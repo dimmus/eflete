@@ -2782,7 +2782,7 @@ static Eina_Bool
 ui_property_state_fill_set(Evas_Object *property)
 {
    Evas_Object *item, *icon;
-   Evas_Object *fill_frame, *box, *prop_box;
+   Evas_Object *box, *prop_box;
    PROP_DATA_GET(EINA_FALSE)
 
    /* if previos selected part is IMAGE or PROXY too, unpack it */
@@ -2790,20 +2790,18 @@ ui_property_state_fill_set(Evas_Object *property)
    prop_box = elm_object_content_get(pd->visual);
    if (!pd_fill.frame)
      {
-        FRAME_PROPERTY_ADD(property, fill_frame, true, _("Fill"), pd->visual)
-        BOX_ADD(fill_frame, box, EINA_FALSE, EINA_FALSE)
+        FRAME_PROPERTY_ADD(property, pd->state_fill.frame, true, _("Fill"), pd->visual)
+        BOX_ADD(pd->state_fill.frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
-        elm_object_content_set(fill_frame, box);
+        elm_object_content_set(pd->state_fill.frame, box);
 
         item = prop_state_fill_type_add(box, pd);
         elm_box_pack_end(box, item);
-        item = prop_state_fill_smooth_add(box, pd,
-                             _("On/off image smooth on scaling"));
+        item = prop_state_fill_smooth_add(box, pd, _("On/off image smooth on scaling"));
         elm_box_pack_end(box, item);
 
-
         /* origin subblock of fill block */
-        item = elm_separator_add(fill_frame);
+        item = elm_separator_add(pd->state_fill.frame);
         elm_separator_horizontal_set(item, true);
         elm_object_style_set(item, "icon");
         elm_layout_text_set(item, "eflete.text", _("Start point"));
@@ -2823,7 +2821,7 @@ ui_property_state_fill_set(Evas_Object *property)
         elm_box_pack_end(box, item);
 
         /* size subblock of fill block */
-        item = elm_separator_add(fill_frame);
+        item = elm_separator_add(pd->state_fill.frame);
         elm_separator_horizontal_set(item, true);
         elm_object_style_set(item, "icon");
         elm_object_part_text_set(item, "eflete.text", _("End point"));
@@ -2842,7 +2840,6 @@ ui_property_state_fill_set(Evas_Object *property)
         elm_layout_content_set(item, NULL, icon);
         elm_box_pack_end(box, item);
 
-        pd_fill.frame = fill_frame;
         elm_box_pack_end(prop_box, pd_fill.frame);
      }
    else
