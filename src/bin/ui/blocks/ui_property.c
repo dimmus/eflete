@@ -3095,7 +3095,38 @@ prop_item_part_item_padding_add(Evas_Object *parent,
 
 #define pd_item pd->part_item
 
-ITEM_COMBOBOX_PART_ITEM_CREATE(_("source"), part_item, source);
+static void
+prop_part_item_source_update(Prop_Data *pd)
+{
+   Eina_List *collections, *l;
+   const char *group, *value;
+   App_Data *ap = app_data_get();
+
+   unsigned int i = 0;
+   ewe_combobox_items_list_free(pd->part_item.source, true);
+   value = edje_edit_part_item_source_get(pd->wm_style->obj, pd->wm_part->name, pd->item_name);
+   ewe_combobox_text_set(pd->part_item.source, value ? value : _("None"));
+
+   collections = edje_mmap_collection_list(ap->project->mmap_file);
+   collections = eina_list_sort(collections, eina_list_count(collections), sort_cb);
+   EINA_LIST_FOREACH(collections, l, group)
+     {
+        if (group != pd->wm_style->full_group_name)
+          ewe_combobox_item_add(pd->part_item.source, group);
+        if (group == value)
+          pd->part.previous_source = i;
+        i++;
+     }
+   edje_edit_string_free(value);
+   edje_mmap_collection_list_free(collections);
+}
+
+#define PART_ITEM_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
+   PART_ITEM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
+   PART_ITEM_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
+
+PART_ITEM_ATTR_1COMBOBOX(_("source"), part_item, source, part_item, _("Sets the group this object will be made from."))
+
 ITEM_2_SPINNERS_ITEM_CREATE(int, _("min"), part_item_min, w, h, "eflete/property/item/default", 1)
 ITEM_2_SPINNERS_ITEM_CREATE(int, _("max"), part_item_max, w, h, "eflete/property/item/default", 1)
 ITEM_2_SPINNERS_ITEM_CREATE(int, _("prefer"), part_item_prefer, w, h, "eflete/property/item/default", 1)
@@ -3126,8 +3157,8 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
 
         item = prop_part_item_name_add(box, _("name"), pd->item_name);
         elm_box_pack_end(box, item);
-        pd_item.source = prop_item_part_item_source_add(box, pd,
-                               _("Sets the group this object will be made from."));
+        item = prop_part_item_source_add(box, pd);
+        elm_box_pack_end(box, item);
         pd_item.min = prop_item_part_item_min_w_h_add(box, pd,
                           0.0, 999.0, 1.0, "%.0f",
                           "w:", "px", "h:", "px",
@@ -3188,7 +3219,6 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
                            _("Sets the row position this item."), false);
         evas_object_hide(pd_item.position);
 
-        elm_box_pack_end(box, pd_item.source);
         if (pd->wm_part->type == EDJE_PART_TYPE_TABLE)
           {
              elm_box_pack_end(box, pd_item.position);
@@ -3210,7 +3240,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
    else
      {
         prop_part_item_name_update(item_name);
-        prop_item_part_item_source_update(pd_item.source, pd);
+        prop_part_item_source_update(pd);
         prop_item_part_item_min_w_h_update(pd_item.min, pd, false);
         prop_item_part_item_max_w_h_update(pd_item.max, pd, false);
         prop_item_part_item_prefer_w_h_update(pd_item.prefer, pd, false);
