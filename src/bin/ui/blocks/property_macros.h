@@ -435,7 +435,6 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
    edje_mmap_collection_list_free(collections); \
 }
 
-
 /*****************************************************************************/
 /*                        PART 1CHECK 1SPINNER DRAG                          */
 /*****************************************************************************/
@@ -577,6 +576,48 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
            ewe_combobox_item_add(pd->MEMBER.VALUE, part->name); \
      } \
    edje_edit_string_free(value); \
+}
+
+/*****************************************************************************/
+/*                     PART ITEM 1 COMBOBOX CONTROL                          */
+/*****************************************************************************/
+/**
+ * Macro for functions that create an item with label and 1 combobox for part
+ * attribute.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param MEMEBER The combobox member from Prop_Data structure
+ * @param TOOLTIP The combobox tooltip
+ *
+ * @ingroup Property_Macro
+ */
+#define PART_ITEM_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
+   PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
+
+/**
+ * Macro defines the callback for PART_ITEM_ATTR_1COMBOBOX_ADD.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param MEMEBER The combobox member from Prop_Data structure
+ *
+ * @ingroup Property_Macro
+ */
+#define PART_ITEM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
+static void \
+_on_##MEMBER##_##VALUE##_change(void *data, \
+                                Evas_Object *obj __UNUSED__, \
+                                void *ei) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Ewe_Combobox_Item *item = ei; \
+   edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, \
+                                   pd->item_name, item->title); \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->wm_style->isModify = true; \
 }
 
 /*****************************************************************************/
