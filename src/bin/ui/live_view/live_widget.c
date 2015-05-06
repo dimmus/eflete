@@ -37,6 +37,7 @@ static struct _live_widget_item widgets[] =
      { "clock", widget_clock_create },
      { "ctxpopup", widget_ctxpopup_create },
      { "colorselector", widget_colorselector_create },
+     { "entry", widget_entry_create },
      { "frame", widget_frame_create },
      { "gengrid", widget_gengrid_create },
      { "genlist", widget_genlist_create },
