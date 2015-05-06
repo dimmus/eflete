@@ -27,7 +27,6 @@ widget_colorselector_create(Evas_Object *parent, const Style *style)
    char **style_parsed = NULL;
    unsigned int count_split = 0;
    standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
-   fprintf(stderr, "class = %s\nstyle = %s\n", class, style_name);
 
    Evas_Object *object = elm_colorselector_add(parent);
    elm_colorselector_mode_set(object, ELM_COLORSELECTOR_ALL);

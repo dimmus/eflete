@@ -81,6 +81,7 @@ ui/live_view/elementary/live_multibuttonentry.c \
 ui/live_view/elementary/live_notify.c \
 ui/live_view/elementary/live_panel.c \
 ui/live_view/elementary/live_panes.c \
+ui/live_view/elementary/live_popup.c \
 ui/live_view/elementary/live_radio.c \
 ui/live_view/elementary/live_scroller.c \
 ui/live_view/elementary/live_segment_control.c \

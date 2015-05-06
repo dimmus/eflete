@@ -91,8 +91,11 @@ _on_all_swallow_check(void *data,
    EINA_LIST_FOREACH(part_list, part, item)
      {
         check = elm_object_part_content_get(item, "info");
-        elm_check_state_set(check, elm_check_state_get(obj));
-        evas_object_smart_callback_call(check, "changed", NULL);
+        if (!elm_object_disabled_get(check))
+          {
+             elm_check_state_set(check, elm_check_state_get(obj));
+             evas_object_smart_callback_call(check, "changed", NULL);
+          }
      }
 
    eina_list_free(part_list);
@@ -284,6 +287,7 @@ live_view_property_style_set(Evas_Object *property,
              evas_object_data_set(check, PART_NAME, eina_stringshare_add(part_name));
 
              elm_object_part_content_set(item, "info", check);
+             if (!strcmp(part_name, "elm.swallow.action_area")) elm_object_disabled_set(check, true);
              elm_box_pack_end(pd->prop_swallow.swallows, item);
           }
         else if ((part_type ==  EDJE_PART_TYPE_TEXT) ||

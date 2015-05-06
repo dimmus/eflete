@@ -134,6 +134,9 @@ Evas_Object *
 widget_panes_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
+widget_popup_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
 widget_radio_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
