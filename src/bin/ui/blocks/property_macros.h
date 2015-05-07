@@ -50,6 +50,64 @@
 /*                      COMMON ATTRIBUTE CONTOLS MACRO                       */
 /*****************************************************************************/
 /**
+ * Macro defines a functions that create an item with label and 2 spinners for
+ * state attribute.
+ *
+ * @param PREFIX The attribute prefix (STATE, PART, etc)
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of state attribute
+ * @param VALUE1 The first value of state attribute
+ * @param VALUE2 The second value of state attribute
+ * @param MEMBER The spinner member from Prop_Data structure
+ * @param MIN The min value of spinner
+ * @param MAX The max value of spinner
+ * @param STEP The step to increment or decrement the spinner value
+ * @param FMT The format string of the displayed label
+ * @param L1_START The text of label before first swallow
+ * @param L1_END The text of label after first swallow
+ * @param L2_START The text of label before second swallow
+ * @param L2_END The text of label after second swallow
+ * @param TOOLTIP1 The first spinner tooltip
+ * @param TOOLTIP2 The second spinner tooltip
+ * @param MULTIPLIER The multiplier to convert the value to percent. If it not
+ *        needed set 1
+ *
+ * @ingroup Property_Macro
+ */
+#define COMMON_2SPINNER_ADD(PREFIX, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, \
+                            MIN, MAX, STEP, FMT, \
+                            L1_START, L1_END, L2_START, L2_END, \
+                            TOOLTIP1, TOOLTIP2, MULTIPLIER) \
+static Evas_Object * \
+prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
+                                          Prop_Data *pd) \
+{ \
+   PROPERTY_ITEM_ADD(parent, TEXT, STYLE) \
+   SPINNER_ADD(item, pd->MEMBER.VALUE1, MIN, MAX, STEP, true) \
+   elm_spinner_label_format_set(pd->MEMBER.VALUE1, FMT); \
+   elm_layout_content_set(item, "swallow.content1", pd->MEMBER.VALUE1); \
+   elm_layout_text_set(item, "label.swallow1.start", L1_START); \
+   elm_layout_text_set(item, "label.swallow1.end", L1_END); \
+   elm_object_tooltip_text_set(pd->MEMBER.VALUE1, TOOLTIP1); \
+   evas_object_event_callback_priority_add(pd->MEMBER.VALUE1, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                          _on_spinner_mouse_wheel, NULL); \
+   evas_object_smart_callback_add(pd->MEMBER.VALUE1, "changed", _on_##MEMBER##_##VALUE1##_change, pd); \
+   SPINNER_ADD(item, pd->MEMBER.VALUE2, MIN, MAX, STEP, true) \
+   elm_spinner_label_format_set(pd->MEMBER.VALUE2, FMT); \
+   elm_layout_content_set(item, "swallow.content2", pd->MEMBER.VALUE2); \
+   elm_layout_text_set(item, "label.swallow2.start", L2_START); \
+   elm_layout_text_set(item, "label.swallow2.end", L2_END); \
+   elm_object_tooltip_text_set(pd->MEMBER.VALUE2, TOOLTIP2); \
+   evas_object_event_callback_priority_add(pd->MEMBER.VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                           _on_spinner_mouse_wheel, NULL); \
+   evas_object_smart_callback_add(pd->MEMBER.VALUE2, "changed", _on_##MEMBER##_##VALUE2##_change, pd); \
+   PREFIX##_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, MULTIPLIER); \
+   return item; \
+}
+
+/**
  * Macro defines a function that updates control by STATE_ATTR_1SPINNER_ADD macro.
  *
  * @param SUB The prefix of main parameter of drag attribute
@@ -810,7 +868,6 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * Macro defines a functions that create an item with label and 2 spinners for
  * state attribute.
  *
- * @param PREFIX The attribute prefix (STATE, PART, etc)
  * @param TEXT The label text
  * @param SUB The prefix of main parameter of state attribute
  * @param VALUE1 The first value of state attribute
@@ -831,38 +888,14 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_2SPINNER_ADD(PREFIX, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, \
+#define STATE_ATTR_2SPINNER_ADD(TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, \
                                 MIN, MAX, STEP, FMT, \
                                 L1_START, L1_END, L2_START, L2_END, \
                                 TOOLTIP1, TOOLTIP2, MULTIPLIER) \
-static Evas_Object * \
-prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
-                                          Prop_Data *pd) \
-{ \
-   PROPERTY_ITEM_ADD(parent, TEXT, STYLE) \
-   SPINNER_ADD(item, pd->MEMBER.VALUE1, MIN, MAX, STEP, true) \
-   elm_spinner_label_format_set(pd->MEMBER.VALUE1, FMT); \
-   elm_layout_content_set(item, "swallow.content1", pd->MEMBER.VALUE1); \
-   elm_layout_text_set(item, "label.swallow1.start", L1_START); \
-   elm_layout_text_set(item, "label.swallow1.end", L1_END); \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE1, TOOLTIP1); \
-   evas_object_event_callback_priority_add(pd->MEMBER.VALUE1, EVAS_CALLBACK_MOUSE_WHEEL, \
-                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
-                                          _on_spinner_mouse_wheel, NULL); \
-   evas_object_smart_callback_add(pd->MEMBER.VALUE1, "changed", _on_##MEMBER##_##VALUE1##_change, pd); \
-   SPINNER_ADD(item, pd->MEMBER.VALUE2, MIN, MAX, STEP, true) \
-   elm_spinner_label_format_set(pd->MEMBER.VALUE2, FMT); \
-   elm_layout_content_set(item, "swallow.content2", pd->MEMBER.VALUE2); \
-   elm_layout_text_set(item, "label.swallow2.start", L2_START); \
-   elm_layout_text_set(item, "label.swallow2.end", L2_END); \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE2, TOOLTIP2); \
-   evas_object_event_callback_priority_add(pd->MEMBER.VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
-                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
-                                           _on_spinner_mouse_wheel, NULL); \
-   evas_object_smart_callback_add(pd->MEMBER.VALUE2, "changed", _on_##MEMBER##_##VALUE2##_change, pd); \
-   PREFIX##_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, MULTIPLIER); \
-   return item; \
-}
+COMMON_2SPINNER_ADD(STATE, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, \
+                    MIN, MAX, STEP, FMT, \
+                    L1_START, L1_END, L2_START, L2_END, \
+                    TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
 /**
  * Macro defines a function that updates control by STATE_ATTR_2SPINNER_ADD macro.
