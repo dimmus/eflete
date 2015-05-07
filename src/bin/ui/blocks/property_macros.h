@@ -44,6 +44,27 @@
    Evas_Object *item; \
    LAYOUT_PROP_ADD(PARENT, NAME, "property", STYLE)
 
+#define STATE_AGRS , pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value
+
+/*****************************************************************************/
+/*                      COMMON ATTRIBUTE CONTOLS MACRO                       */
+/*****************************************************************************/
+/**
+ * Macro defines a function that updates control by STATE_ATTR_1SPINNER_ADD macro.
+ *
+ * @param SUB The prefix of main parameter of drag attribute
+ * @param VALUE The first value of state attribute
+ * @param MEMBER The spinner member from Prop_Data structure
+ * @param MULTIPLIER The multiplier to convert the value to percent. If it not
+ *        needed set 1
+ *
+ * @ingroup Property_Macro
+ */
+#define COMMON_1SPINNER_UPDATE(SUB, VALUE, MEMBER, MULTIPLIER, ARGS) \
+   elm_spinner_value_set(pd->MEMBER.VALUE, \
+                         MULTIPLIER * edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS)); \
+
+
 /*****************************************************************************/
 /*                         GROUP 2 CHECK CONTROL                             */
 /*****************************************************************************/
@@ -741,27 +762,9 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                           _on_spinner_mouse_wheel, NULL); \
    evas_object_smart_callback_add(pd->MEMBER.VALUE, "changed", _on_##MEMBER##_##VALUE##_change, pd); \
-   STATE_ATTR_1SPINNER_UPDATE(SUB, VALUE, MEMBER, MULTIPLIER); \
+   COMMON_1SPINNER_UPDATE(SUB, VALUE, MEMBER, MULTIPLIER, STATE_AGRS) \
    return item; \
 }
-
-/**
- * Macro defines a function that updates control by STATE_ATTR_1SPINNER_ADD macro.
- *
- * @param SUB The prefix of main parameter of drag attribute
- * @param VALUE The first value of state attribute
- * @param MEMBER The spinner member from Prop_Data structure
- * @param MULTIPLIER The multiplier to convert the value to percent. If it not
- *        needed set 1
- *
- * @ingroup Property_Macro
- */
-#define STATE_ATTR_1SPINNER_UPDATE(SUB, VALUE, MEMBER, MULTIPLIER) \
-   elm_spinner_value_set(pd->MEMBER.VALUE, \
-                         MULTIPLIER * edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
-                                                                      pd->wm_part->name, \
-                                                                      pd->wm_part->curr_state, \
-                                                                      pd->wm_part->curr_state_value)); \
 
 /**
  * Macro defines a callback for STATE_ATTR_1(2)SPINNER_ADD.
@@ -874,8 +877,8 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
  * @ingroup Property_Macro
  */
 #define STATE_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, MULTIPLIER) \
-   STATE_ATTR_1SPINNER_UPDATE(SUB, VALUE1, MEMBER, MULTIPLIER) \
-   STATE_ATTR_1SPINNER_UPDATE(SUB, VALUE2, MEMBER, MULTIPLIER)
+   COMMON_1SPINNER_UPDATE(SUB, VALUE1, MEMBER, MULTIPLIER, STATE_AGRS) \
+   COMMON_1SPINNER_UPDATE(SUB, VALUE2, MEMBER, MULTIPLIER, STATE_AGRS) \
 
 /*****************************************************************************/
 /*                          STATE 2 CHECK CONTROLS                           */
