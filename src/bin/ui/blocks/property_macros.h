@@ -44,6 +44,7 @@
    Evas_Object *item; \
    LAYOUT_PROP_ADD(PARENT, NAME, "property", STYLE)
 
+#define PART_ITEM_ARGS , pd->wm_part->name, pd->item_name
 #define STATE_ARGS , pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value
 
 /*****************************************************************************/
@@ -725,6 +726,86 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    Ewe_Combobox_Item *item = ei; \
    edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, \
                                    pd->item_name, item->title); \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->wm_style->isModify = true; \
+}
+
+/*****************************************************************************/
+/*                    PART ITEM 2 SPINNER CONTROLS                           */
+/*****************************************************************************/
+/**
+ * Macro defines a functions that create an item with label and 2 spinners for
+ * part item attribute.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of state attribute
+ * @param VALUE1 The first value of state attribute
+ * @param VALUE2 The second value of state attribute
+ * @param MEMBER The spinner member from Prop_Data structure
+ * @param MIN The min value of spinner
+ * @param MAX The max value of spinner
+ * @param STEP The step to increment or decrement the spinner value
+ * @param FMT The format string of the displayed label
+ * @param L1_START The text of label before first swallow
+ * @param L1_END The text of label after first swallow
+ * @param L2_START The text of label before second swallow
+ * @param L2_END The text of label after second swallow
+ * @param TOOLTIP1 The first spinner tooltip
+ * @param TOOLTIP2 The second spinner tooltip
+ * @param MULTIPLIER The multiplier to convert the value to percent. If it not
+ *        needed set 1
+ *
+ * @ingroup Property_Macro
+ */
+#define PART_ITEM_ATTR_2SPINNER_ADD(TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, \
+                                    MIN, MAX, STEP, FMT, \
+                                    L1_START, L1_END, L2_START, L2_END, \
+                                    TOOLTIP1, TOOLTIP2, MULTIPLIER) \
+COMMON_2SPINNER_ADD(PART_ITEM, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, \
+                    MIN, MAX, STEP, FMT, \
+                    L1_START, L1_END, L2_START, L2_END, \
+                    TOOLTIP1, TOOLTIP2, MULTIPLIER)
+
+/**
+ * Macro defines a function that updates control by PART_ITEM_ATTR_2SPINNER_ADD macro.
+ *
+ * @param SUB The prefix of main parameter of drag attribute
+ * @param VALUE1 The first value of state attribute
+ * @param VALUE2 The second value of state attribute
+ * @param MEMBER The spinner member from Prop_Data structure
+ * @param MULTIPLIER The multiplier to convert the value to percent. If it not
+ *        needed set 1
+ *
+ * @ingroup Property_Macro
+ */
+#define PART_ITEM_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, MULTIPLIER) \
+   COMMON_1SPINNER_UPDATE(SUB, VALUE1, MEMBER, MULTIPLIER, PART_ITEM_ARGS) \
+   COMMON_1SPINNER_UPDATE(SUB, VALUE2, MEMBER, MULTIPLIER, PART_ITEM_ARGS) \
+
+/**
+ * Macro defines a callback for PART_ITEM2SPINNER_ADD.
+ *
+ * @param SUB The prefix of main parameter of state attribute;
+ * @param VALUE The value of state attribute.
+ * @param TYPE The spinner value type: int, double
+ * @param HISTORY_TYPE The history value type: VAL_INT, VAL_DOUBLE
+ * @param MULTIPLIER The multiplier to convert the value to percent
+ *
+ * @ingroup Property_Macro
+ */
+TODO("Add support PART_ITEM attributes to history")
+#define PART_ITEM_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
+static void \
+_on_##MEMBER##_##VALUE##_change(void *data, \
+                                Evas_Object *obj, \
+                                void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   TYPE value = elm_spinner_value_get(obj); \
+   value /= MULTIPLIER; \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
+     return; \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \
