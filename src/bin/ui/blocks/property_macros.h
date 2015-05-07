@@ -807,6 +807,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * Macro defines a functions that create an item with label and 2 spinners for
  * state attribute.
  *
+ * @param PREFIX The attribute prefix (STATE, PART, etc)
  * @param TEXT The label text
  * @param SUB The prefix of main parameter of state attribute
  * @param VALUE1 The first value of state attribute
@@ -827,7 +828,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_2SPINNER_ADD(TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, \
+#define STATE_ATTR_2SPINNER_ADD(PREFIX, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, \
                                 MIN, MAX, STEP, FMT, \
                                 L1_START, L1_END, L2_START, L2_END, \
                                 TOOLTIP1, TOOLTIP2, MULTIPLIER) \
@@ -856,7 +857,7 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
    evas_object_smart_callback_add(pd->MEMBER.VALUE2, "changed", _on_##MEMBER##_##VALUE2##_change, pd); \
-   STATE_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, MULTIPLIER); \
+   PREFIX##_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, MULTIPLIER); \
    return item; \
 }
 
