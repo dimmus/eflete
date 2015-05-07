@@ -101,6 +101,9 @@ Evas_Object *
 widget_ctxpopup_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
+widget_datetime_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
 widget_entry_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
