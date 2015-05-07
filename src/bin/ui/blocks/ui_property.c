@@ -2148,7 +2148,7 @@ ui_property_state_text_set(Evas_Object *property)
      {
         prop_state_text_update(pd);
         prop_state_font_update(pd);
-        COMMON_1SPINNER_UPDATE(state_text, size, state_text, 1, STATE_AGRS)
+        COMMON_1SPINNER_UPDATE(state_text, size, state_text, 1, STATE_ARGS)
         STATE_ATTR_2SPINNER_UPDATE(state_text, align_x, align_y, state_text, 100)
         STATE_ATTR_2CHECK_UPDATE(state_text, min_x, min_y, state_text)
         STATE_ATTR_2CHECK_UPDATE(state_text, max_x, max_y, state_text)

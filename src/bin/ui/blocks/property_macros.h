@@ -44,7 +44,7 @@
    Evas_Object *item; \
    LAYOUT_PROP_ADD(PARENT, NAME, "property", STYLE)
 
-#define STATE_AGRS , pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value
+#define STATE_ARGS , pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value
 
 /*****************************************************************************/
 /*                      COMMON ATTRIBUTE CONTOLS MACRO                       */
@@ -122,6 +122,37 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_spinner_value_set(pd->MEMBER.VALUE, \
                          MULTIPLIER * edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS)); \
 
+/**
+ * Macro defines a callback for STATE_ATTR_1(2)SPINNER_ADD.
+ *
+ * @param SUB The prefix of main parameter of state attribute;
+ * @param VALUE The value of state attribute.
+ * @param TYPE The spinner value type: int, double
+ * @param HISTORY_TYPE The history value type: VAL_INT, VAL_DOUBLE
+ * @param MULTIPLIER The multiplier to convert the value to percent
+ *
+ * @ingroup Property_Macro
+ */
+#define COMMON_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, ARGS) \
+static void \
+_on_##MEMBER##_##VALUE##_change(void *data, \
+                                Evas_Object *obj, \
+                                void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   TYPE value = elm_spinner_value_get(obj); \
+   TYPE old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
+   value /= MULTIPLIER; \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, value)) \
+     return; \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
+                    value, pd->wm_style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->wm_style->isModify = true; \
+}
 
 /*****************************************************************************/
 /*                         GROUP 2 CHECK CONTROL                             */
@@ -820,7 +851,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                           _on_spinner_mouse_wheel, NULL); \
    evas_object_smart_callback_add(pd->MEMBER.VALUE, "changed", _on_##MEMBER##_##VALUE##_change, pd); \
-   COMMON_1SPINNER_UPDATE(SUB, VALUE, MEMBER, MULTIPLIER, STATE_AGRS) \
+   COMMON_1SPINNER_UPDATE(SUB, VALUE, MEMBER, MULTIPLIER, STATE_ARGS) \
    return item; \
 }
 
@@ -836,30 +867,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
  * @ingroup Property_Macro
  */
 #define STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
-static void \
-_on_##MEMBER##_##VALUE##_change(void *data, \
-                                Evas_Object *obj, \
-                                void *ei __UNUSED__) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   TYPE value = elm_spinner_value_get(obj); \
-   TYPE old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name,\
-                                        pd->wm_part->curr_state, \
-                                        pd->wm_part->curr_state_value); \
-   value /= MULTIPLIER; \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name,\
-                                        pd->wm_part->curr_state, \
-                                        pd->wm_part->curr_state_value, \
-                                        value)) \
-     return; \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
-                    value, pd->wm_style->full_group_name,\
-                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
-                    pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
-   project_changed(); \
-   workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
-}
+   COMMON_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, STATE_ARGS)
 
 /*****************************************************************************/
 /*                        STATE 2 SPINNER CONTROLS                           */
@@ -910,8 +918,8 @@ COMMON_2SPINNER_ADD(STATE, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, \
  * @ingroup Property_Macro
  */
 #define STATE_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, MULTIPLIER) \
-   COMMON_1SPINNER_UPDATE(SUB, VALUE1, MEMBER, MULTIPLIER, STATE_AGRS) \
-   COMMON_1SPINNER_UPDATE(SUB, VALUE2, MEMBER, MULTIPLIER, STATE_AGRS) \
+   COMMON_1SPINNER_UPDATE(SUB, VALUE1, MEMBER, MULTIPLIER, STATE_ARGS) \
+   COMMON_1SPINNER_UPDATE(SUB, VALUE2, MEMBER, MULTIPLIER, STATE_ARGS) \
 
 /*****************************************************************************/
 /*                          STATE 2 CHECK CONTROLS                           */
