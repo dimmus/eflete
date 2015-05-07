@@ -3153,7 +3153,7 @@ Eina_Bool
 ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
 {
    Evas_Object *item;
-   Evas_Object *box, *prop_box, *item_box;
+   Evas_Object *box, *prop_box;
    PROP_DATA_GET(false)
 
    ui_property_item_unset(property);
@@ -3226,12 +3226,6 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
                            _("Sets the row position this item."), false);
         evas_object_hide(pd_item.position);
 
-        if (pd->wm_part->type == EDJE_PART_TYPE_TABLE)
-          {
-             elm_box_pack_after(box, pd_item.position, pd->part_item.source_item);
-             evas_object_show(pd_item.position);
-          }
-
         elm_box_pack_end(box, pd_item.max);
         elm_box_pack_end(box, pd_item.prefer);
         elm_box_pack_end(box, pd_item.align);
@@ -3245,6 +3239,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
      }
    else
      {
+        box = elm_object_content_get(pd->part_item.frame);
         prop_part_item_name_update(item_name);
         prop_part_item_source_update(pd);
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, min_w, min_h, part_item, 1)
@@ -3254,18 +3249,29 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         prop_item_part_item_aspect_w_h_update(pd_item.aspect, pd, false);
         prop_item_part_item_spread_w_h_update(pd_item.spread, pd, false);
         prop_item_part_item_span_suf_update(pd_item.span, pd, false);
-        if (pd->wm_part->type == EDJE_PART_TYPE_TABLE)
-          {
-             prop_item_part_item_position_suf_update(pd_item.position, pd, false);
-             item_box = elm_object_content_get(pd_item.frame);
-             elm_box_pack_after(item_box, pd_item.position, pd->part_item.source_item);
-             evas_object_show(pd_item.position);
-          }
         prop_item_part_item_padding_update(pd_item.padding, pd);
         prop_item_part_item_aspect_mode_update(pd_item.aspect_mode, pd);
         elm_box_pack_before(prop_box, pd_item.frame, pd->part.frame);
         evas_object_show(pd_item.frame);
      }
+
+     if (pd->wm_part->type == EDJE_PART_TYPE_TABLE)
+       {
+          if (!evas_object_visible_get(pd->part_item.position))
+            {
+               elm_box_pack_after(box, pd->part_item.position, pd->part_item.source_item);
+               evas_object_show(pd->part_item.position);
+            }
+       }
+     else
+       {
+          if (evas_object_visible_get(pd->part_item.position))
+            {
+               elm_box_unpack(box, pd->part_item.position);
+               evas_object_hide(pd->part_item.position);
+            }
+       }
+
    return true;
 }
 
