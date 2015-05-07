@@ -188,8 +188,8 @@ struct _Prop_Data
    struct {
       Evas_Object *frame;
       Evas_Object *name;
-      Evas_Object *source;
-      Evas_Object *min;
+      Evas_Object *source, *source_item;
+      Evas_Object *min_w, *min_h;
       Evas_Object *max;
       Evas_Object *spread;
       Evas_Object *prefer;
@@ -3125,9 +3125,20 @@ prop_part_item_source_update(Prop_Data *pd)
    PART_ITEM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
    PART_ITEM_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
-PART_ITEM_ATTR_1COMBOBOX(_("source"), part_item, source, part_item, _("Sets the group this object will be made from."))
+#define PART_ITEM_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+                                L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
+                                TYPE, HISTORY_TYPE) \
+   PART_ITEM_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
+   PART_ITEM_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
+   PART_ITEM_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+                           L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
-ITEM_2_SPINNERS_ITEM_CREATE(int, _("min"), part_item_min, w, h, "eflete/property/item/default", 1)
+PART_ITEM_ATTR_1COMBOBOX(_("source"), part_item, source, part_item, _("Sets the group this object will be made from."))
+PART_ITEM_ATTR_2SPINNER(_("min"), part_item, min_w, min_h, part_item,
+                    0.0, 999.0, 1.0, "%.0f", "x:", "%", "y:", "%",
+                    _("Text horizontal align"), _("Text vertical align"),
+                    1, int, VAL_INT)
+
 ITEM_2_SPINNERS_ITEM_CREATE(int, _("max"), part_item_max, w, h, "eflete/property/item/default", 1)
 ITEM_2_SPINNERS_ITEM_CREATE(int, _("prefer"), part_item_prefer, w, h, "eflete/property/item/default", 1)
 ITEM_2_SPINNERS_ITEM_CREATE(int, _("spread"), part_item_spread, w, h, "eflete/property/item/default", 1)
@@ -3157,14 +3168,10 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
 
         item = prop_part_item_name_add(box, _("name"), pd->item_name);
         elm_box_pack_end(box, item);
-        item = prop_part_item_source_add(box, pd);
+        pd->part_item.source_item = prop_part_item_source_add(box, pd);
+        elm_box_pack_end(box, pd->part_item.source_item);
+        item = prop_part_item_min_w_min_h_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_item.min = prop_item_part_item_min_w_h_add(box, pd,
-                          0.0, 999.0, 1.0, "%.0f",
-                          "w:", "px", "h:", "px",
-                          _("Set the item minimum size hint width in pixels."),
-                          _("Set the item minimum size hint height in pixels."),
-                          false);
         pd_item.max = prop_item_part_item_max_w_h_add(box, pd,
                           0.0, 999.0, 1.0, "%.0f",
                           "w:", "px", "h:", "px",
@@ -3221,11 +3228,10 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
 
         if (pd->wm_part->type == EDJE_PART_TYPE_TABLE)
           {
-             elm_box_pack_end(box, pd_item.position);
+             elm_box_pack_after(box, pd_item.position, pd->part_item.source_item);
              evas_object_show(pd_item.position);
           }
 
-        elm_box_pack_end(box, pd_item.min);
         elm_box_pack_end(box, pd_item.max);
         elm_box_pack_end(box, pd_item.prefer);
         elm_box_pack_end(box, pd_item.align);
@@ -3241,8 +3247,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
      {
         prop_part_item_name_update(item_name);
         prop_part_item_source_update(pd);
-        prop_item_part_item_min_w_h_update(pd_item.min, pd, false);
-        prop_item_part_item_max_w_h_update(pd_item.max, pd, false);
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, min_w, min_h, part_item, 1)
         prop_item_part_item_prefer_w_h_update(pd_item.prefer, pd, false);
         prop_item_part_item_align_x_y_update(pd_item.align, pd, false);
         prop_item_part_item_weight_x_y_update(pd_item.weight, pd, false);
@@ -3253,7 +3258,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
           {
              prop_item_part_item_position_suf_update(pd_item.position, pd, false);
              item_box = elm_object_content_get(pd_item.frame);
-             elm_box_pack_before(item_box, pd_item.position, pd_item.min);
+             elm_box_pack_after(item_box, pd_item.position, pd->part_item.source_item);
              evas_object_show(pd_item.position);
           }
         prop_item_part_item_padding_update(pd_item.padding, pd);
