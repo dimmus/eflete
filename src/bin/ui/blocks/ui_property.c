@@ -194,7 +194,7 @@ struct _Prop_Data
       Evas_Object *spread;
       Evas_Object *prefer_w, *prefer_h;
       Evas_Object *padding;
-      Evas_Object *align;
+      Evas_Object *align_x, *align_y;
       Evas_Object *weight;
       Evas_Object *aspect;
       Evas_Object *aspect_mode;
@@ -3143,15 +3143,19 @@ PART_ITEM_ATTR_2SPINNER(_("max"), part_item, max_w, max_h, part_item,
                     _("Set the item maximum size hint width in pixels"), _("Set the item maximum size hint height in pixels"),
                     1, int, VAL_INT)
 PART_ITEM_ATTR_2SPINNER(_("prefer"), part_item, prefer_w, prefer_h, part_item,
+                    0.0, 999.0, 1.0, NULL, "w:", "px", "h:", "px",
+                    _("Set the item prefered size hint width in pixels"), _("Set the item prefered size hint height in pixels"),
+                    1, int, VAL_INT)
+PART_ITEM_ATTR_2SPINNER(_("align"), part_item, align_x, align_y, part_item,
                     0.0, 999.0, 1.0, NULL, "x:", "px", "y:", "px",
-                    _("Set the item prefered size hint width in pixels."), _("Set the item prefered size hint height in pixels."),
+                    _("Sets the alignment hint by x axiss."), _("Sets the alignment hint by y axiss."),
                     1, int, VAL_INT)
 
 ITEM_2_SPINNERS_ITEM_CREATE(int, _("spread"), part_item_spread, w, h, "eflete/property/item/default", 1)
 ITEM_2_SPINNERS_ITEM_CREATE(int, _("aspect"), part_item_aspect, w, h, "eflete/property/item/default", 1)
 ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned short int, _("position"), part_item, position, "eflete/property/item/default")
 ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned char, _("span"), part_item, span, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_CREATE(double, _("align"), part_item_align, x, y, "eflete/property/item/default", 100)
+//ITEM_2_SPINNERS_ITEM_CREATE(double, _("align"), part_item_align, x, y, "eflete/property/item/default", 100)
 ITEM_2_SPINNERS_ITEM_CREATE(double, _("weight"), part_item_weight, x, y, "eflete/property/item/default", 1)
 ITEM_PREDEFINED_COMBOBOX_PART_ITEM_CREATE(_("aspect mode"), part_item, aspect_mode)
 
@@ -3182,6 +3186,8 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         elm_box_pack_end(box, item);
         item = prop_part_item_prefer_w_prefer_h_add(box, pd);
         elm_box_pack_end(box, item);
+        item = prop_part_item_align_x_align_y_add(box, pd);
+        elm_box_pack_end(box, item);
         pd_item.aspect = prop_item_part_item_aspect_w_h_add(box, pd,
                           0, 999, 1, "%.0f",
                           "x:", "", "y:", "",
@@ -3199,12 +3205,6 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
                           "col", "", "row", "",
                           _("Sets how many columns this item will use."),
                           _("Sets how many rows this item will use."), false);
-        pd_item.align = prop_item_part_item_align_x_y_add(box, pd,
-                          -1, 100, 1, NULL,
-                          "x:", "%", "y:", "%",
-                          _("Sets the alignment hint by x axiss."),
-                          _("Sets the alignment hint by y axiss."),
-                          true);
         pd_item.weight = prop_item_part_item_weight_x_y_add(box, pd,
                           0.0, 999.0, 1.0, NULL,
                           "x:", "%", "y:", "",
@@ -3224,7 +3224,6 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
                            _("Sets the row position this item."), false);
         evas_object_hide(pd_item.position);
 
-        elm_box_pack_end(box, pd_item.align);
         elm_box_pack_end(box, pd_item.weight);
         elm_box_pack_end(box, pd_item.aspect);
         elm_box_pack_end(box, pd_item.aspect_mode);
@@ -3241,7 +3240,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, min_w, min_h, part_item, 1)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, max_w, max_h, part_item, 1)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, prefer_w, prefer_h, part_item, 1)
-        prop_item_part_item_align_x_y_update(pd_item.align, pd, false);
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, align_x, align_y, part_item, 1)
         prop_item_part_item_weight_x_y_update(pd_item.weight, pd, false);
         prop_item_part_item_aspect_w_h_update(pd_item.aspect, pd, false);
         prop_item_part_item_spread_w_h_update(pd_item.spread, pd, false);
