@@ -191,7 +191,7 @@ struct _Prop_Data
       Evas_Object *source, *source_item;
       Evas_Object *min_w, *min_h;
       Evas_Object *max_w, *max_h;
-      Evas_Object *spread;
+      Evas_Object *spread_w, *spread_h;
       Evas_Object *prefer_w, *prefer_h;
       Evas_Object *padding;
       Evas_Object *align_x, *align_y;
@@ -3158,8 +3158,12 @@ PART_ITEM_ATTR_2SPINNER(_("aspect"), part_item, aspect_w, aspect_h, part_item,
                     0.0, 999.0, 1.0, NULL, "w:", "", "h:", "",
                     _("Set the item aspect width hint"), _("Set the item aspect height hint"),
                     1, int, VAL_INT)
+PART_ITEM_ATTR_2SPINNER(_("spread"), part_item, spread_w, spread_h, part_item,
+                    1.0, 255.0, 1.0, NULL, "colunm:", "", "row:", "",
+                    _("Replicate the item in width, starting from the current position."),
+                    _("Replicate the item in height, starting from the current position"),
+                    1, int, VAL_INT)
 
-ITEM_2_SPINNERS_ITEM_CREATE(int, _("spread"), part_item_spread, w, h, "eflete/property/item/default", 1)
 ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned short int, _("position"), part_item, position, "eflete/property/item/default")
 ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned char, _("span"), part_item, span, "eflete/property/item/default")
 ITEM_PREDEFINED_COMBOBOX_PART_ITEM_CREATE(_("aspect mode"), part_item, aspect_mode)
@@ -3195,14 +3199,14 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         elm_box_pack_end(box, item);
         item = prop_part_item_weight_x_weight_y_add(box, pd);
         elm_box_pack_end(box, item);
+        pd_item.aspect_mode = prop_item_part_item_aspect_mode_add(box, pd,
+                              _("Sets the aspect control hints for this object."),
+                              edje_item_aspect_pref);
+        elm_box_pack_end(box, pd_item.aspect_mode);
         item = prop_part_item_aspect_w_aspect_h_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_item.spread = prop_item_part_item_spread_w_h_add(box, pd,
-                          1.0, 255.0, 1.0, "%.0f",
-                          "col:", "", "row", "",
-                          _("Replicate the item in width, starting from the current position."),
-                          _("Replicate the item in height, starting from the current position."),
-                          false);
+        item = prop_part_item_spread_w_spread_h_add(box, pd);
+        elm_box_pack_end(box, item);
         pd_item.span = prop_item_part_item_span_suf_add(box, pd,
                           1.0, 999.0, 1.0, "%.0f",
                           "col", "", "row", "",
@@ -3211,9 +3215,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         pd_item.padding =  prop_item_part_item_padding_add(box, pd,
                              0.0, 999.0, 1.0, "%.0f",
                             _("left:"), _("right:"), _("top:"), _("bottom:"));
-        pd_item.aspect_mode = prop_item_part_item_aspect_mode_add(box, pd,
-                              _("Sets the aspect control hints for this object."),
-                              edje_item_aspect_pref);
+
         pd_item.position = prop_item_part_item_position_suf_add(box, pd,
                            0.0, 999.0, 1.0, "%.0f",
                            "col", "", "row", "",
@@ -3221,9 +3223,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
                            _("Sets the row position this item."), false);
         evas_object_hide(pd_item.position);
 
-        elm_box_pack_end(box, pd_item.aspect_mode);
         elm_box_pack_end(box, pd_item.padding);
-        elm_box_pack_end(box, pd_item.spread);
         elm_box_pack_end(box, pd_item.span);
         elm_box_pack_before(prop_box, pd_item.frame, pd->part.frame);
      }
@@ -3237,11 +3237,11 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, prefer_w, prefer_h, part_item, 1)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, align_x, align_y, part_item, 100)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, weight_x, weight_y, part_item, 1)
+        prop_item_part_item_aspect_mode_update(pd_item.aspect_mode, pd);
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, aspect_w, aspect_h, part_item, 1)
-        prop_item_part_item_spread_w_h_update(pd_item.spread, pd, false);
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, spread_w, spread_h, part_item, 1)
         prop_item_part_item_span_suf_update(pd_item.span, pd, false);
         prop_item_part_item_padding_update(pd_item.padding, pd);
-        prop_item_part_item_aspect_mode_update(pd_item.aspect_mode, pd);
         elm_box_pack_before(prop_box, pd_item.frame, pd->part.frame);
         evas_object_show(pd_item.frame);
      }
