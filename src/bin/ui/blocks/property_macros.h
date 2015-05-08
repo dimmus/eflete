@@ -51,14 +51,14 @@
 /*                      COMMON ATTRIBUTE CONTOLS MACRO                       */
 /*****************************************************************************/
 /**
- * Macro defines a functions that create an item with label and 2 spinners for
- * state attribute.
+ * Macro defines a functions that create an item with label and 2 spinners.
  *
- * @param PREFIX The attribute prefix (STATE, PART, etc)
+ * @param PREFIX The attribute prefix (STATE, PART, etc), used for define the
+ *        update function
  * @param TEXT The label text
- * @param SUB The prefix of main parameter of state attribute
- * @param VALUE1 The first value of state attribute
- * @param VALUE2 The second value of state attribute
+ * @param SUB The prefix of the attribute
+ * @param VALUE1 The first value of the attribute
+ * @param VALUE2 The second value of the attribute
  * @param MEMBER The spinner member from Prop_Data structure
  * @param MIN The min value of spinner
  * @param MAX The max value of spinner
@@ -72,6 +72,8 @@
  * @param TOOLTIP2 The second spinner tooltip
  * @param MULTIPLIER The multiplier to convert the value to percent. If it not
  *        needed set 1
+ *
+ * @note for internal usage in property_macros.h
  *
  * @ingroup Property_Macro
  */
@@ -109,13 +111,16 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
 }
 
 /**
- * Macro defines a function that updates control by STATE_ATTR_1SPINNER_ADD macro.
+ * Macro defines a function call with arguments that updates control by
+ * COMMON_1(2)SPINNER_ADD macro.
  *
- * @param SUB The prefix of main parameter of drag attribute
- * @param VALUE The first value of state attribute
+ * @param SUB The prefix of the attribute
+ * @param VALUE The first value of the attribute
  * @param MEMBER The spinner member from Prop_Data structure
  * @param MULTIPLIER The multiplier to convert the value to percent. If it not
  *        needed set 1
+ *
+ * @note for internal usage in property_macros.h
  *
  * @ingroup Property_Macro
  */
@@ -124,13 +129,15 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                          MULTIPLIER * edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS)); \
 
 /**
- * Macro defines a callback for STATE_ATTR_1(2)SPINNER_ADD.
+ * Macro defines a COMMON_1(2)SPINNER_ADD.
  *
- * @param SUB The prefix of main parameter of state attribute;
- * @param VALUE The value of state attribute.
+ * @param SUB The prefix of the attribute
+ * @param VALUE The value of the attribute
  * @param TYPE The spinner value type: int, double
  * @param HISTORY_TYPE The history value type: VAL_INT, VAL_DOUBLE
  * @param MULTIPLIER The multiplier to convert the value to percent
+ *
+ * @note for internal usage in property_macros.h
  *
  * @ingroup Property_Macro
  */
