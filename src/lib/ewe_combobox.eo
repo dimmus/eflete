@@ -1,9 +1,9 @@
-class Ewe_Combobox (Elm_Widget)
+class Ewe_Combobox (Elm.Widget)
 {
    eo_prefix: ewe_obj_combobox;
    data: Ewe_Combobox_Smart_Data;
-   properties {
-      items_list {
+   methods {
+      @property items_list {
          get {
          /*@
           Get internal items list.
@@ -13,11 +13,9 @@ class Ewe_Combobox (Elm_Widget)
           @ingroup combobox*/
          }
          values {
-            const(Eina_List)* items;
+            items: const(Eina_List)*;
          }
       }
-   }
-   methods {
       item_add {
          /*@
           Add an item as last.
@@ -27,7 +25,7 @@ class Ewe_Combobox (Elm_Widget)
           @ingroup combobox*/
          return: Ewe_Combobox_Item *;
          params {
-            @in Eina_Stringshare *title; /*@New items title*/
+            @in title: Eina_Stringshare*; /*@New items title*/
          }
       }
       item_del {
@@ -39,7 +37,7 @@ class Ewe_Combobox (Elm_Widget)
           @ingroup combobox*/
          return: Eina_Bool;
          params {
-            @in Ewe_Combobox_Item *item; /*@The combobox item*/
+            @in item: Ewe_Combobox_Item*; /*@The combobox item*/
          }
       }
       items_list_free {
@@ -51,7 +49,7 @@ class Ewe_Combobox (Elm_Widget)
           @ingroup combobox*/
          return: Eina_Bool;
          params {
-            @in Eina_Bool empty; /*@clear main part*/
+            @in empty: Eina_Bool; /*@clear main part*/
          }
       }
       item_title_set {
@@ -63,8 +61,8 @@ class Ewe_Combobox (Elm_Widget)
           @ingroup combobox*/
          return: Eina_Bool;
          params {
-            @in int index; /*@Combobox item index*/
-            @in Eina_Stringshare *title; /*@New items title*/
+            @in index: int; /*@Combobox item index*/
+            @in title: Eina_Stringshare*; /*@New items title*/
          }
       }
       item_title_get {
@@ -76,7 +74,7 @@ class Ewe_Combobox (Elm_Widget)
           @ingroup combobox*/
          return: Eina_Stringshare *;
          params {
-            @in const(int) index; /*@Combobox item index*/
+            @in index: const(int); /*@Combobox item index*/
          }
       }
       select_item_set {
@@ -88,7 +86,7 @@ class Ewe_Combobox (Elm_Widget)
          @ingroup combobox*/
          return: Eina_Bool;
          params {
-            @in const(int) index; /*@New selected item index*/
+            @in index: const(int); /*@New selected item index*/
          }
       }
       select_item_get {
@@ -118,7 +116,7 @@ class Ewe_Combobox (Elm_Widget)
           @ingroup combobox*/
          return: Eina_Bool;
          params {
-            @in Eina_Stringshare *title; /*@New items title*/
+            @in title: Eina_Stringshare*; /*@New items title*/
          }
       }
       item_style_set {
@@ -130,8 +128,8 @@ class Ewe_Combobox (Elm_Widget)
           @ingroup combobox*/
          return: Eina_Bool;
          params {
-            @in Ewe_Combobox_Item *item; /*@The combobox item*/
-            @in Eina_Stringshare *style; /*@New items style*/
+            @in item: Ewe_Combobox_Item*; /*@The combobox item*/
+            @in style: Eina_Stringshare*; /*@New items style*/
          }
       }
       style_set {
@@ -143,7 +141,7 @@ class Ewe_Combobox (Elm_Widget)
           @ingroup combobox*/
          return: Eina_Bool;
          params {
-            @in Eina_Stringshare *style; /*@New combobox style*/
+            @in style: Eina_Stringshare*; /*@New combobox style*/
          }
       }
       content_set {
@@ -155,8 +153,8 @@ class Ewe_Combobox (Elm_Widget)
           @ingroup combobox*/
          return: Eina_Bool;
          params {
-            @in Eina_Stringshare *part; /*@Part name*/
-            @in Evas_Object *content; /*@A swallowed content*/
+            @in part: Eina_Stringshare*; /*@Part name*/
+            @in content: Evas_Object*; /*@A swallowed content*/
          }
       }
    }
@@ -170,7 +168,7 @@ class Ewe_Combobox (Elm_Widget)
       Evas.Object_Smart.move;
       Evas.Object_Smart.show;
       Evas.Object_Smart.hide;
-      Elm_Widget.disable;
+      Elm.Widget.disable;
    }
    events {
    }

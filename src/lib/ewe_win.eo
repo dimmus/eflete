@@ -1,4 +1,4 @@
-class Ewe_Win (Elm_Win)
+class Ewe_Win (Elm.Win)
 {
    eo_prefix: ewe_obj_win;
    legacy_prefix: ewe_win;

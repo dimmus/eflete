@@ -1,9 +1,9 @@
-class Ewe_Entry (Elm_Entry)
+class Ewe_Entry (Elm.Entry)
 {
    eo_prefix: ewe_obj_entry;
    data: Ewe_Entry_Data;
-   properties {
-      regex_glow {
+   methods {
+      @property regex_glow {
          get {
             /*@
              Returns boolean to check if redex error-signals emition is on/off
@@ -13,10 +13,10 @@ class Ewe_Entry (Elm_Entry)
              @ingroup Entry */
          }
          values {
-            Eina_Bool glow;
+            glow: bool;
          }
       }
-      regex_autocheck {
+      @property regex_autocheck {
          get {
             /*@
              Returns boolean to check if redex autocheck is on/off
@@ -26,10 +26,10 @@ class Ewe_Entry (Elm_Entry)
              @ingroup Entry */
          }
          values {
-            Eina_Bool autocheck;
+            autocheck: bool;
          }
       }
-      regex_error {
+      @property regex_error {
          get {
             /*@
              Returns last regex error
@@ -38,10 +38,10 @@ class Ewe_Entry (Elm_Entry)
              @ingroup Entry */
          }
          values {
-            int error;
+            error: int;
          }
       }
-      regex_error_text {
+      @property regex_error_text {
          get {
             /*@
              Returns last regex error text
@@ -50,11 +50,9 @@ class Ewe_Entry (Elm_Entry)
              @ingroup Entry */
          }
          values {
-            const(char) *error;
+            error: const(char)*;
          }
       }
-   }
-   methods {
       regex_set {
          /*@
           Set regular expresion to be compiled and used.
@@ -64,8 +62,8 @@ class Ewe_Entry (Elm_Entry)
           @ingroup Entry*/
          return: Eina_Bool;
          params {
-            @in const(char) *regex_str; /*@The text of regular expresion*/
-            @in int flags; /*@Compile flags for regex*/
+            @in regex_str: const(char)*; /*@The text of regular expresion*/
+            @in flags: int; /*@Compile flags for regex*/
          }
       }
       regex_unset {
@@ -95,7 +93,7 @@ class Ewe_Entry (Elm_Entry)
           @ingroup Entry*/
          return: Eina_Bool;
          params {
-            @in Eina_Bool autocheck; /*@Boolean to set autocheck on/off*/
+            @in autocheck: Eina_Bool; /*@Boolean to set autocheck on/off*/
          }
       }
       regex_glow_set {
@@ -106,7 +104,7 @@ class Ewe_Entry (Elm_Entry)
           @ingroup Entry*/
          return: Eina_Bool;
          params {
-            @in Eina_Bool glow; /*@Boolean to set signals emition on/off*/
+            @in glow: Eina_Bool; /*@Boolean to set signals emition on/off*/
          }
       }
    }
@@ -114,8 +112,8 @@ class Ewe_Entry (Elm_Entry)
       class.constructor;
       Eo.Base.constructor;
       Eo.Base.destructor;
-      Elm_Widget.theme_apply;
-      Elm_Widget.disable;
+      Elm.Widget.theme_apply;
+      Elm.Widget.disable;
    }
    events {
       focus,out;

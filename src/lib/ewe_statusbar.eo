@@ -1,9 +1,9 @@
-class Ewe_Statusbar (Elm_Widget)
+class Ewe_Statusbar (Elm.Widget)
 {
    eo_prefix: ewe_obj_statusbar;
    data: Ewe_Statusbar_Smart_Data;
-   properties {
-      items_padding {
+   methods {
+      @property items_padding {
          set {
             /*@
             Set the padding between the statusbar items.
@@ -20,11 +20,11 @@ class Ewe_Statusbar (Elm_Widget)
             @ingroup Statusbar */
          }
          values {
-            int padding; /*@ padding size in pixels between items.*/
+            padding: int; /*@ padding size in pixels between items.*/
          }
       }
 
-     items_align {
+     @property items_align {
          set {
             /*@
             Set the alignment of the whole bounding statusbar of items.
@@ -42,11 +42,9 @@ class Ewe_Statusbar (Elm_Widget)
             @ingroup Statusbar */
          }
          values {
-           Ewe_Statusbar_Items_Align align; /*@The alignment of items. */
+           align: Ewe_Statusbar_Items_Align; /*@The alignment of items. */
          }
       }
-   }
-   methods {
      items_list_get {
             /*@
              Retrieve a list of the items, which exist into the statusbar.
@@ -73,10 +71,10 @@ class Ewe_Statusbar (Elm_Widget)
 
          return: Ewe_Statusbar_Item *;
          params {
-            @in Evas_Object *content; /*@ The object, which will be set into statusbar item as content. Can be NULL.*/
-            @in Ewe_Statusbar_Items_Type type; /*@ Item type. */
-            @in Evas_Smart_Cb func; /*@ Convenience function called when the item is clicked.*/
-            @in void *func_data; /*@ Data passed to func above.*/
+            @in content: Evas_Object*; /*@ The object, which will be set into statusbar item as content. Can be NULL.*/
+            @in type: Ewe_Statusbar_Items_Type; /*@ Item type. */
+            @in func: Evas_Smart_Cb; /*@ Convenience function called when the item is clicked.*/
+            @in func_data: void*; /*@ Data passed to func above.*/
          }
       }
 
@@ -90,10 +88,10 @@ class Ewe_Statusbar (Elm_Widget)
 
          return: Ewe_Statusbar_Item *;
          params {
-            @in Evas_Object *content; /*@ The object, which will be set into statusbar item as content. Can be NULL.*/
-            @in Ewe_Statusbar_Items_Type type; /*@ Item type. */
-            @in Evas_Smart_Cb func; /*@ Convenience function called when the item is clicked.*/
-            @in void *func_data; /*@ Data passed to func above.*/
+            @in content: Evas_Object*; /*@ The object, which will be set into statusbar item as content. Can be NULL.*/
+            @in type: Ewe_Statusbar_Items_Type; /*@ Item type. */
+            @in func: Evas_Smart_Cb; /*@ Convenience function called when the item is clicked.*/
+            @in func_data: void*; /*@ Data passed to func above.*/
          }
       }
 
@@ -107,8 +105,8 @@ class Ewe_Statusbar (Elm_Widget)
 
          return: Eina_Bool;
          params {
-            @in Ewe_Statusbar_Item *item; /*@The item to place before another item. */
-            @in Ewe_Statusbar_Item *before; /*@The item to place this new one before. */
+            @in item: Ewe_Statusbar_Item*; /*@The item to place before another item. */
+            @in before: Ewe_Statusbar_Item*; /*@The item to place this new one before. */
          }
       }
 
@@ -122,8 +120,8 @@ class Ewe_Statusbar (Elm_Widget)
 
          return: Eina_Bool;
          params {
-            @in Ewe_Statusbar_Item *item; /*@The item to place after another item. */
-            @in Ewe_Statusbar_Item *after; /*@The item to place this new one after. */
+            @in item: Ewe_Statusbar_Item*; /*@The item to place after another item. */
+            @in after: Ewe_Statusbar_Item*; /*@The item to place this new one after. */
          }
       }
 
@@ -136,8 +134,8 @@ class Ewe_Statusbar (Elm_Widget)
 
          return: Eina_Bool;
          params {
-            @in Ewe_Statusbar_Item *item_first; /*@The item, which will be swapped. */
-            @in Ewe_Statusbar_Item *item_second; /*@The item, which will be swapped. */
+            @in item_first: Ewe_Statusbar_Item*; /*@The item, which will be swapped. */
+            @in item_second: Ewe_Statusbar_Item*; /*@The item, which will be swapped. */
          }
       }
 
@@ -150,7 +148,7 @@ class Ewe_Statusbar (Elm_Widget)
 
          return: Eina_Bool;
          params {
-            @in Ewe_Statusbar_Item *item; /*@The statusbar item. */
+            @in item: Ewe_Statusbar_Item*; /*@The statusbar item. */
          }
       }
    }

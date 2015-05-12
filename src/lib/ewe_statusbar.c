@@ -470,14 +470,15 @@ ewe_statusbar_item_statusbar_get(Ewe_Statusbar_Item *item EINA_UNUSED)
 
 /* -------EO operations---------- */
 
-EOLIAN void
+EOLIAN static Eo*
 _ewe_statusbar_eo_base_constructor(Eo *obj, Ewe_Statusbar_Smart_Data *sd)
 {
+   obj = eo_do_super_ret(obj, MY_CLASS, obj, eo_constructor());
    sd->obj = obj;
-   eo_do_super(obj, MY_CLASS, eo_constructor());
    eo_do(obj,
          evas_obj_type_set(MY_CLASS_NAME_LEGACY),
          evas_obj_smart_callbacks_descriptions_set(_smart_callbacks));
+   return obj;
 }
 
 EOLIAN void

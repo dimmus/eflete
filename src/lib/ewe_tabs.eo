@@ -1,9 +1,9 @@
-class Ewe_Tabs (Elm_Widget, Elm_Layout)
+class Ewe_Tabs (Elm.Layout)
 {
    eo_prefix: ewe_obj_tabs;
    data: Ewe_Tabs_Smart_Data;
-   properties {
-      items_list {
+   methods {
+      @property items_list {
          get {
          /*@
           Get internal items list.
@@ -13,10 +13,10 @@ class Ewe_Tabs (Elm_Widget, Elm_Layout)
           @ingroup tabs*/
          }
          values {
-            const(Eina_List) *items;
+            items: const(Eina_List)*;
          }
       }
-      active_item {
+      @property active_item {
          set {
          /*@
           Activate tabs item.
@@ -34,10 +34,10 @@ class Ewe_Tabs (Elm_Widget, Elm_Layout)
           @return active item on success, NULL otherwise*/
          }
          values {
-            Ewe_Tabs_Item *item;
+            item: Ewe_Tabs_Item*;
          }
       }
-      item_title {
+      @property item_title {
          set {
          /*@
           Set title of the tabs item.
@@ -56,13 +56,13 @@ class Ewe_Tabs (Elm_Widget, Elm_Layout)
           @ingroup tabs*/
          }
          keys {
-            Ewe_Tabs_Item *item @nonull;
+            item: Ewe_Tabs_Item* @nonull;
          }
          values {
-            Eina_Stringshare *title;
+            title: Eina_Stringshare*;
          }
       }
-      item_disabled {
+      @property item_disabled {
          set {
          /*@
           Enables or disables tabs item.
@@ -85,13 +85,13 @@ class Ewe_Tabs (Elm_Widget, Elm_Layout)
           @ingroup tabs*/
          }
          keys {
-            Ewe_Tabs_Item *item @nonull;
+            item: Ewe_Tabs_Item* @nonull;
          }
          values {
-            Eina_Bool disabled;
+            disabled: bool;
          }
       }
-      orient_horizontal {
+      @property orient_horizontal {
          set {
          /*@
           Set horizontal or vertical orient for tabs.
@@ -110,11 +110,9 @@ class Ewe_Tabs (Elm_Widget, Elm_Layout)
           @ingroup tabs*/
          }
          values {
-            Eina_Bool orient;
+            orient: bool;
          }
       }
-   }
-   methods {
       item_append {
          /*@
           Add an item after specified item.
@@ -125,9 +123,9 @@ class Ewe_Tabs (Elm_Widget, Elm_Layout)
           @ingroup tabs*/
          return: Ewe_Tabs_Item *;
          params {
-            @in Ewe_Tabs_Item *item; /*@The tabs item*/
-            @in Eina_Stringshare *title; /*@New items title*/
-            @in Eina_Stringshare *style; /*@New items style*/
+            @in item: Ewe_Tabs_Item*; /*@The tabs item*/
+            @in title: Eina_Stringshare*; /*@New items title*/
+            @in style: Eina_Stringshare*; /*@New items style*/
          }
       }
       item_prepend {
@@ -140,9 +138,9 @@ class Ewe_Tabs (Elm_Widget, Elm_Layout)
           @ingroup tabs*/
          return: Ewe_Tabs_Item *;
          params {
-            @in Ewe_Tabs_Item *item; /*@The tabs item*/
-            @in Eina_Stringshare *title; /*@New items title*/
-            @in Eina_Stringshare *style; /*@New items style*/
+            @in item: Ewe_Tabs_Item*; /*@The tabs item*/
+            @in title: Eina_Stringshare*; /*@New items title*/
+            @in style: Eina_Stringshare*; /*@New items style*/
          }
       }
       item_del {
@@ -154,7 +152,7 @@ class Ewe_Tabs (Elm_Widget, Elm_Layout)
           @ingroup tabs*/
          return: Eina_Bool;
          params {
-            @in Ewe_Tabs_Item *item; /*@The tabs item*/
+            @in item: Ewe_Tabs_Item*; /*@The tabs item*/
          }
       }
       item_content_set {
@@ -166,8 +164,8 @@ class Ewe_Tabs (Elm_Widget, Elm_Layout)
          @ingroup tabs*/
          return: Eina_Bool;
          params {
-            @in Ewe_Tabs_Item *item; /*@The tabs item*/
-            @in Evas_Object *content; /*@New items content*/
+            @in item: Ewe_Tabs_Item*; /*@The tabs item*/
+            @in content: Evas_Object*; /*@New items content*/
          }
       }
       item_content_get {
@@ -179,7 +177,7 @@ class Ewe_Tabs (Elm_Widget, Elm_Layout)
          @ingroup tabs*/
          return: const(Evas_Object) *;
          params {
-            @in Ewe_Tabs_Item *item; /*@The tabs item*/
+            @in item: Ewe_Tabs_Item*; /*@The tabs item*/
          }
       }
       item_content_unset {
@@ -191,7 +189,7 @@ class Ewe_Tabs (Elm_Widget, Elm_Layout)
          @ingroup tabs*/
          return: Evas_Object *;
          params {
-            @in Ewe_Tabs_Item *item; /*@The tabs item*/
+            @in item: Ewe_Tabs_Item*; /*@The tabs item*/
          }
       }
       item_icon_set {
@@ -203,8 +201,8 @@ class Ewe_Tabs (Elm_Widget, Elm_Layout)
          @ingroup tabs*/
          return: Eina_Bool;
          params {
-            @in Ewe_Tabs_Item *item; /*@The tabs item*/
-            @in Evas_Object *icon; /*@New items icon*/
+            @in item: Ewe_Tabs_Item*; /*@The tabs item*/
+            @in icon: Evas_Object*; /*@New items icon*/
          }
       }
       item_icon_unset {
@@ -216,7 +214,7 @@ class Ewe_Tabs (Elm_Widget, Elm_Layout)
          @ingroup tabs*/
          return: Evas_Object *;
          params {
-            @in Ewe_Tabs_Item *item; /*@The tabs item*/
+            @in item: Ewe_Tabs_Item*; /*@The tabs item*/
          }
       }
       item_button_set {
@@ -228,8 +226,8 @@ class Ewe_Tabs (Elm_Widget, Elm_Layout)
          @ingroup tabs*/
          return: Eina_Bool;
          params {
-            @in Ewe_Tabs_Item *item; /*@The tabs item*/
-            @in Evas_Object *button; /*@New items button*/
+            @in item: Ewe_Tabs_Item*; /*@The tabs item*/
+            @in button: Evas_Object*; /*@New items button*/
          }
       }
       item_button_unset {
@@ -241,7 +239,7 @@ class Ewe_Tabs (Elm_Widget, Elm_Layout)
          @ingroup tabs*/
          return: Evas_Object *;
          params {
-            @in Ewe_Tabs_Item *item; /*@The tabs item*/
+            @in item: Ewe_Tabs_Item*; /*@The tabs item*/
          }
       }
    }
@@ -254,9 +252,9 @@ class Ewe_Tabs (Elm_Widget, Elm_Layout)
       Evas.Object_Smart.move;
       Evas.Object_Smart.show;
       Evas.Object_Smart.hide;
-      Elm_Widget.style;
-      Elm_Layout.text_set;
-      Elm_Layout.text_get;
+      Elm.Widget.style;
+      Elm.Layout.text_set;
+      Elm.Layout.text_get;
    }
    events {
       item,activated;

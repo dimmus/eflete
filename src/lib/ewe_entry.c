@@ -95,12 +95,12 @@ _ewe_entry_class_constructor(Eo_Class *klass)
    evas_smart_legacy_type_register(MY_CLASS_NAME_LEGACY, klass);
 }
 
-EOLIAN static void
+EOLIAN static Eo*
 _ewe_entry_eo_base_constructor(Eo *obj, Ewe_Entry_Data *_pd)
 {
+   obj = eo_do_super_ret(obj, MY_CLASS, obj, eo_constructor());
    EWE_ENTRY_PARENT_DATA_GET(obj, parent_sd);
 
-   eo_do_super(obj, MY_CLASS, eo_constructor());
    eo_do(obj, evas_obj_type_set(MY_CLASS_NAME_LEGACY));
 
    _pd->emit_regex_signals  = EINA_FALSE;
@@ -115,6 +115,7 @@ _ewe_entry_eo_base_constructor(Eo *obj, Ewe_Entry_Data *_pd)
    evas_object_smart_callback_add(obj, "rejected", _on_rejected, obj);
    edje_object_signal_callback_add(parent_sd->entry_edje,
       "entry,changed", "elm.text", _entry_changed_signal_cb, obj);
+   return obj;
 }
 
 EOLIAN static void

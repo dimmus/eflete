@@ -501,14 +501,15 @@ _ewe_combobox_evas_object_smart_resize(Eo                      *obj,
 
 /* -----------------------------EO operations-------------------------------- */
 
-static void
+EOLIAN static Eo*
 _ewe_combobox_eo_base_constructor(Eo *obj, Ewe_Combobox_Smart_Data *sd)
 {
+   obj = eo_do_super_ret(obj, MY_CLASS, obj, eo_constructor());
    sd->obj = obj;
-   eo_do_super(obj, MY_CLASS, eo_constructor());
    eo_do(obj,
          evas_obj_type_set(MY_CLASS_NAME_LEGACY),
          evas_obj_smart_callbacks_descriptions_set(_smart_callbacks));
+   return obj;
 }
 
 EOLIAN static void

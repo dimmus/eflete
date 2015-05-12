@@ -85,15 +85,16 @@ ewe_tabs_add(Evas_Object *parent)
    return obj;
 }
 
-EOLIAN static void
+EOLIAN static Eo *
 _ewe_tabs_eo_base_constructor(Eo *obj, Ewe_Tabs_Smart_Data *sd)
 {
+   obj = eo_do_super_ret(obj, MY_CLASS, obj, eo_constructor());
    sd->obj = obj;
    sd->horizontal = EINA_TRUE;
-   eo_do_super(obj, MY_CLASS, eo_constructor());
    eo_do(obj,
          evas_obj_type_set(MY_CLASS_NAME_LEGACY),
          evas_obj_smart_callbacks_descriptions_set(_smart_callbacks));
+   return obj;
 }
 
 EOLIAN static void
@@ -447,7 +448,7 @@ _ewe_tabs_elm_layout_text_set(Eo                   *obj EINA_UNUSED,
 }
 
 EOLIAN static const char *
-_ewe_tabs_elm_layout_text_get(Eo                   *obj EINA_UNUSED,
+_ewe_tabs_elm_layout_text_get(const Eo             *obj EINA_UNUSED,
                               Ewe_Tabs_Smart_Data  *sd,
                               const char           *part)
 {
