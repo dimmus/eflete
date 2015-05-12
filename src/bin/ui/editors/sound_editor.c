@@ -25,6 +25,8 @@
 TODO("Rename this file to sound_manager")
 
 #ifdef HAVE_AUDIO
+TODO("Check pulse_audio on configure and add COREAUDIO support")
+   #define HAVE_PULSE 1
    #include <Ecore_Audio.h>
 #endif
 
@@ -329,7 +331,7 @@ _tone_play(Sound_Editor *edit, int tone_frq)
      {
         edit->io.in = eo_add(ECORE_AUDIO_IN_TONE_CLASS, NULL);
         eo_do(edit->io.in, ecore_audio_obj_name_set(edit->selected));
-        eo_do(edit->io.in, eo_key_data_set(ECORE_AUDIO_ATTR_TONE_FREQ, &tone_frq, NULL));
+        eo_do(edit->io.in, eo_key_data_set(ECORE_AUDIO_ATTR_TONE_FREQ, &tone_frq));
         eo_do(edit->io.in, ecore_audio_obj_in_length_set(TONE_PLAYING_DURATION));
         eo_do(edit->io.in, eo_event_callback_add(ECORE_AUDIO_IN_EVENT_IN_STOPPED,
                                                  _play_finished_cb, edit));
