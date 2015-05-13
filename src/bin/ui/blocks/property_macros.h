@@ -162,6 +162,35 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    pd->wm_style->isModify = true; \
 }
 
+/**
+ * Macro defines functions that create an item with label and 1 combobox for
+ * a attribute item. A predefined list fill the combobox.
+ *
+ * @param PREFIX The attribute prefix (STATE, PART, etc), used for define the
+ *        update function
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param LIST The predefined strings list
+ * @param TOOLTIP The combobox tooltip
+ *
+ * @ingroup Property_Macro
+ */
+#define COMMON_COMBOBOX_LIST_ADD(PREFIX, TEXT, SUB, VALUE, LIST, TOOLTIP) \
+static Evas_Object * \
+prop_##SUB##_##VALUE##_add(Evas_Object *parent, Prop_Data *pd) \
+{ \
+   int i; \
+   PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
+   EWE_COMBOBOX_ADD(parent, pd->SUB.VALUE) \
+   for (i = 0; LIST[i]; ewe_combobox_item_add(pd->SUB.VALUE, LIST[i]), i++) ; \
+   elm_object_tooltip_text_set(pd->SUB.VALUE, TOOLTIP); \
+   evas_object_smart_callback_add(pd->SUB.VALUE, "selected", _on_##SUB##_##VALUE##_change, pd); \
+   elm_layout_content_set(item, "elm.swallow.content", pd->SUB.VALUE); \
+   PREFIX##_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE) \
+   return item; \
+}
+
 /*****************************************************************************/
 /*                         GROUP 2 CHECK CONTROL                             */
 /*****************************************************************************/
@@ -454,19 +483,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * @ingroup Property_Macro
  */
 #define PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, LIST, TOOLTIP) \
-static Evas_Object * \
-prop_##SUB##_##VALUE##_add(Evas_Object *parent, Prop_Data *pd) \
-{ \
-   int i; \
-   PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
-   EWE_COMBOBOX_ADD(parent, pd->SUB.VALUE) \
-   for (i = 0; LIST[i]; ewe_combobox_item_add(pd->SUB.VALUE, LIST[i]), i++) ; \
-   elm_object_tooltip_text_set(pd->SUB.VALUE, TOOLTIP); \
-   evas_object_smart_callback_add(pd->SUB.VALUE, "selected", _on_##SUB##_##VALUE##_change, pd); \
-   elm_layout_content_set(item, "elm.swallow.content", pd->SUB.VALUE); \
-   PART_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE) \
-   return item; \
-}
+   COMMON_COMBOBOX_LIST_ADD(PART, TEXT, SUB, VALUE, LIST, TOOLTIP)
 
 /**
  * Macro defines a function that updates control by PART_ATTR_1COMBOBOX_LIST_ADD macro.
@@ -1094,20 +1111,7 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
  * @ingroup Property_Macro
  */
 #define STATE_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, LIST, TOOLTIP) \
-static Evas_Object * \
-prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
-                           Prop_Data *pd) \
-{ \
-   int i; \
-   PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
-   EWE_COMBOBOX_ADD(parent, pd->SUB.VALUE) \
-   for (i = 0; LIST[i]; ewe_combobox_item_add(pd->SUB.VALUE, LIST[i]), i++) ; \
-   elm_object_tooltip_text_set(pd->SUB.VALUE, TOOLTIP); \
-   evas_object_smart_callback_add(pd->SUB.VALUE, "selected", _on_##SUB##_##VALUE##_change, pd); \
-   elm_layout_content_set(item, "elm.swallow.content", pd->SUB.VALUE); \
-   STATE_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE) \
-   return item; \
-}
+   COMMON_COMBOBOX_LIST_ADD(STATE, TEXT, SUB, VALUE, LIST, TOOLTIP)
 
 /**
  * Macro defines a function that updates control by STATE_ATTR_1COMBOBOX_LIST_ADD macro.
