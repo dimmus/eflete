@@ -401,25 +401,20 @@ string_apply(Eina_Strbuf *strbuf, char **cur, char **prev,
              const Eina_Stringshare *color_string, Eina_Bool inside_string)
 {
    //escape string: " ~ "
-   if ((*cur)[0] != QUOT_C) return 0;
+   if (strncmp(*cur, QUOT, QUOT_LEN)) return 0;
 
    char buf[128];
 
+   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev));
+
    if (!inside_string)
-     {
-        snprintf(buf, sizeof(buf), "<color=#%s>", color_string);
-        eina_strbuf_append(strbuf, buf);
-     }
+     snprintf(buf, sizeof(buf), "<color=#%s>%s", color_string, QUOT);
+   else
+     snprintf(buf, sizeof(buf), "%s</color>", QUOT);
 
-   eina_strbuf_append_length(strbuf, *prev, (*cur - *prev) + 1);
+   eina_strbuf_append(strbuf, buf);
 
-   if (inside_string)
-     {
-        snprintf(buf, sizeof(buf), "</color>");
-        eina_strbuf_append(strbuf, buf);
-     }
-
-   (*cur)++;
+   *cur += QUOT_LEN;
    *prev = *cur;
 
    return 1;
