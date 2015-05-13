@@ -100,7 +100,7 @@ struct _Prop_Data
    struct {
       Evas_Object *frame;
       Evas_Object *state;
-      Evas_Object *proxy_source;
+      Evas_Object *proxy_source, *proxy_source_item;
       Evas_Object *visible;
       Evas_Object *min_w, *min_h;
       Evas_Object *max_w, *max_h;
@@ -1461,8 +1461,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_after(box, pd_state.color_item, pd_state.color_class_item);
         item = prop_state_minmul_w_minmul_h_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_state.proxy_source = prop_state_proxy_source_add(box, pd);
-        evas_object_hide(pd_state.proxy_source);
+        pd_state.proxy_source_item = prop_state_proxy_source_add(box, pd);
+        evas_object_hide(pd_state.proxy_source_item);
 
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_after(prop_box, state_frame, pd->part.frame);
@@ -1544,18 +1544,18 @@ ui_property_state_set(Evas_Object *property, Part *part)
 
    if (part->type == EDJE_PART_TYPE_PROXY)
      {
-        if (!evas_object_visible_get(pd_state.proxy_source))
+        if (!evas_object_visible_get(pd_state.proxy_source_item))
           {
-             elm_box_pack_end(box, pd_state.proxy_source);
-             evas_object_show(pd_state.proxy_source);
+             elm_box_pack_end(box, pd_state.proxy_source_item);
+             evas_object_show(pd_state.proxy_source_item);
           }
      }
    else
      {
-        if (evas_object_visible_get(pd_state.proxy_source))
+        if (evas_object_visible_get(pd_state.proxy_source_item))
           {
-             elm_box_unpack(box, pd_state.proxy_source);
-             evas_object_hide(pd_state.proxy_source);
+             elm_box_unpack(box, pd_state.proxy_source_item);
+             evas_object_hide(pd_state.proxy_source_item);
           }
      }
 
