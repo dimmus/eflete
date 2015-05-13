@@ -45,6 +45,7 @@ static struct _live_widget_item widgets[] =
      { "label", widget_label_create },
      { "layout", widget_layout_create },
      { "list", widget_list_create },
+     { "map", widget_map_create },
      { "multibuttonentry", widget_multibuttonentry_create },
      { "notify", widget_notify_create },
      { "panel", widget_panel_create },
