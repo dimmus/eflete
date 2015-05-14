@@ -933,9 +933,9 @@ PART_ATTR_SOURCE_UPDATE(part, source)
    PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
    PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
-#define PART_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, TYPE, LIST, TOOLTIP) \
+#define PART_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, TYPE, LIST, TOOLTIP) \
    PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
-   PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, LIST, TOOLTIP)
+   PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
 
 #define PART_ATTR_DRAG(TEXT, SUB, VALUE1, VALUE2) \
    PART_ATTR_DRAG_CALLBACK(SUB, VALUE1, VALUE2) \
@@ -948,7 +948,7 @@ PART_ATTR_1CHECK(_("mouse events"), part, mouse_events)
 PART_ATTR_1CHECK(_("event propagation"), part, repeat_events)
 PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to, part,
                     _("Show only the area of part that coincides with another part's container"))
-PART_ATTR_1COMBOBOX_LIST(_("ignore flags"), part, ignore_flags, Evas_Event_Flags, edje_ignore_flags,
+PART_ATTR_1COMBOBOX_LIST(_("ignore flags"), part, ignore_flags, part, Evas_Event_Flags, edje_ignore_flags,
                          _("Specifies whether events with the given flags should be ignored"))
 PART_ATTR_1COMBOBOX(_("group source"), part, source, part,
                     _("Used for the group to be loaded and used to display GROUP part."))
@@ -1039,7 +1039,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
         ITEM_ATTR_1CHECK_UPDATE(part, mouse_events)
         ITEM_ATTR_1CHECK_UPDATE(part, repeat_events)
         prop_part_clip_to_update(pd);
-        PART_ATTR_1COMBOBOX_LIST_UPDATE(part, ignore_flags)
+        PART_ATTR_1COMBOBOX_LIST_UPDATE(part, ignore_flags, part)
         prop_part_source_update(pd);
 
         prop_part_drag_x_step_x_update(pd);
@@ -1371,9 +1371,9 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
                         L1_START, L1_END, L2_START, L2_END, \
                         TOOLTIP1, TOOLTIP2)
 
-#define STATE_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, LIST, TOOLTIP, TYPE) \
+#define STATE_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP, TYPE) \
    STATE_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
-   STATE_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, LIST, TOOLTIP)
+   STATE_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
 
 #define STATE_ATTR_COLOR(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
    STATE_ATTR_COLOR_CALLBACK(SUB, VALUE, MEMBER) \
@@ -1397,7 +1397,7 @@ STATE_ATTR_2SPINNER(_("align"), state, align_x, align_y, state, 0, 100, 1, NULL,
 STATE_ATTR_2CHECK(_("fixed"), state, fixed_w, fixed_h, state, "w:", "", "h:", "",
                   _("This affects the minimum width calculation."),
                   _("This affects the minimum height calculation."))
-STATE_ATTR_1COMBOBOX_LIST(_("aspect ratio mode"), state, aspect_pref, edje_aspect_pref,
+STATE_ATTR_1COMBOBOX_LIST(_("aspect ratio mode"), state, aspect_pref, state, edje_aspect_pref,
                           _("The aspect control hints for this object."), unsigned char)
 STATE_ATTR_2SPINNER(_("aspect ratio"), state, aspect_min, aspect_max, state, 0, 100, 1, NULL, "min:", "", "max:", "",
                    _("Normally width and height can be resized to any values independently"),
@@ -1477,7 +1477,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         STATE_ATTR_2SPINNER_UPDATE(state, max_w, max_h, state, 1)
         STATE_ATTR_2CHECK_UPDATE(state, fixed_w, fixed_h, state)
         STATE_ATTR_2SPINNER_UPDATE(state, align_x, align_y, state, 100)
-        STATE_ATTR_1COMBOBOX_LIST_UPDATE(state, aspect_pref)
+        STATE_ATTR_1COMBOBOX_LIST_UPDATE(state, aspect_pref, state)
         STATE_ATTR_2SPINNER_UPDATE(state, aspect_min, aspect_max, state, 100)
         prop_state_color_class_update(pd);
         prop_state_color_update(pd);
@@ -2229,13 +2229,13 @@ STATE_ATTR_2CHECK(_("max"), state_text, max_x, max_y, state_textblock, "w:", "",
                   _("When any of the parameters is enabled it forces \t"
                   "the maximum size of the container to be equal to\t"
                   "the maximum size of the text."));
-PART_ATTR_1COMBOBOX_LIST(_("select mode"), state_textblock, select_mode, Edje_Edit_Select_Mode,
+PART_ATTR_1COMBOBOX_LIST(_("select mode"), part, select_mode, state_textblock, Edje_Edit_Select_Mode,
                          edje_select_mode, _("Sets the selection mode for a textblock part"))
-PART_ATTR_1COMBOBOX_LIST(_("entry mode"), state_textblock, entry_mode, Edje_Edit_Entry_Mode,
+PART_ATTR_1COMBOBOX_LIST(_("entry mode"), part, entry_mode, state_textblock, Edje_Edit_Entry_Mode,
                          edje_entry_mode, _("Sets the edit mode for a textblock part"))
-PART_ATTR_1COMBOBOX_LIST(_("pointer mode"), state_textblock, pointer_mode, Evas_Object_Pointer_Mode,
+PART_ATTR_1COMBOBOX_LIST(_("pointer mode"), part, pointer_mode, state_textblock, Evas_Object_Pointer_Mode,
                          edje_pointer_mode, _("Sets the mouse pointer behavior for a given part"))
-PART_ATTR_1COMBOBOX_LIST(_("cursor mode"), state_textblock, cursor_mode, unsigned int,
+PART_ATTR_1COMBOBOX_LIST(_("cursor mode"), part, cursor_mode, state_textblock, unsigned int,
                          edje_cursor_mode, _("Sets the cursor mode for a textblock part"))
 PART_ATTR_1CHECK(_("multiline"), state_textblock, multiline)
 PART_ATTR_1COMBOBOX(_("under selected text"), part, source, state_textblock,
@@ -2319,10 +2319,10 @@ ui_property_state_textblock_set(Evas_Object *property)
         STATE_ATTR_2SPINNER_UPDATE(state_text, align_x, align_y, state_textblock, 100)
         STATE_ATTR_2CHECK_UPDATE(state_text, min_x, min_y, state_textblock)
         STATE_ATTR_2CHECK_UPDATE(state_text, max_x, max_y, state_textblock)
-        PART_ATTR_1COMBOBOX_LIST_UPDATE(state_textblock, select_mode)
-        PART_ATTR_1COMBOBOX_LIST_UPDATE(state_textblock, entry_mode)
-        PART_ATTR_1COMBOBOX_LIST_UPDATE(state_textblock, pointer_mode)
-        PART_ATTR_1COMBOBOX_LIST_UPDATE(state_textblock, cursor_mode)
+        PART_ATTR_1COMBOBOX_LIST_UPDATE(part, select_mode, state_textblock)
+        PART_ATTR_1COMBOBOX_LIST_UPDATE(part, entry_mode, state_textblock)
+        PART_ATTR_1COMBOBOX_LIST_UPDATE(part, pointer_mode, state_textblock)
+        PART_ATTR_1COMBOBOX_LIST_UPDATE(part, cursor_mode, state_textblock)
         ITEM_ATTR_1CHECK_UPDATE(state_textblock, multiline);
         prop_state_textblock_source_update(pd);
         prop_state_textblock_source2_update(pd);
@@ -2695,7 +2695,7 @@ prop_state_image_border_update(Prop_Data *pd)
 
 STATE_ATTR_1ENTRY(_("image"), state, image, state_image, NULL, NULL)
 STATE_ATTR_1ENTRY_ADD(_("border"), state_image, border, state_image, PROPERTY_REGEX_IMAGE_BORDER, _("Image's border values."))
-STATE_ATTR_1COMBOBOX_LIST(_("border fill"), state_image, border_fill, edje_middle_type,
+STATE_ATTR_1COMBOBOX_LIST(_("border fill"), state_image, border_fill, state_image, edje_middle_type,
                           NULL, unsigned char)
 
 static Eina_Bool
@@ -2732,7 +2732,7 @@ ui_property_state_image_set(Evas_Object *property)
      {
         prop_state_image_update(pd);
         prop_state_image_border_update(pd);
-        STATE_ATTR_1COMBOBOX_LIST_UPDATE(state_image, border_fill)
+        STATE_ATTR_1COMBOBOX_LIST_UPDATE(state_image, border_fill, state_image)
         prop_item_state_image_tween_update(pd_image.tween, pd);
         elm_box_pack_end(prop_box, pd_image.frame);
         evas_object_show(pd_image.frame);
@@ -2754,7 +2754,7 @@ ui_property_state_image_unset(Evas_Object *property)
 #undef pd_image
 
 #define pd_fill pd->state_fill
-STATE_ATTR_1COMBOBOX_LIST(_("type"), state_fill, type, edje_fill_type,
+STATE_ATTR_1COMBOBOX_LIST(_("type"), state_fill, type, state_fill, edje_fill_type,
                           _("Set the image fill type"), unsigned char)
 STATE_ATTR_1CHECK(_("smooth"), state_fill, smooth, state_fill)
 STATE_ATTR_2SPINNER_ICON(_("align"), state_fill, origin_relative_x, origin_relative_y, state_fill,
@@ -2844,7 +2844,7 @@ ui_property_state_fill_set(Evas_Object *property)
      }
    else
      {
-        STATE_ATTR_1COMBOBOX_LIST_UPDATE(state_fill, type);
+        STATE_ATTR_1COMBOBOX_LIST_UPDATE(state_fill, type, state_fill);
         STATE_ATTR_CHECK_UPDATE(state_fill, smooth, state_fill)
         STATE_ATTR_2SPINNER_UPDATE(state_fill, origin_relative_x, origin_relative_y, state_fill, 100)
         STATE_ATTR_2SPINNER_UPDATE(state_fill, origin_offset_x, origin_offset_y, state_fill, 1)
