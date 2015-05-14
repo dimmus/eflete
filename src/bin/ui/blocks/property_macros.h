@@ -210,7 +210,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, Prop_Data *pd) \
  * @ingroup Property_Macro
  */
 #define COMMON_COMBOBOX_LIST_UPDATE(SUB, VALUE, MEMBER, ARGS) \
-   ewe_combobox_select_item_set(pd->MEMBER.VALUE, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS));
+   ewe_combobox_select_item_set(pd->MEMBER.VALUE, (int)edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS));
 
 /**
  * Macro defines a callback for COMMON_COMBOBOX_ADD.
@@ -866,6 +866,61 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
      return; \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->wm_style->isModify = true; \
+}
+
+/*****************************************************************************/
+/*                    PART ITEM 1 COMBOBOX LIST CONTROL                      */
+/*****************************************************************************/
+/**
+ * Macro defines functions that create an item with label and 1 combobox for part
+ * item attribute. A predefined list fill the combobox.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param MEMBER The combobox member from Prop_Data structure
+ * @param LIST The predefined strings list
+ * @param TOOLTIP The combobox tooltip
+ *
+ * @ingroup Property_Macro
+ */
+#define PART_ITEM_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP) \
+   COMMON_COMBOBOX_LIST_ADD(PART_ITEM, TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP, PART_ITEM_ARGS)
+
+/**
+ * Macro defines a function that updates control by PART_ATTR_1COMBOBOX_LIST_ADD macro.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param MEMBER
+ *
+ * @ingroup Property_Macro
+ */
+#define PART_ITEM_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE, MEMBER) \
+   COMMON_COMBOBOX_LIST_UPDATE(SUB, VALUE, MEMBER, PART_ITEM_ARGS)
+
+/**
+ * Macro defines a callback for PART_ATTR_1COMBOBOX_ADD.
+ *
+ * @param TEXT The attribute name, for error message
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param TYPE The type of given attribute
+ *
+ * @ingroup Property_Macro
+ */
+#define PART_ITEM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                          Evas_Object *obj __UNUSED__, \
+                          void *event_info) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
+   edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, (TYPE)item->index); \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \
