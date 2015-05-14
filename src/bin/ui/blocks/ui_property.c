@@ -3133,6 +3133,10 @@ prop_part_item_source_update(Prop_Data *pd)
    PART_ITEM_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                            L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
+#define PART_ITEM_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, TYPE, LIST, TOOLTIP) \
+   PART_ITEM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
+   PART_ITEM_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
+
 PART_ITEM_ATTR_1COMBOBOX(_("source"), part_item, source, part_item, _("Sets the group this object will be made from."))
 PART_ITEM_ATTR_2SPINNER(_("min"), part_item, min_w, min_h, part_item,
                     0.0, 999.0, 1.0, NULL, "x:", "%", "y:", "%",
@@ -3163,10 +3167,11 @@ PART_ITEM_ATTR_2SPINNER(_("spread"), part_item, spread_w, spread_h, part_item,
                     _("Replicate the item in width, starting from the current position."),
                     _("Replicate the item in height, starting from the current position"),
                     1, int, VAL_INT)
+PART_ITEM_ATTR_1COMBOBOX_LIST(_("aspect mode"), part_item, aspect_mode, part_item, int, edje_item_aspect_pref,
+                              _("Sets the aspect control hints for this object."))
 
 ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned short int, _("position"), part_item, position, "eflete/property/item/default")
 ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned char, _("span"), part_item, span, "eflete/property/item/default")
-ITEM_PREDEFINED_COMBOBOX_PART_ITEM_CREATE(_("aspect mode"), part_item, aspect_mode)
 
 Eina_Bool
 ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
@@ -3199,10 +3204,8 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         elm_box_pack_end(box, item);
         item = prop_part_item_weight_x_weight_y_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_item.aspect_mode = prop_item_part_item_aspect_mode_add(box, pd,
-                              _("Sets the aspect control hints for this object."),
-                              edje_item_aspect_pref);
-        elm_box_pack_end(box, pd_item.aspect_mode);
+        item = prop_part_item_aspect_mode_add(box, pd);
+        elm_box_pack_end(box, item);
         item = prop_part_item_aspect_w_aspect_h_add(box, pd);
         elm_box_pack_end(box, item);
         item = prop_part_item_spread_w_spread_h_add(box, pd);
@@ -3237,7 +3240,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, prefer_w, prefer_h, part_item, 1)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, align_x, align_y, part_item, 100)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, weight_x, weight_y, part_item, 1)
-        prop_item_part_item_aspect_mode_update(pd_item.aspect_mode, pd);
+        PART_ITEM_ATTR_1COMBOBOX_LIST_UPDATE(part_item, aspect_mode, part_item)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, aspect_w, aspect_h, part_item, 1)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, spread_w, spread_h, part_item, 1)
         prop_item_part_item_span_suf_update(pd_item.span, pd, false);
