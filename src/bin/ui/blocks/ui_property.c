@@ -58,7 +58,9 @@ struct _Prop_Data
    Evas_Object *workspace;
    Style *wm_style;
    Part *wm_part;
+   Evas_Object *tabs;
    Ewe_Tabs_Item *visual_tab;
+   Ewe_Tabs_Item *code_tab;
    Evas_Object *visual;
    Evas_Object *code;
    Eina_Stringshare *item_name;
@@ -470,6 +472,7 @@ _code_of_group_setup(Prop_Data *pd)
    const char *colorized_code;
    Eina_Stringshare *code;
 
+   if (ewe_tabs_active_item_get(pd->tabs) != pd->code_tab) return;
    code = edje_edit_source_generate(pd->wm_style->obj);
    if (!code)
      ERR("Something wrong. Can not generate code for style %s", pd->wm_style->name);
@@ -481,6 +484,17 @@ _code_of_group_setup(Prop_Data *pd)
    free(markup_code);
    eina_stringshare_del(code);
 }
+
+static void
+_on_tab_activated(void *data,
+                  Evas_Object *obj,
+                  void *event_info)
+{
+   Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
+   Prop_Data *pd = (Prop_Data *)data;
+   if (it == pd->code_tab) _code_of_group_setup(pd);
+}
+
 #endif
 
 Evas_Object *
@@ -493,6 +507,7 @@ ui_property_add(Evas_Object *parent)
    if (!parent) return NULL;
    pd = mem_calloc(1, sizeof(Prop_Data));
    tabs = ewe_tabs_add(parent);
+   pd->tabs = tabs;
 
    SCROLLER_ADD(tabs, scroller);
    BOX_ADD(scroller, box, EINA_FALSE, EINA_FALSE);
@@ -506,11 +521,11 @@ ui_property_add(Evas_Object *parent)
    pd->visual_tab = it;
 
    it = ewe_tabs_item_append(tabs, it, _("Code"), NULL);
+   pd->code_tab = it;
 
-#ifdef HAVE_ENVENTOR
    evas_object_smart_callback_add(tabs, "ewe,tabs,item,activated",
                                   _on_tab_activated, pd);
-#else
+#ifndef HAVE_ENVENTOR
    pd->code = elm_entry_add(tabs);
    elm_entry_single_line_set(pd->code, false);
    elm_scroller_policy_set(pd->code, ELM_SCROLLER_POLICY_ON, ELM_SCROLLER_POLICY_ON);
