@@ -431,11 +431,7 @@ _on_tab_activated(void *data,
 
    ap = app_data_get();
 
-   Eina_Stringshare *item_name = ewe_tabs_item_title_get(obj, it);
-
-   if (!item_name) return;
-
-   if (!strcmp(item_name, "Code"))
+   if (it == pd->code_tab)
      {
         if (!pd->code_bg)
           {
