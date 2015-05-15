@@ -762,7 +762,6 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew;
    Evas_Object *genlist, *check;
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    wiew = wizard_import_common_add("new_project");
    if (!wiew) return NULL;
 
