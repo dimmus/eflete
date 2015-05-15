@@ -199,7 +199,7 @@ struct _Prop_Data
       Evas_Object *aspect_w, *aspect_h;
       Evas_Object *aspect_mode;
       Evas_Object *position; /* Only for items in part TABLE */
-      Evas_Object *span; /* Only for items in part TABLE */
+      Evas_Object *span, *span1; /* Only for items in part TABLE */
    } part_item;
    struct {
       Evas_Object *frame;
@@ -1360,7 +1360,7 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
                             TYPE, HISTORY_TYPE) \
    STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
    STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
-   STATE_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+   STATE_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, MAX, STEP, FMT, \
                            L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
 #define STATE_ATTR_2CHECK(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
@@ -1473,15 +1473,15 @@ ui_property_state_set(Evas_Object *property, Part *part)
         box = elm_object_content_get(pd_state.frame);
         prop_state_state_update(state);
         STATE_ATTR_CHECK_UPDATE(state, visible, state)
-        STATE_ATTR_2SPINNER_UPDATE(state, min_w, min_h, state, 1)
-        STATE_ATTR_2SPINNER_UPDATE(state, max_w, max_h, state, 1)
+        STATE_ATTR_2SPINNER_UPDATE(state, min_w, min_h, state, int, 1)
+        STATE_ATTR_2SPINNER_UPDATE(state, max_w, max_h, state, int, 1)
         STATE_ATTR_2CHECK_UPDATE(state, fixed_w, fixed_h, state)
-        STATE_ATTR_2SPINNER_UPDATE(state, align_x, align_y, state, 100)
+        STATE_ATTR_2SPINNER_UPDATE(state, align_x, align_y, state, double, 100)
         STATE_ATTR_1COMBOBOX_LIST_UPDATE(state, aspect_pref, state)
-        STATE_ATTR_2SPINNER_UPDATE(state, aspect_min, aspect_max, state, 100)
+        STATE_ATTR_2SPINNER_UPDATE(state, aspect_min, aspect_max, state, double, 100)
         prop_state_color_class_update(pd);
         prop_state_color_update(pd);
-        STATE_ATTR_2SPINNER_UPDATE(state, minmul_w, minmul_h, state, 1)
+        STATE_ATTR_2SPINNER_UPDATE(state, minmul_w, minmul_h, state, double, 1)
         prop_state_proxy_source_update(pd);
 
         prop_box = elm_object_content_get(pd->visual);
@@ -1645,7 +1645,7 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
                                  TYPE, HISTORY_TYPE) \
    STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
    STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
-   STATE_ATTR_2SPINNER_ADD(TEXT, "2swallow_pad", SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+   STATE_ATTR_2SPINNER_ADD(TEXT, "2swallow_pad", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, MAX, STEP, FMT, \
                            L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
 STATE_ATTR_2COMBOBOX_V(_("relative to"), state, rel1_to_x, rel1_to_y, state_object_area,
@@ -1753,13 +1753,13 @@ ui_property_state_obj_area_set(Evas_Object *property)
      {
         prop_state_object_area_rel1_to_x_update(pd);
         prop_state_object_area_rel1_to_y_update(pd);
-        STATE_ATTR_2SPINNER_UPDATE(state, rel1_relative_x, rel1_relative_y, state_object_area, 100)
-        STATE_ATTR_2SPINNER_UPDATE(state, rel1_offset_x, rel1_offset_y, state_object_area, 1)
+        STATE_ATTR_2SPINNER_UPDATE(state, rel1_relative_x, rel1_relative_y, state_object_area, double, 100)
+        STATE_ATTR_2SPINNER_UPDATE(state, rel1_offset_x, rel1_offset_y, state_object_area, int,  1)
 
         prop_state_object_area_rel2_to_x_update(pd);
         prop_state_object_area_rel2_to_y_update(pd);
-        STATE_ATTR_2SPINNER_UPDATE(state, rel2_relative_x, rel2_relative_y, state_object_area, 100)
-        STATE_ATTR_2SPINNER_UPDATE(state, rel2_offset_x, rel2_offset_y, state_object_area, 1)
+        STATE_ATTR_2SPINNER_UPDATE(state, rel2_relative_x, rel2_relative_y, state_object_area, double, 100)
+        STATE_ATTR_2SPINNER_UPDATE(state, rel2_offset_x, rel2_offset_y, state_object_area, int, 1)
 
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_end(prop_box, pd_obj_area.frame);
@@ -2148,8 +2148,8 @@ ui_property_state_text_set(Evas_Object *property)
      {
         prop_state_text_update(pd);
         prop_state_font_update(pd);
-        COMMON_1SPINNER_UPDATE(state_text, size, state_text, 1, STATE_ARGS)
-        STATE_ATTR_2SPINNER_UPDATE(state_text, align_x, align_y, state_text, 100)
+        COMMON_1SPINNER_UPDATE(state_text, size, state_text, int,  1, STATE_ARGS)
+        STATE_ATTR_2SPINNER_UPDATE(state_text, align_x, align_y, state_text, double, 100)
         STATE_ATTR_2CHECK_UPDATE(state_text, min_x, min_y, state_text)
         STATE_ATTR_2CHECK_UPDATE(state_text, max_x, max_y, state_text)
         prop_state_text_source_update(pd);
@@ -2316,7 +2316,7 @@ ui_property_state_textblock_set(Evas_Object *property)
      {
         prop_state_text_update(pd);
         prop_state_textblock_style_update(pd);
-        STATE_ATTR_2SPINNER_UPDATE(state_text, align_x, align_y, state_textblock, 100)
+        STATE_ATTR_2SPINNER_UPDATE(state_text, align_x, align_y, state_textblock, double, 100)
         STATE_ATTR_2CHECK_UPDATE(state_text, min_x, min_y, state_textblock)
         STATE_ATTR_2CHECK_UPDATE(state_text, max_x, max_y, state_textblock)
         PART_ATTR_1COMBOBOX_LIST_UPDATE(part, select_mode, state_textblock)
@@ -2846,10 +2846,10 @@ ui_property_state_fill_set(Evas_Object *property)
      {
         STATE_ATTR_1COMBOBOX_LIST_UPDATE(state_fill, type, state_fill);
         STATE_ATTR_CHECK_UPDATE(state_fill, smooth, state_fill)
-        STATE_ATTR_2SPINNER_UPDATE(state_fill, origin_relative_x, origin_relative_y, state_fill, 100)
-        STATE_ATTR_2SPINNER_UPDATE(state_fill, origin_offset_x, origin_offset_y, state_fill, 1)
-        STATE_ATTR_2SPINNER_UPDATE(state_fill, size_relative_x, size_relative_y, state_fill, 100)
-        STATE_ATTR_2SPINNER_UPDATE(state_fill, size_offset_x, size_offset_y, state_fill, 1)
+        STATE_ATTR_2SPINNER_UPDATE(state_fill, origin_relative_x, origin_relative_y, state_fill, double, 100)
+        STATE_ATTR_2SPINNER_UPDATE(state_fill, origin_offset_x, origin_offset_y, state_fill, int, 1)
+        STATE_ATTR_2SPINNER_UPDATE(state_fill, size_relative_x, size_relative_y, state_fill, double, 100)
+        STATE_ATTR_2SPINNER_UPDATE(state_fill, size_offset_x, size_offset_y, state_fill, int, 1)
 
         elm_box_pack_end(prop_box, pd_fill.frame);
      }
@@ -3130,12 +3130,21 @@ prop_part_item_source_update(Prop_Data *pd)
                                 TYPE, HISTORY_TYPE) \
    PART_ITEM_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
    PART_ITEM_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
-   PART_ITEM_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
-                           L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
+   PART_ITEM_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, \
+                               MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
+                               TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
 #define PART_ITEM_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, TYPE, LIST, TOOLTIP) \
    PART_ITEM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
    PART_ITEM_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
+
+#define PART_ITEM_DOUBLEVAL_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+                                          L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
+                                          TYPE, HISTORY_TYPE) \
+   PART_ITEM_DOUBLEVAL_ATTR_SPINNER_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
+   PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, \
+                                         MIN, MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
+                                         TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
 PART_ITEM_ATTR_1COMBOBOX(_("source"), part_item, source, part_item, _("Sets the group this object will be made from."))
 PART_ITEM_ATTR_2SPINNER(_("min"), part_item, min_w, min_h, part_item,
@@ -3164,14 +3173,17 @@ PART_ITEM_ATTR_2SPINNER(_("aspect"), part_item, aspect_w, aspect_h, part_item,
                     1, int, VAL_INT)
 PART_ITEM_ATTR_2SPINNER(_("spread"), part_item, spread_w, spread_h, part_item,
                     1.0, 255.0, 1.0, NULL, "colunm:", "", "row:", "",
-                    _("Replicate the item in width, starting from the current position."),
+                    _("Replicate the item in width, starting from the current position"),
                     _("Replicate the item in height, starting from the current position"),
                     1, int, VAL_INT)
 PART_ITEM_ATTR_1COMBOBOX_LIST(_("aspect mode"), part_item, aspect_mode, part_item, int, edje_item_aspect_pref,
                               _("Sets the aspect control hints for this object."))
+PART_ITEM_DOUBLEVAL_ATTR_2SPINNER(_("span"), part_item, span, span1, part_item,
+                                  1.0, 999.0, 1.0, NULL, "column:", "", "row:", "",
+                                  _("Sets how many columns this item will use"), _("Sets how many rows this item will use"),
+                                  1, unsigned char, VAL_INT)
 
 ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned short int, _("position"), part_item, position, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned char, _("span"), part_item, span, "eflete/property/item/default")
 
 Eina_Bool
 ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
@@ -3210,14 +3222,12 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         elm_box_pack_end(box, item);
         item = prop_part_item_spread_w_spread_h_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_item.span = prop_item_part_item_span_suf_add(box, pd,
-                          1.0, 999.0, 1.0, "%.0f",
-                          "col", "", "row", "",
-                          _("Sets how many columns this item will use."),
-                          _("Sets how many rows this item will use."), false);
+        item = prop_part_item_span_span1_add(box, pd);
+        elm_box_pack_end(box, item);
         pd_item.padding =  prop_item_part_item_padding_add(box, pd,
                              0.0, 999.0, 1.0, "%.0f",
                             _("left:"), _("right:"), _("top:"), _("bottom:"));
+        elm_box_pack_end(box, pd_item.padding);
 
         pd_item.position = prop_item_part_item_position_suf_add(box, pd,
                            0.0, 999.0, 1.0, "%.0f",
@@ -3226,8 +3236,6 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
                            _("Sets the row position this item."), false);
         evas_object_hide(pd_item.position);
 
-        elm_box_pack_end(box, pd_item.padding);
-        elm_box_pack_end(box, pd_item.span);
         elm_box_pack_before(prop_box, pd_item.frame, pd->part.frame);
      }
    else
@@ -3235,15 +3243,15 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         box = elm_object_content_get(pd->part_item.frame);
         prop_part_item_name_update(item_name);
         prop_part_item_source_update(pd);
-        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, min_w, min_h, part_item, 1)
-        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, max_w, max_h, part_item, 1)
-        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, prefer_w, prefer_h, part_item, 1)
-        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, align_x, align_y, part_item, 100)
-        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, weight_x, weight_y, part_item, 1)
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, min_w, min_h, part_item, int,1)
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, max_w, max_h, part_item, int,1)
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, prefer_w, prefer_h, part_item, int, 1)
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, align_x, align_y, part_item, double, 100)
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, weight_x, weight_y, part_item, int, 1)
         PART_ITEM_ATTR_1COMBOBOX_LIST_UPDATE(part_item, aspect_mode, part_item)
-        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, aspect_w, aspect_h, part_item, 1)
-        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, spread_w, spread_h, part_item, 1)
-        prop_item_part_item_span_suf_update(pd_item.span, pd, false);
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, aspect_w, aspect_h, part_item, int, 1)
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, spread_w, spread_h, part_item, int, 1)
+        PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(part_item, span, span1, part_item, unsigned char, 1);
         prop_item_part_item_padding_update(pd_item.padding, pd);
         elm_box_pack_before(prop_box, pd_item.frame, pd->part.frame);
         evas_object_show(pd_item.frame);
