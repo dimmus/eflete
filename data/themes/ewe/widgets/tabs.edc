@@ -133,7 +133,7 @@ group {name: "ewe/tabs/item/head/horizontal/default";
       part { name: "bg";
          type: IMAGE;
          description { state: "default" 0.0;
-            min: 140 22;
+            min: 120 22;
             max: -1 22;
             image {
                normal: "tab-head-bg.png";
