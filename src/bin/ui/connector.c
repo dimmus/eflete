@@ -1091,13 +1091,11 @@ export_replace_request(Evas_Object *parent, const char *msg)
 }
 
 Eina_Bool
-export_warning(Evas_Object *parent, const char *msg)
+export_warning(Evas_Object *parent, const char *title, const char *msg)
 {
    Eina_Bool result = false;
    Evas_Object *popup, *btn, *label;
-   Eina_Stringshare *title;
 
-   title = eina_stringshare_printf(_("Export project"));
    popup = elm_popup_add(parent);
    elm_object_part_text_set(popup, "title,text", title);
    LABEL_ADD(popup, label, msg);
@@ -1106,7 +1104,6 @@ export_warning(Evas_Object *parent, const char *msg)
    evas_object_smart_callback_add(btn, "clicked", _ecancel_cb, &result);
    elm_object_part_content_set(popup, "button1", btn);
    evas_object_show(popup);
-   eina_stringshare_del(title);
 
    ecore_main_loop_begin();
 
@@ -1162,8 +1159,8 @@ _on_export_done(void *data,
 
    if (!strcmp(selected, path))
      {
-        export_warning(win, _("Name field is empty!"
-                              "Please type a file name to export."));
+        export_warning(win, _("Export edj develop"),
+                       _("Name field is empty! Please type a file name to export."));
         return;
      }
 
@@ -1316,7 +1313,8 @@ _on_export_edc_project_done(void *data,
              current_dev_path = eina_stringshare_printf("%s/develop", dir_path);
              if (!strcmp(ap->project->develop_path, current_dev_path))
                {
-                  export_warning (win, _("Can not delete current project folder!"));
+                  export_warning(win, _("Export edc project"),
+                                 _("Can not delete current project folder!"));
                   return;
                }
              request_str = eina_strbuf_new();
@@ -1340,6 +1338,8 @@ _on_export_edc_project_done(void *data,
                   else
                     ecore_file_mkdir(dir_path);
                }
+             else
+               return;
           }
         else
           {
