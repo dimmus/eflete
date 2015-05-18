@@ -1,4 +1,4 @@
-class Ewe_Tabs (Elm_Widget)
+class Ewe_Tabs (Elm_Widget, Elm_Layout)
 {
    eo_prefix: ewe_obj_tabs;
    data: Ewe_Tabs_Smart_Data;
@@ -255,6 +255,8 @@ class Ewe_Tabs (Elm_Widget)
       Evas.Object_Smart.show;
       Evas.Object_Smart.hide;
       Elm_Widget.style;
+      Elm_Layout.text_set;
+      Elm_Layout.text_get;
    }
    events {
       item,activated;

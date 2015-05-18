@@ -421,6 +421,41 @@ _ewe_tabs_item_disabled_get(Eo                   *obj,
 }
 
 EOLIAN static Eina_Bool
+_ewe_tabs_elm_layout_text_set(Eo                   *obj EINA_UNUSED,
+                              Ewe_Tabs_Smart_Data  *sd,
+                              const char           *part,
+                              const char           *text)
+{
+   Eina_Bool int_ret = EINA_FALSE;
+
+   if (!part || !strcmp(part, "ewe.text"))
+     {
+        if (text)
+          {
+             elm_layout_signal_emit(sd->layout, "ewe,state,text,visible", "ewe");
+             int_ret = elm_layout_text_set(sd->layout, "ewe.text", text);
+          }
+        else
+          {
+             elm_layout_signal_emit(sd->layout, "ewe,state,text,hidden", "ewe");
+          }
+     }
+   else int_ret = elm_layout_text_set(sd->layout, part, text);
+
+   return int_ret;
+}
+
+EOLIAN static const char *
+_ewe_tabs_elm_layout_text_get(Eo                   *obj EINA_UNUSED,
+                              Ewe_Tabs_Smart_Data  *sd,
+                              const char           *part)
+{
+   if (!part) return elm_layout_text_get(sd->layout, "ewe,text");
+   else return elm_layout_text_get(sd->layout, part);
+}
+
+
+EOLIAN static Eina_Bool
 _ewe_tabs_orient_horizontal_set(Eo                   *obj,
                                 Ewe_Tabs_Smart_Data  *sd,
                                 Eina_Bool            horizontal)
