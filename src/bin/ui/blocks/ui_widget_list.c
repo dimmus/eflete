@@ -1155,12 +1155,14 @@ ui_widget_list_selected_part_del(Evas_Object *object, Style *style)
         eoi = elm_genlist_item_parent_get(eoi);
         elm_genlist_item_subitems_clear(eoi);
      }
+   else
+     elm_genlist_item_subitems_clear(eoi);
    part = (Part *)elm_object_item_data_get(eoi);
    wm_part_del(style, part);
 
    next_eoi = elm_genlist_item_next_get(eoi);
    if (!next_eoi) next_eoi = elm_genlist_item_prev_get(eoi);
-   if (next_eoi) elm_genlist_item_selected_set(next_eoi, true);
+   if (next_eoi) elm_genlist_item_selected_set(next_eoi, true);/*  */
    elm_object_item_del(eoi);
 
    return true;
