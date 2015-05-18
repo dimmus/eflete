@@ -23,7 +23,7 @@
 #define makefile "#! bin/sh\nedje_cc -id ./images -fd ./fonts -sd ./sounds  "
 
 static Eina_Bool
-_project_close_request(App_Data *ap, const char *msg);
+_project_close_request(App_Data *ap, Eina_Bool changed);
 
 static void
 _add_part_dialog(void *data,
@@ -850,14 +850,12 @@ _on_open_done(void *data,
    _widget_list_layouts_tab_activate(ap);
 }
 
-#define PROJECT_CLOSE_MSG _("Do you want to save changes?")
-
 Eina_Bool
 project_close(App_Data *ap)
 {
    if (ap->project)
      {
-        if ((ap->project->changed) && (!_project_close_request(ap, PROJECT_CLOSE_MSG)))
+        if (!_project_close_request(ap, ap->project->changed))
           return false;
 
         STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
@@ -894,7 +892,6 @@ project_open(void)
    ap->modal_editor++;
 }
 
-#undef PROJECT_CLOSE_MSG
 /****************************** Project save **********************************/
 
 static Eina_Bool
@@ -1429,14 +1426,21 @@ _save_cb(void *data,
    ecore_main_loop_quit();
 }
 
-static Eina_Bool
-_project_close_request(App_Data *ap, const char *msg)
+static void
+_close_cb(void *data,
+         Evas_Object *obj __UNUSED__,
+         void *ei __UNUSED__)
 {
-   if (!msg)
-      msg = _("If you dont save the open project<br/>"
-            "all your unsaved changes will be lost!");
+   Eina_Bool *res = data;
+   App_Data *ap = app_data_get();
+   evas_object_hide(ap->popup);
+   *res = true;
+   ecore_main_loop_quit();
+}
 
-   if (!ap->project->changed) return true;
+static Eina_Bool
+_project_close_request(App_Data *ap, Eina_Bool changed)
+{
    if (ap->project->close_request) return false;
    ap->project->close_request = true;
 
@@ -1446,18 +1450,34 @@ _project_close_request(App_Data *ap, const char *msg)
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    title = eina_stringshare_printf(_("Close project %s"), ap->project->name);
    ap->popup = elm_popup_add(ap->win_layout);
+   if (changed)
+     {
+        BUTTON_ADD(ap->popup, btn, _("Save"));
+        evas_object_smart_callback_add(btn, "clicked", _save_cb, &result);
+        elm_object_part_content_set(ap->popup, "button1", btn);
+        BUTTON_ADD(ap->popup, btn, _("Don't save"));
+        evas_object_smart_callback_add(btn, "clicked", _discard_cb, &result);
+        elm_object_part_content_set(ap->popup, "button2", btn);
+
+        LABEL_ADD(ap->popup, label, _("Do you want to save changes?"));
+     }
+   else
+     {
+        BUTTON_ADD(ap->popup, btn, _("Close"));
+        evas_object_smart_callback_add(btn, "clicked", _close_cb, &result);
+        elm_object_part_content_set(ap->popup, "button1", btn);
+
+        LABEL_ADD(ap->popup, label, _("Do you want to close project?"));
+     }
    elm_object_part_text_set(ap->popup, "title,text", title);
-   LABEL_ADD(ap->popup, label, msg);
    elm_object_content_set(ap->popup, label);
-   BUTTON_ADD(ap->popup, btn, _("Save"));
-   evas_object_smart_callback_add(btn, "clicked", _save_cb, &result);
-   elm_object_part_content_set(ap->popup, "button1", btn);
-   BUTTON_ADD(ap->popup, btn, _("Don't save"));
-   evas_object_smart_callback_add(btn, "clicked", _discard_cb, &result);
-   elm_object_part_content_set(ap->popup, "button2", btn);
+
    BUTTON_ADD(ap->popup, btn, _("Cancel"));
    evas_object_smart_callback_add(btn, "clicked", _cancel_cb, &result);
-   elm_object_part_content_set(ap->popup, "button3", btn);
+   if (changed)
+     elm_object_part_content_set(ap->popup, "button3", btn);
+   else
+     elm_object_part_content_set(ap->popup, "button2", btn);
    evas_object_show(ap->popup);
    eina_stringshare_del(title);
 
