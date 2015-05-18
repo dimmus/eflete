@@ -325,7 +325,10 @@ _del_layout(void *data,
             void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_group_delete(ap, LAYOUT);
+   if (!ui_group_delete(ap, LAYOUT))
+     {
+        NOTIFY_WARNING(_("Latest style can not be deleted."))
+     }
 }
 
 static Evas_Object *
@@ -439,7 +442,10 @@ _del_style(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_group_delete(ap, STYLE);
+   if (!ui_group_delete(ap, STYLE))
+     {
+        NOTIFY_WARNING(_("Latest style can not be deleted."))
+     }
 }
 
 static void
@@ -1673,6 +1679,13 @@ ui_group_delete(App_Data *ap, Type group_type)
    Evas_Object *gl_groups = NULL;
 
    gl_groups = _widgetlist_current_genlist_get(ap, group_type);
+
+   /* Checking number of groups */
+   Eina_List *groups = edje_file_collection_list(ap->project->dev);
+   unsigned int count = eina_list_count(groups);
+   edje_file_collection_list_free(groups);
+   if (count == 1)
+     return false;
 
    if (group_type != LAYOUT)
      return _selected_style_delete(gl_groups, ap);
