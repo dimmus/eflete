@@ -216,7 +216,7 @@ ui_panes_add(App_Data *ap)
    ap->block.right_top = block;
 
    block = ui_block_add(ap->win_layout);
-   elm_layout_text_set(block, "elm.text", _("Property"));
+   ui_block_title_visible(block, false);
    elm_object_part_content_set(panes_right_hor, "right", block);
    evas_object_show(block);
    ap->block.right_bottom = block;
