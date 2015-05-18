@@ -483,7 +483,7 @@ _code_of_group_setup(Prop_Data *pd)
 
 static void
 _on_tab_activated(void *data,
-                  Evas_Object *obj,
+                  Evas_Object *obj __UNUSED__,
                   void *event_info)
 {
    Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
