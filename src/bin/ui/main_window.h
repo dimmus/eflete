@@ -463,19 +463,6 @@ Eina_Bool
 project_close(App_Data *ap);
 
 /**
- * Dialog with qustion what do with openned project.
- *
- * @param ap The Eflete App_Data.
- * @param msg The message.
- *
- * @return EINA_TRUE on success, otherwise EINA_FALSE.
- *
- * @ingroup Window
- */
-Eina_Bool
-project_close_request(App_Data *ap, const char *msg);
-
-/**
  * Export project as develop edj file.
  *
  * @ingroup Window

@@ -22,6 +22,9 @@
 
 #define makefile "#! bin/sh\nedje_cc -id ./images -fd ./fonts -sd ./sounds  "
 
+static Eina_Bool
+_project_close_request(App_Data *ap, const char *msg);
+
 static void
 _add_part_dialog(void *data,
                  Evas_Object *obj __UNUSED__,
@@ -854,7 +857,7 @@ project_close(App_Data *ap)
 {
    if (ap->project)
      {
-        if ((ap->project->changed) && (!project_close_request(ap, PROJECT_CLOSE_MSG)))
+        if ((ap->project->changed) && (!_project_close_request(ap, PROJECT_CLOSE_MSG)))
           return false;
 
         STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
@@ -1426,8 +1429,8 @@ _save_cb(void *data,
    ecore_main_loop_quit();
 }
 
-Eina_Bool
-project_close_request(App_Data *ap, const char *msg)
+static Eina_Bool
+_project_close_request(App_Data *ap, const char *msg)
 {
    if (!msg)
       msg = _("If you dont save the open project<br/>"
