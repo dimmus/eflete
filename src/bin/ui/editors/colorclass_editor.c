@@ -481,7 +481,7 @@ _on_mwin_del(void * data,
 Evas_Object *
 colorclass_viewer_add(Project *project)
 {
-   Evas_Object *button,  *panes;
+   Evas_Object *button,  *panes, *ic;
    Evas_Object *label, *color;
    Evas_Object *box, *bottom_box, *param_box, *scr_box;
    Evas_Object *scroller = NULL;
@@ -505,6 +505,9 @@ colorclass_viewer_add(Project *project)
         return NULL;
      }
    mw_title_set(ccl_edit->mwin, _("Color class manager"));
+   ic = elm_icon_add(ccl_edit->mwin);
+   elm_icon_standard_set(ic, "color");
+   mw_icon_set(ccl_edit->mwin, ic);
    evas_object_event_callback_add(ccl_edit->mwin, EVAS_CALLBACK_FREE,
                                   _on_ccl_editor_close, ccl_edit);
 
