@@ -519,12 +519,14 @@ _on_directory_bt(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-   Evas_Object *fs;
+   Evas_Object *fs, *ic;
    const char *path;
    Item_Mod_Callback_Data *c_data = (Item_Mod_Callback_Data*)data;
 
    c_data->wiew->fs = mw_add(_fs_close, NULL);
-   if (!c_data->wiew->fs) return;
+   ic = elm_icon_add(c_data->wiew->fs);
+   elm_icon_standard_set(ic, "folder");
+   mw_icon_set(c_data->wiew->fs, ic);
    evas_object_show(c_data->wiew->fs);
    mw_title_set(c_data->wiew->fs, "Select a directory");
    FILESELECTOR_ADD(fs, c_data->wiew->fs, _on_directory_bt_done, data);
@@ -761,11 +763,14 @@ Evas_Object *
 wizard_new_project_add(App_Data *ap __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew;
-   Evas_Object *genlist, *check;
+   Evas_Object *genlist, *check, *ic;
    wiew = wizard_import_common_add("new_project");
    if (!wiew) return NULL;
 
    mw_title_set(wiew->win, _("Wizard: new project"));
+   ic = elm_icon_add(wiew->win);
+   elm_icon_standard_set(ic, "file");
+   mw_icon_set(wiew->win, ic);
 
    elm_object_part_text_set(wiew->layout, "label.widgets", _("Widgets:"));
 
