@@ -2379,9 +2379,19 @@ _on_image_editor_done(void *data,
 
    if (strcmp(value, selected) == 0) return;
    ewe_entry_entry_set(pd->state_image.image, selected);
+   edje_edit_state_image_set(pd->wm_style->obj, pd->wm_part->name,
+                             pd->wm_part->curr_state,
+                             pd->wm_part->curr_state_value, selected);
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, value,
+                    selected, pd->wm_style->full_group_name,
+                    (void*)edje_edit_state_image_set,  "state_image",
+                    pd->wm_part->name, pd->wm_part->curr_state,
+                    pd->wm_part->curr_state_value);
    evas_object_smart_callback_call(pd->state_image.image, "changed,user", NULL);
    ewe_entry_entry_set(border_entry, NULL);
    evas_object_smart_callback_call(border_entry, "changed,user", NULL);
+   workspace_edit_object_recalc(pd->workspace);
+   pd->wm_style->isModify = true;
    project_changed();
 }
 
