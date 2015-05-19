@@ -443,20 +443,6 @@ pm_project_import_edj(const char *name,
 }
 
 static Eina_Bool
-_exe_exit(void *data,
-          int type __UNUSED__,
-          void *event)
-{
-   Ecore_Exe_Event_Del *e = (Ecore_Exe_Event_Del *)event;
-   Project_Thread *worker = (Project_Thread *)data;
-
-   if (e->exit_code)
-     END_SEND(PM_PROJECT_ERROR);
-
-   return true;
-}
-
-static Eina_Bool
 _exe_data(void *data,
           int type __UNUSED__,
           void *event)
@@ -483,8 +469,7 @@ _project_import_edc(void *data,
 {
    Project_Thread *worker;
    Eina_Tmpstr *tmp_dirname;
-   Ecore_Event_Handler *cb_exit = NULL,
-                       *cb_msg_stdout = NULL,
+   Ecore_Event_Handler *cb_msg_stdout = NULL,
                        *cb_msg_stderr = NULL;
    Ecore_Exe_Flags flags  = ECORE_EXE_PIPE_READ |
                             ECORE_EXE_PIPE_READ_LINE_BUFFERED |
@@ -493,11 +478,10 @@ _project_import_edc(void *data,
    Eina_Stringshare *cmd;
    Ecore_Exe *exe_cmd;
    pid_t exe_pid;
-   int waitpid_res = 0;
+   int edje_cc_res = 0, waitpid_res = 0;
 
    worker = (Project_Thread *)data;
 
-   cb_exit = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _exe_exit, worker);
    WORKER_LOCK_TAKE;
       if (worker->func_progress)
         {
@@ -515,15 +499,15 @@ _project_import_edc(void *data,
    exe_cmd = ecore_exe_pipe_run(cmd, flags, NULL);
    exe_pid = ecore_exe_pid_get(exe_cmd);
    THREAD_TESTCANCEL;
-   waitpid_res = waitpid(exe_pid, NULL, 0);
-   ecore_event_handler_del(cb_exit);
+   waitpid_res = waitpid(exe_pid, &edje_cc_res, 0);
    if (worker->func_progress)
      {
         ecore_event_handler_del(cb_msg_stdout);
         ecore_event_handler_del(cb_msg_stderr);
      }
 
-   if ((waitpid_res == -1))
+   if ((waitpid_res == -1) ||
+       (WIFEXITED(edje_cc_res) && (WEXITSTATUS(edje_cc_res) != 0 )))
      {
         END_SEND(PM_PROJECT_ERROR);
         return NULL;
@@ -1481,8 +1465,7 @@ _enventor_save(void *data,
                Eina_Thread *thread __UNUSED__)
 {
    Project_Thread *worker;
-   Ecore_Event_Handler *cb_exit = NULL,
-                       *cb_msg_stdout = NULL,
+   Ecore_Event_Handler *cb_msg_stdout = NULL,
                        *cb_msg_stderr = NULL;
    Ecore_Exe_Flags flags  = ECORE_EXE_PIPE_READ |
                             ECORE_EXE_PIPE_READ_LINE_BUFFERED |
@@ -1493,10 +1476,10 @@ _enventor_save(void *data,
    pid_t exe_pid;
    Eina_List *l;
    Eina_Strbuf *buf = NULL;
+   int edje_cc_res = 0, edje_pick_res = 0, waitpid_res = 0;
 
    worker = (Project_Thread *)data;
 
-   cb_exit = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _exe_exit, worker);
    WORKER_LOCK_TAKE;
       if (worker->func_progress)
         {
@@ -1527,9 +1510,8 @@ _enventor_save(void *data,
    exe_cmd = ecore_exe_pipe_run(cmd, flags, NULL);
    exe_pid = ecore_exe_pid_get(exe_cmd);
    THREAD_TESTCANCEL;
-   waitpid(exe_pid, NULL, 0);
+   waitpid_res = waitpid(exe_pid, &edje_cc_res, 0);
 
-   ecore_event_handler_del(cb_exit);
    if (worker->func_progress)
      {
         ecore_event_handler_del(cb_msg_stdout);
@@ -1537,9 +1519,14 @@ _enventor_save(void *data,
      }
    eina_stringshare_del(cmd);
 
+   if ((waitpid_res == -1) ||
+       (WIFEXITED(edje_cc_res) && (WEXITSTATUS(edje_cc_res) != 0 )))
+     {
+        END_SEND(PM_PROJECT_ERROR);
+        return NULL;
+     }
    THREAD_TESTCANCEL;
 
-   cb_exit = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _exe_exit, worker);
    WORKER_LOCK_TAKE;
       if (worker->func_progress)
         {
@@ -1558,13 +1545,19 @@ _enventor_save(void *data,
    exe_cmd = ecore_exe_pipe_run(cmd, flags, NULL);
    exe_pid = ecore_exe_pid_get(exe_cmd);
    THREAD_TESTCANCEL;
-   waitpid(exe_pid, NULL, 0);
+   waitpid_res = waitpid(exe_pid, &edje_pick_res, 0);
 
-   ecore_event_handler_del(cb_exit);
    if (worker->func_progress)
      {
         ecore_event_handler_del(cb_msg_stdout);
         ecore_event_handler_del(cb_msg_stderr);
+     }
+
+   if ((waitpid_res == -1) ||
+       (WIFEXITED(edje_pick_res) && (WEXITSTATUS(edje_pick_res) != 0 )))
+     {
+        END_SEND(PM_PROJECT_ERROR);
+        return NULL;
      }
 
    WORKER_LOCK_TAKE;
