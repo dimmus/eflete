@@ -1859,7 +1859,7 @@ style_editor_window_add(Project *project)
    Evas_Object *panes, *panes_h;
    Evas_Object *window_layout, *button_box, *btn;
    Evas_Object *layout_left, *layout_right;
-   Evas_Object *bg = NULL;
+   Evas_Object *bg, *ic;
    Evas *canvas = NULL;
    Style_Editor *style_edit = NULL;
    Evas_Textblock_Style *ts = NULL;
@@ -1889,6 +1889,9 @@ style_editor_window_add(Project *project)
         return NULL;
      }
    mw_title_set(style_edit->mwin, _("Textblock style manager"));
+   ic = elm_icon_add(style_edit->mwin);
+   elm_icon_standard_set(ic, "text");
+   mw_icon_set(style_edit->mwin, ic);
    evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_FREE,
                                         _on_style_editor_close, style_edit);
    window_layout = elm_layout_add(style_edit->mwin);
