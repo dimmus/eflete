@@ -1033,7 +1033,6 @@ project_changed(void)
 
    ap = app_data_get();
 
-   if (ap->project->changed) return;
    pm_project_changed(ap->project);
    ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, false);
 }
