@@ -1352,12 +1352,15 @@ _sample_add_cb(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
-   Evas_Object *fs;
+   Evas_Object *fs, *ic;
    Sound_Editor *edit = data;
 
    edit->fs_win  = mw_add(NULL, NULL);
    if (!edit->fs_win) return;
    mw_title_set(edit->fs_win, "Add sound to the library");
+   ic = elm_icon_add(edit->fs_win);
+   elm_icon_standard_set(ic, "folder");
+   mw_icon_set(edit->fs_win, ic);
    evas_object_show(edit->fs_win);
 
    FILESELECTOR_ADD(fs, edit->fs_win, _add_sample_done, data);
@@ -1600,6 +1603,7 @@ Evas_Object *
 sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
 {
    Sound_Editor *edit;
+   Evas_Object *ic;
 
    if (!project)
      {
@@ -1621,6 +1625,9 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
         return NULL;
      }
    mw_title_set(edit->win, _("Sound manager"));
+   ic = elm_icon_add(edit->win);
+   elm_icon_standard_set(ic, "sound");
+   mw_icon_set(edit->win, ic);
    evas_object_data_set(edit->win, SND_EDIT_KEY, edit);
 
    _sound_editor_main_markup_create(edit);
