@@ -149,11 +149,11 @@ _pm_project_descriptor_data_write(const char *path, Project *project)
 {
    Eina_Bool ok = false;
 
-   project->pro = eet_open(path, EET_FILE_MODE_READ_WRITE);
-   if (project->pro)
-     ok = eet_data_write(project->pro, eed_project, PROJECT_FILE_KEY,
+   Eet_File *ef = eet_open(path, EET_FILE_MODE_READ_WRITE);
+   if (ef)
+     ok = eet_data_write(ef, eed_project, PROJECT_FILE_KEY,
                          project, compess_level);
-   eet_close(project->pro);
+   eet_close(ef);
 
    return ok;
 }
@@ -389,7 +389,6 @@ _project_import_edj(void *data,
                     Eina_Thread *thread __UNUSED__)
 {
    Project_Thread *worker;
-   Eina_Stringshare *path_pro;
 
    worker = (Project_Thread *)data;
 
@@ -397,9 +396,8 @@ _project_import_edj(void *data,
    PROGRESS_SEND("%s", _("Creating a specifiec file and folders..."));
    worker->project = _project_files_create(worker);
    THREAD_TESTCANCEL;
-   path_pro = eina_stringshare_printf("%s/%s/%s.pro", worker->path, worker->name, worker->name);
    WORKER_LOCK_TAKE;
-      worker->project->pro = eet_open(path_pro, EET_FILE_MODE_READ_WRITE);
+      worker->project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker->path, worker->name, worker->name);
    WORKER_LOCK_RELEASE;
    THREAD_TESTCANCEL;
    PROGRESS_SEND("%s", _("Importing..."));
@@ -418,7 +416,6 @@ _project_import_edj(void *data,
    WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS);
-   eina_stringshare_del(path_pro);
 
    return NULL;
 }
@@ -485,7 +482,6 @@ _project_import_edc(void *data,
                     Eina_Thread *thread __UNUSED__)
 {
    Project_Thread *worker;
-   Eina_Stringshare *path_pro;
    Eina_Tmpstr *tmp_dirname;
    Ecore_Event_Handler *cb_exit = NULL,
                        *cb_msg_stdout = NULL,
@@ -536,11 +532,10 @@ _project_import_edc(void *data,
    THREAD_TESTCANCEL;
    PROGRESS_SEND("%s", _("Creating a specifiec file and folders..."));
    worker->project = _project_files_create(worker);
-   THREAD_TESTCANCEL;
-   path_pro = eina_stringshare_printf("%s/%s/%s.pro", worker->path, worker->name, worker->name);
    WORKER_LOCK_TAKE;
-      worker->project->pro = eet_open(path_pro, EET_FILE_MODE_READ_WRITE);
+      worker->project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker->path, worker->name, worker->name);
    WORKER_LOCK_RELEASE;
+   THREAD_TESTCANCEL;
    PROGRESS_SEND("%s", _("Importing..."));
    _project_edj_file_copy(worker);
    ecore_file_recursive_rm(tmp_dirname);
@@ -556,7 +551,6 @@ _project_import_edc(void *data,
    WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS)
-   eina_stringshare_del(path_pro);
 
    return NULL;
 }
@@ -635,7 +629,10 @@ pm_project_open(const char *path)
 
    pro_lock->project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
    _pm_project_descriptor_shutdown();
+   eet_close(ef);
    if (!pro_lock->project) goto error;
+
+   pro_lock->project->pro_path = eina_stringshare_add(path);
 
    /* updating .dev file path */
    tmp = strdup(path);
@@ -667,7 +664,6 @@ pm_project_open(const char *path)
 
    pro_lock->project->changed = false;
    pro_lock->project->close_request = false;
-   pro_lock->project->pro = ef;
    pro_lock->project->widgets = wm_widgets_list_new(pro_lock->project->dev);
    pro_lock->project->layouts = wm_layouts_list_new(pro_lock->project->dev);
    pm_project_meta_data_get(pro_lock->project, &pro_lock->project->name, NULL, NULL, NULL, NULL);
@@ -782,13 +778,13 @@ pm_project_close(Project *project)
    wm_widgets_list_free(project->widgets);
    wm_layouts_list_free(project->layouts);
 
-   eet_close(project->pro);
    eina_file_close(project->mmap_file);
    ecore_file_unlink(project->dev);
 
    eina_stringshare_del(project->name);
    eina_stringshare_del(project->dev);
    eina_stringshare_del(project->develop_path);
+   eina_stringshare_del(project->pro_path);
 
    EINA_LIST_FREE(project->res.images, data)
       eina_stringshare_del(data);
@@ -832,10 +828,16 @@ pm_project_meta_data_get(Project *project,
 {
    char *tmp;
 
+   Eet_File *ef = eet_open(project->pro_path, EET_FILE_MODE_READ);
+   if (!ef)
+     {
+        ERR("Can't open proect file \"%s\" for read", project->pro_path);
+        return;
+     }
 #define DATA_READ(DATA, KEY) \
    if (DATA) \
      { \
-        tmp = eet_read(project->pro, KEY, NULL); \
+        tmp = eet_read(ef, KEY, NULL); \
         *DATA = eina_stringshare_add(tmp); \
         free(tmp); \
      }
@@ -845,6 +847,8 @@ pm_project_meta_data_get(Project *project,
    DATA_READ(version, PROJECT_KEY_FILE_VERSION);
    DATA_READ(license, PROJECT_KEY_LICENSE);
    DATA_READ(comment, PROJECT_KEY_COMMENT);
+
+   eet_close(ef);
 
 #undef DATA_READ
 }
@@ -862,11 +866,17 @@ pm_project_meta_data_set(Project *project,
 
    res = true;
 
+   Eet_File *ef = eet_open(project->pro_path, EET_FILE_MODE_READ_WRITE);
+   if (!ef)
+     {
+        ERR("Can't open proect file \"%s\" for write", project->pro_path);
+        return false;
+     }
 #define DATA_WRITE(DATA, KEY) \
    if (DATA) \
      { \
         size = (strlen(DATA) + 1) * sizeof(char); \
-        bytes = eet_write(project->pro, KEY, DATA, size, compess_level); \
+        bytes = eet_write(ef, KEY, DATA, size, compess_level); \
         if (bytes <= 0 ) res = false; \
      }
 
@@ -875,6 +885,8 @@ pm_project_meta_data_set(Project *project,
    DATA_WRITE(version, PROJECT_KEY_FILE_VERSION);
    DATA_WRITE(license, PROJECT_KEY_LICENSE);
    DATA_WRITE(comment, PROJECT_KEY_COMMENT);
+
+   eet_close(ef);
 
 #undef DATA_WRITE
    return res;

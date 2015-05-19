@@ -95,7 +95,7 @@ _progress_end(void *data, PM_Project_Result result)
         if (!eina_inlist_count(ap->project->widgets))
           ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
 
-        STATUSBAR_PROJECT_PATH(ap, eet_file_get(ap->project->pro));
+        STATUSBAR_PROJECT_PATH(ap, ap->project->pro_path);
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
 
         NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
@@ -145,7 +145,7 @@ _teardown_splash(void *data, Splash_Status status)
      }
    if ((status == SPLASH_SUCCESS) && (app->project))
      {
-        STATUSBAR_PROJECT_PATH(app, eet_file_get(app->project->pro));
+        STATUSBAR_PROJECT_PATH(app, app->project->pro_path);
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE(app);
      }
    else return false;

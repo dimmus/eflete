@@ -844,7 +844,7 @@ _on_open_done(void *data,
    evas_object_del(win);
    ap->modal_editor--;
    NOTIFY_INFO(3, _("Project '%s' is opened."), ap->project->name);
-   STATUSBAR_PROJECT_PATH(ap, eet_file_get(ap->project->pro));
+   STATUSBAR_PROJECT_PATH(ap, ap->project->pro_path);
    STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
 
    _widget_list_layouts_tab_activate(ap);

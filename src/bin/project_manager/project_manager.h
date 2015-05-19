@@ -63,8 +63,8 @@ struct _Project
    int version;
    /** The project name */
    Eina_Stringshare *name;
-   /** Eet_File descriptior of specific project file. */
-   Eet_File *pro;
+   /** project path */
+   Eina_Stringshare *pro_path;
    /** this is worrking file, all changes are happened in this file. */
    Eina_Stringshare *dev;
    /** this is saved file. */
