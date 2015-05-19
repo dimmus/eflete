@@ -863,7 +863,7 @@ project_close(App_Data *ap)
 void
 project_open(void)
 {
-   Evas_Object *win, *fs, *img;
+   Evas_Object *win, *fs, *ic;
    App_Data *ap = app_data_get();
    if (!project_close(ap))
      return;
@@ -872,9 +872,9 @@ project_open(void)
      return;
    evas_object_show(win);
    mw_title_set(win, "Select a project file");
-   img = elm_image_add(win);
-   elm_image_file_set(img, EFLETE_IMG_PATH"icon-open_project.png", NULL);
-   mw_icon_set(win, img);
+   ic = elm_icon_add(win);
+   elm_icon_standard_set(ic, "folder");
+   mw_icon_set(win, ic);
 
    FILESELECTOR_ADD(fs, win, _on_open_done, win);
    elm_fileselector_custom_filter_append(fs, _eflete_filter, NULL, "Eflete Files");
