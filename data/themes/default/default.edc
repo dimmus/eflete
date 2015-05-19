@@ -27,4 +27,5 @@ collections {
    #include "widgets/cursor.edc"
    #include "widgets/layout.edc"
    #include "widgets/image.edc"
+   #include "widgets/icon.edc"
 }
