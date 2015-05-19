@@ -622,8 +622,6 @@ _on_image_done(void *data,
                                             img_edit->group_items.linked,
                                             _grid_sel, img_edit);
              elm_gengrid_item_selected_set(item, true);
-             if (!elm_gengrid_multi_select_get(img_edit->gengrid))
-               elm_gengrid_multi_select_set(img_edit->gengrid, true);
           }
      }
 del:
@@ -817,7 +815,6 @@ _on_button_ok_clicked_cb(void *data,
                                      (Eina_List *) names);
 
    _image_editor_del(img_edit);
-
 }
 
 static void
