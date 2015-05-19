@@ -817,7 +817,6 @@ _on_open_done(void *data,
    selected = (const char *)event_info;
    ap = app_data_get();
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    if (!selected)
      {
         ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
@@ -833,6 +832,7 @@ _on_open_done(void *data,
         return;
      }
 
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    wm_widgets_list_objects_load(ap->project->widgets,
                                 evas_object_evas_get(ap->win),
                                 ap->project->mmap_file);
