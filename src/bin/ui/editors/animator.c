@@ -518,7 +518,7 @@ animator_window_add(Style *style)
    Evas_Object *panes;
    Evas_Object *bottom_panes;
    Evas_Object *scroller;
-   Evas_Object *icon;
+   Evas_Object *ic;
    Evas_Object *bt, *program_list_box, *button_box;
    Animator *animator = NULL;
    /* temporary solution, while it not moved to modal window */
@@ -542,6 +542,9 @@ animator_window_add(Style *style)
    animator->is_cycled = true;
 
    mw_title_set(animator->mwin, _("Program editor"));
+   ic = elm_icon_add(animator->mwin);
+   elm_icon_standard_set(ic, "animator");
+   mw_icon_set(animator->mwin, ic);
    evas_object_event_callback_add(animator->mwin, EVAS_CALLBACK_DEL,
                                   _on_animator_close, animator);
 
@@ -620,8 +623,8 @@ animator_window_add(Style *style)
    BUTTON_ADD(animator->program_area_layout, bt, "");
    elm_object_part_content_set(animator->program_area_layout, "swallow.button", bt);
    evas_object_smart_callback_add(bt, "clicked", _on_bt_mode_change, animator);
-   ICON_ADD(bt, icon, false, "animator_arrow_right");
-   elm_layout_content_set(bt, "icon", icon);
+   ICON_ADD(bt, ic, false, "animator_arrow_right");
+   elm_layout_content_set(bt, "icon", ic);
    elm_object_style_set(bt, "simple");
 
    SCROLLER_ADD(animator->program_area_layout, scroller);
