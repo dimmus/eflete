@@ -2382,6 +2382,7 @@ _on_image_editor_done(void *data,
    edje_edit_state_image_set(pd->wm_style->obj, pd->wm_part->name,
                              pd->wm_part->curr_state,
                              pd->wm_part->curr_state_value, selected);
+   edje_edit_without_source_save(pd->wm_style->obj, true);
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, value,
                     selected, pd->wm_style->full_group_name,
                     (void*)edje_edit_state_image_set,  "state_image",
