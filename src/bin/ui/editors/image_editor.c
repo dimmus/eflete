@@ -658,12 +658,14 @@ _on_button_add_clicked_cb(void *data,
                           Evas_Object *obj __UNUSED__,
                           void *event_info __UNUSED__)
 {
-   Evas_Object *fs;
+   Evas_Object *fs, *ic;
    Image_Editor *edit = data;
 
    edit->fs_win  = mw_add(NULL, NULL);
-   if (!edit->fs_win) return;
    mw_title_set(edit->fs_win, "Add image to the library");
+   ic = elm_icon_add(edit->fs_win);
+   elm_icon_standard_set(ic, "folder");
+   mw_icon_set(edit->fs_win, ic);
    evas_object_show(edit->fs_win);
 
    FILESELECTOR_ADD(fs, edit->fs_win, _on_image_done, data);
@@ -1068,7 +1070,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
 {
    Evas_Object *button;
    Evas_Object *_bg = NULL;
-   Evas_Object *icon = NULL;
+   Evas_Object *ic = NULL;
    Evas_Object *search_entry = NULL;
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
@@ -1094,6 +1096,10 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
      mw_title_set(img_edit->win, _("Image manager: select tween images"));
    else if (mode == MULTIPLE)
      mw_title_set(img_edit->win, _("Image manager"));
+
+   ic = elm_icon_add(img_edit->win);
+   elm_icon_standard_set(ic, "image");
+   mw_icon_set(img_edit->win, ic);
 
    img_edit->layout = elm_layout_add(img_edit->win);
    elm_layout_theme_set(img_edit->layout, "layout", "image_editor", "default");
@@ -1143,8 +1149,8 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
 
    BUTTON_ADD(img_edit->layout, button, NULL);
    elm_object_style_set(button, "btn");
-   ICON_ADD(button, icon, true, "icon-add");
-   elm_object_part_content_set(button, NULL, icon);
+   ICON_ADD(button, ic, true, "icon-add");
+   elm_object_part_content_set(button, NULL, ic);
    evas_object_smart_callback_add(button, "clicked",
                                   _on_button_add_clicked_cb, img_edit);
    elm_object_part_content_set(img_edit->layout,
@@ -1152,8 +1158,8 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
 
    BUTTON_ADD(img_edit->layout, button, NULL);
    elm_object_style_set(button, "btn");
-   ICON_ADD(button, icon, true, "icon-remove");
-   elm_object_part_content_set(button, NULL, icon);
+   ICON_ADD(button, ic, true, "icon-remove");
+   elm_object_part_content_set(button, NULL, ic);
    evas_object_smart_callback_add(button, "clicked",
                                   _on_button_delete_clicked_cb, img_edit);
    elm_object_part_content_set(img_edit->layout,
