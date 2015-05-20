@@ -1958,6 +1958,8 @@ style_editor_window_add(Project *project)
    evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(style_edit->mwin);
+   elm_object_focus_set(style_edit->style_search_data.search_entry, true);
+
    evas_textblock_style_free(ts);
    ap->modal_editor++;
    return style_edit->mwin;

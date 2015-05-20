@@ -1641,6 +1641,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
 #endif
 
    evas_object_show(edit->win);
+   elm_object_focus_set(edit->sound_search_data.search_entry, true);
 
    App_Data *ap = app_data_get();
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);

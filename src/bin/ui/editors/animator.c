@@ -323,6 +323,7 @@ _on_bt_prog_add(void *data,
    elm_object_part_content_set(animator->popup.popup, "button2", button);
 
    evas_object_show(animator->popup.popup);
+   elm_object_focus_set(animator->popup.entry, true);
 }
 
 static void

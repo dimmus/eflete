@@ -243,6 +243,8 @@ part_dialog_add(App_Data *ap)
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
 
    evas_object_show(ap->popup);
+   elm_object_focus_set(entry, true);
+
    eina_stringshare_del(title);
    return ap->popup;
 }

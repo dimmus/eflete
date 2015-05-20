@@ -63,6 +63,8 @@ wizard_import_edj_add(App_Data *ap __UNUSED__)
                          _("Please enter the path to edj file"), _on_edj_bt);
    wiew->progress_log = NULL;
 
+   elm_object_focus_set(wiew->name, true);
+
    return wiew->win;
 }
 

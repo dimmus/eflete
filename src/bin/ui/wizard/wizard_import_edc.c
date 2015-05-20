@@ -669,6 +669,8 @@ wizard_import_edc_add(App_Data *ap __UNUSED__)
 
    wiew->splash_setup_func = _splash_setup_import_edc;
 
+   elm_object_focus_set(wiew->name, true);
+
    return wiew->win;
 }
 
@@ -793,6 +795,8 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
 
    wiew->splash_setup_func = _splash_setup_new_project;
    wiew->edj = NULL;
+
+   elm_object_focus_set(wiew->name, true);
 
    return wiew->win;
 }

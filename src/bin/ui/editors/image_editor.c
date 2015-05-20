@@ -1202,6 +1202,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
      }
 
    evas_object_show(img_edit->win);
+   elm_object_focus_set(search_entry, true);
    if (!_image_editor_init(img_edit))
      {
         _image_editor_del(img_edit);

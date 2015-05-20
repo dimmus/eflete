@@ -324,6 +324,7 @@ _on_btn_add(void *data,
    elm_object_part_content_set(ccl_edit->popup, "button2", bt_no);
 
    evas_object_show(ccl_edit->popup);
+   elm_object_focus_set(ccl_edit->entry, true);
 }
 
 static char *
