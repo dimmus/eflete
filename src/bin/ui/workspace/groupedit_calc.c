@@ -65,6 +65,9 @@ static void
 _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file);
 
 static void
+_proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
+
+static void
 _text_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
 
 static void
@@ -781,15 +784,16 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
               _rectangle_param_update(gp, sd->edit_obj);
               _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
-
            case EDJE_PART_TYPE_TEXT:
               _text_param_update(gp, sd->edit_obj);
               _part_text_recalc_apply(sd, gp, offset_x, offset_y);
               break;
-
            case EDJE_PART_TYPE_IMAGE:
-           case EDJE_PART_TYPE_PROXY: // it part like image
               _image_param_update(gp, sd->edit_obj, sd->edit_obj_file);
+              _part_recalc_apply(sd, gp, offset_x, offset_y);
+              break;
+           case EDJE_PART_TYPE_PROXY: // it part like image
+              _proxy_param_update(gp, sd->edit_obj);
               _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
            case EDJE_PART_TYPE_TEXTBLOCK:
@@ -859,6 +863,7 @@ _image_delete(void *data __UNUSED__,
 static Groupedit_Part *
 _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type type)
 {
+   Evas_Object *o;
    Groupedit_Part *gp;
 
    gp = mem_calloc(1, sizeof(Groupedit_Part));
@@ -878,15 +883,24 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          BORDER_ADD(122, 122, 122, 255)
          break;
       case EDJE_PART_TYPE_IMAGE:
+         gp->draw = edje_object_add(sd->e);
+         if (!edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP))
+           ERR("Image can't be loaded.\n");
+         evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_DEL,
+                                        _image_delete, NULL);
+         o = evas_object_image_add(sd->e);
+         edje_object_part_swallow(gp->draw, "swallow.image", o);
+         BORDER_ADD(0, 0, 0, 0)
+         break;
       case EDJE_PART_TYPE_PROXY: // it part like image
          gp->draw = edje_object_add(sd->e);
          if (!edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP))
            ERR("Image can't be loaded.\n");
          evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_DEL,
                                         _image_delete, NULL);
-         Evas_Object *o = evas_object_image_add(sd->e);
+         GET_IMAGE(o, sd->e, PROXY_IMG);
          edje_object_part_swallow(gp->draw, "swallow.image", o);
-         BORDER_ADD(0, 0, 0, 0)
+         BORDER_ADD(255, 112, 49, 255);
          break;
       case EDJE_PART_TYPE_SWALLOW:
          gp->draw = _part_swallow_add(sd->e);
@@ -1087,66 +1101,15 @@ _rectangle_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 }
 
 static void
-_image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
+_image_proxy_common_param_update(Evas_Object *image, Groupedit_Part *gp, Evas_Object *edit_obj)
 {
-   Evas_Load_Error err;
-   Evas_Object *image, *source_image = NULL;
-   const char *image_normal, *proxy_source;
-   const char *buf = NULL;
-   int r, g, b, a;
-   int id;
-   int bl, br, bt, bb;
    int x, y, w, h;
    int img_w, img_h;
    double fill_w, fill_h, fill_x, fill_y;
    int fill_origin_offset_x, fill_origin_offset_y, fill_size_offset_x, fill_size_offset_y;
-   unsigned char middle;
-   Ws_Groupedit_Smart_Data *sd;
-   Groupedit_Part *source;
 
    PART_STATE_GET(edit_obj, gp->name)
 
-   edje_edit_state_color_get(edit_obj, gp->name, state, value, &r, &g, &b, &a);
-
-   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
-   evas_object_color_set(image, r*a/255, g*a/255, b*a/255, a);
-
-   proxy_source = edje_edit_state_proxy_source_get(edit_obj, gp->name, state, value);
-   if (proxy_source)
-     {
-        sd = evas_object_data_get(gp->border, "sd");
-        source = _parts_list_find(sd->parts, proxy_source);
-
-        source_image = edje_object_part_swallow_get(source->draw, "swallow.image");
-        if (!source_image)
-          source_image = source->draw;
-        evas_object_image_source_set(image, source_image);
-        evas_object_image_source_clip_set(image, false);
-     }
-   else
-     {
-        image_normal = edje_edit_state_image_get(edit_obj, gp->name, state, value);
-        if (!image_normal) return;
-        id = edje_edit_image_id_get(edit_obj, image_normal);
-        buf = eina_stringshare_printf("edje/images/%i", id);
-        evas_object_image_file_set(image, file, buf);
-        err = evas_object_image_load_error_get(image);
-        if (err != EVAS_LOAD_ERROR_NONE)
-          WARN("Could not update image:\"%s\"\n",  evas_load_error_str(err));
-        edje_edit_string_free(image_normal);
-
-        edje_edit_state_image_border_get(edit_obj, gp->name, state, value,
-                                         &bl, &br, &bt, &bb);
-        evas_object_image_border_set(image, bl, br, bt, bb);
-
-        middle  = edje_edit_state_image_border_fill_get(edit_obj, gp->name, state, value);
-        if (middle == 0)
-          evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_NONE);
-        else if (middle == 1)
-          evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_DEFAULT);
-        else if (middle == 2)
-          evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_SOLID);
-     }
    /* setups settings from filled block  into evas image object*/
    evas_object_image_smooth_scale_set(image,
             edje_edit_state_fill_smooth_get(edit_obj, gp->name, state, value));
@@ -1174,23 +1137,106 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
    else if (fill_x || fill_y || (fill_w != 1) || (fill_h != 1) ||
             fill_origin_offset_x || fill_origin_offset_y ||
             fill_size_offset_x || fill_size_offset_y)
-         {
-           /* If image fill is scale and params are non default values, set
-              this params to evas image object */
-            evas_object_geometry_get(image, NULL, NULL, &img_w, &img_h);
-            x = (int)(img_w * fill_x) + fill_origin_offset_x;
-            y = (int)(img_h * fill_y) + fill_origin_offset_y;
-            w = (int)(img_w * fill_w) + fill_size_offset_x;
-            h = (int)(img_h * fill_h) + fill_size_offset_y;
-            evas_object_image_filled_set(image, false);
-            evas_object_image_fill_set(image, x, y, w, h);
-         }
-       else
-         /* If image fill is scale with default params. */
-         evas_object_image_filled_set(image, true);
+     {
+        /* If image fill is scale and params are non default values, set
+           this params to evas image object */
+        evas_object_geometry_get(image, NULL, NULL, &img_w, &img_h);
+        x = (int)(img_w * fill_x) + fill_origin_offset_x;
+        y = (int)(img_h * fill_y) + fill_origin_offset_y;
+        w = (int)(img_w * fill_w) + fill_size_offset_x;
+        h = (int)(img_h * fill_h) + fill_size_offset_y;
+        evas_object_image_filled_set(image, false);
+        evas_object_image_fill_set(image, x, y, w, h);
+     }
+   else
+     /* If image fill is scale with default params. */
+     evas_object_image_filled_set(image, true);
+}
+
+static void
+_image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
+{
+   Evas_Load_Error err;
+   Evas_Object *image;
+   const char *image_normal;
+   const char *buf = NULL;
+   int r, g, b, a;
+   int id;
+   int bl, br, bt, bb;
+   unsigned char middle;
+
+   PART_STATE_GET(edit_obj, gp->name)
+
+   edje_edit_state_color_get(edit_obj, gp->name, state, value, &r, &g, &b, &a);
+
+   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
+   evas_object_color_set(image, r*a/255, g*a/255, b*a/255, a);
+
+   image_normal = edje_edit_state_image_get(edit_obj, gp->name, state, value);
+   if (!image_normal) return;
+   id = edje_edit_image_id_get(edit_obj, image_normal);
+   buf = eina_stringshare_printf("edje/images/%i", id);
+   evas_object_image_file_set(image, file, buf);
+   err = evas_object_image_load_error_get(image);
+   if (err != EVAS_LOAD_ERROR_NONE)
+     WARN("Could not update image:\"%s\"\n",  evas_load_error_str(err));
+   edje_edit_string_free(image_normal);
+
+   edje_edit_state_image_border_get(edit_obj, gp->name, state, value,
+                                    &bl, &br, &bt, &bb);
+   evas_object_image_border_set(image, bl, br, bt, bb);
+
+   middle  = edje_edit_state_image_border_fill_get(edit_obj, gp->name, state, value);
+   if (middle == 0)
+     evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_NONE);
+   else if (middle == 1)
+     evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_DEFAULT);
+   else if (middle == 2)
+     evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_SOLID);
+
+   _image_proxy_common_param_update(image, gp, edit_obj);
 
    PART_STATE_FREE
    eina_stringshare_del(buf);
+}
+
+static void
+_proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
+{
+   Evas_Object *image, *source_image = NULL;
+   const char *proxy_source;
+   int r, g, b, a;
+   Ws_Groupedit_Smart_Data *sd;
+   Groupedit_Part *source;
+
+   PART_STATE_GET(edit_obj, gp->name)
+
+   edje_edit_state_color_get(edit_obj, gp->name, state, value, &r, &g, &b, &a);
+
+   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
+   evas_object_del(image);
+
+   sd = evas_object_data_get(gp->border, "sd");
+   proxy_source = edje_edit_state_proxy_source_get(edit_obj, gp->name, state, value);
+   if (proxy_source)
+     {
+        source = _parts_list_find(sd->parts, proxy_source);
+        source_image = edje_object_part_swallow_get(source->draw, "swallow.image");
+        if (!source_image)
+          source_image = source->draw;
+        image = evas_object_image_add(sd->e);
+        evas_object_color_set(image, r*a/255, g*a/255, b*a/255, a);
+        edje_object_part_swallow(gp->draw, "swallow.image", image);
+        evas_object_image_source_set(image, source_image);
+        evas_object_image_source_clip_set(image, false);
+
+        _image_proxy_common_param_update(image, gp, edit_obj);
+     }
+   else
+     {
+         GET_IMAGE(image, sd->e, PROXY_IMG);
+         edje_object_part_swallow(gp->draw, "swallow.image", image);
+     }
 }
 
 static void

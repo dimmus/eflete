@@ -29,6 +29,7 @@
 #define BORDER_2PX_IMG "2pxborder_part"
 #define SPACER_IMG "part_spacer_bg"
 #define SWALLOW_IMG "part_swallow_bg"
+#define PROXY_IMG "part_proxy_bg"
 #define PART_ITEM_IMG "part_container_bg"
 #define BOX_BG_IMG "part_box_bg"
 
