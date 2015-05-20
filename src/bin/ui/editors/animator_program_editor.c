@@ -354,7 +354,8 @@ _on_##sub##_##value##_change(void *data, \
 static Evas_Object * \
 _prop_item_##sub##_##value##_add(Evas_Object *parent, \
                                  const char *tooltip, \
-                                 Evas_Smart_Cb callback, \
+                                 Evas_Smart_Cb changed_callback, \
+                                 Evas_Smart_Cb unfocused_callback, \
                                  void* cb_data) \
 { \
    Evas_Object *item, *entry; \
@@ -362,7 +363,9 @@ _prop_item_##sub##_##value##_add(Evas_Object *parent, \
    EWE_ENTRY_ADD(parent, entry, true) \
    REGEX_SET(entry, regex); \
    elm_object_tooltip_text_set(entry, tooltip); \
-   evas_object_smart_callback_add(entry, "changed,user", callback, cb_data); \
+   evas_object_smart_callback_add(entry, "changed,user", changed_callback, cb_data); \
+   if (unfocused_callback) \
+     evas_object_smart_callback_add(entry, "unfocused", unfocused_callback, cb_data); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
    return item; \
 }
@@ -435,15 +438,26 @@ _on_program_name_change(void *data,
    const char *value = elm_entry_entry_get(obj);
    Eina_Bool res = edje_edit_program_name_set(prop.style->obj, prop.program,
                                               value);
-   if (!res)
-     {
-        NOTIFY_WARNING(_("The entered data is not valid!"))
-           return;
-     }
+   if (!res) return;
+
    evas_object_smart_callback_call(prog_edit->editor_layout,
                                    NAME_CHANGED_CB,
                                    (void *) value);
    prop.program = value;
+}
+
+static void
+_on_program_name_unfocused(void *data,
+                           Evas_Object *obj,
+                           void *ei __UNUSED__)
+{
+   Program_Editor *prog_edit = (Program_Editor*)data;
+   const char *value = elm_entry_entry_get(obj);
+   if (!strcmp(value, prop.program)) return;
+
+   NOTIFY_WARNING(_("Program with name \"%s\" already exist or is invalid. Name changed back to \"%s\""),
+                  value, prop.program);
+   elm_entry_entry_set(obj, prop.program);
 }
 
 static void
@@ -1675,9 +1689,18 @@ _prop_progs_add(Evas_Object *parent, Program_Editor *prog_edit)
    BOX_ADD(parent, box, false, false);
    evas_object_size_hint_align_set(box, 0.5, 0);
 
-   prop.name = _prop_item_program_name_add(box, _("Unique name of program "), _on_program_name_change, prog_edit);
-   prop.signal = _prop_item_program_signal_add(box, _("signal"), _on_program_signal_change, prog_edit);
-   prop.source = _prop_item_program_source_add(box, _("source"), _on_program_source_change, prog_edit);
+   prop.name = _prop_item_program_name_add(box, _("Unique name of program "),
+                                           _on_program_name_change,
+                                           _on_program_name_unfocused,
+                                           prog_edit);
+   prop.signal = _prop_item_program_signal_add(box, _("signal"),
+                                               _on_program_signal_change,
+                                               NULL,
+                                               prog_edit);
+   prop.source = _prop_item_program_source_add(box, _("source"),
+                                               _on_program_source_change,
+                                               NULL,
+                                               prog_edit);
    prop.in.item = _prop_item_program_in_add(box, prog_edit, _("in"));
    action.item = _prop_item_program_action_add(box, prog_edit, _("action"));
    transition.item = _prop_item_program_transition_add(box, prog_edit, _("transition"));
