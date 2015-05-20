@@ -51,6 +51,7 @@ struct _Wizard_Import_Edj_Win
    Evas_Object *name;
    Evas_Object *path;
    Eina_Stringshare *tmp_dir_path;
+   const char *select_file_error_msg;
    Evas_Object *edj;
    Evas_Object *meta_version;
    Evas_Object *meta_authors;
@@ -75,7 +76,7 @@ void
 _progress_end(void *data, PM_Project_Result result);
 
 void
-project_path_item_add(Wizard_Import_Edj_Win *wiew, const char *label, Evas_Smart_Cb cb_func);
+project_path_item_add(Wizard_Import_Edj_Win *wiew, const char *label, const char*msg, Evas_Smart_Cb cb_func);
 
 Wizard_Import_Edj_Win *
 wizard_import_common_add(const char *layout_name);

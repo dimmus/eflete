@@ -646,7 +646,8 @@ wizard_import_edc_add(App_Data *ap __UNUSED__)
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    mw_title_set(wiew->win, _("Wizard: import edc"));
-   project_path_item_add(wiew, _("Path to edc file:"), _on_edc_bt);
+   project_path_item_add(wiew, _("Path to edc file:"),
+                         _("Please enter the path to edc file"), _on_edc_bt);
 
    //labels setup
    elm_object_part_text_set(wiew->layout, "label.directories_img", _("Images directories:"));

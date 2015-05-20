@@ -229,7 +229,7 @@ _required_fields_check(Wizard_Import_Edj_Win *wiew)
      }
    if ((wiew->edj) && (elm_entry_is_empty(wiew->edj)))
      {
-        NOTIFY_WARNING(_("Please enter the path to edj file"));
+        NOTIFY_WARNING(_("%s"), wiew->select_file_error_msg);
         return false;
      }
    if (elm_entry_is_empty(wiew->path))
@@ -298,12 +298,14 @@ _elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data)
 void
 project_path_item_add(Wizard_Import_Edj_Win *wiew,
                       const char *label,
+                      const char *msg,
                       Evas_Smart_Cb cb_func)
 {
    elm_object_part_text_set(wiew->layout, "label.edj", label);
 
    ENTRY_ADD(wiew->layout, wiew->edj, true)
    elm_object_part_content_set(wiew->layout, "swallow.edj", wiew->edj);
+   wiew->select_file_error_msg = msg;
 
    _elipsis_btn_add(wiew->edj, cb_func, wiew);
 }
