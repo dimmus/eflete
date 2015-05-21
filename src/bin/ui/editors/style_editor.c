@@ -720,7 +720,7 @@ Evas_Object *
 _form_left_side(Style_Editor *style_edit)
 {
    Elm_Object_Item *glit_style, *glit_tag;
-   Evas_Object *layout, *btn, *combobox, *search;
+   Evas_Object *layout, *btn, *combobox, *search, *ic;
    Eina_List *styles, *tags, *l_st, *l_tg;
    char *style, *tag;
    Evas_Object *edje_edit_obj = NULL;
@@ -797,9 +797,12 @@ _form_left_side(Style_Editor *style_edit)
    evas_object_smart_callback_add(combobox, "selected", _on_bt_add, style_edit);
    elm_object_part_content_set(layout, "swallow.add_btn", combobox);
 
-   BUTTON_ADD(style_edit->mwin, btn, _("-"));
-   elm_object_style_set(btn, "btn");
-   evas_object_size_hint_weight_set(btn, 0.0, 0.0);
+   btn = elm_button_add(style_edit->mwin);
+   evas_object_show(btn);
+   ic = elm_icon_add(btn);
+   elm_icon_standard_set(ic, "minus");
+   elm_object_part_content_set(btn, NULL, ic);
+
    evas_object_smart_callback_add(btn, "clicked", _on_bt_del, style_edit);
    elm_object_part_content_set(layout, "swallow.rm_btn", btn);
 
