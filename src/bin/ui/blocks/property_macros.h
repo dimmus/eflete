@@ -580,6 +580,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, NULL, 0.0); \
+   edje_edit_without_source_save(pd->wm_style->obj, false); \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \
@@ -754,8 +755,9 @@ _on_part_drag_##VALUE1##_change(void *data, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_part_drag_##VALUE1##_set, #SUB"_"#VALUE1, \
                      pd->wm_part->name, NULL, 0.0); \
-   workspace_edit_object_recalc(pd->workspace); \
+   edje_edit_without_source_save(pd->wm_style->obj, true); \
    project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \
 } \
 static void \
@@ -772,8 +774,9 @@ _on_part_drag_##VALUE2##_change(void *data, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_part_drag_##VALUE2##_set, #SUB"_"#VALUE2, \
                      pd->wm_part->name, NULL, 0.0); \
-   workspace_edit_object_recalc(pd->workspace); \
+   edje_edit_without_source_save(pd->wm_style->obj, true); \
    project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \
 }
 
@@ -1531,6 +1534,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     item->title, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
+   edje_edit_without_source_save(pd->wm_style->obj, true); \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \
