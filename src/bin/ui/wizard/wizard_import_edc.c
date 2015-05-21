@@ -539,7 +539,7 @@ _on_directory_bt(void *data,
 static Evas_Object *
 _dir_item_add(Evas_Object *parent, Wizard_Import_Edj_Win *wiew)
 {
-   Evas_Object *item, *button, *entry, *icon;
+   Evas_Object *item, *button, *entry, *ic;
    Item_Mod_Callback_Data *c_data = mem_malloc(sizeof(Item_Mod_Callback_Data));
    if (!c_data) return NULL;
 
@@ -554,19 +554,21 @@ _dir_item_add(Evas_Object *parent, Wizard_Import_Edj_Win *wiew)
    c_data->obj = item;
    c_data->wiew = wiew;
 
-   BUTTON_ADD(item, button, NULL);
-   elm_object_style_set(button, "btn");
-   ICON_ADD(button, icon, true, "icon-add");
-   elm_object_part_content_set(button, NULL, icon);
+   button = elm_button_add(item);
+   evas_object_show(button);
+   ic = elm_icon_add(button);
+   elm_icon_standard_set(ic, "plus");
+   elm_object_part_content_set(button, NULL, ic);
    evas_object_smart_callback_add(button, "clicked",
                                   _on_button_add_clicked_cb, c_data);
 
    elm_object_part_content_set(item, "swallow.button_add", button);
 
-   BUTTON_ADD(item, button, NULL);
-   elm_object_style_set(button, "btn");
-   ICON_ADD(button, icon, true, "icon-remove");
-   elm_object_part_content_set(button, NULL, icon);
+   button = elm_button_add(item);
+   evas_object_show(button);
+   ic = elm_icon_add(button);
+   elm_icon_standard_set(ic, "minus");
+   elm_object_part_content_set(button, NULL, ic);
    evas_object_smart_callback_add(button, "clicked",
                                   _on_button_del_clicked_cb, c_data);
 
