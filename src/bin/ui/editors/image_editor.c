@@ -1144,18 +1144,19 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
                                   img_edit);
    evas_object_show(img_edit->gengrid);
 
-   BUTTON_ADD(img_edit->layout, button, NULL);
-   elm_object_style_set(button, "btn");
-   ICON_ADD(button, ic, true, "icon-add");
+   button = elm_button_add(img_edit->layout);
+   evas_object_show(button);
+   ic = elm_icon_add(button);
+   elm_icon_standard_set(ic, "plus");
    elm_object_part_content_set(button, NULL, ic);
    evas_object_smart_callback_add(button, "clicked",
                                   _on_button_add_clicked_cb, img_edit);
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.add_btn", button);
-
-   BUTTON_ADD(img_edit->layout, button, NULL);
-   elm_object_style_set(button, "btn");
-   ICON_ADD(button, ic, true, "icon-remove");
+   button = elm_button_add(img_edit->layout);
+   evas_object_show(button);
+   ic = elm_icon_add(button);
+   elm_icon_standard_set(ic, "minus");
    elm_object_part_content_set(button, NULL, ic);
    evas_object_smart_callback_add(button, "clicked",
                                   _on_button_delete_clicked_cb, img_edit);
