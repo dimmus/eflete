@@ -20,6 +20,8 @@ IC("folder",      "toolbar/folder",      "menu/folder",      "icon_folder.png", 
 IC("file",        "toolbar/file",        "menu/file",        "icon_file.png",        16, 0);
 IC("save",        "toolbar/save",        "menu/save",        "icon_save.png",        16, 0);
 IC("search",      "toolbar/search",      "menu/search",      "icon_search.png",      16, 0);
+IC("plus",        "toolbar/plus",        "menu/plus",        "icon_plus.png",        16, 0);
+IC("minus",       "toolbar/minus",       "menu/minus",       "icon_minus.png",       16, 0);
 IC("animator",    "toolbar/animator",    "menu/animator",    "icon_animator.png",    16, 0);
 IC("image",       "toolbar/image",       "menu/image",       "icon_image.png",       16, 0);
 IC("sound",       "toolbar/sound",       "menu/sound",       "icon_sound.png",       16, 0);
