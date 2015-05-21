@@ -1676,8 +1676,10 @@ prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
    value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name, \
                                            pd->wm_part->curr_state, \
                                            pd->wm_part->curr_state_value); \
-   ewe_entry_entry_set(pd->MEMBER.VALUE, value); \
+   char *text = elm_entry_utf8_to_markup(value); \
+   ewe_entry_entry_set(pd->MEMBER.VALUE, text); \
    edje_edit_string_free(value); \
+   free(text); \
 }
 
 /**
@@ -1696,7 +1698,8 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    if (ewe_entry_regex_error_get(obj)) return; \
-   const char *value = elm_entry_entry_get(obj); \
+   const char *text = elm_entry_entry_get(obj); \
+   char *value = elm_entry_markup_to_utf8(text); \
    const char *old_value =  edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
                                pd->wm_part->name, pd->wm_part->curr_state, \
                                pd->wm_part->curr_state_value); \
@@ -1713,6 +1716,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
    workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \
    eina_stringshare_del(old_value); \
+   free(value); \
 }
 
 /** @} privatesection */
