@@ -850,19 +850,6 @@ group { name: "elm/button/base/elipsis";
    }
 }
 
-group { name: "elm/button/base/btn";
-   inherit: "elm/button/base/default";
-   parts {
-      part { name: "elm.text";
-         description { state: "visible" 0.0;
-            text {
-               min: 0 0;
-            }
-         }
-      }
-   }
-}
-
 group { name: "elm/button/base/signal_send";
    parts {
       part { name: "button_image";
