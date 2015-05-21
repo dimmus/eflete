@@ -74,7 +74,6 @@ struct _Sound_Editor
    Sound_Editor_Mode mode;
    Evas_Object *popup;
    Evas_Object *add_cmb;
-   Evas_Object *add_btn;
    Evas_Object *win;
    Evas_Object *tone_entry, *frq_entry;
    Evas_Object *gengrid;
@@ -1532,7 +1531,6 @@ _search_reset_cb(void *data __UNUSED__,
    OBJ = elm_button_add(PARENT); \
    evas_object_size_hint_weight_set(OBJ, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(OBJ, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   elm_object_style_set(OBJ, "btn"); \
    elm_object_text_set(OBJ, TEXT); \
    evas_object_show(OBJ); \
    elm_object_part_content_set(PARENT, "swallow.btn."PART, OBJ); \
@@ -1541,7 +1539,7 @@ _search_reset_cb(void *data __UNUSED__,
 static void
 _sound_editor_main_markup_create(Sound_Editor *edit)
 {
-   Evas_Object *btn, *icon, *search;
+   Evas_Object *btn, *ic, *search;
 
    edit->markup = elm_layout_add(edit->win);
    elm_layout_theme_set(edit->markup, "layout", "sound_editor", "default");
@@ -1550,13 +1548,17 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    elm_win_inwin_content_set(edit->win, edit->markup);
 
    ADD_BUTTON(edit->markup, btn, _("Ok"), "Ok", _on_ok_cb);
-
    ADD_BUTTON(edit->markup, btn, _("Cancel"), "Cancel", _on_quit_cb);
 
-   ADD_BUTTON(edit->markup, btn, "", "del", _on_delete_clicked_cb);
-   ICON_ADD(btn, icon, true, "icon-remove");
-   elm_object_content_set(btn, icon);
-   elm_object_text_set(btn, NULL);
+   btn = elm_button_add(edit->markup);
+   evas_object_smart_callback_add(btn, "clicked", _on_delete_clicked_cb, edit);
+   evas_object_show(btn);
+   elm_object_part_content_set(edit->markup, "swallow.btn.del", btn);
+   evas_object_show(btn);
+
+   ic = elm_icon_add(btn);
+   elm_icon_standard_set(ic, "minus");
+   elm_object_part_content_set(btn, NULL, ic);
 
    switch (edit->mode)
      {
@@ -1572,18 +1574,28 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
       break;
       case SOUND_EDITOR_SAMPLE_SELECT:
         {
-           ADD_BUTTON(edit->markup, edit->add_btn, "", "add", _sample_add_cb);
-           ICON_ADD(edit->add_btn, icon, true, "icon-add");
-           elm_object_content_set(edit->add_btn, icon);
-           elm_object_text_set(edit->add_btn, NULL);
+           btn = elm_button_add(edit->markup);
+           evas_object_smart_callback_add(btn, "clicked", _sample_add_cb, edit);
+           evas_object_show(btn);
+           elm_object_part_content_set(edit->markup, "swallow.btn.add", btn);
+           evas_object_show(btn);
+
+           ic = elm_icon_add(btn);
+           elm_icon_standard_set(ic, "plus");
+           elm_object_part_content_set(btn, NULL, ic);
         }
       break;
       case SOUND_EDITOR_TONE_SELECT:
         {
-           ADD_BUTTON(edit->markup, edit->add_btn, "", "add", _tone_add_cb);
-           ICON_ADD(edit->add_btn, icon, true, "icon-add");
-           elm_object_content_set(edit->add_btn, icon);
-           elm_object_text_set(edit->add_btn, NULL);
+           btn = elm_button_add(edit->markup);
+           evas_object_smart_callback_add(btn, "clicked", _tone_add_cb, edit);
+           evas_object_show(btn);
+           elm_object_part_content_set(edit->markup, "swallow.btn.add", btn);
+           evas_object_show(btn);
+
+           ic = elm_icon_add(btn);
+           elm_icon_standard_set(ic, "plus");
+           elm_object_part_content_set(btn, NULL, ic);
         }
       break;
      }
