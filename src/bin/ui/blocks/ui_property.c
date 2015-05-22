@@ -176,7 +176,7 @@ struct _Prop_Data
    } state_fill;
    struct {
       Evas_Object *frame;
-      Evas_Object *align;
+      Evas_Object *align, *align1;
       Evas_Object *padding;
       Evas_Object *min;
    } state_container;
@@ -3265,8 +3265,21 @@ ui_property_item_unset(Evas_Object *property)
    ITEM_2SPINNER_STATE_VALUE_UPDATE(TYPE, SUB, VALUE1, VALUE2) \
    ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, STYLE)
 
-ITEM_2SPINNER_STATE_2DOUBLE_CREATE(double, _("align"), state_container_align, x, y, "eflete/property/item/default")
 ITEM_2SPINNER_STATE_2DOUBLE_CREATE(int, _("padding"), state_container_padding, h, v, "eflete/property/item/default")
+
+#define STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+                                                L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
+                                                TYPE, HISTORY_TYPE) \
+   STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER) \
+   STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
+                                               MIN, MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
+                                               TOOLTIP1, TOOLTIP2, MULTIPLIER)
+
+STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER(_("align"), state_container, align, align1, state_container,
+                                        0.0, 100.0, 1.0, NULL, "x:", "%", "y:", "%",
+                                        _("Change the position of the point of balance inside the container"),
+                                        _("Change the position of the point of balance inside the container"),
+                                        100, double, VAL_DOUBLE)
 
 static void
 _on_container_min_change(void *data,
@@ -3364,6 +3377,7 @@ prop_item_state_container_min_h_v_add(Evas_Object *parent,
 static Eina_Bool
 ui_property_state_container_set(Evas_Object *property)
 {
+   Evas_Object *item;
    Evas_Object *container_frame, *box, *prop_box;
    PROP_DATA_GET(EINA_FALSE)
 
@@ -3376,12 +3390,8 @@ ui_property_state_container_set(Evas_Object *property)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(container_frame, box);
 
-        pd_container.align = prop_item_state_container_align_x_y_add(box, pd,
-                              0, 100, 1, NULL,
-                              _("hor:"), "%", _("ver:"), "%",
-                              _("Change the position of the point of balance inside the container."),
-                              _("Change the position of the point of balance inside the container."),
-                              true);
+        item = prop_state_container_align_align1_add(box, pd);
+        elm_box_pack_end(box, item);
         pd_container.padding = prop_item_state_container_padding_h_v_add(box, pd, 0.0, 999.0,
                                 1.0, "%.0f", _("hor:"), _("px"), _("ver:"), _("px"),
                                 _("Sets the horizontal space between cells in pixels."),
@@ -3391,7 +3401,6 @@ ui_property_state_container_set(Evas_Object *property)
                             _("This affects the minimum width calculation."),
                             _("This affects the minimum height calculation."));
 
-        elm_box_pack_end(box, pd_container.align);
         elm_box_pack_end(box, pd_container.padding);
         elm_box_pack_end(box, pd_container.min);
         pd_container.frame = container_frame;
@@ -3399,7 +3408,7 @@ ui_property_state_container_set(Evas_Object *property)
      }
    else
      {
-        prop_item_state_container_align_x_y_update(pd_container.align, pd, true);
+        STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, align, align1, state_container, double, 100)
         prop_item_state_container_padding_h_v_update(pd_container.padding, pd, false);
         prop_item_state_container_min_h_v_update(pd_container.min, pd);
         elm_box_pack_after(prop_box, pd_container.frame, pd->part.frame);
