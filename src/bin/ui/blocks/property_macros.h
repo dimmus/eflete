@@ -1723,4 +1723,42 @@ _on_##SUB##_##VALUE##_change(void *data, \
    free(value); \
 }
 
+/*****************************************************************************/
+/*              STATE CONTAINER 2 SPINNERS DOUBLEVAL CONTROL                 */
+/*****************************************************************************/
+/**
+ * Macro defines a functions that create an item with label and 2 spinners for
+ * state container attribute.
+ *
+ * @see COMMON_2SPINNER_ADD
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
+                                                    MIN, MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
+                                                    TOOLTIP1, TOOLTIP2, MULTIPLIER) \
+COMMON_2SPINNER_ADD(STATE_CONTAINER_DOUBLEVAL, TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE,\
+                    MIN, MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
+                    TOOLTIP1, TOOLTIP2, MULTIPLIER)
+
+/**
+ * Macro defines a function that updates control by STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER_ADD macro.
+ *
+ * @see COMMON_2SPINNER_DOUBLEVAL_UPDATE
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER) \
+   COMMON_2SPINNER_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER, STATE_ARGS)
+
+/**
+ * Macro defines a callback for STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER_ADD.
+ *
+ * @see COMMON_2SPINNER_DOUBLEVAL_CALLBACK
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER) \
+   COMMON_2SPINNER_DOUBLEVAL_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER, STATE_ARGS)
+
 /** @} privatesection */
