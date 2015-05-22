@@ -1316,10 +1316,14 @@ _add_tone_done(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
+   Evas_Object *edje_edit_obj;
    Sound *snd;
    Item *it;
-   const char *str_name, *str_value;
+   Eina_Stringshare *tone_name, *tmp_tone_name;
+   const char *str_value;
    int frq;
+   Eina_List *tones_list, *l;
+   Eina_Bool exist = false;
 
    Sound_Editor *edit = (Sound_Editor *)data;
    if (elm_entry_is_empty(edit->tone_entry))
@@ -1333,16 +1337,42 @@ _add_tone_done(void *data,
         return;
      }
 
-   str_name = elm_entry_entry_get(edit->tone_entry);
+   tone_name = eina_stringshare_add(elm_entry_entry_get(edit->tone_entry));
+   GET_OBJ(edit->pr, edje_edit_obj);
+
+   tones_list = edje_edit_sound_samples_list_get(edje_edit_obj);
+   EINA_LIST_FOREACH(tones_list, l, tmp_tone_name)
+     if (tmp_tone_name == tone_name) /* they both are stringshares */
+       {
+          exist = true;
+          break;
+       }
+   edje_edit_string_list_free(tones_list);
+   if (!exist)
+     {
+        EINA_LIST_FOREACH(edit->pr->added_sounds, l, snd)
+          if ((snd->name == tone_name) && (snd->tone_frq != 0))
+            {
+               exist = true;
+               break;
+            }
+     }
+   if (exist)
+     {
+        NOTIFY_WARNING(_("Tone with this name is already added to project"))
+        eina_stringshare_del(tone_name);
+        return;
+     }
+
    str_value = elm_entry_entry_get(edit->frq_entry);
    frq = atoi(str_value);
 
    snd = (Sound *)mem_calloc(1, sizeof(Sound));
-   snd->name = eina_stringshare_add(str_name);
+   snd->name = tone_name;
    snd->tone_frq = frq;
    snd->is_saved = false;
    it = (Item *)mem_calloc(1, sizeof(Item));
-   it->sound_name = eina_stringshare_add(str_name);
+   it->sound_name = eina_stringshare_add(tone_name);
    it->tone_frq = frq;
    it->format = eina_stringshare_printf("%d", it->tone_frq);
    it->is_added = true;
