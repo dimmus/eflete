@@ -1562,6 +1562,13 @@ _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
           }
      }
 
+   edje_edit_without_source_save(style_work->obj, true);
+   /* reloading mmaped dev file to update cached groups */
+   eina_file_close(ap->project->mmap_file);
+   ap->project->mmap_file = eina_file_open(ap->project->dev, false);
+   edje_object_mmap_set(style_work->obj,
+                        ap->project->mmap_file,
+                        style_work->full_group_name);
    project_changed();
    return true;
 }
