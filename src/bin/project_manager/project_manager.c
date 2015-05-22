@@ -661,6 +661,26 @@ error:
    return pro;
 }
 
+void
+pm_save_to_dev(Project *pr, Style *st)
+{
+   if (!pr) return;
+
+   if (st)
+     {
+        edje_edit_without_source_save(st->obj, true);
+     }
+   else
+     {
+        GET_STYLE(pr, st)
+        edje_edit_without_source_save(st->obj, false);
+     }
+   /* reloading mmaped dev file to update cached groups */
+   eina_file_close(pr->mmap_file);
+   pr->mmap_file = eina_file_open(pr->dev, false);
+   edje_object_mmap_set(st->obj, pr->mmap_file, st->full_group_name);
+}
+
 static void *
 _project_save(void *data,
               Eina_Thread *thread __UNUSED__)

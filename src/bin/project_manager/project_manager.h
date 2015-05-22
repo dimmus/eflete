@@ -325,6 +325,18 @@ Project *
 pm_project_open(const char *path) EINA_ARG_NONNULL(1);
 
 /**
+ * Internal save. Should be used after major changes that are affecting dev file.
+ *
+ * @param project The project what should be saved.
+ * @param style Style wich oject will be used. If style is NULL random one will
+ * be picked. In this case save will affect all groups.
+ *
+ * @ingroup ProjectManager
+ */
+void
+pm_save_to_dev(Project *project, Style *style);
+
+/**
  * Save all changes in current project to the dev file.
  *
  * @param project The project what should be saved.
