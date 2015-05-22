@@ -1231,10 +1231,12 @@ _add_sample_done(void *data,
                  Evas_Object *obj,
                  void *event_info)
 {
+   Evas_Object *edje_edit_obj;
    Sound *snd;
    Item *it;
-   Elm_Object_Item *new_item;
-   const char *sound_name;
+   Eina_Stringshare *sound_name, *tmp_sound_name;
+   Eina_List *samples_list, *l;
+   Eina_Bool exist = false;
 
    const char *selected = event_info;
    Sound_Editor *edit = (Sound_Editor *)data;
@@ -1244,17 +1246,35 @@ _add_sample_done(void *data,
 
    if ((ecore_file_exists(selected)) && (!ecore_file_is_dir(selected)))
      {
-        sound_name = ecore_file_file_get(selected);
-        new_item = elm_gengrid_search_by_text_item_get(edit->gengrid, NULL,
-                                                       "elm.text", sound_name, 0);
-        if (new_item)
+        GET_OBJ(edit->pr, edje_edit_obj);
+        sound_name = eina_stringshare_add(ecore_file_file_get(selected));
+
+        samples_list = edje_edit_sound_samples_list_get(edje_edit_obj);
+        EINA_LIST_FOREACH(samples_list, l, tmp_sound_name)
+          if (tmp_sound_name == sound_name) /* they both are stringshares */
+            {
+               exist = true;
+               break;
+            }
+        edje_edit_string_list_free(samples_list);
+        if (!exist)
           {
-             WIN_NOTIFY_WARNING(obj, _("Sample has been already added!"))
+             EINA_LIST_FOREACH(edit->pr->added_sounds, l, snd)
+               if ((snd->name == sound_name) && (!snd->tone_frq))
+                 {
+                    exist = true;
+                    break;
+                 }
+          }
+        if (exist)
+          {
+             WIN_NOTIFY_WARNING(obj, _("Sample with this name is already added to project"))
+             eina_stringshare_del(sound_name);
              return;
           }
 
         snd = (Sound *)mem_calloc(1, sizeof(Sound));
-        snd->name = eina_stringshare_add(sound_name);
+        snd->name = sound_name;
         snd->src = eina_stringshare_add(selected);
         snd->is_saved = false;
         it = (Item *)mem_calloc(1, sizeof(Item));
