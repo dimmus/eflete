@@ -296,7 +296,7 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
  * @param SUB The prefix of main parameter of state attribute;
  * @param VALUE1 The first value of attribute
  * @param VALUE2 The second value of attribute
- * @param MEMBER The combobox member from Prop_Data structure  
+ * @param MEMBER The combobox member from Prop_Data structure
  * @param TYPE The type of given attribute
  * @param MULTIPLIER The multiplier to convert the value to percent
  * @param ARGS The edje edit function arguments
@@ -304,10 +304,10 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
  * @ingroup Property_Macro
  */
 #define COMMON_2SPINNER_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER, ARGS) \
-   TYPE value1, value2; \
-   edje_edit_##SUB##_##VALUE1##_get(pd->wm_style->obj ARGS, &value1, &value2); \
-   elm_spinner_value_set(pd->MEMBER.VALUE1, value1 * MULTIPLIER); \
-   elm_spinner_value_set(pd->MEMBER.VALUE2, value2 * MULTIPLIER);
+   TYPE VALUE1, VALUE2; \
+   edje_edit_##SUB##_##VALUE1##_get(pd->wm_style->obj ARGS, &VALUE1, &VALUE2); \
+   elm_spinner_value_set(pd->MEMBER.VALUE1, VALUE1 * MULTIPLIER); \
+   elm_spinner_value_set(pd->MEMBER.VALUE2, VALUE2 * MULTIPLIER);
 
 /*****************************************************************************/
 /*                         GROUP 2 CHECK CONTROL                             */
@@ -1035,7 +1035,7 @@ COMMON_2SPINNER_ADD(PART_ITEM_DOUBLEVAL, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBE
  * @ingroup Property_Macro
  */
 #define PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER) \
-   COMMON_2SPINNER_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER, PART_ITEM_ARGS) 
+   COMMON_2SPINNER_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER, PART_ITEM_ARGS)
 
 /**
  * Macro defines a callback for PART_ITEM2SPINNER_ADD.
