@@ -195,7 +195,7 @@ struct _Prop_Data
       Evas_Object *max_w, *max_h;
       Evas_Object *spread_w, *spread_h;
       Evas_Object *prefer_w, *prefer_h;
-      Evas_Object *padding;
+      Evas_Object *padding_l, *padding_r, *padding_t, *padding_b;
       Evas_Object *align_x, *align_y;
       Evas_Object *weight_x, *weight_y;
       Evas_Object *aspect_w, *aspect_h;
@@ -2968,129 +2968,70 @@ ui_property_state_box_unset(Evas_Object *property)
    evas_object_hide(pd_box.frame);
 }
 
-#define ITEM_4SPINNER_ITEM_CALLBACK(VALUE) \
-static void \
-_on_part_item_padding_##VALUE##_change(void *data, \
-                                       Evas_Object *obj, \
-                                       void *ei __UNUSED__) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   Evas_Object *item = evas_object_data_get(obj, ITEM1); \
-   Evas_Object *spinner1 = evas_object_data_get(item, ITEM1); \
-   Evas_Object *spinner2 = evas_object_data_get(item, ITEM2); \
-   Evas_Object *spinner3 = evas_object_data_get(item, ITEM3); \
-   Evas_Object *spinner4 = evas_object_data_get(item, ITEM4); \
-   int l = (int)elm_spinner_value_get(spinner1); \
-   int r = (int)elm_spinner_value_get(spinner2); \
-   int t = (int)elm_spinner_value_get(spinner3); \
-   int b = (int)elm_spinner_value_get(spinner4); \
-   if (!edje_edit_part_item_padding_set(pd->wm_style->obj, pd->wm_part->name,\
-                                        pd->item_name, l, r, t, b)) \
-     return; \
-   project_changed(); \
-   workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
-}
-
-ITEM_4SPINNER_ITEM_CALLBACK(l);
-ITEM_4SPINNER_ITEM_CALLBACK(r);
-ITEM_4SPINNER_ITEM_CALLBACK(t);
-ITEM_4SPINNER_ITEM_CALLBACK(b);
-
-#define ITEM_SPINNER_ITEM_PADDING_UPDATE(KEY, VALUE) \
-   spinner = evas_object_data_get(item, KEY); \
-   elm_spinner_value_set(spinner, VALUE); \
-   evas_object_smart_callback_del_full(spinner, "changed", _on_part_item_padding_##VALUE##_change, pd); \
-   evas_object_smart_callback_add(spinner, "changed", _on_part_item_padding_##VALUE##_change, pd);
-
 static void
-prop_item_part_item_padding_update(Evas_Object *item,
-                                   Prop_Data *pd)
+prop_part_item_padding_update(Prop_Data *pd)
 {
    int l = 0, r = 0, t = 0, b = 0;
-   Evas_Object *spinner;
 
-   edje_edit_part_item_padding_get(pd->wm_style->obj, pd->wm_part->name, pd->item_name,
-                                   &l, &r, &t, &b);
-   ITEM_SPINNER_ITEM_PADDING_UPDATE(ITEM1, l)
-   ITEM_SPINNER_ITEM_PADDING_UPDATE(ITEM2, r)
-   ITEM_SPINNER_ITEM_PADDING_UPDATE(ITEM3, t)
-   ITEM_SPINNER_ITEM_PADDING_UPDATE(ITEM4, b)
+   edje_edit_part_item_padding_get(pd->wm_style->obj, pd->wm_part->name,
+                                   pd->item_name, &l, &r, &t, &b);
+   elm_spinner_value_set(pd->part_item.padding_l, l);
+   elm_spinner_value_set(pd->part_item.padding_r, r);
+   elm_spinner_value_set(pd->part_item.padding_t, t);
+   elm_spinner_value_set(pd->part_item.padding_b, b);
 }
 
-static Evas_Object *
-prop_item_part_item_padding_add(Evas_Object *parent,
-                                Prop_Data *pd,
-                                double min,
-                                double max,
-                                double step,
-                                const char *fmt,
-                                const char *sp1_lb_start,
-                                const char *sp2_lb_start,
-                                const char *sp3_lb_start,
-                                const char *sp4_lb_start)
+static void
+_on_part_item_padding_change(void *data,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info __UNUSED__)
 {
-   Evas_Object *item, *item2, *spinner1, *spinner2, *spinner3, *spinner4;
-   Evas_Object *box, *layout, *main_box;
-   BOX_ADD(parent, main_box, false, false)
+   int l, r, t, b;
+   Prop_Data *pd = (Prop_Data *)data;
 
-   ITEM_ADD(parent, item, _("Padding: "), "eflete/property/item/default")
-   BOX_ADD(item, box, true, false)
-   ITEM_CONTEINER_1LABEL_ADD(box, layout, sp1_lb_start);
-   SPINNER_ADD(item, spinner1, min, max, step, true)
-   elm_spinner_label_format_set(spinner1, fmt);
-   elm_object_part_content_set(layout, "eflete.content", spinner1);
-   elm_box_pack_end(box, layout);
-   elm_object_part_content_set(item, "elm.swallow.content", box);
-   evas_object_event_callback_priority_add(spinner1, EVAS_CALLBACK_MOUSE_WHEEL,
-                                           EVAS_CALLBACK_PRIORITY_BEFORE,
-                                           _on_spinner_mouse_wheel, NULL);
+   l = (int)elm_spinner_value_get(pd->part_item.padding_l);
+   r = (int)elm_spinner_value_get(pd->part_item.padding_r);
+   t = (int)elm_spinner_value_get(pd->part_item.padding_t);
+   b = (int)elm_spinner_value_get(pd->part_item.padding_b);
+   if (!edje_edit_part_item_padding_set(pd->wm_style->obj, pd->wm_part->name,
+                                        pd->item_name, l, r, t, b))
+     return;
+   project_changed();
+   workspace_edit_object_recalc(pd->workspace);
+   pd->wm_style->isModify = true;
+}
 
-   ITEM_CONTEINER_1LABEL_ADD(box, layout, sp2_lb_start);
-   SPINNER_ADD(item, spinner2, min, max, step, true)
-   elm_spinner_label_format_set(spinner2, fmt);
-   elm_object_part_content_set(layout, "eflete.content", spinner2);
-   elm_box_pack_end(box, layout);
-   evas_object_event_callback_priority_add(spinner2, EVAS_CALLBACK_MOUSE_WHEEL,
-                                           EVAS_CALLBACK_PRIORITY_BEFORE,
-                                           _on_spinner_mouse_wheel, NULL);
-   elm_object_part_content_set(item, "elm.swallow.content", box);
-   elm_box_pack_end(main_box, item);
+static void
+prop_part_item_padding_add(Evas_Object *box, Prop_Data *pd)
+{
+   Evas_Object *item;
 
-   ITEM_ADD(parent, item2, "", "eflete/property/item/default")
-   BOX_ADD(item2, box, true, true)
-   elm_object_part_content_set(item2, "elm.swallow.content", box);
-   ITEM_CONTEINER_1LABEL_ADD(box, layout, sp3_lb_start);
-   SPINNER_ADD(item2, spinner3, min, max, step, true)
-   elm_spinner_label_format_set(spinner3, fmt);
-   elm_object_part_content_set(layout, "eflete.content", spinner3);
-   elm_box_pack_end(box, layout);
-   evas_object_event_callback_priority_add(spinner3, EVAS_CALLBACK_MOUSE_WHEEL,
-                                           EVAS_CALLBACK_PRIORITY_BEFORE,
-                                           _on_spinner_mouse_wheel, NULL);
+   #define SPINNER_SET(SPINNER, PART) \
+      SPINNER_ADD(item, SPINNER, 0.0, 999.0, 1.0, true) \
+      evas_object_smart_callback_add(SPINNER, "changed", \
+                                     _on_part_item_padding_change, pd); \
+      evas_object_event_callback_priority_add(SPINNER, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                           _on_spinner_mouse_wheel, NULL); \
+      elm_layout_content_set(item, PART, SPINNER);
 
-   ITEM_CONTEINER_1LABEL_ADD(box, layout, sp4_lb_start);
-   SPINNER_ADD(item2, spinner4, min, max, step, true)
-   elm_spinner_label_format_set(spinner4, fmt);
-   elm_object_part_content_set(layout, "eflete.content", spinner4);
-   elm_box_pack_end(box, layout);
-   evas_object_event_callback_priority_add(spinner4, EVAS_CALLBACK_MOUSE_WHEEL,
-                                           EVAS_CALLBACK_PRIORITY_BEFORE,
-                                           _on_spinner_mouse_wheel, NULL);
-   elm_object_part_content_set(item2, "elm.swallow.content", box);
-   elm_box_pack_end(main_box, item2);
+   LAYOUT_PROP_ADD(box, _("padding"), "property", "2swallow");
+   elm_object_part_text_set(item, "label.swallow1.start", "left:");
+   SPINNER_SET(pd->part_item.padding_l, "swallow.content1")
+   elm_object_part_text_set(item, "label.swallow2.start", "right:");
+   SPINNER_SET(pd->part_item.padding_r, "swallow.content2")
+   elm_box_pack_end(box, item);
 
-   evas_object_data_set(main_box, ITEM1, spinner1);
-   evas_object_data_set(main_box, ITEM2, spinner2);
-   evas_object_data_set(main_box, ITEM3, spinner3);
-   evas_object_data_set(main_box, ITEM4, spinner4);
-   evas_object_data_set(spinner1, ITEM1, main_box);
-   evas_object_data_set(spinner2, ITEM1, main_box);
-   evas_object_data_set(spinner3, ITEM1, main_box);
-   evas_object_data_set(spinner4, ITEM1, main_box);
+   LAYOUT_PROP_ADD(box, NULL, "property", "2swallow");
+   elm_object_part_text_set(item, "label.swallow1.start", "top:");
+   SPINNER_SET(pd->part_item.padding_t, "swallow.content1")
+   elm_object_part_text_set(item, "label.swallow2.start", "bottom:");
+   SPINNER_SET(pd->part_item.padding_b, "swallow.content2")
+   elm_box_pack_end(box, item);
 
-   prop_item_part_item_padding_update(main_box, pd);
-   return main_box;
+   prop_part_item_padding_update(pd);
+
+   #undef SPINNER_SET
 }
 #undef ITEM_SPINNER_ITEM_PADDING_UPDATE
 #undef ITEM_4SPINNER_ITEM_CALLBACK
@@ -3210,9 +3151,6 @@ PART_ITEM_DOUBLEVAL_ATTR_2SPINNER(_("position"), part_item, position, position1,
                                   _("Sets the column position this item"), _("Sets the row position this item"),
                                   1, unsigned short, VAL_INT)
 
-
-//ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned short int, _("position"), part_item, position, "eflete/property/item/default")
-
 Eina_Bool
 ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
 {
@@ -3252,10 +3190,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         elm_box_pack_end(box, item);
         item = prop_part_item_span_span1_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_item.padding =  prop_item_part_item_padding_add(box, pd,
-                             0.0, 999.0, 1.0, "%.0f",
-                            _("left:"), _("right:"), _("top:"), _("bottom:"));
-        elm_box_pack_end(box, pd_item.padding);
+        prop_part_item_padding_add(box, pd);
 
         pd_item.position_item = prop_part_item_position_position1_add(box, pd);
         evas_object_hide(pd_item.position_item);
@@ -3277,7 +3212,8 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, spread_w, spread_h, part_item, int, 1)
         PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(part_item, span, span1, part_item, unsigned char, 1);
         PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(part_item, position, position1, part_item, unsigned short, 1);
-        prop_item_part_item_padding_update(pd_item.padding, pd);
+        prop_part_item_padding_update(pd);
+
         elm_box_pack_before(prop_box, pd_item.frame, pd->part.frame);
         evas_object_show(pd_item.frame);
      }
