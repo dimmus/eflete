@@ -200,7 +200,7 @@ struct _Prop_Data
       Evas_Object *weight_x, *weight_y;
       Evas_Object *aspect_w, *aspect_h;
       Evas_Object *aspect_mode;
-      Evas_Object *position; /* Only for items in part TABLE */
+      Evas_Object *position, *position1, *position_item; /* Only for items in part TABLE */
       Evas_Object *span, *span1; /* Only for items in part TABLE */
    } part_item;
    struct {
@@ -3205,8 +3205,13 @@ PART_ITEM_DOUBLEVAL_ATTR_2SPINNER(_("span"), part_item, span, span1, part_item,
                                   1.0, 999.0, 1.0, NULL, "column:", "", "row:", "",
                                   _("Sets how many columns this item will use"), _("Sets how many rows this item will use"),
                                   1, unsigned char, VAL_INT)
+PART_ITEM_DOUBLEVAL_ATTR_2SPINNER(_("position"), part_item, position, position1, part_item,
+                                  0.0, 999.0, 1.0, NULL, "column:", "", "row:", "",
+                                  _("Sets the column position this item"), _("Sets the row position this item"),
+                                  1, unsigned short, VAL_INT)
 
-ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned short int, _("position"), part_item, position, "eflete/property/item/default")
+
+//ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned short int, _("position"), part_item, position, "eflete/property/item/default")
 
 Eina_Bool
 ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
@@ -3252,12 +3257,8 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
                             _("left:"), _("right:"), _("top:"), _("bottom:"));
         elm_box_pack_end(box, pd_item.padding);
 
-        pd_item.position = prop_item_part_item_position_suf_add(box, pd,
-                           0.0, 999.0, 1.0, "%.0f",
-                           "col", "", "row", "",
-                           _("Sets the column position this item."),
-                           _("Sets the row position this item."), false);
-        evas_object_hide(pd_item.position);
+        pd_item.position_item = prop_part_item_position_position1_add(box, pd);
+        evas_object_hide(pd_item.position_item);
 
         elm_box_pack_before(prop_box, pd_item.frame, pd->part.frame);
      }
@@ -3275,6 +3276,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, aspect_w, aspect_h, part_item, int, 1)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, spread_w, spread_h, part_item, int, 1)
         PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(part_item, span, span1, part_item, unsigned char, 1);
+        PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(part_item, position, position1, part_item, unsigned short, 1);
         prop_item_part_item_padding_update(pd_item.padding, pd);
         elm_box_pack_before(prop_box, pd_item.frame, pd->part.frame);
         evas_object_show(pd_item.frame);
@@ -3282,18 +3284,18 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
 
      if (pd->wm_part->type == EDJE_PART_TYPE_TABLE)
        {
-          if (!evas_object_visible_get(pd->part_item.position))
+          if (!evas_object_visible_get(pd->part_item.position_item))
             {
-               elm_box_pack_after(box, pd->part_item.position, pd->part_item.source_item);
-               evas_object_show(pd->part_item.position);
+               elm_box_pack_after(box, pd->part_item.position_item, pd->part_item.source_item);
+               evas_object_show(pd->part_item.position_item);
             }
        }
      else
        {
-          if (evas_object_visible_get(pd->part_item.position))
+          if (evas_object_visible_get(pd->part_item.position_item))
             {
-               elm_box_unpack(box, pd->part_item.position);
-               evas_object_hide(pd->part_item.position);
+               elm_box_unpack(box, pd->part_item.position_item);
+               evas_object_hide(pd->part_item.position_item);
             }
        }
 
@@ -3312,10 +3314,10 @@ ui_property_item_unset(Evas_Object *property)
    elm_box_unpack(prop_box, pd_item.frame);
 
    item_box = elm_object_content_get(pd_item.frame);
-   elm_box_unpack(item_box, pd_item.position);
+   elm_box_unpack(item_box, pd_item.position_item);
 
    evas_object_hide(pd_item.frame);
-   evas_object_hide(pd_item.position);
+   evas_object_hide(pd_item.position_item);
 }
 #undef pd_item
 
