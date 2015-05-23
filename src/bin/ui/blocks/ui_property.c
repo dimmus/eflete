@@ -1362,9 +1362,9 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    ITEM_1COMBOBOX_STATE_PROXY_ADD(TEXT, SUB, VALUE) \
    ITEM_1COMBOBOX_STATE_PROXY_UPDATE(SUB, VALUE)
 
-#define STATE_ATTR_1CHECK(TEXT, SUB, VALUE, MEMBER) \
+#define STATE_ATTR_1CHECK(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
    STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER) \
-   STATE_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER)
+   STATE_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 #define STATE_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                             L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
@@ -1395,7 +1395,8 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
    STATE_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
-STATE_ATTR_1CHECK(_("visible"), state, visible, state)
+STATE_ATTR_1CHECK(_("visible"), state, visible, state,
+                  _("Set visibility for part by current state"))
 STATE_ATTR_2SPINNER(_("min"), state, min_w, min_h, state, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
                     _("Minimal size of part width in pixels."), _("Minimal part height in pixels."),
                     1, int, VAL_INT)
@@ -1452,7 +1453,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
 
         item = prop_state_state_add(box, _("state"), state);
         elm_box_pack_end(box, item);
-        item = prop_state_visible_add(box, pd, "Set visibility for part by current state");
+        item = prop_state_visible_add(box, pd);
         elm_box_pack_end(box, item);
         item = prop_state_min_w_min_h_add(box, pd);
         elm_box_pack_end(box, item);
@@ -1483,7 +1484,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
      {
         box = elm_object_content_get(pd_state.frame);
         prop_state_state_update(state);
-        STATE_ATTR_CHECK_UPDATE(state, visible, state)
+        STATE_ATTR_1CHECK_UPDATE(state, visible, state)
         STATE_ATTR_2SPINNER_UPDATE(state, min_w, min_h, state, int, 1)
         STATE_ATTR_2SPINNER_UPDATE(state, max_w, max_h, state, int, 1)
         STATE_ATTR_2CHECK_UPDATE(state, fixed_w, fixed_h, state)
@@ -2778,7 +2779,8 @@ ui_property_state_image_unset(Evas_Object *property)
 #define pd_fill pd->state_fill
 STATE_ATTR_1COMBOBOX_LIST(_("type"), state_fill, type, state_fill, edje_fill_type,
                           _("Set the image fill type"), unsigned char)
-STATE_ATTR_1CHECK(_("smooth"), state_fill, smooth, state_fill)
+STATE_ATTR_1CHECK(_("smooth"), state_fill, smooth, state_fill,
+                  _("On/off image smooth on scaling"))
 STATE_ATTR_2SPINNER_ICON(_("align"), state_fill, origin_relative_x, origin_relative_y, state_fill,
                          -500, 500, 1, NULL, "x:", "%", "y:", "%",
                          _("Sets the starting point X coordinate relatively to displayed element's content"),
@@ -2819,7 +2821,7 @@ ui_property_state_fill_set(Evas_Object *property)
 
         item = prop_state_fill_type_add(box, pd);
         elm_box_pack_end(box, item);
-        item = prop_state_fill_smooth_add(box, pd, _("On/off image smooth on scaling"));
+        item = prop_state_fill_smooth_add(box, pd);
         elm_box_pack_end(box, item);
 
         /* origin subblock of fill block */
@@ -2867,7 +2869,7 @@ ui_property_state_fill_set(Evas_Object *property)
    else
      {
         STATE_ATTR_1COMBOBOX_LIST_UPDATE(state_fill, type, state_fill);
-        STATE_ATTR_CHECK_UPDATE(state_fill, smooth, state_fill)
+        STATE_ATTR_1CHECK_UPDATE(state_fill, smooth, state_fill)
         STATE_ATTR_2SPINNER_UPDATE(state_fill, origin_relative_x, origin_relative_y, state_fill, double, 100)
         STATE_ATTR_2SPINNER_UPDATE(state_fill, origin_offset_x, origin_offset_y, state_fill, int, 1)
         STATE_ATTR_2SPINNER_UPDATE(state_fill, size_relative_x, size_relative_y, state_fill, double, 100)

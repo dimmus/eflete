@@ -1101,77 +1101,32 @@ COMMON_2SPINNER_ADD(PART_ITEM_DOUBLEVAL, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBE
  * Macro defines a functions that create an item with label and 1 check for
  * state attribute.
  *
- * @param TEXT The label text
- * @param SUB The prefix of main parameter of state attribute
- * @param VALUE The value of state attribute
- * @param MEMBER The check member from Prop_Data structure
+ * @see COMMON_CHECK_ADD
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER) \
-static Evas_Object * \
-prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
-                              Prop_Data *pd, \
-                              const char *tooltip) \
-{ \
-   PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
-   CHECK_ADD(item, pd->MEMBER.VALUE) \
-   elm_object_style_set(pd->MEMBER.VALUE, "toggle"); \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE, tooltip); \
-   evas_object_smart_callback_add(pd->MEMBER.VALUE, "changed", _on_##MEMBER##_##VALUE##_change, pd); \
-   STATE_ATTR_CHECK_UPDATE(SUB, VALUE, MEMBER) \
-   elm_layout_content_set(item, NULL, pd->MEMBER.VALUE); \
-   return item; \
-}
+#define STATE_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
+   COMMON_CHECK_ADD(STATE, TEXT, SUB, VALUE, MEMBER, TOOLTIP, STATE_ARGS)
 
 /**
  * Macro defines a function that updates control by STATE_ATTR_1CHECK_ADD macro.
  *
- * @param SUB The prefix of main parameter of drag attribute
- * @param VALUE The first value of state attribute
- * @param MEMBER The check member from Prop_Data structure
+ * @see COMMON_CHECK_UPDATE
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_CHECK_UPDATE(SUB, VALUE, MEMBER) \
-   elm_check_state_set(pd->MEMBER.VALUE, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
-                                                                         pd->wm_part->name, \
-                                                                         pd->wm_part->curr_state, \
-                                                                         pd->wm_part->curr_state_value));
+#define STATE_ATTR_1CHECK_UPDATE(SUB, VALUE, MEMBER) \
+   COMMON_CHECK_UPDATE(SUB, VALUE, MEMBER, STATE_ARGS)
 
 /**
  * Macro defines a callback for STATE_ATTR_1CHEACK_ADD.
  *
- * @param SUB The prefix of main parameter of state attribute;
- * @param VALUE The value of state attribute.
- * @param MEMBER The check member from Prop_Data structure
+ * @see COMMON_CHECK_CALLBACK
  *
  * @ingroup Property_Macro
  */
 #define STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER) \
-static void \
-_on_##MEMBER##_##VALUE##_change(void *data, \
-                                Evas_Object *obj, \
-                                void *ei __UNUSED__) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   Eina_Bool value = elm_check_state_get(obj); \
-   Eina_Bool old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
-                             pd->wm_part->name, pd->wm_part->curr_state, \
-                             pd->wm_part->curr_state_value); \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, \
-                                        pd->wm_part->curr_state, \
-                                        pd->wm_part->curr_state_value, \
-                                        value)) \
-     return; \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
-                    value, pd->wm_style->full_group_name,\
-                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
-                    pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
-   project_changed(); \
-   workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
-}
+   COMMON_CHECK_CALLBACK(SUB, VALUE, MEMBER, STATE_ARGS, STATE_ARGS)
 
 /*****************************************************************************/
 /*                        STATE 1 SPINNER CONTROLS                           */
@@ -1336,8 +1291,8 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
  * @ingroup Property_Macro
  */
 #define STATE_ATTR_2CHECK_UPDATE(SUB, VALUE1, VALUE2, MEMBER) \
-   STATE_ATTR_CHECK_UPDATE(SUB, VALUE1, MEMBER) \
-   STATE_ATTR_CHECK_UPDATE(SUB, VALUE2, MEMBER)
+   STATE_ATTR_1CHECK_UPDATE(SUB, VALUE1, MEMBER) \
+   STATE_ATTR_1CHECK_UPDATE(SUB, VALUE2, MEMBER)
 
 /**
  * Macro defines a callback for STATE_ATTR_2CHECK_ADD.
