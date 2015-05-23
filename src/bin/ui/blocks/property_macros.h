@@ -387,6 +387,25 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 }
 
 /**
+ * Macro defines a update function for attribute that controled by 2 checks
+ * and edje edit functions returned, as arguments, two values at hte same time.
+ *
+ * @param SUB The prefix of main parameter of state attribute;
+ * @param VALUE1 The first value of attribute
+ * @param VALUE2 The second value of attribute
+ * @param MEMBER The combobox member from Prop_Data structure
+ * @param TYPE The type of given attribute
+ * @param ARGS The edje edit function arguments
+ *
+ * @ingroup Property_Macro
+ */
+#define COMMON_2CHECK_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, ARGS) \
+   TYPE VALUE1, VALUE2; \
+   edje_edit_##SUB##_##VALUE1##_get(pd->wm_style->obj ARGS, &VALUE1, &VALUE2); \
+   elm_spinner_value_set(pd->MEMBER.VALUE1, VALUE1); \
+   elm_spinner_value_set(pd->MEMBER.VALUE2, VALUE2);
+
+/**
  * Macro defines a callback for attribute that controled by 2 checks and
  * edje edit functions returned, as arguments, two values at hte same time.
  *
@@ -395,7 +414,6 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * @param VALUE2 The second value of attribute
  * @param MEMBER The combobox member from Prop_Data structure
  * @param TYPE The type of given attribute
- * @param MULTIPLIER The multiplier to convert the value to percent
  * @param ARGS The edje edit function arguments
  *
  * @ingroup Property_Macro
@@ -427,8 +445,6 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
    workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \
 }
-
-
 
 /*****************************************************************************/
 /*                         GROUP 2 CHECK CONTROL                             */
