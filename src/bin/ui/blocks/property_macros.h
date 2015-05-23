@@ -308,6 +308,84 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
    elm_spinner_value_set(pd->MEMBER.VALUE1, VALUE1 * MULTIPLIER); \
    elm_spinner_value_set(pd->MEMBER.VALUE2, VALUE2 * MULTIPLIER);
 
+/**
+ * Macro defines functions that create an item with label and 1 check for part
+ * attribute.
+ *
+ * @param PREFIX The attribute prefix (STATE, PART, etc), used for define the
+ *        update function
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param MEMBER The combobox member from Prop_Data structure
+ * @param LIST The predefined strings list
+ * @param TOOLTIP The combobox tooltip
+ * @param ARGS The edje edit function arguments
+ *
+ * @note for internal usage in property_macros.h
+ *
+ * @ingroup Property_Macro
+ */
+#define COMMON_CHECK_ADD(PREFIX, TEXT, SUB, VALUE, MEMBER, TOOLTIP, ARGS) \
+static Evas_Object * \
+prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, Prop_Data *pd) \
+{ \
+   PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
+   CHECK_ADD(item, pd->MEMBER.VALUE) \
+   elm_object_style_set(pd->MEMBER.VALUE, "toggle"); \
+   elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
+   evas_object_smart_callback_add(pd->MEMBER.VALUE, "changed", _on_##MEMBER##_##VALUE##_change, pd); \
+   elm_layout_content_set(item, "elm.swallow.content", pd->MEMBER.VALUE); \
+   PREFIX##_ATTR_1CHECK_UPDATE(SUB, VALUE, MEMBER) \
+   return item; \
+}
+
+/* Macro defines a function that updates control by COMMON_CHECK_ADD macro.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param MEMBER The combobox member from Prop_Data structure
+ * @param ARGS The edje edit function arguments
+ *
+ * @note for internal usage in property_macros.h
+ *
+ * @ingroup Property_Macro
+ */
+#define COMMON_CHECK_UPDATE(SUB, VALUE, MEMBER, ARGS) \
+   elm_check_state_set(pd->MEMBER.VALUE, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS));
+
+/**
+ * Macro defines a callback for attribute that controled by check.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param MEMBER The check member from Prop_Data structure
+ * @param ARGS The edje edit function arguments
+ * @param ARGS_DIFF The edje edit function arguments for history
+ *
+ * @note for internal usage in property_macros.h
+ *
+ * @ingroup Property_Macro
+ */
+#define COMMON_CHECK_CALLBACK(SUB, VALUE, MEMBER, ARGS, ARGS_DIFF) \
+static void \
+_on_##MEMBER##_##VALUE##_change(void *data, \
+                                Evas_Object *obj, \
+                                void *event_info __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Eina_Bool value = elm_check_state_get(obj); \
+   Eina_Bool old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS);\
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, value)) \
+     return; \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
+                    value, pd->wm_style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS_DIFF); \
+   workspace_edit_object_recalc(pd->workspace); \
+   project_changed(); \
+   pd->wm_style->isModify = true; \
+}
+
 /*****************************************************************************/
 /*                         GROUP 2 CHECK CONTROL                             */
 /*****************************************************************************/
@@ -446,27 +524,12 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
  * Macro defines functions that create an item with label and 1 check for part
  * attribute.
  *
- * @param TEXT The label text
- * @param SUB The prefix of main parameter of part attribute
- * @param VALUE The value of part attribute
+ * @see COMMON_CHECK_ADD
  *
  * @ingroup Property_Macro
  */
-#define PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE) \
-static Evas_Object * \
-prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
-                           Prop_Data *pd, \
-                           const char *tooltip) \
-{ \
-   PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
-   CHECK_ADD(item, pd->SUB.VALUE) \
-   elm_object_style_set(pd->SUB.VALUE, "toggle"); \
-   elm_check_state_set(pd->SUB.VALUE, edje_edit_part_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name)); \
-   elm_object_tooltip_text_set(pd->SUB.VALUE, tooltip); \
-   evas_object_smart_callback_add(pd->SUB.VALUE, "changed", _on_##SUB##_##VALUE##_change, pd); \
-   elm_layout_content_set(item, "elm.swallow.content", pd->SUB.VALUE); \
-   return item; \
-}
+#define PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
+   COMMON_CHECK_ADD(PART, TEXT, SUB, VALUE, MEMBER, TOOLTIP, PART_ARGS)
 
 /**
  * Macro for function that updates a value of controls of the PART_ATTR_1CHECK_ADD macro.
@@ -476,37 +539,18 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
  *
  * @ingroup Property_Macro
  */
-#define ITEM_ATTR_1CHECK_UPDATE(SUB, VALUE) \
-   elm_check_state_set(pd->SUB.VALUE, edje_edit_part_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name));
+#define PART_ATTR_1CHECK_UPDATE(SUB, VALUE, MEMBER) \
+   COMMON_CHECK_UPDATE(SUB, VALUE, MEMBER, PART_ARGS)
 
 /**
  * Macro defines a callback for PART_ATTR_1CHECK_ADD.
  *
- * @param SUB The prefix of main parameter of part attribute;
- * @param VALUE The value of part attribute.
+ * @see COMMON_CHECK_CALLBACK
  *
  * @ingroup Property_Macro
  */
-#define PART_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
-static void \
-_on_##SUB##_##VALUE##_change(void *data, \
-                             Evas_Object *obj, \
-                             void *ei __UNUSED__) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   Eina_Bool value = elm_check_state_get(obj); \
-   Eina_Bool old_value = edje_edit_part_##VALUE##_get(pd->wm_style->obj, \
-                                                      pd->wm_part->name);\
-   if (!edje_edit_part_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, value)) \
-     return; \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
-                    value, pd->wm_style->full_group_name,\
-                    (void*)edje_edit_part_##VALUE##_set,  #SUB"_"#VALUE, \
-                    pd->wm_part->name, NULL, 0.0); \
-   workspace_edit_object_recalc(pd->workspace); \
-   project_changed(); \
-   pd->wm_style->isModify = true; \
-}
+#define PART_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER) \
+   COMMON_CHECK_CALLBACK(SUB, VALUE, MEMBER, PART_ARGS, PART_ARGS_DIFF) \
 
 /*****************************************************************************/
 /*                       PART 1 COMBOBOX CONTROL                             */

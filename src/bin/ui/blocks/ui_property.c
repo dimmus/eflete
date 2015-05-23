@@ -937,9 +937,9 @@ PART_ATTR_PARTS_LIST(part_drag, event, part_drag)
 
 PART_ATTR_SOURCE_UPDATE(part, source)
 
-#define PART_ATTR_1CHECK(TEXT, SUB, VALUE) \
-   PART_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
-   PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE)
+#define PART_ATTR_1CHECK(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
+   PART_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER) \
+   PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 #define PART_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
    PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
@@ -955,9 +955,12 @@ PART_ATTR_SOURCE_UPDATE(part, source)
    PART_ATTR_DRAG_ADD(TEXT, SUB, VALUE1, VALUE2)
 
 /* part property */
-PART_ATTR_1CHECK(_("scalable"), part, scale)
-PART_ATTR_1CHECK(_("mouse events"), part, mouse_events)
-PART_ATTR_1CHECK(_("event propagation"), part, repeat_events)
+PART_ATTR_1CHECK(_("scalable"), part, scale, part,
+                 _("Specifies whether the part will scale it's size with an edje scaling factor"))
+PART_ATTR_1CHECK(_("mouse events"), part, mouse_events, part,
+                 _("Enable mouse events in this part"))
+PART_ATTR_1CHECK(_("event propagation"), part, repeat_events, part,
+                 _("Enable repeat mouse events to the parts below"))
 PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to, part,
                     _("Show only the area of part that coincides with another part's container"))
 PART_ATTR_1COMBOBOX_LIST(_("ignore flags"), part, ignore_flags, part, Evas_Event_Flags, edje_ignore_flags,
@@ -1002,15 +1005,11 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, item);
         item = prop_part_type_add(box, _("type"), wm_part_type_get(pd->wm_part->type));
         elm_box_pack_end(box, item);
-        pd->part.scale_item = prop_part_scale_add(box, pd,
-                           _("Specifies whether the part will scale "
-                           "its size with an edje scaling factor."));
+        pd->part.scale_item = prop_part_scale_add(box, pd);
         elm_box_pack_end(box, pd->part.scale_item);
-        pd->part.mouse_events_item = prop_part_mouse_events_add(box, pd,
-                           _("Enable mouse events in this part."));
+        pd->part.mouse_events_item = prop_part_mouse_events_add(box, pd);
         elm_box_pack_end(box, pd->part.mouse_events_item);
-        pd->part.repeat_events_item = prop_part_repeat_events_add(box, pd,
-                            _("Enable repeat mouse events to the parts below."));
+        pd->part.repeat_events_item = prop_part_repeat_events_add(box, pd);
         elm_box_pack_end(box, pd->part.repeat_events_item);
         pd->part.clip_to_item = prop_part_clip_to_add(box, pd);
         elm_box_pack_end(box, pd->part.clip_to_item);
@@ -1047,9 +1046,9 @@ ui_property_part_set(Evas_Object *property, Part *part)
      {
         prop_part_name_update(pd);
         prop_part_type_update(wm_part_type_get(pd->wm_part->type));
-        ITEM_ATTR_1CHECK_UPDATE(part, scale)
-        ITEM_ATTR_1CHECK_UPDATE(part, mouse_events)
-        ITEM_ATTR_1CHECK_UPDATE(part, repeat_events)
+        PART_ATTR_1CHECK_UPDATE(part, scale, part)
+        PART_ATTR_1CHECK_UPDATE(part, mouse_events, part)
+        PART_ATTR_1CHECK_UPDATE(part, repeat_events, part)
         prop_part_clip_to_update(pd);
         PART_ATTR_1COMBOBOX_LIST_UPDATE(part, ignore_flags, part)
         prop_part_source_update(pd);
@@ -2249,7 +2248,8 @@ PART_ATTR_1COMBOBOX_LIST(_("pointer mode"), part, pointer_mode, state_textblock,
                          edje_pointer_mode, _("Sets the mouse pointer behavior for a given part"))
 PART_ATTR_1COMBOBOX_LIST(_("cursor mode"), part, cursor_mode, state_textblock, unsigned int,
                          edje_cursor_mode, _("Sets the cursor mode for a textblock part"))
-PART_ATTR_1CHECK(_("multiline"), state_textblock, multiline)
+PART_ATTR_1CHECK(_("multiline"), part, multiline, state_textblock,
+                 _("It causes a textblock that is editable to allow multiple lines for editing"))
 PART_ATTR_1COMBOBOX(_("under selected text"), part, source, state_textblock,
                     _("Used for the group to be loaded and used for selection \t"
                     "display UNDER the selected text the source \t"
@@ -2305,8 +2305,7 @@ ui_property_state_textblock_set(Evas_Object *property)
          elm_box_pack_end(box, item);
          item = prop_state_textblock_cursor_mode_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_multiline_add(box, pd,
-                _("It causes a textblock that is editable to allow multiple lines for editing."));
+         item = prop_state_textblock_multiline_add(box, pd);
          elm_box_pack_end(box, item);
          item = prop_state_textblock_source_add(box, pd);
          elm_box_pack_end(box, item);
@@ -2335,7 +2334,7 @@ ui_property_state_textblock_set(Evas_Object *property)
         PART_ATTR_1COMBOBOX_LIST_UPDATE(part, entry_mode, state_textblock)
         PART_ATTR_1COMBOBOX_LIST_UPDATE(part, pointer_mode, state_textblock)
         PART_ATTR_1COMBOBOX_LIST_UPDATE(part, cursor_mode, state_textblock)
-        ITEM_ATTR_1CHECK_UPDATE(state_textblock, multiline);
+        PART_ATTR_1CHECK_UPDATE(part, multiline, state_textblock);
         prop_state_textblock_source_update(pd);
         prop_state_textblock_source2_update(pd);
         prop_state_textblock_source3_update(pd);
