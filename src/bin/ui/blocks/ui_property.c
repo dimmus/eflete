@@ -177,7 +177,7 @@ struct _Prop_Data
    struct {
       Evas_Object *frame;
       Evas_Object *align, *align1;
-      Evas_Object *padding;
+      Evas_Object *padding, *padding1;
       Evas_Object *min;
    } state_container;
    struct {
@@ -3259,14 +3259,6 @@ ui_property_item_unset(Evas_Object *property)
 
 #define pd_container pd->state_container
 
-#define ITEM_2SPINNER_STATE_2DOUBLE_CREATE(TYPE, TEXT, SUB, VALUE1, VALUE2, STYLE) \
-   ITEM_2SPINNER_STATE_VALUE_CALLBACK(TYPE, SUB, VALUE1) \
-   ITEM_2SPINNER_STATE_VALUE_CALLBACK(TYPE, SUB, VALUE2) \
-   ITEM_2SPINNER_STATE_VALUE_UPDATE(TYPE, SUB, VALUE1, VALUE2) \
-   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, STYLE)
-
-ITEM_2SPINNER_STATE_2DOUBLE_CREATE(int, _("padding"), state_container_padding, h, v, "eflete/property/item/default")
-
 #define STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                                                 L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
                                                 TYPE, HISTORY_TYPE) \
@@ -3280,6 +3272,11 @@ STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER(_("align"), state_container, align, alig
                                         _("Change the position of the point of balance inside the container"),
                                         _("Change the position of the point of balance inside the container"),
                                         100, double, VAL_DOUBLE)
+STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER(_("padding"), state_container, padding, padding1, state_container,
+                                        0.0, 999.0, 1.0, NULL, "x:", "px", "y:", "px",
+                                        _("Sets the horizontal space between cells in pixels"),
+                                        _("Sets the vertcal space between cells in pixels"),
+                                        1, int, VAL_INT)
 
 static void
 _on_container_min_change(void *data,
@@ -3392,16 +3389,12 @@ ui_property_state_container_set(Evas_Object *property)
 
         item = prop_state_container_align_align1_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_container.padding = prop_item_state_container_padding_h_v_add(box, pd, 0.0, 999.0,
-                                1.0, "%.0f", _("hor:"), _("px"), _("ver:"), _("px"),
-                                _("Sets the horizontal space between cells in pixels."),
-                                _("Sets the vertcal space between cells in pixels."),
-                                false);
+        item = prop_state_container_padding_padding1_add(box, pd);
+        elm_box_pack_end(box, item);
+
         pd_container.min = prop_item_state_container_min_h_v_add(box, pd,
                             _("This affects the minimum width calculation."),
                             _("This affects the minimum height calculation."));
-
-        elm_box_pack_end(box, pd_container.padding);
         elm_box_pack_end(box, pd_container.min);
         pd_container.frame = container_frame;
         elm_box_pack_after(prop_box, pd_container.frame, pd->part.frame);
@@ -3409,7 +3402,7 @@ ui_property_state_container_set(Evas_Object *property)
    else
      {
         STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, align, align1, state_container, double, 100)
-        prop_item_state_container_padding_h_v_update(pd_container.padding, pd, false);
+        STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, padding, padding1, state_container, int, 1)
         prop_item_state_container_min_h_v_update(pd_container.min, pd);
         elm_box_pack_after(prop_box, pd_container.frame, pd->part.frame);
         evas_object_show(pd_container.frame);
