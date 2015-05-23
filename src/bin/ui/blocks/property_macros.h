@@ -253,7 +253,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
  * @param SUB The prefix of main parameter of state attribute;
  * @param VALUE1 The first value of attribute
  * @param VALUE2 The second value of attribute
- * @param MEMBER The combobox member from Prop_Data structure  
+ * @param MEMBER The combobox member from Prop_Data structure
  * @param TYPE The type of given attribute
  * @param MULTIPLIER The multiplier to convert the value to percent
  * @param ARGS The edje edit function arguments
@@ -287,7 +287,6 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
    workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \
 }
-
 
 /**
  * Macro defines a update function for attribute that controled by 2 spinners
