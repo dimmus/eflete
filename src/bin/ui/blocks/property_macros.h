@@ -386,6 +386,50 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    pd->wm_style->isModify = true; \
 }
 
+/**
+ * Macro defines a callback for attribute that controled by 2 checks and
+ * edje edit functions returned, as arguments, two values at hte same time.
+ *
+ * @param SUB The prefix of main parameter of state attribute;
+ * @param VALUE1 The first value of attribute
+ * @param VALUE2 The second value of attribute
+ * @param MEMBER The combobox member from Prop_Data structure
+ * @param TYPE The type of given attribute
+ * @param MULTIPLIER The multiplier to convert the value to percent
+ * @param ARGS The edje edit function arguments
+ *
+ * @ingroup Property_Macro
+ */
+#define COMMON_2CHECK_DOUBLEVAL_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, ARGS) \
+static void \
+_on_##MEMBER##_##VALUE1##_change(void *data, \
+                                 Evas_Object *obj __UNUSED__, \
+                                 void *event_info __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   edje_edit_##SUB##_##VALUE1##_set(pd->wm_style->obj ARGS, \
+                                    (TYPE)elm_check_value_get(pd->MEMBER.VALUE1), \
+                                    (TYPE)elm_check_value_get(pd->MEMBER.VALUE2)); \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->wm_style->isModify = true; \
+} \
+static void \
+_on_##MEMBER##_##VALUE2##_change(void *data, \
+                                 Evas_Object *obj __UNUSED__, \
+                                 void *event_info __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   edje_edit_##SUB##_##VALUE1##_set(pd->wm_style->obj ARGS, \
+                                    (TYPE)elm_check_value_get(pd->MEMBER.VALUE1), \
+                                    (TYPE)elm_check_value_get(pd->MEMBER.VALUE2)); \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->wm_style->isModify = true; \
+}
+
+
+
 /*****************************************************************************/
 /*                         GROUP 2 CHECK CONTROL                             */
 /*****************************************************************************/
