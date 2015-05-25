@@ -265,8 +265,7 @@ _on_popup_btn_yes(void *data,
    if (wm_style_copy(dest_style->obj, source_style->full_group_name, full_name,
                      ap->project->dev, style))
      {
-        eina_file_close(ap->project->mmap_file);
-        ap->project->mmap_file = eina_file_open(ap->project->dev, false);
+        pm_save_to_dev(ap->project, source_style);
         wm_style_data_load(style, evas_object_evas_get(ap->win),
                            ap->project->mmap_file);
         _reload_classes(ap, dest_wdg->classes);
