@@ -178,7 +178,7 @@ struct _Prop_Data
       Evas_Object *frame;
       Evas_Object *align, *align1;
       Evas_Object *padding, *padding1;
-      Evas_Object *min;
+      Evas_Object *min, *min1;
    } state_container;
    struct {
       Evas_Object *frame;
@@ -3267,6 +3267,12 @@ ui_property_item_unset(Evas_Object *property)
    STATE_DOUBLEVAL_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
                                      MIN, MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
                                      TOOLTIP1, TOOLTIP2, MULTIPLIER)
+#define STATE_DOUBLEVAL_ATTR_2CHECK(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
+                                    L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2) \
+   STATE_DOUBLEVAL_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2, MEMBER) \
+   STATE_DOUBLEVAL_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
+                                   L1_START, L1_END, L2_START, L2_END, \
+                                   TOOLTIP1, TOOLTIP2) \
 
 STATE_DOUBLEVAL_ATTR_2SPINNER(_("align"), state_container, align, align1, state_container,
                               0.0, 100.0, 1.0, NULL, "x:", "%", "y:", "%",
@@ -3278,99 +3284,10 @@ STATE_DOUBLEVAL_ATTR_2SPINNER(_("padding"), state_container, padding, padding1, 
                               _("Sets the horizontal space between cells in pixels"),
                               _("Sets the vertcal space between cells in pixels"),
                               1, int, VAL_INT)
-
-static void
-_on_container_min_change(void *data,
-                         Evas_Object *obj __UNUSED__,
-                         void *ei __UNUSED__)
-{
-   Prop_Data *pd = (Prop_Data *)data;
-   Eina_Bool min_v, min_h;
-   Evas_Object *check1, *check2;
-
-   check1 = evas_object_data_get(pd_container.min, ITEM1);
-   min_v = elm_check_state_get(check1);
-   check2 = evas_object_data_get(pd_container.min, ITEM2);
-   min_h = elm_check_state_get(check2);
-
-   if (!edje_edit_state_container_min_set(pd->wm_style->obj, pd->wm_part->name,
-                                          pd->wm_part->curr_state,
-                                          pd->wm_part->curr_state_value,
-                                          min_v, min_h))
-     return;
-
-   project_changed();
-   workspace_edit_object_recalc(pd->workspace);
-   pd->wm_style->isModify = true;
-}
-
-static void
-prop_item_state_container_min_h_v_update(Evas_Object *item,
-                                         Prop_Data *pd)
-{
-   Evas_Object *check1, *check2;
-   Eina_Bool min_v, min_h;
-
-   edje_edit_state_container_min_get(pd->wm_style->obj,
-                                     pd->wm_part->name,
-                                     pd->wm_part->curr_state,
-                                     pd->wm_part->curr_state_value,
-                                     &min_v,
-                                     &min_h);
-
-   check1 = evas_object_data_get(item, ITEM1);
-   elm_check_state_set(check1, min_v);
-   check2 = evas_object_data_get(item, ITEM2);
-   elm_check_state_set(check2, min_h);
-
-   evas_object_smart_callback_del_full(check1, "changed", _on_container_min_change, pd);
-   evas_object_smart_callback_add(check1, "changed", _on_container_min_change, pd);
-   evas_object_smart_callback_del_full(check2, "changed", _on_container_min_change, pd);
-   evas_object_smart_callback_add(check2, "changed", _on_container_min_change, pd);
-}
-
-static Evas_Object *
-prop_item_state_container_min_h_v_add(Evas_Object *parent,
-                                      Prop_Data *pd,
-                                      const char *tooltip1,
-                                      const char *tooltip2)
-{
-   Evas_Object *item, *box, *layout, *check1, *check2;
-   Eina_Bool min_v, min_h;
-
-   edje_edit_state_container_min_get(pd->wm_style->obj,
-                                     pd->wm_part->name,
-                                     pd->wm_part->curr_state,
-                                     pd->wm_part->curr_state_value,
-                                     &min_v,
-                                     &min_h);
-
-   ITEM_ADD(parent, item, _("Min: "), "eflete/property/item/default")
-   BOX_ADD(item, box, true, true)
-
-   ITEM_CONTEINER_2LABEL_ADD(box, layout, NULL, NULL);
-   CHECK_ADD(layout, check1)
-   elm_object_style_set(check1, "toggle");
-   elm_check_state_set(check1, min_v);
-   elm_object_tooltip_text_set(check1, tooltip1);
-   evas_object_smart_callback_add(check1, "changed", _on_container_min_change, pd);
-   elm_object_part_content_set(layout, "eflete.content", check1);
-   elm_box_pack_end(box, layout);
-
-   ITEM_CONTEINER_2LABEL_ADD(box, layout, NULL, NULL);
-   CHECK_ADD(layout, check2)
-   elm_object_style_set(check2, "toggle");
-   elm_check_state_set(check2, min_h);
-   elm_object_tooltip_text_set(check2, tooltip2);
-   evas_object_smart_callback_add(check2, "changed", _on_container_min_change, pd);
-   elm_object_part_content_set(layout, "eflete.content", check2);
-   elm_box_pack_end(box, layout);
-
-   elm_object_part_content_set(item, "elm.swallow.content", box);
-   evas_object_data_set(item, ITEM1, check1);
-   evas_object_data_set(item, ITEM2, check2);
-   return item;
-}
+STATE_DOUBLEVAL_ATTR_2CHECK(_("min"), state_container, min, min1, state_container,
+                            "x:", NULL, "y:", NULL,
+                            _("This affects the minimum width calculation"),
+                            _("This affects the minimum height calculation"))
 
 static Eina_Bool
 ui_property_state_container_set(Evas_Object *property)
@@ -3393,10 +3310,8 @@ ui_property_state_container_set(Evas_Object *property)
         item = prop_state_container_padding_padding1_add(box, pd);
         elm_box_pack_end(box, item);
 
-        pd_container.min = prop_item_state_container_min_h_v_add(box, pd,
-                            _("This affects the minimum width calculation."),
-                            _("This affects the minimum height calculation."));
-        elm_box_pack_end(box, pd_container.min);
+        item = prop_state_container_min_min1_add(box, pd);
+        elm_box_pack_end(box, item);
         pd_container.frame = container_frame;
         elm_box_pack_after(prop_box, pd_container.frame, pd->part.frame);
      }
@@ -3404,7 +3319,7 @@ ui_property_state_container_set(Evas_Object *property)
      {
         STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, align, align1, state_container, double, 100)
         STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, padding, padding1, state_container, int, 1)
-        prop_item_state_container_min_h_v_update(pd_container.min, pd);
+        STATE_DOUBLEVAL_ATTR_2CHECK_UPDATE(state_container, min, min1, state_container)
         elm_box_pack_after(prop_box, pd_container.frame, pd->part.frame);
         evas_object_show(pd_container.frame);
      }
