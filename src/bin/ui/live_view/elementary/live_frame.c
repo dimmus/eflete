@@ -78,6 +78,7 @@ _on_frame_text_check(void *data,
    Eina_List* frame_list = NULL, *item_list = NULL, *it;
    Eina_List *l = NULL;
    Eina_Bool all_checks = true;
+   const char *default_text;
 
    Prop_Data *pd = (Prop_Data *)data;
    Evas_Object *object = pd->live_object;
@@ -87,6 +88,11 @@ _on_frame_text_check(void *data,
 
    if (elm_check_state_get(obj))
      {
+        frame_obj = eina_list_data_get(frame_list);
+        default_text = elm_object_part_text_get(frame_obj, part_name);
+        if (default_text)
+          eina_hash_add(pd->prop_text.default_text, part_name, eina_stringshare_add(default_text));
+
         EINA_LIST_FOREACH(frame_list, l, frame_obj)
           elm_object_part_text_set(frame_obj, part_name, _("Text Example"));
 
@@ -103,8 +109,10 @@ _on_frame_text_check(void *data,
      }
    else
      {
+        default_text = eina_hash_find(pd->prop_text.default_text, part_name);
+        eina_hash_del(pd->prop_text.default_text, part_name, NULL);
         EINA_LIST_FOREACH(frame_list, l, frame_obj)
-          elm_object_part_text_set(frame_obj, part_name, "");
+          elm_object_part_text_set(frame_obj, part_name, default_text);
         if (elm_check_state_get(check)) elm_check_state_set(check, false);
      }
    eina_list_free(frame_list);
