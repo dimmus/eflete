@@ -68,6 +68,7 @@ on_layout_text_check(void *data,
    Evas_Object *check = NULL, *item, *ch;
    Eina_List *item_list = NULL;
    Eina_Bool all_checks = true;
+   const char *default_text;
 
    Prop_Data *pd = (Prop_Data *)data;
    Evas_Object *object = pd->live_object;
@@ -76,6 +77,9 @@ on_layout_text_check(void *data,
 
    if (elm_check_state_get(obj))
      {
+        default_text = edje_object_part_text_get(object, part_name);
+        if (default_text)
+          eina_hash_add(pd->prop_text.default_text, part_name, eina_stringshare_add(default_text));
         edje_object_part_text_set(object, part_name,
                                   _("Look at it! This is absolutely and totally text"));
         item_list = elm_box_children_get(pd->prop_text.texts);
@@ -91,7 +95,9 @@ on_layout_text_check(void *data,
      }
    else
      {
-        edje_object_part_text_set(object, part_name, "");
+        default_text = eina_hash_find(pd->prop_text.default_text, part_name);
+        eina_hash_del(pd->prop_text.default_text, part_name, NULL);
+        edje_object_part_text_set(object, part_name, default_text);
         if (elm_check_state_get(check)) elm_check_state_set(check, false);
      }
 }
