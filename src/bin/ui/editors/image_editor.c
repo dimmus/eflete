@@ -589,16 +589,16 @@ _on_image_done(void *data,
 {
    Item *it = NULL;
    Elm_Object_Item *item = NULL;
-   Evas_Object *edje_edit_obj = NULL;
    const Eina_List *images, *l;
    const char *selected = event_info;
+   Style *style = NULL;
 
    Image_Editor *img_edit = (Image_Editor *)data;
 
    if ((!selected) || (!strcmp(selected, "")))
      goto del;
 
-   GET_OBJ(img_edit->pr, edje_edit_obj);
+   GET_STYLE(img_edit->pr, style);
    images = elm_fileselector_selected_paths_get(obj);
 
    EINA_LIST_FOREACH(images, l, selected)
@@ -613,10 +613,10 @@ _on_image_done(void *data,
              WIN_NOTIFY_ERROR(obj, _("Unable to add folder"))
              continue;
           }
-        if (edje_edit_image_add(edje_edit_obj, selected))
+        if (edje_edit_image_add(style->obj, selected))
           {
-             edje_edit_without_source_save(edje_edit_obj, true);
-             it = _image_editor_gengrid_item_data_create(edje_edit_obj,
+             pm_save_to_dev(img_edit->pr, style);
+             it = _image_editor_gengrid_item_data_create(style->obj,
                                                          ecore_file_file_get(selected));
              item = elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
                                             img_edit->group_items.linked,
@@ -688,14 +688,14 @@ _on_button_delete_clicked_cb(void *data,
    Eina_List * in_use = NULL, *used_in = NULL;
    char *name;
    Edje_Part_Image_Use *item;
-   Evas_Object *edje_edit_obj = NULL;
+   Style *style = NULL;
    char buf[BUFF_MAX];
    int symbs = 0;
    int images_to_del = 0;
 
    if (!img_edit->gengrid) return;
 
-   GET_OBJ(img_edit->pr, edje_edit_obj);
+   GET_STYLE(img_edit->pr, style);
 
    grid_list = (Eina_List *)elm_gengrid_selected_items_get(img_edit->gengrid);
    if (!grid_list) return;
@@ -705,9 +705,9 @@ _on_button_delete_clicked_cb(void *data,
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
         it = elm_object_item_data_get(grid_item);
-        if (edje_edit_image_del(edje_edit_obj, it->image_name))
+        if (edje_edit_image_del(style->obj, it->image_name))
           {
-             edje_edit_without_source_save(edje_edit_obj, false);
+             pm_save_to_dev(img_edit->pr, style);
              project_changed();
              deleted++;
              elm_object_item_del(grid_item);
@@ -725,7 +725,7 @@ _on_button_delete_clicked_cb(void *data,
    if (notdeleted == 1)
      {
         name = eina_list_nth(in_use, 0);
-        used_in = edje_edit_image_usage_list_get(edje_edit_obj, name, false);
+        used_in = edje_edit_image_usage_list_get(style->obj, name, false);
         snprintf(buf, BUFF_MAX, _("Image is used in:"));
         symbs = strlen(buf);
         EINA_LIST_FOREACH(used_in, l, item)
