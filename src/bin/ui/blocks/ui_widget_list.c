@@ -897,8 +897,8 @@ ui_widget_list_add(Evas_Object *parent)
         _itc_layout->func.del = NULL;
      }
    tabs = ewe_tabs_add(parent);
-   widgets_tab = ewe_tabs_item_append(tabs, NULL, "Themes", NULL);
-   layouts_tab = ewe_tabs_item_append(tabs, NULL, "Layouts", NULL);
+   widgets_tab = ewe_tabs_item_append(tabs, NULL, _("Themes"), NULL);
+   layouts_tab = ewe_tabs_item_append(tabs, NULL, _("Layouts"), NULL);
 
 #define NAVI(TYPE, TEXT) \
    nf_##TYPE = elm_naviframe_add(tabs); \
