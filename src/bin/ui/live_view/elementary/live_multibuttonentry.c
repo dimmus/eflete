@@ -78,6 +78,7 @@ _on_multibutton_text_check(void *data,
    Eina_List *item_list = NULL, *it;
    Eina_Bool all_checks = true;
    Elm_Object_Item *multi_item = NULL;
+   const char *default_text;
 
    Prop_Data *pd = (Prop_Data *)data;
    Evas_Object *object = pd->live_object;
@@ -87,6 +88,9 @@ _on_multibutton_text_check(void *data,
    if (elm_check_state_get(obj))
      {
         multi_item = elm_multibuttonentry_first_item_get(object);
+        default_text = elm_object_item_part_text_get(multi_item, part_name);
+        if (default_text)
+          eina_hash_add(pd->prop_text.default_text, part_name, eina_stringshare_add(default_text));
         while (multi_item)
           {
              elm_object_item_part_text_set(multi_item, part_name,
@@ -107,10 +111,12 @@ _on_multibutton_text_check(void *data,
      }
    else
      {
+        default_text = eina_hash_find(pd->prop_text.default_text, part_name);
+        eina_hash_del(pd->prop_text.default_text, part_name, NULL);
         multi_item = elm_multibuttonentry_first_item_get(object);
         while (multi_item)
           {
-             elm_object_item_part_text_set(multi_item, part_name, "");
+             elm_object_item_part_text_set(multi_item, part_name, default_text);
              multi_item = elm_multibuttonentry_item_next_get(multi_item);
           }
         if (elm_check_state_get(check)) elm_check_state_set(check, false);
