@@ -485,6 +485,54 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
    pd->wm_style->isModify = true; \
 }
 
+/**
+ * Macro defines a function that updates control by COMMON_COMBOBOX_LIST_ADD macro.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param MEMBER The combobox member from Prop_Data structure
+ * @param ARGS The edje edit function arguments
+ *
+ * @ingroup Property_Macro
+ */
+#define COMMON_COMBOBOX_LIST_STRSHARE_UPDATE(SUB, VALUE, MEMBER, ARGS) \
+   Eina_Stringshare *value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
+   ewe_combobox_text_set(pd->MEMBER.VALUE, value ? value : _("None")); \
+   edje_edit_string_free(value);
+
+
+/**
+ * Macro defines a callback for COMMON_COMBOBOX_ADD.
+ *
+ * @param TEXT The attribute name, for error message
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param TYPE The type of given attribute
+ * @param ARGS The edje edit function arguments
+ * @param ARGS_DIFF The edje edit function arguments for history 
+ *
+ * @ingroup Property_Macro
+ */
+#define COMMON_COMBOBOX_LIST_STRSHARE_CALLBACK(SUB, VALUE, MEMBER, ARGS, ARGS_DIFF) \
+static void \
+_on_##MEMBER##_##VALUE##_change(void *data, \
+                                Evas_Object *obj __UNUSED__, \
+                                void *event_info) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
+   Eina_Stringshare *old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, (char *)item->title)) \
+     return; \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
+                    item->title, pd->wm_style->full_group_name, \
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS); \
+   eina_stringshare_del(old_value); \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->wm_style->isModify = true; \
+}
+
 /*****************************************************************************/
 /*                         GROUP 2 CHECK CONTROL                             */
 /*****************************************************************************/
@@ -1465,6 +1513,40 @@ COMMON_2SPINNER_ADD(STATE, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  */
 #define STATE_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
    COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, STATE_ARGS, STATE_ARGS)
+
+/*****************************************************************************/
+/*                STATE 1 COMBOBOX STRSHARE LIST CONTROL                     */
+/*****************************************************************************/
+/**
+ * Macro defines functions that create an item with label and 1 combobox for
+ * state attribute. A predefined list fill the combobox.
+ *
+ * @see COMMON_COMBOBOX_LIST_ADD
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_STRSHARE_ATR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP) \
+   COMMON_COMBOBOX_LIST_ADD(STATE_STRSHARE, TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP, STATE_ARGS)
+
+/**
+ * Macro defines a function that updates control by STATE_STRSHARE_ATR_1COMBOBOX_LIST_ADD macro.
+ *
+ * @see COMMON_COMBOBOX_LIST_STRSHARE_UPDATE
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_STRSHARE_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE, MEMBER) \
+   COMMON_COMBOBOX_LIST_STRSHARE_UPDATE(SUB, VALUE, MEMBER, STATE_ARGS)
+
+/**
+ * Macro defines a callback for STATE_STRSHARE_ATR_1COMBOBOX_LIST_ADD.
+ *
+ * @see COMMON_COMBOBOX_LIST_STRSHARE_CALLBACK
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_STRSHARE_ATR_1COMBOBOX_LIST_CALLBACK(SUB, VALUE, MEMBER) \
+   COMMON_COMBOBOX_LIST_STRSHARE_CALLBACK(SUB, VALUE, MEMBER, STATE_ARGS, STATE_ARGS)
 
 /*****************************************************************************/
 /*                          STATE 1 COLOR CONTROL                            */
