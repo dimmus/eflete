@@ -73,6 +73,7 @@ _del_part(void *data,
    Evas_Object *gl_signals;
    char *program_name = NULL;
    char *part_name = NULL;
+   Evas_Object *prop_view = NULL;
    if (!style) return;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    if (!part)
@@ -89,7 +90,6 @@ _del_part(void *data,
      ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), style);
    style->isModify = true;
 
-
    /* If deleted all parts in style, also should deleted all programs*/
    if (!style->parts)
      {
@@ -104,6 +104,10 @@ _del_part(void *data,
         ui_signal_list_data_unset(gl_signals);
         _on_ws_part_unselect(ap, ap->workspace, part_name);
         workspace_highlight_unset(ap->workspace);
+        /* Source code is updated on part selection.
+           If this was last part we should update it manualy */
+        prop_view = ui_block_property_get(ap);
+        ui_property_code_of_group_setup(prop_view);
      }
    else
      {

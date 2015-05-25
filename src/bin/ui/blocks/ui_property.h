@@ -141,4 +141,16 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item);
 void
 ui_property_item_unset(Evas_Object *property);
 
+/**
+ * Update sources in "Code" tab.
+ * If current tas isn't "Code" nothing happens.
+ *
+ * @param property The 'property' widget.
+ *
+ * @ingroup Property
+ */
+void
+ui_property_code_of_group_setup(Evas_Object *property);
+
+
 #endif /* UI_PROPERTY_1_H */

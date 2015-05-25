@@ -427,7 +427,8 @@ _on_tab_activated(void *data,
 {
    App_Data *ap;
    Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
-   Prop_Data *pd = (Prop_Data *)data;
+   Evas_Object *property = (Evas_Object *)data;
+   PROP_DATA_GET(RETURN_VOID)
 
    ap = app_data_get();
 
@@ -461,12 +462,14 @@ _on_tab_activated(void *data,
 
 #else
 
-static void
-_code_of_group_setup(Prop_Data *pd)
+void
+ui_property_code_of_group_setup(Evas_Object *property)
 {
    char *markup_code;
    const char *colorized_code;
    Eina_Stringshare *code;
+   if (!property) return;
+   PROP_DATA_GET(RETURN_VOID)
 
    if (ewe_tabs_active_item_get(pd->tabs) != pd->code_tab) return;
    code = edje_edit_source_generate(pd->wm_style->obj);
@@ -487,8 +490,9 @@ _on_tab_activated(void *data,
                   void *event_info)
 {
    Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
-   Prop_Data *pd = (Prop_Data *)data;
-   if (it == pd->code_tab) _code_of_group_setup(pd);
+   Evas_Object *property = (Evas_Object *)data;
+   PROP_DATA_GET(RETURN_VOID)
+   if (it == pd->code_tab) ui_property_code_of_group_setup(property);
 }
 
 #endif
@@ -521,7 +525,7 @@ ui_property_add(Evas_Object *parent)
    pd->code_tab = it;
 
    evas_object_smart_callback_add(tabs, "ewe,tabs,item,activated",
-                                  _on_tab_activated, pd);
+                                  _on_tab_activated, tabs);
 #ifndef HAVE_ENVENTOR
    pd->code = elm_entry_add(tabs);
    elm_entry_single_line_set(pd->code, false);
@@ -669,7 +673,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
      }
 
 #ifndef HAVE_ENVENTOR
-   _code_of_group_setup(pd);
+   ui_property_code_of_group_setup(property);
 #endif
 
    prop_box = elm_object_content_get(pd->visual);
@@ -1540,7 +1544,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
      ui_property_state_container_unset(property);
 
 #ifndef HAVE_ENVENTOR
-   _code_of_group_setup(pd);
+   ui_property_code_of_group_setup(property);
 #endif
 
    /* hide/show the color attribute control */
