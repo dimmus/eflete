@@ -3260,24 +3260,24 @@ ui_property_item_unset(Evas_Object *property)
 
 #define pd_container pd->state_container
 
-#define STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
-                                                L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
-                                                TYPE, HISTORY_TYPE) \
-   STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER) \
-   STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
-                                               MIN, MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
-                                               TOOLTIP1, TOOLTIP2, MULTIPLIER)
+#define STATE_DOUBLEVAL_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+                                      L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
+                                      TYPE, HISTORY_TYPE) \
+   STATE_DOUBLEVAL_ATTR_2SPINNER_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER) \
+   STATE_DOUBLEVAL_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
+                                     MIN, MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
+                                     TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
-STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER(_("align"), state_container, align, align1, state_container,
-                                        0.0, 100.0, 1.0, NULL, "x:", "%", "y:", "%",
-                                        _("Change the position of the point of balance inside the container"),
-                                        _("Change the position of the point of balance inside the container"),
-                                        100, double, VAL_DOUBLE)
-STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER(_("padding"), state_container, padding, padding1, state_container,
-                                        0.0, 999.0, 1.0, NULL, "x:", "px", "y:", "px",
-                                        _("Sets the horizontal space between cells in pixels"),
-                                        _("Sets the vertcal space between cells in pixels"),
-                                        1, int, VAL_INT)
+STATE_DOUBLEVAL_ATTR_2SPINNER(_("align"), state_container, align, align1, state_container,
+                              0.0, 100.0, 1.0, NULL, "x:", "%", "y:", "%",
+                              _("Change the position of the point of balance inside the container"),
+                              _("Change the position of the point of balance inside the container"),
+                              100, double, VAL_DOUBLE)
+STATE_DOUBLEVAL_ATTR_2SPINNER(_("padding"), state_container, padding, padding1, state_container,
+                              0.0, 999.0, 1.0, NULL, "x:", "px", "y:", "px",
+                              _("Sets the horizontal space between cells in pixels"),
+                              _("Sets the vertcal space between cells in pixels"),
+                              1, int, VAL_INT)
 
 static void
 _on_container_min_change(void *data,
@@ -3402,8 +3402,8 @@ ui_property_state_container_set(Evas_Object *property)
      }
    else
      {
-        STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, align, align1, state_container, double, 100)
-        STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, padding, padding1, state_container, int, 1)
+        STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, align, align1, state_container, double, 100)
+        STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, padding, padding1, state_container, int, 1)
         prop_item_state_container_min_h_v_update(pd_container.min, pd);
         elm_box_pack_after(prop_box, pd_container.frame, pd->part.frame);
         evas_object_show(pd_container.frame);
