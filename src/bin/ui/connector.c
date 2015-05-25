@@ -726,12 +726,7 @@ ui_style_clicked(App_Data *ap, Style *style)
    evas_object_show(prop);
    ap->project->current_style = _style;
 
-   /* reloading mmaped dev file to update cached groups */
-   eina_file_close(ap->project->mmap_file);
-   ap->project->mmap_file = eina_file_open(ap->project->dev, false);
-   edje_object_mmap_set(ap->project->current_style->obj,
-                        ap->project->mmap_file,
-                        ap->project->current_style->full_group_name);
+   pm_save_to_dev(ap->project, _style);
 
    history_list = history_genlist_get(ap->history, ap->block.right_top);
    history_module_add(_style->obj);
