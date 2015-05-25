@@ -377,7 +377,7 @@ _project_linked_images_copy(Project_Thread *worker)
                                name, eina_strbuf_string_get(strbuf_to));
      }
    if (is_changed)
-     edje_edit_without_source_save(edje_edit_obj, false);
+     pm_save_to_dev(worker->project, NULL);
    edje_edit_string_list_free(list);
    eina_strbuf_free(strbuf_to);
    eina_strbuf_free(strbuf_from);
