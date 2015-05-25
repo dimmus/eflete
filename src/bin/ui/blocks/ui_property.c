@@ -1395,14 +1395,23 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
    STATE_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
+#define STATE_MINMAX_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+                            L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
+                            TYPE, HISTORY_TYPE, DIF_VALUE1, DIF_VALUE2, CHECK) \
+   STATE_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, DIF_VALUE1, CHECK) \
+   STATE_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, DIF_VALUE2, CHECK) \
+   STATE_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, MAX, STEP, FMT, \
+                           L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
+
+
 STATE_ATTR_1CHECK(_("visible"), state, visible, state,
                   _("Set visibility for part by current state"))
-STATE_ATTR_2SPINNER(_("min"), state, min_w, min_h, state, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
+STATE_MINMAX_ATTR_2SPINNER(_("min"), state, min_w, min_h, state, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
                     _("Minimal size of part width in pixels."), _("Minimal part height in pixels."),
-                    1, int, VAL_INT)
-STATE_ATTR_2SPINNER(_("max"), state, max_w, max_h, state, -1.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
+                    1, int, VAL_INT, max_w, max_h, >)
+STATE_MINMAX_ATTR_2SPINNER(_("max"), state, max_w, max_h, state, -1.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
                     _("Maximal size of part width in pixels."), _("Maximal part height in pixels."),
-                    1, int, VAL_INT)
+                    1, int, VAL_INT, min_w, min_h, <)
 STATE_ATTR_2SPINNER(_("align"), state, align_x, align_y, state, 0, 100, 1, NULL, "x:", "%", "y:", "%",
                     _("Part align horizontally"), _("Part align vertically"),
                     100, double, VAL_DOUBLE)
