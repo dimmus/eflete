@@ -196,7 +196,10 @@ live_view_property_style_set(Evas_Object *property,
    elm_spinner_value_set(spinner, 100);
    pd->current_scale = 1.0;
    evas_object_scale_set(pd->live_object, pd->current_scale);
-   elm_object_part_content_set(parent, "elm.swallow.title", pd->header);
+   if (!pd->in_prog_edit)
+     elm_object_part_content_set(parent, "elm.swallow.title", pd->header);
+   else
+     elm_box_pack_end(prop_box, pd->header);
    evas_object_show(pd->header);
 
    /* Swallows UI setting*/
