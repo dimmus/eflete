@@ -695,6 +695,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                                 void *ei) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
+   App_Data *ap = app_data_get(); \
    Ewe_Combobox_Item *item = ei; \
    const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
                                                            pd->wm_part->name);\
@@ -722,7 +723,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, NULL, 0.0); \
-   edje_edit_without_source_save(pd->wm_style->obj, false); \
+   pm_save_to_dev(ap->project, pd->wm_style); \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \
@@ -888,6 +889,7 @@ _on_part_drag_##VALUE1##_change(void *data, \
                                 void *event_info __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
+   App_Data *ap = app_data_get(); \
    Eina_Bool value = elm_check_state_get(obj); \
    Eina_Bool old_value = edje_edit_part_drag_##VALUE1##_get(pd->wm_style->obj, \
                                                             pd->wm_part->name);\
@@ -897,7 +899,7 @@ _on_part_drag_##VALUE1##_change(void *data, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_part_drag_##VALUE1##_set, #SUB"_"#VALUE1, \
                      pd->wm_part->name, NULL, 0.0); \
-   edje_edit_without_source_save(pd->wm_style->obj, true); \
+   pm_save_to_dev(ap->project, pd->wm_style); \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \
@@ -908,6 +910,7 @@ _on_part_drag_##VALUE2##_change(void *data, \
                                 void *event_info __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
+   App_Data *ap = app_data_get(); \
    int value = elm_spinner_value_get(obj); \
    int old_value = edje_edit_part_drag_##VALUE2##_get(pd->wm_style->obj, \
                                                          pd->wm_part->name);\
@@ -916,7 +919,7 @@ _on_part_drag_##VALUE2##_change(void *data, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_part_drag_##VALUE2##_set, #SUB"_"#VALUE2, \
                      pd->wm_part->name, NULL, 0.0); \
-   edje_edit_without_source_save(pd->wm_style->obj, true); \
+   pm_save_to_dev(ap->project, pd->wm_style); \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \
@@ -1590,6 +1593,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                                 void *ei) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
+   App_Data *ap = app_data_get(); \
    Ewe_Combobox_Item *item = ei; \
    const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
                                                            pd->wm_part->name, \
@@ -1602,7 +1606,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     item->title, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
-   edje_edit_without_source_save(pd->wm_style->obj, true); \
+   pm_save_to_dev(ap->project, pd->wm_style); \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \

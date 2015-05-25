@@ -2370,6 +2370,7 @@ _on_image_editor_done(void *data,
 {
    Evas_Object * border_entry;
    Prop_Data *pd = (Prop_Data *)data;
+   App_Data *ap = app_data_get();
    const char *value;
    const char *selected = (const char *)event_info;
 
@@ -2382,7 +2383,7 @@ _on_image_editor_done(void *data,
    edje_edit_state_image_set(pd->wm_style->obj, pd->wm_part->name,
                              pd->wm_part->curr_state,
                              pd->wm_part->curr_state_value, selected);
-   edje_edit_without_source_save(pd->wm_style->obj, true);
+   pm_save_to_dev(ap->project, pd->wm_style);
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, value,
                     selected, pd->wm_style->full_group_name,
                     (void*)edje_edit_state_image_set,  "state_image",
