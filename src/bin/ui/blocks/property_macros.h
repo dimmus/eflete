@@ -435,13 +435,12 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * @param VALUE1 The first value of attribute
  * @param VALUE2 The second value of attribute
  * @param MEMBER The combobox member from Prop_Data structure
- * @param TYPE The type of given attribute
  * @param ARGS The edje edit function arguments
  *
  * @ingroup Property_Macro
  */
-#define COMMON_2CHECK_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, ARGS) \
-   TYPE VALUE1, VALUE2; \
+#define COMMON_2CHECK_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, ARGS) \
+   Eina_Bool VALUE1, VALUE2; \
    edje_edit_##SUB##_##VALUE1##_get(pd->wm_style->obj ARGS, &VALUE1, &VALUE2); \
    elm_spinner_value_set(pd->MEMBER.VALUE1, VALUE1); \
    elm_spinner_value_set(pd->MEMBER.VALUE2, VALUE2);
@@ -454,12 +453,11 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * @param VALUE1 The first value of attribute
  * @param VALUE2 The second value of attribute
  * @param MEMBER The combobox member from Prop_Data structure
- * @param TYPE The type of given attribute
  * @param ARGS The edje edit function arguments
  *
  * @ingroup Property_Macro
  */
-#define COMMON_2CHECK_DOUBLEVAL_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, ARGS) \
+#define COMMON_2CHECK_DOUBLEVAL_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, ARGS) \
 static void \
 _on_##MEMBER##_##VALUE1##_change(void *data, \
                                  Evas_Object *obj __UNUSED__, \
@@ -467,8 +465,8 @@ _on_##MEMBER##_##VALUE1##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    edje_edit_##SUB##_##VALUE1##_set(pd->wm_style->obj ARGS, \
-                                    (TYPE)elm_check_value_get(pd->MEMBER.VALUE1), \
-                                    (TYPE)elm_check_value_get(pd->MEMBER.VALUE2)); \
+                                    elm_check_state_get(pd->MEMBER.VALUE1), \
+                                    elm_check_state_get(pd->MEMBER.VALUE2)); \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \
@@ -480,8 +478,8 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    edje_edit_##SUB##_##VALUE1##_set(pd->wm_style->obj ARGS, \
-                                    (TYPE)elm_check_value_get(pd->MEMBER.VALUE1), \
-                                    (TYPE)elm_check_value_get(pd->MEMBER.VALUE2)); \
+                                    elm_check_state_get(pd->MEMBER.VALUE1), \
+                                    elm_check_state_get(pd->MEMBER.VALUE2)); \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \
@@ -1830,5 +1828,43 @@ _on_##SUB##_##VALUE##_change(void *data, \
  */
 #define STATE_DOUBLEVAL_ATTR_2SPINNER_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER) \
    COMMON_2SPINNER_DOUBLEVAL_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER, STATE_ARGS)
+
+/*****************************************************************************/
+/*               STATE CONTAINER 2 CHECK DOUBLEVAL CONTROL                   */
+/*****************************************************************************/
+/**
+ * Macro defines a functions that create an item with label and 2 check for
+ * state container attribute.
+ *
+ * @see COMMON_2CHECK_ADD
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_DOUBLEVAL_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
+                                        L1_START, L1_END, L2_START, L2_END, \
+                                        TOOLTIP1, TOOLTIP2) \
+   COMMON_2CHECK_ADD(STATE_DOUBLEVAL, TEXT, SUB, VALUE1, VALUE2, MEMBER, \
+                     L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2)
+
+/**
+ * Macro defines a function that updates control by STATE_CONTAINER_DOUBLEVAL_ATTR_2CHECK_ADD macro.
+ *
+ * @see COMMON_2CHECK_DOUBLEVAL_UPDATE
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_DOUBLEVAL_ATTR_2CHECK_UPDATE(SUB, VALUE1, VALUE2, MEMBER) \
+   COMMON_2CHECK_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, STATE_ARGS)
+
+/**
+ * Macro defines a callback for STATE_CONTAINER_DOUBLEVAL_ATTR_2CHECK_ADD.
+ *
+ * @see COMMON_2CHECK_DOUBLEVAL_CALLBACK
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_DOUBLEVAL_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2, MEMBER) \
+   COMMON_2CHECK_DOUBLEVAL_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, STATE_ARGS)
+
 
 /** @} privatesection */
