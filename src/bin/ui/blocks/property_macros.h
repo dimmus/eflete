@@ -1290,6 +1290,48 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
 #define STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
    COMMON_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, STATE_ARGS)
 
+/**
+ * Macro defines a callback for callbacks of min and max changes.
+ *
+ * @param SUB The prefix of main parameter of state attribute;
+ * @param VALUE The value of state attribute.
+ * @param TYPE The spinner value type: int, double
+ * @param HISTORY_TYPE The history value type: VAL_INT, VAL_DOUBLE
+ * @param MULTIPLIER The multiplier to convert the value to percent
+ * @param DIF_VALUE opposite to VALUE attribute
+ * @param CHECK function that compire DIF_VALUE and VALUE attribute
+ *
+ * @ingroup Property_Macro
+ */
+TODO("merge STATE_MINMAX_... with GROUP_ATTR_2SPINNER... because they are really same")
+#define STATE_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, DIF_VALUE, CHECK) \
+static void \
+_on_##MEMBER##_##VALUE##_change(void *data, \
+                                Evas_Object *obj, \
+                                void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   TYPE value = elm_spinner_value_get(obj); \
+   TYPE old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj STATE_ARGS); \
+   TYPE opposite_value = edje_edit_##SUB##_##DIF_VALUE##_get(pd->wm_style->obj STATE_ARGS); \
+   value /= MULTIPLIER; \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj STATE_ARGS, value)) \
+     return; \
+   if ((value CHECK opposite_value) && (opposite_value != -1)) \
+     { \
+        if (!edje_edit_##SUB##_##DIF_VALUE##_set(pd->wm_style->obj STATE_ARGS, value)) \
+          return; \
+        elm_spinner_value_set(pd->state.DIF_VALUE, value); \
+     } \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
+                    value, pd->wm_style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->wm_style->isModify = true; \
+}
+
 /*****************************************************************************/
 /*                        STATE 2 SPINNER CONTROLS                           */
 /*****************************************************************************/
