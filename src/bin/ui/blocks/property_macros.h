@@ -1346,67 +1346,38 @@ COMMON_2SPINNER_ADD(STATE, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  * Macro defines a functions that create an item with label and 2 check for
  * state attribute.
  *
- * @param TEXT The label text
- * @param SUB The prefix of main parameter of state attribute
- * @param VALUE1 The first value of state attribute
- * @param VALUE2 The second value of state attribute
- * @param MEMBER The check member from Prop_Data structure
- * @param TOOLTIP1 The first spinner tooltip
- * @param TOOLTIP2 The second spinner tooltip
+ * @see COMMON_2CHECK_ADD
  *
  * @ingroup Property_Macro
  */
 #define STATE_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
                               L1_START, L1_END, L2_START, L2_END, \
                               TOOLTIP1, TOOLTIP2) \
-static Evas_Object * \
-prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
-{ \
-   PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
-   CHECK_ADD(item, pd->MEMBER.VALUE1) \
-   elm_object_style_set(pd->MEMBER.VALUE1, "toggle"); \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE1, TOOLTIP1); \
-   evas_object_smart_callback_add(pd->MEMBER.VALUE1, "changed", _on_##MEMBER##_##VALUE1##_change, pd); \
-   elm_layout_content_set(item, "swallow.content1", pd->MEMBER.VALUE1); \
-   elm_layout_text_set(item, "label.swallow1.start", L1_START); \
-   elm_layout_text_set(item, "label.swallow1.end", L1_END); \
-   CHECK_ADD(item, pd->MEMBER.VALUE2) \
-   elm_object_style_set(pd->MEMBER.VALUE2, "toggle"); \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE2, TOOLTIP2); \
-   evas_object_smart_callback_add(pd->MEMBER.VALUE2, "changed", _on_##MEMBER##_##VALUE2##_change, pd); \
-   elm_layout_content_set(item, "swallow.content2", pd->MEMBER.VALUE2); \
-   elm_layout_text_set(item, "label.swallow2.start", L2_START); \
-   elm_layout_text_set(item, "label.swallow2.end", L2_END); \
-   STATE_ATTR_2CHECK_UPDATE(SUB, VALUE1, VALUE2, MEMBER) \
-   return item; \
-}
+   COMMON_2CHECK_ADD(STATE, TEXT, SUB, VALUE1, VALUE2, MEMBER, \
+                     L1_START, L1_END, L2_START, L2_END, \
+                     TOOLTIP1, TOOLTIP2)
 
 /**
  * Macro defines a function that updates control by STATE_ATTR_2CHECK_ADD macro.
  *
- * @param SUB The prefix of main parameter of drag attribute
- * @param VALUE1 The first value of state attribute
- * @param VALUE2 The second value of state attribute
- * @param MEMBER The check member from Prop_Data structure
+ * @see COMMON_CHECK_UPDATE
  *
  * @ingroup Property_Macro
  */
 #define STATE_ATTR_2CHECK_UPDATE(SUB, VALUE1, VALUE2, MEMBER) \
-   STATE_ATTR_1CHECK_UPDATE(SUB, VALUE1, MEMBER) \
-   STATE_ATTR_1CHECK_UPDATE(SUB, VALUE2, MEMBER)
+   COMMON_CHECK_UPDATE(SUB, VALUE1, MEMBER, STATE_ARGS) \
+   COMMON_CHECK_UPDATE(SUB, VALUE2, MEMBER, STATE_ARGS)
 
 /**
  * Macro defines a callback for STATE_ATTR_2CHECK_ADD.
  *
- * @param SUB The prefix of main parameter of state attribute;
- * @param VALUE1 The first value of state attribute
- * @param VALUE2 The second value of state attribute
+ * @see COMMON_CHECK_CALLBACK
  *
  * @ingroup Property_Macro
  */
 #define STATE_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2, MEMBER) \
-   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE1, MEMBER) \
-   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE2, MEMBER)
+   COMMON_CHECK_CALLBACK(SUB, VALUE1, MEMBER, STATE_ARGS, STATE_ARGS) \
+   COMMON_CHECK_CALLBACK(SUB, VALUE2, MEMBER, STATE_ARGS, STATE_ARGS)
 
 /*****************************************************************************/
 /*                    STATE 1 COMBOBOX LIST CONTROL                          */
