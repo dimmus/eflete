@@ -3267,14 +3267,14 @@ ui_property_state_container_set(Evas_Object *property)
 
         item = prop_state_container_min_min1_add(box, pd);
         elm_box_pack_end(box, item);
-        elm_box_pack_after(prop_box, pd_container.frame, pd->part.frame);
+        elm_box_pack_after(prop_box, pd_container.frame, pd->state_object_area.frame);
      }
    else
      {
         STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, align, align1, state_container, double, 100)
         STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, padding, padding1, state_container, int, 1)
         STATE_DOUBLEVAL_ATTR_2CHECK_UPDATE(state_container, min, min1, state_container)
-        elm_box_pack_after(prop_box, pd_container.frame, pd->part.frame);
+        elm_box_pack_after(prop_box, pd_container.frame, pd->state_object_area.frame);
         evas_object_show(pd_container.frame);
      }
    return true;
