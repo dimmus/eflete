@@ -3292,18 +3292,17 @@ STATE_DOUBLEVAL_ATTR_2CHECK(_("min"), state_container, min, min1, state_containe
 static Eina_Bool
 ui_property_state_container_set(Evas_Object *property)
 {
-   Evas_Object *item;
-   Evas_Object *container_frame, *box, *prop_box;
+   Evas_Object *item, *box, *prop_box;
    PROP_DATA_GET(EINA_FALSE)
 
    ui_property_state_container_unset(property);
    prop_box = elm_object_content_get(pd->visual);
    if (!pd_container.frame)
      {
-        FRAME_ADD(property, container_frame, true, _("Container"))
-        BOX_ADD(container_frame, box, EINA_FALSE, EINA_FALSE)
+        FRAME_ADD(property, pd_container.frame, true, _("Container"))
+        BOX_ADD(pd_container.frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
-        elm_object_content_set(container_frame, box);
+        elm_object_content_set(pd_container.frame, box);
 
         item = prop_state_container_align_align1_add(box, pd);
         elm_box_pack_end(box, item);
@@ -3312,7 +3311,6 @@ ui_property_state_container_set(Evas_Object *property)
 
         item = prop_state_container_min_min1_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_container.frame = container_frame;
         elm_box_pack_after(prop_box, pd_container.frame, pd->part.frame);
      }
    else
