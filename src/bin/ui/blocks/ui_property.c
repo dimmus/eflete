@@ -3152,7 +3152,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         pd_item.position_item = prop_part_item_position_position1_add(box, pd);
         evas_object_hide(pd_item.position_item);
 
-        elm_box_pack_before(prop_box, pd_item.frame, pd->part.frame);
+        elm_box_pack_after(prop_box, pd_item.frame, pd->state_container.frame);
      }
    else
      {
@@ -3171,7 +3171,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(part_item, position, position1, part_item, unsigned short, 1);
         prop_part_item_padding_update(pd);
 
-        elm_box_pack_before(prop_box, pd_item.frame, pd->part.frame);
+        elm_box_pack_after(prop_box, pd_item.frame, pd->state_container.frame);
         evas_object_show(pd_item.frame);
      }
 
