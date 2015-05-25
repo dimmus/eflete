@@ -114,6 +114,7 @@ struct _Prop_Data
       Evas_Object *color, *color_obj, *color_item;
       Evas_Object *minmul_w, *minmul_h;
       Evas_Object *box_layout, *box_layout_item;
+      Evas_Object *table_homogeneous, *table_homogeneous_item;
    } state;
    struct {
       Evas_Object *frame;
@@ -197,10 +198,6 @@ struct _Prop_Data
       Evas_Object *position, *position1, *position_item; /* Only for items in part TABLE */
       Evas_Object *span, *span1; /* Only for items in part TABLE */
    } part_item;
-   struct {
-      Evas_Object *frame;
-      Evas_Object *homogeneous;
-   } state_table;
 };
 typedef struct _Prop_Data Prop_Data;
 
@@ -324,11 +321,13 @@ ui_property_state_container_set(Evas_Object *property);
 static void
 ui_property_state_container_unset(Evas_Object *property);
 
+/*
 static Eina_Bool
 ui_property_state_table_set(Evas_Object *property);
 
 static void
 ui_property_state_table_unset(Evas_Object *property);
+*/
 
 static Elm_Genlist_Item_Class *_itc_tween = NULL;
 
@@ -1146,7 +1145,6 @@ ui_property_part_unset(Evas_Object *property)
    PROP_ITEM_UNSET(prop_box, pd->state_textblock.frame)
    PROP_ITEM_UNSET(prop_box, pd->state_fill.frame)
    PROP_ITEM_UNSET(prop_box, pd->state_container.frame)
-   PROP_ITEM_UNSET(prop_box, pd->state_table.frame)
    PROP_ITEM_UNSET(prop_box, pd->part_item.frame)
 }
 
@@ -1428,7 +1426,9 @@ STATE_ATTR_COMBOBOX(_("proxy source"), state, proxy_source, state,
                     _("Causes the part to use another part content as"
                     "the content of this part. Only work with PROXY part."))
 STATE_STRSHARE_ATR_1COMBOBOX_LIST(_("box layout"), state, box_layout, state, edje_box_layouts,
-                          _("The aspect control hints for this object."))
+                          _("The aspect control hints for this object"))
+STATE_ATTR_1COMBOBOX_LIST(_("table homogeneous"), state, table_homogeneous, state, edje_homogeneous,
+                          _("The table homogeneous mode"), unsigned char)
 
 Eina_Bool
 ui_property_state_set(Evas_Object *property, Part *part)
@@ -1481,6 +1481,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
         evas_object_hide(pd_state.proxy_source_item);
         pd_state.box_layout_item = prop_state_box_layout_add(box, pd);
         evas_object_hide(pd_state.box_layout_item);
+        pd_state.table_homogeneous_item = prop_state_table_homogeneous_add(box, pd);
+        evas_object_hide(pd_state.table_homogeneous_item);
 
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_after(prop_box, state_frame, pd->part.frame);
@@ -1502,6 +1504,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         STATE_ATTR_2SPINNER_UPDATE(state, minmul_w, minmul_h, state, double, 1)
         prop_state_proxy_source_update(pd);
         STATE_STRSHARE_ATTR_1COMBOBOX_LIST_UPDATE(state, box_layout, state)
+        STATE_ATTR_1COMBOBOX_LIST_UPDATE(state, table_homogeneous, state)
 
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_end(prop_box, pd_state.frame);
@@ -1522,12 +1525,24 @@ ui_property_state_set(Evas_Object *property, Part *part)
    if (part->type == EDJE_PART_TYPE_TABLE)
      {
         ui_property_state_container_set(property);
-        ui_property_state_table_set(property);
+        if (!evas_object_visible_get(pd_state.table_homogeneous_item))
+          {
+              elm_box_pack_end(box, pd_state.table_homogeneous_item);
+              evas_object_show(pd_state.table_homogeneous_item);
+          }
      }
    else
-     ui_property_state_table_unset(property);
+     {
+        if (evas_object_visible_get(pd_state.table_homogeneous_item))
+          {
+              elm_box_unpack(box, pd_state.table_homogeneous_item);
+              evas_object_hide(pd_state.table_homogeneous_item);
+          }
+
+     }
    if (part->type == EDJE_PART_TYPE_BOX)
      {
+        ui_property_state_container_set(property);
         if (!evas_object_visible_get(pd_state.box_layout_item))
           {
               elm_box_pack_end(box, pd_state.box_layout_item);
@@ -1543,7 +1558,6 @@ ui_property_state_set(Evas_Object *property, Part *part)
           }
 
      }
-
    if ((part->type != EDJE_PART_TYPE_TABLE) && (part->type != EDJE_PART_TYPE_BOX))
      ui_property_state_container_unset(property);
 
@@ -3277,54 +3291,6 @@ ui_property_state_container_unset(Evas_Object *property)
 }
 
 #undef pd_container
-
-#define pd_table pd->state_table
-
-ITEM_1COMBOBOX_PART_STATE_CREATE(_("homogeneous"), state_table, homogeneous, unsigned char)
-
-static Eina_Bool
-ui_property_state_table_set(Evas_Object *property)
-{
-   Evas_Object *table_frame, *box, *prop_box;
-   PROP_DATA_GET(EINA_FALSE)
-
-   ui_property_state_table_unset(property);
-   prop_box = elm_object_content_get(pd->visual);
-   if (!pd_table.frame)
-     {
-        FRAME_PROPERTY_ADD(property, table_frame, true, _("Table"), pd->visual)
-        BOX_ADD(table_frame, box, EINA_FALSE, EINA_FALSE)
-        elm_box_align_set(box, 0.5, 0.0);
-        elm_object_content_set(table_frame, box);
-
-        pd_table.homogeneous = prop_item_state_table_homogeneous_add(box, pd,
-                             _("Sets the homogeneous mode for the table."),
-                             edje_homogeneous);
-
-        elm_box_pack_end(box, pd_table.homogeneous);
-        pd_table.frame = table_frame;
-        elm_box_pack_after(prop_box, pd_table.frame, pd->state_container.frame);
-     }
-   else
-     {
-        prop_item_state_table_homogeneous_update(pd_table.homogeneous, pd);
-        elm_box_pack_after(prop_box, pd_table.frame, pd->state_container.frame);
-     }
-   evas_object_show(pd_table.frame);
-   return true;
-}
-
-static void
-ui_property_state_table_unset(Evas_Object *property)
-{
-   Evas_Object *prop_box;
-   PROP_DATA_GET()
-
-   prop_box = elm_object_content_get(pd->visual);
-   elm_box_unpack(prop_box, pd_table.frame);
-   evas_object_hide(pd_table.frame);
-}
-#undef pd_table
 
 #undef PROP_DATA
 #undef PROP_DATA_GET
