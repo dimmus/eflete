@@ -143,6 +143,12 @@ _change_bg_cb(void *data,
    evas_object_smart_callback_add(RADIO, "changed", _change_bg_cb, property); \
    elm_object_part_content_set(item, SWALLOW, RADIO);
 
+static void
+_default_text_hash_free_cb(void *data)
+{
+   eina_stringshare_del(data);
+}
+
 Eina_Bool
 live_view_property_style_set(Evas_Object *property,
                              Evas_Object *object,
@@ -201,6 +207,8 @@ live_view_property_style_set(Evas_Object *property,
    else
      elm_box_pack_end(prop_box, pd->header);
    evas_object_show(pd->header);
+
+   pd->prop_text.default_text = eina_hash_string_superfast_new(_default_text_hash_free_cb);
 
    /* Swallows UI setting*/
    if (!pd->prop_swallow.swallows)
@@ -443,6 +451,9 @@ live_view_property_style_unset(Evas_Object *property)
    evas_object_hide(pd->header);
 
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
+
+   eina_hash_free(pd->prop_text.default_text);
+   pd->prop_text.default_text = NULL;
 
    /* Swallows Clear */
    if (pd->prop_swallow.frame)

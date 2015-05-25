@@ -53,6 +53,7 @@ struct _Prop_Data
       Evas_Object *frame;
       Evas_Object *check;
       Evas_Object *texts;
+      Eina_Hash *default_text;
    } prop_text;
    struct {
       Evas_Object *frame;
