@@ -1562,13 +1562,7 @@ _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
           }
      }
 
-   edje_edit_without_source_save(style_work->obj, true);
-   /* reloading mmaped dev file to update cached groups */
-   eina_file_close(ap->project->mmap_file);
-   ap->project->mmap_file = eina_file_open(ap->project->dev, false);
-   edje_object_mmap_set(style_work->obj,
-                        ap->project->mmap_file,
-                        style_work->full_group_name);
+   pm_save_to_dev(ap->project, style_work);
    project_changed();
    return true;
 }
@@ -1692,13 +1686,7 @@ found:
    style_work->isModify = true;
    project_changed();
 
-   edje_edit_without_source_save(style_work->obj, true);
-   /* reloading mmaped dev file to update cached groups */
-   eina_file_close(ap->project->mmap_file);
-   ap->project->mmap_file = eina_file_open(ap->project->dev, false);
-   edje_object_mmap_set(style_work->obj,
-                        ap->project->mmap_file,
-                        style_work->full_group_name);
+   pm_save_to_dev(ap->project, style_work);
 
    ui_widget_list_class_data_reload(genlist, widget->classes);
 
