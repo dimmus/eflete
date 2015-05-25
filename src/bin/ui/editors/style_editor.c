@@ -427,6 +427,7 @@ _on_st_add_bt_ok(void *data,
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    ui_property_state_unset(ui_block_property_get(ap));
    ui_property_state_set(ui_block_property_get(ap), part);
+   project_changed();
 }
 
 static void
@@ -468,6 +469,7 @@ _on_tag_add_bt_ok(void *data,
    elm_genlist_item_selected_set(glit_tag, true);
    elm_genlist_item_show(style_edit->tag, ELM_GENLIST_ITEM_SCROLLTO_IN);
    elm_genlist_item_bring_in(glit_tag, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
+   project_changed();
 }
 
 static void
@@ -599,6 +601,7 @@ _on_bt_del(void *data,
    ui_property_state_unset(ui_block_property_get(ap));
    ui_property_state_set(ui_block_property_get(ap), part);
    elm_object_item_del(glit);
+   project_changed();
 }
 
 /* For GenList, getting the content for showing. Tag Names. */
@@ -1008,6 +1011,7 @@ _on_##VALUE##_change(void *data, \
    _lines_colors_update(style_edit, TEXT); \
    _style_edit_update(style_edit); \
    eina_stringshare_del(value); \
+   project_changed(); \
 }
 
 #define ITEM_COLOR_ADD(VALUE, TAG, TEXT) \
@@ -1100,7 +1104,8 @@ SEGMENT_CONTROL_ADD(layout, widget); \
 elm_object_style_set(layout, "style_editor"); \
 for (i = 0; font_styles[i] != NULL; i++) \
 elm_segment_control_item_add(widget, NULL, font_styles[i]); \
-evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
+evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit); \
+evas_object_smart_callback_del(widget, "changed", _on_##VALUE##_change);
 
 #define UNDERLINE_ADD(VALUE) \
 int i = 0; \
@@ -1326,6 +1331,7 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
    int r, g, b, a;
    unsigned int i = 0;
    Evas_Object *scr;
+   Eina_Bool flag = false;
 
    SCROLLER_ADD(style_edit->mwin, scr);
    elm_scroller_policy_set(scr, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
@@ -1380,6 +1386,9 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
                {
                   sc_item = elm_segment_control_item_get(font_style, i);
                   elm_segment_control_item_selected_set(sc_item, true);
+                  if (flag == true)
+                    evas_object_smart_callback_add(font_style, "changed", _on_font_style_change, style_edit);
+                  else flag = true;
                }
           }
         if (!_hex_to_rgb(color, &r, &g, &b, &a))
