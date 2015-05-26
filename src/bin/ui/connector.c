@@ -427,6 +427,7 @@ _add_layout_cb(void *data,
         return;
      }
 
+   pm_save_to_dev(ap->project, NULL);
    layout = wm_style_add(name, name, LAYOUT, NULL);
    layout->isModify = true;
    ap->project->layouts = eina_inlist_append(ap->project->layouts,
@@ -1590,6 +1591,7 @@ _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
         return false;
      }
 
+   pm_save_to_dev(ap->project, style_work);
    evas_object_del(style->obj);
    if (!edje_edit_group_del(style_work->obj, style->full_group_name))
      {
@@ -1680,6 +1682,7 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
                 wm_style_free(alias_style);
           }
          /*Delete loaded object for unlock group in edj file*/
+        pm_save_to_dev(ap->project, style_work);
         evas_object_del(style->obj);
         if (!edje_edit_group_del(style_work->obj, style->full_group_name))
           {

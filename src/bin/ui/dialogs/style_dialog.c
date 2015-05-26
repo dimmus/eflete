@@ -270,6 +270,7 @@ _on_popup_btn_yes(void *data,
                            ap->project->mmap_file);
         _reload_classes(ap, dest_wdg->classes);
         style->isModify = true;
+        pm_save_to_dev(ap->project, style);
 
         /* Selecting added style in genlist! */
         tabs = ui_block_widget_list_get(ap);
