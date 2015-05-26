@@ -84,7 +84,6 @@ EFLETE_TEST (state_dialog_state_del_test_p)
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
    state_list = ui_states_list_add(app_data->win);
    ui_states_list_data_set(state_list, style, part);
-   ui_block_state_list_set(app_data, state_list);
    ui_states_list_state_add(state_list, "new_state 1.0");
    eoi = elm_genlist_last_item_get(state_list);
    elm_genlist_item_selected_set(eoi, EINA_TRUE);

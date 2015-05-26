@@ -66,7 +66,6 @@ EFLETE_TEST(ui_states_list_state_add_test_p)
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
    const char *state = "new_state";
-   int count_before, count_after;
    Eina_File *mmap_file = NULL;
 
    elm_init(0,0);
@@ -80,13 +79,8 @@ EFLETE_TEST(ui_states_list_state_add_test_p)
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
    ui_states_list_data_set(gl_states, style, part);
 
-   count_before = elm_genlist_items_count(gl_states);
    ck_assert_msg(ui_states_list_state_add(gl_states, state) == EINA_TRUE,
                  "Can't add new state.");
-   count_after = elm_genlist_items_count(gl_states);
-   ck_assert_msg(count_before + 1 == count_after,
-                 "New state was added incorrectly.");
-
    elm_theme_extension_del(NULL, EFLETE_THEME);
    eina_file_close(mmap_file);
    elm_shutdown();
