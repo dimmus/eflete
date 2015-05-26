@@ -1497,6 +1497,64 @@ _project_close_request(App_Data *ap, Eina_Bool changed)
 }
 
 /******************************************************************************/
+static Style *
+_style_with_another_object_get(Project *pro, Style *given_style)
+{
+   Widget *widget = NULL;
+   Class *class = NULL;
+   Style *another_style = NULL;
+   /* try to find layout. */
+   EINA_INLIST_FOREACH(pro->layouts, another_style)
+     {
+        if (another_style->full_group_name == given_style->full_group_name)
+          continue;
+        if (!another_style->isAlias)
+          return another_style;
+     }
+   /* try to find style */
+   EINA_INLIST_FOREACH(pro->widgets, widget)
+     {
+        EINA_INLIST_FOREACH(widget->classes, class)
+          {
+               EINA_INLIST_FOREACH(class->styles, another_style)
+                {
+                   if (another_style->full_group_name == given_style->full_group_name)
+                     continue;
+                   if (!another_style->isAlias)
+                     return another_style;
+                }
+          }
+     }
+   return NULL;
+}
+
+static Style *
+_style_from_another_class_with_another_object_get(Project *pro, Class *given_class)
+{
+   Widget *widget = NULL;
+   Class *class = NULL;
+   Style *another_style = NULL;
+   /* try to find layout. */
+   EINA_INLIST_FOREACH(pro->layouts, another_style)
+     {
+        if (!another_style->isAlias)
+          return another_style;
+     }
+   /* try to find style */
+   EINA_INLIST_FOREACH(pro->widgets, widget)
+     {
+        EINA_INLIST_FOREACH(widget->classes, class)
+          {
+             if (class->name != given_class->name)
+               {
+                  EINA_INLIST_FOREACH(class->styles, another_style)
+                    return another_style;
+               }
+          }
+     }
+   return NULL;
+}
+
 
 static Eina_Bool
 _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
@@ -1504,7 +1562,6 @@ _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
    Elm_Object_Item *item_to_del = elm_genlist_selected_item_get(genlist), *eoi;
    Style *style = elm_object_item_data_get(item_to_del);;
    Style *style_work = NULL;
-   Eina_Inlist *l = NULL;
    int i;
 
    if (!item_to_del)
@@ -1525,11 +1582,7 @@ _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
         i--;
      }
 
-   EINA_INLIST_FOREACH_SAFE(ap->project->layouts, l, style_work)
-     {
-        if (strcmp(style->name, style_work->name))
-          break;
-     }
+   style_work = _style_with_another_object_get(ap->project, style);
 
    if (!style_work)
      {
@@ -1570,9 +1623,7 @@ static Eina_Bool
 _selected_style_delete(Evas_Object *genlist, App_Data *ap)
 {
    Widget *widget = ui_widget_from_ap_get(ap);
-   Widget *widget_work = NULL;
    Class *class_st = NULL;
-   Class *class_work = NULL;
    Style *style = NULL;
    Style *alias_style = NULL;
    Style *style_work = NULL;
@@ -1598,41 +1649,11 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
 
    if (class_st->__type != CLASS) return false;
 
-   /* try to find layout. */
-   EINA_INLIST_FOREACH(ap->project->layouts, style_work)
-     {
-        if (!style_work->isAlias)
-          goto found;
-     }
-   /* Search edje edit object, which wont be deleted now. This object is needed
-      for manipulation with group in *.edj file*/
-   EINA_INLIST_FOREACH(ap->project->widgets, widget_work)
-     {
-        EINA_INLIST_FOREACH(widget_work->classes, class_work)
-          {
-             if (style == NULL)
-               {
-                  if (class_work->name != class_st->name)
-                    {
-                       EINA_INLIST_FOREACH(class_work->styles, style_work)
-                         goto found;
-                    }
-               }
-             else
-               EINA_INLIST_FOREACH(class_work->styles, style_work)
-                {
-                   if (style_work->full_group_name == style->full_group_name)
-                     continue;
-                   else
-                     {
-                        if (!style_work->isAlias)
-                          goto found;
-                     }
-                }
-          }
-     }
+   if (style)
+     style_work = _style_with_another_object_get(ap->project, style);
+   else
+     style_work = _style_from_another_class_with_another_object_get(ap->project, class_st);
 
-found:
    if (!style_work)
      {
         ERR("Failed search style object from another class");
