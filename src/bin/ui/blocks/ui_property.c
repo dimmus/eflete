@@ -984,7 +984,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
 
    if (!pd_part.frame)
      {
-        FRAME_PROPERTY_ADD(pd->visual, pd_part.frame, true, _("Part property"), pd->visual)
+        FRAME_PROPERTY_ADD(property, pd_part.frame, true, _("Part property"), pd->visual)
         BOX_ADD(pd_part.frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(pd_part.frame, box);
