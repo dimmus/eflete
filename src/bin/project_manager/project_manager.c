@@ -808,21 +808,6 @@ pm_project_close(Project *project)
 }
 
 void
-pm_project_changed(Project *project)
-{
-   eina_file_close(project->mmap_file);
-   project->mmap_file = eina_file_open(project->dev, false);
-   if (project->current_style)
-     {
-        eina_file_map_free(project->mmap_file, project->current_style->obj);
-        edje_object_mmap_set(project->current_style->obj,
-                             project->mmap_file,
-                             project->current_style->full_group_name);
-     }
-   project->changed = true;
-}
-
-void
 pm_project_meta_data_get(Project *project,
                          Eina_Stringshare **name,
                          Eina_Stringshare **authors,

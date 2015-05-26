@@ -948,7 +948,7 @@ _progress_end(void *data, PM_Project_Result result)
                                      evas_object_evas_get(ap->win),
                                      ap->project->mmap_file);
         enventor_object_focus_set(ap->enventor, true);
-        pm_project_changed(ap->project);
+        pm_save_to_dev(ap->project, ap->project->current_style);
      }
 #endif /* HAVE_ENVENTOR */
 
@@ -975,7 +975,7 @@ _setup_save_splash(void *data, Splash_Status status __UNUSED__)
                                           _progress_print,
                                           _progress_end,
                                           data);
-        pm_project_changed(ap->project);
+        pm_save_to_dev(ap->project, ap->project->current_style);
      }
    else
      {
@@ -1040,7 +1040,8 @@ project_changed(void)
 
    ap = app_data_get();
 
-   pm_project_changed(ap->project);
+   pm_save_to_dev(ap->project, ap->project->current_style);
+   ap->project->changed = true;
    ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, false);
 }
 
@@ -1616,7 +1617,6 @@ _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
           }
      }
 
-   pm_save_to_dev(ap->project, style_work);
    project_changed();
    return true;
 }
@@ -1708,8 +1708,6 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
 
    style_work->isModify = true;
    project_changed();
-
-   pm_save_to_dev(ap->project, style_work);
 
    ui_widget_list_class_data_reload(genlist, widget->classes);
 

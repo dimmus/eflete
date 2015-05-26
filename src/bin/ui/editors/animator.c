@@ -174,7 +174,6 @@ _on_animator_save(void *data,
    Style *style = ap->project->current_style;
    ui_signal_list_data_unset(ui_block_signal_list_get(ap));
    ui_signal_list_data_set(ui_block_signal_list_get(ap), style);
-   pm_save_to_dev(ap->project, style);
    live_view_widget_style_set(ap->live_view, ap->project, style);
    project_changed();
 }

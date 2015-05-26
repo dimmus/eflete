@@ -429,8 +429,7 @@ _on_tab_activated(void *data,
 
         enventor_object_project_load(ap->enventor, ap->project);
 
-        ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, false);
-        pm_project_changed(ap->project);
+        project_changed();
         evas_object_smart_callback_call(ap->enventor, "enventor,mode,on", NULL);
      }
    else

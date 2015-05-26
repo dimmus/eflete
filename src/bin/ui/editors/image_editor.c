@@ -707,7 +707,6 @@ _on_button_delete_clicked_cb(void *data,
         it = elm_object_item_data_get(grid_item);
         if (edje_edit_image_del(style->obj, it->image_name))
           {
-             pm_save_to_dev(img_edit->pr, style);
              project_changed();
              deleted++;
              elm_object_item_del(grid_item);

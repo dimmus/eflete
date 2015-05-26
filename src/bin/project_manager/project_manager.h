@@ -409,19 +409,6 @@ Eina_Bool
 pm_project_close(Project *project) EINA_ARG_NONNULL(1);
 
 /**
- * Mark project as changed
- *
- * Changed flag will be automatically dropped when project will be saved.
- * When closing project that is marked as changed, warning will be shown
- *
- * @param project A Project structure;
- *
- * @ingroup ProjectManager
- */
-void
-pm_project_changed(Project *project) EINA_ARG_NONNULL(1);
-
-/**
  * Get a meta data from Project.
  *
  * @param project The project object.
