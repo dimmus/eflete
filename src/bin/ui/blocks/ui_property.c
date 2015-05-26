@@ -656,7 +656,8 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
      }
 
 #ifndef HAVE_ENVENTOR
-   ui_property_code_of_group_setup(property);
+   if (ewe_tabs_active_item_get(pd->tabs) == pd->code_tab)
+     ui_property_code_of_group_setup(property);
 #endif
 
    prop_box = elm_object_content_get(pd->visual);
@@ -1519,10 +1520,6 @@ ui_property_state_set(Evas_Object *property, Part *part)
      }
    if ((part->type != EDJE_PART_TYPE_TABLE) && (part->type != EDJE_PART_TYPE_BOX))
      ui_property_state_container_unset(property);
-
-#ifndef HAVE_ENVENTOR
-   ui_property_code_of_group_setup(property);
-#endif
 
    /* hide/show the color attribute control */
    if (part->type == EDJE_PART_TYPE_TEXTBLOCK ||
