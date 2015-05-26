@@ -96,12 +96,6 @@ ui_block_signal_list_get(App_Data *ap)
 }
 
 Evas_Object *
-ui_block_state_list_get(App_Data *ap __UNUSED__)
-{
-   return NULL;
-}
-
-Evas_Object *
 ui_block_property_get(App_Data *ap)
 {
    return ui_block_content_get(ap->block.right_bottom);
@@ -135,12 +129,6 @@ Eina_Bool
 ui_block_signal_list_set(App_Data *ap, Evas_Object *content)
 {
    return ui_block_content_set(ap->block.left_bottom, content);
-}
-
-Eina_Bool
-ui_block_state_list_set(App_Data *ap __UNUSED__, Evas_Object *content __UNUSED__)
-{
-   return false;
 }
 
 Eina_Bool
