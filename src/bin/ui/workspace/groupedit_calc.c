@@ -482,6 +482,7 @@ _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd)
 void
 _select_item_move_to_top(Ws_Groupedit_Smart_Data *sd)
 {
+
    int x, y, w, h;
    if (sd->selected == sd->to_select) return;
    if (sd->selected) _selected_item_return_to_place(sd);
@@ -522,9 +523,8 @@ _part_separete_mod_mouse_click_cb(void *data,
 
    if (emd->button != 1) return;
    sd->to_select = gp;
-   _select_item_move_to_top(sd);
    evas_object_smart_callback_call(sd->obj, SIG_PART_SELECTED,
-                                   (void *)sd->selected->name);
+                                  (void *)gp->name);
 }
 
 static void
