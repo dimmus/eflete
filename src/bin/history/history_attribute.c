@@ -100,7 +100,6 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
    if ((!style) || (style->obj != source)) return;
 
    Evas_Object *prop = ui_block_property_get(app);
-   Evas_Object *state_list = ui_block_state_list_get(app);
 
    if (change->part)
      {
@@ -111,7 +110,7 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
           {
              part->curr_state = change->state;
              part->curr_state_value = change->state_value;
-             ui_states_list_data_set(state_list, style, part);
+             ui_states_list_data_set(app->block.state_list, style, part);
           }
         else if (change->param_type == VAL_RENAME)
           evas_object_smart_callback_call(app->workspace, "part,name,changed", part);

@@ -55,10 +55,8 @@ _on_ws_part_unselect(void *data,
    if (!part) return;
 
    ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part, false);
-   ui_states_list_data_unset(ui_block_state_list_get(ap));
+   ui_states_list_data_unset(ap->block.state_list);
    ui_property_part_unset(ui_block_property_get(ap));
-   TODO("in future it will be moved to block api.")
-   elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
 }
 
 static void
@@ -70,7 +68,6 @@ _del_part(void *data,
    Style *style = ap->project->current_style;
    Eina_List *programs = NULL;
    Eina_List *l = NULL;
-   Evas_Object *gl_signals;
    char *program_name = NULL;
    char *part_name = NULL;
    Evas_Object *prop_view = NULL;
@@ -100,8 +97,7 @@ _del_part(void *data,
           }
         edje_edit_string_list_free(programs);
 
-        gl_signals = ui_block_signal_list_get(ap);
-        ui_signal_list_data_unset(gl_signals);
+        ui_signal_list_data_unset(ap->block.signal_list);
         _on_ws_part_unselect(ap, ap->workspace, part_name);
         workspace_highlight_unset(ap->workspace);
         /* Source code is updated on part selection.
@@ -275,7 +271,6 @@ _signal_select(void *data,
    App_Data *ap = (App_Data *)data;
    Signal *sig = (Signal *)event_info;
    Part *part = NULL;
-   Evas_Object *state_list = NULL;
    Evas_Object *prop_view = NULL;
    evas_object_freeze_events_set(sig->style->obj, false);
    wm_style_state_parts_reset(sig->style);
@@ -283,11 +278,10 @@ _signal_select(void *data,
    wm_style_current_state_parts_update(sig->style);
 
    prop_view = ui_block_property_get(ap);
-   state_list = ui_block_state_list_get(ap);
-   part = ui_states_list_part_get(state_list);
+   part = ui_states_list_part_get(ap->block.state_list);
    if (part)
      {
-        ui_states_list_data_set(state_list, sig->style, part);
+        ui_states_list_data_set(ap->block.state_list, sig->style, part);
         ui_property_state_set(prop_view, part);
         workspace_edit_object_part_state_set(ap->workspace, part);
      }
@@ -547,7 +541,7 @@ ui_part_back(App_Data *ap)
 {
    if (!ap) return;
 
-   Evas_Object *wl_list, *groupedit, *st_list, *history_list;
+   Evas_Object *wl_list, *groupedit, *history_list;
 
    wl_list = ui_block_widget_list_get(ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,item,add", _add_part_item_dialog, ap);
@@ -572,13 +566,9 @@ ui_part_back(App_Data *ap)
                                        _part_name_change, ap);
 
    workspace_edit_object_unset(ap->workspace);
-   st_list = ui_block_state_list_get(ap);
-   ui_states_list_data_unset(st_list);
-   evas_object_smart_callback_del_full(st_list, "sl,signal,select", _signal_select, ap);
-   ui_signal_list_data_unset(ui_block_signal_list_get(ap));
+   ui_states_list_data_unset(ap->block.state_list);
+   ui_signal_list_data_unset(ap->block.signal_list);
    ui_block_content_visible(ap->block.right_bottom, false);
-   TODO("in future it will be moved to block api.")
-   elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
    live_view_widget_style_unset(ap->live_view);
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
@@ -627,7 +617,6 @@ Evas_Object *
 ui_part_select(App_Data *ap, Part* part)
 {
    Evas_Object *prop;
-   Evas_Object *gl_states;
 
    if ((!ap) || (!part))
      {
@@ -643,15 +632,7 @@ ui_part_select(App_Data *ap, Part* part)
 
    ui_property_part_set(prop, part);
 
-   gl_states = ui_states_list_add(ap->block.bottom_left);
-   ui_states_list_data_set(gl_states, ap->project->current_style, part);
-   ui_block_state_list_set(ap, gl_states);
-   evas_object_smart_callback_del_full(gl_states, "stl,state,add", _add_state_dialog, ap);
-   evas_object_smart_callback_add(gl_states, "stl,state,add", _add_state_dialog, ap);
-   evas_object_smart_callback_del_full(gl_states, "stl,state,del", _del_state_dialog, ap);
-   evas_object_smart_callback_add(gl_states, "stl,state,del", _del_state_dialog, ap);
-
-   evas_object_show(gl_states);
+   ui_states_list_data_set(ap->block.state_list, ap->project->current_style, part);
 
    evas_object_smart_callback_del_full(ap->workspace, "part,name,changed",
                                        _part_name_change, ap);
@@ -665,19 +646,15 @@ ui_part_select(App_Data *ap, Part* part)
    evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
    evas_object_smart_callback_add(ap->workspace, "part,changed", _property_change, ap);
 
-   return gl_states;
+   return ap->block.state_list;
 }
 
 /* FIXME: rename to style_clicked */
 Eina_Bool
 ui_style_clicked(App_Data *ap, Style *style)
 {
-   Evas_Object *wl_list = NULL;
-   Evas_Object *gl_signals = NULL;
-   Evas_Object *prop = NULL;
-   Evas_Object *groupedit = NULL;
-   Evas_Object *history_list = NULL;
-   Style *_style = NULL, *_alias_style = NULL;
+   Evas_Object *wl_list, *prop, *groupedit, *history_list;
+   Style *_style, *_alias_style;
 
    if ((!ap) || (!ap->project) || (!style))
      {
@@ -696,19 +673,20 @@ ui_style_clicked(App_Data *ap, Style *style)
    evas_object_smart_callback_add(wl_list, "wl,part,below", _below_part, ap);
    evas_object_smart_callback_add(wl_list, "wl,part,show", _show_part, ap);
    evas_object_smart_callback_add(wl_list, "wl,part,hide", _hide_part, ap);
-   evas_object_smart_callback_add(wl_list, "wl,part,moved,up",
-                                  _restack_part_above, ap);
-   evas_object_smart_callback_add(wl_list, "wl,part,moved,down",
-                                  _restack_part_below, ap);
+   evas_object_smart_callback_add(wl_list, "wl,part,moved,up", _restack_part_above, ap);
+   evas_object_smart_callback_add(wl_list, "wl,part,moved,down",_restack_part_below, ap);
    evas_object_smart_callback_add(wl_list, "wl,part,item,add", _add_part_item_dialog, ap);
    evas_object_smart_callback_add(wl_list, "wl,part,item,del", _del_part_item, ap);
 
-   /* Get signals list of a styles and show them */
-   gl_signals = ui_signal_list_add(ap->block.left_bottom);
-   ui_signal_list_data_set(gl_signals, _style);
-   ui_block_signal_list_set(ap, gl_signals);
+   TODO("need to move this callbacks to his blocks")
+   evas_object_smart_callback_del_full(ap->block.state_list, "stl,state,add", _add_state_dialog, ap);
+   evas_object_smart_callback_add(ap->block.state_list, "stl,state,add", _add_state_dialog, ap);
+   evas_object_smart_callback_del_full(ap->block.state_list, "stl,state,del", _del_state_dialog, ap);
+   evas_object_smart_callback_add(ap->block.state_list, "stl,state,del", _del_state_dialog, ap);
 
-   evas_object_smart_callback_add(gl_signals, "sl,signal,select", _signal_select, ap);
+   evas_object_smart_callback_del_full(ap->block.signal_list, "sl,signal,select", _signal_select, ap);
+   evas_object_smart_callback_add(ap->block.signal_list, "sl,signal,select", _signal_select, ap);
+   ui_signal_list_data_set(ap->block.signal_list, _style);
 
    workspace_edit_object_set(ap->workspace, _style, ap->project->dev);
    evas_object_smart_callback_add(ap->workspace, "ws,part,selected",
@@ -780,8 +758,8 @@ _blocks_data_unset(App_Data *ap)
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
    ui_block_content_visible(ap->block.right_bottom, false);
-   ui_signal_list_data_unset(ui_block_signal_list_get(ap));
-   ui_states_list_data_unset(ui_block_state_list_get(ap));
+   ui_signal_list_data_unset(ap->block.signal_list);
+   ui_states_list_data_unset(ap->block.state_list);
    history_clear(ap->history);
    workspace_edit_object_unset(ap->workspace);
    workspace_highlight_unset(ap->workspace);
@@ -1758,7 +1736,7 @@ _on_enventor_mode_on(void *data,
 
    workspace_highlight_unset(ap->workspace);
    ui_property_part_unset(ui_block_property_get(ap));
-   ui_states_list_data_unset(ui_block_state_list_get(ap));
+   ui_states_list_data_unset(ap->block.state_list);
 }
 
 static void
@@ -1935,4 +1913,3 @@ code_edit_mode_switch(App_Data *ap, Eina_Bool is_on)
 
    return true;
 }
-

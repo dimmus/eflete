@@ -211,10 +211,9 @@ _item_delete_cb(App_Data *app)
      }
 
    /* if state list is in focus */
-   nf = ui_block_state_list_get(app);
-   if ((nf) && (elm_object_focus_get(nf)))
+   if (elm_object_focus_get(app->block.state_list))
      {
-        evas_object_smart_callback_call(nf, "stl,state,del", NULL);
+        evas_object_smart_callback_call(app->block.state_list, "stl,state,del", NULL);
         return true;
      }
 

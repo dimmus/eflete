@@ -91,13 +91,14 @@ struct _App_Data
       Evas_Object *left_hor;
       Evas_Object *right_hor;
       Evas_Object *center;
-      Evas_Object *center_down;
+      Evas_Object *center_down; /* delete it*/
    } panes;
 
    struct {
       Evas_Object *left_top;
       Evas_Object *left_bottom;
-      Evas_Object *bottom_left;
+      Evas_Object *state_list;
+      Evas_Object *signal_list;
       Evas_Object *bottom_right;
       Evas_Object *right_top;
       Evas_Object *right_bottom;

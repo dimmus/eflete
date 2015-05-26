@@ -29,8 +29,8 @@ _add_state_cb(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   Evas_Object *state_list = (Evas_Object *)data;
-   evas_object_smart_callback_call(state_list, "stl,state,add", NULL);
+   Evas_Object *box = (Evas_Object *)data;
+   evas_object_smart_callback_call(box, "stl,state,add", NULL);
 }
 
 static void
@@ -38,8 +38,8 @@ _del_state_cb(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   Evas_Object *state_list = (Evas_Object *)data;
-   evas_object_smart_callback_call(state_list, "stl,state,del", NULL);
+   Evas_Object *box = (Evas_Object *)data;
+   evas_object_smart_callback_call(box, "stl,state,del", NULL);
 }
 
 static char *
@@ -51,21 +51,23 @@ _item_state_label_get(void *data,
 }
 
 static void
-_on_state_selected(void *data __UNUSED__,
-                   Evas_Object *obj,
+_on_state_selected(void *data,
+                   Evas_Object *obj __UNUSED__,
                    void *event_info)
 {
+   Evas_Object *box = (Evas_Object *)data;
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-   evas_object_smart_callback_call(obj, "stl,state,select", glit);
+   evas_object_smart_callback_call(box, "stl,state,select", glit);
 }
 
 Evas_Object *
 ui_states_list_add(Evas_Object *parent)
 {
-   Evas_Object *gl_states;
+   Evas_Object *gl_states, *box, *box_btn, *btn, *ic;
 
    if (!parent) return NULL;
 
+   BOX_ADD(parent, box, false, false)
    gl_states = elm_genlist_add(parent);
    evas_object_size_hint_align_set(gl_states,
                                    EVAS_HINT_FILL,
@@ -85,9 +87,30 @@ ui_states_list_add(Evas_Object *parent)
      }
 
    evas_object_smart_callback_add(gl_states, "selected",
-                                  _on_state_selected, NULL);
+                                  _on_state_selected, box);
    TODO("add delete data on EVAS_OBJECT_DEL event")
-   return gl_states;
+
+   BOX_ADD(parent, box_btn, true, false)
+   elm_box_align_set(box_btn, 1.0, 0.5);
+   btn = elm_button_add(box_btn);
+   elm_object_style_set(btn, "simple");
+   evas_object_smart_callback_add(btn, "clicked", _add_state_cb, box);
+   evas_object_show(btn);
+   ICON_STANDARD_ADD(btn, ic, true, "plus");
+   elm_object_part_content_set(btn, NULL, ic);
+   elm_box_pack_end(box_btn, btn);
+   btn = elm_button_add(box_btn);
+   elm_object_style_set(btn, "simple");
+   evas_object_smart_callback_add(btn, "clicked", _del_state_cb, box);
+   evas_object_show(btn);
+   ICON_STANDARD_ADD(btn, ic, true, "minus");
+   elm_object_part_content_set(btn, NULL, ic);
+   elm_box_pack_end(box_btn, btn);
+
+   elm_box_pack_end(box, box_btn);
+   elm_box_pack_end(box, gl_states);
+   evas_object_data_set(box, "st_gl", gl_states);
+   return box;
 }
 
 static void
@@ -109,12 +132,13 @@ ui_states_list_data_set(Evas_Object *object,
    const char *state_name;
    Eina_Stringshare *state, *curr_state;
    Elm_Object_Item *stit;
-   Evas_Object *parent, *box, *button, *icon;
+   Evas_Object *gl;
 
    if ((!object) || (!style) || (!part)) return false;
 
-   parent = elm_object_parent_widget_get(object);
-   elm_genlist_clear(object);
+   gl = evas_object_data_get(object, "st_gl");
+   elm_genlist_clear(gl);
+   evas_object_show(gl);
 
    states = edje_edit_part_states_list_get(style->obj, part->name);
    evas_object_data_set(object, STLIST_PART_KEY, part);
@@ -124,7 +148,7 @@ ui_states_list_data_set(Evas_Object *object,
    EINA_LIST_FOREACH(states, l, state_name)
      {
         state = eina_stringshare_add(state_name);
-        stit = elm_genlist_item_append(object, _itc_state,
+        stit = elm_genlist_item_append(gl, _itc_state,
                                        state,
                                        NULL, ELM_GENLIST_ITEM_NONE,
                                        NULL, NULL);
@@ -135,24 +159,6 @@ ui_states_list_data_set(Evas_Object *object,
      }
    edje_edit_string_list_free(states);
 
-   BOX_ADD(parent, box, true, false)
-   elm_box_align_set(box, 1.0, 0.5);
-   button = elm_button_add(box);
-   elm_object_style_set(button, "simple");
-   evas_object_smart_callback_add(button, "clicked", _add_state_cb, object);
-   evas_object_show(button);
-   ICON_ADD(button, icon, EINA_TRUE, "icon-add")
-   elm_object_part_content_set(button, NULL, icon);
-   elm_box_pack_end(box, button);
-   button = elm_button_add(box);
-   elm_object_style_set(button, "simple");
-   evas_object_smart_callback_add(button, "clicked", _del_state_cb, object);
-   evas_object_show(button);
-   ICON_ADD(button, icon, EINA_TRUE, "icon-remove")
-   elm_object_part_content_set(button, NULL, icon);
-   elm_box_pack_end(box, button);
-   elm_object_part_content_set(parent, "elm.swallow.title", box);
-   elm_object_signal_emit(parent, "title,content,show", "eflete");
    eina_stringshare_del(curr_state);
 
    return true;
@@ -161,15 +167,13 @@ ui_states_list_data_set(Evas_Object *object,
 Eina_Bool
 ui_states_list_data_unset(Evas_Object *object)
 {
-   Evas_Object *parent, *content;
+   Evas_Object *gl;
 
    if (!object) return false;
 
-   elm_genlist_clear(object);
-   parent = elm_object_parent_widget_get(object);
-   content = elm_object_part_content_get(parent, "elm.swallow.title");
-   evas_object_del(content);
-   evas_object_del(object);
+   gl = evas_object_data_get(object, "st_gl");
+   elm_genlist_clear(gl);
+   evas_object_hide(gl);
 
    return true;
 }
@@ -186,11 +190,13 @@ ui_states_list_part_get(Evas_Object *obj)
 Eina_Bool
 ui_states_list_state_add(Evas_Object *obj, const char *state)
 {
+   Evas_Object *gl;
    Elm_Object_Item *eoi;
 
    if ((!obj) || (!state)) return false;
 
-   eoi = elm_genlist_item_append(obj, _itc_state, state,
+   gl = evas_object_data_get(obj, "st_gl");
+   eoi = elm_genlist_item_append(gl, _itc_state, state,
                                  NULL, ELM_GENLIST_ITEM_NONE,
                                  NULL, NULL);
    elm_object_item_data_set(eoi, (void *)state);
@@ -202,10 +208,13 @@ ui_states_list_state_add(Evas_Object *obj, const char *state)
 Eina_Bool
 ui_states_list_selected_state_del(Evas_Object *obj)
 {
+   Evas_Object *gl;
    Elm_Object_Item *eoi, *next_eoi;
+
    if (!obj) return false;
 
-   eoi = elm_genlist_selected_item_get(obj);
+   gl = evas_object_data_get(obj, "st_gl");
+   eoi = elm_genlist_selected_item_get(gl);
 
    if (!eoi)
      {
@@ -225,11 +234,14 @@ ui_states_list_selected_state_del(Evas_Object *obj)
 Eina_Stringshare *
 ui_states_list_selected_state_get(Evas_Object *obj)
 {
+   Evas_Object *gl;
    Elm_Object_Item *eoi;
    Eina_Stringshare *state;
 
    if (!obj) return NULL;
-   eoi = elm_genlist_selected_item_get(obj);
+   gl = evas_object_data_get(obj, "st_gl");
+   eoi = elm_genlist_selected_item_get(gl);
+
    if (!eoi) return NULL;
    state = eina_stringshare_add(elm_object_item_data_get(eoi));
 
