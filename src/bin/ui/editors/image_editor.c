@@ -671,8 +671,6 @@ _on_button_add_clicked_cb(void *data,
    elm_fileselector_mime_types_filter_append(fs, "*", _("All files"));
    elm_fileselector_multi_select_set(fs, true);
    elm_win_inwin_content_set(edit->fs_win, fs);
-
-   project_changed();
 }
 
 static void
