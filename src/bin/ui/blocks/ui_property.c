@@ -1814,12 +1814,12 @@ STATE_ATTR_COLOR(_("shadow color"), state, color3, state_text, NULL)
 STATE_ATTR_COLOR(_("outline color"), state, color2, state_text, NULL)
 
 STATE_ATTR_SOURCE_UPDATE(state_text, source, state_text, EDJE_PART_TYPE_TEXT, ==)
-STATE_ATTR_COMBOBOX(_("proxy source"), state_text, source, state_text,
+STATE_ATTR_COMBOBOX(_("source"), state_text, source, state_text,
                     _("Causes the part to use the text properties "
                       "(like font and size) of another part "
                       "and update them as they change."))
 STATE_ATTR_SOURCE_UPDATE(state_text, text_source, state_text, EDJE_PART_TYPE_TEXT, ==)
-STATE_ATTR_COMBOBOX(_("proxy source"), state_text, text_source, state_text,
+STATE_ATTR_COMBOBOX(_("text source"), state_text, text_source, state_text,
                     _("Causes the part to display the text content of "
                       "another part and update them as they change."));
 
