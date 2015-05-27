@@ -265,12 +265,12 @@ _on_popup_btn_yes(void *data,
    if (wm_style_copy(dest_style->obj, source_style->full_group_name, full_name,
                      ap->project->dev, style))
      {
-        pm_save_to_dev(ap->project, source_style);
+        pm_save_to_dev(ap->project, source_style, true);
         wm_style_data_load(style, evas_object_evas_get(ap->win),
                            ap->project->mmap_file);
         _reload_classes(ap, dest_wdg->classes);
         style->isModify = true;
-        pm_save_to_dev(ap->project, style);
+        pm_save_to_dev(ap->project, style, true);
 
         /* Selecting added style in genlist! */
         tabs = ui_block_widget_list_get(ap);
@@ -291,7 +291,7 @@ _on_popup_btn_yes(void *data,
         elm_genlist_item_selected_set(eoi, true);
      }
 
-   project_changed();
+   project_changed(true);
 
    STRING_CLEAR;
    eina_stringshare_del(full_name);

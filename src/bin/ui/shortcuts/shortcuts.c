@@ -145,13 +145,10 @@ _##FUNC##_part_add_cb(App_Data *app) \
    char name[9]; \
    _random_name_generate(name, 9); \
    if (workspace_edit_object_part_add(workspace, name, TYPE, NULL)) \
-     { \
-       ui_widget_list_part_add(widget_list, style, name); \
-       style->isModify = true; \
-     } \
+     ui_widget_list_part_add(widget_list, style, name); \
    history_diff_add(style->obj, PART_TARGET, ADD, name); \
    live_view_widget_style_set(app->live_view, app->project, style); \
-   project_changed(); \
+   project_changed(true); \
    return true; \
 }
 

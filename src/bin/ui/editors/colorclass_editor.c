@@ -61,7 +61,7 @@ _on_value_changed(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
-   project_changed();
+   project_changed(false);
 }
 
 static void
@@ -255,7 +255,7 @@ _on_add_popup_btn_add(void *data,
    _disable(EINA_FALSE, ccl_edit);
    ccl_edit->changed = true;
 
-   project_changed();
+   project_changed(false);
 }
 
 static void
@@ -420,7 +420,7 @@ _on_btn_del(void *data,
          _disable(EINA_TRUE, ccl_edit);
       }
    elm_object_item_del(it);
-   project_changed();
+   project_changed(false);
 }
 /*button callbacks end*/
 

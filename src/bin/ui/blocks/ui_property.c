@@ -429,7 +429,7 @@ _on_tab_activated(void *data,
 
         enventor_object_project_load(ap->enventor, ap->project);
 
-        project_changed();
+        project_changed(false);
         evas_object_smart_callback_call(ap->enventor, "enventor,mode,on", NULL);
      }
    else
@@ -840,10 +840,9 @@ _on_part_name_change(void *data,
         return;
      }
 
-   project_changed();
+   project_changed(false);
    workspace_edit_object_part_rename(pd->workspace, pd->wm_part->name, value);
    pd->wm_part->name = value;
-   pd->wm_style->isModify = true;
    pos = elm_entry_cursor_pos_get(obj);
    evas_object_smart_callback_call(pd->workspace, "part,name,changed", pd->wm_part);
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_RENAME, old_value, value,
@@ -1196,9 +1195,8 @@ _on_state_color_class_change(void *data,
    edje_edit_string_free(value);
    edje_edit_string_free(old_value);
 
-   project_changed();
+   project_changed(false);
    workspace_edit_object_recalc(pd->workspace);
-   pd->wm_style->isModify = true;
 }
 
 static void
@@ -1637,9 +1635,8 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
                     pd->wm_part->name, pd->wm_part->curr_state, \
                     pd->wm_part->curr_state_value); \
    eina_stringshare_del(text); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 }
 
 #define STATE_ATTR_2COMBOBOX_V(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2) \
@@ -1856,8 +1853,7 @@ _text_effect_update(Prop_Data *pd)
                     _("text effect"), pd->wm_part->name, NULL, 0);
 
    workspace_edit_object_recalc(pd->workspace);
-   pd->wm_style->isModify = true;
-   project_changed();
+   project_changed(false);
 }
 
 inline static void
@@ -1995,8 +1991,7 @@ _on_state_text_ellipsis_change(void *data,
                     pd->wm_part->name, pd->wm_part->curr_state,
                     pd->wm_part->curr_state_value);
    workspace_edit_object_recalc(pd->workspace);
-   pd->wm_style->isModify = true;
-   project_changed();
+   project_changed(false);
 }
 
 static void
@@ -2032,8 +2027,7 @@ _on_state_text_ellipsis_toggle_change(void *data,
                     pd->wm_part->name, pd->wm_part->curr_state,
                     pd->wm_part->curr_state_value);
    workspace_edit_object_recalc(pd->workspace);
-   pd->wm_style->isModify = true;
-   project_changed();
+   project_changed(false);
 }
 
 static void
@@ -2363,7 +2357,7 @@ _on_image_editor_done(void *data,
    edje_edit_state_image_set(pd->wm_style->obj, pd->wm_part->name,
                              pd->wm_part->curr_state,
                              pd->wm_part->curr_state_value, selected);
-   pm_save_to_dev(ap->project, pd->wm_style);
+   pm_save_to_dev(ap->project, pd->wm_style, false);
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, value,
                     selected, pd->wm_style->full_group_name,
                     (void*)edje_edit_state_image_set,  "state_image",
@@ -2373,8 +2367,7 @@ _on_image_editor_done(void *data,
    ewe_entry_entry_set(border_entry, NULL);
    evas_object_smart_callback_call(border_entry, "changed,user", NULL);
    workspace_edit_object_recalc(pd->workspace);
-   pd->wm_style->isModify = true;
-   project_changed();
+   project_changed(false);
 }
 
 static void
@@ -2409,14 +2402,13 @@ _del_tween_image(void *data,
                                  selected))
      {
         elm_object_item_del(it);
-        pd->wm_style->isModify = true;
         history_diff_add(pd->wm_style->obj, PROPERTY, DEL, VAL_STRING,
                          selected, edje_edit_state_tween_add,
                          pd->wm_style->full_group_name,
                          (void*)edje_edit_state_tween_del, "tween image",
                          pd->wm_part->name, pd->wm_part->curr_state,
                          pd->wm_part->curr_state_value);
-        project_changed();
+        project_changed(false);
      }
 }
 
@@ -2441,14 +2433,13 @@ _on_image_editor_tween_done(void *data,
           {
              elm_genlist_item_append(tween_list, _itc_tween, name, NULL,
                                      ELM_GENLIST_ITEM_NONE, NULL, NULL);
-             pd->wm_style->isModify = true;
              history_diff_add(pd->wm_style->obj, PROPERTY, ADD, VAL_STRING,
                               name, edje_edit_state_tween_del,
                               pd->wm_style->full_group_name,
                               (void*)edje_edit_state_tween_add, "tween image",
                               pd->wm_part->name, pd->wm_part->curr_state,
                               pd->wm_part->curr_state_value);
-             project_changed();
+             project_changed(false);
           }
      }
    elm_frame_collapse_go(pd->state_image.tween, false);
@@ -2553,7 +2544,7 @@ _tween_image_moved(Evas_Object *data,
                                   image_name);
         next = elm_genlist_item_next_get(next);
      }
-   project_changed();
+   project_changed(false);
 }
 
 Evas_Object *
@@ -2675,9 +2666,8 @@ _on_state_image_border_change(void *data,
                     pd->wm_part->name, pd->wm_part->curr_state,
                     pd->wm_part->curr_state_value);
 
-   project_changed();
+   project_changed(false);
    workspace_edit_object_recalc(pd->workspace);
-   pd->wm_style->isModify = true;
 }
 
 static void
@@ -2905,9 +2895,8 @@ _on_part_item_padding_change(void *data,
    if (!edje_edit_part_item_padding_set(pd->wm_style->obj, pd->wm_part->name,
                                         pd->item_name, l, r, t, b))
      return;
-   project_changed();
+   project_changed(false);
    workspace_edit_object_recalc(pd->workspace);
-   pd->wm_style->isModify = true;
 }
 
 static void

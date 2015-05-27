@@ -427,7 +427,7 @@ _on_st_add_bt_ok(void *data,
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    ui_property_state_unset(ui_block_property_get(ap));
    ui_property_state_set(ui_block_property_get(ap), part);
-   project_changed();
+   project_changed(false);
 }
 
 static void
@@ -469,7 +469,7 @@ _on_tag_add_bt_ok(void *data,
    elm_genlist_item_selected_set(glit_tag, true);
    elm_genlist_item_show(style_edit->tag, ELM_GENLIST_ITEM_SCROLLTO_IN);
    elm_genlist_item_bring_in(glit_tag, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
-   project_changed();
+   project_changed(false);
 }
 
 static void
@@ -601,7 +601,7 @@ _on_bt_del(void *data,
    ui_property_state_unset(ui_block_property_get(ap));
    ui_property_state_set(ui_block_property_get(ap), part);
    elm_object_item_del(glit);
-   project_changed();
+   project_changed(false);
 }
 
 /* For GenList, getting the content for showing. Tag Names. */
@@ -648,7 +648,7 @@ _on_viewer_exit(void *data,
 {
    Style_Editor *style_edit = (Style_Editor *)data;
    App_Data *ap = app_data_get();
-   project_changed();
+   project_changed(false);
    workspace_edit_object_recalc(ap->workspace);
    mw_del(style_edit->mwin);
 }
@@ -1008,7 +1008,7 @@ _on_##VALUE##_change(void *data, \
    _lines_colors_update(style_edit, TEXT); \
    _style_edit_update(style_edit); \
    eina_stringshare_del(value); \
-   project_changed(); \
+   project_changed(false); \
 }
 
 #define ITEM_COLOR_ADD(VALUE, TAG, TEXT) \

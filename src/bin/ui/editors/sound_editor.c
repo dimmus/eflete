@@ -676,7 +676,7 @@ _on_ok_cb(void *data,
              snd->is_saved = true;
           }
 
-        project_changed();
+        project_changed(true);
         if (edit->pr->layouts)
           {
              style = EINA_INLIST_CONTAINER_GET(edit->pr->layouts, Style);
@@ -1535,7 +1535,7 @@ _on_delete_clicked_cb(void *data,
      }
 
    if (deleted)
-     project_changed();
+     project_changed(true);
 }
 
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, "elm.label")

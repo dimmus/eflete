@@ -85,7 +85,6 @@ _del_part(void *data,
    history_diff_add(style->obj, PART_TARGET, DEL, part_name);
    if (workspace_edit_object_part_del(ap->workspace, part->name))
      ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), style);
-   style->isModify = true;
 
    /* If deleted all parts in style, also should deleted all programs*/
    if (!style->parts)
@@ -110,7 +109,7 @@ _del_part(void *data,
         live_view_widget_style_set(ap->live_view, ap->project, style);
      }
    free(part_name);
-   project_changed();
+   project_changed(true);
 }
 
 static void
@@ -121,7 +120,6 @@ _del_part_item(void *data,
    Eina_Stringshare *item_name = (Eina_Stringshare *)event_info;
    App_Data *ap = (App_Data *)data;
    Evas_Object *widget_tabs = ui_block_widget_list_get(ap);
-   Style *style = ap->project->current_style;
 
    Part *part = ui_widget_list_selected_part_get(widget_tabs);
    if (!part)
@@ -141,9 +139,8 @@ _del_part_item(void *data,
         ERR("Failed delete item")
         return;
      }
-   style->isModify = true;
    workspace_edit_object_recalc(ap->workspace);
-   project_changed();
+   project_changed(true);
    live_view_widget_style_set(ap->live_view, ap->project, ap->project->current_style);
 }
 
@@ -164,9 +161,8 @@ _above_part(void *data,
         NOTIFY_ERROR(_("Internal edje error occurred on part move"));
         ui_widget_list_selected_part_below(ui_block_widget_list_get(ap), style);
      }
-   style->isModify = true;
    live_view_widget_style_set(ap->live_view, ap->project, style);
-   project_changed();
+   project_changed(true);
 }
 
 static void
@@ -186,9 +182,8 @@ _below_part(void *data,
         NOTIFY_ERROR(_("Internal edje error occurred on part move"));
         ui_widget_list_selected_part_above(ui_block_widget_list_get(ap), style);
      }
-   style->isModify = true;
    live_view_widget_style_set(ap->live_view, ap->project, style);
-   project_changed();
+   project_changed(true);
 }
 
 static void
@@ -205,12 +200,11 @@ _restack_part_above(void *data,
    if ((!part) || (!style)) return;
    history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
    workspace_edit_object_part_restack(ap->workspace, part->name, rel->name, false);
-   style->isModify = true;
    live_view_widget_style_set(ap->live_view, ap->project, style);
 
    tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
    tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel));
-   project_changed();
+   project_changed(true);
    if (!tmp_list) return;
 
    style->parts = eina_inlist_remove(style->parts, tmp_list);
@@ -231,12 +225,11 @@ _restack_part_below(void *data,
    if ((!part) || (!style)) return;
    history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
    workspace_edit_object_part_restack(ap->workspace, part->name, rel->name, true);
-   style->isModify = true;
    live_view_widget_style_set(ap->live_view, ap->project, style);
 
    tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
    tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel));
-   project_changed();
+   project_changed(true);
    if (!tmp_list) return;
 
    style->parts = eina_inlist_remove(style->parts, tmp_list);
@@ -421,7 +414,7 @@ _add_layout_cb(void *data,
         return;
      }
 
-   pm_save_to_dev(ap->project, NULL);
+   pm_save_to_dev(ap->project, NULL, true);
    layout = wm_style_add(name, name, LAYOUT, NULL);
    layout->isModify = true;
    ap->project->layouts = eina_inlist_append(ap->project->layouts,
@@ -434,7 +427,7 @@ _add_layout_cb(void *data,
    elm_genlist_item_selected_set(eoi, true);
    eina_stringshare_del(name);
 
-   project_changed();
+   project_changed(true);
    return;
 }
 
@@ -706,12 +699,13 @@ ui_style_clicked(App_Data *ap, Style *style)
         ui_block_property_set(ap, prop);
      }
 
+   if (ap->project->current_style)
+     pm_save_to_dev(ap->project, ap->project->current_style, true);
+
    ui_block_content_visible(ap->block.right_bottom, true);
    ui_property_style_set(prop, _alias_style, ap->workspace);
    evas_object_show(prop);
    ap->project->current_style = _style;
-
-   pm_save_to_dev(ap->project, _style);
 
    history_list = history_genlist_get(ap->history, ap->block.right_top);
    history_module_add(_style->obj);
@@ -1015,15 +1009,18 @@ project_save(void)
 /******************************************************************************/
 
 void
-project_changed(void)
+project_changed(Eina_Bool save)
 {
    App_Data *ap;
 
    ap = app_data_get();
 
-   pm_save_to_dev(ap->project, ap->project->current_style);
+   pm_save_to_dev(ap->project, ap->project->current_style, save);
    ap->project->changed = true;
    ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, false);
+
+   if (ap->project->current_style)
+     ap->project->current_style->isModify = true;
 }
 
 /******************************************************************************/
@@ -1573,7 +1570,7 @@ _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
         return false;
      }
 
-   pm_save_to_dev(ap->project, style_work);
+   pm_save_to_dev(ap->project, style_work, true);
    evas_object_del(style->obj);
    if (!edje_edit_group_del(style_work->obj, style->full_group_name))
      {
@@ -1591,14 +1588,14 @@ _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
      {
         if (elm_genlist_item_index_get(eoi) == i)
           {
-             style = elm_object_item_data_get(eoi);;
+             style = elm_object_item_data_get(eoi);
              elm_genlist_item_selected_set(eoi, true);
-             style = elm_object_item_data_get(eoi);;
+             style = elm_object_item_data_get(eoi);
              break;
           }
      }
 
-   project_changed();
+   project_changed(true);
    return true;
 }
 
@@ -1663,7 +1660,7 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
                 wm_style_free(alias_style);
           }
          /*Delete loaded object for unlock group in edj file*/
-        pm_save_to_dev(ap->project, style_work);
+        pm_save_to_dev(ap->project, style_work, true);
         evas_object_del(style->obj);
         if (!edje_edit_group_del(style_work->obj, style->full_group_name))
           {
@@ -1688,7 +1685,7 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
      }
 
    style_work->isModify = true;
-   project_changed();
+   project_changed(true);
 
    ui_widget_list_class_data_reload(genlist, widget->classes);
 

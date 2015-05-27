@@ -377,7 +377,7 @@ _project_linked_images_copy(Project_Thread *worker)
                                name, eina_strbuf_string_get(strbuf_to));
      }
    if (is_changed)
-     pm_save_to_dev(worker->project, NULL);
+     pm_save_to_dev(worker->project, NULL, true);
    edje_edit_string_list_free(list);
    eina_strbuf_free(strbuf_to);
    eina_strbuf_free(strbuf_from);
@@ -662,18 +662,18 @@ error:
 }
 
 void
-pm_save_to_dev(Project *pr, Style *st)
+pm_save_to_dev(Project *pr, Style *st, Eina_Bool save)
 {
    if (!pr) return;
 
    if (st)
      {
-        edje_edit_without_source_save(st->obj, true);
+        if (save) edje_edit_without_source_save(st->obj, true);
      }
    else
      {
         GET_STYLE(pr, st)
-        edje_edit_without_source_save(st->obj, false);
+        if (save) edje_edit_without_source_save(st->obj, false);
      }
    /* reloading mmaped dev file to update cached groups */
    eina_file_close(pr->mmap_file);

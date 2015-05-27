@@ -330,11 +330,12 @@ pm_project_open(const char *path) EINA_ARG_NONNULL(1);
  * @param project The project what should be saved.
  * @param style Style wich oject will be used. If style is NULL random one will
  * be picked. In this case save will affect all groups.
+ * @param save Defines if saving into edje_edit is required or not.
  *
  * @ingroup ProjectManager
  */
 void
-pm_save_to_dev(Project *project, Style *style);
+pm_save_to_dev(Project *project, Style *style, Eina_Bool save);
 
 /**
  * Save all changes in current project to the dev file.

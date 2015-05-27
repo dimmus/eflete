@@ -65,16 +65,13 @@ _cancel_clicked(void *data,
    ENTRY_IS_EMPTY \
    const char *name = elm_entry_entry_get(entry); \
    if (workspace_edit_object_part_add(workspace, name, TYPE, DATA)) \
-     { \
-       ui_widget_list_part_add(widget_list, style, name); \
-       style->isModify = true; \
-     } \
+     ui_widget_list_part_add(widget_list, style, name); \
    evas_object_del(ap->popup); \
    history_diff_add(style->obj, PART_TARGET, ADD, name); \
    ap->popup = NULL; \
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false); \
    live_view_widget_style_set(ap->live_view, ap->project, style); \
-   project_changed();
+   project_changed(false);
 
 static void
 _swallow_add_on_click(void *data,

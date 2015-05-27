@@ -157,9 +157,8 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 }
 
 /**
@@ -241,9 +240,8 @@ _on_##SUB##_##VALUE##_change(void *data, \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS_DIFF); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 }
 
 /**
@@ -270,9 +268,8 @@ _on_##MEMBER##_##VALUE1##_change(void *data, \
    edje_edit_##SUB##_##VALUE1##_set(pd->wm_style->obj ARGS, \
                                     (TYPE)elm_spinner_value_get(pd->MEMBER.VALUE1) / MULTIPLIER, \
                                     (TYPE)elm_spinner_value_get(pd->MEMBER.VALUE2) / MULTIPLIER); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 } \
 static void \
 _on_##MEMBER##_##VALUE2##_change(void *data, \
@@ -283,9 +280,8 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
    edje_edit_##SUB##_##VALUE1##_set(pd->wm_style->obj ARGS, \
                                     (TYPE)elm_spinner_value_get(pd->MEMBER.VALUE1) / MULTIPLIER, \
                                     (TYPE)elm_spinner_value_get(pd->MEMBER.VALUE2) / MULTIPLIER); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 }
 
 /**
@@ -423,8 +419,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS_DIFF); \
    workspace_edit_object_recalc(pd->workspace); \
-   project_changed(); \
-   pd->wm_style->isModify = true; \
+   project_changed(false); \
 }
 
 /**
@@ -467,9 +462,8 @@ _on_##MEMBER##_##VALUE1##_change(void *data, \
    edje_edit_##SUB##_##VALUE1##_set(pd->wm_style->obj ARGS, \
                                     elm_check_state_get(pd->MEMBER.VALUE1), \
                                     elm_check_state_get(pd->MEMBER.VALUE2)); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 } \
 static void \
 _on_##MEMBER##_##VALUE2##_change(void *data, \
@@ -480,9 +474,8 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
    edje_edit_##SUB##_##VALUE1##_set(pd->wm_style->obj ARGS, \
                                     elm_check_state_get(pd->MEMBER.VALUE1), \
                                     elm_check_state_get(pd->MEMBER.VALUE2)); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 }
 
 /**
@@ -528,9 +521,8 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     item->title, pd->wm_style->full_group_name, \
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS); \
    eina_stringshare_del(old_value); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 }
 
 /*****************************************************************************/
@@ -659,9 +651,8 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
                         (void*)edje_edit_group_##SUB1##_##VALUE##_set,  "group_"#VALUE, \
                         NULL, NULL, 0); \
     } \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 }
 
 /*****************************************************************************/
@@ -743,7 +734,6 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                                 void *ei) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
-   App_Data *ap = app_data_get(); \
    Ewe_Combobox_Item *item = ei; \
    const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
                                                            pd->wm_part->name);\
@@ -771,10 +761,8 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, NULL, 0.0); \
-   pm_save_to_dev(ap->project, pd->wm_style); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 }
 
 /*****************************************************************************/
@@ -937,7 +925,6 @@ _on_part_drag_##VALUE1##_change(void *data, \
                                 void *event_info __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
-   App_Data *ap = app_data_get(); \
    Eina_Bool value = elm_check_state_get(obj); \
    Eina_Bool old_value = edje_edit_part_drag_##VALUE1##_get(pd->wm_style->obj, \
                                                             pd->wm_part->name);\
@@ -947,10 +934,8 @@ _on_part_drag_##VALUE1##_change(void *data, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_part_drag_##VALUE1##_set, #SUB"_"#VALUE1, \
                      pd->wm_part->name, NULL, 0.0); \
-   pm_save_to_dev(ap->project, pd->wm_style); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 } \
 static void \
 _on_part_drag_##VALUE2##_change(void *data, \
@@ -958,7 +943,6 @@ _on_part_drag_##VALUE2##_change(void *data, \
                                 void *event_info __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
-   App_Data *ap = app_data_get(); \
    int value = elm_spinner_value_get(obj); \
    int old_value = edje_edit_part_drag_##VALUE2##_get(pd->wm_style->obj, \
                                                          pd->wm_part->name);\
@@ -967,10 +951,8 @@ _on_part_drag_##VALUE2##_change(void *data, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_part_drag_##VALUE2##_set, #SUB"_"#VALUE2, \
                      pd->wm_part->name, NULL, 0.0); \
-   pm_save_to_dev(ap->project, pd->wm_style); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 }
 
 /*****************************************************************************/
@@ -1043,9 +1025,8 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    Ewe_Combobox_Item *item = ei; \
    edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, \
                                    pd->item_name, item->title); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 }
 
 /*****************************************************************************/
@@ -1121,9 +1102,8 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
      return; \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 }
 
 /*****************************************************************************/
@@ -1176,9 +1156,8 @@ _on_##SUB##_##VALUE##_change(void *data, \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
    edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, (TYPE)item->index); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 }
 
 /*****************************************************************************/
@@ -1375,9 +1354,8 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 }
 
 /*****************************************************************************/
@@ -1642,9 +1620,8 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                       (void*)edje_edit_##SUB##_##VALUE##_set, #SUB"_"#VALUE, \
                       pd->wm_part->name, pd->wm_part->curr_state, \
                       pd->wm_part->curr_state_value); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 } \
 static void \
 _on_##MEMBER##_##VALUE##_dismissed(void *data, \
@@ -1717,7 +1694,6 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                                 void *ei) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
-   App_Data *ap = app_data_get(); \
    Ewe_Combobox_Item *item = ei; \
    const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
                                                            pd->wm_part->name, \
@@ -1730,10 +1706,8 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     item->title, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
-   pm_save_to_dev(ap->project, pd->wm_style); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
    edje_edit_string_free(old_value); \
 }
 
@@ -1912,9 +1886,8 @@ _on_##SUB##_##VALUE##_change(void *data, \
                     pd->wm_part->name, pd->wm_part->curr_state, \
                     pd->wm_part->curr_state_value); \
    elm_object_focus_set(obj, true); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
    eina_stringshare_del(old_value); \
    free(value); \
 }

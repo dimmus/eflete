@@ -94,11 +94,10 @@ _add_ok_clicked(void *data,
 
    if (result)
      {
-        ap->project->current_style->isModify = true;
         state = eina_stringshare_printf("%s %.2f", str_name, atof(str_value));
         ui_states_list_state_add(ap->block.state_list, state);
         eina_stringshare_del(state);
-        project_changed();
+        project_changed(true);
      }
    ecore_job_add(_job_popup_close, ap);
 }
@@ -238,9 +237,8 @@ _del_ok_clicked(void *data,
         "%state name%' and delete the programs or some params from the program")
    if (workspace_edit_object_part_state_del(workspace, part->name, arr[0], atof(arr[1])))
      {
-        ap->project->current_style->isModify = true;
         ui_states_list_selected_state_del(ap->block.state_list);
-        project_changed();
+        project_changed(true);
      }
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);

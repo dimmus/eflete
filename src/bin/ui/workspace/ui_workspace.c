@@ -708,10 +708,9 @@ _highlight_changed_cb(void *data,
                          part->name, part->curr_state, part->curr_state_value);
      }
 
-   if (!sd->style->isModify) sd->style->isModify = true;
    workspace_edit_object_recalc(ws_obj);
    evas_object_smart_callback_call(ws_obj, "part,changed", part);
-   project_changed();
+   project_changed(false);
 }
 
 Eina_Bool

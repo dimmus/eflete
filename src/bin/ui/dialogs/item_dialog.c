@@ -50,7 +50,6 @@ _on_button_add_clicked(void *data,
    Evas_Object *entry = evas_object_data_get(ap->popup, "ENTRY");
    Evas_Object *combobox = evas_object_data_get(ap->popup, "COMBOBOX");
    Part *part = evas_object_data_get(ap->popup, "PART");
-   Style *style = ap->project->current_style;
    const char *name = elm_entry_entry_get(entry);
    Ewe_Combobox_Item *item = NULL;
 
@@ -82,8 +81,7 @@ _on_button_add_clicked(void *data,
      }
 
    workspace_edit_object_recalc(ap->workspace);
-   style->isModify = true;
-   project_changed();
+   project_changed(false);
    ecore_job_add(_job_popup_close, ap);
 }
 

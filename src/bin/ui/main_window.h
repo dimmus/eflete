@@ -442,10 +442,12 @@ project_save();
 /**
  * Mark the opened project as changed, and activate "Save project" button.
  *
+ * @param save defines if saving into edje edit is required or not
+ *
  * @ingroup Window
  */
 void
-project_changed(void);
+project_changed(Eina_Bool save);
 
 /**
  * Requesting to change project (need to close it, to hide blocks, unset data,

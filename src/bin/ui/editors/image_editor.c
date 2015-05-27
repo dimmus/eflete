@@ -615,7 +615,7 @@ _on_image_done(void *data,
           }
         if (edje_edit_image_add(style->obj, selected))
           {
-             pm_save_to_dev(img_edit->pr, style);
+             pm_save_to_dev(img_edit->pr, style, false);
              it = _image_editor_gengrid_item_data_create(style->obj,
                                                          ecore_file_file_get(selected));
              item = elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
@@ -705,7 +705,7 @@ _on_button_delete_clicked_cb(void *data,
         it = elm_object_item_data_get(grid_item);
         if (edje_edit_image_del(style->obj, it->image_name))
           {
-             project_changed();
+             project_changed(false);
              deleted++;
              elm_object_item_del(grid_item);
           }
@@ -718,7 +718,7 @@ _on_button_delete_clicked_cb(void *data,
           }
      }
    if (notdeleted < images_to_del)
-     project_changed();
+     project_changed(false);
    if (notdeleted == 1)
      {
         name = eina_list_nth(in_use, 0);
