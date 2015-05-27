@@ -870,7 +870,7 @@ prop_item_part_name_add(Evas_Object *parent,
    EWE_ENTRY_ADD(parent, pd->part.name, true);
    elm_entry_markup_filter_append(pd->part.name, elm_entry_filter_accept_set, &accept_prop);
    ewe_entry_entry_set(pd->part.name, pd->wm_part->name);
-   elm_object_tooltip_text_set(pd->part.name, tooltip);
+   if (tooltip) elm_object_tooltip_text_set(pd->part.name, tooltip);
    evas_object_smart_callback_add(pd->part.name, "changed,user", _on_part_name_change, pd);
    evas_object_smart_callback_add(pd->part.name, "unfocused", _on_part_name_unfocus, pd);
    elm_layout_content_set(item, "elm.swallow.content", pd->part.name);

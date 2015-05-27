@@ -91,7 +91,7 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
    elm_layout_content_set(item, "swallow.content1", pd->MEMBER.VALUE1); \
    elm_layout_text_set(item, "label.swallow1.start", L1_START); \
    elm_layout_text_set(item, "label.swallow1.end", L1_END); \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE1, TOOLTIP1); \
+   if (TOOLTIP1) elm_object_tooltip_text_set(pd->MEMBER.VALUE1, TOOLTIP1); \
    evas_object_event_callback_priority_add(pd->MEMBER.VALUE1, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                           _on_spinner_mouse_wheel, NULL); \
@@ -101,7 +101,7 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
    elm_layout_content_set(item, "swallow.content2", pd->MEMBER.VALUE2); \
    elm_layout_text_set(item, "label.swallow2.start", L2_START); \
    elm_layout_text_set(item, "label.swallow2.end", L2_END); \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE2, TOOLTIP2); \
+   if (TOOLTIP2) elm_object_tooltip_text_set(pd->MEMBER.VALUE2, TOOLTIP2); \
    evas_object_event_callback_priority_add(pd->MEMBER.VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
@@ -188,7 +188,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, Prop_Data *pd) \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
    EWE_COMBOBOX_ADD(parent, pd->MEMBER.VALUE) \
    for (i = 0; LIST[i]; ewe_combobox_item_add(pd->MEMBER.VALUE, LIST[i]), i++) ; \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
+   if (TOOLTIP) elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
    evas_object_smart_callback_add(pd->MEMBER.VALUE, "selected", _on_##SUB##_##VALUE##_change, pd); \
    elm_layout_content_set(item, "elm.swallow.content", pd->MEMBER.VALUE); \
    PREFIX##_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE, MEMBER) \
@@ -333,7 +333,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, Prop_Data *pd) \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
    CHECK_ADD(item, pd->MEMBER.VALUE) \
    elm_object_style_set(pd->MEMBER.VALUE, "toggle"); \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
+   if (TOOLTIP) elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
    evas_object_smart_callback_add(pd->MEMBER.VALUE, "changed", _on_##MEMBER##_##VALUE##_change, pd); \
    elm_layout_content_set(item, "elm.swallow.content", pd->MEMBER.VALUE); \
    PREFIX##_ATTR_1CHECK_UPDATE(SUB, VALUE, MEMBER) \
@@ -365,14 +365,14 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
    PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
    CHECK_ADD(item, pd->MEMBER.VALUE1) \
    elm_object_style_set(pd->MEMBER.VALUE1, "toggle"); \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE1, TOOLTIP1); \
+   if (TOOLTIP1) elm_object_tooltip_text_set(pd->MEMBER.VALUE1, TOOLTIP1); \
    evas_object_smart_callback_add(pd->MEMBER.VALUE1, "changed", _on_##MEMBER##_##VALUE1##_change, pd); \
    elm_layout_content_set(item, "swallow.content1", pd->MEMBER.VALUE1); \
    elm_layout_text_set(item, "label.swallow1.start", L1_START); \
    elm_layout_text_set(item, "label.swallow1.end", L1_END); \
    CHECK_ADD(item, pd->MEMBER.VALUE2) \
    elm_object_style_set(pd->MEMBER.VALUE2, "toggle"); \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE2, TOOLTIP2); \
+   if (TOOLTIP2) elm_object_tooltip_text_set(pd->MEMBER.VALUE2, TOOLTIP2); \
    evas_object_smart_callback_add(pd->MEMBER.VALUE2, "changed", _on_##MEMBER##_##VALUE2##_change, pd); \
    elm_layout_content_set(item, "swallow.content2", pd->MEMBER.VALUE2); \
    elm_layout_text_set(item, "label.swallow2.start", L2_START); \
@@ -560,7 +560,7 @@ prop_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_object_part_text_set(item, "label.swallow1.end", "px"); \
    SPINNER_ADD(item, pd->group.SUB##_##VALUE1, 0.0, 9999.0, 1.0, true) \
    elm_spinner_label_format_set(pd->group.SUB##_##VALUE1, "%.0f"); \
-   elm_object_tooltip_text_set(pd->group.SUB##_##VALUE1, tooltip1); \
+   if (tooltip1) elm_object_tooltip_text_set(pd->group.SUB##_##VALUE1, tooltip1); \
    evas_object_smart_callback_add(pd->group.SUB##_##VALUE1, "changed", _on_group_##SUB##_##VALUE1##_change, pd); \
    elm_object_part_content_set(item, "swallow.content1", pd->group.SUB##_##VALUE1); \
    evas_object_event_callback_priority_add(pd->group.SUB##_##VALUE1, EVAS_CALLBACK_MOUSE_WHEEL, \
@@ -570,7 +570,7 @@ prop_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_object_part_text_set(item, "label.swallow2.end", "px"); \
    SPINNER_ADD(item, pd->group.SUB##_##VALUE2, 0.0, 9999.0, 1.0, true) \
    elm_spinner_label_format_set(pd->group.SUB##_##VALUE2, "%.0f"); \
-   elm_object_tooltip_text_set(pd->group.SUB##_##VALUE2, tooltip2); \
+   if (tooltip2) elm_object_tooltip_text_set(pd->group.SUB##_##VALUE2, tooltip2); \
    evas_object_smart_callback_add(pd->group.SUB##_##VALUE2, "changed", _on_group_##SUB##_##VALUE2##_change, pd); \
    elm_object_part_content_set(item, "swallow.content2", pd->group.SUB##_##VALUE2); \
    evas_object_event_callback_priority_add(pd->group.SUB##_##VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
@@ -721,7 +721,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
    EWE_COMBOBOX_ADD(item, pd->MEMBER.VALUE) \
    prop_##MEMBER##_##VALUE##_update(pd); \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
+   if (TOOLTIP) elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
    evas_object_smart_callback_add(pd->MEMBER.VALUE, "selected", _on_##MEMBER##_##VALUE##_change, pd); \
    elm_layout_content_set(item, "elm.swallow.content", pd->MEMBER.VALUE); \
    return item; \
@@ -884,12 +884,12 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
    CHECK_ADD(item, pd->SUB.VALUE1) \
    elm_object_style_set(pd->SUB.VALUE1, "toggle"); \
-   elm_object_tooltip_text_set(pd->SUB.VALUE1, tooltip1); \
+   if (tooltip1) elm_object_tooltip_text_set(pd->SUB.VALUE1, tooltip1); \
    evas_object_smart_callback_add(pd->SUB.VALUE1, "changed", _on_part_drag_##VALUE1##_change, pd); \
    elm_layout_content_set(item, "swallow.content1", pd->SUB.VALUE1); \
    SPINNER_ADD(item, pd->SUB.VALUE2, 0.0, 9999.0, 1.0, true) \
    elm_spinner_label_format_set(pd->SUB.VALUE2, N_("%.0f")); \
-   elm_object_tooltip_text_set(pd->SUB.VALUE2, tooltip2); \
+   if (tooltip2) elm_object_tooltip_text_set(pd->SUB.VALUE2, tooltip2); \
    evas_object_smart_callback_add(pd->SUB.VALUE2, "changed", _on_part_drag_##VALUE2##_change, pd); \
    evas_object_event_callback_priority_add(pd->SUB.VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
@@ -1315,7 +1315,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
    elm_layout_content_set(item, "swallow.content1", pd->MEMBER.VALUE); \
    elm_layout_text_set(item, "label.swallow1.start", L_START); \
    elm_layout_text_set(item, "label.swallow1.end", L_END); \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
+   if (TOOLTIP) elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
    evas_object_event_callback_priority_add(pd->MEMBER.VALUE, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                           _on_spinner_mouse_wheel, NULL); \
@@ -1573,7 +1573,7 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
    elm_layout_theme_set(pd->MEMBER.VALUE, "layout", "property", "color"); \
    evas_object_size_hint_weight_set(pd->MEMBER.VALUE,  EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(pd->MEMBER.VALUE, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
+   if (TOOLTIP) elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
    pd->MEMBER.VALUE##_obj = elm_layout_add(parent); \
    elm_layout_theme_set(pd->MEMBER.VALUE##_obj, "image", "color", "color_set"); \
    evas_object_event_callback_add(pd->MEMBER.VALUE, EVAS_CALLBACK_MOUSE_DOWN, \
@@ -1761,13 +1761,13 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
    PROPERTY_ITEM_ADD(parent, TEXT, "2swallow_vertical_pad") \
    elm_object_part_text_set(item, "label.swallow1.start", _("x:")); \
    EWE_COMBOBOX_ADD(item, pd->MEMBER.VALUE1) \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE1, TOOLTIP1); \
+   if (TOOLTIP1) elm_object_tooltip_text_set(pd->MEMBER.VALUE1, TOOLTIP1); \
    evas_object_smart_callback_add(pd->MEMBER.VALUE1, "selected", \
                                   _on_##MEMBER##_##VALUE1##_change, pd); \
    elm_object_part_content_set(item, "swallow.content1", pd->MEMBER.VALUE1); \
    elm_object_part_text_set(item, "label.swallow2.start", _("y:")); \
    EWE_COMBOBOX_ADD(item, pd->MEMBER.VALUE2) \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE2, TOOLTIP2); \
+   if (TOOLTIP2) elm_object_tooltip_text_set(pd->MEMBER.VALUE2, TOOLTIP2); \
    evas_object_smart_callback_add(pd->MEMBER.VALUE2, "selected", \
                                   _on_##MEMBER##_##VALUE2##_change, pd); \
    elm_object_part_content_set(item, "swallow.content2", pd->MEMBER.VALUE2); \
@@ -1853,7 +1853,7 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
    ewe_entry_regex_set(pd->MEMBER.VALUE, REGEX, EWE_REG_EXTENDED); \
    ewe_entry_regex_autocheck_set(pd->MEMBER.VALUE, true); \
    ewe_entry_regex_glow_set(pd->MEMBER.VALUE, true); \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
+   if (TOOLTIP) elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
    elm_layout_content_set(item, NULL, pd->MEMBER.VALUE); \
    prop_##SUB##_##VALUE##_update(pd); \
    return item; \

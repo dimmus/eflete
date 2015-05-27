@@ -362,7 +362,8 @@ _prop_item_##sub##_##value##_add(Evas_Object *parent, \
    ITEM_ADD_(parent, item, text, "editor") \
    EWE_ENTRY_ADD(parent, entry, true) \
    REGEX_SET(entry, regex); \
-   elm_object_tooltip_text_set(entry, tooltip); \
+   if (tooltip) \
+     elm_object_tooltip_text_set(entry, tooltip); \
    evas_object_smart_callback_add(entry, "changed,user", changed_callback, cb_data); \
    if (unfocused_callback) \
      evas_object_smart_callback_add(entry, "unfocused", unfocused_callback, cb_data); \
@@ -1411,7 +1412,7 @@ _prop_item_program_transition_add(Evas_Object *parent,
    elm_box_pack_end(box, transition.layout2);
    elm_box_pack_end(box, transition.layout3);
 
-   elm_object_tooltip_text_set(item, tooltip);
+   if (tooltip) elm_object_tooltip_text_set(item, tooltip);
    elm_object_part_content_set(item, "elm.swallow.content", box);
    return item;
 }
@@ -1472,7 +1473,7 @@ _prop_item_program_action_add(Evas_Object *parent,
    evas_object_smart_callback_add(action.combobox, "selected",
                                   _on_combobox_action_sel, prog_edit);
 
-   elm_object_tooltip_text_set(item, tooltip);
+   if (tooltip) elm_object_tooltip_text_set(item, tooltip);
    elm_box_pack_end(box, action.combobox);
    elm_box_pack_end(box, action.layout1);
    elm_box_pack_end(box, action.layout2);
