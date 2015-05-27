@@ -1271,13 +1271,10 @@ _proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 {
    Evas_Object *image, *source_image = NULL;
    const char *proxy_source;
-   int r, g, b, a;
    Ws_Groupedit_Smart_Data *sd;
    Groupedit_Part *source;
 
    PART_STATE_GET(edit_obj, gp->name)
-
-   edje_edit_state_color_get(edit_obj, gp->name, state, value, &r, &g, &b, &a);
 
    image = edje_object_part_swallow_get(gp->draw, "swallow.image");
    evas_object_del(image);
@@ -1291,7 +1288,6 @@ _proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
         if (!source_image)
           source_image = source->draw;
         image = evas_object_image_add(sd->e);
-        evas_object_color_set(image, r*a/255, g*a/255, b*a/255, a);
         edje_object_part_swallow(gp->draw, "swallow.image", image);
         evas_object_image_source_set(image, source_image);
         evas_object_image_source_clip_set(image, false);
