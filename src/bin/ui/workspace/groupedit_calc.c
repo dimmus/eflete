@@ -1396,13 +1396,8 @@ static void
 _group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
 {
    Eina_Stringshare *source = edje_edit_part_source_get(edit_obj, gp->name);
-
-   if (!source) return;
-
-   if (!edje_object_file_set(gp->draw, file, source))
-     ERR("Image can't be loaded.\n");
-
-   edje_edit_string_free(source);
+   edje_object_file_set(gp->draw, file, source);
+   if (source) edje_edit_string_free(source);
 }
 
 static void
