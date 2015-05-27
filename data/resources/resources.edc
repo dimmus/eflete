@@ -84,4 +84,5 @@ collections {
    ADD_IMAGE("2pxborder_part", "2pxborder_part.png", -1, -1, 2 2 2 2, SCALE, NONE)
    ADD_IMAGE("part_container_bg", "elem_bg-block.png", -1, -1, 0 0 0 0, TILE, SOLID)
    ADD_IMAGE("part_box_bg", "elem_bg-box.png", -1, -1, 0 0 0 0, TILE, SOLID)
+   ADD_IMAGE("part_table_bg", "elem_bg-table.png", -1, -1, 0 0 0 0, TILE, SOLID)
 }
