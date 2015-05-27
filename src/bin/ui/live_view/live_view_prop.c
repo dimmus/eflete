@@ -108,16 +108,21 @@ _on_all_text_check(void *data,
 {
    Evas_Object *check = NULL, *item = NULL;
    Eina_List *part_list = NULL, *part = NULL;
+   Eina_Bool is_checked;
 
    Prop_Data *pd = (Prop_Data *)data;
    part_list = elm_box_children_get(pd->prop_text.texts);
    if (!part_list) return;
 
+   is_checked = elm_check_state_get(obj);
    EINA_LIST_FOREACH(part_list, part, item)
      {
         check = elm_object_part_content_get(item, "info");
-        elm_check_state_set(check, elm_check_state_get(obj));
-        evas_object_smart_callback_call(check, "changed", NULL);
+        if (elm_check_state_get(check) != is_checked)
+          {
+             elm_check_state_set(check, is_checked);
+             evas_object_smart_callback_call(check, "changed", NULL);
+          }
      }
 
    eina_list_free(part_list);
