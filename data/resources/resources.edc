@@ -78,6 +78,7 @@ collections {
 
    ADD_IMAGE("part_swallow_bg", "part_swallow_bg.png", -1, -1, 0 0 0 0, TILE, SOLID)
    ADD_IMAGE("part_proxy_bg", "elem_bg-proxy.png", -1, -1, 0 0 0 0, TILE, SOLID)
+   ADD_IMAGE("part_group_bg", "elem_bg-group.png", -1, -1, 0 0 0 0, TILE, SOLID)
    ADD_IMAGE("part_spacer_bg", "part_spacer_bg.png", -1, -1, 0 0 0 0, TILE, SOLID)
    ADD_IMAGE("border_part", "border_part.png", -1, -1, 1 1 1 1, SCALE, NONE)
    ADD_IMAGE("2pxborder_part", "2pxborder_part.png", -1, -1, 2 2 2 2, SCALE, NONE)
