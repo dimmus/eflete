@@ -1,5 +1,12 @@
 group { name: "elm/layout/live_view/header";
    parts {
+      part { name: "base";
+         type: RECT;
+         description { state: "default" 0.0;
+            min: 265 0;
+            color: INVISIBLE_COLOR;
+         }
+      }
       part { name: "padding.top";
          type: SPACER;
          description { state: "default" 0.0;
