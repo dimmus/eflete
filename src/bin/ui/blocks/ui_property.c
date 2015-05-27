@@ -2749,21 +2749,23 @@ STATE_ATTR_2SPINNER_ICON(_("align"), state_fill, origin_relative_x, origin_relat
                          _("Sets the starting point X coordinate relatively to displayed element's content"),
                          _("Sets the starting point Y coordinate relatively to displayed element's content"),
                          100, double, VAL_DOUBLE)
+TODO("Fix offset edje_edit API: use int instead of double param")
 STATE_ATTR_2SPINNER_ICON(_("offset"), state_fill, origin_offset_x, origin_offset_y, state_fill,
                          -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
                          _("Affects the starting point a fixed number of pixels along X axis"),
                          _("Affects the starting point a fixed number of pixels along Y axis"),
-                         1, int, VAL_INT)
+                         1, double, VAL_DOUBLE)
 STATE_ATTR_2SPINNER_ICON(_("align"), state_fill, size_relative_x, size_relative_y, state_fill,
                          -500, 500, 1, NULL, "x:", "%", "y:", "%",
                          _("Value that represent the percentual value of the original size of the element by X axis"),
                          _("Value that represent the percentual value of the original size of the element by Y axis."),
                          100, double, VAL_DOUBLE)
+TODO("Fix offset edje_edit API: use int instead of double param")
 STATE_ATTR_2SPINNER_ICON(_("offset"), state_fill, size_offset_x, size_offset_y, state_fill,
                          -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
                          _("Affects the size of the tile a fixed number of pixels along X axis"),
                          _("Affects the size of the tile a fixed number of pixels along Y axis"),
-                         1, int, VAL_INT)
+                         1, double, VAL_DOUBLE)
 
 static Eina_Bool
 ui_property_state_fill_set(Evas_Object *property)
