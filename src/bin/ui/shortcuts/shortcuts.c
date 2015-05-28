@@ -584,7 +584,7 @@ static Function_Set _sc_func_set_init[] =
      {"part.add.spacer", _spacer_part_add_cb},
      {"part.add.group", _group_part_add_cb},
      {"part.add.box", _box_part_add_cb},
-     {"item.delete", _item_delete_cb},
+/*   {"item.delete", _item_delete_cb}, this callback works unpredictable because of focus */
      {"separate_mode", _separate_mode_change_cb},
      {"style.create", _new_style_create_cb},
      {"style_editor", _style_editor_open_cb},
