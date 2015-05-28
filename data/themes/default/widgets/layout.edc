@@ -173,13 +173,14 @@ group { name: "elm/layout/block/default";
          description { state: "default" 0.0;
             fixed: 1 1;
             align: 1.0 0.5;
-            min: 277 0;
-            max: 277 -1;
             rel1 {
                relative: 1.0 0.0;
                to_y: "elm.text";
             }
-            rel2.to_y: "elm.text";
+            rel2 {
+               offset: -11 -1;
+               to_y: "elm.text";
+            }
          }
          description { state: "hide" 0.0;
             inherit: "default" 0.0;
