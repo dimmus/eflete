@@ -218,7 +218,7 @@ ui_panes_add(App_Data *ap)
 
    TODO("STOP! it's last changes in this archaic module. All this module must be refactored, and merget to main window!!!!")
    block = ui_block_add(ap->win_layout);
-   elm_layout_text_set(block, "elm.text", _("History of changes"));
+   elm_layout_text_set(block, "elm.text", _("History"));
    elm_object_part_content_set(panes_right_hor, "left", block);
    ap->block.right_top_btn = elm_button_add(block);
    elm_object_text_set(ap->block.right_top_btn, _("Discard"));
