@@ -1218,10 +1218,27 @@ _selected_part_move(Evas_Object *object, Style *style, Eina_Bool move_up)
 
    if (part->__type != PART) return false;
 
-   new_eoi = (move_up) ? elm_genlist_item_insert_before(gl_parts, _itc_part, part, NULL,
-                         prev_eoi, elm_genlist_item_type_get(eoi), _on_part_select, nf):
-                         elm_genlist_item_insert_after(gl_parts, _itc_part, part, NULL,
-                         next_eoi, elm_genlist_item_type_get(eoi),  _on_part_select, nf);
+   if (part->type == EDJE_PART_TYPE_TABLE ||
+       part->type == EDJE_PART_TYPE_BOX)
+     {
+        new_eoi = (move_up) ?
+           elm_genlist_item_insert_before(gl_parts, _itc_container, part, NULL,
+                                          prev_eoi, elm_genlist_item_type_get(eoi),
+                                          _on_part_select, nf) :
+           elm_genlist_item_insert_after(gl_parts, _itc_container, part, NULL,
+                                         next_eoi, elm_genlist_item_type_get(eoi),
+                                         _on_part_select, nf);
+     }
+   else
+     {
+        new_eoi = (move_up) ?
+           elm_genlist_item_insert_before(gl_parts, _itc_part, part, NULL,
+                                          prev_eoi, elm_genlist_item_type_get(eoi),
+                                          _on_part_select, nf) :
+           elm_genlist_item_insert_after(gl_parts, _itc_part, part, NULL,
+                                         next_eoi, elm_genlist_item_type_get(eoi),
+                                         _on_part_select, nf);
+     }
    eoi = elm_genlist_selected_item_get(gl_parts);
    elm_object_item_del(eoi);
    elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
