@@ -861,15 +861,13 @@ prop_part_name_update(Prop_Data *pd)
 }
 
 static Evas_Object *
-prop_item_part_name_add(Evas_Object *parent,
-                        Prop_Data *pd,
-                        const char *tooltip)
+prop_part_name_add(Evas_Object *parent, Prop_Data *pd)
 {
    PROPERTY_ITEM_ADD(parent,  _("name"), "1swallow");
    EWE_ENTRY_ADD(parent, pd->part.name, true);
    elm_entry_markup_filter_append(pd->part.name, elm_entry_filter_accept_set, &accept_prop);
    ewe_entry_entry_set(pd->part.name, pd->wm_part->name);
-   if (tooltip) elm_object_tooltip_text_set(pd->part.name, tooltip);
+   elm_object_tooltip_text_set(pd->part.name, _("Selected part name"));
    evas_object_smart_callback_add(pd->part.name, "changed,user", _on_part_name_change, pd);
    evas_object_smart_callback_add(pd->part.name, "unfocused", _on_part_name_unfocus, pd);
    elm_layout_content_set(item, "elm.swallow.content", pd->part.name);
@@ -987,7 +985,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(pd_part.frame, box);
 
-        item = prop_item_part_name_add(box, pd, _("Selected part name"));
+        item = prop_part_name_add(box, pd);
         elm_box_pack_end(box, item);
         item = prop_part_type_add(box, _("type"), wm_part_type_get(pd->wm_part->type));
         elm_box_pack_end(box, item);
