@@ -490,7 +490,7 @@ ui_property_add(Evas_Object *parent)
    pd = mem_calloc(1, sizeof(Prop_Data));
    tabs = ewe_tabs_add(parent);
    pd->tabs = tabs;
-   elm_layout_text_set(tabs, NULL, _("Property"));
+   elm_layout_text_set(tabs, NULL, _("Properties"));
 
    SCROLLER_ADD(tabs, scroller);
    BOX_ADD(scroller, box, EINA_FALSE, EINA_FALSE);
