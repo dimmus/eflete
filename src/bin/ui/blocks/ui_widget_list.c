@@ -1179,12 +1179,14 @@ _selected_part_move(Evas_Object *object, Style *style, Eina_Bool move_up)
    Elm_Object_Item *new_eoi = NULL;
    Elm_Object_Item *prev_eoi = NULL;
    Elm_Object_Item *next_eoi = NULL;
+   Elm_Object_Item *prev_next_eoi = NULL;
    Part *part = NULL;
    Eina_Inlist *prev_elm =  NULL;
    Eina_Inlist *next_elm =  NULL;
    Eina_Inlist *itr = NULL;
    Part *_part = NULL;
    Evas_Object *nf;
+   Eina_Bool expanded;
 
    if ((!object) || (!style)) return false;
    nf = _current_naviframe_get(object);
@@ -1196,6 +1198,7 @@ _selected_part_move(Evas_Object *object, Style *style, Eina_Bool move_up)
         NOTIFY_INFO(3, _("No part selected"));
         return false;
      }
+   expanded = elm_genlist_item_expanded_get(eoi);
    if (move_up)
      {
         prev_eoi = elm_genlist_item_prev_get(eoi);
@@ -1204,14 +1207,31 @@ _selected_part_move(Evas_Object *object, Style *style, Eina_Bool move_up)
              NOTIFY_INFO(3, _("Selected part is currently on top of the list"));
              return false;
           }
+        if (elm_genlist_item_parent_get(prev_eoi))
+          prev_eoi = elm_genlist_item_parent_get(prev_eoi);
      }
    else
      {
         next_eoi = elm_genlist_item_next_get(eoi);
+        /* if actual moving item is Container */
+        while (elm_genlist_item_parent_get(next_eoi))
+          next_eoi = elm_genlist_item_next_get(next_eoi);
         if (!next_eoi)
           {
              NOTIFY_INFO(3, _("Selected part is currently on bottom of the list"));
              return false;
+          }
+        /* if next item is Container with expanded items */
+        if (elm_genlist_item_subitems_count(next_eoi) > 0)
+          {
+             next_eoi = elm_genlist_item_next_get(next_eoi);
+             prev_next_eoi = next_eoi;
+             while (elm_genlist_item_parent_get(next_eoi))
+               {
+                  prev_next_eoi = next_eoi;
+                  next_eoi = elm_genlist_item_next_get(next_eoi);
+               }
+             if (!next_eoi) next_eoi = prev_next_eoi;
           }
      }
    part = elm_object_item_data_get(eoi);
@@ -1242,6 +1262,7 @@ _selected_part_move(Evas_Object *object, Style *style, Eina_Bool move_up)
    eoi = elm_genlist_selected_item_get(gl_parts);
    elm_object_item_del(eoi);
    elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
+   elm_genlist_item_expanded_set(new_eoi, expanded);
 
    for(itr = style->parts; itr != NULL; itr = itr->next)
      {
