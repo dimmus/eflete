@@ -178,11 +178,12 @@ item_dialog_add(App_Data *ap, Part *part)
    ewe_combobox_select_item_set(combobox_source, 0);
 
    collections = edje_file_collection_list(ap->project->dev);
+   collections = eina_list_sort(collections, eina_list_count(collections), sort_cb);
    EINA_LIST_FOREACH(collections, l, group)
-   {
-      if (group != ap->project->current_style->full_group_name)
-        ewe_combobox_item_add(combobox_source, group);
-   }
+     {
+        if (group != ap->project->current_style->full_group_name)
+          ewe_combobox_item_add(combobox_source, group);
+     }
    edje_file_collection_list_free(collections);
 
    elm_object_part_content_set(item, "elm.swallow.content", combobox_source);
