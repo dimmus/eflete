@@ -74,7 +74,7 @@ static void
 _textblock_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
 
 static void
-_group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file);
+_group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file, Evas *e);
 
 static void
 _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp);
@@ -412,6 +412,10 @@ static void
 _groupedit_part_free(Groupedit_Part *gp)
 {
    Groupedit_Item *ge_item = NULL;
+   /* just in case */
+   Evas_Object *image = NULL;
+   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
+   evas_object_del(image);
    evas_object_del(gp->draw);
    eina_stringshare_del(gp->name);
    evas_object_smart_member_del(gp->border);
@@ -801,7 +805,7 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
               _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
            case EDJE_PART_TYPE_GROUP:
-              _group_param_update(gp, sd->edit_obj, sd->edit_obj_file);
+              _group_param_update(gp, sd->edit_obj, sd->edit_obj_file, sd->e);
               _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
            case EDJE_PART_TYPE_TABLE:
@@ -916,7 +920,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          break;
       case EDJE_PART_TYPE_GROUP:
          gp->draw = edje_object_add(sd->e);
-         BORDER_ADD(122, 122, 122, 255)
+         BORDER_ADD(255, 109, 109, 255)
          break;
       case EDJE_PART_TYPE_TABLE:
          gp->bg = evas_object_rectangle_add(sd->e);
@@ -953,7 +957,6 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
 }
 
 #undef BORDER_ADD
-#undef IMAGE_PART_GROUP
 
 static void
 _part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part)
@@ -1445,14 +1448,27 @@ _textblock_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 }
 
 static void
-_group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
+_group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file, Evas *e)
 {
    Eina_Stringshare *source = edje_edit_part_source_get(edit_obj, gp->name);
+   Evas_Object *image = NULL;
 
    PART_STATE_GET(edit_obj, gp->name)
 
-   _color_apply(gp, edit_obj, state, value);
-   edje_object_file_set(gp->draw, file, source);
+   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
+   evas_object_del(image);
+
+   if (!source)
+     {
+        edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP);
+        GET_IMAGE(image, e, GROUP_IMG);
+        edje_object_part_swallow(gp->draw, "swallow.image", image);
+     }
+   else
+     {
+        _color_apply(gp, edit_obj, state, value);
+        edje_object_file_set(gp->draw, file, source);
+     }
 
    PART_STATE_FREE
    if (source) edje_edit_string_free(source);
