@@ -699,13 +699,13 @@ ui_style_clicked(App_Data *ap, Style *style)
         ui_block_property_set(ap, prop);
      }
 
-   if (ap->project->current_style)
-     pm_save_to_dev(ap->project, ap->project->current_style, true);
 
    ui_block_content_visible(ap->block.right_bottom, true);
    ui_property_style_set(prop, _alias_style, ap->workspace);
    evas_object_show(prop);
    ap->project->current_style = _style;
+
+   pm_save_to_dev(ap->project, ap->project->current_style, true);
 
    history_list = history_genlist_get(ap->history, ap->block.right_top);
    history_module_add(_style->obj);
