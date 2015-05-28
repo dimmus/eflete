@@ -20,7 +20,6 @@
 #include "history.h"
 #include "history_private.h"
 
-static  Elm_Genlist_Item_Class *_itc_module = NULL;
 static  Elm_Genlist_Item_Class *_itc_change = NULL;
 static  Elm_Genlist_Item_Class *_itc_change_inactive = NULL;
 
@@ -50,30 +49,6 @@ _on_change_selected(void *data,
    else if (delta < 0)
      history_redo(module->target, abs(delta));
    return;
-}
-
-static void
-_on_discard_changes_selected(void *data,
-                           Evas_Object *obj __UNUSED__,
-                           void *event_info __UNUSED__)
-{
-   Module *module = (Module *)data;
-
-   int index_curr = 0;
-
-   if (module->current_change)
-     index_curr = module->current_change->index;
-
-   history_undo(module->target, index_curr);
-}
-
-
-static char *
-_module_item_label_get(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
-                const char *part __UNUSED__)
-{
-   return strdup("Discard all changes");
 }
 
 Eina_Bool
@@ -133,16 +108,6 @@ _history_ui_add(Evas_Object *parent)
 {
    Evas_Object *genlist = NULL;
 
-   if (!_itc_module)
-     {
-        _itc_module = elm_genlist_item_class_new();
-        _itc_module->item_style = "level1";
-        _itc_module->func.text_get = _module_item_label_get;
-        _itc_module->func.content_get = NULL;
-        _itc_module->func.state_get = NULL;
-        _itc_module->func.del = NULL;
-     }
-
    if (!_itc_change)
      {
         _itc_change = elm_genlist_item_class_new();
@@ -189,6 +154,7 @@ _history_ui_item_update(Diff *change, Eina_Bool active, Eina_Bool current)
    else
      {
         elm_genlist_item_item_class_update(change->ui_item, _itc_change_inactive);
+        elm_genlist_item_selected_set(change->ui_item, false);
         elm_genlist_item_class_ref(_itc_change_inactive);
         elm_genlist_item_class_unref(_itc_change);
      }
@@ -208,14 +174,6 @@ _history_ui_item_add(Diff *change, Module *module)
 }
 
 void
-_history_module_ui_item_add(History *history, Module *module)
-{
-   module->ui_item = elm_genlist_item_append(history->genlist, _itc_module,
-                                             NULL, NULL, ELM_GENLIST_ITEM_NONE,
-                                             _on_discard_changes_selected, module);
-}
-
-void
 _history_ui_list_reload(History *history, Module *module)
 {
    Eina_List *l, *l_next;
@@ -223,7 +181,6 @@ _history_ui_list_reload(History *history, Module *module)
    Eina_Bool canceled = false;
 
    elm_genlist_clear(history->genlist);
-   _history_module_ui_item_add(history, module);
 
    if (!module->current_change) canceled = true;
 
@@ -246,4 +203,3 @@ _history_ui_list_reload(History *history, Module *module)
      }
    return;
 }
-

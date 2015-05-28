@@ -107,6 +107,18 @@ ui_panes_left_panes_min_size_toggle(App_Data *ap, Eina_Bool is_on)
 #undef PANES_MIN_SIZE_LEFT
 #undef PANES_MIN_SIZE_RIGHT
 
+static void
+_on_discard_changes_selected(void *data,
+                            Evas_Object *obj __UNUSED__,
+                            void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+
+   history_undo(ap->project->current_style->obj,
+                history_diff_count_get(ap->project->current_style->obj));
+}
+
+
 Eina_Bool
 ui_panes_add(App_Data *ap)
 {
@@ -204,9 +216,17 @@ ui_panes_add(App_Data *ap)
    elm_layout_content_set(ap->panes.left_hor, "right", ap->block.left_bottom);
    evas_object_show(ap->block.left_bottom);
 
+   TODO("STOP! it's last changes in this archaic module. All this module must be refactored, and merget to main window!!!!")
    block = ui_block_add(ap->win_layout);
    elm_layout_text_set(block, "elm.text", _("History of changes"));
    elm_object_part_content_set(panes_right_hor, "left", block);
+   ap->block.right_top_btn = elm_button_add(block);
+   elm_object_text_set(ap->block.right_top_btn, _("Discard"));
+   elm_object_disabled_set(ap->block.right_top_btn, true);
+   evas_object_smart_callback_add(ap->block.right_top_btn, "clicked", _on_discard_changes_selected, (void*)ap);
+   evas_object_show(ap->block.right_top_btn);
+   elm_object_part_content_set(block, "elm.swallow.title", ap->block.right_top_btn);
+   elm_object_signal_emit(block, "title,content,show", "eflete");
    evas_object_show(block);
    ap->block.right_top = block;
 

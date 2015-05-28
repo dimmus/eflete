@@ -229,7 +229,8 @@ history_undo(Evas_Object *source, int count)
      module->current_change = eina_list_data_get(prev);
 
    _history_ui_item_update(diff, false, false);
-   if (count > 1) result = history_undo(source, --count);
+   elm_genlist_item_selected_set(diff->ui_item, false);
+   if (count > 0) result = history_undo(source, --count);
 
    if (module->current_change)
      _history_ui_item_update(module->current_change, true, true);
@@ -299,7 +300,6 @@ history_module_add(Evas_Object *source)
    module = (Module *)mem_calloc(1, sizeof(Module));
    module->target = source;
    evas_object_data_set(module->target, HISTORY_MODULE_KEY, module);
-   _history_module_ui_item_add(history, module);
    history->modules = eina_list_append(history->modules, module);
    evas_object_show(history->genlist);
    return true;
