@@ -1520,9 +1520,27 @@ ui_property_state_set(Evas_Object *property, Part *part)
    if ((part->type != EDJE_PART_TYPE_TABLE) && (part->type != EDJE_PART_TYPE_BOX))
      ui_property_state_container_unset(property);
 
+   /* hide/show the color class attribute control for GROUP */
+   if (part->type == EDJE_PART_TYPE_GROUP)
+     {
+        if (evas_object_visible_get(pd_state.color_class_item))
+          {
+             elm_box_unpack(box, pd_state.color_class_item);
+             evas_object_hide(pd_state.color_class_item);
+          }
+     }
+   else
+     {
+        if (!evas_object_visible_get(pd_state.color_class_item))
+          {
+             elm_box_pack_end(box, pd_state.color_class_item);
+             evas_object_show(pd_state.color_class_item);
+          }
+     }
    /* hide/show the color attribute control */
    if (part->type == EDJE_PART_TYPE_TEXTBLOCK ||
        part->type == EDJE_PART_TYPE_SWALLOW ||
+       part->type == EDJE_PART_TYPE_GROUP ||
        part->type == EDJE_PART_TYPE_SPACER)
      {
         if (evas_object_visible_get(pd_state.color_item))
