@@ -1396,9 +1396,15 @@ ui_widget_list_style_parts_reload(Evas_Object *object, Style *style)
 
    EINA_INLIST_FOREACH(style->parts, _part)
      {
-        eoi = elm_genlist_item_append(gl_parts, _itc_part, _part,
-                                      NULL, ELM_GENLIST_ITEM_NONE,
-                                      _on_part_select, nf);
+        if ((_part->type == EDJE_PART_TYPE_TABLE) ||
+            (_part->type == EDJE_PART_TYPE_BOX))
+          eoi = elm_genlist_item_append(gl_parts, _itc_container, _part,
+                                        NULL, ELM_GENLIST_ITEM_TREE,
+                                        _on_part_select, nf);
+        else
+          eoi = elm_genlist_item_append(gl_parts, _itc_part, _part,
+                                        NULL, ELM_GENLIST_ITEM_NONE,
+                                        _on_part_select, nf);
         elm_object_item_data_set(eoi, _part);
      }
 }
