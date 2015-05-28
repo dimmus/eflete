@@ -241,6 +241,18 @@ history_undo(Evas_Object *source, int count)
    return result;
 }
 
+int
+history_diff_count_get(Evas_Object *source)
+{
+   int count = 0;
+   Module *module;
+
+   module = evas_object_data_get(source, HISTORY_MODULE_KEY);
+   if (module) count = eina_list_count(module->changes);
+
+   return count;
+}
+
 Eina_Bool
 history_clear(History *history)
 {
