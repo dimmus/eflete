@@ -469,16 +469,20 @@ _part_reordered(Evas_Object *data,
    Part *part = NULL;
    Elm_Object_Item *rel = elm_genlist_item_next_get(item);
    elm_genlist_item_selected_set(item, true);
-   if (rel)
+
+   if (!elm_genlist_item_parent_get(item))
      {
-        part = elm_object_item_data_get(rel);
-        evas_object_smart_callback_call(tabs, "wl,part,moved,up", part);
-     }
-   else
-     {
-        rel = elm_genlist_item_prev_get(item);
-        part =  elm_object_item_data_get(rel);
-        evas_object_smart_callback_call(tabs, "wl,part,moved,down", part);
+        if (rel)
+          {
+             part = elm_object_item_data_get(rel);
+             evas_object_smart_callback_call(tabs, "wl,part,moved,up", part);
+          }
+        else
+          {
+             rel = elm_genlist_item_prev_get(item);
+             part =  elm_object_item_data_get(rel);
+             evas_object_smart_callback_call(tabs, "wl,part,moved,down", part);
+          }
      }
 }
 
