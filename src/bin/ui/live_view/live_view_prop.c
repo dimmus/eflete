@@ -186,7 +186,7 @@ live_view_property_style_set(Evas_Object *property,
 
    if (!pd->header)
      {
-        LAYOUT_PROP_ADD(parent, "Scale: ", "live_view", "header")
+        LAYOUT_PROP_ADD(parent, _("Scale:"), "live_view", "header")
 
         SPINNER_ADD(item, spinner, 1, 500, 1, true);
         elm_object_style_set(spinner, "live_view");
