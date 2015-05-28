@@ -458,9 +458,6 @@ group { name: "elm/spinner/base/live_view";
             min: 16 19;
             max: 16 19;
             fixed: 1 1;
-            rel1 {
-               offset: 1 0;
-            }
             image {
                normal: "spinner-scale-decrease.png";
                middle: DEFAULT;
@@ -482,9 +479,6 @@ group { name: "elm/spinner/base/live_view";
             min: 16 19;
             max: 16 19;
             fixed: 1 1;
-            rel2 {
-               offset: -2 -1;
-            }
             image {
                normal: "spinner-scale-increase.png";
                middle: DEFAULT;
