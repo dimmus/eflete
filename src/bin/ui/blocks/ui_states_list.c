@@ -93,14 +93,14 @@ ui_states_list_add(Evas_Object *parent)
    BOX_ADD(parent, box_btn, true, false)
    elm_box_align_set(box_btn, 1.0, 0.5);
    btn = elm_button_add(box_btn);
-   elm_object_style_set(btn, "simple");
+   elm_object_style_set(btn, "anchor");
    evas_object_smart_callback_add(btn, "clicked", _add_state_cb, box);
    evas_object_show(btn);
    ICON_STANDARD_ADD(btn, ic, true, "plus");
    elm_object_part_content_set(btn, NULL, ic);
    elm_box_pack_end(box_btn, btn);
    btn = elm_button_add(box_btn);
-   elm_object_style_set(btn, "simple");
+   elm_object_style_set(btn, "anchor");
    evas_object_smart_callback_add(btn, "clicked", _del_state_cb, box);
    evas_object_show(btn);
    ICON_STANDARD_ADD(btn, ic, true, "minus");
