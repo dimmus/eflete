@@ -860,17 +860,6 @@ group { name: "elm/button/base/simple";
       }
    }
 }
-group { name: "elm/button/base/separate";
-   inherit: "elm/button/base/simple";
-   parts {
-      part { name: "bg";
-         description { state: "default" 0.0;
-            visible: 1;
-            color: 48 48 48 255;
-         }
-      }
-   }
-}
 
 group { name: "elm/button/base/elipsis";
    images {
