@@ -68,6 +68,7 @@ ui_states_list_add(Evas_Object *parent)
    if (!parent) return NULL;
 
    BOX_ADD(parent, box, false, false)
+   elm_box_padding_set(box, 0, 6);
    gl_states = elm_genlist_add(parent);
    evas_object_size_hint_align_set(gl_states,
                                    EVAS_HINT_FILL,
@@ -95,6 +96,8 @@ ui_states_list_add(Evas_Object *parent)
    btn = elm_button_add(box_btn);
    elm_object_style_set(btn, "anchor");
    evas_object_smart_callback_add(btn, "clicked", _add_state_cb, box);
+   elm_object_disabled_set(btn, true);
+   evas_object_data_set(box, "st_btn_plus", btn);
    evas_object_show(btn);
    ICON_STANDARD_ADD(btn, ic, true, "plus");
    elm_object_part_content_set(btn, NULL, ic);
@@ -102,6 +105,8 @@ ui_states_list_add(Evas_Object *parent)
    btn = elm_button_add(box_btn);
    elm_object_style_set(btn, "anchor");
    evas_object_smart_callback_add(btn, "clicked", _del_state_cb, box);
+   elm_object_disabled_set(btn, true);
+   evas_object_data_set(box, "st_btn_minus", btn);
    evas_object_show(btn);
    ICON_STANDARD_ADD(btn, ic, true, "minus");
    elm_object_part_content_set(btn, NULL, ic);
@@ -157,6 +162,8 @@ ui_states_list_data_set(Evas_Object *object,
         elm_object_item_data_set(stit, (void *)state);
         elm_object_item_del_cb_set(stit, _item_del);
      }
+   elm_object_disabled_set(evas_object_data_get(object, "st_btn_plus"), false);
+   elm_object_disabled_set(evas_object_data_get(object, "st_btn_minus"), false);
    edje_edit_string_list_free(states);
 
    eina_stringshare_del(curr_state);
@@ -171,6 +178,8 @@ ui_states_list_data_unset(Evas_Object *object)
 
    if (!object) return false;
 
+   elm_object_disabled_set(evas_object_data_get(object, "st_btn_plus"), true);
+   elm_object_disabled_set(evas_object_data_get(object, "st_btn_minus"), true);
    gl = evas_object_data_get(object, "st_gl");
    evas_object_data_del(object, STLIST_PART_KEY);
    elm_genlist_clear(gl);
