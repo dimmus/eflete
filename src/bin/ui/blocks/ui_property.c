@@ -442,6 +442,10 @@ _on_tab_activated(void *data,
    ap->enventor_mode = !ap->enventor_mode;
 }
 
+void
+ui_property_code_of_group_setup(Evas_Object *property __UNUSED__)
+{
+}
 #else
 
 void

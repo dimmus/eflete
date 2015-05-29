@@ -923,7 +923,7 @@ _progress_end(void *data, PM_Project_Result result)
                                      evas_object_evas_get(ap->win),
                                      ap->project->mmap_file);
         enventor_object_focus_set(ap->enventor, true);
-        pm_save_to_dev(ap->project, ap->project->current_style);
+        pm_save_to_dev(ap->project, ap->project->current_style, true);
      }
 #endif /* HAVE_ENVENTOR */
 
@@ -950,7 +950,7 @@ _setup_save_splash(void *data, Splash_Status status __UNUSED__)
                                           _progress_print,
                                           _progress_end,
                                           data);
-        pm_save_to_dev(ap->project, ap->project->current_style);
+        pm_save_to_dev(ap->project, ap->project->current_style, true);
      }
    else
      {
