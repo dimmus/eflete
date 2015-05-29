@@ -172,6 +172,7 @@ ui_states_list_data_unset(Evas_Object *object)
    if (!object) return false;
 
    gl = evas_object_data_get(object, "st_gl");
+   evas_object_data_del(object, STLIST_PART_KEY);
    elm_genlist_clear(gl);
    evas_object_hide(gl);
 
