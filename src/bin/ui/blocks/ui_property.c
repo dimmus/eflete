@@ -2966,6 +2966,15 @@ prop_part_item_source_update(Prop_Data *pd)
    PART_ITEM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
    PART_ITEM_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
+#define PART_ITEM_MINMAX_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+                                       L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
+                                       TYPE, HISTORY_TYPE, DIF_VALUE1, DIF_VALUE2, CHECK) \
+   PART_ITEM_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, DIF_VALUE1, CHECK) \
+   PART_ITEM_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, DIF_VALUE2, CHECK) \
+   PART_ITEM_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, \
+                               MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
+                               TOOLTIP1, TOOLTIP2, MULTIPLIER)
+
 #define PART_ITEM_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                                 L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
                                 TYPE, HISTORY_TYPE) \
@@ -2988,14 +2997,14 @@ prop_part_item_source_update(Prop_Data *pd)
                                          TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
 PART_ITEM_ATTR_1COMBOBOX(_("source"), part_item, source, part_item, _("Sets the group this object will be made from."))
-PART_ITEM_ATTR_2SPINNER(_("min"), part_item, min_w, min_h, part_item,
+PART_ITEM_MINMAX_ATTR_2SPINNER(_("min"), part_item, min_w, min_h, part_item,
                     0.0, 999.0, 1.0, NULL, "x:", "%", "y:", "%",
                     _("Set the item minimum size hint width in pixels"), _("Set the item minimum size hint height in pixels"),
-                    1, int, VAL_INT)
-PART_ITEM_ATTR_2SPINNER(_("max"), part_item, max_w, max_h, part_item,
+                    1, int, VAL_INT, max_w, max_h, >)
+PART_ITEM_MINMAX_ATTR_2SPINNER(_("max"), part_item, max_w, max_h, part_item,
                     0.0, 999.0, 1.0, NULL, "x:", "%", "y:", "%",
                     _("Set the item maximum size hint width in pixels"), _("Set the item maximum size hint height in pixels"),
-                    1, int, VAL_INT)
+                    1, int, VAL_INT, min_w, min_h, <)
 PART_ITEM_ATTR_2SPINNER(_("prefer"), part_item, prefer_w, prefer_h, part_item,
                     0.0, 999.0, 1.0, NULL, "w:", "px", "h:", "px",
                     _("Set the item prefered size hint width in pixels"), _("Set the item prefered size hint height in pixels"),

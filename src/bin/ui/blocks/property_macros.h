@@ -1087,6 +1087,44 @@ COMMON_2SPINNER_ADD(PART_ITEM, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  * @param TYPE The spinner value type: int, double
  * @param HISTORY_TYPE The history value type: VAL_INT, VAL_DOUBLE
  * @param MULTIPLIER The multiplier to convert the value to percent
+ * @param DIF_VALUE opposite to VALUE attribute
+ * @param CHECK function that compire DIF_VALUE and VALUE attribute
+ *
+ * @ingroup Property_Macro
+ */
+TODO("Add support PART_ITEM attributes to history")
+TODO("After history support please refactor and merge this macro with STATE_MINMAX_ATTR_SPINNER_CALLBACK")
+#define PART_ITEM_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, DIF_VALUE, CHECK) \
+static void \
+_on_##MEMBER##_##VALUE##_change(void *data, \
+                                Evas_Object *obj, \
+                                void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   TYPE value = elm_spinner_value_get(obj); \
+   TYPE opposite_value = edje_edit_##SUB##_##DIF_VALUE##_get(pd->wm_style->obj PART_ITEM_ARGS); \
+   value /= MULTIPLIER; \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
+     return; \
+   if (value CHECK opposite_value) \
+     { \
+        if (!edje_edit_##SUB##_##DIF_VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
+          return; \
+        elm_spinner_value_set(pd->state.DIF_VALUE, value); \
+     } \
+   project_changed(false); \
+   workspace_edit_object_recalc(pd->workspace); \
+   COMMON_1SPINNER_UPDATE(SUB, DIF_VALUE, MEMBER, TYPE, MULTIPLIER, PART_ITEM_ARGS) \
+}
+
+/**
+ * Macro defines a callback for PART_ITEM2SPINNER_ADD.
+ *
+ * @param SUB The prefix of main parameter of state attribute;
+ * @param VALUE The value of state attribute.
+ * @param TYPE The spinner value type: int, double
+ * @param HISTORY_TYPE The history value type: VAL_INT, VAL_DOUBLE
+ * @param MULTIPLIER The multiplier to convert the value to percent
  *
  * @ingroup Property_Macro
  */
