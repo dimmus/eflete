@@ -20,6 +20,8 @@
 #include "colorclass_editor.h"
 #include "main_window.h"
 
+TODO("Rename this file to colorclass_manager")
+
 typedef struct _Colorclass_Item Colorclass_Item;
 typedef struct _Colorclasses_Editor Colorclasses_Editor;
 
@@ -53,6 +55,14 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
 };
 
 static Elm_Genlist_Item_Class *_itc_ccl = NULL;
+
+static void
+_on_value_changed(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   project_changed(false);
+}
 
 static void
 _on_spinner_value_changed(void *data,
@@ -108,7 +118,6 @@ _on_spinner_value_changed(void *data,
                           ccl_edit->current_ccl->r3, ccl_edit->current_ccl->g3,
                           ccl_edit->current_ccl->b3, ccl_edit->current_ccl->a3);
    ccl_edit->changed = true;
-
 }
 
 void _disable(Eina_Bool disabled, Colorclasses_Editor *ccl_edit)
@@ -158,13 +167,6 @@ _on_ccl_editor_close(void *data,
                       void *event_info __UNUSED__)
 {
    Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
-   Style *style = NULL;
-   if (ccl_edit->changed)
-     {
-        GET_STYLE(ccl_edit->pr, style);
-        if (style) style->isModify = true;
-        project_changed();
-     }
 
    elm_genlist_item_class_free(_itc_ccl);
    _itc_ccl = NULL;
@@ -252,6 +254,8 @@ _on_add_popup_btn_add(void *data,
    ccl_edit->popup = NULL;
    _disable(EINA_FALSE, ccl_edit);
    ccl_edit->changed = true;
+
+   project_changed(false);
 }
 
 static void
@@ -322,6 +326,7 @@ _on_btn_add(void *data,
    elm_object_part_content_set(ccl_edit->popup, "button2", bt_no);
 
    evas_object_show(ccl_edit->popup);
+   elm_object_focus_set(ccl_edit->entry, true);
 }
 
 static char *
@@ -415,6 +420,7 @@ _on_btn_del(void *data,
          _disable(EINA_TRUE, ccl_edit);
       }
    elm_object_item_del(it);
+   project_changed(false);
 }
 /*button callbacks end*/
 
@@ -479,7 +485,7 @@ _on_mwin_del(void * data,
 Evas_Object *
 colorclass_viewer_add(Project *project)
 {
-   Evas_Object *button,  *panes;
+   Evas_Object *button,  *panes, *ic;
    Evas_Object *label, *color;
    Evas_Object *box, *bottom_box, *param_box, *scr_box;
    Evas_Object *scroller = NULL;
@@ -497,7 +503,15 @@ colorclass_viewer_add(Project *project)
    ccl_edit->changed = false;
    ccl_edit->pr = project;
    ccl_edit->mwin = mw_add(_on_btn_cancel, ccl_edit);
-   mw_title_set(ccl_edit->mwin, _("Color class editor"));
+   if (!ccl_edit->mwin)
+     {
+        free(ccl_edit);
+        return NULL;
+     }
+   mw_title_set(ccl_edit->mwin, _("Color class manager"));
+   ic = elm_icon_add(ccl_edit->mwin);
+   elm_icon_standard_set(ic, "color");
+   mw_icon_set(ccl_edit->mwin, ic);
    evas_object_event_callback_add(ccl_edit->mwin, EVAS_CALLBACK_FREE,
                                   _on_ccl_editor_close, ccl_edit);
 
@@ -572,6 +586,8 @@ colorclass_viewer_add(Project *project)
    evas_object_size_hint_align_set(spinner, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    evas_object_smart_callback_add(spinner, "changed", \
                            _on_spinner_value_changed, ccl_edit); \
+   evas_object_smart_callback_add(spinner, "delay,changed", \
+                                  _on_value_changed, ccl_edit); \
    elm_box_pack_end(box, spinner); \
    evas_object_show(spinner);
 

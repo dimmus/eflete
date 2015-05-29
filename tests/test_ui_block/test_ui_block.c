@@ -34,9 +34,6 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, ui_block_signal_list_test_p);
    tcase_add_test(tcase, ui_block_signal_list_test_n1);
    tcase_add_test(tcase, ui_block_signal_list_test_n2);
-   tcase_add_test(tcase, ui_block_state_list_test_p);
-   tcase_add_test(tcase, ui_block_state_list_test_n1);
-   tcase_add_test(tcase, ui_block_state_list_test_n2);
    tcase_add_test(tcase, ui_block_property_test_p);
    tcase_add_test(tcase, ui_block_property_test_n1);
    tcase_add_test(tcase, ui_block_property_test_n2);

@@ -29,10 +29,10 @@
  * by using user's theme (already saved one).
  */
 
-#include "live_widget.h"
 #include "widget_manager.h"
 #include "project_manager.h"
 #include "common_macro.h"
+#include "live_widget.h"
 #include <Evas.h>
 #include <Elementary.h>
 
@@ -49,6 +49,7 @@ struct _Live_View
    Evas_Object *panel; /**< panel for Live View properties */
    Evas_Object *object; /**< current widget for being showed in live view */
    Evas_Object *property; /**< Live View properties */
+   Evas_Object *parent; /**< Live View block */
    Eina_Bool in_prog_edit; /**< Flag is this liveview in program editor */
 };
 typedef struct _Live_View Live_View;

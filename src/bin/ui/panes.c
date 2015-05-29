@@ -19,6 +19,8 @@
 
 #include "config.h"
 #include "ui_block.h"
+#include "ui_signal_list.h"
+#include "ui_states_list.h"
 
 struct _Window_Attributes
 {
@@ -105,13 +107,27 @@ ui_panes_left_panes_min_size_toggle(App_Data *ap, Eina_Bool is_on)
 #undef PANES_MIN_SIZE_LEFT
 #undef PANES_MIN_SIZE_RIGHT
 
+static void
+_on_discard_changes_selected(void *data,
+                            Evas_Object *obj __UNUSED__,
+                            void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+
+   history_undo(ap->project->current_style->obj,
+                history_diff_count_get(ap->project->current_style->obj));
+}
+
+
 Eina_Bool
 ui_panes_add(App_Data *ap)
 {
    Config *config;
    Evas_Object *block;
    Evas_Object *panes_left, *panes_left_hor, *panes_right;
-   Evas_Object *panes_center, *panes_center_down, *panes_right_hor;
+   Evas_Object *panes_center, *panes_right_hor;
+   Ewe_Tabs_Item *tab_item;
+
    if ((!ap) || (!ap->win_layout))
      {
         ERR("Can't create the panes. Application Data is NULL");
@@ -155,18 +171,11 @@ ui_panes_add(App_Data *ap)
    elm_panes_content_left_size_set(panes_center, config->panes.center);
    elm_object_part_content_set(panes_right, "left", panes_center);
 
-   panes_center_down = elm_panes_add(ap->win_layout);
-   evas_object_size_hint_weight_set(panes_center_down, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(panes_center_down, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_panes_content_left_size_set(panes_center_down, config->panes.center_down);
-   elm_object_part_content_set(panes_center, "right", panes_center_down);
-
    ap->panes.left = panes_left;
    ap->panes.right = panes_right;
    ap->panes.left_hor = panes_left_hor;
    ap->panes.right_hor = panes_right_hor;
    ap->panes.center = panes_center;
-   ap->panes.center_down = panes_center_down;
 
    ui_panes_left_panes_min_size_toggle(ap, true);
 
@@ -177,17 +186,9 @@ ui_panes_add(App_Data *ap)
    evas_object_smart_callback_add(panes_center, "clicked,double",
                                   _double_click_center_panes_down_cb, NULL);
 
-
-   block = ui_block_add(ap->win_layout);
-   elm_layout_text_set(block, "elm.text", _("Part States"));
-   elm_object_part_content_set(panes_center_down, "left", block);
-
-   evas_object_show(block);
-   ap->block.bottom_left = block;
-
    block = ui_block_add(ap->win_layout);
    elm_layout_text_set(block, "elm.text", _("Live View"));
-   elm_object_part_content_set(panes_center_down, "right", block);
+   elm_object_part_content_set(panes_center, "right", block);
    evas_object_show(block);
    ap->block.bottom_right = block;
 
@@ -203,20 +204,34 @@ ui_panes_add(App_Data *ap)
    evas_object_show(block);
    ap->block.left_top = block;
 
-   block = ui_block_add(ap->win_layout);
-   elm_layout_text_set(block, "elm.text", _("Using Signals"));
-   elm_object_part_content_set(panes_left_hor, "right", block);
-   evas_object_show(block);
-   ap->block.left_bottom = block;
+   /* add tab with the signal and signal lists */
+   ap->block.left_bottom = ewe_tabs_add(ap->win_layout);
+   tab_item = ewe_tabs_item_append(ap->block.left_bottom, NULL, _("Part states"), NULL);
+   ap->block.state_list = ui_states_list_add(ap->win_layout);
+   ewe_tabs_item_content_set(ap->block.left_bottom, tab_item, ap->block.state_list);
 
+   tab_item = ewe_tabs_item_append(ap->block.left_bottom, NULL, _("Using signals"), NULL);
+   ap->block.signal_list = ui_signal_list_add(ap->win_layout);
+   ewe_tabs_item_content_set(ap->block.left_bottom, tab_item, ap->block.signal_list);
+   elm_layout_content_set(ap->panes.left_hor, "right", ap->block.left_bottom);
+   evas_object_show(ap->block.left_bottom);
+
+   TODO("STOP! it's last changes in this archaic module. All this module must be refactored, and merget to main window!!!!")
    block = ui_block_add(ap->win_layout);
-   elm_layout_text_set(block, "elm.text", _("History of changes"));
+   elm_layout_text_set(block, "elm.text", _("History"));
    elm_object_part_content_set(panes_right_hor, "left", block);
+   ap->block.right_top_btn = elm_button_add(block);
+   elm_object_text_set(ap->block.right_top_btn, _("Discard"));
+   elm_object_disabled_set(ap->block.right_top_btn, true);
+   evas_object_smart_callback_add(ap->block.right_top_btn, "clicked", _on_discard_changes_selected, (void*)ap);
+   evas_object_show(ap->block.right_top_btn);
+   elm_object_part_content_set(block, "elm.swallow.title", ap->block.right_top_btn);
+   elm_object_signal_emit(block, "title,content,show", "eflete");
    evas_object_show(block);
    ap->block.right_top = block;
 
    block = ui_block_add(ap->win_layout);
-   elm_layout_text_set(block, "elm.text", _("Property"));
+   ui_block_title_visible(block, false);
    elm_object_part_content_set(panes_right_hor, "right", block);
    evas_object_show(block);
    ap->block.right_bottom = block;

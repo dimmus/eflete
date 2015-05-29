@@ -20,13 +20,19 @@
 #include "live_elementary_widgets.h"
 
 Evas_Object *
-widget_separator_create(Evas_Object *parent, const char *class, const char *style __UNUSED__)
+widget_separator_create(Evas_Object *parent, const Style *style)
 {
+   Eina_Stringshare *class;
+   Eina_Stringshare *style_name;
+   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+
    Evas_Object *rect, *object, *separator;
    Eina_Bool is_horizontal;
 
    object = elm_box_add(parent);
    separator = elm_separator_add(parent);
+
+   elm_object_style_set(separator, style_name);
 
    is_horizontal = !strcmp(class, "horizontal");
    elm_box_horizontal_set(object, !is_horizontal);
@@ -40,10 +46,10 @@ widget_separator_create(Evas_Object *parent, const char *class, const char *styl
         elm_box_pack_end(object, rect); \
         evas_object_show(rect);
 
-        _ADD_RECT(COLOR_BLUE_LIGHT);
-        elm_box_pack_end(object, separator);
-        evas_object_show(separator);
-        _ADD_RECT(COLOR_BLUE_DARK);
+   _ADD_RECT(COLOR_BLUE_LIGHT);
+   elm_box_pack_end(object, separator);
+   evas_object_show(separator);
+   _ADD_RECT(COLOR_BLUE_DARK);
 
 #undef _ADD_RECT
 
@@ -51,5 +57,7 @@ widget_separator_create(Evas_Object *parent, const char *class, const char *styl
    evas_object_data_set(object, TEXT_FUNC, on_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, send_signal);
 
+   eina_stringshare_del(class);
+   eina_stringshare_del(style_name);
    return object;
 }

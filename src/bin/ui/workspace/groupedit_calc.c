@@ -65,13 +65,16 @@ static void
 _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file);
 
 static void
+_proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
+
+static void
 _text_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
 
 static void
 _textblock_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
 
 static void
-_group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file);
+_group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file, Evas *e);
 
 static void
 _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp);
@@ -409,6 +412,10 @@ static void
 _groupedit_part_free(Groupedit_Part *gp)
 {
    Groupedit_Item *ge_item = NULL;
+   /* just in case */
+   Evas_Object *image = NULL;
+   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
+   evas_object_del(image);
    evas_object_del(gp->draw);
    eina_stringshare_del(gp->name);
    evas_object_smart_member_del(gp->border);
@@ -479,6 +486,7 @@ _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd)
 void
 _select_item_move_to_top(Ws_Groupedit_Smart_Data *sd)
 {
+
    int x, y, w, h;
    if (sd->selected == sd->to_select) return;
    if (sd->selected) _selected_item_return_to_place(sd);
@@ -519,9 +527,8 @@ _part_separete_mod_mouse_click_cb(void *data,
 
    if (emd->button != 1) return;
    sd->to_select = gp;
-   _select_item_move_to_top(sd);
    evas_object_smart_callback_call(sd->obj, SIG_PART_SELECTED,
-                                   (void *)sd->selected->name);
+                                  (void *)gp->name);
 }
 
 static void
@@ -661,6 +668,7 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
    Evas_Coord part_x, part_y, abs_x, abs_y;
    Eina_List *l, *l_n, *l_sp, *l_sp_n;
    Groupedit_Item *ge_item = NULL, *sp_item = NULL;
+   Edje_Part_Type type;
 
    edje_object_part_geometry_get(sd->edit_obj, gp->name, &x, &y, &w, &h);
    evas_object_geometry_get(sd->edit_obj, &xe, &ye, NULL, NULL);
@@ -674,7 +682,9 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
 
    GP_REAL_GEOMETRY_CALC(part_x, part_y, abs_x, abs_y)
 
-   evas_object_smart_calculate(gp->draw);
+   type = edje_edit_part_type_get(sd->edit_obj, gp->name);
+   if (type == EDJE_PART_TYPE_BOX)
+     evas_object_smart_calculate(gp->draw);
 
    /* We don't need xe or ye for box items */
    xe = 0;
@@ -691,12 +701,10 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
                {
                   EINA_LIST_FOREACH_SAFE(ge_item->spread, l_sp, l_sp_n, sp_item)
                     {
-                       /* If it is BOX then there are borders are exist.
-                        * If border is not exist then it is TABLE's item
-                        *
-                        * TODO: check parts item by it's type, not by "border"
-                        * existence. */
-                       if (sp_item->border)
+                       /* If it is BOX then there are borders exists.
+                        * If border is not exist then it is TABLE's item.
+                        */
+                       if (type == EDJE_PART_TYPE_BOX)
                          evas_object_geometry_get(sp_item->border, &x, &y, &w, &h);
                        else
                          {
@@ -780,15 +788,16 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
               _rectangle_param_update(gp, sd->edit_obj);
               _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
-
            case EDJE_PART_TYPE_TEXT:
               _text_param_update(gp, sd->edit_obj);
               _part_text_recalc_apply(sd, gp, offset_x, offset_y);
               break;
-
            case EDJE_PART_TYPE_IMAGE:
-           case EDJE_PART_TYPE_PROXY: // it part like image
               _image_param_update(gp, sd->edit_obj, sd->edit_obj_file);
+              _part_recalc_apply(sd, gp, offset_x, offset_y);
+              break;
+           case EDJE_PART_TYPE_PROXY: // it part like image
+              _proxy_param_update(gp, sd->edit_obj);
               _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
            case EDJE_PART_TYPE_TEXTBLOCK:
@@ -796,7 +805,7 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
               _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
            case EDJE_PART_TYPE_GROUP:
-              _group_param_update(gp, sd->edit_obj, sd->edit_obj_file);
+              _group_param_update(gp, sd->edit_obj, sd->edit_obj_file, sd->e);
               _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
            case EDJE_PART_TYPE_TABLE:
@@ -858,6 +867,7 @@ _image_delete(void *data __UNUSED__,
 static Groupedit_Part *
 _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type type)
 {
+   Evas_Object *o;
    Groupedit_Part *gp;
 
    gp = mem_calloc(1, sizeof(Groupedit_Part));
@@ -877,15 +887,24 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          BORDER_ADD(122, 122, 122, 255)
          break;
       case EDJE_PART_TYPE_IMAGE:
+         gp->draw = edje_object_add(sd->e);
+         if (!edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP))
+           ERR("Image can't be loaded.\n");
+         evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_DEL,
+                                        _image_delete, NULL);
+         o = evas_object_image_add(sd->e);
+         edje_object_part_swallow(gp->draw, "swallow.image", o);
+         BORDER_ADD(0, 0, 0, 0)
+         break;
       case EDJE_PART_TYPE_PROXY: // it part like image
          gp->draw = edje_object_add(sd->e);
          if (!edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP))
            ERR("Image can't be loaded.\n");
          evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_DEL,
                                         _image_delete, NULL);
-         Evas_Object *o = evas_object_image_add(sd->e);
+         GET_IMAGE(o, sd->e, PROXY_IMG);
          edje_object_part_swallow(gp->draw, "swallow.image", o);
-         BORDER_ADD(0, 0, 0, 0)
+         BORDER_ADD(255, 112, 49, 255);
          break;
       case EDJE_PART_TYPE_SWALLOW:
          gp->draw = _part_swallow_add(sd->e);
@@ -901,11 +920,10 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          break;
       case EDJE_PART_TYPE_GROUP:
          gp->draw = edje_object_add(sd->e);
-         BORDER_ADD(122, 122, 122, 255)
+         BORDER_ADD(255, 109, 109, 255)
          break;
       case EDJE_PART_TYPE_TABLE:
-         gp->bg = evas_object_rectangle_add(sd->e);
-         evas_object_color_set(gp->bg, 49, 140, 141, 255);
+         GET_IMAGE(gp->bg, sd->e, TABLE_BG_IMG);
          gp->draw = _part_container_add(sd, part, &(gp->items), type);
          BORDER_ADD(138, 125, 109, 255)
          break;
@@ -918,8 +936,8 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
       default:
          /* Temporary solution for type parts, which not implemented yet.
           * Here created transparent rectangle as draw evas primitives.
-          * TODO: add support for all part types.
           */
+         TODO("add support for all part types.")
          gp->draw = evas_object_rectangle_add(sd->e);
          evas_object_color_set(gp->draw, 0, 0, 0, 0);
          break;
@@ -938,7 +956,6 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
 }
 
 #undef BORDER_ADD
-#undef IMAGE_PART_GROUP
 
 static void
 _part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part)
@@ -1073,79 +1090,98 @@ _part_container_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part, Eina_Li
    return container;
 }
 
+static inline void
+_colors_get(Groupedit_Part *gp, Evas_Object *edit_obj, const char *state, double value,
+            int *r, int *g, int *b, int *a,
+            int *r2, int *g2, int *b2, int *a2,
+            int *r3, int *g3, int *b3, int *a3)
+{
+   int cr, cg, cb, ca;
+   int cr2, cg2, cb2, ca2;
+   int cr3, cg3, cb3, ca3;
+   Eina_Stringshare *color_class;
+
+   if (r || g || b || a)
+     edje_edit_state_color_get(edit_obj, gp->name, state, value, r, g, b, a);
+   if (r2 || g2 || b2 || a2)
+     edje_edit_state_color2_get(edit_obj, gp->name, state, value, r2, g2, b2, a2);
+   if (r3 || g3 || b3 || a3)
+     edje_edit_state_color3_get(edit_obj, gp->name, state, value, r3, g3, b3, a3);
+
+   color_class = edje_edit_state_color_class_get(edit_obj, gp->name, state, value);
+   if (color_class)
+     {
+        if (edje_edit_color_class_colors_get(edit_obj, color_class, &cr, &cg, &cb, &ca,
+                                             &cr2, &cg2, &cb2, &ca2,
+                                             &cr3, &cg3, &cb3, &ca3))
+          {
+             if (r) *r = ((cr + 1) * *r) >> 8;
+             if (g) *g = ((cg + 1) * *g) >> 8;
+             if (b) *b = ((cb + 1) * *b) >> 8;
+             if (a) *a = ((ca + 1) * *a) >> 8;
+
+             if (r2) *r2 = ((cr2 + 1) * *r2) >> 8;
+             if (g2) *g2 = ((cg2 + 1) * *g2) >> 8;
+             if (b2) *b2 = ((cb2 + 1) * *b2) >> 8;
+             if (a2) *a2 = ((ca2 + 1) * *a2) >> 8;
+
+             if (r3) *r3 = ((cr3 + 1) * *r3) >> 8;
+             if (g3) *g3 = ((cg3 + 1) * *g3) >> 8;
+             if (b3) *b3 = ((cb3 + 1) * *b3) >> 8;
+             if (a3) *a3 = ((ca3 + 1) * *a3) >> 8;
+          }
+        eina_stringshare_del(color_class);
+     }
+
+   if (a) evas_color_argb_premul(*a, r, g, b);
+   if (a2) evas_color_argb_premul(*a2, r2, g2, b2);
+   if (a3) evas_color_argb_premul(*a3, r3, g3, b3);
+}
+
+static inline void
+_color_apply(Groupedit_Part *gp, Evas_Object *edit_obj, const char *state, double value)
+{
+   int r, g, b, a;
+   int r2, g2, b2, a2;
+   int r3, g3, b3, a3;
+
+   Edje_Part_Type ept = edje_edit_part_type_get(edit_obj, gp->name);
+   if (ept == EDJE_PART_TYPE_TEXT || ept == EDJE_PART_TYPE_TEXTBLOCK)
+     _colors_get(gp, edit_obj, state, value, &r, &g, &b, &a, &r2, &g2, &b2, &a2, &r3, &g3, &b3, &a3);
+   else
+     _colors_get(gp, edit_obj, state, value, &r, &g, &b, &a, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+   evas_object_color_set(gp->draw, r, g, b, a);
+   if (ept == EDJE_PART_TYPE_TEXT || ept == EDJE_PART_TYPE_TEXTBLOCK)
+     {
+        evas_object_text_shadow_color_set(gp->draw, r2, g2, b2, a2);
+        evas_object_text_outline_color_set(gp->draw, r3, g3, b3, a3);
+        evas_object_text_glow_color_set(gp->draw, r2, g2, b2, a2);
+        evas_object_text_glow2_color_set(gp->draw, r3, g3, b3, a3);
+     }
+}
 static void
 _rectangle_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 {
-   int r, g, b, a;
-   PART_STATE_GET(edit_obj, gp->name)
+   PART_STATE_GET(edit_obj, gp->name);
 
-   edje_edit_state_color_get(edit_obj, gp->name, state, value, &r, &g, &b, &a);
-   evas_object_color_set(gp->draw, r*a/255, g*a/255, b*a/255, a);
+   _color_apply(gp, edit_obj, state, value);
 
    PART_STATE_FREE
 }
 
 static void
-_image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
+_image_proxy_common_param_update(Evas_Object *image, Groupedit_Part *gp, Evas_Object *edit_obj)
 {
-   Evas_Load_Error err;
-   Evas_Object *image, *source_image = NULL;
-   const char *image_normal, *proxy_source;
-   const char *buf = NULL;
-   int r, g, b, a;
-   int id;
-   int bl, br, bt, bb;
    int x, y, w, h;
    int img_w, img_h;
    double fill_w, fill_h, fill_x, fill_y;
    int fill_origin_offset_x, fill_origin_offset_y, fill_size_offset_x, fill_size_offset_y;
-   unsigned char middle;
-   Ws_Groupedit_Smart_Data *sd;
-   Groupedit_Part *source;
 
    PART_STATE_GET(edit_obj, gp->name)
 
-   edje_edit_state_color_get(edit_obj, gp->name, state, value, &r, &g, &b, &a);
+   _color_apply(gp, edit_obj, state, value);
 
-   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
-   evas_object_color_set(image, r*a/255, g*a/255, b*a/255, a);
-
-   proxy_source = edje_edit_state_proxy_source_get(edit_obj, gp->name, state, value);
-   if (proxy_source)
-     {
-        sd = evas_object_data_get(gp->border, "sd");
-        source = _parts_list_find(sd->parts, proxy_source);
-
-        source_image = edje_object_part_swallow_get(source->draw, "swallow.image");
-        if (!source_image)
-          source_image = source->draw;
-        evas_object_image_source_set(image, source_image);
-        evas_object_image_source_clip_set(image, false);
-     }
-   else
-     {
-        image_normal = edje_edit_state_image_get(edit_obj, gp->name, state, value);
-        if (!image_normal) return;
-        id = edje_edit_image_id_get(edit_obj, image_normal);
-        buf = eina_stringshare_printf("edje/images/%i", id);
-        evas_object_image_file_set(image, file, buf);
-        err = evas_object_image_load_error_get(image);
-        if (err != EVAS_LOAD_ERROR_NONE)
-          WARN("Could not update image:\"%s\"\n",  evas_load_error_str(err));
-        edje_edit_string_free(image_normal);
-
-        edje_edit_state_image_border_get(edit_obj, gp->name, state, value,
-                                         &bl, &br, &bt, &bb);
-        evas_object_image_border_set(image, bl, br, bt, bb);
-
-        middle  = edje_edit_state_image_border_fill_get(edit_obj, gp->name, state, value);
-        if (middle == 0)
-          evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_NONE);
-        else if (middle == 1)
-          evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_DEFAULT);
-        else if (middle == 2)
-          evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_SOLID);
-     }
    /* setups settings from filled block  into evas image object*/
    evas_object_image_smooth_scale_set(image,
             edje_edit_state_fill_smooth_get(edit_obj, gp->name, state, value));
@@ -1173,23 +1209,98 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
    else if (fill_x || fill_y || (fill_w != 1) || (fill_h != 1) ||
             fill_origin_offset_x || fill_origin_offset_y ||
             fill_size_offset_x || fill_size_offset_y)
-         {
-           /* If image fill is scale and params are non default values, set
-              this params to evas image object */
-            evas_object_geometry_get(image, NULL, NULL, &img_w, &img_h);
-            x = (int)(img_w * fill_x) + fill_origin_offset_x;
-            y = (int)(img_h * fill_y) + fill_origin_offset_y;
-            w = (int)(img_w * fill_w) + fill_size_offset_x;
-            h = (int)(img_h * fill_h) + fill_size_offset_y;
-            evas_object_image_filled_set(image, false);
-            evas_object_image_fill_set(image, x, y, w, h);
-         }
-       else
-         /* If image fill is scale with default params. */
-         evas_object_image_filled_set(image, true);
+     {
+        /* If image fill is scale and params are non default values, set
+           this params to evas image object */
+        evas_object_geometry_get(image, NULL, NULL, &img_w, &img_h);
+        x = (int)(img_w * fill_x) + fill_origin_offset_x;
+        y = (int)(img_h * fill_y) + fill_origin_offset_y;
+        w = (int)(img_w * fill_w) + fill_size_offset_x;
+        h = (int)(img_h * fill_h) + fill_size_offset_y;
+        evas_object_image_filled_set(image, false);
+        evas_object_image_fill_set(image, x, y, w, h);
+     }
+   else
+     /* If image fill is scale with default params. */
+     evas_object_image_filled_set(image, true);
+}
+
+static void
+_image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
+{
+   Evas_Load_Error err;
+   Evas_Object *image;
+   const char *image_normal;
+   const char *buf = NULL;
+   int id;
+   int bl, br, bt, bb;
+   unsigned char middle;
+
+   PART_STATE_GET(edit_obj, gp->name)
+
+   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
+
+   image_normal = edje_edit_state_image_get(edit_obj, gp->name, state, value);
+   if (!image_normal) return;
+   id = edje_edit_image_id_get(edit_obj, image_normal);
+   buf = eina_stringshare_printf("edje/images/%i", id);
+   evas_object_image_file_set(image, file, buf);
+   err = evas_object_image_load_error_get(image);
+   if (err != EVAS_LOAD_ERROR_NONE)
+     WARN("Could not update image:\"%s\"\n",  evas_load_error_str(err));
+   edje_edit_string_free(image_normal);
+
+   edje_edit_state_image_border_get(edit_obj, gp->name, state, value,
+                                    &bl, &br, &bt, &bb);
+   evas_object_image_border_set(image, bl, br, bt, bb);
+
+   middle  = edje_edit_state_image_border_fill_get(edit_obj, gp->name, state, value);
+   if (middle == 0)
+     evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_NONE);
+   else if (middle == 1)
+     evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_DEFAULT);
+   else if (middle == 2)
+     evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_SOLID);
+
+   _image_proxy_common_param_update(image, gp, edit_obj);
 
    PART_STATE_FREE
    eina_stringshare_del(buf);
+}
+
+static void
+_proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
+{
+   Evas_Object *image, *source_image = NULL;
+   const char *proxy_source;
+   Ws_Groupedit_Smart_Data *sd;
+   Groupedit_Part *source;
+
+   PART_STATE_GET(edit_obj, gp->name)
+
+   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
+   evas_object_del(image);
+
+   sd = evas_object_data_get(gp->border, "sd");
+   proxy_source = edje_edit_state_proxy_source_get(edit_obj, gp->name, state, value);
+   if (proxy_source)
+     {
+        source = _parts_list_find(sd->parts, proxy_source);
+        source_image = edje_object_part_swallow_get(source->draw, "swallow.image");
+        if (!source_image)
+          source_image = source->draw;
+        image = evas_object_image_add(sd->e);
+        edje_object_part_swallow(gp->draw, "swallow.image", image);
+        evas_object_image_source_set(image, source_image);
+        evas_object_image_source_clip_set(image, false);
+
+        _image_proxy_common_param_update(image, gp, edit_obj);
+     }
+   else
+     {
+         GET_IMAGE(image, sd->e, PROXY_IMG);
+         edje_object_part_swallow(gp->draw, "swallow.image", image);
+     }
 }
 
 static void
@@ -1197,13 +1308,12 @@ _text_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 {
    const char *font, *text;
    int text_size;
-   int r, g, b, a; // main color
-   int sr, sg, sb, sa; // shadow
-   int or, og, ob, oa; // outline
    double elipsis;
    Evas_Text_Style_Type style;
    Edje_Text_Effect effect;
    PART_STATE_GET(edit_obj, gp->name)
+
+   _color_apply(gp, edit_obj, state, value);
 
    font = edje_edit_state_font_get(edit_obj, gp->name, state, value);
    text_size = edje_edit_state_text_size_get(edit_obj, gp->name, state, value);
@@ -1219,15 +1329,6 @@ _text_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 
    elipsis = edje_edit_state_text_elipsis_get(edit_obj, gp->name, state, value);
    evas_object_text_ellipsis_set(gp->draw, elipsis);
-
-   edje_edit_state_color_get(edit_obj, gp->name, state, value, &r, &g, &b, &a);
-   evas_object_color_set(gp->draw, r*a/255, g*a/255, b*a/255, a);
-
-   edje_edit_state_color2_get(edit_obj, gp->name, state, value, &sr, &sg, &sb, &sa);
-   evas_object_text_shadow_color_set(gp->draw, sr, sg, sb, sa);
-
-   edje_edit_state_color3_get(edit_obj, gp->name, state, value, &or, &og, &ob, &oa);
-   evas_object_text_outline_color_set(gp->draw, or, og, ob, oa);
 
    effect = edje_edit_part_effect_get(edit_obj, gp->name);
    switch (effect & EDJE_TEXT_EFFECT_MASK_BASIC)
@@ -1262,8 +1363,6 @@ _text_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
          break;
       case EDJE_TEXT_EFFECT_GLOW:
          style = EVAS_TEXT_STYLE_GLOW;
-         evas_object_text_glow_color_set(gp->draw, sr, sg, sb, sa);
-         evas_object_text_glow2_color_set(gp->draw, or, og, ob, oa);
          break;
       default:
          style = EVAS_TEXT_STYLE_PLAIN;
@@ -1323,6 +1422,8 @@ _textblock_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
    double valign;
    PART_STATE_GET(edit_obj, gp->name)
 
+   _color_apply(gp, edit_obj, state, value);
+
    get_style = edje_object_part_object_get(edit_obj, gp->name);
    obj_style = evas_object_textblock_style_get(get_style);
    text = evas_textblock_style_get(obj_style);
@@ -1346,16 +1447,30 @@ _textblock_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 }
 
 static void
-_group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
+_group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file, Evas *e)
 {
    Eina_Stringshare *source = edje_edit_part_source_get(edit_obj, gp->name);
+   Evas_Object *image = NULL;
 
-   if (!source) return;
+   PART_STATE_GET(edit_obj, gp->name)
 
-   if (!edje_object_file_set(gp->draw, file, source))
-     ERR("Image can't be loaded.\n");
+   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
+   evas_object_del(image);
 
-   edje_edit_string_free(source);
+   if (!source)
+     {
+        edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP);
+        GET_IMAGE(image, e, GROUP_IMG);
+        edje_object_part_swallow(gp->draw, "swallow.image", image);
+     }
+   else
+     {
+        _color_apply(gp, edit_obj, state, value);
+        edje_object_file_set(gp->draw, file, source);
+     }
+
+   PART_STATE_FREE
+   if (source) edje_edit_string_free(source);
 }
 
 static void
@@ -1388,10 +1503,8 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    Eina_List *fake_l;
    int i, k, col, row; /* counters for filling empty cells with fake items*/
 
-   /*
-    * TODO: get TABLE attributes from edje object, after implementing functions
-    *  in edje_edit libs. Until that time will be used default values.
-    */
+   TODO("get TABLE attributes from edje object, after implementing functions"
+        "in edje_edit libs. Until that time will be used default values.")
    PART_STATE_GET(sd->edit_obj, gp->name)
    homogeneous = edje_edit_state_table_homogeneous_get(sd->edit_obj, gp->name, state, value);
    evas_object_table_homogeneous_set(gp->draw, homogeneous);
@@ -1402,7 +1515,7 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    edje_edit_state_container_padding_get(sd->edit_obj, gp->name, state, value, &pad_l, &pad_r);
    evas_object_table_padding_set(gp->draw, pad_l, pad_r);
 
-   edje_edit_state_color_get(sd->edit_obj, gp->name, state, value, &r, &g, &b, &a);
+   _colors_get(gp, sd->edit_obj, state, value, &r, &g, &b, &a, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
    PART_STATE_FREE
 
    /* Unpack all fake items, before pack real */
@@ -1620,11 +1733,11 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    double box_align_x, box_align_y;
    int pad_x, pad_y;
 
-   /* TODO: get items from box and edje_unload them, remove them, destroy them */
+   TODO("get items from box and edje_unload them, remove them, destroy them")
    evas_object_box_remove_all(gp->draw, false);
 
    PART_STATE_GET(sd->edit_obj, gp->name)
-   edje_edit_state_color_get(sd->edit_obj, gp->name, state, value, &r, &g, &b, &a);
+   _colors_get(gp, sd->edit_obj, state, value, &r, &g, &b, &a, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
    PART_STATE_FREE
 
    edje_edit_state_container_align_get(sd->edit_obj, gp->name, state, value, &box_align_x, &box_align_y);
@@ -1784,6 +1897,7 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
    int xg, yg, wg, hg; // groupedit geometry
    int x = 0, w = 0, y = 0, h = 0;
    double relative;
+   int offset;
 
    Groupedit_Part *rel_part = NULL;
 
@@ -1803,46 +1917,52 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
         wc = wg;
         rel_to = edje_edit_state_rel1_to_x_get(sd->edit_obj, name, state, value);
         relative = edje_edit_state_rel1_relative_x_get(sd->edit_obj, name, state, value);
+        offset = edje_edit_state_rel1_offset_x_get(sd->edit_obj, name, state, value);
         if (rel_to)
           {
              rel_part = _parts_list_find(sd->parts, rel_to);
              evas_object_geometry_get(rel_part->draw, &xc, NULL, &wc, NULL);
           }
-        x = (xc + (int)(wc * relative * sd->zoom_factor));
+        x = (xc + (int)(wc * relative * sd->zoom_factor)) + offset;
         edje_edit_string_free(rel_to);
 
         yc = yg;
         hc = hg;
         rel_to = edje_edit_state_rel1_to_y_get(sd->edit_obj, name, state, value);
         relative = edje_edit_state_rel1_relative_y_get(sd->edit_obj, name, state, value);
+        offset = edje_edit_state_rel1_offset_y_get(sd->edit_obj, name, state, value);
         if (rel_to)
           {
              rel_part = _parts_list_find(sd->parts, rel_to);
              evas_object_geometry_get(rel_part->draw, NULL, &yc, NULL, &hc);
           }
-        y = (yc + (int)(hc * relative * sd->zoom_factor));
+        y = (yc + (int)(hc * relative * sd->zoom_factor)) + offset;
         edje_edit_string_free(rel_to);
 
         xc = xg; wc = sd->con_current_size->w;
         rel_to = edje_edit_state_rel2_to_x_get(sd->edit_obj, name, state, value);
         relative = edje_edit_state_rel2_relative_x_get(sd->edit_obj, name, state, value);
+        offset = edje_edit_state_rel2_offset_x_get(sd->edit_obj, name, state, value);
         if (rel_to)
           {
              rel_part = _parts_list_find(sd->parts, rel_to);
              evas_object_geometry_get(rel_part->draw, &xc, NULL, &wc, NULL);
           }
-        w = ((xc - x) + (int)(wc * relative * sd->zoom_factor));
+        w = ((xc - x) + (int)(wc * relative * sd->zoom_factor)) + offset;
+        if (w < 0) { x += w; w = 0; }
         edje_edit_string_free(rel_to);
 
         yc = yg; hc = sd->con_current_size->h;
         rel_to = edje_edit_state_rel2_to_y_get(sd->edit_obj, name, state, value);
         relative = edje_edit_state_rel2_relative_y_get(sd->edit_obj, name, state, value);
+        offset = edje_edit_state_rel2_offset_y_get(sd->edit_obj, name, state, value);
         if (rel_to)
           {
              rel_part = _parts_list_find(sd->parts, rel_to);
              evas_object_geometry_get(rel_part->draw, NULL, &yc, NULL, &hc);
           }
-        h = ((yc - y) + (int)(hc * relative * sd->zoom_factor));
+        h = ((yc - y) + (int)(hc * relative * sd->zoom_factor)) + offset;
+        if (h < 0) { y += h; h = 0; }
         edje_edit_string_free(rel_to);
 
         evas_object_geometry_get(sd->obj, &xc, &yc, NULL, NULL);

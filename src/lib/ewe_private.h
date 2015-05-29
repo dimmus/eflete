@@ -35,6 +35,16 @@
 #include "Ewe.h"
 #include "logger.h"
 
+/* do not allow unsafe sprintf. use snprintf instead */
+#pragma GCC poison sprintf
+
+#ifdef SHOW_TODO
+   #define DO_PRAGMA(x) _Pragma (#x)
+   #define TODO(x) DO_PRAGMA(message ("TODO - " #x))
+#else
+   #define TODO(x)
+#endif
+
 #define EWE_SAFE_FREE(_h, _fn) do { _fn((void*)_h); _h = NULL; } while (0)
 
 #endif /* EWE_PRIVATE_H */

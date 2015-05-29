@@ -95,8 +95,10 @@ _progress_end(void *data, PM_Project_Result result)
         if (!eina_inlist_count(ap->project->widgets))
           ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
 
-        STATUSBAR_PROJECT_PATH(ap, eet_file_get(ap->project->pro));
+        STATUSBAR_PROJECT_PATH(ap, ap->project->pro_path);
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
+
+        NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
      }
 
    ecore_file_recursive_rm(wiew->tmp_dir_path);
@@ -109,7 +111,7 @@ _progress_end(void *data, PM_Project_Result result)
      {
         if (wiew->progress_log)
           {
-             // TODO: add new style of notify with align to the left and smth like "IMPORT ERROR" header
+             TODO("add new style of notify with align to the left and smth like \"IMPORT ERROR\" header")
              NOTIFY_ERROR(_("Errors occured on importing: <br><br>%s"),
                           eina_strbuf_string_get(wiew->progress_log));
           }
@@ -125,6 +127,7 @@ _progress_end(void *data, PM_Project_Result result)
         wiew->progress_log = NULL;
      }
 
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    splash_del(wiew->splash);
 }
 
@@ -142,7 +145,7 @@ _teardown_splash(void *data, Splash_Status status)
      }
    if ((status == SPLASH_SUCCESS) && (app->project))
      {
-        STATUSBAR_PROJECT_PATH(app, eet_file_get(app->project->pro));
+        STATUSBAR_PROJECT_PATH(app, app->project->pro_path);
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE(app);
      }
    else return false;
@@ -226,7 +229,7 @@ _required_fields_check(Wizard_Import_Edj_Win *wiew)
      }
    if ((wiew->edj) && (elm_entry_is_empty(wiew->edj)))
      {
-        NOTIFY_WARNING(_("Please enter the name of the file for exporting"));
+        NOTIFY_WARNING(_("%s"), wiew->select_file_error_msg);
         return false;
      }
    if (elm_entry_is_empty(wiew->path))
@@ -241,7 +244,7 @@ _required_fields_check(Wizard_Import_Edj_Win *wiew)
      }
    if (!ecore_file_is_dir(elm_entry_entry_get(wiew->path)))
      {
-        //TODO: create folder for project if user entered path that does not exist yet
+        TODO("create folder for project if user entered path that does not exist yet")
         NOTIFY_WARNING(_("Wrong path to the project!<br>"
                          "Please path to existing folder."));
         return false;
@@ -277,7 +280,6 @@ _on_apply(void *data,
                              _teardown_splash, _cancel_splash, wiew);
    evas_object_focus_set(wiew->splash, true);
    evas_object_show(wiew->splash);
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 static void
@@ -296,12 +298,14 @@ _elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data)
 void
 project_path_item_add(Wizard_Import_Edj_Win *wiew,
                       const char *label,
+                      const char *msg,
                       Evas_Smart_Cb cb_func)
 {
    elm_object_part_text_set(wiew->layout, "label.edj", label);
 
    ENTRY_ADD(wiew->layout, wiew->edj, true)
    elm_object_part_content_set(wiew->layout, "swallow.edj", wiew->edj);
+   wiew->select_file_error_msg = msg;
 
    _elipsis_btn_add(wiew->edj, cb_func, wiew);
 }
@@ -315,9 +319,14 @@ wizard_import_common_add(const char *layout_name)
    App_Data *ap = app_data_get();
 
    wiew = (Wizard_Import_Edj_Win *)mem_malloc(sizeof(Wizard_Import_Edj_Win));
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
 
    mwin = mw_add(_on_cancel, wiew);
-   if (!mwin) return NULL;
+   if (!mwin)
+     {
+        free(wiew);
+        return NULL;
+     }
 
    wiew->win = mwin;
 

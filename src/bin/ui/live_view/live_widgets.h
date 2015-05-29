@@ -46,6 +46,9 @@
 
 typedef void (* Swallow_Clean_Func)(const char *, Evas_Object *);
 
+Eina_Bool
+standard_widget_name_parse(const char *full_group_name, Eina_Stringshare **widget, Eina_Stringshare **class, Eina_Stringshare **style_name);
+
 /**
  * Special "widget" for program editor. Privat API
  */

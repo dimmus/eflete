@@ -153,7 +153,7 @@ CHANGE_ENTRY_CALLBACK(home, 5)
 #undef CHANGE_ENTRY_CALLBACK
 #undef CHANGE_CALLBACK
 
-/* TODO: add field name into Profile struct  */
+TODO("add field name into Profile struct")
 
 static void
 _general_form(Preferences *preference)
@@ -334,6 +334,11 @@ preferences_window_add(Project *project)
 
    preference->pr = project;
    preference->mwin = mw_add(_on_edit_preferences_exit, preference);
+   if (!preference->mwin)
+     {
+        free(preference);
+        return NULL;
+     }
    mw_title_set(preference->mwin, _("Preferences"));
    evas_object_event_callback_add(preference->mwin, EVAS_CALLBACK_FREE,
                                   _on_preferences_close, preference);

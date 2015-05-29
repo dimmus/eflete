@@ -19,6 +19,38 @@
 
 #include "live_view_prop.h"
 
+Eina_Bool
+standard_widget_name_parse(const char *full_group_name,
+                           Eina_Stringshare **widget,
+                           Eina_Stringshare **class,
+                           Eina_Stringshare **style_name)
+{
+   char **c;
+   unsigned int count;
+   if (!full_group_name) return false;
+
+   c = eina_str_split_full(full_group_name, "/", 4, &count);
+
+   if (count < 4)
+     {
+        if (widget) *widget = NULL;
+        if (class) *class = NULL;
+        if (style_name) *style_name = NULL;
+
+        free(c[0]);
+        free(c);
+        return false;
+     }
+
+   if (widget) *widget = eina_stringshare_add(c[1]);
+   if (class) *class = eina_stringshare_add(c[2]);
+   if (style_name) *style_name = eina_stringshare_add(c[3]);
+
+   free(c[0]);
+   free(c);
+   return true;
+}
+
 void
 on_swallow_check(void *data,
                  Evas_Object *obj,
@@ -66,6 +98,7 @@ on_text_check(void *data,
    Evas_Object *check = NULL, *item, *ch;
    Eina_List *item_list = NULL, *it;
    Eina_Bool all_checks = true;
+   const char *default_text;
 
    Prop_Data *pd = (Prop_Data *)data;
    Evas_Object *object = pd->live_object;
@@ -74,6 +107,9 @@ on_text_check(void *data,
 
    if (elm_check_state_get(obj))
      {
+        default_text = elm_object_part_text_get(object, part_name);
+        if (default_text)
+          eina_hash_add(pd->prop_text.default_text, part_name, eina_stringshare_add(default_text));
         elm_object_part_text_set(object, part_name,
                                  _("Look at it! This is absolutely and totally text"));
         item_list = elm_box_children_get(pd->prop_text.texts);
@@ -90,7 +126,9 @@ on_text_check(void *data,
      }
    else
      {
-        elm_object_part_text_set(object, part_name, "");
+        default_text = eina_hash_find(pd->prop_text.default_text, part_name);
+        eina_hash_del(pd->prop_text.default_text, part_name, NULL);
+        elm_object_part_text_set(object, part_name, default_text);
         if (elm_check_state_get(check)) elm_check_state_set(check, false);
      }
 }

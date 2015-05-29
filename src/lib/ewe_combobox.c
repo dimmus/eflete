@@ -149,7 +149,7 @@ _ewe_combobox_expand(Evas_Object *obj)
           edje_object_file_set(item->content, EWE_THEME, item->style);
         else
           edje_object_file_set(item->content, EWE_THEME,
-                               "ewe/combobox/item/content/default");
+                               "ewe/combobox/item/default");
         evas_object_size_hint_min_set(item->content, combo_width, ITEM_H);
         evas_object_size_hint_weight_set(item->content, EVAS_HINT_EXPAND, 0);
         evas_object_size_hint_align_set(item->content, EVAS_HINT_FILL, 0.5);
@@ -403,11 +403,20 @@ _ewe_combobox_style_set(Eo *obj EINA_UNUSED,
    if (!style)
      return EINA_FALSE;
 
-   st = eina_stringshare_printf("ewe/combobox/%s", style);
+   st = eina_stringshare_printf("ewe/combobox/base/%s", style);
    res = edje_object_file_set(sd->combobox, EWE_THEME, st);
 
    eina_stringshare_del(st);
    return res;
+}
+
+EOLIAN static Eina_Bool
+_ewe_combobox_content_set(Eo *obj EINA_UNUSED,
+                          Ewe_Combobox_Smart_Data *sd,
+                          Eina_Stringshare *part,
+                          Evas_Object *content)
+{
+   return edje_object_part_swallow(sd->combobox, part, content);
 }
 
 /*------------------------Smart functions ----------------------------*/

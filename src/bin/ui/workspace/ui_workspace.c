@@ -160,8 +160,7 @@ _obj_area_visible_change(void *data __UNUSED__,
      }
 }
 
-/*TODO: need to remake it. create the public functions for workspace
-  for ruler manipulation. */
+TODO("need to remake it. create the public functions for workspace for ruler manipulation.")
 static void
 _menu_rulers_enabled_cb(void *data,
                         Evas_Object *obj __UNUSED__,
@@ -171,8 +170,7 @@ _menu_rulers_enabled_cb(void *data,
    evas_object_smart_callback_call(ws, "ruler,toggle", strdup("rulers"));
 }
 
-/*TODO: need to remake it. create the public functions for workspace
-  for ruler manipulation. */
+TODO("need to remake it. create the public functions for workspace for ruler manipulation.")
 static void
 _menu_rulers_abs_cb(void *data,
                         Evas_Object *obj __UNUSED__,
@@ -182,8 +180,7 @@ _menu_rulers_abs_cb(void *data,
    evas_object_smart_callback_call(ws, "ruler,toggle", strdup("abs"));
 }
 
-/*TODO: need to remake it. create the public functions for workspace
-  for ruler manipulation. */
+TODO("need to remake it. create the public functions for workspace for ruler manipulation.")
 static void
 _menu_rulers_rel_cb(void *data,
                         Evas_Object *obj __UNUSED__,
@@ -193,8 +190,7 @@ _menu_rulers_rel_cb(void *data,
    evas_object_smart_callback_call(ws, "ruler,toggle", strdup("rel"));
 }
 
-/*TODO: need to remake it. create the public functions for workspace
-  for ruler manipulation. */
+TODO("need to remake it. create the public functions for workspace for ruler manipulation.")
 static void
 _menu_rulers_both_cb(void *data,
                         Evas_Object *obj __UNUSED__,
@@ -712,10 +708,9 @@ _highlight_changed_cb(void *data,
                          part->name, part->curr_state, part->curr_state_value);
      }
 
-   if (!sd->style->isModify) sd->style->isModify = true;
    workspace_edit_object_recalc(ws_obj);
    evas_object_smart_callback_call(ws_obj, "part,changed", part);
-   project_changed();
+   project_changed(false);
 }
 
 Eina_Bool
@@ -766,6 +761,7 @@ workspace_highlight_unset(Evas_Object *obj)
    sd->highlight.part = NULL;
    evas_object_hide(sd->highlight.space_hl);
    evas_object_hide(sd->highlight.highlight);
+   groupedit_edit_object_part_select(sd->groupedit, NULL);
 
    evas_object_event_callback_del(sd->highlight.highlight,
                                   EVAS_CALLBACK_MOUSE_MOVE,
@@ -849,7 +845,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
 
    /* button for switch mode of view: separated or normal*/
    priv->button_separate = elm_button_add(priv->scroller);
-   elm_object_style_set(priv->button_separate, "separate");
+   elm_object_style_set(priv->button_separate, "anchor");
    GET_IMAGE(icon, priv->scroller, "icon-separate");
    elm_object_part_content_set(priv->button_separate, NULL, icon);
    evas_object_smart_callback_add(priv->button_separate, "clicked",
@@ -1157,8 +1153,7 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
                            ELM_SCROLLER_POLICY_AUTO);
 
    /* Create highlights for object and relative space */
-   /*TODO: remake scroller and layout with rulers etc.
-           because highlight work wrong because of that */
+   TODO("remake scroller and layout with rulers etc. because highlight work wrong because of that")
    if (!sd->highlight.space_hl)
      {
         sd->highlight.space_hl = highlight_add(sd->scroller);
@@ -1189,8 +1184,7 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    max_h = edje_edit_group_max_h_get(sd->style->obj);
    container_min_size_set(sd->container.obj, min_w, min_h);
    container_max_size_set(sd->container.obj, max_w, max_h);
-   //TODO: need refactoring (All communications beetween submodules
-   //      should be implemented in ui_connector)
+   TODO("need refactoring (All communications beetween submodules should be implemented in ui_connector)")
    if (app->live_view)
      {
         container_min_size_set(app->live_view->live_view, min_w, min_h);
@@ -1253,8 +1247,7 @@ workspace_edit_object_recalc(Evas_Object *obj)
    max_h = edje_edit_group_max_h_get(sd->style->obj);
    container_min_size_set(sd->container.obj, min_w, min_h);
    container_max_size_set(sd->container.obj, max_w, max_h);
-   //TODO: need refactoring (All communications beetween submodules
-   //      should be implemented in ui_connector)
+   TODO("need refactoring (All communications beetween submodules should be implemented in ui_connector)")
    if (app->live_view)
      {
         container_min_size_set(app->live_view->live_view, min_w, min_h);

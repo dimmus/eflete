@@ -31,11 +31,11 @@ EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _groupedit,
 static void
 _style_set(Evas_Object *o, const char *style)
 {
-   char group[512]; /* FIXME: change 512 to BUFF_MAX */
+   char group[BUFF_MAX];
    WS_GROUPEDIT_DATA_GET(o, sd)
 
    #define GROUP_NAME(item, style) \
-      sprintf(group, "eflete/groupedit/%s/%s", item, style);
+      snprintf(group, BUFF_MAX, "eflete/groupedit/%s/%s", item, style);
 
    GROUP_NAME("object_area", style)
    if (!edje_object_file_set(sd->obj_area.obj, EFLETE_EDJ, group))
@@ -208,7 +208,7 @@ _groupedit_smart_calculate(Evas_Object *o)
         priv->con_current_size->y = y;
         priv->con_current_size->w = w;
         priv->con_current_size->h = h;
-        sprintf(buff, "%i %i", priv->con_current_size->w, priv->con_current_size->h);
+        snprintf(buff, 16, "%i %i", priv->con_current_size->w, priv->con_current_size->h);
      }
 
    DBG("Groupedit geometry: x[%i] y[%i] w[%i] h[%i]", x, y, w, h);
@@ -291,7 +291,7 @@ groupedit_edit_object_set(Evas_Object *obj,
    /* check input edit_obj, if it not a edje object return false */
    if ((!edit_obj) || (strcmp("edje", evas_object_type_get(edit_obj))))
      {
-        /* TODO: add error message */
+        TODO("add error message")
         return false;
      }
    if ((!file) || (!ecore_file_exists(file))) return false;
@@ -302,7 +302,7 @@ groupedit_edit_object_set(Evas_Object *obj,
     * part state. so set the object opacity 0 - object invisible and calculate
     * geometry. */
    evas_object_color_set(edit_obj, 0, 0, 0, 0);
-   /*TODO: set the state for all parts to default 0.0 */
+   TODO("set the state for all parts to default 0.0")
    sd->edit_obj = edit_obj;
    evas_object_smart_member_add(sd->edit_obj, obj);
    sd->edit_obj_file = file;

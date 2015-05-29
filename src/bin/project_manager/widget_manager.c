@@ -19,6 +19,7 @@
 
 #include "widget_manager.h"
 #include "alloc.h"
+#include "string_common.h"
 
 static char **arr;
 static char tmp[PATH_MAX];
@@ -106,27 +107,13 @@ static unsigned int part_types_count = 12;
    free(arr);
 
 int
-_sort_collection_cb(const void *data1, const void *data2)
-{
-   const char *str1 = eina_stringshare_add(data1);
-   const char *str2 = eina_stringshare_add(data2);
-
-   if (!str1) return 1;
-   if (!str2) return -1;
-
-   int cmp = (strcmp(str1, str2));
-   eina_stringshare_del(str1);
-   eina_stringshare_del(str2);
-   return cmp;
-}
-
-int
 _sort_class_cb(const void *data1, const void *data2)
 {
-   const char *str1 = eina_stringshare_add(data1);
-   const char *str2 = eina_stringshare_add(data2);
+   const char *str1 = data1;
+   const char *str2 = data2;
    char *data1_class = NULL;
    char *data2_class = NULL;
+   int ret;
 
    if (!str1) return 1;
    if (!str2) return -1;
@@ -134,12 +121,10 @@ _sort_class_cb(const void *data1, const void *data2)
    WM_CLASS_NAME_GET(data1_class, str1);
    WM_CLASS_NAME_GET(data2_class, str2);
 
-   int cmp = (strcmp(data1_class, data2_class));
+   ret = (strcmp(data1_class, data2_class));
    free(data1_class);
    free(data2_class);
-   eina_stringshare_del(str1);
-   eina_stringshare_del(str2);
-   return cmp;
+   return ret;
 }
 
 static void
@@ -349,7 +334,7 @@ wm_style_add(const char* style_name, const char* full_group_name,
 
    if ((!full_group_name) || (!style_name)) return NULL;
    if ((style_type != LAYOUT) && (style_type != STYLE)) return NULL;
-   style_edje = (Style *)mem_calloc(1, sizeof(Style));
+   style_edje = (Style *)mem_malloc(sizeof(Style));
    style_edje->name = eina_stringshare_add(style_name);
    style_edje->full_group_name = eina_stringshare_add(full_group_name);
    style_edje->obj = NULL;
@@ -597,7 +582,7 @@ wm_widgets_list_new(const char *file)
 
    collection = eina_list_sort(collection,
                                eina_list_count(collection),
-                               _sort_collection_cb);
+                               sort_cb);
 
    EINA_LIST_FOREACH_SAFE(collection, l, l_next, group)
      {
@@ -629,7 +614,7 @@ wm_widgets_list_new(const char *file)
              if (widget_name)
                free(widget_name);
 
-             /* TODO: change logic here on refactor to make this check unnecessary!! */
+             TODO("change logic here on refactor to make this check unnecessary!!")
              if (widget_name_next != &empty)
                free(widget_name_next);
           }
@@ -662,7 +647,7 @@ wm_layouts_list_new(const char *file)
 
    collection = eina_list_sort(collection,
                                eina_list_count(collection),
-                               _sort_collection_cb);
+                               sort_cb);
 
    EINA_LIST_FOREACH(collection, l, group)
      {

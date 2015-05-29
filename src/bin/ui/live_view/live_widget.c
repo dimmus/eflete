@@ -23,8 +23,7 @@
 struct _live_widget_item {
      const char *name;
      Evas_Object * (*func)(Evas_Object *parent,
-                           const char  *class,
-                           const char  *style);
+                           const Style  *style);
 };
 
 static struct _live_widget_item widgets[] =
@@ -36,17 +35,30 @@ static struct _live_widget_item widgets[] =
      { "calendar", widget_calendar_create },
      { "check", widget_check_create },
      { "clock", widget_clock_create },
+     { "ctxpopup", widget_ctxpopup_create },
+     { "colorselector", widget_colorselector_create },
+     { "datetime", widget_datetime_create },
+     { "entry", widget_entry_create },
+     { "frame", widget_frame_create },
      { "gengrid", widget_gengrid_create },
      { "genlist", widget_genlist_create },
      { "label", widget_label_create },
+     { "layout", widget_layout_create },
      { "list", widget_list_create },
+     { "map", widget_map_create },
+     { "multibuttonentry", widget_multibuttonentry_create },
      { "notify", widget_notify_create },
      { "panel", widget_panel_create },
      { "panes", widget_panes_create },
+     { "popup", widget_popup_create },
      { "radio", widget_radio_create },
      { "scroller", widget_scroller_create },
+     { "segment_control", widget_segment_control_create },
      { "separator", widget_separator_create },
+     { "slider", widget_slider_create },
      { "spinner", widget_spinner_create },
+     { "toolbar", widget_toolbar_create },
+     { "progressbar", widget_progressbar_create },
      { "naviframe", widget_naviframe_create },
      /* do not delete below */
      { NULL, NULL }
@@ -54,24 +66,26 @@ static struct _live_widget_item widgets[] =
 
 Evas_Object *
 live_widget_create(const char  *widget,
-                   const char  *class,
-                   const char  *style,
+                   const Style  *style,
                    Evas_Object *parent)
 {
    Evas_Object *object = NULL;
-   unsigned int i = 0;
+   unsigned int i;
 
-   if ((!widget) || (!class) || (!style) || (!parent))
-     return object;
+   if ((!widget) || (!style) || (!parent))
+     {
+        WARN("Couldn't create live widget: wrong args."
+             "widget: %p, style: %p, parent: %p", widget, style, parent);
+        return NULL;
+     }
 
-   while (widgets[i].name != NULL)
+   for (i = 0; widgets[i].name != NULL; i++)
      {
         if (strcmp(widget, widgets[i].name) == 0)
           {
-             object = widgets[i].func(parent, class, style);
+             object = widgets[i].func(parent, style);
              break;
           }
-        i++;
      }
 
    return object;

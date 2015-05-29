@@ -82,8 +82,6 @@ EFLETE_TEST(ui_panes_add_test_p)
                  "Failed to create left_top block");
    ck_assert_msg(app_data->block.left_bottom != NULL,
                  "Failed to create left_bottom block");
-   ck_assert_msg(app_data->block.bottom_left != NULL,
-                 "Failed to create bottom_left block");
    ck_assert_msg(app_data->block.bottom_right != NULL,
                  "Failed to create bottom_right block");
    ck_assert_msg(app_data->block.right_top != NULL,

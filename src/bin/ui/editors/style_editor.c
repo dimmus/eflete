@@ -20,6 +20,9 @@
 #include "style_editor.h"
 #include "main_window.h"
 #include "alloc.h"
+
+TODO("Rename this file to textblock_style_manager")
+
 #define FONT_DEFAULT "DEFAULT='align=middle font=Sans font_size=24 color=#000000 "
 #define ITEM1 "item1"
 #define ITEM2 "item2"
@@ -149,7 +152,7 @@ static const char *style_table[][2] = {{"font", NULL},
                                        {NULL, NULL},
                                        {"direction", NULL}};
 
-//TODO: <number>, <number>% for align
+TODO("<number>, <number>% for align")
 static const char *font_horizontal_align[] = { N_("auto"),
                                                N_("center"),
                                                N_("middle"),
@@ -157,7 +160,7 @@ static const char *font_horizontal_align[] = { N_("auto"),
                                                N_("right"),
                                                NULL};
 
-//TODO: <number>, <number>% for align
+TODO("<number>, <number>% for align")
 static const char *font_horizontal_valign[] = { N_("top"),
                                                 N_("bottom"),
                                                 N_("middle"),
@@ -416,8 +419,7 @@ _on_st_add_bt_ok(void *data,
    evas_object_del(POPUP.dialog);
    POPUP.dialog = NULL;
 
-   //TODO: Need refactoring after callback logic for modal window
-   //      implementation
+   TODO("Need refactoring after callback logic for modal window implementation")
 
    elm_genlist_item_selected_set(glit_style, true);
    elm_genlist_item_bring_in(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
@@ -425,6 +427,7 @@ _on_st_add_bt_ok(void *data,
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    ui_property_state_unset(ui_block_property_get(ap));
    ui_property_state_set(ui_block_property_get(ap), part);
+   project_changed(false);
 }
 
 static void
@@ -466,6 +469,7 @@ _on_tag_add_bt_ok(void *data,
    elm_genlist_item_selected_set(glit_tag, true);
    elm_genlist_item_show(style_edit->tag, ELM_GENLIST_ITEM_SCROLLTO_IN);
    elm_genlist_item_bring_in(glit_tag, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
+   project_changed(false);
 }
 
 static void
@@ -597,6 +601,7 @@ _on_bt_del(void *data,
    ui_property_state_unset(ui_block_property_get(ap));
    ui_property_state_set(ui_block_property_get(ap), part);
    elm_object_item_del(glit);
+   project_changed(false);
 }
 
 /* For GenList, getting the content for showing. Tag Names. */
@@ -643,10 +648,7 @@ _on_viewer_exit(void *data,
 {
    Style_Editor *style_edit = (Style_Editor *)data;
    App_Data *ap = app_data_get();
-   Evas_Object *edje_edit_obj = NULL;
-   GET_OBJ(style_edit->pr, edje_edit_obj);
-   edje_edit_without_source_save(edje_edit_obj, true);
-   pm_project_changed(ap->project);
+   project_changed(false);
    workspace_edit_object_recalc(ap->workspace);
    mw_del(style_edit->mwin);
 }
@@ -718,7 +720,7 @@ Evas_Object *
 _form_left_side(Style_Editor *style_edit)
 {
    Elm_Object_Item *glit_style, *glit_tag;
-   Evas_Object *layout, *btn, *combobox, *search;
+   Evas_Object *layout, *btn, *combobox, *search, *ic;
    Eina_List *styles, *tags, *l_st, *l_tg;
    char *style, *tag;
    Evas_Object *edje_edit_obj = NULL;
@@ -789,15 +791,18 @@ _form_left_side(Style_Editor *style_edit)
    eina_list_free(styles);
 
    EWE_COMBOBOX_ADD(layout, combobox);
-   ewe_combobox_style_set(combobox, "small/default");
+   ewe_combobox_style_set(combobox, "small");
    ewe_combobox_item_add(combobox, _("New style"));
    ewe_combobox_item_add(combobox, _("New tag"));
    evas_object_smart_callback_add(combobox, "selected", _on_bt_add, style_edit);
    elm_object_part_content_set(layout, "swallow.add_btn", combobox);
 
-   BUTTON_ADD(style_edit->mwin, btn, _("-"));
-   elm_object_style_set(btn, "btn");
-   evas_object_size_hint_weight_set(btn, 0.0, 0.0);
+   btn = elm_button_add(style_edit->mwin);
+   evas_object_show(btn);
+   ic = elm_icon_add(btn);
+   elm_icon_standard_set(ic, "minus");
+   elm_object_part_content_set(btn, NULL, ic);
+
    evas_object_smart_callback_add(btn, "clicked", _on_bt_del, style_edit);
    elm_object_part_content_set(layout, "swallow.rm_btn", btn);
 
@@ -1003,6 +1008,7 @@ _on_##VALUE##_change(void *data, \
    _lines_colors_update(style_edit, TEXT); \
    _style_edit_update(style_edit); \
    eina_stringshare_del(value); \
+   project_changed(false); \
 }
 
 #define ITEM_COLOR_ADD(VALUE, TAG, TEXT) \
@@ -1095,7 +1101,8 @@ SEGMENT_CONTROL_ADD(layout, widget); \
 elm_object_style_set(layout, "style_editor"); \
 for (i = 0; font_styles[i] != NULL; i++) \
 elm_segment_control_item_add(widget, NULL, font_styles[i]); \
-evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
+evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit); \
+evas_object_smart_callback_del(widget, "changed", _on_##VALUE##_change);
 
 #define UNDERLINE_ADD(VALUE) \
 int i = 0; \
@@ -1321,6 +1328,7 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
    int r, g, b, a;
    unsigned int i = 0;
    Evas_Object *scr;
+   Eina_Bool flag = false;
 
    SCROLLER_ADD(style_edit->mwin, scr);
    elm_scroller_policy_set(scr, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
@@ -1375,6 +1383,9 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
                {
                   sc_item = elm_segment_control_item_get(font_style, i);
                   elm_segment_control_item_selected_set(sc_item, true);
+                  if (flag == true)
+                    evas_object_smart_callback_add(font_style, "changed", _on_font_style_change, style_edit);
+                  else flag = true;
                }
           }
         if (!_hex_to_rgb(color, &r, &g, &b, &a))
@@ -1587,7 +1598,7 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
         style_copy = mem_malloc(strlen(style) + 1);
         strcpy(style_copy, style);
         token = strtok(style_copy, ",");
-        /* TODO: replace with eina_str_split_full */
+        TODO("replace with eina_str_split_full")
         while (token)
           {
              if (count == 0)
@@ -1857,7 +1868,7 @@ style_editor_window_add(Project *project)
    Evas_Object *panes, *panes_h;
    Evas_Object *window_layout, *button_box, *btn;
    Evas_Object *layout_left, *layout_right;
-   Evas_Object *bg = NULL;
+   Evas_Object *bg, *ic;
    Evas *canvas = NULL;
    Style_Editor *style_edit = NULL;
    Evas_Textblock_Style *ts = NULL;
@@ -1881,7 +1892,15 @@ style_editor_window_add(Project *project)
 
    style_edit->pr = project;
    style_edit->mwin = mw_add(_on_viewer_exit, style_edit);
-   mw_title_set(style_edit->mwin, _("Textblock style editor"));
+   if (!style_edit->mwin)
+     {
+        free(style_edit);
+        return NULL;
+     }
+   mw_title_set(style_edit->mwin, _("Textblock style manager"));
+   ic = elm_icon_add(style_edit->mwin);
+   elm_icon_standard_set(ic, "text");
+   mw_icon_set(style_edit->mwin, ic);
    evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_FREE,
                                         _on_style_editor_close, style_edit);
    window_layout = elm_layout_add(style_edit->mwin);
@@ -1948,6 +1967,8 @@ style_editor_window_add(Project *project)
    evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(style_edit->mwin);
+   elm_object_focus_set(style_edit->style_search_data.search_entry, true);
+
    evas_textblock_style_free(ts);
    ap->modal_editor++;
    return style_edit->mwin;

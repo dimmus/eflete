@@ -44,14 +44,18 @@
    #define NGETTEXT(single, plur, n) (((n)==1)? (single):(plur))
 #endif /* localization */
 
-/* TODO: delete it, and remake all strings to eina_stringshare or eina_strbuff */
+#include "common_macro.h"
+TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
 #ifndef PATH_MAX
    #define PATH_MAX 4096
 #endif
 #define BUFF_MAX 512
 
 #include <Ewe.h>
-#include "alloc.h"
+
+/* do not allow unsafe sprintf. use snprintf instead */
+#pragma GCC poison sprintf
+
 #include "logger.h"
 #include "project_manager.h"
 #include "ui_workspace.h"
@@ -87,15 +91,16 @@ struct _App_Data
       Evas_Object *left_hor;
       Evas_Object *right_hor;
       Evas_Object *center;
-      Evas_Object *center_down;
+      Evas_Object *center_down; /* delete it*/
    } panes;
 
    struct {
       Evas_Object *left_top;
       Evas_Object *left_bottom;
-      Evas_Object *bottom_left;
+      Evas_Object *state_list;
+      Evas_Object *signal_list;
       Evas_Object *bottom_right;
-      Evas_Object *right_top;
+      Evas_Object *right_top, *right_top_btn;
       Evas_Object *right_bottom;
       Evas_Object *canvas;
    } block;
@@ -210,5 +215,7 @@ history_get(void);
    if (!edje_object_file_set(IMG, EFLETE_RESOURCES, NAME)) \
      ERR("Image with name \"%s\" was not found in resources\n", NAME); \
 }
+
+#include "alloc.h"
 
 #endif /* EFLETE_H */

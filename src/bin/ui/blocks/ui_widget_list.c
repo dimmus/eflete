@@ -133,7 +133,19 @@ _on_item_add_clicked(void *data,
    Evas_Object *gl_parts = evas_object_data_get(obj, PARTLIST_DATA_KEY);
    Evas_Object *tabs = evas_object_data_get(gl_parts, TABS_DATA_KEY);
 
-   evas_object_smart_callback_call(tabs, "wl,part,item,add", _part);
+   /* Checking number of groups */
+   App_Data *app = app_data_get();
+   Eina_List *groups = edje_file_collection_list(app->project->dev);
+   unsigned int count = eina_list_count(groups);
+   edje_file_collection_list_free(groups);
+   if (count >= 2)
+     evas_object_smart_callback_call(tabs, "wl,part,item,add", _part);
+   else
+     {
+        NOTIFY_WARNING(_("There is only one group. <br>"
+                         "Need more groups for adding items."))
+        return;
+     }
 }
 
 static void
@@ -457,16 +469,20 @@ _part_reordered(Evas_Object *data,
    Part *part = NULL;
    Elm_Object_Item *rel = elm_genlist_item_next_get(item);
    elm_genlist_item_selected_set(item, true);
-   if (rel)
+
+   if (!elm_genlist_item_parent_get(item))
      {
-        part = elm_object_item_data_get(rel);
-        evas_object_smart_callback_call(tabs, "wl,part,moved,up", part);
-     }
-   else
-     {
-        rel = elm_genlist_item_prev_get(item);
-        part =  elm_object_item_data_get(rel);
-        evas_object_smart_callback_call(tabs, "wl,part,moved,down", part);
+        if (rel)
+          {
+             part = elm_object_item_data_get(rel);
+             evas_object_smart_callback_call(tabs, "wl,part,moved,up", part);
+          }
+        else
+          {
+             rel = elm_genlist_item_prev_get(item);
+             part =  elm_object_item_data_get(rel);
+             evas_object_smart_callback_call(tabs, "wl,part,moved,down", part);
+          }
      }
 }
 
@@ -618,8 +634,7 @@ _on_style_clicked_double(void *data,
    evas_object_data_set(gl_parts, TABS_DATA_KEY, tabs);
    elm_object_style_set(gl_parts, "dark");
    elm_genlist_reorder_mode_set(gl_parts, true);
-   elm_genlist_select_mode_set(gl_parts, ELM_OBJECT_SELECT_MODE_ALWAYS);
-   pr->current_style = _style;
+   elm_genlist_select_mode_set(gl_parts, ELM_OBJECT_SELECT_MODE_DEFAULT);
    evas_object_smart_callback_add(tabs, "wl,part,back", _unset_cur_style, pr);
    evas_object_size_hint_align_set(gl_parts, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(gl_parts, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -886,8 +901,8 @@ ui_widget_list_add(Evas_Object *parent)
         _itc_layout->func.del = NULL;
      }
    tabs = ewe_tabs_add(parent);
-   widgets_tab = ewe_tabs_item_append(tabs, NULL, "Themes", NULL);
-   layouts_tab = ewe_tabs_item_append(tabs, NULL, "Layouts", NULL);
+   widgets_tab = ewe_tabs_item_append(tabs, NULL, _("Themes"), NULL);
+   layouts_tab = ewe_tabs_item_append(tabs, NULL, _("Layouts"), NULL);
 
 #define NAVI(TYPE, TEXT) \
    nf_##TYPE = elm_naviframe_add(tabs); \
@@ -957,7 +972,8 @@ ui_widget_list_title_set(Evas_Object *object, const char *title)
    return true;
 }
 
-/* TODO: fix renaming
+TODO("fix renaming")
+/*
 static void
 _wl_key_down_cb(void *data __UNUSED__,
                 Evas *e __UNUSED__,
@@ -1068,8 +1084,8 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
    evas_object_smart_callback_add(gl_##TYPE, "clicked,double", \
                                   _on_widget_clicked_double, project);
 
-/* TODO: fix renaming
-   evas_object_event_callback_add(gl_##TYPE, EVAS_CALLBACK_KEY_DOWN, \
+TODO("fix renaming")
+/*   evas_object_event_callback_add(gl_##TYPE, EVAS_CALLBACK_KEY_DOWN, \
                                   _wl_key_down_cb, NULL); \ */
    CALLBACKS(widgets);
    CALLBACKS(layouts);
@@ -1142,12 +1158,14 @@ ui_widget_list_selected_part_del(Evas_Object *object, Style *style)
         eoi = elm_genlist_item_parent_get(eoi);
         elm_genlist_item_subitems_clear(eoi);
      }
+   else
+     elm_genlist_item_subitems_clear(eoi);
    part = (Part *)elm_object_item_data_get(eoi);
    wm_part_del(style, part);
 
    next_eoi = elm_genlist_item_next_get(eoi);
    if (!next_eoi) next_eoi = elm_genlist_item_prev_get(eoi);
-   if (next_eoi) elm_genlist_item_selected_set(next_eoi, true);
+   if (next_eoi) elm_genlist_item_selected_set(next_eoi, true);/*  */
    elm_object_item_del(eoi);
 
    return true;
@@ -1161,12 +1179,14 @@ _selected_part_move(Evas_Object *object, Style *style, Eina_Bool move_up)
    Elm_Object_Item *new_eoi = NULL;
    Elm_Object_Item *prev_eoi = NULL;
    Elm_Object_Item *next_eoi = NULL;
+   Elm_Object_Item *prev_next_eoi = NULL;
    Part *part = NULL;
    Eina_Inlist *prev_elm =  NULL;
    Eina_Inlist *next_elm =  NULL;
    Eina_Inlist *itr = NULL;
    Part *_part = NULL;
    Evas_Object *nf;
+   Eina_Bool expanded;
 
    if ((!object) || (!style)) return false;
    nf = _current_naviframe_get(object);
@@ -1178,6 +1198,7 @@ _selected_part_move(Evas_Object *object, Style *style, Eina_Bool move_up)
         NOTIFY_INFO(3, _("No part selected"));
         return false;
      }
+   expanded = elm_genlist_item_expanded_get(eoi);
    if (move_up)
      {
         prev_eoi = elm_genlist_item_prev_get(eoi);
@@ -1186,27 +1207,62 @@ _selected_part_move(Evas_Object *object, Style *style, Eina_Bool move_up)
              NOTIFY_INFO(3, _("Selected part is currently on top of the list"));
              return false;
           }
+        if (elm_genlist_item_parent_get(prev_eoi))
+          prev_eoi = elm_genlist_item_parent_get(prev_eoi);
      }
    else
      {
         next_eoi = elm_genlist_item_next_get(eoi);
+        /* if actual moving item is Container */
+        while (elm_genlist_item_parent_get(next_eoi))
+          next_eoi = elm_genlist_item_next_get(next_eoi);
         if (!next_eoi)
           {
              NOTIFY_INFO(3, _("Selected part is currently on bottom of the list"));
              return false;
+          }
+        /* if next item is Container with expanded items */
+        if (elm_genlist_item_subitems_count(next_eoi) > 0)
+          {
+             next_eoi = elm_genlist_item_next_get(next_eoi);
+             prev_next_eoi = next_eoi;
+             while (elm_genlist_item_parent_get(next_eoi))
+               {
+                  prev_next_eoi = next_eoi;
+                  next_eoi = elm_genlist_item_next_get(next_eoi);
+               }
+             if (!next_eoi) next_eoi = prev_next_eoi;
           }
      }
    part = elm_object_item_data_get(eoi);
 
    if (part->__type != PART) return false;
 
-   new_eoi = (move_up) ? elm_genlist_item_insert_before(gl_parts, _itc_part, part, NULL,
-                         prev_eoi, elm_genlist_item_type_get(eoi), _on_part_select, nf):
-                         elm_genlist_item_insert_after(gl_parts, _itc_part, part, NULL,
-                         next_eoi, elm_genlist_item_type_get(eoi),  _on_part_select, nf);
+   if (part->type == EDJE_PART_TYPE_TABLE ||
+       part->type == EDJE_PART_TYPE_BOX)
+     {
+        new_eoi = (move_up) ?
+           elm_genlist_item_insert_before(gl_parts, _itc_container, part, NULL,
+                                          prev_eoi, elm_genlist_item_type_get(eoi),
+                                          _on_part_select, nf) :
+           elm_genlist_item_insert_after(gl_parts, _itc_container, part, NULL,
+                                         next_eoi, elm_genlist_item_type_get(eoi),
+                                         _on_part_select, nf);
+     }
+   else
+     {
+        new_eoi = (move_up) ?
+           elm_genlist_item_insert_before(gl_parts, _itc_part, part, NULL,
+                                          prev_eoi, elm_genlist_item_type_get(eoi),
+                                          _on_part_select, nf) :
+           elm_genlist_item_insert_after(gl_parts, _itc_part, part, NULL,
+                                         next_eoi, elm_genlist_item_type_get(eoi),
+                                         _on_part_select, nf);
+     }
    eoi = elm_genlist_selected_item_get(gl_parts);
    elm_object_item_del(eoi);
    elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
+   elm_genlist_item_expanded_set(new_eoi, expanded);
 
    for(itr = style->parts; itr != NULL; itr = itr->next)
      {
@@ -1340,9 +1396,15 @@ ui_widget_list_style_parts_reload(Evas_Object *object, Style *style)
 
    EINA_INLIST_FOREACH(style->parts, _part)
      {
-        eoi = elm_genlist_item_append(gl_parts, _itc_part, _part,
-                                      NULL, ELM_GENLIST_ITEM_NONE,
-                                      _on_part_select, nf);
+        if ((_part->type == EDJE_PART_TYPE_TABLE) ||
+            (_part->type == EDJE_PART_TYPE_BOX))
+          eoi = elm_genlist_item_append(gl_parts, _itc_container, _part,
+                                        NULL, ELM_GENLIST_ITEM_TREE,
+                                        _on_part_select, nf);
+        else
+          eoi = elm_genlist_item_append(gl_parts, _itc_part, _part,
+                                        NULL, ELM_GENLIST_ITEM_NONE,
+                                        _on_part_select, nf);
         elm_object_item_data_set(eoi, _part);
      }
 }

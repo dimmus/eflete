@@ -86,6 +86,7 @@ eflete_elm.edj: Makefile \
 	$(top_srcdir)/data/*.edc \
 	$(top_srcdir)/data/themes/default/*.edc \
 	$(top_srcdir)/data/themes/default/widgets/*.edc \
+	$(top_srcdir)/data/themes/default/widgets/layouts/*.edc \
 	$(top_srcdir)/data/themes/default/images/*.png \
 	$(top_srcdir)/data/themes/default/images/splash/*.png
 	$(AM_V_EDJ)$(EDJE_CC) \

@@ -23,6 +23,9 @@
 #include <Eina.h>
 #include <Evas.h>
 
+/* do not allow unsafe sprintf. use snprintf instead */
+#pragma GCC poison sprintf
+
 /**
  * @defgroup History History module
  * @ingroup Eflete
@@ -446,6 +449,18 @@ history_undo(Evas_Object *source, int count);
  */
 Eina_Bool
 history_redo(Evas_Object *source, int count);
+
+/**
+ * Get the diff changes count for given object.
+ *
+ * @param source The object, that have history of changes
+ *
+ * @return The changes count
+ *
+ * @ingroup History
+ */
+int
+history_diff_count_get(Evas_Object *source);
 
 /**
  * If genlist for history submodule wasn't created, will be returned newly

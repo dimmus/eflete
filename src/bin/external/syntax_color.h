@@ -9,9 +9,9 @@
 
 #include "eflete.h"
 
-#define QUOT "\""
+#define QUOT "&quot;"
 #define QUOT_C '\"'
-#define QUOT_LEN 1
+#define QUOT_LEN 6
 #define EOL "<br/>"
 #define EOL_LEN 5
 #define TAB "<tab/>"

@@ -20,14 +20,7 @@
 #include "wizard.h"
 #include "wizard_common.h"
 
-/*
-                          TODO:
- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- !!   This submodule required to be refactored ASAP,  !!
- !!    after theme specification will be released.    !!
- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-*/
+TODO(" This submodule required to be refactored ASAP, after theme specification will be released.")
 
 struct _Item_Mod_Callback_Data
 {
@@ -192,6 +185,7 @@ _directories_include_flags_build(Evas_Object *box,
         if (path)
           eina_strbuf_append_printf(str, "-%s \"%s\" ", dir_name, path);
      }
+   eina_list_free(box_items);
 }
 
 static inline Evas_Object *
@@ -525,11 +519,14 @@ _on_directory_bt(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-   Evas_Object *fs;
+   Evas_Object *fs, *ic;
    const char *path;
    Item_Mod_Callback_Data *c_data = (Item_Mod_Callback_Data*)data;
 
    c_data->wiew->fs = mw_add(_fs_close, NULL);
+   ic = elm_icon_add(c_data->wiew->fs);
+   elm_icon_standard_set(ic, "folder");
+   mw_icon_set(c_data->wiew->fs, ic);
    evas_object_show(c_data->wiew->fs);
    mw_title_set(c_data->wiew->fs, "Select a directory");
    FILESELECTOR_ADD(fs, c_data->wiew->fs, _on_directory_bt_done, data);
@@ -542,8 +539,8 @@ _on_directory_bt(void *data,
 static Evas_Object *
 _dir_item_add(Evas_Object *parent, Wizard_Import_Edj_Win *wiew)
 {
-   Evas_Object *item, *button, *entry, *icon;
-   Item_Mod_Callback_Data *c_data = malloc(sizeof(Item_Mod_Callback_Data));
+   Evas_Object *item, *button, *entry, *ic;
+   Item_Mod_Callback_Data *c_data = mem_malloc(sizeof(Item_Mod_Callback_Data));
    if (!c_data) return NULL;
 
    item = elm_layout_add(parent);
@@ -557,19 +554,21 @@ _dir_item_add(Evas_Object *parent, Wizard_Import_Edj_Win *wiew)
    c_data->obj = item;
    c_data->wiew = wiew;
 
-   BUTTON_ADD(item, button, NULL);
-   elm_object_style_set(button, "btn");
-   ICON_ADD(button, icon, true, "icon-add");
-   elm_object_part_content_set(button, NULL, icon);
+   button = elm_button_add(item);
+   evas_object_show(button);
+   ic = elm_icon_add(button);
+   elm_icon_standard_set(ic, "plus");
+   elm_object_part_content_set(button, NULL, ic);
    evas_object_smart_callback_add(button, "clicked",
                                   _on_button_add_clicked_cb, c_data);
 
    elm_object_part_content_set(item, "swallow.button_add", button);
 
-   BUTTON_ADD(item, button, NULL);
-   elm_object_style_set(button, "btn");
-   ICON_ADD(button, icon, true, "icon-remove");
-   elm_object_part_content_set(button, NULL, icon);
+   button = elm_button_add(item);
+   evas_object_show(button);
+   ic = elm_icon_add(button);
+   elm_icon_standard_set(ic, "minus");
+   elm_object_part_content_set(button, NULL, ic);
    evas_object_smart_callback_add(button, "clicked",
                                   _on_button_del_clicked_cb, c_data);
 
@@ -602,6 +601,7 @@ _on_button_add_clicked_cb(void *data,
    else
      elm_box_pack_after(c_data->box,
                         _dir_item_add(c_data->box, c_data->wiew), c_data->obj);
+   eina_list_free(box_items);
    return;
 }
 
@@ -613,7 +613,9 @@ _on_button_del_clicked_cb(void *data,
    Item_Mod_Callback_Data *c_data = (Item_Mod_Callback_Data*)data;
 
    Eina_List *box_items = elm_box_children_get(c_data->box);
-   if (eina_list_count(box_items) <= 1)
+   Eina_Bool less_or_eq = eina_list_count(box_items) <= 1;
+   eina_list_free(box_items);
+   if (less_or_eq)
      {
         elm_entry_entry_set(c_data->entry, "");
         return;
@@ -646,7 +648,8 @@ wizard_import_edc_add(App_Data *ap __UNUSED__)
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    mw_title_set(wiew->win, _("Wizard: import edc"));
-   project_path_item_add(wiew, _("Path to edc file:"), _on_edc_bt);
+   project_path_item_add(wiew, _("Path to edc file:"),
+                         _("Please enter the path to edc file"), _on_edc_bt);
 
    //labels setup
    elm_object_part_text_set(wiew->layout, "label.directories_img", _("Images directories:"));
@@ -667,6 +670,8 @@ wizard_import_edc_add(App_Data *ap __UNUSED__)
                                _directories_box_add(wiew));
 
    wiew->splash_setup_func = _splash_setup_import_edc;
+
+   elm_object_focus_set(wiew->name, true);
 
    return wiew->win;
 }
@@ -763,12 +768,14 @@ Evas_Object *
 wizard_new_project_add(App_Data *ap __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew;
-   Evas_Object *genlist, *check;
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
+   Evas_Object *genlist, *check, *ic;
    wiew = wizard_import_common_add("new_project");
    if (!wiew) return NULL;
 
    mw_title_set(wiew->win, _("Wizard: new project"));
+   ic = elm_icon_add(wiew->win);
+   elm_icon_standard_set(ic, "file");
+   mw_icon_set(wiew->win, ic);
 
    elm_object_part_text_set(wiew->layout, "label.widgets", _("Widgets:"));
 
@@ -790,6 +797,8 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
 
    wiew->splash_setup_func = _splash_setup_new_project;
    wiew->edj = NULL;
+
+   elm_object_focus_set(wiew->name, true);
 
    return wiew->win;
 }

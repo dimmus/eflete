@@ -6,42 +6,83 @@ group { name: "ewe/tabs/horizontal/default";
             color: TABS_BG_COLOR;
          }
       }
-      part { name: "separator";
-         type: RECT;
+      part { name: "ewe.text";
+         type: TEXT;
          description { state: "default" 0.0;
-            color: TABS_SEPARATOR_LINE_COLOR;
-            max: -1 1;
-            align: 0.5 1.0;
-            rel1.to_y: "tabs_area";
-            rel2.to_y: "tabs_area";
+            align: 0.0 0.5;
+            max: 0 -1;
+            rel2 {
+               to_y: "tabs_area";
+            }
+            text {
+               font: PT;
+               size: 13;
+            }
+         }
+         description { state: "visible" 0.0;
+            align: 0.0 0.5;
+            max: 112 -1;
+            rel2 {
+               to_y: "tabs_area";
+            }
+            text {
+               font: PT;
+               size: 13;
+            }
          }
       }
       part { name: "tabs_area";
          type: SWALLOW;
-         clip_to: "tabs_area_clip";
          description { state: "default" 0.0;
             align: 0.0 0.0;
             min: 0 22;
             max: -1 22;
-            rel1.offset: 2 0;
-            rel2.offset: -3 0;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 2 6;
+               to_x: "ewe.text";
+            }
+            rel2 {
+               offset: -3 0;
+            }
          }
       }
-      part { name: "tabs_area_clip";
+      part { name: "separator";
          type: RECT;
          description { state: "default" 0.0;
-            rel1.to: "tabs_area";
-            rel2.to: "tabs_area";
+            align: 0.5 1.0;
+            max: -1 1;
+            color: 25 25 26 255;
+            rel1 {
+               to_y: "tabs_area";
+            }
+            rel2 {
+               to_y: "tabs_area";
+            }
          }
       }
       part { name: "content_area";
          type: SWALLOW;
          description { state: "default" 0.0;
             rel1 {
-               to_y: "tabs_area";
                relative: 0.0 1.0;
+               to_y: "tabs_area";
             }
          }
+      }
+   }
+   programs {
+      program { name: "text_show";
+         signal: "ewe,state,text,visible";
+         source: "ewe";
+         action: STATE_SET "visible" 0.00;
+         target: "ewe.text";
+      }
+      program { name: "text_hide";
+         signal: "ewe,state,text,hidden";
+         source: "ewe";
+         action: STATE_SET "default" 0.00;
+         target: "ewe.text";
       }
    }
 }
@@ -92,7 +133,7 @@ group {name: "ewe/tabs/item/head/horizontal/default";
       part { name: "bg";
          type: IMAGE;
          description { state: "default" 0.0;
-            min: 140 22;
+            min: 120 22;
             max: -1 22;
             image {
                normal: "tab-head-bg.png";

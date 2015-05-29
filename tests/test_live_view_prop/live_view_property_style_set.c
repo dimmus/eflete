@@ -48,7 +48,7 @@
  * @step 1 Call live_view_property_style_set.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *)live_view_prop, (Evas_Object *)object, (Style *)style, (const char *) widget = "win"</td>
+ * <td>(Evas_Object *)live_view_prop, (Evas_Object *)object, (Style *)style, (const char *) widget = "win", (Evas_Object *)parent</td>
  * <td>EINA_TRUE returned</td>
  * </tr>
  * @}
@@ -69,7 +69,7 @@ EFLETE_TEST(live_view_property_style_set_test_p)
    wm_style_data_load(style, e, mmap_file);
    live_view_prop = live_view_property_add(parent, false);
 
-   res = live_view_property_style_set(live_view_prop, parent, style, "win");
+   res = live_view_property_style_set(live_view_prop, parent, style, "win", parent);
    ck_assert_msg(res == EINA_TRUE, "Failed to set style into live view prop.");
 
    wm_style_free(style);
@@ -97,7 +97,7 @@ END_TEST
  * @step 1 Call live_view_property_style_set.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *)live_view_prop, (Evas_Object *)object, (Style *)style, (const char *) widget = "win"</td>
+ * <td>(Evas_Object *)live_view_prop, (Evas_Object *)object, (Style *)style, (const char *) widget = "win", (Evas_Object *)parent</td>
  * <td>EINA_TRUE returned</td>
  * </tr>
  * @}
@@ -117,7 +117,7 @@ EFLETE_TEST(live_view_property_style_set_test_n1)
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
 
-   res = live_view_property_style_set(parent, parent, style, "win");
+   res = live_view_property_style_set(parent, parent, style, "win", parent);
    ck_assert_msg(res == EINA_FALSE, "Given, not live view prop, object contain live view prop data in it.");
 
    wm_style_free(style);
@@ -144,7 +144,7 @@ END_TEST
  * @step 1 Call live_view_property_style_set.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *)live_view_prop, (Evas_Object *)object, (Style *)style, (const char *) widget = "win"</td>
+ * <td>(Evas_Object *)live_view_prop, (Evas_Object *)object, (Style *)style, (const char *) widget = "win", (Evas_Object *)parent</td>
  * <td>EINA_TRUE returned</td>
  * </tr>
  * @}
@@ -160,7 +160,7 @@ EFLETE_TEST(live_view_property_style_set_test_n2)
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    live_view_prop = live_view_property_add(parent, false);
 
-   res = live_view_property_style_set(live_view_prop, parent, style, "win");
+   res = live_view_property_style_set(live_view_prop, parent, style, "win", parent);
    ck_assert_msg(res == EINA_FALSE, "Style was set into live view prop.");
 
    wm_style_free(style);
@@ -191,6 +191,8 @@ END_TEST
  * @step 2 Check returned value.
  * @step 1 Call live_view_property_style_set with fourth parameter as NULL.
  * @step 2 Check returned value.
+ * @step 1 Call live_view_property_style_set with fifth parameter as NULL.
+ * @step 2 Check returned value.
  * </td>
  * <td>NULL, NULL, NULL, NULL</td>
  * <td>All checks passed</td>
@@ -208,13 +210,15 @@ EFLETE_TEST(live_view_property_style_set_test_n3)
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    live_view_prop = live_view_property_add(parent, false);
 
-   res = live_view_property_style_set(NULL, parent, style, "win");
+   res = live_view_property_style_set(NULL, parent, style, "win", parent);
    ck_assert_msg(res == EINA_FALSE, "Style was set into live view prop with live_view_prop = NULL.");
-   res = live_view_property_style_set(live_view_prop, NULL, style, "win");
+   res = live_view_property_style_set(live_view_prop, NULL, style, "win", parent);
    ck_assert_msg(res == EINA_FALSE, "Style was set into live view prop with object = NULL.");
-   res = live_view_property_style_set(live_view_prop, parent, NULL, "win");
+   res = live_view_property_style_set(live_view_prop, parent, NULL, "win", parent);
    ck_assert_msg(res == EINA_FALSE, "Style was set into live view prop with style = NULL.");
-   res = live_view_property_style_set(live_view_prop, parent, style, NULL);
+   res = live_view_property_style_set(live_view_prop, parent, style, NULL, parent);
+   ck_assert_msg(res == EINA_FALSE, "Style was set into live view prop with widget = NULL.");
+   res = live_view_property_style_set(live_view_prop, parent, style, "win", NULL);
    ck_assert_msg(res == EINA_FALSE, "Style was set into live view prop with widget = NULL.");
 
    wm_style_free(style);

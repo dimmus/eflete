@@ -41,6 +41,8 @@ _on_enventor_mouse_wheel(void *data __UNUSED__,
 
    if ((scale <= MIN_SCALE) || (scale >= MAX_SCALE)) return;
 
+   profile_get()->enventor.scale = scale;
+
    enventor_object_font_scale_set(enventor, scale);
 }
 
@@ -50,6 +52,8 @@ enventor_object_init(Evas_Object *parent)
 {
   Evas_Object *enventor = NULL;
   enventor = enventor_object_add(parent);
+
+  enventor_object_font_scale_set(enventor, profile_get()->enventor.scale);
   evas_object_event_callback_add(enventor, EVAS_CALLBACK_MOUSE_WHEEL,
                                  _on_enventor_mouse_wheel, NULL);
   enventor_object_auto_complete_set(enventor, true);
@@ -127,6 +131,112 @@ enventor_object_project_unload(Project *project)
    eina_stringshare_del(project->enventor->file);
    project->enventor->file = NULL;
 
+   return true;
+}
+
+Eina_Bool
+enventor_object_profile_load(Evas_Object *enventor, Profile *profile)
+{
+   if ((!enventor) || (!profile))
+     return false;
+   enventor_object_font_scale_set(enventor, profile->enventor.scale);
+   return true;
+}
+
+Eina_Bool
+enventor_object_file_version_update(Evas_Object *enventor, Project *project, const char *key)
+{
+   char *code, *new_code;
+   char *version_ptr, *search_ptr;
+   long long f_size;
+   size_t code_r;
+   FILE *f;
+   long int concat_pos = 1;
+   Eina_Stringshare *data_str = NULL;
+   long int data_len = 0;
+   int cursor_pos = 0;
+
+   if ((!enventor) || (!project) || (!key))
+     return false;
+
+   cursor_pos = enventor_object_cursor_pos_get(enventor);
+   enventor_object_save(enventor, project->enventor->file);
+
+   f_size = ecore_file_size(project->enventor->file);
+   f = fopen(project->enventor->file, "r+");
+   if (!f)
+     {
+        ERR("Failed set the Elementary version support to '%s'",
+            project->enventor->file);
+        return false;
+     }
+   code = mem_calloc(1, f_size);
+   code_r = fread(code, 1, f_size, f);
+   if (code_r == 0)
+     {
+        free(code);
+        fclose(f);
+        eina_stringshare_del(data_str);
+        return false;
+     }
+   version_ptr = strstr(code, "\"version\"");
+   data_str = eina_stringshare_printf("\"version\" \"%s\";", key);
+   if (!version_ptr)
+     {
+        rewind(f);
+        fputs("data.item: ", f);
+        fputs(data_str, f);
+        fputs("\n\n", f);
+        fputs(code, f);
+     }
+   else
+     {
+        fclose(f);
+        f = fopen(project->enventor->file, "w");
+
+        /*Search position where item block ends.*/
+        for (search_ptr = version_ptr;
+             ((!search_ptr) || (*search_ptr != ';'));
+             search_ptr++, concat_pos++);
+
+        /*
+         * Position of the source code, where it should be merged
+         * into temporary buffer.
+         */
+         concat_pos += (version_ptr - code);
+
+         /*
+         * Copy data into temporary buffer with replacing
+         * "version" "value"; to "version" "110";
+         */
+        if (search_ptr)
+          {
+             data_len = strlen(data_str);
+             /*
+              * Calculating new size:
+              * size before "version" + size of new string + size of rest code
+              */
+             new_code = mem_calloc(1, (version_ptr - code) + data_len + strlen(code + concat_pos));
+
+             /* Copying code, that was before "version" */
+             memcpy(new_code, code, (version_ptr - code));
+
+             /* Add string: "version" "110"; */
+             memcpy(new_code + (version_ptr - code), data_str, data_len);
+
+             /* Add rest of source code */
+             memcpy(new_code + data_len + (version_ptr - code), code + concat_pos,
+                    strlen(code + concat_pos));
+
+             fputs(new_code, f);
+             free(new_code);
+          }
+     }
+   free(code);
+   fclose(f);
+   enventor_object_file_set(enventor, project->enventor->file);
+   enventor_object_cursor_pos_set(enventor, cursor_pos);
+   eina_stringshare_del(data_str);
    return true;
 }
 

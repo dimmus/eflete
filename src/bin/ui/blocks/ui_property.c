@@ -22,14 +22,25 @@
    #include "eflete_config.h"
 #endif */
 #include "ui_property.h"
-#include "ui_property_macro_old.h"
+#include "property_macros.h"
 #include "main_window.h"
+#include "string_common.h"
 
 #ifndef HAVE_ENVENTOR
 #include "syntax_color.h"
 #endif
 
 #define PROP_DATA "prop_data"
+
+TODO("I dont know why this regex not work properly in the ewe entry."
+     "It test in the elm_entry - works good, in online checkers - work")
+#define PROPERTY_REGEX_STATE_FONT "^\\w+(:(style|slant|weight|width|spacing|lang)=\\w+)?"
+#define PROPERTY_REGEX_IMAGE_BORDER "^([0-9]+( [0-9]+){3}){0,1}?"
+
+static Elm_Entry_Filter_Accept_Set accept_prop = {
+   .accepted = NULL,
+   .rejected = PART_NAME_BANNED_SYMBOLS
+};
 
 #define PROP_DATA_GET(ret) \
    Prop_Data *pd = evas_object_data_get(property, PROP_DATA); \
@@ -52,7 +63,9 @@ struct _Prop_Data
    Evas_Object *workspace;
    Style *wm_style;
    Part *wm_part;
+   Evas_Object *tabs;
    Ewe_Tabs_Item *visual_tab;
+   Ewe_Tabs_Item *code_tab;
    Evas_Object *visual;
    Evas_Object *code;
    Eina_Stringshare *item_name;
@@ -88,12 +101,13 @@ struct _Prop_Data
       Evas_Object *x, *step_x;
       Evas_Object *y, *step_y;
       Evas_Object *confine;
+      Evas_Object *threshold;
       Evas_Object *event;
    } part_drag;
    struct {
       Evas_Object *frame;
       Evas_Object *state;
-      Evas_Object *proxy_source;
+      Evas_Object *proxy_source, *proxy_source_item;
       Evas_Object *visible;
       Evas_Object *min_w, *min_h;
       Evas_Object *max_w, *max_h;
@@ -101,42 +115,44 @@ struct _Prop_Data
       Evas_Object *align_x, *align_y;
       Evas_Object *aspect_min, *aspect_max;
       Evas_Object *aspect_pref;
-      Evas_Object *color_class;
-      Evas_Object *color;
+      Evas_Object *color_class, *color1, *color2, *color3, *color_class_item;
+      Evas_Object *color, *color_obj, *color_item;
       Evas_Object *minmul_w, *minmul_h;
+      Evas_Object *box_layout, *box_layout_item;
+      Evas_Object *table_homogeneous, *table_homogeneous_item;
    } state;
    struct {
       Evas_Object *frame;
-      Evas_Object *rel1_relative;
-      Evas_Object *rel1_offset;
-      Evas_Object *rel1_to;
-      Evas_Object *rel2_relative;
-      Evas_Object *rel2_offset;
-      Evas_Object *rel2_to;
+      Evas_Object *rel1_to_x, *rel1_to_y;
+      Evas_Object *rel1_relative_x, *rel1_relative_y;
+      Evas_Object *rel1_offset_x, *rel1_offset_y;
+      Evas_Object *rel2_to_x, *rel2_to_y;
+      Evas_Object *rel2_relative_x, *rel2_relative_y;
+      Evas_Object *rel2_offset_x, *rel2_offset_y;
    } state_object_area;
    struct {
       Evas_Object *frame;
       Evas_Object *text;
       Evas_Object *font;
       Evas_Object *size;
-      Evas_Object *align;
+      Evas_Object *align_x, *align_y;
       Evas_Object *source;
-      Evas_Object *ellipsis;
-      Evas_Object *min;
-      Evas_Object *max;
-      Evas_Object *fit;
-      Evas_Object *text_source; /* not implemented in yet the edje */
-      Evas_Object *color2;
-      Evas_Object *color3;
-      Evas_Object *effect;
+      Evas_Object *min_x, *min_y;
+      Evas_Object *max_x, *max_y;
+      Evas_Object *fit_x, *fit_y;
+      Evas_Object *text_source;
+      Evas_Object *ellipsis_toggle, *ellipsis;
+      Evas_Object *effect, *effect_direction;
+      Evas_Object *color2, *color2_obj;
+      Evas_Object *color3, *color3_obj;
    } state_text;
    struct {
       Evas_Object *frame;
       Evas_Object *text;
-      Evas_Object *style; /* not implemented in yet the edje  */
-      Evas_Object *align;
-      Evas_Object *min;
-      Evas_Object *max;
+      Evas_Object *style;
+      Evas_Object *align_x, *align_y;
+      Evas_Object *min_x, *min_y;
+      Evas_Object *max_x, *max_y;
       Evas_Object *select_mode;
       Evas_Object *entry_mode;
       Evas_Object *pointer_mode;
@@ -151,66 +167,44 @@ struct _Prop_Data
    } state_textblock;
    struct {
       Evas_Object *frame;
-      Evas_Object *normal;
+      Evas_Object *image;
       Evas_Object *border;
-      Evas_Object *middle;
+      Evas_Object *border_fill;
       Evas_Object *tween;
    } state_image;
    struct {
       Evas_Object *frame;
       Evas_Object *type;
       Evas_Object *smooth;
-      Evas_Object *origin_relative;
-      Evas_Object *origin_offset;
-      Evas_Object *size_relative;
-      Evas_Object *size_offset;
+      Evas_Object *origin_relative_x, *origin_relative_y;
+      Evas_Object *origin_offset_x, *origin_offset_y;
+      Evas_Object *size_relative_x, *size_relative_y;
+      Evas_Object *size_offset_x, *size_offset_y;
    } state_fill;
    struct {
       Evas_Object *frame;
-      Evas_Object *align;
-      Evas_Object *padding;
-      Evas_Object *min;
+      Evas_Object *align, *align1;
+      Evas_Object *padding, *padding1;
+      Evas_Object *min, *min1;
    } state_container;
    struct {
       Evas_Object *frame;
-      Evas_Object *layout;
-      Evas_Object *custom_layout;
-      Evas_Object *alt_layout;
-      Evas_Object *custom_alt_layout;
-   } state_box;
-   struct {
-      Evas_Object *frame;
       Evas_Object *name;
-      Evas_Object *source;
-      Evas_Object *min;
-      Evas_Object *max;
-      Evas_Object *spread;
-      Evas_Object *prefer;
-      Evas_Object *padding;
-      Evas_Object *align;
-      Evas_Object *weight;
-      Evas_Object *aspect;
+      Evas_Object *source, *source_item;
+      Evas_Object *min_w, *min_h;
+      Evas_Object *max_w, *max_h;
+      Evas_Object *spread_w, *spread_h;
+      Evas_Object *prefer_w, *prefer_h;
+      Evas_Object *padding_l, *padding_r, *padding_t, *padding_b;
+      Evas_Object *align_x, *align_y;
+      Evas_Object *weight_x, *weight_y;
+      Evas_Object *aspect_w, *aspect_h;
       Evas_Object *aspect_mode;
-      Evas_Object *position; /* Only for items in part TABLE */
-      Evas_Object *span; /* Only for items in part TABLE */
+      Evas_Object *position, *position1, *position_item; /* Only for items in part TABLE */
+      Evas_Object *span, *span1; /* Only for items in part TABLE */
    } part_item;
-   struct {
-      Evas_Object *frame;
-      Evas_Object *homogeneous;
-   } state_table;
 };
 typedef struct _Prop_Data Prop_Data;
-
-enum Property_Combo
-{
-   CLIP_TO,
-   FORWARD_EVENTS,
-   SOURCE,
-   DRAG_AREA,
-   COLOR_CLASS,
-   TEXT_STYLE,
-   TEXT_SOURCE
-};
 
 static const char *edje_aspect_pref[] = { N_("None"),
                                           N_("Vertical"),
@@ -218,6 +212,13 @@ static const char *edje_aspect_pref[] = { N_("None"),
                                           N_("Both"),
                                           N_("Source"),
                                           NULL};
+
+static const char *edje_item_aspect_pref[] = { N_("None"),
+                                               N_("Neither"),
+                                               N_("Vertical"),
+                                               N_("Horizontal"),
+                                               N_("Both"),
+                                               NULL};
 
 static const char *edje_select_mode[] = { N_("Default"),
                                           N_("Explicit"),
@@ -258,8 +259,7 @@ static const char *edje_text_effect_type[] = { N_("None"),
                                                N_("Glow"),
                                                NULL};
 
-static const char *edje_text_effect_direction[] = { N_("None"),
-                                                    N_("Bottom Right"),
+static const char *edje_text_effect_direction[] = { N_("Bottom Right"),
                                                     N_("Bottom"),
                                                     N_("Bottom Left"),
                                                     N_("Left"),
@@ -278,8 +278,7 @@ static const char *edje_homogeneous[] = { N_("None"),
                                           N_("Item"),
                                           NULL};
 
-static const char *edje_box_layouts[] = { N_("None"),
-                                          N_("horizontal"),
+static const char *edje_box_layouts[] = { N_("horizontal"),
                                           N_("vertical"),
                                           N_("horizontal_homogeneous"),
                                           N_("vertical_homogeneous"),
@@ -288,7 +287,7 @@ static const char *edje_box_layouts[] = { N_("None"),
                                           N_("horizontal_flow"),
                                           N_("vertical_flow"),
                                           N_("stack"),
-                                          N_("Custom Layout"),
+                                          // N_("Custom Layout"), not implemented yet
                                           NULL};
 
 static Eina_Bool
@@ -327,21 +326,6 @@ ui_property_state_container_set(Evas_Object *property);
 static void
 ui_property_state_container_unset(Evas_Object *property);
 
-static Eina_Bool
-ui_property_state_table_set(Evas_Object *property);
-
-static void
-ui_property_state_table_unset(Evas_Object *property);
-
-static Eina_Bool
-ui_property_state_box_set(Evas_Object *property);
-
-static void
-ui_property_state_box_unset(Evas_Object *property);
-
-static void
-prop_item_state_text_update(Evas_Object *item, Prop_Data *pd);
-
 static Elm_Genlist_Item_Class *_itc_tween = NULL;
 
 static void
@@ -354,7 +338,8 @@ _on_spinner_mouse_wheel(void *data __UNUSED__,
    mev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
 }
 
-/* TODO: remove this hack after scroller would be fixed
+TODO("remove this hack after scroller would be fixed")
+/*
  * Hack start
  */
 static void
@@ -425,15 +410,12 @@ _on_tab_activated(void *data,
 {
    App_Data *ap;
    Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
-   Prop_Data *pd = (Prop_Data *)data;
+   Evas_Object *property = (Evas_Object *)data;
+   PROP_DATA_GET(RETURN_VOID)
 
    ap = app_data_get();
 
-   Eina_Stringshare *item_name = ewe_tabs_item_title_get(obj, it);
-
-   if (!item_name) return;
-
-   if (!strcmp(item_name, "Code"))
+   if (it == pd->code_tab)
      {
         if (!pd->code_bg)
           {
@@ -447,8 +429,7 @@ _on_tab_activated(void *data,
 
         enventor_object_project_load(ap->enventor, ap->project);
 
-        ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, false);
-        pm_project_changed(ap->project);
+        project_changed(false);
         evas_object_smart_callback_call(ap->enventor, "enventor,mode,on", NULL);
      }
    else
@@ -461,15 +442,22 @@ _on_tab_activated(void *data,
    ap->enventor_mode = !ap->enventor_mode;
 }
 
+void
+ui_property_code_of_group_setup(Evas_Object *property __UNUSED__)
+{
+}
 #else
 
-static void
-_code_of_group_setup(Prop_Data *pd)
+void
+ui_property_code_of_group_setup(Evas_Object *property)
 {
    char *markup_code;
    const char *colorized_code;
    Eina_Stringshare *code;
+   if (!property) return;
+   PROP_DATA_GET(RETURN_VOID)
 
+   if (ewe_tabs_active_item_get(pd->tabs) != pd->code_tab) return;
    code = edje_edit_source_generate(pd->wm_style->obj);
    if (!code)
      ERR("Something wrong. Can not generate code for style %s", pd->wm_style->name);
@@ -481,6 +469,18 @@ _code_of_group_setup(Prop_Data *pd)
    free(markup_code);
    eina_stringshare_del(code);
 }
+
+static void
+_on_tab_activated(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info)
+{
+   Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
+   Evas_Object *property = (Evas_Object *)data;
+   PROP_DATA_GET(RETURN_VOID)
+   if (it == pd->code_tab) ui_property_code_of_group_setup(property);
+}
+
 #endif
 
 Evas_Object *
@@ -493,6 +493,8 @@ ui_property_add(Evas_Object *parent)
    if (!parent) return NULL;
    pd = mem_calloc(1, sizeof(Prop_Data));
    tabs = ewe_tabs_add(parent);
+   pd->tabs = tabs;
+   elm_layout_text_set(tabs, NULL, _("Properties"));
 
    SCROLLER_ADD(tabs, scroller);
    BOX_ADD(scroller, box, EINA_FALSE, EINA_FALSE);
@@ -506,11 +508,11 @@ ui_property_add(Evas_Object *parent)
    pd->visual_tab = it;
 
    it = ewe_tabs_item_append(tabs, it, _("Code"), NULL);
+   pd->code_tab = it;
 
-#ifdef HAVE_ENVENTOR
    evas_object_smart_callback_add(tabs, "ewe,tabs,item,activated",
-                                  _on_tab_activated, pd);
-#else
+                                  _on_tab_activated, tabs);
+#ifndef HAVE_ENVENTOR
    pd->code = elm_entry_add(tabs);
    elm_entry_single_line_set(pd->code, false);
    elm_scroller_policy_set(pd->code, ELM_SCROLLER_POLICY_ON, ELM_SCROLLER_POLICY_ON);
@@ -657,7 +659,8 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
      }
 
 #ifndef HAVE_ENVENTOR
-   _code_of_group_setup(pd);
+   if (ewe_tabs_active_item_get(pd->tabs) == pd->code_tab)
+     ui_property_code_of_group_setup(property);
 #endif
 
    prop_box = elm_object_content_get(pd->visual);
@@ -841,10 +844,9 @@ _on_part_name_change(void *data,
         return;
      }
 
-   project_changed();
+   project_changed(false);
    workspace_edit_object_part_rename(pd->workspace, pd->wm_part->name, value);
    pd->wm_part->name = value;
-   pd->wm_style->isModify = true;
    pos = elm_entry_cursor_pos_get(obj);
    evas_object_smart_callback_call(pd->workspace, "part,name,changed", pd->wm_part);
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_RENAME, old_value, value,
@@ -863,15 +865,13 @@ prop_part_name_update(Prop_Data *pd)
 }
 
 static Evas_Object *
-prop_item_part_name_add(Evas_Object *parent,
-                        Prop_Data *pd,
-                        const char *tooltip)
+prop_part_name_add(Evas_Object *parent, Prop_Data *pd)
 {
    PROPERTY_ITEM_ADD(parent,  _("name"), "1swallow");
    EWE_ENTRY_ADD(parent, pd->part.name, true);
    elm_entry_markup_filter_append(pd->part.name, elm_entry_filter_accept_set, &accept_prop);
    ewe_entry_entry_set(pd->part.name, pd->wm_part->name);
-   elm_object_tooltip_text_set(pd->part.name, tooltip);
+   elm_object_tooltip_text_set(pd->part.name, _("Selected part name"));
    evas_object_smart_callback_add(pd->part.name, "changed,user", _on_part_name_change, pd);
    evas_object_smart_callback_add(pd->part.name, "unfocused", _on_part_name_unfocus, pd);
    elm_layout_content_set(item, "elm.swallow.content", pd->part.name);
@@ -880,12 +880,8 @@ prop_item_part_name_add(Evas_Object *parent,
    return item;
 }
 
-#define ITEM_ATTR_1CHECK_UPDATE(SUB, VALUE) \
-   elm_check_state_set(pd->SUB.VALUE, edje_edit_part_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name));
-
 static void
-prop_part_clip_to_update(Prop_Data *pd,
-                         Evas_Object *combobox __UNUSED__)
+prop_part_clip_to_update(Prop_Data *pd)
 {
    Part *part;
    Eina_Inlist *list_n = NULL;
@@ -906,35 +902,6 @@ prop_part_clip_to_update(Prop_Data *pd,
    edje_edit_string_free(value);
 }
 
-/* avaliable only for SOURCE part type */
-static void
-prop_part_source_update(Prop_Data *pd, Evas_Object *combobox)
-{
-   Eina_List *collections, *l;
-   const char *group, *value;
-   App_Data *ap = app_data_get();
-   unsigned int i = 0;
-
-   ewe_combobox_items_list_free(combobox, true);
-   value = edje_edit_part_clip_to_get(pd->wm_style->obj, pd->wm_part->name);
-   if (value)
-     ewe_combobox_text_set(combobox, value);
-   else
-     ewe_combobox_text_set(combobox, _("None"));
-   ewe_combobox_item_add(combobox, _("None"));
-   collections = edje_mmap_collection_list(ap->project->mmap_file);
-   EINA_LIST_FOREACH(collections, l, group)
-     {
-        if (group != pd->wm_style->full_group_name)
-          ewe_combobox_item_add(combobox, group);
-        if (group == value)
-          pd->part.previous_source = i;
-        i++;
-     }
-   edje_edit_string_free(value);
-   edje_mmap_collection_list_free(collections);
-}
-
 inline static void
 prop_part_drag_control_disable_set(Prop_Data *pd, Eina_Bool collapse)
 {
@@ -946,26 +913,29 @@ prop_part_drag_control_disable_set(Prop_Data *pd, Eina_Bool collapse)
    elm_object_disabled_set(pd->part_drag.step_x, !bx);
    elm_object_disabled_set(pd->part_drag.step_y, !by);
    elm_object_disabled_set(pd->part_drag.confine, !(bx | by));
+   elm_object_disabled_set(pd->part_drag.threshold, !(bx | by));
 
    if (collapse)
      elm_frame_collapse_set(pd->part_drag.frame, !(bx | by));
 }
 
 PART_ATTR_PARTS_LIST(part_drag, confine, part_drag)
+PART_ATTR_PARTS_LIST(part_drag, threshold, part_drag)
 PART_ATTR_PARTS_LIST(part_drag, event, part_drag)
 
-#define PART_ATTR_1CHECK(TEXT, SUB, VALUE) \
-   PART_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
-   PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE)
+PART_ATTR_SOURCE_UPDATE(part, source)
 
-#define PART_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER) \
+#define PART_ATTR_1CHECK(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
+   PART_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER) \
+   PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
+
+#define PART_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
    PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
-   PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER)
+   PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
-#define PART_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, TYPE) \
+#define PART_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, TYPE, LIST, TOOLTIP) \
    PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
-   PART_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE, TYPE) \
-   PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, TYPE)
+   PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
 
 #define PART_ATTR_DRAG(TEXT, SUB, VALUE1, VALUE2) \
    PART_ATTR_DRAG_CALLBACK(SUB, VALUE1, VALUE2) \
@@ -973,17 +943,28 @@ PART_ATTR_PARTS_LIST(part_drag, event, part_drag)
    PART_ATTR_DRAG_ADD(TEXT, SUB, VALUE1, VALUE2)
 
 /* part property */
-PART_ATTR_1CHECK(_("scalable"), part, scale)
-PART_ATTR_1CHECK(_("mouse events"), part, mouse_events)
-PART_ATTR_1CHECK(_("event propagation"), part, repeat_events)
-PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to, part)
-PART_ATTR_1COMBOBOX_LIST(_("ignore flags"), part, ignore_flags, Evas_Event_Flags)
-PART_ATTR_1COMBOBOX(_("group source"), part, source, part)
+PART_ATTR_1CHECK(_("scalable"), part, scale, part,
+                 _("Specifies whether the part will scale it's size with an edje scaling factor"))
+PART_ATTR_1CHECK(_("mouse events"), part, mouse_events, part,
+                 _("Enable mouse events in this part"))
+PART_ATTR_1CHECK(_("event propagation"), part, repeat_events, part,
+                 _("Enable repeat mouse events to the parts below"))
+PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to, part,
+                    _("Show only the area of part that coincides with another part's container"))
+PART_ATTR_1COMBOBOX_LIST(_("ignore flags"), part, ignore_flags, part, Evas_Event_Flags, edje_ignore_flags,
+                         _("Specifies whether events with the given flags should be ignored"))
+PART_ATTR_1COMBOBOX(_("group source"), part, source, part,
+                    _("Used for the group to be loaded and used to display GROUP part."))
 /* part drag property */
 PART_ATTR_DRAG(_("axis X"), part_drag, x, step_x)
 PART_ATTR_DRAG(_("axis Y"), part_drag, y, step_y)
-PART_ATTR_1COMBOBOX(_("drag area"), part_drag, confine, part_drag)
-PART_ATTR_1COMBOBOX(_("forward events"), part_drag, event, part_drag)
+PART_ATTR_1COMBOBOX(_("drag area"), part_drag, confine, part_drag,
+                    _("Limits the movement of the dragged part to another part's container"))
+PART_ATTR_1COMBOBOX(_("threshold"), part_drag, threshold, part_drag,
+                    _("Movement of the dragged part can only start when it get moved enough to be outside of this threshold part"))
+PART_ATTR_1COMBOBOX(_("forward events"), part_drag, event, part_drag,
+                    _("It causes the part to forward the drag events "
+                    "to another part, thus ignoring them for itself."))
 
 #define pd_part pd->part
 #define pd_drag pd->part_drag
@@ -1003,36 +984,26 @@ ui_property_part_set(Evas_Object *property, Part *part)
 
    if (!pd_part.frame)
      {
-        FRAME_PROPERTY_ADD(pd->visual, pd_part.frame, true, _("Part property"), pd->visual)
+        FRAME_PROPERTY_ADD(property, pd_part.frame, true, _("Part property"), pd->visual)
         BOX_ADD(pd_part.frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(pd_part.frame, box);
 
-        item = prop_item_part_name_add(box, pd, _("Selected part name"));
+        item = prop_part_name_add(box, pd);
         elm_box_pack_end(box, item);
         item = prop_part_type_add(box, _("type"), wm_part_type_get(pd->wm_part->type));
         elm_box_pack_end(box, item);
-        pd->part.scale_item = prop_part_scale_add(box, pd,
-                           _("Specifies whether the part will scale "
-                           "its size with an edje scaling factor."));
+        pd->part.scale_item = prop_part_scale_add(box, pd);
         elm_box_pack_end(box, pd->part.scale_item);
-        pd->part.mouse_events_item = prop_part_mouse_events_add(box, pd,
-                           _("Enable mouse events in this part."));
+        pd->part.mouse_events_item = prop_part_mouse_events_add(box, pd);
         elm_box_pack_end(box, pd->part.mouse_events_item);
-        pd->part.repeat_events_item = prop_part_repeat_events_add(box, pd,
-                            _("Enable repeat mouse events to the parts below."));
+        pd->part.repeat_events_item = prop_part_repeat_events_add(box, pd);
         elm_box_pack_end(box, pd->part.repeat_events_item);
-        pd->part.clip_to_item = prop_part_clip_to_add(box, pd,
-                             _("Show only the area of part that coincides with "
-                             "another part's container"));
+        pd->part.clip_to_item = prop_part_clip_to_add(box, pd);
         elm_box_pack_end(box, pd->part.clip_to_item);
-        pd->part.ignore_flags_item = prop_part_ignore_flags_add(box, pd,
-                                  _("Specifies whether events with the given "
-                                  " flags should be ignored"), edje_ignore_flags);
+        pd->part.ignore_flags_item = prop_part_ignore_flags_add(box, pd);
         elm_box_pack_end(box, pd->part.ignore_flags_item);
-        pd->part.source_item = prop_part_source_add(box, pd,
-                                  _("Used for the group to be loaded and used to "
-                                  "display GROUP part."));
+        pd->part.source_item = prop_part_source_add(box, pd);
         elm_box_pack_end(box, pd->part.source_item);
 
         FRAME_PROPERTY_ADD(pd->visual, pd_drag.frame, true, _("Part dragable property"), pd->visual)
@@ -1050,13 +1021,11 @@ ui_property_part_set(Evas_Object *property, Part *part)
                                  _("Enable/Disable draggin along Y axis"),
                                  _("Set a drag step value"));
         elm_box_pack_end(box, item);
-        item = prop_part_drag_confine_add(box, pd,
-                                 _("Limits the movement of the dragged part to "
-                                  "another part's container'"));
+        item = prop_part_drag_confine_add(box, pd);
         elm_box_pack_end(box, item);
-        item = prop_part_drag_event_add(box, pd,
-                                _("It causes the part to forward the drag events "
-                                "to another part, thus ignoring them for itself."));
+        item = prop_part_drag_threshold_add(box, pd);
+        elm_box_pack_end(box, item);
+        item = prop_part_drag_event_add(box, pd);
         elm_box_pack_end(box, item);
 
         elm_box_pack_after(prop_box, pd_part.frame, pd->group.frame);
@@ -1065,17 +1034,18 @@ ui_property_part_set(Evas_Object *property, Part *part)
      {
         prop_part_name_update(pd);
         prop_part_type_update(wm_part_type_get(pd->wm_part->type));
-        ITEM_ATTR_1CHECK_UPDATE(part, scale)
-        ITEM_ATTR_1CHECK_UPDATE(part, mouse_events)
-        ITEM_ATTR_1CHECK_UPDATE(part, repeat_events)
-        prop_part_clip_to_update(pd, NULL);
-        prop_part_ignore_flags_update(pd);
-        prop_part_source_update(pd, pd->part.source);
+        PART_ATTR_1CHECK_UPDATE(part, scale, part)
+        PART_ATTR_1CHECK_UPDATE(part, mouse_events, part)
+        PART_ATTR_1CHECK_UPDATE(part, repeat_events, part)
+        prop_part_clip_to_update(pd);
+        PART_ATTR_1COMBOBOX_LIST_UPDATE(part, ignore_flags, part)
+        prop_part_source_update(pd);
 
         prop_part_drag_x_step_x_update(pd);
         prop_part_drag_y_step_y_update(pd);
-        prop_part_drag_confine_update(pd, pd->part_drag.confine);
-        prop_part_drag_event_update(pd, pd->part_drag.event);
+        prop_part_drag_confine_update(pd);
+        prop_part_drag_threshold_update(pd);
+        prop_part_drag_event_update(pd);
      }
 
    box = elm_object_content_get(pd_part.frame);
@@ -1164,14 +1134,15 @@ ui_property_part_unset(Evas_Object *property)
 
    PROP_ITEM_UNSET(prop_box, pd->part.frame)
    PROP_ITEM_UNSET(prop_box, pd->state.frame)
+   evas_object_del(pd->state.color1);
+   evas_object_del(pd->state.color2);
+   evas_object_del(pd->state.color3);
    PROP_ITEM_UNSET(prop_box, pd->state_object_area.frame)
    PROP_ITEM_UNSET(prop_box, pd->state_text.frame)
    PROP_ITEM_UNSET(prop_box, pd->state_image.frame)
    PROP_ITEM_UNSET(prop_box, pd->state_textblock.frame)
    PROP_ITEM_UNSET(prop_box, pd->state_fill.frame)
    PROP_ITEM_UNSET(prop_box, pd->state_container.frame)
-   PROP_ITEM_UNSET(prop_box, pd->state_table.frame)
-   PROP_ITEM_UNSET(prop_box, pd->state_box.frame)
    PROP_ITEM_UNSET(prop_box, pd->part_item.frame)
 }
 
@@ -1179,119 +1150,250 @@ ui_property_part_unset(Evas_Object *property)
 #undef pd_part
 #undef pd_drag
 
-#define ITEM_2SPINNER_STATE_INT_CREATE(TEXT, SUB, VALUE1, VALUE2, STYLE) \
-   ITEM_SPINNER_STATE_INT_CALLBACK(SUB, VALUE1) \
-   ITEM_SPINNER_STATE_INT_CALLBACK(SUB, VALUE2) \
-   ITEM_2SPINNER_STATE_UPDATE(SUB, VALUE1, VALUE2) \
-   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, STYLE)
+/*****************************************************************************/
+/*                          COLOR CLASS COMBOBOX                             */
+/*****************************************************************************/
+static void
+_on_state_color_class_change(void *data,
+                             Evas_Object *obj EINA_UNUSED,
+                             void *event_info)
+{
+   Prop_Data *pd = (Prop_Data *)data;
+   int r, g, b, a, r2, g2, b2, a2, r3, g3, b3, a3;
+   Eina_Stringshare *old_value = NULL, *value = NULL;
+   Ewe_Combobox_Item *item = event_info;
 
-#define ITEM_2SPINNER_STATE_DOUBLE_CREATE(TEXT, SUB, VALUE1, VALUE2, STYLE) \
-   ITEM_SPINNER_STATE_DOUBLE_CALLBACK(SUB, VALUE1) \
-   ITEM_SPINNER_STATE_DOUBLE_CALLBACK(SUB, VALUE2) \
-   ITEM_2SPINNER_STATE_UPDATE(SUB, VALUE1, VALUE2) \
-   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, STYLE)
+   old_value = edje_edit_state_color_class_get(pd->wm_style->obj, pd->wm_part->name,
+                                               pd->wm_part->curr_state,
+                                               pd->wm_part->curr_state_value);
+   value = strcmp(item->title, "None") ? item->title : NULL;
+   edje_edit_state_color_class_set(pd->wm_style->obj, pd->wm_part->name,
+                                   pd->wm_part->curr_state,
+                                   pd->wm_part->curr_state_value,
+                                   value);
 
-#define ITEM_1ENTRY_STATE_CREATE(TEXT, SUB, VALUE, FILTER, TYPE) \
-   ITEM_STRING_STATE_CALLBACK(SUB, VALUE, TYPE) \
-   ITEM_1ENTRY_STATE_ADD(TEXT, SUB, VALUE, FILTER) \
-   ITEM_1ENTRY_STATE_UPDATE(SUB, VALUE)
+   if (edje_edit_color_class_colors_get(pd->wm_style->obj, item->title,
+                                        &r, &g, &b, &a,
+                                        &r2, &g2, &b2, &a2,
+                                        &r3, &g3, &b3, &a3))
+     {
+        evas_object_color_set(pd->state.color1, r * a / 255, g * a / 255, b * a / 255, a);
+        evas_object_color_set(pd->state.color2, r2 * a2 / 255, g2 * a2 / 255, b2 * a2 / 255, a2);
+        evas_object_color_set(pd->state.color3, r3 * a3 / 255, g3 * a3 / 255, b3 * a3 / 255, a3);
+     }
+   else
+     {
+        evas_object_color_set(pd->state.color1, 0, 0, 0, 0);
+        evas_object_color_set(pd->state.color2, 0, 0, 0, 0);
+        evas_object_color_set(pd->state.color3, 0, 0, 0, 0);
+     }
 
-#define ITEM_STATE_CCL_CREATE(TYPE, TEXT, SUB, VALUE, LIST) \
-   ITEM_1COMBOBOX_STATE_ADD(TYPE, TEXT, SUB, VALUE, LIST) \
-   ITEM_1COMBOBOX_STATE_UPDATE(TYPE, TEXT, SUB, VALUE, LIST)
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, value,
+                    pd->wm_style->full_group_name,
+                    (void*)edje_edit_state_color_class_set, "color class",
+                    pd->wm_part->name, pd->wm_part->curr_state,
+                    pd->wm_part->curr_state_value);
 
-#define ITEM_COLOR_STATE_CREATE(TEXT, SUB, VALUE) \
-   ITEM_COLOR_STATE_CALLBACK(SUB, VALUE) \
-   ITEM_COLOR_STATE_ADD(TEXT, SUB, VALUE) \
-   ITEM_COLOR_STATE_UPDATE(SUB, VALUE)
+   edje_edit_string_free(value);
+   edje_edit_string_free(old_value);
 
-#define ITEM_2CHECK_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2) \
-   ITEM_CHECK_STATE_CALLBACK(SUB, VALUE1) \
-   ITEM_CHECK_STATE_CALLBACK(SUB, VALUE2) \
-   ITEM_2CHEACK_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
-   ITEM_2CHEACK_STATE_UPDATE(SUB, VALUE1, VALUE2)
+   project_changed(false);
+   workspace_edit_object_recalc(pd->workspace);
+}
 
-#define ITEM_1COMBOBOX_PART_STATE_CREATE(TEXT, SUB, VALUE, TYPE) \
-   ITEM_1COMBOBOX_STATE_PART_CALLBACK(SUB, VALUE, TYPE) \
-   ITEM_1COMBOBOX_STATE_PART_UPDATE(TEXT, SUB, VALUE, TYPE) \
-   ITEM_1COMBOBOX_STATE_PART_ADD(TEXT, SUB, VALUE)
+static void
+_color_class_items_fill(void *data,
+                        Evas_Object *obj,
+                        void *event_info __UNUSED__)
+{
+   int r, g, b, a, r2, g2, b2, a2, r3, g3, b3, a3;
+   Eina_List *items, *l;
+   Ewe_Combobox_Item *item;
+   Prop_Data *pd = (Prop_Data *)data;
+   Evas_Object *color;
+   Evas *canvas;
 
-#define ITEM_1COMBOBOX_STATE_PROXY_CREATE(TEXT, SUB, VALUE) \
-   ITEM_COMBOBOX_STATE_CALLBACK(-1, TEXT, SUB, VALUE) \
-   ITEM_1COMBOBOX_STATE_PROXY_ADD(TEXT, SUB, VALUE) \
-   ITEM_1COMBOBOX_STATE_PROXY_UPDATE(SUB, VALUE)
+   items = (Eina_List *)ewe_combobox_items_list_get(obj);
+   if (!items) return;
 
-#define STATE_ATTR_CHECK_UPDATE(SUB, VALUE) \
-   elm_check_state_set(pd->SUB.VALUE, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
-                                                                      pd->wm_part->name, \
-                                                                      pd->wm_part->curr_state, \
-                                                                      pd->wm_part->curr_state_value));
+   //get combobbox item from first list item
+   item = eina_list_data_get(items);
+   canvas = evas_object_evas_get(item->content);
+   EINA_LIST_FOREACH(items, l, item)
+     {
+        // this case available if user select 'None'
+        if (!edje_edit_color_class_colors_get(pd->wm_style->obj, item->title,
+                                              &r, &g, &b, &a,
+                                              &r2, &g2, &b2, &a2,
+                                              &r3, &g3, &b3, &a3))
+          continue;
 
-#define STATE_ATTR_2CHECK_UPDATE(SUB, VALUE1, VALUE2) \
-   STATE_ATTR_CHECK_UPDATE(SUB, VALUE1) \
-   STATE_ATTR_CHECK_UPDATE(SUB, VALUE2)
+       /* FIXME: this is bad solition, user shoud not use edje object for add contnent to a
+        * combobox item. Need to move combobox from edje ocject to layout. */
+       color = edje_object_add(canvas);
+       edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+       evas_object_color_set(color, r * a / 255, g * a / 255, b * a / 255, a);
+       edje_object_part_swallow(item->content, "swallow.color1", color);
+       color = edje_object_add(canvas);
+       edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+       evas_object_color_set(color, r2 * a2 / 255, g2 * a2 /  255, b2 * a2 / 255, a2);
+       edje_object_part_swallow(item->content, "swallow.color2", color);
+       color = edje_object_add(canvas);
+       edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+       evas_object_color_set(color, r3 * a3 / 255, g3 * a3 / 255, b3 * a3 / 255, a3);
+       edje_object_part_swallow(item->content, "swallow.color3", color);
+     }
+}
 
-#define STATE_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MULTIPLIER)\
-   elm_spinner_value_set(pd->SUB.VALUE1, \
-                         MULTIPLIER * edje_edit_##SUB##_##VALUE1##_get(pd->wm_style->obj, \
-                                                                       pd->wm_part->name, \
-                                                                       pd->wm_part->curr_state, \
-                                                                       pd->wm_part->curr_state_value)); \
-   elm_spinner_value_set(pd->SUB.VALUE2, \
-                         MULTIPLIER * edje_edit_##SUB##_##VALUE2##_get(pd->wm_style->obj, \
-                                                                       pd->wm_part->name, \
-                                                                       pd->wm_part->curr_state, \
-                                                                       pd->wm_part->curr_state_value));
+static void
+prop_state_color_class_update(Prop_Data *pd)
+{
+   Ewe_Combobox_Item *it;
+   Eina_List *cclist, *l;
+   const char *ccname;
+   int r, g, b, a, r2, g2, b2, a2, r3, g3, b3, a3;
+   Eina_Stringshare *color_c;
+   ewe_combobox_items_list_free(pd->state.color_class, true);
+   ewe_combobox_item_add(pd->state.color_class, _("None"));
+   cclist = edje_edit_color_classes_list_get(pd->wm_style->obj);
+   EINA_LIST_FOREACH(cclist, l, ccname)
+     {
+        it = ewe_combobox_item_add(pd->state.color_class, ccname);
+        ewe_combobox_item_style_set(pd->state.color_class, it, "color_class");
+     }
+   color_c = edje_edit_state_color_class_get(pd->wm_style->obj, pd->wm_part->name,
+                                             pd->wm_part->curr_state,
+                                             pd->wm_part->curr_state_value);
+   ewe_combobox_text_set(pd->state.color_class, color_c ? color_c : _("None"));
+   if (color_c && edje_edit_color_class_colors_get(pd->wm_style->obj, color_c,
+                                                   &r, &g, &b, &a,
+                                                   &r2, &g2, &b2, &a2,
+                                                   &r3, &g3, &b3, &a3))
+     {
+        evas_object_color_set(pd->state.color1, r * a / 255, g * a / 255, b * a / 255, a);
+        evas_object_color_set(pd->state.color2, r2 * a2 / 255, g2 * a2 / 255, b2 * a2 / 255, a2);
+        evas_object_color_set(pd->state.color3, r3 * a3 / 255, g3 * a3 / 255, b3 * a3 / 255, a3);
+     }
+   else
+     {
+        evas_object_color_set(pd->state.color1, 0, 0, 0, 0);
+        evas_object_color_set(pd->state.color2, 0, 0, 0, 0);
+        evas_object_color_set(pd->state.color3, 0, 0, 0, 0);
+     }
 
+   edje_edit_string_list_free(cclist);
+   edje_edit_string_free(color_c);
+}
 
-#define STATE_ATTR_1CHECK(TEXT, SUB, VALUE) \
-   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
-   STATE_ATTR_1CHECK_ADD(TEXT, SUB, VALUE)
+static Evas_Object *
+prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
+{
+   PROPERTY_ITEM_ADD(parent, _("color class"), "1swallow")
+   EWE_COMBOBOX_ADD(parent, pd->state.color_class)
+   elm_object_tooltip_text_set(pd->state.color_class, "Set the color class");
+   ewe_combobox_style_set(pd->state.color_class, "color_class");
+   evas_object_smart_callback_add(pd->state.color_class, "selected", _on_state_color_class_change, pd);
+   evas_object_smart_callback_add(pd->state.color_class, "expanded", _color_class_items_fill, pd);
+   elm_layout_content_set(item, "elm.swallow.content", pd->state.color_class);
+   pd->state.color1 = elm_layout_add(parent);
+   elm_layout_theme_set(pd->state.color1, "image", "color", "color_set");
+   ewe_combobox_content_set(pd->state.color_class, "swallow.color1", pd->state.color1);
+   pd->state.color2 = elm_layout_add(parent);
+   elm_layout_theme_set(pd->state.color2, "image", "color", "color_set");
+   ewe_combobox_content_set(pd->state.color_class, "swallow.color2", pd->state.color2);
+   pd->state.color3 = elm_layout_add(parent);
+   elm_layout_theme_set(pd->state.color3, "image", "color", "color_set");
+   ewe_combobox_content_set(pd->state.color_class, "swallow.color3", pd->state.color3);
 
-#define STATE_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MIN, MAX, STEP, FMT, \
+   prop_state_color_class_update(pd);
+   return item;
+}
+
+#define STATE_ATTR_1CHECK(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
+   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER) \
+   STATE_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
+
+#define STATE_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                             L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
                             TYPE, HISTORY_TYPE) \
-   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE1, TYPE, HISTORY_TYPE, MULTIPLIER) \
-   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE2, TYPE, HISTORY_TYPE, MULTIPLIER) \
-   STATE_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MIN, MAX, STEP, FMT, \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
+   STATE_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, MAX, STEP, FMT, \
                            L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
-#define STATE_ATTR_2CHECK(TEXT, SUB, VALUE1, VALUE2, TOOLTIP1, TOOLTIP2) \
-   STATE_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2) \
-   STATE_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, TOOLTIP1, TOOLTIP2)
+#define STATE_ATTR_2CHECK(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
+                          L1_START, L1_END, L2_START, L2_END, \
+                          TOOLTIP1, TOOLTIP2) \
+   STATE_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2, MEMBER) \
+   STATE_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
+                        L1_START, L1_END, L2_START, L2_END, \
+                        TOOLTIP1, TOOLTIP2)
 
-STATE_ATTR_1CHECK(_("visible"), state, visible)
-STATE_ATTR_2SPINNER(_("min"), state, min_w, min_h, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
+#define STATE_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP, TYPE) \
+   STATE_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
+   STATE_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
+
+#define STATE_ATTR_COLOR(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
+   STATE_ATTR_COLOR_CALLBACK(SUB, VALUE, MEMBER) \
+   STATE_ATTR_COLOR_LIST_UPDATE(SUB, VALUE, MEMBER) \
+   STATE_ATTR_COLOR_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
+
+#define STATE_ATTR_COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
+   STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
+   STATE_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
+
+#define STATE_MINMAX_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+                            L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
+                            TYPE, HISTORY_TYPE, DIF_VALUE1, DIF_VALUE2, CHECK) \
+   STATE_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, DIF_VALUE1, CHECK) \
+   STATE_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, DIF_VALUE2, CHECK) \
+   STATE_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, MAX, STEP, FMT, \
+                           L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
+
+#define STATE_STRSHARE_ATR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP) \
+   STATE_STRSHARE_ATR_1COMBOBOX_LIST_CALLBACK(SUB, VALUE, MEMBER) \
+   STATE_STRSHARE_ATR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
+
+STATE_ATTR_1CHECK(_("visible"), state, visible, state,
+                  _("Set visibility for part by current state"))
+STATE_MINMAX_ATTR_2SPINNER(_("min"), state, min_w, min_h, state, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
                     _("Minimal size of part width in pixels."), _("Minimal part height in pixels."),
-                    1, int, VAL_INT)
-STATE_ATTR_2SPINNER(_("max"), state, max_w, max_h, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
+                    1, int, VAL_INT, max_w, max_h, >)
+STATE_MINMAX_ATTR_2SPINNER(_("max"), state, max_w, max_h, state, -1.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
                     _("Maximal size of part width in pixels."), _("Maximal part height in pixels."),
-                    1, int, VAL_INT)
-STATE_ATTR_2SPINNER(_("align"), state, align_x, align_y, 0, 100, 1, NULL, "x:", "%", "y:", "%",
+                    1, int, VAL_INT, min_w, min_h, <)
+STATE_ATTR_2SPINNER(_("align"), state, align_x, align_y, state, 0, 100, 1, NULL, "x:", "%", "y:", "%",
                     _("Part align horizontally"), _("Part align vertically"),
                     100, double, VAL_DOUBLE)
-STATE_ATTR_2CHECK(_("fixed"), state, fixed_w, fixed_h, _("This affects the minimum width calculation."),
+STATE_ATTR_2CHECK(_("fixed"), state, fixed_w, fixed_h, state, "w:", "", "h:", "",
+                  _("This affects the minimum width calculation."),
                   _("This affects the minimum height calculation."))
-STATE_ATTR_2SPINNER(_("aspect ratio"), state, aspect_min, aspect_max, 0, 100, 1, NULL, "min:", "", "max:", "",
+STATE_ATTR_1COMBOBOX_LIST(_("aspect ratio mode"), state, aspect_pref, state, edje_aspect_pref,
+                          _("The aspect control hints for this object."), unsigned char)
+STATE_ATTR_2SPINNER(_("aspect ratio"), state, aspect_min, aspect_max, state, 0, 100, 1, NULL, "min:", "", "max:", "",
                    _("Normally width and height can be resized to any values independently"),
                    _("Normally width and height can be resized to any values independently"),
                    100, double, VAL_DOUBLE)
-STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, 1.0, 9999.0, 0.1, "%.1f", "w:", "", "h:", "",
+STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, state, 1.0, 9999.0, 0.1, "%.1f", "w:", "", "h:", "",
                     _("The minimal part width value multiplier for current state"),
                     _("The minimal part height value multiplier for current state"),
                     1, double, VAL_DOUBLE)
+STATE_ATTR_COLOR(_("color"), state, color, state, _("Part main color"))
 
-ITEM_1COMBOBOX_STATE_PROXY_CREATE(_("proxy source"), state, proxy_source)
-ITEM_STATE_CCL_CREATE(COLOR_CLASS, _("color class"), state, color_class, color_classes)
-ITEM_COLOR_STATE_CREATE(_("color"), state, color)
-ITEM_1COMBOBOX_PART_STATE_CREATE(_("aspect ratio mode"), state, aspect_pref, unsigned char)
+STATE_ATTR_SOURCE_UPDATE(state, proxy_source, state, EDJE_PART_TYPE_SPACER, !=)
+STATE_ATTR_COMBOBOX(_("proxy source"), state, proxy_source, state,
+                    _("Causes the part to use another part content as"
+                    "the content of this part. Only work with PROXY part."))
+STATE_STRSHARE_ATR_1COMBOBOX_LIST(_("box layout"), state, box_layout, state, edje_box_layouts,
+                          _("The aspect control hints for this object"))
+STATE_ATTR_1COMBOBOX_LIST(_("table homogeneous"), state, table_homogeneous, state, edje_homogeneous,
+                          _("The table homogeneous mode"), unsigned char)
 
 Eina_Bool
 ui_property_state_set(Evas_Object *property, Part *part)
 {
    Evas_Object *item;
    Evas_Object *state_frame, *box, *prop_box;
-   int type;
    char state[BUFF_MAX];
 
    if ((!property) || (!part)) return EINA_FALSE;
@@ -1300,8 +1402,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
    if (pd->wm_part != part) return EINA_FALSE; /* time for panic */
    #define pd_state pd->state
 
-   type = edje_edit_part_type_get(pd->wm_style->obj, part->name);
-   sprintf(state, "%s %.2f", part->curr_state, part->curr_state_value);
+   snprintf(state, BUFF_MAX, "%s %.2f", part->curr_state, part->curr_state_value);
 
    prop_box = elm_object_content_get(pd->visual);
    elm_box_unpack(prop_box, pd_state.frame);
@@ -1315,11 +1416,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
 
         item = prop_state_state_add(box, _("state"), state);
         elm_box_pack_end(box, item);
-        item = prop_state_visible_add(box, pd, "Set visibility for part by current state");
+        item = prop_state_visible_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_state.proxy_source = prop_item_state_proxy_source_add(box, pd,
-                                  _("Causes the part to use another part content as"
-                                  "the content of this part. Only work with PROXY part."));
         item = prop_state_min_w_min_h_add(box, pd);
         elm_box_pack_end(box, item);
         item = prop_state_max_w_max_h_add(box, pd);
@@ -1328,39 +1426,22 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, item);
         item = prop_state_align_x_align_y_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_state.aspect_pref = prop_item_state_aspect_pref_add(box, pd,
-                                   _("The aspect control hints for this object."),
-                                   edje_aspect_pref);
-        elm_box_pack_end(box, pd_state.aspect_pref);
+        item = prop_state_aspect_pref_add(box, pd);
+        elm_box_pack_end(box, item);
         item = prop_state_aspect_min_aspect_max_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_state.color_class = prop_item_state_color_class_add(box, pd,
-                                   _on_state_color_class_change,
-                                   _("Current color class"));
-        elm_box_pack_end(box, pd_state.color_class);
-        pd_state.color = prop_item_state_color_add(box, pd,
-                            _("Part main color."));
+        pd_state.color_class_item = prop_state_color_class_add(box, pd);
+        elm_box_pack_end(box, pd_state.color_class_item);
+        pd_state.color_item = prop_state_color_add(box, pd);
+        elm_box_pack_after(box, pd_state.color_item, pd_state.color_class_item);
         item = prop_state_minmul_w_minmul_h_add(box, pd);
         elm_box_pack_end(box, item);
-
-        evas_object_hide(pd_state.proxy_source);
-        elm_box_unpack(box, pd_state.proxy_source);
-        elm_box_pack_end(box, pd_state.color);
-        switch (type)
-          {
-           case EDJE_PART_TYPE_PROXY:
-             {
-                evas_object_show(pd_state.proxy_source);
-                elm_box_pack_end(box, pd_state.proxy_source);
-                break;
-             }
-           case EDJE_PART_TYPE_SPACER:
-           case EDJE_PART_TYPE_TEXTBLOCK:
-             {
-                evas_object_hide(pd_state.color);
-                elm_box_unpack(box, pd_state.color);
-             }
-          }
+        pd_state.proxy_source_item = prop_state_proxy_source_add(box, pd);
+        evas_object_hide(pd_state.proxy_source_item);
+        pd_state.box_layout_item = prop_state_box_layout_add(box, pd);
+        evas_object_hide(pd_state.box_layout_item);
+        pd_state.table_homogeneous_item = prop_state_table_homogeneous_add(box, pd);
+        evas_object_hide(pd_state.table_homogeneous_item);
 
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_after(prop_box, state_frame, pd->part.frame);
@@ -1369,40 +1450,20 @@ ui_property_state_set(Evas_Object *property, Part *part)
    else
      {
         box = elm_object_content_get(pd_state.frame);
-        /* unpack item for part color, because we don't know whether it is necessary */
-        elm_box_unpack(box, pd_state.color);
-        elm_box_unpack(box, pd_state.proxy_source);
         prop_state_state_update(state);
-        STATE_ATTR_CHECK_UPDATE(state, visible)
-
-        STATE_ATTR_2SPINNER_UPDATE(state, min_w, min_h, 1)
-        STATE_ATTR_2SPINNER_UPDATE(state, max_w, max_h, 1)
-        STATE_ATTR_2CHECK_UPDATE(state, fixed_w, fixed_h)
-        STATE_ATTR_2SPINNER_UPDATE(state, align_x, align_y, 100)
-        prop_item_state_aspect_pref_update(pd_state.aspect_pref, pd);
-        STATE_ATTR_2SPINNER_UPDATE(state, aspect_min, aspect_max, 100)
-        prop_item_state_color_class_update(pd_state.color_class, pd);
-        STATE_ATTR_2SPINNER_UPDATE(state, minmul_w, minmul_h, 1)
-
-        evas_object_hide(pd_state.proxy_source);
-        prop_item_state_color_update(pd_state.color, pd);
-        evas_object_show(pd_state.color);
-        elm_box_pack_end(box, pd_state.color);
-        switch (type)
-          {
-           case EDJE_PART_TYPE_PROXY:
-             {
-                prop_item_state_proxy_source_update(pd_state.proxy_source, pd);
-                evas_object_show(pd_state.proxy_source);
-                elm_box_pack_end(box, pd_state.proxy_source);
-             }
-           case EDJE_PART_TYPE_SPACER:
-           case EDJE_PART_TYPE_TEXTBLOCK:
-             {
-                evas_object_hide(pd_state.color);
-                elm_box_unpack(box, pd_state.color);
-             }
-          }
+        STATE_ATTR_1CHECK_UPDATE(state, visible, state)
+        STATE_ATTR_2SPINNER_UPDATE(state, min_w, min_h, state, int, 1)
+        STATE_ATTR_2SPINNER_UPDATE(state, max_w, max_h, state, int, 1)
+        STATE_ATTR_2CHECK_UPDATE(state, fixed_w, fixed_h, state)
+        STATE_ATTR_2SPINNER_UPDATE(state, align_x, align_y, state, double, 100)
+        STATE_ATTR_1COMBOBOX_LIST_UPDATE(state, aspect_pref, state)
+        STATE_ATTR_2SPINNER_UPDATE(state, aspect_min, aspect_max, state, double, 100)
+        prop_state_color_class_update(pd);
+        prop_state_color_update(pd);
+        STATE_ATTR_2SPINNER_UPDATE(state, minmul_w, minmul_h, state, double, 1)
+        prop_state_proxy_source_update(pd);
+        STATE_STRSHARE_ATTR_1COMBOBOX_LIST_UPDATE(state, box_layout, state)
+        STATE_ATTR_1COMBOBOX_LIST_UPDATE(state, table_homogeneous, state)
 
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_end(prop_box, pd_state.frame);
@@ -1410,37 +1471,109 @@ ui_property_state_set(Evas_Object *property, Part *part)
      }
 
    ui_property_state_obj_area_set(property);
-   if (type == EDJE_PART_TYPE_TEXT) ui_property_state_text_set(property);
+   if (part->type == EDJE_PART_TYPE_TEXT) ui_property_state_text_set(property);
    else ui_property_state_text_unset(property);
-   if (type == EDJE_PART_TYPE_TEXTBLOCK) ui_property_state_textblock_set(property);
+   if (part->type == EDJE_PART_TYPE_TEXTBLOCK) ui_property_state_textblock_set(property);
    else ui_property_state_textblock_unset(property);
-   if (type == EDJE_PART_TYPE_IMAGE) ui_property_state_image_set(property);
+   if (part->type == EDJE_PART_TYPE_IMAGE) ui_property_state_image_set(property);
    else ui_property_state_image_unset(property);
-   if ((type == EDJE_PART_TYPE_IMAGE) || (type == EDJE_PART_TYPE_PROXY))
+   if ((part->type == EDJE_PART_TYPE_IMAGE) || (part->type == EDJE_PART_TYPE_PROXY))
      ui_property_state_fill_set(property);
-   else if ((type != EDJE_PART_TYPE_IMAGE) && (type != EDJE_PART_TYPE_PROXY))
+   else if ((part->type != EDJE_PART_TYPE_IMAGE) && (part->type != EDJE_PART_TYPE_PROXY))
      ui_property_state_fill_unset(property);
-   if (type == EDJE_PART_TYPE_TABLE)
+   if (part->type == EDJE_PART_TYPE_TABLE)
      {
         ui_property_state_container_set(property);
-        ui_property_state_table_set(property);
+        if (!evas_object_visible_get(pd_state.table_homogeneous_item))
+          {
+              elm_box_pack_end(box, pd_state.table_homogeneous_item);
+              evas_object_show(pd_state.table_homogeneous_item);
+          }
      }
    else
-     ui_property_state_table_unset(property);
-   if (type == EDJE_PART_TYPE_BOX)
      {
-        ui_property_state_container_set(property);
-        ui_property_state_box_set(property);
-     }
-   else
-     ui_property_state_box_unset(property);
+        if (evas_object_visible_get(pd_state.table_homogeneous_item))
+          {
+              elm_box_unpack(box, pd_state.table_homogeneous_item);
+              evas_object_hide(pd_state.table_homogeneous_item);
+          }
 
-   if ((type != EDJE_PART_TYPE_TABLE) && (type != EDJE_PART_TYPE_BOX))
+     }
+   if (part->type == EDJE_PART_TYPE_BOX)
+     {
+        ui_property_state_container_set(property);
+        if (!evas_object_visible_get(pd_state.box_layout_item))
+          {
+              elm_box_pack_end(box, pd_state.box_layout_item);
+              evas_object_show(pd_state.box_layout_item);
+          }
+     }
+   else
+     {
+        if (evas_object_visible_get(pd_state.box_layout_item))
+          {
+              elm_box_unpack(box, pd_state.box_layout_item);
+              evas_object_hide(pd_state.box_layout_item);
+          }
+
+     }
+   if ((part->type != EDJE_PART_TYPE_TABLE) && (part->type != EDJE_PART_TYPE_BOX))
      ui_property_state_container_unset(property);
 
-#ifndef HAVE_ENVENTOR
-   _code_of_group_setup(pd);
-#endif
+   /* hide/show the color class attribute control for GROUP */
+   if (part->type == EDJE_PART_TYPE_GROUP)
+     {
+        if (evas_object_visible_get(pd_state.color_class_item))
+          {
+             elm_box_unpack(box, pd_state.color_class_item);
+             evas_object_hide(pd_state.color_class_item);
+          }
+     }
+   else
+     {
+        if (!evas_object_visible_get(pd_state.color_class_item))
+          {
+             elm_box_pack_end(box, pd_state.color_class_item);
+             evas_object_show(pd_state.color_class_item);
+          }
+     }
+   /* hide/show the color attribute control */
+   if (part->type == EDJE_PART_TYPE_TEXTBLOCK ||
+       part->type == EDJE_PART_TYPE_SWALLOW ||
+       part->type == EDJE_PART_TYPE_GROUP ||
+       part->type == EDJE_PART_TYPE_SPACER)
+     {
+        if (evas_object_visible_get(pd_state.color_item))
+          {
+             elm_box_unpack(box, pd_state.color_item);
+             evas_object_hide(pd_state.color_item);
+          }
+     }
+   else
+     {
+        if (!evas_object_visible_get(pd_state.color_item))
+          {
+             elm_box_pack_after(box, pd_state.color_item, pd_state.color_class_item);
+             evas_object_show(pd_state.color_item);
+          }
+     }
+
+   if (part->type == EDJE_PART_TYPE_PROXY)
+     {
+        if (!evas_object_visible_get(pd_state.proxy_source_item))
+          {
+             elm_box_pack_end(box, pd_state.proxy_source_item);
+             evas_object_show(pd_state.proxy_source_item);
+          }
+     }
+   else
+     {
+        if (evas_object_visible_get(pd_state.proxy_source_item))
+          {
+             elm_box_unpack(box, pd_state.proxy_source_item);
+             evas_object_hide(pd_state.proxy_source_item);
+          }
+     }
 
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
    #undef pd_state
@@ -1454,13 +1587,16 @@ ui_property_state_unset(Evas_Object *property)
    PROP_DATA_GET()
 
    evas_object_hide(pd->state.frame);
+   /* hide the evas rectangles, it need to do, because those objects not a smart */
+   evas_object_hide(pd->state.color1);
+   evas_object_hide(pd->state.color2);
+   evas_object_hide(pd->state.color3);
 
    ui_property_state_obj_area_unset(property);
    ui_property_state_text_unset(property);
    ui_property_state_image_unset(property);
    ui_property_state_textblock_unset(property);
    ui_property_state_fill_unset(property);
-   ui_property_state_box_unset(property);
 }
 
 /* FIXME: edje_edit_state_relX_to do not update object properly.
@@ -1501,30 +1637,70 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
                     pd->wm_part->name, pd->wm_part->curr_state, \
                     pd->wm_part->curr_state_value); \
    eina_stringshare_del(text); \
-   project_changed(); \
+   project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
 }
 
-#define ITEM_2COMBOBOX_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2) \
-   ITEM_REL_TO_COMBOBOX_STATE_CALLBACK(SUB, VALUE1) \
-   ITEM_REL_TO_COMBOBOX_STATE_CALLBACK(SUB, VALUE2) \
-   ITEM_2COMBOBOX_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
-   ITEM_2COMBOBOX_STATE_UPDATE(SUB, VALUE1, VALUE2)
+#define STATE_ATTR_2COMBOBOX_V(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2) \
+   STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE1, MEMBER) \
+   STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE2, MEMBER) \
+   STATE_ATTR_SOURCE_UPDATE(SUB, VALUE1, MEMBER, part->type, ==) \
+   STATE_ATTR_SOURCE_UPDATE(SUB, VALUE2, MEMBER, part->type, ==) \
+   STATE_ATTR_2COMBOBOX_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2)
 
-ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_rel1_relative, x, y, "eflete/property/item/relative")
-ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_rel1_offset, x, y, "eflete/property/item/relative")
-ITEM_2COMBOBOX_STATE_CREATE(_("relative to"), state_rel1_to, x, y)
-ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_rel2_relative, x, y, "eflete/property/item/relative")
-ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_rel2_offset, x, y, "eflete/property/item/relative")
-ITEM_2COMBOBOX_STATE_CREATE(_("relative to"), state_rel2_to, x, y)
+#define STATE_ATTR_2SPINNER_ICON(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+                                 L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
+                                 TYPE, HISTORY_TYPE) \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
+   STATE_ATTR_2SPINNER_ADD(TEXT, "2swallow_pad", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, MAX, STEP, FMT, \
+                           L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
+
+STATE_ATTR_2COMBOBOX_V(_("relative to"), state, rel1_to_x, rel1_to_y, state_object_area,
+                       _("Causes a corner to be positioned relatively to the X axis of another "
+                         "part. Setting to \"\" will un-set this value"),
+                       _("Causes a corner to be positioned relatively to the Y axis of another "
+                         "part. Setting to \"\" will un-set this value"))
+STATE_ATTR_2SPINNER_ICON(_("align"), state, rel1_relative_x, rel1_relative_y, state_object_area,
+                         -500, 500, 1, NULL, "x:", "%", "y:", "%",
+                         _("Define the position of left-up corner of the part's container. "
+                           "Moves a corner to a relative position inside the container "
+                           "by X axis."),
+                         _("Define the position of left-up corner of the part's container. "
+                           "Moves a corner to a relative position inside the container "
+                           "by Y axis."),
+                         100, double, VAL_DOUBLE)
+STATE_ATTR_2SPINNER_ICON(_("offset"), state, rel1_offset_x, rel1_offset_y, state_object_area,
+                         -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
+                         _("Left offset from relative position in pixels"),
+                         _("Top offset from relative position in pixels"),
+                         1, int, VAL_INT)
+STATE_ATTR_2COMBOBOX_V(_("relative to"), state, rel2_to_x, rel2_to_y, state_object_area,
+                       _("Causes a corner to be positioned relatively to the X axis of another "
+                         "part. Setting to \"\" will un-set this value"),
+                       _("Causes a corner to be positioned relatively to the Y axis of another "
+                         "part. Setting to \"\" will un-set this value"))
+STATE_ATTR_2SPINNER_ICON(_("align"), state, rel2_relative_x, rel2_relative_y, state_object_area,
+                         -500, 500, 1, NULL, "x:", "%", "y:", "%",
+                         _("Define the position of right-down corner of the part's container. "
+                           "Moves a corner to a relative position inside the container "
+                           "by X axis."),
+                         _("Define the position of right-down corner of the part's container. "
+                           "Moves a corner to a relative position inside the container "
+                           "by Y axis."),
+                         100, double, VAL_DOUBLE)
+STATE_ATTR_2SPINNER_ICON(_("offset"), state, rel2_offset_x, rel2_offset_y, state_object_area,
+                         -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
+                         _("Right offset from relative position in pixels"),
+                         _("Bottom offset from relative position in pixels"),
+                         1, int, VAL_INT)
 
 #define pd_obj_area pd->state_object_area
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property)
 {
+   Evas_Object *item, *icon;
    Evas_Object *obj_area_frame, *box, *prop_box;
-   Evas_Object *separator, *icon;
    PROP_DATA_GET(EINA_FALSE)
 
    prop_box = elm_object_content_get(pd->visual);
@@ -1537,83 +1713,45 @@ ui_property_state_obj_area_set(Evas_Object *property)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(obj_area_frame, box);
 
-        separator = elm_separator_add(obj_area_frame);
-        elm_separator_horizontal_set(separator, true);
-        elm_object_part_text_set(separator, "eflete.text", _("Start point"));
-        ICON_ADD(separator, icon, false, "icon_start-point")
-        elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
-        evas_object_show(separator);
+        item = elm_separator_add(obj_area_frame);
+        elm_separator_horizontal_set(item, true);
+        elm_object_style_set(item, "icon");
+        elm_object_part_text_set(item, "eflete.text", _("Start point"));
+        ICON_ADD(item, icon, false, "icon_start-point")
+        elm_object_part_content_set(item, "eflete.swallow.icon", icon);
+        evas_object_show(item);
+        elm_box_pack_end(box, item);
 
-        pd_obj_area.rel1_to = prop_item_state_rel1_to_x_y_add(box, pd,
-                        _("Causes a corner to be positioned relatively to the X axis of another "
-                        "part. Setting to \"\" will un-set this value"),
-                        _("Causes a corner to be positioned relatively to the Y axis of another "
-                        "part. Setting to \"\" will un-set this value"));
-        pd_obj_area.rel1_relative = prop_item_state_rel1_relative_x_y_add(box, pd,
-                              -500, 500, 1, NULL,
-                              "x:", "%", "y:", "%",
-                              _("Define the position of left-up corner of the part's container. "
-                              "Moves a corner to a relative position inside the container "
-                              "by X axis."),
-                              _("Define the position of left-up corner of the part's container. "
-                              "Moves a corner to a relative position inside the container "
-                              "by Y axis."),
-                              true);
-        ICON_ADD(pd_obj_area.rel1_relative, icon, false, "icon_align");
-        elm_object_part_content_set(pd_obj_area.rel1_relative, "eflete.swallow.icon", icon);
-        pd_obj_area.rel1_offset = prop_item_state_rel1_offset_x_y_add(box, pd,
-                            -9999.0, 9999.0, 1.0, "%.0f",
-                            "x:", "px", "y:", "px",
-                            _("Left offset from relative position in pixels"),
-                            _("Top offset from relative position in pixels"),
-                            false);
-        ICON_ADD(pd_obj_area.rel1_offset, icon, false, "icon_offset");
-        elm_object_part_content_set(pd_obj_area.rel1_offset, "eflete.swallow.icon", icon);
+        item = prop_state_object_area_rel1_to_x_rel1_to_y_add(box, pd);
+        elm_box_pack_end(box, item);
+        item = prop_state_object_area_rel1_relative_x_rel1_relative_y_add(box, pd);
+        ICON_ADD(item, icon, false, "icon_align");
+        elm_layout_content_set(item, NULL, icon);
+        elm_box_pack_end(box, item);
+        item = prop_state_object_area_rel1_offset_x_rel1_offset_y_add(box, pd);
+        ICON_ADD(item, icon, false, "icon_offset");
+        elm_layout_content_set(item, NULL, icon);
+        elm_box_pack_end(box, item);
 
-        elm_box_pack_end(box, separator);
-        elm_box_pack_end(box, pd_obj_area.rel1_to);
-        elm_box_pack_end(box, pd_obj_area.rel1_relative);
-        elm_box_pack_end(box, pd_obj_area.rel1_offset);
+        item = elm_separator_add(obj_area_frame);
+        elm_separator_horizontal_set(item, true);
+        elm_object_style_set(item, "icon");
+        elm_object_part_text_set(item, "eflete.text", _("End point"));
+        ICON_ADD(item, icon, false, "icon_end-point");
+        elm_object_part_content_set(item, "eflete.swallow.icon", icon);
+        evas_object_show(item);
+        elm_box_pack_end(box, item);
 
-        separator = elm_separator_add(obj_area_frame);
-        elm_separator_horizontal_set(separator, true);
-        elm_object_part_text_set(separator, "eflete.text", _("End point"));
-        ICON_ADD(separator, icon, false, "icon_end-point");
-        elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
-        evas_object_show(separator);
-
-        pd_obj_area.rel2_to = prop_item_state_rel2_to_x_y_add(box, pd,
-                        _("Causes a corner to be positioned relatively to the X axis of another "
-                        "part. Setting to \"\" will un-set this value"),
-                        _("Causes a corner to be positioned relatively to the Y axis of another "
-                        "part. Setting to \"\" will un-set this value"));
-        pd_obj_area.rel2_relative = prop_item_state_rel2_relative_x_y_add(box, pd,
-                              -500, 500, 1, NULL,
-                              "x:", "%", "y:", "%",
-                              _("Define the position of right-down corner of the part's container. "
-                              "Moves a corner to a relative position inside the container "
-                              "by X axis."),
-                              _("Define the position of right-down corner of the part's container. "
-                              "Moves a corner to a relative position inside the container "
-                              "by Y axis."),
-                              true);
-        ICON_ADD(pd_obj_area.rel2_relative, icon, false, "icon_align");
-        elm_object_part_content_set(pd_obj_area.rel2_relative, "eflete.swallow.icon", icon);
-        pd_obj_area.rel2_offset = prop_item_state_rel2_offset_x_y_add(box, pd,
-                            -9999.0, 9999.0, 1.0, "%.0f",
-                            "x:", "px", "y:", "px",
-                            _("Left offset from relative position in pixels"),
-                            _("Top offset from relative position in pixels"),
-                            false);
-        ICON_ADD(pd_obj_area.rel2_offset, icon, false, "icon_offset");
-        elm_object_part_content_set(pd_obj_area.rel2_offset, "eflete.swallow.icon", icon);
-
-
-        elm_box_pack_end(box, separator);
-        elm_box_pack_end(box, pd_obj_area.rel2_to);
-        elm_box_pack_end(box, pd_obj_area.rel2_relative);
-        elm_box_pack_end(box, pd_obj_area.rel2_offset);
-
+        item = prop_state_object_area_rel2_to_x_rel2_to_y_add(box, pd);
+        elm_box_pack_end(box, item);
+        item = prop_state_object_area_rel2_relative_x_rel2_relative_y_add(box, pd);
+        ICON_ADD(item, icon, false, "icon_align");
+        elm_layout_content_set(item, NULL, icon);
+        elm_box_pack_end(box, item);
+        item = prop_state_object_area_rel2_offset_x_rel2_offset_y_add(box, pd);
+        ICON_ADD(item, icon, false, "icon_offset");
+        elm_layout_content_set(item, NULL, icon);
+        elm_box_pack_end(box, item);
 
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_end(prop_box, obj_area_frame);
@@ -1621,13 +1759,15 @@ ui_property_state_obj_area_set(Evas_Object *property)
      }
    else
      {
-        prop_item_state_rel1_relative_x_y_update(pd_obj_area.rel1_relative, pd, true);
-        prop_item_state_rel1_offset_x_y_update(pd_obj_area.rel1_offset, pd, false);
-        prop_item_state_rel1_to_x_y_update(pd_obj_area.rel1_to, pd);
+        prop_state_object_area_rel1_to_x_update(pd);
+        prop_state_object_area_rel1_to_y_update(pd);
+        STATE_ATTR_2SPINNER_UPDATE(state, rel1_relative_x, rel1_relative_y, state_object_area, double, 100)
+        STATE_ATTR_2SPINNER_UPDATE(state, rel1_offset_x, rel1_offset_y, state_object_area, int,  1)
 
-        prop_item_state_rel2_relative_x_y_update(pd_obj_area.rel2_relative, pd, true);
-        prop_item_state_rel2_offset_x_y_update(pd_obj_area.rel2_offset, pd, false);
-        prop_item_state_rel2_to_x_y_update(pd_obj_area.rel2_to, pd);
+        prop_state_object_area_rel2_to_x_update(pd);
+        prop_state_object_area_rel2_to_y_update(pd);
+        STATE_ATTR_2SPINNER_UPDATE(state, rel2_relative_x, rel2_relative_y, state_object_area, double, 100)
+        STATE_ATTR_2SPINNER_UPDATE(state, rel2_offset_x, rel2_offset_y, state_object_area, int, 1)
 
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_end(prop_box, pd_obj_area.frame);
@@ -1649,211 +1789,186 @@ ui_property_state_obj_area_unset(Evas_Object *property)
 }
 #undef pd_obj_area
 
+#define STATE_ATTR_1ENTRY(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP) \
+   STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE) \
+   STATE_ATTR_1ENTRY_UPDATE(SUB, VALUE, MEMBER) \
+   STATE_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP)
 
+#define STATE_ATTR_1SPINNER(TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
+                            L_START, L_END, TOOLTIP, MULTIPLIER, \
+                            TYPE, HISTORY_TYPE) \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
+   STATE_ATTR_1SPINNER_ADD(TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
+                           L_START, L_END, TOOLTIP, MULTIPLIER)
 
-#define ITEM_1SPINNER_STATE_INT_CREATE(TEXT, SUB, VALUE) \
-   ITEM_SPINNER_STATE_INT_CALLBACK(SUB, VALUE) \
-   ITEM_1SPINNER_STATE_ADD(TEXT, SUB, VALUE) \
-   ITEM_1SPINNER_STATE_UPDATE(SUB, VALUE)
+STATE_ATTR_1ENTRY(_("text"), state, text, state_text, NULL, _("The dispalyed text"))
+STATE_ATTR_1ENTRY(_("font"), state, font, state_text, PROPERTY_REGEX_STATE_FONT,
+                  _("The text font, posible set a font style. Ex: Sans:style=italic"))
+STATE_ATTR_1SPINNER(_("size"), state_text, size, state_text, 1, 128, 1, "%.0f", "", "pt",
+                    _("The font size"), 1, int, VAL_INT)
+STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_text,
+                    0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
+                    _("Text horizontal align"), _("Text vertical align"),
+                    100, double, VAL_DOUBLE)
+STATE_ATTR_2CHECK(_("min"), state_text, min_x, min_y, state_text, "w:", "", "h:", "",
+                  _("When any of the parameters is enabled it forces \t"
+                  "the minimum size of the container to be equal to\t"
+                  "the minimum size of the text."),
+                  _("When any of the parameters is enabled it forces \t"
+                  "the minimum size of the container to be equal to\t"
+                  "the minimum size of the text."))
+STATE_ATTR_2CHECK(_("max"), state_text, max_x, max_y, state_text, "w:", "", "h:", "",
+                  _("When any of the parameters is enabled it forces \t"
+                  "the maximum size of the container to be equal to\t"
+                  "the maximum size of the text."),
+                  _("When any of the parameters is enabled it forces \t"
+                  "the maximum size of the container to be equal to\t"
+                  "the maximum size of the text."));
+STATE_ATTR_2CHECK(_("fit"), state_text, fit_x, fit_y, state_text, "w:", "", "h:", "",
+                  _("Resize the text for it to fit in it's container by X axis"),
+                  _("Resize the text for it to fit in it's container by Y axis"))
+STATE_ATTR_COLOR(_("shadow color"), state, color3, state_text, NULL)
+STATE_ATTR_COLOR(_("outline color"), state, color2, state_text, NULL)
 
-#define ITEM_1SPINNER_STATE_DOUBLE_CREATE(TEXT, SUB, VALUE) \
-   ITEM_SPINNER_STATE_DOUBLE_CALLBACK(SUB, VALUE) \
-   ITEM_1SPINNER_STATE_ADD(TEXT, SUB, VALUE) \
-   ITEM_1SPINNER_STATE_UPDATE(SUB, VALUE)
+STATE_ATTR_SOURCE_UPDATE(state_text, source, state_text, EDJE_PART_TYPE_TEXT, ==)
+STATE_ATTR_COMBOBOX(_("source"), state_text, source, state_text,
+                    _("Causes the part to use the text properties "
+                      "(like font and size) of another part "
+                      "and update them as they change."))
+STATE_ATTR_SOURCE_UPDATE(state_text, text_source, state_text, EDJE_PART_TYPE_TEXT, ==)
+STATE_ATTR_COMBOBOX(_("text source"), state_text, text_source, state_text,
+                    _("Causes the part to display the text content of "
+                      "another part and update them as they change."));
 
-#define ITEM_1COMBOBOX_STATE_CREATE(TYPE, TEXT, SUB, VALUE, LIST) \
-   ITEM_COMBOBOX_STATE_CALLBACK(TYPE, TEXT, SUB, VALUE) \
-   ITEM_1COMBOBOX_STATE_ADD(TYPE, TEXT, SUB, VALUE, LIST) \
-   ITEM_1COMBOBOX_STATE_UPDATE(TYPE, TEXT, SUB, VALUE, LIST)
-
-ITEM_1ENTRY_STATE_CREATE(_("text"), state, text, NULL, const char *)
-ITEM_1ENTRY_STATE_CREATE(_("font"), state, font, &accept_prop, const char *)
-ITEM_1SPINNER_STATE_INT_CREATE(_("size"), state_text, size)
-ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_text_align, x, y, "eflete/property/item/default")
-ITEM_2CHECK_STATE_CREATE(_("max"), state_text_max, x, y)
-ITEM_2CHECK_STATE_CREATE(_("min"), state_text_min, x, y)
-ITEM_2CHECK_STATE_CREATE(_("fit"), state_text_fit, x, y)
-ITEM_COLOR_STATE_CREATE(_("shadow color"), state, color3)
-ITEM_COLOR_STATE_CREATE(_("outline color"), state, color2)
-ITEM_1COMBOBOX_STATE_CREATE(SOURCE, _("source"), state_text, source, styles)
-ITEM_1COMBOBOX_STATE_CREATE(TEXT_SOURCE, _("text source"), state_text, text_source, styles)
-
-
-static Eina_Bool
-_text_effect_get(Prop_Data *pd, int *type, int *direction)
+inline static void
+_text_effect_update(Prop_Data *pd)
 {
-   Edje_Text_Effect edje_effect = edje_edit_part_effect_get(pd->wm_style->obj,
-                                                            pd->wm_part->name);
+   Edje_Text_Effect effect, old_effect;
 
-   if ((!type) || (!direction))
-     return false;
+   old_effect = edje_edit_part_effect_get(pd->wm_style->obj, pd->wm_part->name);
+   effect = ewe_combobox_select_item_get(pd->state_text.effect)->index |
+            ewe_combobox_select_item_get(pd->state_text.effect_direction)->index << 4;
+   edje_edit_part_effect_set(pd->wm_style->obj, pd->wm_part->name, effect);
 
-     *type = edje_effect & EDJE_TEXT_EFFECT_MASK_BASIC;
-   if ((*type >= EDJE_TEXT_EFFECT_SOFT_OUTLINE) &&
-       (*type != EDJE_TEXT_EFFECT_GLOW))
-     *direction = (edje_effect & EDJE_TEXT_EFFECT_MASK_SHADOW_DIRECTION) >> 4;
-   else *direction = 0;
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_effect, effect,
+                    pd->wm_style->full_group_name, (void*)edje_edit_part_effect_set,
+                    _("text effect"), pd->wm_part->name, NULL, 0);
 
-   return true;
+   workspace_edit_object_recalc(pd->workspace);
+   project_changed(false);
 }
 
-typedef struct {
-   Evas_Object *type_combobox;
-   Evas_Object *direction_combobox;
-   Prop_Data *pd;
-} _text_effect_callback_data;
-
-static void
-_text_effect_value_update(_text_effect_callback_data *effect_data)
+inline static void
+_text_effect_contols_update(Prop_Data *pd)
 {
-   Edje_Text_Effect edje_effect;
-   Edje_Text_Effect old_value = edje_edit_part_effect_get(effect_data->pd->wm_style->obj,
-                             effect_data->pd->wm_part->name);
-   edje_effect = ewe_combobox_select_item_get(effect_data->type_combobox)->index;
-   edje_effect |= ewe_combobox_select_item_get(effect_data->direction_combobox)->index << 4;
-   edje_edit_part_effect_set(effect_data->pd->wm_style->obj,
-                             effect_data->pd->wm_part->name, edje_effect);
-
-   workspace_edit_object_recalc(effect_data->pd->workspace);
-   history_diff_add(effect_data->pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT,
-                    old_value, edje_effect,
-                    effect_data->pd->wm_style->full_group_name,
-                    (void*)edje_edit_part_effect_set, "text effect",
-                    effect_data->pd->wm_part->name, NULL, 0);
-   effect_data->pd->wm_style->isModify = true;
-}
-
-static void
-prop_item_state_effect_update(Evas_Object *item, Prop_Data *pd)
-{
-   int type, direction;
-   Evas_Object *combobox;
-   if (!_text_effect_get(pd, &type, &direction))
-     {
-        ERR("Please, contact DEVS! This error should never appear!");
-        return;
-     }
-   combobox = evas_object_data_get(item, ITEM1);
-   ewe_combobox_select_item_set(combobox, type);
-   combobox = evas_object_data_get(item, ITEM2);
-   if ((type <= EDJE_TEXT_EFFECT_SOFT_OUTLINE) ||
-       (type == EDJE_TEXT_EFFECT_GLOW))
-     {
-        elm_object_disabled_set(combobox, true);
-        ewe_combobox_select_item_set(combobox, 0);
-     }
-   else
-     {
-        ewe_combobox_select_item_set(combobox, direction);
-        elm_object_disabled_set(combobox, false);
-     }
-}
-
-static void
-_on_text_effect_type_change(void *data,
-                            Evas_Object *obj EINA_UNUSED,
-                            void *event_info)
-{
-   _text_effect_callback_data *effect_data = (_text_effect_callback_data *)data;
-   Ewe_Combobox_Item *selected_item = event_info;
-
-   switch (selected_item->index)
+   switch (ewe_combobox_select_item_get(pd->state_text.effect)->index)
      {
       case EDJE_TEXT_EFFECT_NONE:
       case EDJE_TEXT_EFFECT_PLAIN:
+        {
+           elm_object_disabled_set(pd->state_text.effect_direction, true);
+           ewe_combobox_text_set(pd->state_text.effect_direction, _("None"));
+           elm_object_disabled_set(pd->state_text.color3, true);
+           elm_object_disabled_set(pd->state_text.color2, true);
+           break;
+        }
       case EDJE_TEXT_EFFECT_OUTLINE:
       case EDJE_TEXT_EFFECT_SOFT_OUTLINE:
+        {
+           elm_object_disabled_set(pd->state_text.effect_direction, true);
+           ewe_combobox_text_set(pd->state_text.effect_direction, _("None"));
+           elm_object_disabled_set(pd->state_text.color3, true);
+           elm_object_disabled_set(pd->state_text.color2, false);
+           break;
+        }
+      case EDJE_TEXT_EFFECT_OUTLINE_SHADOW:
+      case EDJE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW:
       case EDJE_TEXT_EFFECT_GLOW:
         {
-           ewe_combobox_select_item_set(effect_data->direction_combobox, 0);
-           elm_object_disabled_set(effect_data->direction_combobox, true);
+           elm_object_disabled_set(pd->state_text.effect_direction, false);
+           elm_object_disabled_set(pd->state_text.color3, false);
+           elm_object_disabled_set(pd->state_text.color2, false);
            break;
         }
       default:
         {
-           if (elm_object_disabled_get(effect_data->direction_combobox))
-             {
-                ewe_combobox_select_item_set(effect_data->direction_combobox, 1);
-                elm_object_disabled_set(effect_data->direction_combobox, false);
-             }
+           elm_object_disabled_set(pd->state_text.effect_direction, false);
+           elm_object_disabled_set(pd->state_text.color3, false);
+           elm_object_disabled_set(pd->state_text.color2, true);
         }
      }
-   _text_effect_value_update(effect_data);
-   project_changed();
 }
 
 static void
-_on_text_effect_direction_change(void *data,
-                                 Evas_Object *obj EINA_UNUSED,
-                                 void *event_info EINA_UNUSED)
+_on_text_effect_direction_changed(void *data,
+                                  Evas_Object *obj __UNUSED__,
+                                  void *event_info __UNUSED__)
 {
-   _text_effect_value_update(data);
-   project_changed();
+   _text_effect_update((Prop_Data *)data);
 }
 
 static void
-_del_text_effect_callback_data(void *data,
-                               Evas *e __UNUSED__,
-                               Evas_Object *obj __UNUSED__,
-                               void *ei __UNUSED__)
+_on_text_effect_changed(void *data,
+                        Evas_Object *obj __UNUSED__,
+                        void *event_info __UNUSED__)
 {
-   _text_effect_callback_data *data_to_del = (_text_effect_callback_data *)data;
-   free(data_to_del);
+   Prop_Data *pd = (Prop_Data *)data;
+
+   _text_effect_contols_update(pd);
+   ewe_combobox_select_item_set(pd->state_text.effect_direction, 0);
+   _text_effect_update((Prop_Data *)data);
 }
 
-#define ADD_TEXT_EFFECT_COMBOBOX(_prop_name, _prop_callback, _prop_names_array) \
-   i = 0; \
-   ITEM_ADD(box, layout, _(#_prop_name":"), "eflete/property/item/small_label") \
-   EWE_COMBOBOX_ADD(layout, combobox) \
-   while (_prop_names_array[i]) \
-     { \
-        ewe_combobox_item_add(combobox, _prop_names_array[i]); \
-        i++; \
-     } \
-   evas_object_smart_callback_add(combobox, "selected", \
-                                  _prop_callback, callback_data); \
-   elm_object_part_content_set(layout, "elm.swallow.content", combobox); \
-   elm_box_pack_end(box, layout);
+
+static void
+prop_part_text_effect_update(Prop_Data *pd)
+{
+   int type, direction;
+   Edje_Text_Effect edje_effect;
+
+   edje_effect = edje_edit_part_effect_get(pd->wm_style->obj, pd->wm_part->name);
+
+   type = edje_effect & EDJE_TEXT_EFFECT_MASK_BASIC;
+   if ((type >= EDJE_TEXT_EFFECT_SOFT_OUTLINE) && (type != EDJE_TEXT_EFFECT_GLOW))
+     direction = (edje_effect & EDJE_TEXT_EFFECT_MASK_SHADOW_DIRECTION) >> 4;
+   else direction = 0;
+   ewe_combobox_select_item_set(pd->state_text.effect, type);
+
+   if ((type <= EDJE_TEXT_EFFECT_SOFT_OUTLINE) || (type == EDJE_TEXT_EFFECT_GLOW))
+     elm_object_disabled_set(pd->state_text.effect_direction, true);
+   else
+     elm_object_disabled_set(pd->state_text.effect_direction, false);
+   ewe_combobox_select_item_set(pd->state_text.effect_direction, direction);
+
+   _text_effect_contols_update(pd);
+}
 
 static Evas_Object *
-prop_item_state_effect_add(Evas_Object *parent, Prop_Data *pd)
+prop_part_text_effect_add(Evas_Object *parent, Prop_Data *pd)
 {
-   int i = 0;
-   Evas_Object *item, *box, *layout;
-   Evas_Object *combobox;
+   int i;
+   PROPERTY_ITEM_ADD(parent, _("effect"), "2swallow_vertical")
 
-   _text_effect_callback_data *callback_data = (_text_effect_callback_data *)
-                                   mem_malloc(sizeof(_text_effect_callback_data));
-   if (!callback_data)
-     return NULL;
+   elm_object_part_text_set(item, "label.swallow1.start", _("type:"));
+   EWE_COMBOBOX_ADD(item, pd->state_text.effect)
+   for (i = 0; edje_text_effect_type[i];
+        ewe_combobox_item_add(pd->state_text.effect, edje_text_effect_type[i]), i++) ;
+   elm_object_tooltip_text_set(pd->state_text.effect, _("Causes Edje to draw the selected effect."));
+   evas_object_smart_callback_add(pd->state_text.effect, "selected", _on_text_effect_changed, pd);
+   elm_object_part_content_set(item, "swallow.content1", pd->state_text.effect);
 
-   ITEM_ADD(parent, item, _("effect"), "eflete/property/item/multiple_prop")
-   evas_object_event_callback_add(item, EVAS_CALLBACK_DEL,
-                                  _del_text_effect_callback_data,
-                                  callback_data);
-   callback_data->pd = pd;
+   elm_object_part_text_set(item, "label.swallow2.start", _("direction:"));
+   EWE_COMBOBOX_ADD(item, pd->state_text.effect_direction)
+   for (i = 0; edje_text_effect_direction[i];
+        ewe_combobox_item_add(pd->state_text.effect_direction, edje_text_effect_direction[i]), i++) ;
+   elm_object_tooltip_text_set(pd->state_text.effect_direction, _("Shadow directions."));
+   evas_object_smart_callback_add(pd->state_text.effect_direction, "selected", _on_text_effect_direction_changed, pd);
+   elm_object_part_content_set(item, "swallow.content2", pd->state_text.effect_direction);
 
-   BOX_ADD(item, box, false, true)
-   elm_box_padding_set(box, 0, 6);
-
-   ADD_TEXT_EFFECT_COMBOBOX(type, _on_text_effect_type_change, edje_text_effect_type);
-   callback_data->type_combobox = combobox;
-   evas_object_data_set(item, ITEM1, combobox);
-   elm_object_tooltip_text_set(combobox, _("Causes Edje to draw the selected effect."));
-
-   ADD_TEXT_EFFECT_COMBOBOX(direction, _on_text_effect_direction_change, edje_text_effect_direction);
-   callback_data->direction_combobox = combobox;
-   evas_object_data_set(item, ITEM2, combobox);
-   elm_object_tooltip_text_set(combobox, _("Shadow directions."));
-
-   elm_object_part_content_set(item, "elm.swallow.content", box);
-   prop_item_state_effect_update(item, pd);
    return item;
 }
-#undef ADD_TEXT_EFFECT_COMBOBOX
 
 #define pd_text pd->state_text
-
 
 static void
 _on_state_text_ellipsis_change(void *data,
@@ -1878,8 +1993,7 @@ _on_state_text_ellipsis_change(void *data,
                     pd->wm_part->name, pd->wm_part->curr_state,
                     pd->wm_part->curr_state_value);
    workspace_edit_object_recalc(pd->workspace);
-   pd->wm_style->isModify = true;
-   project_changed();
+   project_changed(false);
 }
 
 static void
@@ -1888,22 +2002,20 @@ _on_state_text_ellipsis_toggle_change(void *data,
                                       void *event_info __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
-   Eina_Bool state = elm_check_state_get(obj);
-   Evas_Object *spinner = evas_object_data_get(pd_text.ellipsis, ITEM2);
-   double value = 0.0;
+   double value;
    double old_value = edje_edit_state_text_elipsis_get(pd->wm_style->obj,
-                                         pd->wm_part->name,
-                                         pd->wm_part->curr_state,
-                                         pd->wm_part->curr_state_value);
+                                                       pd->wm_part->name,
+                                                       pd->wm_part->curr_state,
+                                                       pd->wm_part->curr_state_value);
 
-   if (state)
+   if (elm_check_state_get(obj))
      {
-        elm_object_disabled_set(spinner, false);
-        value = elm_spinner_value_get(spinner);
+        elm_object_disabled_set(pd->state_text.ellipsis, false);
+        value = elm_spinner_value_get(pd->state_text.ellipsis);
      }
    else
      {
-        elm_object_disabled_set(spinner, true);
+        elm_object_disabled_set(pd->state_text.ellipsis, true);
         value = -1.0;
      }
    edje_edit_state_text_elipsis_set(pd->wm_style->obj,
@@ -1917,101 +2029,63 @@ _on_state_text_ellipsis_toggle_change(void *data,
                     pd->wm_part->name, pd->wm_part->curr_state,
                     pd->wm_part->curr_state_value);
    workspace_edit_object_recalc(pd->workspace);
-   pd->wm_style->isModify = true;
-   project_changed();
-}
-
-static Evas_Object *
-prop_item_state_text_ellipsis_add(Evas_Object *parent,
-                                  Prop_Data *pd,
-                                  const char *tooltip)
-{
-   Evas_Object *item, *box, *layout, *check, *spinner;
-   double value;
-
-   ITEM_ADD(parent, item, "ellipsis", "eflete/property/item/default")
-   BOX_ADD(item, box, true, true)
-   elm_box_align_set(box, 0.0, 0.5);
-   ITEM_CONTEINER_2LABEL_ADD(box, layout, "turn", NULL);
-   elm_object_tooltip_text_set(item, tooltip);
-
-   CHECK_ADD(layout, check)
-   elm_object_style_set(check, "toggle");
-   elm_object_part_content_set(layout, "eflete.content", check);
-   evas_object_smart_callback_add(check, "changed",
-                                  _on_state_text_ellipsis_toggle_change, pd);
-
-   SPINNER_ADD(box, spinner, 0.0, 1.0, 0.1, true)
-   elm_spinner_label_format_set(spinner, "%1.2f");
-   value = edje_edit_state_text_elipsis_get(pd->wm_style->obj,
-                                            pd->wm_part->name,
-                                            pd->wm_part->curr_state,
-                                            pd->wm_part->curr_state_value);
-   evas_object_smart_callback_add(spinner, "changed",
-                                  _on_state_text_ellipsis_change, pd);
-
-   if (value < 0)
-     {
-        elm_check_state_set(check, false);
-        elm_object_disabled_set(spinner, true);
-        elm_spinner_value_set(spinner, 0.0);
-     }
-   else
-     {
-        elm_check_state_set(check, true);
-        elm_object_disabled_set(spinner, false);
-        elm_spinner_value_set(spinner, value);
-     }
-
-   elm_box_pack_end(box, layout);
-   elm_box_pack_end(box, spinner);
-   elm_object_part_content_set(item, "elm.swallow.content", box);
-   evas_object_data_set(item, ITEM1, check);
-   evas_object_data_set(item, ITEM2, spinner);
-   return item;
-
+   project_changed(false);
 }
 
 static void
-prop_item_state_text_ellipsis_update(Evas_Object *item,
-                                     Prop_Data *pd)
+prop_state_text_ellipsis_update(Prop_Data *pd)
 {
-   Evas_Object *check, *spinner;
    double value;
-
-   check = evas_object_data_get(item, ITEM1);
-   evas_object_smart_callback_del_full(check, "changed",
-                                       _on_state_text_ellipsis_toggle_change, pd);
-   evas_object_smart_callback_add(check, "changed",
-                                  _on_state_text_ellipsis_toggle_change, pd);
-
-   spinner = evas_object_data_get(item, ITEM2);
-   evas_object_smart_callback_del_full(spinner, "changed",
-                                       _on_state_text_ellipsis_change, pd);
-   evas_object_smart_callback_add(spinner, "changed",
-                                  _on_state_text_ellipsis_change, pd);
 
    value = edje_edit_state_text_elipsis_get(pd->wm_style->obj,
                                             pd->wm_part->name,
                                             pd->wm_part->curr_state,
                                             pd->wm_part->curr_state_value);
-    if (value < 0)
+   if (value < 0)
      {
-        elm_check_state_set(check, false);
-        elm_object_disabled_set(spinner, true);
-        elm_spinner_value_set(spinner, 0.0);
+        elm_check_state_set(pd->state_text.ellipsis_toggle, false);
+        elm_object_disabled_set(pd->state_text.ellipsis, true);
+        elm_spinner_value_set(pd->state_text.ellipsis, 0.0);
      }
    else
      {
-        elm_check_state_set(check, true);
-        elm_object_disabled_set(spinner, false);
-        elm_spinner_value_set(spinner, value);
+        elm_check_state_set(pd->state_text.ellipsis_toggle, true);
+        elm_object_disabled_set(pd->state_text.ellipsis, false);
+        elm_spinner_value_set(pd->state_text.ellipsis, value);
      }
+}
+
+static Evas_Object *
+prop_state_text_ellipsis_add(Evas_Object *parent, Prop_Data *pd)
+{
+   PROPERTY_ITEM_ADD(parent, _("ellipsis"), "2swallow")
+   CHECK_ADD(item, pd->state_text.ellipsis_toggle)
+   elm_object_style_set(pd->state_text.ellipsis_toggle, "toggle");
+   elm_object_tooltip_text_set(pd->state_text.ellipsis_toggle,
+                               _("Turn on/off the text ellipsis"));
+   elm_layout_content_set(item, "swallow.content1", pd->state_text.ellipsis_toggle);
+   evas_object_smart_callback_add(pd->state_text.ellipsis_toggle, "changed",
+                                  _on_state_text_ellipsis_toggle_change, pd);
+
+   SPINNER_ADD(item, pd->state_text.ellipsis, 0.0, 1.0, 0.1, true)
+   elm_spinner_label_format_set(pd->state_text.ellipsis, "%1.2f");
+   elm_object_tooltip_text_set(pd->state_text.ellipsis,
+                               _("Cut text if biggest then part's area"
+                                 "0.0 = fix the left side  1.0 = right side"));
+   elm_layout_content_set(item, "swallow.content2", pd->state_text.ellipsis);
+   evas_object_smart_callback_add(pd->state_text.ellipsis, "changed",
+                                  _on_state_text_ellipsis_change, pd);
+   evas_object_event_callback_priority_add(pd->state_text.ellipsis, EVAS_CALLBACK_MOUSE_WHEEL,
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, _on_spinner_mouse_wheel, NULL);
+
+   prop_state_text_ellipsis_update(pd);
+   return item;
 }
 
 static Eina_Bool
 ui_property_state_text_set(Evas_Object *property)
 {
+   Evas_Object *item;
    Evas_Object *text_frame, *box, *prop_box;
    PROP_DATA_GET(EINA_FALSE)
 
@@ -2025,86 +2099,54 @@ ui_property_state_text_set(Evas_Object *property)
          elm_box_align_set(box, 0.5, 0.0);
          elm_object_content_set(text_frame, box);
 
-         pd_text.text = prop_item_state_text_add(box, pd, NULL,
-                           _("Set the text of part."), NULL);
-         pd_text.font = prop_item_state_font_add(box, pd, NULL,
-                           _("Change the text's font"), NULL);
-         pd_text.size = prop_item_state_text_size_add(box, pd,
-                           0.0, 128.0, 1.0, "%.0f pt",
-                           _("Change text font's size.'"));
-         pd_text.align = prop_item_state_text_align_x_y_add(box, pd,
-                            0, 100, 1, NULL,
-                            "x:", "%", "y:", "%",
-                            _("Text horizontal align. "
-                            "0.0 = left  1.0 = right"),
-                            _("Text vertical align. "
-                            "0.0 = top  1.0 = bottom"),
-                            true);
-         pd_text.min = prop_item_state_text_min_x_y_add(box, pd,
-                           _("When any of the parameters is enabled it forces \t"
-                           "the minimum size of the container to be equal to\t"
-                           "the minimum size of the text."),
-                           _("When any of the parameters is enabled it forces \t"
-                           "the minimum size of the container to be equal to\t"
-                           "the minimum size of the text."));
-         pd_text.max = prop_item_state_text_max_x_y_add(box, pd,
-                           _("When any of the parameters is enabled it forces \t"
-                           "the maximum size of the container to be equal to\t"
-                           "the maximum size of the text."),
-                           _("When any of the parameters is enabled it forces \t"
-                           "the maximum size of the container to be equal to\t"
-                           "the maximum size of the text."));
-         pd_text.source = prop_item_state_text_source_add(box, pd, NULL,
-                            _("Causes the part to use the text properties\t"
-                            "(like font and size) of another part\t"
-                            "and update them as they change."));
-         pd_text.text_source = prop_item_state_text_text_source_add(box, pd, NULL,
-                               _("Causes the part to display the text content of \t"
-                               "another part and update them as they change."));
-         pd_text.ellipsis = prop_item_state_text_ellipsis_add(box, pd,
-                            _("Cut text if biggest then part's area"
-                            "0.0 = fix the left side  1.0 = right side"));
-         pd_text.fit = prop_item_state_text_fit_x_y_add(box, pd,
-                          _("Resize the text for it to fit in it's container by X axis"),
-                          _("Resize the text for it to fit in it's container by Y axis"));
-         pd_text.color2 = prop_item_state_color2_add(box, pd,
-                            _("Text shadow color."));
-         pd_text.color3 = prop_item_state_color3_add(box, pd,
-                            _("Text outline color."));
-         pd_text.effect = prop_item_state_effect_add(box, pd);
+         item = prop_state_text_add(box, pd, NULL);
+         elm_box_pack_end(box, item);
+         item = prop_state_font_add(box, pd, NULL);
+         elm_box_pack_end(box, item);
+         item = prop_state_text_size_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_text_align_x_align_y_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_text_min_x_min_y_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_text_max_x_max_y_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_text_source_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_text_text_source_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_text_ellipsis_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_text_fit_x_fit_y_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_part_text_effect_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_color3_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_color2_add(box, pd);
+         elm_box_pack_end(box, item);
 
-         elm_box_pack_end(box, pd_text.text);
-         elm_box_pack_end(box, pd_text.font);
-         elm_box_pack_end(box, pd_text.size);
-         elm_box_pack_end(box, pd_text.align);
-         elm_box_pack_end(box, pd_text.min);
-         elm_box_pack_end(box, pd_text.max);
-         elm_box_pack_end(box, pd_text.source);
-         elm_box_pack_end(box, pd_text.text_source);
-         elm_box_pack_end(box, pd_text.ellipsis);
-         elm_box_pack_end(box, pd_text.fit);
-         elm_box_pack_end(box, pd_text.color2);
-         elm_box_pack_end(box, pd_text.color3);
-         elm_box_pack_end(box, pd_text.effect);
+          /* disable/enable the effect and colors controls */
+          prop_part_text_effect_update(pd);
 
          elm_box_pack_end(prop_box, text_frame);
          pd_text.frame = text_frame;
      }
    else
      {
-        prop_item_state_text_update(pd_text.text, pd);
-        prop_item_state_font_update(pd_text.font, pd);
-        prop_item_state_text_size_update(pd_text.size, pd);
-        prop_item_state_text_align_x_y_update(pd_text.align, pd, true);
-        prop_item_state_text_min_x_y_update(pd_text.min, pd);
-        prop_item_state_text_max_x_y_update(pd_text.max, pd);
-        prop_item_state_text_source_update(pd_text.source, pd);
-        prop_item_state_text_text_source_update(pd_text.text_source, pd);
-        prop_item_state_text_ellipsis_update(pd_text.ellipsis, pd);
-        prop_item_state_text_fit_x_y_update(pd_text.fit, pd);
-        prop_item_state_color2_update(pd_text.color2, pd);
-        prop_item_state_color3_update(pd_text.color3, pd);
-        prop_item_state_effect_update(pd_text.effect, pd);
+        prop_state_text_update(pd);
+        prop_state_font_update(pd);
+        COMMON_1SPINNER_UPDATE(state_text, size, state_text, int,  1, STATE_ARGS)
+        STATE_ATTR_2SPINNER_UPDATE(state_text, align_x, align_y, state_text, double, 100)
+        STATE_ATTR_2CHECK_UPDATE(state_text, min_x, min_y, state_text)
+        STATE_ATTR_2CHECK_UPDATE(state_text, max_x, max_y, state_text)
+        prop_state_text_source_update(pd);
+        prop_state_text_text_source_update(pd);
+        prop_state_text_ellipsis_update(pd);
+        STATE_ATTR_2CHECK_UPDATE(state_text, fit_x, fit_y, state_text)
+        prop_state_color2_update(pd);
+        prop_state_color3_update(pd);
+        prop_part_text_effect_update(pd);
         elm_box_pack_end(prop_box, pd_text.frame);
         evas_object_show(pd_text.frame);
      }
@@ -2124,27 +2166,86 @@ ui_property_state_text_unset(Evas_Object *property)
 }
 #undef pd_text
 
-#define prop_state_textblock_source_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
-#define prop_state_textblock_source2_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
-#define prop_state_textblock_source3_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
-#define prop_state_textblock_source4_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
-#define prop_state_textblock_source5_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
-#define prop_state_textblock_source6_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
+static void
+prop_state_textblock_style_update(Prop_Data *pd)
+{
+   Eina_List *slist, *l;
+   const char *sname;
+
+   ewe_combobox_items_list_free(pd->state_textblock.style, true);
+   ewe_combobox_item_add(pd->state_textblock.style, _("None"));
+   slist = edje_edit_styles_list_get(pd->wm_style->obj);
+   EINA_LIST_FOREACH(slist, l, sname)
+     {
+        ewe_combobox_item_add(pd->state_textblock.style, sname);
+     }
+   sname = edje_edit_state_text_style_get(pd->wm_style->obj,
+                                          pd->wm_part->name,
+                                          pd->wm_part->curr_state,
+                                          pd->wm_part->curr_state_value);
+   ewe_combobox_text_set(pd->state_textblock.style, sname);
+   edje_edit_string_free(sname);
+   edje_edit_string_list_free(slist);
+}
+
+
+PART_ATTR_SOURCE_UPDATE(state_textblock, source);
+PART_ATTR_SOURCE_UPDATE(state_textblock, source2);
+PART_ATTR_SOURCE_UPDATE(state_textblock, source3);
+PART_ATTR_SOURCE_UPDATE(state_textblock, source4);
+PART_ATTR_SOURCE_UPDATE(state_textblock, source5);
+PART_ATTR_SOURCE_UPDATE(state_textblock, source6);
 
 #define pd_textblock pd->state_textblock
-PART_ATTR_1COMBOBOX_LIST(_("select mode"), state_textblock, select_mode, Edje_Edit_Select_Mode)
-PART_ATTR_1COMBOBOX_LIST(_("entry mode"), state_textblock, entry_mode, Edje_Edit_Entry_Mode)
-PART_ATTR_1COMBOBOX_LIST(_("pointer mode"), state_textblock, pointer_mode, Evas_Object_Pointer_Mode)
-PART_ATTR_1COMBOBOX_LIST(_("cursor mode"), state_textblock, cursor_mode, unsigned int)
-PART_ATTR_1CHECK(_("multiline"), state_textblock, multiline)
-PART_ATTR_1COMBOBOX(_("source"), part, source, state_textblock)
-PART_ATTR_1COMBOBOX(_("under selected text"), part, source2, state_textblock)
-PART_ATTR_1COMBOBOX(_("under cursor"), part, source3, state_textblock)
-PART_ATTR_1COMBOBOX(_("over cursor"), part, source4, state_textblock)
-PART_ATTR_1COMBOBOX(_("under anchor"), part, source5, state_textblock)
-PART_ATTR_1COMBOBOX(_("over anchor"), part, source6, state_textblock)
-
-ITEM_1COMBOBOX_STATE_CREATE(TEXT_STYLE, _("text style"), state, text_style, styles)
+STATE_ATTR_COMBOBOX(_("style"), state_text, style, state_textblock,
+                    _("Set the text style of part."))
+STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_textblock,
+                    0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
+                    _("Text horizontal align"), _("Text vertical align"),
+                    100, double, VAL_DOUBLE)
+STATE_ATTR_2CHECK(_("min"), state_text, min_x, min_y, state_textblock, "w:", "", "h:", "",
+                  _("When any of the parameters is enabled it forces \t"
+                  "the minimum size of the container to be equal to\t"
+                  "the minimum size of the text."),
+                  _("When any of the parameters is enabled it forces \t"
+                  "the minimum size of the container to be equal to\t"
+                  "the minimum size of the text."))
+STATE_ATTR_2CHECK(_("max"), state_text, max_x, max_y, state_textblock, "w:", "", "h:", "",
+                  _("When any of the parameters is enabled it forces \t"
+                  "the maximum size of the container to be equal to\t"
+                  "the maximum size of the text."),
+                  _("When any of the parameters is enabled it forces \t"
+                  "the maximum size of the container to be equal to\t"
+                  "the maximum size of the text."));
+PART_ATTR_1COMBOBOX_LIST(_("select mode"), part, select_mode, state_textblock, Edje_Edit_Select_Mode,
+                         edje_select_mode, _("Sets the selection mode for a textblock part"))
+PART_ATTR_1COMBOBOX_LIST(_("entry mode"), part, entry_mode, state_textblock, Edje_Edit_Entry_Mode,
+                         edje_entry_mode, _("Sets the edit mode for a textblock part"))
+PART_ATTR_1COMBOBOX_LIST(_("pointer mode"), part, pointer_mode, state_textblock, Evas_Object_Pointer_Mode,
+                         edje_pointer_mode, _("Sets the mouse pointer behavior for a given part"))
+PART_ATTR_1COMBOBOX_LIST(_("cursor mode"), part, cursor_mode, state_textblock, unsigned int,
+                         edje_cursor_mode, _("Sets the cursor mode for a textblock part"))
+PART_ATTR_1CHECK(_("multiline"), part, multiline, state_textblock,
+                 _("It causes a textblock that is editable to allow multiple lines for editing"))
+PART_ATTR_1COMBOBOX(_("under selected text"), part, source, state_textblock,
+                    _("Used for the group to be loaded and used for selection \t"
+                    "display UNDER the selected text the source \t"
+                    "of TEXTBLOCK part."))
+PART_ATTR_1COMBOBOX(_("before selected text"), part, source2, state_textblock,
+                    _("It is used for the group to be loaded and used for \t"
+                    "selection display OVER the selected text."))
+PART_ATTR_1COMBOBOX(_("under cursor"), part, source3, state_textblock,
+                    _("It is used for the group to be loaded and used for \t"
+                    "cursor display UNDER the cursor position."))
+PART_ATTR_1COMBOBOX(_("over cursor"), part, source4, state_textblock,
+                    _("It is used for the group to be loaded and used \t"
+                    "for cursor display OVER the cursor position."))
+PART_ATTR_1COMBOBOX(_("under anchor"), part, source5, state_textblock,
+                    _("It is used for the group to be loaded and used for \t"
+                    "anchors display UNDER the anchor position."))
+PART_ATTR_1COMBOBOX(_("over anchor"), part, source6, state_textblock,
+                    _("It is used for the group to be loaded and used for \t"
+                    "anchor display OVER the anchor position."))
 
 static Eina_Bool
 ui_property_state_textblock_set(Evas_Object *property)
@@ -2163,78 +2264,37 @@ ui_property_state_textblock_set(Evas_Object *property)
          elm_box_align_set(box, 0.5, 0.0);
          elm_object_content_set(textblock_frame, box);
 
-         pd_textblock.text = prop_item_state_text_add(box, pd, NULL,
-                           _("Set the text of part."), NULL);
-         elm_box_pack_end(box, pd_textblock.text);
-         pd_textblock.style = prop_item_state_text_style_add(box, pd,
-                           _on_state_text_style_change,
-                           _("Set the text style of part."));
-         elm_box_pack_end(box, pd_textblock.style);
-         pd_textblock.align = prop_item_state_text_align_x_y_add(box, pd,
-                             0, 100, 1, NULL, "x:", "%", "y:", "%",
-                             _("Text horizontal align. 0 = left  100 = right"),
-                             _("Text vertical align. 0 = top  100 = bottom"),
-                             true);
-         elm_box_pack_end(box, pd_textblock.align);
-         pd_textblock.min = prop_item_state_text_min_x_y_add(box, pd,
-                           _("When any of the parameters is enabled it forces \t"
-                           "the minimum size of the container to be equal to\t"
-                           "the minimum size of the text."),
-                           _("When any of the parameters is enabled it forces \t"
-                           "the minimum size of the container to be equal to\t"
-                           "the minimum size of the text."));
-         elm_box_pack_end(box, pd_textblock.min);
-         pd_textblock.max = prop_item_state_text_max_x_y_add(box, pd,
-                           _("When any of the parameters is enabled it forces \t"
-                           "the maximum size of the container to be equal to\t"
-                           "the maximum size of the text."),
-                           _("When any of the parameters is enabled it forces \t"
-                           "the maximum size of the container to be equal to\t"
-                           "the maximum size of the text."));
-         elm_box_pack_end(box, pd_textblock.max);
-         item = prop_state_textblock_select_mode_add(box, pd,
-                                    _("Sets the selection mode for a textblock part"),
-                                    edje_select_mode);
+         item = prop_state_text_add(box, pd, NULL);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_entry_mode_add(box, pd,
-                                   _("Sets the edit mode for a textblock part"),
-                                   edje_entry_mode);
+         item = prop_state_textblock_style_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_pointer_mode_add(box, pd,
-                                     _("Sets the mouse pointer behavior for a given part."),
-                                     edje_pointer_mode);
+         item = prop_state_textblock_align_x_align_y_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_cursor_mode_add(box, pd,
-                                    _("Sets the cursor mode for a textblock part"),
-                                    edje_cursor_mode);
+         item = prop_state_textblock_min_x_min_y_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_multiline_add(box, pd,
-                _("It causes a textblock that is editable to allow multiple lines for editing."));
+         item = prop_state_textblock_max_x_max_y_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_source_add(box, pd,
-                               _("Used for the group to be loaded and used for selection \t"
-                               "display UNDER the selected text the source \t"
-                               "of TEXTBLOCK part."));
+         item = prop_state_textblock_select_mode_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_source2_add(box, pd,
-                               _("It is used for the group to be loaded and used for \t"
-                               "selection display OVER the selected text."));
+         item = prop_state_textblock_entry_mode_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_source3_add(box, pd,
-                               _("It is used for the group to be loaded and used for \t"
-                               "cursor display UNDER the cursor position."));
+         item = prop_state_textblock_pointer_mode_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_source4_add(box, pd,
-                               _("It is used for the group to be loaded and used \t"
-                               "for cursor display OVER the cursor position."));
+         item = prop_state_textblock_cursor_mode_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_source5_add(box, pd,
-                               _("It is used for the group to be loaded and used for \t"
-                               "anchors display UNDER the anchor position."));
+         item = prop_state_textblock_multiline_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_source6_add(box, pd,
-                               _("It is used for the group to be loaded and used for \t"
-                               "anchor display OVER the anchor position."));
+         item = prop_state_textblock_source_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_textblock_source2_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_textblock_source3_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_textblock_source4_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_textblock_source5_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_textblock_source6_add(box, pd);
          elm_box_pack_end(box, item);
 
          elm_box_pack_end(prop_box, textblock_frame);
@@ -2242,22 +2302,22 @@ ui_property_state_textblock_set(Evas_Object *property)
      }
    else
      {
-        prop_item_state_text_update(pd_textblock.text, pd);
-        prop_item_state_text_style_update(pd_textblock.style, pd);
-        prop_item_state_text_style_update(pd_textblock.align, pd);
-        prop_item_state_text_min_x_y_update(pd_textblock.min, pd);
-        prop_item_state_text_max_x_y_update(pd_textblock.max, pd);
-        prop_state_textblock_select_mode_update(pd);
-        prop_state_textblock_entry_mode_update(pd);
-        prop_state_textblock_pointer_mode_update(pd);
-        prop_state_textblock_cursor_mode_update(pd);
-        ITEM_ATTR_1CHECK_UPDATE(state_textblock, multiline);
-        prop_state_textblock_source_update(pd, pd_textblock.source);
-        prop_state_textblock_source2_update(pd, pd_textblock.source2);
-        prop_state_textblock_source3_update(pd, pd_textblock.source3);
-        prop_state_textblock_source4_update(pd, pd_textblock.source4);
-        prop_state_textblock_source5_update(pd, pd_textblock.source5);
-        prop_state_textblock_source6_update(pd, pd_textblock.source6);
+        prop_state_text_update(pd);
+        prop_state_textblock_style_update(pd);
+        STATE_ATTR_2SPINNER_UPDATE(state_text, align_x, align_y, state_textblock, double, 100)
+        STATE_ATTR_2CHECK_UPDATE(state_text, min_x, min_y, state_textblock)
+        STATE_ATTR_2CHECK_UPDATE(state_text, max_x, max_y, state_textblock)
+        PART_ATTR_1COMBOBOX_LIST_UPDATE(part, select_mode, state_textblock)
+        PART_ATTR_1COMBOBOX_LIST_UPDATE(part, entry_mode, state_textblock)
+        PART_ATTR_1COMBOBOX_LIST_UPDATE(part, pointer_mode, state_textblock)
+        PART_ATTR_1COMBOBOX_LIST_UPDATE(part, cursor_mode, state_textblock)
+        PART_ATTR_1CHECK_UPDATE(part, multiline, state_textblock);
+        prop_state_textblock_source_update(pd);
+        prop_state_textblock_source2_update(pd);
+        prop_state_textblock_source3_update(pd);
+        prop_state_textblock_source4_update(pd);
+        prop_state_textblock_source5_update(pd);
+        prop_state_textblock_source6_update(pd);
         elm_box_pack_end(prop_box, pd_textblock.frame);
         evas_object_show(pd_textblock.frame);
      }
@@ -2277,11 +2337,6 @@ ui_property_state_textblock_unset(Evas_Object *property)
 #undef pd_textblock
 
 
-#define ITEM_IM_BORDER_STATE_CREATE(TEXT, SUB, VALUE) \
-   ITEM_IM_BORDER_STATE_CALLBACK(SUB, VALUE) \
-   ITEM_IM_BORDER_STATE_ADD(TEXT, SUB, VALUE) \
-   ITEM_IM_BORDER_STATE_UPDATE(SUB, VALUE)
-
 #define pd_image pd->state_image
 
 static void
@@ -2289,22 +2344,32 @@ _on_image_editor_done(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *event_info)
 {
-   Evas_Object *image_entry, * border_entry;
+   Evas_Object * border_entry;
    Prop_Data *pd = (Prop_Data *)data;
+   App_Data *ap = app_data_get();
    const char *value;
    const char *selected = (const char *)event_info;
 
    if (!selected) return;
-   image_entry = elm_object_part_content_get(pd_image.normal, "elm.swallow.content");
    border_entry = elm_object_part_content_get(pd_image.border, "elm.swallow.content");
-   value = elm_entry_entry_get(image_entry);
+   value = elm_entry_entry_get(pd->state_image.image);
 
    if (strcmp(value, selected) == 0) return;
-   ewe_entry_entry_set(image_entry, selected);
-   evas_object_smart_callback_call(image_entry, "changed,user", NULL);
+   ewe_entry_entry_set(pd->state_image.image, selected);
+   edje_edit_state_image_set(pd->wm_style->obj, pd->wm_part->name,
+                             pd->wm_part->curr_state,
+                             pd->wm_part->curr_state_value, selected);
+   pm_save_to_dev(ap->project, pd->wm_style, false);
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, value,
+                    selected, pd->wm_style->full_group_name,
+                    (void*)edje_edit_state_image_set,  "state_image",
+                    pd->wm_part->name, pd->wm_part->curr_state,
+                    pd->wm_part->curr_state_value);
+   evas_object_smart_callback_call(pd->state_image.image, "changed,user", NULL);
    ewe_entry_entry_set(border_entry, NULL);
    evas_object_smart_callback_call(border_entry, "changed,user", NULL);
-   project_changed();
+   workspace_edit_object_recalc(pd->workspace);
+   project_changed(false);
 }
 
 static void
@@ -2314,8 +2379,7 @@ _on_state_image_choose(void *data,
 {
    Evas_Object *img_edit;
    Prop_Data *pd = (Prop_Data *)data;
-   Evas_Object *entry = elm_object_part_content_get(pd_image.normal, "elm.swallow.content");
-   const char *selected = elm_entry_entry_get(entry);
+   const char *selected = elm_entry_entry_get(pd->state_image.image);
 
    App_Data *ap = app_data_get();
 
@@ -2340,14 +2404,13 @@ _del_tween_image(void *data,
                                  selected))
      {
         elm_object_item_del(it);
-        pd->wm_style->isModify = true;
         history_diff_add(pd->wm_style->obj, PROPERTY, DEL, VAL_STRING,
                          selected, edje_edit_state_tween_add,
                          pd->wm_style->full_group_name,
                          (void*)edje_edit_state_tween_del, "tween image",
                          pd->wm_part->name, pd->wm_part->curr_state,
                          pd->wm_part->curr_state_value);
-        project_changed();
+        project_changed(false);
      }
 }
 
@@ -2372,14 +2435,13 @@ _on_image_editor_tween_done(void *data,
           {
              elm_genlist_item_append(tween_list, _itc_tween, name, NULL,
                                      ELM_GENLIST_ITEM_NONE, NULL, NULL);
-             pd->wm_style->isModify = true;
              history_diff_add(pd->wm_style->obj, PROPERTY, ADD, VAL_STRING,
                               name, edje_edit_state_tween_del,
                               pd->wm_style->full_group_name,
                               (void*)edje_edit_state_tween_add, "tween image",
                               pd->wm_part->name, pd->wm_part->curr_state,
                               pd->wm_part->curr_state_value);
-             project_changed();
+             project_changed(false);
           }
      }
    elm_frame_collapse_go(pd->state_image.tween, false);
@@ -2473,6 +2535,7 @@ _tween_image_moved(Evas_Object *data,
                                   pd->wm_part->curr_state, pd->wm_part->curr_state_value,
                                   image_name);
      }
+   edje_edit_string_list_free(images_list);
 
    next = elm_genlist_first_item_get(obj);
    while (next)
@@ -2483,7 +2546,7 @@ _tween_image_moved(Evas_Object *data,
                                   image_name);
         next = elm_genlist_item_next_get(next);
      }
-   project_changed();
+   project_changed(false);
 }
 
 Evas_Object *
@@ -2563,15 +2626,78 @@ prop_item_state_image_tween_update(Evas_Object *tween, Prop_Data *pd)
        elm_genlist_item_append(tween_list, _itc_tween, image_name, NULL,
                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
+   edje_edit_string_list_free(images_list);
 }
 
-ITEM_1ENTRY_STATE_CREATE(_("image"), state, image, &accept_prop, const char *)
-ITEM_IM_BORDER_STATE_CREATE(_("border"), state_image, border)
-ITEM_1COMBOBOX_PART_STATE_CREATE(_("middle"), state_image, border_fill, unsigned char)
+static void
+_on_state_image_border_change(void *data,
+                              Evas_Object *obj,
+                              void *ei __UNUSED__)
+{ \
+   unsigned int tok_elm;
+   char **c = NULL;
+   int lb = 0, rb = 0, tb = 0, bb = 0;
+   int old_lb, old_rb, old_tb, old_bb;
+   Prop_Data *pd = (Prop_Data *)data;
+   const char *value = elm_entry_entry_get(obj);
+   edje_edit_state_image_border_get(pd->wm_style->obj, pd->wm_part->name,
+                                    pd->wm_part->curr_state,
+                                    pd->wm_part->curr_state_value,
+                                    &old_lb, &old_rb, &old_tb, &old_bb);
+   if (!value || !strcmp(value, ""))
+     lb = rb = tb = bb = 0;
+   else
+     {
+        c = eina_str_split_full (value, " ", 4, &tok_elm);
+        if (tok_elm < 4)
+          {
+             free(c[0]);
+             free(c);
+             return;
+          }
+        lb = atoi(c[0]); rb = atoi(c[1]); tb = atoi(c[2]); bb = atoi(c[3]);
+        free(c[0]);
+        free(c);
+     }
+   edje_edit_state_image_border_set(pd->wm_style->obj, pd->wm_part->name,
+                                    pd->wm_part->curr_state, pd->wm_part->curr_state_value,
+                                    lb, rb, tb, bb);
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_FOUR, old_lb, old_rb,
+                    old_tb, old_bb, lb, rb, tb, bb, pd->wm_style->full_group_name,
+                    (void*)edje_edit_state_image_border_set, "state image border",
+                    pd->wm_part->name, pd->wm_part->curr_state,
+                    pd->wm_part->curr_state_value);
+
+   project_changed(false);
+   workspace_edit_object_recalc(pd->workspace);
+}
+
+static void
+prop_state_image_border_update(Prop_Data *pd)
+{
+   int l, r, t, b;
+   char buff[strlen("255 255 255 255") + 1];
+   edje_edit_state_image_border_get(pd->wm_style->obj, pd->wm_part->name,
+                                    pd->wm_part->curr_state, pd->wm_part->curr_state_value,
+                                    &l, &r, &t, &b);
+   if (!l && !r && !t && !b)
+     ewe_entry_entry_set(pd->state_image.border, NULL);
+   else
+     {
+        snprintf(buff, strlen("255 255 255 255") + 1, "%i %i %i %i", l, r, t, b);
+        ewe_entry_entry_set(pd->state_image.border, buff);
+     }
+}
+
+STATE_ATTR_1ENTRY(_("image"), state, image, state_image, NULL, NULL)
+STATE_ATTR_1ENTRY_ADD(_("border"), state_image, border, state_image, PROPERTY_REGEX_IMAGE_BORDER, _("Image's border values."))
+STATE_ATTR_1COMBOBOX_LIST(_("border fill"), state_image, border_fill, state_image, edje_middle_type,
+                          NULL, unsigned char)
 
 static Eina_Bool
 ui_property_state_image_set(Evas_Object *property)
 {
+   Evas_Object *item;
    Evas_Object *image_frame, *box, *prop_box;
    PROP_DATA_GET(EINA_FALSE)
 
@@ -2585,24 +2711,14 @@ ui_property_state_image_set(Evas_Object *property)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(image_frame, box);
 
-        pd_image.normal = prop_item_state_image_add(box, pd, _on_state_image_choose,
-                             _("Current image name"),
-                             _("Change image"));
-        Evas_Object *entry = elm_object_part_content_get(pd_image.normal, "elm.swallow.content");
-        pd_image.border = prop_item_state_image_border_add(box, pd,
-                             _("Image's border value"));
-        entry = elm_object_part_content_get(pd_image.border, "elm.swallow.content");
-        ewe_entry_regex_set(entry, IMAGE_BORDER_REGEX, EWE_REG_EXTENDED);
-        ewe_entry_regex_autocheck_set(entry, true);
-        ewe_entry_regex_glow_set(entry, true);
-        pd_image.middle = prop_item_state_image_border_fill_add(box, pd,
-                             _("Image's middle value"), edje_middle_type);
+        item = prop_state_image_add(box, pd, _on_state_image_choose);
+        elm_box_pack_end(box, item);
+        item = prop_state_image_border_add(box, pd, NULL);
+        elm_box_pack_end(box, item);
+        item = prop_state_image_border_fill_add(box, pd);
+        elm_box_pack_end(box, item);
 
         pd_image.tween = prop_item_state_image_tween_add(box, pd);
-
-        elm_box_pack_end(box, pd_image.normal);
-        elm_box_pack_end(box, pd_image.border);
-        elm_box_pack_end(box, pd_image.middle);
         elm_box_pack_end(box, pd_image.tween);
 
         elm_box_pack_end(prop_box, image_frame);
@@ -2610,9 +2726,9 @@ ui_property_state_image_set(Evas_Object *property)
      }
    else
      {
-        prop_item_state_image_update(pd_image.normal, pd);
-        prop_item_state_image_border_update(pd_image.border, pd);
-        prop_item_state_image_border_fill_update(pd_image.middle, pd);
+        prop_state_image_update(pd);
+        prop_state_image_border_update(pd);
+        STATE_ATTR_1COMBOBOX_LIST_UPDATE(state_image, border_fill, state_image)
         prop_item_state_image_tween_update(pd_image.tween, pd);
         elm_box_pack_end(prop_box, pd_image.frame);
         evas_object_show(pd_image.frame);
@@ -2634,19 +2750,38 @@ ui_property_state_image_unset(Evas_Object *property)
 #undef pd_image
 
 #define pd_fill pd->state_fill
-STATE_ATTR_1CHECK(_("smooth"), state_fill, smooth)
-ITEM_1COMBOBOX_PART_STATE_CREATE(_("type"), state_fill, type, unsigned char)
-ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_fill_origin_relative, x, y, "eflete/property/item/relative")
-ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_fill_origin_offset, x, y, "eflete/property/item/relative")
-ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_fill_size_relative, x, y, "eflete/property/item/relative")
-ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_fill_size_offset, x, y, "eflete/property/item/relative")
+STATE_ATTR_1COMBOBOX_LIST(_("type"), state_fill, type, state_fill, edje_fill_type,
+                          _("Set the image fill type"), unsigned char)
+STATE_ATTR_1CHECK(_("smooth"), state_fill, smooth, state_fill,
+                  _("On/off image smooth on scaling"))
+STATE_ATTR_2SPINNER_ICON(_("align"), state_fill, origin_relative_x, origin_relative_y, state_fill,
+                         -500, 500, 1, NULL, "x:", "%", "y:", "%",
+                         _("Sets the starting point X coordinate relatively to displayed element's content"),
+                         _("Sets the starting point Y coordinate relatively to displayed element's content"),
+                         100, double, VAL_DOUBLE)
+TODO("Fix offset edje_edit API: use int instead of double param")
+STATE_ATTR_2SPINNER_ICON(_("offset"), state_fill, origin_offset_x, origin_offset_y, state_fill,
+                         -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
+                         _("Affects the starting point a fixed number of pixels along X axis"),
+                         _("Affects the starting point a fixed number of pixels along Y axis"),
+                         1, double, VAL_DOUBLE)
+STATE_ATTR_2SPINNER_ICON(_("align"), state_fill, size_relative_x, size_relative_y, state_fill,
+                         -500, 500, 1, NULL, "x:", "%", "y:", "%",
+                         _("Value that represent the percentual value of the original size of the element by X axis"),
+                         _("Value that represent the percentual value of the original size of the element by Y axis."),
+                         100, double, VAL_DOUBLE)
+TODO("Fix offset edje_edit API: use int instead of double param")
+STATE_ATTR_2SPINNER_ICON(_("offset"), state_fill, size_offset_x, size_offset_y, state_fill,
+                         -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
+                         _("Affects the size of the tile a fixed number of pixels along X axis"),
+                         _("Affects the size of the tile a fixed number of pixels along Y axis"),
+                         1, double, VAL_DOUBLE)
 
 static Eina_Bool
 ui_property_state_fill_set(Evas_Object *property)
 {
-   Evas_Object *item;
-   Evas_Object *fill_frame, *box, *prop_box;
-   Evas_Object *icon, *separator;
+   Evas_Object *item, *icon;
+   Evas_Object *box, *prop_box;
    PROP_DATA_GET(EINA_FALSE)
 
    /* if previos selected part is IMAGE or PROXY too, unpack it */
@@ -2654,97 +2789,66 @@ ui_property_state_fill_set(Evas_Object *property)
    prop_box = elm_object_content_get(pd->visual);
    if (!pd_fill.frame)
      {
-        FRAME_PROPERTY_ADD(property, fill_frame, true, _("Fill"), pd->visual)
-        BOX_ADD(fill_frame, box, EINA_FALSE, EINA_FALSE)
+        FRAME_PROPERTY_ADD(property, pd->state_fill.frame, true, _("Fill"), pd->visual)
+        BOX_ADD(pd->state_fill.frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
-        elm_object_content_set(fill_frame, box);
+        elm_object_content_set(pd->state_fill.frame, box);
 
-        pd_fill.type = prop_item_state_fill_type_add(box, pd,
-                             _("Sets the image fill type."),
-                             edje_fill_type);
-        elm_box_pack_end(box, pd_fill.type);
-        item = prop_state_fill_smooth_add(box, pd,
-                             _("On/off image smooth on scaling"));
+        item = prop_state_fill_type_add(box, pd);
+        elm_box_pack_end(box, item);
+        item = prop_state_fill_smooth_add(box, pd);
         elm_box_pack_end(box, item);
 
+        /* origin subblock of fill block */
+        item = elm_separator_add(pd->state_fill.frame);
+        elm_separator_horizontal_set(item, true);
+        elm_object_style_set(item, "icon");
+        elm_layout_text_set(item, "eflete.text", _("Start point"));
+        ICON_ADD(item, icon, false, "icon_start-point")
+        elm_layout_content_set(item, "eflete.swallow.icon", icon);
+        evas_object_show(item);
+        elm_box_pack_end(box, item);
 
-       /* origin subblock of fill block */
-        separator = elm_separator_add(fill_frame);
-        elm_separator_horizontal_set(separator, true);
-        elm_object_part_text_set(separator, "eflete.text", _("Origin"));
-        ICON_ADD(separator, icon, false, "icon_start-point")
-        elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
-        evas_object_show(separator);
+        item = prop_state_fill_origin_relative_x_origin_relative_y_add(box, pd);
+        ICON_ADD(item, icon, false, "icon_align");
+        elm_layout_content_set(item, NULL, icon);
+        elm_box_pack_end(box, item);
 
-        pd_fill.origin_relative = prop_item_state_fill_origin_relative_x_y_add(box,
-                                     pd, -500, 500, 1, NULL,
-                                     "x:", "%", "y:", "%",
-                                     _("Sets the starting point X coordinate "
-                                       "relatively to displayed element's content."),
-                                     _("Sets the starting point Y coordinate "
-                                       "relatively to displayed element's content."),
-                                     true);
-        ICON_ADD(pd_fill.origin_relative, icon, false, "icon_align");
-        elm_object_part_content_set(pd_fill.origin_relative, "eflete.swallow.icon", icon);
-        pd_fill.origin_offset = prop_item_state_fill_origin_offset_x_y_add(box,
-                                     pd, -9999.0, 9999.0, 1.0, "%.0f",
-                                     "x:", "px", "y:", "px",
-                                     _("Affects the starting point a fixed "
-                                       "number of pixels along X axis"),
-                                     _("Affects the starting point a fixed "
-                                       "number of pixels along Y axis"),
-                                     false);
-        ICON_ADD(pd_fill.origin_offset, icon, false, "icon_offset");
-        elm_object_part_content_set(pd_fill.origin_offset, "eflete.swallow.icon", icon);
-
-        elm_box_pack_end(box, separator);
-        elm_box_pack_end(box, pd_fill.origin_relative);
-        elm_box_pack_end(box, pd_fill.origin_offset);
+        item = prop_state_fill_origin_offset_x_origin_offset_y_add(box, pd);
+        ICON_ADD(item, icon, false, "icon_offset");
+        elm_layout_content_set(item, NULL, icon);
+        elm_box_pack_end(box, item);
 
         /* size subblock of fill block */
-        separator = elm_separator_add(fill_frame);
-        elm_separator_horizontal_set(separator, true);
-        elm_object_part_text_set(separator, "eflete.text", _("Size"));
-        ICON_ADD(separator, icon, false, "icon_end-point")
-        elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
-        evas_object_show(separator);
+        item = elm_separator_add(pd->state_fill.frame);
+        elm_separator_horizontal_set(item, true);
+        elm_object_style_set(item, "icon");
+        elm_object_part_text_set(item, "eflete.text", _("End point"));
+        ICON_ADD(item, icon, false, "icon_end-point")
+        elm_layout_content_set(item, "eflete.swallow.icon", icon);
+        evas_object_show(item);
+        elm_box_pack_end(box, item);
 
-        pd_fill.size_relative = prop_item_state_fill_size_relative_x_y_add(box,
-                                     pd, -500, 500, 1, NULL,
-                                     "x:", "%", "y:", "%",
-                                     _("Value that represent the percentual value "
-                                       "of the original size of the element by X axis."),
-                                     _("Value that represent the percentual value "
-                                       "of the original size of the element by Y axis."),
-                                      true);
-        ICON_ADD(pd_fill.size_relative, icon, false, "icon_align");
-        elm_object_part_content_set(pd_fill.size_relative, "eflete.swallow.icon", icon);
-        pd_fill.size_offset = prop_item_state_fill_size_offset_x_y_add(box,
-                                     pd, -9999.0, 9999.0, 1.0, "%.0f",
-                                     "x:", "px", "y:", "px",
-                                     _("Affects the size of the tile a fixed "
-                                       "number of pixels along X axis."),
-                                     _("Affects the size of the tile a fixed "
-                                       "number of pixels along Y axis."),
-                                     false);
-        ICON_ADD(pd_fill.size_offset, icon, false, "icon_offset");
-        elm_object_part_content_set(pd_fill.size_offset, "eflete.swallow.icon", icon);
+        item = prop_state_fill_size_relative_x_size_relative_y_add(box, pd);
+        ICON_ADD(item, icon, false, "icon_align");
+        elm_layout_content_set(item, NULL, icon);
+        elm_box_pack_end(box, item);
 
-        elm_box_pack_end(box, separator);
-        elm_box_pack_end(box, pd_fill.size_relative);
-        elm_box_pack_end(box, pd_fill.size_offset);
+        item = prop_state_fill_size_offset_x_size_offset_y_add(box, pd);
+        ICON_ADD(item, icon, false, "icon_offset");
+        elm_layout_content_set(item, NULL, icon);
+        elm_box_pack_end(box, item);
 
-        pd_fill.frame = fill_frame;
         elm_box_pack_end(prop_box, pd_fill.frame);
      }
    else
      {
-        prop_item_state_fill_type_update(pd_fill.type, pd);
-        STATE_ATTR_CHECK_UPDATE(state_fill, smooth)
-        prop_item_state_fill_origin_relative_x_y_update(pd_fill.origin_relative, pd, true);
-        prop_item_state_fill_origin_offset_x_y_update(pd_fill.origin_offset, pd, false);
-        prop_item_state_fill_size_relative_x_y_update(pd_fill.size_relative, pd, true);
-        prop_item_state_fill_size_offset_x_y_update(pd_fill.size_offset, pd, false);
+        STATE_ATTR_1COMBOBOX_LIST_UPDATE(state_fill, type, state_fill);
+        STATE_ATTR_1CHECK_UPDATE(state_fill, smooth, state_fill)
+        STATE_ATTR_2SPINNER_UPDATE(state_fill, origin_relative_x, origin_relative_y, state_fill, double, 100)
+        STATE_ATTR_2SPINNER_UPDATE(state_fill, origin_offset_x, origin_offset_y, state_fill, int, 1)
+        STATE_ATTR_2SPINNER_UPDATE(state_fill, size_relative_x, size_relative_y, state_fill, double, 100)
+        STATE_ATTR_2SPINNER_UPDATE(state_fill, size_offset_x, size_offset_y, state_fill, int, 1)
 
         elm_box_pack_end(prop_box, pd_fill.frame);
      }
@@ -2764,296 +2868,174 @@ ui_property_state_fill_unset(Evas_Object *property)
 }
 #undef pd_fill
 
-#define pd_box pd->state_box
-#define ITEM_1COMBOBOX_PART_BOX_STATE_CREATE(TEXT, SUB, VALUE) \
-   ITEM_COMBOBOX_STATE_BOX_CALLBACK(SUB, VALUE) \
-   ITEM_1COMBOBOX_STATE_PART_BOX_UPDATE(SUB, VALUE) \
-   ITEM_1COMBOBOX_STATE_PART_BOX_ADD(TEXT, SUB, VALUE)
-
-ITEM_1COMBOBOX_PART_BOX_STATE_CREATE(_("layout"), state_box, layout)
-ITEM_1COMBOBOX_PART_BOX_STATE_CREATE(_("alternative layout"), state_box, alt_layout)
-ITEM_1ENTRY_STATE_CREATE(NULL, state_box, layout, &accept_prop, char *)
-ITEM_1ENTRY_STATE_CREATE(NULL, state_box, alt_layout, &accept_prop, char *)
-
-static Eina_Bool
-ui_property_state_box_set(Evas_Object *property)
-{
-   Evas_Object *box_frame, *box, *prop_box;
-   PROP_DATA_GET(EINA_FALSE)
-
-   /* if previos selected part is BOX too, unpack it */
-   ui_property_state_box_unset(property);
-   prop_box = elm_object_content_get(pd->visual);
-   if (!pd_box.frame)
-     {
-        FRAME_PROPERTY_ADD(property, box_frame, true, _("Box"), pd->visual)
-        BOX_ADD(box_frame, box, false, false)
-        elm_box_align_set(box, 0.5, 0.0);
-        elm_object_content_set(box_frame, box);
-
-        pd_box.custom_layout = prop_item_state_box_layout_add(box, pd, NULL,
-                               _("Used for typing custom name of "
-                               "main (primary) layout "
-                               "(default horizontal layout would be "
-                               "applied to workspace and live object)."), NULL);
-        pd_box.layout = prop_item_box_state_box_layout_add(box, pd,
-                        _("Used for setting layout for box."),
-                        edje_box_layouts);
-        pd_box.custom_alt_layout = prop_item_state_box_alt_layout_add(box, pd, NULL,
-                                   _("Used for typing custom name of "
-                                   "alternative (fallback) layout "
-                                   "(default horizontal layout would be "
-                                   "applied to workspace and live object)."), NULL);
-        pd_box.alt_layout = prop_item_box_state_box_alt_layout_add(box, pd,
-                            _("Used for setting alternative layout for box."),
-                            edje_box_layouts);
-        elm_box_pack_end(box, pd_box.layout);
-        elm_box_pack_end(box, pd_box.custom_layout);
-        elm_box_pack_end(box, pd_box.alt_layout);
-        elm_box_pack_end(box, pd_box.custom_alt_layout);
-
-        pd_box.frame = box_frame;
-
-        elm_box_pack_after(prop_box, pd_box.frame, pd->state_container.frame);
-     }
-   else
-     {
-        prop_item_box_state_box_layout_update(pd_box.layout, pd, edje_box_layouts);
-        prop_item_state_box_layout_update(pd_box.custom_layout, pd);
-        prop_item_box_state_box_alt_layout_update(pd_box.alt_layout, pd, edje_box_layouts);
-        prop_item_state_box_alt_layout_update(pd_box.custom_alt_layout, pd);
-
-        elm_box_pack_after(prop_box, pd_box.frame, pd->state_container.frame);
-     }
-   evas_object_show(pd_box.frame);
-   return true;
-}
 
 static void
-ui_property_state_box_unset(Evas_Object *property)
-{
-   Evas_Object *prop_box;
-   PROP_DATA_GET()
-
-   prop_box = elm_object_content_get(pd->visual);
-   elm_box_unpack(prop_box, pd_box.frame);
-   evas_object_hide(pd_box.frame);
-}
-
-static void
-_on_state_color_class_change(void *data,
-                             Evas_Object *obj EINA_UNUSED,
-                             void *event_info)
-{
-   Prop_Data *pd = (Prop_Data *)data;
-   int r, g, b, a, r1, g1, b1, a1, r2, g2, b2, a2;
-   r = g = b = a = r1 = g1 = b1 = a1 = r2 = g2 = b2 = a2 = 0;
-
-   const char *old_value = NULL, *value = NULL;
-   old_value =  edje_edit_state_color_class_get(pd->wm_style->obj, pd->wm_part->name,
-                                                pd->wm_part->curr_state,
-                                                pd->wm_part->curr_state_value);
-   Ewe_Combobox_Item *item = event_info;
-   if (strcmp(item->title, "None"))
-     {
-        edje_edit_state_color_class_set(pd->wm_style->obj, pd->wm_part->name,
-                                     pd->wm_part->curr_state,
-                                     pd->wm_part->curr_state_value,
-                                     item->title);
-        edje_edit_color_class_colors_get(pd->wm_style->obj, item->title, &r, &g, &b, &a,
-                                         &r1, &g1, &b1, &a1, &r2, &g2, &b2, &a2);
-        edje_edit_state_color_set(pd->wm_style->obj, pd->wm_part->name,
-                             pd->wm_part->curr_state, pd->wm_part->curr_state_value,
-                             r, g, b, a);
-        edje_edit_state_color2_set(pd->wm_style->obj, pd->wm_part->name,
-                             pd->wm_part->curr_state, pd->wm_part->curr_state_value,
-                             r1, g1, b1, a1);
-        edje_edit_state_color3_set(pd->wm_style->obj, pd->wm_part->name,
-                             pd->wm_part->curr_state, pd->wm_part->curr_state_value,
-                             r2, g2, b2, a2);
-
-        prop_item_state_color_update(pd->state.color, pd);
-        prop_item_state_color2_update(pd->state_text.color2, pd);
-        prop_item_state_color3_update(pd->state_text.color3, pd);
-        value = item->title;
-     }
-   else edje_edit_state_color_class_set(pd->wm_style->obj, pd->wm_part->name,
-                                        pd->wm_part->curr_state,
-                                        pd->wm_part->curr_state_value,
-                                        NULL);
-
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, value,
-                      pd->wm_style->full_group_name,
-                      (void*)edje_edit_state_color_class_set, "colorclass",
-                      pd->wm_part->name, pd->wm_part->curr_state,
-                      pd->wm_part->curr_state_value);
-   project_changed();
-
-   workspace_edit_object_recalc(pd->workspace);
-   pd->wm_style->isModify = true;
-}
-
-#define ITEM_4SPINNER_ITEM_CALLBACK(VALUE) \
-static void \
-_on_part_item_padding_##VALUE##_change(void *data, \
-                                       Evas_Object *obj, \
-                                       void *ei __UNUSED__) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   Evas_Object *item = evas_object_data_get(obj, ITEM1); \
-   Evas_Object *spinner1 = evas_object_data_get(item, ITEM1); \
-   Evas_Object *spinner2 = evas_object_data_get(item, ITEM2); \
-   Evas_Object *spinner3 = evas_object_data_get(item, ITEM3); \
-   Evas_Object *spinner4 = evas_object_data_get(item, ITEM4); \
-   int l = (int)elm_spinner_value_get(spinner1); \
-   int r = (int)elm_spinner_value_get(spinner2); \
-   int t = (int)elm_spinner_value_get(spinner3); \
-   int b = (int)elm_spinner_value_get(spinner4); \
-   if (!edje_edit_part_item_padding_set(pd->wm_style->obj, pd->wm_part->name,\
-                                        pd->item_name, l, r, t, b)) \
-     return; \
-   project_changed(); \
-   workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
-}
-
-ITEM_4SPINNER_ITEM_CALLBACK(l);
-ITEM_4SPINNER_ITEM_CALLBACK(r);
-ITEM_4SPINNER_ITEM_CALLBACK(t);
-ITEM_4SPINNER_ITEM_CALLBACK(b);
-
-#define ITEM_SPINNER_ITEM_PADDING_UPDATE(KEY, VALUE) \
-   spinner = evas_object_data_get(item, KEY); \
-   elm_spinner_value_set(spinner, VALUE); \
-   evas_object_smart_callback_del_full(spinner, "changed", _on_part_item_padding_##VALUE##_change, pd); \
-   evas_object_smart_callback_add(spinner, "changed", _on_part_item_padding_##VALUE##_change, pd);
-
-static void
-prop_item_part_item_padding_update(Evas_Object *item,
-                                   Prop_Data *pd)
+prop_part_item_padding_update(Prop_Data *pd)
 {
    int l = 0, r = 0, t = 0, b = 0;
-   Evas_Object *spinner;
 
-   edje_edit_part_item_padding_get(pd->wm_style->obj, pd->wm_part->name, pd->item_name,
-                                   &l, &r, &t, &b);
-   ITEM_SPINNER_ITEM_PADDING_UPDATE(ITEM1, l)
-   ITEM_SPINNER_ITEM_PADDING_UPDATE(ITEM2, r)
-   ITEM_SPINNER_ITEM_PADDING_UPDATE(ITEM3, t)
-   ITEM_SPINNER_ITEM_PADDING_UPDATE(ITEM4, b)
+   edje_edit_part_item_padding_get(pd->wm_style->obj, pd->wm_part->name,
+                                   pd->item_name, &l, &r, &t, &b);
+   elm_spinner_value_set(pd->part_item.padding_l, l);
+   elm_spinner_value_set(pd->part_item.padding_r, r);
+   elm_spinner_value_set(pd->part_item.padding_t, t);
+   elm_spinner_value_set(pd->part_item.padding_b, b);
 }
 
-static Evas_Object *
-prop_item_part_item_padding_add(Evas_Object *parent,
-                                Prop_Data *pd,
-                                double min,
-                                double max,
-                                double step,
-                                const char *fmt,
-                                const char *sp1_lb_start,
-                                const char *sp2_lb_start,
-                                const char *sp3_lb_start,
-                                const char *sp4_lb_start)
+static void
+_on_part_item_padding_change(void *data,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info __UNUSED__)
 {
-   Evas_Object *item, *item2, *spinner1, *spinner2, *spinner3, *spinner4;
-   Evas_Object *box, *layout, *main_box;
-   BOX_ADD(parent, main_box, false, false)
+   int l, r, t, b;
+   Prop_Data *pd = (Prop_Data *)data;
 
-   ITEM_ADD(parent, item, _("Padding: "), "eflete/property/item/default")
-   BOX_ADD(item, box, true, false)
-   ITEM_CONTEINER_1LABEL_ADD(box, layout, sp1_lb_start);
-   SPINNER_ADD(item, spinner1, min, max, step, true)
-   elm_spinner_label_format_set(spinner1, fmt);
-   elm_object_part_content_set(layout, "eflete.content", spinner1);
-   elm_box_pack_end(box, layout);
-   elm_object_part_content_set(item, "elm.swallow.content", box);
-   evas_object_event_callback_priority_add(spinner1, EVAS_CALLBACK_MOUSE_WHEEL,
-                                           EVAS_CALLBACK_PRIORITY_BEFORE,
-                                           _on_spinner_mouse_wheel, NULL);
-
-   ITEM_CONTEINER_1LABEL_ADD(box, layout, sp2_lb_start);
-   SPINNER_ADD(item, spinner2, min, max, step, true)
-   elm_spinner_label_format_set(spinner2, fmt);
-   elm_object_part_content_set(layout, "eflete.content", spinner2);
-   elm_box_pack_end(box, layout);
-   evas_object_event_callback_priority_add(spinner2, EVAS_CALLBACK_MOUSE_WHEEL,
-                                           EVAS_CALLBACK_PRIORITY_BEFORE,
-                                           _on_spinner_mouse_wheel, NULL);
-   elm_object_part_content_set(item, "elm.swallow.content", box);
-   elm_box_pack_end(main_box, item);
-
-   ITEM_ADD(parent, item2, "", "eflete/property/item/default")
-   BOX_ADD(item2, box, true, true)
-   elm_object_part_content_set(item2, "elm.swallow.content", box);
-   ITEM_CONTEINER_1LABEL_ADD(box, layout, sp3_lb_start);
-   SPINNER_ADD(item2, spinner3, min, max, step, true)
-   elm_spinner_label_format_set(spinner3, fmt);
-   elm_object_part_content_set(layout, "eflete.content", spinner3);
-   elm_box_pack_end(box, layout);
-   evas_object_event_callback_priority_add(spinner3, EVAS_CALLBACK_MOUSE_WHEEL,
-                                           EVAS_CALLBACK_PRIORITY_BEFORE,
-                                           _on_spinner_mouse_wheel, NULL);
-
-   ITEM_CONTEINER_1LABEL_ADD(box, layout, sp4_lb_start);
-   SPINNER_ADD(item2, spinner4, min, max, step, true)
-   elm_spinner_label_format_set(spinner4, fmt);
-   elm_object_part_content_set(layout, "eflete.content", spinner4);
-   elm_box_pack_end(box, layout);
-   evas_object_event_callback_priority_add(spinner4, EVAS_CALLBACK_MOUSE_WHEEL,
-                                           EVAS_CALLBACK_PRIORITY_BEFORE,
-                                           _on_spinner_mouse_wheel, NULL);
-   elm_object_part_content_set(item2, "elm.swallow.content", box);
-   elm_box_pack_end(main_box, item2);
-
-   evas_object_data_set(main_box, ITEM1, spinner1);
-   evas_object_data_set(main_box, ITEM2, spinner2);
-   evas_object_data_set(main_box, ITEM3, spinner3);
-   evas_object_data_set(main_box, ITEM4, spinner4);
-   evas_object_data_set(spinner1, ITEM1, main_box);
-   evas_object_data_set(spinner2, ITEM1, main_box);
-   evas_object_data_set(spinner3, ITEM1, main_box);
-   evas_object_data_set(spinner4, ITEM1, main_box);
-
-   prop_item_part_item_padding_update(main_box, pd);
-   return main_box;
+   l = (int)elm_spinner_value_get(pd->part_item.padding_l);
+   r = (int)elm_spinner_value_get(pd->part_item.padding_r);
+   t = (int)elm_spinner_value_get(pd->part_item.padding_t);
+   b = (int)elm_spinner_value_get(pd->part_item.padding_b);
+   if (!edje_edit_part_item_padding_set(pd->wm_style->obj, pd->wm_part->name,
+                                        pd->item_name, l, r, t, b))
+     return;
+   project_changed(false);
+   workspace_edit_object_recalc(pd->workspace);
 }
-#undef ITEM_SPINNER_ITEM_PADDING_UPDATE
-#undef ITEM_4SPINNER_ITEM_CALLBACK
 
-#define ITEM_COMBOBOX_PART_ITEM_CREATE(TEXT, SUB, VALUE) \
-   ITEM_COMBOBOX_PART_ITEM_CALLBACK(SUB, VALUE) \
-   ITEM_COMBOBOX_PART_ITEM_UPDATE(SUB, VALUE) \
-   ITEM_COMBOBOX_PART_ITEM_ADD(TEXT, SUB, VALUE)
+static void
+prop_part_item_padding_add(Evas_Object *box, Prop_Data *pd)
+{
+   Evas_Object *item;
 
-#define ITEM_2_SPINNERS_ITEM_CREATE(TYPE, TEXT, SUB, VALUE1, VALUE2, STYLE) \
-   ITEM_SPINNER_PART_ITEM_CALLBACK(TYPE, SUB, VALUE1) \
-   ITEM_SPINNER_PART_ITEM_CALLBACK(TYPE, SUB, VALUE2) \
-   ITEM_2SPINNER_PART_ITEM_UPDATE(TYPE, SUB, VALUE1, VALUE2) \
-   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, STYLE)
+   #define SPINNER_SET(SPINNER, PART) \
+      SPINNER_ADD(item, SPINNER, 0.0, 999.0, 1.0, true) \
+      evas_object_smart_callback_add(SPINNER, "changed", \
+                                     _on_part_item_padding_change, pd); \
+      evas_object_event_callback_priority_add(SPINNER, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                           _on_spinner_mouse_wheel, NULL); \
+      elm_layout_content_set(item, PART, SPINNER);
 
-#define ITEM_2_SPINNERS_ITEM_2INT_CREATE(TYPE, TEXT, SUB, VALUE, STYLE) \
-   ITEM_SPINNER_PART_ITEM_2INT_CALLBACK(TYPE, SUB, VALUE) \
-   ITEM_2SPINNER_PART_ITEM_2UPDATE(TYPE, SUB, VALUE, suf) \
-   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE, suf, STYLE)
+   LAYOUT_PROP_ADD(box, _("padding"), "property", "2swallow");
+   elm_object_part_text_set(item, "label.swallow1.start", "left:");
+   SPINNER_SET(pd->part_item.padding_l, "swallow.content1")
+   elm_object_part_text_set(item, "label.swallow2.start", "right:");
+   SPINNER_SET(pd->part_item.padding_r, "swallow.content2")
+   elm_box_pack_end(box, item);
 
-#define ITEM_PREDEFINED_COMBOBOX_PART_ITEM_CREATE(TEXT, SUB, VALUE) \
-   ITEM_PREDEFINED_COMBOBOX_PART_ITEM_CALLBACK(SUB, VALUE) \
-   ITEM_PREDEFINED_COMBOBOX_PART_ITEM_UPDATE(SUB, VALUE) \
-   ITEM_1COMBOBOX_STATE_PART_ADD(TEXT, SUB, VALUE)
+   LAYOUT_PROP_ADD(box, NULL, "property", "2swallow");
+   elm_object_part_text_set(item, "label.swallow1.start", "top:");
+   SPINNER_SET(pd->part_item.padding_t, "swallow.content1")
+   elm_object_part_text_set(item, "label.swallow2.start", "bottom:");
+   SPINNER_SET(pd->part_item.padding_b, "swallow.content2")
+   elm_box_pack_end(box, item);
+
+   prop_part_item_padding_update(pd);
+
+   #undef SPINNER_SET
+}
 
 #define pd_item pd->part_item
 
-ITEM_COMBOBOX_PART_ITEM_CREATE(_("source"), part_item, source);
-ITEM_2_SPINNERS_ITEM_CREATE(int, _("min"), part_item_min, w, h, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_CREATE(int, _("max"), part_item_max, w, h, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_CREATE(int, _("prefer"), part_item_prefer, w, h, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_CREATE(int, _("spread"), part_item_spread, w, h, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_CREATE(int, _("aspect"), part_item_aspect, w, h, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned short int, _("position"), part_item, position, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned char, _("span"), part_item, span, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_CREATE(double, _("align"), part_item_align, x, y, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_CREATE(double, _("weight"), part_item_weight, x, y, "eflete/property/item/default")
-ITEM_PREDEFINED_COMBOBOX_PART_ITEM_CREATE(_("aspect mode"), part_item, aspect_mode)
+static void
+prop_part_item_source_update(Prop_Data *pd)
+{
+   Eina_List *collections, *l;
+   const char *group, *value;
+   App_Data *ap = app_data_get();
+
+   unsigned int i = 0;
+   ewe_combobox_items_list_free(pd->part_item.source, true);
+   value = edje_edit_part_item_source_get(pd->wm_style->obj, pd->wm_part->name, pd->item_name);
+   ewe_combobox_text_set(pd->part_item.source, value ? value : _("None"));
+
+   collections = edje_mmap_collection_list(ap->project->mmap_file);
+   collections = eina_list_sort(collections, eina_list_count(collections), sort_cb);
+   EINA_LIST_FOREACH(collections, l, group)
+     {
+        if (group != pd->wm_style->full_group_name)
+          ewe_combobox_item_add(pd->part_item.source, group);
+        if (group == value)
+          pd->part.previous_source = i;
+        i++;
+     }
+   edje_edit_string_free(value);
+   edje_mmap_collection_list_free(collections);
+}
+
+#define PART_ITEM_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
+   PART_ITEM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
+   PART_ITEM_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
+
+#define PART_ITEM_MINMAX_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+                                       L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
+                                       TYPE, HISTORY_TYPE, DIF_VALUE1, DIF_VALUE2, CHECK) \
+   PART_ITEM_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, DIF_VALUE1, CHECK) \
+   PART_ITEM_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, DIF_VALUE2, CHECK) \
+   PART_ITEM_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, \
+                               MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
+                               TOOLTIP1, TOOLTIP2, MULTIPLIER)
+
+#define PART_ITEM_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+                                L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
+                                TYPE, HISTORY_TYPE) \
+   PART_ITEM_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
+   PART_ITEM_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
+   PART_ITEM_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, \
+                               MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
+                               TOOLTIP1, TOOLTIP2, MULTIPLIER)
+
+#define PART_ITEM_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, TYPE, LIST, TOOLTIP) \
+   PART_ITEM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
+   PART_ITEM_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
+
+#define PART_ITEM_DOUBLEVAL_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+                                          L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
+                                          TYPE, HISTORY_TYPE) \
+   PART_ITEM_DOUBLEVAL_ATTR_SPINNER_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
+   PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, \
+                                         MIN, MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
+                                         TOOLTIP1, TOOLTIP2, MULTIPLIER)
+
+PART_ITEM_ATTR_1COMBOBOX(_("source"), part_item, source, part_item, _("Sets the group this object will be made from."))
+PART_ITEM_MINMAX_ATTR_2SPINNER(_("min"), part_item, min_w, min_h, part_item,
+                    0.0, 999.0, 1.0, NULL, "x:", "%", "y:", "%",
+                    _("Set the item minimum size hint width in pixels"), _("Set the item minimum size hint height in pixels"),
+                    1, int, VAL_INT, max_w, max_h, >)
+PART_ITEM_MINMAX_ATTR_2SPINNER(_("max"), part_item, max_w, max_h, part_item,
+                    0.0, 999.0, 1.0, NULL, "x:", "%", "y:", "%",
+                    _("Set the item maximum size hint width in pixels"), _("Set the item maximum size hint height in pixels"),
+                    1, int, VAL_INT, min_w, min_h, <)
+PART_ITEM_ATTR_2SPINNER(_("prefer"), part_item, prefer_w, prefer_h, part_item,
+                    0.0, 999.0, 1.0, NULL, "w:", "px", "h:", "px",
+                    _("Set the item prefered size hint width in pixels"), _("Set the item prefered size hint height in pixels"),
+                    1, int, VAL_INT)
+PART_ITEM_ATTR_2SPINNER(_("align"), part_item, align_x, align_y, part_item,
+                    0.0, 999.0, 1.0, NULL, "x:", "px", "y:", "px",
+                    _("Sets the alignment hint by x axiss"), _("Sets the alignment hint by y axiss"),
+                    100, double, VAL_DOUBLE)
+PART_ITEM_ATTR_2SPINNER(_("weight"), part_item, weight_x, weight_y, part_item,
+                    0.0, 999.0, 1.0, NULL, "x:", "", "y:", "",
+                    _("Sets the weight hint by x axiss"),_("Sets the weight hint by y axiss"),
+                    1, int, VAL_INT)
+PART_ITEM_ATTR_2SPINNER(_("aspect"), part_item, aspect_w, aspect_h, part_item,
+                    0.0, 999.0, 1.0, NULL, "w:", "", "h:", "",
+                    _("Set the item aspect width hint"), _("Set the item aspect height hint"),
+                    1, int, VAL_INT)
+PART_ITEM_ATTR_2SPINNER(_("spread"), part_item, spread_w, spread_h, part_item,
+                    1.0, 255.0, 1.0, NULL, "colunm:", "", "row:", "",
+                    _("Replicate the item in width, starting from the current position"),
+                    _("Replicate the item in height, starting from the current position"),
+                    1, int, VAL_INT)
+PART_ITEM_ATTR_1COMBOBOX_LIST(_("aspect mode"), part_item, aspect_mode, part_item, int, edje_item_aspect_pref,
+                              _("Sets the aspect control hints for this object."))
+PART_ITEM_DOUBLEVAL_ATTR_2SPINNER(_("span"), part_item, span, span1, part_item,
+                                  1.0, 999.0, 1.0, NULL, "column:", "", "row:", "",
+                                  _("Sets how many columns this item will use"), _("Sets how many rows this item will use"),
+                                  1, unsigned char, VAL_INT)
+PART_ITEM_DOUBLEVAL_ATTR_2SPINNER(_("position"), part_item, position, position1, part_item,
+                                  0.0, 999.0, 1.0, NULL, "column:", "", "row:", "",
+                                  _("Sets the column position this item"), _("Sets the row position this item"),
+                                  1, unsigned short, VAL_INT)
 
 Eina_Bool
 ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
@@ -3074,267 +3056,154 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
 
         item = prop_part_item_name_add(box, _("name"), pd->item_name);
         elm_box_pack_end(box, item);
-        pd_item.source = prop_item_part_item_source_add(box, pd,
-                               _("Sets the group this object will be made from."));
-        pd_item.min = prop_item_part_item_min_w_h_add(box, pd,
-                          0.0, 999.0, 1.0, "%.0f",
-                          "w:", "px", "h:", "px",
-                          _("Set the item minimum size hint width in pixels."),
-                          _("Set the item minimum size hint height in pixels."),
-                          false);
-        pd_item.max = prop_item_part_item_max_w_h_add(box, pd,
-                          0.0, 999.0, 1.0, "%.0f",
-                          "w:", "px", "h:", "px",
-                          _("Set the item maximum size hint width in pixels."),
-                          _("Set the item maximum size hint height in pixels."),
-                          false);
-        pd_item.prefer = prop_item_part_item_prefer_w_h_add(box, pd,
-                          0.0, 999.0, 1.0, "%.0f",
-                          "w:", "px", "h:", "px",
-                          _("Set the item prefered size hint width in pixels."),
-                          _("Set the item prefered size hint height in pixels."),
-                          false);
-        pd_item.aspect = prop_item_part_item_aspect_w_h_add(box, pd,
-                          0, 999, 1, "%.0f",
-                          "x:", "", "y:", "",
-                          _("Set the item aspect width hint."),
-                          _("Set the item aspect height hint."),
-                          false);
-        pd_item.spread = prop_item_part_item_spread_w_h_add(box, pd,
-                          1.0, 255.0, 1.0, "%.0f",
-                          "col:", "", "row", "",
-                          _("Replicate the item in width, starting from the current position."),
-                          _("Replicate the item in height, starting from the current position."),
-                          false);
-        pd_item.span = prop_item_part_item_span_suf_add(box, pd,
-                          1.0, 999.0, 1.0, "%.0f",
-                          "col", "", "row", "",
-                          _("Sets how many columns this item will use."),
-                          _("Sets how many rows this item will use."), false);
-        pd_item.align = prop_item_part_item_align_x_y_add(box, pd,
-                          -1, 100, 1, NULL,
-                          "x:", "%", "y:", "%",
-                          _("Sets the alignment hint by x axiss."),
-                          _("Sets the alignment hint by y axiss."),
-                          true);
-        pd_item.weight = prop_item_part_item_weight_x_y_add(box, pd,
-                          0.0, 999.0, 1.0, NULL,
-                          "x:", "%", "y:", "",
-                          _("Sets the weight hint by x axiss."),
-                          _("Sets the weight hint by y axiss."),
-                          false);
-        pd_item.padding =  prop_item_part_item_padding_add(box, pd,
-                             0.0, 999.0, 1.0, "%.0f",
-                            _("left:"), _("right:"), _("top:"), _("bottom:"));
-        pd_item.aspect_mode = prop_item_part_item_aspect_mode_add(box, pd,
-                              _("Sets the aspect control hints for this object."),
-                              edje_aspect_pref);
+        pd->part_item.source_item = prop_part_item_source_add(box, pd);
+        elm_box_pack_end(box, pd->part_item.source_item);
+        item = prop_part_item_min_w_min_h_add(box, pd);
+        elm_box_pack_end(box, item);
+        item = prop_part_item_max_w_max_h_add(box, pd);
+        elm_box_pack_end(box, item);
+        item = prop_part_item_prefer_w_prefer_h_add(box, pd);
+        elm_box_pack_end(box, item);
+        item = prop_part_item_align_x_align_y_add(box, pd);
+        elm_box_pack_end(box, item);
+        item = prop_part_item_weight_x_weight_y_add(box, pd);
+        elm_box_pack_end(box, item);
+        item = prop_part_item_aspect_mode_add(box, pd);
+        elm_box_pack_end(box, item);
+        item = prop_part_item_aspect_w_aspect_h_add(box, pd);
+        elm_box_pack_end(box, item);
+        item = prop_part_item_spread_w_spread_h_add(box, pd);
+        elm_box_pack_end(box, item);
+        item = prop_part_item_span_span1_add(box, pd);
+        elm_box_pack_end(box, item);
+        prop_part_item_padding_add(box, pd);
 
-        elm_box_pack_end(box, pd_item.source);
-        if (pd->wm_part->type == EDJE_PART_TYPE_TABLE)
-          {
-             pd_item.position = prop_item_part_item_position_suf_add(box, pd,
-                                  0.0, 999.0, 1.0, "%.0f",
-                                  "col", "", "row", "",
-                                   _("Sets the column position this item."),
-                                   _("Sets the row position this item."), false);
-             elm_box_pack_end(box, pd_item.position);
-          }
+        pd_item.position_item = prop_part_item_position_position1_add(box, pd);
+        evas_object_hide(pd_item.position_item);
 
-        elm_box_pack_end(box, pd_item.min);
-        elm_box_pack_end(box, pd_item.max);
-        elm_box_pack_end(box, pd_item.prefer);
-        elm_box_pack_end(box, pd_item.align);
-        elm_box_pack_end(box, pd_item.weight);
-        elm_box_pack_end(box, pd_item.aspect);
-        elm_box_pack_end(box, pd_item.aspect_mode);
-        elm_box_pack_end(box, pd_item.padding);
-        elm_box_pack_end(box, pd_item.spread);
-        elm_box_pack_end(box, pd_item.span);
-        elm_box_pack_before(prop_box, pd_item.frame, pd->part.frame);
+        elm_box_pack_after(prop_box, pd_item.frame, pd->state_container.frame);
      }
    else
      {
+        box = elm_object_content_get(pd->part_item.frame);
         prop_part_item_name_update(item_name);
-        prop_item_part_item_source_update(pd_item.source, pd);
-        prop_item_part_item_min_w_h_update(pd_item.min, pd, false);
-        prop_item_part_item_max_w_h_update(pd_item.max, pd, false);
-        prop_item_part_item_prefer_w_h_update(pd_item.prefer, pd, false);
-        prop_item_part_item_align_x_y_update(pd_item.align, pd, true);
-        prop_item_part_item_weight_x_y_update(pd_item.weight, pd, false);
-        prop_item_part_item_aspect_w_h_update(pd_item.aspect, pd, false);
-        prop_item_part_item_spread_w_h_update(pd_item.spread, pd, false);
-        prop_item_part_item_span_suf_update(pd_item.span, pd, false);
-        if (pd->wm_part->type == EDJE_PART_TYPE_TABLE)
-          prop_item_part_item_position_suf_update(pd_item.position, pd, false);
-        prop_item_part_item_padding_update(pd_item.padding, pd);
-        prop_item_part_item_aspect_mode_update(pd_item.aspect_mode, pd);
-        elm_box_pack_before(prop_box, pd_item.frame, pd->part.frame);
+        prop_part_item_source_update(pd);
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, min_w, min_h, part_item, int,1)
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, max_w, max_h, part_item, int,1)
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, prefer_w, prefer_h, part_item, int, 1)
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, align_x, align_y, part_item, double, 100)
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, weight_x, weight_y, part_item, int, 1)
+        PART_ITEM_ATTR_1COMBOBOX_LIST_UPDATE(part_item, aspect_mode, part_item)
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, aspect_w, aspect_h, part_item, int, 1)
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, spread_w, spread_h, part_item, int, 1)
+        PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(part_item, span, span1, part_item, unsigned char, 1);
+        PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(part_item, position, position1, part_item, unsigned short, 1);
+        prop_part_item_padding_update(pd);
+
+        elm_box_pack_after(prop_box, pd_item.frame, pd->state_container.frame);
         evas_object_show(pd_item.frame);
      }
+
+     if (pd->wm_part->type == EDJE_PART_TYPE_TABLE)
+       {
+          if (!evas_object_visible_get(pd->part_item.position_item))
+            {
+               elm_box_pack_after(box, pd->part_item.position_item, pd->part_item.source_item);
+               evas_object_show(pd->part_item.position_item);
+            }
+       }
+     else
+       {
+          if (evas_object_visible_get(pd->part_item.position_item))
+            {
+               elm_box_unpack(box, pd->part_item.position_item);
+               evas_object_hide(pd->part_item.position_item);
+            }
+       }
+
    return true;
 }
 
 void
 ui_property_item_unset(Evas_Object *property)
 {
-   Evas_Object *prop_box;
+   Evas_Object *prop_box, *item_box;
    PROP_DATA_GET()
    if (!pd_item.frame) return;
 
    pd->item_name = NULL;
    prop_box = elm_object_content_get(pd->visual);
    elm_box_unpack(prop_box, pd_item.frame);
+
+   item_box = elm_object_content_get(pd_item.frame);
+   elm_box_unpack(item_box, pd_item.position_item);
+
    evas_object_hide(pd_item.frame);
+   evas_object_hide(pd_item.position_item);
 }
 #undef pd_item
 
 #define pd_container pd->state_container
 
-#define ITEM_2SPINNER_STATE_2DOUBLE_CREATE(TYPE, TEXT, SUB, VALUE1, VALUE2, STYLE) \
-   ITEM_2SPINNER_STATE_VALUE_CALLBACK(TYPE, SUB, VALUE1) \
-   ITEM_2SPINNER_STATE_VALUE_CALLBACK(TYPE, SUB, VALUE2) \
-   ITEM_2SPINNER_STATE_VALUE_UPDATE(TYPE, SUB, VALUE1, VALUE2) \
-   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, STYLE)
+#define STATE_DOUBLEVAL_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+                                      L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
+                                      TYPE, HISTORY_TYPE) \
+   STATE_DOUBLEVAL_ATTR_2SPINNER_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER) \
+   STATE_DOUBLEVAL_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
+                                     MIN, MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
+                                     TOOLTIP1, TOOLTIP2, MULTIPLIER)
+#define STATE_DOUBLEVAL_ATTR_2CHECK(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
+                                    L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2) \
+   STATE_DOUBLEVAL_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2, MEMBER) \
+   STATE_DOUBLEVAL_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
+                                   L1_START, L1_END, L2_START, L2_END, \
+                                   TOOLTIP1, TOOLTIP2) \
 
-ITEM_2SPINNER_STATE_2DOUBLE_CREATE(double, _("align"), state_container_align, x, y, "eflete/property/item/default")
-ITEM_2SPINNER_STATE_2DOUBLE_CREATE(int, _("padding"), state_container_padding, h, v, "eflete/property/item/default")
-
-static void
-_on_container_min_change(void *data,
-                         Evas_Object *obj __UNUSED__,
-                         void *ei __UNUSED__)
-{
-   Prop_Data *pd = (Prop_Data *)data;
-   Eina_Bool min_v, min_h;
-   Evas_Object *check1, *check2;
-
-   check1 = evas_object_data_get(pd_container.min, ITEM1);
-   min_v = elm_check_state_get(check1);
-   check2 = evas_object_data_get(pd_container.min, ITEM2);
-   min_h = elm_check_state_get(check2);
-
-   if (!edje_edit_state_container_min_set(pd->wm_style->obj, pd->wm_part->name,
-                                          pd->wm_part->curr_state,
-                                          pd->wm_part->curr_state_value,
-                                          min_v, min_h))
-     return;
-
-   project_changed();
-   workspace_edit_object_recalc(pd->workspace);
-   pd->wm_style->isModify = true;
-}
-
-static void
-prop_item_state_container_min_h_v_update(Evas_Object *item,
-                                         Prop_Data *pd)
-{
-   Evas_Object *check1, *check2;
-   Eina_Bool min_v, min_h;
-
-   edje_edit_state_container_min_get(pd->wm_style->obj,
-                                     pd->wm_part->name,
-                                     pd->wm_part->curr_state,
-                                     pd->wm_part->curr_state_value,
-                                     &min_v,
-                                     &min_h);
-
-   check1 = evas_object_data_get(item, ITEM1);
-   elm_check_state_set(check1, min_v);
-   check2 = evas_object_data_get(item, ITEM2);
-   elm_check_state_set(check2, min_h);
-
-   evas_object_smart_callback_del_full(check1, "changed", _on_container_min_change, pd);
-   evas_object_smart_callback_add(check1, "changed", _on_container_min_change, pd);
-   evas_object_smart_callback_del_full(check2, "changed", _on_container_min_change, pd);
-   evas_object_smart_callback_add(check2, "changed", _on_container_min_change, pd);
-}
-
-static Evas_Object *
-prop_item_state_container_min_h_v_add(Evas_Object *parent,
-                                      Prop_Data *pd,
-                                      const char *tooltip1,
-                                      const char *tooltip2)
-{
-   Evas_Object *item, *box, *layout, *check1, *check2;
-   Eina_Bool min_v, min_h;
-
-   edje_edit_state_container_min_get(pd->wm_style->obj,
-                                     pd->wm_part->name,
-                                     pd->wm_part->curr_state,
-                                     pd->wm_part->curr_state_value,
-                                     &min_v,
-                                     &min_h);
-
-   ITEM_ADD(parent, item, _("Min: "), "eflete/property/item/default")
-   BOX_ADD(item, box, true, true)
-
-   ITEM_CONTEINER_2LABEL_ADD(box, layout, NULL, NULL);
-   CHECK_ADD(layout, check1)
-   elm_object_style_set(check1, "toggle");
-   elm_check_state_set(check1, min_v);
-   elm_object_tooltip_text_set(check1, tooltip1);
-   evas_object_smart_callback_add(check1, "changed", _on_container_min_change, pd);
-   elm_object_part_content_set(layout, "eflete.content", check1);
-   elm_box_pack_end(box, layout);
-
-   ITEM_CONTEINER_2LABEL_ADD(box, layout, NULL, NULL);
-   CHECK_ADD(layout, check2)
-   elm_object_style_set(check2, "toggle");
-   elm_check_state_set(check2, min_h);
-   elm_object_tooltip_text_set(check2, tooltip2);
-   evas_object_smart_callback_add(check2, "changed", _on_container_min_change, pd);
-   elm_object_part_content_set(layout, "eflete.content", check2);
-   elm_box_pack_end(box, layout);
-
-   elm_object_part_content_set(item, "elm.swallow.content", box);
-   evas_object_data_set(item, ITEM1, check1);
-   evas_object_data_set(item, ITEM2, check2);
-   return item;
-}
+STATE_DOUBLEVAL_ATTR_2SPINNER(_("align"), state_container, align, align1, state_container,
+                              0.0, 100.0, 1.0, NULL, "x:", "%", "y:", "%",
+                              _("Change the position of the point of balance inside the container"),
+                              _("Change the position of the point of balance inside the container"),
+                              100, double, VAL_DOUBLE)
+STATE_DOUBLEVAL_ATTR_2SPINNER(_("padding"), state_container, padding, padding1, state_container,
+                              0.0, 999.0, 1.0, NULL, "x:", "px", "y:", "px",
+                              _("Sets the horizontal space between cells in pixels"),
+                              _("Sets the vertcal space between cells in pixels"),
+                              1, int, VAL_INT)
+STATE_DOUBLEVAL_ATTR_2CHECK(_("min"), state_container, min, min1, state_container,
+                            "x:", NULL, "y:", NULL,
+                            _("This affects the minimum width calculation"),
+                            _("This affects the minimum height calculation"))
 
 static Eina_Bool
 ui_property_state_container_set(Evas_Object *property)
 {
-   Evas_Object *container_frame, *box, *prop_box;
+   Evas_Object *item, *box, *prop_box;
    PROP_DATA_GET(EINA_FALSE)
 
    ui_property_state_container_unset(property);
    prop_box = elm_object_content_get(pd->visual);
    if (!pd_container.frame)
      {
-        FRAME_ADD(property, container_frame, true, _("Container"))
-        BOX_ADD(container_frame, box, EINA_FALSE, EINA_FALSE)
+        FRAME_ADD(property, pd_container.frame, true, _("Container"))
+        BOX_ADD(pd_container.frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
-        elm_object_content_set(container_frame, box);
+        elm_object_content_set(pd_container.frame, box);
 
-        pd_container.align = prop_item_state_container_align_x_y_add(box, pd,
-                              0, 100, 1, NULL,
-                              _("hor:"), "%", _("ver:"), "%",
-                              _("Change the position of the point of balance inside the container."),
-                              _("Change the position of the point of balance inside the container."),
-                              true);
-        pd_container.padding = prop_item_state_container_padding_h_v_add(box, pd, 0.0, 999.0,
-                                1.0, "%.0f", _("hor:"), _("px"), _("ver:"), _("px"),
-                                _("Sets the horizontal space between cells in pixels."),
-                                _("Sets the vertcal space between cells in pixels."),
-                                false);
-        pd_container.min = prop_item_state_container_min_h_v_add(box, pd,
-                            _("This affects the minimum width calculation."),
-                            _("This affects the minimum height calculation."));
+        item = prop_state_container_align_align1_add(box, pd);
+        elm_box_pack_end(box, item);
+        item = prop_state_container_padding_padding1_add(box, pd);
+        elm_box_pack_end(box, item);
 
-        elm_box_pack_end(box, pd_container.align);
-        elm_box_pack_end(box, pd_container.padding);
-        elm_box_pack_end(box, pd_container.min);
-        pd_container.frame = container_frame;
-        elm_box_pack_after(prop_box, pd_container.frame, pd->part.frame);
+        item = prop_state_container_min_min1_add(box, pd);
+        elm_box_pack_end(box, item);
+        elm_box_pack_after(prop_box, pd_container.frame, pd->state_object_area.frame);
      }
    else
      {
-        prop_item_state_container_align_x_y_update(pd_container.align, pd, true);
-        prop_item_state_container_padding_h_v_update(pd_container.padding, pd, false);
-        prop_item_state_container_min_h_v_update(pd_container.min, pd);
-        elm_box_pack_after(prop_box, pd_container.frame, pd->part.frame);
+        STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, align, align1, state_container, double, 100)
+        STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, padding, padding1, state_container, int, 1)
+        STATE_DOUBLEVAL_ATTR_2CHECK_UPDATE(state_container, min, min1, state_container)
+        elm_box_pack_after(prop_box, pd_container.frame, pd->state_object_area.frame);
         evas_object_show(pd_container.frame);
      }
    return true;
@@ -3351,54 +3220,6 @@ ui_property_state_container_unset(Evas_Object *property)
 }
 
 #undef pd_container
-
-#define pd_table pd->state_table
-
-ITEM_1COMBOBOX_PART_STATE_CREATE(_("homogeneous"), state_table, homogeneous, unsigned char)
-
-static Eina_Bool
-ui_property_state_table_set(Evas_Object *property)
-{
-   Evas_Object *table_frame, *box, *prop_box;
-   PROP_DATA_GET(EINA_FALSE)
-
-   ui_property_state_table_unset(property);
-   prop_box = elm_object_content_get(pd->visual);
-   if (!pd_table.frame)
-     {
-        FRAME_PROPERTY_ADD(property, table_frame, true, _("Table"), pd->visual)
-        BOX_ADD(table_frame, box, EINA_FALSE, EINA_FALSE)
-        elm_box_align_set(box, 0.5, 0.0);
-        elm_object_content_set(table_frame, box);
-
-        pd_table.homogeneous = prop_item_state_table_homogeneous_add(box, pd,
-                             _("Sets the homogeneous mode for the table."),
-                             edje_homogeneous);
-
-        elm_box_pack_end(box, pd_table.homogeneous);
-        pd_table.frame = table_frame;
-        elm_box_pack_after(prop_box, pd_table.frame, pd->state_container.frame);
-     }
-   else
-     {
-        prop_item_state_table_homogeneous_update(pd_table.homogeneous, pd);
-        elm_box_pack_after(prop_box, pd_table.frame, pd->state_container.frame);
-     }
-   evas_object_show(pd_table.frame);
-   return true;
-}
-
-static void
-ui_property_state_table_unset(Evas_Object *property)
-{
-   Evas_Object *prop_box;
-   PROP_DATA_GET()
-
-   prop_box = elm_object_content_get(pd->visual);
-   elm_box_unpack(prop_box, pd_table.frame);
-   evas_object_hide(pd_table.frame);
-}
-#undef pd_table
 
 #undef PROP_DATA
 #undef PROP_DATA_GET

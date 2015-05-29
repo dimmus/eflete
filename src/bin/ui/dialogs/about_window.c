@@ -71,6 +71,7 @@ about_window_add()
 
    elm_object_style_set(label, "slide_about");
    elm_win_inwin_content_set(mwin, label);
+   elm_layout_signal_emit(label, "elm,state,slide,start", "elm");
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_event_callback_add(mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 

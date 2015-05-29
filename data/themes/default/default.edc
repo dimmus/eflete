@@ -5,6 +5,7 @@ collections {
    #include "widgets/styles.edc"
    #include "widgets/bg.edc"
    #include "widgets/panes.edc"
+   #include "widgets/panel.edc"
    #include "widgets/frame.edc"
    #include "widgets/scroller.edc"
    #include "widgets/inwin.edc"
@@ -25,4 +26,6 @@ collections {
    #include "widgets/separator.edc"
    #include "widgets/cursor.edc"
    #include "widgets/layout.edc"
+   #include "widgets/image.edc"
+   #include "widgets/icon.edc"
 }

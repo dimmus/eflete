@@ -76,7 +76,7 @@ Eina_Bool
 app_free()
 {
    CHECK_AP(false)
-   /*TODO: here need delete all created objects from ap! */
+   TODO("here need delete all created objects from ap!")
    free(ap);
    return true;
 }

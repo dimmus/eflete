@@ -29,8 +29,8 @@ _notify_close (void *data,
 }
 
 
-/*TODO: it all need to remake, use widget macro. notify style make as popup,
- with a blink block area*/
+TODO("it all need to remake, use widget macro. notify style make as popup,"
+     " with a blink block area")
 
 Eina_Bool
 noti_error_show(Evas_Object *obj, const char *message)

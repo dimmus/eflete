@@ -22,6 +22,8 @@
 #include "sound_editor.h"
 #include "main_window.h"
 
+TODO("Rename this file to sound_manager")
+
 #ifdef HAVE_AUDIO
    #include <Ecore_Audio.h>
 #endif
@@ -72,7 +74,6 @@ struct _Sound_Editor
    Sound_Editor_Mode mode;
    Evas_Object *popup;
    Evas_Object *add_cmb;
-   Evas_Object *add_btn;
    Evas_Object *win;
    Evas_Object *tone_entry, *frq_entry;
    Evas_Object *gengrid;
@@ -675,7 +676,7 @@ _on_ok_cb(void *data,
              snd->is_saved = true;
           }
 
-        project_changed();
+        project_changed(true);
         if (edit->pr->layouts)
           {
              style = EINA_INLIST_CONTAINER_GET(edit->pr->layouts, Style);
@@ -729,7 +730,7 @@ _on_ok_cb(void *data,
 static char *
 _player_units_format(double val)
 {
-   char *units = malloc(sizeof(char) * 16);
+   char *units = mem_malloc(sizeof(char) * 16);
    int tmp = (int)val;
    snprintf(units, 16, "%02.0f:%02.0f", (double)(tmp / 60), (double)(tmp % 60));
    return units;
@@ -1230,10 +1231,12 @@ _add_sample_done(void *data,
                  Evas_Object *obj,
                  void *event_info)
 {
+   Evas_Object *edje_edit_obj;
    Sound *snd;
    Item *it;
-   Elm_Object_Item *new_item;
-   const char *sound_name;
+   Eina_Stringshare *sound_name, *tmp_sound_name;
+   Eina_List *samples_list, *l;
+   Eina_Bool exist = false;
 
    const char *selected = event_info;
    Sound_Editor *edit = (Sound_Editor *)data;
@@ -1243,17 +1246,35 @@ _add_sample_done(void *data,
 
    if ((ecore_file_exists(selected)) && (!ecore_file_is_dir(selected)))
      {
-        sound_name = ecore_file_file_get(selected);
-        new_item = elm_gengrid_search_by_text_item_get(edit->gengrid, NULL,
-                                                       "elm.text", sound_name, 0);
-        if (new_item)
+        GET_OBJ(edit->pr, edje_edit_obj);
+        sound_name = eina_stringshare_add(ecore_file_file_get(selected));
+
+        samples_list = edje_edit_sound_samples_list_get(edje_edit_obj);
+        EINA_LIST_FOREACH(samples_list, l, tmp_sound_name)
+          if (tmp_sound_name == sound_name) /* they both are stringshares */
+            {
+               exist = true;
+               break;
+            }
+        edje_edit_string_list_free(samples_list);
+        if (!exist)
           {
-             WIN_NOTIFY_WARNING(obj, _("Sample has been already added!"))
+             EINA_LIST_FOREACH(edit->pr->added_sounds, l, snd)
+               if ((snd->name == sound_name) && (!snd->tone_frq))
+                 {
+                    exist = true;
+                    break;
+                 }
+          }
+        if (exist)
+          {
+             WIN_NOTIFY_WARNING(obj, _("Sample with this name is already added to project"))
+             eina_stringshare_del(sound_name);
              return;
           }
 
         snd = (Sound *)mem_calloc(1, sizeof(Sound));
-        snd->name = eina_stringshare_add(sound_name);
+        snd->name = sound_name;
         snd->src = eina_stringshare_add(selected);
         snd->is_saved = false;
         it = (Item *)mem_calloc(1, sizeof(Item));
@@ -1295,10 +1316,14 @@ _add_tone_done(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
+   Evas_Object *edje_edit_obj;
    Sound *snd;
    Item *it;
-   const char *str_name, *str_value;
+   Eina_Stringshare *tone_name, *tmp_tone_name;
+   const char *str_value;
    int frq;
+   Eina_List *tones_list, *l;
+   Eina_Bool exist = false;
 
    Sound_Editor *edit = (Sound_Editor *)data;
    if (elm_entry_is_empty(edit->tone_entry))
@@ -1312,16 +1337,42 @@ _add_tone_done(void *data,
         return;
      }
 
-   str_name = elm_entry_entry_get(edit->tone_entry);
+   tone_name = eina_stringshare_add(elm_entry_entry_get(edit->tone_entry));
+   GET_OBJ(edit->pr, edje_edit_obj);
+
+   tones_list = edje_edit_sound_samples_list_get(edje_edit_obj);
+   EINA_LIST_FOREACH(tones_list, l, tmp_tone_name)
+     if (tmp_tone_name == tone_name) /* they both are stringshares */
+       {
+          exist = true;
+          break;
+       }
+   edje_edit_string_list_free(tones_list);
+   if (!exist)
+     {
+        EINA_LIST_FOREACH(edit->pr->added_sounds, l, snd)
+          if ((snd->name == tone_name) && (snd->tone_frq != 0))
+            {
+               exist = true;
+               break;
+            }
+     }
+   if (exist)
+     {
+        NOTIFY_WARNING(_("Tone with this name is already added to project"))
+        eina_stringshare_del(tone_name);
+        return;
+     }
+
    str_value = elm_entry_entry_get(edit->frq_entry);
    frq = atoi(str_value);
 
    snd = (Sound *)mem_calloc(1, sizeof(Sound));
-   snd->name = eina_stringshare_add(str_name);
+   snd->name = tone_name;
    snd->tone_frq = frq;
    snd->is_saved = false;
    it = (Item *)mem_calloc(1, sizeof(Item));
-   it->sound_name = eina_stringshare_add(str_name);
+   it->sound_name = eina_stringshare_add(tone_name);
    it->tone_frq = frq;
    it->format = eina_stringshare_printf("%d", it->tone_frq);
    it->is_added = true;
@@ -1350,11 +1401,15 @@ _sample_add_cb(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
-   Evas_Object *fs;
+   Evas_Object *fs, *ic;
    Sound_Editor *edit = data;
 
    edit->fs_win  = mw_add(NULL, NULL);
+   if (!edit->fs_win) return;
    mw_title_set(edit->fs_win, "Add sound to the library");
+   ic = elm_icon_add(edit->fs_win);
+   elm_icon_standard_set(ic, "folder");
+   mw_icon_set(edit->fs_win, ic);
    evas_object_show(edit->fs_win);
 
    FILESELECTOR_ADD(fs, edit->fs_win, _add_sample_done, data);
@@ -1480,7 +1535,7 @@ _on_delete_clicked_cb(void *data,
      }
 
    if (deleted)
-     project_changed();
+     project_changed(true);
 }
 
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, "elm.label")
@@ -1526,7 +1581,6 @@ _search_reset_cb(void *data __UNUSED__,
    OBJ = elm_button_add(PARENT); \
    evas_object_size_hint_weight_set(OBJ, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(OBJ, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   elm_object_style_set(OBJ, "btn"); \
    elm_object_text_set(OBJ, TEXT); \
    evas_object_show(OBJ); \
    elm_object_part_content_set(PARENT, "swallow.btn."PART, OBJ); \
@@ -1535,7 +1589,7 @@ _search_reset_cb(void *data __UNUSED__,
 static void
 _sound_editor_main_markup_create(Sound_Editor *edit)
 {
-   Evas_Object *btn, *icon, *search;
+   Evas_Object *btn, *ic, *search;
 
    edit->markup = elm_layout_add(edit->win);
    elm_layout_theme_set(edit->markup, "layout", "sound_editor", "default");
@@ -1544,20 +1598,24 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    elm_win_inwin_content_set(edit->win, edit->markup);
 
    ADD_BUTTON(edit->markup, btn, _("Ok"), "Ok", _on_ok_cb);
-
    ADD_BUTTON(edit->markup, btn, _("Cancel"), "Cancel", _on_quit_cb);
 
-   ADD_BUTTON(edit->markup, btn, "", "del", _on_delete_clicked_cb);
-   ICON_ADD(btn, icon, true, "icon-remove");
-   elm_object_content_set(btn, icon);
-   elm_object_text_set(btn, NULL);
+   btn = elm_button_add(edit->markup);
+   evas_object_smart_callback_add(btn, "clicked", _on_delete_clicked_cb, edit);
+   evas_object_show(btn);
+   elm_object_part_content_set(edit->markup, "swallow.btn.del", btn);
+   evas_object_show(btn);
+
+   ic = elm_icon_add(btn);
+   elm_icon_standard_set(ic, "minus");
+   elm_object_part_content_set(btn, NULL, ic);
 
    switch (edit->mode)
      {
       case SOUND_EDITOR_EDIT:
         {
            EWE_COMBOBOX_ADD(edit->markup, edit->add_cmb);
-           ewe_combobox_style_set(edit->add_cmb, "small/default");
+           ewe_combobox_style_set(edit->add_cmb, "small");
            ewe_combobox_item_add(edit->add_cmb, _("Sample"));
            ewe_combobox_item_add(edit->add_cmb, _("Tone"));
            evas_object_smart_callback_add(edit->add_cmb, "selected", _on_cmb_sel, edit);
@@ -1566,18 +1624,28 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
       break;
       case SOUND_EDITOR_SAMPLE_SELECT:
         {
-           ADD_BUTTON(edit->markup, edit->add_btn, "", "add", _sample_add_cb);
-           ICON_ADD(edit->add_btn, icon, true, "icon-add");
-           elm_object_content_set(edit->add_btn, icon);
-           elm_object_text_set(edit->add_btn, NULL);
+           btn = elm_button_add(edit->markup);
+           evas_object_smart_callback_add(btn, "clicked", _sample_add_cb, edit);
+           evas_object_show(btn);
+           elm_object_part_content_set(edit->markup, "swallow.btn.add", btn);
+           evas_object_show(btn);
+
+           ic = elm_icon_add(btn);
+           elm_icon_standard_set(ic, "plus");
+           elm_object_part_content_set(btn, NULL, ic);
         }
       break;
       case SOUND_EDITOR_TONE_SELECT:
         {
-           ADD_BUTTON(edit->markup, edit->add_btn, "", "add", _tone_add_cb);
-           ICON_ADD(edit->add_btn, icon, true, "icon-add");
-           elm_object_content_set(edit->add_btn, icon);
-           elm_object_text_set(edit->add_btn, NULL);
+           btn = elm_button_add(edit->markup);
+           evas_object_smart_callback_add(btn, "clicked", _tone_add_cb, edit);
+           evas_object_show(btn);
+           elm_object_part_content_set(edit->markup, "swallow.btn.add", btn);
+           evas_object_show(btn);
+
+           ic = elm_icon_add(btn);
+           elm_icon_standard_set(ic, "plus");
+           elm_object_part_content_set(btn, NULL, ic);
         }
       break;
      }
@@ -1597,6 +1665,7 @@ Evas_Object *
 sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
 {
    Sound_Editor *edit;
+   Evas_Object *ic;
 
    if (!project)
      {
@@ -1612,7 +1681,15 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    edit->mode = mode;
    edit->pr = project;
    edit->win = mw_add(_on_quit_cb, edit);
-   mw_title_set(edit->win, _("Sound editor"));
+   if (!edit->win)
+     {
+        free(edit);
+        return NULL;
+     }
+   mw_title_set(edit->win, _("Sound manager"));
+   ic = elm_icon_add(edit->win);
+   elm_icon_standard_set(ic, "sound");
+   mw_icon_set(edit->win, ic);
    evas_object_data_set(edit->win, SND_EDIT_KEY, edit);
 
    _sound_editor_main_markup_create(edit);
@@ -1626,6 +1703,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
 #endif
 
    evas_object_show(edit->win);
+   elm_object_focus_set(edit->sound_search_data.search_entry, true);
 
    App_Data *ap = app_data_get();
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);

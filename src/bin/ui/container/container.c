@@ -213,7 +213,7 @@ _mouse_move_hTL_cb(void *data,
    if (x1 + dx - sd->pad_left_top.w < bgx)
      {
         nw = w - dx;
-        /*TODO: need do refactoring here */
+        TODO("need do refactoring here")
         if (nw <= sd->con_size_min.w + H_WIGTH)
           {
              nw = sd->con_size_min.w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w;
@@ -303,7 +303,7 @@ _mouse_move_hBR_cb(void *data,
    if (!sd->handler_BR_pressed) return;
 
    /* calc wigth and heght */
-   /*TODO: need do refactoring here */
+   TODO("need do refactoring here")
    nw = w + dx;
    if (sd->size->w + H_WIGTH + dx <= sd->con_size_min.w + H_WIGTH)
      nw = sd->con_size_min.w + H_WIGTH + sd->dx + sd->pad_left_top.w + sd->pad_right_bottom.w;
@@ -349,11 +349,11 @@ _mouse_move_hBR_cb(void *data,
 static void
 _style_set(Evas_Object *o, const char *style)
 {
-   char group[512]; /* FIXME: change 512 to BUFF_MAX */
+   char group[BUFF_MAX];
    CONTAINER_DATA_GET(o, sd)
 
    #define GROUP_NAME(item, style) \
-      sprintf(group, "eflete/container/%s/%s", item, style);
+      snprintf(group, BUFF_MAX, "eflete/container/%s/%s", item, style);
 
    GROUP_NAME("base", style)
    if (!edje_object_file_set(sd->container, EFLETE_EDJ, group))
@@ -425,7 +425,7 @@ _container_smart_add(Evas_Object *o)
    priv->pad_left_top.h = 0;
    priv->pad_right_bottom.w = 0;
    priv->pad_right_bottom.h = 0;
-   priv->size = (Container_Geom *)malloc(sizeof(Container_Geom));
+   priv->size = (Container_Geom *)mem_malloc(sizeof(Container_Geom));
    priv->size->w = 0;
    priv->size->h = 0;
    priv->handler_TL_pressed = false;
@@ -545,7 +545,7 @@ _container_smart_calculate(Evas_Object *o)
    priv->size->w = cw;
    priv->size->h = ch;
 
-   sprintf(buff, "%i %i", priv->size->w, priv->size->h);
+   snprintf(buff, 16, "%i %i", priv->size->w, priv->size->h);
    edje_object_part_text_set(priv->container, TEXT_TOOLTIP, buff);
 
    evas_object_resize(priv->handler_TL.obj, htl_w, htl_h);

@@ -67,7 +67,8 @@ _ewe_tabs_evas_object_smart_add(Eo *obj,
    elm_box_align_set(sd->items_box, 0.0, 0.5);
    sd->items = NULL;
 
-   /* TODO: add correct style handling
+   TODO("add correct style handling")
+   /*
    if (!elm_layout_theme_set(obj, "label", "base", elm_widget_style_get(obj)))
      CRI("Failed to set layout!");
    */
@@ -124,7 +125,7 @@ _item_add_internal(Evas_Object           *obj,
    ret->disabled = EINA_FALSE;
    if (!style) style = "default";
    ret->style = style;
-   ret->head = elm_layout_add(obj); /* TODO: find out howto replace this elm_layout with edje_object*/
+   ret->head = elm_layout_add(obj); TODO("find out howto replace this elm_layout with edje_object")
    evas_object_smart_member_add(ret->head, obj);
    if (sd->horizontal)
      eina_strbuf_append_printf(buf, "ewe/tabs/item/head/horizontal/%s", style);
@@ -418,6 +419,41 @@ _ewe_tabs_item_disabled_get(Eo                   *obj,
 
    return item->disabled;
 }
+
+EOLIAN static Eina_Bool
+_ewe_tabs_elm_layout_text_set(Eo                   *obj EINA_UNUSED,
+                              Ewe_Tabs_Smart_Data  *sd,
+                              const char           *part,
+                              const char           *text)
+{
+   Eina_Bool int_ret = EINA_FALSE;
+
+   if (!part || !strcmp(part, "ewe.text"))
+     {
+        if (text)
+          {
+             elm_layout_signal_emit(sd->layout, "ewe,state,text,visible", "ewe");
+             int_ret = elm_layout_text_set(sd->layout, "ewe.text", text);
+          }
+        else
+          {
+             elm_layout_signal_emit(sd->layout, "ewe,state,text,hidden", "ewe");
+          }
+     }
+   else int_ret = elm_layout_text_set(sd->layout, part, text);
+
+   return int_ret;
+}
+
+EOLIAN static const char *
+_ewe_tabs_elm_layout_text_get(Eo                   *obj EINA_UNUSED,
+                              Ewe_Tabs_Smart_Data  *sd,
+                              const char           *part)
+{
+   if (!part) return elm_layout_text_get(sd->layout, "ewe,text");
+   else return elm_layout_text_get(sd->layout, part);
+}
+
 
 EOLIAN static Eina_Bool
 _ewe_tabs_orient_horizontal_set(Eo                   *obj,

@@ -42,6 +42,9 @@
 #include "logger.h"
 #include <Eet.h>
 
+/* don't forget to update on major changes */
+#define PROJECT_FILE_VERSION 2
+
 typedef struct _Enventor_Data Enventor_Data;
 
 /**
@@ -56,12 +59,16 @@ typedef struct _Enventor_Data Enventor_Data;
  */
 struct _Project
 {
+   /* version of project file */
+   int version;
    /** The project name */
    Eina_Stringshare *name;
-   /** Eet_File descriptior of specific project file. */
-   Eet_File *pro;
+   /** project path */
+   Eina_Stringshare *pro_path;
    /** this is worrking file, all changes are happened in this file. */
    Eina_Stringshare *dev;
+   /** this is saved file. */
+   Eina_Stringshare *saved_edj;
 
    /** path where will be saved the develop edj file */
    Eina_Stringshare *develop_path;
@@ -318,6 +325,19 @@ Project *
 pm_project_open(const char *path) EINA_ARG_NONNULL(1);
 
 /**
+ * Internal save. Should be used after major changes that are affecting dev file.
+ *
+ * @param project The project what should be saved.
+ * @param style Style wich oject will be used. If style is NULL random one will
+ * be picked. In this case save will affect all groups.
+ * @param save Defines if saving into edje_edit is required or not.
+ *
+ * @ingroup ProjectManager
+ */
+void
+pm_save_to_dev(Project *project, Style *style, Eina_Bool save);
+
+/**
  * Save all changes in current project to the dev file.
  *
  * @param project The project what should be saved.
@@ -388,19 +408,6 @@ pm_project_build(Project *project, Build build_profile);
  */
 Eina_Bool
 pm_project_close(Project *project) EINA_ARG_NONNULL(1);
-
-/**
- * Mark project as changed
- *
- * Changed flag will be automatically dropped when project will be saved.
- * When closing project that is marked as changed, warning will be shown
- *
- * @param project A Project structure;
- *
- * @ingroup ProjectManager
- */
-void
-pm_project_changed(Project *project) EINA_ARG_NONNULL(1);
 
 /**
  * Get a meta data from Project.

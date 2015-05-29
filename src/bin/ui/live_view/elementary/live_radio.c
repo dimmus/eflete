@@ -76,6 +76,7 @@ _on_radio_text_check(void *data,
    Eina_List* radio_list = NULL, *item_list = NULL, *it;
    Eina_List *l = NULL;
    Eina_Bool all_checks = true;
+   const char *default_text;
 
    Prop_Data *pd = (Prop_Data *)data;
    Evas_Object *object = pd->live_object;
@@ -85,6 +86,11 @@ _on_radio_text_check(void *data,
 
    if (elm_check_state_get(obj))
      {
+        radio_obj = eina_list_data_get(radio_list);
+        default_text = elm_object_part_text_get(radio_obj, part_name);
+        if (default_text)
+          eina_hash_add(pd->prop_text.default_text, part_name,
+                        eina_stringshare_add(default_text));
         EINA_LIST_FOREACH(radio_list, l, radio_obj)
           elm_object_part_text_set(radio_obj, part_name, _("Text Example"));
 
@@ -101,8 +107,10 @@ _on_radio_text_check(void *data,
      }
    else
      {
+        default_text = eina_hash_find(pd->prop_text.default_text, part_name);
+        eina_hash_del(pd->prop_text.default_text, part_name, NULL);
         EINA_LIST_FOREACH(radio_list, l, radio_obj)
-          elm_object_part_text_set(radio_obj, part_name, "");
+          elm_object_part_text_set(radio_obj, part_name, default_text);
         if (elm_check_state_get(check)) elm_check_state_set(check, false);
      }
    eina_list_free(radio_list);
@@ -115,18 +123,20 @@ _radio_send_signal(void *data,
 {
    Evas_Object *radio_obj = NULL;
    Eina_List* radio_list = elm_box_children_get(data);
-   Eina_List *l = NULL;
 
    const char *name = evas_object_data_get(obj, SIGNAL_NAME);
    const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
 
-   EINA_LIST_FOREACH(radio_list, l, radio_obj)
+   EINA_LIST_FREE(radio_list, radio_obj)
      elm_layout_signal_emit(radio_obj, name, source);
 }
 
 Evas_Object *
-widget_radio_create(Evas_Object *parent, const char *class __UNUSED__, const char *style __UNUSED__)
+widget_radio_create(Evas_Object *parent, const Style *style)
 {
+   Eina_Stringshare *style_name;
+   standard_widget_name_parse(style->full_group_name, NULL, NULL, &style_name);
+
    Evas_Object *object, *rd, *rdg;
 
    object = elm_box_add(parent);
@@ -135,12 +145,15 @@ widget_radio_create(Evas_Object *parent, const char *class __UNUSED__, const cha
    RADIO_ADD(parent, rd, 1, NULL);
    elm_box_pack_end(object, rd);
    rdg = rd;
+   elm_object_style_set(rd, style_name);
    RADIO_ADD(parent, rd, 2, NULL);
    elm_radio_group_add(rd, rdg);
    elm_box_pack_end(object, rd);
+   elm_object_style_set(rd, style_name);
    RADIO_ADD(parent, rd, 3, NULL);
    elm_radio_group_add(rd, rdg);
    elm_box_pack_end(object, rd);
+   elm_object_style_set(rd, style_name);
 
    elm_radio_value_set(rdg, 2);
 
@@ -148,5 +161,6 @@ widget_radio_create(Evas_Object *parent, const char *class __UNUSED__, const cha
    evas_object_data_set(object, TEXT_FUNC, _on_radio_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, _radio_send_signal);
 
+   eina_stringshare_del(style_name);
    return object;
 }

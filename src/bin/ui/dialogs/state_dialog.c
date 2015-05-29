@@ -19,7 +19,7 @@
 
 #include "state_dialog.h"
 #include "common_macro.h"
-#include "string_macro.h"
+#include "string_common.h"
 #include "main_window.h"
 
 
@@ -59,8 +59,7 @@ _add_ok_clicked(void *data,
 {
    App_Data *ap = (App_Data *)data;
    Evas_Object *workspace = ap->workspace;
-   Evas_Object *glist = ui_block_state_list_get(ap);
-   Part *part = ui_states_list_part_get(glist);
+   Part *part = ui_states_list_part_get(ap->block.state_list);
    const char *str_name, *str_value;
    Eina_Stringshare *state;
    Eina_Bool result = false;
@@ -95,11 +94,10 @@ _add_ok_clicked(void *data,
 
    if (result)
      {
-        ap->project->current_style->isModify = true;
         state = eina_stringshare_printf("%s %.2f", str_name, atof(str_value));
-        ui_states_list_state_add(glist, state);
+        ui_states_list_state_add(ap->block.state_list, state);
         eina_stringshare_del(state);
-        project_changed();
+        project_changed(true);
      }
    ecore_job_add(_job_popup_close, ap);
 }
@@ -141,7 +139,6 @@ state_dialog_state_add(App_Data *ap)
 {
    Evas_Object *box, *item, *bt_yes, *bt_no;
    Evas_Object *item_dup;
-   Evas_Object *glist = NULL;
    Part *part = NULL;
    Eina_Stringshare *title = NULL;
    Eina_List *states = NULL, *l = NULL;
@@ -154,8 +151,7 @@ state_dialog_state_add(App_Data *ap)
         return NULL;
      }
 
-   glist = ui_block_state_list_get(ap);
-   part = ui_states_list_part_get(glist);
+   part = ui_states_list_part_get(ap->block.state_list);
    if (!part) return NULL;
 
    state_copy = false;
@@ -213,6 +209,8 @@ state_dialog_state_add(App_Data *ap)
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_show(ap->popup);
+   elm_object_focus_set(entry_name, true);
+
    eina_stringshare_del(title);
    return ap->popup;
 }
@@ -223,26 +221,24 @@ _del_ok_clicked(void *data,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   Evas_Object *state_list, *workspace;
+   Evas_Object *workspace;
    Part *part;
    Eina_Stringshare *state;
 
-   state_list = ui_block_state_list_get(ap);
    workspace = ap->workspace;
-   part = ui_states_list_part_get(state_list);
-   state = ui_states_list_selected_state_get(state_list);
+   part = ui_states_list_part_get(ap->block.state_list);
+   state = ui_states_list_selected_state_get(ap->block.state_list);
 
    char **arr = eina_str_split(state, " ", 2);
 
-   /*TODO: need to check the program, some program can use the given state.
-     If given state used in programs - show dialog window with the question:
-     'This state used in the program(s). Are you sure you want to delete
-     %state name%' and delete the programs or some params from the program */
+   TODO("need to check the program, some program can use the given state."
+        "If given state used in programs - show dialog window with the question:"
+        "'This state used in the program(s). Are you sure you want to delete"
+        "%state name%' and delete the programs or some params from the program")
    if (workspace_edit_object_part_state_del(workspace, part->name, arr[0], atof(arr[1])))
      {
-        ap->project->current_style->isModify = true;
-        ui_states_list_selected_state_del(state_list);
-        project_changed();
+        ui_states_list_selected_state_del(ap->block.state_list);
+        project_changed(true);
      }
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
@@ -255,7 +251,6 @@ Evas_Object *
 state_dialog_state_del(App_Data *ap)
 {
    Evas_Object *label, *bt_yes, *bt_no;
-   Evas_Object *state_list;
    Part *part;
    Eina_Stringshare *state, *title, *message;
 
@@ -265,10 +260,9 @@ state_dialog_state_del(App_Data *ap)
         return NULL;
      }
 
-   state_list = ui_block_state_list_get(ap);
-   part = ui_states_list_part_get(state_list);
+   part = ui_states_list_part_get(ap->block.state_list);
    if (!part) return NULL;
-   state = ui_states_list_selected_state_get(state_list);
+   state = ui_states_list_selected_state_get(ap->block.state_list);
 
    if (!state)
      {

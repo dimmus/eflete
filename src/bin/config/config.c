@@ -19,6 +19,7 @@
 
 #include "config.h"
 #include "shortcuts.h"
+#include "enventor_module.h"
 
 #define CONFIG_FILE        EFLETE_SETT_PATH"eflete.cfg"
 #define CONFIG_FILE_TMP    CONFIG_FILE".tmp"
@@ -137,6 +138,9 @@ config_init(App_Data *ap)
    EET_DATA_DESCRIPTOR_ADD_BASIC
       (edd_profile, Profile, "liveview.auto_fill_content",        liveview.auto_fill_content, EET_T_UCHAR);
 
+   /* enventor */
+   EET_DATA_DESCRIPTOR_ADD_BASIC
+      (edd_profile, Profile, "enventor.scale", enventor.scale, EET_T_DOUBLE);
    /* colors */
    EET_DATA_DESCRIPTOR_ADD_ARRAY
       (edd_profile, Profile, "colors",                            colors, edd_color);
@@ -210,7 +214,7 @@ _default_shortcuts_get()
    Shortcuts *shortcut;
 
 #define ADD_SHORTCUT(Name, Keycode, Modifiers, Descr, Holdable)              \
-   shortcut = calloc(1, sizeof(Shortcuts));                                  \
+   shortcut = mem_calloc(1, sizeof(Shortcuts));                                  \
    if (!shortcut) return shortcuts;                                          \
    shortcut->keyname = eina_stringshare_add_length(Name, strlen(Name));      \
    shortcut->keycode = Keycode;                                              \
@@ -230,7 +234,7 @@ _default_shortcuts_get()
    ADD_SHORTCUT("e", 26, CTRL, "export", false);
    ADD_SHORTCUT("q", 24, CTRL, "quit", false);
    ADD_SHORTCUT("z", 52, CTRL, "undo", false);
-   ADD_SHORTCUT("y", 30, CTRL, "redo", false);
+   ADD_SHORTCUT("y", 29, CTRL, "redo", false);
 
    ADD_SHORTCUT("1", 10, CTRL, "animator", false);
    ADD_SHORTCUT("2", 11, CTRL, "image_editor", false);
@@ -276,10 +280,11 @@ _profile_update(Profile *prof)
    if (prof->version > PROFILE_VERSION)
      return;
 
+   char *env_path = getenv("EFLETE_PROJECTS_DIR");
    prof->version                             = PROFILE_VERSION;
-   if (!prof->general.projects_folder)
-     prof->general.projects_folder           = (getenv("EFLETE_PROJECTS_DIR") != NULL) ?
-                                                strdup(getenv("EFLETE_PROJECTS_DIR")):
+   if ((!prof->general.projects_folder) || (env_path))
+     prof->general.projects_folder           =  env_path != NULL ?
+                                                strdup(env_path):
                                                 strdup(getenv("HOME"));
    if (!prof->shortcuts)
      prof->shortcuts                         = _default_shortcuts_get();
@@ -298,6 +303,7 @@ _profile_default_new(void)
    prof->workspace.groupedit_handler_size    = 7;
    prof->workspace.rulers.visible            = true;
    prof->workspace.rulers.mode               = ABS_REL_SCALE;
+   prof->enventor.scale                      = 1;
 
    prof->colors[WORKSPACE].r           = 255;
    prof->colors[WORKSPACE].g           = 255;
@@ -363,6 +369,9 @@ config_load(App_Data *ap)
 
    shortcuts_profile_load(ap, profile_get());
    shortcuts_main_add(ap);
+#ifdef HAVE_ENVENTOR
+   enventor_object_profile_load(ap->enventor, profile_get());
+#endif /* HAVE_ENVENTOR */
 }
 
 Eina_Bool

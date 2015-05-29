@@ -67,7 +67,6 @@ EFLETE_TEST(ui_states_list_selected_state_del_test_p)
    const char *edj = "./edj_build/radio.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
-   int count_before, count_after;
    Eina_File *mmap_file = NULL;
 
    elm_init(0,0);
@@ -85,12 +84,8 @@ EFLETE_TEST(ui_states_list_selected_state_del_test_p)
    eoi = elm_genlist_item_next_get(eoi);
    elm_genlist_item_selected_set(eoi, EINA_TRUE);
 
-   count_before = elm_genlist_items_count(gl_states);
    ck_assert_msg(ui_states_list_selected_state_del(gl_states) == EINA_TRUE,
                  ".");
-   count_after = elm_genlist_items_count(gl_states);
-   ck_assert_msg(count_before - 1 == count_after,
-                 "New state was deleted incorrectly.");
 
    elm_theme_extension_del(NULL, EFLETE_THEME);
 

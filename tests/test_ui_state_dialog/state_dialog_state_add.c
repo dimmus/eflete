@@ -82,7 +82,6 @@ EFLETE_TEST (state_dialog_state_add_test_p)
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
    state_list = ui_states_list_add(app_data->win);
    ui_states_list_data_set(state_list, style, part);
-   ui_block_state_list_set(app_data, state_list);
 
    popup = state_dialog_state_add(app_data);
    ck_assert_msg(popup != NULL, "Failed to create state dialog");

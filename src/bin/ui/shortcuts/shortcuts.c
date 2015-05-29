@@ -145,13 +145,10 @@ _##FUNC##_part_add_cb(App_Data *app) \
    char name[9]; \
    _random_name_generate(name, 9); \
    if (workspace_edit_object_part_add(workspace, name, TYPE, NULL)) \
-     { \
-       ui_widget_list_part_add(widget_list, style, name); \
-       style->isModify = true; \
-     } \
+     ui_widget_list_part_add(widget_list, style, name); \
    history_diff_add(style->obj, PART_TARGET, ADD, name); \
    live_view_widget_style_set(app->live_view, app->project, style); \
-   project_changed(); \
+   project_changed(true); \
    return true; \
 }
 
@@ -166,9 +163,8 @@ PART_ADD(EDJE_PART_TYPE_PROXY, proxy)
 PART_ADD(EDJE_PART_TYPE_GROUP, group)
 PART_ADD(EDJE_PART_TYPE_BOX, box)
 
-/* this one will delete part or style or layout or state.
-   TODO: move this code or some of it's part to Connector,
- */
+/* this one will delete part or style or layout or state.  */
+TODO("move this code or some of it's part to Connector")
 Eina_Bool
 _item_delete_cb(App_Data *app)
 {
@@ -212,10 +208,9 @@ _item_delete_cb(App_Data *app)
      }
 
    /* if state list is in focus */
-   nf = ui_block_state_list_get(app);
-   if ((nf) && (elm_object_focus_get(nf)))
+   if (elm_object_focus_get(app->block.state_list))
      {
-        evas_object_smart_callback_call(nf, "stl,state,del", NULL);
+        evas_object_smart_callback_call(app->block.state_list, "stl,state,del", NULL);
         return true;
      }
 
@@ -586,7 +581,7 @@ static Function_Set _sc_func_set_init[] =
      {"part.add.spacer", _spacer_part_add_cb},
      {"part.add.group", _group_part_add_cb},
      {"part.add.box", _box_part_add_cb},
-     {"item.delete", _item_delete_cb},
+/*   {"item.delete", _item_delete_cb}, this callback works unpredictable because of focus */
      {"separate_mode", _separate_mode_change_cb},
      {"style.create", _new_style_create_cb},
      {"style_editor", _style_editor_open_cb},
@@ -750,11 +745,11 @@ shortcuts_profile_load(App_Data *ap, Profile *profile)
 
    EINA_LIST_FOREACH(profile->shortcuts, l, sc)
      {
-        key = malloc(sizeof(Key_Pair));
+        key = mem_malloc(sizeof(Key_Pair));
         key->keycode = sc->keycode;
         key->modifiers = sc->modifiers;
 
-        sc_func = malloc(sizeof(Shortcut_Function));
+        sc_func = mem_malloc(sizeof(Shortcut_Function));
         sc_func->keyname = sc->keyname;
         sc_func->keycode = sc->keycode;
         sc_func->modifiers = sc->modifiers;

@@ -20,14 +20,18 @@
 #include "live_elementary_widgets.h"
 
 Evas_Object *
-widget_calendar_create(Evas_Object *parent, const char *class __UNUSED__, const char *style __UNUSED__)
+widget_calendar_create(Evas_Object *parent, const Style *style)
 {
+   Eina_Stringshare *style_name;
+   standard_widget_name_parse(style->full_group_name, NULL, NULL, &style_name);
+
    Evas_Object *object = elm_calendar_add(parent);
 
    /* Structure containing a calendar date and time
       broken down into its components (see "time.h").
       {sec, min, hour, day of the month, month, year since 1900,
       days since Sunday, days since January 1, Daylight Saving Time flag} */
+   TODO("fix warnings on windows")
    struct tm saturday = {0, 0, 0, 0, 1, 114, 6, -1, 0, 0, NULL};
    elm_calendar_mark_add(object, "checked", &saturday,
                                 ELM_CALENDAR_WEEKLY);
@@ -36,5 +40,8 @@ widget_calendar_create(Evas_Object *parent, const char *class __UNUSED__, const 
    evas_object_data_set(object, TEXT_FUNC, on_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, send_signal);
 
+   elm_object_style_set(object, style_name);
+
+   eina_stringshare_del(style_name);
    return object;
 }

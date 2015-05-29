@@ -37,7 +37,7 @@
 #include "ui_signal_list.h"
 #include "ui_block.h"
 #include "notify.h"
-#include "string_macro.h"
+#include "string_common.h"
 
 #include "part_dialog.h"
 #include "state_dialog.h"
@@ -442,10 +442,12 @@ project_save();
 /**
  * Mark the opened project as changed, and activate "Save project" button.
  *
+ * @param save defines if saving into edje edit is required or not
+ *
  * @ingroup Window
  */
 void
-project_changed(void);
+project_changed(Eina_Bool save);
 
 /**
  * Requesting to change project (need to close it, to hide blocks, unset data,
@@ -461,19 +463,6 @@ project_changed(void);
  */
 Eina_Bool
 project_close(App_Data *ap);
-
-/**
- * Dialog with qustion what do with openned project.
- *
- * @param ap The Eflete App_Data.
- * @param msg The message.
- *
- * @return EINA_TRUE on success, otherwise EINA_FALSE.
- *
- * @ingroup Window
- */
-Eina_Bool
-project_close_request(App_Data *ap, const char *msg);
 
 /**
  * Export project as develop edj file.

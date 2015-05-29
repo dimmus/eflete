@@ -189,8 +189,12 @@ _on_click(void *data,
 }
 
 Evas_Object *
-widget_notify_create(Evas_Object *parent, const char *class, const char *style __UNUSED__)
+widget_notify_create(Evas_Object *parent, const Style *style)
 {
+   Eina_Stringshare *class;
+   Eina_Stringshare *style_name;
+   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+
    Evas_Object *content, *noti, *bx, *btn, *object = NULL;
    double horizontal, vertical;
 
@@ -201,6 +205,7 @@ widget_notify_create(Evas_Object *parent, const char *class, const char *style _
    noti = elm_notify_add(btn);
    _notify_orient_get(class, &horizontal, &vertical);
    elm_notify_align_set(noti, horizontal, vertical);
+   elm_notify_allow_events_set(noti, false);
    elm_notify_timeout_set(noti, 3);
    BOX_ADD(parent, bx, false, false);
    elm_object_content_set(noti, bx);
@@ -211,11 +216,14 @@ widget_notify_create(Evas_Object *parent, const char *class, const char *style _
 
    object = elm_box_add(parent);
    elm_box_pack_end(object, btn);
-   elm_box_pack_end(object, noti);
 
    evas_object_data_set(object, SWALLOW_FUNC, _on_notify_swallow_check);
    evas_object_data_set(object, TEXT_FUNC, _on_notify_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, _notify_send_signal);
 
+   elm_object_style_set(noti, style_name);
+
+   eina_stringshare_del(class);
+   eina_stringshare_del(style_name);
    return object;
 }

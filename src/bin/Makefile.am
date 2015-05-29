@@ -7,7 +7,7 @@ bin_PROGRAMS = eflete
 noinst_LIBRARIES = libete.a
 libete_a_SOURCES = \
 eflete.c \
-alloc/alloc.c \
+common/string_common.c \
 project_manager/widget_manager.c \
 project_manager/project_manager.c \
 logger/logger.c \
@@ -68,17 +68,29 @@ ui/live_view/elementary/live_button.c \
 ui/live_view/elementary/live_calendar.c \
 ui/live_view/elementary/live_check.c \
 ui/live_view/elementary/live_clock.c \
+ui/live_view/elementary/live_ctxpopup.c \
+ui/live_view/elementary/live_colorselector.c \
+ui/live_view/elementary/live_datetime.c \
+ui/live_view/elementary/live_entry.c \
+ui/live_view/elementary/live_frame.c \
 ui/live_view/elementary/live_gengrid.c \
 ui/live_view/elementary/live_genlist.c \
 ui/live_view/elementary/live_label.c \
+ui/live_view/elementary/live_layout.c \
 ui/live_view/elementary/live_list.c \
+ui/live_view/elementary/live_map.c \
+ui/live_view/elementary/live_multibuttonentry.c \
 ui/live_view/elementary/live_notify.c \
 ui/live_view/elementary/live_panel.c \
 ui/live_view/elementary/live_panes.c \
+ui/live_view/elementary/live_popup.c \
 ui/live_view/elementary/live_radio.c \
 ui/live_view/elementary/live_scroller.c \
+ui/live_view/elementary/live_segment_control.c \
 ui/live_view/elementary/live_separator.c \
+ui/live_view/elementary/live_slider.c \
 ui/live_view/elementary/live_spinner.c \
+ui/live_view/elementary/live_progressbar.c \
 ui/live_view/elementary/live_toolbar.c \
 ui/live_view/elementary/live_naviframe.c \
 ui/notification/notify.c
@@ -110,7 +122,6 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/bin/ui/wizard \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
-@ENVENTOR_CFLAGS@ \
 @EFLETE_DEFINE@
 
 libete_a_CPPFLAGS = ${eflete_CPPFLAGS} \
@@ -121,5 +132,9 @@ libete.a \
 @EFL_LIBS@ \
 @ELEMENTARY_LIBS@ \
 ${top_builddir}/src/lib/libewe.la \
-@ENVENTOR_LIBS@ \
 @LTLIBINTL@
+
+if HAVE_ENVENTOR
+eflete_CPPFLAGS += @ENVENTOR_CFLAGS@
+eflete_LDADD += @ENVENTOR_LIBS@
+endif

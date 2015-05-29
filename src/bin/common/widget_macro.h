@@ -24,6 +24,28 @@
 
 #define FS_TITLE "fs_title"
 
+TODO("see large comment below")
+/**
+ * ITEM_ADD use old kind of adding items and style that looks like
+ * Add layout with name "eflete/property/item/swallow".
+ * This is old kind of layout that is commonly used across whole project.
+ * We are moving to new kind of adding items where styles looks more like this:
+ * "elm/layout/property/swallow".
+ *
+ * So, when refactoring and moving will be done, please delete old ITEM_ADD and
+ * rename NEW_ITEM_ADD to ITEM_ADD.
+ *
+ * Currently this macro is used in live view prop, but can be also used in
+ * property, and everywhere where special item layouts are required.
+ */
+#define LAYOUT_PROP_ADD(PARENT, NAME, GROUP, STYLE) \
+   item = elm_layout_add(PARENT); \
+   elm_layout_theme_set(item, "layout", GROUP, STYLE); \
+   evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0); \
+   evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0); \
+   elm_layout_text_set(item, NULL, NAME); \
+   evas_object_show(item);
+
 #define ITEM_ADD(PARENT, ITEM, TEXT, STYLE) \
    ITEM = elm_layout_add(PARENT); \
    evas_object_size_hint_weight_set(ITEM, EVAS_HINT_EXPAND, 0.0); \

@@ -150,6 +150,9 @@ struct _Profile
       Eina_Bool   auto_fill_content; /**< shows if live view automatically fills
                                           all contents in live object */
    } liveview;
+   struct {
+      double scale; /**< scale of the edc source code in enventor mode*/
+   } enventor;
    Profile_Color colors[LAST]; /**< colors */
    Eina_List     *shortcuts; /**< user defined or default shortcuts */
 };

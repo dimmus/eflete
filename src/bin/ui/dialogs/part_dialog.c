@@ -18,7 +18,7 @@
  */
 
 #include "part_dialog.h"
-#include "string_macro.h"
+#include "string_common.h"
 
 #define ENTRY_IS_EMPTY \
    const char *str = elm_entry_entry_get(entry); \
@@ -65,17 +65,13 @@ _cancel_clicked(void *data,
    ENTRY_IS_EMPTY \
    const char *name = elm_entry_entry_get(entry); \
    if (workspace_edit_object_part_add(workspace, name, TYPE, DATA)) \
-     { \
-       ui_widget_list_part_add(widget_list, style, name); \
-       style->isModify = true; \
-     } \
+     ui_widget_list_part_add(widget_list, style, name); \
    evas_object_del(ap->popup); \
    history_diff_add(style->obj, PART_TARGET, ADD, name); \
    ap->popup = NULL; \
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false); \
    live_view_widget_style_set(ap->live_view, ap->project, style); \
-   edje_edit_without_source_save(style->obj, true); \
-   project_changed();
+   project_changed(true);
 
 static void
 _swallow_add_on_click(void *data,
@@ -243,6 +239,8 @@ part_dialog_add(App_Data *ap)
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
 
    evas_object_show(ap->popup);
+   elm_object_focus_set(entry, true);
+
    eina_stringshare_del(title);
    return ap->popup;
 }

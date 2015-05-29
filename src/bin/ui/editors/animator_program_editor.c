@@ -354,15 +354,19 @@ _on_##sub##_##value##_change(void *data, \
 static Evas_Object * \
 _prop_item_##sub##_##value##_add(Evas_Object *parent, \
                                  const char *tooltip, \
-                                 Evas_Smart_Cb callback, \
+                                 Evas_Smart_Cb changed_callback, \
+                                 Evas_Smart_Cb unfocused_callback, \
                                  void* cb_data) \
 { \
    Evas_Object *item, *entry; \
    ITEM_ADD_(parent, item, text, "editor") \
    EWE_ENTRY_ADD(parent, entry, true) \
    REGEX_SET(entry, regex); \
-   elm_object_tooltip_text_set(entry, tooltip); \
-   evas_object_smart_callback_add(entry, "changed,user", callback, cb_data); \
+   if (tooltip) \
+     elm_object_tooltip_text_set(entry, tooltip); \
+   evas_object_smart_callback_add(entry, "changed,user", changed_callback, cb_data); \
+   if (unfocused_callback) \
+     evas_object_smart_callback_add(entry, "unfocused", unfocused_callback, cb_data); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
    return item; \
 }
@@ -398,18 +402,6 @@ static void _prop_progs_update(Program_Editor *prog_edit);
 ITEM_1ENTRY_PROG_CREATE(_("signal"), program, signal, EDJE_NAME_REGEX)
 ITEM_1ENTRY_PROG_CREATE(_("source"), program, source, EDJE_NAME_REGEX)
 ITEM_1ENTRY_ADD(_("name"), program, name, EDJE_NAME_REGEX)
-
-static int
-_sort_cb(const void *d1, const void *d2)
-{
-   const char *txt = d1;
-   const char *txt2 = d2;
-
-   if (!txt) return(1);
-   if (!txt2) return(-1);
-
-   return(strcmp(txt, txt2));
-}
 
 static void
 _special_properties_hide(Program_Editor *prog_edit)
@@ -447,15 +439,26 @@ _on_program_name_change(void *data,
    const char *value = elm_entry_entry_get(obj);
    Eina_Bool res = edje_edit_program_name_set(prop.style->obj, prop.program,
                                               value);
-   if (!res)
-     {
-        NOTIFY_WARNING(_("The entered data is not valid!"))
-           return;
-     }
+   if (!res) return;
+
    evas_object_smart_callback_call(prog_edit->editor_layout,
                                    NAME_CHANGED_CB,
                                    (void *) value);
    prop.program = value;
+}
+
+static void
+_on_program_name_unfocused(void *data,
+                           Evas_Object *obj,
+                           void *ei __UNUSED__)
+{
+   Program_Editor *prog_edit = (Program_Editor*)data;
+   const char *value = elm_entry_entry_get(obj);
+   if (!strcmp(value, prop.program)) return;
+
+   NOTIFY_WARNING(_("Program with name \"%s\" already exist or is invalid. Name changed back to \"%s\""),
+                  value, prop.program);
+   elm_entry_entry_set(obj, prop.program);
 }
 
 static void
@@ -544,6 +547,7 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
 {
    Evas_Object *box = NULL;
    char *script = NULL;
+   char *script_markup = NULL;
    Evas_Object *entry = NULL;
 
    box = elm_object_part_content_get(prop.script, "elm.swallow.content");
@@ -551,9 +555,10 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
 
    script = edje_edit_script_program_get(prop.style->obj, prop.program);
    entry = eina_list_nth(childs, 0);
-   script = elm_entry_utf8_to_markup(script);
-   ewe_entry_entry_set(entry, script);
+   script_markup = elm_entry_utf8_to_markup(script);
+   ewe_entry_entry_set(entry, script_markup);
    free(script);
+   free(script_markup);
    eina_list_free(childs);
 }
 
@@ -651,7 +656,7 @@ _trans_entries_set(Program_Editor *prog_edit)
            TRANS_VAL_UPDATE(value2, transition.entry3);
            break;
         }
-      case EDJE_TWEEN_MODE_CUBIC_BEZIER: // TODO: implement
+      case EDJE_TWEEN_MODE_CUBIC_BEZIER: TODO("implement")
       case EDJE_TWEEN_MODE_NONE:
       default:
         {
@@ -1249,7 +1254,7 @@ _after_item_add(Program_Editor *prog_edit, const char *name)
 
    posible_afters_list = eina_list_sort(posible_afters_list,
                                         eina_list_count(posible_afters_list),
-                                        _sort_cb);
+                                        sort_cb);
    EWE_COMBOBOX_ADD(element_box, combobox);
    EINA_LIST_FOREACH(posible_afters_list, l, after_name)
      ewe_combobox_item_add(combobox, after_name);
@@ -1320,7 +1325,7 @@ _target_item_add(Program_Editor *prog_edit, const char *name)
 
    posible_targets_list = eina_list_sort(posible_targets_list,
                                          eina_list_count(posible_targets_list),
-                                         _sort_cb);
+                                         sort_cb);
    EWE_COMBOBOX_ADD(element_box, combobox);
    EINA_LIST_FOREACH(posible_targets_list, l, target_name)
      ewe_combobox_item_add(combobox, target_name);
@@ -1407,7 +1412,7 @@ _prop_item_program_transition_add(Evas_Object *parent,
    elm_box_pack_end(box, transition.layout2);
    elm_box_pack_end(box, transition.layout3);
 
-   elm_object_tooltip_text_set(item, tooltip);
+   if (tooltip) elm_object_tooltip_text_set(item, tooltip);
    elm_object_part_content_set(item, "elm.swallow.content", box);
    return item;
 }
@@ -1468,7 +1473,7 @@ _prop_item_program_action_add(Evas_Object *parent,
    evas_object_smart_callback_add(action.combobox, "selected",
                                   _on_combobox_action_sel, prog_edit);
 
-   elm_object_tooltip_text_set(item, tooltip);
+   if (tooltip) elm_object_tooltip_text_set(item, tooltip);
    elm_box_pack_end(box, action.combobox);
    elm_box_pack_end(box, action.layout1);
    elm_box_pack_end(box, action.layout2);
@@ -1556,7 +1561,7 @@ _prop_item_program_after_update(Program_Editor *prog_edit)
    entrys_box = eina_list_nth(childs, 0);
    elm_box_clear(entrys_box);
 
-   afters_list = eina_list_sort(afters_list, eina_list_count(afters_list), _sort_cb);
+   afters_list = eina_list_sort(afters_list, eina_list_count(afters_list), sort_cb);
    EINA_LIST_FOREACH(afters_list, l, after_name)
      _after_item_add(prog_edit, after_name);
    eina_list_free(childs);
@@ -1611,7 +1616,7 @@ _prop_item_program_targets_update(Program_Editor *prog_edit)
    entrys_box = eina_list_nth(childs, 0);
    elm_box_clear(entrys_box);
 
-   targets_list = eina_list_sort(targets_list, eina_list_count(targets_list), _sort_cb);
+   targets_list = eina_list_sort(targets_list, eina_list_count(targets_list), sort_cb);
    EINA_LIST_FOREACH(targets_list, l, target_name)
      _target_item_add(prog_edit, target_name);
    eina_list_free(childs);
@@ -1685,9 +1690,18 @@ _prop_progs_add(Evas_Object *parent, Program_Editor *prog_edit)
    BOX_ADD(parent, box, false, false);
    evas_object_size_hint_align_set(box, 0.5, 0);
 
-   prop.name = _prop_item_program_name_add(box, _("Unique name of program "), _on_program_name_change, prog_edit);
-   prop.signal = _prop_item_program_signal_add(box, _("signal"), _on_program_signal_change, prog_edit);
-   prop.source = _prop_item_program_source_add(box, _("source"), _on_program_source_change, prog_edit);
+   prop.name = _prop_item_program_name_add(box, _("Unique name of program "),
+                                           _on_program_name_change,
+                                           _on_program_name_unfocused,
+                                           prog_edit);
+   prop.signal = _prop_item_program_signal_add(box, _("signal"),
+                                               _on_program_signal_change,
+                                               NULL,
+                                               prog_edit);
+   prop.source = _prop_item_program_source_add(box, _("source"),
+                                               _on_program_source_change,
+                                               NULL,
+                                               prog_edit);
    prop.in.item = _prop_item_program_in_add(box, prog_edit, _("in"));
    action.item = _prop_item_program_action_add(box, prog_edit, _("action"));
    transition.item = _prop_item_program_transition_add(box, prog_edit, _("transition"));

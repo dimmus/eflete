@@ -50,7 +50,6 @@ _on_button_add_clicked(void *data,
    Evas_Object *entry = evas_object_data_get(ap->popup, "ENTRY");
    Evas_Object *combobox = evas_object_data_get(ap->popup, "COMBOBOX");
    Part *part = evas_object_data_get(ap->popup, "PART");
-   Style *style = ap->project->current_style;
    const char *name = elm_entry_entry_get(entry);
    Ewe_Combobox_Item *item = NULL;
 
@@ -82,8 +81,7 @@ _on_button_add_clicked(void *data,
      }
 
    workspace_edit_object_recalc(ap->workspace);
-   style->isModify = true;
-   project_changed();
+   project_changed(false);
    ecore_job_add(_job_popup_close, ap);
 }
 
@@ -178,11 +176,12 @@ item_dialog_add(App_Data *ap, Part *part)
    ewe_combobox_select_item_set(combobox_source, 0);
 
    collections = edje_file_collection_list(ap->project->dev);
+   collections = eina_list_sort(collections, eina_list_count(collections), sort_cb);
    EINA_LIST_FOREACH(collections, l, group)
-   {
-      if (group != ap->project->current_style->full_group_name)
-        ewe_combobox_item_add(combobox_source, group);
-   }
+     {
+        if (group != ap->project->current_style->full_group_name)
+          ewe_combobox_item_add(combobox_source, group);
+     }
    edje_file_collection_list_free(collections);
 
    elm_object_part_content_set(item, "elm.swallow.content", combobox_source);
@@ -205,5 +204,6 @@ item_dialog_add(App_Data *ap, Part *part)
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_show(ap->popup);
+   elm_object_focus_set(entry, true);
    return ap->popup;
 }

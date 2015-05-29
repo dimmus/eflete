@@ -22,13 +22,12 @@
 
 #include <Evas.h>
 #include <Elementary.h>
+#include "common_macro.h"
 
+TODO("THIS PART IS STILL BEING DEVELOPED. MAKE t, l, r, b and cc parts please!")
 /**
  * @defgroup Highlight Highlight
  * @ingroup Workspace
- *
- * TODO: THIS PART IS STILL BEING DEVELOPED.
- * TODO: "MAKE t, l, r, b and cc parts please!"
  *
  * This highlight is needed for highlighting the current part, that was
  * selected by user in the list of parts that is on the left part

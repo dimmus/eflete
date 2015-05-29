@@ -25,7 +25,7 @@ _on_gengrid_swallow_check(void *data,
                           void *ei __UNUSED__)
 {
    Evas_Object *check = NULL, *item_ch, *ch;
-   Eina_List *item_list = NULL, *it;
+   Eina_List *item_list = NULL;
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
@@ -38,7 +38,7 @@ _on_gengrid_swallow_check(void *data,
      {
         part_list =  eina_list_append(part_list, part_name);
         item_list = elm_box_children_get(pd->prop_swallow.swallows);
-        EINA_LIST_FOREACH(item_list, it, item_ch)
+        EINA_LIST_FREE(item_list, item_ch)
           {
              ch = elm_object_part_content_get(item_ch, "info");
              if (elm_check_state_get(ch) == false)
@@ -56,7 +56,7 @@ _on_gengrid_swallow_check(void *data,
    evas_object_data_set(object, SWALLOW_LIST, part_list);
 
    Elm_Object_Item *item = NULL;
-   item = elm_gengrid_first_item_get(data);
+   item = elm_gengrid_first_item_get(object);
    while (item)
      {
         elm_gengrid_item_update(item);
@@ -70,7 +70,7 @@ _on_gengrid_text_check(void *data,
                        void *ei __UNUSED__)
 {
    Evas_Object *check = NULL, *item_ch, *ch;
-   Eina_List *item_list = NULL, *it;
+   Eina_List *item_list = NULL;
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
@@ -83,7 +83,7 @@ _on_gengrid_text_check(void *data,
      {
         part_list =  eina_list_append(part_list, part_name);
         item_list = elm_box_children_get(pd->prop_text.texts);
-        EINA_LIST_FOREACH(item_list, it, item_ch)
+        EINA_LIST_FREE(item_list, item_ch)
           {
              ch = elm_object_part_content_get(item_ch, "info");
              if (elm_check_state_get(ch) == false)
@@ -101,7 +101,7 @@ _on_gengrid_text_check(void *data,
    evas_object_data_set(object, TEXT_LIST, part_list);
 
    Elm_Object_Item *item = NULL;
-   item = elm_gengrid_first_item_get(data);
+   item = elm_gengrid_first_item_get(object);
    while (item)
      {
         elm_gengrid_item_update(item);
@@ -171,7 +171,7 @@ _grid_content_get(void *data __UNUSED__,
 }
 
 static Evas_Object *
-_create_gengrid(Evas_Object *obj, const char *style)
+_create_gengrid(Evas_Object *obj, Eina_Bool item_style, const char *style)
 {
    Elm_Gengrid_Item_Class *ic = NULL;
    int i;
@@ -183,14 +183,27 @@ _create_gengrid(Evas_Object *obj, const char *style)
    evas_object_size_hint_align_set(grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(grid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
-   if (!ic)
+   ic = elm_gengrid_item_class_new();
+   ic->func.text_get = _grid_text_get;
+   ic->func.content_get = _grid_content_get;
+   ic->func.state_get = NULL;
+   ic->func.del = NULL;
+
+   if (item_style)
      {
-        ic = elm_gengrid_item_class_new();
+        char **c;
+
+        c = eina_str_split(style, "/", 2);
+        ic->item_style = strdup(c[0]);
+        elm_object_style_set(grid, c[1]);
+
+        free(c[0]);
+        free(c);
+     }
+   else
+     {
         ic->item_style = strdup(style);
-        ic->func.text_get = _grid_text_get;
-        ic->func.content_get = _grid_content_get;
-        ic->func.state_get = NULL;
-        ic->func.del = NULL;
+        elm_object_style_set(grid, style);
      }
 
    for (i = 0; i < 40; i++)
@@ -203,15 +216,18 @@ _create_gengrid(Evas_Object *obj, const char *style)
 /*********** GEN GRID CREATING FUNCTIONS ****END*********/
 
 Evas_Object *
-widget_gengrid_create(Evas_Object *parent, const char *class, const char *style)
+widget_gengrid_create(Evas_Object *parent, const Style *style)
 {
+   Eina_Stringshare *class;
+   Eina_Stringshare *style_name;
+   Eina_Bool item_style;
+   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+
    Evas_Object *object = NULL;
    Eina_List *swallow_list = NULL, *text_list = NULL;
 
-   if (strcmp(class, "item") == 0)
-     object = _create_gengrid(parent, style);
-   else
-     object = _create_gengrid(parent, "default");
+   item_style = strcmp(class, "item") == 0;
+   object = _create_gengrid(parent, item_style, style_name);
 
    evas_object_data_set(object, SWALLOW_FUNC, _on_gengrid_swallow_check);
    evas_object_data_set(object, TEXT_FUNC, _on_gengrid_text_check);
@@ -220,5 +236,7 @@ widget_gengrid_create(Evas_Object *parent, const char *class, const char *style)
    evas_object_data_set(object, SWALLOW_LIST, swallow_list);
    evas_object_data_set(object, TEXT_LIST, text_list);
 
+   eina_stringshare_del(class);
+   eina_stringshare_del(style_name);
    return object;
 }

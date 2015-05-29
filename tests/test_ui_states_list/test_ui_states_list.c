@@ -30,7 +30,6 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, ui_states_list_data_set_test_n3);
    tcase_add_test(tcase, ui_states_list_data_set_test_n4);
    tcase_add_test(tcase, ui_states_list_data_set_test_n5);
-   tcase_add_test(tcase, ui_states_list_data_set_test_n6);
    tcase_add_test(tcase, ui_states_list_part_get_test_p1);
    tcase_add_test(tcase, ui_states_list_part_get_test_p2);
    tcase_add_test(tcase, ui_states_list_part_get_test_n1);

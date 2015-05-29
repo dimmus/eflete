@@ -20,6 +20,8 @@
 #include "image_editor.h"
 #include "main_window.h"
 
+TODO("Rename this file to image_manager")
+
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
 #define IMG_EDIT_KEY "image_editor_key"
@@ -587,16 +589,16 @@ _on_image_done(void *data,
 {
    Item *it = NULL;
    Elm_Object_Item *item = NULL;
-   Evas_Object *edje_edit_obj = NULL;
    const Eina_List *images, *l;
    const char *selected = event_info;
+   Style *style = NULL;
 
    Image_Editor *img_edit = (Image_Editor *)data;
 
    if ((!selected) || (!strcmp(selected, "")))
      goto del;
 
-   GET_OBJ(img_edit->pr, edje_edit_obj);
+   GET_STYLE(img_edit->pr, style);
    images = elm_fileselector_selected_paths_get(obj);
 
    EINA_LIST_FOREACH(images, l, selected)
@@ -611,17 +613,15 @@ _on_image_done(void *data,
              WIN_NOTIFY_ERROR(obj, _("Unable to add folder"))
              continue;
           }
-        if (edje_edit_image_add(edje_edit_obj, selected))
+        if (edje_edit_image_add(style->obj, selected))
           {
-             edje_edit_without_source_save(edje_edit_obj, true);
-             it = _image_editor_gengrid_item_data_create(edje_edit_obj,
+             pm_save_to_dev(img_edit->pr, style, false);
+             it = _image_editor_gengrid_item_data_create(style->obj,
                                                          ecore_file_file_get(selected));
              item = elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
                                             img_edit->group_items.linked,
                                             _grid_sel, img_edit);
              elm_gengrid_item_selected_set(item, true);
-             if (!elm_gengrid_multi_select_get(img_edit->gengrid))
-               elm_gengrid_multi_select_set(img_edit->gengrid, true);
           }
      }
 del:
@@ -656,11 +656,14 @@ _on_button_add_clicked_cb(void *data,
                           Evas_Object *obj __UNUSED__,
                           void *event_info __UNUSED__)
 {
-   Evas_Object *fs;
+   Evas_Object *fs, *ic;
    Image_Editor *edit = data;
 
    edit->fs_win  = mw_add(NULL, NULL);
    mw_title_set(edit->fs_win, "Add image to the library");
+   ic = elm_icon_add(edit->fs_win);
+   elm_icon_standard_set(ic, "folder");
+   mw_icon_set(edit->fs_win, ic);
    evas_object_show(edit->fs_win);
 
    FILESELECTOR_ADD(fs, edit->fs_win, _on_image_done, data);
@@ -668,8 +671,6 @@ _on_button_add_clicked_cb(void *data,
    elm_fileselector_mime_types_filter_append(fs, "*", _("All files"));
    elm_fileselector_multi_select_set(fs, true);
    elm_win_inwin_content_set(edit->fs_win, fs);
-
-   project_changed();
 }
 
 static void
@@ -685,14 +686,14 @@ _on_button_delete_clicked_cb(void *data,
    Eina_List * in_use = NULL, *used_in = NULL;
    char *name;
    Edje_Part_Image_Use *item;
-   Evas_Object *edje_edit_obj = NULL;
+   Style *style = NULL;
    char buf[BUFF_MAX];
    int symbs = 0;
    int images_to_del = 0;
 
    if (!img_edit->gengrid) return;
 
-   GET_OBJ(img_edit->pr, edje_edit_obj);
+   GET_STYLE(img_edit->pr, style);
 
    grid_list = (Eina_List *)elm_gengrid_selected_items_get(img_edit->gengrid);
    if (!grid_list) return;
@@ -702,10 +703,9 @@ _on_button_delete_clicked_cb(void *data,
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
         it = elm_object_item_data_get(grid_item);
-        if (edje_edit_image_del(edje_edit_obj, it->image_name))
+        if (edje_edit_image_del(style->obj, it->image_name))
           {
-             edje_edit_without_source_save(edje_edit_obj, false);
-             project_changed();
+             project_changed(false);
              deleted++;
              elm_object_item_del(grid_item);
           }
@@ -718,11 +718,11 @@ _on_button_delete_clicked_cb(void *data,
           }
      }
    if (notdeleted < images_to_del)
-     project_changed();
+     project_changed(false);
    if (notdeleted == 1)
      {
         name = eina_list_nth(in_use, 0);
-        used_in = edje_edit_image_usage_list_get(edje_edit_obj, name, false);
+        used_in = edje_edit_image_usage_list_get(style->obj, name, false);
         snprintf(buf, BUFF_MAX, _("Image is used in:"));
         symbs = strlen(buf);
         EINA_LIST_FOREACH(used_in, l, item)
@@ -730,7 +730,7 @@ _on_button_delete_clicked_cb(void *data,
              snprintf(buf + symbs, BUFF_MAX - symbs, _("<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"),
                       item->group, item->part, item->state.name, item->state.value);
              symbs+= strlen(name);
-             break; //TODO: remove this break after warning style remake
+             break; TODO("remove this break after warning style remake")
           }
           edje_edit_image_usage_list_free(used_in);
         NOTIFY_WARNING("%s", buf);
@@ -812,7 +812,6 @@ _on_button_ok_clicked_cb(void *data,
                                      (Eina_List *) names);
 
    _image_editor_del(img_edit);
-
 }
 
 static void
@@ -901,7 +900,7 @@ _image_editor_gengrid_group_items_add(Image_Editor *img_edit)
    img_edit->group_items.linked =
       elm_gengrid_item_append(img_edit->gengrid, ggic,
       eina_stringshare_add(_("<b>Linked</b>")), NULL, NULL);
-   //TODO: Add View group with images that are not included to the edj-file yet.
+   TODO("Add View group with images that are not included to the edj-file yet.")
 
    elm_gengrid_item_class_free(ggic);
 }
@@ -1065,7 +1064,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
 {
    Evas_Object *button;
    Evas_Object *_bg = NULL;
-   Evas_Object *icon = NULL;
+   Evas_Object *ic = NULL;
    Evas_Object *search_entry = NULL;
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
@@ -1080,12 +1079,21 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    img_edit->pr = project;
 
    img_edit->win = mw_add(_on_button_close_clicked_cb, img_edit);
+   if (!img_edit->win)
+     {
+        free(img_edit);
+        return NULL;
+     }
    if (mode == SINGLE)
-     mw_title_set(img_edit->win, _("Image editor: choose image"));
+     mw_title_set(img_edit->win, _("Image manager: choose image"));
    else if (mode == TWEENS)
-     mw_title_set(img_edit->win, _("Image editor: select tween images"));
+     mw_title_set(img_edit->win, _("Image manager: select tween images"));
    else if (mode == MULTIPLE)
-     mw_title_set(img_edit->win, _("Image editor"));
+     mw_title_set(img_edit->win, _("Image manager"));
+
+   ic = elm_icon_add(img_edit->win);
+   elm_icon_standard_set(ic, "image");
+   mw_icon_set(img_edit->win, ic);
 
    img_edit->layout = elm_layout_add(img_edit->win);
    elm_layout_theme_set(img_edit->layout, "layout", "image_editor", "default");
@@ -1133,19 +1141,20 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
                                   img_edit);
    evas_object_show(img_edit->gengrid);
 
-   BUTTON_ADD(img_edit->layout, button, NULL);
-   elm_object_style_set(button, "btn");
-   ICON_ADD(button, icon, true, "icon-add");
-   elm_object_part_content_set(button, NULL, icon);
+   button = elm_button_add(img_edit->layout);
+   evas_object_show(button);
+   ic = elm_icon_add(button);
+   elm_icon_standard_set(ic, "plus");
+   elm_object_part_content_set(button, NULL, ic);
    evas_object_smart_callback_add(button, "clicked",
                                   _on_button_add_clicked_cb, img_edit);
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.add_btn", button);
-
-   BUTTON_ADD(img_edit->layout, button, NULL);
-   elm_object_style_set(button, "btn");
-   ICON_ADD(button, icon, true, "icon-remove");
-   elm_object_part_content_set(button, NULL, icon);
+   button = elm_button_add(img_edit->layout);
+   evas_object_show(button);
+   ic = elm_icon_add(button);
+   elm_icon_standard_set(ic, "minus");
+   elm_object_part_content_set(button, NULL, ic);
    evas_object_smart_callback_add(button, "clicked",
                                   _on_button_delete_clicked_cb, img_edit);
    elm_object_part_content_set(img_edit->layout,
@@ -1191,6 +1200,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
      }
 
    evas_object_show(img_edit->win);
+   elm_object_focus_set(search_entry, true);
    if (!_image_editor_init(img_edit))
      {
         _image_editor_del(img_edit);

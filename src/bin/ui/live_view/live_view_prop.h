@@ -40,17 +40,20 @@ struct _Prop_Data
 {
    Evas_Object *live_object;
    Evas_Object *visual;
-   Evas_Object *scale_spinner;
+   Evas_Object *header;
    double current_scale;
    const char *widget;
    Style *style;
    struct {
       Evas_Object *frame;
+      Evas_Object *check;
       Evas_Object *swallows;
    } prop_swallow;
    struct {
       Evas_Object *frame;
+      Evas_Object *check;
       Evas_Object *texts;
+      Eina_Hash *default_text;
    } prop_text;
    struct {
       Evas_Object *frame;
@@ -92,12 +95,13 @@ live_view_property_free(Evas_Object *property);
  * @param object Widget that is being shown in Live View.
  * @param Style Style structure of the widget in Live View.
  * @param widget Name of viewed widget.
+ * @param object parent that is a block for Live View.
  * @return @c EINA_TRUE - succesfull, EINA_FALSE - otherwise.
  *
  * @ingroup Live_View_Property
  */
 Eina_Bool
-live_view_property_style_set(Evas_Object *property, Evas_Object *object, Style *style, const char *widget);
+live_view_property_style_set(Evas_Object *property, Evas_Object *object, Style *style, const char *widget, Evas_Object *parent);
 
 /**
  * Clear all data from to Live View Property widget.

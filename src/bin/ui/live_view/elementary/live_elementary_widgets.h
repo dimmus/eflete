@@ -73,66 +73,104 @@ send_signal(void *data, Evas_Object *obj, void *event_info);
  * ! *** and they are private, not public API  *** ! *
  * !  !  !  !  !  !  !  !  !  !  !  !  !  !  !  !  ! *
  *****************************************************/
-
 Evas_Object *
 layout_custom_create(Evas_Object *parent);
 
 Evas_Object *
-widget_actionslider_create(Evas_Object *parent, const char *class, const char *style);
+widget_actionslider_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_bg_create(Evas_Object *parent, const char *class, const char *style);
+widget_bg_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_bubble_create(Evas_Object *parent, const char *class, const char *style);
+widget_bubble_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_button_create(Evas_Object *parent, const char *class, const char *style);
+widget_button_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_calendar_create(Evas_Object *parent, const char *class, const char *style);
+widget_calendar_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_check_create(Evas_Object *parent, const char *class, const char *style);
+widget_check_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_clock_create(Evas_Object *parent, const char *class, const char *style);
+widget_clock_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_gengrid_create(Evas_Object *parent, const char *class, const char *style);
+widget_ctxpopup_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_genlist_create(Evas_Object *parent, const char *class, const char *style);
+widget_datetime_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_label_create(Evas_Object *parent, const char *class, const char *style);
+widget_entry_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_list_create(Evas_Object *parent, const char *class, const char *style);
+widget_frame_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_notify_create(Evas_Object *parent, const char *class, const char *style);
+widget_gengrid_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_panel_create(Evas_Object *parent, const char *class, const char *style);
+widget_genlist_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_panes_create(Evas_Object *parent, const char *class, const char *style);
+widget_label_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_radio_create(Evas_Object *parent, const char *class, const char *style);
+widget_layout_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_scroller_create(Evas_Object *parent, const char *class, const char *style);
+widget_list_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_separator_create(Evas_Object *parent, const char *class, const char *style);
+widget_map_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_spinner_create(Evas_Object *parent, const char *class, const char *style);
+widget_multibuttonentry_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
-widget_naviframe_create(Evas_Object *parent, const char *class, const char *style);
+widget_notify_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
+widget_panel_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
+widget_panes_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
+widget_popup_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
+widget_radio_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
+widget_scroller_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
+widget_segment_control_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
+widget_separator_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
+widget_slider_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
+widget_spinner_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
+widget_toolbar_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
+widget_progressbar_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
+widget_naviframe_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
+widget_colorselector_create(Evas_Object *parent, const Style *style);
 
 /*****************************************************
  *****************************************************

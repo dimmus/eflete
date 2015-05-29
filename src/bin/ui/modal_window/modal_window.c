@@ -159,7 +159,7 @@ _mw_create(Evas_Object *parent,
            Evas_Smart_Cb func,
            void *data)
 {
-   Evas_Object *mw, *bt_close, *ic_close;
+   Evas_Object *mw, *bt_close, *ic;
 
    mw = elm_win_inwin_add(parent);
    if (style_name)
@@ -167,18 +167,17 @@ _mw_create(Evas_Object *parent,
 
    evas_object_focus_set(mw, EINA_TRUE);
 
-   BUTTON_ADD(mw, bt_close, "");
-   /*TODO: uncomment it when focus will be adequate
-     evas_object_event_callback_add(mw, EVAS_CALLBACK_KEY_DOWN,
-                                    _on_key_down, bt_close);
-   */
+   BUTTON_ADD(mw, bt_close, NULL);
+   TODO("uncomment it when focus will be adequate"
+        "evas_object_event_callback_add(mw, EVAS_CALLBACK_KEY_DOWN, _on_key_down, bt_close);")
 
    evas_object_data_set(mw, FUNC_CLOSE, func);
    evas_object_data_set(mw, FUNC_DATA, data);
    evas_object_smart_callback_add(bt_close, "clicked", _mw_close, mw);
 
-   GET_IMAGE(ic_close, bt_close, "mw_button_close");
-   elm_layout_content_set(bt_close, "icon", ic_close);
+   ic = elm_icon_add(bt_close);
+   elm_icon_standard_set(ic, "window-close");
+   elm_layout_content_set(bt_close, "icon", ic);
    elm_layout_content_set(mw, "elm.swallow.close", bt_close);
 
    evas_object_event_callback_add(mw, EVAS_CALLBACK_SHOW, _anim_show, parent);
