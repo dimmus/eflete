@@ -1609,8 +1609,7 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
    Style *style_work = NULL;
 
    Elm_Object_Item *eoi = elm_genlist_selected_item_get(genlist);
-   Eina_Inlist *l = NULL;
-   Eina_List *ll = NULL;
+   Eina_List *l = NULL;
 
    if (!eoi)
      {
@@ -1652,7 +1651,7 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
              return false;
           }
         /* Before delete groups from edj file need free tree of aliasses structures*/
-        EINA_LIST_FOREACH(style->aliasses, ll, alias_style)
+        EINA_LIST_FOREACH(style->aliasses, l, alias_style)
           {
               if (eina_inlist_count(alias_style->parent->styles) <= 1)
                 wm_class_free(alias_style->parent);
@@ -1672,7 +1671,7 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
         else
           wm_style_free(style);
      }
-   else /* Deleting all styles in class. Work slow! Need patch for edje_edit_group_del */
+   /*else  Deleting all styles in class. Work slow! Need patch for edje_edit_group_del
      {
         EINA_INLIST_FOREACH_SAFE(class_st->styles, l, style)
           {
@@ -1682,7 +1681,7 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
                            style->name, class_st->name);
           }
         wm_class_free(class_st);
-     }
+     }*/
 
    style_work->isModify = true;
    project_changed(true);
