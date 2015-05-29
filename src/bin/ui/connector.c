@@ -1671,6 +1671,8 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
         else
           wm_style_free(style);
      }
+   else
+     return true;
    /*else  Deleting all styles in class. Work slow! Need patch for edje_edit_group_del
      {
         EINA_INLIST_FOREACH_SAFE(class_st->styles, l, style)
@@ -1711,6 +1713,9 @@ ui_group_delete(App_Data *ap, Type group_type)
 
    gl_groups = _widgetlist_current_genlist_get(ap, group_type);
 
+   Elm_Object_Item *eoi = elm_genlist_selected_item_get(gl_groups);
+   if (!eoi)
+     return true;
    /* Checking number of groups */
    Eina_List *groups = edje_file_collection_list(ap->project->dev);
    unsigned int count = eina_list_count(groups);
