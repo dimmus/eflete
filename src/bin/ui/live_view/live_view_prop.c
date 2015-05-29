@@ -162,7 +162,7 @@ live_view_property_style_set(Evas_Object *property,
                              Evas_Object *parent)
 {
    Evas_Object *prop_box, *spinner, *check, *button;
-   Evas_Object *item;
+   Evas_Object *item, *ic;
    const char *part_name;
    Eina_List *part_list = NULL, *part = NULL, *l = NULL;
    Signal *sig = NULL;
@@ -344,7 +344,8 @@ live_view_property_style_set(Evas_Object *property,
                              "signal")
 
              BUTTON_ADD(item, button, NULL);
-             elm_object_style_set(button, "signal_send");
+             ICON_STANDARD_ADD(button, ic, true, "impuls_in");
+             elm_object_part_content_set(button, NULL, ic);
 
              evas_object_smart_callback_add(button, "clicked",
                                             evas_object_data_get(pd->live_object, SIGNAL_FUNC),
