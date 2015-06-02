@@ -562,6 +562,7 @@ ui_part_back(App_Data *ap)
    ui_states_list_data_unset(ap->block.state_list);
    ui_signal_list_data_unset(ap->block.signal_list);
    ui_block_content_visible(ap->block.right_bottom, false);
+   ui_block_content_visible(ap->block.right_top, false);
    live_view_widget_style_unset(ap->live_view);
 
    elm_object_disabled_set(ap->block.right_top_btn, true);
@@ -710,6 +711,7 @@ ui_style_clicked(App_Data *ap, Style *style)
    history_list = history_genlist_get(ap->history, ap->block.right_top);
    history_module_add(_style->obj);
    ui_block_history_set(ap, history_list);
+   ui_block_content_visible(ap->block.right_top, true);
    elm_object_disabled_set(ap->block.right_top_btn, false);
 
    live_view_widget_style_set(ap->live_view, ap->project, _style);
