@@ -622,6 +622,7 @@ _on_image_done(void *data,
                                             img_edit->group_items.linked,
                                             _grid_sel, img_edit);
              elm_gengrid_item_selected_set(item, true);
+             project_changed(false);
           }
      }
 del:
