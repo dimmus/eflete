@@ -73,6 +73,7 @@ const char *top_levels[] = { "collections",
    eina_stringshare_del(worker->name); \
    eina_stringshare_del(worker->path); \
    eina_stringshare_del(worker->edj); \
+   eina_stringshare_del(worker->edc); \
    eina_stringshare_del(worker->build_options); \
    free(worker); \
    worker = NULL; \
