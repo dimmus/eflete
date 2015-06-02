@@ -143,6 +143,9 @@ _teardown_splash(void *data, Splash_Status status)
         mw_del(wiew->win);
         app->modal_editor--;
      }
+
+   pm_project_thread_free(wiew->thread);
+
    if ((status == SPLASH_SUCCESS) && (app->project))
      {
         STATUSBAR_PROJECT_PATH(app, app->project->pro_path);
