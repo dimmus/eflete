@@ -336,9 +336,10 @@ _project_linked_images_copy(Project_Thread *worker)
      {
         evas_object_del(edje_edit_obj);
         ecore_evas_free(ee);
+        edje_file_collection_list_free(list);
         return false;
      }
-   edje_edit_string_list_free(list);
+   edje_file_collection_list_free(list);
 
    list = edje_edit_images_list_get(edje_edit_obj);
    EINA_LIST_FOREACH(list, l, name)
