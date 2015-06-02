@@ -334,6 +334,7 @@ _project_linked_images_copy(Project_Thread *worker)
    if (!edje_object_file_set(edje_edit_obj, worker->project->saved_edj, eina_list_data_get(list)))
      {
         evas_object_del(edje_edit_obj);
+        ecore_evas_free(ee);
         return false;
      }
    edje_edit_string_list_free(list);
@@ -381,6 +382,8 @@ _project_linked_images_copy(Project_Thread *worker)
    edje_edit_string_list_free(list);
    eina_strbuf_free(strbuf_to);
    eina_strbuf_free(strbuf_from);
+   evas_object_del(edje_edit_obj);
+   ecore_evas_free(ee);
    return true;
 }
 
@@ -1191,6 +1194,7 @@ pm_project_resource_export(Project *pro, const char* dir_path)
    if (!edje_object_mmap_set(edje_edit_obj, pro->mmap_file, eina_list_data_get(list)))
      {
         evas_object_del(edje_edit_obj);
+        ecore_evas_free(ee);
         return false;
      }
    edje_edit_string_list_free(list);
@@ -1219,6 +1223,7 @@ pm_project_resource_export(Project *pro, const char* dir_path)
    eina_stringshare_del(dest);
 
    eina_stringshare_del(path);
+   evas_object_del(edje_edit_obj);
    ecore_evas_free(ee);
 
    return true;
