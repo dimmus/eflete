@@ -129,19 +129,29 @@ group { name: "elm/layout/block/default";
             max: -1 0;
          }
       }
-      part { name: "elm.text";
-         type: TEXT;
+      part { name: "text.area";
+         type: SPACER;
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 1;
             max: 112 -1;
-            color: 223 219 210 255;
             rel1 {
                to_x: "header";
             }
             rel2 {
+               relative: 0.0 1.0;
+               to_x: "elm.swallow.title";
                to_y: "header";
             }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            color: 223 219 210 255;
+            rel1.to: "text.area";
+            rel2.to: "text.area";
             text {
                font: PT;
                size: 13;
