@@ -442,16 +442,18 @@ static Eina_Bool
 _splash_setup_import_edc(void *data, Splash_Status status __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew = (Wizard_Import_Edj_Win *)data;
+   App_Data *ap;
+   ap = app_data_get();
    Eina_Strbuf *flags = _edje_cc_flags_create(wiew);
    wiew->progress_log = eina_strbuf_new();
 
-   wiew->thread = pm_project_import_edc(elm_entry_entry_get(wiew->name),
-                                        elm_entry_entry_get(wiew->path),
-                                        elm_entry_entry_get(wiew->edj),
-                                        eina_strbuf_string_get(flags),
-                                        _progress_print,
-                                        _progress_end,
-                                        wiew);
+   ap->pr_thread = pm_project_import_edc(elm_entry_entry_get(wiew->name),
+                                         elm_entry_entry_get(wiew->path),
+                                         elm_entry_entry_get(wiew->edj),
+                                         eina_strbuf_string_get(flags),
+                                         _progress_print,
+                                         _progress_end,
+                                         wiew);
 
    eina_strbuf_free(flags);
    return false;
@@ -480,6 +482,8 @@ _splash_setup_new_project(void *data, Splash_Status status __UNUSED__)
    Eina_Strbuf *flags;
    Eina_Tmpstr *tmp_dir;
    Eina_Stringshare *edc_path;
+   App_Data *ap;
+   ap = app_data_get();
    if (!eina_file_mkdtemp("eflete_project_XXXXXX", &tmp_dir))
      {
         ERR("can not create tmp dir");
@@ -498,13 +502,13 @@ _splash_setup_new_project(void *data, Splash_Status status __UNUSED__)
                              EFLETE_TEMPLATE_IMAGES_PATH,
                              EFLETE_TEMPLATE_SOUNDS_PATH);
 
-   wiew->thread = pm_project_import_edc(elm_entry_entry_get(wiew->name),
-                                        elm_entry_entry_get(wiew->path),
-                                        edc_path,
-                                        eina_strbuf_string_get(flags),
-                                        _progress_print,
-                                        _progress_end,
-                                        wiew);
+   ap->pr_thread = pm_project_import_edc(elm_entry_entry_get(wiew->name),
+                                         elm_entry_entry_get(wiew->path),
+                                         edc_path,
+                                         eina_strbuf_string_get(flags),
+                                         _progress_print,
+                                         _progress_end,
+                                         wiew);
    wiew->progress_log = eina_strbuf_new();
 
    eina_strbuf_free(edc);
