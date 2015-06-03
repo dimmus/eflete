@@ -716,6 +716,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
           }
 
         elm_object_text_set(info_en, text_info);
+        eina_stringshare_del(text_info);
         elm_object_style_set(info_en, "info");
         elm_object_part_content_set(pd_group.info, "elm.swallow.content", info_en);
         elm_object_part_content_set(pd_group.info, "info", info_image);
