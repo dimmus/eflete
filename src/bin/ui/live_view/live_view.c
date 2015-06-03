@@ -120,13 +120,14 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 
    first_load = live->object == NULL; /* fallback notifications should pop-up only on style load*/
 
-   const char *version = edje_edit_data_value_get(style->obj, "version");
+   Eina_Stringshare *version = edje_edit_data_value_get(style->obj, "version");
    if ((!version) || (strcmp(version, "110")))
      {
         if (first_load)
           NOTIFY_INFO(3, _("Outdated version of file. Using fallback to layout"));
         using_layout = true;
      }
+   eina_stringshare_del(version);
 
    using_layout = using_layout || (style->__type == LAYOUT) || live->in_prog_edit;
 
