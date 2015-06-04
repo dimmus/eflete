@@ -648,7 +648,6 @@ _on_viewer_exit(void *data,
 {
    Style_Editor *style_edit = (Style_Editor *)data;
    App_Data *ap = app_data_get();
-   project_changed(false);
    workspace_edit_object_recalc(ap->workspace);
    mw_del(style_edit->mwin);
 }
