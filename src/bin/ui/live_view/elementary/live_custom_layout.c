@@ -24,13 +24,13 @@ on_layout_swallow_check(void *data,
                         Evas_Object *obj,
                         void *ei __UNUSED__)
 {
-   Evas_Object *rect = NULL, *check = NULL, *item, *ch;
+   Evas_Object *rect = NULL, *check = NULL, *ch;
    Eina_List *item_list = NULL;
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
    Evas_Object *object = pd->live_object;
-   const char *part_name = evas_object_data_get(obj, PART_NAME);
+   const char *part_name = elm_object_part_text_get(obj, NULL);
    check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
 
    if (elm_check_state_get(obj))
@@ -41,9 +41,8 @@ on_layout_swallow_check(void *data,
         evas_object_color_set(rect, RECT_COLOR);
         edje_object_part_swallow(object, part_name, rect);
         item_list = elm_box_children_get(pd->prop_swallow.swallows);
-        EINA_LIST_FREE(item_list, item)
+        EINA_LIST_FREE(item_list, ch)
           {
-             ch = elm_object_part_content_get(item, "info");
              if (elm_check_state_get(ch) == false)
                all_checks = false;
           }
@@ -65,14 +64,14 @@ on_layout_text_check(void *data,
                      Evas_Object *obj,
                      void *ei __UNUSED__)
 {
-   Evas_Object *check = NULL, *item, *ch;
+   Evas_Object *check = NULL, *ch;
    Eina_List *item_list = NULL;
    Eina_Bool all_checks = true;
    const char *default_text;
 
    Prop_Data *pd = (Prop_Data *)data;
    Evas_Object *object = pd->live_object;
-   const char *part_name = evas_object_data_get(obj, PART_NAME);
+   const char *part_name = elm_object_part_text_get(obj, NULL);
    check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
 
    if (elm_check_state_get(obj))
@@ -84,9 +83,8 @@ on_layout_text_check(void *data,
                                   _("Look at it! This is absolutely and totally text"));
         item_list = elm_box_children_get(pd->prop_text.texts);
 
-        EINA_LIST_FREE(item_list, item)
+        EINA_LIST_FREE(item_list, ch)
           {
-             ch = elm_object_part_content_get(item, "info");
              if (elm_check_state_get(ch) == false)
                all_checks = false;
           }

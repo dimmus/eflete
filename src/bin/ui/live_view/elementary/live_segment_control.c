@@ -25,7 +25,7 @@ _on_sc_swallow_check(void *data,
                        Evas_Object *obj,
                        void *ei __UNUSED__)
 {
-   Evas_Object *rect, *check = NULL, *box_item, *ch;
+   Evas_Object *rect, *check = NULL, *ch;
    Eina_List *item_list = NULL, *it;
    Eina_Bool all_checks = true;
    const char *text = NULL;
@@ -51,9 +51,8 @@ _on_sc_swallow_check(void *data,
 
              item_list = elm_box_children_get(pd->prop_swallow.swallows);
 
-             EINA_LIST_FOREACH(item_list, it, box_item)
+             EINA_LIST_FOREACH(item_list, it, ch)
                {
-                  ch = elm_object_part_content_get(box_item, "info");
                   if (elm_check_state_get(ch) == false)
                     all_checks = false;
                }
@@ -82,7 +81,7 @@ _on_sc_text_check(void *data,
                   Evas_Object *obj,
                   void *ei __UNUSED__)
 {
-   Evas_Object *rect, *check = NULL, *box_item, *ch;
+   Evas_Object *rect, *check = NULL, *ch;
    Eina_List *item_list = NULL, *it;
    Eina_Bool all_checks = true;
    int i = 0, index = -1;
@@ -110,9 +109,8 @@ _on_sc_text_check(void *data,
 
              item_list = elm_box_children_get(pd->prop_text.texts);
 
-             EINA_LIST_FOREACH(item_list, it, box_item)
+             EINA_LIST_FOREACH(item_list, it, ch)
                {
-                  ch = elm_object_part_content_get(box_item, "info");
                   if (elm_check_state_get(ch) == false)
                     all_checks = false;
                }

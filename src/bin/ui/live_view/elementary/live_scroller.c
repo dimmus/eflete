@@ -24,13 +24,13 @@ _on_scroller_swallow_check(void *data,
                            Evas_Object *obj,
                            void *ei __UNUSED__)
 {
-   Evas_Object *content = NULL, *check = NULL, *item, *ch;
+   Evas_Object *content = NULL, *check = NULL, *ch;
    Eina_List *item_list = NULL, *it;
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
    Evas_Object *object = pd->live_object;
-   const char *part_name = evas_object_data_get(obj, PART_NAME);
+   const char *part_name = elm_object_part_text_get(obj, NULL);
    check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
 
    if (elm_check_state_get(obj))
@@ -62,9 +62,8 @@ _on_scroller_swallow_check(void *data,
           }
         item_list = elm_box_children_get(pd->prop_swallow.swallows);
 
-        EINA_LIST_FOREACH(item_list, it, item)
+        EINA_LIST_FOREACH(item_list, it, ch)
           {
-             ch = elm_object_part_content_get(item, "info");
              if (elm_check_state_get(ch) == false)
                all_checks = false;
           }
