@@ -1025,7 +1025,10 @@ _grid_sel_sample(void *data,
                        edit->added = true;
 #ifdef HAVE_AUDIO
                        if ((edit->switched) || (auto_play))
-                         _add_sound_play(edit);
+                         {
+                            edit->switched = false;
+                            _add_sound_play(edit);
+                         }
 #endif
                        return;
                     }
