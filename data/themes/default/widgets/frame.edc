@@ -652,6 +652,10 @@ group { name: "elm/frame/base/live_view";
                align: 0.0 0.5;
             }
          }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: LIGHT_GREY_FONT_DISABLE_COLOR;
+         }
       }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
@@ -941,7 +945,7 @@ group { name: "elm/frame/base/live_view";
             rel1.to: "event";
             rel2.to: "event";
          }
-         description { state: "visible" 0.0;
+         description { state: "disabled" 0.0;
             color: INVISIBLE_COLOR;
             rel1.to: "event";
             rel2.to: "event";
@@ -1016,14 +1020,16 @@ group { name: "elm/frame/base/live_view";
       program { name: "disable";
          signal: "elm,state,disabled";
          source: "elm";
-         action: STATE_SET "visible" 0.00;
+         action: STATE_SET "disabled" 0.00;
          target: "disabler";
+         target: "elm.text";
       }
       program { name: "enable";
          signal: "elm,state,enabled";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "disabler";
+         target: "elm.text";
       }
    }
 }
