@@ -223,7 +223,6 @@ live_view_property_style_set(Evas_Object *property,
 
         CHECK_ADD(prop_box, pd->prop_swallow.check);
         elm_object_part_content_set(pd->prop_swallow.frame, "elm.swallow.check", pd->prop_swallow.check);
-        elm_object_style_set(pd->prop_swallow.check, "live_view");
 
         BOX_ADD(pd->prop_swallow.frame, pd->prop_swallow.swallows, false, false)
         elm_box_align_set(pd->prop_swallow.swallows, 0.5, 0.0);
@@ -237,12 +236,11 @@ live_view_property_style_set(Evas_Object *property,
    /* Texts UI setting*/
    if (!pd->prop_text.texts)
      {
-        FRAME_LIVE_VIEW_ADD(property, pd->prop_text.frame, true, _("Texts"), pd->visual);
+        FRAME_LIVE_VIEW_ADD(property, pd->prop_text.frame, true, _("Text"), pd->visual);
         elm_object_style_set(pd->prop_text.frame, "live_view");
 
         CHECK_ADD(prop_box, pd->prop_text.check);
         elm_object_part_content_set(pd->prop_text.frame, "elm.swallow.check", pd->prop_text.check);
-        elm_object_style_set(pd->prop_text.check, "live_view");
 
         BOX_ADD(pd->prop_text.frame, pd->prop_text.texts, false, false)
         elm_box_align_set(pd->prop_text.texts, 0.5, 0.0);
@@ -288,43 +286,32 @@ live_view_property_style_set(Evas_Object *property,
         if (part_type ==  EDJE_PART_TYPE_SWALLOW)
           {
              swallow_parts_exists = true;
-             elm_object_content_set(pd->prop_swallow.frame, pd->prop_swallow.swallows);
 
-             LAYOUT_PROP_ADD(pd->prop_swallow.swallows,
-                             part_name,
-                             "live_view",
-                             "1swallow")
-
-             CHECK_ADD(item, check);
+             CHECK_ADD(pd->prop_swallow.swallows, check);
+             elm_object_part_text_set(check, NULL, part_name);
 
              evas_object_smart_callback_add(check, "changed",
                                             evas_object_data_get(pd->live_object, SWALLOW_FUNC),
                                             pd);
              evas_object_data_set(check, PART_NAME, eina_stringshare_add(part_name));
 
-             elm_object_part_content_set(item, "info", check);
              if (!strcmp(part_name, "elm.swallow.action_area")) elm_object_disabled_set(check, true);
-             elm_box_pack_end(pd->prop_swallow.swallows, item);
+             elm_box_pack_end(pd->prop_swallow.swallows, check);
           }
         else if ((part_type ==  EDJE_PART_TYPE_TEXT) ||
                  (part_type ==  EDJE_PART_TYPE_TEXTBLOCK))
           {
              text_parts_exists = true;
 
-             LAYOUT_PROP_ADD(pd->prop_text.texts,
-                             part_name,
-                             "live_view",
-                             "1swallow")
-
-             CHECK_ADD(item, check);
+             CHECK_ADD(pd->prop_text.texts, check);
+             elm_object_part_text_set(check, NULL, part_name);
 
              evas_object_smart_callback_add(check, "changed",
                                             evas_object_data_get(pd->live_object, TEXT_FUNC),
                                             pd);
              evas_object_data_set(check, PART_NAME, eina_stringshare_add(part_name));
 
-             elm_object_part_content_set(item, "info", check);
-             elm_box_pack_end(pd->prop_text.texts, item);
+             elm_box_pack_end(pd->prop_text.texts, check);
           }
      }
    edje_edit_string_list_free(part_list);
