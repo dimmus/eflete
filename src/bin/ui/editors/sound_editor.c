@@ -1282,8 +1282,12 @@ _add_sample_done(void *data,
         it->format = _sound_format_get(selected);
         it->comp = EDJE_EDIT_SOUND_COMP_RAW;
         it->is_added = true;
-        elm_gengrid_item_insert_before(edit->gengrid, gic, it, edit->tone,
-                                       _grid_sel_sample, edit);
+        if (edit->mode != SOUND_EDITOR_SAMPLE_SELECT)
+          elm_gengrid_item_insert_before(edit->gengrid, gic, it, edit->tone,
+                                         _grid_sel_sample, edit);
+        else
+
+          elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_sample, edit);
         edit->pr->added_sounds = eina_list_append(edit->pr->added_sounds, snd);
         edit->sound_was_added = true;
      }
