@@ -940,7 +940,6 @@ static Eina_Bool
 _setup_save_splash(void *data, Splash_Status status __UNUSED__)
 {
    App_Data *ap;
-   Project_Thread *thread;
 
    ap = (App_Data *)data;
 #ifdef HAVE_ENVENTOR
@@ -948,23 +947,23 @@ _setup_save_splash(void *data, Splash_Status status __UNUSED__)
      {
         enventor_object_file_version_update(ap->enventor, ap->project, "110");
 
-        thread = pm_project_enventor_save(ap->project,
-                                          _progress_print,
-                                          _progress_end,
-                                          data);
+        ap->pr_thread = pm_project_enventor_save(ap->project,
+                                                 _progress_print,
+                                                 _progress_end,
+                                                 data);
         pm_save_to_dev(ap->project, ap->project->current_style, true);
      }
    else
      {
 #endif /* HAVE_ENVENTOR */
-         thread = pm_project_save(ap->project,
-                                  _progress_print,
-                                  _progress_end,
-                                  data);
+         ap->pr_thread = pm_project_save(ap->project,
+                                         _progress_print,
+                                         _progress_end,
+                                         data);
 #ifdef HAVE_ENVENTOR
      }
 #endif /* HAVE_ENVENTOR */
-   if (!thread) return false;
+   if (!ap->pr_thread) return false;
 
    return true;
 }
@@ -979,6 +978,8 @@ _teardown_save_splash(void *data, Splash_Status status)
 
    ap->project->changed = false;
    workspace_edit_object_recalc(ap->workspace);
+   pm_project_thread_free(ap->pr_thread);
+   ap->pr_thread = NULL;
 
    ecore_main_loop_quit();
    return true;
