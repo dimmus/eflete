@@ -1054,14 +1054,14 @@ Eina_Bool
 export_replace_request(Evas_Object *parent, const char *msg)
 {
    Eina_Bool result = false;
-   Evas_Object *popup, *btn, *label;
+   Evas_Object *popup, *btn;
    Eina_Stringshare *title;
 
    title = eina_stringshare_printf(_("Export project"));
    popup = elm_popup_add(parent);
    elm_object_part_text_set(popup, "title,text", title);
-   LABEL_ADD(popup, label, msg);
-   elm_object_content_set(popup, label);
+   elm_popup_content_text_wrap_type_set(popup, ELM_WRAP_WORD);
+   elm_object_text_set(popup, msg);
    BUTTON_ADD(popup, btn, _("Replace"));
    evas_object_smart_callback_add(btn, "clicked", _replace_cb, &result);
    elm_object_part_content_set(popup, "button1", btn);
@@ -1082,12 +1082,12 @@ Eina_Bool
 export_warning(Evas_Object *parent, const char *title, const char *msg)
 {
    Eina_Bool result = false;
-   Evas_Object *popup, *btn, *label;
+   Evas_Object *popup, *btn;
 
    popup = elm_popup_add(parent);
    elm_object_part_text_set(popup, "title,text", title);
-   LABEL_ADD(popup, label, msg);
-   elm_object_content_set(popup, label);
+   elm_popup_content_text_wrap_type_set(popup, ELM_WRAP_WORD);
+   elm_object_text_set(popup, msg);
    BUTTON_ADD(popup, btn, _("Ok"));
    evas_object_smart_callback_add(btn, "clicked", _ecancel_cb, &result);
    elm_object_part_content_set(popup, "button1", btn);

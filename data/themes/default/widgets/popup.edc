@@ -112,11 +112,8 @@ group { name: "elm/label/base/popup/default";
          mouse_events: 0;
          scale: 1;
          description { state: "default" 0.0;
-            min: 380 0;
             text {
-               style: "popup_desc_style";
-               min: 0 1;
-               max: 0 1;
+               style: "eflete_textblock_style";
             }
             rel1 {
                relative: 1.0 1.0;
