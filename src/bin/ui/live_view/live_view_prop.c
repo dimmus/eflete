@@ -329,7 +329,7 @@ live_view_property_style_set(Evas_Object *property,
                              "signal")
 
              BUTTON_ADD(item, button, NULL);
-             ICON_STANDARD_ADD(button, ic, true, "impuls_in");
+             ICON_STANDARD_ADD(button, ic, false, "impuls_in");
              elm_object_part_content_set(button, NULL, ic);
 
              evas_object_smart_callback_add(button, "clicked",
