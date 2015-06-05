@@ -70,7 +70,10 @@ _on_scale_change(void *data,
    if (pd->live_object)
      {
         if (!strcmp("edje", pd->widget))
-          edje_object_scale_set(pd->live_object, pd->current_scale);
+          {
+             edje_object_scale_set(pd->live_object, pd->current_scale);
+             edje_object_calc_force(pd->live_object);
+          }
         else
           elm_object_scale_set(pd->live_object, pd->current_scale);
      }
@@ -203,7 +206,6 @@ live_view_property_style_set(Evas_Object *property,
      }
    spinner = evas_object_data_get(pd->header, ITEM);
    elm_spinner_value_set(spinner, 100);
-   pd->current_scale = 1.0;
    evas_object_scale_set(pd->live_object, pd->current_scale);
    if (!pd->in_prog_edit)
      elm_object_part_content_set(parent, "elm.swallow.title", pd->header);
