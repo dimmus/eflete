@@ -562,6 +562,7 @@ ui_part_back(App_Data *ap)
    ui_states_list_data_unset(ap->block.state_list);
    ui_signal_list_data_unset(ap->block.signal_list);
    ui_block_content_visible(ap->block.right_bottom, false);
+   ui_block_content_visible(ap->block.right_top, false);
    live_view_widget_style_unset(ap->live_view);
 
    elm_object_disabled_set(ap->block.right_top_btn, true);
@@ -710,6 +711,7 @@ ui_style_clicked(App_Data *ap, Style *style)
    history_list = history_genlist_get(ap->history, ap->block.right_top);
    history_module_add(_style->obj);
    ui_block_history_set(ap, history_list);
+   ui_block_content_visible(ap->block.right_top, true);
    elm_object_disabled_set(ap->block.right_top_btn, false);
 
    live_view_widget_style_set(ap->live_view, ap->project, _style);
@@ -938,7 +940,6 @@ static Eina_Bool
 _setup_save_splash(void *data, Splash_Status status __UNUSED__)
 {
    App_Data *ap;
-   Project_Thread *thread;
 
    ap = (App_Data *)data;
 #ifdef HAVE_ENVENTOR
@@ -946,23 +947,23 @@ _setup_save_splash(void *data, Splash_Status status __UNUSED__)
      {
         enventor_object_file_version_update(ap->enventor, ap->project, "110");
 
-        thread = pm_project_enventor_save(ap->project,
-                                          _progress_print,
-                                          _progress_end,
-                                          data);
+        ap->pr_thread = pm_project_enventor_save(ap->project,
+                                                 _progress_print,
+                                                 _progress_end,
+                                                 data);
         pm_save_to_dev(ap->project, ap->project->current_style, true);
      }
    else
      {
 #endif /* HAVE_ENVENTOR */
-         thread = pm_project_save(ap->project,
-                                  _progress_print,
-                                  _progress_end,
-                                  data);
+         ap->pr_thread = pm_project_save(ap->project,
+                                         _progress_print,
+                                         _progress_end,
+                                         data);
 #ifdef HAVE_ENVENTOR
      }
 #endif /* HAVE_ENVENTOR */
-   if (!thread) return false;
+   if (!ap->pr_thread) return false;
 
    return true;
 }
@@ -977,6 +978,8 @@ _teardown_save_splash(void *data, Splash_Status status)
 
    ap->project->changed = false;
    workspace_edit_object_recalc(ap->workspace);
+   pm_project_thread_free(ap->pr_thread);
+   ap->pr_thread = NULL;
 
    ecore_main_loop_quit();
    return true;
@@ -1051,14 +1054,14 @@ Eina_Bool
 export_replace_request(Evas_Object *parent, const char *msg)
 {
    Eina_Bool result = false;
-   Evas_Object *popup, *btn, *label;
+   Evas_Object *popup, *btn;
    Eina_Stringshare *title;
 
    title = eina_stringshare_printf(_("Export project"));
    popup = elm_popup_add(parent);
    elm_object_part_text_set(popup, "title,text", title);
-   LABEL_ADD(popup, label, msg);
-   elm_object_content_set(popup, label);
+   elm_popup_content_text_wrap_type_set(popup, ELM_WRAP_WORD);
+   elm_object_text_set(popup, msg);
    BUTTON_ADD(popup, btn, _("Replace"));
    evas_object_smart_callback_add(btn, "clicked", _replace_cb, &result);
    elm_object_part_content_set(popup, "button1", btn);
@@ -1079,12 +1082,12 @@ Eina_Bool
 export_warning(Evas_Object *parent, const char *title, const char *msg)
 {
    Eina_Bool result = false;
-   Evas_Object *popup, *btn, *label;
+   Evas_Object *popup, *btn;
 
    popup = elm_popup_add(parent);
    elm_object_part_text_set(popup, "title,text", title);
-   LABEL_ADD(popup, label, msg);
-   elm_object_content_set(popup, label);
+   elm_popup_content_text_wrap_type_set(popup, ELM_WRAP_WORD);
+   elm_object_text_set(popup, msg);
    BUTTON_ADD(popup, btn, _("Ok"));
    evas_object_smart_callback_add(btn, "clicked", _ecancel_cb, &result);
    elm_object_part_content_set(popup, "button1", btn);

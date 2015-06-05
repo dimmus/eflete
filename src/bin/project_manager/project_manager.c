@@ -73,6 +73,7 @@ const char *top_levels[] = { "collections",
    eina_stringshare_del(worker->name); \
    eina_stringshare_del(worker->path); \
    eina_stringshare_del(worker->edj); \
+   eina_stringshare_del(worker->edc); \
    eina_stringshare_del(worker->build_options); \
    free(worker); \
    worker = NULL; \
@@ -334,9 +335,11 @@ _project_linked_images_copy(Project_Thread *worker)
    if (!edje_object_file_set(edje_edit_obj, worker->project->saved_edj, eina_list_data_get(list)))
      {
         evas_object_del(edje_edit_obj);
+        ecore_evas_free(ee);
+        edje_file_collection_list_free(list);
         return false;
      }
-   edje_edit_string_list_free(list);
+   edje_file_collection_list_free(list);
 
    list = edje_edit_images_list_get(edje_edit_obj);
    EINA_LIST_FOREACH(list, l, name)
@@ -381,6 +384,8 @@ _project_linked_images_copy(Project_Thread *worker)
    edje_edit_string_list_free(list);
    eina_strbuf_free(strbuf_to);
    eina_strbuf_free(strbuf_from);
+   evas_object_del(edje_edit_obj);
+   ecore_evas_free(ee);
    return true;
 }
 
@@ -1191,6 +1196,7 @@ pm_project_resource_export(Project *pro, const char* dir_path)
    if (!edje_object_mmap_set(edje_edit_obj, pro->mmap_file, eina_list_data_get(list)))
      {
         evas_object_del(edje_edit_obj);
+        ecore_evas_free(ee);
         return false;
      }
    edje_edit_string_list_free(list);
@@ -1219,6 +1225,7 @@ pm_project_resource_export(Project *pro, const char* dir_path)
    eina_stringshare_del(dest);
 
    eina_stringshare_del(path);
+   evas_object_del(edje_edit_obj);
    ecore_evas_free(ee);
 
    return true;

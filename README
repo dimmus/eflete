@@ -8,12 +8,11 @@ towards theme editor and UI design, and not GUI over the edc syntax.
 Requirements:
 -------------
 
-   * efl (>= 1.10.1)
-   * elementary (= 1.10.1)
-   * ewe (>= 0.1.1)
+   * efl (= 1.14.0)
+   * elementary (= 1.14.0)
 
 Please note that some features may not quite function correctly or
-completely on EFL 1.10.1.
+completely on EFL 1.14.0
 
 Please see http://www.enlightenment.org for information on these.
 

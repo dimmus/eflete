@@ -1431,6 +1431,7 @@ _textblock_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
    ts = evas_textblock_style_new();
    evas_textblock_style_set(ts, text);
    evas_object_textblock_style_set(gp->draw, ts);
+   evas_textblock_style_free(ts);
    valign = edje_edit_state_text_align_y_get(edit_obj, gp->name, state, value);
    evas_object_textblock_valign_set(gp->draw, valign);
 

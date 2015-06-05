@@ -1744,7 +1744,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     item->title, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
-   project_changed(false); \
+   project_changed(true); \
    workspace_edit_object_recalc(pd->workspace); \
    edje_edit_string_free(old_value); \
 }

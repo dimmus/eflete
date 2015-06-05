@@ -24,6 +24,8 @@ TODO("Rename this file to image_manager")
 
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
+#define GROUP_ITEM_WIDTH 36
+#define GROUP_ITEM_HEIGHT 36
 #define IMG_EDIT_KEY "image_editor_key"
 
 typedef struct _Image_Editor Image_Editor;
@@ -622,6 +624,7 @@ _on_image_done(void *data,
                                             img_edit->group_items.linked,
                                             _grid_sel, img_edit);
              elm_gengrid_item_selected_set(item, true);
+             project_changed(false);
           }
      }
 del:
@@ -900,6 +903,7 @@ _image_editor_gengrid_group_items_add(Image_Editor *img_edit)
    img_edit->group_items.linked =
       elm_gengrid_item_append(img_edit->gengrid, ggic,
       eina_stringshare_add(_("<b>Linked</b>")), NULL, NULL);
+
    TODO("Add View group with images that are not included to the edj-file yet.")
 
    elm_gengrid_item_class_free(ggic);
@@ -1043,7 +1047,8 @@ _image_editor_init(Image_Editor *img_edit)
               it = _image_editor_gengrid_item_data_create(edje_edit_obj,
                                                           image_name);
               if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
-                elm_gengrid_item_append(img_edit->gengrid, gic, it,
+                elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
+                                        img_edit->group_items.included,
                                         _grid_sel, img_edit);
               else
                 elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
@@ -1056,6 +1061,8 @@ _image_editor_init(Image_Editor *img_edit)
      }
    elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_AUTO);
+   evas_object_smart_calculate(img_edit->gengrid);
+
    return true;
 }
 
@@ -1103,6 +1110,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.grid", img_edit->gengrid);
    elm_gengrid_item_size_set(img_edit->gengrid, ITEM_WIDTH, ITEM_HEIGHT);
+   elm_gengrid_group_item_size_set(img_edit->gengrid, GROUP_ITEM_WIDTH, GROUP_ITEM_HEIGHT);
    elm_gengrid_align_set(img_edit->gengrid, 0.0, 0.0);
    elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_OFF);
@@ -1264,3 +1272,9 @@ image_editor_file_choose(Evas_Object *win, const char *selected)
      }
    return false;
 }
+
+#undef ITEM_WIDTH
+#undef ITEM_HEIGHT
+#undef GROUP_ITEM_WIDTH
+#undef GROUP_ITEM_HEIGHT
+#undef IMG_EDIT_KEY
