@@ -66,26 +66,26 @@ PKG_PROG_PKG_CONFIG
 
 PKG_CHECK_MODULES([EFL],
    [
-    eina = efl_version
-    eet = efl_version
-    evas = efl_version
-    ecore = efl_version
-    ecore-input = efl_version
-    edje = efl_version
-    eo = efl_version
-    ecore-imf = efl_version
-    ecore-con = efl_version
-    ecore-audio = efl_version
-    eio = efl_version
-    eldbus = efl_version
-    efreet = efl_version
-    efreet-mime = efl_version
+    eina >= efl_version
+    eet >= efl_version
+    evas >= efl_version
+    ecore >= efl_version
+    ecore-input >= efl_version
+    edje >= efl_version
+    eo >= efl_version
+    ecore-imf >= efl_version
+    ecore-con >= efl_version
+    ecore-audio >= efl_version
+    eio >= efl_version
+    eldbus >= efl_version
+    efreet >= efl_version
+    efreet-mime >= efl_version
    ],
    [have_efl="${GREEN}yes${RESET}"],
    [have_efl="${RED}no${RESET} (version < efl_version)"]
 )
 
-PKG_CHECK_MODULES([ELEMENTARY], [elementary = elm_version],
+PKG_CHECK_MODULES([ELEMENTARY], [elementary >= elm_version],
    [have_elm="${GREEN}yes${RESET}"],
    [have_elm="${RED}no${RESET} (version < elm_version)"])
 
