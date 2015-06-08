@@ -708,6 +708,9 @@ _project_save(void *data,
                      if (style->isModify)
                        {
                           style->isModify = false;
+                          edje_object_mmap_set(style->obj,
+                                               worker->project->mmap_file,
+                                               style->full_group_name);
                           edje_edit_without_source_save(style->obj, true);
                        }
                   }
@@ -719,6 +722,9 @@ _project_save(void *data,
            if (style->isModify)
              {
                 style->isModify = false;
+                edje_object_mmap_set(style->obj,
+                                     worker->project->mmap_file,
+                                     style->full_group_name);
                 edje_edit_without_source_save(style->obj, true);
              }
         }
