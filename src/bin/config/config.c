@@ -230,6 +230,7 @@ _default_shortcuts_get()
    ADD_SHORTCUT("slash", 61, CTRL, "separate_mode", false);
    ADD_SHORTCUT("n", 57, CTRL, "new_theme", false);
    ADD_SHORTCUT("o", 32, CTRL, "open_edj", false);
+   ADD_SHORTCUT("j", 44, CTRL, "import_edj", false);
    ADD_SHORTCUT("s", 39, CTRL, "save", false);
    ADD_SHORTCUT("e", 26, CTRL, "export", false);
    ADD_SHORTCUT("q", 24, CTRL, "quit", false);

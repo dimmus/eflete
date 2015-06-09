@@ -379,6 +379,15 @@ _open_edj_cb(App_Data *app __UNUSED__)
 }
 
 Eina_Bool
+_import_edj_cb(App_Data *app __UNUSED__)
+{
+   if (!project_close(app))
+     return false;
+   wizard_import_edj_add(app);
+   return true;
+}
+
+Eina_Bool
 _save_cb(App_Data *app __UNUSED__)
 {
    project_save();
@@ -592,6 +601,7 @@ static Function_Set _sc_func_set_init[] =
      {"new_theme", _new_theme_cb},
 //     {"open_edc", _open_edc_cb},
      {"open_edj", _open_edj_cb},
+     {"import_edj", _import_edj_cb},
      {"save", _save_cb},
      {"save_as", _save_as_cb},
      {"export", _export_cb},
