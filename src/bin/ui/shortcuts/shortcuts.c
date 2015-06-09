@@ -397,7 +397,7 @@ _save_cb(App_Data *app __UNUSED__)
 Eina_Bool
 _save_as_cb(App_Data *app)
 {
-   if (!app) return false;
+   if ((!app) || (!app->project)) return false;
    project_export_develop();
    return true;
 }
@@ -405,7 +405,7 @@ _save_as_cb(App_Data *app)
 Eina_Bool
 _export_cb(App_Data *app)
 {
-   if (!app) return false;
+   if ((!app) || (!app->project)) return false;
    project_export_edc_project();
    return true;
 }
