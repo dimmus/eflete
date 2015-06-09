@@ -75,6 +75,8 @@ const char *top_levels[] = { "collections",
    eina_stringshare_del(worker->edj); \
    eina_stringshare_del(worker->edc); \
    eina_stringshare_del(worker->build_options); \
+   if (worker->message) \
+     eina_stringshare_del(worker->message); \
    free(worker); \
    worker = NULL; \
 }
@@ -88,6 +90,8 @@ const char *top_levels[] = { "collections",
    if (worker->func_progress) \
       { \
          WORKER_LOCK_TAKE; \
+            if (worker->message) \
+              eina_stringshare_del(worker->message); \
             worker->message = eina_stringshare_printf(FMT, ## __VA_ARGS__); \
          WORKER_LOCK_RELEASE; \
          ecore_main_loop_thread_safe_call_async(_progress_send, worker); \
