@@ -66,9 +66,6 @@ _del_part(void *data,
 {
    App_Data *ap = (App_Data *)data;
    Style *style = ap->project->current_style;
-   Eina_List *programs = NULL;
-   Eina_List *l = NULL;
-   char *program_name = NULL;
    char *part_name = NULL;
    Evas_Object *prop_view = NULL;
    if (!style) return;
@@ -86,16 +83,8 @@ _del_part(void *data,
    if (workspace_edit_object_part_del(ap->workspace, part->name))
      ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), style);
 
-   /* If deleted all parts in style, also should deleted all programs*/
    if (!style->parts)
      {
-        programs = edje_edit_programs_list_get(style->obj);
-        EINA_LIST_FOREACH(programs, l, program_name)
-          {
-             edje_edit_program_del(style->obj, program_name);
-          }
-        edje_edit_string_list_free(programs);
-
         ui_signal_list_data_unset(ap->block.signal_list);
         _on_ws_part_unselect(ap, ap->workspace, part_name);
         workspace_highlight_unset(ap->workspace);
