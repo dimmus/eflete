@@ -626,7 +626,7 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
    int value_##SUB2##_##VALUE = edje_edit_group_##SUB2##_##VALUE##_get(pd->wm_style->obj); \
    int old_value_##SUB2##_##VALUE = value_##SUB2##_##VALUE; \
    int old_value_##SUB1##_##VALUE = edje_edit_group_##SUB1##_##VALUE##_get(pd->wm_style->obj); \
-   if (value CHECK value_##SUB2##_##VALUE) \
+   if ((value CHECK value_##SUB2##_##VALUE) && (value_##SUB2##_##VALUE != 0)) \
      { \
         if (!edje_edit_group_##SUB2##_##VALUE##_set(pd->wm_style->obj, value)) \
           return; \
