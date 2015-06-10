@@ -812,6 +812,8 @@ _on_open_done(void *data,
    wm_layouts_list_objects_load(ap->project->layouts,
                                 evas_object_evas_get(ap->win),
                                 ap->project->mmap_file);
+   wm_styles_build_alias(ap->project->widgets,
+                         ap->project->layouts);
    blocks_show(ap);
 
    evas_object_del(win);
@@ -913,6 +915,8 @@ _progress_end(void *data, PM_Project_Result result)
         wm_layouts_list_objects_load(ap->project->layouts,
                                      evas_object_evas_get(ap->win),
                                      ap->project->mmap_file);
+        wm_styles_build_alias(ap->project->widgets,
+                              ap->project->layouts);
         enventor_object_focus_set(ap->enventor, true);
         pm_save_to_dev(ap->project, ap->project->current_style, true);
      }

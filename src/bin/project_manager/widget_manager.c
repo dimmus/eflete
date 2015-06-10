@@ -802,9 +802,7 @@ wm_widgets_list_objects_load(Eina_Inlist *widget_list,
 {
    Widget *widget = NULL;
    Class *class_st = NULL;
-   Style *style = NULL, *alias = NULL;
-   Eina_List *alias_list = NULL, *l = NULL;
-   const char *main_name;
+   Style *style = NULL;
 
    if ((!widget_list) || (!e) || (!mmap_file)) return false;
 
@@ -815,21 +813,9 @@ wm_widgets_list_objects_load(Eina_Inlist *widget_list,
              EINA_INLIST_FOREACH(class_st->styles, style)
                {
                   wm_style_data_load(style, e, mmap_file);
-                  if (style->isAlias)
-                    alias_list = eina_list_append(alias_list, style);
                }
           }
      }
-
-   EINA_LIST_FOREACH(alias_list, l, alias)
-     {
-        main_name = edje_edit_group_aliased_get(alias->obj, alias->full_group_name);
-        alias->main_group = wm_style_object_find(widget_list, main_name);
-        alias->main_group->aliasses = eina_list_append(alias->main_group->aliasses, alias);
-        evas_object_del(alias->obj);
-        alias->obj = NULL;
-     }
-   eina_list_free(alias_list);
    return true;
 }
 
@@ -862,31 +848,15 @@ wm_layouts_list_objects_load(Eina_Inlist *layouts_list,
                             Evas *e,
                             Eina_File *mmap_file)
 {
-   Style *layout = NULL, *alias = NULL;
-   Eina_List *alias_list = NULL, *l = NULL;
-   const char *main_name;
+   Style *layout = NULL;
 
    if ((!layouts_list) || (!e) || (!mmap_file)) return false;
 
    EINA_INLIST_FOREACH(layouts_list, layout)
      {
          wm_style_data_load(layout, e, mmap_file);
-         if (layout->isAlias)
-           alias_list = eina_list_append(alias_list, layout);
      }
 
-   EINA_LIST_FOREACH(alias_list, l, alias)
-     {
-        main_name = edje_edit_group_aliased_get(alias->obj, alias->full_group_name);
-        alias->main_group = _layout_object_find(layouts_list, main_name);
-        if (alias->main_group)
-          {
-             alias->main_group->aliasses = eina_list_append(alias->main_group->aliasses, alias);
-             evas_object_del(alias->obj);
-             alias->obj = NULL;
-          }
-     }
-   eina_list_free(alias_list);
    return true;
 }
 
@@ -975,6 +945,69 @@ wm_style_data_reload(Style *style, Eina_File *mmap_file)
    return true;
 }
 
+TODO("Add UTC for this function!")
+Eina_Bool
+wm_styles_build_alias(Eina_Inlist *widgets_list,
+                      Eina_Inlist *layouts_list)
+{
+   Style *layout = NULL;
+   Widget *widget = NULL;
+   Class *class_st = NULL;
+   const char *main_name;
+
+   if ((!layouts_list) && (!widgets_list)) return false;
+
+   /* checking layouts for awesomeness */
+   if (layouts_list)
+     {
+        EINA_INLIST_FOREACH(layouts_list, layout)
+          {
+             if (layout->isAlias)
+               {
+                  main_name = edje_edit_group_aliased_get(layout->obj, layout->full_group_name);
+                  layout->main_group = _layout_object_find(layouts_list, main_name);
+                  if ((!layout->main_group) && (widgets_list))
+                    layout->main_group = wm_style_object_find(widgets_list, main_name);
+
+                  if (layout->main_group)
+                    {
+                       layout->main_group->aliasses = eina_list_append(layout->main_group->aliasses, layout);
+                       evas_object_del(layout->obj);
+                       layout->obj = NULL;
+                    }
+               }
+          }
+     }
+
+   /* checking layouts for awesomeness */
+   if (widgets_list)
+     {
+        EINA_INLIST_FOREACH(widgets_list, widget)
+          {
+             EINA_INLIST_FOREACH(widget->classes, class_st)
+               {
+                  EINA_INLIST_FOREACH(class_st->styles, layout)
+                    {
+                       if (layout->isAlias)
+                         {
+                            main_name = edje_edit_group_aliased_get(layout->obj, layout->full_group_name);
+                            layout->main_group = wm_style_object_find(widgets_list, main_name);
+                            if ((!layout->main_group) && (layouts_list))
+                              layout->main_group = _layout_object_find(layouts_list, main_name);
+
+                            if (layout->main_group)
+                              {
+                                 layout->main_group->aliasses = eina_list_append(layout->main_group->aliasses, layout);
+                                 evas_object_del(layout->obj);
+                                 layout->obj = NULL;
+                              }
+                         }
+                    }
+               }
+          }
+     }
+   return true;
+}
 
 #undef WM_WIDGET_NAME_GET
 #undef WM_CLASS_NAME_GET
