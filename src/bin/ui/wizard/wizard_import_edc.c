@@ -729,7 +729,6 @@ _genlist_content_get(void *data,
      return NULL;
 
    CHECK_ADD(obj, check);
-   elm_object_style_set(check, "live_view");
    elm_object_focus_allow_set(check, false);
    elm_check_state_set(check, widget_data->check);
    evas_object_smart_callback_add(check, "changed",
@@ -745,10 +744,8 @@ _wizart_widget_list_add(Evas_Object *parent)
    Widget_Item_Data *widget_item_data_iterator = widget_item_data;
 
    genlist = elm_genlist_add(parent);
-   elm_object_style_set(genlist, "dark");
 
    itc = elm_genlist_item_class_new();
-   itc->item_style = "wizard_widgetlist";
    itc->func.text_get = _genlist_label_get;
    itc->func.content_get = _genlist_content_get;
    itc->func.state_get = NULL;
