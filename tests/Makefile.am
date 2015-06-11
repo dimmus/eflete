@@ -83,7 +83,7 @@ LD = $(top_builddir)/src/bin/libete.a \
 @CHECK_LIBS@ \
 @EFL_LIBS@ \
 @ELEMENTARY_LIBS@ \
-${top_srcdir}/src/lib/libewe.la \
+${top_builddir}/src/lib/libewe.la \
 @ENVENTOR_LIBS@
 
 ewe_init_test_SOURCES = \
