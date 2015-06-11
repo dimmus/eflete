@@ -632,7 +632,6 @@ _on_style_clicked_double(void *data,
    elm_genlist_longpress_timeout_set(gl_parts, 0.2);
    evas_object_data_set(gl_parts, NAVIFRAME_DATA_KEY, nf);
    evas_object_data_set(gl_parts, TABS_DATA_KEY, tabs);
-   elm_object_style_set(gl_parts, "dark");
    elm_genlist_reorder_mode_set(gl_parts, true);
    elm_genlist_select_mode_set(gl_parts, ELM_OBJECT_SELECT_MODE_DEFAULT);
    evas_object_smart_callback_add(tabs, "wl,part,back", _unset_cur_style, pr);
@@ -769,7 +768,6 @@ _on_widget_clicked_double(void *data,
 
    gl_class = elm_genlist_add(nf);
    evas_object_data_set(gl_class, NAVIFRAME_DATA_KEY, nf);
-   elm_object_style_set(gl_class, "dark");
    elm_genlist_select_mode_set(gl_class, ELM_OBJECT_SELECT_MODE_ALWAYS);
    evas_object_size_hint_align_set(gl_class, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(gl_class, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -911,7 +909,6 @@ ui_widget_list_add(Evas_Object *parent)
    evas_object_size_hint_weight_set(nf_##TYPE, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
     \
    gl_##TYPE = elm_genlist_add(nf_##TYPE); \
-   elm_object_style_set(gl_##TYPE, "dark"); \
    evas_object_size_hint_align_set(gl_##TYPE, \
                                    EVAS_HINT_FILL, \
                                    EVAS_HINT_FILL); \
