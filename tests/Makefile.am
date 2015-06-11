@@ -267,6 +267,7 @@ test_widget_manager/wm_style_copy.c \
 test_widget_manager/wm_style_free.c \
 test_widget_manager/wm_style_data_reload.c \
 test_widget_manager/wm_style_object_find.c \
+test_widget_manager/wm_styles_build_alias.c \
 test_widget_manager/wm_widget_add.c \
 test_widget_manager/wm_widget_free.c \
 test_widget_manager/wm_widget_list_free.c \

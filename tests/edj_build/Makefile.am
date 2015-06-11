@@ -56,6 +56,7 @@ check: Makefile
 	$(builddir)/ui_signal_list_data_set.edj \
 	$(builddir)/ui_signal_list_data_unset.edj \
 	$(builddir)/wm_style_object_find.edj \
+	$(builddir)/wm_styles_build_alias.edj \
 	$(builddir)/wm_widget_list_objects_load.edj \
 	$(builddir)/wm_widget_list_new.edj \
 	$(builddir)/wm_style_copy.edj \
