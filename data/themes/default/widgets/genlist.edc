@@ -8,6 +8,149 @@
 #define LIST_ITEM_REORDERED_COLOR 200 150 0 255
 
 group { name: "elm/genlist/item/default/default";
+   data {
+      item: "texts" "elm.text";
+      item: "treesize" "15";
+      item: "contents" "elm.swallow.icon elm.swallow.end";
+      item: "stacking" "above";
+      item: "selectraise" "on";
+   }
+   parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+            rel2 {
+               offset: -1 -2;
+            }
+         }
+         description { state: "selected" 0.0;
+            color: 58 110 155 255;
+            rel2 {
+               offset: -1 -2;
+            }
+         }
+         description { state: "reorder" 0.0;
+            color: 58 110 155 255;
+            rel2 {
+               offset: -1 -2;
+            }
+         }
+      }
+      part { name: "elm.swallow.icon";
+         type: SWALLOW;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 19 19;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               offset: 6 3;
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -1 -4;
+            }
+         }
+      }
+      part { name: "separator";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            min: 0 1;
+            max: -1 1;
+            color: 68 68 68 255;
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            min: 0 26;
+            color: 214 214 214 255;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 0;
+               to_x: "elm.swallow.icon";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -7 -1;
+               to_x: "elm.swallow.end";
+            }
+            text {
+               font: "PT";
+               size: 12;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "elm.swallow.end";
+         type: SWALLOW;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 0 3;
+            }
+            rel2 {
+               offset: -7 -4;
+            }
+         }
+      }
+      part { name: "elm.swallow.pad";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 0 3;
+            }
+            rel2 {
+               offset: -1 -4;
+            }
+         }
+      }
+      part { name: "disclip";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+   }
+   programs {
+      program { name: "selected";
+         signal: "elm,state,selected";
+         source: "elm";
+         action: STATE_SET "selected" 0.00;
+         target: "bg";
+      }
+      program { name: "unselected";
+         signal: "elm,state,unselected";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+      }
+      program { name: "reorder";
+         signal: "elm,state,reorder,enable";
+         source: "elm";
+         action: STATE_SET "reorder" 0.00;
+         target: "bg";
+      }
+      program { name: "unreorder";
+         signal: "elm,state,reorder,disable";
+         source: "elm";
+         action: STATE_SET "selected" 0.00;
+         target: "bg";
+         after: "selected";
+      }
+   }
+}
+
+group { name: "elm/genlist/item/default1/default";
    data.item: "stacking" "above";
    data.item: "selectraise" "on";
    data.item: "texts" "elm.text";
@@ -217,7 +360,7 @@ group { name: "elm/genlist/item/default/default";
 }
 
 group { name: "elm/genlist/item/program_after/default";
-   inherit: "elm/genlist/item/default/default";
+   inherit: "elm/genlist/item/default1/default";
    parts{
       part { name: "base";
          description { state: "default" 0.0;
@@ -532,7 +675,7 @@ group { name: "elm/genlist/tree/tree/default";
 }
 
 group { name: "elm/genlist/tree/container/default";
-   inherit:"elm/genlist/item/default/default";
+   inherit:"elm/genlist/item/default1/default";
    data.item: "contents" "elm.swallow.icon elm.swallow.end swallow.add";
    images {
       image: "icon-add.png" COMP;
@@ -685,7 +828,7 @@ group { name: "elm/genlist/tree/container/default";
 }
 
 group { name: "elm/genlist/item/signals/default";
-   inherit: "elm/genlist/item/default/default";
+   inherit: "elm/genlist/item/default1/default";
    data.item: "texts" "elm.text elm.text.source elm.text.program";
    parts {
       part { name: "pad.texts";
@@ -886,7 +1029,7 @@ group { name: "elm/genlist/item/signals/default";
 }
 
 group { name: "elm/genlist/item/tween/default";
-   inherit: "elm/genlist/item/default/default";
+   inherit: "elm/genlist/item/default1/default";
    parts {
       part { name: "bg";
          type: RECT;
@@ -948,7 +1091,7 @@ group { name: "elm/genlist/item/tween/default";
 }
 
 group { name: "elm/genlist/item/level1/default";
-    inherit:"elm/genlist/item/default/default";
+    inherit:"elm/genlist/item/default1/default";
     images {
       image: "treemenu-lvl1-item-current-pressed.png" COMP;
       image: "treemenu-lvl1-item-current-bg.png" COMP;
@@ -995,7 +1138,7 @@ group { name: "elm/genlist/item/level1/default";
 }
 
 group { name: "elm/genlist/item/level2/default";
-   inherit:"elm/genlist/item/default/default";
+   inherit:"elm/genlist/item/default1/default";
    parts {
      part { name: "base";
          type: IMAGE;
@@ -1029,7 +1172,7 @@ group { name: "elm/genlist/item/level2/default";
 }
 
 group { name: "elm/genlist/item/level3/default";
-    inherit:"elm/genlist/item/default/default";
+    inherit:"elm/genlist/item/default1/default";
    parts {
       part { name: "base";
          description { state: "default" 0.0;
@@ -1082,7 +1225,7 @@ group { name: "elm/genlist/item/usage_state/default";
 }
 
 group { name: "elm/genlist/item/level4/default";
-   inherit:"elm/genlist/item/default/default";
+   inherit:"elm/genlist/item/default1/default";
    parts {
       part { name: "base";
          description { state: "default" 0.0;
