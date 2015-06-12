@@ -787,6 +787,7 @@ group { name: "elm/frame/base/live_view";
             rel2 {
                relative: 0.0 0.0;
                to: "padding.bottom";
+               offset: -1 -7;
             }
          }
          description { state: "collapsed" 0.0;
