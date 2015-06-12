@@ -544,7 +544,7 @@ static Evas_Object *
 _dir_item_add(Evas_Object *parent, Wizard_Import_Edj_Win *wiew)
 {
    Evas_Object *item, *button, *entry, *ic;
-   Item_Mod_Callback_Data *c_data = mem_malloc(sizeof(Item_Mod_Callback_Data));
+   Item_Mod_Callback_Data *c_data = mem_calloc(1, sizeof(Item_Mod_Callback_Data));
    if (!c_data) return NULL;
 
    item = elm_layout_add(parent);

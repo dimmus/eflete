@@ -326,7 +326,7 @@ wizard_import_common_add(const char *layout_name)
    Wizard_Import_Edj_Win *wiew;
    App_Data *ap = app_data_get();
 
-   wiew = (Wizard_Import_Edj_Win *)mem_malloc(sizeof(Wizard_Import_Edj_Win));
+   wiew = (Wizard_Import_Edj_Win *)mem_calloc(1, sizeof(Wizard_Import_Edj_Win));
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
 
    mwin = mw_add(_on_cancel, wiew);

@@ -97,7 +97,7 @@ _groupedit_smart_add(Evas_Object *o)
    evas_object_repeat_events_set(priv->obj_area.obj, true);
    priv->obj_area.visible = false;
    priv->obj_area.show_now = false;
-   priv->obj_area.geom = (Groupedit_Geom *)mem_malloc(sizeof(Groupedit_Geom));
+   priv->obj_area.geom = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
    priv->separated = false;
    priv->selected = NULL;
    priv->to_select = NULL;

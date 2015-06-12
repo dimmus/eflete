@@ -334,7 +334,7 @@ _config_default_new(void)
 {
    Config *conf = NULL;
 
-   conf = mem_malloc(sizeof(Config));
+   conf = mem_calloc(1, sizeof(Config));
    conf->window.x =           0;
    conf->window.y =           0;
    conf->window.w =           1366;

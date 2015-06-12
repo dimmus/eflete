@@ -785,7 +785,7 @@ shortcuts_profile_load(App_Data *ap, Profile *profile)
         key->keycode = sc->keycode;
         key->modifiers = sc->modifiers;
 
-        sc_func = mem_malloc(sizeof(Shortcut_Function));
+        sc_func = mem_calloc(1, sizeof(Shortcut_Function));
         sc_func->keyname = sc->keyname;
         sc_func->keycode = sc->keycode;
         sc_func->modifiers = sc->modifiers;
