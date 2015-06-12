@@ -375,7 +375,7 @@ genlist_item_classes_init()
    if (!_itc_group)
      {
         _itc_group = elm_genlist_item_class_new();
-        _itc_group->item_style = "level1";
+        _itc_group->item_style = "title";
         _itc_group->func.text_get = _grid_group_item_label_get;
         _itc_group->func.content_get = NULL;
         _itc_group->func.state_get = NULL;

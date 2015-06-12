@@ -287,7 +287,7 @@ _form_left_side(Preferences *preference)
    if (!_itc)
      {
         _itc = elm_genlist_item_class_new();
-        _itc->item_style = "level1";
+        _itc->item_style = "title";
         _itc->func.text_get = _item_label_get;
         _itc->func.content_get = NULL;
         _itc->func.state_get = NULL;

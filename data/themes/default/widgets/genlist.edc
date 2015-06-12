@@ -150,7 +150,7 @@ group { name: "elm/genlist/item/default/default";
    }
 }
 
-group { name: "elm/genlist/item/level1/default";
+group { name: "elm/genlist/item/title/default";
    data {
       item: "texts" "elm.text";
       item: "selectraise" "on";
