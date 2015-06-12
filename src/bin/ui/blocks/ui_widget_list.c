@@ -749,7 +749,7 @@ _on_widget_clicked_double(void *data,
    if (!_itc_class)
      {
         _itc_class = elm_genlist_item_class_new();
-        _itc_class->item_style = "level2";
+        _itc_class->item_style = "group_index";
         _itc_class->func.text_get = _item_class_label_get;
         _itc_class->func.content_get = NULL;
         _itc_class->func.state_get = NULL;
@@ -775,7 +775,7 @@ _on_widget_clicked_double(void *data,
    EINA_INLIST_FOREACH(classes, _class)
      {
         glit_class = elm_genlist_item_append(gl_class, _itc_class, _class,
-                                             NULL, ELM_GENLIST_ITEM_NONE,
+                                             NULL, ELM_GENLIST_ITEM_GROUP,
                                              NULL, NULL);
         styles = _class->styles;
 
@@ -831,7 +831,7 @@ ui_widget_list_class_data_reload(Evas_Object *gl_classes, Eina_Inlist *classes)
    if (!_itc_class)
      {
         _itc_class = elm_genlist_item_class_new();
-        _itc_class->item_style = "level2";
+        _itc_class->item_style = "group_index";
         _itc_class->func.text_get = _item_class_label_get;
         _itc_class->func.content_get = NULL;
         _itc_class->func.state_get = NULL;
