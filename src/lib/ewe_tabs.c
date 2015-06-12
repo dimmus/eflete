@@ -280,6 +280,7 @@ _ewe_tabs_active_item_set(Eo                  *obj,
          evas_object_hide(sd->active_item->content);
          elm_layout_signal_emit(sd->active_item->head, "ewe,tabs,item,deactivate", "ewe");
          sd->active_item->content = elm_layout_content_unset(sd->layout, "content_area");
+         elm_widget_sub_object_add(obj, sd->active_item->content);
      }
 
    elm_layout_signal_emit(item->head, "ewe,tabs,item,activate", "ewe");
