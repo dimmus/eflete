@@ -133,22 +133,26 @@ _random_name_generate(char *part_name, unsigned int length)
 /*========================================================*/
 /*               SHORTCUTS CB FUNCTION                    */
 /*========================================================*/
-#define PART_ADD(TYPE, FUNC) \
-Eina_Bool \
-_##FUNC##_part_add_cb(App_Data *app) \
-{ \
+
+#define PART_FUNCTIONALITY(TYPE, DATA, RET) \
    SKIP_IN_ENVENTOR_MODE \
    Evas_Object *workspace = app->workspace; \
    Evas_Object *widget_list = ui_block_widget_list_get(app); \
    Style *style = workspace_edit_object_get(workspace); \
-   if (!style) return false; \
+   if (!style) return RET; \
    char name[9]; \
    _random_name_generate(name, 9); \
-   if (workspace_edit_object_part_add(workspace, name, TYPE, NULL)) \
+   if (workspace_edit_object_part_add(workspace, name, TYPE, DATA)) \
      ui_widget_list_part_add(widget_list, style, name); \
    history_diff_add(style->obj, PART_TARGET, ADD, name); \
    live_view_widget_style_set(app->live_view, app->project, style); \
-   project_changed(true); \
+   project_changed(true);
+
+#define PART_ADD(TYPE, FUNC) \
+Eina_Bool \
+_##FUNC##_part_add_cb(App_Data *app) \
+{ \
+   PART_FUNCTIONALITY(TYPE, NULL, true) \
    return true; \
 }
 
@@ -158,10 +162,31 @@ PART_ADD(EDJE_PART_TYPE_TEXTBLOCK, textblock)
 PART_ADD(EDJE_PART_TYPE_SPACER, spacer)
 PART_ADD(EDJE_PART_TYPE_TEXT, text)
 PART_ADD(EDJE_PART_TYPE_RECTANGLE, rectangle)
-PART_ADD(EDJE_PART_TYPE_IMAGE, image)
 PART_ADD(EDJE_PART_TYPE_PROXY, proxy)
 PART_ADD(EDJE_PART_TYPE_GROUP, group)
 PART_ADD(EDJE_PART_TYPE_BOX, box)
+
+/* different adding is for image */
+static void
+_on_image_editor_done(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info)
+{
+   char *selected = (char *)event_info;
+   App_Data *app = (App_Data *)data;
+   if (!selected) return;
+   PART_FUNCTIONALITY(EDJE_PART_TYPE_IMAGE, selected, );
+}
+
+Eina_Bool
+_image_part_choose_cb(App_Data *data)
+{
+   Evas_Object *img_edit;
+   App_Data *ap = (App_Data *)data;
+   img_edit = image_editor_window_add(ap->project, SINGLE);
+   evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED, _on_image_editor_done, ap);
+   return true;
+}
 
 /* this one will delete part or style or layout or state.  */
 TODO("move this code or some of it's part to Connector")
@@ -354,6 +379,15 @@ _open_edj_cb(App_Data *app __UNUSED__)
 }
 
 Eina_Bool
+_import_edj_cb(App_Data *app __UNUSED__)
+{
+   if (!project_close(app))
+     return false;
+   wizard_import_edj_add(app);
+   return true;
+}
+
+Eina_Bool
 _save_cb(App_Data *app __UNUSED__)
 {
    project_save();
@@ -363,7 +397,7 @@ _save_cb(App_Data *app __UNUSED__)
 Eina_Bool
 _save_as_cb(App_Data *app)
 {
-   if (!app) return false;
+   if ((!app) || (!app->project)) return false;
    project_export_develop();
    return true;
 }
@@ -371,7 +405,7 @@ _save_as_cb(App_Data *app)
 Eina_Bool
 _export_cb(App_Data *app)
 {
-   if (!app) return false;
+   if ((!app) || (!app->project)) return false;
    project_export_edc_project();
    return true;
 }
@@ -567,6 +601,7 @@ static Function_Set _sc_func_set_init[] =
      {"new_theme", _new_theme_cb},
 //     {"open_edc", _open_edc_cb},
      {"open_edj", _open_edj_cb},
+     {"import_edj", _import_edj_cb},
      {"save", _save_cb},
      {"save_as", _save_as_cb},
      {"export", _export_cb},
@@ -576,7 +611,7 @@ static Function_Set _sc_func_set_init[] =
      {"part.add.textblock", _textblock_part_add_cb},
      {"part.add.text", _text_part_add_cb},
      {"part.add.rectangle", _rectangle_part_add_cb},
-     {"part.add.image", _image_part_add_cb},
+     {"part.add.image", _image_part_choose_cb},
      {"part.add.proxy", _proxy_part_add_cb},
      {"part.add.spacer", _spacer_part_add_cb},
      {"part.add.group", _group_part_add_cb},
@@ -693,6 +728,7 @@ _eina_hash_free(void *data)
 /*=============================================*/
 
 #undef PART_ADD
+#undef PART_FUNCTIONALITY
 
 Eina_Bool
 shortcuts_main_add(App_Data *ap)
@@ -749,7 +785,7 @@ shortcuts_profile_load(App_Data *ap, Profile *profile)
         key->keycode = sc->keycode;
         key->modifiers = sc->modifiers;
 
-        sc_func = mem_malloc(sizeof(Shortcut_Function));
+        sc_func = mem_calloc(1, sizeof(Shortcut_Function));
         sc_func->keyname = sc->keyname;
         sc_func->keycode = sc->keycode;
         sc_func->modifiers = sc->modifiers;

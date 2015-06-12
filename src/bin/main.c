@@ -99,6 +99,8 @@ elm_main(int argc, char **argv)
                   wm_layouts_list_objects_load(ap->project->layouts,
                                                evas_object_evas_get(ap->win),
                                                ap->project->mmap_file);
+                  wm_styles_build_alias(ap->project->widgets,
+                                        ap->project->layouts);
 
                   if (!eina_inlist_count(ap->project->widgets))
                     ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);

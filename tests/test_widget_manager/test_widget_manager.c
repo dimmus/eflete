@@ -89,6 +89,10 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, wm_layouts_list_objects_load_test_n1);
    tcase_add_test(tcase, wm_layouts_list_objects_load_test_n2);
    tcase_add_test(tcase, wm_layouts_list_objects_load_test_n3);
+   tcase_add_test(tcase, wm_styles_build_alias_test_p1);
+   tcase_add_test(tcase, wm_styles_build_alias_test_p2);
+   tcase_add_test(tcase, wm_styles_build_alias_test_n);
+
    tcase_add_test(tcase, wm_style_copy_test_p);
    tcase_add_test(tcase, wm_style_copy_test_n1);
    tcase_add_test(tcase, wm_style_copy_test_n2);

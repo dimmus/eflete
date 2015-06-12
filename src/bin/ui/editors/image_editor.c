@@ -375,7 +375,7 @@ genlist_item_classes_init()
    if (!_itc_group)
      {
         _itc_group = elm_genlist_item_class_new();
-        _itc_group->item_style = "level1";
+        _itc_group->item_style = "title";
         _itc_group->func.text_get = _grid_group_item_label_get;
         _itc_group->func.content_get = NULL;
         _itc_group->func.state_get = NULL;
@@ -384,7 +384,6 @@ genlist_item_classes_init()
    if (!_itc_part)
      {
         _itc_part = elm_genlist_item_class_new();
-        _itc_part->item_style = "level3";
         _itc_part->func.text_get = _grid_group_item_label_get;
         _itc_part->func.content_get = NULL;
         _itc_part->func.state_get = NULL;

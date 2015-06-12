@@ -486,6 +486,19 @@ wm_layouts_list_objects_load(Eina_Inlist *layouts_list,
                              Eina_File *mmap_file);
 
 /**
+ * Link all aliased and alias groups together.
+ *
+ * @param widget_list A list of widget to load data.
+ * @param layouts_list A list of layouts, which stored in file.
+ * @return EINA_TRUE if alias building was successful.
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Bool
+wm_styles_build_alias(Eina_Inlist *widgets_list,
+                      Eina_Inlist *layouts_list);
+
+/**
  * Return the string with the name of the part type by the giving id (int).
  * @note the returned string should not be deleted!
  *

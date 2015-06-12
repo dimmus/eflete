@@ -24,7 +24,7 @@ _on_list_swallow_check(void *data,
                        Evas_Object *obj,
                        void *ei __UNUSED__)
 {
-   Evas_Object *rect, *check = NULL, *box_item, *ch;
+   Evas_Object *rect, *check = NULL, *ch;
    Eina_List *item_list = NULL, *it;
    Eina_Bool all_checks = true;
    Elm_Object_Item *item = NULL;
@@ -32,7 +32,7 @@ _on_list_swallow_check(void *data,
    Prop_Data *pd = (Prop_Data *)data;
    Evas_Object *object = pd->live_object;
    const char *lists_part_name = NULL;
-   const char *part_name = evas_object_data_get(obj, PART_NAME);
+   const char *part_name = elm_object_part_text_get(obj, NULL);
    check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
    item = elm_list_first_item_get(object);
 
@@ -52,9 +52,8 @@ _on_list_swallow_check(void *data,
              elm_object_item_part_content_set(item, lists_part_name, rect);
              item_list = elm_box_children_get(pd->prop_swallow.swallows);
 
-             EINA_LIST_FOREACH(item_list, it, box_item)
+             EINA_LIST_FOREACH(item_list, it, ch)
                {
-                  ch = elm_object_part_content_get(box_item, "info");
                   if (elm_check_state_get(ch) == false)
                     all_checks = false;
                }
@@ -78,14 +77,14 @@ _on_list_text_check(void *data,
                     Evas_Object *obj,
                     void *ei __UNUSED__)
 {
-   Evas_Object *check = NULL, *box_item, *ch;
+   Evas_Object *check = NULL, *ch;
    Eina_List *item_list = NULL, *it;
    Eina_Bool all_checks = true;
    Elm_Object_Item *item = NULL;
 
    Prop_Data *pd = (Prop_Data *)data;
    Evas_Object *object = pd->live_object;
-   const char *part_name = evas_object_data_get(obj, PART_NAME);
+   const char *part_name = elm_object_part_text_get(obj, NULL);
    check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
    item = elm_list_first_item_get(object);
 
@@ -96,9 +95,8 @@ _on_list_text_check(void *data,
              elm_object_item_part_text_set(item, part_name, _("Text Example"));
              item_list = elm_box_children_get(pd->prop_text.texts);
 
-             EINA_LIST_FOREACH(item_list, it, box_item)
+             EINA_LIST_FOREACH(item_list, it, ch)
                {
-                  ch = elm_object_part_content_get(box_item, "info");
                   if (elm_check_state_get(ch) == false)
                     all_checks = false;
                }

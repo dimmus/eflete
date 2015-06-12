@@ -36,6 +36,7 @@ collections {
 }
 group { name: "elm/radio/base/def";
    alias: "elm/radio/base/aliased";
+   alias: "layout_aliased";
    images {
       image: "radio_base.png" COMP;
       image: "radio.png" COMP;
@@ -356,6 +357,7 @@ group { name: "load/layout/test";
    }
 }
 group { name: "layout/table";
+   alias: "elm/widget/widget/widget";
    parts {
      part { name: "table";
         type: TABLE;

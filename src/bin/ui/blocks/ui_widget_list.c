@@ -601,7 +601,6 @@ _on_style_clicked_double(void *data,
    if (!_itc_part)
      {
         _itc_part = elm_genlist_item_class_new();
-        _itc_part->item_style = "level4";
         _itc_part->func.text_get = _item_part_label_get;
         _itc_part->func.content_get = _item_part_content_get;
         _itc_part->func.state_get = NULL;
@@ -632,7 +631,6 @@ _on_style_clicked_double(void *data,
    elm_genlist_longpress_timeout_set(gl_parts, 0.2);
    evas_object_data_set(gl_parts, NAVIFRAME_DATA_KEY, nf);
    evas_object_data_set(gl_parts, TABS_DATA_KEY, tabs);
-   elm_object_style_set(gl_parts, "dark");
    elm_genlist_reorder_mode_set(gl_parts, true);
    elm_genlist_select_mode_set(gl_parts, ELM_OBJECT_SELECT_MODE_DEFAULT);
    evas_object_smart_callback_add(tabs, "wl,part,back", _unset_cur_style, pr);
@@ -750,7 +748,7 @@ _on_widget_clicked_double(void *data,
    if (!_itc_class)
      {
         _itc_class = elm_genlist_item_class_new();
-        _itc_class->item_style = "level2";
+        _itc_class->item_style = "group_index";
         _itc_class->func.text_get = _item_class_label_get;
         _itc_class->func.content_get = NULL;
         _itc_class->func.state_get = NULL;
@@ -760,7 +758,6 @@ _on_widget_clicked_double(void *data,
    if (!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
-        _itc_style->item_style = "level3";
         _itc_style->func.text_get = _item_style_label_get;
         _itc_style->func.content_get = _item_style_content_get;
         _itc_style->func.state_get = NULL;
@@ -769,7 +766,6 @@ _on_widget_clicked_double(void *data,
 
    gl_class = elm_genlist_add(nf);
    evas_object_data_set(gl_class, NAVIFRAME_DATA_KEY, nf);
-   elm_object_style_set(gl_class, "dark");
    elm_genlist_select_mode_set(gl_class, ELM_OBJECT_SELECT_MODE_ALWAYS);
    evas_object_size_hint_align_set(gl_class, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(gl_class, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -777,7 +773,7 @@ _on_widget_clicked_double(void *data,
    EINA_INLIST_FOREACH(classes, _class)
      {
         glit_class = elm_genlist_item_append(gl_class, _itc_class, _class,
-                                             NULL, ELM_GENLIST_ITEM_NONE,
+                                             NULL, ELM_GENLIST_ITEM_GROUP,
                                              NULL, NULL);
         styles = _class->styles;
 
@@ -833,7 +829,7 @@ ui_widget_list_class_data_reload(Evas_Object *gl_classes, Eina_Inlist *classes)
    if (!_itc_class)
      {
         _itc_class = elm_genlist_item_class_new();
-        _itc_class->item_style = "level2";
+        _itc_class->item_style = "group_index";
         _itc_class->func.text_get = _item_class_label_get;
         _itc_class->func.content_get = NULL;
         _itc_class->func.state_get = NULL;
@@ -843,7 +839,6 @@ ui_widget_list_class_data_reload(Evas_Object *gl_classes, Eina_Inlist *classes)
    if (!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
-        _itc_style->item_style = "level3";
         _itc_style->func.text_get = _item_style_label_get;
         _itc_style->func.content_get = NULL;
         _itc_style->func.state_get = NULL;
@@ -884,7 +879,7 @@ ui_widget_list_add(Evas_Object *parent)
    if (!_itc_widget)
      {
         _itc_widget = elm_genlist_item_class_new();
-        _itc_widget->item_style = "level1";
+        _itc_widget->item_style = "title";
         _itc_widget->func.text_get = _item_widget_label_get;
         _itc_widget->func.content_get = NULL;
         _itc_widget->func.state_get = NULL;
@@ -893,7 +888,7 @@ ui_widget_list_add(Evas_Object *parent)
    if (!_itc_layout)
      {
         _itc_layout = elm_genlist_item_class_new();
-        _itc_layout->item_style = "level1";
+        _itc_layout->item_style = "title";
         _itc_layout->decorate_item_style = "mode";
         _itc_layout->func.text_get = _item_layout_label_get;
         _itc_layout->func.content_get = _item_style_content_get;
@@ -911,7 +906,6 @@ ui_widget_list_add(Evas_Object *parent)
    evas_object_size_hint_weight_set(nf_##TYPE, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
     \
    gl_##TYPE = elm_genlist_add(nf_##TYPE); \
-   elm_object_style_set(gl_##TYPE, "dark"); \
    evas_object_size_hint_align_set(gl_##TYPE, \
                                    EVAS_HINT_FILL, \
                                    EVAS_HINT_FILL); \

@@ -83,7 +83,7 @@ LD = $(top_builddir)/src/bin/libete.a \
 @CHECK_LIBS@ \
 @EFL_LIBS@ \
 @ELEMENTARY_LIBS@ \
-${top_srcdir}/src/lib/libewe.la \
+${top_builddir}/src/lib/libewe.la \
 @ENVENTOR_LIBS@
 
 ewe_init_test_SOURCES = \
@@ -267,6 +267,7 @@ test_widget_manager/wm_style_copy.c \
 test_widget_manager/wm_style_free.c \
 test_widget_manager/wm_style_data_reload.c \
 test_widget_manager/wm_style_object_find.c \
+test_widget_manager/wm_styles_build_alias.c \
 test_widget_manager/wm_widget_add.c \
 test_widget_manager/wm_widget_free.c \
 test_widget_manager/wm_widget_list_free.c \

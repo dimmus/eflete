@@ -70,7 +70,10 @@ _on_scale_change(void *data,
    if (pd->live_object)
      {
         if (!strcmp("edje", pd->widget))
-          edje_object_scale_set(pd->live_object, pd->current_scale);
+          {
+             edje_object_scale_set(pd->live_object, pd->current_scale);
+             edje_object_calc_force(pd->live_object);
+          }
         else
           elm_object_scale_set(pd->live_object, pd->current_scale);
      }
@@ -81,16 +84,15 @@ _on_all_swallow_check(void *data,
                       Evas_Object *obj,
                       void *ei __UNUSED__)
 {
-   Evas_Object *check = NULL, *item = NULL;
+   Evas_Object *check = NULL;
    Eina_List *part_list = NULL, *part = NULL;
 
    Prop_Data *pd = (Prop_Data *)data;
    part_list = elm_box_children_get(pd->prop_swallow.swallows);
    if (!part_list) return;
 
-   EINA_LIST_FOREACH(part_list, part, item)
+   EINA_LIST_FOREACH(part_list, part, check)
      {
-        check = elm_object_part_content_get(item, "info");
         if (!elm_object_disabled_get(check))
           {
              elm_check_state_set(check, elm_check_state_get(obj));
@@ -106,7 +108,7 @@ _on_all_text_check(void *data,
                    Evas_Object *obj,
                    void *ei __UNUSED__)
 {
-   Evas_Object *check = NULL, *item = NULL;
+   Evas_Object *check = NULL;
    Eina_List *part_list = NULL, *part = NULL;
    Eina_Bool is_checked;
 
@@ -115,9 +117,8 @@ _on_all_text_check(void *data,
    if (!part_list) return;
 
    is_checked = elm_check_state_get(obj);
-   EINA_LIST_FOREACH(part_list, part, item)
+   EINA_LIST_FOREACH(part_list, part, check)
      {
-        check = elm_object_part_content_get(item, "info");
         if (elm_check_state_get(check) != is_checked)
           {
              elm_check_state_set(check, is_checked);
@@ -205,7 +206,6 @@ live_view_property_style_set(Evas_Object *property,
      }
    spinner = evas_object_data_get(pd->header, ITEM);
    elm_spinner_value_set(spinner, 100);
-   pd->current_scale = 1.0;
    evas_object_scale_set(pd->live_object, pd->current_scale);
    if (!pd->in_prog_edit)
      elm_object_part_content_set(parent, "elm.swallow.title", pd->header);
@@ -223,7 +223,6 @@ live_view_property_style_set(Evas_Object *property,
 
         CHECK_ADD(prop_box, pd->prop_swallow.check);
         elm_object_part_content_set(pd->prop_swallow.frame, "elm.swallow.check", pd->prop_swallow.check);
-        elm_object_style_set(pd->prop_swallow.check, "live_view");
 
         BOX_ADD(pd->prop_swallow.frame, pd->prop_swallow.swallows, false, false)
         elm_box_align_set(pd->prop_swallow.swallows, 0.5, 0.0);
@@ -237,12 +236,11 @@ live_view_property_style_set(Evas_Object *property,
    /* Texts UI setting*/
    if (!pd->prop_text.texts)
      {
-        FRAME_LIVE_VIEW_ADD(property, pd->prop_text.frame, true, _("Texts"), pd->visual);
+        FRAME_LIVE_VIEW_ADD(property, pd->prop_text.frame, true, _("Text"), pd->visual);
         elm_object_style_set(pd->prop_text.frame, "live_view");
 
         CHECK_ADD(prop_box, pd->prop_text.check);
         elm_object_part_content_set(pd->prop_text.frame, "elm.swallow.check", pd->prop_text.check);
-        elm_object_style_set(pd->prop_text.check, "live_view");
 
         BOX_ADD(pd->prop_text.frame, pd->prop_text.texts, false, false)
         elm_box_align_set(pd->prop_text.texts, 0.5, 0.0);
@@ -288,43 +286,32 @@ live_view_property_style_set(Evas_Object *property,
         if (part_type ==  EDJE_PART_TYPE_SWALLOW)
           {
              swallow_parts_exists = true;
-             elm_object_content_set(pd->prop_swallow.frame, pd->prop_swallow.swallows);
 
-             LAYOUT_PROP_ADD(pd->prop_swallow.swallows,
-                             part_name,
-                             "live_view",
-                             "1swallow")
-
-             CHECK_ADD(item, check);
+             CHECK_ADD(pd->prop_swallow.swallows, check);
+             elm_object_part_text_set(check, NULL, part_name);
 
              evas_object_smart_callback_add(check, "changed",
                                             evas_object_data_get(pd->live_object, SWALLOW_FUNC),
                                             pd);
              evas_object_data_set(check, PART_NAME, eina_stringshare_add(part_name));
 
-             elm_object_part_content_set(item, "info", check);
              if (!strcmp(part_name, "elm.swallow.action_area")) elm_object_disabled_set(check, true);
-             elm_box_pack_end(pd->prop_swallow.swallows, item);
+             elm_box_pack_end(pd->prop_swallow.swallows, check);
           }
         else if ((part_type ==  EDJE_PART_TYPE_TEXT) ||
                  (part_type ==  EDJE_PART_TYPE_TEXTBLOCK))
           {
              text_parts_exists = true;
 
-             LAYOUT_PROP_ADD(pd->prop_text.texts,
-                             part_name,
-                             "live_view",
-                             "1swallow")
-
-             CHECK_ADD(item, check);
+             CHECK_ADD(pd->prop_text.texts, check);
+             elm_object_part_text_set(check, NULL, part_name);
 
              evas_object_smart_callback_add(check, "changed",
                                             evas_object_data_get(pd->live_object, TEXT_FUNC),
                                             pd);
              evas_object_data_set(check, PART_NAME, eina_stringshare_add(part_name));
 
-             elm_object_part_content_set(item, "info", check);
-             elm_box_pack_end(pd->prop_text.texts, item);
+             elm_box_pack_end(pd->prop_text.texts, check);
           }
      }
    edje_edit_string_list_free(part_list);
@@ -344,7 +331,7 @@ live_view_property_style_set(Evas_Object *property,
                              "signal")
 
              BUTTON_ADD(item, button, NULL);
-             ICON_STANDARD_ADD(button, ic, true, "impuls_in");
+             ICON_STANDARD_ADD(button, ic, false, "impuls_in");
              elm_object_part_content_set(button, NULL, ic);
 
              evas_object_smart_callback_add(button, "clicked",
@@ -444,7 +431,7 @@ live_view_property_free(Evas_Object *property)
 Eina_Bool
 live_view_property_style_unset(Evas_Object *property)
 {
-   Evas_Object *prop_box, *data, *check, *button;
+   Evas_Object *prop_box, *check, *button, *data;
    Eina_List *items_list = NULL, *l;
    Edje_Part_Type part_type;
    Eina_Stringshare *part_name, *string;
@@ -469,10 +456,9 @@ live_view_property_style_unset(Evas_Object *property)
         elm_check_state_set(check, false);
      }
 
-   EINA_LIST_FOREACH(items_list, l, data)
+   EINA_LIST_FOREACH(items_list, l, check)
      {
-        check = elm_object_part_content_unset(data, "info");
-        part_name = evas_object_data_get(check, PART_NAME);
+        part_name = elm_object_part_text_get(check, NULL);
         part_type = edje_edit_part_type_get(pd->style->obj, part_name);
         evas_object_smart_callback_del_full(check, "changed",
                                             evas_object_data_get(pd->live_object, SWALLOW_FUNC),
@@ -485,11 +471,7 @@ live_view_property_style_unset(Evas_Object *property)
              if (clean) clean(part_name, pd->live_object);
           }
 
-        eina_stringshare_del(part_name);
-        evas_object_data_del(check, PART_NAME);
-
         evas_object_del(check);
-        evas_object_del(data);
      }
    items_list = eina_list_free(items_list);
 
@@ -501,19 +483,12 @@ live_view_property_style_unset(Evas_Object *property)
         elm_check_state_set(check, false);
      }
 
-   EINA_LIST_FOREACH(items_list, l, data)
+   EINA_LIST_FOREACH(items_list, l, check)
      {
-        check = elm_object_part_content_unset(data, "info");
         evas_object_smart_callback_del_full(check, "changed",
                                             evas_object_data_get(pd->live_object, TEXT_FUNC),
                                             pd->live_object);
-
-        string = evas_object_data_get(check, PART_NAME);
-        eina_stringshare_del(string);
-        evas_object_data_del(check, PART_NAME);
-
         evas_object_del(check);
-        evas_object_del(data);
      }
    items_list = eina_list_free(items_list);
 

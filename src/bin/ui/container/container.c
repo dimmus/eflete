@@ -425,7 +425,7 @@ _container_smart_add(Evas_Object *o)
    priv->pad_left_top.h = 0;
    priv->pad_right_bottom.w = 0;
    priv->pad_right_bottom.h = 0;
-   priv->size = (Container_Geom *)mem_malloc(sizeof(Container_Geom));
+   priv->size = (Container_Geom *)mem_calloc(1, sizeof(Container_Geom));
    priv->size->w = 0;
    priv->size->h = 0;
    priv->handler_TL_pressed = false;
