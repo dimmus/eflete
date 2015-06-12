@@ -15,6 +15,9 @@ LT_INIT([win32-dll disable-static pic-only])
 dnl m4_define([package], "EFL\ Edje\ Theme\ Editor")
 m4_define([efl_version], [1.14.0])
 m4_define([elm_version], [1.14.0])
+m4_define([efl_version_max], [1.14.99])
+m4_define([elm_version_max], [1.14.99])
+
 m4_define([enventor_version], [0.4.0])
 
 EWE_INIT
@@ -66,28 +69,28 @@ PKG_PROG_PKG_CONFIG
 
 PKG_CHECK_MODULES([EFL],
    [
-    eina = efl_version
-    eet = efl_version
-    evas = efl_version
-    ecore = efl_version
-    ecore-input = efl_version
-    edje = efl_version
-    eo = efl_version
-    ecore-imf = efl_version
-    ecore-con = efl_version
-    ecore-audio = efl_version
-    eio = efl_version
-    eldbus = efl_version
-    efreet = efl_version
-    efreet-mime = efl_version
+    eina >= efl_version          eina < efl_version_max
+    eet >= efl_version           eet < efl_version_max
+    evas >= efl_version          evas < efl_version_max
+    ecore >= efl_version         ecore < efl_version_max
+    ecore-input >= efl_version   ecore-input < efl_version_max
+    edje >= efl_version          edje < efl_version_max
+    eo >= efl_version            eo < efl_version_max
+    ecore-imf >= efl_version     ecore-imf < efl_version_max
+    ecore-con >= efl_version     ecore-con < efl_version_max
+    ecore-audio >= efl_version   ecore-audio < efl_version_max
+    eio >= efl_version           eio < efl_version_max
+    eldbus >= efl_version        eldbus < efl_version_max
+    efreet >= efl_version        efreet < efl_version_max
+    efreet-mime >= efl_version   efreet-mime < efl_version_max
    ],
    [have_efl="${GREEN}yes${RESET}"],
-   [have_efl="${RED}no${RESET} (version < efl_version)"]
+   [have_efl="${RED}no${RESET} (version < efl_version or > efl_version_max)"]
 )
 
-PKG_CHECK_MODULES([ELEMENTARY], [elementary = elm_version],
+PKG_CHECK_MODULES([ELEMENTARY], [elementary >= elm_version elementary < elm_version_max],
    [have_elm="${GREEN}yes${RESET}"],
-   [have_elm="${RED}no${RESET} (version < elm_version)"])
+   [have_elm="${RED}no${RESET} (version < elm_version or > efl_version_max)"])
 
 PKG_CHECK_MODULES([CHECK], [check],
    [have_check="${GREEN}yes${RESET}"],
