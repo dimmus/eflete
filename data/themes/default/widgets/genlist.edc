@@ -1262,17 +1262,6 @@ group { name: "elm/genlist/item/level4/default";
 
 }
 
-group { name: "elm/genlist/item/wizard_widgetlist/default";
-    inherit:"elm/genlist/item/level4/default";
-   parts {
-      part { name: "base";
-         description { state: "default" 0.0;
-            color: 46 48 49 255;
-         }
-      }
-   }
-}
-
 group { name: "elm/genlist/item/level5/default";
    inherit:"elm/genlist/item/level4/default";
    parts {
