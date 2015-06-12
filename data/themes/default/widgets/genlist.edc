@@ -150,6 +150,92 @@ group { name: "elm/genlist/item/default/default";
    }
 }
 
+group { name: "elm/genlist/item/level1/default";
+   data {
+      item: "texts" "elm.text";
+      item: "selectraise" "on";
+   }
+   images {
+      image: "treemenu-lvl1-item-current-bg.png" COMP;
+      image: "treemenu-lvl1-item-current-pressed.png" COMP;
+   }
+   parts {
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image {
+               normal: "treemenu-lvl1-item-current-bg.png";
+               middle: DEFAULT;
+            }
+         }
+         description { state: "selected" 0.0;
+            image {
+               normal: "treemenu-lvl1-item-current-pressed.png";
+               middle: DEFAULT;
+            }
+         }
+         description { state: "reorder" 0.0;
+            image {
+               normal: "treemenu-lvl1-item-current-pressed.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            min: 0 26;
+            color: 214 214 214 255;
+            rel1 {
+               offset: 25 0;
+            }
+            rel2 {
+               offset: -7 -1;
+            }
+            text {
+               font: "PT";
+               size: 12;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "disclip";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+   }
+   programs {
+      program { name: "selected";
+         signal: "elm,state,selected";
+         source: "elm";
+         action: STATE_SET "selected" 0.00;
+         target: "bg";
+      }
+      program { name: "unselected";
+         signal: "elm,state,unselected";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+      }
+      program { name: "reorder";
+         signal: "elm,state,reorder,enable";
+         source: "elm";
+         action: STATE_SET "reorder" 0.00;
+         target: "bg";
+      }
+      program { name: "unreorder";
+         signal: "elm,state,reorder,disable";
+         source: "elm";
+         action: STATE_SET "selected" 0.00;
+         target: "bg";
+         after: "selected";
+      }
+   }
+}
+
 group { name: "elm/genlist/item/default1/default";
    data.item: "stacking" "above";
    data.item: "selectraise" "on";
@@ -1086,53 +1172,6 @@ group { name: "elm/genlist/item/tween/default";
          signal: "elm,state,reorder,disabled";
          source: "elm";
          after: "go_active";
-      }
-   }
-}
-
-group { name: "elm/genlist/item/level1/default";
-    inherit:"elm/genlist/item/default1/default";
-    images {
-      image: "treemenu-lvl1-item-current-pressed.png" COMP;
-      image: "treemenu-lvl1-item-current-bg.png" COMP;
-   }
-   parts {
-     part { name: "base";
-         type: IMAGE;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            fill.smooth: 0;
-            color: WHITE_VISIBLE_COLOR;
-            image {
-               normal: "treemenu-lvl1-item-current-bg.png";
-               border: 0 0 1 1;
-            }
-         }
-      }
-      part { name: "bg";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image {
-               normal: "treemenu-lvl1-item-current-pressed.png";
-               border: 0 0 1 1;
-            }
-            color: WHITE_VISIBLE_COLOR;
-            rel2.offset: 0 0;
-         }
-         description { state: "selected" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part { name: "base_border_top";
-         description { state: "default" 0.0;
-            visible: 0;
-         }
-      }
-      part { name: "base_border_bot";
-         description { state: "default" 0.0;
-            visible: 0;
-         }
       }
    }
 }
