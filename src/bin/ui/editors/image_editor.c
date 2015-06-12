@@ -384,7 +384,6 @@ genlist_item_classes_init()
    if (!_itc_part)
      {
         _itc_part = elm_genlist_item_class_new();
-        _itc_part->item_style = "level3";
         _itc_part->func.text_get = _grid_group_item_label_get;
         _itc_part->func.content_get = NULL;
         _itc_part->func.state_get = NULL;

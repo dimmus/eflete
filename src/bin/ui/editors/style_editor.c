@@ -737,7 +737,6 @@ _form_left_side(Style_Editor *style_edit)
    if (!_itc_tags)
      {
         _itc_tags= elm_genlist_item_class_new();
-        _itc_tags->item_style = "level3";
         _itc_tags->func.text_get = _item_tags_label_get;
         _itc_tags->func.content_get = NULL;
         _itc_tags->func.state_get = NULL;
