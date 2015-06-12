@@ -225,6 +225,7 @@ live_view_property_style_set(Evas_Object *property,
         elm_object_part_content_set(pd->prop_swallow.frame, "elm.swallow.check", pd->prop_swallow.check);
 
         BOX_ADD(pd->prop_swallow.frame, pd->prop_swallow.swallows, false, false)
+        elm_box_padding_set(pd->prop_swallow.swallows, 0, 7);
         elm_box_align_set(pd->prop_swallow.swallows, 0.5, 0.0);
         elm_object_content_set(pd->prop_swallow.frame, pd->prop_swallow.swallows);
         evas_object_hide(pd->prop_swallow.frame);
@@ -243,6 +244,7 @@ live_view_property_style_set(Evas_Object *property,
         elm_object_part_content_set(pd->prop_text.frame, "elm.swallow.check", pd->prop_text.check);
 
         BOX_ADD(pd->prop_text.frame, pd->prop_text.texts, false, false)
+        elm_box_padding_set(pd->prop_text.texts, 0, 7);
         elm_box_align_set(pd->prop_text.texts, 0.5, 0.0);
         elm_object_content_set(pd->prop_text.frame, pd->prop_text.texts);
         evas_object_hide(pd->prop_text.frame);
