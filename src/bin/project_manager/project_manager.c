@@ -346,6 +346,7 @@ _project_linked_images_copy(Project_Thread *worker)
    Edje_Edit_Image_Comp comp;
    Eina_Bool is_changed = false;
 
+   ecore_thread_main_loop_begin();
    ee = ecore_evas_buffer_new(0, 0);
    e = ecore_evas_get(ee);
    list = edje_file_collection_list(worker->project->saved_edj);
@@ -355,8 +356,10 @@ _project_linked_images_copy(Project_Thread *worker)
         evas_object_del(edje_edit_obj);
         ecore_evas_free(ee);
         edje_file_collection_list_free(list);
+        ecore_thread_main_loop_end();
         return false;
      }
+   ecore_thread_main_loop_end();
    edje_file_collection_list_free(list);
 
    list = edje_edit_images_list_get(edje_edit_obj);
@@ -1244,6 +1247,7 @@ pm_project_resource_export(Project *pro, const char* dir_path)
    Eina_Stringshare *dest;
    Eina_Stringshare *path = NULL;
 
+   ecore_thread_main_loop_begin();
    Ecore_Evas *ee = ecore_evas_buffer_new(0, 0);
    e = ecore_evas_get(ee);
    list = edje_file_collection_list(pro->dev);
@@ -1252,8 +1256,10 @@ pm_project_resource_export(Project *pro, const char* dir_path)
      {
         evas_object_del(edje_edit_obj);
         ecore_evas_free(ee);
+        ecore_thread_main_loop_end();
         return false;
      }
+   ecore_thread_main_loop_end();
    edje_edit_string_list_free(list);
    path = (dir_path) ? eina_stringshare_add(dir_path)
           : eina_stringshare_add(pro->develop_path);
