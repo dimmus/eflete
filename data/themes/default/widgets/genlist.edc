@@ -236,6 +236,48 @@ group { name: "elm/genlist/item/title/default";
    }
 }
 
+group { name: "elm/genlist/item/group_index/default";
+   data {
+      item: "texts" "elm.text";
+   }
+   parts {
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            min: 0 27;
+            image {
+               normal: "treemenu-lvl1-item-current-bg.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 214 214 214 255;
+            rel1 {
+               offset: 25 0;
+            }
+            rel2 {
+               offset: -11 -1;
+            }
+            text {
+               font: "PT";
+               size: 12;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "disclip";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+   }
+}
+
 group { name: "elm/genlist/item/default1/default";
    data.item: "stacking" "above";
    data.item: "selectraise" "on";
