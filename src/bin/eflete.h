@@ -110,6 +110,7 @@ struct _App_Data
    Project *project;
    History *history;
    Shortcut_Module *shortcuts; /**< Structure with data from shortcuts module */
+   Eina_List *nsimage_list;
 #ifdef HAVE_ENVENTOR
    Evas_Object *enventor;
    Eina_Bool enventor_mode : 1;

@@ -63,6 +63,7 @@ struct _Image_Editor
    Search_Data image_search_data;
    Search_Data usage_search_data;
    Evas_Object *tabs;
+   Eina_List *unapplied_list;
    struct {
       Ewe_Tabs_Item *tab;
       Evas_Object *genlist;
@@ -151,7 +152,10 @@ _image_editor_image_setup(Evas_Object *image,
    else
      {
         str = eina_stringshare_printf("edje/images/%i", it->id);
-        elm_image_file_set(image, img_edit->pr->dev, str);
+        if (it->id)
+          elm_image_file_set(image, img_edit->pr->dev, str);
+        else
+          elm_image_file_set(image, it->image_name, NULL);
         eina_stringshare_del(str);
      }
 }
@@ -615,17 +619,16 @@ _on_image_done(void *data,
              WIN_NOTIFY_ERROR(obj, _("Unable to add folder"))
              continue;
           }
-        if (edje_edit_image_add(style->obj, selected))
-          {
-             pm_save_to_dev(img_edit->pr, style, false);
-             it = _image_editor_gengrid_item_data_create(style->obj,
-                                                         ecore_file_file_get(selected));
-             item = elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
-                                            img_edit->group_items.linked,
-                                            _grid_sel, img_edit);
-             elm_gengrid_item_selected_set(item, true);
-             project_changed(false);
-          }
+        img_edit->unapplied_list = eina_list_append(img_edit->unapplied_list,
+                                                    eina_stringshare_add(selected));
+
+        it = (Item *)mem_malloc(sizeof(Item));
+        it->image_name = eina_stringshare_add(selected);
+        it->id = -1;
+        item = elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
+                                              img_edit->group_items.linked,
+                                              _grid_sel, img_edit);
+        elm_gengrid_item_selected_set(item, true);
      }
 del:
    ecore_job_add(_fs_del, img_edit);
@@ -823,6 +826,32 @@ _on_button_close_clicked_cb(void *data,
                             void *event_info __UNUSED__)
 {
    Image_Editor *img_edit = (Image_Editor *)data;
+   eina_list_free(img_edit->unapplied_list);
+   _image_editor_del(img_edit);
+}
+
+static void
+_on_button_apply_clicked_cb(void *data,
+                            Evas_Object *obj __UNUSED__,
+                            void *event_info __UNUSED__)
+{
+   Image_Editor *img_edit = (Image_Editor *)data;
+   Eina_List *l;
+   const char *it;
+   App_Data *ap = app_data_get();
+   Style *style = NULL;
+   GET_STYLE(img_edit->pr, style);
+
+   EINA_LIST_FOREACH(img_edit->unapplied_list, l, it)
+     {
+        if (edje_edit_image_add(style->obj, it))
+          {
+             pm_save_to_dev(img_edit->pr, style, false);
+             ap->nsimage_list = eina_list_append(ap->nsimage_list, it);
+          }
+     }
+   eina_list_free(img_edit->unapplied_list);
+   project_changed(false);
    _image_editor_del(img_edit);
 }
 
@@ -1196,6 +1225,12 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
                                   img_edit);
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.close_btn", button);
+
+   BUTTON_ADD(img_edit->layout, button, _("Apply"));
+   evas_object_smart_callback_add(button, "clicked", _on_button_apply_clicked_cb,
+                                  img_edit);
+   elm_object_part_content_set(img_edit->layout,
+                               "eflete.swallow.ok_btn", button);
 
    if (!gic)
      {
