@@ -289,7 +289,11 @@ live_view_property_style_set(Evas_Object *property,
           {
              swallow_parts_exists = true;
 
-             CHECK_ADD(pd->prop_swallow.swallows, check);
+             /* Weird behaviour!
+                If we have box or frame as a parent it doesn't work at all.
+                Check just doesn't show it's content (part name) but should.
+                This problem appears when we add first text part into group */
+             CHECK_ADD(property, check);
              elm_object_part_text_set(check, NULL, part_name);
 
              evas_object_smart_callback_add(check, "changed",
@@ -305,7 +309,11 @@ live_view_property_style_set(Evas_Object *property,
           {
              text_parts_exists = true;
 
-             CHECK_ADD(pd->prop_text.texts, check);
+             /* Weird behaviour!
+                If we have box or frame as a parent it doesn't work at all.
+                Check just doesn't show it's content (part name) but should.
+                This problem appears when we add first text part into group */
+             CHECK_ADD(property, check);
              elm_object_part_text_set(check, NULL, part_name);
 
              evas_object_smart_callback_add(check, "changed",
