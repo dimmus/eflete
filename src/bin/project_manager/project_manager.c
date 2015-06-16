@@ -759,10 +759,9 @@ _project_save(void *data,
    eina_file_close(worker->project->mmap_file);
 
    /* saving */
-   list = edje_edit_images_list_get(edje_edit_obj);
    dest = eina_stringshare_printf("%s/images", worker->project->develop_path);
-   _image_resources_export(list, dest, NULL, worker->project->dev, edje_edit_obj);
-   edje_edit_string_list_free(list);
+   _image_resources_export(worker->project->nsimage_list, dest, NULL, worker->project->dev, edje_edit_obj);
+   edje_edit_string_list_free(worker->project->nsimage_list);
    eina_stringshare_del(dest);
 
    list = edje_edit_sound_samples_list_get(edje_edit_obj);

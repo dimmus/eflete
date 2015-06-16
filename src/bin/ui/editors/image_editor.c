@@ -847,7 +847,7 @@ _on_button_apply_clicked_cb(void *data,
         if (edje_edit_image_add(style->obj, it))
           {
              pm_save_to_dev(img_edit->pr, style, false);
-             ap->nsimage_list = eina_list_append(ap->nsimage_list, it);
+             ap->project->nsimage_list = eina_list_append(ap->project->nsimage_list, it);
           }
      }
    eina_list_free(img_edit->unapplied_list);
