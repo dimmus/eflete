@@ -723,6 +723,7 @@ _project_save(void *data,
    GET_OBJ(worker->project, edje_edit_obj);
 
    PROGRESS_SEND("Saving...");
+   ecore_thread_main_loop_begin();
    WORKER_LOCK_TAKE;
       EINA_INLIST_FOREACH(worker->project->widgets, widget)
         {
@@ -786,6 +787,7 @@ _project_save(void *data,
      }
 
    WORKER_LOCK_RELEASE;
+   ecore_thread_main_loop_end();
 
    PROGRESS_SEND("Saved.");
    END_SEND(PM_PROJECT_SUCCESS);
