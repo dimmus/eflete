@@ -405,8 +405,10 @@ _project_linked_images_copy(Project_Thread *worker)
    edje_edit_string_list_free(list);
    eina_strbuf_free(strbuf_to);
    eina_strbuf_free(strbuf_from);
+   ecore_thread_main_loop_begin();
    evas_object_del(edje_edit_obj);
    ecore_evas_free(ee);
+   ecore_thread_main_loop_end();
    return true;
 }
 
@@ -980,6 +982,7 @@ _image_resources_export(Eina_List *images, Eina_Stringshare *destination,
               }
             else
               {
+                 ecore_thread_main_loop_begin();
                  im = evas_object_image_add(e);
                  id = edje_edit_image_id_get(edje_edit, image_name);
                  if (id < 0)
@@ -989,14 +992,19 @@ _image_resources_export(Eina_List *images, Eina_Stringshare *destination,
                    }
                  source_file = eina_stringshare_printf("edje/images/%i", id);
                  evas_object_image_file_set(im, dev, source_file);
+                 ecore_thread_main_loop_end();
                  evas_object_image_save(im, dest_file, NULL, NULL);
+                 ecore_thread_main_loop_begin();
                  evas_object_del(im);
+                 ecore_thread_main_loop_end();
               }
          }
        eina_stringshare_del(source_file);
        eina_stringshare_del(dest_file);
     }
+  ecore_thread_main_loop_begin();
   ecore_evas_free(ee);
+  ecore_thread_main_loop_end();
 
   return true;
 }
@@ -1288,8 +1296,10 @@ pm_project_resource_export(Project *pro, const char* dir_path)
    eina_stringshare_del(dest);
 
    eina_stringshare_del(path);
+   ecore_thread_main_loop_begin();
    evas_object_del(edje_edit_obj);
    ecore_evas_free(ee);
+   ecore_thread_main_loop_end();
 
    return true;
 }
