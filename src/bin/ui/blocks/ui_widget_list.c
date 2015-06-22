@@ -601,6 +601,7 @@ _on_style_clicked_double(void *data,
    if (!_itc_part)
      {
         _itc_part = elm_genlist_item_class_new();
+        _itc_part->item_style = "default";
         _itc_part->func.text_get = _item_part_label_get;
         _itc_part->func.content_get = _item_part_content_get;
         _itc_part->func.state_get = NULL;
@@ -758,6 +759,7 @@ _on_widget_clicked_double(void *data,
    if (!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
+        _itc_style->item_style = "default";
         _itc_style->func.text_get = _item_style_label_get;
         _itc_style->func.content_get = _item_style_content_get;
         _itc_style->func.state_get = NULL;
@@ -839,6 +841,7 @@ ui_widget_list_class_data_reload(Evas_Object *gl_classes, Eina_Inlist *classes)
    if (!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
+        _itc_style->item_style = "default";
         _itc_style->func.text_get = _item_style_label_get;
         _itc_style->func.content_get = NULL;
         _itc_style->func.state_get = NULL;

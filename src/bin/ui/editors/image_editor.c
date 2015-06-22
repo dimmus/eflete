@@ -384,6 +384,7 @@ genlist_item_classes_init()
    if (!_itc_part)
      {
         _itc_part = elm_genlist_item_class_new();
+        _itc_part->item_style = "default";
         _itc_part->func.text_get = _grid_group_item_label_get;
         _itc_part->func.content_get = NULL;
         _itc_part->func.state_get = NULL;
@@ -392,7 +393,7 @@ genlist_item_classes_init()
    if (!_itc_state)
      {
         _itc_state = elm_genlist_item_class_new();
-        _itc_state->item_style = "usage_state";
+        _itc_state->item_style = "default";
         _itc_state->func.text_get = _grid_group_item_label_get;
         _itc_state->func.content_get = NULL;
         _itc_state->func.state_get = NULL;
@@ -971,7 +972,6 @@ _image_usage_layout_create(Image_Editor *img_edit, Evas_Object *parent)
    evas_object_show(layout);
 
    genlist = elm_genlist_add(layout);
-   elm_object_style_set(genlist, "usage_list");
    evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(genlist);
