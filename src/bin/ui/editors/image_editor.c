@@ -598,6 +598,7 @@ _on_image_done(void *data,
    const Eina_List *images, *l;
    const char *selected = event_info;
    Style *style = NULL;
+   Uns_List *image = NULL;
 
    Image_Editor *img_edit = (Image_Editor *)data;
 
@@ -619,8 +620,11 @@ _on_image_done(void *data,
              WIN_NOTIFY_ERROR(obj, _("Unable to add folder"))
              continue;
           }
+        image = mem_malloc(sizeof(Uns_List));
+        image->data = (void *)eina_stringshare_add(selected);
+        image->act_type = ACTION_TYPE_ADD;
         img_edit->unapplied_list = eina_list_append(img_edit->unapplied_list,
-                                                    eina_stringshare_add(selected));
+                                                    image);
 
         it = (Item *)mem_malloc(sizeof(Item));
         it->image_name = eina_stringshare_add(selected);
@@ -688,14 +692,15 @@ _on_button_delete_clicked_cb(void *data,
    Elm_Object_Item *grid_item = NULL;
    Item *it = NULL;
    Eina_List *grid_list, *l, *l2;
-   int deleted = 0, notdeleted = 0;
+   int notdeleted = 0;
    Eina_List * in_use = NULL, *used_in = NULL;
    char *name;
    Edje_Part_Image_Use *item;
    Style *style = NULL;
    char buf[BUFF_MAX];
    int symbs = 0;
-   int images_to_del = 0;
+   Uns_List *image = NULL;
+   Eina_List *used;
 
    if (!img_edit->gengrid) return;
 
@@ -703,17 +708,20 @@ _on_button_delete_clicked_cb(void *data,
 
    grid_list = (Eina_List *)elm_gengrid_selected_items_get(img_edit->gengrid);
    if (!grid_list) return;
-   images_to_del = eina_list_count(grid_list);
-
 
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
         it = elm_object_item_data_get(grid_item);
-        if (edje_edit_image_del(style->obj, it->image_name))
+        used = edje_edit_image_usage_list_get(style->obj, it->image_name, EINA_TRUE);
+        if (!used)
           {
-             project_changed(false);
-             deleted++;
              elm_object_item_del(grid_item);
+
+             image = mem_malloc(sizeof(Uns_List));
+             image->data = (void *)eina_stringshare_add(it->image_name);
+             image->act_type = ACTION_TYPE_DEL;
+             img_edit->unapplied_list = eina_list_append(img_edit->unapplied_list,
+                                                         image);
           }
         else
           {
@@ -723,8 +731,6 @@ _on_button_delete_clicked_cb(void *data,
              elm_gengrid_item_selected_set(grid_item, false);
           }
      }
-   if (notdeleted < images_to_del)
-     project_changed(false);
    if (notdeleted == 1)
      {
         name = eina_list_nth(in_use, 0);
@@ -837,19 +843,22 @@ _on_button_apply_clicked_cb(void *data,
 {
    Image_Editor *img_edit = (Image_Editor *)data;
    Eina_List *l;
-   const char *it;
+   Uns_List *it = NULL;
    App_Data *ap = app_data_get();
    Style *style = NULL;
    GET_STYLE(img_edit->pr, style);
 
    EINA_LIST_FOREACH(img_edit->unapplied_list, l, it)
      {
-        if (edje_edit_image_add(style->obj, it))
+        if (it->act_type == ACTION_TYPE_DEL)
           {
-             pm_save_to_dev(img_edit->pr, style, false);
-             ap->project->nsimage_list = eina_list_append(ap->project->nsimage_list, it);
+             if (edje_edit_image_del(style->obj, it->data))
+               ap->project->nsimage_list = eina_list_append(ap->project->nsimage_list, it);
           }
+        else if (edje_edit_image_add(style->obj, it->data))
+          ap->project->nsimage_list = eina_list_append(ap->project->nsimage_list, it);
      }
+   pm_save_to_dev(img_edit->pr, style, false);
    eina_list_free(img_edit->unapplied_list);
    project_changed(false);
    _image_editor_del(img_edit);
