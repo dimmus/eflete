@@ -2565,12 +2565,11 @@ prop_item_state_image_tween_add(Evas_Object *box, Prop_Data *pd)
    elm_genlist_longpress_timeout_set(tween_list, 0.2);
    elm_genlist_reorder_mode_set(tween_list, true);
    evas_object_data_set(tween_list, PROP_DATA, pd);
-   elm_object_style_set(tween_list, "default");
 
    if (!_itc_tween)
      {
         _itc_tween = elm_genlist_item_class_new();
-        _itc_tween->item_style = "tween";
+        _itc_tween->item_style = "default";
         _itc_tween->func.text_get = _item_label_get;
         _itc_tween->func.content_get = _item_content_get;
         _itc_tween->func.state_get = NULL;
