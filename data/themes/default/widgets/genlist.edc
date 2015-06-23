@@ -1168,26 +1168,6 @@ group { name: "elm/genlist/item/tween/default";
    }
 }
 
-group { name: "elm/genlist/item/level5/default";
-   inherit:"elm/genlist/item/default1/default";
-   parts {
-      part { name: "left_pad";
-         type: SPACER;
-         description { state: "default" 0.0;
-            SET_SIZE(ITEM_HEIGHT, ITEM_HEIGHT);
-            align: 0.0 0.0;
-         }
-      }
-      part { name: "right_pad";
-         type: SPACER;
-         description { state: "default" 0.0;
-            SET_SIZE(ITEM_HEIGHT, ITEM_HEIGHT);
-            align: 1.0 1.0;
-         }
-      }
-   }
-}
-
 group { name: "elm/genlist/item/mode/default";
    alias: "elm/genlist/item_odd/mode/default";
    data.item: "contents" "elm.swallow.modeicon elm.swallow.container";
