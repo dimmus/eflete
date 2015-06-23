@@ -10,7 +10,7 @@
 group { name: "elm/genlist/item/default/default";
    data {
       item: "texts" "elm.text";
-      item: "treesize" "15";
+      item: "treesize" "32"; // 13 + 6 + 13 
       item: "contents" "elm.swallow.icon elm.swallow.end";
       item: "stacking" "above";
       item: "selectraise" "on";
@@ -71,8 +71,7 @@ group { name: "elm/genlist/item/default/default";
             color: 214 214 214 255;
             rel1 {
                relative: 1.0 0.0;
-               offset: 6 0;
-               to_x: "elm.swallow.icon";
+               to_x: "elm.swallow.pad";
             }
             rel2 {
                relative: 0.0 1.0;
@@ -105,12 +104,14 @@ group { name: "elm/genlist/item/default/default";
       part { name: "elm.swallow.pad";
          type: SWALLOW;
          description { state: "default" 0.0;
+            align: 0.0 0.5;
             rel1 {
+               to_x: "elm.swallow.icon";
+               offset: 6 0;
                relative: 1.0 0.0;
-               offset: 0 3;
             }
             rel2 {
-               offset: -1 -4;
+               to_x: "elm.swallow.icon";
             }
          }
       }
