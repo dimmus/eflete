@@ -28,4 +28,5 @@ collections {
    #include "widgets/layout.edc"
    #include "widgets/image.edc"
    #include "widgets/icon.edc"
+   #include "widgets/colorselector.edc"
 }
