@@ -507,9 +507,9 @@ group { name: "elm/genlist/item/default1/default";
 }
 
 group { name: "elm/genlist/item/program_after/default";
-   inherit: "elm/genlist/item/default1/default";
+   inherit: "elm/genlist/item/default/default";
    parts{
-      part { name: "base";
+      part { name: "bg";
          description { state: "default" 0.0;
             color: 52 70 84 255;
          }
