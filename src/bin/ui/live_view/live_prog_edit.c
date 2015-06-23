@@ -24,13 +24,13 @@ _on_swallow_check(void *data,
                   Evas_Object *obj,
                   void *ei __UNUSED__)
 {
-   Evas_Object *rect = NULL, *check = NULL, *item, *ch;
+   Evas_Object *rect = NULL, *check = NULL, *ch;
    Eina_List *item_list = NULL;
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
    Evas_Object *object = pd->live_object;
-   const char *part_name = evas_object_data_get(obj, PART_NAME);
+   const char *part_name = elm_object_part_text_get(obj, NULL);
    check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
 
    if (elm_check_state_get(obj))
@@ -41,9 +41,8 @@ _on_swallow_check(void *data,
         evas_object_color_set(rect, RECT_COLOR);
         edje_object_part_swallow(object, part_name, rect);
         item_list = elm_box_children_get(pd->prop_swallow.swallows);
-        EINA_LIST_FREE(item_list, item)
+        EINA_LIST_FREE(item_list, ch)
           {
-             ch = elm_object_part_content_get(item, "info");
              if (elm_check_state_get(ch) == false)
                all_checks = false;
           }
@@ -65,24 +64,27 @@ _on_text_check(void *data,
                Evas_Object *obj,
                void *ei __UNUSED__)
 {
-   Evas_Object *check = NULL, *item, *ch;
+   Evas_Object *check = NULL, *ch;
    Eina_List *item_list = NULL;
    Eina_Bool all_checks = true;
+   const char *default_text;
 
    Prop_Data *pd = (Prop_Data *)data;
    Evas_Object *object = pd->live_object;
-   const char *part_name = evas_object_data_get(obj, PART_NAME);
+   const char *part_name = elm_object_part_text_get(obj, NULL);
    check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
 
    if (elm_check_state_get(obj))
      {
+        default_text = edje_object_part_text_get(object, part_name);
+        if (default_text)
+          eina_hash_add(pd->prop_text.default_text, part_name, eina_stringshare_add(default_text));
         edje_object_part_text_set(object, part_name,
                                   _("Look at it! This is absolutely and totally text"));
         item_list = elm_box_children_get(pd->prop_text.texts);
 
-        EINA_LIST_FREE(item_list, item)
+        EINA_LIST_FREE(item_list, ch)
           {
-             ch = elm_object_part_content_get(item, "info");
              if (elm_check_state_get(ch) == false)
                all_checks = false;
           }
@@ -91,10 +93,11 @@ _on_text_check(void *data,
      }
    else
      {
-        edje_object_part_text_set(object, part_name, "");
+        default_text = eina_hash_find(pd->prop_text.default_text, part_name);
+        eina_hash_del(pd->prop_text.default_text, part_name, NULL);
+        edje_object_part_text_set(object, part_name, default_text);
         if (elm_check_state_get(check)) elm_check_state_set(check, false);
      }
-
 }
 
 static void
