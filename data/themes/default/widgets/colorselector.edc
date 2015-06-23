@@ -6,6 +6,10 @@ images {
    image: "color-shadow.png" COMP;
    image: "color-background-3.png" COMP;
    image: "color_focus.png" COMP;
+
+   image: "ring_shadow.png" COMP;
+   image: "ring_white_blue_glow.png" COMP;
+   image: "ring_white_middle.png" COMP;
 }
 
 group { name: "elm/colorselector/palette/default";
@@ -603,6 +607,229 @@ group { name: "elm/button/base/colorselector/right/default";
          action: STATE_SET "default" 0.00;
          in: 0.50000 0.00000;
          target: "base";
+      }
+   }
+}
+
+group { name: "elm/colorselector/base/default";
+   parts {
+      part { name: "elm.bar_bg";
+         type: SWALLOW;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: 32 15;
+            rel1 {
+               offset: 1 1;
+               to: "elm.arrow_bg";
+            }
+            rel2 {
+               offset: -2 -3;
+               to: "elm.arrow_bg";
+            }
+         }
+      }
+      part { name: "elm.bar";
+         type: SWALLOW;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            rel1.to: "elm.bar_bg";
+            rel2.to: "elm.bar_bg";
+         }
+      }
+      part { name: "elm.arrow_bg";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "elm.l_button";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to: "elm.r_button";
+            }
+         }
+      }
+      part { name: "elm.arrow";
+         type: RECT;
+         dragable {
+            x: 1 1 0;
+            y: 0 0 0;
+            confine: "elm.arrow_bg";
+         }
+         description { state: "default" 0.0;
+            visible: 0;
+            fixed: 1 1;
+            min: 1 1;
+            rel1.to_x: "elm.arrow_bg";
+            rel2.to_x: "elm.arrow_bg";
+         }
+      }
+      part { name: "event";
+         type: RECT;
+         dragable.events: "elm.arrow";
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.to: "elm.arrow_icon";
+            rel2 {
+               to_x: "elm.arrow_icon";
+               to_y: "elm.arrow_bg";
+            }
+         }
+      }
+      part { name: "arrow_under";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            rel1.to: "elm.arrow_icon";
+            rel2.to: "elm.arrow_icon";
+            image {
+               normal: "ring_shadow.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "elm.arrow_icon";
+         type: SWALLOW;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 1 1;
+            min: 16 16;
+            max: 16 16;
+            rel1.to_x: "elm.arrow";
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -1 0;
+               to_x: "elm.arrow";
+               to_y: "elm.bar_bg";
+            }
+         }
+      }
+      part { name: "arrow_over";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            rel1.to: "elm.arrow_icon";
+            rel2.to: "elm.arrow_icon";
+            image {
+               normal: "ring_white_blue_glow.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "bg";
+         type: IMAGE;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            rel1.to_y: "elm.l_button";
+            rel2.to_y: "elm.r_button";
+            image {
+               normal: "color-shadow.png";
+               border: 3 3 5 3;
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "elm.r_button";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            min: 10 19;
+            max: 10 19;
+            rel1.relative: 1.0 0.0;
+            rel2.offset: -2 -1;
+         }
+      }
+      part { name: "elm.l_button";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            min: 10 19;
+            max: 10 19;
+            rel1.offset: 1 0;
+            rel2.relative: 0.0 1.0;
+         }
+      }
+      part { name: "cursor";
+         type: RECT;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 1 1;
+            rel1 {
+               relative: 0.5 1.0;
+               offset: 0 -3;
+               to: "elm.arrow_icon";
+            }
+            rel2 {
+               relative: 0.5 1.0;
+               offset: 0 -1;
+               to_x: "elm.arrow_icon";
+               to_y: "elm.bar_bg";
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/colorselector/bg/default";
+   min: 0 115;
+   parts {
+      part { name: "elm.colorbar_0";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 0 1;
+            min: 0 19;
+            max: -1 19;
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -1 -14;
+               to_y: "elm.colorbar_1";
+            }
+         }
+      }
+      part { name: "elm.colorbar_1";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 0 1;
+            min: 0 19;
+            max: -1 19;
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -1 -14;
+               to_y: "elm.colorbar_2";
+            }
+         }
+      }
+      part { name: "elm.colorbar_2";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 0 1;
+            min: 0 19;
+            max: -1 19;
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -1 -14;
+               to_y: "elm.colorbar_3";
+            }
+         }
+      }
+      part { name: "elm.colorbar_3";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 0 1;
+            min: 0 19;
+            max: -1 19;
+         }
       }
    }
 }
