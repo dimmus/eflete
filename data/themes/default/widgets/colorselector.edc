@@ -2,7 +2,10 @@ images {
    image: "inset_shadow.png" COMP;
    image: "bevel_in.png" COMP;
    image: "bg_demo.png" COMP;
-//   image: "color-sight.png" COMP;
+//   image: "color-sight.pong" COMP;
+   image: "color-shadow.png" COMP;
+   image: "color-background-3.png" COMP;
+   image: "color_focus.png" COMP;
 }
 
 group { name: "elm/colorselector/palette/default";
@@ -332,5 +335,125 @@ group { name: "elm/colorselector/picker/default";
          }
       }
 */
+   }
+}
+
+group { name: "elm/colorselector/item/default";
+   parts {
+      part { name: "base";
+         type: RECT;
+         description { state: "default" 0.0;
+            min: 27 28;
+            max: 27 28;
+            color: 255 255 255 0;
+         }
+      }
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            min: 18 19;
+            max: 18 19;
+            image {
+               normal: "color-background-3.png";
+               middle: DEFAULT;
+            }
+            fill {
+               smooth: 0;
+               type: TILE;
+            }
+         }
+      }
+      part { name: "color_obj";
+         type: SWALLOW;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            min: 16 17;
+            max: 16 17;
+            rel1.offset: -1 -1;
+         }
+      }
+      part { name: "shadow";
+         type: IMAGE;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            image {
+               normal: "color-shadow.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "glow";
+         type: IMAGE;
+         mouse_events: 0;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            min: 18 19;
+            max: 18 19;
+            color: 255 255 255 0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            image {
+               normal: "color_focus.png";
+               border: 7 7 7 7;
+               middle: NONE;
+            }
+            fill.smooth: 0;
+         }
+         description { state: "focused" 0.0;
+            min: 22 23;
+            max: 22 23;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            image {
+               normal: "color_focus.png";
+               border: 7 7 7 7;
+               middle: NONE;
+            }
+            fill.smooth: 0;
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "color_obj";
+            rel2.to: "color_obj";
+         }
+         description { state: "disabled" 0.0;
+            color: 255 255 255 64;
+            rel1.to: "color_obj";
+            rel2.to: "color_obj";
+         }
+      }
+   }
+   programs {
+      program { name: "program_0x1be4380";
+         signal: "elm,state,selected";
+         source: "elm";
+         action: STATE_SET "focused" 0.00;
+         transition: DECELERATE 0.10000;
+         target: "glow";
+      }
+      program { name: "program_0x1be4870";
+         signal: "elm,state,unselected";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         transition: DECELERATE 0.50000;
+         target: "glow";
+      }
+      program { name: "program_0x1be4d60";
+         signal: "elm,anim,activate";
+         source: "elm";
+         action: STATE_SET "focused" 0.00;
+         transition: DECELERATE 0.10000;
+         target: "glow";
+         after: "active2";
+      }
+      program { name: "active2";
+         action: STATE_SET "default" 0.00;
+         transition: DECELERATE 0.80000;
+         target: "glow";
+      }
    }
 }
