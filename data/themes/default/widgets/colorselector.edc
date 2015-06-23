@@ -457,3 +457,152 @@ group { name: "elm/colorselector/item/default";
       }
    }
 }
+
+group { name: "elm/button/base/colorselector/left/default";
+   parts {
+      part { name: "base";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: 10 17;
+            max: 10 17;
+            image {
+               normal: "spinner-horizontal-down.png";
+               middle: DEFAULT;
+            }
+            fill.smooth: 0;
+         }
+         description { state: "clicked" 0.0;
+            min: 10 17;
+            max: 10 17;
+            image {
+               normal: "spinner-horizontal-down-clicked.png";
+               middle: DEFAULT;
+            }
+            fill.smooth: 0;
+         }
+      }
+      part { name: "event";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      program { name: "program_0x1b41e70";
+         signal: "mouse,down,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,press" "elm";
+         after: "button_click_anim";
+      }
+      program { name: "button_unclick";
+         signal: "mouse,up,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,unpress" "elm";
+         after: "button_unclick_anim";
+      }
+      program { name: "buttonactivate";
+         signal: "elm,anim,activate";
+         source: "elm";
+         action: STATE_SET "clicked" 0.00;
+         target: "base";
+         after: "button_unpressed_anim";
+      }
+      program { name: "program_0x1b42fc0";
+         signal: "mouse,clicked,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,click" "elm";
+      }
+      program { name: "button_click_anim";
+         action: STATE_SET "clicked" 0.00;
+         target: "base";
+      }
+      program { name: "button_unclick_anim";
+         action: STATE_SET "default" 0.00;
+         target: "base";
+      }
+      program { name: "button_unpressed_anim";
+         action: STATE_SET "default" 0.00;
+         in: 0.50000 0.00000;
+         target: "base";
+      }
+   }
+}
+
+
+group { name: "elm/button/base/colorselector/right/default";
+   parts {
+      part { name: "base";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: 10 17;
+            max: 10 17;
+            image {
+               normal: "spinner-horizontal-up.png";
+               middle: DEFAULT;
+            }
+            fill.smooth: 0;
+         }
+         description { state: "clicked" 0.0;
+            min: 10 17;
+            max: 10 17;
+            image {
+               normal: "spinner-horizontal-up-clicked.png";
+               middle: DEFAULT;
+            }
+            fill.smooth: 0;
+         }
+      }
+      part { name: "event";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "disabled" 0.0;
+            visible: 0;
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      program { name: "program_0x1b41e70";
+         signal: "mouse,down,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,press" "elm";
+         after: "button_click_anim";
+      }
+      program { name: "button_unclick";
+         signal: "mouse,up,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,unpress" "elm";
+         after: "button_unclick_anim";
+      }
+      program { name: "buttonactivate";
+         signal: "elm,anim,activate";
+         source: "elm";
+         action: STATE_SET "clicked" 0.00;
+         target: "base";
+         after: "button_unpressed_anim";
+      }
+      program { name: "program_0x1b42fc0";
+         signal: "mouse,clicked,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,click" "elm";
+      }
+      program { name: "button_click_anim";
+         action: STATE_SET "clicked" 0.00;
+         target: "base";
+      }
+      program { name: "button_unclick_anim";
+         action: STATE_SET "default" 0.00;
+         target: "base";
+      }
+      program { name: "button_unpressed_anim";
+         action: STATE_SET "default" 0.00;
+         in: 0.50000 0.00000;
+         target: "base";
+      }
+   }
+}
