@@ -461,7 +461,8 @@ live_view_property_style_unset(Evas_Object *property)
    /* Swallows Clear */
    if (pd->prop_swallow.frame)
      {
-        UPDATE_PROPERTY_FRAME(prop_box, pd->prop_swallow.frame, pd->prop_swallow.swallows)
+        evas_object_hide(pd->prop_swallow.frame);
+        items_list = elm_box_children_get(pd->prop_swallow.swallows);
         check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
         elm_check_state_set(check, false);
      }
@@ -484,6 +485,7 @@ live_view_property_style_unset(Evas_Object *property)
         evas_object_del(check);
      }
    items_list = eina_list_free(items_list);
+   elm_box_clear(pd->prop_swallow.swallows);
 
    /* Texts Clear */
    if (pd->prop_text.frame)
