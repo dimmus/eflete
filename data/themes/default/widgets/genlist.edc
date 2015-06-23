@@ -1818,45 +1818,6 @@ group { name: "elm/genlist/base/default";
    }
 }
 
-group { name: "elm/genlist/base/dark";
-      inherit: "elm/genlist/base/default";
-   images {
-      image: "treemenu-background.png" COMP;
-      image: "border_1.png" COMP;
-   }
-   parts {
-      part { name: "bg";
-         description { state: "default" 0.0;
-            color: 35 37 38 255;
-         }
-      }
-      part { name: "content_border";
-         mouse_events: 0;
-         description {
-            align: 1.0 1.0;
-            image {
-               normal: "border_1.png";
-               border: 1 1 1 1;
-               middle: NONE;
-            }
-            color: LIST_BORDER_COLOR;
-         }
-      }
-   }
-}
-
-group { name: "elm/genlist/base/usage_list";
-   inherit: "elm/genlist/base/default";
-   parts {
-      part { name: "bg";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 46 48 49 255;
-         }
-      }
-   }
-}
-
 #undef ITEM_HEIGHT
 #ungef BORDER_COLOR
 #undef LIST_BORDER_COLOR
