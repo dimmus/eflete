@@ -833,3 +833,21 @@ group { name: "elm/colorselector/bg/default";
       }
    }
 }
+
+group { name: "elm/colorselector/bg_image/colorbar_3/default";
+   parts {
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image {
+               normal: "bg_demo.png";
+               middle: DEFAULT;
+            }
+            fill {
+               smooth: 0;
+               type: TILE;
+            }
+         }
+      }
+   }
+}
