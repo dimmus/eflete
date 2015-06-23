@@ -1,3 +1,10 @@
+images {
+   image: "inset_shadow.png" COMP;
+   image: "bevel_in.png" COMP;
+   image: "bg_demo.png" COMP;
+//   image: "color-sight.png" COMP;
+}
+
 group { name: "elm/colorselector/palette/default";
    data {
       item: "vertical_pad" "0";
@@ -229,5 +236,101 @@ group { name: "elm/colorselector/picker/base/default";
             }
          }
       }
+   }
+}
+
+group { name: "elm/colorselector/picker/default";
+   parts {
+      part { name: "pat";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "elm.picker";
+            }
+            rel2 {
+               to: "elm.picker";
+            }
+            image {
+               normal: "bg_demo.png";
+               middle: DEFAULT;
+            }
+            fill {
+               type: TILE;
+            }
+         }
+      }
+      part { name: "elm.picker";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 51 52;
+            max: 51 52;
+         }
+      }
+      part { name: "shadow";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            color: 255 255 255 128;
+            rel1 {
+               to: "elm.picker";
+            }
+            rel2 {
+               to: "elm.picker";
+            }
+            image {
+               normal: "inset_shadow.png";
+               border: 5 5 7 3;
+               middle: NONE;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part { name: "inset";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "elm.picker";
+            }
+            rel2 {
+               to: "elm.picker";
+            }
+            image {
+               normal: "bevel_in.png";
+               border: 1 1 1 1;
+               middle: NONE;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+/*
+      TODO: Uncomment this when https://phab.enlightenment.org/D2749 will be
+      merged AND backported.
+
+      part { name: "cross";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            min: 35 35;
+            max: 35 35;
+            align: 0 0;
+            rel1 {
+               to: "elm.picker";
+               offset: 8 8;
+            }
+            rel2 {
+               to: "elm.picker";
+            }
+            image {
+               normal: "color-sight.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+*/
    }
 }
