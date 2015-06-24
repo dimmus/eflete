@@ -36,3 +36,6 @@ IM("icon",     "start-point", "icon_start-point.png", 12 12,   0 0 0 0,    SCALE
 IM("icon",     "end-point",   "icon_end-point.png",   12 12,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "align",       "icon_align.png",       15 15,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "offset",      "icon_offset.png",      15 15,   0 0 0 0,    SCALE,   SOLID)
+
+IM("bg",       "tile",        "bg_demo.png",          -1 -1,  0 0 0 0,    TILE,    SOLID)
+
