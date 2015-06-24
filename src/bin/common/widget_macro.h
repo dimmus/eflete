@@ -152,6 +152,10 @@ TODO("see large comment below")
    GET_IMAGE(ICON, PARENT, NAME);\
    evas_object_show(ICON);
 
+#define IMAGE_ADD_NEW(PARENT, IMAGE, NAME, STYLE) \
+   IMAGE = elm_image_add(PARENT); \
+   elm_image_file_set(IMAGE, EFLETE_THEME, "elm/image/"NAME"/"STYLE);
+
 #define HOVERSEL_ADD(PARENT, HOVERSEL, ISHORIZONTAL) \
    HOVERSEL = elm_hoversel_add(PARENT); \
    evas_object_size_hint_align_set(HOVERSEL, EVAS_HINT_FILL, EVAS_HINT_FILL); \
