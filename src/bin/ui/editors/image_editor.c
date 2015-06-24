@@ -1107,7 +1107,6 @@ Evas_Object *
 image_editor_window_add(Project *project, Image_Editor_Mode mode)
 {
    Evas_Object *button;
-   Evas_Object *_bg = NULL;
    Evas_Object *ic = NULL;
    Evas_Object *search_entry = NULL;
    /* temporary solution, while it not moved to modal window */
@@ -1151,10 +1150,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    elm_gengrid_align_set(img_edit->gengrid, 0.0, 0.0);
    elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_OFF);
-
-   GET_IMAGE(_bg, img_edit->gengrid, "gallery-bg");
-   elm_object_part_content_set(img_edit->gengrid, "elm.swallow.background", _bg);
-   evas_object_show(_bg);
 
    if (mode == SINGLE)
      {
