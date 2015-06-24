@@ -1167,17 +1167,11 @@ static void
 _create_gengrid(Evas_Object *parent,
                 Sound_Editor *editor)
 {
-   Evas_Object *bg;
-
    editor->gengrid = elm_gengrid_add(parent);
    elm_gengrid_item_size_set(editor->gengrid, ITEM_WIDTH, ITEM_HEIGHT);
    elm_gengrid_group_item_size_set(editor->gengrid, ITEM_HEIGHT/5, ITEM_HEIGHT/5);
    elm_gengrid_align_set(editor->gengrid, 0.0, 0.0);
    elm_scroller_policy_set(editor->gengrid, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-
-   GET_IMAGE(bg, editor->gengrid, "gallery-bg");
-   elm_object_part_content_set(editor->gengrid, "elm.swallow.background", bg);
-   evas_object_show(bg);
 
    elm_gengrid_multi_select_set(editor->gengrid, false);
 
