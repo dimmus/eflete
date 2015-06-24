@@ -2500,7 +2500,7 @@ _item_content_get(void *data, Evas_Object *obj, const char *part)
    if (!strcmp(part, "elm.swallow.end"))
     {
        BUTTON_ADD(obj, button, NULL)
-       ICON_ADD(button, image, true, "icon-remove");
+       ICON_STANDARD_ADD(button, image, true, "minus");
        elm_object_part_content_set(button, NULL, image);
        evas_object_smart_callback_add(button, "clicked", _del_tween_image,
                                       (const char*)data);
@@ -2587,7 +2587,7 @@ prop_item_state_image_tween_add(Evas_Object *box, Prop_Data *pd)
    elm_object_content_set(tween_frame, tween_list);
 
    BUTTON_ADD(tween_frame, button, NULL)
-   ICON_ADD(button, icon, true, "icon-add");
+   ICON_STANDARD_ADD(button, icon, true, "plus");
    elm_object_part_content_set(button, NULL, icon);
    evas_object_smart_callback_add(button, "clicked", _add_tween_image,
                                   tween_list);
