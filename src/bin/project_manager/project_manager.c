@@ -762,7 +762,7 @@ _project_save(void *data,
    EINA_LIST_FOREACH(worker->project->nsimage_list, l, it)
       {
          if (it->act_type == ACTION_TYPE_ADD)
-           add_list = eina_list_append(add_list, it->data);
+           add_list = eina_list_append(add_list, eina_stringshare_add(ecore_file_file_get(it->data)));
       }
 
    /* saving */
