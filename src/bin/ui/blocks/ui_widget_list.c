@@ -184,31 +184,44 @@ _item_part_content_get(void *data,
    if (!strcmp(part, "elm.swallow.end"))
      {
         Evas_Object *icon = NULL;
-        Evas *ev = evas_object_evas_get(obj);
-        if (_part->type == EDJE_PART_TYPE_RECTANGLE)
-          GET_IMAGE(icon, ev, "icon-rectangle");
-        if (_part->type == EDJE_PART_TYPE_IMAGE)
-          GET_IMAGE(icon, ev, "icon-image");
-        if (_part->type == EDJE_PART_TYPE_SPACER)
-          GET_IMAGE(icon, ev, "icon-spacer");
-        if (_part->type == EDJE_PART_TYPE_SWALLOW)
-          GET_IMAGE(icon, ev, "icon-swallow");
-        if (_part->type == EDJE_PART_TYPE_TEXT)
-          GET_IMAGE(icon, ev, "icon-text");
-        if (_part->type == EDJE_PART_TYPE_TEXTBLOCK)
-          GET_IMAGE(icon, ev, "icon-textblock");
-        if (_part->type == EDJE_PART_TYPE_GROUP)
-          GET_IMAGE(icon, ev, "icon-group");
-        if (_part->type == EDJE_PART_TYPE_PROXY)
-          GET_IMAGE(icon, ev, "icon-proxy");
-        if (_part->type == EDJE_PART_TYPE_TABLE)
-          GET_IMAGE(icon, ev, "icon-table");
-        if (_part->type == EDJE_PART_TYPE_BOX)
-          GET_IMAGE(icon, ev, "icon-box");
-        if (_part->type == EDJE_PART_TYPE_EXTERNAL)
-          GET_IMAGE(icon, ev, "icon-external");
 
-        evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+        switch (_part->type)
+          {
+           case EDJE_PART_TYPE_RECTANGLE:
+              IMAGE_ADD_NEW(obj, icon, "icon", "rectangle");
+              break;
+           case EDJE_PART_TYPE_IMAGE:
+              IMAGE_ADD_NEW(obj, icon, "icon", "image");
+              break;
+           case EDJE_PART_TYPE_SPACER:
+              IMAGE_ADD_NEW(obj, icon, "icon", "spacer");
+              break;
+           case EDJE_PART_TYPE_SWALLOW:
+              IMAGE_ADD_NEW(obj, icon, "icon", "swallow");
+              break;
+           case EDJE_PART_TYPE_TEXT:
+              IMAGE_ADD_NEW(obj, icon, "icon", "text");
+              break;
+           case EDJE_PART_TYPE_TEXTBLOCK:
+              IMAGE_ADD_NEW(obj, icon, "icon", "textblock");
+              break;
+           case EDJE_PART_TYPE_GROUP:
+              IMAGE_ADD_NEW(obj, icon, "icon", "group");
+              break;
+           case EDJE_PART_TYPE_PROXY:
+              IMAGE_ADD_NEW(obj, icon, "icon", "proxy");
+              break;
+           case EDJE_PART_TYPE_TABLE:
+              IMAGE_ADD_NEW(obj, icon, "icon", "table");
+              break;
+           case EDJE_PART_TYPE_BOX:
+              IMAGE_ADD_NEW(obj, icon, "icon", "box");
+              break;
+           case EDJE_PART_TYPE_EXTERNAL:
+              IMAGE_ADD_NEW(obj, icon, "icon", "external");
+              break;
+          }
+
         return icon;
      }
    if (!strcmp(part, "elm.swallow.penult"))
