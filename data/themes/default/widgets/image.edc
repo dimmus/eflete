@@ -1,17 +1,20 @@
-group { name: "elm/image/color/color_set";
-   images {
-      image: "color-set.png" COMP;
+#define IM(NAME, STYLE, IMG, MAX_X_Y, BORDER, FILL, MID) \
+   group { name: "elm/image/"NAME"/"STYLE; \
+      images.image: IMG COMP; \
+      parts { \
+         part { name: "image"; \
+            type: IMAGE; \
+            description { state: "default" 0.0; \
+               max: MAX_X_Y; \
+               image { \
+                  normal: IMG; \
+                  border: BORDER; \
+                  middle: MID; \
+               } \
+               fill.type: FILL; \
+            } \
+         } \
+      } \
    }
-   parts {
-      part { name: "bg";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image {
-               normal: "color-set.png";
-               border: 7 7 6 7;
-               middle: DEFAULT;
-            }
-         }
-      }
-   }
-}
+
+IM("color",    "color_set",   "color-set.png",  -1 -1,   7 7 6 7,    SCALE,     SOLID);
