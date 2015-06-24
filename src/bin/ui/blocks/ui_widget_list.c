@@ -167,78 +167,74 @@ _item_part_content_get(void *data,
                        const char *part)
 {
    Part *_part = (Part *) data;
+   Evas_Object *content = NULL;
+
    if (!strcmp(part, "elm.swallow.icon"))
      {
-        Evas_Object *check = elm_check_add(obj);
+        content = elm_check_add(obj);
         if (_part->show)
-          elm_check_state_set(check, true);
+          elm_check_state_set(content, true);
         else
-           elm_check_state_set(check, false);
-        elm_object_style_set(check, "widgetlist/default");
+           elm_check_state_set(content, false);
+        elm_object_style_set(content, "widgetlist/default");
 
-        evas_object_size_hint_aspect_set(check, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-        evas_object_smart_callback_add(check, "changed", _on_check_click, _part);
-        evas_object_data_set(check, PARTLIST_DATA_KEY, obj);
-        return check;
+        evas_object_smart_callback_add(content, "changed", _on_check_click, _part);
+        evas_object_data_set(content, PARTLIST_DATA_KEY, obj);
      }
    if (!strcmp(part, "elm.swallow.end"))
      {
-        Evas_Object *icon = NULL;
-
         switch (_part->type)
           {
            case EDJE_PART_TYPE_RECTANGLE:
-              IMAGE_ADD_NEW(obj, icon, "icon", "rectangle");
+              IMAGE_ADD_NEW(obj, content, "icon", "rectangle");
               break;
            case EDJE_PART_TYPE_IMAGE:
-              IMAGE_ADD_NEW(obj, icon, "icon", "image");
+              IMAGE_ADD_NEW(obj, content, "icon", "image");
               break;
            case EDJE_PART_TYPE_SPACER:
-              IMAGE_ADD_NEW(obj, icon, "icon", "spacer");
+              IMAGE_ADD_NEW(obj, content, "icon", "spacer");
               break;
            case EDJE_PART_TYPE_SWALLOW:
-              IMAGE_ADD_NEW(obj, icon, "icon", "swallow");
+              IMAGE_ADD_NEW(obj, content, "icon", "swallow");
               break;
            case EDJE_PART_TYPE_TEXT:
-              IMAGE_ADD_NEW(obj, icon, "icon", "text");
+              IMAGE_ADD_NEW(obj, content, "icon", "text");
               break;
            case EDJE_PART_TYPE_TEXTBLOCK:
-              IMAGE_ADD_NEW(obj, icon, "icon", "textblock");
+              IMAGE_ADD_NEW(obj, content, "icon", "textblock");
               break;
            case EDJE_PART_TYPE_GROUP:
-              IMAGE_ADD_NEW(obj, icon, "icon", "group");
+              IMAGE_ADD_NEW(obj, content, "icon", "group");
               break;
            case EDJE_PART_TYPE_PROXY:
-              IMAGE_ADD_NEW(obj, icon, "icon", "proxy");
+              IMAGE_ADD_NEW(obj, content, "icon", "proxy");
               break;
            case EDJE_PART_TYPE_TABLE:
-              IMAGE_ADD_NEW(obj, icon, "icon", "table");
+              IMAGE_ADD_NEW(obj, content, "icon", "table");
               break;
            case EDJE_PART_TYPE_BOX:
-              IMAGE_ADD_NEW(obj, icon, "icon", "box");
+              IMAGE_ADD_NEW(obj, content, "icon", "box");
               break;
            case EDJE_PART_TYPE_EXTERNAL:
-              IMAGE_ADD_NEW(obj, icon, "icon", "external");
+              IMAGE_ADD_NEW(obj, content, "icon", "external");
               break;
           }
-
-        return icon;
      }
    if (!strcmp(part, "elm.swallow.penult"))
      {
         if ((_part->type == EDJE_PART_TYPE_TABLE) || ((_part->type == EDJE_PART_TYPE_BOX)))
           {
-             Evas_Object *button, *icon;
-             button = elm_button_add(obj);
-             ICON_STANDARD_ADD(button, icon, true, "plus");
-             elm_object_part_content_set(button, NULL, icon);
-             elm_object_style_set(button, "anchor");
-             evas_object_data_set(button, PARTLIST_DATA_KEY, obj);
-             evas_object_smart_callback_add(button, "clicked", _on_item_add_clicked, _part);
-             return button;
+             Evas_Object *icon;
+
+             content = elm_button_add(obj);
+             ICON_STANDARD_ADD(content, icon, true, "plus");
+             elm_object_part_content_set(content, NULL, icon);
+             elm_object_style_set(content, "anchor");
+             evas_object_data_set(content, PARTLIST_DATA_KEY, obj);
+             evas_object_smart_callback_add(content, "clicked", _on_item_add_clicked, _part);
           }
      }
-   return NULL;
+   return content;
 }
 
 static Evas_Object *
