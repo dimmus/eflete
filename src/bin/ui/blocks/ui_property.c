@@ -1296,14 +1296,11 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    evas_object_smart_callback_add(pd->state.color_class, "selected", _on_state_color_class_change, pd);
    evas_object_smart_callback_add(pd->state.color_class, "expanded", _color_class_items_fill, pd);
    elm_layout_content_set(item, "elm.swallow.content", pd->state.color_class);
-   pd->state.color1 = elm_layout_add(parent);
-   elm_layout_theme_set(pd->state.color1, "image", "color", "color_set");
+   IMAGE_ADD_NEW(parent, pd->state.color1, "color", "color_set")
    ewe_combobox_content_set(pd->state.color_class, "swallow.color1", pd->state.color1);
-   pd->state.color2 = elm_layout_add(parent);
-   elm_layout_theme_set(pd->state.color2, "image", "color", "color_set");
+   IMAGE_ADD_NEW(parent, pd->state.color2, "color", "color_set")
    ewe_combobox_content_set(pd->state.color_class, "swallow.color2", pd->state.color2);
-   pd->state.color3 = elm_layout_add(parent);
-   elm_layout_theme_set(pd->state.color3, "image", "color", "color_set");
+   IMAGE_ADD_NEW(parent, pd->state.color3, "color", "color_set")
    ewe_combobox_content_set(pd->state.color_class, "swallow.color3", pd->state.color3);
 
    prop_state_color_class_update(pd);
