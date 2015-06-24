@@ -671,8 +671,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
      {
         LABEL_ADD(property, info_en, text_info)
 
-        GET_IMAGE(info_image, property, "icon-notification");
-        evas_object_show(info_image);
+        ICON_STANDARD_ADD(property, info_image, false, "info");
 
         pd_group.info = elm_layout_add(property);
         evas_object_size_hint_weight_set(pd_group.info, EVAS_HINT_EXPAND, 0.0);
