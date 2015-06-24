@@ -31,11 +31,11 @@ IM("icon",     "box",         "icon-box.png",         12 11,   0 0 0 0,    SCALE
 IM("icon",     "external",    "icon-external.png",    12 11,   0 0 0 0,    SCALE,   SOLID)
 
 IM("icon",     "alias_link",  "icon-alias_link.png",  16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "separate",    "icon-separate.png",    16 16,   0 0 0 0,    SCALE,   SOLID)
 
 IM("icon",     "start-point", "icon_start-point.png", 12 12,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "end-point",   "icon_end-point.png",   12 12,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "align",       "icon_align.png",       15 15,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "offset",      "icon_offset.png",      15 15,   0 0 0 0,    SCALE,   SOLID)
 
-IM("bg",       "tile",        "bg_demo.png",          -1 -1,  0 0 0 0,    TILE,    SOLID)
-
+IM("bg",       "tile",        "bg_demo.png",          -1 -1,   0 0 0 0,    TILE,    SOLID)
