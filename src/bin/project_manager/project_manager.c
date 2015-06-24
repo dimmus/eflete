@@ -996,6 +996,7 @@ _image_resources_export(Eina_List *images, Eina_Stringshare *destination,
                  if (id < 0)
                    {
                       WARN("Image %s coudn't be exported", image_name);
+                      ecore_thread_main_loop_end();
                       continue;
                    }
                  source_file = eina_stringshare_printf("edje/images/%i", id);
