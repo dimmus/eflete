@@ -720,14 +720,12 @@ _item_style_content_get(void *data,
                        const char *part)
 {
    Style *_style = (Style *)data;
+   Evas_Object *icon = NULL;
+
    if ((!strcmp(part, "elm.swallow.end")) && (_style->isAlias))
-     {
-        Evas_Object *icon = NULL;
-        GET_IMAGE(icon, obj, "alias_link");
-        evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-        return icon;
-     }
-   return NULL;
+     IMAGE_ADD_NEW(obj, icon, "icon", "alias_link");
+
+   return icon;
 }
 
 static void
