@@ -1,0 +1,385 @@
+group { name: "elm/layout/colorclass_editor/default";
+   parts {
+      part { name: "area.list";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 1.0;
+            fixed: 1 1;
+            max: 322 -1;
+            rel2 {
+               relative: 0.2 1.0;
+            }
+         }
+      }
+      part { name: "padding.bottom";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 1.0;
+            fixed: 1 1;
+            min: 0 40;
+            max: -1 40;
+         }
+      }
+      part { name: "padding.params";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 1 1;
+            min: 0 45;
+            max: -1 45;
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "swallow.entry";
+            }
+         }
+      }
+      part { name: "button.close";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 73 26;
+            max: 73 26;
+            rel1 {
+               to_y: "padding.bottom";
+            }
+            rel2 {
+               offset: -22 -1;
+            }
+         }
+      }
+      part { name: "button.apply";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 73 26;
+            max: 73 26;
+            rel1 {
+               to_y: "padding.bottom";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -16 -1;
+               to_x: "button.close";
+            }
+         }
+      }
+      part { name: "separator.bottom";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.0 1.0;
+            fixed: 1 1;
+            min: 0 2;
+            max: -1 2;
+            rel2 {
+               relative: 1.0 0.0;
+               to_y: "padding.bottom";
+            }
+            image {
+               normal: "separator-horizontal.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "swallow.search";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 0 23;
+            max: -1 23;
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -9 -1;
+               to_x: "swallow.control.add";
+            }
+         }
+      }
+      part { name: "swallow.control.minus";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            min: 21 19;
+            max: 21 19;
+            rel2 {
+               offset: -9 -1;
+               to_x: "area.list";
+            }
+         }
+      }
+      part { name: "swallow.control.add";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            min: 21 19;
+            max: 21 19;
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -7 -1;
+               to_x: "swallow.control.minus";
+            }
+         }
+      }
+      part { name: "separator.left";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            min: 2 0;
+            max: 2 -1;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 0;
+               to_x: "swallow.list";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to_y: "separator.bottom";
+            }
+            image {
+               normal: "separator-vertical.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "swallow.entry";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            min: 0 231;
+            max: -1 231;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 0;
+               to_x: "separator.left";
+            }
+         }
+      }
+      part { name: "swallow.radio";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 90 22;
+            max: 90 22;
+            rel1 {
+               to_y: "padding.params";
+            }
+            rel2 {
+               offset: -25 -1;
+               to_y: "padding.params";
+            }
+         }
+      }
+      part { name: "text.object";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            fixed: 1 0;
+            max: 265 -1;
+            color: FN_COL_SPINNER_MAIN;
+            rel1 {
+               relative: 0.0 1.0;
+               to_x: "swallow.entry";
+               to_y: "padding.params";
+            }
+            rel2 {
+               relative: 0.33 0.0;
+               to_x: "swallow.entry";
+               to_y: "separator.bottom";
+            }
+            text {
+               text: "";
+               font: "Sans";
+               size: 16;
+               min: 0 1;
+               max: 0 1;
+            }
+         }
+      }
+      part { name: "separator.outline.left";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 1 1;
+            min: 2 0;
+            max: 2 -1;
+            rel1 {
+               to_x: "text.object";
+               to_y: "text.outline";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to_x: "text.outline";
+               to_y: "separator.bottom";
+            }
+            image {
+               normal: "separator-vertical.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "text.outline";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            fixed: 1 0;
+            max: 265 -1;
+            color: FN_COL_SPINNER_MAIN;
+            rel1 {
+               relative: 0.33 1.0;
+               to_x: "swallow.entry";
+               to_y: "padding.params";
+            }
+            rel2 {
+               relative: 0.66 0.0;
+               to_x: "swallow.entry";
+               to_y: "separator.bottom";
+            }
+            text {
+               text: "";
+               font: "Sans";
+               size: 16;
+               min: 0 1;
+               max: 0 1;
+            }
+         }
+      }
+      part { name: "separator.outline.right";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 2 0;
+            max: 2 -1;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "text.outline";
+               to_y: "padding.params";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to_x: "text.shadow";
+               to_y: "separator.bottom";
+            }
+            image {
+               normal: "separator-vertical.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "text.shadow";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            fixed: 1 0;
+            max: 265 -1;
+            color: FN_COL_SPINNER_MAIN;
+            rel1 {
+               relative: 0.66 1.0;
+               to_x: "swallow.entry";
+               to_y: "padding.params";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to_x: "swallow.entry";
+               to_y: "separator.bottom";
+            }
+            text {
+               text: "";
+               font: "Sans";
+               size: 16;
+               min: 0 1;
+               max: 0 1;
+            }
+         }
+      }
+      part { name: "swallow.colorselector.object";
+         type: SWALLOW;
+         clip_to: "clipper.object";
+         description { state: "default" 0.0;
+            align: 0.5 0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 23 0;
+               to: "text.object";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -24 -15;
+               to_x: "text.object";
+               to_y: "separator.bottom";
+            }
+         }
+      }
+      part { name: "swallow.colorselector.outline";
+         type: SWALLOW;
+         clip_to: "clipper.outline";
+         description { state: "default" 0.0;
+            align: 0.5 0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 23 0;
+               to: "text.outline";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -24 -15;
+               to_x: "text.outline";
+               to_y: "separator.bottom";
+            }
+         }
+      }
+      part { name: "swallow.colorselector.shadow";
+         type: SWALLOW;
+         clip_to: "clipper.shadow";
+         description { state: "default" 0.0;
+            align: 0.5 0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 23 0;
+               to: "text.shadow";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -24 -15;
+               to_x: "text.shadow";
+               to_y: "separator.bottom";
+            }
+         }
+      }
+      part { name: "swallow.list";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: 322 -1;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 8;
+               to_y: "swallow.search";
+            }
+            rel2 {
+               relative: 0.2 0.0;
+               to_y: "separator.bottom";
+            }
+         }
+      }
+      part { name: "clipper.object";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "swallow.colorselector.object";
+            rel2.to: "swallow.colorselector.object";
+         }
+      }
+      part { name: "clipper.outline";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "swallow.colorselector.outline";
+            rel2.to: "swallow.colorselector.outline";
+         }
+      }
+      part { name: "clipper.shadow";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "swallow.colorselector.shadow";
+            rel2.to: "swallow.colorselector.shadow";
+         }
+      }
+   }
+}
