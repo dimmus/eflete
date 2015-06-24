@@ -757,11 +757,20 @@ _project_save(void *data,
              }
         }
    eina_file_close(worker->project->mmap_file);
+   Uns_List *it;
+   Eina_List *add_list = NULL, *l;
+   EINA_LIST_FOREACH(worker->project->nsimage_list, l, it)
+      {
+         if (it->act_type == ACTION_TYPE_ADD)
+           add_list = eina_list_append(add_list, it->data);
+      }
 
    /* saving */
    dest = eina_stringshare_printf("%s/images", worker->project->develop_path);
-   _image_resources_export(worker->project->nsimage_list, dest, NULL, worker->project->dev, edje_edit_obj);
-   edje_edit_string_list_free(worker->project->nsimage_list);
+   _image_resources_export(add_list, dest, NULL, worker->project->dev, edje_edit_obj);
+   edje_edit_string_list_free(add_list);
+   EINA_LIST_FREE(worker->project->nsimage_list, it)
+      free(it);
    eina_stringshare_del(dest);
 
    list = edje_edit_sound_samples_list_get(edje_edit_obj);
