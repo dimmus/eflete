@@ -217,7 +217,7 @@ _item_part_content_get(void *data,
           {
              Evas_Object *button, *icon;
              button = elm_button_add(obj);
-             ICON_ADD(button, icon, true, "icon-add");
+             ICON_STANDARD_ADD(button, icon, true, "plus");
              elm_object_part_content_set(button, NULL, icon);
              elm_object_style_set(button, "anchor");
              evas_object_data_set(button, PARTLIST_DATA_KEY, obj);
@@ -238,7 +238,7 @@ _item_part_item_content_get(void *data,
      {
         Evas_Object *button, *_icon;
         button = elm_button_add(obj);
-        ICON_ADD(button, _icon, true, "icon-remove");
+        ICON_STANDARD_ADD(button, _icon, true, "minus");
         elm_object_part_content_set(button, NULL, _icon);
         elm_object_style_set(button, "anchor");
 
