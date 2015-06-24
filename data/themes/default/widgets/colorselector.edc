@@ -1,0 +1,89 @@
+group { name: "elm/colorselector/palette/default";
+   data {
+      item: "vertical_pad" "0";
+      item: "horizontal_pad" "0";
+   }
+   parts {
+      part { name: "elm.picker";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            rel1.offset: 0 12;
+            rel2.relative: 1.0 0.0;
+         }
+      }
+      part { name: "elm.palette";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 14;
+               to_y: "elm.picker";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -1 -26;
+               to_y: "elm.selector";
+            }
+         }
+         description { state: "off" 0.0;
+            align: 0.5 0.0;
+            rel1.relative: 0.0 1.0;
+            rel2.relative: 1.0 0.0;
+         }
+      }
+      part { name: "elm.selector";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 1.0;
+            min: 0 100;
+            rel1.relative: 0.0 1.0;
+         }
+      }
+   }
+   programs {
+      program { name: "program_0x10734c0";
+         signal: "elm,state,palette";
+         source: "elm";
+         action: STATE_SET "off" 0.00;
+         target: "elm.palette";
+      }
+      program { name: "program_0x1073990";
+         signal: "elm,state,palette";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "elm.palette";
+      }
+      program { name: "program_0x1073ce0";
+         signal: "elm,state,components";
+         source: "elm";
+         action: STATE_SET "off" 0.00;
+         target: "elm.palette";
+      }
+      program { name: "program_0x1074370";
+         signal: "elm,state,both";
+         source: "elm";
+         action: STATE_SET "off" 0.00;
+         target: "elm.palette";
+      }
+      program { name: "program_0x10746d0";
+         signal: "elm,state,both";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "elm.palette";
+      }
+      program { name: "program_0x1074bc0";
+         signal: "elm,state,picker";
+         source: "elm";
+         action: STATE_SET "off" 0.00;
+         target: "elm.palette";
+      }
+      program { name: "program_0x1075260";
+         signal: "elm,state,all";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "elm.palette";
+      }
+   }
+}
