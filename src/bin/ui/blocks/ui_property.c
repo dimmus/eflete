@@ -1714,7 +1714,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
         elm_separator_horizontal_set(item, true);
         elm_object_style_set(item, "icon");
         elm_object_part_text_set(item, "eflete.text", _("Start point"));
-        ICON_ADD(item, icon, false, "icon_start-point")
+        IMAGE_ADD_NEW(item, icon, "icon", "start-point")
         elm_object_part_content_set(item, "eflete.swallow.icon", icon);
         evas_object_show(item);
         elm_box_pack_end(box, item);
@@ -1722,11 +1722,11 @@ ui_property_state_obj_area_set(Evas_Object *property)
         item = prop_state_object_area_rel1_to_x_rel1_to_y_add(box, pd);
         elm_box_pack_end(box, item);
         item = prop_state_object_area_rel1_relative_x_rel1_relative_y_add(box, pd);
-        ICON_ADD(item, icon, false, "icon_align");
+        IMAGE_ADD_NEW(item, icon, "icon", "align");
         elm_layout_content_set(item, NULL, icon);
         elm_box_pack_end(box, item);
         item = prop_state_object_area_rel1_offset_x_rel1_offset_y_add(box, pd);
-        ICON_ADD(item, icon, false, "icon_offset");
+        IMAGE_ADD_NEW(item, icon, "icon", "offset");
         elm_layout_content_set(item, NULL, icon);
         elm_box_pack_end(box, item);
 
@@ -1734,7 +1734,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
         elm_separator_horizontal_set(item, true);
         elm_object_style_set(item, "icon");
         elm_object_part_text_set(item, "eflete.text", _("End point"));
-        ICON_ADD(item, icon, false, "icon_end-point");
+        IMAGE_ADD_NEW(item, icon, "icon", "end-point");
         elm_object_part_content_set(item, "eflete.swallow.icon", icon);
         evas_object_show(item);
         elm_box_pack_end(box, item);
@@ -1742,11 +1742,11 @@ ui_property_state_obj_area_set(Evas_Object *property)
         item = prop_state_object_area_rel2_to_x_rel2_to_y_add(box, pd);
         elm_box_pack_end(box, item);
         item = prop_state_object_area_rel2_relative_x_rel2_relative_y_add(box, pd);
-        ICON_ADD(item, icon, false, "icon_align");
+        IMAGE_ADD_NEW(item, icon, "icon", "align");
         elm_layout_content_set(item, NULL, icon);
         elm_box_pack_end(box, item);
         item = prop_state_object_area_rel2_offset_x_rel2_offset_y_add(box, pd);
-        ICON_ADD(item, icon, false, "icon_offset");
+        IMAGE_ADD_NEW(item, icon, "icon", "offset");
         elm_layout_content_set(item, NULL, icon);
         elm_box_pack_end(box, item);
 
@@ -2800,18 +2800,18 @@ ui_property_state_fill_set(Evas_Object *property)
         elm_separator_horizontal_set(item, true);
         elm_object_style_set(item, "icon");
         elm_layout_text_set(item, "eflete.text", _("Start point"));
-        ICON_ADD(item, icon, false, "icon_start-point")
+        IMAGE_ADD_NEW(item, icon, "icon", "start-point")
         elm_layout_content_set(item, "eflete.swallow.icon", icon);
         evas_object_show(item);
         elm_box_pack_end(box, item);
 
         item = prop_state_fill_origin_relative_x_origin_relative_y_add(box, pd);
-        ICON_ADD(item, icon, false, "icon_align");
+        IMAGE_ADD_NEW(item, icon, "icon", "align");
         elm_layout_content_set(item, NULL, icon);
         elm_box_pack_end(box, item);
 
         item = prop_state_fill_origin_offset_x_origin_offset_y_add(box, pd);
-        ICON_ADD(item, icon, false, "icon_offset");
+        IMAGE_ADD_NEW(item, icon, "icon", "offset");
         elm_layout_content_set(item, NULL, icon);
         elm_box_pack_end(box, item);
 
@@ -2820,18 +2820,18 @@ ui_property_state_fill_set(Evas_Object *property)
         elm_separator_horizontal_set(item, true);
         elm_object_style_set(item, "icon");
         elm_object_part_text_set(item, "eflete.text", _("End point"));
-        ICON_ADD(item, icon, false, "icon_end-point")
+        IMAGE_ADD_NEW(item, icon, "icon", "end-point")
         elm_layout_content_set(item, "eflete.swallow.icon", icon);
         evas_object_show(item);
         elm_box_pack_end(box, item);
 
         item = prop_state_fill_size_relative_x_size_relative_y_add(box, pd);
-        ICON_ADD(item, icon, false, "icon_align");
+        IMAGE_ADD_NEW(item, icon, "icon", "align");
         elm_layout_content_set(item, NULL, icon);
         elm_box_pack_end(box, item);
 
         item = prop_state_fill_size_offset_x_size_offset_y_add(box, pd);
-        ICON_ADD(item, icon, false, "icon_offset");
+        IMAGE_ADD_NEW(item, icon, "icon", "offset");
         elm_layout_content_set(item, NULL, icon);
         elm_box_pack_end(box, item);
 
