@@ -216,10 +216,10 @@ _item_part_content_get(void *data,
         if ((_part->type == EDJE_PART_TYPE_TABLE) || ((_part->type == EDJE_PART_TYPE_BOX)))
           {
              Evas_Object *button, *icon;
-             BUTTON_ADD(obj, button, NULL)
+             button = elm_button_add(obj);
              ICON_ADD(button, icon, true, "icon-add");
              elm_object_part_content_set(button, NULL, icon);
-             elm_object_style_set(button, "simple");
+             elm_object_style_set(button, "anchor");
              evas_object_data_set(button, PARTLIST_DATA_KEY, obj);
              evas_object_smart_callback_add(button, "clicked", _on_item_add_clicked, _part);
              return button;
@@ -237,10 +237,10 @@ _item_part_item_content_get(void *data,
    if (!strcmp(part, "elm.swallow.penult"))
      {
         Evas_Object *button, *_icon;
-        BUTTON_ADD(obj, button, NULL)
+        button = elm_button_add(obj);
         ICON_ADD(button, _icon, true, "icon-remove");
         elm_object_part_content_set(button, NULL, _icon);
-        elm_object_style_set(button, "simple");
+        elm_object_style_set(button, "anchor");
 
         evas_object_data_set(button, PARTLIST_DATA_KEY, obj);
         evas_object_smart_callback_add(button, "clicked", _on_item_del_clicked, item_name);
