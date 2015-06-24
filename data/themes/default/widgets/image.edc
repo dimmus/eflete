@@ -17,4 +17,15 @@
       } \
    }
 
-IM("color",    "color_set",   "color-set.png",  -1 -1,   7 7 6 7,    SCALE,     SOLID);
+IM("color",    "color_set",   "color-set.png",        -1 -1,   7 7 6 7,    SCALE,   SOLID)
+IM("icon",     "rectangle",   "icon-rectangle.png",   12 11,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "image",       "icon-image.png",       12 11,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "spacer",      "icon-spacer.png",      12 11,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "swallow",     "icon-swallow.png",     12 11,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "text",        "icon-text.png",        12 11,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "textblock",   "icon-textblock.png",   12 11,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "group",       "icon-group.png",       12 11,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "proxy",       "icon-proxy.png",       12 11,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "table",       "icon-table.png",       12 11,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "box",         "icon-box.png",         12 11,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "external",    "icon-external.png",    12 11,   0 0 0 0,    SCALE,   SOLID)
