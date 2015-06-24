@@ -846,7 +846,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    /* button for switch mode of view: separated or normal*/
    priv->button_separate = elm_button_add(priv->scroller);
    elm_object_style_set(priv->button_separate, "anchor");
-   GET_IMAGE(icon, priv->scroller, "icon-separate");
+   IMAGE_ADD_NEW(priv->scroller, icon, "icon", "separate");
    elm_object_part_content_set(priv->button_separate, NULL, icon);
    evas_object_smart_callback_add(priv->button_separate, "clicked",
                                   _separate_smart_on_click, o);
