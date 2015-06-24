@@ -211,16 +211,19 @@ _item_part_content_get(void *data,
         evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
         return icon;
      }
-   if (!strcmp(part, "swallow.add"))
+   if (!strcmp(part, "elm.swallow.penult"))
      {
-        Evas_Object *button, *icon;
-        BUTTON_ADD(obj, button, NULL)
-        ICON_ADD(button, icon, true, "icon-add");
-        elm_object_part_content_set(button, NULL, icon);
-        elm_object_style_set(button, "simple");
-        evas_object_data_set(button, PARTLIST_DATA_KEY, obj);
-        evas_object_smart_callback_add(button, "clicked", _on_item_add_clicked, _part);
-        return button;
+        if ((_part->type == EDJE_PART_TYPE_TABLE) || ((_part->type == EDJE_PART_TYPE_BOX)))
+          {
+             Evas_Object *button, *icon;
+             BUTTON_ADD(obj, button, NULL)
+             ICON_ADD(button, icon, true, "icon-add");
+             elm_object_part_content_set(button, NULL, icon);
+             elm_object_style_set(button, "simple");
+             evas_object_data_set(button, PARTLIST_DATA_KEY, obj);
+             evas_object_smart_callback_add(button, "clicked", _on_item_add_clicked, _part);
+             return button;
+          }
      }
    return NULL;
 }
@@ -231,7 +234,7 @@ _item_part_item_content_get(void *data,
                        const char *part)
 {
    Eina_Stringshare *item_name = (Eina_Stringshare *) data;
-   if (!strcmp(part, "elm.swallow.end"))
+   if (!strcmp(part, "elm.swallow.penult"))
      {
         Evas_Object *button, *_icon;
         BUTTON_ADD(obj, button, NULL)
@@ -611,7 +614,7 @@ _on_style_clicked_double(void *data,
    if (!_itc_container)
      {
         _itc_container = elm_genlist_item_class_new();
-        _itc_container->item_style = "container";
+        _itc_container->item_style = "default";
         _itc_container->func.text_get = _item_part_label_get;
         _itc_container->func.content_get = _item_part_content_get;
         _itc_container->func.state_get = NULL;
@@ -621,7 +624,7 @@ _on_style_clicked_double(void *data,
    if (!_itc_part_item)
      {
         _itc_part_item = elm_genlist_item_class_new();
-        _itc_part_item->item_style = "level5";
+        _itc_part_item->item_style = "default";
         _itc_part_item->func.text_get = _item_item_label_get;
         _itc_part_item->func.content_get = _item_part_item_content_get;
         _itc_part_item->func.state_get = NULL;
