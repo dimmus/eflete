@@ -29,3 +29,5 @@ IM("icon",     "proxy",       "icon-proxy.png",       12 11,   0 0 0 0,    SCALE
 IM("icon",     "table",       "icon-table.png",       12 11,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "box",         "icon-box.png",         12 11,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "external",    "icon-external.png",    12 11,   0 0 0 0,    SCALE,   SOLID)
+
+IM("icon",     "alias_link",  "icon-alias_link.png",  16 16,   0 0 0 0,    SCALE,   SOLID)
