@@ -255,7 +255,7 @@ mw_info_text_set(Evas_Object *object, const char *text)
    bt_info = elm_button_add(object);
    evas_object_size_hint_align_set(bt_info, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_smart_callback_add(bt_info, "clicked", _mw_info, text);
-   GET_IMAGE(ic_info, bt_info, "mw_button_info");
+   ICON_STANDARD_ADD(bt_info, ic_info, false, "info");
    elm_layout_content_set(bt_info, "icon", ic_info);
    elm_layout_content_set(object, "elm.swallow.info", bt_info);
    evas_object_show(bt_info);
