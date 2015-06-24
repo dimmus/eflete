@@ -152,7 +152,7 @@ _image_editor_image_setup(Evas_Object *image,
    else
      {
         str = eina_stringshare_printf("edje/images/%i", it->id);
-        if (it->id)
+        if (it->id > -1)
           elm_image_file_set(image, img_edit->pr->dev, str);
         else
           elm_image_file_set(image, it->image_name, NULL);
