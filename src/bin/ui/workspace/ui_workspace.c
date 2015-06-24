@@ -811,7 +811,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    Evas_Object *icon = NULL;
 
    /* Here create evas image, whitch will be background for workspace*/
-   GET_IMAGE(priv->background, e, "bg_demo");
+   IMAGE_ADD_NEW(parent, priv->background, "bg", "tile");
    evas_object_smart_member_add(priv->background, o);
 
    /* Clipper needed for check mouse events*/
