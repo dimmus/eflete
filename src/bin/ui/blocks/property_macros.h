@@ -761,7 +761,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, NULL, 0.0); \
-   project_changed(false); \
+   project_changed(true); \
    workspace_edit_object_recalc(pd->workspace); \
 }
 
