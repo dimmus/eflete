@@ -821,7 +821,7 @@ _change_bg_cb(void *data,
      {
       case 0:
         {
-           GET_IMAGE(bg, canvas, "bg_demo");
+           IMAGE_ADD_NEW(obj, bg, "bg", "tile");
            evas_object_show(bg);
         }
       break;
@@ -1933,9 +1933,8 @@ style_editor_window_add(Project *project)
    elm_object_signal_emit(style_edit->entry_prev, "entry,hide", "eflete");
 
    canvas = evas_object_evas_get(style_edit->mwin);
-   GET_IMAGE(bg, canvas, "bg_demo");
+   IMAGE_ADD_NEW(style_edit->mwin, bg, "bg", "tile");
    elm_object_part_content_set(style_edit->entry_prev, "background", bg);
-   evas_object_show(bg);
 
    style_edit->textblock_style = evas_object_textblock_add(canvas);
    elm_object_part_content_set(style_edit->entry_prev, "entry", style_edit->textblock_style);
