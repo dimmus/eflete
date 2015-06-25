@@ -47,9 +47,6 @@ static void
 _item_draw_del(Groupedit_Item *ge_item);
 
 static Evas_Object *
-_part_swallow_add(Evas *e);
-
-static Evas_Object *
 _part_container_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part, Eina_List **items, Edje_Part_Type type);
 
 static void
@@ -904,7 +901,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          BORDER_ADD(255, 112, 49, 255);
          break;
       case EDJE_PART_TYPE_SWALLOW:
-         gp->draw = _part_swallow_add(sd->e);
+         IMAGE_ADD_NEW(sd->obj, gp->draw, "bg", "swallow")
          BORDER_ADD(120, 103, 140, 255)
          break;
       case EDJE_PART_TYPE_TEXTBLOCK:
@@ -1033,17 +1030,6 @@ _move_border_to_top(Ws_Groupedit_Smart_Data *sd)
    evas_object_smart_member_add(sd->container, sd->obj);
    evas_object_smart_member_add(sd->handler_TL.obj, sd->obj);
    evas_object_smart_member_add(sd->handler_BR.obj, sd->obj);
-}
-
-static Evas_Object *
-_part_swallow_add(Evas *e)
-{
-   Evas_Object *swallow;
-
-   GET_IMAGE(swallow, e, SWALLOW_IMG);
-   evas_object_smart_calculate(swallow);
-
-   return swallow;
 }
 
 static Evas_Object *
