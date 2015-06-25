@@ -68,7 +68,7 @@ static void
 _textblock_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
 
 static void
-_group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file, Evas *e);
+_group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file, Evas_Object *parent);
 
 static void
 _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp);
@@ -799,7 +799,7 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
               _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
            case EDJE_PART_TYPE_GROUP:
-              _group_param_update(gp, sd->edit_obj, sd->edit_obj_file, sd->e);
+              _group_param_update(gp, sd->edit_obj, sd->edit_obj_file, sd->obj);
               _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
            case EDJE_PART_TYPE_TABLE:
@@ -1419,7 +1419,7 @@ _textblock_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 }
 
 static void
-_group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file, Evas *e)
+_group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file, Evas_Object *parent)
 {
    Eina_Stringshare *source = edje_edit_part_source_get(edit_obj, gp->name);
    Evas_Object *image = NULL;
@@ -1432,7 +1432,7 @@ _group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file,
    if (!source)
      {
         edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP);
-        GET_IMAGE(image, e, GROUP_IMG);
+        IMAGE_ADD_NEW(parent, image, "bg", "group");
         edje_object_part_swallow(gp->draw, "swallow.image", image);
      }
    else
