@@ -34,6 +34,14 @@ struct _Search_Data
    Elm_Object_Item *last_item_found;
 };
 
+struct _Colorclass_Item
+{
+   Eina_Stringshare *name;
+   int r1, g1, b1, a1;
+   int r2, g2, b2, a2;
+   int r3, g3, b3, a3;
+};
+
 struct _Colorclasses_Editor
 {
    Project *pr;
@@ -42,17 +50,54 @@ struct _Colorclasses_Editor
    Evas_Object *genlist;
    Evas_Object *edit_obj;
    Evas_Object *edje_preview;
+   Evas_Object *colorsel1, *colorsel2, *colorsel3;
    Eina_Bool changed;
    Search_Data style_search_data;
+   Colorclass_Item *current_ccl;
 };
 
-struct _Colorclass_Item
+static void
+_colorclass_update(Colorclasses_Editor *edit)
 {
-   Eina_Stringshare *name;
-   int r1, g1, b1, a1;
-   int r2, g2, b2, a2;
-   int r3, g3, b3, a3;
-};
+   edje_object_color_class_set(edit->edje_preview,
+                               "colorclass_editor/text_example_colorclass",
+                               edit->current_ccl->r1, edit->current_ccl->g1,
+                               edit->current_ccl->b1, edit->current_ccl->a1,
+                               edit->current_ccl->r2, edit->current_ccl->g2,
+                               edit->current_ccl->b2, edit->current_ccl->a2,
+                               edit->current_ccl->r3, edit->current_ccl->g3,
+                               edit->current_ccl->b3, edit->current_ccl->a3);
+   edje_edit_color_class_colors_set(edit->edit_obj, edit->current_ccl->name,
+                                    edit->current_ccl->r1, edit->current_ccl->g1,
+                                    edit->current_ccl->b1, edit->current_ccl->a1,
+                                    edit->current_ccl->r2, edit->current_ccl->g2,
+                                    edit->current_ccl->b2, edit->current_ccl->a2,
+                                    edit->current_ccl->r3, edit->current_ccl->g3,
+                                    edit->current_ccl->b3, edit->current_ccl->a3);
+}
+/* Colorselector widget callbacks */
+#define COLORSELECTOR_CALLBACK(NUMBER) \
+static void \
+_on_changed_##NUMBER(void *data, \
+                     Evas_Object *obj __UNUSED__, \
+                     void *event_info __UNUSED__) \
+{ \
+   Colorclasses_Editor *edit = (Colorclasses_Editor *)data; \
+   if (!edit->current_ccl) return; \
+   elm_colorselector_color_get(edit->colorsel##NUMBER, \
+                               &edit->current_ccl->r##NUMBER, \
+                               &edit->current_ccl->g##NUMBER, \
+                               &edit->current_ccl->b##NUMBER, \
+                               &edit->current_ccl->a##NUMBER); \
+   _colorclass_update(edit); \
+   edit->changed = true; \
+}
+
+COLORSELECTOR_CALLBACK(1)
+COLORSELECTOR_CALLBACK(2)
+COLORSELECTOR_CALLBACK(3)
+
+#undef COLORSELECTOR_CALLBACK
 
 /* Callback on colorclass selection in list */
 static void
@@ -64,6 +109,12 @@ _on_selected(void *data,
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    Colorclass_Item *ccl = elm_object_item_data_get(glit);
 
+   edit->current_ccl = ccl;
+
+   elm_colorselector_color_set(edit->colorsel1, ccl->r1, ccl->g1, ccl->b1, ccl->a1);
+   elm_colorselector_color_set(edit->colorsel2, ccl->r2, ccl->g2, ccl->b2, ccl->a2);
+   elm_colorselector_color_set(edit->colorsel3, ccl->r3, ccl->g3, ccl->b3, ccl->a3);
+
    edje_object_color_class_set(edit->edje_preview,
                                "colorclass_editor/text_example_colorclass",
                                ccl->r1, ccl->g1,
@@ -72,6 +123,10 @@ _on_selected(void *data,
                                ccl->b2, ccl->a2,
                                ccl->r3, ccl->g3,
                                ccl->b3, ccl->a3);
+
+   elm_object_disabled_set(edit->colorsel1, false);
+   elm_object_disabled_set(edit->colorsel2, false);
+   elm_object_disabled_set(edit->colorsel3, false);
 }
 
 /* Modal Window callbacks (closing and exiting from colorclass manager) */
@@ -210,6 +265,20 @@ _colorclass_main_layout_create(Colorclasses_Editor *edit)
    evas_object_size_hint_align_set(edit->edje_preview, -1, -1);
    evas_object_show(edit->edje_preview);
    elm_object_part_content_set(edit->layout, "swallow.entry", edit->edje_preview);
+
+   /* Creating colorselectors */
+#define ADD_COLORSEL(NUMBER, SWALLOW_NAME) \
+   edit->colorsel##NUMBER = elm_colorselector_add(edit->layout); \
+   elm_colorselector_mode_set(edit->colorsel##NUMBER, ELM_COLORSELECTOR_ALL); \
+   elm_object_part_content_set(edit->layout, SWALLOW_NAME, edit->colorsel##NUMBER); \
+   evas_object_smart_callback_add(edit->colorsel##NUMBER, "changed", _on_changed_##NUMBER, edit); \
+   elm_object_disabled_set(edit->colorsel##NUMBER, true);
+
+   ADD_COLORSEL(1, "swallow.colorselector.object");
+   ADD_COLORSEL(2, "swallow.colorselector.outline");
+   ADD_COLORSEL(3, "swallow.colorselector.shadow");
+
+#undef ADD_COLORSEL
 }
 Eina_Bool
 _colorclass_viewer_init(Colorclasses_Editor *edit)
