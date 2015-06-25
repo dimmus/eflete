@@ -441,6 +441,7 @@ _project_import_edj(void *data,
    WORKER_LOCK_TAKE;
       pm_project_resource_export(worker->project, NULL);
       _project_linked_images_copy(worker);
+      edje_file_cache_flush();
    WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS);
@@ -560,6 +561,7 @@ _project_import_edc(void *data,
       worker->project->widgets = wm_widgets_list_new(worker->project->dev);
       worker->project->layouts = wm_layouts_list_new(worker->project->dev);
       pm_project_resource_export(worker->project, NULL);
+      edje_file_cache_flush();
    WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS)
