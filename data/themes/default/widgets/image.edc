@@ -46,3 +46,6 @@ IM("bg",       "table",       "bg_table.png",         -1 -1,   0 0 0 0,    TILE,
 IM("bg",       "spacer",      "bg_spacer.png",        -1 -1,   0 0 0 0,    TILE,    SOLID)
 IM("bg",       "swallow",     "bg_swallow.png",       -1 -1,   0 0 0 0,    TILE,    SOLID)
 IM("bg",       "part_item",   "bg_part_item.png",     -1 -1,   0 0 0 0,    TILE,    SOLID)
+
+IM("border",   "1px",         "border_1.png",         -1 -1,   1 1 1 1,    SCALE,   NONE)
+IM("border",   "2px",         "border_2.png",         -1 -1,   2 2 2 2,    SCALE,   NONE)
