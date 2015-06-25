@@ -129,12 +129,6 @@ TODO("see large comment below")
    evas_object_size_hint_weight_set(CHECK, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_show(CHECK);
 
-#define IMAGE_ADD(PARENT, IMAGE, NAME) \
-   GET_IMAGE(IMAGE, PARENT, NAME); \
-   evas_object_size_hint_align_set(IMAGE, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   evas_object_size_hint_weight_set(IMAGE, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
-   evas_object_show(IMAGE);
-
 #define BUTTON_ADD(PARENT, BUTTON, TEXT) \
    BUTTON = elm_button_add(PARENT); \
    evas_object_size_hint_align_set(BUTTON, EVAS_HINT_FILL, EVAS_HINT_FILL); \
