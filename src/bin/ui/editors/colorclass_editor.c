@@ -41,6 +41,7 @@ struct _Colorclasses_Editor
    Evas_Object *layout;
    Evas_Object *genlist;
    Evas_Object *edit_obj;
+   Evas_Object *edje_preview;
    Eina_Bool changed;
    Search_Data style_search_data;
 };
@@ -139,7 +140,7 @@ _item_ccl_del(void *data,
 static void
 _colorclass_main_layout_create(Colorclasses_Editor *edit)
 {
-   Evas_Object *search;
+   Evas_Object *search, *bg;
 
    /* Creating main layout of window */
    edit->layout = elm_layout_add(edit->mwin);
@@ -172,6 +173,22 @@ _colorclass_main_layout_create(Colorclasses_Editor *edit)
                                   &(edit->style_search_data));
    edit->style_search_data.search_entry = search;
    edit->style_search_data.last_item_found = NULL;
+
+   /* Entry preview to show colorclass */
+   IMAGE_ADD_NEW(edit->layout, bg, "bg", "tile");
+   elm_object_part_content_set(edit->layout, "swallow.entry.bg", bg);
+   evas_object_show(bg);
+
+   edit->edje_preview = edje_object_add(evas_object_evas_get(edit->mwin));
+   if (!edje_object_file_set(edit->edje_preview,
+                             EFLETE_THEME,
+                             "elm/layout/colorclass_manager/preview"))
+     ERR("Couldn't load layout for text example field!");
+   edje_object_part_text_set(edit->edje_preview, "text_example",
+                       _("The quick brown fox jumps over the lazy dog"));
+   evas_object_size_hint_align_set(edit->edje_preview, -1, -1);
+   evas_object_show(edit->edje_preview);
+   elm_object_part_content_set(edit->layout, "swallow.entry", edit->edje_preview);
 }
 Eina_Bool
 _colorclass_viewer_init(Colorclasses_Editor *edit)
