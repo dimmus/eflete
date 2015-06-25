@@ -54,6 +54,26 @@ struct _Colorclass_Item
    int r3, g3, b3, a3;
 };
 
+/* Callback on colorclass selection in list */
+static void
+_on_selected(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *event_info)
+{
+   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   Colorclass_Item *ccl = elm_object_item_data_get(glit);
+
+   edje_object_color_class_set(edit->edje_preview,
+                               "colorclass_editor/text_example_colorclass",
+                               ccl->r1, ccl->g1,
+                               ccl->b1, ccl->a1,
+                               ccl->r2, ccl->g2,
+                               ccl->b2, ccl->a2,
+                               ccl->r3, ccl->g3,
+                               ccl->b3, ccl->a3);
+}
+
 /* Modal Window callbacks (closing and exiting from colorclass manager) */
 static void
 _on_mwin_del(void * data,
@@ -155,6 +175,7 @@ _colorclass_main_layout_create(Colorclasses_Editor *edit)
    evas_object_size_hint_align_set(edit->genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(edit->genlist);
    elm_object_part_content_set(edit->layout, "swallow.list", edit->genlist);
+   evas_object_smart_callback_add(edit->genlist, "selected", _on_selected, edit);
 
    if (!_itc_ccl)
      {
