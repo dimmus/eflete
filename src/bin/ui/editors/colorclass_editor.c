@@ -23,6 +23,10 @@
 TODO("Rename this file to colorclass_manager")
 
 static Elm_Genlist_Item_Class *_itc_ccl = NULL;
+static Elm_Entry_Filter_Accept_Set accept_name = {
+   .accepted = NULL,
+   .rejected = BANNED_SYMBOLS
+};
 
 typedef struct _Colorclasses_Editor Colorclasses_Editor;
 typedef struct _Colorclass_Item Colorclass_Item;
@@ -51,12 +55,106 @@ struct _Colorclasses_Editor
    Evas_Object *edit_obj;
    Evas_Object *edje_preview, *preview_layout;
    Evas_Object *colorsel1, *colorsel2, *colorsel3;
+   Evas_Object *entry, *popup;
    Eina_Bool changed;
    Search_Data style_search_data;
    Colorclass_Item *current_ccl;
 };
 
 /* BUTTON ADD AND REMOVE FUNCTIONS */
+static void
+_on_add_popup_btn_add(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *ei __UNUSED__)
+{
+   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+   Colorclass_Item *it = NULL;
+   Elm_Object_Item *glit_ccl = NULL;
+   Evas_Object *edje_edit_obj = NULL;
+   App_Data *ap = app_data_get();
+
+   it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
+   it->name = elm_entry_entry_get(edit->entry);
+
+   if ((!it->name) || (!strcmp(it->name, "")))
+     {
+        NOTIFY_WARNING(_("Color class name can not be empty!"));
+        free(it);
+        return;
+     }
+
+   GET_OBJ(edit->pr, edje_edit_obj);
+   if (!edje_edit_color_class_add(edje_edit_obj, eina_stringshare_add(it->name)))
+     {
+        NOTIFY_WARNING(_("Color class name must be unique!"));
+        free(it);
+        return;
+     }
+
+   glit_ccl = elm_genlist_item_append(edit->genlist, _itc_ccl, it, NULL,
+                                    ELM_GENLIST_ITEM_NONE, NULL, NULL);
+   elm_genlist_item_selected_set(glit_ccl, EINA_TRUE);
+
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   ui_property_state_unset(ui_block_property_get(ap));
+   ui_property_state_set(ui_block_property_get(ap), part);
+   evas_object_del(edit->popup);
+   edit->popup = NULL;
+   edit->changed = true;
+
+   project_changed(false);
+}
+static void
+_on_add_popup_btn_cancel(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *ei __UNUSED__)
+{
+   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+   evas_object_del(edit->popup);
+   edit->popup = NULL;
+}
+static void
+_on_button_add_clicked_cb(void *data __UNUSED__,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info __UNUSED__)
+{
+   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+
+   Evas_Object *box, *bt_yes, *bt_no, *item;
+
+   edit->popup = elm_popup_add(edit->mwin);
+   elm_object_part_text_set(edit->popup, "title,text", _("Add color class:"));
+
+   box = elm_box_add(edit->popup);
+   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+   LAYOUT_PROP_ADD(edit->popup, _("Color class name: "), "property", "1swallow")
+   EWE_ENTRY_ADD(item, edit->entry, true);
+   elm_entry_markup_filter_append(edit->entry, elm_entry_filter_accept_set,
+                                  &accept_name);
+   elm_object_part_text_set(edit->entry, "guide",
+                            _("Type new color class name here."));
+   elm_object_part_content_set(item, "elm.swallow.content", edit->entry);
+
+   elm_box_pack_end(box, item);
+   elm_object_content_set(edit->popup, box);
+   evas_object_show(box);
+
+   BUTTON_ADD(edit->popup, bt_yes, _("Ok"));
+   evas_object_smart_callback_add(bt_yes, "clicked", _on_add_popup_btn_add,
+                                  edit);
+   elm_object_part_content_set(edit->popup, "button1", bt_yes);
+
+   BUTTON_ADD(edit->popup, bt_no, _("Cancel"));
+   evas_object_smart_callback_add(bt_no, "clicked", _on_add_popup_btn_cancel,
+                                  edit);
+   elm_object_part_content_set(edit->popup, "button2", bt_no);
+
+   evas_object_show(edit->popup);
+   elm_object_focus_set(edit->entry, true);
+}
+
 static void
 _on_button_delete_clicked_cb(void *data,
                              Evas_Object *obj __UNUSED__,
@@ -382,6 +480,15 @@ _colorclass_main_layout_create(Colorclasses_Editor *edit)
    elm_object_part_content_set(edit->layout, "swallow.radio", box_bg);
 
    /* Controls (add, remove) of colorclasses */
+   button = elm_button_add(edit->layout);
+   evas_object_show(button);
+   ICON_STANDARD_ADD(button, ic, true, "plus");
+   elm_object_part_content_set(button, NULL, ic);
+   evas_object_smart_callback_add(button, "clicked",
+                                  _on_button_add_clicked_cb, edit);
+   elm_object_part_content_set(edit->layout,
+                               "swallow.control.add", button);
+
    button = elm_button_add(edit->layout);
    evas_object_show(button);
    ICON_STANDARD_ADD(button, ic, true, "minus");
