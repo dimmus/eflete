@@ -37,7 +37,6 @@ aimages_DATA = \
    ${srcdir}/images/toolbar_icons/*.png
 
 aresourcesdir = $(datadir)/eflete/
-aresources_DATA = eflete_resources.edj
 
 shortcutdir = $(datadir)/applications
 shortcut_DATA = eflete.desktop
@@ -72,15 +71,6 @@ eflete.edj: Makefile \
 		$(EDJE_FLAGS) \
 	$(top_srcdir)/data/layouts/eflete.edc \
 	$(top_builddir)/data/eflete.edj
-
-eflete_resources.edj: Makefile \
-	$(top_srcdir)/data/*.edc \
-	$(top_srcdir)/data/resources/*.edc \
-	$(top_srcdir)/data/resources/images/*.png
-	$(AM_V_EDJ)$(EDJE_CC) \
-		$(EDJE_FLAGS_RESOURCES) \
-	$(top_srcdir)/data/resources/resources.edc \
-	$(top_builddir)/data/eflete_resources.edj
 
 eflete_elm.edj: Makefile \
 	$(top_srcdir)/data/*.edc \
