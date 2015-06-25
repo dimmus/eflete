@@ -49,12 +49,52 @@ struct _Colorclasses_Editor
    Evas_Object *layout;
    Evas_Object *genlist;
    Evas_Object *edit_obj;
-   Evas_Object *edje_preview;
+   Evas_Object *edje_preview, *preview_layout;
    Evas_Object *colorsel1, *colorsel2, *colorsel3;
    Eina_Bool changed;
    Search_Data style_search_data;
    Colorclass_Item *current_ccl;
 };
+
+/* Changing background of preview */
+static void
+_change_bg_cb(void *data,
+              Evas_Object *obj,
+              void *event_info __UNUSED__)
+{
+   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+   int state = elm_radio_state_value_get(obj);
+   Evas_Object *bg = elm_object_part_content_unset(edit->layout, "swallow.entry.bg");
+   evas_object_del(bg);
+   Evas *canvas = evas_object_evas_get(obj);
+   switch (state)
+     {
+      case 0:
+        {
+           IMAGE_ADD_NEW(edit->layout, bg, "bg", "tile");
+           evas_object_show(bg);
+        }
+      break;
+      case 1:
+        {
+           bg = evas_object_rectangle_add(canvas);
+           evas_object_color_set(bg, 0, 0, 0, 255);
+           evas_object_show(bg);
+        }
+      break;
+      case 2:
+        {
+           bg = evas_object_rectangle_add(canvas);
+           evas_object_color_set(bg, 255, 255, 255, 255);
+           evas_object_show(bg);
+        }
+      break;
+      default:
+      break;
+     }
+
+   elm_object_part_content_set(edit->layout, "swallow.entry.bg", bg);
+}
 
 static void
 _colorclass_update(Colorclasses_Editor *edit)
@@ -215,7 +255,7 @@ _item_ccl_del(void *data,
 static void
 _colorclass_main_layout_create(Colorclasses_Editor *edit)
 {
-   Evas_Object *search, *bg;
+   Evas_Object *search, *bg, *box_bg, *radio, *radio_group, *image_bg;
 
    /* Creating main layout of window */
    edit->layout = elm_layout_add(edit->mwin);
@@ -279,6 +319,30 @@ _colorclass_main_layout_create(Colorclasses_Editor *edit)
    ADD_COLORSEL(3, "swallow.colorselector.shadow");
 
 #undef ADD_COLORSEL
+
+
+   /* Background changing radios */
+   BOX_ADD(edit->layout, box_bg, true, false);
+   elm_box_padding_set(box_bg, 10, 0);
+
+#define _RADIO_ADD(RADIO, VALUE, IMAGE) \
+   RADIO = elm_radio_add(edit->layout); \
+   elm_object_style_set(RADIO, "style_editor"); \
+   elm_radio_state_value_set(RADIO, VALUE); \
+   evas_object_show(RADIO); \
+   IMAGE_ADD_NEW(box_bg, image_bg, "preview", IMAGE); \
+   elm_object_part_content_set(RADIO, "bg", image_bg); \
+   evas_object_smart_callback_add(RADIO, "changed", _change_bg_cb, edit); \
+   elm_box_pack_end(box_bg, RADIO);
+
+   _RADIO_ADD(radio_group, 0, "bg-tile");
+   _RADIO_ADD(radio, 1, "bg-black");
+   elm_radio_group_add(radio, radio_group);
+   _RADIO_ADD(radio, 2, "bg-white");
+   elm_radio_group_add(radio, radio_group);
+#undef _RADIO_ADD
+
+   elm_object_part_content_set(edit->layout, "swallow.radio", box_bg);
 }
 Eina_Bool
 _colorclass_viewer_init(Colorclasses_Editor *edit)
