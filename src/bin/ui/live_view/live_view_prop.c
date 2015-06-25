@@ -144,7 +144,7 @@ _change_bg_cb(void *data,
    elm_object_style_set(RADIO, "style_editor"); \
    elm_radio_state_value_set(RADIO, VALUE); \
    evas_object_show(RADIO); \
-   IMAGE_ADD(item, image_bg, IMAGE); \
+   IMAGE_ADD_NEW(item, image_bg, "preview", IMAGE); \
    elm_object_part_content_set(RADIO, "bg", image_bg); \
    evas_object_smart_callback_add(RADIO, "changed", _change_bg_cb, property); \
    elm_object_part_content_set(item, SWALLOW, RADIO);
@@ -198,10 +198,10 @@ live_view_property_style_set(Evas_Object *property,
         elm_object_part_content_set(item, "elm.swallow.content", spinner);
         evas_object_data_set(item, ITEM, spinner);
 
-        _RADIO_ADD(radio_group, 0, "styles-preview-bg-transparent", "elm.swallow.transparent");
-        _RADIO_ADD(radio, 1, "styles-preview-bg-black", "elm.swallow.black");
+        _RADIO_ADD(radio_group, 0, "bg-tile", "elm.swallow.transparent");
+        _RADIO_ADD(radio, 1, "bg-black", "elm.swallow.black");
         elm_radio_group_add(radio, radio_group);
-        _RADIO_ADD(radio, 2, "styles-preview-bg-white", "elm.swallow.white");
+        _RADIO_ADD(radio, 2, "bg-white", "elm.swallow.white");
         elm_radio_group_add(radio, radio_group);
 #undef _RADIO_ADD
      }
