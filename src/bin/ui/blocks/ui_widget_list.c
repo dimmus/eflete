@@ -680,37 +680,37 @@ _on_style_clicked_double(void *data,
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
    evas_object_smart_callback_add(bt, "clicked", _navi_gl_parts_pop, nf);
-   elm_object_style_set(bt, "simple");
+   elm_object_style_set(bt, "anchor");
    evas_object_show(gl_parts);
 
    elm_naviframe_item_push(nf, clicked_style->full_group_name, bt, NULL, gl_parts, NULL);
 
-   BUTTON_ADD(nf, button, NULL)
+   button = elm_button_add(nf);
    ICON_ADD(button, _icon, true, "icon-add");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add(button, "clicked", _add_part_cb, nf);
-   elm_object_style_set(button, "simple");
+   elm_object_style_set(button, "anchor");
    elm_object_part_content_set(nf, "elm.swallow.bt3", button);
 
-   BUTTON_ADD(nf, button, NULL)
+   button = elm_button_add(nf);
    ICON_ADD(button, _icon, true, "icon-remove");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _del_part_cb, nf);
-   elm_object_style_set(button, "simple");
+   elm_object_style_set(button, "anchor");
    elm_object_part_content_set(nf, "elm.swallow.bt2", button);
 
-   BUTTON_ADD(nf, button, NULL)
+   button = elm_button_add(nf);
    ICON_ADD(button, _icon, true, "icon-slideup");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _above_part_cb, nf);
-   elm_object_style_set(button, "simple");
+   elm_object_style_set(button, "anchor");
    elm_object_part_content_set(nf, "elm.swallow.bt1", button);
 
-   BUTTON_ADD(nf, button, NULL)
+   button = elm_button_add(nf);
    ICON_ADD(button, _icon, true, "icon-slidedown");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _past_part_cb, nf);
-   elm_object_style_set(button, "simple");
+   elm_object_style_set(button, "anchor");
    elm_object_part_content_set(nf, "elm.swallow.bt0", button);
 }
 
@@ -804,23 +804,23 @@ _on_widget_clicked_double(void *data,
    bt = elm_button_add(nf);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
-   elm_object_style_set(bt, "simple");
+   elm_object_style_set(bt, "anchor");
    evas_object_smart_callback_add(bt, "clicked", _navi_gl_styles_pop, nf);
    elm_naviframe_item_push(nf, _widget->name, bt, NULL, gl_class, NULL);
 
-   BUTTON_ADD(nf, button, NULL)
+   button = elm_button_add(nf);
    ICON_ADD(button, _icon, true, "icon-remove");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _del_style_cb, nf);
-   elm_object_style_set(button, "simple");
+   elm_object_style_set(button, "anchor");
    elm_object_part_content_set(nf, "elm.swallow.bt0", button);
 
-   BUTTON_ADD(nf, button, NULL)
+   button = elm_button_add(nf);
    ICON_ADD(button, _icon, true, "icon-add");
    evas_object_size_hint_align_set(button, -1, EVAS_HINT_FILL);
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _add_style_cb, obj);
-   elm_object_style_set(button, "simple");
+   elm_object_style_set(button, "anchor");
    elm_object_part_content_set(nf, "elm.swallow.bt1", button);
    evas_object_show(gl_class);
 }
@@ -939,7 +939,7 @@ ui_widget_list_add(Evas_Object *parent)
    bt = elm_button_add(nf_layouts);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
-   elm_object_style_set(bt, "simple");
+   elm_object_style_set(bt, "anchor");
    evas_object_show(bt);
    evas_object_data_set(bt, WIDGETLIST_DATA_KEY, tabs);
    evas_object_smart_callback_add (bt, "clicked", _layout_add_cb, parent);
@@ -948,7 +948,7 @@ ui_widget_list_add(Evas_Object *parent)
    bt = elm_button_add(nf_layouts);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
-   elm_object_style_set(bt, "simple");
+   elm_object_style_set(bt, "anchor");
    evas_object_show(bt);
    evas_object_data_set(bt, WIDGETLIST_DATA_KEY, tabs);
    evas_object_smart_callback_add (bt, "clicked", _layout_del_cb, parent);
