@@ -34,7 +34,7 @@ ui/preference/preference.c \
 ui/editors/style_editor.c \
 ui/editors/image_editor.c \
 ui/editors/sound_editor.c \
-ui/editors/colorclass_editor.c \
+ui/editors/colorclass_manager.c \
 ui/editors/animator.c \
 ui/editors/animator_program_editor.c \
 ui/editors/animator_program_sequence.c \

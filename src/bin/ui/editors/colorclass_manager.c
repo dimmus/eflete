@@ -17,10 +17,8 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "colorclass_editor.h"
+#include "colorclass_manager.h"
 #include "main_window.h"
-
-TODO("Rename this file to colorclass_manager")
 
 static Elm_Genlist_Item_Class *_itc_ccl = NULL;
 static Elm_Entry_Filter_Accept_Set accept_name = {
@@ -28,7 +26,7 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
    .rejected = BANNED_SYMBOLS
 };
 
-typedef struct _Colorclasses_Editor Colorclasses_Editor;
+typedef struct _Colorclasses_Manager Colorclasses_Manager;
 typedef struct _Colorclass_Item Colorclass_Item;
 typedef struct _Search_Data Search_Data;
 
@@ -46,7 +44,7 @@ struct _Colorclass_Item
    int r3, g3, b3, a3;
 };
 
-struct _Colorclasses_Editor
+struct _Colorclasses_Manager
 {
    Project *pr;
    Evas_Object *mwin;
@@ -67,7 +65,7 @@ _on_add_popup_btn_add(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *ei __UNUSED__)
 {
-   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
    Colorclass_Item *it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
    Evas_Object *edje_edit_obj = NULL;
@@ -109,7 +107,7 @@ _on_add_popup_btn_cancel(void *data,
                          Evas_Object *obj __UNUSED__,
                          void *ei __UNUSED__)
 {
-   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
    evas_object_del(edit->popup);
    edit->popup = NULL;
 }
@@ -118,7 +116,7 @@ _on_button_add_clicked_cb(void *data __UNUSED__,
                           Evas_Object *obj __UNUSED__,
                           void *event_info __UNUSED__)
 {
-   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
 
    Evas_Object *box, *bt_yes, *bt_no, *item;
 
@@ -160,7 +158,7 @@ _on_button_delete_clicked_cb(void *data,
                              Evas_Object *obj __UNUSED__,
                              void *event_info __UNUSED__)
 {
-   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
    Evas_Object *edje_edit_obj;
    App_Data *ap = app_data_get();
    if (!edit->current_ccl) return;
@@ -197,7 +195,7 @@ _change_bg_cb(void *data,
               Evas_Object *obj,
               void *event_info __UNUSED__)
 {
-   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
    int state = elm_radio_state_value_get(obj);
    Evas_Object *bg = elm_object_part_content_unset(edit->layout, "swallow.entry.bg");
    evas_object_del(bg);
@@ -232,10 +230,10 @@ _change_bg_cb(void *data,
 }
 
 static void
-_colorclass_update(Colorclasses_Editor *edit)
+_colorclass_update(Colorclasses_Manager *edit)
 {
    edje_object_color_class_set(edit->edje_preview,
-                               "colorclass_editor/text_example_colorclass",
+                               "colorclass_manager/text_example_colorclass",
                                edit->current_ccl->r1, edit->current_ccl->g1,
                                edit->current_ccl->b1, edit->current_ccl->a1,
                                edit->current_ccl->r2, edit->current_ccl->g2,
@@ -257,7 +255,7 @@ _on_changed_##NUMBER(void *data, \
                      Evas_Object *obj __UNUSED__, \
                      void *event_info __UNUSED__) \
 { \
-   Colorclasses_Editor *edit = (Colorclasses_Editor *)data; \
+   Colorclasses_Manager *edit = (Colorclasses_Manager *)data; \
    if (!edit->current_ccl) return; \
    elm_colorselector_color_get(edit->colorsel##NUMBER, \
                                &edit->current_ccl->r##NUMBER, \
@@ -280,7 +278,7 @@ _on_selected(void *data,
              Evas_Object *obj __UNUSED__,
              void *event_info)
 {
-   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    Colorclass_Item *ccl = elm_object_item_data_get(glit);
 
@@ -291,7 +289,7 @@ _on_selected(void *data,
    elm_colorselector_color_set(edit->colorsel3, ccl->r3, ccl->g3, ccl->b3, ccl->a3);
 
    edje_object_color_class_set(edit->edje_preview,
-                               "colorclass_editor/text_example_colorclass",
+                               "colorclass_manager/text_example_colorclass",
                                ccl->r1, ccl->g1,
                                ccl->b1, ccl->a1,
                                ccl->r2, ccl->g2,
@@ -320,14 +318,14 @@ _on_btn_cancel(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
-   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
    mw_del(edit->mwin);
 }
 
 /* Search functions and creatings */
 ITEM_SEARCH_FUNC(genlist,ELM_GENLIST_ITEM_SCROLLTO_MIDDLE, "elm.text")
 static inline Evas_Object *
-_editor_search_field_create(Evas_Object *parent)
+_manager_search_field_create(Evas_Object *parent)
 {
    Evas_Object *entry, *icon;
    ENTRY_ADD(parent, entry, true);
@@ -342,7 +340,7 @@ _search_changed(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
-   Colorclasses_Editor *edit = data;
+   Colorclasses_Manager *edit = data;
    _genlist_item_search(edit->genlist, &(edit->style_search_data),
                         edit->style_search_data.last_item_found);
 }
@@ -351,7 +349,7 @@ _search_nxt_gd_item(void *data,
                     Evas_Object *obj __UNUSED__,
                     void *event_info __UNUSED__)
 {
-   Colorclasses_Editor *edit = data;
+   Colorclasses_Manager *edit = data;
    Elm_Object_Item *start_from = NULL;
 
    if (edit->style_search_data.last_item_found)
@@ -388,13 +386,13 @@ _item_ccl_del(void *data,
    ccl_it = NULL;
 }
 static void
-_colorclass_main_layout_create(Colorclasses_Editor *edit)
+_colorclass_main_layout_create(Colorclasses_Manager *edit)
 {
    Evas_Object *search, *bg, *box_bg, *radio, *radio_group, *image_bg, *ic, *button;
 
    /* Creating main layout of window */
    edit->layout = elm_layout_add(edit->mwin);
-   elm_layout_theme_set(edit->layout, "layout", "colorclass_editor", "default");
+   elm_layout_theme_set(edit->layout, "layout", "colorclass_manager", "default");
    evas_object_size_hint_weight_set(edit->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(edit->layout);
    elm_win_inwin_content_set(edit->mwin, edit->layout);
@@ -416,7 +414,7 @@ _colorclass_main_layout_create(Colorclasses_Editor *edit)
      }
 
    /* Search engine */
-   search = _editor_search_field_create(edit->layout);
+   search = _manager_search_field_create(edit->layout);
    elm_object_part_content_set(edit->layout, "swallow.search", search);
    evas_object_smart_callback_add(search, "changed", _search_changed, edit);
    evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, edit);
@@ -499,7 +497,7 @@ _colorclass_main_layout_create(Colorclasses_Editor *edit)
                                "swallow.control.minus", button);
 }
 Eina_Bool
-_colorclass_viewer_init(Colorclasses_Editor *edit)
+_colorclass_manager_init(Colorclasses_Manager *edit)
 {
    int r1, r2, r3, g1, g2, g3, b1, b2, b3, a1, a2, a3;
    const char *ccname = NULL;
@@ -540,10 +538,10 @@ _colorclass_viewer_init(Colorclasses_Editor *edit)
 }
 
 Evas_Object *
-colorclass_viewer_add(Project *project)
+colorclass_manager_add(Project *project)
 {
    Evas_Object *ic;
-   Colorclasses_Editor *edit = NULL;
+   Colorclasses_Manager *edit = NULL;
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
 
@@ -553,7 +551,7 @@ colorclass_viewer_add(Project *project)
         return NULL;
      }
 
-   edit = (Colorclasses_Editor *)mem_calloc(1, sizeof(Colorclasses_Editor));
+   edit = (Colorclasses_Manager *)mem_calloc(1, sizeof(Colorclasses_Manager));
    edit->changed = false;
    edit->pr = project;
    edit->mwin = mw_add(_on_btn_cancel, edit);
@@ -568,9 +566,9 @@ colorclass_viewer_add(Project *project)
    mw_icon_set(edit->mwin, ic);
 
    _colorclass_main_layout_create(edit);
-   if (!_colorclass_viewer_init(edit))
+   if (!_colorclass_manager_init(edit))
      {
-        NOTIFY_ERROR(_("Failed initialize colorclasses editor"));
+        NOTIFY_ERROR(_("Failed initialize colorclasses manager"));
         free(edit);
         return NULL;
      }
