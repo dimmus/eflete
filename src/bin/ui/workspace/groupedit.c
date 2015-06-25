@@ -720,7 +720,7 @@ groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
                }
              else
                {
-                  edje_object_file_set(ge_item->highlight, EFLETE_RESOURCES, BORDER_IMG);
+                  edje_object_file_set(ge_item->highlight, EFLETE_THEME, "elm/image/border/1px");
                   evas_object_color_set(ge_item->highlight, 49, 140, 141, 255);
                }
              _parts_recalc(sd);

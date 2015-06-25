@@ -989,7 +989,7 @@ _item_draw_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
         edje_object_file_set(ge_item->draw, sd->edit_obj_file, item_source);
         evas_object_show(ge_item->draw);
 
-        GET_IMAGE(ge_item->highlight, sd->e, BORDER_IMG);
+        IMAGE_ADD_NEW(sd->obj, ge_item->highlight, "border", "1px");
         evas_object_size_hint_min_set(ge_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_size_hint_align_set(ge_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_size_hint_weight_set(ge_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -1631,7 +1631,7 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
                        evas_object_size_hint_min_set(fake->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
                        evas_object_size_hint_align_set(fake->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
                        evas_object_size_hint_weight_set(fake->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
-                       GET_IMAGE(fake->highlight, sd->e, BORDER_IMG);
+                       IMAGE_ADD_NEW(sd->obj, fake->highlight, "border", "1px");
                        evas_object_size_hint_min_set(fake->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
                        evas_object_size_hint_align_set(fake->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
                        evas_object_size_hint_weight_set(fake->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -1803,7 +1803,7 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
              evas_object_size_hint_align_set(spread_item->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
              evas_object_size_hint_weight_set(spread_item->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-             GET_IMAGE(spread_item->highlight, sd->e, BORDER_IMG);
+             IMAGE_ADD_NEW(sd->obj, spread_item->highlight, "border", "1px");
              evas_object_size_hint_min_set(spread_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
              evas_object_size_hint_align_set(spread_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
              evas_object_size_hint_weight_set(spread_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -1815,7 +1815,7 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
                }
              else
                {
-                  edje_object_file_set(spread_item->highlight, EFLETE_RESOURCES, BORDER_IMG);
+                  edje_object_file_set(spread_item->highlight, EFLETE_THEME, "elm/image/border/1px");
                   evas_object_color_set(spread_item->highlight, 49, 140, 141, 255);
                }
 

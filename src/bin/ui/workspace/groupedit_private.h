@@ -25,9 +25,6 @@
 #include "common_macro.h"
 #include "logger.h"
 
-#define BORDER_IMG "border_part"
-#define GROUP_IMG "part_group_bg"
-
 typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;
 typedef struct _Groupedit_Part Groupedit_Part;
 typedef struct _Groupedit_Item Groupedit_Item;
