@@ -2819,7 +2819,7 @@ group { name: "elm/layout/sound_editor/player";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 1.0;
-            FIXED_SIZE(10, 10);
+            FIXED_SIZE(19, 19);
             rel1.to_x: "padding.top";
             rel2 {
                to_y: "padding.check";
@@ -2831,7 +2831,7 @@ group { name: "elm/layout/sound_editor/player";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 1.0;
-            FIXED_SIZE(10, 10);
+            FIXED_SIZE(19, 19);
             rel1.to_x: "padding.top";
             rel2 {
                to_y: "padding.check";
@@ -2844,7 +2844,7 @@ group { name: "elm/layout/sound_editor/player";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 1.0;
-            FIXED_SIZE(10, 10);
+            FIXED_SIZE(19, 19);
             rel1.to_x: "padding.top";
             rel2 {
                to_y: "padding.check";
