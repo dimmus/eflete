@@ -140,6 +140,8 @@ TODO("see large comment below")
    ICON = elm_icon_add (PARENT);\
    elm_icon_standard_set(ICON, ICON_NAME);\
    elm_image_no_scale_set(ICON, NOSCALE);\
+   evas_object_size_hint_align_set(ICON, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   evas_object_size_hint_weight_set(ICON, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_show(ICON);
 
 #define ICON_ADD(PARENT, ICON, NOSCALE, NAME) \
