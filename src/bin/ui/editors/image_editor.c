@@ -147,7 +147,7 @@ _image_editor_image_setup(Evas_Object *image,
         if (ecore_file_exists(it->image_name))
           evas_object_image_file_set(image, it->image_name, NULL);
         else
-          elm_image_file_set(image, EFLETE_RESOURCES, "no_image_warning");
+          elm_image_file_set(image, EFLETE_THEME, "elm/image/icon/attention");
      }
    else
      {
@@ -207,8 +207,7 @@ _image_usage_icon_setup(void *data)
                                             false);
    if (eina_list_count(used_in) == 0)
      {
-        elm_image_file_set(image_init_data->image_obj,
-                           EFLETE_RESOURCES, "no_image_warning");
+        elm_image_file_set(image_init_data->image_obj, EFLETE_THEME, "elm/image/icon/attention");
         elm_image_no_scale_set(image_init_data->image_obj, true);
         evas_object_show(image_init_data->image_obj);
      }
