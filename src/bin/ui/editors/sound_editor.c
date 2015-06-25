@@ -1205,7 +1205,7 @@ _sound_editor_search_field_create(Evas_Object *parent)
    ENTRY_ADD(parent, entry, true);
    elm_object_style_set(entry, "search_field");
    elm_object_part_text_set(entry, "guide", _("Search"));
-   ICON_ADD(entry, icon, true, "icon-search");
+   ICON_STANDARD_ADD(entry, icon, true, "search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
    return entry;
 }
