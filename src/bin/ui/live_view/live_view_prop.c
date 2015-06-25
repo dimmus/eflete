@@ -394,7 +394,7 @@ live_view_property_style_set(Evas_Object *property,
 Evas_Object *
 live_view_property_add(Evas_Object *parent, Eina_Bool in_prog_edit)
 {
-   Evas_Object *box, *scroller, *_bg;
+   Evas_Object *box, *scroller;
    Prop_Data *pd;
 
    if (!parent) return NULL;
@@ -407,10 +407,6 @@ live_view_property_add(Evas_Object *parent, Eina_Bool in_prog_edit)
    elm_box_align_set(box, 0.5, 0.0);
    elm_object_content_set(scroller, box);
 
-   _bg = elm_bg_add(parent);
-   elm_bg_file_set(_bg, EFLETE_RESOURCES, "section-item-bg");
-   elm_object_part_content_set(scroller, "elm.swallow.background", _bg);
-   evas_object_show(_bg);
    evas_object_show(scroller);
    evas_object_show(box);
 
