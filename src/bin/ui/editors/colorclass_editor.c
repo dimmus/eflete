@@ -26,6 +26,14 @@ static Elm_Genlist_Item_Class *_itc_ccl = NULL;
 
 typedef struct _Colorclasses_Editor Colorclasses_Editor;
 typedef struct _Colorclass_Item Colorclass_Item;
+typedef struct _Search_Data Search_Data;
+
+struct _Search_Data
+{
+   Evas_Object *search_entry;
+   Elm_Object_Item *last_item_found;
+};
+
 struct _Colorclasses_Editor
 {
    Project *pr;
@@ -34,6 +42,7 @@ struct _Colorclasses_Editor
    Evas_Object *genlist;
    Evas_Object *edit_obj;
    Eina_Bool changed;
+   Search_Data style_search_data;
 };
 
 struct _Colorclass_Item
@@ -64,6 +73,50 @@ _on_btn_cancel(void *data,
    mw_del(edit->mwin);
 }
 
+/* Search functions and creatings */
+ITEM_SEARCH_FUNC(genlist,ELM_GENLIST_ITEM_SCROLLTO_MIDDLE, "elm.text")
+static inline Evas_Object *
+_editor_search_field_create(Evas_Object *parent)
+{
+   Evas_Object *entry, *icon;
+   ENTRY_ADD(parent, entry, true);
+   elm_object_style_set(entry, "search_field");
+   elm_object_part_text_set(entry, "guide", _("Search"));
+   ICON_STANDARD_ADD(entry, icon, true, "search");
+   elm_object_part_content_set(entry, "elm.swallow.end", icon);
+   return entry;
+}
+static void
+_search_changed(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   Colorclasses_Editor *edit = data;
+   _genlist_item_search(edit->genlist, &(edit->style_search_data),
+                        edit->style_search_data.last_item_found);
+}
+static void
+_search_nxt_gd_item(void *data,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   Colorclasses_Editor *edit = data;
+   Elm_Object_Item *start_from = NULL;
+
+   if (edit->style_search_data.last_item_found)
+     start_from = elm_genlist_item_next_get(edit->style_search_data.last_item_found);
+
+   _genlist_item_search(edit->genlist, &(edit->style_search_data), start_from);
+}
+static void
+_search_reset_cb(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   Search_Data *search_data = data;
+   search_data->last_item_found = NULL;
+}
+
 /* Creating main layout of Manager and filling with data
  (with callbacks for genlist also) */
 static char *
@@ -86,6 +139,8 @@ _item_ccl_del(void *data,
 static void
 _colorclass_main_layout_create(Colorclasses_Editor *edit)
 {
+   Evas_Object *search;
+
    /* Creating main layout of window */
    edit->layout = elm_layout_add(edit->mwin);
    elm_layout_theme_set(edit->layout, "layout", "colorclass_editor", "default");
@@ -107,6 +162,16 @@ _colorclass_main_layout_create(Colorclasses_Editor *edit)
         _itc_ccl->func.text_get = _item_ccl_label_get;
         _itc_ccl->func.del = _item_ccl_del;
      }
+
+   /* Search engine */
+   search = _editor_search_field_create(edit->layout);
+   elm_object_part_content_set(edit->layout, "swallow.search", search);
+   evas_object_smart_callback_add(search, "changed", _search_changed, edit);
+   evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, edit);
+   evas_object_smart_callback_add(edit->genlist, "pressed", _search_reset_cb,
+                                  &(edit->style_search_data));
+   edit->style_search_data.search_entry = search;
+   edit->style_search_data.last_item_found = NULL;
 }
 Eina_Bool
 _colorclass_viewer_init(Colorclasses_Editor *edit)
