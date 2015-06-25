@@ -144,10 +144,6 @@ TODO("see large comment below")
    evas_object_size_hint_weight_set(ICON, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_show(ICON);
 
-#define ICON_ADD(PARENT, ICON, NOSCALE, NAME) \
-   GET_IMAGE(ICON, PARENT, NAME);\
-   evas_object_show(ICON);
-
 #define IMAGE_ADD_NEW(PARENT, IMAGE, NAME, STYLE) \
    IMAGE = elm_image_add(PARENT); \
    elm_image_file_set(IMAGE, EFLETE_THEME, "elm/image/"NAME"/"STYLE);
