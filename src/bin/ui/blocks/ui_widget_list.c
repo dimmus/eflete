@@ -674,7 +674,7 @@ _on_style_clicked_double(void *data,
                                   _part_items_contract_req, NULL);
    evas_object_smart_callback_add(gl_parts, "unselected", _on_part_item_unselect, nf);
 
-   ICON_ADD(nf, ic, false, "icon-back");
+   ICON_STANDARD_ADD(nf, ic, false, "arrow_left");
 
    bt = elm_button_add(nf);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -686,28 +686,28 @@ _on_style_clicked_double(void *data,
    elm_naviframe_item_push(nf, clicked_style->full_group_name, bt, NULL, gl_parts, NULL);
 
    button = elm_button_add(nf);
-   ICON_ADD(button, _icon, true, "icon-add");
+   ICON_STANDARD_ADD(button, _icon, true, "plus");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add(button, "clicked", _add_part_cb, nf);
    elm_object_style_set(button, "anchor");
    elm_object_part_content_set(nf, "elm.swallow.bt3", button);
 
    button = elm_button_add(nf);
-   ICON_ADD(button, _icon, true, "icon-remove");
+   ICON_STANDARD_ADD(button, _icon, true, "minus");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _del_part_cb, nf);
    elm_object_style_set(button, "anchor");
    elm_object_part_content_set(nf, "elm.swallow.bt2", button);
 
    button = elm_button_add(nf);
-   ICON_ADD(button, _icon, true, "icon-slideup");
+   ICON_STANDARD_ADD(button, _icon, true, "arrow_up");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _above_part_cb, nf);
    elm_object_style_set(button, "anchor");
    elm_object_part_content_set(nf, "elm.swallow.bt1", button);
 
    button = elm_button_add(nf);
-   ICON_ADD(button, _icon, true, "icon-slidedown");
+   ICON_STANDARD_ADD(button, _icon, true, "arrow_down");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _past_part_cb, nf);
    elm_object_style_set(button, "anchor");
@@ -800,7 +800,7 @@ _on_widget_clicked_double(void *data,
    evas_object_smart_callback_add(gl_class, "clicked,double",
                                   _on_style_clicked_double, data);
 
-   ICON_ADD(nf, ic, false, "icon-back");
+   ICON_STANDARD_ADD(nf, ic, false, "arrow_left");
    bt = elm_button_add(nf);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
@@ -809,14 +809,14 @@ _on_widget_clicked_double(void *data,
    elm_naviframe_item_push(nf, _widget->name, bt, NULL, gl_class, NULL);
 
    button = elm_button_add(nf);
-   ICON_ADD(button, _icon, true, "icon-remove");
+   ICON_STANDARD_ADD(button, _icon, true, "minus");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _del_style_cb, nf);
    elm_object_style_set(button, "anchor");
    elm_object_part_content_set(nf, "elm.swallow.bt0", button);
 
    button = elm_button_add(nf);
-   ICON_ADD(button, _icon, true, "icon-add");
+   ICON_STANDARD_ADD(button, _icon, true, "plus");
    evas_object_size_hint_align_set(button, -1, EVAS_HINT_FILL);
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _add_style_cb, obj);
@@ -935,7 +935,7 @@ ui_widget_list_add(Evas_Object *parent)
    NAVI(widgets, _("Widget list"));
    NAVI(layouts, _("Layouts list"));
 #undef NAVI
-   ICON_ADD(nf_layouts, ic, false, "icon-add");
+   ICON_STANDARD_ADD(nf_layouts, ic, false, "plus");
    bt = elm_button_add(nf_layouts);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
@@ -944,7 +944,7 @@ ui_widget_list_add(Evas_Object *parent)
    evas_object_data_set(bt, WIDGETLIST_DATA_KEY, tabs);
    evas_object_smart_callback_add (bt, "clicked", _layout_add_cb, parent);
    elm_object_item_part_content_set(it_layouts, "elm.swallow.bt1", bt);
-   ICON_ADD(nf_layouts, ic, false, "icon-remove");
+   ICON_STANDARD_ADD(nf_layouts, ic, false, "minus");
    bt = elm_button_add(nf_layouts);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
