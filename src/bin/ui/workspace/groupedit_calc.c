@@ -843,7 +843,7 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
    return true;
 }
 #define BORDER_ADD(R, G, B, A) \
-   GET_IMAGE(gp->border, sd->e, BORDER_2PX_IMG); \
+   IMAGE_ADD_NEW(sd->obj, gp->border, "border", "2px")\
    evas_object_color_set(gp->border, R*A/255, G*A/255, B*A/255, A);
 
 #define IMAGE_PART_GROUP "eflete/groupedit/image/default"
@@ -1810,7 +1810,7 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 
              if (ge_item->selected)
                {
-                  edje_object_file_set(spread_item->highlight, EFLETE_RESOURCES, BORDER_2PX_IMG);
+                  edje_object_file_set(spread_item->highlight, EFLETE_THEME, "elm/image/border/2px");
                   evas_object_color_set(spread_item->highlight, 0, 253, 255, 255);
                }
              else

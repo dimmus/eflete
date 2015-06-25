@@ -26,7 +26,6 @@
 #include "logger.h"
 
 #define BORDER_IMG "border_part"
-#define BORDER_2PX_IMG "2pxborder_part"
 #define GROUP_IMG "part_group_bg"
 
 typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;

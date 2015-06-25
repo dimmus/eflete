@@ -715,7 +715,7 @@ groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
              ge_item->selected = selected;
              if (selected)
                {
-                  edje_object_file_set(ge_item->highlight, EFLETE_RESOURCES, BORDER_2PX_IMG);
+                  edje_object_file_set(ge_item->highlight, EFLETE_THEME, "elm/image/border/2px");
                   evas_object_color_set(ge_item->highlight, 0, 253, 255, 255);
                }
              else
