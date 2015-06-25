@@ -56,6 +56,43 @@ struct _Colorclasses_Editor
    Colorclass_Item *current_ccl;
 };
 
+/* BUTTON ADD AND REMOVE FUNCTIONS */
+static void
+_on_button_delete_clicked_cb(void *data,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info __UNUSED__)
+{
+   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+   Evas_Object *edje_edit_obj;
+   App_Data *ap = app_data_get();
+   if (!edit->current_ccl) return;
+   GET_OBJ(edit->pr, edje_edit_obj);
+   edje_edit_color_class_del(edje_edit_obj, edit->current_ccl->name);
+   Elm_Object_Item *it = elm_genlist_selected_item_get(edit->genlist);
+   Elm_Object_Item *next = elm_genlist_item_next_get(it);
+
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   ui_property_state_unset(ui_block_property_get(ap));
+   ui_property_state_set(ui_block_property_get(ap), part);
+
+   if (!next) next = elm_genlist_item_prev_get(it);
+   if (next)
+      elm_genlist_item_selected_set(next, EINA_TRUE);
+   else
+      edit->current_ccl = NULL;
+
+   elm_object_item_del(it);
+
+   if (elm_genlist_items_count(edit->genlist) == 0)
+     {
+        elm_object_disabled_set(edit->colorsel1, true);
+        elm_object_disabled_set(edit->colorsel2, true);
+        elm_object_disabled_set(edit->colorsel3, true);
+     }
+
+   project_changed(false);
+}
+
 /* Changing background of preview */
 static void
 _change_bg_cb(void *data,
@@ -255,7 +292,7 @@ _item_ccl_del(void *data,
 static void
 _colorclass_main_layout_create(Colorclasses_Editor *edit)
 {
-   Evas_Object *search, *bg, *box_bg, *radio, *radio_group, *image_bg;
+   Evas_Object *search, *bg, *box_bg, *radio, *radio_group, *image_bg, *ic, *button;
 
    /* Creating main layout of window */
    edit->layout = elm_layout_add(edit->mwin);
@@ -343,6 +380,16 @@ _colorclass_main_layout_create(Colorclasses_Editor *edit)
 #undef _RADIO_ADD
 
    elm_object_part_content_set(edit->layout, "swallow.radio", box_bg);
+
+   /* Controls (add, remove) of colorclasses */
+   button = elm_button_add(edit->layout);
+   evas_object_show(button);
+   ICON_STANDARD_ADD(button, ic, true, "minus");
+   elm_object_part_content_set(button, NULL, ic);
+   evas_object_smart_callback_add(button, "clicked",
+                                  _on_button_delete_clicked_cb, edit);
+   elm_object_part_content_set(edit->layout,
+                               "swallow.control.minus", button);
 }
 Eina_Bool
 _colorclass_viewer_init(Colorclasses_Editor *edit)
