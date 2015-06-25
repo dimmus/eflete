@@ -1824,15 +1824,15 @@ _form_right_side(Style_Editor *style_edit)
    elm_object_style_set(RADIO, "style_editor"); \
    elm_radio_state_value_set(RADIO, VALUE); \
    evas_object_show(RADIO); \
-   IMAGE_ADD(box_bg, image_bg, IMAGE); \
+   IMAGE_ADD_NEW(box_bg, image_bg, "preview", IMAGE); \
    elm_object_part_content_set(RADIO, "bg", image_bg); \
    evas_object_smart_callback_add(RADIO, "changed", _change_bg_cb, style_edit); \
    elm_box_pack_end(box_bg, RADIO);
 
-   _RADIO_ADD(radio_group, 0, "styles-preview-bg-transparent");
-   _RADIO_ADD(radio, 1, "styles-preview-bg-black");
+   _RADIO_ADD(radio_group, 0, "bg-tile");
+   _RADIO_ADD(radio, 1, "bg-black");
    elm_radio_group_add(radio, radio_group);
-   _RADIO_ADD(radio, 2, "styles-preview-bg-white");
+   _RADIO_ADD(radio, 2, "bg-white");
    elm_radio_group_add(radio, radio_group);
 #undef _RADIO_ADD
    elm_object_part_content_set(layout, "menu_container", box_bg);
