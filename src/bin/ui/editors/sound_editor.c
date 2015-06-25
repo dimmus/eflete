@@ -755,7 +755,7 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
    evas_object_show(edit->player_markup);
    elm_object_part_content_set(parent, "player", edit->player_markup);
 
-   edit->snd_data.teg = elm_image_add(edit->player_markup);
+   edit->snd_data.teg = elm_icon_add(edit->player_markup);
    evas_object_image_smooth_scale_set(edit->snd_data.teg, false);
    evas_object_show(edit->snd_data.teg);
    evas_object_size_hint_fill_set(edit->snd_data.teg, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -916,7 +916,7 @@ _sample_info_setup(Sound_Editor *edit,
    evas_object_hide(content);
 
    duration = eina_stringshare_printf("%.2f s", len);
-   evas_object_image_file_set(edit->snd_data.teg, EFLETE_RESOURCES, "sound");
+   elm_icon_standard_set(edit->snd_data.teg, "sound");
    elm_object_part_content_set(edit->markup, "sound_info", edit->sample_box);
 
    type = _sound_format_get(snd_src);
@@ -949,7 +949,7 @@ _tone_info_setup(Sound_Editor *edit, const Item *it)
    evas_object_hide(content);
 
    duration = eina_stringshare_printf("%.1f s", TONE_PLAYING_DURATION);
-   evas_object_image_file_set(edit->snd_data.teg, EFLETE_RESOURCES, "sound");
+   elm_icon_standard_set(edit->snd_data.teg, "sound");
    elm_object_part_content_set(edit->markup, "sound_info", edit->tone_box);
 
    elm_object_part_text_set(edit->snd_data.tone_name, "label.value", it->sound_name);
