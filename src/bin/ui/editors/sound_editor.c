@@ -709,14 +709,13 @@ _on_ok_cb(void *data,
    _sound_editor_quit(edit);
 }
 
-#define BT_ADD(PARENT, OBJ, ICON, TEXT) \
+#define BT_ADD(PARENT, OBJ, ICON, ICON_STYLE) \
    OBJ = elm_button_add(PARENT); \
    evas_object_size_hint_align_set(OBJ, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   ICON_ADD(OBJ, ICON, NULL, "icon_"TEXT) \
-   elm_object_style_set(OBJ, "simple"); \
+   elm_object_style_set(OBJ, "anchor"); \
+   ICON_STANDARD_ADD(OBJ, ICON, false, ICON_STYLE) \
    evas_object_show(OBJ); \
-   elm_object_part_content_set(OBJ, NULL, ICON); \
-   elm_object_part_content_set(PARENT, "swallow.button."TEXT, OBJ);
+   elm_object_part_content_set(OBJ, NULL, ICON);
 
 #define INFO_ADD(PARENT, ITEM, TEXT, STYLE) \
    ITEM = elm_layout_add(PARENT); \
@@ -779,19 +778,22 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
    elm_object_part_content_set(edit->player_markup, "eflete.swallow.fast", edit->rewind);
    evas_object_smart_callback_add(edit->rewind, "changed", _on_rewind_cb, edit);
 
-   BT_ADD(edit->player_markup, bt, icon, "prev");
+   BT_ADD(edit->player_markup, bt, icon, "media_player/prev");
+   elm_object_part_content_set(edit->player_markup, "swallow.button.prev", bt);
    evas_object_smart_callback_add(bt, "clicked", _on_prev_cb, edit);
 
-   BT_ADD(edit->player_markup, edit->play, icon, "play");
+   BT_ADD(edit->player_markup, edit->play, icon, "media_player/play");
+   elm_object_part_content_set(edit->player_markup, "swallow.button.play", edit->play);
    evas_object_smart_callback_add(edit->play, "clicked", _on_play_cb, edit);
 
-   BT_ADD(edit->player_markup, bt, icon, "next");
+   BT_ADD(edit->player_markup, bt, icon, "media_player/next");
+   elm_object_part_content_set(edit->player_markup, "swallow.button.next", bt);
    evas_object_smart_callback_add(bt, "clicked", _on_next_cb, edit);
 
    edit->pause = elm_button_add(edit->player_markup);
+   elm_object_style_set(edit->pause, "anchor");
    evas_object_size_hint_align_set(edit->pause, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   ICON_ADD(edit->pause, icon, NULL, "icon_pause")
-   elm_object_style_set(edit->pause, "simple");
+   ICON_STANDARD_ADD(edit->pause, icon, false, "media_player/pause")
    elm_object_part_content_set(edit->pause, NULL, icon);
    evas_object_smart_callback_add(edit->pause, "clicked", _on_pause_cb, edit);
 
@@ -1203,7 +1205,7 @@ _sound_editor_search_field_create(Evas_Object *parent)
    ENTRY_ADD(parent, entry, true);
    elm_object_style_set(entry, "search_field");
    elm_object_part_text_set(entry, "guide", _("Search"));
-   ICON_STANDARD_ADD(entry, icon, true, "search");
+   ICON_ADD(entry, icon, true, "icon-search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
    return entry;
 }
