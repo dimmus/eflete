@@ -144,8 +144,8 @@ group { name: "elm/layout/colorclass_manager/default";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 0.0;
-            min: 0 231;
-            max: -1 231;
+            min: 0 100;
+            max: -1 100;
             rel1 {
                relative: 1.0 0.0;
                offset: 6 0;
@@ -157,8 +157,8 @@ group { name: "elm/layout/colorclass_manager/default";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 0.0;
-            min: 0 231;
-            max: -1 231;
+            min: 0 100;
+            max: -1 100;
             rel1 {
                relative: 1.0 0.0;
                offset: 6 0;
@@ -412,7 +412,7 @@ group {
             color3: WHITE_VISIBLE_COLOR;
             color_class: "colorclass_manager/text_example_colorclass";
             text {
-               size: 28;
+               size: 29;
                min: 1 1;
                ellipsis: -1;
                font: "arial";
