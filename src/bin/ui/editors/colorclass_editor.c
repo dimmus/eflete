@@ -22,8 +22,21 @@
 
 TODO("Rename this file to colorclass_manager")
 
-typedef struct _Colorclass_Item Colorclass_Item;
+static Elm_Genlist_Item_Class *_itc_ccl = NULL;
+static Elm_Entry_Filter_Accept_Set accept_name = {
+   .accepted = NULL,
+   .rejected = BANNED_SYMBOLS
+};
+
 typedef struct _Colorclasses_Editor Colorclasses_Editor;
+typedef struct _Colorclass_Item Colorclass_Item;
+typedef struct _Search_Data Search_Data;
+
+struct _Search_Data
+{
+   Evas_Object *search_entry;
+   Elm_Object_Item *last_item_found;
+};
 
 struct _Colorclass_Item
 {
@@ -37,196 +50,31 @@ struct _Colorclasses_Editor
 {
    Project *pr;
    Evas_Object *mwin;
+   Evas_Object *layout;
    Evas_Object *genlist;
-   Colorclass_Item *old_ccl,*current_ccl, *next_ccl;
-   Evas_Object *rect_color1, *obj_r, *obj_g, *obj_b, *obj_a;
-   Evas_Object *rect_color2, *out_r, *out_g, *out_b, *out_a;
-   Evas_Object *rect_color3, *sdw_r, *sdw_g, *sdw_b, *sdw_a;
-   Evas_Object *label;
-   Evas_Object *popup;
-   Evas_Object *entry;
    Evas_Object *edit_obj;
+   Evas_Object *edje_preview, *preview_layout;
+   Evas_Object *colorsel1, *colorsel2, *colorsel3;
+   Evas_Object *entry, *popup;
    Eina_Bool changed;
+   Search_Data style_search_data;
+   Colorclass_Item *current_ccl;
 };
 
-static Elm_Entry_Filter_Accept_Set accept_name = {
-   .accepted = NULL,
-   .rejected = BANNED_SYMBOLS
-};
-
-static Elm_Genlist_Item_Class *_itc_ccl = NULL;
-
-static void
-_on_value_changed(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   project_changed(false);
-}
-
-static void
-_on_spinner_value_changed(void *data,
-                          Evas_Object *obj __UNUSED__,
-                          void *event_info __UNUSED__)
-{
-   Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
-   if (!ccl_edit->current_ccl) return;
-
-   ccl_edit->current_ccl->r1 = elm_spinner_value_get(ccl_edit->obj_r);
-   ccl_edit->current_ccl->g1 = elm_spinner_value_get(ccl_edit->obj_g);
-   ccl_edit->current_ccl->b1 = elm_spinner_value_get(ccl_edit->obj_b);
-   ccl_edit->current_ccl->a1 = elm_spinner_value_get(ccl_edit->obj_a);
-
-   ccl_edit->current_ccl->r2 = elm_spinner_value_get(ccl_edit->out_r);
-   ccl_edit->current_ccl->g2 = elm_spinner_value_get(ccl_edit->out_g);
-   ccl_edit->current_ccl->b2 = elm_spinner_value_get(ccl_edit->out_b);
-   ccl_edit->current_ccl->a2 = elm_spinner_value_get(ccl_edit->out_a);
-
-   ccl_edit->current_ccl->r3 = elm_spinner_value_get(ccl_edit->sdw_r);
-   ccl_edit->current_ccl->g3 = elm_spinner_value_get(ccl_edit->sdw_g);
-   ccl_edit->current_ccl->b3 = elm_spinner_value_get(ccl_edit->sdw_b);
-   ccl_edit->current_ccl->a3 = elm_spinner_value_get(ccl_edit->sdw_a);
-
-   evas_object_color_set(ccl_edit->rect_color1,
-                    ccl_edit->current_ccl->r1 * ccl_edit->current_ccl->a1 / 255,
-                    ccl_edit->current_ccl->g1 * ccl_edit->current_ccl->a1 / 255,
-                    ccl_edit->current_ccl->b1 * ccl_edit->current_ccl->a1 / 255,
-                    ccl_edit->current_ccl->a1);
-   evas_object_color_set(ccl_edit->rect_color2,
-                    ccl_edit->current_ccl->r2 * ccl_edit->current_ccl->a2 / 255,
-                    ccl_edit->current_ccl->g2 * ccl_edit->current_ccl->a2 / 255,
-                    ccl_edit->current_ccl->b2 * ccl_edit->current_ccl->a2 / 255,
-                    ccl_edit->current_ccl->a2);
-   evas_object_color_set(ccl_edit->rect_color3,
-                    ccl_edit->current_ccl->r3 * ccl_edit->current_ccl->a3 / 255,
-                    ccl_edit->current_ccl->g3 * ccl_edit->current_ccl->a3 / 255,
-                    ccl_edit->current_ccl->b3 * ccl_edit->current_ccl->a3 / 255,
-                    ccl_edit->current_ccl->a3);
-   edje_object_color_class_set(ccl_edit->label,
-                          "colorclass_editor/text_example_colorclass",
-                          ccl_edit->current_ccl->r1, ccl_edit->current_ccl->g1,
-                          ccl_edit->current_ccl->b1, ccl_edit->current_ccl->a1,
-                          ccl_edit->current_ccl->r2, ccl_edit->current_ccl->g2,
-                          ccl_edit->current_ccl->b2, ccl_edit->current_ccl->a2,
-                          ccl_edit->current_ccl->r3, ccl_edit->current_ccl->g3,
-                          ccl_edit->current_ccl->b3, ccl_edit->current_ccl->a3);
-   edje_edit_color_class_colors_set(ccl_edit->edit_obj, ccl_edit->current_ccl->name,
-                          ccl_edit->current_ccl->r1, ccl_edit->current_ccl->g1,
-                          ccl_edit->current_ccl->b1, ccl_edit->current_ccl->a1,
-                          ccl_edit->current_ccl->r2, ccl_edit->current_ccl->g2,
-                          ccl_edit->current_ccl->b2, ccl_edit->current_ccl->a2,
-                          ccl_edit->current_ccl->r3, ccl_edit->current_ccl->g3,
-                          ccl_edit->current_ccl->b3, ccl_edit->current_ccl->a3);
-   ccl_edit->changed = true;
-}
-
-void _disable(Eina_Bool disabled, Colorclasses_Editor *ccl_edit)
-{
-   elm_object_disabled_set(ccl_edit->obj_r, disabled);
-   elm_object_disabled_set(ccl_edit->obj_g, disabled);
-   elm_object_disabled_set(ccl_edit->obj_b, disabled);
-   elm_object_disabled_set(ccl_edit->obj_a, disabled);
-   elm_object_disabled_set(ccl_edit->out_r, disabled);
-   elm_object_disabled_set(ccl_edit->out_g, disabled);
-   elm_object_disabled_set(ccl_edit->out_b, disabled);
-   elm_object_disabled_set(ccl_edit->out_a, disabled);
-   elm_object_disabled_set(ccl_edit->sdw_r, disabled);
-   elm_object_disabled_set(ccl_edit->sdw_g, disabled);
-   elm_object_disabled_set(ccl_edit->sdw_b, disabled);
-   elm_object_disabled_set(ccl_edit->sdw_a, disabled);
-}
-
-void
-_ccl_set(Colorclasses_Editor *ccl_edit, Colorclass_Item *ccl_it)
-{
-   ccl_edit->old_ccl = ccl_it;
-   ccl_edit->current_ccl = ccl_it;
-
-   elm_spinner_value_set(ccl_edit->obj_r, ccl_it->r1);
-   elm_spinner_value_set(ccl_edit->obj_g, ccl_it->g1);
-   elm_spinner_value_set(ccl_edit->obj_b, ccl_it->b1);
-   elm_spinner_value_set(ccl_edit->obj_a, ccl_it->a1);
-
-   elm_spinner_value_set(ccl_edit->out_r, ccl_it->r2);
-   elm_spinner_value_set(ccl_edit->out_g, ccl_it->g2);
-   elm_spinner_value_set(ccl_edit->out_b, ccl_it->b2);
-   elm_spinner_value_set(ccl_edit->out_a, ccl_it->a2);
-
-   elm_spinner_value_set(ccl_edit->sdw_r, ccl_it->r3);
-   elm_spinner_value_set(ccl_edit->sdw_g, ccl_it->g3);
-   elm_spinner_value_set(ccl_edit->sdw_b, ccl_it->b3);
-   elm_spinner_value_set(ccl_edit->sdw_a, ccl_it->a3);
-
-   _on_spinner_value_changed(ccl_edit, NULL, NULL);
-}
-
-static void
-_on_ccl_editor_close(void *data,
-                      Evas *e __UNUSED__,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info __UNUSED__)
-{
-   Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
-
-   elm_genlist_item_class_free(_itc_ccl);
-   _itc_ccl = NULL;
-   evas_object_del(ccl_edit->rect_color1);
-   evas_object_del(ccl_edit->rect_color2);
-   evas_object_del(ccl_edit->rect_color3);
-   ccl_edit->current_ccl = NULL;
-   ccl_edit->pr = NULL;
-   free(ccl_edit);
-}
-
-/*colorclass popup buttons callbacks*/
-static void
-_on_apply_popup_btn_yes(void *data,
-                        Evas_Object *obj __UNUSED__,
-                        void *ei __UNUSED__)
-{
-   Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
-   Evas_Object *edje_edit_obj = NULL;
-   GET_OBJ(ccl_edit->pr, edje_edit_obj);
-   edje_edit_color_class_colors_set(edje_edit_obj, ccl_edit->current_ccl->name,
-                          ccl_edit->current_ccl->r1, ccl_edit->current_ccl->g1,
-                          ccl_edit->current_ccl->b1, ccl_edit->current_ccl->a1,
-                          ccl_edit->current_ccl->r2, ccl_edit->current_ccl->g2,
-                          ccl_edit->current_ccl->b2, ccl_edit->current_ccl->a2,
-                          ccl_edit->current_ccl->r3, ccl_edit->current_ccl->g3,
-                          ccl_edit->current_ccl->b3, ccl_edit->current_ccl->a3);
-
-   _ccl_set(ccl_edit, ccl_edit->next_ccl);
-   evas_object_del(ccl_edit->popup);
-   ccl_edit->popup = NULL;
-}
-
-
-static void
-_on_apply_popup_btn_no(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       void *ei __UNUSED__)
-{
-   Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
-   ccl_edit->current_ccl = ccl_edit->old_ccl;
-   _ccl_set(ccl_edit, ccl_edit->next_ccl);
-
-   evas_object_del(ccl_edit->popup);
-   ccl_edit->popup = NULL;
-}
-
+/* BUTTON ADD AND REMOVE FUNCTIONS */
 static void
 _on_add_popup_btn_add(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *ei __UNUSED__)
 {
-   Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
+   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
    Colorclass_Item *it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
    Evas_Object *edje_edit_obj = NULL;
    App_Data *ap = app_data_get();
 
    it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
-   it->name = elm_entry_entry_get(ccl_edit->entry);
+   it->name = elm_entry_entry_get(edit->entry);
 
    if ((!it->name) || (!strcmp(it->name, "")))
      {
@@ -235,7 +83,7 @@ _on_add_popup_btn_add(void *data,
         return;
      }
 
-   GET_OBJ(ccl_edit->pr, edje_edit_obj);
+   GET_OBJ(edit->pr, edje_edit_obj);
    if (!edje_edit_color_class_add(edje_edit_obj, eina_stringshare_add(it->name)))
      {
         NOTIFY_WARNING(_("Color class name must be unique!"));
@@ -243,168 +91,82 @@ _on_add_popup_btn_add(void *data,
         return;
      }
 
-   glit_ccl = elm_genlist_item_append(ccl_edit->genlist, _itc_ccl, it, NULL,
+   glit_ccl = elm_genlist_item_append(edit->genlist, _itc_ccl, it, NULL,
                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
    elm_genlist_item_selected_set(glit_ccl, EINA_TRUE);
 
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    ui_property_state_unset(ui_block_property_get(ap));
    ui_property_state_set(ui_block_property_get(ap), part);
-   evas_object_del(ccl_edit->popup);
-   ccl_edit->popup = NULL;
-   _disable(EINA_FALSE, ccl_edit);
-   ccl_edit->changed = true;
+   evas_object_del(edit->popup);
+   edit->popup = NULL;
+   edit->changed = true;
 
    project_changed(false);
 }
-
 static void
 _on_add_popup_btn_cancel(void *data,
                          Evas_Object *obj __UNUSED__,
                          void *ei __UNUSED__)
 {
-   Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
-   evas_object_del(ccl_edit->popup);
-   ccl_edit->popup = NULL;
+   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+   evas_object_del(edit->popup);
+   edit->popup = NULL;
 }
-
-/*Colorclass editor buttons callbacks*/
 static void
-_on_btn_cancel(void *data,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_on_button_add_clicked_cb(void *data __UNUSED__,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info __UNUSED__)
 {
-   Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
-   mw_del(ccl_edit->mwin);
-}
+   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
 
-static void
-_on_btn_add(void *data,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
-{
-   Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
+   Evas_Object *box, *bt_yes, *bt_no, *item;
 
-   Evas_Object *box, *bt_yes, *bt_no;
-   Evas_Object *ccl_box, *ccl_label;
+   edit->popup = elm_popup_add(edit->mwin);
+   elm_object_part_text_set(edit->popup, "title,text", _("Add color class:"));
 
-   ccl_edit->popup = elm_popup_add(ccl_edit->mwin);
-   elm_object_part_text_set(ccl_edit->popup, "title,text", _("Add color class:"));
-
-   box = elm_box_add(ccl_edit->popup);
+   box = elm_box_add(edit->popup);
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-   ccl_box = elm_box_add(box);
-   elm_box_horizontal_set(ccl_box, EINA_TRUE);
-   evas_object_size_hint_weight_set(ccl_box, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(ccl_box, EVAS_HINT_FILL, 0.0);
-   evas_object_show(ccl_box);
-
-   LABEL_ADD(ccl_box, ccl_label, _("Color class name: "))
-   elm_box_pack_end(ccl_box, ccl_label);
-
-   EWE_ENTRY_ADD(ccl_box, ccl_edit->entry, true);
-   elm_entry_markup_filter_append(ccl_edit->entry, elm_entry_filter_accept_set,
+   LAYOUT_PROP_ADD(edit->popup, _("Color class name: "), "property", "1swallow")
+   EWE_ENTRY_ADD(item, edit->entry, true);
+   elm_entry_markup_filter_append(edit->entry, elm_entry_filter_accept_set,
                                   &accept_name);
-   elm_object_part_text_set(ccl_edit->entry, "guide",
+   elm_object_part_text_set(edit->entry, "guide",
                             _("Type new color class name here."));
-   elm_box_pack_end(ccl_box, ccl_edit->entry);
+   elm_object_part_content_set(item, "elm.swallow.content", edit->entry);
 
-   elm_box_pack_end(box, ccl_box);
-   elm_object_content_set(ccl_edit->popup, box);
+   elm_box_pack_end(box, item);
+   elm_object_content_set(edit->popup, box);
    evas_object_show(box);
 
-   BUTTON_ADD(ccl_edit->popup, bt_yes, _("Ok"));
+   BUTTON_ADD(edit->popup, bt_yes, _("Ok"));
    evas_object_smart_callback_add(bt_yes, "clicked", _on_add_popup_btn_add,
-                                  ccl_edit);
-   elm_object_part_content_set(ccl_edit->popup, "button1", bt_yes);
+                                  edit);
+   elm_object_part_content_set(edit->popup, "button1", bt_yes);
 
-   BUTTON_ADD(ccl_edit->popup, bt_no, _("Cancel"));
+   BUTTON_ADD(edit->popup, bt_no, _("Cancel"));
    evas_object_smart_callback_add(bt_no, "clicked", _on_add_popup_btn_cancel,
-                                  ccl_edit);
-   elm_object_part_content_set(ccl_edit->popup, "button2", bt_no);
+                                  edit);
+   elm_object_part_content_set(edit->popup, "button2", bt_no);
 
-   evas_object_show(ccl_edit->popup);
-   elm_object_focus_set(ccl_edit->entry, true);
-}
-
-static char *
-_item_ccl_label_get(void *data,
-                    Evas_Object *obj __UNUSED__,
-                    const char *part __UNUSED__)
-{
-   Colorclass_Item *ccl_it = (Colorclass_Item *)data;
-   return  strdup(ccl_it->name);
+   evas_object_show(edit->popup);
+   elm_object_focus_set(edit->entry, true);
 }
 
 static void
-_item_ccl_del(void *data,
-                    Evas_Object *obj __UNUSED__)
+_on_button_delete_clicked_cb(void *data,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info __UNUSED__)
 {
-   Colorclass_Item *ccl_it = (Colorclass_Item *)data;
-   eina_stringshare_del(ccl_it->name);
-   free(ccl_it);
-   ccl_it = NULL;
-}
-
-
-static void
-_on_ccl_selected(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info)
-{
-   Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
-   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-   Colorclass_Item *ccl_it = elm_object_item_data_get(glit);
-   Evas_Object *button;
-
-   if ((!ccl_edit->current_ccl)
-        ||(ccl_edit->old_ccl->r1 == ccl_edit->current_ccl->r1
-           && ccl_edit->old_ccl->r2 == ccl_edit->current_ccl->r2
-           && ccl_edit->old_ccl->r3 == ccl_edit->current_ccl->r3
-           && ccl_edit->old_ccl->g1 == ccl_edit->current_ccl->g1
-           && ccl_edit->old_ccl->g2 == ccl_edit->current_ccl->g2
-           && ccl_edit->old_ccl->g3 == ccl_edit->current_ccl->g3
-           && ccl_edit->old_ccl->b1 == ccl_edit->current_ccl->b1
-           && ccl_edit->old_ccl->b2 == ccl_edit->current_ccl->b2
-           && ccl_edit->old_ccl->b3 == ccl_edit->current_ccl->b3
-           && ccl_edit->old_ccl->a1 == ccl_edit->current_ccl->a1
-           && ccl_edit->old_ccl->a2 == ccl_edit->current_ccl->a2
-           && ccl_edit->old_ccl->a3 == ccl_edit->current_ccl->a3))
-     {
-        _ccl_set(ccl_edit, ccl_it);
-        return;
-     }
-   ccl_edit->popup = elm_popup_add(ccl_edit->mwin);
-   elm_object_part_text_set(ccl_edit->popup, "title,text", _("Apply changes?"));
-
-   BUTTON_ADD(ccl_edit->popup, button, _("Yes"));
-   evas_object_smart_callback_add(button, "clicked", _on_apply_popup_btn_yes,
-                                  ccl_edit);
-   elm_object_part_content_set(ccl_edit->popup, "button1", button);
-
-   BUTTON_ADD(ccl_edit->popup, button, _("No"));
-   evas_object_smart_callback_add(button, "clicked", _on_apply_popup_btn_no,
-                                  ccl_edit);
-   elm_object_part_content_set(ccl_edit->popup, "button2", button);
-
-   ccl_edit->next_ccl = ccl_it;
-   evas_object_show(ccl_edit->popup);
-}
-
-static void
-_on_btn_del(void *data,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
-{
-   Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
+   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
    Evas_Object *edje_edit_obj;
    App_Data *ap = app_data_get();
-   if (!ccl_edit->current_ccl) return;
-   GET_OBJ(ccl_edit->pr, edje_edit_obj);
-   edje_edit_color_class_del(edje_edit_obj, ccl_edit->current_ccl->name);
-   Elm_Object_Item *it = elm_genlist_selected_item_get(ccl_edit->genlist);
+   if (!edit->current_ccl) return;
+   GET_OBJ(edit->pr, edje_edit_obj);
+   edje_edit_color_class_del(edje_edit_obj, edit->current_ccl->name);
+   Elm_Object_Item *it = elm_genlist_selected_item_get(edit->genlist);
    Elm_Object_Item *next = elm_genlist_item_next_get(it);
 
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
@@ -415,17 +177,329 @@ _on_btn_del(void *data,
    if (next)
       elm_genlist_item_selected_set(next, EINA_TRUE);
    else
-      {
-         ccl_edit->current_ccl = NULL;
-         _disable(EINA_TRUE, ccl_edit);
-      }
+      edit->current_ccl = NULL;
+
    elm_object_item_del(it);
+
+   if (elm_genlist_items_count(edit->genlist) == 0)
+     {
+        elm_object_disabled_set(edit->colorsel1, true);
+        elm_object_disabled_set(edit->colorsel2, true);
+        elm_object_disabled_set(edit->colorsel3, true);
+     }
+
    project_changed(false);
 }
-/*button callbacks end*/
 
+/* Changing background of preview */
+static void
+_change_bg_cb(void *data,
+              Evas_Object *obj,
+              void *event_info __UNUSED__)
+{
+   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+   int state = elm_radio_state_value_get(obj);
+   Evas_Object *bg = elm_object_part_content_unset(edit->layout, "swallow.entry.bg");
+   evas_object_del(bg);
+   Evas *canvas = evas_object_evas_get(obj);
+   switch (state)
+     {
+      case 0:
+        {
+           IMAGE_ADD_NEW(edit->layout, bg, "bg", "tile");
+           evas_object_show(bg);
+        }
+      break;
+      case 1:
+        {
+           bg = evas_object_rectangle_add(canvas);
+           evas_object_color_set(bg, 0, 0, 0, 255);
+           evas_object_show(bg);
+        }
+      break;
+      case 2:
+        {
+           bg = evas_object_rectangle_add(canvas);
+           evas_object_color_set(bg, 255, 255, 255, 255);
+           evas_object_show(bg);
+        }
+      break;
+      default:
+      break;
+     }
+
+   elm_object_part_content_set(edit->layout, "swallow.entry.bg", bg);
+}
+
+static void
+_colorclass_update(Colorclasses_Editor *edit)
+{
+   edje_object_color_class_set(edit->edje_preview,
+                               "colorclass_editor/text_example_colorclass",
+                               edit->current_ccl->r1, edit->current_ccl->g1,
+                               edit->current_ccl->b1, edit->current_ccl->a1,
+                               edit->current_ccl->r2, edit->current_ccl->g2,
+                               edit->current_ccl->b2, edit->current_ccl->a2,
+                               edit->current_ccl->r3, edit->current_ccl->g3,
+                               edit->current_ccl->b3, edit->current_ccl->a3);
+   edje_edit_color_class_colors_set(edit->edit_obj, edit->current_ccl->name,
+                                    edit->current_ccl->r1, edit->current_ccl->g1,
+                                    edit->current_ccl->b1, edit->current_ccl->a1,
+                                    edit->current_ccl->r2, edit->current_ccl->g2,
+                                    edit->current_ccl->b2, edit->current_ccl->a2,
+                                    edit->current_ccl->r3, edit->current_ccl->g3,
+                                    edit->current_ccl->b3, edit->current_ccl->a3);
+}
+/* Colorselector widget callbacks */
+#define COLORSELECTOR_CALLBACK(NUMBER) \
+static void \
+_on_changed_##NUMBER(void *data, \
+                     Evas_Object *obj __UNUSED__, \
+                     void *event_info __UNUSED__) \
+{ \
+   Colorclasses_Editor *edit = (Colorclasses_Editor *)data; \
+   if (!edit->current_ccl) return; \
+   elm_colorselector_color_get(edit->colorsel##NUMBER, \
+                               &edit->current_ccl->r##NUMBER, \
+                               &edit->current_ccl->g##NUMBER, \
+                               &edit->current_ccl->b##NUMBER, \
+                               &edit->current_ccl->a##NUMBER); \
+   _colorclass_update(edit); \
+   edit->changed = true; \
+}
+
+COLORSELECTOR_CALLBACK(1)
+COLORSELECTOR_CALLBACK(2)
+COLORSELECTOR_CALLBACK(3)
+
+#undef COLORSELECTOR_CALLBACK
+
+/* Callback on colorclass selection in list */
+static void
+_on_selected(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *event_info)
+{
+   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   Colorclass_Item *ccl = elm_object_item_data_get(glit);
+
+   edit->current_ccl = ccl;
+
+   elm_colorselector_color_set(edit->colorsel1, ccl->r1, ccl->g1, ccl->b1, ccl->a1);
+   elm_colorselector_color_set(edit->colorsel2, ccl->r2, ccl->g2, ccl->b2, ccl->a2);
+   elm_colorselector_color_set(edit->colorsel3, ccl->r3, ccl->g3, ccl->b3, ccl->a3);
+
+   edje_object_color_class_set(edit->edje_preview,
+                               "colorclass_editor/text_example_colorclass",
+                               ccl->r1, ccl->g1,
+                               ccl->b1, ccl->a1,
+                               ccl->r2, ccl->g2,
+                               ccl->b2, ccl->a2,
+                               ccl->r3, ccl->g3,
+                               ccl->b3, ccl->a3);
+
+   elm_object_disabled_set(edit->colorsel1, false);
+   elm_object_disabled_set(edit->colorsel2, false);
+   elm_object_disabled_set(edit->colorsel3, false);
+}
+
+/* Modal Window callbacks (closing and exiting from colorclass manager) */
+static void
+_on_mwin_del(void * data,
+             Evas *e __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+   ap->modal_editor--;
+}
+static void
+_on_btn_cancel(void *data,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
+{
+   Colorclasses_Editor *edit = (Colorclasses_Editor *)data;
+   mw_del(edit->mwin);
+}
+
+/* Search functions and creatings */
+ITEM_SEARCH_FUNC(genlist,ELM_GENLIST_ITEM_SCROLLTO_MIDDLE, "elm.text")
+static inline Evas_Object *
+_editor_search_field_create(Evas_Object *parent)
+{
+   Evas_Object *entry, *icon;
+   ENTRY_ADD(parent, entry, true);
+   elm_object_style_set(entry, "search_field");
+   elm_object_part_text_set(entry, "guide", _("Search"));
+   ICON_STANDARD_ADD(entry, icon, true, "search");
+   elm_object_part_content_set(entry, "elm.swallow.end", icon);
+   return entry;
+}
+static void
+_search_changed(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   Colorclasses_Editor *edit = data;
+   _genlist_item_search(edit->genlist, &(edit->style_search_data),
+                        edit->style_search_data.last_item_found);
+}
+static void
+_search_nxt_gd_item(void *data,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   Colorclasses_Editor *edit = data;
+   Elm_Object_Item *start_from = NULL;
+
+   if (edit->style_search_data.last_item_found)
+     start_from = elm_genlist_item_next_get(edit->style_search_data.last_item_found);
+
+   _genlist_item_search(edit->genlist, &(edit->style_search_data), start_from);
+}
+static void
+_search_reset_cb(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   Search_Data *search_data = data;
+   search_data->last_item_found = NULL;
+}
+
+/* Creating main layout of Manager and filling with data
+ (with callbacks for genlist also) */
+static char *
+_item_ccl_label_get(void *data,
+                    Evas_Object *obj __UNUSED__,
+                    const char *part __UNUSED__)
+{
+   Colorclass_Item *ccl_it = (Colorclass_Item *)data;
+   return strdup(ccl_it->name);
+}
+static void
+_item_ccl_del(void *data,
+                    Evas_Object *obj __UNUSED__)
+{
+   Colorclass_Item *ccl_it = (Colorclass_Item *)data;
+   eina_stringshare_del(ccl_it->name);
+   free(ccl_it);
+   ccl_it = NULL;
+}
+static void
+_colorclass_main_layout_create(Colorclasses_Editor *edit)
+{
+   Evas_Object *search, *bg, *box_bg, *radio, *radio_group, *image_bg, *ic, *button;
+
+   /* Creating main layout of window */
+   edit->layout = elm_layout_add(edit->mwin);
+   elm_layout_theme_set(edit->layout, "layout", "colorclass_editor", "default");
+   evas_object_size_hint_weight_set(edit->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(edit->layout);
+   elm_win_inwin_content_set(edit->mwin, edit->layout);
+
+   /* List of project's colorclasses */
+   edit->genlist = elm_genlist_add(edit->layout);
+   evas_object_size_hint_weight_set(edit->genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(edit->genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(edit->genlist);
+   elm_object_part_content_set(edit->layout, "swallow.list", edit->genlist);
+   evas_object_smart_callback_add(edit->genlist, "selected", _on_selected, edit);
+
+   if (!_itc_ccl)
+     {
+        _itc_ccl = elm_genlist_item_class_new();
+        _itc_ccl->item_style = "default";
+        _itc_ccl->func.text_get = _item_ccl_label_get;
+        _itc_ccl->func.del = _item_ccl_del;
+     }
+
+   /* Search engine */
+   search = _editor_search_field_create(edit->layout);
+   elm_object_part_content_set(edit->layout, "swallow.search", search);
+   evas_object_smart_callback_add(search, "changed", _search_changed, edit);
+   evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, edit);
+   evas_object_smart_callback_add(edit->genlist, "pressed", _search_reset_cb,
+                                  &(edit->style_search_data));
+   edit->style_search_data.search_entry = search;
+   edit->style_search_data.last_item_found = NULL;
+
+   /* Entry preview to show colorclass */
+   IMAGE_ADD_NEW(edit->layout, bg, "bg", "tile");
+   elm_object_part_content_set(edit->layout, "swallow.entry.bg", bg);
+   evas_object_show(bg);
+
+   edit->edje_preview = edje_object_add(evas_object_evas_get(edit->mwin));
+   if (!edje_object_file_set(edit->edje_preview,
+                             EFLETE_THEME,
+                             "elm/layout/colorclass_manager/preview"))
+     ERR("Couldn't load layout for text example field!");
+   edje_object_part_text_set(edit->edje_preview, "text_example",
+                       _("The quick brown fox jumps over the lazy dog"));
+   evas_object_size_hint_align_set(edit->edje_preview, -1, -1);
+   evas_object_show(edit->edje_preview);
+   elm_object_part_content_set(edit->layout, "swallow.entry", edit->edje_preview);
+
+   /* Creating colorselectors */
+#define ADD_COLORSEL(NUMBER, SWALLOW_NAME) \
+   edit->colorsel##NUMBER = elm_colorselector_add(edit->layout); \
+   elm_colorselector_mode_set(edit->colorsel##NUMBER, ELM_COLORSELECTOR_ALL); \
+   elm_object_part_content_set(edit->layout, SWALLOW_NAME, edit->colorsel##NUMBER); \
+   evas_object_smart_callback_add(edit->colorsel##NUMBER, "changed", _on_changed_##NUMBER, edit); \
+   elm_object_disabled_set(edit->colorsel##NUMBER, true);
+
+   ADD_COLORSEL(1, "swallow.colorselector.object");
+   ADD_COLORSEL(2, "swallow.colorselector.outline");
+   ADD_COLORSEL(3, "swallow.colorselector.shadow");
+
+#undef ADD_COLORSEL
+
+
+   /* Background changing radios */
+   BOX_ADD(edit->layout, box_bg, true, false);
+   elm_box_padding_set(box_bg, 10, 0);
+
+#define _RADIO_ADD(RADIO, VALUE, IMAGE) \
+   RADIO = elm_radio_add(edit->layout); \
+   elm_object_style_set(RADIO, "style_editor"); \
+   elm_radio_state_value_set(RADIO, VALUE); \
+   evas_object_show(RADIO); \
+   IMAGE_ADD_NEW(box_bg, image_bg, "preview", IMAGE); \
+   elm_object_part_content_set(RADIO, "bg", image_bg); \
+   evas_object_smart_callback_add(RADIO, "changed", _change_bg_cb, edit); \
+   elm_box_pack_end(box_bg, RADIO);
+
+   _RADIO_ADD(radio_group, 0, "bg-tile");
+   _RADIO_ADD(radio, 1, "bg-black");
+   elm_radio_group_add(radio, radio_group);
+   _RADIO_ADD(radio, 2, "bg-white");
+   elm_radio_group_add(radio, radio_group);
+#undef _RADIO_ADD
+
+   elm_object_part_content_set(edit->layout, "swallow.radio", box_bg);
+
+   /* Controls (add, remove) of colorclasses */
+   button = elm_button_add(edit->layout);
+   evas_object_show(button);
+   ICON_STANDARD_ADD(button, ic, true, "plus");
+   elm_object_part_content_set(button, NULL, ic);
+   evas_object_smart_callback_add(button, "clicked",
+                                  _on_button_add_clicked_cb, edit);
+   elm_object_part_content_set(edit->layout,
+                               "swallow.control.add", button);
+
+   button = elm_button_add(edit->layout);
+   evas_object_show(button);
+   ICON_STANDARD_ADD(button, ic, true, "minus");
+   elm_object_part_content_set(button, NULL, ic);
+   evas_object_smart_callback_add(button, "clicked",
+                                  _on_button_delete_clicked_cb, edit);
+   elm_object_part_content_set(edit->layout,
+                               "swallow.control.minus", button);
+}
 Eina_Bool
-_colorclass_viewer_init(Colorclasses_Editor *ccl_edit)
+_colorclass_viewer_init(Colorclasses_Editor *edit)
 {
    int r1, r2, r3, g1, g2, g3, b1, b2, b3, a1, a2, a3;
    const char *ccname = NULL;
@@ -434,8 +508,8 @@ _colorclass_viewer_init(Colorclasses_Editor *ccl_edit)
    Colorclass_Item *it = NULL;
    Evas_Object *edje_edit_obj = NULL;
 
-   GET_OBJ(ccl_edit->pr, edje_edit_obj);
-   ccl_edit->edit_obj = edje_edit_obj;
+   GET_OBJ(edit->pr, edje_edit_obj);
+   edit->edit_obj = edje_edit_obj;
    cclist = edje_edit_color_classes_list_get(edje_edit_obj);
 
    EINA_LIST_FOREACH(cclist, l, ccname)
@@ -458,38 +532,18 @@ _colorclass_viewer_init(Colorclasses_Editor *ccl_edit)
         it->b3 = b3; it->a3 = a3;
 
         it->name = eina_stringshare_add(ccname);
-        elm_genlist_item_append(ccl_edit->genlist, _itc_ccl, it, NULL,
+        elm_genlist_item_append(edit->genlist, _itc_ccl, it, NULL,
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
-
-   if (elm_genlist_items_count(ccl_edit->genlist) == 0)
-      _disable(EINA_TRUE, ccl_edit);
-   else
-      elm_genlist_item_selected_set(elm_genlist_first_item_get(ccl_edit->genlist),
-                                      EINA_TRUE);
    eina_list_free(cclist);
    return true;
-}
-
-static void
-_on_mwin_del(void * data,
-             Evas *e __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor--;
 }
 
 Evas_Object *
 colorclass_viewer_add(Project *project)
 {
-   Evas_Object *button,  *panes, *ic;
-   Evas_Object *label, *color;
-   Evas_Object *box, *bottom_box, *param_box, *scr_box;
-   Evas_Object *scroller = NULL;
-   Colorclasses_Editor *ccl_edit = NULL;
+   Evas_Object *ic;
+   Colorclasses_Editor *edit = NULL;
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
 
@@ -499,156 +553,34 @@ colorclass_viewer_add(Project *project)
         return NULL;
      }
 
-   ccl_edit = (Colorclasses_Editor *)mem_calloc(1, sizeof(Colorclasses_Editor));
-   ccl_edit->changed = false;
-   ccl_edit->pr = project;
-   ccl_edit->mwin = mw_add(_on_btn_cancel, ccl_edit);
-   if (!ccl_edit->mwin)
+   edit = (Colorclasses_Editor *)mem_calloc(1, sizeof(Colorclasses_Editor));
+   edit->changed = false;
+   edit->pr = project;
+   edit->mwin = mw_add(_on_btn_cancel, edit);
+   if (!edit->mwin)
      {
-        free(ccl_edit);
+        free(edit);
         return NULL;
      }
-   mw_title_set(ccl_edit->mwin, _("Color class manager"));
-   ic = elm_icon_add(ccl_edit->mwin);
+   mw_title_set(edit->mwin, _("Color class manager"));
+   ic = elm_icon_add(edit->mwin);
    elm_icon_standard_set(ic, "color");
-   mw_icon_set(ccl_edit->mwin, ic);
-   evas_object_event_callback_add(ccl_edit->mwin, EVAS_CALLBACK_FREE,
-                                  _on_ccl_editor_close, ccl_edit);
+   mw_icon_set(edit->mwin, ic);
 
-
-   panes = elm_panes_add(ccl_edit->mwin);
-   evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_panes_content_right_size_set(panes, 0.3);
-   evas_object_show(panes);
-   elm_win_inwin_content_set(ccl_edit->mwin, panes);
-
-   BOX_ADD(panes, box, false, false);
-
-   ccl_edit->genlist = elm_genlist_add(box);
-   elm_box_pack_end(box, ccl_edit->genlist);
-   evas_object_size_hint_weight_set(ccl_edit->genlist, EVAS_HINT_EXPAND,
-                                                            EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(ccl_edit->genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_part_content_set(panes, "left", box);
-   evas_object_show(ccl_edit->genlist);
-   evas_object_smart_callback_add(ccl_edit->genlist, "selected", _on_ccl_selected,
-                                                                        ccl_edit);
-
-   if (!_itc_ccl)
-     {
-        _itc_ccl = elm_genlist_item_class_new();
-        _itc_ccl->item_style = "default";
-        _itc_ccl->func.text_get = _item_ccl_label_get;
-        _itc_ccl->func.content_get = NULL;
-        _itc_ccl->func.state_get = NULL;
-        _itc_ccl->func.del = _item_ccl_del;
-     }
-
-   BOX_ADD(panes, bottom_box, true, false)
-   elm_box_pack_end(box, bottom_box);
-
-   BUTTON_ADD(ccl_edit->mwin, button, _("Add"));
-   evas_object_smart_callback_add(button, "clicked", _on_btn_add, ccl_edit);
-   elm_box_pack_end(bottom_box, button);
-
-   BUTTON_ADD(ccl_edit->mwin, button, _("Delete"));
-   evas_object_smart_callback_add(button, "clicked", _on_btn_del, ccl_edit);
-   elm_box_pack_end(bottom_box, button);
-
-   BUTTON_ADD(ccl_edit->mwin, button, _("Close"));
-   evas_object_smart_callback_add(button, "clicked", _on_btn_cancel, ccl_edit);
-   elm_box_pack_end(bottom_box, button);
-
-   SCROLLER_ADD(panes, scroller);
-   evas_object_size_hint_align_set(scroller, 0.5, 1.0);
-   elm_object_part_content_set(panes, "right", scroller);
-
-
-   BOX_ADD(scroller, scr_box, false, false);
-   elm_object_content_set(scroller, scr_box);
-
-   ccl_edit->label = edje_object_add(evas_object_evas_get(ccl_edit->mwin));
-   if (!edje_object_file_set(ccl_edit->label,
-                             EFLETE_EDJ,
-                             "base/colorclass_editor/text_example"))
-     ERR("Couldn't load layout for text example field!");
-   edje_object_part_text_set(ccl_edit->label, "text_example", _("EXAMPLE"));
-   evas_object_size_hint_align_set(ccl_edit->label, -1, -1);
-   evas_object_show(ccl_edit->label);
-
-#define _SPINNER_ADD(spinner, format, box) \
-   spinner = elm_spinner_add(box); \
-   elm_spinner_min_max_set(spinner, 0, 255); \
-   elm_spinner_interval_set(spinner, 0.4); \
-   elm_spinner_label_format_set(spinner, format); \
-   evas_object_size_hint_min_set(spinner, 100, 0); \
-   evas_object_size_hint_align_set(spinner, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   evas_object_smart_callback_add(spinner, "changed", \
-                           _on_spinner_value_changed, ccl_edit); \
-   evas_object_smart_callback_add(spinner, "delay,changed", \
-                                  _on_value_changed, ccl_edit); \
-   elm_box_pack_end(box, spinner); \
-   evas_object_show(spinner);
-
-#define _COLOR_ADD(rect, title, box) \
-   LABEL_ADD(box, label, title) \
-   elm_box_pack_end(box, label); \
-   color = edje_object_add(evas_object_evas_get(ccl_edit->mwin)); \
-   rect = evas_object_rectangle_add(evas_object_evas_get(ccl_edit->mwin)); \
-   if (!edje_object_file_set(color, EFLETE_EDJ, "base/colorclass_editor/color_example")) \
-     ERR("Could not set style for color example!"); \
-   edje_object_part_swallow(color, "color_example", rect); \
-   evas_object_size_hint_weight_set(color, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
-   evas_object_size_hint_min_set(color, 150, 35); \
-   evas_object_size_hint_align_set(color, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   elm_box_pack_end(box, color); \
-   evas_object_show(rect); \
-   evas_object_show(color);
-
-
-   BOX_ADD(scr_box, param_box, false, true);
-
-   elm_box_pack_start(param_box, ccl_edit->label);
-   _COLOR_ADD(ccl_edit->rect_color1,_("Object color"), param_box)
-   _SPINNER_ADD(ccl_edit->obj_r,_("R:%3.0f"), param_box)
-   _SPINNER_ADD(ccl_edit->obj_g,_("G:%3.0f"), param_box)
-   _SPINNER_ADD(ccl_edit->obj_b,_("B:%3.0f"), param_box)
-   _SPINNER_ADD(ccl_edit->obj_a,_("A:%3.0f"), param_box)
-   elm_box_pack_end(scr_box, param_box);
-
-   BOX_ADD(scr_box, param_box, false, true);
-   _COLOR_ADD(ccl_edit->rect_color2,_("Outline color"), param_box)
-   _SPINNER_ADD(ccl_edit->out_r,_("R:%3.0f"), param_box)
-   _SPINNER_ADD(ccl_edit->out_g,_("G:%3.0f"), param_box)
-   _SPINNER_ADD(ccl_edit->out_b,_("B:%3.0f"), param_box)
-   _SPINNER_ADD(ccl_edit->out_a,_("A:%3.0f"), param_box)
-   elm_box_pack_end(scr_box, param_box);
-
-   BOX_ADD(scr_box, param_box, false, true);
-   _COLOR_ADD(ccl_edit->rect_color3,_("Shadow color"), param_box)
-   _SPINNER_ADD(ccl_edit->sdw_r,_("R:%3.0f"), param_box)
-   _SPINNER_ADD(ccl_edit->sdw_g,_("G:%3.0f"), param_box)
-   _SPINNER_ADD(ccl_edit->sdw_b,_("B:%3.0f"), param_box)
-   _SPINNER_ADD(ccl_edit->sdw_a,_("A:%3.0f"), param_box)
-   elm_box_pack_end(scr_box, param_box);
-
-#undef _SPINNER_ADD
-#undef _COLOR_ADD
-
-   if (!_colorclass_viewer_init(ccl_edit))
+   _colorclass_main_layout_create(edit);
+   if (!_colorclass_viewer_init(edit))
      {
         NOTIFY_ERROR(_("Failed initialize colorclasses editor"));
-        free(ccl_edit);
+        free(edit);
         return NULL;
      }
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
-   evas_object_event_callback_add(ccl_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
+   evas_object_event_callback_add(edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
-   evas_object_show(ccl_edit->mwin);
+   evas_object_show(edit->mwin);
 
    ap->modal_editor++;
 
-   return ccl_edit->mwin;
+   return edit->mwin;
 }

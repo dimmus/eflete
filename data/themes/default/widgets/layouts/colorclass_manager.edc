@@ -140,6 +140,19 @@ group { name: "elm/layout/colorclass_editor/default";
             }
          }
       }
+      part { name: "swallow.entry.bg";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            min: 0 231;
+            max: -1 231;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 0;
+               to_x: "separator.left";
+            }
+         }
+      }
       part { name: "swallow.entry";
          type: SWALLOW;
          description { state: "default" 0.0;
@@ -379,6 +392,31 @@ group { name: "elm/layout/colorclass_editor/default";
          description { state: "default" 0.0;
             rel1.to: "swallow.colorselector.shadow";
             rel2.to: "swallow.colorselector.shadow";
+         }
+      }
+   }
+}
+
+group {
+   name: "elm/layout/colorclass_manager/preview";
+   parts {
+      part {
+         name: "text_example";
+         type: TEXT;
+         effect: OUTLINE_SHADOW;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: WHITE_VISIBLE_COLOR;
+            color2: WHITE_VISIBLE_COLOR;
+            color3: WHITE_VISIBLE_COLOR;
+            color_class: "colorclass_editor/text_example_colorclass";
+            text {
+               size: 28;
+               min: 1 1;
+               ellipsis: -1;
+               font: "arial";
+            }
          }
       }
    }
