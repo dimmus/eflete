@@ -65,10 +65,6 @@ void ui_menu_items_list_disable_set_test_p(int);
 void ui_menu_items_list_disable_set_test_n1(int);
 void ui_menu_items_list_disable_set_test_n2(int);
 
-void ui_style_clicked_test_p(int);
-void ui_style_clicked_test_n1(int);
-void ui_style_clicked_test_n2(int);
-
 void add_callbacks_wd_test_p1(int);
 void add_callbacks_wd_test_p2(int);
 void add_callbacks_wd_test_n(int);
