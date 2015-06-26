@@ -12,7 +12,7 @@ ewe_statusbar_test \
 eflete_test \
 part_dialog_test \
 alloc_test \
-colorclass_editor_test \
+colorclass_manager_test \
 sound_editor_test \
 image_editor_test \
 logger_test \
@@ -246,11 +246,11 @@ test_alloc/mem_calloc.c
 alloc_test_CFLAGS = ${FLAGS}
 alloc_test_LDADD = ${LD}
 
-colorclass_editor_test_SOURCES = \
-test_colorclass_editor/test_colorclass_editor.c \
-test_colorclass_editor/colorclass_viewer_add.c
-colorclass_editor_test_CFLAGS = ${FLAGS}
-colorclass_editor_test_LDADD = ${LD}
+colorclass_manager_test_SOURCES = \
+test_colorclass_manager/test_colorclass_manager.c \
+test_colorclass_manager/colorclass_manager_add.c
+colorclass_manager_test_CFLAGS = ${FLAGS}
+colorclass_manager_test_LDADD = ${LD}
 
 widget_manager_test_SOURCES = \
 test_widget_manager/test_widget_manager.c \

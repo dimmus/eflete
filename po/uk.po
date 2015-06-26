@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eflete 0.1.1\n"
 "Report-Msgid-Bugs-To: v.reutskiy@samsung.com\n"
-"POT-Creation-Date: 2015-01-27 07:02+0000\n"
+"POT-Creation-Date: 2015-06-26 14:38+0300\n"
 "PO-Revision-Date: 2014-02-25 12:51+0200\n"
 "Last-Translator: a.kroitor <an.kroitor@samsung.com>\n"
 "Language-Team: Ukrainian\n"
@@ -18,192 +18,225 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: src/bin/main.c:34
+#: src/bin/main.c:29
 msgid ""
 "This application was written for Enlightenment, to use EFL\n"
 "and design to create and modify Elementary widgets styles.\n"
 msgstr ""
 
-#: src/bin/main.c:38
+#: src/bin/main.c:33
 #, fuzzy
 msgid "Eflete project file"
 msgstr "Закрити проект %s"
 
-#: src/bin/main.c:113
+#: src/bin/main.c:110
 #, c-format
 msgid "Can not open file '%s'. Wrong path or file format."
 msgstr ""
 
-#: src/bin/project_manager/project_manager.c:241
-#, c-format
-msgid "Importing... %u"
-msgstr ""
-
-#: src/bin/project_manager/project_manager.c:383
-#: src/bin/project_manager/project_manager.c:538
-msgid "Creating a specifiec file and folders..."
-msgstr ""
-
-#: src/bin/project_manager/project_manager.c:391
-#: src/bin/project_manager/project_manager.c:545
+#: src/bin/project_manager/project_manager.c:327
+#: src/bin/project_manager/project_manager.c:431
+#: src/bin/project_manager/project_manager.c:552
 msgid "Importing..."
 msgstr ""
 
-#: src/bin/project_manager/project_manager.c:645
+#: src/bin/project_manager/project_manager.c:424
+#: src/bin/project_manager/project_manager.c:546
+msgid "Creating a specifiec file and folders..."
+msgstr ""
+
+#: src/bin/project_manager/project_manager.c:670
+msgid "Old project version. Project files were updated."
+msgstr ""
+
+#: src/bin/project_manager/project_manager.c:684
 msgid "No title"
 msgstr ""
 
-#: src/bin/project_manager/project_manager.c:666
-#, c-format
-msgid "Backuping... %u"
-msgstr ""
-
-#: src/bin/project_manager/project_manager.c:1260
+#: src/bin/project_manager/project_manager.c:1521
 #, fuzzy
 msgid "Export edj..."
 msgstr "Експорт в edc..."
 
-#: src/bin/project_manager/widget_manager.c:439
+#: src/bin/project_manager/widget_manager.c:429
 #, c-format
 msgid "Group [%s] exist"
 msgstr ""
 
-#: src/bin/project_manager/widget_manager.c:444
+#: src/bin/project_manager/widget_manager.c:434
 #, c-format
 msgid "Cannot copy group [%s]"
 msgstr ""
 
-#: src/bin/ui/connector.c:75 src/bin/ui/blocks/ui_widget_list.c:948
-#: src/bin/ui/blocks/ui_widget_list.c:984
+#: src/bin/ui/connector.c:75 src/bin/ui/blocks/ui_widget_list.c:1160
+#: src/bin/ui/blocks/ui_widget_list.c:1205
 msgid "No part selected"
 msgstr ""
 
-#: src/bin/ui/connector.c:125 src/bin/ui/connector.c:147
+#: src/bin/ui/connector.c:150 src/bin/ui/connector.c:171
 msgid "Internal edje error occurred on part move"
 msgstr ""
 
-#: src/bin/ui/connector.c:345 src/bin/ui/connector.c:370
-#: src/bin/ui/connector.c:378
+#: src/bin/ui/connector.c:315 src/bin/ui/connector.c:433
+#, fuzzy
+msgid "Latest style can not be deleted."
+msgstr "Необхідно вказати назву тегу"
+
+#: src/bin/ui/connector.c:369 src/bin/ui/connector.c:394
+#: src/bin/ui/connector.c:402
 msgid "Failed to create new layout."
 msgstr ""
 
-#: src/bin/ui/connector.c:465
+#: src/bin/ui/connector.c:496
 msgid "Couldn't add new state/class without opened widget"
 msgstr ""
 
-#: src/bin/ui/connector.c:789
+#: src/bin/ui/connector.c:801
+msgid "Project is not selected."
+msgstr ""
+
+#: src/bin/ui/connector.c:818 src/bin/ui/wizard/wizard_common.c:103
 #, c-format
 msgid "Project '%s' is opened."
 msgstr ""
 
-#: src/bin/ui/connector.c:796
-msgid "Do you want to save changes?"
-msgstr ""
-
-#: src/bin/ui/connector.c:806 src/bin/ui/main_window.c:76
+#: src/bin/ui/connector.c:833 src/bin/ui/main_window.c:76
 #, fuzzy
 msgid "No project opened"
 msgstr "Новий проект"
 
-#: src/bin/ui/connector.c:827
-#, fuzzy
-msgid "Select a project file"
-msgstr "Зберегти проект"
-
-#: src/bin/ui/connector.c:862
+#: src/bin/ui/connector.c:890
 msgid "Error: project not saved."
 msgstr ""
 
-#: src/bin/ui/connector.c:867
+#: src/bin/ui/connector.c:895
 msgid "Saving canceled."
 msgstr ""
 
-#: src/bin/ui/connector.c:1036
+#: src/bin/ui/connector.c:1050
 #, fuzzy
 msgid "Export project"
 msgstr "Відкрити проект"
 
-#: src/bin/ui/connector.c:1042
+#: src/bin/ui/connector.c:1055
 msgid "Replace"
 msgstr ""
 
-#: src/bin/ui/connector.c:1045 src/bin/ui/connector.c:1273
-#: src/bin/ui/dialogs/part_dialog.c:217
-#: src/bin/ui/dialogs/save_file_dialog.c:142
-#: src/bin/ui/dialogs/state_dialog.c:211 src/bin/ui/dialogs/state_dialog.c:304
-#: src/bin/ui/dialogs/style_dialog.c:341 src/bin/ui/editors/animator.c:319
-#: src/bin/ui/editors/animator_program_editor.c:996
-#: src/bin/ui/editors/colorclass_editor.c:320
-#: src/bin/ui/editors/sound_editor.c:1379
-#: src/bin/ui/editors/sound_editor.c:1519
-#: src/bin/ui/editors/style_editor.c:495 src/bin/ui/editors/style_editor.c:553
-#: src/bin/ui/wizard/wizard_common.c:333
+#: src/bin/ui/connector.c:1058 src/bin/ui/connector.c:1453
+#: src/bin/ui/dialogs/part_dialog.c:235 src/bin/ui/dialogs/state_dialog.c:206
+#: src/bin/ui/dialogs/state_dialog.c:296 src/bin/ui/dialogs/style_dialog.c:366
+#: src/bin/ui/editors/animator.c:319
+#: src/bin/ui/editors/animator_program_editor.c:1000
+#: src/bin/ui/editors/colorclass_manager.c:147
+#: src/bin/ui/editors/sound_editor.c:1464
+#: src/bin/ui/editors/sound_editor.c:1604
+#: src/bin/ui/editors/style_editor.c:501 src/bin/ui/editors/style_editor.c:558
+#: src/bin/ui/wizard/wizard_common.c:350
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: src/bin/ui/connector.c:1103
-msgid "The file already exists.  Replacing it will overwrite its contents."
+#: src/bin/ui/connector.c:1081 src/bin/ui/editors/animator.c:314
+#: src/bin/ui/editors/animator.c:673
+#: src/bin/ui/editors/colorclass_manager.c:142
+#: src/bin/ui/editors/image_editor.c:1219
+#: src/bin/ui/editors/sound_editor.c:1603
+#: src/bin/ui/editors/style_editor.c:496 src/bin/ui/editors/style_editor.c:553
+#: src/bin/ui/modal_window/modal_window.c:49
+msgid "Ok"
 msgstr ""
 
-#: src/bin/ui/connector.c:1133
-msgid "Export edj file (develop)"
-msgstr ""
-
-#: src/bin/ui/connector.c:1200
-msgid "Export edc file (group)"
-msgstr ""
-
-#: src/bin/ui/connector.c:1250
+#: src/bin/ui/connector.c:1140
 #, fuzzy
-msgid ""
-"If you dont save the open project<br/>all your unsaved changes will be lost!"
-msgstr ""
-"Відкритий проект ще не збережено.<br/>Відкриття нової теми призведе до<br/"
-">втрати усіх незбережених змін"
+msgid "Export edj develop"
+msgstr "Експорт в edc..."
 
-#: src/bin/ui/connector.c:1261
+#: src/bin/ui/connector.c:1141
+msgid "Name field is empty! Please type a file name to export."
+msgstr ""
+
+#: src/bin/ui/connector.c:1149
+msgid "The file already exists.Replacement will overwrite its contents."
+msgstr ""
+
+#: src/bin/ui/connector.c:1294
+#, fuzzy
+msgid "Export edc project"
+msgstr "Відкрити проект"
+
+#: src/bin/ui/connector.c:1295
+msgid "Can not delete current project folder!"
+msgstr ""
+
+#: src/bin/ui/connector.c:1300
+#, c-format
+msgid ""
+"The <path>'%s'</path> directory already exists.<br>Do you want to "
+"<b><orange>delete all</orange></b> content of this folder and create new for "
+"project export edc in it?"
+msgstr ""
+
+#: src/bin/ui/connector.c:1313 src/bin/ui/wizard/wizard_common.c:212
+#, c-format
+msgid "Can not delete folder %s!"
+msgstr ""
+
+#: src/bin/ui/connector.c:1324 src/bin/ui/wizard/wizard_common.c:218
+#, c-format
+msgid "The name <path>'%s'</path> is already used at this location."
+msgstr ""
+
+#: src/bin/ui/connector.c:1429
 #, c-format
 msgid "Close project %s"
 msgstr "Закрити проект %s"
 
-#: src/bin/ui/connector.c:1267 src/bin/ui/menu.c:247
+#: src/bin/ui/connector.c:1433 src/bin/ui/menu.c:250
 msgid "Save"
 msgstr "Зберегти"
 
-#: src/bin/ui/connector.c:1270
+#: src/bin/ui/connector.c:1436
 msgid "Don't save"
 msgstr "Не зберігати"
 
-#: src/bin/ui/connector.c:1302
+#: src/bin/ui/connector.c:1440
+msgid "Do you want to save changes?"
+msgstr ""
+
+#: src/bin/ui/connector.c:1444 src/bin/ui/editors/image_editor.c:1226
+#: src/bin/ui/notification/notify.c:58 src/bin/ui/notification/notify.c:92
+#: src/bin/ui/preference/preference.c:366
+msgid "Close"
+msgstr ""
+
+#: src/bin/ui/connector.c:1448
+msgid "Do you want to close project?"
+msgstr ""
+
+#: src/bin/ui/connector.c:1542
 msgid "Select item to be deleted"
 msgstr ""
 
-#: src/bin/ui/connector.c:1326
+#: src/bin/ui/connector.c:1562
 msgid "Can not delete last layout"
 msgstr ""
 
-#: src/bin/ui/connector.c:1333
+#: src/bin/ui/connector.c:1570
 #, c-format
 msgid "Failed to delete layout[%s]"
 msgstr ""
 
-#: src/bin/ui/connector.c:1375
+#: src/bin/ui/connector.c:1609
 msgid "No one style is selected"
 msgstr ""
 
-#: src/bin/ui/connector.c:1439
+#: src/bin/ui/connector.c:1643
 #, c-format
 msgid "Style [%s] don't exist"
 msgstr ""
 
-#: src/bin/ui/connector.c:1454
+#: src/bin/ui/connector.c:1659
 #, c-format
 msgid "Failed to delete style[%s]"
-msgstr ""
-
-#: src/bin/ui/connector.c:1468
-#, c-format
-msgid "Failed to delete style[%s] in class [%s]"
 msgstr ""
 
 #: src/bin/ui/main_window.c:80
@@ -222,1006 +255,1232 @@ msgstr ""
 msgid "Please open the widget style for editing style programs!"
 msgstr "Для редагування програм необхідно спочатку відкрити стиль віджета!"
 
-#: src/bin/ui/menu.c:241
+#: src/bin/ui/menu.c:240
 msgid "File"
 msgstr "Файл"
 
-#: src/bin/ui/menu.c:242 src/bin/ui/menu.c:299
+#: src/bin/ui/menu.c:241 src/bin/ui/menu.c:315
 msgid "New project"
 msgstr "Новий проект"
 
-#: src/bin/ui/menu.c:243 src/bin/ui/menu.c:300
+#: src/bin/ui/menu.c:244 src/bin/ui/menu.c:316
 msgid "Open project"
 msgstr "Відкрити проект"
 
-#: src/bin/ui/menu.c:244
+#: src/bin/ui/menu.c:247
 #, fuzzy
 msgid "Import edj-file"
 msgstr "Відкрити edj-файл"
 
-#: src/bin/ui/menu.c:245
+#: src/bin/ui/menu.c:248
 #, fuzzy
 msgid "Import edc-file"
 msgstr "Відкрити edc-файл"
 
-#: src/bin/ui/menu.c:248
+#: src/bin/ui/menu.c:253
 #, fuzzy
 msgid "Export as edc"
 msgstr "Експорт в edc..."
 
-#: src/bin/ui/menu.c:249
+#: src/bin/ui/menu.c:254 src/bin/ui/dialogs/part_dialog.c:214
 msgid "Group"
-msgstr ""
-
-#: src/bin/ui/menu.c:250
-#, fuzzy
-msgid "Project"
-msgstr "Новий проект"
-
-#: src/bin/ui/menu.c:251
-#, fuzzy
-msgid "Export as edj"
-msgstr "Експорт в edc..."
-
-#: src/bin/ui/menu.c:252
-msgid "Develop"
-msgstr ""
-
-#: src/bin/ui/menu.c:253
-msgid "Release"
 msgstr ""
 
 #: src/bin/ui/menu.c:255
 #, fuzzy
+msgid "Project"
+msgstr "Новий проект"
+
+#: src/bin/ui/menu.c:256
+#, fuzzy
+msgid "Export as edj"
+msgstr "Експорт в edc..."
+
+#: src/bin/ui/menu.c:257
+msgid "Develop"
+msgstr ""
+
+#: src/bin/ui/menu.c:258
+msgid "Release"
+msgstr ""
+
+#: src/bin/ui/menu.c:260
+#, fuzzy
 msgid "Close project"
 msgstr "Закрити проект %s"
 
-#: src/bin/ui/menu.c:257
+#: src/bin/ui/menu.c:262
 msgid "Exit"
 msgstr "Вихід"
 
-#: src/bin/ui/menu.c:260
+#: src/bin/ui/menu.c:267
 msgid "View"
 msgstr "Відображення"
 
-#: src/bin/ui/menu.c:261 src/bin/ui/preference/preference.c:353
+#: src/bin/ui/menu.c:268 src/bin/ui/preference/preference.c:313
 msgid "Workspace"
 msgstr "Робоча область"
 
-#: src/bin/ui/menu.c:262 src/bin/ui/workspace/ui_workspace.c:314
+#: src/bin/ui/menu.c:269 src/bin/ui/workspace/ui_workspace.c:307
 msgid "Zoom in"
 msgstr "Збільшити"
 
-#: src/bin/ui/menu.c:263 src/bin/ui/workspace/ui_workspace.c:315
+#: src/bin/ui/menu.c:270 src/bin/ui/workspace/ui_workspace.c:308
 msgid "Zoom out"
 msgstr "Зменшити"
 
-#: src/bin/ui/menu.c:265
+#: src/bin/ui/menu.c:272
 msgid "Separate"
 msgstr "Розділити шари"
 
-#: src/bin/ui/menu.c:266
+#: src/bin/ui/menu.c:273
 #, fuzzy
 msgid "Show/Hide object area"
 msgstr "Показати/приховати горизонтальну лінійку"
 
-#: src/bin/ui/menu.c:267 src/bin/ui/workspace/ui_workspace.c:304
+#: src/bin/ui/menu.c:274 src/bin/ui/workspace/ui_workspace.c:297
 msgid "Rulers"
 msgstr "Лінійки"
 
-#: src/bin/ui/menu.c:268
+#: src/bin/ui/menu.c:275
 #, fuzzy
 msgid "Show/Hide rulers"
 msgstr "Показати/приховати вертикальну лінійку"
 
-#: src/bin/ui/menu.c:270 src/bin/ui/workspace/ui_workspace.c:308
+#: src/bin/ui/menu.c:277 src/bin/ui/workspace/ui_workspace.c:301
 msgid "Absolute scale"
 msgstr "Абсолютна шкала"
 
-#: src/bin/ui/menu.c:271 src/bin/ui/workspace/ui_workspace.c:310
+#: src/bin/ui/menu.c:278 src/bin/ui/workspace/ui_workspace.c:303
 msgid "Relative scale"
 msgstr "Відносна шкала"
 
-#: src/bin/ui/menu.c:272 src/bin/ui/blocks/ui_property.c:173
-#: src/bin/ui/workspace/ui_workspace.c:311
+#: src/bin/ui/menu.c:279 src/bin/ui/blocks/ui_property.c:212
+#: src/bin/ui/blocks/ui_property.c:220 src/bin/ui/workspace/ui_workspace.c:304
 msgid "Both"
 msgstr ""
 
-#: src/bin/ui/menu.c:273
-msgid "Editors"
+#: src/bin/ui/menu.c:280
+#, fuzzy
+msgid "Edit"
 msgstr "Редактори"
 
-#: src/bin/ui/menu.c:274 src/bin/ui/menu.c:302
+#: src/bin/ui/menu.c:281 src/bin/ui/menu.c:318
 msgid "Animator"
 msgstr ""
 
-#: src/bin/ui/menu.c:275
-msgid "Images"
-msgstr "Зображення"
-
-#: src/bin/ui/menu.c:276
-msgid "Sound"
+#: src/bin/ui/menu.c:284 src/bin/ui/menu.c:319
+#: src/bin/ui/editors/image_editor.c:1134
+msgid "Image manager"
 msgstr ""
 
-#: src/bin/ui/menu.c:277
-msgid "Colorclasses"
-msgstr "Класи кольорів"
-
-#: src/bin/ui/menu.c:278
+#: src/bin/ui/menu.c:287 src/bin/ui/menu.c:320
+#: src/bin/ui/editors/sound_editor.c:1692
 #, fuzzy
-msgid "Text styles"
+msgid "Sound manager"
+msgstr "Редактор програм"
+
+#: src/bin/ui/menu.c:290 src/bin/ui/menu.c:321
+#: src/bin/ui/editors/colorclass_manager.c:569
+#, fuzzy
+msgid "Color class manager"
+msgstr "Назва класу кольорів"
+
+#: src/bin/ui/menu.c:293
+#, fuzzy
+msgid "Textblock styles manager"
 msgstr "Новий стиль "
 
-#: src/bin/ui/menu.c:279
+#: src/bin/ui/menu.c:296
 msgid "Help"
 msgstr "Допомога"
 
-#: src/bin/ui/menu.c:280 src/bin/ui/dialogs/about_window.c:38
+#: src/bin/ui/menu.c:297 src/bin/ui/dialogs/about_window.c:38
 msgid "About"
 msgstr "Про програму"
 
-#: src/bin/ui/menu.c:301
+#: src/bin/ui/menu.c:317
 msgid "Save project"
 msgstr "Зберегти проект"
 
-#: src/bin/ui/menu.c:303 src/bin/ui/editors/image_editor.c:1066
-msgid "Image editor"
+#: src/bin/ui/menu.c:322 src/bin/ui/editors/style_editor.c:1899
+msgid "Textblock style manager"
 msgstr ""
 
-#: src/bin/ui/menu.c:304 src/bin/ui/editors/sound_editor.c:1584
-#, fuzzy
-msgid "Sound editor"
-msgstr "Редактор програм"
-
-#: src/bin/ui/menu.c:305 src/bin/ui/editors/colorclass_editor.c:502
-msgid "Color class editor"
-msgstr "Редактор класів кольорів"
-
-#: src/bin/ui/menu.c:306 src/bin/ui/editors/style_editor.c:1877
-msgid "Textblock style editor"
-msgstr ""
-
-#: src/bin/ui/panes.c:188
-msgid "Part States"
-msgstr ""
-
-#: src/bin/ui/panes.c:195
+#: src/bin/ui/panes.c:190
 msgid "Live View"
 msgstr "Демонстрація"
 
-#: src/bin/ui/panes.c:211
-msgid "Using Signals"
+#: src/bin/ui/panes.c:209
+msgid "Part states"
 msgstr ""
 
-#: src/bin/ui/panes.c:217
-msgid "History of changes"
+#: src/bin/ui/panes.c:213
+msgid "Using signals"
 msgstr ""
 
-#: src/bin/ui/panes.c:223
-msgid "Property"
+#: src/bin/ui/panes.c:221
+msgid "History"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:170 src/bin/ui/blocks/ui_property.c:181
-#: src/bin/ui/blocks/ui_property.c:199 src/bin/ui/blocks/ui_property.c:203
-#: src/bin/ui/blocks/ui_property.c:216 src/bin/ui/blocks/ui_property.c:227
-#: src/bin/ui/dialogs/state_dialog.c:193
+#: src/bin/ui/panes.c:224
+msgid "Discard"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:209 src/bin/ui/blocks/ui_property.c:216
+#: src/bin/ui/blocks/ui_property.c:227 src/bin/ui/blocks/ui_property.c:245
+#: src/bin/ui/blocks/ui_property.c:249 src/bin/ui/blocks/ui_property.c:272
+#: src/bin/ui/blocks/ui_property.c:276 src/bin/ui/blocks/ui_property.c:895
+#: src/bin/ui/blocks/ui_property.c:896 src/bin/ui/blocks/ui_property.c:1257
+#: src/bin/ui/blocks/ui_property.c:1267 src/bin/ui/blocks/ui_property.c:1867
+#: src/bin/ui/blocks/ui_property.c:1876 src/bin/ui/blocks/ui_property.c:2173
+#: src/bin/ui/blocks/ui_property.c:2945 src/bin/ui/dialogs/state_dialog.c:188
 msgid "None"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:171
+#: src/bin/ui/blocks/ui_property.c:210 src/bin/ui/blocks/ui_property.c:218
 msgid "Vertical"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:172
+#: src/bin/ui/blocks/ui_property.c:211 src/bin/ui/blocks/ui_property.c:219
 msgid "Horizontal"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:174
+#: src/bin/ui/blocks/ui_property.c:213 src/bin/ui/blocks/ui_signal_list.c:40
 msgid "Source"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:177 src/bin/ui/blocks/ui_property.c:228
+#: src/bin/ui/blocks/ui_property.c:217
+msgid "Neither"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:223 src/bin/ui/blocks/ui_property.c:273
 msgid "Default"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:178
+#: src/bin/ui/blocks/ui_property.c:224
 msgid "Explicit"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:182 src/bin/ui/blocks/ui_property.c:204
+#: src/bin/ui/blocks/ui_property.c:228 src/bin/ui/blocks/ui_property.c:250
 msgid "Plain"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:183
+#: src/bin/ui/blocks/ui_property.c:229
 msgid "Editable"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:184
+#: src/bin/ui/blocks/ui_property.c:230
 msgid "Password"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:187
+#: src/bin/ui/blocks/ui_property.c:233
 msgid "Autograb"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:188
+#: src/bin/ui/blocks/ui_property.c:234
 msgid "Nograb"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:191
+#: src/bin/ui/blocks/ui_property.c:237
 msgid "Under"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:192
+#: src/bin/ui/blocks/ui_property.c:238
 msgid "Before"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:195
+#: src/bin/ui/blocks/ui_property.c:241
 msgid "Scale"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:196
+#: src/bin/ui/blocks/ui_property.c:242
 msgid "Tile"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:200
+#: src/bin/ui/blocks/ui_property.c:246
 msgid "On hold"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:205
+#: src/bin/ui/blocks/ui_property.c:251
 msgid "Outline"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:206
+#: src/bin/ui/blocks/ui_property.c:252
 msgid "Soft Outline"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:207
+#: src/bin/ui/blocks/ui_property.c:253
 msgid "Shadow"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:208
+#: src/bin/ui/blocks/ui_property.c:254
 msgid "Soft Shadow"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:209
+#: src/bin/ui/blocks/ui_property.c:255
 msgid "Outline Shadow"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:210
+#: src/bin/ui/blocks/ui_property.c:256
 msgid "Outline Soft Shadow"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:211
+#: src/bin/ui/blocks/ui_property.c:257
 msgid "Far Shadow"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:212
+#: src/bin/ui/blocks/ui_property.c:258
 msgid "Far Soft Shadow"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:213
+#: src/bin/ui/blocks/ui_property.c:259
 msgid "Glow"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:217
+#: src/bin/ui/blocks/ui_property.c:262
 msgid "Bottom Right"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:218
+#: src/bin/ui/blocks/ui_property.c:263
 msgid "Bottom"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:219
+#: src/bin/ui/blocks/ui_property.c:264
 msgid "Bottom Left"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:220
+#: src/bin/ui/blocks/ui_property.c:265
 msgid "Left"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:221
+#: src/bin/ui/blocks/ui_property.c:266
 msgid "Top Left"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:222
+#: src/bin/ui/blocks/ui_property.c:267
 msgid "Top"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:223
+#: src/bin/ui/blocks/ui_property.c:268
 msgid "Top Right"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:224
+#: src/bin/ui/blocks/ui_property.c:269
 msgid "Right"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:229
+#: src/bin/ui/blocks/ui_property.c:274
 msgid "Solid"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:396
+#: src/bin/ui/blocks/ui_property.c:277 src/bin/ui/dialogs/part_dialog.c:226
+msgid "Table"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:278 src/bin/ui/blocks/ui_property.c:3048
+msgid "Item"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:281
+msgid "horizontal"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:282
+msgid "vertical"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:283
+msgid "horizontal_homogeneous"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:284
+msgid "vertical_homogeneous"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:285
+msgid "horizontal_max"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:286
+msgid "vertical_max"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:287
+msgid "horizontal_flow"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:288
+msgid "vertical_flow"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:289
+msgid "stack"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:497
+msgid "Properties"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:506
 msgid "Visual"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:400
+#: src/bin/ui/blocks/ui_property.c:510
 msgid "Code"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:462 src/bin/ui/blocks/ui_property.c:1130
-#: src/bin/ui/blocks/ui_property.c:1530
+#: src/bin/ui/blocks/ui_property.c:540 src/bin/ui/blocks/ui_property.c:1356
+#: src/bin/ui/blocks/ui_property.c:1810 src/bin/ui/blocks/ui_property.c:2203
+#: src/bin/ui/blocks/ui_property.c:2996 src/bin/ui/blocks/ui_property.c:3168
 msgid "min"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:463 src/bin/ui/blocks/ui_property.c:1131
-#: src/bin/ui/blocks/ui_property.c:1529
+#: src/bin/ui/blocks/ui_property.c:541 src/bin/ui/blocks/ui_property.c:1359
+#: src/bin/ui/blocks/ui_property.c:1817 src/bin/ui/blocks/ui_property.c:2210
+#: src/bin/ui/blocks/ui_property.c:3000
 msgid "max"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:661
+#: src/bin/ui/blocks/ui_property.c:742
 msgid "Layout property"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:668
+#: src/bin/ui/blocks/ui_property.c:748
 msgid "Minimum group width in pixels."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:669
+#: src/bin/ui/blocks/ui_property.c:749
 msgid "Minimum group height in pixels."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:672
+#: src/bin/ui/blocks/ui_property.c:752
 msgid "Maximum group width in pixels."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:673
+#: src/bin/ui/blocks/ui_property.c:753
 msgid "Maximum group height in pixels."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:788
-#: src/bin/ui/editors/animator_program_editor.c:400
+#: src/bin/ui/blocks/ui_property.c:870 src/bin/ui/blocks/ui_property.c:3053
+#: src/bin/ui/editors/animator_program_editor.c:404
 msgid "name"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:825
-msgid "scalable"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:826
-msgid "mouse events"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:827
-msgid "event propagation"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:828
-msgid "clip to"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:829
-msgid "ignore flags"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:830
-#, fuzzy
-msgid "select mode"
-msgstr "Розділити шари"
-
-#: src/bin/ui/blocks/ui_property.c:831
-#, fuzzy
-msgid "entry mode"
-msgstr "Розділити шари"
-
-#: src/bin/ui/blocks/ui_property.c:832
-#, fuzzy
-msgid "pointer mode"
-msgstr "Розділити шари"
-
-#: src/bin/ui/blocks/ui_property.c:833
-msgid "cursor mode"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:834
-msgid "multiline"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:837
-#: src/bin/ui/editors/animator_program_editor.c:834
-msgid "x"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:838
-#: src/bin/ui/editors/animator_program_editor.c:836
-msgid "y"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:839
-msgid "drag area"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:840
-msgid "forward events"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:864
-msgid "Part property"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:869
+#: src/bin/ui/blocks/ui_property.c:874
 msgid "Selected part name"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:870 src/bin/ui/blocks/ui_property.c:2456
-msgid "type"
+#: src/bin/ui/blocks/ui_property.c:946
+msgid "scalable"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:872
+#: src/bin/ui/blocks/ui_property.c:947
 msgid ""
-"Specifies whether the part will scale its size with an edje scaling factor."
+"Specifies whether the part will scale it's size with an edje scaling factor"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:875
-msgid "Enable mouse events in this part."
+#: src/bin/ui/blocks/ui_property.c:948
+msgid "mouse events"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:877
-msgid "Enable repeat mouse events to the parts below."
+#: src/bin/ui/blocks/ui_property.c:949
+msgid "Enable mouse events in this part"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:879
+#: src/bin/ui/blocks/ui_property.c:950
+msgid "event propagation"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:951
+msgid "Enable repeat mouse events to the parts below"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:952
+msgid "clipper"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:953
 msgid "Show only the area of part that coincides with another part's container"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:882
-msgid "Specifies whether events with the given  flags should be ignored"
+#: src/bin/ui/blocks/ui_property.c:954
+msgid "ignore flags"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:895 src/bin/ui/blocks/ui_property.c:933
-msgid "Sets the selection mode for a textblock part"
+#: src/bin/ui/blocks/ui_property.c:955
+msgid "Specifies whether events with the given flags should be ignored"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:898
-msgid "Sets the edit mode for a textblock part"
+#: src/bin/ui/blocks/ui_property.c:956
+msgid "group source"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:901 src/bin/ui/blocks/ui_property.c:955
-msgid "Sets the mouse pointer behavior for a given part."
+#: src/bin/ui/blocks/ui_property.c:957
+msgid "Used for the group to be loaded and used to display GROUP part."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:904
-msgid "Sets the cursor mode for a textblock part"
+#: src/bin/ui/blocks/ui_property.c:959
+msgid "axis X"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:907 src/bin/ui/blocks/ui_property.c:976
+#: src/bin/ui/blocks/ui_property.c:960
+msgid "axis Y"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:961
+msgid "drag area"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:962
+msgid "Limits the movement of the dragged part to another part's container"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:963
+msgid "threshold"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:964
 msgid ""
-"It causes a textblock that is editable to allow multiple lines for editing."
+"Movement of the dragged part can only start when it get moved enough to be "
+"outside of this threshold part"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:944
-msgid "Sets the edit mode for a textblock part."
+#: src/bin/ui/blocks/ui_property.c:965
+msgid "forward events"
 msgstr ""
 
 #: src/bin/ui/blocks/ui_property.c:966
-msgid " Sets the cursor mode for a textblock part."
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1005
-msgid "Part dragable property"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1011 src/bin/ui/blocks/ui_property.c:1015
-#, c-format
-msgid "%.0f"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1012
-msgid "Enable/Disable draggin along X axis"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1013 src/bin/ui/blocks/ui_property.c:1017
-msgid "Set a drag step value"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1016
-msgid "Enable/Disable draggin along Y axis"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1019
-msgid "Limits the movement of the dragged part to another part's container'"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1022
 msgid ""
 "It causes the part to forward the drag events to another part, thus ignoring "
 "them for itself."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1128
-msgid "proxy source"
+#: src/bin/ui/blocks/ui_property.c:987
+msgid "Part property"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1129
-msgid "visible"
+#: src/bin/ui/blocks/ui_property.c:994 src/bin/ui/blocks/ui_property.c:2749
+msgid "type"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1132
-msgid "fixed"
+#: src/bin/ui/blocks/ui_property.c:1009
+msgid "Part dragable property"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1133 src/bin/ui/blocks/ui_property.c:1369
-#: src/bin/ui/blocks/ui_property.c:1372 src/bin/ui/blocks/ui_property.c:1528
-#: src/bin/ui/blocks/ui_property.c:2458 src/bin/ui/blocks/ui_property.c:2460
-msgid "align"
+#: src/bin/ui/blocks/ui_property.c:1017
+msgid "Enable/Disable draggin along X axis"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1134
-msgid "aspect ratio"
+#: src/bin/ui/blocks/ui_property.c:1018 src/bin/ui/blocks/ui_property.c:1022
+msgid "Set a drag step value"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1135
+#: src/bin/ui/blocks/ui_property.c:1021
+msgid "Enable/Disable draggin along Y axis"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1291
 msgid "color class"
 msgstr "клас кольорів"
 
-#: src/bin/ui/blocks/ui_property.c:1136
-msgid "color"
+#: src/bin/ui/blocks/ui_property.c:1354
+msgid "visible"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1137
+#: src/bin/ui/blocks/ui_property.c:1355
+msgid "Set visibility for part by current state"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1357
+msgid "Minimal size of part width in pixels."
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1357
+msgid "Minimal part height in pixels."
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1360
+msgid "Maximal size of part width in pixels."
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1360
+msgid "Maximal part height in pixels."
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1362 src/bin/ui/blocks/ui_property.c:1661
+#: src/bin/ui/blocks/ui_property.c:1680 src/bin/ui/blocks/ui_property.c:1806
+#: src/bin/ui/blocks/ui_property.c:2199 src/bin/ui/blocks/ui_property.c:2753
+#: src/bin/ui/blocks/ui_property.c:2764 src/bin/ui/blocks/ui_property.c:3008
+#: src/bin/ui/blocks/ui_property.c:3158
+msgid "align"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1363
+msgid "Part align horizontally"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1363
+msgid "Part align vertically"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1365
+msgid "fixed"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1366
+msgid "This affects the minimum width calculation."
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1367
+msgid "This affects the minimum height calculation."
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1368
 #, fuzzy
 msgid "aspect ratio mode"
 msgstr "Розділити шари"
 
-#: src/bin/ui/blocks/ui_property.c:1160
-msgid "State"
+#: src/bin/ui/blocks/ui_property.c:1369
+msgid "The aspect control hints for this object."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1165
-msgid "state"
+#: src/bin/ui/blocks/ui_property.c:1370
+msgid "aspect ratio"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1169
+#: src/bin/ui/blocks/ui_property.c:1371 src/bin/ui/blocks/ui_property.c:1372
+msgid "Normally width and height can be resized to any values independently"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1374
+msgid "multiplier"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1375
+msgid "The minimal part width value multiplier for current state"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1376
+msgid "The minimal part height value multiplier for current state"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1378
+msgid "color"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1378
+msgid "Part main color"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1381
+msgid "proxy source"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1382
 msgid ""
 "Causes the part to use another part content asthe content of this part. Only "
 "work with PROXY part."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1174
-msgid "Minimum part width in pixels."
+#: src/bin/ui/blocks/ui_property.c:1384
+msgid "box layout"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1175
-msgid "Minimum part height in pixels."
+#: src/bin/ui/blocks/ui_property.c:1385
+msgid "The aspect control hints for this object"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1180
-msgid "Maximum part width in pixels."
+#: src/bin/ui/blocks/ui_property.c:1386
+msgid "table homogeneous"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1181
-msgid "Maximum part height in pixels."
+#: src/bin/ui/blocks/ui_property.c:1387
+msgid "The table homogeneous mode"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1184
-msgid "This affects the minimum width calculation."
+#: src/bin/ui/blocks/ui_property.c:1409
+msgid "State"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1185
-msgid "This affects the minimum height calculation."
+#: src/bin/ui/blocks/ui_property.c:1414
+msgid "state"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1189
-msgid "Part horizontal align: 0.0 = left  1.0 = right"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1190
-msgid "Part vertical align: 0.0 = top  1.0 = bottom"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1195 src/bin/ui/blocks/ui_property.c:1197
-msgid "Normally width and height can be resized to any values independently"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1201
-msgid "The aspect control hints for this object."
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1205
-msgid "Current color class"
-msgstr "Поточний клас кольорів"
-
-#: src/bin/ui/blocks/ui_property.c:1207
-msgid "Part main color."
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1335
+#: src/bin/ui/blocks/ui_property.c:1614
 msgid "Layout"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1370 src/bin/ui/blocks/ui_property.c:1373
-#: src/bin/ui/blocks/ui_property.c:2459 src/bin/ui/blocks/ui_property.c:2461
-msgid "offset"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1371 src/bin/ui/blocks/ui_property.c:1374
+#: src/bin/ui/blocks/ui_property.c:1656 src/bin/ui/blocks/ui_property.c:1675
 #, fuzzy
 msgid "relative to"
 msgstr "Відносна шкала"
 
-#: src/bin/ui/blocks/ui_property.c:1389
-msgid "Object area"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1397
-msgid "Start point"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1403 src/bin/ui/blocks/ui_property.c:1442
+#: src/bin/ui/blocks/ui_property.c:1657 src/bin/ui/blocks/ui_property.c:1676
 msgid ""
 "Causes a corner to be positioned relatively to the X axis of another part. "
 "Setting to \"\" will un-set this value"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1405 src/bin/ui/blocks/ui_property.c:1444
+#: src/bin/ui/blocks/ui_property.c:1659 src/bin/ui/blocks/ui_property.c:1678
 msgid ""
 "Causes a corner to be positioned relatively to the Y axis of another part. "
 "Setting to \"\" will un-set this value"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1410
+#: src/bin/ui/blocks/ui_property.c:1663
 msgid ""
 "Define the position of left-up corner of the part's container. Moves a "
 "corner to a relative position inside the container by X axis."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1413
+#: src/bin/ui/blocks/ui_property.c:1666
 msgid ""
 "Define the position of left-up corner of the part's container. Moves a "
 "corner to a relative position inside the container by Y axis."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1422 src/bin/ui/blocks/ui_property.c:1461
+#: src/bin/ui/blocks/ui_property.c:1670 src/bin/ui/blocks/ui_property.c:1689
+#: src/bin/ui/blocks/ui_property.c:2759 src/bin/ui/blocks/ui_property.c:2770
+msgid "offset"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1672
 msgid "Left offset from relative position in pixels"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1423 src/bin/ui/blocks/ui_property.c:1462
+#: src/bin/ui/blocks/ui_property.c:1673
 msgid "Top offset from relative position in pixels"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1436
-msgid "End point"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1449
+#: src/bin/ui/blocks/ui_property.c:1682
 msgid ""
 "Define the position of right-down corner of the part's container. Moves a "
 "corner to a relative position inside the container by X axis."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1452
+#: src/bin/ui/blocks/ui_property.c:1685
 msgid ""
 "Define the position of right-down corner of the part's container. Moves a "
 "corner to a relative position inside the container by Y axis."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1525
+#: src/bin/ui/blocks/ui_property.c:1691
+msgid "Right offset from relative position in pixels"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1692
+msgid "Bottom offset from relative position in pixels"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1708
+msgid "Object area"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1716 src/bin/ui/blocks/ui_property.c:2802
+msgid "Start point"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1736 src/bin/ui/blocks/ui_property.c:2822
+msgid "End point"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1801
 msgid "text"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1526
+#: src/bin/ui/blocks/ui_property.c:1801
+msgid "The dispalyed text"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1802
 msgid "font"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1527 src/bin/ui/editors/style_editor.c:1332
+#: src/bin/ui/blocks/ui_property.c:1803
+msgid "The text font, posible set a font style. Ex: Sans:style=italic"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1804 src/bin/ui/editors/style_editor.c:1347
 msgid "size"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1531
-msgid "fit"
+#: src/bin/ui/blocks/ui_property.c:1805
+msgid "The font size"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1532
-msgid "shadow color"
+#: src/bin/ui/blocks/ui_property.c:1808 src/bin/ui/blocks/ui_property.c:2201
+msgid "Text horizontal align"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1533
-msgid "outline color"
+#: src/bin/ui/blocks/ui_property.c:1808 src/bin/ui/blocks/ui_property.c:2201
+msgid "Text vertical align"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1534
-#: src/bin/ui/editors/animator_program_editor.c:399
-#: src/bin/ui/editors/animator_program_editor.c:1691
-msgid "source"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1535
-msgid "text source"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1662
-msgid ":"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1686
-msgid "effect"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1698
-msgid "Causes Edje to draw the selected effect."
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1703
-msgid "Shadow directions."
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1878 src/bin/ui/dialogs/part_dialog.c:191
-#: src/bin/ui/editors/style_editor.c:1794
-msgid "Text"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1884 src/bin/ui/blocks/ui_property.c:2009
-msgid "Set the text of part."
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1886
-msgid "Change the text's font"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1889
-msgid "Change text font's size.'"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1893
-msgid "Text horizontal align. 0.0 = left  1.0 = right"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1895
-msgid "Text vertical align. 0.0 = top  1.0 = bottom"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1899 src/bin/ui/blocks/ui_property.c:1902
-#: src/bin/ui/blocks/ui_property.c:2019 src/bin/ui/blocks/ui_property.c:2022
+#: src/bin/ui/blocks/ui_property.c:1811 src/bin/ui/blocks/ui_property.c:1814
+#: src/bin/ui/blocks/ui_property.c:2204 src/bin/ui/blocks/ui_property.c:2207
 msgid ""
 "When any of the parameters is enabled it forces \tthe minimum size of the "
 "container to be equal to\tthe minimum size of the text."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1906 src/bin/ui/blocks/ui_property.c:1909
-#: src/bin/ui/blocks/ui_property.c:2026 src/bin/ui/blocks/ui_property.c:2029
+#: src/bin/ui/blocks/ui_property.c:1818 src/bin/ui/blocks/ui_property.c:1821
+#: src/bin/ui/blocks/ui_property.c:2211 src/bin/ui/blocks/ui_property.c:2214
 msgid ""
 "When any of the parameters is enabled it forces \tthe maximum size of the "
 "container to be equal to\tthe maximum size of the text."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1913
-msgid ""
-"Causes the part to use the text properties\t(like font and size) of another "
-"part\tand update them as they change."
+#: src/bin/ui/blocks/ui_property.c:1824
+msgid "fit"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1917
-msgid ""
-"Causes the part to display the text content of \tanother part and update "
-"them as they change."
+#: src/bin/ui/blocks/ui_property.c:1825
+msgid "Resize the text for it to fit in it's container by X axis"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1920
+#: src/bin/ui/blocks/ui_property.c:1826
+msgid "Resize the text for it to fit in it's container by Y axis"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1827
+msgid "shadow color"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1828
+msgid "outline color"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1831 src/bin/ui/blocks/ui_property.c:2995
+#: src/bin/ui/editors/animator_program_editor.c:403
+#: src/bin/ui/editors/animator_program_editor.c:1701
+msgid "source"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1832
+msgid ""
+"Causes the part to use the text properties (like font and size) of another "
+"part and update them as they change."
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1836
+msgid "text source"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1837
+msgid ""
+"Causes the part to display the text content of another part and update them "
+"as they change."
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1852
+msgid "text effect"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1947
+msgid "effect"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1949 src/bin/ui/editors/sound_editor.c:838
+msgid "type:"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1953
+msgid "Causes Edje to draw the selected effect."
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1957
+msgid "direction:"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:1961
+msgid "Shadow directions."
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2058
+msgid "ellipsis"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2062
+msgid "Turn on/off the text ellipsis"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2070
 msgid ""
 "Cut text if biggest then part's area0.0 = fix the left side  1.0 = right side"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1923
-msgid "Resize the text for it to fit in it's container by X axis"
+#: src/bin/ui/blocks/ui_property.c:2094 src/bin/ui/dialogs/part_dialog.c:201
+#: src/bin/ui/editors/style_editor.c:1812
+#: src/bin/ui/live_view/live_view_prop.c:241
+msgid "Text"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:1924
-msgid "Resize the text for it to fit in it's container by Y axis"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1926
-msgid "Text shadow color."
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1928
-msgid "Text outline color."
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1983
-msgid "source (under selected text)"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1984
-msgid "source2 (over selected text)"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1985
-msgid "source3 (under cursor)"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1986
-msgid "source4 (over cursor)"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1987
-msgid "source5 (under anchor)"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1988
-msgid "source6 (over anchor)"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:1990
+#: src/bin/ui/blocks/ui_property.c:2197
 #, fuzzy
-msgid "text style"
-msgstr "Новий стиль "
+msgid "style"
+msgstr "Стилі"
 
-#: src/bin/ui/blocks/ui_property.c:2003
-msgid "TextBlock"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:2012
+#: src/bin/ui/blocks/ui_property.c:2198
 msgid "Set the text style of part."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2015
-msgid "Text horizontal align. 0 = left  100 = right"
+#: src/bin/ui/blocks/ui_property.c:2217
+#, fuzzy
+msgid "select mode"
+msgstr "Розділити шари"
+
+#: src/bin/ui/blocks/ui_property.c:2218
+msgid "Sets the selection mode for a textblock part"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2016
-msgid "Text vertical align. 0 = top  100 = bottom"
+#: src/bin/ui/blocks/ui_property.c:2219
+#, fuzzy
+msgid "entry mode"
+msgstr "Розділити шари"
+
+#: src/bin/ui/blocks/ui_property.c:2220
+msgid "Sets the edit mode for a textblock part"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2033
+#: src/bin/ui/blocks/ui_property.c:2221
+#, fuzzy
+msgid "pointer mode"
+msgstr "Розділити шари"
+
+#: src/bin/ui/blocks/ui_property.c:2222
+msgid "Sets the mouse pointer behavior for a given part"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2223
+msgid "cursor mode"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2224
+msgid "Sets the cursor mode for a textblock part"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2225
+msgid "multiline"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2226
+msgid ""
+"It causes a textblock that is editable to allow multiple lines for editing"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2227
+msgid "under selected text"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2228
 msgid ""
 "Used for the group to be loaded and used for selection \tdisplay UNDER the "
 "selected text the source \tof TEXTBLOCK part."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2037
+#: src/bin/ui/blocks/ui_property.c:2231
+msgid "before selected text"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2232
 msgid ""
 "It is used for the group to be loaded and used for \tselection display OVER "
 "the selected text."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2040
+#: src/bin/ui/blocks/ui_property.c:2234
+msgid "under cursor"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2235
 msgid ""
 "It is used for the group to be loaded and used for \tcursor display UNDER "
 "the cursor position."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2043
+#: src/bin/ui/blocks/ui_property.c:2237
+msgid "over cursor"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2238
 msgid ""
 "It is used for the group to be loaded and used \tfor cursor display OVER the "
 "cursor position."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2046
+#: src/bin/ui/blocks/ui_property.c:2240
+msgid "under anchor"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2241
 msgid ""
 "It is used for the group to be loaded and used for \tanchors display UNDER "
 "the anchor position."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2049
+#: src/bin/ui/blocks/ui_property.c:2243
+msgid "over anchor"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2244
 msgid ""
 "It is used for the group to be loaded and used for \tanchor display OVER the "
 "anchor position."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2316
+#: src/bin/ui/blocks/ui_property.c:2259
+msgid "TextBlock"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2557
 msgid "Tweens"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2387
+#: src/bin/ui/blocks/ui_property.c:2688
 msgid "image"
 msgstr "зображення"
 
-#: src/bin/ui/blocks/ui_property.c:2388
-#: src/bin/ui/wizard/wizard_import_edc.c:88
+#: src/bin/ui/blocks/ui_property.c:2689
+#: src/bin/ui/wizard/wizard_import_edc.c:47
 msgid "border"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2389 src/bin/ui/editors/style_editor.c:155
-#: src/bin/ui/editors/style_editor.c:163
-msgid "middle"
+#: src/bin/ui/blocks/ui_property.c:2689
+msgid "Image's border values."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2402 src/bin/ui/dialogs/part_dialog.c:194
+#: src/bin/ui/blocks/ui_property.c:2690
+msgid "border fill"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2705 src/bin/ui/dialogs/part_dialog.c:204
 msgid "Image"
 msgstr "Зображення"
 
-#: src/bin/ui/blocks/ui_property.c:2408
-msgid "Current image name"
+#: src/bin/ui/blocks/ui_property.c:2750
+msgid "Set the image fill type"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2409
-msgid "Change image"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:2412
-msgid "Image's border value"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:2418
-msgid "Image's middle value"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:2457
+#: src/bin/ui/blocks/ui_property.c:2751
 msgid "smooth"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2475
-msgid "Fill"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:2481
-msgid "Sets the image fill type."
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:2485
+#: src/bin/ui/blocks/ui_property.c:2752
 msgid "On/off image smooth on scaling"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2494
-msgid "Origin"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:2502
+#: src/bin/ui/blocks/ui_property.c:2755
 msgid ""
 "Sets the starting point X coordinate relatively to displayed element's "
-"content."
+"content"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2504
+#: src/bin/ui/blocks/ui_property.c:2756
 msgid ""
 "Sets the starting point Y coordinate relatively to displayed element's "
-"content."
+"content"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2512
+#: src/bin/ui/blocks/ui_property.c:2761
 msgid "Affects the starting point a fixed number of pixels along X axis"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2514
+#: src/bin/ui/blocks/ui_property.c:2762
 msgid "Affects the starting point a fixed number of pixels along Y axis"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2528
-msgid "Size"
-msgstr ""
-
-#: src/bin/ui/blocks/ui_property.c:2536
+#: src/bin/ui/blocks/ui_property.c:2766
 msgid ""
 "Value that represent the percentual value of the original size of the "
-"element by X axis."
+"element by X axis"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2538
+#: src/bin/ui/blocks/ui_property.c:2767
 msgid ""
 "Value that represent the percentual value of the original size of the "
 "element by Y axis."
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2546
-msgid "Affects the size of the tile a fixed number of pixels along X axis."
+#: src/bin/ui/blocks/ui_property.c:2772
+msgid "Affects the size of the tile a fixed number of pixels along X axis"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_property.c:2548
-msgid "Affects the size of the tile a fixed number of pixels along Y axis."
+#: src/bin/ui/blocks/ui_property.c:2773
+msgid "Affects the size of the tile a fixed number of pixels along Y axis"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_widget_list.c:729
+#: src/bin/ui/blocks/ui_property.c:2788
+msgid "Fill"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2914 src/bin/ui/blocks/ui_property.c:3163
+msgid "padding"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2995
+msgid "Sets the group this object will be made from."
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2998
+msgid "Set the item minimum size hint width in pixels"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:2998
+msgid "Set the item minimum size hint height in pixels"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3002
+msgid "Set the item maximum size hint width in pixels"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3002
+msgid "Set the item maximum size hint height in pixels"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3004
+msgid "prefer"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3006
+msgid "Set the item prefered size hint width in pixels"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3006
+msgid "Set the item prefered size hint height in pixels"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3010
+msgid "Sets the alignment hint by x axiss"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3010
+msgid "Sets the alignment hint by y axiss"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3012
+msgid "weight"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3014
+msgid "Sets the weight hint by x axiss"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3014
+msgid "Sets the weight hint by y axiss"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3016
+msgid "aspect"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3018
+msgid "Set the item aspect width hint"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3018
+msgid "Set the item aspect height hint"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3020
+msgid "spread"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3022
+msgid "Replicate the item in width, starting from the current position"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3023
+msgid "Replicate the item in height, starting from the current position"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3025
+#, fuzzy
+msgid "aspect mode"
+msgstr "Розділити шари"
+
+#: src/bin/ui/blocks/ui_property.c:3026
+msgid "Sets the aspect control hints for this object."
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3027
+msgid "span"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3029
+msgid "Sets how many columns this item will use"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3029
+msgid "Sets how many rows this item will use"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3031
+msgid "position"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3033
+msgid "Sets the column position this item"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3033
+msgid "Sets the row position this item"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3160 src/bin/ui/blocks/ui_property.c:3161
+msgid "Change the position of the point of balance inside the container"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3165
+msgid "Sets the horizontal space between cells in pixels"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3166
+msgid "Sets the vertcal space between cells in pixels"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3170
+msgid "This affects the minimum width calculation"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3171
+msgid "This affects the minimum height calculation"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_property.c:3183
+msgid "Container"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_signal_list.c:42
+#, fuzzy
+msgid "Program"
+msgstr "Назва програми: "
+
+#: src/bin/ui/blocks/ui_widget_list.c:145
+msgid "There is only one group. <br>Need more groups for adding items."
+msgstr ""
+
+#: src/bin/ui/blocks/ui_widget_list.c:912
+msgid "Themes"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_widget_list.c:913
+msgid "Layouts"
+msgstr ""
+
+#: src/bin/ui/blocks/ui_widget_list.c:935
 msgid "Widget list"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_widget_list.c:730
+#: src/bin/ui/blocks/ui_widget_list.c:936
 msgid "Layouts list"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_widget_list.c:992
+#: src/bin/ui/blocks/ui_widget_list.c:1214
 msgid "Selected part is currently on top of the list"
 msgstr ""
 
-#: src/bin/ui/blocks/ui_widget_list.c:1001
+#: src/bin/ui/blocks/ui_widget_list.c:1228
 msgid "Selected part is currently on bottom of the list"
 msgstr ""
 
@@ -1234,159 +1493,136 @@ msgstr ""
 msgid "Can't add the part %s, part with the same name already exists"
 msgstr ""
 
-#: src/bin/ui/dialogs/part_dialog.c:178
+#: src/bin/ui/dialogs/part_dialog.c:188
 #, c-format
 msgid "Add new part to group \"%s\""
 msgstr ""
 
-#: src/bin/ui/dialogs/part_dialog.c:184
+#: src/bin/ui/dialogs/part_dialog.c:194
 msgid "Type the new part new."
 msgstr ""
 
-#: src/bin/ui/dialogs/part_dialog.c:188
+#: src/bin/ui/dialogs/part_dialog.c:198
 msgid "Rectangle"
 msgstr ""
 
-#: src/bin/ui/dialogs/part_dialog.c:197
+#: src/bin/ui/dialogs/part_dialog.c:207
 msgid "Swallow"
 msgstr ""
 
-#: src/bin/ui/dialogs/part_dialog.c:200
+#: src/bin/ui/dialogs/part_dialog.c:210
 msgid "Textblock"
 msgstr ""
 
-#: src/bin/ui/dialogs/part_dialog.c:208
+#: src/bin/ui/dialogs/part_dialog.c:218
 msgid "Spacer"
 msgstr ""
 
-#: src/bin/ui/dialogs/part_dialog.c:212
+#: src/bin/ui/dialogs/part_dialog.c:222
 msgid "Proxy"
 msgstr ""
 
-#: src/bin/ui/dialogs/save_file_dialog.c:117
-msgid "The file must have an extension '.edj'"
+#: src/bin/ui/dialogs/part_dialog.c:230
+msgid "Box"
 msgstr ""
 
-#: src/bin/ui/dialogs/save_file_dialog.c:135
-#: src/bin/ui/editors/animator_program_editor.c:989
-msgid "Warning"
-msgstr ""
-
-#: src/bin/ui/dialogs/save_file_dialog.c:136
-msgid "File is already exist. Wouldyou like to replace it?"
-msgstr ""
-
-#: src/bin/ui/dialogs/save_file_dialog.c:138
-msgid "OK"
-msgstr ""
-
-#: src/bin/ui/dialogs/save_file_dialog.c:210
-msgid "Save as EDJ file"
-msgstr ""
-
-#: src/bin/ui/dialogs/save_file_dialog.c:217
-msgid "Export to EDC"
-msgstr "Експорт в EDC"
-
-#: src/bin/ui/dialogs/state_dialog.c:70
+#: src/bin/ui/dialogs/state_dialog.c:69
 msgid "State name can not be empty!"
 msgstr ""
 
-#: src/bin/ui/dialogs/state_dialog.c:75
+#: src/bin/ui/dialogs/state_dialog.c:74
 msgid "State value is not correct!"
 msgstr ""
 
-#: src/bin/ui/dialogs/state_dialog.c:84
+#: src/bin/ui/dialogs/state_dialog.c:83
 msgid "State is exist!"
 msgstr ""
 
-#: src/bin/ui/dialogs/state_dialog.c:165
+#: src/bin/ui/dialogs/state_dialog.c:160
 #, c-format
 msgid "Add new state to part \"%s\""
 msgstr ""
 
-#: src/bin/ui/dialogs/state_dialog.c:171
+#: src/bin/ui/dialogs/state_dialog.c:166
 msgid "Name:"
 msgstr ""
 
-#: src/bin/ui/dialogs/state_dialog.c:174
+#: src/bin/ui/dialogs/state_dialog.c:169
 msgid "Type a new state name."
 msgstr ""
 
-#: src/bin/ui/dialogs/state_dialog.c:178
+#: src/bin/ui/dialogs/state_dialog.c:173
 msgid "Value:"
 msgstr ""
 
-#: src/bin/ui/dialogs/state_dialog.c:181
+#: src/bin/ui/dialogs/state_dialog.c:176
 msgid "Type a state value (0.0 - 1.0)."
 msgstr ""
 
-#: src/bin/ui/dialogs/state_dialog.c:188
+#: src/bin/ui/dialogs/state_dialog.c:183
 msgid "Duplicate state:"
 msgstr ""
 
-#: src/bin/ui/dialogs/state_dialog.c:207 src/bin/ui/dialogs/style_dialog.c:337
-#: src/bin/ui/editors/animator_program_editor.c:1529
-#: src/bin/ui/editors/animator_program_editor.c:1583
-#: src/bin/ui/editors/colorclass_editor.c:541
-#: src/bin/ui/editors/sound_editor.c:1375
+#: src/bin/ui/dialogs/state_dialog.c:202 src/bin/ui/dialogs/style_dialog.c:362
+#: src/bin/ui/editors/animator_program_editor.c:1533
+#: src/bin/ui/editors/animator_program_editor.c:1587
+#: src/bin/ui/editors/sound_editor.c:1460
 msgid "Add"
 msgstr ""
 
-#: src/bin/ui/dialogs/state_dialog.c:276
+#: src/bin/ui/dialogs/state_dialog.c:269
 msgid "Something is wrong. State is not selected"
 msgstr ""
 
-#: src/bin/ui/dialogs/state_dialog.c:282
+#: src/bin/ui/dialogs/state_dialog.c:275
 msgid "Can't delete the default state."
 msgstr ""
 
-#: src/bin/ui/dialogs/state_dialog.c:288
+#: src/bin/ui/dialogs/state_dialog.c:280
 msgid "Delete the state from part"
 msgstr ""
 
-#: src/bin/ui/dialogs/state_dialog.c:292
+#: src/bin/ui/dialogs/state_dialog.c:284
 #, c-format
 msgid "Do you want to delete the state \"%s\" from part \"%s\"."
 msgstr ""
 
-#: src/bin/ui/dialogs/state_dialog.c:300 src/bin/ui/editors/animator.c:605
-#: src/bin/ui/editors/colorclass_editor.c:545
+#: src/bin/ui/dialogs/state_dialog.c:292 src/bin/ui/editors/animator.c:611
 msgid "Delete"
 msgstr ""
 
-#: src/bin/ui/dialogs/style_dialog.c:123
+#: src/bin/ui/dialogs/style_dialog.c:131
 msgid "Please type style name"
 msgstr ""
 
-#: src/bin/ui/dialogs/style_dialog.c:130
+#: src/bin/ui/dialogs/style_dialog.c:138
 msgid "Please type class name"
 msgstr ""
 
-#: src/bin/ui/dialogs/style_dialog.c:140
+#: src/bin/ui/dialogs/style_dialog.c:148
 #, c-format
 msgid "[%s] alredy exist. Type another style name."
 msgstr ""
 
-#: src/bin/ui/dialogs/style_dialog.c:154
+#: src/bin/ui/dialogs/style_dialog.c:162
 #, c-format
 msgid "Sorry, there are no templates for [%s]"
 msgstr ""
 
-#: src/bin/ui/dialogs/style_dialog.c:307
+#: src/bin/ui/dialogs/style_dialog.c:333
 #, c-format
 msgid "Add style/class for \"%s\" widget"
 msgstr ""
 
-#: src/bin/ui/dialogs/style_dialog.c:319 src/bin/ui/editors/style_editor.c:481
+#: src/bin/ui/dialogs/style_dialog.c:344 src/bin/ui/editors/style_editor.c:487
 msgid "Type a new style name."
 msgstr ""
 
-#: src/bin/ui/dialogs/style_dialog.c:331
+#: src/bin/ui/dialogs/style_dialog.c:356
 msgid "Type a new class name."
 msgstr ""
 
-#: src/bin/ui/editors/animator.c:82 src/bin/ui/editors/animator.c:564
+#: src/bin/ui/editors/animator.c:82 src/bin/ui/editors/animator.c:571
 msgid "Play"
 msgstr ""
 
@@ -1394,7 +1630,7 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: src/bin/ui/editors/animator.c:160 src/bin/ui/editors/animator.c:576
+#: src/bin/ui/editors/animator.c:160 src/bin/ui/editors/animator.c:583
 msgid "Cycled"
 msgstr ""
 
@@ -1415,7 +1651,7 @@ msgstr ""
 msgid "Failed to delete program [%s] from style [%s]"
 msgstr ""
 
-#: src/bin/ui/editors/animator.c:304 src/bin/ui/editors/animator.c:600
+#: src/bin/ui/editors/animator.c:304 src/bin/ui/editors/animator.c:606
 msgid "New program"
 msgstr "Нова програма"
 
@@ -1424,24 +1660,16 @@ msgstr "Нова програма"
 msgid "Program name:"
 msgstr "Назва програми: "
 
-#: src/bin/ui/editors/animator.c:314 src/bin/ui/editors/animator.c:668
-#: src/bin/ui/editors/colorclass_editor.c:315
-#: src/bin/ui/editors/image_editor.c:1151
-#: src/bin/ui/editors/sound_editor.c:1517
-#: src/bin/ui/editors/style_editor.c:490 src/bin/ui/editors/style_editor.c:548
-#: src/bin/ui/modal_window/modal_window.c:50
-msgid "Ok"
-msgstr ""
-
-#: src/bin/ui/editors/animator.c:539
+#: src/bin/ui/editors/animator.c:544
 msgid "Program editor"
 msgstr "Редактор програм"
 
-#: src/bin/ui/editors/animator.c:570
+#: src/bin/ui/editors/animator.c:577
 msgid "Reset"
 msgstr ""
 
-#: src/bin/ui/editors/animator.c:662 src/bin/ui/wizard/wizard_common.c:330
+#: src/bin/ui/editors/animator.c:667 src/bin/ui/editors/image_editor.c:1232
+#: src/bin/ui/wizard/wizard_common.c:347
 msgid "Apply"
 msgstr ""
 
@@ -1619,901 +1847,854 @@ msgid "ALL"
 msgstr ""
 
 #: src/bin/ui/editors/animator_program_editor.c:348
-#: src/bin/ui/editors/animator_program_editor.c:452
-#: src/bin/ui/editors/animator_program_editor.c:473
-#: src/bin/ui/editors/animator_program_editor.c:493
-#: src/bin/ui/editors/animator_program_editor.c:1046
-#: src/bin/ui/editors/animator_program_editor.c:1081
-#: src/bin/ui/editors/animator_program_editor.c:1108
-#: src/bin/ui/editors/animator_program_editor.c:1115
-#: src/bin/ui/editors/animator_program_editor.c:1122
-#: src/bin/ui/editors/animator_program_editor.c:1140
-#: src/bin/ui/editors/animator_program_editor.c:1153
-#: src/bin/ui/editors/animator_program_editor.c:1180
+#: src/bin/ui/editors/animator_program_editor.c:476
+#: src/bin/ui/editors/animator_program_editor.c:496
+#: src/bin/ui/editors/animator_program_editor.c:1050
+#: src/bin/ui/editors/animator_program_editor.c:1085
+#: src/bin/ui/editors/animator_program_editor.c:1112
+#: src/bin/ui/editors/animator_program_editor.c:1119
+#: src/bin/ui/editors/animator_program_editor.c:1126
+#: src/bin/ui/editors/animator_program_editor.c:1144
+#: src/bin/ui/editors/animator_program_editor.c:1157
+#: src/bin/ui/editors/animator_program_editor.c:1184
 msgid "The entered data is not valid!"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:398
-#: src/bin/ui/editors/animator_program_editor.c:1690
+#: src/bin/ui/editors/animator_program_editor.c:402
+#: src/bin/ui/editors/animator_program_editor.c:1697
 msgid "signal"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:530
-#: src/bin/ui/editors/animator_program_editor.c:782
+#: src/bin/ui/editors/animator_program_editor.c:459
+#, c-format
+msgid ""
+"Program with name \"%s\" already exist or is invalid. Name changed back to "
+"\"%s\""
+msgstr ""
+
+#: src/bin/ui/editors/animator_program_editor.c:533
+#: src/bin/ui/editors/animator_program_editor.c:787
 msgid "script"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:571
-#: src/bin/ui/editors/animator_program_editor.c:1023
-#: src/bin/ui/editors/animator_program_editor.c:1386
-#: src/bin/ui/editors/animator_program_editor.c:1455
+#: src/bin/ui/editors/animator_program_editor.c:576
+#: src/bin/ui/editors/animator_program_editor.c:1027
+#: src/bin/ui/editors/animator_program_editor.c:1390
+#: src/bin/ui/editors/animator_program_editor.c:1459
 msgid "param1"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:572
-#: src/bin/ui/editors/animator_program_editor.c:1024
-#: src/bin/ui/editors/animator_program_editor.c:1393
-#: src/bin/ui/editors/animator_program_editor.c:1461
+#: src/bin/ui/editors/animator_program_editor.c:577
+#: src/bin/ui/editors/animator_program_editor.c:1028
+#: src/bin/ui/editors/animator_program_editor.c:1397
+#: src/bin/ui/editors/animator_program_editor.c:1465
 msgid "param2"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:614
-#: src/bin/ui/editors/animator_program_editor.c:624
+#: src/bin/ui/editors/animator_program_editor.c:619
+#: src/bin/ui/editors/animator_program_editor.c:629
 msgid "factor"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:623
+#: src/bin/ui/editors/animator_program_editor.c:628
 msgid "gradient"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:634
-#: src/bin/ui/editors/animator_program_editor.c:645
+#: src/bin/ui/editors/animator_program_editor.c:639
+#: src/bin/ui/editors/animator_program_editor.c:650
 msgid "decay"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:635
+#: src/bin/ui/editors/animator_program_editor.c:640
 msgid "bounces"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:646
+#: src/bin/ui/editors/animator_program_editor.c:651
 msgid "swings"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:772
-#: src/bin/ui/editors/animator_program_editor.c:790
-#: src/bin/ui/editors/animator_program_editor.c:809
-#: src/bin/ui/editors/animator_program_editor.c:830
-#: src/bin/ui/editors/animator_program_editor.c:1579
+#: src/bin/ui/editors/animator_program_editor.c:777
+#: src/bin/ui/editors/animator_program_editor.c:795
+#: src/bin/ui/editors/animator_program_editor.c:814
+#: src/bin/ui/editors/animator_program_editor.c:835
+#: src/bin/ui/editors/animator_program_editor.c:1583
 msgid "targets"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:794
+#: src/bin/ui/editors/animator_program_editor.c:799
 msgid "state name"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:796
+#: src/bin/ui/editors/animator_program_editor.c:801
 msgid "state value"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:813
+#: src/bin/ui/editors/animator_program_editor.c:818
 msgid "signal name"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:815
+#: src/bin/ui/editors/animator_program_editor.c:820
 msgid "emitter"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:850
+#: src/bin/ui/editors/animator_program_editor.c:839
+msgid "x"
+msgstr ""
+
+#: src/bin/ui/editors/animator_program_editor.c:841
+msgid "y"
+msgstr ""
+
+#: src/bin/ui/editors/animator_program_editor.c:855
 msgid "sample name"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:858
+#: src/bin/ui/editors/animator_program_editor.c:863
 msgid "Select sample"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:860
+#: src/bin/ui/editors/animator_program_editor.c:865
 msgid "speed"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:864
+#: src/bin/ui/editors/animator_program_editor.c:869
 msgid "channel"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:893
+#: src/bin/ui/editors/animator_program_editor.c:898
 msgid "tone name"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:901
+#: src/bin/ui/editors/animator_program_editor.c:906
 msgid "Select tone"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:903
+#: src/bin/ui/editors/animator_program_editor.c:908
 msgid "duration"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:940
+#: src/bin/ui/editors/animator_program_editor.c:945
 msgid "Transition block can used only with STATE_SET action"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:990
+#: src/bin/ui/editors/animator_program_editor.c:993
+msgid "Warning"
+msgstr ""
+
+#: src/bin/ui/editors/animator_program_editor.c:994
 msgid ""
 "This program has targets. If you change actiontype all target would be "
 "deleted"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:993
+#: src/bin/ui/editors/animator_program_editor.c:997
 msgid "Continue"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:1187
+#: src/bin/ui/editors/animator_program_editor.c:1191
 msgid "the entered data is not valid!"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:1246
-#: src/bin/ui/editors/animator_program_editor.c:1314
+#: src/bin/ui/editors/animator_program_editor.c:1250
+#: src/bin/ui/editors/animator_program_editor.c:1318
 msgid "Del"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:1365
-#: src/bin/ui/editors/animator_program_editor.c:1694
+#: src/bin/ui/editors/animator_program_editor.c:1369
+#: src/bin/ui/editors/animator_program_editor.c:1707
 msgid "transition"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:1369
+#: src/bin/ui/editors/animator_program_editor.c:1373
 msgid "from current"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:1377
+#: src/bin/ui/editors/animator_program_editor.c:1381
 msgid "length"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:1452
-#: src/bin/ui/editors/animator_program_editor.c:1693
+#: src/bin/ui/editors/animator_program_editor.c:1456
+#: src/bin/ui/editors/animator_program_editor.c:1706
 msgid "action"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:1525
+#: src/bin/ui/editors/animator_program_editor.c:1529
 msgid "after"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:1648
-#: src/bin/ui/editors/animator_program_editor.c:1692
+#: src/bin/ui/editors/animator_program_editor.c:1652
+#: src/bin/ui/editors/animator_program_editor.c:1705
 msgid "in"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:1652
+#: src/bin/ui/editors/animator_program_editor.c:1656
 msgid "from"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:1660
+#: src/bin/ui/editors/animator_program_editor.c:1664
 msgid "range"
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:1689
+#: src/bin/ui/editors/animator_program_editor.c:1693
 msgid "Unique name of program "
 msgstr ""
 
-#: src/bin/ui/editors/animator_program_editor.c:1695
+#: src/bin/ui/editors/animator_program_editor.c:1708
 msgid "afters"
 msgstr ""
 
-#: src/bin/ui/editors/colorclass_editor.c:231
+#: src/bin/ui/editors/colorclass_manager.c:79
 msgid "Color class name can not be empty!"
 msgstr ""
 
-#: src/bin/ui/editors/colorclass_editor.c:239
+#: src/bin/ui/editors/colorclass_manager.c:87
 msgid "Color class name must be unique!"
 msgstr ""
 
-#: src/bin/ui/editors/colorclass_editor.c:289
+#: src/bin/ui/editors/colorclass_manager.c:124
 msgid "Add color class:"
 msgstr "Додати клас кольорів"
 
-#: src/bin/ui/editors/colorclass_editor.c:301
+#: src/bin/ui/editors/colorclass_manager.c:130
 msgid "Color class name: "
 msgstr "Назва класу кольорів"
 
-#: src/bin/ui/editors/colorclass_editor.c:308
+#: src/bin/ui/editors/colorclass_manager.c:135
 msgid "Type new color class name here."
 msgstr ""
 
-#: src/bin/ui/editors/colorclass_editor.c:377
-msgid "Apply changes?"
+#: src/bin/ui/editors/colorclass_manager.c:332
+#: src/bin/ui/editors/image_editor.c:992
+#: src/bin/ui/editors/sound_editor.c:1207
+#: src/bin/ui/editors/style_editor.c:661
+msgid "Search"
 msgstr ""
 
-#: src/bin/ui/editors/colorclass_editor.c:379
-msgid "Yes"
+#: src/bin/ui/editors/colorclass_manager.c:441
+#: src/bin/ui/editors/style_editor.c:1946
+msgid "The quick brown fox jumps over the lazy dog"
 msgstr ""
 
-#: src/bin/ui/editors/colorclass_editor.c:384
-msgid "No"
+#: src/bin/ui/editors/colorclass_manager.c:577
+msgid "Failed initialize colorclasses manager"
 msgstr ""
 
-#: src/bin/ui/editors/colorclass_editor.c:549
-#: src/bin/ui/editors/image_editor.c:1158 src/bin/ui/notification/notify.c:58
-#: src/bin/ui/notification/notify.c:93 src/bin/ui/preference/preference.c:402
-msgid "Close"
-msgstr ""
-
-#: src/bin/ui/editors/colorclass_editor.c:566
-msgid "EXAMPLE"
-msgstr ""
-
-#: src/bin/ui/editors/colorclass_editor.c:602
-msgid "Object color"
-msgstr ""
-
-#: src/bin/ui/editors/colorclass_editor.c:603
-#: src/bin/ui/editors/colorclass_editor.c:611
-#: src/bin/ui/editors/colorclass_editor.c:619
-#, c-format
-msgid "R:%3.0f"
-msgstr ""
-
-#: src/bin/ui/editors/colorclass_editor.c:604
-#: src/bin/ui/editors/colorclass_editor.c:612
-#: src/bin/ui/editors/colorclass_editor.c:620
-#, c-format
-msgid "G:%3.0f"
-msgstr ""
-
-#: src/bin/ui/editors/colorclass_editor.c:605
-#: src/bin/ui/editors/colorclass_editor.c:613
-#: src/bin/ui/editors/colorclass_editor.c:621
-#, c-format
-msgid "B:%3.0f"
-msgstr ""
-
-#: src/bin/ui/editors/colorclass_editor.c:606
-#: src/bin/ui/editors/colorclass_editor.c:614
-#: src/bin/ui/editors/colorclass_editor.c:622
-#, c-format
-msgid "A:%3.0f"
-msgstr ""
-
-#: src/bin/ui/editors/colorclass_editor.c:610
-msgid "Outline color"
-msgstr ""
-
-#: src/bin/ui/editors/colorclass_editor.c:618
-msgid "Shadow color"
-msgstr ""
-
-#: src/bin/ui/editors/colorclass_editor.c:630
-msgid "Failed initialize colorclasses editor"
-msgstr ""
-
-#: src/bin/ui/editors/image_editor.c:254
+#: src/bin/ui/editors/image_editor.c:262
 #, c-format
 msgid "Usage (%d)"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:256
+#: src/bin/ui/editors/image_editor.c:264
 msgid "Usage ( - )"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:302 src/bin/ui/editors/image_editor.c:322
+#: src/bin/ui/editors/image_editor.c:310 src/bin/ui/editors/image_editor.c:330
 msgid "Unknown"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:307
+#: src/bin/ui/editors/image_editor.c:315
 #, c-format
 msgid "PNG image (%s)"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:309
+#: src/bin/ui/editors/image_editor.c:317
 #, fuzzy, c-format
 msgid "GIF image (%s)"
 msgstr "Зображення"
 
-#: src/bin/ui/editors/image_editor.c:314
+#: src/bin/ui/editors/image_editor.c:322
 #, c-format
 msgid "JPEG image (%s)"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:316
+#: src/bin/ui/editors/image_editor.c:324
 #, c-format
 msgid "BMP image (%s)"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:319
+#: src/bin/ui/editors/image_editor.c:327
 #, c-format
 msgid "TIFF image (%s)"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:588
+#: src/bin/ui/editors/image_editor.c:614
 msgid "File not exist"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:593
+#: src/bin/ui/editors/image_editor.c:619
 msgid "Unable to add folder"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:620
-msgid "Add image to library"
+#: src/bin/ui/editors/image_editor.c:679
+#, fuzzy
+msgid "Images files"
+msgstr "Зображення"
+
+#: src/bin/ui/editors/image_editor.c:680
+#: src/bin/ui/editors/sound_editor.c:1420
+msgid "All files"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:688
+#: src/bin/ui/editors/image_editor.c:737
 #, c-format
 msgid "Image is used in:"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:692
+#: src/bin/ui/editors/image_editor.c:741
 #, c-format
 msgid "<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:702
-#, c-format
-msgid "%d image in use:"
-msgid_plural "%d images in use:"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-#: src/bin/ui/editors/image_editor.c:755
+#: src/bin/ui/editors/image_editor.c:804
 msgid "Image not selected"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:862
+#: src/bin/ui/editors/image_editor.c:939
 msgid "<b>Include</b>"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:865
+#: src/bin/ui/editors/image_editor.c:942
 msgid "<b>Linked</b>"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:930
-#: src/bin/ui/editors/sound_editor.c:1171
-#: src/bin/ui/editors/style_editor.c:653
-msgid "Search"
+#: src/bin/ui/editors/image_editor.c:1130
+msgid "Image manager: choose image"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:1062
-msgid "Image editor: choose image"
+#: src/bin/ui/editors/image_editor.c:1132
+msgid "Image manager: select tween images"
 msgstr ""
 
-#: src/bin/ui/editors/image_editor.c:1064
-msgid "Image editor: select tween images"
-msgstr ""
-
-#: src/bin/ui/editors/sound_editor.c:747
+#: src/bin/ui/editors/sound_editor.c:766
 msgid "Play on select:"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:813
+#: src/bin/ui/editors/sound_editor.c:836
 msgid "file name:"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:814 src/bin/ui/editors/sound_editor.c:855
+#: src/bin/ui/editors/sound_editor.c:837 src/bin/ui/editors/sound_editor.c:876
 msgid "duration:"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:815
-msgid "type:"
-msgstr ""
-
-#: src/bin/ui/editors/sound_editor.c:816
+#: src/bin/ui/editors/sound_editor.c:839
 msgid "size:"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:820
+#: src/bin/ui/editors/sound_editor.c:841
 msgid "compression:"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:830
+#: src/bin/ui/editors/sound_editor.c:851
 msgid "quality:"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:848
+#: src/bin/ui/editors/sound_editor.c:869
 msgid "name:"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:875
+#: src/bin/ui/editors/sound_editor.c:896
 msgid "UNKNOWN"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:903
+#: src/bin/ui/editors/sound_editor.c:923
 #, c-format
 msgid "%s Format Sound (.%s)"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:1086
+#: src/bin/ui/editors/sound_editor.c:1128
 msgid "<b>Sound Samples</b>"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:1108
+#: src/bin/ui/editors/sound_editor.c:1150
 msgid "<b>Sound Tones</b>"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:1224
-msgid "There are supported only files with extensions:<br>*.wav *.ogg *.flac"
+#: src/bin/ui/editors/sound_editor.c:1270
+msgid "Sample with this name is already added to project"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:1234
-msgid "Sample has been already added!"
-msgstr ""
-
-#: src/bin/ui/editors/sound_editor.c:1253
+#: src/bin/ui/editors/sound_editor.c:1294
 msgid "Error while loading file.<br>File is not exist"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:1289
+#: src/bin/ui/editors/sound_editor.c:1334
 #, fuzzy
 msgid "Tone name can not be empty!"
 msgstr "Необхідно вказати назву тегу"
 
-#: src/bin/ui/editors/sound_editor.c:1294
+#: src/bin/ui/editors/sound_editor.c:1339
 msgid "Frequency value is not correct!"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:1327
-msgid "Add sound to the library"
+#: src/bin/ui/editors/sound_editor.c:1365
+msgid "Tone with this name is already added to project"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:1350
+#: src/bin/ui/editors/sound_editor.c:1419
+#, fuzzy
+msgid "Sound files"
+msgstr "Редактор програм"
+
+#: src/bin/ui/editors/sound_editor.c:1435
 msgid "Add new tone to the project"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:1357
+#: src/bin/ui/editors/sound_editor.c:1442
 msgid "tone name:"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:1359
+#: src/bin/ui/editors/sound_editor.c:1444
 msgid "Type a new tone name"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:1363
+#: src/bin/ui/editors/sound_editor.c:1448
 msgid "frequency:"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:1368
+#: src/bin/ui/editors/sound_editor.c:1453
 msgid "Type a frequency (20 - 20000)"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:1532
+#: src/bin/ui/editors/sound_editor.c:1622
 msgid "Sample"
 msgstr ""
 
-#: src/bin/ui/editors/sound_editor.c:1533
+#: src/bin/ui/editors/sound_editor.c:1623
 msgid "Tone"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:82 src/bin/ui/editors/style_editor.c:87
-#: src/bin/ui/editors/style_editor.c:98
+#: src/bin/ui/editors/style_editor.c:85 src/bin/ui/editors/style_editor.c:90
+#: src/bin/ui/editors/style_editor.c:101
 msgid "Normal"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:83
+#: src/bin/ui/editors/style_editor.c:86
 msgid "Italic"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:84
+#: src/bin/ui/editors/style_editor.c:87
 msgid "Oblique"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:88
+#: src/bin/ui/editors/style_editor.c:91
 msgid "Ultracondensed"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:89 src/bin/ui/editors/style_editor.c:91
+#: src/bin/ui/editors/style_editor.c:92 src/bin/ui/editors/style_editor.c:94
 msgid "Extracondensed"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:90
+#: src/bin/ui/editors/style_editor.c:93
 msgid "Condensed"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:92
+#: src/bin/ui/editors/style_editor.c:95
 msgid "Semicondensed"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:93
+#: src/bin/ui/editors/style_editor.c:96
 msgid "Semiexpanded"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:94
+#: src/bin/ui/editors/style_editor.c:97
 msgid "Expanded"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:95
+#: src/bin/ui/editors/style_editor.c:98
 msgid "Ultraexpanded"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:99
+#: src/bin/ui/editors/style_editor.c:102
 msgid "Thin"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:100
+#: src/bin/ui/editors/style_editor.c:103
 msgid "Ultralight"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:101
+#: src/bin/ui/editors/style_editor.c:104
 msgid "Light"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:102
+#: src/bin/ui/editors/style_editor.c:105
 msgid "Book"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:103
+#: src/bin/ui/editors/style_editor.c:106
 msgid "Medium"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:104
+#: src/bin/ui/editors/style_editor.c:107
 msgid "Semibold"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:105
+#: src/bin/ui/editors/style_editor.c:108
 msgid "Bold"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:106
+#: src/bin/ui/editors/style_editor.c:109
 msgid "Ultrabold"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:107
+#: src/bin/ui/editors/style_editor.c:110
 msgid "Black"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:108
+#: src/bin/ui/editors/style_editor.c:111
 msgid "Extrablack"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:153
+#: src/bin/ui/editors/style_editor.c:156
 msgid "auto"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:154 src/bin/ui/editors/style_editor.c:164
+#: src/bin/ui/editors/style_editor.c:157 src/bin/ui/editors/style_editor.c:167
 msgid "center"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:156 src/bin/ui/editors/style_editor.c:186
-#: src/bin/ui/editors/style_editor.c:1420
+#: src/bin/ui/editors/style_editor.c:158 src/bin/ui/editors/style_editor.c:166
+msgid "middle"
+msgstr ""
+
+#: src/bin/ui/editors/style_editor.c:159 src/bin/ui/editors/style_editor.c:189
+#: src/bin/ui/editors/style_editor.c:1438
 msgid "left"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:157 src/bin/ui/editors/style_editor.c:187
-#: src/bin/ui/editors/style_editor.c:1421
+#: src/bin/ui/editors/style_editor.c:160 src/bin/ui/editors/style_editor.c:190
+#: src/bin/ui/editors/style_editor.c:1439
 msgid "right"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:161 src/bin/ui/editors/style_editor.c:189
+#: src/bin/ui/editors/style_editor.c:164 src/bin/ui/editors/style_editor.c:192
 msgid "top"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:162 src/bin/ui/editors/style_editor.c:184
+#: src/bin/ui/editors/style_editor.c:165 src/bin/ui/editors/style_editor.c:187
 msgid "bottom"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:165
+#: src/bin/ui/editors/style_editor.c:168
 msgid "baseline"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:166
+#: src/bin/ui/editors/style_editor.c:169
 msgid "base"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:169
+#: src/bin/ui/editors/style_editor.c:172
 msgid "none"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:170
+#: src/bin/ui/editors/style_editor.c:173
 msgid "plain"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:171 src/bin/ui/editors/style_editor.c:177
+#: src/bin/ui/editors/style_editor.c:174 src/bin/ui/editors/style_editor.c:180
 msgid "shadow"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:172
+#: src/bin/ui/editors/style_editor.c:175
 msgid "outline"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:173
+#: src/bin/ui/editors/style_editor.c:176
 msgid "soft_outline"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:174
+#: src/bin/ui/editors/style_editor.c:177
 msgid "outline_shadow"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:175
+#: src/bin/ui/editors/style_editor.c:178
 msgid "outline_soft_shadow"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:176
+#: src/bin/ui/editors/style_editor.c:179
 msgid "glow"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:178
+#: src/bin/ui/editors/style_editor.c:181
 msgid "far_shadow"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:179
+#: src/bin/ui/editors/style_editor.c:182
 msgid "soft_shadow"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:180
+#: src/bin/ui/editors/style_editor.c:183
 msgid "far_soft_shadow"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:183
+#: src/bin/ui/editors/style_editor.c:186
 msgid "bottom_left"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:185
+#: src/bin/ui/editors/style_editor.c:188
 msgid "bottom_right"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:188
+#: src/bin/ui/editors/style_editor.c:191
 msgid "top_left"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:190
+#: src/bin/ui/editors/style_editor.c:193
 msgid "top_right"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:193
+#: src/bin/ui/editors/style_editor.c:196
 msgid "single"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:194
+#: src/bin/ui/editors/style_editor.c:197
 msgid "double"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:260
-#: src/bin/ui/editors/style_editor.c:1796
+#: src/bin/ui/editors/style_editor.c:263
+#: src/bin/ui/editors/style_editor.c:1814
 msgid "Glow & Shadow"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:261
-#: src/bin/ui/editors/style_editor.c:1797
+#: src/bin/ui/editors/style_editor.c:264
+#: src/bin/ui/editors/style_editor.c:1815
 msgid "Lines"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:382
+#: src/bin/ui/editors/style_editor.c:385
 msgid "Style name can not be empty!"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:387
+#: src/bin/ui/editors/style_editor.c:390
 msgid "Style name must be unique!"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:394 src/bin/ui/editors/style_editor.c:452
+#: src/bin/ui/editors/style_editor.c:400 src/bin/ui/editors/style_editor.c:458
 msgid "Failed to add tag value. Tag will be deleted"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:401
+#: src/bin/ui/editors/style_editor.c:407
 msgid "Failed to add tag."
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:441
+#: src/bin/ui/editors/style_editor.c:447
 msgid "Tag name can not be empty!"
 msgstr "Необхідно вказати назву тегу"
 
-#: src/bin/ui/editors/style_editor.c:446
+#: src/bin/ui/editors/style_editor.c:452
 msgid "Tag name must be unique!"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:475
+#: src/bin/ui/editors/style_editor.c:481
 msgid "Add textblock style"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:515
+#: src/bin/ui/editors/style_editor.c:521
 msgid "Select a style!"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:532
+#: src/bin/ui/editors/style_editor.c:537
 #, c-format
 msgid "Add tag to style: %s"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:539
+#: src/bin/ui/editors/style_editor.c:544
 msgid "Type a new tag name."
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:588
+#: src/bin/ui/editors/style_editor.c:593
 #, fuzzy
 msgid "DEFAULT tag cannot be deleted!"
 msgstr "Необхідно вказати назву тегу"
 
-#: src/bin/ui/editors/style_editor.c:787
+#: src/bin/ui/editors/style_editor.c:794
 msgid "New style"
 msgstr "Новий стиль "
 
-#: src/bin/ui/editors/style_editor.c:788
+#: src/bin/ui/editors/style_editor.c:795
 msgid "New tag"
 msgstr "Новий тег"
 
-#: src/bin/ui/editors/style_editor.c:792
-msgid "-"
-msgstr ""
-
-#: src/bin/ui/editors/style_editor.c:1329
+#: src/bin/ui/editors/style_editor.c:1344
 msgid "Font name:"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1330
+#: src/bin/ui/editors/style_editor.c:1345
 #, fuzzy
 msgid "Font style:"
 msgstr "Новий стиль "
 
-#: src/bin/ui/editors/style_editor.c:1331
-#: src/bin/ui/editors/style_editor.c:1604
+#: src/bin/ui/editors/style_editor.c:1346
+#: src/bin/ui/editors/style_editor.c:1622
 msgid "Color:"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1333
-#: src/bin/ui/editors/style_editor.c:1422
-#: src/bin/ui/editors/style_editor.c:1423
-#: src/bin/ui/editors/style_editor.c:1467
-#: src/bin/ui/editors/style_editor.c:1468
-#: src/bin/ui/editors/style_editor.c:1469
+#: src/bin/ui/editors/style_editor.c:1348
+#: src/bin/ui/editors/style_editor.c:1440
+#: src/bin/ui/editors/style_editor.c:1441
+#: src/bin/ui/editors/style_editor.c:1485
+#: src/bin/ui/editors/style_editor.c:1486
+#: src/bin/ui/editors/style_editor.c:1487
 msgid "px"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1405
+#: src/bin/ui/editors/style_editor.c:1423
 msgid "Positioning option"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1415
+#: src/bin/ui/editors/style_editor.c:1433
 msgid "Horizontal align:"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1416
+#: src/bin/ui/editors/style_editor.c:1434
 msgid "Vertical align:"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1417
-#: src/bin/ui/editors/style_editor.c:1418
+#: src/bin/ui/editors/style_editor.c:1435
+#: src/bin/ui/editors/style_editor.c:1436
 msgid "%"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1419
+#: src/bin/ui/editors/style_editor.c:1437
 msgid "Margin:"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1456
+#: src/bin/ui/editors/style_editor.c:1474
 msgid "Text format"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1464
+#: src/bin/ui/editors/style_editor.c:1482
 msgid "Text tabstops:"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1465
+#: src/bin/ui/editors/style_editor.c:1483
 msgid "Line size:"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1466
+#: src/bin/ui/editors/style_editor.c:1484
 #, fuzzy
 msgid "Line relative size:"
 msgstr "Відносна шкала"
 
-#: src/bin/ui/editors/style_editor.c:1470
+#: src/bin/ui/editors/style_editor.c:1488
 msgid "Password field"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1471
+#: src/bin/ui/editors/style_editor.c:1489
 msgid "Background color"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1472
+#: src/bin/ui/editors/style_editor.c:1490
 msgid "Replace overflow characters with ellipsis"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1553
+#: src/bin/ui/editors/style_editor.c:1571
 #, fuzzy
 msgid "Style:"
 msgstr "Стилі"
 
-#: src/bin/ui/editors/style_editor.c:1606
+#: src/bin/ui/editors/style_editor.c:1624
 msgid "Direction:"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1641
+#: src/bin/ui/editors/style_editor.c:1659
 msgid "Outer glow color:"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1643
+#: src/bin/ui/editors/style_editor.c:1661
 msgid "Inner glow color:"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1693
+#: src/bin/ui/editors/style_editor.c:1711
 msgid "Strikethrough color"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1694
+#: src/bin/ui/editors/style_editor.c:1712
 msgid "Underline"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1695
+#: src/bin/ui/editors/style_editor.c:1713
 msgid "Color"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1795
+#: src/bin/ui/editors/style_editor.c:1813
 msgid "Format"
 msgstr ""
 
-#: src/bin/ui/editors/style_editor.c:1925
-msgid "The quick brown fox jumps over the lazy dog"
-msgstr ""
-
-#: src/bin/ui/editors/style_editor.c:1935
+#: src/bin/ui/editors/style_editor.c:1956
 msgid "Close viewer"
 msgstr ""
 
-#: src/bin/ui/live_view/live_prog_edit.c:58
+#: src/bin/ui/live_view/live_prog_edit.c:83
 msgid "Look at it! This is absolutely and totally text"
 msgstr ""
 
-#: src/bin/ui/live_view/live_view.c:108
-msgid "Widget isn't implemented yet!"
+#: src/bin/ui/live_view/live_view.c:126
+msgid "Outdated version of file. Using fallback to layout"
 msgstr ""
 
-#: src/bin/ui/live_view/live_view.c:116
-msgid "Outdated version of EDJ file! Should be 110"
+#: src/bin/ui/live_view/live_view.c:145
+msgid "Widget live view isn't implemented yet. Using fallback to layout"
 msgstr ""
 
-#: src/bin/ui/live_view/live_view.c:156
-msgid "Loading live view object was failed"
+#: src/bin/ui/live_view/live_view.c:173
+msgid "Failed to load live view object"
 msgstr ""
 
-#: src/bin/ui/live_view/live_view_prop.c:162
+#: src/bin/ui/live_view/live_view_prop.c:191
+msgid "Scale:"
+msgstr ""
+
+#: src/bin/ui/live_view/live_view_prop.c:222
 msgid "Swallows"
 msgstr ""
 
-#: src/bin/ui/live_view/live_view_prop.c:179
-msgid "Texts"
-msgstr ""
-
-#: src/bin/ui/live_view/live_view_prop.c:196
+#: src/bin/ui/live_view/live_view_prop.c:260
 msgid "Signals"
 msgstr ""
 
-#: src/bin/ui/modal_window/modal_window.c:44
+#: src/bin/ui/modal_window/modal_window.c:43
 msgid "Title will be deleted"
 msgstr ""
 
-#: src/bin/ui/preference/preference.c:226
+#: src/bin/ui/preference/preference.c:187
 msgid "Loaded profile"
 msgstr ""
 
-#: src/bin/ui/preference/preference.c:241
+#: src/bin/ui/preference/preference.c:202
 msgid "Autosave"
 msgstr ""
 
-#: src/bin/ui/preference/preference.c:248
+#: src/bin/ui/preference/preference.c:209
 msgid "autosave"
 msgstr ""
 
-#: src/bin/ui/preference/preference.c:249
+#: src/bin/ui/preference/preference.c:210
 msgid "period"
 msgstr ""
 
-#: src/bin/ui/preference/preference.c:261
+#: src/bin/ui/preference/preference.c:222
 msgid "UI"
 msgstr ""
 
-#: src/bin/ui/preference/preference.c:268
+#: src/bin/ui/preference/preference.c:229
 msgid "UI store on exit"
 msgstr ""
 
-#: src/bin/ui/preference/preference.c:269
+#: src/bin/ui/preference/preference.c:230
 msgid "store window position"
 msgstr ""
 
-#: src/bin/ui/preference/preference.c:350
+#: src/bin/ui/preference/preference.c:310
 msgid "General"
 msgstr ""
 
-#: src/bin/ui/preference/preference.c:356
+#: src/bin/ui/preference/preference.c:316
 #, fuzzy
 msgid "Live view"
 msgstr "Демонстрація"
 
-#: src/bin/ui/preference/preference.c:377
+#: src/bin/ui/preference/preference.c:342
 msgid "Preferences"
 msgstr ""
 
@@ -2521,16 +2702,16 @@ msgstr ""
 msgid "Select path for new project"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_common.c:113
+#: src/bin/ui/wizard/wizard_common.c:117
 #, c-format
 msgid "Errors occured on importing: <br><br>%s"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_common.c:118
+#: src/bin/ui/wizard/wizard_common.c:122
 msgid "Errors occured on importing."
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_common.c:187
+#: src/bin/ui/wizard/wizard_common.c:199
 #, c-format
 msgid ""
 "The <path>'%s'</path> directory already exists.<br>Do you want to "
@@ -2538,413 +2719,432 @@ msgid ""
 "project in it?"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_common.c:200
-#, c-format
-msgid "Can not delete folder %s!"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_common.c:206
-#, c-format
-msgid "The name <path>'%s'</path> is already used at this location."
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_common.c:224
+#: src/bin/ui/wizard/wizard_common.c:236
 msgid "Please enter the name of the project"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_common.c:229
-msgid "Please enter the name of the file for exporting"
+#: src/bin/ui/wizard/wizard_common.c:241
+#, c-format
+msgid "%s"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_common.c:234
+#: src/bin/ui/wizard/wizard_common.c:246
 msgid "Please enter the path to the project"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_common.c:239
+#: src/bin/ui/wizard/wizard_common.c:251
 msgid "The path to file for importing does not exist!"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_common.c:245
+#: src/bin/ui/wizard/wizard_common.c:257
 msgid "Wrong path to the project!<br>Please path to existing folder."
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_common.c:338
+#: src/bin/ui/wizard/wizard_common.c:355
 #, fuzzy
 msgid "Project name:"
 msgstr "Назва програми: "
 
-#: src/bin/ui/wizard/wizard_common.c:344
+#: src/bin/ui/wizard/wizard_common.c:361
 #, fuzzy
 msgid "Path to project:"
 msgstr "Зберегти проект"
 
-#: src/bin/ui/wizard/wizard_common.c:352
+#: src/bin/ui/wizard/wizard_common.c:369
 msgid "Version of file:"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_common.c:356
+#: src/bin/ui/wizard/wizard_common.c:373
 msgid "Authors:"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_common.c:360
+#: src/bin/ui/wizard/wizard_common.c:377
 msgid "Licenses:"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_common.c:364
+#: src/bin/ui/wizard/wizard_common.c:381
 msgid "Comment:"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_common.c:367
+#: src/bin/ui/wizard/wizard_common.c:384
 msgid "Created with Eflete!"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:41
-msgid "bg"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:42
-msgid "button"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:43
-msgid "scroller"
-msgstr ""
-
 #: src/bin/ui/wizard/wizard_import_edc.c:44
-msgid "entry"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:45
-msgid "frame"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:46
-msgid "label"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:47
-#, fuzzy
-msgid "separator"
-msgstr "Розділити шари"
-
-#: src/bin/ui/wizard/wizard_import_edc.c:48
-msgid "check"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:49
-msgid "slider"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:50
-msgid "radio"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:51
-msgid "bubble"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:52
-msgid "panes"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:53
-msgid "toolbar"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:54
-msgid "genlist"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:55
-msgid "list"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:56
-msgid "conform"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:57
-msgid "icon"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:58
-msgid "video"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:59
 msgid "access"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:60
-msgid "photo"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:61
-msgid "focus"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:62
-msgid "datetime"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:63
-msgid "player"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:64
-msgid "thumb"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:65
-msgid "pointer"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:66
-msgid "fileselector"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:67
-msgid "win"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:68
-msgid "slideshow"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:69
-msgid "diskselector"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:70
-msgid "ctxpopup"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:71
-msgid "multibuttonentry"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:72
-msgid "dayselector"
-msgstr ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:73
+#: src/bin/ui/wizard/wizard_import_edc.c:45
 msgid "actionslider"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:74
-msgid "photocam"
+#: src/bin/ui/wizard/wizard_import_edc.c:46
+msgid "bg"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:75
-msgid "tooltip"
+#: src/bin/ui/wizard/wizard_import_edc.c:48
+msgid "bubble"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:76
+#: src/bin/ui/wizard/wizard_import_edc.c:49
+msgid "button"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:50
+msgid "calendar"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:51
+msgid "check"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:52
+msgid "clock"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:53
 #, fuzzy
 msgid "colorsel"
 msgstr "клас кольорів"
 
-#: src/bin/ui/wizard/wizard_import_edc.c:77
-msgid "segment_control"
+#: src/bin/ui/wizard/wizard_import_edc.c:54
+msgid "conform"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:78
+#: src/bin/ui/wizard/wizard_import_edc.c:55
+msgid "ctxpopup"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:56
+msgid "cursor"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:57
+msgid "datetime"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:58
+msgid "dayselector"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:59
+msgid "diskselector"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:60
+msgid "entry"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:61
+msgid "fileselector"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:62
 msgid "flipselector"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:79
-msgid "notify"
+#: src/bin/ui/wizard/wizard_import_edc.c:63
+msgid "focus"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:80
-msgid "map"
+#: src/bin/ui/wizard/wizard_import_edc.c:64
+msgid "frame"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:81
+#: src/bin/ui/wizard/wizard_import_edc.c:65
+msgid "gengrid"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:66
+msgid "genlist"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:67
+msgid "hover"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:68
+msgid "icon"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:69
 msgid "index"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:82
-msgid "calendar"
+#: src/bin/ui/wizard/wizard_import_edc.c:70
+msgid "label"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:83
+#: src/bin/ui/wizard/wizard_import_edc.c:71
 msgid "layout"
 msgstr ""
 
+#: src/bin/ui/wizard/wizard_import_edc.c:72
+msgid "list"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:73
+msgid "map"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:74
+msgid "menu"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:75
+msgid "multibuttonentry"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:76
+msgid "naviframe"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:77
+msgid "notify"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:78
+msgid "panel"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:79
+msgid "panes"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:80
+msgid "photo"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:81
+msgid "photocam"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:82
+msgid "player"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:83
+msgid "pointer"
+msgstr ""
+
 #: src/bin/ui/wizard/wizard_import_edc.c:84
+msgid "popup"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:85
 #, fuzzy
 msgid "progress"
 msgstr "Програми"
 
-#: src/bin/ui/wizard/wizard_import_edc.c:85
-msgid "naviframe"
-msgstr ""
-
 #: src/bin/ui/wizard/wizard_import_edc.c:86
-msgid "panel"
+msgid "radio"
 msgstr ""
 
 #: src/bin/ui/wizard/wizard_import_edc.c:87
-msgid "popup"
+msgid "scroller"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:88
+msgid "segment_control"
 msgstr ""
 
 #: src/bin/ui/wizard/wizard_import_edc.c:89
-msgid "spinner"
-msgstr ""
+#, fuzzy
+msgid "separator"
+msgstr "Розділити шари"
 
 #: src/bin/ui/wizard/wizard_import_edc.c:90
-msgid "menu"
+msgid "slider"
 msgstr ""
 
 #: src/bin/ui/wizard/wizard_import_edc.c:91
-msgid "clock"
+msgid "slideshow"
 msgstr ""
 
 #: src/bin/ui/wizard/wizard_import_edc.c:92
-msgid "gengrid"
+msgid "spinner"
 msgstr ""
 
 #: src/bin/ui/wizard/wizard_import_edc.c:93
-msgid "hover"
+msgid "thumb"
 msgstr ""
 
 #: src/bin/ui/wizard/wizard_import_edc.c:94
-msgid "cursor"
+msgid "toolbar"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:144
+#: src/bin/ui/wizard/wizard_import_edc.c:95
+msgid "tooltip"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:96
+msgid "video"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:97
+msgid "win"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:148
 msgid "Select edc file for import"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:280
+#: src/bin/ui/wizard/wizard_import_edc.c:285
 msgid "Scroller<br>"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:287
+#: src/bin/ui/wizard/wizard_import_edc.c:293
 msgid "Photocam<br>"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:293
+#: src/bin/ui/wizard/wizard_import_edc.c:300
 msgid "Genlist<br>"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:301
+#: src/bin/ui/wizard/wizard_import_edc.c:309
 msgid "Notify<br>"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:307
+#: src/bin/ui/wizard/wizard_import_edc.c:316
 msgid "Button<br>"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:313
+#: src/bin/ui/wizard/wizard_import_edc.c:323
 msgid "List<br>"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:319
+#: src/bin/ui/wizard/wizard_import_edc.c:330
 msgid "Label<br>"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:352
-#, c-format
-msgid "%d widget included due to dependencies:<br><br>"
-msgid_plural "%d widgets included due to dependencies:<br><br>"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-#: src/bin/ui/wizard/wizard_import_edc.c:597
+#: src/bin/ui/wizard/wizard_import_edc.c:654
 msgid "Wizard: import edc"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:598
+#: src/bin/ui/wizard/wizard_import_edc.c:655
 msgid "Path to edc file:"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:601
+#: src/bin/ui/wizard/wizard_import_edc.c:656
+msgid "Please enter the path to edc file"
+msgstr ""
+
+#: src/bin/ui/wizard/wizard_import_edc.c:659
 msgid "Images directories:"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:602
+#: src/bin/ui/wizard/wizard_import_edc.c:660
 msgid "Fonts directories:"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:603
+#: src/bin/ui/wizard/wizard_import_edc.c:661
 msgid "Sounds directories:"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:604
+#: src/bin/ui/wizard/wizard_import_edc.c:662
 msgid "Vibrations directories:"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:605
+#: src/bin/ui/wizard/wizard_import_edc.c:663
 msgid "Data directories:"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edc.c:727
+#: src/bin/ui/wizard/wizard_import_edc.c:777
 #, fuzzy
 msgid "Wizard: new project"
 msgstr "Новий проект"
 
-#: src/bin/ui/wizard/wizard_import_edc.c:729
+#: src/bin/ui/wizard/wizard_import_edc.c:782
 msgid "Widgets:"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edj.c:49
+#: src/bin/ui/wizard/wizard_import_edj.c:51
 msgid "Select edj file for import"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edj.c:59
+#: src/bin/ui/wizard/wizard_import_edj.c:61
 msgid "Wizard: import edj"
 msgstr ""
 
-#: src/bin/ui/wizard/wizard_import_edj.c:61
+#: src/bin/ui/wizard/wizard_import_edj.c:63
 msgid "Path to edj file:"
 msgstr ""
 
-#: src/bin/ui/workspace/ui_workspace.c:300
+#: src/bin/ui/wizard/wizard_import_edj.c:64
+msgid "Please enter the path to edj file"
+msgstr ""
+
+#: src/bin/ui/workspace/ui_workspace.c:293
 msgid "Undo"
 msgstr ""
 
-#: src/bin/ui/workspace/ui_workspace.c:301
+#: src/bin/ui/workspace/ui_workspace.c:294
 msgid "Redo"
 msgstr ""
 
-#: src/bin/ui/workspace/ui_workspace.c:305
+#: src/bin/ui/workspace/ui_workspace.c:298
 msgid "Rulers enabled"
 msgstr "Лінійки"
 
-#: src/bin/ui/workspace/ui_workspace.c:313
+#: src/bin/ui/workspace/ui_workspace.c:306
 msgid "Zoom"
 msgstr ""
 
-#: src/bin/ui/workspace/ui_workspace.c:317
+#: src/bin/ui/workspace/ui_workspace.c:310
 msgid "Fit"
 msgstr ""
 
-#: src/bin/ui/workspace/ui_workspace.c:319
+#: src/bin/ui/workspace/ui_workspace.c:312
 msgid "50%"
 msgstr ""
 
-#: src/bin/ui/workspace/ui_workspace.c:320
+#: src/bin/ui/workspace/ui_workspace.c:313
 msgid "100%"
 msgstr ""
 
-#: src/bin/ui/workspace/ui_workspace.c:321
+#: src/bin/ui/workspace/ui_workspace.c:314
 msgid "200%"
 msgstr ""
 
-#: src/bin/ui/workspace/ui_workspace.c:324
+#: src/bin/ui/workspace/ui_workspace.c:317
 msgid "Normal mode"
 msgstr ""
 
-#: src/bin/ui/workspace/ui_workspace.c:327
+#: src/bin/ui/workspace/ui_workspace.c:320
 msgid "Separate mode"
 msgstr "Розділити шари"
 
-#: src/bin/ui/workspace/ui_workspace.c:330
+#: src/bin/ui/workspace/ui_workspace.c:323
 msgid "Settings..."
 msgstr ""
+
+#, fuzzy
+#~ msgid "Select a project file"
+#~ msgstr "Зберегти проект"
+
+#, fuzzy
+#~ msgid ""
+#~ "If you dont save the open project<br/>all your unsaved changes will be "
+#~ "lost!"
+#~ msgstr ""
+#~ "Відкритий проект ще не збережено.<br/>Відкриття нової теми призведе до<br/"
+#~ ">втрати усіх незбережених змін"
+
+#~ msgid "Colorclasses"
+#~ msgstr "Класи кольорів"
+
+#~ msgid "Color class editor"
+#~ msgstr "Редактор класів кольорів"
+
+#~ msgid "Current color class"
+#~ msgstr "Поточний клас кольорів"
+
+#, fuzzy
+#~ msgid "text style"
+#~ msgstr "Новий стиль "
+
+#~ msgid "Export to EDC"
+#~ msgstr "Експорт в EDC"
 
 #~ msgid "Theme saved: %s"
 #~ msgstr "Збережено тему: %s"

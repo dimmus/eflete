@@ -17,11 +17,11 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "colorclass_editor.h"
+#include "colorclass_manager.h"
 #include "main_window.h"
 #include "utc_common.h"
 
-#define TEST_NAME "colorclass_editor"
+#define TEST_NAME "colorclass_manager"
 
-void colorclass_viewer_add_test_n(int);
-void colorclass_viewer_add_test_p(int);
+void colorclass_manager_add_test_n(int);
+void colorclass_manager_add_test_p(int);

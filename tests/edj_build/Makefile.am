@@ -81,7 +81,7 @@ check: Makefile
 	$(builddir)/style_dialog.edj \
 	$(builddir)/state_dialog.edj \
 	$(builddir)/item_dialog.edj \
-	$(builddir)/colorclass_editor.edj \
+	$(builddir)/colorclass_manager.edj \
 	$(builddir)/sound_editor.edj \
 	$(builddir)/history.edj \
 	$(builddir)/history_diff_add.edj \
