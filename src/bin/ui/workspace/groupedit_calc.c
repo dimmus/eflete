@@ -47,9 +47,6 @@ static void
 _item_draw_del(Groupedit_Item *ge_item);
 
 static Evas_Object *
-_part_spacer_add(Evas *e);
-
-static Evas_Object *
 _part_swallow_add(Evas *e);
 
 static Evas_Object *
@@ -915,7 +912,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          BORDER_ADD(122, 122, 122, 255)
          break;
       case EDJE_PART_TYPE_SPACER:
-         gp->draw = _part_spacer_add(sd->e);
+         IMAGE_ADD_NEW(sd->obj, gp->draw, "bg", "spacer")
          BORDER_ADD(101, 117, 133, 255)
          break;
       case EDJE_PART_TYPE_GROUP:
@@ -1036,17 +1033,6 @@ _move_border_to_top(Ws_Groupedit_Smart_Data *sd)
    evas_object_smart_member_add(sd->container, sd->obj);
    evas_object_smart_member_add(sd->handler_TL.obj, sd->obj);
    evas_object_smart_member_add(sd->handler_BR.obj, sd->obj);
-}
-
-static Evas_Object *
-_part_spacer_add(Evas *e)
-{
-   Evas_Object *spacer;
-
-   GET_IMAGE(spacer, e, SPACER_IMG);
-   evas_object_smart_calculate(spacer);
-
-   return spacer;
 }
 
 static Evas_Object *

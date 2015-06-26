@@ -27,7 +27,6 @@
 
 #define BORDER_IMG "border_part"
 #define BORDER_2PX_IMG "2pxborder_part"
-#define SPACER_IMG "part_spacer_bg"
 #define SWALLOW_IMG "part_swallow_bg"
 #define GROUP_IMG "part_group_bg"
 
