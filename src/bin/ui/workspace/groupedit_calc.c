@@ -902,7 +902,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
            ERR("Image can't be loaded.\n");
          evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_DEL,
                                         _image_delete, NULL);
-         GET_IMAGE(o, sd->e, PROXY_IMG);
+         IMAGE_ADD_NEW(sd->obj, o, "bg", "proxy")
          edje_object_part_swallow(gp->draw, "swallow.image", o);
          BORDER_ADD(255, 112, 49, 255);
          break;
@@ -923,12 +923,12 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          BORDER_ADD(255, 109, 109, 255)
          break;
       case EDJE_PART_TYPE_TABLE:
-         GET_IMAGE(gp->bg, sd->e, TABLE_BG_IMG);
+         IMAGE_ADD_NEW(sd->obj, gp->bg, "bg", "table")
          gp->draw = _part_container_add(sd, part, &(gp->items), type);
          BORDER_ADD(138, 125, 109, 255)
          break;
       case EDJE_PART_TYPE_BOX:
-         GET_IMAGE(gp->bg, sd->e, BOX_BG_IMG);
+         IMAGE_ADD_NEW(sd->obj, gp->bg, "bg", "box")
          gp->draw = _part_container_add(sd, part, &(gp->items), type);
          BORDER_ADD(124, 129, 102, 255)
          break;
@@ -1298,7 +1298,7 @@ _proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
      }
    else
      {
-         GET_IMAGE(image, sd->e, PROXY_IMG);
+         IMAGE_ADD_NEW(sd->obj, image, "bg", "proxy")
          edje_object_part_swallow(gp->draw, "swallow.image", image);
      }
 }
