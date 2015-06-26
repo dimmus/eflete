@@ -39,3 +39,10 @@ IM("icon",     "align",       "icon_align.png",       15 15,   0 0 0 0,    SCALE
 IM("icon",     "offset",      "icon_offset.png",      15 15,   0 0 0 0,    SCALE,   SOLID)
 
 IM("bg",       "tile",        "bg_demo.png",          -1 -1,   0 0 0 0,    TILE,    SOLID)
+IM("bg",       "box",         "bg_box.png",           -1 -1,   0 0 0 0,    TILE,    SOLID)
+IM("bg",       "proxy",       "bg_proxy.png",         -1 -1,   0 0 0 0,    TILE,    SOLID)
+IM("bg",       "group",       "bg_group.png",         -1 -1,   0 0 0 0,    TILE,    SOLID)
+IM("bg",       "table",       "bg_table.png",         -1 -1,   0 0 0 0,    TILE,    SOLID)
+IM("bg",       "spacer",      "bg_spacer.png",        -1 -1,   0 0 0 0,    TILE,    SOLID)
+IM("bg",       "swallow",     "bg_swallow.png",       -1 -1,   0 0 0 0,    TILE,    SOLID)
+IM("bg",       "part_item",   "bg_part_item.png",     -1 -1,   0 0 0 0,    TILE,    SOLID)
