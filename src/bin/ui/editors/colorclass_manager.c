@@ -495,6 +495,12 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
                                   _on_button_delete_clicked_cb, edit);
    elm_object_part_content_set(edit->layout,
                                "swallow.control.minus", button);
+
+   /* window functional buttons (apply and cancel) */
+   BUTTON_ADD(edit->layout, button, _("Close"));
+   evas_object_smart_callback_add(button, "clicked", _on_btn_cancel, edit);
+   elm_object_part_content_set(edit->layout,
+                               "button.close", button);
 }
 Eina_Bool
 _colorclass_manager_init(Colorclasses_Manager *edit)
