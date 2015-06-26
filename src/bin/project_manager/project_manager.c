@@ -1043,7 +1043,7 @@ _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
     {
        sound_file = edje_edit_sound_samplesource_get(edje_edit, sound_name);
        source_file = eina_stringshare_printf("%s/%s", source, sound_file);
-       dest_file = eina_stringshare_printf("%s/%s", destination, sound_name);
+       dest_file = eina_stringshare_printf("%s/%s", destination, sound_file);
        if (!ecore_file_exists(dest_file))
          {
             file_dir = ecore_file_dir_get(dest_file);
