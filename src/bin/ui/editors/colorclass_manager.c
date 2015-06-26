@@ -440,16 +440,17 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    elm_object_part_content_set(edit->layout, "swallow.entry", edit->edje_preview);
 
    /* Creating colorselectors */
-#define ADD_COLORSEL(NUMBER, SWALLOW_NAME) \
+#define ADD_COLORSEL(NUMBER, SWALLOW_NAME, COLORSEL_NAME) \
    edit->colorsel##NUMBER = elm_colorselector_add(edit->layout); \
    elm_colorselector_mode_set(edit->colorsel##NUMBER, ELM_COLORSELECTOR_ALL); \
-   elm_object_part_content_set(edit->layout, SWALLOW_NAME, edit->colorsel##NUMBER); \
+   elm_object_part_content_set(edit->layout, "swallow.colorselector."SWALLOW_NAME, edit->colorsel##NUMBER); \
+   elm_object_part_text_set(edit->layout, "text."SWALLOW_NAME, COLORSEL_NAME); \
    evas_object_smart_callback_add(edit->colorsel##NUMBER, "changed", _on_changed_##NUMBER, edit); \
    elm_object_disabled_set(edit->colorsel##NUMBER, true);
 
-   ADD_COLORSEL(1, "swallow.colorselector.object");
-   ADD_COLORSEL(2, "swallow.colorselector.outline");
-   ADD_COLORSEL(3, "swallow.colorselector.shadow");
+   ADD_COLORSEL(1, "object", _("Object color"));
+   ADD_COLORSEL(2, "outline", _("Outline color"));
+   ADD_COLORSEL(3, "shadow", _("Shadow color"));
 
 #undef ADD_COLORSEL
 
