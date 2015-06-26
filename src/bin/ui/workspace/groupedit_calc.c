@@ -985,8 +985,7 @@ _item_draw_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
         ge_item = (Groupedit_Item *)mem_calloc(1, sizeof(Groupedit_Item));
         ge_item->name = eina_stringshare_add(item);
 
-
-        GET_IMAGE(ge_item->border, sd->e, PART_ITEM_IMG);
+        IMAGE_ADD_NEW(sd->obj, ge_item->border, "bg", "part_item")
         evas_object_show(ge_item->border);
         evas_object_size_hint_min_set(ge_item->border,    EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_size_hint_align_set(ge_item->border,  EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -1655,7 +1654,7 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
                     {
                        /* If there are no already created fakes items, then create new */
                        fake = (Groupedit_Item *)mem_calloc(1, sizeof(Groupedit_Item));
-                       GET_IMAGE(fake->border, sd->e, PART_ITEM_IMG);
+                       IMAGE_ADD_NEW(sd->obj, fake->border, "bg", "part_item")
                        evas_object_show(fake->border);
                        evas_object_size_hint_min_set(fake->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
                        evas_object_size_hint_align_set(fake->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -1827,7 +1826,7 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
           {
              spread_item = (Groupedit_Item *)mem_calloc(1, sizeof(Groupedit_Item));
 
-             GET_IMAGE(spread_item->border, sd->e, PART_ITEM_IMG);
+             IMAGE_ADD_NEW(sd->obj, spread_item->border, "bg", "part_item")
              evas_object_size_hint_min_set(spread_item->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
              evas_object_size_hint_align_set(spread_item->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
              evas_object_size_hint_weight_set(spread_item->border, EVAS_HINT_FILL, EVAS_HINT_FILL);

@@ -30,7 +30,6 @@
 #define SPACER_IMG "part_spacer_bg"
 #define SWALLOW_IMG "part_swallow_bg"
 #define GROUP_IMG "part_group_bg"
-#define PART_ITEM_IMG "part_container_bg"
 
 typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;
 typedef struct _Groupedit_Part Groupedit_Part;
