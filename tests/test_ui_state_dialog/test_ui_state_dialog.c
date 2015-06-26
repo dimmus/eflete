@@ -23,12 +23,10 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("state_dialog_test");
    TCase *tcase = tcase_create("TCase");
 
-   tcase_add_test(tcase, state_dialog_state_add_test_p);
    tcase_add_test(tcase, state_dialog_state_add_test_n1);
    tcase_add_test(tcase, state_dialog_state_add_test_n2);
    tcase_add_test(tcase, state_dialog_state_add_test_n3);
 
-   tcase_add_test(tcase, state_dialog_state_del_test_p);
    tcase_add_test(tcase, state_dialog_state_del_test_n1);
    tcase_add_test(tcase, state_dialog_state_del_test_n2);
    tcase_add_test(tcase, state_dialog_state_del_test_n3);
