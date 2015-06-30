@@ -194,6 +194,8 @@ _image_content_setup(void *data)
 }
 #undef MAX_ICON_SIZE
 
+TODO("Uncomment this function and its usage after usage list will be fixed in lib")
+/*
 static void
 _image_usage_icon_setup(void *data)
 {
@@ -214,7 +216,7 @@ _image_usage_icon_setup(void *data)
    edje_edit_image_usage_list_free(used_in);
 
    free(image_init_data);
-}
+}*/
 
 /* icon fetching callback */
 static Evas_Object *
@@ -238,7 +240,7 @@ _grid_content_get(void *data,
    else if (!strcmp(part, "elm.swallow.end"))
      {
         image_init_data->image_obj = elm_icon_add(grid);
-        ecore_job_add(_image_usage_icon_setup, image_init_data);
+        /* ecore_job_add(_image_usage_icon_setup, image_init_data); */
      }
 
    return image_init_data->image_obj;
