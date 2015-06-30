@@ -841,24 +841,75 @@ _on_button_apply_clicked_cb(void *data,
                             void *event_info __UNUSED__)
 {
    Image_Editor *img_edit = (Image_Editor *)data;
-   Eina_List *l;
-   Uns_List *it = NULL;
+   Uns_List *unit = NULL;
    App_Data *ap = app_data_get();
    Style *style = NULL;
    GET_STYLE(img_edit->pr, style);
+   Eina_List *l, *names = NULL;
+   Eina_Bool multiselect = false;
+   const Eina_List *items;
+   Elm_Object_Item *it;
+   Item *item = NULL;
+   char *ei;
 
-   EINA_LIST_FOREACH(img_edit->unapplied_list, l, it)
+   EINA_LIST_FOREACH(img_edit->unapplied_list, l, unit)
      {
-        if (it->act_type == ACTION_TYPE_DEL)
+        if (unit->act_type == ACTION_TYPE_DEL)
           {
-             if (edje_edit_image_del(style->obj, it->data))
-               ap->project->nsimage_list = eina_list_append(ap->project->nsimage_list, it);
+             if (edje_edit_image_del(style->obj, unit->data))
+               ap->project->nsimage_list = eina_list_append(ap->project->nsimage_list, unit);
           }
-        else if (edje_edit_image_add(style->obj, it->data))
-          ap->project->nsimage_list = eina_list_append(ap->project->nsimage_list, it);
+        else if (edje_edit_image_add(style->obj, unit->data))
+          ap->project->nsimage_list = eina_list_append(ap->project->nsimage_list, unit);
      }
    pm_save_to_dev(img_edit->pr, style, false);
+
    eina_list_free(img_edit->unapplied_list);
+
+   if (!img_edit->gengrid)
+     {
+        _image_editor_del(img_edit);
+        return;
+     }
+
+   multiselect = elm_gengrid_multi_select_get(img_edit->gengrid);
+
+   if (multiselect)
+     {
+        items = elm_gengrid_selected_items_get(img_edit->gengrid);
+        EINA_LIST_FOREACH((Eina_List *)items, l, it)
+          {
+             item = elm_object_item_data_get(it);
+             if (!item) continue;
+             names = eina_list_append(names, eina_stringshare_add(item->image_name));
+          }
+     }
+   else
+     {
+        it = elm_gengrid_selected_item_get(img_edit->gengrid);
+        if (!it)
+          {
+            WIN_NOTIFY_WARNING(img_edit->win, _("Image not selected"));
+            return;
+          }
+        item = elm_object_item_data_get(it);
+        if (!item)
+          {
+             _image_editor_del(img_edit);
+             return;
+          }
+     }
+
+   if (!multiselect)
+     {
+        ei = strdup(ecore_file_file_get(item->image_name));
+        evas_object_smart_callback_call(img_edit->win, SIG_IMAGE_SELECTED, ei);
+        free(ei);
+     }
+   else
+     evas_object_smart_callback_call(img_edit->win, SIG_IMAGE_SELECTED,
+                                     (Eina_List *) names);
+
    project_changed(false);
    _image_editor_del(img_edit);
 }
