@@ -625,7 +625,7 @@ animator_window_add(Style *style)
    evas_object_smart_callback_add(bt, "clicked", _on_bt_mode_change, animator);
    IMAGE_ADD_NEW(bt, ic, "animator", "arrow-right");
    elm_layout_content_set(bt, "icon", ic);
-   elm_object_style_set(bt, "simple");
+   elm_object_style_set(bt, "anchor");
 
    SCROLLER_ADD(animator->program_area_layout, scroller);
    elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
