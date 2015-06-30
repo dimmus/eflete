@@ -70,6 +70,7 @@ _on_add_popup_btn_add(void *data,
    Colorclass_Item *it = NULL, *cc_it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
    Uns_List *colorclass = NULL;
+   Eina_List *l;
    App_Data *ap = app_data_get();
 
    it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
@@ -82,11 +83,6 @@ _on_add_popup_btn_add(void *data,
         return;
      }
 
-/*
-2. Check if that new name was deleted and in unapplied.
-if it is deleted, remove that mark from unapplied and add as ADD modifiying all
-it's values into 0. and ad back to unapplied.
-*/
    Elm_Object_Item *start_from = elm_genlist_first_item_get(edit->genlist);
    if (elm_genlist_search_by_text_item_get(edit->genlist, start_from, "elm.text",
                                            it->name, 0))
@@ -96,6 +92,26 @@ it's values into 0. and ad back to unapplied.
         return;
      }
 
+   EINA_LIST_FOREACH(edit->unapplied_list, l, colorclass)
+     {
+        cc_it = (Colorclass_Item *)colorclass->data;
+
+        if ((colorclass->act_type == ACTION_TYPE_DEL) &&
+            (!strcmp(it->name, cc_it->name)))
+          {
+             edit->unapplied_list = eina_list_remove_list(edit->unapplied_list, l);
+             eina_stringshare_del(cc_it->name);
+             free(cc_it);
+             free(colorclass);
+             cc_it = NULL;
+             colorclass = NULL;
+             break;
+          }
+        cc_it = NULL;
+        colorclass = NULL;
+     }
+
+   /* just a copy for list of unapplied, because "it" would be deleted. */
    cc_it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
    cc_it->name = eina_stringshare_add(it->name);
 
@@ -177,16 +193,31 @@ _on_button_delete_clicked_cb(void *data,
    App_Data *ap = app_data_get();
    Uns_List *colorclass = NULL;
    Colorclass_Item *cc_it = NULL;
+   Eina_List *l;
 
    if (!edit->current_ccl) return;
 
-/*
-   1. Check if that deleting colorclass is new one
-      (if it is ADDED so no need to save or dellater, just delete from unapplied)
-   2. If that colorclass was already in project, mark it as deleted into unapplied.
+   /* check if this is newly added */
+   EINA_LIST_FOREACH(edit->unapplied_list, l, colorclass)
+     {
+        cc_it = (Colorclass_Item *)colorclass->data;
 
-   edje_edit_color_class_del(edje_edit_obj, edit->current_ccl->name);
-*/
+        if ((colorclass->act_type == ACTION_TYPE_ADD) &&
+            (!strcmp(edit->current_ccl->name, cc_it->name)))
+          {
+             edit->unapplied_list = eina_list_remove_list(edit->unapplied_list, l);
+             eina_stringshare_del(cc_it->name);
+             free(cc_it);
+             free(colorclass);
+             cc_it = NULL;
+             colorclass = NULL;
+             break;
+          }
+        cc_it = NULL;
+        colorclass = NULL;
+     }
+
+   TODO("Check if colorclass is exist in project, if not, no need to delete it.");
    cc_it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
    cc_it->name = eina_stringshare_add(edit->current_ccl->name);
 
@@ -272,19 +303,44 @@ _colorclass_update(Colorclasses_Manager *edit)
                                edit->current_ccl->r3, edit->current_ccl->g3,
                                edit->current_ccl->b3, edit->current_ccl->a3);
 
-/*
-1. find colorclass in unapplied (it should be marked as ADD) and change it's values
-2. if it's not in unapplied, add new Unapplied struct and set as ADD with existed name
-and new values
+   /* check if this is newly added */
+   Eina_List *l;
+   Uns_List *colorclass = NULL;
+   Colorclass_Item *cc_it = NULL;
+   EINA_LIST_FOREACH(edit->unapplied_list, l, colorclass)
+     {
+        cc_it = (Colorclass_Item *)colorclass->data;
 
-   edje_edit_color_class_colors_set(edit->edit_obj, edit->current_ccl->name,
-                                    edit->current_ccl->r1, edit->current_ccl->g1,
-                                    edit->current_ccl->b1, edit->current_ccl->a1,
-                                    edit->current_ccl->r2, edit->current_ccl->g2,
-                                    edit->current_ccl->b2, edit->current_ccl->a2,
-                                    edit->current_ccl->r3, edit->current_ccl->g3,
-                                    edit->current_ccl->b3, edit->current_ccl->a3);
-*/
+        if ((colorclass->act_type == ACTION_TYPE_ADD) &&
+            (!strcmp(edit->current_ccl->name, cc_it->name)))
+          {
+             cc_it->r1 = edit->current_ccl->r1; cc_it->g1 = edit->current_ccl->g1;
+             cc_it->b1 = edit->current_ccl->b1; cc_it->a1 = edit->current_ccl->a1;
+             cc_it->r2 = edit->current_ccl->r2; cc_it->g2 = edit->current_ccl->g2;
+             cc_it->b2 = edit->current_ccl->b2; cc_it->a2 = edit->current_ccl->a2;
+             cc_it->r3 = edit->current_ccl->r3; cc_it->g3 = edit->current_ccl->g3;
+             cc_it->b3 = edit->current_ccl->b3; cc_it->a3 = edit->current_ccl->a3;
+             return;
+          }
+        else if ((colorclass->act_type == ACTION_TYPE_DEL) &&
+                 (!strcmp(edit->current_ccl->name, cc_it->name)))
+          return;
+     }
+
+   cc_it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
+   cc_it->name = eina_stringshare_add(edit->current_ccl->name);
+
+   cc_it->r1 = edit->current_ccl->r1; cc_it->g1 =edit->current_ccl->g1;
+   cc_it->b1 = edit->current_ccl->b1; cc_it->a1 =edit->current_ccl->a1;
+   cc_it->r2 = edit->current_ccl->r2; cc_it->g2 =edit->current_ccl->g2;
+   cc_it->b2 = edit->current_ccl->b2; cc_it->a2 =edit->current_ccl->a2;
+   cc_it->r3 = edit->current_ccl->r3; cc_it->g3 =edit->current_ccl->g3;
+   cc_it->b3 = edit->current_ccl->b3; cc_it->a3 =edit->current_ccl->a3;
+
+   colorclass = mem_malloc(sizeof(Uns_List));
+   colorclass->data = (void *)cc_it;
+   colorclass->act_type = ACTION_TYPE_ADD;
+   edit->unapplied_list = eina_list_append(edit->unapplied_list, colorclass);
 }
 /* Colorselector widget callbacks */
 #define COLORSELECTOR_CALLBACK(NUMBER) \
@@ -381,7 +437,6 @@ _on_btn_apply(void *data,
                                               ccl_it->r3, ccl_it->g3,
                                               ccl_it->b3, ccl_it->a3);
           }
-
         eina_stringshare_del(ccl_it->name);
         free(ccl_it);
         ccl_it = NULL;
@@ -402,6 +457,7 @@ _on_btn_cancel(void *data,
    EINA_LIST_FOREACH(edit->unapplied_list, l, it)
      {
         ccl_it = (Colorclass_Item *)it->data;
+
         eina_stringshare_del(ccl_it->name);
         free(ccl_it);
         ccl_it = NULL;
@@ -533,7 +589,8 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    elm_colorselector_mode_set(edit->colorsel##NUMBER, ELM_COLORSELECTOR_ALL); \
    elm_object_part_content_set(edit->layout, "swallow.colorselector."SWALLOW_NAME, edit->colorsel##NUMBER); \
    elm_object_part_text_set(edit->layout, "text."SWALLOW_NAME, COLORSEL_NAME); \
-   evas_object_smart_callback_add(edit->colorsel##NUMBER, "changed", _on_changed_##NUMBER, edit); \
+   evas_object_smart_callback_add(edit->colorsel##NUMBER, "changed,user", _on_changed_##NUMBER, edit); \
+   evas_object_smart_callback_add(edit->colorsel##NUMBER, "color,item,selected", _on_changed_##NUMBER, edit); \
    elm_object_disabled_set(edit->colorsel##NUMBER, true);
 
    ADD_COLORSEL(1, "object", _("Object color"));
