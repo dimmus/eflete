@@ -768,66 +768,6 @@ _on_button_delete_clicked_cb(void *data,
 }
 
 static void
-_on_button_ok_clicked_cb(void *data,
-                         Evas_Object *obj __UNUSED__,
-                         void *event_info __UNUSED__)
-{
-   Image_Editor *img_edit = (Image_Editor *)data;
-   Eina_Bool multiselect = false;
-   const Eina_List *items;
-   Eina_List *l, *names = NULL;
-   Elm_Object_Item *it;
-   const Item *item = NULL;
-   char *ei;
-
-   if (!img_edit->gengrid)
-     {
-        _image_editor_del(img_edit);
-        return;
-     }
-
-   multiselect = elm_gengrid_multi_select_get(img_edit->gengrid);
-
-   if (multiselect)
-     {
-        items = elm_gengrid_selected_items_get(img_edit->gengrid);
-        EINA_LIST_FOREACH((Eina_List *)items, l, it)
-          {
-             item = elm_object_item_data_get(it);
-             if (!item) continue;
-             names = eina_list_append(names, eina_stringshare_add(item->image_name));
-          }
-     }
-   else
-     {
-        it = elm_gengrid_selected_item_get(img_edit->gengrid);
-        if (!it)
-          {
-            WIN_NOTIFY_WARNING(img_edit->win, _("Image not selected"));
-            return;
-          }
-        item = elm_object_item_data_get(it);
-        if (!item)
-          {
-             _image_editor_del(img_edit);
-             return;
-          }
-     }
-
-   if (!multiselect)
-     {
-        ei = strdup(item->image_name);
-        evas_object_smart_callback_call(img_edit->win, SIG_IMAGE_SELECTED, ei);
-        free(ei);
-     }
-   else
-     evas_object_smart_callback_call(img_edit->win, SIG_IMAGE_SELECTED,
-                                     (Eina_List *) names);
-
-   _image_editor_del(img_edit);
-}
-
-static void
 _on_button_close_clicked_cb(void *data,
                             Evas_Object *obj __UNUSED__,
                             void *event_info __UNUSED__)
@@ -1207,7 +1147,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
      {
        elm_gengrid_multi_select_set(img_edit->gengrid, false);
        evas_object_smart_callback_add(img_edit->gengrid, "clicked,double",
-                                      _on_button_ok_clicked_cb, img_edit);
+                                      _on_button_apply_clicked_cb, img_edit);
      }
    else if (mode == MULTIPLE)
      {
@@ -1221,7 +1161,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
         elm_gengrid_multi_select_mode_set(img_edit->gengrid,
                                           ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
         evas_object_smart_callback_add(img_edit->gengrid, "clicked,double",
-                                       _on_button_ok_clicked_cb, img_edit);
+                                       _on_button_apply_clicked_cb, img_edit);
      }
 
    elm_gengrid_select_mode_set(img_edit->gengrid, ELM_OBJECT_SELECT_MODE_ALWAYS);
@@ -1266,15 +1206,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    img_edit->image_search_data.last_item_found = NULL;
 
    _image_info_initiate(img_edit);
-
-   if (mode != MULTIPLE)
-     {
-        BUTTON_ADD(img_edit->layout, button, _("Ok"));
-        evas_object_smart_callback_add(button, "clicked", _on_button_ok_clicked_cb,
-                                       img_edit);
-        elm_object_part_content_set(img_edit->layout,
-                                    "eflete.swallow.ok_btn", button);
-     }
 
    BUTTON_ADD(img_edit->layout, button, _("Close"));
    evas_object_smart_callback_add(button, "clicked", _on_button_close_clicked_cb,
