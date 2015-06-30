@@ -67,9 +67,9 @@ _on_add_popup_btn_add(void *data,
                       void *ei __UNUSED__)
 {
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
-   Colorclass_Item *it = NULL;
+   Colorclass_Item *it = NULL, *cc_it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
-   Evas_Object *edje_edit_obj = NULL;
+   Uns_List *colorclass = NULL;
    App_Data *ap = app_data_get();
 
    it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
@@ -82,20 +82,27 @@ _on_add_popup_btn_add(void *data,
         return;
      }
 
-   GET_OBJ(edit->pr, edje_edit_obj);
 /*
-1. Here we need to check if that name is already exist inside of genlist
 2. Check if that new name was deleted and in unapplied.
 if it is deleted, remove that mark from unapplied and add as ADD modifiying all
 it's values into 0. and ad back to unapplied.
-
-   if (!edje_edit_color_class_add(edje_edit_obj, eina_stringshare_add(it->name)))
+*/
+   Elm_Object_Item *start_from = elm_genlist_first_item_get(edit->genlist);
+   if (elm_genlist_search_by_text_item_get(edit->genlist, start_from, "elm.text",
+                                           it->name, 0))
      {
         NOTIFY_WARNING(_("Color class name must be unique!"));
         free(it);
         return;
      }
-*/
+
+   cc_it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
+   cc_it->name = eina_stringshare_add(it->name);
+
+   colorclass = mem_malloc(sizeof(Uns_List));
+   colorclass->data = cc_it;
+   colorclass->act_type = ACTION_TYPE_ADD;
+   edit->unapplied_list = eina_list_append(edit->unapplied_list, colorclass);
 
    glit_ccl = elm_genlist_item_append(edit->genlist, _itc_ccl, it, NULL,
                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
@@ -167,12 +174,12 @@ _on_button_delete_clicked_cb(void *data,
                              void *event_info __UNUSED__)
 {
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
-   Evas_Object *edje_edit_obj;
    App_Data *ap = app_data_get();
+   Uns_List *colorclass = NULL;
+   Colorclass_Item *cc_it = NULL;
 
    if (!edit->current_ccl) return;
 
-   GET_OBJ(edit->pr, edje_edit_obj);
 /*
    1. Check if that deleting colorclass is new one
       (if it is ADDED so no need to save or dellater, just delete from unapplied)
@@ -180,6 +187,13 @@ _on_button_delete_clicked_cb(void *data,
 
    edje_edit_color_class_del(edje_edit_obj, edit->current_ccl->name);
 */
+   cc_it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
+   cc_it->name = eina_stringshare_add(edit->current_ccl->name);
+
+   colorclass = mem_malloc(sizeof(Uns_List));
+   colorclass->data = cc_it;
+   colorclass->act_type = ACTION_TYPE_DEL;
+   edit->unapplied_list = eina_list_append(edit->unapplied_list, colorclass);
 
    Elm_Object_Item *it = elm_genlist_selected_item_get(edit->genlist);
    Elm_Object_Item *next = elm_genlist_item_next_get(it);
@@ -338,11 +352,61 @@ _on_mwin_del(void * data,
    ap->modal_editor--;
 }
 static void
+_on_btn_apply(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
+   Eina_List *l;
+   Uns_List *it = NULL;
+   Colorclass_Item *ccl_it = NULL;
+
+   Style *style = NULL;
+   GET_STYLE(edit->pr, style);
+
+   EINA_LIST_FOREACH(edit->unapplied_list, l, it)
+     {
+        ccl_it = (Colorclass_Item *)it->data;
+
+        if (it->act_type == ACTION_TYPE_DEL)
+          edje_edit_color_class_del(style->obj, ccl_it->name);
+        else
+          {
+             edje_edit_color_class_add(style->obj, eina_stringshare_add(ccl_it->name));
+             edje_edit_color_class_colors_set(style->obj, ccl_it->name,
+                                              ccl_it->r1, ccl_it->g1,
+                                              ccl_it->b1, ccl_it->a1,
+                                              ccl_it->r2, ccl_it->g2,
+                                              ccl_it->b2, ccl_it->a2,
+                                              ccl_it->r3, ccl_it->g3,
+                                              ccl_it->b3, ccl_it->a3);
+          }
+
+        eina_stringshare_del(ccl_it->name);
+        free(ccl_it);
+        ccl_it = NULL;
+     }
+
+   eina_list_free(edit->unapplied_list);
+   mw_del(edit->mwin);
+}
+static void
 _on_btn_cancel(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
+   Eina_List *l;
+   Uns_List *it = NULL;
+   Colorclass_Item *ccl_it = NULL;
+   EINA_LIST_FOREACH(edit->unapplied_list, l, it)
+     {
+        ccl_it = (Colorclass_Item *)it->data;
+        eina_stringshare_del(ccl_it->name);
+        free(ccl_it);
+        ccl_it = NULL;
+     }
+   eina_list_free(edit->unapplied_list);
    mw_del(edit->mwin);
 }
 
@@ -509,8 +573,7 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    elm_object_part_content_set(button, NULL, ic);
    evas_object_smart_callback_add(button, "clicked",
                                   _on_button_add_clicked_cb, edit);
-   elm_object_part_content_set(edit->layout,
-                               "swallow.control.add", button);
+   elm_object_part_content_set(edit->layout, "swallow.control.add", button);
 
    button = elm_button_add(edit->layout);
    evas_object_show(button);
@@ -518,14 +581,17 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    elm_object_part_content_set(button, NULL, ic);
    evas_object_smart_callback_add(button, "clicked",
                                   _on_button_delete_clicked_cb, edit);
-   elm_object_part_content_set(edit->layout,
-                               "swallow.control.minus", button);
+   elm_object_part_content_set(edit->layout, "swallow.control.minus", button);
 
    /* window functional buttons (apply and cancel) */
-   BUTTON_ADD(edit->layout, button, _("Close"));
+   BUTTON_ADD(edit->layout, button, _("Cancel"));
    evas_object_smart_callback_add(button, "clicked", _on_btn_cancel, edit);
-   elm_object_part_content_set(edit->layout,
-                               "button.close", button);
+   elm_object_part_content_set(edit->layout, "button.close", button);
+
+   /* window functional buttons (apply and cancel) */
+   BUTTON_ADD(edit->layout, button, _("Apply"));
+   evas_object_smart_callback_add(button, "clicked", _on_btn_apply, edit);
+   elm_object_part_content_set(edit->layout, "button.apply", button);
 }
 Eina_Bool
 _colorclass_manager_init(Colorclasses_Manager *edit)
