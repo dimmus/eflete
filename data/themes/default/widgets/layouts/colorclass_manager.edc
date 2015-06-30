@@ -200,7 +200,7 @@ group { name: "elm/layout/colorclass_manager/default";
             }
             text {
                text: "";
-               font: "Sans";
+               font: "PT";
                size: 16;
                min: 0 1;
                max: 0 1;
@@ -248,7 +248,7 @@ group { name: "elm/layout/colorclass_manager/default";
             }
             text {
                text: "";
-               font: "Sans";
+               font: "PT";
                size: 16;
                min: 0 1;
                max: 0 1;
@@ -296,7 +296,7 @@ group { name: "elm/layout/colorclass_manager/default";
             }
             text {
                text: "";
-               font: "Sans";
+               font: "PT";
                size: 16;
                min: 0 1;
                max: 0 1;
