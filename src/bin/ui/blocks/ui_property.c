@@ -2504,7 +2504,7 @@ _item_content_get(void *data, Evas_Object *obj, const char *part)
        elm_object_part_content_set(button, NULL, image);
        evas_object_smart_callback_add(button, "clicked", _del_tween_image,
                                       (const char*)data);
-       elm_object_style_set(button, "simple");
+       elm_object_style_set(button, "anchor");
        return button;
     }
     return NULL;
@@ -2591,7 +2591,7 @@ prop_item_state_image_tween_add(Evas_Object *box, Prop_Data *pd)
    elm_object_part_content_set(button, NULL, icon);
    evas_object_smart_callback_add(button, "clicked", _add_tween_image,
                                   tween_list);
-   elm_object_style_set(button, "simple");
+   elm_object_style_set(button, "anchor");
    elm_object_part_content_set(tween_frame, "elm.swallow.add", button);
    evas_object_smart_callback_add(tween_list, "moved",
                                   (Evas_Smart_Cb)_tween_image_moved, pd);
