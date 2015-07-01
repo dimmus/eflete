@@ -436,7 +436,6 @@ test_ui_main_window/ui_part_back.c \
 test_ui_main_window/ui_part_select.c \
 test_ui_main_window/ui_state_select.c \
 test_ui_main_window/ui_style_back.c \
-test_ui_main_window/ui_style_clicked.c \
 test_ui_main_window/ui_style_delete.c \
 test_ui_main_window/add_callbacks_wd.c \
 test_ui_main_window/code_edit_mode_switch.c
