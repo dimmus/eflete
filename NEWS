@@ -1,6 +1,37 @@
-==================
-Eflete 0.5.0-alpha
-==================
+=================
+Eflete 0.5.0-beta
+=================
+
+Changes since 0.5.0-alpha
+-------------------------
+Fixes:
+   * Layout Add: add any number of layouts when there are widgets in project
+   * Styles: fix colorselector (add disabled states and some minor fixes)
+   * Project manager: fix sound export name
+   * history: fix return value on successful undo
+   * project_manager: fix random segfault after saving new project
+   * image_editor: fix missing image with id 0
+   * project_manager: fix new image saving
+   * project_manager: add missing eina_thread_mainloop_end
+   * live_view: fix properties scroller
+   * animator: fix checks in live veiw properties
+   * live_view: fix swallowed objects not being deleted
+   * properties: internal save on combobox changes
+   * Image_editor: fix del logic by clicked apply button
+   * Project manager: fix save logic for image resources
+   * project_manager: fix random segfaults
+   * live_view: fix bg and scale selection panel style
+   * Project manager: fix folder image and sound is empty
+   * ewe_tabs: fix content theme problems because of missing parent
+   * UTC: make it enabled to "make check" from different folder
+   * Live View Prop: update loaded layout when scale is changed
+   * Project Manager: fix memory leak in Project_Thread (in worker)
+   * Property: Group Max/Min value should not change Min/Max if Min/Max has 0 value
+   * Part Manipulation: do not delete all programs if there are no parts anymore
+   * Shortcuts: export should be disable while project is not opened
+   * Project Manager: update style edje edit objects
+   * Shortcuts: add Image should invoke Image Editor
+   * Live View Prop: fix ...need_recalculate_set() spam if there are signals exist
 
 Changes since 0.4.1
 -------------------
