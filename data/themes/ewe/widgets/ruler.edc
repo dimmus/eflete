@@ -69,31 +69,32 @@ group { name: "ewe/ruler/marker/vertical/default";
 //=====================   pointer marker  =========================//
 
 group { name: "ewe/ruler/marker/horizontal/pointer";
-   images.image: "ruler_hor_pointer.png" COMP;
+   images.image: "cursor-position-ver.png" COMP;
    parts {
       part { name: "mark";
          type: IMAGE;
          description { state: "default" 0.0;
-            image.normal: "ruler_hor_pointer.png";
+            image.normal: "cursor-position-ver.png";
             align: 0.5 1.0;
             rel1.relative: -0.5 0.0;
             rel2.relative: 0.5 1.0;
-            min: 10 15;
-            max: 10 15;
+            min: 10 14;
+            max: 10 14;
          }
       }
    }
 }
 
 group { name: "ewe/ruler/marker/vertical/pointer";
-   images.image: "ruler_ver_pointer.png" COMP;
+   images.image: "cursor-position-hor.png" COMP;
    parts {
       part { name: "mark";
          type: IMAGE;
          description { state: "default" 0.0;
-            image.normal: "ruler_ver_pointer.png";
+            image.normal: "cursor-position-hor.png";
             align: 1.0 0.5;
             rel1.relative: 0.0 -0.5;
+            rel1.offset: 0 2;
             rel2.relative: 1.0 0.5;
             min: 15 10;
             max: 15 10;
