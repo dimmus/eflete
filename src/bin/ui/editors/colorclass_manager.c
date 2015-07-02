@@ -130,8 +130,6 @@ _on_add_popup_btn_add(void *data,
    evas_object_del(edit->popup);
    edit->popup = NULL;
    edit->changed = true;
-
-   project_changed(false);
 }
 static void
 _on_add_popup_btn_cancel(void *data,
@@ -247,8 +245,6 @@ _on_button_delete_clicked_cb(void *data,
         elm_object_disabled_set(edit->colorsel2, true);
         elm_object_disabled_set(edit->colorsel3, true);
      }
-
-   project_changed(false);
 }
 
 /* Changing background of preview */
@@ -443,6 +439,9 @@ _on_btn_apply(void *data,
      }
 
    eina_list_free(edit->unapplied_list);
+
+   project_changed(true);
+
    mw_del(edit->mwin);
 }
 static void
