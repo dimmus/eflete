@@ -347,34 +347,12 @@ _add_layout_cb(void *data,
    Evas_Object *widget_list = _widgetlist_current_genlist_get(data, LAYOUT), *eoi;
    Eina_Bool nameExist = true;
    App_Data *ap = (App_Data *)data;
-   Widget *widget = NULL;
-   Class *class = NULL;
    Style *layout = NULL;
    unsigned int i = 0;
    const char *name = NULL;
    Evas_Object *group_obj;
 
-   layout = EINA_INLIST_CONTAINER_GET(ap->project->layouts, Style);
-   if (!layout)
-     {
-        widget = EINA_INLIST_CONTAINER_GET(ap->project->widgets, Widget);
-        if (widget)
-          {
-             class = EINA_INLIST_CONTAINER_GET(widget->classes, Class);
-             if (class)
-               {
-                  layout = EINA_INLIST_CONTAINER_GET(class->styles, Style);
-                  if (!layout)
-                    {
-                       NOTIFY_INFO(3, _("Failed to create new layout."));
-                       ERR("Failed to create new layout: no edje edit object is found");
-                       return;
-                    }
-               }
-             else return;
-          }
-        else return;
-     }
+   GET_STYLE(ap->project, layout);
 
    /* Using aliased group, if the group we've found is alias. */
    group_obj = (layout->isAlias) ? layout->main_group->obj : layout->obj;
