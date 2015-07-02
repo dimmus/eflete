@@ -614,7 +614,8 @@ group { name: "elm/scroller/entry/default";
 }
 
 group { name: "elm/scroller/entry_single/default";
-   alias: "elm/scroller/entry_single/search_field";
+   alias: "elm/scroller/entry_single/eflete/search_field";
+   alias: "elm/scroller/entry_single/fileselector/default";
    images {
       image: "input-text-bg.png" COMP;
    }
@@ -847,6 +848,8 @@ group { name: "elm/scroller/entry_single/search_field";
 
 group { name: "elm/entry/base-single/default";
    inherit: "elm/entry/base/default";
+   alias: "elm/entry/base-single/fileselector/default";
+   alias: "elm/entry/base-single/eflete/search_field";
    parts {
       part { name: "elm.guide";
          type: TEXTBLOCK;

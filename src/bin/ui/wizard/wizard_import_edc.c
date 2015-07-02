@@ -787,7 +787,6 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
    elm_object_part_content_set(wiew->layout, "swallow.widgets", genlist);
 
    CHECK_ADD(wiew->layout, check);
-   elm_object_style_set(check, "live_view");
    evas_object_smart_callback_add(check, "changed",
                                   _on_widget_include_all_check_changed,
                                   genlist);

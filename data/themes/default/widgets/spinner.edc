@@ -1,4 +1,5 @@
 group { name: "elm/spinner/base/default";
+   alias: "elm/spinner/base/colorselector/default";
    images {
       image: "input-text-bg.png" COMP;
       image: "spinner-horizontal-down.png" COMP;
