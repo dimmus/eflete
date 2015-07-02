@@ -191,10 +191,10 @@ group { name: "elm/button/base/default";
             new Float:vl;
             get_state(PART:"elm.swallow.content", st, 30, vl);
             if (!strcmp(st, "default"))
-            set_state(PART:"elm.text", "textonly", 0.0);
-            if (!strcmp(st, "icononly") || !strcmp(st, "visible")) {
-            set_state(PART:"elm.swallow.content", "visible", 0.0);
-            set_state(PART:"elm.text", "visible", 0.0);
+               set_state(PART:"elm.text", "textonly", 0.0);
+            else { /* icononly */
+               set_state(PART:"elm.swallow.content", "visible", 0.0);
+               set_state(PART:"elm.text", "visible", 0.0);
             }
          }
       }
@@ -205,15 +205,9 @@ group { name: "elm/button/base/default";
             new st[31];
             new Float:vl;
             get_state(PART:"elm.swallow.content", st, 30, vl);
-            if (!strcmp(st, "visible")) {
+            if (!strcmp(st, "visible"))
                set_state(PART:"elm.swallow.content", "icononly", 0.0);
-            }
             set_state(PART:"elm.text", "default", 0.0);
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "default") || (!strcmp(st, "visible")))
-            set_state(PART:"elm.text", "default", 0.0);
-            else
-            set_state(PART:"elm.text", "disabled", 0.0);
          }
       }
       program { name: "icon_show";
@@ -223,11 +217,11 @@ group { name: "elm/button/base/default";
             new st[31];
             new Float:vl;
             get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "visible")) {
-               set_state(PART:"elm.swallow.content", "visible", 0.0);
-            }
-            else {
+            if (!strcmp(st, "default"))
                set_state(PART:"elm.swallow.content", "icononly", 0.0);
+            else { /* textonly */
+               set_state(PART:"elm.swallow.content", "visible", 0.0);
+               set_state(PART:"elm.text", "visible", 0.0);
             }
          }
       }
@@ -239,7 +233,7 @@ group { name: "elm/button/base/default";
             new Float:vl;
             get_state(PART:"elm.text", st, 30, vl);
             if (!strcmp(st, "visible"))
-            set_state(PART:"elm.text", "textonly", 0.0);
+               set_state(PART:"elm.text", "textonly", 0.0);
             set_state(PART:"elm.swallow.content", "default", 0.0);
          }
       }
