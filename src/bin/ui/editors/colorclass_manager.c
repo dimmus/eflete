@@ -57,6 +57,7 @@ struct _Colorclasses_Manager
    Eina_Bool changed;
    Search_Data style_search_data;
    Colorclass_Item *current_ccl;
+   Eina_List *unapplied_list;
 };
 
 /* BUTTON ADD AND REMOVE FUNCTIONS */
@@ -82,12 +83,19 @@ _on_add_popup_btn_add(void *data,
      }
 
    GET_OBJ(edit->pr, edje_edit_obj);
+/*
+1. Here we need to check if that name is already exist inside of genlist
+2. Check if that new name was deleted and in unapplied.
+if it is deleted, remove that mark from unapplied and add as ADD modifiying all
+it's values into 0. and ad back to unapplied.
+
    if (!edje_edit_color_class_add(edje_edit_obj, eina_stringshare_add(it->name)))
      {
         NOTIFY_WARNING(_("Color class name must be unique!"));
         free(it);
         return;
      }
+*/
 
    glit_ccl = elm_genlist_item_append(edit->genlist, _itc_ccl, it, NULL,
                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
@@ -161,9 +169,18 @@ _on_button_delete_clicked_cb(void *data,
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
    Evas_Object *edje_edit_obj;
    App_Data *ap = app_data_get();
+
    if (!edit->current_ccl) return;
+
    GET_OBJ(edit->pr, edje_edit_obj);
+/*
+   1. Check if that deleting colorclass is new one
+      (if it is ADDED so no need to save or dellater, just delete from unapplied)
+   2. If that colorclass was already in project, mark it as deleted into unapplied.
+
    edje_edit_color_class_del(edje_edit_obj, edit->current_ccl->name);
+*/
+
    Elm_Object_Item *it = elm_genlist_selected_item_get(edit->genlist);
    Elm_Object_Item *next = elm_genlist_item_next_get(it);
 
@@ -240,6 +257,12 @@ _colorclass_update(Colorclasses_Manager *edit)
                                edit->current_ccl->b2, edit->current_ccl->a2,
                                edit->current_ccl->r3, edit->current_ccl->g3,
                                edit->current_ccl->b3, edit->current_ccl->a3);
+
+/*
+1. find colorclass in unapplied (it should be marked as ADD) and change it's values
+2. if it's not in unapplied, add new Unapplied struct and set as ADD with existed name
+and new values
+
    edje_edit_color_class_colors_set(edit->edit_obj, edit->current_ccl->name,
                                     edit->current_ccl->r1, edit->current_ccl->g1,
                                     edit->current_ccl->b1, edit->current_ccl->a1,
@@ -247,6 +270,7 @@ _colorclass_update(Colorclasses_Manager *edit)
                                     edit->current_ccl->b2, edit->current_ccl->a2,
                                     edit->current_ccl->r3, edit->current_ccl->g3,
                                     edit->current_ccl->b3, edit->current_ccl->a3);
+*/
 }
 /* Colorselector widget callbacks */
 #define COLORSELECTOR_CALLBACK(NUMBER) \
