@@ -746,6 +746,7 @@ _wizart_widget_list_add(Evas_Object *parent)
    genlist = elm_genlist_add(parent);
 
    itc = elm_genlist_item_class_new();
+   itc->item_style = "default";
    itc->func.text_get = _genlist_label_get;
    itc->func.content_get = _genlist_content_get;
    itc->func.state_get = NULL;

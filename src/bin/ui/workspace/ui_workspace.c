@@ -811,7 +811,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    Evas_Object *icon = NULL;
 
    /* Here create evas image, whitch will be background for workspace*/
-   GET_IMAGE(priv->background, e, "bg_demo");
+   IMAGE_ADD_NEW(parent, priv->background, "bg", "tile");
    evas_object_smart_member_add(priv->background, o);
 
    /* Clipper needed for check mouse events*/
@@ -846,7 +846,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    /* button for switch mode of view: separated or normal*/
    priv->button_separate = elm_button_add(priv->scroller);
    elm_object_style_set(priv->button_separate, "anchor");
-   GET_IMAGE(icon, priv->scroller, "icon-separate");
+   IMAGE_ADD_NEW(priv->scroller, icon, "icon", "separate");
    elm_object_part_content_set(priv->button_separate, NULL, icon);
    evas_object_smart_callback_add(priv->button_separate, "clicked",
                                   _separate_smart_on_click, o);

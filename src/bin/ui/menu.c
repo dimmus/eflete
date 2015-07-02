@@ -184,7 +184,7 @@ _menu_cb(void *data __UNUSED__,
          sound_editor_window_add(ap->project, SOUND_EDITOR_EDIT);
          break;
       case MENU_EDITORS_COLORCLASS:
-         colorclass_viewer_add(ap->project);
+         colorclass_manager_add(ap->project);
          break;
       case MENU_EDITORS_TEXT_STYLE:
          style_editor_window_add(ap->project);

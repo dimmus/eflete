@@ -44,7 +44,7 @@
 #include "style_dialog.h"
 #include "item_dialog.h"
 #include "colorsel.h"
-#include "colorclass_editor.h"
+#include "colorclass_manager.h"
 
 enum Menu_Item
 {

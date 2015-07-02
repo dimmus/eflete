@@ -1,6 +1,6 @@
 /*
  * Edje Theme Editor
- * Copyright (C) 2013-2014 Samsung Electronics.
+ * Copyright (C) 2013-2015 Samsung Electronics.
  *
  * This file is part of Edje Theme Editor.
  *
@@ -17,11 +17,11 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#ifndef COLORCLASS_VIEWER_DIALOG_H
-#define COLORCLASS_VIEWER_DIALOG_H
+#ifndef COLORCLASS_MANAGER_DIALOG_H
+#define COLORCLASS_MANAGER_DIALOG_H
 
 /**
- * @defgroup Colorclass_Viewer Colorclass_Viewer
+ * @defgroup Colorclass_Manager Colorclass_Manager
  * @ingroup Dialogs
  *
  * Show color classes, which uses in project.
@@ -40,9 +40,9 @@
  *
  * @return Pointer to inwin object.
  *
- * @ingroup Colorclass_Viewer
+ * @ingroup Colorclass_Manager
  */
 Evas_Object *
-colorclass_viewer_add(Project *project);
+colorclass_manager_add(Project *project);
 
-#endif /* COLORCLASS_VIEWER_DIALOG_H */
+#endif /* COLORCLASS_MANAGER_DIALOG_H */

@@ -112,12 +112,23 @@ send_layout_signal(void *data,
    edje_object_signal_emit(object, name, source);
 }
 
+static void
+_on_swallow_clean(const char *part_name, Evas_Object *object)
+{
+   Evas_Object *rect = NULL;
+
+   rect = edje_object_part_swallow_get(object, part_name);
+   edje_object_part_unswallow(object, rect);
+   evas_object_del(rect);
+}
+
 Evas_Object *
 layout_custom_create(Evas_Object *parent)
 {
    Evas_Object *object = edje_object_add(evas_object_evas_get(parent));
 
    evas_object_data_set(object, SWALLOW_FUNC, on_layout_swallow_check);
+   evas_object_data_set(object, SWALLOW_CLEAN_FUNC, _on_swallow_clean);
    evas_object_data_set(object, TEXT_FUNC, on_layout_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, send_layout_signal);
 

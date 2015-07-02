@@ -17,13 +17,13 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "test_colorclass_editor.h"
+#include "test_colorclass_manager.h"
 #include "test_common.h"
 
 /**
- * @addtogroup colorclass_editor_test
+ * @addtogroup colorclass_manager_test
  * @{
- * @addtogroup colorclass_viewer_add
+ * @addtogroup colorclass_manager_add
  * @{
  * Color Class editor
  * <TABLE>
@@ -31,17 +31,17 @@
  */
 
 /**
- * @addtogroup colorclass_viewer_add
+ * @addtogroup colorclass_manager_add
  * @{
  * <tr>
- * <td>colorclass_viewer_add</td>
- * <td>colorclass_viewer_add_test_n</td>
+ * <td>colorclass_manager_add</td>
+ * <td>colorclass_manager_add_test_n</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
  *
  * @procedure
- * @step 1 call colorclass_viewer_add
+ * @step 1 call colorclass_manager_add
  * @step 2 check returned pointer
  * </td>
  * <td>NULL</td>
@@ -49,22 +49,22 @@
  * </tr>
  * @}
  */
-EFLETE_TEST (colorclass_viewer_add_test_n)
+EFLETE_TEST (colorclass_manager_add_test_n)
 {
    elm_init(0,0);
 
-   ck_assert_msg(colorclass_viewer_add(NULL) == NULL, "Not NULL returned");
+   ck_assert_msg(colorclass_manager_add(NULL) == NULL, "Not NULL returned");
 
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup colorclass_viewer_add
+ * @addtogroup colorclass_manager_add
  * @{
  * <tr>
- * <td>colorclass_viewer_add</td>
- * <td>colorclass_viewer_add_test_p</td>
+ * <td>colorclass_manager_add</td>
+ * <td>colorclass_manager_add_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
@@ -73,7 +73,7 @@ END_TEST
  * @step 4 create main window
  *
  * @procedure
- * @step 1 call colorclass_viewer_add
+ * @step 1 call colorclass_manager_add
  * @step 2 check returned pointer
  * </td>
  * <td>(Project *)project</td>
@@ -81,37 +81,37 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST (colorclass_viewer_add_test_p)
+EFLETE_TEST (colorclass_manager_add_test_p)
 {
    elm_init(0,0);
-   setup("colorclass_viewer_add_test_p");
+   setup("colorclass_manager_add_test_p");
 
    App_Data *app;
    Evas_Object *colorclass;
 
    app_init();
    app = app_data_get();
-   app->project = pm_project_open("./colorclass_viewer_add_test_p/colorclass_viewer_add_test_p.pro");
+   app->project = pm_project_open("./colorclass_manager_add_test_p/colorclass_manager_add_test_p.pro");
 
    ui_main_window_add(app);
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
                                 app->project->mmap_file);
 
-   colorclass  = colorclass_viewer_add(app->project);
+   colorclass  = colorclass_manager_add(app->project);
    ck_assert_msg(colorclass != NULL, "Unable to create image editor window");
 
    evas_object_del(colorclass);
    pm_project_close(app->project);
    app->project = NULL;
    app_shutdown();
-   teardown("./colorclass_viewer_add_test_p");
+   teardown("./colorclass_manager_add_test_p");
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup colorclass_viewer_add
+ * @addtogroup colorclass_manager_add
  * @{
  * </TABLE>
  * @}

@@ -709,14 +709,13 @@ _on_ok_cb(void *data,
    _sound_editor_quit(edit);
 }
 
-#define BT_ADD(PARENT, OBJ, ICON, TEXT) \
+#define BT_ADD(PARENT, OBJ, ICON, ICON_STYLE) \
    OBJ = elm_button_add(PARENT); \
    evas_object_size_hint_align_set(OBJ, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   ICON_ADD(OBJ, ICON, NULL, "icon_"TEXT) \
-   elm_object_style_set(OBJ, "simple"); \
+   elm_object_style_set(OBJ, "anchor"); \
+   ICON_STANDARD_ADD(OBJ, ICON, false, ICON_STYLE) \
    evas_object_show(OBJ); \
-   elm_object_part_content_set(OBJ, NULL, ICON); \
-   elm_object_part_content_set(PARENT, "swallow.button."TEXT, OBJ);
+   elm_object_part_content_set(OBJ, NULL, ICON);
 
 #define INFO_ADD(PARENT, ITEM, TEXT, STYLE) \
    ITEM = elm_layout_add(PARENT); \
@@ -756,7 +755,7 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
    evas_object_show(edit->player_markup);
    elm_object_part_content_set(parent, "player", edit->player_markup);
 
-   edit->snd_data.teg = elm_image_add(edit->player_markup);
+   edit->snd_data.teg = elm_icon_add(edit->player_markup);
    evas_object_image_smooth_scale_set(edit->snd_data.teg, false);
    evas_object_show(edit->snd_data.teg);
    evas_object_size_hint_fill_set(edit->snd_data.teg, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -779,19 +778,22 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
    elm_object_part_content_set(edit->player_markup, "eflete.swallow.fast", edit->rewind);
    evas_object_smart_callback_add(edit->rewind, "changed", _on_rewind_cb, edit);
 
-   BT_ADD(edit->player_markup, bt, icon, "prev");
+   BT_ADD(edit->player_markup, bt, icon, "media_player/prev");
+   elm_object_part_content_set(edit->player_markup, "swallow.button.prev", bt);
    evas_object_smart_callback_add(bt, "clicked", _on_prev_cb, edit);
 
-   BT_ADD(edit->player_markup, edit->play, icon, "play");
+   BT_ADD(edit->player_markup, edit->play, icon, "media_player/play");
+   elm_object_part_content_set(edit->player_markup, "swallow.button.play", edit->play);
    evas_object_smart_callback_add(edit->play, "clicked", _on_play_cb, edit);
 
-   BT_ADD(edit->player_markup, bt, icon, "next");
+   BT_ADD(edit->player_markup, bt, icon, "media_player/next");
+   elm_object_part_content_set(edit->player_markup, "swallow.button.next", bt);
    evas_object_smart_callback_add(bt, "clicked", _on_next_cb, edit);
 
    edit->pause = elm_button_add(edit->player_markup);
+   elm_object_style_set(edit->pause, "anchor");
    evas_object_size_hint_align_set(edit->pause, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   ICON_ADD(edit->pause, icon, NULL, "icon_pause")
-   elm_object_style_set(edit->pause, "simple");
+   ICON_STANDARD_ADD(edit->pause, icon, false, "media_player/pause")
    elm_object_part_content_set(edit->pause, NULL, icon);
    evas_object_smart_callback_add(edit->pause, "clicked", _on_pause_cb, edit);
 
@@ -914,7 +916,7 @@ _sample_info_setup(Sound_Editor *edit,
    evas_object_hide(content);
 
    duration = eina_stringshare_printf("%.2f s", len);
-   evas_object_image_file_set(edit->snd_data.teg, EFLETE_RESOURCES, "sound");
+   elm_icon_standard_set(edit->snd_data.teg, "sound");
    elm_object_part_content_set(edit->markup, "sound_info", edit->sample_box);
 
    type = _sound_format_get(snd_src);
@@ -947,7 +949,7 @@ _tone_info_setup(Sound_Editor *edit, const Item *it)
    evas_object_hide(content);
 
    duration = eina_stringshare_printf("%.1f s", TONE_PLAYING_DURATION);
-   evas_object_image_file_set(edit->snd_data.teg, EFLETE_RESOURCES, "sound");
+   elm_icon_standard_set(edit->snd_data.teg, "sound");
    elm_object_part_content_set(edit->markup, "sound_info", edit->tone_box);
 
    elm_object_part_text_set(edit->snd_data.tone_name, "label.value", it->sound_name);
@@ -1167,17 +1169,11 @@ static void
 _create_gengrid(Evas_Object *parent,
                 Sound_Editor *editor)
 {
-   Evas_Object *bg;
-
    editor->gengrid = elm_gengrid_add(parent);
    elm_gengrid_item_size_set(editor->gengrid, ITEM_WIDTH, ITEM_HEIGHT);
    elm_gengrid_group_item_size_set(editor->gengrid, ITEM_HEIGHT/5, ITEM_HEIGHT/5);
    elm_gengrid_align_set(editor->gengrid, 0.0, 0.0);
    elm_scroller_policy_set(editor->gengrid, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-
-   GET_IMAGE(bg, editor->gengrid, "gallery-bg");
-   elm_object_part_content_set(editor->gengrid, "elm.swallow.background", bg);
-   evas_object_show(bg);
 
    elm_gengrid_multi_select_set(editor->gengrid, false);
 
@@ -1209,7 +1205,7 @@ _sound_editor_search_field_create(Evas_Object *parent)
    ENTRY_ADD(parent, entry, true);
    elm_object_style_set(entry, "search_field");
    elm_object_part_text_set(entry, "guide", _("Search"));
-   ICON_ADD(entry, icon, true, "icon-search");
+   ICON_STANDARD_ADD(entry, icon, true, "search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
    return entry;
 }

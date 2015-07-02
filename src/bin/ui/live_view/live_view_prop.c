@@ -144,7 +144,7 @@ _change_bg_cb(void *data,
    elm_object_style_set(RADIO, "style_editor"); \
    elm_radio_state_value_set(RADIO, VALUE); \
    evas_object_show(RADIO); \
-   IMAGE_ADD(item, image_bg, IMAGE); \
+   IMAGE_ADD_NEW(item, image_bg, "preview", IMAGE); \
    elm_object_part_content_set(RADIO, "bg", image_bg); \
    evas_object_smart_callback_add(RADIO, "changed", _change_bg_cb, property); \
    elm_object_part_content_set(item, SWALLOW, RADIO);
@@ -178,7 +178,8 @@ live_view_property_style_set(Evas_Object *property,
    PROP_DATA_GET(false)
    pd->style = style;
 
-   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_ON);
+   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
 
    pd->widget = widget;
    pd->live_object = object;
@@ -197,10 +198,10 @@ live_view_property_style_set(Evas_Object *property,
         elm_object_part_content_set(item, "elm.swallow.content", spinner);
         evas_object_data_set(item, ITEM, spinner);
 
-        _RADIO_ADD(radio_group, 0, "styles-preview-bg-transparent", "elm.swallow.transparent");
-        _RADIO_ADD(radio, 1, "styles-preview-bg-black", "elm.swallow.black");
+        _RADIO_ADD(radio_group, 0, "bg-tile", "elm.swallow.transparent");
+        _RADIO_ADD(radio, 1, "bg-black", "elm.swallow.black");
         elm_radio_group_add(radio, radio_group);
-        _RADIO_ADD(radio, 2, "styles-preview-bg-white", "elm.swallow.white");
+        _RADIO_ADD(radio, 2, "bg-white", "elm.swallow.white");
         elm_radio_group_add(radio, radio_group);
 #undef _RADIO_ADD
      }
@@ -225,6 +226,7 @@ live_view_property_style_set(Evas_Object *property,
         elm_object_part_content_set(pd->prop_swallow.frame, "elm.swallow.check", pd->prop_swallow.check);
 
         BOX_ADD(pd->prop_swallow.frame, pd->prop_swallow.swallows, false, false)
+        elm_box_padding_set(pd->prop_swallow.swallows, 0, 7);
         elm_box_align_set(pd->prop_swallow.swallows, 0.5, 0.0);
         elm_object_content_set(pd->prop_swallow.frame, pd->prop_swallow.swallows);
         evas_object_hide(pd->prop_swallow.frame);
@@ -243,6 +245,7 @@ live_view_property_style_set(Evas_Object *property,
         elm_object_part_content_set(pd->prop_text.frame, "elm.swallow.check", pd->prop_text.check);
 
         BOX_ADD(pd->prop_text.frame, pd->prop_text.texts, false, false)
+        elm_box_padding_set(pd->prop_text.texts, 0, 7);
         elm_box_align_set(pd->prop_text.texts, 0.5, 0.0);
         elm_object_content_set(pd->prop_text.frame, pd->prop_text.texts);
         evas_object_hide(pd->prop_text.frame);
@@ -287,7 +290,11 @@ live_view_property_style_set(Evas_Object *property,
           {
              swallow_parts_exists = true;
 
-             CHECK_ADD(pd->prop_swallow.swallows, check);
+             /* Weird behaviour!
+                If we have box or frame as a parent it doesn't work at all.
+                Check just doesn't show it's content (part name) but should.
+                This problem appears when we add first text part into group */
+             CHECK_ADD(property, check);
              elm_object_part_text_set(check, NULL, part_name);
 
              evas_object_smart_callback_add(check, "changed",
@@ -303,7 +310,11 @@ live_view_property_style_set(Evas_Object *property,
           {
              text_parts_exists = true;
 
-             CHECK_ADD(pd->prop_text.texts, check);
+             /* Weird behaviour!
+                If we have box or frame as a parent it doesn't work at all.
+                Check just doesn't show it's content (part name) but should.
+                This problem appears when we add first text part into group */
+             CHECK_ADD(property, check);
              elm_object_part_text_set(check, NULL, part_name);
 
              evas_object_smart_callback_add(check, "changed",
@@ -383,7 +394,7 @@ live_view_property_style_set(Evas_Object *property,
 Evas_Object *
 live_view_property_add(Evas_Object *parent, Eina_Bool in_prog_edit)
 {
-   Evas_Object *box, *scroller, *_bg;
+   Evas_Object *box, *scroller;
    Prop_Data *pd;
 
    if (!parent) return NULL;
@@ -396,10 +407,6 @@ live_view_property_add(Evas_Object *parent, Eina_Bool in_prog_edit)
    elm_box_align_set(box, 0.5, 0.0);
    elm_object_content_set(scroller, box);
 
-   _bg = elm_bg_add(parent);
-   elm_bg_file_set(_bg, EFLETE_RESOURCES, "section-item-bg");
-   elm_object_part_content_set(scroller, "elm.swallow.background", _bg);
-   evas_object_show(_bg);
    evas_object_show(scroller);
    evas_object_show(box);
 
@@ -451,7 +458,8 @@ live_view_property_style_unset(Evas_Object *property)
    /* Swallows Clear */
    if (pd->prop_swallow.frame)
      {
-        UPDATE_PROPERTY_FRAME(prop_box, pd->prop_swallow.frame, pd->prop_swallow.swallows)
+        evas_object_hide(pd->prop_swallow.frame);
+        items_list = elm_box_children_get(pd->prop_swallow.swallows);
         check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
         elm_check_state_set(check, false);
      }
@@ -474,6 +482,7 @@ live_view_property_style_unset(Evas_Object *property)
         evas_object_del(check);
      }
    items_list = eina_list_free(items_list);
+   elm_box_clear(pd->prop_swallow.swallows);
 
    /* Texts Clear */
    if (pd->prop_text.frame)

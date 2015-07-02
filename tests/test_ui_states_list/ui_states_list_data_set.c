@@ -283,7 +283,7 @@ END_TEST
  * @{
  * <tr>
  * <td>ui_states_list_data_set</td>
- * <td>ui_states_list_data_set_test_n6</td>
+ * <td>ui_states_list_data_set_test_n5</td>
  * <td>
  * @precondition
  * @step 1 initialized elm.

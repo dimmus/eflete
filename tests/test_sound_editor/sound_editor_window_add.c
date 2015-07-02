@@ -64,15 +64,11 @@ EFLETE_TEST(sound_editor_window_add_test_p1)
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./sound_editor_window_add_test_p1/sound_editor_window_add_test_p1.pro");
-   wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win),
-                                app->project->mmap_file);
 
    sounds = sound_editor_window_add(app->project, SOUND_EDITOR_EDIT);
    ck_assert_msg(sounds != NULL, "cannot create sound editor window in SOUND_EDITOR_EDIT mode");
 
    evas_object_del(sounds);
-   ui_main_window_del(app);
    app_shutdown();
    teardown("./sound_editor_window_add_test_p1");
    elm_shutdown();
@@ -113,16 +109,12 @@ EFLETE_TEST (sound_editor_window_add_test_p2)
 
    app = app_data_get();
    app->project = pm_project_open("./sound_editor_window_add_test_p2/sound_editor_window_add_test_p2.pro");
-   wm_widgets_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win),
-                               app->project->mmap_file);
    ui_main_window_add(app);
 
    sounds = sound_editor_window_add(app->project, SOUND_EDITOR_SAMPLE_SELECT);
    ck_assert_msg(sounds != NULL, "cannot create sound editor window in SOUND_EDITOR_SAMPLE_SELECT mode");
 
    evas_object_del(sounds);
-   ui_main_window_del(app);
    app_shutdown();
    teardown("./sound_editor_window_add_test_p2");
    elm_shutdown();
@@ -163,16 +155,12 @@ EFLETE_TEST (sound_editor_window_add_test_p3)
 
    app = app_data_get();
    app->project = pm_project_open("./sound_editor_window_add_test_p3/sound_editor_window_add_test_p3.pro");
-   wm_widgets_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win),
-                               app->project->mmap_file);
    ui_main_window_add(app);
 
    sounds = sound_editor_window_add(app->project, SOUND_EDITOR_TONE_SELECT);
    ck_assert_msg(sounds != NULL, "cannot create sound editor window in SOUND_EDITOR_TONE_SELECT mode");
 
    evas_object_del(sounds);
-   ui_main_window_del(app);
    app_shutdown();
    teardown("./sound_editor_window_add_test_p3");
    elm_shutdown();
@@ -212,7 +200,6 @@ EFLETE_TEST (sound_editor_window_add_test_n1)
    ck_assert_msg(sound_editor_window_add(NULL, SINGLE) == NULL,
                  "Created sound editor in SINGLE mode for NULL project");
 
-   ui_main_window_del(app);
    app_shutdown();
    elm_shutdown();
 }
@@ -254,7 +241,6 @@ EFLETE_TEST (sound_editor_window_add_test_n2)
    ck_assert_msg(sounds == NULL,
                  "Created sound editor in MULTIPLE mode for NULL project");
 
-   ui_main_window_del(app);
    evas_object_del(sounds);
    app_shutdown();
    elm_shutdown();

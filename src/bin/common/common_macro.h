@@ -20,6 +20,20 @@
 #ifndef COMMON_MACRO_H
 #define COMMON_MACRO_H
 
+typedef struct _Uns_List Uns_List;
+typedef enum _Action_Type
+{
+   ACTION_TYPE_ADD,
+   ACTION_TYPE_DEL,
+   ACTION_TYPE_LAST
+} Action_Type;
+
+struct _Uns_List
+{
+   void *data;
+   Action_Type act_type;
+};
+
 #define HIGHLIGHT_BG_COLOR 0,0,0,0
 #define HIGHLIGHT_COLOR 58,110,155,255
 #define OBG_AREA_BG_COLOR 64,64,64,64

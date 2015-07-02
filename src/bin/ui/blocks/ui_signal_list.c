@@ -30,14 +30,20 @@ _item_label_get(void *data,
                 const char *part __UNUSED__)
 {
    Signal *sig = (Signal *)data;
-   if (!strcmp(part, "elm.text"))
-      return strdup(sig->name);
-   if ((!strcmp(part, "elm.text.source")) && (sig->source))
-      return strdup(sig->source);
-   if ((!strcmp(part, "elm.text.program")) && (sig->program))
-      return strdup(sig->program);
+   Eina_Strbuf *buff;
+   char *str = NULL;
 
-   return "";
+   buff = eina_strbuf_new();
+   if (!strcmp(part, "elm.text"))
+     eina_strbuf_append(buff, sig->name);
+   if ((!strcmp(part, "elm.title.1")) && (sig->source))
+     eina_strbuf_append_printf(buff, "%s: %s", _("Source"), sig->source);
+   if ((!strcmp(part, "elm.title.2")) && (sig->program))
+     eina_strbuf_append_printf(buff, "%s: %s", _("Program"), sig->program);
+
+   str = strdup(eina_strbuf_string_get(buff));
+   eina_strbuf_free(buff);
+   return str;
 }
 
 static void
@@ -60,7 +66,7 @@ ui_signal_list_add(Evas_Object *parent)
    if (!_itc_signal)
      {
         _itc_signal = elm_genlist_item_class_new();
-        _itc_signal->item_style = "signals";
+        _itc_signal->item_style = "message";
         _itc_signal->func.text_get = _item_label_get;
         _itc_signal->func.content_get = NULL;
         _itc_signal->func.state_get = NULL;

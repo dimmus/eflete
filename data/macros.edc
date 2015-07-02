@@ -23,6 +23,19 @@ fonts {
 #define FN_I "PT-Italic"
 #define FN_BI "PT-BoldItalic"
 
+color_classes {
+   color_class { name: "color_default";
+      color: 214 214 214 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "color_disabled";
+      color: 118 119 120 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+}
+
 /*
  *  [ colors ]
  */

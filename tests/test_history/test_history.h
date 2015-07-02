@@ -64,7 +64,6 @@ void history_diff_add_test_p16(int);
 void history_diff_add_test_n1(int);
 void history_diff_add_test_n2(int);
 void history_diff_add_test_n3(int);
-void history_diff_add_test_n4(int);
 void history_diff_add_test_n5(int);
 void history_diff_add_test_n6(int);
 void history_diff_add_test_n7(int);

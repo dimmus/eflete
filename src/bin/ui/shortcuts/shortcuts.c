@@ -466,9 +466,9 @@ _sound_editor_open_cb(App_Data *app)
 }
 
 Eina_Bool
-_colorclass_viewer_open_cb(App_Data *app)
+_colorclass_manager_open_cb(App_Data *app)
 {
-   colorclass_viewer_add(app->project);
+   colorclass_manager_add(app->project);
    return true;
 }
 
@@ -622,7 +622,7 @@ static Function_Set _sc_func_set_init[] =
      {"style_editor", _style_editor_open_cb},
      {"image_editor", _image_editor_open_cb},
      {"sound_editor", _sound_editor_open_cb},
-     {"colorclass_viewer", _colorclass_viewer_open_cb},
+     {"colorclass_viewer", _colorclass_manager_open_cb},
      {"animator", _animator_open_cb},
      {"widget_manager.layout", _widget_manager_layout_switch_cb},
      {"widget_manager.style", _widget_manager_style_switch_cb},

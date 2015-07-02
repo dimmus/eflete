@@ -103,35 +103,6 @@ END_TEST
 /**
  * @addtogroup cursor_main_get
  * @{
- * <tr>
- * <td>cursor_main_get</td>
- * <td>cursor_main_get_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 call cursor_main_get
- * </td>
- * <td>NULL</td>
- * <td>CURSOR_SYSTEM</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(cursor_main_get_test_n)
-{
-   elm_init(0,0);
-
-   ck_assert_msg(cursor_main_get(NULL) != CURSOR_UNKNOWN,
-                 "Main cursor return not valid cursor.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup cursor_main_get
- * @{
  * </TABLE>
  * @}
  * @}

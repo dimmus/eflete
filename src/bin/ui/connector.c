@@ -236,6 +236,7 @@ _show_part(void *data,
      ERR("Can't show groupedit part %s!", part_name);
 }
 
+/*
 static void
 _live_view_update(void *data,
                   Evas_Object *obj __UNUSED__,
@@ -244,6 +245,7 @@ _live_view_update(void *data,
    App_Data *ap = (App_Data *)data;
    live_view_theme_update(ap->live_view, ap->project);
 }
+*/
 
 static void
 _signal_select(void *data,
@@ -345,34 +347,12 @@ _add_layout_cb(void *data,
    Evas_Object *widget_list = _widgetlist_current_genlist_get(data, LAYOUT), *eoi;
    Eina_Bool nameExist = true;
    App_Data *ap = (App_Data *)data;
-   Widget *widget = NULL;
-   Class *class = NULL;
    Style *layout = NULL;
    unsigned int i = 0;
    const char *name = NULL;
    Evas_Object *group_obj;
 
-   layout = EINA_INLIST_CONTAINER_GET(ap->project->layouts, Style);
-   if (!layout)
-     {
-        widget = EINA_INLIST_CONTAINER_GET(ap->project->widgets, Widget);
-        if (widget)
-          {
-             class = EINA_INLIST_CONTAINER_GET(widget->classes, Class);
-             if (class)
-               {
-                  layout = EINA_INLIST_CONTAINER_GET(class->styles, Style);
-                  if (!layout)
-                    {
-                       NOTIFY_INFO(3, _("Failed to create new layout."));
-                       ERR("Failed to create new layout: no edje edit object is found");
-                       return;
-                    }
-               }
-             else return;
-          }
-        else return;
-     }
+   GET_STYLE(ap->project, layout);
 
    /* Using aliased group, if the group we've found is alias. */
    group_obj = (layout->isAlias) ? layout->main_group->obj : layout->obj;
@@ -523,7 +503,7 @@ ui_part_back(App_Data *ap)
 {
    if (!ap) return;
 
-   Evas_Object *wl_list, *groupedit, *history_list;
+   Evas_Object *wl_list, *history_list;
 
    wl_list = ui_block_widget_list_get(ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,item,add", _add_part_item_dialog, ap);
@@ -541,9 +521,6 @@ ui_part_back(App_Data *ap)
    history_list = ui_block_history_get(ap);
    evas_object_hide(history_list);
 
-   groupedit = ws_groupedit_get(ap->workspace);
-   evas_object_smart_callback_del_full(groupedit, "object,area,changed",
-                                       _live_view_update, ap);
    evas_object_smart_callback_del_full(ap->workspace, "part,name,changed",
                                        _part_name_change, ap);
 
@@ -638,7 +615,7 @@ ui_part_select(App_Data *ap, Part* part)
 Eina_Bool
 ui_style_clicked(App_Data *ap, Style *style)
 {
-   Evas_Object *wl_list, *prop, *groupedit, *history_list;
+   Evas_Object *wl_list, *prop, *history_list;
    Style *_style, *_alias_style;
 
    if ((!ap) || (!ap->project) || (!style))
@@ -678,8 +655,6 @@ ui_style_clicked(App_Data *ap, Style *style)
                                   _on_ws_part_select, ap);
    evas_object_smart_callback_add(ap->workspace, "ws,part,unselected",
                                   _on_ws_part_unselect, ap);
-   groupedit = ws_groupedit_get(ap->workspace);
-   evas_object_smart_callback_add(groupedit, "object,area,changed", _live_view_update, ap);
 
    /* style properties */
    prop = ui_block_property_get(ap);

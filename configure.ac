@@ -1,4 +1,4 @@
-EFLETE_VERSION([0], [5], [0], [alpha])
+EFLETE_VERSION([0], [5], [0], [beta])
 AC_INIT([eflete], [eflete_version], [enlightenment-devel@lists.sourceforge.net],
         [eflete])
 AC_PREREQ([2.60])
@@ -193,7 +193,6 @@ EFLETE_DEFINE=" -DEFLETE_EDJ=\\\"${datadir}/eflete/layouts/eflete.edj\\\" "
 EFLETE_DEFINE+=" -DEFLETE_THEME=\\\"${datadir}/eflete/themes/default/eflete_elm.edj\\\" "
 EFLETE_DEFINE+=" -DEFLETE_EDJ_PATH=\\\"${datadir}/eflete/themes/default/\\\" "
 EFLETE_DEFINE+=" -DEFLETE_IMG_PATH=\\\"${datadir}/eflete/images/\\\" "
-EFLETE_DEFINE+=" -DEFLETE_RESOURCES=\\\"${datadir}/eflete/eflete_resources.edj\\\" "
 EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_EDC_PATH=\\\"${datadir}/eflete/themes/default/template/edc\\\" "
 EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_IMAGES_PATH=\\\"${datadir}/eflete/themes/default/template/images\\\" "
 EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_SOUNDS_PATH=\\\"${datadir}/eflete/themes/default/template/sounds\\\" "

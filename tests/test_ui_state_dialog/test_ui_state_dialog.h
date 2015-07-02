@@ -30,9 +30,7 @@
 void state_dialog_state_add_test_n1(int);
 void state_dialog_state_add_test_n2(int);
 void state_dialog_state_add_test_n3(int);
-void state_dialog_state_add_test_p(int);
 
 void state_dialog_state_del_test_n1(int);
 void state_dialog_state_del_test_n2(int);
 void state_dialog_state_del_test_n3(int);
-void state_dialog_state_del_test_p(int);

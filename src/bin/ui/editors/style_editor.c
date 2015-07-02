@@ -659,7 +659,7 @@ _style_editor_search_field_create(Evas_Object *parent)
    ENTRY_ADD(parent, entry, true);
    elm_object_style_set(entry, "search_field");
    elm_object_part_text_set(entry, "guide", _("Search"));
-   ICON_ADD(entry, icon, true, "icon-search");
+   ICON_STANDARD_ADD(entry, icon, true, "search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
    return entry;
 }
@@ -737,6 +737,7 @@ _form_left_side(Style_Editor *style_edit)
    if (!_itc_tags)
      {
         _itc_tags= elm_genlist_item_class_new();
+        _itc_tags->item_style = "default";
         _itc_tags->func.text_get = _item_tags_label_get;
         _itc_tags->func.content_get = NULL;
         _itc_tags->func.state_get = NULL;
@@ -772,7 +773,7 @@ _form_left_side(Style_Editor *style_edit)
    EINA_LIST_FOREACH(styles, l_st, style)
      {
         glit_style = elm_genlist_item_append(style_edit->glist, _itc_style,
-                                             style, NULL, ELM_GENLIST_ITEM_NONE,
+                                             style, NULL, ELM_GENLIST_ITEM_GROUP,
                                              _on_glit_selected, style_edit);
         elm_object_item_data_set(glit_style, style);
 
@@ -820,7 +821,7 @@ _change_bg_cb(void *data,
      {
       case 0:
         {
-           GET_IMAGE(bg, canvas, "bg_demo");
+           IMAGE_ADD_NEW(obj, bg, "bg", "tile");
            evas_object_show(bg);
         }
       break;
@@ -1823,15 +1824,15 @@ _form_right_side(Style_Editor *style_edit)
    elm_object_style_set(RADIO, "style_editor"); \
    elm_radio_state_value_set(RADIO, VALUE); \
    evas_object_show(RADIO); \
-   IMAGE_ADD(box_bg, image_bg, IMAGE); \
+   IMAGE_ADD_NEW(box_bg, image_bg, "preview", IMAGE); \
    elm_object_part_content_set(RADIO, "bg", image_bg); \
    evas_object_smart_callback_add(RADIO, "changed", _change_bg_cb, style_edit); \
    elm_box_pack_end(box_bg, RADIO);
 
-   _RADIO_ADD(radio_group, 0, "styles-preview-bg-transparent");
-   _RADIO_ADD(radio, 1, "styles-preview-bg-black");
+   _RADIO_ADD(radio_group, 0, "bg-tile");
+   _RADIO_ADD(radio, 1, "bg-black");
    elm_radio_group_add(radio, radio_group);
-   _RADIO_ADD(radio, 2, "styles-preview-bg-white");
+   _RADIO_ADD(radio, 2, "bg-white");
    elm_radio_group_add(radio, radio_group);
 #undef _RADIO_ADD
    elm_object_part_content_set(layout, "menu_container", box_bg);
@@ -1932,9 +1933,8 @@ style_editor_window_add(Project *project)
    elm_object_signal_emit(style_edit->entry_prev, "entry,hide", "eflete");
 
    canvas = evas_object_evas_get(style_edit->mwin);
-   GET_IMAGE(bg, canvas, "bg_demo");
+   IMAGE_ADD_NEW(style_edit->mwin, bg, "bg", "tile");
    elm_object_part_content_set(style_edit->entry_prev, "background", bg);
-   evas_object_show(bg);
 
    style_edit->textblock_style = evas_object_textblock_add(canvas);
    elm_object_part_content_set(style_edit->entry_prev, "entry", style_edit->textblock_style);

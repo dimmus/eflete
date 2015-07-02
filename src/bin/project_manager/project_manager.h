@@ -85,6 +85,7 @@ struct _Project
    Eina_File *mmap_file; /**< mmaped dev file*/
 
    Eina_List *added_sounds;
+   Eina_List *nsimage_list;
 
    struct
    {

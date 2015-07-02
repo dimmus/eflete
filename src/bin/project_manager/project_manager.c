@@ -346,6 +346,7 @@ _project_linked_images_copy(Project_Thread *worker)
    Edje_Edit_Image_Comp comp;
    Eina_Bool is_changed = false;
 
+   ecore_thread_main_loop_begin();
    ee = ecore_evas_buffer_new(0, 0);
    e = ecore_evas_get(ee);
    list = edje_file_collection_list(worker->project->saved_edj);
@@ -355,8 +356,10 @@ _project_linked_images_copy(Project_Thread *worker)
         evas_object_del(edje_edit_obj);
         ecore_evas_free(ee);
         edje_file_collection_list_free(list);
+        ecore_thread_main_loop_end();
         return false;
      }
+   ecore_thread_main_loop_end();
    edje_file_collection_list_free(list);
 
    list = edje_edit_images_list_get(edje_edit_obj);
@@ -402,8 +405,10 @@ _project_linked_images_copy(Project_Thread *worker)
    edje_edit_string_list_free(list);
    eina_strbuf_free(strbuf_to);
    eina_strbuf_free(strbuf_from);
+   ecore_thread_main_loop_begin();
    evas_object_del(edje_edit_obj);
    ecore_evas_free(ee);
+   ecore_thread_main_loop_end();
    return true;
 }
 
@@ -436,6 +441,7 @@ _project_import_edj(void *data,
    WORKER_LOCK_TAKE;
       pm_project_resource_export(worker->project, NULL);
       _project_linked_images_copy(worker);
+      edje_file_cache_flush();
    WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS);
@@ -555,6 +561,7 @@ _project_import_edc(void *data,
       worker->project->widgets = wm_widgets_list_new(worker->project->dev);
       worker->project->layouts = wm_layouts_list_new(worker->project->dev);
       pm_project_resource_export(worker->project, NULL);
+      edje_file_cache_flush();
    WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS)
@@ -720,6 +727,7 @@ _project_save(void *data,
    GET_OBJ(worker->project, edje_edit_obj);
 
    PROGRESS_SEND("Saving...");
+   ecore_thread_main_loop_begin();
    WORKER_LOCK_TAKE;
       EINA_INLIST_FOREACH(worker->project->widgets, widget)
         {
@@ -751,12 +759,20 @@ _project_save(void *data,
              }
         }
    eina_file_close(worker->project->mmap_file);
+   Uns_List *it;
+   Eina_List *add_list = NULL, *l;
+   EINA_LIST_FOREACH(worker->project->nsimage_list, l, it)
+      {
+         if (it->act_type == ACTION_TYPE_ADD)
+           add_list = eina_list_append(add_list, eina_stringshare_add(ecore_file_file_get(it->data)));
+      }
 
    /* saving */
-   list = edje_edit_images_list_get(edje_edit_obj);
    dest = eina_stringshare_printf("%s/images", worker->project->develop_path);
-   _image_resources_export(list, dest, NULL, worker->project->dev, edje_edit_obj);
-   edje_edit_string_list_free(list);
+   _image_resources_export(add_list, dest, NULL, worker->project->dev, edje_edit_obj);
+   edje_edit_string_list_free(add_list);
+   EINA_LIST_FREE(worker->project->nsimage_list, it)
+      free(it);
    eina_stringshare_del(dest);
 
    list = edje_edit_sound_samples_list_get(edje_edit_obj);
@@ -783,6 +799,7 @@ _project_save(void *data,
      }
 
    WORKER_LOCK_RELEASE;
+   ecore_thread_main_loop_end();
 
    PROGRESS_SEND("Saved.");
    END_SEND(PM_PROJECT_SUCCESS);
@@ -975,23 +992,30 @@ _image_resources_export(Eina_List *images, Eina_Stringshare *destination,
               }
             else
               {
+                 ecore_thread_main_loop_begin();
                  im = evas_object_image_add(e);
                  id = edje_edit_image_id_get(edje_edit, image_name);
                  if (id < 0)
                    {
                       WARN("Image %s coudn't be exported", image_name);
+                      ecore_thread_main_loop_end();
                       continue;
                    }
                  source_file = eina_stringshare_printf("edje/images/%i", id);
                  evas_object_image_file_set(im, dev, source_file);
+                 ecore_thread_main_loop_end();
                  evas_object_image_save(im, dest_file, NULL, NULL);
+                 ecore_thread_main_loop_begin();
                  evas_object_del(im);
+                 ecore_thread_main_loop_end();
               }
          }
        eina_stringshare_del(source_file);
        eina_stringshare_del(dest_file);
     }
+  ecore_thread_main_loop_begin();
   ecore_evas_free(ee);
+  ecore_thread_main_loop_end();
 
   return true;
 }
@@ -1019,7 +1043,7 @@ _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
     {
        sound_file = edje_edit_sound_samplesource_get(edje_edit, sound_name);
        source_file = eina_stringshare_printf("%s/%s", source, sound_file);
-       dest_file = eina_stringshare_printf("%s/%s", destination, sound_name);
+       dest_file = eina_stringshare_printf("%s/%s", destination, sound_file);
        if (!ecore_file_exists(dest_file))
          {
             file_dir = ecore_file_dir_get(dest_file);
@@ -1244,6 +1268,7 @@ pm_project_resource_export(Project *pro, const char* dir_path)
    Eina_Stringshare *dest;
    Eina_Stringshare *path = NULL;
 
+   ecore_thread_main_loop_begin();
    Ecore_Evas *ee = ecore_evas_buffer_new(0, 0);
    e = ecore_evas_get(ee);
    list = edje_file_collection_list(pro->dev);
@@ -1252,8 +1277,10 @@ pm_project_resource_export(Project *pro, const char* dir_path)
      {
         evas_object_del(edje_edit_obj);
         ecore_evas_free(ee);
+        ecore_thread_main_loop_end();
         return false;
      }
+   ecore_thread_main_loop_end();
    edje_edit_string_list_free(list);
    path = (dir_path) ? eina_stringshare_add(dir_path)
           : eina_stringshare_add(pro->develop_path);
@@ -1280,8 +1307,10 @@ pm_project_resource_export(Project *pro, const char* dir_path)
    eina_stringshare_del(dest);
 
    eina_stringshare_del(path);
+   ecore_thread_main_loop_begin();
    evas_object_del(edje_edit_obj);
    ecore_evas_free(ee);
+   ecore_thread_main_loop_end();
 
    return true;
 }

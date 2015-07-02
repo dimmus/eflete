@@ -339,7 +339,7 @@ _on_bt_mode_change(void *data,
    elm_object_content_unset(animator->prop_scroller);
    if (animator->sequence_mode)
      {
-        ICON_ADD(bt, icon, false, "animator_arrow_left");
+        IMAGE_ADD_NEW(bt, icon, "animator", "arrow-left");
         elm_layout_content_set(bt, "icon", icon);
         program_editor_program_stop(animator->program_editor);
         evas_object_hide(animator->program_editor);
@@ -349,7 +349,7 @@ _on_bt_mode_change(void *data,
      }
    else
      {
-        ICON_ADD(bt, icon, false, "animator_arrow_right");
+        IMAGE_ADD_NEW(bt, icon, "animator", "arrow-right");
         elm_layout_content_set(bt, "icon", icon);
         prog_sequence_program_stop(animator->program_sequence);
         evas_object_hide(animator->program_sequence);
@@ -623,9 +623,9 @@ animator_window_add(Style *style)
    BUTTON_ADD(animator->program_area_layout, bt, "");
    elm_object_part_content_set(animator->program_area_layout, "swallow.button", bt);
    evas_object_smart_callback_add(bt, "clicked", _on_bt_mode_change, animator);
-   ICON_ADD(bt, ic, false, "animator_arrow_right");
+   IMAGE_ADD_NEW(bt, ic, "animator", "arrow-right");
    elm_layout_content_set(bt, "icon", ic);
-   elm_object_style_set(bt, "simple");
+   elm_object_style_set(bt, "anchor");
 
    SCROLLER_ADD(animator->program_area_layout, scroller);
    elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);

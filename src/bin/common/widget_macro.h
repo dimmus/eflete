@@ -129,12 +129,6 @@ TODO("see large comment below")
    evas_object_size_hint_weight_set(CHECK, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_show(CHECK);
 
-#define IMAGE_ADD(PARENT, IMAGE, NAME) \
-   GET_IMAGE(IMAGE, PARENT, NAME); \
-   evas_object_size_hint_align_set(IMAGE, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   evas_object_size_hint_weight_set(IMAGE, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
-   evas_object_show(IMAGE);
-
 #define BUTTON_ADD(PARENT, BUTTON, TEXT) \
    BUTTON = elm_button_add(PARENT); \
    evas_object_size_hint_align_set(BUTTON, EVAS_HINT_FILL, EVAS_HINT_FILL); \
@@ -146,11 +140,13 @@ TODO("see large comment below")
    ICON = elm_icon_add (PARENT);\
    elm_icon_standard_set(ICON, ICON_NAME);\
    elm_image_no_scale_set(ICON, NOSCALE);\
+   evas_object_size_hint_align_set(ICON, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   evas_object_size_hint_weight_set(ICON, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_show(ICON);
 
-#define ICON_ADD(PARENT, ICON, NOSCALE, NAME) \
-   GET_IMAGE(ICON, PARENT, NAME);\
-   evas_object_show(ICON);
+#define IMAGE_ADD_NEW(PARENT, IMAGE, NAME, STYLE) \
+   IMAGE = elm_image_add(PARENT); \
+   elm_image_file_set(IMAGE, EFLETE_THEME, "elm/image/"NAME"/"STYLE);
 
 #define HOVERSEL_ADD(PARENT, HOVERSEL, ISHORIZONTAL) \
    HOVERSEL = elm_hoversel_add(PARENT); \
