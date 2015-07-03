@@ -1518,7 +1518,10 @@ ui_property_state_set(Evas_Object *property, Part *part)
      ui_property_state_container_unset(property);
 
    /* hide/show the color class attribute control for GROUP */
-   if (part->type == EDJE_PART_TYPE_GROUP)
+   if ((part->type == EDJE_PART_TYPE_GROUP) ||
+       (part->type == EDJE_PART_TYPE_SWALLOW) ||
+       (part->type == EDJE_PART_TYPE_SPACER) ||
+       (part->type == EDJE_PART_TYPE_TEXTBLOCK))
      {
         if (evas_object_visible_get(pd_state.color_class_item))
           {
