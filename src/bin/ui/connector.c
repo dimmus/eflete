@@ -340,34 +340,42 @@ _widgetlist_current_genlist_get(App_Data *ap, Type group_type)
 }
 
 static void
+_job_popup_close(void *data)
+{
+   App_Data *ap = (App_Data *)data;
+   evas_object_del(ap->popup);
+   ap->popup = NULL;
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+}
+
+static void
+_popup_close_cb(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   ecore_job_add(_job_popup_close, data);
+}
+
+static void
 _add_layout_cb(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
-   Evas_Object *widget_list = _widgetlist_current_genlist_get(data, LAYOUT), *eoi;
-   Eina_Bool nameExist = true;
-   App_Data *ap = (App_Data *)data;
+   Evas_Object *widget_list, *eoi;
+   App_Data *ap = app_data_get();
    Style *layout = NULL;
-   unsigned int i = 0;
    const char *name = NULL;
-   Evas_Object *group_obj;
+   Evas_Object *group_obj, *en;
 
+   widget_list = _widgetlist_current_genlist_get(ap, LAYOUT);
+   en = (Evas_Object *)data;
+   name = elm_entry_entry_get(en);
    GET_STYLE(ap->project, layout);
 
    /* Using aliased group, if the group we've found is alias. */
    group_obj = (layout->isAlias) ? layout->main_group->obj : layout->obj;
 
-   for (i = 0; i < 999; i++)
-     {
-        name = eina_stringshare_printf("new/layout/%d", i);
-        if (!edje_edit_group_exist(group_obj, name))
-          {
-             nameExist = false;
-             break;
-          }
-     }
-
-   if (nameExist)
+   if (edje_edit_group_exist(group_obj, name))
      {
         NOTIFY_INFO(3, _("Failed to create new layout."));
         ERR("Failed to create new layout: all avalaible names are existing");
@@ -396,8 +404,45 @@ _add_layout_cb(void *data,
    elm_genlist_item_selected_set(eoi, true);
    eina_stringshare_del(name);
 
+   ecore_job_add(_job_popup_close, ap);
    project_changed(true);
    return;
+}
+
+static void
+_popup_layout_add(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   Evas_Object *item, *en, *bt;
+   App_Data *ap;
+
+   ap = (App_Data *)data;
+   if (!ap) return;
+
+   /* Checking if the source style is an alias.
+      We can't clone aliases right now, it need lots of difficult code for that.
+   */
+   ap->popup = elm_popup_add(ap->win_layout);
+   elm_object_part_text_set(ap->popup, "title,text", _("Add new layout"));
+   elm_popup_orient_set(ap->popup, ELM_POPUP_ORIENT_CENTER);
+
+   LAYOUT_PROP_ADD(ap->popup, "Style name:", "property", "1swallow")
+   EWE_ENTRY_ADD(item, en, true)
+   elm_object_part_text_set(en, "guide", _("Type a new layout name"));
+   elm_object_part_content_set(item, "elm.swallow.content", en);
+   elm_object_content_set(ap->popup, item);
+
+   BUTTON_ADD(ap->popup, bt, _("Add"));
+   evas_object_smart_callback_add(bt, "clicked", _add_layout_cb, en);
+   elm_object_part_content_set(ap->popup, "button1", bt);
+
+   BUTTON_ADD(ap->popup, bt, _("Cancel"));
+   evas_object_smart_callback_add(bt, "clicked", _popup_close_cb, ap);
+   elm_object_part_content_set(ap->popup, "button2", bt);
+
+   evas_object_show(ap->popup);
+   elm_object_focus_set(en, true);
 }
 
 static void
@@ -1741,7 +1786,7 @@ register_callbacks(App_Data *ap)
                                   _del_style, ap);
 
    evas_object_smart_callback_add(ap->block.left_top, "wl,layout,add",
-                                  _add_layout_cb, ap);
+                                  _popup_layout_add, ap); //_add_layout_cb, ap);
    evas_object_smart_callback_add(ap->block.left_top, "wl,layout,del",
                                   _del_layout, ap);
 
