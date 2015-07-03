@@ -1865,7 +1865,7 @@ Evas_Object *
 style_editor_window_add(Project *project)
 {
    Evas_Object *panes, *panes_h;
-   Evas_Object *window_layout, *button_box, *btn;
+   Evas_Object *btn;
    Evas_Object *layout_left, *layout_right;
    Evas_Object *bg, *ic;
    Evas *canvas = NULL;
@@ -1890,7 +1890,7 @@ style_editor_window_add(Project *project)
    style_edit = (Style_Editor *)mem_calloc(1, sizeof(Style_Editor));
 
    style_edit->pr = project;
-   style_edit->mwin = mw_add(NULL, _on_viewer_exit, style_edit);
+   style_edit->mwin = mw_add("dialog", _on_viewer_exit, style_edit);
    if (!style_edit->mwin)
      {
         free(style_edit);
@@ -1902,15 +1902,12 @@ style_editor_window_add(Project *project)
    mw_icon_set(style_edit->mwin, ic);
    evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_FREE,
                                         _on_style_editor_close, style_edit);
-   window_layout = elm_layout_add(style_edit->mwin);
-   elm_layout_file_set(window_layout, EFLETE_EDJ, "eflete/editor/default");
-   elm_win_inwin_content_set(style_edit->mwin, window_layout);
 
    panes = elm_panes_add(style_edit->mwin);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes, 0.2);
-   elm_object_part_content_set(window_layout, "eflete.swallow.content", panes);
+   elm_object_part_content_set(style_edit->mwin, NULL, panes);
    evas_object_show(panes);
 
    layout_left = _form_left_side(style_edit);
@@ -1950,16 +1947,10 @@ style_editor_window_add(Project *project)
    elm_object_part_content_set(panes_h, "right", layout_right);
    evas_object_show(layout_right);
 
-   BOX_ADD(window_layout, button_box, true, false)
-   elm_box_align_set(button_box, 1.0, 0.5);
-
    BUTTON_ADD(style_edit->mwin, btn, _("Close viewer"));
    evas_object_smart_callback_add(btn, "clicked", _on_viewer_exit, style_edit);
-   evas_object_size_hint_weight_set(btn, 0.0, 0.0);
-   evas_object_size_hint_min_set(btn, 100, 30);
    evas_object_show(btn);
-   elm_box_pack_end(button_box, btn);
-   elm_object_part_content_set(window_layout, "eflete.swallow.button_box", button_box);
+   elm_object_part_content_set(style_edit->mwin, "eflete.swallow.btn_close", btn);
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
