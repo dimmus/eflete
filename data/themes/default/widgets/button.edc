@@ -1,5 +1,9 @@
 #define BUTTON_BORDER 6 6 13 13
 group { name: "elm/button/base/default";
+   alias: "elm/button/base/colorselector/default";
+   alias: "elm/button/base/fileselector/default";
+   alias: "elm/button/base/fileselector/actions/default";
+   alias: "elm/button/base/hoversel_vertical/fileselector/actions/default";
    images {
       image: "button_bg.png" COMP;
       image: "button_click_bg.png" COMP;
