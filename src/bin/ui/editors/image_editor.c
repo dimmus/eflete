@@ -1113,7 +1113,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    Image_Editor *img_edit = (Image_Editor *)mem_calloc(1, sizeof(Image_Editor));
    img_edit->pr = project;
 
-   img_edit->win = mw_add(NULL, _on_button_close_clicked_cb, img_edit);
+   img_edit->win = mw_add("dialog", _on_button_close_clicked_cb, img_edit);
    if (!img_edit->win)
      {
         free(img_edit);
@@ -1207,17 +1207,17 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
 
    _image_info_initiate(img_edit);
 
-   BUTTON_ADD(img_edit->layout, button, _("Close"));
+   BUTTON_ADD(img_edit->win, button, _("Close"));
    evas_object_smart_callback_add(button, "clicked", _on_button_close_clicked_cb,
                                   img_edit);
-   elm_object_part_content_set(img_edit->layout,
-                               "eflete.swallow.close_btn", button);
+   elm_object_part_content_set(img_edit->win,
+                               "eflete.swallow.btn_close", button);
 
-   BUTTON_ADD(img_edit->layout, button, _("Apply"));
+   BUTTON_ADD(img_edit->win, button, _("Apply"));
    evas_object_smart_callback_add(button, "clicked", _on_button_apply_clicked_cb,
                                   img_edit);
-   elm_object_part_content_set(img_edit->layout,
-                               "eflete.swallow.ok_btn", button);
+   elm_object_part_content_set(img_edit->win,
+                               "eflete.swallow.btn_ok", button);
 
    if (!gic)
      {
