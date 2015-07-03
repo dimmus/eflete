@@ -1863,6 +1863,7 @@ group { name: "elm/layout/image_editor/default";
       part { name: "eflete.swallow.search_area";
          type: SWALLOW;
          description { state: "default" 0.0;
+            fixed: 0 1;
             align: 0.0 0.0;
             max: 600 19;
             rel1 {
