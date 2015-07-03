@@ -60,7 +60,7 @@ EFLETE_TEST (mw_icon_set_test_p)
    app_init();
    app = app_data_get();
    ui_main_window_add(app);
-   mw = mw_add(NULL, NULL);
+   mw = mw_add(NULL, NULL, NULL);
    Evas_Object *ic = elm_icon_add(app->win);
    elm_image_file_set (ic, "./edj_build/radio_base.png", NULL);
 
@@ -101,7 +101,7 @@ EFLETE_TEST (mw_icon_set_test_n1)
    app_init();
    app = app_data_get();
    ui_main_window_add(app);
-   mw = mw_add(NULL, NULL);
+   mw = mw_add(NULL, NULL, NULL);
 
    ck_assert_msg(mw_icon_set(mw, NULL) == EINA_FALSE, "Icon was set");
 
