@@ -533,7 +533,7 @@ animator_window_add(Style *style)
    animator = (Animator *)mem_calloc(1, sizeof(Animator));
 
    animator->style = style;
-   animator->mwin = mw_add(_on_animator_ok, animator);
+   animator->mwin = mw_add(NULL, _on_animator_ok, animator);
    if (!animator->mwin)
      {
         free(animator);

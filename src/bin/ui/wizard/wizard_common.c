@@ -329,7 +329,7 @@ wizard_import_common_add(const char *layout_name)
    wiew = (Wizard_Import_Edj_Win *)mem_calloc(1, sizeof(Wizard_Import_Edj_Win));
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
 
-   mwin = mw_add(_on_cancel, wiew);
+   mwin = mw_add(NULL, _on_cancel, wiew);
    if (!mwin)
      {
         free(wiew);

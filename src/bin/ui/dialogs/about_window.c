@@ -34,7 +34,7 @@ _on_mwin_del(void * data,
 Evas_Object *
 about_window_add()
 {
-   Evas_Object *mwin = mw_about_add(NULL, NULL);
+   Evas_Object *mwin = mw_add("about_window", NULL, NULL);
    mw_title_set(mwin, _("About"));
    Evas_Object *label;
    /* temporary solution, while it not moved to modal window */

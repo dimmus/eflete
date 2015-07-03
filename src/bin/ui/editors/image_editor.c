@@ -670,7 +670,7 @@ _on_button_add_clicked_cb(void *data,
    Evas_Object *fs, *ic;
    Image_Editor *edit = data;
 
-   edit->fs_win  = mw_add(NULL, NULL);
+   edit->fs_win  = mw_add(NULL, NULL, NULL);
    mw_title_set(edit->fs_win, "Add image to the library");
    ic = elm_icon_add(edit->fs_win);
    elm_icon_standard_set(ic, "folder");
@@ -1113,7 +1113,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    Image_Editor *img_edit = (Image_Editor *)mem_calloc(1, sizeof(Image_Editor));
    img_edit->pr = project;
 
-   img_edit->win = mw_add(_on_button_close_clicked_cb, img_edit);
+   img_edit->win = mw_add(NULL, _on_button_close_clicked_cb, img_edit);
    if (!img_edit->win)
      {
         free(img_edit);

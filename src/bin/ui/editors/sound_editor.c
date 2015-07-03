@@ -1407,7 +1407,7 @@ _sample_add_cb(void *data,
    Evas_Object *fs, *ic;
    Sound_Editor *edit = data;
 
-   edit->fs_win  = mw_add(NULL, NULL);
+   edit->fs_win  = mw_add(NULL, NULL, NULL);
    if (!edit->fs_win) return;
    mw_title_set(edit->fs_win, "Add sound to the library");
    ic = elm_icon_add(edit->fs_win);
@@ -1683,7 +1683,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    edit = (Sound_Editor *)mem_calloc(1, sizeof(Sound_Editor));
    edit->mode = mode;
    edit->pr = project;
-   edit->win = mw_add(_on_quit_cb, edit);
+   edit->win = mw_add(NULL, _on_quit_cb, edit);
    if (!edit->win)
      {
         free(edit);

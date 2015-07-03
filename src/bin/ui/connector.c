@@ -876,7 +876,7 @@ project_open(void)
    App_Data *ap = app_data_get();
    if (!project_close(ap))
      return;
-   win  = mw_add(_fs_close, ap);
+   win  = mw_add(NULL, _fs_close, ap);
    if (!win)
      return;
    evas_object_show(win);
@@ -1208,7 +1208,7 @@ project_export_develop(void)
    Evas_Object *win, *fs;
    App_Data *ap = app_data_get();
 
-   win  = mw_add(_fs_close, ap);
+   win  = mw_add(NULL, _fs_close, ap);
    if (!win)
      return;
    evas_object_show(win);
@@ -1277,7 +1277,7 @@ project_export_edc_group(void)
    Evas_Object *win, *fs;
    App_Data *ap = app_data_get();
 
-   win  = mw_add(_fs_close, ap);
+   win  = mw_add(NULL, _fs_close, ap);
    if (!win)
      return;
    evas_object_show(win);
@@ -1389,7 +1389,7 @@ project_export_edc_project(void)
    Evas_Object *win, *fs;
    App_Data *ap = app_data_get();
 
-   win  = mw_add(_fs_close, ap);
+   win  = mw_add(NULL, _fs_close, ap);
    if (!win)
      return;
    evas_object_show(win);

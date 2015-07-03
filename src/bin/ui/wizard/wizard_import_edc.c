@@ -527,7 +527,7 @@ _on_directory_bt(void *data,
    const char *path;
    Item_Mod_Callback_Data *c_data = (Item_Mod_Callback_Data*)data;
 
-   c_data->wiew->fs = mw_add(_fs_close, NULL);
+   c_data->wiew->fs = mw_add(NULL, _fs_close, NULL);
    ic = elm_icon_add(c_data->wiew->fs);
    elm_icon_standard_set(ic, "folder");
    mw_icon_set(c_data->wiew->fs, ic);

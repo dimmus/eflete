@@ -707,7 +707,7 @@ colorclass_manager_add(Project *project)
    edit = (Colorclasses_Manager *)mem_calloc(1, sizeof(Colorclasses_Manager));
    edit->changed = false;
    edit->pr = project;
-   edit->mwin = mw_add(_on_btn_cancel, edit);
+   edit->mwin = mw_add(NULL, _on_btn_cancel, edit);
    if (!edit->mwin)
      {
         free(edit);

@@ -1890,7 +1890,7 @@ style_editor_window_add(Project *project)
    style_edit = (Style_Editor *)mem_calloc(1, sizeof(Style_Editor));
 
    style_edit->pr = project;
-   style_edit->mwin = mw_add(_on_viewer_exit, style_edit);
+   style_edit->mwin = mw_add(NULL, _on_viewer_exit, style_edit);
    if (!style_edit->mwin)
      {
         free(style_edit);

@@ -154,12 +154,19 @@ mw_del(Evas_Object *mw)
 }
 
 Evas_Object *
-_mw_create(Evas_Object *parent,
-           const char *style_name,
-           Evas_Smart_Cb func,
-           void *data)
+mw_add(const char *style_name,
+       Evas_Smart_Cb func,
+       void *data)
 {
    Evas_Object *mw, *bt_close, *ic;
+   Evas_Object *parent;
+
+   parent = main_window_get();
+   if (!parent)
+     {
+        ERR("Parent evas_object is NULL.");
+        return NULL;
+     }
 
    mw = elm_win_inwin_add(parent);
    if (style_name)
@@ -184,37 +191,19 @@ _mw_create(Evas_Object *parent,
 
    return mw;
 }
-
+/*
 Evas_Object *
 mw_add(Evas_Smart_Cb func, void *data)
 {
-   Evas_Object *win = NULL;
-   win = main_window_get();
-
-   if (!win)
-     {
-        ERR("Parent evas_object is NULL.");
-        return NULL;
-     }
-
-   return _mw_create(win, NULL, func, data);
+   return _mw_create(NULL, func, data);
 }
 
 Evas_Object *
 mw_about_add(Evas_Smart_Cb func, void *data)
 {
-   Evas_Object *win = NULL;
-   win = main_window_get();
-
-   if (!win)
-     {
-        ERR("Parent evas_object is NULL.");
-        return NULL;
-     }
-
-   return _mw_create(win, "about_window", func, data);
+   return _mw_create("about_window", func, data);
 }
-
+*/
 Eina_Bool
 mw_title_set(Evas_Object *object, const char *title)
 {

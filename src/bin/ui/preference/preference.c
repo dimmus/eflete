@@ -333,7 +333,7 @@ preferences_window_add(Project *project)
    preference = (Preferences *)mem_calloc(1, sizeof(Preferences));
 
    preference->pr = project;
-   preference->mwin = mw_add(_on_edit_preferences_exit, preference);
+   preference->mwin = mw_add(NULL, _on_edit_preferences_exit, preference);
    if (!preference->mwin)
      {
         free(preference);
