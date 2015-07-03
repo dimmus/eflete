@@ -364,12 +364,17 @@ _add_layout_cb(void *data,
    Evas_Object *widget_list, *eoi;
    App_Data *ap = app_data_get();
    Style *layout = NULL;
-   const char *name = NULL;
+   Eina_Stringshare *name = NULL;
    Evas_Object *group_obj, *en;
 
    widget_list = _widgetlist_current_genlist_get(ap, LAYOUT);
    en = (Evas_Object *)data;
-   name = elm_entry_entry_get(en);
+   name = eina_stringshare_add(elm_entry_entry_get(en));
+   if (eina_stringshare_strlen(name) <= 0)
+     {
+        NOTIFY_WARNING(_("Please type layout name"));
+        goto exit;
+     }
    GET_STYLE(ap->project, layout);
 
    /* Using aliased group, if the group we've found is alias. */
@@ -406,6 +411,8 @@ _add_layout_cb(void *data,
 
    ecore_job_add(_job_popup_close, ap);
    project_changed(true);
+exit:
+   eina_stringshare_del(name);
    return;
 }
 
