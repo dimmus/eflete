@@ -181,6 +181,240 @@ group { name: "elm/win/inwin/default";
    }
 }
 
+group { name: "elm/win/inwin/dialog";
+   parts {
+      part { name: "block_events";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 0 0 0;
+         }
+         description { state: "clicked" 0.0;
+            color: 255 0 0 50;
+         }
+      }
+      part { name: "pop";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 0.1 0.1;
+            }
+            rel2 {
+               relative: 0.9 0.9;
+            }
+            image {
+               normal: "popup-bg.png";
+               border: 34 34 34 34;
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "header";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            min: 0 31;
+            max: -1 31;
+            rel1 {
+               offset: 21 21;
+               to: "pop";
+            }
+            rel2 {
+               offset: -21 -21;
+               to: "pop";
+            }
+            image {
+               normal: "popup-header-bg.png";
+               border: 11 11 0 0;
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "header_space_rel1_padding";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 6 6;
+            max: 6 6;
+            rel1 {
+               to: "header";
+            }
+            rel2 {
+               to: "header";
+            }
+         }
+      }
+      part { name: "header_space_rel2_padding";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            min: 6 6;
+            max: 6 6;
+            rel1 {
+               to: "header";
+            }
+            rel2 {
+               to: "header";
+            }
+         }
+      }
+      part { name: "header_space";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "header_space_rel1_padding";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "header_space_rel2_padding";
+            }
+         }
+      }
+      part { name: "elm.swallow.icon";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 16 16;
+            max: 16 16;
+            rel1 {
+               to: "header_space";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -6 -1;
+               to_x: "elm.text.title";
+               to_y: "header_space";
+            }
+         }
+      }
+      part { name: "elm.swallow.close";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            max: 21 21;
+            aspect: 1.0 1.0;
+            rel1 {
+               to: "header_space";
+            }
+            rel2 {
+               to: "header_space";
+            }
+         }
+      }
+      part { name: "elm.text.title";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color: 223 219 210 255;
+            color3: 255 255 255 25;
+            rel1 {
+               relative: 1.0 1.0;
+               offset: 22 0;
+               to: "header_space_rel1_padding";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               offset: -22 -1;
+               to: "header_space_rel2_padding";
+            }
+            text {
+               font: "PT-Bold";
+               size: 15;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               offset: 0 6;
+               to_x: "header_space_rel1_padding";
+               to_y: "header";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -1 -9;
+               to_x: "header_space_rel2_padding";
+               to_y: "decoration.button_box";
+            }
+         }
+      }
+      part { name: "decoration.button_box";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 1 1;
+            min: 0 2;
+            max: -1 2;
+            rel1 {
+               offset: 6 0;
+               to_x: "header_space_rel1_padding";
+            }
+            rel2 {
+               offset: -1 -26;
+               to: "eflete.swallow.btn_close";
+            }
+            image {
+               normal: "separator-horizontal.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "eflete.swallow.btn_close";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            fixed: 1 1;
+            min: 73 19;
+            max: 73 19;
+            rel2 {
+               offset: -8 -28;
+               to_x: "header_space_rel2_padding";
+               to_y: "pop";
+            }
+         }
+      }
+      part { name: "eflete.swallow.btn_ok";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            fixed: 1 1;
+            min: 75 19;
+            max: 75 19;
+            rel1 {
+               to: "eflete.swallow.btn_close";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -7 -1;
+               to: "eflete.swallow.btn_close";
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "block_clicked";
+         signal: "mouse,clicked,*";
+         source: "block_events";
+         action: SIGNAL_EMIT "elm,action,click" "elm";
+         after: "deeper_block_color";
+      }
+      program { name: "deeper_block_color";
+         action: STATE_SET "clicked" 0.00;
+         target: "block_events";
+         after: "default_block_color";
+      }
+      program { name: "default_block_color";
+         action: STATE_SET "default" 0.00;
+         transition: LINEAR 0.20000;
+         target: "block_events";
+      }
+   }
+}
+
 #define ABOUT_WINDOW_SIZE 400 300
 #define SCROLL_TIME 8.0
 
