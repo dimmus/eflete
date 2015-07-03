@@ -22,6 +22,11 @@
 
 #define makefile "#! bin/sh\nedje_cc -id ./images -fd ./fonts -sd ./sounds  "
 
+static Elm_Entry_Filter_Accept_Set accept_name = {
+   .accepted = NULL,
+   .rejected = STYLE_NAME_BANNED_SYMBOLS
+};
+
 static Eina_Bool
 _project_close_request(App_Data *ap, Eina_Bool changed);
 
@@ -437,6 +442,7 @@ _popup_layout_add(void *data,
    LAYOUT_PROP_ADD(ap->popup, "Style name:", "property", "1swallow")
    EWE_ENTRY_ADD(item, en, true)
    elm_object_part_text_set(en, "guide", _("Type a new layout name"));
+   elm_entry_markup_filter_append(en, elm_entry_filter_accept_set, &accept_name);
    elm_object_part_content_set(item, "elm.swallow.content", en);
    elm_object_content_set(ap->popup, item);
 
