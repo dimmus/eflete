@@ -46,17 +46,16 @@ about_window_add()
    Evas_Object *mwin = mw_add("about_window", NULL, NULL);
    mw_title_set(mwin, _("About"));
    Evas_Object *label;
-   /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
 
    label = elm_label_add(mwin);
    elm_object_text_set(label,
      "<color=#b6b6b6>"
      "<b><align=center>"PACKAGE_NAME" v."VERSION"</align></b><br>"
-     "This application was written for Enlightenment, to use EFL<br>"
-     "and design to a create and modify a Elementary widgets style.<br>"
+     "This application was written for Enlightenment project.<br>"
+     "It is designed to create and modify styles of Elementary widgets.<br>"
      "<br>"
-     "Copyright (C) 2013 - 2014 Samsung Electronics.<br>"
+     "Copyright (C) 2013 - 2015 Samsung Electronics.<br>"
      "<br>"
      "<align=center><b>Authors:</b><br>"
      "Vyacheslav \"rimmed\" Reutskiy (v.reutskiy@samsung.com))<br>"
