@@ -2319,136 +2319,12 @@ group { name: "elm/layout/sound_editor/default";
       image: "focus-outer-glow.png" COMP;
    }
    parts {
-      part { name: "area.bottom";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            min: 0 27;
-            max: -1 27;
-         }
-      }
-      part { name: "padding.bottom";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            FIXED_SIZE(5, 5);
-            rel2 {
-               relative: 1.0 0.0;
-               to: "area.bottom";
-            }
-         }
-      }
-      part { name: "editor.button_box.separator";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            max: -1 2;
-            rel2 {
-               relative: 1.0 0.0;
-               to_y: "padding.bottom";
-            }
-            image.normal: "separator-horizontal.png";
-         }
-      }
-      part { name: "swallow.btn.Cancel";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            FIXED_SIZE(70, 26);
-            rel1.to: "area.bottom";
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "padding.right";
-               to_y: "area.bottom";
-            }
-         }
-      }
-      part { name: "padding.btn";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            FIXED_SIZE(17, 5);
-            rel2 {
-               relative: 0.0 1.0;
-               to: "swallow.btn.Cancel";
-            }
-         }
-      }
-      part { name: "swallow.btn.Ok";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            FIXED_SIZE(70, 26);
-            rel1.to: "area.bottom";
-            rel2 {
-               relative: 0.0 1.0;
-               to: "padding.btn";
-            }
-         }
-      }
-
-      part { name: "padding.bottom2";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            FIXED_SIZE(5, 5);
-            rel2 {
-               relative: 1.0 0.0;
-               to_y: "editor.button_box.separator";
-            }
-         }
-      }
-      part { name: "padding.left";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 16 1;
-            max: 16 -1;
-            rel2 {
-               relative: 1.0 0.0;
-               to_y: "editor.button_box.separator";
-            }
-         }
-      }
-      part { name: "padding.right";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            min: 16 1;
-            max: 16 -1;
-         }
-      }
-      part { name: "area.all_space";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            rel1 {
-               relative: 1.0 0.0;
-               to: "padding.left";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to_x: "padding.right";
-               to_y: "padding.bottom2";
-            }
-         }
-      }
       part { name: "area.info";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 1.0;
             SET_SIZE(320, 200);
-            rel1.to: "area.all_space";
-            rel2.to: "area.all_space";
          }
       }
       part { name: "sound_decoration";
@@ -2471,47 +2347,15 @@ group { name: "elm/layout/sound_editor/default";
             visible: 1;
          }
       }
-      part { name: "padding.top";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            FIXED_SIZE(5, 5);
-            rel1 {
-               relative: 0.0 0.0;
-               to: "area.edit";
-            }
-         }
-      }
       part { name: "area.player";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.0;
             SET_SIZE(320, 180);
-            rel1 {
-               relative: 0.0 1.0;
-               to_x: "area.all_space";
-               to_y: "padding.top";
-            }
             rel2 {
-               relative: 0.0 0.0;
-               to_x: "padding.right";
+               relative: 1.0 0.0;
                to_y: "area.info";
-         }
-         }
-      }
-      part { name: "padding.player";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            min: 16 0;
-            max: 16 -1;
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "area.player";
-               to_y: "area.all_space";
             }
          }
       }
@@ -2522,10 +2366,10 @@ group { name: "elm/layout/sound_editor/default";
             align: 1.0 0.0;
             min: 0 40;
             max: -1 40;
-            rel1.to: "area.all_space";
             rel2 {
                relative: 0.0 1.0;
-               to_x: "padding.player";
+               offset: -7 -1;
+               to_x: "area.player";
             }
          }
       }
@@ -2535,7 +2379,6 @@ group { name: "elm/layout/sound_editor/default";
          description { state: "default" 0.0;
             align: 0.0 1.0;
             FIXED_SIZE(5, 5);
-            rel1.to_x: "area.all_space";
             rel2 {
                relative: 0.0 1.0;
                to: "area.edit";
@@ -2553,8 +2396,8 @@ group { name: "elm/layout/sound_editor/default";
             }
             rel2 {
                relative: 0.0 1.0;
-               to_x: "padding.player";
-               to_y: "area.all_space";
+               offset: -7 -1;
+               to_x: "area.player";
             }
          }
       }
@@ -2567,23 +2410,13 @@ group { name: "elm/layout/sound_editor/default";
             rel2.to: "area.player";
          }
       }
-      part { name: "padding.decoration";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            FIXED_SIZE(15, 5);
-            rel1.to: "sound_decoration";
-         }
-      }
       part { name: "sound_info";
          type: SWALLOW;
-         scale: 1;
          description { state: "default" 0.0;
-            align: 1.0 1.0;
+            align: 0.5 0.0;
             rel1 {
-               to: "padding.decoration";
-               relative: 1.0 1.0;
+               offset: 6 6;
+               to: "area.info";
             }
             rel2.to: "area.info";
          }
