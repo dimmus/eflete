@@ -329,7 +329,7 @@ wizard_import_common_add(const char *layout_name)
    wiew = (Wizard_Import_Edj_Win *)mem_calloc(1, sizeof(Wizard_Import_Edj_Win));
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
 
-   mwin = mw_add(NULL, _on_cancel, wiew);
+   mwin = mw_add("dialog", _on_cancel, wiew);
    if (!mwin)
      {
         free(wiew);
@@ -344,11 +344,11 @@ wizard_import_common_add(const char *layout_name)
    elm_object_content_set(mwin, layout);
    evas_object_show(layout);
 
-   BUTTON_ADD(layout, bt, _("Apply"))
-   elm_object_part_content_set(layout, "swallow.button1", bt);
+   BUTTON_ADD(mwin, bt, _("Apply"))
+   elm_object_part_content_set(mwin, "eflete.swallow.btn_ok", bt);
    evas_object_smart_callback_add(bt, "clicked", _on_apply, wiew);
-   BUTTON_ADD(layout, bt, _("Cancel"))
-   elm_object_part_content_set(layout, "swallow.button2", bt);
+   BUTTON_ADD(mwin, bt, _("Cancel"))
+   elm_object_part_content_set(mwin, "eflete.swallow.btn_close", bt);
    evas_object_smart_callback_add(bt, "clicked", _on_cancel, wiew);
 
    //label.name

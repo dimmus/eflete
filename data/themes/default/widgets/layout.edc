@@ -275,11 +275,7 @@ group { name: "elm/layout/wizard/import_edj";
             align: 0.0 0.5;
             min: 10 0;
             max: 10 -1;
-            rel1.relative: 0.5 0;
-            rel2 {
-               relative: 1.0 0.0;
-               to_y: "area.separator2";
-            }
+            rel1.relative: 0.5 0.0;
          }
       }
       part { name: "separator1";
@@ -485,10 +481,6 @@ group { name: "elm/layout/wizard/import_edj";
                relative: 0.0 1.0;
                to: "area.meta_version";
             }
-            rel2 {
-               relative: 1.0 0.0;
-               to_y: "area.separator2";
-            }
          }
       }
       part { name: "area.meta_authors";
@@ -691,79 +683,6 @@ group { name: "elm/layout/wizard/import_edj";
             rel2.to: "area.meta_comment";
          }
       }
-      part { name: "area.buttons";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            min: 0 26;
-            max: -1 26;
-         }
-      }
-      part { name: "swallow.button1";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            min: 72 0;
-            max: 72 -1;
-            fixed: 1 1;
-            rel1.to: "area.buttons";
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "padding.buttons";
-               to_y: "area.buttons";
-            }
-         }
-      }
-      part { name: "padding.buttons";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            min: 4 0;
-            max: 4 -1;
-            rel1.to: "area.buttons";
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "swallow.button2";
-               to_y: "area.buttons";
-            }
-         }
-      }
-      part { name: "swallow.button2";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            min: 72 0;
-            max: 72 -1;
-            fixed: 1 1;
-            rel1.to: "area.buttons";
-            rel2.to: "area.buttons";
-         }
-      }
-      part { name: "area.separator2";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            min: 0 10;
-            max: -1 10;
-            rel2 {
-               relative: 1.0 0.0;
-               to_y: "area.buttons";
-            }
-         }
-      }
-      part { name: "separator2";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            min: 0 2;
-            max: -1 2;
-            rel1.to: "area.separator2";
-            rel2.to: "area.separator2";
-            image {
-               normal: "separator-horizontal.png";
-               middle: DEFAULT;
-            }
-         }
-      }
    }
 }
 
@@ -795,8 +714,7 @@ group { name: "elm/layout/wizard/import_edc";
             }
             rel2 {
                to_x: "area.separator1";
-               to_y: "area.separator2";
-               relative: 0.0 0.0;
+               relative: 0.0 1.0;
             }
          }
       }
@@ -1050,8 +968,7 @@ group { name: "elm/layout/wizard/new_project";
             min: 10 10;
             max: 10 -1;
             rel2 {
-               relative: 0.6 0.0;
-               to: "area.separator2";
+               relative: 0.6 1.0;
             }
          }
       }
@@ -1253,79 +1170,6 @@ ITEM_ADD(meta_authors)
 ITEM_ADD(meta_licenses)
 ITEM_ADD(meta_comment)
 
-//TODO: reuse this code from "elm/layout/wizard/import_edj"
-      part { name: "area.buttons";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            min: 0 ITEM_H;
-            max: -1 ITEM_H;
-         }
-      }
-      part { name: "swallow.button1";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            min: 72 0;
-            max: 72 -1;
-            fixed: 1 1;
-            rel1.to: "area.buttons";
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "padding.buttons";
-               to_y: "area.buttons";
-            }
-         }
-      }
-      part { name: "padding.buttons";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            min: 4 0;
-            max: 4 -1;
-            rel1.to: "area.buttons";
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "swallow.button2";
-               to_y: "area.buttons";
-            }
-         }
-      }
-      part { name: "swallow.button2";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            min: 72 0;
-            max: 72 -1;
-            fixed: 1 1;
-            rel1.to: "area.buttons";
-            rel2.to: "area.buttons";
-         }
-      }
-      part { name: "area.separator2";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            min: 0 10;
-            max: -1 10;
-            rel2 {
-               relative: 1.0 0.0;
-               to_y: "area.buttons";
-            }
-         }
-      }
-      part { name: "separator2";
-         description { state: "default" 0.0;
-            min: 0 2;
-            max: -1 2;
-            rel1.to: "area.separator2";
-            rel2.to: "area.separator2";
-            image {
-               normal: "separator-horizontal.png";
-               middle: DEFAULT;
-            }
-         }
-      }
    }
 }
 
