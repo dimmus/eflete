@@ -31,9 +31,18 @@ _on_mwin_del(void * data,
    ap->modal_editor--;
 }
 
+static void
+_on_button_close_clicked_cb(void *data,
+                            Evas_Object *obj __UNUSED__,
+                            void *event_info __UNUSED__)
+{
+   evas_object_del(data);
+}
+
 Evas_Object *
 about_window_add()
 {
+   Evas_Object *button;
    Evas_Object *mwin = mw_add("about_window", NULL, NULL);
    mw_title_set(mwin, _("About"));
    Evas_Object *label;
@@ -74,6 +83,10 @@ about_window_add()
    elm_layout_signal_emit(label, "elm,state,slide,start", "elm");
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_event_callback_add(mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
+
+   BUTTON_ADD(mwin, button, _("Close"));
+   evas_object_smart_callback_add(button, "clicked", _on_button_close_clicked_cb, mwin);
+   elm_object_part_content_set(mwin, "eflete.swallow.btn_close", button);
 
    evas_object_show(mwin);
    ap->modal_editor++;
