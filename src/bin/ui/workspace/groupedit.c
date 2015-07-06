@@ -644,14 +644,14 @@ groupedit_bg_set(Evas_Object *obj, Evas_Object *bg)
    int w, h;
 
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if (!bg) return false;
 
-   if (!bg)
+   if (bg)
      {
         Evas_Object *old_bg = evas_object_image_source_get(sd->bg);
         evas_object_event_callback_del_full(old_bg,
                                             EVAS_CALLBACK_RESIZE,
                                             _bg_changed, sd->bg);
+        evas_object_del(old_bg);
      }
 
    sd->bg = evas_object_image_filled_add(sd->e);
