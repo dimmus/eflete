@@ -227,6 +227,7 @@ _grid_content_get(void *data,
    Item *it = data;
    Evas_Object *grid = (Evas_Object *)obj;
    Image_Editor *img_edit = evas_object_data_get(grid, IMG_EDIT_KEY);
+   Evas_Object *image_obj = NULL;
 
    Content_Init_Data *image_init_data = mem_malloc(sizeof(Content_Init_Data));
    image_init_data->item_data = it;
@@ -236,14 +237,17 @@ _grid_content_get(void *data,
      {
         image_init_data->image_obj = elm_image_add(grid);
         ecore_job_add(_image_content_setup, image_init_data);
+        image_obj = image_init_data->image_obj;
      }
    else if (!strcmp(part, "elm.swallow.end"))
      {
         image_init_data->image_obj = elm_icon_add(grid);
         /* ecore_job_add(_image_usage_icon_setup, image_init_data); */
+        image_obj = image_init_data->image_obj;
+        free(image_init_data);
      }
 
-   return image_init_data->image_obj;
+   return image_obj;
 }
 
 /* deletion callback */
