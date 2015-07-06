@@ -1474,7 +1474,6 @@ pm_project_source_code_export(Project *pro, const char *dir_path)
                   fputs(GROUP"{", fedc);
                   fputs(group, fedc);
                }
-             fclose(fedc);
              include = eina_stringshare_printf(S3"#include \"edc/%s\"\n", group_edc);
              fputs(include, f);
              eina_stringshare_del(path_edc);
@@ -1498,11 +1497,12 @@ pm_project_source_code_export(Project *pro, const char *dir_path)
         fclose(f_top[i]);
         eina_stringshare_del(top_level_str[i]);
      }
-   fclose(f);
 
 exit:
    eina_stringshare_del(path);
    eina_stringshare_del(path_edc_dir);
+   fclose(f);
+   fclose(fedc);
    return EINA_TRUE;
 }
 #undef S3
