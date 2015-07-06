@@ -962,8 +962,8 @@ _part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part)
         ERR("Failed to find part in parts list");
         return;
      }
-   _groupedit_part_free(gp);
    sd->parts = eina_list_remove(sd->parts, gp);
+   _groupedit_part_free(gp);
 }
 
 static Groupedit_Item *
