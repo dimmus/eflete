@@ -54,6 +54,7 @@ _ewe_tabs_evas_object_smart_add(Eo *obj,
 
    elm_widget_sub_object_parent_add(obj);
 
+   sd->horizontal = EINA_TRUE;
    sd->layout = elm_layout_add(obj);
    evas_object_smart_member_add(sd->layout, obj);
 
@@ -90,7 +91,6 @@ _ewe_tabs_eo_base_constructor(Eo *obj, Ewe_Tabs_Smart_Data *sd)
 {
    obj = eo_do_super_ret(obj, MY_CLASS, obj, eo_constructor());
    sd->obj = obj;
-   sd->horizontal = EINA_TRUE;
    eo_do(obj,
          evas_obj_type_set(MY_CLASS_NAME_LEGACY),
          evas_obj_smart_callbacks_descriptions_set(_smart_callbacks));
