@@ -59,7 +59,7 @@ EFLETE_TEST (mw_title_set_test_p)
    app_init();
    app = app_data_get();
    ui_main_window_add(app);
-   mw = mw_add(NULL, NULL);
+   mw = mw_add(NULL, NULL, NULL);
 
    ck_assert_msg(mw_title_set(mw, "test text"), "Can't set title");
 
@@ -130,7 +130,7 @@ EFLETE_TEST (mw_title_set_test_n2)
    app_init();
    app = app_data_get();
    ui_main_window_add(app);
-   mw = mw_add(NULL, NULL);
+   mw = mw_add(NULL, NULL, NULL);
 
    ck_assert_msg(mw_title_set(mw, NULL) == EINA_FALSE, "Trying to set NULL title");
 

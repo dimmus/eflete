@@ -1407,7 +1407,7 @@ _sample_add_cb(void *data,
    Evas_Object *fs, *ic;
    Sound_Editor *edit = data;
 
-   edit->fs_win  = mw_add(NULL, NULL);
+   edit->fs_win  = mw_add(NULL, NULL, NULL);
    if (!edit->fs_win) return;
    mw_title_set(edit->fs_win, "Add sound to the library");
    ic = elm_icon_add(edit->fs_win);
@@ -1580,15 +1580,6 @@ _search_reset_cb(void *data __UNUSED__,
    search_data->last_item_found = NULL;
 }
 
-#define ADD_BUTTON(PARENT, OBJ, TEXT, PART, CLB) \
-   OBJ = elm_button_add(PARENT); \
-   evas_object_size_hint_weight_set(OBJ, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
-   evas_object_size_hint_align_set(OBJ, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   elm_object_text_set(OBJ, TEXT); \
-   evas_object_show(OBJ); \
-   elm_object_part_content_set(PARENT, "swallow.btn."PART, OBJ); \
-   evas_object_smart_callback_add(OBJ, "clicked", CLB, edit);
-
 static void
 _sound_editor_main_markup_create(Sound_Editor *edit)
 {
@@ -1600,8 +1591,12 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    evas_object_show(edit->markup);
    elm_win_inwin_content_set(edit->win, edit->markup);
 
-   ADD_BUTTON(edit->markup, btn, _("Ok"), "Ok", _on_ok_cb);
-   ADD_BUTTON(edit->markup, btn, _("Cancel"), "Cancel", _on_quit_cb);
+   BUTTON_ADD(edit->markup, btn, _("Ok"));
+   evas_object_smart_callback_add(btn, "clicked", _on_ok_cb, edit);
+   elm_object_part_content_set(edit->win, "eflete.swallow.btn_ok", btn);
+   BUTTON_ADD(edit->markup, btn, _("Cancel"));
+   evas_object_smart_callback_add(btn, "clicked", _on_quit_cb, edit);
+   elm_object_part_content_set(edit->win, "eflete.swallow.btn_close", btn);
 
    btn = elm_button_add(edit->markup);
    evas_object_smart_callback_add(btn, "clicked", _on_delete_clicked_cb, edit);
@@ -1662,8 +1657,6 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    edit->sound_search_data.last_item_found = NULL;
 }
 
-#undef ADD_BUTTON
-
 Evas_Object *
 sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
 {
@@ -1683,7 +1676,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    edit = (Sound_Editor *)mem_calloc(1, sizeof(Sound_Editor));
    edit->mode = mode;
    edit->pr = project;
-   edit->win = mw_add(_on_quit_cb, edit);
+   edit->win = mw_add("dialog", _on_quit_cb, edit);
    if (!edit->win)
      {
         free(edit);

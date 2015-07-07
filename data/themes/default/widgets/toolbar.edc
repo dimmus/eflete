@@ -120,13 +120,9 @@ group { name: "elm/toolbar/item/default";
          type: RECT;
          description { state: "default" 0.0;
             color_class: "color_default";
-            color: 214 214 214 255;
-            color2: 0 0 0 0;
          }
          description { state: "disabled" 0.0;
             color_class: "color_disabled";
-            color: 118 119 120 255;
-            color2: 0 0 0 0;
          }
       }
       part { name: "event";

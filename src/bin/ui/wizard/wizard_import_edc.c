@@ -527,7 +527,7 @@ _on_directory_bt(void *data,
    const char *path;
    Item_Mod_Callback_Data *c_data = (Item_Mod_Callback_Data*)data;
 
-   c_data->wiew->fs = mw_add(_fs_close, NULL);
+   c_data->wiew->fs = mw_add(NULL, _fs_close, NULL);
    ic = elm_icon_add(c_data->wiew->fs);
    elm_icon_standard_set(ic, "folder");
    mw_icon_set(c_data->wiew->fs, ic);
@@ -787,7 +787,6 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
    elm_object_part_content_set(wiew->layout, "swallow.widgets", genlist);
 
    CHECK_ADD(wiew->layout, check);
-   elm_object_style_set(check, "live_view");
    evas_object_smart_callback_add(check, "changed",
                                   _on_widget_include_all_check_changed,
                                   genlist);

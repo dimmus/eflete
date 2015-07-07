@@ -1,4 +1,5 @@
 group { name: "elm/label/base/default";
+   alias: "elm/label/base/info";
    data.item: "default_font_size" "11";
    data.item: "min_font_size" "6";
    data.item: "max_font_size" "60";
@@ -87,7 +88,7 @@ group { name: "elm/label/base/slide_about";
       }
       program { name: "animation_sliding";
          action: STATE_SET "sliding" 0.00;
-         transition: LINEAR 8.00000;
+         transition: LINEAR 16.0;
          target: "elm.text";
          after: "animation_bottom";
       }

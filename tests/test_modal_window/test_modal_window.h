@@ -27,8 +27,6 @@
 
 void  mw_add_test_p(int);
 void  mw_add_test_n(int);
-void  mw_about_add_test_p(int);
-void  mw_about_add_test_n(int);
 void  mw_title_set_test_n1(int);
 void  mw_title_set_test_p(int);
 void  mw_title_set_test_n2(int);

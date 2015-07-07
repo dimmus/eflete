@@ -962,8 +962,8 @@ _part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part)
         ERR("Failed to find part in parts list");
         return;
      }
-   _groupedit_part_free(gp);
    sd->parts = eina_list_remove(sd->parts, gp);
+   _groupedit_part_free(gp);
 }
 
 static Groupedit_Item *
@@ -1600,7 +1600,6 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
              evas_object_smart_member_add(spread_item->draw, gp->draw);
              if (spread_row > 1) spread_row--;
              else if (spread_col > 1) {spread_col--; spread_row = old_spread_row; }
-             else break;
              evas_object_color_set(spread_item->draw, r, g, b, a);
           }
 
@@ -1845,7 +1844,6 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 
              if (spread_row > 1) spread_row--;
              else if (spread_col > 1) {spread_col--; spread_row = old_spread_row; }
-             else break;
              evas_object_color_set(spread_item->draw, r, g, b, a);
           }
 

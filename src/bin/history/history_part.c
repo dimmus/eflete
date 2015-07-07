@@ -221,6 +221,7 @@ _part_undo(Evas_Object *source, Part_Diff *change)
          ui_widget_list_selected_part_del(widget_list, style);
 
          ui_property_style_set(prop, style, app->workspace);
+         ui_states_list_data_unset(app->block.state_list);
          ui_widget_list_style_parts_reload(widget_list, style);
       break;
       case DEL:

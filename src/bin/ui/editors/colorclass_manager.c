@@ -640,14 +640,14 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    elm_object_part_content_set(edit->layout, "swallow.control.minus", button);
 
    /* window functional buttons (apply and cancel) */
-   BUTTON_ADD(edit->layout, button, _("Cancel"));
+   BUTTON_ADD(edit->mwin, button, _("Cancel"));
    evas_object_smart_callback_add(button, "clicked", _on_btn_cancel, edit);
-   elm_object_part_content_set(edit->layout, "button.close", button);
+   elm_object_part_content_set(edit->mwin, "eflete.swallow.btn_close", button);
 
    /* window functional buttons (apply and cancel) */
-   BUTTON_ADD(edit->layout, button, _("Apply"));
+   BUTTON_ADD(edit->mwin, button, _("Apply"));
    evas_object_smart_callback_add(button, "clicked", _on_btn_apply, edit);
-   elm_object_part_content_set(edit->layout, "button.apply", button);
+   elm_object_part_content_set(edit->mwin, "eflete.swallow.btn_ok", button);
 }
 Eina_Bool
 _colorclass_manager_init(Colorclasses_Manager *edit)
@@ -707,7 +707,7 @@ colorclass_manager_add(Project *project)
    edit = (Colorclasses_Manager *)mem_calloc(1, sizeof(Colorclasses_Manager));
    edit->changed = false;
    edit->pr = project;
-   edit->mwin = mw_add(_on_btn_cancel, edit);
+   edit->mwin = mw_add("dialog" , _on_btn_cancel, edit);
    if (!edit->mwin)
      {
         free(edit);

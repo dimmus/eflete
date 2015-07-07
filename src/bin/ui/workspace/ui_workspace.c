@@ -658,6 +658,14 @@ _highlight_changed_cb(void *data,
    if (events->descr != MIDDLE)
      {
         int old_max_w = 0, old_max_h = 0;
+        int min_w = 0, min_h = 0;
+        min_w = edje_edit_state_min_w_get(sd->style->obj, part->name,
+                                          part->curr_state,
+                                          part->curr_state_value);
+        min_h = edje_edit_state_min_h_get(sd->style->obj, part->name,
+                                          part->curr_state,
+                                          part->curr_state_value);
+
         old_max_w = edje_edit_state_max_w_get(sd->style->obj, part->name,
                                               part->curr_state,
                                               part->curr_state_value);
@@ -666,10 +674,10 @@ _highlight_changed_cb(void *data,
                                               part->curr_state_value);
         edje_edit_state_max_w_set(sd->style->obj, part->name,
                                   part->curr_state, part->curr_state_value,
-                                  events->w / sd->zoom.factor);
+                                  (events->w / sd->zoom.factor) <= min_w ? min_w : (events->w / sd->zoom.factor));
         edje_edit_state_max_h_set(sd->style->obj, part->name,
                                   part->curr_state, part->curr_state_value,
-                                  events->h / sd->zoom.factor);
+                                  (events->h / sd->zoom.factor) <= min_h ? min_h : (events->h / sd->zoom.factor));
         history_diff_add(sd->style->obj, PROPERTY, CONTAINER, VAL_INT, old_max_w, events->w,
                          old_max_h, events->h, (void *)edje_edit_state_max_w_set,
                          sd->style->full_group_name,

@@ -513,13 +513,12 @@ _gl_progs_add(Animator *animator)
 Evas_Object *
 animator_window_add(Style *style)
 {
-   Evas_Object *window_layout;
    Evas_Object *top_layout;
    Evas_Object *panes;
    Evas_Object *bottom_panes;
    Evas_Object *scroller;
    Evas_Object *ic;
-   Evas_Object *bt, *program_list_box, *button_box;
+   Evas_Object *bt, *program_list_box;
    Animator *animator = NULL;
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
@@ -533,7 +532,7 @@ animator_window_add(Style *style)
    animator = (Animator *)mem_calloc(1, sizeof(Animator));
 
    animator->style = style;
-   animator->mwin = mw_add(_on_animator_ok, animator);
+   animator->mwin = mw_add("dialog", _on_animator_ok, animator);
    if (!animator->mwin)
      {
         free(animator);
@@ -548,22 +547,18 @@ animator_window_add(Style *style)
    evas_object_event_callback_add(animator->mwin, EVAS_CALLBACK_DEL,
                                   _on_animator_close, animator);
 
-   window_layout = elm_layout_add(animator->mwin);
-   elm_layout_file_set(window_layout, EFLETE_EDJ, "eflete/editor/default");
-   elm_win_inwin_content_set(animator->mwin, window_layout);
-
-   panes = elm_panes_add(window_layout);
+   panes = elm_panes_add(animator->mwin);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_horizontal_set(panes, true);
    evas_object_show(panes);
 
-   animator->live = live_view_add(window_layout, true);
+   animator->live = live_view_add(animator->mwin, true);
    live_view_widget_style_set(animator->live, ap->project, style);
    edje_object_signal_callback_add(animator->live->object, "show", "",
                                    _on_object_load, animator);
 
-   top_layout = elm_layout_add(window_layout);
+   top_layout = elm_layout_add(animator->mwin);
    elm_layout_theme_set(top_layout, "layout", "animator", "live_view");
    elm_layout_content_set(top_layout, "swallow.content", animator->live->layout);
    evas_object_show(top_layout);
@@ -586,13 +581,13 @@ animator_window_add(Style *style)
    elm_layout_content_set(top_layout, "swallow.button.cycled", bt);
    animator->program_controls.cycle = bt;
 
-   bottom_panes = elm_panes_add(window_layout);
+   bottom_panes = elm_panes_add(animator->mwin);
    evas_object_size_hint_weight_set(bottom_panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(bottom_panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(bottom_panes, 0.2);
    evas_object_show(bottom_panes);
 
-   BOX_ADD(window_layout, program_list_box, false, false);
+   BOX_ADD(animator->mwin, program_list_box, false, false);
 
    animator->gl_progs = _gl_progs_add(animator);
    elm_box_pack_end(program_list_box, animator->gl_progs);
@@ -661,25 +656,17 @@ animator_window_add(Style *style)
    evas_object_smart_callback_add(animator->program_sequence, SCROLL_CB,
                                   _on_program_scroll_cb, animator);
 
-   BOX_ADD(window_layout, button_box, true, false);
-   elm_box_align_set(button_box, 1.0, 0.5);
-
-   BUTTON_ADD(button_box, bt, _("Apply"));
-   evas_object_size_hint_weight_set(bt, 0.0, 0.0);
-   evas_object_size_hint_min_set(bt, 100, 30);
+   BUTTON_ADD(animator->mwin, bt, _("Apply"));
    evas_object_smart_callback_add(bt, "clicked", _on_animator_save, ap);
-   elm_box_pack_end(button_box, bt);
+   elm_object_part_content_set(animator->mwin, "eflete.swallow.btn_ok", bt);
 
-   BUTTON_ADD(button_box, bt, _("Ok"));
-   evas_object_size_hint_weight_set(bt, 0.0, 0.0);
-   evas_object_size_hint_min_set(bt, 100, 30);
+   BUTTON_ADD(animator->mwin, bt, _("Ok"));
    evas_object_smart_callback_add(bt, "clicked", _on_animator_ok, animator);
-   elm_box_pack_end(button_box, bt);
+   elm_object_part_content_set(animator->mwin, "eflete.swallow.btn_close", bt);
 
    elm_object_part_content_set(panes, "top", top_layout);
    elm_object_part_content_set(panes, "bottom", bottom_panes);
-   elm_object_part_content_set(window_layout, "eflete.swallow.content", panes);
-   elm_object_part_content_set(window_layout, "eflete.swallow.button_box", button_box);
+   elm_object_part_content_set(animator->mwin, NULL, panes);
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_event_callback_add(animator->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);

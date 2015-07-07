@@ -11,15 +11,6 @@ group { name: "elm/layout/colorclass_manager/default";
             }
          }
       }
-      part { name: "padding.bottom";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 1.0;
-            fixed: 1 1;
-            min: 0 40;
-            max: -1 40;
-         }
-      }
       part { name: "padding.params";
          type: SPACER;
          description { state: "default" 0.0;
@@ -30,53 +21,6 @@ group { name: "elm/layout/colorclass_manager/default";
             rel1 {
                relative: 0.0 1.0;
                to_y: "swallow.entry";
-            }
-         }
-      }
-      part { name: "button.close";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            min: 73 26;
-            max: 73 26;
-            rel1 {
-               to_y: "padding.bottom";
-            }
-            rel2 {
-               offset: -22 -1;
-            }
-         }
-      }
-      part { name: "button.apply";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            min: 73 26;
-            max: 73 26;
-            rel1 {
-               to_y: "padding.bottom";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               offset: -16 -1;
-               to_x: "button.close";
-            }
-         }
-      }
-      part { name: "separator.bottom";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            align: 0.0 1.0;
-            fixed: 1 1;
-            min: 0 2;
-            max: -1 2;
-            rel2 {
-               relative: 1.0 0.0;
-               to_y: "padding.bottom";
-            }
-            image {
-               normal: "separator-horizontal.png";
-               middle: DEFAULT;
             }
          }
       }
@@ -129,10 +73,6 @@ group { name: "elm/layout/colorclass_manager/default";
                relative: 1.0 0.0;
                offset: 6 0;
                to_x: "swallow.list";
-            }
-            rel2 {
-               relative: 1.0 0.0;
-               to_y: "separator.bottom";
             }
             image {
                normal: "separator-vertical.png";
@@ -194,9 +134,8 @@ group { name: "elm/layout/colorclass_manager/default";
                to_y: "padding.params";
             }
             rel2 {
-               relative: 0.33 0.0;
+               relative: 0.33 1.0;
                to_x: "swallow.entry";
-               to_y: "separator.bottom";
             }
             text {
                text: "";
@@ -219,9 +158,7 @@ group { name: "elm/layout/colorclass_manager/default";
                to_y: "text.outline";
             }
             rel2 {
-               relative: 1.0 0.0;
                to_x: "text.outline";
-               to_y: "separator.bottom";
             }
             image {
                normal: "separator-vertical.png";
@@ -242,9 +179,8 @@ group { name: "elm/layout/colorclass_manager/default";
                to_y: "padding.params";
             }
             rel2 {
-               relative: 0.66 0.0;
+               relative: 0.66 1.0;
                to_x: "swallow.entry";
-               to_y: "separator.bottom";
             }
             text {
                text: "";
@@ -267,9 +203,8 @@ group { name: "elm/layout/colorclass_manager/default";
                to_y: "padding.params";
             }
             rel2 {
-               relative: 0.0 0.0;
+               relative: 0.0 1.0;
                to_x: "text.shadow";
-               to_y: "separator.bottom";
             }
             image {
                normal: "separator-vertical.png";
@@ -290,9 +225,8 @@ group { name: "elm/layout/colorclass_manager/default";
                to_y: "padding.params";
             }
             rel2 {
-               relative: 1.0 0.0;
+               relative: 1.0 1.0;
                to_x: "swallow.entry";
-               to_y: "separator.bottom";
             }
             text {
                text: "";
@@ -314,10 +248,9 @@ group { name: "elm/layout/colorclass_manager/default";
                to: "text.object";
             }
             rel2 {
-               relative: 1.0 0.0;
-               offset: -24 -15;
+               relative: 1.0 1.0;
+               offset: -24 -1;
                to_x: "text.object";
-               to_y: "separator.bottom";
             }
          }
       }
@@ -332,10 +265,9 @@ group { name: "elm/layout/colorclass_manager/default";
                to: "text.outline";
             }
             rel2 {
-               relative: 1.0 0.0;
-               offset: -24 -15;
+               relative: 1.0 1.0;
+               offset: -24 -1;
                to_x: "text.outline";
-               to_y: "separator.bottom";
             }
          }
       }
@@ -350,10 +282,9 @@ group { name: "elm/layout/colorclass_manager/default";
                to: "text.shadow";
             }
             rel2 {
-               relative: 1.0 0.0;
-               offset: -24 -15;
+               relative: 1.0 1.0;
+               offset: -24 -1;
                to_x: "text.shadow";
-               to_y: "separator.bottom";
             }
          }
       }
@@ -368,8 +299,7 @@ group { name: "elm/layout/colorclass_manager/default";
                to_y: "swallow.search";
             }
             rel2 {
-               relative: 0.2 0.0;
-               to_y: "separator.bottom";
+               relative: 0.2 1.0;
             }
          }
       }

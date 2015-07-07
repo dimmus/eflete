@@ -41,7 +41,7 @@
  * @step 2 main_window created
  *
  * @procedure
- * @step 1 Call mw_add(NULL, NULL)
+ * @step 1 Call mw_add(NULL, NULL, NULL)
  * @step 2 Check returned pointer
  * </td>
  * <td>NULL, NULL</td>
@@ -57,7 +57,7 @@ EFLETE_TEST (mw_add_test_p)
    app_init();
    app = app_data_get();
    ui_main_window_add(app);
-   ck_assert_msg(mw_add(NULL, NULL) != NULL, "cannot create new Modal Window");
+   ck_assert_msg(mw_add(NULL, NULL, NULL) != NULL, "cannot create new Modal Window");
 
    app_shutdown();
    elm_shutdown();
@@ -77,7 +77,7 @@ END_TEST
  * @step 2 main_window NOT created
  *
  * @procedure
- * @step 1 Call mw_add(NULL, NULL)
+ * @step 1 Call mw_add(NULL, NULL, NULL)
  * @step 2 Check returned pointer
  * </td>
  * <td>NULL, NULL</td>
@@ -90,7 +90,7 @@ EFLETE_TEST (mw_add_test_n)
    elm_init(0,0);
 
    app_init();
-   ck_assert_msg(mw_add(NULL, NULL) == NULL, "Not NULL pointer returned");
+   ck_assert_msg(mw_add(NULL, NULL, NULL) == NULL, "Not NULL pointer returned");
 
    elm_shutdown();
 }
