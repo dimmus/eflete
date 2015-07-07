@@ -1,6 +1,21 @@
-=================
-Eflete 0.5.0-beta
-=================
+============
+Eflete 0.5.0
+============
+
+Changes since 0.5.0-beta
+-------------------------
+Features:
+* Widget list: set the name for new layout on add
+
+Fixes:
+* History: show added diff in history list from combobox
+* History: hide the state list if part list is empty on Unde action
+* Workspace: do not set max part size less then min
+* Styles: propogate events for ctxpopup
+* Property: hide the color class attribute for swallow, spoacer and textblock
+* layouts: fix fallback styles
+* Layout Add: add any number of layouts when there are widgets in project
+
 
 Changes since 0.5.0-alpha
 -------------------------
