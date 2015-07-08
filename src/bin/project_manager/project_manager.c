@@ -623,30 +623,22 @@ Project *
 pm_project_open(const char *path)
 {
    Eet_File *ef;
-   Project *pro = NULL;
+   Project *project;
    char *tmp;
    int tmp_len;
-   struct _Project_Lock
-     {
-       Project *project;
-       Eina_Lock mutex;
-     };
 
    edje_file_cache_flush();
-   struct _Project_Lock *pro_lock = mem_calloc(1, sizeof(struct _Project_Lock));
-   eina_lock_new(&pro_lock->mutex);
 
    _project_descriptor_init();
    ef = eet_open(path, EET_FILE_MODE_READ_WRITE);
-   if (!ef)
-     goto error;
+   if (!ef) return NULL;
 
-   pro_lock->project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
+   project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
    _pm_project_descriptor_shutdown();
    eet_close(ef);
-   if (!pro_lock->project) goto error;
+   if (!project) return NULL;
 
-   pro_lock->project->pro_path = eina_stringshare_add(path);
+   project->pro_path = eina_stringshare_add(path);
 
    /* updating .dev file path */
    tmp = strdup(path);
@@ -654,41 +646,35 @@ pm_project_open(const char *path)
    tmp[tmp_len - 3] = 'd';
    tmp[tmp_len - 2] = 'e';
    tmp[tmp_len - 1] = 'v';
-   eina_stringshare_replace(&pro_lock->project->dev, tmp);
+   eina_stringshare_replace(&project->dev, tmp);
    free(tmp);
    /* updating .edj file path */
    tmp = strdup(path);
    tmp[tmp_len - 3] = 'e';
    tmp[tmp_len - 2] = 'd';
    tmp[tmp_len - 1] = 'j';
-   eina_stringshare_replace(&pro_lock->project->saved_edj, tmp);
+   eina_stringshare_replace(&project->saved_edj, tmp);
    free(tmp);
 
    /* checking for older project versions and upgrading them version-by-version */
-   if (pro_lock->project->version < 2) /* upgrade to version 2 */
+   if (project->version < 2) /* upgrade to version 2 */
      {
         WARN(_("Old project version. Project files were updated."));
-        ecore_file_mv(pro_lock->project->dev, pro_lock->project->saved_edj);
-        pro_lock->project->version = 2;
+        ecore_file_mv(project->dev, project->saved_edj);
+        project->version = 2;
      }
    TODO("Add crash recovery prompt here")
-   _project_dev_file_create(pro_lock->project);
-   pro_lock->project->mmap_file = eina_file_open(pro_lock->project->dev, false);
-   eina_lock_take(&pro_lock->mutex);
+   _project_dev_file_create(project);
+   project->mmap_file = eina_file_open(project->dev, false);
 
-   pro_lock->project->changed = false;
-   pro_lock->project->close_request = false;
-   pro_lock->project->widgets = wm_widgets_list_new(pro_lock->project->dev);
-   pro_lock->project->layouts = wm_layouts_list_new(pro_lock->project->dev);
-   pm_project_meta_data_get(pro_lock->project, &pro_lock->project->name, NULL, NULL, NULL, NULL);
-   if (!pro_lock->project->name) pro_lock->project->name = eina_stringshare_add(_("No title"));
-   eina_lock_release(&pro_lock->mutex);
+   project->changed = false;
+   project->close_request = false;
+   project->widgets = wm_widgets_list_new(project->dev);
+   project->layouts = wm_layouts_list_new(project->dev);
+   pm_project_meta_data_get(project, &project->name, NULL, NULL, NULL, NULL);
+   if (!project->name) project->name = eina_stringshare_add(_("No title"));
 
-error:
-   eina_lock_free(&pro_lock->mutex);
-   pro = pro_lock->project;
-   free(pro_lock);
-   return pro;
+   return project;
 }
 
 void
