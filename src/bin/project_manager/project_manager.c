@@ -422,6 +422,8 @@ _project_open_internal(Project *project)
    project->close_request = false;
    project->widgets = wm_widgets_list_new(project->dev);
    project->layouts = wm_layouts_list_new(project->dev);
+   project->global_object = edje_edit_object_add(evas_object_evas_get(app_data_get()->win));
+   edje_object_mmap_set(project->global_object, project->mmap_file, EFLETE_INTERNAL_GROUP_NAME);
 }
 
 static void
