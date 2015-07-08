@@ -412,6 +412,18 @@ _project_linked_images_copy(Project_Thread *worker)
    return true;
 }
 
+static void
+_project_open_internal(Project *project)
+{
+   _project_dev_file_create(project);
+   project->mmap_file = eina_file_open(project->dev, false);
+
+   project->changed = false;
+   project->close_request = false;
+   project->widgets = wm_widgets_list_new(project->dev);
+   project->layouts = wm_layouts_list_new(project->dev);
+}
+
 static void *
 _project_import_edj(void *data,
                     Eina_Thread *thread __UNUSED__)
@@ -431,11 +443,8 @@ _project_import_edj(void *data,
    PROGRESS_SEND("%s", _("Importing..."));
    _project_edj_file_copy(worker);
    _copy_meta_data_to_pro(worker);
-   _project_dev_file_create(worker->project);
    WORKER_LOCK_TAKE;
-      worker->project->mmap_file = eina_file_open(worker->project->dev, false);
-      worker->project->widgets = wm_widgets_list_new(worker->project->dev);
-      worker->project->layouts = wm_layouts_list_new(worker->project->dev);
+      _project_open_internal(worker->project);
    WORKER_LOCK_RELEASE;
    THREAD_TESTCANCEL;
    WORKER_LOCK_TAKE;
@@ -553,14 +562,14 @@ _project_import_edc(void *data,
    _project_edj_file_copy(worker);
    ecore_file_recursive_rm(tmp_dirname);
    eina_tmpstr_del(tmp_dirname);
-   _project_linked_images_copy(worker);
    _copy_meta_data_to_pro(worker);
-   _project_dev_file_create(worker->project);
    WORKER_LOCK_TAKE;
-      worker->project->mmap_file = eina_file_open(worker->project->dev, false);
-      worker->project->widgets = wm_widgets_list_new(worker->project->dev);
-      worker->project->layouts = wm_layouts_list_new(worker->project->dev);
+      _project_open_internal(worker->project);
+   WORKER_LOCK_RELEASE;
+   THREAD_TESTCANCEL;
+   WORKER_LOCK_TAKE;
       pm_project_resource_export(worker->project, NULL);
+      _project_linked_images_copy(worker);
       edje_file_cache_flush();
    WORKER_LOCK_RELEASE;
 
@@ -664,13 +673,9 @@ pm_project_open(const char *path)
         project->version = 2;
      }
    TODO("Add crash recovery prompt here")
-   _project_dev_file_create(project);
-   project->mmap_file = eina_file_open(project->dev, false);
 
-   project->changed = false;
-   project->close_request = false;
-   project->widgets = wm_widgets_list_new(project->dev);
-   project->layouts = wm_layouts_list_new(project->dev);
+   _project_open_internal(project);
+
    pm_project_meta_data_get(project, &project->name, NULL, NULL, NULL, NULL);
    if (!project->name) project->name = eina_stringshare_add(_("No title"));
 
