@@ -130,7 +130,6 @@ struct _Style
     Eina_Stringshare *name; /**< The name of style. */
     Eina_Stringshare *full_group_name; /**< The name of a block 'group' in edc. */
     Evas_Object *obj; /** Edje edit object, which loaded form theme file. */
-    Eina_Bool isModify;  /**< Is it style modificated. */
     /** is it Group an alias **/
     Eina_Bool isAlias;
     /** link to main group that is being aliased **/

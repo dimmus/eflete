@@ -340,7 +340,6 @@ wm_style_add(const char* style_name, const char* full_group_name,
    style_edje->obj = NULL;
    style_edje->parts = NULL;
    style_edje->main_group = NULL;
-   style_edje->isModify = false;
    style_edje->isAlias = false;
    style_edje->__type = style_type;
    style_edje->parent = parent;
@@ -912,7 +911,6 @@ wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
    else
       style->parts = eina_inlist_prepend_relative(style->parts, tmp_list, tmp_prev);
 
-   style->isModify = true;
    return true;
 }
 

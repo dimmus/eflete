@@ -658,9 +658,6 @@ _on_ok_cb(void *data,
 {
    Evas_Object *edje_edit_obj;
    Eina_List *l;
-   Widget *widget;
-   Class *class;
-   Style *style;
    Sound *snd;
    Eina_Bool multiselect;
    char *ei;
@@ -679,25 +676,6 @@ _on_ok_cb(void *data,
           }
 
         project_changed(true);
-        if (edit->pr->layouts)
-          {
-             style = EINA_INLIST_CONTAINER_GET(edit->pr->layouts, Style);
-             if (style)
-               style->isModify = true;
-          }
-        else
-          {
-             widget = EINA_INLIST_CONTAINER_GET(edit->pr->widgets, Widget);
-             if (widget)
-               {
-                  class = EINA_INLIST_CONTAINER_GET(widget->classes, Class);
-                  if (class)
-                    {
-                       style = EINA_INLIST_CONTAINER_GET(class->styles, Style);
-                       style->isModify = true;
-                    }
-               }
-          }
      }
 
    multiselect = elm_gengrid_multi_select_get(edit->gengrid);

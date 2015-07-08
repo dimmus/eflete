@@ -403,7 +403,6 @@ _add_layout_cb(void *data,
 
    pm_save_to_dev(ap->project, NULL, true);
    layout = wm_style_add(name, name, LAYOUT, NULL);
-   layout->isModify = true;
    ap->project->layouts = eina_inlist_append(ap->project->layouts,
                                              EINA_INLIST_GET(layout));
    wm_style_data_load(layout, evas_object_evas_get(widget_list),
@@ -1047,9 +1046,6 @@ project_changed(Eina_Bool save)
    pm_save_to_dev(ap->project, ap->project->current_style, save);
    ap->project->changed = true;
    ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, false);
-
-   if (ap->project->current_style)
-     ap->project->current_style->isModify = true;
 }
 
 /******************************************************************************/
@@ -1714,7 +1710,6 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
         wm_class_free(class_st);
      }*/
 
-   style_work->isModify = true;
    project_changed(true);
 
    ui_widget_list_class_data_reload(genlist, widget->classes);
