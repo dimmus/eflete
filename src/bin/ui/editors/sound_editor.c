@@ -625,14 +625,12 @@ _on_quit_cb(void *data,
             Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
 {
-   Evas_Object *edje_edit_obj;
    Eina_List *l, *l_next;
    Sound *snd;
 
    Sound_Editor *edit = (Sound_Editor *)data;
    if ((edit->pr->added_sounds) && (edit->sound_was_added))
      {
-        GET_OBJ(edit->pr, edje_edit_obj);
         EINA_LIST_REVERSE_FOREACH_SAFE(edit->pr->added_sounds, l, l_next, snd)
           {
              if (!snd->is_saved)
@@ -656,7 +654,6 @@ _on_ok_cb(void *data,
           Evas_Object *obj __UNUSED__,
           void *event_info __UNUSED__)
 {
-   Evas_Object *edje_edit_obj;
    Eina_List *l;
    Sound *snd;
    Eina_Bool multiselect;
@@ -665,13 +662,12 @@ _on_ok_cb(void *data,
    Sound_Editor *edit = (Sound_Editor *)data;
    if ((edit->pr->added_sounds) && (edit->sound_was_added))
      {
-        GET_OBJ(edit->pr, edje_edit_obj);
         EINA_LIST_FOREACH(edit->pr->added_sounds, l, snd)
           {
              if (!snd->tone_frq)
-               edje_edit_sound_sample_add(edje_edit_obj, snd->name, snd->src);
+               edje_edit_sound_sample_add(edit->pr->global_object, snd->name, snd->src);
              else
-               edje_edit_sound_tone_add(edje_edit_obj, snd->name, snd->tone_frq);
+               edje_edit_sound_tone_add(edit->pr->global_object, snd->name, snd->tone_frq);
              snd->is_saved = true;
           }
 
@@ -966,7 +962,6 @@ _grid_sel_sample(void *data,
    Eina_List *l;
    Sound *snd;
    const char *snd_src;
-   Evas_Object *edje_edit_obj;
    double len = 0.0;
    const Item *item;
    Sound_Editor *edit = (Sound_Editor *)data;
@@ -991,7 +986,6 @@ _grid_sel_sample(void *data,
      {
         item = elm_object_item_data_get(eina_list_data_get(sel_list));
         edit->selected = eina_stringshare_add(item->sound_name);
-        GET_OBJ(edit->pr, edje_edit_obj);
 
         if ((edit->pr->added_sounds))
           {
@@ -1018,7 +1012,7 @@ _grid_sel_sample(void *data,
           }
 
 #ifdef HAVE_AUDIO
-        edit->io.buf = edje_edit_sound_samplebuffer_get(edje_edit_obj, edit->selected);
+        edit->io.buf = edje_edit_sound_samplebuffer_get(edit->pr->global_object, edit->selected);
         edit->io.data = eina_binbuf_string_get(edit->io.buf);
         edit->io.length = eina_binbuf_length_get(edit->io.buf);
         _initialize_io_data(edit);
@@ -1027,7 +1021,7 @@ _grid_sel_sample(void *data,
         elm_slider_min_max_set(edit->rewind, 0, len);
         elm_slider_value_set(edit->rewind, 0.0);
 #endif
-        snd_src = edje_edit_sound_samplesource_get(edje_edit_obj, edit->selected);
+        snd_src = edje_edit_sound_samplesource_get(edit->pr->global_object, edit->selected);
         _sample_info_setup(edit, item, snd_src, len);
         eina_stringshare_del(snd_src);
 
@@ -1096,7 +1090,7 @@ _gengrid_content_fill(Sound_Editor *edit)
    const char* sound_name, *snd_src;
    Evas_Object *edje_edit_obj;
 
-   GET_OBJ(edit->pr, edje_edit_obj);
+   edje_edit_obj = edit->pr->global_object;
 
    sounds = edje_edit_sound_samples_list_get(edje_edit_obj);
    tones = edje_edit_sound_tones_list_get(edje_edit_obj);
@@ -1210,7 +1204,6 @@ _add_sample_done(void *data,
                  Evas_Object *obj,
                  void *event_info)
 {
-   Evas_Object *edje_edit_obj;
    Sound *snd;
    Item *it;
    Eina_Stringshare *sound_name, *tmp_sound_name;
@@ -1225,10 +1218,9 @@ _add_sample_done(void *data,
 
    if ((ecore_file_exists(selected)) && (!ecore_file_is_dir(selected)))
      {
-        GET_OBJ(edit->pr, edje_edit_obj);
         sound_name = eina_stringshare_add(ecore_file_file_get(selected));
 
-        samples_list = edje_edit_sound_samples_list_get(edje_edit_obj);
+        samples_list = edje_edit_sound_samples_list_get(edit->pr->global_object);
         EINA_LIST_FOREACH(samples_list, l, tmp_sound_name)
           if (tmp_sound_name == sound_name) /* they both are stringshares */
             {
@@ -1299,7 +1291,6 @@ _add_tone_done(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
-   Evas_Object *edje_edit_obj;
    Sound *snd;
    Item *it;
    Eina_Stringshare *tone_name, *tmp_tone_name;
@@ -1321,9 +1312,8 @@ _add_tone_done(void *data,
      }
 
    tone_name = eina_stringshare_add(elm_entry_entry_get(edit->tone_entry));
-   GET_OBJ(edit->pr, edje_edit_obj);
 
-   tones_list = edje_edit_sound_samples_list_get(edje_edit_obj);
+   tones_list = edje_edit_sound_samples_list_get(edit->pr->global_object);
    EINA_LIST_FOREACH(tones_list, l, tmp_tone_name)
      if (tmp_tone_name == tone_name) /* they both are stringshares */
        {
@@ -1469,7 +1459,6 @@ _on_delete_clicked_cb(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *event_info __UNUSED__)
 {
-   Evas_Object *edje_edit_obj;
    Elm_Object_Item *grid_it;
    Item *item;
    Sound *snd;
@@ -1477,8 +1466,6 @@ _on_delete_clicked_cb(void *data,
    Eina_List *sl, *sl_next;
    int selected, deleted = 0;
    Sound_Editor *edit = (Sound_Editor *)data;
-
-   GET_OBJ(edit->pr, edje_edit_obj);
 
    list = (Eina_List *)elm_gengrid_selected_items_get(edit->gengrid);
    selected = eina_list_count(list);
@@ -1495,9 +1482,9 @@ _on_delete_clicked_cb(void *data,
         if (!item->is_added)
           {
              if (!item->tone_frq)
-               edje_edit_sound_sample_del(edje_edit_obj, item->sound_name);
+               edje_edit_sound_sample_del(edit->pr->global_object, item->sound_name);
              else
-               edje_edit_sound_tone_del(edje_edit_obj, item->sound_name);
+               edje_edit_sound_tone_del(edit->pr->global_object, item->sound_name);
              deleted++;
           }
         else

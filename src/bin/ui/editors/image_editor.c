@@ -418,17 +418,14 @@ _image_info_usage_update(Image_Editor *img_edit)
    Evas_Object *list;
    Elm_Object_Item *it_group, *it_part;
    Edje_Part_Image_Use *image;
-   Evas_Object *edje_edit_obj;
    const char *cur_group = NULL;
    const char *cur_part = NULL;
    Eina_Stringshare *state_name;
 
    if (!img_edit->image_data_fields.image_name) return;
 
-   GET_OBJ(img_edit->pr, edje_edit_obj);
-
    usage_list =
-      edje_edit_image_usage_list_get(edje_edit_obj,
+      edje_edit_image_usage_list_get(img_edit->pr->global_object,
                                      img_edit->image_data_fields.image_name,
                                      false);
    if (!eina_list_count(usage_list))
@@ -478,14 +475,11 @@ static void
 _image_info_setup(Image_Editor *img_edit,
                   const Item* it)
 {
-   Evas_Object *edje_edit_obj = NULL;
    Eina_Stringshare *str;
    Evas_Object *image;
    Edje_Edit_Image_Comp comp;
    Eina_List *usage_list;
    int w, h;
-
-   GET_OBJ(img_edit->pr, edje_edit_obj);
 
    _image_info_reset(img_edit);
    img_edit->image_data_fields.image_name = it->image_name;
@@ -496,7 +490,7 @@ _image_info_setup(Image_Editor *img_edit,
    img_edit->image_data_fields.image = image;
    evas_object_show(image);
 
-   comp =  edje_edit_image_compression_type_get(edje_edit_obj, it->image_name);
+   comp =  edje_edit_image_compression_type_get(img_edit->pr->global_object, it->image_name);
 
    if (comp != EDJE_EDIT_IMAGE_COMP_USER)
      {
@@ -513,7 +507,7 @@ _image_info_setup(Image_Editor *img_edit,
 
    if (comp == EDJE_EDIT_IMAGE_COMP_LOSSY)
      {
-        int quality = edje_edit_image_compression_rate_get(edje_edit_obj,
+        int quality = edje_edit_image_compression_rate_get(img_edit->pr->global_object,
                                                            it->image_name);
         elm_spinner_value_set(img_edit->image_data_fields.quality, quality);
      }
@@ -532,7 +526,7 @@ _image_info_setup(Image_Editor *img_edit,
 
    _image_info_type_setup(img_edit->image_data_fields.layout, it->image_name);
 
-   usage_list = edje_edit_image_usage_list_get(edje_edit_obj,
+   usage_list = edje_edit_image_usage_list_get(img_edit->pr->global_object,
                                                it->image_name, false);
    _image_info_update_usage_info(img_edit, eina_list_count(usage_list));
    _image_info_usage_update(img_edit);
@@ -1059,13 +1053,11 @@ _image_editor_init(Image_Editor *img_edit)
    const char* image_name = NULL;
    Eina_List *images = NULL;
    int counter = 0;
-   Evas_Object *edje_edit_obj = NULL;
 
    if (!img_edit) return false;
-   GET_OBJ(img_edit->pr, edje_edit_obj);
 
    _image_editor_gengrid_group_items_add(img_edit);
-   images = edje_edit_images_list_get(edje_edit_obj);
+   images = edje_edit_images_list_get(img_edit->pr->global_object);
 
    if (images)
      {
@@ -1077,7 +1069,7 @@ _image_editor_init(Image_Editor *img_edit)
                    ERR("name not found for image #%d",counter);
                    continue;
                 }
-              it = _image_editor_gengrid_item_data_create(edje_edit_obj,
+              it = _image_editor_gengrid_item_data_create(img_edit->pr->global_object,
                                                           image_name);
               if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
                 elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,

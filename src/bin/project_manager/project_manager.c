@@ -749,7 +749,7 @@ _project_save(void *data,
    Evas_Object *edje_edit_obj;
 
    worker = (Project_Thread *)data;
-   GET_OBJ(worker->project, edje_edit_obj);
+   edje_edit_obj = worker->project->global_object;
 
    PROGRESS_SEND("Saving...");
    ecore_thread_main_loop_begin();
@@ -1362,8 +1362,7 @@ pm_project_source_code_export(Project *pro, const char *dir_path)
    int value = -1, k = 0;
    const char *pos = NULL;
    char str[100];
-   Evas_Object *edje_edit_obj;
-   GET_OBJ(pro, edje_edit_obj);
+   Evas_Object *edje_edit_obj = pro->global_object;
 
    path = eina_stringshare_printf("%s/%s.edc", dir_path, pro->name);
    f = fopen(path, "w");
@@ -1512,15 +1511,13 @@ _develop_export(void *data,
                 Eina_Thread *thread __UNUSED__)
 {
    Project_Thread *worker;
-   Evas_Object *edje_edit_obj;
 
    worker = (Project_Thread *)data;
 
    PROGRESS_SEND(_("Export edj..."));
    WORKER_LOCK_TAKE;
 
-      GET_OBJ(worker->project, edje_edit_obj);
-      edje_edit_save_all(edje_edit_obj);
+      edje_edit_save_all(worker->project->global_object);
       eina_file_copy(worker->project->dev, worker->edj,
                      EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
                      NULL, NULL);

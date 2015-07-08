@@ -50,7 +50,6 @@ struct _Colorclasses_Manager
    Evas_Object *mwin;
    Evas_Object *layout;
    Evas_Object *genlist;
-   Evas_Object *edit_obj;
    Evas_Object *edje_preview, *preview_layout;
    Evas_Object *colorsel1, *colorsel2, *colorsel3;
    Evas_Object *entry, *popup;
@@ -657,16 +656,13 @@ _colorclass_manager_init(Colorclasses_Manager *edit)
    Eina_List *cclist = NULL;
    Eina_List *l = NULL;
    Colorclass_Item *it = NULL;
-   Evas_Object *edje_edit_obj = NULL;
 
-   GET_OBJ(edit->pr, edje_edit_obj);
-   edit->edit_obj = edje_edit_obj;
-   cclist = edje_edit_color_classes_list_get(edje_edit_obj);
+   cclist = edje_edit_color_classes_list_get(edit->pr->global_object);
 
    EINA_LIST_FOREACH(cclist, l, ccname)
      {
         it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
-        if (!edje_edit_color_class_colors_get(edje_edit_obj, ccname,
+        if (!edje_edit_color_class_colors_get(edit->pr->global_object, ccname,
                                      &r1, &g1, &b1, &a1,
                                      &r2, &g2, &b2, &a2,
                                      &r3, &g3, &b3, &a3))
