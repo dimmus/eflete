@@ -50,6 +50,7 @@
 #include <Edje_Edit.h>
 #include "logger.h"
 
+#define EFLETE_INTERNAL_GROUP_NAME        "___eflete_internal_group___"
 /**
  * @enum _Type
  * @ingroup WidgetManager

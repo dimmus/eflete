@@ -424,6 +424,33 @@ _project_open_internal(Project *project)
    project->layouts = wm_layouts_list_new(project->dev);
 }
 
+static void
+_project_special_group_add(Project *project)
+{
+   Evas *e;
+   Evas_Object *edje_edit_obj;
+   Eina_List *list;
+
+   ecore_thread_main_loop_begin();
+
+   Ecore_Evas *ee = ecore_evas_buffer_new(0, 0);
+   e = ecore_evas_get(ee);
+   list = edje_file_collection_list(project->saved_edj);
+   edje_edit_obj = edje_edit_object_add(e);
+
+   edje_object_file_set(edje_edit_obj, project->saved_edj, eina_list_data_get(list));
+
+   if (!edje_edit_group_exist(edje_edit_obj, EFLETE_INTERNAL_GROUP_NAME))
+     {
+        edje_edit_group_add(edje_edit_obj, EFLETE_INTERNAL_GROUP_NAME);
+        edje_edit_without_source_save(edje_edit_obj, false);
+     }
+   edje_edit_string_list_free(list);
+   evas_object_del(edje_edit_obj);
+
+   ecore_thread_main_loop_end();
+}
+
 static void *
 _project_import_edj(void *data,
                     Eina_Thread *thread __UNUSED__)
@@ -444,6 +471,7 @@ _project_import_edj(void *data,
    _project_edj_file_copy(worker);
    _copy_meta_data_to_pro(worker);
    WORKER_LOCK_TAKE;
+      _project_special_group_add(worker->project);
       _project_open_internal(worker->project);
    WORKER_LOCK_RELEASE;
    THREAD_TESTCANCEL;
@@ -564,6 +592,7 @@ _project_import_edc(void *data,
    eina_tmpstr_del(tmp_dirname);
    _copy_meta_data_to_pro(worker);
    WORKER_LOCK_TAKE;
+      _project_special_group_add(worker->project);
       _project_open_internal(worker->project);
    WORKER_LOCK_RELEASE;
    THREAD_TESTCANCEL;
@@ -671,6 +700,12 @@ pm_project_open(const char *path)
         WARN(_("Old project version. Project files were updated."));
         ecore_file_mv(project->dev, project->saved_edj);
         project->version = 2;
+     }
+   if (project->version < 3) /* upgrade to version 3 */
+     {
+        WARN(_("Old project version. Project files were updated."));
+        _project_special_group_add(project);
+        project->version = 3;
      }
    TODO("Add crash recovery prompt here")
 
@@ -1262,6 +1297,7 @@ pm_project_resource_export(Project *pro, const char* dir_path)
    ecore_thread_main_loop_begin();
    Ecore_Evas *ee = ecore_evas_buffer_new(0, 0);
    e = ecore_evas_get(ee);
+
    list = edje_file_collection_list(pro->dev);
    edje_edit_obj = edje_edit_object_add(e);
    if (!edje_object_mmap_set(edje_edit_obj, pro->mmap_file, eina_list_data_get(list)))
