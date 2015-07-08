@@ -744,9 +744,6 @@ _project_save(void *data,
               Eina_Thread *thread __UNUSED__)
 {
    Project_Thread *worker;
-   Widget *widget;
-   Style *style;
-   Class *class_st;
    Eina_List *list;
    Eina_Stringshare *dest;
    Evas_Object *edje_edit_obj;
@@ -757,35 +754,7 @@ _project_save(void *data,
    PROGRESS_SEND("Saving...");
    ecore_thread_main_loop_begin();
    WORKER_LOCK_TAKE;
-      EINA_INLIST_FOREACH(worker->project->widgets, widget)
-        {
-           EINA_INLIST_FOREACH(widget->classes, class_st)
-             {
-                EINA_INLIST_FOREACH(class_st->styles, style)
-                  {
-                     if (style->isModify)
-                       {
-                          style->isModify = false;
-                          edje_object_mmap_set(style->obj,
-                                               worker->project->mmap_file,
-                                               style->full_group_name);
-                          edje_edit_without_source_save(style->obj, true);
-                       }
-                  }
-             }
-        }
-
-      EINA_INLIST_FOREACH(worker->project->layouts, style)
-        {
-           if (style->isModify)
-             {
-                style->isModify = false;
-                edje_object_mmap_set(style->obj,
-                                     worker->project->mmap_file,
-                                     style->full_group_name);
-                edje_edit_without_source_save(style->obj, true);
-             }
-        }
+   pm_save_to_dev(worker->project, NULL, true);
    eina_file_close(worker->project->mmap_file);
    Uns_List *it;
    Eina_List *add_list = NULL, *l;
