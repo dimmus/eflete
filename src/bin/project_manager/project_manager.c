@@ -730,13 +730,13 @@ pm_save_to_dev(Project *pr, Style *st, Eina_Bool save)
      }
    else
      {
-        GET_STYLE(pr, st)
-        if (save) edje_edit_without_source_save(st->obj, false);
+        if (save) edje_edit_without_source_save(pr->global_object, false);
      }
    /* reloading mmaped dev file to update cached groups */
    eina_file_close(pr->mmap_file);
    pr->mmap_file = eina_file_open(pr->dev, false);
-   edje_object_mmap_set(st->obj, pr->mmap_file, st->full_group_name);
+   if (st) edje_object_mmap_set(st->obj, pr->mmap_file, st->full_group_name);
+   edje_object_mmap_set(pr->global_object, pr->mmap_file, EFLETE_INTERNAL_GROUP_NAME);
 }
 
 static void *
