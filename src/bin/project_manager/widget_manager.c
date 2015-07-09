@@ -650,7 +650,7 @@ wm_layouts_list_new(const char *file)
 
    EINA_LIST_FOREACH(collection, l, group)
      {
-        if (!eina_str_has_prefix(group, prefix))
+        if (!eina_str_has_prefix(group, prefix) && strcmp(group, EFLETE_INTERNAL_GROUP_NAME))
           {
              layout = wm_style_add(group, group, LAYOUT, NULL);
              layouts = eina_inlist_append(layouts, EINA_INLIST_GET(layout));
