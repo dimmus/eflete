@@ -412,19 +412,16 @@ _on_btn_apply(void *data,
    Uns_List *it = NULL;
    Colorclass_Item *ccl_it = NULL;
 
-   Style *style = NULL;
-   GET_STYLE(edit->pr, style);
-
    EINA_LIST_FOREACH(edit->unapplied_list, l, it)
      {
         ccl_it = (Colorclass_Item *)it->data;
 
         if (it->act_type == ACTION_TYPE_DEL)
-          edje_edit_color_class_del(style->obj, ccl_it->name);
+          edje_edit_color_class_del(edit->pr->global_object, ccl_it->name);
         else
           {
-             edje_edit_color_class_add(style->obj, eina_stringshare_add(ccl_it->name));
-             edje_edit_color_class_colors_set(style->obj, ccl_it->name,
+             edje_edit_color_class_add(edit->pr->global_object, eina_stringshare_add(ccl_it->name));
+             edje_edit_color_class_colors_set(edit->pr->global_object, ccl_it->name,
                                               ccl_it->r1, ccl_it->g1,
                                               ccl_it->b1, ccl_it->a1,
                                               ccl_it->r2, ccl_it->g2,

@@ -370,7 +370,7 @@ _add_layout_cb(void *data,
    App_Data *ap = app_data_get();
    Style *layout = NULL;
    Eina_Stringshare *name = NULL;
-   Evas_Object *group_obj, *en;
+   Evas_Object *en;
 
    widget_list = _widgetlist_current_genlist_get(ap, LAYOUT);
    en = (Evas_Object *)data;
@@ -380,12 +380,8 @@ _add_layout_cb(void *data,
         NOTIFY_WARNING(_("Please type layout name"));
         goto exit;
      }
-   GET_STYLE(ap->project, layout);
 
-   /* Using aliased group, if the group we've found is alias. */
-   group_obj = (layout->isAlias) ? layout->main_group->obj : layout->obj;
-
-   if (edje_edit_group_exist(group_obj, name))
+   if (edje_edit_group_exist(ap->project->global_object, name))
      {
         NOTIFY_INFO(3, _("Failed to create new layout."));
         ERR("Failed to create new layout: all avalaible names are existing");
@@ -393,7 +389,7 @@ _add_layout_cb(void *data,
         return;
      }
 
-   if (!edje_edit_group_add(group_obj, name))
+   if (!edje_edit_group_add(ap->project->global_object, name))
      {
         NOTIFY_INFO(3, _("Failed to create new layout."));
         ERR("Failed to create new layout: edje edit group add is failed");
