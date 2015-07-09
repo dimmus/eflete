@@ -549,7 +549,7 @@ _attribute_highlight_merge(Attribute_Diff *previous, Attribute_Diff *change)
 }
 
 Diff *
-_attribute_change_merge(Attribute_Diff *change, Module *module)
+_attribute_change_merge(Attribute_Diff *change, History_Module *module)
 {
    Diff *prev_general = NULL;
    Attribute_Diff *previous = NULL;
