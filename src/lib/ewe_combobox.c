@@ -1,5 +1,4 @@
 #include "ewe_private.h"
-#include "ewe_win.h"
 #include "ewe_widget_combobox.h"
 
 EAPI Eo_Op EWE_OBJ_COMBOBOX_BASE_ID = EO_NOOP;
@@ -81,7 +80,7 @@ _exp_window_create(Evas **evas, Ewe_Combobox_Smart_Data *sd)
         evas_object_smart_callback_del(sd->win, "unfocused", _focus_out_cb);
         evas_object_del(sd->win);
      }
-   win = ewe_win_add(sd->top_win, "expand_window", ELM_WIN_DROPDOWN_MENU);
+   win = elm_win_add(sd->top_win, "expand_window", ELM_WIN_DROPDOWN_MENU);
    elm_win_autodel_set(win, EINA_TRUE);
    elm_win_borderless_set(win, EINA_TRUE);
    elm_win_focus_highlight_enabled_set(win, EINA_TRUE);

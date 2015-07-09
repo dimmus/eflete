@@ -56,10 +56,7 @@ ewe_ruler.h \
 ewe_ruler_legacy.h \
 ewe_ruler_eo.h \
 ewe_ruler_common.h \
-ewe_widget_ruler.h \
-ewe_win.h \
-ewe_win.eo.h \
-ewe_win_legacy.h
+ewe_widget_ruler.h
 
 includesubdir = $(pkgincludedir)-@VMAJ@
 
@@ -73,7 +70,6 @@ ewe_statusbar.c \
 ewe_combobox.c \
 ewe_entry.c \
 ewe_ruler.c \
-ewe_win.c \
 ewe_private.h
 
 BUILT_SOURCES = \
@@ -86,8 +82,6 @@ ewe_combobox.eo.h \
 ewe_entry.eo.c \
 ewe_entry.eo.h \
 ewe_ruler.eo.c \
-ewe_ruler.eo.h \
-ewe_win.eo.h \
-ewe_win.eo.c
+ewe_ruler.eo.h
 
 EXTRA_DIST = $(BUILT_SOURCES)

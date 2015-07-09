@@ -53,6 +53,5 @@
 #include "ewe_ruler.h"
 #include "ewe_entry.h"
 #include "ewe_tabs.h"
-#include "ewe_win.h"
 
 #endif  /* ELEMENTARY_WIDGET_EXTENTIONS_H */
