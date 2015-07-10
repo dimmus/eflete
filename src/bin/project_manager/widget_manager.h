@@ -320,6 +320,19 @@ wm_style_add(const char* style_name, const char* full_group_name,
              Type style_type, Class *parent);
 
 /**
+ * Set new name to given Style.
+ *
+ * @param style The given style
+ * @param name The new name for style
+ *
+ * @return New style name or NULL
+ *
+ * @ingroup WidgetManager
+ */
+const char *
+wm_style_name_set(Style *style, const char *name);
+
+/**
  * Free a @Style object.
  *
  * @param style A @Style object to free.

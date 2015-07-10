@@ -360,6 +360,39 @@ wm_style_add(const char* style_name, const char* full_group_name,
    return style_edje;
 }
 
+const char *
+wm_style_name_set(Style *style, const char *name)
+{
+   Eina_Stringshare *new_name;
+
+   assert(style != NULL);
+   assert(name != NULL);
+
+   if (style->__type == LAYOUT)
+     eina_stringshare_replace(&style->full_group_name, name);
+   if (style->__type == STYLE)
+     {
+        arr = eina_str_split(style->full_group_name, "/", 0);
+        eina_strlcpy(tmp, arr[3], sizeof(tmp));
+        for (size = 4; arr[size]; size++)
+          {
+             if (strcmp(arr[size], style->parent->name))
+               {
+                  eina_strlcat(tmp, "/", PATH_MAX);
+                     eina_strlcat(tmp, arr[size], PATH_MAX);
+               }
+          }
+        new_name = eina_stringshare_printf("elm/%s/%s/%s", arr[1], arr[2], arr[3]);
+        free(arr[0]); \
+        free(arr);
+
+        eina_stringshare_replace(&style->full_group_name, new_name);
+        eina_stringshare_del(new_name);
+     }
+   eina_stringshare_replace(&style->name, name);
+   return style->name;
+}
+
 Eina_Bool
 wm_style_free(Style *style)
 {
