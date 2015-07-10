@@ -45,6 +45,7 @@
    assert(PARENT != NULL); \
    LAYOUT_PROP_ADD(PARENT, NAME, "property", STYLE)
 
+#define GROUP_ARGS
 #define PART_ARGS , pd->wm_part->name
 #define PART_ARGS_DIFF , pd->wm_part->name, NULL, 0.0
 #define PART_ITEM_ARGS , pd->wm_part->name, pd->item_name
@@ -615,7 +616,6 @@ _on_##SUB##_##VALUE##_change(void *data, \
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS); \
    elm_object_focus_set(obj, true); \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
    eina_stringshare_del(old_value); \
    free(value); \
 }
@@ -749,6 +749,43 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
    project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
 }
+
+/*****************************************************************************/
+/*                           GROUP 1 ENTRY CONTROL                            */
+/*****************************************************************************/
+/**
+ * Macro defines functions that create an item with label and 1 entry for group
+ * attribute.
+ *
+ * @see COMMON_ENTRY_ADD
+ *
+ * @ingroup Property_Macro
+ */
+#define GROUP_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP) \
+   COMMON_ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP)
+
+/**
+ * Macro defines a function that updates control by STATE_ATTR_1ENTRY_ADD macro.
+ *
+ * @see COMMON_ENTRY_UPDATE
+ *
+ * @ingroup Property_Macro
+ */
+#define GROUP_ATTR_1ENTRY_UPDATE(SUB, VALUE, MEMBER) \
+   COMMON_ENTRY_UPDATE(SUB, VALUE, MEMBER, GROUP_ARGS) \
+
+/**
+ * Macro defines a callback for STATE_ATTR_1ENTRY_ADD.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ *
+ * @ingroup Property_Macro
+ */
+#define GROUP_ATTR_1ENTRY_CALLBACK(SUB, VALUE) \
+   COMMON_ENTRY_CALLBACK(SUB, VALUE, GROUP_ARGS) \
+
+
 
 /*****************************************************************************/
 /*                         PART 1 CHECK CONTROL                              */
