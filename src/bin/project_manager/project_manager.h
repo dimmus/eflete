@@ -67,6 +67,8 @@ struct _Project
    Eina_Stringshare *pro_path;
    /** this is worrking file, all changes are happened in this file. */
    Eina_Stringshare *dev;
+   /** ecore evas buffer for project objects */
+   Ecore_Evas *ecore_evas;
    /** edje_edit_object for global operations */
    Evas_Object *global_object;
    /** this is saved file. */
