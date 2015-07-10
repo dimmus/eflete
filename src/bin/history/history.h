@@ -306,7 +306,6 @@ history_module_del(Evas_Object *source);
  *   if (!edje_edit_part_name_set(style->obj, part->name, value)) return;
  *   project_changed();
  *   part->name = value;
- *   style->isModify = true;
  *   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_RENAME, old_value, value,
  *                    style->full_group_name, (void*)edje_edit_part_name_set,
  *                    "Rename", part->name, NULL, 0);

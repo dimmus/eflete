@@ -110,7 +110,8 @@ const char *top_levels[] = { "collections",
 }
 
 static Eina_Bool
-_image_resources_export(Eina_List *images, Eina_Stringshare *destination,
+_image_resources_export(Project *project,
+                        Eina_List *images, Eina_Stringshare *destination,
                         Eina_Stringshare *source, Eina_Stringshare *dev,
                         Evas_Object *edje_edit);
 
@@ -338,7 +339,6 @@ _project_linked_images_copy(Project_Thread *worker)
    Eina_List *list, *l;
    Evas_Object *edje_edit_obj;
    Evas *e;
-   Ecore_Evas *ee;
    const char *name;
    const char *file_name;
    Eina_Strbuf *strbuf_to = eina_strbuf_new();
@@ -347,14 +347,12 @@ _project_linked_images_copy(Project_Thread *worker)
    Eina_Bool is_changed = false;
 
    ecore_thread_main_loop_begin();
-   ee = ecore_evas_buffer_new(0, 0);
-   e = ecore_evas_get(ee);
+   e = ecore_evas_get(worker->project->ecore_evas);
    list = edje_file_collection_list(worker->project->saved_edj);
    edje_edit_obj = edje_edit_object_add(e);
    if (!edje_object_file_set(edje_edit_obj, worker->project->saved_edj, eina_list_data_get(list)))
      {
         evas_object_del(edje_edit_obj);
-        ecore_evas_free(ee);
         edje_file_collection_list_free(list);
         ecore_thread_main_loop_end();
         return false;
@@ -407,9 +405,51 @@ _project_linked_images_copy(Project_Thread *worker)
    eina_strbuf_free(strbuf_from);
    ecore_thread_main_loop_begin();
    evas_object_del(edje_edit_obj);
-   ecore_evas_free(ee);
    ecore_thread_main_loop_end();
    return true;
+}
+
+static void
+_project_open_internal(Project *project)
+{
+   _project_dev_file_create(project);
+   project->mmap_file = eina_file_open(project->dev, false);
+
+   project->changed = false;
+   project->close_request = false;
+   project->widgets = wm_widgets_list_new(project->dev);
+   project->layouts = wm_layouts_list_new(project->dev);
+   project->ecore_evas = ecore_evas_buffer_new(0, 0);
+   project->global_object = edje_edit_object_add(ecore_evas_get(project->ecore_evas));
+   edje_object_mmap_set(project->global_object, project->mmap_file, EFLETE_INTERNAL_GROUP_NAME);
+}
+
+static void
+_project_special_group_add(Project *project)
+{
+   Evas *e;
+   Evas_Object *edje_edit_obj;
+   Eina_List *list;
+
+   ecore_thread_main_loop_begin();
+
+   Ecore_Evas *ee = ecore_evas_buffer_new(0, 0);
+   e = ecore_evas_get(ee);
+   list = edje_file_collection_list(project->saved_edj);
+   edje_edit_obj = edje_edit_object_add(e);
+
+   edje_object_file_set(edje_edit_obj, project->saved_edj, eina_list_data_get(list));
+
+   if (!edje_edit_group_exist(edje_edit_obj, EFLETE_INTERNAL_GROUP_NAME))
+     {
+        edje_edit_group_add(edje_edit_obj, EFLETE_INTERNAL_GROUP_NAME);
+        edje_edit_without_source_save(edje_edit_obj, false);
+     }
+   edje_edit_string_list_free(list);
+   evas_object_del(edje_edit_obj);
+   ecore_evas_free(project->ecore_evas);
+
+   ecore_thread_main_loop_end();
 }
 
 static void *
@@ -431,11 +471,9 @@ _project_import_edj(void *data,
    PROGRESS_SEND("%s", _("Importing..."));
    _project_edj_file_copy(worker);
    _copy_meta_data_to_pro(worker);
-   _project_dev_file_create(worker->project);
    WORKER_LOCK_TAKE;
-      worker->project->mmap_file = eina_file_open(worker->project->dev, false);
-      worker->project->widgets = wm_widgets_list_new(worker->project->dev);
-      worker->project->layouts = wm_layouts_list_new(worker->project->dev);
+      _project_special_group_add(worker->project);
+      _project_open_internal(worker->project);
    WORKER_LOCK_RELEASE;
    THREAD_TESTCANCEL;
    WORKER_LOCK_TAKE;
@@ -553,14 +591,15 @@ _project_import_edc(void *data,
    _project_edj_file_copy(worker);
    ecore_file_recursive_rm(tmp_dirname);
    eina_tmpstr_del(tmp_dirname);
-   _project_linked_images_copy(worker);
    _copy_meta_data_to_pro(worker);
-   _project_dev_file_create(worker->project);
    WORKER_LOCK_TAKE;
-      worker->project->mmap_file = eina_file_open(worker->project->dev, false);
-      worker->project->widgets = wm_widgets_list_new(worker->project->dev);
-      worker->project->layouts = wm_layouts_list_new(worker->project->dev);
+      _project_special_group_add(worker->project);
+      _project_open_internal(worker->project);
+   WORKER_LOCK_RELEASE;
+   THREAD_TESTCANCEL;
+   WORKER_LOCK_TAKE;
       pm_project_resource_export(worker->project, NULL);
+      _project_linked_images_copy(worker);
       edje_file_cache_flush();
    WORKER_LOCK_RELEASE;
 
@@ -623,30 +662,22 @@ Project *
 pm_project_open(const char *path)
 {
    Eet_File *ef;
-   Project *pro = NULL;
+   Project *project;
    char *tmp;
    int tmp_len;
-   struct _Project_Lock
-     {
-       Project *project;
-       Eina_Lock mutex;
-     };
 
    edje_file_cache_flush();
-   struct _Project_Lock *pro_lock = mem_calloc(1, sizeof(struct _Project_Lock));
-   eina_lock_new(&pro_lock->mutex);
 
    _project_descriptor_init();
    ef = eet_open(path, EET_FILE_MODE_READ_WRITE);
-   if (!ef)
-     goto error;
+   if (!ef) return NULL;
 
-   pro_lock->project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
+   project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
    _pm_project_descriptor_shutdown();
    eet_close(ef);
-   if (!pro_lock->project) goto error;
+   if (!project) return NULL;
 
-   pro_lock->project->pro_path = eina_stringshare_add(path);
+   project->pro_path = eina_stringshare_add(path);
 
    /* updating .dev file path */
    tmp = strdup(path);
@@ -654,41 +685,37 @@ pm_project_open(const char *path)
    tmp[tmp_len - 3] = 'd';
    tmp[tmp_len - 2] = 'e';
    tmp[tmp_len - 1] = 'v';
-   eina_stringshare_replace(&pro_lock->project->dev, tmp);
+   eina_stringshare_replace(&project->dev, tmp);
    free(tmp);
    /* updating .edj file path */
    tmp = strdup(path);
    tmp[tmp_len - 3] = 'e';
    tmp[tmp_len - 2] = 'd';
    tmp[tmp_len - 1] = 'j';
-   eina_stringshare_replace(&pro_lock->project->saved_edj, tmp);
+   eina_stringshare_replace(&project->saved_edj, tmp);
    free(tmp);
 
    /* checking for older project versions and upgrading them version-by-version */
-   if (pro_lock->project->version < 2) /* upgrade to version 2 */
+   if (project->version < 2) /* upgrade to version 2 */
      {
         WARN(_("Old project version. Project files were updated."));
-        ecore_file_mv(pro_lock->project->dev, pro_lock->project->saved_edj);
-        pro_lock->project->version = 2;
+        ecore_file_mv(project->dev, project->saved_edj);
+        project->version = 2;
+     }
+   if (project->version < 3) /* upgrade to version 3 */
+     {
+        WARN(_("Old project version. Project files were updated."));
+        _project_special_group_add(project);
+        project->version = 3;
      }
    TODO("Add crash recovery prompt here")
-   _project_dev_file_create(pro_lock->project);
-   pro_lock->project->mmap_file = eina_file_open(pro_lock->project->dev, false);
-   eina_lock_take(&pro_lock->mutex);
 
-   pro_lock->project->changed = false;
-   pro_lock->project->close_request = false;
-   pro_lock->project->widgets = wm_widgets_list_new(pro_lock->project->dev);
-   pro_lock->project->layouts = wm_layouts_list_new(pro_lock->project->dev);
-   pm_project_meta_data_get(pro_lock->project, &pro_lock->project->name, NULL, NULL, NULL, NULL);
-   if (!pro_lock->project->name) pro_lock->project->name = eina_stringshare_add(_("No title"));
-   eina_lock_release(&pro_lock->mutex);
+   _project_open_internal(project);
 
-error:
-   eina_lock_free(&pro_lock->mutex);
-   pro = pro_lock->project;
-   free(pro_lock);
-   return pro;
+   pm_project_meta_data_get(project, &project->name, NULL, NULL, NULL, NULL);
+   if (!project->name) project->name = eina_stringshare_add(_("No title"));
+
+   return project;
 }
 
 void
@@ -702,13 +729,13 @@ pm_save_to_dev(Project *pr, Style *st, Eina_Bool save)
      }
    else
      {
-        GET_STYLE(pr, st)
-        if (save) edje_edit_without_source_save(st->obj, false);
+        if (save) edje_edit_without_source_save(pr->global_object, false);
      }
    /* reloading mmaped dev file to update cached groups */
    eina_file_close(pr->mmap_file);
    pr->mmap_file = eina_file_open(pr->dev, false);
-   edje_object_mmap_set(st->obj, pr->mmap_file, st->full_group_name);
+   if (st) edje_object_mmap_set(st->obj, pr->mmap_file, st->full_group_name);
+   edje_object_mmap_set(pr->global_object, pr->mmap_file, EFLETE_INTERNAL_GROUP_NAME);
 }
 
 static void *
@@ -716,48 +743,17 @@ _project_save(void *data,
               Eina_Thread *thread __UNUSED__)
 {
    Project_Thread *worker;
-   Widget *widget;
-   Style *style;
-   Class *class_st;
    Eina_List *list;
    Eina_Stringshare *dest;
    Evas_Object *edje_edit_obj;
 
    worker = (Project_Thread *)data;
-   GET_OBJ(worker->project, edje_edit_obj);
+   edje_edit_obj = worker->project->global_object;
 
    PROGRESS_SEND("Saving...");
    ecore_thread_main_loop_begin();
    WORKER_LOCK_TAKE;
-      EINA_INLIST_FOREACH(worker->project->widgets, widget)
-        {
-           EINA_INLIST_FOREACH(widget->classes, class_st)
-             {
-                EINA_INLIST_FOREACH(class_st->styles, style)
-                  {
-                     if (style->isModify)
-                       {
-                          style->isModify = false;
-                          edje_object_mmap_set(style->obj,
-                                               worker->project->mmap_file,
-                                               style->full_group_name);
-                          edje_edit_without_source_save(style->obj, true);
-                       }
-                  }
-             }
-        }
-
-      EINA_INLIST_FOREACH(worker->project->layouts, style)
-        {
-           if (style->isModify)
-             {
-                style->isModify = false;
-                edje_object_mmap_set(style->obj,
-                                     worker->project->mmap_file,
-                                     style->full_group_name);
-                edje_edit_without_source_save(style->obj, true);
-             }
-        }
+   pm_save_to_dev(worker->project, NULL, true);
    eina_file_close(worker->project->mmap_file);
    Uns_List *it;
    Eina_List *add_list = NULL, *l;
@@ -769,7 +765,7 @@ _project_save(void *data,
 
    /* saving */
    dest = eina_stringshare_printf("%s/images", worker->project->develop_path);
-   _image_resources_export(add_list, dest, NULL, worker->project->dev, edje_edit_obj);
+   _image_resources_export(worker->project, add_list, dest, NULL, worker->project->dev, edje_edit_obj);
    edje_edit_string_list_free(add_list);
    EINA_LIST_FREE(worker->project->nsimage_list, it)
       free(it);
@@ -849,6 +845,9 @@ pm_project_close(Project *project)
 
    wm_widgets_list_free(project->widgets);
    wm_layouts_list_free(project->layouts);
+
+   evas_object_del(project->global_object);
+   ecore_evas_free(project->ecore_evas);
 
    eina_file_close(project->mmap_file);
    ecore_file_unlink(project->dev);
@@ -950,13 +949,13 @@ pm_project_meta_data_set(Project *project,
 }
 
 static Eina_Bool
-_image_resources_export(Eina_List *images, Eina_Stringshare *destination,
+_image_resources_export(Project *project,
+                        Eina_List *images, Eina_Stringshare *destination,
                         Eina_Stringshare *source, Eina_Stringshare *dev,
                         Evas_Object *edje_edit)
 {
   Eina_Stringshare *image_name, *source_file, *dest_file;
   Eina_List *l;
-  Ecore_Evas *ee;
   Evas *e;
   Evas_Object *im;
   int id;
@@ -969,8 +968,7 @@ _image_resources_export(Eina_List *images, Eina_Stringshare *destination,
             ERR("Failed create path %s for export images", destination);
             return false;
          }
-       ee = ecore_evas_buffer_new(0, 0);
-       e = ecore_evas_get(ee);
+       e = ecore_evas_get(project->ecore_evas);
     }
   else return false;
   EINA_LIST_FOREACH(images, l, image_name)
@@ -1014,7 +1012,6 @@ _image_resources_export(Eina_List *images, Eina_Stringshare *destination,
        eina_stringshare_del(dest_file);
     }
   ecore_thread_main_loop_begin();
-  ecore_evas_free(ee);
   ecore_thread_main_loop_end();
 
   return true;
@@ -1229,7 +1226,7 @@ pm_style_resource_export(Project *pro ,
    dest = eina_stringshare_printf("%s/images", path);
    EINA_LIST_FOREACH(pro->res.images, l, source)
      {
-       if (!_image_resources_export(images, dest, source, pro->dev, style->obj))
+       if (!_image_resources_export(pro, images, dest, source, pro->dev, style->obj))
          WARN("Failed export images");
      }
    eina_stringshare_del(dest);
@@ -1271,6 +1268,7 @@ pm_project_resource_export(Project *pro, const char* dir_path)
    ecore_thread_main_loop_begin();
    Ecore_Evas *ee = ecore_evas_buffer_new(0, 0);
    e = ecore_evas_get(ee);
+
    list = edje_file_collection_list(pro->dev);
    edje_edit_obj = edje_edit_object_add(e);
    if (!edje_object_mmap_set(edje_edit_obj, pro->mmap_file, eina_list_data_get(list)))
@@ -1288,7 +1286,7 @@ pm_project_resource_export(Project *pro, const char* dir_path)
    /* export images */
    list = edje_edit_images_list_get(edje_edit_obj);
    dest = eina_stringshare_printf("%s/images", path);
-   _image_resources_export(list, dest, NULL, pro->dev, edje_edit_obj);
+   _image_resources_export(pro, list, dest, NULL, pro->dev, edje_edit_obj);
    edje_edit_string_list_free(list);
    eina_stringshare_del(dest);
 
@@ -1364,8 +1362,7 @@ pm_project_source_code_export(Project *pro, const char *dir_path)
    int value = -1, k = 0;
    const char *pos = NULL;
    char str[100];
-   Evas_Object *edje_edit_obj;
-   GET_OBJ(pro, edje_edit_obj);
+   Evas_Object *edje_edit_obj = pro->global_object;
 
    path = eina_stringshare_printf("%s/%s.edc", dir_path, pro->name);
    f = fopen(path, "w");
@@ -1514,15 +1511,13 @@ _develop_export(void *data,
                 Eina_Thread *thread __UNUSED__)
 {
    Project_Thread *worker;
-   Evas_Object *edje_edit_obj;
 
    worker = (Project_Thread *)data;
 
    PROGRESS_SEND(_("Export edj..."));
    WORKER_LOCK_TAKE;
 
-      GET_OBJ(worker->project, edje_edit_obj);
-      edje_edit_save_all(edje_edit_obj);
+      edje_edit_save_all(worker->project->global_object);
       eina_file_copy(worker->project->dev, worker->edj,
                      EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
                      NULL, NULL);

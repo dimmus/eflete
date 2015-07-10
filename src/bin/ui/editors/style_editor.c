@@ -287,7 +287,7 @@ _on_glit_selected(void *data,
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
 
-   GET_OBJ(style_edit->pr, edje_edit_obj);
+   edje_edit_obj = style_edit->pr->global_object;
 
    if (!glit_parent)
      {
@@ -378,7 +378,7 @@ _on_st_add_bt_ok(void *data,
    const char *style_name = elm_entry_entry_get(POPUP.name);
    App_Data *ap = app_data_get();
 
-   GET_OBJ(style_edit->pr, edje_edit_obj);
+   edje_edit_obj = style_edit->pr->global_object;
 
    if ((!style_name) || (strcmp(style_name, "") == 0))
      {
@@ -440,7 +440,7 @@ _on_tag_add_bt_ok(void *data,
    Evas_Object *edje_edit_obj = NULL;
    const char *style_name = elm_object_item_data_get(style_edit->tag);
    const char *tag_name = elm_entry_entry_get(POPUP.name);
-   GET_OBJ(style_edit->pr, edje_edit_obj);
+   edje_edit_obj = style_edit->pr->global_object;
 
    if ((!tag_name) || (strcmp(tag_name, "") == 0))
      {
@@ -577,7 +577,7 @@ _on_bt_del(void *data,
    Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
    if (!glit) return;
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
-   GET_OBJ(style_edit->pr, edje_edit_obj);
+   edje_edit_obj = style_edit->pr->global_object;
 
    if (!glit_parent)
      {
@@ -766,7 +766,7 @@ _form_left_side(Style_Editor *style_edit)
                                    EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(style_edit->glist, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
-   GET_OBJ(style_edit->pr, edje_edit_obj);
+   edje_edit_obj = style_edit->pr->global_object;
 
    styles = edje_edit_styles_list_get(edje_edit_obj);
 
@@ -864,7 +864,7 @@ _tag_parse(Style_Editor *style_edit, const char *value, const char *text)
    int i = 0, k = 0, exist = 0, style_length = 0;
 
    eina_strbuf_append(tag, CURRENT.stvalue);
-   GET_OBJ(style_edit->pr, edje_edit_obj);
+   edje_edit_obj = style_edit->pr->global_object;
    stolen_buf = eina_strbuf_string_steal(tag);
    token = strtok(stolen_buf, " =+");
    while (token)
@@ -1317,7 +1317,6 @@ ITEM_COLOR_ADD(underline2_color, "underline2_color", "underline2_color")
 static void
 _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value)
 {
-   Evas_Object *edje_edit_obj = NULL;
    Evas_Object *layout;
    Evas_Object *fonts_list, *font_size;
    Evas_Object *font_weight;
@@ -1331,7 +1330,6 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
 
    SCROLLER_ADD(style_edit->mwin, scr);
    elm_scroller_policy_set(scr, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
-   GET_OBJ(style_edit->pr, edje_edit_obj);
 
    layout = elm_layout_add(style_edit->mwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -1403,7 +1401,6 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
 static void
 _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value)
 {
-   Evas_Object *edje_edit_obj = NULL;
    Evas_Object *box_frames, *frame1, *frame2, *layout1, *layout2;
    Evas_Object *font_align, *font_lmargin, *font_valign,  *font_rmargin;
    Evas_Object *text_tabstops, *line_size, *rel_size;
@@ -1418,7 +1415,6 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
    BOX_ADD(scr, box_frames, EINA_FALSE, EINA_FALSE)
    elm_box_align_set(box_frames, 0.5, 0.0);
    elm_object_content_set(scr, box_frames);
-   GET_OBJ(style_edit->pr, edje_edit_obj);
 
    FRAME_ADD(box_frames, frame1, false, _("Positioning option"))
    evas_object_size_hint_weight_set(frame1, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -1547,7 +1543,6 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
 static void
 _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value)
 {
-   Evas_Object *edje_edit_obj = NULL;
    Evas_Object *layout, *item;
    Evas_Object *font_style, *shadow_color, *inner_glow, *outer_glow;
    int r, g, b, a;
@@ -1558,7 +1553,6 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
    int count = 0, direction = DEFAULT_DIRECTION;
 
    SCROLLER_ADD(style_edit->mwin, scr);
-   GET_OBJ(style_edit->pr, edje_edit_obj);
 
    layout = elm_layout_add(style_edit->mwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -1687,7 +1681,6 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
 static void
 _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value)
 {
-   Evas_Object *edje_edit_obj = NULL;
    Evas_Object *layout;
    Evas_Object *font_strikethrough, *strikethrough_color;
    Evas_Object *font_underline, *underline_style, *underline_color, *underline2_color;
@@ -1698,7 +1691,6 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it
 
    Evas_Object *scr;
    SCROLLER_ADD(style_edit->mwin, scr);
-   GET_OBJ(style_edit->pr, edje_edit_obj);
 
    layout = elm_layout_add(style_edit->mwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

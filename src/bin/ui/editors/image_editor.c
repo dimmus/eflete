@@ -418,17 +418,14 @@ _image_info_usage_update(Image_Editor *img_edit)
    Evas_Object *list;
    Elm_Object_Item *it_group, *it_part;
    Edje_Part_Image_Use *image;
-   Evas_Object *edje_edit_obj;
    const char *cur_group = NULL;
    const char *cur_part = NULL;
    Eina_Stringshare *state_name;
 
    if (!img_edit->image_data_fields.image_name) return;
 
-   GET_OBJ(img_edit->pr, edje_edit_obj);
-
    usage_list =
-      edje_edit_image_usage_list_get(edje_edit_obj,
+      edje_edit_image_usage_list_get(img_edit->pr->global_object,
                                      img_edit->image_data_fields.image_name,
                                      false);
    if (!eina_list_count(usage_list))
@@ -478,14 +475,11 @@ static void
 _image_info_setup(Image_Editor *img_edit,
                   const Item* it)
 {
-   Evas_Object *edje_edit_obj = NULL;
    Eina_Stringshare *str;
    Evas_Object *image;
    Edje_Edit_Image_Comp comp;
    Eina_List *usage_list;
    int w, h;
-
-   GET_OBJ(img_edit->pr, edje_edit_obj);
 
    _image_info_reset(img_edit);
    img_edit->image_data_fields.image_name = it->image_name;
@@ -496,7 +490,7 @@ _image_info_setup(Image_Editor *img_edit,
    img_edit->image_data_fields.image = image;
    evas_object_show(image);
 
-   comp =  edje_edit_image_compression_type_get(edje_edit_obj, it->image_name);
+   comp =  edje_edit_image_compression_type_get(img_edit->pr->global_object, it->image_name);
 
    if (comp != EDJE_EDIT_IMAGE_COMP_USER)
      {
@@ -513,7 +507,7 @@ _image_info_setup(Image_Editor *img_edit,
 
    if (comp == EDJE_EDIT_IMAGE_COMP_LOSSY)
      {
-        int quality = edje_edit_image_compression_rate_get(edje_edit_obj,
+        int quality = edje_edit_image_compression_rate_get(img_edit->pr->global_object,
                                                            it->image_name);
         elm_spinner_value_set(img_edit->image_data_fields.quality, quality);
      }
@@ -532,7 +526,7 @@ _image_info_setup(Image_Editor *img_edit,
 
    _image_info_type_setup(img_edit->image_data_fields.layout, it->image_name);
 
-   usage_list = edje_edit_image_usage_list_get(edje_edit_obj,
+   usage_list = edje_edit_image_usage_list_get(img_edit->pr->global_object,
                                                it->image_name, false);
    _image_info_update_usage_info(img_edit, eina_list_count(usage_list));
    _image_info_usage_update(img_edit);
@@ -602,7 +596,6 @@ _on_image_done(void *data,
    Elm_Object_Item *item = NULL;
    const Eina_List *images, *l;
    const char *selected = event_info;
-   Style *style = NULL;
    Uns_List *image = NULL;
 
    Image_Editor *img_edit = (Image_Editor *)data;
@@ -610,7 +603,6 @@ _on_image_done(void *data,
    if ((!selected) || (!strcmp(selected, "")))
      goto del;
 
-   GET_STYLE(img_edit->pr, style);
    images = elm_fileselector_selected_paths_get(obj);
 
    EINA_LIST_FOREACH(images, l, selected)
@@ -701,7 +693,6 @@ _on_button_delete_clicked_cb(void *data,
    Eina_List * in_use = NULL, *used_in = NULL;
    char *name;
    Edje_Part_Image_Use *item;
-   Style *style = NULL;
    char buf[BUFF_MAX];
    int symbs = 0;
    Uns_List *image = NULL;
@@ -709,15 +700,13 @@ _on_button_delete_clicked_cb(void *data,
 
    if (!img_edit->gengrid) return;
 
-   GET_STYLE(img_edit->pr, style);
-
    grid_list = (Eina_List *)elm_gengrid_selected_items_get(img_edit->gengrid);
    if (!grid_list) return;
 
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
         it = elm_object_item_data_get(grid_item);
-        used = edje_edit_image_usage_list_get(style->obj, it->image_name, EINA_TRUE);
+        used = edje_edit_image_usage_list_get(img_edit->pr->global_object, it->image_name, EINA_TRUE);
         if (!used)
           {
              elm_object_item_del(grid_item);
@@ -739,7 +728,7 @@ _on_button_delete_clicked_cb(void *data,
    if (notdeleted == 1)
      {
         name = eina_list_nth(in_use, 0);
-        used_in = edje_edit_image_usage_list_get(style->obj, name, false);
+        used_in = edje_edit_image_usage_list_get(img_edit->pr->global_object, name, false);
         snprintf(buf, BUFF_MAX, _("Image is used in:"));
         symbs = strlen(buf);
         EINA_LIST_FOREACH(used_in, l, item)
@@ -789,8 +778,6 @@ _on_button_apply_clicked_cb(void *data,
    Image_Editor *img_edit = (Image_Editor *)data;
    Uns_List *unit = NULL;
    App_Data *ap = app_data_get();
-   Style *style = NULL;
-   GET_STYLE(img_edit->pr, style);
    Eina_List *l, *names = NULL;
    Eina_Bool multiselect = false;
    const Eina_List *items;
@@ -802,13 +789,13 @@ _on_button_apply_clicked_cb(void *data,
      {
         if (unit->act_type == ACTION_TYPE_DEL)
           {
-             if (edje_edit_image_del(style->obj, unit->data))
+             if (edje_edit_image_del(img_edit->pr->global_object, unit->data))
                ap->project->nsimage_list = eina_list_append(ap->project->nsimage_list, unit);
           }
-        else if (edje_edit_image_add(style->obj, unit->data))
+        else if (edje_edit_image_add(img_edit->pr->global_object, unit->data))
           ap->project->nsimage_list = eina_list_append(ap->project->nsimage_list, unit);
      }
-   pm_save_to_dev(img_edit->pr, style, false);
+   pm_save_to_dev(img_edit->pr, NULL, false);
 
    eina_list_free(img_edit->unapplied_list);
 
@@ -1059,13 +1046,11 @@ _image_editor_init(Image_Editor *img_edit)
    const char* image_name = NULL;
    Eina_List *images = NULL;
    int counter = 0;
-   Evas_Object *edje_edit_obj = NULL;
 
    if (!img_edit) return false;
-   GET_OBJ(img_edit->pr, edje_edit_obj);
 
    _image_editor_gengrid_group_items_add(img_edit);
-   images = edje_edit_images_list_get(edje_edit_obj);
+   images = edje_edit_images_list_get(img_edit->pr->global_object);
 
    if (images)
      {
@@ -1077,7 +1062,7 @@ _image_editor_init(Image_Editor *img_edit)
                    ERR("name not found for image #%d",counter);
                    continue;
                 }
-              it = _image_editor_gengrid_item_data_create(edje_edit_obj,
+              it = _image_editor_gengrid_item_data_create(img_edit->pr->global_object,
                                                           image_name);
               if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
                 elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,

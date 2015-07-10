@@ -340,7 +340,6 @@ wm_style_add(const char* style_name, const char* full_group_name,
    style_edje->obj = NULL;
    style_edje->parts = NULL;
    style_edje->main_group = NULL;
-   style_edje->isModify = false;
    style_edje->isAlias = false;
    style_edje->__type = style_type;
    style_edje->parent = parent;
@@ -651,7 +650,7 @@ wm_layouts_list_new(const char *file)
 
    EINA_LIST_FOREACH(collection, l, group)
      {
-        if (!eina_str_has_prefix(group, prefix))
+        if (!eina_str_has_prefix(group, prefix) && strcmp(group, EFLETE_INTERNAL_GROUP_NAME))
           {
              layout = wm_style_add(group, group, LAYOUT, NULL);
              layouts = eina_inlist_append(layouts, EINA_INLIST_GET(layout));
@@ -912,7 +911,6 @@ wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
    else
       style->parts = eina_inlist_prepend_relative(style->parts, tmp_list, tmp_prev);
 
-   style->isModify = true;
    return true;
 }
 

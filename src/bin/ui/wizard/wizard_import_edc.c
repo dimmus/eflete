@@ -388,7 +388,6 @@ _edc_code_generate(Eina_Stringshare *path, Wizard_Import_Edj_Win *wiew __UNUSED_
    Eina_Strbuf *dep_edc = eina_strbuf_new();
    int deps_count;
    Widget_Item_Data *widget_item_data_iterator = widget_item_data;
-   Eina_Bool are_widgets_included = false;
    deps_count = _widgets_dependencies_setup(widget_item_data, dep_message);
 
    if (deps_count)
@@ -403,6 +402,12 @@ _edc_code_generate(Eina_Stringshare *path, Wizard_Import_Edj_Win *wiew __UNUSED_
    eina_strbuf_free(dep_message);
    eina_strbuf_append(edc, "data.item: \"version\" \"110\";\n\n");
    eina_strbuf_append(edc, "collections {\n");
+
+   eina_strbuf_append(edc, "   group {\n");
+   eina_strbuf_append(edc, "      name: \"" EFLETE_INTERNAL_GROUP_NAME "\";\n");
+   eina_strbuf_append(edc, "   }\n");
+
+   TODO("move fonts, colorclasses and macros to widgets where they are used");
    eina_strbuf_append(edc, "   #include \"fonts.edc\"\n");
    eina_strbuf_append(edc, "   #include \"colorclasses.edc\"\n");
    eina_strbuf_append(edc, "   #include \"macros.edc\"\n");
@@ -411,7 +416,7 @@ _edc_code_generate(Eina_Stringshare *path, Wizard_Import_Edj_Win *wiew __UNUSED_
    _file_to_swap_copy(path, "colorclasses");
    _file_to_swap_copy(path, "macros");
 
-   are_widgets_included = _widgets_dependencies_generate(path, dep_edc);
+   _widgets_dependencies_generate(path, dep_edc);
    eina_strbuf_append(edc, eina_strbuf_string_get(dep_edc));
    eina_strbuf_free(dep_edc);
 
@@ -422,16 +427,8 @@ _edc_code_generate(Eina_Stringshare *path, Wizard_Import_Edj_Win *wiew __UNUSED_
              eina_strbuf_append_printf(edc, "   #include \"%s.edc\"\n",
                                        widget_item_data_iterator->name);
              _file_to_swap_copy(path, widget_item_data_iterator->name);
-             are_widgets_included = true;
           }
         widget_item_data_iterator++;
-     }
-
-   if (!are_widgets_included)
-     {
-        eina_strbuf_append(edc, "   group {\n");
-        eina_strbuf_append(edc, "      name: \"new/layout/0\";\n");
-        eina_strbuf_append(edc, "   }\n");
      }
 
    eina_strbuf_append(edc, "}\n");

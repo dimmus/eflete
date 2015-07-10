@@ -127,7 +127,7 @@ void groupedit_edit_object_part_select_test_n1(int);
 void groupedit_edit_object_part_select_test_n2(int);
 
 void groupedit_bg_set_test_p(int);
-void groupedit_bg_set_test_n1(int);
+void groupedit_bg_set_test_p1(int);
 void groupedit_bg_set_test_n2(int);
 
 void groupedit_bg_unset_test_p(int);

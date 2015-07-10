@@ -370,7 +370,7 @@ _add_layout_cb(void *data,
    App_Data *ap = app_data_get();
    Style *layout = NULL;
    Eina_Stringshare *name = NULL;
-   Evas_Object *group_obj, *en;
+   Evas_Object *en;
 
    widget_list = _widgetlist_current_genlist_get(ap, LAYOUT);
    en = (Evas_Object *)data;
@@ -380,12 +380,8 @@ _add_layout_cb(void *data,
         NOTIFY_WARNING(_("Please type layout name"));
         goto exit;
      }
-   GET_STYLE(ap->project, layout);
 
-   /* Using aliased group, if the group we've found is alias. */
-   group_obj = (layout->isAlias) ? layout->main_group->obj : layout->obj;
-
-   if (edje_edit_group_exist(group_obj, name))
+   if (edje_edit_group_exist(ap->project->global_object, name))
      {
         NOTIFY_INFO(3, _("Failed to create new layout."));
         ERR("Failed to create new layout: all avalaible names are existing");
@@ -393,7 +389,7 @@ _add_layout_cb(void *data,
         return;
      }
 
-   if (!edje_edit_group_add(group_obj, name))
+   if (!edje_edit_group_add(ap->project->global_object, name))
      {
         NOTIFY_INFO(3, _("Failed to create new layout."));
         ERR("Failed to create new layout: edje edit group add is failed");
@@ -403,7 +399,6 @@ _add_layout_cb(void *data,
 
    pm_save_to_dev(ap->project, NULL, true);
    layout = wm_style_add(name, name, LAYOUT, NULL);
-   layout->isModify = true;
    ap->project->layouts = eina_inlist_append(ap->project->layouts,
                                              EINA_INLIST_GET(layout));
    wm_style_data_load(layout, evas_object_evas_get(widget_list),
@@ -1047,9 +1042,6 @@ project_changed(Eina_Bool save)
    pm_save_to_dev(ap->project, ap->project->current_style, save);
    ap->project->changed = true;
    ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, false);
-
-   if (ap->project->current_style)
-     ap->project->current_style->isModify = true;
 }
 
 /******************************************************************************/
@@ -1506,71 +1498,11 @@ _project_close_request(App_Data *ap, Eina_Bool changed)
 }
 
 /******************************************************************************/
-static Style *
-_style_with_another_object_get(Project *pro, Style *given_style)
-{
-   Widget *widget = NULL;
-   Class *class = NULL;
-   Style *another_style = NULL;
-   /* try to find layout. */
-   EINA_INLIST_FOREACH(pro->layouts, another_style)
-     {
-        if (another_style->full_group_name == given_style->full_group_name)
-          continue;
-        if (!another_style->isAlias)
-          return another_style;
-     }
-   /* try to find style */
-   EINA_INLIST_FOREACH(pro->widgets, widget)
-     {
-        EINA_INLIST_FOREACH(widget->classes, class)
-          {
-               EINA_INLIST_FOREACH(class->styles, another_style)
-                {
-                   if (another_style->full_group_name == given_style->full_group_name)
-                     continue;
-                   if (!another_style->isAlias)
-                     return another_style;
-                }
-          }
-     }
-   return NULL;
-}
-
-static Style *
-_style_from_another_class_with_another_object_get(Project *pro, Class *given_class)
-{
-   Widget *widget = NULL;
-   Class *class = NULL;
-   Style *another_style = NULL;
-   /* try to find layout. */
-   EINA_INLIST_FOREACH(pro->layouts, another_style)
-     {
-        if (!another_style->isAlias)
-          return another_style;
-     }
-   /* try to find style */
-   EINA_INLIST_FOREACH(pro->widgets, widget)
-     {
-        EINA_INLIST_FOREACH(widget->classes, class)
-          {
-             if (class->name != given_class->name)
-               {
-                  EINA_INLIST_FOREACH(class->styles, another_style)
-                    return another_style;
-               }
-          }
-     }
-   return NULL;
-}
-
-
 static Eina_Bool
 _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
 {
    Elm_Object_Item *item_to_del = elm_genlist_selected_item_get(genlist), *eoi;
    Style *style = elm_object_item_data_get(item_to_del);;
-   Style *style_work = NULL;
    int i;
 
    if (!item_to_del)
@@ -1591,17 +1523,9 @@ _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
         i--;
      }
 
-   style_work = _style_with_another_object_get(ap->project, style);
-
-   if (!style_work)
-     {
-        NOTIFY_INFO(3, _("Can not delete last layout"));
-        return false;
-     }
-
-   pm_save_to_dev(ap->project, style_work, true);
+   pm_save_to_dev(ap->project, NULL, true);
    evas_object_del(style->obj);
-   if (!edje_edit_group_del(style_work->obj, style->full_group_name))
+   if (!edje_edit_group_del(ap->project->global_object, style->full_group_name))
      {
         NOTIFY_INFO(3, _("Failed to delete layout[%s]"),
                     style->name);
@@ -1635,7 +1559,6 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
    Class *class_st = NULL;
    Style *style = NULL;
    Style *alias_style = NULL;
-   Style *style_work = NULL;
 
    Elm_Object_Item *eoi = elm_genlist_selected_item_get(genlist);
    Eina_List *l = NULL;
@@ -1657,17 +1580,6 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
 
    if (class_st->__type != CLASS) return false;
 
-   if (style)
-     style_work = _style_with_another_object_get(ap->project, style);
-   else
-     style_work = _style_from_another_class_with_another_object_get(ap->project, class_st);
-
-   if (!style_work)
-     {
-        ERR("Failed search style object from another class");
-        return false;
-     }
-
    if (style) /* Deleting style */
      {
         Evas_Object *st_cur = style->obj;
@@ -1688,9 +1600,9 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
                 wm_style_free(alias_style);
           }
          /*Delete loaded object for unlock group in edj file*/
-        pm_save_to_dev(ap->project, style_work, true);
+        pm_save_to_dev(ap->project, NULL, true);
         evas_object_del(style->obj);
-        if (!edje_edit_group_del(style_work->obj, style->full_group_name))
+        if (!edje_edit_group_del(ap->project->global_object, style->full_group_name))
           {
              NOTIFY_INFO(3, _("Failed to delete style[%s]"), style->name);
              return false;
@@ -1707,14 +1619,13 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
         EINA_INLIST_FOREACH_SAFE(class_st->styles, l, style)
           {
              evas_object_del(style->obj);
-             if (!edje_edit_group_del(style_work->obj, style->full_group_name))
+             if (!edje_edit_group_del(ap->project->global_object, style->full_group_name))
                NOTIFY_INFO(3, _("Failed to delete style[%s] in class [%s]"),
                            style->name, class_st->name);
           }
         wm_class_free(class_st);
      }*/
 
-   style_work->isModify = true;
    project_changed(true);
 
    ui_widget_list_class_data_reload(genlist, widget->classes);
@@ -1745,12 +1656,6 @@ ui_group_delete(App_Data *ap, Type group_type)
    Elm_Object_Item *eoi = elm_genlist_selected_item_get(gl_groups);
    if (!eoi)
      return true;
-   /* Checking number of groups */
-   Eina_List *groups = edje_file_collection_list(ap->project->dev);
-   unsigned int count = eina_list_count(groups);
-   edje_file_collection_list_free(groups);
-   if (count == 1)
-     return false;
 
    if (group_type != LAYOUT)
      return _selected_style_delete(gl_groups, ap);

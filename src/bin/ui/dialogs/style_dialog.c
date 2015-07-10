@@ -269,7 +269,6 @@ _on_popup_btn_yes(void *data,
         wm_style_data_load(style, evas_object_evas_get(ap->win),
                            ap->project->mmap_file);
         _reload_classes(ap, dest_wdg->classes);
-        style->isModify = true;
         pm_save_to_dev(ap->project, style, true);
 
         /* Selecting added style in genlist! */

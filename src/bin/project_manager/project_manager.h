@@ -43,7 +43,7 @@
 #include <Eet.h>
 
 /* don't forget to update on major changes */
-#define PROJECT_FILE_VERSION 2
+#define PROJECT_FILE_VERSION 3
 
 typedef struct _Enventor_Data Enventor_Data;
 
@@ -67,6 +67,10 @@ struct _Project
    Eina_Stringshare *pro_path;
    /** this is worrking file, all changes are happened in this file. */
    Eina_Stringshare *dev;
+   /** ecore evas buffer for project objects */
+   Ecore_Evas *ecore_evas;
+   /** edje_edit_object for global operations */
+   Evas_Object *global_object;
    /** this is saved file. */
    Eina_Stringshare *saved_edj;
 

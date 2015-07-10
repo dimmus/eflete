@@ -1371,7 +1371,7 @@ STATE_ATTR_2SPINNER(_("aspect ratio"), state, aspect_min, aspect_max, state, 0, 
                    _("Normally width and height can be resized to any values independently"),
                    _("Normally width and height can be resized to any values independently"),
                    100, double, VAL_DOUBLE)
-STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, state, 1.0, 9999.0, 0.1, "%.1f", "w:", "", "h:", "",
+STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, state, 0.0, 9999.0, 0.1, "%.1f", "w:", "", "h:", "",
                     _("The minimal part width value multiplier for current state"),
                     _("The minimal part height value multiplier for current state"),
                     1, double, VAL_DOUBLE)

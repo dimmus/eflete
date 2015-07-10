@@ -1649,9 +1649,6 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                                         r, g, b, a))\
      return; \
    evas_object_color_set(pd->MEMBER.VALUE##_obj, r*a/255, g*a/255, b*a/255, a); \
-   edje_edit_state_color_class_set(pd->wm_style->obj, pd->wm_part->name, \
-                                   pd->wm_part->curr_state, \
-                                   pd->wm_part->curr_state_value, NULL); \
    if ((r != old_r) || (g != old_g) || (b != old_b) || (a != old_a)) \
      history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_FOUR, old_r, old_g, old_b, \
                       old_a, r, g, b, a, pd->wm_style->full_group_name, \
