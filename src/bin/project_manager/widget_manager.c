@@ -394,6 +394,14 @@ wm_style_name_set(Style *style, const char *name)
 }
 
 Eina_Bool
+wm_style_layout_is(Style *style)
+{
+   assert(style != NULL);
+
+   return style->__type == LAYOUT;
+}
+
+Eina_Bool
 wm_style_free(Style *style)
 {
    Style *aliassed;

@@ -322,7 +322,7 @@ wm_style_add(const char* style_name, const char* full_group_name,
 /**
  * Set new name to given Style.
  *
- * @param style The given style
+ * @param style The given @Style object
  * @param name The new name for style
  *
  * @return New style name or NULL
@@ -343,6 +343,16 @@ wm_style_name_set(Style *style, const char *name);
  */
 Eina_Bool
 wm_style_free(Style *style);
+
+/**
+ * Check Style type.
+ *
+ * @param style The given @Style object
+ *
+ * @return EINA_TRUE if given style is layout, otherwise EINA_FALSE
+ */
+Eina_Bool
+wm_style_layout_is(Style *style);
 
 /**
  * Copy all parms of style from one edje_edit object to new style of the same object.
