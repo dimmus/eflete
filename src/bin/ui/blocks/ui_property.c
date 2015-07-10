@@ -77,6 +77,7 @@ struct _Prop_Data
       Evas_Object *info;
       Evas_Object *shared_check;
       Evas_Object *ctxpopup;
+      Evas_Object *name;
       Evas_Object *min_w, *min_h;
       Evas_Object *max_w, *max_h;
       Evas_Object *current;
@@ -534,14 +535,53 @@ ui_property_add(Evas_Object *parent)
    return tabs;
 }
 
+static void
+_on_group_name_change(void *data,
+                      Evas_Object *obj,
+                      void *ei __UNUSED__)
+{
+   Prop_Data *pd = (Prop_Data *)data;
+   const char *value, *old_value;
+   char *entry;
+
+   if (ewe_entry_regex_error_get(obj)) return;
+
+   old_value = eina_stringshare_add(pd->wm_style->full_group_name);
+   entry = elm_entry_markup_to_utf8(elm_entry_entry_get(obj));
+   value = wm_style_name_set(pd->wm_style, entry);
+
+   if (!edje_edit_group_name_set(pd->wm_style->obj, value)) return;
+
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING,
+                    old_value, value, pd->wm_style->full_group_name,
+                    (void*)edje_edit_group_name_set, "style name");
+   elm_object_focus_set(obj, true);
+   project_changed(false);
+   eina_stringshare_del(old_value);
+   free(entry);
+}
+
 #define GROUP_ATTR_2SPINNER(TEXT, SUB1, SUB2, VALUE1, VALUE2, CHECK) \
    GROUP_ATTR_2SPINNER_CALLBACK(SUB1, SUB2, VALUE1, CHECK) \
    GROUP_ATTR_2SPINNER_CALLBACK(SUB1, SUB2, VALUE2, CHECK) \
    GROUP_ATTR_2SPINNER_UPDATE(SUB1, VALUE1, VALUE2) \
    GROUP_ATTR_2SPINNER_ADD(TEXT, SUB1, VALUE1, VALUE2)
 
+/*
+ * Edje Edit API have't API for get the name from loaded image. It's first
+ * reason for create this macro.
+ *
+ * Second: we need to get the different names for layouts and for styles. */
+#define edje_edit_group_name_get(OBJ) \
+   wm_style_layout_is(pd->wm_style) ? pd->wm_style->full_group_name : pd->wm_style->name \
+
+#define GROUP_ATTR_1ENTRY(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP) \
+   GROUP_ATTR_1ENTRY_UPDATE(SUB, VALUE, MEMBER) \
+   GROUP_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP)
+
 GROUP_ATTR_2SPINNER(_("min"), min, max, w, h, >)
 GROUP_ATTR_2SPINNER(_("max"), max, min, w, h, <)
+GROUP_ATTR_1ENTRY(_("name"), group, name, group, NULL, _(""))
 
 #define pd_group pd->group
 
@@ -754,6 +794,8 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(group_frame, box);
 
+        item = prop_group_name_add(box, pd, NULL);
+        elm_box_pack_end(box, item);
         item = prop_group_min_w_h_add(box, pd,
                                       _("Minimum group width in pixels."),
                                       _("Minimum group height in pixels."));
@@ -774,6 +816,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
              evas_object_show(pd_group.info);
           }
         _prop_item_shared_check_update(pd_group.shared_check, aliases_count);
+        prop_group_name_update(pd);
         prop_group_min_w_h_update(pd);
         prop_group_max_w_h_update(pd);
         evas_object_show(pd_group.frame);
