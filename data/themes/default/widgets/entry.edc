@@ -430,7 +430,7 @@ group { name: "elm/entry/base/default";
          source6: "elm/entry/anchor/default";
          description { state: "default" 0.0;
             text {
-               style: "eflete_text_style";
+               style: "main_text";
                min: 1 1;
                align: 0.0 0.0;
                elipsis: -1;
@@ -1000,7 +1000,6 @@ group { name: "elm/scroller/entry_single/search_field";
 }
 
 group { name: "elm/entry/base-single/default";
-   inherit: "elm/entry/base/default";
    alias: "elm/entry/base-single/fileselector/default";
    alias: "elm/entry/base-single/eflete/search_field";
    parts {
@@ -1019,10 +1018,18 @@ group { name: "elm/entry/base-single/default";
          }
       }
       part { name: "elm.text";
+         type: TEXTBLOCK;
+         mouse_events: 1;
+         scale: 1;
+         entry_mode: EDITABLE;
+         cursor_mode: BEFORE;
          multiline: 0;
+         source: "elm/entry/selection/default";
+         source4: "elm/entry/cursor/default";
+         source6: "elm/entry/anchor/default";
          description { state: "default" 0.0;
             text {
-               style: "eflete_text_style";
+               style: "main_text";
                min: 1 1;
                max: 0 0;
                ellipsis: -1;
@@ -1030,9 +1037,46 @@ group { name: "elm/entry/base-single/default";
             }
          }
          description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            text.style: "eflete_text_disabled_style";
+            text {
+               style: "main_text_disable";
+               min: 1 1;
+               max: 0 0;
+               ellipsis: -1;
+               align: 0.0 0.5;
+            }
          }
+      }
+   }
+   programs {
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "elm.text";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text";
+      }
+      program { name: "gdisable";
+         signal: "elm,guide,disabled";
+         source: "elm";
+         action: STATE_SET "hidden" 0.0;
+         target: "elm.guide";
+      }
+      program { name: "genable";
+         signal: "elm,guide,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.guide";
+      }
+      program { name: "focus";
+         signal: "load";
+         source: "";
+         action: FOCUS_SET;
+         target: "elm.text";
       }
    }
 }
