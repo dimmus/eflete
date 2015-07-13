@@ -388,18 +388,6 @@ group { name: "elm/entry/cursor/style_editor";
    }
 }
 
-group { name: "elm/entry/selection/style_editor";
-   parts {
-      part { name: "bg";
-         type: RECT;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            color: 128 128 128 128;
-         }
-      }
-   }
-}
-
 group { name: "elm/entry/anchor/style_editor";
    parts {
       part { name: "bg";
@@ -920,12 +908,14 @@ group { name: "elm/entry/base-single/search_field";
 }
 
 group { name: "elm/entry/selection/default";
+   alias: "elm/entry/selection/style_editor";
    parts {
       part { name: "bg";
          type: RECT;
          mouse_events: 0;
-         description { state: "default" 0;
-            color: 128 128 128 128;
+         description { state: "default" 0.0;
+            color_class: "select_light";
+            color: 255 255 255 128;
          }
       }
    }
