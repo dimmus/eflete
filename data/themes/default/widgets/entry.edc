@@ -479,7 +479,6 @@ group { name: "elm/entry/base/default";
 }
 
 group { name: "elm/scroller/entry/default";
-   alias: "elm/scroller/entry/search_field";
    inherit: "elm/scroller/base/default";
    images {
       image: "input-text-bg.png" COMP;
@@ -602,7 +601,6 @@ group { name: "elm/scroller/entry/default";
 }
 
 group { name: "elm/scroller/entry_single/default";
-   alias: "elm/scroller/entry_single/eflete/search_field";
    alias: "elm/scroller/entry_single/fileselector/default";
    data {
       item: "focus_highlight" "on";
@@ -985,23 +983,8 @@ group { name: "elm/scroller/entry_single/default";
    }
 }
 
-group { name: "elm/scroller/entry_single/search_field";
-   inherit: "elm/scroller/entry_single/default";
-   parts {
-      part { name: "base";
-         type: SPACER;
-         description { state: "default" 0.0;
-            min: 0 25;
-            max: -1 25;
-            fixed: 1 1;
-         }
-      }
-   }
-}
-
 group { name: "elm/entry/base-single/default";
    alias: "elm/entry/base-single/fileselector/default";
-   alias: "elm/entry/base-single/eflete/search_field";
    parts {
       part { name: "elm.guide";
          type: TEXTBLOCK;
@@ -1091,26 +1074,6 @@ group { name: "elm/entry/base-single/spinner/live_view";
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
             text.style: "eflete_spinner_live_view_disabled_style";
-         }
-      }
-   }
-}
-
-group { name: "elm/entry/base-single/search_field";
-   inherit: "elm/entry/base-single/default";
-   parts {
-      part { name: "elm.guide";
-         type: TEXTBLOCK;
-         mouse_events: 0;
-         scale: 1;
-         description { state: "default" 0.0;
-            rel1.to: "elm.text";
-            rel2.to: "elm.text";
-            text.style: "eflete_text_search_guide_style";
-         }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
          }
       }
    }
