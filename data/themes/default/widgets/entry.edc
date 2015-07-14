@@ -465,6 +465,23 @@ group { name: "elm/scroller/entry_single/default";
             }
          }
       }
+      part { name: "elm.swallow.elipsis";
+         type: SWALLOW;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 19 0;
+            max: 19 -1;
+            rel1 {
+               offset: 0 1;
+               to_y: "bg";
+            }
+            rel2 {
+               offset: -2 -3;
+               to_y: "bg";
+            }
+         }
+      }
       part { name: "focus";
          type: IMAGE;
          repeat_events: 1;

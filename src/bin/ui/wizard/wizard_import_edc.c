@@ -580,7 +580,7 @@ _dir_item_add(Evas_Object *parent, Wizard_Import_Edj_Win *wiew)
    elm_object_style_set(button, "elipsis");
    evas_object_show(button);
    evas_object_smart_callback_add(button, "clicked", _on_directory_bt, c_data);
-   elm_object_part_content_set(entry, "elm.swallow.end", button);
+   elm_object_part_content_set(entry, "elm.swallow.elipsis", button);
    elm_object_part_content_set(item, "swallow.entry", entry);
    c_data->entry = entry;
 

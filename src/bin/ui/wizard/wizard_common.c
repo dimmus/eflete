@@ -300,7 +300,7 @@ _elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data)
    elm_object_focus_allow_set(bt, false);
    evas_object_show(bt);
    evas_object_smart_callback_add(bt, "clicked", cb_func, data);
-   elm_object_part_content_set(entry, "elm.swallow.end", bt);
+   elm_object_part_content_set(entry, "elm.swallow.elipsis", bt);
 }
 
 void
