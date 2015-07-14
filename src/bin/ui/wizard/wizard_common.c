@@ -353,7 +353,7 @@ wizard_import_common_add(const char *layout_name)
 
    //label.name
    elm_object_part_text_set(layout, "label.name", _("Project name:"));
-   EWE_ENTRY_ADD(layout, wiew->name, true)
+   ENTRY_ADD(layout, wiew->name, true)
    elm_entry_markup_filter_append(wiew->name,
                                   elm_entry_filter_accept_set, &accept_name);
    elm_object_part_content_set(layout, "swallow.name", wiew->name);
