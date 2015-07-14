@@ -468,7 +468,6 @@ _manager_search_field_create(Evas_Object *parent)
 {
    Evas_Object *entry, *icon;
    ENTRY_ADD(parent, entry, true);
-   elm_object_style_set(entry, "search_field");
    elm_object_part_text_set(entry, "guide", _("Search"));
    ICON_STANDARD_ADD(entry, icon, true, "search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);

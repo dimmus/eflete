@@ -91,7 +91,6 @@ EFLETE_TEST (pm_project_save_test_p)
                          edje_edit_state_min_w_set(style->obj, part->name,
                                                    "default", 0.0, 10);
                       }
-                    style->isModify = true;
                }
           }
      }

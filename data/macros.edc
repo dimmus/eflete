@@ -24,13 +24,48 @@ fonts {
 #define FN_BI "PT-BoldItalic"
 
 color_classes {
-   color_class { name: "color_default";
+   color_class { name: "main";
       color: 214 214 214 255;
       color2: 0 0 0 0;
       color3: 0 0 0 0;
    }
-   color_class { name: "color_disabled";
+   color_class { name: "main_alternative";
+      color: 182 182 182 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "main_disabled";
       color: 118 119 120 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "bg_main";
+      color: 52 53 54 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "bg_entry";
+      color: 35 37 38 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "select_light";
+      color: 160 203 240 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "select";
+      color: 58 110 155 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "invalid";
+      color: 155 58 58 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "valid";
+      color: 44 102 78 255;
       color2: 0 0 0 0;
       color3: 0 0 0 0;
    }

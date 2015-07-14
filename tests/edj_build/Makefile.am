@@ -87,6 +87,7 @@ check: Makefile
 	$(builddir)/history_diff_add.edj \
 	$(builddir)/preference.edj \
 	$(builddir)/project_manager.edj \
+	$(builddir)/project_thread_cancel.edj \
 	;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj
