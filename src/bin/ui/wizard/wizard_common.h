@@ -49,6 +49,7 @@ struct _Wizard_Import_Edj_Win
    Evas_Object *win;
    Evas_Object *splash;
    Evas_Object *name;
+   Elm_Validator_Regexp *name_validator;
    Evas_Object *path;
    Eina_Stringshare *tmp_dir_path;
    const char *select_file_error_msg;

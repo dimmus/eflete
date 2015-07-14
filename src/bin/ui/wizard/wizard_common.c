@@ -16,13 +16,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
 
 #include "wizard_common.h"
-
-static Elm_Entry_Filter_Accept_Set accept_name = {
-   .accepted = NULL,
-   .rejected = BANNED_SYMBOLS
-};
 
 static void
 _on_cancel(void *data,
@@ -35,6 +33,7 @@ _on_cancel(void *data,
 
    mw_del(wiew->win);
    app->modal_editor--;
+   if (!wiew->name_validator) elm_validator_regexp_free(wiew->name_validator);
    free(wiew);
    ui_menu_items_list_disable_set(app->menu, MENU_ITEMS_LIST_MAIN, false);
    ui_menu_items_list_disable_set(app->menu, MENU_ITEMS_LIST_BASE, true);
@@ -337,6 +336,7 @@ wizard_import_common_add(const char *layout_name)
      }
 
    wiew->win = mwin;
+   wiew->name_validator = elm_validator_regexp_new("^[a-zA-Z0-9_]+$", NULL);
 
    layout = elm_layout_add(mwin);
    elm_layout_theme_set(layout, "layout", "wizard", layout_name);
@@ -354,8 +354,7 @@ wizard_import_common_add(const char *layout_name)
    //label.name
    elm_object_part_text_set(layout, "label.name", _("Project name:"));
    ENTRY_ADD(layout, wiew->name, true)
-   elm_entry_markup_filter_append(wiew->name,
-                                  elm_entry_filter_accept_set, &accept_name);
+   eo_do(wiew->name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, wiew->name_validator));
    elm_object_part_content_set(layout, "swallow.name", wiew->name);
    //label.path
    elm_object_part_text_set(layout, "label.path", _("Path to project:"));
