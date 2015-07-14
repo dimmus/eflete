@@ -119,6 +119,7 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
                                         (void *)change->part);
         workspace_edit_object_part_state_set(app->workspace, part);
         ui_property_part_set(prop, part);
+        live_view_widget_style_set(app->live_view, app->project, style);
      }
    else
      {
@@ -134,6 +135,7 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
         ui_property_part_unset(prop);
         ui_property_style_set(prop, style, app->workspace);
         workspace_edit_object_recalc(app->workspace);
+        live_view_widget_style_set(app->live_view, app->project, style);
      }
 }
 
