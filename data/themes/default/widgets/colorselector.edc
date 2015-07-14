@@ -2,7 +2,7 @@ images {
    image: "inset_shadow.png" COMP;
    image: "bevel_in.png" COMP;
    image: "bg_demo.png" COMP;
-//   image: "color-sight.pong" COMP;
+   image: "color-sight.png" COMP;
    image: "color-shadow.png" COMP;
    image: "color-background-3.png" COMP;
    image: "color_focus.png" COMP;
@@ -318,10 +318,6 @@ group { name: "elm/colorselector/picker/default";
             }
          }
       }
-/*
-      TODO: Uncomment this when https://phab.enlightenment.org/D2749 will be
-      merged AND backported.
-
       part { name: "cross";
          type: IMAGE;
          description { state: "default" 0.0;
@@ -341,7 +337,6 @@ group { name: "elm/colorselector/picker/default";
             }
          }
       }
-*/
    }
 }
 
