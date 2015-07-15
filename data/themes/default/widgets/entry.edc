@@ -218,6 +218,7 @@ group { name: "elm/scroller/entry/default";
             }
             rel2 {
                relative: 0.0 1.0;
+               offset: 0 -3;
                to_x: "sb_vbar";
                to_y: "bg";
             }
