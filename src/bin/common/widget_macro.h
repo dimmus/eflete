@@ -97,8 +97,6 @@ TODO("see large comment below")
    evas_object_size_hint_align_set(ENTRY, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    elm_entry_single_line_set(ENTRY, ISSINGLELINE); \
    elm_entry_scrollable_set(ENTRY, EINA_TRUE); \
-   elm_scroller_policy_set(ENTRY, ELM_SCROLLER_POLICY_OFF, \
-                                  ELM_SCROLLER_POLICY_OFF); \
    evas_object_show(ENTRY);
 
 #define EWE_ENTRY_ADD(PARENT, ENTRY, ISSINGLELINE) \
