@@ -37,7 +37,7 @@ group { name: "elm/entry/base/default";
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
             text {
-               style: "eflete_text_disabled_style";
+               style: "main_text_disabled";
             }
          }
       }

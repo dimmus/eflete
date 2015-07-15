@@ -1,9 +1,11 @@
 styles {
    style { name: "main_text";
       base: "font="FN" font_size=12 color=#d6d6d6 wrap=word text_class=entry ellipsis=1.0";
+      TEXTBLOCK_TAGS_ENABLED
       }
    style { name: "main_text_disabled";
       base: "font="FN" font_size=12 color=#767778 wrap=word text_class=entry ellipsis=1.0";
+      TEXTBLOCK_TAGS_DISABLED
    }
 
    /* not refactored */
