@@ -267,40 +267,25 @@ group { name: "elm/layout/wizard/import_edj";
       image: "separator-vertical.png" COMP;
       image: "separator-horizontal.png" COMP;
    }
-   broadcast_signal: 0;
    parts {
-      part { name: "area.separator1";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            min: 10 0;
-            max: 10 -1;
-            rel1.relative: 0.5 0.0;
-         }
-      }
-      part { name: "separator1";
+      part { name: "separator";
          type: IMAGE;
          description { state: "default" 0.0;
             min: 2 0;
             max: 2 -1;
-            rel1 {
-               relative: 0.0 0.0;
-               to: "area.separator1";
+            image {
+               normal: "separator-vertical.png";
+               middle: DEFAULT;
             }
-            rel2.to: "area.separator1";
-            image.normal: "separator-vertical.png";
          }
       }
-      part { name: "area.name";
+      part { name: "area.project_info";
          type: SPACER;
-         scale: 1;
          description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 0 26;
-            max: -1 26;
             rel2 {
                relative: 0.0 1.0;
-               to_x: "area.separator1";
+               offset: -7 -1;
+               to_x: "separator";
             }
          }
       }
@@ -309,15 +294,20 @@ group { name: "elm/layout/wizard/import_edj";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            rel1.to: "area.name";
+            color_class: "main";
+            rel1 {
+               to_x: "area.project_info";
+               to_y: "swallow.name";
+            }
             rel2 {
-               relative: 0.3 1;
-               to: "area.name";
+               relative: 0.3 1.0;
+               to_x: "area.project_info";
+               to_y: "swallow.name";
             }
             text {
-               font: FN;
+               font: "PT";
                size: 12;
-               max: 1 1;
+               align: 0.0 0.5;
             }
          }
       }
@@ -325,30 +315,16 @@ group { name: "elm/layout/wizard/import_edj";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            min: 0 20;
-            max: -1 20;
+            align: 0.5 0.0;
             fixed: 1 1;
+            min: 0 19;
+            max: -1 19;
             rel1 {
                relative: 0.3 0.0;
-               to: "area.name";
-            }
-            rel2.to: "area.name";
-         }
-      }
-      part { name: "area.path";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 0 26;
-            max: -1 26;
-            rel1 {
-               relative: 0.0 1.0;
-               to: "area.name";
+               to: "area.project_info";
             }
             rel2 {
-               relative: 0.0 1.0;
-               to_x: "area.separator1";
+               to: "area.project_info";
             }
          }
       }
@@ -357,15 +333,20 @@ group { name: "elm/layout/wizard/import_edj";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            rel1.to: "area.path";
+            color_class: "main";
+            rel1 {
+               to_x: "area.project_info";
+               to_y: "swallow.path";
+            }
             rel2 {
                relative: 0.3 1.0;
-               to: "area.path";
+               to_x: "area.project_info";
+               to_y: "swallow.path";
             }
             text {
-               font: FN;
+               font: "PT";
                size: 12;
-               max: 1 1;
+               align: 0.0 0.5;
             }
          }
       }
@@ -373,29 +354,17 @@ group { name: "elm/layout/wizard/import_edj";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
+            align: 0.5 0.0;
             min: 0 20;
             max: -1 20;
             rel1 {
-               relative: 0.3 0.0;
-               to: "area.path";
-            }
-            rel2.to: "area.path";
-         }
-      }
-      part { name: "area.edj";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 0 26;
-            max: -1 26;
-            rel1 {
-               relative: 0.0 1.0;
-               to: "area.path";
+               relative: 0.3 1.0;
+               offset: 0 6;
+               to_x: "area.project_info";
+               to_y: "swallow.name";
             }
             rel2 {
-               relative: 0.0 1.0;
-               to_x: "area.separator1";
+               to_x: "area.project_info";
             }
          }
       }
@@ -404,15 +373,20 @@ group { name: "elm/layout/wizard/import_edj";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            rel1.to: "area.edj";
+            color_class: "main";
+            rel1 {
+               to_x: "area.project_info";
+               to_y: "swallow.edj";
+            }
             rel2 {
                relative: 0.3 1.0;
-               to: "area.edj";
+               to_x: "area.project_info";
+               to_y: "swallow.edj";
             }
             text {
-               font: FN;
+               font: "PT";
                size: 12;
-               max: 1 1;
+               align: 0.0 0.5;
             }
          }
       }
@@ -420,25 +394,29 @@ group { name: "elm/layout/wizard/import_edj";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
+            align: 0.5 0.0;
             min: 0 20;
             max: -1 20;
             rel1 {
-               relative: 0.3 0.0;
-               to: "area.edj";
+               relative: 0.3 1.0;
+               offset: 0 6;
+               to_x: "area.project_info";
+               to_y: "swallow.path";
             }
-            rel2.to: "area.edj";
+            rel2 {
+               to: "area.project_info";
+            }
          }
       }
-      part { name: "area.meta_version";
+      part { name: "area.project_details";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
-            min: 0 26;
-            max: -1 26;
             rel1 {
                relative: 1.0 0.0;
-               to_x: "area.separator1";
+               offset: 6 0;
+               to_x: "separator";
             }
          }
       }
@@ -447,15 +425,20 @@ group { name: "elm/layout/wizard/import_edj";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            rel1.to: "area.meta_version";
+            color_class: "main";
+            rel1 {
+               to_x: "area.project_details";
+               to_y: "swallow.meta_version";
+            }
             rel2 {
                relative: 0.3 1.0;
-               to: "area.meta_version";
+               to_x: "area.project_details";
+               to_y: "swallow.meta_version";
             }
             text {
-               font: FN;
+               font: "PT";
                size: 12;
-               max: 1 1;
+               align: 0.0 0.5;
             }
          }
       }
@@ -463,14 +446,16 @@ group { name: "elm/layout/wizard/import_edj";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0.0 0.5;
-            min: 0 20;
-            max: -1 20;
+            align: 1.0 0.0;
+            min: 0 19;
+            max: -1 19;
             rel1 {
                relative: 0.3 0.0;
-               to: "area.meta_version";
+               to: "area.project_details";
             }
-            rel2.to: "area.meta_version";
+            rel2 {
+               to: "area.project_details";
+            }
          }
       }
       part { name: "area.big_fields";
@@ -479,7 +464,9 @@ group { name: "elm/layout/wizard/import_edj";
          description { state: "default" 0.0;
             rel1 {
                relative: 0.0 1.0;
-               to: "area.meta_version";
+               offset: 0 6;
+               to_x: "area.project_details";
+               to_y: "swallow.meta_version";
             }
          }
       }
@@ -489,31 +476,13 @@ group { name: "elm/layout/wizard/import_edj";
          description { state: "default" 0.0;
             align: 0.0 0.0;
             min: 0 26;
-            rel1.to: "area.big_fields";
-            rel2 {
-               relative: 1 0.33;
+            rel1 {
                to: "area.big_fields";
             }
-         }
-      }
-      part { name: "padding.rel1.meta_authors";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 3 3;
-            max: 3 3;
-            rel1.to: "area.meta_authors";
-            rel2.to: "area.meta_authors";
-         }
-      }
-      part { name: "padding.rel2.meta_authors";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            min: 3 3;
-            max: 3 3;
-            rel1.to: "area.meta_authors";
-            rel2.to: "area.meta_authors";
+            rel2 {
+               relative: 1.0 0.33;
+               to: "area.big_fields";
+            }
          }
       }
       part { name: "label.meta_authors";
@@ -521,18 +490,18 @@ group { name: "elm/layout/wizard/import_edj";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
+            color_class: "main";
             rel1 {
-               relative: 0.0 1.0;
-               to: "padding.rel1.meta_authors";
+               to: "area.meta_authors";
             }
             rel2 {
                relative: 0.3 1.0;
                to: "area.meta_authors";
             }
             text {
-               font: FN;
+               font: "PT";
                size: 12;
-               max: 1 1;
+               align: 0.0 0.0;
             }
          }
       }
@@ -541,13 +510,12 @@ group { name: "elm/layout/wizard/import_edj";
          scale: 1;
          description { state: "default" 0.0;
             rel1 {
-               relative: 0.3 1.0;
+               relative: 0.3 0.0;
                to_x: "area.meta_authors";
-               to_y: "padding.rel1.meta_authors";
+               to_y: "area.big_fields";
             }
             rel2 {
-               relative: 1.0 0.0;
-               to: "padding.rel2.meta_authors";
+               to: "area.meta_authors";
             }
          }
       }
@@ -559,6 +527,7 @@ group { name: "elm/layout/wizard/import_edj";
             min: 0 26;
             rel1 {
                relative: 0.0 1.0;
+               offset: 0 6;
                to_x: "area.big_fields";
                to_y: "area.meta_authors";
             }
@@ -569,44 +538,23 @@ group { name: "elm/layout/wizard/import_edj";
             }
          }
       }
-      part { name: "padding.rel1.meta_licenses";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 3 3;
-            max: 3 3;
-            rel1.to: "area.meta_licenses";
-            rel2.to: "area.meta_licenses";
-         }
-      }
-      part { name: "padding.rel2.meta_licenses";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            min: 3 3;
-            max: 3 3;
-            rel1.to: "area.meta_licenses";
-            rel2.to: "area.meta_licenses";
-         }
-      }
       part { name: "label.meta_licenses";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
+            color_class: "main";
             rel1 {
-               relative: 0.0 1.0;
-               to_x: "area.meta_licenses";
-               to_y: "padding.rel1.meta_licenses";
+               to: "area.meta_licenses";
             }
             rel2 {
                relative: 0.3 1.0;
                to: "area.meta_licenses";
             }
             text {
-               font: FN;
+               font: "PT";
                size: 12;
-               max: 1 1;
+               align: 0.0 0.0;
             }
          }
       }
@@ -615,14 +563,11 @@ group { name: "elm/layout/wizard/import_edj";
          scale: 1;
          description { state: "default" 0.0;
             rel1 {
-               relative: 0.3 1.0;
-               to_x: "area.meta_licenses";
-               to_y: "padding.rel1.meta_licenses";
+               relative: 0.3 0.0;
+               to: "area.meta_licenses";
             }
             rel2 {
-               relative: 1.0 0.0;
-               to_x: "area.meta_licenses";
-               to_y: "padding.rel2.meta_licenses";
+               to: "area.meta_licenses";
             }
          }
       }
@@ -634,20 +579,13 @@ group { name: "elm/layout/wizard/import_edj";
             min: 0 26;
             rel1 {
                relative: 0.0 1.0;
+               offset: 0 6;
                to_x: "area.big_fields";
                to_y: "area.meta_licenses";
             }
-            rel2.to: "area.big_fields";
-         }
-      }
-      part { name: "padding.rel1.meta_comment";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 3 3;
-            max: 3 3;
-            rel1.to: "area.meta_comment";
-            rel2.to: "area.meta_comment";
+            rel2 {
+               to: "area.big_fields";
+            }
          }
       }
       part { name: "label.meta_comment";
@@ -655,19 +593,18 @@ group { name: "elm/layout/wizard/import_edj";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
+            color_class: "main";
             rel1 {
-               relative: 0.0 1.0;
-               to_x: "area.meta_comment";
-               to_y: "padding.rel1.meta_comment";
+               to: "area.meta_comment";
             }
             rel2 {
                relative: 0.3 1.0;
                to: "area.meta_comment";
             }
             text {
-               font: FN;
+               font: "PT";
                size: 12;
-               max: 1 1;
+               align: 0.0 0.0;
             }
          }
       }
@@ -676,11 +613,12 @@ group { name: "elm/layout/wizard/import_edj";
          scale: 1;
          description { state: "default" 0.0;
             rel1 {
-               relative: 0.3 1.0;
-               to_x: "area.meta_comment";
-               to_y: "padding.rel1.meta_comment";
+               relative: 0.3 0.0;
+               to: "area.meta_comment";
             }
-            rel2.to: "area.meta_comment";
+            rel2 {
+               to: "area.meta_comment";
+            }
          }
       }
    }
