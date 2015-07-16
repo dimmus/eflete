@@ -804,6 +804,7 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
                                      &sd->real_size->y,
                                      &sd->real_size->w,
                                      &sd->real_size->h);
+   DBG("Recalc %p object. Object parts count: %d", sd->obj, eina_list_count(sd->parts))
 
    EINA_LIST_FOREACH(sd->parts, l, gp)
      {
