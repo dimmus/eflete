@@ -217,13 +217,6 @@ live_view_theme_update(Live_View *live, Project *project)
    else
 #endif /* HAVE_ENVENTOR */
      path = eina_stringshare_add(project->dev);
-   if ((!project->current_style) || (!project->current_style->parts))
-     {
-        WARN("Could'nt apply the empty style to live view.");
-        live_view_widget_style_unset(live);
-        eina_stringshare_del(path);
-        return false;
-     }
 
    if (project->current_style->__type == LAYOUT)
      {
