@@ -316,8 +316,6 @@ groupedit_edit_object_set(Evas_Object *obj,
    _parts_list_free(sd);
    _parts_list_new(sd);
 
-   evas_object_smart_changed(sd->obj);
-
    return true;
 }
 
