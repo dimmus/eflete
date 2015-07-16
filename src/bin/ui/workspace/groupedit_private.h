@@ -175,9 +175,6 @@ _parts_list_find(Eina_List *parts, const char *part);
 Eina_Bool
 _parts_recalc(Ws_Groupedit_Smart_Data *sd);
 
-void
-_edit_object_load(Ws_Groupedit_Smart_Data *sd);
-
 Eina_Bool
 _edit_object_part_add(Ws_Groupedit_Smart_Data *sd, const char *part,
                       Edje_Part_Type type, const char *data);

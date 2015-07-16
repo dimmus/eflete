@@ -76,33 +76,6 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp);
 static void
 _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp);
 
-void
-_edit_object_load(Ws_Groupedit_Smart_Data *sd)
-{
-   Eina_List *parts_list, *l;
-   Edje_Part_Type ept;
-   const char *state, *name, *text;
-   double value;
-
-   assert(sd != NULL);
-
-   parts_list = edje_edit_parts_list_get(sd->edit_obj);
-   EINA_LIST_FOREACH(parts_list, l, name)
-     {
-        ept = edje_edit_part_type_get(sd->edit_obj, name);
-        state = edje_edit_part_selected_state_get(sd->edit_obj, name, &value);
-        if (ept == EDJE_PART_TYPE_TEXT || ept == EDJE_PART_TYPE_TEXTBLOCK)
-          {
-             text = edje_edit_state_text_get(sd->edit_obj, name, state, value);
-             if (text) edje_object_part_text_set(sd->edit_obj, name, text);
-             else edje_object_part_text_set(sd->edit_obj, name, name);
-             edje_edit_string_free(text);
-          }
-        edje_edit_string_free(state);
-     }
-   edje_edit_string_list_free(parts_list);
-}
-
 Eina_Bool
 _edit_object_part_add(Ws_Groupedit_Smart_Data *sd, const char *part,
                       Edje_Part_Type type, const char *data)

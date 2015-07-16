@@ -312,7 +312,6 @@ groupedit_edit_object_set(Evas_Object *obj,
    evas_object_smart_member_add(sd->edit_obj, obj);
    sd->edit_obj_file = file;
 
-   _edit_object_load(sd);
    _parts_list_free(sd);
    _parts_list_new(sd);
 
