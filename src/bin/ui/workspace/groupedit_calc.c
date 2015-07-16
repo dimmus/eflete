@@ -78,11 +78,9 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp);
 
 Eina_Bool
 _edit_object_part_add(Ws_Groupedit_Smart_Data *sd, const char *part,
-                      Edje_Part_Type type, const char *data)
+                      Edje_Part_Type type, const char *data __UNUSED__)
 {
    Groupedit_Part *gp;
-   Eina_List *list;
-   Eina_Stringshare *style_default = eina_stringshare_add("Generated_default");
 
    assert(sd != NULL);
    assert(part != NULL);
@@ -92,35 +90,6 @@ _edit_object_part_add(Ws_Groupedit_Smart_Data *sd, const char *part,
         ERR("Cann't add part %s to edit object %p", part, sd->edit_obj);
         abort();
      }
-   if ((type == EDJE_PART_TYPE_IMAGE) && (data))
-     edje_edit_state_image_set(sd->edit_obj, part, "default", 0.0, data);
-   if (type == EDJE_PART_TYPE_TEXT)
-     {
-        edje_edit_state_font_set(sd->edit_obj, part, "default", 0.0, "Sans");
-        edje_edit_state_text_size_set(sd->edit_obj, part, "default", 0.0, 10);
-        edje_object_part_text_set(sd->edit_obj, part, part);
-     }
-   if (type ==  EDJE_PART_TYPE_TEXTBLOCK)
-     {
-        list = edje_edit_styles_list_get(sd->edit_obj);
-        if (eina_list_count(list) == 0)
-          {
-             edje_edit_style_add(sd->edit_obj, style_default);
-             edje_edit_style_tag_add(sd->edit_obj, "Generated_default", "DEFAULT");
-             edje_edit_style_tag_value_set(sd->edit_obj,
-                                           "Generated_default",
-                                           "DEFAULT",
-                                           "align=middle font=Sans font_size=24 color=#000000FF");
-          }
-        else style_default = eina_stringshare_add(eina_list_data_get(list));
-        edje_edit_state_text_style_set(sd->edit_obj, part,
-                                       "default",
-                                       0.0,
-                                       style_default);
-        eina_stringshare_del(style_default);
-        edje_edit_string_list_free(list);
-     }
-
    gp = _part_draw_add(sd, part, type);
    sd->parts = eina_list_append(sd->parts, gp);
    _move_border_to_top(sd);
