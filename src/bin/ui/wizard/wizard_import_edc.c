@@ -669,6 +669,7 @@ _directories_box_add(Wizard_Import_Edj_Win *wiew)
 
    SCROLLER_ADD(wiew->layout, scr);
    BOX_ADD(wiew->layout, box, false, false);
+   elm_box_padding_set(box, 0, 6);
    elm_box_pack_end(box, _dir_item_add(box, wiew));
    elm_object_content_set(scr, box);
    return scr;

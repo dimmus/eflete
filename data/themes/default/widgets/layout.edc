@@ -1247,79 +1247,41 @@ group { name: "elm/layout/wizard/import_edc";
 
 group { name: "elm/layout/wizard/directories_item";
    parts {
-      part { name: "area.base";
-         type: SPACER;
-         description { state: "default" 0.0;
-            min: 0 26;
-            max: -1 26;
-         }
-      }
-      part { name: "area.buttons";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            SET_SIZE(70, 26);
-            rel1.to: "area.base";
-            rel2.to: "area.base";
-         }
-      }
       part { name: "swallow.entry";
          type: SWALLOW;
          description { state: "default" 0.0;
-            rel1.to: "area.base";
-            rel2 {
-               to: "area.buttons";
+           min: 0 19;
+           max: -1 19;
+           rel2 {
                relative: 0.0 1.0;
+               offset: -7 -1;
+               to_x: "swallow.button_add";
             }
-         }
-      }
-      part { name: "padding.buttons_top_left";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            SET_SIZE(6, 3);
-            rel1.to: "area.buttons";
-            rel2.to: "area.buttons";
-         }
-      }
-      part { name: "padding.buttons_right_bottom";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            SET_SIZE(6, 3);
-            rel1.to: "area.buttons";
-            rel2.to: "area.buttons";
          }
       }
       part { name: "swallow.button_del";
          type: SWALLOW;
          description { state: "default" 0.0;
-            align: 1.0 1.0;
-            SET_SIZE(28, 20);
+            align: 1.0 0.5;
             fixed: 1 1;
-            rel1 {
-               to: "padding.buttons_top_left";
-               relative: 1.0 1.0;
-            }
+            min: 28 19;
+            max: 28 19;
             rel2 {
-               to: "padding.buttons_right_bottom";
-               relative: 0.0 0.0;
+               offset: -7 -1;
             }
          }
       }
       part { name: "swallow.button_add";
          type: SWALLOW;
          description { state: "default" 0.0;
-            align: 0.0 0.0;
-            SET_SIZE(28, 20);
+            align: 1.0 0.5;
             fixed: 1 1;
-            rel1 {
-               to: "padding.buttons_top_left";
-               relative: 1.0 1.0;
-            }
+            min: 28 19;
+            max: 28 19;
             rel2 {
-               to: "padding.buttons_right_bottom";
-               relative: 0.0 0.0;
+               relative: 0.0 1.0;
+               offset: -7 -1;
+               to_x: "swallow.button_del";
             }
          }
       }
