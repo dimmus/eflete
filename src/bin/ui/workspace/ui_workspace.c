@@ -1325,6 +1325,7 @@ workspace_edit_object_part_rename(Evas_Object *obj,
                                   const char *old_name,
                                   const char *new_name)
 {
+   Eina_Bool ret;
    WS_DATA_GET(obj, sd);
 
    assert(old_name != NULL);
@@ -1334,10 +1335,11 @@ workspace_edit_object_part_rename(Evas_Object *obj,
 
    if (!strcmp(old_name, new_name))
      return false;
-   if (groupedit_edit_object_part_draw_get(sd->groupedit, new_name))
-     return false;
 
-   return groupedit_edit_object_part_rename(sd->groupedit, old_name, new_name);
+   ret = groupedit_edit_object_part_rename(sd->groupedit, old_name, new_name);
+   if (ret)
+     evas_object_smart_callback_call(obj, "part,name,changed", (void *)old_name);
+   return ret;
 }
 
 Eina_Bool

@@ -520,16 +520,13 @@ _add_style_dailog(void *data,
 static void
 _part_name_change(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
-   Part *part = (Part*)event_info;
+   const char *part = (const char *)event_info;
    App_Data *ap = (App_Data *)data;
 
    assert(ap != NULL);
    assert(part != NULL);
 
-   ui_widget_list_part_update(ui_block_widget_list_get(ap), part->name);
-   live_view_widget_style_unset(ap->live_view);
-   live_view_widget_style_set(ap->live_view, ap->project, ap->project->current_style);
-   evas_object_smart_callback_call(ui_block_widget_list_get(ap), "wl,part,select", part);
+   ui_widget_list_part_update(ui_block_widget_list_get(ap), part);
 }
 
 static void

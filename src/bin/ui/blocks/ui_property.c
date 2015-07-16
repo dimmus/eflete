@@ -862,7 +862,6 @@ _on_part_name_change(void *data,
    workspace_edit_object_part_rename(pd->workspace, pd->wm_part->name, value);
    pd->wm_part->name = value;
    pos = elm_entry_cursor_pos_get(obj);
-   evas_object_smart_callback_call(pd->workspace, "part,name,changed", pd->wm_part);
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_RENAME, old_value, value,
                       pd->wm_style->full_group_name,
                       (void*)edje_edit_part_name_set, "rename",
