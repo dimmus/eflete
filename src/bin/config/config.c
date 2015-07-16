@@ -85,7 +85,6 @@ config_init(App_Data *ap)
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.left_hor",    panes.left_hor, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.right_hor",   panes.right_hor, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.center",      panes.center, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.center_down", panes.center_down, EET_T_DOUBLE);
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "profile", profile, EET_T_STRING);
 
@@ -344,7 +343,6 @@ _config_default_new(void)
    conf->panes.left_hor =     0.7;
    conf->panes.right_hor =    0.3;
    conf->panes.center =       0.65;
-   conf->panes.center_down =  0.2;
    conf->profile = strdup("default");
 
    return conf;
@@ -390,8 +388,6 @@ config_panes_sizes_data_update(App_Data *ap)
      elm_panes_content_left_size_get(ap->panes.right_hor);
    config->panes.center =
      elm_panes_content_left_size_get(ap->panes.center);
-   config->panes.center_down =
-     elm_panes_content_left_size_get(ap->panes.center_down);
 
    return true;
 }
