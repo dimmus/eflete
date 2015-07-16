@@ -577,6 +577,7 @@ ui_part_back(App_Data *ap)
    evas_object_smart_callback_del_full(ap->workspace, "part,name,changed",
                                        _part_name_change, ap);
 
+   workspace_highlight_unset(ap->workspace);
    workspace_edit_object_unset(ap->workspace);
    ui_states_list_data_unset(ap->block.state_list);
    ui_signal_list_data_unset(ap->block.signal_list);
@@ -593,7 +594,6 @@ ui_part_back(App_Data *ap)
    evas_object_smart_callback_del_full(ap->workspace, "ws,part,unselected",
                                        _on_ws_part_unselect, ap);
    evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
-   workspace_highlight_unset(ap->workspace);
 #ifdef HAVE_ENVENTOR
    enventor_object_project_unload(ap->project);
 #endif /* HAVE_ENVENTOR */
@@ -777,8 +777,8 @@ _blocks_data_unset(App_Data *ap)
    ui_signal_list_data_unset(ap->block.signal_list);
    ui_states_list_data_unset(ap->block.state_list);
    history_clear(ap->history);
-   workspace_edit_object_unset(ap->workspace);
    workspace_highlight_unset(ap->workspace);
+   workspace_edit_object_unset(ap->workspace);
    live_view_widget_style_unset(ap->live_view);
 }
 
