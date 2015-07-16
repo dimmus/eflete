@@ -950,8 +950,11 @@ _progress_end(void *data, PM_Project_Result result)
      }
 #endif /* HAVE_ENVENTOR */
 
-   live_view_widget_style_unset(ap->live_view);
-   live_view_widget_style_set(ap->live_view, ap->project, ap->project->current_style);
+   if (ap->project->current_style)
+     {
+        live_view_widget_style_unset(ap->live_view);
+        live_view_widget_style_set(ap->live_view, ap->project, ap->project->current_style);
+     }
    splash_del(ap->splash);
    ap->splash = NULL;
 
@@ -998,7 +1001,10 @@ _teardown_save_splash(void *data, Splash_Status status)
      STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
 
    ap->project->changed = false;
-   workspace_edit_object_recalc(ap->workspace);
+
+   TODO("Check if this recalc is necessary");
+   if (ap->project->current_style)
+     workspace_edit_object_recalc(ap->workspace);
    pm_project_thread_free(ap->pr_thread);
    ap->pr_thread = NULL;
 
