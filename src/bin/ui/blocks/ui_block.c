@@ -22,7 +22,9 @@
 static Eina_Bool
 ui_block_content_set(Evas_Object *block, Evas_Object *content)
 {
-   if ((!block) || (!content)) return EINA_FALSE;
+   assert(block != NULL);
+   assert(content != NULL);
+
    elm_object_part_content_set(block, "elm.swallow.content", content);
    return EINA_TRUE;
 
@@ -31,7 +33,8 @@ ui_block_content_set(Evas_Object *block, Evas_Object *content)
 static Evas_Object *
 ui_block_content_get(Evas_Object *block)
 {
-   if (!block) return NULL;
+   assert(block != NULL);
+
    return elm_object_part_content_get(block, "elm.swallow.content");
 }
 
@@ -40,11 +43,8 @@ ui_block_add(Evas_Object *parent)
 {
    Evas_Object *block;
 
-   if (!parent)
-     {
-        ERR("Could not create 'ui_block', because parent object is NULL.");
-        return NULL;
-     }
+   assert(parent != NULL);
+
    block = elm_layout_add(parent);
    elm_layout_theme_set(block, "layout", "block", "default");
 
@@ -54,11 +54,8 @@ ui_block_add(Evas_Object *parent)
 Eina_Bool
 ui_block_title_visible(Evas_Object *block, Eina_Bool vis)
 {
-   if (!block)
-     {
-        ERR("Could not show/hide a title, because a block is NULL.");
-        return false;
-     }
+   assert(block != NULL);
+
    if (vis) elm_object_signal_emit(block, "title,show", "eflete");
    else elm_object_signal_emit(block, "title,hide", "eflete");
    return true;
@@ -67,11 +64,8 @@ ui_block_title_visible(Evas_Object *block, Eina_Bool vis)
 Eina_Bool
 ui_block_content_visible(Evas_Object *block, Eina_Bool vis)
 {
-   if (!block)
-     {
-        ERR("Could not show/hide content, because a block is NULL.");
-        return false;
-     }
+   assert(block != NULL);
+
    if (vis) elm_object_signal_emit(block, "content,show", "eflete");
    else elm_object_signal_emit(block, "content,hide", "eflete");
    return true;
@@ -80,71 +74,95 @@ ui_block_content_visible(Evas_Object *block, Eina_Bool vis)
 Evas_Object *
 ui_block_widget_list_get(App_Data *ap)
 {
+   assert(ap != NULL);
+
    return ui_block_content_get(ap->block.left_top);
 }
 
 Evas_Object *
 ui_block_ws_get(App_Data *ap)
 {
+   assert(ap != NULL);
+
    return ui_block_content_get(ap->block.canvas);
 }
 
 Evas_Object *
 ui_block_signal_list_get(App_Data *ap)
 {
+   assert(ap != NULL);
+
    return ui_block_content_get(ap->block.left_bottom);
 }
 
 Evas_Object *
 ui_block_property_get(App_Data *ap)
 {
+   assert(ap != NULL);
+
    return ui_block_content_get(ap->block.right_bottom);
 }
 
 Evas_Object *
 ui_block_history_get(App_Data *ap)
 {
+   assert(ap != NULL);
+
    return ui_block_content_get(ap->block.right_top);
 }
 
 Evas_Object *
 ui_block_live_view_get(App_Data *ap)
 {
+   assert(ap != NULL);
+
    return ui_block_content_get(ap->block.bottom_right);
 }
 
 Eina_Bool
 ui_block_widget_list_set(App_Data *ap, Evas_Object *content)
 {
+   assert(ap != NULL);
+
    return ui_block_content_set(ap->block.left_top, content);
 }
 
 Eina_Bool
 ui_block_ws_set(App_Data *ap, Evas_Object *content)
 {
+   assert(ap != NULL);
+
    return ui_block_content_set(ap->block.canvas, content);
 }
 
 Eina_Bool
 ui_block_signal_list_set(App_Data *ap, Evas_Object *content)
 {
+   assert(ap != NULL);
+
    return ui_block_content_set(ap->block.left_bottom, content);
 }
 
 Eina_Bool
 ui_block_property_set(App_Data *ap, Evas_Object *content)
 {
+   assert(ap != NULL);
+
    return ui_block_content_set(ap->block.right_bottom, content);
 }
 
 Eina_Bool
 ui_block_history_set(App_Data *ap, Evas_Object *content)
 {
+   assert(ap != NULL);
+
    return ui_block_content_set(ap->block.right_top, content);
 }
 
 Eina_Bool
 ui_block_live_view_set(App_Data *ap, Evas_Object *content)
 {
+   assert(ap != NULL);
+
    return ui_block_content_set(ap->block.bottom_right, content);
 }

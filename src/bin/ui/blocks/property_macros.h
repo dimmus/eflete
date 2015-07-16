@@ -42,6 +42,7 @@
  */
 #define PROPERTY_ITEM_ADD(PARENT, NAME, STYLE) \
    Evas_Object *item; \
+   assert(PARENT != NULL); \
    LAYOUT_PROP_ADD(PARENT, NAME, "property", STYLE)
 
 #define PART_ARGS , pd->wm_part->name
@@ -152,7 +153,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    TYPE old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, value)) \
-     return; \
+     abort(); \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
@@ -233,9 +234,8 @@ _on_##SUB##_##VALUE##_change(void *data, \
    int value = item->index; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, (TYPE)item->index)) \
      { \
-        NOTIFY_WARNING(_("Cann't apply value '%s' for attribute '"#TEXT"'. Restore previous value"), item->title); \
-        ewe_combobox_select_item_set(obj, old_value); \
-        return; \
+        ERR("Cann't apply value '%s' for attribute '"#TEXT"'.", item->title); \
+        abort(); \
      } \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
                     value, pd->wm_style->full_group_name,\
@@ -414,7 +414,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    Eina_Bool value = elm_check_state_get(obj); \
    Eina_Bool old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS);\
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, value)) \
-     return; \
+     abort(); \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS_DIFF); \
@@ -502,7 +502,7 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
  * @param VALUE The value of part attribute
  * @param TYPE The type of given attribute
  * @param ARGS The edje edit function arguments
- * @param ARGS_DIFF The edje edit function arguments for history 
+ * @param ARGS_DIFF The edje edit function arguments for history
  *
  * @ingroup Property_Macro
  */
@@ -516,7 +516,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
    Eina_Stringshare *old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, (char *)item->title)) \
-     return; \
+     abort(); \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
                     item->title, pd->wm_style->full_group_name, \
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS); \
@@ -629,12 +629,12 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
    if ((value CHECK value_##SUB2##_##VALUE) && (value_##SUB2##_##VALUE != 0)) \
      { \
         if (!edje_edit_group_##SUB2##_##VALUE##_set(pd->wm_style->obj, value)) \
-          return; \
+          abort(); \
         elm_spinner_value_set(pd->group.SUB2##_##VALUE, value); \
         value_##SUB2##_##VALUE = value; \
      } \
    if (!edje_edit_group_##SUB1##_##VALUE##_set(pd->wm_style->obj, value)) \
-     return; \
+     abort(); \
    if (!strcmp("min", #SUB1)) \
      { \
        history_diff_add(pd->wm_style->obj, PROPERTY, CONTAINER, VAL_GROUP, old_value_##SUB1##_##VALUE, value, \
@@ -1105,11 +1105,11 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    TYPE opposite_value = edje_edit_##SUB##_##DIF_VALUE##_get(pd->wm_style->obj PART_ITEM_ARGS); \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
-     return; \
+     abort(); \
    if (value CHECK opposite_value) \
      { \
         if (!edje_edit_##SUB##_##DIF_VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
-          return; \
+          abort(); \
         elm_spinner_value_set(pd->state.DIF_VALUE, value); \
      } \
    project_changed(false); \
@@ -1139,7 +1139,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    TYPE value = elm_spinner_value_get(obj); \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
-     return; \
+     abort(); \
    project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
 }
@@ -1381,11 +1381,11 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    TYPE opposite_value = edje_edit_##SUB##_##DIF_VALUE##_get(pd->wm_style->obj STATE_ARGS); \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj STATE_ARGS, value)) \
-     return; \
+     abort(); \
    if ((value CHECK opposite_value) && (opposite_value != -1)) \
      { \
         if (!edje_edit_##SUB##_##DIF_VALUE##_set(pd->wm_style->obj STATE_ARGS, value)) \
-          return; \
+          abort(); \
         elm_spinner_value_set(pd->state.DIF_VALUE, value); \
      } \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
@@ -1647,7 +1647,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                                         pd->wm_part->curr_state, \
                                         pd->wm_part->curr_state_value, \
                                         r, g, b, a))\
-     return; \
+     abort(); \
    evas_object_color_set(pd->MEMBER.VALUE##_obj, r*a/255, g*a/255, b*a/255, a); \
    if ((r != old_r) || (g != old_g) || (b != old_b) || (a != old_a)) \
      history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_FOUR, old_r, old_g, old_b, \

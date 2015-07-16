@@ -22,6 +22,8 @@
 static void
 _entry_set_params(Evas_Object *obj, Eina_Stringshare *class_name)
 {
+   assert(obj != NULL);
+   assert(class_name != NULL);
 
    if (strstr(class_name, "single"))
      elm_entry_single_line_set(obj, true);
@@ -59,6 +61,9 @@ _entry_set_params(Evas_Object *obj, Eina_Stringshare *class_name)
 Evas_Object *
 widget_entry_create(Evas_Object *parent, const Style *style)
 {
+   assert(parent != NULL);
+   assert(style != NULL);
+
    Eina_Stringshare *class;
    Eina_Stringshare *style_name;
    standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);

@@ -42,13 +42,10 @@ static Elm_Entry_Filter_Accept_Set accept_prop = {
    .rejected = PART_NAME_BANNED_SYMBOLS
 };
 
-#define PROP_DATA_GET(ret) \
+#define PROP_DATA_GET() \
+   assert(property != NULL); \
    Prop_Data *pd = evas_object_data_get(property, PROP_DATA); \
-   if (!pd) \
-     { \
-        ERR("Can not show group data, because object[%p] is not a property object", property); \
-        return ret; \
-     }
+   assert(pd != NULL);
 
 /*
  * Callback is added for frames at property box to correct scroller
@@ -374,6 +371,9 @@ _del_prop_data(void *data,
                void *ei __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
 #ifndef HAVE_ENVENTOR
    color_term(pd->color_data);
    eina_strbuf_free(pd->strbuf);
@@ -387,6 +387,9 @@ prop_item_label_add(Evas_Object *parent,
                     const char *lab_text,
                     const char *text)
 {
+   assert(parent != NULL);
+   assert(label != NULL);
+
    PROPERTY_ITEM_ADD(parent, lab_text, "1swallow")
    LABEL_ADD(item, *label, text)
    elm_object_part_content_set(item, "elm.swallow.content", *label);
@@ -411,7 +414,7 @@ _on_tab_activated(void *data,
    App_Data *ap;
    Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
    Evas_Object *property = (Evas_Object *)data;
-   PROP_DATA_GET(RETURN_VOID)
+   PROP_DATA_GET()
 
    ap = app_data_get();
 
@@ -454,8 +457,7 @@ ui_property_code_of_group_setup(Evas_Object *property)
    char *markup_code;
    const char *colorized_code;
    Eina_Stringshare *code;
-   if (!property) return;
-   PROP_DATA_GET(RETURN_VOID)
+   PROP_DATA_GET()
 
    if (ewe_tabs_active_item_get(pd->tabs) != pd->code_tab) return;
    code = edje_edit_source_generate(pd->wm_style->obj);
@@ -477,7 +479,7 @@ _on_tab_activated(void *data,
 {
    Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
    Evas_Object *property = (Evas_Object *)data;
-   PROP_DATA_GET(RETURN_VOID)
+   PROP_DATA_GET()
    if (it == pd->code_tab) ui_property_code_of_group_setup(property);
 }
 
@@ -490,7 +492,8 @@ ui_property_add(Evas_Object *parent)
    Ewe_Tabs_Item *it;
    Prop_Data *pd;
 
-   if (!parent) return NULL;
+   assert(parent != NULL);
+
    pd = mem_calloc(1, sizeof(Prop_Data));
    tabs = ewe_tabs_add(parent);
    pd->tabs = tabs;
@@ -557,6 +560,9 @@ _on_clicked(void *data,
 {
    int x, y;
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    evas_object_smart_callback_del_full(pd_group.ctxpopup, "dismissed",
                                        _on_dismissed, pd);
    evas_object_smart_callback_add(pd_group.ctxpopup, "dismissed",
@@ -573,6 +579,9 @@ _prop_item_alias_update(Prop_Data *pd, Style *style, int aliases_count)
    const char *text_info = NULL;
    char *list_data;
    Eina_Strbuf *text_ctx;
+
+   assert(pd != NULL);
+   assert(style != NULL);
 
    label = elm_object_part_content_get(pd_group.info, "elm.swallow.content");
    label_ctx = elm_object_content_get(pd_group.ctxpopup);
@@ -618,6 +627,9 @@ static void
 _prop_item_shared_check_update(Evas_Object *item, int count)
 {
    Evas_Object *entry;
+
+   assert(item != NULL);
+
    entry = elm_object_part_content_get(item, "info");
    Eina_Bool bool = false;
    if (count > 0) bool = true;
@@ -638,9 +650,11 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
    char *list_data;
    Eina_Strbuf *text_ctx = NULL;
 
-   if ((!property) || (!workspace)) return EINA_FALSE;
+   PROP_DATA_GET()
+   assert(workspace != NULL);
+   assert(style != NULL);
+
    ui_property_style_unset(property);
-   PROP_DATA_GET(EINA_FALSE)
 
    evas_object_show(property);
 
@@ -651,12 +665,8 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
    pd->workspace = workspace;
    pd->wm_style = style;
    if (style->isAlias) pd->wm_style = style->main_group;
-   if (pd->wm_style != workspace_edit_object_get(workspace))
-     {
-        ERR("Cann't set the style! Style [%p] not matched"
-            " with editable group in workspace", style);
-        return false;
-     }
+
+   assert(pd->wm_style == workspace_edit_object_get(workspace));
 
 #ifndef HAVE_ENVENTOR
    if (ewe_tabs_active_item_get(pd->tabs) == pd->code_tab)
@@ -784,7 +794,7 @@ void
 ui_property_style_unset(Evas_Object *property)
 {
    Evas_Object *prop_box;
-   if (!property) return;
+
    PROP_DATA_GET()
 
    prop_box = elm_object_content_get(pd->visual);
@@ -819,6 +829,8 @@ _on_part_name_unfocus(void *data,
 {
    Prop_Data *pd = (Prop_Data *)data;
 
+   assert(pd != NULL);
+
    const char *value = elm_entry_entry_get(obj);
 
    if (strcmp(value, pd->wm_part->name))
@@ -834,6 +846,8 @@ _on_part_name_change(void *data,
    int pos;
    const char *value;
    const char *old_value = pd->wm_part->name;
+
+   assert(pd != NULL);
 
    if (elm_entry_is_empty(obj)) return;
 
@@ -861,12 +875,17 @@ _on_part_name_change(void *data,
 static void
 prop_part_name_update(Prop_Data *pd)
 {
+   assert(pd != NULL);
+
    elm_entry_entry_set(pd->part.name, pd->wm_part->name);
 }
 
 static Evas_Object *
 prop_part_name_add(Evas_Object *parent, Prop_Data *pd)
 {
+   assert(parent != NULL);
+   assert(pd != NULL);
+
    PROPERTY_ITEM_ADD(parent,  _("name"), "1swallow");
    EWE_ENTRY_ADD(parent, pd->part.name, true);
    elm_entry_markup_filter_append(pd->part.name, elm_entry_filter_accept_set, &accept_prop);
@@ -887,6 +906,8 @@ prop_part_clip_to_update(Prop_Data *pd)
    Eina_Inlist *list_n = NULL;
    Eina_Stringshare *value;
 
+   assert(pd != NULL);
+
    ewe_combobox_items_list_free(pd->part.clip_to, true);
    value = edje_edit_part_clip_to_get(pd->wm_style->obj, pd->wm_part->name);
    if (value)
@@ -906,6 +927,8 @@ inline static void
 prop_part_drag_control_disable_set(Prop_Data *pd, Eina_Bool collapse)
 {
    Eina_Bool bx, by;
+
+   assert(pd != NULL);
 
    bx = edje_edit_part_drag_x_get(pd->wm_style->obj, pd->wm_part->name);
    by = edje_edit_part_drag_y_get(pd->wm_style->obj, pd->wm_part->name);
@@ -975,8 +998,8 @@ ui_property_part_set(Evas_Object *property, Part *part)
    Evas_Object *box, *prop_box;
    int y_reg, h_reg, h_box;
 
-   if ((!property) || (!part)) return EINA_FALSE;
-   PROP_DATA_GET(EINA_FALSE)
+   PROP_DATA_GET()
+   assert(part != NULL);
 
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
    pd->wm_part = part;
@@ -1126,7 +1149,7 @@ void
 ui_property_part_unset(Evas_Object *property)
 {
    Evas_Object *prop_box;
-   if (!property) return;
+
    PROP_DATA_GET()
 
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
@@ -1162,6 +1185,8 @@ _on_state_color_class_change(void *data,
    int r, g, b, a, r2, g2, b2, a2, r3, g3, b3, a3;
    Eina_Stringshare *old_value = NULL, *value = NULL;
    Ewe_Combobox_Item *item = event_info;
+
+   assert(pd != NULL);
 
    old_value = edje_edit_state_color_class_get(pd->wm_style->obj, pd->wm_part->name,
                                                pd->wm_part->curr_state,
@@ -1213,7 +1238,10 @@ _color_class_items_fill(void *data,
    Evas_Object *color;
    Evas *canvas;
 
+   assert(pd != NULL);
+
    items = (Eina_List *)ewe_combobox_items_list_get(obj);
+
    if (!items) return;
 
    //get combobbox item from first list item
@@ -1253,6 +1281,9 @@ prop_state_color_class_update(Prop_Data *pd)
    const char *ccname;
    int r, g, b, a, r2, g2, b2, a2, r3, g3, b3, a3;
    Eina_Stringshare *color_c;
+
+   assert(pd != NULL);
+
    ewe_combobox_items_list_free(pd->state.color_class, true);
    ewe_combobox_item_add(pd->state.color_class, _("None"));
    cclist = edje_edit_color_classes_list_get(pd->wm_style->obj);
@@ -1288,6 +1319,9 @@ prop_state_color_class_update(Prop_Data *pd)
 static Evas_Object *
 prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
 {
+   assert(parent != NULL);
+   assert(pd != NULL);
+
    PROPERTY_ITEM_ADD(parent, _("color class"), "1swallow")
    EWE_COMBOBOX_ADD(parent, pd->state.color_class)
    elm_object_tooltip_text_set(pd->state.color_class, "Set the color class");
@@ -1393,10 +1427,10 @@ ui_property_state_set(Evas_Object *property, Part *part)
    Evas_Object *state_frame, *box, *prop_box;
    char state[BUFF_MAX];
 
-   if ((!property) || (!part)) return EINA_FALSE;
-   PROP_DATA_GET(EINA_FALSE)
+   PROP_DATA_GET()
+   assert(part != NULL);
+   assert(pd->wm_part == part);
 
-   if (pd->wm_part != part) return EINA_FALSE; /* time for panic */
    #define pd_state pd->state
 
    snprintf(state, BUFF_MAX, "%s %.2f", part->curr_state, part->curr_state_value);
@@ -1583,7 +1617,6 @@ ui_property_state_set(Evas_Object *property, Part *part)
 void
 ui_property_state_unset(Evas_Object *property)
 {
-   if (!property) return;
    PROP_DATA_GET()
 
    evas_object_hide(pd->state.frame);
@@ -1609,6 +1642,9 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
                              void *ei) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
+   \
+   assert(pd != NULL); \
+   \
    Ewe_Combobox_Item *item = ei; \
    const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
                                      pd->wm_part->name, pd->wm_part->curr_state, \
@@ -1701,7 +1737,8 @@ ui_property_state_obj_area_set(Evas_Object *property)
 {
    Evas_Object *item, *icon;
    Evas_Object *obj_area_frame, *box, *prop_box;
-   PROP_DATA_GET(EINA_FALSE)
+
+   PROP_DATA_GET()
 
    prop_box = elm_object_content_get(pd->visual);
    elm_box_unpack(prop_box, pd_obj_area.frame);
@@ -1781,6 +1818,7 @@ static void
 ui_property_state_obj_area_unset(Evas_Object *property)
 {
    Evas_Object *prop_box;
+
    PROP_DATA_GET()
 
    prop_box = elm_object_content_get(pd->visual);
@@ -1845,6 +1883,8 @@ _text_effect_update(Prop_Data *pd)
 {
    Edje_Text_Effect effect, old_effect;
 
+   assert(pd != NULL);
+
    old_effect = edje_edit_part_effect_get(pd->wm_style->obj, pd->wm_part->name);
    effect = ewe_combobox_select_item_get(pd->state_text.effect)->index |
             ewe_combobox_select_item_get(pd->state_text.effect_direction)->index << 4;
@@ -1861,6 +1901,8 @@ _text_effect_update(Prop_Data *pd)
 inline static void
 _text_effect_contols_update(Prop_Data *pd)
 {
+   assert(pd != NULL);
+
    switch (ewe_combobox_select_item_get(pd->state_text.effect)->index)
      {
       case EDJE_TEXT_EFFECT_NONE:
@@ -1904,6 +1946,8 @@ _on_text_effect_direction_changed(void *data,
                                   Evas_Object *obj __UNUSED__,
                                   void *event_info __UNUSED__)
 {
+   assert(data != NULL);
+
    _text_effect_update((Prop_Data *)data);
 }
 
@@ -1913,6 +1957,8 @@ _on_text_effect_changed(void *data,
                         void *event_info __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
 
    _text_effect_contols_update(pd);
    ewe_combobox_select_item_set(pd->state_text.effect_direction, 0);
@@ -1925,6 +1971,8 @@ prop_part_text_effect_update(Prop_Data *pd)
 {
    int type, direction;
    Edje_Text_Effect edje_effect;
+
+   assert(pd != NULL);
 
    edje_effect = edje_edit_part_effect_get(pd->wm_style->obj, pd->wm_part->name);
 
@@ -1947,6 +1995,10 @@ static Evas_Object *
 prop_part_text_effect_add(Evas_Object *parent, Prop_Data *pd)
 {
    int i;
+
+   assert(parent != NULL);
+   assert(pd != NULL);
+
    PROPERTY_ITEM_ADD(parent, _("effect"), "2swallow_vertical")
 
    elm_object_part_text_set(item, "label.swallow1.start", _("type:"));
@@ -1976,6 +2028,9 @@ _on_state_text_ellipsis_change(void *data,
                                void *event_info __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    double value = elm_spinner_value_get(obj);
    double old_value = edje_edit_state_text_elipsis_get(pd->wm_style->obj,
                                                        pd->wm_part->name,
@@ -2002,6 +2057,9 @@ _on_state_text_ellipsis_toggle_change(void *data,
                                       void *event_info __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    double value;
    double old_value = edje_edit_state_text_elipsis_get(pd->wm_style->obj,
                                                        pd->wm_part->name,
@@ -2037,6 +2095,8 @@ prop_state_text_ellipsis_update(Prop_Data *pd)
 {
    double value;
 
+   assert(pd != NULL);
+
    value = edje_edit_state_text_elipsis_get(pd->wm_style->obj,
                                             pd->wm_part->name,
                                             pd->wm_part->curr_state,
@@ -2058,6 +2118,9 @@ prop_state_text_ellipsis_update(Prop_Data *pd)
 static Evas_Object *
 prop_state_text_ellipsis_add(Evas_Object *parent, Prop_Data *pd)
 {
+   assert(parent != NULL);
+   assert(pd != NULL);
+
    PROPERTY_ITEM_ADD(parent, _("ellipsis"), "2swallow")
    CHECK_ADD(item, pd->state_text.ellipsis_toggle)
    elm_object_style_set(pd->state_text.ellipsis_toggle, "toggle");
@@ -2087,7 +2150,8 @@ ui_property_state_text_set(Evas_Object *property)
 {
    Evas_Object *item;
    Evas_Object *text_frame, *box, *prop_box;
-   PROP_DATA_GET(EINA_FALSE)
+
+   PROP_DATA_GET()
 
    /* if previos selected part is TEXT too, unpack it */
    ui_property_state_text_unset(property);
@@ -2158,6 +2222,7 @@ static void
 ui_property_state_text_unset(Evas_Object *property)
 {
    Evas_Object *prop_box;
+
    PROP_DATA_GET()
 
    prop_box = elm_object_content_get(pd->visual);
@@ -2171,6 +2236,8 @@ prop_state_textblock_style_update(Prop_Data *pd)
 {
    Eina_List *slist, *l;
    const char *sname;
+
+   assert(pd != NULL);
 
    ewe_combobox_items_list_free(pd->state_textblock.style, true);
    ewe_combobox_item_add(pd->state_textblock.style, _("None"));
@@ -2252,7 +2319,8 @@ ui_property_state_textblock_set(Evas_Object *property)
 {
    Evas_Object *item;
    Evas_Object *textblock_frame, *box, *prop_box;
-   PROP_DATA_GET(EINA_FALSE)
+
+   PROP_DATA_GET()
 
    /* if previos selected part is TEXTBLOCK too, unpack it */
    ui_property_state_textblock_unset(property);
@@ -2328,6 +2396,7 @@ static void
 ui_property_state_textblock_unset(Evas_Object *property)
 {
    Evas_Object *prop_box;
+
    PROP_DATA_GET()
 
    prop_box = elm_object_content_get(pd->visual);
@@ -2349,6 +2418,8 @@ _on_image_editor_done(void *data,
    App_Data *ap = app_data_get();
    const char *value;
    const char *selected = (const char *)event_info;
+
+   assert(pd != NULL);
 
    if (!selected) return;
    border_entry = elm_object_part_content_get(pd_image.border, "elm.swallow.content");
@@ -2379,6 +2450,9 @@ _on_state_image_choose(void *data,
 {
    Evas_Object *img_edit;
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    const char *selected = elm_entry_entry_get(pd->state_image.image);
 
    App_Data *ap = app_data_get();
@@ -2397,6 +2471,8 @@ _del_tween_image(void *data,
    const char *selected = (const char *)data;
    Elm_Object_Item *it = elm_genlist_selected_item_get(tween_list);
    Prop_Data *pd = evas_object_data_get(tween_list, PROP_DATA);
+
+   assert(pd != NULL);
 
    if ((!selected) || (!it) || (!pd)) return;
    if (edje_edit_state_tween_del(pd->wm_style->obj, pd->wm_part->name,
@@ -2425,7 +2501,9 @@ _on_image_editor_tween_done(void *data,
    const char *name = NULL;
    Prop_Data *pd = evas_object_data_get(tween_list, PROP_DATA);
 
-   if ((!selected) || (!pd)) return;
+   assert(pd != NULL);
+
+   if (!selected) return;
 
    EINA_LIST_FOREACH(selected, l, name)
      {
@@ -2485,7 +2563,9 @@ _item_content_get(void *data, Evas_Object *obj, const char *part)
    if (!strcmp(part, "elm.swallow.icon"))
     {
        pd = evas_object_data_get(obj, PROP_DATA);
-       if (!pd) return NULL;
+
+       assert(pd != NULL);
+
        edje_object_file_get((const Eo*)pd->wm_style->obj, &file, &group);
        image = evas_object_image_add(evas_object_evas_get(obj));
        buf = eina_stringshare_printf("edje/images/%i",
@@ -2511,7 +2591,6 @@ _item_content_get(void *data, Evas_Object *obj, const char *part)
        return button;
     }
     return NULL;
-
 }
 
 static void
@@ -2523,6 +2602,8 @@ _tween_image_moved(Evas_Object *data,
    Eina_List *images_list, *l;
    Elm_Object_Item *next;
    const char *image_name;
+
+   assert(pd != NULL);
 
    images_list = edje_edit_state_tweens_list_get(pd->wm_style->obj,
                                                  pd->wm_part->name,
@@ -2556,6 +2637,9 @@ prop_item_state_image_tween_add(Evas_Object *box, Prop_Data *pd)
    Evas_Object *button, *icon;
    Eina_List *images_list, *l;
    char *image_name;
+
+   assert(box != NULL);
+   assert(pd != NULL);
 
    FRAME_PROPERTY_ADD(box, tween_frame, true, _("Tweens"), pd->visual)
    elm_object_style_set(tween_frame, "tween");
@@ -2611,6 +2695,9 @@ prop_item_state_image_tween_update(Evas_Object *tween, Prop_Data *pd)
    Eina_List *images_list, *l;
    const char *image_name = NULL;
 
+   assert(tween != NULL);
+   assert(pd != NULL);
+
    tween_list = elm_object_content_get(tween);
    elm_genlist_clear(tween_list);
    images_list = edje_edit_state_tweens_list_get(pd->wm_style->obj,
@@ -2638,6 +2725,9 @@ _on_state_image_border_change(void *data,
    int lb = 0, rb = 0, tb = 0, bb = 0;
    int old_lb, old_rb, old_tb, old_bb;
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    const char *value = elm_entry_entry_get(obj);
    edje_edit_state_image_border_get(pd->wm_style->obj, pd->wm_part->name,
                                     pd->wm_part->curr_state,
@@ -2675,6 +2765,9 @@ static void
 prop_state_image_border_update(Prop_Data *pd)
 {
    int l, r, t, b;
+
+   assert(pd != NULL);
+
    char buff[strlen("255 255 255 255") + 1];
    edje_edit_state_image_border_get(pd->wm_style->obj, pd->wm_part->name,
                                     pd->wm_part->curr_state, pd->wm_part->curr_state_value,
@@ -2698,7 +2791,8 @@ ui_property_state_image_set(Evas_Object *property)
 {
    Evas_Object *item;
    Evas_Object *image_frame, *box, *prop_box;
-   PROP_DATA_GET(EINA_FALSE)
+
+   PROP_DATA_GET()
 
    /* if previos selected part is IMAGE too, unpack it */
    ui_property_state_image_unset(property);
@@ -2740,6 +2834,7 @@ static void
 ui_property_state_image_unset(Evas_Object *property)
 {
    Evas_Object *prop_box;
+
    PROP_DATA_GET()
 
    prop_box = elm_object_content_get(pd->visual);
@@ -2781,7 +2876,8 @@ ui_property_state_fill_set(Evas_Object *property)
 {
    Evas_Object *item, *icon;
    Evas_Object *box, *prop_box;
-   PROP_DATA_GET(EINA_FALSE)
+
+   PROP_DATA_GET()
 
    /* if previos selected part is IMAGE or PROXY too, unpack it */
    ui_property_state_fill_unset(property);
@@ -2859,6 +2955,7 @@ static void
 ui_property_state_fill_unset(Evas_Object *property)
 {
    Evas_Object *prop_box;
+
    PROP_DATA_GET()
 
    prop_box = elm_object_content_get(pd->visual);
@@ -2871,6 +2968,8 @@ ui_property_state_fill_unset(Evas_Object *property)
 static void
 prop_part_item_padding_update(Prop_Data *pd)
 {
+   assert(pd != NULL);
+
    int l = 0, r = 0, t = 0, b = 0;
 
    edje_edit_part_item_padding_get(pd->wm_style->obj, pd->wm_part->name,
@@ -2889,6 +2988,8 @@ _on_part_item_padding_change(void *data,
    int l, r, t, b;
    Prop_Data *pd = (Prop_Data *)data;
 
+   assert(pd != NULL);
+
    l = (int)elm_spinner_value_get(pd->part_item.padding_l);
    r = (int)elm_spinner_value_get(pd->part_item.padding_r);
    t = (int)elm_spinner_value_get(pd->part_item.padding_t);
@@ -2904,6 +3005,9 @@ static void
 prop_part_item_padding_add(Evas_Object *box, Prop_Data *pd)
 {
    Evas_Object *item;
+
+   assert(box != NULL);
+   assert(pd != NULL);
 
    #define SPINNER_SET(SPINNER, PART) \
       SPINNER_ADD(item, SPINNER, 0.0, 999.0, 1.0, true) \
@@ -2941,6 +3045,8 @@ prop_part_item_source_update(Prop_Data *pd)
    Eina_List *collections, *l;
    const char *group, *value;
    App_Data *ap = app_data_get();
+
+   assert(pd != NULL);
 
    unsigned int i = 0;
    ewe_combobox_items_list_free(pd->part_item.source, true);
@@ -3041,7 +3147,8 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
 {
    Evas_Object *item;
    Evas_Object *box, *prop_box;
-   PROP_DATA_GET(false)
+
+   PROP_DATA_GET()
 
    ui_property_item_unset(property);
    pd->item_name = item_name;
@@ -3127,7 +3234,9 @@ void
 ui_property_item_unset(Evas_Object *property)
 {
    Evas_Object *prop_box, *item_box;
+
    PROP_DATA_GET()
+
    if (!pd_item.frame) return;
 
    pd->item_name = NULL;
@@ -3177,7 +3286,8 @@ static Eina_Bool
 ui_property_state_container_set(Evas_Object *property)
 {
    Evas_Object *item, *box, *prop_box;
-   PROP_DATA_GET(EINA_FALSE)
+
+   PROP_DATA_GET()
 
    ui_property_state_container_unset(property);
    prop_box = elm_object_content_get(pd->visual);
@@ -3211,6 +3321,7 @@ static void
 ui_property_state_container_unset(Evas_Object *property)
 {
    Evas_Object *prop_box;
+
    PROP_DATA_GET()
 
    prop_box = elm_object_content_get(pd->visual);

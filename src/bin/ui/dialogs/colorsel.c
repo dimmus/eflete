@@ -25,6 +25,9 @@ _on_changed(void *data,
             void *event_info)
 {
    Evas_Object *ctxpopup = (Evas_Object *)data;
+
+   assert(ctxpopup != NULL);
+
    evas_object_smart_callback_call(ctxpopup, "color,changed", event_info);
 }
 
@@ -34,6 +37,9 @@ _on_item_selected(void *data,
                   void *event_info)
 {
    Evas_Object *ctxpopup = (Evas_Object *)data;
+
+   assert(ctxpopup != NULL);
+
    evas_object_smart_callback_call(ctxpopup, "palette,item,selected", event_info);
 }
 
@@ -43,6 +49,9 @@ _on_item_longpressed(void *data,
                      void *event_info)
 {
    Evas_Object *ctxpopup = (Evas_Object *)data;
+
+   assert(ctxpopup != NULL);
+
    evas_object_smart_callback_call(ctxpopup, "palette,item,longpressed", event_info);
 }
 
@@ -62,7 +71,7 @@ colorselector_add(Evas_Object *parent)
 {
    Evas_Object *ctxpopup, *colorsel;
 
-   if (!parent) return NULL;
+   assert(parent != NULL);
 
    ctxpopup = elm_ctxpopup_add(parent);
    elm_object_style_set(ctxpopup, "colorsel");
@@ -84,9 +93,11 @@ colorselector_color_set(Evas_Object *obj, int r, int g, int b, int a)
 {
    Evas_Object *colorsel;
 
-   if (!obj) return;
+   assert(obj != NULL);
+
    colorsel = elm_object_content_get(obj);
-   if (!colorsel) return;
+
+   assert(colorsel != NULL);
 
    elm_colorselector_color_set(colorsel, r, g, b, a);
 }
@@ -97,9 +108,11 @@ colorselector_color_get(Evas_Object *obj, int *r, int *g, int *b, int *a)
    Evas_Object *colorsel;
    int rc, gc, bc, ac;
 
-   if (!obj) return;
+   assert(obj != NULL);
+
    colorsel = elm_object_content_get(obj);
-   if (!colorsel) return;
+
+   assert(colorsel != NULL);
 
    elm_colorselector_color_get(colorsel, &rc, &gc, &bc, &ac);
 

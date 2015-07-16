@@ -62,6 +62,9 @@ _part_params_save(Evas_Object *obj, Eina_Stringshare *part)
 {
    Part_Params *params_diff = NULL;
 
+   assert(obj != NULL);
+   assert(part != NULL);
+
    if (!edje_edit_part_exist(obj, part)) return NULL;
 
    params_diff = (Part_Params *)mem_calloc(1, sizeof(Part_Params));
@@ -100,6 +103,10 @@ Eina_Bool
 _part_params_restore(Evas_Object *obj, Eina_Stringshare *part,
                      Part_Params *params_diff)
 {
+   assert(obj != NULL);
+   assert(part != NULL);
+   assert(params_diff != NULL);
+
    if (!edje_edit_part_exist(obj, part)) return false;
 
    edje_edit_part_clip_to_set(obj, part, params_diff->clip_to);
@@ -132,9 +139,14 @@ _part_redo(Evas_Object *source, Part_Diff *change)
    Eina_List *l = NULL, *l_next = NULL;
    State_Params *state = NULL;
 
+   assert(source != NULL);
+   assert(change != NULL);
+
    App_Data *app = app_data_get();
    Style *style = app->project->current_style;
-   if ((!style) || (style->obj != source)) return false;
+
+   assert(style != NULL);
+   assert(style->obj != NULL);
 
    Evas_Object *prop = ui_block_property_get(app);
    Evas_Object *widget_list = ui_block_widget_list_get(app);
@@ -145,7 +157,7 @@ _part_redo(Evas_Object *source, Part_Diff *change)
       case ADD:
          if (!workspace_edit_object_part_add(app->workspace, change->part,
                                              change->params->type, NULL))
-           return false;
+           abort();
          if (change->params->type == EDJE_PART_TYPE_IMAGE)
            {
               EINA_LIST_FOREACH_SAFE(change->states, l, l_next, state)
@@ -188,7 +200,7 @@ _part_redo(Evas_Object *source, Part_Diff *change)
          ui_widget_list_part_selected_set(widget_list, change->part, true);
       break;
       default:
-         return false;
+         abort();
       break;
      }
    live_view_widget_style_set(app->live_view, app->project, style);
@@ -203,9 +215,14 @@ _part_undo(Evas_Object *source, Part_Diff *change)
    Eina_Bool last = false;
    Eina_Stringshare *above = NULL;
 
+   assert(source != NULL);
+   assert(change != NULL);
+
    App_Data *app = app_data_get();
    Style *style = app->project->current_style;
-   if ((!style) || (style->obj != source)) return false;
+
+   assert(style != NULL);
+   assert(style->obj != NULL);
 
    Evas_Object *prop = ui_block_property_get(app);
    Evas_Object *widget_list = ui_block_widget_list_get(app);
@@ -227,7 +244,7 @@ _part_undo(Evas_Object *source, Part_Diff *change)
       case DEL:
          if (!workspace_edit_object_part_add(app->workspace, change->part,
                                              change->params->type, NULL))
-           return false;
+           abort();
          _part_params_restore(source, change->part, change->params);
          EINA_LIST_FOREACH_SAFE(change->states, l, l_next, state)
            {
@@ -263,7 +280,7 @@ _part_undo(Evas_Object *source, Part_Diff *change)
          ui_widget_list_part_selected_set(widget_list, change->part, true);
       break;
       default:
-         return false;
+         abort();
       break;
      }
    live_view_widget_style_set(app->live_view, app->project, style);
@@ -274,6 +291,8 @@ void
 _part_change_free(Part_Diff *change)
 {
    State_Params *state = NULL;
+
+   assert(change != NULL);
 
    eina_stringshare_del(change->part);
 
@@ -306,19 +325,20 @@ _part_change_new(va_list list, Evas_Object *source)
    change->diff.module_type = PART_TARGET;
    change->diff.action_type = va_arg(list, Action);
 
-   if ((change->diff.action_type != ADD) &&
-       (change->diff.action_type != DEL) &&
-       (change->diff.action_type != RESTACK))
-     goto error;
+   assert ((change->diff.action_type == ADD) ||
+           (change->diff.action_type == DEL) ||
+           (change->diff.action_type == RESTACK));
 
    change->part = eina_stringshare_add((char *)va_arg(list, char *));
-   if (!change->part) goto error;
+
+   assert (change->part != NULL);
 
    /*This strings needed for UI elements. Will change later. */
    change->diff.new = eina_stringshare_add(change->part);
 
    change->params = _part_params_save(source, change->part);
-   if (!change->params) goto error;
+
+   assert(change->params != NULL);
 
    if (change->diff.action_type == RESTACK)
      return (Diff *)change;
@@ -334,10 +354,8 @@ _part_change_new(va_list list, Evas_Object *source)
           free(split);
        }
    edje_edit_string_list_free(states);
-   if (!change->states) goto error;
+
+   assert(change->states != NULL);
 
    return (Diff *)change;
-error:
-   _part_change_free(change);
-   return NULL;
 }

@@ -163,6 +163,8 @@ _sound_editor_del(Sound_Editor *edit)
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    ap->modal_editor--;
 
+   assert(edit != NULL);
+
 #ifdef HAVE_AUDIO
    ecore_audio_shutdown();
 #endif
@@ -180,6 +182,8 @@ static int
 _snd_file_seek(void *data, Eo *eo_obj EINA_UNUSED, int offset, int whence)
 {
    Sound_Editor *vf = data;
+
+   assert(vf != NULL);
 
    switch (whence)
      {
@@ -203,6 +207,8 @@ _snd_file_read(void *data, Eo *eo_obj EINA_UNUSED, void *buffer, int len)
 {
    Sound_Editor *vf = data;
 
+   assert(vf != NULL);
+
    if ((vf->io.offset + len) > vf->io.length)
      len = vf->io.length - vf->io.offset;
    memcpy(buffer, vf->io.data + vf->io.offset, len);
@@ -214,6 +220,9 @@ static int
 _snd_file_get_length(void *data, Eo *eo_obj EINA_UNUSED)
 {
    Sound_Editor *vf = data;
+
+   assert(vf != NULL);
+
    return vf->io.length;
 }
 
@@ -221,6 +230,9 @@ static int
 _snd_file_tell(void *data, Eo *eo_obj EINA_UNUSED)
 {
    Sound_Editor *vf = data;
+
+   assert(vf != NULL);
+
    return vf->io.offset;
 }
 
@@ -231,6 +243,9 @@ _play_finished_cb(void *data,
                   void *event_info EINA_UNUSED)
 {
    Sound_Editor *edit = (Sound_Editor *) data;
+
+   assert(edit != NULL);
+
    eo_del(edit->io.in);
    edit->io.in = NULL;
    edit->playing = false;
@@ -276,20 +291,12 @@ static void
 _create_io_stream(Sound_Editor *edit)
 {
    edit->io.in = eo_add(ECORE_AUDIO_IN_SNDFILE_CLASS, NULL);
-   if (!edit->io.in)
-     {
-        ERR("Input stream was't create!");
-        return;
-     }
+
+   assert(edit->io.in != NULL);
 
    edit->io.out = eo_add(ECORE_AUDIO_OUT_PULSE_CLASS, NULL);
-   if (!edit->io.out)
-     {
-        ERR("Output stream was't create!");
-        eo_del(edit->io.in);
-        edit->io.in = NULL;
-        return;
-     }
+
+   assert(edit->io.out != NULL);
 
    eo_do(edit->io.out, eo_event_callback_add(ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
                                              _out_fail, NULL));
@@ -302,6 +309,9 @@ static void
 _initialize_io_data(Sound_Editor *edit)
 {
    edit->io.offset = 0;
+
+   assert(edit != NULL);
+
    _create_io_stream(edit);
 
    eo_do(edit->io.in, ecore_audio_obj_name_set(edit->selected));
@@ -313,6 +323,8 @@ _tone_play(Sound_Editor *edit, int tone_frq)
 {
    double value;
    Eina_Bool ret = false;
+
+   assert(edit != NULL);
 
    elm_object_part_content_unset(edit->player_markup, "swallow.button.play");
    evas_object_hide(edit->play);
@@ -346,6 +358,7 @@ _tone_play(Sound_Editor *edit, int tone_frq)
    if (!ret)
      {
         ERR("Couldn't attach input and output!");
+        abort();
         return;
      }
 
@@ -363,6 +376,8 @@ _add_sound_play(Sound_Editor *edit)
 {
    double value;
    Eina_Bool ret = false;
+
+   assert(edit != NULL);
 
    elm_object_part_content_unset(edit->player_markup, "swallow.button.play");
    evas_object_hide(edit->play);
@@ -421,12 +436,11 @@ _play_sound(Sound_Editor *edit)
    Elm_Object_Item *g_item;
    const Item *item;
 
+   assert(edit != NULL);
+
    g_item = elm_gengrid_selected_item_get(edit->gengrid);
    if (!g_item)
-     {
-        ERR("Can't play sound! Item is not selected.");
-        return;
-     }
+     return;
 
    if (edit->added)
      {
@@ -480,6 +494,8 @@ _play_sound(Sound_Editor *edit)
 static void
 _interrupt_playing(Sound_Editor *edit)
 {
+   assert(edit != NULL);
+
    Eina_Bool ret;
    if (edit->playing)
      {
@@ -530,6 +546,8 @@ _on_pause_cb(void *data,
 {
    Sound_Editor *edit = (Sound_Editor *)data;
 
+   assert(edit != NULL);
+
    edit->stopped = true;
    eo_do(edit->io.in, ecore_audio_obj_paused_set(true));
 
@@ -547,6 +565,8 @@ _on_next_cb(void *data,
 {
    Elm_Object_Item *it, *first, *last;
    Sound_Editor *edit = (Sound_Editor *)data;
+
+   assert(edit != NULL);
 
    edit->switched = true;
    first = elm_gengrid_first_item_get(edit->gengrid);
@@ -575,6 +595,8 @@ _on_prev_cb(void *data,
    Elm_Object_Item *it, *first, *last;
    Sound_Editor *edit = (Sound_Editor *)data;
 
+   assert(edit != NULL);
+
    edit->switched = true;
    first = elm_gengrid_first_item_get(edit->gengrid);
    last = elm_gengrid_last_item_get(edit->gengrid);
@@ -599,6 +621,9 @@ _on_rewind_cb(void *data,
               void *event_info EINA_UNUSED)
 {
    Sound_Editor *edit = (Sound_Editor *)data;
+
+   assert(edit != NULL);
+
    double value = elm_slider_value_get(edit->rewind);
    eo_do(edit->io.in, value = ecore_audio_obj_in_seek(value, SEEK_SET));
 }
@@ -629,6 +654,9 @@ _on_quit_cb(void *data,
    Sound *snd;
 
    Sound_Editor *edit = (Sound_Editor *)data;
+
+   assert(edit != NULL);
+
    if ((edit->pr->added_sounds) && (edit->sound_was_added))
      {
         EINA_LIST_REVERSE_FOREACH_SAFE(edit->pr->added_sounds, l, l_next, snd)
@@ -660,6 +688,9 @@ _on_ok_cb(void *data,
    char *ei;
 
    Sound_Editor *edit = (Sound_Editor *)data;
+
+   assert(edit != NULL);
+
    if ((edit->pr->added_sounds) && (edit->sound_was_added))
      {
         EINA_LIST_FOREACH(edit->pr->added_sounds, l, snd)
@@ -722,7 +753,8 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
 {
    Evas_Object *bt, *icon, *item;
 
-   if (!parent) return;
+   assert(parent != NULL);
+   assert(edit != NULL);
 
    edit->player_markup = elm_layout_add(parent);
    elm_layout_theme_set(edit->player_markup, "layout", "sound_editor", "player");
@@ -806,6 +838,10 @@ static void
 _sample_info_create(Evas_Object *parent, Sound_Editor *edit)
 {
    Evas_Object *item;
+
+   assert(parent != NULL);
+   assert(edit != NULL);
+
    BOX_ADD(parent, edit->sample_box, false, false);
    elm_box_align_set(edit->sample_box, 0.5, 0.5);
 
@@ -839,6 +875,9 @@ _tone_info_create(Evas_Object *parent, Sound_Editor *edit)
 {
    Evas_Object *item;
 
+   assert(parent != NULL);
+   assert(edit != NULL);
+
    BOX_ADD(parent, edit->tone_box, false, false);
    elm_box_align_set(edit->tone_box, 0.5, 0.5);
 
@@ -857,6 +896,9 @@ _tone_info_create(Evas_Object *parent, Sound_Editor *edit)
 static void
 _sound_info_create(Evas_Object *parent, Sound_Editor *edit)
 {
+   assert(parent != NULL);
+   assert(edit != NULL);
+
    _sample_info_create(parent, edit);
    _tone_info_create(parent, edit);
 }
@@ -866,6 +908,8 @@ _sound_format_get(Eina_Stringshare *snd_src)
 {
    Eina_Stringshare *type;
    char *dot, *up;
+
+   assert(snd_src != NULL);
 
    dot = strrchr(snd_src, '.');
    if (!dot)
@@ -887,6 +931,10 @@ _sample_info_setup(Sound_Editor *edit,
 {
    Eina_Stringshare *duration, *type, *type_show;
    Evas_Object *content;
+
+   assert(edit != NULL);
+   assert(it != NULL);
+   assert(snd_src != NULL);
 
    content = elm_object_part_content_unset(edit->markup, "sound_info");
    evas_object_hide(content);
@@ -921,6 +969,9 @@ _tone_info_setup(Sound_Editor *edit, const Item *it)
    Evas_Object *content;
    Eina_Stringshare *duration;
 
+   assert(edit != NULL);
+   assert(it != NULL);
+
    content = elm_object_part_content_unset(edit->markup, "sound_info");
    evas_object_hide(content);
 
@@ -941,6 +992,8 @@ _added_sample_src_info_setup(Sound_Editor *edit,
                              double *len)
 {
    Eina_Bool ret;
+
+   assert(edit != NULL);
 
    _create_io_stream(edit);
    eo_do(edit->io.in, ecore_audio_obj_name_set(edit->snd_src));
@@ -965,6 +1018,8 @@ _grid_sel_sample(void *data,
    double len = 0.0;
    const Item *item;
    Sound_Editor *edit = (Sound_Editor *)data;
+
+   assert(edit != NULL);
 
    const Eina_List* sel_list = elm_gengrid_selected_items_get(edit->gengrid);
    int count = eina_list_count(sel_list);
@@ -1047,6 +1102,8 @@ _grid_sel_tone(void *data,
    const Item *item;
    Sound_Editor *edit = (Sound_Editor *)data;
 
+   assert(edit != NULL);
+
    const Eina_List* sel_list = elm_gengrid_selected_items_get(edit->gengrid);
    int count = eina_list_count(sel_list);
 
@@ -1090,7 +1147,11 @@ _gengrid_content_fill(Sound_Editor *edit)
    const char* sound_name, *snd_src;
    Evas_Object *edje_edit_obj;
 
+   assert(edit != NULL);
+
    edje_edit_obj = edit->pr->global_object;
+
+   assert(edje_edit_obj != NULL);
 
    sounds = edje_edit_sound_samples_list_get(edje_edit_obj);
    tones = edje_edit_sound_tones_list_get(edje_edit_obj);
@@ -1143,6 +1204,9 @@ static void
 _create_gengrid(Evas_Object *parent,
                 Sound_Editor *editor)
 {
+   assert(parent != NULL);
+   assert(editor != NULL);
+
    editor->gengrid = elm_gengrid_add(parent);
    elm_gengrid_item_size_set(editor->gengrid, ITEM_WIDTH, ITEM_HEIGHT);
    elm_gengrid_group_item_size_set(editor->gengrid, ITEM_HEIGHT/5, ITEM_HEIGHT/5);
@@ -1176,6 +1240,9 @@ static inline Evas_Object *
 _sound_editor_search_field_create(Evas_Object *parent)
 {
    Evas_Object *entry, *icon;
+
+   assert(parent != NULL);
+
    ENTRY_ADD(parent, entry, true);
    elm_object_part_text_set(entry, "guide", _("Search"));
    ICON_STANDARD_ADD(entry, icon, true, "search");
@@ -1188,6 +1255,8 @@ _fs_del(void *data)
 {
    Elm_Object_Item *it;
    Sound_Editor *edit = (Sound_Editor *)data;
+
+   assert(edit != NULL);
 
    if (edit->fs_win)
      {
@@ -1211,6 +1280,8 @@ _add_sample_done(void *data,
 
    const char *selected = event_info;
    Sound_Editor *edit = (Sound_Editor *)data;
+
+   assert(edit != NULL);
 
    if ((!selected) || (!strcmp(selected, "")))
      goto del;
@@ -1281,6 +1352,8 @@ _popup_close(void *data)
 {
    Sound_Editor *edit = (Sound_Editor *)data;
 
+   assert(edit != NULL);
+
    evas_object_del(edit->popup);
    elm_gengrid_item_selected_set(elm_gengrid_last_item_get(edit->gengrid), true);
 }
@@ -1299,6 +1372,9 @@ _add_tone_done(void *data,
    Eina_Bool exist = false;
 
    Sound_Editor *edit = (Sound_Editor *)data;
+
+   assert(edit != NULL);
+
    if (elm_entry_is_empty(edit->tone_entry))
      {
         NOTIFY_WARNING(_("Tone name can not be empty!"))
@@ -1376,8 +1452,12 @@ _sample_add_cb(void *data,
    Evas_Object *fs, *ic;
    Sound_Editor *edit = data;
 
+   assert(edit != NULL);
+
    edit->fs_win  = mw_add(NULL, NULL, NULL);
-   if (!edit->fs_win) return;
+
+   assert(edit->fs_win != NULL);
+
    mw_title_set(edit->fs_win, "Add sound to the library");
    ic = elm_icon_add(edit->fs_win);
    elm_icon_standard_set(ic, "folder");
@@ -1396,6 +1476,8 @@ _tone_add_cb(void *data,
              void *event_info __UNUSED__)
 {
    Sound_Editor *edit = data;
+
+   assert(edit != NULL);
 
    Evas_Object *popup, *box, *item, *bt_yes, *bt_no;
    Eina_Stringshare *title;
@@ -1466,6 +1548,8 @@ _on_delete_clicked_cb(void *data,
    int selected, deleted = 0;
    Sound_Editor *edit = (Sound_Editor *)data;
 
+   assert(edit != NULL);
+
    list = (Eina_List *)elm_gengrid_selected_items_get(edit->gengrid);
    selected = eina_list_count(list);
 
@@ -1515,6 +1599,9 @@ _search_changed(void *data,
                 void *event_info __UNUSED__)
 {
    Sound_Editor *edit = data;
+
+   assert(edit != NULL);
+
    _gengrid_item_search(edit->gengrid, &(edit->sound_search_data),
                         edit->sound_search_data.last_item_found);
 
@@ -1527,6 +1614,8 @@ _search_nxt_gd_item(void *data __UNUSED__,
 {
    Sound_Editor *edit = data;
    Elm_Object_Item *start_from = NULL;
+
+   assert(edit != NULL);
 
    if (edit->sound_search_data.last_item_found)
      {
@@ -1543,6 +1632,9 @@ _search_reset_cb(void *data __UNUSED__,
                  void *event_info __UNUSED__)
 {
    Search_Data *search_data = data;
+
+   assert(search_data != NULL);
+
    search_data->last_item_found = NULL;
 }
 
@@ -1550,6 +1642,8 @@ static void
 _sound_editor_main_markup_create(Sound_Editor *edit)
 {
    Evas_Object *btn, *ic, *search;
+
+   assert(edit != NULL);
 
    edit->markup = elm_layout_add(edit->win);
    elm_layout_theme_set(edit->markup, "layout", "sound_editor", "default");
@@ -1629,11 +1723,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    Sound_Editor *edit;
    Evas_Object *ic;
 
-   if (!project)
-     {
-        ERR("Project is not opened");
-        return NULL;
-     }
+   assert(project != NULL);
 
 #ifdef HAVE_AUDIO
    ecore_audio_init();
@@ -1643,11 +1733,9 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    edit->mode = mode;
    edit->pr = project;
    edit->win = mw_add("dialog", _on_quit_cb, edit);
-   if (!edit->win)
-     {
-        free(edit);
-        return NULL;
-     }
+
+   assert(edit->win != NULL);
+
    mw_title_set(edit->win, _("Sound manager"));
    ic = elm_icon_add(edit->win);
    elm_icon_standard_set(ic, "sound");
@@ -1693,18 +1781,13 @@ sound_editor_file_choose(Evas_Object *win, const char *selected)
    Sound_Editor *snd_edit;
 
    if (!selected) return false;
-   if (!win)
-     {
-        ERR("Expecting sound editor window.");
-        return false;
-     }
+
+   assert(win != NULL);
 
    snd_edit = evas_object_data_get(win, SND_EDIT_KEY);
-   if (!snd_edit)
-     {
-        ERR("Expecting sound editor object.");
-        return false;
-     }
+
+   assert(snd_edit != NULL);
+
    grid_item = elm_gengrid_search_by_text_item_get(snd_edit->gengrid, NULL,
                                                    "elm.text", selected, 0);
    if (grid_item)

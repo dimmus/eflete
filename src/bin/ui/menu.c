@@ -193,7 +193,8 @@ _menu_cb(void *data __UNUSED__,
          about_window_add();
          break;
       default:
-         DBG("unknown menu id: %d", menu_event->mid);
+         ERR("unknown menu id: %d", menu_event->mid);
+         abort();
          break;
      }
    return ECORE_CALLBACK_DONE;
@@ -205,6 +206,9 @@ _delay_menu_cb(void *data,
                void *event_info __UNUSED__)
 {
    Menu_Event *menu_event = mem_malloc(sizeof(Menu_Event));
+
+   assert(data != NULL);
+
    menu_event->mid = * (int *)data;
    ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
 }
@@ -215,12 +219,11 @@ ui_menu_add(App_Data *ap)
    Evas_Object *window_menu, *toolbar, *items_obj;
    Menu *menu;
    int i = 0;
-   if (!ap)
-     {
-        ERR("ap is NULL");
-        return NULL;
-     }
-   if ((!ap->win) || (!ap->win_layout)) return NULL;
+
+   assert(ap != NULL);
+   assert(ap->win != NULL);
+   assert(ap->win_layout != NULL);
+
    _menu_delayed_event = ecore_event_type_new();
 
    ecore_event_handler_add(_menu_delayed_event, _menu_cb, NULL);
@@ -336,16 +339,9 @@ ui_menu_add(App_Data *ap)
 Eina_Bool
 ui_menu_disable_set(Menu *menu, int mid, Eina_Bool flag)
 {
-   if (!menu)
-     {
-        ERR("Menu is NULL");
-        return false;
-     }
-   if ((mid <= MENU_NULL) || (mid >= MENU_ITEMS_COUNT))
-     {
-        ERR("Wrond menu item id: %d", mid);
-        return false;
-     }
+   assert(menu != NULL);
+   assert((mid > MENU_NULL) && (mid < MENU_ITEMS_COUNT));
+
    elm_object_item_disabled_set(menu->menu_items[mid], flag);
    elm_object_item_disabled_set(menu->toolbar_items[mid], flag);
 
@@ -355,7 +351,8 @@ ui_menu_disable_set(Menu *menu, int mid, Eina_Bool flag)
 Eina_Bool
 ui_menu_items_list_disable_set(Menu *menu, int *list, Eina_Bool flag)
 {
-   if ((!menu) || (!list)) return false;
+   assert(menu != NULL);
+   assert(list != NULL);
 
    Eina_Bool result = true;
    int i = 0;

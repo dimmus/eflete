@@ -31,6 +31,9 @@ _item_new(Evas_Object *ctxpopup, int item_num, const char *icon)
    Eina_Stringshare *name = NULL;
    Evas_Object *ic = NULL;
    Elm_Object_Item * ret;
+
+   assert(ctxpopup != NULL);
+
    if (item_num > 0)
      name = eina_stringshare_printf("Item #%d", item_num);
    if (icon)
@@ -54,6 +57,10 @@ _ctx_popup_create(Evas_Object *parent,
 {
    int i;
    Evas_Coord x,y;
+
+   assert(parent != NULL);
+   assert(style_name != NULL);
+
    Evas_Object *ctxpopup = elm_ctxpopup_add(parent);
    elm_object_style_set(ctxpopup, style_name);
    evas_object_smart_callback_add(ctxpopup, "dismissed", _dismissed_cb, NULL);
@@ -178,6 +185,9 @@ _on_del(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, 
 Evas_Object *
 widget_ctxpopup_create(Evas_Object *parent, const Style *style)
 {
+   assert(parent != NULL);
+   assert(style != NULL);
+
    Eina_Stringshare *class;
    Eina_Stringshare *style_name;
    standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);

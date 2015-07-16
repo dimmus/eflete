@@ -27,6 +27,9 @@ _on_mwin_del(void * data,
              void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+
+   assert(ap != NULL);
+
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    ap->modal_editor--;
 }
@@ -36,6 +39,8 @@ _on_button_close_clicked_cb(void *data,
                             Evas_Object *obj __UNUSED__,
                             void *event_info __UNUSED__)
 {
+   assert(data != NULL);
+
    evas_object_del(data);
 }
 
@@ -44,6 +49,9 @@ about_window_add()
 {
    Evas_Object *button;
    Evas_Object *mwin = mw_add("about_window", NULL, NULL);
+
+   assert(mwin != NULL);
+
    mw_title_set(mwin, _("About"));
    Evas_Object *label;
    App_Data *ap = app_data_get();

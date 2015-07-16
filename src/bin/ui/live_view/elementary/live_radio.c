@@ -30,6 +30,9 @@ _on_radio_swallow_check(void *data,
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    radio_list = elm_box_children_get(object);
    const char *part_name = elm_object_part_text_get(obj, NULL);
@@ -78,6 +81,9 @@ _on_radio_text_check(void *data,
    const char *default_text;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    radio_list = elm_box_children_get(object);
    const char *part_name = elm_object_part_text_get(obj, NULL);
@@ -120,10 +126,16 @@ _radio_send_signal(void *data,
                    void *ei __UNUSED__)
 {
    Evas_Object *radio_obj = NULL;
+
+   assert(data != NULL);
+
    Eina_List* radio_list = elm_box_children_get(data);
 
    const char *name = evas_object_data_get(obj, SIGNAL_NAME);
    const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
+
+   assert(name != NULL);
+   assert(source != NULL);
 
    EINA_LIST_FREE(radio_list, radio_obj)
      elm_layout_signal_emit(radio_obj, name, source);
@@ -132,6 +144,9 @@ _radio_send_signal(void *data,
 Evas_Object *
 widget_radio_create(Evas_Object *parent, const Style *style)
 {
+   assert(parent != NULL);
+   assert(style != NULL);
+
    Eina_Stringshare *style_name;
    standard_widget_name_parse(style->full_group_name, NULL, NULL, &style_name);
 

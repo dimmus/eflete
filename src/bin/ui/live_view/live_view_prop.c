@@ -20,13 +20,10 @@
 #include "live_view_prop.h"
 
 #define PROP_DATA "prop_data"
-#define PROP_DATA_GET(ret) \
+#define PROP_DATA_GET() \
+   assert(property != NULL); \
    Prop_Data *pd = evas_object_data_get(property, PROP_DATA); \
-   if (!pd) \
-     { \
-        ERR("Can not show group data, because object[%p] is not a property object", property); \
-        return ret; \
-     }
+   assert(pd != NULL);
 
 #define FRAME_LIVE_VIEW_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE, SCROLLER) \
 FRAME_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE) \
@@ -41,6 +38,9 @@ _on_frame_click(void *data,
                 void *event_info __UNUSED__)
 {
    Evas_Object *scroller = (Evas_Object *)data;
+
+   assert(scroller != NULL);
+
    Evas_Object *box, *frame_box;
    int h_box, h_frame_box, h_scr, y_reg, h_reg, y_frame;
    box = elm_object_content_get(scroller);
@@ -66,6 +66,9 @@ _on_scale_change(void *data,
                 void *event_info __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    pd->current_scale = elm_spinner_value_get(obj) / 100;
    if (pd->live_object)
      {
@@ -88,6 +91,9 @@ _on_all_swallow_check(void *data,
    Eina_List *part_list = NULL, *part = NULL;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    part_list = elm_box_children_get(pd->prop_swallow.swallows);
    if (!part_list) return;
 
@@ -113,6 +119,9 @@ _on_all_text_check(void *data,
    Eina_Bool is_checked;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    part_list = elm_box_children_get(pd->prop_text.texts);
    if (!part_list) return;
 
@@ -136,6 +145,9 @@ _change_bg_cb(void *data,
               void *event_info __UNUSED__)
 {
    Evas_Object *property = (Evas_Object *)data;
+
+   assert(property != NULL);
+
    evas_object_smart_callback_call(property, "bg,changed", obj);
 }
 
@@ -173,9 +185,13 @@ live_view_property_style_set(Evas_Object *property,
    Evas_Object *radio_group = NULL;
    Evas_Object *radio = NULL;
 
-   if ((!property) || (!object) || (!style) || (!widget) || (!style->obj))
-     return false;
-   PROP_DATA_GET(false)
+   PROP_DATA_GET()
+   assert(object != NULL);
+   assert(style != NULL);
+   assert(widget != NULL);
+   assert(style->obj != NULL);
+   assert(parent != NULL);
+
    pd->style = style;
 
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
@@ -397,7 +413,7 @@ live_view_property_add(Evas_Object *parent, Eina_Bool in_prog_edit)
    Evas_Object *box, *scroller;
    Prop_Data *pd;
 
-   if (!parent) return NULL;
+   assert(parent != NULL);
 
    pd = mem_calloc(1, sizeof(Prop_Data));
 
@@ -420,10 +436,8 @@ live_view_property_add(Evas_Object *parent, Eina_Bool in_prog_edit)
 Eina_Bool
 live_view_property_free(Evas_Object *property)
 {
-   if (!property)
-     return false;
+   PROP_DATA_GET()
 
-   Prop_Data *pd = evas_object_data_get(property, PROP_DATA);
    free(pd);
    evas_object_del(property);
 
@@ -443,8 +457,7 @@ live_view_property_style_unset(Evas_Object *property)
    Edje_Part_Type part_type;
    Eina_Stringshare *part_name, *string;
 
-   if (!property) return false;
-   PROP_DATA_GET(false)
+   PROP_DATA_GET()
 
    prop_box = elm_object_content_get(pd->visual);
    elm_box_unpack_all(prop_box);

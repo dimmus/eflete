@@ -25,6 +25,9 @@ _notify_close (void *data,
                void *event_info __UNUSED__)
 {
    Evas_Object *notify = (Evas_Object *)data;
+
+   assert(notify != NULL);
+
    evas_object_del(notify);
 }
 
@@ -36,7 +39,9 @@ Eina_Bool
 noti_error_show(Evas_Object *obj, const char *message)
 {
    Evas_Object *notify, *layout, *btn;
-   if (!obj) return false;
+
+   assert(obj != NULL);
+   assert(message != NULL);
 
    //1. setting notify up
    notify = elm_notify_add(obj);
@@ -70,7 +75,9 @@ Eina_Bool
 noti_warning_show(Evas_Object *obj, const char *message)
 {
    Evas_Object *notify, *layout, *btn;
-   if (!obj) return false;
+
+   assert(obj != NULL);
+   assert(message != NULL);
 
    //1. setting notify up
    notify = elm_notify_add(obj);
@@ -105,8 +112,10 @@ Eina_Bool
 noti_info_show(Evas_Object *obj, const char *message, double time)
 {
    Evas_Object *notify, *layout;
-   if (!obj) return false;
-   if (time < 0) return false;
+
+   assert(obj != NULL);
+   assert(message != NULL);
+   assert(time >= 0);
 
    //1. setting notify up
    notify = elm_notify_add(obj);

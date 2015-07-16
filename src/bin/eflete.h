@@ -32,6 +32,8 @@
    #include "eflete_config.h"
 #endif /* include eflete_config.h */
 
+#include <assert.h>
+
 /* localization */
 #ifdef HAVE_GETTEXT
    #include <libintl.h>

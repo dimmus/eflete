@@ -40,6 +40,8 @@ static Elm_Genlist_Item_Class *_itc_part_item = NULL;
 static inline Elm_Object_Item *
 _widget_list_get(Evas_Object *naviframe)
 {
+   assert(naviframe != NULL);
+
    Elm_Object_Item *item_gl_widgets = elm_naviframe_top_item_get(naviframe);
 
    return item_gl_widgets;
@@ -49,6 +51,9 @@ static inline Evas_Object *
 _current_naviframe_get(Evas_Object *tabs)
 {
    Ewe_Tabs_Item *selected;
+
+   assert(tabs != NULL);
+
    selected = ewe_tabs_active_item_get(tabs);
    if (evas_object_data_get(tabs, WIDGETS_TAB_DATA_KEY) == selected)
       return evas_object_data_get(tabs, WIDGETS_NAVIFRAME_DATA_KEY);
@@ -59,6 +64,10 @@ static Elm_Object_Item *
 _genlist_find_item_by_name(Evas_Object *obj, const char *name)
 {
    Part *part;
+
+   assert(obj != NULL);
+   assert(name != NULL);
+
    Elm_Object_Item *item = elm_genlist_first_item_get(obj);
 
    while (item)
@@ -80,20 +89,19 @@ _genlist_find_item_by_name(Evas_Object *obj, const char *name)
 static char *
 _item_part_label_get(void *data,
                      Evas_Object *obj __UNUSED__,
-                     const char *part __UNUSED__)
+                     const char *part)
 {
    Part *p = (Part *)data;
-   if (!p->name)
-     {
-        ERR("It impossible, but it is occurred, part name is missing!");
-        return NULL;
-     }
+
+   assert(p != NULL);
+   assert(p->name != NULL);
+   assert(part != NULL);
 
    if (!strcmp(part, "elm.text"))
      {
         return strdup(p->name);
      }
-   return "";
+   return strdup("");
 }
 
 static char *
@@ -113,10 +121,18 @@ _on_check_click(void *data,
 {
    Evas_Object *gl_parts, *tabs;
    Part *_part = (Part *)data;
+
+   assert(_part != NULL);
+
    _part->show = !_part->show;
 
    gl_parts = evas_object_data_get(obj, PARTLIST_DATA_KEY);
+
+   assert(gl_parts != NULL);
+
    tabs = evas_object_data_get(gl_parts, TABS_DATA_KEY);
+
+   assert(tabs != NULL);
 
    if (_part->show)
      evas_object_smart_callback_call(tabs, "wl,part,show", (void *)_part->name);
@@ -130,8 +146,16 @@ _on_item_add_clicked(void *data,
                      void *event_info __UNUSED__)
 {
    Part *_part =  (Part* ) data;
+
+   assert(_part != NULL);
+
    Evas_Object *gl_parts = evas_object_data_get(obj, PARTLIST_DATA_KEY);
+
+   assert(gl_parts != NULL);
+
    Evas_Object *tabs = evas_object_data_get(gl_parts, TABS_DATA_KEY);
+
+   assert(tabs != NULL);
 
    /* Checking number of groups */
    App_Data *app = app_data_get();
@@ -154,8 +178,16 @@ _on_item_del_clicked(void *data,
                      void *event_info __UNUSED__)
 {
    Eina_Stringshare *item_name = (Eina_Stringshare *)data;
+
+   assert(item_name != NULL);
+
    Evas_Object *gl_parts = evas_object_data_get(obj, PARTLIST_DATA_KEY);
+
+   assert(gl_parts != NULL);
+
    Evas_Object *tabs = evas_object_data_get(gl_parts, TABS_DATA_KEY);
+
+   assert(tabs != NULL);
 
    evas_object_smart_callback_call(tabs, "wl,part,item,del", (char *)item_name);
    return;
@@ -166,8 +198,10 @@ _item_part_content_get(void *data,
                        Evas_Object *obj,
                        const char *part)
 {
-   Part *_part = (Part *) data;
    Evas_Object *content = NULL;
+   Part *_part = (Part *) data;
+
+   assert(_part != NULL);
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
@@ -243,6 +277,9 @@ _item_part_item_content_get(void *data,
                        const char *part)
 {
    Eina_Stringshare *item_name = (Eina_Stringshare *) data;
+
+   assert(item_name != NULL);
+
    if (!strcmp(part, "elm.swallow.penult"))
      {
         Evas_Object *button, *_icon;
@@ -264,11 +301,10 @@ _item_layout_label_get(void *data,
                       const char *part __UNUSED__)
 {
    Style *layout = (Style *)data;
-   if (!layout->full_group_name)
-     {
-        ERR("It impossible, but it is occurred, layout name is missing!");
-        return NULL;
-     }
+
+   assert(layout != NULL);
+   assert(layout->full_group_name != NULL);
+
    return strdup(layout->full_group_name);
 }
 
@@ -279,11 +315,10 @@ _item_style_label_get(void *data,
                       const char *part __UNUSED__)
 {
    Style *style = (Style *)data;
-   if (!style->name)
-     {
-        ERR("It impossible, but it is occurred, style name is missing!");
-        return NULL;
-     }
+
+   assert(style != NULL);
+   assert(style->name != NULL);
+
    return strdup(style->name);
 }
 
@@ -293,11 +328,10 @@ _item_widget_label_get(void *data,
                        const char *part __UNUSED__)
 {
    Widget *widget = (Widget *)data;
-   if (!widget->name)
-     {
-        ERR("It impossible, but it is occurred, widget name is missing!");
-        return NULL;
-     }
+
+   assert(widget != NULL);
+   assert(widget->name != NULL);
+
    return strdup(widget->name);
 }
 
@@ -307,11 +341,10 @@ _item_class_label_get(void *data,
                       const char *part __UNUSED__)
 {
    Class *class = (Class *)data;
-   if (!class->name)
-     {
-        ERR("It impossible, but it is occurred, class name is missing!");
-        return NULL;
-     }
+
+   assert(class != NULL);
+   assert(class->name != NULL);
+
    return strdup(class->name);
 }
 
@@ -321,8 +354,13 @@ _navi_gl_styles_pop(void *data,
                     void *event_info __UNUSED__)
 {
    Evas_Object *nf = (Evas_Object *)data;
+
+   assert(nf != NULL);
+
    elm_naviframe_item_pop(nf);
    Evas_Object *tabs = evas_object_data_get(nf, TABS_DATA_KEY);
+
+   assert(tabs != NULL);
 
    evas_object_smart_callback_call (tabs, "wl,style,back", NULL);
 }
@@ -333,8 +371,13 @@ _navi_gl_parts_pop(void *data,
                    void *event_info __UNUSED__)
 {
    Evas_Object *nf = (Evas_Object *)data;
+
+   assert(nf != NULL);
+
    elm_naviframe_item_pop(nf);
    Evas_Object *tabs = evas_object_data_get(nf, TABS_DATA_KEY);
+
+   assert(tabs != NULL);
 
    evas_object_smart_callback_call(tabs, "wl,part,back", NULL);
 }
@@ -346,8 +389,17 @@ _on_part_select(void *data,
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    Evas_Object *nf = (Evas_Object *)data;
+
+   assert(nf != NULL);
+
    Part *_part = elm_object_item_data_get(glit);
+
+   assert(_part != NULL);
+
    Evas_Object *tabs = evas_object_data_get(nf, TABS_DATA_KEY);
+
+   assert(tabs != NULL);
+
    evas_object_smart_callback_call(tabs, "wl,part,select", _part);
 }
 
@@ -359,10 +411,18 @@ _on_part_item_select(void *data,
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    Elm_Object_Item *parent = elm_genlist_item_parent_get(glit);
    Part *part = elm_object_item_data_get(parent);
+
+   assert(part != NULL);
+
    Evas_Object *nf = (Evas_Object *)data;
    Eina_Stringshare *item_name = elm_object_item_data_get(glit);
 
+   assert(item_name != NULL);
+
    Evas_Object *tabs = evas_object_data_get(nf, TABS_DATA_KEY);
+
+   assert(tabs != NULL);
+
    evas_object_smart_callback_call(tabs, "wl,part,select", part);
    evas_object_smart_callback_call(tabs, "wl,part,item,select", (char *)item_name);
    return;
@@ -375,9 +435,19 @@ _on_part_item_unselect(void *data,
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    Evas_Object *nf = (Evas_Object *)data;
+
+   assert(nf != NULL);
+
+   TODO("Is this check needed?");
    if (!elm_genlist_item_parent_get(glit)) return;
    Eina_Stringshare *item_name = elm_object_item_data_get(glit);
+
+   assert(item_name != NULL);
+
    Evas_Object *tabs = evas_object_data_get(nf, TABS_DATA_KEY);
+
+   assert(tabs != NULL);
+
    evas_object_smart_callback_call(tabs, "wl,part,item,unselect", (char *)item_name);
 }
 
@@ -387,7 +457,13 @@ _layout_add_cb(void *data,
                void *event_info __UNUSED__)
 {
    Evas_Object *block = (Evas_Object *)data;
+
+   assert(block != NULL);
+
    Evas_Object *widget_list = evas_object_data_get(obj, WIDGETLIST_DATA_KEY);
+
+   assert(widget_list);
+
    evas_object_smart_callback_call(block, "wl,layout,add", widget_list);
 }
 
@@ -397,6 +473,9 @@ _layout_del_cb(void *data,
                void *event_info __UNUSED__)
 {
    Evas_Object *block = (Evas_Object *)data;
+
+   assert(block != NULL);
+
    evas_object_smart_callback_call(block, "wl,layout,del", NULL);
 }
 
@@ -406,6 +485,9 @@ _unset_cur_style(void *data,
                  void *ei __UNUSED__)
 {
    Project *project = (Project *)data;
+
+   assert(project != NULL);
+
    Part *pr;
    EINA_INLIST_FOREACH(project->current_style->parts, pr)
       pr->show = true;
@@ -419,6 +501,9 @@ _add_style_cb(void *data,
               void *event_info __UNUSED__)
 {
    Evas_Object *block =  elm_object_parent_widget_get(evas_object_data_get((Evas_Object *)data, TABS_DATA_KEY));
+
+   assert(block != NULL);
+
    evas_object_smart_callback_call(block, "wl,style,add", NULL);
 }
 
@@ -428,6 +513,9 @@ _del_style_cb(void *data,
               void *event_info __UNUSED__)
 {
    Evas_Object *block =  elm_object_parent_widget_get(evas_object_data_get((Evas_Object *)data, TABS_DATA_KEY));
+
+   assert(block != NULL);
+
    evas_object_smart_callback_call(block, "wl,style,del", NULL);
 }
 
@@ -437,7 +525,13 @@ _del_part_cb(void *data,
              void *event_info __UNUSED__)
 {
    Evas_Object *nf = (Evas_Object *)data;
+
+   assert(nf != NULL);
+
    Evas_Object *tabs = evas_object_data_get(nf, TABS_DATA_KEY);
+
+   assert(tabs != NULL);
+
    evas_object_smart_callback_call(tabs, "wl,part,del", NULL);
 }
 
@@ -447,7 +541,13 @@ _add_part_cb(void *data,
              void *event_info __UNUSED__)
 {
    Evas_Object *nf = (Evas_Object *)data;
+
+   assert(nf != NULL);
+
    Evas_Object *tabs = evas_object_data_get(nf, TABS_DATA_KEY);
+
+   assert(tabs != NULL);
+
    evas_object_smart_callback_call(tabs, "wl,part,add", NULL);
 }
 
@@ -457,7 +557,13 @@ _above_part_cb(void *data,
                    void *event_info __UNUSED__)
 {
    Evas_Object *nf = (Evas_Object *)data;
+
+   assert(nf != NULL);
+
    Evas_Object *tabs = evas_object_data_get(nf, TABS_DATA_KEY);
+
+   assert(tabs != NULL);
+
    evas_object_smart_callback_call(tabs, "wl,part,above", NULL);
 }
 
@@ -467,7 +573,13 @@ _past_part_cb(void *data,
                    void *event_info __UNUSED__)
 {
    Evas_Object *nf = (Evas_Object *)data;
+
+   assert(nf != NULL);
+
    Evas_Object *tabs = evas_object_data_get(nf, TABS_DATA_KEY);
+
+   assert(tabs != NULL);
+
    evas_object_smart_callback_call(tabs, "wl,part,below", NULL);
 }
 
@@ -477,7 +589,13 @@ _part_reordered(Evas_Object *data,
                 Elm_Object_Item *item)
 {
    Evas_Object *nf = (Evas_Object *)data;
+
+   assert(nf != NULL);
+
    Evas_Object *tabs = evas_object_data_get(nf, TABS_DATA_KEY);
+
+   assert(tabs != NULL);
+
    Part *part = NULL;
    Elm_Object_Item *rel = elm_genlist_item_next_get(item);
    elm_genlist_item_selected_set(item, true);
@@ -504,8 +622,14 @@ _part_items_expand(void *data,
                    void *event_info)
 {
    Evas_Object *nf = (Evas_Object *)data;
+
+   assert(nf != NULL);
+
    Elm_Object_Item *glit = event_info;
    Part *_part = elm_object_item_data_get(glit);
+
+   assert(_part != NULL);
+
    Eina_List *l_items = NULL, *l_n_items = NULL;
    Eina_Stringshare *item_name = NULL;
 
@@ -577,13 +701,21 @@ _on_style_clicked_double(void *data,
    Evas_Object *_icon = NULL;
    Eina_List *naviframe_items = NULL;
 
+   assert(pr != NULL);
+
    nf = evas_object_data_get(obj, NAVIFRAME_DATA_KEY);
    tabs = evas_object_data_get(nf, TABS_DATA_KEY);
    nf_widgets = evas_object_data_get(tabs, WIDGETS_NAVIFRAME_DATA_KEY);
    nf_layouts = evas_object_data_get(tabs, LAYOUTS_NAVIFRAME_DATA_KEY);
    _style = elm_object_item_data_get(glit);
 
-   if ((_style->__type != STYLE) && (_style->__type != LAYOUT)) return;
+   assert(nf != NULL);
+   assert(tabs != NULL);
+   assert(nf_widgets != NULL);
+   assert(nf_layouts != NULL);
+   assert(_style != NULL);
+   assert((_style->__type == STYLE) ||
+          (_style->__type == LAYOUT));
 
    if (nf == nf_widgets)
      {
@@ -602,7 +734,7 @@ _on_style_clicked_double(void *data,
    clicked_style = _style;
    if (_style->isAlias)
      {
-       if (!_style->main_group) return;
+       assert(_style->main_group != NULL);
         _style = _style->main_group;
      }
 
@@ -722,6 +854,8 @@ _item_style_content_get(void *data,
    Style *_style = (Style *)data;
    Evas_Object *icon = NULL;
 
+   assert(_style != NULL);
+
    if ((!strcmp(part, "elm.swallow.end")) && (_style->isAlias))
      IMAGE_ADD_NEW(obj, icon, "icon", "alias_link");
 
@@ -745,6 +879,8 @@ _on_widget_clicked_double(void *data,
 
    _style = elm_object_item_data_get(glit);
 
+   assert(_style != NULL);
+
    if (_style->__type == LAYOUT)
      {
         _on_style_clicked_double(data, obj, event_info);
@@ -754,7 +890,13 @@ _on_widget_clicked_double(void *data,
 
    nf = evas_object_data_get(obj, NAVIFRAME_DATA_KEY);
    _widget = elm_object_item_data_get(glit);
+
+   assert(nf != NULL);
+   assert(_widget != NULL);
+
    classes = _widget->classes;
+
+   assert(classes != NULL);
 
    if (!_itc_class)
      {
@@ -834,9 +976,11 @@ ui_widget_list_class_data_reload(Evas_Object *gl_classes, Eina_Inlist *classes)
    Elm_Object_Item *glit_style = NULL;
    Elm_Object_Item *glit_class = NULL;
 
-   if (gl_classes) elm_genlist_clear(gl_classes);
-   else return false;
-   if (!classes) return false;
+   assert(gl_classes != NULL);
+
+   elm_genlist_clear(gl_classes);
+
+   assert(classes != NULL);
 
    if (!_itc_class)
      {
@@ -887,7 +1031,7 @@ ui_widget_list_add(Evas_Object *parent)
    Elm_Object_Item *it_widgets, *it_layouts;
    Ewe_Tabs_Item *widgets_tab, *layouts_tab;
 
-   if (!parent) return NULL;
+   assert(parent != NULL);
 
    if (!_itc_widget)
      {
@@ -967,13 +1111,21 @@ ui_widget_list_title_set(Evas_Object *object, const char *title)
 {
    Elm_Object_Item *item_gl_widgets;
 
-   if ((!object) || (!title)) return false;
+   assert(object != NULL);
+   assert(title != NULL);
 
    item_gl_widgets = elm_naviframe_bottom_item_get(evas_object_data_get(object,
                                                    WIDGETS_NAVIFRAME_DATA_KEY));
+
+   assert(item_gl_widgets != NULL);
+
    elm_object_item_part_text_set(item_gl_widgets, "elm.text.title", title);
+
    item_gl_widgets = elm_naviframe_bottom_item_get(evas_object_data_get(object,
                                                    LAYOUTS_NAVIFRAME_DATA_KEY));
+
+   assert(item_gl_widgets != NULL);
+
    elm_object_item_part_text_set(item_gl_widgets, "elm.text.title", title);
 
    return true;
@@ -1033,7 +1185,9 @@ ui_widget_list_layouts_reload(Evas_Object *gl_layouts, Project *project)
 {
    Elm_Object_Item *eoi = NULL;
    Style *_layout = NULL;
-   if ((!gl_layouts) || (!project)) return false;
+
+   assert(gl_layouts != NULL);
+   assert(project != NULL);
 
    elm_genlist_clear(gl_layouts);
    EINA_INLIST_FOREACH(project->layouts, _layout)
@@ -1058,17 +1212,30 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
    Evas_Object *gl_layouts;
    Eina_Inlist *widget_list = NULL;
 
-   if ((!object) || (!project)) return false;
+   assert(object != NULL);
+   assert(project != NULL);
 
    widget_list = project->widgets;
    nf_widgets = evas_object_data_get(object, WIDGETS_NAVIFRAME_DATA_KEY);
+
+   assert(nf_widgets != NULL);
+
    gl_widgets = elm_object_item_part_content_get(_widget_list_get(nf_widgets),
                                                  "elm.swallow.content");
+
+   assert(gl_widgets != NULL);
+
    elm_genlist_select_mode_set(gl_widgets, ELM_OBJECT_SELECT_MODE_ALWAYS);
 
    nf_layouts = evas_object_data_get(object, LAYOUTS_NAVIFRAME_DATA_KEY);
+
+   assert(nf_layouts != NULL);
+
    gl_layouts = elm_object_item_part_content_get(_widget_list_get(nf_layouts),
                                                  "elm.swallow.content");
+
+   assert(gl_layouts != NULL);
+
    elm_genlist_select_mode_set(gl_layouts, ELM_OBJECT_SELECT_MODE_ALWAYS);
 
    EINA_INLIST_FOREACH(widget_list, _widget)
@@ -1107,10 +1274,13 @@ ui_widget_list_part_add(Evas_Object *object, Style *style, const char *name)
    Elm_Object_Item *eoi;
    Part *part;
 
-   if ((!object) || (!style) || (!name)) return false;
+   assert(object != NULL);
+   assert(style != NULL);
+   assert(name != NULL);
+
    part = wm_part_add(style, name);
 
-   if (!part) return false;
+   assert(part != NULL);
 
    if (style->__type == STYLE)
      {
@@ -1122,12 +1292,16 @@ ui_widget_list_part_add(Evas_Object *object, Style *style, const char *name)
      }
    else
      {
-        wm_part_del(style, part);
-        return false;
+        abort();
      }
+
+   assert(nf != NULL);
 
    gl_parts = elm_object_item_part_content_get(_widget_list_get(nf),
                                                "elm.swallow.content");
+
+   assert(gl_parts != NULL);
+
    if ((part->type == EDJE_PART_TYPE_TABLE) ||
        (part->type == EDJE_PART_TYPE_BOX))
      eoi = elm_genlist_item_append(gl_parts, _itc_container, part,
@@ -1149,10 +1323,14 @@ ui_widget_list_selected_part_del(Evas_Object *object, Style *style)
    Elm_Object_Item *eoi, *next_eoi;
    Part *part;
 
-   if ((!object) || (!style)) return false;
+   assert(object != NULL);
+   assert(style != NULL);
 
    gl_parts = elm_object_item_part_content_get(_widget_list_get(_current_naviframe_get(object)),
                                                "elm.swallow.content");
+
+   assert(gl_parts != NULL);
+
    eoi = elm_genlist_selected_item_get(gl_parts);
 
    if (!eoi)
@@ -1195,10 +1373,18 @@ _selected_part_move(Evas_Object *object, Style *style, Eina_Bool move_up)
    Evas_Object *nf;
    Eina_Bool expanded;
 
-   if ((!object) || (!style)) return false;
+   assert(object != NULL);
+   assert(style != NULL);
+
    nf = _current_naviframe_get(object);
+
+   assert(nf != NULL);
+
    gl_parts = elm_object_item_part_content_get(_widget_list_get(nf),
                                                "elm.swallow.content");
+
+   assert(gl_parts != NULL);
+
    eoi = elm_genlist_selected_item_get(gl_parts);
    if (!eoi)
      {
@@ -1309,9 +1495,13 @@ ui_widget_list_selected_part_get(Evas_Object *object)
    Elm_Object_Item *eoi;
    Elm_Object_Item *parent_item = NULL;
 
-   if (!object) return NULL;
+   assert(object != NULL);
+
    gl_parts = elm_object_item_part_content_get(_widget_list_get(_current_naviframe_get(object)),
                                                "elm.swallow.content");
+
+   assert(gl_parts != NULL);
+
    eoi = elm_genlist_selected_item_get(gl_parts);
    if (!eoi) return NULL;
    parent_item = elm_genlist_item_parent_get(eoi);
@@ -1330,16 +1520,19 @@ ui_widget_list_part_selected_set(Evas_Object *object,
 {
    Evas_Object *gl_parts;
 
-   if ((!object) || (!part)) return false;
+   assert(object != NULL);
+   assert(part != NULL);
+
    gl_parts = elm_object_item_part_content_get(_widget_list_get(_current_naviframe_get(object)),
                                                "elm.swallow.content");
+
+   assert(gl_parts != NULL);
+
    Elm_Object_Item *item = _genlist_find_item_by_name(gl_parts, part);
-   if (item)
-     {
-        elm_genlist_item_selected_set(item, selected);
-        elm_genlist_item_bring_in(item, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
-     }
-   else return false;
+   assert(item != NULL);
+
+   elm_genlist_item_selected_set(item, selected);
+   elm_genlist_item_bring_in(item, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
 
    return true;
 }
@@ -1350,12 +1543,19 @@ ui_widget_list_part_update(Evas_Object *object, const char *part)
    Evas_Object *gl_parts;
    Elm_Object_Item *item;
 
-   if ((!object) || (!part)) return false;
+   assert(object != NULL);
+   assert(part != NULL);
+
    gl_parts = elm_object_item_part_content_get(_widget_list_get(_current_naviframe_get(object)),
                                                "elm.swallow.content");
+
+   assert(gl_parts != NULL);
+
    item = _genlist_find_item_by_name(gl_parts, part);
-   if (item) elm_genlist_item_update(item);
-   else return false;
+
+   assert(item != NULL);
+
+   elm_genlist_item_update(item);
 
    return true;
 }
@@ -1369,9 +1569,13 @@ ui_widget_list_selected_parts_get(Evas_Object *object)
    Eina_List *selected, *l;
    Eina_List *parts = NULL;
 
-   if (!object) return NULL;
+   assert(object != NULL);
+
    gl_parts = elm_object_item_part_content_get(_widget_list_get(_current_naviframe_get(object)),
                                                "elm.swallow.content");
+
+   assert(gl_parts != NULL);
+
    selected = (Eina_List *)elm_genlist_selected_items_get(gl_parts);
    if (!selected) return NULL;
 
@@ -1391,13 +1595,18 @@ ui_widget_list_style_parts_reload(Evas_Object *object, Style *style)
    Elm_Object_Item *eoi = NULL;
    Evas_Object *nf = NULL, *gl_parts = NULL;
 
-   if ((!object) || (!style)) return;
+   assert(object != NULL);
+   assert(style != NULL);
 
    gl_parts = elm_object_item_part_content_get(
                               _widget_list_get(_current_naviframe_get(object)),
                               "elm.swallow.content");
 
+   assert(gl_parts != NULL);
+
    nf = evas_object_data_get(gl_parts, NAVIFRAME_DATA_KEY);
+
+   assert(nf != NULL);
 
    elm_genlist_clear(gl_parts);
 
@@ -1422,7 +1631,7 @@ ui_widget_list_tab_activate(Evas_Object *object, unsigned int tab_index)
    Ewe_Tabs_Item * tab_item;
    const Eina_List *tabs_list;
 
-   if (!object) return false;
+   assert(object != NULL);
 
    tabs_list = ewe_tabs_items_list_get(object);
    tab_item = eina_list_nth(tabs_list, tab_index);
@@ -1443,12 +1652,19 @@ ui_widget_list_part_items_refresh(Evas_Object *obj, Part *part, Eina_Bool additi
    Evas_Object *part_list = NULL;
    Elm_Object_Item *eoi = NULL;
 
-   if ((!obj) || (!part)) return false;
+   assert(obj != NULL);
+   assert(part != NULL);
+
    part_list = elm_object_item_part_content_get(
                            _widget_list_get(_current_naviframe_get(obj)),
                             "elm.swallow.content");
 
+   assert(part_list != NULL);
+
    nf = evas_object_data_get(part_list, NAVIFRAME_DATA_KEY);
+
+   assert(nf != NULL);
+
    iterator = elm_genlist_first_item_get(part_list);
    if (!iterator) return false;
 
@@ -1461,11 +1677,9 @@ ui_widget_list_part_items_refresh(Evas_Object *obj, Part *part, Eina_Bool additi
          * checking need to be skipped. */
         if (!elm_genlist_item_parent_get(iterator))
           {
-             if ((!item_data) || (item_data->__type != PART))
-               {
-                  ERR("Item data isn't presented or data isn't PART");
-                  return false;
-               }
+             assert(item_data != NULL);
+             assert(item_data->__type == PART);
+
              if (item_data == part)
                {
                   if (!elm_genlist_item_expanded_get(iterator)) return true;

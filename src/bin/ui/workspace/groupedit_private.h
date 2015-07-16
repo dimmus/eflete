@@ -113,16 +113,9 @@ struct _Ws_Groupedit_Smart_Data
 };
 
 #define WS_GROUPEDIT_DATA_GET(o, ptr)  \
-   Ws_Groupedit_Smart_Data *ptr = evas_object_smart_data_get(o);
-
-#define WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, ptr, val)                \
-   WS_GROUPEDIT_DATA_GET(o, ptr)                                        \
-   if (!ptr)                                                            \
-     {                                                                  \
-        ERR("No Groupedit data for object %p (%s)!",                    \
-            o, evas_object_type_get(o));                                \
-        return val;                                                     \
-     }
+   assert(o != NULL); \
+   Ws_Groupedit_Smart_Data *ptr = evas_object_smart_data_get(o); \
+   assert(ptr != NULL);
 
 /**
  * It a padding for parts layer in the separete mod.

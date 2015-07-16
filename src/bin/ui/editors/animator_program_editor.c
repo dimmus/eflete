@@ -163,6 +163,10 @@ _object_state_reset(Program_Editor *prog_edit)
 {
    Part *part;
 
+   assert(prog_edit != NULL);
+   assert(prog_edit->live != NULL);
+   assert(prog_edit->live->object != NULL);
+
    edje_edit_program_stop_all(prog_edit->live->object);
 
    EINA_INLIST_FOREACH(prop.style->parts, part)
@@ -176,6 +180,8 @@ static Eina_Bool
 _timer_cb(void *data)
 {
    Program_Editor *prog_edit = data;
+
+   assert(prog_edit != NULL);
 
    double pos;
    double time = ecore_loop_time_get();
@@ -216,6 +222,8 @@ _timer_cb(void *data)
 static void
 _program_reset(Program_Editor *prog_edit)
 {
+   assert(prog_edit != NULL);
+
    _object_state_reset(prog_edit);
    prog_edit->playback.program_time = 0;
    elm_slider_value_set(prog_edit->slider, 0);
@@ -240,6 +248,8 @@ program_editor_program_reset(Evas_Object *obj)
 {
    Program_Editor *prog_edit = evas_object_data_get(obj, DATA_KEY);
 
+   assert(prog_edit != NULL);
+
    _program_reset(prog_edit);
 }
 
@@ -247,6 +257,8 @@ void
 program_editor_program_stop(Evas_Object *obj)
 {
    Program_Editor *prog_edit = evas_object_data_get(obj, DATA_KEY);
+
+   assert(prog_edit != NULL);
 
    if (prog_edit->playback.timer)
      ecore_timer_del(prog_edit->playback.timer);
@@ -257,6 +269,8 @@ void
 program_editor_program_play(Evas_Object *obj)
 {
    Program_Editor *prog_edit = evas_object_data_get(obj, DATA_KEY);
+
+   assert(prog_edit != NULL);
 
    if (!prog_edit->playback.is_played)
      {
@@ -284,6 +298,8 @@ program_editor_cycled_set(Evas_Object *obj, Eina_Bool cycled)
 {
    Program_Editor *prog_edit = evas_object_data_get(obj, DATA_KEY);
 
+   assert(prog_edit != NULL);
+
    prog_edit->playback.is_cycled = cycled;
 }
 
@@ -293,6 +309,9 @@ _slider_seek_start_cb(void *data,
                       void *event_info __UNUSED__)
 {
    Program_Editor *prog_edit = data;
+
+   assert(prog_edit != NULL);
+
    prog_edit->playback.is_in_seek = true;
 }
 
@@ -302,6 +321,9 @@ _slider_seek_stop_cb(void *data,
                      void *event_info __UNUSED__)
 {
    Program_Editor *prog_edit = data;
+
+   assert(prog_edit != NULL);
+
    prog_edit->playback.is_in_seek = false;
 }
 
@@ -312,6 +334,8 @@ _slider_changed_cb(void *data,
 {
    double pos, transition_time;
    Program_Editor *prog_edit = data;
+
+   assert(prog_edit != NULL);
 
    prog_edit->playback.program_time = elm_slider_value_get(obj);
    transition_time = prog_edit->playback.total_time - prog_edit->playback.start_delay;
@@ -324,6 +348,7 @@ _slider_changed_cb(void *data,
 
 /********************* editor *************************************************/
 #define ITEM_ADD_(parent, item, text, style) \
+   assert(parent != NULL); \
    item = elm_layout_add(parent); \
    evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0); \
    evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0); \
@@ -339,6 +364,7 @@ _on_##sub##_##value##_change(void *data, \
                               void *ei __UNUSED__) \
 { \
    Program_Editor *prog_edit = (Program_Editor *)data; \
+   assert(prog_edit != NULL); \
    const char *value = elm_entry_entry_get(obj); \
    Eina_Bool res = edje_edit_##sub##_##value##_set(prop.style->obj, \
                                                    prop.program, \
@@ -377,6 +403,7 @@ _prop_item_##sub##_##value##_update(Evas_Object *item, Program_Editor *prog_edit
 { \
    Evas_Object *entry; \
    const char *value; \
+   assert(prog_edit != NULL); \
    entry = elm_object_part_content_get(item, "elm.swallow.content"); \
    value = edje_edit_##sub##_##value##_get(prop.style->obj, prop.program); \
    ewe_entry_entry_set(entry, value); \
@@ -406,6 +433,8 @@ ITEM_1ENTRY_ADD(_("name"), program, name, EDJE_NAME_REGEX)
 static void
 _special_properties_hide(Program_Editor *prog_edit)
 {
+   assert(prog_edit != NULL);
+
    if (prop.script)
      {
         elm_box_unpack(prop.prop_box, prop.script);
@@ -436,6 +465,8 @@ _on_program_name_change(void *data,
                         void *ei __UNUSED__)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
+   assert(prog_edit != NULL);
+
    const char *value = elm_entry_entry_get(obj);
    Eina_Bool res = edje_edit_program_name_set(prop.style->obj, prop.program,
                                               value);
@@ -453,6 +484,9 @@ _on_program_name_unfocused(void *data,
                            void *ei __UNUSED__)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
+
+   assert(prog_edit != NULL);
+
    const char *value = elm_entry_entry_get(obj);
    if (!strcmp(value, prop.program)) return;
 
@@ -468,6 +502,9 @@ _on_in_from_change(void *data,
 {
    Eina_Bool was_playing;
    Program_Editor *prog_edit = (Program_Editor*)data;
+
+   assert(prog_edit != NULL);
+
    const char *value = elm_entry_entry_get(obj);
    Eina_Bool res = edje_edit_program_in_from_set(prop.style->obj, prop.program,
                                                  atof(value));
@@ -488,6 +525,9 @@ _on_in_range_change(void *data,
                     void *ei __UNUSED__)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
+
+   assert(prog_edit != NULL);
+
    const char *value = elm_entry_entry_get(obj);
    Eina_Bool res = edje_edit_program_in_range_set(prop.style->obj, prop.program,
                                                   atof(value));
@@ -509,6 +549,8 @@ _on_target_name_change(void *data,
    Program_Editor *prog_edit = (Program_Editor *) data;
    Ewe_Combobox_Item *item = ei;
 
+   assert(prog_edit != NULL);
+
    value = ewe_combobox_item_title_get(obj, item->index);
    old_value = evas_object_data_get(obj, TARGET_NAME_KEY);
 
@@ -528,7 +570,7 @@ _prop_item_program_script_add(Evas_Object *parent,
    Evas_Object *box = NULL;
    Evas_Object *entry = NULL;
 
-   if (!parent) return NULL;
+   assert(parent != NULL);
 
    ITEM_ADD_(parent, item, _("script"), "script");
 
@@ -549,6 +591,8 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
    char *script = NULL;
    char *script_markup = NULL;
    Evas_Object *entry = NULL;
+
+   assert(prog_edit != NULL);
 
    box = elm_object_part_content_get(prop.script, "elm.swallow.content");
    Eina_List *childs = elm_box_children_get(box);
@@ -598,6 +642,8 @@ _trans_entries_set(Program_Editor *prog_edit)
 {
    Eina_Stringshare *buff = NULL;
    double value;
+
+   assert(prog_edit != NULL);
 
    switch (prop.trans_type & EDJE_TWEEN_MODE_MASK)
      {
@@ -685,6 +731,8 @@ _on_sample_select_done(void *data,
    const char *value;
    const char *selected = (const char *)event_info;
 
+   assert(prog_edit != NULL);
+
    value = elm_entry_entry_get(action.entry1);
    if ((strcmp(selected, "")) && (strcmp(value, selected)))
    {
@@ -701,6 +749,9 @@ _on_sample_select(void *data,
    Program_Editor *prog_edit = data;
    App_Data *ap = app_data_get();
    Evas_Object *snd_edit;
+
+   assert(prog_edit != NULL);
+
    const char *selected = elm_entry_entry_get(action.entry1);
 
    snd_edit = sound_editor_window_add(ap->project, SOUND_EDITOR_SAMPLE_SELECT);
@@ -716,6 +767,8 @@ _on_combobox_channel_sel(void *data,
    Program_Editor *prog_edit = (Program_Editor *) data;
    Ewe_Combobox_Item *combitem = ei;
 
+   assert(prog_edit != NULL);
+
    edje_edit_program_channel_set(prop.style->obj, prop.program,
                                  (Edje_Channel)(combitem->index));
 }
@@ -728,6 +781,8 @@ _on_tone_select_done(void *data,
    Program_Editor *prog_edit = data;
    const char *value;
    const char *selected = (const char *)event_info;
+
+   assert(prog_edit != NULL);
 
    value = elm_entry_entry_get(action.entry1);
    if ((strcmp(selected, "")) && (strcmp(value, selected)))
@@ -745,6 +800,9 @@ _on_tone_select(void *data,
    Program_Editor *prog_edit = data;
    App_Data *ap = app_data_get();
    Evas_Object *snd_edit;
+
+   assert(prog_edit != NULL);
+
    const char *selected = elm_entry_entry_get(action.entry1);
 
    snd_edit = sound_editor_window_add(ap->project, SOUND_EDITOR_TONE_SELECT);
@@ -758,6 +816,8 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
    Eina_Stringshare *str = NULL;
    double value;
    Eina_Stringshare *buff = NULL;
+
+   assert(prog_edit != NULL);
 
    evas_object_smart_callback_del(action.entry1, "clicked", _on_sample_select);
    evas_object_smart_callback_del(action.entry1, "clicked", _on_tone_select);
@@ -931,6 +991,9 @@ _on_combobox_trans_sel(void *data,
                        void *ei)
 {
    Program_Editor *prog_edit = (Program_Editor *) data;
+
+   assert(prog_edit != NULL);
+
    Ewe_Combobox_Item *combitem = ei;
    ewe_entry_entry_set(transition.entry1, "");
    ewe_entry_entry_set(transition.entry2, "");
@@ -983,6 +1046,8 @@ _on_combobox_action_sel(void *data,
    Eina_List *targets_list;
    Eina_Bool result = false;
    Evas_Object *popup, *label, *btn;
+
+   assert(prog_edit != NULL);
 
    targets_list = edje_edit_program_targets_get(prop.style->obj, prop.program);
    if (targets_list)
@@ -1043,6 +1108,9 @@ _on_transition_time_active(void *data,
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *value;
    value = elm_entry_entry_get(obj);
+
+   assert(prog_edit != NULL);
+
    Eina_Bool res = edje_edit_program_transition_time_set(prop.style->obj,
                                                          prop.program, atof(value));
    if (!res)
@@ -1062,6 +1130,9 @@ _on_transition_opt_current_changed(void *data,
                                    void *ei __UNUSED__)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
+
+   assert(prog_edit != NULL);
+
    Ewe_Combobox_Item *combitem = ewe_combobox_select_item_get(transition.combobox);
    Eina_Bool value;
    Edje_Tween_Mode mode;
@@ -1081,6 +1152,9 @@ _on_state_active(void *data,
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *state;
    state = elm_entry_entry_get(obj);
+
+   assert(prog_edit != NULL);
+
    if (!edje_edit_program_state_set(prop.style->obj, prop.program, state))
      NOTIFY_WARNING(_("The entered data is not valid!"));
 }
@@ -1092,6 +1166,9 @@ _on_value2_active(void *data,
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *value;
+
+   assert(prog_edit != NULL);
+
    value = elm_entry_entry_get(obj);
    switch (prop.act_type)
      {
@@ -1139,6 +1216,9 @@ _on_v1_active(void *data,
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *value;
    value = elm_entry_entry_get(obj);
+
+   assert(prog_edit != NULL);
+
    if (!edje_edit_program_transition_value1_set(prop.style->obj, prop.program,
                                                 atof(value)))
      NOTIFY_WARNING(_("The entered data is not valid!"));
@@ -1152,6 +1232,9 @@ _on_v2_active(void *data,
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *value;
    value = elm_entry_entry_get(obj);
+
+   assert(prog_edit != NULL);
+
    if (!edje_edit_program_transition_value2_set(prop.style->obj, prop.program,
                                                 atof(value)))
      NOTIFY_WARNING(_("The entered data is not valid!"));
@@ -1164,6 +1247,8 @@ _on_value_active(void *data,
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *value;
+
+   assert(prog_edit != NULL);
 
    value = elm_entry_entry_get(obj);
    switch (prop.act_type)
@@ -1207,6 +1292,8 @@ _on_after_name_change(void *data,
    Program_Editor *prog_edit = (Program_Editor*)data;
    Ewe_Combobox_Item *item = ei;
 
+   assert(prog_edit != NULL);
+
    value = ewe_combobox_item_title_get(obj, item->index);
    old_value = evas_object_data_get(obj, AFTER_NAME_KEY);
 
@@ -1224,6 +1311,9 @@ _after_remove_button_cb(void *data,
                         void *event_info __UNUSED__)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
+
+   assert(prog_edit != NULL);
+
    const char *after = evas_object_data_get(obj, AFTER_NAME_KEY);
    Evas_Object *item = evas_object_data_get(obj, AFTER_ITEM_KEY);
    edje_edit_program_after_del(prop.style->obj, prop.program, after);
@@ -1241,6 +1331,9 @@ _after_item_add(Program_Editor *prog_edit, const char *name)
    Evas_Object *combobox = NULL;
    Evas_Object *item_box = NULL;
    Eina_List *childs = NULL;
+
+   assert(prog_edit != NULL);
+   assert(name != NULL);
 
    childs = elm_box_children_get(elm_object_part_content_get(prop.afters,
                                                              "elm.swallow.content"));
@@ -1283,6 +1376,9 @@ _after_add_button_cb(void *data,
                      void *event_info __UNUSED__)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
+
+   assert(prog_edit != NULL);
+
    _after_item_add(prog_edit, "");
 }
 
@@ -1292,6 +1388,9 @@ _target_remove_button_cb(void *data,
                          void *event_info __UNUSED__)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
+
+   assert(prog_edit != NULL);
+
    const char *target = evas_object_data_get(obj, TARGET_NAME_KEY);
    Evas_Object *item = evas_object_data_get(obj, TARGET_ITEM_KEY);
    edje_edit_program_target_del(prop.style->obj, prop.program, target);
@@ -1309,6 +1408,9 @@ _target_item_add(Program_Editor *prog_edit, const char *name)
    Evas_Object *combobox = NULL;
    Evas_Object *item_box = NULL;
    Eina_List *childs = NULL;
+
+   assert(prog_edit != NULL);
+   assert(name != NULL);
 
    childs = elm_box_children_get(elm_object_part_content_get(prop.targets,
                                                              "elm.swallow.content"));
@@ -1355,6 +1457,9 @@ _target_add_button_cb(void *data,
                       void *event_info __UNUSED__)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
+
+   assert(prog_edit != NULL);
+
    _target_item_add(prog_edit, "");
 }
 
@@ -1365,6 +1470,9 @@ _prop_item_program_transition_add(Evas_Object *parent,
 {
    Evas_Object *item, *box;
    int i = 0;
+
+   assert(parent != NULL);
+   assert(prog_edit != NULL);
 
    ITEM_ADD_(parent, item, _("transition"), "editor");
    BOX_ADD(item, box, false, true);
@@ -1422,6 +1530,9 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
 {
    Eina_Stringshare *buff = NULL;
    double value;
+
+   assert(prog_edit != NULL);
+
    if (!transition.item) return;
    prop.trans_type = edje_edit_program_transition_get(prop.style->obj, prop.program);
 
@@ -1452,6 +1563,9 @@ _prop_item_program_action_add(Evas_Object *parent,
 {
    Evas_Object *item, *box;
    int i = 0;
+
+   assert(parent != NULL);
+   assert(prog_edit != NULL);
 
    ITEM_ADD_(parent, item, _("action"), "editor");
    BOX_ADD(item, box, false, true);
@@ -1488,6 +1602,9 @@ static void
 _prop_item_program_action_update(Program_Editor *prog_edit)
 {
    int act_type_item;
+
+   assert(prog_edit != NULL);
+
    prop.act_type = edje_edit_program_action_get(prop.style->obj, prop.program);
    ewe_entry_entry_set(action.entry1, "");
    ewe_entry_entry_set(action.entry2, "");
@@ -1524,7 +1641,8 @@ _prop_item_program_after_add(Evas_Object *parent,
    Evas_Object *entrys_box = NULL;
    Evas_Object *button = NULL;
 
-   if (!parent) return NULL;
+   assert(parent != NULL);
+   assert(prog_edit != NULL);
 
    ITEM_ADD_(parent, item, _("after"), "editor");
    BOX_ADD(item, box, true, false);
@@ -1552,6 +1670,8 @@ _prop_item_program_after_update(Program_Editor *prog_edit)
    Evas_Object *box = NULL;
    Evas_Object *entrys_box = NULL;
 
+   assert(prog_edit != NULL);
+
    if (!prop.afters) return;
 
    afters_list = edje_edit_program_afters_get(prop.style->obj, prop.program);
@@ -1577,6 +1697,8 @@ _prop_item_program_target_add(Evas_Object *parent,
    Evas_Object *box = NULL;
    Evas_Object *entries_box = NULL;
    Evas_Object *button = NULL;
+
+   assert(prog_edit != NULL);
 
    if (!parent) return NULL;
 
@@ -1607,6 +1729,8 @@ _prop_item_program_targets_update(Program_Editor *prog_edit)
    Evas_Object *box = NULL;
    Evas_Object *entrys_box = NULL;
 
+   assert(prog_edit != NULL);
+
    if (!prop.targets) return;
 
    targets_list = edje_edit_program_targets_get(prop.style->obj, prop.program);
@@ -1629,6 +1753,8 @@ _prop_item_program_in_update(Program_Editor *prog_edit)
    double val = 0;
    Eina_Stringshare *text = NULL;
 
+   assert(prog_edit != NULL);
+
    val = edje_edit_program_in_from_get(prop.style->obj, prop.program);
    text = eina_stringshare_printf("%2.3f", val);
    ewe_entry_entry_set(prop.in.entry_from, text);
@@ -1647,7 +1773,8 @@ _prop_item_program_in_add(Evas_Object *parent,
 {
    Evas_Object *item, *box;
 
-   if (!parent) return NULL;
+   assert(parent != NULL);
+   assert(prog_edit != NULL);
 
    ITEM_ADD_(parent, item, _("in"), "editor");
 
@@ -1676,6 +1803,8 @@ _prop_item_program_in_add(Evas_Object *parent,
 static void
 _prop_item_program_name_update(Program_Editor *prog_edit)
 {
+   assert(prog_edit != NULL);
+
    Evas_Object *entry = elm_object_part_content_get(prop.name,
                                                     "elm.swallow.content");
 
@@ -1686,6 +1815,9 @@ static Evas_Object *
 _prop_progs_add(Evas_Object *parent, Program_Editor *prog_edit)
 {
    Evas_Object *box;
+
+   assert(parent != NULL);
+   assert(prog_edit != NULL);
 
    BOX_ADD(parent, box, false, false);
    evas_object_size_hint_align_set(box, 0.5, 0);
@@ -1721,6 +1853,8 @@ _prop_progs_add(Evas_Object *parent, Program_Editor *prog_edit)
 static void
 _prop_progs_update(Program_Editor *prog_edit)
 {
+   assert(prog_edit != NULL);
+
    if (!prop.prop_box)
      {
         prop.prop_box = _prop_progs_add(prop.prop_scroller, prog_edit);
@@ -1740,7 +1874,8 @@ Eina_Bool
 prog_editor_program_set(Evas_Object *obj, const char* program_name)
 {
    Program_Editor *prog_edit = evas_object_data_get(obj, DATA_KEY);
-   if (!prog_edit) return false;
+
+   assert(prog_edit != NULL);
 
    if (prop.program) eina_stringshare_del(prop.program);
    prop.program = eina_stringshare_add(program_name);
@@ -1757,11 +1892,10 @@ program_editor_add(Evas_Object *parent, Style *style, Live_View *live)
    Evas_Object *sl;
    Program_Editor *prog_edit = NULL;
 
-   if ((!parent) || (!style) || (!style->obj) || (!live))
-     {
-        ERR("Failed create program editor for current style");
-        return NULL;
-     }
+   assert(parent != NULL);
+   assert(style != NULL);
+   assert(style->obj != NULL);
+   assert(live != NULL);
 
    prog_edit = (Program_Editor *)mem_calloc(1, sizeof(Program_Editor));
 
@@ -1807,11 +1941,11 @@ void program_editor_free(Evas_Object * obj)
 {
    Program_Editor *prog_edit = evas_object_data_get(obj, DATA_KEY);
 
-   if (prog_edit)
-     {
-        program_editor_program_stop(obj);
-        free(prog_edit);
-     }
+   assert(prog_edit != NULL);
+
+   program_editor_program_stop(obj);
+   free(prog_edit);
+
    evas_object_del(obj);
 }
 

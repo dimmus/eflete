@@ -106,6 +106,9 @@ _on_mwin_del(void * data,
              void *event_info __UNUSED__)
 {
    Image_Editor *img_edit = (Image_Editor *)data;
+
+   assert(img_edit != NULL);
+
    _image_editor_del(img_edit);
 }
 
@@ -113,6 +116,9 @@ static void
 _image_editor_del(Image_Editor *img_edit)
 {
    App_Data *ap = app_data_get();
+
+   assert(img_edit != NULL);
+
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    ap->modal_editor--;
 
@@ -142,6 +148,10 @@ _image_editor_image_setup(Evas_Object *image,
 {
    Eina_Stringshare *str;
 
+   assert(image != NULL);
+   assert(img_edit != NULL);
+   assert(it != NULL);
+
    if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
      {
         if (ecore_file_exists(it->image_name))
@@ -165,6 +175,10 @@ _image_editor_image_create(Evas_Object *parent,
                            Image_Editor *img_edit,
                            const Item *it)
 {
+   assert(parent != NULL);
+   assert(img_edit != NULL);
+   assert(it != NULL);
+
    Evas_Object *image = elm_image_add(parent);
    _image_editor_image_setup(image, img_edit, it);
    return image;
@@ -177,6 +191,8 @@ _image_content_setup(void *data)
 {
    int w, h;
    Content_Init_Data *image_init_data = data;
+
+   assert(image_init_data != NULL);
 
    _image_editor_image_setup(image_init_data->image_obj,
                              image_init_data->image_editor,
@@ -225,9 +241,15 @@ _grid_content_get(void *data,
                   const char  *part)
 {
    Item *it = data;
-   Evas_Object *grid = (Evas_Object *)obj;
-   Image_Editor *img_edit = evas_object_data_get(grid, IMG_EDIT_KEY);
    Evas_Object *image_obj = NULL;
+   Evas_Object *grid = (Evas_Object *)obj;
+
+   assert(it != NULL);
+   assert(grid != NULL);
+
+   Image_Editor *img_edit = evas_object_data_get(grid, IMG_EDIT_KEY);
+
+   assert(img_edit != NULL);
 
    Content_Init_Data *image_init_data = mem_malloc(sizeof(Content_Init_Data));
    image_init_data->item_data = it;
@@ -256,6 +278,9 @@ _grid_del(void *data,
           Evas_Object *obj __UNUSED__)
 {
    Item *it = data;
+
+   assert(it != NULL);
+
    eina_stringshare_del(it->image_name);
    free(it);
 }
@@ -264,6 +289,9 @@ static inline void
 _image_info_update_usage_info(Image_Editor *img_edit, int list_count)
 {
    Eina_Stringshare *title;
+
+   assert(img_edit != NULL);
+
    if (list_count)
      title = eina_stringshare_printf(_("Usage (%d)"), list_count);
    else
@@ -282,6 +310,8 @@ _image_info_update_usage_info(Image_Editor *img_edit, int list_count)
 static void
 _image_info_reset(Image_Editor *img_edit)
 {
+   assert(img_edit != NULL);
+
    if (img_edit->image_data_fields.image)
      {
         elm_object_part_content_unset(img_edit->layout, "eflete.swallow.image");
@@ -310,6 +340,10 @@ _image_info_type_setup(Evas_Object *layout,
                        const char *image_name)
 {
    char buf[BUFF_MAX];
+
+   assert(layout != NULL);
+   assert(image_name != NULL);
+
    const char *dot = strrchr(image_name, '.');
    if ((!dot) || (dot == image_name))
      {
@@ -343,6 +377,9 @@ static void
 _image_info_location_setup(Image_Editor *img_edit,
                            const char *image_name)
 {
+   assert(img_edit != NULL);
+   assert(image_name != NULL);
+
    const char *file_name = strrchr(image_name, '/');
    if (!file_name) file_name = image_name;
    else file_name++;
@@ -422,6 +459,8 @@ _image_info_usage_update(Image_Editor *img_edit)
    const char *cur_part = NULL;
    Eina_Stringshare *state_name;
 
+   assert(img_edit != NULL);
+
    if (!img_edit->image_data_fields.image_name) return;
 
    usage_list =
@@ -480,6 +519,9 @@ _image_info_setup(Image_Editor *img_edit,
    Edje_Edit_Image_Comp comp;
    Eina_List *usage_list;
    int w, h;
+
+   assert(img_edit != NULL);
+   assert(it != NULL);
 
    _image_info_reset(img_edit);
    img_edit->image_data_fields.image_name = it->image_name;
@@ -540,6 +582,9 @@ _search_reset_cb(void *data,
                  void *event_info __UNUSED__)
 {
    Search_Data *search_data = data;
+
+   assert(search_data != NULL);
+
    search_data->last_item_found = NULL;
 }
 
@@ -550,6 +595,9 @@ _grid_sel(void *data,
           void *event_info __UNUSED__)
 {
    Image_Editor *img_edit = (Image_Editor *)data;
+
+   assert(img_edit != NULL);
+
    const Eina_List* sel_list = elm_gengrid_selected_items_get(img_edit->gengrid);
    int selected_images_count = eina_list_count(sel_list);
 
@@ -564,6 +612,9 @@ static inline Item *
 _image_editor_gengrid_item_data_create(Evas_Object *edje_edit_obj,
                                        const char *image_name)
 {
+   assert(edje_edit_obj != NULL);
+   assert(image_name != NULL);
+
    Item *it = (Item *)mem_malloc(sizeof(Item));
    it->image_name = eina_stringshare_add(image_name);
    it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
@@ -578,13 +629,13 @@ _fs_del(void *data)
    Elm_Object_Item *it;
    Image_Editor *edit = (Image_Editor *)data;
 
-   if (edit->fs_win)
-     {
-        evas_object_del(edit->fs_win);
-        edit->fs_win = NULL;
-        it = elm_gengrid_item_prev_get(edit->group_items.linked);
-        elm_gengrid_item_selected_set(it, true);
-     }
+   assert(edit != NULL);
+   assert(edit->fs_win != NULL);
+
+   evas_object_del(edit->fs_win);
+   edit->fs_win = NULL;
+   it = elm_gengrid_item_prev_get(edit->group_items.linked);
+   elm_gengrid_item_selected_set(it, true);
 }
 
 static void
@@ -599,6 +650,8 @@ _on_image_done(void *data,
    Uns_List *image = NULL;
 
    Image_Editor *img_edit = (Image_Editor *)data;
+
+   assert(img_edit != NULL);
 
    if ((!selected) || (!strcmp(selected, "")))
      goto del;
@@ -666,6 +719,8 @@ _on_button_add_clicked_cb(void *data,
    Evas_Object *fs, *ic;
    Image_Editor *edit = data;
 
+   assert(edit != NULL);
+
    edit->fs_win  = mw_add(NULL, NULL, NULL);
    mw_title_set(edit->fs_win, "Add image to the library");
    ic = elm_icon_add(edit->fs_win);
@@ -698,10 +753,12 @@ _on_button_delete_clicked_cb(void *data,
    Uns_List *image = NULL;
    Eina_List *used;
 
-   if (!img_edit->gengrid) return;
+   assert(img_edit != NULL);
+   assert(img_edit->gengrid != NULL);
 
    grid_list = (Eina_List *)elm_gengrid_selected_items_get(img_edit->gengrid);
-   if (!grid_list) return;
+
+   assert(grid_list != NULL);
 
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
@@ -766,6 +823,9 @@ _on_button_close_clicked_cb(void *data,
                             void *event_info __UNUSED__)
 {
    Image_Editor *img_edit = (Image_Editor *)data;
+
+   assert(img_edit != NULL);
+
    eina_list_free(img_edit->unapplied_list);
    _image_editor_del(img_edit);
 }
@@ -785,6 +845,8 @@ _on_button_apply_clicked_cb(void *data,
    Item *item = NULL;
    char *ei;
 
+   assert(img_edit != NULL);
+
    EINA_LIST_FOREACH(img_edit->unapplied_list, l, unit)
      {
         if (unit->act_type == ACTION_TYPE_DEL)
@@ -799,11 +861,7 @@ _on_button_apply_clicked_cb(void *data,
 
    eina_list_free(img_edit->unapplied_list);
 
-   if (!img_edit->gengrid)
-     {
-        _image_editor_del(img_edit);
-        return;
-     }
+   assert(img_edit->gengrid != NULL);
 
    multiselect = elm_gengrid_multi_select_get(img_edit->gengrid);
 
@@ -856,6 +914,9 @@ _on_images_search_entry_changed_cb(void *data,
                                    void *event_info __UNUSED__)
 {
    Image_Editor *img_edit = data;
+
+   assert(img_edit != NULL);
+
    _gengrid_item_search(img_edit->gengrid, &(img_edit->image_search_data),
                         img_edit->image_search_data.last_item_found);
 }
@@ -866,6 +927,9 @@ _on_usage_search_entry_changed_cb(void *data,
                                   void *event_info __UNUSED__)
 {
    Image_Editor *img_edit = data;
+
+   assert(img_edit != NULL);
+
    _genlist_item_search(img_edit->image_usage_fields.genlist,
                         &(img_edit->usage_search_data),
                         img_edit->usage_search_data.last_item_found);
@@ -878,6 +942,8 @@ _search_next_genlist_item_cb(void *data,
 {
    Image_Editor *img_edit = data;
    Elm_Object_Item *start_from = NULL;
+
+   assert(img_edit != NULL);
 
    if (img_edit->usage_search_data.last_item_found)
      {
@@ -897,6 +963,8 @@ _search_next_gengrid_item_cb(void *data,
    Image_Editor *img_edit = data;
    Elm_Object_Item *start_from = NULL;
 
+   assert(img_edit != NULL);
+
    if (img_edit->image_search_data.last_item_found)
      {
         start_from =
@@ -910,6 +978,8 @@ _search_next_gengrid_item_cb(void *data,
 static void
 _image_editor_gengrid_group_items_add(Image_Editor *img_edit)
 {
+   assert(img_edit != NULL);
+
    Elm_Gengrid_Item_Class *ggic = elm_gengrid_item_class_new();
 
    ggic->item_style = "group_index";
@@ -934,6 +1004,9 @@ static Evas_Object *
 _image_info_box_create(Image_Editor *img_edit)
 {
    Evas_Object *scroller;
+
+   assert(img_edit != NULL);
+
    SCROLLER_ADD(img_edit->layout, scroller);
    Evas_Object *layout = elm_layout_add(scroller);
    elm_layout_theme_set(layout, "layout", "image_editor", "image_info");
@@ -971,6 +1044,9 @@ static inline Evas_Object *
 _image_editor_search_field_create(Evas_Object *parent)
 {
    Evas_Object *entry, *icon;
+
+   assert(parent != NULL);
+
    ENTRY_ADD(parent, entry, true);
    elm_object_part_text_set(entry, "guide", _("Search"));
    ICON_STANDARD_ADD(entry, icon, true, "search");
@@ -984,6 +1060,9 @@ _image_usage_layout_create(Image_Editor *img_edit, Evas_Object *parent)
    Evas_Object *layout = NULL;
    Evas_Object *genlist = NULL;
    Evas_Object *entry = NULL;
+
+   assert(img_edit != NULL);
+   assert(parent != NULL);
 
    layout = elm_layout_add(parent);
    elm_layout_theme_set(layout, "layout", "image_editor", "usage_info");
@@ -1018,6 +1097,8 @@ _image_info_initiate(Image_Editor *img_edit)
 {
    Ewe_Tabs_Item *it = NULL;
 
+   assert(img_edit != NULL);
+
    img_edit->tabs = ewe_tabs_add(img_edit->layout);
    elm_object_style_set(img_edit->tabs, "bookmark");
 
@@ -1046,7 +1127,7 @@ _image_editor_init(Image_Editor *img_edit)
    Eina_List *images = NULL;
    int counter = 0;
 
-   if (!img_edit) return false;
+   assert(img_edit != NULL);
 
    _image_editor_gengrid_group_items_add(img_edit);
    images = edje_edit_images_list_get(img_edit->pr->global_object);
@@ -1092,21 +1173,15 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
 
-   if (!project)
-     {
-        ERR("Project isn't opened");
-        return NULL;
-     }
+   assert(project != NULL);
 
    Image_Editor *img_edit = (Image_Editor *)mem_calloc(1, sizeof(Image_Editor));
    img_edit->pr = project;
 
    img_edit->win = mw_add("dialog", _on_button_close_clicked_cb, img_edit);
-   if (!img_edit->win)
-     {
-        free(img_edit);
-        return NULL;
-     }
+
+   assert(img_edit->win != NULL);
+
    if (mode == SINGLE)
      mw_title_set(img_edit->win, _("Image manager: choose image"));
    else if (mode == TWEENS)
@@ -1220,9 +1295,8 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    elm_object_focus_set(search_entry, true);
    if (!_image_editor_init(img_edit))
      {
-        _image_editor_del(img_edit);
         ERR("Filed initialize image editor");
-        return NULL;
+        abort();
      }
    evas_object_data_set(img_edit->gengrid, IMG_EDIT_KEY, img_edit);
    evas_object_data_set(img_edit->win, IMG_EDIT_KEY, img_edit);
@@ -1243,18 +1317,11 @@ image_editor_file_choose(Evas_Object *win, const char *selected)
 
    if (!selected) return false;
 
-   if (!win)
-     {
-        ERR("Expecting Image editor window.");
-        return false;
-     }
+   assert(win != NULL);
 
    img_edit = evas_object_data_get(win, IMG_EDIT_KEY);
-   if (!img_edit)
-     {
-        ERR("Image editor does'nt exist");
-        return false;
-     }
+
+   assert(img_edit != NULL);
 
    grid_item = elm_gengrid_first_item_get(img_edit->gengrid);
 

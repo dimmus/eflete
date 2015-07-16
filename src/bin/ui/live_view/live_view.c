@@ -33,6 +33,9 @@ _change_bg_cb(void *data,
 {
    Evas_Object *live_layout = (Evas_Object *)data;
    Evas_Object *bg = NULL;
+
+   assert(live_layout != NULL);
+
    int state = elm_radio_state_value_get((Evas_Object *)event_info);
    switch (state)
      {
@@ -56,6 +59,7 @@ _change_bg_cb(void *data,
         }
       break;
       default:
+         abort();
       break;
      }
    elm_object_part_content_set(live_layout, SWALLOW_BG, bg);
@@ -67,7 +71,7 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit)
    Live_View *live;
    Evas_Object *bg;
 
-   if (!parent) return NULL;
+   assert(parent != NULL);
 
    live = mem_calloc(1, sizeof(Live_View));
 
@@ -110,12 +114,9 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
    Eina_Bool using_layout = false;
    int x, y;
 
-   if ((!live) || (!project) || (!style))
-     {
-        WARN("Couldn't apply the style to live view."
-             "Live_View: %p, Project: %p, Style: %p", live, project, style);
-        return false;
-     }
+   assert(live != NULL);
+   assert(project != NULL);
+   assert(style != NULL);
 
    first_load = live->object == NULL; /* fallback notifications should pop-up only on style load*/
 
@@ -194,7 +195,10 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 Eina_Bool
 live_view_widget_style_unset(Live_View *live)
 {
-   if ((!live) || (!live->object)) return false;
+   assert(live != NULL);
+
+   if (!live->object) return false;
+
    evas_object_hide(live->live_view);
    elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
    container_content_unset(live->live_view);
@@ -210,7 +214,10 @@ live_view_theme_update(Live_View *live, Project *project)
 {
    Eina_Stringshare *path;
 
-   if ((!live) || (!project) || (!live->object)) return false;
+   assert(live != NULL);
+   assert(project != NULL);
+   assert(live->object != NULL);
+
 #ifdef HAVE_ENVENTOR
    if ((app_data_get())->enventor_mode)
      path = eina_stringshare_printf("%s/tmp.edj", project->develop_path);
@@ -241,12 +248,10 @@ live_view_theme_update(Live_View *live, Project *project)
 Eina_Bool
 live_view_free(Live_View *live)
 {
-   if (live)
-     {
-        live_view_widget_style_unset(live);
-        live_view_property_free(live->property);
-     }
-   else return false;
+   assert(live != NULL);
+
+   live_view_widget_style_unset(live);
+   live_view_property_free(live->property);
 
    free(live);
    live = NULL;

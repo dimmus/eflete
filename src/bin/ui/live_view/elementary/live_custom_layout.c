@@ -29,6 +29,9 @@ on_layout_swallow_check(void *data,
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    const char *part_name = elm_object_part_text_get(obj, NULL);
    check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
@@ -70,6 +73,9 @@ on_layout_text_check(void *data,
    const char *default_text;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    const char *part_name = elm_object_part_text_get(obj, NULL);
    check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
@@ -106,8 +112,14 @@ send_layout_signal(void *data,
                    void *ei __UNUSED__)
 {
    Evas_Object *object = (Evas_Object *)data;
+
+   assert(object != NULL);
+
    const char *name = evas_object_data_get(obj, SIGNAL_NAME);
    const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
+
+   assert(name != NULL);
+   assert(source != NULL);
 
    edje_object_signal_emit(object, name, source);
 }
@@ -117,6 +129,9 @@ _on_swallow_clean(const char *part_name, Evas_Object *object)
 {
    Evas_Object *rect = NULL;
 
+   assert(part_name != NULL);
+   assert(object != NULL);
+
    rect = edje_object_part_swallow_get(object, part_name);
    edje_object_part_unswallow(object, rect);
    evas_object_del(rect);
@@ -125,6 +140,8 @@ _on_swallow_clean(const char *part_name, Evas_Object *object)
 Evas_Object *
 layout_custom_create(Evas_Object *parent)
 {
+   assert(parent != NULL);
+
    Evas_Object *object = edje_object_add(evas_object_evas_get(parent));
 
    evas_object_data_set(object, SWALLOW_FUNC, on_layout_swallow_check);

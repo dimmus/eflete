@@ -121,16 +121,9 @@ typedef struct _Ws_Smart_Data Ws_Smart_Data;
 #define _evas_smart_ws "Evas_Smart_Ws"
 
 #define WS_DATA_GET(o, ptr) \
-   Ws_Smart_Data *ptr = evas_object_smart_data_get(o);
-
-#define WS_DATA_GET_OR_RETURN_VAL(o, ptr, val)      \
-   WS_DATA_GET(o, ptr);                             \
-   if (!ptr)                                        \
-    {                                               \
-       ERR("No workspace data for object %p (%s)!", \
-           o, evas_object_type_get(o));             \
-       return val;                                  \
-    }
+   assert(o != NULL); \
+   Ws_Smart_Data *ptr = evas_object_smart_data_get(o); \
+   assert(ptr != NULL);
 
 static const char SIG_PART_SELECTED[] = "ws,part,selected";
 static const char SIG_PART_UNSELECTED[] = "ws,part,unselected";
@@ -152,7 +145,7 @@ _obj_area_visible_change(void *data __UNUSED__,
 {
    Eina_Bool visible;
 
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   WS_DATA_GET(obj, sd);
    if (!groupedit_edit_object_parts_separated_is(sd->groupedit))
      {
         visible = groupedit_part_object_area_visible_get(sd->groupedit);
@@ -167,6 +160,9 @@ _menu_rulers_enabled_cb(void *data,
                         void *event_info __UNUSED__)
 {
    Evas_Object *ws = (Evas_Object *)data;
+
+   assert(ws != NULL);
+
    evas_object_smart_callback_call(ws, "ruler,toggle", strdup("rulers"));
 }
 
@@ -177,6 +173,9 @@ _menu_rulers_abs_cb(void *data,
                         void *event_info __UNUSED__)
 {
    Evas_Object *ws = (Evas_Object *)data;
+
+   assert(ws != NULL);
+
    evas_object_smart_callback_call(ws, "ruler,toggle", strdup("abs"));
 }
 
@@ -187,6 +186,9 @@ _menu_rulers_rel_cb(void *data,
                         void *event_info __UNUSED__)
 {
    Evas_Object *ws = (Evas_Object *)data;
+
+   assert(ws != NULL);
+
    evas_object_smart_callback_call(ws, "ruler,toggle", strdup("rel"));
 }
 
@@ -197,6 +199,9 @@ _menu_rulers_both_cb(void *data,
                         void *event_info __UNUSED__)
 {
    Evas_Object *ws = (Evas_Object *)data;
+
+   assert(ws != NULL);
+
    evas_object_smart_callback_call(ws, "ruler,toggle", strdup("abs&rel"));
 }
 
@@ -206,6 +211,9 @@ _separate_mode_click(void *data,
                    void *event_info __UNUSED__)
 {
    Ws_Smart_Data *sd = (Ws_Smart_Data *)data;
+
+   assert(sd != NULL);
+
    workspace_separate_mode_set(sd->obj, true);
 }
 
@@ -215,6 +223,9 @@ _normal_mode_click(void *data,
                    void *event_info __UNUSED__)
 {
    Ws_Smart_Data *sd = (Ws_Smart_Data *)data;
+
+   assert(sd != NULL);
+
    workspace_separate_mode_set(sd->obj, false);
 }
 
@@ -224,6 +235,9 @@ _zoom_factor_50(void *data,
                 void *event_info __UNUSED__)
 {
    Evas_Object *ws = (Evas_Object *)data;
+
+   assert(ws != NULL);
+
    workspace_zoom_factor_set(ws, 0.5);
 }
 
@@ -233,6 +247,9 @@ _zoom_factor_100(void *data,
                  void *event_info __UNUSED__)
 {
    Evas_Object *ws = (Evas_Object *)data;
+
+   assert(ws != NULL);
+
    workspace_zoom_factor_set(ws, 1.0);
 }
 
@@ -242,6 +259,9 @@ _zoom_factor_200(void *data,
                  void *event_info __UNUSED__)
 {
    Evas_Object *ws = (Evas_Object *)data;
+
+   assert(ws != NULL);
+
    workspace_zoom_factor_set(ws, 2.0);
 }
 
@@ -251,6 +271,9 @@ _zoom_factor_in(void *data,
                 void *event_info __UNUSED__)
 {
    Ws_Smart_Data *ws = (Ws_Smart_Data *)data;
+
+   assert(ws != NULL);
+
    workspace_zoom_factor_set(ws->obj, ws->zoom.factor + 0.1);
 }
 
@@ -260,6 +283,9 @@ _zoom_factor_out(void *data,
                  void *event_info __UNUSED__)
 {
    Ws_Smart_Data *ws = (Ws_Smart_Data *)data;
+
+   assert(ws != NULL);
+
    workspace_zoom_factor_set(ws->obj, ws->zoom.factor - 0.1);
 }
 
@@ -269,6 +295,9 @@ _menu_undo_cb(void *data,
               void *event_info __UNUSED__)
 {
    Ws_Smart_Data *ws = (Ws_Smart_Data *)data;
+
+   assert(ws != NULL);
+
    if (!ws->style) return;
    history_undo(ws->style->obj, 1);
 }
@@ -279,6 +308,9 @@ _menu_redo_cb(void *data,
               void *event_info __UNUSED__)
 {
    Ws_Smart_Data *ws = (Ws_Smart_Data *)data;
+
+   assert(ws != NULL);
+
    if (!ws->style) return;
    history_redo(ws->style->obj, 1);
 }
@@ -288,6 +320,10 @@ _init_ctx_menu(Ws_Smart_Data *ws, Evas_Object *parent)
 {
    Evas_Object *menu;
    Ws_Menu *items = &ws->menu.items;
+
+   assert(ws != NULL);
+   assert(parent != NULL);
+
    ws->menu.obj = menu = elm_menu_add(elm_object_top_widget_get (parent));
 
    items->undo = elm_menu_item_add(menu, NULL, NULL, _("Undo"), _menu_undo_cb, ws);
@@ -331,7 +367,7 @@ _ws_ruler_toggle_cb(void *data __UNUSED__,
                     Evas_Object *obj,
                     void *event_info)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID)
+   WS_DATA_GET(obj, sd)
    char *data_info = (char *)event_info;
 
    if (!strcmp(data_info, "rulers"))
@@ -388,7 +424,7 @@ _ws_ruler_abs_zero_move_cb(void *data,
 {
    Evas_Object *workspace = (Evas_Object *)data;
    Groupedit_Geom *ge_geom = (Groupedit_Geom *)event_info;
-   WS_DATA_GET_OR_RETURN_VAL(workspace, sd, RETURN_VOID)
+   WS_DATA_GET(workspace, sd)
 
    Evas_Coord cross_size = 0, bg_x = 0, bg_y = 0;
    evas_object_geometry_get(sd->ruler_hor, NULL, NULL, NULL, &cross_size);
@@ -405,7 +441,7 @@ _ws_ruler_rel_zero_move_cb(void *data,
 {
    Evas_Object *workspace = (Evas_Object *)data;
    Groupedit_Geom *ge_geom = (Groupedit_Geom *)event_info;
-   WS_DATA_GET_OR_RETURN_VAL(workspace, sd, RETURN_VOID)
+   WS_DATA_GET(workspace, sd)
 
    Evas_Coord cross_size = 0, bg_x = 0, bg_y = 0;
    evas_object_geometry_get(sd->ruler_hor, NULL, NULL, NULL, &cross_size);
@@ -427,7 +463,7 @@ _ws_smart_mouse_click_cb(void *data ,
                    void *event_info)
 {
    Evas_Event_Mouse_Down *ev = event_info;
-   WS_DATA_GET_OR_RETURN_VAL(data, sd, RETURN_VOID);
+   WS_DATA_GET(data, sd);
 
    if (ev->button == 3)
      {
@@ -444,7 +480,7 @@ _ws_smart_mouse_move_cb(void *data, Evas *e,
    int x, y;
    int dx, dy;
    Evas_Object *ws = (Evas_Object *)data;
-   WS_DATA_GET_OR_RETURN_VAL(ws, sd, RETURN_VOID)
+   WS_DATA_GET(ws, sd)
    evas_pointer_output_xy_get(e, &x, &y);
    evas_object_geometry_get(sd->ruler_hor, &dx, NULL, NULL, NULL);
    evas_object_geometry_get(sd->ruler_ver, NULL, &dy, NULL, NULL);
@@ -458,7 +494,7 @@ _separate_smart_on_click(void *data,
                          void *event_info __UNUSED__)
 {
    Evas_Object *o = (Evas_Object *)data;
-   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+   WS_DATA_GET(o, sd)
 
    if (!sd->style) return;
    Eina_Bool sep = groupedit_edit_object_parts_separated_is(sd->groupedit);
@@ -476,7 +512,7 @@ _sc_smart_drag_y_cb(void *data ,
                     void *event_info __UNUSED__)
 {
    Evas_Object *o = (Evas_Object *)data;
-   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+   WS_DATA_GET(o, sd)
 
    int x, y, w, h, w_ge, h_ge, w_cont;
 
@@ -500,7 +536,7 @@ _sc_smart_drag_x_cb(void *data ,
                     void *event_info __UNUSED__)
 {
    Evas_Object *o = (Evas_Object *)data;
-   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+   WS_DATA_GET(o, sd)
 
    int x, y, w, h, w_ge, h_ge, h_cont;
    if ((groupedit_edit_object_parts_separated_is(sd->groupedit))
@@ -525,7 +561,7 @@ _sc_smart_move_cb(void *data,
    int bg_x, bg_y, gs_x, gs_y, gs_w, gs_h;
    int cross_size;
    Evas_Object *o = (Evas_Object *)data;
-   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+   WS_DATA_GET(o, sd)
 
    if (!sd->style) return;
 
@@ -562,7 +598,7 @@ Eina_Bool
 workspace_zoom_factor_set(Evas_Object *obj, double factor)
 {
    if ((factor < 0.01) || (factor > 20)) return false;
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+   WS_DATA_GET(obj, sd)
 
    if ((groupedit_edit_object_parts_separated_is(sd->groupedit)) ||
        (fabs(sd->zoom.factor - factor) <= 0.001) || (!sd->style))
@@ -618,7 +654,7 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
 double
 workspace_zoom_factor_get(Evas_Object *obj)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, 0);
+   WS_DATA_GET(obj, sd);
    return sd->zoom.factor;
 }
 
@@ -630,7 +666,7 @@ _ws_mouse_move_cb(void *data, Evas *e,
    int x, y;
    int dx, dy;
    Evas_Object *ws_obj = (Evas_Object *)data;
-   WS_DATA_GET_OR_RETURN_VAL(ws_obj, sd, RETURN_VOID)
+   WS_DATA_GET(ws_obj, sd)
    evas_pointer_output_xy_get (e, &x, &y);
    evas_object_geometry_get(sd->ruler_hor, &dx, NULL, NULL, NULL);
    evas_object_geometry_get(sd->ruler_ver, NULL, &dy, NULL, NULL);
@@ -646,7 +682,7 @@ _highlight_changed_cb(void *data,
    Highlight_Events *events = (Highlight_Events *)ei;
 
    Evas_Object *ws_obj = (Evas_Object *)data;
-   WS_DATA_GET_OR_RETURN_VAL(ws_obj, sd, RETURN_VOID)
+   WS_DATA_GET(ws_obj, sd)
 
    Part *part = sd->highlight.part;
    if ((!sd->style) || (!part)) return;
@@ -725,10 +761,10 @@ Eina_Bool
 workspace_highlight_set(Evas_Object *obj, Part *part)
 {
    Evas_Object *follow;
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+   WS_DATA_GET(obj, sd)
 
-   if (!part) return false;
-   if (!sd->groupedit) return false;
+   assert(part != NULL);
+   assert(sd->groupedit != NULL);
 
    sd->highlight.part = part;
 
@@ -761,8 +797,7 @@ workspace_highlight_set(Evas_Object *obj, Part *part)
 Eina_Bool
 workspace_highlight_unset(Evas_Object *obj)
 {
-   if (!obj) return false;
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+   WS_DATA_GET(obj, sd)
    if ((!sd->highlight.highlight) || (!sd->highlight.space_hl)) return false;
    highlight_object_unfollow(sd->highlight.highlight);
    highlight_object_unfollow(sd->highlight.space_hl);
@@ -781,9 +816,9 @@ workspace_highlight_unset(Evas_Object *obj)
 
 static void
 _sc_wheel_move(void *data,
-            Evas *e __UNUSED__,
-            Evas_Object *obj __UNUSED__,
-            void *event_info)
+               Evas *e __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void *event_info)
 {
    Evas_Event_Mouse_Wheel *ev = (Evas_Event_Mouse_Wheel *)event_info;
    Evas_Object *workspace = (Evas_Object *)data;
@@ -802,6 +837,8 @@ _sc_wheel_move(void *data,
 static void
 _workspace_smart_add(Evas_Object *o)
 {
+   assert(o != NULL);
+
    /* Allocate memory for workspace smart data*/
    EVAS_SMART_DATA_ALLOC(o, Ws_Smart_Data)
 
@@ -811,7 +848,10 @@ _workspace_smart_add(Evas_Object *o)
 static Eina_Bool
 _workspace_child_create(Evas_Object *o, Evas_Object *parent)
 {
-   WS_DATA_GET_OR_RETURN_VAL(o, priv, false);
+   WS_DATA_GET(o, priv);
+
+   assert(parent != NULL);
+
    /* adding self-reference */
    priv->obj = o;
 
@@ -907,7 +947,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
 static void
 _workspace_smart_del(Evas_Object *o)
 {
-   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
+   WS_DATA_GET(o, sd);
 
    _workspace_parent_sc->del(o);
 }
@@ -917,7 +957,7 @@ _workspace_smart_show(Evas_Object *o)
 {
    if (evas_object_visible_get(o)) return;
 
-   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+   WS_DATA_GET(o, sd)
 
    evas_object_show(sd->button_separate);
    evas_object_show(sd->scroller);
@@ -939,7 +979,7 @@ _workspace_smart_hide(Evas_Object *o)
 {
    if (!evas_object_visible_get(o)) return;
 
-   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
+   WS_DATA_GET(o, sd);
 
    if (sd->groupedit) evas_object_hide(sd->groupedit);
    if (sd->ruler_hor) evas_object_hide(sd->ruler_hor);
@@ -958,7 +998,7 @@ _workspace_smart_resize(Evas_Object *o,
                         Evas_Coord h)
 {
    Evas_Coord ox, oy, ow, oh;
-   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+   WS_DATA_GET(o, sd)
 
    evas_object_geometry_get(o, &ox, &oy, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
@@ -969,7 +1009,7 @@ _workspace_smart_resize(Evas_Object *o,
 static void
 _workspace_color_set(Evas_Object *o, int r, int g, int b, int a)
 {
-   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
+   WS_DATA_GET(o, sd);
 
    evas_object_color_set(sd->background, r, g, b, a);
 }
@@ -977,6 +1017,8 @@ _workspace_color_set(Evas_Object *o, int r, int g, int b, int a)
 static void
 _workspace_smart_set_user(Evas_Smart_Class *sc)
 {
+   assert(sc != NULL);
+
    sc->add = _workspace_smart_add;
    sc->del = _workspace_smart_del;
    sc->show = _workspace_smart_show;
@@ -994,7 +1036,7 @@ workspace_add(Evas_Object *parent)
    Evas *e = NULL;
    Evas_Object *obj = NULL;
 
-   if (!parent) return NULL;
+   assert(parent != NULL);
 
    e = evas_object_evas_get(parent);
    obj = evas_object_smart_add(e, _workspace_smart_class_new());
@@ -1009,7 +1051,7 @@ workspace_add(Evas_Object *parent)
 Evas_Object *
 ws_groupedit_get(Evas_Object *obj)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   WS_DATA_GET(obj, sd);
 
    return sd->groupedit;
 }
@@ -1020,6 +1062,9 @@ _on_part_select(void *data,
                 void *event_info)
 {
    Evas_Object *workspace = (Evas_Object *)data;
+
+   assert(workspace != NULL);
+
    evas_object_smart_callback_call(workspace, SIG_PART_SELECTED, event_info);
 }
 
@@ -1041,6 +1086,9 @@ _on_groupedit_geometry_changed(void *data,
                                void *event_info __UNUSED__)
 {
    Ws_Smart_Data *sd __UNUSED__= (Ws_Smart_Data *)data;
+
+   assert(sd != NULL);
+
    Container_Geom *geom __UNUSED__ = (Container_Geom *)event_info;
 
    Evas_Coord x, y, w, h, ruler_ver_w, ruler_hor_h, hrb_w, hrb_h;
@@ -1084,6 +1132,9 @@ _on_container_TL_move(void *data,
    Ws_Smart_Data *sd = (Ws_Smart_Data *)data;
    Container_Geom *geom = (Container_Geom *)event_info;
 
+   assert(sd != NULL);
+   assert(geom != NULL);
+
    Evas_Coord x, y, w, h;
    elm_scroller_region_get(sd->scroller, &x, &y, &w, &h);
    if (geom->dx < 0) x -= geom->dx;
@@ -1100,9 +1151,11 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    Evas_Coord x, y, w, h, ruler_ver_w, ruler_hor_h, hrb_w, hrb_h;
    App_Data *app = app_data_get();
 
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   WS_DATA_GET(obj, sd);
 
-   if ((!style) || (!file)) return false;
+   assert(style != NULL);
+   assert(file != NULL);
+
    if (!sd->groupedit)
      {
         sd->groupedit = groupedit_add(sd->scroller);
@@ -1208,10 +1261,11 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
 Eina_Bool
 workspace_edit_object_unset(Evas_Object *obj)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   WS_DATA_GET(obj, sd);
 
    Eina_Bool is_unset = false;
    sd->style = NULL;
+
    if (!sd->groupedit) return false;
 
    if (groupedit_edit_object_unset(sd->groupedit)) is_unset = true;
@@ -1232,10 +1286,11 @@ workspace_edit_object_unset(Evas_Object *obj)
    return is_unset;
 }
 
+TODO("Rename function")
 Style *
 workspace_edit_object_get(Evas_Object *obj)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
+   WS_DATA_GET(obj, sd);
 
    return sd->style;
 }
@@ -1243,10 +1298,10 @@ workspace_edit_object_get(Evas_Object *obj)
 Eina_Bool
 workspace_edit_object_recalc(Evas_Object *obj)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   WS_DATA_GET(obj, sd);
    App_Data *app = app_data_get();
 
-   if (!sd->groupedit) return false;
+   assert(sd->groupedit != NULL);
 
    Evas_Coord min_w, max_w, min_h, max_h;
    min_w = edje_edit_group_min_w_get(sd->style->obj);
@@ -1270,12 +1325,13 @@ workspace_edit_object_part_rename(Evas_Object *obj,
                                   const char *old_name,
                                   const char *new_name)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   WS_DATA_GET(obj, sd);
 
-   if ((!old_name) || (!new_name))
-     return false;
-   if (!strcmp(old_name, "") || (!strcmp(new_name, "")))
-     return false;
+   assert(old_name != NULL);
+   assert(new_name != NULL);
+   assert(strcmp(old_name, ""));
+   assert(strcmp(new_name, ""));
+
    if (!strcmp(old_name, new_name))
      return false;
    if (groupedit_edit_object_part_draw_get(sd->groupedit, new_name))
@@ -1288,13 +1344,8 @@ Eina_Bool
 workspace_edit_object_part_add(Evas_Object *obj, const char *part,
                                Edje_Part_Type type, const char *data)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if (!part)
-     {
-        ERR("Can't add the part '%s' to the group '%s'!",
-            part, sd->style->full_group_name)
-        return false;
-     }
+   WS_DATA_GET(obj, sd);
+   assert(part != NULL);
 
    return groupedit_edit_object_part_add(sd->groupedit, part, type, data);
 }
@@ -1302,13 +1353,8 @@ workspace_edit_object_part_add(Evas_Object *obj, const char *part,
 Eina_Bool
 workspace_edit_object_part_del(Evas_Object *obj, const char *part)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if (!part)
-     {
-        ERR("Can't delete the part '%s' from the group '%s'!",
-            part, sd->style->full_group_name)
-        return false;
-     }
+   WS_DATA_GET(obj, sd);
+   assert(part != NULL);
 
    return groupedit_edit_object_part_del(sd->groupedit, part);
 }
@@ -1316,13 +1362,8 @@ workspace_edit_object_part_del(Evas_Object *obj, const char *part)
 Eina_Bool
 workspace_edit_object_part_above(Evas_Object *obj, const char *part)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if (!part)
-     {
-        ERR("Can't restack above the part '%s' in the group %s!",
-            part, sd->style->full_group_name)
-        return false;
-     }
+   WS_DATA_GET(obj, sd);
+   assert(part != NULL);
 
    return groupedit_edit_object_part_above(sd->groupedit, part);
 }
@@ -1330,13 +1371,8 @@ workspace_edit_object_part_above(Evas_Object *obj, const char *part)
 Eina_Bool
 workspace_edit_object_part_below(Evas_Object *obj, const char *part)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if (!part)
-     {
-        ERR("Can't restack below the part '%s' in the group %s!",
-            part, sd->style->full_group_name)
-        return false;
-     }
+   WS_DATA_GET(obj, sd);
+   assert(part != NULL);
 
    return groupedit_edit_object_part_below(sd->groupedit, part);
 }
@@ -1344,13 +1380,9 @@ workspace_edit_object_part_below(Evas_Object *obj, const char *part)
 Eina_Bool
 workspace_edit_object_part_state_set(Evas_Object *obj, Part *part)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   WS_DATA_GET(obj, sd);
+   assert(part != NULL);
 
-   if (!part)
-     {
-        ERR("Can't set state to NULL pointer part");
-        return false;
-     }
    return groupedit_edit_object_part_state_set(sd->groupedit, part->name,
                                                part->curr_state,
                                                part->curr_state_value);
@@ -1360,13 +1392,9 @@ Eina_Bool
 workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,
                                      const char *state, double value)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if ((!part) || (!state))
-     {
-        ERR("Can't add state '%s %f' to part '%s' in the group %s!",
-            state, value, part, sd->style->full_group_name)
-        return false;
-     }
+   WS_DATA_GET(obj, sd);
+   assert(part != NULL);
+   assert(state != NULL);
 
    return groupedit_edit_object_part_state_add(sd->groupedit, part, state, value);
 }
@@ -1377,12 +1405,9 @@ workspace_edit_object_part_restack(Evas_Object *obj,
                                    const char *rel_part,
                                    Eina_Bool direct)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if (!part || !rel_part)
-     {
-        ERR("Input arguments wrong: part[%s] rel_part[%s]", part, rel_part);
-        return false;
-     }
+   WS_DATA_GET(obj, sd);
+   assert(part != NULL);
+   assert(rel_part != NULL);
 
    if (!direct)
       return groupedit_edit_object_part_move_above(sd->groupedit, part, rel_part);
@@ -1396,9 +1421,10 @@ workspace_edit_object_part_state_copy(Evas_Object *obj, const char *part,
                                      const char *state_from, double value_from,
                                      const char *state_to, double value_to)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if ((!part) || (!state_from) || (!state_to))
-     return false;
+   WS_DATA_GET(obj, sd);
+   assert(part != NULL);
+   assert(state_from != NULL);
+   assert(state_to != NULL);
 
    return groupedit_edit_object_part_state_copy(sd->groupedit, part, state_from,
                                                value_from, state_to, value_to);
@@ -1408,13 +1434,9 @@ Eina_Bool
 workspace_edit_object_part_state_del(Evas_Object *obj, const char *part,
                                      const char *state, double value)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if ((!part) || (!state))
-     {
-        ERR("Can't delete state '%s %f' from part '%s' in the group %s!",
-            state, value, part, sd->style->full_group_name)
-        return false;
-     }
+   WS_DATA_GET(obj, sd);
+   assert(part != NULL);
+   assert(state != NULL);
 
    return groupedit_edit_object_part_state_del(sd->groupedit, part, state, value);
 }
@@ -1424,13 +1446,8 @@ workspace_edit_object_visible_set(Evas_Object *obj,
                                   const char *part,
                                   Eina_Bool visible)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-
-   if (!part)
-     {
-        ERR("Can't change visible params for NULL pointer");
-        return false;
-     }
+   WS_DATA_GET(obj, sd);
+   assert(part != NULL);
 
    return groupedit_part_visible_set(sd->groupedit, part, visible);
 }
@@ -1442,9 +1459,9 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
    const char *name = NULL;
    Eina_Bool sep, success;
 
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+   WS_DATA_GET(obj, sd)
+   assert(sd->groupedit != NULL);
 
-   if (!sd->groupedit) return false;
    sep = groupedit_edit_object_parts_separated_is(sd->groupedit);
    if (sep == separate) return false;
 
@@ -1514,14 +1531,14 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
 Eina_Bool
 workspace_separate_mode_get(Evas_Object *obj)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+   WS_DATA_GET(obj, sd)
    return groupedit_edit_object_parts_separated_is(sd->groupedit);
 }
 
 Eina_Bool
 workspace_highlight_align_visible_set(Evas_Object *obj, Eina_Bool flag)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   WS_DATA_GET(obj, sd);
    if (flag)
      highlight_handler_align_show(sd->highlight.highlight);
    else
@@ -1532,15 +1549,16 @@ workspace_highlight_align_visible_set(Evas_Object *obj, Eina_Bool flag)
 Eina_Bool
 workspace_highlight_align_visible_get(Evas_Object *obj)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if (!sd->highlight.highlight) return false;
+   WS_DATA_GET(obj, sd);
+   assert(sd->highlight.highlight != NULL);
+
    return highlight_handler_align_visible_get(sd->highlight.highlight);
 }
 
 Eina_Bool
 workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool flag)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   WS_DATA_GET(obj, sd);
    groupedit_part_object_area_visible_set(sd->groupedit, flag);
    return true;
 }
@@ -1548,7 +1566,7 @@ workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool flag)
 Eina_Bool
 workspace_object_area_visible_get(Evas_Object *obj)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   WS_DATA_GET(obj, sd);
    return groupedit_part_object_area_visible_get(sd->groupedit);
 }
 
@@ -1557,13 +1575,9 @@ workspace_edit_object_part_item_selected_set(Evas_Object *obj,
                                              Eina_Stringshare *item_name,
                                              Eina_Bool selected)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   WS_DATA_GET(obj, sd);
+   assert(item_name != NULL);
 
-   if (!item_name)
-     {
-        ERR("Can't change selection state of unnamed item");
-        return false;
-     }
    return groupedit_edit_object_part_item_selected_set(sd->groupedit, item_name,
                                                        selected);
 }
@@ -1573,13 +1587,10 @@ workspace_edit_object_part_item_add(Evas_Object *obj, Eina_Stringshare *part,
                                     Eina_Stringshare *item,
                                     Eina_Stringshare *source)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if ((!part) || (!item) || (!source))
-     {
-        ERR("Can't add the item '%s' to the part '%s' in the group '%s'!",
-            item, part, sd->style->full_group_name)
-        return false;
-     }
+   WS_DATA_GET(obj, sd);
+   assert(part != NULL);
+   assert(item != NULL);
+   assert(source != NULL);
 
    return groupedit_edit_object_part_item_add(sd->groupedit, part, item, source);
 }
@@ -1588,13 +1599,9 @@ Eina_Bool
 workspace_edit_object_part_item_del(Evas_Object *obj, Eina_Stringshare *part,
                                     Eina_Stringshare *item)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if ((!part) || (!item))
-     {
-        ERR("Can't del the item '%s' from part '%s' in the group '%s'!",
-            item, part, sd->style->full_group_name)
-        return false;
-     }
+   WS_DATA_GET(obj, sd);
+   assert(part != NULL);
+   assert(item != NULL);
 
    return groupedit_edit_object_part_item_del(sd->groupedit, part, item);
 }

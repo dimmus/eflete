@@ -22,6 +22,8 @@
 static Elm_Panel_Orient
 _panel_orient_get(const char *class)
 {
+   assert(class != NULL);
+
    Elm_Panel_Orient orient = ELM_PANEL_ORIENT_LEFT;
 
    if (strcmp(class, "top") == 0)
@@ -39,6 +41,9 @@ _panel_orient_get(const char *class)
 Evas_Object *
 widget_panel_create(Evas_Object *parent, const Style *style)
 {
+   assert(parent != NULL);
+   assert(style != NULL);
+
    Eina_Stringshare *class;
    Eina_Stringshare *style_name;
    standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);

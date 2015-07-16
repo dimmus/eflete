@@ -29,6 +29,9 @@ _on_genlist_swallow_check(void *data,
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    Eina_List *part_list = evas_object_data_get(object, SWALLOW_LIST);
    const char *part_name = elm_object_part_text_get(obj, NULL);
@@ -73,6 +76,9 @@ _on_genlist_text_check(void *data,
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    Eina_List *part_list = evas_object_data_get(object, TEXT_LIST);
    const char *part_name = elm_object_part_text_get(obj, NULL);
@@ -113,10 +119,16 @@ _genlist_send_signal(void *data,
                      void *ei __UNUSED__)
 {
    Elm_Object_Item *item = NULL;
+
+   assert(data != NULL);
+
    item = elm_genlist_first_item_get(data);
 
    const char *name = evas_object_data_get(obj, SIGNAL_NAME);
    const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
+
+   assert(name != NULL);
+   assert(source != NULL);
 
    while (item)
      {
@@ -132,6 +144,9 @@ _glist_text_get(void        *data,
                 const char  *part)
 {
    Eina_List *part_list = evas_object_data_get(obj, TEXT_LIST);
+
+   assert(part_list != NULL);
+
    Eina_List *l = NULL;
    const char *part_name = NULL;
    const char *text = (char *) data;
@@ -151,6 +166,9 @@ _glist_content_get(void *data __UNUSED__,
                    const char  *part)
 {
    Eina_List *part_list = evas_object_data_get(obj, SWALLOW_LIST);
+
+   assert(part_list != NULL);
+
    Eina_List *l = NULL;
    const char *part_name = NULL;
 
@@ -232,7 +250,10 @@ _create_genlist(Evas_Object *obj, const char *class, const char *style)
    char *item_style;
    Evas_Object *glist = NULL;
 
-   if (!obj) return NULL;
+   assert(obj != NULL);
+   assert(class != NULL);
+   assert(style != NULL);
+
    glist = elm_genlist_add(obj);
    evas_object_size_hint_align_set(glist, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(glist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -305,6 +326,9 @@ _create_genlist(Evas_Object *obj, const char *class, const char *style)
 Evas_Object *
 widget_genlist_create(Evas_Object *parent, const Style *style)
 {
+   assert(parent != NULL);
+   assert(style != NULL);
+
    Eina_Stringshare *class;
    Eina_Stringshare *style_name;
 

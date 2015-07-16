@@ -28,6 +28,9 @@ static void
 _job_popup_close(void *data)
 {
    App_Data *ap = (App_Data *)data;
+
+   assert(ap != NULL);
+
    Evas_Object *markup = elm_object_content_get(ap->popup);
    Evas_Object *proxy_preview = elm_object_part_content_unset(markup, "preview.swallow");
    Evas_Object *group_preview = elm_object_part_content_unset(markup, "origin.swallow");
@@ -47,9 +50,17 @@ _on_button_add_clicked(void *data,
                        void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+
+   assert(ap != NULL);
+
    Evas_Object *entry = evas_object_data_get(ap->popup, "ENTRY");
    Evas_Object *combobox = evas_object_data_get(ap->popup, "COMBOBOX");
    Part *part = evas_object_data_get(ap->popup, "PART");
+
+   assert(entry != NULL);
+   assert(combobox != NULL);
+   assert(part != NULL);
+
    const char *name = elm_entry_entry_get(entry);
    Ewe_Combobox_Item *item = NULL;
 
@@ -100,6 +111,9 @@ _on_item_source_change(void *data,
 {
    Evas_Object *markup = (Evas_Object *)data;
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info;
+
+   assert(markup != NULL);
+
    Evas_Object *proxy_preview = elm_object_part_content_unset(markup, "preview.swallow");
    Evas_Object *group_preview = elm_object_part_content_unset(markup, "origin.swallow");
    App_Data *ap = app_data_get();
@@ -145,11 +159,9 @@ item_dialog_add(App_Data *ap, Part *part)
    Evas_Object *entry;
    Evas_Object *markup = NULL;
 
-   if ((!ap) || (!ap->workspace) || (!part))
-     {
-        ERR("Wrong input params: ap[%p] workspace[%p] part[%p]", ap, ap?ap->workspace:NULL, part)
-        return NULL;
-     }
+   assert(ap != NULL);
+   assert(ap->workspace != NULL);
+   assert(part != NULL);
 
    ap->popup = elm_popup_add(ap->win_layout);
    elm_object_part_text_set(ap->popup, "title,text", _("Add new item"));

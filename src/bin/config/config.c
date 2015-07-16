@@ -69,7 +69,7 @@ config_init(App_Data *ap)
    Eet_Data_Descriptor_Class eddc;
    Eet_Data_Descriptor_Class eddkc;
 
-   if (!ap) return false;
+   assert(ap != NULL);
 
    /* Config descriptor */
    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof(eddc), "Config", sizeof(Config));
@@ -178,7 +178,7 @@ config_init(App_Data *ap)
 Eina_Bool
 config_shutdown(App_Data *ap)
 {
-   if (!ap) return false;
+   assert(ap != NULL);
 
    if (edd_base)
      {
@@ -277,6 +277,7 @@ _default_shortcuts_get()
 static void
 _profile_update(Profile *prof)
 {
+   assert(prof != NULL);
    if (prof->version > PROFILE_VERSION)
      return;
 
@@ -353,6 +354,8 @@ config_load(App_Data *ap)
 {
    Eet_File *ef;
 
+   assert(ap != NULL);
+
    if (config) _config_free();
    ef = eet_open(CONFIG_FILE, EET_FILE_MODE_READ);
    if (ef)
@@ -376,6 +379,8 @@ config_load(App_Data *ap)
 Eina_Bool
 config_panes_sizes_data_update(App_Data *ap)
 {
+   assert(ap != NULL);
+
    if (!config) return false;
 
    config->panes.left =
@@ -400,13 +405,13 @@ config_save(App_Data *ap)
    Eet_File *ef;
    Eina_Bool ok;
 
+   assert(ap != NULL);
+
    if (!edd_base)
      {
         CRIT("Nothing to save! Config not loaded.");
         return false;
      }
-
-   if (!ap) return false;
 
    evas_object_geometry_get(ap->win, &x, &y, &w, &h);
    if (profile->general.save_win_pos)
@@ -443,7 +448,8 @@ profile_load(const char *name)
    Eet_File *ef;
    Eina_Stringshare *path;
 
-   if (!name) return;
+   assert(name != NULL);
+
    path = eina_stringshare_printf(EFLETE_SETT_PATH"%s"PROFILE_FILE_EXT, name);
 
    if (profile) _profile_free();
@@ -469,13 +475,14 @@ profile_save(const char *name)
    Eina_Stringshare *path, *tmp;
    Eina_Bool ok;
 
+   assert(name != NULL);
+
    if (!edd_profile)
      {
         CRIT("Nothing to save! Profile not loaded.");
         return false;
      }
 
-   if (!name) return false;
    path = eina_stringshare_printf(EFLETE_SETT_PATH"%s"PROFILE_FILE_EXT, name);
    tmp = eina_stringshare_printf("%s%s", path, ".tmp");
 

@@ -88,16 +88,9 @@ struct _Container_Smart_Data
 };
 
 #define CONTAINER_DATA_GET(o, ptr) \
-   Container_Smart_Data *ptr = evas_object_smart_data_get(o);
-
-#define CONTAINER_DATA_GET_OR_RETURN_VAL(o, ptr, val)                   \
-   CONTAINER_DATA_GET(o, ptr)                                           \
-   if (!ptr)                                                            \
-     {                                                                  \
-        ERR("No container data for object %p (%s)!",                    \
-            o, evas_object_type_get(o));                                \
-        return val;                                                     \
-     }
+   assert(o != NULL); \
+   Container_Smart_Data *ptr = evas_object_smart_data_get(o); \
+   assert(ptr != NULL);
 
 /* here we create and define some functions for creating our container smart
  * object that is inherited from general Smart Object. */
@@ -109,7 +102,7 @@ static Eina_Bool
 _user_size_calc(Evas_Object *o)
 {
    int nw, nh;
-   CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, false)
+   CONTAINER_DATA_GET(o, sd)
 
    nw = sd->size->w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w + sd->dx;
    nh = sd->size->h + H_HEIGHT + sd->pad_left_top.h + sd->pad_right_bottom.h + sd->dy;
@@ -360,21 +353,30 @@ _style_set(Evas_Object *o, const char *style)
      {
         GROUP_NAME("base", "default")
         if (!edje_object_file_set(sd->container, EFLETE_EDJ, group))
-          ERR("Couldn't load default style for base border of container.");
+          {
+             ERR("Couldn't load default style for base border of container.");
+             abort();
+          }
      }
    GROUP_NAME("handler_TL", style)
    if (!edje_object_file_set(sd->handler_TL.obj, EFLETE_EDJ, group))
      {
         GROUP_NAME("handler_TL", "default")
         if (!edje_object_file_set(sd->handler_TL.obj, EFLETE_EDJ, group))
-          ERR("Couldn't load default style for top-left handler of container.");
+          {
+             ERR("Couldn't load default style for top-left handler of container.");
+             abort();
+          }
      }
    GROUP_NAME("handler_BR", style)
    if (!edje_object_file_set(sd->handler_BR.obj, EFLETE_EDJ, group))
      {
         GROUP_NAME("handler_BR", "default")
         if (!edje_object_file_set(sd->handler_BR.obj, EFLETE_EDJ, group))
-          ERR("Couldn't load default style for bottom-right handler of container.");
+          {
+             ERR("Couldn't load default style for bottom-right handler of container.");
+             abort();
+          }
      }
 
    eina_stringshare_del(sd->style);
@@ -443,7 +445,7 @@ _container_smart_add(Evas_Object *o)
 static void
 _container_smart_del(Evas_Object *o)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+   CONTAINER_DATA_GET(o, sd)
 
    eina_stringshare_del(sd->style);
    free(sd->size);
@@ -454,7 +456,7 @@ _container_smart_del(Evas_Object *o)
 static void
 _container_smart_show(Evas_Object *o)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
+   CONTAINER_DATA_GET(o, sd);
 
    if (sd->handler_TL.obj) evas_object_show(sd->handler_TL.obj);
    if (sd->handler_BR.obj) evas_object_show(sd->handler_BR.obj);
@@ -467,7 +469,7 @@ _container_smart_show(Evas_Object *o)
 static void
 _container_smart_hide(Evas_Object *o)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+   CONTAINER_DATA_GET(o, sd)
 
    if (sd->handler_TL.obj) evas_object_hide(sd->handler_TL.obj);
    if (sd->handler_BR.obj) evas_object_hide(sd->handler_BR.obj);
@@ -486,7 +488,7 @@ _container_smart_resize(Evas_Object *o,
    evas_object_geometry_get(o, NULL, NULL, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
 
-   CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+   CONTAINER_DATA_GET(o, sd)
    if (!sd->confine.obj)
      evas_object_size_hint_min_set(o, w, h);
 
@@ -507,7 +509,7 @@ _container_smart_calculate(Evas_Object *o)
    Evas_Coord hrb_x, hrb_y, hrb_w, hrb_h;
    char buff[16];
 
-   CONTAINER_DATA_GET_OR_RETURN_VAL(o, priv, RETURN_VOID)
+   CONTAINER_DATA_GET(o, priv)
    evas_object_geometry_get(o, &x, &y, &w, &h);
    evas_object_resize(priv->bg, w, h);
 
@@ -561,6 +563,8 @@ _container_smart_calculate(Evas_Object *o)
 static void
 _container_smart_set_user(Evas_Smart_Class *sc)
 {
+   assert(sc != NULL);
+
    sc->add = _container_smart_add;
    sc->del = _container_smart_del;
    sc->show = _container_smart_show;
@@ -577,7 +581,7 @@ container_add(Evas_Object *parent)
    Evas *e;
    Evas_Object *obj;
 
-   if (!parent) return NULL;
+   assert(parent != NULL);
 
    e = evas_object_evas_get(parent);
    obj = evas_object_smart_add(e, _container_smart_class_new());
@@ -588,7 +592,7 @@ container_add(Evas_Object *parent)
 Eina_Bool
 container_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hrb_w, int hrb_h)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   CONTAINER_DATA_GET(obj, sd);
 
    if (htl_w < 5) sd->handler_TL.w = 5;
    else sd->handler_TL.w = htl_w;
@@ -605,7 +609,7 @@ container_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hrb_w, in
 Eina_Bool
 container_handler_size_get(Evas_Object *obj, int *htl_w, int *htl_h, int *hbr_w, int *hbr_h)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   CONTAINER_DATA_GET(obj, sd);
 
    if (htl_w) *htl_w = sd->handler_TL.w;
    if (htl_h) *htl_h = sd->handler_TL.h;
@@ -618,7 +622,7 @@ container_handler_size_get(Evas_Object *obj, int *htl_w, int *htl_h, int *hbr_w,
 Eina_Bool
 container_min_size_set(Evas_Object *obj, int w, int h)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   CONTAINER_DATA_GET(obj, sd);
 
    if (w < 0) sd->con_size_min.w = 0;
    else sd->con_size_min.w = w;
@@ -634,7 +638,7 @@ container_min_size_set(Evas_Object *obj, int w, int h)
 Eina_Bool
 container_max_size_set(Evas_Object *obj, int w, int h)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   CONTAINER_DATA_GET(obj, sd);
 
    if (w < 0) sd->con_size_max.w = 0;
    else sd->con_size_max.w = w;
@@ -652,7 +656,7 @@ container_max_size_set(Evas_Object *obj, int w, int h)
 Eina_Bool
 container_container_size_set(Evas_Object *obj, int w, int h)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   CONTAINER_DATA_GET(obj, sd);
 
    if (w <= sd->con_size_min.w) sd->size->w = sd->con_size_min.w;
    else
@@ -676,7 +680,7 @@ container_container_size_set(Evas_Object *obj, int w, int h)
 Eina_Bool
 container_container_size_get(Evas_Object *obj, int *w, int *h)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   CONTAINER_DATA_GET(obj, sd);
 
    if (w) *w = sd->size->w;
    if (h) *h = sd->size->h;
@@ -687,9 +691,11 @@ container_container_size_get(Evas_Object *obj, int *w, int *h)
 Eina_Bool
 container_style_set(Evas_Object *obj, const char *style)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   CONTAINER_DATA_GET(obj, sd);
 
-   if (!style || (!strcmp(sd->style, style))) return false;
+   assert(style != NULL);
+
+   if (!strcmp(sd->style, style)) return false;
    _style_set(obj, style);
 
    return true;
@@ -698,16 +704,17 @@ container_style_set(Evas_Object *obj, const char *style)
 const char *
 container_style_get(Evas_Object *obj)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
+   CONTAINER_DATA_GET(obj, sd);
    return sd->style;
 }
 
 Eina_Bool
 container_content_set(Evas_Object *obj, Evas_Object *content)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   CONTAINER_DATA_GET(obj, sd);
 
-   if (!content) return false;
+   assert(content != NULL);
+
    edje_object_part_swallow(sd->container, SWALLOW, content);
 
    return true;
@@ -717,7 +724,7 @@ Evas_Object *
 container_content_unset(Evas_Object *obj)
 {
    Evas_Object *ret;
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
+   CONTAINER_DATA_GET(obj, sd);
 
    ret = edje_object_part_swallow_get(sd->container, SWALLOW);
    edje_object_part_unswallow(sd->container, ret);
@@ -732,6 +739,8 @@ _confine_changed(void *data,
 {
    Container_Smart_Data *sd = (Container_Smart_Data *)data;
 
+   assert(sd != NULL);
+
    evas_object_geometry_get(obj,
                             &sd->confine.x,
                             &sd->confine.y,
@@ -743,9 +752,9 @@ _confine_changed(void *data,
 Eina_Bool
 container_confine_set(Evas_Object *obj, Evas_Object *confine)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   CONTAINER_DATA_GET(obj, sd);
 
-   if (!confine) return false;
+   assert(confine != NULL);
 
    sd->confine.obj = confine;
    evas_object_geometry_get(confine,
@@ -764,7 +773,7 @@ container_confine_set(Evas_Object *obj, Evas_Object *confine)
 Eina_Bool
 container_confine_unset(Evas_Object *obj)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   CONTAINER_DATA_GET(obj, sd);
 
    if (!sd->confine.obj) return false;
 
@@ -780,7 +789,7 @@ container_confine_unset(Evas_Object *obj)
 Eina_Bool
 container_border_hide(Evas_Object *obj)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   CONTAINER_DATA_GET(obj, sd);
 
    if (sd->handler_TL.obj)
      evas_object_hide(sd->handler_TL.obj);
@@ -795,7 +804,7 @@ container_border_hide(Evas_Object *obj)
 Eina_Bool
 container_border_show(Evas_Object *obj)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+   CONTAINER_DATA_GET(obj, sd)
 
    if (sd->handler_TL.obj)
      evas_object_show(sd->handler_TL.obj);
@@ -810,7 +819,7 @@ container_border_show(Evas_Object *obj)
 Eina_Bool
 container_padding_size_set(Evas_Object *obj, int tl_w, int tl_h, int rb_w, int rb_h)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   CONTAINER_DATA_GET(obj, sd);
 
    Evas_Coord x, y, w, h;
    Evas_Coord tlw, tlh, rbw, rbh;
@@ -841,7 +850,7 @@ container_padding_size_set(Evas_Object *obj, int tl_w, int tl_h, int rb_w, int r
 Eina_Bool
 container_padding_size_get(Evas_Object *obj, int *tl_w, int *tl_h, int *br_w, int *br_h)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   CONTAINER_DATA_GET(obj, sd);
 
    if (tl_w) *tl_w = sd->pad_left_top.w;
    if (tl_h) *tl_h = sd->pad_left_top.h;

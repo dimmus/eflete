@@ -49,6 +49,8 @@ _cursor_object_get(Evas_Object *obj, Cursor_Type type)
    Evas_Object *cur_obj;
    int x, y;
 
+   assert(obj != NULL);
+
    e = evas_object_evas_get(obj);
 
    cur_name = eina_stringshare_printf("elm/cursor/%s/default",
@@ -67,6 +69,10 @@ static void
 _ecore_evas_cursor_set(Ecore_Evas *ee, Evas_Object *cursor)
 {
    int x, y;
+
+   assert(ee != NULL);
+   assert(cursor != NULL);
+
    edje_object_part_geometry_get(cursor, "hotspot", &x, &y, NULL, NULL);
    ecore_evas_object_cursor_set(ee, cursor, ELM_OBJECT_LAYER_CURSOR, x, y);
 }
@@ -116,6 +122,9 @@ _eflete_object_cursor_del(void *data,
                           void *event_info __UNUSED__)
 {
    Cursor *cursor = (Cursor *)data;
+
+   assert(cursor != NULL);
+
    free(cursor);
 }
 
@@ -130,12 +139,8 @@ cursor_main_free()
    e = evas_object_evas_get(ap->win);
    ee = ecore_evas_ecore_evas_get(e);
    cursor = ecore_evas_data_get(ee, CURSOR_KEY);
-   if (cursor)
-     {
-        free(cursor);
-        return true;
-     }
-   else return false;
+   free(cursor);
+   return true;
 }
 
 Eina_Bool
@@ -147,10 +152,13 @@ cursor_main_set(Evas_Object *win, Cursor_Type type)
    Evas_Object *cur_obj;
    Cursor *cursor;
 
-   if ((type <= CURSOR_UNKNOWN) || (type >= CURSOR_LAST)) return false;
-   if (!win) return false;
+   assert((type > CURSOR_UNKNOWN) &&
+          (type < CURSOR_LAST));
+   assert(win != NULL);
+
    obj_name = evas_object_type_get(win);
-   if (strcmp(obj_name, "elm_win")) return false;
+
+   assert(!strcmp(obj_name, "elm_win"));
 
    e = evas_object_evas_get(win);
    ee = ecore_evas_ecore_evas_get(e);
@@ -173,7 +181,8 @@ cursor_main_get(Evas_Object *win)
    Ecore_Evas *ee;
    Cursor *cursor;
 
-   if (!win) return CURSOR_UNKNOWN;
+   assert(win != NULL);
+
    e = evas_object_evas_get(win);
    ee = ecore_evas_ecore_evas_get(e);
    cursor = ecore_evas_data_get(ee, CURSOR_KEY);
@@ -191,8 +200,9 @@ cursor_type_set(Evas_Object *obj, Cursor_Type type)
    Ecore_Evas *ee;
    Cursor *cursor;
 
-   if ((type <= CURSOR_UNKNOWN) || (type >= CURSOR_LAST)) return false;
-   if (!obj) return false;
+   assert((type > CURSOR_UNKNOWN) &&
+          (type < CURSOR_LAST));
+   assert(obj != NULL);
 
    cursor = evas_object_data_get(obj, CURSOR_KEY);
    if (!cursor) cursor = mem_malloc(sizeof(Cursor));
@@ -218,7 +228,8 @@ cursor_type_get(Evas_Object *obj)
 {
    Cursor *cursor;
 
-   if (!obj) return CURSOR_UNKNOWN;
+   assert(obj != NULL);
+
    cursor = evas_object_data_get(obj, CURSOR_KEY);
 
    return cursor->type;

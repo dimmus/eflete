@@ -44,6 +44,9 @@ static void
 _job_popup_del(void *data)
 {
    App_Data *ap = (App_Data *)data;
+
+   assert(ap != NULL);
+
    evas_object_del(ap->popup);
    ap->popup = NULL;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
@@ -59,6 +62,9 @@ _cancel_clicked(void *data,
 
 #define WORKSPACE_PART_ADD(TYPE, DATA) \
    App_Data *ap = (App_Data *)data; \
+   \
+   assert(ap != NULL); \
+   \
    Evas_Object *workspace = ap->workspace; \
    Evas_Object *widget_list = ui_block_widget_list_get(ap); \
    Style *style = workspace_edit_object_get(workspace); \
@@ -163,6 +169,9 @@ _on_state_image_choose(void *data,
 {
    Evas_Object *img_edit;
    App_Data *ap = (App_Data *)data;
+
+   assert(ap != NULL);
+
    ENTRY_IS_EMPTY
    evas_object_hide(ap->popup); /* popup is delete in WORKSPACE_PART_ADD */
    img_edit = image_editor_window_add(ap->project, SINGLE);
@@ -177,11 +186,16 @@ part_dialog_add(App_Data *ap)
    Eina_Stringshare *title;
    Style *style;
 
-   if ((!ap) || (!ap->project)) return NULL;
+   assert(ap != NULL);
+   assert(ap->project != NULL);
+
    win = ap->win;
    workspace = ap->workspace;
    widget_list = ui_block_widget_list_get(ap);
-   if ((!win) || (!workspace) || (!widget_list)) return NULL;
+
+   assert(win != NULL);
+   assert(workspace != NULL);
+   assert(widget_list != NULL);
 
    style = workspace_edit_object_get(workspace);
    ap->popup = elm_popup_add(ap->win);

@@ -95,7 +95,8 @@ _double_click_center_panes_down_cb(void * data __UNUSED__,
 Eina_Bool
 ui_panes_left_panes_min_size_toggle(App_Data *ap, Eina_Bool is_on)
 {
-   if (!ap->panes.left) return false;
+   assert(ap != NULL);
+   assert(ap->panes.left != NULL);
 
    elm_panes_content_left_min_size_set(ap->panes.left,
                                        is_on ? PANES_MIN_SIZE_LEFT : 0);
@@ -114,6 +115,10 @@ _on_discard_changes_selected(void *data,
 {
    App_Data *ap = (App_Data *)data;
 
+   assert(ap != NULL);
+   assert(ap->project != NULL);
+   assert(ap->project->current_style != NULL);
+
    history_undo(ap->project->current_style->obj,
                 history_diff_count_get(ap->project->current_style->obj));
 }
@@ -128,11 +133,8 @@ ui_panes_add(App_Data *ap)
    Evas_Object *panes_center, *panes_right_hor;
    Ewe_Tabs_Item *tab_item;
 
-   if ((!ap) || (!ap->win_layout))
-     {
-        ERR("Can't create the panes. Application Data is NULL");
-        return false;
-     }
+   assert(ap != NULL);
+   assert(ap->win_layout != NULL);
 
    config = config_get();
 
@@ -242,11 +244,9 @@ ui_panes_add(App_Data *ap)
 Eina_Bool
 ui_panes_show(App_Data *ap)
 {
-   if ((!ap) || (!ap->win_layout))
-     {
-        ERR("Application Data is missing! Can't emit the signal to win_layout.");
-        return false;
-     }
+   assert(ap != NULL);
+   assert(ap->win_layout != NULL);
+
    elm_object_signal_emit(ap->win_layout, "window,panes,show", "eflete");
    return true;
 }
@@ -254,11 +254,9 @@ ui_panes_show(App_Data *ap)
 Eina_Bool
 ui_panes_hide(App_Data *ap)
 {
-   if ((!ap) || (!ap->win_layout))
-     {
-        ERR("Application Data is missing! Can't emit the signal to win_layout.");
-        return false;
-     }
+   assert(ap != NULL);
+   assert(ap->win_layout != NULL);
+
    elm_object_signal_emit(ap->win_layout, "window,panes,hide", "eflete");
    return true;
 }

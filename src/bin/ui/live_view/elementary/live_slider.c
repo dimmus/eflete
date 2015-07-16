@@ -23,6 +23,9 @@
 Evas_Object *
 widget_slider_create(Evas_Object *parent, const Style *style)
 {
+   assert(parent != NULL);
+   assert(style != NULL);
+
    Eina_Stringshare *class;
    Eina_Stringshare *style_name;
    char **style_parsed = NULL;

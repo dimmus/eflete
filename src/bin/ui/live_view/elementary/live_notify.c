@@ -30,6 +30,9 @@ _on_notify_swallow_check(void *data,
    Eina_List *notify_list = NULL;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    notify_list = elm_box_children_get(object);
    notify_obj = eina_list_nth(notify_list, 1);
@@ -73,6 +76,9 @@ _on_notify_text_check(void *data,
    Eina_List *notify_list = NULL;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    notify_list = elm_box_children_get(object);
    notify_obj = eina_list_nth(notify_list, 1);
@@ -108,11 +114,17 @@ _notify_send_signal(void *data,
                     void *ei __UNUSED__)
 {
    Evas_Object *notify_obj = NULL;
+
+   assert(data != NULL);
+
    Eina_List *notify_list = elm_box_children_get(data);
    notify_obj = eina_list_nth(notify_list, 1);
 
    const char *name = evas_object_data_get(obj, SIGNAL_NAME);
    const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
+
+   assert(name != NULL);
+   assert(source != NULL);
 
    elm_layout_signal_emit(notify_obj, name, source);
 
@@ -122,8 +134,9 @@ _notify_send_signal(void *data,
 static void
 _notify_orient_get(const char *class, double *horizontal, double *vertical)
 {
-   if ((horizontal == NULL) || (vertical == NULL))
-     return;
+   assert(class != NULL);
+   assert(horizontal != NULL);
+   assert(vertical != NULL);
 
    if (strcmp(class, "top") == 0)
      {
@@ -183,12 +196,18 @@ _on_click(void *data,
           void *event_info __UNUSED__)
 {
    Evas_Object *notify = data;
+
+   assert(notify != NULL);
+
    evas_object_show(notify);
 }
 
 Evas_Object *
 widget_notify_create(Evas_Object *parent, const Style *style)
 {
+   assert(parent != NULL);
+   assert(style != NULL);
+
    Eina_Stringshare *class;
    Eina_Stringshare *style_name;
    standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
@@ -196,7 +215,7 @@ widget_notify_create(Evas_Object *parent, const Style *style)
    Evas_Object *content, *noti, *bx, *btn, *object = NULL;
    double horizontal, vertical;
 
-   if ((!parent) || (!class)) return NULL;
+   assert(class != NULL);
 
    BUTTON_ADD(parent, btn, _("Press to show Notify"));
 

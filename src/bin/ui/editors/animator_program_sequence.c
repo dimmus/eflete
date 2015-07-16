@@ -94,17 +94,10 @@ struct _Prog_Sequence_Smart_Data
    } playback;
 };
 
-#define PROG_SEQUENCE_DATA_GET(o, ptr)  \
-   Prog_Sequence_Smart_Data *ptr = evas_object_smart_data_get(o);
-
-#define PROG_SEQUENCE_DATA_GET_OR_RETURN_VAL(o, ptr, val)               \
-   PROG_SEQUENCE_DATA_GET(o, ptr)                                       \
-   if (!ptr)                                                            \
-     {                                                                  \
-        ERR("No program_sequence data for object %p (%s)!",             \
-            o, evas_object_type_get(o));                                \
-        return val;                                                     \
-     }
+#define PROG_SEQUENCE_DATA_GET(o, ptr)                                  \
+   assert(o != NULL);                                                   \
+   Prog_Sequence_Smart_Data *ptr = evas_object_smart_data_get(o);       \
+   assert(ptr != NULL);
 
 static void _prog_sequence_smart_add(Evas_Object *o);
 static void _prog_sequence_smart_del(Evas_Object *o);
@@ -124,6 +117,8 @@ EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _prog_sequence,
 static void
 _prog_sequence_smart_set_user(Evas_Smart_Class *sc)
 {
+   assert(sc != NULL);
+
    evas_object_smart_clipped_smart_set(sc);
 
    sc->add = _prog_sequence_smart_add;
@@ -152,7 +147,7 @@ _prog_sequence_smart_add(Evas_Object *o)
 static void
 _prog_sequence_smart_del(Evas_Object *o)
 {
-   PROG_SEQUENCE_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+   PROG_SEQUENCE_DATA_GET(o, sd)
 
    if (sd->playback.timer)
      ecore_timer_del(sd->playback.timer);
@@ -170,7 +165,7 @@ _prog_sequence_smart_show(Evas_Object *o)
 {
    if (evas_object_visible_get(o)) return;
 
-   PROG_SEQUENCE_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
+   PROG_SEQUENCE_DATA_GET(o, sd);
 
    evas_object_show(sd->bg);
    evas_object_show(sd->labels_bg);
@@ -185,7 +180,7 @@ _prog_sequence_smart_hide(Evas_Object *o)
 {
    if (!evas_object_visible_get(o)) return;
 
-   PROG_SEQUENCE_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+   PROG_SEQUENCE_DATA_GET(o, sd)
 
    evas_object_hide(sd->bg);
    evas_object_hide(sd->labels_bg);
@@ -201,7 +196,7 @@ _prog_sequence_smart_move(Evas_Object *o,
                           Evas_Coord y)
 {
    Evas_Coord ox, oy;
-   PROG_SEQUENCE_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+   PROG_SEQUENCE_DATA_GET(o, sd)
 
    evas_object_geometry_get(o, &ox, &oy, NULL, NULL);
    if ((ox == x) && (oy == y)) return;
@@ -216,7 +211,7 @@ _prog_sequence_smart_resize(Evas_Object *o,
                             Evas_Coord h)
 {
    Evas_Coord ow, oh;
-   PROG_SEQUENCE_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+   PROG_SEQUENCE_DATA_GET(o, sd)
 
    evas_object_geometry_get(o, NULL, NULL, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
@@ -234,7 +229,7 @@ _prog_sequence_smart_calculate(Evas_Object *o)
    int line_num;
    Eina_Stringshare *name;
 
-   PROG_SEQUENCE_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+   PROG_SEQUENCE_DATA_GET(o, sd)
    evas_object_geometry_get(sd->obj, NULL, NULL, &ow, &oh);
    evas_object_resize(sd->bg, ow, oh);
    evas_object_resize(sd->labels_bg, LABELS_W, oh);
@@ -281,6 +276,8 @@ _overlay_move(Prog_Sequence_Smart_Data *sd, int x, int y)
    Eina_List *l;
    int line_num = 0;
 
+   assert(sd != NULL);
+
    /* assuming that parent is scroller and its x-coord is starting point of viewport.
       labels block shouldn't scroll along X-axis.
       labels in list are sorted by y-coord */
@@ -309,6 +306,9 @@ _run_prog_cmp(const void *d1, const void *d2)
 static Run_Prog *
 _item_create(Prog_Sequence_Smart_Data *sd, const char* program, double time)
 {
+   assert(sd != NULL);
+   assert(program != NULL);
+
    Run_Prog *rp = mem_malloc(sizeof(Run_Prog));
 
    rp->start_time = time;
@@ -342,6 +342,8 @@ _item_create(Prog_Sequence_Smart_Data *sd, const char* program, double time)
 static void
 _item_free(Run_Prog *rp)
 {
+   assert(rp != NULL);
+
    eina_stringshare_del(rp->name);
    evas_object_del(rp->obj);
    evas_object_del(rp->delay_obj);
@@ -357,6 +359,9 @@ _timeline_init(Prog_Sequence_Smart_Data *sd, Eina_Stringshare *program)
    Run_Prog *cur, *rp_check;
    double time = 0;
    int cmp;
+
+   assert(sd != NULL);
+   assert(program != NULL);
 
    Evas_Object *obj = sd->style->obj;
    Run_Prog *rp;
@@ -427,6 +432,9 @@ static void
 _timeline_free(Prog_Sequence_Smart_Data *sd)
 {
    Run_Prog *cur;
+
+   assert(sd != NULL);
+
    EINA_LIST_FREE(sd->timeline, cur)
      {
          eina_stringshare_del(cur->name);
@@ -442,6 +450,8 @@ _start_state_init(Prog_Sequence_Smart_Data *sd)
    Part *part;
    Run_Prog *runp;
    Eina_List *l;
+
+   assert(sd != NULL);
 
    sd->parts_count = eina_inlist_count(sd->style->parts);
    sd->playback.start_state.parts = mem_malloc(sizeof(Part_State) * sd->parts_count);
@@ -466,6 +476,10 @@ static void
 _state_clean(Prog_Sequence_Smart_Data *sd, Playback_State *state)
 {
    int i;
+
+   assert(sd != NULL);
+   assert(state != NULL);
+
    if (state->parts)
      {
         for (i = 0; i < sd->parts_count; i++)
@@ -485,6 +499,10 @@ _state_copy(Prog_Sequence_Smart_Data *sd, const Playback_State *src, Playback_St
    int i;
    Eina_List *l;
    Run_Prog *runp;
+
+   assert(sd != NULL);
+   assert(src != NULL);
+   assert(dest != NULL);
 
    dest->parts = mem_malloc(sizeof(Part_State) * sd->parts_count);
    for (i = 0; i < sd->parts_count; i++)
@@ -506,13 +524,13 @@ prog_sequence_add(Evas_Object *parent, Style *style, Live_View *live)
    Evas *e;
    Evas_Object *obj;
 
-   if (!parent) return NULL;
-   if (!live) return NULL;
-   if (!style) return NULL;
+   assert(parent != NULL);
+   assert(style != NULL);
+   assert(live != NULL);
 
    e = evas_object_evas_get(parent);
    obj = evas_object_smart_add(e, _prog_sequence_smart_class_new());
-   PROG_SEQUENCE_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
+   PROG_SEQUENCE_DATA_GET(obj, sd);
    sd->parent = parent;
    sd->live = live;
    sd->style = style;
@@ -548,7 +566,9 @@ prog_sequence_program_set(Evas_Object *obj,
    Eina_Stringshare *program;
    Evas_Object *label;
    Eina_List *l;
-   PROG_SEQUENCE_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   PROG_SEQUENCE_DATA_GET(obj, sd);
+
+   assert(program_name != NULL);
 
    if (sd->playback.timer)
      {
@@ -590,7 +610,7 @@ prog_sequence_program_set(Evas_Object *obj,
 void
 prog_sequence_program_reset(Evas_Object *obj)
 {
-   PROG_SEQUENCE_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   PROG_SEQUENCE_DATA_GET(obj, sd);
 
    Part *part;
    Evas_Coord x, y;
@@ -622,6 +642,8 @@ static Eina_Bool
 _timer_cb(void *data)
 {
    Prog_Sequence_Smart_Data *sd = data;
+
+   assert(sd != NULL);
 
    Eina_List *l, *ln, *lt;
    Run_Prog *runp;
@@ -703,7 +725,7 @@ _timer_cb(void *data)
 void
 prog_sequence_program_play(Evas_Object *obj)
 {
-   PROG_SEQUENCE_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   PROG_SEQUENCE_DATA_GET(obj, sd);
 
    if (!sd->playback.is_played)
      {
@@ -730,7 +752,7 @@ prog_sequence_program_play(Evas_Object *obj)
 void
 prog_sequence_program_stop(Evas_Object *obj)
 {
-   PROG_SEQUENCE_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   PROG_SEQUENCE_DATA_GET(obj, sd);
 
    if (sd->playback.timer)
      ecore_timer_del(sd->playback.timer);
@@ -743,7 +765,7 @@ prog_sequence_program_stop(Evas_Object *obj)
 void
 prog_sequence_cycled_set(Evas_Object *obj, Eina_Bool cycled)
 {
-   PROG_SEQUENCE_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   PROG_SEQUENCE_DATA_GET(obj, sd);
 
    sd->playback.is_cycled = cycled;
 }

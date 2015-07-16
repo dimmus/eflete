@@ -32,6 +32,9 @@ _on_popup_swallow_check(void *data,
    Eina_Stringshare *but_swallow = NULL, *title_swallow = NULL;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    const char *part_name = elm_object_part_text_get(obj, NULL);
    check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
@@ -101,6 +104,9 @@ _on_popup_swallow_check(void *data,
 Evas_Object *
 widget_popup_create(Evas_Object *parent, const Style *style)
 {
+   assert(parent != NULL);
+   assert(style != NULL);
+
    Eina_Stringshare *class;
    Eina_Stringshare *style_name;
    char **style_parsed = NULL;

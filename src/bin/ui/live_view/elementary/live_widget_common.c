@@ -27,7 +27,8 @@ standard_widget_name_parse(const char *full_group_name,
 {
    char **c;
    unsigned int count;
-   if (!full_group_name) return false;
+
+   assert(full_group_name != NULL);
 
    c = eina_str_split_full(full_group_name, "/", 4, &count);
 
@@ -61,6 +62,9 @@ on_swallow_check(void *data,
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    const char *part_name = elm_object_part_text_get(obj, NULL);
    check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
@@ -100,6 +104,9 @@ on_text_check(void *data,
    const char *default_text;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    const char *part_name = elm_object_part_text_get(obj, NULL);
    check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
@@ -137,8 +144,14 @@ send_signal(void *data,
              void *ei __UNUSED__)
 {
    Evas_Object *object = (Evas_Object *)data;
+
+   assert(data != NULL);
+
    const char *name = evas_object_data_get(obj, SIGNAL_NAME);
    const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
+
+   assert(name != NULL);
+   assert(source != NULL);
 
    elm_layout_signal_emit(object, name, source);
 }
