@@ -641,11 +641,13 @@ groupedit_edit_object_part_select(Evas_Object *obj, const char *part)
    Groupedit_Part *gp;
    WS_GROUPEDIT_DATA_GET(obj, sd);
 
-   assert(part != NULL);
-
-   gp = _parts_list_find(sd->parts, part);
-
-   assert(gp != NULL);
+   if (part)
+     {
+        gp = _parts_list_find(sd->parts, part);
+        assert(gp != NULL);
+     }
+   else
+     gp = NULL;
 
    if (!sd->separated) sd->selected = gp;
    else
