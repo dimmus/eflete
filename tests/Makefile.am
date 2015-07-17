@@ -594,9 +594,7 @@ shortcuts_test_SOURCES = \
 test_shortcuts/test_shortcuts.c \
 test_shortcuts/shortcuts_init.c \
 test_shortcuts/shortcuts_shutdown.c \
-test_shortcuts/shortcuts_profile_load.c \
-test_shortcuts/shortcuts_main_add.c \
-test_shortcuts/shortcuts_main_del.c
+test_shortcuts/shortcuts_profile_load.c
 shortcuts_test_CFLAGS = ${FLAGS}
 shortcuts_test_LDADD = ${LD}
 
