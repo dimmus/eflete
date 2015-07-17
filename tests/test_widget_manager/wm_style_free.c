@@ -112,33 +112,6 @@ END_TEST
 /**
  * @addtogroup wm_style_free
  * @{
- * <tr>
- * <td>wm_style_free</td>
- * <td>wm_style_free_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- *
- * @procedure
- * @step 1 Call function wm_style_free(NULL).
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (wm_style_free_test_n)
-{
-   elm_init(0,0);
-   ck_assert_msg(wm_style_free(NULL) == EINA_FALSE, "Deleting NULL as Group object.");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup wm_style_free
- * @{
  * </TABLE>
  * @}
  * @}
