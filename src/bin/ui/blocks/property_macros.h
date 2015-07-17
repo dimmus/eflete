@@ -1724,7 +1724,7 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
    if (TOOLTIP) elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
    pd->MEMBER.VALUE##_obj = elm_layout_add(parent); \
    elm_layout_theme_set(pd->MEMBER.VALUE##_obj, "image", "color", "color_set"); \
-   evas_object_event_callback_add(pd->MEMBER.VALUE, EVAS_CALLBACK_MOUSE_DOWN, \
+   elm_layout_signal_callback_add(pd->MEMBER.VALUE, "clicked", "eflete", \
                                   _on_##MEMBER##_##VALUE##_clicked, pd); \
    elm_layout_content_set(pd->MEMBER.VALUE, NULL, pd->MEMBER.VALUE##_obj); \
    elm_layout_content_set(item, NULL, pd->MEMBER.VALUE); \
@@ -1806,9 +1806,9 @@ _on_##MEMBER##_##VALUE##_dismissed(void *data, \
 } \
 static void \
 _on_##MEMBER##_##VALUE##_clicked(void *data, \
-                                 Evas *e __UNUSED__, \
                                  Evas_Object *obj, \
-                                 void *event_info __UNUSED__) \
+                                 const char *emission __UNUSED__, \
+                                 const char *source __UNUSED__) \
 { \
    int x, y; \
    int r, g, b, a; \
