@@ -23,7 +23,6 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("colorclass_manager_test");
    TCase *tcase = tcase_create("TCase");
 
-   tcase_add_test(tcase, colorclass_manager_add_test_n);
    tcase_add_test(tcase, colorclass_manager_add_test_p);
 
    suite_add_tcase(suite, tcase);

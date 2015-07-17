@@ -35,35 +35,6 @@
  * @{
  * <tr>
  * <td>colorclass_manager_add</td>
- * <td>colorclass_manager_add_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 call colorclass_manager_add
- * @step 2 check returned pointer
- * </td>
- * <td>NULL</td>
- * <td>NULL pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (colorclass_manager_add_test_n)
-{
-   elm_init(0,0);
-
-   ck_assert_msg(colorclass_manager_add(NULL) == NULL, "Not NULL returned");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup colorclass_manager_add
- * @{
- * <tr>
- * <td>colorclass_manager_add</td>
  * <td>colorclass_manager_add_test_p</td>
  * <td>
  * @precondition
