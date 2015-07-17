@@ -74,7 +74,7 @@ EFLETE_TEST(ui_states_list_data_unset_test_p1)
    style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
    gl_states = ui_states_list_add(window);
-   part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
+   part = EINA_INLIST_CONTAINER_GET(style->parts->next->next, Part);
    ui_states_list_data_set(gl_states, style, part);
 
    ck_assert_msg(ui_states_list_data_unset(gl_states) == EINA_TRUE,
@@ -121,36 +121,6 @@ EFLETE_TEST(ui_states_list_data_unset_test_p2)
                  "Data cant be unset from empty State List");
 
    elm_theme_extension_del(NULL, EFLETE_THEME);
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_states_list_data_unset
- * @{
- * <tr>
- * <td>ui_states_list_data_unset</td>
- * <td>ui_states_list_data_unset_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialized elm.
- *
- * @procedure
- * @step 1 Call function ui_states_list_data_unset(NULL).
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(ui_states_list_data_unset_test_n)
-{
-   elm_init(0,0);
-
-   ck_assert_msg(ui_states_list_data_unset(NULL) == EINA_FALSE,
-                 "Data was unset from NULL");
 
    elm_shutdown();
 }
