@@ -23,5 +23,4 @@
 
 #define TEST_NAME "colorclass_manager"
 
-void colorclass_manager_add_test_n(int);
 void colorclass_manager_add_test_p(int);
