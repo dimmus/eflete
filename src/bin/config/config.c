@@ -370,7 +370,6 @@ config_load(App_Data *ap)
    profile_load(config->profile);
 
    shortcuts_profile_load(ap, profile_get());
-   shortcuts_main_add(ap);
 #ifdef HAVE_ENVENTOR
    enventor_object_profile_load(ap->enventor, profile_get());
 #endif /* HAVE_ENVENTOR */
