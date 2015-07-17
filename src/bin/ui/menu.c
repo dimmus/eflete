@@ -194,7 +194,6 @@ _menu_cb(void *data __UNUSED__,
          break;
       default:
          ERR("unknown menu id: %d", menu_event->mid);
-         abort();
          break;
      }
    return ECORE_CALLBACK_DONE;
