@@ -1907,8 +1907,8 @@ STATE_ATTR_2CHECK(_("max"), state_text, max_x, max_y, state_text, "w:", "", "h:"
 STATE_ATTR_2CHECK(_("fit"), state_text, fit_x, fit_y, state_text, "w:", "", "h:", "",
                   _("Resize the text for it to fit in it's container by X axis"),
                   _("Resize the text for it to fit in it's container by Y axis"))
-STATE_ATTR_COLOR(_("shadow color"), state, color3, state_text, NULL)
-STATE_ATTR_COLOR(_("outline color"), state, color2, state_text, NULL)
+STATE_ATTR_COLOR(_("shadow color"), state, color2, state_text, NULL)
+STATE_ATTR_COLOR(_("outline color"), state, color3, state_text, NULL)
 
 STATE_ATTR_SOURCE_UPDATE(state_text, source, state_text, EDJE_PART_TYPE_TEXT, ==)
 STATE_ATTR_COMBOBOX(_("source"), state_text, source, state_text,
@@ -1961,8 +1961,8 @@ _text_effect_contols_update(Prop_Data *pd)
         {
            elm_object_disabled_set(pd->state_text.effect_direction, true);
            ewe_combobox_text_set(pd->state_text.effect_direction, _("None"));
-           elm_object_disabled_set(pd->state_text.color3, true);
-           elm_object_disabled_set(pd->state_text.color2, false);
+           elm_object_disabled_set(pd->state_text.color3, false);
+           elm_object_disabled_set(pd->state_text.color2, true);
            break;
         }
       case EDJE_TEXT_EFFECT_OUTLINE_SHADOW:
@@ -1977,8 +1977,8 @@ _text_effect_contols_update(Prop_Data *pd)
       default:
         {
            elm_object_disabled_set(pd->state_text.effect_direction, false);
-           elm_object_disabled_set(pd->state_text.color3, false);
-           elm_object_disabled_set(pd->state_text.color2, true);
+           elm_object_disabled_set(pd->state_text.color3, true);
+           elm_object_disabled_set(pd->state_text.color2, false);
         }
      }
 }
