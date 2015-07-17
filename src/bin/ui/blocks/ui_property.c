@@ -2940,7 +2940,7 @@ ui_property_state_fill_set(Evas_Object *property)
         item = elm_separator_add(pd->state_fill.frame);
         elm_separator_horizontal_set(item, true);
         elm_object_style_set(item, "icon");
-        elm_layout_text_set(item, "eflete.text", _("Start point"));
+        elm_layout_text_set(item, "eflete.text", _("Origin point"));
         IMAGE_ADD_NEW(item, icon, "icon", "start-point")
         elm_layout_content_set(item, "eflete.swallow.icon", icon);
         evas_object_show(item);
@@ -2960,7 +2960,7 @@ ui_property_state_fill_set(Evas_Object *property)
         item = elm_separator_add(pd->state_fill.frame);
         elm_separator_horizontal_set(item, true);
         elm_object_style_set(item, "icon");
-        elm_object_part_text_set(item, "eflete.text", _("End point"));
+        elm_object_part_text_set(item, "eflete.text", _("Size"));
         IMAGE_ADD_NEW(item, icon, "icon", "end-point")
         elm_layout_content_set(item, "eflete.swallow.icon", icon);
         evas_object_show(item);
