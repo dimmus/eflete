@@ -101,7 +101,6 @@ _del_part(void *data,
    if (!style->parts)
      {
         ui_signal_list_data_unset(ap->block.signal_list);
-        _on_ws_part_unselect(ap, ap->workspace, part_name);
         workspace_highlight_unset(ap->workspace);
         /* Source code is updated on part selection.
            If this was last part we should update it manualy */
