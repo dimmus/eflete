@@ -794,8 +794,8 @@ _eina_hash_free(void *data)
 #undef PART_ADD
 #undef PART_FUNCTIONALITY
 
-Eina_Bool
-shortcuts_main_add(App_Data *ap)
+static Eina_Bool
+_shortcuts_main_add(App_Data *ap)
 {
    assert(ap != NULL);
 
@@ -811,8 +811,8 @@ shortcuts_main_add(App_Data *ap)
    return true;
 }
 
-Eina_Bool
-shortcuts_main_del(App_Data *ap)
+static Eina_Bool
+_shortcuts_main_del(App_Data *ap)
 {
    assert(ap != NULL);
 
@@ -898,6 +898,7 @@ shortcuts_init(App_Data *ap)
         eina_hash_direct_add(_sc_functions, _sc_func_set->descr, _sc_func_set->func);
         _sc_func_set++;
      }
+   _shortcuts_main_add(ap);
 
    return true;
 }
@@ -911,7 +912,7 @@ shortcuts_shutdown(App_Data *ap)
 
    Key_Pair *key;
 
-   shortcuts_main_del(ap);
+   _shortcuts_main_del(ap);
 
    eina_hash_free(_sc_functions);
    _sc_functions = NULL;
