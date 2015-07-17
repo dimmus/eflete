@@ -26,6 +26,8 @@ _pop_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED_
 {
    Evas_Object *nf = data;
 
+   assert(nf != NULL);
+
    elm_naviframe_item_pop(nf);
 }
 
@@ -33,6 +35,9 @@ void
 _next_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *nf = pd->live_object, *bt = NULL;
    Eina_Stringshare *find_part = eina_stringshare_add("elm.swallow.prev_btn");
 
@@ -53,6 +58,9 @@ void
 _prev_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *nf = pd->live_object, *bt = NULL;
    Eina_Stringshare *find_part = eina_stringshare_add("elm.swallow.next_btn");
 
@@ -82,6 +90,9 @@ _on_naviframe_swallow_check(void *data,
    Elm_Object_Item *item_main, *item_current;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    const char *part_name = elm_object_part_text_get(obj, NULL);
    check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
@@ -151,6 +162,9 @@ _on_naviframe_text_check(void *data,
    Elm_Object_Item *item_main, *item_current;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    const char *part_name = elm_object_part_text_get(obj, NULL);
    check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
@@ -194,8 +208,14 @@ _naviframe_send_signal(void *data,
                        void *ei __UNUSED__)
 {
    Evas_Object *object = (Evas_Object *)data;
+
+   assert(object != NULL);
+
    const char *name = evas_object_data_get(obj, SIGNAL_NAME);
    const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
+
+   assert(name != NULL);
+   assert(source != NULL);
 
    Elm_Object_Item *item_main, *item_current;
 
@@ -211,6 +231,9 @@ _naviframe_send_signal(void *data,
 Evas_Object *
 widget_naviframe_create(Evas_Object *parent, const Style *style)
 {
+   assert(parent != NULL);
+   assert(style != NULL);
+
    Eina_Stringshare *style_name;
    char **style_parsed = NULL;
    unsigned int count_split = 0;
@@ -225,8 +248,6 @@ widget_naviframe_create(Evas_Object *parent, const Style *style)
      }
    free(style_parsed[0]);
    free(style_parsed);
-
-   if (!parent) return NULL;
 
    Evas_Object *nf = elm_naviframe_add(parent);
    evas_object_size_hint_weight_set(nf, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

@@ -77,6 +77,8 @@ splash_add(Evas_Object *parent,
    sdata.data = data;
    sdata.status = SPLASH_NONE;
 
+   assert(parent != NULL);
+
    sdata.win = elm_win_inwin_add(parent);
    elm_object_style_set(sdata.win, "splash");
 
@@ -96,6 +98,8 @@ splash_add(Evas_Object *parent,
 void
 splash_del(Evas_Object *obj)
 {
+   assert(obj != NULL);
+
    sdata.status = SPLASH_SUCCESS;
    elm_layout_signal_emit(obj, "end", "eflete");
 }

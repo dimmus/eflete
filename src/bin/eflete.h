@@ -32,6 +32,8 @@
    #include "eflete_config.h"
 #endif /* include eflete_config.h */
 
+#include <assert.h>
+
 /* localization */
 #ifdef HAVE_GETTEXT
    #include <libintl.h>
@@ -92,7 +94,6 @@ struct _App_Data
       Evas_Object *left_hor;
       Evas_Object *right_hor;
       Evas_Object *center;
-      Evas_Object *center_down; /* delete it*/
    } panes;
 
    struct {

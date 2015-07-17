@@ -29,6 +29,9 @@ _on_gengrid_swallow_check(void *data,
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    Eina_List *part_list = evas_object_data_get(object, SWALLOW_LIST);
    const char *part_name = elm_object_part_text_get(obj, NULL);
@@ -73,6 +76,9 @@ _on_gengrid_text_check(void *data,
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    Eina_List *part_list = evas_object_data_get(object, TEXT_LIST);
    const char *part_name = elm_object_part_text_get(obj, NULL);
@@ -113,10 +119,16 @@ _gengrid_send_signal(void *data,
                      void *ei __UNUSED__)
 {
    Elm_Object_Item *item = NULL;
+
+   assert(data != NULL);
+
    item = elm_gengrid_first_item_get(data);
 
    const char *name = evas_object_data_get(obj, SIGNAL_NAME);
    const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
+
+   assert(name != NULL);
+   assert(source != NULL);
 
    while (item)
      {
@@ -175,8 +187,11 @@ _create_gengrid(Evas_Object *obj, Eina_Bool item_style, const char *style)
    int i;
    Evas_Object *grid = NULL;
    double scale = elm_config_scale_get();
-   if (!obj) return NULL;
-   grid = elm_gengrid_add(obj);
+
+   assert(obj != NULL);
+   assert(style != NULL);
+
+  grid = elm_gengrid_add(obj);
    elm_gengrid_item_size_set(grid, scale * 100, scale * 100);
    evas_object_size_hint_align_set(grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(grid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -216,6 +231,9 @@ _create_gengrid(Evas_Object *obj, Eina_Bool item_style, const char *style)
 Evas_Object *
 widget_gengrid_create(Evas_Object *parent, const Style *style)
 {
+   assert(parent != NULL);
+   assert(style != NULL);
+
    Eina_Stringshare *class;
    Eina_Stringshare *style_name;
    Eina_Bool item_style;

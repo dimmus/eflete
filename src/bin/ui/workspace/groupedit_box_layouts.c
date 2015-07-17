@@ -11,6 +11,10 @@
 static void
 _fixed_point_divide_and_decompose_integer(int dividend, int divisor, int *int_part, int *frac_part)
 {
+   assert(int_part != NULL);
+   assert(frac_part != NULL);
+   assert(divisor != 0);
+
    int quotient = ((long long)dividend << 16) / divisor;
    *frac_part = quotient & 0xffff;
    *int_part = quotient >> 16;
@@ -19,6 +23,8 @@ _fixed_point_divide_and_decompose_integer(int dividend, int divisor, int *int_pa
 static void
 _layout_dimension_change_min_max_cell_bound(int dim, int *new_dim, int min_d, int max_d, int cell_sz)
 {
+   assert(new_dim != NULL);
+
    if (dim > cell_sz)
      {
         if ((min_d != 0) && (cell_sz < min_d))
@@ -38,6 +44,11 @@ _layout_dimension_change_min_max_cell_bound(int dim, int *new_dim, int min_d, in
 static void
 _layout_set_offset_and_expand_dimension_space_max_bounded(int dim, int *new_dim, int space_sz, int max_dim, int *offset_current, int *offset_top, int *offset_bottom, double align, int pad_before, int pad_after)
 {
+   assert(new_dim != NULL);
+   assert(offset_current != NULL);
+   assert(offset_top != NULL);
+   assert(offset_bottom != NULL);
+
    if (align >= 0.0)
      {
         *new_dim = dim;
@@ -72,6 +83,11 @@ _layout_set_offset_and_expand_dimension_space_max_bounded(int dim, int *new_dim,
 static void
 _layout_set_offset_and_change_dimension_min_max_cell_bounded(int dim, int *new_dim, int min_dim, int max_dim, int cell_sz, int *offset_current, int *offset_top, int *offset_bottom, double align, int pad_before, int pad_after)
 {
+   assert(new_dim != NULL);
+   assert(offset_current != NULL);
+   assert(offset_top != NULL);
+   assert(offset_bottom != NULL);
+
    if (align >= 0.0)
      {
         *new_dim = dim;
@@ -97,6 +113,8 @@ _sizing_eval(Evas_Object *obj)
    Evas_Coord minw, minh, maxw, maxh;
    Evas_Coord w, h;
 
+   assert(obj != NULL);
+
    evas_object_size_hint_min_get(obj, &minw, &minh);
    evas_object_size_hint_max_get(obj, &maxw, &maxh);
    evas_object_geometry_get(obj, NULL, NULL, &w, &h);
@@ -114,6 +132,8 @@ _evas_object_box_layout_horizontal_weight_apply(Evas_Object_Box_Data *priv, Evas
 {
    int rem_diff = 0;
    int i;
+
+   assert(priv != NULL);
 
    for (i = 0; i < n_objects; i++)
      {
@@ -178,6 +198,9 @@ _box_layout_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
    Groupedit_Item *ge_item = NULL;
 
    Eina_List *items = (Eina_List *)data;
+
+   assert(o != NULL);
+   assert(priv != NULL);
 
    n_children = eina_list_count(priv->children);
    if (!n_children)
@@ -310,6 +333,8 @@ _evas_object_box_layout_vertical_weight_apply(Evas_Object_Box_Data *priv, Evas_O
    int rem_diff = 0;
    int i;
 
+   assert(priv != NULL);
+
    for (i = 0; i < n_objects; i++)
      {
         Evas_Object_Box_Option *opt = objects[i];
@@ -373,6 +398,9 @@ _box_layout_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
    Groupedit_Item *ge_item = NULL;
 
    Eina_List *items = (Eina_List *)data;
+
+   assert(o != NULL);
+   assert(priv != NULL);
 
    n_children = eina_list_count(priv->children);
    if (!n_children)
@@ -513,6 +541,9 @@ _box_layout_homogeneous_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void
 
    Eina_List *items = (Eina_List *)data;
 
+   assert(o != NULL);
+   assert(priv != NULL);
+
    n_children = eina_list_count(priv->children);
    if (!n_children)
      {
@@ -613,6 +644,9 @@ _box_layout_homogeneous_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *
 
    Eina_List *items = (Eina_List *)data;
 
+   assert(o != NULL);
+   assert(priv != NULL);
+
    n_children = eina_list_count(priv->children);
    if (!n_children)
      {
@@ -712,6 +746,9 @@ _box_layout_homogeneous_max_size_horizontal(Evas_Box *o, Evas_Object_Box_Data *p
    Groupedit_Item *ge_item = NULL;
 
    Eina_List *items = (Eina_List *)data;
+
+   assert(o != NULL);
+   assert(priv != NULL);
 
    n_children = eina_list_count(priv->children);
    if (!n_children)
@@ -836,6 +873,9 @@ _box_layout_homogeneous_max_size_vertical(Evas_Box *o, Evas_Object_Box_Data *pri
 
    Eina_List *items = (Eina_List *)data;
 
+   assert(o != NULL);
+   assert(priv != NULL);
+
    n_children = eina_list_count(priv->children);
    if (!n_children)
      {
@@ -948,6 +988,15 @@ _box_layout_homogeneous_max_size_vertical(Evas_Box *o, Evas_Object_Box_Data *pri
 void
 _evas_object_box_layout_flow_horizontal_row_info_collect(Evas_Object_Box_Data *priv, int box_w, int *row_count, int *row_max_h, int *row_break, int *row_width, int *off_y_ret, int *max_w_ret, int *max_h_ret)
 {
+   assert(priv != NULL);
+   assert(row_count != NULL);
+   assert(row_max_h != NULL);
+   assert(row_break != NULL);
+   assert(row_width != NULL);
+   assert(off_y_ret != NULL);
+   assert(max_w_ret != NULL);
+   assert(max_h_ret != NULL);
+
    int i, remain_w = box_w, start_i = 0;
    int off_y = 0, max_w = 0, max_h = 0, n_rows = 0;
    Eina_List *l;
@@ -1030,6 +1079,9 @@ _box_layout_flow_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
    Groupedit_Item *ge_item = NULL;
 
    Eina_List *items = (Eina_List *)data;
+
+   assert(o != NULL);
+   assert(priv != NULL);
 
    n_children = eina_list_count(priv->children);
    if (!n_children)
@@ -1159,6 +1211,15 @@ _evas_object_box_layout_flow_vertical_col_info_collect(Evas_Object_Box_Data *pri
    int off_x = 0, max_w = 0, max_h = 0, n_cols = 0;
    Eina_List *l;
 
+   assert(priv != NULL);
+   assert(col_count != NULL);
+   assert(col_max_w != NULL);
+   assert(col_break != NULL);
+   assert(col_height != NULL);
+   assert(off_x_ret != NULL);
+   assert(max_w_ret != NULL);
+   assert(max_h_ret != NULL);
+
    for (i = 0, l = priv->children; l; i++, l = l->next)
      {
         Evas_Object_Box_Option *opt = l->data;
@@ -1238,6 +1299,9 @@ _box_layout_flow_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
    Groupedit_Item *ge_item = NULL;
 
    Eina_List *items = (Eina_List *)data;
+
+   assert(o != NULL);
+   assert(priv != NULL);
 
    n_children = eina_list_count(priv->children);
    if (!n_children)
@@ -1371,6 +1435,9 @@ _box_layout_stack(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
    Groupedit_Item *ge_item = NULL;
 
    Eina_List *items = (Eina_List *)data;
+
+   assert(o != NULL);
+   assert(priv != NULL);
 
    evas_object_geometry_get(o, &ox, &oy, &ow, &oh);
 

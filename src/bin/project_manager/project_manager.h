@@ -41,6 +41,7 @@
 #include "widget_manager.h"
 #include "logger.h"
 #include <Eet.h>
+#include <assert.h>
 
 /* don't forget to update on major changes */
 #define PROJECT_FILE_VERSION 3
@@ -313,6 +314,8 @@ pm_project_import_edc(const char *name,
 static inline Project *
 pm_project_thread_project_get(Project_Thread *worker)
 {
+   assert(worker != NULL);
+
    return worker->project;
 }
 

@@ -47,6 +47,8 @@ _job_popup_close(void *data)
 {
    App_Data *ap = (App_Data *)data;
 
+   assert(ap != NULL);
+
    evas_object_del(ap->popup);
    ap->popup = NULL;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
@@ -58,6 +60,9 @@ _add_ok_clicked(void *data,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+
+   assert(ap != NULL);
+
    Evas_Object *workspace = ap->workspace;
    Part *part = ui_states_list_part_get(ap->block.state_list);
    const char *str_name, *str_value;
@@ -117,6 +122,9 @@ _on_dup_state_change(void *data,
 {
    char **split = NULL;
    Part *part = (Part *) data;
+
+   assert(part != NULL);
+
    Ewe_Combobox_Item *it = ei;
    const char *state = it->title;
    if (!it->index)
@@ -145,14 +153,12 @@ state_dialog_state_add(App_Data *ap)
    const char *state_name = NULL;
    Evas_Object *combobox_dup_state;
 
-   if ((!ap) || (!ap->workspace))
-     {
-        ERR("Failed create a add state dialog.");
-        return NULL;
-     }
+   assert(ap != NULL);
+   assert(ap->workspace != NULL);
 
    part = ui_states_list_part_get(ap->block.state_list);
-   if (!part) return NULL;
+
+   assert(part != NULL);
 
    state_copy = false;
 
@@ -225,6 +231,8 @@ _del_ok_clicked(void *data,
    Part *part;
    Eina_Stringshare *state;
 
+   assert(ap != NULL);
+
    workspace = ap->workspace;
    part = ui_states_list_part_get(ap->block.state_list);
    state = ui_states_list_selected_state_get(ap->block.state_list);
@@ -254,21 +262,16 @@ state_dialog_state_del(App_Data *ap)
    Part *part;
    Eina_Stringshare *state, *title, *message;
 
-   if ((!ap) || (!ap->workspace))
-     {
-        ERR("Failed create an add state dialog.");
-        return NULL;
-     }
+   assert(ap != NULL);
+   assert(ap->workspace != NULL);
 
    part = ui_states_list_part_get(ap->block.state_list);
-   if (!part) return NULL;
+
+   assert(part != NULL);
+
    state = ui_states_list_selected_state_get(ap->block.state_list);
 
-   if (!state)
-     {
-        NOTIFY_WARNING(_("Something is wrong. State is not selected"));
-        return NULL;
-     }
+   assert(state != NULL);
 
    if (!strcmp(state, "default 0.00"))
      {

@@ -16,13 +16,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
 
 #include "wizard_common.h"
-
-static Elm_Entry_Filter_Accept_Set accept_name = {
-   .accepted = NULL,
-   .rejected = BANNED_SYMBOLS
-};
 
 static void
 _on_cancel(void *data,
@@ -31,10 +29,14 @@ _on_cancel(void *data,
 {
    Wizard_Import_Edj_Win *wiew;
    wiew = (Wizard_Import_Edj_Win *)data;
+
+   assert(wiew != NULL);
+
    App_Data *app = app_data_get();
 
    mw_del(wiew->win);
    app->modal_editor--;
+   if (!wiew->name_validator) elm_validator_regexp_free(wiew->name_validator);
    free(wiew);
    ui_menu_items_list_disable_set(app->menu, MENU_ITEMS_LIST_MAIN, false);
    ui_menu_items_list_disable_set(app->menu, MENU_ITEMS_LIST_BASE, true);
@@ -59,6 +61,9 @@ _progress_print(void *data, Eina_Stringshare *progress_string)
 {
    Wizard_Import_Edj_Win *wiew;
    wiew = (Wizard_Import_Edj_Win *)data;
+
+   assert(wiew != NULL);
+
    elm_object_part_text_set(wiew->splash, "label.info", progress_string);
 
    if (wiew->progress_log)
@@ -75,6 +80,9 @@ _progress_end(void *data, PM_Project_Result result)
    App_Data *ap;
 
    wiew = (Wizard_Import_Edj_Win *)data;
+
+   assert(wiew != NULL);
+
    ap = app_data_get();
 
    if (result == PM_PROJECT_SUCCESS)
@@ -138,6 +146,9 @@ _teardown_splash(void *data, Splash_Status status)
 {
    Wizard_Import_Edj_Win *wiew;
    wiew = (Wizard_Import_Edj_Win *)data;
+
+   assert(wiew != NULL);
+
    App_Data *app = app_data_get();
 
    if (app->pr_thread->result == PM_PROJECT_SUCCESS)
@@ -165,6 +176,8 @@ _teardown_splash(void *data, Splash_Status status)
 static Eina_Strbuf *
 _path_to_project_build(Wizard_Import_Edj_Win *wiew)
 {
+   assert(wiew != NULL);
+
    Eina_Strbuf *path_to_project = eina_strbuf_new();
 
    // remove trailing slashes
@@ -186,6 +199,8 @@ _path_to_project_build(Wizard_Import_Edj_Win *wiew)
 static Eina_Bool
 _project_directory_check(Wizard_Import_Edj_Win *wiew)
 {
+   assert(wiew != NULL);
+
    Eina_Strbuf *path_to_project = _path_to_project_build(wiew);
    Eina_Strbuf *request_str = NULL;
    Eina_Bool ret = true;
@@ -231,6 +246,8 @@ _project_directory_check(Wizard_Import_Edj_Win *wiew)
 static Eina_Bool
 _required_fields_check(Wizard_Import_Edj_Win *wiew)
 {
+   assert(wiew != NULL);
+
    if (elm_entry_is_empty(wiew->name))
      {
         NOTIFY_WARNING(_("Please enter the name of the project"));
@@ -295,12 +312,14 @@ _elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data)
 {
    Evas_Object *bt;
 
+   assert(entry != NULL);
+
    bt = elm_button_add(entry);
    elm_object_style_set(bt, "elipsis");
    elm_object_focus_allow_set(bt, false);
    evas_object_show(bt);
    evas_object_smart_callback_add(bt, "clicked", cb_func, data);
-   elm_object_part_content_set(entry, "elm.swallow.end", bt);
+   elm_object_part_content_set(entry, "elm.swallow.elipsis", bt);
 }
 
 void
@@ -309,6 +328,8 @@ project_path_item_add(Wizard_Import_Edj_Win *wiew,
                       const char *msg,
                       Evas_Smart_Cb cb_func)
 {
+   assert(wiew != NULL);
+
    elm_object_part_text_set(wiew->layout, "label.edj", label);
 
    ENTRY_ADD(wiew->layout, wiew->edj, true)
@@ -326,17 +347,17 @@ wizard_import_common_add(const char *layout_name)
    Wizard_Import_Edj_Win *wiew;
    App_Data *ap = app_data_get();
 
+   assert(layout_name != NULL);
+
    wiew = (Wizard_Import_Edj_Win *)mem_calloc(1, sizeof(Wizard_Import_Edj_Win));
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
 
    mwin = mw_add("dialog", _on_cancel, wiew);
-   if (!mwin)
-     {
-        free(wiew);
-        return NULL;
-     }
+
+   assert(mwin != NULL);
 
    wiew->win = mwin;
+   wiew->name_validator = elm_validator_regexp_new("^[a-zA-Z0-9_]+$", NULL);
 
    layout = elm_layout_add(mwin);
    elm_layout_theme_set(layout, "layout", "wizard", layout_name);
@@ -353,9 +374,8 @@ wizard_import_common_add(const char *layout_name)
 
    //label.name
    elm_object_part_text_set(layout, "label.name", _("Project name:"));
-   EWE_ENTRY_ADD(layout, wiew->name, true)
-   elm_entry_markup_filter_append(wiew->name,
-                                  elm_entry_filter_accept_set, &accept_name);
+   ENTRY_ADD(layout, wiew->name, true)
+   eo_do(wiew->name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, wiew->name_validator));
    elm_object_part_content_set(layout, "swallow.name", wiew->name);
    //label.path
    elm_object_part_text_set(layout, "label.path", _("Path to project:"));

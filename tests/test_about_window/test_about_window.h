@@ -26,4 +26,3 @@
  */
 
 void  about_window_add_test_p(int);
-void  about_window_add_test_n(int);

@@ -11,6 +11,7 @@ FUNC##_done(void *data, \
 \
    selected = event_info; \
    wiew = (Wizard_Import_Edj_Win *)data; \
+   assert(wiew != NULL); \
    if ((selected) && (strcmp(selected, ""))) \
      elm_entry_entry_set(wiew->FIELD, selected); \
    mw_del(wiew->fs); \
@@ -26,9 +27,10 @@ FUNC(void *data, \
    const char *path; \
 \
    wiew = (Wizard_Import_Edj_Win *)data; \
+   assert(wiew != NULL); \
 \
    wiew->fs = mw_add(NULL, _fs_close, NULL); \
-   if (!wiew->fs) return; \
+   assert(wiew->fs != NULL); \
    evas_object_show(wiew->fs); \
    FILESELECTOR_ADD(fs, wiew->fs, FUNC##_done, data); \
    elm_fileselector_folder_only_set(fs, FOLDER_ONLY); \
@@ -49,6 +51,7 @@ struct _Wizard_Import_Edj_Win
    Evas_Object *win;
    Evas_Object *splash;
    Evas_Object *name;
+   Elm_Validator_Regexp *name_validator;
    Evas_Object *path;
    Eina_Stringshare *tmp_dir_path;
    const char *select_file_error_msg;

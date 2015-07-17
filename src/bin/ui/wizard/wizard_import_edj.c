@@ -26,6 +26,9 @@ _setup_splash(void *data, Splash_Status status __UNUSED__)
    App_Data *ap;
    ap = app_data_get();
    wiew = (Wizard_Import_Edj_Win *)data;
+
+   assert(wiew != NULL);
+
    ap->pr_thread = pm_project_import_edj(elm_entry_entry_get(wiew->name),
                                          elm_entry_entry_get(wiew->path),
                                          elm_entry_entry_get(wiew->edj),
@@ -55,7 +58,8 @@ wizard_import_edj_add(App_Data *ap __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew;
    wiew = wizard_import_common_add("import_edj");
-   if (!wiew) return NULL;
+
+   assert(wiew != NULL);
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    mw_title_set(wiew->win, _("Wizard: import edj"));

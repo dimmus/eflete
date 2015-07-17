@@ -32,13 +32,14 @@ _on_change_selected(void *data,
    Diff *selected = NULL;
    int delta = 0;
 
-   if (!module) return;
+   assert(module != NULL);
 
    int index_curr = 0;
 
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    selected = elm_object_item_data_get(glit);
-   if (!selected) return;
+
+   assert(selected != NULL);
 
    if (module->current_change)
      index_curr = module->current_change->index;
@@ -48,7 +49,6 @@ _on_change_selected(void *data,
      history_undo(module->target, delta);
    else if (delta < 0)
      history_redo(module->target, abs(delta));
-   return;
 }
 
 Eina_Bool
@@ -57,6 +57,8 @@ _item_state_get(void *data,
                 const char *part)
 {
    Diff *diff = (Diff *)data;
+
+   assert(diff != NULL);
 
    if (((diff->action_type == MODIFY) || (diff->action_type == CONTAINER))
        && ((!strcmp(part, "modify"))))
@@ -75,6 +77,8 @@ _item_label_get(void *data,
                 const char *part)
 {
    Diff *diff = (Diff *)data;
+
+   assert(diff != NULL);
 
    if ((diff->description) && (!strcmp(part, "elm.text.message")))
      {
@@ -107,6 +111,8 @@ Evas_Object *
 _history_ui_add(Evas_Object *parent)
 {
    Evas_Object *genlist = NULL;
+
+   assert(parent != NULL);
 
    if (!_itc_change)
      {
@@ -163,8 +169,13 @@ _history_ui_item_update(Diff *change, Eina_Bool active, Eina_Bool current)
 void
 _history_ui_item_add(Diff *change, Module *module)
 {
+   assert(change != NULL);
+   assert(module != NULL);
+
    History *history = history_get();
-   if ((!history) || (!history->genlist)) return;
+
+   assert(history != NULL);
+   assert(history->genlist != NULL);
 
    change->ui_item = elm_genlist_item_append(history->genlist, _itc_change,
                                              change, NULL, ELM_GENLIST_ITEM_NONE,
@@ -179,6 +190,9 @@ _history_ui_list_reload(History *history, Module *module)
    Eina_List *l, *l_next;
    Diff *data = NULL;
    Eina_Bool canceled = false;
+
+   assert(history != NULL);
+   assert(module != NULL);
 
    elm_genlist_clear(history->genlist);
 

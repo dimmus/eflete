@@ -176,40 +176,6 @@ END_TEST
 /**
  * @addtogroup ui_states_list_part_get
  * @{
- * <tr>
- * <td>ui_states_list_part_get</td>
- * <td>ui_states_list_part_get_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialized elm.
- *
- * @procedure
- * @step 1 Call function ui_states_list_part_get(NULL).
- * @step 2 Check returned value.
- * </td>
- * <td>(Evas_Object *) window</td>
- * <td>NULL</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(ui_states_list_part_get_test_n2)
-{
-   Part *states_list_part;
-
-   elm_init(0,0);
-
-   states_list_part = ui_states_list_part_get(NULL);
-   ck_assert_msg(states_list_part == NULL,
-                 "Wrong object contain part.");
-
-   elm_shutdown();
-}
-END_TEST
-
-
-/**
- * @addtogroup ui_states_list_part_get
- * @{
  * </TABLE>
  * @}
  * @}

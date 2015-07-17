@@ -66,6 +66,9 @@ _on_add_popup_btn_add(void *data,
                       void *ei __UNUSED__)
 {
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
+
+   assert(edit != NULL);
+
    Colorclass_Item *it = NULL, *cc_it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
    Uns_List *colorclass = NULL;
@@ -136,6 +139,9 @@ _on_add_popup_btn_cancel(void *data,
                          void *ei __UNUSED__)
 {
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
+
+   assert(edit != NULL);
+
    evas_object_del(edit->popup);
    edit->popup = NULL;
 }
@@ -145,6 +151,8 @@ _on_button_add_clicked_cb(void *data __UNUSED__,
                           void *event_info __UNUSED__)
 {
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
+
+   assert(edit != NULL);
 
    Evas_Object *box, *bt_yes, *bt_no, *item;
 
@@ -187,6 +195,9 @@ _on_button_delete_clicked_cb(void *data,
                              void *event_info __UNUSED__)
 {
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
+
+   assert(edit != NULL);
+
    App_Data *ap = app_data_get();
    Uns_List *colorclass = NULL;
    Colorclass_Item *cc_it = NULL;
@@ -253,6 +264,9 @@ _change_bg_cb(void *data,
               void *event_info __UNUSED__)
 {
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
+
+   assert(edit != NULL);
+
    int state = elm_radio_state_value_get(obj);
    Evas_Object *bg = elm_object_part_content_unset(edit->layout, "swallow.entry.bg");
    evas_object_del(bg);
@@ -280,6 +294,7 @@ _change_bg_cb(void *data,
         }
       break;
       default:
+         abort();
       break;
      }
 
@@ -289,6 +304,8 @@ _change_bg_cb(void *data,
 static void
 _colorclass_update(Colorclasses_Manager *edit)
 {
+   assert(edit != NULL);
+
    edje_object_color_class_set(edit->edje_preview,
                                "colorclass_manager/text_example_colorclass",
                                edit->current_ccl->r1, edit->current_ccl->g1,
@@ -345,6 +362,7 @@ _on_changed_##NUMBER(void *data, \
                      void *event_info __UNUSED__) \
 { \
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data; \
+   assert(edit != NULL); \
    if (!edit->current_ccl) return; \
    elm_colorselector_color_get(edit->colorsel##NUMBER, \
                                &edit->current_ccl->r##NUMBER, \
@@ -368,8 +386,13 @@ _on_selected(void *data,
              void *event_info)
 {
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
+
+   assert(edit != NULL);
+
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    Colorclass_Item *ccl = elm_object_item_data_get(glit);
+
+   assert(ccl != NULL);
 
    edit->current_ccl = ccl;
 
@@ -399,6 +422,9 @@ _on_mwin_del(void * data,
              void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+
+   assert(ap != NULL);
+
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    ap->modal_editor--;
 }
@@ -411,6 +437,8 @@ _on_btn_apply(void *data,
    Eina_List *l;
    Uns_List *it = NULL;
    Colorclass_Item *ccl_it = NULL;
+
+   assert(edit != NULL);
 
    EINA_LIST_FOREACH(edit->unapplied_list, l, it)
      {
@@ -449,6 +477,9 @@ _on_btn_cancel(void *data,
    Eina_List *l;
    Uns_List *it = NULL;
    Colorclass_Item *ccl_it = NULL;
+
+   assert(edit != NULL);
+
    EINA_LIST_FOREACH(edit->unapplied_list, l, it)
      {
         ccl_it = (Colorclass_Item *)it->data;
@@ -467,8 +498,10 @@ static inline Evas_Object *
 _manager_search_field_create(Evas_Object *parent)
 {
    Evas_Object *entry, *icon;
+
+   assert(parent != NULL);
+
    ENTRY_ADD(parent, entry, true);
-   elm_object_style_set(entry, "search_field");
    elm_object_part_text_set(entry, "guide", _("Search"));
    ICON_STANDARD_ADD(entry, icon, true, "search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
@@ -480,6 +513,9 @@ _search_changed(void *data,
                 void *event_info __UNUSED__)
 {
    Colorclasses_Manager *edit = data;
+
+   assert(edit != NULL);
+
    _genlist_item_search(edit->genlist, &(edit->style_search_data),
                         edit->style_search_data.last_item_found);
 }
@@ -490,6 +526,8 @@ _search_nxt_gd_item(void *data,
 {
    Colorclasses_Manager *edit = data;
    Elm_Object_Item *start_from = NULL;
+
+   assert(edit != NULL);
 
    if (edit->style_search_data.last_item_found)
      start_from = elm_genlist_item_next_get(edit->style_search_data.last_item_found);
@@ -502,6 +540,9 @@ _search_reset_cb(void *data,
                  void *event_info __UNUSED__)
 {
    Search_Data *search_data = data;
+
+   assert(search_data != NULL);
+
    search_data->last_item_found = NULL;
 }
 
@@ -528,6 +569,8 @@ static void
 _colorclass_main_layout_create(Colorclasses_Manager *edit)
 {
    Evas_Object *search, *bg, *box_bg, *radio, *radio_group, *image_bg, *ic, *button;
+
+   assert(edit != NULL);
 
    /* Creating main layout of window */
    edit->layout = elm_layout_add(edit->mwin);
@@ -571,7 +614,10 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    if (!edje_object_file_set(edit->edje_preview,
                              EFLETE_THEME,
                              "elm/layout/colorclass_manager/preview"))
-     ERR("Couldn't load layout for text example field!");
+     {
+        ERR("Couldn't load layout for text example field!");
+        abort();
+     }
    edje_object_part_text_set(edit->edje_preview, "text_example",
                        _("The quick brown fox jumps over the lazy dog"));
    evas_object_size_hint_align_set(edit->edje_preview, -1, -1);
@@ -654,6 +700,8 @@ _colorclass_manager_init(Colorclasses_Manager *edit)
    Eina_List *l = NULL;
    Colorclass_Item *it = NULL;
 
+   assert(edit != NULL);
+
    cclist = edje_edit_color_classes_list_get(edit->pr->global_object);
 
    EINA_LIST_FOREACH(cclist, l, ccname)
@@ -664,9 +712,8 @@ _colorclass_manager_init(Colorclasses_Manager *edit)
                                      &r2, &g2, &b2, &a2,
                                      &r3, &g3, &b3, &a3))
           {
-             free(it);
              ERR("Couldn`t get color's from colorclass %s.", ccname);
-             continue;
+             abort();
           }
         it->r1 = r1; it->g1 = g1;
         it->b1 = b1; it->a1 = a1;
@@ -691,21 +738,15 @@ colorclass_manager_add(Project *project)
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
 
-   if (!project)
-     {
-        ERR("Project isn't opened");
-        return NULL;
-     }
+   assert(project != NULL);
 
    edit = (Colorclasses_Manager *)mem_calloc(1, sizeof(Colorclasses_Manager));
    edit->changed = false;
    edit->pr = project;
    edit->mwin = mw_add("dialog" , _on_btn_cancel, edit);
-   if (!edit->mwin)
-     {
-        free(edit);
-        return NULL;
-     }
+
+   assert(edit->mwin != NULL);
+
    mw_title_set(edit->mwin, _("Color class manager"));
    ic = elm_icon_add(edit->mwin);
    elm_icon_standard_set(ic, "color");
@@ -714,9 +755,8 @@ colorclass_manager_add(Project *project)
    _colorclass_main_layout_create(edit);
    if (!_colorclass_manager_init(edit))
      {
-        NOTIFY_ERROR(_("Failed initialize colorclasses manager"));
-        free(edit);
-        return NULL;
+        ERR(_("Failed initialize colorclasses manager"));
+        abort();
      }
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);

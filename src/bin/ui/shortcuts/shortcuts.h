@@ -47,30 +47,6 @@
 #include "config.h"
 
 /**
- * Set up shortcuts for main window.
- *
- * @param ap Application Data.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @ingroup Shortcuts
- */
-Eina_Bool
-shortcuts_main_add(App_Data *ap);
-
-/**
- * Unset shortcuts from main window.
- *
- * @param ap Application Data.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @ingroup Shortcuts
- */
-Eina_Bool
-shortcuts_main_del(App_Data *ap);
-
-/**
  * Setting shortcuts from user's profile.
  *
  * @param ap Application Data.

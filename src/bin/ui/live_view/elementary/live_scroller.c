@@ -29,6 +29,9 @@ _on_scroller_swallow_check(void *data,
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    const char *part_name = elm_object_part_text_get(obj, NULL);
    check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
@@ -85,6 +88,9 @@ _on_scroller_swallow_check(void *data,
 Evas_Object *
 widget_scroller_create(Evas_Object *parent, const Style *style)
 {
+   assert(parent != NULL);
+   assert(style != NULL);
+
    Eina_Stringshare *class;
    Eina_Stringshare *style_name;
    standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);

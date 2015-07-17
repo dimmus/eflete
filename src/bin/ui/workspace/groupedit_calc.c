@@ -76,75 +76,20 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp);
 static void
 _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp);
 
-void
-_edit_object_load(Ws_Groupedit_Smart_Data *sd)
-{
-   Eina_List *parts_list, *l;
-   Edje_Part_Type ept;
-   const char *state, *name, *text;
-   double value;
-
-   parts_list = edje_edit_parts_list_get(sd->edit_obj);
-   EINA_LIST_FOREACH(parts_list, l, name)
-     {
-        ept = edje_edit_part_type_get(sd->edit_obj, name);
-        state = edje_edit_part_selected_state_get(sd->edit_obj, name, &value);
-        if (ept == EDJE_PART_TYPE_TEXT || ept == EDJE_PART_TYPE_TEXTBLOCK)
-          {
-             text = edje_edit_state_text_get(sd->edit_obj, name, state, value);
-             if (text) edje_object_part_text_set(sd->edit_obj, name, text);
-             else edje_object_part_text_set(sd->edit_obj, name, name);
-             edje_edit_string_free(text);
-          }
-        edje_edit_string_free(state);
-     }
-   edje_edit_string_list_free(parts_list);
-}
-
 Eina_Bool
 _edit_object_part_add(Ws_Groupedit_Smart_Data *sd, const char *part,
-                      Edje_Part_Type type, const char *data)
+                      Edje_Part_Type type, const char *data __UNUSED__)
 {
    Groupedit_Part *gp;
-   Eina_List *list;
-   Eina_Stringshare *style_default = eina_stringshare_add("Generated_default");
 
-   if (!part) return false;
-   if ((type > EDJE_PART_TYPE_LAST)) return false;
+   assert(sd != NULL);
+   assert(part != NULL);
+   assert(type < EDJE_PART_TYPE_LAST);
    if (!edje_edit_part_add(sd->edit_obj, part, type))
      {
         ERR("Cann't add part %s to edit object %p", part, sd->edit_obj);
-        return false;
+        abort();
      }
-   if ((type == EDJE_PART_TYPE_IMAGE) && (data))
-     edje_edit_state_image_set(sd->edit_obj, part, "default", 0.0, data);
-   if (type == EDJE_PART_TYPE_TEXT)
-     {
-        edje_edit_state_font_set(sd->edit_obj, part, "default", 0.0, "Sans");
-        edje_edit_state_text_size_set(sd->edit_obj, part, "default", 0.0, 10);
-        edje_object_part_text_set(sd->edit_obj, part, part);
-     }
-   if (type ==  EDJE_PART_TYPE_TEXTBLOCK)
-     {
-        list = edje_edit_styles_list_get(sd->edit_obj);
-        if (eina_list_count(list) == 0)
-          {
-             edje_edit_style_add(sd->edit_obj, style_default);
-             edje_edit_style_tag_add(sd->edit_obj, "Generated_default", "DEFAULT");
-             edje_edit_style_tag_value_set(sd->edit_obj,
-                                           "Generated_default",
-                                           "DEFAULT",
-                                           "align=middle font=Sans font_size=24 color=#000000FF");
-          }
-        else style_default = eina_stringshare_add(eina_list_data_get(list));
-        edje_edit_state_text_style_set(sd->edit_obj, part,
-                                       "default",
-                                       0.0,
-                                       style_default);
-        eina_stringshare_del(style_default);
-        edje_edit_string_list_free(list);
-     }
-
    gp = _part_draw_add(sd, part, type);
    sd->parts = eina_list_append(sd->parts, gp);
    _move_border_to_top(sd);
@@ -156,11 +101,13 @@ _edit_object_part_add(Ws_Groupedit_Smart_Data *sd, const char *part,
 Eina_Bool
 _edit_object_part_del(Ws_Groupedit_Smart_Data *sd, const char *part)
 {
-   if ((!sd->parts) || (!part)) return false;
+   assert(sd != NULL);
+   assert(sd->parts != NULL);
+   assert(part != NULL);
    if (!edje_edit_part_del(sd->edit_obj, part))
      {
         ERR("Failed to delete part from edje edit object");
-        return false;
+        abort();
      }
 
    _selected_item_return_to_place(sd);
@@ -180,8 +127,13 @@ _edit_object_part_item_add(Ws_Groupedit_Smart_Data *sd,
    Groupedit_Item *ge_item = NULL;
    unsigned char type = EDJE_PART_TYPE_NONE;
 
+   assert(sd != NULL);
+   assert(part != NULL);
+   assert(item != NULL);
+   assert(source != NULL);
+
    gp = _parts_list_find(sd->parts, part);
-   if(!edje_edit_part_item_append(sd->edit_obj, part, item, source))
+   if (!edje_edit_part_item_append(sd->edit_obj, part, item, source))
      return false;
 
    ge_item = _item_draw_add(sd, part, item);
@@ -218,7 +170,7 @@ _edit_object_part_item_del(Ws_Groupedit_Smart_Data *sd __UNUSED__,
 
    gp = _parts_list_find(sd->parts, part);
 
-   if(!edje_edit_part_item_del(sd->edit_obj, part, item))
+   if (!edje_edit_part_item_del(sd->edit_obj, part, item))
      return false;
 
    EINA_LIST_FOREACH_SAFE(gp->items, l, l_next, ge_item)
@@ -241,6 +193,10 @@ _part_parts_layouts_update(Ws_Groupedit_Smart_Data *sd,
                            Groupedit_Part *ge_part_to,
                            Eina_Bool mode)
 {
+   assert(sd != NULL);
+   assert(ge_part != NULL);
+   assert(ge_part_to != NULL);
+
    if (mode)
      {
         evas_object_stack_below(sd->bg, ge_part_to->draw);
@@ -284,6 +240,10 @@ _part_restack(Ws_Groupedit_Smart_Data *sd,
 {
    Eina_List *l = NULL;
    Groupedit_Part *ge_part_to, *ge_part;
+
+   assert(sd != NULL);
+   assert(part != NULL);
+   assert(part_to != NULL);
 
    ge_part = _parts_list_find(sd->parts, part);
    if (!ge_part) return false;
@@ -331,7 +291,11 @@ _edit_object_part_restack_above(Ws_Groupedit_Smart_Data *sd,
                                 const char *part_above)
 {
    Eina_Bool ret = false;
-   if ((!sd->parts) || (!part)) return false;
+
+   assert(sd != NULL);
+   assert(sd->parts != NULL);
+   assert(part != NULL);
+
    if (part_above)
      ret = edje_edit_part_restack_part_below(sd->edit_obj, part, part_above);
    else
@@ -340,7 +304,7 @@ _edit_object_part_restack_above(Ws_Groupedit_Smart_Data *sd,
    if (!ret)
      {
         ERR("Failed restack in edje_edit object");
-        return false;
+        abort();
      }
    _part_restack(sd, part, part_above, true);
    evas_object_smart_changed(sd->obj);
@@ -353,7 +317,11 @@ _edit_object_part_restack_below(Ws_Groupedit_Smart_Data *sd,
                                 const char *part_below)
 {
    Eina_Bool ret = false;
-   if ((!sd->parts) || (!part)) return false;
+
+   assert(sd != NULL);
+   assert(sd->parts != NULL);
+   assert(part != NULL);
+
    if (part_below)
      ret = edje_edit_part_restack_part_above(sd->edit_obj, part, part_below);
    else
@@ -362,7 +330,7 @@ _edit_object_part_restack_below(Ws_Groupedit_Smart_Data *sd,
    if (!ret)
      {
         ERR("Failed restack in edje_edit object");
-        return false;
+        abort();
      }
    _part_restack(sd, part, part_below, false);
    evas_object_smart_changed(sd->obj);
@@ -376,6 +344,8 @@ _parts_list_new(Ws_Groupedit_Smart_Data *sd)
    Eina_List *parts_list, *l;
    const char *name;
    Edje_Part_Type type;
+
+   assert(sd != NULL);
 
    parts_list = edje_edit_parts_list_get(sd->edit_obj);
 
@@ -395,6 +365,9 @@ void
 _parts_list_free(Ws_Groupedit_Smart_Data *sd)
 {
    Groupedit_Part *gp;
+
+   assert(sd != NULL);
+
    if (!sd->parts) return;
 
    EINA_LIST_FREE(sd->parts, gp)
@@ -408,6 +381,9 @@ _groupedit_part_free(Groupedit_Part *gp)
    Groupedit_Item *ge_item = NULL;
    /* just in case */
    Evas_Object *image = NULL;
+
+   assert(gp != NULL);
+
    image = edje_object_part_swallow_get(gp->draw, "swallow.image");
    evas_object_del(image);
    evas_object_del(gp->draw);
@@ -439,7 +415,9 @@ _parts_list_find(Eina_List *parts, const char *part)
    Eina_List *l;
    Groupedit_Part *gp;
 
-   if ((!parts) || (!part)) return NULL;
+   assert(parts != NULL);
+   assert(part != NULL);
+
    EINA_LIST_FOREACH(parts, l, gp)
      {
         if ((gp->name == part) || (!strcmp(part, gp->name)))
@@ -454,6 +432,8 @@ _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd)
    Groupedit_Part *gp;
    Eina_List *l, *ln;
    Eina_Bool is_below = false;
+
+   assert(sd != NULL);
 
    if (!sd->selected) return;
    l = eina_list_data_find_list(sd->parts, sd->selected);
@@ -480,6 +460,7 @@ _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd)
 void
 _select_item_move_to_top(Ws_Groupedit_Smart_Data *sd)
 {
+   assert(sd != NULL);
 
    int x, y, w, h;
    if (sd->selected == sd->to_select) return;
@@ -516,7 +497,13 @@ _part_separete_mod_mouse_click_cb(void *data,
                                   void *event_info)
 {
    Groupedit_Part *gp = (Groupedit_Part *)data;
+
+   assert(gp != NULL);
+
    Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->border, "sd");
+
+   assert(sd != NULL);
+
    Evas_Event_Mouse_Down *emd = (Evas_Event_Mouse_Down *)event_info;
 
    if (emd->button != 1) return;
@@ -532,7 +519,13 @@ _part_separete_mod_mouse_in_cb(void *data,
                                void *event_info __UNUSED__)
 {
    Groupedit_Part *gp = (Groupedit_Part *)data;
+
+   assert(gp != NULL);
+
    Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->border, "sd");
+
+   assert(sd != NULL);
+
    if (sd->selected == gp) return;
    edje_object_signal_emit(gp->item, "item,mouse,in", "eflete");
 }
@@ -544,7 +537,13 @@ _part_separete_mod_mouse_out_cb(void *data,
                                 void *event_info __UNUSED__)
 {
    Groupedit_Part *gp = (Groupedit_Part *)data;
+
+   assert(gp != NULL);
+
    Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->border, "sd");
+
+   assert(sd != NULL);
+
    if (sd->selected == gp) return;
    edje_object_signal_emit(gp->item, "item,mouse,out", "eflete");
 }
@@ -556,7 +555,13 @@ _part_select(void *data,
              void *event_info)
 {
    Groupedit_Part *gp = (Groupedit_Part *)data;
+
+   assert(gp != NULL);
+
    Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->border, "sd");
+
+   assert(sd != NULL);
+
    Evas_Event_Mouse_Down *emd = (Evas_Event_Mouse_Down *)event_info;
 
    if (emd->button != 1) return;
@@ -633,6 +638,9 @@ _part_text_recalc_apply(Ws_Groupedit_Smart_Data *sd,
    int w, h, ro_w, ro_h;
    const Evas_Object *ro;
 
+   assert(sd != NULL);
+   assert(gp != NULL);
+
    edje_object_part_geometry_get(sd->edit_obj, gp->name, &x, &y, &w, &h);
    evas_object_geometry_get(sd->edit_obj, &xe, &ye, NULL, NULL);
    ro = edje_object_part_object_get(sd->edit_obj, gp->name);
@@ -663,6 +671,9 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
    Eina_List *l, *l_n, *l_sp, *l_sp_n;
    Groupedit_Item *ge_item = NULL, *sp_item = NULL;
    Edje_Part_Type type;
+
+   assert(sd != NULL);
+   assert(gp != NULL);
 
    edje_object_part_geometry_get(sd->edit_obj, gp->name, &x, &y, &w, &h);
    evas_object_geometry_get(sd->edit_obj, &xe, &ye, NULL, NULL);
@@ -727,12 +738,15 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
    Edje_Part_Type ept;
    int i = 0, offset_x, offset_y;
 
+   assert(sd != NULL);
+
    if (!sd->parts) return false;
 
    evas_object_geometry_get(sd->obj, &sd->real_size->x,
                                      &sd->real_size->y,
                                      &sd->real_size->w,
                                      &sd->real_size->h);
+   DBG("Recalc %p object. Object parts count: %d", sd->obj, eina_list_count(sd->parts))
 
    EINA_LIST_FOREACH(sd->parts, l, gp)
      {
@@ -854,6 +868,8 @@ _image_delete(void *data __UNUSED__,
               Evas_Object *obj,
               void *event_info __UNUSED__)
 {
+   assert(obj != NULL);
+
    Evas_Object *image = edje_object_part_swallow_get(obj, "swallow.image");
    if (image) evas_object_del(image);
 }
@@ -863,6 +879,9 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
 {
    Evas_Object *o;
    Groupedit_Part *gp;
+
+   assert(sd != NULL);
+   assert(part != NULL);
 
    gp = mem_calloc(1, sizeof(Groupedit_Part));
    gp->name = eina_stringshare_add(part);
@@ -956,12 +975,13 @@ _part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part)
 {
    Groupedit_Part *gp;
 
+   assert(sd != NULL);
+   assert(part != NULL);
+
    gp = _parts_list_find(sd->parts, part);
-   if (!gp)
-     {
-        ERR("Failed to find part in parts list");
-        return;
-     }
+
+   assert(gp != NULL);
+
    sd->parts = eina_list_remove(sd->parts, gp);
    _groupedit_part_free(gp);
 }
@@ -972,6 +992,10 @@ _item_draw_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
 {
    Groupedit_Item *ge_item = NULL;
    Eina_Stringshare *item_source;
+
+   assert(sd != NULL);
+   assert(part != NULL);
+   assert(item != NULL);
 
    item_source = edje_edit_part_item_source_get(sd->edit_obj, part, item);
    if (item_source)
@@ -1004,6 +1028,9 @@ static void
 _item_draw_del(Groupedit_Item *ge_item)
 {
    Groupedit_Item *spread_item = NULL;
+
+   assert(ge_item != NULL);
+
    EINA_LIST_FREE(ge_item->spread, spread_item)
      {
         evas_object_del(spread_item->draw);
@@ -1023,6 +1050,8 @@ _item_draw_del(Groupedit_Item *ge_item)
 static void
 _move_border_to_top(Ws_Groupedit_Smart_Data *sd)
 {
+   assert(sd != NULL);
+
    evas_object_smart_member_del(sd->container);
    evas_object_smart_member_del(sd->handler_TL.obj);
    evas_object_smart_member_del(sd->handler_BR.obj);
@@ -1039,6 +1068,9 @@ _part_container_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part, Eina_Li
    Eina_List *items_names = NULL, *l_items = NULL, *l_n_items = NULL;
    Eina_Stringshare *item_name = NULL;
    Groupedit_Item *ge_item = NULL;
+
+   assert(sd != NULL);
+   assert(part != NULL);
 
    if (type == EDJE_PART_TYPE_BOX)
      container = evas_object_box_add(sd->e);
@@ -1071,6 +1103,10 @@ _colors_get(Groupedit_Part *gp, Evas_Object *edit_obj, const char *state, double
    int cr2, cg2, cb2, ca2;
    int cr3, cg3, cb3, ca3;
    Eina_Stringshare *color_class;
+
+   assert(gp != NULL);
+   assert(edit_obj != NULL);
+   assert(state != NULL);
 
    if (r || g || b || a)
      edje_edit_state_color_get(edit_obj, gp->name, state, value, r, g, b, a);
@@ -1116,6 +1152,10 @@ _color_apply(Groupedit_Part *gp, Evas_Object *edit_obj, const char *state, doubl
    int r2, g2, b2, a2;
    int r3, g3, b3, a3;
 
+   assert(gp != NULL);
+   assert(edit_obj != NULL);
+   assert(state != NULL);
+
    Edje_Part_Type ept = edje_edit_part_type_get(edit_obj, gp->name);
    if (ept == EDJE_PART_TYPE_TEXT || ept == EDJE_PART_TYPE_TEXTBLOCK)
      _colors_get(gp, edit_obj, state, value, &r, &g, &b, &a, &r2, &g2, &b2, &a2, &r3, &g3, &b3, &a3);
@@ -1136,6 +1176,9 @@ _rectangle_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 {
    PART_STATE_GET(edit_obj, gp->name);
 
+   assert(gp != NULL);
+   assert(edit_obj != NULL);
+
    _color_apply(gp, edit_obj, state, value);
 
    PART_STATE_FREE
@@ -1148,6 +1191,10 @@ _image_proxy_common_param_update(Evas_Object *image, Groupedit_Part *gp, Evas_Ob
    int img_w, img_h;
    double fill_w, fill_h, fill_x, fill_y;
    int fill_origin_offset_x, fill_origin_offset_y, fill_size_offset_x, fill_size_offset_y;
+
+   assert(image != NULL);
+   assert(gp != NULL);
+   assert(edit_obj != NULL);
 
    PART_STATE_GET(edit_obj, gp->name)
 
@@ -1207,6 +1254,10 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
    int bl, br, bt, bb;
    unsigned char middle;
 
+   assert(gp != NULL);
+   assert(edit_obj != NULL);
+   assert(file != NULL);
+
    PART_STATE_GET(edit_obj, gp->name)
 
    image = edje_object_part_swallow_get(gp->draw, "swallow.image");
@@ -1247,6 +1298,12 @@ _proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
    Ws_Groupedit_Smart_Data *sd;
    Groupedit_Part *source;
 
+   assert(gp != NULL);
+   assert(edit_obj != NULL);
+
+   assert(gp != NULL);
+   assert(edit_obj != NULL);
+
    PART_STATE_GET(edit_obj, gp->name)
 
    image = edje_object_part_swallow_get(gp->draw, "swallow.image");
@@ -1282,6 +1339,10 @@ _text_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
    double elipsis;
    Evas_Text_Style_Type style;
    Edje_Text_Effect effect;
+
+   assert(gp != NULL);
+   assert(edit_obj != NULL);
+
    PART_STATE_GET(edit_obj, gp->name)
 
    _color_apply(gp, edit_obj, state, value);
@@ -1391,6 +1452,10 @@ _textblock_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
    const Evas_Object *get_style;
    const char *text;
    double valign;
+
+   assert(gp != NULL);
+   assert(edit_obj != NULL);
+
    PART_STATE_GET(edit_obj, gp->name)
 
    _color_apply(gp, edit_obj, state, value);
@@ -1423,6 +1488,11 @@ _group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file,
 {
    Eina_Stringshare *source = edje_edit_part_source_get(edit_obj, gp->name);
    Evas_Object *image = NULL;
+
+   assert(gp != NULL);
+   assert(edit_obj != NULL);
+   assert(file != NULL);
+   assert(parent != NULL);
 
    PART_STATE_GET(edit_obj, gp->name)
 
@@ -1474,6 +1544,9 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    int fake_init = 0, fake_count = 0, fake_diff = 0;
    Eina_List *fake_l;
    int i, k, col, row; /* counters for filling empty cells with fake items*/
+
+   assert(sd != NULL);
+   assert(gp != NULL);
 
    TODO("get TABLE attributes from edje object, after implementing functions"
         "in edje_edit libs. Until that time will be used default values.")
@@ -1704,6 +1777,9 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    double box_align_x, box_align_y;
    int pad_x, pad_y;
 
+   assert(sd != NULL);
+   assert(gp != NULL);
+
    TODO("get items from box and edje_unload them, remove them, destroy them")
    evas_object_box_remove_all(gp->draw, false);
 
@@ -1870,6 +1946,8 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
    int offset;
 
    Groupedit_Part *rel_part = NULL;
+
+   assert(sd != NULL);
 
    if (!sd->selected)
      {

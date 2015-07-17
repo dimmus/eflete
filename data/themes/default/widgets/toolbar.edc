@@ -119,10 +119,10 @@ group { name: "elm/toolbar/item/default";
       part { name: "clipper";
          type: RECT;
          description { state: "default" 0.0;
-            color_class: "color_default";
+            color_class: "main";
          }
          description { state: "disabled" 0.0;
-            color_class: "color_disabled";
+            color_class: "main_disabled";
          }
       }
       part { name: "event";

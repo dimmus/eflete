@@ -1098,6 +1098,7 @@ group { name: "elm/layout/property/color";
       }
       part { name: "shadow";
          type: IMAGE;
+         repeat_events: 1;
          description { state: "default" 0.0;
             rel1 {
                to: "base";
@@ -1112,43 +1113,22 @@ group { name: "elm/layout/property/color";
             }
          }
       }
-      part { name: "elm.text";
-         type: TEXT;
+      part { name: "event";
+         type: RECT;
          description { state: "default" 0.0;
-            align: 0.0 0.5;
-            color: LIGHT_GREY_FONT_COLOR;
+            color: 0 0 0 0;
             rel1 {
-               relative: 1.0 0.0;
-               offset: 3 0;
                to: "base";
             }
             rel2 {
-               to_y: "base";
-            }
-            text {
-               font: PT;
-               size: 12;
-               max: 1 0;
+               to: "base";
             }
          }
          description { state: "disabled" 0.0;
             visible: 0;
-            align: 0.0 0.5;
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 3 0;
-               to: "base";
-            }
-            rel2 {
-               to_y: "base";
-            }
-            text {
-               font: PT;
-               size: 12;
-               max: 1 0;
-            }
          }
       }
+
    }
    programs {
       program { name: "enabled";
@@ -1156,14 +1136,19 @@ group { name: "elm/layout/property/color";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "disabler";
-         target: "elm.text";
+         target: "event";
       }
       program { name: "disabled";
          signal: "elm,state,disabled";
          source: "elm";
          action: STATE_SET "disabled" 0.00;
          target: "disabler";
-         target: "elm.text";
+         target: "event";
+      }
+      program { name: "clicked";
+         signal: "mouse,clicked,1";
+         source: "event";
+         action: SIGNAL_EMIT "clicked" "eflete";
       }
    }
 }

@@ -61,7 +61,7 @@ ui_signal_list_add(Evas_Object *parent)
 {
    Evas_Object *gl_signals;
 
-   if (!parent) return NULL;
+   assert(parent != NULL);
 
    if (!_itc_signal)
      {
@@ -87,7 +87,9 @@ ui_signal_list_data_set(Evas_Object *object, Style *style)
    Signal *sig = NULL;
    Elm_Object_Item *it = NULL;
 
-   if ((!object) || (!style) || (!style->obj)) return false;
+   assert(object != NULL);
+   assert(style != NULL);
+   assert(style->obj != NULL);
 
    signals = wm_program_signals_list_get(style);
    EINA_LIST_FOREACH(signals, l, sig)
@@ -108,7 +110,8 @@ Style *
 ui_signal_list_data_unset(Evas_Object *object)
 {
    Style *style;
-   if (!object) return NULL;
+
+   assert(object != NULL);
 
    Eina_List *signals = evas_object_data_del(object, SIGNALS_LIST);
    wm_program_signals_list_free(signals);

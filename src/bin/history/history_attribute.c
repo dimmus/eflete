@@ -94,10 +94,16 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
    Style *style = NULL;
    Part *part = NULL;
 
+   assert(change != NULL);
+   assert(source != NULL);
+
    App_Data *app = app_data_get();
-   if (!app->project) return;
+
+   assert(app->project != NULL);
+   assert(app->project->current_style != NULL);
+   assert(app->project->current_style->obj == source);
+
    style = app->project->current_style;
-   if ((!style) || (style->obj != source)) return;
 
    Evas_Object *prop = ui_block_property_get(app);
 
@@ -105,7 +111,9 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
      {
         /* this case mean, that change have action with part attributes */
         part = wm_part_by_name_find(style, change->part);
-        if (!part) return;
+
+        assert(part != NULL);
+
         if (change->state)
           {
              part->curr_state = change->state;
@@ -143,57 +151,59 @@ _attribute_modify_redo(Evas_Object *source, Attribute_Diff *change)
    Style *style = NULL;
    Part *part = NULL;
 
+   assert(change != NULL);
+   assert(source != NULL);
+
    App_Data *app = app_data_get();
-   if (!app->project) return false;
-   style = app->project->current_style;
-   if ((!style) || (style->obj != source)) return false;
+
+   assert(app->project != NULL);
+   assert(app->project->current_style != NULL);
+   assert(app->project->current_style->obj == source);
 
    switch(change->param_type)
     {
      case VAL_INT:
-        change->state ?
-           change->func(source, change->part, change->state,
-                        change->state_value, change->integer.new) :
-           change->func(source, change->part, change->integer.new);
+        if (change->state)
+          change->func(source, change->part, change->state,
+                       change->state_value, change->integer.new);
+        else
+          change->func(source, change->part, change->integer.new);
      break;
      case VAL_DOUBLE:
-        if (change->state)
-           change->func(source, change->part, change->state,
-                        change->state_value, change->doubl.new);
-        else
-          return false;
+        assert(change->state != NULL);
+
+        change->func(source, change->part, change->state,
+                     change->state_value, change->doubl.new);
      break;
      case VAL_STRING:
-        change->state ?
-           change->func(source, change->part, change->state,
-                        change->state_value, change->string.new) :
-           change->func(source, change->part, change->string.new);
+        if (change->state)
+          change->func(source, change->part, change->state,
+                       change->state_value, change->string.new);
+        else
+          change->func(source, change->part, change->string.new);
      break;
      case VAL_FOUR:
-        if (change->state)
-           change->func(source, change->part, change->state,
-                        change->state_value, change->four.new_1,
-                        change->four.new_2, change->four.new_3,
-                        change->four.new_4);
-        else
-          return false;
+        assert(change->state != NULL);
+
+        change->func(source, change->part, change->state,
+                     change->state_value, change->four.new_1,
+                     change->four.new_2, change->four.new_3,
+                     change->four.new_4);
      break;
      case VAL_RENAME:
-        if (!change->state)
-          {
-             part = wm_part_by_name_find(style, change->part);
-             if (!part) return false;
+        assert(change->state != NULL);
 
-             change->func(source, change->part, change->string.new);
-             change->part = change->string.new;
-             part->name = change->string.new;
-          }
-        else
-          return false;
+        part = wm_part_by_name_find(style, change->part);
+
+        assert(part != NULL);
+
+        change->func(source, change->part, change->string.new);
+        change->part = change->string.new;
+        part->name = change->string.new;
      break;
      default:
        ERR("Unsupported param type");
-       return false;
+       abort();
      break;
     }
 
@@ -203,17 +213,20 @@ _attribute_modify_redo(Evas_Object *source, Attribute_Diff *change)
 static Eina_Bool
 _attribute_curd_redo(Evas_Object *source, Attribute_Diff *change)
 {
+   assert(change != NULL);
+   assert(source != NULL);
+
    switch(change->param_type)
     {
      case VAL_STRING:
-        if (change->state)
-          change->func(source, change->part, change->state,
-                       change->state_value, change->string.old);
-        else return false;
+        assert(change->state != NULL);
+
+        change->func(source, change->part, change->state,
+                     change->state_value, change->string.old);
      break;
      default:
        ERR("Unsupported module type, that store diff");
-       return false;
+       abort();
     }
 
    return true;
@@ -222,6 +235,9 @@ _attribute_curd_redo(Evas_Object *source, Attribute_Diff *change)
 static Eina_Bool
 _attribute_highlight_redo(Evas_Object *source, Attribute_Diff *change)
 {
+   assert(change != NULL);
+   assert(source != NULL);
+
    switch(change->param_type)
     {
      case VAL_GROUP:
@@ -229,28 +245,24 @@ _attribute_highlight_redo(Evas_Object *source, Attribute_Diff *change)
        change->func(source, change->twice_int.new_2);
      break;
      case VAL_INT:
-        if (change->state)
-          {
-             change->func_revert(source, change->part, change->state,
-                                 change->state_value, change->twice_int.new_1);
-             change->func(source, change->part, change->state,
-                          change->state_value, change->twice_int.new_2);
-          }
-        else return false;
+        assert(change->state != NULL);
+
+        change->func_revert(source, change->part, change->state,
+                            change->state_value, change->twice_int.new_1);
+        change->func(source, change->part, change->state,
+                     change->state_value, change->twice_int.new_2);
      break;
      case VAL_DOUBLE:
-        if (change->state)
-          {
-             change->func_revert(source, change->part, change->state,
-                                 change->state_value, change->twice_double.new_1);
-             change->func(source, change->part, change->state,
-                          change->state_value, change->twice_double.new_2);
-          }
-        else return false;
+        assert(change->state != NULL);
+
+        change->func_revert(source, change->part, change->state,
+                            change->state_value, change->twice_double.new_1);
+        change->func(source, change->part, change->state,
+                     change->state_value, change->twice_double.new_2);
      break;
      default:
        ERR("Unsupported value type, in the given diff");
-       return false;
+       abort();
     }
    return true;
 }
@@ -259,6 +271,9 @@ Eina_Bool
 _attribute_redo(Evas_Object *source, Attribute_Diff *change)
 {
    Eina_Bool redo = false;
+
+   assert(change != NULL);
+   assert(source != NULL);
 
    switch(change->diff.action_type)
      {
@@ -274,6 +289,7 @@ _attribute_redo(Evas_Object *source, Attribute_Diff *change)
       break;
       default:
           ERR("Unsupported action type[%d]", change->diff.action_type);
+          abort();
      }
 
    if (redo)
@@ -287,56 +303,61 @@ _attribute_modify_undo(Evas_Object *source, Attribute_Diff *change)
    Style *style = NULL;
    Part *part = NULL;
 
+   assert(change != NULL);
+   assert(source != NULL);
+
    App_Data *app = app_data_get();
-   if (!app->project) return false;
+
+   assert(app->project != NULL);
+   assert(app->project->current_style != NULL);
+   assert(app->project->current_style->obj == source);
+
    style = app->project->current_style;
-   if ((!style) || (style->obj != source)) return false;
 
    switch(change->param_type)
     {
      case VAL_INT:
-        change->state ?
-           change->func(source, change->part, change->state,
-                        change->state_value, change->integer.old) :
-           change->func(source, change->part, change->integer.old);
-     break;
-     case VAL_DOUBLE:
         if (change->state)
           change->func(source, change->part, change->state,
-                       change->state_value, change->doubl.old);
+                       change->state_value, change->integer.old);
         else
-           return false;
+          change->func(source, change->part, change->integer.old);
+     break;
+     case VAL_DOUBLE:
+        assert(change->state != NULL);
+
+        change->func(source, change->part, change->state,
+                     change->state_value, change->doubl.old);
      break;
      case VAL_STRING:
-        change->state ?
+        if (change->state)
            change->func(source, change->part, change->state,
-                        change->state_value, change->string.old) :
+                        change->state_value, change->string.old);
+        else
            change->func(source, change->part, change->string.old);
      break;
      case VAL_FOUR:
-        if (change->state)
-          change->func(source, change->part, change->state,
-                       change->state_value, change->four.old_1,
-                       change->four.old_2, change->four.old_3,
-                       change->four.old_4);
-        else
-           return false;
+        assert(change->state != NULL);
+
+        change->func(source, change->part, change->state,
+                     change->state_value, change->four.old_1,
+                     change->four.old_2, change->four.old_3,
+                     change->four.old_4);
      break;
      case VAL_RENAME:
-        if (!change->state)
-          {
-             part =   wm_part_by_name_find(style, change->part);
-             if (!part) return false;
+        assert(change->state != NULL);
 
-             change->func(source, change->part, change->string.old);
-             change->part = change->string.old;
-             part->name = change->string.old;
-          }
-        else return false;
+        part = wm_part_by_name_find(style, change->part);
+
+        assert(part != NULL);
+
+        change->func(source, change->part, change->string.old);
+        change->part = change->string.old;
+        part->name = change->string.old;
      break;
      default:
        ERR("Unsupported module type, that store diff");
-       return false;
+       abort();
      break;
     }
 
@@ -346,17 +367,20 @@ _attribute_modify_undo(Evas_Object *source, Attribute_Diff *change)
 static Eina_Bool
 _attribute_curd_undo(Evas_Object *source, Attribute_Diff *change)
 {
+   assert(change != NULL);
+   assert(source != NULL);
+
    switch(change->param_type)
     {
      case VAL_STRING:
-        if (change->state)
-          change->func_revert(source, change->part, change->state,
-                              change->state_value, change->string.old);
-        else return false;
+        assert(change->state != NULL);
+
+        change->func_revert(source, change->part, change->state,
+                            change->state_value, change->string.old);
      break;
      default:
        ERR("Unsupported module type, that store diff");
-       return false;
+       abort();
     }
 
    return true;
@@ -365,6 +389,9 @@ _attribute_curd_undo(Evas_Object *source, Attribute_Diff *change)
 static Eina_Bool
 _attribute_highlight_undo(Evas_Object *source, Attribute_Diff *change)
 {
+   assert(change != NULL);
+   assert(source != NULL);
+
    switch(change->param_type)
     {
      case VAL_GROUP:
@@ -372,28 +399,24 @@ _attribute_highlight_undo(Evas_Object *source, Attribute_Diff *change)
        change->func(source, change->twice_int.old_2);
      break;
      case VAL_INT:
-        if (change->state)
-          {
-             change->func_revert(source, change->part, change->state,
-                                 change->state_value, change->twice_int.old_1);
-             change->func(source, change->part, change->state,
-                          change->state_value, change->twice_int.old_2);
-          }
-        else return false;
+        assert(change->state != NULL);
+
+        change->func_revert(source, change->part, change->state,
+                            change->state_value, change->twice_int.old_1);
+        change->func(source, change->part, change->state,
+                     change->state_value, change->twice_int.old_2);
      break;
      case VAL_DOUBLE:
-        if (change->state)
-          {
-             change->func_revert(source, change->part, change->state,
-                                 change->state_value, change->twice_double.old_1);
-             change->func(source, change->part, change->state,
-                          change->state_value, change->twice_double.old_2);
-          }
-        else return false;
+        assert(change->state != NULL);
+
+        change->func_revert(source, change->part, change->state,
+                            change->state_value, change->twice_double.old_1);
+        change->func(source, change->part, change->state,
+                     change->state_value, change->twice_double.old_2);
      break;
      default:
        ERR("Unsupported value type, in the given diff");
-       return false;
+       abort();
     }
    return true;
 }
@@ -402,6 +425,9 @@ Eina_Bool
 _attribute_undo(Evas_Object *source, Attribute_Diff *change)
 {
    Eina_Bool undo = false;
+
+   assert(change != NULL);
+   assert(source != NULL);
 
    switch(change->diff.action_type)
      {
@@ -427,7 +453,7 @@ _attribute_undo(Evas_Object *source, Attribute_Diff *change)
 void
 _attribute_change_free(Attribute_Diff *change)
 {
-   if (!change) return;
+   assert(change != NULL);
 
    eina_stringshare_del(change->style);
    eina_stringshare_del(change->part);
@@ -454,6 +480,9 @@ _attribute_change_free(Attribute_Diff *change)
 static Attribute_Diff *
 _attribute_modify_merge(Attribute_Diff *previous, Attribute_Diff *change)
 {
+   assert(change != NULL);
+   assert(previous != NULL);
+
    if ((previous->func == change->func) &&
        ((previous->part == change->part) ||  /* or if this and previous change for the same part*/
         (change->param_type == VAL_RENAME)))
@@ -491,6 +520,9 @@ _attribute_modify_merge(Attribute_Diff *previous, Attribute_Diff *change)
 static Attribute_Diff *
 _attribute_highlight_merge(Attribute_Diff *previous, Attribute_Diff *change)
 {
+   assert(change != NULL);
+   assert(previous != NULL);
+
    if ((previous->func == change->func) &&
        (previous->func_revert == change->func_revert) &&
        (previous->part == change->part))
@@ -523,6 +555,9 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
    Diff *prev_general = NULL;
    Attribute_Diff *previous = NULL;
 
+   assert(change != NULL);
+   assert(module != NULL);
+
    if (module->current_change)
       prev_general = module->current_change;
    else
@@ -551,6 +586,8 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
 #define _attribute_modify_parse(ret, list, change) \
 { \
    Eina_Stringshare *string = NULL; \
+ \
+   assert(change != NULL); \
  \
    switch(change->param_type) \
      { \
@@ -606,12 +643,14 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
       break; \
       default: \
          ERR("Unsupported value type."); \
-         ret = false; \
+         abort(); \
      } \
 } \
 
 #define _attribute_curd_parse(ret, list, change) \
 { \
+   assert(change != NULL); \
+ \
    switch(change->param_type) \
      { \
       case VAL_STRING: \
@@ -626,13 +665,15 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
       break; \
       default: \
          ERR("Unsupported value type."); \
-         ret = false; \
+         abort(); \
      } \
    if (!change->func_revert) ret = false; \
 }
 
 #define _attribute_highlight_parse(ret, list, change) \
 { \
+   assert(change != NULL); \
+ \
    switch(change->param_type) \
      { \
       case VAL_GROUP: \
@@ -662,7 +703,7 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
       break; \
       default: \
          ERR("Unsupported value type."); \
-         ret = false; \
+         abort(); \
      } \
    if (!change->func_revert) ret = false; \
 }
@@ -693,14 +734,18 @@ _attribute_change_new(va_list list)
       break;
       default:
           ERR("Unsupported action type.");
-          goto error;
+          abort();
      }
-   if (!parse) goto error;
+   assert(parse == true);
 
    change->style = eina_stringshare_add((char *)va_arg(list, char *));
-   if (!change->style) goto error;
+
+   assert(change->style != NULL);
+
    change->func = (void *)va_arg(list, void *);
-   if (!change->func) goto error;
+
+   assert(change->func != NULL);
+
    change->diff.description = eina_stringshare_add((char *)va_arg(list, char *));
 
    change->part = eina_stringshare_add((char *)va_arg(list, char *));
@@ -720,8 +765,4 @@ _attribute_change_new(va_list list)
      change->diff.source = eina_stringshare_add("Group");
 
    return (Diff *)change;
-
-error:
-   _attribute_change_free(change);
-   return NULL;
 }

@@ -28,16 +28,9 @@
 #define MAXSIZE 200
 
 #define HIGHLIGHT_DATA_GET(o, ptr) \
-   Highlight *ptr = evas_object_smart_data_get(o);
-
-#define HIGHLIGHT_DATA_GET_OR_RETURN_VAL(o, ptr, val) \
-   HIGHLIGHT_DATA_GET(o, ptr) \
-   if (!ptr) \
-     { \
-        fprintf(stderr, "No highlight data for object %p (%s)!", \
-                o, evas_object_type_get(o)); \
-        return val; \
-     }
+   assert(o != NULL); \
+   Highlight *ptr = evas_object_smart_data_get(o); \
+   assert(ptr != NULL);
 
 #define COLOR_CHECK \
    if ((r < 0) || (r > 255)) return false; \
@@ -90,6 +83,8 @@ EVAS_SMART_SUBCLASS_NEW("highlight", _highlight,
 static void
 _apply_changes(Handler *handler)
 {
+   assert(handler != NULL);
+
    evas_object_resize(handler->border, handler->w, handler->h);
    evas_object_move(handler->border, handler->x, handler->y);
 }
@@ -108,6 +103,8 @@ _handler_size_recalc(Highlight *highlight)
 {
    int x, y, w, h;
 
+   assert(highlight != NULL);
+
    if (highlight->handlers_disabled) return;
 
    evas_object_geometry_get(highlight->border, &x, &y, &w, &h);
@@ -116,7 +113,7 @@ _handler_size_recalc(Highlight *highlight)
       If width or height of highlight is below MINSIZE, then inner handlers will
       be located outside of the highlighted part.
     */
-   if((w < MINSIZE) || (h < MINSIZE)) highlight->outside = true;
+   if ((w < MINSIZE) || (h < MINSIZE)) highlight->outside = true;
    else highlight->outside = false;
 
    if ((highlight->outside) || (highlight->mode == HIGHLIGHT_STATIC_HANDLERS))
@@ -157,6 +154,8 @@ _handler_size_recalc(Highlight *highlight)
 static void
 _handler_pos_recalc(Highlight *highlight)
 {
+   assert(highlight != NULL);
+
    if (highlight->handlers_disabled) return;
 
    int x, y, w, h;
@@ -221,7 +220,12 @@ _handler_down_cb(void *data,
                  void *event_info __UNUSED__)
 {
    Handler *handler = (Handler *)data;
+
+   assert(handler != NULL);
+
    Highlight *highlight = handler->highlight;
+
+   assert(highlight != NULL);
 
    Evas_Coord curX, curY;
    evas_pointer_output_xy_get(evas, &curX, &curY);
@@ -239,7 +243,13 @@ _handler_move_cb(void *data,
                  void *event_info __UNUSED__)
 {
    Handler *handler = (Handler *)data;
+
+   assert(handler != NULL);
+
    Highlight *highlight = handler->highlight;
+
+   assert(highlight != NULL);
+
    Highlight_Events *events = handler->highlight->events;
    if (highlight->handlers_disabled) return;
 
@@ -405,6 +415,9 @@ _handler_up_cb(void *data,
                void *event_info __UNUSED__)
 {
    Handler *handler = (Handler *)data;
+
+   assert(handler != NULL);
+
    _handler_size_recalc(handler->highlight);
    _handler_pos_recalc(handler->highlight);
 
@@ -427,6 +440,8 @@ _handler_mouse_in_cb(void *data,
                     void *event_info __UNUSED__)
 {
    Highlight *highlight = (Highlight *)data;
+
+   assert(highlight != NULL);
 
    if (highlight->handlers_disabled) return;
    if (highlight->mode == HIGHLIGHT_STATIC_HANDLERS) return;
@@ -451,6 +466,8 @@ _handler_mouse_out_cb(void *data,
 {
    Highlight *highlight = (Highlight *)data;
 
+   assert(highlight != NULL);
+
    if (highlight->handlers_disabled) return;
    if (highlight->mode == HIGHLIGHT_STATIC_HANDLERS) return;
 
@@ -474,9 +491,16 @@ _handler_object_add(Evas_Object *parent,
    handler = mem_calloc(1, sizeof(Handler));
    Evas_Object *border;
 
+   assert(parent != NULL);
+   assert(highlight != NULL);
+   assert(style != NULL);
+
    border = edje_object_add(evas_object_evas_get(parent));
    if (!edje_object_file_set(border, EFLETE_EDJ, style))
-     ERR("Could not load style for handler's border!");
+     {
+        ERR("Could not load style for handler's border!");
+        abort();
+     }
    evas_object_smart_member_add(border, parent);
 
    handler->descr = descr;
@@ -515,6 +539,7 @@ _handler_object_add(Evas_Object *parent,
          cursor_type_set(border, CURSOR_FLEUR);
          break;
       default:
+         abort();
          break;
      }
 
@@ -547,12 +572,17 @@ _smart_add(Evas_Object *parent)
 {
    Evas_Object *border;
 
+   assert(parent != NULL);
+
    EVAS_SMART_DATA_ALLOC(parent, Highlight)
    _highlight_parent_sc->add(parent);
 
    border = edje_object_add(evas_object_evas_get(parent));
    if (!edje_object_file_set(border, EFLETE_EDJ, "eflete/highlight/border/default"))
-     ERR("Could not load style for main border!");
+     {
+        ERR("Could not load style for main border!");
+        abort();
+     }
    evas_object_repeat_events_set(border, true);
 
    priv->border = border;
@@ -685,7 +715,7 @@ highlight_add(Evas_Object *parent)
    Evas *e;
    Evas_Object *obj;
 
-   if (!parent) return NULL;
+   assert(parent != NULL);
 
    e = evas_object_evas_get(parent);
    obj = evas_object_smart_add(e, _highlight_smart_class_new());
@@ -698,7 +728,8 @@ highlight_add(Evas_Object *parent)
 Eina_Bool
 highlight_handler_align_show(Evas_Object *hl)
 {
-   HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
+   HIGHLIGHT_DATA_GET(hl, highlight)
+
    if (highlight->handlers_disabled) return false;
 
    highlight->middle_show = true;
@@ -721,7 +752,7 @@ highlight_handler_align_show(Evas_Object *hl)
 Eina_Bool
 highlight_handler_align_hide(Evas_Object *hl)
 {
-   HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
+   HIGHLIGHT_DATA_GET(hl, highlight)
 
    highlight->middle_show = false;
    evas_object_hide(highlight->handler_MIDDLE->border);
@@ -732,15 +763,14 @@ highlight_handler_align_hide(Evas_Object *hl)
 Eina_Bool
 highlight_handler_align_visible_get(Evas_Object *hl)
 {
-   HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
+   HIGHLIGHT_DATA_GET(hl, highlight)
    return highlight->middle_show;
 }
 
 Eina_Bool
 highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled)
 {
-   if (!hl) return false;
-   HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
+   HIGHLIGHT_DATA_GET(hl, highlight)
    if (highlight->handlers_disabled == disabled) return true;
    highlight->handlers_disabled = disabled;
    if (disabled)
@@ -766,8 +796,7 @@ highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled)
 Eina_Bool
 highlight_handler_mode_set(Evas_Object *hl, Highlight_Mode mode)
 {
-   if (!hl) return false;
-   HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
+   HIGHLIGHT_DATA_GET(hl, highlight)
    highlight->mode = mode;
    return true;
 }
@@ -789,8 +818,8 @@ Eina_Bool
 highlight_object_follow(Evas_Object *hl, Evas_Object *object)
 {
    int x, y, w, h;
-   if ((!hl) || (!object)) return false;
-   HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
+   HIGHLIGHT_DATA_GET(hl, highlight)
+   assert(object != NULL);
 
    if (highlight->object)
      {
@@ -816,8 +845,7 @@ highlight_object_follow(Evas_Object *hl, Evas_Object *object)
 Eina_Bool
 highlight_object_unfollow(Evas_Object *hl)
 {
-   if (!hl) return false;
-   HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
+   HIGHLIGHT_DATA_GET(hl, highlight)
 
    if (highlight->object)
      {

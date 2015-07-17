@@ -25,6 +25,8 @@
 static Eina_Bool
 _diff_free(Diff *diff)
 {
+   assert(diff != NULL);
+
    switch (diff->module_type)
      {
       case PROPERTY:
@@ -38,7 +40,7 @@ _diff_free(Diff *diff)
       break;
       default:
          ERR("Unsupported module type in diff attributes. This should never happens");
-         return false;
+         abort();
      }
    return true;
 }
@@ -97,9 +99,14 @@ _change_save(Module *module, Diff *change)
 {
    Diff *data = NULL;
 
+   assert(module != NULL);
+
    module->changes = _clear_untracked_changes(module->changes,
                                               module->current_change);
+
+   TODO("Check return logic here")
    if (!change) return false;
+
    module->changes = eina_list_append(module->changes, change);
    change->index = eina_list_count(module->changes);
 
@@ -126,6 +133,8 @@ _module_changes_clear(Module *module)
    Diff *diff = NULL;
    Eina_Bool result = true;
 
+   assert(module != NULL);
+
    EINA_LIST_FREE(module->changes, diff)
      {
         result &= _diff_free(diff);
@@ -137,16 +146,19 @@ _module_changes_clear(Module *module)
 Eina_Bool
 history_redo(Evas_Object *source, int count)
 {
-   if ((count <= 0 ) || (!source)) return false;
-
    Diff *diff = NULL;
    Eina_List *next = NULL;
    Module *module = NULL;
    Eina_Bool result = false;
 
+   assert(source != NULL);
+   assert(count > 0);
+
    module = evas_object_data_get(source, HISTORY_MODULE_KEY);
 
-   if ((module) && (module->changes))
+   assert(module != NULL);
+
+   if (module->changes)
      {
         diff = module->current_change;
         if (!diff) diff = eina_list_data_get(module->changes);
@@ -176,7 +188,7 @@ history_redo(Evas_Object *source, int count)
       break;
       default:
          ERR("Unsupported module type, that store diff");
-         return false;
+         abort();
      }
 
    module->current_change = diff;
@@ -192,17 +204,19 @@ history_redo(Evas_Object *source, int count)
 Eina_Bool
 history_undo(Evas_Object *source, int count)
 {
-   if ((count <= 0 ) || (!source)) return false;
-
    Diff *diff = NULL;
    Eina_List *prev = NULL;
    Eina_Bool result = false;
    Module *module = NULL;
 
+   assert(source != NULL);
+   assert(count > 0);
+
    module = evas_object_data_get(source, HISTORY_MODULE_KEY);
 
-   if (module) diff = module->current_change;
-   else return false;
+   assert(module != NULL);
+
+   diff = module->current_change;
 
    if (!diff) return false;
 
@@ -219,7 +233,7 @@ history_undo(Evas_Object *source, int count)
       break;
       default:
          ERR("Unsupported module type: %d", diff->module_type);
-         return false;
+         abort();
      }
 
    prev = eina_list_prev(eina_list_data_find_list(module->changes, diff));
@@ -248,6 +262,8 @@ history_diff_count_get(Evas_Object *source)
    int count = 0;
    Module *module;
 
+   assert(source != NULL);
+
    module = evas_object_data_get(source, HISTORY_MODULE_KEY);
    if (module) count = eina_list_count(module->changes);
 
@@ -259,15 +275,14 @@ history_clear(History *history)
 {
    Module *module;
 
-   if (!history) return false;
-
+   assert(history != NULL);
 
    EINA_LIST_FREE(history->modules, module)
      {
         if (!_module_changes_clear(module))
           {
              ERR("Didn't cleared history for module %p", module->target);
-             return false;
+             abort();
           }
        elm_object_item_del(module->ui_item);
        free(module);
@@ -284,9 +299,11 @@ history_module_add(Evas_Object *source)
    History *history = NULL;
    Module *module = NULL;
 
-   if (!source) return false;
+   assert(source != NULL);
+
    history = history_get();
-   if (!history) return false;
+
+   assert(history != NULL);
 
    module = evas_object_data_get(source, HISTORY_MODULE_KEY);
    if (module)
@@ -312,9 +329,11 @@ history_module_del(Evas_Object *source)
    Module *module = NULL;
    Eina_List *module_list_node = NULL;
 
-   if (!source) return false;
+   assert(source != NULL);
+
    history = history_get();
-   if (!history) return false;
+
+   assert(history != NULL);
 
    module = evas_object_data_del(source, HISTORY_MODULE_KEY);
    if (!module) return false;
@@ -322,7 +341,7 @@ history_module_del(Evas_Object *source)
    if (!_module_changes_clear(module))
      {
         ERR("Didn't cleared history for module %p", module->target);
-        return false;
+        abort();
      }
    elm_object_item_del(module->ui_item);
    module_list_node = eina_list_data_find_list(history->modules, module);
@@ -335,11 +354,12 @@ history_module_del(Evas_Object *source)
 Evas_Object *
 history_genlist_get(History *history, Evas_Object *parent)
 {
-   if (!history) return NULL;
+   assert(history != NULL);
 
    if (history->genlist) return history->genlist;
 
-   if (!parent) return NULL;
+   assert(parent != NULL);
+
    history->genlist = _history_ui_add(parent);
 
    return history->genlist;
@@ -357,7 +377,7 @@ history_init(void)
 Eina_Bool
 history_term(History *history __UNUSED__)
 {
-   if (!history) return false;
+   assert(history != NULL);
 
    history_clear(history);
    free(history);
@@ -372,11 +392,15 @@ history_diff_add(Evas_Object *source, Target target, ...)
    Diff *change = NULL;
    va_list list;
 
-   if (!source) return false;
+   assert(source != NULL);
+
    history = history_get();
-   if (!history) return false;
+
+   assert(history != NULL);
+
    module = evas_object_data_get(source, HISTORY_MODULE_KEY);
-   if (!module) return false;
+
+   assert(module != NULL);
 
    va_start(list, target);
 
@@ -394,8 +418,7 @@ history_diff_add(Evas_Object *source, Target target, ...)
       break;
       default:
          ERR("Unsupported target");
-         va_end(list);
-         return false;
+         abort();
      }
    va_end(list);
    return _change_save(module, change);
@@ -406,14 +429,12 @@ history_module_depth_set(Evas_Object *source, unsigned int depth)
 {
    Module *module = NULL;
 
-   if (source)
-     {
-        module = evas_object_data_get(source, HISTORY_MODULE_KEY);
-        if (!module) return false;
-        module->depth = depth;
-        return true;
-     }
-   return false;
+   assert(source != NULL);
+
+   module = evas_object_data_get(source, HISTORY_MODULE_KEY);
+   if (!module) return false;
+   module->depth = depth;
+   return true;
 }
 
 int
@@ -421,12 +442,10 @@ history_module_depth_get(Evas_Object *source)
 {
    Module *module = NULL;
 
-   if (source)
-     {
-        module = evas_object_data_get(source, HISTORY_MODULE_KEY);
-        if (!module) return -1;
-        return (int)module->depth;
-     }
-   return -1;
+   assert(source != NULL);
+
+   module = evas_object_data_get(source, HISTORY_MODULE_KEY);
+   if (!module) return -1;
+   return (int)module->depth;
 }
 

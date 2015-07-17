@@ -67,6 +67,8 @@ _on_object_load(void *data,
 {
    Animator *animator = data;
 
+   assert(animator != NULL);
+
    program_editor_program_reset(animator->program_editor);
 }
 
@@ -79,6 +81,8 @@ _on_program_pause_cb(void *data,
    /* changing button name on submodules request */
    Animator *animator = data;
 
+   assert(animator != NULL);
+
    elm_object_text_set(animator->program_controls.play, _("Play"));
 }
 
@@ -89,6 +93,8 @@ _on_program_play_cb(void *data,
 {
    /* changing button name on submodules request */
    Animator *animator = data;
+
+   assert(animator != NULL);
 
    elm_object_text_set(animator->program_controls.play, _("Pause"));
 }
@@ -101,6 +107,8 @@ _on_program_name_change_cb(void *data,
    /* changing name of program in genlist on submodules request */
    Animator *animator = data;
    const char *new_name = event_info;
+
+   assert(animator != NULL);
 
    Eina_Stringshare *item_data = elm_object_item_data_get(animator->sel);
    eina_stringshare_replace(&item_data, new_name);
@@ -117,6 +125,8 @@ _on_program_scroll_cb(void *data,
    Evas_Coord x = * (int *) event_info;
    Evas_Coord y, w, h;
 
+   assert(animator != NULL);
+
    elm_scroller_region_get(animator->prop_scroller, NULL, &y, &w, &h);
    elm_scroller_region_show(animator->prop_scroller, x, y, w, h);
 }
@@ -128,6 +138,8 @@ _on_program_reset(void *data,
                   void *event_info __UNUSED__)
 {
    Animator *animator = data;
+
+   assert(animator != NULL);
 
    if (animator->sequence_mode)
      prog_sequence_program_reset(animator->program_sequence);
@@ -142,6 +154,8 @@ _on_program_play(void *data,
 {
    Animator *animator = data;
 
+   assert(animator != NULL);
+
    if (animator->sequence_mode)
      prog_sequence_program_play(animator->program_sequence);
    else
@@ -154,6 +168,8 @@ _on_program_cycle(void *data,
                   void *event_info __UNUSED__)
 {
    Animator *animator = data;
+
+   assert(animator != NULL);
 
    animator->is_cycled = !animator->is_cycled;
    if (animator->is_cycled)
@@ -171,6 +187,9 @@ _on_animator_save(void *data,
                   void *ei __UNUSED__)
 {
    App_Data *ap = data;
+
+   assert(ap != NULL);
+
    Style *style = ap->project->current_style;
    ui_signal_list_data_unset(ap->block.signal_list);
    ui_signal_list_data_set(ap->block.signal_list, style);
@@ -186,6 +205,8 @@ _on_animator_close(void *data,
 {
    App_Data *ap = app_data_get();
    Animator *animator = (Animator*)data;
+
+   assert(animator != NULL);
 
    TODO("change this after discarding changes would be possible")
    _on_animator_save(ap, NULL, NULL);
@@ -206,6 +227,8 @@ _on_animator_ok(void *data,
 {
    Animator *animator = (Animator *)data;
 
+   assert(animator != NULL);
+
    mw_del(animator->mwin);
 }
 
@@ -218,6 +241,8 @@ _on_add_popup_bt_add(void *data,
    App_Data *ap = app_data_get();
    Animator *animator = (Animator*)data;
    Eina_Stringshare *name = elm_entry_entry_get(animator->popup.entry);
+
+   assert(animator != NULL);
 
    if ((!name) || (strcmp(name, "") == 0))
      {
@@ -250,6 +275,8 @@ _on_add_popup_bt_cancel(void *data,
 {
    Animator *animator = (Animator*)data;
 
+   assert(animator != NULL);
+
    evas_object_del(animator->popup.popup);
    animator->popup.popup = NULL;
    animator->popup.entry = NULL;
@@ -262,6 +289,8 @@ _on_bt_prog_del(void *data,
 {
    Animator *animator = (Animator*)data;
 
+   assert(animator != NULL);
+
    Elm_Object_Item *glit = elm_genlist_selected_item_get(animator->gl_progs);
    if (!glit) return;
    const char *program_name = NULL;
@@ -269,8 +298,7 @@ _on_bt_prog_del(void *data,
    program_name = elm_object_item_part_text_get(glit, "elm.text");
    if (!edje_edit_program_del(animator->style->obj, program_name))
      {
-        NOTIFY_WARNING(_("Failed to delete program [%s] from style [%s]"),
-                       program_name, animator->style->name)
+        abort();
      }
    else
      {
@@ -298,6 +326,8 @@ _on_bt_prog_add(void *data,
    Evas_Object *item;
 
    Animator *animator = (Animator*)data;
+
+   assert(animator != NULL);
 
    animator->popup.popup = elm_popup_add(animator->mwin);
    elm_object_part_text_set(animator->popup.popup, "title,text",
@@ -332,6 +362,9 @@ _on_bt_mode_change(void *data,
 {
    Evas_Object *icon;
    Animator *animator = (Animator*)data;
+
+   assert(animator != NULL);
+
    if (!animator->program) return;
 
    animator->sequence_mode = !animator->sequence_mode;
@@ -366,6 +399,9 @@ _on_mwin_del(void * data,
              void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+
+   assert(ap != NULL);
+
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    ap->modal_editor--;
 }
@@ -388,6 +424,8 @@ _on_gen_prog_sel(void *data,
    Eina_List *queue = NULL;
    Eina_List *prog_afters = NULL, *l;
    Eina_Stringshare *program;
+
+   assert(animator != NULL);
 
    elm_layout_signal_emit(animator->program_area_layout, "eflete,content,show", "eflete");
    animator->sel = glit;
@@ -455,6 +493,8 @@ _item_prog_label_get(void *data,
 static Evas_Object *
 _gl_progs_add(Animator *animator)
 {
+   assert(animator != NULL);
+
    Evas_Object *gl_progs = NULL;;
    Eina_List *progs_list = NULL;
    Eina_List *l = NULL;
@@ -523,21 +563,17 @@ animator_window_add(Style *style)
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
 
-   if ((!style) || (!style->obj) || (!ap->project))
-     {
-        ERR("Style or project doesn't opened");
-        return NULL;
-     }
+   assert(style != NULL);
+   assert(style->obj != NULL);
+   assert(ap->project != NULL);
 
    animator = (Animator *)mem_calloc(1, sizeof(Animator));
 
    animator->style = style;
    animator->mwin = mw_add("dialog", _on_animator_ok, animator);
-   if (!animator->mwin)
-     {
-        free(animator);
-        return NULL;
-     }
+
+   assert(animator->mwin != NULL);
+
    animator->is_cycled = true;
 
    mw_title_set(animator->mwin, _("Program editor"));

@@ -24,22 +24,15 @@
 #include "win32.h"
 #endif
 
-#define CHECK_AP(RET) \
-if (!ap) \
-  { \
-     ERR("Application data structure does'nt exist"); \
-     return RET; \
-  }
-
 App_Data *ap = NULL;
 
 Evas_Object *
 win_layout_get(void)
 {
-   if ((ap) && (ap->win_layout))
-     return ap->win_layout;
-   else
-     return NULL;
+   assert(ap != NULL);
+   assert(ap->win_layout != NULL);
+
+   return ap->win_layout;
 }
 
 App_Data *
@@ -53,14 +46,14 @@ app_data_get(void)
 Evas_Object *
 main_window_get(void)
 {
-   CHECK_AP(NULL)
+   assert(ap != NULL);
    return ap->win;
 }
 
 Evas_Object *
 colorselector_get(void)
 {
-   CHECK_AP(NULL)
+   assert(ap != NULL);
    if (!ap->colorsel) ap->colorsel = colorselector_add(ap->win);
    return ap->colorsel;
 }
@@ -68,16 +61,17 @@ colorselector_get(void)
 History *
 history_get(void)
 {
-   CHECK_AP(NULL)
+   assert(ap != NULL);
    return ap->history;
 }
 
 Eina_Bool
 app_free()
 {
-   CHECK_AP(false)
+   assert(ap != NULL);
    TODO("here need delete all created objects from ap!")
    free(ap);
+   ap = NULL;
    return true;
 }
 
@@ -147,7 +141,8 @@ app_init()
 Eina_Bool
 app_shutdown()
 {
-   if (!ap) return false;
+   assert(ap != NULL);
+
    config_shutdown(ap);
    elm_theme_free(ap->theme);
    eina_shutdown();

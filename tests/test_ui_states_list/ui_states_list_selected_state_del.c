@@ -132,37 +132,6 @@ END_TEST
 /**
  * @addtogroup ui_states_list_selected_state_del
  * @{
- * <tr>
- * <td>ui_states_list_selected_state_del</td>
- * <td>ui_states_list_selected_state_del_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialized elm.
- *
- * @procedure
- * @step 1 Call function ui_states_list_selected_state_del(window).
- * @step 2 Check returned value.
- * @step 3 Check new number of states.
- * </td>
- * <td>(Evas_Object *) gl_states</td>
- * <td>All checks passed</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(ui_states_list_selected_state_del_test_n2)
-{
-   elm_init(0,0);
-
-   ck_assert_msg(ui_states_list_selected_state_del(NULL) == EINA_FALSE,
-                 "Deleting state from not state list was successfull.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_states_list_selected_state_del
- * @{
  * </TABLE>
  * @}
  * @}

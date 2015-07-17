@@ -165,6 +165,8 @@ _on_directory_bt_done(void *data,
 static inline const char *
 item_entry_entry_get(Evas_Object *item)
 {
+   assert(item != NULL);
+
    Evas_Object *entry = elm_object_part_content_get(item, "swallow.entry");
    return elm_entry_entry_get(entry);
 }
@@ -177,6 +179,10 @@ _directories_include_flags_build(Evas_Object *box,
    Eina_List *box_items, *l;
    Evas_Object *item;
    const char *path;
+
+   assert(box != NULL);
+   assert(dir_name != NULL);
+   assert(str != NULL);
 
    box_items = elm_box_children_get(box);
    EINA_LIST_FOREACH(box_items, l, item)
@@ -191,6 +197,8 @@ _directories_include_flags_build(Evas_Object *box,
 static inline Evas_Object *
 _directories_box_get(Evas_Object *layout, const char *part_name)
 {
+   assert(layout != NULL);
+
    Evas_Object *scr = elm_object_part_content_get(layout, part_name);
    return elm_object_content_get(scr);
 }
@@ -198,6 +206,8 @@ _directories_box_get(Evas_Object *layout, const char *part_name)
 static Eina_Strbuf *
 _edje_cc_flags_create(Wizard_Import_Edj_Win *wiew)
 {
+   assert(wiew != NULL);
+
    Eina_Strbuf *flags = eina_strbuf_new();
 
    _directories_include_flags_build(_directories_box_get(wiew->layout,
@@ -218,6 +228,9 @@ _edje_cc_flags_create(Wizard_Import_Edj_Win *wiew)
 static void
 _file_to_swap_copy(Eina_Stringshare *path, const char *widget_name)
 {
+   assert(path != NULL);
+   assert(widget_name != NULL);
+
    Eina_Stringshare *path_to =
       eina_stringshare_printf("%s/%s.edc", path, widget_name);
    Eina_Stringshare *path_from =
@@ -267,6 +280,9 @@ _file_to_swap_copy(Eina_Stringshare *path, const char *widget_name)
 static int
 _widgets_dependencies_setup(Widget_Item_Data *item, Eina_Strbuf *dep_message)
 {
+   assert(item != NULL);
+   assert(dep_message != NULL);
+
    int ret  = 0;
    if (item->name)
      ret += _widgets_dependencies_setup(item + 1, dep_message);
@@ -351,6 +367,9 @@ _widgets_dependencies_generate(Eina_Stringshare *path, Eina_Strbuf *dep_edc)
 {
    Eina_Bool are_widgets_included = false;
 
+   assert(path != NULL);
+   assert(dep_edc != NULL);
+
    DEPENDENCE_INCLUDE(BTN_WD);
    DEPENDENCE_INCLUDE(SCROLLER_WD);
    DEPENDENCE_INCLUDE(ENTRY_WD);
@@ -383,6 +402,8 @@ _widgets_dependencies_generate(Eina_Stringshare *path, Eina_Strbuf *dep_edc)
 static Eina_Strbuf *
 _edc_code_generate(Eina_Stringshare *path, Wizard_Import_Edj_Win *wiew __UNUSED__)
 {
+   assert(path != NULL);
+
    Eina_Strbuf *edc = eina_strbuf_new();
    Eina_Strbuf *dep_message = eina_strbuf_new();
    Eina_Strbuf *dep_edc = eina_strbuf_new();
@@ -439,6 +460,9 @@ static Eina_Bool
 _splash_setup_import_edc(void *data, Splash_Status status __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew = (Wizard_Import_Edj_Win *)data;
+
+   assert(wiew != NULL);
+
    App_Data *ap;
    ap = app_data_get();
    Eina_Strbuf *flags = _edje_cc_flags_create(wiew);
@@ -459,6 +483,9 @@ _splash_setup_import_edc(void *data, Splash_Status status __UNUSED__)
 Eina_Bool
 _new_project_file_create(Eina_Stringshare *path, const char *edc)
 {
+   assert(path != NULL);
+   assert(edc != NULL);
+
    FILE *fp = fopen(path, "w");
    if (!fp)
      {
@@ -475,6 +502,9 @@ static Eina_Bool
 _splash_setup_new_project(void *data, Splash_Status status __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew = (Wizard_Import_Edj_Win *)data;
+
+   assert(wiew != NULL);
+
    Eina_Strbuf *edc;
    Eina_Strbuf *flags;
    Eina_Tmpstr *tmp_dir;
@@ -540,6 +570,8 @@ _on_directory_bt(void *data,
 static Evas_Object *
 _dir_item_add(Evas_Object *parent, Wizard_Import_Edj_Win *wiew)
 {
+   assert(wiew != NULL);
+
    Evas_Object *item, *button, *entry, *ic;
    Item_Mod_Callback_Data *c_data = mem_calloc(1, sizeof(Item_Mod_Callback_Data));
    if (!c_data) return NULL;
@@ -580,7 +612,7 @@ _dir_item_add(Evas_Object *parent, Wizard_Import_Edj_Win *wiew)
    elm_object_style_set(button, "elipsis");
    evas_object_show(button);
    evas_object_smart_callback_add(button, "clicked", _on_directory_bt, c_data);
-   elm_object_part_content_set(entry, "elm.swallow.end", button);
+   elm_object_part_content_set(entry, "elm.swallow.elipsis", button);
    elm_object_part_content_set(item, "swallow.entry", entry);
    c_data->entry = entry;
 
@@ -633,8 +665,11 @@ _directories_box_add(Wizard_Import_Edj_Win *wiew)
    Evas_Object *scr;
    Evas_Object *box;
 
+   assert(wiew != NULL);
+
    SCROLLER_ADD(wiew->layout, scr);
    BOX_ADD(wiew->layout, box, false, false);
+   elm_box_padding_set(box, 0, 6);
    elm_box_pack_end(box, _dir_item_add(box, wiew));
    elm_object_content_set(scr, box);
    return scr;
@@ -645,7 +680,8 @@ wizard_import_edc_add(App_Data *ap __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew;
    wiew = wizard_import_common_add("import_edc");
-   if (!wiew) return NULL;
+
+   assert(wiew != NULL);
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    mw_title_set(wiew->win, _("Wizard: import edc"));
@@ -683,6 +719,9 @@ _genlist_label_get(void *data,
                    const char  *part __UNUSED__)
 {
    Widget_Item_Data *widget_data = (Widget_Item_Data *)data;
+
+   assert(widget_data != NULL);
+
    return strdup(widget_data->name);
 }
 
@@ -692,6 +731,9 @@ _on_widget_include_check_changed(void *data,
                                  void *ei __UNUSED__)
 {
    Widget_Item_Data *widget_data = (Widget_Item_Data *)data;
+
+   assert(widget_data != NULL);
+
    widget_data->check = elm_check_state_get(obj);
 }
 
@@ -701,6 +743,9 @@ _on_widget_include_all_check_changed(void *data,
                                      void *ei __UNUSED__)
 {
    Evas_Object *genlist = (Evas_Object *)data;
+
+   assert(genlist != NULL);
+
    _widget_item_data_array_checks_set(genlist, elm_check_state_get(obj));
 }
 
@@ -711,6 +756,9 @@ _on_genlist_item_activated(void *data __UNUSED__,
 {
    Elm_Object_Item *it = (Elm_Object_Item *)ei;
    Widget_Item_Data *widget_data = elm_object_item_data_get(it);
+
+   assert(widget_data != NULL);
+
    widget_data->check = !widget_data->check;
    elm_genlist_item_update(it);
 }
@@ -739,6 +787,8 @@ _wizart_widget_list_add(Evas_Object *parent)
    Evas_Object *genlist;
    Elm_Genlist_Item_Class *itc = NULL;
    Widget_Item_Data *widget_item_data_iterator = widget_item_data;
+
+   assert(parent != NULL);
 
    genlist = elm_genlist_add(parent);
 
@@ -769,7 +819,8 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
    Wizard_Import_Edj_Win *wiew;
    Evas_Object *genlist, *check, *ic;
    wiew = wizard_import_common_add("new_project");
-   if (!wiew) return NULL;
+
+   assert(wiew != NULL);
 
    mw_title_set(wiew->win, _("Wizard: new project"));
    ic = elm_icon_add(wiew->win);

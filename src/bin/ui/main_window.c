@@ -31,6 +31,9 @@ _on_done(void *data,
          void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+
+   assert(ap != NULL);
+
    ui_main_window_del(ap);
 }
 
@@ -41,7 +44,10 @@ ui_main_window_del(App_Data *ap)
      return false;
 
    if (!history_term(ap->history))
-     WARN("Failed terminate history module");
+     {
+        ERR("Failed terminate history module");
+        abort();
+     }
 #ifdef HAVE_ENVENTOR
    code_edit_mode_switch(ap, false);
 #endif
@@ -68,6 +74,8 @@ _statusbar_init(Evas_Object *obj)
    Evas_Object *statusbar = NULL;
    Evas_Object *label = NULL;
    Ewe_Statusbar_Item *item = NULL;
+
+   assert(obj != NULL);
 
    statusbar = ewe_statusbar_add(obj);
    elm_object_part_content_set(obj, "eflete.swallow.statusbar",
@@ -98,7 +106,7 @@ _statusbar_init(Evas_Object *obj)
 #define MARK_TO_SHUTDOWN(fmt, ...) \
    { \
       ERR(fmt, ## __VA_ARGS__); \
-      return false; \
+      abort(); \
    } \
 
 Eina_Bool
@@ -107,22 +115,16 @@ ui_main_window_add(App_Data *ap)
    Config *config;
    Evas_Object *bg;
 
-   if (!ap)
-     {
-        ERR("Can't create the window. App_Data is NULL");
-        return EINA_FALSE;
-     }
+   assert(ap != NULL);
+
    config_load(ap);
    config = config_get();
 
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
    ap->win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
 
-   if (ap->win == NULL)
-     {
-        ERR("Failed to create main window.");
-        return false;
-     }
+   assert(ap->win != NULL);
+
    evas_object_resize(ap->win, config->window.w, config->window.h);
    evas_object_move(ap->win, config->window.x, config->window.y);
 
@@ -130,7 +132,10 @@ ui_main_window_add(App_Data *ap)
 
    evas_object_smart_callback_add(ap->win, "delete,request", _on_done, ap);
    if (!cursor_main_set(ap->win, CURSOR_ARROW))
-     ERR("Main cursor not setted.");
+     {
+        ERR("Main cursor not setted.");
+        abort();
+     }
 
    elm_object_theme_set(ap->win, ap->theme);
 

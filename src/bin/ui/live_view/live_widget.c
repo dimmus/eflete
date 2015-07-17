@@ -72,12 +72,9 @@ live_widget_create(const char  *widget,
    Evas_Object *object = NULL;
    unsigned int i;
 
-   if ((!widget) || (!style) || (!parent))
-     {
-        WARN("Couldn't create live widget: wrong args."
-             "widget: %p, style: %p, parent: %p", widget, style, parent);
-        return NULL;
-     }
+   assert(widget != NULL);
+   assert(style != NULL);
+   assert(parent != NULL);
 
    for (i = 0; widgets[i].name != NULL; i++)
      {
@@ -94,17 +91,17 @@ live_widget_create(const char  *widget,
 Eina_Bool
 live_widget_del(Evas_Object *widget)
 {
-   if (!widget) return false;
+   assert(widget != NULL);
 
    if (!evas_object_data_del(widget, TEXT_FUNC))
      {
-        WARN("Given Object doesn't contain any data so it probably wrong object!");
-        return false;
+        ERR("Given Object doesn't contain any data so it probably wrong object!");
+        abort();
      }
    if (!evas_object_data_del(widget, SWALLOW_FUNC))
      {
-        WARN("Given Object doesn't contain any data so it probably wrong object!");
-        return false;
+        ERR("Given Object doesn't contain any data so it probably wrong object!");
+        abort();
      }
    evas_object_del(widget);
 

@@ -130,7 +130,7 @@ _sort_class_cb(const void *data1, const void *data2)
 static void
 _wm_part_free(Part *part)
 {
-   if (!part) return;
+   assert(part != NULL);
 
    eina_stringshare_del(part->name);
    eina_stringshare_del(part->curr_state);
@@ -146,10 +146,12 @@ wm_part_del(Style *style, Part *part)
 {
    Eina_Inlist *tmp_list = NULL;
 
-   if ((!style) || (!part)) return false;
+   assert(part != NULL);
+   assert(style != NULL);
 
    tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
-   if (!tmp_list) return false;
+
+   assert(tmp_list != NULL);
 
    style->parts = eina_inlist_remove(style->parts, tmp_list);
    _wm_part_free(part);
@@ -163,7 +165,8 @@ wm_style_current_state_parts_update(Style *style)
    Part *part = NULL;
    double val = 0;
    const char *state = NULL;
-   if (!style) return false;
+
+   assert(style != NULL);
 
    EINA_INLIST_FOREACH(style->parts, part)
      {
@@ -178,7 +181,8 @@ Eina_Bool
 wm_style_state_parts_reset(Style *style)
 {
    Part *part = NULL;
-   if (!style) return false;
+
+   assert(style != NULL);
 
    EINA_INLIST_FOREACH(style->parts, part)
      {
@@ -195,7 +199,10 @@ wm_part_current_state_set(Part *part, const char *state)
 {
    char **split;
 
-   if ((!part) || (!state) || (!strcmp(state, ""))) return false;
+   assert(part != NULL);
+   assert(state != NULL);
+   assert(strcmp(state, ""));
+
    split = eina_str_split(state, " ", 2);
    eina_stringshare_del(part->curr_state);
    part->curr_state = eina_stringshare_add(split[0]);
@@ -211,9 +218,10 @@ wm_part_add(Style *style, const char *part)
    Part *result = NULL;
    double value;
 
-   if ((!style) || (!part) || (!style->obj)) return NULL;
-   if (!edje_edit_part_exist(style->obj, part))
-     return NULL;
+   assert(style != NULL);
+   assert(style->obj != NULL);
+   assert(part != NULL);
+   assert(edje_edit_part_exist(style->obj, part));
 
    result = (Part *)mem_calloc(1, sizeof(Part));
    result->__type = PART;
@@ -240,7 +248,8 @@ wm_program_signals_list_get(Style *style)
    Eina_Stringshare *prog_name, *sig_name, *source_name;
    Signal *sig = NULL;
 
-   if ((!style) || (!style->obj)) return NULL;
+   assert(style != NULL);
+   assert(style->obj != NULL);
 
    progs = edje_edit_programs_list_get(style->obj);
    EINA_LIST_FOREACH(progs, l, prog_name)
@@ -269,7 +278,6 @@ Eina_Bool
 wm_program_signals_list_free(Eina_List *signals)
 {
    Signal *sig;
-   if (!signals) return false;
 
    EINA_LIST_FREE(signals, sig)
      {
@@ -293,7 +301,9 @@ wm_style_data_load(Style *style, Evas *e, Eina_File *mmap_file)
    Eina_List *parts_list = NULL, *l = NULL;
    char *part_name = NULL;
 
-   if ((!style) || (!e)) return false;
+   assert(style != NULL);
+   assert(e != NULL);
+
    if (style->obj)
      {
         eina_file_map_free(mmap_file, style->obj);
@@ -301,11 +311,10 @@ wm_style_data_load(Style *style, Evas *e, Eina_File *mmap_file)
      }
 
    edje_edit_obj = edje_edit_object_add(e);
+
    if (!edje_object_mmap_set(edje_edit_obj, mmap_file, style->full_group_name))
-     {
-        evas_object_del(edje_edit_obj);
-        return false;
-     }
+     abort();
+
    edje_object_freeze(edje_edit_obj);
    evas_object_freeze_events_set(edje_edit_obj, true);
    style->obj = edje_edit_obj;
@@ -332,8 +341,11 @@ wm_style_add(const char* style_name, const char* full_group_name,
 {
    Style *style_edje = NULL;
 
-   if ((!full_group_name) || (!style_name)) return NULL;
-   if ((style_type != LAYOUT) && (style_type != STYLE)) return NULL;
+   assert(full_group_name != NULL);
+   assert(style_name != NULL);
+   assert((style_type == LAYOUT) ||
+          (style_type == STYLE));
+
    style_edje = (Style *)mem_calloc(1, sizeof(Style));
    style_edje->name = eina_stringshare_add(style_name);
    style_edje->full_group_name = eina_stringshare_add(full_group_name);
@@ -348,6 +360,47 @@ wm_style_add(const char* style_name, const char* full_group_name,
    return style_edje;
 }
 
+const char *
+wm_style_name_set(Style *style, const char *name)
+{
+   Eina_Stringshare *new_name;
+
+   assert(style != NULL);
+   assert(name != NULL);
+
+   if (style->__type == LAYOUT)
+     eina_stringshare_replace(&style->full_group_name, name);
+   if (style->__type == STYLE)
+     {
+        arr = eina_str_split(style->full_group_name, "/", 0);
+        eina_strlcpy(tmp, arr[3], sizeof(tmp));
+        for (size = 4; arr[size]; size++)
+          {
+             if (strcmp(arr[size], style->parent->name))
+               {
+                  eina_strlcat(tmp, "/", PATH_MAX);
+                     eina_strlcat(tmp, arr[size], PATH_MAX);
+               }
+          }
+        new_name = eina_stringshare_printf("elm/%s/%s/%s", arr[1], arr[2], arr[3]);
+        free(arr[0]); \
+        free(arr);
+
+        eina_stringshare_replace(&style->full_group_name, new_name);
+        eina_stringshare_del(new_name);
+     }
+   eina_stringshare_replace(&style->name, name);
+   return style->name;
+}
+
+Eina_Bool
+wm_style_layout_is(Style *style)
+{
+   assert(style != NULL);
+
+   return style->__type == LAYOUT;
+}
+
 Eina_Bool
 wm_style_free(Style *style)
 {
@@ -355,7 +408,7 @@ wm_style_free(Style *style)
    Part *part;
    Eina_List *alias_node, *ll;
 
-   if (!style) return false;
+   assert(style != NULL);
 
    if (style->parent)
      style->parent->styles = eina_inlist_remove(style->parent->styles,
@@ -407,33 +460,18 @@ wm_style_copy(Evas_Object *dest_edje, Eina_Stringshare *source_full_name,
 {
    Evas *e = NULL;
 
-   if ((!full_name) || (!dest_file) || (!style))
-     return false;
-
-   if (!dest_edje)
-     {
-        CRIT("Invalid style object. style->obj[%p]", dest_edje);
-        return false;
-     }
+   assert(dest_edje != NULL);
+   assert(source_full_name != NULL);
+   assert(full_name != NULL);
+   assert(dest_file != NULL);
+   assert(style != NULL);
 
    e = evas_object_evas_get(dest_edje);
-   if (!e)
-     {
-        CRIT("Failure get evas[%p] from object", e);
-        return false;
-     }
 
-   if (edje_edit_group_exist(dest_edje, full_name))
-     {
-        NOTIFY_ERROR(_("Group [%s] exist"), full_name);
-        return false;
-     }
-   if (!edje_edit_group_copy(dest_edje, source_full_name, full_name))
-     {
-        NOTIFY_ERROR(_("Cannot copy group [%s]"), full_name);
-        return false;
-     }
+   assert(e != NULL);
 
+   assert(!edje_edit_group_exist(dest_edje, full_name));
+   assert(edje_edit_group_copy(dest_edje, source_full_name, full_name));
 
   return true;
 }
@@ -446,7 +484,8 @@ wm_class_add(const char *class_name, Eina_List *styles, Widget *parent)
    Eina_List *l;
    char *style_name, *style_name_full;
 
-   if ((!class_name) || (!styles)) return NULL;
+   assert(class_name != NULL);
+   assert(styles != NULL);
 
    class_edje = (Class *)mem_calloc(1, sizeof(Class));
    class_edje->name = eina_stringshare_add(class_name);
@@ -471,7 +510,7 @@ wm_class_free(Class *class_st)
    Style *style_edje = NULL;
    Eina_Inlist *l = NULL;
 
-   if (!class_st) return false;
+   assert(class_st != NULL);
 
    if (class_st->parent)
      class_st->parent->classes = eina_inlist_remove(
@@ -499,7 +538,9 @@ wm_widget_add(const char *widget_name, Eina_List **styles)
    char *class_name = NULL, *class_name_next = NULL;
    char *full_style_name, *style_next;
 
-   if ((!widget_name) || (!styles) || (!*styles)) return NULL;
+   assert(widget_name != NULL);
+   assert(styles != NULL);
+   assert(*styles != NULL);
 
    _widget = (Widget *)mem_calloc(1, sizeof(Widget));
    _widget->name = eina_stringshare_add(widget_name);
@@ -544,7 +585,7 @@ wm_widget_free(Widget *widget)
    Class *class_st = NULL;
    Eina_Inlist *l = NULL;
 
-   if (!widget) return false;
+   assert(widget != NULL);
 
    EINA_INLIST_FOREACH_SAFE(widget->classes, l, class_st)
      {
@@ -569,7 +610,7 @@ wm_widgets_list_new(const char *file)
    const char prefix[] = "elm/";
    Eina_Error error;
 
-   if (!file) return NULL;
+   assert(file != NULL);
 
    DBG("Start to parse the edje group collection. From file %s", file);
    collection = edje_file_collection_list(file);
@@ -635,7 +676,7 @@ wm_layouts_list_new(const char *file)
    const char prefix[] = "elm/";
    Eina_Error error;
 
-   if (!file) return NULL;
+   assert(file != NULL);
 
    collection = edje_file_collection_list(file);
    if (!collection)
@@ -667,8 +708,6 @@ wm_widgets_list_free(Eina_Inlist *widget_list)
 {
    Widget *widget = NULL;
 
-   if (!widget_list) return false;
-
    while (widget_list)
      {
         widget = EINA_INLIST_CONTAINER_GET(widget_list, Widget);
@@ -683,8 +722,6 @@ Eina_Bool
 wm_layouts_list_free(Eina_Inlist *widget_list)
 {
    Style *style = NULL;
-
-   if (!widget_list) return false;
 
    while (widget_list)
      {
@@ -707,7 +744,8 @@ wm_style_object_find(Eina_Inlist *widget_list, const char *style_full_name)
    Class *_class = NULL;
    Style *_style = NULL;
 
-   if ((!widget_list) || (!style_full_name)) return NULL;
+   assert(widget_list != NULL);
+   assert(style_full_name != NULL);
 
    WM_WIDGET_NAME_GET(widget_name, style_full_name);
    if (!widget_name)
@@ -771,8 +809,6 @@ wm_style_object_find(Eina_Inlist *widget_list, const char *style_full_name)
    free(class_name);
    free(style_name);
 
-   if (!_style) return NULL;
-
    return _style;
 }
 
@@ -781,17 +817,15 @@ _layout_object_find(Eina_Inlist *layout_list, const char *style_full_name)
 {
    Style *_layout = NULL;
 
-   if ((!layout_list) || (!style_full_name)) return NULL;
+   assert(layout_list != NULL);
+   assert(style_full_name != NULL);
 
    EINA_INLIST_FOREACH(layout_list, _layout)
      {
         if (!strcmp(_layout->full_group_name, style_full_name)) break;
      }
 
-   if (!_layout) return NULL;
-
    return _layout;
-
 }
 
 Eina_Bool
@@ -803,7 +837,8 @@ wm_widgets_list_objects_load(Eina_Inlist *widget_list,
    Class *class_st = NULL;
    Style *style = NULL;
 
-   if ((!widget_list) || (!e) || (!mmap_file)) return false;
+   assert(e != NULL);
+   assert(mmap_file != NULL);
 
    EINA_INLIST_FOREACH(widget_list, widget)
      {
@@ -825,7 +860,7 @@ wm_widgets_list_objects_del(Eina_Inlist *widget_list)
    Class *class_st = NULL;
    Style *style = NULL;
 
-   if (!widget_list) return false;
+   assert(widget_list != NULL);
 
    EINA_INLIST_FOREACH(widget_list, widget)
      {
@@ -849,7 +884,8 @@ wm_layouts_list_objects_load(Eina_Inlist *layouts_list,
 {
    Style *layout = NULL;
 
-   if ((!layouts_list) || (!e) || (!mmap_file)) return false;
+   assert(e != NULL);
+   assert(mmap_file != NULL);
 
    EINA_INLIST_FOREACH(layouts_list, layout)
      {
@@ -862,7 +898,8 @@ wm_layouts_list_objects_load(Eina_Inlist *layouts_list,
 const char *
 wm_part_type_get(Edje_Part_Type part_type)
 {
-   if (part_type > part_types_count) return NULL;
+   assert(part_type <= part_types_count);
+
    return part_types[part_type];
 }
 
@@ -871,7 +908,8 @@ wm_part_by_name_find(Style *style, Eina_Stringshare *part_name)
 {
    Part *data = NULL;
 
-   if ((!style) || (!part_name)) return NULL;
+   assert(style != NULL);
+   assert(part_name != NULL);
 
    EINA_INLIST_FOREACH(style->parts, data)
      {
@@ -888,19 +926,24 @@ wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
    Part *part = NULL;
    Part *rel_part = NULL;
    Eina_Inlist *tmp_list = NULL, *tmp_prev = NULL;
-   if ((!style) || (!part_name)) return false;
+
+   assert(style != NULL);
+   assert(part_name != NULL);
 
    EINA_INLIST_FOREACH(style->parts, data)
      {
+        TODO("Check logic here. Seems like we are skipping rel_part if part was found earlier")
         if (data->name == part_name) part = data;
         else if (data->name == rel_name)
          rel_part = data;
         if (part) break;
      }
-   if (!part) return false;
+
+   assert(part != NULL);
 
    tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
-   if (!tmp_list) return false;
+
+   assert(tmp_list != NULL);
 
    if (rel_part)
     tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel_part));
@@ -914,7 +957,6 @@ wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
    return true;
 }
 
-
 Eina_Bool
 wm_style_data_reload(Style *style, Eina_File *mmap_file)
 {
@@ -922,7 +964,10 @@ wm_style_data_reload(Style *style, Eina_File *mmap_file)
    char *part_name = NULL;
    Part *part = NULL;
 
-   if ((!style) || (!style->obj) || (!mmap_file)) return false;
+   assert(style != NULL);
+   assert(style->obj != NULL);
+   assert(style->full_group_name != NULL);
+   assert(mmap_file != NULL);
 
    eina_file_map_free(mmap_file, style->obj);
    edje_object_mmap_set(style->obj, mmap_file, style->full_group_name);
@@ -952,8 +997,6 @@ wm_styles_build_alias(Eina_Inlist *widgets_list,
    Widget *widget = NULL;
    Class *class_st = NULL;
    const char *main_name;
-
-   if ((!layouts_list) && (!widgets_list)) return false;
 
    /* checking layouts for awesomeness */
    if (layouts_list)

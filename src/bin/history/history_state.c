@@ -160,10 +160,17 @@ _history_ui_state_update(Evas_Object *source, State_Diff *change)
    Style *style = NULL;
    Part *part = NULL;
 
+   assert(source != NULL);
+   assert(change != NULL);
+
    App_Data *app = app_data_get();
-   if (!app->project) return;
+
+   assert(app->project != NULL);
+
    style = app->project->current_style;
-   if ((!style) || (style->obj != source)) return;
+
+   assert(style != NULL);
+   assert(style->obj == source);
 
    Evas_Object *prop_view = ui_block_property_get(app);
    part = wm_part_by_name_find(style, change->part);
@@ -198,8 +205,10 @@ _state_params_save(Evas_Object *obj, const char *part, const char *state,
    int r, g, b, a;
    int l, t;
 
-   if ((!part) || (!state)) return NULL;
-   if (!edje_edit_state_exist(obj, part, state, value)) return NULL;
+   assert(obj != NULL);
+   assert(part != NULL);
+   assert(state != NULL);
+   assert(edje_edit_state_exist(obj, part, state, value));
 
    state_diff = (State_Params *)mem_calloc(1, sizeof(State_Params));
 
@@ -360,11 +369,12 @@ _state_param_restore(Evas_Object *obj, Eina_Stringshare *part,
    Eina_List *l, *l_next;
    Eina_Stringshare *tween = NULL;
 
-   if ((!part) || (!state_diff)) return false;
+   assert(obj != NULL);
+   assert(part != NULL);
+   assert(state_diff != NULL);
+   assert(!edje_edit_state_exist(obj, part, state_diff->name, state_diff->value));
 
-   if (!edje_edit_state_exist(obj, part, state_diff->name, state_diff->value))
-     edje_edit_state_add(obj, part, state_diff->name, state_diff->value);
-
+   edje_edit_state_add(obj, part, state_diff->name, state_diff->value);
 
    edje_edit_state_visible_set(obj, part, state_diff->name,
                                state_diff->value, state_diff->visible);
@@ -559,6 +569,7 @@ _state_param_restore(Evas_Object *obj, Eina_Stringshare *part,
                                         state_diff->textblock.max_y);
       break;
       default:
+         abort();
       break;
      }
    return true;
@@ -568,6 +579,9 @@ Eina_Bool
 _state_redo(Evas_Object *source, State_Diff *change)
 {
    Eina_Bool result = false;
+
+   assert(source != NULL);
+   assert(change != NULL);
 
    switch(change->diff.action_type)
      {
@@ -580,7 +594,7 @@ _state_redo(Evas_Object *source, State_Diff *change)
                                       change->state->value);
       break;
       default:
-        return false;
+         abort();
       break;
      }
    if (result) _history_ui_state_update(source, change);
@@ -592,6 +606,9 @@ _state_undo(Evas_Object *source, State_Diff *change)
 {
    Eina_Bool result = false;
 
+   assert(source != NULL);
+   assert(change != NULL);
+
    switch(change->diff.action_type)
      {
       case ADD:
@@ -603,7 +620,7 @@ _state_undo(Evas_Object *source, State_Diff *change)
                                        change->type);
       break;
       default:
-         return false;
+         abort();
       break;
      }
 
@@ -614,6 +631,8 @@ _state_undo(Evas_Object *source, State_Diff *change)
 void
 _state_change_free(State_Diff *change)
 {
+   assert(change != NULL);
+
    eina_stringshare_del(change->style);
    eina_stringshare_del(change->part);
 
@@ -636,6 +655,8 @@ _state_change_free(State_Diff *change)
 Diff *
 _state_change_new(va_list list, Evas_Object *source)
 {
+   assert(source != NULL);
+
    char *state = NULL;
    double state_value = 0.0;
    State_Diff *change = (State_Diff *)mem_calloc(1, sizeof(State_Diff));
@@ -644,17 +665,17 @@ _state_change_new(va_list list, Evas_Object *source)
    change->diff.action_type = va_arg(list, Action);
 
    change->style = eina_stringshare_add((char *)va_arg(list, char *));
-   if (!change->style) goto error;
+   assert(change->style != NULL);
 
    change->part = eina_stringshare_add((char *)va_arg(list, char *));
-   if (!change->part) goto error;
+   assert(change->part != NULL);
 
    state = (char *)va_arg(list, char *);
    state_value = (double)va_arg(list, double);
    change->type = edje_edit_part_type_get(source, change->part);
    change->state = _state_params_save(source, change->part, state,
                                       state_value, change->type);
-   if (!change->state) goto error;
+   assert(change->state != NULL);
 
    change->diff.description = eina_stringshare_add((char *)va_arg(list, char *));
    change->diff.source = eina_stringshare_add(change->part);
@@ -664,8 +685,4 @@ _state_change_new(va_list list, Evas_Object *source)
    change->diff.old = eina_stringshare_add(" ");
 
    return (Diff *)change;
-
-error:
-   _state_change_free(change);
-   return NULL;
 }

@@ -49,6 +49,7 @@ check: Makefile
 	$(builddir)/test_project_manager.edj \
 	$(builddir)/image_editor.edj \
 	$(builddir)/ui_states_list_data_set.edj \
+	$(builddir)/ui_states_list_data_unset.edj \
 	$(builddir)/ui_states_list_part_get.edj \
 	$(builddir)/ui_states_list_selected_state_get.edj \
 	$(builddir)/ui_states_list_selected_states_del.edj \

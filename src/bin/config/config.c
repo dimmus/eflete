@@ -69,7 +69,7 @@ config_init(App_Data *ap)
    Eet_Data_Descriptor_Class eddc;
    Eet_Data_Descriptor_Class eddkc;
 
-   if (!ap) return false;
+   assert(ap != NULL);
 
    /* Config descriptor */
    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof(eddc), "Config", sizeof(Config));
@@ -85,7 +85,6 @@ config_init(App_Data *ap)
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.left_hor",    panes.left_hor, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.right_hor",   panes.right_hor, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.center",      panes.center, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.center_down", panes.center_down, EET_T_DOUBLE);
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "profile", profile, EET_T_STRING);
 
@@ -179,7 +178,7 @@ config_init(App_Data *ap)
 Eina_Bool
 config_shutdown(App_Data *ap)
 {
-   if (!ap) return false;
+   assert(ap != NULL);
 
    if (edd_base)
      {
@@ -278,6 +277,7 @@ _default_shortcuts_get()
 static void
 _profile_update(Profile *prof)
 {
+   assert(prof != NULL);
    if (prof->version > PROFILE_VERSION)
      return;
 
@@ -344,7 +344,6 @@ _config_default_new(void)
    conf->panes.left_hor =     0.7;
    conf->panes.right_hor =    0.3;
    conf->panes.center =       0.65;
-   conf->panes.center_down =  0.2;
    conf->profile = strdup("default");
 
    return conf;
@@ -354,6 +353,8 @@ void
 config_load(App_Data *ap)
 {
    Eet_File *ef;
+
+   assert(ap != NULL);
 
    if (config) _config_free();
    ef = eet_open(CONFIG_FILE, EET_FILE_MODE_READ);
@@ -369,7 +370,6 @@ config_load(App_Data *ap)
    profile_load(config->profile);
 
    shortcuts_profile_load(ap, profile_get());
-   shortcuts_main_add(ap);
 #ifdef HAVE_ENVENTOR
    enventor_object_profile_load(ap->enventor, profile_get());
 #endif /* HAVE_ENVENTOR */
@@ -378,6 +378,8 @@ config_load(App_Data *ap)
 Eina_Bool
 config_panes_sizes_data_update(App_Data *ap)
 {
+   assert(ap != NULL);
+
    if (!config) return false;
 
    config->panes.left =
@@ -390,8 +392,6 @@ config_panes_sizes_data_update(App_Data *ap)
      elm_panes_content_left_size_get(ap->panes.right_hor);
    config->panes.center =
      elm_panes_content_left_size_get(ap->panes.center);
-   config->panes.center_down =
-     elm_panes_content_left_size_get(ap->panes.center_down);
 
    return true;
 }
@@ -404,13 +404,13 @@ config_save(App_Data *ap)
    Eet_File *ef;
    Eina_Bool ok;
 
+   assert(ap != NULL);
+
    if (!edd_base)
      {
         CRIT("Nothing to save! Config not loaded.");
         return false;
      }
-
-   if (!ap) return false;
 
    evas_object_geometry_get(ap->win, &x, &y, &w, &h);
    if (profile->general.save_win_pos)
@@ -447,7 +447,8 @@ profile_load(const char *name)
    Eet_File *ef;
    Eina_Stringshare *path;
 
-   if (!name) return;
+   assert(name != NULL);
+
    path = eina_stringshare_printf(EFLETE_SETT_PATH"%s"PROFILE_FILE_EXT, name);
 
    if (profile) _profile_free();
@@ -473,13 +474,14 @@ profile_save(const char *name)
    Eina_Stringshare *path, *tmp;
    Eina_Bool ok;
 
+   assert(name != NULL);
+
    if (!edd_profile)
      {
         CRIT("Nothing to save! Profile not loaded.");
         return false;
      }
 
-   if (!name) return false;
    path = eina_stringshare_printf(EFLETE_SETT_PATH"%s"PROFILE_FILE_EXT, name);
    tmp = eina_stringshare_printf("%s%s", path, ".tmp");
 

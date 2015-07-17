@@ -38,6 +38,9 @@ _reload_classes(App_Data *ap, Eina_Inlist *classes)
    Ewe_Tabs_Item *class_tab = NULL;
    Evas_Object *tabs = NULL;
 
+   assert(ap != NULL);
+   assert(classes != NULL);
+
    tabs = ui_block_widget_list_get(ap);
    class_tab = ewe_tabs_active_item_get(tabs);
    nf = ewe_tabs_item_content_get(tabs, class_tab);
@@ -71,6 +74,9 @@ static void
 _job_popup_close(void *data)
 {
    App_Data *ap = (App_Data *)data;
+
+   assert(ap != NULL);
+
    evas_object_del(ap->popup);
    ap->popup = NULL;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
@@ -120,9 +126,12 @@ _on_popup_btn_yes(void *data,
         eina_stringshare_del(style_name);\
         eina_stringshare_del(class_name);\
 
+   assert(ap != NULL);
 
    widget = ui_widget_from_ap_get(ap);
-   if (!widget) return;
+
+   assert(widget != NULL);
+
    style_name = eina_stringshare_add(elm_entry_entry_get(entry_style));
    class_name = eina_stringshare_add(elm_entry_entry_get(entry_class));
 
@@ -311,9 +320,11 @@ style_dialog_add(App_Data *ap)
    Style *_style = NULL;
    Evas_Object *nf = NULL;
 
-   if (!ap) return false;
+   assert(ap != NULL);
+
    widget = ui_widget_from_ap_get(ap);
-   if (!widget) return false;
+
+   assert(widget != NULL);
 
    /* Checking if the source style is an alias.
       We can't clone aliases right now, it need lots of difficult code for that.
@@ -345,7 +356,9 @@ style_dialog_add(App_Data *ap)
    elm_box_pack_end(box, item);
 
    class_st = ui_class_from_ap_get(ap);
-   if (!class_st) return false;
+
+   assert(class_st != NULL);
+
    entry_text = eina_stringshare_add(class_st->name);
 
    ITEM_ADD(box, item, "Class name:", "eflete/property/item/default")

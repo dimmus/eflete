@@ -27,6 +27,8 @@ _response_cb(void *data,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
+   assert(data != NULL);
+
    evas_object_del(data);
 }
 
@@ -37,6 +39,9 @@ _mw_info(void *data,
 {
    Evas_Object *popup, *content, *bt;
    char *info = (char *)data;
+
+   assert(info != NULL);
+
    Evas_Object *mwin = elm_object_parent_widget_get(obj);
 
    popup = elm_popup_add(mwin);
@@ -75,6 +80,9 @@ _anim_show_finish(void *data,
    Evas_Object *img, *mw;
 
    mw = (Evas_Object *)data;
+
+   assert(mw != NULL);
+
    evas_object_smart_callback_call(mw, "show,anim,finished", "eflete");
 
    img = elm_layout_content_get(obj, "elm.swallow.content");
@@ -91,6 +99,9 @@ _anim_hide_finish(void *data,
    Evas_Object *img, *mw;
 
    mw = (Evas_Object *)data;
+
+   assert(mw != NULL);
+
    evas_object_smart_callback_call(mw, "hide,anim,finished", "eflete");
 
    img = elm_layout_content_get(obj, "elm.swallow.content");
@@ -108,6 +119,7 @@ _anim_##NAME(void *data, \
 { \
    Evas_Object *parent, *helper, *img; \
    parent = (Evas_Object *)data; \
+   assert(parent != NULL); \
    helper = elm_layout_add(parent); \
    elm_layout_theme_set(helper, "layout", "inwin", "anim/helper"); \
    evas_object_size_hint_weight_set(helper, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
@@ -139,6 +151,9 @@ _mw_close(void *data,
    Evas_Object *mw;
 
    mw = (Evas_Object *)data;
+
+   assert(mw != NULL);
+
    func_data = evas_object_data_get(mw, FUNC_DATA);
    func = evas_object_data_get(mw, FUNC_CLOSE);
    if (func) func(func_data, mw, NULL);
@@ -149,6 +164,8 @@ _mw_close(void *data,
 void
 mw_del(Evas_Object *mw)
 {
+   assert(mw != NULL);
+
    _anim_hide(elm_object_parent_widget_get(mw),
               evas_object_evas_get(mw), mw, NULL);
 }
@@ -162,11 +179,8 @@ mw_add(const char *style_name,
    Evas_Object *parent;
 
    parent = main_window_get();
-   if (!parent)
-     {
-        ERR("Parent evas_object is NULL.");
-        return NULL;
-     }
+
+   assert(parent != NULL);
 
    mw = elm_win_inwin_add(parent);
    if (style_name)
@@ -207,11 +221,8 @@ mw_about_add(Evas_Smart_Cb func, void *data)
 Eina_Bool
 mw_title_set(Evas_Object *object, const char *title)
 {
-   if ((!object) || (!title))
-     {
-        ERR("Object or title is NULL.");
-        return false;
-     }
+   assert(object != NULL);
+   assert(title != NULL);
 
    elm_object_part_text_set(object, "elm.text.title", title);
    return true;
@@ -220,11 +231,8 @@ mw_title_set(Evas_Object *object, const char *title)
 Eina_Bool
 mw_icon_set(Evas_Object *object, Evas_Object *icon)
 {
-   if ((!object) || (!icon))
-     {
-        ERR("Evas_object or icon is NULL.");
-        return false;
-     }
+   assert(object != NULL);
+   assert(icon != NULL);
 
    elm_layout_content_set(object, "elm.swallow.icon", icon);
    return true;
@@ -235,11 +243,8 @@ mw_info_text_set(Evas_Object *object, const char *text)
 {
    Evas_Object *ic_info, *bt_info;
 
-   if ((!object) || (!text))
-     {
-        ERR("Evas_object or text is NULL.");
-        return false;
-     }
+   assert(object != NULL);
+   assert(text != NULL);
 
    bt_info = elm_button_add(object);
    evas_object_size_hint_align_set(bt_info, EVAS_HINT_FILL, EVAS_HINT_FILL);

@@ -224,6 +224,8 @@ _on_popup_bt_cancel(void *data,
 {
    Style_Editor *style_edit = (Style_Editor *)data;
 
+   assert(style_edit != NULL);
+
    evas_object_del(POPUP.dialog);
    POPUP.dialog = NULL;
 }
@@ -233,6 +235,8 @@ _style_edit_update(Style_Editor *style_edit)
 {
    Evas_Textblock_Style *ts = NULL;
    Eina_Strbuf *style = eina_strbuf_new();
+
+   assert(style_edit != NULL);
 
    eina_strbuf_append(style, FONT_DEFAULT);
    eina_strbuf_append(style, CURRENT.stvalue);
@@ -252,6 +256,7 @@ _##VALUE##_update(Style_Editor *style_edit) \
 { \
    Eina_List *tabs_list = NULL, *tab = NULL; \
    Ewe_Tabs_Item *it; \
+   assert(style_edit != NULL); \
    tabs_list = (Eina_List *)ewe_tabs_items_list_get(style_edit->tabs); \
    EINA_LIST_FOREACH(tabs_list, tab, it) \
      { \
@@ -284,6 +289,9 @@ _on_glit_selected(void *data,
    eina_strbuf_append(style, FONT_DEFAULT);
 
    Style_Editor *style_edit = (Style_Editor *)data;
+
+   assert(style_edit != NULL);
+
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
 
@@ -375,6 +383,9 @@ _on_st_add_bt_ok(void *data,
    Elm_Object_Item *glit_style = NULL;
    Evas_Object *edje_edit_obj = NULL;
    Style_Editor *style_edit = (Style_Editor *)data;
+
+   assert(style_edit != NULL);
+
    const char *style_name = elm_entry_entry_get(POPUP.name);
    App_Data *ap = app_data_get();
 
@@ -438,6 +449,9 @@ _on_tag_add_bt_ok(void *data,
    Style_Editor *style_edit = (Style_Editor *)data;
    Elm_Object_Item *glit_tag = NULL;
    Evas_Object *edje_edit_obj = NULL;
+
+   assert(style_edit != NULL);
+
    const char *style_name = elm_object_item_data_get(style_edit->tag);
    const char *tag_name = elm_entry_entry_get(POPUP.name);
    edje_edit_obj = style_edit->pr->global_object;
@@ -477,6 +491,8 @@ _on_bt_style_add(Style_Editor *style_edit)
 {
    Evas_Object *box, *item, *button;
 
+   assert(style_edit != NULL);
+
    POPUP.dialog = elm_popup_add(style_edit->mwin);
    elm_object_part_text_set(POPUP.dialog, "title,text", _("Add textblock style"));
 
@@ -510,6 +526,8 @@ static void
 _on_bt_tag_add(Style_Editor *style_edit)
 {
    Evas_Object *box, *item, *button;
+
+   assert(style_edit != NULL);
 
    Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
@@ -574,6 +592,9 @@ _on_bt_del(void *data,
    App_Data *ap = app_data_get();
 
    Style_Editor *style_edit = (Style_Editor *)data;
+
+   assert(style_edit != NULL);
+
    Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
    if (!glit) return;
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
@@ -647,6 +668,9 @@ _on_viewer_exit(void *data,
                 void *event_info __UNUSED__)
 {
    Style_Editor *style_edit = (Style_Editor *)data;
+
+   assert(style_edit != NULL);
+
    App_Data *ap = app_data_get();
    workspace_edit_object_recalc(ap->workspace);
    mw_del(style_edit->mwin);
@@ -656,8 +680,10 @@ static inline Evas_Object *
 _style_editor_search_field_create(Evas_Object *parent)
 {
    Evas_Object *entry, *icon;
+
+   assert(parent != NULL);
+
    ENTRY_ADD(parent, entry, true);
-   elm_object_style_set(entry, "search_field");
    elm_object_part_text_set(entry, "guide", _("Search"));
    ICON_STANDARD_ADD(entry, icon, true, "search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
@@ -670,6 +696,9 @@ _on_bt_add(void *data,
            void *event_info)
 {
    Style_Editor *style_edit = (Style_Editor *)data;
+
+   assert(style_edit != NULL);
+
    Ewe_Combobox_Item *selected_item = event_info;
 
    if (!selected_item->index) _on_bt_style_add(style_edit);
@@ -684,6 +713,9 @@ _search_changed(void *data,
                 void *event_info __UNUSED__)
 {
    Style_Editor *style_edit = data;
+
+   assert(style_edit != NULL);
+
    _genlist_item_search(style_edit->glist, &(style_edit->style_search_data),
                         style_edit->style_search_data.last_item_found);
 }
@@ -695,6 +727,8 @@ _search_nxt_gd_item(void *data,
 {
    Style_Editor *style_edit = data;
    Elm_Object_Item *start_from = NULL;
+
+   assert(style_edit != NULL);
 
    if (style_edit->style_search_data.last_item_found)
      {
@@ -711,6 +745,9 @@ _search_reset_cb(void *data,
                  void *event_info __UNUSED__)
 {
    Search_Data *search_data = data;
+
+   assert(search_data != NULL);
+
    search_data->last_item_found = NULL;
 }
 
@@ -724,6 +761,7 @@ _form_left_side(Style_Editor *style_edit)
    char *style, *tag;
    Evas_Object *edje_edit_obj = NULL;
 
+   assert(style_edit != NULL);
 
    if (!_itc_style)
      {
@@ -814,6 +852,9 @@ _change_bg_cb(void *data,
               void *event_info __UNUSED__)
 {
    Style_Editor *style_edit = (Style_Editor *)data;
+
+   assert(style_edit != NULL);
+
    int state = elm_radio_state_value_get(obj);
    Evas_Object *bg = NULL;
    Evas *canvas = evas_object_evas_get(obj);
@@ -848,6 +889,8 @@ _change_bg_cb(void *data,
 static void
 _entry_repch_update(Style_Editor *style_edit, Eina_Bool password)
 {
+   assert(style_edit != NULL);
+
    if (password)
      evas_object_textblock_replace_char_set(style_edit->textblock_style, "*");
    else
@@ -863,6 +906,10 @@ _tag_parse(Style_Editor *style_edit, const char *value, const char *text)
    char *token;
    int i = 0, k = 0, exist = 0, style_length = 0;
 
+   assert(style_edit != NULL);
+   assert(value != NULL);
+   assert(text != NULL);
+
    eina_strbuf_append(tag, CURRENT.stvalue);
    edje_edit_obj = style_edit->pr->global_object;
    stolen_buf = eina_strbuf_string_steal(tag);
@@ -873,7 +920,7 @@ _tag_parse(Style_Editor *style_edit, const char *value, const char *text)
           {
              for (k = 0; style_table[k][0] != NULL; k++)
                {
-                  if(!strcmp(style_table[k][0], token)) exist = k;
+                  if (!strcmp(style_table[k][0], token)) exist = k;
                }
           }
         else if (strstr(token, "shadow"))
@@ -902,7 +949,7 @@ _tag_parse(Style_Editor *style_edit, const char *value, const char *text)
      {
         for (k = 0; style_table[k][0] != NULL; k++)
           {
-             if(!strcmp(style_table[k][0], text))
+             if (!strcmp(style_table[k][0], text))
                {
                   eina_stringshare_del(style_table[k][1]);
                   style_table[k][1] = eina_stringshare_add(value);
@@ -945,6 +992,10 @@ static void
 _lines_colors_update(Style_Editor *style_edit, const char *param)
 {
    Eina_Tmpstr *val;
+
+   assert(style_edit != NULL);
+   assert(param != NULL);
+
    if (!strcmp(param, "underline"))
      {
         _lines_update(style_edit);
@@ -1001,6 +1052,7 @@ _on_##VALUE##_change(void *data, \
                      void *ei EINA_UNUSED) \
 { \
    Style_Editor *style_edit = (Style_Editor *)data; \
+   assert(style_edit != NULL); \
    WIDGET##_VALUE \
    _tag_parse(style_edit, value, TEXT); \
    FUNC; \
@@ -1019,6 +1071,7 @@ _on_##VALUE##_change(void *data, \
    int r, g, b, a; \
    const char *value; \
    Style_Editor *style_edit = (Style_Editor *)data; \
+   assert(style_edit != NULL); \
    Evas_Object *color, *rect; \
    color = evas_object_data_get(obj, "color"); \
    colorselector_color_get(obj, &r, &g, &b, &a); \
@@ -1035,6 +1088,7 @@ _on_##VALUE##_dismissed(void *data, \
                         void *event_info __UNUSED__) \
 { \
    Style_Editor *style_edit = (Style_Editor *)data; \
+   assert(style_edit != NULL); \
    evas_object_smart_callback_del_full(obj, "color,changed", \
                                       _on_##VALUE##_change, style_edit); \
    evas_object_smart_callback_del_full(obj, "palette,item,selected", \
@@ -1051,6 +1105,7 @@ _on_##VALUE##_clicked(void *data, \
    int x, y; \
    int r, g, b, a; \
    Style_Editor *style_edit = (Style_Editor *)data; \
+   assert(style_edit != NULL); \
    Evas_Object *colorsel, *rect; \
    colorsel = colorselector_get(); \
    evas_object_data_set(colorsel, "color", obj); \
@@ -1071,6 +1126,8 @@ static Evas_Object * \
 _style_item_##VALUE##_add(Evas_Object *layout, Style_Editor *style_edit) \
 { \
    Evas_Object *color, *rect; \
+   assert(layout != NULL); \
+   assert(style_edit != NULL); \
    color = elm_layout_add(layout); \
    elm_layout_file_set(color, EFLETE_EDJ, "eflete/style/color"); \
    evas_object_size_hint_weight_set(color, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
@@ -1134,6 +1191,9 @@ _style_item_##VALUE##_add(Evas_Object *layout, Style_Editor *style_edit) \
 { \
    Evas_Object *widget; \
 \
+   assert(layout != NULL); \
+   assert(style_edit != NULL); \
+\
    WIDGET##_ADD(VALUE) \
 \
    elm_object_part_content_set(layout, "swallow."SWALLOW, widget); \
@@ -1147,6 +1207,7 @@ _on_##VALUE##_select_direction(void *data, \
                               void *event_info __UNUSED__) \
 { \
    Style_Editor *st = data; \
+   assert(st != NULL); \
    style_table[DIRECTION_NUM][1] = eina_stringshare_add(TEXT); \
    _tag_parse(st, TEXT, "direction"); \
    _style_edit_update(st); \
@@ -1156,6 +1217,7 @@ _direction_item_##VALUE##_add(Evas_Object *item, Style_Editor *style_edit) \
 { \
    Evas_Object *widget; \
 \
+   assert(style_edit != NULL); \
    RADIO_ADD(item, widget, VAL, ""); \
    elm_object_style_set(widget, STYLE); \
    elm_object_part_content_set(item, "swallow."TEXT, widget); \
@@ -1175,6 +1237,9 @@ DIRECT_ADD(tr, "top_right", "tr", 7)
 static Eina_Tmpstr*
 _tag_value_get(const char* text_style, char* a_tag)
 {
+   assert(text_style != NULL);
+   assert(a_tag != NULL);
+
    char *tag_list_copy = mem_malloc(strlen(text_style) + 1);
    Eina_Tmpstr *result = NULL;
    char *token;
@@ -1204,8 +1269,11 @@ _tag_value_get(const char* text_style, char* a_tag)
 static Eina_Bool
 _hex_to_rgb(const char *hex, int *r, int *g, int *b, int *a)
 {
-   if ((!hex) || (!r) || (!g) || (!b) || (!a))
-     return false;
+   assert(hex != NULL);
+   assert(r != NULL);
+   assert(g != NULL);
+   assert(b != NULL);
+   assert(a != NULL);
 
    unsigned long val;
    char *end;
@@ -1328,6 +1396,10 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
    Evas_Object *scr;
    Eina_Bool flag = false;
 
+   assert(style_edit != NULL);
+   assert(tabs != NULL);
+   assert(it != NULL);
+
    SCROLLER_ADD(style_edit->mwin, scr);
    elm_scroller_policy_set(scr, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
 
@@ -1386,7 +1458,7 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
                }
           }
         if (!_hex_to_rgb(color, &r, &g, &b, &a))
-          ERR("This error should not happen in style editor... Contact devs please!");
+          abort();
         evas_object_color_set(text_color, r*a/255, g*a/255, b*a/255, a);
 
         eina_tmpstr_del(font);
@@ -1408,6 +1480,10 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
    Eina_Bool pass, bg;
    int r, g, b, a;
    unsigned int i = 0;
+
+   assert(style_edit != NULL);
+   assert(tabs != NULL);
+   assert(it != NULL);
 
    Evas_Object *scr;
    SCROLLER_ADD(style_edit->mwin, scr);
@@ -1552,6 +1628,10 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
    char *token;
    int count = 0, direction = DEFAULT_DIRECTION;
 
+   assert(style_edit != NULL);
+   assert(tabs != NULL);
+   assert(it != NULL);
+
    SCROLLER_ADD(style_edit->mwin, scr);
 
    layout = elm_layout_add(style_edit->mwin);
@@ -1689,6 +1769,10 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it
    int r, g, b, a;
    unsigned int i = 0;
 
+   assert(style_edit != NULL);
+   assert(tabs != NULL);
+   assert(it != NULL);
+
    Evas_Object *scr;
    SCROLLER_ADD(style_edit->mwin, scr);
 
@@ -1794,6 +1878,8 @@ _form_right_side(Style_Editor *style_edit)
    Evas_Object *radio_group = NULL;
    Evas_Object *radio = NULL;
 
+   assert(style_edit != NULL);
+
    layout = elm_layout_add(style_edit->mwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_layout_theme_set(layout, "layout", "style_editor", "property");
@@ -1838,6 +1924,9 @@ _on_style_editor_close(void *data,
                         void *event_info __UNUSED__)
 {
    Style_Editor *style_edit = (Style_Editor *)data;
+
+   assert(style_edit != NULL);
+
    eina_stringshare_del(CURRENT.stvalue);
    free(style_edit);
 }
@@ -1849,6 +1938,9 @@ _on_mwin_del(void * data,
              void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+
+   assert(ap != NULL);
+
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    ap->modal_editor--;
 }
@@ -1868,26 +1960,16 @@ style_editor_window_add(Project *project)
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
 
-   if (!project)
-     {
-        ERR("Project isn't opened");
-        return NULL;
-     }
-   if (!ap->win)
-     {
-        ERR("Failed create style editor without main window.");
-        return NULL;
-     }
+   assert(project != NULL);
+   assert(ap->win != NULL);
 
    style_edit = (Style_Editor *)mem_calloc(1, sizeof(Style_Editor));
 
    style_edit->pr = project;
    style_edit->mwin = mw_add("dialog", _on_viewer_exit, style_edit);
-   if (!style_edit->mwin)
-     {
-        free(style_edit);
-        return NULL;
-     }
+
+   assert(style_edit->mwin != NULL);
+
    mw_title_set(style_edit->mwin, _("Textblock style manager"));
    ic = elm_icon_add(style_edit->mwin);
    elm_icon_standard_set(ic, "text");

@@ -30,6 +30,9 @@ _add_state_cb(void *data,
               void *event_info __UNUSED__)
 {
    Evas_Object *box = (Evas_Object *)data;
+
+   assert(box != NULL);
+
    evas_object_smart_callback_call(box, "stl,state,add", NULL);
 }
 
@@ -39,6 +42,9 @@ _del_state_cb(void *data,
               void *event_info __UNUSED__)
 {
    Evas_Object *box = (Evas_Object *)data;
+
+   assert(box != NULL);
+
    evas_object_smart_callback_call(box, "stl,state,del", NULL);
 }
 
@@ -56,6 +62,9 @@ _on_state_selected(void *data,
                    void *event_info)
 {
    Evas_Object *box = (Evas_Object *)data;
+
+   assert(box != NULL);
+
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    evas_object_smart_callback_call(box, "stl,state,select", glit);
 }
@@ -65,7 +74,7 @@ ui_states_list_add(Evas_Object *parent)
 {
    Evas_Object *gl_states, *box, *box_btn, *btn, *ic;
 
-   if (!parent) return NULL;
+   assert(parent != NULL);
 
    BOX_ADD(parent, box, false, false)
    elm_box_padding_set(box, 0, 6);
@@ -139,7 +148,9 @@ ui_states_list_data_set(Evas_Object *object,
    Elm_Object_Item *stit;
    Evas_Object *gl;
 
-   if ((!object) || (!style) || (!part)) return false;
+   assert(object != NULL);
+   assert(style != NULL);
+   assert(part != NULL);
 
    gl = evas_object_data_get(object, "st_gl");
    elm_genlist_clear(gl);
@@ -176,7 +187,7 @@ ui_states_list_data_unset(Evas_Object *object)
 {
    Evas_Object *gl;
 
-   if (!object) return false;
+   assert(object != NULL);
 
    elm_object_disabled_set(evas_object_data_get(object, "st_btn_plus"), true);
    elm_object_disabled_set(evas_object_data_get(object, "st_btn_minus"), true);
@@ -192,7 +203,9 @@ Part *
 ui_states_list_part_get(Evas_Object *obj)
 {
    Part *_part = NULL;
-   if (!obj) return NULL;
+
+   assert(obj != NULL);
+
    _part = evas_object_data_get(obj, STLIST_PART_KEY);
    return _part;
 }
@@ -203,7 +216,8 @@ ui_states_list_state_add(Evas_Object *obj, const char *state)
    Evas_Object *gl;
    Elm_Object_Item *eoi;
 
-   if ((!obj) || (!state)) return false;
+   assert(obj != NULL);
+   assert(state != NULL);
 
    gl = evas_object_data_get(obj, "st_gl");
    eoi = elm_genlist_item_append(gl, _itc_state, state,
@@ -221,7 +235,7 @@ ui_states_list_selected_state_del(Evas_Object *obj)
    Evas_Object *gl;
    Elm_Object_Item *eoi, *next_eoi;
 
-   if (!obj) return false;
+   assert(obj != NULL);
 
    gl = evas_object_data_get(obj, "st_gl");
    eoi = elm_genlist_selected_item_get(gl);
@@ -248,7 +262,8 @@ ui_states_list_selected_state_get(Evas_Object *obj)
    Elm_Object_Item *eoi;
    Eina_Stringshare *state;
 
-   if (!obj) return NULL;
+   assert(obj != NULL);
+
    gl = evas_object_data_get(obj, "st_gl");
    eoi = elm_genlist_selected_item_get(gl);
 

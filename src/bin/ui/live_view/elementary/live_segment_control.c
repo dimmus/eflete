@@ -33,6 +33,9 @@ _on_sc_swallow_check(void *data,
    Elm_Object_Item *item = NULL;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
    item = elm_segment_control_item_selected_get(object);
@@ -88,6 +91,9 @@ _on_sc_text_check(void *data,
    Elm_Object_Item *item = NULL;
 
    Prop_Data *pd = (Prop_Data *)data;
+
+   assert(pd != NULL);
+
    Evas_Object *object = pd->live_object;
    check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
 
@@ -143,6 +149,9 @@ _sc_send_signal(void *data,
    const char *name = evas_object_data_get(obj, SIGNAL_NAME);
    const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
 
+   assert(name != NULL);
+   assert(source != NULL);
+
    for (i = 0; i < 3; i++)
      {
         item = elm_segment_control_item_get(data, i);
@@ -153,6 +162,9 @@ _sc_send_signal(void *data,
 Evas_Object *
 widget_segment_control_create(Evas_Object *parent, const Style *style)
 {
+   assert(parent != NULL);
+   assert(style != NULL);
+
    Eina_Stringshare *style_name;
    standard_widget_name_parse(style->full_group_name, NULL, NULL, &style_name);
 

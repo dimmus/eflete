@@ -22,6 +22,8 @@
 static Eina_Bool
 _panes_orient_get(const char *class)
 {
+   assert(class != NULL);
+
    Eina_Bool horizontal = true;
 
    if (strcmp(class, "horizontal") == 0)
@@ -35,6 +37,9 @@ _panes_orient_get(const char *class)
 Evas_Object *
 widget_panes_create(Evas_Object *parent, const Style *style)
 {
+   assert(parent != NULL);
+   assert(style != NULL);
+
    Eina_Stringshare *class;
    Eina_Stringshare *style_name;
    standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);

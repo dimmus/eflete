@@ -26,6 +26,10 @@ _create_toolbar(Evas_Object *obj, const char *class, const char *style)
    Elm_Object_Item *tb_it;
    Evas_Object *bt;
 
+   assert(obj != NULL);
+   assert(class != NULL);
+   assert(style != NULL);
+
    layout = elm_layout_add(obj);
    elm_layout_theme_set(layout, "layout", "live_view", "toolbar_helper");
    evas_object_show(layout);
@@ -67,6 +71,9 @@ _create_toolbar(Evas_Object *obj, const char *class, const char *style)
 Evas_Object *
 widget_toolbar_create(Evas_Object *parent, const Style *style)
 {
+   assert(parent != NULL);
+   assert(style != NULL);
+
    Eina_Stringshare *class;
    Eina_Stringshare *style_name;
 

@@ -22,6 +22,9 @@
 Evas_Object *
 widget_button_create(Evas_Object *parent, const Style *style)
 {
+   assert(parent != NULL);
+   assert(style != NULL);
+
    Eina_Stringshare *style_name;
    standard_widget_name_parse(style->full_group_name, NULL, NULL, &style_name);
 

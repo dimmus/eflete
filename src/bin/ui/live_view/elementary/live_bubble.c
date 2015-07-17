@@ -24,6 +24,8 @@ _bubble_pos_get(const char *class)
 {
    Elm_Bubble_Pos position = ELM_BUBBLE_POS_TOP_LEFT;
 
+   assert(class != NULL);
+
    if (strcmp(class, "top_left") == 0)
      position = ELM_BUBBLE_POS_TOP_LEFT;
    else if (strcmp(class, "top_right") == 0)
@@ -39,6 +41,9 @@ _bubble_pos_get(const char *class)
 Evas_Object *
 widget_bubble_create(Evas_Object *parent, const Style *style)
 {
+   assert(parent != NULL);
+   assert(style != NULL);
+
    Eina_Stringshare *class;
    Eina_Stringshare *style_name;
    standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);

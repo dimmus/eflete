@@ -70,33 +70,6 @@ END_TEST
 /**
  * @addtogroup about_window_add
  * @{
- * <tr>
- * <td>about_window_add</td>
- * <td>about_window_add_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialized efl
- *
- * @procedure
- * @step 1 Call about_window_add()
- * @step 2 Check returned pointer
- * </td>
- * <td>void</td>
- * <td>NULL pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (about_window_add_test_n)
-{
-   elm_init(0,0);
-   ck_assert_msg(about_window_add() == NULL, "about_window_add() should return NULL if App_Data is not initialized, but it returned non-NULL value");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup about_window_add
- * @{
  * </TABLE>
  * @}
  * @}
