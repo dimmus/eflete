@@ -186,36 +186,6 @@ END_TEST
 /**
  * @addtogroup ui_states_list_selected_state_get
  * @{
- * <tr>
- * <td>ui_states_list_selected_state_get</td>
- * <td>ui_states_list_selected_state_get_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialized elm.
- *
- * @procedure
- * @step 1 Call function ui_states_list_selected_state_get(NULL).
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>NULL</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(ui_states_list_selected_state_get_test_n2)
-{
-   elm_init(0,0);
-
-   ck_assert_msg(ui_states_list_selected_state_get(NULL) == NULL,
-                 "Got selected state from Nothing!");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_states_list_selected_state_get
- * @{
  * </TABLE>
  * @}
  * @}
