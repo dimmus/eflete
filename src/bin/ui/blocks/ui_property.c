@@ -21,6 +21,10 @@
 #ifdef HAVE_CONFIG_H
    #include "eflete_config.h"
 #endif */
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
+
 #include "ui_property.h"
 #include "property_macros.h"
 #include "main_window.h"
@@ -36,11 +40,6 @@ TODO("I dont know why this regex not work properly in the ewe entry."
      "It test in the elm_entry - works good, in online checkers - work")
 #define PROPERTY_REGEX_STATE_FONT "^\\w+(:(style|slant|weight|width|spacing|lang)=\\w+)?"
 #define PROPERTY_REGEX_IMAGE_BORDER "^([0-9]+( [0-9]+){3}){0,1}?"
-
-static Elm_Entry_Filter_Accept_Set accept_prop = {
-   .accepted = NULL,
-   .rejected = PART_NAME_BANNED_SYMBOLS
-};
 
 #define PROP_DATA_GET() \
    assert(property != NULL); \
@@ -85,6 +84,7 @@ struct _Prop_Data
    struct {
       Evas_Object *frame;
       Evas_Object *name;
+      Elm_Validator_Regexp *validator;
       Evas_Object *type;
       Evas_Object *scale, *scale_item;
       Evas_Object *mouse_events, *mouse_events_item;
@@ -929,9 +929,9 @@ prop_part_name_add(Evas_Object *parent, Prop_Data *pd)
    assert(pd != NULL);
 
    PROPERTY_ITEM_ADD(parent,  _("name"), "1swallow");
-   EWE_ENTRY_ADD(parent, pd->part.name, true);
-   elm_entry_markup_filter_append(pd->part.name, elm_entry_filter_accept_set, &accept_prop);
-   ewe_entry_entry_set(pd->part.name, pd->wm_part->name);
+   ENTRY_ADD(parent, pd->part.name, true);
+   eo_do(pd->part.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, pd->part.validator));
+   elm_entry_entry_set(pd->part.name, pd->wm_part->name);
    elm_object_tooltip_text_set(pd->part.name, _("Selected part name"));
    evas_object_smart_callback_add(pd->part.name, "changed,user", _on_part_name_change, pd);
    evas_object_smart_callback_add(pd->part.name, "unfocused", _on_part_name_unfocus, pd);
@@ -1054,6 +1054,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(pd_part.frame, box);
 
+        pd->part.validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
         item = prop_part_name_add(box, pd);
         elm_box_pack_end(box, item);
         item = prop_part_type_add(box, _("type"), wm_part_type_get(pd->wm_part->type));
@@ -1197,6 +1198,9 @@ ui_property_part_unset(Evas_Object *property)
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    prop_box = elm_object_content_get(pd->visual);
 
+   if (pd->part.validator)
+     elm_validator_regexp_free(pd->part.validator);
+   pd->part.validator = NULL;
    PROP_ITEM_UNSET(prop_box, pd->part.frame)
    PROP_ITEM_UNSET(prop_box, pd->state.frame)
    evas_object_del(pd->state.color1);
