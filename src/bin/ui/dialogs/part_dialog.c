@@ -48,6 +48,7 @@ _job_popup_del(void *data)
    assert(name_validator != NULL);
 
    elm_validator_regexp_free(name_validator);
+   name_validator = NULL;
    evas_object_del(ap->popup);
    ap->popup = NULL;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
