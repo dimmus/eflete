@@ -1486,9 +1486,11 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
    else
      {
         if (sd->highlight.part)
-          name = sd->highlight.part->name;
-        follow = groupedit_edit_object_part_draw_get(sd->groupedit, name);
-        highlight_object_follow(sd->highlight.highlight, follow);
+          {
+             name = sd->highlight.part->name;
+             follow = groupedit_edit_object_part_draw_get(sd->groupedit, name);
+             highlight_object_follow(sd->highlight.highlight, follow);
+          }
         follow = groupedit_part_object_area_get(sd->groupedit);
         highlight_object_follow(sd->highlight.space_hl, follow);
 
