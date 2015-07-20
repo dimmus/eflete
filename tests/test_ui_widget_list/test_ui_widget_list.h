@@ -27,13 +27,11 @@
 #define TEST_NAME "widget_list"
 
 void ui_widget_list_add_test_p(int);
-void ui_widget_list_add_test_n(int);
 
 void ui_widget_list_data_set_test_p1(int);
 void ui_widget_list_data_set_test_p2(int);
 void ui_widget_list_data_set_test_p3(int);
 void ui_widget_list_data_set_test_p4(int);
-void ui_widget_list_data_set_test_n1(int);
 void ui_widget_list_data_set_test_n2(int);
 
 void ui_widget_list_class_data_reload_test_p1(int);
@@ -80,8 +78,6 @@ void ui_widget_list_part_selected_set_test_n2(int);
 void ui_widget_list_part_selected_set_test_n3(int);
 
 void ui_widget_list_title_set_test_p(int);
-void ui_widget_list_title_set_test_n1(int);
-void ui_widget_list_title_set_test_n2(int);
 
 void ui_widget_list_selected_parts_get_test_p(int);
 void ui_widget_list_selected_parts_get_test_n1(int);
@@ -89,4 +85,3 @@ void ui_widget_list_selected_parts_get_test_n2(int);
 
 void ui_widget_list_tab_activate_test_p(int);
 void ui_widget_list_tab_activate_test_n1(int);
-void ui_widget_list_tab_activate_test_n2(int);

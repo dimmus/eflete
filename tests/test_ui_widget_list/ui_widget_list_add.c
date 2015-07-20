@@ -65,35 +65,6 @@ END_TEST
 /**
  * @addtogroup ui_widget_list_add
  * @{
- * <tr>
- * <td>ui_widget_list_add</td>
- * <td>ui_widget_list_add_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 Call ui_widget_list_add
- * @step 2 Check returned pointer
- * </td>
- * <td>NULL</td>
- * <td>NULL pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (ui_widget_list_add_test_n)
-{
-   elm_init(0, 0);
-   Evas_Object *widget_list;
-   widget_list = ui_widget_list_add(NULL);
-   ck_assert_msg(widget_list == NULL, "Create widget list object without parent.");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_widget_list_add
- * @{
  * </TABLE>
  * @}
  * @}
