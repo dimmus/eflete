@@ -357,7 +357,7 @@ wizard_import_common_add(const char *layout_name)
    assert(mwin != NULL);
 
    wiew->win = mwin;
-   wiew->name_validator = elm_validator_regexp_new("^[a-zA-Z0-9_]+$", NULL);
+   wiew->name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
 
    layout = elm_layout_add(mwin);
    elm_layout_theme_set(layout, "layout", "wizard", layout_name);
