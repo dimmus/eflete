@@ -64,38 +64,6 @@ EFLETE_TEST (mw_add_test_p)
 }
 END_TEST
 
-
-/**
- * @addtogroup mw_add
- * @{
- * <tr>
- * <td>mw_add</td>
- * <td>mw_add_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialized efl and app
- * @step 2 main_window NOT created
- *
- * @procedure
- * @step 1 Call mw_add(NULL, NULL, NULL)
- * @step 2 Check returned pointer
- * </td>
- * <td>NULL, NULL</td>
- * <td>NULL pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (mw_add_test_n)
-{
-   elm_init(0,0);
-
-   app_init();
-   ck_assert_msg(mw_add(NULL, NULL, NULL) == NULL, "Not NULL pointer returned");
-
-   elm_shutdown();
-}
-END_TEST
-
 /**
  * @addtogroup mw_add
  * @{
