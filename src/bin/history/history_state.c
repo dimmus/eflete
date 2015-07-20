@@ -569,7 +569,6 @@ _state_param_restore(Evas_Object *obj, Eina_Stringshare *part,
                                         state_diff->textblock.max_y);
       break;
       default:
-         abort();
       break;
      }
    return true;
