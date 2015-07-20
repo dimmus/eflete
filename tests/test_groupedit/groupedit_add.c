@@ -68,39 +68,6 @@ END_TEST
 /**
  * @addtogroup groupedit_add
  * @{
- * <tr>
- * <td>groupedit_add</td>
- * <td>groupedit_add_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 call groupedit_add
- * @step 2 check returned pointer
- * </td>
- * <td>NULL</td>
- * <td>Returned pointer is NULL</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (groupedit_add_test_n)
-{
-   Evas_Object *groupedit;
-
-   elm_init(0, 0);
-
-   groupedit = groupedit_add(NULL);
-   ck_assert_msg(groupedit == NULL, "Failed create groupedit object.");
-
-   elm_shutdown();
-}
-END_TEST
-
-
-/**
- * @addtogroup groupedit_add
- * @{
  * </TABLE>
  * @}
  * @}

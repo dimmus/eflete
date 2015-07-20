@@ -24,16 +24,10 @@ Suite* test_suite (void) {
    TCase *tcase = tcase_create("TCase");
 
    tcase_add_test(tcase, groupedit_add_test_p);
-   tcase_add_test(tcase, groupedit_add_test_n);
 
    tcase_add_test(tcase, groupedit_edit_object_set_test_p);
-   tcase_add_test(tcase, groupedit_edit_object_set_test_n1);
-   tcase_add_test(tcase, groupedit_edit_object_set_test_n2);
-   tcase_add_test(tcase, groupedit_edit_object_set_test_n3);
 
    tcase_add_test(tcase, groupedit_edit_object_unset_test_p);
-   tcase_add_test(tcase, groupedit_edit_object_unset_test_n1);
-   tcase_add_test(tcase, groupedit_edit_object_unset_test_n2);
 
    //tcase_add_test(tcase, groupedit_edit_object_recalc_all_test_p);
    //tcase_add_test(tcase, groupedit_edit_object_recalc_all_test_n);
@@ -94,10 +88,8 @@ Suite* test_suite (void) {
 
    tcase_add_test(tcase, groupedit_bg_set_test_p);
    tcase_add_test(tcase, groupedit_bg_set_test_p1);
-   tcase_add_test(tcase, groupedit_bg_set_test_n2);
 
    tcase_add_test(tcase, groupedit_bg_unset_test_p);
-   tcase_add_test(tcase, groupedit_bg_unset_test_n);
 
    //tcase_add_test(tcase, groupedit_part_visible_set_test_p);
    //tcase_add_test(tcase, groupedit_part_visible_set_test_n1);

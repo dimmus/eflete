@@ -27,7 +27,6 @@
  */
 
 void groupedit_add_test_p(int);
-void groupedit_add_test_n(int);
 
 void groupedit_handler_size_set_test_p(int);
 void groupedit_handler_size_set_test_n1(int);
@@ -61,13 +60,8 @@ void groupedit_style_get_test_p(int);
 void groupedit_style_get_test_n(int);
 
 void groupedit_edit_object_set_test_p(int);
-void groupedit_edit_object_set_test_n1(int);
-void groupedit_edit_object_set_test_n2(int);
-void groupedit_edit_object_set_test_n3(int);
 
 void groupedit_edit_object_unset_test_p(int);
-void groupedit_edit_object_unset_test_n1(int);
-void groupedit_edit_object_unset_test_n2(int);
 
 void groupedit_edit_object_recalc_all_test_p(int);
 void groupedit_edit_object_recalc_all_test_n(int);
@@ -128,10 +122,8 @@ void groupedit_edit_object_part_select_test_n2(int);
 
 void groupedit_bg_set_test_p(int);
 void groupedit_bg_set_test_p1(int);
-void groupedit_bg_set_test_n2(int);
 
 void groupedit_bg_unset_test_p(int);
-void groupedit_bg_unset_test_n(int);
 
 void groupedit_part_visible_set_test_p(int);
 void groupedit_part_visible_set_test_n1(int);
