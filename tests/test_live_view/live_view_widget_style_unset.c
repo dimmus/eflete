@@ -134,34 +134,6 @@ END_TEST
 /**
  * @addtogroup live_view_widget_style_unset
  * @{
- * <tr>
- * <td>live_view_widget_style_unset</td>
- * <td>live_view_widget_style_unset_test_n2</td>
- * <td>
- * @precondition
- * @step 1 None
- *
- * @procedure
- * @step 1 Call live_view_widget_style_unset.
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(live_view_widget_style_unset_test_n2)
-{
-   Eina_Bool res = EINA_TRUE;
-
-   res = live_view_widget_style_unset(NULL);
-   ck_assert_msg(res == EINA_FALSE, "Unset style from NULL pointer live view.");
-}
-END_TEST
-
-/**
- * @addtogroup live_view_widget_style_unset
- * @{
  * </TABLE>
  * @}
  * @}
