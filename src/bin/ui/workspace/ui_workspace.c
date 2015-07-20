@@ -1185,7 +1185,11 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    elm_menu_item_icon_name_set(sd->menu.items.mode_normal,
                                EFLETE_IMG_PATH"context_menu-bullet.png");
    elm_menu_item_icon_name_set(sd->menu.items.mode_separate, "");
-   if (!groupedit_edit_object_set(sd->groupedit, style->obj, file)) return false;
+   if (!groupedit_edit_object_set(sd->groupedit, style->obj, file))
+     {
+        ERR("Can't set groupedit edit object");
+        abort();
+     }
    container_handler_size_set(sd->container.obj, 8, 8, 8, 8);
    evas_object_smart_callback_add(sd->groupedit, "part,selected",
                                   _on_part_select, obj);
