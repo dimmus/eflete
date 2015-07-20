@@ -67,33 +67,6 @@ END_TEST
 /**
  * @addtogroup wm_widget_free
  * @{
- * <tr>
- * <td>wm_widget_free</td>
- * <td>wm_widget_free_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- *
- * @procedure
- * @step 1 Call function wm_widget_free(NULL).
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>EINA_FALSE returned.</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (wm_widget_free_test_n)
-{
-   elm_init(0,0);
-   ck_assert_msg(wm_widget_free(NULL) == EINA_FALSE, "NULL parameter was deleted as Widget.");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup wm_widget_free
- * @{
  * </TABLE>
  * @}
  * @}
