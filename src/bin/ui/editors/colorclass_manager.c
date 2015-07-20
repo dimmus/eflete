@@ -74,7 +74,6 @@ _on_add_popup_btn_add(void *data,
    Elm_Object_Item *glit_ccl = NULL;
    Uns_List *colorclass = NULL;
    Eina_List *l;
-   App_Data *ap = app_data_get();
 
    it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
    it->name = elm_entry_entry_get(edit->entry);
@@ -120,9 +119,6 @@ _on_add_popup_btn_add(void *data,
                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
    elm_genlist_item_selected_set(glit_ccl, EINA_TRUE);
 
-   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
-   ui_property_state_unset(ui_block_property_get(ap));
-   ui_property_state_set(ui_block_property_get(ap), part);
    evas_object_del(edit->popup);
    edit->popup = NULL;
    edit->changed = true;
