@@ -243,7 +243,6 @@ _part_restack(Ws_Groupedit_Smart_Data *sd,
 
    assert(sd != NULL);
    assert(part != NULL);
-   assert(part_to != NULL);
 
    ge_part = _parts_list_find(sd->parts, part);
    if (!ge_part) return false;
