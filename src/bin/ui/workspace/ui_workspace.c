@@ -804,7 +804,8 @@ workspace_highlight_unset(Evas_Object *obj)
    sd->highlight.part = NULL;
    evas_object_hide(sd->highlight.space_hl);
    evas_object_hide(sd->highlight.highlight);
-   groupedit_edit_object_part_select(sd->groupedit, NULL);
+   if (sd->groupedit)
+     groupedit_edit_object_part_select(sd->groupedit, NULL);
 
    evas_object_event_callback_del(sd->highlight.highlight,
                                   EVAS_CALLBACK_MOUSE_MOVE,
