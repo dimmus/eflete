@@ -128,37 +128,6 @@ END_TEST
 /**
  * @addtogroup workspace_edit_object_unset
  * @{
- * <tr>
- * <td>workspace_edit_object_unset</td>
- * <td>workspace_edit_object_unset_test_n1</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 call workspace_edit_object_unset with NULL param.
- * @step 2 check returned value
- * </td>
- * <td>NULL</td>
- * <td>Returned EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (workspace_edit_object_unset_test_n1)
-{
-   elm_init(0, 0);
-   Eina_Bool res = EINA_TRUE;
-
-   res = workspace_edit_object_unset(NULL);
-   ck_assert_msg(res == EINA_FALSE, "Unset edit object from NULL workspace object");
-   elm_shutdown();
-}
-END_TEST
-
-
-/**
- * @addtogroup workspace_edit_object_unset
- * @{
  * </TABLE>
  * @}
  * @}

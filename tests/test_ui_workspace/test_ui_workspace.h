@@ -19,6 +19,7 @@
 
 #include "eflete.h"
 #include "ui_workspace.h"
+#include "main_window.h"
 #include "utc_common.h"
 
 /**
@@ -26,154 +27,58 @@
  */
 
 void workspace_add_test_p(int);
-void workspace_add_test_n(int);
-
-void workspace_zoom_factor_set_p(int);
+void workspace_edit_object_get_test_p(int);
+void workspace_edit_object_get_test_p1(int);
+void workspace_edit_object_part_above_test_p(int);
+void workspace_edit_object_part_add_test_p(int);
+void workspace_edit_object_part_add_test_p1(int);
+void workspace_edit_object_part_below_test_p(int);
+void workspace_edit_object_part_del_test_p(int);
+void workspace_edit_object_part_item_add_test_n1(int);
+void workspace_edit_object_part_item_add_test_n2(int);
+void workspace_edit_object_part_item_add_test_n7(int);
+void workspace_edit_object_part_item_add_test_p1(int);
+void workspace_edit_object_part_item_del_test_n1(int);
+void workspace_edit_object_part_item_del_test_n2(int);
+void workspace_edit_object_part_item_del_test_p1(int);
+void workspace_edit_object_part_item_selected_set_test_n1(int);
+void workspace_edit_object_part_item_selected_set_test_n4(int);
+void workspace_edit_object_part_item_selected_set_test_p1(int);
+void workspace_edit_object_part_rename_test_n3(int);
+void workspace_edit_object_part_rename_test_p1(int);
+void workspace_edit_object_part_rename_test_p2(int);
+void workspace_edit_object_part_restack_test_p1(int);
+void workspace_edit_object_part_restack_test_p2(int);
+void workspace_edit_object_part_state_add_test_n(int);
+void workspace_edit_object_part_state_add_test_n1(int);
+void workspace_edit_object_part_state_add_test_p(int);
+void workspace_edit_object_part_state_add_test_p1(int);
+void workspace_edit_object_part_state_del_test_p(int);
+void workspace_edit_object_part_state_del_test_p1(int);
+void workspace_edit_object_part_state_set_test_n2(int);
+void workspace_edit_object_part_state_set_test_p(int);
+void workspace_edit_object_recalc_test_p(int);
+void workspace_edit_object_set_test_p(int);
+void workspace_edit_object_unset_test_n(int);
+void workspace_edit_object_unset_test_p(int);
+void workspace_edit_object_visible_set_test_p(int);
+void workspace_highlight_align_visible_get_test_p1(int);
+void workspace_highlight_align_visible_get_test_p2(int);
+void workspace_highlight_align_visible_set_test_p1(int);
+void workspace_highlight_align_visible_set_test_p2(int);
+void workspace_highlight_set_test_p(int);
+void workspace_highlight_unset_test_n(int);
+void workspace_highlight_unset_test_p(int);
+void workspace_object_area_visible_get_test_p1(int);
+void workspace_object_area_visible_get_test_p2(int);
+void workspace_object_area_visible_set_test_p1(int);
+void workspace_object_area_visible_set_test_p2(int);
+void workspace_separate_mode_get_test_p1(int);
+void workspace_separate_mode_get_test_p2(int);
+void workspace_separate_mode_set_test_p1(int);
+void workspace_separate_mode_set_test_p2(int);
+void workspace_zoom_factor_get_test_p(int);
 void workspace_zoom_factor_set_n1(int);
 void workspace_zoom_factor_set_n2(int);
 void workspace_zoom_factor_set_n3(int);
-
-void workspace_zoom_factor_get_test_p(int);
-void workspace_zoom_factor_get_test_n1(int);
-
-void workspace_edit_object_set_test_p(int);
-void workspace_edit_object_set_test_n(int);
-void workspace_edit_object_set_test_n1(int);
-void workspace_edit_object_set_test_n2(int);
-void workspace_edit_object_set_test_n3(int);
-
-void workspace_edit_object_unset_test_p(int);
-void workspace_edit_object_unset_test_n(int);
-void workspace_edit_object_unset_test_n1(int);
-
-void workspace_edit_object_get_test_p(int);
-void workspace_edit_object_get_test_p1(int);
-void workspace_edit_object_get_test_n(int);
-
-void workspace_edit_object_recalc_test_p(int);
-void workspace_edit_object_recalc_test_n(int);
-void workspace_edit_object_recalc_test_n1(int);
-
-void workspace_edit_object_part_add_test_p(int);
-void workspace_edit_object_part_add_test_p1(int);
-void workspace_edit_object_part_add_test_n(int);
-void workspace_edit_object_part_add_test_n1(int);
-void workspace_edit_object_part_add_test_n2(int);
-void workspace_edit_object_part_add_test_n3(int);
-
-void workspace_edit_object_part_del_test_p(int);
-void workspace_edit_object_part_del_test_n(int);
-void workspace_edit_object_part_del_test_n1(int);
-void workspace_edit_object_part_del_test_n2(int);
-
-void workspace_edit_object_part_above_test_p(int);
-void workspace_edit_object_part_above_test_n(int);
-void workspace_edit_object_part_above_test_n1(int);
-void workspace_edit_object_part_above_test_n2(int);
-
-void workspace_edit_object_part_below_test_p(int);
-void workspace_edit_object_part_below_test_n(int);
-void workspace_edit_object_part_below_test_n1(int);
-void workspace_edit_object_part_below_test_n2(int);
-
-void workspace_edit_object_part_state_set_test_p(int);
-void workspace_edit_object_part_state_set_test_n(int);
-void workspace_edit_object_part_state_set_test_n1(int);
-void workspace_edit_object_part_state_set_test_n2(int);
-
-void workspace_edit_object_part_state_add_test_p(int);
-void workspace_edit_object_part_state_add_test_p1(int);
-void workspace_edit_object_part_state_add_test_n(int);
-void workspace_edit_object_part_state_add_test_n1(int);
-void workspace_edit_object_part_state_add_test_n2(int);
-void workspace_edit_object_part_state_add_test_n3(int);
-void workspace_edit_object_part_state_add_test_n4(int);
-
-void workspace_edit_object_part_state_del_test_p(int);
-void workspace_edit_object_part_state_del_test_p1(int);
-void workspace_edit_object_part_state_del_test_n(int);
-void workspace_edit_object_part_state_del_test_n1(int);
-void workspace_edit_object_part_state_del_test_n2(int);
-void workspace_edit_object_part_state_del_test_n3(int);
-void workspace_edit_object_part_state_del_test_n4(int);
-
-void workspace_edit_object_part_rename_test_p1(int);
-void workspace_edit_object_part_rename_test_p2(int);
-void workspace_edit_object_part_rename_test_n1(int);
-void workspace_edit_object_part_rename_test_n2(int);
-void workspace_edit_object_part_rename_test_n3(int);
-void workspace_edit_object_part_rename_test_n4(int);
-
-void workspace_edit_object_visible_set_test_p(int);
-void workspace_edit_object_visible_set_test_n(int);
-void workspace_edit_object_visible_set_test_n1(int);
-
-void workspace_highlight_set_test_p(int);
-void workspace_highlight_set_test_n(int);
-void workspace_highlight_set_test_n1(int);
-void workspace_highlight_set_test_n2(int);
-void workspace_highlight_set_test_n3(int);
-
-void workspace_highlight_unset_test_p(int);
-void workspace_highlight_unset_test_n(int);
-void workspace_highlight_unset_test_n1(int);
-
-void workspace_separate_mode_set_test_p1(int);
-void workspace_separate_mode_set_test_p2(int);
-void workspace_separate_mode_set_test_n1(int);
-void workspace_separate_mode_set_test_n2(int);
-
-void workspace_separate_mode_get_test_p1(int);
-void workspace_separate_mode_get_test_p2(int);
-void workspace_separate_mode_get_test_n1(int);
-void workspace_separate_mode_get_test_n2(int);
-
-void workspace_edit_object_part_restack_test_p1(int);
-void workspace_edit_object_part_restack_test_p2(int);
-void workspace_edit_object_part_restack_test_n1(int);
-void workspace_edit_object_part_restack_test_n2(int);
-void workspace_edit_object_part_restack_test_n3(int);
-void workspace_edit_object_part_restack_test_n4(int);
-void workspace_edit_object_part_restack_test_n5(int);
-
-void workspace_highlight_align_visible_get_test_p1(int);
-void workspace_highlight_align_visible_get_test_p2(int);
-void workspace_highlight_align_visible_get_test_n1(int);
-void workspace_highlight_align_visible_get_test_n2(int);
-
-void workspace_highlight_align_visible_set_test_p1(int);
-void workspace_highlight_align_visible_set_test_p2(int);
-void workspace_highlight_align_visible_set_test_n(int);
-
-void workspace_object_area_visible_get_test_p1(int);
-void workspace_object_area_visible_get_test_p2(int);
-void workspace_object_area_visible_get_test_n1(int);
-void workspace_object_area_visible_get_test_n2(int);
-
-void workspace_object_area_visible_set_test_p1(int);
-void workspace_object_area_visible_set_test_p2(int);
-void workspace_object_area_visible_set_test_n(int);
-
-void workspace_edit_object_part_item_selected_set_test_p1(int);
-void workspace_edit_object_part_item_selected_set_test_n1(int);
-void workspace_edit_object_part_item_selected_set_test_n2(int);
-void workspace_edit_object_part_item_selected_set_test_n3(int);
-void workspace_edit_object_part_item_selected_set_test_n4(int);
-
-void workspace_edit_object_part_item_add_test_p1(int);
-void workspace_edit_object_part_item_add_test_n1(int);
-void workspace_edit_object_part_item_add_test_n2(int);
-void workspace_edit_object_part_item_add_test_n3(int);
-void workspace_edit_object_part_item_add_test_n4(int);
-void workspace_edit_object_part_item_add_test_n5(int);
-void workspace_edit_object_part_item_add_test_n6(int);
-void workspace_edit_object_part_item_add_test_n7(int);
-
-void workspace_edit_object_part_item_del_test_p1(int);
-void workspace_edit_object_part_item_del_test_n1(int);
-void workspace_edit_object_part_item_del_test_n2(int);
-void workspace_edit_object_part_item_del_test_n3(int);
-void workspace_edit_object_part_item_del_test_n4(int);
-void workspace_edit_object_part_item_del_test_n5(int);
-
-
+void workspace_zoom_factor_set_p(int);

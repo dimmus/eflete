@@ -48,7 +48,6 @@
  *
  * @procedure
  * @step 1 Above exist part. Here should returned EINA_TRUE.
- * @step 2 Again above part. Here should returned EINA_FALSE, because part already at top.
  * </td>
  * <td>(Evas_Object *)workspace, (char *)"radio"</td>
  * <td>All check's passed'</td>
@@ -74,8 +73,6 @@ EFLETE_TEST (workspace_edit_object_part_above_test_p)
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_above.edj");
    ret = workspace_edit_object_part_above(workspace, "radio");
    ck_assert_msg(ret == EINA_TRUE, "Failed above part");
-   ret = workspace_edit_object_part_above(workspace, "radio");
-   ck_assert_msg(ret == EINA_FALSE, "Already top part above again");
 
    wm_style_free(style);
    eina_file_close(mmap_file);
@@ -86,148 +83,6 @@ EFLETE_TEST (workspace_edit_object_part_above_test_p)
    elm_shutdown();
 }
 END_TEST
-
-/**
- * @addtogroup workspace_edit_object_part_above
- * @{
- * <tr>
- * <td>workspace_edit_object_part_above</td>
- * <td>workspace_edit_object_part_above_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 load extenstion theme from EFLETE_THEME file
- * @step 3 create parent window
- * @step 4 Mmap edj file.
- * @step 5 create workspace object
- * @step 6 create style object
- * @step 7 load style data from edje file
- * @step 8 set edit object into workspace
- *
- * @procedure
- * @step 1 Above non exist part.
- * </td>
- * <td>(Evas_Object *)workspace, (char *)"non_exist</td>
- * <td>Returned EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (workspace_edit_object_part_above_test_n)
-{
-   elm_init(0, 0);
-   app_init();
-   Evas_Object *parent, *workspace;
-   Eina_Bool ret = EINA_TRUE;
-   Style *style = NULL;
-   Evas *e = NULL;
-   Eina_File *mmap_file = NULL;
-
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_above.edj", EINA_FALSE);
-   workspace = workspace_add(parent);
-   e = evas_object_evas_get(parent);
-   style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, mmap_file);
-   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_above.edj");
-   ret = workspace_edit_object_part_above(workspace, "non_exist");
-   ck_assert_msg(ret == EINA_FALSE, "Non exist part is above");
-
-   wm_style_free(style);
-   eina_file_close(mmap_file);
-   workspace_edit_object_unset(workspace);
-   evas_object_del(workspace);
-   evas_object_del(parent);
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup workspace_edit_object_part_above
- * @{
- * <tr>
- * <td>workspace_edit_object_part_above</td>
- * <td>workspace_edit_object_part_above_test_n1</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 load extenstion theme from EFLETE_THEME file
- * @step 3 create parent window
- * @step 4 Mmap edj file.
- * @step 5 create workspace object
- * @step 6 create style object
- * @step 7 load style data from edje file
- * @step 8 set edit object into workspace
- *
- * @procedure
- * @step 1 Above part with NULL pointer string name.
- * </td>
- * <td>(Evas_Object *)workspace, NULL</td>
- * <td>Returned EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (workspace_edit_object_part_above_test_n1)
-{
-   elm_init(0, 0);
-   app_init();
-   Evas_Object *parent, *workspace;
-   Eina_Bool ret = EINA_TRUE;
-   Style *style = NULL;
-   Evas *e = NULL;
-   Eina_File *mmap_file = NULL;
-
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_above.edj", EINA_FALSE);
-   workspace = workspace_add(parent);
-   e = evas_object_evas_get(parent);
-   style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, mmap_file);
-   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_above.edj");
-   ret = workspace_edit_object_part_above(workspace, NULL);
-   ck_assert_msg(ret == EINA_FALSE, "NULL named part is above");
-
-   workspace_edit_object_unset(workspace);
-   eina_file_close(mmap_file);
-   evas_object_del(workspace);
-   evas_object_del(parent);
-   wm_style_free(style);
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup workspace_edit_object_part_above
- * @{
- * <tr>
- * <td>workspace_edit_object_part_above</td>
- * <td>workspace_edit_object_part_above_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 Above part with NULL pointer workspace object.
- * </td>
- * <td>NULL, (char *)"bg"</td>
- * <td>Returned EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (workspace_edit_object_part_above_test_n2)
-{
-   elm_init(0, 0);
-   app_init();
-   Eina_Bool ret = EINA_TRUE;
-
-   ret = workspace_edit_object_part_above(NULL, "bg");
-   ck_assert_msg(ret == EINA_FALSE, "Above part in NULL object workspace");
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
 
 /**
  * @addtogroup workspace_edit_object_part_above

@@ -129,40 +129,6 @@ END_TEST
 /**
  * @addtogroup workspace_edit_object_get
  * @{
- * <tr>
- * <td>workspace_edit_object_get</td>
- * <td>workspace_edit_object_get_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 get style with workspace_edit_object_get with NULL param
- * @step 2 returned pointer is NULL
- * </td>
- * <td>NULL</td>
- * <td>NULL pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (workspace_edit_object_get_test_n)
-{
-   elm_init(0, 0);
-   app_init();
-   Style *style_ret = NULL;
-
-   style_ret = workspace_edit_object_get(NULL);
-   ck_assert_msg(style_ret == NULL, "Get edit object from NULL object");
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-
-
-/**
- * @addtogroup workspace_edit_object_get
- * @{
  * </TABLE>
  * @}
  * @}

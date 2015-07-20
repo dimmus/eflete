@@ -67,36 +67,6 @@ END_TEST
 /**
  * @addtogroup workspace_add
  * @{
- * <tr>
- * <td>workspace_add</td>
- * <td>workspace_add_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 Call workspace_add
- * @step 2 Check returned pointer
- * </td>
- * <td>(Evas_Object *) parent</td>
- * <td>Returned pointer is NULL</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (workspace_add_test_n)
-{
-   elm_init(0, 0);
-   app_init();
-   Evas_Object *workspace = workspace_add(NULL);
-   ck_assert_msg(workspace == NULL, "Returned pointer is not NULL");
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup workspace_add
- * @{
  * </TABLE>
  * @}
  * @}

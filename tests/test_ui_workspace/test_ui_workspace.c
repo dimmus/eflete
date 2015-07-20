@@ -24,150 +24,57 @@ Suite* test_suite (void) {
    TCase *tcase = tcase_create("TCase");
 
    tcase_add_test(tcase, workspace_add_test_p);
-   tcase_add_test(tcase, workspace_add_test_n);
-
-   tcase_add_test(tcase, workspace_edit_object_set_test_p);
-   tcase_add_test(tcase, workspace_edit_object_set_test_n);
-   tcase_add_test(tcase, workspace_edit_object_set_test_n1);
-   tcase_add_test(tcase, workspace_edit_object_set_test_n2);
-   tcase_add_test(tcase, workspace_edit_object_set_test_n3);
-
-   tcase_add_test(tcase, workspace_edit_object_unset_test_p);
-   tcase_add_test(tcase, workspace_edit_object_unset_test_n);
-   tcase_add_test(tcase, workspace_edit_object_unset_test_n1);
-
-   tcase_add_test(tcase, workspace_zoom_factor_get_test_p);
-   tcase_add_test(tcase, workspace_zoom_factor_get_test_n1);
-
    tcase_add_test(tcase, workspace_edit_object_get_test_p);
    tcase_add_test(tcase, workspace_edit_object_get_test_p1);
-   tcase_add_test(tcase, workspace_edit_object_get_test_n);
-
-   tcase_add_test(tcase, workspace_edit_object_recalc_test_p);
-   tcase_add_test(tcase, workspace_edit_object_recalc_test_n);
-   tcase_add_test(tcase, workspace_edit_object_recalc_test_n1);
-
+   tcase_add_test(tcase, workspace_edit_object_part_above_test_p);
    tcase_add_test(tcase, workspace_edit_object_part_add_test_p);
    tcase_add_test(tcase, workspace_edit_object_part_add_test_p1);
-   tcase_add_test(tcase, workspace_edit_object_part_add_test_n);
-   tcase_add_test(tcase, workspace_edit_object_part_add_test_n1);
-   tcase_add_test(tcase, workspace_edit_object_part_add_test_n2);
-   tcase_add_test(tcase, workspace_edit_object_part_add_test_n3);
-
-   tcase_add_test(tcase, workspace_edit_object_part_del_test_p);
-   tcase_add_test(tcase, workspace_edit_object_part_del_test_n);
-   tcase_add_test(tcase, workspace_edit_object_part_del_test_n1);
-   tcase_add_test(tcase, workspace_edit_object_part_del_test_n2);
-
-   tcase_add_test(tcase, workspace_edit_object_part_above_test_p);
-   tcase_add_test(tcase, workspace_edit_object_part_above_test_n);
-   tcase_add_test(tcase, workspace_edit_object_part_above_test_n1);
-   tcase_add_test(tcase, workspace_edit_object_part_above_test_n2);
-
    tcase_add_test(tcase, workspace_edit_object_part_below_test_p);
-   tcase_add_test(tcase, workspace_edit_object_part_below_test_n);
-   tcase_add_test(tcase, workspace_edit_object_part_below_test_n1);
-   tcase_add_test(tcase, workspace_edit_object_part_below_test_n2);
-
-   tcase_add_test(tcase, workspace_edit_object_part_restack_test_p1);
-   tcase_add_test(tcase, workspace_edit_object_part_restack_test_p2);
-   tcase_add_test(tcase, workspace_edit_object_part_restack_test_n1);
-   tcase_add_test(tcase, workspace_edit_object_part_restack_test_n2);
-   tcase_add_test(tcase, workspace_edit_object_part_restack_test_n3);
-   tcase_add_test(tcase, workspace_edit_object_part_restack_test_n4);
-   tcase_add_test(tcase, workspace_edit_object_part_restack_test_n5);
-
-   tcase_add_test(tcase, workspace_edit_object_part_state_set_test_p);
-   tcase_add_test(tcase, workspace_edit_object_part_state_set_test_n);
-   tcase_add_test(tcase, workspace_edit_object_part_state_set_test_n1);
-   tcase_add_test(tcase, workspace_edit_object_part_state_set_test_n2);
-
-   tcase_add_test(tcase, workspace_edit_object_part_state_add_test_p);
-   tcase_add_test(tcase, workspace_edit_object_part_state_add_test_p1);
-   tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n);
-   tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n1);
-   tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n2);
-   tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n3);
-   tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n4);
-
-   tcase_add_test(tcase, workspace_edit_object_part_state_del_test_p);
-   tcase_add_test(tcase, workspace_edit_object_part_state_del_test_p1);
-   tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n);
-   tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n1);
-   tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n2);
-   tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n3);
-   tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n4);
-
-   tcase_add_test(tcase, workspace_edit_object_part_rename_test_p1);
-   tcase_add_test(tcase, workspace_edit_object_part_rename_test_p2);
-   tcase_add_test(tcase, workspace_edit_object_part_rename_test_n1);
-   tcase_add_test(tcase, workspace_edit_object_part_rename_test_n2);
-   tcase_add_test(tcase, workspace_edit_object_part_rename_test_n3);
-   tcase_add_test(tcase, workspace_edit_object_part_rename_test_n4);
-
-   tcase_add_test(tcase, workspace_edit_object_visible_set_test_p);
-   tcase_add_test(tcase, workspace_edit_object_visible_set_test_n);
-   tcase_add_test(tcase, workspace_edit_object_visible_set_test_n1);
-
-   tcase_add_test(tcase, workspace_highlight_set_test_p);
-   tcase_add_test(tcase, workspace_highlight_set_test_n);
-   tcase_add_test(tcase, workspace_highlight_set_test_n1);
-   tcase_add_test(tcase, workspace_highlight_set_test_n2);
-   tcase_add_test(tcase, workspace_highlight_set_test_n3);
-
-   tcase_add_test(tcase, workspace_highlight_unset_test_p);
-   tcase_add_test(tcase, workspace_highlight_unset_test_n);
-   tcase_add_test(tcase, workspace_highlight_unset_test_n1);
-
-   tcase_add_test(tcase, workspace_separate_mode_set_test_p1);
-   tcase_add_test(tcase, workspace_separate_mode_set_test_p2);
-   tcase_add_test(tcase, workspace_separate_mode_set_test_n1);
-   tcase_add_test(tcase, workspace_separate_mode_set_test_n2);
-
-   tcase_add_test(tcase, workspace_separate_mode_get_test_p1);
-   tcase_add_test(tcase, workspace_separate_mode_get_test_p2);
-   tcase_add_test(tcase, workspace_separate_mode_get_test_n1);
-   tcase_add_test(tcase, workspace_separate_mode_get_test_n2);
-
-   tcase_add_test(tcase, workspace_highlight_align_visible_get_test_p1);
-   tcase_add_test(tcase, workspace_highlight_align_visible_get_test_p2);
-   tcase_add_test(tcase, workspace_highlight_align_visible_get_test_n1);
-   tcase_add_test(tcase, workspace_highlight_align_visible_get_test_n2);
-
-   tcase_add_test(tcase, workspace_highlight_align_visible_set_test_p1);
-   tcase_add_test(tcase, workspace_highlight_align_visible_set_test_p2);
-   tcase_add_test(tcase, workspace_highlight_align_visible_set_test_n);
-
-   tcase_add_test(tcase, workspace_object_area_visible_get_test_p1);
-   tcase_add_test(tcase, workspace_object_area_visible_get_test_p2);
-   tcase_add_test(tcase, workspace_object_area_visible_get_test_n1);
-   tcase_add_test(tcase, workspace_object_area_visible_get_test_n2);
-
-   tcase_add_test(tcase, workspace_object_area_visible_set_test_p1);
-   tcase_add_test(tcase, workspace_object_area_visible_set_test_p2);
-   tcase_add_test(tcase, workspace_object_area_visible_set_test_n);
-
-   tcase_add_test(tcase, workspace_edit_object_part_item_selected_set_test_p1);
-   tcase_add_test(tcase, workspace_edit_object_part_item_selected_set_test_n1);
-   tcase_add_test(tcase, workspace_edit_object_part_item_selected_set_test_n2);
-   tcase_add_test(tcase, workspace_edit_object_part_item_selected_set_test_n3);
-   tcase_add_test(tcase, workspace_edit_object_part_item_selected_set_test_n4);
-
-   tcase_add_test(tcase, workspace_edit_object_part_item_add_test_p1);
+   tcase_add_test(tcase, workspace_edit_object_part_del_test_p);
    tcase_add_test(tcase, workspace_edit_object_part_item_add_test_n1);
    tcase_add_test(tcase, workspace_edit_object_part_item_add_test_n2);
-   tcase_add_test(tcase, workspace_edit_object_part_item_add_test_n3);
-   tcase_add_test(tcase, workspace_edit_object_part_item_add_test_n4);
-   tcase_add_test(tcase, workspace_edit_object_part_item_add_test_n5);
-   tcase_add_test(tcase, workspace_edit_object_part_item_add_test_n6);
    tcase_add_test(tcase, workspace_edit_object_part_item_add_test_n7);
-
-   tcase_add_test(tcase, workspace_edit_object_part_item_del_test_p1);
+   tcase_add_test(tcase, workspace_edit_object_part_item_add_test_p1);
    tcase_add_test(tcase, workspace_edit_object_part_item_del_test_n1);
    tcase_add_test(tcase, workspace_edit_object_part_item_del_test_n2);
-   tcase_add_test(tcase, workspace_edit_object_part_item_del_test_n3);
-   tcase_add_test(tcase, workspace_edit_object_part_item_del_test_n4);
-   tcase_add_test(tcase, workspace_edit_object_part_item_del_test_n5);
+   tcase_add_test(tcase, workspace_edit_object_part_item_del_test_p1);
+   tcase_add_test(tcase, workspace_edit_object_part_item_selected_set_test_n1);
+   tcase_add_test(tcase, workspace_edit_object_part_item_selected_set_test_n4);
+   tcase_add_test(tcase, workspace_edit_object_part_item_selected_set_test_p1);
+   tcase_add_test(tcase, workspace_edit_object_part_rename_test_n3);
+   tcase_add_test(tcase, workspace_edit_object_part_rename_test_p1);
+   tcase_add_test(tcase, workspace_edit_object_part_rename_test_p2);
+   tcase_add_test(tcase, workspace_edit_object_part_restack_test_p1);
+   tcase_add_test(tcase, workspace_edit_object_part_restack_test_p2);
+   tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n);
+   tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n1);
+   tcase_add_test(tcase, workspace_edit_object_part_state_add_test_p);
+   tcase_add_test(tcase, workspace_edit_object_part_state_add_test_p1);
+   tcase_add_test(tcase, workspace_edit_object_part_state_del_test_p);
+   tcase_add_test(tcase, workspace_edit_object_part_state_del_test_p1);
+   tcase_add_test(tcase, workspace_edit_object_part_state_set_test_n2);
+   tcase_add_test(tcase, workspace_edit_object_part_state_set_test_p);
+   tcase_add_test(tcase, workspace_edit_object_recalc_test_p);
+   tcase_add_test(tcase, workspace_edit_object_set_test_p);
+   tcase_add_test(tcase, workspace_edit_object_unset_test_n);
+   tcase_add_test(tcase, workspace_edit_object_unset_test_p);
+   tcase_add_test(tcase, workspace_edit_object_visible_set_test_p);
+   tcase_add_test(tcase, workspace_highlight_align_visible_get_test_p1);
+   tcase_add_test(tcase, workspace_highlight_align_visible_get_test_p2);
+   tcase_add_test(tcase, workspace_highlight_align_visible_set_test_p1);
+   tcase_add_test(tcase, workspace_highlight_align_visible_set_test_p2);
+   tcase_add_test(tcase, workspace_highlight_set_test_p);
+   tcase_add_test(tcase, workspace_highlight_unset_test_n);
+   tcase_add_test(tcase, workspace_highlight_unset_test_p);
+   tcase_add_test(tcase, workspace_object_area_visible_get_test_p1);
+   tcase_add_test(tcase, workspace_object_area_visible_get_test_p2);
+   tcase_add_test(tcase, workspace_object_area_visible_set_test_p1);
+   tcase_add_test(tcase, workspace_object_area_visible_set_test_p2);
+   tcase_add_test(tcase, workspace_separate_mode_get_test_p1);
+   tcase_add_test(tcase, workspace_separate_mode_get_test_p2);
+   tcase_add_test(tcase, workspace_separate_mode_set_test_p1);
+   tcase_add_test(tcase, workspace_separate_mode_set_test_p2);
+   //tcase_add_test(tcase, workspace_zoom_factor_get_test_p);
 
    suite_add_tcase(suite, tcase);
    return suite;

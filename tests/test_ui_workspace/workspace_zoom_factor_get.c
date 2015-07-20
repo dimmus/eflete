@@ -60,58 +60,25 @@ EFLETE_TEST (workspace_zoom_factor_get_test_p)
 {
    elm_init(0, 0);
    app_init();
+   App_Data *ap = app_data_get();
    double res = -1;
-   Evas_Object *parent, *workspace;
    Style *style = NULL;
    Evas *e = NULL;
    Eina_File *mmap_file = NULL;
 
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   ui_main_window_add(ap);
    mmap_file = eina_file_open("./edj_build/workspace_zoom_factor_get.edj", EINA_FALSE);
-   workspace = workspace_add(parent);
-   e = evas_object_evas_get(parent);
+   e = evas_object_evas_get(ap->workspace);
    style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
-   workspace_edit_object_set(workspace, style, "./edj_build/workspace_zoom_factor_get.edj");
-   workspace_zoom_factor_set(workspace, 1.5);
-   res = workspace_zoom_factor_get(workspace);
+   workspace_edit_object_set(ap->workspace, style, "./edj_build/workspace_zoom_factor_get.edj");
+   workspace_zoom_factor_set(ap->workspace, 1.5);
+   res = workspace_zoom_factor_get(ap->workspace);
    ck_assert_msg(res == 1.5, "Failed get zoom factor");
 
    wm_style_free(style);
    eina_file_close(mmap_file);
-   workspace_edit_object_unset(workspace);
-   evas_object_del(workspace);
-   evas_object_del(parent);
    app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup workspace_zoom_factor_get
- * @{
- * <tr>
- * <td>workspace_zoom_factor_get</td>
- * <td>workspace_zoom_factor_get_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 call workspace_zoom_factor_get with NULL pointer workspace object
- * @step 2 check returned value
- * </td>
- * <td>NULL</td>
- * <td>Returned 0</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (workspace_zoom_factor_get_test_n1)
-{
-   elm_init(0, 0);
-   double res = -1;
-   res = workspace_zoom_factor_get(NULL);
-   ck_assert_msg(res == 0, "Get zoom factor from NULL object");
    elm_shutdown();
 }
 END_TEST

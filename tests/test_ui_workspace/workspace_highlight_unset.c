@@ -135,39 +135,6 @@ END_TEST
 /**
  * @addtogroup workspace_highlight_unset
  * @{
- * <tr>
- * <td>workspace_highlight_unset</td>
- * <td>workspace_highlight_unset_test_p</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 call workspace_highlight_unset with NULL pointer to workspace
- * @step 2 check returned value
- * </td>
- * <td>NULL</td>
- * <td>Returned EINA_FALSE</td>
- * </tr>
- * @}
- */
-
-EFLETE_TEST(workspace_highlight_unset_test_n1)
-{
-   Eina_Bool res = EINA_TRUE;
-
-   elm_init(0, 0);
-
-   res = workspace_highlight_unset(NULL);
-   ck_assert_msg(res == EINA_FALSE, "Unset highlight from workspace NULL object");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup workspace_highlight_unset
- * @{
  * </TABLE>
  * @}
  * @}
