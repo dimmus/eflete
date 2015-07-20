@@ -26,8 +26,5 @@
 
 void live_widget_create_test_p(int);
 void live_widget_create_test_n1(int);
-void live_widget_create_test_n2(int);
 
 void live_widget_del_test_p(int);
-void live_widget_del_test_n1(int);
-void live_widget_del_test_n2(int);
