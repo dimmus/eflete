@@ -17,30 +17,24 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
+
 #include "state_dialog.h"
 #include "common_macro.h"
 #include "string_common.h"
 #include "main_window.h"
 
-
 static Evas_Object *entry_name;
 static Evas_Object *entry_value;
+static Evas_Object *btn_add;
+static Elm_Validator_Regexp *name_validator = NULL;
+static Elm_Validator_Regexp *value_validator = NULL;
 
 static const char *state_from;
 static double value_from;
 static Eina_Bool state_copy;
-
-
-
-static Elm_Entry_Filter_Accept_Set accept_value = {
-   .accepted = "0123456789.",
-   .rejected = NULL
-};
-
-static Elm_Entry_Filter_Accept_Set accept_name = {
-   .accepted = NULL,
-   .rejected = BANNED_SYMBOLS
-};
 
 static void
 _job_popup_close(void *data)
@@ -49,6 +43,8 @@ _job_popup_close(void *data)
 
    assert(ap != NULL);
 
+   elm_validator_regexp_free(name_validator);
+   elm_validator_regexp_free(value_validator);
    evas_object_del(ap->popup);
    ap->popup = NULL;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
@@ -142,10 +138,22 @@ _on_dup_state_change(void *data,
    state_copy = true;
 }
 
+static void
+_on_entry_changed(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   if ((elm_validator_regexp_status_get(name_validator) != ELM_REG_NOERROR) ||
+       (elm_validator_regexp_status_get(value_validator) != ELM_REG_NOERROR))
+     elm_object_disabled_set(btn_add, true);
+   else
+     elm_object_disabled_set(btn_add, false);
+}
+
 Evas_Object *
 state_dialog_state_add(App_Data *ap)
 {
-   Evas_Object *box, *item, *bt_yes, *bt_no;
+   Evas_Object *box, *item, *bt_no;
    Evas_Object *item_dup;
    Part *part = NULL;
    Eina_Stringshare *title = NULL;
@@ -157,6 +165,8 @@ state_dialog_state_add(App_Data *ap)
    assert(ap->workspace != NULL);
 
    part = ui_states_list_part_get(ap->block.state_list);
+   name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
+   value_validator = elm_validator_regexp_new(STATE_VALUE_REGEX, NULL);
 
    assert(part != NULL);
 
@@ -170,19 +180,20 @@ state_dialog_state_add(App_Data *ap)
    BOX_ADD(ap->popup, box, false, false);
 
    ITEM_ADD(box, item, _("Name:"), "eflete/property/item/default")
-   EWE_ENTRY_ADD(item, entry_name, true);
-   elm_entry_markup_filter_append(entry_name, elm_entry_filter_accept_set, &accept_name);
-   elm_object_part_text_set(entry_name, "guide", _("Type a new state name."));
+   ENTRY_ADD(item, entry_name, true);
+   eo_do(entry_name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, name_validator));
+   evas_object_smart_callback_add(entry_name, "changed", _on_entry_changed, NULL);
+   elm_object_part_text_set(entry_name, "guide", _("Type a new state name"));
    elm_object_part_content_set(item, "elm.swallow.content", entry_name);
    elm_box_pack_end(box, item);
 
    ITEM_ADD(box, item, _("Value:"), "eflete/property/item/default")
-   EWE_ENTRY_ADD(item, entry_value, true);
-   elm_entry_markup_filter_append(entry_value, elm_entry_filter_accept_set, &accept_value);
-   elm_object_part_text_set(entry_value, "guide", _("Type a state value (0.0 - 1.0)."));
-   ewe_entry_regex_set(entry_value, FLOAT_NUMBER_0_1_REGEX_2_SYMBOLS, EWE_REG_EXTENDED);
-   ewe_entry_regex_autocheck_set(entry_value, true);
-   ewe_entry_regex_glow_set(entry_value, true);
+   ENTRY_ADD(item, entry_value, true);
+   eo_do(entry_value, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, value_validator));
+   evas_object_smart_callback_add(entry_value, "changed", _on_entry_changed, NULL);
+   /* need to manualy set not valid string for triggered validator */
+   elm_entry_entry_set(entry_value, NULL);
+   elm_object_part_text_set(entry_value, "guide", _("Type a state value (0.0 - 1.0)"));
    elm_object_part_content_set(item, "elm.swallow.content", entry_value);
    elm_box_pack_end(box, item);
 
@@ -205,9 +216,10 @@ state_dialog_state_add(App_Data *ap)
    elm_box_pack_end(box, item_dup);
    elm_object_content_set(ap->popup, box);
 
-   BUTTON_ADD(ap->popup, bt_yes, _("Add"));
-   evas_object_smart_callback_add (bt_yes, "clicked", _add_ok_clicked, ap);
-   elm_object_part_content_set(ap->popup, "button1", bt_yes);
+   BUTTON_ADD(ap->popup, btn_add, _("Add"));
+   evas_object_smart_callback_add (btn_add, "clicked", _add_ok_clicked, ap);
+   elm_object_part_content_set(ap->popup, "button1", btn_add);
+   elm_object_disabled_set(btn_add, true);
 
    BUTTON_ADD(ap->popup, bt_no, _("Cancel"));
    evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, ap);
