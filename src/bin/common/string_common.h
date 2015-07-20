@@ -31,6 +31,8 @@
    free(arr); \
 }
 
+#define NAME_REGEX "^[a-zA-Z0-9_]+$"
+
 #define BANNED_SYMBOLS ":;,.'\"~!?&^%$#@()[]=+*{} |/\\№"
 #define STYLE_NAME_BANNED_SYMBOLS ":;,.'`\"~!?&^%$#@()[]=+*{} |\\№"
 #define EDITORS_BANNED_SYMBOLS ":;'\"~!?&^%$@()[]*{}|\\№"
