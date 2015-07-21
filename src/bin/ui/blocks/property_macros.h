@@ -154,7 +154,10 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    TYPE old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, value)) \
-     abort(); \
+     { \
+       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       abort(); \
+     } \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
@@ -415,7 +418,10 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    Eina_Bool value = elm_check_state_get(obj); \
    Eina_Bool old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS);\
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, value)) \
-     abort(); \
+     { \
+       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       abort(); \
+     } \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS_DIFF); \
@@ -517,7 +523,10 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
    Eina_Stringshare *old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, (char *)item->title)) \
-     abort(); \
+     { \
+       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       abort(); \
+     } \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
                     item->title, pd->wm_style->full_group_name, \
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS); \
@@ -724,12 +733,18 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
    if ((value CHECK value_##SUB2##_##VALUE) && (value_##SUB2##_##VALUE != 0)) \
      { \
         if (!edje_edit_group_##SUB2##_##VALUE##_set(pd->wm_style->obj, value)) \
-          abort(); \
+          { \
+            ERR("edje_edit_group_"#SUB2"_"#VALUE"_set failed"); \
+            abort(); \
+          } \
         elm_spinner_value_set(pd->group.SUB2##_##VALUE, value); \
         value_##SUB2##_##VALUE = value; \
      } \
    if (!edje_edit_group_##SUB1##_##VALUE##_set(pd->wm_style->obj, value)) \
-     abort(); \
+     { \
+       ERR("edje_edit_group_"#SUB1"_"#VALUE"_set failed"); \
+       abort(); \
+     } \
    if (!strcmp("min", #SUB1)) \
      { \
        history_diff_add(pd->wm_style->obj, PROPERTY, CONTAINER, VAL_GROUP, old_value_##SUB1##_##VALUE, value, \
@@ -1237,11 +1252,17 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    TYPE opposite_value = edje_edit_##SUB##_##DIF_VALUE##_get(pd->wm_style->obj PART_ITEM_ARGS); \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
-     abort(); \
+     { \
+       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       abort(); \
+     } \
    if (value CHECK opposite_value) \
      { \
         if (!edje_edit_##SUB##_##DIF_VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
-          abort(); \
+          { \
+            ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+            abort(); \
+          } \
         elm_spinner_value_set(pd->state.DIF_VALUE, value); \
      } \
    project_changed(false); \
@@ -1271,7 +1292,10 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    TYPE value = elm_spinner_value_get(obj); \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
-     abort(); \
+     { \
+       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       abort(); \
+     } \
    project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
 }
@@ -1513,11 +1537,17 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    TYPE opposite_value = edje_edit_##SUB##_##DIF_VALUE##_get(pd->wm_style->obj STATE_ARGS); \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj STATE_ARGS, value)) \
-     abort(); \
+     { \
+       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       abort(); \
+     } \
    if ((value CHECK opposite_value) && (opposite_value != -1)) \
      { \
         if (!edje_edit_##SUB##_##DIF_VALUE##_set(pd->wm_style->obj STATE_ARGS, value)) \
-          abort(); \
+          { \
+            ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+            abort(); \
+          } \
         elm_spinner_value_set(pd->state.DIF_VALUE, value); \
      } \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
@@ -1779,7 +1809,10 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                                         pd->wm_part->curr_state, \
                                         pd->wm_part->curr_state_value, \
                                         r, g, b, a))\
-     abort(); \
+     { \
+       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       abort(); \
+     } \
    evas_object_color_set(pd->MEMBER.VALUE##_obj, r*a/255, g*a/255, b*a/255, a); \
    if ((r != old_r) || (g != old_g) || (b != old_b) || (a != old_a)) \
      history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_FOUR, old_r, old_g, old_b, \

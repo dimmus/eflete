@@ -59,7 +59,10 @@ _change_bg_cb(void *data,
         }
       break;
       default:
-         abort();
+        {
+           ERR("Wrong state");
+           abort();
+        }
       break;
      }
    elm_object_part_content_set(live_layout, SWALLOW_BG, bg);

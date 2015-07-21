@@ -1479,7 +1479,10 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
                }
           }
         if (!_hex_to_rgb(color, &r, &g, &b, &a))
-          abort();
+          {
+             ERR("Can't convert color value");
+             abort();
+          }
         evas_object_color_set(text_color, r*a/255, g*a/255, b*a/255, a);
 
         eina_tmpstr_del(font);

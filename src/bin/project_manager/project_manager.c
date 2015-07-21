@@ -366,7 +366,10 @@ _project_linked_images_copy(Project_Thread *worker)
    edje_edit_obj = edje_edit_object_add(e);
 
    if (!edje_object_file_set(edje_edit_obj, worker->project->saved_edj, eina_list_data_get(list)))
-     abort();
+     {
+        ERR("Can't set object file");
+        abort();
+     }
 
    ecore_thread_main_loop_end();
    edje_file_collection_list_free(list);

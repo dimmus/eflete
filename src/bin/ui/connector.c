@@ -163,7 +163,10 @@ _above_part(void *data,
    if (!part) return;
    history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
    if (!workspace_edit_object_part_above(ap->workspace, part->name))
-     abort();
+     {
+        ERR("workspace_edit_object_part_above returned FALSE");
+        abort();
+     }
    live_view_widget_style_set(ap->live_view, ap->project, style);
    project_changed(true);
 }
@@ -184,7 +187,10 @@ _below_part(void *data,
    if (!part) return;
    history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
    if (!workspace_edit_object_part_below(ap->workspace, part->name))
-     abort();
+     {
+        ERR("workspace_edit_object_part_below returned FALSE");
+        abort();
+     }
    live_view_widget_style_set(ap->live_view, ap->project, style);
    project_changed(true);
 }
@@ -263,7 +269,10 @@ _show_part(void *data,
    assert(part_name != NULL);
 
    if (!workspace_edit_object_visible_set(ap->workspace, part_name, true))
-     abort();
+     {
+        ERR("Can't make workspace_edit_object visible");
+        abort();
+     }
 }
 
 /*
@@ -323,7 +332,10 @@ _hide_part(void *data,
    assert(part_name != NULL);
 
    if (!workspace_edit_object_visible_set(ap->workspace, part_name, false))
-     abort();
+     {
+        ERR("Can't hide workspace_edit_object");
+        abort();
+     }
 }
 
 static void
@@ -436,7 +448,10 @@ _add_layout_cb(void *data,
      }
 
    if (!edje_edit_group_add(ap->project->global_object, name))
-     abort();
+     {
+        ERR("Can't add group");
+        abort();
+     }
 
    pm_save_to_dev(ap->project, NULL, true);
    layout = wm_style_add(name, name, LAYOUT, NULL);
@@ -1001,7 +1016,10 @@ _progress_end(void *data, PM_Project_Result result)
            break;
         }
       default:
-         abort();
+        {
+           ERR("Wrong result");
+           abort();
+        }
      }
 
 #ifdef HAVE_ENVENTOR
@@ -1643,7 +1661,10 @@ _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
    pm_save_to_dev(ap->project, NULL, true);
    evas_object_del(style->obj);
    if (!edje_edit_group_del(ap->project->global_object, style->full_group_name))
-     abort();
+     {
+        ERR("Can't del group");
+        abort();
+     }
    ap->project->layouts = eina_inlist_remove(ap->project->layouts,
                                              EINA_INLIST_GET(style));
    ui_widget_list_layouts_reload(genlist, ap->project);

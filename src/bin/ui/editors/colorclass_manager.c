@@ -302,7 +302,10 @@ _change_bg_cb(void *data,
         }
       break;
       default:
-         abort();
+        {
+           ERR("Wrong state");
+           abort();
+        }
       break;
      }
 

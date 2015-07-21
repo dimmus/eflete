@@ -359,7 +359,6 @@ _tone_play(Sound_Editor *edit, int tone_frq)
      {
         ERR("Couldn't attach input and output!");
         abort();
-        return;
      }
 
    value = elm_slider_value_get(edit->rewind);

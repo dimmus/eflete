@@ -1292,6 +1292,7 @@ ui_widget_list_part_add(Evas_Object *object, Style *style, const char *name)
      }
    else
      {
+        ERR("Wrong style type");
         abort();
      }
 

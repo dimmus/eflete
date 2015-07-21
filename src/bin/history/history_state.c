@@ -593,7 +593,10 @@ _state_redo(Evas_Object *source, State_Diff *change)
                                       change->state->value);
       break;
       default:
-         abort();
+        {
+           ERR("Wrong action type");
+           abort();
+        }
       break;
      }
    if (result) _history_ui_state_update(source, change);
@@ -619,7 +622,10 @@ _state_undo(Evas_Object *source, State_Diff *change)
                                        change->type);
       break;
       default:
-         abort();
+        {
+           ERR("Wrong action type");
+           abort();
+        }
       break;
      }
 

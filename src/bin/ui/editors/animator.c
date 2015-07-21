@@ -304,6 +304,7 @@ _on_bt_prog_del(void *data,
    program_name = elm_object_item_part_text_get(glit, "elm.text");
    if (!edje_edit_program_del(animator->style->obj, program_name))
      {
+        ERR("Can't del program");
         abort();
      }
    else
