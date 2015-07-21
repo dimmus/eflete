@@ -474,7 +474,7 @@ _popup_layout_add(void *data,
    elm_popup_orient_set(ap->popup, ELM_POPUP_ORIENT_CENTER);
 
    LAYOUT_PROP_ADD(ap->popup, "Style name:", "property", "1swallow")
-   EWE_ENTRY_ADD(item, en, true)
+   ENTRY_ADD(item, en, true)
    elm_object_part_text_set(en, "guide", _("Type a new layout name"));
    elm_entry_markup_filter_append(en, elm_entry_filter_accept_set, &accept_name);
    elm_object_part_content_set(item, "elm.swallow.content", en);
