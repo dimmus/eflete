@@ -83,41 +83,6 @@ END_TEST
 /**
  * @addtogroup ui_main_window_add
  * @{
- * <tr>
- * <td>ui_main_window_add</td>
- * <td>ui_main_window_add_test_n</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- * @step 2 Initialize requred libraries.
- *
- * @procedure
- * @step 1 Call ui_main_window.
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(ui_main_window_add_test_n)
-{
-   Eina_Bool ret = EINA_TRUE;
-
-   elm_init(0, 0);
-   app_init();
-
-   ret = ui_main_window_add(NULL);
-   ck_assert_msg(ret == EINA_FALSE, "Create main window without application data");
-
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_main_window_add
- * @{
  * </TABLE>
  * @}
  * @}

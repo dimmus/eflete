@@ -23,48 +23,18 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("ui_main_window_test");
    TCase *tcase = tcase_create("TCase");
 
-   tcase_add_test(tcase, ui_main_window_add_test_p);
-   tcase_add_test(tcase, ui_main_window_add_test_n);
-
-   tcase_add_test(tcase, ui_main_window_del_test_p);
-
-   tcase_add_test(tcase, ui_panes_add_test_p);
-   tcase_add_test(tcase, ui_panes_add_test_n1);
-   tcase_add_test(tcase, ui_panes_add_test_n2);
-
-   tcase_add_test(tcase, ui_panes_show_test_p);
-   tcase_add_test(tcase, ui_panes_show_test_n1);
-   tcase_add_test(tcase, ui_panes_show_test_n2);
-
-   tcase_add_test(tcase, ui_panes_hide_test_p);
-   tcase_add_test(tcase, ui_panes_hide_test_n1);
-   tcase_add_test(tcase, ui_panes_hide_test_n2);
-
-   tcase_add_test(tcase, ui_panes_left_panes_min_size_toggle_test_p);
-   tcase_add_test(tcase, ui_panes_left_panes_min_size_toggle_test_n);
-
-   tcase_add_test(tcase, ui_menu_add_test_p);
-   tcase_add_test(tcase, ui_menu_add_test_n1);
-   tcase_add_test(tcase, ui_menu_add_test_n2);
-
-   tcase_add_test(tcase, register_callbacks_test_p);
-   tcase_add_test(tcase, register_callbacks_test_n1);
-   tcase_add_test(tcase, register_callbacks_test_n2);
-
-   tcase_add_test(tcase, ui_menu_disable_set_test_p);
-   tcase_add_test(tcase, ui_menu_disable_set_test_n1);
-   tcase_add_test(tcase, ui_menu_disable_set_test_n2);
-
-   tcase_add_test(tcase, ui_menu_items_list_disable_set_test_p);
-   tcase_add_test(tcase, ui_menu_items_list_disable_set_test_n1);
-   tcase_add_test(tcase, ui_menu_items_list_disable_set_test_n2);
-
    tcase_add_test(tcase, add_callbacks_wd_test_p1);
-   tcase_add_test(tcase, add_callbacks_wd_test_p2);
-   tcase_add_test(tcase, add_callbacks_wd_test_n);
-
    tcase_add_test(tcase, code_edit_mode_switch_test_p);
-   tcase_add_test(tcase, code_edit_mode_switch_test_n);
+   tcase_add_test(tcase, register_callbacks_test_p);
+   tcase_add_test(tcase, ui_main_window_add_test_p);
+   tcase_add_test(tcase, ui_main_window_del_test_p);
+   tcase_add_test(tcase, ui_menu_add_test_p);
+   tcase_add_test(tcase, ui_menu_disable_set_test_p);
+   tcase_add_test(tcase, ui_menu_items_list_disable_set_test_p);
+   tcase_add_test(tcase, ui_panes_add_test_p);
+   tcase_add_test(tcase, ui_panes_hide_test_p);
+   tcase_add_test(tcase, ui_panes_left_panes_min_size_toggle_test_p);
+   tcase_add_test(tcase, ui_panes_show_test_p);
 
    suite_add_tcase(suite, tcase);
 
