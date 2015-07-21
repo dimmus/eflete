@@ -74,41 +74,6 @@ END_TEST
 /**
  * @addtogroup container_handler_size_get
  * @{
- * <tr>
- * <td>container_handler_size_get</td>
- * <td>container_handler_size_get_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 create parent window
- *
- * @procedure
- * @step 1 get the new size for container handlers
- * @step 2 check size of container handlers
- * </td>
- * <td>NULL</td>
- * <td>0, 0, 0, 0</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(container_handler_size_get_test_n)
-{
-   int lt_w, lt_h, br_w, br_h;
-
-   elm_init(0, 0);
-   lt_w = lt_h = br_w = br_h = 0;
-
-   container_handler_size_get(NULL, &lt_w, &lt_h, &br_w, &br_h);
-   ck_assert_msg(((lt_w == 0) || (lt_h == 0) || (br_w == 0) || (br_h == 0)),
-                 "Failed to set the container handlers size.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup container_handler_size_get
- * @{
  * </TABLE>
  * @}
  * @}

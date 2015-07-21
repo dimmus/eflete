@@ -73,36 +73,6 @@ END_TEST
 /**
  * @addtogroup container_style_get
  * @{
- * <tr>
- * <td>container_style_get</td>
- * <td>container_style_get_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 get the a new style name
- * @step 2 check returned value
- * </td>
- * <td>NULL, "default"</td>
- * <td>EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(container_style_get_test_n)
-{
-   elm_init(0, 0);
-
-   ck_assert_msg(!container_style_get(NULL),
-                 "Getting a style from NULL object.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup container_style_get
- * @{
  * </TABLE>
  * @}
  * @}

@@ -71,38 +71,6 @@ END_TEST
 /**
  * @addtogroup container_min_size_set
  * @{
- * <tr>
- * <td>container_min_size_set</td>
- * <td>container_min_size_set_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 create parent window
- *
- * @procedure
- * @step 1 set min size to container of the container
- * @step 2 check returned value
- * </td>
- * <td>NULL, 100, 100</td>
- * <td>EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(container_min_size_set_test_n)
-{
-   elm_init(0, 0);
-
-   ck_assert_msg(!container_min_size_set(NULL, 100, 100),
-                 "Failed to set minimun size to container of the container.");
-
-   elm_shutdown();
-}
-END_TEST
-
-
-/**
- * @addtogroup container_min_size_set
- * @{
  * </TABLE>
  * @}
  * @}

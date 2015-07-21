@@ -25,72 +25,32 @@
  */
 
 void container_add_test_p(int);
-void container_add_test_n(int);
-
+void container_border_hide_test_p(int);
+void container_border_show_test_p(int);
+void container_confine_set_test_p(int);
+void container_confine_unset_test_n1(int);
+void container_confine_unset_test_p(int);
+void container_container_size_get_test_p(int);
 void container_container_size_set_test_p1(int);
 void container_container_size_set_test_p2(int);
 void container_container_size_set_test_p3(int);
-void container_container_size_set_test_n(int);
-
-void container_container_size_get_test_p(int);
-void container_container_size_get_test_n(int);
-
-void container_min_size_set_test_p(int);
-void container_min_size_set_test_n(int);
-
-void container_max_size_set_test_p(int);
-void container_max_size_set_test_n(int);
-
-void container_handler_size_set_test_p(int);
-void container_handler_size_set_test_n1(int);
+void container_content_set_test_p(int);
+void container_content_unset_test_n1(int);
+void container_content_unset_test_p(int);
+void container_handler_size_get_test_p(int);
 void container_handler_size_set_test_n2(int);
 void container_handler_size_set_test_n3(int);
 void container_handler_size_set_test_n4(int);
 void container_handler_size_set_test_n5(int);
-
-void container_handler_size_get_test_p(int);
-void container_handler_size_get_test_n(int);
-
-void container_style_set_test_p(int);
-void container_style_set_test_n1(int);
-void container_style_set_test_n2(int);
-
-void container_style_get_test_p(int);
-void container_style_get_test_n(int);
-
-void container_content_set_test_p(int);
-void container_content_set_test_n1(int);
-void container_content_set_test_n2(int);
-
-void container_content_unset_test_p(int);
-void container_content_unset_test_n1(int);
-void container_content_unset_test_n2(int);
-
-void container_confine_set_test_p(int);
-void container_confine_set_test_n1(int);
-void container_confine_set_test_n2(int);
-
-void container_confine_unset_test_p(int);
-void container_confine_unset_test_n1(int);
-void container_confine_unset_test_n2(int);
-
-void container_border_show_test_p(int);
-void container_border_show_test_n1(int);
-void container_border_show_test_n2(int);
-
-void container_border_hide_test_p(int);
-void container_border_hide_test_n1(int);
-void container_border_hide_test_n2(int);
-
-void container_padding_size_set_test_p(int);
-void container_padding_size_set_test_n1(int);
-void container_padding_size_set_test_n2(int);
+void container_handler_size_set_test_p(int);
+void container_max_size_set_test_p(int);
+void container_min_size_set_test_p(int);
+void container_padding_size_get_test_p1(int);
+void container_padding_size_get_test_p2(int);
 void container_padding_size_set_test_n3(int);
 void container_padding_size_set_test_n4(int);
 void container_padding_size_set_test_n5(int);
 void container_padding_size_set_test_n6(int);
-
-void container_padding_size_get_test_p1(int);
-void container_padding_size_get_test_p2(int);
-void container_padding_size_get_test_n1(int);
-void container_padding_size_get_test_n2(int);
+void container_padding_size_set_test_p(int);
+void container_style_get_test_p(int);
+void container_style_set_test_p(int);

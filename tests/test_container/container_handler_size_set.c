@@ -73,36 +73,6 @@ END_TEST
  * @{
  * <tr>
  * <td>container_handler_size_set</td>
- * <td>container_handler_size_set_test_n1</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 set the new size for container handlers
- * @step 2 check returned value
- * </td>
- * <td>NULL, 9, 9, 9, 9</td>
- * <td>EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(container_handler_size_set_test_n1)
-{
-   elm_init(0, 0);
-
-   ck_assert_msg(!container_handler_size_set(NULL, 9, 9, 9, 9),
-                 "Failed to set the container handlers size.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup container_handler_size_set
- * @{
- * <tr>
- * <td>container_handler_size_set</td>
  * <td>container_handler_size_set_test_n2</td>
  * <td>
  * @precondition
