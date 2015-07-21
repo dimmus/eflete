@@ -692,7 +692,8 @@ _on_viewer_exit(void *data,
    assert(style_edit != NULL);
 
    App_Data *ap = app_data_get();
-   workspace_edit_object_recalc(ap->workspace);
+   TODO("Move to 'Apply'")
+   //workspace_edit_object_recalc(ap->workspace);
    mw_del(style_edit->mwin);
 }
 
