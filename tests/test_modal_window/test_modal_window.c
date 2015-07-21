@@ -23,16 +23,9 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("modal_window_test");
    TCase *tcase = tcase_create("TCase");
    tcase_add_test(tcase, mw_add_test_p);
-   tcase_add_test(tcase, mw_add_test_n);
    tcase_add_test(tcase, mw_title_set_test_p);
-   tcase_add_test(tcase, mw_title_set_test_n1);
-   tcase_add_test(tcase, mw_title_set_test_n2);
    tcase_add_test(tcase, mw_info_text_set_test_p);
-   tcase_add_test(tcase, mw_info_text_set_test_n1);
-   tcase_add_test(tcase, mw_info_text_set_test_n2);
    tcase_add_test(tcase, mw_icon_set_test_p);
-   tcase_add_test(tcase, mw_icon_set_test_n1);
-   tcase_add_test(tcase, mw_icon_set_test_n2);
    suite_add_tcase(suite, tcase);
    return suite;
 }
