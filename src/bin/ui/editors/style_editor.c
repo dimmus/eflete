@@ -387,7 +387,6 @@ _on_st_add_bt_ok(void *data,
    assert(style_edit != NULL);
 
    const char *style_name = elm_entry_entry_get(POPUP.name);
-   App_Data *ap = app_data_get();
 
    edje_edit_obj = style_edit->pr->global_object;
 
@@ -433,9 +432,11 @@ _on_st_add_bt_ok(void *data,
    elm_genlist_item_selected_set(glit_style, true);
    elm_genlist_item_bring_in(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
    elm_genlist_item_show(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
+   /* MUST to move to "Apply" function
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    ui_property_state_unset(ui_block_property_get(ap));
    ui_property_state_set(ui_block_property_get(ap), part);
+   */
 
    _on_popup_bt_cancel(style_edit, NULL, NULL);
 
