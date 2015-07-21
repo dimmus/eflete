@@ -68,35 +68,6 @@ END_TEST
 /**
  * @addtogroup cursor_type_get
  * @{
- * <tr>
- * <td>cursor_type_get</td>
- * <td>cursor_type_get_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 call cursor_type_get
- * </td>
- * <td>NULL</td>
- * <td>CURSOR_LAST</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(cursor_type_get_test_n)
-{
-   elm_init(0,0);
-
-   ck_assert_msg(cursor_type_get(NULL) == CURSOR_UNKNOWN,
-                 "Get not valid cursor");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup cursor_type_get
- * @{
  * </TABLE>
  * @}
  * @}
