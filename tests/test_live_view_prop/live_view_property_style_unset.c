@@ -65,7 +65,7 @@ EFLETE_TEST(live_view_property_style_unset_test_p)
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(parent);
-   mmap_file = eina_file_open("./edj_build/live_view_property_style_unset.edj", EINA_FALSE);
+   mmap_file = eina_file_open("./edj_build/live_view_property.edj", EINA_FALSE);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
    live_view_prop = live_view_property_add(parent, false);
@@ -77,90 +77,6 @@ EFLETE_TEST(live_view_property_style_unset_test_p)
    wm_style_free(style);
    eina_file_close(mmap_file);
    evas_object_del(parent);
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup live_view_property_style_unset
- * @{
- * <tr>
- * <td>live_view_property_style_unset</td>
- * <td>live_view_property_style_unset_test_n1</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- * @step 2 Create parent window.
- * @step 3 Mmap edj file.
- * @step 4 Create style object as style.
- * @step 5 Load style data from edje file.
- * @step 6 Create object that is not live view property.
- * @step 7 Load object into live view property
- *
- * @procedure
- * @step 1 Call live_view_property_style_unset.
- * @step 2 Check returned value.
- * </td>
- * <td>(Evas_Object *)live_view_prop</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(live_view_property_style_unset_test_n1)
-{
-   Evas *e = NULL;
-   Evas_Object *parent = NULL, *live_view_prop = NULL;
-   Style *style = NULL;
-   Eina_Bool res = EINA_FALSE;
-   Eina_File *mmap_file = NULL;
-
-   elm_init(0, 0);
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   e = evas_object_evas_get(parent);
-   mmap_file = eina_file_open("./edj_build/live_view_property_style_unset.edj", EINA_FALSE);
-   style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, mmap_file);
-   live_view_prop = elm_bg_add(parent);
-   live_view_property_style_set(live_view_prop, parent, style, "win", parent);
-
-   res = live_view_property_style_unset(parent);
-   ck_assert_msg(res == EINA_FALSE, "Style was unset but shouldn't.");
-
-   wm_style_free(style);
-   eina_file_close(mmap_file);
-   evas_object_del(parent);
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup live_view_property_style_unset
- * @{
- * <tr>
- * <td>live_view_property_style_unset</td>
- * <td>live_view_property_style_unset_test_n2</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- *
- * @procedure
- * @step 1 Call live_view_property_style_unset.
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(live_view_property_style_unset_test_n2)
-{
-   Eina_Bool res = EINA_FALSE;
-
-   elm_init(0, 0);
-
-   res = live_view_property_style_unset(NULL);
-   ck_assert_msg(res == EINA_FALSE, "Style was unset but shouldn't.");
-
    elm_shutdown();
 }
 END_TEST

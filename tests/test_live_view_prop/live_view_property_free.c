@@ -73,38 +73,6 @@ END_TEST
 /**
  * @addtogroup live_view_property_free
  * @{
- * <tr>
- * <td>live_view_property_free</td>
- * <td>live_view_property_free_test_n</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- *
- * @procedure
- * @step 1 Call live_view_property_free.
- * @step 2 Check result.
- * </td>
- * <td>NULL</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(live_view_property_free_test_n)
-{
-   Eina_Bool result = EINA_FALSE;
-
-   elm_init(0, 0);
-
-   result = live_view_property_free(NULL);
-   ck_assert_msg(result == EINA_FALSE, "Something was deleted......");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup live_view_property_free
- * @{
  * </TABLE>
  * @}
  * @}
