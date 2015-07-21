@@ -59,46 +59,6 @@ EFLETE_TEST(noti_error_show_test_p)
    ui_main_window_add(app);
    ck_assert_msg(noti_error_show(win_layout_get(), "text"),
                  "can't show notify with text");
-   ck_assert_msg(noti_error_show(win_layout_get(), NULL),
-                 "can't show notify with NULL text");
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup noti_error_show
- * @{
- * <tr>
- * <td>noti_error_show</td>
- * <td>noti_error_show_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialized efl and app
- * @step 2 main window created
- *
- * @procedure
- * @step 1 Call noti_error_show(NULL, "text")
- * @step 2 Check returned value
- * @step 3 Call noti_error_show(NULL, NULL)
- * @step 4 Check returned value
- * </td>
- * <td>NULL, "text"/NULL</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(noti_error_show_test_n)
-{
-   elm_init(0,0);
-   App_Data *app;
-   app_init();
-   app = app_data_get();
-   ui_main_window_add(app);
-   ck_assert_msg(noti_error_show(NULL, "text") == false,
-                 "can't show notify with text");
-   ck_assert_msg(noti_error_show(NULL, NULL) == false,
-                 "can't show notify with NULL text");
    app_shutdown();
    elm_shutdown();
 }
