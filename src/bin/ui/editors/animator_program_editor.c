@@ -387,7 +387,6 @@ _prop_item_##sub##_##value##_add(Evas_Object *parent, \
    Evas_Object *item, *entry; \
    ITEM_ADD_(parent, item, text, "editor") \
    ENTRY_ADD(parent, entry, true) \
-   REGEX_SET(entry, regex); \
    if (tooltip) \
      elm_object_tooltip_text_set(entry, tooltip); \
    evas_object_smart_callback_add(entry, "changed,user", changed_callback, cb_data); \
@@ -413,11 +412,6 @@ _prop_item_##sub##_##value##_update(Evas_Object *item, Program_Editor *prog_edit
    ITEM_STRING_CALLBACK(sub, value) \
    ITEM_1ENTRY_ADD(text, sub, value, regex) \
    ITEM_1ENTRY_UPDATE(sub, value)
-
-#define REGEX_SET(entry, regex) \
-   elm_entry_regex_set(entry, regex, EWE_REG_EXTENDED); \
-   elm_entry_regex_autocheck_set(entry, true); \
-   elm_entry_regex_glow_set(entry, true);
 
 static void _on_v1_active(void *data, Evas_Object *obj, void *ei);
 static void _on_v2_active(void *data, Evas_Object *obj, void *ei);
@@ -857,9 +851,7 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
            elm_box_pack_after(prop.prop_box, prop.targets, action.item);
 
            ENTRY_UPDATE(action.entry1, false, action.layout1, _("state name"));
-           REGEX_SET(action.entry1, EDJE_NAME_REGEX);
            ENTRY_UPDATE(action.entry2, false, action.layout2, _("state value"));
-           REGEX_SET(action.entry2, FLOAT_NUMBER_0_1_REGEX);
            CALLBACK_UPDATE(_on_state_active, action.entry1);
            CALLBACK_UPDATE(_on_value_active, action.entry2);
            if (is_update)
@@ -876,9 +868,7 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
            elm_box_pack_after(prop.prop_box, prop.targets, action.item);
 
            ENTRY_UPDATE(action.entry1, false, action.layout1, _("signal name"));
-           REGEX_SET(action.entry1, EDJE_NAME_REGEX);
            ENTRY_UPDATE(action.entry2, false, action.layout2, _("emitter"));
-           REGEX_SET(action.entry2, EDJE_NAME_REGEX);
            CALLBACK_UPDATE(_on_state_active, action.entry1);
            CALLBACK_UPDATE(_on_value_active, action.entry2);
            if (is_update)
@@ -897,9 +887,7 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
            elm_box_pack_after(prop.prop_box, prop.targets, action.item);
 
            ENTRY_UPDATE(action.entry1, false, action.layout1, _("x"));
-           REGEX_SET(action.entry1, FLOAT_NUMBER_REGEX);
            ENTRY_UPDATE(action.entry2, false, action.layout2, _("y"));
-           REGEX_SET(action.entry2, FLOAT_NUMBER_REGEX);
            CALLBACK_UPDATE(_on_value_active, action.entry1);
            CALLBACK_UPDATE(_on_value2_active, action.entry2);
            if (is_update)
@@ -923,7 +911,6 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
            elm_object_tooltip_text_set(action.btn1, _("Select sample"));
 
            ENTRY_UPDATE(action.entry2, false, action.layout2, _("speed"));
-           REGEX_SET(action.entry2, FLOAT_NUMBER_REGEX);
            CALLBACK_UPDATE(_on_value2_active, action.entry2);
 
            ITEM_ADD_(action.box, action.layout3, _("channel"), "editor");
@@ -966,7 +953,6 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
            elm_object_tooltip_text_set(action.btn1, _("Select tone"));
 
            ENTRY_UPDATE(action.entry2, false, action.layout2, _("duration"));
-           REGEX_SET(action.entry2, FLOAT_NUMBER_REGEX);
            CALLBACK_UPDATE(_on_value2_active, action.entry2);
 
            if (is_update)
@@ -1488,7 +1474,6 @@ _prop_item_program_transition_add(Evas_Object *parent,
 
    ITEM_ADD_(box, transition.layout1, _("length"), "editor");
    ENTRY_ADD(transition.layout1, transition.entry1, true);
-   REGEX_SET(transition.entry1, FLOAT_NUMBER_REGEX);
    elm_object_part_content_set(transition.layout1,
                                "elm.swallow.content",
                                transition.entry1);
@@ -1497,14 +1482,12 @@ _prop_item_program_transition_add(Evas_Object *parent,
 
    ITEM_ADD_(box, transition.layout2, _("param1"), "editor");
    ENTRY_ADD(transition.layout2, transition.entry2, true);
-   REGEX_SET(transition.entry2, FLOAT_NUMBER_REGEX);
    elm_object_part_content_set(transition.layout2,
                                "elm.swallow.content",
                                transition.entry2);
 
    ITEM_ADD_(box, transition.layout3, _("param2"), "editor");
    ENTRY_ADD(transition.layout3, transition.entry3, true);
-   REGEX_SET(transition.entry3, FLOAT_NUMBER_REGEX);
    elm_object_part_content_set(transition.layout3,
                                "elm.swallow.content",
                                transition.entry3);
@@ -1782,7 +1765,6 @@ _prop_item_program_in_add(Evas_Object *parent,
 
    ITEM_ADD_(box, prop.in.item_from, _("from"), "editor");
    ENTRY_ADD(prop.in.item_from, prop.in.entry_from, true);
-   REGEX_SET(prop.in.entry_from, FLOAT_NUMBER_REGEX);
    elm_object_part_content_set(prop.in.item_from, "elm.swallow.content", prop.in.entry_from);
    evas_object_smart_callback_add(prop.in.entry_from, "changed,user",
                                   _on_in_from_change, prog_edit);
@@ -1790,7 +1772,6 @@ _prop_item_program_in_add(Evas_Object *parent,
 
    ITEM_ADD_(box, prop.in.item_range, _("range"), "editor");
    ENTRY_ADD(prop.in.item_range, prop.in.entry_range, true);
-   REGEX_SET(prop.in.entry_range, FLOAT_NUMBER_REGEX);
    elm_object_part_content_set(prop.in.item_range, "elm.swallow.content", prop.in.entry_range);
    evas_object_smart_callback_add(prop.in.entry_range, "changed,user",
                                   _on_in_range_change, prog_edit);
@@ -1957,4 +1938,3 @@ void program_editor_free(Evas_Object * obj)
 #undef CALLBACK_UPDATE
 #undef TRANS_ENTRIES_DEFAULT_SET
 #undef TRANS_VAL_UPDATE
-#undef REGEX_SET
