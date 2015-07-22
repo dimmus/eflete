@@ -1464,6 +1464,7 @@ _selected_part_move(Evas_Object *object, Style *style, Eina_Bool move_up)
         if (_part == part)
           {
              prev_elm = itr->prev;
+             next_elm = itr->next;
              style->parts = eina_inlist_remove(style->parts, itr);
              style->parts = (move_up) ? eina_inlist_prepend_relative(style->parts,
                                                                      itr, prev_elm):
