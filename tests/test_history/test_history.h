@@ -20,6 +20,7 @@
 #include "utc_common.h"
 #include "eflete.h"
 #include "history.h"
+#include "main_window.h"
 /**
  * @defgroup history_test
  */
@@ -29,21 +30,13 @@
 void history_init_test_p(int);
 
 void history_term_test_p(int);
-void history_term_test_n(int);
 
 void history_clear_test_p(int);
-void history_clear_test_n(int);
 
 void history_module_add_test_p1(int);
 void history_module_add_test_p2(int);
-void history_module_add_test_n1(int);
-void history_module_add_test_n2(int);
 
 void history_module_del_test_p1(int);
-void history_module_del_test_p2(int);
-void history_module_del_test_n1(int);
-void history_module_del_test_n2(int);
-void history_module_del_test_n3(int);
 
 void history_diff_add_test_p1(int);
 void history_diff_add_test_p2(int);
@@ -61,16 +54,6 @@ void history_diff_add_test_p13(int);
 void history_diff_add_test_p14(int);
 void history_diff_add_test_p15(int);
 void history_diff_add_test_p16(int);
-void history_diff_add_test_n1(int);
-void history_diff_add_test_n2(int);
-void history_diff_add_test_n3(int);
-void history_diff_add_test_n5(int);
-void history_diff_add_test_n6(int);
-void history_diff_add_test_n7(int);
-void history_diff_add_test_n8(int);
-void history_diff_add_test_n9(int);
-void history_diff_add_test_n10(int);
-void history_diff_add_test_n11(int);
 
 void history_undo_test_p1(int);
 void history_undo_test_p2(int);
@@ -94,9 +77,6 @@ void history_undo_test_p19(int);
 void history_undo_test_p20(int);
 void history_undo_test_p21(int);
 void history_undo_test_p22(int);
-void history_undo_test_n1(int);
-void history_undo_test_n2(int);
-void history_undo_test_n3(int);
 
 void history_redo_test_p1(int);
 void history_redo_test_p2(int);
@@ -117,21 +97,12 @@ void history_redo_test_p16(int);
 void history_redo_test_p17(int);
 void history_redo_test_p18(int);
 void history_redo_test_p19(int);
-void history_redo_test_n1(int);
-void history_redo_test_n2(int);
-void history_redo_test_n3(int);
 
 void history_genlist_get_test_p1(int);
 void history_genlist_get_test_p2(int);
-void history_genlist_get_test_n1(int);
-void history_genlist_get_test_n2(int);
 
 void history_module_depth_set_test_p1(int);
 void history_module_depth_set_test_p2(int);
-void history_module_depth_set_test_n1(int);
-void history_module_depth_set_test_n2(int);
 
 void history_module_depth_get_test_p1(int);
 void history_module_depth_get_test_p2(int);
-void history_module_depth_get_test_n1(int);
-void history_module_depth_get_test_n2(int);

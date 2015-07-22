@@ -82,6 +82,7 @@ EFLETE_TEST(history_redo_test_p1)
    app->project = pm_project_open("./history_redo_test_p1/history_redo_test_p1.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -157,6 +158,7 @@ EFLETE_TEST(history_redo_test_p2)
    app->project = pm_project_open("./history_redo_test_p2/history_redo_test_p2.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -241,6 +243,7 @@ EFLETE_TEST(history_redo_test_p3)
    app->project = pm_project_open("./history_redo_test_p3/history_redo_test_p3.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -333,6 +336,7 @@ EFLETE_TEST(history_redo_test_p4)
    app->project = pm_project_open("./history_redo_test_p4/history_redo_test_p4.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -415,6 +419,7 @@ EFLETE_TEST(history_redo_test_p5)
    app->project = pm_project_open("./history_redo_test_p5/history_redo_test_p5.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -492,6 +497,7 @@ EFLETE_TEST(history_redo_test_p6)
    app->project = pm_project_open("./history_redo_test_p6/history_redo_test_p6.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -575,6 +581,7 @@ EFLETE_TEST(history_redo_test_p7)
    app->project = pm_project_open("./history_redo_test_p7/history_redo_test_p7.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -658,6 +665,7 @@ EFLETE_TEST(history_redo_test_p8)
    app->project = pm_project_open("./history_redo_test_p8/history_redo_test_p8.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -739,6 +747,7 @@ EFLETE_TEST(history_redo_test_p9)
    app->project = pm_project_open("./history_redo_test_p9/history_redo_test_p9.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -817,6 +826,7 @@ EFLETE_TEST(history_redo_test_p10)
    app->project = pm_project_open("./history_redo_test_p10/history_redo_test_p10.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -890,6 +900,7 @@ EFLETE_TEST(history_redo_test_p11)
    app->project = pm_project_open("./history_redo_test_p11/history_redo_test_p11.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -964,6 +975,7 @@ EFLETE_TEST(history_redo_test_p12)
    app->project = pm_project_open("./history_redo_test_p12/history_redo_test_p12.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1043,6 +1055,7 @@ EFLETE_TEST(history_redo_test_p13)
    app->project = pm_project_open("./history_redo_test_p13/history_redo_test_p13.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1125,6 +1138,7 @@ EFLETE_TEST(history_redo_test_p14)
    app->project = pm_project_open("./history_redo_test_p14/history_redo_test_p14.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1200,6 +1214,7 @@ EFLETE_TEST(history_redo_test_p15)
    app->project = pm_project_open("./history_redo_test_p15/history_redo_test_p15.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1267,6 +1282,7 @@ EFLETE_TEST(history_redo_test_p16)
    app->project = pm_project_open("./history_redo_test_p16/history_redo_test_p16.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1334,6 +1350,7 @@ EFLETE_TEST(history_redo_test_p17)
    app->project = pm_project_open("./history_redo_test_p17/history_redo_test_p17.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1400,10 +1417,11 @@ EFLETE_TEST(history_redo_test_p18)
    app->project = pm_project_open("./history_redo_test_p18/history_redo_test_p18.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
-   edje_edit_part_add(style->obj, "part_add", EDJE_PART_TYPE_RECTANGLE);
+   workspace_edit_object_part_add(app->workspace, "part_add", EDJE_PART_TYPE_RECTANGLE, NULL);
    history_diff_add(style->obj, PART_TARGET, ADD, "part_add");
    history_undo(style->obj, 1);
 
@@ -1469,6 +1487,7 @@ EFLETE_TEST(history_redo_test_p19)
    app->project = pm_project_open("./history_redo_test_p19/history_redo_test_p19.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1488,159 +1507,6 @@ EFLETE_TEST(history_redo_test_p19)
    ui_main_window_del(app);
    app_shutdown();
    teardown("./history_redo_test_p19");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup history_redo
- * @{
- * <tr>
- * <td>history_redo</td>
- * <td>history_redo_test_n1</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- * @step 2 Initialize Application Data structure.
- * @step 3 Create canvas, that needed for creating source object.
- * @step 4 Create edje edit object, that will be source of changes.
- *
- * @procedure
- * @step 1 Call history_redo for object from step 5 of precondition.
- * @step 2 Check returned value.
- *
- * </td>
- * <td>(Evas_Object *) source, (int) 1 </td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(history_redo_test_n1)
-{
-   Evas *canvas = NULL;
-   Ecore_Evas *ee = NULL;
-   Evas_Object *source = NULL;
-   Eina_Bool result = EINA_FALSE;
-   char *edj;
-
-   edj = "./edj_build/history.edj";
-   elm_init(0, 0);
-   setup("history_redo_test_n1");
-
-   ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
-   canvas = ecore_evas_get(ee);
-   source = edje_edit_object_add(canvas);
-   edje_object_file_set(source, edj, "elm/radio/base/def");
-
-   result = history_redo(source, 1);
-   ck_assert_msg(!result, "Change was restored with uninitialized history module.");
-
-   ecore_evas_free(ee);
-   teardown("./history_redo_test_n1");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup history_redo
- * @{
- * <tr>
- * <td>history_redo</td>
- * <td>history_redo_test_n2</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- * @step 2 Initialize Application Data structure.
- * @step 3 Initialize main window.
- * @step 4 Open project.
- * @step 5 Fill widget inlist with data.
- * @step 6 Find style that represent the group "elm/radio/base/def"
- * @step 7 Load style into project.
- * @step 8 Register in history style object, that finded at step 6, as module.
- * @step 9 Save current value of  min height param of "bg" part.
- * @step 10 Set new value [10] for min height param of "bg" part.
- * @step 11 Store diff with using history_diff_add function.
- *
- * @procedure
- * @step 1 Call history_redo for object from step 6 of precondition.
- * @step 2 Check returned value.
- *
- * </td>
- * <td>(Evas_Object *) style->obj, (int) -1 </td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(history_redo_test_n2)
-{
-   App_Data *app = NULL;
-   Style *style = NULL;
-   Eina_Bool result = EINA_FALSE;
-   int old_value = -1;
-   int new_value = 10;
-
-   elm_init(0, 0);
-   app_init();
-   setup("history_redo_test_n2");
-
-   app = app_data_get();
-   ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_n2/history_redo_test_n2.pro");
-   wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->mmap_file);
-   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
-   ui_style_clicked(app, style);
-   history_module_add(style->obj);
-   edje_object_mmap_set(style->obj, app->project->mmap_file, "elm/radio/base/def");
-   history_module_add(style->obj);
-   old_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
-   edje_edit_state_min_h_set(style->obj, "bg", "default", 0.0, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value, new_value,
-                    "elm/radio/base/def", (void *)edje_edit_state_min_h_set,
-                    "Min h", "bg", "default", 0.0);
-
-   result = history_redo(style->obj, -1);
-   ck_assert_msg(!result, "Restore diff with quantity of changes  '-1' .");
-
-   pm_project_close(app->project);
-   app->project = NULL;
-
-   ui_main_window_del(app);
-   app_shutdown();
-   teardown("./history_redo_test_n2");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup history_redo
- * @{
- * <tr>
- * <td>history_redo</td>
- * <td>history_redo_test_n3</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- *
- * @procedure
- * @step 1 Call history_redo.
- * @step 2 Check returned value.
- *
- * </td>
- * <td>NULL, (int) 1 </td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(history_redo_test_n3)
-{
-   Eina_Bool result = EINA_FALSE;
-
-   elm_init(0, 0);
-
-   result = history_redo(NULL, 1);
-   ck_assert_msg(!result, "Change was restored with NULL source param.");
-
    elm_shutdown();
 }
 END_TEST
