@@ -407,6 +407,42 @@ live_view_property_style_set(Evas_Object *property,
    return true;
 }
 
+TODO("We need implementation here!~~ ")
+Eina_Bool
+live_view_property_part_add(Evas_Object *parent __UNUSED__, Part *part __UNUSED__)
+{
+   printf("Signal: add part name [%s] \n", part->name);
+   return true;
+}
+
+Eina_Bool
+live_view_property_part_del(Evas_Object *parent __UNUSED__, Part *part __UNUSED__)
+{
+   printf("Signal: del part name [%s] \n", part->name);
+   return true;
+}
+
+Eina_Bool
+live_view_property_part_rename(Evas_Object *parent __UNUSED__, Part *part __UNUSED__, Eina_Stringshare *new_name __UNUSED__)
+{
+   printf("Signal: rename part name from [%s] to [%s] \n", part->name, new_name);
+   return true;
+}
+
+Eina_Bool
+live_view_property_part_restack_above(Evas_Object *parent __UNUSED__, Part *part_move __UNUSED__, Part *part_above __UNUSED__)
+{
+   printf("Signal: moving part [%s] above [%s] \n", part_move->name, part_above->name);
+   return true;
+}
+
+Eina_Bool
+live_view_property_part_restack_below(Evas_Object *parent __UNUSED__, Part *part_move, Part *part_below __UNUSED__)
+{
+   printf("Signal: moving part [%s] below [%s] \n", part_move->name, part_below->name);
+   return true;
+}
+
 Evas_Object *
 live_view_property_add(Evas_Object *parent, Eina_Bool in_prog_edit)
 {

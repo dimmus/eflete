@@ -114,4 +114,21 @@ live_view_property_style_set(Evas_Object *property, Evas_Object *object, Style *
 Eina_Bool
 live_view_property_style_unset(Evas_Object *property);
 
+/****** FUNCTIONS FOR CONNECTOR ***********/
+TODO("We need documentation here! ")
+Eina_Bool
+live_view_property_part_add(Evas_Object *parent, Part *part);
+
+Eina_Bool
+live_view_property_part_del(Evas_Object *parent, Part *part);
+
+Eina_Bool
+live_view_property_part_rename(Evas_Object *parent, Part *part, Eina_Stringshare *new_name);
+
+Eina_Bool
+live_view_property_part_restack_above(Evas_Object *parent, Part *part_move, Part *part_above);
+
+Eina_Bool
+live_view_property_part_restack_below(Evas_Object *parent, Part *part_move, Part *part_below);
+
 #endif /* UI_LIVEVIEWPROP_HEADER_H */

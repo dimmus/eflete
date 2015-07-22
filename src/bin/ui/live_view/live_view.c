@@ -260,3 +260,34 @@ live_view_free(Live_View *live)
    live = NULL;
    return true;
 }
+
+TODO("We need implementation here!~~ ")
+Eina_Bool
+live_view_part_add(Evas_Object *parent, Part *part)
+{
+   return live_view_property_part_add(parent, part);
+}
+
+Eina_Bool
+live_view_part_del(Evas_Object *parent, Part *part)
+{
+   return live_view_property_part_del(parent, part);
+}
+
+Eina_Bool
+live_view_part_rename(Evas_Object *parent, Part *part, Eina_Stringshare *new_name)
+{
+   return live_view_property_part_rename(parent, part, new_name);
+}
+
+Eina_Bool
+live_view_part_restack_above(Evas_Object *parent, Part *part_move, Part *part_above)
+{
+   return live_view_property_part_restack_above(parent, part_move, part_above);
+}
+
+Eina_Bool
+live_view_part_restack_below(Evas_Object *parent, Part *part_move, Part *part_below)
+{
+   return live_view_property_part_restack_below(parent, part_move, part_below);
+}
