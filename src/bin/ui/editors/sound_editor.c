@@ -16,8 +16,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
-
+#define EO_BETA_API
 #define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
 
 #include "sound_editor.h"
 #include "main_window.h"
@@ -40,11 +41,6 @@ typedef struct _Sound_Editor Sound_Editor;
 typedef struct _Search_Data Search_Data;
 typedef struct _Item Item;
 typedef struct _Sound Sound;
-
-static Elm_Entry_Filter_Accept_Set accept_value = {
-   .accepted = "0123456789.",
-   .rejected = NULL
-};
 
 struct _Sound
 {
@@ -75,9 +71,11 @@ struct _Sound_Editor
    Project *pr;
    Sound_Editor_Mode mode;
    Evas_Object *popup;
+   Evas_Object *popup_btn_add;
    Evas_Object *add_cmb;
    Evas_Object *win;
    Evas_Object *tone_entry, *frq_entry;
+   Elm_Validator_Regexp *tone_validator, *frq_validator;
    Evas_Object *gengrid;
    Evas_Object *sample_box;
    Evas_Object *tone_box;
@@ -1339,22 +1337,31 @@ del:
 }
 
 static void
-_add_tone_cancel(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   evas_object_del(data);
-}
-
-static void
 _popup_close(void *data)
 {
    Sound_Editor *edit = (Sound_Editor *)data;
 
    assert(edit != NULL);
+   assert(edit->tone_validator != NULL);
+   assert(edit->frq_validator != NULL);
+
+   elm_validator_regexp_free(edit->tone_validator);
+   elm_validator_regexp_free(edit->frq_validator);
+   edit->tone_validator = NULL;
+   edit->frq_validator = NULL;
 
    evas_object_del(edit->popup);
    elm_gengrid_item_selected_set(elm_gengrid_last_item_get(edit->gengrid), true);
+}
+
+static void
+_add_tone_cancel(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   Sound_Editor *edit = (Sound_Editor *)data;
+
+   ecore_job_add(_popup_close, edit);
 }
 
 static void
@@ -1373,17 +1380,6 @@ _add_tone_done(void *data,
    Sound_Editor *edit = (Sound_Editor *)data;
 
    assert(edit != NULL);
-
-   if (elm_entry_is_empty(edit->tone_entry))
-     {
-        NOTIFY_WARNING(_("Tone name can not be empty!"))
-        return;
-     }
-   if (!ewe_entry_regex_check(edit->frq_entry))
-     {
-        NOTIFY_WARNING(_("Frequency value is not correct!"));
-        return;
-     }
 
    tone_name = eina_stringshare_add(elm_entry_entry_get(edit->tone_entry));
 
@@ -1470,6 +1466,20 @@ _sample_add_cb(void *data,
 }
 
 static void
+_validation(void *data __UNUSED__,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
+{
+   Sound_Editor *edit = (Sound_Editor *)data;
+
+   if ((elm_validator_regexp_status_get(edit->tone_validator) != ELM_REG_NOERROR) ||
+       (elm_validator_regexp_status_get(edit->frq_validator) != ELM_REG_NOERROR))
+     elm_object_disabled_set(edit->popup_btn_add, true);
+   else
+     elm_object_disabled_set(edit->popup_btn_add, false);
+}
+
+static void
 _tone_add_cb(void *data,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
@@ -1478,7 +1488,7 @@ _tone_add_cb(void *data,
 
    assert(edit != NULL);
 
-   Evas_Object *popup, *box, *item, *bt_yes, *bt_no;
+   Evas_Object *popup, *box, *item, *bt_no;
    Eina_Stringshare *title;
 
    popup = elm_popup_add(edit->win);
@@ -1487,32 +1497,40 @@ _tone_add_cb(void *data,
    elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
    edit->popup = popup;
 
+   assert(edit->tone_validator == NULL);
+   assert(edit->frq_validator == NULL);
+   edit->tone_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
+   edit->frq_validator = elm_validator_regexp_new(FREQUENCY_REGEX, NULL);
+
    BOX_ADD(popup, box, false, false);
    elm_object_content_set(popup, box);
    ITEM_ADD(box, item, _("tone name:"), "property/item/editor");
-   EWE_ENTRY_ADD(item, edit->tone_entry, true);
+   ENTRY_ADD(item, edit->tone_entry, true);
+   eo_do(edit->tone_entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, edit->tone_validator));
+   evas_object_smart_callback_add(edit->tone_entry, "changed", _validation, edit);
    elm_object_part_text_set(edit->tone_entry, "guide", _("Type a new tone name"));
+   /* need to manualy set not valid string for triggered validator */
+   elm_entry_entry_set(edit->tone_entry, NULL);
    elm_object_part_content_set(item, "elm.swallow.content", edit->tone_entry);
    elm_box_pack_end(box, item);
 
    ITEM_ADD(box, item, _("frequency:"), "property/item/editor");
-   EWE_ENTRY_ADD(item, edit->frq_entry, true);
-   elm_entry_markup_filter_append(edit->frq_entry, elm_entry_filter_accept_set,
-                                  &accept_value);
-   elm_object_part_text_set(edit->frq_entry, "guide",
-                            _("Type a frequency (20 - 20000)"));
-   ewe_entry_regex_set(edit->frq_entry, TONE_FRQ_REGEX, EWE_REG_EXTENDED);
-   ewe_entry_regex_autocheck_set(edit->frq_entry, true);
-   ewe_entry_regex_glow_set(edit->frq_entry, true);
+   ENTRY_ADD(item, edit->frq_entry, true);
+   eo_do(edit->frq_entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, edit->frq_validator));
+   evas_object_smart_callback_add(edit->frq_entry, "changed", _validation, edit);
+   elm_object_part_text_set(edit->frq_entry, "guide", _("Type a frequency (20 - 20000)"));
+   /* need to manualy set not valid string for triggered validator */
+   elm_entry_entry_set(edit->frq_entry, NULL);
    elm_object_part_content_set(item, "elm.swallow.content", edit->frq_entry);
    elm_box_pack_end(box, item);
 
-   BUTTON_ADD(popup, bt_yes, _("Add"));
-   evas_object_smart_callback_add (bt_yes, "clicked", _add_tone_done, edit);
-   elm_object_part_content_set(popup, "button1", bt_yes);
+   BUTTON_ADD(popup, edit->popup_btn_add, _("Add"));
+   evas_object_smart_callback_add (edit->popup_btn_add, "clicked", _add_tone_done, edit);
+   elm_object_part_content_set(popup, "button1", edit->popup_btn_add);
+   elm_object_disabled_set(edit->popup_btn_add, true);
 
    BUTTON_ADD(popup, bt_no, _("Cancel"));
-   evas_object_smart_callback_add (bt_no, "clicked", _add_tone_cancel, popup);
+   evas_object_smart_callback_add (bt_no, "clicked", _add_tone_cancel, edit);
    elm_object_part_content_set(popup, "button2", bt_no);
 
    evas_object_show(popup);
