@@ -714,9 +714,9 @@ _on_style_clicked_double(void *data,
    assert(nf_widgets != NULL);
    assert(nf_layouts != NULL);
    assert(_style != NULL);
-   assert((_style->__type == STYLE) ||
-          (_style->__type == LAYOUT));
 
+   if ((_style->__type != STYLE) && (_style->__type != LAYOUT))
+     return;
    if (nf == nf_widgets)
      {
         naviframe_items = elm_naviframe_items_get(nf_layouts);
