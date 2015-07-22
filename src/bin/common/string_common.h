@@ -34,6 +34,8 @@
 #define NAME_REGEX "^[a-zA-Z0-9_]+$"
 #define STATE_VALUE_REGEX "^[0,1]?\\.?[0-9]+$"
 #define PART_NAME_REGEX "^[a-zA-Z0-9_\\.]+$"
+#define FONT_STYLE_REGEX "^\\w+(:(style|slant|weight|width|spacing|lang)=\\w+)?$"
+#define IMAGE_BORDER_REGEX "^([0-9]+( [0-9]+){3}){0,1}?$"
 
 #define BANNED_SYMBOLS ":;,.'\"~!?&^%$#@()[]=+*{} |/\\№"
 #define STYLE_NAME_BANNED_SYMBOLS ":;,.'`\"~!?&^%$#@()[]=+*{} |\\№"

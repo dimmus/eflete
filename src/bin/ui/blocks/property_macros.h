@@ -542,12 +542,12 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
  * @param MEMBER The entry member from Prop_Data structure
- * @param REGEX The regex for validation input string
+ * @param VALIDATOR The entry validator
  * @param TOOLTIP The tooltip for combobox
  *
  * @ingroup Property_Macro
  */
-#define COMMON_ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP) \
+#define COMMON_ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP) \
 static Evas_Object * \
 prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
                            Prop_Data *pd, \
@@ -555,22 +555,21 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
 { \
    Evas_Object *btn; \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
-   EWE_ENTRY_ADD(item, pd->MEMBER.VALUE, true) \
+   ENTRY_ADD(item, pd->MEMBER.VALUE, true) \
    if (btn_func_cb) \
      { \
         btn = elm_button_add(parent); \
         elm_object_style_set(btn, "elipsis"); \
         evas_object_smart_callback_add(btn, "clicked", btn_func_cb, pd); \
         evas_object_smart_callback_add(pd->MEMBER.VALUE, "clicked", btn_func_cb, pd); \
-        elm_object_part_content_set(pd->MEMBER.VALUE, "elm.swallow.end", btn); \
+        elm_object_part_content_set(pd->MEMBER.VALUE, "elm.swallow.elipsis", btn); \
         elm_entry_editable_set(pd->MEMBER.VALUE, false); \
         evas_object_show(btn); \
      } \
    else \
      evas_object_smart_callback_add(pd->MEMBER.VALUE, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
-   ewe_entry_regex_set(pd->MEMBER.VALUE, REGEX, EWE_REG_EXTENDED); \
-   ewe_entry_regex_autocheck_set(pd->MEMBER.VALUE, true); \
-   ewe_entry_regex_glow_set(pd->MEMBER.VALUE, true); \
+   if (VALIDATOR) \
+      eo_do(pd->MEMBER.VALUE, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, VALIDATOR)); \
    if (TOOLTIP) elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
    elm_layout_content_set(item, NULL, pd->MEMBER.VALUE); \
    prop_##SUB##_##VALUE##_update(pd); \
@@ -594,7 +593,7 @@ prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
    const char *value; \
    value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
    char *text = elm_entry_utf8_to_markup(value); \
-   ewe_entry_entry_set(pd->MEMBER.VALUE, text); \
+   elm_entry_entry_set(pd->MEMBER.VALUE, text); \
    edje_edit_string_free(value); \
    free(text); \
 }
@@ -604,18 +603,20 @@ prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
+ * @param VALIDATOR The entry validator
  * @param ARGS The edje edit function arguments
  *
  * @ingroup Property_Macro
  */
-#define COMMON_ENTRY_CALLBACK(SUB, VALUE, ARGS) \
+#define COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, ARGS) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
                              Evas_Object *obj, \
                              void *ei __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
-   if (ewe_entry_regex_error_get(obj)) return; \
+   if (VALIDATOR && (elm_validator_regexp_status_get(VALIDATOR)) != ELM_REG_NOERROR) \
+     return; \
    const char *text = elm_entry_entry_get(obj); \
    char *value = elm_entry_markup_to_utf8(text); \
    const char *old_value =  edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
@@ -776,8 +777,8 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define GROUP_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP) \
-   COMMON_ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP)
+#define GROUP_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP) \
+   COMMON_ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP)
 
 /**
  * Macro defines a function that updates control by STATE_ATTR_1ENTRY_ADD macro.
@@ -797,8 +798,8 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define GROUP_ATTR_1ENTRY_CALLBACK(SUB, VALUE) \
-   COMMON_ENTRY_CALLBACK(SUB, VALUE, GROUP_ARGS) \
+#define GROUP_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR) \
+   COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, GROUP_ARGS) \
 
 
 
@@ -1998,8 +1999,8 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP) \
-   COMMON_ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP)
+#define STATE_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP) \
+   COMMON_ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP)
 
 /**
  * Macro defines a function that updates control by STATE_ATTR_1ENTRY_ADD macro.
@@ -2019,8 +2020,8 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE) \
-   COMMON_ENTRY_CALLBACK(SUB, VALUE, STATE_ARGS) \
+#define STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR) \
+   COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, STATE_ARGS) \
 
 /*****************************************************************************/
 /*              STATE CONTAINER 2 SPINNERS DOUBLEVAL CONTROL                 */

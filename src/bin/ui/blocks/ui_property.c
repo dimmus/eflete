@@ -36,11 +36,6 @@
 
 #define PROP_DATA "prop_data"
 
-TODO("I dont know why this regex not work properly in the ewe entry."
-     "It test in the elm_entry - works good, in online checkers - work")
-#define PROPERTY_REGEX_STATE_FONT "^\\w+(:(style|slant|weight|width|spacing|lang)=\\w+)?"
-#define PROPERTY_REGEX_IMAGE_BORDER "^([0-9]+( [0-9]+){3}){0,1}?"
-
 #define PROP_DATA_GET() \
    assert(property != NULL); \
    Prop_Data *pd = evas_object_data_get(property, PROP_DATA); \
@@ -132,6 +127,7 @@ struct _Prop_Data
       Evas_Object *frame;
       Evas_Object *text;
       Evas_Object *font;
+      Elm_Validator_Regexp *validator;
       Evas_Object *size;
       Evas_Object *align_x, *align_y;
       Evas_Object *source;
@@ -167,6 +163,7 @@ struct _Prop_Data
       Evas_Object *frame;
       Evas_Object *image;
       Evas_Object *border;
+      Elm_Validator_Regexp *validator;
       Evas_Object *border_fill;
       Evas_Object *tween;
    } state_image;
@@ -575,9 +572,9 @@ _on_group_name_change(void *data,
 #define edje_edit_group_name_get(OBJ) \
    wm_style_layout_is(pd->wm_style) ? pd->wm_style->full_group_name : pd->wm_style->name \
 
-#define GROUP_ATTR_1ENTRY(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP) \
+#define GROUP_ATTR_1ENTRY(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP) \
    GROUP_ATTR_1ENTRY_UPDATE(SUB, VALUE, MEMBER) \
-   GROUP_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP)
+   GROUP_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP)
 
 GROUP_ATTR_2SPINNER(_("min"), min, max, w, h, >)
 GROUP_ATTR_2SPINNER(_("max"), max, min, w, h, <)
@@ -882,7 +879,7 @@ _on_part_name_unfocus(void *data,
 
 static void
 _on_part_name_change(void *data,
-                     Evas_Object *obj,
+                     Evas_Object *obj __UNUSED__,
                      void *ei __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
@@ -891,8 +888,8 @@ _on_part_name_change(void *data,
    const char *old_value = pd->wm_part->name;
 
    assert(pd != NULL);
-
-   if (elm_entry_is_empty(obj)) return;
+   if (elm_validator_regexp_status_get(pd->part.validator) != ELM_REG_NOERROR)
+     return;
 
    value = elm_entry_entry_get(obj);
    if (!edje_edit_part_name_set(pd->wm_style->obj, pd->wm_part->name, value))
@@ -1054,7 +1051,9 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(pd_part.frame, box);
 
-        pd->part.validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
+        if (pd->part.validator == NULL)
+          pd->part.validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
+
         item = prop_part_name_add(box, pd);
         elm_box_pack_end(box, item);
         item = prop_part_type_add(box, _("type"), wm_part_type_get(pd->wm_part->type));
@@ -1198,9 +1197,13 @@ ui_property_part_unset(Evas_Object *property)
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    prop_box = elm_object_content_get(pd->visual);
 
-   if (pd->part.validator)
-     elm_validator_regexp_free(pd->part.validator);
-   pd->part.validator = NULL;
+   /*
+   if (pd->part.validator != NULL)
+     {
+        elm_validator_regexp_free(pd->part.validator);
+        pd->part.validator = NULL;
+     }
+   */
    PROP_ITEM_UNSET(prop_box, pd->part.frame)
    PROP_ITEM_UNSET(prop_box, pd->state.frame)
    evas_object_del(pd->state.color1);
@@ -1873,10 +1876,10 @@ ui_property_state_obj_area_unset(Evas_Object *property)
 }
 #undef pd_obj_area
 
-#define STATE_ATTR_1ENTRY(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP) \
-   STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE) \
+#define STATE_ATTR_1ENTRY(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP) \
+   STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR) \
    STATE_ATTR_1ENTRY_UPDATE(SUB, VALUE, MEMBER) \
-   STATE_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP)
+   STATE_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP)
 
 #define STATE_ATTR_1SPINNER(TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
                             L_START, L_END, TOOLTIP, MULTIPLIER, \
@@ -1886,7 +1889,7 @@ ui_property_state_obj_area_unset(Evas_Object *property)
                            L_START, L_END, TOOLTIP, MULTIPLIER)
 
 STATE_ATTR_1ENTRY(_("text"), state, text, state_text, NULL, _("The dispalyed text"))
-STATE_ATTR_1ENTRY(_("font"), state, font, state_text, PROPERTY_REGEX_STATE_FONT,
+STATE_ATTR_1ENTRY(_("font"), state, font, state_text, pd->state_text.validator,
                   _("The text font, posible set a font style. Ex: Sans:style=italic"))
 STATE_ATTR_1SPINNER(_("size"), state_text, size, state_text, 1, 128, 1, "%.0f", "", "pt",
                     _("The font size"), 1, int, VAL_INT)
@@ -2209,6 +2212,9 @@ ui_property_state_text_set(Evas_Object *property)
          elm_box_align_set(box, 0.5, 0.0);
          elm_object_content_set(text_frame, box);
 
+         if (pd_text.validator == NULL)
+           pd_text.validator = elm_validator_regexp_new(FONT_STYLE_REGEX, NULL);
+
          item = prop_state_text_add(box, pd, NULL);
          elm_box_pack_end(box, item);
          item = prop_state_font_add(box, pd, NULL);
@@ -2270,7 +2276,13 @@ ui_property_state_text_unset(Evas_Object *property)
    Evas_Object *prop_box;
 
    PROP_DATA_GET()
-
+   /*
+   if (pd_text.validator != NULL)
+     {
+        elm_validator_regexp_free(pd_text.validator);
+        pd_text.validator = NULL;
+     }
+   */
    prop_box = elm_object_content_get(pd->visual);
    elm_box_unpack(prop_box, pd_text.frame);
    evas_object_hide(pd_text.frame);
@@ -2779,6 +2791,7 @@ _on_state_image_border_change(void *data,
                                     pd->wm_part->curr_state,
                                     pd->wm_part->curr_state_value,
                                     &old_lb, &old_rb, &old_tb, &old_bb);
+   if (elm_validator_regexp_status_get(pd->state_image.validator) != ELM_REG_NOERROR) return;
    if (!value || !strcmp(value, ""))
      lb = rb = tb = bb = 0;
    else
@@ -2819,18 +2832,19 @@ prop_state_image_border_update(Prop_Data *pd)
                                     pd->wm_part->curr_state, pd->wm_part->curr_state_value,
                                     &l, &r, &t, &b);
    if (!l && !r && !t && !b)
-     ewe_entry_entry_set(pd->state_image.border, NULL);
+     elm_entry_entry_set(pd->state_image.border, NULL);
    else
      {
         snprintf(buff, strlen("255 255 255 255") + 1, "%i %i %i %i", l, r, t, b);
-        ewe_entry_entry_set(pd->state_image.border, buff);
+        elm_entry_entry_set(pd->state_image.border, buff);
      }
 }
 
 STATE_ATTR_1ENTRY(_("image"), state, image, state_image, NULL, NULL)
-STATE_ATTR_1ENTRY_ADD(_("border"), state_image, border, state_image, PROPERTY_REGEX_IMAGE_BORDER, _("Image's border values."))
-STATE_ATTR_1COMBOBOX_LIST(_("border fill"), state_image, border_fill, state_image, edje_middle_type,
-                          NULL, unsigned char)
+STATE_ATTR_1ENTRY_ADD(_("border"), state_image, border, state_image,
+                      pd->state_image.validator, _("Image's border values"))
+STATE_ATTR_1COMBOBOX_LIST(_("border fill"), state_image, border_fill, state_image,\
+                          edje_middle_type, NULL, unsigned char)
 
 static Eina_Bool
 ui_property_state_image_set(Evas_Object *property)
@@ -2849,6 +2863,9 @@ ui_property_state_image_set(Evas_Object *property)
         BOX_ADD(image_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(image_frame, box);
+
+        if (pd_image.validator == NULL)
+          pd_image.validator = elm_validator_regexp_new(IMAGE_BORDER_REGEX, NULL);
 
         item = prop_state_image_add(box, pd, _on_state_image_choose);
         elm_box_pack_end(box, item);
@@ -2882,7 +2899,13 @@ ui_property_state_image_unset(Evas_Object *property)
    Evas_Object *prop_box;
 
    PROP_DATA_GET()
-
+   /*
+   if (pd_image.validator != NULL)
+     {
+        elm_validator_regexp_free(pd_image.validator);
+        pd_image.validator = NULL;
+     }
+   */
    prop_box = elm_object_content_get(pd->visual);
    elm_box_unpack(prop_box, pd_image.frame);
    evas_object_hide(pd_image.frame);
