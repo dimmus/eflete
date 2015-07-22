@@ -6,7 +6,6 @@ TESTS = \
 ewe_init_test \
 ewe_tabs_test \
 ewe_combobox_test \
-ewe_entry_test \
 ewe_ruler_test \
 ewe_statusbar_test \
 eflete_test \
@@ -93,20 +92,6 @@ test_ewe_init/test_ewe_init.h \
 test_ewe_init/ewe_init.c
 ewe_init_test_CFLAGS = ${FLAGS}
 ewe_init_test_LDADD = ${LD}
-
-ewe_entry_test_SOURCES = \
-utc_common.h \
-test_ewe_entry/test_ewe_entry.c \
-test_ewe_entry/test_ewe_entry.h \
-test_ewe_entry/ewe_entry_add.c \
-test_ewe_entry/ewe_entry_regex_check.c \
-test_ewe_entry/ewe_entry_regex_set.c \
-test_ewe_entry/ewe_entry_regex_unset.c \
-test_ewe_entry/ewe_entry_regex_glow.c \
-test_ewe_entry/ewe_entry_regex_error_get.c \
-test_ewe_entry/ewe_entry_regex_autocheck.c
-ewe_entry_test_CFLAGS = ${FLAGS}
-ewe_entry_test_LDADD = ${LD}
 
 ewe_ruler_test_SOURCES = \
 utc_common.h \

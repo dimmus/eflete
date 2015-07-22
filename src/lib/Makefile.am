@@ -47,11 +47,6 @@ ewe_combobox_eo.h \
 ewe_combobox_legacy.h \
 ewe_combobox_common.h \
 ewe_widget_combobox.h \
-ewe_entry.h \
-ewe_entry_legacy.h \
-ewe_entry_common.h\
-ewe_entry_eo.h \
-ewe_widget_entry.h \
 ewe_ruler.h \
 ewe_ruler_legacy.h \
 ewe_ruler_eo.h \
@@ -68,7 +63,6 @@ logger/logger.c \
 ewe_tabs.c \
 ewe_statusbar.c \
 ewe_combobox.c \
-ewe_entry.c \
 ewe_ruler.c \
 ewe_private.h
 
@@ -79,8 +73,6 @@ ewe_statusbar.eo.c \
 ewe_statusbar.eo.h \
 ewe_combobox.eo.c \
 ewe_combobox.eo.h \
-ewe_entry.eo.c \
-ewe_entry.eo.h \
 ewe_ruler.eo.c \
 ewe_ruler.eo.h
 
