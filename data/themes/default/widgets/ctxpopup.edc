@@ -58,6 +58,7 @@ group { name: "elm/ctxpopup/base/colorsel";
          clip_to: "clip";
          description { state: "default" 0.0;
             min: 240 320;
+            max: 240 320;
             rel1 {
                to:"base";
                offset: 30 30;
