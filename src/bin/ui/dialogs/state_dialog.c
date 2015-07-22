@@ -70,11 +70,6 @@ _add_ok_clicked(void *data,
         NOTIFY_WARNING(_("State name can not be empty!"))
         return;
      }
-   if (!ewe_entry_regex_check(entry_value))
-     {
-        NOTIFY_WARNING(_("State value is not correct!"));
-        return;
-     }
 
    str_name = elm_entry_entry_get(entry_name);
    str_value = elm_entry_entry_get(entry_value);
