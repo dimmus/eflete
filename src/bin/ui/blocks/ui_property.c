@@ -541,8 +541,6 @@ _on_group_name_change(void *data,
    const char *value, *old_value;
    char *entry;
 
-   if (ewe_entry_regex_error_get(obj)) return;
-
    old_value = eina_stringshare_add(pd->wm_style->full_group_name);
    entry = elm_entry_markup_to_utf8(elm_entry_entry_get(obj));
    value = wm_style_name_set(pd->wm_style, entry);
@@ -2484,7 +2482,7 @@ _on_image_editor_done(void *data,
    value = elm_entry_entry_get(pd->state_image.image);
 
    if (strcmp(value, selected) == 0) return;
-   ewe_entry_entry_set(pd->state_image.image, selected);
+   elm_entry_entry_set(pd->state_image.image, selected);
    edje_edit_state_image_set(pd->wm_style->obj, pd->wm_part->name,
                              pd->wm_part->curr_state,
                              pd->wm_part->curr_state_value, selected);
@@ -2495,7 +2493,7 @@ _on_image_editor_done(void *data,
                     pd->wm_part->name, pd->wm_part->curr_state,
                     pd->wm_part->curr_state_value);
    evas_object_smart_callback_call(pd->state_image.image, "changed,user", NULL);
-   ewe_entry_entry_set(border_entry, NULL);
+   elm_entry_entry_set(border_entry, NULL);
    evas_object_smart_callback_call(border_entry, "changed,user", NULL);
    workspace_edit_object_recalc(pd->workspace);
    project_changed(false);
