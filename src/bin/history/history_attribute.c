@@ -150,7 +150,6 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
 static Eina_Bool
 _attribute_modify_redo(Evas_Object *source, Attribute_Diff *change)
 {
-   Style *style = NULL;
    Part *part = NULL;
 
    assert(change != NULL);
@@ -193,9 +192,9 @@ _attribute_modify_redo(Evas_Object *source, Attribute_Diff *change)
                      change->four.new_4);
      break;
      case VAL_RENAME:
-        assert(change->state != NULL);
+        assert(change->state == NULL);
 
-        part = wm_part_by_name_find(style, change->part);
+        part = wm_part_by_name_find(app->project->current_style, change->part);
 
         assert(part != NULL);
 
@@ -347,7 +346,7 @@ _attribute_modify_undo(Evas_Object *source, Attribute_Diff *change)
                      change->four.old_4);
      break;
      case VAL_RENAME:
-        assert(change->state != NULL);
+        assert(change->state == NULL);
 
         part = wm_part_by_name_find(style, change->part);
 
@@ -669,7 +668,7 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
          ERR("Unsupported value type."); \
          abort(); \
      } \
-   if (!change->func_revert) ret = false; \
+   assert(change->func_revert != NULL); \
 }
 
 #define _attribute_highlight_parse(ret, list, change) \
@@ -707,7 +706,7 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
          ERR("Unsupported value type."); \
          abort(); \
      } \
-   if (!change->func_revert) ret = false; \
+   assert(change->func_revert != NULL); \
 }
 
 Diff *
