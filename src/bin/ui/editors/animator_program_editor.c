@@ -406,7 +406,7 @@ _prop_item_##sub##_##value##_update(Evas_Object *item, Program_Editor *prog_edit
    assert(prog_edit != NULL); \
    entry = elm_object_part_content_get(item, "elm.swallow.content"); \
    value = edje_edit_##sub##_##value##_get(prop.style->obj, prop.program); \
-   ewe_entry_entry_set(entry, value); \
+   elm_entry_entry_set(entry, value); \
 }
 
 #define ITEM_1ENTRY_PROG_CREATE(text, sub, value, regex) \
@@ -415,9 +415,9 @@ _prop_item_##sub##_##value##_update(Evas_Object *item, Program_Editor *prog_edit
    ITEM_1ENTRY_UPDATE(sub, value)
 
 #define REGEX_SET(entry, regex) \
-   ewe_entry_regex_set(entry, regex, EWE_REG_EXTENDED); \
-   ewe_entry_regex_autocheck_set(entry, true); \
-   ewe_entry_regex_glow_set(entry, true);
+   elm_entry_regex_set(entry, regex, EWE_REG_EXTENDED); \
+   elm_entry_regex_autocheck_set(entry, true); \
+   elm_entry_regex_glow_set(entry, true);
 
 static void _on_v1_active(void *data, Evas_Object *obj, void *ei);
 static void _on_v2_active(void *data, Evas_Object *obj, void *ei);
@@ -600,7 +600,7 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
    script = edje_edit_script_program_get(prop.style->obj, prop.program);
    entry = eina_list_nth(childs, 0);
    script_markup = elm_entry_utf8_to_markup(script);
-   ewe_entry_entry_set(entry, script_markup);
+   elm_entry_entry_set(entry, script_markup);
    free(script);
    free(script_markup);
    eina_list_free(childs);
@@ -619,15 +619,15 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
    elm_check_state_set(transition.checkbox, false); \
    elm_object_part_text_set(transition.layout2, "elm.text", _("param1")); \
    elm_object_part_text_set(transition.layout3, "elm.text", _("param2")); \
-   ewe_entry_entry_set(transition.entry1, ""); \
-   ewe_entry_entry_set(transition.entry2, ""); \
-   ewe_entry_entry_set(transition.entry3, "");
+   elm_entry_entry_set(transition.entry1, ""); \
+   elm_entry_entry_set(transition.entry2, ""); \
+   elm_entry_entry_set(transition.entry3, "");
 
 #define TRANS_VAL_UPDATE(_val_, _entry) \
    value = edje_edit_program_transition_##_val_##_get(prop.style->obj, \
                                                       prop.program); \
    buff = eina_stringshare_printf("%1.2f", value); \
-   ewe_entry_entry_set(_entry, buff); \
+   elm_entry_entry_set(_entry, buff); \
    eina_stringshare_del(buff);
 
 #define CALLBACK_UPDATE(_activated_cb, _entry) \
@@ -713,13 +713,13 @@ _trans_entries_set(Program_Editor *prog_edit)
 
 #define ACTION_STATE_GET(_state_get, _entry) \
          str = _state_get(prop.style->obj, prop.program); \
-         ewe_entry_entry_set(_entry, str); \
+         elm_entry_entry_set(_entry, str); \
          edje_edit_string_free(str);
 
 #define ACTION_VAL_GET(_val_get, _entry) \
          value = _val_get(prop.style->obj, prop.program); \
          buff = eina_stringshare_printf("%1.2f", value); \
-         ewe_entry_entry_set(_entry, buff); \
+         elm_entry_entry_set(_entry, buff); \
          eina_stringshare_del(buff);
 
 static void
@@ -943,7 +943,7 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
              {
                 Eina_Stringshare *sample_name =
                   edje_edit_program_sample_name_get(prop.style->obj, prop.program);
-                ewe_entry_entry_set(action.entry1, sample_name);
+                elm_entry_entry_set(action.entry1, sample_name);
                 eina_stringshare_del(sample_name);
 
                 ACTION_VAL_GET(edje_edit_program_sample_speed_get, action.entry2);
@@ -973,7 +973,7 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
              {
                 Eina_Stringshare *tone_name =
                   edje_edit_program_tone_name_get(prop.style->obj, prop.program);
-                ewe_entry_entry_set(action.entry1, tone_name);
+                elm_entry_entry_set(action.entry1, tone_name);
                 eina_stringshare_del(tone_name);
 
                 ACTION_VAL_GET(edje_edit_program_tone_duration_get, action.entry2);
@@ -995,9 +995,9 @@ _on_combobox_trans_sel(void *data,
    assert(prog_edit != NULL);
 
    Ewe_Combobox_Item *combitem = ei;
-   ewe_entry_entry_set(transition.entry1, "");
-   ewe_entry_entry_set(transition.entry2, "");
-   ewe_entry_entry_set(transition.entry3, "");
+   elm_entry_entry_set(transition.entry1, "");
+   elm_entry_entry_set(transition.entry2, "");
+   elm_entry_entry_set(transition.entry3, "");
 
    edje_edit_program_transition_set(prop.style->obj, prop.program,
                                     (Edje_Tween_Mode)(combitem->index));
@@ -1078,8 +1078,8 @@ _on_combobox_action_sel(void *data,
           }
      }
 
-   ewe_entry_entry_set(action.entry1, "");
-   ewe_entry_entry_set(action.entry2, "");
+   elm_entry_entry_set(action.entry1, "");
+   elm_entry_entry_set(action.entry2, "");
 
    edje_edit_program_action_set(prop.style->obj, prop.program,
                                 combobox_action[combitem->index]);
@@ -1549,7 +1549,7 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
    value = edje_edit_program_transition_time_get(prop.style->obj, prop.program);
 
    buff = eina_stringshare_printf("%1.2f", value);
-   ewe_entry_entry_set(transition.entry1, buff);
+   elm_entry_entry_set(transition.entry1, buff);
    eina_stringshare_del(buff);
    TRANS_ENTRIES_DEFAULT_SET(false);
 
@@ -1606,8 +1606,8 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
    assert(prog_edit != NULL);
 
    prop.act_type = edje_edit_program_action_get(prop.style->obj, prop.program);
-   ewe_entry_entry_set(action.entry1, "");
-   ewe_entry_entry_set(action.entry2, "");
+   elm_entry_entry_set(action.entry1, "");
+   elm_entry_entry_set(action.entry2, "");
    elm_object_disabled_set(action.entry1, true);
    elm_object_disabled_set(action.entry2, true);
 
@@ -1757,12 +1757,12 @@ _prop_item_program_in_update(Program_Editor *prog_edit)
 
    val = edje_edit_program_in_from_get(prop.style->obj, prop.program);
    text = eina_stringshare_printf("%2.3f", val);
-   ewe_entry_entry_set(prop.in.entry_from, text);
+   elm_entry_entry_set(prop.in.entry_from, text);
    eina_stringshare_del(text);
 
    val = edje_edit_program_in_range_get(prop.style->obj, prop.program);
    text = eina_stringshare_printf("%2.3f", val);
-   ewe_entry_entry_set(prop.in.entry_range, text);
+   elm_entry_entry_set(prop.in.entry_range, text);
    eina_stringshare_del(text);
 }
 
@@ -1808,7 +1808,7 @@ _prop_item_program_name_update(Program_Editor *prog_edit)
    Evas_Object *entry = elm_object_part_content_get(prop.name,
                                                     "elm.swallow.content");
 
-   ewe_entry_entry_set(entry, prop.program);
+   elm_entry_entry_set(entry, prop.program);
 }
 
 static Evas_Object *
