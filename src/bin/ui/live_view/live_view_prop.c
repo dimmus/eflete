@@ -193,6 +193,7 @@ live_view_property_style_set(Evas_Object *property,
    assert(parent != NULL);
 
    pd->style = style;
+   pd->parent = parent;
 
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
@@ -409,9 +410,42 @@ live_view_property_style_set(Evas_Object *property,
 
 TODO("We need implementation here!~~ ")
 Eina_Bool
-live_view_property_part_add(Evas_Object *property __UNUSED__, Part *part __UNUSED__)
+live_view_property_part_add(Evas_Object *property, Part *part)
 {
-   printf("Signal: add part name [%s] \n", part->name);
+   Evas_Object *check;
+   PROP_DATA_GET();
+
+   if (part->type ==  EDJE_PART_TYPE_SWALLOW)
+     {
+        CHECK_ADD(pd->parent, check);
+        elm_object_part_text_set(check, NULL, part->name);
+
+        evas_object_smart_callback_add(check, "changed",
+                                       evas_object_data_get(pd->live_object, SWALLOW_FUNC),
+                                       pd);
+
+        elm_object_disabled_set(pd->prop_swallow.check, false);
+        elm_object_disabled_set(pd->prop_swallow.frame, false);
+
+        if (!strcmp(part->name, "elm.swallow.action_area")) elm_object_disabled_set(check, true);
+        elm_box_pack_end(pd->prop_swallow.swallows, check);
+     }
+   else if ((part->type ==  EDJE_PART_TYPE_TEXT) ||
+            (part->type ==  EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        CHECK_ADD(pd->parent, check);
+        elm_object_part_text_set(check, NULL, part->name);
+
+        evas_object_smart_callback_add(check, "changed",
+                                       evas_object_data_get(pd->live_object, TEXT_FUNC),
+                                       pd);
+
+        elm_object_disabled_set(pd->prop_text.check, false);
+        elm_object_disabled_set(pd->prop_text.frame, false);
+
+        elm_box_pack_end(pd->prop_text.texts, check);
+     }
+
    return true;
 }
 

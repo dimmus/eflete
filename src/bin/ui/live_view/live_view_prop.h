@@ -39,6 +39,7 @@
 struct _Prop_Data
 {
    Evas_Object *live_object;
+   Evas_Object *parent;
    Evas_Object *visual;
    Evas_Object *header;
    double current_scale;
