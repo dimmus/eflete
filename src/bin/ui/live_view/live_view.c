@@ -263,31 +263,44 @@ live_view_free(Live_View *live)
 
 TODO("We need implementation here!~~ ")
 Eina_Bool
-live_view_part_add(Evas_Object *parent, Part *part)
+live_view_part_add(Live_View *live, Part *part)
 {
-   return live_view_property_part_add(parent, part);
+   assert(live != NULL);
+   assert(part != NULL);
+   return live_view_property_part_add(live->property, part);
 }
 
 Eina_Bool
-live_view_part_del(Evas_Object *parent, Part *part)
+live_view_part_del(Live_View *live, Part *part)
 {
-   return live_view_property_part_del(parent, part);
+   assert(live != NULL);
+   assert(part != NULL);
+   return live_view_property_part_del(live->property, part);
 }
 
 Eina_Bool
-live_view_part_rename(Evas_Object *parent, Part *part, Eina_Stringshare *new_name)
+live_view_part_rename(Live_View *live, Part *part, Eina_Stringshare *new_name)
 {
-   return live_view_property_part_rename(parent, part, new_name);
+   assert(live != NULL);
+   assert(part != NULL);
+   assert(new_name != NULL);
+   return live_view_property_part_rename(live->property, part, new_name);
 }
 
 Eina_Bool
-live_view_part_restack_above(Evas_Object *parent, Part *part_move, Part *part_above)
+live_view_part_restack_above(Live_View *live, Part *part_move, Part *part_above)
 {
-   return live_view_property_part_restack_above(parent, part_move, part_above);
+   assert(live != NULL);
+   assert(part_move != NULL);
+   assert(part_above != NULL);
+   return live_view_property_part_restack_above(live->property, part_move, part_above);
 }
 
 Eina_Bool
-live_view_part_restack_below(Evas_Object *parent, Part *part_move, Part *part_below)
+live_view_part_restack_below(Live_View *live, Part *part_move, Part *part_below)
 {
-   return live_view_property_part_restack_below(parent, part_move, part_below);
+   assert(live != NULL);
+   assert(part_move != NULL);
+   assert(part_below != NULL);
+   return live_view_property_part_restack_below(live->property, part_move, part_below);
 }

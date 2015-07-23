@@ -97,7 +97,7 @@ _del_part(void *data,
    history_diff_add(style->obj, PART_TARGET, DEL, part_name);
    if (workspace_edit_object_part_del(ap->workspace, part->name))
      {
-        live_view_part_del(ap->live_view->property, part);
+        live_view_part_del(ap->live_view, part);
         ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), style);
      }
 
@@ -167,7 +167,7 @@ _above_part(void *data,
      }
    tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
    Part *rel = EINA_INLIST_CONTAINER_GET(tmp_list->next, Part);
-   live_view_part_restack_above(ap->live_view->property, part, rel);
+   live_view_part_restack_above(ap->live_view, part, rel);
    project_changed(true);
 }
 
@@ -192,7 +192,7 @@ _below_part(void *data,
 
    tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
    Part *rel = EINA_INLIST_CONTAINER_GET(tmp_list->prev, Part);
-   live_view_part_restack_below(ap->live_view->property, part, rel);
+   live_view_part_restack_below(ap->live_view, part, rel);
    project_changed(true);
 }
 
@@ -210,7 +210,7 @@ _restack_part_above(void *data,
    if ((!part) || (!style)) return;
    history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
    workspace_edit_object_part_restack(ap->workspace, part->name, rel->name, false);
-   live_view_part_restack_above(ap->live_view->property, part, rel);
+   live_view_part_restack_above(ap->live_view, part, rel);
 
    tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
    tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel));
@@ -235,7 +235,7 @@ _restack_part_below(void *data,
    if ((!part) || (!style)) return;
    history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
    workspace_edit_object_part_restack(ap->workspace, part->name, rel->name, true);
-   live_view_part_restack_below(ap->live_view->property, part, rel);
+   live_view_part_restack_below(ap->live_view, part, rel);
 
    tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
    tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel));
