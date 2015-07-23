@@ -9,7 +9,6 @@ ewe_combobox_test \
 ewe_ruler_test \
 ewe_statusbar_test \
 eflete_test \
-part_dialog_test \
 alloc_test \
 colorclass_manager_test \
 sound_editor_test \
@@ -22,13 +21,11 @@ project_manager_test \
 config_test \
 cursor_test \
 style_editor_test \
-style_dialog_test \
 ui_block_test \
 highlight_test \
 ui_main_window_test \
 ui_signal_list_test \
 ui_states_list_test \
-ui_state_dialog_test \
 ui_widget_list_test \
 groupedit_test \
 ui_workspace_test \
@@ -40,8 +37,7 @@ live_widget_test \
 about_window_test \
 history_test \
 colorselector_test \
-shortcuts_test \
-ui_item_dialog_test
+shortcuts_test
 
 
 check_PROGRAMS = ${TESTS}
@@ -218,12 +214,6 @@ test_eflete/colorselector_get.c
 eflete_test_CFLAGS = ${FLAGS}
 eflete_test_LDADD = ${LD}
 
-part_dialog_test_SOURCES = \
-test_part_dialog/test_part_dialog.c \
-test_part_dialog/part_dialog_add.c
-part_dialog_test_CFLAGS = ${FLAGS}
-part_dialog_test_LDADD = ${LD}
-
 alloc_test_SOURCES = \
 test_alloc/test_alloc.c \
 test_alloc/mem_malloc.c \
@@ -348,12 +338,6 @@ test_style_editor/test_style_editor.c \
 test_style_editor/style_editor_window_add.c
 style_editor_test_CFLAGS = ${FLAGS} -DEDC_PATH=\"${srcdir}/test_style_editor/data/\"
 style_editor_test_LDADD = ${LD}
-
-style_dialog_test_SOURCES = \
-test_style_dialog/test_style_dialog.c \
-test_style_dialog/style_dialog_add.c
-style_dialog_test_CFLAGS = ${FLAGS}
-style_dialog_test_LDADD = ${LD}
 
 container_test_SOURCES = \
 test_container/test_container.c \
@@ -568,13 +552,6 @@ test_about_window/about_window_add.c
 about_window_test_CFLAGS = ${FLAGS}
 about_window_test_LDADD = ${LD}
 
-ui_state_dialog_test_SOURCES = \
-test_ui_state_dialog/test_ui_state_dialog.c \
-test_ui_state_dialog/state_dialog_state_add.c \
-test_ui_state_dialog/state_dialog_state_del.c
-ui_state_dialog_test_CFLAGS = ${FLAGS}
-ui_state_dialog_test_LDADD = ${LD}
-
 shortcuts_test_SOURCES = \
 test_shortcuts/test_shortcuts.c \
 test_shortcuts/shortcuts_init.c \
@@ -605,12 +582,6 @@ test_history/history_module_depth_set.c \
 test_history/history_module_depth_get.c
 history_test_CFLAGS = ${FLAGS}
 history_test_LDADD = ${LD}
-
-ui_item_dialog_test_SOURCES = \
-test_ui_item_dialog/test_ui_item_dialog.c \
-test_ui_item_dialog/item_dialog_add.c
-ui_item_dialog_test_CFLAGS = ${FLAGS}
-ui_item_dialog_test_LDADD = ${LD}
 
 coverage:
 	echo "<html><body>" > ../coverage.html
