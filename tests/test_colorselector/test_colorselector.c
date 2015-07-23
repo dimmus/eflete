@@ -23,10 +23,7 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("colorselector_test");
    TCase *tcase = tcase_create("TCase");
    tcase_add_test(tcase, colorselector_add_test_p);
-   tcase_add_test(tcase, colorselector_add_test_n);
    tcase_add_test(tcase, colorselector_color_get_test_p);
-   tcase_add_test(tcase, colorselector_color_get_test_n1);
-   tcase_add_test(tcase, colorselector_color_get_test_n2);
    suite_add_tcase(suite, tcase);
    return suite;
 }
