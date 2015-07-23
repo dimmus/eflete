@@ -149,7 +149,6 @@ Evas_Object *
 state_dialog_state_add(App_Data *ap)
 {
    Evas_Object *box, *item, *bt_no;
-   Evas_Object *item_dup;
    Part *part = NULL;
    Eina_Stringshare *title = NULL;
    Eina_List *states = NULL, *l = NULL;
@@ -174,7 +173,7 @@ state_dialog_state_add(App_Data *ap)
 
    BOX_ADD(ap->popup, box, false, false);
 
-   ITEM_ADD(box, item, _("Name:"), "eflete/property/item/default")
+   LAYOUT_PROP_ADD(box, _("Name:"), "property", "1swallow")
    ENTRY_ADD(item, entry_name, true);
    eo_do(entry_name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, name_validator));
    evas_object_smart_callback_add(entry_name, "changed", _on_entry_changed, NULL);
@@ -182,7 +181,7 @@ state_dialog_state_add(App_Data *ap)
    elm_object_part_content_set(item, "elm.swallow.content", entry_name);
    elm_box_pack_end(box, item);
 
-   ITEM_ADD(box, item, _("Value:"), "eflete/property/item/default")
+   LAYOUT_PROP_ADD(box, _("Value:"), "property", "1swallow")
    ENTRY_ADD(item, entry_value, true);
    eo_do(entry_value, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, value_validator));
    evas_object_smart_callback_add(entry_value, "changed", _on_entry_changed, NULL);
@@ -192,8 +191,8 @@ state_dialog_state_add(App_Data *ap)
    elm_object_part_content_set(item, "elm.swallow.content", entry_value);
    elm_box_pack_end(box, item);
 
-   ITEM_ADD(box, item_dup, _("Duplicate state:"), "eflete/property/item/default")
-   EWE_COMBOBOX_ADD(item_dup, combobox_dup_state)
+   LAYOUT_PROP_ADD(box, _("Duplicate state:"), "property", "1swallow")
+   EWE_COMBOBOX_ADD(item, combobox_dup_state)
 
    states = edje_edit_part_states_list_get(ap->project->current_style->obj, part->name);
 
@@ -203,12 +202,12 @@ state_dialog_state_add(App_Data *ap)
      {
        ewe_combobox_item_add(combobox_dup_state, state_name);
      }
-   elm_object_part_content_set(item_dup, "elm.swallow.content", combobox_dup_state);
+   elm_object_part_content_set(item, "elm.swallow.content", combobox_dup_state);
    evas_object_smart_callback_add(combobox_dup_state, "selected",
                                   _on_dup_state_change, part);
    edje_edit_string_list_free(states);
 
-   elm_box_pack_end(box, item_dup);
+   elm_box_pack_end(box, item);
    elm_object_content_set(ap->popup, box);
 
    BUTTON_ADD(ap->popup, btn_add, _("Add"));

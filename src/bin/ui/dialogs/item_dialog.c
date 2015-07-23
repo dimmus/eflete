@@ -190,7 +190,7 @@ item_dialog_add(App_Data *ap, Part *part)
 
    BOX_ADD(ap->popup, box, false, false);
 
-   ITEM_ADD(box, item, _("Name:"), "eflete/property/item/small_label")
+   LAYOUT_PROP_ADD(box, _("Name:"), "property", "1swallow")
    ENTRY_ADD(item, entry, true);
    eo_do(entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, name_validator));
    evas_object_smart_callback_add(entry, "changed", _validation, NULL);
@@ -198,7 +198,7 @@ item_dialog_add(App_Data *ap, Part *part)
    elm_object_part_content_set(item, "elm.swallow.content", entry);
    elm_box_pack_end(box, item);
 
-   ITEM_ADD(box, item, _("Source:"), "eflete/property/item/small_label")
+   LAYOUT_PROP_ADD(box, _("Source:"), "property", "1swallow")
    EWE_COMBOBOX_ADD(item, combobox)
    ewe_combobox_item_add(combobox, _("None"));
    ewe_combobox_select_item_set(combobox, 0);

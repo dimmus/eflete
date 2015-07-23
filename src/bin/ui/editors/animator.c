@@ -357,7 +357,7 @@ _on_bt_prog_add(void *data,
                             _("New program"));
 
    animator->popup.name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
-   ITEM_ADD(animator->popup.popup, item, _("Program name:"), "eflete/property/item/default");
+   LAYOUT_PROP_ADD(animator->popup.popup, _("Frequency:"), "property", "1swallow")
    ENTRY_ADD(item, animator->popup.entry, true)
    eo_do(animator->popup.entry,
          eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, animator->popup.name_validator));

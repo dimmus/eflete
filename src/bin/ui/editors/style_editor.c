@@ -514,10 +514,9 @@ _on_bt_style_add(Style_Editor *style_edit)
    elm_object_part_text_set(POPUP.dialog, "title,text", _("Add textblock style"));
 
    BOX_ADD(POPUP.dialog, box, false, false);
-   ITEM_ADD(box, item, "Style name:", "eflete/property/item/default")
 
+   LAYOUT_PROP_ADD(box, _("Style name:"), "property", "1swallow")
    POPUP.name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
-
    ENTRY_ADD(item, POPUP.name, true);
    eo_do(POPUP.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, POPUP.name_validator));
    evas_object_smart_callback_add(POPUP.name, "changed", _validate, style_edit);
@@ -575,10 +574,9 @@ _on_bt_tag_add(Style_Editor *style_edit)
    elm_object_part_text_set(POPUP.dialog, "title,text", buf);
 
    BOX_ADD(POPUP.dialog, box, false, false);
-   ITEM_ADD(box, item, "Tag name:", "eflete/property/item/default")
 
+   LAYOUT_PROP_ADD(box, "Tag name:", "property", "1swallow")
    POPUP.name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
-
    ENTRY_ADD(item, POPUP.name, true);
    eo_do(POPUP.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, POPUP.name_validator));
    evas_object_smart_callback_add(POPUP.name, "changed", _validate, style_edit);

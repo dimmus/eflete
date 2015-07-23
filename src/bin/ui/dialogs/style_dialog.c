@@ -338,7 +338,7 @@ style_dialog_add(App_Data *ap)
    class_st = ui_class_from_ap_get(ap);
    entry_text = eina_stringshare_add(class_st->name);
 
-   ITEM_ADD(box, item, "Class name:", "eflete/property/item/default")
+   LAYOUT_PROP_ADD(box, _("Class name:"), "property", "1swallow")
    ENTRY_ADD(box, entry_class, true);
    eo_do(entry_class, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, class_validator));
    elm_entry_entry_set(entry_class, entry_text);
@@ -347,7 +347,7 @@ style_dialog_add(App_Data *ap)
    elm_object_part_content_set(item, "elm.swallow.content", entry_class);
    elm_box_pack_end(box, item);
 
-   ITEM_ADD(box, item, "Style name:", "eflete/property/item/default")
+   LAYOUT_PROP_ADD(box, _("Style name:"), "property", "1swallow")
    ENTRY_ADD(item, entry_style, true);
    eo_do(entry_style, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, style_validator));
    evas_object_smart_callback_add(entry_style, "changed", _on_entry_changed, NULL);
