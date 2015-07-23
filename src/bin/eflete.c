@@ -47,6 +47,8 @@ Evas_Object *
 main_window_get(void)
 {
    assert(ap != NULL);
+   assert(ap->win != NULL);
+
    return ap->win;
 }
 
