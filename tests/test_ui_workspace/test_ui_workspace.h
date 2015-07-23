@@ -22,6 +22,7 @@
 #include "main_window.h"
 #include "utc_common.h"
 
+#define TEST_NAME "ui_workspace"
 /**
  * @defgroup test_ui_workspace
  */
@@ -78,7 +79,4 @@ void workspace_separate_mode_get_test_p2(int);
 void workspace_separate_mode_set_test_p1(int);
 void workspace_separate_mode_set_test_p2(int);
 void workspace_zoom_factor_get_test_p(int);
-void workspace_zoom_factor_set_n1(int);
-void workspace_zoom_factor_set_n2(int);
-void workspace_zoom_factor_set_n3(int);
-void workspace_zoom_factor_set_p(int);
+void workspace_zoom_factor_set_test_p(int);

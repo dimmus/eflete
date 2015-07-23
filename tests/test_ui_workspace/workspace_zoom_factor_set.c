@@ -18,11 +18,69 @@
  */
 
 #include "test_ui_workspace.h"
+#include "main_window.h"
+#include "test_common.h"
 
 /**
  * @addtogroup ui_workspace_test
  * @{
  */
+
+/**
+ * @addtogroup workspace_zoom_factor_set
+ * @{
+ * <tr>
+ * <td>workspace_zoom_factor_set</td>
+ * <td>workspace_zoom_factor_set_test_p</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ * @step 2 load extenstion theme from EFLETE_THEME file
+ * @step 3 create parent window
+ * @step 4 Mmap edj file.
+ * @step 5 create workspace object
+ * @step 6 create style
+ * @step 7 load data into created style from edj file
+ * @step 8 set loaded object into workspace
+ *
+ * @procedure
+ * @step 1 call workspace_zoom_factor_set
+ * @step 2 check returned value
+ * </td>
+ * <td>1.5</td>
+ * <td>EINA_TRUE returned</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (workspace_zoom_factor_set_test_p)
+{
+   App_Data *app = NULL;
+   Style *style = NULL;
+
+   elm_init(0, 0);
+   app_init();
+   setup("workspace_zoom_factor_get_test_p");
+
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_project_open("./workspace_zoom_factor_get_test_p/workspace_zoom_factor_get_test_p.pro");
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+
+   ck_assert_msg(workspace_zoom_factor_set(app->workspace, 1.5), "Failed get zoom factor");
+
+   pm_project_close(app->project);
+   app->project = NULL;
+   ui_main_window_del(app);
+   app_shutdown();
+   teardown("./workspace_zoom_factor_get_test_p");
+   elm_shutdown();
+}
+END_TEST
+
 
 /*
  * @}

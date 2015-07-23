@@ -18,6 +18,8 @@
  */
 
 #include "test_ui_workspace.h"
+#include "main_window.h"
+#include "test_common.h"
 
 /**
  * @addtogroup ui_workspace_test
@@ -58,27 +60,30 @@
  */
 EFLETE_TEST (workspace_zoom_factor_get_test_p)
 {
+   App_Data *app = NULL;
+   Style *style = NULL;
+
    elm_init(0, 0);
    app_init();
-   App_Data *ap = app_data_get();
-   double res = -1;
-   Style *style = NULL;
-   Evas *e = NULL;
-   Eina_File *mmap_file = NULL;
+   setup("workspace_zoom_factor_get_test_p");
 
-   ui_main_window_add(ap);
-   mmap_file = eina_file_open("./edj_build/workspace_zoom_factor_get.edj", EINA_FALSE);
-   e = evas_object_evas_get(ap->workspace);
-   style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, mmap_file);
-   workspace_edit_object_set(ap->workspace, style, "./edj_build/workspace_zoom_factor_get.edj");
-   workspace_zoom_factor_set(ap->workspace, 1.5);
-   res = workspace_zoom_factor_get(ap->workspace);
-   ck_assert_msg(res == 1.5, "Failed get zoom factor");
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_project_open("./workspace_zoom_factor_get_test_p/workspace_zoom_factor_get_test_p.pro");
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   workspace_zoom_factor_set(app->workspace, 1.5);
 
-   wm_style_free(style);
-   eina_file_close(mmap_file);
+   ck_assert_msg(workspace_zoom_factor_get(app->workspace) == 1.5, "Failed get zoom factor");
+
+   pm_project_close(app->project);
+   app->project = NULL;
+   ui_main_window_del(app);
    app_shutdown();
+   teardown("./workspace_zoom_factor_get_test_p");
    elm_shutdown();
 }
 END_TEST

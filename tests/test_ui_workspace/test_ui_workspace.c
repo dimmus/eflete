@@ -74,7 +74,8 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, workspace_separate_mode_get_test_p2);
    tcase_add_test(tcase, workspace_separate_mode_set_test_p1);
    tcase_add_test(tcase, workspace_separate_mode_set_test_p2);
-   //tcase_add_test(tcase, workspace_zoom_factor_get_test_p);
+   tcase_add_test(tcase, workspace_zoom_factor_set_test_p);
+   tcase_add_test(tcase, workspace_zoom_factor_get_test_p);
 
    suite_add_tcase(suite, tcase);
    return suite;

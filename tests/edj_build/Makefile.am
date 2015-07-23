@@ -12,6 +12,7 @@ check: Makefile
 	$(builddir)/radio.edc \
 	$(builddir)/radio.edj
 	for i in \
+	$(builddir)/ui_workspace.edj \
 	$(builddir)/workspace_edit_object_part_state_del.edj \
 	$(builddir)/workspace_background_image_set.edj \
 	$(builddir)/workspace_highlight_unset.edj \
