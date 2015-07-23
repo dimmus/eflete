@@ -117,69 +117,6 @@ END_TEST
 /**
  * @addtogroup highlight_object_unfollow
  * @{
- * <tr>
- * <td>highlight_object_unfollow</td>
- * <td>highlight_object_unfollow_test_n1</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- * @step 2 main window created.
- *
- * @procedure
- * @step 1 Call function highlight_object_unfollow(bg).
- * @step 2 Check returned value.
- * </td>
- * <td>Evas_Object *bg</td>
- * <td>EVAS_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (highlight_object_unfollow_test_n1)
-{
-   Evas_Object *parent, *bg;
-
-   elm_init(0, 0);
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   bg = elm_bg_add(parent);
-
-   ck_assert_msg(!highlight_object_unfollow(bg), "Made bg to unfollow anything.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup highlight_object_unfollow
- * @{
- * <tr>
- * <td>highlight_object_unfollow</td>
- * <td>highlight_object_unfollow_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- *
- * @procedure
- * @step 1 Call function highlight_object_unfollow(NULL).
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>EVAS_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (highlight_object_unfollow_test_n2)
-{
-   elm_init(0, 0);
-
-   ck_assert_msg(!highlight_object_unfollow(NULL), "Made NULL to unfollow anything.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup highlight_object_unfollow
- * @{
  * </TABLE>
  * @}
  * @}
