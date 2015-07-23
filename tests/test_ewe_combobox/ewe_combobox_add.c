@@ -32,7 +32,7 @@
 * @{
 * <tr>
 * <td>ewe_combobox_add</td>
-* <td>ewe_comobox_add_test_p</td>
+* <td>ewe_combobox_add_test_p</td>
 * <td>
 * @precondition
 * @step 1 init ewe
