@@ -67,68 +67,6 @@ END_TEST
 /**
  * @addtogroup colorselector_get
  * @{
- * <tr>
- * <td>colorselector_get</td>
- * <td>colorselector_get_test_n1</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- * @step 2 initialize application with app_init() function
- * @step 3 Create application data structure.
- *
- * @procedure
- * @step 1 call colorselector_get
- * @step 2 check returned pointer
- * </td>
- * <td>void</td>
- * <td>NULL object</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (colorselector_get_test_n1)
-{
-   elm_init(0,0);
-   app_init();
-   app_data_get();
-
-   ck_assert_msg(colorselector_get() == NULL, "Colorselector was returned");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup colorselector_get
- * @{
- * <tr>
- * <td>colorselector_get</td>
- * <td>colorselector_get_test_n2</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- *
- * @procedure
- * @step 1 call colorselector_get
- * @step 2 check returned pointer
- * </td>
- * <td>void</td>
- * <td>NULL object</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (colorselector_get_test_n2)
-{
-   elm_init(0,0);
-
-   ck_assert_msg(colorselector_get() == NULL, "Colorselector was returned");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup colorselector_get
- * @{
  * </TABLE>
  * @}
  * @}

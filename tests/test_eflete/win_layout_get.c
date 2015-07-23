@@ -67,67 +67,6 @@ END_TEST
 /**
  * @addtogroup win_layout_get
  * @{
- * <tr>
- * <td>win_layout_get</td>
- * <td>win_layout_get_test_n1</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- * @step 2 Initialize requred libraries.
- * @step 3 Create application data structure.
- *
- * @procedure
- * @step 1 call win_layout_get
- * @step 2 check returned pointer
- * </td>
- * <td>void</td>
- * <td>NULL object</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (win_layout_get_test_n1)
-{
-   elm_init(0,0);
-   app_init();
-   app_data_get();
-
-   ck_assert_msg(win_layout_get() == NULL, "failure: win_layout was returned");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup win_layout_get
- * @{
- * <tr>
- * <td>win_layout_get</td>
- * <td>win_layout_get_test_n2</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- *
- * @procedure
- * @step 1 call win_layout_get
- * @step 2 check returned pointer
- * </td>
- * <td>void</td>
- * <td>NULL object</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (win_layout_get_test_n2)
-{
-   elm_init(0,0);
-
-   ck_assert_msg(win_layout_get() == NULL, "failure: win_layout was returned");
-
-   elm_shutdown();
-}
-END_TEST
-/**
- * @addtogroup win_layout_get
- * @{
  * </TABLE>
  * @}
  * @}
