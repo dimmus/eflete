@@ -84,6 +84,7 @@ check: Makefile
 	$(builddir)/item_dialog.edj \
 	$(builddir)/colorclass_manager.edj \
 	$(builddir)/sound_editor.edj \
+	$(builddir)/animator.edj \
 	$(builddir)/history.edj \
 	$(builddir)/history_diff_add.edj \
 	$(builddir)/preference.edj \

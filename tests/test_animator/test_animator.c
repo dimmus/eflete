@@ -22,9 +22,7 @@
 Suite* test_suite (void) {
    Suite *suite = suite_create("animator_test");
    TCase *tcase = tcase_create("TCase");
-//   tcase_add_test(tcase, animator_window_add_test_p);
-   tcase_add_test(tcase, animator_window_add_test_n1);
-   tcase_add_test(tcase, animator_window_add_test_n2);
+   tcase_add_test(tcase, animator_window_add_test_p);
    suite_add_tcase(suite, tcase);
    return suite;
 }

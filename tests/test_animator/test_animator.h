@@ -23,7 +23,6 @@
 /**
  * @defgroup test_animator
  */
+#define TEST_NAME "animator"
 
 void animator_window_add_test_p(int);
-void animator_window_add_test_n1(int);
-void animator_window_add_test_n2(int);
