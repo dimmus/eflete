@@ -336,7 +336,8 @@ history_module_del(Evas_Object *source)
    assert(history != NULL);
 
    module = evas_object_data_del(source, HISTORY_MODULE_KEY);
-   if (!module) return false;
+
+   assert(module != NULL);
 
    if (!_module_changes_clear(module))
      {
@@ -432,7 +433,9 @@ history_module_depth_set(Evas_Object *source, unsigned int depth)
    assert(source != NULL);
 
    module = evas_object_data_get(source, HISTORY_MODULE_KEY);
-   if (!module) return false;
+
+   assert(module != NULL);
+
    module->depth = depth;
    return true;
 }
@@ -445,7 +448,9 @@ history_module_depth_get(Evas_Object *source)
    assert(source != NULL);
 
    module = evas_object_data_get(source, HISTORY_MODULE_KEY);
-   if (!module) return -1;
+
+   assert(module != NULL);
+
    return (int)module->depth;
 }
 
