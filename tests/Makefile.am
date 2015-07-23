@@ -440,16 +440,7 @@ ui_states_list_test_LDADD = ${LD}
 ui_widget_list_test_SOURCES = \
 test_ui_widget_list/test_ui_widget_list.c \
 test_ui_widget_list/ui_widget_list_add.c \
-test_ui_widget_list/ui_widget_list_class_data_reload.c \
 test_ui_widget_list/ui_widget_list_data_set.c \
-test_ui_widget_list/ui_widget_list_layouts_reload.c \
-test_ui_widget_list/ui_widget_list_part_add.c \
-test_ui_widget_list/ui_widget_list_selected_part_above.c \
-test_ui_widget_list/ui_widget_list_selected_part_below.c \
-test_ui_widget_list/ui_widget_list_selected_part_del.c \
-test_ui_widget_list/ui_widget_list_selected_part_get.c \
-test_ui_widget_list/ui_widget_list_part_selected_set.c \
-test_ui_widget_list/ui_widget_list_selected_parts_get.c \
 test_ui_widget_list/ui_widget_list_title_set.c \
 test_ui_widget_list/ui_widget_list_tab_activate.c
 ui_widget_list_test_CFLAGS = ${FLAGS}
