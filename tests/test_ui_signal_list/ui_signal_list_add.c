@@ -67,36 +67,6 @@ END_TEST
 /**
  * @addtogroup ui_signal_list_add
  * @{
- * <tr>
- * <td>ui_signal_list_add</td>
- * <td>ui_signal_list_add_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 call ui_signal_list_add
- * @step 2 check returned pointer
- * </td>
- * <td>NULL</td>
- * <td>Returned pointer is NULL</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(ui_signal_list_add_test_n)
-{
-   elm_init(0,0);
-
-   ck_assert_msg(ui_signal_list_add(NULL) == NULL,
-                 "Signal List created with parent NULL.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_signal_list_add
- * @{
  * </TABLE>
  * @}
  * @}

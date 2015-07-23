@@ -125,38 +125,6 @@ END_TEST
 /**
  * @addtogroup ui_signal_list_data_unset
  * @{
- * <tr>
- * <td>ui_signal_list_data_unset</td>
- * <td>ui_signal_list_data_unset_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialized elm.
- *
- * @procedure
- * @step 1 Call function ui_signal_list_data_unset
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>NULL</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(ui_signal_list_data_unset_test_n)
-{
-   elm_init(0,0);
-
-   ck_assert_msg(ui_signal_list_data_unset(NULL) == NULL,
-                 "Unsetted the Signal List data not NULL");
-
-   elm_shutdown();
-
-}
-END_TEST
-
-
-/**
- * @addtogroup ui_signal_list_data_unset
- * @{
  * </TABLE>
  * @}
  * @}

@@ -21,18 +21,11 @@
 #include "utc_common.h"
 
 void ui_signal_list_add_test_p(int);
-void ui_signal_list_add_test_n(int);
 
 void ui_signal_list_data_set_test_p1(int);
 void ui_signal_list_data_set_test_p2(int);
 void ui_signal_list_data_set_test_p3(int);
 void ui_signal_list_data_set_test_p4(int);
-void ui_signal_list_data_set_test_n1(int);
-void ui_signal_list_data_set_test_n2(int);
-void ui_signal_list_data_set_test_n3(int);
-void ui_signal_list_data_set_test_n4(int);
-void ui_signal_list_data_set_test_n5(int);
 
 void ui_signal_list_data_unset_test_p1(int);
 void ui_signal_list_data_unset_test_p2(int);
-void ui_signal_list_data_unset_test_n(int);
