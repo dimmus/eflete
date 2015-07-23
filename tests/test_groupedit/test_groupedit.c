@@ -29,79 +29,10 @@ Suite* test_suite (void) {
 
    tcase_add_test(tcase, groupedit_edit_object_unset_test_p);
 
-   //tcase_add_test(tcase, groupedit_edit_object_recalc_all_test_p);
-   //tcase_add_test(tcase, groupedit_edit_object_recalc_all_test_n);
-
-   //tcase_add_test(tcase, groupedit_edit_object_part_draw_get_test_p);
-   //tcase_add_test(tcase, groupedit_edit_object_part_draw_get_test_n1);
-   //tcase_add_test(tcase, groupedit_edit_object_part_draw_get_test_n2);
-
-   //tcase_add_test(tcase, groupedit_edit_object_part_add_test_p);
-   //tcase_add_test(tcase, groupedit_edit_object_part_add_test_n1);
-   //tcase_add_test(tcase, groupedit_edit_object_part_add_test_n2);
-   //tcase_add_test(tcase, groupedit_edit_object_part_add_test_n3);
-   //tcase_add_test(tcase, groupedit_edit_object_part_add_test_n4);
-
-   //tcase_add_test(tcase, groupedit_edit_object_part_del_test_p);
-   //tcase_add_test(tcase, groupedit_edit_object_part_del_test_n1);
-   //tcase_add_test(tcase, groupedit_edit_object_part_del_test_n2);
-
-   //tcase_add_test(tcase, groupedit_edit_object_part_state_set_test_p);
-   //tcase_add_test(tcase, groupedit_edit_object_part_state_set_test_n1);
-   //tcase_add_test(tcase, groupedit_edit_object_part_state_set_test_n2);
-   //tcase_add_test(tcase, groupedit_edit_object_part_state_set_test_n3);
-   //tcase_add_test(tcase, groupedit_edit_object_part_state_set_test_n4);
-
-   //tcase_add_test(tcase, groupedit_edit_object_part_state_add_test_p);
-   //tcase_add_test(tcase, groupedit_edit_object_part_state_add_test_n1);
-   //tcase_add_test(tcase, groupedit_edit_object_part_state_add_test_n2);
-   //tcase_add_test(tcase, groupedit_edit_object_part_state_add_test_n3);
-   //tcase_add_test(tcase, groupedit_edit_object_part_state_add_test_n4);
-
-   //tcase_add_test(tcase, groupedit_edit_object_part_state_del_test_p);
-   //tcase_add_test(tcase, groupedit_edit_object_part_state_del_test_n1);
-   //tcase_add_test(tcase, groupedit_edit_object_part_state_del_test_n2);
-   //tcase_add_test(tcase, groupedit_edit_object_part_state_del_test_n3);
-   //tcase_add_test(tcase, groupedit_edit_object_part_state_del_test_n4);
-
-   //tcase_add_test(tcase, groupedit_part_object_area_get_test_p);
-   //tcase_add_test(tcase, groupedit_part_object_area_get_test_n1);
-   //tcase_add_test(tcase, groupedit_part_object_area_get_test_n2);
-
-   //tcase_add_test(tcase, groupedit_part_object_area_visible_set_test_p);
-   //tcase_add_test(tcase, groupedit_part_object_area_visible_set_test_n);
-
-   //tcase_add_test(tcase, groupedit_part_object_area_visible_get_test_p);
-   //tcase_add_test(tcase, groupedit_part_object_area_visible_get_test_n);
-
-   //tcase_add_test(tcase, groupedit_edit_object_parts_separated_test_p);
-   //tcase_add_test(tcase, groupedit_edit_object_parts_separated_test_n1);
-   //tcase_add_test(tcase, groupedit_edit_object_parts_separated_test_n2);
-   //tcase_add_test(tcase, groupedit_edit_object_parts_separated_test_n3);
-
-   //tcase_add_test(tcase, groupedit_edit_object_parts_separated_is_test_p);
-   //tcase_add_test(tcase, groupedit_edit_object_parts_separated_is_test_n);
-
-   //tcase_add_test(tcase, groupedit_edit_object_part_select_test_p);
-   //tcase_add_test(tcase, groupedit_edit_object_part_select_test_n1);
-   //tcase_add_test(tcase, groupedit_edit_object_part_select_test_n2);
-
    tcase_add_test(tcase, groupedit_bg_set_test_p);
    tcase_add_test(tcase, groupedit_bg_set_test_p1);
 
    tcase_add_test(tcase, groupedit_bg_unset_test_p);
-
-   //tcase_add_test(tcase, groupedit_part_visible_set_test_p);
-   //tcase_add_test(tcase, groupedit_part_visible_set_test_n1);
-   //tcase_add_test(tcase, groupedit_part_visible_set_test_n2);
-
-   //tcase_add_test(tcase, groupedit_edit_object_part_above_test_p);
-   //tcase_add_test(tcase, groupedit_edit_object_part_above_test_n1);
-   //tcase_add_test(tcase, groupedit_edit_object_part_above_test_n2);
-
-   //tcase_add_test(tcase, groupedit_edit_object_part_below_test_p);
-   //tcase_add_test(tcase, groupedit_edit_object_part_below_test_n1);
-   //tcase_add_test(tcase, groupedit_edit_object_part_below_test_n2);
 
    suite_add_tcase(suite, tcase);
    return suite;

@@ -494,23 +494,14 @@ test_groupedit/groupedit_add.c \
 test_groupedit/groupedit_bg_set.c \
 test_groupedit/groupedit_bg_unset.c \
 test_groupedit/groupedit_edit_object_part_above.c \
-test_groupedit/groupedit_edit_object_part_add.c \
 test_groupedit/groupedit_edit_object_part_below.c \
-test_groupedit/groupedit_edit_object_part_del.c \
 test_groupedit/groupedit_edit_object_part_draw_get.c \
 test_groupedit/groupedit_edit_object_part_select.c \
-test_groupedit/groupedit_edit_object_part_state_add.c \
-test_groupedit/groupedit_edit_object_part_state_del.c \
-test_groupedit/groupedit_edit_object_part_state_set.c \
 test_groupedit/groupedit_edit_object_parts_separated.c \
 test_groupedit/groupedit_edit_object_parts_separated_is.c \
 test_groupedit/groupedit_edit_object_recalc_all.c \
 test_groupedit/groupedit_edit_object_set.c \
-test_groupedit/groupedit_edit_object_unset.c \
-test_groupedit/groupedit_part_object_area_get.c \
-test_groupedit/groupedit_part_object_area_visible_get.c \
-test_groupedit/groupedit_part_object_area_visible_set.c \
-test_groupedit/groupedit_part_visible_set.c
+test_groupedit/groupedit_edit_object_unset.c
 groupedit_test_CFLAGS = ${FLAGS}
 groupedit_test_LDADD = ${LD}
 
