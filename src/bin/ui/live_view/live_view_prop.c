@@ -317,7 +317,6 @@ live_view_property_style_set(Evas_Object *property,
              evas_object_smart_callback_add(check, "changed",
                                             evas_object_data_get(pd->live_object, SWALLOW_FUNC),
                                             pd);
-             evas_object_data_set(check, PART_NAME, eina_stringshare_add(part_name));
 
              if (!strcmp(part_name, "elm.swallow.action_area")) elm_object_disabled_set(check, true);
              elm_box_pack_end(pd->prop_swallow.swallows, check);
@@ -337,7 +336,6 @@ live_view_property_style_set(Evas_Object *property,
              evas_object_smart_callback_add(check, "changed",
                                             evas_object_data_get(pd->live_object, TEXT_FUNC),
                                             pd);
-             evas_object_data_set(check, PART_NAME, eina_stringshare_add(part_name));
 
              elm_box_pack_end(pd->prop_text.texts, check);
           }
