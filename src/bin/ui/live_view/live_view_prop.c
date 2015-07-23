@@ -448,9 +448,71 @@ live_view_property_part_add(Evas_Object *property, Part *part)
 }
 
 Eina_Bool
-live_view_property_part_del(Evas_Object *property __UNUSED__, Part *part __UNUSED__)
+live_view_property_part_del(Evas_Object *property, Part *part)
 {
-   printf("Signal: del part name [%s] \n", part->name);
+   Evas_Object *check, *item_box, *frame, *frame_check;
+   Eina_List *items_list = NULL, *l;
+   PROP_DATA_GET();
+   Eina_Stringshare *part_name = NULL;
+
+   /* texts and swallows are different boxes */
+   if (part->type ==  EDJE_PART_TYPE_SWALLOW)
+     {
+        item_box = pd->prop_swallow.swallows;
+        frame = pd->prop_swallow.frame;
+        frame_check = pd->prop_swallow.check;
+        items_list = elm_box_children_get(item_box);
+     }
+   else if ((part->type ==  EDJE_PART_TYPE_TEXT) ||
+            (part->type ==  EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        item_box = pd->prop_text.texts;
+        frame = pd->prop_text.frame;
+        frame_check = pd->prop_text.check;
+        items_list = elm_box_children_get(item_box);
+     }
+   else return false;
+
+   EINA_LIST_FOREACH(items_list, l, check)
+     {
+        part_name = elm_object_part_text_get(check, NULL);
+        if (!strcmp(part->name, part_name))
+          {
+             /* texts and swallows are deleting in different way */
+             if (part->type ==  EDJE_PART_TYPE_SWALLOW)
+               {
+                  evas_object_smart_callback_del_full(check, "changed",
+                                                      evas_object_data_get(pd->live_object, SWALLOW_FUNC),
+                                                      pd->live_object);
+                  Swallow_Clean_Func clean = (Swallow_Clean_Func)evas_object_data_get(pd->live_object,
+                                                                                      SWALLOW_CLEAN_FUNC);
+                  if (clean) clean(part_name, pd->live_object);
+               }
+             else if ((part->type ==  EDJE_PART_TYPE_TEXT) ||
+                      (part->type ==  EDJE_PART_TYPE_TEXTBLOCK))
+               {
+                  evas_object_smart_callback_del_full(check, "changed",
+                                                      evas_object_data_get(pd->live_object, TEXT_FUNC),
+                                                      pd->live_object);
+               }
+             elm_box_unpack(item_box, check);
+             evas_object_del(check);
+             break;
+          }
+     }
+
+   /* if there were only one item, then because of this function it would be 0.
+      After deleting and removing item from box, list, that was returned by
+      elm_box_children_get, is not updated, so there are still one object. */
+   if (eina_list_count(items_list) == 1)
+     {
+        elm_object_disabled_set(frame_check, true);
+        elm_frame_collapse_go(frame, false);
+        elm_object_disabled_set(frame, true);
+     }
+
+   eina_list_free(items_list);
+
    return true;
 }
 

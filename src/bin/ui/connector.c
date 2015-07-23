@@ -95,11 +95,9 @@ _del_part(void *data,
    /* In case when deleting part which is dragable area for another part,
       reloading style into liveview crash application */
    history_diff_add(style->obj, PART_TARGET, DEL, part_name);
+   live_view_part_del(ap->live_view, part);
    if (workspace_edit_object_part_del(ap->workspace, part->name))
-     {
-        live_view_part_del(ap->live_view, part);
-        ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), style);
-     }
+     ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), style);
 
    if (!style->parts)
      {
