@@ -72,36 +72,6 @@ TODO("aspect for groupedit")
 //Eina_Bool
 //ws_groupedit_aspect_set(Evas_Object *obj, double x, double y);
 
-/**
- * Set the new style to groupedit object.
- *
- * @param obj The groupedit object,
- * @param style The name of style that will be set.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @note if the style description missing for some groupedit parts (container,
- *       handlers), will be used default style.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_style_set(Evas_Object *obj, const char *style);
-
-/**
- * Get the current style name of groupedit.
- *
- * @param obj The groupedit object.
- *
- * @return the style name.
- *
- * @ingroup Groupedit
- */
-const char *
-groupedit_style_get(Evas_Object *obj);
-
-
-
 /******************************************************************************/
 /******************************************************************************/
 
