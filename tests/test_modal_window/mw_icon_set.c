@@ -51,7 +51,7 @@
  * </tr>
  * @}
  */
-EFLETE_TEST (mw_icon_set_test_p)
+EFLETE_TEST (mw_icon_set_p)
 {
    Evas_Object *mw;
    App_Data *app;

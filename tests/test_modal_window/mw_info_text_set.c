@@ -50,7 +50,7 @@
  * </tr>
  * @}
  */
-EFLETE_TEST (mw_info_text_set_test_p)
+EFLETE_TEST (mw_info_text_set_p)
 {
    Evas_Object *mw;
    App_Data *app;

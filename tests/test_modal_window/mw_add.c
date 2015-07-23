@@ -34,7 +34,7 @@
  * @{
  * <tr>
  * <td>mw_add</td>
- * <td>mw_add_test_p</td>
+ * <td>mw_add_p</td>
  * <td>
  * @precondition
  * @step 1 initialized efl and app
@@ -49,7 +49,7 @@
  * </tr>
  * @}
  */
-EFLETE_TEST (mw_add_test_p)
+EFLETE_TEST (mw_add_p)
 {
    elm_init(0,0);
    App_Data *app;
