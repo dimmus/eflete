@@ -67,34 +67,6 @@ END_TEST
 /**
  * @addtogroup ui_block_content_visible
  * @{
- * <tr>
- * <td>ui_block_content_visible</td>
- * <td>ui_block_content_visible_n</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- *
- * @procedure
- * @step 1 Call ui_block_content_visible(NULL, EINA_FALSE)
- * @step 2 Call ui_block_content_visible(NULL, EINA_TRUE)
- * </td>
- * <td>NULL, EINA_TRUE</td>
- * <td>all checks passed</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (ui_block_content_visible_n)
-{
-   elm_init(0, 0);
-   ck_assert_msg(!ui_block_content_visible(NULL, EINA_TRUE), "Set visible to not existing object\n");
-   ck_assert_msg(!ui_block_content_visible(NULL, EINA_FALSE), "Set visible to not existing object\n");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_block_content_visible
- * @{
  * </TABLE>
  * @}
  * @}
