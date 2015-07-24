@@ -79,6 +79,7 @@ _cancel_clicked(void *data,
    ap->popup = NULL; \
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false); \
    live_view_part_add(ap->live_view, ui_widget_list_selected_part_get(widget_list)); \
+   ecore_job_add(_job_popup_del, data); \
    project_changed(true);
 
 static void
