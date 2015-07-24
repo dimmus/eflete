@@ -139,14 +139,15 @@ EFLETE_TEST(history_module_depth_set_test_p2)
    app->project = pm_project_open("./history_module_depth_set_test_p2/history_module_depth_set_test_p2.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
    history_module_depth_set(style->obj, 3);
    edje_edit_group_max_h_set(style->obj, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_GROUP, 0, new_value,
-                    "elm/radio/base/def", (void *)edje_edit_group_max_h_set,
-                    "Min h", NULL, NULL, 0.0);
+   history_diff_add(style->obj, PROPERTY, CONTAINER, VAL_GROUP, 0, new_value, 0, new_value,
+                    (void *)edje_edit_group_max_h_set, "elm/radio/base/def",
+                    (void *)edje_edit_group_max_w_set, "group_h", NULL, NULL, 0.0);
    edje_edit_state_color_set(style->obj, "radio", "default", 0.0, 80, 90, 100, 120);
    history_diff_add(style->obj, PROPERTY, MODIFY, VAL_FOUR, 0, 0, 0, 0,
                     80, 90, 100, 120, "elm/radio/base/def",
@@ -171,89 +172,6 @@ EFLETE_TEST(history_module_depth_set_test_p2)
    ui_main_window_del(app);
    app_shutdown();
    teardown("./history_module_depth_set_test_p2");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup history_module_depth_set
- * @{
- * <tr>
- * <td>history_module_depth_set</td>
- * <td>history_module_depth_set_test_n1</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- * @step 2 Initialize Application Data structure.
- * @step 3 Initialize history module.
- * @step 4 Create canvas, that needed for creating source object.
- * @step 5 Create edje edit object, that will be source of changes.
- *
- * @procedure
- * @step 1 Call history_module_depth_set with value depth equal 2
- * @step 2 Check returned value.
- * </td>
- * <td>(Evas_Object *) source, (int) 2 </td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(history_module_depth_set_test_n1)
-{
-   App_Data *app = NULL;
-   Evas *canvas = NULL;
-   Evas_Object *source = NULL;
-   Eina_Bool result = EINA_FALSE;
-   const char *path;
-
-   path = "./edj_build/history_module_depth_set.edj";
-   elm_init(0, 0);
-   app_init();
-   app = app_data_get();
-   app->history = history_init();
-   canvas = evas_new();
-   source = edje_edit_object_add(canvas);
-   edje_object_file_set(source, path, "elm/radio/base/def");
-
-   result = history_module_depth_set(source, 2);
-   ck_assert_msg(!result, "Setted new history depth for object, that not registered"
-                 " as module");
-
-   history_term(app->history);
-   evas_free(canvas);
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup history_module_depth_set
- * @{
- * <tr>
- * <td>history_module_depth_set</td>
- * <td>history_module_depth_set_test_n2</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- *
- * @procedure
- * @step 1 Call history_module_depth_set with value depth equal 2
- * @step 2 Check returned value.
- * </td>
- * <td>NULL, (int) 2 </td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(history_module_depth_set_test_n2)
-{
-   Eina_Bool result = true;
-
-   elm_init(0, 0);
-
-   result = history_module_depth_set(NULL, 2);
-   ck_assert_msg(!result, "Seted new history depth for NULL object");
-
    elm_shutdown();
 }
 END_TEST

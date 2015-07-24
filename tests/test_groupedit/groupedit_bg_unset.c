@@ -77,36 +77,6 @@ END_TEST
 /**
  * @addtogroup groupedit_bg_unset
  * @{
- * <tr>
- * <td>groupedit_bg_unset</td>
- * <td>groupedit_bg_unset_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 call groupedit_bg_unset
- * @step 2 check returned value
- * </td>
- * <td>NULL</td>
- * <td>NULL</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(groupedit_bg_unset_test_n)
-{
-   elm_init(0, 0);
-
-   ck_assert_msg(groupedit_bg_unset(NULL) == NULL,
-                 "Groupedit returned not NULL pointer, must to return NULL.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup groupedit_bg_unset
- * @{
  * </TABLE>
  * @}
  * @}

@@ -66,37 +66,6 @@ END_TEST
 /**
  * @addtogroup profile_save
  * @{
- * <tr>
- * <td>profile_save</td>
- * <td>profile_save_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 initialize application data
- *
- * @procedure
- * @step 1 call profile_save
- * </td>
- * <td>NULL</td>
- * <td>NULL</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(profile_save_test_n)
-{
-   elm_init(0,0);
-   app_init();
-
-   ck_assert_msg(!profile_save(NULL), "Profile is saved.");
-
-   config_shutdown(app_data_get());
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup profile_save
- * @{
  * </TABLE>
  * @}
  * @}

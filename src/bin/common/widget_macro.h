@@ -46,14 +46,6 @@ TODO("see large comment below")
    elm_layout_text_set(item, NULL, NAME); \
    evas_object_show(item);
 
-#define ITEM_ADD(PARENT, ITEM, TEXT, STYLE) \
-   ITEM = elm_layout_add(PARENT); \
-   evas_object_size_hint_weight_set(ITEM, EVAS_HINT_EXPAND, 0.0); \
-   evas_object_size_hint_align_set(ITEM, EVAS_HINT_FILL, 0.0); \
-   elm_layout_file_set(ITEM, EFLETE_EDJ, STYLE); \
-   elm_object_part_text_set(ITEM, "elm.text", TEXT); \
-   evas_object_show(ITEM);
-
 #define BOX_ADD(PARENT, BOX, ISHORIZONTAL, ISHOMOGENEOS) \
    BOX = elm_box_add(PARENT); \
    evas_object_size_hint_weight_set(BOX, EVAS_HINT_EXPAND, 0.0); \

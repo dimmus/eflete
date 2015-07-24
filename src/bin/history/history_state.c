@@ -190,8 +190,9 @@ _history_ui_state_update(Evas_Object *source, State_Diff *change)
              eina_stringshare_replace(&part->curr_state, "default");
              part->curr_state_value = 0.0;
           }
-        workspace_edit_object_part_state_set(app->workspace, part);
+        ui_property_part_set(prop_view, part);
         ui_property_state_set(prop_view, part);
+        workspace_edit_object_part_state_set(app->workspace, part);
      }
    ui_widget_list_part_selected_set(ui_block_widget_list_get(app), change->part,
                                     true);
@@ -372,9 +373,9 @@ _state_param_restore(Evas_Object *obj, Eina_Stringshare *part,
    assert(obj != NULL);
    assert(part != NULL);
    assert(state_diff != NULL);
-   assert(!edje_edit_state_exist(obj, part, state_diff->name, state_diff->value));
 
-   edje_edit_state_add(obj, part, state_diff->name, state_diff->value);
+   if (!edje_edit_state_exist(obj, part, state_diff->name, state_diff->value))
+     edje_edit_state_add(obj, part, state_diff->name, state_diff->value);
 
    edje_edit_state_visible_set(obj, part, state_diff->name,
                                state_diff->value, state_diff->visible);
@@ -569,7 +570,6 @@ _state_param_restore(Evas_Object *obj, Eina_Stringshare *part,
                                         state_diff->textblock.max_y);
       break;
       default:
-         abort();
       break;
      }
    return true;
@@ -594,7 +594,10 @@ _state_redo(Evas_Object *source, State_Diff *change)
                                       change->state->value);
       break;
       default:
-         abort();
+        {
+           ERR("Wrong action type");
+           abort();
+        }
       break;
      }
    if (result) _history_ui_state_update(source, change);
@@ -620,7 +623,10 @@ _state_undo(Evas_Object *source, State_Diff *change)
                                        change->type);
       break;
       default:
-         abort();
+        {
+           ERR("Wrong action type");
+           abort();
+        }
       break;
      }
 

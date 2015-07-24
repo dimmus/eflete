@@ -111,49 +111,6 @@ END_TEST
 /**
  * @addtogroup live_widget_create
  * @{
- * <tr>
- * <td>live_widget_create</td>
- * <td>live_widget_create_test_n2</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- * @step 2 Create style object as Style.
- * @step 3 Create parent window.
- *
- * @procedure
- * @step 1 Call live_widget_create (call for unexisted widget).
- * @step 2 Check returned pointer.
- * </td>
- * <td>NULL, NULL, NULL, NULL</td>
- * <td>All checks passed</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(live_widget_create_test_n2)
-{
-   elm_init(0, 0);
-
-   Style *style = NULL;
-   Evas_Object *parent = NULL;
-   Evas_Object *live = NULL;
-
-   style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   live = live_widget_create(NULL, style, parent);
-   ck_assert_msg(live == NULL, "Live object was created with NULL params 1");
-   live = live_widget_create("radio", NULL, parent);
-   ck_assert_msg(live == NULL, "Live object was created with NULL params 2");
-   live = live_widget_create("radio", style, NULL);
-   ck_assert_msg(live == NULL, "Live object was created with NULL params 3");
-
-   evas_object_del(parent);
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup live_widget_create
- * @{
  * </TABLE>
  * @}
  * @}

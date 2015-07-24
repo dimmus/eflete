@@ -18,6 +18,8 @@
  */
 
 #include "test_animator.h"
+#include "main_window.h"
+#include "test_common.h"
 
 /**
  * @addtogroup animator_test
@@ -52,115 +54,32 @@
  */
 EFLETE_TEST (animator_window_add_test_p)
 {
-   elm_init(0,0);
-   const char *file = "./edj_build/animator_window_add_test.edj";
-   const char *full_style_name = "elm/radio/base/test";
-   Evas_Object *manager, *win;
-   App_Data *app;
-   Eina_Inlist *widget_list = NULL;
-   Evas *e = NULL;
-   Style *style;
-   Eina_File *mmap_file = NULL;
+   App_Data *app = NULL;
+   Style *style = NULL;
+   Evas_Object *manager;
 
+   elm_init(0, 0);
    app_init();
+   setup("animator_window_add_test_p");
+
    app = app_data_get();
-   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   app->win = win;
-   e = evas_object_evas_get(win);
-   mmap_file = eina_file_open(file, EINA_FALSE);
-   widget_list = wm_widgets_list_new(file);
-   wm_widgets_list_objects_load(widget_list, e, mmap_file);
-   style = wm_style_object_find(widget_list, full_style_name);
+   ui_main_window_add(app);
+   app->project = pm_project_open("./animator_window_add_test_p/animator_window_add_test_p.pro");
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
 
    manager = animator_window_add(style);
    ck_assert_msg(manager != NULL, "cannot create new Animator");
 
-   wm_widgets_list_free(widget_list);
-   eina_file_close(mmap_file);
+   evas_object_del(manager);
+   pm_project_close(app->project);
+   app->project = NULL;
+   ui_main_window_del(app);
    app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup animator_window_add
- * @{
- * <tr>
- * <td>animator_window_add</td>
- * <td>animator_window_add_test_n1</td>
- * <td>
- * @precondition
- * @step 1 initialized efl and app
- * @step 2 main_window created
- * @step 3 Empty new Style
- *
- * @procedure
- * @step 1 Call animator_window_add(Style)
- * @step 2 Check returned pointer
- * </td>
- * <td>Style *style</td>
- * <td>NULL pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (animator_window_add_test_n1)
-{
-   elm_init(0,0);
-   const char *full_style_name = "elm/radio/base/test";
-   const char *style_name = "test";
-   Evas_Object *manager, *win;
-   App_Data *app;
-   Style *style;
-
-   app_init();
-   app = app_data_get();
-   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   app->win = win;
-   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
-
-   manager = animator_window_add(style);
-   ck_assert_msg(manager == NULL, "Animator was successfully created");
-
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup animator_window_add
- * @{
- * <tr>
- * <td>animator_window_add</td>
- * <td>animator_window_add_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialized efl and app
- * @step 2 main_window created
- *
- * @procedure
- * @step 1 Call animator_window_add(NULL)
- * @step 2 Check returned pointer
- * </td>
- * <td>NULL</td>
- * <td>NULL pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (animator_window_add_test_n2)
-{
-   elm_init(0,0);
-   Evas_Object *manager, *win;
-   App_Data *app;
-
-   app_init();
-   app = app_data_get();
-   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   app->win = win;
-
-   manager = animator_window_add(NULL);
-   ck_assert_msg(manager == NULL, "Animator was successfully created");
-
-   app_shutdown();
+   teardown("./animator_window_add_test_p");
    elm_shutdown();
 }
 END_TEST

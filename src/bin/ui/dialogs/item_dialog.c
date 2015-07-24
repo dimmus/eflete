@@ -16,13 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
 
 #include "item_dialog.h"
 
-static Elm_Entry_Filter_Accept_Set accept_name = {
-   .accepted = NULL,
-   .rejected = BANNED_SYMBOLS
-};
+static Evas_Object *entry, *combobox, *btn_add;
+static Elm_Validator_Regexp *name_validator = NULL;
 
 static void
 _job_popup_close(void *data)
@@ -30,10 +31,14 @@ _job_popup_close(void *data)
    App_Data *ap = (App_Data *)data;
 
    assert(ap != NULL);
+   assert(name_validator != NULL);
 
    Evas_Object *markup = elm_object_content_get(ap->popup);
    Evas_Object *proxy_preview = elm_object_part_content_unset(markup, "preview.swallow");
    Evas_Object *group_preview = elm_object_part_content_unset(markup, "origin.swallow");
+
+   elm_validator_regexp_free(name_validator);
+   name_validator = NULL;
 
    eina_file_map_free(ap->project->mmap_file, group_preview);
    evas_object_del(group_preview);
@@ -53,8 +58,6 @@ _on_button_add_clicked(void *data,
 
    assert(ap != NULL);
 
-   Evas_Object *entry = evas_object_data_get(ap->popup, "ENTRY");
-   Evas_Object *combobox = evas_object_data_get(ap->popup, "COMBOBOX");
    Part *part = evas_object_data_get(ap->popup, "PART");
 
    assert(entry != NULL);
@@ -149,19 +152,32 @@ _on_item_source_change(void *data,
    return;
 }
 
+static void
+_validation(void *data __UNUSED__,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
+{
+   if ((elm_validator_regexp_status_get(name_validator) != ELM_REG_NOERROR) ||
+       (ewe_combobox_select_item_get(combobox)->index == 0))
+     elm_object_disabled_set(btn_add, true);
+   else
+     elm_object_disabled_set(btn_add, false);
+}
+
 Evas_Object *
 item_dialog_add(App_Data *ap, Part *part)
 {
    Evas_Object *box, *item, *button;
    Eina_List *collections = NULL, *l = NULL;
    Eina_Stringshare *group = NULL;
-   Evas_Object *combobox_source;
-   Evas_Object *entry;
    Evas_Object *markup = NULL;
 
    assert(ap != NULL);
    assert(ap->workspace != NULL);
    assert(part != NULL);
+   assert(name_validator == NULL);
+
+   name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
 
    ap->popup = elm_popup_add(ap->win_layout);
    elm_object_part_text_set(ap->popup, "title,text", _("Add new item"));
@@ -174,41 +190,41 @@ item_dialog_add(App_Data *ap, Part *part)
 
    BOX_ADD(ap->popup, box, false, false);
 
-   ITEM_ADD(box, item, _("Name:"), "eflete/property/item/small_label")
-   EWE_ENTRY_ADD(item, entry, true);
-   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_name);
+   LAYOUT_PROP_ADD(box, _("Name:"), "property", "1swallow")
+   ENTRY_ADD(item, entry, true);
+   eo_do(entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, name_validator));
+   evas_object_smart_callback_add(entry, "changed", _validation, NULL);
    elm_object_part_text_set(entry, "guide", _("Type a item name."));
    elm_object_part_content_set(item, "elm.swallow.content", entry);
    elm_box_pack_end(box, item);
 
-   ITEM_ADD(box, item, _("Source:"), "eflete/property/item/small_label")
-   EWE_COMBOBOX_ADD(item, combobox_source)
-
-   ewe_combobox_item_add(combobox_source, _("None"));
-   ewe_combobox_select_item_set(combobox_source, 0);
+   LAYOUT_PROP_ADD(box, _("Source:"), "property", "1swallow")
+   EWE_COMBOBOX_ADD(item, combobox)
+   ewe_combobox_item_add(combobox, _("None"));
+   ewe_combobox_select_item_set(combobox, 0);
 
    collections = edje_file_collection_list(ap->project->dev);
    collections = eina_list_sort(collections, eina_list_count(collections), sort_cb);
    EINA_LIST_FOREACH(collections, l, group)
      {
         if (group != ap->project->current_style->full_group_name)
-          ewe_combobox_item_add(combobox_source, group);
+          ewe_combobox_item_add(combobox, group);
      }
    edje_file_collection_list_free(collections);
 
-   elm_object_part_content_set(item, "elm.swallow.content", combobox_source);
-   evas_object_smart_callback_add(combobox_source, "selected",
-                                  _on_item_source_change, markup);
+   elm_object_part_content_set(item, "elm.swallow.content", combobox);
+   evas_object_smart_callback_add(combobox, "selected", _on_item_source_change, markup);
+   evas_object_smart_callback_add(combobox, "selected", _validation, NULL);
    elm_box_pack_end(box, item);
    elm_object_part_content_set(markup, "items.swallow", box);
    elm_object_content_set(ap->popup, markup);
 
-   BUTTON_ADD(ap->popup, button, _("Add"));
-   evas_object_data_set(ap->popup, "ENTRY", entry);
    evas_object_data_set(ap->popup, "PART", part);
-   evas_object_data_set(ap->popup, "COMBOBOX", combobox_source);
-   evas_object_smart_callback_add (button, "clicked", _on_button_add_clicked, ap);
-   elm_object_part_content_set(ap->popup, "button1", button);
+
+   BUTTON_ADD(ap->popup, btn_add, _("Add"));
+   evas_object_smart_callback_add (btn_add, "clicked", _on_button_add_clicked, ap);
+   elm_object_part_content_set(ap->popup, "button1", btn_add);
+   elm_object_disabled_set(btn_add, true);
 
    BUTTON_ADD(ap->popup, button, _("Cancel"));
    evas_object_smart_callback_add(button, "clicked", _on_button_cancel_clicked, ap);

@@ -16,15 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
 
 #include "colorclass_manager.h"
 #include "main_window.h"
 
 static Elm_Genlist_Item_Class *_itc_ccl = NULL;
-static Elm_Entry_Filter_Accept_Set accept_name = {
-   .accepted = NULL,
-   .rejected = BANNED_SYMBOLS
-};
 
 typedef struct _Colorclasses_Manager Colorclasses_Manager;
 typedef struct _Colorclass_Item Colorclass_Item;
@@ -53,6 +52,8 @@ struct _Colorclasses_Manager
    Evas_Object *edje_preview, *preview_layout;
    Evas_Object *colorsel1, *colorsel2, *colorsel3;
    Evas_Object *entry, *popup;
+   Evas_Object *btn_add;
+   Elm_Validator_Regexp *name_validator;
    Eina_Bool changed;
    Search_Data style_search_data;
    Colorclass_Item *current_ccl;
@@ -73,17 +74,9 @@ _on_add_popup_btn_add(void *data,
    Elm_Object_Item *glit_ccl = NULL;
    Uns_List *colorclass = NULL;
    Eina_List *l;
-   App_Data *ap = app_data_get();
 
    it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
    it->name = elm_entry_entry_get(edit->entry);
-
-   if ((!it->name) || (!strcmp(it->name, "")))
-     {
-        NOTIFY_WARNING(_("Color class name can not be empty!"));
-        free(it);
-        return;
-     }
 
    Elm_Object_Item *start_from = elm_genlist_first_item_get(edit->genlist);
    if (elm_genlist_search_by_text_item_get(edit->genlist, start_from, "elm.text",
@@ -126,9 +119,6 @@ _on_add_popup_btn_add(void *data,
                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
    elm_genlist_item_selected_set(glit_ccl, EINA_TRUE);
 
-   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
-   ui_property_state_unset(ui_block_property_get(ap));
-   ui_property_state_set(ui_block_property_get(ap), part);
    evas_object_del(edit->popup);
    edit->popup = NULL;
    edit->changed = true;
@@ -142,43 +132,61 @@ _on_add_popup_btn_cancel(void *data,
 
    assert(edit != NULL);
 
+   elm_validator_regexp_free(edit->name_validator);
+   edit->name_validator = NULL;
+
    evas_object_del(edit->popup);
    edit->popup = NULL;
 }
+
 static void
-_on_button_add_clicked_cb(void *data __UNUSED__,
-                          Evas_Object *obj __UNUSED__,
-                          void *event_info __UNUSED__)
+_validation(void *data,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
 {
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
 
    assert(edit != NULL);
 
-   Evas_Object *box, *bt_yes, *bt_no, *item;
+   if (elm_validator_regexp_status_get(edit->name_validator) != ELM_REG_NOERROR)
+     elm_object_disabled_set(edit->btn_add, true);
+   else
+     elm_object_disabled_set(edit->btn_add, false);
+}
+
+static void
+_on_button_add_clicked_cb(void *data __UNUSED__,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info __UNUSED__)
+{
+   Evas_Object *box, *bt_no, *item;
+   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
+
+   assert(edit != NULL);
+   assert(edit->name_validator == NULL);
 
    edit->popup = elm_popup_add(edit->mwin);
    elm_object_part_text_set(edit->popup, "title,text", _("Add color class:"));
 
+   edit->name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
    box = elm_box_add(edit->popup);
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    LAYOUT_PROP_ADD(edit->popup, _("Color class name: "), "property", "1swallow")
-   EWE_ENTRY_ADD(item, edit->entry, true);
-   elm_entry_markup_filter_append(edit->entry, elm_entry_filter_accept_set,
-                                  &accept_name);
-   elm_object_part_text_set(edit->entry, "guide",
-                            _("Type new color class name here."));
+   ENTRY_ADD(item, edit->entry, true);
+   eo_do(edit->entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, edit->name_validator));
+   evas_object_smart_callback_add(edit->entry, "changed", _validation, edit);
+   elm_object_part_text_set(edit->entry, "guide", _("Type new color class name here"));
    elm_object_part_content_set(item, "elm.swallow.content", edit->entry);
 
    elm_box_pack_end(box, item);
    elm_object_content_set(edit->popup, box);
    evas_object_show(box);
 
-   BUTTON_ADD(edit->popup, bt_yes, _("Ok"));
-   evas_object_smart_callback_add(bt_yes, "clicked", _on_add_popup_btn_add,
-                                  edit);
-   elm_object_part_content_set(edit->popup, "button1", bt_yes);
+   BUTTON_ADD(edit->popup, edit->btn_add, _("Ok"));
+   evas_object_smart_callback_add(edit->btn_add, "clicked", _on_add_popup_btn_add, edit);
+   elm_object_part_content_set(edit->popup, "button1", edit->btn_add);
 
    BUTTON_ADD(edit->popup, bt_no, _("Cancel"));
    evas_object_smart_callback_add(bt_no, "clicked", _on_add_popup_btn_cancel,
@@ -294,7 +302,10 @@ _change_bg_cb(void *data,
         }
       break;
       default:
-         abort();
+        {
+           ERR("Wrong state");
+           abort();
+        }
       break;
      }
 

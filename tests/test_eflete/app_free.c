@@ -59,32 +59,6 @@ END_TEST
 /**
  * @addtogroup app_free
  * @{
- * <tr>
- * <td>app_free</td>
- * <td>app_free_test_n</td>
- * <td>
- * @precondition
- * @step 1 Nothing.
- *
- * @procedure
- * @step 1 call app_free
- * @step 2 check returned pointer
- * </td>
- * <td>NULL</td>
- * <td>EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (app_free_test_n)
-{
-   ck_assert_msg(app_free(NULL) == EINA_FALSE, "Something was freed");
-}
-END_TEST
-
-
-/**
- * @addtogroup app_free
- * @{
  * </TABLE>
  * @}
  * @}

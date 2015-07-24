@@ -32,7 +32,7 @@
  * @{
  * <tr>
  * <td>ewe_tabs_active_item_get</td>
- * <td>ewe_tabs_active_item_get_test_p1</td>
+ * <td>ewe_tabs_active_item_get_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialized ewe

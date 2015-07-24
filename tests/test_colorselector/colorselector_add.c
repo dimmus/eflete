@@ -67,33 +67,6 @@ END_TEST
 /**
  * @addtogroup colorselector_add
  * @{
- * <tr>
- * <td>colorselector_add</td>
- * <td>colorselector_add_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialized efl
- *
- * @procedure
- * @step 1 Call colorselector_add()
- * @step 2 Check returned pointer
- * </td>
- * <td>void</td>
- * <td>NULL pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (colorselector_add_test_n)
-{
-   elm_init(0,0);
-   ck_assert_msg(colorselector_add(NULL) == NULL, "colorselector_add(NULL) should return NULL but it did not");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup colorselector_add
- * @{
  * </TABLE>
  * @}
  * @}

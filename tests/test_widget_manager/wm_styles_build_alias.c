@@ -144,36 +144,6 @@ END_TEST
 /**
  * @addtogroup wm_styles_build_alias
  * @{
- * <tr>
- * <td>wm_styles_build_alias</td>
- * <td>wm_styles_build_alias_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- *
- * @procedure
- * @step 1 Call function wm_styles_build_alias(NULL, layouts_list).
- * @step 2 Check returned bool.
- * </td>
- * <td>NULL, NULL</td>
- * <td>Returned EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(wm_styles_build_alias_test_n)
-{
-   elm_init(0,0);
-
-   ck_assert_msg(!wm_styles_build_alias(NULL, NULL),
-                 "Aliases loaded but shoudn't.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup wm_styles_build_alias
- * @{
  * </TABLE>
  * @}
  * @}

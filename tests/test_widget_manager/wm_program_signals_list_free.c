@@ -82,33 +82,6 @@ END_TEST
 /**
  * @addtogroup wm_program_signals_list_free
  * @{
- * <tr>
- * <td>wm_program_signals_list_free</td>
- * <td>wm_program_signals_list_free_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- *
- * @procedure
- * @step 1 Call function wm_program_signals_list_free(NULL).
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (wm_program_signals_list_free_test_n)
-{
-   elm_init(0,0);
-   ck_assert_msg(wm_program_signals_list_free(NULL) == EINA_FALSE, "NULL signal list was deleted.");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup wm_program_signals_list_free
- * @{
  * </TABLE>
  * @}
  * @}

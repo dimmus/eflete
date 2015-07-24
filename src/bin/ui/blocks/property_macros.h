@@ -154,7 +154,10 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    TYPE old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, value)) \
-     abort(); \
+     { \
+       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       abort(); \
+     } \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
@@ -415,7 +418,10 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    Eina_Bool value = elm_check_state_get(obj); \
    Eina_Bool old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS);\
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, value)) \
-     abort(); \
+     { \
+       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       abort(); \
+     } \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS_DIFF); \
@@ -517,7 +523,10 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
    Eina_Stringshare *old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, (char *)item->title)) \
-     abort(); \
+     { \
+       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       abort(); \
+     } \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
                     item->title, pd->wm_style->full_group_name, \
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS); \
@@ -533,12 +542,12 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
  * @param MEMBER The entry member from Prop_Data structure
- * @param REGEX The regex for validation input string
+ * @param VALIDATOR The entry validator
  * @param TOOLTIP The tooltip for combobox
  *
  * @ingroup Property_Macro
  */
-#define COMMON_ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP) \
+#define COMMON_ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP) \
 static Evas_Object * \
 prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
                            Prop_Data *pd, \
@@ -546,22 +555,21 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
 { \
    Evas_Object *btn; \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
-   EWE_ENTRY_ADD(item, pd->MEMBER.VALUE, true) \
+   ENTRY_ADD(item, pd->MEMBER.VALUE, true) \
    if (btn_func_cb) \
      { \
         btn = elm_button_add(parent); \
         elm_object_style_set(btn, "elipsis"); \
         evas_object_smart_callback_add(btn, "clicked", btn_func_cb, pd); \
         evas_object_smart_callback_add(pd->MEMBER.VALUE, "clicked", btn_func_cb, pd); \
-        elm_object_part_content_set(pd->MEMBER.VALUE, "elm.swallow.end", btn); \
+        elm_object_part_content_set(pd->MEMBER.VALUE, "elm.swallow.elipsis", btn); \
         elm_entry_editable_set(pd->MEMBER.VALUE, false); \
         evas_object_show(btn); \
      } \
    else \
      evas_object_smart_callback_add(pd->MEMBER.VALUE, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
-   ewe_entry_regex_set(pd->MEMBER.VALUE, REGEX, EWE_REG_EXTENDED); \
-   ewe_entry_regex_autocheck_set(pd->MEMBER.VALUE, true); \
-   ewe_entry_regex_glow_set(pd->MEMBER.VALUE, true); \
+   if (VALIDATOR) \
+      eo_do(pd->MEMBER.VALUE, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, VALIDATOR)); \
    if (TOOLTIP) elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
    elm_layout_content_set(item, NULL, pd->MEMBER.VALUE); \
    prop_##SUB##_##VALUE##_update(pd); \
@@ -585,7 +593,7 @@ prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
    const char *value; \
    value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
    char *text = elm_entry_utf8_to_markup(value); \
-   ewe_entry_entry_set(pd->MEMBER.VALUE, text); \
+   elm_entry_entry_set(pd->MEMBER.VALUE, text); \
    edje_edit_string_free(value); \
    free(text); \
 }
@@ -595,18 +603,20 @@ prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
+ * @param VALIDATOR The entry validator
  * @param ARGS The edje edit function arguments
  *
  * @ingroup Property_Macro
  */
-#define COMMON_ENTRY_CALLBACK(SUB, VALUE, ARGS) \
+#define COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, ARGS) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
                              Evas_Object *obj, \
                              void *ei __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
-   if (ewe_entry_regex_error_get(obj)) return; \
+   if (VALIDATOR && (elm_validator_regexp_status_get(VALIDATOR)) != ELM_REG_NOERROR) \
+     return; \
    const char *text = elm_entry_entry_get(obj); \
    char *value = elm_entry_markup_to_utf8(text); \
    const char *old_value =  edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
@@ -724,12 +734,18 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
    if ((value CHECK value_##SUB2##_##VALUE) && (value_##SUB2##_##VALUE != 0)) \
      { \
         if (!edje_edit_group_##SUB2##_##VALUE##_set(pd->wm_style->obj, value)) \
-          abort(); \
+          { \
+            ERR("edje_edit_group_"#SUB2"_"#VALUE"_set failed"); \
+            abort(); \
+          } \
         elm_spinner_value_set(pd->group.SUB2##_##VALUE, value); \
         value_##SUB2##_##VALUE = value; \
      } \
    if (!edje_edit_group_##SUB1##_##VALUE##_set(pd->wm_style->obj, value)) \
-     abort(); \
+     { \
+       ERR("edje_edit_group_"#SUB1"_"#VALUE"_set failed"); \
+       abort(); \
+     } \
    if (!strcmp("min", #SUB1)) \
      { \
        history_diff_add(pd->wm_style->obj, PROPERTY, CONTAINER, VAL_GROUP, old_value_##SUB1##_##VALUE, value, \
@@ -761,8 +777,8 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define GROUP_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP) \
-   COMMON_ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP)
+#define GROUP_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP) \
+   COMMON_ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP)
 
 /**
  * Macro defines a function that updates control by STATE_ATTR_1ENTRY_ADD macro.
@@ -782,8 +798,8 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define GROUP_ATTR_1ENTRY_CALLBACK(SUB, VALUE) \
-   COMMON_ENTRY_CALLBACK(SUB, VALUE, GROUP_ARGS) \
+#define GROUP_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR) \
+   COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, GROUP_ARGS) \
 
 
 
@@ -1237,11 +1253,17 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    TYPE opposite_value = edje_edit_##SUB##_##DIF_VALUE##_get(pd->wm_style->obj PART_ITEM_ARGS); \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
-     abort(); \
+     { \
+       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       abort(); \
+     } \
    if (value CHECK opposite_value) \
      { \
         if (!edje_edit_##SUB##_##DIF_VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
-          abort(); \
+          { \
+            ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+            abort(); \
+          } \
         elm_spinner_value_set(pd->state.DIF_VALUE, value); \
      } \
    project_changed(false); \
@@ -1271,7 +1293,10 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    TYPE value = elm_spinner_value_get(obj); \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
-     abort(); \
+     { \
+       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       abort(); \
+     } \
    project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
 }
@@ -1513,11 +1538,17 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    TYPE opposite_value = edje_edit_##SUB##_##DIF_VALUE##_get(pd->wm_style->obj STATE_ARGS); \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj STATE_ARGS, value)) \
-     abort(); \
+     { \
+       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       abort(); \
+     } \
    if ((value CHECK opposite_value) && (opposite_value != -1)) \
      { \
         if (!edje_edit_##SUB##_##DIF_VALUE##_set(pd->wm_style->obj STATE_ARGS, value)) \
-          abort(); \
+          { \
+            ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+            abort(); \
+          } \
         elm_spinner_value_set(pd->state.DIF_VALUE, value); \
      } \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
@@ -1779,7 +1810,10 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                                         pd->wm_part->curr_state, \
                                         pd->wm_part->curr_state_value, \
                                         r, g, b, a))\
-     abort(); \
+     { \
+       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       abort(); \
+     } \
    evas_object_color_set(pd->MEMBER.VALUE##_obj, r*a/255, g*a/255, b*a/255, a); \
    if ((r != old_r) || (g != old_g) || (b != old_b) || (a != old_a)) \
      history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_FOUR, old_r, old_g, old_b, \
@@ -1965,8 +1999,8 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP) \
-   COMMON_ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP)
+#define STATE_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP) \
+   COMMON_ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP)
 
 /**
  * Macro defines a function that updates control by STATE_ATTR_1ENTRY_ADD macro.
@@ -1986,8 +2020,8 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE) \
-   COMMON_ENTRY_CALLBACK(SUB, VALUE, STATE_ARGS) \
+#define STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR) \
+   COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, STATE_ARGS) \
 
 /*****************************************************************************/
 /*              STATE CONTAINER 2 SPINNERS DOUBLEVAL CONTROL                 */

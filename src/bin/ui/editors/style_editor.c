@@ -16,6 +16,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
 
 #include "style_editor.h"
 #include "main_window.h"
@@ -24,8 +27,6 @@
 TODO("Rename this file to textblock_style_manager")
 
 #define FONT_DEFAULT "DEFAULT='align=middle font=Sans font_size=24 color=#000000 "
-#define ITEM1 "item1"
-#define ITEM2 "item2"
 #define DIRECTION_NUM 39
 #define DEFAULT_DIRECTION 2
 #define WHITE_COLOR "#FFF"
@@ -51,18 +52,19 @@ struct _Style_Editor
    Evas_Object *tabs;
    Search_Data style_search_data;
    struct {
-        const char *st_name;
-        const char *st_tag;
-        Eina_Stringshare *stvalue;
+      const char *st_name;
+      const char *st_tag;
+      Eina_Stringshare *stvalue;
    } current_style;
    struct {
-        Evas_Object *name;
-        Evas_Object *dialog;
+      Evas_Object *name;
+      Elm_Validator_Regexp *name_validator;
+      Evas_Object *btn_add;
+      Evas_Object *dialog;
    } popup;
    Elm_Object_Item *tag;
    Evas_Object *direction[8];
 };
-
 
 struct _Style_Entries
 {
@@ -197,11 +199,6 @@ static const char *underl_styles[] = { N_("single"),
                                        N_("double"),
                                        NULL};
 
-static Elm_Entry_Filter_Accept_Set accept_name = {
-   .accepted = NULL,
-   .rejected = BANNED_SYMBOLS
-};
-
 static Eina_Tmpstr*
 _tag_value_get(const char* text_style, char* a_tag);
 
@@ -225,6 +222,9 @@ _on_popup_bt_cancel(void *data,
    Style_Editor *style_edit = (Style_Editor *)data;
 
    assert(style_edit != NULL);
+   assert(POPUP.name_validator != NULL);
+   elm_validator_regexp_free(POPUP.name_validator);
+   POPUP.name_validator = NULL;
 
    evas_object_del(POPUP.dialog);
    POPUP.dialog = NULL;
@@ -387,7 +387,6 @@ _on_st_add_bt_ok(void *data,
    assert(style_edit != NULL);
 
    const char *style_name = elm_entry_entry_get(POPUP.name);
-   App_Data *ap = app_data_get();
 
    edje_edit_obj = style_edit->pr->global_object;
 
@@ -427,17 +426,20 @@ _on_st_add_bt_ok(void *data,
    elm_genlist_item_append(style_edit->glist, _itc_tags,
                            "DEFAULT", glit_style, ELM_GENLIST_ITEM_NONE,
                            _on_glit_selected, style_edit);
-   evas_object_del(POPUP.dialog);
-   POPUP.dialog = NULL;
 
    TODO("Need refactoring after callback logic for modal window implementation")
 
    elm_genlist_item_selected_set(glit_style, true);
    elm_genlist_item_bring_in(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
    elm_genlist_item_show(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
+   /* MUST to move to "Apply" function
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    ui_property_state_unset(ui_block_property_get(ap));
    ui_property_state_set(ui_block_property_get(ap), part);
+   */
+
+   _on_popup_bt_cancel(style_edit, NULL, NULL);
+
    project_changed(false);
 }
 
@@ -478,12 +480,26 @@ _on_tag_add_bt_ok(void *data,
                                       ELM_GENLIST_ITEM_NONE,
                                       _on_glit_selected, style_edit);
    elm_object_item_data_set(glit_tag,(char *)tag_name);
-   evas_object_del(POPUP.dialog);
-   POPUP.dialog = NULL;
    elm_genlist_item_selected_set(glit_tag, true);
    elm_genlist_item_show(style_edit->tag, ELM_GENLIST_ITEM_SCROLLTO_IN);
    elm_genlist_item_bring_in(glit_tag, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
+
+   _on_popup_bt_cancel(style_edit, NULL, NULL);
+
    project_changed(false);
+}
+
+static void
+_validate(void *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
+{
+   Style_Editor *style_edit = (Style_Editor *)data;
+
+   if (elm_validator_regexp_status_get(POPUP.name_validator) != ELM_REG_NOERROR)
+     elm_object_disabled_set(POPUP.btn_add, true);
+   else
+     elm_object_disabled_set(POPUP.btn_add, false);
 }
 
 static void
@@ -492,31 +508,32 @@ _on_bt_style_add(Style_Editor *style_edit)
    Evas_Object *box, *item, *button;
 
    assert(style_edit != NULL);
+   assert(POPUP.name == NULL);
 
    POPUP.dialog = elm_popup_add(style_edit->mwin);
    elm_object_part_text_set(POPUP.dialog, "title,text", _("Add textblock style"));
 
    BOX_ADD(POPUP.dialog, box, false, false);
-   ITEM_ADD(box, item, "Style name:", "eflete/property/item/default")
 
-   EWE_ENTRY_ADD(item, POPUP.name, true);
-   elm_object_part_text_set(POPUP.name, "guide", _("Type a new style name."));
-   elm_entry_markup_filter_append(POPUP.name, elm_entry_filter_accept_set,
-                                  &accept_name);
+   LAYOUT_PROP_ADD(box, _("Style name:"), "property", "1swallow")
+   POPUP.name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
+   ENTRY_ADD(item, POPUP.name, true);
+   eo_do(POPUP.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, POPUP.name_validator));
+   evas_object_smart_callback_add(POPUP.name, "changed", _validate, style_edit);
+   elm_object_part_text_set(POPUP.name, "guide", _("Type a new style name"));
    elm_object_part_content_set(item, "elm.swallow.content", POPUP.name);
    elm_box_pack_end(box, item);
 
    elm_object_content_set(POPUP.dialog, box);
    evas_object_show(box);
 
-   BUTTON_ADD(POPUP.dialog, button, _("Ok"));
-   evas_object_smart_callback_add(button, "clicked", _on_st_add_bt_ok,
-                                  style_edit);
-   elm_object_part_content_set(POPUP.dialog, "button1", button);
+   BUTTON_ADD(POPUP.dialog, POPUP.btn_add, _("Ok"));
+   evas_object_smart_callback_add(POPUP.btn_add, "clicked", _on_st_add_bt_ok,  style_edit);
+   elm_object_part_content_set(POPUP.dialog, "button1", POPUP.btn_add);
+   elm_object_disabled_set(POPUP.btn_add, true);
 
    BUTTON_ADD(POPUP.dialog, button, _("Cancel"));
-   evas_object_smart_callback_add(button, "clicked", _on_popup_bt_cancel,
-                                  style_edit);
+   evas_object_smart_callback_add(button, "clicked", _on_popup_bt_cancel, style_edit);
    elm_object_part_content_set(POPUP.dialog, "button2", button);
 
    evas_object_show(POPUP.dialog);
@@ -528,6 +545,7 @@ _on_bt_tag_add(Style_Editor *style_edit)
    Evas_Object *box, *item, *button;
 
    assert(style_edit != NULL);
+   assert(POPUP.name_validator == NULL);
 
    Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
@@ -556,26 +574,26 @@ _on_bt_tag_add(Style_Editor *style_edit)
    elm_object_part_text_set(POPUP.dialog, "title,text", buf);
 
    BOX_ADD(POPUP.dialog, box, false, false);
-   ITEM_ADD(box, item, "Tag name:", "eflete/property/item/default")
 
-   EWE_ENTRY_ADD(item, POPUP.name, true);
+   LAYOUT_PROP_ADD(box, "Tag name:", "property", "1swallow")
+   POPUP.name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
+   ENTRY_ADD(item, POPUP.name, true);
+   eo_do(POPUP.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, POPUP.name_validator));
+   evas_object_smart_callback_add(POPUP.name, "changed", _validate, style_edit);
    elm_object_part_text_set(POPUP.name, "guide", _("Type a new tag name."));
-   elm_entry_markup_filter_append(POPUP.name, elm_entry_filter_accept_set,
-                                  &accept_name);
    elm_object_part_content_set(item, "elm.swallow.content", POPUP.name);
    elm_box_pack_end(box, item);
 
    elm_object_content_set(POPUP.dialog, box);
    evas_object_show(box);
 
-   BUTTON_ADD(POPUP.dialog, button, _("Ok"));
-   evas_object_smart_callback_add(button, "clicked", _on_tag_add_bt_ok,
-                                  style_edit);
-   elm_object_part_content_set(POPUP.dialog, "button1", button);
+   BUTTON_ADD(POPUP.dialog, POPUP.btn_add, _("Ok"));
+   evas_object_smart_callback_add(POPUP.btn_add, "clicked", _on_tag_add_bt_ok, style_edit);
+   elm_object_part_content_set(POPUP.dialog, "button1", POPUP.btn_add);
+   elm_object_disabled_set(POPUP.btn_add, true);
 
    BUTTON_ADD(POPUP.dialog, button, _("Cancel"));
-   evas_object_smart_callback_add(button, "clicked", _on_popup_bt_cancel,
-                                  style_edit);
+   evas_object_smart_callback_add(button, "clicked", _on_popup_bt_cancel, style_edit);
    elm_object_part_content_set(POPUP.dialog, "button2", button);
 
    evas_object_show(POPUP.dialog);
@@ -671,8 +689,9 @@ _on_viewer_exit(void *data,
 
    assert(style_edit != NULL);
 
-   App_Data *ap = app_data_get();
-   workspace_edit_object_recalc(ap->workspace);
+   //App_Data *ap = app_data_get();
+   TODO("Move to 'Apply'")
+   //workspace_edit_object_recalc(ap->workspace);
    mw_del(style_edit->mwin);
 }
 
@@ -1458,7 +1477,10 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
                }
           }
         if (!_hex_to_rgb(color, &r, &g, &b, &a))
-          abort();
+          {
+             ERR("Can't convert color value");
+             abort();
+          }
         evas_object_color_set(text_color, r*a/255, g*a/255, b*a/255, a);
 
         eina_tmpstr_del(font);

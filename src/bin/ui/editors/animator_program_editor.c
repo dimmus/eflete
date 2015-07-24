@@ -386,8 +386,7 @@ _prop_item_##sub##_##value##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *entry; \
    ITEM_ADD_(parent, item, text, "editor") \
-   EWE_ENTRY_ADD(parent, entry, true) \
-   REGEX_SET(entry, regex); \
+   ENTRY_ADD(parent, entry, true) \
    if (tooltip) \
      elm_object_tooltip_text_set(entry, tooltip); \
    evas_object_smart_callback_add(entry, "changed,user", changed_callback, cb_data); \
@@ -406,18 +405,13 @@ _prop_item_##sub##_##value##_update(Evas_Object *item, Program_Editor *prog_edit
    assert(prog_edit != NULL); \
    entry = elm_object_part_content_get(item, "elm.swallow.content"); \
    value = edje_edit_##sub##_##value##_get(prop.style->obj, prop.program); \
-   ewe_entry_entry_set(entry, value); \
+   elm_entry_entry_set(entry, value); \
 }
 
 #define ITEM_1ENTRY_PROG_CREATE(text, sub, value, regex) \
    ITEM_STRING_CALLBACK(sub, value) \
    ITEM_1ENTRY_ADD(text, sub, value, regex) \
    ITEM_1ENTRY_UPDATE(sub, value)
-
-#define REGEX_SET(entry, regex) \
-   ewe_entry_regex_set(entry, regex, EWE_REG_EXTENDED); \
-   ewe_entry_regex_autocheck_set(entry, true); \
-   ewe_entry_regex_glow_set(entry, true);
 
 static void _on_v1_active(void *data, Evas_Object *obj, void *ei);
 static void _on_v2_active(void *data, Evas_Object *obj, void *ei);
@@ -575,7 +569,7 @@ _prop_item_program_script_add(Evas_Object *parent,
    ITEM_ADD_(parent, item, _("script"), "script");
 
    BOX_ADD(item, box, true, false);
-   EWE_ENTRY_ADD(item, entry, false);
+   ENTRY_ADD(item, entry, false);
    elm_scroller_policy_set(entry, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_AUTO);
    elm_entry_editable_set(entry, false);
@@ -600,7 +594,7 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
    script = edje_edit_script_program_get(prop.style->obj, prop.program);
    entry = eina_list_nth(childs, 0);
    script_markup = elm_entry_utf8_to_markup(script);
-   ewe_entry_entry_set(entry, script_markup);
+   elm_entry_entry_set(entry, script_markup);
    free(script);
    free(script_markup);
    eina_list_free(childs);
@@ -619,15 +613,15 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
    elm_check_state_set(transition.checkbox, false); \
    elm_object_part_text_set(transition.layout2, "elm.text", _("param1")); \
    elm_object_part_text_set(transition.layout3, "elm.text", _("param2")); \
-   ewe_entry_entry_set(transition.entry1, ""); \
-   ewe_entry_entry_set(transition.entry2, ""); \
-   ewe_entry_entry_set(transition.entry3, "");
+   elm_entry_entry_set(transition.entry1, ""); \
+   elm_entry_entry_set(transition.entry2, ""); \
+   elm_entry_entry_set(transition.entry3, "");
 
 #define TRANS_VAL_UPDATE(_val_, _entry) \
    value = edje_edit_program_transition_##_val_##_get(prop.style->obj, \
                                                       prop.program); \
    buff = eina_stringshare_printf("%1.2f", value); \
-   ewe_entry_entry_set(_entry, buff); \
+   elm_entry_entry_set(_entry, buff); \
    eina_stringshare_del(buff);
 
 #define CALLBACK_UPDATE(_activated_cb, _entry) \
@@ -713,13 +707,13 @@ _trans_entries_set(Program_Editor *prog_edit)
 
 #define ACTION_STATE_GET(_state_get, _entry) \
          str = _state_get(prop.style->obj, prop.program); \
-         ewe_entry_entry_set(_entry, str); \
+         elm_entry_entry_set(_entry, str); \
          edje_edit_string_free(str);
 
 #define ACTION_VAL_GET(_val_get, _entry) \
          value = _val_get(prop.style->obj, prop.program); \
          buff = eina_stringshare_printf("%1.2f", value); \
-         ewe_entry_entry_set(_entry, buff); \
+         elm_entry_entry_set(_entry, buff); \
          eina_stringshare_del(buff);
 
 static void
@@ -857,9 +851,7 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
            elm_box_pack_after(prop.prop_box, prop.targets, action.item);
 
            ENTRY_UPDATE(action.entry1, false, action.layout1, _("state name"));
-           REGEX_SET(action.entry1, EDJE_NAME_REGEX);
            ENTRY_UPDATE(action.entry2, false, action.layout2, _("state value"));
-           REGEX_SET(action.entry2, FLOAT_NUMBER_0_1_REGEX);
            CALLBACK_UPDATE(_on_state_active, action.entry1);
            CALLBACK_UPDATE(_on_value_active, action.entry2);
            if (is_update)
@@ -876,9 +868,7 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
            elm_box_pack_after(prop.prop_box, prop.targets, action.item);
 
            ENTRY_UPDATE(action.entry1, false, action.layout1, _("signal name"));
-           REGEX_SET(action.entry1, EDJE_NAME_REGEX);
            ENTRY_UPDATE(action.entry2, false, action.layout2, _("emitter"));
-           REGEX_SET(action.entry2, EDJE_NAME_REGEX);
            CALLBACK_UPDATE(_on_state_active, action.entry1);
            CALLBACK_UPDATE(_on_value_active, action.entry2);
            if (is_update)
@@ -897,9 +887,7 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
            elm_box_pack_after(prop.prop_box, prop.targets, action.item);
 
            ENTRY_UPDATE(action.entry1, false, action.layout1, _("x"));
-           REGEX_SET(action.entry1, FLOAT_NUMBER_REGEX);
            ENTRY_UPDATE(action.entry2, false, action.layout2, _("y"));
-           REGEX_SET(action.entry2, FLOAT_NUMBER_REGEX);
            CALLBACK_UPDATE(_on_value_active, action.entry1);
            CALLBACK_UPDATE(_on_value2_active, action.entry2);
            if (is_update)
@@ -923,7 +911,6 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
            elm_object_tooltip_text_set(action.btn1, _("Select sample"));
 
            ENTRY_UPDATE(action.entry2, false, action.layout2, _("speed"));
-           REGEX_SET(action.entry2, FLOAT_NUMBER_REGEX);
            CALLBACK_UPDATE(_on_value2_active, action.entry2);
 
            ITEM_ADD_(action.box, action.layout3, _("channel"), "editor");
@@ -943,7 +930,7 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
              {
                 Eina_Stringshare *sample_name =
                   edje_edit_program_sample_name_get(prop.style->obj, prop.program);
-                ewe_entry_entry_set(action.entry1, sample_name);
+                elm_entry_entry_set(action.entry1, sample_name);
                 eina_stringshare_del(sample_name);
 
                 ACTION_VAL_GET(edje_edit_program_sample_speed_get, action.entry2);
@@ -966,14 +953,13 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
            elm_object_tooltip_text_set(action.btn1, _("Select tone"));
 
            ENTRY_UPDATE(action.entry2, false, action.layout2, _("duration"));
-           REGEX_SET(action.entry2, FLOAT_NUMBER_REGEX);
            CALLBACK_UPDATE(_on_value2_active, action.entry2);
 
            if (is_update)
              {
                 Eina_Stringshare *tone_name =
                   edje_edit_program_tone_name_get(prop.style->obj, prop.program);
-                ewe_entry_entry_set(action.entry1, tone_name);
+                elm_entry_entry_set(action.entry1, tone_name);
                 eina_stringshare_del(tone_name);
 
                 ACTION_VAL_GET(edje_edit_program_tone_duration_get, action.entry2);
@@ -995,9 +981,9 @@ _on_combobox_trans_sel(void *data,
    assert(prog_edit != NULL);
 
    Ewe_Combobox_Item *combitem = ei;
-   ewe_entry_entry_set(transition.entry1, "");
-   ewe_entry_entry_set(transition.entry2, "");
-   ewe_entry_entry_set(transition.entry3, "");
+   elm_entry_entry_set(transition.entry1, "");
+   elm_entry_entry_set(transition.entry2, "");
+   elm_entry_entry_set(transition.entry3, "");
 
    edje_edit_program_transition_set(prop.style->obj, prop.program,
                                     (Edje_Tween_Mode)(combitem->index));
@@ -1078,8 +1064,8 @@ _on_combobox_action_sel(void *data,
           }
      }
 
-   ewe_entry_entry_set(action.entry1, "");
-   ewe_entry_entry_set(action.entry2, "");
+   elm_entry_entry_set(action.entry1, "");
+   elm_entry_entry_set(action.entry2, "");
 
    edje_edit_program_action_set(prop.style->obj, prop.program,
                                 combobox_action[combitem->index]);
@@ -1487,8 +1473,7 @@ _prop_item_program_transition_add(Evas_Object *parent,
                                   _on_transition_opt_current_changed, prog_edit);
 
    ITEM_ADD_(box, transition.layout1, _("length"), "editor");
-   EWE_ENTRY_ADD(transition.layout1, transition.entry1, true);
-   REGEX_SET(transition.entry1, FLOAT_NUMBER_REGEX);
+   ENTRY_ADD(transition.layout1, transition.entry1, true);
    elm_object_part_content_set(transition.layout1,
                                "elm.swallow.content",
                                transition.entry1);
@@ -1496,15 +1481,13 @@ _prop_item_program_transition_add(Evas_Object *parent,
                                   _on_transition_time_active, prog_edit);
 
    ITEM_ADD_(box, transition.layout2, _("param1"), "editor");
-   EWE_ENTRY_ADD(transition.layout2, transition.entry2, true);
-   REGEX_SET(transition.entry2, FLOAT_NUMBER_REGEX);
+   ENTRY_ADD(transition.layout2, transition.entry2, true);
    elm_object_part_content_set(transition.layout2,
                                "elm.swallow.content",
                                transition.entry2);
 
    ITEM_ADD_(box, transition.layout3, _("param2"), "editor");
-   EWE_ENTRY_ADD(transition.layout3, transition.entry3, true);
-   REGEX_SET(transition.entry3, FLOAT_NUMBER_REGEX);
+   ENTRY_ADD(transition.layout3, transition.entry3, true);
    elm_object_part_content_set(transition.layout3,
                                "elm.swallow.content",
                                transition.entry3);
@@ -1549,7 +1532,7 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
    value = edje_edit_program_transition_time_get(prop.style->obj, prop.program);
 
    buff = eina_stringshare_printf("%1.2f", value);
-   ewe_entry_entry_set(transition.entry1, buff);
+   elm_entry_entry_set(transition.entry1, buff);
    eina_stringshare_del(buff);
    TRANS_ENTRIES_DEFAULT_SET(false);
 
@@ -1571,13 +1554,13 @@ _prop_item_program_action_add(Evas_Object *parent,
    BOX_ADD(item, box, false, true);
    EWE_COMBOBOX_ADD(box, action.combobox);
    ITEM_ADD_(box, action.layout1, _("param1"), "editor");
-   EWE_ENTRY_ADD(action.layout1, action.entry1, true);
+   ENTRY_ADD(action.layout1, action.entry1, true);
    elm_object_part_content_set(action.layout1,
                                "elm.swallow.content",
                                action.entry1);
 
    ITEM_ADD_(box, action.layout2, _("param2"), "editor");
-   EWE_ENTRY_ADD(action.layout2, action.entry2, true);
+   ENTRY_ADD(action.layout2, action.entry2, true);
    elm_object_part_content_set(action.layout2,
                                "elm.swallow.content",
                                action.entry2);
@@ -1606,8 +1589,8 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
    assert(prog_edit != NULL);
 
    prop.act_type = edje_edit_program_action_get(prop.style->obj, prop.program);
-   ewe_entry_entry_set(action.entry1, "");
-   ewe_entry_entry_set(action.entry2, "");
+   elm_entry_entry_set(action.entry1, "");
+   elm_entry_entry_set(action.entry2, "");
    elm_object_disabled_set(action.entry1, true);
    elm_object_disabled_set(action.entry2, true);
 
@@ -1757,12 +1740,12 @@ _prop_item_program_in_update(Program_Editor *prog_edit)
 
    val = edje_edit_program_in_from_get(prop.style->obj, prop.program);
    text = eina_stringshare_printf("%2.3f", val);
-   ewe_entry_entry_set(prop.in.entry_from, text);
+   elm_entry_entry_set(prop.in.entry_from, text);
    eina_stringshare_del(text);
 
    val = edje_edit_program_in_range_get(prop.style->obj, prop.program);
    text = eina_stringshare_printf("%2.3f", val);
-   ewe_entry_entry_set(prop.in.entry_range, text);
+   elm_entry_entry_set(prop.in.entry_range, text);
    eina_stringshare_del(text);
 }
 
@@ -1781,16 +1764,14 @@ _prop_item_program_in_add(Evas_Object *parent,
    BOX_ADD(item, box, false, false);
 
    ITEM_ADD_(box, prop.in.item_from, _("from"), "editor");
-   EWE_ENTRY_ADD(prop.in.item_from, prop.in.entry_from, true);
-   REGEX_SET(prop.in.entry_from, FLOAT_NUMBER_REGEX);
+   ENTRY_ADD(prop.in.item_from, prop.in.entry_from, true);
    elm_object_part_content_set(prop.in.item_from, "elm.swallow.content", prop.in.entry_from);
    evas_object_smart_callback_add(prop.in.entry_from, "changed,user",
                                   _on_in_from_change, prog_edit);
    elm_box_pack_end(box, prop.in.item_from);
 
    ITEM_ADD_(box, prop.in.item_range, _("range"), "editor");
-   EWE_ENTRY_ADD(prop.in.item_range, prop.in.entry_range, true);
-   REGEX_SET(prop.in.entry_range, FLOAT_NUMBER_REGEX);
+   ENTRY_ADD(prop.in.item_range, prop.in.entry_range, true);
    elm_object_part_content_set(prop.in.item_range, "elm.swallow.content", prop.in.entry_range);
    evas_object_smart_callback_add(prop.in.entry_range, "changed,user",
                                   _on_in_range_change, prog_edit);
@@ -1808,7 +1789,7 @@ _prop_item_program_name_update(Program_Editor *prog_edit)
    Evas_Object *entry = elm_object_part_content_get(prop.name,
                                                     "elm.swallow.content");
 
-   ewe_entry_entry_set(entry, prop.program);
+   elm_entry_entry_set(entry, prop.program);
 }
 
 static Evas_Object *
@@ -1957,4 +1938,3 @@ void program_editor_free(Evas_Object * obj)
 #undef CALLBACK_UPDATE
 #undef TRANS_ENTRIES_DEFAULT_SET
 #undef TRANS_VAL_UPDATE
-#undef REGEX_SET

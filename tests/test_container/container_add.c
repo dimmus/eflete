@@ -68,39 +68,6 @@ END_TEST
 /**
  * @addtogroup container_add
  * @{
- * <tr>
- * <td>container_add</td>
- * <td>container_add_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 call container_add
- * @step 2 check returned pointer
- * </td>
- * <td>NULL</td>
- * <td>Returned pointer is NULL</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (container_add_test_n)
-{
-   Evas_Object *container;
-
-   elm_init(0, 0);
-
-   container = container_add(NULL);
-   ck_assert_msg(container == NULL, "Failed create container object.");
-
-   elm_shutdown();
-}
-END_TEST
-
-
-/**
- * @addtogroup container_add
- * @{
  * </TABLE>
  * @}
  * @}

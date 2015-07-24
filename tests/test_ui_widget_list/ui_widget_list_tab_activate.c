@@ -109,36 +109,6 @@ END_TEST
 /**
  * @addtogroup ui_widget_list_tab_activate
  * @{
- * <tr>
- * <td>ui_widget_list_tab_activate</td>
- * <td>ui_widget_list_tab_activate_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 Call ui_widget_list_tab_activate(NULL, 0);
- * @step 2 Check returned pointer
- * </td>
- * <td>(Evas_Object *) parent</td>
- * <td>EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (ui_widget_list_tab_activate_test_n2)
-{
-   elm_init(0, 0);
-   Eina_Bool res = EINA_FALSE;
-
-   res = ui_widget_list_tab_activate(NULL, 0);
-   ck_assert_msg(res == EINA_FALSE, "The activated tab does not exist");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_widget_list_tab_activate
- * @{
  * </TABLE>
  * @}
  * @}

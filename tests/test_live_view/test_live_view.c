@@ -23,27 +23,15 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("live_view_test");
    TCase *tcase = tcase_create("TCase");
 
+
    tcase_add_test(tcase, live_view_add_test_p);
-   tcase_add_test(tcase, live_view_add_test_n);
-
    tcase_add_test(tcase, live_view_free_test_p);
-   tcase_add_test(tcase, live_view_free_test_n);
-
-   tcase_add_test(tcase, live_view_widget_style_set_test_p1);
-   tcase_add_test(tcase, live_view_widget_style_set_test_p2);
-   tcase_add_test(tcase, live_view_widget_style_set_test_n1);
-   tcase_add_test(tcase, live_view_widget_style_set_test_n2);
-   tcase_add_test(tcase, live_view_widget_style_set_test_n3);
-
-   tcase_add_test(tcase, live_view_widget_style_unset_test_p);
-   tcase_add_test(tcase, live_view_widget_style_unset_test_n1);
-   tcase_add_test(tcase, live_view_widget_style_unset_test_n2);
-
    tcase_add_test(tcase, live_view_theme_update_test_p1);
    tcase_add_test(tcase, live_view_theme_update_test_p2);
-   tcase_add_test(tcase, live_view_theme_update_test_n1);
-   tcase_add_test(tcase, live_view_theme_update_test_n2);
-   tcase_add_test(tcase, live_view_theme_update_test_n3);
+   tcase_add_test(tcase, live_view_widget_style_set_test_p1);
+   tcase_add_test(tcase, live_view_widget_style_set_test_p2);
+   tcase_add_test(tcase, live_view_widget_style_unset_test_n1);
+   tcase_add_test(tcase, live_view_widget_style_unset_test_p);
 
    suite_add_tcase(suite, tcase);
 

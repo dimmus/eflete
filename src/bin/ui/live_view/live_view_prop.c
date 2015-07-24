@@ -193,6 +193,7 @@ live_view_property_style_set(Evas_Object *property,
    assert(parent != NULL);
 
    pd->style = style;
+   pd->parent = parent;
 
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
@@ -310,13 +311,12 @@ live_view_property_style_set(Evas_Object *property,
                 If we have box or frame as a parent it doesn't work at all.
                 Check just doesn't show it's content (part name) but should.
                 This problem appears when we add first text part into group */
-             CHECK_ADD(property, check);
+             CHECK_ADD(parent, check);
              elm_object_part_text_set(check, NULL, part_name);
 
              evas_object_smart_callback_add(check, "changed",
                                             evas_object_data_get(pd->live_object, SWALLOW_FUNC),
                                             pd);
-             evas_object_data_set(check, PART_NAME, eina_stringshare_add(part_name));
 
              if (!strcmp(part_name, "elm.swallow.action_area")) elm_object_disabled_set(check, true);
              elm_box_pack_end(pd->prop_swallow.swallows, check);
@@ -330,13 +330,12 @@ live_view_property_style_set(Evas_Object *property,
                 If we have box or frame as a parent it doesn't work at all.
                 Check just doesn't show it's content (part name) but should.
                 This problem appears when we add first text part into group */
-             CHECK_ADD(property, check);
+             CHECK_ADD(parent, check);
              elm_object_part_text_set(check, NULL, part_name);
 
              evas_object_smart_callback_add(check, "changed",
                                             evas_object_data_get(pd->live_object, TEXT_FUNC),
                                             pd);
-             evas_object_data_set(check, PART_NAME, eina_stringshare_add(part_name));
 
              elm_box_pack_end(pd->prop_text.texts, check);
           }
@@ -404,6 +403,137 @@ live_view_property_style_set(Evas_Object *property,
      }
    else elm_object_disabled_set(pd->prop_signal.frame, false);
 
+   return true;
+}
+
+TODO("We need implementation here!~~ ")
+Eina_Bool
+live_view_property_part_add(Evas_Object *property, Part *part)
+{
+   Evas_Object *check;
+   PROP_DATA_GET();
+
+   if (part->type ==  EDJE_PART_TYPE_SWALLOW)
+     {
+        CHECK_ADD(pd->parent, check);
+        elm_object_part_text_set(check, NULL, part->name);
+
+        evas_object_smart_callback_add(check, "changed",
+                                       evas_object_data_get(pd->live_object, SWALLOW_FUNC),
+                                       pd);
+
+        elm_object_disabled_set(pd->prop_swallow.check, false);
+        elm_object_disabled_set(pd->prop_swallow.frame, false);
+
+        if (!strcmp(part->name, "elm.swallow.action_area")) elm_object_disabled_set(check, true);
+        elm_box_pack_end(pd->prop_swallow.swallows, check);
+     }
+   else if ((part->type ==  EDJE_PART_TYPE_TEXT) ||
+            (part->type ==  EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        CHECK_ADD(pd->parent, check);
+        elm_object_part_text_set(check, NULL, part->name);
+
+        evas_object_smart_callback_add(check, "changed",
+                                       evas_object_data_get(pd->live_object, TEXT_FUNC),
+                                       pd);
+
+        elm_object_disabled_set(pd->prop_text.check, false);
+        elm_object_disabled_set(pd->prop_text.frame, false);
+
+        elm_box_pack_end(pd->prop_text.texts, check);
+     }
+
+   return true;
+}
+
+Eina_Bool
+live_view_property_part_del(Evas_Object *property, Part *part)
+{
+   Evas_Object *check, *item_box, *frame, *frame_check;
+   Eina_List *items_list = NULL, *l;
+   PROP_DATA_GET();
+   Eina_Stringshare *part_name = NULL;
+
+   /* texts and swallows are different boxes */
+   if (part->type ==  EDJE_PART_TYPE_SWALLOW)
+     {
+        item_box = pd->prop_swallow.swallows;
+        frame = pd->prop_swallow.frame;
+        frame_check = pd->prop_swallow.check;
+        items_list = elm_box_children_get(item_box);
+     }
+   else if ((part->type ==  EDJE_PART_TYPE_TEXT) ||
+            (part->type ==  EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        item_box = pd->prop_text.texts;
+        frame = pd->prop_text.frame;
+        frame_check = pd->prop_text.check;
+        items_list = elm_box_children_get(item_box);
+     }
+   else return false;
+
+   EINA_LIST_FOREACH(items_list, l, check)
+     {
+        part_name = elm_object_part_text_get(check, NULL);
+        if (!strcmp(part->name, part_name))
+          {
+             /* texts and swallows are deleting in different way */
+             if (part->type ==  EDJE_PART_TYPE_SWALLOW)
+               {
+                  evas_object_smart_callback_del_full(check, "changed",
+                                                      evas_object_data_get(pd->live_object, SWALLOW_FUNC),
+                                                      pd->live_object);
+                  Swallow_Clean_Func clean = (Swallow_Clean_Func)evas_object_data_get(pd->live_object,
+                                                                                      SWALLOW_CLEAN_FUNC);
+                  if (clean) clean(part_name, pd->live_object);
+               }
+             else if ((part->type ==  EDJE_PART_TYPE_TEXT) ||
+                      (part->type ==  EDJE_PART_TYPE_TEXTBLOCK))
+               {
+                  evas_object_smart_callback_del_full(check, "changed",
+                                                      evas_object_data_get(pd->live_object, TEXT_FUNC),
+                                                      pd->live_object);
+               }
+             elm_box_unpack(item_box, check);
+             evas_object_del(check);
+             break;
+          }
+     }
+
+   /* if there were only one item, then because of this function it would be 0.
+      After deleting and removing item from box, list, that was returned by
+      elm_box_children_get, is not updated, so there are still one object. */
+   if (eina_list_count(items_list) == 1)
+     {
+        elm_object_disabled_set(frame_check, true);
+        elm_frame_collapse_go(frame, false);
+        elm_object_disabled_set(frame, true);
+     }
+
+   eina_list_free(items_list);
+
+   return true;
+}
+
+Eina_Bool
+live_view_property_part_rename(Evas_Object *property __UNUSED__, Part *part __UNUSED__, Eina_Stringshare *new_name __UNUSED__)
+{
+   printf("Signal: rename part name from [%s] to [%s] \n", part->name, new_name);
+   return true;
+}
+
+Eina_Bool
+live_view_property_part_restack_above(Evas_Object *property __UNUSED__, Part *part_move __UNUSED__, Part *part_above __UNUSED__)
+{
+   printf("Signal: moving part [%s] above [%s] \n", part_move->name, part_above->name);
+   return true;
+}
+
+Eina_Bool
+live_view_property_part_restack_below(Evas_Object *property __UNUSED__, Part *part_move, Part *part_below __UNUSED__)
+{
+   printf("Signal: moving part [%s] below [%s] \n", part_move->name, part_below->name);
    return true;
 }
 

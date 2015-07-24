@@ -804,7 +804,8 @@ workspace_highlight_unset(Evas_Object *obj)
    sd->highlight.part = NULL;
    evas_object_hide(sd->highlight.space_hl);
    evas_object_hide(sd->highlight.highlight);
-   groupedit_edit_object_part_select(sd->groupedit, NULL);
+   if (sd->groupedit)
+     groupedit_edit_object_part_select(sd->groupedit, NULL);
 
    evas_object_event_callback_del(sd->highlight.highlight,
                                   EVAS_CALLBACK_MOUSE_MOVE,
@@ -1184,7 +1185,11 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    elm_menu_item_icon_name_set(sd->menu.items.mode_normal,
                                EFLETE_IMG_PATH"context_menu-bullet.png");
    elm_menu_item_icon_name_set(sd->menu.items.mode_separate, "");
-   if (!groupedit_edit_object_set(sd->groupedit, style->obj, file)) return false;
+   if (!groupedit_edit_object_set(sd->groupedit, style->obj, file))
+     {
+        ERR("Can't set groupedit edit object");
+        abort();
+     }
    container_handler_size_set(sd->container.obj, 8, 8, 8, 8);
    evas_object_smart_callback_add(sd->groupedit, "part,selected",
                                   _on_part_select, obj);
@@ -1315,7 +1320,6 @@ workspace_edit_object_recalc(Evas_Object *obj)
      {
         container_min_size_set(app->live_view->live_view, min_w, min_h);
         container_max_size_set(app->live_view->live_view, max_w, max_h);
-        live_view_widget_style_set(app->live_view, app->project, sd->style);
      }
    return groupedit_edit_object_recalc_all(sd->groupedit);
 }
@@ -1481,9 +1485,11 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
    else
      {
         if (sd->highlight.part)
-          name = sd->highlight.part->name;
-        follow = groupedit_edit_object_part_draw_get(sd->groupedit, name);
-        highlight_object_follow(sd->highlight.highlight, follow);
+          {
+             name = sd->highlight.part->name;
+             follow = groupedit_edit_object_part_draw_get(sd->groupedit, name);
+             highlight_object_follow(sd->highlight.highlight, follow);
+          }
         follow = groupedit_part_object_area_get(sd->groupedit);
         highlight_object_follow(sd->highlight.space_hl, follow);
 

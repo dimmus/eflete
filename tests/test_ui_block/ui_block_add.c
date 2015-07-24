@@ -62,32 +62,6 @@ END_TEST
 /**
  * @addtogroup ui_block_add
  * @{
- * <tr>
- * <td>ui_block_add</td>
- * <td>ui_block_add_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- *
- * @procedure
- * @step 1 Call ui_block_add(NULL)
- * </td>
- * <td>NULL</td>
- * <td>NULL returned value</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (ui_block_add_test_n)
-{
-   elm_init(0, 0);
-   ck_assert_msg(!ui_block_add(NULL), "Not NULL returned\n");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_block_add
- * @{
  * </TABLE>
  * @}
  * @}

@@ -66,37 +66,6 @@ END_TEST
 /**
  * @addtogroup history_term
  * @{
- * <tr>
- * <td>history_term</td>
- * <td>history_term_test_n</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- *
- * @procedure
- * @step 1 Call history_term.
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>EINA_FALSE value returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(history_term_test_n)
-{
-   Eina_Bool result = EINA_TRUE;
-   elm_init(0, 0);
-
-   result = history_term(NULL);
-   ck_assert_msg(!result, "Terminate history module with NULL pointer object.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup history_term
- * @{
  * </TABLE>
  * @}
  * @}

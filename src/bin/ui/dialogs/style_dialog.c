@@ -16,6 +16,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
 
 #include "style_dialog.h"
 #include "common_macro.h"
@@ -23,11 +26,9 @@
 
 static Evas_Object *entry_class;
 static Evas_Object *entry_style;
-
-static Elm_Entry_Filter_Accept_Set accept_name = {
-   .accepted = NULL,
-   .rejected = STYLE_NAME_BANNED_SYMBOLS
-};
+static Evas_Object *btn_add;
+static Elm_Validator_Regexp *class_validator = NULL;
+static Elm_Validator_Regexp *style_validator = NULL;
 
 static void
 _reload_classes(App_Data *ap, Eina_Inlist *classes)
@@ -50,26 +51,6 @@ _reload_classes(App_Data *ap, Eina_Inlist *classes)
    ui_widget_list_class_data_reload(gl_classes, classes);
 }
 
-int
-_sort_class_add_cb(const void *data1, const void *data2)
-{
-   Style *style_1 = NULL;
-   Style *style_2 = NULL;
-   int cmp = 0;
-
-   if (!data1) return 1;
-   if (!data2) return -1;
-
-   style_1 = EINA_INLIST_CONTAINER_GET(data1, Style);
-   style_2 = EINA_INLIST_CONTAINER_GET(data2, Style);
-
-   cmp = strcmp(style_1->name, style_2->name);
-
-   if (cmp < 0) return -1;
-   if (cmp > 0) return 1;
-   return 0;
-}
-
 static void
 _job_popup_close(void *data)
 {
@@ -77,6 +58,10 @@ _job_popup_close(void *data)
 
    assert(ap != NULL);
 
+   elm_validator_regexp_free(class_validator);
+   elm_validator_regexp_free(style_validator);
+   class_validator = NULL;
+   style_validator = NULL;
    evas_object_del(ap->popup);
    ap->popup = NULL;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
@@ -134,20 +119,6 @@ _on_popup_btn_yes(void *data,
 
    style_name = eina_stringshare_add(elm_entry_entry_get(entry_style));
    class_name = eina_stringshare_add(elm_entry_entry_get(entry_class));
-
-   if (eina_stringshare_strlen(style_name) <= 0)
-     {
-        NOTIFY_WARNING(_("Please type style name"));
-        STRING_CLEAR;
-        return;
-     }
-
-   if (eina_stringshare_strlen(class_name) <= 0)
-     {
-        NOTIFY_WARNING(_("Please type class name"));
-        STRING_CLEAR;
-        return;
-     }
 
    full_name = eina_stringshare_printf("elm/%s/%s/%s", widget->name, class_name,
                                        style_name);
@@ -307,6 +278,18 @@ _on_popup_btn_yes(void *data,
 #undef STRING_CLEAR
 }
 
+static void
+_on_entry_changed(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   if ((elm_validator_regexp_status_get(class_validator) != ELM_REG_NOERROR) ||
+       (elm_validator_regexp_status_get(style_validator) != ELM_REG_NOERROR))
+     elm_object_disabled_set(btn_add, true);
+   else
+     elm_object_disabled_set(btn_add, false);
+}
+
 /* FIXME: change name to class_dialog_add */
 Eina_Bool
 style_dialog_add(App_Data *ap)
@@ -321,8 +304,12 @@ style_dialog_add(App_Data *ap)
    Evas_Object *nf = NULL;
 
    assert(ap != NULL);
+   assert(class_validator == NULL);
+   assert(style_validator == NULL);
 
    widget = ui_widget_from_ap_get(ap);
+   class_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
+   style_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
 
    assert(widget != NULL);
 
@@ -348,32 +335,34 @@ style_dialog_add(App_Data *ap)
 
    BOX_ADD(ap->popup, box, false, false);
 
-   ITEM_ADD(box, item, "Style name:", "eflete/property/item/default")
-   EWE_ENTRY_ADD(item, entry_style, true);
-   elm_entry_markup_filter_append(entry_style, elm_entry_filter_accept_set, &accept_name);
-   elm_object_part_text_set(entry_style, "guide", _("Type a new style name."));
-   elm_object_part_content_set(item, "elm.swallow.content", entry_style);
-   elm_box_pack_end(box, item);
-
    class_st = ui_class_from_ap_get(ap);
-
-   assert(class_st != NULL);
-
    entry_text = eina_stringshare_add(class_st->name);
 
-   ITEM_ADD(box, item, "Class name:", "eflete/property/item/default")
-   EWE_ENTRY_ADD(box, entry_class, true);
-   elm_entry_markup_filter_append(entry_class, elm_entry_filter_accept_set, &accept_name);
-   ewe_entry_entry_set(entry_class, entry_text);
-   elm_object_part_text_set(entry_class, "guide", _("Type a new class name."));
+   LAYOUT_PROP_ADD(box, _("Class name:"), "property", "1swallow")
+   ENTRY_ADD(box, entry_class, true);
+   eo_do(entry_class, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, class_validator));
+   elm_entry_entry_set(entry_class, entry_text);
+   evas_object_smart_callback_add(entry_class, "changed", _on_entry_changed, NULL);
+   elm_object_part_text_set(entry_class, "guide", _("Type a new class name"));
    elm_object_part_content_set(item, "elm.swallow.content", entry_class);
    elm_box_pack_end(box, item);
 
+   LAYOUT_PROP_ADD(box, _("Style name:"), "property", "1swallow")
+   ENTRY_ADD(item, entry_style, true);
+   eo_do(entry_style, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, style_validator));
+   evas_object_smart_callback_add(entry_style, "changed", _on_entry_changed, NULL);
+   elm_object_part_text_set(entry_style, "guide", _("Type a new style name"));
+   elm_object_part_content_set(item, "elm.swallow.content", entry_style);
+   elm_box_pack_end(box, item);
+
+   assert(class_st != NULL);
+
    elm_object_content_set(ap->popup, box);
 
-   BUTTON_ADD(ap->popup, button, _("Add"));
-   evas_object_smart_callback_add(button, "clicked", _on_popup_btn_yes, ap);
-   elm_object_part_content_set(ap->popup, "button1", button);
+   BUTTON_ADD(ap->popup, btn_add, _("Add"));
+   evas_object_smart_callback_add(btn_add, "clicked", _on_popup_btn_yes, ap);
+   elm_object_part_content_set(ap->popup, "button1", btn_add);
+   elm_object_disabled_set(btn_add, true);
 
    BUTTON_ADD(ap->popup, button, _("Cancel"));
    evas_object_smart_callback_add(button, "clicked", _popup_close_cb, ap);

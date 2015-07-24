@@ -132,4 +132,21 @@ live_view_theme_update(Live_View *live, Project *project);
 Eina_Bool
 live_view_free(Live_View *live);
 
+/****** FUNCTIONS FOR CONNECTOR ***********/
+TODO("We need documentation here! ")
+Eina_Bool
+live_view_part_add(Live_View *live, Part *part);
+
+Eina_Bool
+live_view_part_del(Live_View *live, Part *part);
+
+Eina_Bool
+live_view_part_rename(Live_View *live, Part *part, Eina_Stringshare *new_name);
+
+Eina_Bool
+live_view_part_restack_above(Live_View *live, Part *part_move, Part *part_above);
+
+Eina_Bool
+live_view_part_restack_below(Live_View *live, Part *part_move, Part *part_below);
+
 #endif /* UI_LIVEVIEW_HEADER_H */

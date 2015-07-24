@@ -6,11 +6,9 @@ TESTS = \
 ewe_init_test \
 ewe_tabs_test \
 ewe_combobox_test \
-ewe_entry_test \
 ewe_ruler_test \
 ewe_statusbar_test \
 eflete_test \
-part_dialog_test \
 alloc_test \
 colorclass_manager_test \
 sound_editor_test \
@@ -23,13 +21,11 @@ project_manager_test \
 config_test \
 cursor_test \
 style_editor_test \
-style_dialog_test \
 ui_block_test \
 highlight_test \
 ui_main_window_test \
 ui_signal_list_test \
 ui_states_list_test \
-ui_state_dialog_test \
 ui_widget_list_test \
 groupedit_test \
 ui_workspace_test \
@@ -41,8 +37,7 @@ live_widget_test \
 about_window_test \
 history_test \
 colorselector_test \
-shortcuts_test \
-ui_item_dialog_test
+shortcuts_test
 
 
 check_PROGRAMS = ${TESTS}
@@ -93,20 +88,6 @@ test_ewe_init/test_ewe_init.h \
 test_ewe_init/ewe_init.c
 ewe_init_test_CFLAGS = ${FLAGS}
 ewe_init_test_LDADD = ${LD}
-
-ewe_entry_test_SOURCES = \
-utc_common.h \
-test_ewe_entry/test_ewe_entry.c \
-test_ewe_entry/test_ewe_entry.h \
-test_ewe_entry/ewe_entry_add.c \
-test_ewe_entry/ewe_entry_regex_check.c \
-test_ewe_entry/ewe_entry_regex_set.c \
-test_ewe_entry/ewe_entry_regex_unset.c \
-test_ewe_entry/ewe_entry_regex_glow.c \
-test_ewe_entry/ewe_entry_regex_error_get.c \
-test_ewe_entry/ewe_entry_regex_autocheck.c
-ewe_entry_test_CFLAGS = ${FLAGS}
-ewe_entry_test_LDADD = ${LD}
 
 ewe_ruler_test_SOURCES = \
 utc_common.h \
@@ -233,12 +214,6 @@ test_eflete/colorselector_get.c
 eflete_test_CFLAGS = ${FLAGS}
 eflete_test_LDADD = ${LD}
 
-part_dialog_test_SOURCES = \
-test_part_dialog/test_part_dialog.c \
-test_part_dialog/part_dialog_add.c
-part_dialog_test_CFLAGS = ${FLAGS}
-part_dialog_test_LDADD = ${LD}
-
 alloc_test_SOURCES = \
 test_alloc/test_alloc.c \
 test_alloc/mem_malloc.c \
@@ -364,12 +339,6 @@ test_style_editor/style_editor_window_add.c
 style_editor_test_CFLAGS = ${FLAGS} -DEDC_PATH=\"${srcdir}/test_style_editor/data/\"
 style_editor_test_LDADD = ${LD}
 
-style_dialog_test_SOURCES = \
-test_style_dialog/test_style_dialog.c \
-test_style_dialog/style_dialog_add.c
-style_dialog_test_CFLAGS = ${FLAGS}
-style_dialog_test_LDADD = ${LD}
-
 container_test_SOURCES = \
 test_container/test_container.c \
 test_container/container_add.c \
@@ -471,16 +440,7 @@ ui_states_list_test_LDADD = ${LD}
 ui_widget_list_test_SOURCES = \
 test_ui_widget_list/test_ui_widget_list.c \
 test_ui_widget_list/ui_widget_list_add.c \
-test_ui_widget_list/ui_widget_list_class_data_reload.c \
 test_ui_widget_list/ui_widget_list_data_set.c \
-test_ui_widget_list/ui_widget_list_layouts_reload.c \
-test_ui_widget_list/ui_widget_list_part_add.c \
-test_ui_widget_list/ui_widget_list_selected_part_above.c \
-test_ui_widget_list/ui_widget_list_selected_part_below.c \
-test_ui_widget_list/ui_widget_list_selected_part_del.c \
-test_ui_widget_list/ui_widget_list_selected_part_get.c \
-test_ui_widget_list/ui_widget_list_part_selected_set.c \
-test_ui_widget_list/ui_widget_list_selected_parts_get.c \
 test_ui_widget_list/ui_widget_list_title_set.c \
 test_ui_widget_list/ui_widget_list_tab_activate.c
 ui_widget_list_test_CFLAGS = ${FLAGS}
@@ -525,23 +485,14 @@ test_groupedit/groupedit_add.c \
 test_groupedit/groupedit_bg_set.c \
 test_groupedit/groupedit_bg_unset.c \
 test_groupedit/groupedit_edit_object_part_above.c \
-test_groupedit/groupedit_edit_object_part_add.c \
 test_groupedit/groupedit_edit_object_part_below.c \
-test_groupedit/groupedit_edit_object_part_del.c \
 test_groupedit/groupedit_edit_object_part_draw_get.c \
 test_groupedit/groupedit_edit_object_part_select.c \
-test_groupedit/groupedit_edit_object_part_state_add.c \
-test_groupedit/groupedit_edit_object_part_state_del.c \
-test_groupedit/groupedit_edit_object_part_state_set.c \
 test_groupedit/groupedit_edit_object_parts_separated.c \
 test_groupedit/groupedit_edit_object_parts_separated_is.c \
 test_groupedit/groupedit_edit_object_recalc_all.c \
 test_groupedit/groupedit_edit_object_set.c \
-test_groupedit/groupedit_edit_object_unset.c \
-test_groupedit/groupedit_part_object_area_get.c \
-test_groupedit/groupedit_part_object_area_visible_get.c \
-test_groupedit/groupedit_part_object_area_visible_set.c \
-test_groupedit/groupedit_part_visible_set.c
+test_groupedit/groupedit_edit_object_unset.c
 groupedit_test_CFLAGS = ${FLAGS}
 groupedit_test_LDADD = ${LD}
 
@@ -583,13 +534,6 @@ test_about_window/about_window_add.c
 about_window_test_CFLAGS = ${FLAGS}
 about_window_test_LDADD = ${LD}
 
-ui_state_dialog_test_SOURCES = \
-test_ui_state_dialog/test_ui_state_dialog.c \
-test_ui_state_dialog/state_dialog_state_add.c \
-test_ui_state_dialog/state_dialog_state_del.c
-ui_state_dialog_test_CFLAGS = ${FLAGS}
-ui_state_dialog_test_LDADD = ${LD}
-
 shortcuts_test_SOURCES = \
 test_shortcuts/test_shortcuts.c \
 test_shortcuts/shortcuts_init.c \
@@ -620,12 +564,6 @@ test_history/history_module_depth_set.c \
 test_history/history_module_depth_get.c
 history_test_CFLAGS = ${FLAGS}
 history_test_LDADD = ${LD}
-
-ui_item_dialog_test_SOURCES = \
-test_ui_item_dialog/test_ui_item_dialog.c \
-test_ui_item_dialog/item_dialog_add.c
-ui_item_dialog_test_CFLAGS = ${FLAGS}
-ui_item_dialog_test_LDADD = ${LD}
 
 coverage:
 	echo "<html><body>" > ../coverage.html

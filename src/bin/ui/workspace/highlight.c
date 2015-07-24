@@ -539,6 +539,7 @@ _handler_object_add(Evas_Object *parent,
          cursor_type_set(border, CURSOR_FLEUR);
          break;
       default:
+         ERR("Wrong handler type");
          abort();
          break;
      }

@@ -68,39 +68,6 @@ END_TEST
 /**
  * @addtogroup live_view_property_add
  * @{
- * <tr>
- * <td>live_view_property_add</td>
- * <td>live_view_property_add_test_n</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- *
- * @procedure
- * @step 1 Call live_view_property_add.
- * @step 2 Check returned pointer.
- * </td>
- * <td>NULL</td>
- * <td>NULL pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(live_view_property_add_test_n)
-{
-   Evas_Object *live = NULL;
-
-   elm_init(0, 0);
-
-   live = live_view_property_add(NULL, false);
-   ck_assert_msg(live == NULL, "Live view property object was created "
-                               "with NULL pointer parent");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup live_view_property_add
- * @{
  * </TABLE>
  * @}
  * @}

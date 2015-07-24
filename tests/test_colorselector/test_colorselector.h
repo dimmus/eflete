@@ -26,7 +26,4 @@
  */
 
 void  colorselector_add_test_p(int);
-void  colorselector_add_test_n(int);
 void  colorselector_color_get_test_p(int);
-void  colorselector_color_get_test_n1(int);
-void  colorselector_color_get_test_n2(int);

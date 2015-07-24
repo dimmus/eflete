@@ -146,68 +146,6 @@ END_TEST
 /**
  * @addtogroup wm_program_signals_list_get
  * @{
- * <tr>
- * <td>wm_program_signals_list_get</td>
- * <td>wm_program_signals_list_get_test_n1</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- * @step 2 Empty Style object.
- *
- * @procedure
- * @step 1 Call function wm_program_signals_list_get(style).
- * @step 2 Check returned value.
- * </td>
- * <td>Style *style</td>
- * <td>NULL object pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (wm_program_signals_list_get_test_n1)
-{
-   elm_init(0,0);
-   Style *style = NULL;
-   const char *style_name = "def";
-   const char *full_style_name = "elm/radio/base/test";
-
-   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
-   ck_assert_msg(wm_program_signals_list_get(style) == NULL, "Style returned data that should don't exist.");
-
-   wm_style_free(style);
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup wm_program_signals_list_get
- * @{
- * <tr>
- * <td>wm_program_signals_list_get</td>
- * <td>wm_program_signals_list_get_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- *
- * @procedure
- * @step 1 Call function wm_program_signals_list_get(NULL).
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>NULL object pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (wm_program_signals_list_get_test_n2)
-{
-   elm_init(0,0);
-   ck_assert_msg(wm_program_signals_list_get(NULL) == NULL, "Data returned from null pointer group.");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup wm_program_signals_list_get
- * @{
  * </TABLE>
  * @}
  * @}

@@ -25,14 +25,7 @@
  * @defgroup modal_window_test
  */
 
-void  mw_add_test_p(int);
-void  mw_add_test_n(int);
-void  mw_title_set_test_n1(int);
-void  mw_title_set_test_p(int);
-void  mw_title_set_test_n2(int);
-void  mw_info_text_set_test_p(int);
-void  mw_info_text_set_test_n1(int);
-void  mw_info_text_set_test_n2(int);
-void  mw_icon_set_test_p(int);
-void  mw_icon_set_test_n1(int);
-void  mw_icon_set_test_n2(int);
+void  mw_add_p(int);
+void  mw_title_set_p(int);
+void  mw_info_text_set_p(int);
+void  mw_icon_set_p(int);

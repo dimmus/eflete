@@ -194,7 +194,7 @@ _general_form(Preferences *preference)
     *       ewe_combobox_item_add(profile, version);
     *    }
     */
-   EWE_ENTRY_ADD(pref_layout.general, entry_home, true);
+   ENTRY_ADD(pref_layout.general, entry_home, true);
    elm_object_part_text_set(entry_home, "elm.text", prof_general.projects_folder);
    elm_object_part_content_set(pref_layout.general, "swallow.home", entry_home);
    evas_object_smart_callback_add(entry_home, "changed", _on_home_change, prof);

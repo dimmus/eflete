@@ -91,26 +91,25 @@ _del_part(void *data,
         return;
      }
    part_name = strdup(part->name);
+
    /* In case when deleting part which is dragable area for another part,
       reloading style into liveview crash application */
-   live_view_widget_style_unset(ap->live_view);
    history_diff_add(style->obj, PART_TARGET, DEL, part_name);
+   live_view_part_del(ap->live_view, part);
    if (workspace_edit_object_part_del(ap->workspace, part->name))
      ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), style);
 
    if (!style->parts)
      {
         ui_signal_list_data_unset(ap->block.signal_list);
+        _on_ws_part_unselect(ap, ap->workspace, part_name);
         workspace_highlight_unset(ap->workspace);
         /* Source code is updated on part selection.
            If this was last part we should update it manualy */
         prop_view = ui_block_property_get(ap);
         ui_property_code_of_group_setup(prop_view);
      }
-   else
-     {
-        live_view_widget_style_set(ap->live_view, ap->project, style);
-     }
+
    free(part_name);
    project_changed(true);
 }
@@ -144,7 +143,6 @@ _del_part_item(void *data,
      }
    workspace_edit_object_recalc(ap->workspace);
    project_changed(true);
-   live_view_widget_style_set(ap->live_view, ap->project, ap->project->current_style);
 }
 
 static void
@@ -152,19 +150,22 @@ _above_part(void *data,
           Evas_Object *obj __UNUSED__,
           void *event_info __UNUSED__)
 {
+   Eina_Inlist *tmp_list = NULL;
    App_Data *ap = (App_Data *)data;
    Style *style = ap->project->current_style;
-
-   assert(ap != NULL);
-
    if (!ui_widget_list_selected_part_above(ui_block_widget_list_get(ap), style))
       return;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    if (!part) return;
    history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
    if (!workspace_edit_object_part_above(ap->workspace, part->name))
-     abort();
-   live_view_widget_style_set(ap->live_view, ap->project, style);
+     {
+        NOTIFY_ERROR(_("Internal edje error occurred on part move"));
+        ui_widget_list_selected_part_below(ui_block_widget_list_get(ap), style);
+     }
+   tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
+   Part *rel = EINA_INLIST_CONTAINER_GET(tmp_list->next, Part);
+   live_view_part_restack_above(ap->live_view, part, rel);
    project_changed(true);
 }
 
@@ -173,19 +174,23 @@ _below_part(void *data,
           Evas_Object *obj __UNUSED__,
           void *event_info __UNUSED__)
 {
+   Eina_Inlist *tmp_list = NULL;
    App_Data *ap = (App_Data *)data;
    Style *style = ap->project->current_style;
-
-   assert(ap != NULL);
-
    if (!ui_widget_list_selected_part_below(ui_block_widget_list_get(ap), style))
       return;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    if (!part) return;
    history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
    if (!workspace_edit_object_part_below(ap->workspace, part->name))
-     abort();
-   live_view_widget_style_set(ap->live_view, ap->project, style);
+     {
+        NOTIFY_ERROR(_("Internal edje error occurred on part move"));
+        ui_widget_list_selected_part_above(ui_block_widget_list_get(ap), style);
+     }
+
+   tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
+   Part *rel = EINA_INLIST_CONTAINER_GET(tmp_list->prev, Part);
+   live_view_part_restack_below(ap->live_view, part, rel);
    project_changed(true);
 }
 
@@ -196,25 +201,19 @@ _restack_part_above(void *data,
 {
    App_Data *ap = (App_Data *)data;
    Part *rel = (Part *)event_info;
-
-   assert(ap != NULL);
-
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    Style *style = ap->project->current_style;
    Eina_Inlist *tmp_list = NULL, *tmp_prev = NULL;
 
-   assert(part != NULL);
-   assert(style != NULL);
-
+   if ((!part) || (!style)) return;
    history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
    workspace_edit_object_part_restack(ap->workspace, part->name, rel->name, false);
-   live_view_widget_style_set(ap->live_view, ap->project, style);
+   live_view_part_restack_above(ap->live_view, part, rel);
 
    tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
    tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel));
    project_changed(true);
-
-   assert(tmp_list != NULL);
+   if (!tmp_list) return;
 
    style->parts = eina_inlist_remove(style->parts, tmp_list);
    style->parts = eina_inlist_prepend_relative(style->parts, tmp_list, tmp_prev);
@@ -227,25 +226,19 @@ _restack_part_below(void *data,
 {
    App_Data *ap = (App_Data *)data;
    Part *rel = (Part *)event_info;
-
-   assert(ap != NULL);
-
    Style *style = ap->project->current_style;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    Eina_Inlist *tmp_list = NULL, *tmp_prev = NULL;
 
-   assert(part != NULL);
-   assert(style != NULL);
-
+   if ((!part) || (!style)) return;
    history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
    workspace_edit_object_part_restack(ap->workspace, part->name, rel->name, true);
-   live_view_widget_style_set(ap->live_view, ap->project, style);
+   live_view_part_restack_below(ap->live_view, part, rel);
 
    tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
    tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel));
    project_changed(true);
-
-   assert(tmp_list != NULL);
+   if (!tmp_list) return;
 
    style->parts = eina_inlist_remove(style->parts, tmp_list);
    style->parts = eina_inlist_append_relative(style->parts, tmp_list, tmp_prev);
@@ -263,19 +256,11 @@ _show_part(void *data,
    assert(part_name != NULL);
 
    if (!workspace_edit_object_visible_set(ap->workspace, part_name, true))
-     abort();
+     {
+        ERR("Can't make workspace_edit_object visible");
+        abort();
+     }
 }
-
-/*
-static void
-_live_view_update(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   live_view_theme_update(ap->live_view, ap->project);
-}
-*/
 
 static void
 _signal_select(void *data,
@@ -323,7 +308,10 @@ _hide_part(void *data,
    assert(part_name != NULL);
 
    if (!workspace_edit_object_visible_set(ap->workspace, part_name, false))
-     abort();
+     {
+        ERR("Can't hide workspace_edit_object");
+        abort();
+     }
 }
 
 static void
@@ -436,7 +424,10 @@ _add_layout_cb(void *data,
      }
 
    if (!edje_edit_group_add(ap->project->global_object, name))
-     abort();
+     {
+        ERR("Can't add group");
+        abort();
+     }
 
    pm_save_to_dev(ap->project, NULL, true);
    layout = wm_style_add(name, name, LAYOUT, NULL);
@@ -474,7 +465,7 @@ _popup_layout_add(void *data,
    elm_popup_orient_set(ap->popup, ELM_POPUP_ORIENT_CENTER);
 
    LAYOUT_PROP_ADD(ap->popup, "Style name:", "property", "1swallow")
-   EWE_ENTRY_ADD(item, en, true)
+   ENTRY_ADD(item, en, true)
    elm_object_part_text_set(en, "guide", _("Type a new layout name"));
    elm_entry_markup_filter_append(en, elm_entry_filter_accept_set, &accept_name);
    elm_object_part_content_set(item, "elm.swallow.content", en);
@@ -1001,7 +992,10 @@ _progress_end(void *data, PM_Project_Result result)
            break;
         }
       default:
-         abort();
+        {
+           ERR("Wrong result");
+           abort();
+        }
      }
 
 #ifdef HAVE_ENVENTOR
@@ -1020,14 +1014,8 @@ _progress_end(void *data, PM_Project_Result result)
      }
 #endif /* HAVE_ENVENTOR */
 
-   if (ap->project->current_style)
-     {
-        live_view_widget_style_unset(ap->live_view);
-        live_view_widget_style_set(ap->live_view, ap->project, ap->project->current_style);
-     }
    splash_del(ap->splash);
    ap->splash = NULL;
-
 }
 
 static Eina_Bool
@@ -1123,6 +1111,10 @@ project_changed(Eina_Bool save)
    pm_save_to_dev(ap->project, ap->project->current_style, save);
    ap->project->changed = true;
    ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, false);
+   /* for example this function will be called after adding layout, so no need
+      in updating live view */
+   if (ap->project->current_style)
+     live_view_theme_update(ap->live_view, ap->project);
 }
 
 /******************************************************************************/
@@ -1643,7 +1635,10 @@ _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
    pm_save_to_dev(ap->project, NULL, true);
    evas_object_del(style->obj);
    if (!edje_edit_group_del(ap->project->global_object, style->full_group_name))
-     abort();
+     {
+        ERR("Can't del group");
+        abort();
+     }
    ap->project->layouts = eina_inlist_remove(ap->project->layouts,
                                              EINA_INLIST_GET(style));
    ui_widget_list_layouts_reload(genlist, ap->project);

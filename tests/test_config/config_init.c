@@ -63,34 +63,6 @@ END_TEST
 /**
  * @addtogroup config_init
  * @{
- * <tr>
- * <td>config_init</td>
- * <td>config_init_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 call config_init
- * </td>
- * <td>NULL</td>
- * <td>EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(config_init_test_n)
-{
-   elm_init(0,0);
-
-   ck_assert_msg(!config_init(NULL), "Config was initialized.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup config_init
- * @{
  * </TABLE>
  * @}
  * @}

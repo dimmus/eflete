@@ -27,7 +27,6 @@
 
 #define ITEM "item"
 #define EDJE_EDIT_OBJ "edje_edit_obj"
-#define PART_NAME "part_name"
 #define SIGNAL_NAME "signal_data_name"
 #define SIGNAL_SOURCE "signal_data_source"
 

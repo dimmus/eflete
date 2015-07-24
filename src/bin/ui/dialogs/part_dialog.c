@@ -16,6 +16,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
 
 #include "part_dialog.h"
 #include "string_common.h"
@@ -34,11 +37,7 @@
      }
 
 static Evas_Object *entry;
-
-static Elm_Entry_Filter_Accept_Set accept_name = {
-   .accepted = NULL,
-   .rejected = PART_NAME_BANNED_SYMBOLS
-};
+static Elm_Validator_Regexp *name_validator = NULL;
 
 static void
 _job_popup_del(void *data)
@@ -46,7 +45,10 @@ _job_popup_del(void *data)
    App_Data *ap = (App_Data *)data;
 
    assert(ap != NULL);
+   assert(name_validator != NULL);
 
+   elm_validator_regexp_free(name_validator);
+   name_validator = NULL;
    evas_object_del(ap->popup);
    ap->popup = NULL;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
@@ -76,7 +78,8 @@ _cancel_clicked(void *data,
    history_diff_add(style->obj, PART_TARGET, ADD, name); \
    ap->popup = NULL; \
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false); \
-   live_view_widget_style_set(ap->live_view, ap->project, style); \
+   live_view_part_add(ap->live_view, ui_widget_list_selected_part_get(widget_list)); \
+   ecore_job_add(_job_popup_del, data); \
    project_changed(true);
 
 static void
@@ -196,6 +199,9 @@ part_dialog_add(App_Data *ap)
    assert(win != NULL);
    assert(workspace != NULL);
    assert(widget_list != NULL);
+   assert(name_validator == NULL);
+
+   name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
 
    style = workspace_edit_object_get(workspace);
    ap->popup = elm_popup_add(ap->win);
@@ -203,8 +209,8 @@ part_dialog_add(App_Data *ap)
    elm_object_part_text_set(ap->popup, "title,text", title);
 
    BOX_ADD(ap->popup, box, EINA_FALSE, EINA_TRUE);
-   EWE_ENTRY_ADD(box, entry, EINA_TRUE);
-   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_name);
+   ENTRY_ADD(box, entry, EINA_TRUE);
+   eo_do(entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, name_validator));
    elm_object_part_text_set(entry, "guide", _("Type the new part new."));
    evas_object_show(entry);
    elm_box_pack_end(box, entry);

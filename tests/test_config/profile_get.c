@@ -34,39 +34,6 @@
  * @{
  * <tr>
  * <td>profile_get</td>
- * <td>profile_get_test_p1</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 initialize application data
- * @step 3 initialize config
- *
- * @procedure
- * @step 1 call profile_get
- * </td>
- * <td>void</td>
- * <td>NULL</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(profile_get_test_p1)
-{
-   elm_init(0,0);
-   app_init();
-   App_Data *app = app_data_get();
-   config_init(app);
-
-   ck_assert_msg(profile_get() == NULL, "Profile not NULL");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup profile_get
- * @{
- * <tr>
- * <td>profile_get</td>
  * <td>profile_get_test_p2</td>
  * <td>
  * @precondition

@@ -23,43 +23,26 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("highlight_test");
    TCase *tcase = tcase_create("TCase");
    tcase_add_test(tcase, highlight_add_test_p);
-   tcase_add_test(tcase, highlight_add_test_n);
 
    tcase_add_test(tcase, highlight_handler_disabled_set_test_p1);
    tcase_add_test(tcase, highlight_handler_disabled_set_test_p2);
-   tcase_add_test(tcase, highlight_handler_disabled_set_test_n1);
-   tcase_add_test(tcase, highlight_handler_disabled_set_test_n2);
 
    tcase_add_test(tcase, highlight_handler_align_hide_test_p1);
    tcase_add_test(tcase, highlight_handler_align_hide_test_p2);
-   tcase_add_test(tcase, highlight_handler_align_hide_test_n1);
-   tcase_add_test(tcase, highlight_handler_align_hide_test_n2);
 
    tcase_add_test(tcase, highlight_handler_align_show_test_p1);
    tcase_add_test(tcase, highlight_handler_align_show_test_p2);
-   tcase_add_test(tcase, highlight_handler_align_show_test_n1);
-   tcase_add_test(tcase, highlight_handler_align_show_test_n2);
 
    tcase_add_test(tcase, highlight_handler_align_visible_get_test_p1);
    tcase_add_test(tcase, highlight_handler_align_visible_get_test_p2);
-   tcase_add_test(tcase, highlight_handler_align_visible_get_test_n1);
-   tcase_add_test(tcase, highlight_handler_align_visible_get_test_n2);
 
    tcase_add_test(tcase, highlight_handler_mode_set_test_p);
-   tcase_add_test(tcase, highlight_handler_mode_set_test_n1);
-   tcase_add_test(tcase, highlight_handler_mode_set_test_n2);
 
    tcase_add_test(tcase, highlight_object_follow_test_p1);
    tcase_add_test(tcase, highlight_object_follow_test_p2);
-   tcase_add_test(tcase, highlight_object_follow_test_n1);
-   tcase_add_test(tcase, highlight_object_follow_test_n2);
-   tcase_add_test(tcase, highlight_object_follow_test_n3);
-   tcase_add_test(tcase, highlight_object_follow_test_n4);
 
    tcase_add_test(tcase, highlight_object_unfollow_test_p1);
    tcase_add_test(tcase, highlight_object_unfollow_test_p2);
-   tcase_add_test(tcase, highlight_object_unfollow_test_n1);
-   tcase_add_test(tcase, highlight_object_unfollow_test_n2);
    suite_add_tcase(suite, tcase);
    return suite;
 }

@@ -112,36 +112,6 @@ END_TEST
 /**
  * @addtogroup container_confine_unset
  * @{
- * <tr>
- * <td>container_confine_unset</td>
- * <td>container_confine_unset_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 try to unconfine object from NULL
- * @step 2 check returned value
- * </td>
- * <td>NULL</td>
- * <td>EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(container_confine_unset_test_n2)
-{
-   elm_init(0, 0);
-
-   ck_assert_msg(container_confine_unset(NULL) == EINA_FALSE,
-                 "Unconfining NULL object was successful.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup container_confine_unset
- * @{
  * </TABLE>
  * @}
  * @}

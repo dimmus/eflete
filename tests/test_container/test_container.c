@@ -24,75 +24,35 @@ Suite* test_suite (void) {
    TCase *tcase = tcase_create("TCase");
 
    tcase_add_test(tcase, container_add_test_p);
-   tcase_add_test(tcase, container_add_test_n);
-
+   tcase_add_test(tcase, container_border_hide_test_p);
+   tcase_add_test(tcase, container_border_show_test_p);
+   tcase_add_test(tcase, container_confine_set_test_p);
+   tcase_add_test(tcase, container_confine_unset_test_n1);
+   tcase_add_test(tcase, container_confine_unset_test_p);
+   tcase_add_test(tcase, container_container_size_get_test_p);
    tcase_add_test(tcase, container_container_size_set_test_p1);
    tcase_add_test(tcase, container_container_size_set_test_p2);
    tcase_add_test(tcase, container_container_size_set_test_p3);
-   tcase_add_test(tcase, container_container_size_set_test_n);
-
-   tcase_add_test(tcase, container_container_size_get_test_p);
-   tcase_add_test(tcase, container_container_size_get_test_n);
-
-   tcase_add_test(tcase, container_min_size_set_test_p);
-   tcase_add_test(tcase, container_min_size_set_test_n);
-
-   tcase_add_test(tcase, container_max_size_set_test_p);
-   tcase_add_test(tcase, container_max_size_set_test_n);
-
-   tcase_add_test(tcase, container_handler_size_set_test_p);
-   tcase_add_test(tcase, container_handler_size_set_test_n1);
+   tcase_add_test(tcase, container_content_set_test_p);
+   tcase_add_test(tcase, container_content_unset_test_n1);
+   tcase_add_test(tcase, container_content_unset_test_p);
+   tcase_add_test(tcase, container_handler_size_get_test_p);
    tcase_add_test(tcase, container_handler_size_set_test_n2);
    tcase_add_test(tcase, container_handler_size_set_test_n3);
    tcase_add_test(tcase, container_handler_size_set_test_n4);
    tcase_add_test(tcase, container_handler_size_set_test_n5);
-
-   tcase_add_test(tcase, container_handler_size_get_test_p);
-   tcase_add_test(tcase, container_handler_size_get_test_n);
-
-   tcase_add_test(tcase, container_style_set_test_p);
-   tcase_add_test(tcase, container_style_set_test_n1);
-   tcase_add_test(tcase, container_style_set_test_n2);
-
-   tcase_add_test(tcase, container_style_get_test_p);
-   tcase_add_test(tcase, container_style_get_test_n);
-
-   tcase_add_test(tcase, container_content_set_test_p);
-   tcase_add_test(tcase, container_content_set_test_n1);
-   tcase_add_test(tcase, container_content_set_test_n2);
-
-   tcase_add_test(tcase, container_content_unset_test_p);
-   tcase_add_test(tcase, container_content_unset_test_n1);
-   tcase_add_test(tcase, container_content_unset_test_n2);
-
-   tcase_add_test(tcase, container_confine_set_test_p);
-   tcase_add_test(tcase, container_confine_set_test_n1);
-   tcase_add_test(tcase, container_confine_set_test_n2);
-
-   tcase_add_test(tcase, container_confine_unset_test_p);
-   tcase_add_test(tcase, container_confine_unset_test_n1);
-   tcase_add_test(tcase, container_confine_unset_test_n2);
-
-   tcase_add_test(tcase, container_border_show_test_p);
-   tcase_add_test(tcase, container_border_show_test_n1);
-   tcase_add_test(tcase, container_border_show_test_n2);
-
-   tcase_add_test(tcase, container_border_hide_test_p);
-   tcase_add_test(tcase, container_border_hide_test_n1);
-   tcase_add_test(tcase, container_border_hide_test_n2);
-
-   tcase_add_test(tcase, container_padding_size_set_test_p);
-   tcase_add_test(tcase, container_padding_size_set_test_n1);
-   tcase_add_test(tcase, container_padding_size_set_test_n2);
+   tcase_add_test(tcase, container_handler_size_set_test_p);
+   tcase_add_test(tcase, container_max_size_set_test_p);
+   tcase_add_test(tcase, container_min_size_set_test_p);
+   tcase_add_test(tcase, container_padding_size_get_test_p1);
+   tcase_add_test(tcase, container_padding_size_get_test_p2);
    tcase_add_test(tcase, container_padding_size_set_test_n3);
    tcase_add_test(tcase, container_padding_size_set_test_n4);
    tcase_add_test(tcase, container_padding_size_set_test_n5);
    tcase_add_test(tcase, container_padding_size_set_test_n6);
-
-   tcase_add_test(tcase, container_padding_size_get_test_p1);
-   tcase_add_test(tcase, container_padding_size_get_test_p2);
-   tcase_add_test(tcase, container_padding_size_get_test_n1);
-   tcase_add_test(tcase, container_padding_size_get_test_n2);
+   tcase_add_test(tcase, container_padding_size_set_test_p);
+   tcase_add_test(tcase, container_style_get_test_p);
+   tcase_add_test(tcase, container_style_set_test_p);
 
    suite_add_tcase(suite, tcase);
    return suite;

@@ -78,36 +78,6 @@ END_TEST
 /**
  * @addtogroup container_container_size_get
  * @{
- * <tr>
- * <td>container_container_size_get</td>
- * <td>container_container_size_get_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 get the new size for container container
- * @step 2 check returned value
- * </td>
- * <td>NULL, NULL, NULL</td>
- * <td>EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(container_container_size_get_test_n)
-{
-   elm_init(0, 0);
-
-   ck_assert_msg(!container_container_size_get(NULL, NULL, NULL),
-                 "Success to get the container container size.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup container_container_size_get
- * @{
  * </TABLE>
  * @}
  * @}

@@ -150,14 +150,16 @@ _part_redo(Evas_Object *source, Part_Diff *change)
 
    Evas_Object *prop = ui_block_property_get(app);
    Evas_Object *widget_list = ui_block_widget_list_get(app);
-   live_view_widget_style_unset(app->live_view);
 
    switch (change->diff.action_type)
      {
       case ADD:
          if (!workspace_edit_object_part_add(app->workspace, change->part,
                                              change->params->type, NULL))
-           abort();
+           {
+              ERR("Can't add part to workspace");
+              abort();
+           }
          if (change->params->type == EDJE_PART_TYPE_IMAGE)
            {
               EINA_LIST_FOREACH_SAFE(change->states, l, l_next, state)
@@ -200,10 +202,12 @@ _part_redo(Evas_Object *source, Part_Diff *change)
          ui_widget_list_part_selected_set(widget_list, change->part, true);
       break;
       default:
-         abort();
+        {
+           ERR("Wrong action type");
+           abort();
+        }
       break;
      }
-   live_view_widget_style_set(app->live_view, app->project, style);
    return true;
 }
 
@@ -227,8 +231,6 @@ _part_undo(Evas_Object *source, Part_Diff *change)
    Evas_Object *prop = ui_block_property_get(app);
    Evas_Object *widget_list = ui_block_widget_list_get(app);
 
-   live_view_widget_style_unset(app->live_view);
-
    switch (change->diff.action_type)
      {
       case ADD:
@@ -244,7 +246,10 @@ _part_undo(Evas_Object *source, Part_Diff *change)
       case DEL:
          if (!workspace_edit_object_part_add(app->workspace, change->part,
                                              change->params->type, NULL))
-           abort();
+           {
+              ERR("Can't add part to workspace");
+              abort();
+           }
          _part_params_restore(source, change->part, change->params);
          EINA_LIST_FOREACH_SAFE(change->states, l, l_next, state)
            {
@@ -280,10 +285,12 @@ _part_undo(Evas_Object *source, Part_Diff *change)
          ui_widget_list_part_selected_set(widget_list, change->part, true);
       break;
       default:
-         abort();
+        {
+           ERR("Wrong action type");
+           abort();
+        }
       break;
      }
-   live_view_widget_style_set(app->live_view, app->project, style);
    return true;
 }
 

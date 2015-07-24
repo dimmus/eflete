@@ -313,7 +313,10 @@ wm_style_data_load(Style *style, Evas *e, Eina_File *mmap_file)
    edje_edit_obj = edje_edit_object_add(e);
 
    if (!edje_object_mmap_set(edje_edit_obj, mmap_file, style->full_group_name))
-     abort();
+     {
+        ERR("Can't set mmap object");
+        abort();
+     }
 
    edje_object_freeze(edje_edit_obj);
    evas_object_freeze_events_set(edje_edit_obj, true);

@@ -70,11 +70,7 @@ EFLETE_TEST(ui_panes_add_test_p)
    elm_init(0, 0);
    app_init();
    app_data = app_data_get();
-   config_init(app_data);
-   config_load(app_data);
-
-   app_data->win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
-   app_data->win_layout = elm_layout_add(app_data->win);
+   ui_main_window_add(app_data);
 
    ret = ui_panes_add(app_data);
    ck_assert_msg(ret == EINA_TRUE, "Failed to create panes");
@@ -90,79 +86,6 @@ EFLETE_TEST(ui_panes_add_test_p)
                  "Failed to create right_bottom block");
    ck_assert_msg(app_data->block.canvas != NULL,
                  "Failed to create canvas block");
-
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_panes_add
- * @{
- * <tr>
- * <td>ui_panes_add</td>
- * <td>ui_panes_add_test_n1</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- * @step 2 Initialize requred libraries.
- * @step 3 Create application data structure.
- *
- * @procedure
- * @step 1 Call ui_panes_add.
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(ui_panes_add_test_n1)
-{
-   Eina_Bool ret = EINA_TRUE;
-
-   elm_init(0, 0);
-   app_init();
-
-   ret = ui_panes_add(NULL);
-   ck_assert_msg(ret == EINA_FALSE, "Create panes without application data");
-
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_panes_add
- * @{
- * <tr>
- * <td>ui_panes_add</td>
- * <td>ui_panes_add_test_n2</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- * @step 2 Initialize requred libraries.
- *
- * @procedure
- * @step 1 Call ui_panes_add.
- * @step 2 Check returned value.
- * </td>
- * <td>(App_Data *)app_data</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(ui_panes_add_test_n2)
-{
-   App_Data *app_data = NULL;
-   Eina_Bool ret = EINA_TRUE;
-
-   elm_init(0, 0);
-   app_init();
-   app_data = app_data_get();
-
-   ret = ui_panes_add(app_data);
-   ck_assert_msg(ret == EINA_FALSE, "Create panes without main window create");
 
    app_shutdown();
    elm_shutdown();

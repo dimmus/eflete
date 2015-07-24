@@ -71,33 +71,6 @@ END_TEST
 /**
  * @addtogroup wm_widget_list_new
  * @{
- * <tr>
- * <td>wm_widget_list_new</td>
- * <td>wm_widget_list_new_test_p</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- *
- * @procedure
- * @step 1 Call function wm_widget_list_new(NULL).
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>NULL object pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (wm_widget_list_new_test_n)
-{
-   elm_init(0,0);
-   ck_assert_msg(wm_widgets_list_new(NULL) == NULL, "new widget list was created");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup wm_widget_list_new
- * @{
  * </TABLE>
  * @}
  * @}

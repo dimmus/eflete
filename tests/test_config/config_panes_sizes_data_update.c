@@ -73,43 +73,6 @@ END_TEST
 /**
  * @addtogroup config_panes_sizes_data_update
  * @{
- * <tr>
- * <td>config_panes_sizes_data_update</td>
- * <td>config_panes_sizes_data_update_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 create application data
- * @step 3 init config
- *
- * @procedure
- * @step 1 Call config_panes_sizes_data_update(ap)
- * @step 2 Check returned value
- * </td>
- * <td>App_Data *app_data</td>
- * <td>EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(config_panes_sizes_data_update_test_n)
-{
-   App_Data *app_data;
-   Eina_Bool result = EINA_FALSE;
-   elm_init(0,0);
-   app_init();
-   app_data = app_data_get();
-   config_init(app_data);
-
-   result = config_panes_sizes_data_update(app_data);
-   ck_assert_msg(result == EINA_FALSE, "Should not update Panes sizes data if main window is not added");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup config_panes_sizes_data_update
- * @{
  * </TABLE>
  * @}
  * @}

@@ -144,38 +144,6 @@ END_TEST
 /**
  * @addtogroup workspace_highlight_align_visible_set
  * @{
- * <tr>
- * <td>workspace_highlight_align_visible_set</td>
- * <td>workspace_highlight_align_visible_set_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 call workspace_highlight_align_visible_set(EINA_TRUE)
- * @step 2 check returned value
- * </td>
- * <td>NULL, EINA_TRUE</td>
- * <td>Returned EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(workspace_highlight_align_visible_set_test_n)
-{
-   Eina_Bool res;
-
-   elm_init(0, 0);
-
-   res = workspace_highlight_align_visible_set(NULL, EINA_TRUE);
-   ck_assert_msg(res == EINA_FALSE, "Failed setting visibility for highlight's align handler");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup workspace_highlight_align_visible_set
- * @{
  * </TABLE>
  * @}
  * @}

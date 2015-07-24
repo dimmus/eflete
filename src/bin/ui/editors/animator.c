@@ -16,6 +16,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
 
 #include "animator.h"
 #include "animator_private.h"
@@ -38,7 +41,9 @@ struct _Animator
 
    struct {
         Evas_Object *popup;
+        Elm_Validator_Regexp *name_validator;
         Evas_Object *entry;
+        Evas_Object *btn_add;
    } popup;
    struct {
         Evas_Object *play;
@@ -52,11 +57,6 @@ struct _Animator
 typedef struct _Animator Animator;
 
 static Elm_Genlist_Item_Class *_itc_prog, *_itc_prog_after;
-
-static Elm_Entry_Filter_Accept_Set accept_name = {
-     .accepted = NULL,
-     .rejected = EDITORS_BANNED_SYMBOLS
-};
 
 /* onload callback for live object. needed to interrupt onload/onshow programs */
 static void
@@ -238,7 +238,7 @@ _on_add_popup_bt_add(void *data,
                      void *ei __UNUSED__)
 {
    Elm_Object_Item *glit_prog = NULL;
-   App_Data *ap = app_data_get();
+   //App_Data *ap = app_data_get();
    Animator *animator = (Animator*)data;
    Eina_Stringshare *name = elm_entry_entry_get(animator->popup.entry);
 
@@ -263,9 +263,11 @@ _on_add_popup_bt_add(void *data,
    animator->popup.popup = NULL;
    animator->popup.entry = NULL;
 
+   /* move to "Apply"?
    live_view_widget_style_set(animator->live, ap->project, animator->style);
    edje_object_signal_callback_add(animator->live->object, "show", "",
                                    _on_object_load, animator);
+   */
 }
 
 static void
@@ -276,6 +278,10 @@ _on_add_popup_bt_cancel(void *data,
    Animator *animator = (Animator*)data;
 
    assert(animator != NULL);
+   assert(animator->popup.name_validator != NULL);
+
+   elm_validator_regexp_free(animator->popup.name_validator);
+   animator->popup.name_validator = NULL;
 
    evas_object_del(animator->popup.popup);
    animator->popup.popup = NULL;
@@ -298,6 +304,7 @@ _on_bt_prog_del(void *data,
    program_name = elm_object_item_part_text_get(glit, "elm.text");
    if (!edje_edit_program_del(animator->style->obj, program_name))
      {
+        ERR("Can't del program");
         abort();
      }
    else
@@ -318,6 +325,21 @@ _on_bt_prog_del(void *data,
 }
 
 static void
+_validation(void *data,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
+{
+   Animator *animator = (Animator*)data;
+   
+   assert(animator != NULL);
+
+   if (elm_validator_regexp_status_get(animator->popup.name_validator) != ELM_REG_NOERROR)
+     elm_object_disabled_set(animator->popup.btn_add, true);
+   else
+     elm_object_disabled_set(animator->popup.btn_add, false);
+}
+
+static void
 _on_bt_prog_add(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
@@ -328,27 +350,29 @@ _on_bt_prog_add(void *data,
    Animator *animator = (Animator*)data;
 
    assert(animator != NULL);
+   assert(animator->popup.name_validator == NULL);
 
    animator->popup.popup = elm_popup_add(animator->mwin);
    elm_object_part_text_set(animator->popup.popup, "title,text",
                             _("New program"));
 
-   ITEM_ADD(animator->popup.popup, item, _("Program name:"), "eflete/property/item/default");
-   EWE_ENTRY_ADD(item, animator->popup.entry, true)
-   elm_entry_markup_filter_append(animator->popup.entry,
-                                  elm_entry_filter_accept_set, &accept_name);
+   animator->popup.name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
+   LAYOUT_PROP_ADD(animator->popup.popup, _("Frequency:"), "property", "1swallow")
+   ENTRY_ADD(item, animator->popup.entry, true)
+   eo_do(animator->popup.entry,
+         eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, animator->popup.name_validator));
+   evas_object_smart_callback_add(animator->popup.entry, "changed", _validation, animator);
    elm_object_part_content_set(item, "elm.swallow.content", animator->popup.entry);
 
    elm_object_content_set(animator->popup.popup, item);
 
-   BUTTON_ADD(animator->popup.popup, button, _("Ok"));
-   evas_object_smart_callback_add(button, "clicked", _on_add_popup_bt_add,
-                                  animator);
-   elm_object_part_content_set(animator->popup.popup, "button1", button);
+   BUTTON_ADD(animator->popup.popup, animator->popup.btn_add, _("Ok"));
+   evas_object_smart_callback_add(animator->popup.btn_add, "clicked", _on_add_popup_bt_add, animator);
+   elm_object_part_content_set(animator->popup.popup, "button1", animator->popup.btn_add);
+   elm_object_disabled_set(animator->popup.btn_add, true);
 
    BUTTON_ADD(animator->popup.popup, button, _("Cancel"));
-   evas_object_smart_callback_add(button, "clicked", _on_add_popup_bt_cancel,
-                                  animator);
+   evas_object_smart_callback_add(button, "clicked", _on_add_popup_bt_cancel, animator);
    elm_object_part_content_set(animator->popup.popup, "button2", button);
 
    evas_object_show(animator->popup.popup);

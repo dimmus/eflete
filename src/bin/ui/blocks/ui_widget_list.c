@@ -714,9 +714,9 @@ _on_style_clicked_double(void *data,
    assert(nf_widgets != NULL);
    assert(nf_layouts != NULL);
    assert(_style != NULL);
-   assert((_style->__type == STYLE) ||
-          (_style->__type == LAYOUT));
 
+   if ((_style->__type != STYLE) && (_style->__type != LAYOUT))
+     return;
    if (nf == nf_widgets)
      {
         naviframe_items = elm_naviframe_items_get(nf_layouts);
@@ -1292,6 +1292,7 @@ ui_widget_list_part_add(Evas_Object *object, Style *style, const char *name)
      }
    else
      {
+        ERR("Wrong style type");
         abort();
      }
 
@@ -1463,6 +1464,7 @@ _selected_part_move(Evas_Object *object, Style *style, Eina_Bool move_up)
         if (_part == part)
           {
              prev_elm = itr->prev;
+             next_elm = itr->next;
              style->parts = eina_inlist_remove(style->parts, itr);
              style->parts = (move_up) ? eina_inlist_prepend_relative(style->parts,
                                                                      itr, prev_elm):
@@ -1529,12 +1531,18 @@ ui_widget_list_part_selected_set(Evas_Object *object,
    assert(gl_parts != NULL);
 
    Elm_Object_Item *item = _genlist_find_item_by_name(gl_parts, part);
-   assert(item != NULL);
 
-   elm_genlist_item_selected_set(item, selected);
-   elm_genlist_item_bring_in(item, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
-
-   return true;
+   if (item)
+     {
+        elm_genlist_item_selected_set(item, selected);
+        elm_genlist_item_bring_in(item, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
+        return true;
+     }
+   else
+     {
+        ERR("This should appear only in tests to skip actual part selection");
+        return false;
+     }
 }
 
 Eina_Bool

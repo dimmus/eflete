@@ -90,64 +90,6 @@ END_TEST
 /**
  * @addtogroup wm_part_type_get
  * @{
- * <tr>
- * <td>wm_part_type_get</td>
- * <td>wm_part_type_get_test_n1</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- * @step 2 Unexisting Edje Part Type prepared.
- *
- * @procedure
- * @step 1 Call function wm_part_type_get(55).
- * @step 2 Check returned object.
- * </td>
- * <td>Edje_Part_Type type = 55</td>
- * <td>NULL string returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (wm_part_type_get_test_n1)
-{
-   elm_init(0,0);
-   Edje_Part_Type type = 55;
-   ck_assert_msg(!wm_part_type_get(type), "Not NULL returned");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup wm_part_type_get
- * @{
- * <tr>
- * <td>wm_part_type_get</td>
- * <td>wm_part_type_get_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- * @step 2 Unexisting Edje Part Type prepared.
- *
- * @procedure
- * @step 1 Call function wm_part_type_get(-13).
- * @step 2 Check returned object.
- * </td>
- * <td>Edje_Part_Type type = -13</td>
- * <td>NULL string returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (wm_part_type_get_test_n2)
-{
-   elm_init(0,0);
-   Edje_Part_Type type = -13;
-   ck_assert_msg(!wm_part_type_get(type), "Not NULL returned");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup wm_part_type_get
- * @{
  * </TABLE>
  * @}
  * @}

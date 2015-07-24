@@ -1014,7 +1014,7 @@ _image_info_box_create(Image_Editor *img_edit)
    evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(layout);
 
-   EWE_ENTRY_ADD(layout, img_edit->image_data_fields.file_name, true);
+   ENTRY_ADD(layout, img_edit->image_data_fields.file_name, true);
    elm_entry_editable_set(img_edit->image_data_fields.file_name, false);
    elm_object_part_content_set(layout, "eflete.swallow.image_info.name",
                                img_edit->image_data_fields.file_name);
