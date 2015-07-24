@@ -3,6 +3,7 @@
 #include "layouts/live_view.edc"
 #include "layouts/live_view_toolbar_helper.edc"
 #include "layouts/property.edc"
+#include "layouts/signal_list.edc"
 
 group { name: "elm/layout/window/main";
    images {
