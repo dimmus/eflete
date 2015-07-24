@@ -130,6 +130,6 @@ Eina_Bool
 live_view_property_part_restack_above(Evas_Object *property, Part *part_move, Part *part_above);
 
 Eina_Bool
-live_view_property_part_restack_below(Evas_Object *property, Part *part_move, Part *part_below);
+live_view_property_part_restack_below(Evas_Object *property, Part *part_move);
 
 #endif /* UI_LIVEVIEWPROP_HEADER_H */

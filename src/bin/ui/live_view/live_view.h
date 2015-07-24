@@ -147,6 +147,6 @@ Eina_Bool
 live_view_part_restack_above(Live_View *live, Part *part_move, Part *part_above);
 
 Eina_Bool
-live_view_part_restack_below(Live_View *live, Part *part_move, Part *part_below);
+live_view_part_restack_below(Live_View *live, Part *part_move);
 
 #endif /* UI_LIVEVIEW_HEADER_H */
