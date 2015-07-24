@@ -196,7 +196,6 @@ _history_ui_state_update(Evas_Object *source, State_Diff *change)
      }
    ui_widget_list_part_selected_set(ui_block_widget_list_get(app), change->part,
                                     true);
-   live_view_widget_style_set(app->live_view, app->project, style);
 }
 
 State_Params *

@@ -150,7 +150,6 @@ _part_redo(Evas_Object *source, Part_Diff *change)
 
    Evas_Object *prop = ui_block_property_get(app);
    Evas_Object *widget_list = ui_block_widget_list_get(app);
-   live_view_widget_style_unset(app->live_view);
 
    switch (change->diff.action_type)
      {
@@ -209,7 +208,6 @@ _part_redo(Evas_Object *source, Part_Diff *change)
         }
       break;
      }
-   live_view_widget_style_set(app->live_view, app->project, style);
    return true;
 }
 
@@ -232,8 +230,6 @@ _part_undo(Evas_Object *source, Part_Diff *change)
 
    Evas_Object *prop = ui_block_property_get(app);
    Evas_Object *widget_list = ui_block_widget_list_get(app);
-
-   live_view_widget_style_unset(app->live_view);
 
    switch (change->diff.action_type)
      {
@@ -295,7 +291,6 @@ _part_undo(Evas_Object *source, Part_Diff *change)
         }
       break;
      }
-   live_view_widget_style_set(app->live_view, app->project, style);
    return true;
 }
 
