@@ -515,13 +515,16 @@ _add_style_dailog(void *data,
 static void
 _part_name_change(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
-   const char *part = (const char *)event_info;
+   const char *new_name = (const char *)event_info;
    App_Data *ap = (App_Data *)data;
 
    assert(ap != NULL);
-   assert(part != NULL);
+   assert(new_name != NULL);
 
-   ui_widget_list_part_update(ui_block_widget_list_get(ap), part);
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+
+   live_view_part_rename(ap->live_view, part, new_name);
+   ui_widget_list_part_update(ui_block_widget_list_get(ap), part->name);
 }
 
 static void
