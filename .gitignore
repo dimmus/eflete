@@ -29,7 +29,7 @@ tests/ewe_statusbar_test
 tests/ewe_tabs_test
 tests/addpart_test
 tests/alloc_test
-tests/colorclass_editor_test
+tests/colorclass_manager_test
 tests/colorclasses_edit_api_test
 tests/edje_compile_test
 tests/font_viewer_dialog_test
@@ -78,6 +78,7 @@ tests/html/
 #tests
 tests/*xml
 Testing/*
+tests/doxygen_sqlite3.db
 
 #Autotools generated objects
 config.cache-env
