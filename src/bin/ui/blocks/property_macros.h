@@ -1539,14 +1539,14 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj STATE_ARGS, value)) \
      { \
-       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       ERR("edje_edit_"#SUB"_"#VALUE"_set value '%d' is failed", value); \
        abort(); \
      } \
    if ((value CHECK opposite_value) && (opposite_value != -1)) \
      { \
         if (!edje_edit_##SUB##_##DIF_VALUE##_set(pd->wm_style->obj STATE_ARGS, value)) \
           { \
-            ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+            ERR("edje_edit_"#SUB"_"#VALUE"_set value '%d' is failed", value); \
             abort(); \
           } \
         elm_spinner_value_set(pd->state.DIF_VALUE, value); \
