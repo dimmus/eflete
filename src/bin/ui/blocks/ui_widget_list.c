@@ -857,7 +857,9 @@ _item_style_content_get(void *data,
    assert(_style != NULL);
 
    if ((!strcmp(part, "elm.swallow.end")) && (_style->isAlias))
-     IMAGE_ADD_NEW(obj, icon, "icon", "alias_link");
+     {
+        IMAGE_ADD_NEW(obj, icon, "icon", "alias_link");
+     }
 
    return icon;
 }
