@@ -976,8 +976,6 @@ group { name: "elm/layout/property/color";
       part { name: "base";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0.0 0.5;
-            fixed: 1 1;
             min: 50 19;
             max: 50 19;
          }
