@@ -67,6 +67,7 @@ EFLETE_TEST (pm_project_close_test_p)
 
    elm_init(0,0);
    app_init();
+   ecore_file_recursive_rm("./UTC");
 
    thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
                                   NULL, _test_end_cb, NULL);
@@ -80,6 +81,7 @@ EFLETE_TEST (pm_project_close_test_p)
 
    res = pm_project_close(pro);
    ck_assert_msg(res, "Project is not closed!");
+   ecore_file_recursive_rm("./UTC");
 
    app_shutdown();
    elm_shutdown();
