@@ -483,6 +483,7 @@ _project_import_edj(void *data,
    THREAD_TESTCANCEL;
    PROGRESS_SEND("%s", _("Creating a specifiec file and folders..."));
    worker->project = _project_files_create(worker);
+   TODO("Add correct error handling here (if project == NULL). Probably we should add negative TC where directory already exist");
    THREAD_TESTCANCEL;
    WORKER_LOCK_TAKE;
       worker->project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker->path, worker->name, worker->name);
@@ -611,6 +612,7 @@ _project_import_edc(void *data,
    THREAD_TESTCANCEL;
    PROGRESS_SEND("%s", _("Creating a specifiec file and folders..."));
    worker->project = _project_files_create(worker);
+   TODO("Add correct error handling here (if project == NULL). Probably we should add negative TC where directory already exist");
    WORKER_LOCK_TAKE;
       worker->project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker->path, worker->name, worker->name);
    WORKER_LOCK_RELEASE;
