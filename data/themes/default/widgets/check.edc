@@ -171,7 +171,6 @@ group { name: "elm/check/base/toggle";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0.0 0.5;
             min: 55 19;
             max: 55 19;
             rel1 {
