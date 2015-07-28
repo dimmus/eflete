@@ -1469,7 +1469,8 @@ _on_export_edc_project_done(void *data,
    build_str = eina_stringshare_printf("%s%s.edc", makefile, ap->project->name);
    fputs(build_str, fbuild);
    fclose(fbuild);
-   chmod(build_sh, 777);
+   if (chmod(build_sh, 677) != 0)
+     ERR("Could't set permission flags for '%s'", build_sh);
 
    eina_stringshare_del(dir_path);
    eina_stringshare_del(build_sh);
