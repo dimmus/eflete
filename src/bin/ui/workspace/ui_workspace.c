@@ -1342,7 +1342,7 @@ workspace_edit_object_part_rename(Evas_Object *obj,
 
    ret = groupedit_edit_object_part_rename(sd->groupedit, old_name, new_name);
    if (ret)
-     evas_object_smart_callback_call(obj, "part,name,changed", (void *)old_name);
+     evas_object_smart_callback_call(obj, "part,name,changed", (void *)new_name);
    return ret;
 }
 

@@ -517,9 +517,38 @@ live_view_property_part_del(Evas_Object *property, Part *part)
 }
 
 Eina_Bool
-live_view_property_part_rename(Evas_Object *property __UNUSED__, Part *part __UNUSED__, Eina_Stringshare *new_name __UNUSED__)
+live_view_property_part_rename(Evas_Object *property, Part *part, Eina_Stringshare *new_name)
 {
-   printf("Signal: rename part name from [%s] to [%s] \n", part->name, new_name);
+   Evas_Object  *item_box = NULL, *check;
+   Eina_List *items_list, *l;
+   PROP_DATA_GET();
+   Eina_Stringshare *part_name;
+
+   if ((part->type != EDJE_PART_TYPE_TEXT) &&
+       (part->type != EDJE_PART_TYPE_TEXTBLOCK) &&
+       (part->type != EDJE_PART_TYPE_SWALLOW))
+     return false;
+
+   if (part->type ==  EDJE_PART_TYPE_SWALLOW)
+     item_box = pd->prop_swallow.swallows;
+   else if ((part->type ==  EDJE_PART_TYPE_TEXT) ||
+            (part->type ==  EDJE_PART_TYPE_TEXTBLOCK))
+     item_box = pd->prop_text.texts;
+
+   /* Now lets restack this.
+      We need to find moving check and check we need to move above */
+   assert(item_box != NULL);
+   items_list = elm_box_children_get(item_box);
+   EINA_LIST_FOREACH(items_list, l, check)
+     {
+        part_name = elm_object_part_text_get(check, NULL);
+        if (!strcmp(part_name, part->name))
+          {
+             elm_object_part_text_set(check, NULL, new_name);
+             break;
+          }
+     }
+
    return true;
 }
 
