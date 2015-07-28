@@ -6,10 +6,10 @@ group { name: "elm/layout/property/1swallow";
             min: 0 19;
             max: -1 19;
             rel1 {
-               offset: 0 6;
+               offset: 0 3;
             }
             rel2 {
-               offset: -1 -7;
+               offset: -1 -4;
             }
          }
       }
