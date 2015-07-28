@@ -100,9 +100,10 @@ group { name: "elm/layout/property/1swallow_subtext";
          description { state: "default" 0.0;
             color_class: "main";
             rel1 {
-               relative: 0.06 0.0;
+               relative: 1.0 0.0;
                to_x: "elm.swallow.content";
                to_y: "area.base";
+               offset: 6 0;
             }
             rel2 {
                to_y: "area.base";
