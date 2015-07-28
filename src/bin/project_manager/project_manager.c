@@ -1559,8 +1559,8 @@ pm_project_source_code_export(Project *pro, const char *dir_path)
 exit:
    eina_stringshare_del(path);
    eina_stringshare_del(path_edc_dir);
-   fclose(f);
-   fclose(fedc);
+   if (f) fclose(f);
+   if (fedc) fclose(fedc);
    return EINA_TRUE;
 }
 #undef S3
