@@ -87,6 +87,14 @@ struct _Project
    /**< list of custom layouts int loaded theme */
    Eina_Inlist *layouts;
 
+   Eina_List *groups;
+   Eina_List *images;
+   Eina_List *sounds;
+   Eina_List *tones;
+   Eina_List *fonts;
+   Eina_List *colorclasses;
+   Eina_List *styles;
+
    Eina_File *mmap_file; /**< mmaped dev file*/
 
    Eina_List *added_sounds;
@@ -572,4 +580,83 @@ pm_project_enventor_save(Project *project,
 Eina_Bool
 pm_style_resource_export(Project *pro, Style *style, Eina_Stringshare *path);
 
+
+/**
+ * @struct _Resource
+ *
+ * Common structure for resources that can be used somewhere (images, sounds,
+ * states etc.)
+ *
+ * @ingroup ProjectManager
+ */
+struct _Resource
+{
+   Eina_Stringshare *name;
+   Eina_List *used_in;
+};
+
+/**
+ * @typedef Resource
+ * @ingroup ProjectManager
+ */
+typedef struct _Resource Resource;
+
+/**
+ * Find resource in sorted list by its name.
+ *
+ * @param list Resources list
+ * @param name Name of the resource to be found
+ *
+ * @return pointer to resource or NULL if it was not found
+ *
+ * @ingroup ProjectManager.
+ */
+static inline void*
+pm_resource_get(Eina_List *list, Eina_Stringshare *name)
+{
+   return eina_list_search_sorted(list, (Eina_Compare_Cb)strcmp, name);
+}
+
+/**
+ * Add reference to resource with info where it is used (i.e. part for images)
+ *
+ * @param list Resources list
+ * @param name Name of the resource. Must be in the list.
+ * @param usage_data Place where resource is used
+ *
+ * @ingroup ProjectManager.
+ */
+static inline void
+pm_resource_usage_add(Eina_List *list, Eina_Stringshare *name, void *usage_data)
+{
+   Resource *res = (Resource *) pm_resource_get(list, name);
+
+   assert(res != NULL);
+
+   res->used_in = eina_list_sorted_insert(res->used_in, (Eina_Compare_Cb) strcmp, usage_data);
+}
+
+/**
+ * Remove reference to resource.
+ *
+ * @param list Resources list
+ * @param name Name of the resource. Must be in the list.
+ * @param usage_data Place where resource is used. Must be added to usage list.
+ *
+ * @ingroup ProjectManager.
+ */
+static inline void
+pm_resource_usage_del(Eina_List *list, Eina_Stringshare *name, void *usage_data)
+{
+   Resource *res = (Resource *) pm_resource_get(list, name);
+   Eina_List *l_del;
+
+   assert(res != NULL);
+
+   l_del = eina_list_search_sorted(res->used_in, (Eina_Compare_Cb)strcmp, usage_data);
+
+   assert(l_del);
+
+   res->used_in = eina_list_remove_list(res->used_in, l_del);
+}
 #endif /* PROJECT_MANAGER_H */
