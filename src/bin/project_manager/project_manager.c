@@ -89,11 +89,9 @@ const char *top_levels[] = { "collections",
 { \
    if (worker->func_progress) \
       { \
-         WORKER_LOCK_TAKE; \
-            if (worker->message) \
-              eina_stringshare_del(worker->message); \
-            worker->message = eina_stringshare_printf(FMT, ## __VA_ARGS__); \
-         WORKER_LOCK_RELEASE; \
+         if (worker->message) \
+           eina_stringshare_del(worker->message); \
+         worker->message = eina_stringshare_printf(FMT, ## __VA_ARGS__); \
          ecore_main_loop_thread_safe_call_async(_progress_send, worker); \
       } \
 }
@@ -336,9 +334,9 @@ _project_edj_file_copy(Project_Thread *worker)
    WORKER_LOCK_TAKE;
       src = eina_stringshare_ref(worker->edj);
       dst = eina_stringshare_ref(worker->project->saved_edj);
+      PROGRESS_SEND(_("Importing..."));
    WORKER_LOCK_RELEASE;
-   PROGRESS_SEND(_("Importing..."));
-      result = ecore_file_cp(src, dst);
+   result = ecore_file_cp(src, dst);
    DBG("Copy the .edj file to project folder.");
    eina_stringshare_del(src);
    eina_stringshare_del(dst);
@@ -481,7 +479,9 @@ _project_import_edj(void *data,
    assert(worker != NULL);
 
    THREAD_TESTCANCEL;
-   PROGRESS_SEND("%s", _("Creating a specifiec file and folders..."));
+   WORKER_LOCK_TAKE;
+      PROGRESS_SEND("%s", _("Creating a specifiec file and folders..."));
+   WORKER_LOCK_RELEASE;
    worker->project = _project_files_create(worker);
    TODO("Add correct error handling here (if project == NULL). Probably we should add negative TC where directory already exist");
    THREAD_TESTCANCEL;
@@ -489,7 +489,9 @@ _project_import_edj(void *data,
       worker->project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker->path, worker->name, worker->name);
    WORKER_LOCK_RELEASE;
    THREAD_TESTCANCEL;
-   PROGRESS_SEND("%s", _("Importing..."));
+   WORKER_LOCK_TAKE;
+      PROGRESS_SEND("%s", _("Importing..."));
+   WORKER_LOCK_RELEASE;
    _project_edj_file_copy(worker);
    _copy_meta_data_to_pro(worker);
    WORKER_LOCK_TAKE;
@@ -550,7 +552,9 @@ _exe_data(void *data,
         for (i = 0; ev->lines[i].line; i++)
           {
              DBG("%s", ev->lines[i].line);
-             PROGRESS_SEND("%s", ev->lines[i].line);
+             WORKER_LOCK_TAKE;
+                PROGRESS_SEND("%s", ev->lines[i].line);
+             WORKER_LOCK_RELEASE;
           }
      }
 
@@ -610,14 +614,18 @@ _project_import_edc(void *data,
      }
 
    THREAD_TESTCANCEL;
-   PROGRESS_SEND("%s", _("Creating a specifiec file and folders..."));
+   WORKER_LOCK_TAKE;
+      PROGRESS_SEND("%s", _("Creating a specifiec file and folders..."));
+   WORKER_LOCK_RELEASE;
    worker->project = _project_files_create(worker);
    TODO("Add correct error handling here (if project == NULL). Probably we should add negative TC where directory already exist");
    WORKER_LOCK_TAKE;
       worker->project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker->path, worker->name, worker->name);
    WORKER_LOCK_RELEASE;
    THREAD_TESTCANCEL;
-   PROGRESS_SEND("%s", _("Importing..."));
+   WORKER_LOCK_TAKE;
+      PROGRESS_SEND("%s", _("Importing..."));
+   WORKER_LOCK_RELEASE;
    _project_edj_file_copy(worker);
    ecore_file_recursive_rm(tmp_dirname);
    eina_tmpstr_del(tmp_dirname);
@@ -793,7 +801,9 @@ _project_save(void *data,
 
    edje_edit_obj = worker->project->global_object;
 
-   PROGRESS_SEND("Saving...");
+   WORKER_LOCK_TAKE;
+      PROGRESS_SEND("Saving...");
+   WORKER_LOCK_RELEASE;
    ecore_thread_main_loop_begin();
    WORKER_LOCK_TAKE;
    pm_save_to_dev(worker->project, NULL, true);
@@ -840,7 +850,9 @@ _project_save(void *data,
    WORKER_LOCK_RELEASE;
    ecore_thread_main_loop_end();
 
-   PROGRESS_SEND("Saved.");
+   WORKER_LOCK_TAKE;
+      PROGRESS_SEND("Saved.");
+   WORKER_LOCK_RELEASE;
    END_SEND(PM_PROJECT_SUCCESS);
    return NULL;
 }
@@ -1577,17 +1589,15 @@ _develop_export(void *data,
 
    assert(worker != NULL);
 
-   PROGRESS_SEND(_("Export edj..."));
    WORKER_LOCK_TAKE;
-
+      PROGRESS_SEND(_("Export edj..."));
       edje_edit_save_all(worker->project->global_object);
       eina_file_copy(worker->project->dev, worker->edj,
                      EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
                      NULL, NULL);
-
+      PROGRESS_SEND("Saved.");
    WORKER_LOCK_RELEASE;
 
-   PROGRESS_SEND("Saved.");
    END_SEND(PM_PROJECT_SUCCESS);
    return NULL;
 }
