@@ -129,7 +129,7 @@ _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
 static Eina_Bool
 _font_resources_export(Eina_List *fonts, Eina_Stringshare *destination,
                        Eina_Stringshare *source, Eina_Stringshare *dev,
-                       Evas_Object *edje_edit);
+                       Evas_Object *edje_edit, Project_Thread *worker);
 
 static Eina_Bool
 _project_dev_file_create(Project *pro)
@@ -831,7 +831,7 @@ _project_save(void *data,
 
       list = edje_edit_fonts_list_get(edje_edit_obj);
       dest = eina_stringshare_printf("%s/fonts", worker->project->develop_path);
-      _font_resources_export(list, dest, NULL, worker->project->dev, edje_edit_obj);
+      _font_resources_export(list, dest, NULL, worker->project->dev, edje_edit_obj, worker);
       edje_edit_string_list_free(list);
       eina_stringshare_del(dest);
 
@@ -1141,15 +1141,15 @@ _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
 
 static Eina_Bool
 _font_resources_export(Eina_List *fonts, Eina_Stringshare *destination,
-                        Eina_Stringshare *source, Eina_Stringshare *dev,
-                        Evas_Object *edje_edit)
+                       Eina_Stringshare *source, Eina_Stringshare *dev,
+                       Evas_Object *edje_edit, Project_Thread *worker)
 {
   Eet_File *ef;
   Eina_List *l;
   Eina_Stringshare *font_name, *source_file, *dest_file, *font_file;
   void *font;
   FILE *f;
-  int size;
+  int size, fnt_total, fnt_proc;
 
   assert(destination != NULL);
   assert(dev != NULL);
@@ -1161,11 +1161,17 @@ _font_resources_export(Eina_List *fonts, Eina_Stringshare *destination,
        return false;
     }
   ef = eet_open(dev, EET_FILE_MODE_READ);
+  fnt_total = eina_list_count(fonts);
+  fnt_proc = 0;
+  if (worker) PROGRESS_SEND(_("Start font processing, total %d:"), fnt_total);
   EINA_LIST_FOREACH(fonts, l, font_name)
     {
        font_file = edje_edit_font_path_get(edje_edit, font_name);
        source_file = eina_stringshare_printf("%s/%s", source, font_file);
        dest_file = eina_stringshare_printf("%s/%s", destination, font_file);
+       fnt_proc++;
+       if (worker) PROGRESS_SEND(_("font processing (%d/%d): %s"),
+                                 fnt_proc, fnt_total, font_file);
        if (!ecore_file_exists(dest_file))
          {
             edje_edit_string_free(font_file);
@@ -1313,7 +1319,7 @@ pm_style_resource_export(Project *pro , Style *style, Eina_Stringshare *path)
    dest = eina_stringshare_printf("%s/fonts", path);
    EINA_LIST_FOREACH(pro->res.fonts, l, source)
      {
-        if (!_font_resources_export(fonts, dest, source, pro->dev, style->obj))
+        if (!_font_resources_export(fonts, dest, source, pro->dev, style->obj, NULL))
           WARN("Failed export fonts");
      }
    eina_stringshare_del(dest);
@@ -1368,7 +1374,7 @@ _project_resource_export(Project *pro, const char* dir_path, Project_Thread *wor
    /* export fonts */
    list = edje_edit_fonts_list_get(edje_edit_obj);
    dest = eina_stringshare_printf("%s/fonts", path);
-   _font_resources_export(list, dest, NULL, pro->dev, edje_edit_obj);
+   _font_resources_export(list, dest, NULL, pro->dev, edje_edit_obj, worker);
    edje_edit_string_list_free(list);
    eina_stringshare_del(dest);
 
