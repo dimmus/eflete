@@ -113,10 +113,14 @@ typedef struct
 }
 
 static Eina_Bool
+_project_resource_export(Project *pro, const char* dir_path,
+                         Project_Thread *worker);
+
+static Eina_Bool
 _image_resources_export(Project *project,
                         Eina_List *images, Eina_Stringshare *destination,
                         Eina_Stringshare *source, Eina_Stringshare *dev,
-                        Evas_Object *edje_edit);
+                        Evas_Object *edje_edit, Project_Thread *worker);
 
 static Eina_Bool
 _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
@@ -496,7 +500,7 @@ _project_import_edj(void *data,
    WORKER_LOCK_RELEASE;
    THREAD_TESTCANCEL;
    WORKER_LOCK_TAKE;
-      pm_project_resource_export(worker->project, NULL);
+      _project_resource_export(worker->project, NULL, worker);
       _project_linked_images_copy(worker);
       edje_file_cache_flush();
       PROGRESS_SEND(_("Import finished. Project '%s' created"), worker->project->name);
@@ -632,7 +636,7 @@ _project_import_edc(void *data,
    WORKER_LOCK_RELEASE;
    THREAD_TESTCANCEL;
    WORKER_LOCK_TAKE;
-      pm_project_resource_export(worker->project, NULL);
+      _project_resource_export(worker->project, NULL, worker);
       _project_linked_images_copy(worker);
       edje_file_cache_flush();
       PROGRESS_SEND(_("Import finished. Project '%s' created"), worker->project->name);
@@ -813,7 +817,7 @@ _project_save(void *data,
 
       /* saving */
       dest = eina_stringshare_printf("%s/images", worker->project->develop_path);
-      _image_resources_export(worker->project, add_list, dest, NULL, worker->project->dev, edje_edit_obj);
+      _image_resources_export(worker->project, add_list, dest, NULL, worker->project->dev, edje_edit_obj, worker);
       edje_edit_string_list_free(add_list);
       EINA_LIST_FREE(worker->project->nsimage_list, it)
          free(it);
@@ -1007,7 +1011,7 @@ static Eina_Bool
 _image_resources_export(Project *project,
                         Eina_List *images, Eina_Stringshare *destination,
                         Eina_Stringshare *source, Eina_Stringshare *dev,
-                        Evas_Object *edje_edit)
+                        Evas_Object *edje_edit, Project_Thread *worker)
 {
   Eina_Stringshare *image_name, *source_file, *dest_file;
   Eina_List *l;
@@ -1015,6 +1019,7 @@ _image_resources_export(Project *project,
   Evas_Object *im;
   int id;
   char *file_dir;
+  int im_total, im_proc;
 
   assert(project != NULL);
   assert(destination != NULL);
@@ -1027,11 +1032,17 @@ _image_resources_export(Project *project,
        return false;
     }
   e = ecore_evas_get(project->ecore_evas);
+  im_total = eina_list_count(images);
+  im_proc = 0;
+  if (worker) PROGRESS_SEND(_("Start image processing, total %d:"), im_total);
   EINA_LIST_FOREACH(images, l, image_name)
     {
        /* for supporting old themes, which were compilled
         * with edje_cc version less than 1.10 */
        if (!image_name) continue;
+       im_proc++;
+       if (worker) PROGRESS_SEND(_("image processing (%d/%d): %s"),
+                                 im_proc, im_total, image_name);
        source_file = eina_stringshare_printf("%s/%s", source,
                                              ecore_file_file_get(image_name));
        dest_file = eina_stringshare_printf("%s/%s", destination, image_name);
@@ -1187,9 +1198,7 @@ _font_resources_export(Eina_List *fonts, Eina_Stringshare *destination,
 }
 
 Eina_Bool
-pm_style_resource_export(Project *pro ,
-                         Style *style,
-                         Eina_Stringshare *path)
+pm_style_resource_export(Project *pro , Style *style, Eina_Stringshare *path)
 {
    Eina_List *l, *l_next, *parts, *state_list, *l_states, *tween_list, *l_tween;
    Eina_List *programs;
@@ -1284,7 +1293,7 @@ pm_style_resource_export(Project *pro ,
    dest = eina_stringshare_printf("%s/images", path);
    EINA_LIST_FOREACH(pro->res.images, l, source)
      {
-       if (!_image_resources_export(pro, images, dest, source, pro->dev, style->obj))
+       if (!_image_resources_export(pro, images, dest, source, pro->dev, style->obj, NULL))
          WARN("Failed export images");
      }
    eina_stringshare_del(dest);
@@ -1317,6 +1326,12 @@ pm_style_resource_export(Project *pro ,
 Eina_Bool
 pm_project_resource_export(Project *pro, const char* dir_path)
 {
+   return _project_resource_export(pro, dir_path, NULL);
+}
+
+Eina_Bool
+_project_resource_export(Project *pro, const char* dir_path, Project_Thread *worker)
+{
    Eina_List *list;
    Evas_Object *edje_edit_obj;
    Evas *e;
@@ -1346,7 +1361,7 @@ pm_project_resource_export(Project *pro, const char* dir_path)
    /* export images */
    list = edje_edit_images_list_get(edje_edit_obj);
    dest = eina_stringshare_printf("%s/images", path);
-   _image_resources_export(pro, list, dest, NULL, pro->dev, edje_edit_obj);
+   _image_resources_export(pro, list, dest, NULL, pro->dev, edje_edit_obj, worker);
    edje_edit_string_list_free(list);
    eina_stringshare_del(dest);
 
