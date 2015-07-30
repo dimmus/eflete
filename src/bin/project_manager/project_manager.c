@@ -1079,8 +1079,6 @@ _image_resources_export(Project *project,
        eina_stringshare_del(source_file);
        eina_stringshare_del(dest_file);
     }
-  ecore_thread_main_loop_begin();
-  ecore_thread_main_loop_end();
 
   return true;
 }
