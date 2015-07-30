@@ -172,6 +172,7 @@ group { name: "elm/button/base/default";
       program { name: "button_unclick";
          signal: "mouse,up,1";
          source: "event";
+         filter: "bg" "clicked";
          action: SIGNAL_EMIT "elm,action,unpress" "";
          after: "button_unclick_anim";
       }
@@ -263,7 +264,6 @@ group { name: "elm/button/base/default";
       }
       program { name: "button_unpressed_anim";
          action: STATE_SET "default" 0.00;
-         transition: DECELERATE 0.50000;
          target: "bg";
       }
       program { name: "button_unclick_anim";
