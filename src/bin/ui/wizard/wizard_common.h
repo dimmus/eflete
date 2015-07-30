@@ -47,6 +47,7 @@ FUNC(void *data, \
 struct _Wizard_Import_Edj_Win
 {
    Evas_Object *layout;
+   Evas_Object *btn_apply;
 
    Evas_Object *win;
    Evas_Object *splash;
