@@ -49,6 +49,12 @@ const char *top_levels[] = { "collections",
                              "sounds",
                              "group",
                              NULL};
+typedef struct
+{
+   Eina_Stringshare *str;
+   PM_Project_Progress_Cb func_print;
+   void *data;
+} Progress_Message;
 
 #define WORKER_CREATE(FUNC_PROGRESS, FUNC_END, DATA, PROJECT, \
                       NAME, PATH, EDJ, EDC, BUILD_OPTIONS) \
@@ -75,8 +81,6 @@ const char *top_levels[] = { "collections",
    eina_stringshare_del(worker->edj); \
    eina_stringshare_del(worker->edc); \
    eina_stringshare_del(worker->build_options); \
-   if (worker->message) \
-     eina_stringshare_del(worker->message); \
    free(worker); \
    worker = NULL; \
 }
@@ -89,10 +93,11 @@ const char *top_levels[] = { "collections",
 { \
    if (worker->func_progress) \
       { \
-         if (worker->message) \
-           eina_stringshare_del(worker->message); \
-         worker->message = eina_stringshare_printf(FMT, ## __VA_ARGS__); \
-         ecore_main_loop_thread_safe_call_async(_progress_send, worker); \
+         Progress_Message *message = mem_malloc(sizeof(Progress_Message)); \
+         message->str = eina_stringshare_printf(FMT, ## __VA_ARGS__); \
+         message->func_print = worker->func_progress; \
+         message->data = worker->data; \
+         ecore_main_loop_thread_safe_call_async(_progress_send, message); \
       } \
 }
 
@@ -179,23 +184,14 @@ _pm_project_descriptor_data_write(const char *path, Project *project)
 static void
 _progress_send(void *data)
 {
-   Project_Thread *worker;
-   PM_Project_Progress_Cb func;
-   Eina_Stringshare *message;
-   void *udata;
+   Progress_Message *message;
 
-   worker = (Project_Thread *)data;
+   message = (Progress_Message *)data;
+   assert(message != NULL);
 
-   assert(worker != NULL);
-
-   /** Copy the links to callback and meesage, to fast release worker resource. */
-   WORKER_LOCK_TAKE;
-      func = worker->func_progress;
-      message = eina_stringshare_ref(worker->message);
-      udata = worker->data;
-   WORKER_LOCK_RELEASE;
-   if (func) func(udata, message);
-   eina_stringshare_del(message);
+   message->func_print(message->data, message->str);
+   eina_stringshare_del(message->str);
+   free(message);
 }
 
 static void
