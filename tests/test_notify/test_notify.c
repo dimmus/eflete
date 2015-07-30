@@ -23,12 +23,8 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("notify_test");
    TCase *tcase = tcase_create("TCase");
    tcase_add_test(tcase, noti_error_show_test_p);
-   tcase_add_test(tcase, noti_error_show_test_n);
    tcase_add_test(tcase, noti_warning_show_test_p);
-   tcase_add_test(tcase, noti_warning_show_test_n);
    tcase_add_test(tcase, noti_info_show_test_p);
-   tcase_add_test(tcase, noti_info_show_test_n1);
-   tcase_add_test(tcase, noti_info_show_test_n2);
    suite_add_tcase(suite, tcase);
    return suite;
 }

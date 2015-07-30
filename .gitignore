@@ -9,16 +9,27 @@
 *.o
 *.i
 *.s
+*.eo.h
+*.eo.c
 intl/
-src/eflete
+src/bin/eflete
 *.dirstamp
 *.log
 *.trs
 *.dev
 *.eet
+*.lo
+*.la
+*.libs
+tests/ewe_combobox_test
+tests/ewe_entry_test
+tests/ewe_init_test
+tests/ewe_ruler_test
+tests/ewe_statusbar_test
+tests/ewe_tabs_test
 tests/addpart_test
 tests/alloc_test
-tests/colorclass_editor_test
+tests/colorclass_manager_test
 tests/colorclasses_edit_api_test
 tests/edje_compile_test
 tests/font_viewer_dialog_test
@@ -67,12 +78,13 @@ tests/html/
 #tests
 tests/*xml
 Testing/*
+tests/doxygen_sqlite3.db
 
 #Autotools generated objects
 config.cache-env
 config/
 src/config.h
-!src/config/
+!src/bin/config
 build/*
 *Makefile
 !*.am
@@ -96,6 +108,8 @@ config.rpath
 m4/*
 !m4/eflete.m4
 !m4/eflete_binary.m4
+!m4/ewe.m4
+!m4/ewe_binary.m4
 !m4/ac_attribute.m4
 ABOUT-NLS
 INSTALL
@@ -114,6 +128,7 @@ eflete_config.h
 stamp-h1
 tests/Doxyfile
 tests/edj_build/radio.edc
+libtool
 
 
 #localization

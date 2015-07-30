@@ -24,18 +24,19 @@ _test_end_cb(void *data __UNUSED__,
    ecore_main_loop_quit();
 }
 
-   static void
+static void
 teardown(const char *path)
 {
    ecore_file_recursive_rm(path);
 }
 
-   static void
+static void
 setup(const char *name)
 {
    Project_Thread *thread;
    Project *pro;
 
+   ecore_file_recursive_rm(name);
    thread = pm_project_import_edj(name, ".", "./edj_build/"TEST_NAME".edj",
          NULL, _test_end_cb, NULL);
    if (!thread)

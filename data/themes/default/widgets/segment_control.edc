@@ -1,4 +1,4 @@
-group { name: "elm/segment_control/base/eflete/style_editor";
+group { name: "elm/segment_control/base/default";
    #define SEGMENT_TYPE_LEFT 2
    #define SEGMENT_TYPE_MIDDLE 3
    #define SEGMENT_TYPE_RIGHT 4
@@ -20,7 +20,7 @@ group { name: "elm/segment_control/base/eflete/style_editor";
       }
    }
 }
-group { name: "elm/segment_control/item/eflete/style_editor";
+group { name: "elm/segment_control/item/default";
    images {
       image: "Button_v3_left.png" COMP;
       image: "Button_v3_left_disabled.png" COMP;

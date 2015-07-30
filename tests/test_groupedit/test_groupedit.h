@@ -19,15 +19,14 @@
 
 #include <Elementary.h>
 #include "utc_common.h"
-#include "groupedit.h"
 #include "main_window.h"
+#include "groupedit.h"
 
 /**
  * @defgroup test_groupedit
  */
 
 void groupedit_add_test_p(int);
-void groupedit_add_test_n(int);
 
 void groupedit_handler_size_set_test_p(int);
 void groupedit_handler_size_set_test_n1(int);
@@ -53,94 +52,11 @@ void groupedit_container_size_set_test_n(int);
 void groupedit_container_size_get_test_p(int);
 void groupedit_container_size_get_test_n(int);
 
-void groupedit_style_set_test_p(int);
-void groupedit_style_set_test_n1(int);
-void groupedit_style_set_test_n2(int);
-
-void groupedit_style_get_test_p(int);
-void groupedit_style_get_test_n(int);
-
 void groupedit_edit_object_set_test_p(int);
-void groupedit_edit_object_set_test_n1(int);
-void groupedit_edit_object_set_test_n2(int);
-void groupedit_edit_object_set_test_n3(int);
 
 void groupedit_edit_object_unset_test_p(int);
-void groupedit_edit_object_unset_test_n1(int);
-void groupedit_edit_object_unset_test_n2(int);
-
-void groupedit_edit_object_recalc_all_test_p(int);
-void groupedit_edit_object_recalc_all_test_n(int);
-
-void groupedit_edit_object_part_draw_get_test_p(int);
-void groupedit_edit_object_part_draw_get_test_n1(int);
-void groupedit_edit_object_part_draw_get_test_n2(int);
-
-void groupedit_edit_object_part_add_test_p(int);
-void groupedit_edit_object_part_add_test_n1(int);
-void groupedit_edit_object_part_add_test_n2(int);
-void groupedit_edit_object_part_add_test_n3(int);
-void groupedit_edit_object_part_add_test_n4(int);
-
-void groupedit_edit_object_part_del_test_p(int);
-void groupedit_edit_object_part_del_test_n1(int);
-void groupedit_edit_object_part_del_test_n2(int);
-
-void groupedit_edit_object_part_state_set_test_p(int);
-void groupedit_edit_object_part_state_set_test_n1(int);
-void groupedit_edit_object_part_state_set_test_n2(int);
-void groupedit_edit_object_part_state_set_test_n3(int);
-void groupedit_edit_object_part_state_set_test_n4(int);
-
-void groupedit_edit_object_part_state_add_test_p(int);
-void groupedit_edit_object_part_state_add_test_n1(int);
-void groupedit_edit_object_part_state_add_test_n2(int);
-void groupedit_edit_object_part_state_add_test_n3(int);
-void groupedit_edit_object_part_state_add_test_n4(int);
-
-void groupedit_edit_object_part_state_del_test_p(int);
-void groupedit_edit_object_part_state_del_test_n1(int);
-void groupedit_edit_object_part_state_del_test_n2(int);
-void groupedit_edit_object_part_state_del_test_n3(int);
-void groupedit_edit_object_part_state_del_test_n4(int);
-
-void groupedit_part_object_area_get_test_p(int);
-void groupedit_part_object_area_get_test_n1(int);
-void groupedit_part_object_area_get_test_n2(int);
-
-void groupedit_part_object_area_visible_set_test_p(int);
-void groupedit_part_object_area_visible_set_test_n(int);
-
-void groupedit_part_object_area_visible_get_test_p(int);
-void groupedit_part_object_area_visible_get_test_n(int);
-
-void groupedit_edit_object_parts_separated_test_p(int);
-void groupedit_edit_object_parts_separated_test_n1(int);
-void groupedit_edit_object_parts_separated_test_n2(int);
-void groupedit_edit_object_parts_separated_test_n3(int);
-
-void groupedit_edit_object_parts_separated_is_test_p(int);
-void groupedit_edit_object_parts_separated_is_test_n(int);
-
-void groupedit_edit_object_part_select_test_p(int);
-void groupedit_edit_object_part_select_test_n1(int);
-void groupedit_edit_object_part_select_test_n2(int);
 
 void groupedit_bg_set_test_p(int);
-void groupedit_bg_set_test_n1(int);
-void groupedit_bg_set_test_n2(int);
+void groupedit_bg_set_test_p1(int);
 
 void groupedit_bg_unset_test_p(int);
-void groupedit_bg_unset_test_n(int);
-
-void groupedit_part_visible_set_test_p(int);
-void groupedit_part_visible_set_test_n1(int);
-void groupedit_part_visible_set_test_n2(int);
-
-void groupedit_edit_object_part_above_test_p(int);
-void groupedit_edit_object_part_above_test_n1(int);
-void groupedit_edit_object_part_above_test_n2(int);
-
-void groupedit_edit_object_part_below_test_p(int);
-void groupedit_edit_object_part_below_test_n1(int);
-void groupedit_edit_object_part_below_test_n2(int);

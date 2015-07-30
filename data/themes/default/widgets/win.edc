@@ -1,0 +1,61 @@
+group { name: "elm/win/base/default";
+   parts {
+      part { name: "elm.swallow.menu";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            fixed: 0 1;
+            rel2 {
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "elm.swallow.toolbar";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            fixed: 0 1;
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "elm.swallow.menu";
+            }
+            rel2 {
+               to_y: "elm.swallow.menu";
+            }
+         }
+      }
+      part { name: "elm.swallow.contents";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "elm.swallow.toolbar";
+            }
+         }
+      }
+      part { name: "blocker";
+         type: RECT;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+         }
+         description { state: "visibled" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+   }
+   programs {
+      program { name: "blocker_hide";
+         signal: "elm,action,hide_blocker";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "blocker";
+      }
+      program { name: "blocker_show";
+         signal: "elm,action,show_blocker";
+         source: "elm";
+         action: STATE_SET "visibled" 0.00;
+         target: "blocker";
+      }
+   }
+}

@@ -39,9 +39,10 @@
  * @precondition
  * @step 1 initialized elm
  * @step 2 Evas canvas created
- * @step 3 Create Style structure
- * @step 4 Edje Edit object of the tested existing group
- * @step 5 Fill Style with parts.
+ * @step 3 Mmap edj file.
+ * @step 4 Create Style structure
+ * @step 5 Edje Edit object of the tested existing group
+ * @step 6 Fill Style with parts.
  *
  * @procedure
  * @step 1 Call function wm_style_free(style).
@@ -60,14 +61,18 @@ EFLETE_TEST (wm_style_free_test_p1)
    Style *style = NULL;
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
+   Eina_File *mmap_file = NULL;
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
+   mmap_file = eina_file_open("./edj_build/wm_style_free.edj", EINA_FALSE);
    style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/wm_style_free.edj", "elm/radio/base/def");
-   wm_style_data_load(style, e, "./edj_build/wm_style_free.edj");
+   edje_object_mmap_set(style->obj, mmap_file, "elm/radio/base/def");
+   wm_style_data_load(style, e, mmap_file);
    ck_assert_msg(wm_style_free(style) == EINA_TRUE, "cannot delete Style object");
+
+   eina_file_close(mmap_file);
    elm_shutdown();
 }
 END_TEST
@@ -100,33 +105,6 @@ EFLETE_TEST (wm_style_free_test_p2)
    const char *full_style_name = "elm/check/base/defaul";
    style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    ck_assert_msg(wm_style_free(style) == EINA_TRUE, "cannot delete Group object");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup wm_style_free
- * @{
- * <tr>
- * <td>wm_style_free</td>
- * <td>wm_style_free_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- *
- * @procedure
- * @step 1 Call function wm_style_free(NULL).
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (wm_style_free_test_n)
-{
-   elm_init(0,0);
-   ck_assert_msg(wm_style_free(NULL) == EINA_FALSE, "Deleting NULL as Group object.");
    elm_shutdown();
 }
 END_TEST

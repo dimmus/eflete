@@ -77,41 +77,6 @@ END_TEST
 /**
  * @addtogroup code_edit_mode_switch
  * @{
- * <tr>
- * <td>code_edit_mode_switch</td>
- * <td>code_edit_mode_switch_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 create application data
- *
- * @procedure
- * @step 1 Call code_edit_mode_switch(ap, false)
- * @step 2 Check returned value
- * </td>
- * <td>App_Data *app_data</td>
- * <td>EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (code_edit_mode_switch_test_n)
-{
-   App_Data *app_data;
-   Eina_Bool result = EINA_FALSE;
-   elm_init(0,0);
-   app_init();
-   app_data = app_data_get();
-
-   result = code_edit_mode_switch(app_data, false);
-   ck_assert_msg(result == EINA_FALSE, "Should not switch to Edit mode if config is not loaded");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup code_edit_mode_switch
- * @{
  * </TABLE>
  * @}
  * @}

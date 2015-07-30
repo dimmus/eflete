@@ -72,6 +72,7 @@ EFLETE_TEST (pm_project_save_test_p)
 
    elm_init(0,0);
    app_init();
+   ecore_file_recursive_rm("./UTC");
 
    thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
                                   NULL, _test_end_cb, NULL);
@@ -91,7 +92,6 @@ EFLETE_TEST (pm_project_save_test_p)
                          edje_edit_state_min_w_set(style->obj, part->name,
                                                    "default", 0.0, 10);
                       }
-                    style->isModify = true;
                }
           }
      }
@@ -105,6 +105,7 @@ EFLETE_TEST (pm_project_save_test_p)
 
    eet_close(ef);
    pm_project_close(pro);
+   ecore_file_recursive_rm("./UTC");
 
    app_shutdown();
    elm_shutdown();

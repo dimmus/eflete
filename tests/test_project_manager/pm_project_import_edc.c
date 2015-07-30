@@ -68,9 +68,10 @@ EFLETE_TEST (pm_project_import_edc_test_p1)
 
    elm_init(0,0);
    app_init();
+   ecore_file_recursive_rm("./UTC");
 
    thread = pm_project_import_edc("UTC", ".", "./edj_build/radio.edc",
-                                  "-id ./edj_build/ -fd ./edj_build/fnt -sd ./edj_build/",
+                                  "-id ./edj_build -fd ./edj_build -sd ./edj_build",
                                   NULL, _test_end_p1_cb, NULL);
    ecore_main_loop_begin();
 
@@ -78,6 +79,7 @@ EFLETE_TEST (pm_project_import_edc_test_p1)
 
    pro = pm_project_thread_project_get(thread);
    pm_project_close(pro);
+   ecore_file_recursive_rm("./UTC");
 
    app_shutdown();
    elm_shutdown();
@@ -123,9 +125,10 @@ EFLETE_TEST (pm_project_import_edc_test_p2)
 
    elm_init(0,0);
    app_init();
+   ecore_file_recursive_rm("./UTC");
 
    thread = pm_project_import_edc("UTC", ".", "./edj_build/radio.edc",
-                                  "-id ./edj_build/ -fd ./edj_build/fnt -sd ./edj_build/",
+                                  "-id ./edj_build -fd ./edj_build -sd ./edj_build",
                                   NULL, _test_end_p2_cb, NULL);
    if (!thread)
      ck_abort_msg("Project thread not started!");
@@ -143,6 +146,7 @@ EFLETE_TEST (pm_project_import_edc_test_p2)
 
    pro = pm_project_thread_project_get(thread);
    pm_project_close(pro);
+   ecore_file_recursive_rm("./UTC");
 
    app_shutdown();
    elm_shutdown();
@@ -188,10 +192,11 @@ EFLETE_TEST (pm_project_import_edc_test_p3)
 
    elm_init(0,0);
    app_init();
+   ecore_file_recursive_rm("./UTC");
 
    res = EINA_FALSE;
    thread = pm_project_import_edc("UTC", ".", "./edj_build/radio.edc",
-                                  "-id ./edj_build/ -fd ./edj_build/fnt -sd ./edj_build/",
+                                  "-id ./edj_build -fd ./edj_build -sd ./edj_build",
                                   _test_progress_cb, _test_end_p2_cb, NULL);
    if (!thread)
      ck_abort_msg("Project thread not started!");
@@ -201,6 +206,7 @@ EFLETE_TEST (pm_project_import_edc_test_p3)
 
    pro = pm_project_thread_project_get(thread);
    pm_project_close(pro);
+   ecore_file_recursive_rm("./UTC");
 
    app_shutdown();
    elm_shutdown();

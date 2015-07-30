@@ -160,38 +160,6 @@ EFLETE_TEST(container_container_size_set_test_p3)
 }
 END_TEST
 
-
-
-/**
- * @addtogroup container_container_size_set
- * @{
- * <tr>
- * <td>container_container_size_set</td>
- * <td>container_container_size_set_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 set the new size for container container
- * @step 2 check returned value
- * </td>
- * <td>NULL, 100, 100</td>
- * <td>EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(container_container_size_set_test_n)
-{
-   elm_init(0, 0);
-
-   ck_assert_msg(!container_container_size_set(NULL, 100, 100),
-                 "Func returned true, though was used NULL object.");
-
-   elm_shutdown();
-}
-END_TEST
-
 /**
  * @addtogroup container_container_size_set
  * @{

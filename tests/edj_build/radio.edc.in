@@ -1,5 +1,7 @@
 data.item: "version" "110";
-
+fonts {
+   font: "PTS55F.ttf" "PT";
+}
 collections {
    sounds {
       sample {
@@ -34,6 +36,7 @@ collections {
 }
 group { name: "elm/radio/base/def";
    alias: "elm/radio/base/aliased";
+   alias: "layout_aliased";
    images {
       image: "radio_base.png" COMP;
       image: "radio.png" COMP;
@@ -124,7 +127,7 @@ group { name: "elm/radio/base/def";
             }
             color: 0 0 0 255;
             text {
-               font: "Sans,Edje-Vera";
+               font: "PT";
                size: 15;
                min: 0 0;
                align: -1.0 0.5;
@@ -220,6 +223,10 @@ group { name: "elm/radio/base/def";
          action: STATE_SET "disabled" 0.0;
          target: "disabler";
          after: "disable_text";
+         after: "play";
+      }
+      program { name: "play";
+         action: PLAY_SAMPLE "key-tap" 1.0;
       }
       program { name: "disable_text";
          script {
@@ -346,6 +353,36 @@ group { name: "load/layout/test";
             aspect_preference: VERTICAL;
             image.normal: "radio_base.png";
          }
+      }
+   }
+}
+group { name: "layout/table";
+   alias: "elm/widget/widget/widget";
+   parts {
+     part { name: "table";
+        type: TABLE;
+        mouse_events: 0;
+        scale: 1;
+        table {
+           items {
+              item {
+                 type: GROUP;
+                 name: "first";
+                 source: "load/layout/test";
+                 align: -1.0 -1.0;
+                 position: 0 0;
+              }
+              item {
+                 type: GROUP;
+                 name: "second";
+                 source: "load/layout/test";
+                 align: -1.0 -1.0;
+                 position: 1 1;
+              }
+           }
+        }
+        description { state: "default" 0.0;
+        }
       }
    }
 }

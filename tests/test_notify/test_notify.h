@@ -26,11 +26,7 @@
  */
 
 void noti_error_show_test_p(int);
-void noti_error_show_test_n(int);
 
 void noti_warning_show_test_p(int);
-void noti_warning_show_test_n(int);
 
 void noti_info_show_test_p(int);
-void noti_info_show_test_n1(int);
-void noti_info_show_test_n2(int);

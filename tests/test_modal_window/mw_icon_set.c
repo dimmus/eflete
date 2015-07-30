@@ -51,7 +51,7 @@
  * </tr>
  * @}
  */
-EFLETE_TEST (mw_icon_set_test_p)
+EFLETE_TEST (mw_icon_set_p)
 {
    Evas_Object *mw;
    App_Data *app;
@@ -60,89 +60,11 @@ EFLETE_TEST (mw_icon_set_test_p)
    app_init();
    app = app_data_get();
    ui_main_window_add(app);
-   mw = mw_add(NULL, NULL);
+   mw = mw_add(NULL, NULL, NULL);
    Evas_Object *ic = elm_icon_add(app->win);
    elm_image_file_set (ic, "./edj_build/radio_base.png", NULL);
 
    ck_assert_msg(mw_icon_set(mw, ic), "Can't set icon");
-
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup mw_icon_set
- * @{
- * <tr>
- * <td>mw_icon_set</td>
- * <td>mw_icon_set_n1</td>
- * <td>
- * @precondition
- * @step 1 initialized efl and app
- * @step 2 main_window created
- * @step 3 modal window created
- *
- * @procedure
- * @step 1 Call mw_icon_set(mw, NULL)
- * @step 2 Check returned value
- * </td>
- * <td>Evas_Object *modal_window, NULL</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (mw_icon_set_test_n1)
-{
-   Evas_Object *mw;
-   App_Data *app;
-
-   elm_init(0,0);
-   app_init();
-   app = app_data_get();
-   ui_main_window_add(app);
-   mw = mw_add(NULL, NULL);
-
-   ck_assert_msg(mw_icon_set(mw, NULL) == EINA_FALSE, "Icon was set");
-
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-
-/**
- * @addtogroup mw_icon_set
- * @{
- * <tr>
- * <td>mw_icon_set</td>
- * <td>mw_icon_set_n2</td>
- * <td>
- * @precondition
- * @step 1 initialized efl and app
- * @step 2 create main window
- * @step 2 create icon
- *
- * @procedure
- * @step 1 Call mw_icon_set(NULL, icon)
- * @step 2 Check returned value
- * </td>
- * <td>NULL, Evas_Object *icon</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (mw_icon_set_test_n2)
-{
-   App_Data *app;
-
-   elm_init(0,0);
-   app_init();
-   app = app_data_get();
-   ui_main_window_add(app);
-   Evas_Object *ic = elm_icon_add(app->win);
-
-   ck_assert_msg(mw_icon_set(NULL, ic) == EINA_FALSE, "Icon was set");
 
    app_shutdown();
    elm_shutdown();

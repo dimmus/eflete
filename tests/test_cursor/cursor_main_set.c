@@ -98,67 +98,6 @@ END_TEST
 /**
  * @addtogroup cursor_main_set
  * @{
- * <tr>
- * <td>cursor_main_set</td>
- * <td>cursor_main_set_test_n1</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 create win
- *
- * @procedure
- * @step 1 call cursor_main_set
- * </td>
- * <td>(Evas_Object *) win, (Cursor_Type) 338</td>
- * <td>EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(cursor_main_set_test_n1)
-{
-   Evas_Object *win;
-
-   elm_init(0,0);
-   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-
-   ck_assert_msg(!cursor_main_set(win, 338), "Main cursor was set with wrong data");
-
-   evas_object_del(win);
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup cursor_main_set
- * @{
- * <tr>
- * <td>cursor_main_set</td>
- * <td>cursor_main_set_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 call cursor_main_set
- * </td>
- * <td>NULL, (Cursor_Type) CURSOR_ARROW</td>
- * <td>EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(cursor_main_set_test_n2)
-{
-   elm_init(0,0);
-
-   ck_assert_msg(!cursor_main_set(NULL, CURSOR_ARROW), "Main cursor was setted to NULL window");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup cursor_main_set
- * @{
  * </TABLE>
  * @}
  * @}

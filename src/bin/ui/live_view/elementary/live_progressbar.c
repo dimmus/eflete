@@ -1,0 +1,45 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2015 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
+#include "live_elementary_widgets.h"
+
+Evas_Object *
+widget_progressbar_create(Evas_Object *parent, const Style *style)
+{
+   assert(parent != NULL);
+   assert(style != NULL);
+
+   Eina_Stringshare *class;
+   Eina_Stringshare *style_name;
+   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+
+   Evas_Object *object = elm_progressbar_add(parent);
+   if (!strcmp(class, "vertical"))
+      elm_progressbar_horizontal_set(object, false);
+
+   evas_object_data_set(object, SWALLOW_FUNC, on_swallow_check);
+   evas_object_data_set(object, TEXT_FUNC, on_text_check);
+   evas_object_data_set(object, SIGNAL_FUNC, send_signal);
+
+   elm_object_style_set(object, style_name);
+
+   eina_stringshare_del(class);
+   eina_stringshare_del(style_name);
+   return object;
+}

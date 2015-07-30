@@ -69,15 +69,17 @@ EFLETE_TEST (pm_project_thread_cancel_test_p)
 
    elm_init(0,0);
    app_init();
+   ecore_file_recursive_rm("./UTC");
 
    res = EINA_FALSE;
-   thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
+   thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager_thread_cancel.edj",
                                   NULL, _test_end_cb, NULL);
    pm_project_thread_cancel(thread);
    ecore_main_loop_begin();
 
    ck_assert_msg(res, "Project thread did't canceled!");
 
+   ecore_file_recursive_rm("./UTC");
    app_shutdown();
    elm_shutdown();
 }

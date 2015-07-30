@@ -112,36 +112,6 @@ END_TEST
 /**
  * @addtogroup container_content_unset
  * @{
- * <tr>
- * <td>container_content_unset</td>
- * <td>container_content_unset_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 try to unset the content object from the containet
- * @step 2 check returned value
- * </td>
- * <td>NULL</td>
- * <td>NULL</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(container_content_unset_test_n2)
-{
-   elm_init(0, 0);
-
-   ck_assert_msg(container_content_unset(NULL) == NULL,
-                 "Unset the content object from the NULL container.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup container_content_unset
- * @{
  * </TABLE>
  * @}
  * @}

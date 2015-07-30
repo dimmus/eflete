@@ -39,13 +39,14 @@
  * @precondition
  * @step 1 initialized elm
  * @step 2 Evas canvas created.
- * @step 3 Layouts list filled with data which storred into edj file.
+ * @step 3 Mmap edj file.
+ * @step 4 Layouts list filled with data which storred into edj file.
  *
  * @procedure
- * @step 1 Call function wm_layouts_list_objects_load(widget_list, e, "./edj_build/wm_layouts_list_objects_load.edj").
+ * @step 1 Call function wm_layouts_list_objects_load(widget_list, e, mmap_file).
  * @step 2 Check returned bool.
  * </td>
- * <td>Eina_Inlist *layouts_list, Evas *e, char *file = "./edj_build/wm_layouts_list_objects_load.edj"</td>
+ * <td>Eina_Inlist *layouts_list, Evas *e, (Eina_File *)mmap_file</td>
  * <td>Returned EINA_TRUE</td>
  * </tr>
  * @}
@@ -57,117 +58,16 @@ EFLETE_TEST(wm_layouts_list_objects_load_test_p)
    Eina_Inlist *layouts_list = NULL;
    Evas_Object *win = NULL;
    Evas *e = NULL;
+   Eina_File *mmap_file = NULL;
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
+   mmap_file = eina_file_open(file, EINA_FALSE);
    layouts_list = wm_layouts_list_new(file);
-   ck_assert_msg(wm_layouts_list_objects_load(layouts_list, e, file), "Failed load layout.");
+   ck_assert_msg(wm_layouts_list_objects_load(layouts_list, e, mmap_file),
+                 "Failed load layout.");
 
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup wm_layouts_list_objects_load
- * @{
- * <tr>
- * <td>wm_layouts_list_objects_load</td>
- * <td>wm_layouts_list_objects_load_test_n1</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- * @step 2 Evas canvas created.
- *
- * @procedure
- * @step 1 Call function wm_layouts_list_objects_load(NULL, e, "./edj_build/wm_layouts_list_objects_load.edj").
- * @step 2 Check returned bool.
- * </td>
- * <td>NULL, Evas *e, char *file = "./edj_build/wm_layouts_list_objects_load.edj"</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(wm_layouts_list_objects_load_test_n1)
-{
-   elm_init(0,0);
-   const char *file = "./edj_build/wm_layouts_list_objects_load.edj";
-   Evas_Object *win = NULL;
-   Evas *e = NULL;
-
-   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   e = evas_object_evas_get(win);
-   ck_assert_msg(!wm_layouts_list_objects_load(NULL, e, file), "Layouts list loaded into NULL object.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup wm_layouts_list_objects_load
- * @{
- * <tr>
- * <td>wm_layouts_list_objects_load</td>
- * <td>wm_layouts_list_objects_load_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- * @step 2 Evas canvas created.
- *
- * @procedure
- * @step 1 Call function wm_layouts_list_objects_load(widget_list, NULL, "./edj_build/wm_layouts_list_objects_load.edj").
- * @step 2 Check returned bool.
- * </td>
- * <td>Eina_Inlist *layouts_list, NULL, char *file = "./edj_build/wm_layouts_list_objects_load.edj"</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(wm_layouts_list_objects_load_test_n2)
-{
-   elm_init(0,0);
-   const char *file = "./edj_build/wm_layouts_list_objects_load.edj";
-   Eina_Inlist *layouts_list = NULL;
-
-   layouts_list = wm_layouts_list_new(file);
-   ck_assert_msg(!wm_layouts_list_objects_load(layouts_list, NULL, file), "Layouts list loaded without canvas pointer.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup wm_layouts_list_objects_load
- * @{
- * <tr>
- * <td>wm_layouts_list_objects_load</td>
- * <td>wm_layouts_list_objects_load_test_n3</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- * @step 2 Evas canvas created.
- *
- * @procedure
- * @step 1 Call function wm_layouts_list_objects_load(widget_list, e, NULL).
- * @step 2 Check returned bool.
- * </td>
- * <td>Eina_Inlist *layouts_list, Evas *e, NULL</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(wm_layouts_list_objects_load_test_n3)
-{
-   elm_init(0,0);
-   const char *file = "./edj_build/wm_layouts_list_objects_load.edj";
-   Eina_Inlist *layouts_list = NULL;
-   Evas_Object *win = NULL;
-   Evas *e = NULL;
-
-   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   e = evas_object_evas_get(win);
-   layouts_list = wm_layouts_list_new(file);
-   ck_assert_msg(!wm_layouts_list_objects_load(layouts_list, e, NULL), "Layouts List loaded without file name.");
-
+   eina_file_close(mmap_file);
    elm_shutdown();
 }
 END_TEST

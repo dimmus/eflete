@@ -1,6 +1,316 @@
 ============
-Eflete 0.4.0
+Eflete 0.5.0
 ============
+
+Changes since 0.5.0-beta
+-------------------------
+Features:
+* Widget list: set the name for new layout on add
+
+Fixes:
+* History: show added diff in history list from combobox
+* History: hide the state list if part list is empty on Unde action
+* Workspace: do not set max part size less then min
+* Styles: propogate events for ctxpopup
+* Property: hide the color class attribute for swallow, spoacer and textblock
+* layouts: fix fallback styles
+* Layout Add: add any number of layouts when there are widgets in project
+
+
+Changes since 0.5.0-alpha
+-------------------------
+Fixes:
+   * Layout Add: add any number of layouts when there are widgets in project
+   * Styles: fix colorselector (add disabled states and some minor fixes)
+   * Project manager: fix sound export name
+   * history: fix return value on successful undo
+   * project_manager: fix random segfault after saving new project
+   * image_editor: fix missing image with id 0
+   * project_manager: fix new image saving
+   * project_manager: add missing eina_thread_mainloop_end
+   * live_view: fix properties scroller
+   * animator: fix checks in live veiw properties
+   * live_view: fix swallowed objects not being deleted
+   * properties: internal save on combobox changes
+   * Image_editor: fix del logic by clicked apply button
+   * Project manager: fix save logic for image resources
+   * project_manager: fix random segfaults
+   * live_view: fix bg and scale selection panel style
+   * Project manager: fix folder image and sound is empty
+   * ewe_tabs: fix content theme problems because of missing parent
+   * UTC: make it enabled to "make check" from different folder
+   * Live View Prop: update loaded layout when scale is changed
+   * Project Manager: fix memory leak in Project_Thread (in worker)
+   * Property: Group Max/Min value should not change Min/Max if Min/Max has 0 value
+   * Part Manipulation: do not delete all programs if there are no parts anymore
+   * Shortcuts: export should be disable while project is not opened
+   * Project Manager: update style edje edit objects
+   * Shortcuts: add Image should invoke Image Editor
+   * Live View Prop: fix ...need_recalculate_set() spam if there are signals exist
+
+Changes since 0.4.1
+-------------------
+Features:
+   * Groupedit: apply layout to BOX part
+   * Property: add BOX property called layout and alternative layout
+   * Groupedit: showing BOX and it's items on workspace
+   * Property: add attribure multiplier
+   * Widget manager: add field 'items' into Part structure.
+   * Shortcuts: add GROUP part shortcut
+   * Workspace: show GROUP part on workspace
+   * Property: support GROUP's params
+   * Part Dialog: new part type GROUP
+Fixes:
+   * groupedit_calc: fix memory leak on every TEXTBLOCK recalc
+   * Sound editor: fix sound playes after select, without auto checkmark
+   * properties: fix memory leak in ui_property_style_set
+   * live_view: fix memory leak in live_view_widget_style_set
+   * wizard_common: fix memory leak
+   * Style editor: no sense to mark the project 'changed'
+   * Image Manager: Group Item should have size
+   * Sound Editor: while in Sample Select mode, add new sound in different way
+   * Property macro: fix workspace update
+   * conector: fix history block hide/show
+   * Live view: fix live view resize at layout block
+   * Property: update min-max for item
+   * States_List: unset part from states list after part,unselect
+   * part_dialog: add internal save after adding new part
+   * ui: fix spinner text overflow
+   * connector: save style before opening
+   * Widget List: fix Controls disappear after redo or undo
+   * Widget List: fix restack behaviour while there are expanded Container part
+   * Widget List: fix style fallback after restack container part (BOX or TABLE)
+   * Widget List: fix SIGSEV after item restack
+   * Groupedit: set background of TABLE part according to UI/UX
+   * item_dialog: add groups sorting
+   * Property: hide 'color' and 'color class' attributes when GROUP part is selected
+   * Groupedit: show background of GROUP part when source is NULL
+   * Property: fix the tooltips text for text attribute
+   * shortcuts: disable delete callback
+   * properties: fix image.fill.offset history
+   * groupedit: fix proxy colors
+   * group_edit: fix color calculation
+   * Project Manager: refactor dev-file reload functions
+   * Groupedit: fix separate mode selection
+   * Property: fix errors on part creation
+   * connector: fix layout deletion after adding new layouts
+   * connector: make layout and style deletion find another object in the same way
+   * Groupedit: unset Group part when source is set to 'None'
+   * Spinner: fix style that caused property to spam
+   * Live View header: set min size for whole header
+   * Workspace: fix contextual menu
+   * Live View Property: do not check already checked check while checking 'Texts'
+   * Live View: hash which contain default text of text parts (radio)
+   * Property: fix code reset after select new part
+   * Live View: hash which contain default text of text parts (naviframe)
+   * Live View: hash which contain default text of text parts (multibuttonentry)
+   * Live View: hash which contain default text of text parts (frame widget)
+   * Live View: hash which contain default text of text parts (custom layouts)
+   * Live View: hash which contain default text of text parts (common widgets)
+   * properties: update code tab on last part deletion
+   * Property: update min and max of property
+   * Style editor: fix save activation logic
+   * ui_connector: fix segfault on style deletion
+   * ui_connector: fix layout delete
+   * sound manager: add tone name check
+   * Sound Manager: fix sound sample add
+   * Live View Property: while in Animator move menu (bg radios and scale) inside
+   * connector: add mmaped file reload on style loading
+   * Colorclass: fix save enable logic
+   * Property: save and update loaded group when draggable is changed
+   * Workspace: background for proxy part
+   * properties: fix TEXTBLOCK tags support
+   * animator: show real program name on unfocus
+   * ui: set default focus in dialogs
+   * project_manager: fix wrong behaviour on edc compilation failure
+   * project_manager: fix .pro file being damaged on crash
+   * Property: update Live View after set image from Image Editor
+   * Saving routines: reload file after every inner save fix
+   * Wizard: warning message if path to file is not entered
+   * Project Open: block menu when error is shown while 'Project Open' action
+   * Property: fix wrong filename after new image add from property
+   * Property: state image change fix
+   * Project Manager: ask if user is sure about 'unchanged project close'
+   * Export edj/edc: fix warning name in "export edc/edj"
+   * Widget List: fix crash after new part box(table) with item delete
+   * Widget Manager: do not allow to delete latest style and notify about it
+   * properties: fix localization issue in enventor mode
+   * Main Menu: block menu while splash is active (in new theme, open and import)
+   * properties: fix the console error with 'proxy source' control
+   * Styles: add clipper for text in "image" Entry
+   * animator: fix segfault on mode change after deleting all programs
+   * project_manager: fix segfault on 'New project' close
+   * Project Open: 'Project is not selected' warning
+   * Shortcuts: fix type for Ctrl+Y (redo)
+   * Import Edj: change error message when 'path to edj file' is empty
+   * Export Edj: enable menu after 'Export_edj_develop' mwin close ('X' button)
+   * Widget List: item add shows error if there is only one group in project
+   * fix other list-free memory leaks
+   * wizard_import_edc: fix memory leak
+   * live_view: fix memory leaks
+   * Live View: genlist fix of container/text set
+   * Live View: gengrid fix of container/text set
+   * Widget manager: reduse the creating time of wm_style
+   * Open project: disable the main menu while the dialog is open
+   * sound_editor: fix segfault if main window is not created
+   * UTC: live_widget change const char pointers to Style *
+   * UTC: live_view_test fix
+   * UTC: live view style set fix
+   * Style: fix layout for signals in live view property
+   * Style: fix frame for live view
+   * Styles: fix 'ellipsis' build warning from main_menu style
+   * live_view: fix SEGFAULT when opening ill-named genlist item style
+   * Property: fix update all source attribute
+   * Live_view: Update panel accroding to new UI / UX
+   * Wizards: add notify message on project import event
+   * Groupedit: set color2 as outline and color3 as shadow for editable TEXT
+   * Live View: update live view when new signal added
+   * Groupedit: object area calculation now use offsets
+   * Style: fix size difference between expanded frame with and without checks
+   * Live_view prop: add frame collapse prohibition if no items
+   * Live View Property: disable check of frame if there are no items
+   * Property: fix visibility of "position" field (for TABLE/BOX)
+   * Styles: set the ellipsis for combobox color_class items
+   * Styles: set text align to left for combobox items
+   * Property: add correct values for part item aspect ratio mode.
+   * Property: fix item.weight attribute.
+   * Live_view prop: fix property and radio layouts
+   * Style: fix frame for LiveView, Signal frame doesn't need any checks in header
+   * Style: fix panel size in Live View
+   * Style: clipper behavior on collapsed and expanded states
+   * Styles: fix panel style according to UI/UX
+   * Groupedit: could not be resolved for class 'Evas_Rectangle' message SPAM fix
+   * Live View Property: fix style reload drop swallow/text check's styles
+   * Live View Property: hide scroller when live view is unset
+   * Combobox: fix style set
+   * Live View: apply style to Radio widget
+   * About Window: fix incorrect animation
+   * Property: fix typo after refactoring state.max
+   * Project manager: fix generation options for edje_cc in enventor mode.
+   * Property: change the labels for aspect ration controls
+   * Style: change the state of button image in collapsed state of frame
+   * locale: fix for systems without nls support
+   * Live view: fix apply scale value to the non-widget objects.
+   * Project manager: add handlers into enventro save function.
+   * Enventor: fix segfault on switch to enventor mode.
+   * Groupedit: fix TABLE - border was removed by accident
+   * Property: fix mistake in property TABLE/BOX (min checks update)
+   * Property: fix macro descriprions
+   * Properties: fix aspect ratio display issue
+   * Widget List: fix SIGSEV on part selection when BOX/TABLE items are expanded
+   * Style: update style for combobox accordingly to guideline
+   * Style: fix size of '2swallow' property layout parts
+   * Groupedit: remove recalc for BOX
+   * Widget list: fix scroll at Widget list after new item was added/deleted
+   * Menu: disable and enable menu while "Export EDJ" inwin opening/closing
+   * Groupedit: select item on workspace for BOX
+   * Groupedit: spread items in BOX - fix bug of borders being on top
+   * Project_manager: fix overall top levels generation
+   * Export Edj: fix SIGSEV on fileselector close after "Export edj => develop"
+   * About Window: about information should slide from begin to end fully
+   * Property: hide BOX, TABLE and item's frame after style unload
+   * Part Dialog: new part should disable Save Project button
+   * Widget List: fix Item isn't visible after added few Box with Item
+   * Open Project: fix shortcut blockage after project load
+   * windows: fix theme loading
+   * BOX/TABLE Item Dialog: show error message when item is already exist
+   * BOX/TABLE Item Dialog: show error message when item's source is not selected
+   * Enventor: add pathes for enventor object.
+   * sound_editor: fix compilation with --disable-audio
+   * Style: fix genlist item tree style.
+   * Style: fix history genlist item style.
+   * UTC: fix liveview test accourdinly to changes in the Elementary
+   * Connector: fix create modal window for fileselector.
+   * Groupedit: fix delete components of groupedit part.
+   * Connector: fix _on_export_done (export as edj -> develop)
+   * Groupedit: make border and highlight items (of BOX) as part of groupedit
+   * Property: fix scroller calculation at property after part selection
+   * Groupedit: fix Textblock add logic
+   * Live View: fix notification popup show.
+   * Style: change the frame default style accourdingly to guideline
+   * History: fix group min/max attributes history flow.
+   * History: fix incorrect part add undo action.
+   * Style: change the spiner style accordingly to guideline
+   * Connector: remove setting style for button "Ok" in popup dialog
+   * Widget List: fix segfault on TABLE part delete.
+   * Styles: fix label style for eflete
+   * Styles: fix style for image_info
+   * Live_genlist: fix check logic
+   * Live_gengrid: fix check logic
+   * Styles: fix segmant control style name
+   * Image editor: fix segfault on close select image dialog
+   * History: fix loading history in genlist
+   * Property: set existing style for image tween frame
+   * Property: change property part unset
+   * Connector: add prohibition on empty name field Export edj
+   * Project manager: fix addition of extension while export file
+   * Live_view: fix checkmark for animator
+   * Live_view: fix checkmark for list
+   * Live_view: fix checkmark for radio and scroller
+   * Live_view: fix checkmark on Swallow and Texts logic
+   * Property: fix deploy at property list
+   * New Theme: quick fix, compile with dependency groups
+   * History: fix seg fault on x86 while new state add for some part
+   * Delete unnecessary stringshare
+   * localization: fix ngettext calls if localization is disabled
+   * Connector: fix highlight item absence after layout add
+   * project_manager: make pm_project_thread_project_get inline
+   * common_macro: fix value from wrong enum warning
+   * Connector: show created property that is hidden after new project reopen
+   * Build: Ability to build project from different places
+   * Live_view: fix deploy at live view property list
+   * Property: show error on wrong part source set
+   * Export Edj: ability to show all files in fileselector during export
+   * Style dialog: fix highlight item absence after style add
+   * UTC: fix random fail/pass of workspace_edit_object_part_rename tests
+   * Connector: update workspace to apply saved and new text styles
+   * New Theme: animation of "New Theme" window
+   * Menu: minor fixes with editor buttons disable
+   * Style Editor: do visible new style after 'save project'
+   * Ability to build project from different places
+   * Fix the build of tests after ewe move
+   * Fix the build resources
+   * UTC: fix pm_thread_free test
+   * Shortcuts: disable some shortcuts while in enventor mode
+   * Style Editor: fix segmentation fault on using newly added style for textblock.
+   * Connector: fix adding sound with enventor mode
+   * groupedit: fix ERR on style reopen
+   * widget_manager: fix memory leak
+   * history: fix memory leak
+   * style_editor: fix mixed char*/stringshare usage.
+   * Zoom: disable ability to zoom in or out while style is not loaded
+   * Zoom: zoom reset on unloading style
+   * style_editor: fix incorrect memory read in _lines_colors_update
+   * sound_editor: fix memory leak
+   * animator: fix memory leaks in program_editor
+   * animator: fix memory leaks in program_sequnce
+   * animator: fix memory leak
+   * Live view: fix incorrect double swallow add at live view
+   * project_manager: fix memory leak on new project creation
+   * external/syntax_color: fix memory leak
+   * Connector: fix highlight item absence after layout del
+   * Connector: fix 'export group' cancel not work
+   * ui_property: fix SEGFAULT on exit if part with type TEXT selected
+   * UTC: fix failing colorclass_viewer positive test
+   * ui_property: fix memory leak in macro ITEM_1COMBOBOX_STATE_UPDATE
+   * ui_property: fix memory leak in macro ITEM_1COMBOBOX_PART_*
+   * Property: free enventor object on style unset.
+   * Style_dialog: fix style addition
+   * Wizard: disable special menu items on _cancel_cb while imporing edc or edj
+   * Wizard: change accepted symbols for project names
+   * ui_property: fix memory leak in macro
+   * Connector: delete duplicate saving after adding new layout
+   * main_widow: fix invalid memory read
+   * ui_property: fix memory leaks
+   * widget_manager: fix layout aliasses linking
+   * widget_manager: fix memory leak in wm_widgets_list_new
+
+
+Changes since 0.4.0
+-------------------
+
+Fixes:
+   * fixes memory leaks.
 
 Changes since 0.3.1
 -------------------

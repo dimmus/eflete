@@ -1,0 +1,380 @@
+class Ewe_Ruler (Elm.Widget)
+{
+   eo_prefix: ewe_obj_ruler;
+   data: Ewe_Ruler_Smart_Data;
+   methods {
+      @property horizontal {
+         get {
+         /*@
+          Get the ruler orientation.
+
+          @param obj The ruler object
+          @return EINA_TRUE if ruler is horizontal or EINA_FALSE otherwise
+          @ingroup ruler*/
+         }
+         set {
+         /*@
+          Change the ruler's orientation to horizontal or vertical.
+
+          @return EINA_TRUE if orientation was set or EINA_FALSE on failure.
+
+          @ingroup ruler*/
+         return: Eina_Bool;
+         }
+         values {
+           horizontal: Eina_Bool;
+         }
+      }
+      @property step {
+         get {
+         /*@
+          Get step between marks of the ruler.
+
+          @param obj The ruler object
+          @return step
+          @ingroup ruler*/
+         }
+         set {
+         /*@
+          Set step between marks of the ruler
+
+          @return EINA_TRUE if step was set or EINA_FALSE on failure.
+
+          @ingroup ruler*/
+         return: Eina_Bool;
+         }
+         keys {
+           scale: Ewe_Ruler_Scale*;
+         }
+         values {
+           step: uint;
+         }
+      }
+      @property value_step {
+         get {
+         /*@
+          Get step between marks values of the ruler.
+
+          @param obj The ruler object
+          @return step
+          @ingroup ruler*/
+         }
+         set {
+         /*@
+          Set step between marks values of the scale
+
+          @return EINA_TRUE if step was set or EINA_FALSE on failure.
+
+          @ingroup ruler*/
+         return: Eina_Bool;
+         }
+         keys {
+           scale: Ewe_Ruler_Scale*;
+         }
+         values {
+           step: double;
+         }
+      }
+      @property zero_offset {
+         get {
+         /*@
+          Get "zero pointer" mark position
+
+          @param obj The ruler object
+          @return offset
+          @ingroup ruler*/
+         }
+         set {
+         /*@
+          Change the ruler's "zero pointer" mark position
+          @return EINA_TRUE if offset was set or EINA_FALSE on failure.
+
+          @ingroup ruler*/
+         return: Eina_Bool;
+         }
+         keys {
+           scale: Ewe_Ruler_Scale*;
+         }
+         values {
+           offset: int;
+         }
+      }
+      @property format {
+         get {
+         /*@
+          Get format string of given scale.
+
+          @param obj The ruler object
+          @return format string
+          @ingroup ruler*/
+         }
+         set {
+         /*@
+          Set format string for given scale
+
+          @return EINA_TRUE if format was setted or EINA_FALSE on failure.
+
+          @ingroup ruler*/
+         return: Eina_Bool;
+         }
+         keys {
+           scale: Ewe_Ruler_Scale*;
+         }
+         values {
+           format: const(char)*;
+         }
+      }
+      @property style {
+         get {
+         /*@
+          Get style of given scale.
+
+          @param obj The ruler object
+          @return style
+          @ingroup ruler*/
+         }
+         set {
+         /*@
+          Set style for given scale
+
+          @return EINA_TRUE if style was setted or EINA_FALSE on failure.
+
+          @ingroup ruler*/
+         return: Eina_Bool;
+         }
+         keys {
+           scale: Ewe_Ruler_Scale*;
+         }
+         values {
+           style: const(char)*;
+         }
+      }
+      @property scale_visible {
+         get {
+         /*@
+          Get visibility of given scale
+
+          @param obj The ruler object
+          @param scale Scale
+          @return visibility
+          @ingroup ruler*/
+         }
+         set {
+         /*@
+          Change the scale's visibility
+          @param obj The ruler object
+          @param scale Scale
+          @param visible New visibility state of given scale
+          @return EINA_TRUE if offset was set or EINA_FALSE on failure.
+
+          @ingroup ruler*/
+         return: Eina_Bool;
+         }
+         keys {
+           scale: Ewe_Ruler_Scale*;
+         }
+         values {
+           visible: Eina_Bool;
+         }
+      }
+      @property scale_middle_mark {
+         get {
+         /*@
+          Get visibility of middle mark in given scale
+
+          @param obj The ruler object
+          @param scale Scale
+          @return visibility
+          @ingroup ruler*/
+         }
+         set {
+         /*@
+          Change the scale middle mark visibility
+          @param obj The ruler object
+          @param scale Scale
+          @param middle_mark New visibility state of middle mark in scale
+          @return EINA_TRUE if middle_mark was set or EINA_FALSE on failure.
+
+          @ingroup ruler*/
+         return: Eina_Bool;
+         }
+         keys {
+           scale: Ewe_Ruler_Scale*;
+         }
+         values {
+           middle_mark: Eina_Bool;
+         }
+      }
+      @property marker_relative {
+         get {
+         /*@
+          Get marker position relative to given scale
+
+          @param obj The ruler object
+          @param marker Marker
+          @param scale Scale
+          @return relative position
+          @ingroup ruler*/
+         }
+         set {
+         /*@
+          Set marker to folow specified value on given scale
+          @return EINA_TRUE if position was set or EINA_FALSE on failure.
+
+          @ingroup ruler*/
+         return: Eina_Bool;
+         }
+         keys {
+           marker: Ewe_Ruler_Marker*;
+           scale: Ewe_Ruler_Scale*;
+         }
+         values {
+           rel_position: double;
+         }
+      }
+      @property marker_absolute {
+         get {
+         /*@
+          Get marker position
+
+          @param obj The ruler object
+          @param marker Marker
+          @return marker position
+          @ingroup ruler*/
+         }
+         set {
+         /*@
+          Set marker absolute posiiton
+          @return EINA_TRUE if position was set or EINA_FALSE on failure.
+
+          @ingroup ruler*/
+         return: Eina_Bool;
+         }
+         keys {
+           marker: Ewe_Ruler_Marker*;
+         }
+         values {
+           position: int;
+         }
+      }
+      @property marker_visible {
+         get {
+         /*@
+          Get visibility of given marker
+
+          @param obj The ruler object
+          @param marker Marker
+          @return visibility of arker
+          @ingroup ruler*/
+         }
+         set {
+         /*@
+          Change the marker's visibility
+          @param obj The ruler object
+          @param marker Marker
+          @param visible New visibility state of given marker
+          @return EINA_TRUE if visibility was set or EINA_FALSE on failure.
+
+          @ingroup ruler*/
+         return: Eina_Bool;
+         }
+         keys {
+           marker: Ewe_Ruler_Marker*;
+         }
+         values {
+           visible: Eina_Bool;
+         }
+      }
+      @property marker_style {
+         get {
+         /*@
+          Get style of given marker.
+
+          @param obj The ruler object
+          @return style
+          @ingroup ruler*/
+         }
+         set {
+         /*@
+          Set style for given marker
+
+          @return EINA_TRUE if style was setted or EINA_FALSE on failure.
+
+          @ingroup ruler*/
+         return: Eina_Bool;
+         }
+         keys {
+           marker: Ewe_Ruler_Marker*;
+         }
+         values {
+           style: const(char)*;
+         }
+      }
+      scale_add {
+         /*@
+          Add new scale to ruler.
+          @param obj The ruler object
+          @param style Style of new scale. NULL - default.
+          @return Scale object or NULL on failure.
+
+          @ingroup ruler*/
+         return: Ewe_Ruler_Scale *;
+         params {
+            style: const(char)*;
+         }
+      }
+      scale_del {
+         /*@
+          Delete given scale from ruler.
+          @param obj The ruler object
+          @param scale Scale to be deleted
+          @return EINA_TRUE on success, EIAN_FALSE on failure.
+
+          @ingroup ruler*/
+         return: Eina_Bool;
+         params {
+            scale: Ewe_Ruler_Scale*;
+         }
+      }
+      marker_add {
+         /*@
+          Add new marker to ruler.
+          @param obj The ruler object
+          @param style Style of new marker. NULL - default.
+          @return Marker object or NULL on failure.
+
+          @ingroup ruler*/
+         return: Ewe_Ruler_Marker *;
+         params {
+            style: const(char)*;
+         }
+      }
+      marker_del {
+         /*@
+          Delete given marker from ruler.
+          @param obj The ruler object
+          @param marker Marker to be deleted
+          @return EINA_TRUE on success, EIAN_FALSE on failure.
+
+          @ingroup ruler*/
+         return: Eina_Bool;
+         params {
+            marker: Ewe_Ruler_Marker*;
+         }
+      }
+   }
+   implements {
+      class.constructor;
+      Eo.Base.constructor;
+      Evas.Object_Smart.add;
+      Evas.Object_Smart.del;
+      Evas.Object_Smart.resize;
+      Evas.Object_Smart.calculate;
+      Evas.Object_Smart.move;
+      Evas.Object_Smart.show;
+      Evas.Object_Smart.hide;
+      Elm.Widget.theme_apply;
+   }
+   events {
+   }
+}

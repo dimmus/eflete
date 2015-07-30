@@ -69,7 +69,7 @@ EFLETE_TEST (image_editor_file_choose_test_p)
    app->project = pm_project_open("./image_editor_file_choose_test_p/image_editor_file_choose_test_p.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
-                                app->project->dev);
+                                app->project->mmap_file);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_file_choose(images, "radio.png") == EINA_TRUE,
@@ -121,7 +121,7 @@ EFLETE_TEST (image_editor_file_choose_test_n1)
    app->project = pm_project_open("./image_editor_file_choose_test_n1/image_editor_file_choose_test_n1.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
-                                app->project->dev);
+                                app->project->mmap_file);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_file_choose(images, "not_correct_image_name") == EINA_FALSE,
@@ -130,58 +130,6 @@ EFLETE_TEST (image_editor_file_choose_test_n1)
    evas_object_del(images);
    app_shutdown();
    teardown("./image_editor_file_choose_test_n1");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup image_editor_file_choose
- * @{
- * <tr>
- * <td>image_editor_file_choose</td>
- * <td>image_editor_file_choose_test_n2</td>
- * <td>
- * @precondition
- * @step 1 init elemantary
- * @step 2 init app
- * @step 3 create main window
- * @step 4 load project
- * @step 5 call wm_widgets_list_objects_load
- * @step 6 add image editor
- *
- * @procedure
- * @step 1 call image_editor_file_choose
- * @step 2 check returned value
- *
- * </td>
- * <td>NULL, "not_correct_image_name"</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (image_editor_file_choose_test_n2)
-{
-   elm_init(0,0);
-   setup("image_editor_file_choose_test_n2");
-
-   App_Data *app;
-   app_init();
-   Evas_Object *images;
-
-   app = app_data_get();
-   ui_main_window_add(app);
-   app->project = pm_project_open("./image_editor_file_choose_test_n2/image_editor_file_choose_test_n2.pro");
-   wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win),
-                                app->project->dev);
-   images = image_editor_window_add(app->project, SINGLE);
-
-   ck_assert_msg(image_editor_file_choose(NULL, "not_correct_image_name") == EINA_FALSE,
-                 "Selected image that not exist");
-
-   evas_object_del(images);
-   app_shutdown();
-   teardown("./image_editor_file_choose_test_n2");
    elm_shutdown();
 }
 END_TEST
@@ -225,7 +173,7 @@ EFLETE_TEST (image_editor_file_choose_test_n3)
    app->project = pm_project_open("./image_editor_file_choose_test_n3/image_editor_file_choose_test_n3.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
-                                app->project->dev);
+                                app->project->mmap_file);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_file_choose(images, NULL) == EINA_FALSE, "Selected image that not exist");

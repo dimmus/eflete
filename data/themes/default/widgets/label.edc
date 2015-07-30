@@ -1,4 +1,5 @@
-group { name: "elm/label/base/eflete/default";
+group { name: "elm/label/base/default";
+   alias: "elm/label/base/info";
    data.item: "default_font_size" "11";
    data.item: "min_font_size" "6";
    data.item: "max_font_size" "60";
@@ -15,7 +16,6 @@ group { name: "elm/label/base/eflete/default";
          description { state: "default" 0.0;
             rel1.relative: 0.0 0.0;
             rel2.relative: 1.0 1.0;
-            fixed: 1 1;
             text {
                style: "eflete_textblock_style";
                min: 0 1;
@@ -25,10 +25,12 @@ group { name: "elm/label/base/eflete/default";
    }
 }
 
-group { name: "elm/label/base/eflete/info";
-   data.item: "default_font_size" "11";
-   data.item: "min_font_size" "6";
-   data.item: "max_font_size" "60";
+group { name: "elm/label/base/slide_about";
+   data {
+      item: "min_font_size" "6";
+      item: "max_font_size" "60";
+      item: "default_font_size" "11";
+   }
    parts {
       part { name: "label.text.clip";
          type: RECT;
@@ -40,37 +42,59 @@ group { name: "elm/label/base/eflete/info";
          scale: 1;
          clip_to: "label.text.clip";
          description { state: "default" 0.0;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 1.0;
             text {
-               style: "eflete_infoblock_style";
+               style: "eflete_textblock_style";
+            }
+         }
+         description { state: "sliding" 0.0;
+            align: 0.5 1.0;
+            rel2 {
+               relative: 1.0 0.0;
+            }
+            text {
                min: 1 1;
                ellipsis: -1;
+               style: "eflete_textblock_style";
+            }
+         }
+         description { state: "slidin_start" 0.0;
+            align: 0.5 0.0;
+            rel1 {
+               relative: 0.0 1.0;
+            }
+            text {
+               min: 1 1;
+               ellipsis: -1;
+               style: "eflete_textblock_style";
             }
          }
       }
    }
-}
-group { name: "elm/label/base/eflete/editor";
-   parts {
-      part { name: "label.text.clip";
-         type: RECT;
-         description { state: "default" 0.0;
-         }
+   programs {
+      program { name: "animation_bottom";
+         signal: "elm,state,slide,start";
+         source: "elm";
+         action: STATE_SET "slidin_start" 0.00;
+         target: "elm.text";
+         after: "animation_sliding";
       }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         clip_to: "label.text.clip";
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            text {
-               style: "eflete_editor_textblock_style";
-               min: 0 1;
-            }
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 1.0;
-         }
+      program { name: "animation_stop";
+         signal: "elm,state,slide,stop";
+         source: "elm";
+         action: ACTION_STOP;
+         target: "animation_bottom";
+         target: "animation_sliding";
+         after: "animation_set_default";
+      }
+      program { name: "animation_sliding";
+         action: STATE_SET "sliding" 0.00;
+         transition: LINEAR 16.0;
+         target: "elm.text";
+         after: "animation_bottom";
+      }
+      program { name: "animation_set_default";
+         action: STATE_SET "default" 0.00;
+         target: "elm.text";
       }
    }
 }

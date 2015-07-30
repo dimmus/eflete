@@ -76,7 +76,7 @@ END_TEST
  * @{
  * <tr>
  * <td>groupedit_bg_set</td>
- * <td>groupedit_bg_set_test_n1</td>
+ * <td>groupedit_bg_set_test_p1</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
@@ -88,11 +88,11 @@ END_TEST
  * @step 3 check returned value
  * </td>
  * <td>(Evas_Object *) groupedit, NULL</td>
- * <td>Returned value is EINA_FALSE</td>
+ * <td>Returned value is EINA_TRUE</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(groupedit_bg_set_test_n1)
+EFLETE_TEST(groupedit_bg_set_test_p1)
 {
    Evas_Object *parent, *groupedit;
    Eina_Bool res;
@@ -103,40 +103,8 @@ EFLETE_TEST(groupedit_bg_set_test_n1)
 
    groupedit = groupedit_add(parent);
    res = groupedit_bg_set(groupedit, NULL);
-   ck_assert_msg(res == EINA_FALSE, "Failed create groupedit object.");
+   ck_assert_msg(res != EINA_FALSE, "Failed create groupedit object.");
    evas_object_del(parent);
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup groupedit_bg_set
- * @{
- * <tr>
- * <td>groupedit_bg_set</td>
- * <td>groupedit_bg_set_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 call groupedit_bg_set
- * @step 2 check returned value
- * </td>
- * <td>NULL, NULL</td>
- * <td>Returned value is EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (groupedit_bg_set_test_n2)
-{
-   Eina_Bool res;
-
-   elm_init(0, 0);
-
-   res = groupedit_bg_set(NULL, NULL);
-   ck_assert_msg(res == EINA_FALSE, "Failed create groupedit object.");
 
    elm_shutdown();
 }

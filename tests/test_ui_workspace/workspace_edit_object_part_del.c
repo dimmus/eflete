@@ -41,10 +41,11 @@
  * @step 1 initialize elementary library
  * @step 2 load extenstion theme from EFLETE_THEME file
  * @step 3 create parent window
- * @step 4 create workspace object
- * @step 5 create style object
- * @step 6 load style data from edje file
- * @step 7 set edit object into workspace
+ * @step 4 Mmap edj file.
+ * @step 5 create workspace object
+ * @step 6 create style object
+ * @step 7 load style data from edje file
+ * @step 8 set edit object into workspace
  *
  * @procedure
  * @step 1 Delete exist part
@@ -64,12 +65,14 @@ EFLETE_TEST (workspace_edit_object_part_del_test_p)
    Eina_Bool ret = EINA_FALSE;
    Style *style = NULL;
    Evas *e = NULL;
+   Eina_File *mmap_file = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_del.edj", EINA_FALSE);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_del.edj");
+   wm_style_data_load(style, e, mmap_file);
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_del.edj");
    ret = workspace_edit_object_part_del(workspace, "bg");
    ck_assert_msg(ret == EINA_TRUE, "Failed delete part from edit object ");
@@ -77,6 +80,7 @@ EFLETE_TEST (workspace_edit_object_part_del_test_p)
                  "Part exist after delete");
 
    wm_style_free(style);
+   eina_file_close(mmap_file);
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
@@ -84,141 +88,6 @@ EFLETE_TEST (workspace_edit_object_part_del_test_p)
    elm_shutdown();
 }
 END_TEST
-
-/**
- * @addtogroup workspace_edit_object_part_del
- * @{
- * <tr>
- * <td>workspace_edit_object_part_del</td>
- * <td>workspace_edit_object_part_del_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 load extenstion theme from EFLETE_THEME file
- * @step 3 create parent window
- * @step 4 create workspace object
- * @step 5 create style object
- * @step 6 load style data from edje file
- * @step 7 set edit object into workspace
- *
- * @procedure
- * @step 1 Delete non exist part
- * @step 2 check returned value
- * </td>
- * <td>(Evas_Object *) workspace, (char *)"b_g"</td>
- * <td>Returned EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (workspace_edit_object_part_del_test_n)
-{
-   elm_init(0, 0);
-   app_init();
-   Evas_Object *parent, *workspace;
-   Eina_Bool ret = EINA_TRUE;
-   Style *style = NULL;
-   Evas *e = NULL;
-
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   workspace = workspace_add(parent);
-   e = evas_object_evas_get(parent);
-   style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_del.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_del.edj");
-   ret = workspace_edit_object_part_del(workspace, "b_g");
-   ck_assert_msg(ret == EINA_FALSE, "Delete non exist part from edit object ");
-
-   wm_style_free(style);
-   workspace_edit_object_unset(workspace);
-   evas_object_del(workspace);
-   evas_object_del(parent);
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup workspace_edit_object_part_del
- * @{
- * <tr>
- * <td>workspace_edit_object_part_del</td>
- * <td>workspace_edit_object_part_del_test_n1</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 Delete part from NULL pointer workspace object
- * @step 2 check returned value
- * </td>
- * <td>NULL, (char *)"bg"</td>
- * <td>Returned EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (workspace_edit_object_part_del_test_n1)
-{
-   elm_init(0, 0);
-   Eina_Bool ret = EINA_TRUE;
-
-   ret = workspace_edit_object_part_del(NULL, "bg");
-   ck_assert_msg(ret == EINA_FALSE, "Delete part from NULL object workspace");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup workspace_edit_object_part_del
- * @{
- * <tr>
- * <td>workspace_edit_object_part_del</td>
- * <td>workspace_edit_object_part_del_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 load extenstion theme from EFLETE_THEME file
- * @step 3 create parent window
- * @step 4 create workspace object
- * @step 5 create style object
- * @step 6 load style data from edje file
- * @step 7 set edit object into workspace
- *
- * @procedure
- * @step 1 Delete part with NULL pointer string name
- * @step 2 check returned value
- * </td>
- * <td>(Evas_Object *) workspace, NULL</td>
- * <td>Returned EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (workspace_edit_object_part_del_test_n2)
-{
-   elm_init(0, 0);
-   app_init();
-   Evas_Object *parent, *workspace;
-   Eina_Bool ret = EINA_TRUE;
-   Style *style = NULL;
-   Evas *e = NULL;
-
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   workspace = workspace_add(parent);
-   e = evas_object_evas_get(parent);
-   style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_del.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_del.edj");
-   ret = workspace_edit_object_part_del(workspace, NULL);
-   ck_assert_msg(ret == EINA_FALSE, "Delete part without name");
-
-   wm_style_free(style);
-   workspace_edit_object_unset(workspace);
-   evas_object_del(workspace);
-   evas_object_del(parent);
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
 
 /**
  * @addtogroup workspace_edit_object_part_del

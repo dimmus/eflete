@@ -1,193 +1,178 @@
 #define BUTTON_BORDER 6 6 13 13
-group { name: "elm/button/base/eflete/default";
-   images{
-      image: "button-bg.png" COMP;
-      image: "button-click-bg.png" COMP;
-      image: "button-disabled-bg.png" COMP;
-      image: "focus-outer-glow.png" COMP;
+group { name: "elm/button/base/default";
+   alias: "elm/button/base/colorselector/default";
+   alias: "elm/button/base/fileselector/default";
+   alias: "elm/button/base/fileselector/actions/default";
+   alias: "elm/button/base/hoversel_vertical/fileselector/actions/default";
+   images {
+      image: "button_bg.png" COMP;
+      image: "button_click_bg.png" COMP;
+      image: "button_disabled_bg.png" COMP;
    }
    parts {
-      part { name: "button_image";
-            type: IMAGE;
-            description { state: "default" 0;
-               min: 12 12;
-               rel2.offset: -1 -1;
-               image {
-                  normal: "button-bg.png";
-                  border: BUTTON_BORDER;
-                  middle: SOLID;
-               }
-            }
-            description { state: "clicked" 0;
-               inherit: "default" 0.0;
-               image.normal: "button-click-bg.png";
-            }
-            description { state: "disabled" 0;
-               inherit: "default" 0.0;
-               image.normal: "button-disabled-bg.png";
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            min: 19 19;
+            image {
+               normal: "button_bg.png";
+               border: 4 4 9 9;
+               middle: SOLID;
             }
          }
+         description { state: "clicked" 0.0;
+            min: 19 19;
+            image {
+               normal: "button_click_bg.png";
+               border: 4 4 9 9;
+               middle: SOLID;
+            }
+         }
+         description { state: "disabled" 0.0;
+            min: 19 19;
+            color: 255 255 255 254;
+            image {
+               normal: "button_disabled_bg.png";
+               border: 4 4 9 9;
+               middle: SOLID;
+            }
+         }
+      }
       part { name: "elm.swallow.content";
          type: SWALLOW;
+         clip_to: "clipper";
          description { state: "default" 0.0;
-            fixed: 1 0;
             visible: 0;
             align: 0.0 0.5;
-            rel1 {
-               to: "pad_left";
-               relative: 1.0 0.0;
-            }
             rel2 {
-               offset: 1 -3;
                relative: 0.0 1.0;
             }
          }
          description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            fixed: 1 0;
-            visible: 1;
+            align: 0.0 0.5;
+            fixed: 1 1;
             aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               offset: 6 2;
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -1 -4;
+            }
          }
          description { state: "icononly" 0.0;
-            inherit: "default" 0.0;
-            fixed: 0 0;
-            visible: 1;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               offset: 6 2;
+            }
+            rel2 {
+               offset: -7 -4;
+            }
          }
       }
       part { name: "elm.text";
          type: TEXT;
-         effect: SOFT_SHADOW;
-         mouse_events:  0;
+         mouse_events: 0;
          scale: 1;
+         clip_to: "clipper";
+         effect: PLAIN;
          description { state: "default" 0.0;
             visible: 0;
+            text {
+               font: "PT";
+               size: 12;
+               text_class: "button";
+               min: 1 1;
+               max: 1 1;
+               ellipsis: -1.0;
+            }
+         }
+         description { state: "visible" 0.0;
+            color2: 0 0 0 0;
+            color3: 0 0 0 0;
             rel1 {
+               relative: 1.0 0.0;
+               offset: 6 2;
                to_x: "elm.swallow.content";
-               to_y: "pad_left";
-               relative: 1.0 1.0;
             }
             rel2 {
-               to: "pad_right";
-               relative: 0.0 0.0;
+               offset: -7 -3;
             }
             text {
-               font: FN;
+               font: "PT";
                size: 12;
+               text_class: "button";
+               min: 1 1;
                max: 1 1;
+               ellipsis: -1.0;
+            }
+         }
+         description { state: "textonly" 0.0;
+            color2: 0 0 0 0;
+            color3: 0 0 0 0;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 2;
+               to_x: "elm.swallow.content";
+            }
+            rel2 {
+               offset: -7 -3;
+            }
+            text {
+               font: "PT";
+               size: 12;
                text_class: "button";
-            }
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            color: 214 214 214 255;
-            color2: 0 0 0 0;
-            color3: 0 0 0 0;
-            visible: 1;
-            text {
                min: 1 1;
-               ellipsis: -1;
-            }
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "disabled_visible" 0.0;
-            inherit: "default" 0.0;
-            color: 176 178 179 255;
-            color2: 0 0 0 0;
-            color3: 0 0 0 0;
-            visible: 1;
-            text {
-               min: 1 1;
-               ellipsis: -1;
+               max: 1 1;
+               ellipsis: -1.0;
             }
          }
       }
-      part { name: "over2";
+      part { name: "clipper";
          type: RECT;
-         mouse_events: 1;
          repeat_events: 1;
-         ignore_flags: ON_HOLD;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
+            color: 214 214 214 255;
+            rel1 {
+               offset: 2 2;
+            }
+            rel2 {
+               offset: -3 -4;
+            }
          }
          description { state: "disabled" 0.0;
-            inherit:  "default" 0.0;
-            visible: 0;
+            color: 118 119 120 255;
+            rel1 {
+               offset: 2 2;
+            }
+            rel2 {
+               offset: -3 -4;
+            }
          }
       }
-      part { name: "disabler";
+      part { name: "event";
          type: RECT;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
-            visible: 0;
+            color: 255 255 255 0;
          }
          description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      // used to force sizing of icon to follow label sizing nearby
-      part { name: "sizer.content"; type: TEXT;
-         mouse_events:  0;
-         scale: 1;
-         description { state: "default" 0.0;
             visible: 0;
-            fixed: 1 1;
-               text {
-               font: FN;
-               size: 10;
-               min: 0 0;
-               text_class: "button";
-            }
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            text {
-               min: 1 1;
-               ellipsis: -1;
-               text: "M";
-            }
-         }
-         description { state: "icononly" 0.0;
-            inherit: "default" 0.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            text {
-               min: 1 1;
-               ellipsis: -1;
-               text: "M";
-            }
-         }
-      }
-      // end sizer
-      part { name: "pad_left";
-         type: SPACER;
-         description { state: "default" 0;
-            align: 0.0 0.0;
-            max: 5 5;
-         }
-      }
-      part { name: "pad_right";
-         type: SPACER;
-         description { state: "default" 0;
-            align: 1.0 1.0;
-            max: 5 5;
          }
       }
    }
    programs {
       program { name: "button_click";
          signal: "mouse,down,1";
-         source: "over2";
+         source: "event";
          action: SIGNAL_EMIT "elm,action,press" "";
          after: "button_click_anim";
       }
       program { name: "button_unclick";
          signal: "mouse,up,1";
-         source: "over2";
+         source: "event";
+         filter: "bg" "clicked";
          action: SIGNAL_EMIT "elm,action,unpress" "";
          after: "button_unclick_anim";
       }
@@ -195,309 +180,262 @@ group { name: "elm/button/base/eflete/default";
          signal: "elm,anim,activate";
          source: "elm";
          action: STATE_SET "clicked" 0.00;
-         target: "button_image";
+         target: "bg";
          after: "button_unpressed_anim";
       }
       program { name: "button_unclick2";
          signal: "mouse,clicked,1";
-         source: "over2";
+         source: "event";
          action: SIGNAL_EMIT "elm,action,click" "";
       }
       program { name: "text_show";
          signal: "elm,state,text,visible";
          source: "elm";
          script {
-           new st[31];
-           new Float:vl;
-           get_state(PART:"elm.swallow.content", st, 30, vl);
-           if (!strcmp(st, "icononly")) {
-              set_state(PART:"elm.swallow.content", "visible", 0.0);
-              set_state(PART:"sizer.content", "visible", 0.0);
-           }
-           get_state(PART:"elm.text", st, 30, vl);
-           if (!strcmp(st, "disabled") || (!strcmp(st, "disabled_visible")))
-             set_state(PART:"elm.text", "disabled_visible", 0.0);
-           else
-             set_state(PART:"elm.text", "visible", 0.0);
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.swallow.content", st, 30, vl);
+            if (!strcmp(st, "default"))
+               set_state(PART:"elm.text", "textonly", 0.0);
+            else { /* icononly */
+               set_state(PART:"elm.swallow.content", "visible", 0.0);
+               set_state(PART:"elm.text", "visible", 0.0);
+            }
          }
       }
       program { name: "text_hide";
          signal: "elm,state,text,hidden";
          source: "elm";
          script {
-           new st[31];
-           new Float:vl;
-           get_state(PART:"elm.swallow.content", st, 30, vl);
-           if (!strcmp(st, "visible")) {
-              set_state(PART:"elm.swallow.content", "icononly", 0.0);
-              set_state(PART:"sizer.content", "icononly", 0.0);
-           }
-           set_state(PART:"elm.text", "default", 0.0);
-           get_state(PART:"elm.text", st, 30, vl);
-           if (!strcmp(st, "default") || (!strcmp(st, "visible")))
-             set_state(PART:"elm.text", "default", 0.0);
-           else
-             set_state(PART:"elm.text", "disabled", 0.0);
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.swallow.content", st, 30, vl);
+            if (!strcmp(st, "visible"))
+               set_state(PART:"elm.swallow.content", "icononly", 0.0);
+            set_state(PART:"elm.text", "default", 0.0);
          }
       }
       program { name: "icon_show";
          signal: "elm,state,icon,visible";
          source: "elm";
          script {
-           new st[31];
-           new Float:vl;
-           get_state(PART:"elm.text", st, 30, vl);
-           if (!strcmp(st, "visible")) {
-              set_state(PART:"elm.swallow.content", "visible", 0.0);
-              set_state(PART:"sizer.content", "visible", 0.0);
-           }
-           else {
-              set_state(PART:"elm.swallow.content", "icononly", 0.0);
-              set_state(PART:"sizer.content", "icononly", 0.0);
-           }
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            if (!strcmp(st, "default"))
+               set_state(PART:"elm.swallow.content", "icononly", 0.0);
+            else { /* textonly */
+               set_state(PART:"elm.swallow.content", "visible", 0.0);
+               set_state(PART:"elm.text", "visible", 0.0);
+            }
          }
       }
       program { name: "icon_hide";
          signal: "elm,state,icon,hidden";
          source: "elm";
-         action: STATE_SET "default" 0.00;
-         target: "elm.swallow.content";
-         target: "sizer.content";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            if (!strcmp(st, "visible"))
+               set_state(PART:"elm.text", "textonly", 0.0);
+            set_state(PART:"elm.swallow.content", "default", 0.0);
+         }
       }
       program { name: "disable";
          signal: "elm,state,disabled";
          source: "elm";
-         script {
-           new st[31];
-           new Float:vl;
-           set_state(PART:"button_image", "disabled", 0.0);
-           set_state(PART:"disabler", "disabled", 0.0);
-           get_state(PART:"elm.text", st, 30, vl);
-           if (!strcmp(st, "visible") || !strcmp(st, "disabled_visible"))
-             set_state(PART:"elm.text", "disabled_visible", 0.0);
-           else
-             set_state(PART:"elm.text", "disabled", 0.0);
-         }
+         action: STATE_SET "disabled" 0.00;
+         target: "clipper";
+         target: "event";
+         target: "bg";
       }
       program { name: "enable";
          signal: "elm,state,enabled";
          source: "elm";
-         script {
-           new st[31];
-           new Float:vl;
-           set_state(PART:"button_image", "visible", 0.0);
-           set_state(PART:"disabler", "visible", 0.0);
-           get_state(PART:"elm.text", st, 30, vl);
-           if (!strcmp(st, "visible") || !strcmp(st, "disabled_visible"))
-             set_state(PART:"elm.text", "visible", 0.0);
-           else
-             set_state(PART:"elm.text", "default", 0.0);
-         }
+         action: STATE_SET "default" 0.00;
+         target: "clipper";
+         target: "event";
+         target: "bg";
       }
       program { name: "button_click_anim";
          action: STATE_SET "clicked" 0.00;
-         target: "button_image";
+         target: "bg";
       }
       program { name: "button_unpressed_anim";
          action: STATE_SET "default" 0.00;
-         transition: DECELERATE 0.50000;
-         target: "button_image";
+         target: "bg";
       }
       program { name: "button_unclick_anim";
          action: STATE_SET "default" 0.00;
-         target: "button_image";
+         target: "bg";
       }
    }
 }
 
-group { name: "elm/button/base/eflete/simple";
-   images{
-      image: "button-bg.png" COMP;
-      image: "button-click-bg.png" COMP;
-      image: "button-disabled-bg.png" COMP;
-      image: "focus-outer-glow.png" COMP;
+group { name: "elm/button/base/anchor";
+   images {
+      image: "button_click_bg.png" COMP;
    }
    parts {
       part { name: "bg";
-         type: RECT;
+         type: IMAGE;
          description { state: "default" 0.0;
             visible: 0;
-         }
-      }
-      part { name: "button_image";
-         type: IMAGE;
-         description { state: "default" 0;
-            min: 16 16;
-            color: 0 0 0 0;
-            rel2.offset: -1 -1;
+            min: 19 19;
             image {
-               normal: "button-bg.png";
+               normal: "button_click_bg.png";
+               border: 4 4 9 9;
                middle: SOLID;
             }
          }
-         description { state: "clicked" 0;
-            inherit: "default" 0.0;
+         description { state: "clicked" 0.0;
+            min: 19 19;
             image {
-               normal: "button-click-bg.png";
-               border: BUTTON_BORDER;
+               normal: "button_click_bg.png";
+               border: 4 4 9 9;
+               middle: SOLID;
             }
-            color: 255 255 255 255;
          }
-         description { state: "disabled" 0;
-             inherit: "default" 0.0;
-             image {
-               normal: "button-disabled-bg.png";
-               border: BUTTON_BORDER;
-             }
-          }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
+         clip_to: "clipper";
          description { state: "default" 0.0;
-            fixed: 1 0;
             visible: 0;
-            align: 0.5 0.5;
-            rel1.offset: 0 0;
-            rel2.offset: 0 0;
+            align: 0.0 0.5;
+            rel1 {
+               offset: 2 2;
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: 1 -4;
+            }
          }
          description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            fixed: 1 0;
-            visible: 1;
+            align: 0.0 0.5;
+            fixed: 1 1;
             aspect: 1.0 1.0;
-            rel2.offset: 0 0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               offset: 10 4;
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -5 -5;
+            }
          }
          description { state: "icononly" 0.0;
-            inherit: "default" 0.0;
-            fixed: 0 0;
-            visible: 1;
-            align: 0.5 0.5;
-            rel1.offset: 0 0;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               offset: 2 2;
+            }
             rel2 {
-               offset: 0 0;
-               relative: 1.0 1.0;
+               offset: -3 -4;
             }
          }
       }
       part { name: "elm.text";
          type: TEXT;
-         effect: SOFT_SHADOW;
-         mouse_events:  0;
+         mouse_events: 0;
          scale: 1;
+         clip_to: "clipper";
+         effect: PLAIN;
          description { state: "default" 0.0;
             visible: 0;
-            fixed: 1 1;
+            text {
+               font: "PT";
+               size: 13;
+               text_class: "button";
+               min: 1 1;
+               max: 1 1;
+               ellipsis: -1.0;
+            }
+         }
+         description { state: "visible" 0.0;
+            color2: 0 0 0 0;
+            color3: 0 0 0 0;
             rel1 {
-               to_x: "elm.swallow.content";
                relative: 1.0 0.0;
-               offset: 0 2;
+               offset: 6 2;
+               to_x: "elm.swallow.content";
             }
-            rel2.offset: -3 -3;
+            rel2 {
+               offset: -11 -5;
+            }
             text {
-               font: FN;
-               size: 10;
-               min: 0 0;
-               align: 0.5 0.5;
+               font: "PT";
+               size: 13;
                text_class: "button";
+               min: 1 1;
+               max: 1 1;
+               ellipsis: -1.0;
             }
          }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            color: 214 214 214 255;
+         description { state: "textonly" 0.0;
             color2: 0 0 0 0;
             color3: 0 0 0 0;
-            visible: 1;
-            text {
-               min: 1 1;
-               ellipsis: -1;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 10 2;
+               to_x: "elm.swallow.content";
             }
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "disabled_visible" 0.0;
-            inherit: "default" 0.0;
-            color: 176 178 179 255;
-            color2: 0 0 0 0;
-            color3: 0 0 0 0;
-            visible: 1;
+            rel2 {
+               offset: -11 -5;
+            }
             text {
+               font: "PT";
+               size: 13;
+               text_class: "button";
                min: 1 1;
-               ellipsis: -1;
+               max: 1 1;
+               ellipsis: -1.0;
             }
          }
       }
-      part { name: "over2";
+      part { name: "clipper";
          type: RECT;
-         mouse_events: 1;
          repeat_events: 1;
-         ignore_flags: ON_HOLD;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
+            color: LIGHT_GREY_FONT_COLOR;
+            rel1 {
+               offset: 2 2;
+            }
+            rel2 {
+               offset: -3 -4;
+            }
          }
          description { state: "disabled" 0.0;
-            inherit:  "default" 0.0;
-            visible: 0;
+            color: LIGHT_GREY_FONT_DISABLE_COLOR;
+            rel1 {
+               offset: 2 2;
+            }
+            rel2 {
+               offset: -3 -4;
+            }
          }
       }
-      part { name: "disabler";
+      part { name: "event";
          type: RECT;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
-            visible: 0;
+            color: 255 255 255 0;
          }
          description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      // used to force sizing of icon to follow label sizing nearby
-      part { name: "sizer.content"; type: TEXT;
-         mouse_events:  0;
-         scale: 1;
-         description { state: "default" 0.0;
             visible: 0;
-            fixed: 1 1;
-               text {
-               font: FN;
-               size: 10;
-               min: 0 0;
-               text_class: "button";
-            }
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            text {
-               min: 1 1;
-               ellipsis: -1;
-               text: "M";
-            }
-         }
-         description { state: "icononly" 0.0;
-            inherit: "default" 0.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            text {
-               min: 1 1;
-               ellipsis: -1;
-               text: "M";
-            }
          }
       }
-      // end sizer
    }
    programs {
       program { name: "button_click";
          signal: "mouse,down,1";
-         source: "over2";
+         source: "event";
          action: SIGNAL_EMIT "elm,action,press" "";
          after: "button_click_anim";
       }
       program { name: "button_unclick";
          signal: "mouse,up,1";
-         source: "over2";
+         source: "event";
          action: SIGNAL_EMIT "elm,action,unpress" "";
          after: "button_unclick_anim";
       }
@@ -505,422 +443,159 @@ group { name: "elm/button/base/eflete/simple";
          signal: "elm,anim,activate";
          source: "elm";
          action: STATE_SET "clicked" 0.00;
-         target: "button_image";
+         target: "bg";
          after: "button_unpressed_anim";
       }
       program { name: "button_unclick2";
          signal: "mouse,clicked,1";
-         source: "over2";
+         source: "event";
          action: SIGNAL_EMIT "elm,action,click" "";
       }
       program { name: "text_show";
          signal: "elm,state,text,visible";
          source: "elm";
          script {
-           new st[31];
-           new Float:vl;
-           get_state(PART:"elm.swallow.content", st, 30, vl);
-           if (!strcmp(st, "icononly")) {
-              set_state(PART:"elm.swallow.content", "visible", 0.0);
-              set_state(PART:"sizer.content", "visible", 0.0);
-           }
-           get_state(PART:"elm.text", st, 30, vl);
-           if (!strcmp(st, "disabled") || (!strcmp(st, "disabled_visible")))
-             set_state(PART:"elm.text", "disabled_visible", 0.0);
-           else
-             set_state(PART:"elm.text", "visible", 0.0);
+
+         new st[31];
+         new Float:vl;
+         get_state(PART:"elm.swallow.content", st, 30, vl);
+         if (!strcmp(st, "default"))
+         set_state(PART:"elm.text", "textonly", 0.0);
+         if (!strcmp(st, "icononly") || !strcmp(st, "visible")) {
+         set_state(PART:"elm.swallow.content", "visible", 0.0);
+         set_state(PART:"elm.text", "visible", 0.0);
          }
+                  }
       }
       program { name: "text_hide";
          signal: "elm,state,text,hidden";
          source: "elm";
          script {
-           new st[31];
-           new Float:vl;
-           get_state(PART:"elm.swallow.content", st, 30, vl);
-           if (!strcmp(st, "visible")) {
-              set_state(PART:"elm.swallow.content", "icononly", 0.0);
-              set_state(PART:"sizer.content", "icononly", 0.0);
-           }
-           set_state(PART:"elm.text", "default", 0.0);
-           get_state(PART:"elm.text", st, 30, vl);
-           if (!strcmp(st, "default") || (!strcmp(st, "visible")))
-             set_state(PART:"elm.text", "default", 0.0);
-           else
-             set_state(PART:"elm.text", "disabled", 0.0);
+
+         new st[31];
+         new Float:vl;
+         get_state(PART:"elm.swallow.content", st, 30, vl);
+         if (!strcmp(st, "visible")) {
+            set_state(PART:"elm.swallow.content", "icononly", 0.0);
          }
+         set_state(PART:"elm.text", "default", 0.0);
+         get_state(PART:"elm.text", st, 30, vl);
+         if (!strcmp(st, "default") || (!strcmp(st, "visible")))
+         set_state(PART:"elm.text", "default", 0.0);
+         else
+         set_state(PART:"elm.text", "disabled", 0.0);
+                  }
       }
       program { name: "icon_show";
          signal: "elm,state,icon,visible";
          source: "elm";
          script {
-           new st[31];
-           new Float:vl;
-           get_state(PART:"elm.text", st, 30, vl);
-           if (!strcmp(st, "visible")) {
-              set_state(PART:"elm.swallow.content", "visible", 0.0);
-              set_state(PART:"sizer.content", "visible", 0.0);
-           }
-           else {
-              set_state(PART:"elm.swallow.content", "icononly", 0.0);
-              set_state(PART:"sizer.content", "icononly", 0.0);
-           }
+
+         new st[31];
+         new Float:vl;
+         get_state(PART:"elm.text", st, 30, vl);
+         if (!strcmp(st, "visible")) {
+            set_state(PART:"elm.swallow.content", "visible", 0.0);
          }
+         else {
+            set_state(PART:"elm.swallow.content", "icononly", 0.0);
+         }
+                  }
       }
       program { name: "icon_hide";
          signal: "elm,state,icon,hidden";
          source: "elm";
-         action: STATE_SET "default" 0.00;
-         target: "elm.swallow.content";
-         target: "sizer.content";
+         script {
+
+         new st[31];
+         new Float:vl;
+         get_state(PART:"elm.text", st, 30, vl);
+         if (!strcmp(st, "visible"))
+         set_state(PART:"elm.text", "textonly", 0.0);
+         set_state(PART:"elm.swallow.content", "default", 0.0);
+                  }
       }
       program { name: "disable";
          signal: "elm,state,disabled";
          source: "elm";
-         script {
-           new st[31];
-           new Float:vl;
-           set_state(PART:"button_image", "disabled", 0.0);
-           set_state(PART:"disabler", "disabled", 0.0);
-           get_state(PART:"elm.text", st, 30, vl);
-           if (!strcmp(st, "visible") || !strcmp(st, "disabled_visible"))
-             set_state(PART:"elm.text", "disabled_visible", 0.0);
-           else
-             set_state(PART:"elm.text", "disabled", 0.0);
-         }
+         action: STATE_SET "disabled" 0.00;
+         target: "clipper";
+         target: "event";
       }
       program { name: "enable";
          signal: "elm,state,enabled";
          source: "elm";
-         script {
-           new st[31];
-           new Float:vl;
-           set_state(PART:"button_image", "visible", 0.0);
-           set_state(PART:"disabler", "visible", 0.0);
-           get_state(PART:"elm.text", st, 30, vl);
-           if (!strcmp(st, "visible") || !strcmp(st, "disabled_visible"))
-             set_state(PART:"elm.text", "visible", 0.0);
-           else
-             set_state(PART:"elm.text", "default", 0.0);
-         }
+         action: STATE_SET "default" 0.00;
+         target: "clipper";
+         target: "event";
       }
       program { name: "button_click_anim";
          action: STATE_SET "clicked" 0.00;
-         target: "button_image";
+         target: "bg";
       }
       program { name: "button_unpressed_anim";
          action: STATE_SET "default" 0.00;
          transition: DECELERATE 0.50000;
-         target: "button_image";
+         target: "bg";
       }
       program { name: "button_unclick_anim";
          action: STATE_SET "default" 0.00;
-         target: "button_image";
-      }
-   }
-}
-group { name: "elm/button/base/separate";
-   inherit: "elm/button/base/eflete/simple";
-   parts {
-      part { name: "bg";
-         description { state: "default" 0.0;
-            visible: 1;
-            color: 48 48 48 255;
-         }
+         target: "bg";
       }
    }
 }
 
-group { name: "elm/button/base/eflete/elipsis";
+group { name: "elm/button/base/elipsis";
    images {
       image: "input-select-file.png" COMP;
       image: "input-select-file-clicked.png" COMP;
    }
    parts {
-      part { name: "button_image";
-         mouse_events: 1;
+      part { name: "bg";
+         type: IMAGE;
          description { state: "default" 0.0;
-            SET_SIZE(19, 17);
+            min: 19 17;
+            max: 19 17;
             image {
                normal: "input-select-file.png";
                middle: SOLID;
             }
          }
          description { state: "clicked" 0.0;
-            inherit: "default" 0.0;
-            image.normal: "input-select-file-clicked.png";
-         }
-         description { state: "disabled" 0.0;
-            inherit:  "default" 0.0;
-            image.normal: "input-select-file.png";
-            color: 64 64 64 100;
-         }
-      }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            fixed: 1 0;
-            visible: 0;
-            align: 0.0 0.5;
-            rel1.offset: 2 2;
-            rel2 {
-               offset: 1 -3;
-               relative: 0.0 1.0;
-            }
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            fixed: 1 0;
-            visible: 1;
-            aspect: 1.0 1.0;
-            rel2.offset: 2 -3;
-         }
-         description { state: "icononly" 0.0;
-            inherit: "default" 0.0;
-            fixed: 0 0;
-            visible: 1;
-            align: 0.5 0.5;
-            rel2 {
-               offset: -3 -3;
-               relative: 1.0 1.0;
+            min: 19 17;
+            max: 19 17;
+            image {
+               normal: "input-select-file-clicked.png";
+               middle: SOLID;
             }
          }
       }
-      part {
-         name:          "elm.text";
-         type:          TEXT;
-         effect:        SOFT_SHADOW;
-         mouse_events:  0;
-         scale: 1;
-         description { state: "default" 0.0;
-            visible: 0;
-            rel1 {
-               to_x: "elm.swallow.content";
-               relative: 1.0 0.0;
-               offset: 0 2;
-            }
-            rel2.offset: -3 -3;
-            color: 224 224 224 255;
-            color3: 0 0 0 64;
-            text {
-               font: FN;
-               size: 10;
-               min: 0 0;
-               align: 0.5 0.5;
-               text_class: "button";
-            }
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            text {
-               min: 1 1;
-               ellipsis: -1;
-            }
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "disabled_visible" 0.0;
-            inherit: "default" 0.0;
-            color: 0 0 0 128;
-            color3: 0 0 0 0;
-            visible: 1;
-            text {
-               min: 1 1;
-               ellipsis: -1;
-            }
-         }
-      }
-      part { name: "over2";
-         type: RECT;
-         mouse_events: 1;
-         repeat_events: 1;
-         ignore_flags: ON_HOLD;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-         }
-         description { state: "disabled" 0.0;
-            inherit:  "default" 0.0;
-            visible: 0;
-         }
-      }
-      part { name: "disabler";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-            visible: 0;
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      // used to force sizing of icon to follow label sizing nearby
-      part { name: "sizer.content"; type: TEXT;
-         mouse_events:  0;
-         scale: 1;
-         description { state: "default" 0.0;
-            visible: 0;
-            text {
-               font: FN;
-               size: 10;
-               min: 0 0;
-               text_class: "button";
-            }
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            rel1.to: "elm.swallow.content";
-            rel2.to: "elm.swallow.content";
-            text {
-               min: 1 1;
-               ellipsis: -1;
-               text: "M";
-            }
-         }
-         description { state: "icononly" 0.0;
-            inherit: "visible" 0.0;
-         }
-      }
-      // end sizer
    }
    programs {
-      program {
-         name:   "button_click";
+      program { name: "button_click";
          signal: "mouse,down,1";
-         source: "over2";
+         source: "bg";
          action: SIGNAL_EMIT "elm,action,press" "";
          after: "button_click_anim";
       }
-      program {
-         name:   "button_click_anim";
-         action: STATE_SET "clicked" 0.0;
-         target: "button_image";
-      }
-      program {
-         name:   "button_unclick";
+      program { name: "button_unclick";
          signal: "mouse,up,1";
-         source: "over2";
+         source: "bg";
          action: SIGNAL_EMIT "elm,action,unpress" "";
          after: "button_unclick_anim";
       }
-      program {
-         name:   "button_unclick_anim";
-         action: STATE_SET "default" 0.0;
-         target: "button_image";
-      }
-      program {
-         name:   "button_unclick3";
+      program { name: "button_unclick3";
          signal: "mouse,clicked,1";
-         source: "over2";
+         source: "bg";
          action: SIGNAL_EMIT "elm,action,click" "";
       }
-      program { name: "text_show";
-         signal: "elm,state,text,visible";
-         source: "elm";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.swallow.content", st, 30, vl);
-            if (!strcmp(st, "icononly")) {
-               set_state(PART:"elm.swallow.content", "visible", 0.0);
-               set_state(PART:"sizer.content", "visible", 0.0);
-            }
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "disabled") || (!strcmp(st, "disabled_visible")))
-              set_state(PART:"elm.text", "disabled_visible", 0.0);
-            else
-              set_state(PART:"elm.text", "visible", 0.0);
-         }
+      program { name: "button_unclick_anim";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
       }
-      program { name: "text_hide";
-         signal: "elm,state,text,hidden";
-         source: "elm";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.swallow.content", st, 30, vl);
-            if (!strcmp(st, "visible")) {
-               set_state(PART:"elm.swallow.content", "icononly", 0.0);
-               set_state(PART:"sizer.content", "icononly", 0.0);
-            }
-            set_state(PART:"elm.text", "default", 0.0);
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "default") || (!strcmp(st, "visible")))
-              set_state(PART:"elm.text", "default", 0.0);
-            else
-              set_state(PART:"elm.text", "disabled", 0.0);
-         }
-      }
-      program { name: "icon_show";
-         signal: "elm,state,icon,visible";
-         source: "elm";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "visible")) {
-               set_state(PART:"elm.swallow.content", "visible", 0.0);
-               set_state(PART:"sizer.content", "visible", 0.0);
-            }
-            else {
-               set_state(PART:"elm.swallow.content", "icononly", 0.0);
-               set_state(PART:"sizer.content", "icononly", 0.0);
-            }
-         }
-      }
-      program { name: "icon_hide";
-         signal: "elm,state,icon,hidden";
-         source: "elm";
-         action:  STATE_SET "default" 0.0;
-         target: "elm.swallow.content";
-         target: "sizer.content";
-      }
-      program { name: "disable";
-         signal: "elm,state,disabled";
-         source: "elm";
-         script {
-            new st[31];
-            new Float:vl;
-            set_state(PART:"button_image", "disabled", 0.0);
-            set_state(PART:"over2", "disabled", 0.0);
-            set_state(PART:"disabler", "disabled", 0.0);
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "visible") || !strcmp(st, "disabled_visible"))
-              set_state(PART:"elm.text", "disabled_visible", 0.0);
-            else
-              set_state(PART:"elm.text", "disabled", 0.0);
-         }
-      }
-      program { name: "enable";
-         signal: "elm,state,enabled";
-         source: "elm";
-         script {
-            new st[31];
-            new Float:vl;
-            set_state(PART:"button_image", "visible", 0.0);
-            set_state(PART:"over2", "visible", 0.0);
-            set_state(PART:"disabler", "visible", 0.0);
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "visible") || !strcmp(st, "disabled_visible"))
-              set_state(PART:"elm.text", "visible", 0.0);
-            else
-              set_state(PART:"elm.text", "default", 0.0);
-         }
-      }
-   }
-}
-
-group { name: "elm/button/base/eflete/btn";
-   inherit: "elm/button/base/eflete/default";
-   parts {
-      part { name: "elm.text";
-         description { state: "visible" 0.0;
-            text {
-               min: 0 0;
-            }
-         }
+      program { name: "button_click_anim";
+         action: STATE_SET "clicked" 0.00;
+         target: "bg";
       }
    }
 }

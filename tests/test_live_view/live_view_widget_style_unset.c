@@ -74,7 +74,7 @@ EFLETE_TEST(live_view_widget_style_unset_test_p)
    project = pm_project_open("./live_view_widget_style_unset_test_p/live_view_widget_style_unset_test_p.pro");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, project->dev);
+   wm_style_data_load(style, e, project->mmap_file);
    project->current_style = style;
    live = live_view_add(parent, false);
    live_view_widget_style_set(live, project, style);
@@ -128,34 +128,6 @@ EFLETE_TEST(live_view_widget_style_unset_test_n1)
    live_view_free(live);
    evas_object_del(parent);
    elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup live_view_widget_style_unset
- * @{
- * <tr>
- * <td>live_view_widget_style_unset</td>
- * <td>live_view_widget_style_unset_test_n2</td>
- * <td>
- * @precondition
- * @step 1 None
- *
- * @procedure
- * @step 1 Call live_view_widget_style_unset.
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>EINA_FALSE returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(live_view_widget_style_unset_test_n2)
-{
-   Eina_Bool res = EINA_TRUE;
-
-   res = live_view_widget_style_unset(NULL);
-   ck_assert_msg(res == EINA_FALSE, "Unset style from NULL pointer live view.");
 }
 END_TEST
 

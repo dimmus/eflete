@@ -41,14 +41,13 @@
  * @step 1 initialized elm;
  * @step 2 initialized eflete, need for logger.
  * @step 3 start a some Project thread
- * @step 4 cancel the thread.
  *
  * @procedure
  * @step 1 Call pm_project_thread_free;
  * @step 2 Check returned value.
  * </td>
  * <td>(Project_Thread *)worker</td>
- * <td>The and func must be called with param PM_PROJECT_CANCEL</td>
+ * <td>thread freed</td>
  * </tr>
  * @}
  */
@@ -67,17 +66,18 @@ EFLETE_TEST (pm_project_thread_free_test_p)
 
    elm_init(0,0);
    app_init();
+   ecore_file_recursive_rm("./UTC");
 
    worker = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
                                   NULL, _test_end_cb, NULL);
    ecore_main_loop_begin();
-   pm_project_thread_cancel(worker);
+   pro = pm_project_thread_project_get(worker);
 
    res = pm_project_thread_free(worker);
-   ck_assert_msg(res, "Project thread did't canceled!");
+   ck_assert_msg(res, "Can't cancel project thread!");
 
-   pro = pm_project_thread_project_get(worker);
    pm_project_close(pro);
+   ecore_file_recursive_rm("./UTC");
 
    app_shutdown();
    elm_shutdown();
@@ -121,6 +121,7 @@ EFLETE_TEST (pm_project_thread_free_test_n)
 
    elm_init(0,0);
    app_init();
+   ecore_file_recursive_rm("./UTC");
 
    worker = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
                                   NULL, _test_end_n_cb, NULL);
@@ -131,6 +132,7 @@ EFLETE_TEST (pm_project_thread_free_test_n)
 
    pro = pm_project_thread_project_get(worker);
    pm_project_close(pro);
+   ecore_file_recursive_rm("./UTC");
 
    app_shutdown();
    elm_shutdown();

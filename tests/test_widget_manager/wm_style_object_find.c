@@ -39,8 +39,9 @@
  * @precondition
  * @step 1 initialized elm
  * @step 2 Evas canvas created.
- * @step 3 Widget list filled with data (Widgets, Classes, Styles etc).
- * @step 4 Group existing in edj.
+ * @step 3 Mmap edj file.
+ * @step 4 Widget list filled with data (Widgets, Classes, Styles etc).
+ * @step 5 Group existing in edj.
  *
  * @procedure
  * @step 1 Call function wm_style_object_find(widget_list, "elm/radio/base/test").
@@ -59,14 +60,17 @@ EFLETE_TEST (wm_style_object_find_test_p1)
    Eina_Inlist *widget_list = NULL;
    Evas_Object *win = NULL;
    Evas *e = NULL;
+   Eina_File *mmap_file = NULL;
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   mmap_file = eina_file_open(file, EINA_FALSE);
    e = evas_object_evas_get(win);
    widget_list = wm_widgets_list_new(file);
-   wm_widgets_list_objects_load(widget_list, e, file);
+   wm_widgets_list_objects_load(widget_list, e, mmap_file);
    ck_assert_msg(wm_style_object_find(widget_list, full_style_name) != NULL, "Group wasn't found");
 
    wm_widgets_list_free(widget_list);
+   eina_file_close(mmap_file);
    elm_shutdown();
 }
 END_TEST
@@ -81,8 +85,9 @@ END_TEST
  * @precondition
  * @step 1 initialized elm
  * @step 2 Evas canvas created.
- * @step 3 widget list filled with data (Widgets, Classes, Styles etc).
- * @step 4 Group not existing in edj.
+ * @step 3 Mmap edj file.
+ * @step 4 widget list filled with data (Widgets, Classes, Styles etc).
+ * @step 5 Group not existing in edj.
  *
  * @procedure
  * @step 1 Call function wm_style_object_find(widget_list, "elm/widget/base/test").
@@ -101,109 +106,17 @@ EFLETE_TEST (wm_style_object_find_test_p2)
    Eina_Inlist *widget_list = NULL;
    Evas_Object *win = NULL;
    Evas *e = NULL;
+   Eina_File *mmap_file = NULL;
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
+   mmap_file = eina_file_open(file, EINA_FALSE);
    widget_list = wm_widgets_list_new(file);
-   wm_widgets_list_objects_load(widget_list, e, file);
+   wm_widgets_list_objects_load(widget_list, e, mmap_file);
    ck_assert_msg(wm_style_object_find(widget_list, full_style_name) == NULL, "Unexisted Group was found");
 
    wm_widgets_list_free(widget_list);
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup wm_style_object_find
- * @{
- * <tr>
- * <td>wm_style_object_find</td>
- * <td>wm_style_object_find_test_n1</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- *
- * @procedure
- * @step 1 Call function wm_style_object_find(NULL, "elm/widget/base/test").
- * @step 2 Check returned object.
- * </td>
- * <td>NULL, char *full_style_name = "elm/widget/base/test"</td>
- * <td>NULL object pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (wm_style_object_find_test_n1)
-{
-   elm_init(0,0);
-   const char *full_style_name = "elm/widget/base/test";
-   ck_assert_msg(wm_style_object_find(NULL, full_style_name) == NULL, "Group was found from NULL list");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup wm_style_object_find
- * @{
- * <tr>
- * <td>wm_style_object_find</td>
- * <td>wm_style_object_find_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- * @step 2 Evas canvas created.
- * @step 3 Widget list filled with data (Widgets, Classes, Styles etc).
- *
- * @procedure
- * @step 1 Call function wm_style_object_find(widget_list, NULL).
- * @step 2 Check returned object.
- * </td>
- * <td>Eina_Inlist *widget_list, NULL</td>
- * <td>NULL object pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (wm_style_object_find_test_n2)
-{
-   elm_init(0,0);
-   const char *file = "./edj_build/wm_style_object_find.edj";
-   Eina_Inlist *widget_list = NULL;
-   Evas_Object *win = NULL;
-   Evas *e = NULL;
-
-   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   e = evas_object_evas_get(win);
-   widget_list = wm_widgets_list_new(file);
-   wm_widgets_list_objects_load(widget_list, e, file);
-   ck_assert_msg(wm_style_object_find(widget_list, NULL) == NULL, "NULL was found");
-
-   wm_widgets_list_free(widget_list);
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup wm_style_object_find
- * @{
- * <tr>
- * <td>wm_style_object_find</td>
- * <td>wm_style_object_find_test_n3</td>
- * <td>
- * @precondition
- * @step 1 initialized elm
- *
- * @procedure
- * @step 1 Call function wm_style_object_find(NULL, NULL).
- * @step 2 Check returned object.
- * </td>
- * <td>NULL, NULL</td>
- * <td>NULL object pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (wm_style_object_find_test_n3)
-{
-   elm_init(0,0);
-   ck_assert_msg(wm_style_object_find(NULL, NULL) == NULL, "Group was found");
+   eina_file_close(mmap_file);
    elm_shutdown();
 }
 END_TEST

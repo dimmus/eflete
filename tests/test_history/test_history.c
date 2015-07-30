@@ -22,23 +22,16 @@
 Suite* test_suite (void) {
    Suite *suite = suite_create("test_history");
    TCase *tcase = tcase_create("TCase");
+
    tcase_add_test(tcase, history_init_test_p);
    tcase_add_test(tcase, history_term_test_p);
-   tcase_add_test(tcase, history_term_test_n);
 
    tcase_add_test(tcase, history_clear_test_p);
-   tcase_add_test(tcase, history_clear_test_n);
 
    tcase_add_test(tcase, history_module_add_test_p1);
    tcase_add_test(tcase, history_module_add_test_p2);
-   tcase_add_test(tcase, history_module_add_test_n1);
-   tcase_add_test(tcase, history_module_add_test_n2);
 
    tcase_add_test(tcase, history_module_del_test_p1);
-   tcase_add_test(tcase, history_module_del_test_p2);
-   tcase_add_test(tcase, history_module_del_test_n1);
-   tcase_add_test(tcase, history_module_del_test_n2);
-   tcase_add_test(tcase, history_module_del_test_n3);
 
    tcase_add_test(tcase, history_diff_add_test_p1);
    tcase_add_test(tcase, history_diff_add_test_p2);
@@ -56,17 +49,6 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, history_diff_add_test_p14);
    tcase_add_test(tcase, history_diff_add_test_p15);
    tcase_add_test(tcase, history_diff_add_test_p16);
-   tcase_add_test(tcase, history_diff_add_test_n1);
-   tcase_add_test(tcase, history_diff_add_test_n2);
-   tcase_add_test(tcase, history_diff_add_test_n3);
-   tcase_add_test(tcase, history_diff_add_test_n4);
-   tcase_add_test(tcase, history_diff_add_test_n5);
-   tcase_add_test(tcase, history_diff_add_test_n6);
-   tcase_add_test(tcase, history_diff_add_test_n7);
-   tcase_add_test(tcase, history_diff_add_test_n8);
-   tcase_add_test(tcase, history_diff_add_test_n9);
-   tcase_add_test(tcase, history_diff_add_test_n10);
-   tcase_add_test(tcase, history_diff_add_test_n11);
 
    tcase_add_test(tcase, history_undo_test_p1);
    tcase_add_test(tcase, history_undo_test_p2);
@@ -90,9 +72,6 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, history_undo_test_p20);
    tcase_add_test(tcase, history_undo_test_p21);
    tcase_add_test(tcase, history_undo_test_p22);
-   tcase_add_test(tcase, history_undo_test_n1);
-   tcase_add_test(tcase, history_undo_test_n2);
-   tcase_add_test(tcase, history_undo_test_n3);
 
    tcase_add_test(tcase, history_redo_test_p1);
    tcase_add_test(tcase, history_redo_test_p2);
@@ -113,24 +92,15 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, history_redo_test_p17);
    tcase_add_test(tcase, history_redo_test_p18);
    tcase_add_test(tcase, history_redo_test_p19);
-   tcase_add_test(tcase, history_redo_test_n1);
-   tcase_add_test(tcase, history_redo_test_n2);
-   tcase_add_test(tcase, history_redo_test_n3);
 
    tcase_add_test(tcase, history_genlist_get_test_p1);
    tcase_add_test(tcase, history_genlist_get_test_p2);
-   tcase_add_test(tcase, history_genlist_get_test_n1);
-   tcase_add_test(tcase, history_genlist_get_test_n2);
 
    tcase_add_test(tcase, history_module_depth_set_test_p1);
    tcase_add_test(tcase, history_module_depth_set_test_p2);
-   tcase_add_test(tcase, history_module_depth_set_test_n1);
-   tcase_add_test(tcase, history_module_depth_set_test_n2);
 
    tcase_add_test(tcase, history_module_depth_get_test_p1);
    tcase_add_test(tcase, history_module_depth_get_test_p2);
-   tcase_add_test(tcase, history_module_depth_get_test_n1);
-   tcase_add_test(tcase, history_module_depth_get_test_n2);
 
    suite_add_tcase(suite, tcase);
    return suite;

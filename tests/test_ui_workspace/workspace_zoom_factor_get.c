@@ -18,6 +18,8 @@
  */
 
 #include "test_ui_workspace.h"
+#include "main_window.h"
+#include "test_common.h"
 
 /**
  * @addtogroup ui_workspace_test
@@ -40,11 +42,12 @@
  * @step 1 initialize elementary library
  * @step 2 load extenstion theme from EFLETE_THEME file
  * @step 3 create parent window
- * @step 4 create workspace object
- * @step 5 create style
- * @step 6 load data into created style from edj file
- * @step 7 set loaded object into workspace
- * @step 8 Set zoom factor equal 1.5
+ * @step 4 Mmap edj file.
+ * @step 5 create workspace object
+ * @step 6 create style
+ * @step 7 load data into created style from edj file
+ * @step 8 set loaded object into workspace
+ * @step 9 Set zoom factor equal 1.5
  *
  * @procedure
  * @step 1 call workspace_zoom_factor_get
@@ -57,57 +60,30 @@
  */
 EFLETE_TEST (workspace_zoom_factor_get_test_p)
 {
+   App_Data *app = NULL;
+   Style *style = NULL;
+
    elm_init(0, 0);
    app_init();
-   double res = -1;
-   Evas_Object *parent, *workspace;
-   Style *style = NULL;
-   Evas *e = NULL;
+   setup("workspace_zoom_factor_get_test_p");
 
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   workspace = workspace_add(parent);
-   e = evas_object_evas_get(parent);
-   style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/workspace_zoom_factor_get.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/workspace_zoom_factor_get.edj");
-   workspace_zoom_factor_set(workspace, 1.5);
-   res = workspace_zoom_factor_get(workspace);
-   ck_assert_msg(res == 1.5, "Failed get zoom factor");
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_project_open("./workspace_zoom_factor_get_test_p/workspace_zoom_factor_get_test_p.pro");
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win), app->project->mmap_file);
+   blocks_show(app);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   workspace_zoom_factor_set(app->workspace, 1.5);
 
-   wm_style_free(style);
-   workspace_edit_object_unset(workspace);
-   evas_object_del(workspace);
-   evas_object_del(parent);
+   ck_assert_msg(workspace_zoom_factor_get(app->workspace) == 1.5, "Failed get zoom factor");
+
+   pm_project_close(app->project);
+   app->project = NULL;
+   ui_main_window_del(app);
    app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup workspace_zoom_factor_get
- * @{
- * <tr>
- * <td>workspace_zoom_factor_get</td>
- * <td>workspace_zoom_factor_get_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 call workspace_zoom_factor_get with NULL pointer workspace object
- * @step 2 check returned value
- * </td>
- * <td>NULL</td>
- * <td>Returned 0</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (workspace_zoom_factor_get_test_n1)
-{
-   elm_init(0, 0);
-   double res = -1;
-   res = workspace_zoom_factor_get(NULL);
-   ck_assert_msg(res == 0, "Get zoom factor from NULL object");
+   teardown("./workspace_zoom_factor_get_test_p");
    elm_shutdown();
 }
 END_TEST

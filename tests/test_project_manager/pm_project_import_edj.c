@@ -68,6 +68,7 @@ EFLETE_TEST (pm_project_import_edj_test_p)
 
    elm_init(0,0);
    app_init();
+   ecore_file_recursive_rm("./UTC");
 
    thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
                                   NULL, _end_cb, NULL);
@@ -76,6 +77,7 @@ EFLETE_TEST (pm_project_import_edj_test_p)
 
    pro = pm_project_thread_project_get(thread);
    pm_project_close(pro);
+   ecore_file_recursive_rm("./UTC");
 
    app_shutdown();
    elm_shutdown();
@@ -120,6 +122,7 @@ EFLETE_TEST (pm_project_import_edj_test_p1)
 
    elm_init(0,0);
    app_init();
+   ecore_file_recursive_rm("./UTC");
 
    res = EINA_FALSE;
    thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
@@ -131,6 +134,7 @@ EFLETE_TEST (pm_project_import_edj_test_p1)
 
    pro = pm_project_thread_project_get(thread);
    pm_project_close(pro);
+   ecore_file_recursive_rm("./UTC");
 
    app_shutdown();
    elm_shutdown();
@@ -176,6 +180,7 @@ EFLETE_TEST (pm_project_import_edj_test_p2)
 
    elm_init(0,0);
    app_init();
+   ecore_file_recursive_rm("./UTC");
 
    res = EINA_FALSE;
    thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
@@ -187,6 +192,7 @@ EFLETE_TEST (pm_project_import_edj_test_p2)
 
    pro = pm_project_thread_project_get(thread);
    pm_project_close(pro);
+   ecore_file_recursive_rm("./UTC");
 
    app_shutdown();
    elm_shutdown();

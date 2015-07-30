@@ -38,11 +38,13 @@
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 create parent window
- * @step 3 create a workspace
- * @step 4 create a edje edit object
- * @step 5 load some group from file to edje edit object
- * @step 6 set to the workspace editable object
+ * @step 2 load extenstion theme from EFLETE_THEME file
+ * @step 3 create parent window
+ * @step 4 Mmap edj file.
+ * @step 5 create workspace object
+ * @step 6 create style object
+ * @step 7 load style data from edje file
+ * @step 8 set edit object into workspace
  *
  * @procedure
  * @step 1 Rename part "radio" into "NEW_radio"
@@ -54,21 +56,28 @@
  */
 EFLETE_TEST(workspace_edit_object_part_rename_test_p1)
 {
-   Evas_Object *parent, *workspace, *edje_edit;
-   Style *style = calloc(1, sizeof(Style));
-
    elm_init(0, 0);
    app_init();
+   Evas_Object *parent, *workspace;
+   Style *style = NULL;
+   Evas *e = NULL;
+   Eina_File *mmap_file = NULL;
+
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_rename.edj", EINA_FALSE);
    workspace = workspace_add(parent);
-   edje_edit = edje_edit_object_add(evas_object_evas_get(parent));
-   edje_object_file_set(edje_edit, "edj_build/workspace_edit_object_part_rename.edj", "elm/radio/base/def");
-   style->obj = edje_edit;
+   e = evas_object_evas_get(parent);
+   style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
+   wm_style_data_load(style, e, mmap_file);
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_rename.edj");
 
    ck_assert_msg(workspace_edit_object_part_rename(workspace, "radio", "NEW_radio"),
                  "Renaming was unsuccesfull");
 
+   wm_style_free(style);
+   eina_file_close(mmap_file);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
 
    app_shutdown();
@@ -85,11 +94,13 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 create parent window
- * @step 3 create a workspace
- * @step 4 create a edje edit object
- * @step 5 load some group from file to edje edit object
- * @step 6 set to the workspace editable object
+ * @step 2 load extenstion theme from EFLETE_THEME file
+ * @step 3 create parent window
+ * @step 4 Mmap edj file.
+ * @step 5 create workspace object
+ * @step 6 create style object
+ * @step 7 load style data from edje file
+ * @step 8 set edit object into workspace
  *
  * @procedure
  * @step 1 Check that there are no parts with name "NEW_radio"
@@ -102,16 +113,19 @@ END_TEST
  */
 EFLETE_TEST(workspace_edit_object_part_rename_test_p2)
 {
-   Evas_Object *parent, *workspace, *edje_edit;
-   Style *style = calloc(1, sizeof(Style));
-
    elm_init(0, 0);
    app_init();
+   Evas_Object *parent, *workspace;
+   Style *style = NULL;
+   Evas *e = NULL;
+   Eina_File *mmap_file = NULL;
+
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_rename.edj", EINA_FALSE);
    workspace = workspace_add(parent);
-   edje_edit = edje_edit_object_add(evas_object_evas_get(parent));
-   edje_object_file_set(edje_edit, "edj_build/workspace_edit_object_part_rename.edj", "elm/radio/base/def");
-   style->obj = edje_edit;
+   e = evas_object_evas_get(parent);
+   style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
+   wm_style_data_load(style, e, mmap_file);
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_rename.edj");
 
    ck_assert_msg(workspace_edit_object_part_rename(workspace, "radio", "NEW_radio"),
@@ -119,103 +133,10 @@ EFLETE_TEST(workspace_edit_object_part_rename_test_p2)
    ck_assert_msg(workspace_edit_object_part_rename(workspace, "NEW_radio", "radio"),
                  "Renaming back was unsuccesfull");
 
-
-   evas_object_del(parent);
-
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup workspace_edit_object_part_rename
- * @{
- * <tr>
- * <td>workspace_edit_object_part_rename</td>
- * <td>workspace_edit_object_part_rename_test_n1</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 create parent window
- * @step 3 create a workspace
- * @step 4 create a edje edit object
- * @step 5 load some group from file to edje edit object
- * @step 6 set to the workspace editable object
- *
- * @procedure
- * @step 1 Rename unexisted part "qqqqq" into "NEW_radio"
- * </td>
- * <td>(Evas_Object *) workspace, (const char *) old_name = "qqqqq", (const char *) new_name = "NEW_radio"</td>
- * <td>EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(workspace_edit_object_part_rename_test_n1)
-{
-   Evas_Object *parent, *workspace, *edje_edit;
-   Style *style = calloc(1, sizeof(Style));
-
-   elm_init(0, 0);
-   app_init();
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   workspace = workspace_add(parent);
-   edje_edit = edje_edit_object_add(evas_object_evas_get(parent));
-   edje_object_file_set(edje_edit, "edj_build/workspace_edit_object_part_rename.edj", "elm/radio/base/def");
-   style->obj = edje_edit;
-   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_rename.edj");
-
-   ck_assert_msg(!workspace_edit_object_part_rename(workspace, "qqqqq", "NEW_radio"),
-                 "Renaming was succesfull with unexisted part");
-
-
-   evas_object_del(parent);
-
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup workspace_edit_object_part_rename
- * @{
- * <tr>
- * <td>workspace_edit_object_part_rename</td>
- * <td>workspace_edit_object_part_rename_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 create parent window
- * @step 3 create a workspace
- * @step 4 create a edje edit object
- * @step 5 load some group from file to edje edit object
- * @step 6 set to the workspace editable object
- *
- * @procedure
- * @step 1 Rename part "radio" into "bg" (part called "bg" already exists)
- * </td>
- * <td>(Evas_Object *) workspace, (const char *) old_name = "radio", (const char *) new_name = "bg"</td>
- * <td>EINA_FALSE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(workspace_edit_object_part_rename_test_n2)
-{
-   Evas_Object *parent, *workspace, *edje_edit;
-   Style *style = calloc(1, sizeof(Style));
-
-   elm_init(0, 0);
-   app_init();
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   workspace = workspace_add(parent);
-   edje_edit = edje_edit_object_add(evas_object_evas_get(parent));
-   edje_object_file_set(edje_edit, "edj_build/workspace_edit_object_part_rename.edj", "elm/radio/base/def");
-   style->obj = edje_edit;
-   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_rename.edj");
-
-   ck_assert_msg(!workspace_edit_object_part_rename(workspace, "radio", "bg"),
-                 "Renaming part into name that is already exist was successfull");
-
-
+   wm_style_free(style);
+   eina_file_close(mmap_file);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
 
    app_shutdown();
@@ -232,11 +153,13 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 create parent window
- * @step 3 create a workspace
- * @step 4 create a edje edit object
- * @step 5 load some group from file to edje edit object
- * @step 6 set to the workspace editable object
+ * @step 2 load extenstion theme from EFLETE_THEME file
+ * @step 3 create parent window
+ * @step 4 Mmap edj file.
+ * @step 5 create workspace object
+ * @step 6 create style object
+ * @step 7 load style data from edje file
+ * @step 8 set edit object into workspace
  *
  * @procedure
  * @step 1 Rename part "radio" into its current name.
@@ -248,81 +171,28 @@ END_TEST
  */
 EFLETE_TEST(workspace_edit_object_part_rename_test_n3)
 {
-   Evas_Object *parent, *workspace, *edje_edit;
-   Style *style = calloc(1, sizeof(Style));
-
    elm_init(0, 0);
    app_init();
+   Evas_Object *parent, *workspace;
+   Style *style = NULL;
+   Evas *e = NULL;
+   Eina_File *mmap_file = NULL;
+
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_rename.edj", EINA_FALSE);
    workspace = workspace_add(parent);
-   edje_edit = edje_edit_object_add(evas_object_evas_get(parent));
-   edje_object_file_set(edje_edit, "edj_build/workspace_edit_object_part_rename.edj", "elm/radio/base/def");
-   style->obj = edje_edit;
+   e = evas_object_evas_get(parent);
+   style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
+   wm_style_data_load(style, e, mmap_file);
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_rename.edj");
 
    ck_assert_msg(!workspace_edit_object_part_rename(workspace, "radio", "radio"),
                  "Renaming part from radio to radio... So useless act!");
 
-
-   evas_object_del(parent);
-
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup workspace_edit_object_part_rename
- * @{
- * <tr>
- * <td>workspace_edit_object_part_rename</td>
- * <td>workspace_edit_object_part_rename_test_n4</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 create parent window
- * @step 3 create a workspace
- * @step 4 create a edje edit object
- * @step 5 load some group from file to edje edit object
- * @step 6 set to the workspace editable object
- *
- * @procedure
- * @step 1 Call function workspace_edit_object_part_rename with third parameter as NULL
- * @step 2 Call function workspace_edit_object_part_rename with second parameter as NULL
- * @step 3 Call function workspace_edit_object_part_rename with first parameter as NULL
- * @step 4 Call function workspace_edit_object_part_rename with second parameter as ""
- * @step 5 Call function workspace_edit_object_part_rename with third parameter as ""
- * </td>
- * <td>NULL, NULL, NULL</td>
- * <td>All checks passed</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(workspace_edit_object_part_rename_test_n4)
-{
-   Evas_Object *parent, *workspace, *edje_edit;
-   Style *style = calloc(1, sizeof(Style));
-
-   elm_init(0, 0);
-   app_init();
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   workspace = workspace_add(parent);
-   edje_edit = edje_edit_object_add(evas_object_evas_get(parent));
-   edje_object_file_set(edje_edit, "edj_build/workspace_edit_object_part_rename.edj", "elm/radio/base/def");
-   style->obj = edje_edit;
-   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_rename.edj");
-
-   ck_assert_msg(!workspace_edit_object_part_rename(workspace, "radio", NULL),
-                 "Renaming part into name with NULL was successfull");
-   ck_assert_msg(!workspace_edit_object_part_rename(workspace, NULL, "NEW_radio"),
-                 "Renaming part with name NULL was successfull");
-   ck_assert_msg(!workspace_edit_object_part_rename(NULL, "radio", "NEW_radio"),
-                 "Renaming part in NULL workspace was successful");
-   ck_assert_msg(!workspace_edit_object_part_rename(workspace, "", "NEW_radio"),
-                 "Renaming part with wrong name \"\" was successful");
-   ck_assert_msg(!workspace_edit_object_part_rename(workspace, "radio", ""),
-                 "Renaming part into wrong name \"\" was successful");
-
+   wm_style_free(style);
+   eina_file_close(mmap_file);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
 
    app_shutdown();
