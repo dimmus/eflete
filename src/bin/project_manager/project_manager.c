@@ -124,7 +124,8 @@ _image_resources_export(Project *project,
 
 static Eina_Bool
 _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
-                        Eina_Stringshare *source, Evas_Object *edje_edit);
+                        Eina_Stringshare *source, Evas_Object *edje_edit,
+                        Project_Thread *worker);
 
 static Eina_Bool
 _font_resources_export(Eina_List *fonts, Eina_Stringshare *destination,
@@ -825,7 +826,7 @@ _project_save(void *data,
 
       list = edje_edit_sound_samples_list_get(edje_edit_obj);
       dest = eina_stringshare_printf("%s/sounds", worker->project->develop_path);
-      _sound_resources_export(list, dest, NULL, edje_edit_obj);
+      _sound_resources_export(list, dest, NULL, edje_edit_obj, worker);
       edje_edit_string_list_free(list);
       eina_stringshare_del(dest);
 
@@ -1086,13 +1087,15 @@ _image_resources_export(Project *project,
 
 static Eina_Bool
 _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
-                        Eina_Stringshare *source, Evas_Object *edje_edit)
+                        Eina_Stringshare *source, Evas_Object *edje_edit,
+                        Project_Thread *worker)
 {
   Eina_Stringshare *sound_name, *source_file, *dest_file, *sound_file;
   Eina_List *l;
   Eina_Binbuf *sound_bin;
   FILE *f;
   char *file_dir;
+  int snd_total, snd_proc;
 
   assert(destination != NULL);
   assert(edje_edit != NULL);
@@ -1102,11 +1105,18 @@ _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
        ERR("Failed create path %s for export sounds", destination);
        return false;
     }
+  snd_total = eina_list_count(sounds);
+  snd_proc = 0;
+  if (worker) PROGRESS_SEND(_("Start sound processing: total %d:"), snd_total);
   EINA_LIST_FOREACH(sounds, l, sound_name)
     {
        sound_file = edje_edit_sound_samplesource_get(edje_edit, sound_name);
        source_file = eina_stringshare_printf("%s/%s", source, sound_file);
        dest_file = eina_stringshare_printf("%s/%s", destination, sound_file);
+       snd_proc++;
+       if (worker) PROGRESS_SEND(_("sound processing (%d/%d): %s"),
+                                 snd_proc, snd_total, sound_file);
+
        if (!ecore_file_exists(dest_file))
          {
             file_dir = ecore_file_dir_get(dest_file);
@@ -1309,7 +1319,7 @@ pm_style_resource_export(Project *pro , Style *style, Eina_Stringshare *path)
    dest = eina_stringshare_printf("%s/sounds", path);
    EINA_LIST_FOREACH(pro->res.sounds, l, source)
      {
-       if (!_sound_resources_export(sounds, dest, source, style->obj))
+       if (!_sound_resources_export(sounds, dest, source, style->obj, NULL))
          ERR("Failed export sounds");
      }
    eina_stringshare_del(dest);
@@ -1381,7 +1391,7 @@ _project_resource_export(Project *pro, const char* dir_path, Project_Thread *wor
    /* export sounds */
    list = edje_edit_sound_samples_list_get(edje_edit_obj);
    dest = eina_stringshare_printf("%s/sounds", path);
-   _sound_resources_export(list, dest, NULL, edje_edit_obj);
+   _sound_resources_export(list, dest, NULL, edje_edit_obj, worker);
    edje_edit_string_list_free(list);
    eina_stringshare_del(dest);
 
