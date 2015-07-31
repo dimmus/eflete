@@ -493,7 +493,6 @@ pm_project_import_edj(const char *name,
                       const void *data)
 {
    Project_Thread *worker;
-   Eina_Bool result;
 
    assert(name != NULL);
    assert(path != NULL);
@@ -502,10 +501,12 @@ pm_project_import_edj(const char *name,
    WORKER_CREATE(func_progress, func_end, data, NULL,
                  name, path, edj, NULL, NULL);
 
-   result = eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
-                               (void *)_project_import_edj, worker);
-   if (!result)
-     WORKER_FREE();
+   if (!eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
+                           (void *)_project_import_edj, worker))
+     {
+        ERR("System error: can't create thread");
+        abort();
+     }
 
    return worker;
 }
@@ -618,7 +619,6 @@ pm_project_import_edc(const char *name,
                       const void *data)
 {
    Project_Thread *worker;
-   Eina_Bool result;
 
    assert(name != NULL);
    assert(path != NULL);
@@ -627,10 +627,12 @@ pm_project_import_edc(const char *name,
    WORKER_CREATE(func_progress, func_end, data, NULL,
                  name, path, NULL, edc, import_options);
 
-   result = eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
-                               (void *)_project_import_edc, worker);
-   if (!result)
-     WORKER_FREE();
+   if (!eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
+                           (void *)_project_import_edc, worker))
+     {
+        ERR("System error: can't create thread");
+        abort();
+     }
 
    return worker;
 }
@@ -817,17 +819,18 @@ pm_project_save(Project *project,
                 const void *data)
 {
    Project_Thread *worker;
-   Eina_Bool result;
 
    assert(project != NULL);
 
    WORKER_CREATE(func_progress, func_end, data, project,
                  NULL, NULL, NULL, NULL, NULL);
 
-   result = eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
-                               (void *)_project_save, worker);
-   if (!result)
-     WORKER_FREE();
+   if (!eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
+                           (void *)_project_save, worker))
+     {
+        ERR("System error: can't create thread");
+        abort();
+     }
 
    return worker;
 }
@@ -1586,7 +1589,6 @@ pm_project_develop_export(Project *project,
                           const void *data)
 {
    Project_Thread *worker;
-   Eina_Bool result;
 
    assert(project != NULL);
    assert(path != NULL);
@@ -1594,10 +1596,12 @@ pm_project_develop_export(Project *project,
    WORKER_CREATE(func_progress, func_end, data, project,
                  NULL, NULL, path, NULL, data);
 
-   result = eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
-                               (void *)_develop_export, worker);
-   if (!result)
-     WORKER_FREE();
+   if (!eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
+                           (void *)_develop_export, worker))
+     {
+        ERR("System error: can't create thread");
+        abort();
+     }
 
    return worker;
 }
@@ -1718,17 +1722,18 @@ pm_project_enventor_save(Project *project,
                          const void *data)
 {
    Project_Thread *worker;
-   Eina_Bool result;
 
    assert(project != NULL);
 
    WORKER_CREATE(func_progress, func_end, data, project,
                  NULL, NULL, NULL, NULL, NULL);
 
-   result = eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
-                               (void *)_enventor_save, worker);
-   if (!result)
-     WORKER_FREE();
+   if (!eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
+                           (void *)_enventor_save, worker))
+     {
+        ERR("System error: can't create thread");
+        abort();
+     }
 
    return worker;
 }
