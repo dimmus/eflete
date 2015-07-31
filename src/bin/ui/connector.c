@@ -1038,23 +1038,22 @@ _setup_save_splash(void *data, Splash_Status status __UNUSED__)
      {
         enventor_object_file_version_update(ap->enventor, ap->project, "110");
 
-        ap->pr_thread = pm_project_enventor_save(ap->project,
-                                                 _progress_print,
-                                                 _progress_end,
-                                                 data);
+        pm_project_enventor_save(ap->project,
+                                 _progress_print,
+                                 _progress_end,
+                                 data);
         pm_save_to_dev(ap->project, ap->project->current_style, true);
      }
    else
      {
 #endif /* HAVE_ENVENTOR */
-         ap->pr_thread = pm_project_save(ap->project,
-                                         _progress_print,
-                                         _progress_end,
-                                         data);
+        pm_project_save(ap->project,
+                        _progress_print,
+                        _progress_end,
+                        data);
 #ifdef HAVE_ENVENTOR
      }
 #endif /* HAVE_ENVENTOR */
-   if (!ap->pr_thread) return false;
 
    return true;
 }
@@ -1074,8 +1073,7 @@ _teardown_save_splash(void *data, Splash_Status status)
    TODO("Check if this recalc is necessary");
    if (ap->project->current_style)
      workspace_edit_object_recalc(ap->workspace);
-   pm_project_thread_free(ap->pr_thread);
-   ap->pr_thread = NULL;
+   pm_project_thread_free();
 
    ecore_main_loop_quit();
    return true;
@@ -1208,7 +1206,6 @@ static Eina_Bool
 _export_splash_setup(void *data, Splash_Status status __UNUSED__)
 {
    App_Data *ap;
-   Project_Thread *thread;
    const char *path;
 
    ap = app_data_get();
@@ -1216,10 +1213,9 @@ _export_splash_setup(void *data, Splash_Status status __UNUSED__)
 
    assert(path != NULL);
 
-   thread = pm_project_develop_export(ap->project, path,
-                                      _progress_print, _progress_end,
-                                      ap);
-   assert(thread != NULL);
+   pm_project_develop_export(ap->project, path,
+                             _progress_print, _progress_end,
+                             ap);
 
    return true;
 }

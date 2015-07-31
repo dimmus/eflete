@@ -87,7 +87,7 @@ _progress_end(void *data, PM_Project_Result result)
 
    if (result == PM_PROJECT_SUCCESS)
      {
-        pro = pm_project_thread_project_get(ap->pr_thread);
+        pro = pm_project_thread_project_get();
         ap->project = pro;
 
         wm_widgets_list_objects_load(pro->widgets,
@@ -115,7 +115,7 @@ _progress_end(void *data, PM_Project_Result result)
 
    if (result == PM_PROJECT_CANCEL)
      {
-       DBG("Canceled by user! 'thread: %p'", ap->pr_thread);
+       DBG("Canceled by user!");
      }
    else if (result == PM_PROJECT_ERROR)
      {
@@ -151,14 +151,13 @@ _teardown_splash(void *data, Splash_Status status)
 
    App_Data *app = app_data_get();
 
-   if (app->pr_thread->result == PM_PROJECT_SUCCESS)
+   if (pm_project_thread_result_get() == PM_PROJECT_SUCCESS)
      {
         mw_del(wiew->win);
         app->modal_editor--;
      }
 
-   pm_project_thread_free(app->pr_thread);
-   app->pr_thread = NULL;
+   pm_project_thread_free();
 
    if (wiew->tmp_dir_path) eina_stringshare_del(wiew->tmp_dir_path);
    free(wiew);
@@ -281,9 +280,7 @@ _required_fields_check(Wizard_Import_Edj_Win *wiew)
 static Eina_Bool
 _cancel_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 {
-   App_Data *ap;
-   ap = app_data_get();
-   return pm_project_thread_cancel(ap->pr_thread);
+   return pm_project_thread_cancel();
 }
 
 static void

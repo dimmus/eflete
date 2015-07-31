@@ -60,7 +60,7 @@ _import_end(void *data __UNUSED__, PM_Project_Result result)
 
    if (result == PM_PROJECT_SUCCESS)
      {
-        pro = pm_project_thread_project_get(ap->pr_thread);
+        pro = pm_project_thread_project_get();
         ap->project = pro;
 
         wm_widgets_list_objects_load(pro->widgets,
@@ -102,9 +102,8 @@ _import_edj(void *data __UNUSED__)
     * DO NOT DELETE: whith out iterate import from command line not worked! */
    ecore_main_loop_iterate();
 
-   App_Data *ap = app_data_get();
-   ap->pr_thread = pm_project_import_edj(pro_name, pro_path, import_edj,
-                                         _message_print, _import_end, NULL);
+   pm_project_import_edj(pro_name, pro_path, import_edj,
+                         _message_print, _import_end, NULL);
 
 }
 

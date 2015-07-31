@@ -167,12 +167,6 @@ typedef enum _Build Build;
 typedef enum _PM_Project_Result PM_Project_Result;
 
 /**
- * @typedef Project_Thread
- * @ingroup ProjectManager
- */
-typedef struct _Project_Thread Project_Thread;
-
-/**
  * @typedef PM_Project_Progress_Cb
  *
  * The Project process callback, this callback be called to receive the progress
@@ -204,50 +198,24 @@ typedef void
 (* PM_Project_End_Cb)(void *data, PM_Project_Result result);
 
 /**
- * @struct _Project_Thread
- *
- * A handler for Project process.
- *
- * @ingroup ProjectManager
- */
-struct _Project_Thread
-{
-   /** The handler of Project thread. */
-   Eina_Thread thread;
-   /** The progress callback. See #PM_Project_Progress_Cb.*/
-   PM_Project_Progress_Cb func_progress;
-   /** The end callback. See #PM_Project_End_Cb. */
-   PM_Project_End_Cb func_end;
-   /** The project process result. */
-   PM_Project_Result result;
-   /** The user data. */
-   void *data;
-   /** The new project, was created in the Project process. This pointer will be
-    * NULL until the Project process finished it's job.*/
-   Project *project;
-   /** Name of project what must be created. */
-   const char *name;
-   /** Path to new project. */
-   const char *path;
-   /** Path to imported edj file. */
-   const char *edj;
-   /** Path to imported edc file. */
-   const char *edc;
-   /** edje_cc options. Used for 'new project' and 'import from edc'. */
-   const char *build_options;
-};
-
-/**
  * Free the Project Thread object.
- *
- * @param worker The Project thread.
  *
  * @return EINA_TRUE on success, EINA_FALSE if thread running.
  *
  * @ingroup ProjectManager
  */
 Eina_Bool
-pm_project_thread_free(Project_Thread *worker) EINA_ARG_NONNULL(1);
+pm_project_thread_free(void);
+
+/**
+ * Get project result.
+ *
+ * @return project thread result.
+ *
+ * @ingroup ProjectManager
+ */
+PM_Project_Result
+pm_project_thread_result_get(void);
 
 /**
  * Create a new project which based on the imported edj file.
@@ -261,17 +229,15 @@ pm_project_thread_free(Project_Thread *worker) EINA_ARG_NONNULL(1);
  *        Project progress;
  * @param data The user data.
  *
- * @return The new #Project_Thread object, othewise NULL.
- *
  * @ingroup ProjectManager
  */
-Project_Thread *
+void
 pm_project_import_edj(const char *name,
                       const char *path,
                       const char *edj,
                       PM_Project_Progress_Cb func_progress,
                       PM_Project_End_Cb func_end,
-                      const void *data) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
+                      const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
  * Create a new project which base on the imported edc file.
@@ -290,39 +256,29 @@ pm_project_import_edj(const char *name,
  *        Project progress;
  * @param data The user data.
  *
- * @return The new #Project_Thread object, othewise NULL.
- *
  * @note Function will not check a edc file, and directories.
  *
  * @ingroup ProjectManager
  */
-Project_Thread *
+void
 pm_project_import_edc(const char *name,
                       const char *path,
                       const char *edc,
                       const char *import_options,
                       PM_Project_Progress_Cb func_progress,
                       PM_Project_End_Cb func_end,
-                      const void *data) EINA_ARG_NONNULL(1, 2, 3, 4) EINA_WARN_UNUSED_RESULT;
+                      const void *data) EINA_ARG_NONNULL(1, 2, 3, 4);
 
 /**
  * Get the Project object from thread. If thread not finished, function will
  * return NULL.
  *
- * @param worker The Project thread.
- *
  * @return Project object, or NULL if thread not finished or finished with error.
  *
  * @ingroup ProjectManager
  */
-static inline Project *
-pm_project_thread_project_get(Project_Thread *worker)
-{
-   assert(worker != NULL);
-
-   return worker->project;
-}
-
+Project *
+pm_project_thread_project_get();
 
 /**
  * Open Eflete project.
@@ -358,11 +314,9 @@ pm_save_to_dev(Project *project, Style *style, Eina_Bool save);
  *        Project progress;
  * @param data The user data.
  *
- * @return The new #Project_Thread object, othewise NULL.
- *
  * @ingroup ProjectManager
  */
-Project_Thread *
+void
 pm_project_save(Project *project,
                 PM_Project_Progress_Cb func_progress,
                 PM_Project_End_Cb func_end,
@@ -371,14 +325,12 @@ pm_project_save(Project *project,
 /**
  * Cancel the Project thread, and called func_end.
  *
- * @param worker The Project thread.
- *
  * @return EINA_TRUE on success, otherwise EINA_FALSE.
  *
  * @ingroup ProjectManager
  */
 Eina_Bool
-pm_project_thread_cancel(Project_Thread *worker) EINA_ARG_NONNULL(1);
+pm_project_thread_cancel(void);
 
 
 /**
@@ -524,11 +476,9 @@ pm_project_source_code_export(Project *pro, const char *dir_path);
  *        Project progress;
  * @param data The user data.
  *
- * @return The new #Project_Thread object, othewise NULL.
- *
  * @ingroup ProjectManager.
  */
-Project_Thread *
+void
 pm_project_develop_export(Project *pro,
                           const char *path,
                           PM_Project_Progress_Cb func_progress,
@@ -544,13 +494,11 @@ pm_project_develop_export(Project *pro,
  *        Project progress;
  * @param data The user data.
  *
- * @return The new #Project_Thread object, othewise NULL.
- *
  * @warning Use only in enventor mode.
  *
  * @ingroup ProjectManager
  */
-Project_Thread *
+void
 pm_project_enventor_save(Project *project,
                          PM_Project_Progress_Cb func_progress,
                          PM_Project_End_Cb func_end,

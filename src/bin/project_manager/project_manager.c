@@ -56,75 +56,102 @@ typedef struct
    void *data;
 } Progress_Message;
 
+/* A handler for Project process. */
+typedef struct
+{
+   /** The handler of Project thread. */
+   Eina_Thread thread;
+   /** The progress callback. See #PM_Project_Progress_Cb.*/
+   PM_Project_Progress_Cb func_progress;
+   /** The end callback. See #PM_Project_End_Cb. */
+   PM_Project_End_Cb func_end;
+   /** The project process result. */
+   PM_Project_Result result;
+   /** The user data. */
+   void *data;
+   /** The new project, was created in the Project process. This pointer will be
+    * NULL until the Project process finished it's job.*/
+   Project *project;
+   /** Name of project what must be created. */
+   const char *name;
+   /** Path to new project. */
+   const char *path;
+   /** Path to imported edj file. */
+   const char *edj;
+   /** Path to imported edc file. */
+   const char *edc;
+   /** edje_cc options. Used for 'new project' and 'import from edc'. */
+   const char *build_options;
+} Project_Thread;
+
+
+
+
+static Project_Thread worker;
 #define WORKER_CREATE(FUNC_PROGRESS, FUNC_END, DATA, PROJECT, \
                       NAME, PATH, EDJ, EDC, BUILD_OPTIONS) \
 { \
-   worker = (Project_Thread *)mem_calloc(1, sizeof(Project_Thread)); \
-   worker->func_progress = FUNC_PROGRESS; \
-   worker->func_end = FUNC_END; \
-   worker->data = (void *)DATA; \
-   worker->project = PROJECT; \
-   worker->result = PM_PROJECT_LAST; \
-   worker->name = eina_stringshare_add(NAME); \
-   worker->path = eina_stringshare_add(PATH); \
-   worker->edj = eina_stringshare_add(EDJ); \
-   worker->edc = eina_stringshare_add(EDC); \
-   worker->build_options = eina_stringshare_add(BUILD_OPTIONS); \
+   worker.func_progress = FUNC_PROGRESS; \
+   worker.func_end = FUNC_END; \
+   worker.data = (void *)DATA; \
+   worker.project = PROJECT; \
+   worker.result = PM_PROJECT_LAST; \
+   worker.name = eina_stringshare_add(NAME); \
+   worker.path = eina_stringshare_add(PATH); \
+   worker.edj = eina_stringshare_add(EDJ); \
+   worker.edc = eina_stringshare_add(EDC); \
+   worker.build_options = eina_stringshare_add(BUILD_OPTIONS); \
 }
 
 #define WORKER_FREE() \
 { \
-   eina_stringshare_del(worker->name); \
-   eina_stringshare_del(worker->path); \
-   eina_stringshare_del(worker->edj); \
-   eina_stringshare_del(worker->edc); \
-   eina_stringshare_del(worker->build_options); \
-   free(worker); \
-   worker = NULL; \
+   eina_stringshare_del(worker.name); \
+   eina_stringshare_del(worker.path); \
+   eina_stringshare_del(worker.edj); \
+   eina_stringshare_del(worker.edc); \
+   eina_stringshare_del(worker.build_options); \
 }
 
 #define THREAD_TESTCANCEL pthread_testcancel()
 
 #define PROGRESS_SEND(FMT, ...) \
 { \
-   if (worker->func_progress) \
+   if (worker.func_progress) \
       { \
          Progress_Message *message = mem_malloc(sizeof(Progress_Message)); \
          message->str = eina_stringshare_printf(FMT, ## __VA_ARGS__); \
-         message->func_print = worker->func_progress; \
-         message->data = worker->data; \
+         message->func_print = worker.func_progress; \
+         message->data = worker.data; \
          ecore_main_loop_thread_safe_call_async(_progress_send, message); \
       } \
 }
 
 #define END_SEND(STATUS) \
 { \
-   if (worker->func_end) \
+   if (worker.func_end) \
      { \
-        worker->result = STATUS; \
-        ecore_main_loop_thread_safe_call_async(_end_send, worker); \
+        worker.result = STATUS; \
+        ecore_main_loop_thread_safe_call_async(_end_send, NULL); \
      } \
 }
 
 static Eina_Bool
-_project_resource_export(Project *pro, const char* dir_path,
-                         Project_Thread *worker);
+_project_resource_export(Project *pro, const char* dir_path);
 
 static Eina_Bool
 _image_resources_export(Project *project,
                         Eina_List *images, Eina_Stringshare *destination,
                         Eina_Stringshare *source, Eina_Stringshare *dev,
-                        Evas_Object *edje_edit, Project_Thread *worker);
+                        Evas_Object *edje_edit);
 
 static Eina_Bool
 _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
-                        Eina_Stringshare *source, Evas_Object *edje_edit,
-                        Project_Thread *worker);
+                        Eina_Stringshare *source, Evas_Object *edje_edit);
 
 static Eina_Bool
 _font_resources_export(Eina_List *fonts, Eina_Stringshare *destination,
                        Eina_Stringshare *source, Eina_Stringshare *dev,
-                       Evas_Object *edje_edit, Project_Thread *worker);
+                       Evas_Object *edje_edit);
 
 static Eina_Bool
 _project_dev_file_create(Project *pro)
@@ -194,22 +221,17 @@ _progress_send(void *data)
 }
 
 static void
-_end_send(void *data)
+_end_send(void *data __UNUSED__)
 {
-   Project_Thread *worker;
    PM_Project_End_Cb func;
    PM_Project_Result result;
    void *udata;
 
-   worker = (Project_Thread *)data;
-
-   assert(worker != NULL);
-
    /** Copy the links to callback and meesage, to fast release worker resource. */
-   worker->func_progress = NULL;
-   func = worker->func_end;
-   result = worker->result;
-   udata = worker->data;
+   worker.func_progress = NULL;
+   func = worker.func_end;
+   result = worker.result;
+   udata = worker.data;
    func(udata, result);
 }
 
@@ -220,20 +242,18 @@ _end_send(void *data)
    eina_stringshare_del(tmp)
 
 static Project *
-_project_files_create(Project_Thread *worker)
+_project_files_create()
 {
    Project *pro;
    Eina_Stringshare *folder_path, *pro_path, *tmp;
    Eina_Bool error = false;
 
-   assert(worker != NULL);
-
    _project_descriptor_init();
 
-   folder_path = eina_stringshare_printf("%s/%s", worker->path, worker->name);
+   folder_path = eina_stringshare_printf("%s/%s", worker.path, worker.name);
    if (ecore_file_mkdir(folder_path))
      {
-        DBG("Create the folder '%s' for new project '%s'", folder_path, worker->name);
+        DBG("Create the folder '%s' for new project '%s'", folder_path, worker.name);
      }
    else
      {
@@ -245,14 +265,14 @@ _project_files_create(Project_Thread *worker)
 
    THREAD_TESTCANCEL;
    pro = (Project *)mem_calloc(1, sizeof(Project));
-   folder_path = eina_stringshare_printf("%s/%s", worker->path, worker->name);
+   folder_path = eina_stringshare_printf("%s/%s", worker.path, worker.name);
    pro->version = PROJECT_FILE_VERSION;
-   pro->name = eina_stringshare_add(worker->name);
-   pro->dev = eina_stringshare_printf("%s/%s.dev", folder_path, worker->name);
-   pro->saved_edj = eina_stringshare_printf("%s/%s.edj", folder_path, worker->name);
+   pro->name = eina_stringshare_add(worker.name);
+   pro->dev = eina_stringshare_printf("%s/%s.dev", folder_path, worker.name);
+   pro->saved_edj = eina_stringshare_printf("%s/%s.edj", folder_path, worker.name);
    pro->develop_path = eina_stringshare_printf("%s/develop", folder_path);
 
-   pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, worker->name);
+   pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, worker.name);
    ecore_file_mkdir(pro->develop_path);
    MKDIR(images);
    MKDIR(sounds);
@@ -282,23 +302,21 @@ _project_files_create(Project_Thread *worker)
 #undef MKDIR
 
 static void
-_copy_meta_data_to_pro(Project_Thread *worker)
+_copy_meta_data_to_pro()
 {
    Eet_File *ef;
    char *name, *authors, *version, *license, *comment;
 
-   assert(worker != NULL);
+   ef = eet_open(worker.edj, EET_FILE_MODE_READ_WRITE);
 
-   ef = eet_open(worker->edj, EET_FILE_MODE_READ_WRITE);
-
-   name = strdup(worker->name);
+   name = strdup(worker.name);
    authors = eet_read(ef, PROJECT_KEY_AUTHORS, NULL);
    version = eet_read(ef, PROJECT_KEY_FILE_VERSION, NULL);
    license = eet_read(ef, PROJECT_KEY_LICENSE, NULL);
    comment = eet_read(ef, PROJECT_KEY_COMMENT, NULL);
    eet_close(ef);
 
-   pm_project_meta_data_set(worker->project, name, authors,
+   pm_project_meta_data_set(worker.project, name, authors,
                             version, license, comment);
 
    if (name) free(name);
@@ -309,15 +327,13 @@ _copy_meta_data_to_pro(Project_Thread *worker)
 }
 
 static Eina_Bool
-_project_edj_file_copy(Project_Thread *worker)
+_project_edj_file_copy()
 {
    Eina_Stringshare *src, *dst;
    Eina_Bool result;
 
-   assert(worker != NULL);
-
-   src = eina_stringshare_ref(worker->edj);
-   dst = eina_stringshare_ref(worker->project->saved_edj);
+   src = eina_stringshare_ref(worker.edj);
+   dst = eina_stringshare_ref(worker.project->saved_edj);
    result = ecore_file_cp(src, dst);
    DBG("Copy the .edj file to project folder.");
    eina_stringshare_del(src);
@@ -326,7 +342,7 @@ _project_edj_file_copy(Project_Thread *worker)
 }
 
 static Eina_Bool
-_project_linked_images_copy(Project_Thread *worker)
+_project_linked_images_copy()
 {
    Eina_List *list, *l;
    Evas_Object *edje_edit_obj;
@@ -338,14 +354,12 @@ _project_linked_images_copy(Project_Thread *worker)
    Edje_Edit_Image_Comp comp;
    Eina_Bool is_changed = false;
 
-   assert(worker != NULL);
-
    ecore_thread_main_loop_begin();
-   e = ecore_evas_get(worker->project->ecore_evas);
-   list = edje_file_collection_list(worker->project->saved_edj);
+   e = ecore_evas_get(worker.project->ecore_evas);
+   list = edje_file_collection_list(worker.project->saved_edj);
    edje_edit_obj = edje_edit_object_add(e);
 
-   if (!edje_object_file_set(edje_edit_obj, worker->project->saved_edj, eina_list_data_get(list)))
+   if (!edje_object_file_set(edje_edit_obj, worker.project->saved_edj, eina_list_data_get(list)))
      {
         ERR("Can't set object file");
         abort();
@@ -372,7 +386,7 @@ _project_linked_images_copy(Project_Thread *worker)
         if (name[0] == '/')
           eina_strbuf_append(strbuf_from, name);
         else
-          eina_strbuf_append_printf(strbuf_from, "%s/%s", worker->path, name);
+          eina_strbuf_append_printf(strbuf_from, "%s/%s", worker.path, name);
         if (!ecore_file_exists(eina_strbuf_string_get(strbuf_from)))
           {
              edje_edit_image_rename(edje_edit_obj,
@@ -383,7 +397,7 @@ _project_linked_images_copy(Project_Thread *worker)
         file_name = ecore_file_file_get(name);
 
         eina_strbuf_append_printf(strbuf_to, "%s/images/%s",
-                                  worker->project->develop_path, file_name);
+                                  worker.project->develop_path, file_name);
 
         eina_file_copy(eina_strbuf_string_get(strbuf_from),
                        eina_strbuf_string_get(strbuf_to),
@@ -393,7 +407,7 @@ _project_linked_images_copy(Project_Thread *worker)
                                name, eina_strbuf_string_get(strbuf_to));
      }
    if (is_changed)
-     pm_save_to_dev(worker->project, NULL, true);
+     pm_save_to_dev(worker.project, NULL, true);
    edje_edit_string_list_free(list);
    eina_strbuf_free(strbuf_to);
    eina_strbuf_free(strbuf_from);
@@ -451,40 +465,33 @@ _project_special_group_add(Project *project)
 }
 
 static void *
-_project_import_edj(void *data,
+_project_import_edj(void *data __UNUSED__,
                     Eina_Thread *thread __UNUSED__)
 {
-   Project_Thread *worker;
-
-   worker = (Project_Thread *)data;
-
-   assert(worker != NULL);
-
-   THREAD_TESTCANCEL;
-   PROGRESS_SEND(_("Start import '%s' file as new project"), worker->edj);
+   PROGRESS_SEND(_("Start import '%s' file as new project"), worker.edj);
    PROGRESS_SEND(_("Creating a specifiec file and folders"));
-   worker->project = _project_files_create(worker);
+   worker.project = _project_files_create(worker);
    TODO("Add correct error handling here (if project == NULL). Probably we should add negative TC where directory already exist");
    THREAD_TESTCANCEL;
-   worker->project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker->path, worker->name, worker->name);
+   worker.project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker.path, worker.name, worker.name);
    THREAD_TESTCANCEL;
    PROGRESS_SEND(_("Import processing"));
    _project_edj_file_copy(worker);
    _copy_meta_data_to_pro(worker);
-   _project_special_group_add(worker->project);
-   _project_open_internal(worker->project);
+   _project_special_group_add(worker.project);
+   _project_open_internal(worker.project);
    THREAD_TESTCANCEL;
-   _project_resource_export(worker->project, NULL, worker);
+   _project_resource_export(worker.project, NULL);
    _project_linked_images_copy(worker);
    edje_file_cache_flush();
-   PROGRESS_SEND(_("Import finished. Project '%s' created"), worker->project->name);
+   PROGRESS_SEND(_("Import finished. Project '%s' created"), worker.project->name);
 
    END_SEND(PM_PROJECT_SUCCESS);
 
    return NULL;
 }
 
-Project_Thread *
+void
 pm_project_import_edj(const char *name,
                       const char *path,
                       const char *edj,
@@ -492,8 +499,6 @@ pm_project_import_edj(const char *name,
                       PM_Project_End_Cb func_end ,
                       const void *data)
 {
-   Project_Thread *worker;
-
    assert(name != NULL);
    assert(path != NULL);
    assert(edj != NULL);
@@ -501,26 +506,21 @@ pm_project_import_edj(const char *name,
    WORKER_CREATE(func_progress, func_end, data, NULL,
                  name, path, edj, NULL, NULL);
 
-   if (!eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
-                           (void *)_project_import_edj, worker))
+   if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
+                           (void *)_project_import_edj, NULL))
      {
         ERR("System error: can't create thread");
         abort();
      }
-
-   return worker;
 }
 
 static Eina_Bool
-_exe_data(void *data,
+_exe_data(void *data __UNUSED__,
           int type __UNUSED__,
           void *event)
 {
    int i;
    Ecore_Exe_Event_Data *ev = event;
-   Project_Thread *worker = (Project_Thread *)data;
-
-   assert(worker != NULL);
 
    if (ev->lines)
      {
@@ -535,10 +535,9 @@ _exe_data(void *data,
 }
 
 static void *
-_project_import_edc(void *data,
+_project_import_edc(void *data __UNUSED__,
                     Eina_Thread *thread __UNUSED__)
 {
-   Project_Thread *worker;
    Eina_Tmpstr *tmp_dirname;
    Ecore_Event_Handler *cb_msg_stdout = NULL,
                        *cb_msg_stderr = NULL;
@@ -551,29 +550,25 @@ _project_import_edc(void *data,
    pid_t exe_pid;
    int edje_cc_res = 0, waitpid_res = 0;
 
-   worker = (Project_Thread *)data;
-
-   assert(worker != NULL);
-
-   PROGRESS_SEND(_("Start import '%s' file as new project"), worker->edj);
+   PROGRESS_SEND(_("Start import '%s' file as new project"), worker.edj);
    PROGRESS_SEND(_("Creating a specifiec file and folders"));
-   if (worker->func_progress)
+   if (worker.func_progress)
      {
-        cb_msg_stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_data, worker);
-        cb_msg_stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_data, worker);
+        cb_msg_stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_data, NULL);
+        cb_msg_stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_data, NULL);
      }
    eina_file_mkdtemp("eflete_build_XXXXXX", &tmp_dirname);
-   worker->edj = eina_stringshare_printf("%s/out.edj", tmp_dirname);
+   worker.edj = eina_stringshare_printf("%s/out.edj", tmp_dirname);
    cmd = eina_stringshare_printf("edje_cc -v %s %s %s",
-                                 worker->build_options,
-                                 worker->edc,
-                                 worker->edj);
+                                 worker.build_options,
+                                 worker.edc,
+                                 worker.edj);
    THREAD_TESTCANCEL;
    exe_cmd = ecore_exe_pipe_run(cmd, flags, NULL);
    exe_pid = ecore_exe_pid_get(exe_cmd);
    THREAD_TESTCANCEL;
    waitpid_res = waitpid(exe_pid, &edje_cc_res, 0);
-   if (worker->func_progress)
+   if (worker.func_progress)
      {
         ecore_event_handler_del(cb_msg_stdout);
         ecore_event_handler_del(cb_msg_stderr);
@@ -587,29 +582,29 @@ _project_import_edc(void *data,
      }
 
    THREAD_TESTCANCEL;
-   worker->project = _project_files_create(worker);
+   worker.project = _project_files_create(worker);
    TODO("Add correct error handling here (if project == NULL). Probably we should add negative TC where directory already exist");
-   worker->project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker->path, worker->name, worker->name);
+   worker.project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker.path, worker.name, worker.name);
    THREAD_TESTCANCEL;
    PROGRESS_SEND("%s", _("Import processing"));
    _project_edj_file_copy(worker);
    ecore_file_recursive_rm(tmp_dirname);
    eina_tmpstr_del(tmp_dirname);
    _copy_meta_data_to_pro(worker);
-   _project_special_group_add(worker->project);
-   _project_open_internal(worker->project);
+   _project_special_group_add(worker.project);
+   _project_open_internal(worker.project);
    THREAD_TESTCANCEL;
-   _project_resource_export(worker->project, NULL, worker);
+   _project_resource_export(worker.project, NULL);
    _project_linked_images_copy(worker);
    edje_file_cache_flush();
-   PROGRESS_SEND(_("Import finished. Project '%s' created"), worker->project->name);
+   PROGRESS_SEND(_("Import finished. Project '%s' created"), worker.project->name);
 
    END_SEND(PM_PROJECT_SUCCESS)
 
    return NULL;
 }
 
-Project_Thread *
+void
 pm_project_import_edc(const char *name,
                       const char *path,
                       const char *edc,
@@ -618,8 +613,6 @@ pm_project_import_edc(const char *name,
                       PM_Project_End_Cb func_end,
                       const void *data)
 {
-   Project_Thread *worker;
-
    assert(name != NULL);
    assert(path != NULL);
    assert(edc != NULL);
@@ -627,39 +620,45 @@ pm_project_import_edc(const char *name,
    WORKER_CREATE(func_progress, func_end, data, NULL,
                  name, path, NULL, edc, import_options);
 
-   if (!eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
-                           (void *)_project_import_edc, worker))
+   if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
+                           (void *)_project_import_edc, NULL))
      {
         ERR("System error: can't create thread");
         abort();
      }
-
-   return worker;
 }
 
 Eina_Bool
-pm_project_thread_cancel(Project_Thread *worker)
+pm_project_thread_cancel()
 {
    int ret;
 
-   assert(worker != NULL);
-
-   ret = pthread_cancel((pthread_t)worker->thread);
+   ret = pthread_cancel((pthread_t)worker.thread);
    if (ret)
      return false;
 
    END_SEND(PM_PROJECT_CANCEL);
-   DBG("Project Thread %p stoped by user!", worker);
+   DBG("Project Thread stoped by user!");
    return true;
 }
 
 Eina_Bool
-pm_project_thread_free(Project_Thread *worker)
+pm_project_thread_free()
 {
-   assert(worker != NULL);
-
    WORKER_FREE();
    return true;
+}
+
+PM_Project_Result
+pm_project_thread_result_get(void)
+{
+   return worker.result;
+}
+
+Project *
+pm_project_thread_project_get()
+{
+   return worker.project;
 }
 
 Project *
@@ -745,61 +744,56 @@ pm_save_to_dev(Project *pr, Style *st, Eina_Bool save)
 }
 
 static void *
-_project_save(void *data,
+_project_save(void *data __UNUSED__,
               Eina_Thread *thread __UNUSED__)
 {
-   Project_Thread *worker;
    Eina_List *list;
    Eina_Stringshare *dest;
    Evas_Object *edje_edit_obj;
 
-   worker = (Project_Thread *)data;
-
-   assert(worker != NULL);
-
-   edje_edit_obj = worker->project->global_object;
+   edje_edit_obj = worker.project->global_object;
 
    ecore_thread_main_loop_begin();
-   PROGRESS_SEND(_("Save project '%s'"), worker->project->name);
-   pm_save_to_dev(worker->project, NULL, true);
-   eina_file_close(worker->project->mmap_file);
+   PROGRESS_SEND(_("Save project '%s'"), worker.project->name);
+   pm_save_to_dev(worker.project, NULL, true);
+   eina_file_close(worker.project->mmap_file);
    Uns_List *it;
    Eina_List *add_list = NULL, *l;
-   EINA_LIST_FOREACH(worker->project->nsimage_list, l, it)
+   EINA_LIST_FOREACH(worker.project->nsimage_list, l, it)
      {
         if (it->act_type == ACTION_TYPE_ADD)
           add_list = eina_list_append(add_list, eina_stringshare_add(ecore_file_file_get(it->data)));
      }
 
    /* saving */
-   dest = eina_stringshare_printf("%s/images", worker->project->develop_path);
-   _image_resources_export(worker->project, add_list, dest, NULL, worker->project->dev, edje_edit_obj, worker);
+   dest = eina_stringshare_printf("%s/images", worker.project->develop_path);
+   _image_resources_export(worker.project, add_list, dest, NULL, worker.project->dev, edje_edit_obj);
    edje_edit_string_list_free(add_list);
-   EINA_LIST_FREE(worker->project->nsimage_list, it)
+   EINA_LIST_FREE(worker.project->nsimage_list, it)
       free(it);
    eina_stringshare_del(dest);
 
    list = edje_edit_sound_samples_list_get(edje_edit_obj);
-   dest = eina_stringshare_printf("%s/sounds", worker->project->develop_path);
-   _sound_resources_export(list, dest, NULL, edje_edit_obj, worker);
+   dest = eina_stringshare_printf("%s/sounds", worker.project->develop_path);
+   _sound_resources_export(list, dest, NULL, edje_edit_obj);
    edje_edit_string_list_free(list);
    eina_stringshare_del(dest);
 
    list = edje_edit_fonts_list_get(edje_edit_obj);
-   dest = eina_stringshare_printf("%s/fonts", worker->project->develop_path);
-   _font_resources_export(list, dest, NULL, worker->project->dev, edje_edit_obj, worker);
+   dest = eina_stringshare_printf("%s/fonts", worker.project->develop_path);
+   _font_resources_export(list, dest, NULL, worker.project->dev, edje_edit_obj);
    edje_edit_string_list_free(list);
    eina_stringshare_del(dest);
 
-   ecore_file_cp(worker->project->dev, worker->project->saved_edj);
+   ecore_file_cp(worker.project->dev, worker.project->saved_edj);
 
    /* reloading dev*/
-   worker->project->mmap_file = eina_file_open(worker->project->dev, false);
-   if (worker->project->current_style)
+   worker.project->mmap_file = eina_file_open(worker.project->dev, false);
+   if (worker.project->current_style)
      {
-        edje_object_mmap_set(worker->project->current_style->obj,
-                             worker->project->mmap_file,
-                             worker->project->current_style->full_group_name);
+        edje_object_mmap_set(worker.project->current_style->obj,
+                             worker.project->mmap_file,
+                             worker.project->current_style->full_group_name);
      }
    PROGRESS_SEND("Save done");
    ecore_thread_main_loop_end();
@@ -808,27 +802,23 @@ _project_save(void *data,
    return NULL;
 }
 
-Project_Thread *
+void
 pm_project_save(Project *project,
                 PM_Project_Progress_Cb func_progress,
                 PM_Project_End_Cb func_end,
                 const void *data)
 {
-   Project_Thread *worker;
-
    assert(project != NULL);
 
    WORKER_CREATE(func_progress, func_end, data, project,
                  NULL, NULL, NULL, NULL, NULL);
 
-   if (!eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
-                           (void *)_project_save, worker))
+   if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
+                           (void *)_project_save, NULL))
      {
         ERR("System error: can't create thread");
         abort();
      }
-
-   return worker;
 }
 
 Eina_Bool
@@ -967,7 +957,7 @@ static Eina_Bool
 _image_resources_export(Project *project,
                         Eina_List *images, Eina_Stringshare *destination,
                         Eina_Stringshare *source, Eina_Stringshare *dev,
-                        Evas_Object *edje_edit, Project_Thread *worker)
+                        Evas_Object *edje_edit)
 {
   Eina_Stringshare *image_name, *source_file, *dest_file;
   Eina_List *l;
@@ -990,15 +980,15 @@ _image_resources_export(Project *project,
   e = ecore_evas_get(project->ecore_evas);
   im_total = eina_list_count(images);
   im_proc = 0;
-  if (worker) PROGRESS_SEND(_("Start image processing, total %d:"), im_total);
+  PROGRESS_SEND(_("Start image processing, total %d:"), im_total);
   EINA_LIST_FOREACH(images, l, image_name)
     {
        /* for supporting old themes, which were compilled
         * with edje_cc version less than 1.10 */
        if (!image_name) continue;
        im_proc++;
-       if (worker) PROGRESS_SEND(_("image processing (%d/%d): %s"),
-                                 im_proc, im_total, image_name);
+       PROGRESS_SEND(_("image processing (%d/%d): %s"),
+                     im_proc, im_total, image_name);
        source_file = eina_stringshare_printf("%s/%s", source,
                                              ecore_file_file_get(image_name));
        dest_file = eina_stringshare_printf("%s/%s", destination, image_name);
@@ -1040,8 +1030,7 @@ _image_resources_export(Project *project,
 
 static Eina_Bool
 _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
-                        Eina_Stringshare *source, Evas_Object *edje_edit,
-                        Project_Thread *worker)
+                        Eina_Stringshare *source, Evas_Object *edje_edit)
 {
   Eina_Stringshare *sound_name, *source_file, *dest_file, *sound_file;
   Eina_List *l;
@@ -1060,15 +1049,15 @@ _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
     }
   snd_total = eina_list_count(sounds);
   snd_proc = 0;
-  if (worker) PROGRESS_SEND(_("Start sound processing: total %d:"), snd_total);
+  PROGRESS_SEND(_("Start sound processing: total %d:"), snd_total);
   EINA_LIST_FOREACH(sounds, l, sound_name)
     {
        sound_file = edje_edit_sound_samplesource_get(edje_edit, sound_name);
        source_file = eina_stringshare_printf("%s/%s", source, sound_file);
        dest_file = eina_stringshare_printf("%s/%s", destination, sound_file);
        snd_proc++;
-       if (worker) PROGRESS_SEND(_("sound processing (%d/%d): %s"),
-                                 snd_proc, snd_total, sound_file);
+       PROGRESS_SEND(_("sound processing (%d/%d): %s"),
+                     snd_proc, snd_total, sound_file);
 
        if (!ecore_file_exists(dest_file))
          {
@@ -1105,7 +1094,7 @@ _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
 static Eina_Bool
 _font_resources_export(Eina_List *fonts, Eina_Stringshare *destination,
                        Eina_Stringshare *source, Eina_Stringshare *dev,
-                       Evas_Object *edje_edit, Project_Thread *worker)
+                       Evas_Object *edje_edit)
 {
   Eet_File *ef;
   Eina_List *l;
@@ -1126,15 +1115,15 @@ _font_resources_export(Eina_List *fonts, Eina_Stringshare *destination,
   ef = eet_open(dev, EET_FILE_MODE_READ);
   fnt_total = eina_list_count(fonts);
   fnt_proc = 0;
-  if (worker) PROGRESS_SEND(_("Start font processing, total %d:"), fnt_total);
+  PROGRESS_SEND(_("Start font processing, total %d:"), fnt_total);
   EINA_LIST_FOREACH(fonts, l, font_name)
     {
        font_file = edje_edit_font_path_get(edje_edit, font_name);
        source_file = eina_stringshare_printf("%s/%s", source, font_file);
        dest_file = eina_stringshare_printf("%s/%s", destination, font_file);
        fnt_proc++;
-       if (worker) PROGRESS_SEND(_("font processing (%d/%d): %s"),
-                                 fnt_proc, fnt_total, font_file);
+       PROGRESS_SEND(_("font processing (%d/%d): %s"),
+                     fnt_proc, fnt_total, font_file);
        if (!ecore_file_exists(dest_file))
          {
             edje_edit_string_free(font_file);
@@ -1262,7 +1251,7 @@ pm_style_resource_export(Project *pro , Style *style, Eina_Stringshare *path)
    dest = eina_stringshare_printf("%s/images", path);
    EINA_LIST_FOREACH(pro->res.images, l, source)
      {
-       if (!_image_resources_export(pro, images, dest, source, pro->dev, style->obj, NULL))
+       if (!_image_resources_export(pro, images, dest, source, pro->dev, style->obj))
          WARN("Failed export images");
      }
    eina_stringshare_del(dest);
@@ -1272,7 +1261,7 @@ pm_style_resource_export(Project *pro , Style *style, Eina_Stringshare *path)
    dest = eina_stringshare_printf("%s/sounds", path);
    EINA_LIST_FOREACH(pro->res.sounds, l, source)
      {
-       if (!_sound_resources_export(sounds, dest, source, style->obj, NULL))
+       if (!_sound_resources_export(sounds, dest, source, style->obj))
          ERR("Failed export sounds");
      }
    eina_stringshare_del(dest);
@@ -1282,7 +1271,7 @@ pm_style_resource_export(Project *pro , Style *style, Eina_Stringshare *path)
    dest = eina_stringshare_printf("%s/fonts", path);
    EINA_LIST_FOREACH(pro->res.fonts, l, source)
      {
-        if (!_font_resources_export(fonts, dest, source, pro->dev, style->obj, NULL))
+        if (!_font_resources_export(fonts, dest, source, pro->dev, style->obj))
           WARN("Failed export fonts");
      }
    eina_stringshare_del(dest);
@@ -1295,11 +1284,11 @@ pm_style_resource_export(Project *pro , Style *style, Eina_Stringshare *path)
 Eina_Bool
 pm_project_resource_export(Project *pro, const char* dir_path)
 {
-   return _project_resource_export(pro, dir_path, NULL);
+   return _project_resource_export(pro, dir_path);
 }
 
 Eina_Bool
-_project_resource_export(Project *pro, const char* dir_path, Project_Thread *worker)
+_project_resource_export(Project *pro, const char* dir_path)
 {
    Eina_List *list;
    Evas_Object *edje_edit_obj;
@@ -1330,21 +1319,21 @@ _project_resource_export(Project *pro, const char* dir_path, Project_Thread *wor
    /* export images */
    list = edje_edit_images_list_get(edje_edit_obj);
    dest = eina_stringshare_printf("%s/images", path);
-   _image_resources_export(pro, list, dest, NULL, pro->dev, edje_edit_obj, worker);
+   _image_resources_export(pro, list, dest, NULL, pro->dev, edje_edit_obj);
    edje_edit_string_list_free(list);
    eina_stringshare_del(dest);
 
    /* export fonts */
    list = edje_edit_fonts_list_get(edje_edit_obj);
    dest = eina_stringshare_printf("%s/fonts", path);
-   _font_resources_export(list, dest, NULL, pro->dev, edje_edit_obj, worker);
+   _font_resources_export(list, dest, NULL, pro->dev, edje_edit_obj);
    edje_edit_string_list_free(list);
    eina_stringshare_del(dest);
 
    /* export sounds */
    list = edje_edit_sound_samples_list_get(edje_edit_obj);
    dest = eina_stringshare_printf("%s/sounds", path);
-   _sound_resources_export(list, dest, NULL, edje_edit_obj, worker);
+   _sound_resources_export(list, dest, NULL, edje_edit_obj);
    edje_edit_string_list_free(list);
    eina_stringshare_del(dest);
 
@@ -1556,19 +1545,13 @@ exit:
 #undef TOP_LEVEL_NUMBER
 
 static void *
-_develop_export(void *data,
+_develop_export(void *data __UNUSED__,
                 Eina_Thread *thread __UNUSED__)
 {
-   Project_Thread *worker;
-
-   worker = (Project_Thread *)data;
-
-   assert(worker != NULL);
-
    PROGRESS_SEND(_("Export project as develop file"));
-   PROGRESS_SEND(_("Export to file '%s'"), worker->edj);
-   edje_edit_save_all(worker->project->global_object);
-   eina_file_copy(worker->project->dev, worker->edj,
+   PROGRESS_SEND(_("Export to file '%s'"), worker.edj);
+   edje_edit_save_all(worker.project->global_object);
+   eina_file_copy(worker.project->dev, worker.edj,
                   EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
                   NULL, NULL);
    PROGRESS_SEND("Export done");
@@ -1577,37 +1560,32 @@ _develop_export(void *data,
    return NULL;
 }
 
-Project_Thread *
+void
 pm_project_develop_export(Project *project,
                           const char *path,
                           PM_Project_Progress_Cb func_progress,
                           PM_Project_End_Cb func_end,
                           const void *data)
 {
-   Project_Thread *worker;
-
    assert(project != NULL);
    assert(path != NULL);
 
    WORKER_CREATE(func_progress, func_end, data, project,
                  NULL, NULL, path, NULL, data);
 
-   if (!eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
-                           (void *)_develop_export, worker))
+   if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
+                           (void *)_develop_export, NULL))
      {
         ERR("System error: can't create thread");
         abort();
      }
-
-   return worker;
 }
 
 #ifdef HAVE_ENVENTOR
 static void *
-_enventor_save(void *data,
+_enventor_save(void *data __UNUSED__,
                Eina_Thread *thread __UNUSED__)
 {
-   Project_Thread *worker;
    Ecore_Event_Handler *cb_msg_stdout = NULL,
                        *cb_msg_stderr = NULL;
    Ecore_Exe_Flags flags  = ECORE_EXE_PIPE_READ |
@@ -1621,32 +1599,28 @@ _enventor_save(void *data,
    Eina_Strbuf *buf = NULL;
    int edje_cc_res = 0, edje_pick_res = 0, waitpid_res = 0;
 
-   worker = (Project_Thread *)data;
-
-   assert(worker != NULL);
-
-   if (worker->func_progress)
+   if (worker.func_progress)
      {
         cb_msg_stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_data, worker);
         cb_msg_stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_data, worker);
      }
-   edj = eina_stringshare_printf("%s/build.edj", worker->project->enventor->path);
+   edj = eina_stringshare_printf("%s/build.edj", worker.project->enventor->path);
    buf = eina_strbuf_new();
 
-   EINA_LIST_FOREACH(worker->project->res.images, l, dir)
+   EINA_LIST_FOREACH(worker.project->res.images, l, dir)
      {
         eina_strbuf_append_printf(buf, " -id %s", dir);
      }
-   EINA_LIST_FOREACH(worker->project->res.fonts, l, dir)
+   EINA_LIST_FOREACH(worker.project->res.fonts, l, dir)
      {
         eina_strbuf_append_printf(buf, " -fd %s", dir);
      }
-   EINA_LIST_FOREACH(worker->project->res.sounds, l, dir)
+   EINA_LIST_FOREACH(worker.project->res.sounds, l, dir)
      {
         eina_strbuf_append_printf(buf, " -sd %s", dir);
      }
    cmd = eina_stringshare_printf("edje_cc -v %s %s %s", eina_strbuf_string_get(buf),
-                                 worker->project->enventor->file, edj);
+                                 worker.project->enventor->file, edj);
    eina_strbuf_free(buf);
    THREAD_TESTCANCEL;
    DBG("Run command for compile: %s", cmd);
@@ -1655,7 +1629,7 @@ _enventor_save(void *data,
    THREAD_TESTCANCEL;
    waitpid_res = waitpid(exe_pid, &edje_cc_res, 0);
 
-   if (worker->func_progress)
+   if (worker.func_progress)
      {
         ecore_event_handler_del(cb_msg_stdout);
         ecore_event_handler_del(cb_msg_stderr);
@@ -1670,17 +1644,17 @@ _enventor_save(void *data,
      }
    THREAD_TESTCANCEL;
 
-   if (worker->func_progress)
+   if (worker.func_progress)
      {
         cb_msg_stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_data, worker);
         cb_msg_stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_data, worker);
      }
-   worker->edj = eina_stringshare_printf("%s/enbuild.edj",
-                                         worker->project->enventor->path);
+   worker.edj = eina_stringshare_printf("%s/enbuild.edj",
+                                         worker.project->enventor->path);
    cmd = eina_stringshare_printf("edje_pick -o %s -a %s -i %s -g %s",
-                                 worker->edj,
-                                 worker->project->dev, edj,
-                                 worker->project->current_style->full_group_name);
+                                 worker.edj,
+                                 worker.project->dev, edj,
+                                 worker.project->current_style->full_group_name);
 
    DBG("Run command for compile: %s", cmd);
    exe_cmd = ecore_exe_pipe_run(cmd, flags, NULL);
@@ -1688,7 +1662,7 @@ _enventor_save(void *data,
    THREAD_TESTCANCEL;
    waitpid_res = waitpid(exe_pid, &edje_pick_res, 0);
 
-   if (worker->func_progress)
+   if (worker.func_progress)
      {
         ecore_event_handler_del(cb_msg_stdout);
         ecore_event_handler_del(cb_msg_stderr);
@@ -1701,7 +1675,7 @@ _enventor_save(void *data,
         return NULL;
      }
 
-   eina_file_copy(worker->edj, worker->project->dev,
+   eina_file_copy(worker.edj, worker.project->dev,
                   EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
                   NULL, NULL);
 
@@ -1711,26 +1685,22 @@ _enventor_save(void *data,
    return NULL;
 }
 
-Project_Thread *
+void
 pm_project_enventor_save(Project *project,
                          PM_Project_Progress_Cb func_progress,
                          PM_Project_End_Cb func_end,
                          const void *data)
 {
-   Project_Thread *worker;
-
    assert(project != NULL);
 
    WORKER_CREATE(func_progress, func_end, data, project,
                  NULL, NULL, NULL, NULL, NULL);
 
-   if (!eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
-                           (void *)_enventor_save, worker))
+   if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
+                           (void *)_enventor_save, NULL))
      {
         ERR("System error: can't create thread");
         abort();
      }
-
-   return worker;
 }
 #endif /* HAVE_ENVENTOR */
