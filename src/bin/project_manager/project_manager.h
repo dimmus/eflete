@@ -235,8 +235,6 @@ struct _Project_Thread
    const char *edc;
    /** edje_cc options. Used for 'new project' and 'import from edc'. */
    const char *build_options;
-   /** Mutex, I say no more then. */
-   Eina_Lock mutex;
 };
 
 /**
