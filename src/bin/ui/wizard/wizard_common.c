@@ -160,12 +160,12 @@ _teardown_splash(void *data, Splash_Status status)
    pm_project_thread_free();
 
    if (wiew->tmp_dir_path) eina_stringshare_del(wiew->tmp_dir_path);
-   free(wiew);
 
    if ((status == SPLASH_SUCCESS) && (app->project))
      {
         STATUSBAR_PROJECT_PATH(app, app->project->pro_path);
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE(app);
+        free(wiew);
      }
    else return false;
    return true;
