@@ -658,12 +658,8 @@ pm_project_thread_free(Project_Thread *worker)
 {
    assert(worker != NULL);
 
-   if (worker->result == 0)
-     {
-        WORKER_FREE();
-        return true;
-     }
-   return false;
+   WORKER_FREE();
+   return true;
 }
 
 Project *
