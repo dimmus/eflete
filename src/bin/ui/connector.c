@@ -189,8 +189,13 @@ _below_part(void *data,
      }
 
    tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
-   Part *rel = EINA_INLIST_CONTAINER_GET(tmp_list->prev, Part);
-   live_view_part_restack_below(ap->live_view, part, rel);
+   if (!tmp_list->next)
+     live_view_part_restack_below(ap->live_view, part);
+   else
+     {
+        Part *rel = EINA_INLIST_CONTAINER_GET(tmp_list->next, Part);
+        live_view_part_restack_above(ap->live_view, part, rel);
+     }
    project_changed(true);
 }
 
@@ -233,7 +238,7 @@ _restack_part_below(void *data,
    if ((!part) || (!style)) return;
    history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
    workspace_edit_object_part_restack(ap->workspace, part->name, rel->name, true);
-   live_view_part_restack_below(ap->live_view, part, rel);
+   live_view_part_restack_below(ap->live_view, part);
 
    tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
    tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel));
@@ -510,13 +515,16 @@ _add_style_dailog(void *data,
 static void
 _part_name_change(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
-   const char *part = (const char *)event_info;
+   const char *new_name = (const char *)event_info;
    App_Data *ap = (App_Data *)data;
 
    assert(ap != NULL);
-   assert(part != NULL);
+   assert(new_name != NULL);
 
-   ui_widget_list_part_update(ui_block_widget_list_get(ap), part);
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+
+   live_view_part_rename(ap->live_view, part, new_name);
+   ui_widget_list_part_update(ui_block_widget_list_get(ap), part->name);
 }
 
 static void
@@ -1461,7 +1469,8 @@ _on_export_edc_project_done(void *data,
    build_str = eina_stringshare_printf("%s%s.edc", makefile, ap->project->name);
    fputs(build_str, fbuild);
    fclose(fbuild);
-   chmod(build_sh, 777);
+   if (chmod(build_sh, 677) != 0)
+     ERR("Could't set permission flags for '%s'", build_sh);
 
    eina_stringshare_del(dir_path);
    eina_stringshare_del(build_sh);

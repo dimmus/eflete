@@ -517,23 +517,162 @@ live_view_property_part_del(Evas_Object *property, Part *part)
 }
 
 Eina_Bool
-live_view_property_part_rename(Evas_Object *property __UNUSED__, Part *part __UNUSED__, Eina_Stringshare *new_name __UNUSED__)
+live_view_property_part_rename(Evas_Object *property, Part *part, Eina_Stringshare *new_name)
 {
-   printf("Signal: rename part name from [%s] to [%s] \n", part->name, new_name);
+   Evas_Object  *item_box = NULL, *check;
+   Eina_List *items_list, *l;
+   PROP_DATA_GET();
+   Eina_Stringshare *part_name;
+
+   if ((part->type != EDJE_PART_TYPE_TEXT) &&
+       (part->type != EDJE_PART_TYPE_TEXTBLOCK) &&
+       (part->type != EDJE_PART_TYPE_SWALLOW))
+     return false;
+
+   if (part->type ==  EDJE_PART_TYPE_SWALLOW)
+     item_box = pd->prop_swallow.swallows;
+   else if ((part->type ==  EDJE_PART_TYPE_TEXT) ||
+            (part->type ==  EDJE_PART_TYPE_TEXTBLOCK))
+     item_box = pd->prop_text.texts;
+
+   /* Now lets restack this.
+      We need to find moving check and check we need to move above */
+   assert(item_box != NULL);
+   items_list = elm_box_children_get(item_box);
+   EINA_LIST_FOREACH(items_list, l, check)
+     {
+        part_name = elm_object_part_text_get(check, NULL);
+        if (!strcmp(part_name, part->name))
+          {
+             elm_object_part_text_set(check, NULL, new_name);
+             break;
+          }
+     }
+
    return true;
 }
 
+#define IS_SWALLOW_MOVE (part_move->type == EDJE_PART_TYPE_SWALLOW)
+#define IS_SWALLOW_CURR (part_type == EDJE_PART_TYPE_SWALLOW)
+
+#define IS_TEXT_OR_TEXTBLOCK_MOVE \
+  ((part_move->type == EDJE_PART_TYPE_TEXT) || (part_move->type == EDJE_PART_TYPE_TEXTBLOCK))
+
+#define IS_TEXT_OR_TEXTBLOCK_CURR \
+  ((part_type == EDJE_PART_TYPE_TEXT) || (part_type == EDJE_PART_TYPE_TEXTBLOCK))
+
 Eina_Bool
-live_view_property_part_restack_above(Evas_Object *property __UNUSED__, Part *part_move __UNUSED__, Part *part_above __UNUSED__)
+live_view_property_part_restack_above(Evas_Object *property, Part *part_move, Part *part_above)
 {
-   printf("Signal: moving part [%s] above [%s] \n", part_move->name, part_above->name);
+   Evas_Object *check_nearest = NULL, *check_move = NULL, *item_box = NULL, *check;
+   Eina_List *part_list = NULL, *part = NULL, *after_above_list = NULL;
+   Eina_List *items_list = NULL, *l;
+   PROP_DATA_GET();
+   Eina_Stringshare *part_name, *nearest_part = NULL;
+   int part_type;
+
+   if ((part_move->type != EDJE_PART_TYPE_TEXT) &&
+       (part_move->type != EDJE_PART_TYPE_TEXTBLOCK) &&
+       (part_move->type != EDJE_PART_TYPE_SWALLOW))
+     return false;
+
+   part_list = edje_edit_parts_list_get(pd->style->obj);
+
+   /* start searching for part with same type from part_above point.
+      We need to find name of this part. */
+   after_above_list = eina_list_data_find_list(part_list, part_above->name);
+   EINA_LIST_FOREACH(after_above_list, part, part_name)
+     {
+        part_type = edje_edit_part_type_get(pd->style->obj, part_name);
+
+        if (!strcmp(part_name, part_move->name))
+          return false;
+
+        if ((IS_SWALLOW_MOVE && IS_SWALLOW_CURR) ||
+            (IS_TEXT_OR_TEXTBLOCK_MOVE && IS_TEXT_OR_TEXTBLOCK_CURR))
+          {
+             nearest_part = part_name;
+             break;
+          }
+     }
+   edje_edit_string_list_free(part_list);
+
+   if (part_move->type ==  EDJE_PART_TYPE_SWALLOW)
+     item_box = pd->prop_swallow.swallows;
+   else if ((part_move->type ==  EDJE_PART_TYPE_TEXT) ||
+            (part_move->type ==  EDJE_PART_TYPE_TEXTBLOCK))
+     item_box = pd->prop_text.texts;
+
+   /* Now lets restack this.
+      We need to find moving check and check we need to move above */
+   assert(item_box != NULL);
+   items_list = elm_box_children_get(item_box);
+   EINA_LIST_FOREACH(items_list, l, check)
+     {
+        part_name = elm_object_part_text_get(check, NULL);
+        if (nearest_part && !strcmp(part_name, nearest_part))
+          check_nearest = check;
+
+        if (!strcmp(part_name, part_move->name))
+          check_move = check;
+
+        if (check_move && check_nearest)
+          break;
+     }
+
+   assert(check_move != NULL);
+   elm_box_unpack(item_box, check_move);
+
+   if (nearest_part)
+     {
+        assert(check_nearest != NULL);
+        elm_box_pack_before(item_box, check_move, check_nearest);
+     }
+   else /* if not found then we drop it to the end */
+     elm_box_pack_end(item_box, check_move);
+
    return true;
 }
 
+#undef IS_SWALLOW_MOVE
+#undef IS_SWALLOW_CURR
+#undef IS_TEXT_OR_TEXTBLOCK_MOVE
+#undef IS_TEXT_OR_TEXTBLOCK_CURR
+
 Eina_Bool
-live_view_property_part_restack_below(Evas_Object *property __UNUSED__, Part *part_move, Part *part_below __UNUSED__)
+live_view_property_part_restack_below(Evas_Object *property, Part *part_move)
 {
-   printf("Signal: moving part [%s] below [%s] \n", part_move->name, part_below->name);
+   Evas_Object *check_move = NULL, *item_box = NULL, *check;
+   Eina_List *items_list = NULL, *l;
+   PROP_DATA_GET();
+   Eina_Stringshare *part_name = NULL;
+
+   if ((part_move->type != EDJE_PART_TYPE_TEXT) &&
+       (part_move->type != EDJE_PART_TYPE_TEXTBLOCK) &&
+       (part_move->type != EDJE_PART_TYPE_SWALLOW))
+     return false;
+
+   /* Now lets restack this */
+   if (part_move->type ==  EDJE_PART_TYPE_SWALLOW)
+     item_box = pd->prop_swallow.swallows;
+   else if ((part_move->type ==  EDJE_PART_TYPE_TEXT) ||
+            (part_move->type ==  EDJE_PART_TYPE_TEXTBLOCK))
+     item_box = pd->prop_text.texts;
+
+   /* find check that we are moving and pack it to the end of items/box/lists */
+   items_list = elm_box_children_get(item_box);
+   EINA_LIST_FOREACH(items_list, l, check)
+     {
+        part_name = elm_object_part_text_get(check, NULL);
+
+        if (!strcmp(part_name, part_move->name))
+          check_move = check;
+
+        if (check_move) break;
+     }
+
+   elm_box_unpack(item_box, check_move);
+   elm_box_pack_end(item_box, check_move);
    return true;
 }
 

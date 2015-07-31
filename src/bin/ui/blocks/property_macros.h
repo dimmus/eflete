@@ -330,7 +330,7 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
 static Evas_Object * \
 prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, Prop_Data *pd) \
 { \
-   PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
+   PROPERTY_ITEM_ADD(parent, TEXT, "1swallow_subtext") \
    CHECK_ADD(item, pd->MEMBER.VALUE) \
    elm_object_style_set(pd->MEMBER.VALUE, "toggle"); \
    if (TOOLTIP) elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
@@ -1539,14 +1539,14 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj STATE_ARGS, value)) \
      { \
-       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       ERR("edje_edit_"#SUB"_"#VALUE"_set value '%d' is failed", value); \
        abort(); \
      } \
    if ((value CHECK opposite_value) && (opposite_value != -1)) \
      { \
         if (!edje_edit_##SUB##_##DIF_VALUE##_set(pd->wm_style->obj STATE_ARGS, value)) \
           { \
-            ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+            ERR("edje_edit_"#SUB"_"#VALUE"_set value '%d' is failed", value); \
             abort(); \
           } \
         elm_spinner_value_set(pd->state.DIF_VALUE, value); \
@@ -1747,7 +1747,7 @@ static Evas_Object * \
 prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
                            Prop_Data *pd) \
 { \
-   PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
+   PROPERTY_ITEM_ADD(parent, TEXT, "1swallow_subtext") \
    pd->MEMBER.VALUE = elm_layout_add(item); \
    elm_layout_theme_set(pd->MEMBER.VALUE, "layout", "property", "color"); \
    evas_object_size_hint_weight_set(pd->MEMBER.VALUE,  EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \

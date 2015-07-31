@@ -935,11 +935,13 @@ wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
 
    EINA_INLIST_FOREACH(style->parts, data)
      {
-        TODO("Check logic here. Seems like we are skipping rel_part if part was found earlier")
-        if (data->name == part_name) part = data;
+        if (data->name == part_name)
+          part = data;
         else if (data->name == rel_name)
-         rel_part = data;
-        if (part) break;
+          rel_part = data;
+
+        if (part && rel_part)
+          break;
      }
 
    assert(part != NULL);
@@ -949,13 +951,13 @@ wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
    assert(tmp_list != NULL);
 
    if (rel_part)
-    tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel_part));
+     tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel_part));
 
    style->parts = eina_inlist_remove(style->parts, tmp_list);
    if (!tmp_prev)
-      style->parts = eina_inlist_append_relative(style->parts, tmp_list, tmp_prev);
+     style->parts = eina_inlist_append_relative(style->parts, tmp_list, tmp_prev);
    else
-      style->parts = eina_inlist_prepend_relative(style->parts, tmp_list, tmp_prev);
+     style->parts = eina_inlist_prepend_relative(style->parts, tmp_list, tmp_prev);
 
    return true;
 }

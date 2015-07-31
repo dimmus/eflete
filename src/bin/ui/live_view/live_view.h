@@ -132,21 +132,89 @@ live_view_theme_update(Live_View *live, Project *project);
 Eina_Bool
 live_view_free(Live_View *live);
 
-/****** FUNCTIONS FOR CONNECTOR ***********/
-TODO("We need documentation here! ")
+/**
+ * Add new part to live view properties list of parts.
+ *
+ * This function works only if part is SWALLOW, TEXTBLOCK or TEXT. All other
+ * types of parts are being ignored.
+ *
+ * @param live live_view structure.
+ * @param part new added part
+ *
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise;
+ *
+ * @ingroup Live_View
+ */
 Eina_Bool
 live_view_part_add(Live_View *live, Part *part);
 
+/**
+ * Delete new part to live view properties list of parts.
+ *
+ * This function works only if part is SWALLOW, TEXTBLOCK or TEXT. All other
+ * types of parts are being ignored.
+ *
+ * @param live live_view structure.
+ * @param part part to be deleted
+ *
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise;
+ *
+ * @ingroup Live_View
+ */
 Eina_Bool
 live_view_part_del(Live_View *live, Part *part);
 
+/**
+ * Rename part from list of parts in live view property.
+ *
+ * This function works only if part is SWALLOW, TEXTBLOCK or TEXT. All other
+ * types of parts are being ignored.
+ *
+ * @param live live_view structure.
+ * @param part part to be renamed
+ * @param new_name new name of that part
+ *
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise;
+ *
+ * @ingroup Live_View
+ */
 Eina_Bool
 live_view_part_rename(Live_View *live, Part *part, Eina_Stringshare *new_name);
 
+/**
+ * Restack part in list of parts in live view property above given part.
+ *
+ * This function works only if part is SWALLOW, TEXTBLOCK or TEXT. All other
+ * types of parts are being ignored. It restack above nearest part
+ * (related to given one) with same part type.
+ *
+ * @param live live_view structure.
+ * @param part_move part to be restacked
+ * @param part_above related part. part_move should be above this given part
+ *
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise;
+ *
+ * @ingroup Live_View
+ */
 Eina_Bool
 live_view_part_restack_above(Live_View *live, Part *part_move, Part *part_above);
 
+/**
+ * Restack part in list of parts in live view property below given part.
+ *
+ * This function works only if part is SWALLOW, TEXTBLOCK or TEXT. All other
+ * types of parts are being ignored. It restack above nearest part
+ * (related to given one) with same part type.
+ *
+ * @param live live_view structure.
+ * @param part_move part to be restacked
+ * @param part_below related part. part_move should be below this given part
+ *
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise;
+ *
+ * @ingroup Live_View
+ */
 Eina_Bool
-live_view_part_restack_below(Live_View *live, Part *part_move, Part *part_below);
+live_view_part_restack_below(Live_View *live, Part *part_move);
 
 #endif /* UI_LIVEVIEW_HEADER_H */

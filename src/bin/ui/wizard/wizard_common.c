@@ -322,6 +322,18 @@ _elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data)
    elm_object_part_content_set(entry, "elm.swallow.elipsis", bt);
 }
 
+static void
+_validate(void *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
+{
+   Wizard_Import_Edj_Win *wiew = (Wizard_Import_Edj_Win *)data;
+   if (elm_validator_regexp_status_get(wiew->name_validator) != ELM_REG_NOERROR)
+     elm_object_disabled_set(wiew->btn_apply, true);
+   else
+     elm_object_disabled_set(wiew->btn_apply, false);
+}
+
 void
 project_path_item_add(Wizard_Import_Edj_Win *wiew,
                       const char *label,
@@ -342,7 +354,6 @@ project_path_item_add(Wizard_Import_Edj_Win *wiew,
 Wizard_Import_Edj_Win *
 wizard_import_common_add(const char *layout_name)
 {
-   Evas_Object *mwin, *layout;
    Evas_Object *bt;
    Wizard_Import_Edj_Win *wiew;
    App_Data *ap = app_data_get();
@@ -352,61 +363,57 @@ wizard_import_common_add(const char *layout_name)
    wiew = (Wizard_Import_Edj_Win *)mem_calloc(1, sizeof(Wizard_Import_Edj_Win));
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
 
-   mwin = mw_add("dialog", _on_cancel, wiew);
+   wiew->win = mw_add("dialog", _on_cancel, wiew);
 
-   assert(mwin != NULL);
+   assert(wiew->win != NULL);
 
-   wiew->win = mwin;
    wiew->name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
+   wiew->layout = elm_layout_add(wiew->win);
+   elm_layout_theme_set(wiew->layout, "layout", "wizard", layout_name);
+   elm_object_content_set(wiew->win, wiew->layout);
 
-   layout = elm_layout_add(mwin);
-   elm_layout_theme_set(layout, "layout", "wizard", layout_name);
-
-   elm_object_content_set(mwin, layout);
-   evas_object_show(layout);
-
-   BUTTON_ADD(mwin, bt, _("Apply"))
-   elm_object_part_content_set(mwin, "eflete.swallow.btn_ok", bt);
-   evas_object_smart_callback_add(bt, "clicked", _on_apply, wiew);
-   BUTTON_ADD(mwin, bt, _("Cancel"))
-   elm_object_part_content_set(mwin, "eflete.swallow.btn_close", bt);
+   BUTTON_ADD(wiew->win, wiew->btn_apply, _("Apply"))
+   elm_object_part_content_set(wiew->win, "eflete.swallow.btn_ok", wiew->btn_apply);
+   evas_object_smart_callback_add(wiew->btn_apply, "clicked", _on_apply, wiew);
+   elm_object_disabled_set(wiew->btn_apply, true);
+   BUTTON_ADD(wiew->win, bt, _("Cancel"))
+   elm_object_part_content_set(wiew->win, "eflete.swallow.btn_close", bt);
    evas_object_smart_callback_add(bt, "clicked", _on_cancel, wiew);
 
    //label.name
-   elm_object_part_text_set(layout, "label.name", _("Project name:"));
-   ENTRY_ADD(layout, wiew->name, true)
+   elm_object_part_text_set(wiew->layout, "label.name", _("Project name:"));
+   ENTRY_ADD(wiew->layout, wiew->name, true)
    eo_do(wiew->name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, wiew->name_validator));
-   elm_object_part_content_set(layout, "swallow.name", wiew->name);
+   evas_object_smart_callback_add(wiew->name, "changed", _validate, wiew);
+   elm_object_part_content_set(wiew->layout, "swallow.name", wiew->name);
    //label.path
-   elm_object_part_text_set(layout, "label.path", _("Path to project:"));
-   ENTRY_ADD(layout, wiew->path, true)
-   elm_object_part_content_set(layout, "swallow.path", wiew->path);
+   elm_object_part_text_set(wiew->layout, "label.path", _("Path to project:"));
+   ENTRY_ADD(wiew->layout, wiew->path, true)
+   elm_object_part_content_set(wiew->layout, "swallow.path", wiew->path);
    elm_entry_entry_set(wiew->path, profile_get()->general.projects_folder);
 
    _elipsis_btn_add(wiew->path, _on_path_bt, wiew);
 
    //label.meta_version
-   elm_object_part_text_set(layout, "label.meta_version", _("Version of file:"));
-   ENTRY_ADD(layout, wiew->meta_version, true)
-   elm_object_part_content_set(layout, "swallow.meta_version", wiew->meta_version);
+   elm_object_part_text_set(wiew->layout, "label.meta_version", _("Version of file:"));
+   ENTRY_ADD(wiew->layout, wiew->meta_version, true)
+   elm_object_part_content_set(wiew->layout, "swallow.meta_version", wiew->meta_version);
    //label.meta_authors
-   elm_object_part_text_set(layout, "label.meta_authors", _("Authors:"));
-   ENTRY_ADD(layout, wiew->meta_authors, false)
-   elm_object_part_content_set(layout, "swallow.meta_authors", wiew->meta_authors);
+   elm_object_part_text_set(wiew->layout, "label.meta_authors", _("Authors:"));
+   ENTRY_ADD(wiew->layout, wiew->meta_authors, false)
+   elm_object_part_content_set(wiew->layout, "swallow.meta_authors", wiew->meta_authors);
    //label.meta_licenses
-   elm_object_part_text_set(layout, "label.meta_licenses", _("Licenses:"));
-   ENTRY_ADD(layout, wiew->meta_licenses, false)
-   elm_object_part_content_set(layout, "swallow.meta_licenses", wiew->meta_licenses);
+   elm_object_part_text_set(wiew->layout, "label.meta_licenses", _("Licenses:"));
+   ENTRY_ADD(wiew->layout, wiew->meta_licenses, false)
+   elm_object_part_content_set(wiew->layout, "swallow.meta_licenses", wiew->meta_licenses);
    //label.meta_comment
-   elm_object_part_text_set(layout, "label.meta_comment", _("Comment:"));
-   ENTRY_ADD(layout, wiew->meta_comment, false)
-   elm_object_part_content_set(layout, "swallow.meta_comment", wiew->meta_comment);
+   elm_object_part_text_set(wiew->layout, "label.meta_comment", _("Comment:"));
+   ENTRY_ADD(wiew->layout, wiew->meta_comment, false)
+   elm_object_part_content_set(wiew->layout, "swallow.meta_comment", wiew->meta_comment);
    elm_entry_entry_set(wiew->meta_comment, _("Created with Eflete!"));
 
-   wiew->layout = layout;
-
    ap->modal_editor++;
-   evas_object_show(mwin);
+   evas_object_show(wiew->win);
 
    return wiew;
 }

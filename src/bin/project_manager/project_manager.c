@@ -49,6 +49,12 @@ const char *top_levels[] = { "collections",
                              "sounds",
                              "group",
                              NULL};
+typedef struct
+{
+   Eina_Stringshare *str;
+   PM_Project_Progress_Cb func_print;
+   void *data;
+} Progress_Message;
 
 #define WORKER_CREATE(FUNC_PROGRESS, FUNC_END, DATA, PROJECT, \
                       NAME, PATH, EDJ, EDC, BUILD_OPTIONS) \
@@ -75,8 +81,6 @@ const char *top_levels[] = { "collections",
    eina_stringshare_del(worker->edj); \
    eina_stringshare_del(worker->edc); \
    eina_stringshare_del(worker->build_options); \
-   if (worker->message) \
-     eina_stringshare_del(worker->message); \
    free(worker); \
    worker = NULL; \
 }
@@ -89,12 +93,11 @@ const char *top_levels[] = { "collections",
 { \
    if (worker->func_progress) \
       { \
-         WORKER_LOCK_TAKE; \
-            if (worker->message) \
-              eina_stringshare_del(worker->message); \
-            worker->message = eina_stringshare_printf(FMT, ## __VA_ARGS__); \
-         WORKER_LOCK_RELEASE; \
-         ecore_main_loop_thread_safe_call_async(_progress_send, worker); \
+         Progress_Message *message = mem_malloc(sizeof(Progress_Message)); \
+         message->str = eina_stringshare_printf(FMT, ## __VA_ARGS__); \
+         message->func_print = worker->func_progress; \
+         message->data = worker->data; \
+         ecore_main_loop_thread_safe_call_async(_progress_send, message); \
       } \
 }
 
@@ -110,19 +113,24 @@ const char *top_levels[] = { "collections",
 }
 
 static Eina_Bool
+_project_resource_export(Project *pro, const char* dir_path,
+                         Project_Thread *worker);
+
+static Eina_Bool
 _image_resources_export(Project *project,
                         Eina_List *images, Eina_Stringshare *destination,
                         Eina_Stringshare *source, Eina_Stringshare *dev,
-                        Evas_Object *edje_edit);
+                        Evas_Object *edje_edit, Project_Thread *worker);
 
 static Eina_Bool
 _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
-                        Eina_Stringshare *source, Evas_Object *edje_edit);
+                        Eina_Stringshare *source, Evas_Object *edje_edit,
+                        Project_Thread *worker);
 
 static Eina_Bool
 _font_resources_export(Eina_List *fonts, Eina_Stringshare *destination,
                        Eina_Stringshare *source, Eina_Stringshare *dev,
-                       Evas_Object *edje_edit);
+                       Evas_Object *edje_edit, Project_Thread *worker);
 
 static Eina_Bool
 _project_dev_file_create(Project *pro)
@@ -181,23 +189,14 @@ _pm_project_descriptor_data_write(const char *path, Project *project)
 static void
 _progress_send(void *data)
 {
-   Project_Thread *worker;
-   PM_Project_Progress_Cb func;
-   Eina_Stringshare *message;
-   void *udata;
+   Progress_Message *message;
 
-   worker = (Project_Thread *)data;
+   message = (Progress_Message *)data;
+   assert(message != NULL);
 
-   assert(worker != NULL);
-
-   /** Copy the links to callback and meesage, to fast release worker resource. */
-   WORKER_LOCK_TAKE;
-      func = worker->func_progress;
-      message = eina_stringshare_ref(worker->message);
-      udata = worker->data;
-   WORKER_LOCK_RELEASE;
-   if (func) func(udata, message);
-   eina_stringshare_del(message);
+   message->func_print(message->data, message->str);
+   eina_stringshare_del(message->str);
+   free(message);
 }
 
 static void
@@ -337,8 +336,7 @@ _project_edj_file_copy(Project_Thread *worker)
       src = eina_stringshare_ref(worker->edj);
       dst = eina_stringshare_ref(worker->project->saved_edj);
    WORKER_LOCK_RELEASE;
-   PROGRESS_SEND(_("Importing..."));
-      result = ecore_file_cp(src, dst);
+   result = ecore_file_cp(src, dst);
    DBG("Copy the .edj file to project folder.");
    eina_stringshare_del(src);
    eina_stringshare_del(dst);
@@ -481,14 +479,20 @@ _project_import_edj(void *data,
    assert(worker != NULL);
 
    THREAD_TESTCANCEL;
-   PROGRESS_SEND("%s", _("Creating a specifiec file and folders..."));
+   WORKER_LOCK_TAKE;
+      PROGRESS_SEND(_("Start import '%s' file as new project"), worker->edj);
+      PROGRESS_SEND(_("Creating a specifiec file and folders"));
+   WORKER_LOCK_RELEASE;
    worker->project = _project_files_create(worker);
+   TODO("Add correct error handling here (if project == NULL). Probably we should add negative TC where directory already exist");
    THREAD_TESTCANCEL;
    WORKER_LOCK_TAKE;
       worker->project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker->path, worker->name, worker->name);
    WORKER_LOCK_RELEASE;
    THREAD_TESTCANCEL;
-   PROGRESS_SEND("%s", _("Importing..."));
+   WORKER_LOCK_TAKE;
+      PROGRESS_SEND(_("Import processing"));
+   WORKER_LOCK_RELEASE;
    _project_edj_file_copy(worker);
    _copy_meta_data_to_pro(worker);
    WORKER_LOCK_TAKE;
@@ -497,9 +501,10 @@ _project_import_edj(void *data,
    WORKER_LOCK_RELEASE;
    THREAD_TESTCANCEL;
    WORKER_LOCK_TAKE;
-      pm_project_resource_export(worker->project, NULL);
+      _project_resource_export(worker->project, NULL, worker);
       _project_linked_images_copy(worker);
       edje_file_cache_flush();
+      PROGRESS_SEND(_("Import finished. Project '%s' created"), worker->project->name);
    WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS);
@@ -549,7 +554,9 @@ _exe_data(void *data,
         for (i = 0; ev->lines[i].line; i++)
           {
              DBG("%s", ev->lines[i].line);
-             PROGRESS_SEND("%s", ev->lines[i].line);
+             WORKER_LOCK_TAKE;
+                PROGRESS_SEND("%s", ev->lines[i].line);
+             WORKER_LOCK_RELEASE;
           }
      }
 
@@ -578,6 +585,8 @@ _project_import_edc(void *data,
    assert(worker != NULL);
 
    WORKER_LOCK_TAKE;
+      PROGRESS_SEND(_("Start import '%s' file as new project"), worker->edj);
+      PROGRESS_SEND(_("Creating a specifiec file and folders"));
       if (worker->func_progress)
         {
            cb_msg_stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_data, worker);
@@ -609,13 +618,15 @@ _project_import_edc(void *data,
      }
 
    THREAD_TESTCANCEL;
-   PROGRESS_SEND("%s", _("Creating a specifiec file and folders..."));
    worker->project = _project_files_create(worker);
+   TODO("Add correct error handling here (if project == NULL). Probably we should add negative TC where directory already exist");
    WORKER_LOCK_TAKE;
       worker->project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker->path, worker->name, worker->name);
    WORKER_LOCK_RELEASE;
    THREAD_TESTCANCEL;
-   PROGRESS_SEND("%s", _("Importing..."));
+   WORKER_LOCK_TAKE;
+      PROGRESS_SEND("%s", _("Import processing"));
+   WORKER_LOCK_RELEASE;
    _project_edj_file_copy(worker);
    ecore_file_recursive_rm(tmp_dirname);
    eina_tmpstr_del(tmp_dirname);
@@ -626,9 +637,10 @@ _project_import_edc(void *data,
    WORKER_LOCK_RELEASE;
    THREAD_TESTCANCEL;
    WORKER_LOCK_TAKE;
-      pm_project_resource_export(worker->project, NULL);
+      _project_resource_export(worker->project, NULL, worker);
       _project_linked_images_copy(worker);
       edje_file_cache_flush();
+      PROGRESS_SEND(_("Import finished. Project '%s' created"), worker->project->name);
    WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS)
@@ -791,54 +803,53 @@ _project_save(void *data,
 
    edje_edit_obj = worker->project->global_object;
 
-   PROGRESS_SEND("Saving...");
    ecore_thread_main_loop_begin();
    WORKER_LOCK_TAKE;
-   pm_save_to_dev(worker->project, NULL, true);
-   eina_file_close(worker->project->mmap_file);
-   Uns_List *it;
-   Eina_List *add_list = NULL, *l;
-   EINA_LIST_FOREACH(worker->project->nsimage_list, l, it)
-      {
-         if (it->act_type == ACTION_TYPE_ADD)
-           add_list = eina_list_append(add_list, eina_stringshare_add(ecore_file_file_get(it->data)));
-      }
+      PROGRESS_SEND(_("Save project '%s'"), worker->project->name);
+      pm_save_to_dev(worker->project, NULL, true);
+      eina_file_close(worker->project->mmap_file);
+      Uns_List *it;
+      Eina_List *add_list = NULL, *l;
+      EINA_LIST_FOREACH(worker->project->nsimage_list, l, it)
+         {
+            if (it->act_type == ACTION_TYPE_ADD)
+              add_list = eina_list_append(add_list, eina_stringshare_add(ecore_file_file_get(it->data)));
+         }
 
-   /* saving */
-   dest = eina_stringshare_printf("%s/images", worker->project->develop_path);
-   _image_resources_export(worker->project, add_list, dest, NULL, worker->project->dev, edje_edit_obj);
-   edje_edit_string_list_free(add_list);
-   EINA_LIST_FREE(worker->project->nsimage_list, it)
-      free(it);
-   eina_stringshare_del(dest);
+      /* saving */
+      dest = eina_stringshare_printf("%s/images", worker->project->develop_path);
+      _image_resources_export(worker->project, add_list, dest, NULL, worker->project->dev, edje_edit_obj, worker);
+      edje_edit_string_list_free(add_list);
+      EINA_LIST_FREE(worker->project->nsimage_list, it)
+         free(it);
+      eina_stringshare_del(dest);
 
-   list = edje_edit_sound_samples_list_get(edje_edit_obj);
-   dest = eina_stringshare_printf("%s/sounds", worker->project->develop_path);
-   _sound_resources_export(list, dest, NULL, edje_edit_obj);
-   edje_edit_string_list_free(list);
-   eina_stringshare_del(dest);
+      list = edje_edit_sound_samples_list_get(edje_edit_obj);
+      dest = eina_stringshare_printf("%s/sounds", worker->project->develop_path);
+      _sound_resources_export(list, dest, NULL, edje_edit_obj, worker);
+      edje_edit_string_list_free(list);
+      eina_stringshare_del(dest);
 
-   list = edje_edit_fonts_list_get(edje_edit_obj);
-   dest = eina_stringshare_printf("%s/fonts", worker->project->develop_path);
-   _font_resources_export(list, dest, NULL, worker->project->dev, edje_edit_obj);
-   edje_edit_string_list_free(list);
-   eina_stringshare_del(dest);
+      list = edje_edit_fonts_list_get(edje_edit_obj);
+      dest = eina_stringshare_printf("%s/fonts", worker->project->develop_path);
+      _font_resources_export(list, dest, NULL, worker->project->dev, edje_edit_obj, worker);
+      edje_edit_string_list_free(list);
+      eina_stringshare_del(dest);
 
-   ecore_file_cp(worker->project->dev, worker->project->saved_edj);
+      ecore_file_cp(worker->project->dev, worker->project->saved_edj);
 
-   /* reloading dev*/
-   worker->project->mmap_file = eina_file_open(worker->project->dev, false);
-   if (worker->project->current_style)
-     {
-        edje_object_mmap_set(worker->project->current_style->obj,
-                             worker->project->mmap_file,
-                             worker->project->current_style->full_group_name);
-     }
-
+      /* reloading dev*/
+      worker->project->mmap_file = eina_file_open(worker->project->dev, false);
+      if (worker->project->current_style)
+        {
+           edje_object_mmap_set(worker->project->current_style->obj,
+                                worker->project->mmap_file,
+                                worker->project->current_style->full_group_name);
+        }
+      PROGRESS_SEND("Save done");
    WORKER_LOCK_RELEASE;
    ecore_thread_main_loop_end();
 
-   PROGRESS_SEND("Saved.");
    END_SEND(PM_PROJECT_SUCCESS);
    return NULL;
 }
@@ -1001,7 +1012,7 @@ static Eina_Bool
 _image_resources_export(Project *project,
                         Eina_List *images, Eina_Stringshare *destination,
                         Eina_Stringshare *source, Eina_Stringshare *dev,
-                        Evas_Object *edje_edit)
+                        Evas_Object *edje_edit, Project_Thread *worker)
 {
   Eina_Stringshare *image_name, *source_file, *dest_file;
   Eina_List *l;
@@ -1009,6 +1020,7 @@ _image_resources_export(Project *project,
   Evas_Object *im;
   int id;
   char *file_dir;
+  int im_total, im_proc;
 
   assert(project != NULL);
   assert(destination != NULL);
@@ -1021,11 +1033,17 @@ _image_resources_export(Project *project,
        return false;
     }
   e = ecore_evas_get(project->ecore_evas);
+  im_total = eina_list_count(images);
+  im_proc = 0;
+  if (worker) PROGRESS_SEND(_("Start image processing, total %d:"), im_total);
   EINA_LIST_FOREACH(images, l, image_name)
     {
        /* for supporting old themes, which were compilled
         * with edje_cc version less than 1.10 */
        if (!image_name) continue;
+       im_proc++;
+       if (worker) PROGRESS_SEND(_("image processing (%d/%d): %s"),
+                                 im_proc, im_total, image_name);
        source_file = eina_stringshare_printf("%s/%s", source,
                                              ecore_file_file_get(image_name));
        dest_file = eina_stringshare_printf("%s/%s", destination, image_name);
@@ -1061,21 +1079,21 @@ _image_resources_export(Project *project,
        eina_stringshare_del(source_file);
        eina_stringshare_del(dest_file);
     }
-  ecore_thread_main_loop_begin();
-  ecore_thread_main_loop_end();
 
   return true;
 }
 
 static Eina_Bool
 _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
-                        Eina_Stringshare *source, Evas_Object *edje_edit)
+                        Eina_Stringshare *source, Evas_Object *edje_edit,
+                        Project_Thread *worker)
 {
   Eina_Stringshare *sound_name, *source_file, *dest_file, *sound_file;
   Eina_List *l;
   Eina_Binbuf *sound_bin;
   FILE *f;
   char *file_dir;
+  int snd_total, snd_proc;
 
   assert(destination != NULL);
   assert(edje_edit != NULL);
@@ -1085,11 +1103,18 @@ _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
        ERR("Failed create path %s for export sounds", destination);
        return false;
     }
+  snd_total = eina_list_count(sounds);
+  snd_proc = 0;
+  if (worker) PROGRESS_SEND(_("Start sound processing: total %d:"), snd_total);
   EINA_LIST_FOREACH(sounds, l, sound_name)
     {
        sound_file = edje_edit_sound_samplesource_get(edje_edit, sound_name);
        source_file = eina_stringshare_printf("%s/%s", source, sound_file);
        dest_file = eina_stringshare_printf("%s/%s", destination, sound_file);
+       snd_proc++;
+       if (worker) PROGRESS_SEND(_("sound processing (%d/%d): %s"),
+                                 snd_proc, snd_total, sound_file);
+
        if (!ecore_file_exists(dest_file))
          {
             file_dir = ecore_file_dir_get(dest_file);
@@ -1124,15 +1149,15 @@ _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
 
 static Eina_Bool
 _font_resources_export(Eina_List *fonts, Eina_Stringshare *destination,
-                        Eina_Stringshare *source, Eina_Stringshare *dev,
-                        Evas_Object *edje_edit)
+                       Eina_Stringshare *source, Eina_Stringshare *dev,
+                       Evas_Object *edje_edit, Project_Thread *worker)
 {
   Eet_File *ef;
   Eina_List *l;
   Eina_Stringshare *font_name, *source_file, *dest_file, *font_file;
   void *font;
   FILE *f;
-  int size;
+  int size, fnt_total, fnt_proc;
 
   assert(destination != NULL);
   assert(dev != NULL);
@@ -1144,11 +1169,17 @@ _font_resources_export(Eina_List *fonts, Eina_Stringshare *destination,
        return false;
     }
   ef = eet_open(dev, EET_FILE_MODE_READ);
+  fnt_total = eina_list_count(fonts);
+  fnt_proc = 0;
+  if (worker) PROGRESS_SEND(_("Start font processing, total %d:"), fnt_total);
   EINA_LIST_FOREACH(fonts, l, font_name)
     {
        font_file = edje_edit_font_path_get(edje_edit, font_name);
        source_file = eina_stringshare_printf("%s/%s", source, font_file);
        dest_file = eina_stringshare_printf("%s/%s", destination, font_file);
+       fnt_proc++;
+       if (worker) PROGRESS_SEND(_("font processing (%d/%d): %s"),
+                                 fnt_proc, fnt_total, font_file);
        if (!ecore_file_exists(dest_file))
          {
             edje_edit_string_free(font_file);
@@ -1181,9 +1212,7 @@ _font_resources_export(Eina_List *fonts, Eina_Stringshare *destination,
 }
 
 Eina_Bool
-pm_style_resource_export(Project *pro ,
-                         Style *style,
-                         Eina_Stringshare *path)
+pm_style_resource_export(Project *pro , Style *style, Eina_Stringshare *path)
 {
    Eina_List *l, *l_next, *parts, *state_list, *l_states, *tween_list, *l_tween;
    Eina_List *programs;
@@ -1278,7 +1307,7 @@ pm_style_resource_export(Project *pro ,
    dest = eina_stringshare_printf("%s/images", path);
    EINA_LIST_FOREACH(pro->res.images, l, source)
      {
-       if (!_image_resources_export(pro, images, dest, source, pro->dev, style->obj))
+       if (!_image_resources_export(pro, images, dest, source, pro->dev, style->obj, NULL))
          WARN("Failed export images");
      }
    eina_stringshare_del(dest);
@@ -1288,7 +1317,7 @@ pm_style_resource_export(Project *pro ,
    dest = eina_stringshare_printf("%s/sounds", path);
    EINA_LIST_FOREACH(pro->res.sounds, l, source)
      {
-       if (!_sound_resources_export(sounds, dest, source, style->obj))
+       if (!_sound_resources_export(sounds, dest, source, style->obj, NULL))
          ERR("Failed export sounds");
      }
    eina_stringshare_del(dest);
@@ -1298,7 +1327,7 @@ pm_style_resource_export(Project *pro ,
    dest = eina_stringshare_printf("%s/fonts", path);
    EINA_LIST_FOREACH(pro->res.fonts, l, source)
      {
-        if (!_font_resources_export(fonts, dest, source, pro->dev, style->obj))
+        if (!_font_resources_export(fonts, dest, source, pro->dev, style->obj, NULL))
           WARN("Failed export fonts");
      }
    eina_stringshare_del(dest);
@@ -1310,6 +1339,12 @@ pm_style_resource_export(Project *pro ,
 
 Eina_Bool
 pm_project_resource_export(Project *pro, const char* dir_path)
+{
+   return _project_resource_export(pro, dir_path, NULL);
+}
+
+Eina_Bool
+_project_resource_export(Project *pro, const char* dir_path, Project_Thread *worker)
 {
    Eina_List *list;
    Evas_Object *edje_edit_obj;
@@ -1340,21 +1375,21 @@ pm_project_resource_export(Project *pro, const char* dir_path)
    /* export images */
    list = edje_edit_images_list_get(edje_edit_obj);
    dest = eina_stringshare_printf("%s/images", path);
-   _image_resources_export(pro, list, dest, NULL, pro->dev, edje_edit_obj);
+   _image_resources_export(pro, list, dest, NULL, pro->dev, edje_edit_obj, worker);
    edje_edit_string_list_free(list);
    eina_stringshare_del(dest);
 
    /* export fonts */
    list = edje_edit_fonts_list_get(edje_edit_obj);
    dest = eina_stringshare_printf("%s/fonts", path);
-   _font_resources_export(list, dest, NULL, pro->dev, edje_edit_obj);
+   _font_resources_export(list, dest, NULL, pro->dev, edje_edit_obj, worker);
    edje_edit_string_list_free(list);
    eina_stringshare_del(dest);
 
    /* export sounds */
    list = edje_edit_sound_samples_list_get(edje_edit_obj);
    dest = eina_stringshare_printf("%s/sounds", path);
-   _sound_resources_export(list, dest, NULL, edje_edit_obj);
+   _sound_resources_export(list, dest, NULL, edje_edit_obj, worker);
    edje_edit_string_list_free(list);
    eina_stringshare_del(dest);
 
@@ -1557,8 +1592,8 @@ pm_project_source_code_export(Project *pro, const char *dir_path)
 exit:
    eina_stringshare_del(path);
    eina_stringshare_del(path_edc_dir);
-   fclose(f);
-   fclose(fedc);
+   if (f) fclose(f);
+   if (fedc) fclose(fedc);
    return EINA_TRUE;
 }
 #undef S3
@@ -1575,17 +1610,16 @@ _develop_export(void *data,
 
    assert(worker != NULL);
 
-   PROGRESS_SEND(_("Export edj..."));
    WORKER_LOCK_TAKE;
-
+      PROGRESS_SEND(_("Export project as develop file"));
+      PROGRESS_SEND(_("Export to file '%s'"), worker->edj);
       edje_edit_save_all(worker->project->global_object);
       eina_file_copy(worker->project->dev, worker->edj,
                      EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
                      NULL, NULL);
-
+      PROGRESS_SEND("Export done");
    WORKER_LOCK_RELEASE;
 
-   PROGRESS_SEND("Saved.");
    END_SEND(PM_PROJECT_SUCCESS);
    return NULL;
 }

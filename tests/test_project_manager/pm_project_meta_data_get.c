@@ -66,6 +66,7 @@ EFLETE_TEST (pm_project_meta_data_get_test_p)
 
    elm_init(0,0);
    app_init();
+   ecore_file_recursive_rm("./UTC");
 
    thread = pm_project_import_edj("UTC", ".", "./edj_build/radio.edj",
                                   NULL, _test_end_cb, NULL);
@@ -81,6 +82,7 @@ EFLETE_TEST (pm_project_meta_data_get_test_p)
    ck_assert_msg(license != NULL, "Meta data is missing in the project.");
 
    pm_project_close(pro);
+   ecore_file_recursive_rm("./UTC");
    app_shutdown();
    elm_shutdown();
 }

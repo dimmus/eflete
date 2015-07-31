@@ -297,10 +297,9 @@ live_view_part_restack_above(Live_View *live, Part *part_move, Part *part_above)
 }
 
 Eina_Bool
-live_view_part_restack_below(Live_View *live, Part *part_move, Part *part_below)
+live_view_part_restack_below(Live_View *live, Part *part_move)
 {
    assert(live != NULL);
    assert(part_move != NULL);
-   assert(part_below != NULL);
-   return live_view_property_part_restack_below(live->property, part_move, part_below);
+   return live_view_property_part_restack_below(live->property, part_move);
 }
