@@ -715,10 +715,10 @@ pm_project_open(const char *path)
      }
    TODO("Add crash recovery prompt here")
 
-   _project_open_internal(project);
-
    pm_project_meta_data_get(project, &project->name, NULL, NULL, NULL, NULL);
    if (!project->name) project->name = eina_stringshare_add(_("No title"));
+
+   _project_open_internal(project);
 
    return project;
 }
