@@ -67,7 +67,7 @@ _on_ws_part_unselect(void *data,
    assert(part != NULL);
 
    ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part, false);
-   ui_states_list_data_unset(ap->block.state_list);
+   ui_states_list_data_unset();
    ui_property_part_unset(ui_block_property_get(ap));
 }
 
@@ -287,11 +287,11 @@ _signal_select(void *data,
    wm_style_current_state_parts_update(sig->style);
 
    prop_view = ui_block_property_get(ap);
-   part = ui_states_list_part_get(ap->block.state_list);
+   part = ui_states_list_part_get();
    TODO("Explain to me this piece of code")
    if (part)
      {
-        ui_states_list_data_set(ap->block.state_list, sig->style, part);
+        ui_states_list_data_set(sig->style, part);
         ui_property_state_set(prop_view, part);
         workspace_edit_object_part_state_set(ap->workspace, part);
      }
@@ -659,7 +659,7 @@ ui_part_back(App_Data *ap)
 
    workspace_highlight_unset(ap->workspace);
    workspace_edit_object_unset(ap->workspace);
-   ui_states_list_data_unset(ap->block.state_list);
+   ui_states_list_data_unset();
    ui_signal_list_data_unset(ap->block.signal_list);
    ui_block_content_visible(ap->block.right_bottom, false);
    ui_block_content_visible(ap->block.right_top, false);
@@ -701,7 +701,7 @@ ui_part_select(App_Data *ap, Part* part)
 
    ui_property_part_set(prop, part);
 
-   ui_states_list_data_set(ap->block.state_list, ap->project->current_style, part);
+   ui_states_list_data_set(ap->project->current_style, part);
 
    evas_object_smart_callback_del_full(ap->workspace, "part,name,changed",
                                        _part_name_change, ap);
@@ -833,7 +833,7 @@ _blocks_data_unset(App_Data *ap)
 
    ui_block_content_visible(ap->block.right_bottom, false);
    ui_signal_list_data_unset(ap->block.signal_list);
-   ui_states_list_data_unset(ap->block.state_list);
+   ui_states_list_data_unset();
    history_clear(ap->history);
    workspace_highlight_unset(ap->workspace);
    workspace_edit_object_unset(ap->workspace);
@@ -1800,7 +1800,7 @@ _on_enventor_mode_on(void *data,
 
    workspace_highlight_unset(ap->workspace);
    ui_property_part_unset(ui_block_property_get(ap));
-   ui_states_list_data_unset(ap->block.state_list);
+   ui_states_list_data_unset();
 }
 
 static void

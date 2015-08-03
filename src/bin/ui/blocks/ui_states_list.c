@@ -323,7 +323,7 @@ _item_del(void *data __UNUSED__,
 }
 
 Eina_Bool
-ui_states_list_data_set(Evas_Object *obj, Style *style, Part *part)
+ui_states_list_data_set(Style *style, Part *part)
 {
    Eina_List *states, *l;
    const char *state_name;
@@ -331,7 +331,7 @@ ui_states_list_data_set(Evas_Object *obj, Style *style, Part *part)
    Elm_Object_Item *stit;
 
    /* We must be sure that only one State list is exist */
-   assert(obj == sl.layout);
+   assert(sl.layout != NULL);
    assert(style != NULL);
    assert(part != NULL);
 
@@ -361,9 +361,9 @@ ui_states_list_data_set(Evas_Object *obj, Style *style, Part *part)
 }
 
 Eina_Bool
-ui_states_list_data_unset(Evas_Object *obj)
+ui_states_list_data_unset(void)
 {
-   assert(obj == sl.layout);
+   assert(sl.layout != NULL);
 
    elm_object_disabled_set(sl.btn_add, true);
    elm_object_disabled_set(sl.btn_del, true);
@@ -375,26 +375,8 @@ ui_states_list_data_unset(Evas_Object *obj)
 }
 
 Part *
-ui_states_list_part_get(Evas_Object *obj)
+ui_states_list_part_get(void)
 {
-   assert(obj != sl.layout);
+   assert(sl.layout != NULL);
    return sl.part;
-}
-
-Eina_Stringshare *
-ui_states_list_selected_state_get(Evas_Object *obj)
-{
-   Evas_Object *gl;
-   Elm_Object_Item *eoi;
-   Eina_Stringshare *state;
-
-   assert(obj != NULL);
-
-   gl = evas_object_data_get(obj, "st_gl");
-   eoi = elm_genlist_selected_item_get(gl);
-
-   if (!eoi) return NULL;
-   state = eina_stringshare_add(elm_object_item_data_get(eoi));
-
-   return state;
 }
