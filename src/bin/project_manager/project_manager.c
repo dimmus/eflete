@@ -661,28 +661,41 @@ pm_project_thread_project_get()
    return worker.project;
 }
 
-Project *
-pm_project_open(const char *path)
+void *
+_project_open(void *data,
+              Eina_Thread *t __UNUSED__)
 {
    Eet_File *ef;
-   Project *project;
    char *tmp;
    int tmp_len;
+   const char *path = (const char *) data;
 
    assert(path != NULL);
 
    edje_file_cache_flush();
 
+   PROGRESS_SEND(_("Opening project \"%s\""), path);
+
    _project_descriptor_init();
    ef = eet_open(path, EET_FILE_MODE_READ_WRITE);
-   if (!ef) return NULL;
+   if (!ef)
+     {
+        END_SEND(PM_PROJECT_ERROR);
+        return NULL;
+     }
 
-   project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
+   PROGRESS_SEND(_("Reading project descriptor"));
+
+   worker.project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
    _pm_project_descriptor_shutdown();
    eet_close(ef);
-   if (!project) return NULL;
+   if (!worker.project)
+     {
+        END_SEND(PM_PROJECT_ERROR);
+        return NULL;
+     }
 
-   project->pro_path = eina_stringshare_add(path);
+   worker.project->pro_path = eina_stringshare_add(path);
 
    /* updating .dev file path */
    tmp = strdup(path);
@@ -690,37 +703,60 @@ pm_project_open(const char *path)
    tmp[tmp_len - 3] = 'd';
    tmp[tmp_len - 2] = 'e';
    tmp[tmp_len - 1] = 'v';
-   eina_stringshare_replace(&project->dev, tmp);
+   eina_stringshare_replace(&worker.project->dev, tmp);
    free(tmp);
    /* updating .edj file path */
    tmp = strdup(path);
    tmp[tmp_len - 3] = 'e';
    tmp[tmp_len - 2] = 'd';
    tmp[tmp_len - 1] = 'j';
-   eina_stringshare_replace(&project->saved_edj, tmp);
+   eina_stringshare_replace(&worker.project->saved_edj, tmp);
    free(tmp);
 
+   PROGRESS_SEND(_("Checking project version"));
    /* checking for older project versions and upgrading them version-by-version */
-   if (project->version < 2) /* upgrade to version 2 */
+   if (worker.project->version < 2) /* upgrade to version 2 */
      {
-        WARN(_("Old project version. Project files were updated."));
-        ecore_file_mv(project->dev, project->saved_edj);
-        project->version = 2;
+        PROGRESS_SEND(_("Updating project files to version 2"));
+        ecore_file_mv(worker.project->dev, worker.project->saved_edj);
+        worker.project->version = 2;
      }
-   if (project->version < 3) /* upgrade to version 3 */
+   if (worker.project->version < 3) /* upgrade to version 3 */
      {
-        WARN(_("Old project version. Project files were updated."));
-        _project_special_group_add(project);
-        project->version = 3;
+        PROGRESS_SEND(_("Updating project files to version 3"));
+        _project_special_group_add(worker.project);
+        worker.project->version = 3;
      }
    TODO("Add crash recovery prompt here")
 
-   pm_project_meta_data_get(project, &project->name, NULL, NULL, NULL, NULL);
-   if (!project->name) project->name = eina_stringshare_add(_("No title"));
+   pm_project_meta_data_get(worker.project, &worker.project->name, NULL, NULL, NULL, NULL);
+   if (!worker.project->name) worker.project->name = eina_stringshare_add(_("No title"));
 
-   _project_open_internal(project);
+   _project_open_internal(worker.project);
 
-   return project;
+   PROGRESS_SEND(_("Project is open"));
+   END_SEND(PM_PROJECT_SUCCESS);
+
+   return NULL;
+}
+
+void
+pm_project_open(const char *path,
+                PM_Project_Progress_Cb func_progress,
+                PM_Project_End_Cb func_end,
+                const void *data)
+{
+   assert(path != NULL);
+
+   WORKER_CREATE(func_progress, func_end, data, NULL,
+                 NULL, NULL, NULL, NULL, NULL);
+
+   if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
+                           (void *)_project_open, path))
+     {
+        ERR("System error: can't create thread");
+        abort();
+     }
 }
 
 void

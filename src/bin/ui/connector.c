@@ -866,9 +866,99 @@ _fs_close(void *data,
 }
 
 static void
-_on_open_done(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info)
+_progress_pm_open_end(void *data, PM_Project_Result result)
+{
+   App_Data *ap = (App_Data *)data;
+
+   assert(ap != NULL);
+
+   switch (result)
+     {
+      case PM_PROJECT_ERROR:
+        {
+           NOTIFY_INFO(3, _("Can't open project."));
+           break;
+        }
+      case PM_PROJECT_CANCEL:
+        {
+           NOTIFY_INFO(3, _("Project opening canceled."));
+           break;
+        }
+      case PM_PROJECT_SUCCESS:
+        {
+           ap->project = pm_project_thread_project_get();
+           assert(ap->project);
+
+           ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+           wm_widgets_list_objects_load(ap->project->widgets,
+                                        evas_object_evas_get(ap->win),
+                                        ap->project->mmap_file);
+           wm_layouts_list_objects_load(ap->project->layouts,
+                                        evas_object_evas_get(ap->win),
+                                        ap->project->mmap_file);
+           wm_styles_build_alias(ap->project->widgets,
+                                 ap->project->layouts);
+           blocks_show(ap);
+
+           NOTIFY_INFO(3, _("Project '%s' is opened."), ap->project->name);
+           STATUSBAR_PROJECT_PATH(ap, ap->project->pro_path);
+           STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
+
+           _widget_list_layouts_tab_activate(ap);
+
+           break;
+        }
+      default:
+        {
+           ERR("Wrong result");
+           abort();
+        }
+     }
+
+   splash_del(ap->splash);
+   ap->splash = NULL;
+}
+
+static Eina_Bool
+_progress_print(void *data, Eina_Stringshare *progress_string);
+
+static Eina_Bool
+_setup_open_splash(void *data, Splash_Status status __UNUSED__)
+{
+   Eina_Stringshare *path = data;
+
+   assert(path != NULL);
+
+   pm_project_open(path,
+                   _progress_print,
+                   _progress_pm_open_end,
+                   app_data_get());
+
+   eina_stringshare_del(path);
+
+   return true;
+}
+
+static Eina_Bool
+_teardown_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+{
+   pm_project_thread_free();
+
+   return true;
+}
+
+static Eina_Bool
+_cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+{
+   pm_project_thread_cancel();
+
+   return true;
+}
+
+static void
+_on_fs_open_done(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info)
 {
    Evas_Object *win;
    const char *selected;
@@ -881,39 +971,23 @@ _on_open_done(void *data,
    selected = (const char *)event_info;
    ap = app_data_get();
 
+   evas_object_hide(win);
+   _fs_close(ap, win, NULL);
+
    if (!selected)
      {
         ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
         ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
-        _fs_close(ap, win, NULL);
         return;
      }
 
-   ap->project = pm_project_open(selected);
-   if (!ap->project)
-     {
-        NOTIFY_WARNING(_("Project is not selected."));
-        return;
-     }
-
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win),
-                                ap->project->mmap_file);
-   wm_layouts_list_objects_load(ap->project->layouts,
-                                evas_object_evas_get(ap->win),
-                                ap->project->mmap_file);
-   wm_styles_build_alias(ap->project->widgets,
-                         ap->project->layouts);
-   blocks_show(ap);
-
-   evas_object_del(win);
-   ap->modal_editor--;
-   NOTIFY_INFO(3, _("Project '%s' is opened."), ap->project->name);
-   STATUSBAR_PROJECT_PATH(ap, ap->project->pro_path);
-   STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
-
-   _widget_list_layouts_tab_activate(ap);
+   ap->splash = splash_add(ap->win,
+                           _setup_open_splash,
+                           _teardown_open_splash,
+                           _cancel_open_splash,
+                           (void *)eina_stringshare_add(selected));
+   evas_object_focus_set(ap->splash, true);
+   evas_object_show(ap->splash);
 }
 
 Eina_Bool
@@ -952,7 +1026,7 @@ project_open(void)
    elm_icon_standard_set(ic, "folder");
    mw_icon_set(win, ic);
 
-   FILESELECTOR_ADD(fs, win, _on_open_done, win);
+   FILESELECTOR_ADD(fs, win, _on_fs_open_done, win);
    elm_fileselector_custom_filter_append(fs, _eflete_filter, NULL, "Eflete Files");
    elm_fileselector_mime_types_filter_append(fs, "*", "All Files");
    elm_win_inwin_content_set(win, fs);

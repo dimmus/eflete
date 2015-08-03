@@ -50,7 +50,7 @@ static const Ecore_Getopt options = {
    }
 };
 
-void
+static void
 _import_end(void *data __UNUSED__, PM_Project_Result result)
 {
    Project *pro;
@@ -82,14 +82,63 @@ _import_end(void *data __UNUSED__, PM_Project_Result result)
 
         NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
      }
-     evas_object_show(ap->win);
+   evas_object_show(ap->win);
 }
 
-Eina_Bool
+void
+_open_end(void *data __UNUSED__, PM_Project_Result result)
+{
+   Project *pro;
+   App_Data *ap;
+
+   ap = app_data_get();
+
+   if (result == PM_PROJECT_SUCCESS)
+     {
+        pro = pm_project_thread_project_get();
+        ap->project = pro;
+
+        blocks_show(ap);
+        wm_widgets_list_objects_load(ap->project->widgets,
+                                     evas_object_evas_get(ap->win),
+                                     ap->project->mmap_file);
+        wm_layouts_list_objects_load(ap->project->layouts,
+                                     evas_object_evas_get(ap->win),
+                                     ap->project->mmap_file);
+        wm_styles_build_alias(ap->project->widgets,
+                              ap->project->layouts);
+
+        if (!eina_inlist_count(ap->project->widgets))
+          ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
+
+        NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
+        STATUSBAR_PROJECT_PATH(ap, ap->project->pro_path);
+        STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
+     }
+   evas_object_show(ap->win);
+}
+
+static Eina_Bool
 _message_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
 {
    fprintf(stdout, "%s\n", progress_string);
    return true;
+}
+
+static void
+_open_project(void *data __UNUSED__)
+{
+   /* Ugly hack, but we need to do this.
+    * When we try to import edj file while ecore main loop not fully started
+    * we get a freeze. So for use the ecore and eina threads in the project
+    * manager need to itarate the main loop for initialize it.
+    * DO NOT DELETE: whith out iterate import from command line not worked! */
+   ecore_main_loop_iterate();
+
+   pm_project_open(open,
+                   _message_print,
+                   _import_end,
+                   NULL);
 }
 
 static void
@@ -104,7 +153,6 @@ _import_edj(void *data __UNUSED__)
 
    pm_project_import_edj(pro_name, pro_path, import_edj,
                          _message_print, _import_end, NULL);
-
 }
 
 EAPI_MAIN int
@@ -155,20 +203,8 @@ elm_main(int argc, char **argv)
              if ((eina_str_has_suffix(open, ".pro")) &&
                  (ecore_file_exists(open)))
                {
-                  ap->project = pm_project_open(open);
-                  blocks_show(ap);
-                  wm_widgets_list_objects_load(ap->project->widgets,
-                                               evas_object_evas_get(ap->win),
-                                               ap->project->mmap_file);
-                  wm_layouts_list_objects_load(ap->project->layouts,
-                                               evas_object_evas_get(ap->win),
-                                               ap->project->mmap_file);
-                  wm_styles_build_alias(ap->project->widgets,
-                                        ap->project->layouts);
+                  ecore_job_add(_open_project, NULL);
 
-                  if (!eina_inlist_count(ap->project->widgets))
-                    ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
-                  evas_object_show(ap->win);
                }
              else
                {
