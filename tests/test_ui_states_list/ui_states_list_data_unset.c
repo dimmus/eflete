@@ -57,7 +57,7 @@
  */
 EFLETE_TEST(ui_states_list_data_unset_test_p1)
 {
-   Evas_Object *window, *gl_states;
+   Evas_Object *window;
    Evas *e;
    Style *style;
    Part *part;
@@ -73,11 +73,11 @@ EFLETE_TEST(ui_states_list_data_unset_test_p1)
    e = evas_object_evas_get(window);
    style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
-   gl_states = ui_states_list_add(window);
+   ui_states_list_add(window);
    part = EINA_INLIST_CONTAINER_GET(style->parts->next->next, Part);
-   ui_states_list_data_set(gl_states, style, part);
+   ui_states_list_data_set(style, part);
 
-   ck_assert_msg(ui_states_list_data_unset(gl_states) == EINA_TRUE,
+   ck_assert_msg(ui_states_list_data_unset() == EINA_TRUE,
                  "Data cant be unset from State List");
 
    elm_theme_extension_del(NULL, EFLETE_THEME);
@@ -110,14 +110,14 @@ END_TEST
  */
 EFLETE_TEST(ui_states_list_data_unset_test_p2)
 {
-   Evas_Object *window, *gl_states;
+   Evas_Object *window;
 
    elm_init(0,0);
    elm_theme_extension_add(NULL, EFLETE_THEME);
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   gl_states = ui_states_list_add(window);
+   ui_states_list_add(window);
 
-   ck_assert_msg(ui_states_list_data_unset(gl_states) == EINA_TRUE,
+   ck_assert_msg(ui_states_list_data_unset() == EINA_TRUE,
                  "Data cant be unset from empty State List");
 
    elm_theme_extension_del(NULL, EFLETE_THEME);
