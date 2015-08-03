@@ -27,8 +27,22 @@
  * A State List used for view list of part states
  */
 
-#include "ui_block.h"
-#include "ui_property.h"
+#include "main_window.h"
+
+/**
+ * The state data.
+ *
+ * @ingroup StateList
+ */
+struct _State_Data
+{
+   Part *part; /** The given part */
+   Eina_Stringshare *state; /** The state name */
+   Eina_Stringshare *duplicate_state; /** The state should be duplicated */
+   double value; /** The state value */
+};
+
+typedef struct _State_Data State_Data;
 
 /**
  * Add a new State List

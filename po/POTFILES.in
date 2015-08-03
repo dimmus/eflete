@@ -24,7 +24,6 @@ src/bin/ui/blocks/ui_widget_list.c
 src/bin/ui/dialogs/about_window.c
 src/bin/ui/dialogs/colorsel.c
 src/bin/ui/dialogs/part_dialog.c
-src/bin/ui/dialogs/state_dialog.c
 src/bin/ui/dialogs/style_dialog.c
 src/bin/ui/editors/animator.c
 src/bin/ui/editors/animator_program_editor.c

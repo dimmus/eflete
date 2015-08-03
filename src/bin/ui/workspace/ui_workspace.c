@@ -1402,7 +1402,9 @@ workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,
    assert(part != NULL);
    assert(state != NULL);
 
-   return groupedit_edit_object_part_state_add(sd->groupedit, part, state, value);
+   groupedit_edit_object_part_state_add(sd->groupedit, part, state, value);
+   project_changed(true);
+   return true; /* not check anyway */
 }
 
 Eina_Bool
@@ -1432,8 +1434,10 @@ workspace_edit_object_part_state_copy(Evas_Object *obj, const char *part,
    assert(state_from != NULL);
    assert(state_to != NULL);
 
-   return groupedit_edit_object_part_state_copy(sd->groupedit, part, state_from,
-                                               value_from, state_to, value_to);
+   groupedit_edit_object_part_state_copy(sd->groupedit, part, state_from,
+                                        value_from, state_to, value_to);
+   project_changed(true);
+   return true; /* not check anyway */
 }
 
 Eina_Bool
@@ -1444,7 +1448,9 @@ workspace_edit_object_part_state_del(Evas_Object *obj, const char *part,
    assert(part != NULL);
    assert(state != NULL);
 
-   return groupedit_edit_object_part_state_del(sd->groupedit, part, state, value);
+   groupedit_edit_object_part_state_del(sd->groupedit, part, state, value);
+   project_changed(true);
+   return true; /* not check anyway */
 }
 
 Eina_Bool
