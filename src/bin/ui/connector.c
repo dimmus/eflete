@@ -320,27 +320,49 @@ _hide_part(void *data,
 }
 
 static void
-_add_state_dialog(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+_add_state(void *data,
+           Evas_Object *obj __UNUSED__,
+           void *event_info)
 {
+   State_Data *sd = (State_Data *)event_info;
    App_Data *ap = (App_Data *)data;
+   char **split;
 
    assert(ap != NULL);
+   assert(sd != NULL);
 
-   state_dialog_state_add(ap);
+   if (sd->duplicate_state)
+     {
+        split = eina_str_split(sd->duplicate_state, " ", 2);
+        workspace_edit_object_part_state_copy(ap->workspace, sd->part->name,
+                                              split[0], atof(split[1]),
+                                              sd->state, sd->value);
+        free(split[0]);
+        free(split);
+     }
+   else
+     workspace_edit_object_part_state_add(ap->workspace, sd->part->name,
+                                          sd->state, sd->value);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 static void
-_del_state_dialog(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+_del_state(void *data,
+           Evas_Object *obj __UNUSED__,
+           void *event_info)
 {
    App_Data *ap = (App_Data *)data;
+   State_Data *sd = (State_Data *)event_info;
+   char **split;
 
-   assert(ap != NULL);
+   assert(ap);
+   assert(sd);
 
-   state_dialog_state_del(ap);
+   split = eina_str_split(sd->state, " ", 2);
+   workspace_edit_object_part_state_del(ap->workspace, sd->part->name, split[0], atof(split[1]));
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+   free(split[0]);
+   free(split);
 }
 
 static void
@@ -665,27 +687,6 @@ ui_style_back(App_Data *ap __UNUSED__)
 {
 }
 
-void
-ui_state_select(App_Data *ap,
-                Evas_Object *obj,
-                Eina_Stringshare *state)
-{
-   Part *part = NULL;
-   Evas_Object *prop_view;
-
-   assert(ap != NULL);
-   assert(obj != NULL);
-
-   prop_view = ui_block_property_get(ap);
-   part = ui_states_list_part_get(obj);
-
-   assert(part != NULL);
-
-   wm_part_current_state_set(part, state);
-   ui_property_state_set(prop_view, part);
-   workspace_edit_object_part_state_set(ap->workspace, part);
-}
-
 Evas_Object *
 ui_part_select(App_Data *ap, Part* part)
 {
@@ -745,10 +746,10 @@ ui_style_clicked(App_Data *ap, Style *style)
    evas_object_smart_callback_add(wl_list, "wl,part,item,del", _del_part_item, ap);
 
    TODO("need to move this callbacks to his blocks")
-   evas_object_smart_callback_del_full(ap->block.state_list, "stl,state,add", _add_state_dialog, ap);
-   evas_object_smart_callback_add(ap->block.state_list, "stl,state,add", _add_state_dialog, ap);
-   evas_object_smart_callback_del_full(ap->block.state_list, "stl,state,del", _del_state_dialog, ap);
-   evas_object_smart_callback_add(ap->block.state_list, "stl,state,del", _del_state_dialog, ap);
+   evas_object_smart_callback_del_full(ap->block.state_list, "stl,state,add", _add_state, ap);
+   evas_object_smart_callback_add(ap->block.state_list, "stl,state,add", _add_state, ap);
+   evas_object_smart_callback_del_full(ap->block.state_list, "stl,state,del", _del_state, ap);
+   evas_object_smart_callback_add(ap->block.state_list, "stl,state,del", _del_state, ap);
 
    evas_object_smart_callback_del_full(ap->block.signal_list, "sl,signal,select", _signal_select, ap);
    evas_object_smart_callback_add(ap->block.signal_list, "sl,signal,select", _signal_select, ap);
@@ -1848,16 +1849,19 @@ register_callbacks(App_Data *ap)
 
 static void
 _on_state_selected(void *data,
-                   Evas_Object *obj,
+                   Evas_Object *obj __UNUSED__,
                    void *event_info)
 {
    App_Data *ap = (App_Data *)data;
+   State_Data *sd = (State_Data *)event_info;
+   Evas_Object *prop_view;
 
    assert(ap != NULL);
 
-   Elm_Object_Item *eoit = (Elm_Object_Item *)event_info;
-   Eina_Stringshare *state = elm_object_item_data_get(eoit);
-   ui_state_select(ap, obj, state);
+   prop_view = ui_block_property_get(ap);
+   wm_part_current_state_set(sd->part, sd->state);
+   ui_property_state_set(prop_view, sd->part);
+   workspace_edit_object_part_state_set(ap->workspace, sd->part);
 }
 
 static void
