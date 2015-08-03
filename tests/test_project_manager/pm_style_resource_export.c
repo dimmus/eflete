@@ -73,15 +73,13 @@ EFLETE_TEST(pm_style_resource_export_test_p)
    elm_init(0,0);
    app_init();
    ecore_file_recursive_rm("./UTC");
-   setup("pm_style_resource_export_test_p");
    path = eina_stringshare_add("./pm_style_resource_export_test_p/export");
    check_resource = eina_stringshare_printf("%s/images/radio.png", path);
    ecore_file_mkdir(path);
 
    ap = app_data_get();
    ui_main_window_add(ap);
-   ap->project = pm_project_open("./pm_style_resource_export_test_p/"
-                                  "pm_style_resource_export_test_p.pro");
+   ap->project = setup("pm_style_resource_export_test_p");
    wm_widgets_list_objects_load(ap->project->widgets,
                                 evas_object_evas_get(ap->win),
                                 ap->project->mmap_file);

@@ -132,11 +132,10 @@ EFLETE_TEST(history_module_depth_set_test_p2)
 
    elm_init(0, 0);
    app_init();
-   setup("history_module_depth_set_test_p2");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_module_depth_set_test_p2/history_module_depth_set_test_p2.pro");
+   app->project = setup("history_module_depth_set_test_p2");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);

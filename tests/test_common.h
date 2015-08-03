@@ -30,7 +30,7 @@ teardown(const char *path)
    ecore_file_recursive_rm(path);
 }
 
-static void
+static Project *
 setup(const char *name)
 {
    Project *pro;
@@ -43,7 +43,7 @@ setup(const char *name)
    pro = pm_project_thread_project_get();
    if (!pro)
       ck_abort_msg("Setup is failed! Project not imported");
-   pm_project_close(pro);
 
    pm_project_thread_free();
+   return pro;
 }

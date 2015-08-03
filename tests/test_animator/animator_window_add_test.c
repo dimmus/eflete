@@ -60,11 +60,10 @@ EFLETE_TEST (animator_window_add_test_p)
 
    elm_init(0, 0);
    app_init();
-   setup("animator_window_add_test_p");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./animator_window_add_test_p/animator_window_add_test_p.pro");
+   app->project = setup("animator_window_add_test_p");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);

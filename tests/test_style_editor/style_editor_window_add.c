@@ -56,11 +56,10 @@ EFLETE_TEST(style_editor_window_add_test_p)
    App_Data *app = NULL;
 
    elm_init(0,0);
-   setup("style_editor_window_add_test_p");
 
    app_init();
    app = app_data_get();
-   app->project = pm_project_open("./style_editor_window_add_test_p/style_editor_window_add_test_p.pro");
+   app->project = setup("style_editor_window_add_test_p");
 
    ui_main_window_add(app);
    ck_assert_msg(style_editor_window_add(app->project) != NULL,

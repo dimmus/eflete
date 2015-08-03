@@ -58,7 +58,6 @@
 EFLETE_TEST (image_editor_file_choose_test_p)
 {
    elm_init(0,0);
-   setup("image_editor_file_choose_test_p");
 
    App_Data *app;
    app_init();
@@ -66,7 +65,7 @@ EFLETE_TEST (image_editor_file_choose_test_p)
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./image_editor_file_choose_test_p/image_editor_file_choose_test_p.pro");
+   app->project = setup("image_editor_file_choose_test_p");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
                                 app->project->mmap_file);
@@ -110,7 +109,6 @@ END_TEST
 EFLETE_TEST (image_editor_file_choose_test_n1)
 {
    elm_init(0,0);
-   setup("image_editor_file_choose_test_n1");
 
    App_Data *app;
    app_init();
@@ -118,7 +116,7 @@ EFLETE_TEST (image_editor_file_choose_test_n1)
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./image_editor_file_choose_test_n1/image_editor_file_choose_test_n1.pro");
+   app->project = setup("image_editor_file_choose_test_n1");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
                                 app->project->mmap_file);
@@ -162,7 +160,6 @@ END_TEST
 EFLETE_TEST (image_editor_file_choose_test_n3)
 {
    elm_init(0,0);
-   setup("image_editor_file_choose_test_n3");
 
    App_Data *app;
    app_init();
@@ -170,7 +167,7 @@ EFLETE_TEST (image_editor_file_choose_test_n3)
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./image_editor_file_choose_test_n3/image_editor_file_choose_test_n3.pro");
+   app->project = setup("image_editor_file_choose_test_n3");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
                                 app->project->mmap_file);

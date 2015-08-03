@@ -56,14 +56,13 @@
 EFLETE_TEST (ui_widget_list_data_set_test_p1)
 {
    elm_init(0, 0);
-   setup("ui_widget_list_data_set_test_p1");
 
    Evas_Object *parent, *widget_list;
    Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_project_open("./ui_widget_list_data_set_test_p1/ui_widget_list_data_set_test_p1.pro");
+   project = setup("ui_widget_list_data_set_test_p1");
    widget_list = ui_widget_list_add(parent);
 
    result = ui_widget_list_data_set(widget_list, project);
@@ -101,7 +100,6 @@ END_TEST
 EFLETE_TEST (ui_widget_list_data_set_test_p2)
 {
    elm_init(0, 0);
-   setup("ui_widget_list_data_set_test_p2");
 
    Evas_Object *parent, *widget_list;
    Project *project = NULL;
@@ -109,7 +107,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p2)
    Style *layout = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_project_open("./ui_widget_list_data_set_test_p2/ui_widget_list_data_set_test_p2.pro");
+   project = setup("ui_widget_list_data_set_test_p2");
    project->layouts = NULL;
    while (project->layouts)
      {
@@ -155,7 +153,6 @@ END_TEST
 EFLETE_TEST (ui_widget_list_data_set_test_p3)
 {
    elm_init(0, 0);
-   setup("ui_widget_list_data_set_test_p3");
 
    Evas_Object *parent, *widget_list;
    Project *project = NULL;
@@ -163,7 +160,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p3)
    Widget *widget = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_project_open("./ui_widget_list_data_set_test_p3/ui_widget_list_data_set_test_p3.pro");
+   project = setup("ui_widget_list_data_set_test_p3");
    while (project->widgets)
      {
         widget = EINA_INLIST_CONTAINER_GET(project->widgets, Widget);
@@ -208,7 +205,6 @@ END_TEST
 EFLETE_TEST (ui_widget_list_data_set_test_p4)
 {
    elm_init(0, 0);
-   setup("ui_widget_list_data_set_test_p4");
 
    Evas_Object *parent, *widget_list;
    Project *project = NULL;
@@ -217,7 +213,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p4)
    Style *layout = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_project_open("./ui_widget_list_data_set_test_p4/ui_widget_list_data_set_test_p4.pro");
+   project = setup("ui_widget_list_data_set_test_p4");
    project->widgets = NULL;
    project->layouts = NULL;
    while (project->layouts)

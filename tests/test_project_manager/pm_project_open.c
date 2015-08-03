@@ -74,7 +74,9 @@ EFLETE_TEST (pm_project_open_test_p)
    pm_project_close(pro);
    pro = NULL;
 
-   pro = pm_project_open("./UTC/UTC.pro");
+   pm_project_open("./UTC/UTC.pro", NULL, _test_end_cb, NULL);
+   ecore_main_loop_begin();
+   pro = pm_project_thread_project_get();
    ck_assert_msg(pro != NULL, "Project does't opened.");
    pm_project_close(pro);
    ecore_file_recursive_rm("./UTC");

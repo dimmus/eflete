@@ -75,11 +75,10 @@ EFLETE_TEST(history_redo_test_p1)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p1");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p1/history_redo_test_p1.pro");
+   app->project = setup("history_redo_test_p1");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -153,9 +152,8 @@ EFLETE_TEST(history_redo_test_p2)
    app_init();
    app = app_data_get();
    ui_main_window_add(app);
-   setup("history_redo_test_p2");
 
-   app->project = pm_project_open("./history_redo_test_p2/history_redo_test_p2.pro");
+   app->project = setup("history_redo_test_p2");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -236,11 +234,10 @@ EFLETE_TEST(history_redo_test_p3)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p3");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p3/history_redo_test_p3.pro");
+   app->project = setup("history_redo_test_p3");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -329,11 +326,10 @@ EFLETE_TEST(history_redo_test_p4)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p4");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p4/history_redo_test_p4.pro");
+   app->project = setup("history_redo_test_p4");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -412,11 +408,10 @@ EFLETE_TEST(history_redo_test_p5)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p5");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p5/history_redo_test_p5.pro");
+   app->project = setup("history_redo_test_p5");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -489,12 +484,11 @@ EFLETE_TEST(history_redo_test_p6)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p6");
 
    new_value = eina_stringshare_add("events");
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p6/history_redo_test_p6.pro");
+   app->project = setup("history_redo_test_p6");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -573,12 +567,11 @@ EFLETE_TEST(history_redo_test_p7)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p7");
 
    new_value = eina_stringshare_add("events");
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p7/history_redo_test_p7.pro");
+   app->project = setup("history_redo_test_p7");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -657,12 +650,11 @@ EFLETE_TEST(history_redo_test_p8)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p8");
 
    app = app_data_get();
    app->history = history_init();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p8/history_redo_test_p8.pro");
+   app->project = setup("history_redo_test_p8");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -739,12 +731,11 @@ EFLETE_TEST(history_redo_test_p9)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p9");
 
    app = app_data_get();
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p9/history_redo_test_p9.pro");
+   app->project = setup("history_redo_test_p9");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -819,11 +810,10 @@ EFLETE_TEST(history_redo_test_p10)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p10");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p10/history_redo_test_p10.pro");
+   app->project = setup("history_redo_test_p10");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -893,11 +883,10 @@ EFLETE_TEST(history_redo_test_p11)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p11");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p11/history_redo_test_p11.pro");
+   app->project = setup("history_redo_test_p11");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -968,11 +957,10 @@ EFLETE_TEST(history_redo_test_p12)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p12");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p12/history_redo_test_p12.pro");
+   app->project = setup("history_redo_test_p12");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -1048,11 +1036,10 @@ EFLETE_TEST(history_redo_test_p13)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p13");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p13/history_redo_test_p13.pro");
+   app->project = setup("history_redo_test_p13");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -1131,11 +1118,10 @@ EFLETE_TEST(history_redo_test_p14)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p14");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p14/history_redo_test_p14.pro");
+   app->project = setup("history_redo_test_p14");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -1207,11 +1193,10 @@ EFLETE_TEST(history_redo_test_p15)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p15");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p15/history_redo_test_p15.pro");
+   app->project = setup("history_redo_test_p15");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -1275,11 +1260,10 @@ EFLETE_TEST(history_redo_test_p16)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p16");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p16/history_redo_test_p16.pro");
+   app->project = setup("history_redo_test_p16");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -1343,11 +1327,10 @@ EFLETE_TEST(history_redo_test_p17)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p17");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p17/history_redo_test_p17.pro");
+   app->project = setup("history_redo_test_p17");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -1410,11 +1393,10 @@ EFLETE_TEST(history_redo_test_p18)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p18");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p18/history_redo_test_p18.pro");
+   app->project = setup("history_redo_test_p18");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);
@@ -1480,11 +1462,10 @@ EFLETE_TEST(history_redo_test_p19)
 
    elm_init(0, 0);
    app_init();
-   setup("history_redo_test_p19");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_p19/history_redo_test_p19.pro");
+   app->project = setup("history_redo_test_p19");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);

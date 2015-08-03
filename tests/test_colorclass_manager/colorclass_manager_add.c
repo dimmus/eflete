@@ -55,14 +55,13 @@
 EFLETE_TEST (colorclass_manager_add_test_p)
 {
    elm_init(0,0);
-   setup("colorclass_manager_add_test_p");
 
    App_Data *app;
    Evas_Object *colorclass;
 
    app_init();
    app = app_data_get();
-   app->project = pm_project_open("./colorclass_manager_add_test_p/colorclass_manager_add_test_p.pro");
+   app->project = setup("colorclass_manager_add_test_p");
 
    ui_main_window_add(app);
    wm_widgets_list_objects_load(app->project->widgets,
