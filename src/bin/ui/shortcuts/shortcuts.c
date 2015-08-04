@@ -537,6 +537,9 @@ Eina_Bool
 _highlight_align_show_switch_cb(App_Data *app)
 {
    assert(app != NULL);
+   assert(app->project != NULL);
+
+   if (!app->project->current_style) return false;
 
    SKIP_IN_ENVENTOR_MODE
    Eina_Bool flag = workspace_highlight_align_visible_get(app->workspace);
