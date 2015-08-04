@@ -807,7 +807,7 @@ _project_save(void *data,
    WORKER_LOCK_TAKE;
       PROGRESS_SEND(_("Save project '%s'"), worker->project->name);
       pm_save_to_dev(worker->project, NULL, true);
-      eina_file_close(worker->project->mmap_file);
+
       Uns_List *it;
       Eina_List *add_list = NULL, *l;
       EINA_LIST_FOREACH(worker->project->nsimage_list, l, it)
@@ -838,14 +838,6 @@ _project_save(void *data,
 
       ecore_file_cp(worker->project->dev, worker->project->saved_edj);
 
-      /* reloading dev*/
-      worker->project->mmap_file = eina_file_open(worker->project->dev, false);
-      if (worker->project->current_style)
-        {
-           edje_object_mmap_set(worker->project->current_style->obj,
-                                worker->project->mmap_file,
-                                worker->project->current_style->full_group_name);
-        }
       PROGRESS_SEND("Save done");
    WORKER_LOCK_RELEASE;
    ecore_thread_main_loop_end();
