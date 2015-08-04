@@ -1116,6 +1116,8 @@ project_changed(Eina_Bool save)
    App_Data *ap;
 
    ap = app_data_get();
+   assert(ap->project != NULL);
+   assert(ap->project->current_style);
 
    pm_save_to_dev(ap->project, ap->project->current_style, save);
    ap->project->changed = true;
