@@ -479,6 +479,8 @@ groupedit_edit_object_part_state_add(Evas_Object *obj, const char *part,
 
    assert(part != NULL);
    assert(state != NULL);
+   assert(edje_edit_part_exist(sd->edit_obj, part));
+   assert(!edje_edit_state_exist(sd->edit_obj, part, state, value));
 
    ret = edje_edit_state_add(sd->edit_obj, part, state, value);
    ret &= edje_edit_part_selected_state_set(sd->edit_obj, part, state, value);
