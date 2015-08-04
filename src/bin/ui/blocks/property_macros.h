@@ -625,6 +625,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS); \
    elm_object_focus_set(obj, true); \
+   workspace_edit_object_recalc(pd->workspace); \
    project_changed(false); \
    eina_stringshare_del(old_value); \
    free(value); \
