@@ -465,9 +465,11 @@ _project_special_group_add(Project *project)
 }
 
 static void *
-_project_import_edj(void *data __UNUSED__,
+_project_import_edj(void *data,
                     Eina_Thread *thread __UNUSED__)
 {
+   Eina_Bool send_end = (data) ? (*(Eina_Bool *)data) : true;
+
    PROGRESS_SEND(_("Start import '%s' file as new project"), worker.edj);
    PROGRESS_SEND(_("Creating a specifiec file and folders"));
    worker.project = _project_files_create(worker);
@@ -486,7 +488,7 @@ _project_import_edj(void *data __UNUSED__,
    edje_file_cache_flush();
    PROGRESS_SEND(_("Import finished. Project '%s' created"), worker.project->name);
 
-   END_SEND(PM_PROJECT_SUCCESS);
+   if (send_end) END_SEND(PM_PROJECT_SUCCESS);
 
    return NULL;
 }
@@ -535,9 +537,12 @@ _exe_data(void *data __UNUSED__,
 }
 
 static void *
-_project_import_edc(void *data __UNUSED__,
+_project_import_edc(void *data,
                     Eina_Thread *thread __UNUSED__)
 {
+   Eina_Bool send_end_child;
+   Eina_Bool send_end = (data) ? (*(Eina_Bool *)data) : true;
+
    Eina_Tmpstr *tmp_dirname;
    Ecore_Event_Handler *cb_msg_stdout = NULL,
                        *cb_msg_stderr = NULL;
@@ -581,25 +586,15 @@ _project_import_edc(void *data __UNUSED__,
         return NULL;
      }
 
-   THREAD_TESTCANCEL;
-   worker.project = _project_files_create(worker);
-   TODO("Add correct error handling here (if project == NULL). Probably we should add negative TC where directory already exist");
-   worker.project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker.path, worker.name, worker.name);
-   THREAD_TESTCANCEL;
-   PROGRESS_SEND("%s", _("Import processing"));
-   _project_edj_file_copy(worker);
+   send_end_child = false;
+   _project_import_edj(&send_end_child, NULL);
+
+   PROGRESS_SEND(_("Removing temporary files..."));
    ecore_file_recursive_rm(tmp_dirname);
    eina_tmpstr_del(tmp_dirname);
-   _copy_meta_data_to_pro(worker);
-   _project_special_group_add(worker.project);
-   _project_open_internal(worker.project);
-   THREAD_TESTCANCEL;
-   _project_resource_export(worker.project, NULL);
-   _project_linked_images_copy(worker);
-   edje_file_cache_flush();
-   PROGRESS_SEND(_("Import finished. Project '%s' created"), worker.project->name);
+   PROGRESS_SEND(_("Done."));
 
-   END_SEND(PM_PROJECT_SUCCESS)
+   if (send_end) END_SEND(PM_PROJECT_SUCCESS)
 
    return NULL;
 }
