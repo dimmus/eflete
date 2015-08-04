@@ -27,8 +27,22 @@
  * A State List used for view list of part states
  */
 
-#include "ui_block.h"
-#include "ui_property.h"
+#include "main_window.h"
+
+/**
+ * The state data.
+ *
+ * @ingroup StateList
+ */
+struct _State_Data
+{
+   Part *part; /** The given part */
+   Eina_Stringshare *state; /** The state name */
+   Eina_Stringshare *duplicate_state; /** The state should be duplicated */
+   double value; /** The state value */
+};
+
+typedef struct _State_Data State_Data;
 
 /**
  * Add a new State List
@@ -44,7 +58,6 @@ ui_states_list_add(Evas_Object *parent);
 /**
  * Set to a 'states list' widget a data of a part states.
  *
- * @param object The 'states list' object.
  * @param group The Style data.
  * @param part The Part object.
  * @return EINA_TRUE - successful, EINA_FALSE - something wrong.
@@ -52,61 +65,26 @@ ui_states_list_add(Evas_Object *parent);
  * @ingroup StateList
  */
 Eina_Bool
-ui_states_list_data_set(Evas_Object *object, Style *style, Part *part);
+ui_states_list_data_set(Style *style, Part *part);
+
+/**
+ * Unset data of a part states from 'states list'.
+ *
+ * @return EINA_TRUE - successful, EINA_FALSE - something wrong.
+ *
+ * @ingroup StateList
+ */
+Eina_Bool
+ui_states_list_data_unset(void);
 
 /**
  * Get Part object, wich states currently showed.
  *
- * @param object A 'states list' object
  * @return A Part object
  *
  * @ingroup StateList
  */
 Part *
-ui_states_list_part_get(Evas_Object *obj);
+ui_states_list_part_get(void);
 
-/**
- * Add new state to current selected part in state list.
- *
- * @param object A 'states list' object
- * @param state new state name that is going to be added.
- * @return EINA_TRUE - successful, EINA_FALSE - something wrong.
- *
- * @ingroup StateList
- */
-Eina_Bool
-ui_states_list_state_add(Evas_Object *obj, const char *state);
-
-/**
- * Delete state from given states list.
- *
- * @param object A 'states list' object
- * @return EINA_TRUE - successful, EINA_FALSE - something wrong.
- *
- * @ingroup StateList
- */
-Eina_Bool
-ui_states_list_selected_state_del(Evas_Object *obj);
-
-/**
- * Return currently selected state in 'states list' object.
- *
- * @param object A 'states list' object
- * @return selected state's name.
- *
- * @ingroup StateList
- */
-Eina_Stringshare *
-ui_states_list_selected_state_get(Evas_Object *obj);
-
-/**
- * Unset data of a part states from 'states list'.
- *
- * @param object A 'states list' object
- * @return EINA_TRUE - successful, EINA_FALSE - something wrong.
- *
- * @ingroup StateList
- */
-Eina_Bool
-ui_states_list_data_unset(Evas_Object *obj);
 #endif /* UI_STATES_LIST_H */

@@ -92,7 +92,7 @@ END_TEST
  * @{
  * <tr>
  * <td>workspace_edit_object_part_state_add</td>
- * <td>workspace_edit_object_part_state_add_test_p</td>
+ * <td>workspace_edit_object_part_state_add_test_p1</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library

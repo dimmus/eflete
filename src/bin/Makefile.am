@@ -40,7 +40,6 @@ ui/editors/animator.c \
 ui/editors/animator_program_editor.c \
 ui/editors/animator_program_sequence.c \
 ui/dialogs/part_dialog.c \
-ui/dialogs/state_dialog.c \
 ui/dialogs/style_dialog.c \
 ui/dialogs/about_window.c \
 ui/dialogs/colorsel.c \
