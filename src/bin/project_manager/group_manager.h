@@ -79,6 +79,7 @@ struct _Group
    Group *main_group;         /**< pointer to main group. NULL if group is not an alias */
    Eina_List *aliases;        /**< list of pointers to aliases. NULL if group is an alias */
    Eina_List *parts;          /**< list of parts */
+   Eina_List *programs;       /**< list of programs */
 
    Evas_Object *edit_object;  /**< object needed to access group with edje_edit functions. Should be NULL if group is not open */
 };

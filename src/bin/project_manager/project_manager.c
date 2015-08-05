@@ -19,6 +19,7 @@
 #define _GNU_SOURCE
 #include "enventor_module.h"
 #include "project_manager.h"
+#include "group_manager.h"
 #include "alloc.h"
 #ifndef _WIN32
 #include <sys/wait.h>
@@ -363,6 +364,8 @@ _project_open_internal(Project *project)
    _tones_resources_load(project);
    _colorclasses_resources_load(project);
    _styles_resources_load(project);
+
+   gm_groups_load(project);
 
    edje_file_cache_flush();
 }

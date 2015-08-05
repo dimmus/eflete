@@ -64,7 +64,7 @@ _state_load(Project *pro, Part_ *part, Eina_Stringshare *state_name)
    state->name = eina_stringshare_add(state_name);
    state->part = part;
 
-   part->states = eina_list_sorted_insert(part->states, (Eina_Compare_Cb) strcmp, state);
+   part->states = eina_list_sorted_insert(part->states, (Eina_Compare_Cb) resource_cmp, state);
 
    state_name_split(state_name, &parsed_state_name, &parsed_state_val);
 
@@ -79,16 +79,43 @@ _state_load(Project *pro, Part_ *part, Eina_Stringshare *state_name)
         edje_edit_string_free(name); \
      }
 
+   #define COLORCLASS_USAGE_ADD() \
+   name = edje_edit_state_color_class_get(part->group->edit_object, \
+                                          part->name, \
+                                          parsed_state_name, \
+                                          parsed_state_val); \
+   if (name) \
+     { \
+        if (!pm_resource_usage_add(pro->colorclasses, name, state)) \
+          { \
+             TODO("move this code to colorclass resource manager"); \
+             edje_edit_color_class_add(pro->global_object, name); \
+             Colorclass_Resource *res = mem_calloc(1, sizeof(Colorclass_Resource)); \
+             res->name = eina_stringshare_add(name); \
+             res->color1.r = res->color1.g = res->color1.b = res->color1.a = 255; \
+             res->color2.r = res->color2.g = res->color2.b = res->color2.a = 255; \
+             res->color3.r = res->color3.g = res->color3.b = res->color3.a = 255; \
+             pro->colorclasses = eina_list_sorted_insert(pro->colorclasses, (Eina_Compare_Cb) resource_cmp, res); \
+             if (!pm_resource_usage_add(pro->colorclasses, name, state)) \
+               { \
+                  ERR("Err: resource not found: %s", name); \
+                  abort(); \
+               }; \
+          } \
+        edje_edit_string_free(name); \
+     }
+
+
    switch (part->type)
      {
       case EDJE_PART_TYPE_RECTANGLE:
       case EDJE_PART_TYPE_PROXY:
       case EDJE_PART_TYPE_BOX:
       case EDJE_PART_TYPE_TABLE:
-         USAGE_ADD(color_class, pro->colorclasses);
+         COLORCLASS_USAGE_ADD();
          break;
       case EDJE_PART_TYPE_IMAGE:
-         USAGE_ADD(color_class, pro->colorclasses);
+         COLORCLASS_USAGE_ADD();
 
          USAGE_ADD(image, pro->images);
 
@@ -102,7 +129,7 @@ _state_load(Project *pro, Part_ *part, Eina_Stringshare *state_name)
 
          break;
       case EDJE_PART_TYPE_TEXT:
-         USAGE_ADD(color_class, pro->colorclasses);
+         COLORCLASS_USAGE_ADD();
          USAGE_ADD(font, pro->fonts);
          break;
       case EDJE_PART_TYPE_TEXTBLOCK:
@@ -111,6 +138,7 @@ _state_load(Project *pro, Part_ *part, Eina_Stringshare *state_name)
       default:
          break;
      }
+   #undef COLORCLASS_USAGE_ADD
    #undef USAGE_ADD
 }
 static void
@@ -191,18 +219,20 @@ _group_load(Project *pro, Group *group)
    double state_val;
    Part_ *part;
    State *state;
+   Resource *program;
 
    assert(pro != NULL);
    assert(group != NULL);
 
    TODO("Add widget/class/style parse logic here");
 
+   ecore_thread_main_loop_begin();
    _group_object_add(pro, group);
    if (edje_edit_group_alias_is(group->edit_object, group->name))
      {
         main_group_name = edje_edit_group_aliased_get(group->edit_object, group->name);
         group->main_group = pm_resource_get(pro->groups, main_group_name);
-        group->main_group->aliases = eina_list_sorted_insert(group->main_group->aliases, (Eina_Compare_Cb)strcmp, group);
+        group->main_group->aliases = eina_list_sorted_insert(group->main_group->aliases, (Eina_Compare_Cb)resource_cmp, group);
         edje_edit_string_free(main_group_name);
      }
    else
@@ -215,6 +245,13 @@ _group_load(Project *pro, Group *group)
         programs = edje_edit_programs_list_get(group->edit_object);
         EINA_LIST_FOREACH(programs, l, program_name)
           {
+            program = mem_calloc(1, sizeof(Resource));
+            program->name = eina_stringshare_add(program_name);
+            group->programs = eina_list_sorted_insert(group->programs, (Eina_Compare_Cb)resource_cmp, program);
+          }
+        EINA_LIST_FOREACH(programs, l, program_name)
+          {
+             program = pm_resource_get(group->programs, program_name);
              act = edje_edit_program_action_get(group->edit_object, program_name);
              switch (act)
                {
@@ -226,12 +263,12 @@ _group_load(Project *pro, Group *group)
                    eina_stringshare_del(state_name);
                    EINA_LIST_FOREACH(targets, lt, target_name)
                      {
-                        part = (Part_ *) pm_resource_get(group->parts, target_name);
+                        part = (Part_ *) pm_resource_unsorted_get(group->parts, target_name);
                         state = (State *) pm_resource_get(part->states, state_full_name);
                         if (state)
                           state->used_in = eina_list_sorted_insert(state->used_in,
-                                                                   (Eina_Compare_Cb) strcmp,
-                                                                   eina_stringshare_ref(program_name));
+                                                                   (Eina_Compare_Cb) resource_cmp,
+                                                                   program);
                         else
                           {
                              TODO("Handle programs with states that don't exist");
@@ -246,17 +283,17 @@ _group_load(Project *pro, Group *group)
                 case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
                    targets = edje_edit_program_targets_get(group->edit_object, program_name);
                    EINA_LIST_FOREACH(targets, lt, target_name)
-                      pm_resource_usage_add(group->parts, target_name, (void *) eina_stringshare_ref(program_name));
+                      pm_resource_usage_unsorted_add(group->parts, target_name, (void *) program);
                    edje_edit_string_list_free(targets);
                    break;
                 case EDJE_ACTION_TYPE_SOUND_SAMPLE:
                    sample_name = edje_edit_program_sample_name_get(group->edit_object, program_name);
-                   pm_resource_usage_add(pro->sounds, sample_name, (void *) program_name);
+                   pm_resource_usage_add(pro->sounds, sample_name, (void *) program);
                    eina_stringshare_del(sample_name);
                    break;
                 case EDJE_ACTION_TYPE_SOUND_TONE:
                    tone_name = edje_edit_program_tone_name_get(group->edit_object, program_name);
-                   pm_resource_usage_add(pro->tones, tone_name, (void *) program_name);
+                   pm_resource_usage_add(pro->tones, tone_name, (void *) program);
                    eina_stringshare_del(tone_name);
                    break;
                 default:
@@ -268,6 +305,7 @@ _group_load(Project *pro, Group *group)
      }
 
    _group_object_del(group);
+   ecore_thread_main_loop_end();
 }
 
 void

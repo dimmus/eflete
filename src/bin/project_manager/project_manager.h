@@ -646,7 +646,49 @@ resource_cmp(Resource *res1, Resource *res2)
 static inline void*
 pm_resource_get(Eina_List *list, Eina_Stringshare *name)
 {
-   return eina_list_search_sorted(list, (Eina_Compare_Cb)resource_cmp, name);
+   Resource res;
+   res.name = name;
+   return eina_list_search_sorted(list, (Eina_Compare_Cb)resource_cmp, &res);
+}
+
+/**
+ * Find resource in not sorted list by its name.
+ *
+ * @param list Resources list
+ * @param name Name of the resource to be found
+ *
+ * @return pointer to resource or NULL if it was not found
+ *
+ * @ingroup ProjectManager.
+ */
+static inline void*
+pm_resource_unsorted_get(Eina_List *list, Eina_Stringshare *name)
+{
+   Resource res;
+   res.name = name;
+   return eina_list_search_unsorted(list, (Eina_Compare_Cb)resource_cmp, &res);
+}
+
+
+/**
+ * Add reference to resource with info where it is used (i.e. part for images)
+ *
+ * @param list Resources list
+ * @param name Name of the resource. Must be in the list.
+ * @param usage_data Place where resource is used
+ *
+ * @ingroup ProjectManager.
+ */
+static inline Eina_Bool
+pm_resource_usage_add(Eina_List *list, Eina_Stringshare *name, void *usage_data)
+{
+   Resource *res = (Resource *) pm_resource_get(list, name);
+
+   if (!res)
+      return false;
+
+   res->used_in = eina_list_sorted_insert(res->used_in, (Eina_Compare_Cb)resource_cmp, usage_data);
+   return true;
 }
 
 /**
@@ -658,14 +700,16 @@ pm_resource_get(Eina_List *list, Eina_Stringshare *name)
  *
  * @ingroup ProjectManager.
  */
-static inline void
-pm_resource_usage_add(Eina_List *list, Eina_Stringshare *name, void *usage_data)
+static inline Eina_Bool
+pm_resource_usage_unsorted_add(Eina_List *list, Eina_Stringshare *name, void *usage_data)
 {
-   Resource *res = (Resource *) pm_resource_get(list, name);
+   Resource *res = (Resource *) pm_resource_unsorted_get(list, name);
 
-   assert(res != NULL);
+   if (!res)
+      return false;
 
    res->used_in = eina_list_sorted_insert(res->used_in, (Eina_Compare_Cb)resource_cmp, usage_data);
+   return true;
 }
 
 /**
@@ -681,6 +725,30 @@ static inline void
 pm_resource_usage_del(Eina_List *list, Eina_Stringshare *name, void *usage_data)
 {
    Resource *res = (Resource *) pm_resource_get(list, name);
+   Eina_List *l_del;
+
+   assert(res != NULL);
+
+   l_del = eina_list_search_sorted(res->used_in, (Eina_Compare_Cb)resource_cmp, usage_data);
+
+   assert(l_del);
+
+   res->used_in = eina_list_remove_list(res->used_in, l_del);
+}
+
+/**
+ * Remove reference to resource.
+ *
+ * @param list Resources list
+ * @param name Name of the resource. Must be in the list.
+ * @param usage_data Place where resource is used. Must be added to usage list.
+ *
+ * @ingroup ProjectManager.
+ */
+static inline void
+pm_resource_usage_unsorted_del(Eina_List *list, Eina_Stringshare *name, void *usage_data)
+{
+   Resource *res = (Resource *) pm_resource_unsorted_get(list, name);
    Eina_List *l_del;
 
    assert(res != NULL);
