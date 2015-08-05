@@ -87,6 +87,9 @@ struct _Group
 void
 gm_groups_load(Project *pro);
 
+void
+gm_groups_free(Project *pro);
+
 static inline void
 state_name_split(Eina_Stringshare *name, Eina_Stringshare **name_out, double *val_out)
 {

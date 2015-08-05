@@ -337,3 +337,49 @@ gm_groups_load(Project *pro)
    EINA_LIST_FOREACH(pro->groups, l, group)
      _group_load(pro, group);
 }
+
+void
+gm_groups_free(Project *pro)
+{
+   Group *group;
+   Resource *program;
+   Part_ *part;
+   State *state;
+   Eina_Stringshare *item_name;
+
+   assert(pro != NULL);
+
+   EINA_LIST_FREE(pro->groups, group)
+     {
+        eina_stringshare_del(group->name);
+        eina_list_free(group->used_in);
+        eina_stringshare_del(group->widget);
+        eina_stringshare_del(group->class);
+        eina_stringshare_del(group->style);
+        eina_list_free(group->aliases);
+
+        EINA_LIST_FREE(group->parts, part)
+          {
+             eina_stringshare_del(part->name);
+             eina_list_free(part->used_in);
+             EINA_LIST_FREE(part->states, state)
+               {
+                  eina_stringshare_del(state->name);
+                  eina_list_free(state->used_in);
+                  free(state);
+               }
+            EINA_LIST_FREE(part->items, item_name)
+               eina_stringshare_del(item_name);
+            free(part);
+          }
+        EINA_LIST_FREE(group->programs, program)
+          {
+             eina_stringshare_del(program->name);
+             eina_list_free(program->used_in);
+             free(program);
+          }
+        /* object should be deleted before freeing groups list*/
+        assert(group->edit_object == NULL);
+        free(group);
+     }
+}
