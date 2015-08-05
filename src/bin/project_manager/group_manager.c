@@ -20,6 +20,28 @@
 #include "group_manager.h"
 
 static void
+_group_name_parse(Group *group)
+{
+   char **c;
+   unsigned int count;
+
+   assert(group != NULL);
+
+   c = eina_str_split_full(group->name, "/", 4, &count);
+
+   TODO("move here complicated class/style parsing from live_view");
+   if ((count == 4) && (!strcmp(c[0], "elm")))
+     {
+        group->widget = eina_stringshare_add(c[1]);
+        group->class = eina_stringshare_add(c[2]);
+        group->style = eina_stringshare_add(c[3]);
+     }
+
+   free(c[0]);
+   free(c);
+}
+
+static void
 _group_object_add(Project *pro, Group *group)
 {
    assert(pro != NULL);
@@ -224,7 +246,7 @@ _group_load(Project *pro, Group *group)
    assert(pro != NULL);
    assert(group != NULL);
 
-   TODO("Add widget/class/style parse logic here");
+   _group_name_parse(group);
 
    ecore_thread_main_loop_begin();
    _group_object_add(pro, group);
