@@ -136,13 +136,13 @@ static Project_Thread worker;
 }
 
 static Eina_Bool
-_image_resources_export(Project *project);
+_image_resources_load(Project *project);
 
 static Eina_Bool
-_sound_resources_export(Project *project);
+_sound_resources_load(Project *project);
 
 static Eina_Bool
-_font_resources_export(Project *project);
+_font_resources_load(Project *project);
 
 static Eina_Bool
 _project_dev_file_create(Project *pro)
@@ -348,9 +348,9 @@ _project_open_internal(Project *project)
    project->global_object = edje_edit_object_add(ecore_evas_get(project->ecore_evas));
    edje_object_mmap_set(project->global_object, project->mmap_file, EFLETE_INTERNAL_GROUP_NAME);
 
-   _image_resources_export(project);
-   _font_resources_export(project);
-   _sound_resources_export(project);
+   _image_resources_load(project);
+   _sound_resources_load(project);
+   _font_resources_load(project);
 
    edje_file_cache_flush();
 }
@@ -880,13 +880,13 @@ pm_project_meta_data_set(Project *project,
    return res;
 }
 
-
 static Eina_Bool
-_image_resources_export(Project *project)
+_image_resources_load(Project *project)
 {
+   External_Resource *res;
    Eina_List *images;
    Eina_Stringshare *resource_folder;
-   Eina_Stringshare *image_name, *source_file, *dest_file;
+   Eina_Stringshare *image_name, *source_file;
    Eina_List *l;
    Evas *e;
    Evas_Object *im;
@@ -917,13 +917,19 @@ _image_resources_export(Project *project)
         /* for supporting old themes, which were compilled
          * with edje_cc version less than 1.10 */
         if (!image_name) continue;
+
         im_proc++;
         PROGRESS_SEND(_("image processing (%d/%d): %s"),
                       im_proc, im_total, image_name);
-        dest_file = eina_stringshare_printf("%s/%s", resource_folder, image_name);
-        if (!ecore_file_exists(dest_file))
+
+        res = mem_calloc(1, sizeof(External_Resource));
+        res->name = eina_stringshare_add(image_name);
+        res->source = eina_stringshare_printf("%s/%s", resource_folder, image_name);
+        project->images = eina_list_sorted_insert(project->images, (Eina_Compare_Cb) resource_cmp, res);
+
+        if (!ecore_file_exists(res->source))
           {
-             file_dir = ecore_file_dir_get(dest_file);
+             file_dir = ecore_file_dir_get(res->source);
              ecore_file_mkpath(file_dir);
              free(file_dir);
              ecore_thread_main_loop_begin();
@@ -938,13 +944,12 @@ _image_resources_export(Project *project)
              source_file = eina_stringshare_printf("edje/images/%i", id);
              evas_object_image_file_set(im, project->dev, source_file);
              ecore_thread_main_loop_end();
-             evas_object_image_save(im, dest_file, NULL, NULL);
+             evas_object_image_save(im, res->source, NULL, NULL);
              ecore_thread_main_loop_begin();
              evas_object_del(im);
              eina_stringshare_del(source_file);
              ecore_thread_main_loop_end();
           }
-        eina_stringshare_del(dest_file);
      }
 
    edje_edit_string_list_free(images);
@@ -953,11 +958,12 @@ _image_resources_export(Project *project)
 }
 
 static Eina_Bool
-_sound_resources_export(Project *project)
+_sound_resources_load(Project *project)
 {
+   External_Resource *res;
    Eina_List *sounds;
    Eina_Stringshare *resource_folder;
-   Eina_Stringshare *sound_name, *dest_file, *sound_file;
+   Eina_Stringshare *sound_name, *sound_file;
    Eina_List *l;
    Eina_Binbuf *sound_bin;
    FILE *f;
@@ -984,30 +990,33 @@ _sound_resources_export(Project *project)
    EINA_LIST_FOREACH(sounds, l, sound_name)
      {
         sound_file = edje_edit_sound_samplesource_get(project->global_object, sound_name);
-        dest_file = eina_stringshare_printf("%s/%s", resource_folder, sound_file);
         snd_proc++;
         PROGRESS_SEND(_("sound processing (%d/%d): %s"),
                       snd_proc, snd_total, sound_file);
 
-        if (!ecore_file_exists(dest_file))
+        res = mem_calloc(1, sizeof(External_Resource));
+        res->name = eina_stringshare_add(sound_name);
+        res->source = eina_stringshare_printf("%s/%s", resource_folder, sound_file);
+        project->sounds = eina_list_sorted_insert(project->sounds, (Eina_Compare_Cb) resource_cmp, res);
+
+        if (!ecore_file_exists(res->source))
           {
-             file_dir = ecore_file_dir_get(dest_file);
+             file_dir = ecore_file_dir_get(res->source);
              ecore_file_mkpath(file_dir);
              free(file_dir);
              sound_bin = edje_edit_sound_samplebuffer_get(project->global_object, sound_name);
-             if (!(f = fopen(dest_file, "wb")))
+             if (!(f = fopen(res->source, "wb")))
                {
-                  ERR("Could not open file: %s", dest_file);
+                  ERR("Could not open file: %s", res->source);
                   continue;
                }
              if (fwrite(eina_binbuf_string_get(sound_bin),
                         eina_binbuf_length_get(sound_bin), 1, f) != 1)
-               ERR("Could not write font: %s", strerror(errno));
+               ERR("Could not write sound: %s", strerror(errno));
              if (f) fclose(f);
              eina_binbuf_free(sound_bin);
           }
         edje_edit_string_free(sound_file);
-        eina_stringshare_del(dest_file);
      }
 
    edje_edit_string_list_free(sounds);
@@ -1016,13 +1025,14 @@ _sound_resources_export(Project *project)
 }
 
 static Eina_Bool
-_font_resources_export(Project *project)
+_font_resources_load(Project *project)
 {
+   External_Resource *res;
    Eina_List *fonts;
    Eina_Stringshare *resource_folder;
    Eet_File *ef;
    Eina_List *l;
-   Eina_Stringshare *font_name, *dest_file, *font_file;
+   Eina_Stringshare *font_name, *font_file;
    void *font;
    FILE *f;
    int size, fnt_total, fnt_proc;
@@ -1048,19 +1058,24 @@ _font_resources_export(Project *project)
    EINA_LIST_FOREACH(fonts, l, font_name)
      {
         font_file = edje_edit_font_path_get(project->global_object, font_name);
-        dest_file = eina_stringshare_printf("%s/%s", resource_folder, font_file);
         fnt_proc++;
         PROGRESS_SEND(_("font processing (%d/%d): %s"),
                       fnt_proc, fnt_total, font_file);
-        if (!ecore_file_exists(dest_file))
+
+        res = mem_calloc(1, sizeof(External_Resource));
+        res->name = eina_stringshare_add(font_name);
+        res->source = eina_stringshare_printf("%s/%s", resource_folder, font_file);
+        project->fonts = eina_list_sorted_insert(project->fonts, (Eina_Compare_Cb) resource_cmp, res);
+
+        if (!ecore_file_exists(res->source))
           {
              edje_edit_string_free(font_file);
              font_file = eina_stringshare_printf("edje/fonts/%s", font_name);
              font = eet_read(ef, font_file, &size);
              if (!font) continue;
-             if (!(f = fopen(dest_file, "wb")))
+             if (!(f = fopen(res->source, "wb")))
                {
-                  ERR("Could not open file: %s", dest_file);
+                  ERR("Could not open file: %s", res->source);
                   continue;
                }
              if (fwrite(font, size, 1, f) != 1)
@@ -1069,7 +1084,6 @@ _font_resources_export(Project *project)
              free(font);
              eina_stringshare_del(font_file);
           }
-        eina_stringshare_del(dest_file);
      }
    eet_close(ef);
    edje_edit_string_list_free(fonts);

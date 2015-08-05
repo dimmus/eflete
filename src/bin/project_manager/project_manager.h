@@ -553,6 +553,34 @@ struct _Resource
 typedef struct _Resource Resource;
 
 /**
+ * @struct _External_Resource
+ *
+ * Common structure for resources that can be used somewhere (images, sounds,
+ * states etc.)
+ *
+ * @ingroup ProjectManager
+ */
+struct _External_Resource
+{
+   Eina_Stringshare *name;
+   Eina_List *used_in;
+   Eina_Stringshare *source;
+};
+
+/**
+ * @typedef External_Resource
+ * @ingroup ProjectManager
+ */
+typedef struct _External_Resource External_Resource;
+
+
+static int
+resource_cmp(Resource *res1, Resource *res2)
+{
+   return strcmp(res1->name, res2->name);
+}
+
+/**
  * Find resource in sorted list by its name.
  *
  * @param list Resources list
@@ -565,7 +593,7 @@ typedef struct _Resource Resource;
 static inline void*
 pm_resource_get(Eina_List *list, Eina_Stringshare *name)
 {
-   return eina_list_search_sorted(list, (Eina_Compare_Cb)strcmp, name);
+   return eina_list_search_sorted(list, (Eina_Compare_Cb)resource_cmp, name);
 }
 
 /**
@@ -584,7 +612,7 @@ pm_resource_usage_add(Eina_List *list, Eina_Stringshare *name, void *usage_data)
 
    assert(res != NULL);
 
-   res->used_in = eina_list_sorted_insert(res->used_in, (Eina_Compare_Cb) strcmp, usage_data);
+   res->used_in = eina_list_sorted_insert(res->used_in, (Eina_Compare_Cb)resource_cmp, usage_data);
 }
 
 /**
@@ -604,7 +632,7 @@ pm_resource_usage_del(Eina_List *list, Eina_Stringshare *name, void *usage_data)
 
    assert(res != NULL);
 
-   l_del = eina_list_search_sorted(res->used_in, (Eina_Compare_Cb)strcmp, usage_data);
+   l_del = eina_list_search_sorted(res->used_in, (Eina_Compare_Cb)resource_cmp, usage_data);
 
    assert(l_del);
 
