@@ -583,6 +583,37 @@ struct _Tone_Resource
 };
 
 /**
+ * @struct _Colorclass_Resource
+ *
+ * Common structure for resources that can be used somewhere (images, sounds,
+ * states etc.)
+ *
+ * @ingroup ProjectManager
+ */
+struct _Colorclass_Resource
+{
+   Eina_Stringshare *name;
+   Eina_List *used_in;
+
+   struct {
+      int r,g,b,a;
+   } color1;
+   struct {
+      int r,g,b,a;
+   } color2;
+   struct {
+      int r,g,b,a;
+   } color3;
+};
+
+/**
+ * @typedef Colorclass_Resource
+ * @ingroup ProjectManager
+ */
+typedef struct _Colorclass_Resource Colorclass_Resource;
+
+
+/**
  * @typedef Tone_Resource
  * @ingroup ProjectManager
  */

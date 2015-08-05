@@ -147,6 +147,9 @@ _font_resources_load(Project *project);
 static void
 _tones_resources_load(Project *project);
 
+static void
+_colorclasses_resources_load(Project *project);
+
 static Eina_Bool
 _project_dev_file_create(Project *pro)
 {
@@ -355,6 +358,7 @@ _project_open_internal(Project *project)
    _sound_resources_load(project);
    _font_resources_load(project);
    _tones_resources_load(project);
+   _colorclasses_resources_load(project);
 
    edje_file_cache_flush();
 }
@@ -1122,6 +1126,39 @@ _tones_resources_load(Project *project)
 
    edje_edit_string_list_free(tones);
 }
+
+static void
+_colorclasses_resources_load(Project *project)
+{
+   Eina_List *colorclasses, *l;
+   Colorclass_Resource *res;
+   Eina_Stringshare *name;
+   int cc_total, cc_proc = 0;
+
+   assert(project != NULL);
+
+   colorclasses = edje_edit_color_classes_list_get(project->global_object);
+   cc_total = eina_list_count(colorclasses);
+
+   PROGRESS_SEND(_("Start colorclass processing, total %d:"), cc_total);
+   EINA_LIST_FOREACH(colorclasses, l, name)
+     {
+        PROGRESS_SEND(_("colorclass processing (%d/%d): %s"),
+                      ++cc_proc, cc_total, name);
+
+        res = mem_calloc(1, sizeof(Colorclass_Resource));
+        res->name = eina_stringshare_add(name);
+
+        edje_edit_color_class_colors_get(project->global_object, name,
+                                         &res->color1.r, &res->color1.g, &res->color1.b, &res->color1.a,
+                                         &res->color2.r, &res->color2.g, &res->color2.b, &res->color2.a,
+                                         &res->color3.r, &res->color3.g, &res->color3.b, &res->color3.a);
+        project->colorclasses = eina_list_sorted_insert(project->colorclasses, (Eina_Compare_Cb) resource_cmp, res);
+     }
+
+   edje_edit_string_list_free(colorclasses);
+}
+
 
 Eina_Bool
 pm_style_resource_export(Project *pro __UNUSED__ , Style *style __UNUSED__, Eina_Stringshare *path __UNUSED__)
