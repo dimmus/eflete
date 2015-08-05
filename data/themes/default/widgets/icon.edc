@@ -28,6 +28,7 @@ IC("sound",       "toolbar/sound",       "menu/sound",       "icon_sound.png",  
 IC("color",       "toolbar/color",       "menu/color",       "icon_color.png",       14, 0);
 IC("text",        "toolbar/text",        "menu/text",        "icon_text.png",        14, 0);
 IC("info",        "toolbar/info",        "menu/info",        "icon_info.png",        14, 0);
+IC("eye",         "toolbar/eye",         "menu/eye",         "icon_eye.png",         14, 0);
 IC("no_photo",    "photo/no_photo",      "anonim",           "icon_head.png",        14, 0);
 #undef IC
 
