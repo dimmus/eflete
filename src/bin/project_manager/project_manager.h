@@ -568,6 +568,28 @@ struct _External_Resource
 };
 
 /**
+ * @struct _Tone_Resource
+ *
+ * Common structure for resources that can be used somewhere (images, sounds,
+ * states etc.)
+ *
+ * @ingroup ProjectManager
+ */
+struct _Tone_Resource
+{
+   Eina_Stringshare *name;
+   Eina_List *used_in;
+   int freq;
+};
+
+/**
+ * @typedef Tone_Resource
+ * @ingroup ProjectManager
+ */
+typedef struct _Tone_Resource Tone_Resource;
+
+
+/**
  * @typedef External_Resource
  * @ingroup ProjectManager
  */

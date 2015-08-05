@@ -144,6 +144,9 @@ _sound_resources_load(Project *project);
 static Eina_Bool
 _font_resources_load(Project *project);
 
+static void
+_tones_resources_load(Project *project);
+
 static Eina_Bool
 _project_dev_file_create(Project *pro)
 {
@@ -351,6 +354,7 @@ _project_open_internal(Project *project)
    _image_resources_load(project);
    _sound_resources_load(project);
    _font_resources_load(project);
+   _tones_resources_load(project);
 
    edje_file_cache_flush();
 }
@@ -1089,6 +1093,34 @@ _font_resources_load(Project *project)
    edje_edit_string_list_free(fonts);
    eina_stringshare_del(resource_folder);
    return true;
+}
+
+static void
+_tones_resources_load(Project *project)
+{
+   Eina_List *tones, *l;
+   Tone_Resource *res;
+   Eina_Stringshare *name;
+   int tones_total, tones_proc = 0;
+
+   assert(project != NULL);
+
+   tones = edje_edit_sound_tones_list_get(project->global_object);
+   tones_total = eina_list_count(tones);
+
+   PROGRESS_SEND(_("Start tone processing, total %d:"), tones_total);
+   EINA_LIST_FOREACH(tones, l, name)
+     {
+        PROGRESS_SEND(_("tone processing (%d/%d): %s"),
+                      ++tones_proc, tones_total, name);
+
+        res = mem_calloc(1, sizeof(Tone_Resource));
+        res->name = eina_stringshare_add(name);
+        res->freq = edje_edit_sound_tone_frequency_get(project->global_object, name);
+        project->tones = eina_list_sorted_insert(project->tones, (Eina_Compare_Cb) resource_cmp, res);
+     }
+
+   edje_edit_string_list_free(tones);
 }
 
 Eina_Bool
