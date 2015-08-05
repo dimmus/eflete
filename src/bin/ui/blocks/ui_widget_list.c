@@ -210,7 +210,7 @@ _item_part_content_get(void *data,
           elm_check_state_set(content, true);
         else
            elm_check_state_set(content, false);
-        elm_object_style_set(content, "widgetlist/default");
+        elm_object_style_set(content, "eye");
 
         evas_object_smart_callback_add(content, "changed", _on_check_click, _part);
         evas_object_data_set(content, PARTLIST_DATA_KEY, obj);
