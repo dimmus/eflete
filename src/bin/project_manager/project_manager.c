@@ -769,6 +769,10 @@ pm_project_close(Project *project)
 {
    Eina_Stringshare *backup, *data;
    Eina_Stringshare *resource_folder;
+   External_Resource *image, *sound, *font;
+   Tone_Resource *tone;
+   Colorclass_Resource *cc;
+   Resource *style;
 
    assert(project != NULL);
 
@@ -799,6 +803,49 @@ pm_project_close(Project *project)
    eina_stringshare_del(project->dev);
    eina_stringshare_del(project->develop_path);
    eina_stringshare_del(project->pro_path);
+
+   gm_groups_free(project);
+   EINA_LIST_FREE(project->images, image)
+     {
+        eina_stringshare_del(image->name);
+        eina_list_free(image->used_in);
+        eina_stringshare_del(image->source);
+        free(image);
+     }
+   EINA_LIST_FREE(project->sounds, sound)
+     {
+        eina_stringshare_del(sound->name);
+        eina_list_free(sound->used_in);
+        eina_stringshare_del(sound->source);
+        free(sound);
+     }
+   EINA_LIST_FREE(project->fonts, font)
+     {
+        eina_stringshare_del(font->name);
+        eina_list_free(font->used_in);
+        eina_stringshare_del(font->source);
+        free(font);
+     }
+   EINA_LIST_FREE(project->tones, tone)
+     {
+        eina_stringshare_del(tone->name);
+        eina_list_free(tone->used_in);
+        free(tone);
+     }
+   EINA_LIST_FREE(project->colorclasses, cc)
+     {
+        eina_stringshare_del(cc->name);
+        eina_list_free(cc->used_in);
+        free(cc);
+     }
+   EINA_LIST_FREE(project->styles, style)
+     {
+        eina_stringshare_del(style->name);
+        eina_list_free(style->used_in);
+        free(style);
+     }
+
+
 
    EINA_LIST_FREE(project->res.images, data)
       eina_stringshare_del(data);
