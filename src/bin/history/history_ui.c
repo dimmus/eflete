@@ -28,7 +28,7 @@ _on_change_selected(void *data,
                     Evas_Object *obj  __UNUSED__,
                     void *event_info)
 {
-   Module *module = (Module *)data;
+   History_Module *module = (History_Module *)data;
    Diff *selected = NULL;
    int delta = 0;
 
@@ -167,7 +167,7 @@ _history_ui_item_update(Diff *change, Eina_Bool active, Eina_Bool current)
 }
 
 void
-_history_ui_item_add(Diff *change, Module *module)
+_history_ui_item_add(Diff *change, History_Module *module)
 {
    assert(change != NULL);
    assert(module != NULL);
@@ -185,7 +185,7 @@ _history_ui_item_add(Diff *change, Module *module)
 }
 
 void
-_history_ui_list_reload(History *history, Module *module)
+_history_ui_list_reload(History *history, History_Module *module)
 {
    Eina_List *l, *l_next;
    Diff *data = NULL;

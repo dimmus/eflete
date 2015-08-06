@@ -95,7 +95,7 @@ _changes_index_update(Eina_List *changes)
  * This function manage adding new diff into the history of module.
  */
 static Eina_Bool
-_change_save(Module *module, Diff *change)
+_change_save(History_Module *module, Diff *change)
 {
    Diff *data = NULL;
 
@@ -128,7 +128,7 @@ _change_save(Module *module, Diff *change)
  * This function clear all changes, that was happens with module.
  */
 static Eina_Bool
-_module_changes_clear(Module *module)
+_module_changes_clear(History_Module *module)
 {
    Diff *diff = NULL;
    Eina_Bool result = true;
@@ -148,7 +148,7 @@ history_redo(Evas_Object *source, int count)
 {
    Diff *diff = NULL;
    Eina_List *next = NULL;
-   Module *module = NULL;
+   History_Module *module = NULL;
    Eina_Bool result = false;
 
    assert(source != NULL);
@@ -207,7 +207,7 @@ history_undo(Evas_Object *source, int count)
    Diff *diff = NULL;
    Eina_List *prev = NULL;
    Eina_Bool result = false;
-   Module *module = NULL;
+   History_Module *module = NULL;
 
    assert(source != NULL);
    assert(count > 0);
@@ -251,7 +251,8 @@ history_undo(Evas_Object *source, int count)
    else
      elm_genlist_item_selected_set(module->ui_item, true);
 
-   project_changed(true);
+   if (count == 1)
+     project_changed(true);
 
    return result;
 }
@@ -260,7 +261,7 @@ int
 history_diff_count_get(Evas_Object *source)
 {
    int count = 0;
-   Module *module;
+   History_Module *module;
 
    assert(source != NULL);
 
@@ -273,7 +274,7 @@ history_diff_count_get(Evas_Object *source)
 Eina_Bool
 history_clear(History *history)
 {
-   Module *module;
+   History_Module *module;
 
    assert(history != NULL);
 
@@ -297,7 +298,7 @@ Eina_Bool
 history_module_add(Evas_Object *source)
 {
    History *history = NULL;
-   Module *module = NULL;
+   History_Module *module = NULL;
 
    assert(source != NULL);
 
@@ -314,7 +315,7 @@ history_module_add(Evas_Object *source)
      }
 
    elm_genlist_clear(history->genlist);
-   module = (Module *)mem_calloc(1, sizeof(Module));
+   module = (History_Module *)mem_calloc(1, sizeof(History_Module));
    module->target = source;
    evas_object_data_set(module->target, HISTORY_MODULE_KEY, module);
    history->modules = eina_list_append(history->modules, module);
@@ -326,7 +327,7 @@ Eina_Bool
 history_module_del(Evas_Object *source)
 {
    History *history = NULL;
-   Module *module = NULL;
+   History_Module *module = NULL;
    Eina_List *module_list_node = NULL;
 
    assert(source != NULL);
@@ -389,7 +390,7 @@ Eina_Bool
 history_diff_add(Evas_Object *source, Target target, ...)
 {
    History *history = NULL;
-   Module *module = NULL;
+   History_Module *module = NULL;
    Diff *change = NULL;
    va_list list;
 
@@ -428,7 +429,7 @@ history_diff_add(Evas_Object *source, Target target, ...)
 Eina_Bool
 history_module_depth_set(Evas_Object *source, unsigned int depth)
 {
-   Module *module = NULL;
+   History_Module *module = NULL;
 
    assert(source != NULL);
 
@@ -443,7 +444,7 @@ history_module_depth_set(Evas_Object *source, unsigned int depth)
 int
 history_module_depth_get(Evas_Object *source)
 {
-   Module *module = NULL;
+   History_Module *module = NULL;
 
    assert(source != NULL);
 

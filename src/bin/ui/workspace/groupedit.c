@@ -283,11 +283,6 @@ groupedit_edit_object_set(Evas_Object *obj,
    if (!ecore_file_exists(file)) return false;
 
    edje_object_animation_set(edit_obj, false);
-   /* hide the editing object, we can not use evas_object_hide, because object
-    * will be showed again, after changing, for example part add, or change
-    * part state. so set the object opacity 0 - object invisible and calculate
-    * geometry. */
-   evas_object_color_set(edit_obj, 0, 0, 0, 0);
    TODO("set the state for all parts to default 0.0")
    sd->edit_obj = edit_obj;
    evas_object_smart_member_add(sd->edit_obj, obj);
@@ -295,6 +290,15 @@ groupedit_edit_object_set(Evas_Object *obj,
 
    _parts_list_free(sd);
    _parts_list_new(sd);
+
+   /* hide the editing object by using clipper (clipper is small, it's size is 0,0)
+    * with such clipper object invisible and calculate geometry. */
+   evas_object_show(edit_obj);
+
+   sd->edit_obj_clipper = evas_object_rectangle_add(sd->e);
+   evas_object_clip_set(edit_obj, sd->edit_obj_clipper);
+   evas_object_smart_member_add(sd->edit_obj_clipper, obj);
+   evas_object_show(sd->edit_obj_clipper);
 
    return true;
 }
@@ -312,7 +316,11 @@ groupedit_edit_object_unset(Evas_Object *obj)
    _parts_list_free(sd);
    ret = sd->edit_obj;
    evas_object_smart_member_del(sd->edit_obj);
+   evas_object_smart_member_del(sd->edit_obj_clipper);
+   evas_object_hide(sd->edit_obj);
+   evas_object_del(sd->edit_obj_clipper);
    sd->edit_obj = NULL;
+   sd->edit_obj_clipper = NULL;
 
    return ret;
 }
@@ -479,6 +487,8 @@ groupedit_edit_object_part_state_add(Evas_Object *obj, const char *part,
 
    assert(part != NULL);
    assert(state != NULL);
+   assert(edje_edit_part_exist(sd->edit_obj, part));
+   assert(!edje_edit_state_exist(sd->edit_obj, part, state, value));
 
    ret = edje_edit_state_add(sd->edit_obj, part, state, value);
    ret &= edje_edit_part_selected_state_set(sd->edit_obj, part, state, value);

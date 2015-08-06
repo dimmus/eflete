@@ -92,6 +92,7 @@ struct _Ws_Groupedit_Smart_Data
    Eina_Bool handler_BR_pressed : 1;
    const char *style;
    Evas_Object *edit_obj;
+   Evas_Object *edit_obj_clipper;
    const char *edit_obj_file;
    Eina_List *parts;
    struct {

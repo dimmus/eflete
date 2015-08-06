@@ -754,7 +754,6 @@ _highlight_changed_cb(void *data,
 
    workspace_edit_object_recalc(ws_obj);
    evas_object_smart_callback_call(ws_obj, "part,changed", part);
-   project_changed(false);
 }
 
 Eina_Bool
@@ -1403,7 +1402,6 @@ workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,
    assert(state != NULL);
 
    groupedit_edit_object_part_state_add(sd->groupedit, part, state, value);
-   project_changed(true);
    return true; /* not check anyway */
 }
 
@@ -1436,7 +1434,6 @@ workspace_edit_object_part_state_copy(Evas_Object *obj, const char *part,
 
    groupedit_edit_object_part_state_copy(sd->groupedit, part, state_from,
                                         value_from, state_to, value_to);
-   project_changed(true);
    return true; /* not check anyway */
 }
 
@@ -1449,7 +1446,6 @@ workspace_edit_object_part_state_del(Evas_Object *obj, const char *part,
    assert(state != NULL);
 
    groupedit_edit_object_part_state_del(sd->groupedit, part, state, value);
-   project_changed(true);
    return true; /* not check anyway */
 }
 

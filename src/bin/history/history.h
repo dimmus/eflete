@@ -64,7 +64,7 @@
  * The new changes registered in History module using @c history_change_add.
  *
  * All changes to one module register in general stack of events which is,
- * organized within @c Module.
+ * organized within @c History_Module.
  *
  * Manager of the stack of modules ensures that for each type of change was
  * caused by the corresponding functional. Manager parses the new changes by
@@ -119,6 +119,13 @@
  * @ingroup History
  */
 typedef struct _History History;
+
+
+/**
+ * @typedef History_Module
+ * @ingroup History
+ */
+typedef struct _History_Module History_Module;
 
 /**
  * @typedef Action

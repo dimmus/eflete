@@ -26,12 +26,6 @@
 #define HISTORY_MODULE_KEY "history_module_key"
 
 /**
- * @typedef Module
- * @ingroup History
- */
-typedef struct _Module Module;
-
-/**
  * @typedef Diff
  * @ingroup History
  */
@@ -79,13 +73,13 @@ struct _History
 };
 
 /**
- * @struct _Module
+ * @struct _History_Module
  *
  * @brief This struct contain list of changes for one module.
  *
  * @ingroup History
  */
-struct _Module
+struct _History_Module
 {
    Evas_Object *target; /**< Target object. Can be any Evas_Object with lifetime
                              equale to lifetime of module*/
@@ -207,7 +201,7 @@ _attribute_change_free(Attribute_Diff *change);
  * @ingroup History_Attribute
  */
 Diff *
-_attribute_change_merge(Attribute_Diff *change, Module *module);
+_attribute_change_merge(Attribute_Diff *change, History_Module *module);
 
 /**
  * This function cancel given diff.
@@ -428,12 +422,12 @@ _history_ui_add(Evas_Object *parent);
  * genlist. This item provide functionality to manage changes with using ui.
  *
  * @param change The Diff that was created with using history_diff_add.
- * @param module The Module, that contain diff.
+ * @param module The History_Module, that contain diff.
  *
  * @ingroup History_UI
  */
 void
-_history_ui_item_add(Diff *change, Module *module);
+_history_ui_item_add(Diff *change, History_Module *module);
 
 /**
  * Update current view of ui item, accordinly to the current state of change.
@@ -453,12 +447,12 @@ _history_ui_item_update(Diff *change, Eina_Bool active, Eina_Bool current);
  * Reload all items in the history genlist, accordingly to the given module.
  *
  * @param history A History object, that was created wirt using @c history_init.
- * @param module The Module, that needed to reload diffs view.
+ * @param module The History_Module, that needed to reload diffs view.
  *
  * @ingroup History_UI
  */
 void
-_history_ui_list_reload(History *history, Module *module);
+_history_ui_list_reload(History *history, History_Module *module);
 
 /**
  * Create new genlist item, that provide discard all changes from history
@@ -470,5 +464,5 @@ _history_ui_list_reload(History *history, Module *module);
  * @ingroup History_UI
  */
 void
-_history_module_ui_item_add(History *history, Module *module);
+_history_module_ui_item_add(History *history, History_Module *module);
 #endif /* HISTORY_PRIVATE_H */

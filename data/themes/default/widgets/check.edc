@@ -354,6 +354,12 @@ group { name: "elm/check/base/toggle";
 }
 
 group { name: "elm/check/base/default";
+   images {
+      image: "control-bg.png" COMP;
+      image: "control-bg-disabled.png" COMP;
+      image: "checkbox-white.png" COMP;
+      image: "control-shadow.png" COMP;
+   }
    parts {
       part { name: "bg";
          type: IMAGE;
@@ -364,19 +370,22 @@ group { name: "elm/check/base/default";
             min: 18 19;
             max: 18 19;
             aspect: 1.0 1.0;
+            color_class: "bg_entry";
             image {
-               normal: "checkbox-bg.png";
-               border: 5 5 5 5;
+               normal: "control-bg.png";
+               border: 8 8 8 8;
                middle: DEFAULT;
             }
          }
          description { state: "disabled" 0.0;
-            align: 0.0 0.0;
+            align: 0.0 0.5;
             min: 18 19;
             max: 18 19;
             aspect: 1.0 1.0;
+            color_class: "bg_entry";
             image {
-               normal: "checkbox-bg-disabled.png";
+               normal: "control-bg-disabled.png";
+               border: 8 8 8 8;
                middle: DEFAULT;
             }
          }
@@ -385,9 +394,9 @@ group { name: "elm/check/base/default";
          type: IMAGE;
          mouse_events: 0;
          scale: 1;
+         clip_to: "clipper";
          description { state: "default" 0.0;
             visible: 0;
-            color: FN_COL_CHECK_MAIN;
             rel1 {
                offset: 1 1;
                to: "bg";
@@ -402,23 +411,54 @@ group { name: "elm/check/base/default";
             }
          }
          description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
+            rel1 {
+               offset: 1 1;
+               to: "bg";
+            }
+            rel2 {
+               offset: -2 -3;
+               to: "bg";
+            }
+            image {
+               normal: "checkbox-white.png";
+               middle: DEFAULT;
+            }
          }
-         description { state: "disabled" 0;
-            inherit: "default" 0.0;
+      }
+      part { name: "shadow";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg";
+            }
+            rel2 {
+               to: "bg";
+            }
+            image {
+               normal: "control-shadow.png";
+               border: 8 8 8 8;
+               middle: DEFAULT;
+            }
+         }
+         description { state: "disabled" 0.0;
             visible: 0;
-            color: FN_COL_CHECK_DISABLED;
-         }
-         description { state: "disabled_visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            color: FN_COL_CHECK_DISABLED;
+            rel1 {
+               to: "bg";
+            }
+            rel2 {
+               to: "bg";
+            }
+            image {
+               normal: "control-shadow.png";
+               border: 8 8 8 8;
+               middle: DEFAULT;
+            }
          }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
          scale: 1;
+         clip_to: "clipper";
          description { state: "default" 0.0;
             visible: 0;
             align: 0.0 0.5;
@@ -437,31 +477,7 @@ group { name: "elm/check/base/default";
             max: 0 -1;
             rel1 {
                relative: 1.0 0.0;
-               to_x: "bg";
-            }
-            rel2 {
-               offset: 1 -2;
-               to_x: "bg";
-            }
-         }
-         description { state: "disabled" 0.0;
-            visible: 0;
-            align: 0.0 0.5;
-            max: 0 -1;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "bg";
-            }
-            rel2 {
-               offset: 1 -2;
-               to_x: "bg";
-            }
-         }
-         description { state: "disabled_visible" 0.0;
-            align: 0.0 0.5;
-            max: 0 -1;
-            rel1 {
-               relative: 1.0 0.0;
+               offset: 6 0;
                to_x: "bg";
             }
             rel2 {
@@ -472,54 +488,66 @@ group { name: "elm/check/base/default";
       }
       part { name: "elm.text";
          type: TEXT;
-         mouse_events: 0;
          scale: 1;
+         clip_to: "clipper";
          description { state: "default" 0.0;
             visible: 0;
-            align: 0.0 0.5;
-            color: LIGHT_GREY_FONT_COLOR;
+            fixed: 0 1;
             rel1 {
                relative: 1.0 0.0;
-               to: "bg";
+               to_x: "elm.swallow.content";
+               to_y: "bg";
             }
-            rel2.to_y: "bg";
+            rel2 {
+               to_y: "bg";
+            }
             text {
+               align: 0.0 0.5;
                font: "PT";
                size: 12;
-               max: 1 1;
+               min: 1 1;
+               ellipsis: -1;
             }
          }
          description { state: "visible" 0.0;
-            align: 0.0 0.5;
-            color: LIGHT_GREY_FONT_COLOR;
+            visible: 1;
+            fixed: 0 1;
             rel1 {
                relative: 1.0 0.0;
-               offset: 9 0;
-               to: "bg";
+               offset: 6 0;
+               to_x: "elm.swallow.content";
+               to_y: "bg";
             }
-            rel2.to_y: "bg";
+            rel2 {
+               to_y: "bg";
+            }
             text {
-               font: FN;
+               align: 0.0 0.5;
+               font: "PT";
                size: 12;
                min: 1 1;
-               max: 1 1;
-               ellipsis: -1; /* required to avoid edje_cc: Warning */
+               ellipsis: -1;
             }
          }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            color: LIGHT_GREY_FONT_DISABLE_COLOR;
+      }
+      part { name: "clipper";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color_class: "main";
          }
-         description { state: "disabled_visible" 0.0;
-            inherit: "visible" 0.0;
-            visible: 1;
-            color: LIGHT_GREY_FONT_DISABLE_COLOR;
+         description { state: "disabled" 0.0;
+            color_class: "main_disabled";
          }
       }
       part { name: "events";
          type: RECT;
          ignore_flags: "ON_HOLD";
          description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "disabled" 0.0;
+            visible: 0;
             color: 0 0 0 0;
          }
       }
@@ -571,90 +599,280 @@ group { name: "elm/check/base/default";
          source: "elm";
          action: STATE_SET "disabled" 0.00;
          target: "bg";
-         after: "disable_text";
+         target: "shadow";
+         target: "events";
+         target: "clipper";
       }
       program { name: "enable";
          signal: "elm,state,enabled";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
-         after: "enable_text";
-      }
-      program { name: "disable_text";
-         script {
-
-         new st[31];
-         new Float:vl;
-         get_state(PART:"elm.text", st, 30, vl);
-         if (!strcmp(st, "visible"))
-         set_state(PART:"elm.text", "disabled_visible", 0.0);
-         else
-         set_state(PART:"elm.text", "disabled", 0.0);
-
-         get_state(PART:"elm.swallow.content", st, 30, vl);
-         if (!strcmp(st, "visible"))
-         set_state(PART:"elm.swallow.content", "disabled_visible", 0.0);
-         else
-         set_state(PART:"elm.swallow.content", "disabled", 0.0);
-
-         get_state(PART:"check", st, 30, vl);
-         if (!strcmp(st, "visible"))
-         set_state(PART:"check", "disabled_visible", 0.0);
-         else
-         set_state(PART:"check", "disabled", 0.0);
-                  }
-      }
-      program { name: "enable_text";
-         script {
-
-         new st[31];
-         new Float:vl;
-         get_state(PART:"elm.text", st, 30, vl);
-         if (!strcmp(st, "disabled_visible"))
-         set_state(PART:"elm.text", "visible", 0.0);
-         else
-         set_state(PART:"elm.text", "default", 0.0);
-
-         get_state(PART:"elm.swallow.content", st, 30, vl);
-         if (!strcmp(st, "visible"))
-         set_state(PART:"elm.swallow.content", "visible", 0.0);
-         else
-         set_state(PART:"elm.swallow.content", "default", 0.0);
-
-         get_state(PART:"check", st, 30, vl);
-         if (!strcmp(st, "disabled_visible"))
-         set_state(PART:"check", "visible", 0.0);
-         else
-         set_state(PART:"check", "default", 0.0);
-                  }
+         target: "shadow";
+         target: "events";
+         target: "clipper";
       }
    }
 }
 
-group { name: "elm/check/base/widgetlist/default";
+group { name: "elm/check/base/eye";
    images {
-      image: "icon-treemenu-item-visibility.png" COMP;
-      image: "treemenu-item-visibility-bg.png" COMP;
+      image: "control-bg.png" COMP;
+      image: "control-bg-disabled.png" COMP;
+      image: "icon_eye.png" COMP;
+      image: "control-shadow.png" COMP;
    }
-   inherit: "elm/check/base/default";
    parts {
       part { name: "bg";
+         type: IMAGE;
+         mouse_events: 0;
+         scale: 1;
          description { state: "default" 0.0;
-            SET_SIZE(13 13, 13 13);
             align: 0.0 0.5;
-            image.normal: "treemenu-item-visibility-bg.png";
-            rel1.offset: 0 1;
-            rel2.offset: 0 1;
+            min: 18 19;
+            max: 18 19;
+            aspect: 1.0 1.0;
+            color_class: "bg_entry";
+            image {
+               normal: "control-bg.png";
+               border: 8 8 8 8;
+               middle: DEFAULT;
+            }
+         }
+         description { state: "disabled" 0.0;
+            align: 0.0 0.5;
+            min: 18 19;
+            max: 18 19;
+            aspect: 1.0 1.0;
+            color_class: "bg_entry";
+            image {
+               normal: "control-bg-disabled.png";
+               border: 8 8 8 8;
+               middle: DEFAULT;
+            }
          }
       }
       part { name: "check";
+         type: IMAGE;
+         mouse_events: 0;
+         scale: 1;
+         clip_to: "clipper";
          description { state: "default" 0.0;
-            image.normal: "icon-treemenu-item-visibility.png";
+            visible: 0;
+            rel1 {
+               offset: 1 1;
+               to: "bg";
+            }
+            rel2 {
+               offset: -2 -2;
+               to: "bg";
+            }
+            image {
+               normal: "icon_eye.png";
+               middle: DEFAULT;
+            }
          }
          description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
+            rel1 {
+               offset: 1 1;
+               to: "bg";
+            }
+            rel2 {
+               offset: -2 -2;
+               to: "bg";
+            }
+            image {
+               normal: "icon_eye.png";
+               middle: DEFAULT;
+            }
          }
+      }
+      part { name: "shadow";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg";
+            }
+            rel2 {
+               to: "bg";
+            }
+            image {
+               normal: "control-shadow.png";
+               border: 8 8 8 8;
+               middle: DEFAULT;
+            }
+         }
+         description { state: "disabled" 0.0;
+            visible: 0;
+            rel1 {
+               to: "bg";
+            }
+            rel2 {
+               to: "bg";
+            }
+            image {
+               normal: "control-shadow.png";
+               border: 8 8 8 8;
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            visible: 0;
+            align: 0.0 0.5;
+            max: 0 -1;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "bg";
+            }
+            rel2 {
+               offset: 1 -2;
+               to_x: "bg";
+            }
+         }
+         description { state: "visible" 0.0;
+            align: 0.0 0.5;
+            max: 0 -1;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 0;
+               to_x: "bg";
+            }
+            rel2 {
+               offset: 1 -2;
+               to_x: "bg";
+            }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         scale: 1;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            visible: 0;
+            fixed: 0 1;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "elm.swallow.content";
+               to_y: "bg";
+            }
+            rel2 {
+               to_y: "bg";
+            }
+            text {
+               align: 0.0 0.5;
+               font: "PT";
+               size: 12;
+               min: 1 1;
+               ellipsis: -1;
+            }
+         }
+         description { state: "visible" 0.0;
+            visible: 1;
+            fixed: 0 1;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 0;
+               to_x: "elm.swallow.content";
+               to_y: "bg";
+            }
+            rel2 {
+               to_y: "bg";
+            }
+            text {
+               align: 0.0 0.5;
+               font: "PT";
+               size: 12;
+               min: 1 1;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color_class: "main";
+         }
+         description { state: "disabled" 0.0;
+            color_class: "main_disabled";
+         }
+      }
+      part { name: "events";
+         type: RECT;
+         ignore_flags: "ON_HOLD";
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "disabled" 0.0;
+            visible: 0;
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      program { name: "click";
+         signal: "mouse,clicked,1";
+         source: "events";
+         action: SIGNAL_EMIT "elm,action,check,toggle" "";
+      }
+      program { name: "check_on";
+         signal: "elm,state,check,on";
+         source: "elm";
+         action: STATE_SET "visible" 0.00;
+         target: "check";
+      }
+      program { name: "check_off";
+         signal: "elm,state,check,off";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "check";
+      }
+      program { name: "text_show";
+         signal: "elm,state,text,visible";
+         source: "elm";
+         action: STATE_SET "visible" 0.00;
+         target: "elm.text";
+      }
+      program { name: "text_hide";
+         signal: "elm,state,text,hidden";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "elm.text";
+      }
+      program { name: "icon_show";
+         signal: "elm,state,icon,visible";
+         source: "elm";
+         action: STATE_SET "visible" 0.00;
+         target: "elm.swallow.content";
+      }
+      program { name: "icon_hide";
+         signal: "elm,state,icon,hidden";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "elm.swallow.content";
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.00;
+         target: "bg";
+         target: "shadow";
+         target: "events";
+         target: "clipper";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+         target: "shadow";
+         target: "events";
+         target: "clipper";
       }
    }
 }

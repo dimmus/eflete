@@ -714,19 +714,11 @@ _project_save(void *data __UNUSED__,
    ecore_thread_main_loop_begin();
    PROGRESS_SEND(_("Save project '%s'"), worker.project->name);
    pm_save_to_dev(worker.project, NULL, true);
-   eina_file_close(worker.project->mmap_file);
 
    ecore_file_cp(worker.project->dev, worker.project->saved_edj);
 
-   /* reloading dev*/
-   worker.project->mmap_file = eina_file_open(worker.project->dev, false);
-   if (worker.project->current_style)
-     {
-        edje_object_mmap_set(worker.project->current_style->obj,
-                             worker.project->mmap_file,
-                             worker.project->current_style->full_group_name);
-     }
    PROGRESS_SEND("Save done");
+
    ecore_thread_main_loop_end();
 
    END_SEND(PM_PROJECT_SUCCESS);

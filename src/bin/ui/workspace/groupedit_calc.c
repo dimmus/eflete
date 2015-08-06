@@ -878,6 +878,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
 {
    Evas_Object *o;
    Groupedit_Part *gp;
+   Evas_Object *image;
 
    assert(sd != NULL);
    assert(part != NULL);
@@ -895,7 +896,15 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          BORDER_ADD(0, 0, 0, 0)
          break;
       case EDJE_PART_TYPE_TEXT:
-         gp->draw = evas_object_text_add(sd->e);
+         gp->draw = edje_object_add(sd->e);
+         if (!edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP))
+           ERR("Image can't be loaded.\n");
+         evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_DEL,
+                                        _image_delete, NULL);
+
+         image = evas_object_image_filled_add(sd->e);
+         edje_object_part_swallow(gp->draw, "swallow.image", image);
+
          BORDER_ADD(122, 122, 122, 255)
          break;
       case EDJE_PART_TYPE_IMAGE:
@@ -1333,114 +1342,18 @@ _proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 static void
 _text_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 {
-   const char *font, *text;
-   int text_size;
-   double elipsis;
-   Evas_Text_Style_Type style;
-   Edje_Text_Effect effect;
+   Evas_Object *image;
 
    assert(gp != NULL);
    assert(edit_obj != NULL);
 
-   PART_STATE_GET(edit_obj, gp->name)
+   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
 
-   _color_apply(gp, edit_obj, state, value);
-
-   font = edje_edit_state_font_get(edit_obj, gp->name, state, value);
-   text_size = edje_edit_state_text_size_get(edit_obj, gp->name, state, value);
-   evas_object_text_font_set(gp->draw, font, text_size);
-
-   text = edje_edit_state_text_get(edit_obj, gp->name, state, value);
-   if (text) evas_object_text_text_set(gp->draw, text);
-   else
-     {
-         edje_object_part_text_set(edit_obj, gp->name, gp->name);
-         evas_object_text_text_set(gp->draw, gp->name);
-     }
-
-   elipsis = edje_edit_state_text_elipsis_get(edit_obj, gp->name, state, value);
-   evas_object_text_ellipsis_set(gp->draw, elipsis);
-
-   effect = edje_edit_part_effect_get(edit_obj, gp->name);
-   switch (effect & EDJE_TEXT_EFFECT_MASK_BASIC)
-     {
-      case EDJE_TEXT_EFFECT_NONE:
-      case EDJE_TEXT_EFFECT_PLAIN:
-         style = EVAS_TEXT_STYLE_PLAIN;
-         break;
-      case EDJE_TEXT_EFFECT_OUTLINE:
-         style = EVAS_TEXT_STYLE_OUTLINE;
-         break;
-      case EDJE_TEXT_EFFECT_SOFT_OUTLINE:
-         style = EVAS_TEXT_STYLE_SOFT_OUTLINE;
-         break;
-      case EDJE_TEXT_EFFECT_SHADOW:
-         style = EVAS_TEXT_STYLE_SHADOW;
-         break;
-      case EDJE_TEXT_EFFECT_SOFT_SHADOW:
-         style = EVAS_TEXT_STYLE_SOFT_SHADOW;
-         break;
-      case EDJE_TEXT_EFFECT_OUTLINE_SHADOW:
-         style = EVAS_TEXT_STYLE_OUTLINE_SHADOW;
-         break;
-      case EDJE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW:
-         style = EVAS_TEXT_STYLE_OUTLINE_SOFT_SHADOW;
-         break;
-      case EDJE_TEXT_EFFECT_FAR_SHADOW:
-         style = EVAS_TEXT_STYLE_FAR_SHADOW;
-         break;
-      case EDJE_TEXT_EFFECT_FAR_SOFT_SHADOW:
-         style = EVAS_TEXT_STYLE_FAR_SOFT_SHADOW;
-         break;
-      case EDJE_TEXT_EFFECT_GLOW:
-         style = EVAS_TEXT_STYLE_GLOW;
-         break;
-      default:
-         style = EVAS_TEXT_STYLE_PLAIN;
-         break;
-     }
-
-   switch (effect & EDJE_TEXT_EFFECT_MASK_SHADOW_DIRECTION)
-     {
-      case EDJE_TEXT_EFFECT_SHADOW_DIRECTION_BOTTOM_RIGHT:
-         EVAS_TEXT_STYLE_SHADOW_DIRECTION_SET
-            (style, EVAS_TEXT_STYLE_SHADOW_DIRECTION_BOTTOM_RIGHT);
-         break;
-      case EDJE_TEXT_EFFECT_SHADOW_DIRECTION_BOTTOM:
-         EVAS_TEXT_STYLE_SHADOW_DIRECTION_SET
-            (style, EVAS_TEXT_STYLE_SHADOW_DIRECTION_BOTTOM);
-         break;
-      case EDJE_TEXT_EFFECT_SHADOW_DIRECTION_BOTTOM_LEFT:
-         EVAS_TEXT_STYLE_SHADOW_DIRECTION_SET
-            (style, EVAS_TEXT_STYLE_SHADOW_DIRECTION_BOTTOM_LEFT);
-         break;
-      case EDJE_TEXT_EFFECT_SHADOW_DIRECTION_LEFT:
-         EVAS_TEXT_STYLE_SHADOW_DIRECTION_SET
-            (style, EVAS_TEXT_STYLE_SHADOW_DIRECTION_LEFT);
-         break;
-      case EDJE_TEXT_EFFECT_SHADOW_DIRECTION_TOP_LEFT:
-         EVAS_TEXT_STYLE_SHADOW_DIRECTION_SET
-            (style, EVAS_TEXT_STYLE_SHADOW_DIRECTION_TOP_LEFT);
-         break;
-      case EDJE_TEXT_EFFECT_SHADOW_DIRECTION_TOP:
-         EVAS_TEXT_STYLE_SHADOW_DIRECTION_SET
-            (style, EVAS_TEXT_STYLE_SHADOW_DIRECTION_TOP);
-         break;
-      case EDJE_TEXT_EFFECT_SHADOW_DIRECTION_TOP_RIGHT:
-         EVAS_TEXT_STYLE_SHADOW_DIRECTION_SET
-            (style, EVAS_TEXT_STYLE_SHADOW_DIRECTION_TOP_RIGHT);
-         break;
-      case EDJE_TEXT_EFFECT_SHADOW_DIRECTION_RIGHT:
-         EVAS_TEXT_STYLE_SHADOW_DIRECTION_SET
-            (style, EVAS_TEXT_STYLE_SHADOW_DIRECTION_RIGHT);
-         break;
-      default:
-         break;
-     }
-   evas_object_text_style_set(gp->draw, style);
-   PART_STATE_FREE
-   edje_edit_string_free(font);
-   edje_edit_string_free(text);
+   Evas_Object *text_part = (Evas_Object *)edje_object_part_object_get(edit_obj, gp->name);
+   TODO("This should be removed. Perfectly, proxy should work from begining and doesn't need update! Need to refactor");
+   evas_object_image_source_set(image, NULL);
+   evas_object_image_source_set(image, text_part);
+   evas_object_image_source_clip_set(image, false);
 }
 
 static void

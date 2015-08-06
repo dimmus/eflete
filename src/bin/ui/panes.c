@@ -119,8 +119,9 @@ _on_discard_changes_selected(void *data,
    assert(ap->project != NULL);
    assert(ap->project->current_style != NULL);
 
-   history_undo(ap->project->current_style->obj,
-                history_diff_count_get(ap->project->current_style->obj));
+   if (history_diff_count_get(ap->project->current_style->obj) > 0)
+     history_undo(ap->project->current_style->obj,
+                  history_diff_count_get(ap->project->current_style->obj));
 }
 
 

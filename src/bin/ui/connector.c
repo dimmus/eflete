@@ -343,6 +343,7 @@ _add_state(void *data,
    else
      workspace_edit_object_part_state_add(ap->workspace, sd->part->name,
                                           sd->state, sd->value);
+   project_changed(true);
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
@@ -361,6 +362,7 @@ _del_state(void *data,
    split = eina_str_split(sd->state, " ", 2);
    workspace_edit_object_part_state_del(ap->workspace, sd->part->name, split[0], atof(split[1]));
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+   project_changed(true);
    free(split[0]);
    free(split);
 }
@@ -564,6 +566,7 @@ _property_change(void *data,
 
    assert(prop != NULL);
 
+   project_changed(false);
    ui_property_state_set(prop, part);
 }
 

@@ -80,6 +80,12 @@ group { name: "elm/button/base/default";
          effect: PLAIN;
          description { state: "default" 0.0;
             visible: 0;
+            rel1 {
+               to: "clipper";
+            }
+            rel2 {
+               to: "clipper";
+            }
             text {
                font: "PT";
                size: 12;
@@ -98,7 +104,7 @@ group { name: "elm/button/base/default";
                to_x: "elm.swallow.content";
             }
             rel2 {
-               offset: -7 -3;
+               offset: -7 -4;
             }
             text {
                font: "PT";
@@ -118,7 +124,7 @@ group { name: "elm/button/base/default";
                to_x: "elm.swallow.content";
             }
             rel2 {
-               offset: -7 -3;
+               offset: -7 -4;
             }
             text {
                font: "PT";
