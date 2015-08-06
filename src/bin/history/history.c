@@ -251,7 +251,8 @@ history_undo(Evas_Object *source, int count)
    else
      elm_genlist_item_selected_set(module->ui_item, true);
 
-   project_changed(true);
+   if (count == 1)
+     project_changed(true);
 
    return result;
 }
