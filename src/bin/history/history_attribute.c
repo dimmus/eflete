@@ -114,6 +114,7 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
 
         assert(part != NULL);
 
+        ui_property_part_set(prop, part);
         if (change->state)
           {
              part->curr_state = change->state;
@@ -126,7 +127,6 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
         evas_object_smart_callback_call(app->workspace, "ws,part,selected",
                                         (void *)change->part);
         workspace_edit_object_part_state_set(app->workspace, part);
-        ui_property_part_set(prop, part);
      }
    else
      {
@@ -428,6 +428,9 @@ _attribute_undo(Evas_Object *source, Attribute_Diff *change)
    assert(change != NULL);
    assert(source != NULL);
 
+   /* first update need for set the current part to property, because we
+    * don't know what a part been selected early. */
+   _history_ui_attribute_update(source, change);
    switch(change->diff.action_type)
      {
       case MODIFY:
@@ -443,9 +446,10 @@ _attribute_undo(Evas_Object *source, Attribute_Diff *change)
       default:
           ERR("Unsupported action type[%d]", change->diff.action_type);
      }
-
+   /* second update need for update the part attributes in the property. */
    if (undo)
      _history_ui_attribute_update(source, change);
+
    return undo;
 }
 
