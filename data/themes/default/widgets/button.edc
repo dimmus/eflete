@@ -1,4 +1,3 @@
-#define BUTTON_BORDER 6 6 13 13
 group { name: "elm/button/base/default";
    alias: "elm/button/base/colorselector/default";
    alias: "elm/button/base/fileselector/default";
