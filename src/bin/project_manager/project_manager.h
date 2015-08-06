@@ -100,6 +100,7 @@ struct _Project
    Eina_List *added_sounds;
    Eina_List *nsimage_list;
 
+   TODO("Fix paths in enventor mode. Looks like enventor project can't be moved")
    struct
    {
       Eina_List *images;  /**< pathes to the image dirs */
