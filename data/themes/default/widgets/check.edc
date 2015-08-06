@@ -54,9 +54,8 @@ group { name: "elm/check/base/toggle";
    }
 
    images {
-      image: "checkbox-bg.png" COMP;
-      image: "checkbox-bg-disabled.png" COMP;
-      image: "checkbox-white.png" COMP;
+      image: "control-bg.png" COMP;
+      image: "control-shadow.png" COMP;
       image: "toggle-off.png" COMP;
       image: "toggle-on.png" COMP;
    }
@@ -184,6 +183,7 @@ group { name: "elm/check/base/toggle";
          scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
+            color_class: "bg_entry";
             rel1 {
                to: "base";
             }
@@ -191,8 +191,24 @@ group { name: "elm/check/base/toggle";
                to: "base";
             }
             image {
-               normal: "input-text-bg.png";
-               border: 5 5 5 5;
+               normal: "control-bg.png";
+               border: 8 8 8 9;
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "shadow";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg";
+            }
+            rel2 {
+               to: "bg";
+            }
+            image {
+               normal: "control-shadow.png";
+               border: 8 8 8 9;
                middle: DEFAULT;
             }
          }
