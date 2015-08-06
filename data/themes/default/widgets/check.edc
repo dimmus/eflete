@@ -170,8 +170,8 @@ group { name: "elm/check/base/toggle";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: 55 19;
-            max: 55 19;
+            min: 60 19;
+            max: 60 19;
             rel1 {
                relative: 1.0 0.0;
                to_x: "padding.text";
