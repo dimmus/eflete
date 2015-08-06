@@ -596,7 +596,7 @@ _project_open(void *data,
    Eet_File *ef;
    char *tmp;
    int tmp_len;
-   const char *path = (const char *) data;
+   Eina_Stringshare *path = data;
 
    assert(path != NULL);
 
@@ -608,6 +608,7 @@ _project_open(void *data,
    ef = eet_open(path, EET_FILE_MODE_READ_WRITE);
    if (!ef)
      {
+        eina_stringshare_del(path);
         END_SEND(PM_PROJECT_ERROR);
         return NULL;
      }
@@ -619,6 +620,7 @@ _project_open(void *data,
    eet_close(ef);
    if (!worker.project)
      {
+        eina_stringshare_del(path);
         END_SEND(PM_PROJECT_ERROR);
         return NULL;
      }
@@ -640,6 +642,7 @@ _project_open(void *data,
    tmp[tmp_len - 1] = 'j';
    eina_stringshare_replace(&worker.project->saved_edj, tmp);
    free(tmp);
+   eina_stringshare_del(path);
 
    PROGRESS_SEND(_("Checking project version"));
    /* checking for older project versions and upgrading them version-by-version */
@@ -680,7 +683,7 @@ pm_project_open(const char *path,
                  NULL, NULL, NULL, NULL, NULL);
 
    if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
-                           (void *)_project_open, path))
+                           (void *)_project_open, eina_stringshare_add(path)))
      {
         ERR("System error: can't create thread");
         abort();
