@@ -1131,7 +1131,7 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
    ewe_combobox_item_add(pd->MEMBER.VALUE, _("None")); \
    EINA_INLIST_FOREACH_SAFE(pd->wm_style->parts, list_n, part) \
      { \
-        if ((part != pd->wm_part) && (part->type != EDJE_PART_TYPE_SPACER)) \
+        if (part != pd->wm_part) \
            ewe_combobox_item_add(pd->MEMBER.VALUE, part->name); \
      } \
    edje_edit_string_free(value); \

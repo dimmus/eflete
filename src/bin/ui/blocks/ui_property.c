@@ -1125,12 +1125,10 @@ ui_property_part_set(Evas_Object *property, Part *part)
              elm_box_unpack(box, pd->part.repeat_events_item);
              elm_box_unpack(box, pd->part.clip_to_item);
              elm_box_unpack(box, pd->part.ignore_flags_item);
-             elm_box_unpack(box, pd->part_drag.frame);
              evas_object_hide(pd->part.mouse_events_item);
              evas_object_hide(pd->part.repeat_events_item);
              evas_object_hide(pd->part.clip_to_item);
              evas_object_hide(pd->part.ignore_flags_item);
-             evas_object_hide(pd->part_drag.frame);
           }
      }
    else
@@ -1141,7 +1139,6 @@ ui_property_part_set(Evas_Object *property, Part *part)
              elm_box_pack_after(box, pd->part.repeat_events_item, pd->part.mouse_events_item);
              elm_box_pack_after(box, pd->part.clip_to_item, pd->part.repeat_events_item);
              elm_box_pack_after(box, pd->part.ignore_flags_item, pd->part.clip_to_item);
-             elm_box_pack_end(box, pd_drag.frame);
              evas_object_show(pd->part.mouse_events_item);
              evas_object_show(pd->part.repeat_events_item);
              evas_object_show(pd->part.clip_to_item);
