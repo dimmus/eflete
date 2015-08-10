@@ -250,56 +250,42 @@ group { name: "elm/frame/base/default";
 }
 
 group { name: "elm/frame/base/outdent_top";
+   images {
+      image: "separator-horizontal.png" COMP;
+      image: "frame_border.png" COMP;
+      image: "icon_arrow_down.png" COMP;
+   }
    parts {
-      part { name: "padding_top_left";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 5 5;
-            max: 5 5;
-         }
-      }
-      part { name: "padding_bottom_right";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            min: 5 5;
-            max: 5 5;
-         }
-      }
       part { name: "base";
-         type: RECT;
+         type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            color: INVISIBLE_COLOR;
             rel1 {
-               relative: 1.0 1.0;
-               to: "padding_top_left";
+               offset: 6 6;
             }
             rel2 {
-               relative: 0.0 0.0;
-               to: "padding_bottom_right";
+               offset: -7 -7;
             }
          }
       }
       part { name: "elm.text";
-         type: TEXTBLOCK;
+         type: TEXT;
          description { state: "default" 0.0;
             align: 0.0 0.0;
+            color_class: "main";
             rel1 {
-               relative: 1.0 1.0;
+               relative: 1.0 0.0;
                to_x: "button";
-               to_y: "padding_top_left";
+               to_y: "base";
             }
             text {
+               font: "PT";
+               size: 13;
                max: 1 1;
-               style: "frame";
             }
          }
       }
-      part { name: "bevel_upper_right";
+      part { name: "border_right";
          type: IMAGE;
          mouse_events: 0;
          description { state: "default" 0.0;
@@ -307,50 +293,32 @@ group { name: "elm/frame/base/outdent_top";
             max: -1 2;
             rel1 {
                relative: 1.0 0.5;
+               offset: 6 0;
                to: "elm.text";
             }
             image {
-               normal: "group-border-bg-upper.png";
+               normal: "separator-horizontal.png";
                middle: DEFAULT;
-            }
-            fill {
-               smooth: 0;
             }
          }
       }
-      part { name: "bevel_upper_left";
+      part { name: "border_left";
          type: IMAGE;
          mouse_events: 0;
          description { state: "default" 0.0;
             align: 0.0 0.0;
-            min: 7 2;
-            max: 7 2;
+            max: 10 2;
             rel1 {
                relative: 0.0 0.5;
                to_y: "elm.text";
             }
-            image {
-               normal: "group-border-bg-upper.png";
-               middle: DEFAULT;
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-      }
-      part { name: "padding.button.right";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            min: 4 0;
-            max: 4 -1;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "bevel_upper_left";
-               to_y: "elm.text";
-            }
             rel2 {
+               relative: 1.0 1.0;
                to_y: "elm.text";
+            }
+            image {
+               normal: "separator-horizontal.png";
+               middle: DEFAULT;
             }
          }
       }
@@ -358,63 +326,70 @@ group { name: "elm/frame/base/outdent_top";
          type: IMAGE;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            min: 6 6;
-            max: 6 6;
+            min: 16 16;
+            max: 16 16;
             rel1 {
-               relative: 1.0 0.0;
-               to_x: "padding.button.right";
+               offset: 7 0;
+               to_x: "base";
                to_y: "elm.text";
             }
             rel2 {
                to_y: "elm.text";
             }
+            map {
+               on: 1;
+            }
             image {
-               normal: "icon-group-minimize.png";
+               normal: "icon_arrow_down.png";
                middle: DEFAULT;
             }
          }
          description { state: "collapsed" 0.0;
             align: 0.0 0.5;
-            min: 6 6;
-            max: 6 6;
+            min: 16 16;
+            max: 16 16;
             rel1 {
-               relative: 1.0 0.0;
-               to_x: "padding.button.right";
+               offset: 7 0;
+               to_x: "base";
                to_y: "elm.text";
             }
             rel2 {
                to_y: "elm.text";
             }
+            map {
+               on: 1;
+               smooth: 0;
+               rotation {
+                  center: "button";
+                  z: -90.0;
+               }
+            }
             image {
-               normal: "icon-group-expand.png";
+               normal: "icon_arrow_down.png";
                middle: DEFAULT;
             }
          }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
-         clip_to: "clip";
+         clip_to: "clipper";
          description { state: "default" 0.0;
+            align: 0.5 0.0;
             rel1 {
-               relative: 1.0 1.0;
-               to_x: "padding_top_left";
-               to_y: "elm.text";
+               to: "clipper";
             }
             rel2 {
-               relative: 0.0 0.0;
-               to: "padding_bottom_right";
+               to: "clipper";
             }
          }
          description { state: "collapsed" 0.0;
+            align: 0.5 0.0;
             minmul: 1.0 0.0;
             rel1 {
-               relative: 1.0 1.0;
-               to_x: "padding_top_left";
-               to_y: "elm.text";
+               to: "clipper";
             }
             rel2 {
-               relative: 0.0 0.0;
-               to: "padding_bottom_right";
+               to: "clipper";
             }
          }
       }
@@ -422,38 +397,41 @@ group { name: "elm/frame/base/outdent_top";
          type: RECT;
          ignore_flags: "ON_HOLD";
          description { state: "default" 0.0;
-            color: INVISIBLE_COLOR;
+            color: 0 0 0 0;
             rel1 {
+               to_x: "button";
                to_y: "elm.text";
             }
             rel2 {
-               to_y: "elm.text";
+               to: "elm.text";
             }
          }
       }
-      part { name: "clip";
+      part { name: "clipper";
          type: RECT;
          description { state: "default" 0.0;
+            fixed: 1 0;
             rel1 {
-               relative: 1.0 1.0;
-               to_x: "padding_top_left";
+               relative: 0.0 1.0;
+               offset: 0 3;
+               to_x: "base";
                to_y: "elm.text";
             }
             rel2 {
-               relative: 0.0 0.0;
-               to: "padding_bottom_right";
+               to: "base";
             }
          }
          description { state: "collapsed" 0.0;
-            color: WHITE_INVISIBLE_COLOR;
+            fixed: 1 0;
+            color: 255 255 255 0;
             rel1 {
-               relative: 1.0 1.0;
-               to_x: "padding_top_left";
+               relative: 0.0 1.0;
+               offset: 0 3;
+               to_x: "base";
                to_y: "elm.text";
             }
             rel2 {
-               relative: 0.0 0.0;
-               to: "padding_bottom_right";
+               to: "base";
             }
          }
       }
@@ -463,7 +441,6 @@ group { name: "elm/frame/base/outdent_top";
          signal: "mouse,up,1";
          source: "event";
          action: SIGNAL_EMIT "elm,action,click" "elm";
-
       }
       program { name: "action_toggle";
          signal: "elm,action,toggle";
@@ -473,38 +450,17 @@ group { name: "elm/frame/base/outdent_top";
             new Float:vl;
             get_state(PART:"elm.swallow.content", st, 30, vl);
             if (!strcmp(st, "default"))
-               run_program(PROGRAM:"collapse");
+            run_program(PROGRAM:"collapse");
             else
-               run_program(PROGRAM:"expand");
+            run_program(PROGRAM:"expand");
          }
-      }
-      program { name: "action_switch";
-        signal: "elm,action,switch";
-        source: "elm";
-        script {
-           new st[31];
-           new Float:vl;
-           get_state(PART:"elm.swallow.content", st, 30, vl);
-           if (!strcmp(st, "default")) {
-              set_state(PART:"elm.swallow.content", "collapsed", 0.0);
-              set_state(PART:"button", "collapsed", 0.0);
-              set_state(PART:"clip", "collapsed", 0.0);
-
-           }
-           else {
-              set_state(PART:"elm.swallow.content", "default", 0.0);
-              set_state(PART:"button", "default", 0.0);
-              set_state(PART:"clip", "default", 0.0);
-
-           }
-        }
       }
       program { name: "collapse";
          action: STATE_SET "collapsed" 0.00;
          transition: ACCELERATE 0.50000;
          target: "elm.swallow.content";
          target: "button";
-         target: "clip";
+         target: "clipper";
          after: "signal";
       }
       program { name: "expand";
@@ -512,11 +468,24 @@ group { name: "elm/frame/base/outdent_top";
          transition: DECELERATE 0.50000;
          target: "elm.swallow.content";
          target: "button";
-         target: "clip";
+         target: "clipper";
          after: "signal";
       }
       program { name: "signal";
          action: SIGNAL_EMIT "elm,anim,done" "elm";
+      }
+      program { name: "action_switch";
+         signal: "elm,action,switch";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.swallow.content", st, 30, vl);
+            if (!strcmp(st, "default"))
+               set_state(PART:"elm.swallow.content", "collapsed", 0.0);
+            else
+               set_state(PART:"elm.swallow.content", "default", 0.0);
+         }
       }
    }
 }
