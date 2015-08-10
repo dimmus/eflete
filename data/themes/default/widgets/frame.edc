@@ -1,60 +1,41 @@
 group { name: "elm/frame/base/default";
    images {
-      image: "icon-group-expand.png" COMP;
-      image: "icon-group-minimize.png" COMP;
-      image: "group-border-bg.png" COMP;
-      image: "group-border-bg-upper.png" COMP;
+      image: "separator-horizontal.png" COMP;
+      image: "frame_border.png" COMP;
+      image: "icon_arrow_down.png" COMP;
    }
    parts {
-      part { name: "padding_top_left";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 5 5;
-            max: 5 5;
-         }
-      }
-      part { name: "padding_bottom_right";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            min: 5 5;
-            max: 5 5;
-         }
-      }
       part { name: "base";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            color: INVISIBLE_COLOR;
+            color: 0 0 0 0;
             rel1 {
-               relative: 1.0 1.0;
-               to: "padding_top_left";
+               offset: 6 6;
             }
             rel2 {
-               relative: 0.0 0.0;
-               to: "padding_bottom_right";
+               offset: -7 -7;
             }
          }
       }
       part { name: "elm.text";
-         type: TEXTBLOCK;
+         type: TEXT;
          description { state: "default" 0.0;
             align: 0.0 0.0;
+            color_class: "main";
             rel1 {
-               relative: 1.0 1.0;
+               relative: 1.0 0.0;
                to_x: "button";
-               to_y: "padding_top_left";
+               to_y: "base";
             }
             text {
+               font: "PT";
+               size: 13;
                max: 1 1;
-               style: "frame";
             }
          }
       }
-      part { name: "bevel_upper_right";
+      part { name: "border_up";
          type: IMAGE;
          mouse_events: 0;
          description { state: "default" 0.0;
@@ -62,22 +43,21 @@ group { name: "elm/frame/base/default";
             max: -1 2;
             rel1 {
                relative: 1.0 0.0;
+               offset: 6 0;
                to_x: "elm.text";
-               to_y: "bevel";
+               to_y: "border";
             }
             rel2 {
-               to: "bevel";
+               offset: -4 -1;
+               to: "border";
             }
             image {
-               normal: "group-border-bg-upper.png";
+               normal: "separator-horizontal.png";
                middle: DEFAULT;
-            }
-            fill {
-               smooth: 0;
             }
          }
       }
-      part { name: "bevel";
+      part { name: "border";
          type: IMAGE;
          mouse_events: 0;
          description { state: "default" 0.0;
@@ -90,8 +70,8 @@ group { name: "elm/frame/base/default";
                to: "base";
             }
             image {
-               normal: "group-border-bg.png";
-               border: 1 1 0 2;
+               normal: "frame_border.png";
+               border: 7 3 3 4;
                middle: NONE;
             }
             fill {
@@ -99,105 +79,74 @@ group { name: "elm/frame/base/default";
             }
          }
       }
-      part { name: "bevel_upper_left";
-         type: IMAGE;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 7 2;
-            max: 7 2;
-            rel1 {
-               offset: 1 0;
-               to: "bevel";
-            }
-            rel2 {
-               to: "base";
-            }
-            image {
-               normal: "group-border-bg-upper.png";
-               middle: DEFAULT;
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-      }
-      part { name: "padding.button.right";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            min: 4 0;
-            max: 4 -1;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "bevel_upper_left";
-               to_y: "elm.text";
-            }
-            rel2 {
-               to_y: "elm.text";
-            }
-         }
-      }
       part { name: "button";
          type: IMAGE;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            min: 6 6;
-            max: 6 6;
+            min: 16 16;
+            max: 16 16;
             rel1 {
-               relative: 1.0 0.0;
-               to_x: "padding.button.right";
+               offset: 7 0;
+               to_x: "border";
                to_y: "elm.text";
             }
             rel2 {
                to_y: "elm.text";
             }
+            map {
+               on: 1;
+            }
             image {
-               normal: "icon-group-minimize.png";
+               normal: "icon_arrow_down.png";
                middle: DEFAULT;
             }
          }
          description { state: "collapsed" 0.0;
             align: 0.0 0.5;
-            min: 6 6;
-            max: 6 6;
+            min: 16 16;
+            max: 16 16;
             rel1 {
-               relative: 1.0 0.0;
-               to_x: "padding.button.right";
+               offset: 7 0;
+               to_x: "border";
                to_y: "elm.text";
             }
             rel2 {
                to_y: "elm.text";
             }
+            map {
+               on: 1;
+               smooth: 0;
+               rotation {
+                  center: "button";
+                  z: -90.0;
+               }
+            }
             image {
-               normal: "icon-group-expand.png";
+               normal: "icon_arrow_down.png";
                middle: DEFAULT;
             }
          }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
-         clip_to: "clip";
+         clip_to: "clippper";
          description { state: "default" 0.0;
+            align: 0.5 0.0;
             rel1 {
-               relative: 1.0 1.0;
-               to: "padding.content.top_left";
+               to: "clippper";
             }
             rel2 {
-               relative: 0.0 0.0;
-               offset: -2 -2;
-               to: "podffing.content.bottom_right";
+               to: "clippper";
             }
          }
          description { state: "collapsed" 0.0;
+            align: 0.5 0.0;
             minmul: 1.0 0.0;
             rel1 {
-               relative: 1.0 1.0;
-               to: "padding.content.top_left";
+               to: "clippper";
             }
             rel2 {
-               relative: 0.0 0.0;
-               to: "podffing.content.bottom_right";
+               to: "clippper";
             }
          }
       }
@@ -205,62 +154,43 @@ group { name: "elm/frame/base/default";
          type: RECT;
          ignore_flags: "ON_HOLD";
          description { state: "default" 0.0;
-            color: INVISIBLE_COLOR;
+            color: 0 0 0 0;
             rel1 {
+               to_x: "button";
                to_y: "elm.text";
             }
             rel2 {
-               to_y: "elm.text";
+               to: "elm.text";
             }
          }
       }
-      part { name: "clip";
+      part { name: "clippper";
          type: RECT;
          description { state: "default" 0.0;
+            fixed: 1 0;
             rel1 {
-               relative: 1.0 1.0;
-               to: "padding.content.top_left";
+               relative: 0.0 1.0;
+               offset: 7 7;
+               to_x: "base";
+               to_y: "elm.text";
             }
             rel2 {
-               relative: 0.0 0.0;
-               to: "podffing.content.bottom_right";
+               offset: -8 -8;
+               to: "border";
             }
          }
          description { state: "collapsed" 0.0;
+            fixed: 1 0;
             color: 255 255 255 0;
             rel1 {
-               relative: 1.0 1.0;
-               to: "padding.content.top_left";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to: "podffing.content.bottom_right";
-            }
-         }
-      }
-      part { name: "padding.content.top_left";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 6 5;
-            max: 6 5;
-            rel1 {
                relative: 0.0 1.0;
-               offset: 1 0;
-               to_x: "bevel";
+               offset: 7 7;
+               to_x: "base";
                to_y: "elm.text";
             }
-         }
-      }
-      part { name: "podffing.content.bottom_right";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            min: 6 5;
-            max: 6 5;
             rel2 {
-               offset: -2 -3;
-               to: "bevel";
+               offset: -8 -8;
+               to: "border";
             }
          }
       }
@@ -279,10 +209,29 @@ group { name: "elm/frame/base/default";
             new Float:vl;
             get_state(PART:"elm.swallow.content", st, 30, vl);
             if (!strcmp(st, "default"))
-              run_program(PROGRAM:"collapse");
+            run_program(PROGRAM:"collapse");
             else
-              run_program(PROGRAM:"expand");
+            run_program(PROGRAM:"expand");
          }
+      }
+      program { name: "collapse";
+         action: STATE_SET "collapsed" 0.00;
+         transition: ACCELERATE 0.50000;
+         target: "elm.swallow.content";
+         target: "button";
+         target: "clippper";
+         after: "signal";
+      }
+      program { name: "expand";
+         action: STATE_SET "default" 0.00;
+         transition: DECELERATE 0.50000;
+         target: "elm.swallow.content";
+         target: "button";
+         target: "clippper";
+         after: "signal";
+      }
+      program { name: "signal";
+         action: SIGNAL_EMIT "elm,anim,done" "elm";
       }
       program { name: "action_switch";
          signal: "elm,action,switch";
@@ -292,29 +241,10 @@ group { name: "elm/frame/base/default";
             new Float:vl;
             get_state(PART:"elm.swallow.content", st, 30, vl);
             if (!strcmp(st, "default"))
-              set_state(PART:"elm.swallow.content", "collapsed", 0.0);
+               set_state(PART:"elm.swallow.content", "collapsed", 0.0);
             else
-              set_state(PART:"elm.swallow.content", "default", 0.0);
+               set_state(PART:"elm.swallow.content", "default", 0.0);
          }
-      }
-      program { name: "collapse";
-         action: STATE_SET "collapsed" 0.00;
-         transition: ACCELERATE 0.50000;
-         target: "elm.swallow.content";
-         target: "button";
-         target: "clip";
-         after: "signal";
-      }
-      program { name: "expand";
-         action: STATE_SET "default" 0.00;
-         transition: DECELERATE 0.50000;
-         target: "elm.swallow.content";
-         target: "button";
-         target: "clip";
-         after: "signal";
-      }
-      program { name: "signal";
-         action: SIGNAL_EMIT "elm,anim,done" "elm";
       }
    }
 }
