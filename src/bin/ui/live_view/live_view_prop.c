@@ -237,10 +237,10 @@ live_view_property_style_set(Evas_Object *property,
    if (!pd->prop_swallow.swallows)
      {
         FRAME_LIVE_VIEW_ADD(property, pd->prop_swallow.frame, true, _("Swallows"), pd->visual);
-        elm_object_style_set(pd->prop_swallow.frame, "live_view");
+        elm_object_style_set(pd->prop_swallow.frame, "icon");
 
         CHECK_ADD(prop_box, pd->prop_swallow.check);
-        elm_object_part_content_set(pd->prop_swallow.frame, "elm.swallow.check", pd->prop_swallow.check);
+        elm_object_part_content_set(pd->prop_swallow.frame, "elm.swallow.icon", pd->prop_swallow.check);
 
         BOX_ADD(pd->prop_swallow.frame, pd->prop_swallow.swallows, false, false)
         elm_box_padding_set(pd->prop_swallow.swallows, 0, 7);
@@ -256,10 +256,10 @@ live_view_property_style_set(Evas_Object *property,
    if (!pd->prop_text.texts)
      {
         FRAME_LIVE_VIEW_ADD(property, pd->prop_text.frame, true, _("Text"), pd->visual);
-        elm_object_style_set(pd->prop_text.frame, "live_view");
+        elm_object_style_set(pd->prop_text.frame, "icon");
 
         CHECK_ADD(prop_box, pd->prop_text.check);
-        elm_object_part_content_set(pd->prop_text.frame, "elm.swallow.check", pd->prop_text.check);
+        elm_object_part_content_set(pd->prop_text.frame, "elm.swallow.icon", pd->prop_text.check);
 
         BOX_ADD(pd->prop_text.frame, pd->prop_text.texts, false, false)
         elm_box_padding_set(pd->prop_text.texts, 0, 7);
@@ -275,7 +275,6 @@ live_view_property_style_set(Evas_Object *property,
    if ((!pd->in_prog_edit) && (!pd->prop_signal.signals))
      {
         FRAME_LIVE_VIEW_ADD(property, pd->prop_signal.frame, true, _("Signals"), pd->visual);
-        elm_object_style_set(pd->prop_signal.frame, "live_view");
 
         BOX_ADD(pd->prop_signal.frame, pd->prop_signal.signals, false, false)
         elm_box_align_set(pd->prop_signal.signals, 0.5, 0.0);
@@ -742,7 +741,7 @@ live_view_property_style_unset(Evas_Object *property)
      {
         evas_object_hide(pd->prop_swallow.frame);
         items_list = elm_box_children_get(pd->prop_swallow.swallows);
-        check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
+        check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.icon");
         elm_check_state_set(check, false);
      }
 
@@ -770,7 +769,7 @@ live_view_property_style_unset(Evas_Object *property)
    if (pd->prop_text.frame)
      {
         UPDATE_PROPERTY_FRAME(prop_box, pd->prop_text.frame, pd->prop_text.texts)
-        check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
+        check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.icon");
         elm_check_state_set(check, false);
      }
 
