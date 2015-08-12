@@ -21,7 +21,10 @@
 
 typedef struct
 {
+   Evas_Object *layout;
    Evas_Object *genlist;
+   Evas_Object *btn_add;
+   Evas_Object *btn_del;
    Elm_Genlist_Item_Class *itc_group;
    Elm_Genlist_Item_Class *itc_folder;
 } Navigator;
@@ -251,11 +254,28 @@ _on_clicked_double(void *data __UNUSED__,
      }
 }
 
+static void
+_btn_add_group_cb(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   TODO("Implement group add dialog");
+}
+
+static void
+_btn_del_group_cb(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   TODO("Implement group del dialog");
+}
+
 Evas_Object *
 navigator_add(void)
 {
    Eina_List *folders = NULL, *groups = NULL;
-   Eina_Stringshare *prefix;
+   Eina_Stringshare *prefix, *project_text;
+   Evas_Object *icon;
    Group *group;
    App_Data *ap = app_data_get();
 
@@ -276,10 +296,33 @@ navigator_add(void)
    navigator.itc_group->func.state_get = NULL;
    navigator.itc_group->func.del = NULL;
 
-   navigator.genlist = elm_genlist_add(ap->win);
+   navigator.layout = elm_layout_add(ap->win);
+   elm_layout_theme_set(navigator.layout, "layout", "navigator", "default");
+   evas_object_show(navigator.layout);
 
-   evas_object_size_hint_align_set(navigator.genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(navigator.genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   navigator.btn_add = elm_button_add(navigator.layout);
+   ICON_STANDARD_ADD(navigator.btn_add, icon, true, "plus");
+   elm_object_part_content_set(navigator.btn_add, NULL, icon);
+   evas_object_smart_callback_add(navigator.btn_add, "clicked", _btn_add_group_cb, NULL);
+   elm_object_style_set(navigator.btn_add, "anchor");
+   elm_object_part_content_set(navigator.layout, "elm.swallow.bt1", navigator.btn_add);
+   elm_object_disabled_set(navigator.btn_add, true);
+
+   navigator.btn_del = elm_button_add(navigator.layout);
+   ICON_STANDARD_ADD(navigator.btn_del, icon, true, "minus");
+   elm_object_part_content_set(navigator.btn_del, NULL, icon);
+   evas_object_smart_callback_add (navigator.btn_del, "clicked", _btn_del_group_cb, NULL);
+   elm_object_style_set(navigator.btn_del, "anchor");
+   elm_object_part_content_set(navigator.layout, "elm.swallow.bt0", navigator.btn_del);
+   elm_object_disabled_set(navigator.btn_del, true);
+
+   navigator.genlist = elm_genlist_add(navigator.layout);
+   evas_object_show(navigator.genlist);
+   elm_object_content_set(navigator.layout, navigator.genlist);
+
+   project_text = eina_stringshare_printf(_("Project \"%s\""), ap->project->name);
+   elm_object_text_set(navigator.layout, project_text);
+   eina_stringshare_del(project_text);
 
    _tree_items_get("", &folders, &groups);
 
@@ -312,5 +355,5 @@ navigator_add(void)
 
    TODO("Add deletion callback and free resources");
 
-   return navigator.genlist;
+   return navigator.layout;
 }
