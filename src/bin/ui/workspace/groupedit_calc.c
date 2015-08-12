@@ -53,16 +53,13 @@ static void
 _part_object_area_calc(Ws_Groupedit_Smart_Data *sd);
 
 static void
-_rectangle_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
+_common_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
 
 static void
 _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file);
 
 static void
 _proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
-
-static void
-_text_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
 
 static void
 _textblock_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
@@ -792,13 +789,22 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
         switch (ept)
           {
            case EDJE_PART_TYPE_RECTANGLE:
-              _rectangle_param_update(gp, sd->edit_obj);
+              _common_param_update(gp, sd->edit_obj);
               _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
            case EDJE_PART_TYPE_TEXT:
-              _text_param_update(gp, sd->edit_obj);
+              _common_param_update(gp, sd->edit_obj);
               _part_text_recalc_apply(sd, gp, offset_x, offset_y);
               break;
+/*
+	  !!!uncomment this case after merging https://phab.enlightenment.org/D2940!!!
+
+           case EDJE_PART_TYPE_TEXTBLOCK:
+             common_param_update(gp, sd->edit_obj);
+              _part_recalc_apply(sd, gp, offset_x, offset_y);
+              break;
+*/
+
            case EDJE_PART_TYPE_IMAGE:
               _image_param_update(gp, sd->edit_obj, sd->edit_obj_file);
               _part_recalc_apply(sd, gp, offset_x, offset_y);
@@ -807,6 +813,7 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
               _proxy_param_update(gp, sd->edit_obj);
               _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
+/* delete this case after merging https://phab.enlightenment.org/D2940 */
            case EDJE_PART_TYPE_TEXTBLOCK:
               _textblock_param_update(gp, sd->edit_obj);
               _part_recalc_apply(sd, gp, offset_x, offset_y);
@@ -892,7 +899,15 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
    switch (type)
      {
       case EDJE_PART_TYPE_RECTANGLE:
-         gp->draw = evas_object_rectangle_add(sd->e);
+         gp->draw = edje_object_add(sd->e);
+         if (!edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP))
+           ERR("Image can't be loaded.\n");
+         evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_DEL,
+                                        _image_delete, NULL);
+
+         image = evas_object_image_filled_add(sd->e);
+         edje_object_part_swallow(gp->draw, "swallow.image", image);
+
          BORDER_ADD(0, 0, 0, 0)
          break;
       case EDJE_PART_TYPE_TEXT:
@@ -907,13 +922,28 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
 
          BORDER_ADD(122, 122, 122, 255)
          break;
+/*
+	  !!!uncomment this case after merging https://phab.enlightenment.org/D2940!!!
+      case EDJE_PART_TYPE_TEXTBLOCK:
+         gp->draw = edje_object_add(sd->e);
+         if (!edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP))
+           ERR("Image can't be loaded.\n");
+         evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_DEL,
+                                        _image_delete, NULL);
+
+         image = evas_object_image_filled_add(sd->e);
+         edje_object_part_swallow(gp->draw, "swallow.image", image);
+
+         BORDER_ADD(122, 122, 122, 255)
+         break;
+*/
       case EDJE_PART_TYPE_IMAGE:
          gp->draw = edje_object_add(sd->e);
          if (!edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP))
            ERR("Image can't be loaded.\n");
          evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_DEL,
                                         _image_delete, NULL);
-         o = evas_object_image_add(sd->e);
+         o = evas_object_image_filled_add(sd->e);
          edje_object_part_swallow(gp->draw, "swallow.image", o);
          BORDER_ADD(0, 0, 0, 0)
          break;
@@ -931,6 +961,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          IMAGE_ADD_NEW(sd->obj, gp->draw, "bg", "swallow")
          BORDER_ADD(120, 103, 140, 255)
          break;
+/* delete this case after merging https://phab.enlightenment.org/D2940 */
       case EDJE_PART_TYPE_TEXTBLOCK:
          gp->draw = evas_object_textblock_add(sd->e);
          BORDER_ADD(122, 122, 122, 255)
@@ -1179,18 +1210,6 @@ _color_apply(Groupedit_Part *gp, Evas_Object *edit_obj, const char *state, doubl
         evas_object_text_glow2_color_set(gp->draw, r3, g3, b3, a3);
      }
 }
-static void
-_rectangle_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
-{
-   PART_STATE_GET(edit_obj, gp->name);
-
-   assert(gp != NULL);
-   assert(edit_obj != NULL);
-
-   _color_apply(gp, edit_obj, state, value);
-
-   PART_STATE_FREE
-}
 
 static void
 _image_proxy_common_param_update(Evas_Object *image, Groupedit_Part *gp, Evas_Object *edit_obj)
@@ -1340,7 +1359,7 @@ _proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 }
 
 static void
-_text_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
+_common_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 {
    Evas_Object *image;
 
@@ -1350,7 +1369,6 @@ _text_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
    image = edje_object_part_swallow_get(gp->draw, "swallow.image");
 
    Evas_Object *text_part = (Evas_Object *)edje_object_part_object_get(edit_obj, gp->name);
-   TODO("This should be removed. Perfectly, proxy should work from begining and doesn't need update! Need to refactor");
    evas_object_image_source_set(image, NULL);
    evas_object_image_source_set(image, text_part);
    evas_object_image_source_clip_set(image, false);
