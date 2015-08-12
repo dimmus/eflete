@@ -2577,7 +2577,6 @@ group { name: "elm/layout/image_editor/image_info";
 group { name: "elm/layout/sound_editor/default";
    images {
       image: "separator-horizontal.png" COMP;
-      image: "focus-outer-glow.png" COMP;
    }
    parts {
       part { name: "area.info";
@@ -2586,26 +2585,6 @@ group { name: "elm/layout/sound_editor/default";
          description { state: "default" 0.0;
             align: 1.0 1.0;
             SET_SIZE(320, 200);
-         }
-      }
-      part { name: "sound_decoration";
-         description { state: "default" 0.0;
-            fixed: 1 1;
-            visible: 0;
-            align: 0.5 0.0;
-            aspect_preference: BOTH;
-            image {
-               normal: "focus-outer-glow.png";
-               border: 3 3 3 3;
-               middle: NONE;
-            }
-            color: DARK_GREY_BG_COLOR;
-            rel1.to: "area.info";
-            rel2.to: "area.info";
-         }
-         description { state: "focused" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
          }
       }
       part { name: "area.player";
@@ -2736,14 +2715,6 @@ group { name: "elm/layout/sound_editor/default";
                to_y: "area.edit";
             }
          }
-      }
-   }
-   programs {
-      program { name: "focused";
-         signal: "eflete,sound,clicked";
-         source: "eflete";
-         action: STATE_SET "focused" 0.0;
-         target: "sound_decoration";
       }
    }
 }

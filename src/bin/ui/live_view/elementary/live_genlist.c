@@ -145,8 +145,6 @@ _glist_text_get(void        *data,
 {
    Eina_List *part_list = evas_object_data_get(obj, TEXT_LIST);
 
-   assert(part_list != NULL);
-
    Eina_List *l = NULL;
    const char *part_name = NULL;
    const char *text = (char *) data;
@@ -166,8 +164,6 @@ _glist_content_get(void *data __UNUSED__,
                    const char  *part)
 {
    Eina_List *part_list = evas_object_data_get(obj, SWALLOW_LIST);
-
-   assert(part_list != NULL);
 
    Eina_List *l = NULL;
    const char *part_name = NULL;

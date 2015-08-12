@@ -125,6 +125,11 @@ color_classes {
       color2: 0 0 0 0;
       color3: 0 0 0 0;
    }
+   color_class { name: "select_dark";
+      color: 52 70 84 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
    color_class { name: "invalid";
       color: 155 58 58 255;
       color2: 0 0 0 0;
