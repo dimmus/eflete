@@ -137,7 +137,7 @@ _open_project(void *data __UNUSED__)
 
    pm_project_open(open,
                    _message_print,
-                   _import_end,
+                   _open_end,
                    NULL);
 }
 
@@ -204,7 +204,7 @@ elm_main(int argc, char **argv)
                  (ecore_file_exists(open)))
                {
                   ecore_job_add(_open_project, NULL);
-
+                  goto run;
                }
              else
                {
@@ -252,9 +252,11 @@ elm_main(int argc, char **argv)
               }
             ecore_job_add(_import_edj, NULL);
             eina_stringshare_del(pro_folder); pro_folder = NULL;
+            goto run;
           }
-        else evas_object_show(ap->win);
 
+        evas_object_show(ap->win);
+run:
         elm_run();
 #ifdef HAVE_ENVENTOR
         enventor_shutdown();
