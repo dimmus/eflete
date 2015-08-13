@@ -68,10 +68,9 @@ EFLETE_TEST(live_view_theme_update_test_p1)
    Eina_Bool res = EINA_FALSE;
 
    elm_init(0, 0);
-   setup("live_view_theme_update_test_p1");
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_project_open("./live_view_theme_update_test_p1/live_view_theme_update_test_p1.pro");
+   project = setup("live_view_theme_update_test_p1");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, project->mmap_file);
@@ -128,10 +127,9 @@ EFLETE_TEST(live_view_theme_update_test_p2)
    Eina_Bool res = EINA_FALSE;
 
    elm_init(0, 0);
-   setup("live_view_theme_update_test_p2");
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_project_open("./live_view_theme_update_test_p2/live_view_theme_update_test_p2.pro");
+   project = setup("live_view_theme_update_test_p2");
    e = evas_object_evas_get(parent);
    layout = wm_style_add("load/layout/test", "load/layout/test", LAYOUT, NULL);
    wm_style_data_load(layout, e, project->mmap_file);

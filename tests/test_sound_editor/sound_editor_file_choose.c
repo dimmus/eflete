@@ -57,7 +57,6 @@
 EFLETE_TEST (sound_editor_file_choose_test_p)
 {
    elm_init(0,0);
-   setup("sound_editor_file_choose_test_p");
 
    App_Data *app;
    app_init();
@@ -65,7 +64,7 @@ EFLETE_TEST (sound_editor_file_choose_test_p)
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./sound_editor_file_choose_test_p/sound_editor_file_choose_test_p.pro");
+   app->project = setup("sound_editor_file_choose_test_p");
    wm_widgets_list_objects_load(app->project->widgets, evas_object_evas_get(app->win), app->project->mmap_file);
    sound_editor = sound_editor_window_add(app->project, SOUND_EDITOR_EDIT);
 
@@ -109,7 +108,6 @@ END_TEST
 EFLETE_TEST (sound_editor_file_choose_test_n3)
 {
    elm_init(0,0);
-   setup("sound_editor_file_choose_test_n3");
 
    App_Data *app;
    app_init();
@@ -117,7 +115,7 @@ EFLETE_TEST (sound_editor_file_choose_test_n3)
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./sound_editor_file_choose_test_n3/sound_editor_file_choose_test_n3.pro");
+   app->project = setup("sound_editor_file_choose_test_n3");
    sound_editor = sound_editor_window_add(app->project, SOUND_EDITOR_EDIT);
 
    ck_assert_msg(sound_editor_file_choose(sound_editor, NULL) == EINA_FALSE, "Selected sound that not exist");

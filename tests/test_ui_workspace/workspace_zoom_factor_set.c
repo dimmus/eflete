@@ -59,11 +59,10 @@ EFLETE_TEST (workspace_zoom_factor_set_test_p)
 
    elm_init(0, 0);
    app_init();
-   setup("workspace_zoom_factor_get_test_p");
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./workspace_zoom_factor_get_test_p/workspace_zoom_factor_get_test_p.pro");
+   app->project = setup("workspace_zoom_factor_get_test_p");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->mmap_file);
    blocks_show(app);

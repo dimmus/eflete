@@ -59,7 +59,6 @@
 EFLETE_TEST (register_callbacks_test_p)
 {
    elm_init(0, 0);
-   setup("register_callbacks_test_p");
 
    elm_theme_extension_add(NULL, EFLETE_THEME);
    Evas_Object *widget_list;
@@ -70,7 +69,7 @@ EFLETE_TEST (register_callbacks_test_p)
    app_init();
    app_data = app_data_get();
    ui_main_window_add(app_data);
-   project = pm_project_open("./register_callbacks_test_p/register_callbacks_test_p.pro");
+   project = setup("register_callbacks_test_p");
    widget_list = ui_widget_list_add(app_data->win);
    ui_widget_list_data_set(widget_list, project);
    ui_block_widget_list_set(app_data, widget_list);

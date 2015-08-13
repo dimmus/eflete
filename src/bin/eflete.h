@@ -87,7 +87,6 @@ struct _App_Data
                             application. */
    Evas_Object *statusbar; /**< The statusbar object, which contain some items */
    int modal_editor; /**< count of open editors */
-   Project_Thread *pr_thread;
    struct {
       Evas_Object *left;
       Evas_Object *right;

@@ -55,7 +55,6 @@
 EFLETE_TEST(sound_editor_window_add_test_p1)
 {
    elm_init(0,0);
-   setup("sound_editor_window_add_test_p1");
 
    Evas_Object *sounds;
    App_Data *app = NULL;
@@ -63,7 +62,7 @@ EFLETE_TEST(sound_editor_window_add_test_p1)
    app_init();
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./sound_editor_window_add_test_p1/sound_editor_window_add_test_p1.pro");
+   app->project = setup("sound_editor_window_add_test_p1");
 
    sounds = sound_editor_window_add(app->project, SOUND_EDITOR_EDIT);
    ck_assert_msg(sounds != NULL, "cannot create sound editor window in SOUND_EDITOR_EDIT mode");
@@ -101,14 +100,13 @@ END_TEST
 EFLETE_TEST (sound_editor_window_add_test_p2)
 {
    elm_init(0,0);
-   setup("sound_editor_window_add_test_p2");
 
    App_Data *app;
    app_init();
    Evas_Object *sounds;
 
    app = app_data_get();
-   app->project = pm_project_open("./sound_editor_window_add_test_p2/sound_editor_window_add_test_p2.pro");
+   app->project = setup("sound_editor_window_add_test_p2");
    ui_main_window_add(app);
 
    sounds = sound_editor_window_add(app->project, SOUND_EDITOR_SAMPLE_SELECT);
@@ -147,14 +145,13 @@ END_TEST
 EFLETE_TEST (sound_editor_window_add_test_p3)
 {
    elm_init(0,0);
-   setup("sound_editor_window_add_test_p3");
 
    App_Data *app;
    app_init();
    Evas_Object *sounds;
 
    app = app_data_get();
-   app->project = pm_project_open("./sound_editor_window_add_test_p3/sound_editor_window_add_test_p3.pro");
+   app->project = setup("sound_editor_window_add_test_p3");
    ui_main_window_add(app);
 
    sounds = sound_editor_window_add(app->project, SOUND_EDITOR_TONE_SELECT);

@@ -87,11 +87,20 @@ struct _Project
    /**< list of custom layouts int loaded theme */
    Eina_Inlist *layouts;
 
+   Eina_List *groups;
+   Eina_List *images;
+   Eina_List *sounds;
+   Eina_List *tones;
+   Eina_List *fonts;
+   Eina_List *colorclasses;
+   Eina_List *styles;
+
    Eina_File *mmap_file; /**< mmaped dev file*/
 
    Eina_List *added_sounds;
    Eina_List *nsimage_list;
 
+   TODO("Fix paths in enventor mode. Looks like enventor project can't be moved")
    struct
    {
       Eina_List *images;  /**< pathes to the image dirs */
@@ -159,12 +168,6 @@ typedef enum _Build Build;
 typedef enum _PM_Project_Result PM_Project_Result;
 
 /**
- * @typedef Project_Thread
- * @ingroup ProjectManager
- */
-typedef struct _Project_Thread Project_Thread;
-
-/**
  * @typedef PM_Project_Progress_Cb
  *
  * The Project process callback, this callback be called to receive the progress
@@ -196,52 +199,24 @@ typedef void
 (* PM_Project_End_Cb)(void *data, PM_Project_Result result);
 
 /**
- * @struct _Project_Thread
- *
- * A handler for Project process.
- *
- * @ingroup ProjectManager
- */
-struct _Project_Thread
-{
-   /** The handler of Project thread. */
-   Eina_Thread thread;
-   /** The progress callback. See #PM_Project_Progress_Cb.*/
-   PM_Project_Progress_Cb func_progress;
-   /** The end callback. See #PM_Project_End_Cb. */
-   PM_Project_End_Cb func_end;
-   /** The project process result. */
-   PM_Project_Result result;
-   /** The user data. */
-   void *data;
-   /** The new project, was created in the Project process. This pointer will be
-    * NULL until the Project process finished it's job.*/
-   Project *project;
-   /** Name of project what must be created. */
-   const char *name;
-   /** Path to new project. */
-   const char *path;
-   /** Path to imported edj file. */
-   const char *edj;
-   /** Path to imported edc file. */
-   const char *edc;
-   /** edje_cc options. Used for 'new project' and 'import from edc'. */
-   const char *build_options;
-   /** Mutex, I say no more then. */
-   Eina_Lock mutex;
-};
-
-/**
  * Free the Project Thread object.
- *
- * @param worker The Project thread.
  *
  * @return EINA_TRUE on success, EINA_FALSE if thread running.
  *
  * @ingroup ProjectManager
  */
 Eina_Bool
-pm_project_thread_free(Project_Thread *worker) EINA_ARG_NONNULL(1);
+pm_project_thread_free(void);
+
+/**
+ * Get project result.
+ *
+ * @return project thread result.
+ *
+ * @ingroup ProjectManager
+ */
+PM_Project_Result
+pm_project_thread_result_get(void);
 
 /**
  * Create a new project which based on the imported edj file.
@@ -255,17 +230,15 @@ pm_project_thread_free(Project_Thread *worker) EINA_ARG_NONNULL(1);
  *        Project progress;
  * @param data The user data.
  *
- * @return The new #Project_Thread object, othewise NULL.
- *
  * @ingroup ProjectManager
  */
-Project_Thread *
+void
 pm_project_import_edj(const char *name,
                       const char *path,
                       const char *edj,
                       PM_Project_Progress_Cb func_progress,
                       PM_Project_End_Cb func_end,
-                      const void *data) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
+                      const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
  * Create a new project which base on the imported edc file.
@@ -284,51 +257,46 @@ pm_project_import_edj(const char *name,
  *        Project progress;
  * @param data The user data.
  *
- * @return The new #Project_Thread object, othewise NULL.
- *
  * @note Function will not check a edc file, and directories.
  *
  * @ingroup ProjectManager
  */
-Project_Thread *
+void
 pm_project_import_edc(const char *name,
                       const char *path,
                       const char *edc,
                       const char *import_options,
                       PM_Project_Progress_Cb func_progress,
                       PM_Project_End_Cb func_end,
-                      const void *data) EINA_ARG_NONNULL(1, 2, 3, 4) EINA_WARN_UNUSED_RESULT;
+                      const void *data) EINA_ARG_NONNULL(1, 2, 3, 4);
 
 /**
  * Get the Project object from thread. If thread not finished, function will
  * return NULL.
  *
- * @param worker The Project thread.
- *
  * @return Project object, or NULL if thread not finished or finished with error.
  *
  * @ingroup ProjectManager
  */
-static inline Project *
-pm_project_thread_project_get(Project_Thread *worker)
-{
-   assert(worker != NULL);
-
-   return worker->project;
-}
-
+Project *
+pm_project_thread_project_get();
 
 /**
  * Open Eflete project.
  *
  * @param path The path to the Eflete project file.
- *
- * @return The #Project object, otherwise NULL.
+ * @param func_progress The progress callback;
+ * @param func_end The end callback, this callback be called on the end of
+ *        Project progress;
+ * @param data The user data.
  *
  * @ingroup ProjectManager
  */
-Project *
-pm_project_open(const char *path) EINA_ARG_NONNULL(1);
+void
+pm_project_open(const char *path,
+                PM_Project_Progress_Cb func_progress,
+                PM_Project_End_Cb func_end,
+                const void *data);
 
 /**
  * Internal save. Should be used after major changes that are affecting dev file.
@@ -352,11 +320,9 @@ pm_save_to_dev(Project *project, Style *style, Eina_Bool save);
  *        Project progress;
  * @param data The user data.
  *
- * @return The new #Project_Thread object, othewise NULL.
- *
  * @ingroup ProjectManager
  */
-Project_Thread *
+void
 pm_project_save(Project *project,
                 PM_Project_Progress_Cb func_progress,
                 PM_Project_End_Cb func_end,
@@ -365,14 +331,12 @@ pm_project_save(Project *project,
 /**
  * Cancel the Project thread, and called func_end.
  *
- * @param worker The Project thread.
- *
  * @return EINA_TRUE on success, otherwise EINA_FALSE.
  *
  * @ingroup ProjectManager
  */
 Eina_Bool
-pm_project_thread_cancel(Project_Thread *worker) EINA_ARG_NONNULL(1);
+pm_project_thread_cancel(void);
 
 
 /**
@@ -518,11 +482,9 @@ pm_project_source_code_export(Project *pro, const char *dir_path);
  *        Project progress;
  * @param data The user data.
  *
- * @return The new #Project_Thread object, othewise NULL.
- *
  * @ingroup ProjectManager.
  */
-Project_Thread *
+void
 pm_project_develop_export(Project *pro,
                           const char *path,
                           PM_Project_Progress_Cb func_progress,
@@ -538,13 +500,11 @@ pm_project_develop_export(Project *pro,
  *        Project progress;
  * @param data The user data.
  *
- * @return The new #Project_Thread object, othewise NULL.
- *
  * @warning Use only in enventor mode.
  *
  * @ingroup ProjectManager
  */
-Project_Thread *
+void
 pm_project_enventor_save(Project *project,
                          PM_Project_Progress_Cb func_progress,
                          PM_Project_End_Cb func_end,
@@ -572,4 +532,232 @@ pm_project_enventor_save(Project *project,
 Eina_Bool
 pm_style_resource_export(Project *pro, Style *style, Eina_Stringshare *path);
 
+
+/**
+ * @struct _Resource
+ *
+ * Common structure for resources that can be used somewhere (images, sounds,
+ * states etc.)
+ *
+ * @ingroup ProjectManager
+ */
+struct _Resource
+{
+   Eina_Stringshare *name;
+   Eina_List *used_in;
+};
+
+/**
+ * @typedef Resource
+ * @ingroup ProjectManager
+ */
+typedef struct _Resource Resource;
+
+/**
+ * @struct _External_Resource
+ *
+ * Common structure for resources that can be used somewhere (images, sounds,
+ * states etc.)
+ *
+ * @ingroup ProjectManager
+ */
+struct _External_Resource
+{
+   Eina_Stringshare *name;
+   Eina_List *used_in;
+   Eina_Stringshare *source;
+};
+
+/**
+ * @struct _Tone_Resource
+ *
+ * Common structure for resources that can be used somewhere (images, sounds,
+ * states etc.)
+ *
+ * @ingroup ProjectManager
+ */
+struct _Tone_Resource
+{
+   Eina_Stringshare *name;
+   Eina_List *used_in;
+   int freq;
+};
+
+/**
+ * @struct _Colorclass_Resource
+ *
+ * Common structure for resources that can be used somewhere (images, sounds,
+ * states etc.)
+ *
+ * @ingroup ProjectManager
+ */
+struct _Colorclass_Resource
+{
+   Eina_Stringshare *name;
+   Eina_List *used_in;
+
+   struct {
+      int r,g,b,a;
+   } color1;
+   struct {
+      int r,g,b,a;
+   } color2;
+   struct {
+      int r,g,b,a;
+   } color3;
+};
+
+/**
+ * @typedef Colorclass_Resource
+ * @ingroup ProjectManager
+ */
+typedef struct _Colorclass_Resource Colorclass_Resource;
+
+
+/**
+ * @typedef Tone_Resource
+ * @ingroup ProjectManager
+ */
+typedef struct _Tone_Resource Tone_Resource;
+
+
+/**
+ * @typedef External_Resource
+ * @ingroup ProjectManager
+ */
+typedef struct _External_Resource External_Resource;
+
+
+static int
+resource_cmp(Resource *res1, Resource *res2)
+{
+   return strcmp(res1->name, res2->name);
+}
+
+/**
+ * Find resource in sorted list by its name.
+ *
+ * @param list Resources list
+ * @param name Name of the resource to be found
+ *
+ * @return pointer to resource or NULL if it was not found
+ *
+ * @ingroup ProjectManager.
+ */
+static inline void*
+pm_resource_get(Eina_List *list, Eina_Stringshare *name)
+{
+   Resource res;
+   res.name = name;
+   return eina_list_search_sorted(list, (Eina_Compare_Cb)resource_cmp, &res);
+}
+
+/**
+ * Find resource in not sorted list by its name.
+ *
+ * @param list Resources list
+ * @param name Name of the resource to be found
+ *
+ * @return pointer to resource or NULL if it was not found
+ *
+ * @ingroup ProjectManager.
+ */
+static inline void*
+pm_resource_unsorted_get(Eina_List *list, Eina_Stringshare *name)
+{
+   Resource res;
+   res.name = name;
+   return eina_list_search_unsorted(list, (Eina_Compare_Cb)resource_cmp, &res);
+}
+
+
+/**
+ * Add reference to resource with info where it is used (i.e. part for images)
+ *
+ * @param list Resources list
+ * @param name Name of the resource. Must be in the list.
+ * @param usage_data Place where resource is used
+ *
+ * @ingroup ProjectManager.
+ */
+static inline Eina_Bool
+pm_resource_usage_add(Eina_List *list, Eina_Stringshare *name, void *usage_data)
+{
+   Resource *res = (Resource *) pm_resource_get(list, name);
+
+   if (!res)
+      return false;
+
+   res->used_in = eina_list_sorted_insert(res->used_in, (Eina_Compare_Cb)resource_cmp, usage_data);
+   return true;
+}
+
+/**
+ * Add reference to resource with info where it is used (i.e. part for images)
+ *
+ * @param list Resources list
+ * @param name Name of the resource. Must be in the list.
+ * @param usage_data Place where resource is used
+ *
+ * @ingroup ProjectManager.
+ */
+static inline Eina_Bool
+pm_resource_usage_unsorted_add(Eina_List *list, Eina_Stringshare *name, void *usage_data)
+{
+   Resource *res = (Resource *) pm_resource_unsorted_get(list, name);
+
+   if (!res)
+      return false;
+
+   res->used_in = eina_list_sorted_insert(res->used_in, (Eina_Compare_Cb)resource_cmp, usage_data);
+   return true;
+}
+
+/**
+ * Remove reference to resource.
+ *
+ * @param list Resources list
+ * @param name Name of the resource. Must be in the list.
+ * @param usage_data Place where resource is used. Must be added to usage list.
+ *
+ * @ingroup ProjectManager.
+ */
+static inline void
+pm_resource_usage_del(Eina_List *list, Eina_Stringshare *name, void *usage_data)
+{
+   Resource *res = (Resource *) pm_resource_get(list, name);
+   Eina_List *l_del;
+
+   assert(res != NULL);
+
+   l_del = eina_list_search_sorted(res->used_in, (Eina_Compare_Cb)resource_cmp, usage_data);
+
+   assert(l_del);
+
+   res->used_in = eina_list_remove_list(res->used_in, l_del);
+}
+
+/**
+ * Remove reference to resource.
+ *
+ * @param list Resources list
+ * @param name Name of the resource. Must be in the list.
+ * @param usage_data Place where resource is used. Must be added to usage list.
+ *
+ * @ingroup ProjectManager.
+ */
+static inline void
+pm_resource_usage_unsorted_del(Eina_List *list, Eina_Stringshare *name, void *usage_data)
+{
+   Resource *res = (Resource *) pm_resource_unsorted_get(list, name);
+   Eina_List *l_del;
+
+   assert(res != NULL);
+
+   l_del = eina_list_search_sorted(res->used_in, (Eina_Compare_Cb)resource_cmp, usage_data);
+
+   assert(l_del);
+
+   res->used_in = eina_list_remove_list(res->used_in, l_del);
+}
 #endif /* PROJECT_MANAGER_H */

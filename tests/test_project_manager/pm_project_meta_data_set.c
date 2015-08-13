@@ -61,7 +61,6 @@ _test_end_cb(void *data __UNUSED__,
 
 EFLETE_TEST (pm_project_meta_data_set_test_p)
 {
-   Project_Thread *thread;
    Project *pro;
    Eina_Bool ret;
 
@@ -69,13 +68,11 @@ EFLETE_TEST (pm_project_meta_data_set_test_p)
    app_init();
    ecore_file_recursive_rm("./UTC");
 
-   thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
-                                  NULL, _test_end_cb, NULL);
-   if (!thread)
-     ck_abort_msg("Project thread is not runned!");
+   pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
+                         NULL, _test_end_cb, NULL);
    ecore_main_loop_begin();
 
-   pro = pm_project_thread_project_get(thread);
+   pro = pm_project_thread_project_get();
    if (!pro)
      ck_abort_msg("Project thread not returned the Project. Maybe thread not finished yet.");
 

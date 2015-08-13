@@ -23,18 +23,16 @@ static Eina_Bool
 _setup_splash(void *data, Splash_Status status __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew;
-   App_Data *ap;
-   ap = app_data_get();
    wiew = (Wizard_Import_Edj_Win *)data;
 
    assert(wiew != NULL);
 
-   ap->pr_thread = pm_project_import_edj(elm_entry_entry_get(wiew->name),
-                                         elm_entry_entry_get(wiew->path),
-                                         elm_entry_entry_get(wiew->edj),
-                                         _progress_print,
-                                         _progress_end,
-                                         wiew);
+   pm_project_import_edj(elm_entry_entry_get(wiew->name),
+                         elm_entry_entry_get(wiew->path),
+                         elm_entry_entry_get(wiew->edj),
+                         _progress_print,
+                         _progress_end,
+                         wiew);
 
    return true;
 }

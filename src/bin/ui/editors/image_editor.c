@@ -893,6 +893,7 @@ _on_button_apply_clicked_cb(void *data,
 
    if (!multiselect)
      {
+        TODO("FIX IT! This line breaks images with / in name");
         ei = strdup(ecore_file_file_get(item->image_name));
         evas_object_smart_callback_call(img_edit->win, SIG_IMAGE_SELECTED, ei);
         free(ei);

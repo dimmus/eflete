@@ -65,16 +65,14 @@ _test_end_cb(void *data __UNUSED__,
 
 EFLETE_TEST (pm_project_thread_cancel_test_p)
 {
-   Project_Thread *thread;
-
    elm_init(0,0);
    app_init();
    ecore_file_recursive_rm("./UTC");
 
    res = EINA_FALSE;
-   thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager_thread_cancel.edj",
+   pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager_thread_cancel.edj",
                                   NULL, _test_end_cb, NULL);
-   pm_project_thread_cancel(thread);
+   pm_project_thread_cancel();
    ecore_main_loop_begin();
 
    ck_assert_msg(res, "Project thread did't canceled!");
