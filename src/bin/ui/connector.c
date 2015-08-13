@@ -1499,6 +1499,8 @@ project_export_edc_project(void)
    elm_fileselector_is_save_set(fs, false);
    elm_fileselector_folder_only_set(fs, true);
    elm_win_inwin_content_set(win, fs);
+
+   ap->modal_editor++;
 }
 
 /*************************** Close request popup ******************************/
