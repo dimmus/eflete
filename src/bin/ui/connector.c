@@ -816,8 +816,6 @@ blocks_show(App_Data *ap)
 
    _widget_list_layouts_tab_activate(ap);
 
-   ui_panes_show(ap);
-
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, false);
    ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
 
@@ -1005,7 +1003,6 @@ project_close(App_Data *ap)
           return false;
 
         STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
-        ui_panes_hide(ap);
         _blocks_data_unset(ap);
         pm_project_close(ap->project);
         ap->project = NULL;

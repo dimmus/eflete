@@ -72,8 +72,6 @@ _import_end(void *data __UNUSED__, PM_Project_Result result)
         wm_styles_build_alias(pro->widgets,
                               pro->layouts);
 
-        blocks_show(ap);
-
         if (!eina_inlist_count(ap->project->widgets))
           ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
 
@@ -98,7 +96,6 @@ _open_end(void *data __UNUSED__, PM_Project_Result result)
         pro = pm_project_thread_project_get();
         ap->project = pro;
 
-        blocks_show(ap);
         wm_widgets_list_objects_load(ap->project->widgets,
                                      evas_object_evas_get(ap->win),
                                      ap->project->mmap_file);
