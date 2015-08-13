@@ -64,21 +64,35 @@ _folder_item_label_get(void *data,
 
 static Evas_Object *
 _folder_item_icon_get(void *data __UNUSED__,
-                      Evas_Object *obj __UNUSED__,
-                      const char *part __UNUSED__)
+                      Evas_Object *obj,
+                      const char *part)
 {
    Evas_Object *icon = NULL;
+
+   if (!strcmp(part, "elm.swallow.icon"))
+     {
+        ICON_STANDARD_ADD(obj, icon, true, "folder");
+     }
 
    return icon;
 }
 
 static Evas_Object *
-_group_item_icon_get(void *data __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
-                     const char *part __UNUSED__)
+_group_item_icon_get(void *data,
+                     Evas_Object *obj,
+                     const char *part)
 {
    Evas_Object *icon = NULL;
+   Group *group = data;
 
+   if (!strcmp(part, "elm.swallow.icon"))
+     {
+        ICON_STANDARD_ADD(obj, icon, true, "file");
+     }
+   if ((group->main_group != NULL) && (!strcmp(part, "elm.swallow.end")))
+     {
+        IMAGE_ADD_NEW(obj, icon, "icon", "alias_link");
+     }
    return icon;
 }
 
