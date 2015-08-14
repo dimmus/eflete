@@ -61,20 +61,14 @@ struct _Uns_List
 #define TONE_FRQ_REGEX "^([2-9][0-9]|[1-9][0-9]{2,3}|1[0-9]{4}|20000)$"
 
 #define STATUSBAR_PROJECT_PATH(AP, TEXT) \
-   Evas_Object *label = ewe_statusbar_item_content_get( \
-         eina_list_nth(ewe_statusbar_items_list_get(AP->statusbar), 1)); \
-   elm_object_text_set(label, TEXT);
+   elm_layout_text_set(AP->win_layout, "eflete.project.part", TEXT);
 
 #define STATUSBAR_PROJECT_SAVE_TIME_UPDATE(AP) \
 { \
    char date[100]; \
-   Ewe_Statusbar_Item *item; \
-   Evas_Object *lb; \
    long long tm = ecore_file_mod_time(AP->project->dev); \
-   item = eina_list_data_get(ewe_statusbar_items_list_get(AP->statusbar)); \
-   lb = ewe_statusbar_item_content_get(item); \
-   strftime(date, 100, "%d %b %Y %R", localtime((const time_t *)&tm)); \
-   elm_object_text_set(lb, date); \
+   strftime(date, 100, _("Last saved: %d %b %Y %R"), localtime((const time_t *)&tm)); \
+   elm_layout_text_set(AP->win_layout, "eflete.project.time", date); \
 }
 
 #define ITEM_SEARCH_FUNC(_gen, _GEN_SCROLL, PART_NAME) \

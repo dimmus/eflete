@@ -68,41 +68,6 @@ ui_main_window_del(App_Data *ap)
    return true;
 }
 
-Evas_Object *
-_statusbar_init(Evas_Object *obj)
-{
-   Evas_Object *statusbar = NULL;
-   Evas_Object *label = NULL;
-   Ewe_Statusbar_Item *item = NULL;
-
-   assert(obj != NULL);
-
-   statusbar = ewe_statusbar_add(obj);
-   elm_object_part_content_set(obj, "eflete.swallow.statusbar",
-                               statusbar);
-   evas_object_show(statusbar);
-   LABEL_ADD(statusbar, label, _("No project opened"));
-
-   item = ewe_statusbar_item_append(statusbar, label,
-                                    EWE_STATUSBAR_ITEM_TYPE_OBJECT, NULL, NULL);
-   ewe_statusbar_item_label_set(item, _("Last saved: "));
-   /* MAGIC number 500 is width of item, which display path to currently open
-      project. It will be fixed in ewe_statusbar module from ewe library. Currently
-      width param "-1"(unlimited width) work incorrect. */
-   ewe_statusbar_item_width_set(item, 500);
-
-   LABEL_ADD(statusbar, label, _("the project is not opened"));
-   item = ewe_statusbar_item_append(statusbar, label,
-                                    EWE_STATUSBAR_ITEM_TYPE_OBJECT, NULL, NULL);
-   ewe_statusbar_item_label_set(item, _("Project path: "));
-   /* MAGIC number 500 is width of item, which display path to currently open
-      project. It will be fixed in ewe_statusbar module from ewe library. Currently
-      width param "-1"(unlimited width) work incorrect. */
-   ewe_statusbar_item_width_set(item, 500);
-
-   return statusbar;
-}
-
 #define MARK_TO_SHUTDOWN(fmt, ...) \
    { \
       ERR(fmt, ## __VA_ARGS__); \
@@ -150,6 +115,8 @@ ui_main_window_add(App_Data *ap)
    elm_layout_theme_set(ap->win_layout, "layout", "window", "main");
    evas_object_size_hint_weight_set(ap->win_layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_win_resize_object_add(ap->win, ap->win_layout);
+   elm_layout_text_set(ap->win_layout, "eflete.project.time", _("Last saved: none"));
+   elm_layout_text_set(ap->win_layout, "eflete.project.part", _("Project path: none"));
    evas_object_show(ap->win_layout);
 
    ap->menu = ui_menu_add(ap);
@@ -183,10 +150,6 @@ ui_main_window_add(App_Data *ap)
 
    if (!register_callbacks(ap))
      MARK_TO_SHUTDOWN("Failed to register callbacks");
-
-   ap->statusbar = _statusbar_init(ap->win_layout);
-   if (!ap->statusbar)
-     MARK_TO_SHUTDOWN("Can't create a statusbar.")
 
    ap->history = history_init();
    if (!ap->history)

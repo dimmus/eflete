@@ -7,7 +7,7 @@
 
 group { name: "elm/layout/window/main";
    images {
-      image: "logo.png" COMP;
+      image: "status-top_border-bg.png" COMP;
    }
    parts {
       part { name: "eflete.swallow.panes";
@@ -22,7 +22,7 @@ group { name: "elm/layout/window/main";
             }
             rel2 {
                relative: 1.0 0.0;
-               to: "eflete.swallow.statusbar";
+               to: "statusbar";
             }
           }
       }
@@ -35,13 +35,63 @@ group { name: "elm/layout/window/main";
             align: 0.0 0.0;
          }
       }
-      part { name: "eflete.swallow.statusbar";
-         type: SWALLOW;
+      part { name: "statusbar";
+         type: SPACER;
          scale: 1;
-         mouse_events: 1;
          description { state: "default" 0.0;
             max: -1 20;
-            align: 0.0 1.0;
+            align: 0.5 1.0;
+         }
+      }
+      part { name: "statusbar_border";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            max: -1 2;
+            rel1 {
+               to: "statusbar";
+            }
+            image {
+               normal: "status-top_border-bg.png";
+            }
+         }
+      }
+      part { name: "eflete.project.time";
+         type: TEXT;
+         description {
+            max: 500 -1;
+            align: 0.0 0.5;
+            rel1 {
+               to: "statusbar";
+               offset: 3 0;
+            }
+            rel2 {
+               to: "statusbar";
+            }
+            text {
+               size: 11;
+               font: PT;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "eflete.project.part";
+         type: TEXT;
+         description {
+            align: 0.0 0.5;
+            rel1 {
+               to_x: "eflete.project.time";
+               to_y: "statusbar";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "statusbar";
+            }
+            text {
+               size: 11;
+               font: PT;
+               align: 0.0 0.5;
+            }
          }
       }
    }

@@ -48,7 +48,6 @@
 #endif
 
 #include "ewe_main.h"
-#include "ewe_statusbar.h"
 #include "ewe_combobox.h"
 #include "ewe_ruler.h"
 #include "ewe_tabs.h"

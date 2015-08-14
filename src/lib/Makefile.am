@@ -37,11 +37,6 @@ ewe_tabs_legacy.h \
 ewe_tabs_eo.h \
 ewe_tabs_common.h\
 ewe_widget_tabs.h \
-ewe_statusbar.h \
-ewe_statusbar_eo.h \
-ewe_statusbar_legacy.h \
-ewe_statusbar_common.h \
-ewe_widget_statusbar.h \
 ewe_combobox.h \
 ewe_combobox_eo.h \
 ewe_combobox_legacy.h \
@@ -61,7 +56,6 @@ libewe_la_SOURCES = \
 ewe_main.c \
 logger/logger.c \
 ewe_tabs.c \
-ewe_statusbar.c \
 ewe_combobox.c \
 ewe_ruler.c \
 ewe_private.h
@@ -69,8 +63,6 @@ ewe_private.h
 BUILT_SOURCES = \
 ewe_tabs.eo.c \
 ewe_tabs.eo.h \
-ewe_statusbar.eo.c \
-ewe_statusbar.eo.h \
 ewe_combobox.eo.c \
 ewe_combobox.eo.h \
 ewe_ruler.eo.c \

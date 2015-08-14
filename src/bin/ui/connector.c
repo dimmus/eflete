@@ -1003,6 +1003,7 @@ project_close(App_Data *ap)
           return false;
 
         STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
+        elm_layout_text_set(ap->win_layout, "eflete.project.time", _("Last saved: none"));
         _blocks_data_unset(ap);
         pm_project_close(ap->project);
         ap->project = NULL;

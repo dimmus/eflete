@@ -3,11 +3,9 @@ data.item: "version" "110";
 collections {
    #include "macro.edc"
    #include "text_styles.edc"
-
    #include "widgets/scroller.edc"
    #include "widgets/combobox.edc"
    #include "widgets/entry.edc"
    #include "widgets/ruler.edc"
    #include "widgets/tabs.edc"
-   #include "widgets/statusbar.edc"
 }

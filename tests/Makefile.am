@@ -7,7 +7,6 @@ ewe_init_test \
 ewe_tabs_test \
 ewe_combobox_test \
 ewe_ruler_test \
-ewe_statusbar_test \
 eflete_test \
 alloc_test \
 colorclass_manager_test \
@@ -169,38 +168,6 @@ test_ewe_tabs/ewe_tabs_elm_widget_style_set.c \
 test_ewe_tabs/ewe_tabs_elm_widget_style_get.c
 ewe_tabs_test_CFLAGS = ${FLAGS}
 ewe_tabs_test_LDADD = ${LD}
-
-ewe_statusbar_test_SOURCES = \
-utc_common.h \
-test_ewe_statusbar/test_ewe_statusbar.c \
-test_ewe_statusbar/test_ewe_statusbar.h \
-test_ewe_statusbar/ewe_statusbar_add.c \
-test_ewe_statusbar/ewe_statusbar_clear.c \
-test_ewe_statusbar/ewe_statusbar_item_append.c \
-test_ewe_statusbar/ewe_statusbar_item_content_get.c \
-test_ewe_statusbar/ewe_statusbar_item_content_set.c \
-test_ewe_statusbar/ewe_statusbar_item_content_unset.c \
-test_ewe_statusbar/ewe_statusbar_item_id_get.c \
-test_ewe_statusbar/ewe_statusbar_item_insert_after.c \
-test_ewe_statusbar/ewe_statusbar_item_insert_before.c \
-test_ewe_statusbar/ewe_statusbar_item_label_get.c \
-test_ewe_statusbar/ewe_statusbar_item_label_set.c \
-test_ewe_statusbar/ewe_statusbar_item_prepend.c \
-test_ewe_statusbar/ewe_statusbar_item_remove.c \
-test_ewe_statusbar/ewe_statusbar_item_statusbar_get.c \
-test_ewe_statusbar/ewe_statusbar_item_width_get.c \
-test_ewe_statusbar/ewe_statusbar_item_width_set.c \
-test_ewe_statusbar/ewe_statusbar_items_align_get.c \
-test_ewe_statusbar/ewe_statusbar_items_align_set.c \
-test_ewe_statusbar/ewe_statusbar_items_list_get.c \
-test_ewe_statusbar/ewe_statusbar_items_padding_get.c \
-test_ewe_statusbar/ewe_statusbar_items_padding_set.c \
-test_ewe_statusbar/ewe_statusbar_items_swap.c
-ewe_statusbar_test_CFLAGS = ${FLAGS}
-ewe_statusbar_test_LDADD = ${LD}
-
-
-
 
 eflete_test_SOURCES = \
 test_eflete/test_eflete.c \
