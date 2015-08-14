@@ -173,6 +173,7 @@ group { name: "elm/panes/vertical/default";
          description { state: "default" 0.0;
             rel2 {
                to_x: "bar";
+               relative: 0.0 1.0;
             }
          }
       }
@@ -180,6 +181,7 @@ group { name: "elm/panes/vertical/default";
          type: RECT;
          description { state: "default" 0.0;
             rel1 {
+               relative: 1.0 0.0;
                to_x: "bar";
             }
          }
@@ -328,11 +330,13 @@ group { name: "elm/panes/horizontal/default";
             confine: "bar_area";
          }
          description { state: "default" 0.0;
+            align: 0.5 0.0;
             fixed: 1 1;
             min: 0 6;
             max: -1 6;
          }
          description { state: "disabled" 0.0;
+            align: 0.5 0.0;
             fixed: 1 1;
             max: -1 0;
          }
@@ -453,6 +457,7 @@ group { name: "elm/panes/horizontal/default";
          description { state: "default" 0.0;
             rel2 {
                to_y: "elm.bar";
+               relative: 1.0 0.0;
             }
          }
       }
@@ -461,6 +466,7 @@ group { name: "elm/panes/horizontal/default";
          description { state: "default" 0.0;
             rel1 {
                to_y: "elm.bar";
+               relative: 0.0 1.0;
             }
          }
       }
