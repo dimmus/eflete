@@ -607,7 +607,6 @@ _on_bt_del(void *data,
 {
    Evas_Object *edje_edit_obj = NULL;
    const char *style_name, *tag;
-   App_Data *ap = app_data_get();
 
    Style_Editor *style_edit = (Style_Editor *)data;
 
@@ -636,9 +635,9 @@ _on_bt_del(void *data,
           edje_edit_style_tag_del(edje_edit_obj, style_name, tag);
      }
 
-   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
-   ui_property_state_unset(ui_block_property_get(ap));
-   ui_property_state_set(ui_block_property_get(ap), part);
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get());
+   ui_property_state_unset(ui_block_property_get());
+   ui_property_state_set(ui_block_property_get(), part);
    elm_object_item_del(glit);
    project_changed(false);
 }
@@ -689,7 +688,6 @@ _on_viewer_exit(void *data,
 
    assert(style_edit != NULL);
 
-   //App_Data *ap = app_data_get();
    TODO("Move to 'Apply'")
    //workspace_edit_object_recalc(ap->workspace);
    mw_del(style_edit->mwin);
@@ -1954,13 +1952,11 @@ _on_style_editor_close(void *data,
 }
 
 static void
-_on_mwin_del(void * data,
+_on_mwin_del(void * data __UNUSED__,
              Evas *e __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-
    assert(ap != NULL);
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
@@ -1978,9 +1974,6 @@ style_editor_window_add(Project *project)
    Style_Editor *style_edit = NULL;
    Evas_Textblock_Style *ts = NULL;
    static const char *style_buf = FONT_DEFAULT"'";
-
-   /* temporary solution, while it not moved to modal window */
-   App_Data *ap = app_data_get();
 
    assert(project != NULL);
    assert(ap->win != NULL);

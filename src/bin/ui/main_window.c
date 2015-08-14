@@ -26,21 +26,18 @@
 #include "cursor.h"
 
 static void
-_on_done(void *data,
+_on_done(void *data __UNUSED__,
          Evas_Object *obj __UNUSED__,
          void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-
    assert(ap != NULL);
-
-   ui_main_window_del(ap);
+   ui_main_window_del();
 }
 
 Eina_Bool
-ui_main_window_del(App_Data *ap)
+ui_main_window_del(void)
 {
-   if (!project_close(ap))
+   if (!project_close())
      return false;
 
    if (!history_term(ap->history))
@@ -49,7 +46,7 @@ ui_main_window_del(App_Data *ap)
         abort();
      }
 #ifdef HAVE_ENVENTOR
-   code_edit_mode_switch(ap, false);
+   code_edit_mode_switch(false);
 #endif
 
    /* FIXME: remove it from here */
@@ -59,7 +56,7 @@ ui_main_window_del(App_Data *ap)
    ap->menu = NULL;
    cursor_main_free();
 
-   config_save(ap);
+   config_save();
    INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
    /* FIXME: when be implemented multi workspace feature, remove this line */
    evas_object_del(ap->workspace);
@@ -75,14 +72,14 @@ ui_main_window_del(App_Data *ap)
    } \
 
 Eina_Bool
-ui_main_window_add(App_Data *ap)
+ui_main_window_add(void)
 {
    Config *config;
    Evas_Object *bg;
 
    assert(ap != NULL);
 
-   config_load(ap);
+   config_load();
    config = config_get();
 
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
@@ -95,7 +92,7 @@ ui_main_window_add(App_Data *ap)
 
    elm_win_title_set(ap->win, "EFL Edje Theme Editor");
 
-   evas_object_smart_callback_add(ap->win, "delete,request", _on_done, ap);
+   evas_object_smart_callback_add(ap->win, "delete,request", _on_done, NULL);
    if (!cursor_main_set(ap->win, CURSOR_ARROW))
      {
         ERR("Main cursor not setted.");
@@ -119,24 +116,24 @@ ui_main_window_add(App_Data *ap)
    elm_layout_text_set(ap->win_layout, "eflete.project.part", _("Project path: none"));
    evas_object_show(ap->win_layout);
 
-   ap->menu = ui_menu_add(ap);
+   ap->menu = ui_menu_add();
    if (!ap->menu)
      MARK_TO_SHUTDOWN("Failed to add menu on main window.")
 
-   if (!ui_panes_add(ap))
+   if (!ui_panes_add())
      MARK_TO_SHUTDOWN("Failed to add panes on main window.")
 
    ap->workspace = workspace_add(ap->block.canvas);
    if (!ap->workspace)
      MARK_TO_SHUTDOWN("Failed to create workspace in main window.")
 
-   ui_block_ws_set(ap, ap->workspace);
+   ui_block_ws_set(ap->workspace);
    evas_object_show(ap->workspace);
    ap->live_view = live_view_add(ap->block.bottom_right, false);
    if (!ap->live_view)
      MARK_TO_SHUTDOWN("Failed to create live view")
    else
-     ui_block_live_view_set(ap, ap->live_view->layout);
+     ui_block_live_view_set(ap->live_view->layout);
 
    ap->colorsel = colorselector_add(ap->win);
    if (!ap->colorsel)
@@ -148,7 +145,7 @@ ui_main_window_add(App_Data *ap)
        MARK_TO_SHUTDOWN("Can't create a enventor object.")
    #endif /* HAVE_ENVENTOR */
 
-   if (!register_callbacks(ap))
+   if (!register_callbacks())
      MARK_TO_SHUTDOWN("Failed to register callbacks");
 
    ap->history = history_init();

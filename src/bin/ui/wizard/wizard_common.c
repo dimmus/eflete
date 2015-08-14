@@ -32,16 +32,14 @@ _on_cancel(void *data,
 
    assert(wiew != NULL);
 
-   App_Data *app = app_data_get();
-
    mw_del(wiew->win);
-   app->modal_editor--;
+   ap->modal_editor--;
    if (!wiew->name_validator) elm_validator_regexp_free(wiew->name_validator);
    free(wiew);
-   ui_menu_items_list_disable_set(app->menu, MENU_ITEMS_LIST_MAIN, false);
-   ui_menu_items_list_disable_set(app->menu, MENU_ITEMS_LIST_BASE, true);
-   ui_menu_items_list_disable_set(app->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
-   ui_menu_disable_set(app->menu, MENU_FILE_CLOSE_PROJECT, true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
+   ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, true);
 }
 
 void
@@ -73,17 +71,14 @@ _progress_print(void *data, Eina_Stringshare *progress_string)
 }
 
 void
-_progress_end(void *data, PM_Project_Result result)
+_progress_end(void *data __UNUSED__, PM_Project_Result result)
 {
    Wizard_Import_Edj_Win *wiew;
    Project *pro;
-   App_Data *ap;
 
    wiew = (Wizard_Import_Edj_Win *)data;
 
    assert(wiew != NULL);
-
-   ap = app_data_get();
 
    if (result == PM_PROJECT_SUCCESS)
      {
@@ -99,14 +94,14 @@ _progress_end(void *data, PM_Project_Result result)
         wm_styles_build_alias(pro->widgets,
                               pro->layouts);
 
-        blocks_show(ap);
+        blocks_show();
 
         ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, false);
         if (!eina_inlist_count(ap->project->widgets))
-          ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
+          ui_widget_list_tab_activate(ui_block_widget_list_get(), 1);
 
-        STATUSBAR_PROJECT_PATH(ap, ap->project->pro_path);
-        STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
+        STATUSBAR_PROJECT_PATH(ap->project->pro_path);
+        STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
 
         NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
      }
@@ -149,22 +144,20 @@ _teardown_splash(void *data, Splash_Status status)
 
    assert(wiew != NULL);
 
-   App_Data *app = app_data_get();
-
    if (pm_project_thread_result_get() == PM_PROJECT_SUCCESS)
      {
         mw_del(wiew->win);
-        app->modal_editor--;
+        ap->modal_editor--;
      }
 
    pm_project_thread_free();
 
    if (wiew->tmp_dir_path) eina_stringshare_del(wiew->tmp_dir_path);
 
-   if ((status == SPLASH_SUCCESS) && (app->project))
+   if ((status == SPLASH_SUCCESS) && (ap->project))
      {
-        STATUSBAR_PROJECT_PATH(app, app->project->pro_path);
-        STATUSBAR_PROJECT_SAVE_TIME_UPDATE(app);
+        STATUSBAR_PROJECT_PATH(ap->project->pro_path);
+        STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
         free(wiew);
      }
    else return false;
@@ -284,14 +277,12 @@ _cancel_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 }
 
 static void
-_on_apply(void *data,
+_on_apply(void *data __UNUSED__,
           Evas_Object *obj __UNUSED__,
           void *event_info __UNUSED__)
 {
-   App_Data *ap;
    Wizard_Import_Edj_Win *wiew;
 
-   ap = app_data_get();
    wiew = (Wizard_Import_Edj_Win *)data;
 
    if ((!_required_fields_check(wiew)) || (!wiew->splash_setup_func) ||
@@ -353,7 +344,6 @@ wizard_import_common_add(const char *layout_name)
 {
    Evas_Object *bt;
    Wizard_Import_Edj_Win *wiew;
-   App_Data *ap = app_data_get();
 
    assert(layout_name != NULL);
 

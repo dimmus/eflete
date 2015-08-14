@@ -135,7 +135,6 @@ _tree_items_get(const char *prefix,
    int cmp;
    int level = 0;
    const char *pos;
-   App_Data *ap = app_data_get();
    Group *group, *group_next;
    size_t prefix_len;
    Eina_Stringshare *group_prefix;
@@ -291,7 +290,6 @@ navigator_add(void)
    Eina_Stringshare *prefix, *project_text;
    Evas_Object *icon;
    Group *group;
-   App_Data *ap = app_data_get();
 
    assert(ap != NULL);
    assert(ap->win != NULL);

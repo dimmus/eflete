@@ -40,10 +40,8 @@ static Evas_Object *entry;
 static Elm_Validator_Regexp *name_validator = NULL;
 
 static void
-_job_popup_del(void *data)
+_job_popup_del(void *data __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-
    assert(ap != NULL);
    assert(name_validator != NULL);
 
@@ -63,12 +61,9 @@ _cancel_clicked(void *data,
 }
 
 #define WORKSPACE_PART_ADD(TYPE, DATA) \
-   App_Data *ap = (App_Data *)data; \
-   \
    assert(ap != NULL); \
-   \
    Evas_Object *workspace = ap->workspace; \
-   Evas_Object *widget_list = ui_block_widget_list_get(ap); \
+   Evas_Object *widget_list = ui_block_widget_list_get(); \
    Style *style = workspace_edit_object_get(workspace); \
    ENTRY_IS_EMPTY \
    const char *name = elm_entry_entry_get(entry); \
@@ -166,12 +161,11 @@ _on_image_editor_done(void *data __UNUSED__,
 }
 
 static void
-_on_state_image_choose(void *data,
+_on_state_image_choose(void *data __UNUSED__,
                        Evas_Object *obj __UNUSED__,
                        void *ei __UNUSED__)
 {
    Evas_Object *img_edit;
-   App_Data *ap = (App_Data *)data;
 
    assert(ap != NULL);
 
@@ -182,7 +176,7 @@ _on_state_image_choose(void *data,
 }
 
 Evas_Object *
-part_dialog_add(App_Data *ap)
+part_dialog_add(void)
 {
    Evas_Object *win, *workspace, *widget_list;
    Evas_Object *box, *button, *bt_no;
@@ -194,7 +188,7 @@ part_dialog_add(App_Data *ap)
 
    win = ap->win;
    workspace = ap->workspace;
-   widget_list = ui_block_widget_list_get(ap);
+   widget_list = ui_block_widget_list_get();
 
    assert(win != NULL);
    assert(workspace != NULL);

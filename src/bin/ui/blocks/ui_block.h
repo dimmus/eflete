@@ -73,7 +73,7 @@ ui_block_content_visible(Evas_Object *block, Eina_Bool vis);
  * @ingroup Block
  */
 Evas_Object *
-ui_block_widget_list_get(App_Data *ap);
+ui_block_widget_list_get(void);
 
 /**
  * Get the workspace object
@@ -84,7 +84,7 @@ ui_block_widget_list_get(App_Data *ap);
  * @ingroup Block
  */
 Evas_Object *
-ui_block_ws_get(App_Data *ap);
+ui_block_ws_get(void);
 
 /**
  * Get the part signal list object
@@ -95,7 +95,7 @@ ui_block_ws_get(App_Data *ap);
  * @ingroup Block
  */
 Evas_Object *
-ui_block_signal_list_get(App_Data *ap);
+ui_block_signal_list_get(void);
 
 /**
  * Get the part state list object
@@ -106,7 +106,7 @@ ui_block_signal_list_get(App_Data *ap);
  * @ingroup Block
  */
 Evas_Object *
-ui_block_state_list_get(App_Data *ap);
+ui_block_state_list_get(void);
 
 /**
  * Get the property object
@@ -117,7 +117,7 @@ ui_block_state_list_get(App_Data *ap);
  * @ingroup Block
  */
 Evas_Object *
-ui_block_property_get(App_Data *ap);
+ui_block_property_get(void);
 
 /**
  * Get the history object
@@ -128,7 +128,7 @@ ui_block_property_get(App_Data *ap);
  * @ingroup Block
  */
 Evas_Object *
-ui_block_history_get(App_Data *ap);
+ui_block_history_get(void);
 
 /**
  * Get the live view object
@@ -139,7 +139,7 @@ ui_block_history_get(App_Data *ap);
  * @ingroup Block
  */
 Evas_Object *
-ui_block_live_view_get(App_Data *ap);
+ui_block_live_view_get(void);
 
 /**
  * Set the content in to the widget list block
@@ -152,7 +152,7 @@ ui_block_live_view_get(App_Data *ap);
  * @ingroup Block
  */
 Eina_Bool
-ui_block_widget_list_set(App_Data *ap, Evas_Object *content);
+ui_block_widget_list_set(Evas_Object *content);
 
 /**
  * Set the content in to the signal list block
@@ -165,7 +165,7 @@ ui_block_widget_list_set(App_Data *ap, Evas_Object *content);
  * @ingroup Block
  */
 Eina_Bool
-ui_block_signal_list_set(App_Data *ap, Evas_Object *content);
+ui_block_signal_list_set(Evas_Object *content);
 
 /**
  * Set the content in to the state list block
@@ -178,7 +178,7 @@ ui_block_signal_list_set(App_Data *ap, Evas_Object *content);
  * @ingroup Block
  */
 Eina_Bool
-ui_block_state_list_set(App_Data *ap, Evas_Object *content);
+ui_block_state_list_set(Evas_Object *content);
 
 /**
  * Set the content in to the state workspace block
@@ -191,7 +191,7 @@ ui_block_state_list_set(App_Data *ap, Evas_Object *content);
  * @ingroup Block
  */
 Eina_Bool
-ui_block_ws_set(App_Data *ap, Evas_Object *content);
+ui_block_ws_set(Evas_Object *content);
 
 /**
  * Set the content in to the property block
@@ -204,7 +204,7 @@ ui_block_ws_set(App_Data *ap, Evas_Object *content);
  * @ingroup Block
  */
 Eina_Bool
-ui_block_property_set(App_Data *ap, Evas_Object *content);
+ui_block_property_set(Evas_Object *content);
 
 /**
  * Set the content in to the history block
@@ -217,7 +217,7 @@ ui_block_property_set(App_Data *ap, Evas_Object *content);
  * @ingroup Block
  */
 Eina_Bool
-ui_block_history_set(App_Data *ap, Evas_Object *content);
+ui_block_history_set(Evas_Object *content);
 
 /**
  * Set the content in to the live view block
@@ -230,6 +230,6 @@ ui_block_history_set(App_Data *ap, Evas_Object *content);
  * @ingroup Block
  */
 Eina_Bool
-ui_block_live_view_set(App_Data *ap, Evas_Object *content);
+ui_block_live_view_set(Evas_Object *content);
 
 #endif /* UI_BLOCK_HEADER_H */

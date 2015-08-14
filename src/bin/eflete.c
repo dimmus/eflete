@@ -24,7 +24,7 @@
 #include "win32.h"
 #endif
 
-App_Data *ap = NULL;
+extern App_Data *ap;
 
 Evas_Object *
 win_layout_get(void)
@@ -33,14 +33,6 @@ win_layout_get(void)
    assert(ap->win_layout != NULL);
 
    return ap->win_layout;
-}
-
-App_Data *
-app_data_get(void)
-{
-   if (!ap)
-     ap = mem_calloc(1, sizeof (App_Data));
-   return ap;
 }
 
 Evas_Object *
@@ -119,8 +111,8 @@ app_init()
    if (!ecore_file_exists(EFLETE_SETT_PATH))
      ecore_file_mkdir(EFLETE_SETT_PATH);
 
-   app_data_get();
-   if (!config_init(ap)) return false;
+   ap = mem_calloc(1, sizeof (App_Data));
+   if (!config_init()) return false;
 
    if (!ewe_init(0, 0))
      {
@@ -145,7 +137,7 @@ app_shutdown()
 {
    assert(ap != NULL);
 
-   config_shutdown(ap);
+   config_shutdown();
    elm_theme_free(ap->theme);
    eina_shutdown();
    efreet_shutdown();

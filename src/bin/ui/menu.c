@@ -91,24 +91,23 @@ _menu_cb(void *data __UNUSED__,
          void *event)
 {
    Menu_Event *menu_event = (Menu_Event *)event;
-   App_Data *ap = app_data_get();
 
    switch (menu_event->mid)
      {
       case MENU_FILE_NEW_PROJECT:
-         if (!project_close(ap)) break;
-         wizard_new_project_add(ap);
+         if (!project_close()) break;
+         wizard_new_project_add();
          break;
       case MENU_FILE_OPEN_PROJECT:
          project_open();
          break;
       case MENU_FILE_IMPORT_EDJ:
-         if (!project_close(ap)) break;
-         wizard_import_edj_add(ap);
+         if (!project_close()) break;
+         wizard_import_edj_add();
          break;
       case MENU_FILE_IMPORT_EDC:
-         if (!project_close(ap)) break;
-         wizard_import_edc_add(ap);
+         if (!project_close()) break;
+         wizard_import_edc_add();
          break;
       case MENU_FILE_SAVE:
          project_save();
@@ -124,14 +123,14 @@ _menu_cb(void *data __UNUSED__,
          break;
       case MENU_FILE_CLOSE_PROJECT:
            {
-              if (!project_close(ap)) break;
+              if (!project_close()) break;
               ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
               ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
               ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
            }
          break;
       case MENU_FILE_EXIT:
-         ui_main_window_del(ap);
+         ui_main_window_del();
          break;
       case MENU_EDIT_PREFERENCE:
          /* preferences_window_add(ap->project); */
@@ -213,7 +212,7 @@ _delay_menu_cb(void *data,
 }
 
 Menu *
-ui_menu_add(App_Data *ap)
+ui_menu_add(void)
 {
    Evas_Object *window_menu, *toolbar, *items_obj;
    Menu *menu;

@@ -54,9 +54,6 @@ static void
 _import_end(void *data __UNUSED__, PM_Project_Result result)
 {
    Project *pro;
-   App_Data *ap;
-
-   ap = app_data_get();
 
    if (result == PM_PROJECT_SUCCESS)
      {
@@ -73,10 +70,10 @@ _import_end(void *data __UNUSED__, PM_Project_Result result)
                               pro->layouts);
 
         if (!eina_inlist_count(ap->project->widgets))
-          ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
+          ui_widget_list_tab_activate(ui_block_widget_list_get(), 1);
 
-        STATUSBAR_PROJECT_PATH(ap, ap->project->pro_path);
-        STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
+        STATUSBAR_PROJECT_PATH(ap->project->pro_path);
+        STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
 
         NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
      }
@@ -87,9 +84,6 @@ void
 _open_end(void *data __UNUSED__, PM_Project_Result result)
 {
    Project *pro;
-   App_Data *ap;
-
-   ap = app_data_get();
 
    if (result == PM_PROJECT_SUCCESS)
      {
@@ -106,11 +100,11 @@ _open_end(void *data __UNUSED__, PM_Project_Result result)
                               ap->project->layouts);
 
         if (!eina_inlist_count(ap->project->widgets))
-          ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
+          ui_widget_list_tab_activate(ui_block_widget_list_get(), 1);
 
         NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
-        STATUSBAR_PROJECT_PATH(ap, ap->project->pro_path);
-        STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
+        STATUSBAR_PROJECT_PATH(ap->project->pro_path);
+        STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
      }
    evas_object_show(ap->win);
 }
@@ -188,8 +182,7 @@ elm_main(int argc, char **argv)
         CRIT("Could not find 'eflete_config.h'");
 #endif
 
-        App_Data *ap = app_data_get();
-        if (!ui_main_window_add(ap))
+        if (!ui_main_window_add())
           {
              app_shutdown();
              return -1;

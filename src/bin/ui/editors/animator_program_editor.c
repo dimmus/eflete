@@ -741,7 +741,6 @@ _on_sample_select(void *data,
                   void *ei __UNUSED__)
 {
    Program_Editor *prog_edit = data;
-   App_Data *ap = app_data_get();
    Evas_Object *snd_edit;
 
    assert(prog_edit != NULL);
@@ -792,7 +791,6 @@ _on_tone_select(void *data,
                 void *ei __UNUSED__)
 {
    Program_Editor *prog_edit = data;
-   App_Data *ap = app_data_get();
    Evas_Object *snd_edit;
 
    assert(prog_edit != NULL);

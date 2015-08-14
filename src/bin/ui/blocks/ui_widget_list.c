@@ -158,8 +158,7 @@ _on_item_add_clicked(void *data,
    assert(tabs != NULL);
 
    /* Checking number of groups */
-   App_Data *app = app_data_get();
-   Eina_List *groups = edje_file_collection_list(app->project->dev);
+   Eina_List *groups = edje_file_collection_list(ap->project->dev);
    unsigned int count = eina_list_count(groups);
    edje_file_collection_list_free(groups);
    if (count >= 2)

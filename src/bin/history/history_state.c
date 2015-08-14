@@ -163,19 +163,17 @@ _history_ui_state_update(Evas_Object *source, State_Diff *change)
    assert(source != NULL);
    assert(change != NULL);
 
-   App_Data *app = app_data_get();
+   assert(ap->project != NULL);
 
-   assert(app->project != NULL);
-
-   style = app->project->current_style;
+   style = ap->project->current_style;
 
    assert(style != NULL);
    assert(style->obj == source);
 
-   Evas_Object *prop_view = ui_block_property_get(app);
+   Evas_Object *prop_view = ui_block_property_get();
    part = wm_part_by_name_find(style, change->part);
    ui_property_state_unset(prop_view);
-   ui_widget_list_part_selected_set(ui_block_widget_list_get(app),
+   ui_widget_list_part_selected_set(ui_block_widget_list_get(),
                                     change->part, false);
    if (part)
      {
@@ -192,9 +190,9 @@ _history_ui_state_update(Evas_Object *source, State_Diff *change)
           }
         ui_property_part_set(prop_view, part);
         ui_property_state_set(prop_view, part);
-        workspace_edit_object_part_state_set(app->workspace, part);
+        workspace_edit_object_part_state_set(ap->workspace, part);
      }
-   ui_widget_list_part_selected_set(ui_block_widget_list_get(app), change->part,
+   ui_widget_list_part_selected_set(ui_block_widget_list_get(), change->part,
                                     true);
 }
 

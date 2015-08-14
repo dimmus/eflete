@@ -45,12 +45,11 @@ _on_edit_preferences_exit(void *data,
 }
 
 static void
-_on_mwin_del(void * data,
+_on_mwin_del(void * data __UNUSED__,
              Evas *e __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
@@ -326,9 +325,6 @@ preferences_window_add(Project *project)
    Evas_Object *layout_left;
    Evas_Object *window_layout, *button_box, *btn;
    Preferences *preference = NULL;
-
-   /* temporary solution, while it not moved to modal window */
-   App_Data *ap = app_data_get();
 
    preference = (Preferences *)mem_calloc(1, sizeof(Preferences));
 

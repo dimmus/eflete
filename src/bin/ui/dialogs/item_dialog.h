@@ -43,6 +43,6 @@
  * @ingroup Item_Dialog
  */
 Evas_Object *
-item_dialog_add(App_Data *ap, Part *part);
+item_dialog_add(Part *part);
 
 #endif /* ITEM_DIALOG_H */

@@ -123,6 +123,9 @@ struct _App_Data
 typedef struct _App_Data App_Data;
 EAPI_MAIN int elm_main();
 
+/* The global Eflete_Data */
+App_Data *ap;
+
 /**
  * This function inits all libraries required by this programm.
  * Also it will add extension to all edc files required by this programm.
@@ -159,16 +162,6 @@ app_shutdown(void);
  */
 Evas_Object *
 win_layout_get(void);
-
-/**
- * Allocate memory for creating App_Data.
- *
- * @return link to created empty App_Data.
- *
- * @ingroup Eflete
- */
-App_Data *
-app_data_get(void);
 
 /**
  * This function will free allocated memory used for App_Data.

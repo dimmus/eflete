@@ -182,12 +182,10 @@ _on_program_cycle(void *data,
 }
 
 static void
-_on_animator_save(void *data,
+_on_animator_save(void *data __UNUSED__,
                   Evas_Object* obj __UNUSED__,
                   void *ei __UNUSED__)
 {
-   App_Data *ap = data;
-
    assert(ap != NULL);
 
    Style *style = ap->project->current_style;
@@ -203,7 +201,6 @@ _on_animator_close(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
-   App_Data *ap = app_data_get();
    Animator *animator = (Animator*)data;
 
    assert(animator != NULL);
@@ -238,7 +235,6 @@ _on_add_popup_bt_add(void *data,
                      void *ei __UNUSED__)
 {
    Elm_Object_Item *glit_prog = NULL;
-   //App_Data *ap = app_data_get();
    Animator *animator = (Animator*)data;
    Eina_Stringshare *name = elm_entry_entry_get(animator->popup.entry);
 
@@ -417,13 +413,11 @@ _on_bt_mode_change(void *data,
 }
 
 static void
-_on_mwin_del(void * data,
+_on_mwin_del(void * data __UNUSED__,
              Evas *e __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-
    assert(ap != NULL);
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
@@ -584,8 +578,6 @@ animator_window_add(Style *style)
    Evas_Object *ic;
    Evas_Object *bt, *program_list_box;
    Animator *animator = NULL;
-   /* temporary solution, while it not moved to modal window */
-   App_Data *ap = app_data_get();
 
    assert(style != NULL);
    assert(style->obj != NULL);

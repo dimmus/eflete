@@ -21,13 +21,11 @@
 #include "main_window.h"
 
 static void
-_on_mwin_del(void * data,
+_on_mwin_del(void *data __UNUSED__,
              Evas *e __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-
    assert(ap != NULL);
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
@@ -40,7 +38,6 @@ _on_button_close_clicked_cb(void *data,
                             void *event_info __UNUSED__)
 {
    assert(data != NULL);
-
    evas_object_del(data);
 }
 
@@ -54,7 +51,6 @@ about_window_add()
 
    mw_title_set(mwin, _("About"));
    Evas_Object *label;
-   App_Data *ap = app_data_get();
 
    label = elm_label_add(mwin);
    elm_object_text_set(label,

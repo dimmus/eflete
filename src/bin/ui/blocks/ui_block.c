@@ -72,7 +72,7 @@ ui_block_content_visible(Evas_Object *block, Eina_Bool vis)
 }
 
 Evas_Object *
-ui_block_widget_list_get(App_Data *ap)
+ui_block_widget_list_get(void)
 {
    assert(ap != NULL);
 
@@ -80,7 +80,7 @@ ui_block_widget_list_get(App_Data *ap)
 }
 
 Evas_Object *
-ui_block_ws_get(App_Data *ap)
+ui_block_ws_get(void)
 {
    assert(ap != NULL);
 
@@ -88,7 +88,7 @@ ui_block_ws_get(App_Data *ap)
 }
 
 Evas_Object *
-ui_block_signal_list_get(App_Data *ap)
+ui_block_signal_list_get(void)
 {
    assert(ap != NULL);
 
@@ -96,7 +96,7 @@ ui_block_signal_list_get(App_Data *ap)
 }
 
 Evas_Object *
-ui_block_property_get(App_Data *ap)
+ui_block_property_get(void)
 {
    assert(ap != NULL);
 
@@ -104,7 +104,7 @@ ui_block_property_get(App_Data *ap)
 }
 
 Evas_Object *
-ui_block_history_get(App_Data *ap)
+ui_block_history_get(void)
 {
    assert(ap != NULL);
 
@@ -112,7 +112,7 @@ ui_block_history_get(App_Data *ap)
 }
 
 Evas_Object *
-ui_block_live_view_get(App_Data *ap)
+ui_block_live_view_get(void)
 {
    assert(ap != NULL);
 
@@ -120,7 +120,7 @@ ui_block_live_view_get(App_Data *ap)
 }
 
 Eina_Bool
-ui_block_widget_list_set(App_Data *ap, Evas_Object *content)
+ui_block_widget_list_set(Evas_Object *content)
 {
    assert(ap != NULL);
 
@@ -128,7 +128,7 @@ ui_block_widget_list_set(App_Data *ap, Evas_Object *content)
 }
 
 Eina_Bool
-ui_block_ws_set(App_Data *ap, Evas_Object *content)
+ui_block_ws_set(Evas_Object *content)
 {
    assert(ap != NULL);
 
@@ -136,7 +136,7 @@ ui_block_ws_set(App_Data *ap, Evas_Object *content)
 }
 
 Eina_Bool
-ui_block_signal_list_set(App_Data *ap, Evas_Object *content)
+ui_block_signal_list_set(Evas_Object *content)
 {
    assert(ap != NULL);
 
@@ -144,7 +144,7 @@ ui_block_signal_list_set(App_Data *ap, Evas_Object *content)
 }
 
 Eina_Bool
-ui_block_property_set(App_Data *ap, Evas_Object *content)
+ui_block_property_set(Evas_Object *content)
 {
    assert(ap != NULL);
 
@@ -152,7 +152,7 @@ ui_block_property_set(App_Data *ap, Evas_Object *content)
 }
 
 Eina_Bool
-ui_block_history_set(App_Data *ap, Evas_Object *content)
+ui_block_history_set(Evas_Object *content)
 {
    assert(ap != NULL);
 
@@ -160,7 +160,7 @@ ui_block_history_set(App_Data *ap, Evas_Object *content)
 }
 
 Eina_Bool
-ui_block_live_view_set(App_Data *ap, Evas_Object *content)
+ui_block_live_view_set(Evas_Object *content)
 {
    assert(ap != NULL);
 

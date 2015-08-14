@@ -672,7 +672,7 @@ _directories_box_add(Wizard_Import_Edj_Win *wiew)
 }
 
 Evas_Object *
-wizard_import_edc_add(App_Data *ap __UNUSED__)
+wizard_import_edc_add()
 {
    Wizard_Import_Edj_Win *wiew;
    wiew = wizard_import_common_add("import_edc");
@@ -810,7 +810,7 @@ _wizart_widget_list_add(Evas_Object *parent)
 }
 
 Evas_Object *
-wizard_new_project_add(App_Data *ap __UNUSED__)
+wizard_new_project_add(void)
 {
    Wizard_Import_Edj_Win *wiew;
    Evas_Object *genlist, *check, *ic;

@@ -198,7 +198,7 @@ _on_button_add_clicked_cb(void *data __UNUSED__,
 }
 
 static void
-_on_button_delete_clicked_cb(void *data,
+_on_button_delete_clicked_cb(void *data __UNUSED__,
                              Evas_Object *obj __UNUSED__,
                              void *event_info __UNUSED__)
 {
@@ -206,7 +206,6 @@ _on_button_delete_clicked_cb(void *data,
 
    assert(edit != NULL);
 
-   App_Data *ap = app_data_get();
    Uns_List *colorclass = NULL;
    Colorclass_Item *cc_it = NULL;
    Eina_List *l;
@@ -245,9 +244,9 @@ _on_button_delete_clicked_cb(void *data,
    Elm_Object_Item *it = elm_genlist_selected_item_get(edit->genlist);
    Elm_Object_Item *next = elm_genlist_item_next_get(it);
 
-   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
-   ui_property_state_unset(ui_block_property_get(ap));
-   ui_property_state_set(ui_block_property_get(ap), part);
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get());
+   ui_property_state_unset(ui_block_property_get());
+   ui_property_state_set(ui_block_property_get(), part);
 
    if (!next) next = elm_genlist_item_prev_get(it);
    if (next)
@@ -427,13 +426,11 @@ _on_selected(void *data,
 
 /* Modal Window callbacks (closing and exiting from colorclass manager) */
 static void
-_on_mwin_del(void * data,
+_on_mwin_del(void * data __UNUSED__,
              Evas *e __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-
    assert(ap != NULL);
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
@@ -746,8 +743,6 @@ colorclass_manager_add(Project *project)
 {
    Evas_Object *ic;
    Colorclasses_Manager *edit = NULL;
-   /* temporary solution, while it not moved to modal window */
-   App_Data *ap = app_data_get();
 
    assert(project != NULL);
 

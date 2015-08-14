@@ -26,10 +26,8 @@ static Evas_Object *entry, *combobox, *btn_add;
 static Elm_Validator_Regexp *name_validator = NULL;
 
 static void
-_job_popup_close(void *data)
+_job_popup_close(void *data __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-
    assert(ap != NULL);
    assert(name_validator != NULL);
 
@@ -50,12 +48,10 @@ _job_popup_close(void *data)
 }
 
 static void
-_on_button_add_clicked(void *data,
+_on_button_add_clicked(void *data __UNUSED__,
                        Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-
    assert(ap != NULL);
 
    Part *part = evas_object_data_get(ap->popup, "PART");
@@ -85,7 +81,7 @@ _on_button_add_clicked(void *data,
      {
        edje_edit_string_list_free(part->items);
        part->items = edje_edit_part_items_list_get(ap->project->current_style->obj, part->name);
-       ui_widget_list_part_items_refresh(ui_block_widget_list_get(ap), part, true);
+       ui_widget_list_part_items_refresh(ui_block_widget_list_get(), part, true);
      }
    else
      {
@@ -119,7 +115,6 @@ _on_item_source_change(void *data,
 
    Evas_Object *proxy_preview = elm_object_part_content_unset(markup, "preview.swallow");
    Evas_Object *group_preview = elm_object_part_content_unset(markup, "origin.swallow");
-   App_Data *ap = app_data_get();
 
    if (!group_preview)
      group_preview =  edje_object_add(evas_object_evas_get(obj));
@@ -165,7 +160,7 @@ _validation(void *data __UNUSED__,
 }
 
 Evas_Object *
-item_dialog_add(App_Data *ap, Part *part)
+item_dialog_add(Part *part)
 {
    Evas_Object *box, *item, *button;
    Eina_List *collections = NULL, *l = NULL;

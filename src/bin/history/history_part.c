@@ -142,19 +142,18 @@ _part_redo(Evas_Object *source, Part_Diff *change)
    assert(source != NULL);
    assert(change != NULL);
 
-   App_Data *app = app_data_get();
-   Style *style = app->project->current_style;
+   Style *style = ap->project->current_style;
 
    assert(style != NULL);
    assert(style->obj != NULL);
 
-   Evas_Object *prop = ui_block_property_get(app);
-   Evas_Object *widget_list = ui_block_widget_list_get(app);
+   Evas_Object *prop = ui_block_property_get();
+   Evas_Object *widget_list = ui_block_widget_list_get();
 
    switch (change->diff.action_type)
      {
       case ADD:
-         if (!workspace_edit_object_part_add(app->workspace, change->part,
+         if (!workspace_edit_object_part_add(ap->workspace, change->part,
                                              change->params->type, NULL))
            {
               ERR("Can't add part to workspace");
@@ -175,13 +174,13 @@ _part_redo(Evas_Object *source, Part_Diff *change)
       case DEL:
          ui_widget_list_part_selected_set(widget_list, change->part, true);
          ui_widget_list_selected_part_del(widget_list, style);
-         evas_object_smart_callback_call(app->workspace, "ws,part,unselected",
+         evas_object_smart_callback_call(ap->workspace, "ws,part,unselected",
                                          (void *)change->part);
-         workspace_highlight_unset(app->workspace);
+         workspace_highlight_unset(ap->workspace);
          ui_property_part_unset(prop);
-         ui_property_style_set(prop, style, app->workspace);
+         ui_property_style_set(prop, style, ap->workspace);
 
-         workspace_edit_object_part_del(app->workspace, change->part);
+         workspace_edit_object_part_del(ap->workspace, change->part);
          ui_widget_list_style_parts_reload(widget_list, style);
       break;
       case RESTACK:
@@ -197,7 +196,7 @@ _part_redo(Evas_Object *source, Part_Diff *change)
              above = edje_edit_part_below_get(style->obj, change->part);
              last = true;
            }
-         workspace_edit_object_part_restack(app->workspace, change->part,
+         workspace_edit_object_part_restack(ap->workspace, change->part,
                                             change->params->above,
                                             change->params->last);
          change->params->last = last;
@@ -227,29 +226,28 @@ _part_undo(Evas_Object *source, Part_Diff *change)
    assert(source != NULL);
    assert(change != NULL);
 
-   App_Data *app = app_data_get();
-   Style *style = app->project->current_style;
+   Style *style = ap->project->current_style;
 
    assert(style != NULL);
    assert(style->obj != NULL);
 
-   Evas_Object *prop = ui_block_property_get(app);
-   Evas_Object *widget_list = ui_block_widget_list_get(app);
+   Evas_Object *prop = ui_block_property_get();
+   Evas_Object *widget_list = ui_block_widget_list_get();
 
    switch (change->diff.action_type)
      {
       case ADD:
-         workspace_edit_object_part_del(app->workspace, change->part);
-         workspace_highlight_unset(app->workspace);
+         workspace_edit_object_part_del(ap->workspace, change->part);
+         workspace_highlight_unset(ap->workspace);
          ui_widget_list_part_selected_set(widget_list, change->part, true);
          ui_widget_list_selected_part_del(widget_list, style);
 
-         ui_property_style_set(prop, style, app->workspace);
+         ui_property_style_set(prop, style, ap->workspace);
          ui_states_list_data_unset();
          ui_widget_list_style_parts_reload(widget_list, style);
       break;
       case DEL:
-         if (!workspace_edit_object_part_add(app->workspace, change->part,
+         if (!workspace_edit_object_part_add(ap->workspace, change->part,
                                              change->params->type, NULL))
            {
               ERR("Can't add part to workspace");
@@ -263,7 +261,7 @@ _part_undo(Evas_Object *source, Part_Diff *change)
            }
          ui_widget_list_part_add(widget_list, style, change->part);
          wm_style_parts_restack(style, change->part, change->params->above);
-         workspace_edit_object_part_restack(app->workspace, change->part,
+         workspace_edit_object_part_restack(ap->workspace, change->part,
                                             change->params->above,
                                             change->params->last);
 
@@ -284,7 +282,7 @@ _part_undo(Evas_Object *source, Part_Diff *change)
          else
            wm_style_parts_restack(style, change->part, NULL);
 
-         workspace_edit_object_part_restack(app->workspace, change->part,
+         workspace_edit_object_part_restack(ap->workspace, change->part,
                                             change->params->above,
                                             change->params->last);
          change->params->last = last;

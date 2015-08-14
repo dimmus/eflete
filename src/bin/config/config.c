@@ -64,7 +64,7 @@ _profile_free(void)
 }
 
 Eina_Bool
-config_init(App_Data *ap)
+config_init(void)
 {
    Eet_Data_Descriptor_Class eddc;
    Eet_Data_Descriptor_Class eddkc;
@@ -176,7 +176,7 @@ config_init(App_Data *ap)
 }
 
 Eina_Bool
-config_shutdown(App_Data *ap)
+config_shutdown(void)
 {
    assert(ap != NULL);
 
@@ -350,7 +350,7 @@ _config_default_new(void)
 }
 
 void
-config_load(App_Data *ap)
+config_load(void)
 {
    Eet_File *ef;
 
@@ -369,14 +369,14 @@ config_load(App_Data *ap)
 
    profile_load(config->profile);
 
-   shortcuts_profile_load(ap, profile_get());
+   shortcuts_profile_load(profile_get());
 #ifdef HAVE_ENVENTOR
    enventor_object_profile_load(ap->enventor, profile_get());
 #endif /* HAVE_ENVENTOR */
 }
 
 Eina_Bool
-config_panes_sizes_data_update(App_Data *ap)
+config_panes_sizes_data_update(void)
 {
    assert(ap != NULL);
 
@@ -398,7 +398,7 @@ config_panes_sizes_data_update(App_Data *ap)
 
 
 Eina_Bool
-config_save(App_Data *ap)
+config_save(void)
 {
    int x, y, w, h;
    Eet_File *ef;
@@ -421,7 +421,7 @@ config_save(App_Data *ap)
         config->window.h =            h;
      }
    if (profile->general.save_ui)
-     config_panes_sizes_data_update(ap);
+     config_panes_sizes_data_update();
 
    profile_save(config->profile);
 

@@ -115,8 +115,6 @@ _on_mwin_del(void * data,
 static void
 _image_editor_del(Image_Editor *img_edit)
 {
-   App_Data *ap = app_data_get();
-
    assert(img_edit != NULL);
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
@@ -837,7 +835,6 @@ _on_button_apply_clicked_cb(void *data,
 {
    Image_Editor *img_edit = (Image_Editor *)data;
    Uns_List *unit = NULL;
-   App_Data *ap = app_data_get();
    Eina_List *l, *names = NULL;
    Eina_Bool multiselect = false;
    const Eina_List *items;
@@ -1171,8 +1168,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    Evas_Object *button;
    Evas_Object *ic = NULL;
    Evas_Object *search_entry = NULL;
-   /* temporary solution, while it not moved to modal window */
-   App_Data *ap = app_data_get();
 
    assert(project != NULL);
 

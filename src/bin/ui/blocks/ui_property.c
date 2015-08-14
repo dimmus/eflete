@@ -409,12 +409,9 @@ _on_tab_activated(void *data,
                   Evas_Object *obj,
                   void *event_info)
 {
-   App_Data *ap;
    Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
    Evas_Object *property = (Evas_Object *)data;
    PROP_DATA_GET()
-
-   ap = app_data_get();
 
    if (it == pd->code_tab)
      {
@@ -2468,7 +2465,6 @@ _on_image_editor_done(void *data,
 {
    Evas_Object * border_entry;
    Prop_Data *pd = (Prop_Data *)data;
-   App_Data *ap = app_data_get();
    const char *value;
    const char *selected = (const char *)event_info;
 
@@ -2507,8 +2503,6 @@ _on_state_image_choose(void *data,
    assert(pd != NULL);
 
    const char *selected = elm_entry_entry_get(pd->state_image.image);
-
-   App_Data *ap = app_data_get();
 
    img_edit = image_editor_window_add(ap->project, SINGLE);
    image_editor_file_choose(img_edit, selected);
@@ -2586,8 +2580,6 @@ _add_tween_image(void *data,
 {
    Evas_Object *img_edit;
    Evas_Object *tween_list = (Evas_Object *)data;
-
-   App_Data *ap = app_data_get();
 
    img_edit = image_editor_window_add(ap->project, TWEENS);
    evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED,
@@ -3108,7 +3100,6 @@ prop_part_item_source_update(Prop_Data *pd)
 {
    Eina_List *collections, *l;
    const char *group, *value;
-   App_Data *ap = app_data_get();
 
    assert(pd != NULL);
 

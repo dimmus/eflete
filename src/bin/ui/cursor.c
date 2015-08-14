@@ -134,7 +134,6 @@ cursor_main_free()
    Cursor *cursor;
    Evas *e;
    Ecore_Evas *ee;
-   App_Data *ap = app_data_get();
 
    e = evas_object_evas_get(ap->win);
    ee = ecore_evas_ecore_evas_get(e);

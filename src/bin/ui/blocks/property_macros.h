@@ -975,7 +975,6 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
 { \
    Eina_List *collections, *l; \
    const char *group, *value; \
-   App_Data *ap = app_data_get(); \
    unsigned int i = 0; \
    ewe_combobox_items_list_free(pd->MEMBER.VALUE, true); \
    value = edje_edit_part_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name); \

@@ -27,7 +27,7 @@
 
 #ifdef HAVE_ENVENTOR
    #define SKIP_IN_ENVENTOR_MODE \
-      if (app->enventor_mode) \
+      if (ap->enventor_mode) \
         return false;
 #else
    #define SKIP_IN_ENVENTOR_MODE
@@ -138,8 +138,8 @@ _random_name_generate(char *part_name, unsigned int length)
 
 #define PART_FUNCTIONALITY(TYPE, DATA) \
    SKIP_IN_ENVENTOR_MODE \
-   Evas_Object *workspace = app->workspace; \
-   Evas_Object *widget_list = ui_block_widget_list_get(app); \
+   Evas_Object *workspace = ap->workspace; \
+   Evas_Object *widget_list = ui_block_widget_list_get(); \
    Style *style = workspace_edit_object_get(workspace); \
    assert(style != NULL); \
    char name[9]; \
@@ -147,12 +147,12 @@ _random_name_generate(char *part_name, unsigned int length)
    if (workspace_edit_object_part_add(workspace, name, TYPE, DATA)) \
      ui_widget_list_part_add(widget_list, style, name); \
    history_diff_add(style->obj, PART_TARGET, ADD, name); \
-   live_view_part_add(app->live_view, ui_widget_list_selected_part_get(widget_list)); \
+   live_view_part_add(ap->live_view, ui_widget_list_selected_part_get(widget_list)); \
    project_changed(true);
 
 #define PART_ADD(TYPE, FUNC) \
 Eina_Bool \
-_##FUNC##_part_add_cb(App_Data *app) \
+_##FUNC##_part_add_cb(void) \
 { \
    PART_FUNCTIONALITY(TYPE, NULL) \
    return true; \
@@ -170,24 +170,22 @@ PART_ADD(EDJE_PART_TYPE_BOX, box)
 
 /* different adding is for image */
 static void
-_on_image_editor_done(void *data,
+_on_image_editor_done(void *data __UNUSED__,
                       Evas_Object *obj __UNUSED__,
                       void *event_info)
 {
    char *selected = (char *)event_info;
-   App_Data *app = (App_Data *)data;
 
-   assert(app != NULL);
+   assert(ap != NULL);
 
    if (!selected) return;
    PART_FUNCTIONALITY(EDJE_PART_TYPE_IMAGE, selected);
 }
 
 Eina_Bool
-_image_part_choose_cb(App_Data *data)
+_image_part_choose_cb(void)
 {
    Evas_Object *img_edit;
-   App_Data *ap = (App_Data *)data;
 
    assert(ap != NULL);
 
@@ -199,7 +197,7 @@ _image_part_choose_cb(App_Data *data)
 /* this one will delete part or style or layout or state.  */
 TODO("move this code or some of it's part to Connector")
 Eina_Bool
-_item_delete_cb(App_Data *app)
+_item_delete_cb(void)
 {
    SKIP_IN_ENVENTOR_MODE
    Elm_Object_Item *glit = NULL;
@@ -207,22 +205,22 @@ _item_delete_cb(App_Data *app)
    Evas_Object *nf = NULL;
    Ewe_Tabs_Item *selected = NULL;
    /* if widget list is in focus. Delete part, style or layout. */
-   nf = ui_block_widget_list_get(app);
+   nf = ui_block_widget_list_get();
    if ((nf) && (elm_object_focus_get(nf)))
      {
         selected = ewe_tabs_active_item_get(nf);
         /* try to delete layout */
         if ((evas_object_data_get(nf, "layouts_tab") == selected) &&
-            ((!app->project->current_style) ||
-             (app->project->current_style->__type != LAYOUT)))
+            ((!ap->project->current_style) ||
+             (ap->project->current_style->__type != LAYOUT)))
           {
-             evas_object_smart_callback_call(app->block.left_top, "wl,layout,del", nf);
+             evas_object_smart_callback_call(ap->block.left_top, "wl,layout,del", nf);
              return true;
           }
         /* try to delete style */
         else if ((evas_object_data_get(nf, "widgets_tab") == selected) &&
-            ((!app->project->current_style) ||
-             (app->project->current_style->__type != STYLE)))
+            ((!ap->project->current_style) ||
+             (ap->project->current_style->__type != STYLE)))
           {
              nf = evas_object_data_get(nf, "nf_widgets");
              nf = elm_object_item_part_content_get(elm_naviframe_top_item_get(nf),
@@ -233,7 +231,7 @@ _item_delete_cb(App_Data *app)
                   _style = elm_object_item_data_get(glit);
                   if (_style->__type != WIDGET)
                     {
-                       evas_object_smart_callback_call(app->block.left_top, "wl,style,del", NULL);
+                       evas_object_smart_callback_call(ap->block.left_top, "wl,style,del", NULL);
                        return true;
                     }
                }
@@ -241,26 +239,26 @@ _item_delete_cb(App_Data *app)
      }
 
    /* if state list is in focus */
-   if (elm_object_focus_get(app->block.state_list))
+   if (elm_object_focus_get(ap->block.state_list))
      {
-        evas_object_smart_callback_call(app->block.state_list, "stl,state,del", NULL);
+        evas_object_smart_callback_call(ap->block.state_list, "stl,state,del", NULL);
         return true;
      }
 
    /* try to delete part */
-   evas_object_smart_callback_call(ui_block_widget_list_get(app), "wl,part,del", NULL);
+   evas_object_smart_callback_call(ui_block_widget_list_get(), "wl,part,del", NULL);
 
    return true;
 }
 
 Eina_Bool
-_widget_manager_layout_switch_cb(App_Data *app)
+_widget_manager_layout_switch_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
    SKIP_IN_ENVENTOR_MODE
    const Eina_List *tabs;
-   Evas_Object *nf = ui_block_widget_list_get(app);
+   Evas_Object *nf = ui_block_widget_list_get();
    tabs = ewe_tabs_items_list_get(nf);
    tabs = eina_list_next(tabs);
 
@@ -271,13 +269,13 @@ _widget_manager_layout_switch_cb(App_Data *app)
 }
 
 Eina_Bool
-_widget_manager_style_switch_cb(App_Data *app)
+_widget_manager_style_switch_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
    SKIP_IN_ENVENTOR_MODE
    const Eina_List *tabs;
-   Evas_Object *nf = ui_block_widget_list_get(app);
+   Evas_Object *nf = ui_block_widget_list_get();
    tabs = ewe_tabs_items_list_get(nf);
 
    assert(tabs != NULL);
@@ -287,44 +285,44 @@ _widget_manager_style_switch_cb(App_Data *app)
 }
 
 Eina_Bool
-_separate_mode_change_cb(App_Data *app)
+_separate_mode_change_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
    SKIP_IN_ENVENTOR_MODE
-   double factor = workspace_zoom_factor_get(app->workspace);
+   double factor = workspace_zoom_factor_get(ap->workspace);
    if (fabs(factor - 1.0) > 0.001)
      return false;
 
-   Eina_Bool sep = workspace_separate_mode_get(app->workspace);
-   workspace_separate_mode_set(app->workspace, !sep);
+   Eina_Bool sep = workspace_separate_mode_get(ap->workspace);
+   workspace_separate_mode_set(ap->workspace, !sep);
 
    return true;
 }
 
 Eina_Bool
-_new_style_create_cb(App_Data *app)
+_new_style_create_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
    SKIP_IN_ENVENTOR_MODE
    Elm_Object_Item *glit = NULL;
    Style *_style = NULL;
-   Evas_Object *nf = ui_block_widget_list_get(app);
+   Evas_Object *nf = ui_block_widget_list_get();
    Ewe_Tabs_Item *selected = ewe_tabs_active_item_get(nf);
 
    if (!elm_object_focus_get(nf)) return false;
-   if (!app->project) return false;
+   if (!ap->project) return false;
 
    if ((evas_object_data_get(nf, "layouts_tab") == selected) &&
-       ((!app->project->current_style) ||
-        (app->project->current_style->__type != LAYOUT)))
+       ((!ap->project->current_style) ||
+        (ap->project->current_style->__type != LAYOUT)))
      {
-        evas_object_smart_callback_call(app->block.left_top, "wl,layout,add", nf);
+        evas_object_smart_callback_call(ap->block.left_top, "wl,layout,add", nf);
      }
    else if ((evas_object_data_get(nf, "widgets_tab") == selected) &&
-       ((!app->project->current_style) ||
-        (app->project->current_style->__type != STYLE)))
+       ((!ap->project->current_style) ||
+        (ap->project->current_style->__type != STYLE)))
      {
         nf = evas_object_data_get(nf, "nf_widgets");
         nf = elm_object_item_part_content_get(elm_naviframe_top_item_get(nf),
@@ -334,35 +332,35 @@ _new_style_create_cb(App_Data *app)
           {
              _style = elm_object_item_data_get(glit);
              if (_style->__type != WIDGET)
-               evas_object_smart_callback_call(app->block.left_top, "wl,style,add", NULL);
+               evas_object_smart_callback_call(ap->block.left_top, "wl,style,add", NULL);
           }
      }
    return true;
 }
 
 Eina_Bool
-_style_delete_cb(App_Data *app)
+_style_delete_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
    SKIP_IN_ENVENTOR_MODE
    Elm_Object_Item *glit = NULL;
    Style *_style = NULL;
-   Evas_Object *nf = ui_block_widget_list_get(app);
+   Evas_Object *nf = ui_block_widget_list_get();
    Ewe_Tabs_Item *selected = ewe_tabs_active_item_get(nf);
 
    if (!elm_object_focus_get(nf)) return false;
-   if (!app->project) return false;
+   if (!ap->project) return false;
 
    if ((evas_object_data_get(nf, "layouts_tab") == selected) &&
-       ((!app->project->current_style) ||
-        (app->project->current_style->__type != LAYOUT)))
+       ((!ap->project->current_style) ||
+        (ap->project->current_style->__type != LAYOUT)))
      {
-        evas_object_smart_callback_call(app->block.left_top, "wl,layout,del", nf);
+        evas_object_smart_callback_call(ap->block.left_top, "wl,layout,del", nf);
      }
    else if ((evas_object_data_get(nf, "widgets_tab") == selected) &&
-       ((!app->project->current_style) ||
-        (app->project->current_style->__type != STYLE)))
+       ((!ap->project->current_style) ||
+        (ap->project->current_style->__type != STYLE)))
      {
         nf = evas_object_data_get(nf, "nf_widgets");
         nf = elm_object_item_part_content_get(elm_naviframe_top_item_get(nf),
@@ -370,87 +368,87 @@ _style_delete_cb(App_Data *app)
         glit = elm_genlist_selected_item_get(nf);
         _style = elm_object_item_data_get(glit);
         if (_style->__type != WIDGET)
-          evas_object_smart_callback_call(app->block.left_top, "wl,style,del", NULL);
+          evas_object_smart_callback_call(ap->block.left_top, "wl,style,del", NULL);
      }
    return true;
 }
 
 Eina_Bool
-_new_theme_cb(App_Data *app)
+_new_theme_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
-   if (!project_close(app))
+   if (!project_close())
      return false;
-   wizard_new_project_add(app);
+   wizard_new_project_add();
    return true;
 }
 
 /*
 Eina_Bool
-_open_edc_cb(App_Data *app)
+_open_edc_cb(void)
 {
-   if (!project_close(app))
+   if (!project_close())
      return false;
-   compile_dialog(app);
+   compile_dialog();
    return true;
 }
 */
 
 Eina_Bool
-_open_edj_cb(App_Data *app __UNUSED__)
+_open_edj_cb(void)
 {
    project_open();
    return true;
 }
 
 Eina_Bool
-_import_edj_cb(App_Data *app)
+_import_edj_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
-   if (!project_close(app))
+   if (!project_close())
      return false;
-   wizard_import_edj_add(app);
+   wizard_import_edj_add();
    return true;
 }
 
 Eina_Bool
-_save_cb(App_Data *app __UNUSED__)
+_save_cb(void)
 {
    project_save();
    return true;
 }
 
 Eina_Bool
-_save_as_cb(App_Data *app)
+_save_as_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
-   if (!app->project) return false;
+   if (!ap->project) return false;
    project_export_develop();
    return true;
 }
 
 Eina_Bool
-_export_cb(App_Data *app)
+_export_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
-   if (!app->project) return false;
+   if (!ap->project) return false;
    project_export_edc_project();
    return true;
 }
 
 Eina_Bool
-_visual_tab_cb(App_Data *app)
+_visual_tab_cb(void)
 {
    const Eina_List *tabs;
    Evas_Object *nf;
 
-   assert(app != NULL);
+   assert(ap != NULL);
 
-   nf = ui_block_property_get(app);
+   nf = ui_block_property_get();
    tabs = ewe_tabs_items_list_get(nf);
    ewe_tabs_active_item_set(nf, eina_list_data_get(tabs));
 
@@ -458,14 +456,14 @@ _visual_tab_cb(App_Data *app)
 }
 
 Eina_Bool
-_code_tab_cb(App_Data *app)
+_code_tab_cb(void)
 {
    const Eina_List *tabs;
    Evas_Object *nf;
 
-   assert(app != NULL);
+   assert(ap != NULL);
 
-   nf = ui_block_property_get(app);
+   nf = ui_block_property_get();
    tabs = ewe_tabs_items_list_get(nf);
    tabs = eina_list_next(tabs);
    ewe_tabs_active_item_set(nf, eina_list_data_get(tabs));
@@ -474,59 +472,59 @@ _code_tab_cb(App_Data *app)
 }
 
 Eina_Bool
-_quit_cb(App_Data *app)
+_quit_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
-   ui_main_window_del(app);
+   ui_main_window_del();
    return true;
 }
 
 Eina_Bool
-_style_editor_open_cb(App_Data *app)
+_style_editor_open_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
-   style_editor_window_add(app->project);
+   style_editor_window_add(ap->project);
    return true;
 }
 
 Eina_Bool
-_image_editor_open_cb(App_Data *app)
+_image_editor_open_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
-   image_editor_window_add(app->project, MULTIPLE);
+   image_editor_window_add(ap->project, MULTIPLE);
    return true;
 }
 
 Eina_Bool
-_sound_editor_open_cb(App_Data *app)
+_sound_editor_open_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
-   sound_editor_window_add(app->project, SOUND_EDITOR_EDIT);
+   sound_editor_window_add(ap->project, SOUND_EDITOR_EDIT);
    return true;
 }
 
 Eina_Bool
-_colorclass_manager_open_cb(App_Data *app)
+_colorclass_manager_open_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
-   colorclass_manager_add(app->project);
+   colorclass_manager_add(ap->project);
    return true;
 }
 
 Eina_Bool
-_animator_open_cb(App_Data *app)
+_animator_open_cb(void)
 {
    Style *style = NULL;
 
-   assert(app != NULL);
+   assert(ap != NULL);
 
-   if (app->project)
-     style = app->project->current_style;
+   if (ap->project)
+     style = ap->project->current_style;
 
    animator_window_add(style);
 
@@ -534,79 +532,79 @@ _animator_open_cb(App_Data *app)
 }
 
 Eina_Bool
-_highlight_align_show_switch_cb(App_Data *app)
+_highlight_align_show_switch_cb(void)
 {
-   assert(app != NULL);
-   assert(app->project != NULL);
+   assert(ap != NULL);
+   assert(ap->project != NULL);
 
-   if (!app->project->current_style) return false;
+   if (!ap->project->current_style) return false;
 
    SKIP_IN_ENVENTOR_MODE
-   Eina_Bool flag = workspace_highlight_align_visible_get(app->workspace);
-   workspace_highlight_align_visible_set(app->workspace, !flag);
-   workspace_object_area_visible_set(app->workspace, !flag);
+   Eina_Bool flag = workspace_highlight_align_visible_get(ap->workspace);
+   workspace_highlight_align_visible_set(ap->workspace, !flag);
+   workspace_object_area_visible_set(ap->workspace, !flag);
    return true;
 }
 
 Eina_Bool
-_object_area_show_switch_cb(App_Data *app)
+_object_area_show_switch_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
    SKIP_IN_ENVENTOR_MODE
-   if ((!app->project) || (!app->project->current_style)) return false;
-   Eina_Bool flag = workspace_object_area_visible_get(app->workspace);
-   workspace_object_area_visible_set(app->workspace, !flag);
+   if ((!ap->project) || (!ap->project->current_style)) return false;
+   Eina_Bool flag = workspace_object_area_visible_get(ap->workspace);
+   workspace_object_area_visible_set(ap->workspace, !flag);
    return true;
 }
 
 Eina_Bool
-_zoom_in_cb(App_Data *app)
+_zoom_in_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
    SKIP_IN_ENVENTOR_MODE
-   if (!app->project->current_style)
+   if (!ap->project->current_style)
      return false;
 
-   double current_factor = workspace_zoom_factor_get(app->workspace);
-   workspace_zoom_factor_set(app->workspace, current_factor + 0.1);
+   double current_factor = workspace_zoom_factor_get(ap->workspace);
+   workspace_zoom_factor_set(ap->workspace, current_factor + 0.1);
    return true;
 }
 
 Eina_Bool
-_zoom_out_cb(App_Data *app)
+_zoom_out_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
    SKIP_IN_ENVENTOR_MODE
-   if (!app->project->current_style)
+   if (!ap->project->current_style)
      return false;
 
-   double current_factor = workspace_zoom_factor_get(app->workspace);
-   workspace_zoom_factor_set(app->workspace, current_factor - 0.1);
+   double current_factor = workspace_zoom_factor_get(ap->workspace);
+   workspace_zoom_factor_set(ap->workspace, current_factor - 0.1);
    return true;
 }
 
 Eina_Bool
-_undo_cb(App_Data *app)
+_undo_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
    SKIP_IN_ENVENTOR_MODE
-   if ((app->project) && (app->project->current_style))
-     history_undo(app->project->current_style->obj, 1);
+   if ((ap->project) && (ap->project->current_style))
+     history_undo(ap->project->current_style->obj, 1);
    return true;
 }
 
 Eina_Bool
-_redo_cb(App_Data *app)
+_redo_cb(void)
 {
-   assert(app != NULL);
+   assert(ap != NULL);
 
    SKIP_IN_ENVENTOR_MODE
-   if ((app->project) && (app->project->current_style))
-     history_redo(app->project->current_style->obj, 1);
+   if ((ap->project) && (ap->project->current_style))
+     history_redo(ap->project->current_style->obj, 1);
    return true;
 }
 
@@ -617,7 +615,7 @@ _redo_cb(App_Data *app)
 /*
  * Pointer to a function that will be called after clicking on some shortcut.
  */
-typedef Eina_Bool (*Shortcut_Function_Cb)(App_Data *app);
+typedef Eina_Bool (*Shortcut_Function_Cb)(void);
 struct _Shortcut_Function
 {
    const char           *keyname;
@@ -701,10 +699,9 @@ static Function_Set _sc_func_set_init[] =
 static Eina_Hash *_sc_functions = NULL;
 
 static Eina_Bool
-_key_press_event_cb(void *data, int type __UNUSED__, void *event)
+_key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Event_Key *ev = (Ecore_Event_Key *)event;
-   App_Data *ap = (App_Data *)data;
    Shortcut_Function *sc_func;
    Key_Pair *key = mem_malloc(sizeof(Key_Pair));
 
@@ -722,12 +719,12 @@ _key_press_event_cb(void *data, int type __UNUSED__, void *event)
 
         sc_func = eina_hash_find(ap->shortcuts->shortcut_functions, key);
         if ((sc_func) && (!sc_func->holdable))
-          sc_func->function(ap);
+          sc_func->function();
         else if ((sc_func) && (sc_func->holdable) && (!sc_func->held))
           {
              sc_func->held = true;
              ap->shortcuts->holded_functions = eina_list_append(ap->shortcuts->holded_functions, sc_func);
-             sc_func->function(ap);
+             sc_func->function();
           }
      }
 
@@ -736,10 +733,9 @@ _key_press_event_cb(void *data, int type __UNUSED__, void *event)
 }
 
 static Eina_Bool
-_key_unpress_event_cb(void *data, int type __UNUSED__, void *event)
+_key_unpress_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Event_Key *ev = (Ecore_Event_Key *)event;
-   App_Data *ap = (App_Data *)data;
    Shortcut_Function *sc_func;
    Eina_List *l;
 
@@ -753,7 +749,7 @@ _key_unpress_event_cb(void *data, int type __UNUSED__, void *event)
                {
                   sc_func->held = false;
                   ap->shortcuts->holded_functions = eina_list_remove(ap->shortcuts->holded_functions, sc_func);
-                  sc_func->function(ap);
+                  sc_func->function();
                }
           }
      }
@@ -798,7 +794,7 @@ _eina_hash_free(void *data)
 #undef PART_FUNCTIONALITY
 
 static Eina_Bool
-_shortcuts_main_add(App_Data *ap)
+_shortcuts_main_add(void)
 {
    assert(ap != NULL);
 
@@ -815,7 +811,7 @@ _shortcuts_main_add(App_Data *ap)
 }
 
 static Eina_Bool
-_shortcuts_main_del(App_Data *ap)
+_shortcuts_main_del(void)
 {
    assert(ap != NULL);
 
@@ -832,7 +828,7 @@ _shortcuts_main_del(App_Data *ap)
 }
 
 Eina_Bool
-shortcuts_profile_load(App_Data *ap, Profile *profile)
+shortcuts_profile_load(Profile *profile)
 {
    Shortcuts *sc;
    Shortcut_Function *sc_func;
@@ -886,7 +882,7 @@ shortcuts_profile_load(App_Data *ap, Profile *profile)
 }
 
 Eina_Bool
-shortcuts_init(App_Data *ap)
+shortcuts_init(void)
 {
    assert(_sc_functions == NULL);
    assert(ap != NULL);
@@ -901,13 +897,13 @@ shortcuts_init(App_Data *ap)
         eina_hash_direct_add(_sc_functions, _sc_func_set->descr, _sc_func_set->func);
         _sc_func_set++;
      }
-   _shortcuts_main_add(ap);
+   _shortcuts_main_add();
 
    return true;
 }
 
 Eina_Bool
-shortcuts_shutdown(App_Data *ap)
+shortcuts_shutdown(void)
 {
    assert(_sc_functions != NULL);
    assert(ap != NULL);
@@ -915,7 +911,7 @@ shortcuts_shutdown(App_Data *ap)
 
    Key_Pair *key;
 
-   _shortcuts_main_del(ap);
+   _shortcuts_main_del();
 
    eina_hash_free(_sc_functions);
    _sc_functions = NULL;

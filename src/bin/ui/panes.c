@@ -93,7 +93,7 @@ _double_click_center_panes_down_cb(void * data __UNUSED__,
 #define PANES_MIN_SIZE_RIGHT 385
 
 Eina_Bool
-ui_panes_left_panes_min_size_toggle(App_Data *ap, Eina_Bool is_on)
+ui_panes_left_panes_min_size_toggle(Eina_Bool is_on)
 {
    assert(ap != NULL);
    assert(ap->panes.left != NULL);
@@ -109,12 +109,10 @@ ui_panes_left_panes_min_size_toggle(App_Data *ap, Eina_Bool is_on)
 #undef PANES_MIN_SIZE_RIGHT
 
 static void
-_on_discard_changes_selected(void *data,
+_on_discard_changes_selected(void *data __UNUSED__,
                             Evas_Object *obj __UNUSED__,
                             void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-
    assert(ap != NULL);
    assert(ap->project != NULL);
    assert(ap->project->current_style != NULL);
@@ -126,7 +124,7 @@ _on_discard_changes_selected(void *data,
 
 
 Eina_Bool
-ui_panes_add(App_Data *ap)
+ui_panes_add(void)
 {
    Config *config;
    Evas_Object *block;
@@ -180,7 +178,7 @@ ui_panes_add(App_Data *ap)
    ap->panes.right_hor = panes_right_hor;
    ap->panes.center = panes_center;
 
-   ui_panes_left_panes_min_size_toggle(ap, true);
+   ui_panes_left_panes_min_size_toggle(true);
 
    evas_object_smart_callback_add(panes_right_hor, "clicked,double",
                                   _double_click_up_cb, NULL);
@@ -243,7 +241,7 @@ ui_panes_add(App_Data *ap)
 }
 
 Eina_Bool
-ui_panes_show(App_Data *ap)
+ui_panes_show(void)
 {
    assert(ap != NULL);
    assert(ap->win_layout != NULL);
@@ -253,7 +251,7 @@ ui_panes_show(App_Data *ap)
 }
 
 Eina_Bool
-ui_panes_hide(App_Data *ap)
+ui_panes_hide(void)
 {
    assert(ap != NULL);
    assert(ap->win_layout != NULL);

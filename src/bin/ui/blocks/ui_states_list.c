@@ -47,7 +47,6 @@ static Elm_Genlist_Item_Class *_itc_state = NULL;
 static void
 _popup_close(void)
 {
-   App_Data *ap = app_data_get();
    if (sl.popup.name_validator)
      {
         elm_validator_regexp_free(sl.popup.name_validator);
@@ -95,9 +94,7 @@ _btn_del_cb(void *data __UNUSED__,
 {
    Evas_Object *bt_no;
    Eina_Stringshare *message;
-   App_Data *ap;
 
-   ap = app_data_get();
    assert(ap != NULL);
 
    sl.popup.popup = elm_popup_add(ap->win);
@@ -174,9 +171,7 @@ _btn_add_cb(void *data __UNUSED__,
    Eina_Stringshare *title;
    Eina_List *states = NULL, *l = NULL;
    const char *state_name = NULL;
-   App_Data *ap;
 
-   ap = app_data_get();
    assert(ap != NULL);
 
    sl.popup.name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
