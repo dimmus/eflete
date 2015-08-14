@@ -54,7 +54,6 @@ EFLETE_TEST (app_shutdown_test_p1)
 {
    elm_init(0,0);
    app_init();
-   app_data_get();
 
    ck_assert_msg(app_shutdown() == EINA_TRUE, "Could not shutdown some of libraries");
 

@@ -56,15 +56,13 @@ EFLETE_TEST (add_callbacks_wd_test_p1)
 {
    elm_init(0, 0);
    Evas_Object *widget_list;
-   App_Data *app_data;
    Eina_Bool result = EINA_FALSE;
 
    app_init();
-   app_data = app_data_get();
-   ui_main_window_add(app_data);
-   widget_list = ui_widget_list_add(app_data->win);
+   ui_main_window_add();
+   widget_list = ui_widget_list_add(ap->win);
 
-   result = add_callbacks_wd(widget_list, app_data);
+   result = add_callbacks_wd(widget_list);
    ck_assert_msg(result == EINA_TRUE, "Could not register callbacks!");
 
    app_shutdown();

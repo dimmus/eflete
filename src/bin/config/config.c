@@ -163,7 +163,7 @@ config_init(void)
      (edd_profile, Profile, "shortcuts",    shortcuts, edd_keys);
 
    if (!edd_profile) return false;
-   if (!shortcuts_init(ap))
+   if (!shortcuts_init())
      {
         CRIT("Can't initialize the shortcut module");
         return false;

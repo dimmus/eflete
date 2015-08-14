@@ -81,7 +81,7 @@ EFLETE_TEST(config_get_test_p2)
 {
    elm_init(0,0);
    app_init();
-   config_load(app_data_get());
+   config_load();
 
    ck_assert_msg(config_get() != NULL, "Config not loaded.");
 

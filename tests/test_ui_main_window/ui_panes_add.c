@@ -56,7 +56,7 @@
  * @step 8 Check (App_Data)->block.right_bottom
  * @step 9 Check (App_Data)->block.canvas
  * </td>
- * <td>(App_Data *) app_data</td>
+ * <td></td>
  * <td>All checks are passed</td>
  * </tr>
  * @}
@@ -64,27 +64,25 @@
 
 EFLETE_TEST(ui_panes_add_test_p)
 {
-   App_Data *app_data = NULL;
    Eina_Bool ret = EINA_FALSE;
 
    elm_init(0, 0);
    app_init();
-   app_data = app_data_get();
-   ui_main_window_add(app_data);
 
-   ret = ui_panes_add(app_data);
+   ui_main_window_add();
+   ret = ui_panes_add();
    ck_assert_msg(ret == EINA_TRUE, "Failed to create panes");
-   ck_assert_msg(app_data->block.left_top != NULL,
+   ck_assert_msg(ap->block.left_top != NULL,
                  "Failed to create left_top block");
-   ck_assert_msg(app_data->block.left_bottom != NULL,
+   ck_assert_msg(ap->block.left_bottom != NULL,
                  "Failed to create left_bottom block");
-   ck_assert_msg(app_data->block.bottom_right != NULL,
+   ck_assert_msg(ap->block.bottom_right != NULL,
                  "Failed to create bottom_right block");
-   ck_assert_msg(app_data->block.right_top != NULL,
+   ck_assert_msg(ap->block.right_top != NULL,
                  "Failed to create right_top block");
-   ck_assert_msg(app_data->block.right_bottom != NULL,
+   ck_assert_msg(ap->block.right_bottom != NULL,
                  "Failed to create right_bottom block");
-   ck_assert_msg(app_data->block.canvas != NULL,
+   ck_assert_msg(ap->block.canvas != NULL,
                  "Failed to create canvas block");
 
    app_shutdown();

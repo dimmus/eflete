@@ -50,14 +50,13 @@
  */
 EFLETE_TEST(shortcuts_init_test_p1)
 {
-   App_Data *ap;
-
    elm_init(0,0);
-   ap = app_data_get();
+   app_init();
 
-   ck_assert_msg(shortcuts_init(ap), "Shortcuts not initialized.");
+   ck_assert_msg(shortcuts_init(), "Shortcuts not initialized.");
 
    shortcuts_shutdown(ap);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -85,16 +84,15 @@ END_TEST
  */
 EFLETE_TEST(shortcuts_init_test_p2)
 {
-   App_Data *ap;
-
    elm_init(0,0);
-   ap = app_data_get();
+   app_init();
 
-   ck_assert_msg(shortcuts_init(ap), "Shortcuts not initialized at first time.");
-   shortcuts_shutdown(ap);
-   ck_assert_msg(shortcuts_init(ap), "Shortcuts not initialized at second time.");
+   ck_assert_msg(shortcuts_init(), "Shortcuts not initialized at first time.");
+   shortcuts_shutdown();
+   ck_assert_msg(shortcuts_init(), "Shortcuts not initialized at second time.");
 
    shortcuts_shutdown(ap);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST

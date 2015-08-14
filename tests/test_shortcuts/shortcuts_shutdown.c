@@ -51,14 +51,13 @@
  */
 EFLETE_TEST(shortcuts_shutdown_test_p1)
 {
-   App_Data *ap;
-
    elm_init(0,0);
-   ap = app_data_get();
+   app_init();
 
-   shortcuts_init(ap);
-   ck_assert_msg(shortcuts_shutdown(ap), "Can't shutdown shortcuts.");
+   shortcuts_init();
+   ck_assert_msg(shortcuts_shutdown(), "Can't shutdown shortcuts.");
 
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -87,16 +86,15 @@ END_TEST
  */
 EFLETE_TEST(shortcuts_shutdown_test_p2)
 {
-   App_Data *ap;
-
    elm_init(0,0);
-   ap = app_data_get();
+   app_init();
 
-   shortcuts_init(ap);
-   ck_assert_msg(shortcuts_shutdown(ap), "Can't shutdown shortcuts.");
-   shortcuts_init(ap);
-   ck_assert_msg(shortcuts_shutdown(ap), "Can't shutdown shortcuts after second initialization.");
+   shortcuts_init();
+   ck_assert_msg(shortcuts_shutdown(), "Can't shutdown shortcuts.");
+   shortcuts_init();
+   ck_assert_msg(shortcuts_shutdown(), "Can't shutdown shortcuts after second initialization.");
 
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST

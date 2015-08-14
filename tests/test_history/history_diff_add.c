@@ -57,7 +57,6 @@
  */
 EFLETE_TEST(history_diff_add_test_p1)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -66,10 +65,9 @@ EFLETE_TEST(history_diff_add_test_p1)
    path = "./edj_build/history_diff_add.edj";
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
-   ui_main_window_add(app);
-   history_genlist_get(app->history, app->win);
+   ap->history = history_init();
+   ui_main_window_add();
+   history_genlist_get(ap->history, ap->win);
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -81,7 +79,7 @@ EFLETE_TEST(history_diff_add_test_p1)
    ck_assert_msg(result, "Failed to add new diff with VAL_RENAME value type in the"
                          " history of module.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -116,7 +114,6 @@ END_TEST
  */
 EFLETE_TEST(history_diff_add_test_p2)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -125,10 +122,9 @@ EFLETE_TEST(history_diff_add_test_p2)
    path = "./edj_build/history_diff_add.edj";
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
-   ui_main_window_add(app);
-   history_genlist_get(app->history, app->win);
+   ap->history = history_init();
+   ui_main_window_add();
+   history_genlist_get(ap->history, ap->win);
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -141,7 +137,7 @@ EFLETE_TEST(history_diff_add_test_p2)
    ck_assert_msg(result, "Failed to add new diff with type VAL_STRING"
                          " in the history of module.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -177,7 +173,6 @@ END_TEST
  */
 EFLETE_TEST(history_diff_add_test_p3)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -186,10 +181,9 @@ EFLETE_TEST(history_diff_add_test_p3)
    path = "./edj_build/history_diff_add.edj";
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
-   ui_main_window_add(app);
-   history_genlist_get(app->history, app->win);
+   ap->history = history_init();
+   ui_main_window_add();
+   history_genlist_get(ap->history, ap->win);
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -202,7 +196,7 @@ EFLETE_TEST(history_diff_add_test_p3)
    ck_assert_msg(result, "Failed to add new diff with type VAL_DOUBLE"
                          " in the history of module.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -238,7 +232,6 @@ END_TEST
  */
 EFLETE_TEST(history_diff_add_test_p4)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -247,10 +240,9 @@ EFLETE_TEST(history_diff_add_test_p4)
    path = "./edj_build/history_diff_add.edj";
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
-   ui_main_window_add(app);
-   history_genlist_get(app->history, app->win);
+   ap->history = history_init();
+   ui_main_window_add();
+   history_genlist_get(ap->history, ap->win);
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -263,7 +255,7 @@ EFLETE_TEST(history_diff_add_test_p4)
    ck_assert_msg(result, "Failed to add new diff with type VAL_INT"
                          " in the history of module.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -299,7 +291,6 @@ END_TEST
  */
 EFLETE_TEST(history_diff_add_test_p5)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -308,10 +299,9 @@ EFLETE_TEST(history_diff_add_test_p5)
    path = "./edj_build/history_diff_add.edj";
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
-   ui_main_window_add(app);
-   history_genlist_get(app->history, app->win);
+   ap->history = history_init();
+   ui_main_window_add();
+   history_genlist_get(ap->history, ap->win);
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -325,7 +315,7 @@ EFLETE_TEST(history_diff_add_test_p5)
    ck_assert_msg(result, "Failed to add new diff with type VAL_GROUP"
                          " in the history of module.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -361,7 +351,6 @@ END_TEST
  */
 EFLETE_TEST(history_diff_add_test_p6)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -370,10 +359,9 @@ EFLETE_TEST(history_diff_add_test_p6)
    path = "./edj_build/history_diff_add.edj";
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
-   ui_main_window_add(app);
-   history_genlist_get(app->history, app->win);
+   ap->history = history_init();
+   ui_main_window_add();
+   history_genlist_get(ap->history, ap->win);
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -386,7 +374,7 @@ EFLETE_TEST(history_diff_add_test_p6)
    ck_assert_msg(result, "Failed to add new diff with type VAL_FOUR"
                          " in the history of module.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -424,7 +412,6 @@ END_TEST
  */
 EFLETE_TEST(history_diff_add_test_p7)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Evas_Object *win = NULL;
@@ -434,16 +421,15 @@ EFLETE_TEST(history_diff_add_test_p7)
    path = "./edj_build/history_diff_add.edj";
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
-   ui_main_window_add(app);
-   history_genlist_get(app->history, app->win);
+   ap->history = history_init();
+   ui_main_window_add();
+   history_genlist_get(ap->history, ap->win);
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
    win = elm_win_add(NULL, "history_diff_add", ELM_WIN_BASIC);
-   history_genlist_get(app->history, win);
+   history_genlist_get(ap->history, win);
 
    result = history_diff_add(source, PROPERTY, MODIFY, VAL_FOUR, 255, 255, 255, 255,
                              0, 20, 50, 180, "elm/radio/base/def",
@@ -452,7 +438,7 @@ EFLETE_TEST(history_diff_add_test_p7)
    ck_assert_msg(result, "Failed to add new diff with type VAL_FOUR"
                          " in the history of module.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -489,7 +475,6 @@ END_TEST
  */
 EFLETE_TEST(history_diff_add_test_p8)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -498,10 +483,9 @@ EFLETE_TEST(history_diff_add_test_p8)
    path = "./edj_build/history_diff_add.edj";
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
-   ui_main_window_add(app);
-   history_genlist_get(app->history, app->win);
+   ap->history = history_init();
+   ui_main_window_add();
+   history_genlist_get(ap->history, ap->win);
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -514,7 +498,7 @@ EFLETE_TEST(history_diff_add_test_p8)
    ck_assert_msg(result, "Failed to add new diff with type VAL_STRING for action ADD"
                          " in the history of module.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -551,7 +535,6 @@ END_TEST
  */
 EFLETE_TEST(history_diff_add_test_p9)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -560,10 +543,9 @@ EFLETE_TEST(history_diff_add_test_p9)
    path = "./edj_build/history_diff_add.edj";
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
-   ui_main_window_add(app);
-   history_genlist_get(app->history, app->win);
+   ap->history = history_init();
+   ui_main_window_add();
+   history_genlist_get(ap->history, ap->win);
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -576,7 +558,7 @@ EFLETE_TEST(history_diff_add_test_p9)
    ck_assert_msg(result, "Failed to add new diff with type VAL_STRING for action DEL"
                          " in the history of module.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -612,7 +594,6 @@ END_TEST
  */
 EFLETE_TEST(history_diff_add_test_p10)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -621,10 +602,9 @@ EFLETE_TEST(history_diff_add_test_p10)
    path = "./edj_build/history_diff_add.edj";
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
-   ui_main_window_add(app);
-   history_genlist_get(app->history, app->win);
+   ap->history = history_init();
+   ui_main_window_add();
+   history_genlist_get(ap->history, ap->win);
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -637,7 +617,7 @@ EFLETE_TEST(history_diff_add_test_p10)
    ck_assert_msg(result, "Failed to add new diff from highlight with VAL_INT value"
                          " type in the history of module.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -673,7 +653,6 @@ END_TEST
  */
 EFLETE_TEST(history_diff_add_test_p11)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -682,10 +661,9 @@ EFLETE_TEST(history_diff_add_test_p11)
    path = "./edj_build/history_diff_add.edj";
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
-   ui_main_window_add(app);
-   history_genlist_get(app->history, app->win);
+   ap->history = history_init();
+   ui_main_window_add();
+   history_genlist_get(ap->history, ap->win);
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -698,7 +676,7 @@ EFLETE_TEST(history_diff_add_test_p11)
    ck_assert_msg(result, "Failed to add new diff from highlight with VAL_DOUBLE value"
                          " type in the history of module.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -735,7 +713,6 @@ END_TEST
  */
 EFLETE_TEST(history_diff_add_test_p12)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -744,10 +721,9 @@ EFLETE_TEST(history_diff_add_test_p12)
    path = "./edj_build/history_diff_add.edj";
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
-   ui_main_window_add(app);
-   history_genlist_get(app->history, app->win);
+   ap->history = history_init();
+   ui_main_window_add();
+   history_genlist_get(ap->history, ap->win);
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -759,7 +735,7 @@ EFLETE_TEST(history_diff_add_test_p12)
    ck_assert_msg(result, "Failed to add new diff from STATE_TARGET module with"
                          " action type ADD in the history of module.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -795,7 +771,6 @@ END_TEST
  */
 EFLETE_TEST(history_diff_add_test_p13)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -804,10 +779,9 @@ EFLETE_TEST(history_diff_add_test_p13)
    path = "./edj_build/history_diff_add.edj";
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
-   ui_main_window_add(app);
-   history_genlist_get(app->history, app->win);
+   ap->history = history_init();
+   ui_main_window_add();
+   history_genlist_get(ap->history, ap->win);
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -818,7 +792,7 @@ EFLETE_TEST(history_diff_add_test_p13)
    ck_assert_msg(result, "Failed to add new diff from STATE_TARGET module with"
                          " action type DEL in the history of module.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -852,7 +826,6 @@ END_TEST
  */
 EFLETE_TEST(history_diff_add_test_p14)
 {
-   App_Data *app = NULL;
    Ecore_Evas *ee = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
@@ -862,10 +835,9 @@ EFLETE_TEST(history_diff_add_test_p14)
    path = "./edj_build/history_diff_add.edj";
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
-   ui_main_window_add(app);
-   history_genlist_get(app->history, app->win);
+   ap->history = history_init();
+   ui_main_window_add();
+   history_genlist_get(ap->history, ap->win);
    ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
    canvas = ecore_evas_get(ee);
    source = edje_edit_object_add(canvas);
@@ -877,7 +849,7 @@ EFLETE_TEST(history_diff_add_test_p14)
    ck_assert_msg(result, "Failed to add new diff from PART_TARGET module with"
                          " action type ADD in the history of module.");
 
-   history_term(app->history);
+   history_term(ap->history);
    ecore_evas_free(ee);
    app_shutdown();
    elm_shutdown();
@@ -911,7 +883,6 @@ END_TEST
  */
 EFLETE_TEST(history_diff_add_test_p15)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -920,10 +891,9 @@ EFLETE_TEST(history_diff_add_test_p15)
    path = "./edj_build/history_diff_add.edj";
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
-   ui_main_window_add(app);
-   history_genlist_get(app->history, app->win);
+   ap->history = history_init();
+   ui_main_window_add();
+   history_genlist_get(ap->history, ap->win);
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -933,7 +903,7 @@ EFLETE_TEST(history_diff_add_test_p15)
    ck_assert_msg(result, "Failed to add new diff from PART_TARGET module with"
                          " action type DEL in the history of module.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -967,7 +937,6 @@ END_TEST
  */
 EFLETE_TEST(history_diff_add_test_p16)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -976,10 +945,9 @@ EFLETE_TEST(history_diff_add_test_p16)
    path = "./edj_build/history_diff_add.edj";
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
-   ui_main_window_add(app);
-   history_genlist_get(app->history, app->win);
+   ap->history = history_init();
+   ui_main_window_add();
+   history_genlist_get(ap->history, ap->win);
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -989,7 +957,7 @@ EFLETE_TEST(history_diff_add_test_p16)
    ck_assert_msg(result, "Failed to add new diff from PART_TARGET module with"
                          " action type RESTACK in the history of module.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();

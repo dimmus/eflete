@@ -51,7 +51,7 @@
  * @step 1 Call register_callbacks
  * @step 2 Check returned value
  * </td>
- * <td>App_Data *app_data</td>
+ * <td></td>
  * <td>EINA_TRUE</td>
  * </tr>
  * @}
@@ -62,22 +62,20 @@ EFLETE_TEST (register_callbacks_test_p)
 
    elm_theme_extension_add(NULL, EFLETE_THEME);
    Evas_Object *widget_list;
-   App_Data *app_data;
    Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
 
    app_init();
-   app_data = app_data_get();
-   ui_main_window_add(app_data);
+   ui_main_window_add();
    project = setup("register_callbacks_test_p");
-   widget_list = ui_widget_list_add(app_data->win);
+   widget_list = ui_widget_list_add(ap->win);
    ui_widget_list_data_set(widget_list, project);
-   ui_block_widget_list_set(app_data, widget_list);
+   ui_block_widget_list_set(widget_list);
 
-   result = register_callbacks(app_data);
+   result = register_callbacks();
    ck_assert_msg(result == EINA_TRUE, "Could not register callbacks!");
 
-   evas_object_del(app_data->win);
+   evas_object_del(ap->win);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    teardown("./register_callbacks_test_p");
    elm_shutdown();

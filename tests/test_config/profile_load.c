@@ -59,7 +59,7 @@ EFLETE_TEST(profile_load_test_p1)
    profile = profile_get();
    ck_assert_msg(profile != NULL, "Profile not been loaded.");
 
-   config_shutdown(app_data_get());
+   config_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -94,7 +94,7 @@ EFLETE_TEST(profile_load_test_p2)
    profile = profile_get();
    ck_assert_msg(profile != NULL, "Profile not been loaded.");
 
-   config_shutdown(app_data_get());
+   config_shutdown();
    elm_shutdown();
 }
 END_TEST

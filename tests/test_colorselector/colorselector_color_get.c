@@ -57,13 +57,11 @@
 EFLETE_TEST (colorselector_color_get_test_p)
 {
    elm_init(0,0);
-   App_Data *app;
    int r, g, b, a;
 
    app_init();
-   app = app_data_get();
-   ui_main_window_add(app);
-   Evas_Object *colsel = colorselector_add(app->win);
+   ui_main_window_add();
+   Evas_Object *colsel = colorselector_add(ap->win);
 
    colorselector_color_get(colsel, &r, &g, &b, &a);
    ck_assert_msg( (!r || !g || !b || !a ), "Wrong default value returned");

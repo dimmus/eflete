@@ -58,15 +58,13 @@
 EFLETE_TEST(workspace_edit_object_part_state_del_test_p)
 {
    Eina_Bool res = EINA_FALSE;
-   App_Data *ap;
    Style *style = NULL;
    Evas *e = NULL;
    Eina_File *mmap_file = NULL;
 
    elm_init(0, 0);
    app_init();
-   ap = app_data_get();
-   ui_main_window_add(ap);
+   ui_main_window_add();
    mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_state_del.edj", EINA_FALSE);
    e = evas_object_evas_get(ap->workspace);
    style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
@@ -122,15 +120,13 @@ END_TEST
 EFLETE_TEST(workspace_edit_object_part_state_del_test_p1)
 {
    Eina_Bool res = EINA_FALSE;
-   App_Data *ap;
    Style *style = NULL;
    Evas *e = NULL;
    Eina_File *mmap_file = NULL;
 
    elm_init(0, 0);
    app_init();
-   ap = app_data_get();
-   ui_main_window_add(ap);
+   ui_main_window_add();
    mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_state_del.edj", EINA_FALSE);
    e = evas_object_evas_get(ap->workspace);
    style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);

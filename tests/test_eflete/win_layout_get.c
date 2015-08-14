@@ -55,8 +55,7 @@ EFLETE_TEST (win_layout_get_test_p)
 {
    elm_init(0,0);
    app_init();
-   App_Data *app = app_data_get();
-   ui_main_window_add(app);
+   ui_main_window_add();
 
    ck_assert_msg(win_layout_get() != NULL, "failure: win_layout not exist");
 

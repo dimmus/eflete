@@ -174,8 +174,6 @@ test_eflete/test_eflete.c \
 test_eflete/app_init.c \
 test_eflete/app_shutdown.c \
 test_eflete/win_layout_get.c \
-test_eflete/app_data_get.c \
-test_eflete/app_free.c \
 test_eflete/main_window_get.c \
 test_eflete/colorselector_get.c
 eflete_test_CFLAGS = ${FLAGS}
@@ -367,7 +365,6 @@ test_ui_main_window/ui_panes_add.c \
 test_ui_main_window/ui_panes_hide.c \
 test_ui_main_window/ui_panes_show.c \
 test_ui_main_window/ui_panes_left_panes_min_size_toggle.c \
-test_ui_main_window/ui_part_back.c \
 test_ui_main_window/ui_part_select.c \
 test_ui_main_window/ui_state_select.c \
 test_ui_main_window/ui_style_back.c \

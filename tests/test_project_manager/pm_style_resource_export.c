@@ -64,7 +64,6 @@
 
 EFLETE_TEST(pm_style_resource_export_test_p)
 {
-   App_Data *ap = NULL;
    Eina_Bool result = EINA_FALSE;
    Style *style = NULL;
    Eina_Stringshare *path = NULL;
@@ -77,14 +76,13 @@ EFLETE_TEST(pm_style_resource_export_test_p)
    check_resource = eina_stringshare_printf("%s/images/radio.png", path);
    ecore_file_mkdir(path);
 
-   ap = app_data_get();
-   ui_main_window_add(ap);
+   ui_main_window_add();
    ap->project = setup("pm_style_resource_export_test_p");
    wm_widgets_list_objects_load(ap->project->widgets,
                                 evas_object_evas_get(ap->win),
                                 ap->project->mmap_file);
    style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
-   ui_style_clicked(ap, style);
+   ui_style_clicked(style);
 
    result = pm_style_resource_export(ap->project, style, path);
    ck_assert_msg(result, "Failed export resources of group.");
@@ -102,7 +100,7 @@ EFLETE_TEST(pm_style_resource_export_test_p)
    pm_project_close(ap->project);
    ecore_file_recursive_rm("./UTC");
    ap->project = NULL;
-   ui_main_window_del(ap);
+   ui_main_window_del();
    app_shutdown();
    teardown("./pm_style_resource_export_test_p");
    eina_stringshare_del(path);

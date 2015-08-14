@@ -56,24 +56,22 @@ EFLETE_TEST (colorclass_manager_add_test_p)
 {
    elm_init(0,0);
 
-   App_Data *app;
    Evas_Object *colorclass;
 
    app_init();
-   app = app_data_get();
-   app->project = setup("colorclass_manager_add_test_p");
+   ap->project = setup("colorclass_manager_add_test_p");
 
-   ui_main_window_add(app);
-   wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win),
-                                app->project->mmap_file);
+   ui_main_window_add();
+   wm_widgets_list_objects_load(ap->project->widgets,
+                                evas_object_evas_get(ap->win),
+                                ap->project->mmap_file);
 
-   colorclass  = colorclass_manager_add(app->project);
+   colorclass  = colorclass_manager_add(ap->project);
    ck_assert_msg(colorclass != NULL, "Unable to create image editor window");
 
    evas_object_del(colorclass);
-   pm_project_close(app->project);
-   app->project = NULL;
+   pm_project_close(ap->project);
+   ap->project = NULL;
    app_shutdown();
    teardown("./colorclass_manager_add_test_p");
    elm_shutdown();

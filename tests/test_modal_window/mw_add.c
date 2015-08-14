@@ -52,11 +52,9 @@
 EFLETE_TEST (mw_add_p)
 {
    elm_init(0,0);
-   App_Data *app;
 
    app_init();
-   app = app_data_get();
-   ui_main_window_add(app);
+   ui_main_window_add();
    ck_assert_msg(mw_add(NULL, NULL, NULL) != NULL, "cannot create new Modal Window");
 
    app_shutdown();

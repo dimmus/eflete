@@ -46,22 +46,20 @@
  * @step 1 Call ui_panes_show.
  * @step 2 Check returned value.
  * </td>
- * <td>(App_Data *) app_data</td>
+ * <td></td>
  * <td>EINA_TRUE returned</td>
  * </tr>
  * @}
  */
 EFLETE_TEST(ui_panes_show_test_p)
 {
-   App_Data *app_data = NULL;
    Eina_Bool ret = EINA_FALSE;
 
    elm_init(0, 0);
    app_init();
-   app_data = app_data_get();
-   ui_main_window_add(app_data);
 
-   ret = ui_panes_show(app_data);
+   ui_main_window_add();
+   ret = ui_panes_show();
    ck_assert_msg(ret == EINA_TRUE, "Failed to show panes");
 
    app_shutdown();

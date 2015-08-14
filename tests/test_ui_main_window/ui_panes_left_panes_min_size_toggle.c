@@ -48,7 +48,7 @@
  * @step 3 Call ui_panes_left_panes_min_size_toggle(ap, false)
  * @step 4 Check returned value
  * </td>
- * <td>App_Data *app_data, Eina_Bool is_on</td>
+ * <td>Eina_Bool is_on</td>
  * <td>All checks passed</td>
  * </tr>
  * @}
@@ -57,19 +57,17 @@ EFLETE_TEST (ui_panes_left_panes_min_size_toggle_test_p)
 {
    elm_init(0, 0);
    elm_theme_extension_add(NULL, EFLETE_THEME);
-   App_Data *app_data;
    Eina_Bool result = EINA_FALSE;
 
    app_init();
-   app_data = app_data_get();
-   ui_main_window_add(app_data);
+   ui_main_window_add();
 
-   result = ui_panes_left_panes_min_size_toggle(app_data, true);
+   result = ui_panes_left_panes_min_size_toggle(true);
    ck_assert_msg(result == EINA_TRUE, "Could not switch Panes min sizes ON!");
-   result = ui_panes_left_panes_min_size_toggle(app_data, false);
+   result = ui_panes_left_panes_min_size_toggle(false);
    ck_assert_msg(result == EINA_TRUE, "Could not switch Panes min sizes OFF!");
 
-   evas_object_del(app_data->win);
+   evas_object_del(ap->win);
    elm_shutdown();
 }
 END_TEST

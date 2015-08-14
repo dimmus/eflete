@@ -54,22 +54,20 @@
  */
 EFLETE_TEST(history_module_add_test_p1)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
 
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
+   ap->history = history_init();
    canvas = evas_new();
    source = evas_object_rectangle_add(canvas);
 
    result = history_module_add(source);
    ck_assert_msg(result, "Failed to add new module in history.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -103,15 +101,13 @@ END_TEST
  */
 EFLETE_TEST(history_module_add_test_p2)
 {
-   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
 
    elm_init(0, 0);
    app_init();
-   app = app_data_get();
-   app->history = history_init();
+   ap->history = history_init();
    canvas = evas_new();
    source = evas_object_rectangle_add(canvas);
 
@@ -120,7 +116,7 @@ EFLETE_TEST(history_module_add_test_p2)
    result = history_module_add(source);
    ck_assert_msg(result, "Already initilized module didn't confirmed.");
 
-   history_term(app->history);
+   history_term(ap->history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();

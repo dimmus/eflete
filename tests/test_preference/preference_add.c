@@ -58,10 +58,8 @@ EFLETE_TEST (preferences_window_add_test_p1)
    elm_init(0,0);
    app_init();
 
-   App_Data *app;
    Evas_Object *preferences;
-   app = app_data_get();
-   ui_main_window_add(app);
+   ui_main_window_add(ap);
    app->project = setup("preferences_window_add_test_p1");
 
    preferences = preferences_window_add(app->project);
