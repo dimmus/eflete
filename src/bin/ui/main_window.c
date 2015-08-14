@@ -65,12 +65,6 @@ ui_main_window_del(void)
    return true;
 }
 
-#define MARK_TO_SHUTDOWN(fmt, ...) \
-   { \
-      ERR(fmt, ## __VA_ARGS__); \
-      abort(); \
-   } \
-
 Eina_Bool
 ui_main_window_add(void)
 {
@@ -117,41 +111,18 @@ ui_main_window_add(void)
    evas_object_show(ap->win_layout);
 
    ap->menu = ui_menu_add();
-   if (!ap->menu)
-     MARK_TO_SHUTDOWN("Failed to add menu on main window.")
-
-   if (!ui_panes_add())
-     MARK_TO_SHUTDOWN("Failed to add panes on main window.")
-
+   ui_panes_add();
    ap->workspace = workspace_add(ap->block.canvas);
-   if (!ap->workspace)
-     MARK_TO_SHUTDOWN("Failed to create workspace in main window.")
-
    ui_block_ws_set(ap->workspace);
    evas_object_show(ap->workspace);
    ap->live_view = live_view_add(ap->block.bottom_right, false);
-   if (!ap->live_view)
-     MARK_TO_SHUTDOWN("Failed to create live view")
-   else
-     ui_block_live_view_set(ap->live_view->layout);
-
+   ui_block_live_view_set(ap->live_view->layout);
    ap->colorsel = colorselector_add(ap->win);
-   if (!ap->colorsel)
-     MARK_TO_SHUTDOWN("Can't create a colorselector.")
-
    #ifdef HAVE_ENVENTOR
      ap->enventor= enventor_object_init(ap->win);
-     if (!ap->enventor)
-       MARK_TO_SHUTDOWN("Can't create a enventor object.")
    #endif /* HAVE_ENVENTOR */
-
-   if (!register_callbacks())
-     MARK_TO_SHUTDOWN("Failed to register callbacks");
-
+   register_callbacks();
    ap->history = history_init();
-   if (!ap->history)
-     MARK_TO_SHUTDOWN("Failed initialize history module.")
 
    return true;
 }
-#undef MARK_TO_SHUTDOWN
