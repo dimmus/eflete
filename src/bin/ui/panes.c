@@ -148,7 +148,6 @@ ui_panes_add(void)
    elm_panes_horizontal_set(panes_left_hor, true);
    evas_object_size_hint_weight_set(panes_left_hor, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_left_hor, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_panes_content_left_size_set(panes_left_hor, config->panes.left_hor);
    elm_object_part_content_set(panes_left, "left", panes_left_hor);
 
    panes_right = elm_panes_add(ap->win_layout);

@@ -53,7 +53,6 @@ struct _Config
    struct { /* take and save left panes size */
       double left; /**< position of left panes */
       double right; /**< position of right panes */
-      double left_hor; /**< position of left_hor panes */
       double right_hor; /**< position of right_hor panes */
       double center; /**< position of center panes */
    } panes;
