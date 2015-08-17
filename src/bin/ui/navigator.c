@@ -315,7 +315,6 @@ navigator_add(void)
    evas_object_smart_callback_add(navigator.btn_add, "clicked", _btn_add_group_cb, NULL);
    elm_object_style_set(navigator.btn_add, "anchor");
    elm_object_part_content_set(navigator.layout, "elm.swallow.bt1", navigator.btn_add);
-   elm_object_disabled_set(navigator.btn_add, true);
 
    navigator.btn_del = elm_button_add(navigator.layout);
    ICON_STANDARD_ADD(navigator.btn_del, icon, true, "minus");
@@ -323,13 +322,13 @@ navigator_add(void)
    evas_object_smart_callback_add (navigator.btn_del, "clicked", _btn_del_group_cb, NULL);
    elm_object_style_set(navigator.btn_del, "anchor");
    elm_object_part_content_set(navigator.layout, "elm.swallow.bt0", navigator.btn_del);
-   elm_object_disabled_set(navigator.btn_del, true);
 
    navigator.genlist = elm_genlist_add(navigator.layout);
    evas_object_show(navigator.genlist);
    elm_object_content_set(navigator.layout, navigator.genlist);
 
    elm_object_text_set(navigator.layout, _("None"));
+   elm_object_disabled_set(navigator.layout, true);
 
    TODO("Add deletion callback and free resources");
 
@@ -373,8 +372,7 @@ navigator_project_set(void)
    evas_object_smart_callback_add(navigator.genlist, "expanded", _expanded_cb, NULL);
    evas_object_smart_callback_add(navigator.genlist, "contracted", _contracted_cb, NULL);
 
-   elm_object_disabled_set(navigator.btn_add, false);
-   elm_object_disabled_set(navigator.btn_del, false);
+   elm_object_disabled_set(navigator.layout, false);
 }
 
 void
@@ -382,6 +380,5 @@ navigator_project_unset(void)
 {
    elm_object_text_set(navigator.layout, _("None"));
    elm_genlist_clear(navigator.genlist);
-   elm_object_disabled_set(navigator.btn_add, true);
-   elm_object_disabled_set(navigator.btn_del, true);
+   elm_object_disabled_set(navigator.layout, true);
 }
