@@ -73,6 +73,7 @@ ui_main_window_add(void)
 {
    Config *config;
    Evas_Object *bg, *navigator;
+   Ewe_Tabs_Item *tab_item;
 
    assert(ap != NULL);
 
@@ -114,17 +115,17 @@ ui_main_window_add(void)
    evas_object_show(ap->win_layout);
 
    /* add panes to main window */
-   ap->panes.left = elm_panes_add(ap->win_layout);
+   ap->panes.left = elm_panes_add(ap->win);
    evas_object_size_hint_weight_set(ap->panes.left, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(ap->panes.left, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(ap->win_layout, "eflete.swallow.panes", ap->panes.left);
 
-   ap->panes.right = elm_panes_add(ap->win_layout);
+   ap->panes.right = elm_panes_add(ap->win);
    evas_object_size_hint_weight_set(ap->panes.right, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(ap->panes.right, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(ap->panes.left, "right", ap->panes.right);
 
-   ap->panes.right_hor = elm_panes_add(ap->win_layout);
+   ap->panes.right_hor = elm_panes_add(ap->win);
    elm_panes_horizontal_set(ap->panes.right_hor, true);
    evas_object_size_hint_weight_set(ap->panes.right_hor, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(ap->panes.right_hor, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -138,6 +139,18 @@ ui_main_window_add(void)
    navigator = navigator_add();
    elm_object_part_content_set(ap->panes.left, "left", navigator);
 
+   ap->history = history_init();
+   /* add tabs with history and signals */
+   ap->block.right_top = ewe_tabs_add(ap->win_layout);
+   tab_item = ewe_tabs_item_append(ap->block.right_top, NULL, _("History"), NULL);
+   ap->block.history = history_genlist_get(ap->history, ap->block.right_top);
+   ewe_tabs_item_content_set(ap->block.right_top, tab_item, ap->block.history);
+   tab_item = ewe_tabs_item_append(ap->block.right_top, NULL, _("Signals"), NULL);
+   ap->block.signals = ui_signal_list_add(ap->win);
+   ewe_tabs_item_content_set(ap->block.right_top, tab_item, ap->block.signals);
+   elm_object_disabled_set(ap->block.right_top, true);
+   elm_object_part_content_set(ap->panes.right_hor, "left", ap->block.right_top);
+
    ap->menu = ui_menu_add();
    //ui_panes_add();
    //ap->workspace = workspace_add(ap->block.canvas);
@@ -150,7 +163,6 @@ ui_main_window_add(void)
      ap->enventor= enventor_object_init(ap->win);
    #endif /* HAVE_ENVENTOR */
    //register_callbacks();
-   //ap->history = history_init();
 
    return true;
 }

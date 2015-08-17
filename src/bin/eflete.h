@@ -99,7 +99,7 @@ struct _App_Data
       Evas_Object *state_list;
       Evas_Object *signal_list;
       Evas_Object *bottom_right;
-      Evas_Object *right_top, *right_top_btn;
+      Evas_Object *right_top, *history, *signals;
       Evas_Object *right_bottom;
       Evas_Object *canvas;
    } block;

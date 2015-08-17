@@ -638,8 +638,6 @@ ui_part_back(void)
    ui_block_content_visible(ap->block.right_top, false);
    live_view_widget_style_unset(ap->live_view);
 
-   elm_object_disabled_set(ap->block.right_top_btn, true);
-
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
    evas_object_smart_callback_del_full(ap->workspace, "ws,part,selected",
@@ -754,7 +752,6 @@ ui_style_clicked(Style *style)
    history_module_add(_style->obj);
    ui_block_history_set(history_list);
    ui_block_content_visible(ap->block.right_top, true);
-   elm_object_disabled_set(ap->block.right_top_btn, false);
 
    live_view_widget_style_set(ap->live_view, ap->project, _style);
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, false);
