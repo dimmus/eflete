@@ -1,4 +1,5 @@
 #include "main_window.h"
+#include "navigator.h"
 
 #define FILESELCTOR_INWIN(FUNC, TITLE, FOLDER_ONLY, FILTER, FILTER_CB, FIELD) \
 static void \

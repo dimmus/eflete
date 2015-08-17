@@ -20,6 +20,7 @@
 #include <Ecore_Getopt.h>
 #include <regex.h>
 #include "main_window.h"
+#include "navigator.h"
 
 static char *open = NULL;
 static char *import_edj = NULL;
@@ -60,17 +61,9 @@ _import_end(void *data __UNUSED__, PM_Project_Result result)
         pro = pm_project_thread_project_get();
         ap->project = pro;
 
-        wm_widgets_list_objects_load(pro->widgets,
-                                     evas_object_evas_get(ap->win),
-                                     pro->mmap_file);
-        wm_layouts_list_objects_load(pro->layouts,
-                                     evas_object_evas_get(ap->win),
-                                     pro->mmap_file);
-        wm_styles_build_alias(pro->widgets,
-                              pro->layouts);
-
-        if (!eina_inlist_count(ap->project->widgets))
-          ui_widget_list_tab_activate(ui_block_widget_list_get(), 1);
+        ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+        ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, false);
+        navigator_project_set();
 
         STATUSBAR_PROJECT_PATH(ap->project->pro_path);
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
@@ -90,17 +83,9 @@ _open_end(void *data __UNUSED__, PM_Project_Result result)
         pro = pm_project_thread_project_get();
         ap->project = pro;
 
-        wm_widgets_list_objects_load(ap->project->widgets,
-                                     evas_object_evas_get(ap->win),
-                                     ap->project->mmap_file);
-        wm_layouts_list_objects_load(ap->project->layouts,
-                                     evas_object_evas_get(ap->win),
-                                     ap->project->mmap_file);
-        wm_styles_build_alias(ap->project->widgets,
-                              ap->project->layouts);
-
-        if (!eina_inlist_count(ap->project->widgets))
-          ui_widget_list_tab_activate(ui_block_widget_list_get(), 1);
+        ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+        ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, false);
+        navigator_project_set();
 
         NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
         STATUSBAR_PROJECT_PATH(ap->project->pro_path);

@@ -18,6 +18,7 @@
  */
 
 #include "main_window.h"
+#include "navigator.h"
 #include "preference.h"
 
 #define makefile "#! bin/sh\nedje_cc -id ./images -fd ./fonts -sd ./sounds  "
@@ -793,23 +794,6 @@ blocks_show(void)
    return true;
 }
 
-static void
-_blocks_data_unset(void)
-{
-   assert(ap != NULL);
-
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
-
-   ui_block_content_visible(ap->block.right_bottom, false);
-   ui_signal_list_data_unset(ap->block.signal_list);
-   ui_states_list_data_unset();
-   history_clear(ap->history);
-   workspace_highlight_unset(ap->workspace);
-   workspace_edit_object_unset(ap->workspace);
-   live_view_widget_style_unset(ap->live_view);
-}
-
 static Eina_Bool
 _eflete_filter(const char *path,
                Eina_Bool dir,
@@ -857,15 +841,8 @@ _progress_pm_open_end(void *data __UNUSED__, PM_Project_Result result)
            assert(ap->project);
 
            ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-           wm_widgets_list_objects_load(ap->project->widgets,
-                                        evas_object_evas_get(ap->win),
-                                        ap->project->mmap_file);
-           wm_layouts_list_objects_load(ap->project->layouts,
-                                        evas_object_evas_get(ap->win),
-                                        ap->project->mmap_file);
-           wm_styles_build_alias(ap->project->widgets,
-                                 ap->project->layouts);
-           blocks_show();
+           ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, false);
+           navigator_project_set();
 
            NOTIFY_INFO(3, _("Project '%s' is opened."), ap->project->name);
            STATUSBAR_PROJECT_PATH(ap->project->pro_path);
@@ -966,7 +943,9 @@ project_close(void)
 
         STATUSBAR_PROJECT_PATH(_("No project opened"));
         elm_layout_text_set(ap->win_layout, "eflete.project.time", _("Last saved: none"));
-        _blocks_data_unset();
+        ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
+        ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
+        navigator_project_unset();
         pm_project_close(ap->project);
         ap->project = NULL;
      }

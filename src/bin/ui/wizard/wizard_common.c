@@ -85,21 +85,7 @@ _progress_end(void *data __UNUSED__, PM_Project_Result result)
         pro = pm_project_thread_project_get();
         ap->project = pro;
 
-        wm_widgets_list_objects_load(pro->widgets,
-                                     evas_object_evas_get(ap->win),
-                                     pro->mmap_file);
-        wm_layouts_list_objects_load(pro->layouts,
-                                     evas_object_evas_get(ap->win),
-                                     pro->mmap_file);
-        wm_styles_build_alias(pro->widgets,
-                              pro->layouts);
-
-        blocks_show();
-
-        ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, false);
-        if (!eina_inlist_count(ap->project->widgets))
-          ui_widget_list_tab_activate(ui_block_widget_list_get(), 1);
-
+        navigator_project_set();
         STATUSBAR_PROJECT_PATH(ap->project->pro_path);
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
 
@@ -133,6 +119,7 @@ _progress_end(void *data __UNUSED__, PM_Project_Result result)
      }
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+   ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, false);
    splash_del(wiew->splash);
 }
 
