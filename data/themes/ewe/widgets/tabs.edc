@@ -416,10 +416,6 @@ group {name: "ewe/tabs/item/head/vertical/red";
    }
 }
 
-#define PADDING_SIZE_SET \
-   min: 2 2; \
-   max: 2 2;
-
 group {name: "ewe/tabs/item/content/horizontal/default";
    images {
       image: "tab-content-bg.png" COMP;
@@ -435,30 +431,14 @@ group {name: "ewe/tabs/item/content/horizontal/default";
             fill.smooth: 0;
          }
       }
-      part { name: "padding.top_left";
-         type: SPACER;
-         description {
-            align: 0.0 0.0;
-            PADDING_SIZE_SET;
-         }
-      }
-      part { name: "padding.right_bottom";
-         type: SPACER;
-         description {
-            align: 1.0 1.0;
-            PADDING_SIZE_SET;
-         }
-      }
       part { name: "ewe.content";
          type: SWALLOW;
          description { state: "default" 0.0;
             rel1 {
-               to: "padding.top_left";
-               relative: 1.0 1.0;
+               offset: 3 3;
             }
             rel2 {
-               to: "padding.right_bottom";
-               relative: 0.0 0.0;
+               offset: -4 -4;
             }
          }
       }
@@ -491,8 +471,6 @@ group {name: "ewe/tabs/item/content/horizontal/default";
       }
    }
 }
-
-#undef PADDING_SIZE
 
 group {name: "ewe/tabs/item/content/horizontal/blue";
    inherit: "ewe/tabs/item/content/horizontal/default";
