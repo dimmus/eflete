@@ -1424,6 +1424,9 @@ group { name: "elm/genlist/base/default";
          description { state: "default" 0.0;
             color_class: "bg_main";
          }
+         description { state: "disabled" 0.0;
+            color: 0 0 0 0;
+         }
       }
       part { name: "sb_vbar";
          type: RECT;
@@ -1869,6 +1872,14 @@ group { name: "elm/genlist/base/default";
                middle: DEFAULT;
             }
          }
+         description { state: "disabled" 0.0;
+            color: 255 255 255 127;
+            image {
+               normal: "section-border.png";
+               border: 10 10 10 11;
+               middle: DEFAULT;
+            }
+         }
       }
    }
    programs {
@@ -1996,6 +2007,20 @@ group { name: "elm/genlist/base/default";
          source: "elm.dragable.hbar";
          action: STATE_SET "default" 0.00;
          target: "base_hbar";
+      }
+      program { name: "disabled";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.00;
+         target: "bg";
+         target: "shadow";
+      }
+      program { name: "enabled";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+         target: "shadow";
       }
    }
 }
