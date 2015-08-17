@@ -32,6 +32,15 @@
 #include "eflete.h"
 #include "group_manager.h"
 
+/**
+ * Add navigator object. This object is a layout with two buttons: "plus" and
+ * "minus", for add and delete layout from navigator. Also layout contaions a
+ * genlist for view and navigate by layouts in given project.
+ *
+ * @return The navigator object
+ * @ingroup Navigator
+ */
 Evas_Object *
 navigator_add(void);
+
 #endif /* NAVIGATOR_H */
