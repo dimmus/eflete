@@ -40,17 +40,19 @@ ui_main_window_del(void)
    if (!project_close())
      return false;
 
+   /*
    if (!history_term(ap->history))
      {
         ERR("Failed terminate history module");
         abort();
      }
+   */
 #ifdef HAVE_ENVENTOR
    code_edit_mode_switch(false);
 #endif
 
    /* FIXME: remove it from here */
-   live_view_free(ap->live_view);
+   //live_view_free(ap->live_view);
 
    free(ap->menu);
    ap->menu = NULL;
@@ -110,19 +112,41 @@ ui_main_window_add(void)
    elm_layout_text_set(ap->win_layout, "eflete.project.part", _("Project path: none"));
    evas_object_show(ap->win_layout);
 
+   /* add panes to main window */
+   ap->panes.left = elm_panes_add(ap->win_layout);
+   evas_object_size_hint_weight_set(ap->panes.left, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(ap->panes.left, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(ap->win_layout, "eflete.swallow.panes", ap->panes.left);
+
+   ap->panes.right = elm_panes_add(ap->win_layout);
+   evas_object_size_hint_weight_set(ap->panes.right, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(ap->panes.right, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(ap->panes.left, "right", ap->panes.right);
+
+   ap->panes.right_hor = elm_panes_add(ap->win_layout);
+   elm_panes_horizontal_set(ap->panes.right_hor, true);
+   evas_object_size_hint_weight_set(ap->panes.right_hor, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(ap->panes.right_hor, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(ap->panes.right, "right", ap->panes.right_hor);
+
+   /* apply the panes size from config */
+   elm_panes_content_left_size_set(ap->panes.left, config->panes.left);
+   elm_panes_content_left_size_set(ap->panes.right, config->panes.right);
+   elm_panes_content_left_size_set(ap->panes.right_hor, config->panes.right_hor);
+
    ap->menu = ui_menu_add();
-   ui_panes_add();
-   ap->workspace = workspace_add(ap->block.canvas);
-   ui_block_ws_set(ap->workspace);
-   evas_object_show(ap->workspace);
-   ap->live_view = live_view_add(ap->block.bottom_right, false);
-   ui_block_live_view_set(ap->live_view->layout);
-   ap->colorsel = colorselector_add(ap->win);
+   //ui_panes_add();
+   //ap->workspace = workspace_add(ap->block.canvas);
+   //ui_block_ws_set(ap->workspace);
+   //evas_object_show(ap->workspace);
+   //ap->live_view = live_view_add(ap->block.bottom_right, false);
+   //ui_block_live_view_set(ap->live_view->layout);
+   //ap->colorsel = colorselector_add(ap->win);
    #ifdef HAVE_ENVENTOR
      ap->enventor= enventor_object_init(ap->win);
    #endif /* HAVE_ENVENTOR */
-   register_callbacks();
-   ap->history = history_init();
+   //register_callbacks();
+   //ap->history = history_init();
 
    return true;
 }
