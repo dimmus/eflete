@@ -286,10 +286,7 @@ _btn_del_group_cb(void *data __UNUSED__,
 Evas_Object *
 navigator_add(void)
 {
-   Eina_List *folders = NULL, *groups = NULL;
-   Eina_Stringshare *prefix, *project_text;
    Evas_Object *icon;
-   Group *group;
 
    assert(ap != NULL);
    assert(ap->win != NULL);
@@ -332,10 +329,21 @@ navigator_add(void)
    evas_object_show(navigator.genlist);
    elm_object_content_set(navigator.layout, navigator.genlist);
 
-   project_text = eina_stringshare_printf(_("Project \"%s\""), ap->project->name);
-   elm_object_text_set(navigator.layout, project_text);
-   eina_stringshare_del(project_text);
+   elm_object_text_set(navigator.layout, _("None"));
 
+   TODO("Add deletion callback and free resources");
+
+   return navigator.layout;
+}
+
+void
+navigator_project_set(void)
+{
+   Eina_List *folders = NULL, *groups = NULL;
+   Eina_Stringshare *prefix;
+   Group *group;
+
+   elm_object_text_set(navigator.layout, ap->project->name);
    _tree_items_get("", &folders, &groups);
 
    EINA_LIST_FREE(folders, prefix)
@@ -365,7 +373,15 @@ navigator_add(void)
    evas_object_smart_callback_add(navigator.genlist, "expanded", _expanded_cb, NULL);
    evas_object_smart_callback_add(navigator.genlist, "contracted", _contracted_cb, NULL);
 
-   TODO("Add deletion callback and free resources");
+   elm_object_disabled_set(navigator.btn_add, false);
+   elm_object_disabled_set(navigator.btn_del, false);
+}
 
-   return navigator.layout;
+void
+navigator_project_unset(void)
+{
+   elm_object_text_set(navigator.layout, _("None"));
+   elm_genlist_clear(navigator.genlist);
+   elm_object_disabled_set(navigator.btn_add, true);
+   elm_object_disabled_set(navigator.btn_del, true);
 }

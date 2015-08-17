@@ -43,4 +43,25 @@
 Evas_Object *
 navigator_add(void);
 
+/**
+ * Set the project to navigator. By project data navigator build a layouts
+ * (styles) tree. Navigator used the global data (App_Data) for take a opened
+ * project.
+ *
+ * @warning If project not avaliable assert is work.
+ *
+ * @ingroup Navigator
+ */
+void
+navigator_project_set(void);
+
+/**
+ * Unset the given project. Navigator delete all data from genlist and disable
+ * manipulation buttons ("plus" and "delete").
+ *
+ * @ingroup Navigator
+ */
+void
+navigator_project_unset(void);
+
 #endif /* NAVIGATOR_H */

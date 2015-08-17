@@ -22,6 +22,7 @@
 #endif /* include eflete_config.h */
 
 #include "main_window.h"
+#include "navigator.h"
 #include "shortcuts.h"
 #include "cursor.h"
 
@@ -71,7 +72,7 @@ Eina_Bool
 ui_main_window_add(void)
 {
    Config *config;
-   Evas_Object *bg;
+   Evas_Object *bg, *navigator;
 
    assert(ap != NULL);
 
@@ -133,6 +134,9 @@ ui_main_window_add(void)
    elm_panes_content_left_size_set(ap->panes.left, config->panes.left);
    elm_panes_content_left_size_set(ap->panes.right, config->panes.right);
    elm_panes_content_left_size_set(ap->panes.right_hor, config->panes.right_hor);
+
+   navigator = navigator_add();
+   elm_object_part_content_set(ap->panes.left, "left", navigator);
 
    ap->menu = ui_menu_add();
    //ui_panes_add();
