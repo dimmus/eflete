@@ -247,6 +247,12 @@ group { name: "elm/layout/block/default";
 
 group { name: "elm/layout/navigator/default";
    parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 80 82 83 255;
+         }
+      }
       part { name: "area.top";
          type: SPACER;
          description { state: "default" 0.0;
