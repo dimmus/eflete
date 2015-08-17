@@ -167,46 +167,6 @@ Eina_Bool
 ui_main_window_del(void);
 
 /**
- * Adds marked panes to the given Elementary layout.
- *
- * @return EINA_TRUE if all panes created and positioned correctly, EINA_FALSE
- * if fail create any one of panes.
- *
- * @ingroup Window
- */
-Eina_Bool
-ui_panes_add(void);
-
-/**
- * Toggles min sizes for left Pane.
- *
- * @param is_on value to toggle min sizes for left Pane ON/OFF.
- * @return EINA_TRUE if succeed, EINA_FALSE otherwise.
- *
- * @ingroup Window
- */
-Eina_Bool
-ui_panes_left_panes_min_size_toggle(Eina_Bool is_on);
-
-/**
- * Show panes element on main window
- *
- * @ingroup Window
- * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
- */
-Eina_Bool
-ui_panes_show(void);
-
-/**
- * Hide panes element on main window
- *
- * @ingroup Window
- * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
- */
-Eina_Bool
-ui_panes_hide(void);
-
-/**
  * Clear groupspace with highlight. Clear items from states, signals
  * groups and parts genlists.
  * Moved to own method for the separation of the interaction between the blocks.

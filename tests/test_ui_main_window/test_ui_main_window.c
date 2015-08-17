@@ -31,10 +31,6 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, ui_menu_add_test_p);
    tcase_add_test(tcase, ui_menu_disable_set_test_p);
    tcase_add_test(tcase, ui_menu_items_list_disable_set_test_p);
-   tcase_add_test(tcase, ui_panes_add_test_p);
-   tcase_add_test(tcase, ui_panes_hide_test_p);
-   tcase_add_test(tcase, ui_panes_left_panes_min_size_toggle_test_p);
-   tcase_add_test(tcase, ui_panes_show_test_p);
 
    suite_add_tcase(suite, tcase);
 

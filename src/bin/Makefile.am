@@ -21,7 +21,6 @@ history/history_state.c \
 history/history_part.c \
 history/history_ui.c \
 ui/cursor.c \
-ui/panes.c \
 ui/menu.c \
 ui/main_window.c \
 ui/connector.c \

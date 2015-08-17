@@ -361,10 +361,6 @@ test_ui_main_window/ui_main_window_del.c \
 test_ui_main_window/ui_menu_add.c \
 test_ui_main_window/ui_menu_disable_set.c \
 test_ui_main_window/ui_menu_items_list_disable_set.c \
-test_ui_main_window/ui_panes_add.c \
-test_ui_main_window/ui_panes_hide.c \
-test_ui_main_window/ui_panes_show.c \
-test_ui_main_window/ui_panes_left_panes_min_size_toggle.c \
 test_ui_main_window/ui_part_select.c \
 test_ui_main_window/ui_state_select.c \
 test_ui_main_window/ui_style_back.c \

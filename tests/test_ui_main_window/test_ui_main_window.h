@@ -34,7 +34,3 @@ void ui_main_window_del_test_p(int);
 void ui_menu_add_test_p(int);
 void ui_menu_disable_set_test_p(int);
 void ui_menu_items_list_disable_set_test_p(int);
-void ui_panes_add_test_p(int);
-void ui_panes_hide_test_p(int);
-void ui_panes_left_panes_min_size_toggle_test_p(int);
-void ui_panes_show_test_p(int);

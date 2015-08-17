@@ -54,7 +54,6 @@ struct _Config
       double left; /**< position of left panes */
       double right; /**< position of right panes */
       double right_hor; /**< position of right_hor panes */
-      double center; /**< position of center panes */
    } panes;
    const char *profile; /**< profile name */
 };

@@ -1966,9 +1966,7 @@ Eina_Bool
 code_edit_mode_switch(Eina_Bool is_on)
 {
    Config *config;
-   double center = 0.0,
-          left = 0.0,
-          right_hor = 0.0;
+   double left = 0.0, right_hor = 0.0;
 
    assert(ap != NULL);
 
@@ -1982,15 +1980,15 @@ code_edit_mode_switch(Eina_Bool is_on)
 
          assert(config != NULL);
 
-         center = config->panes.center;
+         //center = config->panes.center;
          left = config->panes.left;
          right_hor = config->panes.right_hor;
       }
 
-   _panes_pos_setup(ap->panes.center, center, is_on);
+   //_panes_pos_setup(ap->panes.center, center, is_on);
    _panes_pos_setup(ap->panes.left, left, is_on);
    _panes_pos_setup(ap->panes.right_hor, right_hor, is_on);
-   ui_panes_left_panes_min_size_toggle(!is_on);
+   //ui_panes_left_panes_min_size_toggle(!is_on);
 
    return true;
 }
