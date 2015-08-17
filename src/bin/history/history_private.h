@@ -67,7 +67,10 @@ typedef struct _State_Params State_Params;
 struct _History
 {
    Eina_List *modules; /**< List of registered modules. */
+   Evas_Object *layout; /*< Layout with buttons 'discard', 'history clean' and genlist */
    Evas_Object *genlist; /**< Genlist, that provide visual navigation in history. */
+   Evas_Object *btn_discard;
+   Evas_Object *btn_clean;
    Ecore_Timer *timer; /**< Using for merge the changes, folowing one by one
                             and changes the same parameter in the same module. */
 };

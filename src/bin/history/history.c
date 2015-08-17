@@ -356,15 +356,31 @@ history_module_del(Evas_Object *source)
 Evas_Object *
 history_genlist_get(History *history, Evas_Object *parent)
 {
+   Evas_Object *ic;
+
    assert(history != NULL);
 
    if (history->genlist) return history->genlist;
 
    assert(parent != NULL);
 
-   history->genlist = _history_ui_add(parent);
+   history->layout = elm_layout_add(parent);
+   elm_layout_theme_set(history->layout, "layout", "history", "default");
+   evas_object_size_hint_align_set(history->layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(history->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
-   return history->genlist;
+   history->btn_clean = elm_button_add(history->layout);
+   ICON_STANDARD_ADD(history->btn_clean, ic, true, "delete");
+   elm_object_part_content_set(history->btn_clean, NULL, ic);
+   history->btn_discard = elm_button_add(history->layout);
+   elm_object_text_set(history->btn_discard, _("Discard"));
+   history->genlist = _history_ui_add(parent); 
+
+   elm_layout_content_set(history->layout, NULL, history->genlist);
+   elm_layout_content_set(history->layout, "elm.swallow.btn_clean", history->btn_clean);
+   elm_layout_content_set(history->layout, "elm.swallow.btn_discard", history->btn_discard);
+
+   return history->layout;
 }
 
 History *
