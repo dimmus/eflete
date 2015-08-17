@@ -100,7 +100,8 @@ ui_block_property_get(void)
 {
    assert(ap != NULL);
 
-   return ui_block_content_get(ap->block.right_bottom);
+   //return ui_block_content_get(ap->block.right_bottom);
+   return NULL;
 }
 
 Evas_Object *
@@ -144,11 +145,12 @@ ui_block_signal_list_set(Evas_Object *content)
 }
 
 Eina_Bool
-ui_block_property_set(Evas_Object *content)
+ui_block_property_set(Evas_Object *content __UNUSED__)
 {
    assert(ap != NULL);
 
-   return ui_block_content_set(ap->block.right_bottom, content);
+   //return ui_block_content_set(ap->block.right_bottom, content);
+   return true;
 }
 
 Eina_Bool

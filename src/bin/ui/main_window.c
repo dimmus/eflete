@@ -151,6 +151,10 @@ ui_main_window_add(void)
    elm_object_disabled_set(ap->block.right_top, true);
    elm_object_part_content_set(ap->panes.right_hor, "left", ap->block.right_top);
 
+   ap->block.property = ui_property_add(ap->win);
+   elm_object_disabled_set(ap->block.property, true);
+   elm_object_part_content_set(ap->panes.right_hor, "right", ap->block.property);
+
    ap->menu = ui_menu_add();
    //ui_panes_add();
    //ap->workspace = workspace_add(ap->block.canvas);

@@ -470,12 +470,14 @@ ui_property_code_of_group_setup(Evas_Object *property)
 static void
 _on_tab_activated(void *data,
                   Evas_Object *obj __UNUSED__,
-                  void *event_info)
+                  void *event_info __UNUSED__)
 {
-   Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
+   //Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
    Evas_Object *property = (Evas_Object *)data;
    PROP_DATA_GET()
+   /* update this logic: need check the opened tab with workspace
    if (it == pd->code_tab) ui_property_code_of_group_setup(property);
+   */
 }
 
 #endif

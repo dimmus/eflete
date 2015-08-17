@@ -634,7 +634,6 @@ ui_part_back(void)
    workspace_edit_object_unset(ap->workspace);
    ui_states_list_data_unset();
    ui_signal_list_data_unset(ap->block.signal_list);
-   ui_block_content_visible(ap->block.right_bottom, false);
    ui_block_content_visible(ap->block.right_top, false);
    live_view_widget_style_unset(ap->live_view);
 
@@ -740,8 +739,6 @@ ui_style_clicked(Style *style)
         ui_block_property_set(prop);
      }
 
-
-   ui_block_content_visible(ap->block.right_bottom, true);
    ui_property_style_set(prop, _alias_style, ap->workspace);
    evas_object_show(prop);
    ap->project->current_style = _style;

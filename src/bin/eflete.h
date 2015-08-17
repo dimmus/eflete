@@ -100,7 +100,7 @@ struct _App_Data
       Evas_Object *signal_list;
       Evas_Object *bottom_right;
       Evas_Object *right_top, *history, *signals;
-      Evas_Object *right_bottom;
+      Evas_Object *property;
       Evas_Object *canvas;
    } block;
    Evas_Object *workspace;
