@@ -67,7 +67,7 @@ group { name: "elm/toolbar/item/default";
                offset: 6 6;
             }
             rel2 {
-               offset: -1 -7;
+               offset: -7 -7;
             }
          }
          description { state: "icononly" 0.0;
