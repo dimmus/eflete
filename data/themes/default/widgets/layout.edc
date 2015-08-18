@@ -5,6 +5,7 @@
 #include "layouts/property.edc"
 #include "layouts/signal_list.edc"
 #include "layouts/history.edc"
+#include "layouts/tabs.edc"
 
 group { name: "elm/layout/window/main";
    images {

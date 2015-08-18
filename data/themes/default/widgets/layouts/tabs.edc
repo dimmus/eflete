@@ -1,0 +1,30 @@
+group { name: "elm/layout/tabs/default";
+   parts {
+      part { name: "elm.swallow.toolbar";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            max: -1 27;
+            align: 0.0 0.0;
+         }
+      }
+      part { name: "bg_content";
+         type: RECT;
+         description {
+            color: 81 82 84 255;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "elm.swallow.toolbar";
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state:   "default" 0.0;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "elm.swallow.toolbar";
+            }
+         }
+      }
+   }
+}
