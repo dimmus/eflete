@@ -54,47 +54,9 @@ EFLETE_TEST(shortcuts_shutdown_test_p1)
    elm_init(0,0);
    app_init();
 
-   shortcuts_init();
-   ck_assert_msg(shortcuts_shutdown(), "Can't shutdown shortcuts.");
-
    app_shutdown();
-   elm_shutdown();
-}
-END_TEST
+   ck_assert_msg(ap.shortcuts == NULL, "Can't shutdown shortcuts.");
 
-/**
- * @addtogroup shortcuts_shutdown
- * @{
- * <tr>
- * <td>shortcuts_shutdown</td>
- * <td>shortcuts_shutdown_test_p2</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 create App_Data
- *
- * @procedure
- * @step 1 call shortcuts_init
- * @step 2 call shortcuts_shutdown
- * @step 3 call shortcuts_init
- * @step 4 call shortcuts_shutdown
- * </td>
- * <td>App_Data *ap</td>
- * <td>EINA_TRUE</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(shortcuts_shutdown_test_p2)
-{
-   elm_init(0,0);
-   app_init();
-
-   shortcuts_init();
-   ck_assert_msg(shortcuts_shutdown(), "Can't shutdown shortcuts.");
-   shortcuts_init();
-   ck_assert_msg(shortcuts_shutdown(), "Can't shutdown shortcuts after second initialization.");
-
-   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -106,4 +68,3 @@ END_TEST
  * @}
  * @}
  */
-

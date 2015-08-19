@@ -24,11 +24,7 @@ Suite* test_suite (void) {
    TCase *tcase = tcase_create("TCase");
 
    tcase_add_test(tcase, shortcuts_init_test_p1);
-   tcase_add_test(tcase, shortcuts_init_test_p2);
-
    tcase_add_test(tcase, shortcuts_shutdown_test_p1);
-   tcase_add_test(tcase, shortcuts_shutdown_test_p2);
-
    tcase_add_test(tcase, shortcuts_profile_load_test_p);
 
    suite_add_tcase(suite, tcase);
