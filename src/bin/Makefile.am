@@ -20,6 +20,7 @@ history/history_attribute.c \
 history/history_state.c \
 history/history_part.c \
 history/history_ui.c \
+ui/part_list.c \
 ui/cursor.c \
 ui/menu.c \
 ui/main_window.c \
