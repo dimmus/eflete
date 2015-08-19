@@ -814,8 +814,6 @@ _progress_pm_open_end(void *data __UNUSED__, PM_Project_Result result)
            STATUSBAR_PROJECT_PATH(ap.project->pro_path);
            STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
 
-           _widget_list_layouts_tab_activate();
-
            break;
         }
       default:
