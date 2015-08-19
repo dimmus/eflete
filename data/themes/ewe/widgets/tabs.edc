@@ -39,7 +39,7 @@ group { name: "ewe/tabs/horizontal/default";
             max: -1 22;
             rel1 {
                relative: 1.0 0.0;
-               offset: 2 6;
+               offset: 2 5;
                to_x: "ewe.text";
             }
             rel2 {
