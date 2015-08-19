@@ -162,17 +162,6 @@ Evas_Object *
 win_layout_get(void);
 
 /**
- * This function will free allocated memory used for App_Data.
- *
- * @return EINA_TRUE application data freed succesfully.
- * EINA_FALSE failed to free application data.
- *
- * @ingroup Eflete
- */
-Eina_Bool
-app_free();
-
-/**
  * This function get pointer to main window of application.
  *
  * @return pointer to main window Evas_Object.

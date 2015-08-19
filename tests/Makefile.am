@@ -53,6 +53,7 @@ FLAGS = \
 -I${top_srcdir}/src/bin/history \
 -I${top_srcdir}/src/bin/ui \
 -I${top_srcdir}/src/bin/ui/container \
+-I${top_srcdir}/src/bin/ui/blocks \
 -I${top_srcdir}/src/bin/ui/dialogs \
 -I${top_srcdir}/src/bin/ui/editors \
 -I${top_srcdir}/src/bin/ui/modal_window \
@@ -323,20 +324,6 @@ test_container/container_confine_set.c \
 test_container/container_confine_unset.c
 container_test_CFLAGS = ${FLAGS}
 container_test_LDADD = ${LD}
-
-ui_block_test_SOURCES = \
-test_ui_block/test_ui_block.c \
-test_ui_block/ui_block_add.c \
-test_ui_block/ui_block_history.c \
-test_ui_block/ui_block_live_view.c \
-test_ui_block/ui_block_property.c \
-test_ui_block/ui_block_signal_list.c \
-test_ui_block/ui_block_title_visible.c \
-test_ui_block/ui_block_content_visible.c \
-test_ui_block/ui_block_widget_list.c \
-test_ui_block/ui_block_ws_set.c
-ui_block_test_CFLAGS = ${FLAGS}
-ui_block_test_LDADD = ${LD}
 
 highlight_test_SOURCES = \
 test_highlight/test_highlight.c \

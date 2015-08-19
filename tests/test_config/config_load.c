@@ -60,7 +60,7 @@ EFLETE_TEST(config_load_test_p)
    config = config_get();
    ck_assert_msg(config != NULL, "Config not been loaded.");
 
-   app_free(NULL);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
