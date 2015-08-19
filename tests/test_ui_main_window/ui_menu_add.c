@@ -60,8 +60,8 @@ EFLETE_TEST(ui_menu_add_test_p)
    elm_init(0, 0);
    app_init();
 
-   ap->win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
-   ap->win_layout = elm_layout_add(ap->win);
+   ap.win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
+   ap.win_layout = elm_layout_add(ap.win);
 
    ret = ui_menu_add();
    ck_assert_msg(ret != NULL, "Failed to create menu");

@@ -63,7 +63,7 @@ EFLETE_TEST(history_module_depth_get_test_p1)
    path = "./edj_build/history_module_depth_get.edj";
    elm_init(0, 0);
    app_init();
-   ap->history = history_init();
+   ap.history = history_init();
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -72,7 +72,7 @@ EFLETE_TEST(history_module_depth_get_test_p1)
    result = history_module_depth_get(source);
    ck_assert_msg(result == 0, "Failed get history depth for module");
 
-   history_term(ap->history);
+   history_term(ap.history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -114,7 +114,7 @@ EFLETE_TEST(history_module_depth_get_test_p2)
    path = "./edj_build/history_module_depth_get.edj";
    elm_init(0, 0);
    app_init();
-   ap->history = history_init();
+   ap.history = history_init();
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -124,7 +124,7 @@ EFLETE_TEST(history_module_depth_get_test_p2)
    result = history_module_depth_get(source);
    ck_assert_msg(result == 2, "Failed get history depth for module");
 
-   history_term(ap->history);
+   history_term(ap.history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();

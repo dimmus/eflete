@@ -33,13 +33,13 @@ _on_cancel(void *data,
    assert(wiew != NULL);
 
    mw_del(wiew->win);
-   ap->modal_editor--;
+   ap.modal_editor--;
    if (!wiew->name_validator) elm_validator_regexp_free(wiew->name_validator);
    free(wiew);
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
-   ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, true);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_BASE, true);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
+   ui_menu_disable_set(ap.menu, MENU_FILE_CLOSE_PROJECT, true);
 }
 
 void
@@ -83,10 +83,10 @@ _progress_end(void *data __UNUSED__, PM_Project_Result result)
    if (result == PM_PROJECT_SUCCESS)
      {
         pro = pm_project_thread_project_get();
-        ap->project = pro;
+        ap.project = pro;
 
         navigator_project_set();
-        STATUSBAR_PROJECT_PATH(ap->project->pro_path);
+        STATUSBAR_PROJECT_PATH(ap.project->pro_path);
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
 
         NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
@@ -118,8 +118,8 @@ _progress_end(void *data __UNUSED__, PM_Project_Result result)
         wiew->progress_log = NULL;
      }
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, false);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+   ui_menu_disable_set(ap.menu, MENU_FILE_CLOSE_PROJECT, false);
    splash_del(wiew->splash);
 }
 
@@ -134,16 +134,16 @@ _teardown_splash(void *data, Splash_Status status)
    if (pm_project_thread_result_get() == PM_PROJECT_SUCCESS)
      {
         mw_del(wiew->win);
-        ap->modal_editor--;
+        ap.modal_editor--;
      }
 
    pm_project_thread_free();
 
    if (wiew->tmp_dir_path) eina_stringshare_del(wiew->tmp_dir_path);
 
-   if ((status == SPLASH_SUCCESS) && (ap->project))
+   if ((status == SPLASH_SUCCESS) && (ap.project))
      {
-        STATUSBAR_PROJECT_PATH(ap->project->pro_path);
+        STATUSBAR_PROJECT_PATH(ap.project->pro_path);
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
         free(wiew);
      }
@@ -276,7 +276,7 @@ _on_apply(void *data __UNUSED__,
        (!_project_directory_check(wiew)))
      return;
 
-   wiew->splash = splash_add(ap->win, wiew->splash_setup_func,
+   wiew->splash = splash_add(ap.win, wiew->splash_setup_func,
                              _teardown_splash, _cancel_splash, wiew);
    evas_object_focus_set(wiew->splash, true);
    evas_object_show(wiew->splash);
@@ -335,7 +335,7 @@ wizard_import_common_add(const char *layout_name)
    assert(layout_name != NULL);
 
    wiew = (Wizard_Import_Edj_Win *)mem_calloc(1, sizeof(Wizard_Import_Edj_Win));
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
 
    wiew->win = mw_add("dialog", _on_cancel, wiew);
 
@@ -386,7 +386,7 @@ wizard_import_common_add(const char *layout_name)
    elm_object_part_content_set(wiew->layout, "swallow.meta_comment", wiew->meta_comment);
    elm_entry_entry_set(wiew->meta_comment, _("Created with Eflete!"));
 
-   ap->modal_editor++;
+   ap.modal_editor++;
    evas_object_show(wiew->win);
 
    return wiew;

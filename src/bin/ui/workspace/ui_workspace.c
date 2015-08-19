@@ -623,7 +623,7 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
      {
         container_border_hide(sd->container.obj);
 
-        ui_menu_disable_set(ap->menu, MENU_VIEW_WORKSPACE_SEPARATE, true);
+        ui_menu_disable_set(ap.menu, MENU_VIEW_WORKSPACE_SEPARATE, true);
         Ws_Menu *items = &sd->menu.items;
         elm_object_item_disabled_set(items->mode_normal, true);
         elm_object_item_disabled_set(items->mode_separate, true);
@@ -633,7 +633,7 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
      {
         container_border_show(sd->container.obj);
 
-        ui_menu_disable_set(ap->menu, MENU_VIEW_WORKSPACE_SEPARATE, false);
+        ui_menu_disable_set(ap.menu, MENU_VIEW_WORKSPACE_SEPARATE, false);
 
         Ws_Menu *items = &sd->menu.items;
         elm_object_item_disabled_set(items->mode_normal, false);
@@ -1247,10 +1247,10 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    container_min_size_set(sd->container.obj, min_w, min_h);
    container_max_size_set(sd->container.obj, max_w, max_h);
    TODO("need refactoring (All communications beetween submodules should be implemented in ui_connector)")
-   if (ap->live_view)
+   if (ap.live_view)
      {
-        container_min_size_set(ap->live_view->live_view, min_w, min_h);
-        container_max_size_set(ap->live_view->live_view, max_w, max_h);
+        container_min_size_set(ap.live_view->live_view, min_w, min_h);
+        container_max_size_set(ap.live_view->live_view, max_w, max_h);
      }
 
    evas_object_geometry_get(sd->scroller, &x, &y, &w, &h);
@@ -1311,10 +1311,10 @@ workspace_edit_object_recalc(Evas_Object *obj)
    container_min_size_set(sd->container.obj, min_w, min_h);
    container_max_size_set(sd->container.obj, max_w, max_h);
    TODO("need refactoring (All communications beetween submodules should be implemented in ui_connector)")
-   if (ap->live_view)
+   if (ap.live_view)
      {
-        container_min_size_set(ap->live_view->live_view, min_w, min_h);
-        container_max_size_set(ap->live_view->live_view, max_w, max_h);
+        container_min_size_set(ap.live_view->live_view, min_w, min_h);
+        container_max_size_set(ap.live_view->live_view, max_w, max_h);
      }
    return groupedit_edit_object_recalc_all(sd->groupedit);
 }

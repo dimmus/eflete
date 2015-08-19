@@ -747,7 +747,7 @@ _on_sample_select(void *data,
 
    const char *selected = elm_entry_entry_get(action.entry1);
 
-   snd_edit = sound_editor_window_add(ap->project, SOUND_EDITOR_SAMPLE_SELECT);
+   snd_edit = sound_editor_window_add(ap.project, SOUND_EDITOR_SAMPLE_SELECT);
    sound_editor_file_choose(snd_edit, selected);
    evas_object_smart_callback_add(snd_edit, SIG_SOUND_SELECTED, _on_sample_select_done, data);
 }
@@ -797,7 +797,7 @@ _on_tone_select(void *data,
 
    const char *selected = elm_entry_entry_get(action.entry1);
 
-   snd_edit = sound_editor_window_add(ap->project, SOUND_EDITOR_TONE_SELECT);
+   snd_edit = sound_editor_window_add(ap.project, SOUND_EDITOR_TONE_SELECT);
    sound_editor_file_choose(snd_edit, selected);
    evas_object_smart_callback_add(snd_edit, SIG_SOUND_SELECTED, _on_tone_select_done, data);
 }

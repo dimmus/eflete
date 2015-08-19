@@ -74,97 +74,85 @@ ui_block_content_visible(Evas_Object *block, Eina_Bool vis)
 Evas_Object *
 ui_block_widget_list_get(void)
 {
-   assert(ap != NULL);
 
-   return ui_block_content_get(ap->block.left_top);
+   return ui_block_content_get(ap.block.left_top);
 }
 
 Evas_Object *
 ui_block_ws_get(void)
 {
-   assert(ap != NULL);
 
-   return ui_block_content_get(ap->block.canvas);
+   return ui_block_content_get(ap.block.canvas);
 }
 
 Evas_Object *
 ui_block_signal_list_get(void)
 {
-   assert(ap != NULL);
 
-   return ui_block_content_get(ap->block.left_bottom);
+   return ui_block_content_get(ap.block.left_bottom);
 }
 
 Evas_Object *
 ui_block_property_get(void)
 {
-   assert(ap != NULL);
 
-   //return ui_block_content_get(ap->block.right_bottom);
+   //return ui_block_content_get(ap.block.right_bottom);
    return NULL;
 }
 
 Evas_Object *
 ui_block_history_get(void)
 {
-   assert(ap != NULL);
 
-   return ui_block_content_get(ap->block.right_top);
+   return ui_block_content_get(ap.block.right_top);
 }
 
 Evas_Object *
 ui_block_live_view_get(void)
 {
-   assert(ap != NULL);
 
-   return ui_block_content_get(ap->block.bottom_right);
+   return ui_block_content_get(ap.block.bottom_right);
 }
 
 Eina_Bool
 ui_block_widget_list_set(Evas_Object *content)
 {
-   assert(ap != NULL);
 
-   return ui_block_content_set(ap->block.left_top, content);
+   return ui_block_content_set(ap.block.left_top, content);
 }
 
 Eina_Bool
 ui_block_ws_set(Evas_Object *content)
 {
-   assert(ap != NULL);
 
-   return ui_block_content_set(ap->block.canvas, content);
+   return ui_block_content_set(ap.block.canvas, content);
 }
 
 Eina_Bool
 ui_block_signal_list_set(Evas_Object *content)
 {
-   assert(ap != NULL);
 
-   return ui_block_content_set(ap->block.left_bottom, content);
+   return ui_block_content_set(ap.block.left_bottom, content);
 }
 
 Eina_Bool
 ui_block_property_set(Evas_Object *content __UNUSED__)
 {
-   assert(ap != NULL);
 
-   //return ui_block_content_set(ap->block.right_bottom, content);
+   //return ui_block_content_set(ap.block.right_bottom, content);
    return true;
 }
 
 Eina_Bool
 ui_block_history_set(Evas_Object *content)
 {
-   assert(ap != NULL);
 
-   return ui_block_content_set(ap->block.right_top, content);
+   return ui_block_content_set(ap.block.right_top, content);
 }
 
 Eina_Bool
 ui_block_live_view_set(Evas_Object *content)
 {
-   assert(ap != NULL);
 
-   return ui_block_content_set(ap->block.bottom_right, content);
+   return ui_block_content_set(ap.block.bottom_right, content);
 }

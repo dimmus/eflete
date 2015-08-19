@@ -433,9 +433,9 @@ _on_st_add_bt_ok(void *data,
    elm_genlist_item_bring_in(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
    elm_genlist_item_show(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
    /* MUST to move to "Apply" function
-   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
-   ui_property_state_unset(ui_block_property_get(ap));
-   ui_property_state_set(ui_block_property_get(ap), part);
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(NULL));
+   ui_property_state_unset(ui_block_property_get(NULL));
+   ui_property_state_set(ui_block_property_get(NULL), part);
    */
 
    _on_popup_bt_cancel(style_edit, NULL, NULL);
@@ -689,7 +689,7 @@ _on_viewer_exit(void *data,
    assert(style_edit != NULL);
 
    TODO("Move to 'Apply'")
-   //workspace_edit_object_recalc(ap->workspace);
+   //workspace_edit_object_recalc(ap.workspace);
    mw_del(style_edit->mwin);
 }
 
@@ -1957,10 +1957,9 @@ _on_mwin_del(void * data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   assert(ap != NULL);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor--;
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+   ap.modal_editor--;
 }
 
 Evas_Object *
@@ -1976,7 +1975,7 @@ style_editor_window_add(Project *project)
    static const char *style_buf = FONT_DEFAULT"'";
 
    assert(project != NULL);
-   assert(ap->win != NULL);
+   assert(ap.win != NULL);
 
    style_edit = (Style_Editor *)mem_calloc(1, sizeof(Style_Editor));
 
@@ -2041,14 +2040,14 @@ style_editor_window_add(Project *project)
    evas_object_show(btn);
    elm_object_part_content_set(style_edit->mwin, "eflete.swallow.btn_close", btn);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
-   evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+   evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, NULL);
 
    evas_object_show(style_edit->mwin);
    elm_object_focus_set(style_edit->style_search_data.search_entry, true);
 
    evas_textblock_style_free(ts);
-   ap->modal_editor++;
+   ap.modal_editor++;
    return style_edit->mwin;
 }
 

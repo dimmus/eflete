@@ -61,19 +61,19 @@ EFLETE_TEST (animator_window_add_test_p)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("animator_window_add_test_p");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("animator_window_add_test_p");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
 
    manager = animator_window_add(style);
    ck_assert_msg(manager != NULL, "cannot create new Animator");
 
    evas_object_del(manager);
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("./animator_window_add_test_p");

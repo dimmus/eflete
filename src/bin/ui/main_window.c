@@ -32,7 +32,6 @@ _on_done(void *data __UNUSED__,
          Evas_Object *obj __UNUSED__,
          void *event_info __UNUSED__)
 {
-   assert(ap != NULL);
    ui_main_window_del();
 }
 
@@ -43,7 +42,7 @@ ui_main_window_del(void)
      return false;
 
    /*
-   if (!history_term(ap->history))
+   if (!history_term(ap.history))
      {
         ERR("Failed terminate history module");
         abort();
@@ -54,16 +53,16 @@ ui_main_window_del(void)
 #endif
 
    /* FIXME: remove it from here */
-   //live_view_free(ap->live_view);
+   //live_view_free(ap.live_view);
 
-   free(ap->menu);
-   ap->menu = NULL;
+   free(ap.menu);
+   ap.menu = NULL;
    cursor_main_free();
 
    config_save();
    INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
    /* FIXME: when be implemented multi workspace feature, remove this line */
-   evas_object_del(ap->workspace);
+   evas_object_del(ap.workspace);
    elm_exit();
 
    return true;
@@ -76,99 +75,98 @@ ui_main_window_add(void)
    Evas_Object *bg, *navigator, *tabs;
    Ewe_Tabs_Item *tab_item;
 
-   assert(ap != NULL);
 
    config_load();
    config = config_get();
 
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
-   ap->win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
+   ap.win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
 
-   assert(ap->win != NULL);
+   assert(ap.win != NULL);
 
-   evas_object_resize(ap->win, config->window.w, config->window.h);
-   evas_object_move(ap->win, config->window.x, config->window.y);
+   evas_object_resize(ap.win, config->window.w, config->window.h);
+   evas_object_move(ap.win, config->window.x, config->window.y);
 
-   elm_win_title_set(ap->win, "EFL Edje Theme Editor");
+   elm_win_title_set(ap.win, "EFL Edje Theme Editor");
 
-   evas_object_smart_callback_add(ap->win, "delete,request", _on_done, NULL);
-   if (!cursor_main_set(ap->win, CURSOR_ARROW))
+   evas_object_smart_callback_add(ap.win, "delete,request", _on_done, NULL);
+   if (!cursor_main_set(ap.win, CURSOR_ARROW))
      {
         ERR("Main cursor not setted.");
         abort();
      }
 
-   elm_object_theme_set(ap->win, ap->theme);
+   elm_object_theme_set(ap.win, ap.theme);
 
-   bg = elm_bg_add(ap->win);
-   elm_win_resize_object_add(ap->win, bg);
+   bg = elm_bg_add(ap.win);
+   elm_win_resize_object_add(ap.win, bg);
    evas_object_size_hint_min_set(bg, 1024, 600);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_focus_highlight_enabled_set(ap->win, false);
+   elm_win_focus_highlight_enabled_set(ap.win, false);
    evas_object_show(bg);
 
-   ap->win_layout = elm_layout_add(ap->win);
-   elm_layout_theme_set(ap->win_layout, "layout", "window", "main");
-   evas_object_size_hint_weight_set(ap->win_layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(ap->win, ap->win_layout);
-   elm_layout_text_set(ap->win_layout, "eflete.project.time", _("Last saved: none"));
-   elm_layout_text_set(ap->win_layout, "eflete.project.part", _("Project path: none"));
-   evas_object_show(ap->win_layout);
+   ap.win_layout = elm_layout_add(ap.win);
+   elm_layout_theme_set(ap.win_layout, "layout", "window", "main");
+   evas_object_size_hint_weight_set(ap.win_layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_win_resize_object_add(ap.win, ap.win_layout);
+   elm_layout_text_set(ap.win_layout, "eflete.project.time", _("Last saved: none"));
+   elm_layout_text_set(ap.win_layout, "eflete.project.part", _("Project path: none"));
+   evas_object_show(ap.win_layout);
 
    /* add panes to main window */
-   ap->panes.left = elm_panes_add(ap->win);
-   evas_object_size_hint_weight_set(ap->panes.left, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(ap->panes.left, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_part_content_set(ap->win_layout, "eflete.swallow.panes", ap->panes.left);
+   ap.panes.left = elm_panes_add(ap.win);
+   evas_object_size_hint_weight_set(ap.panes.left, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(ap.panes.left, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(ap.win_layout, "eflete.swallow.panes", ap.panes.left);
 
-   ap->panes.right = elm_panes_add(ap->win);
-   evas_object_size_hint_weight_set(ap->panes.right, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(ap->panes.right, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_part_content_set(ap->panes.left, "right", ap->panes.right);
+   ap.panes.right = elm_panes_add(ap.win);
+   evas_object_size_hint_weight_set(ap.panes.right, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(ap.panes.right, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(ap.panes.left, "right", ap.panes.right);
 
-   ap->panes.right_hor = elm_panes_add(ap->win);
-   elm_panes_horizontal_set(ap->panes.right_hor, true);
-   evas_object_size_hint_weight_set(ap->panes.right_hor, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(ap->panes.right_hor, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_part_content_set(ap->panes.right, "right", ap->panes.right_hor);
+   ap.panes.right_hor = elm_panes_add(ap.win);
+   elm_panes_horizontal_set(ap.panes.right_hor, true);
+   evas_object_size_hint_weight_set(ap.panes.right_hor, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(ap.panes.right_hor, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(ap.panes.right, "right", ap.panes.right_hor);
 
    /* apply the panes size from config */
-   elm_panes_content_left_size_set(ap->panes.left, config->panes.left);
-   elm_panes_content_left_size_set(ap->panes.right, config->panes.right);
-   elm_panes_content_left_size_set(ap->panes.right_hor, config->panes.right_hor);
+   elm_panes_content_left_size_set(ap.panes.left, config->panes.left);
+   elm_panes_content_left_size_set(ap.panes.right, config->panes.right);
+   elm_panes_content_left_size_set(ap.panes.right_hor, config->panes.right_hor);
 
    navigator = navigator_add();
-   elm_object_part_content_set(ap->panes.left, "left", navigator);
+   elm_object_part_content_set(ap.panes.left, "left", navigator);
 
    tabs = tabs_add();
-   elm_object_part_content_set(ap->panes.right, "left", tabs);
+   elm_object_part_content_set(ap.panes.right, "left", tabs);
 
-   ap->history = history_init();
+   ap.history = history_init();
    /* add tabs with history and signals */
-   ap->block.right_top = ewe_tabs_add(ap->win_layout);
-   tab_item = ewe_tabs_item_append(ap->block.right_top, NULL, _("History"), NULL);
-   ap->block.history = history_genlist_get(ap->history, ap->block.right_top);
-   ewe_tabs_item_content_set(ap->block.right_top, tab_item, ap->block.history);
-   tab_item = ewe_tabs_item_append(ap->block.right_top, NULL, _("Signals"), NULL);
-   ap->block.signals = ui_signal_list_add(ap->win);
-   ewe_tabs_item_content_set(ap->block.right_top, tab_item, ap->block.signals);
-   elm_object_disabled_set(ap->block.right_top, true);
-   elm_object_part_content_set(ap->panes.right_hor, "left", ap->block.right_top);
+   ap.block.right_top = ewe_tabs_add(ap.win_layout);
+   tab_item = ewe_tabs_item_append(ap.block.right_top, NULL, _("History"), NULL);
+   ap.block.history = history_genlist_get(ap.history, ap.block.right_top);
+   ewe_tabs_item_content_set(ap.block.right_top, tab_item, ap.block.history);
+   tab_item = ewe_tabs_item_append(ap.block.right_top, NULL, _("Signals"), NULL);
+   ap.block.signals = ui_signal_list_add(ap.win);
+   ewe_tabs_item_content_set(ap.block.right_top, tab_item, ap.block.signals);
+   elm_object_disabled_set(ap.block.right_top, true);
+   elm_object_part_content_set(ap.panes.right_hor, "left", ap.block.right_top);
 
-   ap->block.property = ui_property_add(ap->win);
-   elm_object_disabled_set(ap->block.property, true);
-   elm_object_part_content_set(ap->panes.right_hor, "right", ap->block.property);
+   ap.block.property = ui_property_add(ap.win);
+   elm_object_disabled_set(ap.block.property, true);
+   elm_object_part_content_set(ap.panes.right_hor, "right", ap.block.property);
 
-   ap->menu = ui_menu_add();
+   ap.menu = ui_menu_add();
    //ui_panes_add();
-   //ap->workspace = workspace_add(ap->block.canvas);
-   //ui_block_ws_set(ap->workspace);
-   //evas_object_show(ap->workspace);
-   //ap->live_view = live_view_add(ap->block.bottom_right, false);
-   //ui_block_live_view_set(ap->live_view->layout);
-   //ap->colorsel = colorselector_add(ap->win);
+   //ap.workspace = workspace_add(ap.block.canvas);
+   //ui_block_ws_set(ap.workspace);
+   //evas_object_show(ap.workspace);
+   //ap.live_view = live_view_add(ap.block.bottom_right, false);
+   //ui_block_live_view_set(ap.live_view->layout);
+   //ap.colorsel = colorselector_add(ap.win);
    #ifdef HAVE_ENVENTOR
-     ap->enventor= enventor_object_init(ap->win);
+     ap.enventor= enventor_object_init(ap.win);
    #endif /* HAVE_ENVENTOR */
    //register_callbacks();
 

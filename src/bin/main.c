@@ -59,18 +59,18 @@ _import_end(void *data __UNUSED__, PM_Project_Result result)
    if (result == PM_PROJECT_SUCCESS)
      {
         pro = pm_project_thread_project_get();
-        ap->project = pro;
+        ap.project = pro;
 
-        ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-        ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, false);
+        ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+        ui_menu_disable_set(ap.menu, MENU_FILE_CLOSE_PROJECT, false);
         navigator_project_set();
 
-        STATUSBAR_PROJECT_PATH(ap->project->pro_path);
+        STATUSBAR_PROJECT_PATH(ap.project->pro_path);
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
 
         NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
      }
-   evas_object_show(ap->win);
+   evas_object_show(ap.win);
 }
 
 void
@@ -81,17 +81,17 @@ _open_end(void *data __UNUSED__, PM_Project_Result result)
    if (result == PM_PROJECT_SUCCESS)
      {
         pro = pm_project_thread_project_get();
-        ap->project = pro;
+        ap.project = pro;
 
-        ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-        ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, false);
+        ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+        ui_menu_disable_set(ap.menu, MENU_FILE_CLOSE_PROJECT, false);
         navigator_project_set();
 
         NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
-        STATUSBAR_PROJECT_PATH(ap->project->pro_path);
+        STATUSBAR_PROJECT_PATH(ap.project->pro_path);
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
      }
-   evas_object_show(ap->win);
+   evas_object_show(ap.win);
 }
 
 static Eina_Bool
@@ -230,7 +230,7 @@ elm_main(int argc, char **argv)
             goto run;
           }
 
-        evas_object_show(ap->win);
+        evas_object_show(ap.win);
 run:
         elm_run();
 #ifdef HAVE_ENVENTOR

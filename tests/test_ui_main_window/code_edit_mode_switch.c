@@ -67,7 +67,7 @@ EFLETE_TEST (code_edit_mode_switch_test_p)
    result = code_edit_mode_switch(false);
    ck_assert_msg(result == EINA_TRUE, "Could not switch Code Edit mode OFF!");
 
-   evas_object_del(ap->win);
+   evas_object_del(ap.win);
    elm_shutdown();
 }
 END_TEST

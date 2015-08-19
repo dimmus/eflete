@@ -66,9 +66,9 @@ _content_set(Evas_Object *content)
 Evas_Object *
 tabs_add(void)
 {
-   assert (ap->win != NULL);
+   assert (ap.win != NULL);
 
-   tabs.layout = elm_layout_add(ap->win);
+   tabs.layout = elm_layout_add(ap.win);
    elm_layout_theme_set(tabs.layout, "layout", "tabs", "default");
    tabs.toolbar = elm_toolbar_add(tabs.layout);
    elm_layout_content_set(tabs.layout, "elm.swallow.toolbar", tabs.toolbar);

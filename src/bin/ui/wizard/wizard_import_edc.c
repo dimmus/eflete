@@ -679,7 +679,7 @@ wizard_import_edc_add()
 
    assert(wiew != NULL);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
    mw_title_set(wiew->win, _("Wizard: import edc"));
    project_path_item_add(wiew, _("Path to edc file:"),
                          _("Please enter the path to edc file"), _on_edc_bt);

@@ -186,12 +186,10 @@ _on_animator_save(void *data __UNUSED__,
                   Evas_Object* obj __UNUSED__,
                   void *ei __UNUSED__)
 {
-   assert(ap != NULL);
-
-   Style *style = ap->project->current_style;
-   ui_signal_list_data_unset(ap->block.signal_list);
-   ui_signal_list_data_set(ap->block.signal_list, style);
-   live_view_widget_style_set(ap->live_view, ap->project, style);
+   Style *style = ap.project->current_style;
+   ui_signal_list_data_unset(ap.block.signal_list);
+   ui_signal_list_data_set(ap.block.signal_list, style);
+   live_view_widget_style_set(ap.live_view, ap.project, style);
    project_changed(true);
 }
 
@@ -206,7 +204,7 @@ _on_animator_close(void *data,
    assert(animator != NULL);
 
    TODO("change this after discarding changes would be possible")
-   _on_animator_save(ap, NULL, NULL);
+   _on_animator_save(NULL, NULL, NULL);
 
    program_editor_free(animator->program_editor);
 
@@ -260,7 +258,7 @@ _on_add_popup_bt_add(void *data,
    animator->popup.entry = NULL;
 
    /* move to "Apply"?
-   live_view_widget_style_set(animator->live, ap->project, animator->style);
+   live_view_widget_style_set(animator->live, ap.project, animator->style);
    edje_object_signal_callback_add(animator->live->object, "show", "",
                                    _on_object_load, animator);
    */
@@ -418,10 +416,9 @@ _on_mwin_del(void * data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   assert(ap != NULL);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor--;
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+   ap.modal_editor--;
 }
 
 /********************* genlist callbacks **************************************/
@@ -581,7 +578,7 @@ animator_window_add(Style *style)
 
    assert(style != NULL);
    assert(style->obj != NULL);
-   assert(ap->project != NULL);
+   assert(ap.project != NULL);
 
    animator = (Animator *)mem_calloc(1, sizeof(Animator));
 
@@ -606,7 +603,7 @@ animator_window_add(Style *style)
    evas_object_show(panes);
 
    animator->live = live_view_add(animator->mwin, true);
-   live_view_widget_style_set(animator->live, ap->project, style);
+   live_view_widget_style_set(animator->live, ap.project, style);
    edje_object_signal_callback_add(animator->live->object, "show", "",
                                    _on_object_load, animator);
 
@@ -709,7 +706,7 @@ animator_window_add(Style *style)
                                   _on_program_scroll_cb, animator);
 
    BUTTON_ADD(animator->mwin, bt, _("Apply"));
-   evas_object_smart_callback_add(bt, "clicked", _on_animator_save, ap);
+   evas_object_smart_callback_add(bt, "clicked", _on_animator_save, NULL);
    elm_object_part_content_set(animator->mwin, "eflete.swallow.btn_ok", bt);
 
    BUTTON_ADD(animator->mwin, bt, _("Ok"));
@@ -720,12 +717,12 @@ animator_window_add(Style *style)
    elm_object_part_content_set(panes, "bottom", bottom_panes);
    elm_object_part_content_set(animator->mwin, NULL, panes);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
-   evas_object_event_callback_add(animator->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+   evas_object_event_callback_add(animator->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, NULL);
 
    evas_object_show(animator->mwin);
 
-   ap->modal_editor++;
+   ap.modal_editor++;
    return animator->mwin;
 }
 

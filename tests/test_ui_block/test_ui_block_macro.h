@@ -24,9 +24,9 @@ EFLETE_TEST (_func_##_test_p) \
    Evas_Object *parent, *content; \
    app_init(); \
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC); \
-   elm_object_theme_set(parent, ap->theme); \
+   elm_object_theme_set(parent, ap.theme); \
    content = ui_block_add(parent); \
-   ap->block.bl = ui_block_add(parent); \
+   ap.block.bl = ui_block_add(parent); \
    ck_assert_msg(_func_##_set(content) == EINA_TRUE, "Function is not working right"); \
    ck_assert_msg(_func_##_get() == content,"Content isn't set or returned properly"); \
    elm_shutdown(); \

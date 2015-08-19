@@ -117,8 +117,8 @@ _image_editor_del(Image_Editor *img_edit)
 {
    assert(img_edit != NULL);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor--;
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+   ap.modal_editor--;
 
    evas_object_event_callback_del(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del);
 
@@ -849,10 +849,10 @@ _on_button_apply_clicked_cb(void *data,
         if (unit->act_type == ACTION_TYPE_DEL)
           {
              if (edje_edit_image_del(img_edit->pr->global_object, unit->data))
-               ap->project->nsimage_list = eina_list_append(ap->project->nsimage_list, unit);
+               ap.project->nsimage_list = eina_list_append(ap.project->nsimage_list, unit);
           }
         else if (edje_edit_image_add(img_edit->pr->global_object, unit->data))
-          ap->project->nsimage_list = eina_list_append(ap->project->nsimage_list, unit);
+          ap.project->nsimage_list = eina_list_append(ap.project->nsimage_list, unit);
      }
    pm_save_to_dev(img_edit->pr, NULL, false);
 
@@ -1297,10 +1297,10 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    evas_object_data_set(img_edit->gengrid, IMG_EDIT_KEY, img_edit);
    evas_object_data_set(img_edit->win, IMG_EDIT_KEY, img_edit);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_event_callback_add(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del, img_edit);
 
-   ap->modal_editor++;
+   ap.modal_editor++;
    return img_edit->win;
 }
 

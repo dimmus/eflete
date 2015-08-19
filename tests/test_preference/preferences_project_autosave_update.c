@@ -60,9 +60,9 @@ EFLETE_TEST (preferences_project_autosave_update_test_p)
 
    Eina_Bool result;
    profile_load("default");
-   ap->project = setup("preferences_project_autosave_update_test_p");
+   ap.project = setup("preferences_project_autosave_update_test_p");
 
-   result = preferences_project_autosave_update(ap->project);
+   result = preferences_project_autosave_update(ap.project);
    ck_assert_msg(result == EINA_TRUE, "Can not register autosave callback");
 
    app_shutdown();

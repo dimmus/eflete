@@ -76,11 +76,11 @@ EFLETE_TEST(history_redo_test_p1)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p1");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p1");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
@@ -95,8 +95,8 @@ EFLETE_TEST(history_redo_test_p1)
    check_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == new_value, "Value didn't restore");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -149,11 +149,11 @@ EFLETE_TEST(history_redo_test_p2)
    app_init();
    ui_main_window_add();
 
-   ap->project = setup("history_redo_test_p2");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p2");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value = edje_edit_part_drag_x_get(style->obj, "bg");
@@ -168,8 +168,8 @@ EFLETE_TEST(history_redo_test_p2)
    check_value = edje_edit_part_drag_x_get(style->obj, "bg");
    ck_assert_msg(check_value == new_value, "Value didn't restore");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -231,11 +231,11 @@ EFLETE_TEST(history_redo_test_p3)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p3");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p3");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value_drag_y = edje_edit_part_drag_y_get(style->obj, "bg");
@@ -259,8 +259,8 @@ EFLETE_TEST(history_redo_test_p3)
    check_value_min_w = edje_edit_state_min_w_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value_min_w == old_value_min_w, "Restored all changes");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -321,11 +321,11 @@ EFLETE_TEST(history_redo_test_p4)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p4");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p4");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value_drag_x = edje_edit_part_drag_x_get(style->obj, "bg");
@@ -347,8 +347,8 @@ EFLETE_TEST(history_redo_test_p4)
    check_value_min_h = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value_min_h == new_value_min_h, "Not all changes are restored");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -401,11 +401,11 @@ EFLETE_TEST(history_redo_test_p5)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p5");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p5");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value = edje_edit_state_aspect_max_get(style->obj, "bg", "default", 0.0);
@@ -420,8 +420,8 @@ EFLETE_TEST(history_redo_test_p5)
    check_value = edje_edit_state_aspect_max_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == new_value, "Action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -476,11 +476,11 @@ EFLETE_TEST(history_redo_test_p6)
 
    new_value = eina_stringshare_add("events");
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p6");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p6");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    tmp = edje_edit_part_clip_to_get(style->obj, "bg");
@@ -501,8 +501,8 @@ EFLETE_TEST(history_redo_test_p6)
    eina_stringshare_del(old_value);
    eina_stringshare_del(check_value);
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -557,11 +557,11 @@ EFLETE_TEST(history_redo_test_p7)
 
    new_value = eina_stringshare_add("events");
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p7");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p7");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    tmp = edje_edit_state_rel1_to_x_get(style->obj, "radio", "default", 0.0);
@@ -582,8 +582,8 @@ EFLETE_TEST(history_redo_test_p7)
    eina_stringshare_del(old_value);
    eina_stringshare_del(check_value);
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -636,13 +636,13 @@ EFLETE_TEST(history_redo_test_p8)
    elm_init(0, 0);
    app_init();
 
-   ap->history = history_init();
+   ap.history = history_init();
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p8");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p8");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    edje_edit_state_color_get(style->obj, "radio", "default", 0.0, &oldr, &oldg,
@@ -662,8 +662,8 @@ EFLETE_TEST(history_redo_test_p8)
    ck_assert_msg(((checkr == newr) && (checkg == newg) && (checkb == newb) &&
                   (checka == newa )), "Recovered action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -716,11 +716,11 @@ EFLETE_TEST(history_redo_test_p9)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p9");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p9");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value = edje_edit_group_min_h_get(style->obj);
@@ -739,8 +739,8 @@ EFLETE_TEST(history_redo_test_p9)
    check_value = edje_edit_group_max_h_get(style->obj);
    ck_assert_msg(check_value == new_value, "Recovered action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -792,11 +792,11 @@ EFLETE_TEST(history_redo_test_p10)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p10");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p10");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    part = wm_part_by_name_find(style, eina_stringshare_add(old_value));
@@ -812,8 +812,8 @@ EFLETE_TEST(history_redo_test_p10)
    result = edje_edit_part_exist(style->obj, new_value);
    ck_assert_msg(result, "Recover action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -863,11 +863,11 @@ EFLETE_TEST(history_redo_test_p11)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p11");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p11");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    edje_edit_state_tween_add(style->obj, "bg", "default", 0.0, name);
@@ -883,8 +883,8 @@ EFLETE_TEST(history_redo_test_p11)
    ck_assert_msg(eina_list_count(tween_list) == 1,
                  "Restored action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -935,11 +935,11 @@ EFLETE_TEST(history_redo_test_p12)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p12");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p12");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    edje_edit_state_tween_add(style->obj, "bg", "default", 0.0, name);
@@ -956,8 +956,8 @@ EFLETE_TEST(history_redo_test_p12)
    ck_assert_msg(eina_list_count(tween_list) == 0,
                  "Restored action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -1012,11 +1012,11 @@ EFLETE_TEST(history_redo_test_p13)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p13");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p13");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value_1 = edje_edit_state_max_h_get(style->obj, "bg", "default", 0.0);
@@ -1036,8 +1036,8 @@ EFLETE_TEST(history_redo_test_p13)
    check_value = edje_edit_state_max_w_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == new_value_2, "Max weight didn't restored");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -1092,11 +1092,11 @@ EFLETE_TEST(history_redo_test_p14)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p14");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p14");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value_1 = edje_edit_state_align_x_get(style->obj, "bg", "default", 0.0);
@@ -1116,8 +1116,8 @@ EFLETE_TEST(history_redo_test_p14)
    check_value = edje_edit_state_align_y_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == new_value_2, "Align y didn't restored");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -1165,11 +1165,11 @@ EFLETE_TEST(history_redo_test_p15)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p15");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p15");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    edje_edit_state_add(style->obj, "bg", "new_state", 0.1);
@@ -1183,8 +1183,8 @@ EFLETE_TEST(history_redo_test_p15)
    result = edje_edit_state_exist(style->obj, "bg", "new_state", 0.1);
    ck_assert_msg(result, "Adding new state didn't restored");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;   ui_main_window_del();
+   pm_project_close(ap.project);
+   ap.project = NULL;   ui_main_window_del();
    app_shutdown();
    teardown("./history_redo_test_p15");
    elm_shutdown();
@@ -1230,11 +1230,11 @@ EFLETE_TEST(history_redo_test_p16)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p16");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p16");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    history_diff_add(style->obj, STATE_TARGET, DEL, "elm/radio/base/def",
@@ -1248,8 +1248,8 @@ EFLETE_TEST(history_redo_test_p16)
    result = edje_edit_state_exist(style->obj, "elm.text", "visible", 0.0);
    ck_assert_msg(!result, "Deleting state didn't restored");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;   ui_main_window_del();
+   pm_project_close(ap.project);
+   ap.project = NULL;   ui_main_window_del();
    app_shutdown();
    teardown("./history_redo_test_p16");
    elm_shutdown();
@@ -1295,11 +1295,11 @@ EFLETE_TEST(history_redo_test_p17)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p17");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p17");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    history_diff_add(style->obj, PART_TARGET, DEL, "elm.text");
@@ -1312,8 +1312,8 @@ EFLETE_TEST(history_redo_test_p17)
    result = edje_edit_part_exist(style->obj, "elm.text");
    ck_assert_msg(!result, "Deleting part didn't repeated");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;   ui_main_window_del();
+   pm_project_close(ap.project);
+   ap.project = NULL;   ui_main_window_del();
    app_shutdown();
    teardown("./history_redo_test_p17");
    elm_shutdown();
@@ -1359,14 +1359,14 @@ EFLETE_TEST(history_redo_test_p18)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p18");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p18");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
-   workspace_edit_object_part_add(ap->workspace, "part_add", EDJE_PART_TYPE_RECTANGLE, NULL);
+   workspace_edit_object_part_add(ap.workspace, "part_add", EDJE_PART_TYPE_RECTANGLE, NULL);
    history_diff_add(style->obj, PART_TARGET, ADD, "part_add");
    history_undo(style->obj, 1);
 
@@ -1376,8 +1376,8 @@ EFLETE_TEST(history_redo_test_p18)
    result = edje_edit_part_exist(style->obj, "part_add");
    ck_assert_msg(result, "Adding part didn't restored");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("./history_redo_test_p18");
@@ -1426,11 +1426,11 @@ EFLETE_TEST(history_redo_test_p19)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_redo_test_p19");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_redo_test_p19");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    history_diff_add(style->obj, PART_TARGET, RESTACK, "radio");
@@ -1444,8 +1444,8 @@ EFLETE_TEST(history_redo_test_p19)
    check = eina_stringshare_add(edje_edit_part_below_get(style->obj, "radio"));
    ck_assert_msg(check == below, "Restack part didn't restored");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("./history_redo_test_p19");

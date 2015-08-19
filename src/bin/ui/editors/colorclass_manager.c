@@ -431,10 +431,9 @@ _on_mwin_del(void * data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   assert(ap != NULL);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor--;
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+   ap.modal_editor--;
 }
 static void
 _on_btn_apply(void *data,
@@ -765,12 +764,12 @@ colorclass_manager_add(Project *project)
         abort();
      }
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
-   evas_object_event_callback_add(edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+   evas_object_event_callback_add(edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, NULL);
 
    evas_object_show(edit->mwin);
 
-   ap->modal_editor++;
+   ap.modal_editor++;
 
    return edit->mwin;
 }

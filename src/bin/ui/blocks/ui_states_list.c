@@ -53,7 +53,7 @@ _popup_close(void)
         sl.popup.name_validator = NULL;
      }
    evas_object_del(sl.popup.popup);
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 static void
@@ -95,9 +95,8 @@ _btn_del_cb(void *data __UNUSED__,
    Evas_Object *bt_no;
    Eina_Stringshare *message;
 
-   assert(ap != NULL);
 
-   sl.popup.popup = elm_popup_add(ap->win);
+   sl.popup.popup = elm_popup_add(ap.win);
    elm_object_part_text_set(sl.popup.popup, "title,text", _("Delete state"));
 
    message = eina_stringshare_printf(_("Do you want to delete the state \"%s %f from part \"%s\"?"),
@@ -116,7 +115,7 @@ _btn_del_cb(void *data __UNUSED__,
    evas_object_smart_callback_add (bt_no, "clicked", _close_cb, NULL);
    elm_object_part_content_set(sl.popup.popup, "button2", bt_no);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_show(sl.popup.popup);
    elm_object_focus_set(sl.popup.entry_name, true);
 }
@@ -172,11 +171,10 @@ _btn_add_cb(void *data __UNUSED__,
    Eina_List *states = NULL, *l = NULL;
    const char *state_name = NULL;
 
-   assert(ap != NULL);
 
    sl.popup.name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
 
-   sl.popup.popup = elm_popup_add(ap->win);
+   sl.popup.popup = elm_popup_add(ap.win);
    title = eina_stringshare_printf(_("Add new state to part \"%s\""), sl.part->name);
    elm_object_part_text_set(sl.popup.popup, "title,text", title);
 
@@ -200,7 +198,7 @@ _btn_add_cb(void *data __UNUSED__,
 
    LAYOUT_PROP_ADD(box, _("Duplicate state:"), "property", "1swallow")
    EWE_COMBOBOX_ADD(item, sl.popup.combobox_dup)
-   states = edje_edit_part_states_list_get(ap->project->current_style->obj, sl.part->name);
+   states = edje_edit_part_states_list_get(ap.project->current_style->obj, sl.part->name);
 
    ewe_combobox_item_add(sl.popup.combobox_dup, _("None"));
    ewe_combobox_select_item_set(sl.popup.combobox_dup, 0);
@@ -223,7 +221,7 @@ _btn_add_cb(void *data __UNUSED__,
    evas_object_smart_callback_add (bt_no, "clicked", _close_cb, NULL);
    elm_object_part_content_set(sl.popup.popup, "button2", bt_no);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_show(sl.popup.popup);
    elm_object_focus_set(sl.popup.entry_name, true);
 

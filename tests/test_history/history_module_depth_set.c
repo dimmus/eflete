@@ -67,7 +67,7 @@ EFLETE_TEST(history_module_depth_set_test_p1)
    path = "./edj_build/history_module_depth_set.edj";
    elm_init(0, 0);
    app_init();
-   ap->history = history_init();
+   ap.history = history_init();
    canvas = evas_new();
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
@@ -78,7 +78,7 @@ EFLETE_TEST(history_module_depth_set_test_p1)
    depth = history_module_depth_get(source);
    ck_assert_msg(depth == 2, "Getted depth value is not equal to setted");
 
-   history_term(ap->history);
+   history_term(ap.history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();
@@ -131,11 +131,11 @@ EFLETE_TEST(history_module_depth_set_test_p2)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_module_depth_set_test_p2");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_module_depth_set_test_p2");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    history_module_depth_set(style->obj, 3);
@@ -161,8 +161,8 @@ EFLETE_TEST(history_module_depth_set_test_p2)
    check_value = edje_edit_group_max_h_get(style->obj);
    ck_assert_msg(check_value == new_value, "Cancel diff, that outside of depth");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();

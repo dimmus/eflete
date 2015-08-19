@@ -20,7 +20,6 @@ project_manager_test \
 config_test \
 cursor_test \
 style_editor_test \
-ui_block_test \
 highlight_test \
 ui_main_window_test \
 ui_signal_list_test \
@@ -54,7 +53,6 @@ FLAGS = \
 -I${top_srcdir}/src/bin/history \
 -I${top_srcdir}/src/bin/ui \
 -I${top_srcdir}/src/bin/ui/container \
--I${top_srcdir}/src/bin/ui/blocks \
 -I${top_srcdir}/src/bin/ui/dialogs \
 -I${top_srcdir}/src/bin/ui/editors \
 -I${top_srcdir}/src/bin/ui/modal_window \

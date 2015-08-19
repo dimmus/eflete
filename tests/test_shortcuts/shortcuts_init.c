@@ -55,7 +55,7 @@ EFLETE_TEST(shortcuts_init_test_p1)
 
    ck_assert_msg(shortcuts_init(), "Shortcuts not initialized.");
 
-   shortcuts_shutdown(ap);
+   shortcuts_shutdown(NULL);
    app_shutdown();
    elm_shutdown();
 }
@@ -91,7 +91,7 @@ EFLETE_TEST(shortcuts_init_test_p2)
    shortcuts_shutdown();
    ck_assert_msg(shortcuts_init(), "Shortcuts not initialized at second time.");
 
-   shortcuts_shutdown(ap);
+   shortcuts_shutdown(NULL);
    app_shutdown();
    elm_shutdown();
 }

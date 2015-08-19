@@ -39,7 +39,6 @@ _reload_classes(Eina_Inlist *classes)
    Ewe_Tabs_Item *class_tab = NULL;
    Evas_Object *tabs = NULL;
 
-   assert(ap != NULL);
    assert(classes != NULL);
 
    tabs = ui_block_widget_list_get();
@@ -54,15 +53,14 @@ _reload_classes(Eina_Inlist *classes)
 static void
 _job_popup_close(void *data __UNUSED__)
 {
-   assert(ap != NULL);
 
    elm_validator_regexp_free(class_validator);
    elm_validator_regexp_free(style_validator);
    class_validator = NULL;
    style_validator = NULL;
-   evas_object_del(ap->popup);
-   ap->popup = NULL;
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+   evas_object_del(ap.popup);
+   ap.popup = NULL;
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 static void
@@ -108,7 +106,6 @@ _on_popup_btn_yes(void *data __UNUSED__,
         eina_stringshare_del(style_name);\
         eina_stringshare_del(class_name);\
 
-   assert(ap != NULL);
 
    widget = ui_widget_from_ap_get();
 
@@ -120,7 +117,7 @@ _on_popup_btn_yes(void *data __UNUSED__,
    full_name = eina_stringshare_printf("elm/%s/%s/%s", widget->name, class_name,
                                        style_name);
 
-   if (wm_style_object_find(ap->project->widgets, full_name))
+   if (wm_style_object_find(ap.project->widgets, full_name))
      {
         NOTIFY_WARNING(_("[%s] alredy exist. Type another style name."),
                       full_name);
@@ -129,7 +126,7 @@ _on_popup_btn_yes(void *data __UNUSED__,
         return;
      }
 
-   EINA_INLIST_FOREACH_SAFE(ap->project->widgets, l, source_wdg)
+   EINA_INLIST_FOREACH_SAFE(ap.project->widgets, l, source_wdg)
      {
         if (!strcmp(source_wdg->name, widget->name)) break;
      }
@@ -137,12 +134,12 @@ _on_popup_btn_yes(void *data __UNUSED__,
    if (!source_wdg)
      {
         NOTIFY_ERROR(_("Sorry, there are no templates for [%s]"), widget->name);
-        ecore_job_add(_job_popup_close, ap);
+        ecore_job_add(_job_popup_close, NULL);
         STRING_CLEAR;
         eina_stringshare_del(full_name);
         return;
      }
-   EINA_INLIST_FOREACH_SAFE(ap->project->widgets, l, dest_wdg)
+   EINA_INLIST_FOREACH_SAFE(ap.project->widgets, l, dest_wdg)
      {
         if (!strcmp(dest_wdg->name, widget->name)) break;
      }
@@ -240,13 +237,13 @@ _on_popup_btn_yes(void *data __UNUSED__,
 
    /* call method, which copy all parts and their params into new style */
    if (wm_style_copy(dest_style->obj, source_style->full_group_name, full_name,
-                     ap->project->dev, style))
+                     ap.project->dev, style))
      {
-        pm_save_to_dev(ap->project, source_style, true);
-        wm_style_data_load(style, evas_object_evas_get(ap->win),
-                           ap->project->mmap_file);
+        pm_save_to_dev(ap.project, source_style, true);
+        wm_style_data_load(style, evas_object_evas_get(ap.win),
+                           ap.project->mmap_file);
         _reload_classes(dest_wdg->classes);
-        pm_save_to_dev(ap->project, style, true);
+        pm_save_to_dev(ap.project, style, true);
 
         /* Selecting added style in genlist! */
         tabs = ui_block_widget_list_get();
@@ -271,7 +268,7 @@ _on_popup_btn_yes(void *data __UNUSED__,
 
    STRING_CLEAR;
    eina_stringshare_del(full_name);
-   ecore_job_add(_job_popup_close, ap);
+   ecore_job_add(_job_popup_close, NULL);
 #undef STRING_CLEAR
 }
 
@@ -300,7 +297,6 @@ style_dialog_add()
    Style *_style = NULL;
    Evas_Object *nf = NULL;
 
-   assert(ap != NULL);
    assert(class_validator == NULL);
    assert(style_validator == NULL);
 
@@ -326,11 +322,11 @@ style_dialog_add()
 
    title = eina_stringshare_printf(_("Add style/class for \"%s\" widget"),
                                    widget->name);
-   ap->popup = elm_popup_add(ap->win_layout);
-   elm_object_part_text_set(ap->popup, "title,text", title);
-   elm_popup_orient_set(ap->popup, ELM_POPUP_ORIENT_CENTER);
+   ap.popup = elm_popup_add(ap.win_layout);
+   elm_object_part_text_set(ap.popup, "title,text", title);
+   elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
 
-   BOX_ADD(ap->popup, box, false, false);
+   BOX_ADD(ap.popup, box, false, false);
 
    class_st = ui_class_from_ap_get();
    entry_text = eina_stringshare_add(class_st->name);
@@ -354,20 +350,20 @@ style_dialog_add()
 
    assert(class_st != NULL);
 
-   elm_object_content_set(ap->popup, box);
+   elm_object_content_set(ap.popup, box);
 
-   BUTTON_ADD(ap->popup, btn_add, _("Add"));
+   BUTTON_ADD(ap.popup, btn_add, _("Add"));
    evas_object_smart_callback_add(btn_add, "clicked", _on_popup_btn_yes, NULL);
-   elm_object_part_content_set(ap->popup, "button1", btn_add);
+   elm_object_part_content_set(ap.popup, "button1", btn_add);
    elm_object_disabled_set(btn_add, true);
 
-   BUTTON_ADD(ap->popup, button, _("Cancel"));
+   BUTTON_ADD(ap.popup, button, _("Cancel"));
    evas_object_smart_callback_add(button, "clicked", _popup_close_cb, NULL);
-   elm_object_part_content_set(ap->popup, "button2", button);
+   elm_object_part_content_set(ap.popup, "button2", button);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
 
-   evas_object_show(ap->popup);
+   evas_object_show(ap.popup);
    elm_object_focus_set(entry_style, true);
 
    eina_stringshare_del(title);

@@ -68,14 +68,14 @@ EFLETE_TEST (register_callbacks_test_p)
    app_init();
    ui_main_window_add();
    project = setup("register_callbacks_test_p");
-   widget_list = ui_widget_list_add(ap->win);
+   widget_list = ui_widget_list_add(ap.win);
    ui_widget_list_data_set(widget_list, project);
    ui_block_widget_list_set(widget_list);
 
    result = register_callbacks();
    ck_assert_msg(result == EINA_TRUE, "Could not register callbacks!");
 
-   evas_object_del(ap->win);
+   evas_object_del(ap.win);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    teardown("./register_callbacks_test_p");
    elm_shutdown();

@@ -59,7 +59,7 @@ EFLETE_TEST (preferences_window_add_test_p1)
    app_init();
 
    Evas_Object *preferences;
-   ui_main_window_add(ap);
+   ui_main_window_add(NULL);
    app->project = setup("preferences_window_add_test_p1");
 
    preferences = preferences_window_add(app->project);

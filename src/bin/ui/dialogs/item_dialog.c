@@ -28,23 +28,22 @@ static Elm_Validator_Regexp *name_validator = NULL;
 static void
 _job_popup_close(void *data __UNUSED__)
 {
-   assert(ap != NULL);
    assert(name_validator != NULL);
 
-   Evas_Object *markup = elm_object_content_get(ap->popup);
+   Evas_Object *markup = elm_object_content_get(ap.popup);
    Evas_Object *proxy_preview = elm_object_part_content_unset(markup, "preview.swallow");
    Evas_Object *group_preview = elm_object_part_content_unset(markup, "origin.swallow");
 
    elm_validator_regexp_free(name_validator);
    name_validator = NULL;
 
-   eina_file_map_free(ap->project->mmap_file, group_preview);
+   eina_file_map_free(ap.project->mmap_file, group_preview);
    evas_object_del(group_preview);
    evas_object_del(proxy_preview);
-   evas_object_del(ap->popup);
+   evas_object_del(ap.popup);
 
-   ap->popup = NULL;
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+   ap.popup = NULL;
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 static void
@@ -52,9 +51,8 @@ _on_button_add_clicked(void *data __UNUSED__,
                        Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
-   assert(ap != NULL);
 
-   Part *part = evas_object_data_get(ap->popup, "PART");
+   Part *part = evas_object_data_get(ap.popup, "PART");
 
    assert(entry != NULL);
    assert(combobox != NULL);
@@ -77,10 +75,10 @@ _on_button_add_clicked(void *data __UNUSED__,
         return;
      }
 
-   if (workspace_edit_object_part_item_add(ap->workspace, part->name, name, item->title))
+   if (workspace_edit_object_part_item_add(ap.workspace, part->name, name, item->title))
      {
        edje_edit_string_list_free(part->items);
-       part->items = edje_edit_part_items_list_get(ap->project->current_style->obj, part->name);
+       part->items = edje_edit_part_items_list_get(ap.project->current_style->obj, part->name);
        ui_widget_list_part_items_refresh(ui_block_widget_list_get(), part, true);
      }
    else
@@ -90,9 +88,9 @@ _on_button_add_clicked(void *data __UNUSED__,
         return;
      }
 
-   workspace_edit_object_recalc(ap->workspace);
+   workspace_edit_object_recalc(ap.workspace);
    project_changed(false);
-   ecore_job_add(_job_popup_close, ap);
+   ecore_job_add(_job_popup_close, NULL);
 }
 
 static void
@@ -119,9 +117,9 @@ _on_item_source_change(void *data,
    if (!group_preview)
      group_preview =  edje_object_add(evas_object_evas_get(obj));
    else
-     eina_file_map_free(ap->project->mmap_file, group_preview);
+     eina_file_map_free(ap.project->mmap_file, group_preview);
 
-   edje_object_mmap_set(group_preview, ap->project->mmap_file, item->title);
+   edje_object_mmap_set(group_preview, ap.project->mmap_file, item->title);
    evas_object_size_hint_min_set(group_preview, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(group_preview, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_align_set(group_preview, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -167,23 +165,22 @@ item_dialog_add(Part *part)
    Eina_Stringshare *group = NULL;
    Evas_Object *markup = NULL;
 
-   assert(ap != NULL);
-   assert(ap->workspace != NULL);
+   assert(ap.workspace != NULL);
    assert(part != NULL);
    assert(name_validator == NULL);
 
    name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
 
-   ap->popup = elm_popup_add(ap->win_layout);
-   elm_object_part_text_set(ap->popup, "title,text", _("Add new item"));
-   elm_popup_orient_set(ap->popup, ELM_POPUP_ORIENT_CENTER);
+   ap.popup = elm_popup_add(ap.win_layout);
+   elm_object_part_text_set(ap.popup, "title,text", _("Add new item"));
+   elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
 
-   markup = elm_layout_add(ap->popup);
+   markup = elm_layout_add(ap.popup);
    elm_layout_theme_set(markup, "layout", "dialog", "item");
    evas_object_size_hint_weight_set(markup, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(markup);
 
-   BOX_ADD(ap->popup, box, false, false);
+   BOX_ADD(ap.popup, box, false, false);
 
    LAYOUT_PROP_ADD(box, _("Name:"), "property", "1swallow")
    ENTRY_ADD(item, entry, true);
@@ -198,11 +195,11 @@ item_dialog_add(Part *part)
    ewe_combobox_item_add(combobox, _("None"));
    ewe_combobox_select_item_set(combobox, 0);
 
-   collections = edje_file_collection_list(ap->project->dev);
+   collections = edje_file_collection_list(ap.project->dev);
    collections = eina_list_sort(collections, eina_list_count(collections), sort_cb);
    EINA_LIST_FOREACH(collections, l, group)
      {
-        if (group != ap->project->current_style->full_group_name)
+        if (group != ap.project->current_style->full_group_name)
           ewe_combobox_item_add(combobox, group);
      }
    edje_file_collection_list_free(collections);
@@ -212,21 +209,21 @@ item_dialog_add(Part *part)
    evas_object_smart_callback_add(combobox, "selected", _validation, NULL);
    elm_box_pack_end(box, item);
    elm_object_part_content_set(markup, "items.swallow", box);
-   elm_object_content_set(ap->popup, markup);
+   elm_object_content_set(ap.popup, markup);
 
-   evas_object_data_set(ap->popup, "PART", part);
+   evas_object_data_set(ap.popup, "PART", part);
 
-   BUTTON_ADD(ap->popup, btn_add, _("Add"));
-   evas_object_smart_callback_add (btn_add, "clicked", _on_button_add_clicked, ap);
-   elm_object_part_content_set(ap->popup, "button1", btn_add);
+   BUTTON_ADD(ap.popup, btn_add, _("Add"));
+   evas_object_smart_callback_add (btn_add, "clicked", _on_button_add_clicked, NULL);
+   elm_object_part_content_set(ap.popup, "button1", btn_add);
    elm_object_disabled_set(btn_add, true);
 
-   BUTTON_ADD(ap->popup, button, _("Cancel"));
-   evas_object_smart_callback_add(button, "clicked", _on_button_cancel_clicked, ap);
-   elm_object_part_content_set(ap->popup, "button2", button);
+   BUTTON_ADD(ap.popup, button, _("Cancel"));
+   evas_object_smart_callback_add(button, "clicked", _on_button_cancel_clicked, NULL);
+   elm_object_part_content_set(ap.popup, "button2", button);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
-   evas_object_show(ap->popup);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+   evas_object_show(ap.popup);
    elm_object_focus_set(entry, true);
-   return ap->popup;
+   return ap.popup;
 }

@@ -122,7 +122,7 @@ typedef struct _App_Data App_Data;
 EAPI_MAIN int elm_main();
 
 /* The global Eflete_Data */
-App_Data *ap;
+extern App_Data ap;
 
 /**
  * This function inits all libraries required by this programm.

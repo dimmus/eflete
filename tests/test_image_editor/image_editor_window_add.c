@@ -60,9 +60,9 @@ EFLETE_TEST (image_editor_window_add_test_p1)
    app_init();
    Evas_Object *images;
    ui_main_window_add();
-   ap->project = setup("image_editor_window_add_test_p1");
+   ap.project = setup("image_editor_window_add_test_p1");
 
-   images = image_editor_window_add(ap->project, SINGLE);
+   images = image_editor_window_add(ap.project, SINGLE);
    ck_assert_msg(images != NULL,
                  "cannot create image editor window in SINGLE mode");
 

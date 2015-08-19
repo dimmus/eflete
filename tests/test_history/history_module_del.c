@@ -61,7 +61,7 @@ EFLETE_TEST(history_module_del_test_p1)
 
    elm_init(0, 0);
    app_init();
-   ap->history = history_init();
+   ap.history = history_init();
    canvas = evas_new();
    source = evas_object_rectangle_add(canvas);
    history_module_add(source);
@@ -69,7 +69,7 @@ EFLETE_TEST(history_module_del_test_p1)
    result = history_module_del(source);
    ck_assert_msg(result, "Failed to del module from history.");
 
-   history_term(ap->history);
+   history_term(ap.history);
    evas_free(canvas);
    app_shutdown();
    elm_shutdown();

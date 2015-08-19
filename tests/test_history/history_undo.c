@@ -75,11 +75,11 @@ EFLETE_TEST(history_undo_test_p1)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p1");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p1");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
@@ -93,8 +93,8 @@ EFLETE_TEST(history_undo_test_p1)
    check_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("./history_undo_test_p1");
@@ -145,11 +145,11 @@ EFLETE_TEST(history_undo_test_p2)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p2");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p2");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value = edje_edit_part_drag_x_get(style->obj, "bg");
@@ -163,8 +163,8 @@ EFLETE_TEST(history_undo_test_p2)
    check_value = edje_edit_part_drag_x_get(style->obj, "bg");
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("./history_undo_test_p2");
@@ -223,11 +223,11 @@ EFLETE_TEST(history_undo_test_p3)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p3");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p3");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value_drag_y = edje_edit_part_drag_y_get(style->obj, "bg");
@@ -248,8 +248,8 @@ EFLETE_TEST(history_undo_test_p3)
    check_value_drag_y = edje_edit_part_drag_y_get(style->obj, "bg");
    ck_assert_msg(check_value_drag_y == new_value_drag_y, "Canceled all actions");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("./history_undo_test_p3");
@@ -308,11 +308,11 @@ EFLETE_TEST(history_undo_test_p4)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p4");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p4");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value_drag_x = edje_edit_part_drag_x_get(style->obj, "bg");
@@ -333,8 +333,8 @@ EFLETE_TEST(history_undo_test_p4)
    check_value_drag_x = edje_edit_part_drag_x_get(style->obj, "bg");
    ck_assert_msg(check_value_drag_x == old_value_drag_x, "Canceled not all actions");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -386,11 +386,11 @@ EFLETE_TEST(history_undo_test_p5)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p5");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p5");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value = edje_edit_state_aspect_max_get(style->obj, "bg", "default", 0.0);
@@ -404,8 +404,8 @@ EFLETE_TEST(history_undo_test_p5)
    check_value = edje_edit_state_aspect_max_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("./history_undo_test_p5");
@@ -458,11 +458,11 @@ EFLETE_TEST(history_undo_test_p6)
 
    new_value = eina_stringshare_add("events");
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p6");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p6");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    tmp = edje_edit_part_clip_to_get(style->obj, "bg");
@@ -481,8 +481,8 @@ EFLETE_TEST(history_undo_test_p6)
    eina_stringshare_del(new_value);
    eina_stringshare_del(old_value);
    eina_stringshare_del(check_value);
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("./history_undo_test_p6");
@@ -535,11 +535,11 @@ EFLETE_TEST(history_undo_test_p7)
 
    new_value = eina_stringshare_add("events");
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p7");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p7");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    tmp = edje_edit_state_rel1_to_x_get(style->obj, "radio", "default", 0.0);
@@ -558,8 +558,8 @@ EFLETE_TEST(history_undo_test_p7)
    eina_stringshare_del(new_value);
    eina_stringshare_del(old_value);
    eina_stringshare_del(check_value);
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("./history_undo_test_p7");
@@ -610,11 +610,11 @@ EFLETE_TEST(history_undo_test_p8)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p8");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p8");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    edje_edit_state_color_get(style->obj, "radio", "default", 0.0, &oldr, &oldg,
@@ -633,8 +633,8 @@ EFLETE_TEST(history_undo_test_p8)
    ck_assert_msg(((checkr == oldr) && (checkg == oldg) && (checkb == oldb) &&
                   (checka == olda )), "Canceled action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("./history_undo_test_p8");
@@ -685,11 +685,11 @@ EFLETE_TEST(history_undo_test_p9)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p9");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p9");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    old_value = edje_edit_group_max_h_get(style->obj);
    edje_edit_group_max_h_set(style->obj, new_value);
@@ -705,8 +705,8 @@ EFLETE_TEST(history_undo_test_p9)
    check_value = edje_edit_group_min_h_get(style->obj);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -757,11 +757,11 @@ EFLETE_TEST(history_undo_test_p10)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p10");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p10");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    part = wm_part_by_name_find(style, eina_stringshare_add(old_value));
@@ -776,8 +776,8 @@ EFLETE_TEST(history_undo_test_p10)
    result = edje_edit_part_exist(style->obj, old_value);
    ck_assert_msg(result, "Canceled action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("./history_undo_test_p10");
@@ -828,12 +828,12 @@ EFLETE_TEST(history_undo_test_p11)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p11");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win),
-                                ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p11");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win),
+                                ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value = edje_edit_part_drag_x_get(style->obj, "bg");
@@ -847,8 +847,8 @@ EFLETE_TEST(history_undo_test_p11)
    check_value = edje_edit_part_drag_x_get(style->obj, "bg");
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("./history_undo_test_p11");
@@ -899,12 +899,12 @@ EFLETE_TEST(history_undo_test_p12)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p12");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win),
-                                ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p12");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win),
+                                ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
@@ -918,8 +918,8 @@ EFLETE_TEST(history_undo_test_p12)
    check_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("history_undo_test_p12");
@@ -970,12 +970,12 @@ EFLETE_TEST(history_undo_test_p13)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p13");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win),
-                                ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p13");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win),
+                                ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value = edje_edit_group_max_h_get(style->obj);
@@ -992,8 +992,8 @@ EFLETE_TEST(history_undo_test_p13)
    check_value = edje_edit_group_min_h_get(style->obj);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
 
    ui_main_window_del();
    app_shutdown();
@@ -1042,11 +1042,11 @@ EFLETE_TEST(history_undo_test_p14)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p14");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p14");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    edje_edit_state_tween_add(style->obj, "bg", "default", 0.0, name);
@@ -1061,8 +1061,8 @@ EFLETE_TEST(history_undo_test_p14)
    ck_assert_msg(eina_list_count(tween_list) == 0,
                  "Canceled action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("history_undo_test_p14");
@@ -1111,11 +1111,11 @@ EFLETE_TEST(history_undo_test_p15)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p15");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p15");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    edje_edit_state_tween_add(style->obj, "bg", "default", 0.0, name);
@@ -1131,8 +1131,8 @@ EFLETE_TEST(history_undo_test_p15)
    ck_assert_msg(eina_list_count(tween_list) == 1,
                  "Canceled action doesn't change value");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("history_undo_test_p15");
@@ -1187,11 +1187,11 @@ EFLETE_TEST(history_undo_test_p16)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p16");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p16");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value_1 = edje_edit_state_max_h_get(style->obj, "bg", "default", 0.0);
@@ -1210,8 +1210,8 @@ EFLETE_TEST(history_undo_test_p16)
    check_value = edje_edit_state_max_w_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value_2, "Max weight didn't canceled");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("history_undo_test_p16");
@@ -1266,11 +1266,11 @@ EFLETE_TEST(history_undo_test_p17)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p17");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win), ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p17");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    old_value_1 = edje_edit_state_align_x_get(style->obj, "bg", "default", 0.0);
@@ -1289,8 +1289,8 @@ EFLETE_TEST(history_undo_test_p17)
    check_value = edje_edit_state_align_y_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value_2, "Align y didn't canceled");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("history_undo_test_p17");
@@ -1336,12 +1336,12 @@ EFLETE_TEST(history_undo_test_p18)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p18");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win),
-                                ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p18");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win),
+                                ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    edje_edit_state_add(style->obj, "bg", "new_state", 0.1);
@@ -1354,8 +1354,8 @@ EFLETE_TEST(history_undo_test_p18)
    result = edje_edit_state_exist(style->obj, "bg", "new_state", 0.1);
    ck_assert_msg(!result, "Adding new state didn't canceled'");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("history_undo_test_p18");
@@ -1401,12 +1401,12 @@ EFLETE_TEST(history_undo_test_p19)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p19");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win),
-                                ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p19");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win),
+                                ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    history_diff_add(style->obj, STATE_TARGET, DEL, "elm/radio/base/def",
@@ -1419,8 +1419,8 @@ EFLETE_TEST(history_undo_test_p19)
    result = edje_edit_state_exist(style->obj, "elm.text", "test_state", 0.2);
    ck_assert_msg(result, "Deleting state didn't canceled'");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("history_undo_test_p19");
@@ -1470,12 +1470,12 @@ EFLETE_TEST(history_undo_test_p20)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p20");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win),
-                                ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p20");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win),
+                                ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    states = edje_edit_part_states_list_get(style->obj, "elm.text");
@@ -1496,8 +1496,8 @@ EFLETE_TEST(history_undo_test_p20)
      }
    ck_assert_msg(result, "Not all states are restored");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("history_undo_test_p20");
@@ -1543,15 +1543,15 @@ EFLETE_TEST(history_undo_test_p21)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p21");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win),
-                                ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p21");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win),
+                                ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
-   workspace_edit_object_part_add(ap->workspace, "part_add", EDJE_PART_TYPE_RECTANGLE, NULL);
+   workspace_edit_object_part_add(ap.workspace, "part_add", EDJE_PART_TYPE_RECTANGLE, NULL);
    history_diff_add(style->obj, PART_TARGET, ADD, "part_add");
 
    result = history_undo(style->obj, 1);
@@ -1560,8 +1560,8 @@ EFLETE_TEST(history_undo_test_p21)
    result = edje_edit_part_exist(style->obj, "part_add");
    ck_assert_msg(!result, "Adding part didn't canceled");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("history_undo_test_p21");
@@ -1609,12 +1609,12 @@ EFLETE_TEST(history_undo_test_p22)
    app_init();
 
    ui_main_window_add();
-   ap->project = setup("history_undo_test_p22");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win),
-                                ap->project->mmap_file);
+   ap.project = setup("history_undo_test_p22");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win),
+                                ap.project->mmap_file);
    blocks_show();
-   style = wm_style_object_find(ap->project->widgets, "elm/radio/base/def");
+   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
    history_diff_add(style->obj, PART_TARGET, RESTACK, "radio");
@@ -1627,8 +1627,8 @@ EFLETE_TEST(history_undo_test_p22)
    check = eina_stringshare_add(edje_edit_part_below_get(style->obj, "radio"));
    ck_assert_msg(check == below, "Restack part didn't canceled");
 
-   pm_project_close(ap->project);
-   ap->project = NULL;
+   pm_project_close(ap.project);
+   ap.project = NULL;
    ui_main_window_del();
    app_shutdown();
    teardown("history_undo_test_p22");

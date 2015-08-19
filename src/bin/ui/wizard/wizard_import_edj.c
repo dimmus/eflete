@@ -59,7 +59,7 @@ wizard_import_edj_add(void)
 
    assert(wiew != NULL);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
    mw_title_set(wiew->win, _("Wizard: import edj"));
    wiew->splash_setup_func = _setup_splash;
    project_path_item_add(wiew, _("Path to edj file:"),

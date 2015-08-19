@@ -56,10 +56,10 @@ EFLETE_TEST(style_editor_window_add_test_p)
    elm_init(0,0);
 
    app_init();
-   ap->project = setup("style_editor_window_add_test_p");
+   ap.project = setup("style_editor_window_add_test_p");
 
    ui_main_window_add();
-   ck_assert_msg(style_editor_window_add(ap->project) != NULL,
+   ck_assert_msg(style_editor_window_add(ap.project) != NULL,
                  "Unable to create style editor");
 
    elm_shutdown();

@@ -222,7 +222,7 @@ live_view_theme_update(Live_View *live, Project *project)
    assert(live->object != NULL);
 
 #ifdef HAVE_ENVENTOR
-   if ((ap->enventor_mode)
+   if ((ap.enventor_mode)
      path = eina_stringshare_printf("%s/tmp.edj", project->develop_path);
    else
 #endif /* HAVE_ENVENTOR */

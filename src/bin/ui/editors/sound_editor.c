@@ -157,8 +157,8 @@ _grid_group_label_get(void *data,
 static void
 _sound_editor_del(Sound_Editor *edit)
 {
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor--;
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+   ap.modal_editor--;
 
    assert(edit != NULL);
 
@@ -1771,8 +1771,8 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    evas_object_show(edit->win);
    elm_object_focus_set(edit->sound_search_data.search_entry, true);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
-   ap->modal_editor++;
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+   ap.modal_editor++;
    return edit->win;
 }
 

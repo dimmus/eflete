@@ -59,7 +59,7 @@ EFLETE_TEST(config_save_test_p)
 
    ck_assert_msg(config_save(), "Config not saved.");
 
-   app_free(ap);
+   app_free(NULL);
    elm_shutdown();
 }
 END_TEST

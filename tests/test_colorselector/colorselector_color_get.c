@@ -61,7 +61,7 @@ EFLETE_TEST (colorselector_color_get_test_p)
 
    app_init();
    ui_main_window_add();
-   Evas_Object *colsel = colorselector_add(ap->win);
+   Evas_Object *colsel = colorselector_add(ap.win);
 
    colorselector_color_get(colsel, &r, &g, &b, &a);
    ck_assert_msg( (!r || !g || !b || !a ), "Wrong default value returned");

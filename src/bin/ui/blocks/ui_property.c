@@ -417,7 +417,7 @@ _on_tab_activated(void *data,
      {
         if (!pd->code_bg)
           {
-             pd->code = ap->enventor;
+             pd->code = ap.enventor;
              pd->code_bg = elm_bg_add(obj);
              elm_bg_color_set(pd->code_bg, ENVENTOR_CODE_BG_COLOR);
              elm_object_part_content_set(pd->code_bg, "elm.swallow.content", pd->code);
@@ -425,19 +425,19 @@ _on_tab_activated(void *data,
           }
         code_edit_mode_switch(ap, true);
 
-        enventor_object_project_load(ap->enventor, ap->project);
+        enventor_object_project_load(ap.enventor, ap.project);
 
         project_changed(false);
-        evas_object_smart_callback_call(ap->enventor, "enventor,mode,on", NULL);
+        evas_object_smart_callback_call(ap.enventor, "enventor,mode,on", NULL);
      }
    else
      {
         code_edit_mode_switch(ap, false);
-        evas_object_smart_callback_call(ap->enventor, "enventor,mode,off",
-                                        ap->project->current_style);
+        evas_object_smart_callback_call(ap.enventor, "enventor,mode,off",
+                                        ap.project->current_style);
      }
 
-   ap->enventor_mode = !ap->enventor_mode;
+   ap.enventor_mode = !ap.enventor_mode;
 }
 
 void
@@ -2481,7 +2481,7 @@ _on_image_editor_done(void *data,
    edje_edit_state_image_set(pd->wm_style->obj, pd->wm_part->name,
                              pd->wm_part->curr_state,
                              pd->wm_part->curr_state_value, selected);
-   pm_save_to_dev(ap->project, pd->wm_style, false);
+   pm_save_to_dev(ap.project, pd->wm_style, false);
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, value,
                     selected, pd->wm_style->full_group_name,
                     (void*)edje_edit_state_image_set,  "state_image",
@@ -2506,7 +2506,7 @@ _on_state_image_choose(void *data,
 
    const char *selected = elm_entry_entry_get(pd->state_image.image);
 
-   img_edit = image_editor_window_add(ap->project, SINGLE);
+   img_edit = image_editor_window_add(ap.project, SINGLE);
    image_editor_file_choose(img_edit, selected);
    evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED, _on_image_editor_done, pd);
 }
@@ -2583,7 +2583,7 @@ _add_tween_image(void *data,
    Evas_Object *img_edit;
    Evas_Object *tween_list = (Evas_Object *)data;
 
-   img_edit = image_editor_window_add(ap->project, TWEENS);
+   img_edit = image_editor_window_add(ap.project, TWEENS);
    evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED,
                                   _on_image_editor_tween_done, tween_list);
 
@@ -3110,7 +3110,7 @@ prop_part_item_source_update(Prop_Data *pd)
    value = edje_edit_part_item_source_get(pd->wm_style->obj, pd->wm_part->name, pd->item_name);
    ewe_combobox_text_set(pd->part_item.source, value ? value : _("None"));
 
-   collections = edje_mmap_collection_list(ap->project->mmap_file);
+   collections = edje_mmap_collection_list(ap.project->mmap_file);
    collections = eina_list_sort(collections, eina_list_count(collections), sort_cb);
    EINA_LIST_FOREACH(collections, l, group)
      {

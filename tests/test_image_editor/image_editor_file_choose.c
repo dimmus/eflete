@@ -63,11 +63,11 @@ EFLETE_TEST (image_editor_file_choose_test_p)
    Evas_Object *images;
 
    ui_main_window_add();
-   ap->project = setup("image_editor_file_choose_test_p");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win),
-                                ap->project->mmap_file);
-   images = image_editor_window_add(ap->project, SINGLE);
+   ap.project = setup("image_editor_file_choose_test_p");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win),
+                                ap.project->mmap_file);
+   images = image_editor_window_add(ap.project, SINGLE);
 
    ck_assert_msg(image_editor_file_choose(images, "radio.png") == EINA_TRUE,
                  "failure: cannot select file");
@@ -112,11 +112,11 @@ EFLETE_TEST (image_editor_file_choose_test_n1)
    Evas_Object *images;
 
    ui_main_window_add();
-   ap->project = setup("image_editor_file_choose_test_n1");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win),
-                                ap->project->mmap_file);
-   images = image_editor_window_add(ap->project, SINGLE);
+   ap.project = setup("image_editor_file_choose_test_n1");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win),
+                                ap.project->mmap_file);
+   images = image_editor_window_add(ap.project, SINGLE);
 
    ck_assert_msg(image_editor_file_choose(images, "not_correct_image_name") == EINA_FALSE,
                  "Selected image that not exist");
@@ -161,11 +161,11 @@ EFLETE_TEST (image_editor_file_choose_test_n3)
    Evas_Object *images;
 
    ui_main_window_add();
-   ap->project = setup("image_editor_file_choose_test_n3");
-   wm_widgets_list_objects_load(ap->project->widgets,
-                                evas_object_evas_get(ap->win),
-                                ap->project->mmap_file);
-   images = image_editor_window_add(ap->project, SINGLE);
+   ap.project = setup("image_editor_file_choose_test_n3");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win),
+                                ap.project->mmap_file);
+   images = image_editor_window_add(ap.project, SINGLE);
 
    ck_assert_msg(image_editor_file_choose(images, NULL) == EINA_FALSE, "Selected image that not exist");
 

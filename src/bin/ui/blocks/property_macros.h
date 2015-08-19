@@ -981,7 +981,7 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
    if (value) ewe_combobox_text_set(pd->MEMBER.VALUE, value); \
    else ewe_combobox_text_set(pd->MEMBER.VALUE, _("None")); \
    ewe_combobox_item_add(pd->MEMBER.VALUE, _("None")); \
-   collections = edje_mmap_collection_list(ap->project->mmap_file); \
+   collections = edje_mmap_collection_list(ap.project->mmap_file); \
    collections = eina_list_sort(collections, eina_list_count(collections), sort_cb); \
    EINA_LIST_FOREACH(collections, l, group) \
      { \

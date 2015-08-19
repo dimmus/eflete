@@ -69,7 +69,6 @@ config_init(void)
    Eet_Data_Descriptor_Class eddc;
    Eet_Data_Descriptor_Class eddkc;
 
-   assert(ap != NULL);
 
    /* Config descriptor */
    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof(eddc), "Config", sizeof(Config));
@@ -176,7 +175,6 @@ config_init(void)
 Eina_Bool
 config_shutdown(void)
 {
-   assert(ap != NULL);
 
    if (edd_base)
      {
@@ -199,7 +197,7 @@ config_shutdown(void)
         edd_keys = NULL;
      }
    if (config) _config_free();
-   shortcuts_shutdown(ap);
+   shortcuts_shutdown(NULL);
 
    return true;
 }
@@ -350,7 +348,6 @@ config_load(void)
 {
    Eet_File *ef;
 
-   assert(ap != NULL);
 
    if (config) _config_free();
    ef = eet_open(CONFIG_FILE, EET_FILE_MODE_READ);
@@ -367,23 +364,22 @@ config_load(void)
 
    shortcuts_profile_load(profile_get());
 #ifdef HAVE_ENVENTOR
-   enventor_object_profile_load(ap->enventor, profile_get());
+   enventor_object_profile_load(ap.enventor, profile_get());
 #endif /* HAVE_ENVENTOR */
 }
 
 Eina_Bool
 config_panes_sizes_data_update(void)
 {
-   assert(ap != NULL);
 
    if (!config) return false;
 
    config->panes.left =
-     elm_panes_content_left_size_get(ap->panes.left);
+     elm_panes_content_left_size_get(ap.panes.left);
    config->panes.right =
-     elm_panes_content_left_size_get(ap->panes.right);
+     elm_panes_content_left_size_get(ap.panes.right);
    config->panes.right_hor =
-     elm_panes_content_left_size_get(ap->panes.right_hor);
+     elm_panes_content_left_size_get(ap.panes.right_hor);
 
    return true;
 }
@@ -396,7 +392,6 @@ config_save(void)
    Eet_File *ef;
    Eina_Bool ok;
 
-   assert(ap != NULL);
 
    if (!edd_base)
      {
@@ -404,7 +399,7 @@ config_save(void)
         return false;
      }
 
-   evas_object_geometry_get(ap->win, &x, &y, &w, &h);
+   evas_object_geometry_get(ap.win, &x, &y, &w, &h);
    if (profile->general.save_win_pos)
      {
         config->window.x =            x;

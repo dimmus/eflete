@@ -65,19 +65,19 @@ EFLETE_TEST(workspace_edit_object_part_state_add_test_p)
    app_init();
    ui_main_window_add();
    mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_state_add.edj", EINA_FALSE);
-   e = evas_object_evas_get(ap->workspace);
+   e = evas_object_evas_get(ap.workspace);
    style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
-   workspace_edit_object_set(ap->workspace, style, "./edj_build/workspace_edit_object_part_state_add.edj");
-   history_genlist_get(ap->history, ap->workspace);
+   workspace_edit_object_set(ap.workspace, style, "./edj_build/workspace_edit_object_part_state_add.edj");
+   history_genlist_get(ap.history, ap.workspace);
    history_module_add(style->obj);
 
-   res = workspace_edit_object_part_state_add(ap->workspace, "bg", "test", 1.0);
+   res = workspace_edit_object_part_state_add(ap.workspace, "bg", "test", 1.0);
    ck_assert_msg(res == EINA_TRUE, "Failed add state for part, loaded into workspace");
 
    wm_style_free(style);
    eina_file_close(mmap_file);
-   workspace_edit_object_unset(ap->workspace);
+   workspace_edit_object_unset(ap.workspace);
    app_shutdown();
    elm_shutdown();
 }
@@ -120,19 +120,19 @@ EFLETE_TEST(workspace_edit_object_part_state_add_test_p1)
    app_init();
    ui_main_window_add();
    mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_state_add.edj", EINA_FALSE);
-   e = evas_object_evas_get(ap->workspace);
+   e = evas_object_evas_get(ap.workspace);
    style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
-   workspace_edit_object_set(ap->workspace, style, "./edj_build/workspace_edit_object_part_state_add.edj");
-   history_genlist_get(ap->history, ap->workspace);
+   workspace_edit_object_set(ap.workspace, style, "./edj_build/workspace_edit_object_part_state_add.edj");
+   history_genlist_get(ap.history, ap.workspace);
    history_module_add(style->obj);
 
-   res = workspace_edit_object_part_state_add(ap->workspace, "bg", "default", 0.5);
+   res = workspace_edit_object_part_state_add(ap.workspace, "bg", "default", 0.5);
    ck_assert_msg(res == EINA_TRUE, "Failed add state for part, loaded into workspace");
 
    wm_style_free(style);
    eina_file_close(mmap_file);
-   workspace_edit_object_unset(ap->workspace);
+   workspace_edit_object_unset(ap.workspace);
    app_shutdown();
    elm_shutdown();
 }

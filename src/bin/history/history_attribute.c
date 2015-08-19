@@ -97,11 +97,11 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
    assert(change != NULL);
    assert(source != NULL);
 
-   assert(ap->project != NULL);
-   assert(ap->project->current_style != NULL);
-   assert(ap->project->current_style->obj == source);
+   assert(ap.project != NULL);
+   assert(ap.project->current_style != NULL);
+   assert(ap.project->current_style->obj == source);
 
-   style = ap->project->current_style;
+   style = ap.project->current_style;
 
    Evas_Object *prop = ui_block_property_get();
 
@@ -120,11 +120,11 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
              ui_states_list_data_set(style, part);
           }
         else if (change->param_type == VAL_RENAME)
-          evas_object_smart_callback_call(ap->workspace, "part,name,changed", part);
-        evas_object_smart_callback_call(ap->workspace, "part,changed", part);
-        evas_object_smart_callback_call(ap->workspace, "ws,part,selected",
+          evas_object_smart_callback_call(ap.workspace, "part,name,changed", part);
+        evas_object_smart_callback_call(ap.workspace, "part,changed", part);
+        evas_object_smart_callback_call(ap.workspace, "ws,part,selected",
                                         (void *)change->part);
-        workspace_edit_object_part_state_set(ap->workspace, part);
+        workspace_edit_object_part_state_set(ap.workspace, part);
      }
    else
      {
@@ -133,13 +133,13 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
                                  ui_block_widget_list_get());
         if (part)
           {
-             evas_object_smart_callback_call(ap->workspace, "ws,part,unselected",
+             evas_object_smart_callback_call(ap.workspace, "ws,part,unselected",
                                              (void *)part->name);
-             workspace_highlight_unset(ap->workspace);
+             workspace_highlight_unset(ap.workspace);
           }
         ui_property_part_unset(prop);
-        ui_property_style_set(prop, style, ap->workspace);
-        workspace_edit_object_recalc(ap->workspace);
+        ui_property_style_set(prop, style, ap.workspace);
+        workspace_edit_object_recalc(ap.workspace);
      }
 }
 
@@ -151,9 +151,9 @@ _attribute_modify_redo(Evas_Object *source, Attribute_Diff *change)
    assert(change != NULL);
    assert(source != NULL);
 
-   assert(ap->project != NULL);
-   assert(ap->project->current_style != NULL);
-   assert(ap->project->current_style->obj == source);
+   assert(ap.project != NULL);
+   assert(ap.project->current_style != NULL);
+   assert(ap.project->current_style->obj == source);
 
    switch(change->param_type)
     {
@@ -188,7 +188,7 @@ _attribute_modify_redo(Evas_Object *source, Attribute_Diff *change)
      case VAL_RENAME:
         assert(change->state == NULL);
 
-        part = wm_part_by_name_find(ap->project->current_style, change->part);
+        part = wm_part_by_name_find(ap.project->current_style, change->part);
 
         assert(part != NULL);
 
@@ -302,11 +302,11 @@ _attribute_modify_undo(Evas_Object *source, Attribute_Diff *change)
    assert(source != NULL);
 
 
-   assert(ap->project != NULL);
-   assert(ap->project->current_style != NULL);
-   assert(ap->project->current_style->obj == source);
+   assert(ap.project != NULL);
+   assert(ap.project->current_style != NULL);
+   assert(ap.project->current_style->obj == source);
 
-   style = ap->project->current_style;
+   style = ap.project->current_style;
 
    switch(change->param_type)
     {

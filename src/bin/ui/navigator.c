@@ -151,7 +151,7 @@ _tree_items_get(const char *prefix,
    while ((pos = strchr(pos + 1, '/')))
      level++;
 
-   EINA_LIST_FOREACH(ap->project->groups, l, group)
+   EINA_LIST_FOREACH(ap.project->groups, l, group)
      {
         cmp = strncmp(group->name, prefix, prefix_len);
         /* skipping all groups with different prefix */
@@ -288,8 +288,7 @@ navigator_add(void)
 {
    Evas_Object *icon;
 
-   assert(ap != NULL);
-   assert(ap->win != NULL);
+   assert(ap.win != NULL);
 
    navigator.itc_folder = elm_genlist_item_class_new();
    navigator.itc_folder->item_style = "navigator";
@@ -305,7 +304,7 @@ navigator_add(void)
    navigator.itc_group->func.state_get = NULL;
    navigator.itc_group->func.del = NULL;
 
-   navigator.layout = elm_layout_add(ap->win);
+   navigator.layout = elm_layout_add(ap.win);
    elm_layout_theme_set(navigator.layout, "layout", "navigator", "default");
    evas_object_show(navigator.layout);
 
@@ -342,7 +341,7 @@ navigator_project_set(void)
    Eina_Stringshare *prefix;
    Group *group;
 
-   elm_object_text_set(navigator.layout, ap->project->name);
+   elm_object_text_set(navigator.layout, ap.project->name);
    _tree_items_get("", &folders, &groups);
 
    EINA_LIST_FREE(folders, prefix)

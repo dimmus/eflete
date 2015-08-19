@@ -43,7 +43,7 @@
  * @step 4 create main window
  *
  * @procedure
- * @step 1 Call config_panes_sizes_data_update(ap)
+ * @step 1 Call config_panes_sizes_data_update(NULL)
  * @step 2 Check returned value
  * </td>
  * <td></td>
@@ -63,7 +63,7 @@ EFLETE_TEST (config_panes_sizes_data_update_test_p)
    result = config_panes_sizes_data_update();
    ck_assert_msg(result == EINA_TRUE, "Could not update Panes sizes data");
 
-   evas_object_del(ap->win);
+   evas_object_del(ap.win);
    elm_shutdown();
 }
 END_TEST

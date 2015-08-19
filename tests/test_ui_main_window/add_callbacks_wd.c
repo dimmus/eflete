@@ -60,7 +60,7 @@ EFLETE_TEST (add_callbacks_wd_test_p1)
 
    app_init();
    ui_main_window_add();
-   widget_list = ui_widget_list_add(ap->win);
+   widget_list = ui_widget_list_add(ap.win);
 
    result = add_callbacks_wd(widget_list);
    ck_assert_msg(result == EINA_TRUE, "Could not register callbacks!");
