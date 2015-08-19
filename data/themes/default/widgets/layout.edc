@@ -259,10 +259,8 @@ group { name: "elm/layout/navigator/default";
          description { state: "default" 0.0;
             align: 0.5 0.0;
             fixed: 0 1;
-            min: 0 26;
-            max: -1 26;
-            rel1.offset: 3 0;
-            rel2.offset: -4 -1;
+            min: 0 23;
+            max: -1 23;
          }
       }
       part { name: "elm.text";
@@ -282,8 +280,8 @@ group { name: "elm/layout/navigator/default";
                to_y: "area.top";
             }
             text {
-               font: "pt";
-               size: 14;
+               font: "PT";
+               size: 13;
                align: 0.0 0.5;
             }
          }
