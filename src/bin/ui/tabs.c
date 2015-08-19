@@ -85,7 +85,7 @@ tabs_add(void)
 }
 
 void
-tabs_home_open(Tabs_View view __UNUSED__)
+tabs_tab_home_open(Tabs_View view __UNUSED__)
 {
    assert(tabs.layout != NULL);
    assert(tabs.home.item != NULL);
@@ -93,4 +93,3 @@ tabs_home_open(Tabs_View view __UNUSED__)
    elm_toolbar_item_selected_set(tabs.home.item, true);
    TODO("select the tab with wizard accourdingly to view`");
 }
-

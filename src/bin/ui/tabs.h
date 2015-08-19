@@ -53,6 +53,6 @@ tabs_add(void);
  * @ingroup Tabs
  */
 void
-tabs_home_open(Tabs_View view);
+tabs_tab_home_open(Tabs_View view);
 
 #endif /* TABS_H */
