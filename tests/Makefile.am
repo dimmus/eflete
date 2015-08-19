@@ -340,7 +340,6 @@ highlight_test_LDADD = ${LD}
 
 ui_main_window_test_SOURCES = \
 test_ui_main_window/test_ui_main_window.c \
-test_ui_main_window/register_callbacks.c \
 test_ui_main_window/ui_main_window_add.c \
 test_ui_main_window/ui_main_window_del.c \
 test_ui_main_window/ui_menu_add.c \

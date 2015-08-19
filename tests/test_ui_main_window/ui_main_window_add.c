@@ -69,9 +69,6 @@ EFLETE_TEST(ui_main_window_add_test_p)
    ck_assert_msg(ap.win != NULL, "Failed to create window object");
    ck_assert_msg(ap.win_layout != NULL, "Failed to create window layout");
    ck_assert_msg(ap.menu != NULL, "Failed to create window menu");
-   ck_assert_msg(ap.workspace != NULL, "Failed to create workspace object");
-   ck_assert_msg(ap.live_view != NULL, "Failed to create live view object");
-   ck_assert_msg(ap.colorsel != NULL, "Failed to create color selector object");
 
    app_shutdown();
    elm_shutdown();
