@@ -53,9 +53,8 @@ EFLETE_TEST(config_init_test_p)
    elm_init(0,0);
    app_init();
 
-   ck_assert_msg(config_init() == EINA_FALSE, "Config not initialized.");
+   ck_assert_msg(config_get() == NULL, "Config not initialized.");
 
-   config_shutdown();
    app_shutdown();
    elm_shutdown();
 }
