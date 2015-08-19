@@ -23,6 +23,7 @@
 
 #include "main_window.h"
 #include "navigator.h"
+#include "tabs.h"
 #include "shortcuts.h"
 #include "cursor.h"
 
@@ -72,7 +73,7 @@ Eina_Bool
 ui_main_window_add(void)
 {
    Config *config;
-   Evas_Object *bg, *navigator;
+   Evas_Object *bg, *navigator, *tabs;
    Ewe_Tabs_Item *tab_item;
 
    assert(ap != NULL);
@@ -138,6 +139,9 @@ ui_main_window_add(void)
 
    navigator = navigator_add();
    elm_object_part_content_set(ap->panes.left, "left", navigator);
+
+   tabs = tabs_add();
+   elm_object_part_content_set(ap->panes.right, "left", tabs);
 
    ap->history = history_init();
    /* add tabs with history and signals */
