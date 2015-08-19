@@ -178,6 +178,7 @@ _part_load(Project *pro, Group *group, Eina_Stringshare *part_name)
    part->name = eina_stringshare_add(part_name);
    part->group = group;
    part->type = edje_edit_part_type_get(group->edit_object, part_name);
+   part->visible = true;
    group->parts = eina_list_append(group->parts, part);
    states = edje_edit_part_states_list_get(group->edit_object, part_name);
    EINA_LIST_FOREACH(states, l, state_name)

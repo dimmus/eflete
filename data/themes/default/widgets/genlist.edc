@@ -550,6 +550,9 @@ group { name: "elm/genlist/tree/default/default";
    }
 }
 
+group { name: "elm/genlist/tree/part/default";
+   inherit: "elm/genlist/tree/default/default";
+}
 
 group { name: "elm/genlist/tree/navigator/default";
    inherit: "elm/genlist/tree/default/default";
