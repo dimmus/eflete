@@ -28,6 +28,7 @@
  * user can create new, open, or import Eflete project.
  */
 #include "eflete.h"
+#include "group_manager.h"
 
 typedef enum {
    TABS_NEW_PROJECT = 0,
@@ -54,5 +55,15 @@ tabs_add(void);
  */
 void
 tabs_tab_home_open(Tabs_View view);
+
+/**
+ * Add new tab. This tab consist a workspace and a liveview.
+ *
+ * @param group The Group object
+ *
+ * @ingroup Tabs
+ */
+void
+tabs_tab_add(Group *group);
 
 #endif /* TABS_H */

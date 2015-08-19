@@ -18,11 +18,10 @@
  */
 
 #include "tabs.h"
-#include "group_manager.h"
 
 struct _Tabs_Item {
    Group *group;
-   Elm_Object_Item *item;
+   Elm_Object_Item *toolbar_item;
    Evas_Object *content; //panes
    Evas_Object *workspace;
    Evas_Object *live_view;
@@ -45,23 +44,31 @@ typedef struct _Tabs Tabs;
 
 Tabs tabs;
 
-/*
 static void
 _content_unset(void)
 {
+   Evas_Object *content;
+
    assert(tabs.layout != NULL);
-   elm_layout_content_unset(tabs.layout, NULL);
+   content = elm_layout_content_unset(tabs.layout, NULL);
+   evas_object_hide(content);
 }
 
 static void
-_content_set(Evas_Object *content)
+_content_set(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
 {
-   Evas_Object *content = (Evas_Object *)data;
+   Tabs_Item *item = (Tabs_Item *)data;
 
    assert(tabs.layout != NULL);
-   elm_layout_content_set(tabs.layout, NULL, content);
+
+   _content_unset();
+   if (item)
+     elm_layout_content_set(tabs.layout, NULL, item->content);
+   else
+     tabs_tab_home_open(TABS_LAST);
 }
-*/
 
 Evas_Object *
 tabs_add(void)
@@ -76,7 +83,8 @@ tabs_add(void)
    elm_toolbar_shrink_mode_set(tabs.toolbar, ELM_TOOLBAR_SHRINK_SCROLL);
    elm_toolbar_select_mode_set(tabs.toolbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
    elm_toolbar_align_set(tabs.toolbar, 0.0);
-   tabs.home.item = elm_toolbar_item_append(tabs.toolbar, "home", NULL, NULL, NULL);
+   tabs.home.item = elm_toolbar_item_append(tabs.toolbar, "home", NULL,
+                                            _content_set, NULL);
    elm_toolbar_item_selected_set(tabs.home.item, true);
 
    TODO("add tabs with wizards!");
@@ -88,8 +96,32 @@ void
 tabs_tab_home_open(Tabs_View view __UNUSED__)
 {
    assert(tabs.layout != NULL);
-   assert(tabs.home.item != NULL);
 
-   elm_toolbar_item_selected_set(tabs.home.item, true);
-   TODO("select the tab with wizard accourdingly to view`");
+   if (!elm_toolbar_item_selected_get(tabs.home.item))
+     elm_toolbar_item_selected_set(tabs.home.item, true);
+
+   _content_unset();
+   elm_layout_content_set(tabs.layout, NULL, tabs.home.content);
+
+   TODO("select the tab with wizard accourdingly to view");
+}
+
+void
+tabs_tab_add(Group *group)
+{
+   Tabs_Item *item;
+
+   assert(group != NULL);
+
+   item = mem_calloc(1, sizeof(Tabs_Item));
+   item->content = elm_panes_add(tabs.layout);
+   elm_panes_horizontal_set(item->content, true);
+   item->workspace = workspace_add(item->content);
+   //item->live_view = live_view_add(item->content, false);
+   elm_object_part_content_set(item->content, "left", item->workspace);
+   //elm_object_part_content_set(item->content, "right", item->live_view);
+
+   item->toolbar_item = elm_toolbar_item_append(tabs.toolbar, NULL, group->name,
+                                               _content_set, (void *)item);
+   elm_toolbar_item_selected_set(item->toolbar_item, true);
 }
