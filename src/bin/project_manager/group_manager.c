@@ -88,6 +88,10 @@ _state_load(Project *pro, Part_ *part, Eina_Stringshare *state_name)
 
    part->states = eina_list_sorted_insert(part->states, (Eina_Compare_Cb) resource_cmp, state);
 
+   /* default 0.0 should be allways first state */
+   if (part->current_state == NULL)
+     part->current_state = state;
+
    state_name_split(state_name, &parsed_state_name, &parsed_state_val);
 
    #define USAGE_ADD(TYPE, USAGE_LIST) \

@@ -25,13 +25,13 @@ group { name: "elm/genlist/item/default/default";
             }
          }
          description { state: "selected" 0.0;
-            color: 58 110 155 255;
+            color_class: "select";
             rel2 {
                offset: -1 -2;
             }
          }
          description { state: "reorder" 0.0;
-            color: 58 110 155 255;
+            color_class: "select";
             rel2 {
                offset: -1 -2;
             }
@@ -327,13 +327,13 @@ group { name: "elm/genlist/tree/default/default";
             }
          }
          description { state: "selected" 0.0;
-            color: 58 110 155 255;
+            color_class: "select";
             rel2 {
                offset: -1 -2;
             }
          }
          description { state: "reorder" 0.0;
-            color: 58 110 155 255;
+            color_class: "select";
             rel2 {
                offset: -1 -2;
             }
@@ -554,6 +554,32 @@ group { name: "elm/genlist/tree/default/default";
 group { name: "elm/genlist/tree/part/default";
    inherit: "elm/genlist/tree/default/default";
 }
+
+group { name: "elm/genlist/item/state/default";
+   inherit: "elm/genlist/item/default/default";
+   parts {
+      part { name: "bg";
+         description { state: "selected" 0.0;
+            color_class: "select_dark";
+         }
+         description { state: "reorder" 0.0;
+            color_class: "select_dark";
+         }
+      }
+   }
+}
+
+group { name: "elm/genlist/item/state_selected/default";
+   inherit: "elm/genlist/item/state/default";
+   parts {
+      part { name: "elm.text";
+         description { state: "default" 0.0;
+            color_class: "select_light";
+         }
+      }
+   }
+}
+
 
 group { name: "elm/genlist/tree/navigator/default";
    inherit: "elm/genlist/tree/default/default";

@@ -34,6 +34,7 @@ typedef struct
 
    Elm_Genlist_Item_Class *itc_part;
    Elm_Genlist_Item_Class *itc_state;
+   Elm_Genlist_Item_Class *itc_state_selected;
    Elm_Genlist_Item_Class *itc_item;
 } Part_List;
 
@@ -48,6 +49,19 @@ _part_label_get(void *data,
    assert(part->name != NULL);
 
    return strdup(part->name);
+}
+
+static char *
+_state_label_get(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 const char *pr __UNUSED__)
+{
+   State *state = data;
+
+   assert(state != NULL);
+   assert(state->name != NULL);
+
+   return strdup(state->name);
 }
 
 static void
@@ -130,6 +144,91 @@ _part_content_get(void *data,
    return content;
 }
 
+static void
+_expand_request_cb(void *data __UNUSED__,
+                   Evas_Object *o __UNUSED__,
+                   void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, EINA_TRUE);
+}
+
+static void
+_contract_request_cb(void *data __UNUSED__,
+                     Evas_Object *o __UNUSED__,
+                     void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, EINA_FALSE);
+}
+
+static void
+_on_clicked_double(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+
+   if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
+     elm_genlist_item_expanded_set(glit, !elm_genlist_item_expanded_get(glit));
+}
+
+static void
+_expanded_cb(void *data,
+             Evas_Object *o __UNUSED__,
+             void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   Part_List *pl = data;
+   const Elm_Genlist_Item_Class* itc;
+   Eina_List *l;
+   Part_ *part;
+   State *state;
+
+   TODO("remove this hack after https://phab.enlightenment.org/D2965 will be accepted");
+   Eina_Bool first_item = true;
+
+   assert(pl != NULL);
+
+   itc = elm_genlist_item_item_class_get(glit);
+
+   if (itc == pl->itc_part)
+     {
+        part = elm_object_item_data_get(glit);
+        EINA_LIST_FOREACH(part->states, l, state)
+          {
+             /* default state should be listed first */
+             if ((first_item) || (strcmp(state->name, "default 0.00") != 0))
+               {
+                  elm_genlist_item_append(pl->genlist,
+                                          (state->part->current_state == state) ? pl->itc_state_selected : pl->itc_state,
+                                          state,
+                                          glit,
+                                          ELM_GENLIST_ITEM_NONE,
+                                          NULL,
+                                          NULL);
+                  first_item = false;
+               }
+             else
+               elm_genlist_item_prepend(pl->genlist,
+                                        (state->part->current_state == state) ? pl->itc_state_selected : pl->itc_state,
+                                        state,
+                                        glit,
+                                        ELM_GENLIST_ITEM_NONE,
+                                        NULL,
+                                        NULL);
+          }
+     }
+}
+
+static void
+_contracted_cb(void *data __UNUSED__,
+               Evas_Object *o __UNUSED__,
+               void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_subitems_clear(glit);
+}
 
 Evas_Object *
 part_list_add(Group *group)
@@ -169,26 +268,27 @@ part_list_add(Group *group)
    pl->itc_part->item_style = "part";
    pl->itc_part->func.text_get = _part_label_get;
    pl->itc_part->func.content_get = _part_content_get;
-   pl->itc_part->func.state_get = NULL;
-   pl->itc_part->func.del = NULL;
 
    pl->itc_state = elm_genlist_item_class_new();
    pl->itc_state->item_style = "state";
-   pl->itc_state->func.text_get = NULL;
-   pl->itc_state->func.content_get = NULL;
-   pl->itc_state->func.state_get = NULL;
-   pl->itc_state->func.del = NULL;
+   pl->itc_state->func.text_get = _state_label_get;
+
+   pl->itc_state_selected = elm_genlist_item_class_new();
+   pl->itc_state_selected->item_style = "state_selected";
+   pl->itc_state_selected->func.text_get = _state_label_get;
 
    pl->itc_item = elm_genlist_item_class_new();
    pl->itc_item->item_style = "item";
    pl->itc_item->func.text_get = NULL;
-   pl->itc_item->func.content_get = NULL;
-   pl->itc_item->func.state_get = NULL;
-   pl->itc_item->func.del = NULL;
 
    pl->genlist = elm_genlist_add(pl->layout);
    evas_object_show(pl->genlist);
    elm_object_content_set(pl->layout, pl->genlist);
+   evas_object_smart_callback_add(pl->genlist, "clicked,double", _on_clicked_double, NULL);
+   evas_object_smart_callback_add(pl->genlist, "expand,request", _expand_request_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, "contract,request", _contract_request_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, "expanded", _expanded_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, "contracted", _contracted_cb, pl);
 
    EINA_LIST_FOREACH(group->parts, l, part)
      {
