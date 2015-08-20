@@ -70,6 +70,20 @@ _content_set(void *data,
      tabs_tab_home_open(TABS_LAST);
 }
 
+static Tabs_Item *
+_find_tab(Group *group)
+{
+   Eina_List *l;
+   Tabs_Item *item;
+
+   EINA_LIST_FOREACH(tabs.items, l, item)
+     {
+        if (item->group == group)
+          return item;
+     }
+   return NULL;
+}
+
 Evas_Object *
 tabs_add(void)
 {
@@ -112,6 +126,14 @@ tabs_tab_add(Group *group)
    Tabs_Item *item;
 
    assert(group != NULL);
+
+   /* check group, maybe this group already opend */
+   item = _find_tab(group);
+   if (item)
+     {
+        elm_toolbar_item_selected_set(item->toolbar_item, true);
+        return;
+     }
 
    item = mem_calloc(1, sizeof(Tabs_Item));
    item->group = group;
