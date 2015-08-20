@@ -114,6 +114,7 @@ tabs_tab_add(Group *group)
    assert(group != NULL);
 
    item = mem_calloc(1, sizeof(Tabs_Item));
+   item->group = group;
    item->content = elm_panes_add(tabs.layout);
    elm_panes_horizontal_set(item->content, true);
    item->workspace = workspace_add(item->content);
@@ -124,4 +125,5 @@ tabs_tab_add(Group *group)
    item->toolbar_item = elm_toolbar_item_append(tabs.toolbar, NULL, group->name,
                                                _content_set, (void *)item);
    elm_toolbar_item_selected_set(item->toolbar_item, true);
+   tabs.items = eina_list_append(tabs.items, item);
 }
