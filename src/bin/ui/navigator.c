@@ -19,6 +19,8 @@
 
 #include "navigator.h"
 
+#define SIG_GROUP_OPEN "group,open"
+
 typedef struct
 {
    Evas_Object *layout;
@@ -263,7 +265,8 @@ _on_clicked_double(void *data __UNUSED__,
      }
    else
      {
-        TODO("Add group selection signal here");
+        Group *group = (Group *)elm_object_item_data_get(glit);
+        evas_object_smart_callback_call(navigator.layout, SIG_GROUP_OPEN, group);
      }
 }
 

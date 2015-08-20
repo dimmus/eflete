@@ -28,6 +28,14 @@
 #include "cursor.h"
 
 static void
+_navigator_group_open(void *data __UNUSED__,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info)
+{
+   tabs_tab_add((Group *)event_info);
+}
+
+static void
 _on_done(void *data __UNUSED__,
          Evas_Object *obj __UNUSED__,
          void *event_info __UNUSED__)
@@ -136,6 +144,7 @@ ui_main_window_add(void)
    elm_panes_content_left_size_set(ap.panes.right_hor, config->panes.right_hor);
 
    navigator = navigator_add();
+   evas_object_smart_callback_add(navigator, "group,open", _navigator_group_open, NULL);
    elm_object_part_content_set(ap.panes.left, "left", navigator);
 
    tabs = tabs_add();
