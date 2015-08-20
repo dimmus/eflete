@@ -19,6 +19,7 @@
 
 #include "main_window.h"
 #include "navigator.h"
+#include "tabs.h"
 #include "preference.h"
 
 #define makefile "#! bin/sh\nedje_cc -id ./images -fd ./fonts -sd ./sounds  "
@@ -909,6 +910,7 @@ project_close(void)
         ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_BASE, true);
         ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
         navigator_project_unset();
+        tabs_clean();
         pm_project_close(ap.project);
         ap.project = NULL;
      }
