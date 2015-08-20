@@ -329,6 +329,12 @@ navigator_add(void)
    elm_object_text_set(navigator.layout, _("None"));
    elm_object_disabled_set(navigator.layout, true);
 
+   evas_object_smart_callback_add(navigator.genlist, "clicked,double", _on_clicked_double, NULL);
+   evas_object_smart_callback_add(navigator.genlist, "expand,request", _expand_request_cb, NULL);
+   evas_object_smart_callback_add(navigator.genlist, "contract,request", _contract_request_cb, NULL);
+   evas_object_smart_callback_add(navigator.genlist, "expanded", _expanded_cb, NULL);
+   evas_object_smart_callback_add(navigator.genlist, "contracted", _contracted_cb, NULL);
+
    TODO("Add deletion callback and free resources");
 
    return navigator.layout;
@@ -364,12 +370,6 @@ navigator_project_set(void)
                                 NULL,
                                 NULL);
      }
-
-   evas_object_smart_callback_add(navigator.genlist, "clicked,double", _on_clicked_double, NULL);
-   evas_object_smart_callback_add(navigator.genlist, "expand,request", _expand_request_cb, NULL);
-   evas_object_smart_callback_add(navigator.genlist, "contract,request", _contract_request_cb, NULL);
-   evas_object_smart_callback_add(navigator.genlist, "expanded", _expanded_cb, NULL);
-   evas_object_smart_callback_add(navigator.genlist, "contracted", _contracted_cb, NULL);
 
    elm_object_disabled_set(navigator.layout, false);
 }
