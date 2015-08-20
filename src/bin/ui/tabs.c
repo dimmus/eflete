@@ -149,3 +149,18 @@ tabs_tab_add(Group *group)
    elm_toolbar_item_selected_set(item->toolbar_item, true);
    tabs.items = eina_list_append(tabs.items, item);
 }
+
+void
+tabs_clean(void)
+{
+   Tabs_Item *item;
+
+   EINA_LIST_FREE(tabs.items, item)
+     {
+        elm_object_item_del(item->toolbar_item);
+        /* delete pans with workspace and liveview */
+        evas_object_del(item->content);
+        free(item);
+     }
+   tabs.items = NULL;
+}

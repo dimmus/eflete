@@ -66,4 +66,12 @@ tabs_tab_home_open(Tabs_View view);
 void
 tabs_tab_add(Group *group);
 
+/**
+ * Close all tabs
+ *
+ * @ingroup Tabs
+ */
+void
+tabs_clean(void);
+
 #endif /* TABS_H */
