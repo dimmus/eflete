@@ -514,14 +514,12 @@ group { name: "elm/genlist/tree/default/default";
          signal: "elm,state,expanded";
          source: "elm";
          action: STATE_SET "selected" 0.00;
-         target: "bg";
          target: "arrow";
       }
       program { name: "arrow_conract";
          signal: "elm,state,contracted";
          source: "elm";
          action: STATE_SET "default" 0.00;
-         target: "bg";
          target: "arrow";
       }
       program { name: "go_active";

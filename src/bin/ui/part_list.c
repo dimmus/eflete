@@ -33,10 +33,13 @@ typedef struct
    Evas_Object *btn_down;
 
    Elm_Genlist_Item_Class *itc_part;
+   Elm_Genlist_Item_Class *itc_part_selected;
    Elm_Genlist_Item_Class *itc_state;
    Elm_Genlist_Item_Class *itc_state_selected;
    Elm_Genlist_Item_Class *itc_item_caption;
    Elm_Genlist_Item_Class *itc_item;
+
+   Elm_Object_Item *selected_part_item;
 } Part_List;
 
 static char *
@@ -226,7 +229,7 @@ _expanded_cb(void *data,
 
    itc = elm_genlist_item_item_class_get(glit);
 
-   if (itc == pl->itc_part)
+   if (itc == pl->itc_part_selected)
      {
         part = elm_object_item_data_get(glit);
         EINA_LIST_FOREACH(part->states, l, state)
@@ -301,6 +304,38 @@ _contracted_cb(void *data __UNUSED__,
    elm_genlist_item_subitems_clear(glit);
 }
 
+static void
+_selected_cb(void *data,
+             Evas_Object *o __UNUSED__,
+             void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   Part_List *pl = data;
+
+   assert(pl != NULL);
+
+   while (elm_genlist_item_parent_get(glit))
+     glit = elm_genlist_item_parent_get(glit);
+
+   if (glit != pl->selected_part_item)
+     {
+        pl->selected_part_item = glit;
+     }
+   elm_genlist_item_item_class_update(glit, pl->itc_part_selected);
+}
+
+static void
+_unselected_cb(void *data,
+               Evas_Object *o __UNUSED__,
+               void *event_info __UNUSED__)
+{
+   Part_List *pl = data;
+
+   assert(pl != NULL);
+
+   elm_genlist_item_item_class_update(pl->selected_part_item, pl->itc_part);
+}
+
 Evas_Object *
 part_list_add(Group *group)
 {
@@ -340,6 +375,11 @@ part_list_add(Group *group)
    pl->itc_part->func.text_get = _part_label_get;
    pl->itc_part->func.content_get = _part_content_get;
 
+   pl->itc_part_selected = elm_genlist_item_class_new();
+   pl->itc_part_selected->item_style = "part_selected";
+   pl->itc_part_selected->func.text_get = _part_label_get;
+   pl->itc_part_selected->func.content_get = _part_content_get;
+
    pl->itc_state = elm_genlist_item_class_new();
    pl->itc_state->item_style = "state";
    pl->itc_state->func.text_get = _state_label_get;
@@ -365,6 +405,8 @@ part_list_add(Group *group)
    evas_object_smart_callback_add(pl->genlist, "contract,request", _contract_request_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "expanded", _expanded_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "contracted", _contracted_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, "selected", _selected_cb, pl);
+   evas_object_smart_callback_add(pl->genlist, "unselected", _unselected_cb, pl);
 
    EINA_LIST_FOREACH(group->parts, l, part)
      {
