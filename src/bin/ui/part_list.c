@@ -35,6 +35,7 @@ typedef struct
    Elm_Genlist_Item_Class *itc_part;
    Elm_Genlist_Item_Class *itc_state;
    Elm_Genlist_Item_Class *itc_state_selected;
+   Elm_Genlist_Item_Class *itc_item_caption;
    Elm_Genlist_Item_Class *itc_item;
 } Part_List;
 
@@ -62,6 +63,38 @@ _state_label_get(void *data,
    assert(state->name != NULL);
 
    return strdup(state->name);
+}
+
+static char *
+_item_caption_label_get(void *data,
+                        Evas_Object *obj __UNUSED__,
+                        const char *pr __UNUSED__)
+{
+   Part_ *part = data;
+   char buf[BUFF_MAX];
+
+   assert(part != NULL);
+
+   if (!strcmp(pr, "elm.text.end"))
+     {
+        snprintf(buf, BUFF_MAX, "%d", eina_list_count(part->items));
+        return strdup(buf);
+     }
+   if (!strcmp(pr, "elm.text"))
+     return strdup(_("items"));
+
+   return NULL;
+}
+
+static char *
+_item_label_get(void *data,
+                Evas_Object *obj __UNUSED__,
+                const char *pr __UNUSED__)
+{
+   if (!strcmp(pr, "elm.text"))
+     return strdup(data);
+
+   return NULL;
 }
 
 static void
@@ -184,6 +217,7 @@ _expanded_cb(void *data,
    Eina_List *l;
    Part_ *part;
    State *state;
+   Eina_Stringshare *item_name;
 
    TODO("remove this hack after https://phab.enlightenment.org/D2965 will be accepted");
    Eina_Bool first_item = true;
@@ -213,6 +247,43 @@ _expanded_cb(void *data,
                elm_genlist_item_prepend(pl->genlist,
                                         (state->part->current_state == state) ? pl->itc_state_selected : pl->itc_state,
                                         state,
+                                        glit,
+                                        ELM_GENLIST_ITEM_NONE,
+                                        NULL,
+                                        NULL);
+          }
+        if ((part->type == EDJE_PART_TYPE_BOX) ||
+            (part->type == EDJE_PART_TYPE_TABLE))
+          {
+             elm_genlist_item_append(pl->genlist,
+                                     pl->itc_item_caption,
+                                     part,
+                                     glit,
+                                     ELM_GENLIST_ITEM_TREE,
+                                     NULL,
+                                     NULL);
+          }
+     }
+   else if (itc == pl->itc_item_caption)
+     {
+        part = elm_object_item_data_get(glit);
+        EINA_LIST_FOREACH(part->items, l, item_name)
+          {
+             if (first_item)
+               {
+                  elm_genlist_item_append(pl->genlist,
+                                          pl->itc_item,
+                                          item_name,
+                                          glit,
+                                          ELM_GENLIST_ITEM_NONE,
+                                          NULL,
+                                          NULL);
+                  first_item = false;
+               }
+             else
+               elm_genlist_item_prepend(pl->genlist,
+                                        pl->itc_item,
+                                        item_name,
                                         glit,
                                         ELM_GENLIST_ITEM_NONE,
                                         NULL,
@@ -279,7 +350,12 @@ part_list_add(Group *group)
 
    pl->itc_item = elm_genlist_item_class_new();
    pl->itc_item->item_style = "item";
-   pl->itc_item->func.text_get = NULL;
+   pl->itc_item->func.text_get = _item_label_get;
+
+   pl->itc_item_caption = elm_genlist_item_class_new();
+   pl->itc_item_caption->item_style = "item";
+   pl->itc_item_caption->func.text_get = _item_caption_label_get;
+
 
    pl->genlist = elm_genlist_add(pl->layout);
    evas_object_show(pl->genlist);

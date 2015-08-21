@@ -555,8 +555,21 @@ group { name: "elm/genlist/tree/part/default";
    inherit: "elm/genlist/tree/default/default";
 }
 
+group { name: "elm/genlist/tree/part_selected/default";
+   inherit: "elm/genlist/tree/part/default";
+   parts {
+      part { name: "bg";
+         description { state: "default" 0.0;
+            color: 255 255 255 255;
+            color_class: "select";
+         }
+      }
+   }
+}
+
 group { name: "elm/genlist/item/state/default";
    inherit: "elm/genlist/item/default/default";
+   alias: "elm/genlist/item/item/default";
    parts {
       part { name: "bg";
          description { state: "selected" 0.0;
@@ -580,6 +593,53 @@ group { name: "elm/genlist/item/state_selected/default";
    }
 }
 
+group { name: "elm/genlist/tree/item/default";
+   inherit: "elm/genlist/tree/default/default";
+
+   data.item: "texts" "elm.text elm.text.end";
+   parts {
+      part { name: "elm.text.end";
+         type: TEXT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 0 26;
+            color_class: "select";
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 0;
+               to_x: "elm.text";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -7 -1;
+               to_x: "elm.swallow.penult";
+            }
+            text {
+               font: "PT";
+               size: 12;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "elm.text";
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            text.max: 1 0;
+         }
+      }
+   }
+   parts {
+      part { name: "bg";
+         description { state: "selected" 0.0;
+            color_class: "select_dark";
+         }
+         description { state: "reorder" 0.0;
+            color_class: "select_dark";
+         }
+      }
+   }
+}
 
 group { name: "elm/genlist/tree/navigator/default";
    inherit: "elm/genlist/tree/default/default";
