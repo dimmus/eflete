@@ -70,14 +70,14 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_p)
    elm_init(0, 0);
    app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   workspace = workspace_add(parent);
+   workspace = workspace_add(parent, NULL, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    style->obj = edje_edit_object_add(e);
    edje_object_file_set(style->obj, "./edj_build/workspace_edit_object_part_state_set.edj",
                         style->full_group_name);
    part = wm_part_add(style, "elm.text");
-   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_state_set.edj");
+   //workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_state_set.edj");
    part->curr_state = eina_stringshare_add("visible");
    part->curr_state_value = 0.0;
 
@@ -91,7 +91,7 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_p)
                  "Setted state value is not equal to value in edje edit object");
 
    wm_style_free(style);
-   workspace_edit_object_unset(workspace);
+   //workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
    app_shutdown();
@@ -135,14 +135,14 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n2)
    elm_init(0, 0);
    app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   workspace = workspace_add(parent);
+   workspace = workspace_add(parent, NULL, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    style->obj = edje_edit_object_add(e);
    edje_object_file_set(style->obj, "./edj_build/workspace_edit_object_part_state_set.edj",
                         style->full_group_name);
    part = wm_part_add(style, "elm.text");
-   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_state_set.edj");
+   //workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_state_set.edj");
    part->curr_state = eina_stringshare_add("non_exist");
    part->curr_state_value = 2.0;
 
@@ -150,7 +150,7 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n2)
    ck_assert_msg(res == EINA_FALSE, "Set non exist state for part");
 
    wm_style_free(style);
-   workspace_edit_object_unset(workspace);
+   //workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
    app_shutdown();

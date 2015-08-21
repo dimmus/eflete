@@ -56,7 +56,7 @@ EFLETE_TEST (workspace_add_test_p)
    app_init();
    Evas_Object *parent, *workspace;
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   workspace = workspace_add(parent);
+   workspace = workspace_add(parent, NULL, NULL);
    ck_assert_msg(workspace != NULL, "Failed create workspace object.");
    evas_object_del(parent);
    app_shutdown();

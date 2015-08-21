@@ -67,18 +67,18 @@ EFLETE_TEST(workspace_edit_object_part_below_test_p)
    app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_below.edj", EINA_FALSE);
-   workspace = workspace_add(parent);
+   workspace = workspace_add(parent, NULL, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
-   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_below.edj");
+   //workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_below.edj");
 
    ret = workspace_edit_object_part_below(workspace, "events");
    ck_assert_msg(ret == EINA_TRUE, "Failed below part");
 
    wm_style_free(style);
    eina_file_close(mmap_file);
-   workspace_edit_object_unset(workspace);
+   //workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
    app_shutdown();
