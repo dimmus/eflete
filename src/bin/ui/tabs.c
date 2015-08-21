@@ -135,6 +135,7 @@ tabs_tab_add(Group *group)
         elm_toolbar_item_selected_set(item->toolbar_item, true);
         return;
      }
+   group_load(ap.project, group, evas_object_evas_get(ap.win));
 
    item = mem_calloc(1, sizeof(Tabs_Item));
    item->group = group;

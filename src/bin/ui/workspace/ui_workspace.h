@@ -64,20 +64,6 @@ Evas_Object *
 ws_groupedit_get(Evas_Object *obj);
 
 /**
- * Set the editable object to the workspace.
- *
- * @param obj The workspace object.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Workspace
- */
-/*
-Eina_Bool
-workspace_edit_object_set(Evas_Object *obj, Group *group, const char *file);
-*/
-
-/**
  * Force recal for editable object from the workspace.
  *
  * @param obj The workspace object.
