@@ -42,13 +42,13 @@ _group_name_parse(Group *group)
 }
 
 static void
-_group_object_add(Project *pro, Group *group)
+_group_object_add(Project *pro, Group *group, Evas *e)
 {
    assert(pro != NULL);
    assert(group != NULL);
    assert(group->edit_object == NULL);
 
-   group->edit_object = edje_edit_object_add(evas_object_evas_get(pro->global_object));
+   group->edit_object = edje_edit_object_add(e);
    edje_object_freeze(group->edit_object);
    evas_object_freeze_events_set(group->edit_object, true);
 
@@ -250,7 +250,7 @@ _group_load(Project *pro, Group *group)
    _group_name_parse(group);
 
    ecore_thread_main_loop_begin();
-   _group_object_add(pro, group);
+   _group_object_add(pro, group, evas_object_evas_get(pro->global_object));
    if (edje_edit_group_alias_is(group->edit_object, group->name))
      {
         main_group_name = edje_edit_group_aliased_get(group->edit_object, group->name);
@@ -329,6 +329,12 @@ _group_load(Project *pro, Group *group)
 
    _group_object_del(group);
    ecore_thread_main_loop_end();
+}
+
+void
+group_load(Project *pro, Group *group, Evas *e)
+{
+   _group_object_add(pro, group, e);
 }
 
 void
