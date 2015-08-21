@@ -51,7 +51,8 @@ group { name: "elm/genlist/item/default/default";
          repeat_events: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            min: 19 19;
+            min: 14 14;
+            max: 14 14;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
             rel1 {
@@ -352,7 +353,7 @@ group { name: "elm/genlist/tree/default/default";
          repeat_events: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            min: 19 19;
+            min: 14 14;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
             rel1 {
