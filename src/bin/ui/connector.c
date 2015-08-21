@@ -609,8 +609,8 @@ ui_part_back(void)
    evas_object_smart_callback_del_full(ap.workspace, "part,name,changed",
                                        _part_name_change, NULL);
 
-   workspace_highlight_unset(ap.workspace);
-   workspace_edit_object_unset(ap.workspace);
+   //workspace_highlight_unset(ap.workspace);
+   //workspace_edit_object_unset(ap.workspace);
    ui_states_list_data_unset();
    ui_signal_list_data_unset(ap.block.signal_list);
    ui_block_content_visible(ap.block.right_top, false);
@@ -702,7 +702,7 @@ ui_style_clicked(Style *style)
    evas_object_smart_callback_add(ap.block.signal_list, "sl,signal,select", _signal_select, NULL);
    ui_signal_list_data_set(ap.block.signal_list, _style);
 
-   workspace_edit_object_set(ap.workspace, _style, ap.project->dev);
+   //workspace_edit_object_set(ap.workspace, _style, ap.project->dev);
    evas_object_smart_callback_add(ap.workspace, "ws,part,selected",
                                   _on_ws_part_select, NULL);
    evas_object_smart_callback_add(ap.workspace, "ws,part,unselected",
@@ -1748,7 +1748,7 @@ _on_enventor_mode_off(void *data,
    assert(style != NULL);
 
    wm_style_data_reload(style, ap.project->mmap_file);
-   workspace_edit_object_set(ap.workspace, style, ap.project->dev);
+   //workspace_edit_object_set(ap.workspace, style, ap.project->dev);
    workspace_edit_object_recalc(ap.workspace);
    ui_widget_list_style_parts_reload(ui_block_widget_list_get(), style);
    ui_property_style_set(ui_block_property_get(), style, ap.workspace);

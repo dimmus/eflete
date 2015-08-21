@@ -140,7 +140,7 @@ _random_name_generate(char *part_name, unsigned int length)
    SKIP_IN_ENVENTOR_MODE \
    Evas_Object *workspace = ap.workspace; \
    Evas_Object *widget_list = ui_block_widget_list_get(); \
-   Style *style = workspace_edit_object_get(workspace); \
+   Style *style = NULL; \
    assert(style != NULL); \
    char name[9]; \
    _random_name_generate(name, 9); \

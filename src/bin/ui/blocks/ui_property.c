@@ -700,7 +700,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
    pd->wm_style = style;
    if (style->isAlias) pd->wm_style = style->main_group;
 
-   assert(pd->wm_style == workspace_edit_object_get(workspace));
+   //assert(pd->wm_style == workspace_edit_object_get(workspace));
 
 #ifndef HAVE_ENVENTOR
    if (ewe_tabs_active_item_get(pd->tabs) == pd->code_tab)

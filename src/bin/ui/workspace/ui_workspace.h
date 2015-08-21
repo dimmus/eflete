@@ -35,19 +35,21 @@
 #include <Evas.h>
 #include <Elementary.h>
 #include <Ewe.h>
-#include "widget_manager.h"
+#include "group_manager.h"
 
 /**
  * Create a new Workspace object to the parent.
  *
  * @param parent The parent object.
+ * @param group The group to be editing.
+ * @param file Path to the file from been loaded the edje edit object.
  *
  * @return The new object or NULL if it cannot be created.
  *
  * @ingroup Workspace
  */
 Evas_Object *
-workspace_add(Evas_Object *parent);
+workspace_add(Evas_Object *parent, Group *group, const char *file);
 
 /**
  * Get the groupedit object, which loaded into workspace.
@@ -65,40 +67,15 @@ ws_groupedit_get(Evas_Object *obj);
  * Set the editable object to the workspace.
  *
  * @param obj The workspace object.
- * @param style The style to be editing.
- * @param file Path to the file from been loaded the edje edit object.
  *
  * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup Workspace
  */
+/*
 Eina_Bool
-workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file);
-
-/**
- * Unset the editable object from the workspace.
- *
- * @param obj The workspace object.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_edit_object_unset(Evas_Object *obj);
-
-/**
- * Get the editable object from the workspace.
- *
- * @param obj The workspace object.
- *
- * @return A @Style object, which stored in workspace as editable, or NULL if
- * no one object is setted.
- *
- * @ingroup Workspace
- */
-Style *
-workspace_edit_object_get(Evas_Object *obj);
+workspace_edit_object_set(Evas_Object *obj, Group *group, const char *file);
+*/
 
 /**
  * Force recal for editable object from the workspace.

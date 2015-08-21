@@ -18,6 +18,7 @@
  */
 
 #include "tabs.h"
+#include "ui_workspace.h"
 
 struct _Tabs_Item {
    Group *group;
@@ -139,7 +140,7 @@ tabs_tab_add(Group *group)
    item->group = group;
    item->content = elm_panes_add(tabs.layout);
    elm_panes_horizontal_set(item->content, true);
-   item->workspace = workspace_add(item->content);
+   item->workspace = workspace_add(item->content, group, ap.project->dev);
    //item->live_view = live_view_add(item->content, false);
    elm_object_part_content_set(item->content, "left", item->workspace);
    //elm_object_part_content_set(item->content, "right", item->live_view);

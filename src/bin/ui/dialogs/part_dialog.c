@@ -62,8 +62,8 @@ _cancel_clicked(void *data,
 #define WORKSPACE_PART_ADD(TYPE, DATA) \
    Evas_Object *workspace = ap.workspace; \
    Evas_Object *widget_list = ui_block_widget_list_get(); \
-   Style *style = workspace_edit_object_get(workspace); \
    ENTRY_IS_EMPTY \
+   Style *style = NULL; \
    const char *name = elm_entry_entry_get(entry); \
    if (workspace_edit_object_part_add(workspace, name, TYPE, DATA)) \
      ui_widget_list_part_add(widget_list, style, name); \
@@ -178,7 +178,7 @@ part_dialog_add(void)
    Evas_Object *win, *workspace, *widget_list;
    Evas_Object *box, *button, *bt_no;
    Eina_Stringshare *title;
-   Style *style;
+   Style *style = NULL;
 
    assert(ap.project != NULL);
 
@@ -193,7 +193,7 @@ part_dialog_add(void)
 
    name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
 
-   style = workspace_edit_object_get(workspace);
+   //style = workspace_edit_object_get(workspace);
    ap.popup = elm_popup_add(ap.win);
    title = eina_stringshare_printf(_("Add new part to group \"%s\""), style->name);
    elm_object_part_text_set(ap.popup, "title,text", title);
