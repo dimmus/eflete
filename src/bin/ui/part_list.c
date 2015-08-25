@@ -334,6 +334,7 @@ _unselected_cb(void *data,
    assert(pl != NULL);
 
    elm_genlist_item_item_class_update(pl->selected_part_item, pl->itc_part);
+   pl->selected_part_item = NULL;
 }
 
 Evas_Object *
@@ -424,4 +425,31 @@ part_list_add(Group *group)
 
    TODO("Add deletion callback and free resources");
    return pl->layout;
+}
+
+void
+part_list_part_select(Evas_Object *obj, Part *part)
+{
+   Part *pr;
+   Elm_Object_Item *part_item;
+   Part_List *pl = evas_object_data_get(obj, PART_LIST_DATA);
+
+   assert(pl != NULL);
+
+   if (part)
+     {
+        part_item = elm_genlist_first_item_get(pl->genlist);
+        pr = elm_object_item_data_get(part_item);
+        while (pr != part)
+          {
+             part_item = elm_genlist_item_next_get(part_item);
+             pr = elm_object_item_data_get(part_item);
+
+             assert(pr != NULL);
+          }
+        assert(part_item != NULL);
+        elm_genlist_item_selected_set(part_item, true);
+     }
+   else
+     elm_genlist_item_selected_set(pl->selected_part_item, false);
 }
