@@ -398,6 +398,7 @@ part_list_add(Group *group)
 
 
    pl->genlist = elm_genlist_add(pl->layout);
+   elm_scroller_policy_set(pl->genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
    evas_object_show(pl->genlist);
    elm_object_content_set(pl->layout, pl->genlist);
    evas_object_smart_callback_add(pl->genlist, "clicked,double", _on_clicked_double, NULL);
