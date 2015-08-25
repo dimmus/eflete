@@ -99,15 +99,30 @@ tabs_add(void)
    elm_layout_theme_set(tabs.layout, "layout", "tabs", "default");
    tabs.toolbar = elm_toolbar_add(tabs.layout);
    elm_layout_content_set(tabs.layout, "elm.swallow.toolbar", tabs.toolbar);
-   elm_object_style_set(tabs.toolbar, "tabs");
+   elm_object_style_set(tabs.toolbar, "tabs_horizontal");
    elm_toolbar_shrink_mode_set(tabs.toolbar, ELM_TOOLBAR_SHRINK_SCROLL);
    elm_toolbar_select_mode_set(tabs.toolbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
    elm_toolbar_align_set(tabs.toolbar, 0.0);
+
+   tabs.home.content = elm_layout_add(ap.win);
+   elm_layout_theme_set(tabs.home.content, "layout", "tab_home", "default");
+   Evas_Object *toolbar = elm_toolbar_add(tabs.home.content);
+   elm_layout_content_set(tabs.home.content, "elm.swallow.toolbar", toolbar);
+   elm_toolbar_horizontal_set(toolbar, false);
+   elm_object_style_set(toolbar, "tabs_vertical");
+   elm_toolbar_shrink_mode_set(toolbar, ELM_TOOLBAR_SHRINK_SCROLL);
+   elm_toolbar_select_mode_set(toolbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   elm_toolbar_align_set(toolbar, 0.0);
+   elm_toolbar_item_append(toolbar, NULL, _("Summary"), NULL, NULL);
+   elm_toolbar_item_append(toolbar, NULL, _("Open project"), NULL, NULL);
+   elm_toolbar_item_append(toolbar, NULL, _("New project"), NULL, NULL);
+   elm_toolbar_item_append(toolbar, NULL, _("Import edj-file"), NULL, NULL);
+   elm_toolbar_item_append(toolbar, NULL, _("Import edc-file"), NULL, NULL);
+
    tabs.home.item = elm_toolbar_item_append(tabs.toolbar, "home", NULL,
                                             _content_set, NULL);
-   elm_toolbar_item_selected_set(tabs.home.item, true);
 
-   TODO("add tabs with wizards!");
+   elm_toolbar_item_selected_set(tabs.home.item, true);
 
    return tabs.layout;
 }
