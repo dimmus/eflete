@@ -23,6 +23,7 @@
 #include "groupedit.h"
 #include "container.h"
 #include "eflete.h"
+#include "part_list.h"
 
 struct _Ws_Menu
 {
@@ -109,6 +110,9 @@ struct _Ws_Smart_Data
                                    factor. Markup in zoom_control.edc*/
    } zoom;
    Group *group;
+
+   Evas_Object *panes;
+   Evas_Object *part_list;
 
    struct {
         Evas_Object *highlight; /**< A highlight object */
@@ -872,12 +876,23 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    /* create empty groupspace object */
    priv->groupedit = NULL;
 
+   /* add panes */
+   priv->panes = elm_panes_add(parent);
+   evas_object_size_hint_weight_set(priv->panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(priv->panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_panes_content_right_min_size_set(priv->panes, 225);
+   elm_panes_content_right_size_set(priv->panes, 0); /* default is min size */
+   evas_object_smart_member_add(priv->panes, o);
+
    /* using scroller in workspace, with special style*/
    priv->scroll_flag = 0;
    priv->zoom.factor = 1.0;
    priv->scroller = elm_scroller_add(parent);
    elm_object_style_set(priv->scroller, "workspace");
    elm_scroller_content_min_limit(priv->scroller, false, false);
+
+   elm_object_part_content_set(priv->panes, "left",
+                               priv->scroller);
 
    evas_object_event_callback_add(priv->scroller, EVAS_CALLBACK_MOUSE_WHEEL,
                                   _sc_wheel_move, o);
@@ -959,6 +974,7 @@ _workspace_smart_show(Evas_Object *o)
 
    evas_object_show(sd->button_separate);
    evas_object_show(sd->scroller);
+   evas_object_show(sd->panes);
    evas_object_show(sd->events);
 
    if (sd->groupedit)
@@ -985,6 +1001,7 @@ _workspace_smart_hide(Evas_Object *o)
 
    evas_object_hide(sd->button_separate);
    evas_object_hide(sd->scroller);
+   evas_object_hide(sd->panes);
    evas_object_hide(sd->events);
 
    _workspace_parent_sc->hide(o);
@@ -1000,7 +1017,7 @@ _workspace_smart_resize(Evas_Object *o,
 
    evas_object_geometry_get(o, &ox, &oy, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
-   evas_object_resize(sd->scroller, w, h);
+   evas_object_resize(sd->panes, w, h);
    evas_object_smart_changed(o);
 }
 
@@ -1134,6 +1151,12 @@ workspace_add(Evas_Object *parent, Group *group, const char *file)
         return NULL;
      }
    WS_DATA_GET(obj, sd);
+
+   sd->part_list = part_list_add(group);
+   evas_object_size_hint_weight_set(sd->part_list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(sd->part_list, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_smart_member_add(sd->part_list, obj);
+   elm_object_part_content_set(sd->panes, "right", sd->part_list);
 
    /* create conteiner with handlers */
    sd->container.obj = container_add(sd->scroller);
