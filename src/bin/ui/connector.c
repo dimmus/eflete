@@ -29,8 +29,10 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
    .rejected = STYLE_NAME_BANNED_SYMBOLS
 };
 
+/*
 static Eina_Bool
 _project_close_request(Eina_Bool changed);
+*/
 
 static void
 _add_part_dialog(void *data __UNUSED__,
@@ -891,7 +893,7 @@ _on_fs_open_done(void *data,
    evas_object_focus_set(ap.splash, true);
    evas_object_show(ap.splash);
 }
-
+/*
 Eina_Bool
 project_close(void)
 {
@@ -912,6 +914,7 @@ project_close(void)
      }
    return true;
 }
+*/
 
 void
 project_open(void)
@@ -1440,7 +1443,7 @@ project_export_edc_project(void)
 }
 
 /*************************** Close request popup ******************************/
-TODO("I think, this functionality need move to dialogs")
+/*
 static void
 _discard_cb(void *data,
             Evas_Object *obj __UNUSED__,
@@ -1537,7 +1540,6 @@ _project_close_request(Eina_Bool changed)
      elm_object_part_content_set(ap.popup, "button3", btn);
    else
      elm_object_part_content_set(ap.popup, "button2", btn);
-   evas_object_show(ap.popup);
    eina_stringshare_del(title);
 
    ecore_main_loop_begin();
@@ -1549,6 +1551,7 @@ _project_close_request(Eina_Bool changed)
 
    return result;
 }
+*/
 
 /******************************************************************************/
 static Eina_Bool

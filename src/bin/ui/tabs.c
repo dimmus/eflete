@@ -230,6 +230,7 @@ tabs_clean(void)
         elm_object_item_del(item->toolbar_item);
         /* delete pans with workspace and liveview */
         evas_object_del(item->content);
+        group_unload(item->group);
         free(item);
      }
    tabs.items = NULL;

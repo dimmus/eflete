@@ -24,6 +24,7 @@ ui/part_list.c \
 ui/cursor.c \
 ui/menu.c \
 ui/main_window.c \
+ui/project_close.c \
 ui/connector.c \
 ui/splash.c \
 ui/wizard/wizard_common.c \

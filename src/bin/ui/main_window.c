@@ -46,8 +46,7 @@ _on_done(void *data __UNUSED__,
 Eina_Bool
 ui_main_window_del(void)
 {
-   if (!project_close())
-     return false;
+   if (ap.project) project_close();
 
    /*
    if (!history_term(ap.history))
