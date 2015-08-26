@@ -39,7 +39,16 @@ struct _Tabs {
       Elm_Object_Item *item;
       Evas_Object *content;
       Evas_Object *tabs;
-      Evas_Object *tab_open_project;
+      Elm_Object_Item *tab_project_info;
+      Evas_Object *content_project_info;
+      Elm_Object_Item *tab_open_project;
+      Evas_Object *content_open_project;
+      Elm_Object_Item *tab_new_project;
+      Evas_Object *content_new_project;
+      Elm_Object_Item *tab_import_edj;
+      Evas_Object *content_import_edj;
+      Elm_Object_Item *tab_import_edc;
+      Evas_Object *content_import_edc;
    } home;
 };
 
@@ -117,21 +126,26 @@ tabs_add(void)
 
    tabs.home.content = elm_layout_add(ap.win);
    elm_layout_theme_set(tabs.home.content, "layout", "tab_home", "default");
-   Evas_Object *toolbar = elm_toolbar_add(tabs.home.content);
-   elm_layout_content_set(tabs.home.content, "elm.swallow.toolbar", toolbar);
-   elm_toolbar_horizontal_set(toolbar, false);
-   elm_object_style_set(toolbar, "tabs_vertical");
-   elm_toolbar_shrink_mode_set(toolbar, ELM_TOOLBAR_SHRINK_SCROLL);
-   elm_toolbar_select_mode_set(toolbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
-   elm_toolbar_align_set(toolbar, 0.0);
+   tabs.home.tabs = elm_toolbar_add(tabs.home.content);
+   elm_layout_content_set(tabs.home.content, "elm.swallow.toolbar", tabs.home.tabs);
+   elm_toolbar_horizontal_set(tabs.home.tabs, false);
+   elm_object_style_set(tabs.home.tabs, "tabs_vertical");
+   elm_toolbar_shrink_mode_set(tabs.home.tabs, ELM_TOOLBAR_SHRINK_SCROLL);
+   elm_toolbar_select_mode_set(tabs.home.tabs, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   elm_toolbar_align_set(tabs.home.tabs, 0.0);
 
-   tabs.home.tab_open_project = _tab_open_project_add();
+   tabs.home.content_open_project = _tab_open_project_add();
 
-   elm_toolbar_item_append(toolbar, NULL, _("Summary"),         _home_tab_change, NULL);
-   elm_toolbar_item_append(toolbar, NULL, _("Open project"),    _home_tab_change, tabs.home.tab_open_project);
-   elm_toolbar_item_append(toolbar, NULL, _("New project"),     _home_tab_change, NULL);
-   elm_toolbar_item_append(toolbar, NULL, _("Import edj-file"), _home_tab_change, NULL);
-   elm_toolbar_item_append(toolbar, NULL, _("Import edc-file"), _home_tab_change, NULL);
+   tabs.home.tab_project_info =
+      elm_toolbar_item_append(tabs.home.tabs, NULL, _("Summary"), _home_tab_change, NULL);
+   tabs.home.tab_open_project =
+      elm_toolbar_item_append(tabs.home.tabs, NULL, _("Open project"), _home_tab_change, tabs.home.content_open_project);
+   tabs.home.tab_new_project =
+      elm_toolbar_item_append(tabs.home.tabs, NULL, _("New project"), _home_tab_change, NULL);
+   tabs.home.tab_import_edj =
+      elm_toolbar_item_append(tabs.home.tabs, NULL, _("Import edj-file"), _home_tab_change, NULL);
+   tabs.home.tab_import_edc =
+      elm_toolbar_item_append(tabs.home.tabs, NULL, _("Import edc-file"), _home_tab_change, NULL);
 
    tabs.home.item = elm_toolbar_item_append(tabs.toolbar, "home", NULL,
                                             _content_set, NULL);
@@ -142,7 +156,7 @@ tabs_add(void)
 }
 
 void
-tabs_tab_home_open(Tabs_View view __UNUSED__)
+tabs_tab_home_open(Tabs_View view)
 {
    assert(tabs.layout != NULL);
 
@@ -152,7 +166,27 @@ tabs_tab_home_open(Tabs_View view __UNUSED__)
    _content_unset();
    elm_layout_content_set(tabs.layout, NULL, tabs.home.content);
 
-   TODO("select the tab with wizard accourdingly to view");
+   switch(view)
+     {
+      case TAB_HOME_PROJECT_INFO:
+         elm_toolbar_item_selected_set(tabs.home.tab_project_info, true);
+         break;
+      case TAB_HOME_OPEN_PROJECT:
+         elm_toolbar_item_selected_set(tabs.home.tab_open_project, true);
+         break;
+      case TAB_HOME_NEW_PROJECT:
+         elm_toolbar_item_selected_set(tabs.home.tab_new_project, true);
+         break;
+      case TAB_HOME_IMPORT_EDJ:
+         elm_toolbar_item_selected_set(tabs.home.tab_import_edj, true);
+         break;
+      case TAB_HOME_IMPORT_EDC:
+         elm_toolbar_item_selected_set(tabs.home.tab_import_edj, true);
+         break;
+      case TAB_HOME_LAST:
+      default:
+         break;
+     }
 }
 
 void
