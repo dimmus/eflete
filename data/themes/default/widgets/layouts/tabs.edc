@@ -43,17 +43,10 @@ group { name: "elm/layout/tab_home/default";
          description { state: "default" 0.0;
             color_class: "bg_main";
             rel1 {
-               to: "elm.swallow.content";
-               offset: -1 0;
+               to: "border";
             }
-         }
-      }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            rel1 {
-               relative: 1.0 0.0;
-               to: "elm.swallow.toolbar";
+            rel2 {
+               to: "border";
             }
          }
       }
@@ -66,8 +59,25 @@ group { name: "elm/layout/tab_home/default";
                border: 10 10 10 11;
             }
             rel1 {
-               to: "elm.swallow.content";
+               relative: 1.0 0.0;
+               to: "elm.swallow.toolbar";
                offset: -1 0;
+            }
+            rel2 {
+               offset: -4 -4;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "border";
+               offset: 20 6;
+            }
+            rel2 {
+               to: "border";
+               offset: -21 -7;
             }
          }
       }
@@ -76,6 +86,9 @@ group { name: "elm/layout/tab_home/default";
          description { state: "default" 0.0;
             max: 136 -1;
             align: 0.0 0.0;
+            rel1 {
+               offset: 3 3;
+            }
          }
       }
    }
