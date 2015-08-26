@@ -801,10 +801,10 @@ group { name: "elm/toolbar/item/tabs_vertical";
             }
          }
          description { state: "visible" 0.0;
-            min: 120 21;
+            min: 0 21;
             rel1 {
                relative: 1.0 0.0;
-               offset: 6 0;
+               offset: 18 0;
                to_x: "elm.swallow.icon";
                to_y: "bg";
             }
@@ -813,6 +813,7 @@ group { name: "elm/toolbar/item/tabs_vertical";
                to: "bg";
             }
             text {
+               align: 0.0 0.5;
                font: "PT";
                size: 12;
                ellipsis: 1.0;
