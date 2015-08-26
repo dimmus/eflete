@@ -70,7 +70,7 @@ _content_set(void *data,
    if (item)
      elm_layout_content_set(tabs.layout, NULL, item->content);
    else
-     tabs_tab_home_open(TABS_LAST);
+     tabs_tab_home_open(TAB_HOME_LAST);
 
    /* call 'tab,changed' on tab click, and sent Group accociated with clicked
     * tab or NULL, if click on 'home' tab */

@@ -30,11 +30,12 @@
 #include "group_manager.h"
 
 typedef enum {
-   TABS_NEW_PROJECT = 0,
-   TABS_IMPORT_EDJ,
-   TABS_IMPORT_EDC,
-   TABS_OPEN_PROJECT,
-   TABS_LAST
+   TAB_HOME_PROJECT_INFO = 0,
+   TAB_HOME_NEW_PROJECT,
+   TAB_HOME_IMPORT_EDJ,
+   TAB_HOME_IMPORT_EDC,
+   TAB_HOME_OPEN_PROJECT,
+   TAB_HOME_LAST
 } Tabs_View;
 
 /**
