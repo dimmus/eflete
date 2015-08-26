@@ -57,7 +57,7 @@ EFLETE_TEST (groupedit_add_test_p)
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
-   groupedit = groupedit_add(parent);
+   groupedit = groupedit_add(parent, NULL);
    ck_assert_msg(groupedit != NULL, "Failed create groupedit object.");
    evas_object_del(parent);
 

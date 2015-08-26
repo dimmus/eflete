@@ -70,7 +70,7 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_p)
    elm_init(0, 0);
    app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   workspace = workspace_add(parent, NULL, NULL);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    style->obj = edje_edit_object_add(e);
@@ -135,7 +135,7 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n2)
    elm_init(0, 0);
    app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   workspace = workspace_add(parent, NULL, NULL);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    style->obj = edje_edit_object_add(e);

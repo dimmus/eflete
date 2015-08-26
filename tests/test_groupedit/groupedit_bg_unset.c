@@ -62,7 +62,7 @@ EFLETE_TEST(groupedit_bg_unset_test_p)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    image = evas_object_image_add(evas_object_evas_get(parent));
 
-   groupedit = groupedit_add(parent);
+   groupedit = groupedit_add(parent, NULL);
    groupedit_bg_set(groupedit, image);
    res_image = groupedit_bg_unset(groupedit);
    ck_assert_msg(image == res_image,

@@ -70,7 +70,7 @@ EFLETE_TEST(workspace_edit_object_part_item_del_test_p1)
    part_name = eina_stringshare_add("table");
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    mmap_file = eina_file_open(file, EINA_FALSE);
-   workspace = workspace_add(parent, NULL, NULL);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "layout/table", LAYOUT, NULL);
    wm_style_data_load(style, e, mmap_file);
@@ -134,7 +134,7 @@ EFLETE_TEST(workspace_edit_object_part_item_del_test_n1)
    part_name = eina_stringshare_add("wrong_name");
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    mmap_file = eina_file_open(file, EINA_FALSE);
-   workspace = workspace_add(parent, NULL, NULL);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "layout/table", LAYOUT, NULL);
    wm_style_data_load(style, e, mmap_file);
@@ -194,7 +194,7 @@ EFLETE_TEST(workspace_edit_object_part_item_del_test_n2)
    part_name = eina_stringshare_add("table");
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    mmap_file = eina_file_open(file, EINA_FALSE);
-   workspace = workspace_add(parent, NULL, NULL);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "layout/table", LAYOUT, NULL);
    wm_style_data_load(style, e, mmap_file);

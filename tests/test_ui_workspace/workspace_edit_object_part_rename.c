@@ -65,7 +65,7 @@ EFLETE_TEST(workspace_edit_object_part_rename_test_p1)
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_rename.edj", EINA_FALSE);
-   workspace = workspace_add(parent, NULL, NULL);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
@@ -122,7 +122,7 @@ EFLETE_TEST(workspace_edit_object_part_rename_test_p2)
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_rename.edj", EINA_FALSE);
-   workspace = workspace_add(parent, NULL, NULL);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
@@ -180,7 +180,7 @@ EFLETE_TEST(workspace_edit_object_part_rename_test_n3)
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_rename.edj", EINA_FALSE);
-   workspace = workspace_add(parent, NULL, NULL);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);

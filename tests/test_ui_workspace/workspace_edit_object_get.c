@@ -65,7 +65,7 @@ EFLETE_TEST (workspace_edit_object_get_test_p)
    Eina_File *mmap_file = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   workspace = workspace_add(parent, NULL, NULL);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    mmap_file = eina_file_open("./edj_build/workspace_edit_object_get.edj", EINA_FALSE);
    style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
@@ -114,7 +114,7 @@ EFLETE_TEST (workspace_edit_object_get_test_p1)
    Style *style_ret = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   workspace = workspace_add(parent, NULL, NULL);
+   workspace = workspace_add(parent, NULL);
    //style_ret = workspace_edit_object_get(workspace);
    ck_assert_msg(style_ret == NULL, "Get edit object from workspace, "
                                 "whithout prevision set");
