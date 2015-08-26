@@ -211,6 +211,43 @@ _on_clicked_double(void *data __UNUSED__,
 }
 
 static void
+_on_activated(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info)
+{
+   Part_List *pl = data;
+   const Elm_Genlist_Item_Class* itc;
+   Elm_Object_Item *selected;
+   const Eina_List *subitems, *l;
+   Part_ *part;
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+
+   assert(pl != NULL);
+   assert(pl->selected_part_item != NULL);
+
+   itc = elm_genlist_item_item_class_get(glit);
+   if (itc == pl->itc_state)
+     {
+        /* unselecting previous selected state */
+        subitems = elm_genlist_item_subitems_get(pl->selected_part_item);
+        EINA_LIST_FOREACH(subitems, l, selected)
+           if (elm_genlist_item_item_class_get(selected) == pl->itc_state_selected)
+             break;
+        assert(selected != NULL);
+        elm_genlist_item_item_class_update(selected, pl->itc_state);
+
+        /* selecting new one */
+        elm_genlist_item_item_class_update(glit, pl->itc_state_selected);
+
+        part = elm_object_item_data_get(pl->selected_part_item);
+        part->current_state = elm_object_item_data_get(glit);
+
+        evas_object_smart_callback_call(pl->layout, SIGNAL_PART_LIST_PART_STATE_SELECTED,
+                                        (void *)part);
+     }
+}
+
+static void
 _expanded_cb(void *data,
              Evas_Object *o __UNUSED__,
              void *event_info)
@@ -412,7 +449,8 @@ part_list_add(Group *group)
    elm_scroller_policy_set(pl->genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
    evas_object_show(pl->genlist);
    elm_object_content_set(pl->layout, pl->genlist);
-   evas_object_smart_callback_add(pl->genlist, "clicked,double", _on_clicked_double, NULL);
+   evas_object_smart_callback_add(pl->genlist, "clicked,double", _on_clicked_double, pl);
+   evas_object_smart_callback_add(pl->genlist, "activated", _on_activated, pl);
    evas_object_smart_callback_add(pl->genlist, "expand,request", _expand_request_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "contract,request", _contract_request_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "expanded", _expanded_cb, pl);
