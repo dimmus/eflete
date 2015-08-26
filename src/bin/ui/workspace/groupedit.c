@@ -70,8 +70,8 @@ _unselect_part(void *data,
         _selected_item_return_to_place(sd);
      }
    evas_object_hide(sd->obj_area.obj);
-   evas_object_smart_callback_call(o, SIG_PART_UNSELECTED,
-                                   (void *)sd->selected->name);
+/*   evas_object_smart_callback_call(o, SIG_PART_UNSELECTED,
+                                   (void *)sd->selected->name);*/
    sd->selected = NULL;
 }
 
@@ -95,7 +95,6 @@ _groupedit_smart_add(Evas_Object *o)
    priv->con_current_size = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
    priv->real_size = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
    priv->zoom_factor = 1.0;
-   priv->edit_obj = NULL;
    priv->parts = NULL;
    priv->obj_area.obj = edje_object_add(priv->e);
    evas_object_repeat_events_set(priv->obj_area.obj, true);
@@ -117,7 +116,13 @@ _groupedit_smart_del(Evas_Object *o)
 {
    WS_GROUPEDIT_DATA_GET(o, sd)
 
+   groupedit_bg_unset(o);
+
    _parts_list_free(sd);
+   evas_object_smart_member_del(sd->group->edit_object);
+   evas_object_smart_member_del(sd->edit_obj_clipper);
+   evas_object_hide(sd->group->edit_object);
+   evas_object_del(sd->edit_obj_clipper);
 
    free(sd->real_size);
    free(sd->con_current_size);
@@ -218,11 +223,13 @@ _groupedit_smart_calculate(Evas_Object *o)
    DBG("Groupedit geometry: x[%i] y[%i] w[%i] h[%i]", x, y, w, h);
    if (!priv->separated)
      {
-        evas_object_move(priv->edit_obj, priv->con_current_size->x,
-                                         priv->con_current_size->y);
+        evas_object_move(priv->group->edit_object,
+                         priv->con_current_size->x,
+                         priv->con_current_size->y);
      }
-   evas_object_resize(priv->edit_obj, priv->con_current_size->w,
-                                      priv->con_current_size->h);
+   evas_object_resize(priv->group->edit_object,
+                      priv->con_current_size->w,
+                      priv->con_current_size->h);
 
    _parts_recalc(priv);
 
@@ -250,81 +257,40 @@ _groupedit_smart_set_user(Evas_Smart_Class *sc)
 }
 
 Evas_Object *
-groupedit_add(Evas_Object *parent)
+groupedit_add(Evas_Object *parent, Group *group)
 {
    Evas *e;
    Evas_Object *obj;
 
    assert(parent != NULL);
+   assert(group != NULL);
 
    e = evas_object_evas_get(parent);
    obj = evas_object_smart_add(e, _groupedit_smart_class_new());
    WS_GROUPEDIT_DATA_GET(obj, sd);
    sd->parent = parent;
 
+   edje_object_animation_set(group->edit_object, false);
+   TODO("set the state for all parts to default 0.0")
+   sd->group = group;
+   evas_object_smart_member_add(sd->group->edit_object, obj);
+
+   _parts_list_new(sd);
+
+   /* hide the editing object by using clipper (clipper is small, it's size is 0,0)
+    * with such clipper object invisible and calculate geometry. */
+   evas_object_show(sd->group->edit_object);
+
+   sd->edit_obj_clipper = evas_object_rectangle_add(sd->e);
+   evas_object_clip_set(sd->group->edit_object, sd->edit_obj_clipper);
+   evas_object_smart_member_add(sd->edit_obj_clipper, obj);
+   evas_object_show(sd->edit_obj_clipper);
+
    return obj;
 }
 
 /******************************************************************************/
 /******************************************************************************/
-
-Eina_Bool
-groupedit_edit_object_set(Evas_Object *obj,
-                          Evas_Object *edit_obj,
-                          const char *file)
-{
-   WS_GROUPEDIT_DATA_GET(obj, sd);
-
-   /* check input edit_obj, if it not a edje object return false */
-   assert(edit_obj != NULL);
-   assert(!strcmp("edje", evas_object_type_get(edit_obj)));
-   assert(file != NULL);
-
-   if (!ecore_file_exists(file)) return false;
-
-   edje_object_animation_set(edit_obj, false);
-   TODO("set the state for all parts to default 0.0")
-   sd->edit_obj = edit_obj;
-   evas_object_smart_member_add(sd->edit_obj, obj);
-   sd->edit_obj_file = file;
-
-   _parts_list_free(sd);
-   _parts_list_new(sd);
-
-   /* hide the editing object by using clipper (clipper is small, it's size is 0,0)
-    * with such clipper object invisible and calculate geometry. */
-   evas_object_show(edit_obj);
-
-   sd->edit_obj_clipper = evas_object_rectangle_add(sd->e);
-   evas_object_clip_set(edit_obj, sd->edit_obj_clipper);
-   evas_object_smart_member_add(sd->edit_obj_clipper, obj);
-   evas_object_show(sd->edit_obj_clipper);
-
-   return true;
-}
-
-Evas_Object *
-groupedit_edit_object_unset(Evas_Object *obj)
-{
-   Evas_Object *ret;
-   WS_GROUPEDIT_DATA_GET(obj, sd);
-
-   groupedit_bg_unset(obj);
-
-   assert(sd->edit_obj != NULL);
-
-   _parts_list_free(sd);
-   ret = sd->edit_obj;
-   evas_object_smart_member_del(sd->edit_obj);
-   evas_object_smart_member_del(sd->edit_obj_clipper);
-   evas_object_hide(sd->edit_obj);
-   evas_object_del(sd->edit_obj_clipper);
-   sd->edit_obj = NULL;
-   sd->edit_obj_clipper = NULL;
-
-   return ret;
-}
-
 Eina_Bool
 groupedit_edit_object_recalc_all(Evas_Object *obj)
 {
@@ -348,6 +314,8 @@ groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part)
    return gp->border;
 }
 
+
+TODO("Fix part rename")
 Eina_Bool
 groupedit_edit_object_part_rename(Evas_Object *obj,
                                   const char *part_old_name,
@@ -366,7 +334,7 @@ groupedit_edit_object_part_rename(Evas_Object *obj,
    assert(gp != NULL);
    assert(gp2 == NULL);
 
-   eina_stringshare_replace(&gp->name, part_new_name);
+/*   eina_stringshare_replace(&gp->name, part_new_name); */
 
    return true;
 }
@@ -471,7 +439,7 @@ groupedit_edit_object_part_state_set(Evas_Object *obj, const char *part,
    assert(part != NULL);
    assert(state != NULL);
 
-   ret = edje_edit_part_selected_state_set(sd->edit_obj, part, state, value);
+   ret = edje_edit_part_selected_state_set(sd->group->edit_object, part, state, value);
 
    evas_object_smart_changed(sd->obj);
    return ret;
@@ -487,19 +455,19 @@ groupedit_edit_object_part_state_add(Evas_Object *obj, const char *part,
 
    assert(part != NULL);
    assert(state != NULL);
-   assert(edje_edit_part_exist(sd->edit_obj, part));
-   assert(!edje_edit_state_exist(sd->edit_obj, part, state, value));
+   assert(edje_edit_part_exist(sd->group->edit_object, part));
+   assert(!edje_edit_state_exist(sd->group->edit_object, part, state, value));
 
-   ret = edje_edit_state_add(sd->edit_obj, part, state, value);
-   ret &= edje_edit_part_selected_state_set(sd->edit_obj, part, state, value);
+   ret = edje_edit_state_add(sd->group->edit_object, part, state, value);
+   ret &= edje_edit_part_selected_state_set(sd->group->edit_object, part, state, value);
    TODO("WTF?");
-   img = edje_edit_state_image_get(sd->edit_obj, part, "default", 0.0);
-   edje_edit_state_image_set(sd->edit_obj, part, state, value, img);
+   img = edje_edit_state_image_get(sd->group->edit_object, part, "default", 0.0);
+   edje_edit_state_image_set(sd->group->edit_object, part, state, value, img);
 
    if (ret)
      {
         evas_object_smart_changed(sd->obj);
-        history_diff_add(sd->edit_obj, STATE_TARGET, ADD, "unsued", part, state,
+        history_diff_add(sd->group->edit_object, STATE_TARGET, ADD, "unsued", part, state,
                          value, "state");
      }
    return ret;
@@ -518,17 +486,17 @@ groupedit_edit_object_part_state_copy(Evas_Object *obj, const char *part,
    assert(state_from != NULL);
    assert(state_to != NULL);
 
-   ret = edje_edit_state_copy(sd->edit_obj, part, state_from, value_from,
+   ret = edje_edit_state_copy(sd->group->edit_object, part, state_from, value_from,
                               state_to, value_to);
-   ret &= edje_edit_part_selected_state_set(sd->edit_obj, part, state_to, value_to);
+   ret &= edje_edit_part_selected_state_set(sd->group->edit_object, part, state_to, value_to);
    TODO("WTF?");
-   img = edje_edit_state_image_get(sd->edit_obj, part, state_from, value_from);
-   edje_edit_state_image_set(sd->edit_obj, part, state_to, value_to, img);
+   img = edje_edit_state_image_get(sd->group->edit_object, part, state_from, value_from);
+   edje_edit_state_image_set(sd->group->edit_object, part, state_to, value_to, img);
 
    if (ret)
      {
         evas_object_smart_changed(sd->obj);
-        history_diff_add(sd->edit_obj, STATE_TARGET, ADD, "unused", part, state_to,
+        history_diff_add(sd->group->edit_object, STATE_TARGET, ADD, "unused", part, state_to,
                          value_to, "state");
      }
    return ret;
@@ -544,9 +512,9 @@ groupedit_edit_object_part_state_del(Evas_Object *obj, const char *part,
    assert(part != NULL);
    assert(state != NULL);
 
-   history_diff_add(sd->edit_obj, STATE_TARGET, DEL, "unused", part, state, value,
+   history_diff_add(sd->group->edit_object, STATE_TARGET, DEL, "unused", part, state, value,
                     "state");
-   ret = edje_edit_state_del(sd->edit_obj, part, state, value);
+   ret = edje_edit_state_del(sd->group->edit_object, part, state, value);
 
    evas_object_smart_changed(sd->obj);
    return ret;
@@ -586,7 +554,7 @@ groupedit_edit_object_parts_separated(Evas_Object *obj,
    int w, h, count;
    WS_GROUPEDIT_DATA_GET(obj, sd);
 
-   assert(sd->edit_obj != NULL);
+   assert(sd->group->edit_object != NULL);
 
    if (!sd->parts) return false;
    if (sd->separated == separated) return true;
@@ -613,7 +581,7 @@ groupedit_edit_object_parts_separated(Evas_Object *obj,
            send the name of selected item(part), for hilight and widget list
            events. */
         DBG("Separate mod off; selected part is %s",
-            sd->selected ? sd->selected->name : NULL);
+            sd->selected ? sd->selected->part->name : NULL);
         evas_object_smart_callback_call(obj, SIG_PART_SEPARETE_CLOSE, NULL);
         _selected_item_return_to_place(sd);
      }
@@ -653,8 +621,10 @@ groupedit_edit_object_part_select(Evas_Object *obj, const char *part)
      }
 }
 
+TODO("remove this from public API and use callback from part list");
+
 Eina_Bool
-groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible)
+groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible __UNUSED__)
 {
    Groupedit_Part *gp;
    WS_GROUPEDIT_DATA_GET(obj, sd);
@@ -664,8 +634,6 @@ groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible
    gp = _parts_list_find(sd->parts, part);
 
    assert(gp != NULL);
-
-   gp->visible = visible;
 
    _parts_recalc(sd);
    return true;

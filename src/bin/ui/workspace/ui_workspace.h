@@ -42,14 +42,13 @@
  *
  * @param parent The parent object.
  * @param group The group to be editing.
- * @param file Path to the file from been loaded the edje edit object.
  *
  * @return The new object or NULL if it cannot be created.
  *
  * @ingroup Workspace
  */
 Evas_Object *
-workspace_add(Evas_Object *parent, Group *group, const char *file);
+workspace_add(Evas_Object *parent, Group *group);
 
 /**
  * Get the groupedit object, which loaded into workspace.

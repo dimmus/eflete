@@ -44,6 +44,8 @@
  *
  */
 
+#include "group_manager.h"
+
 struct _Geom{
    int x, y, w, h;
 };
@@ -60,13 +62,14 @@ typedef struct _Geom Groupedit_Geom;
  * To delete groupedit object use evas_object_del.
  *
  * @param parent The parent object.
+ * @param group Group to be shown.
  *
  * @return The groupedit object.
  *
  * @ingroup Groupedit
  */
 Evas_Object *
-groupedit_add(Evas_Object *parent);
+groupedit_add(Evas_Object *parent, Group *group);
 
 TODO("aspect for groupedit")
 //Eina_Bool
@@ -74,36 +77,6 @@ TODO("aspect for groupedit")
 
 /******************************************************************************/
 /******************************************************************************/
-
-/**
- * Set the editable object, parts, which will be drawn in groupedit.
- *
- * @param obj The groupedit object,
- * @param edit_obj The object being edited,
- * @param file The editable object file, means the file was loaded from an
- *        object.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_edit_object_set(Evas_Object *obj,
-                          Evas_Object *edit_obj,
-                          const char *file);
-
-/**
- * Unset the editable object. All pictured parts from groupedit will be deleted.
- *
- * @param obj The groupedit object.
- *
- * @return The editable object will be returned, or NULL if object not set
- * setted.
- *
- * @ingroup Groupedit
- */
-Evas_Object *
-groupedit_edit_object_unset(Evas_Object *obj);
 
 /**
  * Recalculate all parts geometry for groupedit.

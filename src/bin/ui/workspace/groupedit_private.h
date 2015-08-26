@@ -24,6 +24,7 @@
 #include "groupedit.h"
 #include "common_macro.h"
 #include "logger.h"
+#include "group_manager.h"
 
 typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;
 typedef struct _Groupedit_Part Groupedit_Part;
@@ -56,6 +57,7 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
 struct _Ws_Groupedit_Smart_Data
 {
    Evas_Object_Smart_Clipped_Data base;
+   Group *group;
    Evas *e;
    Evas_Object *obj;
    Evas_Object *event;
@@ -90,10 +92,7 @@ struct _Ws_Groupedit_Smart_Data
    } handler_BR;
    Eina_Bool handler_TL_pressed : 1;
    Eina_Bool handler_BR_pressed : 1;
-   const char *style;
-   Evas_Object *edit_obj;
    Evas_Object *edit_obj_clipper;
-   const char *edit_obj_file;
    Eina_List *parts;
    struct {
       Evas_Object *obj;
@@ -139,12 +138,11 @@ struct _Ws_Groupedit_Smart_Data
  */
 struct _Groupedit_Part
 {
-   Eina_Stringshare *name;    /**< The part name.  */
+   Part_ *part;               /**< Pointer to part */
    Evas_Object *bg;           /**< The background, uses for container parts TABLE or BOX */
    Evas_Object *draw;         /**< The evas primitive to be draw in groupedit.
                                    The valid evas object types: image, rectangle,
                                    text and textblock.*/
-   Eina_Bool visible : 1;     /**< Visible or not on canvas. */
    Evas_Object *border;       /**< The object border, use for next part types:
                                    TEXT, TEXTBLOCK, SWALLOW, SPACER. In another
                                    case border has opacity 0. This object serves

@@ -1134,7 +1134,7 @@ _on_part_unselect(void *data,
 }
 
 Evas_Object *
-workspace_add(Evas_Object *parent, Group *group, const char *file)
+workspace_add(Evas_Object *parent, Group *group)
 {
    Evas *e = NULL;
    Evas_Object *obj = NULL;
@@ -1165,7 +1165,7 @@ workspace_add(Evas_Object *parent, Group *group, const char *file)
    container_style_set(sd->container.obj, "scroller");
 
    /* create groupedit - editable */
-   sd->groupedit = groupedit_add(sd->scroller);
+   sd->groupedit = groupedit_add(sd->scroller, group);
    /* it temporary solution white not implemented preference module
       and not finished config module */
    evas_object_color_set(sd->groupedit, 0, 0, 0, 255);
@@ -1180,11 +1180,6 @@ workspace_add(Evas_Object *parent, Group *group, const char *file)
    elm_menu_item_icon_name_set(sd->menu.items.mode_normal,
                                EFLETE_IMG_PATH"context_menu-bullet.png");
    elm_menu_item_icon_name_set(sd->menu.items.mode_separate, "");
-   if (!groupedit_edit_object_set(sd->groupedit, group->edit_object, file))
-     {
-        ERR("Can't set groupedit edit object");
-        abort();
-     }
 
    container_handler_size_set(sd->container.obj, 8, 8, 8, 8);
    evas_object_smart_callback_add(sd->groupedit, "part,selected",
