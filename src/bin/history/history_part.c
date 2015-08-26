@@ -176,7 +176,7 @@ _part_redo(Evas_Object *source, Part_Diff *change)
          ui_widget_list_selected_part_del(widget_list, style);
          evas_object_smart_callback_call(ap.workspace, "ws,part,unselected",
                                          (void *)change->part);
-         workspace_highlight_unset(ap.workspace);
+         //workspace_highlight_unset(ap.workspace);
          ui_property_part_unset(prop);
          ui_property_style_set(prop, style, ap.workspace);
 
@@ -238,7 +238,7 @@ _part_undo(Evas_Object *source, Part_Diff *change)
      {
       case ADD:
          workspace_edit_object_part_del(ap.workspace, change->part);
-         workspace_highlight_unset(ap.workspace);
+         //workspace_highlight_unset(ap.workspace);
          ui_widget_list_part_selected_set(widget_list, change->part, true);
          ui_widget_list_selected_part_del(widget_list, style);
 

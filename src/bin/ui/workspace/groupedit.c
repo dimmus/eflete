@@ -70,8 +70,8 @@ _unselect_part(void *data,
         _selected_item_return_to_place(sd);
      }
    evas_object_hide(sd->obj_area.obj);
-/*   evas_object_smart_callback_call(o, SIG_PART_UNSELECTED,
-                                   (void *)sd->selected->name);*/
+   evas_object_smart_callback_call(o, SIGNAL_GROUPEDIT_PART_UNSELECTED,
+                                   (void *)sd->selected->part);
    sd->selected = NULL;
 }
 

@@ -135,7 +135,7 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
           {
              evas_object_smart_callback_call(ap.workspace, "ws,part,unselected",
                                              (void *)part->name);
-             workspace_highlight_unset(ap.workspace);
+             //workspace_highlight_unset(ap.workspace);
           }
         ui_property_part_unset(prop);
         ui_property_style_set(prop, style, ap.workspace);

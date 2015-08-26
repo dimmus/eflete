@@ -94,7 +94,7 @@ _del_part(void *data __UNUSED__,
      {
         ui_signal_list_data_unset(ap.block.signal_list);
         _on_ws_part_unselect(NULL, ap.workspace, part_name);
-        workspace_highlight_unset(ap.workspace);
+//        workspace_highlight_unset(ap.workspace);
         /* Source code is updated on part selection.
            If this was last part we should update it manualy */
         prop_view = ui_block_property_get();
@@ -658,8 +658,8 @@ ui_part_select(Part* part)
 
    ui_property_state_set(prop, part);
    workspace_edit_object_part_state_set(ap.workspace, part);
-   workspace_highlight_unset(ap.workspace);
-   workspace_highlight_set(ap.workspace, part);
+/*   workspace_highlight_unset(ap.workspace);
+   workspace_highlight_set(ap.workspace, part);*/
    evas_object_smart_callback_del_full(ap.workspace, "part,changed", _property_change, NULL);
    evas_object_smart_callback_add(ap.workspace, "part,changed", _property_change, NULL);
 
@@ -703,8 +703,8 @@ ui_style_clicked(Style *style)
    ui_signal_list_data_set(ap.block.signal_list, _style);
 
    //workspace_edit_object_set(ap.workspace, _style, ap.project->dev);
-   evas_object_smart_callback_add(ap.workspace, "ws,part,selected",
-                                  _on_ws_part_select, NULL);
+//   evas_object_smart_callback_add(ap.workspace, "ws,part,selected",
+//                                  _on_ws_part_select, NULL);
    evas_object_smart_callback_add(ap.workspace, "ws,part,unselected",
                                   _on_ws_part_unselect, NULL);
 
@@ -1733,7 +1733,7 @@ _on_enventor_mode_on(void *data,
                      void *event_info __UNUSED__)
 {
 
-   workspace_highlight_unset(ap.workspace);
+//   workspace_highlight_unset(ap.workspace);
    ui_property_part_unset(ui_block_property_get());
    ui_states_list_data_unset();
 }

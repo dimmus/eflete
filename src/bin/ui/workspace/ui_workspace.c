@@ -117,7 +117,7 @@ struct _Ws_Smart_Data
    struct {
         Evas_Object *highlight; /**< A highlight object */
         Evas_Object *space_hl; /**< A object area highlight*/
-        Part *part; /**< Contain part name and it's state. need for callbacks of highlight. */
+        Part_ *part; /**< Contain part name and it's state. need for callbacks of highlight. */
    } highlight;
 };
 typedef struct _Ws_Smart_Data Ws_Smart_Data;
@@ -129,18 +129,9 @@ typedef struct _Ws_Smart_Data Ws_Smart_Data;
    Ws_Smart_Data *ptr = evas_object_smart_data_get(o); \
    assert(ptr != NULL);
 
-static const char SIG_PART_SELECTED[] = "ws,part,selected";
-static const char SIG_PART_UNSELECTED[] = "ws,part,unselected";
-
-static const Evas_Smart_Cb_Description _smart_callbacks[] = {
-   {SIG_PART_SELECTED, "s"},
-   {SIG_PART_UNSELECTED, "s"},
-   {NULL, NULL}
-};
-
 EVAS_SMART_SUBCLASS_NEW(_evas_smart_ws, _workspace,
                         Evas_Smart_Class, Evas_Smart_Class,
-                        evas_object_smart_clipped_class_get, _smart_callbacks);
+                        evas_object_smart_clipped_class_get, NULL);
 
 static void
 _obj_area_visible_change(void *data __UNUSED__,
@@ -682,13 +673,15 @@ _highlight_changed_cb(void *data,
                       void *ei)
 {
    Highlight_Events *events = (Highlight_Events *)ei;
+   Eina_Stringshare *st_name = NULL;
+   double st_val = 0.0;
 
    Evas_Object *ws_obj = (Evas_Object *)data;
    WS_DATA_GET(ws_obj, sd)
 
-   Part *part = sd->highlight.part;
+   Part_ *part = sd->highlight.part;
    if ((!sd->group) || (!part)) return;
-
+   state_name_split(part->current_state->name, &st_name, &st_val);
    Evas_Object *obj_area = groupedit_part_object_area_get(sd->groupedit);
    Evas_Coord x, y, w, h;
    evas_object_geometry_get(obj_area, &x, &y, &w, &h);
@@ -698,29 +691,29 @@ _highlight_changed_cb(void *data,
         int old_max_w = 0, old_max_h = 0;
         int min_w = 0, min_h = 0;
         min_w = edje_edit_state_min_w_get(sd->group->edit_object, part->name,
-                                          part->curr_state,
-                                          part->curr_state_value);
+                                          st_name,
+                                          st_val);
         min_h = edje_edit_state_min_h_get(sd->group->edit_object, part->name,
-                                          part->curr_state,
-                                          part->curr_state_value);
+                                          st_name,
+                                          st_val);
 
         old_max_w = edje_edit_state_max_w_get(sd->group->edit_object, part->name,
-                                              part->curr_state,
-                                              part->curr_state_value);
+                                              st_name,
+                                              st_val);
         old_max_h = edje_edit_state_max_h_get(sd->group->edit_object, part->name,
-                                              part->curr_state,
-                                              part->curr_state_value);
+                                              st_name,
+                                              st_val);
         edje_edit_state_max_w_set(sd->group->edit_object, part->name,
-                                  part->curr_state, part->curr_state_value,
+                                  st_name, st_val,
                                   (events->w / sd->zoom.factor) <= min_w ? min_w : (events->w / sd->zoom.factor));
         edje_edit_state_max_h_set(sd->group->edit_object, part->name,
-                                  part->curr_state, part->curr_state_value,
+                                  st_name, st_val,
                                   (events->h / sd->zoom.factor) <= min_h ? min_h : (events->h / sd->zoom.factor));
         history_diff_add(sd->group->edit_object, PROPERTY, CONTAINER, VAL_INT, old_max_w, events->w,
                          old_max_h, events->h, (void *)edje_edit_state_max_w_set,
                          sd->group->name,
                          (void *)edje_edit_state_max_h_set, "max size",
-                         part->name, part->curr_state, part->curr_state_value);
+                         part->name, st_name, st_val);
      }
    else
      {
@@ -734,32 +727,32 @@ _highlight_changed_cb(void *data,
         if (align_x > 1.0) align_x = 1.0;
         if (align_y > 1.0) align_y = 1.0;
         old_align_x = edje_edit_state_align_x_get(sd->group->edit_object, part->name,
-                                                  part->curr_state,
-                                                  part->curr_state_value);
+                                                  st_name,
+                                                  st_val);
         old_align_y = edje_edit_state_align_y_get(sd->group->edit_object, part->name,
-                                                  part->curr_state,
-                                                  part->curr_state_value);
+                                                  st_name,
+                                                  st_val);
 
         edje_edit_state_align_x_set(sd->group->edit_object, part->name,
-                                    part->curr_state, part->curr_state_value,
+                                    st_name, st_val,
                                     align_x);
         edje_edit_state_align_y_set(sd->group->edit_object, part->name,
-                                    part->curr_state, part->curr_state_value,
+                                    st_name, st_val,
                                     align_y);
         history_diff_add(sd->group->edit_object, PROPERTY, CONTAINER, VAL_DOUBLE, old_align_x,
                          align_x, old_align_y, align_y,
                          (void *)edje_edit_state_align_x_set,
                          sd->group->name,
                          (void *)edje_edit_state_align_y_set, "align",
-                         part->name, part->curr_state, part->curr_state_value);
+                         part->name, st_name, st_val);
      }
 
    workspace_edit_object_recalc(ws_obj);
    evas_object_smart_callback_call(ws_obj, "part,changed", part);
 }
 
-Eina_Bool
-workspace_highlight_set(Evas_Object *obj, Part *part)
+static Eina_Bool
+_workspace_highlight_set(Evas_Object *obj, Part_ *part)
 {
    Evas_Object *follow;
    WS_DATA_GET(obj, sd)
@@ -795,8 +788,8 @@ workspace_highlight_set(Evas_Object *obj, Part *part)
    return true;
 }
 
-Eina_Bool
-workspace_highlight_unset(Evas_Object *obj)
+static Eina_Bool
+_workspace_highlight_unset(Evas_Object *obj)
 {
    WS_DATA_GET(obj, sd)
    if ((!sd->highlight.highlight) || (!sd->highlight.space_hl)) return false;
@@ -1117,20 +1110,26 @@ _on_part_select(void *data,
                 void *event_info)
 {
    Evas_Object *workspace = (Evas_Object *)data;
+   Part_ *part = event_info;
 
-   assert(workspace != NULL);
+   WS_DATA_GET(workspace, sd);
 
-   evas_object_smart_callback_call(workspace, SIG_PART_SELECTED, event_info);
+   _workspace_highlight_unset(workspace);
+   _workspace_highlight_set(workspace, part);
+   part_list_part_select(sd->part_list, part);
 }
 
 static void
 _on_part_unselect(void *data,
                   Evas_Object *obj __UNUSED__,
-                  void *event_info)
+                  void *event_info __UNUSED__)
 {
    Evas_Object *workspace = (Evas_Object *)data;
-   evas_object_smart_callback_call(workspace, SIG_PART_UNSELECTED, event_info);
-   workspace_highlight_unset(workspace);
+
+   WS_DATA_GET(workspace, sd);
+
+   _workspace_highlight_unset(workspace);
+   part_list_part_select(sd->part_list, NULL);
 }
 
 Evas_Object *
@@ -1182,9 +1181,9 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_menu_item_icon_name_set(sd->menu.items.mode_separate, "");
 
    container_handler_size_set(sd->container.obj, 8, 8, 8, 8);
-   evas_object_smart_callback_add(sd->groupedit, "part,selected",
+   evas_object_smart_callback_add(sd->groupedit, SIGNAL_GROUPEDIT_PART_SELECTED,
                                   _on_part_select, obj);
-   evas_object_smart_callback_add(sd->groupedit, "part,unselected",
+   evas_object_smart_callback_add(sd->groupedit, SIGNAL_GROUPEDIT_PART_UNSELECTED,
                                   _on_part_unselect, obj);
    evas_object_smart_callback_add(sd->groupedit, "container,changed",
                                   _ws_ruler_abs_zero_move_cb, obj);

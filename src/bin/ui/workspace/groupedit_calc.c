@@ -507,7 +507,7 @@ _part_separete_mod_mouse_click_cb(void *data,
 
    if (emd->button != 1) return;
    sd->to_select = gp;
-   evas_object_smart_callback_call(sd->obj, SIG_PART_SELECTED,
+   evas_object_smart_callback_call(sd->obj, SIGNAL_GROUPEDIT_PART_SELECTED,
                                   (void *)gp->part);
 }
 
@@ -565,7 +565,7 @@ _part_select(void *data,
 
    if (emd->button != 1) return;
    sd->to_select = gp;
-   evas_object_smart_callback_call(sd->obj, SIG_PART_SELECTED,
+   evas_object_smart_callback_call(sd->obj, SIGNAL_GROUPEDIT_PART_SELECTED,
                                   (void *)gp->part);
 }
 

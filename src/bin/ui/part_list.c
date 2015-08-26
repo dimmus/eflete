@@ -428,9 +428,9 @@ part_list_add(Group *group)
 }
 
 void
-part_list_part_select(Evas_Object *obj, Part *part)
+part_list_part_select(Evas_Object *obj, Part_ *part)
 {
-   Part *pr;
+   Part_ *pr;
    Elm_Object_Item *part_item;
    Part_List *pl = evas_object_data_get(obj, PART_LIST_DATA);
 

@@ -50,6 +50,9 @@ struct _Geom{
    int x, y, w, h;
 };
 
+#define SIGNAL_GROUPEDIT_PART_SELECTED "SIGNAL_GROUPEDIT_PART_SELECTED"
+#define SIGNAL_GROUPEDIT_PART_UNSELECTED "SIGNAL_GROUPEDIT_PART_UNSELECTED"
+
 /**
  * Geometry of groupedit part primitive.
  *
