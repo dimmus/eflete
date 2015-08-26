@@ -21,7 +21,8 @@
 #include "tabs.h"
 #include "navigator.h"
 
-static Eina_Bool want_close; 
+static Eina_Bool want_close;
+static Evas_Object *popup;
 
 static void
 _cancel_cb(void *data __UNUSED__,
@@ -37,8 +38,8 @@ _save_cb(void *data __UNUSED__,
          Evas_Object *obj __UNUSED__,
          void *ei __UNUSED__)
 {
-   evas_object_del(ap.popup);
-   ap.popup = NULL;
+   evas_object_del(popup);
+   popup = NULL;
    project_save();
    want_close = true;
    ecore_main_loop_quit();
@@ -62,22 +63,22 @@ _popup_want_save(void)
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
 
    title = eina_stringshare_printf(_("Close project %s"), ap.project->name);
-   ap.popup = elm_popup_add(ap.win_layout);
-   elm_object_part_text_set(ap.popup, "title,text", title);
+   popup = elm_popup_add(ap.win_layout);
+   elm_object_part_text_set(popup, "title,text", title);
 
-   BUTTON_ADD(ap.popup, btn, _("Save"));
+   BUTTON_ADD(popup, btn, _("Save"));
    evas_object_smart_callback_add(btn, "clicked", _save_cb, NULL);
-   elm_object_part_content_set(ap.popup, "button1", btn);
-   BUTTON_ADD(ap.popup, btn, _("Don't save"));
+   elm_object_part_content_set(popup, "button1", btn);
+   BUTTON_ADD(popup, btn, _("Don't save"));
    evas_object_smart_callback_add(btn, "clicked", _discard_cb, NULL);
-   elm_object_part_content_set(ap.popup, "button2", btn);
-   BUTTON_ADD(ap.popup, btn, _("Cancel"));
+   elm_object_part_content_set(popup, "button2", btn);
+   BUTTON_ADD(popup, btn, _("Cancel"));
    evas_object_smart_callback_add(btn, "clicked", _cancel_cb, NULL);
-   elm_object_part_content_set(ap.popup, "button3", btn);
-   LABEL_ADD(ap.popup, label, _("Do you want to save changes?"));
-   elm_object_content_set(ap.popup, label);
+   elm_object_part_content_set(popup, "button3", btn);
+   LABEL_ADD(popup, label, _("Do you want to save changes?"));
+   elm_object_content_set(popup, label);
 
-   evas_object_show(ap.popup);
+   evas_object_show(popup);
 
    ecore_main_loop_begin();
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);

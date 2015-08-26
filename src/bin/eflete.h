@@ -80,6 +80,7 @@ struct _App_Data
    Evas_Object *win;
    Evas_Object *win_layout;
    Menu *menu;
+   TODO("Burn popup variable");
    Evas_Object *popup;
    Evas_Object *splash;
    Evas_Object *colorsel; /**< global colorselector. the one colorselector for
