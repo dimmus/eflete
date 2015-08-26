@@ -59,7 +59,7 @@ TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
 #pragma GCC poison sprintf
 
 #include "logger.h"
-#include "project_manager.h"
+#include "group_manager.h"
 #include "live_view.h"
 #include "notify.h"
 #include "history.h"

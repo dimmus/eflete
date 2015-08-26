@@ -210,9 +210,9 @@ tabs_tab_add(Group *group)
    item->content = elm_panes_add(tabs.layout);
    elm_panes_horizontal_set(item->content, true);
    item->workspace = workspace_add(item->content, group);
-   //item->live_view = live_view_add(item->content, false);
+   item->live_view = live_view_add(item->content, false, group);
    elm_object_part_content_set(item->content, "left", item->workspace);
-   //elm_object_part_content_set(item->content, "right", item->live_view);
+   elm_object_part_content_set(item->content, "right", item->live_view);
 
    item->toolbar_item = elm_toolbar_item_append(tabs.toolbar, NULL, group->name,
                                                _content_set, (void *)item);

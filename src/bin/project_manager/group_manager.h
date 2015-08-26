@@ -27,7 +27,6 @@
 #include <Edje_Edit.h>
 #include <assert.h>
 #include "project_manager.h"
-#include "alloc.h"
 #define EFLETE_INTERNAL_GROUP_NAME "___eflete_internal_group___"
 
 /**

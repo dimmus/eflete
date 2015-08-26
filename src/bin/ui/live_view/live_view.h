@@ -36,6 +36,8 @@
 #include <Evas.h>
 #include <Elementary.h>
 
+#include "group_manager.h"
+
 /**
  * @typedef Live_View
  *
@@ -67,8 +69,8 @@ typedef struct _Live_View Live_View;
  *
  * @ingroup Live_View
  */
-Live_View *
-live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit);
+Evas_Object *
+live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group);
 
 /**
  * Set and show given widget and apply the style to it for showing the view of

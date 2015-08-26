@@ -68,8 +68,8 @@ _change_bg_cb(void *data,
    elm_object_part_content_set(live_layout, SWALLOW_BG, bg);
 }
 
-Live_View *
-live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit)
+Evas_Object *
+live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group __UNUSED__)
 {
    Live_View *live;
    Evas_Object *bg;
@@ -105,7 +105,7 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit)
    evas_object_hide(live->live_view);
    elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
 
-   return live;
+   return live->layout;
 }
 
 Eina_Bool

@@ -602,7 +602,7 @@ animator_window_add(Style *style)
    elm_panes_horizontal_set(panes, true);
    evas_object_show(panes);
 
-   animator->live = live_view_add(animator->mwin, true);
+   //animator->live = live_view_add(animator->mwin, true, NULL);
    live_view_widget_style_set(animator->live, ap.project, style);
    edje_object_signal_callback_add(animator->live->object, "show", "",
                                    _on_object_load, animator);

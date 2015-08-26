@@ -18,6 +18,7 @@
  */
 
 #include "group_manager.h"
+#include "alloc.h"
 
 static void
 _group_name_parse(Group *group)
