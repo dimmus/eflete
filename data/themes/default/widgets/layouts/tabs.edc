@@ -93,3 +93,65 @@ group { name: "elm/layout/tab_home/default";
       }
    }
 }
+
+group { name: "elm/layout/tab_home/open_project";
+   parts {
+      part { name: "area.recent";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 300 0;
+            max: 300 -1;
+            align: 1.0 0.5;
+         }
+      }
+      part { name: "elm.swallow.btn_clear";
+         type: SWALLOW;
+         description {
+            align: 1.0 0.0;
+            rel1 {
+               to: "area.recent";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "area.recent";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "elm.text.recent";
+         type: TEXT;
+         description {
+            rel1.to: "area.recent";
+            rel2.to: "area.recent";
+            align: 0.0 0.0;
+            text {
+               size: 12;
+               font: "PT";
+               min: 1 1;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "area.fileselector";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel2 {
+               to: "area.recent";
+               relative: 0.0 1.0;
+               offset: -7 -1;
+            }
+         }
+      }
+      part { name: "elm.swallow.fileselector";
+         type: SWALLOW;
+         description {
+            rel1 {
+               to: "area.fileselector";
+            }
+            rel2 {
+               to: "area.fileselector";
+            }
+         }
+      }
+   }
+}
