@@ -25,6 +25,7 @@
 #include "sound_editor.h"
 #include "animator.h"
 #include "about_window.h"
+#include "tabs.h"
 
 static int _menu_delayed_event = 0;
 
@@ -99,7 +100,7 @@ _menu_cb(void *data __UNUSED__,
          wizard_new_project_add();
          break;
       case MENU_FILE_OPEN_PROJECT:
-         project_open();
+         tabs_tab_home_open(TAB_HOME_OPEN_PROJECT);
          break;
       case MENU_FILE_IMPORT_EDJ:
          if (!project_close()) break;
