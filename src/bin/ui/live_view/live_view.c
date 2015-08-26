@@ -73,16 +73,24 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group __UNUSED
 {
    Live_View *live;
    Evas_Object *bg;
+   Evas_Object *block;
 
    assert(parent != NULL);
 
+   /* Create the very top object of live view */
+   block = elm_layout_add(parent);
+   elm_layout_theme_set(block, "layout", "block", "default");
+   elm_layout_text_set(block, "elm.text", _("Live View"));
+   evas_object_show(block);
+
+   /* Fill up live view structure */
    live = mem_calloc(1, sizeof(Live_View));
-
    live->in_prog_edit = in_prog_edit;
-
    live->parent = parent;
-   live->layout = elm_layout_add(parent);
+   /* Create main layout of entire live view */
+   live->layout = elm_layout_add(block);
    elm_layout_theme_set(live->layout, "layout", "live_view", "toolbar");
+   elm_object_part_content_set(block, "elm.swallow.content", live->layout);
    bg = elm_bg_add(live->layout);
    IMAGE_ADD_NEW(live->layout, bg, "bg", "tile");
    evas_object_show(bg);
@@ -105,7 +113,7 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group __UNUSED
    evas_object_hide(live->live_view);
    elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
 
-   return live->layout;
+   return block;
 }
 
 Eina_Bool
