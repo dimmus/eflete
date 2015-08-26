@@ -136,8 +136,6 @@ tabs_add(void)
 
    tabs.home.content_open_project = _tab_open_project_add();
 
-   tabs.home.tab_project_info =
-      elm_toolbar_item_append(tabs.home.tabs, NULL, _("Summary"), _home_tab_change, NULL);
    tabs.home.tab_open_project =
       elm_toolbar_item_append(tabs.home.tabs, NULL, _("Open project"), _home_tab_change, tabs.home.content_open_project);
    tabs.home.tab_new_project =
@@ -146,6 +144,8 @@ tabs_add(void)
       elm_toolbar_item_append(tabs.home.tabs, NULL, _("Import edj-file"), _home_tab_change, NULL);
    tabs.home.tab_import_edc =
       elm_toolbar_item_append(tabs.home.tabs, NULL, _("Import edc-file"), _home_tab_change, NULL);
+   tabs.home.tab_project_info =
+      elm_toolbar_item_append(tabs.home.tabs, NULL, _("Project info"), _home_tab_change, NULL);
 
    tabs.home.item = elm_toolbar_item_append(tabs.toolbar, "home", NULL,
                                             _content_set, NULL);
