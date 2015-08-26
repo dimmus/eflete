@@ -343,6 +343,12 @@ group_load(Project *pro, Group *group, Evas *e)
 }
 
 void
+group_unload(Group *group)
+{
+   _group_object_del(group);
+}
+
+void
 gm_groups_load(Project *pro)
 {
    Eina_List *collections, *l;
