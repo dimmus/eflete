@@ -17,8 +17,9 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "tabs.h"
+#include "tabs_private.h"
 #include "ui_workspace.h"
+#include "tabs.h"
 
 struct _Tabs_Item {
    Group *group;
@@ -38,6 +39,7 @@ struct _Tabs {
       Elm_Object_Item *item;
       Evas_Object *content;
       Evas_Object *tabs;
+      Evas_Object *tab_open_project;
    } home;
 };
 
@@ -90,6 +92,15 @@ _find_tab(Group *group)
    return NULL;
 }
 
+static void
+_home_tab_change(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   evas_object_hide(elm_layout_content_unset(tabs.home.content, NULL));
+   elm_layout_content_set(tabs.home.content, NULL, data);
+}
+
 Evas_Object *
 tabs_add(void)
 {
@@ -113,11 +124,14 @@ tabs_add(void)
    elm_toolbar_shrink_mode_set(toolbar, ELM_TOOLBAR_SHRINK_SCROLL);
    elm_toolbar_select_mode_set(toolbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
    elm_toolbar_align_set(toolbar, 0.0);
-   elm_toolbar_item_append(toolbar, NULL, _("Summary"), NULL, NULL);
-   elm_toolbar_item_append(toolbar, NULL, _("Open project"), NULL, NULL);
-   elm_toolbar_item_append(toolbar, NULL, _("New project"), NULL, NULL);
-   elm_toolbar_item_append(toolbar, NULL, _("Import edj-file"), NULL, NULL);
-   elm_toolbar_item_append(toolbar, NULL, _("Import edc-file"), NULL, NULL);
+
+   tabs.home.tab_open_project = _tab_open_project_add();
+
+   elm_toolbar_item_append(toolbar, NULL, _("Summary"),         _home_tab_change, NULL);
+   elm_toolbar_item_append(toolbar, NULL, _("Open project"),    _home_tab_change, tabs.home.tab_open_project);
+   elm_toolbar_item_append(toolbar, NULL, _("New project"),     _home_tab_change, NULL);
+   elm_toolbar_item_append(toolbar, NULL, _("Import edj-file"), _home_tab_change, NULL);
+   elm_toolbar_item_append(toolbar, NULL, _("Import edc-file"), _home_tab_change, NULL);
 
    tabs.home.item = elm_toolbar_item_append(tabs.toolbar, "home", NULL,
                                             _content_set, NULL);

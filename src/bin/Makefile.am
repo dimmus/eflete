@@ -47,6 +47,7 @@ ui/dialogs/item_dialog.c \
 ui/modal_window/modal_window.c \
 ui/navigator.c \
 ui/tabs.c \
+ui/tab_home_open.c \
 ui/blocks/ui_block.c \
 ui/blocks/ui_property.c \
 ui/blocks/ui_widget_list.c \
