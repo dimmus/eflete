@@ -24,6 +24,7 @@
 #include "container.h"
 #include "eflete.h"
 #include "part_list.h"
+#include "signals.h"
 
 struct _Ws_Menu
 {
@@ -1105,18 +1106,33 @@ _on_groupedit_geometry_changed(void *data,
 }
 
 static void
-_on_part_select(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info)
+_on_groupedit_part_select(void *data,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info)
 {
    Evas_Object *workspace = (Evas_Object *)data;
    Part_ *part = event_info;
 
    WS_DATA_GET(workspace, sd);
 
+   part_list_part_select(sd->part_list, part);
+}
+
+static void
+_on_part_list_part_select(void *data,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info)
+{
+   Evas_Object *workspace = (Evas_Object *)data;
+   Part_ *part = event_info;
+
+   WS_DATA_GET(workspace, sd);
+
+   TODO("Combine this methods to one")
    _workspace_highlight_unset(workspace);
    _workspace_highlight_set(workspace, part);
-   part_list_part_select(sd->part_list, part);
+
+   evas_object_smart_callback_call(ap.win, SIGNAL_PART_SELECTED, (void *)part);
 }
 
 static void
@@ -1156,6 +1172,8 @@ workspace_add(Evas_Object *parent, Group *group)
    evas_object_size_hint_align_set(sd->part_list, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_smart_member_add(sd->part_list, obj);
    elm_object_part_content_set(sd->panes, "right", sd->part_list);
+   evas_object_smart_callback_add(sd->part_list, SIGNAL_PART_LIST_PART_SELECTED,
+                                  _on_part_list_part_select, obj);
 
    /* create conteiner with handlers */
    sd->container.obj = container_add(sd->scroller);
@@ -1182,7 +1200,7 @@ workspace_add(Evas_Object *parent, Group *group)
 
    container_handler_size_set(sd->container.obj, 8, 8, 8, 8);
    evas_object_smart_callback_add(sd->groupedit, SIGNAL_GROUPEDIT_PART_SELECTED,
-                                  _on_part_select, obj);
+                                  _on_groupedit_part_select, obj);
    evas_object_smart_callback_add(sd->groupedit, SIGNAL_GROUPEDIT_PART_UNSELECTED,
                                   _on_part_unselect, obj);
    evas_object_smart_callback_add(sd->groupedit, "container,changed",

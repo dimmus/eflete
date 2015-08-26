@@ -23,6 +23,8 @@
 #include "eflete.h"
 #include "group_manager.h"
 
+#define SIGNAL_PART_LIST_PART_SELECTED "SIGNAL_PART_LIST_PART_SELECTED"
+
 Evas_Object *
 part_list_add(Group *group);
 
