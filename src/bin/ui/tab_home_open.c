@@ -22,7 +22,6 @@
 
 struct _Tab_Home_Open {
    Evas_Object *layout;
-   Evas_Object *btn_open;
    Evas_Object *btn_clear;
    Evas_Object *fs;
 };
@@ -150,11 +149,6 @@ _tab_open_project_add(void)
    elm_layout_content_set(tab.layout, "elm.swallow.btn_clear", tab.btn_clear);
    /* while recent list not implemented this button will be disabled */
    elm_object_disabled_set(tab.btn_clear, true);
-
-   tab.btn_open = elm_button_add(ap.win);
-   elm_object_text_set(tab.btn_open, _("Open"));
-   elm_layout_content_set(tab.layout, "elm.swallow.btn_open", tab.btn_open);
-   evas_object_smart_callback_add(tab.btn_open, "clicked", _open, NULL);
 
    tab.fs = elm_fileselector_add(ap.win);
    elm_fileselector_expandable_set(tab.fs, false);
