@@ -25,4 +25,7 @@
 
 Evas_Object *
 part_list_add(Group *group);
+
+void
+part_list_part_select(Evas_Object *obj, Part *part);
 #endif /* PART_LIST_H */
