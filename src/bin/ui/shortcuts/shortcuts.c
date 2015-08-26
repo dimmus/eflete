@@ -24,6 +24,7 @@
 #include "image_editor.h"
 #include "sound_editor.h"
 #include "animator.h"
+#include "tabs.h"
 
 #ifdef HAVE_ENVENTOR
    #define SKIP_IN_ENVENTOR_MODE \
@@ -388,9 +389,9 @@ _open_edc_cb(void)
 */
 
 Eina_Bool
-_open_edj_cb(void)
+_open_project_cb(void)
 {
-   project_open();
+   tabs_tab_home_open(TAB_HOME_OPEN_PROJECT);
    return true;
 }
 
@@ -636,7 +637,7 @@ static Function_Set _sc_func_set_init[] =
 {
      {"new_theme", _new_theme_cb},
 //     {"open_edc", _open_edc_cb},
-     {"open_edj", _open_edj_cb},
+     {"open_edj", _open_project_cb},
      {"import_edj", _import_edj_cb},
      {"save", _save_cb},
      {"save_as", _save_as_cb},
