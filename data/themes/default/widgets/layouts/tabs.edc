@@ -108,6 +108,7 @@ group { name: "elm/layout/tab_home/open_project";
          type: SWALLOW;
          description {
             align: 1.0 0.0;
+            fixed: 1 1;
             rel1 {
                to: "area.recent";
                relative: 1.0 0.0;
