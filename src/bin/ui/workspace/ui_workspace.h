@@ -172,7 +172,7 @@ workspace_edit_object_part_restack(Evas_Object *obj,
  *
  */
 Eina_Bool
-workspace_edit_object_part_state_set(Evas_Object *obj, Part *part);
+workspace_edit_object_part_state_set(Evas_Object *obj, Part_ *part);
 
 Eina_Bool
 workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,

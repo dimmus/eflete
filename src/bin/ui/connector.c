@@ -250,6 +250,7 @@ _show_part(void *data __UNUSED__,
      }
 }
 
+/*
 static void
 _signal_select(void *data __UNUSED__,
                Evas_Object *obj __UNUSED__,
@@ -280,7 +281,7 @@ _signal_select(void *data __UNUSED__,
      workspace_edit_object_recalc(ap.workspace);
    evas_object_freeze_events_set(sig->style->obj, true);
 }
-
+*/
 
 static void
 _hide_part(void *data __UNUSED__,
@@ -657,8 +658,8 @@ ui_part_select(Part* part)
                                   _part_name_change, NULL);
 
    ui_property_state_set(prop, part);
-   workspace_edit_object_part_state_set(ap.workspace, part);
-/*   workspace_highlight_unset(ap.workspace);
+/*   workspace_edit_object_part_state_set(ap.workspace, part);
+   workspace_highlight_unset(ap.workspace);
    workspace_highlight_set(ap.workspace, part);*/
    evas_object_smart_callback_del_full(ap.workspace, "part,changed", _property_change, NULL);
    evas_object_smart_callback_add(ap.workspace, "part,changed", _property_change, NULL);
@@ -698,8 +699,8 @@ ui_style_clicked(Style *style)
    evas_object_smart_callback_del_full(ap.block.state_list, "stl,state,del", _del_state, NULL);
    evas_object_smart_callback_add(ap.block.state_list, "stl,state,del", _del_state, NULL);
 
-   evas_object_smart_callback_del_full(ap.block.signal_list, "sl,signal,select", _signal_select, NULL);
-   evas_object_smart_callback_add(ap.block.signal_list, "sl,signal,select", _signal_select, NULL);
+//   evas_object_smart_callback_del_full(ap.block.signal_list, "sl,signal,select", _signal_select, NULL);
+//   evas_object_smart_callback_add(ap.block.signal_list, "sl,signal,select", _signal_select, NULL);
    ui_signal_list_data_set(ap.block.signal_list, _style);
 
    //workspace_edit_object_set(ap.workspace, _style, ap.project->dev);
@@ -1779,6 +1780,7 @@ register_callbacks(void)
    return true;
 }
 
+/*
 static void
 _on_state_selected(void *data __UNUSED__,
                    Evas_Object *obj __UNUSED__,
@@ -1793,6 +1795,7 @@ _on_state_selected(void *data __UNUSED__,
    ui_property_state_set(prop_view, sd->part);
    workspace_edit_object_part_state_set(ap.workspace, sd->part);
 }
+*/
 
 static void
 _on_style_clicked(void *datai __UNUSED__,
@@ -1816,10 +1819,10 @@ _on_part_selected(void *data __UNUSED__,
 
    assert(part != NULL);
 
-   Evas_Object *gl_states = ui_part_select(part);
+/*   Evas_Object *gl_states = ui_part_select(part);
 
    if (gl_states)
-     evas_object_smart_callback_add(gl_states, "stl,state,select", _on_state_selected, NULL);
+     evas_object_smart_callback_add(gl_states, "stl,state,select", _on_state_selected, NULL);*/
 }
 
 static void

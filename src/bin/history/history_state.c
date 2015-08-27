@@ -190,7 +190,7 @@ _history_ui_state_update(Evas_Object *source, State_Diff *change)
           }
         ui_property_part_set(prop_view, part);
         ui_property_state_set(prop_view, part);
-        workspace_edit_object_part_state_set(ap.workspace, part);
+        //workspace_edit_object_part_state_set(ap.workspace, part);
      }
    ui_widget_list_part_selected_set(ui_block_widget_list_get(), change->part,
                                     true);

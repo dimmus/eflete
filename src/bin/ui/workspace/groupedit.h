@@ -169,17 +169,14 @@ groupedit_edit_object_part_del(Evas_Object *obj, const char *part);
  * Set the current state value to the part.
  *
  * @param obj The groupedit object,
- * @param part The name of the part to set the state,
- * @param state Name of the state to set,
- * @param value Value of the state.
+ * @param part Pointer to Part_ structure
  *
  * @return EINA_TRUE on success or EINA_FALSE, on errors.
  *
  * @ingroup Groupedit
  */
 Eina_Bool
-groupedit_edit_object_part_state_set(Evas_Object *obj, const char *part,
-                                     const char *state, double value);
+groupedit_edit_object_part_state_set(Evas_Object *obj, Part_ *part);
 
 /**
  * Create new state for the give part.

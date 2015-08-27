@@ -124,7 +124,7 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
         evas_object_smart_callback_call(ap.workspace, "part,changed", part);
         evas_object_smart_callback_call(ap.workspace, "ws,part,selected",
                                         (void *)change->part);
-        workspace_edit_object_part_state_set(ap.workspace, part);
+        //workspace_edit_object_part_state_set(ap.workspace, part);
      }
    else
      {

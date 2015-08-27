@@ -1136,6 +1136,21 @@ _on_part_list_part_select(void *data,
 }
 
 static void
+_on_part_list_part_state_select(void *data,
+                                Evas_Object *obj __UNUSED__,
+                                void *event_info)
+{
+   Evas_Object *workspace = (Evas_Object *)data;
+   Part_ *part = event_info;
+
+   WS_DATA_GET(workspace, sd);
+
+   groupedit_edit_object_part_state_set(sd->groupedit, part);
+
+   evas_object_smart_callback_call(ap.win, SIGNAL_PART_STATE_SELECTED, (void *)part);
+}
+
+static void
 _on_part_unselect(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
@@ -1174,6 +1189,8 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_part_content_set(sd->panes, "right", sd->part_list);
    evas_object_smart_callback_add(sd->part_list, SIGNAL_PART_LIST_PART_SELECTED,
                                   _on_part_list_part_select, obj);
+   evas_object_smart_callback_add(sd->part_list, SIGNAL_PART_LIST_PART_STATE_SELECTED,
+                                  _on_part_list_part_state_select, obj);
 
    /* create conteiner with handlers */
    sd->container.obj = container_add(sd->scroller);
@@ -1364,14 +1381,13 @@ workspace_edit_object_part_below(Evas_Object *obj, const char *part)
 }
 
 Eina_Bool
-workspace_edit_object_part_state_set(Evas_Object *obj, Part *part)
+workspace_edit_object_part_state_set(Evas_Object *obj, Part_ *part)
 {
    WS_DATA_GET(obj, sd);
    assert(part != NULL);
 
-   return groupedit_edit_object_part_state_set(sd->groupedit, part->name,
-                                               part->curr_state,
-                                               part->curr_state_value);
+   TODO("fix state set from external sources");
+   return false;
 }
 
 Eina_Bool

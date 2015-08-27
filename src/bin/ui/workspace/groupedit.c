@@ -430,17 +430,18 @@ groupedit_edit_object_part_move_below(Evas_Object *obj,
 }
 
 Eina_Bool
-groupedit_edit_object_part_state_set(Evas_Object *obj, const char *part,
-                                     const char *state, double value)
+groupedit_edit_object_part_state_set(Evas_Object *obj, Part_ *part)
 {
    Eina_Bool ret;
+   Eina_Stringshare *st_name;
+   double st_val;
    WS_GROUPEDIT_DATA_GET(obj, sd);
 
    assert(part != NULL);
-   assert(state != NULL);
 
-   ret = edje_edit_part_selected_state_set(sd->group->edit_object, part, state, value);
-
+   state_name_split(part->current_state->name, &st_name, &st_val);
+   ret = edje_edit_part_selected_state_set(sd->group->edit_object, part->name, st_name, st_val);
+   eina_stringshare_del(st_name);
    evas_object_smart_changed(sd->obj);
    return ret;
 }
