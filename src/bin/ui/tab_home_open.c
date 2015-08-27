@@ -76,6 +76,7 @@ _progress_pm_open_end(void *data __UNUSED__, PM_Project_Result result)
            STATUSBAR_PROJECT_PATH(ap.project->pro_path);
            STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
 
+           _tab_open_project_recents_update();
            break;
         }
       default:
@@ -164,5 +165,32 @@ _tab_open_project_add(void)
 
    elm_layout_content_set(tab.layout, "elm.swallow.fileselector", tab.fs);
 
+   _tab_open_project_recents_update();
    return tab.layout;
+}
+
+void
+_tab_open_project_recents_update(void)
+{
+   Config *config;
+   Evas_Object *box, *btn;
+   Eina_List *l;
+   Recent *r;
+
+   config = config_get();
+   evas_object_del(elm_layout_content_unset(tab.layout, "elm.swallow.recents"));
+
+   if (!config->recents) return;
+   BOX_ADD(tab.layout, box, false, false)
+   elm_box_align_set(box, 0.5, 0.0);
+   elm_layout_content_set(tab.layout, "elm.swallow.recents", box);
+   EINA_LIST_FOREACH(config->recents, l, r)
+     {
+        btn = elm_button_add(ap.win);
+        elm_object_text_set(btn, r->path);
+        evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, 0.0);
+        elm_box_pack_end(box, btn);
+        evas_object_show(btn);
+     }
+   evas_object_show(box);
 }

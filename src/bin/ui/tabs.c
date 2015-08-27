@@ -173,6 +173,7 @@ tabs_tab_home_open(Tabs_View view)
          break;
       case TAB_HOME_OPEN_PROJECT:
          elm_toolbar_item_selected_set(tabs.home.tab_open_project, true);
+         _tab_open_project_recents_update();
          break;
       case TAB_HOME_NEW_PROJECT:
          elm_toolbar_item_selected_set(tabs.home.tab_new_project, true);

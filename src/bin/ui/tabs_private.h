@@ -26,4 +26,7 @@
 Evas_Object *
 _tab_open_project_add(void);
 
+void
+_tab_open_project_recents_update();
+
 #endif /* TABS_PRIVATE */
