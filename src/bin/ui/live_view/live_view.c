@@ -99,8 +99,8 @@ TODO("change function to use new Group structure")
           }
         else
           {
+             live_view_theme_update(live->block);
 TODO("change functions to use new Group structure")
-//             live_view_theme_update(live);
 //             live_view_property_style_set(live->property, live->object, group, live->parent);
           }
      }
@@ -109,7 +109,7 @@ TODO("change functions to use new Group structure")
         using_layout = true;
      }
 
-   if (!using_layout)
+   if (using_layout)
      {
         if (!live->in_prog_edit)
           {
@@ -128,13 +128,13 @@ TODO("change functions to use new Group structure")
              elm_object_text_set(live->object, _("Failed to load live view object"));
           }
 TODO("change functions to use new Group structure")
-//        live_view_theme_update(live);
+        live_view_theme_update(live->block);
 //        live_view_property_style_set(live->property, live->object, group, live->parent);
      }
 }
 
 Evas_Object *
-live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group __UNUSED__)
+live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group)
 {
    Live_View *live;
    Evas_Object *bg;
@@ -152,10 +152,12 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group __UNUSED
    live = mem_calloc(1, sizeof(Live_View));
    live->in_prog_edit = in_prog_edit;
    live->parent = parent;
+   live->group = group;
+   live->block = block;
    /* Create main layout of entire live view */
-   live->layout = elm_layout_add(block);
+   live->layout = elm_layout_add(live->block);
    elm_layout_theme_set(live->layout, "layout", "live_view", "toolbar");
-   elm_object_part_content_set(block, "elm.swallow.content", live->layout);
+   elm_object_part_content_set(live->block, "elm.swallow.content", live->layout);
    bg = elm_bg_add(live->layout);
    IMAGE_ADD_NEW(live->layout, bg, "bg", "tile");
    evas_object_show(bg);
@@ -179,12 +181,15 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group __UNUSED
    elm_object_part_content_set(live->layout, SWALLOW_MENU, live->panel);
    elm_object_part_content_set(live->layout, SWALLOW_BG, bg);
    container_confine_set(live->live_view, bg);
-   evas_object_hide(live->live_view);
-   elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
 
+TODO("Should we delete it?")
+//   elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
+   elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
+
+   evas_object_data_set(live->block, "live_view_structure", live);
    _live_view_load_object(live, group);
 
-   return block;
+   return live->block;
 }
 
 TODO("Delete this function, its outdated and old since everything is changed")
@@ -231,7 +236,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
           }
         else
           {
-             live_view_theme_update(live, project);
+//             live_view_theme_update(live, project);
              live_view_property_style_set(live->property, live->object, style, widget, live->parent);
           }
 
@@ -257,7 +262,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
              elm_object_text_set(live->object, _("Failed to load live view object"));
              ret = false;
           }
-        live_view_theme_update(live, project);
+//        live_view_theme_update(live, project);
         live_view_property_style_set(live->property, live->object, style, "edje", live->parent);
      }
    TODO("reapply swallows/texts")
@@ -294,26 +299,29 @@ live_view_widget_style_unset(Live_View *live)
 }
 
 Eina_Bool
-live_view_theme_update(Live_View *live, Project *project)
+live_view_theme_update(Evas_Object *object)
 {
    Eina_Stringshare *path;
 
+   assert(object != NULL);
+   assert(ap.project != NULL);
+
+   Live_View *live = evas_object_data_get(object, "live_view_structure");
    assert(live != NULL);
-   assert(project != NULL);
    assert(live->object != NULL);
 
 #ifdef HAVE_ENVENTOR
    if ((ap.enventor_mode)
-     path = eina_stringshare_printf("%s/tmp.edj", project->develop_path);
+     path = eina_stringshare_printf("%s/tmp.edj", ap.project->develop_path);
    else
 #endif /* HAVE_ENVENTOR */
-     path = eina_stringshare_add(project->dev);
+     path = eina_stringshare_add(ap.project->dev);
 
-   if (project->current_style->__type == LAYOUT)
+   if (!live->group->widget)
      {
-        eina_file_map_free(project->mmap_file, live->object);
-        edje_object_mmap_set(live->object, project->mmap_file,
-                             project->current_style->full_group_name);
+        eina_file_map_free(ap.project->mmap_file, live->object);
+        edje_object_mmap_set(live->object, ap.project->mmap_file,
+                             live->group->name);
         edje_object_calc_force(live->object);
         eina_stringshare_del(path);
         return true;

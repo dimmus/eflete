@@ -43,19 +43,23 @@
  *
  * Contain objects to show demo of widget (live view).
  */
+TODO("try to remove not required objects and fields")
 struct _Live_View
 {
    Evas_Object *live_view; /**< live_view object that contain widget for showing,
                              and spinner for scaling */
+   Evas_Object *block; /**< MAIN OBJECT */
    Evas_Object *layout; /**< the layout of the whole live view widget */
    Evas_Object *panel; /**< panel for Live View properties */
    Evas_Object *object; /**< current widget for being showed in live view */
    Evas_Object *property; /**< Live View properties */
    Evas_Object *parent; /**< Live View block */
    Eina_Bool in_prog_edit; /**< Flag is this liveview in program editor */
+   Group *group;
 };
 typedef struct _Live_View Live_View;
 
+TODO("update documentation")
 /**
  * Add new live view object.
  *
@@ -117,7 +121,7 @@ live_view_widget_style_unset(Live_View *live);
  * @ingroup Live_View
  */
 Eina_Bool
-live_view_theme_update(Live_View *live, Project *project);
+live_view_theme_update(Evas_Object *object);
 
 /**
  * Freeing the live_view structure.

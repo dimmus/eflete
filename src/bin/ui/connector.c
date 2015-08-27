@@ -1076,7 +1076,7 @@ project_changed(Eina_Bool save)
    /* for example this function will be called after adding layout, so no need
       in updating live view */
    if (ap.project->current_style)
-     live_view_theme_update(ap.live_view, ap.project);
+     live_view_theme_update(ap.live_view->block);
 }
 
 /******************************************************************************/
