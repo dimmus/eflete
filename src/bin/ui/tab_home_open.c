@@ -76,6 +76,7 @@ _progress_pm_open_end(void *data __UNUSED__, PM_Project_Result result)
            STATUSBAR_PROJECT_PATH(ap.project->pro_path);
            STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
 
+           config_recent_add(ap.project->name, ap.project->pro_path);
            _tab_open_project_recents_update();
            break;
         }
@@ -169,6 +170,22 @@ _tab_open_project_add(void)
    return tab.layout;
 }
 
+static void
+_open_recent(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
+{
+   Recent *r = (Recent *)data;
+
+   ap.splash = splash_add(ap.win,
+                          _setup_open_splash,
+                          _teardown_open_splash,
+                          _cancel_open_splash,
+                          (void *)eina_stringshare_add(r->path));
+   elm_object_focus_set(ap.splash, true);
+   evas_object_show(ap.splash);
+}
+
 void
 _tab_open_project_recents_update(void)
 {
@@ -189,6 +206,7 @@ _tab_open_project_recents_update(void)
         btn = elm_button_add(ap.win);
         elm_object_text_set(btn, r->path);
         evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, 0.0);
+        evas_object_smart_callback_add(btn, "clicked", _open_recent, r);
         elm_box_pack_end(box, btn);
         evas_object_show(btn);
      }
