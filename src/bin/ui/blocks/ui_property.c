@@ -52,9 +52,8 @@ struct _Prop_Data
    Evas_Object *workspace;
    Style *wm_style;
    Part *wm_part;
-   Evas_Object *tabs;
-   Ewe_Tabs_Item *visual_tab;
-   Evas_Object *visual;
+   Evas_Object *layout;
+   Evas_Object *scroller;
    Eina_Stringshare *item_name;
    color_data *color_data;
    Eina_Strbuf *strbuf;
@@ -395,32 +394,29 @@ prop_item_label_add(Evas_Object *parent,
 Evas_Object *
 ui_property_add(Evas_Object *parent)
 {
-   Evas_Object *box, *scroller, *tabs;
-   Ewe_Tabs_Item *it;
+   Evas_Object *box, *scroller;
    Prop_Data *pd;
 
    assert(parent != NULL);
 
    pd = mem_calloc(1, sizeof(Prop_Data));
-   tabs = ewe_tabs_add(parent);
-   pd->tabs = tabs;
-   elm_layout_text_set(tabs, NULL, _("Properties"));
+   pd->layout = elm_layout_add(parent);
+   elm_layout_theme_set(pd->layout, "layout", "property", "default");
+   elm_layout_text_set(pd->layout, NULL, _("Properties"));
 
-   SCROLLER_ADD(tabs, scroller);
+   SCROLLER_ADD(pd->layout, scroller);
    BOX_ADD(scroller, box, EINA_FALSE, EINA_FALSE);
    elm_box_align_set(box, 0.5, 0.0);
    elm_object_content_set(scroller, box);
 
-   pd->visual = scroller;
-   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   it = ewe_tabs_item_append(tabs, NULL, _("Visual"), NULL);
-   ewe_tabs_item_content_set(tabs, it, pd->visual);
-   pd->visual_tab = it;
+   pd->scroller = scroller;
+   elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   elm_object_content_set(pd->layout, pd->scroller);
 
-   evas_object_data_set(tabs, PROP_DATA, pd);
-   evas_object_event_callback_add(tabs, EVAS_CALLBACK_DEL, _del_prop_data, pd);
+   evas_object_data_set(pd->layout, PROP_DATA, pd);
+   evas_object_event_callback_add(pd->layout, EVAS_CALLBACK_DEL, _del_prop_data, pd);
 
-   return tabs;
+   return pd->layout;
 }
 
 static void
@@ -584,9 +580,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
 
    evas_object_show(property);
 
-   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
-
-   ewe_tabs_active_item_set(property, pd->visual_tab);
+   elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
 
    pd->workspace = workspace;
    pd->wm_style = style;
@@ -594,7 +588,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
 
    //assert(pd->wm_style == workspace_edit_object_get(workspace));
 
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    aliases = edje_edit_group_aliases_get(style->obj, style->full_group_name);
    aliases_count = eina_list_count(aliases);
 
@@ -670,7 +664,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
 
    if (!pd_group.frame)
      {
-        FRAME_PROPERTY_ADD(property, group_frame, true, _("Layout property"), pd->visual)
+        FRAME_PROPERTY_ADD(property, group_frame, true, _("Layout property"), pd->scroller)
         BOX_ADD(group_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(group_frame, box);
@@ -721,7 +715,7 @@ ui_property_style_unset(Evas_Object *property)
 
    PROP_DATA_GET()
 
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    evas_object_hide(pd_group.info);
    elm_box_unpack(prop_box, pd_group.info);
    elm_box_unpack(prop_box, pd_group.shared_check);
@@ -730,7 +724,7 @@ ui_property_style_unset(Evas_Object *property)
    evas_object_hide(pd_group.frame);
    evas_object_hide(pd_group.shared_check);
    ui_property_part_unset(property);
-   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 
   evas_object_hide(property);
 }
@@ -914,13 +908,13 @@ ui_property_part_set(Evas_Object *property, Part *part)
    PROP_DATA_GET()
    assert(part != NULL);
 
-   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
+   elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
    pd->wm_part = part;
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
 
    if (!pd_part.frame)
      {
-        FRAME_PROPERTY_ADD(property, pd_part.frame, true, _("Part property"), pd->visual)
+        FRAME_PROPERTY_ADD(property, pd_part.frame, true, _("Part property"), pd->scroller)
         BOX_ADD(pd_part.frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(pd_part.frame, box);
@@ -945,7 +939,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
         pd->part.source_item = prop_part_source_add(box, pd);
         elm_box_pack_end(box, pd->part.source_item);
 
-        FRAME_PROPERTY_ADD(pd->visual, pd_drag.frame, true, _("Part dragable property"), pd->visual)
+        FRAME_PROPERTY_ADD(pd->scroller, pd_drag.frame, true, _("Part dragable property"), pd->scroller)
         elm_object_style_set(pd_drag.frame, "outdent_top");
         elm_box_pack_end(box, pd_drag.frame);
         BOX_ADD(pd_drag.frame, box, EINA_FALSE, EINA_FALSE)
@@ -1041,10 +1035,10 @@ ui_property_part_set(Evas_Object *property, Part *part)
 
    prop_part_drag_control_disable_set(pd, true);
    evas_object_geometry_get(prop_box, NULL, NULL, NULL, &h_box);
-   elm_scroller_region_get(pd->visual, NULL, &y_reg, NULL, &h_reg);
-   elm_scroller_region_bring_in(pd->visual, 0.0, y_reg + 1, 0.0, h_reg);
+   elm_scroller_region_get(pd->scroller, NULL, &y_reg, NULL, &h_reg);
+   elm_scroller_region_bring_in(pd->scroller, 0.0, y_reg + 1, 0.0, h_reg);
    if (h_box == h_reg + y_reg)
-     elm_scroller_region_show(pd->visual, 0.0, y_reg + h_box, 0.0, h_reg);
+     elm_scroller_region_show(pd->scroller, 0.0, y_reg + h_box, 0.0, h_reg);
 
    return true;
 }
@@ -1065,8 +1059,8 @@ ui_property_part_unset(Evas_Object *property)
 
    PROP_DATA_GET()
 
-   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   prop_box = elm_object_content_get(pd->visual);
+   elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   prop_box = elm_object_content_get(pd->scroller);
 
    /*
    if (pd->part.validator != NULL)
@@ -1355,12 +1349,12 @@ ui_property_state_set(Evas_Object *property, Part *part)
 
    snprintf(state, BUFF_MAX, "%s %.2f", part->curr_state, part->curr_state_value);
 
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    elm_box_unpack(prop_box, pd_state.frame);
 
    if (!pd_state.frame)
      {
-        FRAME_PROPERTY_ADD(property, state_frame, true, _("State"), pd->visual)
+        FRAME_PROPERTY_ADD(property, state_frame, true, _("State"), pd->scroller)
         BOX_ADD(state_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(state_frame, box);
@@ -1394,7 +1388,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         pd_state.table_homogeneous_item = prop_state_table_homogeneous_add(box, pd);
         evas_object_hide(pd_state.table_homogeneous_item);
 
-        prop_box = elm_object_content_get(pd->visual);
+        prop_box = elm_object_content_get(pd->scroller);
         elm_box_pack_after(prop_box, state_frame, pd->part.frame);
         pd_state.frame = state_frame;
      }
@@ -1416,7 +1410,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         STATE_STRSHARE_ATTR_1COMBOBOX_LIST_UPDATE(state, box_layout, state)
         STATE_ATTR_1COMBOBOX_LIST_UPDATE(state, table_homogeneous, state)
 
-        prop_box = elm_object_content_get(pd->visual);
+        prop_box = elm_object_content_get(pd->scroller);
         elm_box_pack_end(prop_box, pd_state.frame);
         evas_object_show(pd_state.frame);
      }
@@ -1529,7 +1523,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
           }
      }
 
-   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
+   elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
    #undef pd_state
    return true;
 }
@@ -1660,12 +1654,12 @@ ui_property_state_obj_area_set(Evas_Object *property)
 
    PROP_DATA_GET()
 
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    elm_box_unpack(prop_box, pd_obj_area.frame);
 
    if (!pd_obj_area.frame)
      {
-        FRAME_PROPERTY_ADD(property, obj_area_frame, true, _("Object area"), pd->visual)
+        FRAME_PROPERTY_ADD(property, obj_area_frame, true, _("Object area"), pd->scroller)
         BOX_ADD(obj_area_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(obj_area_frame, box);
@@ -1710,7 +1704,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
         elm_layout_content_set(item, NULL, icon);
         elm_box_pack_end(box, item);
 
-        prop_box = elm_object_content_get(pd->visual);
+        prop_box = elm_object_content_get(pd->scroller);
         elm_box_pack_end(prop_box, obj_area_frame);
         pd_obj_area.frame = obj_area_frame;
      }
@@ -1726,7 +1720,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
         STATE_ATTR_2SPINNER_UPDATE(state, rel2_relative_x, rel2_relative_y, state_object_area, double, 100)
         STATE_ATTR_2SPINNER_UPDATE(state, rel2_offset_x, rel2_offset_y, state_object_area, int, 1)
 
-        prop_box = elm_object_content_get(pd->visual);
+        prop_box = elm_object_content_get(pd->scroller);
         elm_box_pack_end(prop_box, pd_obj_area.frame);
         evas_object_show(pd_obj_area.frame);
      }
@@ -1741,7 +1735,7 @@ ui_property_state_obj_area_unset(Evas_Object *property)
 
    PROP_DATA_GET()
 
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    elm_box_unpack(prop_box, pd_obj_area.frame);
    evas_object_hide(pd_obj_area.frame);
 }
@@ -2075,10 +2069,10 @@ ui_property_state_text_set(Evas_Object *property)
 
    /* if previos selected part is TEXT too, unpack it */
    ui_property_state_text_unset(property);
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    if (!pd_text.frame)
      {
-         FRAME_PROPERTY_ADD(property, text_frame, true, _("Text"), pd->visual)
+         FRAME_PROPERTY_ADD(property, text_frame, true, _("Text"), pd->scroller)
          BOX_ADD(text_frame, box, EINA_FALSE, EINA_FALSE)
          elm_box_align_set(box, 0.5, 0.0);
          elm_object_content_set(text_frame, box);
@@ -2154,7 +2148,7 @@ ui_property_state_text_unset(Evas_Object *property)
         pd_text.validator = NULL;
      }
    */
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    elm_box_unpack(prop_box, pd_text.frame);
    evas_object_hide(pd_text.frame);
 }
@@ -2253,10 +2247,10 @@ ui_property_state_textblock_set(Evas_Object *property)
 
    /* if previos selected part is TEXTBLOCK too, unpack it */
    ui_property_state_textblock_unset(property);
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    if (!pd_textblock.frame)
      {
-         FRAME_PROPERTY_ADD(property, textblock_frame, true, _("TextBlock"), pd->visual)
+         FRAME_PROPERTY_ADD(property, textblock_frame, true, _("TextBlock"), pd->scroller)
          BOX_ADD(textblock_frame, box, EINA_FALSE, EINA_FALSE)
          elm_box_align_set(box, 0.5, 0.0);
          elm_object_content_set(textblock_frame, box);
@@ -2328,7 +2322,7 @@ ui_property_state_textblock_unset(Evas_Object *property)
 
    PROP_DATA_GET()
 
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    elm_box_unpack(prop_box, pd_textblock.frame);
    evas_object_hide(pd_textblock.frame);
 }
@@ -2565,7 +2559,7 @@ prop_item_state_image_tween_add(Evas_Object *box, Prop_Data *pd)
    assert(box != NULL);
    assert(pd != NULL);
 
-   FRAME_PROPERTY_ADD(box, tween_frame, true, _("Tweens"), pd->visual)
+   FRAME_PROPERTY_ADD(box, tween_frame, true, _("Tweens"), pd->scroller)
    elm_object_style_set(tween_frame, "tween");
 
    tween_list = elm_genlist_add(tween_frame);
@@ -2722,10 +2716,10 @@ ui_property_state_image_set(Evas_Object *property)
 
    /* if previos selected part is IMAGE too, unpack it */
    ui_property_state_image_unset(property);
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    if (!pd_image.frame)
      {
-        FRAME_PROPERTY_ADD(property, image_frame, true, _("Image"), pd->visual)
+        FRAME_PROPERTY_ADD(property, image_frame, true, _("Image"), pd->scroller)
         BOX_ADD(image_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(image_frame, box);
@@ -2772,7 +2766,7 @@ ui_property_state_image_unset(Evas_Object *property)
         pd_image.validator = NULL;
      }
    */
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    elm_box_unpack(prop_box, pd_image.frame);
    evas_object_hide(pd_image.frame);
 }
@@ -2816,10 +2810,10 @@ ui_property_state_fill_set(Evas_Object *property)
 
    /* if previos selected part is IMAGE or PROXY too, unpack it */
    ui_property_state_fill_unset(property);
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    if (!pd_fill.frame)
      {
-        FRAME_PROPERTY_ADD(property, pd->state_fill.frame, true, _("Fill"), pd->visual)
+        FRAME_PROPERTY_ADD(property, pd->state_fill.frame, true, _("Fill"), pd->scroller)
         BOX_ADD(pd->state_fill.frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(pd->state_fill.frame, box);
@@ -2893,7 +2887,7 @@ ui_property_state_fill_unset(Evas_Object *property)
 
    PROP_DATA_GET()
 
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    elm_box_unpack(prop_box, pd_fill.frame);
    evas_object_hide(pd_fill.frame);
 }
@@ -3086,7 +3080,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
 
    ui_property_item_unset(property);
    pd->item_name = item_name;
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    if (!pd_item.frame)
      {
         FRAME_ADD(property, pd_item.frame, true, _("Item"))
@@ -3174,7 +3168,7 @@ ui_property_item_unset(Evas_Object *property)
    if (!pd_item.frame) return;
 
    pd->item_name = NULL;
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    elm_box_unpack(prop_box, pd_item.frame);
 
    item_box = elm_object_content_get(pd_item.frame);
@@ -3224,7 +3218,7 @@ ui_property_state_container_set(Evas_Object *property)
    PROP_DATA_GET()
 
    ui_property_state_container_unset(property);
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    if (!pd_container.frame)
      {
         FRAME_ADD(property, pd_container.frame, true, _("Container"))
@@ -3258,7 +3252,7 @@ ui_property_state_container_unset(Evas_Object *property)
 
    PROP_DATA_GET()
 
-   prop_box = elm_object_content_get(pd->visual);
+   prop_box = elm_object_content_get(pd->scroller);
    elm_box_unpack(prop_box, pd_container.frame);
    evas_object_hide(pd_container.frame);
 }
