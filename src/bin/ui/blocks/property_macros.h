@@ -46,10 +46,10 @@
    LAYOUT_PROP_ADD(PARENT, NAME, "property", STYLE)
 
 #define GROUP_ARGS
-#define PART_ARGS , pd->wm_part->name
-#define PART_ARGS_DIFF , pd->wm_part->name, NULL, 0.0
-#define PART_ITEM_ARGS , pd->wm_part->name, pd->item_name
-#define STATE_ARGS , pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value
+#define PART_ARGS , pd->part->name
+#define PART_ARGS_DIFF , pd->part->name, NULL, 0.0
+#define PART_ITEM_ARGS , pd->part->name, pd->item_name
+#define STATE_ARGS , pd->part->name, pd->part->current_state->parsed_name, pd->part->current_state->parsed_val
 
 /*****************************************************************************/
 /*                      COMMON ATTRIBUTE CONTOLS MACRO                       */
@@ -128,7 +128,7 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
  */
 #define COMMON_1SPINNER_UPDATE(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, ARGS) \
    elm_spinner_value_set(pd->attributes.MEMBER.VALUE, \
-                         MULTIPLIER * edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS)); \
+                         MULTIPLIER * edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS)); \
 
 /**
  * Macro defines a COMMON_1(2)SPINNER_ADD.
@@ -151,17 +151,17 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    TYPE value = elm_spinner_value_get(obj); \
-   TYPE old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
+   TYPE old_value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
    value /= MULTIPLIER; \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, value)) \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, value)) \
      { \
        ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
        abort(); \
      } \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
-                    value, pd->wm_style->full_group_name,\
+   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
+                    value, pd->group->name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
-                    pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
+                    pd->part->name, pd->part->current_state->parsed_name, pd->part->current_state->parsed_val); \
    project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
 }
@@ -212,7 +212,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, Prop_Data *pd) \
  * @ingroup Property_Macro
  */
 #define COMMON_COMBOBOX_LIST_UPDATE(SUB, VALUE, MEMBER, ARGS) \
-   ewe_combobox_select_item_set(pd->attributes.MEMBER.VALUE, (int)edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS));
+   ewe_combobox_select_item_set(pd->attributes.MEMBER.VALUE, (int)edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS));
 
 /**
  * Macro defines a callback for COMMON_COMBOBOX_ADD.
@@ -234,15 +234,15 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
-   int old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
+   int old_value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
    int value = item->index; \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, (TYPE)item->index)) \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, (TYPE)item->index)) \
      { \
         ERR("Cann't apply value '%s' for attribute '"#TEXT"'.", item->title); \
         abort(); \
      } \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
-                    value, pd->wm_style->full_group_name,\
+   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_INT, old_value, \
+                    value, pd->group->name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS_DIFF); \
    project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
@@ -269,7 +269,7 @@ _on_##MEMBER##_##VALUE1##_change(void *data, \
                                  void *event_info __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
-   edje_edit_##SUB##_##VALUE1##_set(pd->wm_style->obj ARGS, \
+   edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
                                     (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE1) / MULTIPLIER, \
                                     (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE2) / MULTIPLIER); \
    project_changed(false); \
@@ -281,7 +281,7 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
                                  void *event_info __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
-   edje_edit_##SUB##_##VALUE1##_set(pd->wm_style->obj ARGS, \
+   edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
                                     (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE1) / MULTIPLIER, \
                                     (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE2) / MULTIPLIER); \
    project_changed(false); \
@@ -304,7 +304,7 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
  */
 #define COMMON_2SPINNER_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER, ARGS) \
    TYPE VALUE1, VALUE2; \
-   edje_edit_##SUB##_##VALUE1##_get(pd->wm_style->obj ARGS, &VALUE1, &VALUE2); \
+   edje_edit_##SUB##_##VALUE1##_get(pd->group->edit_object ARGS, &VALUE1, &VALUE2); \
    elm_spinner_value_set(pd->attributes.MEMBER.VALUE1, VALUE1 * MULTIPLIER); \
    elm_spinner_value_set(pd->attributes.MEMBER.VALUE2, VALUE2 * MULTIPLIER);
 
@@ -393,7 +393,7 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
  * @ingroup Property_Macro
  */
 #define COMMON_CHECK_UPDATE(SUB, VALUE, MEMBER, ARGS) \
-   elm_check_state_set(pd->attributes.MEMBER.VALUE, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS));
+   elm_check_state_set(pd->attributes.MEMBER.VALUE, edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS));
 
 /**
  * Macro defines a callback for attribute that controled by check.
@@ -416,14 +416,14 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Eina_Bool value = elm_check_state_get(obj); \
-   Eina_Bool old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS);\
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, value)) \
+   Eina_Bool old_value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS);\
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, value)) \
      { \
        ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
        abort(); \
      } \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
-                    value, pd->wm_style->full_group_name,\
+   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_INT, old_value, \
+                    value, pd->group->name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS_DIFF); \
    workspace_edit_object_recalc(pd->workspace); \
    project_changed(false); \
@@ -443,7 +443,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  */
 #define COMMON_2CHECK_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, ARGS) \
    Eina_Bool VALUE1, VALUE2; \
-   edje_edit_##SUB##_##VALUE1##_get(pd->wm_style->obj ARGS, &VALUE1, &VALUE2); \
+   edje_edit_##SUB##_##VALUE1##_get(pd->group->edit_object ARGS, &VALUE1, &VALUE2); \
    elm_spinner_value_set(pd->attributes.MEMBER.VALUE1, VALUE1); \
    elm_spinner_value_set(pd->attributes.MEMBER.VALUE2, VALUE2);
 
@@ -466,7 +466,7 @@ _on_##MEMBER##_##VALUE1##_change(void *data, \
                                  void *event_info __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
-   edje_edit_##SUB##_##VALUE1##_set(pd->wm_style->obj ARGS, \
+   edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
                                     elm_check_state_get(pd->attributes.MEMBER.VALUE1), \
                                     elm_check_state_get(pd->attributes.MEMBER.VALUE2)); \
    project_changed(false); \
@@ -478,7 +478,7 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
                                  void *event_info __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
-   edje_edit_##SUB##_##VALUE1##_set(pd->wm_style->obj ARGS, \
+   edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
                                     elm_check_state_get(pd->attributes.MEMBER.VALUE1), \
                                     elm_check_state_get(pd->attributes.MEMBER.VALUE2)); \
    project_changed(false); \
@@ -496,7 +496,7 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
  * @ingroup Property_Macro
  */
 #define COMMON_COMBOBOX_LIST_STRSHARE_UPDATE(SUB, VALUE, MEMBER, ARGS) \
-   Eina_Stringshare *value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
+   Eina_Stringshare *value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
    ewe_combobox_text_set(pd->attributes.MEMBER.VALUE, value ? value : _("None")); \
    edje_edit_string_free(value);
 
@@ -521,14 +521,14 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
-   Eina_Stringshare *old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, (char *)item->title)) \
+   Eina_Stringshare *old_value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, (char *)item->title)) \
      { \
        ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
        abort(); \
      } \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
-                    item->title, pd->wm_style->full_group_name, \
+   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_STRING, old_value, \
+                    item->title, pd->group->name, \
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS); \
    eina_stringshare_del(old_value); \
    project_changed(false); \
@@ -591,7 +591,7 @@ static void \
 prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
 { \
    const char *value; \
-   value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
+   value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
    char *text = elm_entry_utf8_to_markup(value); \
    elm_entry_entry_set(pd->attributes.MEMBER.VALUE, text); \
    edje_edit_string_free(value); \
@@ -619,10 +619,10 @@ _on_##SUB##_##VALUE##_change(void *data, \
      return; \
    const char *text = elm_entry_entry_get(obj); \
    char *value = elm_entry_markup_to_utf8(text); \
-   const char *old_value =  edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj ARGS); \
-   edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj ARGS, value); \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
-                    value, pd->wm_style->full_group_name,\
+   const char *old_value =  edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
+   edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, value); \
+   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_STRING, old_value, \
+                    value, pd->group->name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS); \
    elm_object_focus_set(obj, true); \
    workspace_edit_object_recalc(pd->workspace); \
@@ -692,8 +692,8 @@ prop_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
 static void \
 prop_group_##SUB##_##VALUE1##_##VALUE2##_update(Prop_Data *pd) \
 { \
-   elm_spinner_value_set(pd->attributes.group.SUB##_##VALUE1, edje_edit_group_##SUB##_##VALUE1##_get(pd->wm_style->obj)); \
-   elm_spinner_value_set(pd->attributes.group.SUB##_##VALUE2, edje_edit_group_##SUB##_##VALUE2##_get(pd->wm_style->obj)); \
+   elm_spinner_value_set(pd->attributes.group.SUB##_##VALUE1, edje_edit_group_##SUB##_##VALUE1##_get(pd->group->edit_object)); \
+   elm_spinner_value_set(pd->attributes.group.SUB##_##VALUE2, edje_edit_group_##SUB##_##VALUE2##_get(pd->group->edit_object)); \
 }
 
 /**
@@ -729,12 +729,12 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    int value = (int)elm_spinner_value_get(obj); \
-   int value_##SUB2##_##VALUE = edje_edit_group_##SUB2##_##VALUE##_get(pd->wm_style->obj); \
+   int value_##SUB2##_##VALUE = edje_edit_group_##SUB2##_##VALUE##_get(pd->group->edit_object); \
    int old_value_##SUB2##_##VALUE = value_##SUB2##_##VALUE; \
-   int old_value_##SUB1##_##VALUE = edje_edit_group_##SUB1##_##VALUE##_get(pd->wm_style->obj); \
+   int old_value_##SUB1##_##VALUE = edje_edit_group_##SUB1##_##VALUE##_get(pd->group->edit_object); \
    if ((value CHECK value_##SUB2##_##VALUE) && (value_##SUB2##_##VALUE != 0)) \
      { \
-        if (!edje_edit_group_##SUB2##_##VALUE##_set(pd->wm_style->obj, value)) \
+        if (!edje_edit_group_##SUB2##_##VALUE##_set(pd->group->edit_object, value)) \
           { \
             ERR("edje_edit_group_"#SUB2"_"#VALUE"_set failed"); \
             abort(); \
@@ -742,24 +742,24 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
         elm_spinner_value_set(pd->attributes.group.SUB2##_##VALUE, value); \
         value_##SUB2##_##VALUE = value; \
      } \
-   if (!edje_edit_group_##SUB1##_##VALUE##_set(pd->wm_style->obj, value)) \
+   if (!edje_edit_group_##SUB1##_##VALUE##_set(pd->group->edit_object, value)) \
      { \
        ERR("edje_edit_group_"#SUB1"_"#VALUE"_set failed"); \
        abort(); \
      } \
    if (!strcmp("min", #SUB1)) \
      { \
-       history_diff_add(pd->wm_style->obj, PROPERTY, CONTAINER, VAL_GROUP, old_value_##SUB1##_##VALUE, value, \
+       history_diff_add(pd->group->edit_object, PROPERTY, CONTAINER, VAL_GROUP, old_value_##SUB1##_##VALUE, value, \
                         old_value_##SUB2##_##VALUE, value_##SUB2##_##VALUE,  \
-                        (void*)edje_edit_group_##SUB1##_##VALUE##_set, pd->wm_style->full_group_name, \
+                        (void*)edje_edit_group_##SUB1##_##VALUE##_set, pd->group->name, \
                         (void*)edje_edit_group_##SUB2##_##VALUE##_set,  "group_"#VALUE, \
                         NULL, NULL, 0); \
      } \
    else \
     { \
-       history_diff_add(pd->wm_style->obj, PROPERTY, CONTAINER, VAL_GROUP, old_value_##SUB2##_##VALUE,\
+       history_diff_add(pd->group->edit_object, PROPERTY, CONTAINER, VAL_GROUP, old_value_##SUB2##_##VALUE,\
                         value_##SUB2##_##VALUE, old_value_##SUB1##_##VALUE, value,  \
-                        (void*)edje_edit_group_##SUB2##_##VALUE##_set, pd->wm_style->full_group_name, \
+                        (void*)edje_edit_group_##SUB2##_##VALUE##_set, pd->group->name, \
                         (void*)edje_edit_group_##SUB1##_##VALUE##_set,  "group_"#VALUE, \
                         NULL, NULL, 0); \
     } \
@@ -884,14 +884,14 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
-   const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
-                                                           pd->wm_part->name);\
+   const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object, \
+                                                           pd->part->name);\
    const char *value = NULL; \
    if (item->index != 0) \
      { \
         value = item->title; \
-        if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, \
-                                             pd->wm_part->name, item->title)) \
+        if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, \
+                                             pd->part->name, item->title)) \
           { \
              ewe_combobox_select_item_set(obj, pd->attributes.part.previous_source); \
              NOTIFY_ERROR(_("This source value will <br>" \
@@ -903,13 +903,13 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
      } \
    else \
      { \
-        edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, NULL); \
+        edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, pd->part->name, NULL); \
         pd->attributes.part.previous_source = 0; \
      } \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
-                    value, pd->wm_style->full_group_name,\
+   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_STRING, old_value, \
+                    value, pd->group->name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
-                    pd->wm_part->name, NULL, 0.0); \
+                    pd->part->name, NULL, 0.0); \
    project_changed(true); \
    workspace_edit_object_recalc(pd->workspace); \
 }
@@ -977,7 +977,7 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
    const char *group, *value; \
    unsigned int i = 0; \
    ewe_combobox_items_list_free(pd->attributes.MEMBER.VALUE, true); \
-   value = edje_edit_part_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name); \
+   value = edje_edit_part_##VALUE##_get(pd->group->edit_object, pd->part->name); \
    if (value) ewe_combobox_text_set(pd->attributes.MEMBER.VALUE, value); \
    else ewe_combobox_text_set(pd->attributes.MEMBER.VALUE, _("None")); \
    ewe_combobox_item_add(pd->attributes.MEMBER.VALUE, _("None")); \
@@ -985,7 +985,7 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
    collections = eina_list_sort(collections, eina_list_count(collections), sort_cb); \
    EINA_LIST_FOREACH(collections, l, group) \
      { \
-        if (group != pd->wm_style->full_group_name) \
+        if (group != pd->group->name) \
           ewe_combobox_item_add(pd->attributes.MEMBER.VALUE, group); \
         if (group == value) \
           pd->attributes.part.previous_source = i; \
@@ -1051,9 +1051,9 @@ static void \
 prop_part_drag_##VALUE1##_##VALUE2##_update(Prop_Data *pd) \
 { \
    Eina_Bool ch_value; int st_value; \
-   ch_value = edje_edit_part_drag_##VALUE1##_get(pd->wm_style->obj, pd->wm_part->name); \
+   ch_value = edje_edit_part_drag_##VALUE1##_get(pd->group->edit_object, pd->part->name); \
    elm_check_state_set(pd->attributes.SUB.VALUE1, ch_value); \
-   st_value = edje_edit_part_drag_##VALUE2##_get(pd->wm_style->obj, pd->wm_part->name); \
+   st_value = edje_edit_part_drag_##VALUE2##_get(pd->group->edit_object, pd->part->name); \
    elm_spinner_value_set(pd->attributes.SUB.VALUE2, st_value); \
 }
 
@@ -1074,14 +1074,14 @@ _on_part_drag_##VALUE1##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Eina_Bool value = elm_check_state_get(obj); \
-   Eina_Bool old_value = edje_edit_part_drag_##VALUE1##_get(pd->wm_style->obj, \
-                                                            pd->wm_part->name);\
-   edje_edit_part_drag_##VALUE1##_set(pd->wm_style->obj, pd->wm_part->name, value); \
+   Eina_Bool old_value = edje_edit_part_drag_##VALUE1##_get(pd->group->edit_object, \
+                                                            pd->part->name);\
+   edje_edit_part_drag_##VALUE1##_set(pd->group->edit_object, pd->part->name, value); \
    prop_part_drag_control_disable_set(pd, false); \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
-                    value, pd->wm_style->full_group_name,\
+   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_INT, old_value, \
+                    value, pd->group->name,\
                     (void*)edje_edit_part_drag_##VALUE1##_set, #SUB"_"#VALUE1, \
-                     pd->wm_part->name, NULL, 0.0); \
+                     pd->part->name, NULL, 0.0); \
    project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
 } \
@@ -1092,13 +1092,13 @@ _on_part_drag_##VALUE2##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    int value = elm_spinner_value_get(obj); \
-   int old_value = edje_edit_part_drag_##VALUE2##_get(pd->wm_style->obj, \
-                                                         pd->wm_part->name);\
-   edje_edit_part_drag_##VALUE2##_set(pd->wm_style->obj, pd->wm_part->name, value); \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
-                    value, pd->wm_style->full_group_name,\
+   int old_value = edje_edit_part_drag_##VALUE2##_get(pd->group->edit_object, \
+                                                         pd->part->name);\
+   edje_edit_part_drag_##VALUE2##_set(pd->group->edit_object, pd->part->name, value); \
+   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_INT, old_value, \
+                    value, pd->group->name,\
                     (void*)edje_edit_part_drag_##VALUE2##_set, #SUB"_"#VALUE2, \
-                     pd->wm_part->name, NULL, 0.0); \
+                     pd->part->name, NULL, 0.0); \
    project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
 }
@@ -1120,17 +1120,17 @@ _on_part_drag_##VALUE2##_change(void *data, \
 static void \
 prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
 { \
-   Part *part; \
-   Eina_Inlist *list_n = NULL; \
+   Part_ *part; \
+   Eina_List *l; \
    Eina_Stringshare *value; \
    ewe_combobox_items_list_free(pd->attributes.MEMBER.VALUE, true); \
-   value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name); \
+   value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object, pd->part->name); \
    if (value) ewe_combobox_text_set(pd->attributes.MEMBER.VALUE, value); \
    else ewe_combobox_text_set(pd->attributes.MEMBER.VALUE, _("None")); \
    ewe_combobox_item_add(pd->attributes.MEMBER.VALUE, _("None")); \
-   EINA_INLIST_FOREACH_SAFE(pd->wm_style->parts, list_n, part) \
+   EINA_LIST_FOREACH(pd->group->parts, l, part) \
      { \
-        if (part != pd->wm_part) \
+        if (part != pd->part) \
            ewe_combobox_item_add(pd->attributes.MEMBER.VALUE, part->name); \
      } \
    edje_edit_string_free(value); \
@@ -1171,7 +1171,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
-   edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, \
+   edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, pd->part->name, \
                                    pd->item_name, item->title); \
    project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
@@ -1250,16 +1250,16 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    TYPE value = elm_spinner_value_get(obj); \
-   TYPE opposite_value = edje_edit_##SUB##_##DIF_VALUE##_get(pd->wm_style->obj PART_ITEM_ARGS); \
+   TYPE opposite_value = edje_edit_##SUB##_##DIF_VALUE##_get(pd->group->edit_object PART_ITEM_ARGS); \
    value /= MULTIPLIER; \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object PART_ITEM_ARGS, value)) \
      { \
        ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
        abort(); \
      } \
    if (value CHECK opposite_value) \
      { \
-        if (!edje_edit_##SUB##_##DIF_VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
+        if (!edje_edit_##SUB##_##DIF_VALUE##_set(pd->group->edit_object PART_ITEM_ARGS, value)) \
           { \
             ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
             abort(); \
@@ -1292,7 +1292,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    Prop_Data *pd = (Prop_Data *)data; \
    TYPE value = elm_spinner_value_get(obj); \
    value /= MULTIPLIER; \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, value)) \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object PART_ITEM_ARGS, value)) \
      { \
        ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
        abort(); \
@@ -1350,7 +1350,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
-   edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj PART_ITEM_ARGS, (TYPE)item->index); \
+   edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object PART_ITEM_ARGS, (TYPE)item->index); \
    project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
 }
@@ -1534,27 +1534,27 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    TYPE value = elm_spinner_value_get(obj); \
-   TYPE old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj STATE_ARGS); \
-   TYPE opposite_value = edje_edit_##SUB##_##DIF_VALUE##_get(pd->wm_style->obj STATE_ARGS); \
+   TYPE old_value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object STATE_ARGS); \
+   TYPE opposite_value = edje_edit_##SUB##_##DIF_VALUE##_get(pd->group->edit_object STATE_ARGS); \
    value /= MULTIPLIER; \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj STATE_ARGS, value)) \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object STATE_ARGS, value)) \
      { \
        ERR("edje_edit_"#SUB"_"#VALUE"_set value '%d' is failed", value); \
        abort(); \
      } \
    if ((value CHECK opposite_value) && (opposite_value != -1)) \
      { \
-        if (!edje_edit_##SUB##_##DIF_VALUE##_set(pd->wm_style->obj STATE_ARGS, value)) \
+        if (!edje_edit_##SUB##_##DIF_VALUE##_set(pd->group->edit_object STATE_ARGS, value)) \
           { \
             ERR("edje_edit_"#SUB"_"#DIF_VALUE"_set value '%d' is failed", value); \
             abort(); \
           } \
         elm_spinner_value_set(pd->attributes.state.DIF_VALUE, value); \
      } \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
-                    value, pd->wm_style->full_group_name,\
+   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
+                    value, pd->group->name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
-                    pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
+                    pd->part->name, pd->part->current_state->parsed_name, pd->part->current_state->parsed_val); \
    project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
 }
@@ -1777,8 +1777,8 @@ static void \
 prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
 { \
    int r, g, b, a; \
-   edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name, \
-                                   pd->wm_part->curr_state, pd->wm_part->curr_state_value, \
+   edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object, pd->part->name, \
+                                   pd->part->current_state->parsed_name, pd->part->current_state->parsed_val, \
                                    &r, &g, &b, &a); \
    evas_object_color_set(pd->attributes.MEMBER.VALUE##_obj, r*a/255, g*a/255, b*a/255, a); \
 }
@@ -1801,14 +1801,14 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    int r, g, b, a; \
    int old_r, old_g, old_b, old_a; \
    Prop_Data *pd = (Prop_Data *)data; \
-   edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name, \
-                                   pd->wm_part->curr_state, \
-                                   pd->wm_part->curr_state_value, \
+   edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object, pd->part->name, \
+                                   pd->part->current_state->parsed_name, \
+                                   pd->part->current_state->parsed_val, \
                                    &old_r, &old_g, &old_b, &old_a); \
    colorselector_color_get(obj, &r, &g, &b, &a); \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, \
-                                        pd->wm_part->curr_state, \
-                                        pd->wm_part->curr_state_value, \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, pd->part->name, \
+                                        pd->part->current_state->parsed_name, \
+                                        pd->part->current_state->parsed_val, \
                                         r, g, b, a))\
      { \
        ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
@@ -1816,11 +1816,11 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
      } \
    evas_object_color_set(pd->attributes.MEMBER.VALUE##_obj, r*a/255, g*a/255, b*a/255, a); \
    if ((r != old_r) || (g != old_g) || (b != old_b) || (a != old_a)) \
-     history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_FOUR, old_r, old_g, old_b, \
-                      old_a, r, g, b, a, pd->wm_style->full_group_name, \
+     history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_FOUR, old_r, old_g, old_b, \
+                      old_a, r, g, b, a, pd->group->name, \
                       (void*)edje_edit_##SUB##_##VALUE##_set, #SUB"_"#VALUE, \
-                      pd->wm_part->name, pd->wm_part->curr_state, \
-                      pd->wm_part->curr_state_value); \
+                      pd->part->name, pd->part->current_state->parsed_name, \
+                      pd->part->current_state->parsed_val); \
    project_changed(false); \
    workspace_edit_object_recalc(pd->workspace); \
 } \
@@ -1896,17 +1896,17 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
-   const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
-                                                           pd->wm_part->name, \
-                                                           pd->wm_part->curr_state, \
-                                                           pd->wm_part->curr_state_value);\
-   edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, \
-                                   pd->wm_part->curr_state, pd->wm_part->curr_state_value, \
+   const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object, \
+                                                           pd->part->name, \
+                                                           pd->part->current_state->parsed_name, \
+                                                           pd->part->current_state->parsed_val);\
+   edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, pd->part->name, \
+                                   pd->part->current_state->parsed_name, pd->part->current_state->parsed_val, \
                                    !strcmp(item->title, _("None")) ? NULL : item->title); \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
-                    item->title, pd->wm_style->full_group_name,\
+   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_STRING, old_value, \
+                    item->title, pd->group->name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
-                    pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
+                    pd->part->name, pd->part->current_state->parsed_name, pd->part->current_state->parsed_val); \
    project_changed(true); \
    workspace_edit_object_recalc(pd->workspace); \
    edje_edit_string_free(old_value); \
@@ -1970,19 +1970,19 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
 static void \
 prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
 { \
-   Part *part; \
-   Eina_Inlist *list_n = NULL; \
+   Part_ *part; \
+   Eina_List *l; \
    Eina_Stringshare *value; \
    ewe_combobox_items_list_free(pd->attributes.MEMBER.VALUE, true); \
-   value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
-                                           pd->wm_part->name, \
-                                           pd->wm_part->curr_state, \
-                                           pd->wm_part->curr_state_value); \
+   value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object, \
+                                           pd->part->name, \
+                                           pd->part->current_state->parsed_name, \
+                                           pd->part->current_state->parsed_val); \
    ewe_combobox_item_add(pd->attributes.MEMBER.VALUE, _("None")); \
    ewe_combobox_text_set(pd->attributes.MEMBER.VALUE, value ? value : _("None")); \
-   EINA_INLIST_FOREACH_SAFE(pd->wm_style->parts, list_n, part) \
+   EINA_LIST_FOREACH(pd->group->parts, l, part) \
      { \
-        if ((part != pd->wm_part) && (part->type COMPARE EXCLUDE_PART)) \
+        if ((part != pd->part) && (part->type COMPARE EXCLUDE_PART)) \
           ewe_combobox_item_add(pd->attributes.MEMBER.VALUE, part->name); \
      } \
    edje_edit_string_free(value); \

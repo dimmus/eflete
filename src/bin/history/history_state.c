@@ -188,8 +188,8 @@ _history_ui_state_update(Evas_Object *source, State_Diff *change)
              eina_stringshare_replace(&part->curr_state, "default");
              part->curr_state_value = 0.0;
           }
-        ui_property_part_set(prop_view, part);
-        ui_property_state_set(prop_view, part);
+/*        ui_property_part_set(prop_view, part);
+        ui_property_state_set(prop_view, part);*/
         //workspace_edit_object_part_state_set(ap.workspace, part);
      }
    ui_widget_list_part_selected_set(ui_block_widget_list_get(), change->part,

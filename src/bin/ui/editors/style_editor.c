@@ -635,9 +635,10 @@ _on_bt_del(void *data,
           edje_edit_style_tag_del(edje_edit_obj, style_name, tag);
      }
 
-   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get());
-   ui_property_state_unset(ui_block_property_get());
-   ui_property_state_set(ui_block_property_get(), part);
+TODO("Fix me")
+//   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get());
+//   ui_property_state_unset(ui_block_property_get());
+//   ui_property_state_set(ui_block_property_get(), part);
    elm_object_item_del(glit);
    project_changed(false);
 }

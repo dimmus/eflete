@@ -244,9 +244,10 @@ _on_button_delete_clicked_cb(void *data __UNUSED__,
    Elm_Object_Item *it = elm_genlist_selected_item_get(edit->genlist);
    Elm_Object_Item *next = elm_genlist_item_next_get(it);
 
-   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get());
-   ui_property_state_unset(ui_block_property_get());
-   ui_property_state_set(ui_block_property_get(), part);
+   TODO("Fix me")
+//   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get());
+//   ui_property_state_unset(ui_block_property_get());
+//   ui_property_state_set(ui_block_property_get(), part);
 
    if (!next) next = elm_genlist_item_prev_get(it);
    if (next)

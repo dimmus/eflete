@@ -112,7 +112,7 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
 
         assert(part != NULL);
 
-        ui_property_part_set(prop, part);
+        //ui_property_part_set(prop, part);
         if (change->state)
           {
              part->curr_state = change->state;

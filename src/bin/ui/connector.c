@@ -519,7 +519,7 @@ _property_change(void *data __UNUSED__,
    assert(prop != NULL);
 
    project_changed(false);
-   ui_property_state_set(prop, part);
+   //ui_property_state_set(prop, part);
 }
 
 static void
@@ -645,7 +645,7 @@ ui_part_select(Part* part)
 
    assert(prop != NULL);
 
-   ui_property_part_set(prop, part);
+   //ui_property_part_set(prop, part);
 
    ui_states_list_data_set(ap.project->current_style, part);
 
@@ -654,7 +654,7 @@ ui_part_select(Part* part)
    evas_object_smart_callback_add(ap.workspace, "part,name,changed",
                                   _part_name_change, NULL);
 
-   ui_property_state_set(prop, part);
+   //ui_property_state_set(prop, part);
 /*   workspace_edit_object_part_state_set(ap.workspace, part);
    workspace_highlight_unset(ap.workspace);
    workspace_highlight_set(ap.workspace, part);*/

@@ -83,7 +83,7 @@ ui_property_style_unset(Evas_Object *property);
  */
 
 Eina_Bool
-ui_property_part_set(Evas_Object *property, Part *part);
+ui_property_part_set(Evas_Object *property, Part_ *part);
 
 /**
  * Unset the part view content on a given property.
@@ -107,7 +107,7 @@ ui_property_part_unset(Evas_Object *property);
  * @ingroup Property
  */
 Eina_Bool
-ui_property_state_set(Evas_Object *property, Part *part);
+ui_property_state_set(Evas_Object *property, Part_ *part);
 
 /**
  * Unset the part state view content on a given property.
