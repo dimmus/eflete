@@ -30,9 +30,7 @@
 #include "main_window.h"
 #include "string_common.h"
 
-#ifndef HAVE_ENVENTOR
 #include "syntax_color.h"
-#endif
 
 #define PROP_DATA "prop_data"
 
@@ -60,12 +58,8 @@ struct _Prop_Data
    Evas_Object *visual;
    Evas_Object *code;
    Eina_Stringshare *item_name;
-#ifndef HAVE_ENVENTOR
    color_data *color_data;
    Eina_Strbuf *strbuf;
-#else
-   Evas_Object *code_bg;
-#endif
    struct {
       Evas_Object *frame;
       Evas_Object *info;
@@ -372,10 +366,8 @@ _del_prop_data(void *data,
 
    assert(pd != NULL);
 
-#ifndef HAVE_ENVENTOR
    color_term(pd->color_data);
    eina_strbuf_free(pd->strbuf);
-#endif
    free(pd);
 }
 
@@ -401,50 +393,6 @@ prop_item_label_add(Evas_Object *parent,
 #define prop_part_type_update(TEXT) elm_object_text_set(pd->part.type, TEXT)
 #define prop_state_state_update(TEXT) elm_object_text_set(pd->state.state, TEXT)
 #define prop_part_item_name_update(TEXT) elm_object_text_set(pd->part_item.name, TEXT)
-
-#ifdef HAVE_ENVENTOR
-
-static void
-_on_tab_activated(void *data,
-                  Evas_Object *obj,
-                  void *event_info)
-{
-   Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
-   Evas_Object *property = (Evas_Object *)data;
-   PROP_DATA_GET()
-
-   if (it == pd->code_tab)
-     {
-        if (!pd->code_bg)
-          {
-             pd->code = ap.enventor;
-             pd->code_bg = elm_bg_add(obj);
-             elm_bg_color_set(pd->code_bg, ENVENTOR_CODE_BG_COLOR);
-             elm_object_part_content_set(pd->code_bg, "elm.swallow.content", pd->code);
-             ewe_tabs_item_content_set(obj, it, pd->code_bg);
-          }
-        code_edit_mode_switch(ap, true);
-
-        enventor_object_project_load(ap.enventor, ap.project);
-
-        project_changed(false);
-        evas_object_smart_callback_call(ap.enventor, "enventor,mode,on", NULL);
-     }
-   else
-     {
-        code_edit_mode_switch(ap, false);
-        evas_object_smart_callback_call(ap.enventor, "enventor,mode,off",
-                                        ap.project->current_style);
-     }
-
-   ap.enventor_mode = !ap.enventor_mode;
-}
-
-void
-ui_property_code_of_group_setup(Evas_Object *property __UNUSED__)
-{
-}
-#else
 
 void
 ui_property_code_of_group_setup(Evas_Object *property)
@@ -480,8 +428,6 @@ _on_tab_activated(void *data,
    */
 }
 
-#endif
-
 Evas_Object *
 ui_property_add(Evas_Object *parent)
 {
@@ -512,7 +458,6 @@ ui_property_add(Evas_Object *parent)
 
    evas_object_smart_callback_add(tabs, "ewe,tabs,item,activated",
                                   _on_tab_activated, tabs);
-#ifndef HAVE_ENVENTOR
    pd->code = elm_entry_add(tabs);
    elm_entry_single_line_set(pd->code, false);
    elm_scroller_policy_set(pd->code, ELM_SCROLLER_POLICY_ON, ELM_SCROLLER_POLICY_ON);
@@ -523,7 +468,6 @@ ui_property_add(Evas_Object *parent)
    pd->strbuf = eina_strbuf_new();
    pd->color_data = color_init(pd->strbuf);
    ewe_tabs_item_content_set(tabs, it, pd->code);
-#endif
 
    evas_object_data_set(tabs, PROP_DATA, pd);
    evas_object_event_callback_add(tabs, EVAS_CALLBACK_DEL, _del_prop_data, pd);
@@ -702,10 +646,8 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
 
    //assert(pd->wm_style == workspace_edit_object_get(workspace));
 
-#ifndef HAVE_ENVENTOR
    if (ewe_tabs_active_item_get(pd->tabs) == pd->code_tab)
      ui_property_code_of_group_setup(property);
-#endif
 
    prop_box = elm_object_content_get(pd->visual);
    aliases = edje_edit_group_aliases_get(style->obj, style->full_group_name);
@@ -845,15 +787,7 @@ ui_property_style_unset(Evas_Object *property)
    ui_property_part_unset(property);
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 
-#ifdef HAVE_ENVENTOR
-   elm_object_part_content_unset(pd->code_bg, "elm.swallow.content");
-   evas_object_del(pd->code_bg);
-   evas_object_hide(pd->code);
-   pd->code_bg = NULL;
-   pd->code = NULL;
-#else
   evas_object_hide(pd->code);
-#endif
 
   evas_object_hide(property);
 }
