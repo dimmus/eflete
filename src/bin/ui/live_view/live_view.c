@@ -72,6 +72,7 @@ static void
 _live_view_load_object(Live_View *live, Group *group)
 {
    Eina_Bool using_layout = false;
+   Evas_Coord x, y;
 
    assert(ap.project != NULL);
    assert(live != NULL);
@@ -131,6 +132,18 @@ TODO("change functions to use new Group structure")
         live_view_theme_update(live->block);
 //        live_view_property_style_set(live->property, live->object, group, live->parent);
      }
+
+   TODO("reapply swallows/texts")
+   evas_object_show(live->live_view);
+   evas_object_show(live->object);
+   TODO("reapply comtainer size and position")
+   container_content_set(live->live_view, live->object);
+
+   elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
+
+   evas_object_geometry_get(live->live_view, NULL, NULL, &x, &y);
+   edje_object_part_drag_value_set(elm_layout_edje_get(live->layout),
+                                   "bottom_pad", x, y);
 }
 
 Evas_Object *
@@ -184,7 +197,6 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group)
 
 TODO("Should we delete it?")
 //   elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
-   elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
 
    evas_object_data_set(live->block, "live_view_structure", live);
    _live_view_load_object(live, group);
