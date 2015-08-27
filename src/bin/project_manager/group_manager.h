@@ -52,6 +52,8 @@ struct _State
    Eina_Stringshare *name;    /**< state name as returned from edje_edit */
    Eina_List *used_in;        /**< list of programs where state is used */
 
+   Eina_Stringshare *parsed_name;  /**< parsed state name */
+   double parsed_val;          /**< parsed state value */
    Part_ *part;                /**< pointer to part */
 };
 
@@ -96,18 +98,4 @@ group_load(Project *pro, Group *group, Evas *e);
 void
 group_unload(Group *group);
 
-static inline void
-state_name_split(Eina_Stringshare *name, Eina_Stringshare **name_out, double *val_out)
-{
-   char **state_split;
-
-   assert(name != NULL);
-   assert(name_out != NULL || val_out != NULL);
-
-   state_split = eina_str_split(name, " ", 2);
-   if (name_out) *name_out = eina_stringshare_add(state_split[0]);
-   if (val_out) *val_out = atof(state_split[1]);
-   free(state_split[0]);
-   free(state_split);
-}
 #endif /* GROUP_MANAGER_H */

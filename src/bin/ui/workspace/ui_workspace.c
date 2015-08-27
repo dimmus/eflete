@@ -674,15 +674,12 @@ _highlight_changed_cb(void *data,
                       void *ei)
 {
    Highlight_Events *events = (Highlight_Events *)ei;
-   Eina_Stringshare *st_name = NULL;
-   double st_val = 0.0;
 
    Evas_Object *ws_obj = (Evas_Object *)data;
    WS_DATA_GET(ws_obj, sd)
 
    Part_ *part = sd->highlight.part;
    if ((!sd->group) || (!part)) return;
-   state_name_split(part->current_state->name, &st_name, &st_val);
    Evas_Object *obj_area = groupedit_part_object_area_get(sd->groupedit);
    Evas_Coord x, y, w, h;
    evas_object_geometry_get(obj_area, &x, &y, &w, &h);
@@ -692,29 +689,29 @@ _highlight_changed_cb(void *data,
         int old_max_w = 0, old_max_h = 0;
         int min_w = 0, min_h = 0;
         min_w = edje_edit_state_min_w_get(sd->group->edit_object, part->name,
-                                          st_name,
-                                          st_val);
+                                          part->current_state->parsed_name,
+                                          part->current_state->parsed_val);
         min_h = edje_edit_state_min_h_get(sd->group->edit_object, part->name,
-                                          st_name,
-                                          st_val);
+                                          part->current_state->parsed_name,
+                                          part->current_state->parsed_val);
 
         old_max_w = edje_edit_state_max_w_get(sd->group->edit_object, part->name,
-                                              st_name,
-                                              st_val);
+                                              part->current_state->parsed_name,
+                                              part->current_state->parsed_val);
         old_max_h = edje_edit_state_max_h_get(sd->group->edit_object, part->name,
-                                              st_name,
-                                              st_val);
+                                              part->current_state->parsed_name,
+                                              part->current_state->parsed_val);
         edje_edit_state_max_w_set(sd->group->edit_object, part->name,
-                                  st_name, st_val,
+                                  part->current_state->parsed_name, part->current_state->parsed_val,
                                   (events->w / sd->zoom.factor) <= min_w ? min_w : (events->w / sd->zoom.factor));
         edje_edit_state_max_h_set(sd->group->edit_object, part->name,
-                                  st_name, st_val,
+                                  part->current_state->parsed_name, part->current_state->parsed_val,
                                   (events->h / sd->zoom.factor) <= min_h ? min_h : (events->h / sd->zoom.factor));
         history_diff_add(sd->group->edit_object, PROPERTY, CONTAINER, VAL_INT, old_max_w, events->w,
                          old_max_h, events->h, (void *)edje_edit_state_max_w_set,
                          sd->group->name,
                          (void *)edje_edit_state_max_h_set, "max size",
-                         part->name, st_name, st_val);
+                         part->name, part->current_state->parsed_name, part->current_state->parsed_val);
      }
    else
      {
@@ -728,24 +725,24 @@ _highlight_changed_cb(void *data,
         if (align_x > 1.0) align_x = 1.0;
         if (align_y > 1.0) align_y = 1.0;
         old_align_x = edje_edit_state_align_x_get(sd->group->edit_object, part->name,
-                                                  st_name,
-                                                  st_val);
+                                                  part->current_state->parsed_name,
+                                                  part->current_state->parsed_val);
         old_align_y = edje_edit_state_align_y_get(sd->group->edit_object, part->name,
-                                                  st_name,
-                                                  st_val);
+                                                  part->current_state->parsed_name,
+                                                  part->current_state->parsed_val);
 
         edje_edit_state_align_x_set(sd->group->edit_object, part->name,
-                                    st_name, st_val,
+                                    part->current_state->parsed_name, part->current_state->parsed_val,
                                     align_x);
         edje_edit_state_align_y_set(sd->group->edit_object, part->name,
-                                    st_name, st_val,
+                                    part->current_state->parsed_name, part->current_state->parsed_val,
                                     align_y);
         history_diff_add(sd->group->edit_object, PROPERTY, CONTAINER, VAL_DOUBLE, old_align_x,
                          align_x, old_align_y, align_y,
                          (void *)edje_edit_state_align_x_set,
                          sd->group->name,
                          (void *)edje_edit_state_align_y_set, "align",
-                         part->name, st_name, st_val);
+                         part->name, part->current_state->parsed_name, part->current_state->parsed_val);
      }
 
    workspace_edit_object_recalc(ws_obj);

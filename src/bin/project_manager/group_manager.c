@@ -20,6 +20,21 @@
 #include "group_manager.h"
 #include "alloc.h"
 
+static inline void
+state_name_split(Eina_Stringshare *name, Eina_Stringshare **name_out, double *val_out)
+{
+   char **state_split;
+
+   assert(name != NULL);
+   assert(name_out != NULL || val_out != NULL);
+
+   state_split = eina_str_split(name, " ", 2);
+   if (name_out) *name_out = eina_stringshare_add(state_split[0]);
+   if (val_out) *val_out = atof(state_split[1]);
+   free(state_split[0]);
+   free(state_split);
+}
+
 static void
 _group_name_parse(Group *group)
 {
@@ -74,8 +89,6 @@ static void
 _state_load(Project *pro, Part_ *part, Eina_Stringshare *state_name)
 {
    State *state;
-   Eina_Stringshare *parsed_state_name = NULL;
-   double parsed_state_val = 0.0;
    Eina_Stringshare *image_name, *name;
    Eina_List *tween_list, *l;
 
@@ -93,13 +106,13 @@ _state_load(Project *pro, Part_ *part, Eina_Stringshare *state_name)
    if (part->current_state == NULL)
      part->current_state = state;
 
-   state_name_split(state_name, &parsed_state_name, &parsed_state_val);
+   state_name_split(state_name, &state->parsed_name, &state->parsed_val);
 
    #define USAGE_ADD(TYPE, USAGE_LIST) \
    name = edje_edit_state_ ## TYPE ## _get(part->group->edit_object, \
                                            part->name, \
-                                           parsed_state_name, \
-                                           parsed_state_val); \
+                                           state->parsed_name, \
+                                           state->parsed_val); \
    if (name) \
      { \
         pm_resource_usage_add(USAGE_LIST, name, state); \
@@ -109,8 +122,8 @@ _state_load(Project *pro, Part_ *part, Eina_Stringshare *state_name)
    #define COLORCLASS_USAGE_ADD() \
    name = edje_edit_state_color_class_get(part->group->edit_object, \
                                           part->name, \
-                                          parsed_state_name, \
-                                          parsed_state_val); \
+                                          state->parsed_name, \
+                                          state->parsed_val); \
    if (name) \
      { \
         if (!pm_resource_usage_add(pro->colorclasses, name, state)) \
@@ -148,8 +161,8 @@ _state_load(Project *pro, Part_ *part, Eina_Stringshare *state_name)
 
          tween_list = edje_edit_state_tweens_list_get(part->group->edit_object,
                                                       part->name,
-                                                      parsed_state_name,
-                                                      parsed_state_val);
+                                                      state->parsed_name,
+                                                      state->parsed_val);
          EINA_LIST_FOREACH(tween_list, l, image_name)
             pm_resource_usage_add(pro->images, image_name, state);
          edje_edit_string_list_free(tween_list);
@@ -405,6 +418,7 @@ gm_groups_free(Project *pro)
              EINA_LIST_FREE(part->states, state)
                {
                   eina_stringshare_del(state->name);
+                  eina_stringshare_del(state->parsed_name);
                   eina_list_free(state->used_in);
                   free(state);
                }
