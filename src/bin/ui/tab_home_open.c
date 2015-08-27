@@ -202,11 +202,14 @@ _tab_open_project_recents_update(void)
    if (!config->recents) return;
    BOX_ADD(tab.layout, box, false, false)
    elm_box_align_set(box, 0.5, 0.0);
+   elm_box_padding_set(box, 0, 6);
    elm_layout_content_set(tab.layout, "elm.swallow.recents", box);
    EINA_LIST_FOREACH(config->recents, l, r)
      {
         btn = elm_button_add(ap.win);
-        elm_object_text_set(btn, r->path);
+        elm_object_style_set(btn, "recent");
+        elm_object_part_text_set(btn, "elm.text", r->name);
+        elm_object_part_text_set(btn, "elm.subtext", r->path);
         evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, 0.0);
         evas_object_smart_callback_add(btn, "clicked", _open_recent, r);
         elm_box_pack_end(box, btn);
