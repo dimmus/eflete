@@ -189,7 +189,7 @@ _on_animator_save(void *data __UNUSED__,
    Style *style = ap.project->current_style;
    ui_signal_list_data_unset(ap.block.signal_list);
    ui_signal_list_data_set(ap.block.signal_list, style);
-   live_view_widget_style_set(ap.live_view, ap.project, style);
+//   live_view_widget_style_set(ap.live_view, ap.project, style);
    project_changed(true);
 }
 
@@ -603,7 +603,7 @@ animator_window_add(Style *style)
    evas_object_show(panes);
 
    //animator->live = live_view_add(animator->mwin, true, NULL);
-   live_view_widget_style_set(animator->live, ap.project, style);
+//   live_view_widget_style_set(animator->live, ap.project, style);
    edje_object_signal_callback_add(animator->live->object, "show", "",
                                    _on_object_load, animator);
 

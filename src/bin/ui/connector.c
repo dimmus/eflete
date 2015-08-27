@@ -725,7 +725,7 @@ ui_style_clicked(Style *style)
    ui_block_history_set(history_list);
    ui_block_content_visible(ap.block.right_top, true);
 
-   live_view_widget_style_set(ap.live_view, ap.project, _style);
+//   live_view_widget_style_set(ap.live_view, ap.project, _style);
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, false);
 
    return true;
