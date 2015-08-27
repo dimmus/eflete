@@ -145,6 +145,27 @@ TODO("change functions to use new Group structure")
                                    "bottom_pad", x, y);
 }
 
+static void
+_live_view_delete(void *data __UNUSED__,
+                  Evas *e __UNUSED__,
+                  Evas_Object *obj,
+                  void *event_info __UNUSED__)
+{
+   assert(obj != NULL);
+   Live_View *live = evas_object_data_get(obj, "live_view_structure");
+   assert(live != NULL);
+
+   if (!live_widget_del(live->object))
+     evas_object_del(live->object);
+
+   TODO("Implement these API accoding to new architecture")
+      //   live_view_property_style_unset(live->property);
+      //   live_view_property_free(live->property);
+
+   free(live);
+   live = NULL;
+}
+
 Evas_Object *
 live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group)
 {
@@ -200,24 +221,10 @@ TODO("Should we delete it?")
    evas_object_data_set(live->block, "live_view_structure", live);
    _live_view_load_object(live, group);
 
+   evas_object_event_callback_add(live->block, EVAS_CALLBACK_DEL,
+                                  _live_view_delete, NULL);
+
    return live->block;
-}
-
-Eina_Bool
-live_view_widget_style_unset(Live_View *live)
-{
-   assert(live != NULL);
-
-   if (!live->object) return false;
-
-   evas_object_hide(live->live_view);
-   elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
-   container_content_unset(live->live_view);
-   live_view_property_style_unset(live->property);
-   if (!live_widget_del(live->object))
-     evas_object_del(live->object);
-   live->object = NULL;
-   return true;
 }
 
 Eina_Bool
@@ -256,19 +263,6 @@ live_view_theme_update(Evas_Object *object)
    elm_theme_free(theme);
 
    eina_stringshare_del(path);
-   return true;
-}
-
-Eina_Bool
-live_view_free(Live_View *live)
-{
-   assert(live != NULL);
-
-   live_view_widget_style_unset(live);
-   live_view_property_free(live->property);
-
-   free(live);
-   live = NULL;
    return true;
 }
 
