@@ -355,21 +355,6 @@ _on_frame_click(void *data,
 }
 /* Hack end */
 
-static void
-_del_prop_data(void *data,
-               Evas *e __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *ei __UNUSED__)
-{
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   color_term(pd->color_data);
-   eina_strbuf_free(pd->strbuf);
-   free(pd);
-}
-
 static Evas_Object *
 prop_item_label_add(Evas_Object *parent,
                     Evas_Object **label,
@@ -416,7 +401,6 @@ ui_property_add(Evas_Object *parent)
    elm_object_content_set(pd->layout, pd->scroller);
 
    evas_object_data_set(pd->layout, PROP_DATA, pd);
-   evas_object_event_callback_add(pd->layout, EVAS_CALLBACK_DEL, _del_prop_data, pd);
 
    return pd->layout;
 }
