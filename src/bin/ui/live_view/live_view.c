@@ -68,6 +68,71 @@ _change_bg_cb(void *data,
    elm_object_part_content_set(live_layout, SWALLOW_BG, bg);
 }
 
+static void
+_live_view_load_object(Live_View *live, Group *group)
+{
+   Eina_Bool using_layout = false;
+
+   assert(ap.project != NULL);
+   assert(live != NULL);
+   assert(group != NULL);
+
+   /* check version */
+   Eina_Stringshare *version = edje_edit_data_value_get(ap.project->global_object, "version");
+   if ((!version) || (strcmp(version, "110")))
+     {
+        NOTIFY_INFO(3, _("Outdated version of file. Using fallback to layout"));
+        using_layout = true;
+     }
+   eina_stringshare_del(version);
+
+   /* If loaded gorup is widget, then fields widget/class/style would be filled */
+   if ((group->widget) && (!live->in_prog_edit))
+     {
+TODO("change function to use new Group structure")
+//        live->object = live_widget_create(group->widget, group, live->layout);
+
+        if (!live->object)
+          {
+             NOTIFY_INFO(3, _("Widget live view isn't implemented yet. Using fallback to layout"));
+             using_layout = true;
+          }
+        else
+          {
+TODO("change functions to use new Group structure")
+//             live_view_theme_update(live);
+//             live_view_property_style_set(live->property, live->object, group, live->parent);
+          }
+     }
+   else
+     {
+        using_layout = true;
+     }
+
+   if (!using_layout)
+     {
+        if (!live->in_prog_edit)
+          {
+             live->object = layout_custom_create(live->layout);
+          }
+        else
+          {
+             live->object = layout_prog_edit_create(live->layout);
+             evas_object_freeze_events_set(live->object, true);
+          }
+        if (!edje_object_mmap_set(live->object, ap.project->mmap_file,
+                                  group->name))
+          {
+             evas_object_del(live->object);
+             live->object = elm_label_add(live->layout);
+             elm_object_text_set(live->object, _("Failed to load live view object"));
+          }
+TODO("change functions to use new Group structure")
+//        live_view_theme_update(live);
+//        live_view_property_style_set(live->property, live->object, group, live->parent);
+     }
+}
+
 Evas_Object *
 live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group __UNUSED__)
 {
@@ -95,8 +160,12 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group __UNUSED
    IMAGE_ADD_NEW(live->layout, bg, "bg", "tile");
    evas_object_show(bg);
 
+   /* Create container,  will hold live object inside (resizable container).
+      And create Panel for live view property. */
    live->live_view = container_add(parent);
    live->panel = elm_panel_add(parent);
+
+   TODO("Load property instantly here by passing Group object.")
    live->property = live_view_property_add(live->panel, in_prog_edit);
    elm_object_content_set(live->panel, live->property);
    evas_object_smart_callback_add(live->property, "bg,changed", _change_bg_cb,
@@ -113,9 +182,12 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group __UNUSED
    evas_object_hide(live->live_view);
    elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
 
+   _live_view_load_object(live, group);
+
    return block;
 }
 
+TODO("Delete this function, its outdated and old since everything is changed")
 Eina_Bool
 live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 {
@@ -202,6 +274,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 
    return ret;
 }
+
 
 Eina_Bool
 live_view_widget_style_unset(Live_View *live)
