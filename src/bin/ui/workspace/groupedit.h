@@ -50,7 +50,19 @@ struct _Geom{
    int x, y, w, h;
 };
 
+/**
+ * emited when part is selected in groupedit.
+ * eventinfo - pointer to Part_ structure
+ *
+ * @ingroup Groupedit
+ */
 #define SIGNAL_GROUPEDIT_PART_SELECTED "SIGNAL_GROUPEDIT_PART_SELECTED"
+/**
+ * emited when part is unselected in groupedit.
+ * eventinfo - pointer to Part_ structure
+ *
+ * @ingroup Groupedit
+ */
 #define SIGNAL_GROUPEDIT_PART_UNSELECTED "SIGNAL_GROUPEDIT_PART_UNSELECTED"
 
 /**

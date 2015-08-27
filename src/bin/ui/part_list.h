@@ -23,12 +23,37 @@
 #include "eflete.h"
 #include "group_manager.h"
 
+/**
+ * @defgroup Partlist Partlist
+ *
+ * @ingroup EFLETE
+ */
+
+/**
+ * emited when part is selected in part list.
+ * eventinfo - pointer to Part_ structure
+ *
+ * @ingroup Partlist
+ */
 #define SIGNAL_PART_LIST_PART_SELECTED "SIGNAL_PART_LIST_PART_SELECTED"
+
+/**
+ * emited when part state is activated in part list.
+ * eventinfo - pointer to Part_ structure
+ *
+ * @ingroup Partlist
+ */
 #define SIGNAL_PART_LIST_PART_STATE_SELECTED "SIGNAL_PART_LIST_PART_STATE_SELECTED"
 
+/**
+ * @ingroup Partlist
+ */
 Evas_Object *
 part_list_add(Group *group);
 
+/**
+ * @ingroup Partlist
+ */
 void
 part_list_part_select(Evas_Object *obj, Part_ *part);
 #endif /* PART_LIST_H */
