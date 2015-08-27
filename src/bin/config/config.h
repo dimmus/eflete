@@ -55,9 +55,24 @@ struct _Config
       double right; /**< position of right panes */
       double right_hor; /**< position of right_hor panes */
    } panes;
+   Eina_List *recents; /**< The list of recent projects */
    const char *profile; /**< profile name */
 };
 typedef struct _Config Config;
+
+/**
+ * @struct _Recent
+ *
+ * Containt data about early opened project.
+ * 
+ * @ingroup Config
+ */
+struct _Recent
+{
+   char *name;
+   char *path;
+};
+typedef struct _Recent Recent;
 
 /**
  * @enum _COLORS
@@ -247,6 +262,25 @@ config_get(void);
  */
 Eina_Bool
 config_panes_sizes_data_update(void);
+
+/**
+ * Add new project data to recent list.
+ *
+ * @param name The project name;
+ * @param path The project path.
+ *
+ * @ingroup Config
+ */
+void
+config_recent_add(const char *name, const char *path);
+
+/**
+ * Clear the recent list.
+ *
+ * @ingroup Config
+ */
+void
+config_recent_list_clear(void);
 
 /**
  * Load the Eflete profile by name.

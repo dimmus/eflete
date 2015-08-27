@@ -33,6 +33,7 @@ Config *config;
 Profile *profile;
 
 static Eet_Data_Descriptor *edd_base = NULL;
+static Eet_Data_Descriptor *edd_recent = NULL;
 static Eet_Data_Descriptor *edd_profile = NULL;
 static Eet_Data_Descriptor *edd_keys = NULL;
 static Eet_Data_Descriptor *edd_color = NULL;
@@ -42,6 +43,45 @@ _config_free(void)
 {
    free(config);
    config = NULL;
+}
+
+static void
+_recent_free(Recent *r)
+{
+   free(r->name);
+   free(r->path);
+   free(r);
+}
+
+void
+config_recent_list_clear(void)
+{
+   Recent *r;
+
+   EINA_LIST_FREE(config->recents, r)
+     {
+       _recent_free(r);
+     }
+   config->recents = NULL;
+}
+
+void
+config_recent_add(const char *name, const char *path)
+{
+   Recent *r;
+
+   assert(name != NULL);
+   assert(path != NULL);
+
+   if (eina_list_count(config->recents) > 9)
+     config->recents = eina_list_remove_list(config->recents, eina_list_last(config->recents));
+
+   r = mem_malloc(sizeof(Recent));
+   r->name = strdup(name);
+   r->path = strdup(path);
+
+   config->recents = eina_list_prepend(config->recents, r);
+   config_save();
 }
 
 static void
@@ -68,7 +108,7 @@ config_init(void)
 {
    Eet_Data_Descriptor_Class eddc;
    Eet_Data_Descriptor_Class eddkc;
-
+   Eet_Data_Descriptor_Class eddcr;
 
    /* Config descriptor */
    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof(eddc), "Config", sizeof(Config));
@@ -82,6 +122,12 @@ config_init(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.left",        panes.left, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.right",       panes.right, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.right_hor",   panes.right_hor, EET_T_DOUBLE);
+
+   eet_eina_stream_data_descriptor_class_set(&eddcr, sizeof(eddcr), "Recent", sizeof(Recent));
+   edd_recent = eet_data_descriptor_stream_new(&eddcr);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_recent, Recent, "recent.name", name, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_recent, Recent, "recent.path", path, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_LIST(edd_base, Config, "recents",  recents, edd_recent);
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "profile", profile, EET_T_STRING);
 
@@ -181,6 +227,12 @@ config_shutdown(void)
         eet_data_descriptor_free(edd_base);
         edd_base = NULL;
      }
+   if (edd_recent)
+     {
+        eet_data_descriptor_free(edd_recent);
+        edd_recent = NULL;
+     }
+
    if (edd_color)
      {
         eet_data_descriptor_free(edd_color);
