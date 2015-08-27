@@ -350,8 +350,6 @@ _unselect_part(Part_List *pl)
    assert(pl != NULL);
    assert(pl->selected_part_item != NULL);
 
-
-   elm_genlist_item_selected_set(pl->selected_part_item, false);
    part = elm_object_item_data_get(pl->selected_part_item);
    elm_genlist_item_item_class_update(pl->selected_part_item, pl->itc_part);
    pl->selected_part_item = NULL;
@@ -498,5 +496,8 @@ part_list_part_select(Evas_Object *obj, Part_ *part)
         elm_genlist_item_selected_set(part_item, true);
      }
    else
-     _unselect_part(pl);
+     {
+        _unselect_part(pl);
+        elm_genlist_item_selected_set(elm_genlist_selected_item_get(pl->genlist), false);
+     }
 }
