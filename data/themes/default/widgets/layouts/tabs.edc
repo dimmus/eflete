@@ -122,7 +122,10 @@ group { name: "elm/layout/tab_home/open_project";
       part { name: "elm.text.recent";
          type: TEXT;
          description {
-            rel1.to: "area.recent";
+            rel1 {
+               to: "area.recent";
+               offset: 8 0;
+            }
             rel2.to: "area.recent";
             align: 0.0 0.0;
             text {
@@ -131,6 +134,20 @@ group { name: "elm/layout/tab_home/open_project";
                min: 1 1;
                max: 1 1;
                ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.swallow.recents";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               to_x: "area.recent";
+               to_y: "elm.swallow.btn_clear";
+               relative: 0.0 1.0;
+               offset: 0 6;
+            }
+            rel2 {
+               to: "area.recent";
             }
          }
       }
