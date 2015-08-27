@@ -125,6 +125,7 @@ _open(void *data __UNUSED__,
 {
    const char *selected;
 
+   if (ap.project) project_close();
    selected = elm_fileselector_selected_get(tab.fs);
    if ((!selected) || !eina_str_has_suffix(selected, ".pro")) return;
 
@@ -177,6 +178,7 @@ _open_recent(void *data,
 {
    Recent *r = (Recent *)data;
 
+   if (ap.project) project_close();
    ap.splash = splash_add(ap.win,
                           _setup_open_splash,
                           _teardown_open_splash,
