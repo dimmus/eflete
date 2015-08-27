@@ -54,9 +54,7 @@ struct _Prop_Data
    Part *wm_part;
    Evas_Object *tabs;
    Ewe_Tabs_Item *visual_tab;
-   Ewe_Tabs_Item *code_tab;
    Evas_Object *visual;
-   Evas_Object *code;
    Eina_Stringshare *item_name;
    color_data *color_data;
    Eina_Strbuf *strbuf;
@@ -394,40 +392,6 @@ prop_item_label_add(Evas_Object *parent,
 #define prop_state_state_update(TEXT) elm_object_text_set(pd->state.state, TEXT)
 #define prop_part_item_name_update(TEXT) elm_object_text_set(pd->part_item.name, TEXT)
 
-void
-ui_property_code_of_group_setup(Evas_Object *property)
-{
-   char *markup_code;
-   const char *colorized_code;
-   Eina_Stringshare *code;
-   PROP_DATA_GET()
-
-   if (ewe_tabs_active_item_get(pd->tabs) != pd->code_tab) return;
-   code = edje_edit_source_generate(pd->wm_style->obj);
-   if (!code)
-     ERR("Something wrong. Can not generate code for style %s", pd->wm_style->name);
-   markup_code = elm_entry_utf8_to_markup(code);
-   colorized_code = color_apply(pd->color_data, markup_code,
-                                strlen(markup_code), NULL, NULL);
-   if (colorized_code) elm_object_text_set(pd->code, colorized_code);
-   evas_object_show(pd->code);
-   free(markup_code);
-   eina_stringshare_del(code);
-}
-
-static void
-_on_tab_activated(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   //Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
-   Evas_Object *property = (Evas_Object *)data;
-   PROP_DATA_GET()
-   /* update this logic: need check the opened tab with workspace
-   if (it == pd->code_tab) ui_property_code_of_group_setup(property);
-   */
-}
-
 Evas_Object *
 ui_property_add(Evas_Object *parent)
 {
@@ -452,22 +416,6 @@ ui_property_add(Evas_Object *parent)
    it = ewe_tabs_item_append(tabs, NULL, _("Visual"), NULL);
    ewe_tabs_item_content_set(tabs, it, pd->visual);
    pd->visual_tab = it;
-
-   it = ewe_tabs_item_append(tabs, it, _("Code"), NULL);
-   pd->code_tab = it;
-
-   evas_object_smart_callback_add(tabs, "ewe,tabs,item,activated",
-                                  _on_tab_activated, tabs);
-   pd->code = elm_entry_add(tabs);
-   elm_entry_single_line_set(pd->code, false);
-   elm_scroller_policy_set(pd->code, ELM_SCROLLER_POLICY_ON, ELM_SCROLLER_POLICY_ON);
-   evas_object_size_hint_weight_set(pd->code, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(pd->code, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_entry_scrollable_set(pd->code, true);
-   elm_entry_editable_set(pd->code, false);
-   pd->strbuf = eina_strbuf_new();
-   pd->color_data = color_init(pd->strbuf);
-   ewe_tabs_item_content_set(tabs, it, pd->code);
 
    evas_object_data_set(tabs, PROP_DATA, pd);
    evas_object_event_callback_add(tabs, EVAS_CALLBACK_DEL, _del_prop_data, pd);
@@ -646,9 +594,6 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
 
    //assert(pd->wm_style == workspace_edit_object_get(workspace));
 
-   if (ewe_tabs_active_item_get(pd->tabs) == pd->code_tab)
-     ui_property_code_of_group_setup(property);
-
    prop_box = elm_object_content_get(pd->visual);
    aliases = edje_edit_group_aliases_get(style->obj, style->full_group_name);
    aliases_count = eina_list_count(aliases);
@@ -786,8 +731,6 @@ ui_property_style_unset(Evas_Object *property)
    evas_object_hide(pd_group.shared_check);
    ui_property_part_unset(property);
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-
-  evas_object_hide(pd->code);
 
   evas_object_hide(property);
 }

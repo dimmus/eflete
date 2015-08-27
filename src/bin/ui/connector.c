@@ -71,7 +71,6 @@ _del_part(void *data __UNUSED__,
 {
    Style *style = ap.project->current_style;
    char *part_name = NULL;
-   Evas_Object *prop_view = NULL;
 
    assert(style != NULL);
 
@@ -95,10 +94,6 @@ _del_part(void *data __UNUSED__,
         ui_signal_list_data_unset(ap.block.signal_list);
         _on_ws_part_unselect(NULL, ap.workspace, part_name);
 //        workspace_highlight_unset(ap.workspace);
-        /* Source code is updated on part selection.
-           If this was last part we should update it manualy */
-        prop_view = ui_block_property_get();
-        ui_property_code_of_group_setup(prop_view);
      }
 
    free(part_name);
