@@ -59,19 +59,17 @@ _entry_set_params(Evas_Object *obj, Eina_Stringshare *class_name)
 }
 
 Evas_Object *
-widget_entry_create(Evas_Object *parent, const Style *style)
+widget_entry_create(Evas_Object *parent, const Group *group)
 {
    assert(parent != NULL);
-   assert(style != NULL);
-
-   Eina_Stringshare *class;
-   Eina_Stringshare *style_name;
-   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+   assert(group != NULL);
+   assert(group->class != NULL);
+   assert(group->style != NULL);
 
    Evas_Object *object = elm_entry_add(parent);
 
-   elm_object_style_set(object, style_name);
-   _entry_set_params(object, class);
+   elm_object_style_set(object, group->style);
+   _entry_set_params(object, group->class);
 
    elm_object_text_set(object, "This is an entry widget in this window that "
             "uses markup <b>like this</> for styling and "
@@ -100,17 +98,16 @@ widget_entry_create(Evas_Object *parent, const Style *style)
             "<item absize=64x64 vsize=full href=emoticon/not-impressed></item>"
             " ... end.");
 
-   if (strcmp(class, "emoticon") == 0)
+   if (strcmp(group->class, "emoticon") == 0)
      {
         char **parsed = NULL;
         unsigned int count_split = 0;
         Eina_Stringshare *emoticon_type = NULL;
 
-        parsed = eina_str_split_full(style_name, "/", 2, &count_split);
+        parsed = eina_str_split_full(group->style, "/", 2, &count_split);
         if (count_split == 2)
           {
              emoticon_type = eina_stringshare_add(parsed[0]);
-             eina_stringshare_replace(&style_name, parsed[1]);
           }
         free(parsed[0]);
         free(parsed);
@@ -134,7 +131,5 @@ widget_entry_create(Evas_Object *parent, const Style *style)
    evas_object_data_set(object, TEXT_FUNC, on_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, send_signal);
 
-   eina_stringshare_del(class);
-   eina_stringshare_del(style_name);
    return object;
 }

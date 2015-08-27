@@ -91,7 +91,7 @@ _live_view_load_object(Live_View *live, Group *group)
    if ((group->widget) && (!live->in_prog_edit))
      {
 TODO("change function to use new Group structure")
-//        live->object = live_widget_create(group->widget, group, live->layout);
+        live->object = live_widget_create(group, live->layout);
 
         if (!live->object)
           {
@@ -238,7 +238,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
      {
         standard_widget_name_parse(style->full_group_name, &widget, NULL, NULL);
 
-        live->object = live_widget_create(widget, style, live->layout);
+//        live->object = live_widget_create(widget, style, live->layout);
 
         if (!live->object)
           {

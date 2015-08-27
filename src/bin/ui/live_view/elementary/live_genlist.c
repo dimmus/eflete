@@ -320,20 +320,17 @@ _create_genlist(Evas_Object *obj, const char *class, const char *style)
 /*********** GEN LIST CREATING FUNCTIONS ****END*********/
 
 Evas_Object *
-widget_genlist_create(Evas_Object *parent, const Style *style)
+widget_genlist_create(Evas_Object *parent, const Group *group)
 {
    assert(parent != NULL);
-   assert(style != NULL);
-
-   Eina_Stringshare *class;
-   Eina_Stringshare *style_name;
-
-   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+   assert(group != NULL);
+   assert(group->style != NULL);
+   assert(group->class != NULL);
 
    Evas_Object *object;
    Eina_List *swallow_list = NULL, *text_list = NULL;
 
-   object = _create_genlist(parent, class, style_name);
+   object = _create_genlist(parent, group->class, group->style);
    evas_object_show(object);
 
    evas_object_data_set(object, SWALLOW_FUNC, _on_genlist_swallow_check);
@@ -343,7 +340,5 @@ widget_genlist_create(Evas_Object *parent, const Style *style)
    evas_object_data_set(object, SWALLOW_LIST, swallow_list);
    evas_object_data_set(object, TEXT_LIST, text_list);
 
-   eina_stringshare_del(class);
-   eina_stringshare_del(style_name);
    return object;
 }

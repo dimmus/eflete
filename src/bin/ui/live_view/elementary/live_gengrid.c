@@ -191,7 +191,7 @@ _create_gengrid(Evas_Object *obj, Eina_Bool item_style, const char *style)
    assert(obj != NULL);
    assert(style != NULL);
 
-  grid = elm_gengrid_add(obj);
+   grid = elm_gengrid_add(obj);
    elm_gengrid_item_size_set(grid, scale * 100, scale * 100);
    evas_object_size_hint_align_set(grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(grid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -229,21 +229,19 @@ _create_gengrid(Evas_Object *obj, Eina_Bool item_style, const char *style)
 /*********** GEN GRID CREATING FUNCTIONS ****END*********/
 
 Evas_Object *
-widget_gengrid_create(Evas_Object *parent, const Style *style)
+widget_gengrid_create(Evas_Object *parent, const Group *group)
 {
    assert(parent != NULL);
-   assert(style != NULL);
-
-   Eina_Stringshare *class;
-   Eina_Stringshare *style_name;
-   Eina_Bool item_style;
-   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+   assert(group != NULL);
+   assert(group->class != NULL);
+   assert(group->style != NULL);
 
    Evas_Object *object = NULL;
+   Eina_Bool item_style;
    Eina_List *swallow_list = NULL, *text_list = NULL;
 
-   item_style = strcmp(class, "item") == 0;
-   object = _create_gengrid(parent, item_style, style_name);
+   item_style = strcmp(group->class, "item") == 0;
+   object = _create_gengrid(parent, item_style, group->style);
 
    evas_object_data_set(object, SWALLOW_FUNC, _on_gengrid_swallow_check);
    evas_object_data_set(object, TEXT_FUNC, _on_gengrid_text_check);
@@ -252,7 +250,5 @@ widget_gengrid_create(Evas_Object *parent, const Style *style)
    evas_object_data_set(object, SWALLOW_LIST, swallow_list);
    evas_object_data_set(object, TEXT_LIST, text_list);
 
-   eina_stringshare_del(class);
-   eina_stringshare_del(style_name);
    return object;
 }

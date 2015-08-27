@@ -32,11 +32,11 @@
 #include "widget_manager.h"
 #include "project_manager.h"
 #include "common_macro.h"
-#include "live_widget.h"
 #include <Evas.h>
 #include <Elementary.h>
 
 #include "group_manager.h"
+#include "live_widget.h"
 
 /**
  * @typedef Live_View

@@ -229,17 +229,17 @@ _naviframe_send_signal(void *data,
 
 
 Evas_Object *
-widget_naviframe_create(Evas_Object *parent, const Style *style)
+widget_naviframe_create(Evas_Object *parent, const Group *group)
 {
    assert(parent != NULL);
-   assert(style != NULL);
+   assert(group != NULL);
+   assert(group->style != NULL);
 
-   Eina_Stringshare *style_name;
+   Eina_Stringshare *style_name = group->style;
    char **style_parsed = NULL;
    unsigned int count_split = 0;
    Elm_Object_Item *it = NULL;
 
-   standard_widget_name_parse(style->full_group_name, NULL, NULL, &style_name);
    style_parsed = eina_str_split_full(style_name, "/", 2, &count_split);
    if (count_split == 2)
      {
@@ -266,7 +266,5 @@ widget_naviframe_create(Evas_Object *parent, const Style *style)
 
    elm_object_style_set(nf, style_name);
 
-   eina_stringshare_del(style_name);
-   eina_stringshare_del(item_style_name);
    return nf;
 }

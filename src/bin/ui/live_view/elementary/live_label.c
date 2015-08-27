@@ -20,13 +20,11 @@
 #include "live_elementary_widgets.h"
 
 Evas_Object *
-widget_label_create(Evas_Object *parent, const Style *style)
+widget_label_create(Evas_Object *parent, const Group *group)
 {
    assert(parent != NULL);
-   assert(style != NULL);
-
-   Eina_Stringshare *style_name;
-   standard_widget_name_parse(style->full_group_name, NULL, NULL, &style_name);
+   assert(group != NULL);
+   assert(group->style != NULL);
 
    Evas_Object *object = NULL;
    LABEL_ADD(parent, object, _("Some long text for our label, that is"
@@ -38,8 +36,7 @@ widget_label_create(Evas_Object *parent, const Style *style)
    evas_object_data_set(object, TEXT_FUNC, on_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, send_signal);
 
-   elm_object_style_set(object, style_name);
+   elm_object_style_set(object, group->style);
 
-   eina_stringshare_del(style_name);
    return object;
 }
