@@ -25,7 +25,7 @@
 #define EFL_BETA_API_SUPPORT
 #define EFL_EO_API_SUPPORT
 
-#include "ui_property.h"
+#include "property.h"
 #include "property_macros.h"
 #include "main_window.h"
 #include "string_common.h"

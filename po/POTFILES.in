@@ -16,7 +16,7 @@ src/bin/external/enventor_module.c
 
 # src/*/*/*.c
 src/bin/ui/blocks/ui_block.c
-src/bin/ui/blocks/ui_property.c
+src/bin/ui/property.c
 src/bin/ui/blocks/ui_signal_list.c
 src/bin/ui/blocks/ui_states_list.c
 src/bin/ui/blocks/ui_widget_list.c

@@ -50,7 +50,7 @@ ui/navigator.c \
 ui/tabs.c \
 ui/tab_home_open.c \
 ui/blocks/ui_block.c \
-ui/blocks/ui_property.c \
+ui/property.c \
 ui/blocks/ui_widget_list.c \
 ui/blocks/ui_signal_list.c \
 ui/blocks/ui_states_list.c \

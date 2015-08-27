@@ -42,7 +42,7 @@
  */
 
 #include "main_window.h"
-#include "ui_property.h"
+#include "property.h"
 #include "ui_states_list.h"
 
 /**
