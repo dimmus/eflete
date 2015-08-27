@@ -92,6 +92,7 @@ splash_add(Evas_Object *parent,
    elm_layout_signal_callback_add(sdata.win, "setup", "eflete", _on_setup, NULL);
    elm_layout_signal_callback_add(sdata.win, "teardown", "eflete", _on_teardown, NULL);
 
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
    return sdata.win;
 }
 
@@ -102,4 +103,5 @@ splash_del(Evas_Object *obj)
 
    sdata.status = SPLASH_SUCCESS;
    elm_layout_signal_emit(obj, "end", "eflete");
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
 }
