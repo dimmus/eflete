@@ -84,6 +84,7 @@ struct _Group
    Eina_List *programs;       /**< list of programs */
 
    Evas_Object *edit_object;  /**< object needed to access group with edje_edit functions. Should be NULL if group is not open */
+   Part_ *current_part;        /**< pointer to selected part */
 };
 
 void
