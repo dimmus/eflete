@@ -401,8 +401,6 @@ test_ui_workspace/workspace_edit_object_part_state_set.c \
 test_ui_workspace/workspace_edit_object_recalc.c \
 test_ui_workspace/workspace_edit_object_part_rename.c \
 test_ui_workspace/workspace_edit_object_visible_set.c \
-test_ui_workspace/workspace_highlight_set.c \
-test_ui_workspace/workspace_highlight_unset.c \
 test_ui_workspace/workspace_zoom_factor_get.c \
 test_ui_workspace/workspace_zoom_factor_set.c \
 test_ui_workspace/workspace_separate_mode_set.c \
@@ -442,9 +440,6 @@ animator_test_LDADD = ${LD}
 live_view_test_SOURCES = \
 test_live_view/test_live_view.c \
 test_live_view/live_view_add.c \
-test_live_view/live_view_free.c \
-test_live_view/live_view_widget_style_set.c \
-test_live_view/live_view_widget_style_unset.c \
 test_live_view/live_view_theme_update.c
 live_view_test_CFLAGS = ${FLAGS}
 live_view_test_LDADD = ${LD}

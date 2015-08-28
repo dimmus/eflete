@@ -59,7 +59,7 @@ EFLETE_TEST(workspace_edit_object_part_item_selected_set_test_p1)
    Evas_Object *parent, *workspace;
    Style *style = NULL;
    Evas *e = NULL;
-   Part *part = NULL;
+//   Part *part = NULL;
    Eina_File *mmap_file = NULL;
    Eina_Stringshare *item, *part_name;
    const char *file = "./edj_build/workspace_edit_object_part_item_selected_set.edj";
@@ -75,8 +75,9 @@ EFLETE_TEST(workspace_edit_object_part_item_selected_set_test_p1)
    style = wm_style_add("test", "layout/table", LAYOUT, NULL);
    wm_style_data_load(style, e, mmap_file);
    //workspace_edit_object_set(workspace, style, file);
-   part = wm_part_by_name_find(style, part_name);
-   workspace_highlight_set(workspace, part);
+//   part = wm_part_by_name_find(style, part_name);
+//   workspace_highlight_set(workspace, part);
+   ck_assert(0);
 
    res = workspace_edit_object_part_item_selected_set(workspace, item, EINA_TRUE);
    ck_assert_msg(res == EINA_TRUE, "Failed change selection state of the part item");
@@ -123,7 +124,7 @@ EFLETE_TEST(workspace_edit_object_part_item_selected_set_test_n1)
    Evas_Object *parent, *workspace;
    Style *style = NULL;
    Evas *e = NULL;
-   Part *part = NULL;
+//   Part *part = NULL;
    Eina_File *mmap_file = NULL;
    Eina_Stringshare *item, *part_name;
    const char *file = "./edj_build/workspace_edit_object_part_item_selected_set.edj";
@@ -139,8 +140,9 @@ EFLETE_TEST(workspace_edit_object_part_item_selected_set_test_n1)
    style = wm_style_add("test", "layout/table", LAYOUT, NULL);
    wm_style_data_load(style, e, mmap_file);
    //workspace_edit_object_set(workspace, style, file);
-   part = wm_part_by_name_find(style, part_name);
-   workspace_highlight_set(workspace, part);
+//   part = wm_part_by_name_find(style, part_name);
+//   workspace_highlight_set(workspace, part);
+   ck_assert(0);
 
    res = workspace_edit_object_part_item_selected_set(workspace, item, EINA_TRUE);
    ck_assert_msg(res == EINA_FALSE, "Change selection state of the unexist part item");
