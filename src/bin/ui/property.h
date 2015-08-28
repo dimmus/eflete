@@ -45,28 +45,6 @@ Evas_Object *
 ui_property_add(Evas_Object *parent);
 
 /**
- * Set to current 'property' widget a part state view which state details.
- * If current property has a part view, then old view will be removed.
- *
- * @param property The 'property' widget.
- * @param part The Part data which will be displayed.
- *
- * @ingroup Property
- */
-Eina_Bool
-ui_property_state_set(Evas_Object *property, Part_ *part);
-
-/**
- * Unset the part state view content on a given property.
- *
- * @param property the 'property' widget.
- *
- * @ingroup Property
- */
-void
-ui_property_state_unset(Evas_Object *property);
-
-/**
  * Set to current 'property' widget a part item view.
  * If current property has a part item view, then old view will be removed.
  *
