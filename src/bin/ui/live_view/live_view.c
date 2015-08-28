@@ -200,16 +200,6 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group)
    live->live_view = container_add(parent);
    live->panel = elm_panel_add(parent);
 
-   TODO("Load property instantly here by passing Group object.")
-   live->property = live_view_property_add(live->panel, in_prog_edit);
-   elm_object_content_set(live->panel, live->property);
-   evas_object_smart_callback_add(live->property, "bg,changed", _change_bg_cb,
-                                  live->layout);
-   elm_panel_orient_set(live->panel, ELM_PANEL_ORIENT_RIGHT);
-   evas_object_size_hint_weight_set(live->panel, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(live->panel, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(live->panel);
-
    elm_object_part_content_set(live->layout, SWALLOW_CONTENT, live->live_view);
    elm_object_part_content_set(live->layout, SWALLOW_MENU, live->panel);
    elm_object_part_content_set(live->layout, SWALLOW_BG, bg);
@@ -218,8 +208,19 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group)
 TODO("Should we delete it?")
 //   elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
 
+   /* save structure inside of an object */
    evas_object_data_set(live->block, "live_view_structure", live);
    _live_view_load_object(live, group);
+
+   live->property = live_view_property_add(live->block, group, in_prog_edit);
+   elm_object_content_set(live->panel, live->property);
+   evas_object_smart_callback_add(live->property, "bg,changed", _change_bg_cb,
+                                  live->layout);
+//   live_view_property_style_set(live->property, live->parent);
+   elm_panel_orient_set(live->panel, ELM_PANEL_ORIENT_RIGHT);
+   evas_object_size_hint_weight_set(live->panel, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(live->panel, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(live->panel);
 
    evas_object_event_callback_add(live->block, EVAS_CALLBACK_DEL,
                                   _live_view_delete, NULL);

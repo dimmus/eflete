@@ -41,7 +41,7 @@ _next_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED
    Evas_Object *nf = pd->live_object, *bt = NULL;
    Eina_Stringshare *find_part = eina_stringshare_add("elm.swallow.prev_btn");
 
-   if (wm_part_by_name_find(pd->style, find_part))
+//   if (wm_part_by_name_find(pd->style, find_part))
      {
         bt = elm_button_add(nf);
         elm_object_text_set(bt, _("Back"));
@@ -64,7 +64,7 @@ _prev_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED
    Evas_Object *nf = pd->live_object, *bt = NULL;
    Eina_Stringshare *find_part = eina_stringshare_add("elm.swallow.next_btn");
 
-   if (wm_part_by_name_find(pd->style, find_part))
+//   if (wm_part_by_name_find(pd->style, find_part))
      {
         bt = elm_button_add(nf);
         elm_object_text_set(bt, _("Back"));

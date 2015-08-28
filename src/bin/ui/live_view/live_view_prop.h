@@ -36,6 +36,7 @@
 #include <Evas.h>
 #include <Elementary.h>
 
+TODO("Look through it and clean!")
 struct _Prop_Data
 {
    Evas_Object *live_object;
@@ -43,8 +44,7 @@ struct _Prop_Data
    Evas_Object *visual;
    Evas_Object *header;
    double current_scale;
-   const char *widget;
-   Style *style;
+   Group *group;
    struct {
       Evas_Object *frame;
       Evas_Object *check;
@@ -76,7 +76,7 @@ typedef struct _Prop_Data Prop_Data;
  * @ingroup Live_View_Property
  */
 Evas_Object *
-live_view_property_add(Evas_Object *parent, Eina_Bool in_prog_edit);
+live_view_property_add(Evas_Object *object, Group *group, Eina_Bool in_prog_edit);
 
 /**
  * Free all data associated to 'property' widget.
