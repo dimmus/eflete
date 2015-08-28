@@ -286,6 +286,12 @@ _ui_property_group_set(Evas_Object *property, Group *group);
 static void
 _ui_property_group_unset(Evas_Object *property);
 
+static void
+_ui_property_part_set(Evas_Object *property, Part_ *part);
+
+static void
+_ui_property_part_unset(Evas_Object *property);
+
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property);
 
@@ -400,8 +406,25 @@ _on_tab_changed(void *data,
    _ui_property_group_unset(property);
 
    if (!group) return;
-
    _ui_property_group_set(property, group);
+
+   if (!group->current_part) return;
+   _ui_property_part_set(property, group->current_part);
+}
+
+static void
+_on_part_selected(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info)
+{
+   Evas_Object *property = data;
+   PROP_DATA_GET()
+   Part_ *part = event_info;
+
+   _ui_property_part_unset(property);
+
+   if (!part) return;
+   _ui_property_part_set(property, part);
 }
 
 Evas_Object *
@@ -430,6 +453,7 @@ ui_property_add(Evas_Object *parent)
 
    /* register global callbacks */
    evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _on_tab_changed, pd->layout);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PART_SELECTED, _on_part_selected, pd->layout);
 
    return pd->layout;
 }
@@ -729,7 +753,7 @@ _ui_property_group_unset(Evas_Object *property)
                                   _on_clicked, pd);
    evas_object_hide(pd_group.frame);
    evas_object_hide(pd_group.shared_check);
-   ui_property_part_unset(property);
+   _ui_property_part_unset(property);
    elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 
   evas_object_hide(property);
@@ -904,8 +928,8 @@ PART_ATTR_1COMBOBOX(_("forward events"), part_drag, event, part_drag,
 
 #define pd_part pd->attributes.part
 #define pd_drag pd->attributes.part_drag
-Eina_Bool
-ui_property_part_set(Evas_Object *property, Part_ *part)
+static void
+_ui_property_part_set(Evas_Object *property, Part_ *part)
 {
    Evas_Object *item;
    Evas_Object *box, *prop_box;
@@ -1045,8 +1069,6 @@ ui_property_part_set(Evas_Object *property, Part_ *part)
    elm_scroller_region_bring_in(pd->scroller, 0.0, y_reg + 1, 0.0, h_reg);
    if (h_box == h_reg + y_reg)
      elm_scroller_region_show(pd->scroller, 0.0, y_reg + h_box, 0.0, h_reg);
-
-   return true;
 }
 
 #define PROP_ITEM_UNSET(BOX, ITEM) \
@@ -1058,8 +1080,8 @@ ui_property_part_set(Evas_Object *property, Part_ *part)
         ITEM = NULL; \
      }
 
-void
-ui_property_part_unset(Evas_Object *property)
+static void
+_ui_property_part_unset(Evas_Object *property)
 {
    Evas_Object *prop_box;
 

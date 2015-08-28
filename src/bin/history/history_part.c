@@ -147,7 +147,7 @@ _part_redo(Evas_Object *source, Part_Diff *change)
    assert(style != NULL);
    assert(style->obj != NULL);
 
-   Evas_Object *prop = ui_block_property_get();
+   //Evas_Object *prop = ui_block_property_get();
    Evas_Object *widget_list = ui_block_widget_list_get();
 
    switch (change->diff.action_type)
@@ -177,7 +177,7 @@ _part_redo(Evas_Object *source, Part_Diff *change)
          evas_object_smart_callback_call(ap.workspace, "ws,part,unselected",
                                          (void *)change->part);
          //workspace_highlight_unset(ap.workspace);
-         ui_property_part_unset(prop);
+         //ui_property_part_unset(prop);
          //ui_property_style_set(prop, style, ap.workspace);
 
          workspace_edit_object_part_del(ap.workspace, change->part);

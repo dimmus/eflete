@@ -63,7 +63,7 @@ _on_ws_part_unselect(void *data __UNUSED__,
 
    ui_widget_list_part_selected_set(ui_block_widget_list_get(), part, false);
    ui_states_list_data_unset();
-   ui_property_part_unset(ui_block_property_get());
+   //ui_property_part_unset(ui_block_property_get());
 }
 
 static void
@@ -1733,7 +1733,7 @@ _on_enventor_mode_on(void *data,
 {
 
 //   workspace_highlight_unset(ap.workspace);
-   ui_property_part_unset(ui_block_property_get());
+   //ui_property_part_unset(ui_block_property_get());
    ui_states_list_data_unset();
 }
 
