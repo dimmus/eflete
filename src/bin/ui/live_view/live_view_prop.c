@@ -177,7 +177,6 @@ _live_view_property_load(Evas_Object *property,
    Evas_Object *item, *ic;
    const char *part_name;
    Eina_List *part_list = NULL, *part = NULL, *l = NULL;
-   Signal *sig = NULL;
    Edje_Part_Type part_type;
    Eina_Bool swallow_parts_exists = false, text_parts_exists = false, signal_parts_exists = false;
    Evas_Object *image_bg = NULL;
@@ -338,17 +337,21 @@ _live_view_property_load(Evas_Object *property,
      }
    edje_edit_string_list_free(part_list);
    /* setting all signals for current widget or style except mouse-like ones */
-//   if (!pd->in_prog_edit)
-//     pd->signals = wm_program_signals_list_get(group);
+   if (!pd->in_prog_edit)
+     pd->signals = edje_edit_programs_list_get(group->edit_object);
 
-   EINA_LIST_FOREACH(pd->signals, l, sig)
+   Eina_Stringshare *prog_name, *sig_name, *source_name;
+   EINA_LIST_FOREACH(pd->signals, l, prog_name)
      {
-        if ((strcmp(sig->name, "drag") != 0) &&
-            (strncmp(sig->name, "mouse", strlen("mouse")) != 0))
+        sig_name = edje_edit_program_signal_get(group->edit_object, prog_name);
+        source_name = edje_edit_program_source_get(group->edit_object, prog_name);
+        if (!source_name) source_name = eina_stringshare_add("");
+        if ((sig_name) && (strcmp(sig_name, "drag") != 0) &&
+            (strncmp(sig_name, "mouse", strlen("mouse")) != 0))
           {
              signal_parts_exists = true;
              LAYOUT_PROP_ADD(pd->prop_signal.signals,
-                             sig->name,
+                             sig_name,
                              "live_view",
                              "signal")
 
@@ -359,14 +362,14 @@ _live_view_property_load(Evas_Object *property,
              evas_object_smart_callback_add(button, "clicked",
                                             evas_object_data_get(pd->live_object, SIGNAL_FUNC),
                                             pd->live_object);
-             evas_object_data_set(button, SIGNAL_NAME, eina_stringshare_add(sig->name));
-             evas_object_data_set(button, SIGNAL_SOURCE, eina_stringshare_add(sig->source));
+             evas_object_data_set(button, SIGNAL_NAME, eina_stringshare_add(sig_name));
+             evas_object_data_set(button, SIGNAL_SOURCE, eina_stringshare_add(source_name));
 
              elm_object_part_content_set(item, "elm.swallow.content", button);
              elm_box_pack_end(pd->prop_signal.signals, item);
           }
      }
-//   wm_program_signals_list_free(pd->signals);
+   edje_edit_string_list_free(pd->signals);
 
    if (!swallow_parts_exists)
      {

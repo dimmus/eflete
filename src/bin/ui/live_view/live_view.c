@@ -158,9 +158,8 @@ _live_view_delete(void *data __UNUSED__,
    if (!live_widget_del(live->object))
      evas_object_del(live->object);
 
-   TODO("Implement these API accoding to new architecture")
-      //   live_view_property_style_unset(live->property);
-      //   live_view_property_free(live->property);
+   live_view_property_style_unset(live->property);
+   live_view_property_free(live->property);
 
    free(live);
    live = NULL;
