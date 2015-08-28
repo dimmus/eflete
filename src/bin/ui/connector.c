@@ -714,7 +714,7 @@ ui_style_clicked(Style *style)
         ui_block_property_set(prop);
      }
 
-   ui_property_style_set(prop, _alias_style, ap.workspace);
+//   ui_property_style_set(prop, _alias_style, ap.workspace);
    evas_object_show(prop);
    ap.project->current_style = _style;
 
@@ -1750,7 +1750,7 @@ _on_enventor_mode_off(void *data,
    //workspace_edit_object_set(ap.workspace, style, ap.project->dev);
    workspace_edit_object_recalc(ap.workspace);
    ui_widget_list_style_parts_reload(ui_block_widget_list_get(), style);
-   ui_property_style_set(ui_block_property_get(), style, ap.workspace);
+//   ui_property_style_set(ui_block_property_get(), style, ap.workspace);
 }
 #endif /* HAVE_ENVENTOR */
 

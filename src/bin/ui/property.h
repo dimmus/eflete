@@ -45,34 +45,6 @@ Evas_Object *
 ui_property_add(Evas_Object *parent);
 
 /**
- * Set to current 'property' widget a style view which style details.
- * If current property has a style view, then old view will be removed.
- *
- * @param property The 'property' widget.
- * @param style The Style data which will be displayed.
- * @param workspace The workspace object with editable object.
- *
- * @note If the parameter style and editable style in the workspace not matched
- * propety do not set, and function will return EINA_FALSE.
- *
- * @ingroup Property
- */
-Eina_Bool
-ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspace);
-
-/**
- * Unset the style view content on a given property.
- * This method cascade unset all prop view:
- * style -> part -> state
- *
- * @param property the 'property' widget.
- *
- * @ingroup Property
- */
-void
-ui_property_style_unset(Evas_Object *property);
-
-/**
  * Set to current 'property' widget a part view which part details.
  * If current property has a part view, then old view will be removed.
  *
