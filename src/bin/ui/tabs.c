@@ -102,6 +102,16 @@ _find_tab(Group *group)
 }
 
 static void
+_del_tab(Tabs_Item *item)
+{
+   elm_object_item_del(item->toolbar_item);
+   /* delete pans with workspace and liveview */
+   evas_object_del(item->content);
+   group_unload(item->group);
+   free(item);
+}
+
+static void
 _home_tab_change(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
@@ -189,6 +199,16 @@ tabs_tab_home_open(Tabs_View view)
          break;
      }
 }
+static void
+_tab_close(void *data,
+           Elm_Object_Item *it __UNUSED__,
+           const char *emission __UNUSED__,
+           const char *source __UNUSED__)
+{
+   Tabs_Item *item = (Tabs_Item *)data;
+   tabs.items = eina_list_remove(tabs.items, item);
+   _del_tab(item);
+}
 
 void
 tabs_tab_add(Group *group)
@@ -218,6 +238,7 @@ tabs_tab_add(Group *group)
    item->toolbar_item = elm_toolbar_item_append(tabs.toolbar, NULL, group->name,
                                                _content_set, (void *)item);
    elm_toolbar_item_selected_set(item->toolbar_item, true);
+   elm_object_item_signal_callback_add(item->toolbar_item, "tab,close", "eflete", _tab_close, (void *)item);
    tabs.items = eina_list_append(tabs.items, item);
 }
 
@@ -228,11 +249,7 @@ tabs_clean(void)
 
    EINA_LIST_FREE(tabs.items, item)
      {
-        elm_object_item_del(item->toolbar_item);
-        /* delete pans with workspace and liveview */
-        evas_object_del(item->content);
-        group_unload(item->group);
-        free(item);
+        _del_tab(item);
      }
    tabs.items = NULL;
 }
