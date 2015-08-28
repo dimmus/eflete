@@ -612,7 +612,7 @@ ui_part_back(void)
    ui_states_list_data_unset();
    ui_signal_list_data_unset(ap.block.signal_list);
    ui_block_content_visible(ap.block.right_top, false);
-   live_view_widget_style_unset(ap.live_view);
+//   live_view_widget_style_unset(ap.live_view);
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 

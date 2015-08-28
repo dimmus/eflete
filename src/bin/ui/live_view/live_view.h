@@ -77,20 +77,6 @@ Evas_Object *
 live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group);
 
 /**
- * Unset widget from live view and hide it aswell.
- *
- * This function will delete and unset all previously created widgets from live
- view and then hide live view and scaling spinner.
- *
- * @param live live_view structure.
- * @return EINA_TRUE if successful, EINA_FALSE otherwise;
- *
- * @ingroup Live_View
- */
-Eina_Bool
-live_view_widget_style_unset(Live_View *live);
-
-/**
  * Update changed and loaded project theme.
  *
  * This function will update the widget inside of the live view.
@@ -104,21 +90,6 @@ live_view_widget_style_unset(Live_View *live);
  */
 Eina_Bool
 live_view_theme_update(Evas_Object *object);
-
-/**
- * Freeing the live_view structure.
- *
- * This function will free and delete the structure that contain all
- * information about live view.
- *
- * @param live live_view structure.
- *
- * @return EINA_TRUE if successful, EINA_FALSE otherwise;
- *
- * @ingroup Live_View
- */
-Eina_Bool
-live_view_free(Live_View *live);
 
 /**
  * Add new part to live view properties list of parts.

@@ -208,7 +208,7 @@ _on_animator_close(void *data,
 
    program_editor_free(animator->program_editor);
 
-   live_view_free(animator->live);
+//   live_view_free(animator->live);
 
    animator->afters = eina_list_free(animator->afters);
 
