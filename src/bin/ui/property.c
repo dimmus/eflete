@@ -409,9 +409,11 @@ _on_tab_changed(void *data,
 
    assert(pd != NULL);
 
-   _ui_property_group_unset(property);
-
-   if (!group) return;
+   if (!group)
+     {
+        _ui_property_group_unset(property);
+        return;
+     }
    _ui_property_group_set(property, group);
 
    if (!group->current_part) return;
@@ -428,9 +430,11 @@ _on_part_selected(void *data,
    PROP_DATA_GET()
    Part_ *part = event_info;
 
-   _ui_property_part_unset(property);
-
-   if (!part) return;
+   if (!part)
+     {
+        _ui_property_part_unset(property);
+        return;
+     }
    _ui_property_part_set(property, part);
    _ui_property_part_state_set(property, part);
 }
@@ -444,9 +448,12 @@ _on_part_state_selected(void *data,
    PROP_DATA_GET()
    Part_ *part = event_info;
 
-   _ui_property_part_state_unset(property);
-
-   if (!part) return;
+   if (!part)
+     {
+        TODO("is this unset needed?");
+        _ui_property_part_state_unset(property);
+        return;
+     }
    _ui_property_part_state_set(property, part);
 }
 
