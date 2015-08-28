@@ -137,6 +137,16 @@ _open(void *data __UNUSED__,
    evas_object_show(ap.splash);
 }
 
+static void
+_recent_clear(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   config_recent_list_clear();
+   _tab_open_project_recents_update();
+}
+
+
 Evas_Object *
 _tab_open_project_add(void)
 {
@@ -149,8 +159,7 @@ _tab_open_project_add(void)
    tab.btn_clear = elm_button_add(ap.win);
    elm_object_text_set(tab.btn_clear, _("Clear list"));
    elm_layout_content_set(tab.layout, "elm.swallow.btn_clear", tab.btn_clear);
-   /* while recent list not implemented this button will be disabled */
-   elm_object_disabled_set(tab.btn_clear, true);
+   evas_object_smart_callback_add(tab.btn_clear, "clicked", _recent_clear, NULL);
 
    tab.fs = elm_fileselector_add(ap.win);
    elm_fileselector_expandable_set(tab.fs, false);
@@ -197,8 +206,10 @@ _tab_open_project_recents_update(void)
 
    config = config_get();
    evas_object_del(elm_layout_content_unset(tab.layout, "elm.swallow.recents"));
+   elm_object_disabled_set(tab.btn_clear, true);
 
    if (!config->recents) return;
+   elm_object_disabled_set(tab.btn_clear, false);
    BOX_ADD(tab.layout, box, false, false)
    elm_box_align_set(box, 0.5, 0.0);
    elm_box_padding_set(box, 0, 6);

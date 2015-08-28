@@ -520,6 +520,7 @@ group { name: "elm/toolbar/item/tabs_horizontal";
    images {
       image: "tab-head-active-bg.png" COMP;
       image: "tab-head-bg.png" COMP;
+      image: "icon_close.png" COMP;
    }
    parts {
       part { name: "bg";
@@ -568,6 +569,24 @@ group { name: "elm/toolbar/item/tabs_horizontal";
             }
          }
       }
+      part { name: "icon_close";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            max: 14 14;
+            align: 1.0 0.5;
+            rel2.offset: -7 -1;
+            image.normal: "icon_close.png";
+            color_class: "main";
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            color_class: "select_light";
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
+            color_class: "select";
+         }
+      }
       part { name: "elm.text";
          type: TEXT;
          clip_to: "clipper";
@@ -591,7 +610,9 @@ group { name: "elm/toolbar/item/tabs_horizontal";
                to_x: "elm.swallow.icon";
             }
             rel2 {
-               offset: -7 -1;
+               to_x: "icon_close";
+               relative: 0.0 1.0;
+               offset: -5 -1;
             }
             text {
                font: "PT";
@@ -611,6 +632,7 @@ group { name: "elm/toolbar/item/tabs_horizontal";
       }
       part { name: "event";
          type: RECT;
+         repeat_events: 1;
          description { state: "default" 0.0;
             color: 255 255 255 0;
          }
@@ -689,6 +711,34 @@ group { name: "elm/toolbar/item/tabs_horizontal";
          action: STATE_SET "default" 0.00;
          target: "clipper";
          target: "event";
+      }
+      program { name: "close_focused";
+         signal: "mouse,in";
+         source: "icon_close";
+         action: STATE_SET "focused" 0.0;
+         target: "icon_close";
+      }
+      program { name: "close_unfocused";
+         signal: "mouse,out";
+         source: "icon_close";
+         action: STATE_SET "default" 0.0;
+         target: "icon_close";
+      }
+      program { name: "close_clicked";
+         signal: "mouse,down,1";
+         source: "icon_close";
+         action: STATE_SET "clicked" 0.0;
+         target: "icon_close";
+      }
+      program { name: "close_unclicked";
+         signal: "mouse,up,1";
+         source: "icon_close";
+         action: STATE_SET "default" 0.0;
+         target: "icon_close";
+         after: "close_emit";
+      }
+      program { name: "close_emit";
+         action: SIGNAL_EMIT "tab,close" "eflete";
       }
    }
 }

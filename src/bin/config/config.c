@@ -48,8 +48,8 @@ _config_free(void)
 static void
 _recent_free(Recent *r)
 {
-   free(r->name);
-   free(r->path);
+   eina_stringshare_del(r->name);
+   eina_stringshare_del(r->path);
    free(r);
 }
 
