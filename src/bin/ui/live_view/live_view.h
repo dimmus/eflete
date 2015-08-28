@@ -77,24 +77,6 @@ Evas_Object *
 live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group);
 
 /**
- * Set and show given widget and apply the style to it for showing the view of
- * of this widget.
- *
- * This function will create widget/widgets for showing loaded group,
- * and create new theme for applying changed style to widget.
- * This function also will hide the scaling spinner.
- *
- * @param live live_view structure.
- * @param project project structure that contain path to swap file.
- * @param style style that contain current style name is being showed.
- * @return EINA_TRUE if successful, EINA_FALSE otherwise;
- *
- * @ingroup Live_View
- */
-Eina_Bool
-live_view_widget_style_set(Live_View *live, Project *project, Style *style);
-
-/**
  * Unset widget from live view and hide it aswell.
  *
  * This function will delete and unset all previously created widgets from live
