@@ -105,6 +105,8 @@ project_close(void)
    tabs_tab_home_open(TAB_HOME_OPEN_PROJECT);
 
    pm_project_close(ap.project);
+   elm_layout_text_set(ap.win_layout, "eflete.project.time", _("Last saved: none"));
+   elm_layout_text_set(ap.win_layout, "eflete.project.part", _("Project path: none"));
 
    return true;
 }
