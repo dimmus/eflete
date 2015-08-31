@@ -35,6 +35,7 @@ typedef struct _Tabs_Item Tabs_Item;
 struct _Tabs {
    Evas_Object *layout;
    Evas_Object *toolbar;
+   Elm_Object_Item *selected;
    Eina_List *items;
    struct {
       Elm_Object_Item *item;
@@ -70,11 +71,15 @@ _content_unset(void)
 static void
 _content_set(void *data,
              Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+             void *event_info)
 {
    Tabs_Item *item = (Tabs_Item *)data;
+   Elm_Object_Item *toolbar_item = event_info;
 
    assert(tabs.layout != NULL);
+
+   if (tabs.selected == toolbar_item) return;
+   tabs.selected = toolbar_item;
 
    _content_unset();
    if (item)
