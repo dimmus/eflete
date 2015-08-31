@@ -20,6 +20,7 @@
 #include "tabs_private.h"
 #include "ui_workspace.h"
 #include "tabs.h"
+#include "signals.h"
 
 struct _Tabs_Item {
    Group *group;
@@ -83,7 +84,7 @@ _content_set(void *data,
 
    /* call 'tab,changed' on tab click, and sent Group accociated with clicked
     * tab or NULL, if click on 'home' tab */
-   evas_object_smart_callback_call(tabs.layout, "tab,changed",
+   evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED,
                                    item ? item->group : NULL);
 }
 

@@ -21,6 +21,14 @@
 #define SIGNALS_H
 
 /**
+ * emited when tab changed.
+ * eventinfo - pointer to Group structure. Can be NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_TAB_CHANGED "SIGNAL_TAB_CHANGED"
+
+/**
  * emited when part is selected.
  * eventinfo - pointer to Part_ structure
  *
