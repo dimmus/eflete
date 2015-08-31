@@ -439,9 +439,7 @@ live_view_test_LDADD = ${LD}
 live_view_prop_test_SOURCES = \
 ../tests/test_live_view_prop/test_live_view_prop.c \
 ../tests/test_live_view_prop/live_view_property_add.c \
-../tests/test_live_view_prop/live_view_property_free.c \
-../tests/test_live_view_prop/live_view_property_style_set.c \
-../tests/test_live_view_prop/live_view_property_style_unset.c
+../tests/test_live_view_prop/live_view_property_free.c
 live_view_prop_test_CFLAGS = ${FLAGS}
 live_view_prop_test_LDADD = ${LD}
 
