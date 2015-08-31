@@ -3666,26 +3666,8 @@ group { name: "elm/layout/live_view/toolbar";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0;
-            visible: 0;
-         }
-         description { state: "displayed" 0;
-            inherit: "default" 0.0;
             visible: 1;
          }
-      }
-   }
-   programs {
-      program { name: "live_view_spinner_hide";
-         signal: "live_view,hide";
-         source: "eflete";
-         action: STATE_SET "default" 0.00;
-         target: "eflete.swallow.content";
-      }
-      program { name: "live_view_spinner_show";
-         signal: "live_view,show";
-         source: "eflete";
-         action: STATE_SET "displayed" 0.00;
-         target: "eflete.swallow.content";
       }
    }
 }
