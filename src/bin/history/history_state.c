@@ -170,9 +170,9 @@ _history_ui_state_update(Evas_Object *source, State_Diff *change)
    assert(style != NULL);
    assert(style->obj == source);
 
-   Evas_Object *prop_view = ui_block_property_get();
+   //Evas_Object *prop_view = ui_block_property_get();
    part = wm_part_by_name_find(style, change->part);
-   ui_property_state_unset(prop_view);
+   //ui_property_state_unset(prop_view);
    ui_widget_list_part_selected_set(ui_block_widget_list_get(),
                                     change->part, false);
    if (part)

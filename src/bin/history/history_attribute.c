@@ -103,7 +103,7 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
 
    style = ap.project->current_style;
 
-   Evas_Object *prop = ui_block_property_get();
+   //Evas_Object *prop = ui_block_property_get();
 
    if (change->part)
      {
@@ -137,7 +137,7 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
                                              (void *)part->name);
              //workspace_highlight_unset(ap.workspace);
           }
-        ui_property_part_unset(prop);
+        //ui_property_part_unset(prop);
         //ui_property_style_set(prop, style, ap.workspace);
         workspace_edit_object_recalc(ap.workspace);
      }
