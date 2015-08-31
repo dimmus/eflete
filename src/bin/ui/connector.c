@@ -1843,25 +1843,26 @@ _on_style_back(void *data __UNUSED__,
 static void
 _on_part_item_selected(void *data __UNUSED__,
                        Evas_Object *obj __UNUSED__,
-                       void *event_data)
+                       void *event_data __UNUSED__)
 {
-
+/*
    Eina_Stringshare *item_name = (Eina_Stringshare *) event_data;
    workspace_edit_object_part_item_selected_set(ap.workspace, item_name, true);
-   ui_property_item_set(ui_block_property_get(), item_name);
+   ui_property_item_set(ui_block_property_get(), item_name);*/
 }
 
 static void
 _on_part_item_unselected(void *data __UNUSED__,
                          Evas_Object *obj __UNUSED__,
-                         void *event_data)
+                         void *event_data __UNUSED__)
 {
 
-   Eina_Stringshare *item_name = (Eina_Stringshare *) event_data;
+/*   Eina_Stringshare *item_name = (Eina_Stringshare *) event_data;
    workspace_edit_object_part_item_selected_set(ap.workspace, item_name, false);
-   ui_property_item_unset(ui_block_property_get());
+   ui_property_item_unset(ui_block_property_get());*/
 }
 
+TODO("remove this method")
 Eina_Bool
 add_callbacks_wd(Evas_Object *wd_list)
 {

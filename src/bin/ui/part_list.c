@@ -350,6 +350,7 @@ _unselect_part(Part_List *pl)
    assert(pl != NULL);
    assert(pl->selected_part_item != NULL);
 
+   pl->group->current_part->current_item_name = NULL;
    pl->group->current_part = NULL;
    part = elm_object_item_data_get(pl->selected_part_item);
    elm_genlist_item_item_class_update(pl->selected_part_item, pl->itc_part);
@@ -363,20 +364,29 @@ _selected_cb(void *data,
              void *event_info)
 {
    Elm_Object_Item *glit = event_info;
+   const Elm_Genlist_Item_Class* itc;
+   Eina_Stringshare *item_name;
    Part_List *pl = data;
    Part_ *part;
 
    assert(pl != NULL);
 
+   itc = elm_genlist_item_item_class_get(glit);
+   if (itc == pl->itc_item)
+     item_name = elm_object_item_data_get(glit);
+   else
+     item_name = NULL;
+
    while (elm_genlist_item_parent_get(glit))
      glit = elm_genlist_item_parent_get(glit);
 
-   if (pl->selected_part_item != glit)
+   part = elm_object_item_data_get(glit);
+   if ((pl->selected_part_item != glit) || (part->current_item_name != item_name))
      {
         if (pl->selected_part_item)
           _unselect_part(pl);
         pl->selected_part_item = glit;
-        part = elm_object_item_data_get(glit);
+        part->current_item_name = item_name;
         pl->group->current_part = part;
         evas_object_smart_callback_call(pl->layout, SIGNAL_PART_LIST_PART_SELECTED,
                                         (void *)part);

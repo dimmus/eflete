@@ -298,6 +298,12 @@ _ui_property_part_state_set(Evas_Object *property, Part_ *part);
 static void
 _ui_property_part_state_unset(Evas_Object *property);
 
+static void
+_ui_property_part_item_set(Evas_Object *property, Part_ *part);
+
+static void
+_ui_property_part_item_unset(Evas_Object *property);
+
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property);
 
@@ -437,6 +443,8 @@ _on_part_selected(void *data,
      }
    _ui_property_part_set(property, part);
    _ui_property_part_state_set(property, part);
+   if (part->current_item_name)
+     _ui_property_part_item_set(property, part);
 }
 static void
 _on_part_unselected(void *data,
@@ -3134,16 +3142,16 @@ PART_ITEM_DOUBLEVAL_ATTR_2SPINNER(_("position"), part_item, position, position1,
                                   _("Sets the column position this item"), _("Sets the row position this item"),
                                   1, unsigned short, VAL_INT)
 
-Eina_Bool
-ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
+static void
+_ui_property_part_item_set(Evas_Object *property, Part_ *part)
 {
    Evas_Object *item;
    Evas_Object *box, *prop_box;
 
    PROP_DATA_GET()
 
-   ui_property_item_unset(property);
-   pd->item_name = item_name;
+   _ui_property_part_item_unset(property);
+   pd->item_name = part->current_item_name;
    prop_box = elm_object_content_get(pd->scroller);
    if (!pd_item.frame)
      {
@@ -3184,7 +3192,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
    else
      {
         box = elm_object_content_get(pd->attributes.part_item.frame);
-        prop_part_item_name_update(item_name);
+        prop_part_item_name_update(pd->item_name);
         prop_part_item_source_update(pd);
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, min_w, min_h, part_item, int,1)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, max_w, max_h, part_item, int,1)
@@ -3218,12 +3226,10 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
                evas_object_hide(pd->attributes.part_item.position_item);
             }
        }
-
-   return true;
 }
 
-void
-ui_property_item_unset(Evas_Object *property)
+static void
+_ui_property_part_item_unset(Evas_Object *property)
 {
    Evas_Object *prop_box, *item_box;
 

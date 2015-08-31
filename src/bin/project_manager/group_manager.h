@@ -66,6 +66,7 @@ struct _Part_
    Eina_List *states;         /**< list of states */
    State *current_state;      /**< pointer to selected state */
    Eina_List *items;          /**< list of item names. Used only for BOX and TABLE parts */
+   Eina_Stringshare * current_item_name; /**< name of selected item */
    Group *group;              /**< pointer to group */
    Eina_Bool visible;         /**< is part visible on workspace*/
 };
