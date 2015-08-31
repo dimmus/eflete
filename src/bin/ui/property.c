@@ -51,7 +51,6 @@ evas_object_smart_callback_add(FRAME, "clicked", _on_frame_click, SCROLLER);
 
 struct _Prop_Data
 {
-   Evas_Object *workspace;
    Group *group;
    Part_ *part;
    Evas_Object *layout;
@@ -832,6 +831,9 @@ _on_part_name_change(void *data,
    const char *value;
    const char *old_value = pd->part->name;
 
+   TODO("Fix rename");
+   return;
+
    assert(pd != NULL);
    if (elm_validator_regexp_status_get(pd->attributes.part.validator) != ELM_REG_NOERROR)
      return;
@@ -844,7 +846,7 @@ _on_part_name_change(void *data,
      }
 
    project_changed(false);
-   workspace_edit_object_part_rename(pd->workspace, pd->part->name, value);
+/*   workspace_edit_object_part_rename(pd->workspace, pd->part->name, value); */
    pd->part->name = value;
    pos = elm_entry_cursor_pos_get(obj);
    history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_RENAME, old_value, value,
@@ -853,7 +855,7 @@ _on_part_name_change(void *data,
                       pd->part->name, NULL, 0.0);
    elm_object_focus_set(obj, true);
    elm_entry_cursor_pos_set(obj, pos);
-   workspace_edit_object_recalc(pd->workspace);
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
 }
 
 static void
@@ -1212,7 +1214,7 @@ _on_state_color_class_change(void *data,
    edje_edit_string_free(old_value);
 
    project_changed(false);
-   workspace_edit_object_recalc(pd->workspace);
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
 }
 
 static void
@@ -1658,7 +1660,7 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
                     pd->part->current_state->parsed_val); \
    eina_stringshare_del(text); \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
 #define STATE_ATTR_2COMBOBOX_V(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2) \
@@ -1878,7 +1880,7 @@ _text_effect_update(Prop_Data *pd)
                     pd->group->name, (void*)edje_edit_part_effect_set,
                     _("text effect"), pd->part->name, NULL, 0);
 
-   workspace_edit_object_recalc(pd->workspace);
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
    project_changed(false);
 }
 
@@ -2031,7 +2033,7 @@ _on_state_text_ellipsis_change(void *data,
                     (void*)edje_edit_state_text_elipsis_set, "elipsis",
                     pd->part->name, pd->part->current_state->parsed_name,
                     pd->part->current_state->parsed_val);
-   workspace_edit_object_recalc(pd->workspace);
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
    project_changed(false);
 }
 
@@ -2070,7 +2072,7 @@ _on_state_text_ellipsis_toggle_change(void *data,
                     (void*)edje_edit_state_text_elipsis_set, "elipsis",
                     pd->part->name, pd->part->current_state->parsed_name,
                     pd->part->current_state->parsed_val);
-   workspace_edit_object_recalc(pd->workspace);
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
    project_changed(false);
 }
 
@@ -2432,7 +2434,7 @@ TODO("uncomment after changing save API")
    evas_object_smart_callback_call(pd->attributes.state_image.image, "changed,user", NULL);
    elm_entry_entry_set(border_entry, NULL);
    evas_object_smart_callback_call(border_entry, "changed,user", NULL);
-   workspace_edit_object_recalc(pd->workspace);
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
    project_changed(false);
 }
 
@@ -2748,7 +2750,7 @@ _on_state_image_border_change(void *data,
                     pd->part->current_state->parsed_val);
 
    project_changed(false);
-   workspace_edit_object_recalc(pd->workspace);
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
 }
 
 static void
@@ -2998,7 +3000,7 @@ _on_part_item_padding_change(void *data,
                                         pd->item_name, l, r, t, b))
      return;
    project_changed(false);
-   workspace_edit_object_recalc(pd->workspace);
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
 }
 
 static void

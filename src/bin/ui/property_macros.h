@@ -163,7 +163,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->part->name, pd->part->current_state->parsed_name, pd->part->current_state->parsed_val); \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
 /**
@@ -245,7 +245,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
                     value, pd->group->name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS_DIFF); \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
 /**
@@ -273,7 +273,7 @@ _on_##MEMBER##_##VALUE1##_change(void *data, \
                                     (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE1) / MULTIPLIER, \
                                     (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE2) / MULTIPLIER); \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 } \
 static void \
 _on_##MEMBER##_##VALUE2##_change(void *data, \
@@ -285,7 +285,7 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
                                     (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE1) / MULTIPLIER, \
                                     (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE2) / MULTIPLIER); \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
 /**
@@ -425,7 +425,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_INT, old_value, \
                     value, pd->group->name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS_DIFF); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
    project_changed(false); \
 }
 
@@ -470,7 +470,7 @@ _on_##MEMBER##_##VALUE1##_change(void *data, \
                                     elm_check_state_get(pd->attributes.MEMBER.VALUE1), \
                                     elm_check_state_get(pd->attributes.MEMBER.VALUE2)); \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 } \
 static void \
 _on_##MEMBER##_##VALUE2##_change(void *data, \
@@ -482,7 +482,7 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
                                     elm_check_state_get(pd->attributes.MEMBER.VALUE1), \
                                     elm_check_state_get(pd->attributes.MEMBER.VALUE2)); \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
 /**
@@ -532,7 +532,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS); \
    eina_stringshare_del(old_value); \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
 /**
@@ -625,7 +625,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
                     value, pd->group->name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS); \
    elm_object_focus_set(obj, true); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
    project_changed(false); \
    eina_stringshare_del(old_value); \
    free(value); \
@@ -764,7 +764,7 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
                         NULL, NULL, 0); \
     } \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
 /*****************************************************************************/
@@ -911,7 +911,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->part->name, NULL, 0.0); \
    project_changed(true); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
 /*****************************************************************************/
@@ -1083,7 +1083,7 @@ _on_part_drag_##VALUE1##_change(void *data, \
                     (void*)edje_edit_part_drag_##VALUE1##_set, #SUB"_"#VALUE1, \
                      pd->part->name, NULL, 0.0); \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 } \
 static void \
 _on_part_drag_##VALUE2##_change(void *data, \
@@ -1100,7 +1100,7 @@ _on_part_drag_##VALUE2##_change(void *data, \
                     (void*)edje_edit_part_drag_##VALUE2##_set, #SUB"_"#VALUE2, \
                      pd->part->name, NULL, 0.0); \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
 /*****************************************************************************/
@@ -1174,7 +1174,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, pd->part->name, \
                                    pd->item_name, item->title); \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
 /*****************************************************************************/
@@ -1267,7 +1267,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
         elm_spinner_value_set(pd->attributes.state.DIF_VALUE, value); \
      } \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
    COMMON_1SPINNER_UPDATE(SUB, DIF_VALUE, MEMBER, TYPE, MULTIPLIER, PART_ITEM_ARGS) \
 }
 
@@ -1298,7 +1298,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
        abort(); \
      } \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
 /*****************************************************************************/
@@ -1352,7 +1352,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
    edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object PART_ITEM_ARGS, (TYPE)item->index); \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
 /*****************************************************************************/
@@ -1556,7 +1556,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->part->name, pd->part->current_state->parsed_name, pd->part->current_state->parsed_val); \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
 /*****************************************************************************/
@@ -1822,7 +1822,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                       pd->part->name, pd->part->current_state->parsed_name, \
                       pd->part->current_state->parsed_val); \
    project_changed(false); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 } \
 static void \
 _on_##MEMBER##_##VALUE##_dismissed(void *data, \
@@ -1908,7 +1908,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->part->name, pd->part->current_state->parsed_name, pd->part->current_state->parsed_val); \
    project_changed(true); \
-   workspace_edit_object_recalc(pd->workspace); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
    edje_edit_string_free(old_value); \
 }
 

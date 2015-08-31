@@ -37,6 +37,7 @@ struct _Tabs {
    Evas_Object *toolbar;
    Elm_Object_Item *selected;
    Eina_List *items;
+   Evas_Object *current_workspace;
    struct {
       Elm_Object_Item *item;
       Evas_Object *content;
@@ -64,6 +65,7 @@ _content_unset(void)
    Evas_Object *content;
 
    assert(tabs.layout != NULL);
+   tabs.current_workspace = NULL;
    content = elm_layout_content_unset(tabs.layout, NULL);
    evas_object_hide(content);
 }
@@ -81,9 +83,12 @@ _content_set(void *data,
    if (tabs.selected == toolbar_item) return;
    tabs.selected = toolbar_item;
 
-   _content_unset();
    if (item)
-     elm_layout_content_set(tabs.layout, NULL, item->content);
+     {
+        _content_unset();
+        elm_layout_content_set(tabs.layout, NULL, item->content);
+        tabs.current_workspace = item->workspace;
+     }
    else
      tabs_tab_home_open(TAB_HOME_LAST);
 
@@ -216,6 +221,15 @@ _tab_close(void *data,
    _del_tab(item);
 }
 
+static void
+_property_attribute_changed(void *data __UNUSED__,
+                            Evas_Object *obj __UNUSED__,
+                            void *ei __UNUSED__)
+{
+   assert(tabs.current_workspace != NULL);
+   workspace_edit_object_recalc(tabs.current_workspace);
+}
+
 void
 tabs_tab_add(Group *group)
 {
@@ -246,6 +260,8 @@ tabs_tab_add(Group *group)
    elm_toolbar_item_selected_set(item->toolbar_item, true);
    elm_object_item_signal_callback_add(item->toolbar_item, "tab,close", "eflete", _tab_close, (void *)item);
    tabs.items = eina_list_append(tabs.items, item);
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
 }
 
 void

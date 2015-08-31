@@ -68,5 +68,12 @@
  */
 #define SIGNAL_PART_ITEM_UNSELECTED "SIGNAL_PART_ITEM_UNSELECTED"
 
+/**
+ * emited when any attribute is changed in properties.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_PROPERTY_ATTRIBUTE_CHANGED "SIGNAL_PROPERTY_ATTRIBUTE_CHANGED"
 
 #endif /* SIGNALS_H*/
