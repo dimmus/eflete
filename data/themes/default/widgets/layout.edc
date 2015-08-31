@@ -3667,31 +3667,10 @@ group { name: "elm/layout/live_view/toolbar";
          scale: 1;
          description { state: "default" 0;
             visible: 0;
-            rel1 {
-               relative: 0 0;
-            }
-            rel2 {
-               relative: 0 1;
-               to_x: "eflete.swallow.menu";
-            }
          }
          description { state: "displayed" 0;
             inherit: "default" 0.0;
             visible: 1;
-         }
-      }
-      part { name: "eflete.swallow.menu";
-         type: SWALLOW;
-         description { state: "default" 0;
-            min: 277 0;
-            max: 277 -1;
-            align: 1.0 0.5;
-            fixed: 1 1;
-            rel1 {
-               relative: 0.7 0;
-               offset: -1 0;
-            }
-            color: 255 0 255 255;
          }
       }
    }

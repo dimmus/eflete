@@ -186,21 +186,26 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group)
    live->parent = parent;
    live->group = group;
    live->block = block;
+
+   live->panel = elm_panes_add(live->block);
+   evas_object_size_hint_weight_set(live->panel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(live->panel, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_panes_content_right_min_size_set(live->panel, 225);
+   elm_panes_content_right_size_set(live->panel, 0); /* default is min size */
+   elm_object_part_content_set(live->block, "elm.swallow.content", live->panel);
+   evas_object_show(live->panel);
    /* Create main layout of entire live view */
    live->layout = elm_layout_add(live->block);
    elm_layout_theme_set(live->layout, "layout", "live_view", "toolbar");
-   elm_object_part_content_set(live->block, "elm.swallow.content", live->layout);
+   elm_object_part_content_set(live->panel, "left", live->layout);
    bg = elm_bg_add(live->layout);
    IMAGE_ADD_NEW(live->layout, bg, "bg", "tile");
    evas_object_show(bg);
 
    /* Create container,  will hold live object inside (resizable container).
-      And create Panel for live view property. */
+      And create panes for having both live view property and live object. */
    live->live_view = container_add(parent);
-   live->panel = elm_panel_add(parent);
-
    elm_object_part_content_set(live->layout, SWALLOW_CONTENT, live->live_view);
-   elm_object_part_content_set(live->layout, SWALLOW_MENU, live->panel);
    elm_object_part_content_set(live->layout, SWALLOW_BG, bg);
    container_confine_set(live->live_view, bg);
 
@@ -210,16 +215,12 @@ TODO("Should we delete it?")
    /* save structure inside of an object */
    evas_object_data_set(live->block, "live_view_structure", live);
    _live_view_load_object(live, group);
-
    live->property = live_view_property_add(live->block, group, in_prog_edit);
-   elm_object_content_set(live->panel, live->property);
+   elm_object_part_content_set(live->panel, "right", live->property);
+
    evas_object_smart_callback_add(live->property, "bg,changed", _change_bg_cb,
                                   live->layout);
 //   live_view_property_style_set(live->property, live->parent);
-   elm_panel_orient_set(live->panel, ELM_PANEL_ORIENT_RIGHT);
-   evas_object_size_hint_weight_set(live->panel, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(live->panel, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(live->panel);
 
    evas_object_event_callback_add(live->block, EVAS_CALLBACK_DEL,
                                   _live_view_delete, NULL);
