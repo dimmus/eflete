@@ -350,6 +350,7 @@ _unselect_part(Part_List *pl)
    assert(pl != NULL);
    assert(pl->selected_part_item != NULL);
 
+   pl->group->current_part = NULL;
    part = elm_object_item_data_get(pl->selected_part_item);
    elm_genlist_item_item_class_update(pl->selected_part_item, pl->itc_part);
    pl->selected_part_item = NULL;
@@ -376,6 +377,7 @@ _selected_cb(void *data,
           _unselect_part(pl);
         pl->selected_part_item = glit;
         part = elm_object_item_data_get(glit);
+        pl->group->current_part = part;
         evas_object_smart_callback_call(pl->layout, SIGNAL_PART_LIST_PART_SELECTED,
                                         (void *)part);
         elm_genlist_item_item_class_update(glit, pl->itc_part_selected);

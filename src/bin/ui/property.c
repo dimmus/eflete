@@ -32,6 +32,8 @@
 
 #include "syntax_color.h"
 
+#include "signals.h"
+
 #define PROP_DATA "prop_data"
 
 #define PROP_DATA_GET() \
@@ -278,6 +280,12 @@ static const char *edje_box_layouts[] = { N_("horizontal"),
                                           // N_("Custom Layout"), not implemented yet
                                           NULL};
 
+static void
+_ui_property_group_set(Evas_Object *property, Group *group);
+
+static void
+_ui_property_group_unset(Evas_Object *property);
+
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property);
 
@@ -378,6 +386,24 @@ prop_item_label_add(Evas_Object *parent,
 #define prop_state_state_update(TEXT) elm_object_text_set(pd->attributes.state.state, TEXT)
 #define prop_part_item_name_update(TEXT) elm_object_text_set(pd->attributes.part_item.name, TEXT)
 
+static void
+_on_tab_changed(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info)
+{
+   Evas_Object *property = data;
+   PROP_DATA_GET()
+   Group *group = event_info;
+
+   assert(pd != NULL);
+
+   _ui_property_group_unset(property);
+
+   if (!group) return;
+
+   _ui_property_group_set(property, group);
+}
+
 Evas_Object *
 ui_property_add(Evas_Object *parent)
 {
@@ -401,6 +427,9 @@ ui_property_add(Evas_Object *parent)
    elm_object_content_set(pd->layout, pd->scroller);
 
    evas_object_data_set(pd->layout, PROP_DATA, pd);
+
+   /* register global callbacks */
+   evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _on_tab_changed, pd->layout);
 
    return pd->layout;
 }
@@ -451,7 +480,7 @@ TODO("Implement rename. Note: groups list must remain sorted")
 
 GROUP_ATTR_2SPINNER(_("min"), min, max, w, h, >)
 GROUP_ATTR_2SPINNER(_("max"), max, min, w, h, <)
-GROUP_ATTR_1ENTRY(_("name"), group, name, group, NULL, _(""))
+GROUP_ATTR_1ENTRY(_("name"), group, name, group, NULL, _("Name of the group."))
 
 #define pd_group pd->attributes.group
 
@@ -481,36 +510,36 @@ _on_clicked(void *data,
    evas_object_move(pd_group.ctxpopup, x, y);
    evas_object_show(pd_group.ctxpopup);
 }
+
 static void
-_prop_item_alias_update(Prop_Data *pd, Style *style, int aliases_count)
+_prop_item_alias_update(Prop_Data *pd, int aliases_count)
 {
    Evas_Object *label, *label_ctx;
-   Eina_List *list = NULL, *l;
+   Eina_List *l;
    const char *text_info = NULL;
    char *list_data;
    Eina_Strbuf *text_ctx;
 
    assert(pd != NULL);
-   assert(style != NULL);
+   assert(pd->group != NULL);
 
    label = elm_object_part_content_get(pd_group.info, "elm.swallow.content");
    label_ctx = elm_object_content_get(pd_group.ctxpopup);
-   if (style->isAlias)
+   if (pd->group->main_group != NULL)
      {
-        text_info = eina_stringshare_add("This is alias of <a>%s</a>");
-        text_info = eina_stringshare_printf(text_info,
-                                            style->main_group->full_group_name);
+        text_info = eina_stringshare_printf(_("This is alias of <a>%s</a>"),
+                                            pd->group->main_group->name);
      }
    else
      {
-        list = edje_edit_group_aliases_get(style->obj, style->full_group_name);
-        text_info = eina_stringshare_add("changes in this style will also affect <a>%d elements.</a>");
-        text_info = eina_stringshare_printf(text_info, aliases_count);
+        text_info = eina_stringshare_printf(_("changes in this style will"
+                                              "also affect <a>%d elements.</a>"),
+                                            aliases_count);
 
         int count = 1;
         text_ctx = eina_strbuf_new();
 
-        EINA_LIST_FOREACH(list, l, list_data)
+        EINA_LIST_FOREACH(pd->group->aliases, l, list_data)
           {
              const char *step = "%d. %s";
              if (eina_strbuf_length_get(text_ctx) > 0)
@@ -525,7 +554,6 @@ _prop_item_alias_update(Prop_Data *pd, Style *style, int aliases_count)
                                        _on_clicked, pd);
         elm_object_text_set(label_ctx, eina_strbuf_string_get(text_ctx));
         eina_strbuf_free(text_ctx);
-        edje_edit_string_list_free(list);
      }
 
    elm_object_text_set(label, text_info);
@@ -547,38 +575,32 @@ _prop_item_shared_check_update(Evas_Object *item, int count)
    evas_object_show(item);
 }
 
-Eina_Bool
-ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspace)
+static void
+_ui_property_group_set(Evas_Object *property, Group *group)
 {
    Evas_Object *group_frame, *box, *prop_box, *info_en = NULL;
    Evas_Object *item;
    Evas_Object *info_image;
    Evas_Object *check, *label_ctx;
-   Eina_List *aliases = NULL, *l;
+   Eina_List *l;
    const char *text_info = NULL;
    int aliases_count = 0;
    char *list_data;
    Eina_Strbuf *text_ctx = NULL;
 
    PROP_DATA_GET()
-   assert(workspace != NULL);
-   assert(style != NULL);
+   assert(group != NULL);
 
-   ui_property_style_unset(property);
+   _ui_property_group_unset(property);
 
    evas_object_show(property);
 
    elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
 
-   pd->workspace = workspace;
-//   pd->wm_style = style;
-//   if (style->isAlias) pd->wm_style = style->main_group;
-
-   //assert(pd->wm_style == workspace_edit_object_get(workspace));
+   pd->group = group;
 
    prop_box = elm_object_content_get(pd->scroller);
-   aliases = edje_edit_group_aliases_get(style->obj, style->full_group_name);
-   aliases_count = eina_list_count(aliases);
+   aliases_count = eina_list_count(group->aliases);
 
    if (!pd_group.info)
      {
@@ -600,18 +622,18 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
         elm_object_style_set(pd_group.ctxpopup, "info");
         evas_object_hide(pd_group.ctxpopup);
 
-        if (style->isAlias)
-          text_info = eina_stringshare_printf("This is alias of <a>%s</a>",
-                                              style->main_group->full_group_name);
+        if (group->main_group != NULL) /* group is alias */
+          text_info = eina_stringshare_printf(_("This is alias of <a>%s</a>"),
+                                              group->main_group->name);
         else
           {
-             text_info = eina_stringshare_printf("changes in this style will also"
-                                                 "affect <a>%d elements.</a>",
+             text_info = eina_stringshare_printf(_("changes in this style will also"
+                                                 "affect <a>%d elements.</a>"),
                                                  aliases_count);
              int count = 1;
              text_ctx = eina_strbuf_new();
 
-             EINA_LIST_FOREACH(aliases, l, list_data)
+             EINA_LIST_FOREACH(group->aliases, l, list_data)
                {
                   const char *step = "%d. %s";
                   if (eina_strbuf_length_get(text_ctx) > 0)
@@ -637,7 +659,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
    if (!pd_group.shared_check)
      {
         CHECK_ADD(property, check)
-        elm_object_text_set(check, "Shared style");
+        elm_object_text_set(check, _("Shared style"));
         if (aliases_count > 0) elm_check_state_set(check, true);
         elm_object_disabled_set(check, true);
 
@@ -673,9 +695,9 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
      }
    else
      {
-        if ((aliases_count > 0) || (style->isAlias))
+        if ((aliases_count > 0) || (group->main_group != NULL))
           {
-             _prop_item_alias_update(pd, style, aliases_count);
+             _prop_item_alias_update(pd, aliases_count);
              evas_object_show(pd_group.info);
           }
         _prop_item_shared_check_update(pd_group.shared_check, aliases_count);
@@ -684,20 +706,16 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
         prop_group_max_w_h_update(pd);
         evas_object_show(pd_group.frame);
      }
-   if ((aliases_count > 0) || (style->isAlias))
+   if ((aliases_count > 0) || (group->main_group != NULL))
      {
         elm_box_pack_start(prop_box, pd_group.info);
         evas_object_show(pd_group.info);
      }
    elm_box_pack_start(prop_box, pd_group.shared_check);
-
-   edje_edit_string_list_free(aliases);
-
-   return true;
 }
 
-void
-ui_property_style_unset(Evas_Object *property)
+static void
+_ui_property_group_unset(Evas_Object *property)
 {
    Evas_Object *prop_box;
 

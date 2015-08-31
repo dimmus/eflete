@@ -138,7 +138,7 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
              //workspace_highlight_unset(ap.workspace);
           }
         ui_property_part_unset(prop);
-        ui_property_style_set(prop, style, ap.workspace);
+        //ui_property_style_set(prop, style, ap.workspace);
         workspace_edit_object_recalc(ap.workspace);
      }
 }
