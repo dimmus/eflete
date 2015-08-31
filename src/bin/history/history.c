@@ -418,6 +418,7 @@ history_diff_add(Evas_Object *source, Target target, ...)
 
    module = evas_object_data_get(source, HISTORY_MODULE_KEY);
 
+   return false;
    assert(module != NULL);
 
    va_start(list, target);
