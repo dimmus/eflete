@@ -134,6 +134,24 @@ _home_tab_change(void *data,
    elm_layout_content_set(tabs.home.content, NULL, data);
 }
 
+static void
+_property_attribute_changed(void *data __UNUSED__,
+                            Evas_Object *obj __UNUSED__,
+                            void *ei __UNUSED__)
+{
+   assert(tabs.current_workspace != NULL);
+   workspace_edit_object_recalc(tabs.current_workspace);
+}
+
+static void
+_project_changed(void *data __UNUSED__,
+                 Evas_Object *obj __UNUSED__,
+                 void *ei __UNUSED__)
+{
+   assert(tabs.current_live_view != NULL);
+   live_view_theme_update(tabs.current_live_view);
+}
+
 Evas_Object *
 tabs_add(void)
 {
@@ -176,6 +194,9 @@ tabs_add(void)
 
    elm_toolbar_item_selected_set(tabs.home.item, true);
 
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _project_changed, NULL);
+
    return tabs.layout;
 }
 
@@ -215,25 +236,6 @@ tabs_tab_home_open(Tabs_View view)
 }
 
 static void
-_property_attribute_changed(void *data __UNUSED__,
-                            Evas_Object *obj __UNUSED__,
-                            void *ei __UNUSED__)
-{
-   assert(tabs.current_workspace != NULL);
-   workspace_edit_object_recalc(tabs.current_workspace);
-}
-
-static void
-_project_changed(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *ei __UNUSED__)
-{
-   assert(tabs.current_live_view != NULL);
-   live_view_theme_update(tabs.current_live_view);
-printf("UPDATED \n");
-}
-
-static void
 _tab_close(void *data,
            Elm_Object_Item *it __UNUSED__,
            const char *emission __UNUSED__,
@@ -242,7 +244,6 @@ _tab_close(void *data,
    Tabs_Item *item = (Tabs_Item *)data;
    tabs.items = eina_list_remove(tabs.items, item);
    _del_tab(item);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_PROJECT_CHANGED, _project_changed, NULL);
 }
 
 void
@@ -275,9 +276,6 @@ tabs_tab_add(Group *group)
    elm_toolbar_item_selected_set(item->toolbar_item, true);
    elm_object_item_signal_callback_add(item->toolbar_item, "tab,close", "eflete", _tab_close, (void *)item);
    tabs.items = eina_list_append(tabs.items, item);
-
-   evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _project_changed, NULL);
 }
 
 void
