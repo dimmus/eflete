@@ -284,14 +284,18 @@ _widget_manager_style_switch_cb(void)
 Eina_Bool
 _separate_mode_change_cb(void)
 {
+   Evas_Object *workspace = tabs_current_workspace_get();
 
    SKIP_IN_ENVENTOR_MODE
-   double factor = workspace_zoom_factor_get(ap.workspace);
+
+   if (!workspace) return false;
+
+   double factor = workspace_zoom_factor_get(workspace);
    if (fabs(factor - 1.0) > 0.001)
      return false;
 
-   Eina_Bool sep = workspace_separate_mode_get(ap.workspace);
-   workspace_separate_mode_set(ap.workspace, !sep);
+   Eina_Bool sep = workspace_separate_mode_get(workspace);
+   workspace_separate_mode_set(workspace, !sep);
 
    return true;
 }
@@ -518,49 +522,52 @@ _highlight_align_show_switch_cb(void)
 {
    assert(ap.project != NULL);
 
-   if (!ap.project->current_style) return false;
+   Evas_Object *workspace = tabs_current_workspace_get();
+
+   if (!workspace) return false;
 
    SKIP_IN_ENVENTOR_MODE
-   Eina_Bool flag = workspace_highlight_align_visible_get(ap.workspace);
-   workspace_highlight_align_visible_set(ap.workspace, !flag);
-   workspace_object_area_visible_set(ap.workspace, !flag);
+   Eina_Bool flag = workspace_highlight_align_visible_get(workspace);
+   workspace_highlight_align_visible_set(workspace, !flag);
+   workspace_object_area_visible_set(workspace, !flag);
    return true;
 }
 
 Eina_Bool
 _object_area_show_switch_cb(void)
 {
+   Evas_Object *workspace = tabs_current_workspace_get();
 
    SKIP_IN_ENVENTOR_MODE
-   if ((!ap.project) || (!ap.project->current_style)) return false;
-   Eina_Bool flag = workspace_object_area_visible_get(ap.workspace);
-   workspace_object_area_visible_set(ap.workspace, !flag);
+   if (!workspace) return false;
+   Eina_Bool flag = workspace_object_area_visible_get(workspace);
+   workspace_object_area_visible_set(workspace, !flag);
    return true;
 }
 
 Eina_Bool
 _zoom_in_cb(void)
 {
+   Evas_Object *workspace = tabs_current_workspace_get();
 
    SKIP_IN_ENVENTOR_MODE
-   if (!ap.project->current_style)
-     return false;
+   if (!workspace) return false;
 
-   double current_factor = workspace_zoom_factor_get(ap.workspace);
-   workspace_zoom_factor_set(ap.workspace, current_factor + 0.1);
+   double current_factor = workspace_zoom_factor_get(workspace);
+   workspace_zoom_factor_set(workspace, current_factor + 0.1);
    return true;
 }
 
 Eina_Bool
 _zoom_out_cb(void)
 {
+   Evas_Object *workspace = tabs_current_workspace_get();
 
    SKIP_IN_ENVENTOR_MODE
-   if (!ap.project->current_style)
-     return false;
+   if (!workspace) return false;
 
-   double current_factor = workspace_zoom_factor_get(ap.workspace);
-   workspace_zoom_factor_set(ap.workspace, current_factor - 0.1);
+   double current_factor = workspace_zoom_factor_get(workspace);
+   workspace_zoom_factor_set(workspace, current_factor - 0.1);
    return true;
 }
 
