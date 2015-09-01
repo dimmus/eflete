@@ -115,6 +115,7 @@ struct _Shortcut_Module
    Eina_List *keys;             /* list of pointer to hash keys to be freed */
 };
 
+/*
 static void
 _random_name_generate(char *part_name, unsigned int length)
 {
@@ -132,7 +133,7 @@ _random_name_generate(char *part_name, unsigned int length)
 
    part_name[length - 1] = 0;
 }
-
+*/
 /*========================================================*/
 /*               SHORTCUTS CB FUNCTION                    */
 /*========================================================*/
@@ -160,6 +161,7 @@ _##FUNC##_part_add_cb(void) \
 }
 
 /* Adding New Parts */
+/*
 PART_ADD(EDJE_PART_TYPE_SWALLOW, swallow)
 PART_ADD(EDJE_PART_TYPE_TEXTBLOCK, textblock)
 PART_ADD(EDJE_PART_TYPE_SPACER, spacer)
@@ -168,8 +170,9 @@ PART_ADD(EDJE_PART_TYPE_RECTANGLE, rectangle)
 PART_ADD(EDJE_PART_TYPE_PROXY, proxy)
 PART_ADD(EDJE_PART_TYPE_GROUP, group)
 PART_ADD(EDJE_PART_TYPE_BOX, box)
-
+*/
 /* different adding is for image */
+/*
 static void
 _on_image_editor_done(void *data __UNUSED__,
                       Evas_Object *obj __UNUSED__,
@@ -192,7 +195,7 @@ _image_part_choose_cb(void)
    evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED, _on_image_editor_done, NULL);
    return true;
 }
-
+*/
 /* this one will delete part or style or layout or state.  */
 TODO("move this code or some of it's part to Connector")
 Eina_Bool
@@ -651,7 +654,7 @@ static Function_Set _sc_func_set_init[] =
      {"export", _export_cb},
      {"property.visual_tab", _visual_tab_cb},
      {"property.code_tab", _code_tab_cb},
-     {"part.add.swallow", _swallow_part_add_cb},
+/*     {"part.add.swallow", _swallow_part_add_cb},
      {"part.add.textblock", _textblock_part_add_cb},
      {"part.add.text", _text_part_add_cb},
      {"part.add.rectangle", _rectangle_part_add_cb},
@@ -659,7 +662,7 @@ static Function_Set _sc_func_set_init[] =
      {"part.add.proxy", _proxy_part_add_cb},
      {"part.add.spacer", _spacer_part_add_cb},
      {"part.add.group", _group_part_add_cb},
-     {"part.add.box", _box_part_add_cb},
+     {"part.add.box", _box_part_add_cb},*/
 /*   {"item.delete", _item_delete_cb}, this callback works unpredictable because of focus */
      {"separate_mode", _separate_mode_change_cb},
      {"style.create", _new_style_create_cb},

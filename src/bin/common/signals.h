@@ -45,6 +45,14 @@
 #define SIGNAL_PART_UNSELECTED "SIGNAL_PART_UNSELECTED"
 
 /**
+ * emited when new part is added.
+ * eventinfo - pointer to Part_ structure
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_PART_ADDED "SIGNAL_PART_ADDED"
+
+/**
  * emited when part state changed.
  * eventinfo - pointer to Part_ structure
  *

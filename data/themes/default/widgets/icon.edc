@@ -29,6 +29,18 @@ IC("color",       "toolbar/color",       "menu/color",       "icon_color.png",  
 IC("text",        "toolbar/text",        "menu/text",        "icon_text.png",        14, 0);
 IC("info",        "toolbar/info",        "menu/info",        "icon_info.png",        14, 0);
 IC("eye",         "toolbar/eye",         "menu/eye",         "icon_eye.png",         14, 0);
+
+IC("type_rectangle",   "toolbar/type_rectangle",   "menu/type_rectangle",   "icon-rectangle.png",   14, 0);
+IC("type_text",        "toolbar/type_text",        "menu/type_text",        "icon-text.png",        14, 0);
+IC("type_image",       "toolbar/type_image",       "menu/type_image",       "icon-image.png",       14, 0);
+IC("type_swallow",     "toolbar/type_swallow",     "menu/type_swallow",     "icon-swallow.png",     14, 0);
+IC("type_textblock",   "toolbar/type_textblock",   "menu/type_textblock",   "icon-textblock.png",   14, 0);
+IC("type_group",       "toolbar/type_group",       "menu/type_group",       "icon-group.png",       14, 0);
+IC("type_box",         "toolbar/type_box",         "menu/type_box",         "icon-box.png",         14, 0);
+IC("type_table",       "toolbar/type_table",       "menu/type_table",       "icon-table.png",       14, 0);
+IC("type_proxy",       "toolbar/type_proxy",       "menu/type_proxy",       "icon-proxy.png",       14, 0);
+IC("type_spacer",      "toolbar/type_spacer",      "menu/type_spacer",      "icon-spacer.png",      14, 0);
+
 IC("no_photo",    "photo/no_photo",      "anonim",           "icon_head.png",        14, 0);
 #undef IC
 

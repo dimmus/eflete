@@ -140,17 +140,14 @@ groupedit_edit_object_part_rename(Evas_Object *obj,
  * add groupedit part.
  *
  * @param obj The groupedit object,
- * @param part The name of the new part,
- * @param type The part type. See <a href="http://docs.enlightenment.org/auto/edje/group__Edje__Object__Part.html">Edje_Part_Type</a>,
- * @param data The string data, used for setting image name, with part type EDJE_PART_TYPE_IMAGE.
+ * @param part Pointer to Part_ sturcture,
  *
  * @return EINA_TRUE on success or EINA_FALSE, on errors.
  *
  * @ingroup Groupedit
  */
 Eina_Bool
-groupedit_edit_object_part_add(Evas_Object *obj, const char *part,
-                               Edje_Part_Type type, const char *data);
+groupedit_edit_object_part_add(Evas_Object *obj, Part_ *part);
 
 /**
  * Delete the part from groupedit and from editable object.

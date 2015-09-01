@@ -144,6 +144,19 @@ _property_attribute_changed(void *data __UNUSED__,
 }
 
 static void
+_part_added(void *data __UNUSED__,
+            Evas_Object *obj __UNUSED__,
+            void *ei)
+{
+   Part_ *part = ei;
+
+   assert(tabs.current_workspace != NULL);
+
+   workspace_edit_object_part_add(tabs.current_workspace, part);
+   TODO("Add liveview update here")
+}
+
+static void
 _project_changed(void *data __UNUSED__,
                  Evas_Object *obj __UNUSED__,
                  void *ei __UNUSED__)
@@ -195,6 +208,7 @@ tabs_add(void)
    elm_toolbar_item_selected_set(tabs.home.item, true);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PART_ADDED, _part_added, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _project_changed, NULL);
 
    return tabs.layout;

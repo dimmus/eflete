@@ -16,9 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
 
 #include "part_list.h"
 #include "signals.h"
+#include "string_common.h"
+#include "main_window.h"
 
 #define PART_LIST_DATA "part_list_data"
 
@@ -41,7 +46,32 @@ typedef struct
    Elm_Genlist_Item_Class *itc_item;
 
    Elm_Object_Item *selected_part_item;
+
+   Evas_Object *menu;
+   Elm_Validator_Regexp *name_validator;
+   struct {
+        Evas_Object *entry_name;
+        Evas_Object *btn_add;
+        Evas_Object *btn_cancel;
+   } popup;
 } Part_List;
+
+static char *part_types[] = {
+     N_("NONE"),
+     N_("RECTANGLE"),
+     N_("TEXT"),
+     N_("IMAGE"),
+     N_("SWALLOW"),
+     N_("TEXTBLOCK"),
+     N_("GRADIENT"),
+     N_("GROUP"),
+     N_("BOX"),
+     N_("TABLE"),
+     N_("EXTERNAL"),
+     N_("PROXY"),
+     N_("SPACER")
+};
+static const unsigned int part_types_count = 12;
 
 static char *
 _part_label_get(void *data,
@@ -394,6 +424,151 @@ _selected_cb(void *data,
      }
 }
 
+static void
+_on_entry_changed(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   Part_List *pl = data;
+   const char *name;
+
+   assert(pl != NULL);
+
+   name = elm_entry_entry_get(pl->popup.entry_name);
+   if ((elm_validator_regexp_status_get(pl->name_validator) != ELM_REG_NOERROR) ||
+       (edje_edit_part_exist(pl->group->edit_object, name)))
+     elm_object_disabled_set(pl->popup.btn_add, true);
+   else
+     elm_object_disabled_set(pl->popup.btn_add, false);
+}
+
+static void
+_job_popup_del(void *data)
+{
+   Part_List *pl = data;
+
+   assert(pl != NULL);
+
+   pl->popup.entry_name = NULL;
+   evas_object_del(ap.popup);
+   ap.popup = NULL;
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+}
+
+static void
+_popup_cancel_clicked(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
+{
+   ecore_job_add(_job_popup_del, data);
+}
+
+static void
+_popup_add_part_ok_clicked(void *data,
+                           Evas_Object *obj __UNUSED__,
+                           void *event_info __UNUSED__)
+{
+   const Edje_Part_Type type = *((const Edje_Part_Type *)data);
+   Part_List *pl = evas_object_data_get(obj, PART_LIST_DATA);
+   const char *name;
+   Part_ *part;
+
+   assert(pl != NULL);
+
+   name = elm_entry_entry_get(pl->popup.entry_name);
+
+   edje_edit_part_add(pl->group->edit_object, name, type);
+   /* if (type == EDJE_PART_IMAGE) */
+   TODO("Add noimage here")
+
+   part = gm_part_add(ap.project, pl->group, name);
+
+   elm_genlist_item_append(pl->genlist,
+                           pl->itc_part,
+                           part,
+                           NULL,
+                           ELM_GENLIST_ITEM_TREE,
+                           NULL,
+                           NULL);
+
+   evas_object_smart_callback_call(ap.win, SIGNAL_PART_ADDED, (void *)part);
+
+   ecore_job_add(_job_popup_del, pl);
+}
+
+static void
+_on_menu_add_part_clicked(void *data,
+                          Evas_Object *obj __UNUSED__,
+                          void *ei __UNUSED__)
+{
+   const Edje_Part_Type type = *((const Edje_Part_Type *)data);
+   Part_List *pl = evas_object_data_get(obj, PART_LIST_DATA);
+
+   Eina_Stringshare *title;
+   Evas_Object *box, *item;
+
+   assert(pl != NULL);
+   assert(type <= part_types_count);
+
+   ap.popup = elm_popup_add(ap.win);
+   title = eina_stringshare_printf(_("Add new %s part to group \"%s\""), _(part_types[type]), pl->group->name);
+   elm_object_part_text_set(ap.popup, "title,text", title);
+   elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
+
+   BOX_ADD(ap.popup, box, false, false);
+   LAYOUT_PROP_ADD(box, _("Part name:"), "property", "1swallow")
+   ENTRY_ADD(box, pl->popup.entry_name, true);
+   eo_do(pl->popup.entry_name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, pl->name_validator));
+   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new part here."));
+   evas_object_smart_callback_add(pl->popup.entry_name, "changed", _on_entry_changed, pl);
+   evas_object_show(pl->popup.entry_name);
+   elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
+   elm_box_pack_end(box, item);
+
+   elm_object_content_set(ap.popup, box);
+   BUTTON_ADD(box, pl->popup.btn_add, _("Add"));
+   evas_object_data_set(pl->popup.btn_add, PART_LIST_DATA, pl);
+   evas_object_smart_callback_add(pl->popup.btn_add, "clicked", _popup_add_part_ok_clicked, data);
+   elm_object_part_content_set(ap.popup, "button1", pl->popup.btn_add);
+   elm_object_disabled_set(pl->popup.btn_add, true);
+
+   BUTTON_ADD(box, pl->popup.btn_cancel, _("Cancel"));
+   evas_object_smart_callback_add(pl->popup.btn_cancel, "clicked", _popup_cancel_clicked, pl);
+   elm_object_part_content_set(ap.popup, "button2", pl->popup.btn_cancel);
+
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+
+   evas_object_show(ap.popup);
+   elm_object_focus_set(pl->popup.entry_name, true);
+}
+/* constan variables to be passed as item data */
+static const Edje_Part_Type _type_rect = EDJE_PART_TYPE_RECTANGLE;
+static const Edje_Part_Type _type_text = EDJE_PART_TYPE_TEXT;
+static const Edje_Part_Type _type_image = EDJE_PART_TYPE_IMAGE;
+static const Edje_Part_Type _type_swallow = EDJE_PART_TYPE_SWALLOW;
+static const Edje_Part_Type _type_textblock = EDJE_PART_TYPE_TEXTBLOCK;
+static const Edje_Part_Type _type_group = EDJE_PART_TYPE_GROUP;
+static const Edje_Part_Type _type_box = EDJE_PART_TYPE_BOX;
+static const Edje_Part_Type _type_table = EDJE_PART_TYPE_TABLE;
+static const Edje_Part_Type _type_proxy = EDJE_PART_TYPE_PROXY;
+static const Edje_Part_Type _type_spacer = EDJE_PART_TYPE_SPACER;
+
+static void
+_on_btn_plus_clicked(void *data,
+                     Evas_Object *obj,
+                     void *ei __UNUSED__)
+{
+   Part_List *pl = data;
+   Evas_Coord x, y, h;
+
+   assert(pl != NULL);
+
+   evas_object_geometry_get(obj, &x, &y, NULL, &h);
+
+   elm_menu_move(pl->menu, x, y + h);
+   evas_object_show(pl->menu);
+}
+
 Evas_Object *
 part_list_add(Group *group)
 {
@@ -401,6 +576,7 @@ part_list_add(Group *group)
    Part_List *pl;
    Eina_List *l;
    Part_ *part;
+   Elm_Object_Item *menu_item;
 
    assert(group != NULL);
    assert(ap.win != NULL);
@@ -422,7 +598,7 @@ part_list_add(Group *group)
    elm_object_style_set(pl->BTN, "anchor"); \
    elm_object_part_content_set(pl->layout, "elm.swallow." #BTN, pl->BTN);
 
-   BTN_ADD(btn_add, "plus", NULL);
+   BTN_ADD(btn_add, "plus", _on_btn_plus_clicked);
    BTN_ADD(btn_del, "minus", NULL);
    BTN_ADD(btn_up, "arrow_up", NULL);
    BTN_ADD(btn_down, "arrow_down", NULL);
@@ -479,6 +655,32 @@ part_list_add(Group *group)
      }
 
    elm_object_text_set(pl->layout, pl->group->name);
+
+   pl->menu = elm_menu_add(ap.win);
+   evas_object_data_set(pl->menu, PART_LIST_DATA, pl);
+
+   menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Rectangle"), _on_menu_add_part_clicked, &_type_rect);
+   elm_menu_item_icon_name_set(menu_item, "type_rectangle");
+   menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Text"), _on_menu_add_part_clicked, &_type_text);
+   elm_menu_item_icon_name_set(menu_item, "type_text");
+   menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Image"), _on_menu_add_part_clicked, &_type_image);
+   elm_menu_item_icon_name_set(menu_item, "type_image");
+   menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Swallow"), _on_menu_add_part_clicked, &_type_swallow);
+   elm_menu_item_icon_name_set(menu_item, "type_swallow");
+   menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Textblock"), _on_menu_add_part_clicked, &_type_textblock);
+   elm_menu_item_icon_name_set(menu_item, "type_textblock");
+   menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Group"), _on_menu_add_part_clicked, &_type_group);
+   elm_menu_item_icon_name_set(menu_item, "type_group");
+   menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Box"), _on_menu_add_part_clicked, &_type_box);
+   elm_menu_item_icon_name_set(menu_item, "type_box");
+   menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Table"), _on_menu_add_part_clicked, &_type_table);
+   elm_menu_item_icon_name_set(menu_item, "type_table");
+   menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Proxy"), _on_menu_add_part_clicked, &_type_proxy);
+   elm_menu_item_icon_name_set(menu_item, "type_proxy");
+   menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Spacer"), _on_menu_add_part_clicked, &_type_spacer);
+   elm_menu_item_icon_name_set(menu_item, "type_spacer");
+
+   pl->name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
 
    TODO("Add deletion callback and free resources");
    return pl->layout;

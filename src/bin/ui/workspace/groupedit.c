@@ -340,14 +340,13 @@ groupedit_edit_object_part_rename(Evas_Object *obj,
 }
 
 Eina_Bool
-groupedit_edit_object_part_add(Evas_Object *obj, const char *part,
-                               Edje_Part_Type type, const char *data)
+groupedit_edit_object_part_add(Evas_Object *obj, Part_ *part)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd);
 
    assert(part != NULL);
 
-   return _edit_object_part_add(sd, part, type, data);
+   return _edit_object_part_add(sd, part);
 }
 
 Eina_Bool

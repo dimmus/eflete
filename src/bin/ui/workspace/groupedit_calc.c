@@ -75,28 +75,19 @@ static void
 _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp);
 
 Eina_Bool
-_edit_object_part_add(Ws_Groupedit_Smart_Data *sd __UNUSED__,
-                      const char *part __UNUSED__,
-                      Edje_Part_Type type __UNUSED__,
-                      const char *data __UNUSED__)
+_edit_object_part_add(Ws_Groupedit_Smart_Data *sd,
+                      Part_ *part)
 {
-   ERR("fix part add")
-   abort();
-/*   Groupedit_Part *gp;
+   Groupedit_Part *gp;
 
    assert(sd != NULL);
    assert(part != NULL);
-   assert(type < EDJE_PART_TYPE_LAST);
-   if (!edje_edit_part_add(sd->group->edit_object, part, type))
-     {
-        ERR("Can't add part %s to edit object %p", part, sd->group->edit_object);
-        abort();
-     }
+
    gp = _part_draw_add(sd, part);
    sd->parts = eina_list_append(sd->parts, gp);
    _move_border_to_top(sd);
    evas_object_smart_changed(sd->obj);
-*/
+
    return true;
 }
 

@@ -173,8 +173,7 @@ Eina_Bool
 _parts_recalc(Ws_Groupedit_Smart_Data *sd);
 
 Eina_Bool
-_edit_object_part_add(Ws_Groupedit_Smart_Data *sd, const char *part,
-                      Edje_Part_Type type, const char *data);
+_edit_object_part_add(Ws_Groupedit_Smart_Data *sd, Part_ *part);
 
 Eina_Bool
 _edit_object_part_del(Ws_Groupedit_Smart_Data *sd, const char *part);

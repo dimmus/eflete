@@ -1365,13 +1365,12 @@ workspace_edit_object_part_rename(Evas_Object *obj,
 }
 
 Eina_Bool
-workspace_edit_object_part_add(Evas_Object *obj, const char *part,
-                               Edje_Part_Type type, const char *data)
+workspace_edit_object_part_add(Evas_Object *obj, Part_ *part)
 {
    WS_DATA_GET(obj, sd);
    assert(part != NULL);
 
-   return groupedit_edit_object_part_add(sd->groupedit, part, type, data);
+   return groupedit_edit_object_part_add(sd->groupedit, part);
 }
 
 Eina_Bool

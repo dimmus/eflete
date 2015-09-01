@@ -60,13 +60,13 @@ _cancel_clicked(void *data,
 }
 
 #define WORKSPACE_PART_ADD(TYPE, DATA) \
-   Evas_Object *workspace = ap.workspace; \
+   /*Evas_Object *workspace = ap.workspace;*/ \
    Evas_Object *widget_list = ui_block_widget_list_get(); \
    ENTRY_IS_EMPTY \
    Style *style = NULL; \
    const char *name = elm_entry_entry_get(entry); \
-   if (workspace_edit_object_part_add(workspace, name, TYPE, DATA)) \
-     ui_widget_list_part_add(widget_list, style, name); \
+   /*if (workspace_edit_object_part_add(workspace, name, TYPE, DATA))*/ \
+   /*  ui_widget_list_part_add(widget_list, style, name);*/ \
    evas_object_del(ap.popup); \
    history_diff_add(style->obj, PART_TARGET, ADD, name); \
    ap.popup = NULL; \
