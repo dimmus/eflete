@@ -1176,6 +1176,9 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
                                   _on_button_add_clicked_cb, img_edit);
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.add_btn", button);
+   TODO("REMOVE AFTER IMPLEMENT IN RIGHT WAY")
+   elm_object_disabled_set(button, true);
+
    button = elm_button_add(img_edit->layout);
    evas_object_show(button);
    ic = elm_icon_add(button);
@@ -1185,6 +1188,8 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
                                   _on_button_delete_clicked_cb, img_edit);
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.del_btn", button);
+   TODO("REMOVE AFTER IMPLEMENT IN RIGHT WAY")
+   elm_object_disabled_set(button, true);
 
    // Search line add
    search_entry = _image_editor_search_field_create(img_edit->layout);
@@ -1212,6 +1217,8 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
                                   img_edit);
    elm_object_part_content_set(img_edit->win,
                                "eflete.swallow.btn_ok", button);
+   TODO("REMOVE AFTER IMPLEMENT IN RIGHT WAY")
+   elm_object_disabled_set(button, true);
 
    if (!gic)
      {
