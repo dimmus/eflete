@@ -37,6 +37,7 @@ struct _Item
 {
    int id;
    const char* image_name;
+   const char* source;
    Edje_Edit_Image_Comp comp_type;
 };
 
@@ -144,27 +145,20 @@ _image_editor_image_setup(Evas_Object *image,
                           Image_Editor *img_edit,
                           const Item *it)
 {
-   Eina_Stringshare *str;
-
    assert(image != NULL);
    assert(img_edit != NULL);
    assert(it != NULL);
 
    if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
      {
-        if (ecore_file_exists(it->image_name))
-          evas_object_image_file_set(image, it->image_name, NULL);
+        if (ecore_file_exists(it->source))
+          elm_thumb_file_set(image, it->source, NULL);
         else
-          elm_image_file_set(image, EFLETE_THEME, "elm/image/icon/attention");
+          elm_thumb_file_set(image, EFLETE_THEME, "elm/image/icon/attention");
      }
    else
      {
-        str = eina_stringshare_printf("edje/images/%i", it->id);
-        if (it->id > -1)
-          elm_image_file_set(image, img_edit->pr->dev, str);
-        else
-          elm_image_file_set(image, it->image_name, NULL);
-        eina_stringshare_del(str);
+        elm_thumb_file_set(image, it->source, NULL);
      }
 }
 
@@ -182,31 +176,6 @@ _image_editor_image_create(Evas_Object *parent,
    return image;
 }
 
-/* functions for deferred creation of gengrid icons */
-#define MAX_ICON_SIZE 16
-static void
-_image_content_setup(void *data)
-{
-   int w, h;
-   Content_Init_Data *image_init_data = data;
-
-   assert(image_init_data != NULL);
-
-   _image_editor_image_setup(image_init_data->image_obj,
-                             image_init_data->image_editor,
-                             image_init_data->item_data);
-
-   elm_image_object_size_get(image_init_data->image_obj, &w, &h);
-   if ((w < MAX_ICON_SIZE) && (h < MAX_ICON_SIZE))
-     evas_object_size_hint_max_set(image_init_data->image_obj,
-                                   MAX_ICON_SIZE, MAX_ICON_SIZE);
-   else
-     elm_image_resizable_set(image_init_data->image_obj, false, true);
-   evas_object_show(image_init_data->image_obj);
-
-   free(image_init_data);
-}
-#undef MAX_ICON_SIZE
 
 TODO("Uncomment this function and its usage after usage list will be fixed in lib")
 /*
@@ -233,6 +202,7 @@ _image_usage_icon_setup(void *data)
 }*/
 
 /* icon fetching callback */
+#define MAX_ICON_SIZE 16
 static Evas_Object *
 _grid_content_get(void *data,
                   Evas_Object *obj,
@@ -249,26 +219,24 @@ _grid_content_get(void *data,
 
    assert(img_edit != NULL);
 
-   Content_Init_Data *image_init_data = mem_malloc(sizeof(Content_Init_Data));
-   image_init_data->item_data = it;
-   image_init_data->image_editor = img_edit;
-
    if (!strcmp(part, "elm.swallow.icon"))
      {
-        image_init_data->image_obj = elm_image_add(grid);
-        ecore_job_add(_image_content_setup, image_init_data);
-        image_obj = image_init_data->image_obj;
+        image_obj = elm_thumb_add(grid);
+        _image_editor_image_setup(image_obj, img_edit, it);
+        elm_thumb_reload(image_obj);
+        evas_object_show(image_obj);
+   /* functions for deferred creation of gengrid icons */
+   //ecore_job_add(_image_content_setup, image_init_data);
      }
    else if (!strcmp(part, "elm.swallow.end"))
      {
-        image_init_data->image_obj = elm_icon_add(grid);
+        image_obj = elm_icon_add(grid);
         /* ecore_job_add(_image_usage_icon_setup, image_init_data); */
-        image_obj = image_init_data->image_obj;
-        free(image_init_data);
      }
 
    return image_obj;
 }
+#undef MAX_ICON_SIZE
 
 /* deletion callback */
 static void
@@ -608,16 +576,18 @@ _grid_sel(void *data,
 
 static inline Item *
 _image_editor_gengrid_item_data_create(Evas_Object *edje_edit_obj,
-                                       const char *image_name)
+                                       External_Resource *res)
 {
    assert(edje_edit_obj != NULL);
-   assert(image_name != NULL);
+   assert(res != NULL);
 
    Item *it = (Item *)mem_malloc(sizeof(Item));
-   it->image_name = eina_stringshare_add(image_name);
+   it->image_name = eina_stringshare_add(res->name);
    it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
    it->comp_type = edje_edit_image_compression_type_get(edje_edit_obj,
                                                         it->image_name);
+   it->source = res->source;
+
    return it;
 }
 
@@ -1121,27 +1091,27 @@ _image_editor_init(Image_Editor *img_edit)
 {
    Eina_List *l = NULL;
    Item *it = NULL;
-   const char* image_name = NULL;
    Eina_List *images = NULL;
    int counter = 0;
+   External_Resource *res;
 
    assert(img_edit != NULL);
 
    _image_editor_gengrid_group_items_add(img_edit);
-   images = edje_edit_images_list_get(img_edit->pr->global_object);
+   images = img_edit->pr->images;
 
    if (images)
      {
-        EINA_LIST_FOREACH(images, l, image_name)
+        EINA_LIST_FOREACH(images, l, res)
            {
               counter++;
-              if (!image_name)
+              if (!res->name)
                 {
                    ERR("name not found for image #%d",counter);
                    continue;
                 }
               it = _image_editor_gengrid_item_data_create(img_edit->pr->global_object,
-                                                          image_name);
+                                                          res);
               if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
                 elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
                                         img_edit->group_items.included,
@@ -1153,7 +1123,6 @@ _image_editor_init(Image_Editor *img_edit)
            }
          elm_gengrid_item_bring_in(elm_gengrid_first_item_get(img_edit->gengrid),
                                    ELM_GENGRID_ITEM_SCROLLTO_TOP);
-         edje_edit_string_list_free(images);
      }
    elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_AUTO);

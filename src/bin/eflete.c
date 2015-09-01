@@ -114,6 +114,8 @@ app_init()
    elm_theme_set(ap.theme, theme);
    free(theme);
 
+   elm_need_ethumb();
+
    return true;
 }
 
