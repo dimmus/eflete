@@ -471,6 +471,32 @@ _on_part_state_selected(void *data,
    _ui_property_part_state_set(property, part);
 }
 
+static void
+_on_workspace_attribute_changed(void *data,
+                                Evas_Object *obj __UNUSED__,
+                                void *event_info)
+{
+   Evas_Object *property = data;
+   PROP_DATA_GET()
+   Attribute *attribute = event_info;
+
+   switch(*attribute)
+     {
+      case ATTRIBUTE_STATE_MAX_W:
+         COMMON_1SPINNER_UPDATE(state, max_w, state, int,  1, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_MAX_H:
+         COMMON_1SPINNER_UPDATE(state, max_h, state, int,  1, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_ALIGN_X:
+         COMMON_1SPINNER_UPDATE(state, align_x, state, double,  100, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_ALIGN_Y:
+         COMMON_1SPINNER_UPDATE(state, align_y, state, double,  100, STATE_ARGS);
+         break;
+     }
+}
+
 Evas_Object *
 ui_property_add(Evas_Object *parent)
 {
@@ -500,6 +526,7 @@ ui_property_add(Evas_Object *parent)
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_SELECTED, _on_part_selected, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_UNSELECTED, _on_part_unselected, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_STATE_SELECTED, _on_part_state_selected, pd->layout);
+   evas_object_smart_callback_add(ap.win, SIGNAL_WORKSPACE_ATTRIBUTE_CHANGED, _on_workspace_attribute_changed, pd->layout);
 
    return pd->layout;
 }

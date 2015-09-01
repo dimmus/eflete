@@ -674,6 +674,7 @@ _highlight_changed_cb(void *data,
                       void *ei)
 {
    Highlight_Events *events = (Highlight_Events *)ei;
+   Attribute attribute;
 
    Evas_Object *ws_obj = (Evas_Object *)data;
    WS_DATA_GET(ws_obj, sd)
@@ -686,7 +687,7 @@ _highlight_changed_cb(void *data,
 
    if (events->descr != MIDDLE)
      {
-        int old_max_w = 0, old_max_h = 0;
+        int old_max_w = 0, old_max_h = 0, new_max_w, new_max_h;
         int min_w = 0, min_h = 0;
         min_w = edje_edit_state_min_w_get(sd->group->edit_object, part->name,
                                           part->current_state->parsed_name,
@@ -701,12 +702,24 @@ _highlight_changed_cb(void *data,
         old_max_h = edje_edit_state_max_h_get(sd->group->edit_object, part->name,
                                               part->current_state->parsed_name,
                                               part->current_state->parsed_val);
-        edje_edit_state_max_w_set(sd->group->edit_object, part->name,
-                                  part->current_state->parsed_name, part->current_state->parsed_val,
-                                  (events->w / sd->zoom.factor) <= min_w ? min_w : (events->w / sd->zoom.factor));
-        edje_edit_state_max_h_set(sd->group->edit_object, part->name,
-                                  part->current_state->parsed_name, part->current_state->parsed_val,
-                                  (events->h / sd->zoom.factor) <= min_h ? min_h : (events->h / sd->zoom.factor));
+        new_max_w = (events->w / sd->zoom.factor) <= min_w ? min_w : (events->w / sd->zoom.factor);
+        new_max_h = (events->h / sd->zoom.factor) <= min_h ? min_h : (events->h / sd->zoom.factor);
+        if (new_max_w != old_max_w)
+          {
+             edje_edit_state_max_w_set(sd->group->edit_object, part->name,
+                                       part->current_state->parsed_name, part->current_state->parsed_val,
+                                       new_max_w);
+             attribute = ATTRIBUTE_STATE_MAX_W;
+             evas_object_smart_callback_call(ap.win, SIGNAL_WORKSPACE_ATTRIBUTE_CHANGED, &attribute);
+          }
+        if (new_max_h != old_max_h)
+          {
+             edje_edit_state_max_h_set(sd->group->edit_object, part->name,
+                                       part->current_state->parsed_name, part->current_state->parsed_val,
+                                       new_max_h);
+             attribute = ATTRIBUTE_STATE_MAX_H;
+             evas_object_smart_callback_call(ap.win, SIGNAL_WORKSPACE_ATTRIBUTE_CHANGED, &attribute);
+          }
         history_diff_add(sd->group->edit_object, PROPERTY, CONTAINER, VAL_INT, old_max_w, events->w,
                          old_max_h, events->h, (void *)edje_edit_state_max_w_set,
                          sd->group->name,
@@ -731,12 +744,22 @@ _highlight_changed_cb(void *data,
                                                   part->current_state->parsed_name,
                                                   part->current_state->parsed_val);
 
-        edje_edit_state_align_x_set(sd->group->edit_object, part->name,
-                                    part->current_state->parsed_name, part->current_state->parsed_val,
-                                    align_x);
-        edje_edit_state_align_y_set(sd->group->edit_object, part->name,
-                                    part->current_state->parsed_name, part->current_state->parsed_val,
-                                    align_y);
+        if (align_x != old_align_x)
+          {
+             edje_edit_state_align_x_set(sd->group->edit_object, part->name,
+                                         part->current_state->parsed_name, part->current_state->parsed_val,
+                                         align_x);
+             attribute = ATTRIBUTE_STATE_ALIGN_X;
+             evas_object_smart_callback_call(ap.win, SIGNAL_WORKSPACE_ATTRIBUTE_CHANGED, &attribute);
+          }
+        if (align_y != old_align_y)
+          {
+             edje_edit_state_align_y_set(sd->group->edit_object, part->name,
+                                         part->current_state->parsed_name, part->current_state->parsed_val,
+                                         align_y);
+             attribute = ATTRIBUTE_STATE_ALIGN_Y;
+             evas_object_smart_callback_call(ap.win, SIGNAL_WORKSPACE_ATTRIBUTE_CHANGED, &attribute);
+          }
         history_diff_add(sd->group->edit_object, PROPERTY, CONTAINER, VAL_DOUBLE, old_align_x,
                          align_x, old_align_y, align_y,
                          (void *)edje_edit_state_align_x_set,

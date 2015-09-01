@@ -76,4 +76,19 @@
  */
 #define SIGNAL_PROPERTY_ATTRIBUTE_CHANGED "SIGNAL_PROPERTY_ATTRIBUTE_CHANGED"
 
+typedef enum {
+   ATTRIBUTE_STATE_MAX_W,
+   ATTRIBUTE_STATE_MAX_H,
+   ATTRIBUTE_STATE_ALIGN_X,
+   ATTRIBUTE_STATE_ALIGN_Y
+} Attribute;
+/**
+ * emited when any attribute is changed in workspace.
+ * eventinfo - Pointer to Attribute
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_WORKSPACE_ATTRIBUTE_CHANGED "SIGNAL_WORKSPACE_ATTRIBUTE_CHANGED"
+
+
 #endif /* SIGNALS_H*/
