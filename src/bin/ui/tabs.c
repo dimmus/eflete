@@ -275,3 +275,9 @@ tabs_clean(void)
      }
    tabs.items = NULL;
 }
+
+Evas_Object *
+tabs_current_workspace_get(void)
+{
+   return tabs.current_workspace;
+}
