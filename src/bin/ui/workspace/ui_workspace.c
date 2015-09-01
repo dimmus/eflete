@@ -768,6 +768,7 @@ _highlight_changed_cb(void *data,
                          part->name, part->current_state->parsed_name, part->current_state->parsed_val);
      }
 
+   project_changed(false);
    workspace_edit_object_recalc(ws_obj);
    evas_object_smart_callback_call(ws_obj, "part,changed", part);
 }

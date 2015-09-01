@@ -20,6 +20,7 @@
 #include "main_window.h"
 #include "navigator.h"
 #include "tabs.h"
+#include "signals.h"
 #include "preference.h"
 
 #define makefile "#! bin/sh\nedje_cc -id ./images -fd ./fonts -sd ./sounds  "
@@ -1078,8 +1079,9 @@ project_changed(Eina_Bool save)
    ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, false);
    /* for example this function will be called after adding layout, so no need
       in updating live view */
-   if (ap.project->current_style)
-     live_view_theme_update(ap.live_view->block);
+
+/* call ap.win SIGNAL TEMPORARY*/
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_CHANGED, NULL);
 }
 
 /******************************************************************************/

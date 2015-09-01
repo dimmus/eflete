@@ -38,6 +38,7 @@ struct _Tabs {
    Elm_Object_Item *selected;
    Eina_List *items;
    Evas_Object *current_workspace;
+   Evas_Object *current_live_view;
    struct {
       Elm_Object_Item *item;
       Evas_Object *content;
@@ -66,6 +67,7 @@ _content_unset(void)
 
    assert(tabs.layout != NULL);
    tabs.current_workspace = NULL;
+   tabs.current_live_view = NULL;
    content = elm_layout_content_unset(tabs.layout, NULL);
    evas_object_hide(content);
 }
@@ -88,6 +90,7 @@ _content_set(void *data,
         _content_unset();
         elm_layout_content_set(tabs.layout, NULL, item->content);
         tabs.current_workspace = item->workspace;
+        tabs.current_live_view = item->live_view;
      }
    else
      tabs_tab_home_open(TAB_HOME_LAST);
@@ -210,6 +213,26 @@ tabs_tab_home_open(Tabs_View view)
          break;
      }
 }
+
+static void
+_property_attribute_changed(void *data __UNUSED__,
+                            Evas_Object *obj __UNUSED__,
+                            void *ei __UNUSED__)
+{
+   assert(tabs.current_workspace != NULL);
+   workspace_edit_object_recalc(tabs.current_workspace);
+}
+
+static void
+_project_changed(void *data __UNUSED__,
+                 Evas_Object *obj __UNUSED__,
+                 void *ei __UNUSED__)
+{
+   assert(tabs.current_live_view != NULL);
+   live_view_theme_update(tabs.current_live_view);
+printf("UPDATED \n");
+}
+
 static void
 _tab_close(void *data,
            Elm_Object_Item *it __UNUSED__,
@@ -219,15 +242,7 @@ _tab_close(void *data,
    Tabs_Item *item = (Tabs_Item *)data;
    tabs.items = eina_list_remove(tabs.items, item);
    _del_tab(item);
-}
-
-static void
-_property_attribute_changed(void *data __UNUSED__,
-                            Evas_Object *obj __UNUSED__,
-                            void *ei __UNUSED__)
-{
-   assert(tabs.current_workspace != NULL);
-   workspace_edit_object_recalc(tabs.current_workspace);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_PROJECT_CHANGED, _project_changed, NULL);
 }
 
 void
@@ -262,6 +277,7 @@ tabs_tab_add(Group *group)
    tabs.items = eina_list_append(tabs.items, item);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _project_changed, NULL);
 }
 
 void

@@ -89,6 +89,12 @@ typedef enum {
  * @ingroup Window
  */
 #define SIGNAL_WORKSPACE_ATTRIBUTE_CHANGED "SIGNAL_WORKSPACE_ATTRIBUTE_CHANGED"
-
+/**
+ * emited when project is changed in any way (through attribute, .
+ * eventinfo - Pointer to Attribute
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_PROJECT_CHANGED "SIGNAL_PROJECT_CHANGED"
 
 #endif /* SIGNALS_H*/
