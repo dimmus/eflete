@@ -72,7 +72,6 @@ static void
 _live_view_load_object(Live_View *live, Group *group)
 {
    Eina_Bool using_layout = false;
-   Evas_Coord x, y;
 
    assert(ap.project != NULL);
    assert(live != NULL);
@@ -100,8 +99,6 @@ _live_view_load_object(Live_View *live, Group *group)
         else
           {
              live_view_theme_update(live->block);
-TODO("change functions to use new Group structure")
-//             live_view_property_style_set(live->property, live->object, group, live->parent);
           }
      }
    else
@@ -127,22 +124,8 @@ TODO("change functions to use new Group structure")
              live->object = elm_label_add(live->layout);
              elm_object_text_set(live->object, _("Failed to load live view object"));
           }
-TODO("change functions to use new Group structure")
         live_view_theme_update(live->block);
-//        live_view_property_style_set(live->property, live->object, group, live->parent);
      }
-
-   TODO("reapply swallows/texts")
-   evas_object_show(live->live_view);
-   evas_object_show(live->object);
-   TODO("reapply comtainer size and position")
-   container_content_set(live->live_view, live->object);
-
-   elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
-
-   evas_object_geometry_get(live->live_view, NULL, NULL, &x, &y);
-   edje_object_part_drag_value_set(elm_layout_edje_get(live->layout),
-                                   "bottom_pad", x, y);
 }
 
 static void
@@ -209,19 +192,21 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group)
    elm_object_part_content_set(live->layout, SWALLOW_BG, bg);
    container_confine_set(live->live_view, bg);
 
-TODO("Should we delete it?")
-//   elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
-
    /* save structure inside of an object */
    evas_object_data_set(live->block, "live_view_structure", live);
    _live_view_load_object(live, group);
+
+   TODO("reapply swallows/texts")
+   evas_object_show(live->live_view);
+   evas_object_show(live->object);
+   TODO("reapply comtainer size and position")
+   container_content_set(live->live_view, live->object);
+
    live->property = live_view_property_add(live->block, group, in_prog_edit);
    elm_object_part_content_set(live->panel, "right", live->property);
 
    evas_object_smart_callback_add(live->property, "bg,changed", _change_bg_cb,
                                   live->layout);
-//   live_view_property_style_set(live->property, live->parent);
-
    evas_object_event_callback_add(live->block, EVAS_CALLBACK_DEL,
                                   _live_view_delete, NULL);
 
