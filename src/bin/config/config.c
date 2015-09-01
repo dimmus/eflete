@@ -69,9 +69,14 @@ void
 config_recent_add(const char *name, const char *path)
 {
    Recent *r;
+   Eina_List *l, *l_n;
 
    assert(name != NULL);
    assert(path != NULL);
+
+   EINA_LIST_FOREACH_SAFE(config->recents, l, l_n, r)
+      if (!strcmp(path, r->path))
+        config->recents = eina_list_remove_list(config->recents, l);
 
    if (eina_list_count(config->recents) > 9)
      config->recents = eina_list_remove_list(config->recents, eina_list_last(config->recents));
