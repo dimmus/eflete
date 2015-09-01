@@ -415,65 +415,53 @@ genlist_item_classes_init()
 
 
 static void
-_image_info_usage_update(Image_Editor *img_edit)
+_image_info_usage_update(Image_Editor *img_edit, Resource *res)
 {
-   Eina_List *usage_list, *l;
+   Eina_List *l;
    Evas_Object *list;
    Elm_Object_Item *it_group, *it_part;
-   Edje_Part_Image_Use *image;
    const char *cur_group = NULL;
    const char *cur_part = NULL;
-   Eina_Stringshare *state_name;
+   State *state;
 
    assert(img_edit != NULL);
+   assert(res != NULL);
 
    if (!img_edit->image_data_fields.image_name) return;
 
-   usage_list =
-      edje_edit_image_usage_list_get(img_edit->pr->global_object,
-                                     img_edit->image_data_fields.image_name,
-                                     false);
-   if (!eina_list_count(usage_list))
-     {
-        edje_edit_image_usage_list_free(usage_list);
-        return;
-     }
+   if (!eina_list_count(res->used_in))
+     return;
 
    genlist_item_classes_init();
 
    list = img_edit->image_usage_fields.genlist;
 
-   EINA_LIST_FOREACH(usage_list, l, image)
+   EINA_LIST_FOREACH(res->used_in, l, state)
      {
-        if ((!cur_group) || (strcmp(cur_group, image->group)))
+        if ((!cur_group) || (strcmp(cur_group, state->part->group->name)))
           {
              it_group = elm_genlist_item_append(list, _itc_group,
-                                                eina_stringshare_add(image->group),
+                                                eina_stringshare_add(state->part->group->name),
                                                 NULL, ELM_GENLIST_ITEM_NONE,
                                                 NULL, NULL);
-             cur_group = image->group;
+             cur_group = state->part->group->name;
              cur_part = NULL;
           }
-        if ((!cur_part) || (strcmp(cur_part, image->part)))
+        if ((!cur_part) || (strcmp(cur_part, state->part->name)))
           {
              it_part = elm_genlist_item_append(list, _itc_part,
-                                               eina_stringshare_add(image->part),
+                                               eina_stringshare_add(state->part->name),
                                                it_group, ELM_GENLIST_ITEM_NONE,
                                                NULL, NULL);
-             cur_part = image->part;
+             cur_part = state->part->name;
           }
-        if ((cur_part) && (!strcmp(cur_part, image->part)))
+        if ((cur_part) && (!strcmp(cur_part, state->part->name)))
           {
-             state_name = eina_stringshare_printf("\"%s\" %.1f",
-                                                  image->state.name,
-                                                  image->state.value);
-             elm_genlist_item_append(list, _itc_state, state_name,
+             elm_genlist_item_append(list, _itc_state, state->name,
                                      it_part, ELM_GENLIST_ITEM_NONE,
                                      NULL, NULL);
           }
-       }
-
-   edje_edit_image_usage_list_free(usage_list);
+     }
 }
 
 static void
@@ -483,7 +471,6 @@ _image_info_setup(Image_Editor *img_edit,
    Eina_Stringshare *str;
    Evas_Object *image;
    Edje_Edit_Image_Comp comp;
-   Eina_List *usage_list;
    int w, h;
 
    assert(img_edit != NULL);
@@ -534,11 +521,9 @@ _image_info_setup(Image_Editor *img_edit,
 
    _image_info_type_setup(img_edit->image_data_fields.layout, it->image_name);
 
-   usage_list = edje_edit_image_usage_list_get(img_edit->pr->global_object,
-                                               it->image_name, false);
-   _image_info_update_usage_info(img_edit, eina_list_count(usage_list));
-   _image_info_usage_update(img_edit);
-   edje_edit_image_usage_list_free(usage_list);
+   Resource *res = (Resource *) pm_resource_get(img_edit->pr->images, it->image_name);
+   _image_info_update_usage_info(img_edit, eina_list_count(res->used_in));
+   _image_info_usage_update(img_edit, res);
    evas_object_smart_calculate(img_edit->image_data_fields.layout);
 }
 
