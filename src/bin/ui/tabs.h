@@ -74,4 +74,11 @@ tabs_tab_add(Group *group);
 void
 tabs_clean(void);
 
+/**
+ * Get pointer to active workspace
+ *
+ * @ingroup Tabs
+ */
+Evas_Object *
+tabs_current_workspace_get(void);
 #endif /* TABS_H */
