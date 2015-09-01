@@ -176,31 +176,6 @@ _image_editor_image_create(Evas_Object *parent,
    return image;
 }
 
-
-TODO("Uncomment this function and its usage after usage list will be fixed in lib")
-/*
-static void
-_image_usage_icon_setup(void *data)
-{
-   Eina_List *used_in;
-   Evas_Object *edje_edit_obj;
-   Content_Init_Data *image_init_data = data;
-
-   GET_OBJ(image_init_data->image_editor->pr, edje_edit_obj);
-   used_in = edje_edit_image_usage_list_get(edje_edit_obj,
-                                            image_init_data->item_data->image_name,
-                                            false);
-   if (eina_list_count(used_in) == 0)
-     {
-        elm_image_file_set(image_init_data->image_obj, EFLETE_THEME, "elm/image/icon/attention");
-        elm_image_no_scale_set(image_init_data->image_obj, true);
-        evas_object_show(image_init_data->image_obj);
-     }
-   edje_edit_image_usage_list_free(used_in);
-
-   free(image_init_data);
-}*/
-
 /* icon fetching callback */
 #define MAX_ICON_SIZE 16
 static Evas_Object *
@@ -211,6 +186,7 @@ _grid_content_get(void *data,
    Item *it = data;
    Evas_Object *image_obj = NULL;
    Evas_Object *grid = (Evas_Object *)obj;
+   Resource *res;
 
    assert(it != NULL);
    assert(grid != NULL);
@@ -230,8 +206,13 @@ _grid_content_get(void *data,
      }
    else if (!strcmp(part, "elm.swallow.end"))
      {
-        image_obj = elm_icon_add(grid);
-        /* ecore_job_add(_image_usage_icon_setup, image_init_data); */
+        res = (Resource *) pm_resource_get(img_edit->pr->images, it->image_name);
+        if (eina_list_count(res->used_in) == 0)
+          {
+             image_obj = elm_icon_add(grid);
+             elm_image_file_set(image_obj, EFLETE_THEME, "elm/image/icon/attention");
+             evas_object_show(image_obj);
+          }
      }
 
    return image_obj;
