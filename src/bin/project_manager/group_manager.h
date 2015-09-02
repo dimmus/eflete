@@ -95,9 +95,17 @@ void
 gm_groups_free(Project *pro);
 
 void
-group_load(Project *pro, Group *group, Evas *e);
+gm_group_edit_object_load(Project *pro, Group *group, Evas *e);
 
 void
-group_unload(Group *group);
+gm_group_edit_object_unload(Group *group);
 
+State *
+gm_state_add(Project *pro, Part_ *part, const char *state_name);
+
+Part_ *
+gm_part_add(Project *pro, Group *group, Eina_Stringshare *part_name);
+
+Group *
+gm_group_add(Project *pro, const char *group_name);
 #endif /* GROUP_MANAGER_H */

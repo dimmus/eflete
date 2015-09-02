@@ -121,7 +121,7 @@ _del_tab(Tabs_Item *item)
    elm_object_item_del(item->toolbar_item);
    /* delete pans with workspace and liveview */
    evas_object_del(item->content);
-   group_unload(item->group);
+   gm_group_edit_object_unload(item->group);
    free(item);
 }
 
@@ -260,7 +260,7 @@ tabs_tab_add(Group *group)
         elm_toolbar_item_selected_set(item->toolbar_item, true);
         return;
      }
-   group_load(ap.project, group, evas_object_evas_get(ap.win));
+   gm_group_edit_object_load(ap.project, group, evas_object_evas_get(ap.win));
 
    item = mem_calloc(1, sizeof(Tabs_Item));
    item->group = group;

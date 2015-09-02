@@ -57,8 +57,8 @@ _group_name_parse(Group *group)
    free(c);
 }
 
-static void
-_group_object_add(Project *pro, Group *group, Evas *e)
+void
+gm_group_edit_object_load(Project *pro, Group *group, Evas *e)
 {
    assert(pro != NULL);
    assert(group != NULL);
@@ -75,8 +75,8 @@ _group_object_add(Project *pro, Group *group, Evas *e)
      }
 }
 
-static void
-_group_object_del(Group *group)
+void
+gm_group_edit_object_unload(Group *group)
 {
    assert(group != NULL);
    assert(group->edit_object != NULL);
@@ -85,8 +85,8 @@ _group_object_del(Group *group)
    group->edit_object = NULL;
 }
 
-static void
-_state_load(Project *pro, Part_ *part, Eina_Stringshare *state_name)
+State *
+gm_state_add(Project *pro, Part_ *part, const char *state_name)
 {
    State *state;
    Eina_Stringshare *image_name, *name;
@@ -182,9 +182,11 @@ _state_load(Project *pro, Part_ *part, Eina_Stringshare *state_name)
      }
    #undef COLORCLASS_USAGE_ADD
    #undef USAGE_ADD
+   return state;
 }
-static void
-_part_load(Project *pro, Group *group, Eina_Stringshare *part_name)
+
+Part_ *
+gm_part_add(Project *pro, Group *group, const char *part_name)
 {
    Part_ *part;
    Eina_List *states, *l;
@@ -202,7 +204,7 @@ _part_load(Project *pro, Group *group, Eina_Stringshare *part_name)
    group->parts = eina_list_append(group->parts, part);
    states = edje_edit_part_states_list_get(group->edit_object, part_name);
    EINA_LIST_FOREACH(states, l, state_name)
-     _state_load(pro, part, state_name);
+     gm_state_add(pro, part, state_name);
    edje_edit_string_list_free(states);
 
    if ((part->type == EDJE_PART_TYPE_TABLE) ||
@@ -249,6 +251,7 @@ _part_load(Project *pro, Group *group, Eina_Stringshare *part_name)
          break;
      }
    #undef GROUP_USAGE_ADD
+   return part;
 }
 
 static void
@@ -270,7 +273,7 @@ _group_load(Project *pro, Group *group)
    _group_name_parse(group);
 
    ecore_thread_main_loop_begin();
-   _group_object_add(pro, group, evas_object_evas_get(pro->global_object));
+   gm_group_edit_object_load(pro, group, evas_object_evas_get(pro->global_object));
    if (edje_edit_group_alias_is(group->edit_object, group->name))
      {
         main_group_name = edje_edit_group_aliased_get(group->edit_object, group->name);
@@ -282,7 +285,7 @@ _group_load(Project *pro, Group *group)
      {
         parts = edje_edit_parts_list_get(group->edit_object);
         EINA_LIST_FOREACH(parts, l, part_name)
-           _part_load(pro, group, part_name);
+           gm_part_add(pro, group, part_name);
         edje_edit_string_list_free(parts);
 
         programs = edje_edit_programs_list_get(group->edit_object);
@@ -347,20 +350,24 @@ _group_load(Project *pro, Group *group)
         edje_edit_string_list_free(programs);
      }
 
-   _group_object_del(group);
+   gm_group_edit_object_unload(group);
    ecore_thread_main_loop_end();
 }
 
-void
-group_load(Project *pro, Group *group, Evas *e)
+Group *
+gm_group_add(Project *pro, const char *group_name)
 {
-   _group_object_add(pro, group, e);
-}
+   Group *group;
 
-void
-group_unload(Group *group)
-{
-   _group_object_del(group);
+   assert(pro != NULL);
+   assert(group_name != NULL);
+
+   group = mem_calloc(1, sizeof(Group));
+   group->name = eina_stringshare_add(group_name);
+   pro->groups = eina_list_sorted_insert(pro->groups, (Eina_Compare_Cb) resource_cmp, group);
+
+   _group_load(pro, group);
+   return group;
 }
 
 void
