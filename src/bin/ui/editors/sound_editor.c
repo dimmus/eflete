@@ -1140,17 +1140,13 @@ _gengrid_content_fill(Sound_Editor *edit)
 {
    Eina_List *sounds, *tones, *l;
    Item *it;
-   const char* sound_name, *snd_src;
-   Evas_Object *edje_edit_obj;
+   External_Resource *res;
 
    assert(edit != NULL);
+   assert(edit->pr != NULL);
 
-   edje_edit_obj = edit->pr->global_object;
-
-   assert(edje_edit_obj != NULL);
-
-   sounds = edje_edit_sound_samples_list_get(edje_edit_obj);
-   tones = edje_edit_sound_tones_list_get(edje_edit_obj);
+   sounds = edit->pr->sounds;
+   tones = edit->pr->tones;
 
    if (edit->mode != SOUND_EDITOR_TONE_SELECT)
      {
@@ -1161,14 +1157,13 @@ _gengrid_content_fill(Sound_Editor *edit)
 
         if (sounds)
           {
-             EINA_LIST_FOREACH(sounds, l, sound_name)
+             EINA_LIST_FOREACH(sounds, l, res)
                {
                   it = (Item *)mem_calloc(1, sizeof(Item));
-                  it->sound_name = eina_stringshare_add(sound_name);
-                  snd_src = edje_edit_sound_samplesource_get(edje_edit_obj, sound_name);
-                  it->format = _sound_format_get(snd_src);
-                  it->comp = edje_edit_sound_compression_type_get(edje_edit_obj, it->sound_name);
-                  it->rate = edje_edit_sound_compression_rate_get(edje_edit_obj, it->sound_name);
+                  it->sound_name = eina_stringshare_add(res->name);
+                  it->format = _sound_format_get(res->source);
+                  it->comp = edje_edit_sound_compression_type_get(edit->pr->global_object, it->sound_name);
+                  it->rate = edje_edit_sound_compression_rate_get(edit->pr->global_object, it->sound_name);
                   elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_sample, edit);
                }
              eina_list_free(sounds);
@@ -1183,11 +1178,11 @@ _gengrid_content_fill(Sound_Editor *edit)
 
         if (tones)
           {
-             EINA_LIST_FOREACH(tones, l, sound_name)
+             EINA_LIST_FOREACH(tones, l, res)
                {
                   it = (Item *)mem_calloc(1, sizeof(Item));
-                  it->sound_name = eina_stringshare_add(sound_name);
-                  it->tone_frq = edje_edit_sound_tone_frequency_get(edje_edit_obj, sound_name);
+                  it->sound_name = eina_stringshare_add(res->name);
+                  it->tone_frq = edje_edit_sound_tone_frequency_get(edit->pr->global_object, it->sound_name);
                   it->format = eina_stringshare_printf("%d", it->tone_frq);
                   elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
                }
