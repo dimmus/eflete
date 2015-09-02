@@ -153,14 +153,14 @@ groupedit_edit_object_part_add(Evas_Object *obj, Part_ *part);
  * Delete the part from groupedit and from editable object.
  *
  * @param obj The groupedit object,
- * @param part The name of the part, which will be deleted.
+ * @param part Pointer to part which will be deleted.
  *
  * @return EINA_TRUE on success or EINA_FALSE, on errors.
  *
  * @ingroup Groupedit
  */
 Eina_Bool
-groupedit_edit_object_part_del(Evas_Object *obj, const char *part);
+groupedit_edit_object_part_del(Evas_Object *obj, Part_ *part);
 
 /**
  * Set the current state value to the part.

@@ -350,7 +350,7 @@ groupedit_edit_object_part_add(Evas_Object *obj, Part_ *part)
 }
 
 Eina_Bool
-groupedit_edit_object_part_del(Evas_Object *obj, const char *part)
+groupedit_edit_object_part_del(Evas_Object *obj, Part_ *part)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd);
 

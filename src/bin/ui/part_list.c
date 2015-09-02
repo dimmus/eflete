@@ -389,6 +389,7 @@ _unselect_part(Part_List *pl)
    elm_genlist_item_item_class_update(pl->selected_part_item, pl->itc_part);
    pl->selected_part_item = NULL;
    elm_object_item_disabled_set(pl->add_state_menu_item, true);
+   elm_object_disabled_set(pl->btn_del, true);
    evas_object_smart_callback_call(ap.win, SIGNAL_PART_UNSELECTED, (void *)part);
 }
 
@@ -406,6 +407,7 @@ _selected_cb(void *data,
    assert(pl != NULL);
 
    itc = elm_genlist_item_item_class_get(glit);
+
    if (itc == pl->itc_item)
      item_name = elm_object_item_data_get(glit);
    else
@@ -427,6 +429,12 @@ _selected_cb(void *data,
         elm_genlist_item_item_class_update(glit, pl->itc_part_selected);
      }
    elm_object_item_disabled_set(pl->add_state_menu_item, false);
+   if ((itc == pl->itc_item_caption) ||
+       (((itc == pl->itc_state) || (itc == pl->itc_state_selected)) &&
+        (!strcmp(((State *)elm_object_item_data_get(glit))->name, "default 0.00"))))
+     elm_object_disabled_set(pl->btn_del, true);
+   else
+     elm_object_disabled_set(pl->btn_del, false);
 }
 
 static void
@@ -740,6 +748,40 @@ _on_btn_plus_clicked(void *data,
    evas_object_show(pl->menu);
 }
 
+static void
+_on_btn_minus_clicked(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *ei __UNUSED__)
+{
+   Part_List *pl = data;
+   Elm_Object_Item *glit;
+   const Elm_Genlist_Item_Class* itc;
+   Part_ *part;
+
+   assert(pl != NULL);
+
+   glit = elm_genlist_selected_item_get(pl->genlist);
+
+   assert(glit != NULL);
+
+   itc = elm_genlist_item_item_class_get(glit);
+   if (itc == pl->itc_part_selected)
+     {
+        part = elm_object_item_data_get(glit);
+        _unselect_part(pl);
+
+        /* This callbck should be called before actual part deletion */
+        evas_object_smart_callback_call(ap.win, SIGNAL_PART_DELETED, (void *)part);
+
+        elm_object_item_del(glit);
+        gm_part_del(ap.project, part);
+        edje_edit_part_del(pl->group->edit_object, part->name);
+     }
+
+   TODO("Add state/item del here")
+}
+
+
 Evas_Object *
 part_list_add(Group *group)
 {
@@ -770,9 +812,11 @@ part_list_add(Group *group)
    elm_object_part_content_set(pl->layout, "elm.swallow." #BTN, pl->BTN);
 
    BTN_ADD(btn_add, "plus", _on_btn_plus_clicked);
-   BTN_ADD(btn_del, "minus", NULL);
+   BTN_ADD(btn_del, "minus", _on_btn_minus_clicked);
    BTN_ADD(btn_up, "arrow_up", NULL);
    BTN_ADD(btn_down, "arrow_down", NULL);
+
+   elm_object_disabled_set(pl->btn_del, true);
 
 #undef BTN_ADD
    pl->itc_part = elm_genlist_item_class_new();

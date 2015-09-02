@@ -89,8 +89,8 @@ _del_part(void *data __UNUSED__,
       reloading style into liveview crash application */
    history_diff_add(style->obj, PART_TARGET, DEL, part_name);
    live_view_part_del(ap.live_view, part);
-   if (workspace_edit_object_part_del(ap.workspace, part->name))
-     ui_widget_list_selected_part_del(ui_block_widget_list_get(), style);
+   /*if (workspace_edit_object_part_del(ap.workspace, part->name))
+     ui_widget_list_selected_part_del(ui_block_widget_list_get(), style);*/
 
    if (!style->parts)
      {

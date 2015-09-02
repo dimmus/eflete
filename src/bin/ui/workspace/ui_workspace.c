@@ -1374,7 +1374,7 @@ workspace_edit_object_part_add(Evas_Object *obj, Part_ *part)
 }
 
 Eina_Bool
-workspace_edit_object_part_del(Evas_Object *obj, const char *part)
+workspace_edit_object_part_del(Evas_Object *obj, Part_ *part)
 {
    WS_DATA_GET(obj, sd);
    assert(part != NULL);

@@ -176,7 +176,7 @@ Eina_Bool
 _edit_object_part_add(Ws_Groupedit_Smart_Data *sd, Part_ *part);
 
 Eina_Bool
-_edit_object_part_del(Ws_Groupedit_Smart_Data *sd, const char *part);
+_edit_object_part_del(Ws_Groupedit_Smart_Data *sd, Part_ *part);
 
 void
 _select_item_move_to_top(Ws_Groupedit_Smart_Data *sd);

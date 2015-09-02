@@ -37,10 +37,10 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part);
 static void
 _move_border_to_top(Ws_Groupedit_Smart_Data *sd);
 
-/*
+
 static void
-_part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part);
-*/
+_part_draw_del(Ws_Groupedit_Smart_Data *sd, Part_ *part);
+
 static Groupedit_Item *
 _item_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part, Eina_Stringshare *item);
 
@@ -92,25 +92,16 @@ _edit_object_part_add(Ws_Groupedit_Smart_Data *sd,
 }
 
 Eina_Bool
-_edit_object_part_del(Ws_Groupedit_Smart_Data *sd __UNUSED__,
-                      const char *part __UNUSED__)
+_edit_object_part_del(Ws_Groupedit_Smart_Data *sd, Part_ *part)
 {
-   ERR("fix part del")
-   abort();
-/*
    assert(sd != NULL);
    assert(sd->parts != NULL);
    assert(part != NULL);
-   if (!edje_edit_part_del(sd->group->edit_object, part))
-     {
-        ERR("Failed to delete part from edje edit object");
-        abort();
-     }
 
    _selected_item_return_to_place(sd);
    _part_draw_del(sd, part);
    evas_object_smart_changed(sd->obj);
-*/
+
    return true;
 }
 
@@ -999,22 +990,22 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
 #undef BORDER_ADD
 
 TODO("Fix part del")
-/*
+
 static void
-_part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part)
+_part_draw_del(Ws_Groupedit_Smart_Data *sd, Part_ *part)
 {
    Groupedit_Part *gp;
 
    assert(sd != NULL);
    assert(part != NULL);
 
-   gp = _parts_list_find(sd->parts, part);
+   gp = _parts_list_find(sd->parts, part->name);
 
    assert(gp != NULL);
 
    sd->parts = eina_list_remove(sd->parts, gp);
    _groupedit_part_free(gp);
-}*/
+}
 
 static Groupedit_Item *
 _item_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part,

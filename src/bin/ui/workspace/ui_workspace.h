@@ -110,14 +110,14 @@ workspace_edit_object_part_add(Evas_Object *obj, Part_ *part);
  * Delete part from style, which currently loaded into workspace.
  *
  * @param obj The workspace object.
- * @param part The name for deleting part.
+ * @param part Pointer to deleting part.
  *
  * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup Workspace
  */
 Eina_Bool
-workspace_edit_object_part_del(Evas_Object *obj, const char *part);
+workspace_edit_object_part_del(Evas_Object *obj, Part_ *part);
 
 /**
  * Stack part above above in workspace module. This function is a wrapper
