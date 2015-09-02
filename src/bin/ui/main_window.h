@@ -93,6 +93,7 @@ enum Menu_Item
 extern int MENU_ITEMS_LIST_BASE[];
 extern int MENU_ITEMS_LIST_STYLE_ONLY[];
 extern int MENU_ITEMS_LIST_MAIN[];
+extern int MENU_ITEMS_LIST_TEMPORARY[];
 
 /**
  * Adds toolbar with menu and buttons to the given Elementary layout.

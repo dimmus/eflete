@@ -67,6 +67,7 @@ _progress_pm_open_end(void *data __UNUSED__, PM_Project_Result result)
            ap.project = pm_project_thread_project_get();
            assert(ap.project);
 
+           ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_TEMPORARY, false);
            ui_menu_disable_set(ap.menu, MENU_FILE_CLOSE_PROJECT, false);
            navigator_project_set();
            tabs_tab_home_open(TAB_HOME_PROJECT_INFO);
