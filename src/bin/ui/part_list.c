@@ -501,6 +501,7 @@ _popup_add_part_ok_clicked(void *data,
    Part_List *pl = evas_object_data_get(obj, PART_LIST_DATA);
    const char *name;
    Part_ *part;
+   Elm_Object_Item *glit;
 
    assert(pl != NULL);
 
@@ -512,15 +513,18 @@ _popup_add_part_ok_clicked(void *data,
 
    part = gm_part_add(ap.project, pl->group, name);
 
-   elm_genlist_item_append(pl->genlist,
-                           pl->itc_part,
-                           part,
-                           NULL,
-                           ELM_GENLIST_ITEM_TREE,
-                           NULL,
-                           NULL);
+   glit = elm_genlist_item_append(pl->genlist,
+                                  pl->itc_part,
+                                  part,
+                                  NULL,
+                                  ELM_GENLIST_ITEM_TREE,
+                                  NULL,
+                                  NULL);
 
+   /* callback should be called before selection to allow some additional loading */
    evas_object_smart_callback_call(ap.win, SIGNAL_PART_ADDED, (void *)part);
+
+   elm_genlist_item_selected_set(glit, true);
 
    ecore_job_add(_job_popup_del, pl);
 }
