@@ -108,4 +108,10 @@ gm_part_add(Project *pro, Group *group, Eina_Stringshare *part_name);
 
 Group *
 gm_group_add(Project *pro, const char *group_name);
+
+void
+gm_state_del(Project *pro, State *state);
+
+void
+gm_part_del(Project *pro, Part_* part);
 #endif /* GROUP_MANAGER_H */

@@ -446,3 +446,127 @@ gm_groups_free(Project *pro)
         free(group);
      }
 }
+
+void
+gm_state_del(Project *pro, State *state)
+{
+   Eina_Stringshare *name, *image_name;
+   Eina_List *tween_list, *l;
+
+   assert(pro != NULL);
+   assert(state != NULL);
+
+#define USAGE_DEL(TYPE, USAGE_LIST) \
+   name = edje_edit_state_ ## TYPE ## _get(state->part->group->edit_object, \
+                                           state->part->name, \
+                                           state->parsed_name, \
+                                           state->parsed_val); \
+   if (name) \
+     { \
+        pm_resource_usage_del(USAGE_LIST, name, state); \
+        edje_edit_string_free(name); \
+     }
+   switch (state->part->type)
+     {
+      case EDJE_PART_TYPE_RECTANGLE:
+      case EDJE_PART_TYPE_PROXY:
+      case EDJE_PART_TYPE_BOX:
+      case EDJE_PART_TYPE_TABLE:
+         USAGE_DEL(color_class, ap.project->colorclasses);
+         break;
+      case EDJE_PART_TYPE_IMAGE:
+         USAGE_DEL(color_class, ap.project->colorclasses);
+
+         USAGE_DEL(image, ap.project->images);
+
+         tween_list = edje_edit_state_tweens_list_get(state->part->group->edit_object,
+                                                      state->part->name,
+                                                      state->parsed_name,
+                                                      state->parsed_val);
+         EINA_LIST_FOREACH(tween_list, l, image_name)
+            pm_resource_usage_del(ap.project->images, image_name, state);
+         edje_edit_string_list_free(tween_list);
+
+         break;
+      case EDJE_PART_TYPE_TEXT:
+         USAGE_DEL(color_class, ap.project->colorclasses);
+         USAGE_DEL(font, ap.project->fonts);
+         break;
+      case EDJE_PART_TYPE_TEXTBLOCK:
+         USAGE_DEL(text_style, ap.project->styles);
+         break;
+      default:
+         break;
+     }
+   state->used_in = eina_list_free(state->used_in);
+   state->part->states = eina_list_remove(state->part->states, state);
+   eina_stringshare_del(state->parsed_name);
+   eina_stringshare_del(state->name);
+   free(state);
+
+#undef USAGE_DEL
+}
+
+void
+gm_part_del(Project *pro, Part_* part)
+{
+   State *state;
+   const char *group_name, *item_name;
+   Eina_List *l;
+
+   assert(pro != NULL);
+   assert(part != NULL);
+
+   #define GROUP_USAGE_DEL(TYPE) \
+   group_name = edje_edit_part_ ## TYPE ## _get(part->group->edit_object, \
+                                                part->name); \
+   if (group_name) \
+     { \
+        pm_resource_usage_del(pro->groups, group_name, part); \
+        edje_edit_string_free(group_name); \
+     }
+
+   switch (part->type)
+     {
+      case EDJE_PART_TYPE_BOX:
+      case EDJE_PART_TYPE_TABLE:
+         EINA_LIST_FOREACH(part->items, l, item_name)
+           {
+              group_name = edje_edit_part_item_source_get(part->group->edit_object,
+                                                          part->name,
+                                                          item_name);
+              if (group_name)
+                {
+                   pm_resource_usage_del(pro->groups, group_name, part);
+                   edje_edit_string_free(group_name);
+                }
+           }
+         break;
+      case EDJE_PART_TYPE_TEXTBLOCK:
+         GROUP_USAGE_DEL(source);
+         GROUP_USAGE_DEL(source2);
+         GROUP_USAGE_DEL(source3);
+         GROUP_USAGE_DEL(source4);
+         GROUP_USAGE_DEL(source5);
+         GROUP_USAGE_DEL(source6);
+         break;
+      case EDJE_PART_TYPE_GROUP:
+         GROUP_USAGE_DEL(source);
+         break;
+      default:
+         break;
+     }
+   #undef GROUP_USAGE_DEL
+
+   if ((part->type == EDJE_PART_TYPE_TABLE) ||
+       (part->type == EDJE_PART_TYPE_BOX))
+     edje_edit_string_list_free(part->items);
+
+   EINA_LIST_FREE(part->states, state)
+      gm_state_del(pro, state);
+
+   part->used_in = eina_list_free(part->used_in);
+   part->group->parts = eina_list_remove(part->group->parts, part);
+   eina_stringshare_del(part->name);
+   free(part);
+}
