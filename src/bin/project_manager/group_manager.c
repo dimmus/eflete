@@ -128,6 +128,8 @@ _state_load(Project *pro, Part_ *part, Eina_Stringshare *state_name)
      { \
         if (!pm_resource_usage_add(pro->colorclasses, name, state)) \
           { \
+             /* Colorclass can be specified but not defined in edc.
+                If colorclass don't exist yet adding it */ \
              TODO("move this code to colorclass resource manager"); \
              edje_edit_color_class_add(pro->global_object, name); \
              Colorclass_Resource *res = mem_calloc(1, sizeof(Colorclass_Resource)); \
