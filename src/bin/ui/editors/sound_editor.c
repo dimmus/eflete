@@ -1009,8 +1009,6 @@ _grid_sel_sample(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-   Eina_List *l;
-   Sound *snd;
    double len = 0.0;
    const Item *item;
    Sound_Editor *edit = (Sound_Editor *)data;
@@ -1037,31 +1035,6 @@ _grid_sel_sample(void *data,
      {
         item = elm_object_item_data_get(eina_list_data_get(sel_list));
         edit->selected = eina_stringshare_add(item->sound_name);
-
-        TODO("I guess, add new sound mechanism would be changed? hmmm?")
-        if ((edit->pr->added_sounds))
-          {
-             EINA_LIST_FOREACH(edit->pr->added_sounds, l, snd)
-               {
-                  if (!strcmp(snd->name, edit->selected) && (!snd->tone_frq))
-                    {
-                       edit->snd_src = snd->src;
-#ifdef HAVE_AUDIO
-                       _added_sample_src_info_setup(edit, &len);
-#endif
-                       _sample_info_setup(edit, item, snd->src, len);
-                       edit->added = true;
-#ifdef HAVE_AUDIO
-                       if ((edit->switched) || (auto_play))
-                         {
-                            edit->switched = false;
-                            _add_sound_play(edit);
-                         }
-#endif
-                       return;
-                    }
-               }
-          }
 
         edit->snd_src = item->src;
 #ifdef HAVE_AUDIO
@@ -1267,11 +1240,11 @@ _add_sample_done(void *data,
    if ((!selected) || (!strcmp(selected, "")))
      goto del;
 
+   samples_list = edje_edit_sound_samples_list_get(edit->pr->global_object);
    if ((ecore_file_exists(selected)) && (!ecore_file_is_dir(selected)))
      {
         sound_name = eina_stringshare_add(ecore_file_file_get(selected));
 
-        samples_list = edje_edit_sound_samples_list_get(edit->pr->global_object);
         EINA_LIST_FOREACH(samples_list, l, tmp_sound_name)
           if (tmp_sound_name == sound_name) /* they both are stringshares */
             {
