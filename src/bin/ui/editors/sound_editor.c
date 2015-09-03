@@ -53,6 +53,7 @@ struct _Sound
 struct _Item
 {
    Eina_Stringshare *sound_name;
+   Eina_Stringshare *src;
    Eina_Stringshare *format;
    Edje_Edit_Sound_Comp comp;
    double rate;
@@ -1010,7 +1011,6 @@ _grid_sel_sample(void *data,
 {
    Eina_List *l;
    Sound *snd;
-   const char *snd_src;
    double len = 0.0;
    const Item *item;
    Sound_Editor *edit = (Sound_Editor *)data;
@@ -1038,6 +1038,7 @@ _grid_sel_sample(void *data,
         item = elm_object_item_data_get(eina_list_data_get(sel_list));
         edit->selected = eina_stringshare_add(item->sound_name);
 
+        TODO("I guess, add new sound mechanism would be changed? hmmm?")
         if ((edit->pr->added_sounds))
           {
              EINA_LIST_FOREACH(edit->pr->added_sounds, l, snd)
@@ -1062,30 +1063,18 @@ _grid_sel_sample(void *data,
                }
           }
 
+        edit->snd_src = item->src;
 #ifdef HAVE_AUDIO
-        edit->io.buf = edje_edit_sound_samplebuffer_get(edit->pr->global_object, edit->selected);
-        edit->io.data = eina_binbuf_string_get(edit->io.buf);
-        edit->io.length = eina_binbuf_length_get(edit->io.buf);
-        _initialize_io_data(edit);
-
-        eo_do(edit->io.in, len = ecore_audio_obj_in_length_get());
-        elm_slider_min_max_set(edit->rewind, 0, len);
-        elm_slider_value_set(edit->rewind, 0.0);
+        _added_sample_src_info_setup(edit, &len);
 #endif
-        snd_src = edje_edit_sound_samplesource_get(edit->pr->global_object, edit->selected);
-        _sample_info_setup(edit, item, snd_src, len);
-        eina_stringshare_del(snd_src);
-
+        _sample_info_setup(edit, item, item->src, len);
+        edit->added = true;
 #ifdef HAVE_AUDIO
-        if (edit->switched)
+        if ((edit->switched) || (auto_play))
           {
              edit->switched = false;
-             _play_sound(edit);
-             return;
+             _add_sound_play(edit);
           }
-
-        if (auto_play)
-          _play_sound(edit);
 #endif
      }
 }
@@ -1164,6 +1153,7 @@ _gengrid_content_fill(Sound_Editor *edit)
                   it->format = _sound_format_get(res->source);
                   it->comp = edje_edit_sound_compression_type_get(edit->pr->global_object, it->sound_name);
                   it->rate = edje_edit_sound_compression_rate_get(edit->pr->global_object, it->sound_name);
+                  it->src = eina_stringshare_add(res->source);
                   elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_sample, edit);
                }
              eina_list_free(sounds);
