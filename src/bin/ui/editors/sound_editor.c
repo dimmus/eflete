@@ -1628,6 +1628,8 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    BUTTON_ADD(edit->markup, btn, _("Ok"));
    evas_object_smart_callback_add(btn, "clicked", _on_ok_cb, edit);
    elm_object_part_content_set(edit->win, "eflete.swallow.btn_ok", btn);
+   elm_object_disabled_set(btn, true);
+
    BUTTON_ADD(edit->markup, btn, _("Cancel"));
    evas_object_smart_callback_add(btn, "clicked", _on_quit_cb, edit);
    elm_object_part_content_set(edit->win, "eflete.swallow.btn_close", btn);
@@ -1637,6 +1639,7 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    evas_object_show(btn);
    elm_object_part_content_set(edit->markup, "swallow.btn.del", btn);
    evas_object_show(btn);
+   elm_object_disabled_set(btn, true);
 
    ic = elm_icon_add(btn);
    elm_icon_standard_set(ic, "minus");
@@ -1652,6 +1655,7 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
            ewe_combobox_item_add(edit->add_cmb, _("Tone"));
            evas_object_smart_callback_add(edit->add_cmb, "selected", _on_cmb_sel, edit);
            elm_object_part_content_set(edit->markup, "swallow.btn.add", edit->add_cmb);
+           elm_object_disabled_set(edit->add_cmb, true);
         }
       break;
       case SOUND_EDITOR_SAMPLE_SELECT:
@@ -1660,6 +1664,7 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
            evas_object_smart_callback_add(btn, "clicked", _sample_add_cb, edit);
            evas_object_show(btn);
            elm_object_part_content_set(edit->markup, "swallow.btn.add", btn);
+           elm_object_disabled_set(btn, true);
            evas_object_show(btn);
 
            ic = elm_icon_add(btn);
@@ -1673,6 +1678,7 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
            evas_object_smart_callback_add(btn, "clicked", _tone_add_cb, edit);
            evas_object_show(btn);
            elm_object_part_content_set(edit->markup, "swallow.btn.add", btn);
+           elm_object_disabled_set(btn, true);
            evas_object_show(btn);
 
            ic = elm_icon_add(btn);
