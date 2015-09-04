@@ -253,17 +253,30 @@ live_view_theme_update(Evas_Object *object)
 }
 
 Eina_Bool
-live_view_part_add(Live_View *live, Part *part)
+live_view_part_add(Evas_Object *object, Part_ *part)
 {
+   assert(object != NULL);
+   assert(ap.project != NULL);
+
+   Live_View *live = evas_object_data_get(object, "live_view_structure");
+
    assert(live != NULL);
+   assert(live->object != NULL);
    assert(part != NULL);
    return live_view_property_part_add(live->property, part);
 }
 
 Eina_Bool
-live_view_part_del(Live_View *live, Part *part)
+live_view_part_del(Evas_Object *object, Part_ *part)
 {
+   assert(object != NULL);
+   assert(ap.project != NULL);
+
+   Live_View *live = evas_object_data_get(object, "live_view_structure");
+
    assert(live != NULL);
+   assert(live->object != NULL);
+   assert(part != NULL);
    assert(part != NULL);
    return live_view_property_part_del(live->property, part);
 }
