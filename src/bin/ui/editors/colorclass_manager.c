@@ -702,39 +702,29 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
 Eina_Bool
 _colorclass_manager_init(Colorclasses_Manager *edit)
 {
-   int r1, r2, r3, g1, g2, g3, b1, b2, b3, a1, a2, a3;
-   const char *ccname = NULL;
-   Eina_List *cclist = NULL;
    Eina_List *l = NULL;
    Colorclass_Item *it = NULL;
+   Colorclass_Resource *res;
 
    assert(edit != NULL);
+   assert(edit->pr != NULL);
+   assert(edit->pr->colorclasses != NULL);
 
-   cclist = edje_edit_color_classes_list_get(edit->pr->global_object);
-
-   EINA_LIST_FOREACH(cclist, l, ccname)
+   EINA_LIST_FOREACH(edit->pr->colorclasses, l, res)
      {
         it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
-        if (!edje_edit_color_class_colors_get(edit->pr->global_object, ccname,
-                                     &r1, &g1, &b1, &a1,
-                                     &r2, &g2, &b2, &a2,
-                                     &r3, &g3, &b3, &a3))
-          {
-             ERR("Couldn`t get color's from colorclass %s.", ccname);
-             abort();
-          }
-        it->r1 = r1; it->g1 = g1;
-        it->b1 = b1; it->a1 = a1;
-        it->r2 = r2; it->g2 = g2;
-        it->b2 = b2; it->a2 = a2;
-        it->r3 = r3; it->g3 = g3;
-        it->b3 = b3; it->a3 = a3;
 
-        it->name = eina_stringshare_add(ccname);
+        it->r1 = res->color1.r; it->g1 = res->color1.g;
+        it->b1 = res->color1.b; it->a1 = res->color1.a;
+        it->r2 = res->color2.r; it->g2 = res->color2.g;
+        it->b2 = res->color2.b; it->a2 = res->color2.a;
+        it->r3 = res->color3.r; it->g3 = res->color3.g;
+        it->b3 = res->color3.b; it->a3 = res->color3.a;
+
+        it->name = eina_stringshare_add(res->name);
         elm_genlist_item_append(edit->genlist, _itc_ccl, it, NULL,
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
-   eina_list_free(cclist);
    return true;
 }
 
