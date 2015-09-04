@@ -680,6 +680,7 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    evas_object_smart_callback_add(button, "clicked",
                                   _on_button_add_clicked_cb, edit);
    elm_object_part_content_set(edit->layout, "swallow.control.add", button);
+   elm_object_disabled_set(button, true);
 
    button = elm_button_add(edit->layout);
    evas_object_show(button);
@@ -688,6 +689,7 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    evas_object_smart_callback_add(button, "clicked",
                                   _on_button_delete_clicked_cb, edit);
    elm_object_part_content_set(edit->layout, "swallow.control.minus", button);
+   elm_object_disabled_set(button, true);
 
    /* window functional buttons (apply and cancel) */
    BUTTON_ADD(edit->mwin, button, _("Cancel"));
@@ -698,6 +700,7 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    BUTTON_ADD(edit->mwin, button, _("Apply"));
    evas_object_smart_callback_add(button, "clicked", _on_btn_apply, edit);
    elm_object_part_content_set(edit->mwin, "eflete.swallow.btn_ok", button);
+   elm_object_disabled_set(button, true);
 }
 Eina_Bool
 _colorclass_manager_init(Colorclasses_Manager *edit)
