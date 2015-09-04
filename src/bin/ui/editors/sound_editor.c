@@ -1129,7 +1129,6 @@ _gengrid_content_fill(Sound_Editor *edit)
                   it->src = eina_stringshare_add(res->source);
                   elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_sample, edit);
                }
-             eina_list_free(sounds);
           }
      }
 
@@ -1149,7 +1148,6 @@ _gengrid_content_fill(Sound_Editor *edit)
                   it->format = eina_stringshare_printf("%d", it->tone_frq);
                   elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
                }
-             eina_list_free(tones);
           }
      }
 }
