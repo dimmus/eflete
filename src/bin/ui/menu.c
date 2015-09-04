@@ -73,6 +73,7 @@ TODO("Remove it when all editors are back again!")
 int MENU_ITEMS_LIST_TEMPORARY[] = {
    MENU_EDITORS_IMAGE,
    MENU_EDITORS_SOUND,
+   MENU_EDITORS_COLORCLASS,
    MENU_HELP,
 
    MENU_NULL
