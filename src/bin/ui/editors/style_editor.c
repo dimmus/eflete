@@ -36,6 +36,14 @@ typedef struct _Style_entries Style_Entries;
 typedef struct _Style_Editor Style_Editor;
 typedef struct _Search_Data Search_Data;
 
+typedef enum {
+   TAB_EDITOR_TEXT = 0,
+   TAB_EDITOR_FORMAT,
+   TAB_EDITOR_GLOW_SHADOW,
+   TAB_EDITOR_LINES,
+   TAB_LAST
+} Tabs_Style_Editor;
+
 struct _Search_Data
 {
    Evas_Object *search_entry;
@@ -58,6 +66,8 @@ struct _Style_Editor
       Evas_Object *content_format;
       Evas_Object *content_glow_shadow;
       Evas_Object *content_lines;
+
+      Tabs_Style_Editor current_tab;
    } prop;
    Search_Data style_search_data;
    struct {
@@ -325,6 +335,7 @@ _on_glit_selected(void *data,
    evas_object_del(style_edit->prop.content_format);
    evas_object_del(style_edit->prop.content_glow_shadow);
    evas_object_del(style_edit->prop.content_lines);
+
    if (!glit_parent)
      {
         elm_object_signal_emit(style_edit->entry_prev, "entry,hide", "eflete");
@@ -1461,6 +1472,9 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
         eina_tmpstr_del(width);
         eina_tmpstr_del(style);
      }
+
+   if (style_edit->prop.current_tab == TAB_EDITOR_TEXT)
+     elm_layout_content_set(style_edit->prop.content, NULL, scr);
 }
 
 static void
@@ -1607,6 +1621,9 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *valu
 
    elm_box_pack_end(box_frames, frame1);
    elm_box_pack_end(box_frames, frame2);
+
+   if (style_edit->prop.current_tab == TAB_EDITOR_FORMAT)
+     elm_layout_content_set(style_edit->prop.content, NULL, scr);
 }
 
 static void
@@ -1748,6 +1765,9 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
         eina_tmpstr_del(outer);
         eina_tmpstr_del(shadow);
      }
+
+   if (style_edit->prop.current_tab == TAB_EDITOR_GLOW_SHADOW)
+     elm_layout_content_set(style_edit->prop.content, NULL, scr);
 }
 
 static void
@@ -1836,6 +1856,9 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value
         eina_tmpstr_del(underl_color);
         eina_tmpstr_del(underl2_color);
      }
+
+   if (style_edit->prop.current_tab == TAB_EDITOR_LINES)
+     elm_layout_content_set(style_edit->prop.content, NULL, scr);
 }
 #undef COMBOBOX_VALUE
 #undef SEGMENT_VALUE
@@ -1860,21 +1883,22 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value
 #undef DIRECT_ADD
 #undef WHITE_COLOR
 
-#define _TAB_CHANGE_CALLBACK(property) \
+#define _TAB_CHANGE_CALLBACK(PROPERTY, TAB_MARK) \
 static void \
-_##property##_tab_change(void *data, \
+_##PROPERTY##_tab_change(void *data, \
                         Evas_Object *obj __UNUSED__, \
                         void *event_info __UNUSED__) \
 { \
    Style_Editor *style_edit = (Style_Editor *)data; \
    evas_object_hide(elm_layout_content_unset(style_edit->prop.content, NULL)); \
-   elm_layout_content_set(style_edit->prop.content, NULL, style_edit->prop.property); \
+   elm_layout_content_set(style_edit->prop.content, NULL, style_edit->prop.PROPERTY); \
+   style_edit->prop.current_tab = TAB_MARK; \
 }
 
-_TAB_CHANGE_CALLBACK(content_text);
-_TAB_CHANGE_CALLBACK(content_format);
-_TAB_CHANGE_CALLBACK(content_glow_shadow);
-_TAB_CHANGE_CALLBACK(content_lines);
+_TAB_CHANGE_CALLBACK(content_text, TAB_EDITOR_TEXT);
+_TAB_CHANGE_CALLBACK(content_format, TAB_EDITOR_FORMAT);
+_TAB_CHANGE_CALLBACK(content_glow_shadow, TAB_EDITOR_GLOW_SHADOW);
+_TAB_CHANGE_CALLBACK(content_lines, TAB_EDITOR_LINES);
 
 #undef _TAB_CHANGE_CALLBACK
 
@@ -1912,6 +1936,8 @@ _form_right_side(Style_Editor *style_edit)
    elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Format"), _content_format_tab_change, style_edit);
    elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Glow & Shadow"), _content_glow_shadow_tab_change, style_edit);
    elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Lines"), _content_lines_tab_change, style_edit);
+
+   style_edit->prop.current_tab = TAB_EDITOR_TEXT;
 
    BOX_ADD(style_edit->mwin, box_bg, true, false);
    elm_box_padding_set(box_bg, 10, 0);
