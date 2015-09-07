@@ -776,7 +776,8 @@ _form_left_side(Style_Editor *style_edit)
    Elm_Object_Item *glit_style, *glit_tag;
    Evas_Object *layout, *btn, *combobox, *search, *ic;
    Eina_List *styles, *tags, *l_st, *l_tg;
-   char *style, *tag;
+   char *tag;
+   Resource *res;
    Evas_Object *edje_edit_obj = NULL;
 
    assert(style_edit != NULL);
@@ -824,16 +825,16 @@ _form_left_side(Style_Editor *style_edit)
                                     EVAS_HINT_EXPAND);
    edje_edit_obj = style_edit->pr->global_object;
 
-   styles = edje_edit_styles_list_get(edje_edit_obj);
+   styles = style_edit->pr->styles;
 
-   EINA_LIST_FOREACH(styles, l_st, style)
+   EINA_LIST_FOREACH(styles, l_st, res)
      {
         glit_style = elm_genlist_item_append(style_edit->glist, _itc_style,
-                                             style, NULL, ELM_GENLIST_ITEM_GROUP,
+                                             res->name, NULL, ELM_GENLIST_ITEM_GROUP,
                                              _on_glit_selected, style_edit);
-        elm_object_item_data_set(glit_style, style);
+        elm_object_item_data_set(glit_style, (char *)res->name);
 
-        tags = edje_edit_style_tags_list_get(edje_edit_obj, style);
+        tags = edje_edit_style_tags_list_get(edje_edit_obj, res->name);
         EINA_LIST_FOREACH(tags, l_tg, tag)
           {
              glit_tag = elm_genlist_item_append(style_edit->glist, _itc_tags,
