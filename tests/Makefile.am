@@ -181,6 +181,8 @@ alloc_test_LDADD = ${LD}
 
 diff_test_SOURCES = \
 ../tests/test_diff/test_diff.c \
+../tests/test_diff/diff_free.c \
+../tests/test_diff/diff_update.c \
 ../tests/test_diff/diff_undo_redo.c
 diff_test_CFLAGS = ${FLAGS}
 diff_test_LDADD = ${LD}

@@ -23,3 +23,7 @@
 
 void diff_undo_redo_test_p1(int);
 void diff_undo_redo_test_p2(int);
+
+void diff_update_test_p(int);
+
+void diff_free_test_p(int);
