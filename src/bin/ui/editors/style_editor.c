@@ -1930,37 +1930,24 @@ _form_right_side(Style_Editor *style_edit)
    elm_layout_theme_set(layout, "layout", "style_editor", "property");
    evas_object_show(layout);
 
-   style_edit->prop.layout = elm_layout_add(ap.win);
-   elm_layout_theme_set(style_edit->prop.layout, "layout", "tabs", "default");
-   elm_object_part_content_set(layout, "swallow/tabs_entry", style_edit->prop.layout);
-
-   style_edit->prop.tabs = elm_toolbar_add(style_edit->prop.layout);
-   elm_layout_content_set(style_edit->prop.layout, "elm.swallow.tabs", style_edit->prop.tabs);
-   elm_object_style_set(style_edit->prop.tabs, "tabs_horizontal");
-   elm_toolbar_shrink_mode_set(style_edit->prop.tabs, ELM_TOOLBAR_SHRINK_SCROLL);
-   elm_toolbar_select_mode_set(style_edit->prop.tabs, ELM_OBJECT_SELECT_MODE_ALWAYS);
-   elm_toolbar_align_set(style_edit->prop.tabs, 0.0);
-
-   style_edit->prop.content = elm_layout_add(ap.win);
+   style_edit->prop.content = elm_layout_add(layout);
    elm_layout_theme_set(style_edit->prop.content, "layout", "tab_home", "default");
+   elm_object_part_content_set(layout, "swallow/tabs_entry", style_edit->prop.content);
+   evas_object_show(style_edit->prop.content);
+
    style_edit->prop.tabs = elm_toolbar_add(style_edit->prop.content);
-   elm_layout_content_set(style_edit->prop.content, "elm.swallow.tabs", style_edit->prop.tabs);
+   elm_layout_content_set(style_edit->prop.content, "elm.swallow.toolbar", style_edit->prop.tabs);
    elm_toolbar_horizontal_set(style_edit->prop.tabs, false);
-   elm_object_style_set(style_edit->prop.tabs, "tabs_vertical");
+   elm_object_style_set(style_edit->prop.tabs,"tabs_vertical");
    elm_toolbar_shrink_mode_set(style_edit->prop.tabs, ELM_TOOLBAR_SHRINK_SCROLL);
    elm_toolbar_select_mode_set(style_edit->prop.tabs, ELM_OBJECT_SELECT_MODE_ALWAYS);
    elm_toolbar_align_set(style_edit->prop.tabs, 0.0);
+   evas_object_show(style_edit->prop.tabs);
 
    elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Text"), _home_tab_change, style_edit);
    elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Format"), _home_tab_change, style_edit);
    elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Glow & Shadow"), _home_tab_change, style_edit);
    elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Lines"), _home_tab_change, style_edit);
-
-   elm_object_style_set(style_edit->prop.tabs, "tabs_horizontal");
-   elm_toolbar_shrink_mode_set(style_edit->prop.tabs, ELM_TOOLBAR_SHRINK_SCROLL);
-   elm_toolbar_select_mode_set(style_edit->prop.tabs, ELM_OBJECT_SELECT_MODE_ALWAYS);
-   elm_toolbar_align_set(style_edit->prop.tabs, 0.0);
-   evas_object_show(style_edit->prop.tabs);
 
    BOX_ADD(style_edit->mwin, box_bg, true, false);
    elm_box_padding_set(box_bg, 10, 0);
