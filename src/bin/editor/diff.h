@@ -55,4 +55,7 @@ diff_redo(Evas_Object *obj, Diff_ *diff);
 void
 diff_update(Diff_ *diff, Diff_ *new_diff);
 
+void
+diff_free(Diff_ *diff);
+
 #endif /* DIFF_H */

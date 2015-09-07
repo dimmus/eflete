@@ -31,6 +31,7 @@ _apply(Evas_Object *obj, Function_Info *fi)
          return true;
       case FUNCTION_TYPE_INT:
          return ((function_type_int)fi->function)(obj, fi->args.type_int.ival);
+         /* Don't add 'case default:'. Compiler should warn about new values in enum */
      }
    return false;
 }
@@ -66,18 +67,27 @@ diff_update(Diff_ *diff, Diff_ *new_diff)
       case FUNCTION_TYPE_NONE:
       case FUNCTION_TYPE_INT:
          break;
-         /* Do not forget to clean previous stringshares in existing_diff.redo
+         /* Do not forget to replace previous stringshares in existing_diff.redo
             if needed. */
+         /* Don't add 'case default:'. Compiler should warn about new values in enum */
      }
-   switch (new_diff->undo.type)
+
+   diff->redo = new_diff->redo;
+   diff_free(new_diff);
+}
+
+void
+diff_free(Diff_ *diff)
+{
+   assert(diff != NULL);
+
+   switch (diff->redo.type)
      {
       case FUNCTION_TYPE_NONE:
       case FUNCTION_TYPE_INT:
          break;
-         /* Do not forget to clean previous stringshares in diff.undo
-            if needed. */
+         /* Do not forget to clean stringshares */
+         /* Don't add 'case default:'. Compiler should warn about new values in enum */
      }
-
-   diff->redo = new_diff->redo;
-   free(new_diff);
+   free(diff);
 }
