@@ -49,7 +49,20 @@ struct _Style_Editor
    Evas_Object *glist;
    Evas_Object *textblock_style;
    Evas_Object *entry_prev;
-   Evas_Object *tabs;
+   struct {
+      Evas_Object *layout;
+      Evas_Object *content;
+      Evas_Object *tabs;
+
+      Elm_Object_Item *tab_text;
+      Evas_Object *content_text;
+      Elm_Object_Item *tab_format;
+      Evas_Object *content_format;
+      Elm_Object_Item *tab_glow_shadow;
+      Evas_Object *content_glow_shadow;
+      Elm_Object_Item *tab_lines;
+      Evas_Object *content_lines;
+   } prop;
    Search_Data style_search_data;
    struct {
       const char *st_name;
@@ -257,11 +270,11 @@ _##VALUE##_update(Style_Editor *style_edit) \
    Eina_List *tabs_list = NULL, *tab = NULL; \
    Ewe_Tabs_Item *it; \
    assert(style_edit != NULL); \
-   tabs_list = (Eina_List *)ewe_tabs_items_list_get(style_edit->tabs); \
+   tabs_list = (Eina_List *)ewe_tabs_items_list_get(style_edit->prop.tabs); \
    EINA_LIST_FOREACH(tabs_list, tab, it) \
      { \
-        if (!strcmp(ewe_tabs_item_title_get(style_edit->tabs, it), TEXT)) \
-          _##VALUE##_tab_update(style_edit, style_edit->tabs, it, CURRENT.stvalue); \
+        if (!strcmp(ewe_tabs_item_title_get(style_edit->prop.tabs, it), TEXT)) \
+          _##VALUE##_tab_update(style_edit, style_edit->prop.tabs, it, CURRENT.stvalue); \
      } \
 }
 
@@ -320,12 +333,12 @@ _on_glit_selected(void *data,
    CURRENT.st_name = style_name;
    CURRENT.st_tag = tag;
    CURRENT.stvalue = eina_stringshare_add(value);
-   tabs_list = (Eina_List *)ewe_tabs_items_list_get(style_edit->tabs);
+   tabs_list = (Eina_List *)ewe_tabs_items_list_get(style_edit->prop.tabs);
    if (!glit_parent)
      {
         EINA_LIST_FOREACH(tabs_list, tab, it)
           {
-            tab_content = ewe_tabs_item_content_unset(style_edit->tabs, it);
+            tab_content = ewe_tabs_item_content_unset(style_edit->prop.tabs, it);
             evas_object_del(tab_content);
             count++;
           }
@@ -339,22 +352,22 @@ _on_glit_selected(void *data,
                {
                 case 0:
                    {
-                      _text_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
+                      _text_tab_update(style_edit, style_edit->prop.tabs, it, eina_strbuf_string_get(style));
                       break;
                    }
                 case 1:
                    {
-                      _format_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
+                      _format_tab_update(style_edit, style_edit->prop.tabs, it, eina_strbuf_string_get(style));
                       break;
                    }
                 case 2:
                    {
-                      _glow_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
+                      _glow_tab_update(style_edit, style_edit->prop.tabs, it, eina_strbuf_string_get(style));
                       break;
                    }
                 case 3:
                    {
-                      _lines_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
+                      _lines_tab_update(style_edit, style_edit->prop.tabs, it, eina_strbuf_string_get(style));
                       break;
                    }
                 default:
@@ -1890,6 +1903,17 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it
 #undef DIRECT_ADD
 #undef WHITE_COLOR
 
+static void
+_home_tab_change(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   Style_Editor *style_edit = (Style_Editor *)data;
+
+   evas_object_hide(elm_layout_content_unset(style_edit->prop.content, NULL));
+   elm_layout_content_set(style_edit->prop.content, NULL, NULL);
+}
+
 Evas_Object*
 _form_right_side(Style_Editor *style_edit)
 {
@@ -1906,14 +1930,37 @@ _form_right_side(Style_Editor *style_edit)
    elm_layout_theme_set(layout, "layout", "style_editor", "property");
    evas_object_show(layout);
 
-   style_edit->tabs = ewe_tabs_add(style_edit->mwin);
-   elm_object_part_content_set(layout, "swallow/tabs_entry", style_edit->tabs);
-   ewe_tabs_item_append(style_edit->tabs, NULL, _("Text"), NULL);
-   ewe_tabs_item_append(style_edit->tabs, NULL, _("Format"), NULL);
-   ewe_tabs_item_append(style_edit->tabs, NULL, _("Glow & Shadow"), NULL);
-   ewe_tabs_item_append(style_edit->tabs, NULL, _("Lines"), NULL);
-   ewe_tabs_orient_horizontal_set(style_edit->tabs, EINA_FALSE);
-   evas_object_show(style_edit->tabs);
+   style_edit->prop.layout = elm_layout_add(ap.win);
+   elm_layout_theme_set(style_edit->prop.layout, "layout", "tabs", "default");
+   elm_object_part_content_set(layout, "swallow/tabs_entry", style_edit->prop.layout);
+
+   style_edit->prop.tabs = elm_toolbar_add(style_edit->prop.layout);
+   elm_layout_content_set(style_edit->prop.layout, "elm.swallow.tabs", style_edit->prop.tabs);
+   elm_object_style_set(style_edit->prop.tabs, "tabs_horizontal");
+   elm_toolbar_shrink_mode_set(style_edit->prop.tabs, ELM_TOOLBAR_SHRINK_SCROLL);
+   elm_toolbar_select_mode_set(style_edit->prop.tabs, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   elm_toolbar_align_set(style_edit->prop.tabs, 0.0);
+
+   style_edit->prop.content = elm_layout_add(ap.win);
+   elm_layout_theme_set(style_edit->prop.content, "layout", "tab_home", "default");
+   style_edit->prop.tabs = elm_toolbar_add(style_edit->prop.content);
+   elm_layout_content_set(style_edit->prop.content, "elm.swallow.tabs", style_edit->prop.tabs);
+   elm_toolbar_horizontal_set(style_edit->prop.tabs, false);
+   elm_object_style_set(style_edit->prop.tabs, "tabs_vertical");
+   elm_toolbar_shrink_mode_set(style_edit->prop.tabs, ELM_TOOLBAR_SHRINK_SCROLL);
+   elm_toolbar_select_mode_set(style_edit->prop.tabs, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   elm_toolbar_align_set(style_edit->prop.tabs, 0.0);
+
+   elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Text"), _home_tab_change, style_edit);
+   elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Format"), _home_tab_change, style_edit);
+   elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Glow & Shadow"), _home_tab_change, style_edit);
+   elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Lines"), _home_tab_change, style_edit);
+
+   elm_object_style_set(style_edit->prop.tabs, "tabs_horizontal");
+   elm_toolbar_shrink_mode_set(style_edit->prop.tabs, ELM_TOOLBAR_SHRINK_SCROLL);
+   elm_toolbar_select_mode_set(style_edit->prop.tabs, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   elm_toolbar_align_set(style_edit->prop.tabs, 0.0);
+   evas_object_show(style_edit->prop.tabs);
 
    BOX_ADD(style_edit->mwin, box_bg, true, false);
    elm_box_padding_set(box_bg, 10, 0);
