@@ -27,6 +27,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/cursor.c \
 ../../src/bin/ui/menu.c \
 ../../src/bin/ui/main_window.c \
+../../src/bin/ui/popup.c \
 ../../src/bin/ui/project_close.c \
 ../../src/bin/ui/connector.c \
 ../../src/bin/ui/splash.c \

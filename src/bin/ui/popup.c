@@ -1,0 +1,94 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2015 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
+#include "main_window.h"
+
+static Popup_Button btn_pressed;
+static Evas_Object *popup;
+
+static const Popup_Button _btn_ok         = BTN_OK;
+static const Popup_Button _btn_save       = BTN_SAVE;
+static const Popup_Button _btn_replace    = BTN_REPLACE;
+static const Popup_Button _btn_dont_save  = BTN_DONT_SAVE;
+static const Popup_Button _btn_cancel     = BTN_CANCEL;
+
+static void
+_btn_cb(void *data,
+        Evas_Object *obj __UNUSED__,
+        void *ei __UNUSED__)
+{
+   btn_pressed = *((Popup_Button *)data);
+   ecore_main_loop_quit();
+}
+
+#define BTN_ADD(TEXT, PLACE, DATA) \
+{ \
+   BUTTON_ADD(popup, btn, TEXT); \
+   evas_object_smart_callback_add(btn, "clicked", _btn_cb, DATA); \
+   elm_object_part_content_set(popup, PLACE, btn); \
+}
+
+Popup_Button
+popup_want_action(const char *title,
+                  const char *msg,
+                  Evas_Object *content,
+                  Popup_Button popup_btns)
+{
+   Evas_Object *btn;
+
+   /* only one content will be setted to popup: or message, or used content */
+   assert((msg != NULL) != (content != NULL));
+
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+
+   popup = elm_popup_add(ap.win);
+   elm_object_part_text_set(popup, "title,text", title);
+   elm_popup_content_text_wrap_type_set(popup, ELM_WRAP_WORD);
+   if (msg) elm_object_text_set(popup, msg);
+   if (content) elm_object_content_set(popup, content);
+
+   if (popup_btns & BTN_OK)
+     BTN_ADD(_("Ok"), "button1", &_btn_ok)
+
+   if (popup_btns & BTN_SAVE)
+     BTN_ADD(_("Save"), "button1", &_btn_save)
+
+   if (popup_btns & BTN_REPLACE)
+     BTN_ADD(_("Replace"), "button1", &_btn_replace)
+
+   if (popup_btns & BTN_DONT_SAVE)
+     BTN_ADD(_("Don't save"), "button2", &_btn_dont_save)
+
+   if ((popup_btns & BTN_CANCEL) && (popup_btns & BTN_DONT_SAVE))
+     BTN_ADD(_("Cancel"), "button3", &_btn_cancel)
+   else
+     BTN_ADD(_("Cancel"), "button2", &_btn_cancel)
+
+   evas_object_show(popup);
+   ecore_main_loop_begin();
+
+   /* clear up before return the presed button */
+   evas_object_del(popup);
+   popup = NULL;
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+
+   return btn_pressed;
+}
+
+#undef BTN_ADD

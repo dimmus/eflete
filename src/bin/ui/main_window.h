@@ -95,6 +95,17 @@ extern int MENU_ITEMS_LIST_STYLE_ONLY[];
 extern int MENU_ITEMS_LIST_MAIN[];
 extern int MENU_ITEMS_LIST_TEMPORARY[];
 
+#define POPUP_BUTTON_MASK 0xf
+typedef enum _Popup_Button
+{
+   BTN_NONE       = 0,
+   BTN_OK         = (1 << 0),
+   BTN_CANCEL     = (1 << 1),
+   BTN_SAVE       = (1 << 2),
+   BTN_DONT_SAVE  = (1 << 3),
+   BTN_REPLACE    = (1 << 4)
+} Popup_Button;
+
 /**
  * Adds toolbar with menu and buttons to the given Elementary layout.
  *
@@ -395,6 +406,24 @@ project_changed(Eina_Bool save);
 Eina_Bool
 project_close(void);
 
+/**
+ * Create and show popup with given title and content. Only one - Evas_Object or
+ * text will be setted as content. And you can set define the buttons what you
+ * want to use in the popup. Func have a blocked behavior, while the popup button
+ * not clicked, popup blocked the code runing, used ecore main loop iteration.
+ *
+ * @param title The Popup title;
+ * @param msg The Popup message, formated text;
+ * @param content The user Evas_Object seted as content to popup;
+ * @param p_btns The flags for set the popup buttons
+ *
+ * @ingroup Window
+ */
+Popup_Button
+popup_want_action(const char *title,
+                  const char *msg,
+                  Evas_Object *content,
+                  Popup_Button p_btns);
 /**
  * Export project as develop edj file.
  *
