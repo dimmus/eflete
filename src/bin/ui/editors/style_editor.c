@@ -835,6 +835,8 @@ _form_left_side(Style_Editor *style_edit)
    ewe_combobox_item_add(combobox, _("New tag"));
    evas_object_smart_callback_add(combobox, "selected", _on_bt_add, style_edit);
    elm_object_part_content_set(layout, "swallow.add_btn", combobox);
+   TODO("Remove when savings would work well")
+   elm_object_disabled_set(combobox, true);
 
    btn = elm_button_add(style_edit->mwin);
    evas_object_show(btn);
@@ -844,6 +846,8 @@ _form_left_side(Style_Editor *style_edit)
 
    evas_object_smart_callback_add(btn, "clicked", _on_bt_del, style_edit);
    elm_object_part_content_set(layout, "swallow.rm_btn", btn);
+   TODO("Remove when savings would work well")
+   elm_object_disabled_set(btn, true);
 
    return layout;
 }
