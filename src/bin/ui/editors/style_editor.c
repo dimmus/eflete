@@ -844,7 +844,6 @@ _form_left_side(Style_Editor *style_edit)
           }
         eina_list_free(tags);
      }
-   eina_list_free(styles);
 
    EWE_COMBOBOX_ADD(layout, combobox);
    ewe_combobox_style_set(combobox, "small");
