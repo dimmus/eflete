@@ -72,3 +72,18 @@ progress_end(void *data __UNUSED__, PM_Project_Result result)
    splash_del(ap.splash);
    ap.splash = NULL;
 }
+
+void
+elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data)
+{
+   Evas_Object *bt;
+
+   assert(entry != NULL);
+
+   bt = elm_button_add(entry);
+   elm_object_style_set(bt, "elipsis");
+   elm_object_focus_allow_set(bt, false);
+   evas_object_show(bt);
+   evas_object_smart_callback_add(bt, "clicked", cb_func, data);
+   elm_object_part_content_set(entry, "elm.swallow.elipsis", bt);
+}

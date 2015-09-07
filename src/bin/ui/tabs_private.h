@@ -38,4 +38,7 @@ progress_print(void *data, Eina_Stringshare *progress_string);
 void
 progress_end(void *data, PM_Project_Result result);
 
+void
+elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data);
+
 #endif /* TABS_PRIVATE */
