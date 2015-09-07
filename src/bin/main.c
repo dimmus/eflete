@@ -43,6 +43,7 @@ static const Ecore_Getopt options = {
       ECORE_GETOPT_STORE_STR(0, "name", N_("Name for new project that would be created in import process")),
       ECORE_GETOPT_STORE_STR(0, "path", N_("Path for project")),
       ECORE_GETOPT_STORE_TRUE(0, "replace", N_("Replace existing project")),
+      ECORE_GETOPT_STORE_TRUE('r', "reopen", "reopen last project"),
       ECORE_GETOPT_VERSION  ('v', "version"),
       ECORE_GETOPT_COPYRIGHT('c', "copyright"),
       ECORE_GETOPT_LICENSE  ('l', "license"),
@@ -134,8 +135,10 @@ _import_edj(void *data __UNUSED__)
 EAPI_MAIN int
 elm_main(int argc, char **argv)
 {
-   Eina_Bool info_only = false;
+   Eina_Bool info_only = false, reopen = false;
    Eina_Stringshare *pro_folder;
+   Config *config;
+   Recent *r;
 
    Ecore_Getopt_Value values[] = {
      ECORE_GETOPT_VALUE_STR(open),
@@ -143,6 +146,7 @@ elm_main(int argc, char **argv)
      ECORE_GETOPT_VALUE_STR(pro_name),
      ECORE_GETOPT_VALUE_STR(pro_path),
      ECORE_GETOPT_VALUE_BOOL(pro_replace),
+     ECORE_GETOPT_VALUE_BOOL(reopen),
      ECORE_GETOPT_VALUE_BOOL(info_only),
      ECORE_GETOPT_VALUE_BOOL(info_only),
      ECORE_GETOPT_VALUE_BOOL(info_only),
@@ -173,6 +177,19 @@ elm_main(int argc, char **argv)
              return -1;
           }
 
+        if (reopen)
+          {
+             config = config_get();
+             if (!config->recents)
+               {
+                  ERR(_("There are no previously opened projects yet."));
+                  return 1;
+               }
+             r = eina_list_data_get(config->recents);
+             open = r->path;
+             ecore_job_add(_open_project, NULL);
+             goto run;
+          }
         if (open)
           {
              if ((eina_str_has_suffix(open, ".pro")) &&
