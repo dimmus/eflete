@@ -52,3 +52,32 @@ diff_redo(Evas_Object *obj, Diff_ *diff)
 
    return _apply(obj, &diff->redo);
 }
+
+void
+diff_update(Diff_ *diff, Diff_ *new_diff)
+{
+   assert(diff != NULL);
+   assert(new_diff != NULL);
+   assert(diff->undo.function == new_diff->undo.function);
+   assert(diff->redo.function == new_diff->redo.function);
+
+   switch (diff->redo.type)
+     {
+      case FUNCTION_TYPE_NONE:
+      case FUNCTION_TYPE_INT:
+         break;
+         /* Do not forget to clean previous stringshares in existing_diff.redo
+            if needed. */
+     }
+   switch (new_diff->undo.type)
+     {
+      case FUNCTION_TYPE_NONE:
+      case FUNCTION_TYPE_INT:
+         break;
+         /* Do not forget to clean previous stringshares in diff.undo
+            if needed. */
+     }
+
+   diff->redo = new_diff->redo;
+   free(new_diff);
+}

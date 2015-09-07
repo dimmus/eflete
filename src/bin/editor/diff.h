@@ -51,4 +51,8 @@ diff_undo(Evas_Object *obj, Diff_ *diff);
 
 Eina_Bool
 diff_redo(Evas_Object *obj, Diff_ *diff);
+
+void
+diff_update(Diff_ *diff, Diff_ *new_diff);
+
 #endif /* DIFF_H */
