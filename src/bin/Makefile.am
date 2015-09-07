@@ -15,6 +15,7 @@ libete_a_SOURCES = \
 ../../src/bin/config/config.c \
 ../../src/bin/external/syntax_color.c \
 ../../src/bin/external/enventor_module.c \
+../../src/bin/editor/diff.c \
 ../../src/bin/history/history.c \
 ../../src/bin/history/history_attribute.c \
 ../../src/bin/history/history_state.c \
@@ -104,6 +105,7 @@ eflete_SOURCES  = ../../src/bin/main.c
 eflete_CPPFLAGS = \
 -I${top_srcdir}/src/lib \
 -I${top_srcdir}/src/bin/alloc \
+-I${top_srcdir}/src/bin/editor \
 -I${top_srcdir}/src/bin/external \
 -I${top_srcdir}/src/bin/preference \
 -I${top_srcdir}/src/bin/common \

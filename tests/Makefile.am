@@ -10,6 +10,7 @@ ewe_ruler_test \
 eflete_test \
 alloc_test \
 colorclass_manager_test \
+diff_test \
 sound_editor_test \
 image_editor_test \
 logger_test \
@@ -46,6 +47,7 @@ FLAGS = \
 -I${top_srcdir}/src/bin/alloc \
 -I${top_srcdir}/src/bin/external \
 -I${top_srcdir}/src/bin/common \
+-I${top_srcdir}/src/bin/editor \
 -I${top_srcdir}/src/bin/logger \
 -I${top_srcdir}/src/bin/loop_manager \
 -I${top_srcdir}/src/bin/project_manager \
@@ -176,6 +178,12 @@ alloc_test_SOURCES = \
 ../tests/test_alloc/mem_calloc.c
 alloc_test_CFLAGS = ${FLAGS}
 alloc_test_LDADD = ${LD}
+
+diff_test_SOURCES = \
+../tests/test_diff/test_diff.c \
+../tests/test_diff/diff_undo_redo.c
+diff_test_CFLAGS = ${FLAGS}
+diff_test_LDADD = ${LD}
 
 colorclass_manager_test_SOURCES = \
 ../tests/test_colorclass_manager/test_colorclass_manager.c \
