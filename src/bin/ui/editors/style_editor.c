@@ -54,13 +54,9 @@ struct _Style_Editor
       Evas_Object *content;
       Evas_Object *tabs;
 
-      Elm_Object_Item *tab_text;
       Evas_Object *content_text;
-      Elm_Object_Item *tab_format;
       Evas_Object *content_format;
-      Elm_Object_Item *tab_glow_shadow;
       Evas_Object *content_glow_shadow;
-      Elm_Object_Item *tab_lines;
       Evas_Object *content_lines;
    } prop;
    Search_Data style_search_data;
@@ -216,16 +212,16 @@ static Eina_Tmpstr*
 _tag_value_get(const char* text_style, char* a_tag);
 
 static void
-_text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value);
+_text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value);
 
 static void
-_format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value);
+_format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value);
 
 static void
-_glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value);
+_glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value);
 
 static void
-_lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value);
+_lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value);
 
 static void
 _on_popup_bt_cancel(void *data,
@@ -263,23 +259,18 @@ _style_edit_update(Style_Editor *style_edit)
    evas_textblock_style_free(ts);
 }
 
-#define TAB_UPDATE(VALUE, TEXT) \
+#define TAB_UPDATE(VALUE) \
 static void \
 _##VALUE##_update(Style_Editor *style_edit) \
 { \
-   Eina_List *tabs_list = NULL, *tab = NULL; \
-   Ewe_Tabs_Item *it; \
    assert(style_edit != NULL); \
-   tabs_list = (Eina_List *)ewe_tabs_items_list_get(style_edit->prop.tabs); \
-   EINA_LIST_FOREACH(tabs_list, tab, it) \
-     { \
-        if (!strcmp(ewe_tabs_item_title_get(style_edit->prop.tabs, it), TEXT)) \
-          _##VALUE##_tab_update(style_edit, style_edit->prop.tabs, it, CURRENT.stvalue); \
-     } \
+   _##VALUE##_tab_update(style_edit, style_edit->prop.tabs, CURRENT.stvalue); \
 }
 
-TAB_UPDATE(glow, _("Glow & Shadow"))
-TAB_UPDATE(lines, _("Lines"))
+TAB_UPDATE(glow)
+TAB_UPDATE(lines)
+
+#undef TAB_UPDATE
 
 static void
 _on_glit_selected(void *data,
@@ -288,15 +279,11 @@ _on_glit_selected(void *data,
 {
    Eina_List *tags = NULL;
    Eina_List *l = NULL;
-   Eina_List *tabs_list = NULL, *tab = NULL;
    Evas_Object *edje_edit_obj = NULL;
-   Evas_Object *tab_content;
 
    const char *style_name = NULL;
    const char *tag, *value = NULL;
    Evas_Textblock_Style *ts = NULL;
-   Ewe_Tabs_Item *it;
-   int count = 0;
 
    Eina_Strbuf *style = eina_strbuf_new();
    eina_strbuf_append(style, FONT_DEFAULT);
@@ -333,48 +320,21 @@ _on_glit_selected(void *data,
    CURRENT.st_name = style_name;
    CURRENT.st_tag = tag;
    CURRENT.stvalue = eina_stringshare_add(value);
-   tabs_list = (Eina_List *)ewe_tabs_items_list_get(style_edit->prop.tabs);
+
+   evas_object_del(style_edit->prop.content_text);
+   evas_object_del(style_edit->prop.content_format);
+   evas_object_del(style_edit->prop.content_glow_shadow);
+   evas_object_del(style_edit->prop.content_lines);
    if (!glit_parent)
      {
-        EINA_LIST_FOREACH(tabs_list, tab, it)
-          {
-            tab_content = ewe_tabs_item_content_unset(style_edit->prop.tabs, it);
-            evas_object_del(tab_content);
-            count++;
-          }
         elm_object_signal_emit(style_edit->entry_prev, "entry,hide", "eflete");
      }
    else
      {
-        EINA_LIST_FOREACH(tabs_list, tab, it)
-          {
-             switch (count)
-               {
-                case 0:
-                   {
-                      _text_tab_update(style_edit, style_edit->prop.tabs, it, eina_strbuf_string_get(style));
-                      break;
-                   }
-                case 1:
-                   {
-                      _format_tab_update(style_edit, style_edit->prop.tabs, it, eina_strbuf_string_get(style));
-                      break;
-                   }
-                case 2:
-                   {
-                      _glow_tab_update(style_edit, style_edit->prop.tabs, it, eina_strbuf_string_get(style));
-                      break;
-                   }
-                case 3:
-                   {
-                      _lines_tab_update(style_edit, style_edit->prop.tabs, it, eina_strbuf_string_get(style));
-                      break;
-                   }
-                default:
-                   break;
-               }
-             count++;
-          }
+        _text_tab_update(style_edit, style_edit->prop.tabs, eina_strbuf_string_get(style));
+        _format_tab_update(style_edit, style_edit->prop.tabs, eina_strbuf_string_get(style));
+        _glow_tab_update(style_edit, style_edit->prop.tabs, eina_strbuf_string_get(style));
+        _lines_tab_update(style_edit, style_edit->prop.tabs, eina_strbuf_string_get(style));
 
         elm_object_signal_emit(style_edit->entry_prev, "entry,show", "eflete");
         eina_strbuf_append(style, "'");
@@ -1414,7 +1374,7 @@ ITEM_COLOR_ADD(underline_color, "underline_color", "underline_color")
 ITEM_COLOR_ADD(underline2_color, "underline2_color", "underline2_color")
 
 static void
-_text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value)
+_text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
 {
    Evas_Object *layout;
    Evas_Object *fonts_list, *font_size;
@@ -1429,7 +1389,6 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
 
    assert(style_edit != NULL);
    assert(tabs != NULL);
-   assert(it != NULL);
 
    SCROLLER_ADD(style_edit->mwin, scr);
    elm_scroller_policy_set(scr, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
@@ -1440,7 +1399,7 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
    evas_object_show(layout);
    elm_object_content_set(scr, layout);
 
-   ewe_tabs_item_content_set(tabs, it, scr);
+   style_edit->prop.content_text = scr;
 
    elm_object_part_text_set(layout, "label.font", _("Font name:"));
    elm_object_part_text_set(layout, "label.style", _("Font style:"));
@@ -1505,7 +1464,7 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
 }
 
 static void
-_format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value)
+_format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
 {
    Evas_Object *box_frames, *frame1, *frame2, *layout1, *layout2;
    Evas_Object *font_align, *font_lmargin, *font_valign,  *font_rmargin;
@@ -1517,7 +1476,6 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
 
    assert(style_edit != NULL);
    assert(tabs != NULL);
-   assert(it != NULL);
 
    Evas_Object *scr;
    SCROLLER_ADD(style_edit->mwin, scr);
@@ -1525,6 +1483,8 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
    BOX_ADD(scr, box_frames, EINA_FALSE, EINA_FALSE)
    elm_box_align_set(box_frames, 0.5, 0.0);
    elm_object_content_set(scr, box_frames);
+
+   style_edit->prop.content_format = scr;
 
    FRAME_ADD(box_frames, frame1, false, _("Positioning option"))
    evas_object_size_hint_weight_set(frame1, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -1647,11 +1607,10 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
 
    elm_box_pack_end(box_frames, frame1);
    elm_box_pack_end(box_frames, frame2);
-   ewe_tabs_item_content_set(tabs, it, scr);
 }
 
 static void
-_glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value)
+_glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
 {
    Evas_Object *layout, *item;
    Evas_Object *font_style, *shadow_color, *inner_glow, *outer_glow;
@@ -1664,7 +1623,6 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
 
    assert(style_edit != NULL);
    assert(tabs != NULL);
-   assert(it != NULL);
 
    SCROLLER_ADD(style_edit->mwin, scr);
 
@@ -1674,7 +1632,7 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
    evas_object_show(layout);
    elm_object_content_set(scr, layout);
 
-   ewe_tabs_item_content_set(tabs, it, scr);
+   style_edit->prop.content_glow_shadow = scr;
 
    elm_object_part_text_set(layout, "label.style", _("Style:"));
    font_style = _style_item_style_add(layout, style_edit);
@@ -1793,7 +1751,7 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
 }
 
 static void
-_lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value)
+_lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
 {
    Evas_Object *layout;
    Evas_Object *font_strikethrough, *strikethrough_color;
@@ -1805,7 +1763,6 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it
 
    assert(style_edit != NULL);
    assert(tabs != NULL);
-   assert(it != NULL);
 
    Evas_Object *scr;
    SCROLLER_ADD(style_edit->mwin, scr);
@@ -1816,7 +1773,7 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it
    evas_object_show(layout);
    elm_object_content_set(scr, layout);
 
-   ewe_tabs_item_content_set(tabs, it, scr);
+   style_edit->prop.content_lines = scr;
 
    elm_object_part_text_set(layout, "label.strikethrough", _("Strikethrough color"));
    elm_object_part_text_set(layout, "label.underline", _("Underline"));
@@ -1903,16 +1860,23 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it
 #undef DIRECT_ADD
 #undef WHITE_COLOR
 
-static void
-_home_tab_change(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   Style_Editor *style_edit = (Style_Editor *)data;
-
-   evas_object_hide(elm_layout_content_unset(style_edit->prop.content, NULL));
-   elm_layout_content_set(style_edit->prop.content, NULL, NULL);
+#define _TAB_CHANGE_CALLBACK(property) \
+static void \
+_##property##_tab_change(void *data, \
+                        Evas_Object *obj __UNUSED__, \
+                        void *event_info __UNUSED__) \
+{ \
+   Style_Editor *style_edit = (Style_Editor *)data; \
+   evas_object_hide(elm_layout_content_unset(style_edit->prop.content, NULL)); \
+   elm_layout_content_set(style_edit->prop.content, NULL, style_edit->prop.property); \
 }
+
+_TAB_CHANGE_CALLBACK(content_text);
+_TAB_CHANGE_CALLBACK(content_format);
+_TAB_CHANGE_CALLBACK(content_glow_shadow);
+_TAB_CHANGE_CALLBACK(content_lines);
+
+#undef _TAB_CHANGE_CALLBACK
 
 Evas_Object*
 _form_right_side(Style_Editor *style_edit)
@@ -1944,10 +1908,10 @@ _form_right_side(Style_Editor *style_edit)
    elm_toolbar_align_set(style_edit->prop.tabs, 0.0);
    evas_object_show(style_edit->prop.tabs);
 
-   elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Text"), _home_tab_change, style_edit);
-   elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Format"), _home_tab_change, style_edit);
-   elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Glow & Shadow"), _home_tab_change, style_edit);
-   elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Lines"), _home_tab_change, style_edit);
+   elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Text"), _content_text_tab_change, style_edit);
+   elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Format"), _content_format_tab_change, style_edit);
+   elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Glow & Shadow"), _content_glow_shadow_tab_change, style_edit);
+   elm_toolbar_item_append(style_edit->prop.tabs, NULL, _("Lines"), _content_lines_tab_change, style_edit);
 
    BOX_ADD(style_edit->mwin, box_bg, true, false);
    elm_box_padding_set(box_bg, 10, 0);
