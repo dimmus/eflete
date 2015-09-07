@@ -174,7 +174,8 @@ _project_changed(void *data __UNUSED__,
                  Evas_Object *obj __UNUSED__,
                  void *ei __UNUSED__)
 {
-   assert(tabs.current_live_view != NULL);
+   /* project may be changed in editors for example */
+   if (tabs.current_live_view == NULL) return;
    live_view_theme_update(tabs.current_live_view);
 }
 
