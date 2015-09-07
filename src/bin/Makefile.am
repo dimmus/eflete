@@ -52,6 +52,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/modal_window/modal_window.c \
 ../../src/bin/ui/navigator.c \
 ../../src/bin/ui/tabs.c \
+../../src/bin/ui/tab_home_common.c \
 ../../src/bin/ui/tab_home_open.c \
 ../../src/bin/ui/blocks/ui_block.c \
 ../../src/bin/ui/property.c \

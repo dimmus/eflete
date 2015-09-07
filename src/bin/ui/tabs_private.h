@@ -26,7 +26,16 @@
 Evas_Object *
 _tab_open_project_add(void);
 
+Evas_Object *
+_tab_new_project_add(void);
+
 void
 _tab_open_project_recents_update();
+
+Eina_Bool
+progress_print(void *data, Eina_Stringshare *progress_string);
+
+void
+progress_end(void *data, PM_Project_Result result);
 
 #endif /* TABS_PRIVATE */

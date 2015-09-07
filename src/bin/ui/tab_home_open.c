@@ -40,65 +40,13 @@ _eflete_filter(const char *path,
 }
 
 static Eina_Bool
-_progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
-{
-   elm_object_part_text_set(ap.splash, "label.info", progress_string);
-   return true;
-}
-
-static void
-_progress_pm_open_end(void *data __UNUSED__, PM_Project_Result result)
-{
-
-   switch (result)
-     {
-      case PM_PROJECT_ERROR:
-        {
-           NOTIFY_INFO(3, _("Can't open project."));
-           break;
-        }
-      case PM_PROJECT_CANCEL:
-        {
-           NOTIFY_INFO(3, _("Project opening canceled."));
-           break;
-        }
-      case PM_PROJECT_SUCCESS:
-        {
-           ap.project = pm_project_thread_project_get();
-           assert(ap.project);
-
-           ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_TEMPORARY, false);
-           ui_menu_disable_set(ap.menu, MENU_FILE_CLOSE_PROJECT, false);
-           navigator_project_set();
-           tabs_tab_home_open(TAB_HOME_PROJECT_INFO);
-
-           NOTIFY_INFO(3, _("Project '%s' is opened."), ap.project->name);
-           STATUSBAR_PROJECT_PATH(ap.project->pro_path);
-           STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
-
-           config_recent_add(ap.project->name, ap.project->pro_path);
-           _tab_open_project_recents_update();
-           break;
-        }
-      default:
-        {
-           ERR("Wrong result");
-           abort();
-        }
-     }
-
-   splash_del(ap.splash);
-   ap.splash = NULL;
-}
-
-static Eina_Bool
 _setup_open_splash(void *data, Splash_Status status __UNUSED__)
 {
    Eina_Stringshare *path = data;
 
    assert(path != NULL);
 
-   pm_project_open(path, _progress_print, _progress_pm_open_end, NULL);
+   pm_project_open(path, progress_print, progress_end, NULL);
    eina_stringshare_del(path);
 
    return true;
