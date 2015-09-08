@@ -26,6 +26,10 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, diff_undo_redo_test_p1);
    tcase_add_test(tcase, diff_undo_redo_test_p2);
 
+   tcase_add_test(tcase, diff_update_test_p);
+
+   tcase_add_test(tcase, diff_free_test_p);
+
    suite_add_tcase(suite, tcase);
    return suite;
 }
