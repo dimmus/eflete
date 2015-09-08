@@ -57,6 +57,7 @@ TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
 
 /* do not allow unsafe sprintf. use snprintf instead */
 #pragma GCC poison sprintf
+#include "banned_edje_edit_api.h"
 
 #include "logger.h"
 #include "group_manager.h"
