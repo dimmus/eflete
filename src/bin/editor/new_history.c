@@ -33,6 +33,18 @@ history_add(Group *group)
 }
 
 void
+history_del(History_ *history)
+{
+   Change *change;
+
+   assert(history != NULL);
+
+   EINA_LIST_FREE(history->changes, change)
+      change_free(change);
+   free(history);
+}
+
+void
 history_change_add(History_ *history, Change *change)
 {
    Eina_List *undone, *l, *l_n;
