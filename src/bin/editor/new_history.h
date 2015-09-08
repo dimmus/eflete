@@ -33,6 +33,9 @@ History_ *
 history_add(Group *group);
 
 void
+history_del(History_ *history);
+
+void
 history_change_add(History_ *history, Change *change);
 
 Eina_Bool
