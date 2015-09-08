@@ -79,11 +79,11 @@ _function_type_int_redo_return_true(Evas_Object *obj, int val)
 EFLETE_TEST (change_diff_merge_add_test_p)
 {
    eina_init();
-   int sence = 42;
+   int sense = 42;
    Diff_ *d1, *d2;
    Change *change;
    /* We don't need to create actual object. Only pointer to it is needed for checks */
-   pseudo_object = (Evas_Object *) &sence;
+   pseudo_object = (Evas_Object *) &sense;
    change = change_add("test", NULL, NULL);
 
    d1 = mem_calloc(1, sizeof(Diff_));

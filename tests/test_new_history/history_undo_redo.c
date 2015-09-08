@@ -85,9 +85,9 @@ EFLETE_TEST (history_undo_redo_test_p)
    Change *change;
    Diff_ *d1;
    eina_init();
-   int sence = 42;
+   int sense = 42;
    Group *group = mem_calloc(1, sizeof(Group));
-   pseudo_object = group->edit_object = (Evas_Object *) &sence;
+   pseudo_object = group->edit_object = (Evas_Object *) &sense;
    change = change_add("test", NULL, NULL);
    History_ *history = history_add(group);
    d1 = mem_calloc(1, sizeof(Diff_));
