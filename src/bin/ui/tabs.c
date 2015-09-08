@@ -153,7 +153,7 @@ _part_added(void *data __UNUSED__,
    assert(tabs.current_workspace != NULL);
 
    workspace_edit_object_part_add(tabs.current_workspace, part);
-   TODO("Add liveview update here")
+   live_view_part_add(tabs.current_live_view, part);
 }
 
 static void
@@ -166,7 +166,7 @@ _part_deleted(void *data __UNUSED__,
    assert(tabs.current_workspace != NULL);
 
    workspace_edit_object_part_del(tabs.current_workspace, part);
-   TODO("Add liveview update here")
+   live_view_part_del(tabs.current_live_view, part);
 }
 
 static void

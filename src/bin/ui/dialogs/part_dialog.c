@@ -61,7 +61,6 @@ _cancel_clicked(void *data,
 
 #define WORKSPACE_PART_ADD(TYPE, DATA) \
    /*Evas_Object *workspace = ap.workspace;*/ \
-   Evas_Object *widget_list = ui_block_widget_list_get(); \
    ENTRY_IS_EMPTY \
    Style *style = NULL; \
    const char *name = elm_entry_entry_get(entry); \
@@ -71,7 +70,6 @@ _cancel_clicked(void *data,
    history_diff_add(style->obj, PART_TARGET, ADD, name); \
    ap.popup = NULL; \
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false); \
-   live_view_part_add(ap.live_view, ui_widget_list_selected_part_get(widget_list)); \
    ecore_job_add(_job_popup_del, data); \
    project_changed(true);
 
