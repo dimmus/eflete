@@ -256,7 +256,6 @@ _item_delete_cb(void)
 Eina_Bool
 _widget_manager_layout_switch_cb(void)
 {
-
    SKIP_IN_ENVENTOR_MODE
    const Eina_List *tabs;
    Evas_Object *nf = ui_block_widget_list_get();
@@ -272,7 +271,6 @@ _widget_manager_layout_switch_cb(void)
 Eina_Bool
 _widget_manager_style_switch_cb(void)
 {
-
    SKIP_IN_ENVENTOR_MODE
    const Eina_List *tabs;
    Evas_Object *nf = ui_block_widget_list_get();
@@ -306,7 +304,6 @@ _separate_mode_change_cb(void)
 Eina_Bool
 _new_style_create_cb(void)
 {
-
    SKIP_IN_ENVENTOR_MODE
    Elm_Object_Item *glit = NULL;
    Style *_style = NULL;
@@ -343,7 +340,6 @@ _new_style_create_cb(void)
 Eina_Bool
 _style_delete_cb(void)
 {
-
    SKIP_IN_ENVENTOR_MODE
    Elm_Object_Item *glit = NULL;
    Style *_style = NULL;
@@ -377,7 +373,6 @@ _style_delete_cb(void)
 Eina_Bool
 _new_theme_cb(void)
 {
-
    if (!project_close())
      return false;
    wizard_new_project_add();
@@ -405,7 +400,6 @@ _open_project_cb(void)
 Eina_Bool
 _import_edj_cb(void)
 {
-
    if (!project_close())
      return false;
    wizard_import_edj_add();
@@ -422,7 +416,6 @@ _save_cb(void)
 Eina_Bool
 _save_as_cb(void)
 {
-
    if (!ap.project) return false;
    project_export_develop();
    return true;
@@ -431,7 +424,6 @@ _save_as_cb(void)
 Eina_Bool
 _export_cb(void)
 {
-
    if (!ap.project) return false;
    project_export_edc_project();
    return true;
@@ -442,7 +434,6 @@ _visual_tab_cb(void)
 {
    const Eina_List *tabs;
    Evas_Object *nf;
-
 
    nf = ui_block_property_get();
    tabs = ewe_tabs_items_list_get(nf);
@@ -457,7 +448,6 @@ _code_tab_cb(void)
    const Eina_List *tabs;
    Evas_Object *nf;
 
-
    nf = ui_block_property_get();
    tabs = ewe_tabs_items_list_get(nf);
    tabs = eina_list_next(tabs);
@@ -469,7 +459,6 @@ _code_tab_cb(void)
 Eina_Bool
 _quit_cb(void)
 {
-
    ui_main_window_del();
    return true;
 }
@@ -477,7 +466,6 @@ _quit_cb(void)
 Eina_Bool
 _style_editor_open_cb(void)
 {
-
    style_editor_window_add(ap.project);
    return true;
 }
@@ -485,7 +473,6 @@ _style_editor_open_cb(void)
 Eina_Bool
 _image_editor_open_cb(void)
 {
-
    image_editor_window_add(ap.project, MULTIPLE);
    return true;
 }
@@ -493,7 +480,6 @@ _image_editor_open_cb(void)
 Eina_Bool
 _sound_editor_open_cb(void)
 {
-
    sound_editor_window_add(ap.project, SOUND_EDITOR_EDIT);
    return true;
 }
@@ -501,7 +487,6 @@ _sound_editor_open_cb(void)
 Eina_Bool
 _colorclass_manager_open_cb(void)
 {
-
    colorclass_manager_add(ap.project);
    return true;
 }
@@ -509,13 +494,8 @@ _colorclass_manager_open_cb(void)
 Eina_Bool
 _animator_open_cb(void)
 {
-   Style *style = NULL;
-
-
    if (ap.project)
-     style = ap.project->current_style;
-
-   animator_window_add(style);
+     animator_window_add(ap.project);
 
    return true;
 }
@@ -577,7 +557,6 @@ _zoom_out_cb(void)
 Eina_Bool
 _undo_cb(void)
 {
-
    SKIP_IN_ENVENTOR_MODE
    if ((ap.project) && (ap.project->current_style))
      history_undo(ap.project->current_style->obj, 1);
@@ -587,7 +566,6 @@ _undo_cb(void)
 Eina_Bool
 _redo_cb(void)
 {
-
    SKIP_IN_ENVENTOR_MODE
    if ((ap.project) && (ap.project->current_style))
      history_redo(ap.project->current_style->obj, 1);

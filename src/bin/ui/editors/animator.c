@@ -24,6 +24,7 @@
 #include "animator_private.h"
 #include "main_window.h"
 
+TODO("After all is done, cleanup this structure from non-important fields")
 struct _Animator
 {
    Evas_Object *mwin;
@@ -52,6 +53,8 @@ struct _Animator
    } program_controls;
    Eina_Bool is_cycled : 1;
    Eina_Bool sequence_mode : 1;
+
+   Group *group;
 };
 
 typedef struct _Animator Animator;
@@ -566,7 +569,7 @@ _gl_progs_add(Animator *animator)
 }
 
 Evas_Object *
-animator_window_add(Style *style)
+animator_window_add(Project *project)
 {
    Evas_Object *top_layout;
    Evas_Object *panes;
@@ -576,13 +579,9 @@ animator_window_add(Style *style)
    Evas_Object *bt, *program_list_box;
    Animator *animator = NULL;
 
-   assert(style != NULL);
-   assert(style->obj != NULL);
-   assert(ap.project != NULL);
-
+   assert(project != NULL);
    animator = (Animator *)mem_calloc(1, sizeof(Animator));
 
-   animator->style = style;
    animator->mwin = mw_add("dialog", _on_animator_ok, animator);
 
    assert(animator->mwin != NULL);
@@ -677,14 +676,16 @@ animator_window_add(Style *style)
                                scroller);
    animator->prop_scroller = scroller;
 
-   animator->program_editor = program_editor_add(animator->mwin, style,
+   TODO("Fix it furtherly.. need to make compilable for now")
+   animator->program_editor = program_editor_add(animator->mwin, NULL,
                                                  animator->live);
    elm_object_content_set(animator->prop_scroller, animator->program_editor);
    evas_object_size_hint_weight_set(animator->program_editor, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(animator->program_editor, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(animator->program_editor);
 
-   animator->program_sequence = prog_sequence_add(animator->prop_scroller, style,
+   TODO("Fix it furtherly.. need to make compilable for now")
+   animator->program_sequence = prog_sequence_add(animator->prop_scroller, NULL,
                                                   animator->live);
    evas_object_size_hint_weight_set(animator->program_sequence, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(animator->program_sequence, EVAS_HINT_FILL, EVAS_HINT_FILL);

@@ -43,7 +43,7 @@
 /**
  * Add new program editor inwin object.
  *
- * @param style A @Style structure data.
+ * @param project A project that was early loaded.
  *
  * @return Pointer to inwin object, which contain some program properties and
  * list of programs.
@@ -51,6 +51,6 @@
  * @ingroup ProgramEditor
  */
 Evas_Object *
-animator_window_add(Style *style);
+animator_window_add(Project *project);
 
 #endif /* PROGRAM_EDITOR_H */

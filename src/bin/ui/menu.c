@@ -182,10 +182,10 @@ _menu_cb(void *data __UNUSED__,
          break;
       case MENU_EDITORS_ANIMATOR:
            {
-              if (!ap.project->current_style)
+              if (!ap.project)
                 NOTIFY_WARNING(_("Please open the widget style for editing style programs!"))
               else
-                animator_window_add(ap.project->current_style);
+                animator_window_add(ap.project);
            }
          break;
       case MENU_EDITORS_IMAGE:
