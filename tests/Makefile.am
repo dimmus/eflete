@@ -11,6 +11,7 @@ eflete_test \
 alloc_test \
 colorclass_manager_test \
 diff_test \
+change_test \
 sound_editor_test \
 image_editor_test \
 logger_test \
@@ -186,6 +187,15 @@ diff_test_SOURCES = \
 ../tests/test_diff/diff_undo_redo.c
 diff_test_CFLAGS = ${FLAGS}
 diff_test_LDADD = ${LD}
+
+change_test_SOURCES = \
+../tests/test_change/test_change.c \
+../tests/test_change/change_add.c \
+../tests/test_change/change_diff_add.c \
+../tests/test_change/change_diff_merge_add.c \
+../tests/test_change/change_free.c
+change_test_CFLAGS = ${FLAGS}
+change_test_LDADD = ${LD}
 
 colorclass_manager_test_SOURCES = \
 ../tests/test_colorclass_manager/test_colorclass_manager.c \
