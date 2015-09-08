@@ -52,9 +52,9 @@
 EFLETE_TEST (history_del_test_p1)
 {
    eina_init();
-   int sence = 42;
+   int sense = 42;
    Group *group = mem_calloc(1, sizeof(Group));
-   group->edit_object = (Evas_Object *) &sence;
+   group->edit_object = (Evas_Object *) &sense;
 
    History_ *history = history_add(group);
    history_del(history);
@@ -88,9 +88,9 @@ EFLETE_TEST (history_del_test_p2)
 {
    Change *change;
    eina_init();
-   int sence = 42;
+   int sense = 42;
    Group *group = mem_calloc(1, sizeof(Group));
-   group->edit_object = (Evas_Object *) &sence;
+   group->edit_object = (Evas_Object *) &sense;
    change = change_add("test", NULL, NULL);
 
    History_ *history = history_add(group);

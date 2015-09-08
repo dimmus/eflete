@@ -53,10 +53,10 @@ static Evas_Object *pseudo_object;
  */
 EFLETE_TEST (diff_undo_redo_test_p1)
 {
-   int sence = 42;
+   int sense = 42;
    Diff_ diff;
    /* We don't need to create actual object. Only pointer to it is needed for checks */
-   pseudo_object = (Evas_Object *) &sence;
+   pseudo_object = (Evas_Object *) &sense;
 
    diff.undo.type = FUNCTION_TYPE_NONE;
    diff.redo.type = FUNCTION_TYPE_NONE;
@@ -133,10 +133,10 @@ _function_type_int_redo_return_false(Evas_Object *obj, int val)
  */
 EFLETE_TEST (diff_undo_redo_test_p2)
 {
-   int sence = 42;
+   int sense = 42;
    Diff_ diff;
    /* We don't need to create actual object. Only pointer to it is needed for checks */
-   pseudo_object = (Evas_Object *) &sence;
+   pseudo_object = (Evas_Object *) &sense;
 
    diff.undo.type = FUNCTION_TYPE_INT;
    diff.undo.function = _function_type_int_undo_return_true;

@@ -51,9 +51,9 @@
 EFLETE_TEST (history_add_test_p)
 {
    eina_init();
-   int sence = 42;
+   int sense = 42;
    Group *group = mem_calloc(1, sizeof(Group));
-   group->edit_object = (Evas_Object *) &sence;
+   group->edit_object = (Evas_Object *) &sense;
 
    ck_assert(history_add(group) != NULL);
 
