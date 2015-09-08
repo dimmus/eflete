@@ -24,7 +24,6 @@ Eina_Bool
 progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
 {
    elm_object_part_text_set(ap.splash, "label.info", progress_string);
-   fprintf(stdout,"%s\n", progress_string);
    return true;
 }
 
