@@ -17,8 +17,8 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#ifndef BANNED_EDJE_EDIT_API_H
-#define BANNED_EDJE_EDIT_API_H
+#ifndef EDITOR_H
+#define EDITOR_H
 
 #define ALLOW_DIRECT_EDJE_EDIT_CALLS
 #include "eflete.h"
@@ -35,4 +35,4 @@ editor_group_max_w_set(Evas_Object *obj, Change *change, int new_val);
 
 Eina_Bool
 editor_group_max_h_set(Evas_Object *obj, Change *change, int new_val);
-#endif /* BANNED_EDJE_EDIT_API_H */
+#endif /* EDITOR_H */

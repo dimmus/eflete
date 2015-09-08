@@ -660,6 +660,8 @@ prop_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_spinner_label_format_set(pd->attributes.group.SUB##_##VALUE1, "%.0f"); \
    if (tooltip1) elm_object_tooltip_text_set(pd->attributes.group.SUB##_##VALUE1, tooltip1); \
    evas_object_smart_callback_add(pd->attributes.group.SUB##_##VALUE1, "changed", _on_group_##SUB##_##VALUE1##_change, pd); \
+   evas_object_smart_callback_add(pd->attributes.group.SUB##_##VALUE1, "spinner,drag,start", _on_group_##SUB##_##VALUE1##_start, pd); \
+   evas_object_smart_callback_add(pd->attributes.group.SUB##_##VALUE1, "spinner,drag,stop", _on_group_##SUB##_##VALUE1##_stop, pd); \
    elm_object_part_content_set(item, "swallow.content1", pd->attributes.group.SUB##_##VALUE1); \
    evas_object_event_callback_priority_add(pd->attributes.group.SUB##_##VALUE1, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
@@ -670,6 +672,8 @@ prop_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_spinner_label_format_set(pd->attributes.group.SUB##_##VALUE2, "%.0f"); \
    if (tooltip2) elm_object_tooltip_text_set(pd->attributes.group.SUB##_##VALUE2, tooltip2); \
    evas_object_smart_callback_add(pd->attributes.group.SUB##_##VALUE2, "changed", _on_group_##SUB##_##VALUE2##_change, pd); \
+   evas_object_smart_callback_add(pd->attributes.group.SUB##_##VALUE2, "spinner,drag,start", _on_group_##SUB##_##VALUE2##_start, pd); \
+   evas_object_smart_callback_add(pd->attributes.group.SUB##_##VALUE2, "spinner,drag,stop", _on_group_##SUB##_##VALUE2##_stop, pd); \
    elm_object_part_content_set(item, "swallow.content2", pd->attributes.group.SUB##_##VALUE2); \
    evas_object_event_callback_priority_add(pd->attributes.group.SUB##_##VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
@@ -721,7 +725,26 @@ prop_group_##SUB##_##VALUE1##_##VALUE2##_update(Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define GROUP_ATTR_2SPINNER_CALLBACK(SUB1, SUB2, VALUE, CHECK) \
+#define GROUP_ATTR_2SPINNER_CALLBACK(SUB1, SUB2, VALUE, DESCRIPTION) \
+static void \
+_on_group_##SUB1##_##VALUE##_start(void *data, \
+                                   Evas_Object *obj __UNUSED__, \
+                                   void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   assert(pd->change == NULL); \
+   pd->change = change_add(DESCRIPTION, NULL, NULL);\
+} \
+static void \
+_on_group_##SUB1##_##VALUE##_stop(void *data, \
+                                  Evas_Object *obj __UNUSED__, \
+                                  void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   assert(pd->change != NULL); \
+   history_change_add(pd->group->history, pd->change); \
+   pd->change = NULL; \
+} \
 static void \
 _on_group_##SUB1##_##VALUE##_change(void *data, \
                                     Evas_Object *obj, \
@@ -729,41 +752,11 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    int value = (int)elm_spinner_value_get(obj); \
-   int value_##SUB2##_##VALUE = edje_edit_group_##SUB2##_##VALUE##_get(pd->group->edit_object); \
-   int old_value_##SUB2##_##VALUE = value_##SUB2##_##VALUE; \
-   int old_value_##SUB1##_##VALUE = edje_edit_group_##SUB1##_##VALUE##_get(pd->group->edit_object); \
-   if ((value CHECK value_##SUB2##_##VALUE) && (value_##SUB2##_##VALUE != 0)) \
+   if (!editor_group_##SUB1##_##VALUE##_set(pd->group->edit_object, pd->change, value)) \
      { \
-        if (!edje_edit_group_##SUB2##_##VALUE##_set(pd->group->edit_object, value)) \
-          { \
-            ERR("edje_edit_group_"#SUB2"_"#VALUE"_set failed"); \
-            abort(); \
-          } \
-        elm_spinner_value_set(pd->attributes.group.SUB2##_##VALUE, value); \
-        value_##SUB2##_##VALUE = value; \
-     } \
-   if (!edje_edit_group_##SUB1##_##VALUE##_set(pd->group->edit_object, value)) \
-     { \
-       ERR("edje_edit_group_"#SUB1"_"#VALUE"_set failed"); \
+       ERR("editor_group_"#SUB1"_"#VALUE"_set failed"); \
        abort(); \
      } \
-   if (!strcmp("min", #SUB1)) \
-     { \
-       history_diff_add(pd->group->edit_object, PROPERTY, CONTAINER, VAL_GROUP, old_value_##SUB1##_##VALUE, value, \
-                        old_value_##SUB2##_##VALUE, value_##SUB2##_##VALUE,  \
-                        (void*)edje_edit_group_##SUB1##_##VALUE##_set, pd->group->name, \
-                        (void*)edje_edit_group_##SUB2##_##VALUE##_set,  "group_"#VALUE, \
-                        NULL, NULL, 0); \
-     } \
-   else \
-    { \
-       history_diff_add(pd->group->edit_object, PROPERTY, CONTAINER, VAL_GROUP, old_value_##SUB2##_##VALUE,\
-                        value_##SUB2##_##VALUE, old_value_##SUB1##_##VALUE, value,  \
-                        (void*)edje_edit_group_##SUB2##_##VALUE##_set, pd->group->name, \
-                        (void*)edje_edit_group_##SUB1##_##VALUE##_set,  "group_"#VALUE, \
-                        NULL, NULL, 0); \
-    } \
-   project_changed(false); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 

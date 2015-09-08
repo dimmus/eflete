@@ -29,6 +29,8 @@
 #include "property_macros.h"
 #include "main_window.h"
 #include "string_common.h"
+#include "new_history.h"
+#include "editor.h"
 
 #include "syntax_color.h"
 
@@ -53,6 +55,7 @@ struct _Prop_Data
 {
    Group *group;
    Part_ *part;
+   Change *change;
    Evas_Object *layout;
    Evas_Object *scroller;
    Eina_Stringshare *item_name;
@@ -557,9 +560,9 @@ TODO("Implement rename. Note: groups list must remain sorted")
    free(entry);
 }
 
-#define GROUP_ATTR_2SPINNER(TEXT, SUB1, SUB2, VALUE1, VALUE2, CHECK) \
-   GROUP_ATTR_2SPINNER_CALLBACK(SUB1, SUB2, VALUE1, CHECK) \
-   GROUP_ATTR_2SPINNER_CALLBACK(SUB1, SUB2, VALUE2, CHECK) \
+#define GROUP_ATTR_2SPINNER(TEXT, SUB1, SUB2, VALUE1, VALUE2, DESCRIPTION1, DESCRIPTION2) \
+   GROUP_ATTR_2SPINNER_CALLBACK(SUB1, SUB2, VALUE1, DESCRIPTION1) \
+   GROUP_ATTR_2SPINNER_CALLBACK(SUB1, SUB2, VALUE2, DESCRIPTION2) \
    GROUP_ATTR_2SPINNER_UPDATE(SUB1, VALUE1, VALUE2) \
    GROUP_ATTR_2SPINNER_ADD(TEXT, SUB1, VALUE1, VALUE2)
 
@@ -575,8 +578,8 @@ TODO("Implement rename. Note: groups list must remain sorted")
    GROUP_ATTR_1ENTRY_UPDATE(SUB, VALUE, MEMBER) \
    GROUP_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP)
 
-GROUP_ATTR_2SPINNER(_("min"), min, max, w, h, >)
-GROUP_ATTR_2SPINNER(_("max"), max, min, w, h, <)
+GROUP_ATTR_2SPINNER(_("min"), min, max, w, h, _("group_min_w changed"), _("group_min_h changed"))
+GROUP_ATTR_2SPINNER(_("max"), max, min, w, h, _("group_max_w changed"), _("group_max_h changed"))
 GROUP_ATTR_1ENTRY(_("name"), group, name, group, NULL, _("Name of the group."))
 
 #define pd_group pd->attributes.group
