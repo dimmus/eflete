@@ -1551,7 +1551,7 @@ EFLETE_TEST(history_undo_test_p21)
    style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    ui_style_clicked(style);
    history_module_add(style->obj);
-   workspace_edit_object_part_add(ap.workspace, "part_add", EDJE_PART_TYPE_RECTANGLE, NULL);
+   //workspace_edit_object_part_add(ap.workspace, "part_add", EDJE_PART_TYPE_RECTANGLE, NULL);
    history_diff_add(style->obj, PART_TARGET, ADD, "part_add");
 
    result = history_undo(style->obj, 1);
