@@ -12,6 +12,7 @@ alloc_test \
 colorclass_manager_test \
 diff_test \
 change_test \
+new_history_test \
 sound_editor_test \
 image_editor_test \
 logger_test \
@@ -196,6 +197,15 @@ change_test_SOURCES = \
 ../tests/test_change/change_free.c
 change_test_CFLAGS = ${FLAGS}
 change_test_LDADD = ${LD}
+
+new_history_test_SOURCES = \
+../tests/test_new_history/test_new_history.c \
+../tests/test_new_history/history_add.c \
+../tests/test_new_history/history_del.c \
+../tests/test_new_history/history_change_add.c \
+../tests/test_new_history/history_undo_redo.c
+new_history_test_CFLAGS = ${FLAGS}
+new_history_test_LDADD = ${LD}
 
 colorclass_manager_test_SOURCES = \
 ../tests/test_colorclass_manager/test_colorclass_manager.c \
