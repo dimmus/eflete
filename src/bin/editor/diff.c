@@ -18,9 +18,9 @@
  */
 
 #include "diff.h"
+#include "change.h"
 
-TODO("Add pointer to History");
-typedef Eina_Bool (* function_type_int) (Evas_Object *, int);
+typedef Eina_Bool (* function_type_int) (Evas_Object *, Change*, int);
 
 static Eina_Bool
 _apply(Evas_Object *obj, Function_Info *fi)
@@ -30,7 +30,7 @@ _apply(Evas_Object *obj, Function_Info *fi)
       case FUNCTION_TYPE_NONE:
          return true;
       case FUNCTION_TYPE_INT:
-         return ((function_type_int)fi->function)(obj, fi->args.type_int.ival);
+         return ((function_type_int)fi->function)(obj, NULL, fi->args.type_int.ival);
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
      }
    return false;
