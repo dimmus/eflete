@@ -466,28 +466,32 @@ _quit_cb(void)
 Eina_Bool
 _style_editor_open_cb(void)
 {
-   style_editor_window_add(ap.project);
+   if (ap.project)
+     style_editor_window_add(ap.project);
    return true;
 }
 
 Eina_Bool
 _image_editor_open_cb(void)
 {
-   image_editor_window_add(ap.project, MULTIPLE);
+   if (ap.project)
+     image_editor_window_add(ap.project, MULTIPLE);
    return true;
 }
 
 Eina_Bool
 _sound_editor_open_cb(void)
 {
-   sound_editor_window_add(ap.project, SOUND_EDITOR_EDIT);
+   if (ap.project)
+     sound_editor_window_add(ap.project, SOUND_EDITOR_EDIT);
    return true;
 }
 
 Eina_Bool
 _colorclass_manager_open_cb(void)
 {
-   colorclass_manager_add(ap.project);
+   if (ap.project)
+     colorclass_manager_add(ap.project);
    return true;
 }
 
@@ -496,7 +500,6 @@ _animator_open_cb(void)
 {
    if (ap.project)
      animator_window_add(ap.project);
-
    return true;
 }
 
