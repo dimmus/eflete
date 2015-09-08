@@ -29,6 +29,9 @@ tests/ewe_statusbar_test
 tests/ewe_tabs_test
 tests/addpart_test
 tests/alloc_test
+tests/change_test
+tests/diff_test
+tests/new_history_test
 tests/colorclass_manager_test
 tests/colorclasses_edit_api_test
 tests/edje_compile_test
