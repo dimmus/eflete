@@ -73,8 +73,8 @@ EFLETE_TEST (workspace_edit_object_part_add_test_p)
    style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
    //workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_add.edj");
-   ret = workspace_edit_object_part_add(workspace, "new_part",
-                                        EDJE_PART_TYPE_RECTANGLE, NULL);
+/*   ret = workspace_edit_object_part_add(workspace, "new_part",
+                                        EDJE_PART_TYPE_RECTANGLE, NULL);*/
    ck_assert_msg(ret == EINA_TRUE, "Failed add new part into edit object ");
    ck_assert_msg(edje_edit_part_exist(style->obj, "new_part") == EINA_TRUE,
                  "New part didn't exist in edit object");
@@ -133,8 +133,8 @@ EFLETE_TEST (workspace_edit_object_part_add_test_p1)
    style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
    //workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_add.edj");
-   ret = workspace_edit_object_part_add(workspace, "new_part",
-                                        EDJE_PART_TYPE_IMAGE, "radio_base.png");
+/*   ret = workspace_edit_object_part_add(workspace, "new_part",
+                                        EDJE_PART_TYPE_IMAGE, "radio_base.png");*/
    ck_assert_msg(ret == EINA_TRUE, "Failed add new part into edit object ");
    ck_assert_msg(edje_edit_part_exist(style->obj, "new_part") == EINA_TRUE,
                  "New part didn't exist in edit object");
