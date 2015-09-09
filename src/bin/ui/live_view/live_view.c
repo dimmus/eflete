@@ -306,3 +306,14 @@ live_view_part_restack_below(Live_View *live, Part *part_move)
    assert(part_move != NULL);
    return live_view_property_part_restack_below(live->property, part_move);
 }
+
+Evas_Object *
+live_view_live_object_get(Evas_Object *object)
+{
+   assert(object != NULL);
+   assert(ap.project != NULL);
+
+   Live_View *live = evas_object_data_get(object, "live_view_structure");
+
+   return live->object;
+}

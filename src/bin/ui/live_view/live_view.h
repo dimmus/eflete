@@ -176,4 +176,19 @@ live_view_part_restack_above(Live_View *live, Part *part_move, Part *part_above)
 Eina_Bool
 live_view_part_restack_below(Live_View *live, Part *part_move);
 
+/**
+ * Get current live object.
+ *
+ * @warning This function is strictly for animator only.
+ * Don't use it in any other cases, because then live object won't be edje_edit
+ * object and you can break everything into tiny pieces of Evas!
+ *
+ * @param object live view object (entire live view with properties, objects and such)
+ * @return certain live object that is inside of live view;
+ *
+ * @ingroup Live_View
+ */
+Evas_Object *
+live_view_live_object_get(Evas_Object *object);
+
 #endif /* UI_LIVEVIEW_HEADER_H */
