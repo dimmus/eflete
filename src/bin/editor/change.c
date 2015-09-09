@@ -24,8 +24,6 @@ change_add(const char *description, const char *part, const char *state)
 {
    Change *change;
 
-   assert(description != NULL);
-
    change = mem_calloc(1, sizeof(Change));
    change->description = eina_stringshare_add(description);
    change->part = eina_stringshare_add(part);
@@ -33,6 +31,15 @@ change_add(const char *description, const char *part, const char *state)
    change->diffs = NULL;
 
    return change;
+}
+
+void
+change_description_set(Change *change, const char *description)
+{
+   assert(change != NULL);
+
+   eina_stringshare_del(change->description);
+   change->description = eina_stringshare_add(description);
 }
 
 void

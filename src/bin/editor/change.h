@@ -34,6 +34,9 @@ Change *
 change_add(const char *description, const char *part, const char *state);
 
 void
+change_description_set(Change *change, const char *description);
+
+void
 change_free(Change *change);
 
 void
