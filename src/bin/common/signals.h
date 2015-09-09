@@ -121,4 +121,12 @@ typedef enum {
  */
 #define SIGNAL_PROJECT_CHANGED "SIGNAL_PROJECT_CHANGED"
 
+/**
+ * emited when change is added to history.
+ * eventinfo - Pointer to added Change
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_HISTORY_CHANGE_ADDED "SIGNAL_HISTORY_CHANGE_ADDED"
+
 #endif /* SIGNALS_H*/

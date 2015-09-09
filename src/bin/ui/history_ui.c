@@ -18,6 +18,7 @@
  */
 
 #include "history_ui.h"
+#include "signals.h"
 
 typedef struct {
    Evas_Object *layout;
@@ -27,9 +28,144 @@ typedef struct {
    History_ *history;
    Elm_Genlist_Item_Class *itc_change;
    Elm_Genlist_Item_Class *itc_change_reverted;
+   Elm_Genlist_Item *active_item;
 } History_UI_data;
 
 static History_UI_data hd;
+
+static char *
+_item_label_get(void *data,
+                Evas_Object *obj __UNUSED__,
+                const char *part)
+{
+   Change * change = data;
+   if (!strcmp(part, "elm.text.message"))
+     return strdup(change->description);
+   return NULL;
+}
+
+static void
+_item_selected(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *ei)
+{
+   Elm_Genlist_Item *glit = ei;
+   Change *change = elm_object_item_data_get(glit);
+
+   assert(change != NULL);
+
+   if (glit == hd.active_item)
+     return;
+
+   if (elm_genlist_item_item_class_get(glit) == hd.itc_change)
+     {
+        /* undo */
+        while (eina_list_data_get(hd.history->current_change) != change)
+          {
+             if (!history_undo_(hd.history))
+               {
+                  ERR("Can't undo change. Something is wrong with object");
+                  TODO("Add error handling here");
+                  abort();
+               }
+             elm_genlist_item_item_class_update(hd.active_item, hd.itc_change_reverted);
+             hd.active_item = elm_genlist_item_prev_get(hd.active_item);
+          }
+     }
+   else
+     {
+        /* redo */
+        while (eina_list_data_get(hd.history->current_change) != change)
+          {
+             if (!history_redo_(hd.history))
+               {
+                  ERR("Can't redo change. Something is wrong with object");
+                  TODO("Add error handling here");
+                  abort();
+               }
+             hd.active_item = (hd.active_item != NULL)?
+                elm_genlist_item_next_get(hd.active_item):
+                elm_genlist_first_item_get(hd.genlist);
+             elm_genlist_item_item_class_update(hd.active_item, hd.itc_change);
+          }
+     }
+   TODO("Add update workspace callback here");
+
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
+}
+
+static void
+_on_change_added(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *ei)
+{
+   Elm_Genlist_Item *glit, *glit2;
+   Change *change = ei;
+
+   /* removing all reverted changes because the were deleted from history */
+   glit = elm_genlist_last_item_get(hd.genlist);
+   while (glit != hd.active_item)
+     {
+        glit2 = elm_genlist_item_prev_get(glit);
+        elm_object_item_del(glit);
+        glit = glit2;
+     }
+
+   glit = elm_genlist_item_append(hd.genlist,
+                                  hd.itc_change,
+                                  change,
+                                  NULL,
+                                  ELM_GENLIST_ITEM_NONE,
+                                  _item_selected,
+                                  NULL);
+
+   /* making item active before selection allows to skip callback */
+   hd.active_item = glit;
+   elm_genlist_item_selected_set(glit, true);
+}
+
+static void
+_history_set(void *data __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void * ei)
+{
+   Group *group = ei;
+   Eina_List *l = NULL;
+   Change *change;
+   Elm_Genlist_Item *it;
+
+   elm_genlist_clear(hd.genlist);
+
+   hd.history = (group) ? group->history : NULL;
+   if (!hd.history)
+     return;
+
+   /* */
+   EINA_LIST_FOREACH(hd.history->changes, l, change)
+     {
+        it = elm_genlist_item_append(hd.genlist,
+                                     hd.itc_change,
+                                     change,
+                                     NULL,
+                                     ELM_GENLIST_ITEM_NONE,
+                                     _item_selected,
+                                     NULL);
+        if (l == hd.history->current_change)
+          {
+             /* making item active before selection allows to skip callback */
+             hd.active_item = it;
+             elm_genlist_item_selected_set(it, true);
+             break;
+          }
+     }
+   l = eina_list_next(l);
+   EINA_LIST_FOREACH(l, l, change)
+     {
+        elm_genlist_item_append(hd.genlist,
+                                hd.itc_change_reverted,
+                                change,
+                                NULL,
+                                ELM_GENLIST_ITEM_NONE,
+                                _item_selected,
+                                NULL);
+     }
+}
 
 Evas_Object *
 history_ui_add(void)
@@ -40,13 +176,13 @@ history_ui_add(void)
 
    hd.itc_change = elm_genlist_item_class_new();
    hd.itc_change->item_style = "history";
-   hd.itc_change->func.text_get = NULL;
+   hd.itc_change->func.text_get = _item_label_get;
    hd.itc_change->func.content_get = NULL;
    hd.itc_change->func.del = NULL;
 
    hd.itc_change_reverted = elm_genlist_item_class_new();
    hd.itc_change_reverted->item_style = "history_inactive";
-   hd.itc_change_reverted->func.text_get = NULL;
+   hd.itc_change_reverted->func.text_get = _item_label_get;
    hd.itc_change_reverted->func.content_get = NULL;
    hd.itc_change_reverted->func.del = NULL;
 
@@ -64,6 +200,9 @@ history_ui_add(void)
    elm_layout_content_set(hd.layout, NULL, hd.genlist);
    elm_layout_content_set(hd.layout, "elm.swallow.btn_clean", hd.btn_clean);
    elm_layout_content_set(hd.layout, "elm.swallow.btn_discard", hd.btn_undo_all);
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_HISTORY_CHANGE_ADDED, _on_change_added, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _history_set, NULL);
 
    TODO("Add clean-up callbacks here")
    evas_object_show(hd.layout);

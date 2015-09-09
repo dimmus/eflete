@@ -25,7 +25,4 @@
 Evas_Object *
 history_ui_add(void);
 
-void
-history_ui_history_set(History_ *history);
-
 #endif /* HISTORY_UI_H */

@@ -18,6 +18,7 @@
  */
 
 #include "new_history.h"
+#include "signals.h"
 
 History_ *
 history_add(Group *group)
@@ -64,6 +65,8 @@ history_change_add(History_ *history, Change *change)
 
    history->changes = eina_list_append(history->changes, change);
    history->current_change = eina_list_last(history->changes);
+
+   evas_object_smart_callback_call(ap.win, SIGNAL_HISTORY_CHANGE_ADDED, change);
 }
 
 Eina_Bool
