@@ -69,17 +69,6 @@ int MENU_ITEMS_LIST_MAIN[] = {
    MENU_NULL
 };
 
-TODO("Remove it when all editors are back again!")
-int MENU_ITEMS_LIST_TEMPORARY[] = {
-   MENU_EDITORS_IMAGE,
-   MENU_EDITORS_SOUND,
-   MENU_EDITORS_COLORCLASS,
-   MENU_EDITORS_TEXT_STYLE,
-   MENU_HELP,
-
-   MENU_NULL
-};
-
 static int sad_callback_data[MENU_ITEMS_COUNT];
 
 struct _Menu

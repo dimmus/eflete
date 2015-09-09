@@ -95,6 +95,8 @@ _content_set(void *data,
         tabs.current_workspace = item->workspace;
         tabs.current_live_view = item->live_view;
         tabs.current_group = item->group;
+        if (ap.project)
+          ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, false);
      }
    else
      {
@@ -102,6 +104,8 @@ _content_set(void *data,
         tabs.current_workspace = NULL;
         tabs.current_live_view = NULL;
         tabs.current_group = NULL;
+        if (ap.project)
+          ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
      }
 
    /* call 'tab,changed' on tab click, and sent Group accociated with clicked
