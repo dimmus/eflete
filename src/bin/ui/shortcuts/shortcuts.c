@@ -498,7 +498,7 @@ _colorclass_manager_open_cb(void)
 Eina_Bool
 _animator_open_cb(void)
 {
-   if (ap.project)
+   if ((ap.project) && (tabs_current_group_get()))
      animator_window_add(ap.project);
    return true;
 }
