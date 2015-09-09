@@ -22,6 +22,7 @@
 #endif /* include eflete_config.h */
 
 #include "main_window.h"
+#include "history_ui.h"
 #include "navigator.h"
 #include "tabs.h"
 #include "shortcuts.h"
@@ -149,11 +150,10 @@ ui_main_window_add(void)
    tabs = tabs_add();
    elm_object_part_content_set(ap.panes.right, "left", tabs);
 
-   ap.history = history_init();
    /* add tabs with history and signals */
    ap.block.right_top = ewe_tabs_add(ap.win_layout);
    tab_item = ewe_tabs_item_append(ap.block.right_top, NULL, _("History"), NULL);
-   ap.block.history = history_genlist_get(ap.history, ap.block.right_top);
+   ap.block.history = history_ui_add();
    ewe_tabs_item_content_set(ap.block.right_top, tab_item, ap.block.history);
    tab_item = ewe_tabs_item_append(ap.block.right_top, NULL, _("Signals"), NULL);
    ap.block.signals = ui_signal_list_add(ap.win);

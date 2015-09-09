@@ -24,6 +24,7 @@ libete_a_SOURCES = \
 ../../src/bin/history/history_state.c \
 ../../src/bin/history/history_part.c \
 ../../src/bin/history/history_ui.c \
+../../src/bin/ui/history_ui.c \
 ../../src/bin/ui/part_list.c \
 ../../src/bin/ui/cursor.c \
 ../../src/bin/ui/menu.c \
