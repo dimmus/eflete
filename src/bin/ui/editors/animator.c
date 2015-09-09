@@ -23,6 +23,7 @@
 #include "animator.h"
 #include "animator_private.h"
 #include "main_window.h"
+#include "tabs.h"
 
 TODO("After all is done, cleanup this structure from non-important fields")
 struct _Animator
@@ -54,6 +55,7 @@ struct _Animator
    Eina_Bool is_cycled : 1;
    Eina_Bool sequence_mode : 1;
 
+   Project *project;
    Group *group;
 };
 
@@ -581,8 +583,9 @@ animator_window_add(Project *project)
 
    assert(project != NULL);
    animator = (Animator *)mem_calloc(1, sizeof(Animator));
-
    animator->mwin = mw_add("dialog", _on_animator_ok, animator);
+   animator->project = project;
+   animator->group = tabs_current_group_get();
 
    assert(animator->mwin != NULL);
 
@@ -601,6 +604,7 @@ animator_window_add(Project *project)
    elm_panes_horizontal_set(panes, true);
    evas_object_show(panes);
 
+   TODO("Apply brand new live view here!")
    //animator->live = live_view_add(animator->mwin, true, NULL);
 //   live_view_widget_style_set(animator->live, ap.project, style);
    edje_object_signal_callback_add(animator->live->object, "show", "",
@@ -616,18 +620,24 @@ animator_window_add(Project *project)
    evas_object_smart_callback_add(bt, "clicked", _on_program_play, animator);
    elm_layout_content_set(top_layout, "swallow.button.play", bt);
    animator->program_controls.play = bt;
+   TODO("Disable for few commits, making animator back alive")
+   elm_object_disabled_set(bt, true);
 
    BUTTON_ADD(top_layout, bt, _("Reset"));
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_smart_callback_add(bt, "clicked", _on_program_reset, animator);
    elm_layout_content_set(top_layout, "swallow.button.reset", bt);
    animator->program_controls.reset = bt;
+   TODO("Disable for few commits, making animator back alive")
+   elm_object_disabled_set(bt, true);
 
    BUTTON_ADD(top_layout, bt, _("Cycled"));
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_smart_callback_add(bt, "clicked", _on_program_cycle, animator);
    elm_layout_content_set(top_layout, "swallow.button.cycled", bt);
    animator->program_controls.cycle = bt;
+   TODO("Disable for few commits, making animator back alive")
+   elm_object_disabled_set(bt, true);
 
    bottom_panes = elm_panes_add(animator->mwin);
    evas_object_size_hint_weight_set(bottom_panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -650,12 +660,16 @@ animator_window_add(Project *project)
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_smart_callback_add(bt, "clicked", _on_bt_prog_add, animator);
    elm_box_pack_end(program_list_box, bt);
+   TODO("Disable for few commits, making animator back alive")
+   elm_object_disabled_set(bt, true);
 
    BUTTON_ADD(program_list_box, bt, _("Delete"));
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_smart_callback_add(bt, "clicked", _on_bt_prog_del, animator);
    elm_box_pack_end(program_list_box, bt);
    elm_object_part_content_set(bottom_panes, "left", program_list_box);
+   TODO("Disable for few commits, making animator back alive")
+   elm_object_disabled_set(bt, true);
 
    animator->program_area_layout = elm_layout_add(bottom_panes);
    elm_layout_theme_set(animator->program_area_layout, "layout", "animator", "program_area");
@@ -709,6 +723,8 @@ animator_window_add(Project *project)
    BUTTON_ADD(animator->mwin, bt, _("Apply"));
    evas_object_smart_callback_add(bt, "clicked", _on_animator_save, NULL);
    elm_object_part_content_set(animator->mwin, "eflete.swallow.btn_ok", bt);
+   TODO("Disable for few commits, making animator back alive")
+   elm_object_disabled_set(bt, true);
 
    BUTTON_ADD(animator->mwin, bt, _("Ok"));
    evas_object_smart_callback_add(bt, "clicked", _on_animator_ok, animator);
