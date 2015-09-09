@@ -90,5 +90,57 @@ popup_want_action(const char *title,
 
    return btn_pressed;
 }
-
 #undef BTN_ADD
+
+static void
+_popup_dismiss(void *data __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               const char *signal __UNUSED__,
+               const char *source __UNUSED__)
+{
+   evas_object_del(popup);
+}
+
+static void
+_open(void *data,
+      Evas_Object *obj,
+      void *event_info __UNUSED__)
+{
+   Evas_Object *entry = (Evas_Object *)data;
+   elm_entry_entry_set(entry, elm_fileselector_selected_get(obj));
+   _popup_dismiss(NULL, NULL, NULL, NULL);
+}
+
+#define FS_W 430
+#define FS_H 460
+void
+popup_fileselector_helper(Evas_Object *entry, const char *path)
+{
+   Evas_Object *fs;
+   int x, y, w, h, nx, ny;
+
+   popup = elm_layout_add(ap.win);
+   elm_layout_theme_set(popup, "layout", "popup", "hint");
+   elm_layout_signal_callback_add(popup, "hint,dismiss", "eflete", _popup_dismiss, NULL);
+
+   fs = elm_fileselector_add(ap.win);
+   elm_fileselector_folder_only_set(fs, true);
+   elm_fileselector_expandable_set(fs, false);
+   elm_fileselector_path_set(fs, path ? path : getenv("HOME"));
+   evas_object_smart_callback_add(fs, "done", _open, entry);
+   evas_object_smart_callback_add(fs, "activated", _open, entry);
+   /* small hack, hide not necessary button */
+   evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
+   /* one more hack, set text our text to button 'ok' */
+   elm_object_text_set(elm_layout_content_get(fs, "elm.swallow.ok"), _("Open"));
+   evas_object_resize(fs, FS_W, FS_H);
+   elm_layout_content_set(popup, "elm.swallow.content", fs);
+
+   evas_object_geometry_get(entry, &x, &y, &w, &h);
+   nx = x - (FS_W - w);
+   ny = y + h;
+   evas_object_move(popup, nx, ny);
+   evas_object_show(popup);
+}
+#undef FS_W
+#undef FS_H
