@@ -527,7 +527,7 @@ _gl_progs_add(Animator *animator)
    Eina_List *progs_list = NULL;
    Eina_List *l = NULL;
 
-   const char *prog_name = NULL;
+   Resource *res;
    Eina_Stringshare *item_data = NULL;
    Elm_Object_Item *glit = NULL;
 
@@ -559,11 +559,11 @@ _gl_progs_add(Animator *animator)
                            ELM_SCROLLER_POLICY_OFF);
    evas_object_show(gl_progs);
 
-   progs_list = edje_edit_programs_list_get(animator->group->edit_object);
-   EINA_LIST_FOREACH(progs_list, l, prog_name)
+   progs_list = animator->group->programs;
+   EINA_LIST_FOREACH(progs_list, l, res)
      {
-        if (!prog_name) continue; /* if the list has NULL item */
-        item_data = eina_stringshare_add(prog_name);
+        if (!res->name) continue; /* if the list has NULL item */
+        item_data = eina_stringshare_add(res->name);
         glit = elm_genlist_item_append(gl_progs, _itc_prog, item_data,
                                        NULL, ELM_GENLIST_ITEM_NONE,
                                        NULL, NULL);
@@ -572,7 +572,6 @@ _gl_progs_add(Animator *animator)
 
    evas_object_smart_callback_add(gl_progs, "selected", _on_gen_prog_sel,
                                   animator);
-   edje_edit_string_list_free(progs_list);
    elm_scroller_policy_set(gl_progs, ELM_SCROLLER_POLICY_AUTO,
                            ELM_SCROLLER_POLICY_AUTO);
    return gl_progs;
