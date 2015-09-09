@@ -40,6 +40,7 @@ struct _Tabs {
    Eina_List *items;
    Evas_Object *current_workspace;
    Evas_Object *current_live_view;
+   Group *current_group;
    struct {
       Elm_Object_Item *item;
       Evas_Object *content;
@@ -69,6 +70,7 @@ _content_unset(void)
    assert(tabs.layout != NULL);
    tabs.current_workspace = NULL;
    tabs.current_live_view = NULL;
+   tabs.current_group = NULL;
    content = elm_layout_content_unset(tabs.layout, NULL);
    evas_object_hide(content);
 }
@@ -92,9 +94,15 @@ _content_set(void *data,
         elm_layout_content_set(tabs.layout, NULL, item->content);
         tabs.current_workspace = item->workspace;
         tabs.current_live_view = item->live_view;
+        tabs.current_group = item->group;
      }
    else
-     tabs_tab_home_open(TAB_HOME_LAST);
+     {
+        tabs_tab_home_open(TAB_HOME_LAST);
+        tabs.current_workspace = NULL;
+        tabs.current_live_view = NULL;
+        tabs.current_group = NULL;
+     }
 
    /* call 'tab,changed' on tab click, and sent Group accociated with clicked
     * tab or NULL, if click on 'home' tab */
@@ -327,4 +335,10 @@ Evas_Object *
 tabs_current_workspace_get(void)
 {
    return tabs.current_workspace;
+}
+
+Group *
+tabs_current_group_get(void)
+{
+   return tabs.current_group;
 }

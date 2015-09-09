@@ -81,4 +81,13 @@ tabs_clean(void);
  */
 Evas_Object *
 tabs_current_workspace_get(void);
+
+/**
+ * Get pointer to group that is related to currently opened tab
+ *
+ * @ingroup Tabs
+ */
+Group *
+tabs_current_group_get(void);
+
 #endif /* TABS_H */
