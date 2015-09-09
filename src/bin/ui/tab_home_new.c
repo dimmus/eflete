@@ -98,7 +98,6 @@ struct _Tab_Home_New
 
    Evas_Object *name;
    Evas_Object *path;
-   Evas_Object *edj;
    Evas_Object *meta_version;
    Evas_Object *meta_authors;
    Evas_Object *meta_licenses;
