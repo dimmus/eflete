@@ -622,24 +622,18 @@ animator_window_add(Project *project)
    evas_object_smart_callback_add(bt, "clicked", _on_program_play, animator);
    elm_layout_content_set(top_layout, "swallow.button.play", bt);
    animator->program_controls.play = bt;
-   TODO("Disable for few commits, making animator back alive")
-   elm_object_disabled_set(bt, true);
 
    BUTTON_ADD(top_layout, bt, _("Reset"));
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_smart_callback_add(bt, "clicked", _on_program_reset, animator);
    elm_layout_content_set(top_layout, "swallow.button.reset", bt);
    animator->program_controls.reset = bt;
-   TODO("Disable for few commits, making animator back alive")
-   elm_object_disabled_set(bt, true);
 
    BUTTON_ADD(top_layout, bt, _("Cycled"));
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_smart_callback_add(bt, "clicked", _on_program_cycle, animator);
    elm_layout_content_set(top_layout, "swallow.button.cycled", bt);
    animator->program_controls.cycle = bt;
-   TODO("Disable for few commits, making animator back alive")
-   elm_object_disabled_set(bt, true);
 
    bottom_panes = elm_panes_add(animator->mwin);
    evas_object_size_hint_weight_set(bottom_panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
