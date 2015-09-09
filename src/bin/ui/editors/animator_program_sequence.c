@@ -617,6 +617,7 @@ prog_sequence_program_reset(Evas_Object *obj)
 
    Part *part;
    Evas_Coord x, y;
+   Eina_List *l;
 
    _state_clean(sd, &sd->playback.current_state);
    _state_copy(sd, &sd->playback.start_state, &sd->playback.current_state);
@@ -633,7 +634,7 @@ prog_sequence_program_reset(Evas_Object *obj)
    evas_object_geometry_get(sd->obj, &x, &y, NULL, NULL);
    evas_object_move(sd->timemark_line, x + LABELS_W + sd->playback.current_state.time * PIX_PER_SEC, y);
 
-   EINA_INLIST_FOREACH(sd->group->parts, part)
+   EINA_LIST_FOREACH(sd->group->parts, l, part)
      edje_edit_part_selected_state_set(sd->live_object,
                                        part->name,
                                        part->curr_state,

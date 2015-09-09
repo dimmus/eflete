@@ -215,7 +215,7 @@ _on_animator_close(void *data,
    TODO("change this after discarding changes would be possible")
 //   _on_animator_save(NULL, NULL, NULL);
 
-//   program_editor_free(animator->program_editor);
+   program_editor_free(animator->program_editor);
 
    evas_object_del(animator->live_view);
 
@@ -679,7 +679,6 @@ animator_window_add(Project *project)
    IMAGE_ADD_NEW(bt, ic, "animator", "arrow-right");
    elm_layout_content_set(bt, "icon", ic);
    elm_object_style_set(bt, "anchor");
-   elm_object_disabled_set(bt, true);
 
    SCROLLER_ADD(animator->program_area_layout, scroller);
    elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
