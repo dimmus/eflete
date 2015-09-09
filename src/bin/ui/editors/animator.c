@@ -29,8 +29,8 @@ TODO("After all is done, cleanup this structure from non-important fields")
 struct _Animator
 {
    Evas_Object *mwin;
-   Live_View *live;
-   Style *style;
+   Live_View *live; /* delete */
+   Style *style; /* delete */
    const char *program;
    Evas_Object *program_area_layout;
    Evas_Object *prop_scroller;
@@ -57,6 +57,7 @@ struct _Animator
 
    Project *project;
    Group *group;
+   Evas_Object *live_view;
 };
 
 typedef struct _Animator Animator;
@@ -216,7 +217,7 @@ _on_animator_close(void *data,
 
 //   program_editor_free(animator->program_editor);
 
-//   live_view_free(animator->live);
+   evas_object_del(animator->live_view);
 
    animator->afters = eina_list_free(animator->afters);
 
@@ -266,8 +267,8 @@ _on_add_popup_bt_add(void *data,
    animator->popup.entry = NULL;
 
    /* move to "Apply"?
-   live_view_widget_style_set(animator->live, ap.project, animator->style);
-   edje_object_signal_callback_add(animator->live->object, "show", "",
+   live_view_widget_style_set(animator->live_view, ap.project, animator->style);
+   edje_object_signal_callback_add(animator->live_view, "show", "",
                                    _on_object_load, animator);
    */
 }
@@ -576,7 +577,7 @@ _gl_progs_add(Animator *animator)
 Evas_Object *
 animator_window_add(Project *project)
 {
-   Evas_Object *top_layout __UNUSED__;
+   Evas_Object *top_layout;
    Evas_Object *panes;
    Evas_Object *bottom_panes;
    Evas_Object *scroller;
@@ -607,15 +608,14 @@ animator_window_add(Project *project)
    elm_panes_horizontal_set(panes, true);
    evas_object_show(panes);
 
-   TODO("Apply brand new live view here!")
-   //animator->live = live_view_add(animator->mwin, true, NULL);
-//   live_view_widget_style_set(animator->live, ap.project, style);
+   animator->live_view = live_view_add(animator->mwin, true, animator->group);
+   TODO("SPANK SPANK SPANK, forgetfull programmer! Where is comment about why do we need that object load?")
 //   edje_object_signal_callback_add(animator->live->object, "show", "",
 //                                   _on_object_load, animator);
 
    top_layout = elm_layout_add(animator->mwin);
    elm_layout_theme_set(top_layout, "layout", "animator", "live_view");
-//   elm_layout_content_set(top_layout, "swallow.content", animator->live->layout);
+   elm_layout_content_set(top_layout, "swallow.content", animator->live_view);
    evas_object_show(top_layout);
 
    BUTTON_ADD(top_layout, bt, _("Play"));
@@ -695,7 +695,7 @@ animator_window_add(Project *project)
 
    TODO("Fix it furtherly.. need to make compilable for now")
 //   animator->program_editor = program_editor_add(animator->mwin, NULL,
-//                                                 animator->live);
+//                                                 animator->live_view);
    elm_object_content_set(animator->prop_scroller, animator->program_editor);
    evas_object_size_hint_weight_set(animator->program_editor, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(animator->program_editor, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -703,7 +703,7 @@ animator_window_add(Project *project)
 
    TODO("Fix it furtherly.. need to make compilable for now")
 //   animator->program_sequence = prog_sequence_add(animator->prop_scroller, NULL,
-//                                                  animator->live);
+//                                                  animator->live_view);
    evas_object_size_hint_weight_set(animator->program_sequence, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(animator->program_sequence, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
