@@ -694,8 +694,9 @@ animator_window_add(Project *project)
    animator->prop_scroller = scroller;
 
    TODO("Fix it furtherly.. need to make compilable for now")
-//   animator->program_editor = program_editor_add(animator->mwin, NULL,
-//                                                 animator->live_view);
+   animator->program_editor = program_editor_add(animator->mwin,
+                                                 animator->group,
+                                                 animator->live_view);
    elm_object_content_set(animator->prop_scroller, animator->program_editor);
    evas_object_size_hint_weight_set(animator->program_editor, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(animator->program_editor, EVAS_HINT_FILL, EVAS_HINT_FILL);

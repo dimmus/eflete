@@ -43,7 +43,7 @@ void prog_sequence_program_stop(Evas_Object *obj);
 void prog_sequence_cycled_set(Evas_Object *obj, Eina_Bool cycled);
 
 /* program editor */
-Evas_Object * program_editor_add(Evas_Object *parent, Style *style, Live_View *live);
+Evas_Object * program_editor_add(Evas_Object *parent, Group *group, Evas_Object *live);
 
 Eina_Bool prog_editor_program_set(Evas_Object *obj, const char* program_name);
 
