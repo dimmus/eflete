@@ -498,10 +498,14 @@ _on_gen_prog_sel(void *data,
      }
 
    /* updating submodule view */
+
+TODO("NOT NOW")
+/*
    if (animator->sequence_mode)
      prog_sequence_program_set(animator->program_sequence, animator->program, animator->afters);
    else
      prog_editor_program_set(animator->program_editor, animator->program);
+*/
 }
 
 static char *
@@ -566,8 +570,8 @@ _gl_progs_add(Animator *animator)
         elm_object_item_data_set(glit, (void *)item_data);
      }
 
-//   evas_object_smart_callback_add(gl_progs, "selected", _on_gen_prog_sel,
-//                                  animator);
+   evas_object_smart_callback_add(gl_progs, "selected", _on_gen_prog_sel,
+                                  animator);
    edje_edit_string_list_free(progs_list);
    elm_scroller_policy_set(gl_progs, ELM_SCROLLER_POLICY_AUTO,
                            ELM_SCROLLER_POLICY_AUTO);
@@ -686,6 +690,7 @@ animator_window_add(Project *project)
    IMAGE_ADD_NEW(bt, ic, "animator", "arrow-right");
    elm_layout_content_set(bt, "icon", ic);
    elm_object_style_set(bt, "anchor");
+   elm_object_disabled_set(bt, true);
 
    SCROLLER_ADD(animator->program_area_layout, scroller);
    elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
