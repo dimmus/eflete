@@ -545,6 +545,14 @@ _validate(void *data __UNUSED__,
      elm_object_disabled_set(tab_new.btn_create, false);
 }
 
+static void
+_elipsis(void *data __UNUSED__,
+         Evas_Object *obj __UNUSED__,
+         void *event_info __UNUSED__)
+{
+   popup_fileselector_helper(tab_new.path, elm_entry_entry_get(tab_new.path));
+}
+
 Evas_Object *
 _tab_new_project_add(void)
 {
@@ -573,7 +581,7 @@ _tab_new_project_add(void)
    elm_object_part_content_set(tab_new.layout, "swallow.path", tab_new.path);
    elm_entry_entry_set(tab_new.path, profile_get()->general.projects_folder);
 
-   elipsis_btn_add(tab_new.path, NULL, NULL);
+   elipsis_btn_add(tab_new.path, _elipsis, NULL);
 
    /* label.meta_version */
    elm_object_part_text_set(tab_new.layout, "label.meta_version", _("Version of file:"));
