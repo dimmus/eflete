@@ -29,6 +29,7 @@ _cancel_cb(void *data __UNUSED__,
            Evas_Object *obj __UNUSED__,
            void *ei __UNUSED__)
 {
+   evas_object_hide(popup);
    want_close = false;
    ecore_main_loop_quit();
 }
@@ -38,10 +39,9 @@ _save_cb(void *data __UNUSED__,
          Evas_Object *obj __UNUSED__,
          void *ei __UNUSED__)
 {
-   evas_object_del(popup);
-   popup = NULL;
-   project_save();
+   evas_object_hide(popup);
    want_close = true;
+   project_save();
    ecore_main_loop_quit();
 }
 
@@ -50,6 +50,7 @@ _discard_cb(void *data __UNUSED__,
             Evas_Object *obj __UNUSED__,
             void *ei __UNUSED__)
 {
+   evas_object_hide(popup);
    want_close = true;
    ecore_main_loop_quit();
 }
@@ -79,8 +80,10 @@ _popup_want_save(void)
    elm_object_content_set(popup, label);
 
    evas_object_show(popup);
-
    ecore_main_loop_begin();
+
+   evas_object_del(popup);
+   popup = NULL;
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
