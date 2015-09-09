@@ -113,8 +113,9 @@ _open(void *data,
 
 #define FS_W 430
 #define FS_H 460
-void
-popup_fileselector_folder_helper(Evas_Object *entry, const char *path)
+
+static void
+_fileselector_helper(Evas_Object *entry, const char *path, Elm_Fileselector_Filter_Func filter_cb)
 {
    Evas_Object *fs;
    int x, y, w, h, nx, ny;
@@ -124,8 +125,14 @@ popup_fileselector_folder_helper(Evas_Object *entry, const char *path)
    elm_layout_signal_callback_add(popup, "hint,dismiss", "eflete", _popup_dismiss, NULL);
 
    fs = elm_fileselector_add(ap.win);
-   elm_fileselector_folder_only_set(fs, true);
    elm_fileselector_expandable_set(fs, false);
+   if (filter_cb)
+     {
+        elm_fileselector_custom_filter_append(fs, filter_cb, NULL, "edj");
+        evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.filters"));
+     }
+   else elm_fileselector_folder_only_set(fs, true);
+
    elm_fileselector_path_set(fs, path ? path : getenv("HOME"));
    evas_object_smart_callback_add(fs, "done", _open, entry);
    evas_object_smart_callback_add(fs, "activated", _open, entry);
@@ -142,5 +149,30 @@ popup_fileselector_folder_helper(Evas_Object *entry, const char *path)
    evas_object_move(popup, nx, ny);
    evas_object_show(popup);
 }
+
+void
+popup_fileselector_folder_helper(Evas_Object *entry, const char *path)
+{
+   _fileselector_helper(entry, path, NULL);
+}
+
+static Eina_Bool
+_edj_filter(const char *path,
+            Eina_Bool dir,
+            void *data __UNUSED__)
+{
+   if (dir) return true;
+
+   if (eina_str_has_extension(path, ".edj"))
+     return true;
+   return false;
+}
+
+void
+popup_fileselector_edj_helper(Evas_Object *entry, const char *path)
+{
+   _fileselector_helper(entry, path, _edj_filter);
+}
+
 #undef FS_W
 #undef FS_H

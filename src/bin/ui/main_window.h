@@ -428,6 +428,9 @@ popup_want_action(const char *title,
 void
 popup_fileselector_folder_helper(Evas_Object *entry, const char *path);
 
+void
+popup_fileselector_edj_helper(Evas_Object *entry, const char *path);
+
 /**
  * Export project as develop edj file.
  *
