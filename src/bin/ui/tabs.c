@@ -20,6 +20,7 @@
 #include "tabs_private.h"
 #include "ui_workspace.h"
 #include "tabs.h"
+#include "new_history.h"
 #include "signals.h"
 
 struct _Tabs_Item {
@@ -122,6 +123,7 @@ _del_tab(Tabs_Item *item)
    /* delete pans with workspace and liveview */
    evas_object_del(item->content);
    gm_group_edit_object_unload(item->group);
+   history_del(item->group->history);
    free(item);
 }
 
@@ -291,6 +293,7 @@ tabs_tab_add(Group *group)
         return;
      }
    gm_group_edit_object_load(ap.project, group, evas_object_evas_get(ap.win));
+   group->history = history_add(group);
 
    item = mem_calloc(1, sizeof(Tabs_Item));
    item->group = group;

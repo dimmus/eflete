@@ -29,6 +29,7 @@
 #include "project_manager.h"
 #define EFLETE_INTERNAL_GROUP_NAME "___eflete_internal_group___"
 
+typedef struct _History_ History_;
 /**
  * @typedef State
  * @ingroup GroupManager
@@ -86,6 +87,8 @@ struct _Group
 
    Evas_Object *edit_object;  /**< object needed to access group with edje_edit functions. Should be NULL if group is not open */
    Part_ *current_part;        /**< pointer to selected part */
+
+   History_ *history;          /**< history of changes in the group */
 };
 
 void
