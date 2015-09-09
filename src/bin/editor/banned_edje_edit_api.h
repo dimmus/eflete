@@ -40,10 +40,10 @@
 //#pragma GCC poison edje_edit_group_copy
 //#pragma GCC poison edje_edit_group_del
 //#pragma GCC poison edje_edit_group_name_set
-//#pragma GCC poison edje_edit_group_min_w_set
-//#pragma GCC poison edje_edit_group_min_h_set
-//#pragma GCC poison edje_edit_group_max_w_set
-//#pragma GCC poison edje_edit_group_max_h_set
+#pragma GCC poison edje_edit_group_min_w_set
+#pragma GCC poison edje_edit_group_min_h_set
+#pragma GCC poison edje_edit_group_max_w_set
+#pragma GCC poison edje_edit_group_max_h_set
 
 /* Alias API */
 //#pragma GCC poison edje_edit_group_alias_add
