@@ -498,14 +498,10 @@ _on_gen_prog_sel(void *data,
      }
 
    /* updating submodule view */
-
-TODO("NOT NOW")
-/*
    if (animator->sequence_mode)
      prog_sequence_program_set(animator->program_sequence, animator->program, animator->afters);
    else
      prog_editor_program_set(animator->program_editor, animator->program);
-*/
 }
 
 static char *

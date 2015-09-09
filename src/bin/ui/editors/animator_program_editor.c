@@ -163,13 +163,14 @@ static void
 _object_state_reset(Program_Editor *prog_edit)
 {
    Part *part;
+   Eina_List *l;
 
    assert(prog_edit != NULL);
    assert(prog_edit->live != NULL);
 
    edje_edit_program_stop_all(prog_edit->live);
 
-   EINA_INLIST_FOREACH(prop.group->parts, part)
+   EINA_LIST_FOREACH(prop.group->parts, l, part)
      edje_edit_part_selected_state_set(prog_edit->live_object,
                                        part->name,
                                        part->curr_state,
