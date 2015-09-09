@@ -73,8 +73,9 @@ struct _Prog_Sequence_Smart_Data
    Evas_Object *bg;
    Evas_Object *labels_bg;
    Evas_Object *parent;
-   Live_View *live;
-   Style *style;
+   Evas_Object *live;
+   Evas_Object *live_object;
+   Group *group;
    Eina_List *timeline;
    Eina_List *program_list;
    Eina_List *labels;
@@ -313,8 +314,8 @@ _item_create(Prog_Sequence_Smart_Data *sd, const char* program, double time)
 
    rp->start_time = time;
    rp->name = eina_stringshare_add(program);
-   rp->delay = edje_edit_program_in_from_get(sd->style->obj, program);
-   rp->length = edje_edit_program_transition_time_get(sd->style->obj, program);
+   rp->delay = edje_edit_program_in_from_get(sd->group->edit_object, program);
+   rp->length = edje_edit_program_transition_time_get(sd->group->edit_object, program);
 
    TODO("replace with special object")
    rp->obj = evas_object_rectangle_add(sd->e);
@@ -363,7 +364,7 @@ _timeline_init(Prog_Sequence_Smart_Data *sd, Eina_Stringshare *program)
    assert(sd != NULL);
    assert(program != NULL);
 
-   Evas_Object *obj = sd->style->obj;
+   Evas_Object *obj = sd->group->edit_object;
    Run_Prog *rp;
    rp = _item_create(sd, program, time);
    list = eina_list_append(list, rp);
@@ -453,9 +454,9 @@ _start_state_init(Prog_Sequence_Smart_Data *sd)
 
    assert(sd != NULL);
 
-   sd->parts_count = eina_inlist_count(sd->style->parts);
+   sd->parts_count = eina_list_count(sd->group->parts);
    sd->playback.start_state.parts = mem_malloc(sizeof(Part_State) * sd->parts_count);
-   EINA_INLIST_FOREACH(sd->style->parts, part)
+   EINA_LIST_FOREACH(sd->group->parts, l, part)
      {
         sd->playback.start_state.parts[i].name = eina_stringshare_add(part->name);
         sd->playback.start_state.parts[i].state = eina_stringshare_add(part->curr_state);
@@ -519,13 +520,14 @@ _state_copy(Prog_Sequence_Smart_Data *sd, const Playback_State *src, Playback_St
 }
 
 Evas_Object *
-prog_sequence_add(Evas_Object *parent, Style *style, Live_View *live)
+prog_sequence_add(Evas_Object *parent, Group *group, Evas_Object *live)
 {
    Evas *e;
    Evas_Object *obj;
 
    assert(parent != NULL);
-   assert(style != NULL);
+   assert(group != NULL);
+   assert(group->edit_object != NULL);
    assert(live != NULL);
 
    e = evas_object_evas_get(parent);
@@ -533,7 +535,8 @@ prog_sequence_add(Evas_Object *parent, Style *style, Live_View *live)
    PROG_SEQUENCE_DATA_GET(obj, sd);
    sd->parent = parent;
    sd->live = live;
-   sd->style = style;
+   sd->live_object = live_view_live_object_get(live);
+   sd->group = group;
 
    sd->bg = evas_object_rectangle_add(sd->e);
    evas_object_color_set(sd->bg, BG_COLOR);
@@ -630,8 +633,8 @@ prog_sequence_program_reset(Evas_Object *obj)
    evas_object_geometry_get(sd->obj, &x, &y, NULL, NULL);
    evas_object_move(sd->timemark_line, x + LABELS_W + sd->playback.current_state.time * PIX_PER_SEC, y);
 
-   EINA_INLIST_FOREACH(sd->style->parts, part)
-     edje_edit_part_selected_state_set(sd->live->object,
+   EINA_INLIST_FOREACH(sd->group->parts, part)
+     edje_edit_part_selected_state_set(sd->live_object,
                                        part->name,
                                        part->curr_state,
                                        part->curr_state_value);
@@ -672,25 +675,25 @@ _timer_cb(void *data)
    /* playing current frame */
    EINA_LIST_FOREACH_SAFE(sd->playback.current_state.runprogs, l, ln, runp)
      {
-        act_type = edje_edit_program_action_get(sd->style->obj, runp->name);
+        act_type = edje_edit_program_action_get(sd->group->edit_object, runp->name);
         if (act_type != EDJE_ACTION_TYPE_STATE_SET) continue;
 
-        st_name = edje_edit_program_state_get(sd->style->obj, runp->name);
-        st_val = edje_edit_program_value_get(sd->style->obj, runp->name);
+        st_name = edje_edit_program_state_get(sd->group->edit_object, runp->name);
+        st_val = edje_edit_program_value_get(sd->group->edit_object, runp->name);
 
         pos = (sd->playback.current_state.time - runp->start_time - runp->delay) / runp->length;
         if (pos < 0) /* program has delayed start*/
           continue;
         else if (pos < 1.0)
           {
-             edje_edit_program_transition_state_set(sd->live->object, runp->name, pos);
+             edje_edit_program_transition_state_set(sd->live_object, runp->name, pos);
           }
         else
           {
-             targets = edje_edit_program_targets_get(sd->style->obj, runp->name);
+             targets = edje_edit_program_targets_get(sd->group->edit_object, runp->name);
              EINA_LIST_FOREACH(targets, lt, part)
                {
-                  edje_edit_part_selected_state_set(sd->live->object, part, st_name, st_val);
+                  edje_edit_part_selected_state_set(sd->live_object, part, st_name, st_val);
                   for (i = 0; i < sd->parts_count; i++)
                   {
                      if (sd->playback.current_state.parts[i].name == part) /* stringshares */

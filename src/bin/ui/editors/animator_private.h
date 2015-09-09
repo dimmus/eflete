@@ -30,7 +30,7 @@
 #include "logger.h"
 
 /* program sequence */
-Evas_Object *prog_sequence_add(Evas_Object *parent, Style *style, Live_View *live);
+Evas_Object *prog_sequence_add(Evas_Object *parent, Group *group, Evas_Object *live);
 
 Eina_Bool prog_sequence_program_set(Evas_Object *obj, const char* program_name, Eina_List *program_list);
 

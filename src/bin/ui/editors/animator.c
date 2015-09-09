@@ -707,8 +707,9 @@ animator_window_add(Project *project)
    evas_object_show(animator->program_editor);
 
    TODO("Fix it furtherly.. need to make compilable for now")
-//   animator->program_sequence = prog_sequence_add(animator->prop_scroller, NULL,
-//                                                  animator->live_view);
+      animator->program_sequence = prog_sequence_add(animator->prop_scroller,
+                                                     animator->group,
+                                                     animator->live_view);
    evas_object_size_hint_weight_set(animator->program_sequence, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(animator->program_sequence, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
