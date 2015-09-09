@@ -99,6 +99,55 @@ group { name: "elm/layout/window/main";
    }
 }
 
+group { name: "elm/layout/popup/hint";
+   images {
+      image: "hint-background.png" COMP;
+   }
+   parts {
+      part { name: "event";
+         repeat_events: 1;
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.offset: -9999 -9999;
+            rel2.offset: 9999 9999;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            min: 430 460;
+            align: 0.0 0.0;
+            image {
+               normal: "hint-background.png";
+               border: 5 5 3 3;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            rel1 {
+               offset: 6 6;
+               to: "bg";
+            }
+            rel2 {
+               offset: -7 -7;
+               to: "bg";
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "dismiss";
+         signal: "mouse,up,*";
+         source: "event";
+         action: SIGNAL_EMIT "hint,dismiss" "eflete";
+      }
+   }
+}
+
 group { name: "elm/layout/property/default";
    parts {
       part { name: "bg";
