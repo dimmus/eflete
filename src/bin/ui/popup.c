@@ -114,7 +114,7 @@ _open(void *data,
 #define FS_W 430
 #define FS_H 460
 void
-popup_fileselector_helper(Evas_Object *entry, const char *path)
+popup_fileselector_folder_helper(Evas_Object *entry, const char *path)
 {
    Evas_Object *fs;
    int x, y, w, h, nx, ny;
