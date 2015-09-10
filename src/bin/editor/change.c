@@ -94,10 +94,12 @@ change_undo(Evas_Object *edit_object, Change *change)
 
    assert(edit_object != NULL);
    assert(change != NULL);
+   assert(!change->reverted);
 
    EINA_LIST_REVERSE_FOREACH(change->diffs, l, diff)
       if (!diff_undo(edit_object, diff))
         return false;
+   change->reverted = true;
    return true;
 }
 
@@ -109,9 +111,11 @@ change_redo(Evas_Object *edit_object, Change *change)
 
    assert(edit_object != NULL);
    assert(change != NULL);
+   assert(change->reverted);
 
    EINA_LIST_FOREACH(change->diffs, l, diff)
       if (!diff_redo(edit_object, diff))
         return false;
+   change->reverted = false;
    return true;
 }

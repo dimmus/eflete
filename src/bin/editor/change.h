@@ -27,6 +27,7 @@ struct _Change {
    Eina_Stringshare *part;
    Eina_Stringshare *state;
    Eina_List *diffs;
+   Eina_Bool reverted : 1;
 };
 typedef struct _Change Change;
 
