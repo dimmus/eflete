@@ -57,6 +57,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/tab_home_common.c \
 ../../src/bin/ui/tab_home_open.c \
 ../../src/bin/ui/tab_home_new.c \
+../../src/bin/ui/tab_home_import_edj.c \
 ../../src/bin/ui/blocks/ui_block.c \
 ../../src/bin/ui/property.c \
 ../../src/bin/ui/blocks/ui_widget_list.c \
