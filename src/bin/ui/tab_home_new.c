@@ -489,7 +489,10 @@ _on_create(void *data __UNUSED__,
            Evas_Object *obj __UNUSED__,
            void *event_info __UNUSED__)
 {
-   if (ap.project) project_close();
+   if (ap.project)
+     if (!project_close())
+       return;
+
    exist_permission_check(elm_entry_entry_get(tab_new.path),
                           elm_entry_entry_get(tab_new.name),
                           _("New project"));
