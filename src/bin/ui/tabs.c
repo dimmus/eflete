@@ -37,6 +37,8 @@ typedef struct _Tabs_Item Tabs_Item;
 struct _Tabs {
    Evas_Object *layout;
    Evas_Object *toolbar;
+   Evas_Object *toolbar_editors;
+   Evas_Object *box;
    Elm_Object_Item *selected;
    Eina_List *items;
    Evas_Object *current_workspace;
@@ -229,12 +231,35 @@ tabs_add(void)
 
    tabs.layout = elm_layout_add(ap.win);
    elm_layout_theme_set(tabs.layout, "layout", "tabs", "default");
+   BOX_ADD(tabs.layout, tabs.box, true, false);
+   evas_object_size_hint_weight_set(tabs.box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(tabs.box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_align_set(tabs.box, 0.0, 0.5);
+   elm_layout_content_set(tabs.layout, "elm.swallow.toolbar", tabs.box);
+   evas_object_show(tabs.box);
+
+   /* adding toolbar for editors */
+   tabs.toolbar_editors = elm_toolbar_add(tabs.layout);
+//   elm_layout_content_set(tabs.layout, "elm.swallow.toolbar", tabs.toolbar_editors);
+   elm_object_style_set(tabs.toolbar_editors, "tabs_horizontal");
+   elm_toolbar_shrink_mode_set(tabs.toolbar_editors, ELM_TOOLBAR_SHRINK_NONE);
+   elm_toolbar_select_mode_set(tabs.toolbar_editors, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   evas_object_size_hint_weight_set(tabs.toolbar_editors, 0.0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(tabs.toolbar_editors, 0.0, EVAS_HINT_FILL);
+   elm_toolbar_align_set(tabs.toolbar_editors, 0.0);
+   elm_box_pack_end(tabs.box, tabs.toolbar_editors);
+   evas_object_show(tabs.toolbar_editors);
+   /* addind two different toolbars */
    tabs.toolbar = elm_toolbar_add(tabs.layout);
-   elm_layout_content_set(tabs.layout, "elm.swallow.toolbar", tabs.toolbar);
+//   elm_layout_content_set(tabs.layout, "elm.swallow.toolbar", tabs.toolbar);
    elm_object_style_set(tabs.toolbar, "tabs_horizontal");
    elm_toolbar_shrink_mode_set(tabs.toolbar, ELM_TOOLBAR_SHRINK_SCROLL);
    elm_toolbar_select_mode_set(tabs.toolbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   evas_object_size_hint_weight_set(tabs.toolbar, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(tabs.toolbar, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_toolbar_align_set(tabs.toolbar, 0.0);
+   elm_box_pack_end(tabs.box, tabs.toolbar);
+   evas_object_show(tabs.toolbar);
 
    tabs.home.content = elm_layout_add(ap.win);
    elm_layout_theme_set(tabs.home.content, "layout", "tab_home", "default");
@@ -261,7 +286,13 @@ tabs_add(void)
    tabs.home.tab_project_info =
       elm_toolbar_item_append(tabs.home.tabs, NULL, _("Project info"), _home_tab_change, NULL);
 
-   tabs.home.item = elm_toolbar_item_append(tabs.toolbar, "home", NULL,
+   tabs.home.item = elm_toolbar_item_append(tabs.toolbar_editors, "home", NULL,
+                                            _content_set, NULL);
+   tabs.home.item = elm_toolbar_item_append(tabs.toolbar_editors, "image2", NULL,
+                                            _content_set, NULL);
+   tabs.home.item = elm_toolbar_item_append(tabs.toolbar_editors, "sound2", NULL,
+                                            _content_set, NULL);
+   tabs.home.item = elm_toolbar_item_append(tabs.toolbar_editors, "text2", NULL,
                                             _content_set, NULL);
 
    elm_toolbar_item_selected_set(tabs.home.item, true);
