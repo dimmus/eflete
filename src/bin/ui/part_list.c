@@ -824,6 +824,7 @@ part_list_add(Group *group)
    pl->itc_part->func.text_get = _part_label_get;
    pl->itc_part->func.content_get = _part_content_get;
 
+   TODO("Get rid of *_selected item classes. Use func.state_get instead")
    pl->itc_part_selected = elm_genlist_item_class_new();
    pl->itc_part_selected->item_style = "part_selected";
    pl->itc_part_selected->func.text_get = _part_label_get;
