@@ -9,6 +9,9 @@ IC("arrow_down",  "toolbar/arrow_down",  "menu/arrow_down",  "icon_arrow_down.pn
 IC("arrow_left",  "toolbar/arrow_left",  "menu/arrow_left",  "icon_arrow_left.png",  14, 0);
 IC("arrow_right", "toolbar/arrow_right", "menu/arrow_right", "icon_arrow_right.png", 14, 0);
 IC("home",        "toolbar/home",        "menu/home",        "icon_home.png",        14, 0);
+IC("image2",      "toolbar/image2",      "menu/image2",      "icon_image2.png",      14, 0);
+IC("sound2",      "toolbar/sound2",      "menu/sound2",      "icon_sound2.png",      14, 0);
+IC("text2",       "toolbar/text2",       "menu/text2",       "icon_text2.png",       14, 0);
 IC("close",       "toolbar/close",       "menu/close",       "icon_close.png",       14, 0);
 IC("apps",        "toolbar/apps",        "menu/apps",        "icon_apps.png",        14, 0);
 IC("chat",        "toolbar/chat",        "menu/chat",        "icon_chat.png",        14, 0);
