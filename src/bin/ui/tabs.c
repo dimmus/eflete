@@ -241,7 +241,7 @@ tabs_add(void)
    /* adding toolbar for editors */
    tabs.toolbar_editors = elm_toolbar_add(tabs.layout);
 //   elm_layout_content_set(tabs.layout, "elm.swallow.toolbar", tabs.toolbar_editors);
-   elm_object_style_set(tabs.toolbar_editors, "tabs_horizontal");
+   elm_object_style_set(tabs.toolbar_editors, "editor_tabs_horizontal");
    elm_toolbar_shrink_mode_set(tabs.toolbar_editors, ELM_TOOLBAR_SHRINK_NONE);
    elm_toolbar_select_mode_set(tabs.toolbar_editors, ELM_OBJECT_SELECT_MODE_ALWAYS);
    evas_object_size_hint_weight_set(tabs.toolbar_editors, 0.0, EVAS_HINT_EXPAND);
