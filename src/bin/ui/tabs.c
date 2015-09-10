@@ -45,7 +45,11 @@ struct _Tabs {
    Evas_Object *current_live_view;
    Group *current_group;
    struct {
-      Elm_Object_Item *item;
+      Elm_Object_Item *item_home;
+      Elm_Object_Item *item_sound;
+      Elm_Object_Item *item_text;
+      Elm_Object_Item *item_image;
+      /* those are used for showing home params */
       Evas_Object *content;
       Evas_Object *tabs;
       Elm_Object_Item *tab_project_info;
@@ -58,7 +62,7 @@ struct _Tabs {
       Evas_Object *content_import_edj;
       Elm_Object_Item *tab_import_edc;
       Evas_Object *content_import_edc;
-   } home;
+   } menu;
 };
 
 typedef struct _Tabs Tabs;
@@ -89,6 +93,7 @@ _content_set(void *data,
    assert(tabs.layout != NULL);
 
    if (tabs.selected == toolbar_item) return;
+   elm_toolbar_item_selected_set(tabs.selected, false);
    tabs.selected = toolbar_item;
 
    if (item)
@@ -153,8 +158,8 @@ _home_tab_change(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-   evas_object_hide(elm_layout_content_unset(tabs.home.content, NULL));
-   elm_layout_content_set(tabs.home.content, NULL, data);
+   evas_object_hide(elm_layout_content_unset(tabs.menu.content, NULL));
+   elm_layout_content_set(tabs.menu.content, NULL, data);
 }
 
 static void
@@ -240,7 +245,6 @@ tabs_add(void)
 
    /* adding toolbar for editors */
    tabs.toolbar_editors = elm_toolbar_add(tabs.layout);
-//   elm_layout_content_set(tabs.layout, "elm.swallow.toolbar", tabs.toolbar_editors);
    elm_object_style_set(tabs.toolbar_editors, "editor_tabs_horizontal");
    elm_toolbar_shrink_mode_set(tabs.toolbar_editors, ELM_TOOLBAR_SHRINK_NONE);
    elm_toolbar_select_mode_set(tabs.toolbar_editors, ELM_OBJECT_SELECT_MODE_ALWAYS);
@@ -251,7 +255,6 @@ tabs_add(void)
    evas_object_show(tabs.toolbar_editors);
    /* addind two different toolbars */
    tabs.toolbar = elm_toolbar_add(tabs.layout);
-//   elm_layout_content_set(tabs.layout, "elm.swallow.toolbar", tabs.toolbar);
    elm_object_style_set(tabs.toolbar, "tabs_horizontal");
    elm_toolbar_shrink_mode_set(tabs.toolbar, ELM_TOOLBAR_SHRINK_SCROLL);
    elm_toolbar_select_mode_set(tabs.toolbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
@@ -261,41 +264,41 @@ tabs_add(void)
    elm_box_pack_end(tabs.box, tabs.toolbar);
    evas_object_show(tabs.toolbar);
 
-   tabs.home.content = elm_layout_add(ap.win);
-   elm_layout_theme_set(tabs.home.content, "layout", "tab_home", "default");
-   tabs.home.tabs = elm_toolbar_add(tabs.home.content);
-   elm_layout_content_set(tabs.home.content, "elm.swallow.toolbar", tabs.home.tabs);
-   elm_toolbar_horizontal_set(tabs.home.tabs, false);
-   elm_object_style_set(tabs.home.tabs, "tabs_vertical");
-   elm_toolbar_shrink_mode_set(tabs.home.tabs, ELM_TOOLBAR_SHRINK_SCROLL);
-   elm_toolbar_select_mode_set(tabs.home.tabs, ELM_OBJECT_SELECT_MODE_ALWAYS);
-   elm_toolbar_align_set(tabs.home.tabs, 0.0);
+   tabs.menu.content = elm_layout_add(ap.win);
+   elm_layout_theme_set(tabs.menu.content, "layout", "tab_home", "default");
+   tabs.menu.tabs = elm_toolbar_add(tabs.menu.content);
+   elm_layout_content_set(tabs.menu.content, "elm.swallow.toolbar", tabs.menu.tabs);
+   elm_toolbar_horizontal_set(tabs.menu.tabs, false);
+   elm_object_style_set(tabs.menu.tabs, "tabs_vertical");
+   elm_toolbar_shrink_mode_set(tabs.menu.tabs, ELM_TOOLBAR_SHRINK_SCROLL);
+   elm_toolbar_select_mode_set(tabs.menu.tabs, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   elm_toolbar_align_set(tabs.menu.tabs, 0.0);
 
-   tabs.home.content_open_project = _tab_open_project_add();
-   tabs.home.content_new_project = _tab_new_project_add();
-   tabs.home.content_import_edj = _tab_import_edj_add();
+   tabs.menu.content_open_project = _tab_open_project_add();
+   tabs.menu.content_new_project = _tab_new_project_add();
+   tabs.menu.content_import_edj = _tab_import_edj_add();
 
-   tabs.home.tab_open_project =
-      elm_toolbar_item_append(tabs.home.tabs, NULL, _("Open project"), _home_tab_change, tabs.home.content_open_project);
-   tabs.home.tab_new_project =
-      elm_toolbar_item_append(tabs.home.tabs, NULL, _("New project"), _home_tab_change, tabs.home.content_new_project);
-   tabs.home.tab_import_edj =
-      elm_toolbar_item_append(tabs.home.tabs, NULL, _("Import edj-file"), _home_tab_change, tabs.home.content_import_edj);
-   tabs.home.tab_import_edc =
-      elm_toolbar_item_append(tabs.home.tabs, NULL, _("Import edc-file"), _home_tab_change, NULL);
-   tabs.home.tab_project_info =
-      elm_toolbar_item_append(tabs.home.tabs, NULL, _("Project info"), _home_tab_change, NULL);
+   tabs.menu.tab_open_project =
+      elm_toolbar_item_append(tabs.menu.tabs, NULL, _("Open project"), _home_tab_change, tabs.menu.content_open_project);
+   tabs.menu.tab_new_project =
+      elm_toolbar_item_append(tabs.menu.tabs, NULL, _("New project"), _home_tab_change, tabs.menu.content_new_project);
+   tabs.menu.tab_import_edj =
+      elm_toolbar_item_append(tabs.menu.tabs, NULL, _("Import edj-file"), _home_tab_change, tabs.menu.content_import_edj);
+   tabs.menu.tab_import_edc =
+      elm_toolbar_item_append(tabs.menu.tabs, NULL, _("Import edc-file"), _home_tab_change, NULL);
+   tabs.menu.tab_project_info =
+      elm_toolbar_item_append(tabs.menu.tabs, NULL, _("Project info"), _home_tab_change, NULL);
 
-   tabs.home.item = elm_toolbar_item_append(tabs.toolbar_editors, "home", NULL,
+   tabs.menu.item_home = elm_toolbar_item_append(tabs.toolbar_editors, "home", NULL,
                                             _content_set, NULL);
-   tabs.home.item = elm_toolbar_item_append(tabs.toolbar_editors, "image2", NULL,
+   tabs.menu.item_home = elm_toolbar_item_append(tabs.toolbar_editors, "image2", NULL,
                                             _content_set, NULL);
-   tabs.home.item = elm_toolbar_item_append(tabs.toolbar_editors, "sound2", NULL,
+   tabs.menu.item_home = elm_toolbar_item_append(tabs.toolbar_editors, "sound2", NULL,
                                             _content_set, NULL);
-   tabs.home.item = elm_toolbar_item_append(tabs.toolbar_editors, "text2", NULL,
+   tabs.menu.item_home = elm_toolbar_item_append(tabs.toolbar_editors, "text2", NULL,
                                             _content_set, NULL);
 
-   elm_toolbar_item_selected_set(tabs.home.item, true);
+   elm_toolbar_item_selected_set(tabs.menu.item_home, true);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_ADDED, _part_added, NULL);
@@ -311,29 +314,29 @@ tabs_tab_home_open(Tabs_View view)
 {
    assert(tabs.layout != NULL);
 
-   if (!elm_toolbar_item_selected_get(tabs.home.item))
-     elm_toolbar_item_selected_set(tabs.home.item, true);
+   if (!elm_toolbar_item_selected_get(tabs.menu.item_home))
+     elm_toolbar_item_selected_set(tabs.menu.item_home, true);
 
    _content_unset();
-   elm_layout_content_set(tabs.layout, NULL, tabs.home.content);
+   elm_layout_content_set(tabs.layout, NULL, tabs.menu.content);
 
    switch(view)
      {
       case TAB_HOME_PROJECT_INFO:
-         elm_toolbar_item_selected_set(tabs.home.tab_project_info, true);
+         elm_toolbar_item_selected_set(tabs.menu.tab_project_info, true);
          break;
       case TAB_HOME_OPEN_PROJECT:
-         elm_toolbar_item_selected_set(tabs.home.tab_open_project, true);
+         elm_toolbar_item_selected_set(tabs.menu.tab_open_project, true);
          _tab_open_project_recents_update();
          break;
       case TAB_HOME_NEW_PROJECT:
-         elm_toolbar_item_selected_set(tabs.home.tab_new_project, true);
+         elm_toolbar_item_selected_set(tabs.menu.tab_new_project, true);
          break;
       case TAB_HOME_IMPORT_EDJ:
-         elm_toolbar_item_selected_set(tabs.home.tab_import_edj, true);
+         elm_toolbar_item_selected_set(tabs.menu.tab_import_edj, true);
          break;
       case TAB_HOME_IMPORT_EDC:
-         elm_toolbar_item_selected_set(tabs.home.tab_import_edj, true);
+         elm_toolbar_item_selected_set(tabs.menu.tab_import_edj, true);
          break;
       case TAB_HOME_LAST:
       default:
