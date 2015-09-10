@@ -56,6 +56,7 @@ struct _Prop_Data
    Group *group;
    Part_ *part;
    Change *change;
+   int old_int_val;
    Evas_Object *layout;
    Evas_Object *scroller;
    Eina_Stringshare *item_name;
@@ -578,8 +579,10 @@ TODO("Implement rename. Note: groups list must remain sorted")
    GROUP_ATTR_1ENTRY_UPDATE(SUB, VALUE, MEMBER) \
    GROUP_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP)
 
-GROUP_ATTR_2SPINNER(_("min"), min, max, w, h, _("group_min_w changed"), _("group_min_h changed"))
-GROUP_ATTR_2SPINNER(_("max"), max, min, w, h, _("group_max_w changed"), _("group_max_h changed"))
+GROUP_ATTR_2SPINNER(_("min"), min, max, w, h, _("group_min_w changed from %d to %d"),
+                                              _("group_min_h changed from %d to %d"))
+GROUP_ATTR_2SPINNER(_("max"), max, min, w, h, _("group_max_w changed from %d to %d"),
+                                              _("group_max_h changed from %d to %d"))
 GROUP_ATTR_1ENTRY(_("name"), group, name, group, NULL, _("Name of the group."))
 
 #define pd_group pd->attributes.group

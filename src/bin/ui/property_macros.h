@@ -734,6 +734,7 @@ _on_group_##SUB1##_##VALUE##_start(void *data, \
    Prop_Data *pd = (Prop_Data *)data; \
    assert(pd->change == NULL); \
    pd->change = change_add(DESCRIPTION, NULL, NULL);\
+   pd->old_int_val = edje_edit_group_##SUB1##_##VALUE##_get(pd->group->edit_object); \
 } \
 static void \
 _on_group_##SUB1##_##VALUE##_stop(void *data, \
@@ -741,8 +742,18 @@ _on_group_##SUB1##_##VALUE##_stop(void *data, \
                                   void *ei __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
+   Eina_Stringshare *msg; \
    assert(pd->change != NULL); \
-   history_change_add(pd->group->history, pd->change); \
+   int new_int_val = edje_edit_group_##SUB1##_##VALUE##_get(pd->group->edit_object); \
+   if (new_int_val != pd->old_int_val) \
+     { \
+        msg = eina_stringshare_printf(DESCRIPTION, pd->old_int_val, new_int_val); \
+        change_description_set(pd->change, msg); \
+        history_change_add(pd->group->history, pd->change); \
+     } \
+   else \
+     change_free(pd->change); \
+   elm_spinner_value_set(obj, new_int_val); \
    pd->change = NULL; \
 } \
 static void \
@@ -752,10 +763,23 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    int value = (int)elm_spinner_value_get(obj); \
-   if (!editor_group_##SUB1##_##VALUE##_set(pd->group->edit_object, pd->change, value)) \
+   if (pd->change) \
      { \
-       ERR("editor_group_"#SUB1"_"#VALUE"_set failed"); \
-       abort(); \
+        if (!editor_group_##SUB1##_##VALUE##_set(pd->group->edit_object, pd->change, value)) \
+        { \
+           ERR("editor_group_"#SUB1"_"#VALUE"_set failed"); \
+           abort(); \
+        } \
+     } \
+   else \
+     { \
+        _on_group_##SUB1##_##VALUE##_start(data, obj, ei); \
+        if (!editor_group_##SUB1##_##VALUE##_set(pd->group->edit_object, pd->change, value)) \
+        { \
+           ERR("editor_group_"#SUB1"_"#VALUE"_set failed"); \
+           abort(); \
+        } \
+        _on_group_##SUB1##_##VALUE##_stop(data, obj, ei); \
      } \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
