@@ -41,4 +41,7 @@ progress_end(void *data, PM_Project_Result result);
 void
 elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data);
 
+void
+exist_permission_check(const char *path, const char *name, const char *title);
+
 #endif /* TABS_PRIVATE */

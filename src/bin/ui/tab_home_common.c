@@ -86,3 +86,35 @@ elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data)
    evas_object_smart_callback_add(bt, "clicked", cb_func, data);
    elm_object_part_content_set(entry, "elm.swallow.elipsis", bt);
 }
+
+void
+exist_permission_check(const char *path, const char *name, const char *title)
+{
+   Eina_Strbuf *buf, *buf_msg;
+   Popup_Button btn_res;
+
+   /* we alwayes imported and exported project to folder by given path, means
+    * that we alwayes create a new folder for project or exported source.
+    * So need to check there is the folder "path/name" */
+   buf = eina_strbuf_new();
+   eina_strbuf_append_printf(buf, "%s/%s", path, name);
+   if (!ecore_file_exists(eina_strbuf_string_get(buf))) return;
+   buf_msg = eina_strbuf_new();
+   eina_strbuf_append_printf(buf_msg,
+                             _("<font_size=16>A project folder named '%s' already exist."
+                               "Do you want to replace it?</font_size><br>"
+                               "The project folder '%s' already exist in '%s'. Replacing it will overwrite"
+                               "<b>all</b> contents."), name, name, path);
+   btn_res = popup_want_action(title, eina_strbuf_string_get(buf_msg),
+                               NULL, BTN_REPLACE | BTN_CANCEL);
+   if (btn_res == BTN_CANCEL) return;
+   if (!ecore_file_can_write(eina_strbuf_string_get(buf)))
+     {
+        eina_strbuf_reset(buf_msg);
+        eina_strbuf_append_printf(buf_msg, _("Haven't permision to overwrite '%s' in '%s'"), name, path);
+        popup_want_action("New project", eina_strbuf_string_get(buf_msg), NULL, BTN_OK);
+     }
+   ecore_file_recursive_rm(eina_strbuf_string_get(buf));
+   eina_strbuf_free(buf_msg);
+   eina_strbuf_free(buf);
+}

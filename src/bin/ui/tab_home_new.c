@@ -489,40 +489,10 @@ _on_create(void *data __UNUSED__,
            Evas_Object *obj __UNUSED__,
            void *event_info __UNUSED__)
 {
-   Popup_Button btn_res;
-   Eina_Strbuf *buf, *buf_msg;
-
    if (ap.project) project_close();
-   /* we alwayes imported and exported project to folder by given path, means
-    * that we alwayes create a new folder for project or exported source.
-    * So need to check there is the folder "path/name" */
-   buf = eina_strbuf_new();
-   eina_strbuf_append_printf(buf, "%s/%s", elm_entry_entry_get(tab_new.path), elm_entry_entry_get(tab_new.name));
-   if (ecore_file_exists(eina_strbuf_string_get(buf)))
-     {
-        buf_msg = eina_strbuf_new();
-        eina_strbuf_append_printf(buf_msg,
-           _("<font_size=16>A project folder named '%s' already exist."
-              "Do you want to replace it?</font_size><br>"
-              "The project folder '%s' already exist in '%s'. Replacing it will overwrite"
-              "<b>all</b> contents."),
-           elm_entry_entry_get(tab_new.name), elm_entry_entry_get(tab_new.name),
-           elm_entry_entry_get(tab_new.path));
-        btn_res = popup_want_action("New project", eina_strbuf_string_get(buf_msg),
-                                    NULL, BTN_REPLACE | BTN_CANCEL);
-        if (btn_res == BTN_CANCEL) return;
-        if (!ecore_file_can_write(eina_strbuf_string_get(buf)))
-          {
-             eina_strbuf_reset(buf_msg);
-             eina_strbuf_append_printf(buf_msg, _("Haven't permision to overwrite '%s' in '%s'"),
-                                       elm_entry_entry_get(tab_new.name),
-                                       elm_entry_entry_get(tab_new.path));
-             popup_want_action("New project", eina_strbuf_string_get(buf_msg), NULL, BTN_OK);
-          }
-        ecore_file_recursive_rm(eina_strbuf_string_get(buf));
-        eina_strbuf_free(buf_msg);
-     }
-
+   exist_permission_check(elm_entry_entry_get(tab_new.path),
+                          elm_entry_entry_get(tab_new.name),
+                          _("New project"));
    ap.splash = splash_add(ap.win,
                           _setup_open_splash,
                           _teardown_open_splash,
@@ -530,7 +500,6 @@ _on_create(void *data __UNUSED__,
                           NULL);
    elm_object_focus_set(ap.splash, true);
    evas_object_show(ap.splash);
-   eina_strbuf_free(buf);
 }
 
 static void
