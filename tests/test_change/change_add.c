@@ -42,7 +42,7 @@
  * @procedure
  * @step 1 call change_add
  * </td>
- * <td>"test", NULL, NULL</td>
+ * <td>"test"</td>
  * <td>not NULL returned</td>
  * </tr>
  * @}
@@ -51,7 +51,8 @@ EFLETE_TEST (change_add_test_p)
 {
    eina_init();
 
-   ck_assert(change_add("test", NULL, NULL) != NULL);
+   ck_assert(change_add("test") != NULL);
+   ck_assert(change_add(NULL) != NULL);
 
    eina_shutdown();
 }

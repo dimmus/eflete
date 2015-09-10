@@ -52,7 +52,7 @@ EFLETE_TEST (change_free_test_p)
 {
    Change *change;
    eina_init();
-   change = change_add("test", NULL, NULL);
+   change = change_add("test");
 
    change_free(change);
 

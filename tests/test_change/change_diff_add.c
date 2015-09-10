@@ -100,7 +100,7 @@ EFLETE_TEST (change_diff_add_test_p)
    Change *change;
    /* We don't need to create actual object. Only pointer to it is needed for checks */
    pseudo_object = (Evas_Object *) &sense;
-   change = change_add("test", NULL, NULL);
+   change = change_add("test");
 
    d1 = mem_calloc(1, sizeof(Diff_));
    d1->undo.type = FUNCTION_TYPE_INT;

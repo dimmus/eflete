@@ -24,15 +24,13 @@
 
 struct _Change {
    Eina_Stringshare *description;
-   Eina_Stringshare *part;
-   Eina_Stringshare *state;
    Eina_List *diffs;
    Eina_Bool reverted : 1;
 };
 typedef struct _Change Change;
 
 Change *
-change_add(const char *description, const char *part, const char *state);
+change_add(const char *description);
 
 void
 change_description_set(Change *change, const char *description);

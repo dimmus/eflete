@@ -57,7 +57,7 @@ EFLETE_TEST (history_change_add_test_p)
    int sense = 42;
    Group *group = mem_calloc(1, sizeof(Group));
    group->edit_object = (Evas_Object *) &sense;
-   change = change_add("test", NULL, NULL);
+   change = change_add("test");
 
    History_ *history = history_add(group);
    history_change_add(history, change);

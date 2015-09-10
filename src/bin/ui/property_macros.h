@@ -733,7 +733,7 @@ _on_group_##SUB1##_##VALUE##_start(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    assert(pd->change == NULL); \
-   pd->change = change_add(DESCRIPTION, NULL, NULL);\
+   pd->change = change_add(DESCRIPTION);\
    pd->old_int_val = edje_edit_group_##SUB1##_##VALUE##_get(pd->group->edit_object); \
 } \
 static void \

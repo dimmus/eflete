@@ -20,14 +20,12 @@
 #include "change.h"
 
 Change *
-change_add(const char *description, const char *part, const char *state)
+change_add(const char *description)
 {
    Change *change;
 
    change = mem_calloc(1, sizeof(Change));
    change->description = eina_stringshare_add(description);
-   change->part = eina_stringshare_add(part);
-   change->state = eina_stringshare_add(state);
    change->diffs = NULL;
 
    return change;
@@ -50,8 +48,6 @@ change_free(Change *change)
    assert(change != NULL);
 
    eina_stringshare_del(change->description);
-   eina_stringshare_del(change->part);
-   eina_stringshare_del(change->state);
 
    EINA_LIST_FREE(change->diffs, diff)
       diff_free(diff);
