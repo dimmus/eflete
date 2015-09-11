@@ -467,7 +467,7 @@ Eina_Bool
 _style_editor_open_cb(void)
 {
    if (ap.project)
-     style_editor_window_add(ap.project);
+     tabs_menu_tab_open(TAB_STYLE_EDITOR);
    return true;
 }
 
@@ -475,7 +475,7 @@ Eina_Bool
 _image_editor_open_cb(void)
 {
    if (ap.project)
-     image_editor_window_add(ap.project, MULTIPLE);
+     tabs_menu_tab_open(TAB_IMAGE_EDITOR);
    return true;
 }
 
@@ -483,7 +483,7 @@ Eina_Bool
 _sound_editor_open_cb(void)
 {
    if (ap.project)
-     sound_editor_window_add(ap.project, SOUND_EDITOR_EDIT);
+     tabs_menu_tab_open(TAB_SOUND_EDITOR);
    return true;
 }
 
@@ -491,7 +491,7 @@ Eina_Bool
 _colorclass_manager_open_cb(void)
 {
    if (ap.project)
-     colorclass_manager_add(ap.project);
+     tabs_menu_tab_open(TAB_COLORCLASS_EDITOR);
    return true;
 }
 
@@ -651,11 +651,6 @@ static Function_Set _sc_func_set_init[] =
 /*   {"item.delete", _item_delete_cb}, this callback works unpredictable because of focus */
      {"separate_mode", _separate_mode_change_cb},
      {"style.create", _new_style_create_cb},
-     {"style_editor", _style_editor_open_cb},
-     {"image_editor", _image_editor_open_cb},
-     {"sound_editor", _sound_editor_open_cb},
-     {"colorclass_viewer", _colorclass_manager_open_cb},
-     {"animator", _animator_open_cb},
      {"widget_manager.layout", _widget_manager_layout_switch_cb},
      {"widget_manager.style", _widget_manager_style_switch_cb},
      {"highlight.align.show", _highlight_align_show_switch_cb},
@@ -665,6 +660,11 @@ static Function_Set _sc_func_set_init[] =
      {"quit", _quit_cb},
      {"undo", _undo_cb},
      {"redo", _redo_cb},
+     {"tab.style_editor", _style_editor_open_cb},
+     {"tab.image_editor", _image_editor_open_cb},
+     {"tab.sound_editor", _sound_editor_open_cb},
+     {"tab.colorclass_viewer", _colorclass_manager_open_cb},
+     {"animator", _animator_open_cb},
      {NULL, NULL}
 };
 static Eina_Hash *_sc_functions = NULL;
