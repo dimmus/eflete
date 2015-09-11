@@ -74,7 +74,6 @@ struct _Sound_Editor
    Evas_Object *popup;
    Evas_Object *popup_btn_add;
    Evas_Object *add_cmb;
-   Evas_Object *win;
    Evas_Object *tone_entry, *frq_entry;
    Elm_Validator_Regexp *tone_validator, *frq_validator;
    Evas_Object *gengrid;
@@ -158,9 +157,6 @@ _grid_group_label_get(void *data,
 static void
 _sound_editor_del(Sound_Editor *edit)
 {
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
-   ap.modal_editor--;
-
    assert(edit != NULL);
 
 #ifdef HAVE_AUDIO
@@ -169,8 +165,7 @@ _sound_editor_del(Sound_Editor *edit)
    edit->pr = NULL;
    elm_gengrid_item_class_free(gic);
    elm_gengrid_item_class_free(ggic);
-   evas_object_data_del(edit->win, SND_EDIT_KEY);
-   mw_del(edit->win);
+   evas_object_data_del(edit->markup, SND_EDIT_KEY);
    eina_stringshare_del(edit->selected);
    free(edit);
 }
@@ -643,7 +638,8 @@ _sound_editor_quit(Sound_Editor *edit)
 }
 
 static void
-_on_quit_cb(void *data,
+_on_sound_editor_del(void * data,
+            Evas *e __UNUSED__,
             Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
 {
@@ -674,6 +670,8 @@ _on_quit_cb(void *data,
    _sound_editor_quit(edit);
 }
 
+TODO("Refactor and uncomment when everything would be more stable")
+/*
 static void
 _on_ok_cb(void *data,
           Evas_Object *obj __UNUSED__,
@@ -706,12 +704,13 @@ _on_ok_cb(void *data,
    if ((!multiselect) && (edit->selected))
      {
         ei = strdup(edit->selected);
-        evas_object_smart_callback_call(edit->win, SIG_SOUND_SELECTED, ei);
+        evas_object_smart_callback_call(ap.win, SIG_SOUND_SELECTED, ei);
         free(ei);
      }
 
    _sound_editor_quit(edit);
 }
+*/
 
 #define BT_ADD(PARENT, OBJ, ICON, ICON_STYLE) \
    OBJ = elm_button_add(PARENT); \
@@ -1446,7 +1445,7 @@ _tone_add_cb(void *data,
    Evas_Object *popup, *box, *item, *bt_no;
    Eina_Stringshare *title;
 
-   popup = elm_popup_add(edit->win);
+   popup = elm_popup_add(ap.win);
    title = eina_stringshare_add(_("Add new tone to the project"));
    elm_object_part_text_set(popup, "title,text", title);
    elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
@@ -1618,20 +1617,13 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
 
    assert(edit != NULL);
 
-   edit->markup = elm_layout_add(edit->win);
+   edit->markup = elm_layout_add(ap.win);
    elm_layout_theme_set(edit->markup, "layout", "sound_editor", "default");
    evas_object_size_hint_weight_set(edit->markup, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(edit->markup);
-   elm_win_inwin_content_set(edit->win, edit->markup);
+   evas_object_data_set(edit->markup, SND_EDIT_KEY, edit);
 
-   BUTTON_ADD(edit->markup, btn, _("Ok"));
-   evas_object_smart_callback_add(btn, "clicked", _on_ok_cb, edit);
-   elm_object_part_content_set(edit->win, "eflete.swallow.btn_ok", btn);
-   elm_object_disabled_set(btn, true);
-
-   BUTTON_ADD(edit->markup, btn, _("Cancel"));
-   evas_object_smart_callback_add(btn, "clicked", _on_quit_cb, edit);
-   elm_object_part_content_set(edit->win, "eflete.swallow.btn_close", btn);
+   evas_object_event_callback_add(edit->markup, EVAS_CALLBACK_DEL, _on_sound_editor_del, edit);
 
    btn = elm_button_add(edit->markup);
    evas_object_smart_callback_add(btn, "clicked", _on_delete_clicked_cb, edit);
@@ -1700,7 +1692,6 @@ Evas_Object *
 sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
 {
    Sound_Editor *edit;
-   Evas_Object *ic;
 
    assert(project != NULL);
 
@@ -1711,15 +1702,6 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    edit = (Sound_Editor *)mem_calloc(1, sizeof(Sound_Editor));
    edit->mode = mode;
    edit->pr = project;
-   edit->win = mw_add("dialog", _on_quit_cb, edit);
-
-   assert(edit->win != NULL);
-
-   mw_title_set(edit->win, _("Sound manager"));
-   ic = elm_icon_add(edit->win);
-   elm_icon_standard_set(ic, "sound");
-   mw_icon_set(edit->win, ic);
-   evas_object_data_set(edit->win, SND_EDIT_KEY, edit);
 
    _sound_editor_main_markup_create(edit);
 
@@ -1731,12 +1713,9 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    _sound_player_create(edit->markup, edit);
 #endif
 
-   evas_object_show(edit->win);
    elm_object_focus_set(edit->sound_search_data.search_entry, true);
 
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
-   ap.modal_editor++;
-   return edit->win;
+   return edit->markup;
 }
 
 void sound_editor_added_sounds_free(Eina_List *add_snd)
