@@ -753,7 +753,6 @@ _on_group_##SUB1##_##VALUE##_stop(void *data, \
      } \
    else \
      change_free(pd->change); \
-   elm_spinner_value_set(obj, new_int_val); \
    pd->change = NULL; \
 } \
 static void \

@@ -18,8 +18,9 @@
  */
 
 #include "editor.h"
+#include "signals.h"
 
-#define MAX_SET(VAL) \
+#define MAX_SET(VAL, VAL_CAPS) \
 Eina_Bool \
 editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, int new_value) \
 { \
@@ -27,6 +28,7 @@ editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, int new_value) 
    int old_value; \
    int min_value; \
    Diff_ *diff; \
+   Attribute attribute = ATTRIBUTE_GROUP_MAX_##VAL_CAPS; \
  \
    assert(obj != NULL); \
    assert(new_value >= 0); \
@@ -50,13 +52,14 @@ editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, int new_value) 
      } \
    res = edje_edit_group_max_## VAL ##_set(obj, new_value); \
    TODO("Add signal to property here") \
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return res; \
 }
 
-MAX_SET(w)
-MAX_SET(h)
+MAX_SET(w, W)
+MAX_SET(h, H)
 
-#define MIN_SET(VAL) \
+#define MIN_SET(VAL, VAL_CAPS) \
 Eina_Bool \
 editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, int new_value) \
 { \
@@ -64,6 +67,7 @@ editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, int new_value) 
    int old_value; \
    int max_value; \
    Diff_ *diff; \
+   Attribute attribute = ATTRIBUTE_GROUP_MIN_##VAL_CAPS; \
  \
    assert(obj != NULL); \
    assert(new_value >= 0); \
@@ -87,8 +91,9 @@ editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, int new_value) 
      } \
    res = edje_edit_group_min_## VAL ##_set(obj, new_value); \
    TODO("Add signal to property here") \
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return res; \
 }
 
-MIN_SET(w)
-MIN_SET(h)
+MIN_SET(w, W)
+MIN_SET(h, H)

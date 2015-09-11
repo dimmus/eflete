@@ -24,6 +24,17 @@
 #include "eflete.h"
 #include "change.h"
 
+typedef enum {
+   ATTRIBUTE_GROUP_MIN_W,
+   ATTRIBUTE_GROUP_MIN_H,
+   ATTRIBUTE_GROUP_MAX_W,
+   ATTRIBUTE_GROUP_MAX_H,
+   ATTRIBUTE_STATE_MAX_W,
+   ATTRIBUTE_STATE_MAX_H,
+   ATTRIBUTE_STATE_ALIGN_X,
+   ATTRIBUTE_STATE_ALIGN_Y
+} Attribute;
+
 Eina_Bool
 editor_group_min_w_set(Evas_Object *obj, Change *change, int new_val);
 
