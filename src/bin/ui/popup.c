@@ -174,5 +174,24 @@ popup_fileselector_edj_helper(Evas_Object *entry, const char *path)
    _fileselector_helper(entry, path, _edj_filter);
 }
 
+static Eina_Bool
+_edc_filter(const char *path,
+            Eina_Bool dir,
+            void *data __UNUSED__)
+{
+   if (dir) return true;
+
+   if (eina_str_has_extension(path, ".edc"))
+     return true;
+   return false;
+}
+
+void
+popup_fileselector_edc_helper(Evas_Object *entry, const char *path)
+{
+   _fileselector_helper(entry, path, _edc_filter);
+}
+
+
 #undef FS_W
 #undef FS_H
