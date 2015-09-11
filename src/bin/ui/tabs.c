@@ -247,6 +247,11 @@ _project_opened(void *data __UNUSED__,
                 void *ei __UNUSED__)
 {
    tabs.menu.content_image_editor = image_editor_window_add(ap.project, MULTIPLE);
+
+   elm_object_item_disabled_set(tabs.menu.item_image, false);
+   elm_object_item_disabled_set(tabs.menu.item_sound, false);
+   elm_object_item_disabled_set(tabs.menu.item_text, false);
+   elm_object_item_disabled_set(tabs.menu.item_colorclass, false);
 }
 
 static void
@@ -255,6 +260,12 @@ _project_closed(void *data __UNUSED__,
                 void *ei __UNUSED__)
 {
    tabs.menu.content_image_editor = NULL;
+
+   elm_object_item_disabled_set(tabs.menu.item_image, true);
+   elm_object_item_disabled_set(tabs.menu.item_sound, true);
+   elm_object_item_disabled_set(tabs.menu.item_text, true);
+   elm_object_item_disabled_set(tabs.menu.item_colorclass, true);
+
    tabs_menu_tab_open(TAB_LAST);
 }
 
@@ -331,6 +342,11 @@ tabs_add(void)
 
    elm_toolbar_item_selected_set(tabs.menu.item_home, true);
    elm_layout_content_set(tabs.layout, NULL, tabs.menu.content);
+
+   elm_object_item_disabled_set(tabs.menu.item_image, true);
+   elm_object_item_disabled_set(tabs.menu.item_sound, true);
+   elm_object_item_disabled_set(tabs.menu.item_text, true);
+   elm_object_item_disabled_set(tabs.menu.item_colorclass, true);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_ADDED, _part_added, NULL);
