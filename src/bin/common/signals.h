@@ -123,4 +123,12 @@
  */
 #define SIGNAL_HISTORY_CHANGE_ADDED "SIGNAL_HISTORY_CHANGE_ADDED"
 
+/**
+ * emited when editor_save or editor_save_all are called.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_SAVED "SIGNAL_EDITOR_SAVED"
+
 #endif /* SIGNALS_H*/

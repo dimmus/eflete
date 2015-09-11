@@ -35,6 +35,14 @@ typedef enum {
    ATTRIBUTE_STATE_ALIGN_Y
 } Attribute;
 
+/* General */
+Eina_Bool
+editor_save(Evas_Object *edit_object);
+
+Eina_Bool
+editor_save_all(Evas_Object *edit_object);
+
+/* Group */
 Eina_Bool
 editor_group_min_w_set(Evas_Object *obj, Change *change, int new_val);
 

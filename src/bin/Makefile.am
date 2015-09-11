@@ -18,6 +18,7 @@ libete_a_SOURCES = \
 ../../src/bin/editor/diff.c \
 ../../src/bin/editor/change.c \
 ../../src/bin/editor/new_history.c \
+../../src/bin/editor/editor_general.c \
 ../../src/bin/editor/editor_group.c \
 ../../src/bin/ui/history_ui.c \
 ../../src/bin/ui/part_list.c \
