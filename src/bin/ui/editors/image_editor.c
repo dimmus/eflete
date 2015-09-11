@@ -121,7 +121,7 @@ _image_editor_del(Image_Editor *img_edit)
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
    ap.modal_editor--;
 
-   evas_object_event_callback_del(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del);
+   evas_object_event_callback_del(main_window_get(), EVAS_CALLBACK_DEL, _on_mwin_del);
 
    img_edit->pr = NULL;
    elm_gengrid_item_class_free(gic);
@@ -132,10 +132,10 @@ _image_editor_del(Image_Editor *img_edit)
    _itc_group = NULL;
    _itc_part = NULL;
    _itc_state = NULL;
-   evas_object_data_del(img_edit->win, IMG_EDIT_KEY);
+   evas_object_data_del(main_window_get(), IMG_EDIT_KEY);
    evas_object_data_del(img_edit->gengrid, IMG_EDIT_KEY);
    //evas_object_del(img_edit->gengrid);
-   mw_del(img_edit->win);
+   mw_del(main_window_get());
    _image_info_reset(img_edit);
    free(img_edit);
 }
@@ -813,7 +813,7 @@ _on_button_apply_clicked_cb(void *data,
         it = elm_gengrid_selected_item_get(img_edit->gengrid);
         if (!it)
           {
-            WIN_NOTIFY_WARNING(img_edit->win, _("Image not selected"));
+            WIN_NOTIFY_WARNING(main_window_get(), _("Image not selected"));
             return;
           }
         item = elm_object_item_data_get(it);
@@ -828,11 +828,11 @@ _on_button_apply_clicked_cb(void *data,
      {
         TODO("FIX IT! This line breaks images with / in name");
         ei = strdup(ecore_file_file_get(item->image_name));
-        evas_object_smart_callback_call(img_edit->win, SIG_IMAGE_SELECTED, ei);
+        evas_object_smart_callback_call(main_window_get(), SIG_IMAGE_SELECTED, ei);
         free(ei);
      }
    else
-     evas_object_smart_callback_call(img_edit->win, SIG_IMAGE_SELECTED,
+     evas_object_smart_callback_call(main_window_get(), SIG_IMAGE_SELECTED,
                                      (Eina_List *) names);
 
    //project_changed(false);
@@ -1109,24 +1109,13 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    Image_Editor *img_edit = (Image_Editor *)mem_calloc(1, sizeof(Image_Editor));
    img_edit->pr = project;
 
-   img_edit->win = mw_add("dialog", _on_button_close_clicked_cb, img_edit);
-
-   assert(img_edit->win != NULL);
-
-   if (mode == SINGLE)
-     mw_title_set(img_edit->win, _("Image manager: choose image"));
-   else if (mode == TWEENS)
-     mw_title_set(img_edit->win, _("Image manager: select tween images"));
-   else if (mode == MULTIPLE)
-     mw_title_set(img_edit->win, _("Image manager"));
-
-   ic = elm_icon_add(img_edit->win);
+   ic = elm_icon_add(main_window_get());
    elm_icon_standard_set(ic, "image");
-   mw_icon_set(img_edit->win, ic);
+   mw_icon_set(main_window_get(), ic);
 
-   img_edit->layout = elm_layout_add(img_edit->win);
+   img_edit->layout = elm_layout_add(main_window_get());
    elm_layout_theme_set(img_edit->layout, "layout", "image_editor", "default");
-   elm_win_inwin_content_set(img_edit->win, img_edit->layout);
+   elm_win_inwin_content_set(main_window_get(), img_edit->layout);
 
    img_edit->gengrid = elm_gengrid_add(img_edit->layout);
    elm_object_part_content_set(img_edit->layout,
@@ -1206,16 +1195,16 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
 
    _image_info_initiate(img_edit);
 
-   BUTTON_ADD(img_edit->win, button, _("Close"));
+   BUTTON_ADD(main_window_get(), button, _("Close"));
    evas_object_smart_callback_add(button, "clicked", _on_button_close_clicked_cb,
                                   img_edit);
-   elm_object_part_content_set(img_edit->win,
+   elm_object_part_content_set(main_window_get(),
                                "eflete.swallow.btn_close", button);
 
-   BUTTON_ADD(img_edit->win, button, _("Apply"));
+   BUTTON_ADD(main_window_get(), button, _("Apply"));
    evas_object_smart_callback_add(button, "clicked", _on_button_apply_clicked_cb,
                                   img_edit);
-   elm_object_part_content_set(img_edit->win,
+   elm_object_part_content_set(main_window_get(),
                                "eflete.swallow.btn_ok", button);
    TODO("REMOVE AFTER IMPLEMENT IN RIGHT WAY")
    elm_object_disabled_set(button, true);
@@ -1229,7 +1218,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
         gic->func.del = _grid_del;
      }
 
-   evas_object_show(img_edit->win);
+   evas_object_show(main_window_get());
    elm_object_focus_set(search_entry, true);
    if (!_image_editor_init(img_edit))
      {
@@ -1237,13 +1226,13 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
         abort();
      }
    evas_object_data_set(img_edit->gengrid, IMG_EDIT_KEY, img_edit);
-   evas_object_data_set(img_edit->win, IMG_EDIT_KEY, img_edit);
+   evas_object_data_set(main_window_get(), IMG_EDIT_KEY, img_edit);
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
-   evas_object_event_callback_add(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del, img_edit);
+   evas_object_event_callback_add(main_window_get(), EVAS_CALLBACK_DEL, _on_mwin_del, img_edit);
 
    ap.modal_editor++;
-   return img_edit->win;
+   return img_edit->layout;
 }
 
 Eina_Bool

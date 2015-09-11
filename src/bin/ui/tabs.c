@@ -63,6 +63,8 @@ struct _Tabs {
       Evas_Object *content_import_edj;
       Elm_Object_Item *tab_import_edc;
       Evas_Object *content_import_edc;
+      /* editors */
+      Evas_Object *content_image_editor;
    } menu;
 };
 
@@ -356,7 +358,9 @@ tabs_menu_tab_open(Tabs_Menu view)
 
       /* editor cases */
       case TAB_IMAGE_EDITOR:
-         elm_layout_content_set(tabs.layout, NULL, NULL);
+         if ((ap.project) && (!tabs.menu.content_image_editor))
+           tabs.menu.content_image_editor = image_editor_window_add(ap.project, MULTIPLE);
+         elm_layout_content_set(tabs.layout, NULL, tabs.menu.content_image_editor);
          break;
       case TAB_SOUND_EDITOR:
          elm_layout_content_set(tabs.layout, NULL, NULL);
@@ -373,7 +377,6 @@ tabs_menu_tab_open(Tabs_Menu view)
       default:
          break;
      }
-
 #undef _TAB_HOME_CASE
 }
 
