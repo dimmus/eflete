@@ -109,7 +109,7 @@
 #define SIGNAL_EDITOR_ATTRIBUTE_CHANGED "SIGNAL_EDITOR_ATTRIBUTE_CHANGED"
 /**
  * emited when project is changed in any way (through attribute, .
- * eventinfo - Pointer to Attribute
+ * eventinfo - NULL
  *
  * @ingroup Window
  */
@@ -130,5 +130,22 @@
  * @ingroup Window
  */
 #define SIGNAL_EDITOR_SAVED "SIGNAL_EDITOR_SAVED"
+
+/**
+ * emited when project is opened.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_PROJECT_OPENED "SIGNAL_PROJECT_OPENED"
+
+/**
+ * emited when project is closed.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_PROJECT_CLOSED "SIGNAL_PROJECT_CLOSED"
+
 
 #endif /* SIGNALS_H*/
