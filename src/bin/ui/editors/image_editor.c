@@ -101,10 +101,10 @@ _grid_label_get(void *data,
 }
 
 static void
-_on_mwin_del(void * data,
-             Evas *e __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+_on_image_editor_del(void * data,
+                     Evas *e __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
 {
    Image_Editor *img_edit = (Image_Editor *)data;
 
@@ -120,7 +120,7 @@ _image_editor_del(Image_Editor *img_edit)
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
 
-   evas_object_event_callback_del(main_window_get(), EVAS_CALLBACK_DEL, _on_mwin_del);
+   evas_object_event_callback_del(img_edit->layout, EVAS_CALLBACK_DEL, _on_image_editor_del);
 
    img_edit->pr = NULL;
    elm_gengrid_item_class_free(gic);
@@ -131,10 +131,9 @@ _image_editor_del(Image_Editor *img_edit)
    _itc_group = NULL;
    _itc_part = NULL;
    _itc_state = NULL;
-   evas_object_data_del(main_window_get(), IMG_EDIT_KEY);
+   evas_object_data_del(img_edit->layout, IMG_EDIT_KEY);
    evas_object_data_del(img_edit->gengrid, IMG_EDIT_KEY);
    //evas_object_del(img_edit->gengrid);
-   mw_del(main_window_get());
    _image_info_reset(img_edit);
    free(img_edit);
 }
@@ -750,19 +749,8 @@ _on_button_delete_clicked_cb(void *data,
    eina_list_free(in_use);
 }
 
-static void
-_on_button_close_clicked_cb(void *data,
-                            Evas_Object *obj __UNUSED__,
-                            void *event_info __UNUSED__)
-{
-   Image_Editor *img_edit = (Image_Editor *)data;
-
-   assert(img_edit != NULL);
-
-   eina_list_free(img_edit->unapplied_list);
-   _image_editor_del(img_edit);
-}
-
+TODO("Refactor and uncomment when savings and other stuff of project would be more stable")
+/*
 static void
 _on_button_apply_clicked_cb(void *data,
                             Evas_Object *obj __UNUSED__,
@@ -837,6 +825,7 @@ _on_button_apply_clicked_cb(void *data,
    //project_changed(false);
    _image_editor_del(img_edit);
 }
+*/
 
 ITEM_SEARCH_FUNC(genlist, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE, NULL)
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, NULL)
@@ -1108,13 +1097,8 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    Image_Editor *img_edit = (Image_Editor *)mem_calloc(1, sizeof(Image_Editor));
    img_edit->pr = project;
 
-   ic = elm_icon_add(main_window_get());
-   elm_icon_standard_set(ic, "image");
-   mw_icon_set(main_window_get(), ic);
-
    img_edit->layout = elm_layout_add(main_window_get());
    elm_layout_theme_set(img_edit->layout, "layout", "image_editor", "default");
-   elm_win_inwin_content_set(main_window_get(), img_edit->layout);
 
    img_edit->gengrid = elm_gengrid_add(img_edit->layout);
    elm_object_part_content_set(img_edit->layout,
@@ -1127,9 +1111,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
 
    if (mode == SINGLE)
      {
-       elm_gengrid_multi_select_set(img_edit->gengrid, false);
-       evas_object_smart_callback_add(img_edit->gengrid, "clicked,double",
-                                      _on_button_apply_clicked_cb, img_edit);
+        elm_gengrid_multi_select_set(img_edit->gengrid, false);
      }
    else if (mode == MULTIPLE)
      {
@@ -1142,8 +1124,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
         elm_gengrid_multi_select_set(img_edit->gengrid, true);
         elm_gengrid_multi_select_mode_set(img_edit->gengrid,
                                           ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
-        evas_object_smart_callback_add(img_edit->gengrid, "clicked,double",
-                                       _on_button_apply_clicked_cb, img_edit);
      }
 
    elm_gengrid_select_mode_set(img_edit->gengrid, ELM_OBJECT_SELECT_MODE_ALWAYS);
@@ -1194,20 +1174,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
 
    _image_info_initiate(img_edit);
 
-   BUTTON_ADD(main_window_get(), button, _("Close"));
-   evas_object_smart_callback_add(button, "clicked", _on_button_close_clicked_cb,
-                                  img_edit);
-   elm_object_part_content_set(main_window_get(),
-                               "eflete.swallow.btn_close", button);
-
-   BUTTON_ADD(main_window_get(), button, _("Apply"));
-   evas_object_smart_callback_add(button, "clicked", _on_button_apply_clicked_cb,
-                                  img_edit);
-   elm_object_part_content_set(main_window_get(),
-                               "eflete.swallow.btn_ok", button);
-   TODO("REMOVE AFTER IMPLEMENT IN RIGHT WAY")
-   elm_object_disabled_set(button, true);
-
    if (!gic)
      {
         gic = elm_gengrid_item_class_new();
@@ -1217,7 +1183,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
         gic->func.del = _grid_del;
      }
 
-   evas_object_show(main_window_get());
    elm_object_focus_set(search_entry, true);
    if (!_image_editor_init(img_edit))
      {
@@ -1225,10 +1190,10 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
         abort();
      }
    evas_object_data_set(img_edit->gengrid, IMG_EDIT_KEY, img_edit);
-   evas_object_data_set(main_window_get(), IMG_EDIT_KEY, img_edit);
+   evas_object_data_set(img_edit->layout, IMG_EDIT_KEY, img_edit);
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
-   evas_object_event_callback_add(main_window_get(), EVAS_CALLBACK_DEL, _on_mwin_del, img_edit);
+   evas_object_event_callback_add(img_edit->layout, EVAS_CALLBACK_DEL, _on_image_editor_del, img_edit);
 
    return img_edit->layout;
 }

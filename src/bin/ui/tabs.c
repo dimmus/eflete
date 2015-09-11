@@ -265,6 +265,8 @@ _project_closed(void *data __UNUSED__,
                 Evas_Object *obj __UNUSED__,
                 void *ei __UNUSED__)
 {
+   evas_object_del(tabs.menu.content_image_editor);
+
    tabs.menu.content_image_editor = NULL;
    tabs.menu.content_sound_editor = NULL;
    tabs.menu.content_text_editor = NULL;
