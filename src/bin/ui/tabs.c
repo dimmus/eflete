@@ -246,7 +246,7 @@ _project_opened(void *data __UNUSED__,
                 Evas_Object *obj __UNUSED__,
                 void *ei __UNUSED__)
 {
-   printf("opened!\n");
+   tabs.menu.content_image_editor = image_editor_window_add(ap.project, MULTIPLE);
 }
 
 static void
@@ -254,7 +254,8 @@ _project_closed(void *data __UNUSED__,
                 Evas_Object *obj __UNUSED__,
                 void *ei __UNUSED__)
 {
-   printf("closed!\n");
+   tabs.menu.content_image_editor = NULL;
+   tabs_menu_tab_open(TAB_LAST);
 }
 
 Evas_Object *
@@ -376,9 +377,8 @@ tabs_menu_tab_open(Tabs_Menu view)
 
       /* editor cases */
       case TAB_IMAGE_EDITOR:
-         if ((ap.project) && (!tabs.menu.content_image_editor))
-           tabs.menu.content_image_editor = image_editor_window_add(ap.project, MULTIPLE);
-         elm_layout_content_set(tabs.layout, NULL, tabs.menu.content_image_editor);
+         if (ap.project)
+           elm_layout_content_set(tabs.layout, NULL, tabs.menu.content_image_editor);
          break;
       case TAB_SOUND_EDITOR:
          elm_layout_content_set(tabs.layout, NULL, NULL);

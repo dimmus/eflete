@@ -21,6 +21,7 @@
 #include <regex.h>
 #include "main_window.h"
 #include "navigator.h"
+#include "signals.h"
 
 static char *open = NULL;
 static char *import_edj = NULL;
@@ -70,6 +71,7 @@ _import_end(void *data __UNUSED__, PM_Project_Result result)
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
 
         NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
+        evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_OPENED, NULL);
      }
    evas_object_show(ap.win);
 }
@@ -91,6 +93,7 @@ _open_end(void *data __UNUSED__, PM_Project_Result result)
         NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
         STATUSBAR_PROJECT_PATH(ap.project->pro_path);
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
+        evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_OPENED, NULL);
      }
    evas_object_show(ap.win);
 }

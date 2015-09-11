@@ -670,8 +670,6 @@ _project_open(void *data,
    PROGRESS_SEND(_("Project is open"));
    END_SEND(PM_PROJECT_SUCCESS);
 
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_OPENED, NULL);
-
    return NULL;
 }
 

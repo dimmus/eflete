@@ -19,6 +19,7 @@
 
 #include "tabs_private.h"
 #include "tabs.h"
+#include "signals.h"
 
 Eina_Bool
 progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
@@ -59,6 +60,7 @@ progress_end(void *data __UNUSED__, PM_Project_Result result)
 
            config_recent_add(ap.project->name, ap.project->pro_path);
            _tab_open_project_recents_update();
+           evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_OPENED, NULL);
            break;
         }
       default:

@@ -21,6 +21,7 @@
 #define EFL_EO_API_SUPPORT
 
 #include "wizard_common.h"
+#include "signals.h"
 
 static void
 _on_cancel(void *data,
@@ -90,6 +91,7 @@ _progress_end(void *data __UNUSED__, PM_Project_Result result)
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
 
         NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
+        evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_OPENED, NULL);
      }
 
    ecore_file_recursive_rm(wiew->tmp_dir_path);
