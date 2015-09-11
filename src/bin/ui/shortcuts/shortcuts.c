@@ -393,7 +393,7 @@ _open_edc_cb(void)
 Eina_Bool
 _open_project_cb(void)
 {
-   tabs_tab_home_open(TAB_HOME_OPEN_PROJECT);
+   tabs_menu_tab_open(TAB_HOME_OPEN_PROJECT);
    return true;
 }
 

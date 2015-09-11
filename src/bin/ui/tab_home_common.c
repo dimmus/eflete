@@ -51,7 +51,7 @@ progress_end(void *data __UNUSED__, PM_Project_Result result)
            ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_BASE, false);
            ui_menu_disable_set(ap.menu, MENU_FILE_CLOSE_PROJECT, false);
            navigator_project_set();
-           tabs_tab_home_open(TAB_HOME_PROJECT_INFO);
+           tabs_menu_tab_open(TAB_HOME_PROJECT_INFO);
 
            NOTIFY_INFO(3, _("Project '%s' is opened."), ap.project->name);
            STATUSBAR_PROJECT_PATH(ap.project->pro_path);

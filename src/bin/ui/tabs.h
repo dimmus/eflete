@@ -35,8 +35,12 @@ typedef enum {
    TAB_HOME_IMPORT_EDJ,
    TAB_HOME_IMPORT_EDC,
    TAB_HOME_OPEN_PROJECT,
-   TAB_HOME_LAST
-} Tabs_View;
+   TAB_IMAGE_EDITOR,
+   TAB_SOUND_EDITOR,
+   TAB_COLORCLASS_EDITOR,
+   TAB_STYLE_EDITOR,
+   TAB_LAST
+} Tabs_Menu;
 
 /**
  * Create a tabs.
@@ -49,12 +53,12 @@ Evas_Object *
 tabs_add(void);
 
 /**
- * Show home tab with given view
+ * Show tab according to given option
  *
  * @ingroup Tabs
  */
 void
-tabs_tab_home_open(Tabs_View view);
+tabs_menu_tab_open(Tabs_Menu view);
 
 /**
  * Add new tab. This tab consist a workspace and a liveview.

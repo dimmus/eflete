@@ -101,7 +101,7 @@ _menu_cb(void *data __UNUSED__,
          wizard_new_project_add();
          break;
       case MENU_FILE_OPEN_PROJECT:
-         tabs_tab_home_open(TAB_HOME_OPEN_PROJECT);
+         tabs_menu_tab_open(TAB_HOME_OPEN_PROJECT);
          break;
       case MENU_FILE_IMPORT_EDJ:
          if (!project_close()) break;

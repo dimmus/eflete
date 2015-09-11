@@ -49,6 +49,7 @@ struct _Tabs {
       Elm_Object_Item *item_sound;
       Elm_Object_Item *item_text;
       Elm_Object_Item *item_image;
+      Elm_Object_Item *item_colorclass;
       /* those are used for showing home params */
       Evas_Object *content;
       Evas_Object *tabs;
@@ -114,12 +115,22 @@ _content_set(void *data,
      }
    else
      {
-        tabs_tab_home_open(TAB_HOME_LAST);
         tabs.current_workspace = NULL;
         tabs.current_live_view = NULL;
         tabs.current_group = NULL;
         if (ap.project)
           ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
+
+        if (toolbar_item == tabs.menu.item_home)
+          tabs_menu_tab_open(TAB_LAST);
+        else if (toolbar_item == tabs.menu.item_sound)
+          tabs_menu_tab_open(TAB_SOUND_EDITOR);
+        else if (toolbar_item == tabs.menu.item_text)
+          tabs_menu_tab_open(TAB_STYLE_EDITOR);
+        else if (toolbar_item == tabs.menu.item_image)
+          tabs_menu_tab_open(TAB_IMAGE_EDITOR);
+        else if (toolbar_item == tabs.menu.item_colorclass)
+          tabs_menu_tab_open(TAB_COLORCLASS_EDITOR);
      }
 
    /* call 'tab,changed' on tab click, and sent Group accociated with clicked
@@ -290,15 +301,18 @@ tabs_add(void)
       elm_toolbar_item_append(tabs.menu.tabs, NULL, _("Project info"), _home_tab_change, NULL);
 
    tabs.menu.item_home = elm_toolbar_item_append(tabs.toolbar_editors, "home", NULL,
-                                            _content_set, NULL);
-   tabs.menu.item_home = elm_toolbar_item_append(tabs.toolbar_editors, "image2", NULL,
-                                            _content_set, NULL);
-   tabs.menu.item_home = elm_toolbar_item_append(tabs.toolbar_editors, "sound2", NULL,
-                                            _content_set, NULL);
-   tabs.menu.item_home = elm_toolbar_item_append(tabs.toolbar_editors, "text2", NULL,
-                                            _content_set, NULL);
+                                                 _content_set, NULL);
+   tabs.menu.item_image = elm_toolbar_item_append(tabs.toolbar_editors, "image2", NULL,
+                                                  _content_set, NULL);
+   tabs.menu.item_sound = elm_toolbar_item_append(tabs.toolbar_editors, "sound2", NULL,
+                                                  _content_set, NULL);
+   tabs.menu.item_text = elm_toolbar_item_append(tabs.toolbar_editors, "text2", NULL,
+                                                 _content_set, NULL);
+   tabs.menu.item_colorclass = elm_toolbar_item_append(tabs.toolbar_editors, "color", NULL,
+                                                       _content_set, NULL);
 
    elm_toolbar_item_selected_set(tabs.menu.item_home, true);
+   elm_layout_content_set(tabs.layout, NULL, tabs.menu.content);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_ADDED, _part_added, NULL);
@@ -310,38 +324,59 @@ tabs_add(void)
 }
 
 void
-tabs_tab_home_open(Tabs_View view)
+tabs_menu_tab_open(Tabs_Menu view)
 {
    assert(tabs.layout != NULL);
 
-   if (!elm_toolbar_item_selected_get(tabs.menu.item_home))
-     elm_toolbar_item_selected_set(tabs.menu.item_home, true);
-
    _content_unset();
+
+
+#define _TAB_HOME_CASE(HOME_TAB) \
+   elm_toolbar_item_selected_set(tabs.menu.HOME_TAB, true); \
+   elm_toolbar_item_selected_set(tabs.menu.item_home, true); \
    elm_layout_content_set(tabs.layout, NULL, tabs.menu.content);
 
    switch(view)
      {
+        /* home case */
       case TAB_HOME_PROJECT_INFO:
-         elm_toolbar_item_selected_set(tabs.menu.tab_project_info, true);
+         _TAB_HOME_CASE(tab_project_info);
          break;
       case TAB_HOME_OPEN_PROJECT:
-         elm_toolbar_item_selected_set(tabs.menu.tab_open_project, true);
+         _TAB_HOME_CASE(tab_open_project);
          _tab_open_project_recents_update();
          break;
       case TAB_HOME_NEW_PROJECT:
-         elm_toolbar_item_selected_set(tabs.menu.tab_new_project, true);
+         _TAB_HOME_CASE(tab_new_project);
          break;
       case TAB_HOME_IMPORT_EDJ:
-         elm_toolbar_item_selected_set(tabs.menu.tab_import_edj, true);
+         _TAB_HOME_CASE(tab_import_edj);
          break;
       case TAB_HOME_IMPORT_EDC:
-         elm_toolbar_item_selected_set(tabs.menu.tab_import_edj, true);
+         _TAB_HOME_CASE(tab_import_edc);
          break;
-      case TAB_HOME_LAST:
+
+      /* editor cases */
+      case TAB_IMAGE_EDITOR:
+         elm_layout_content_set(tabs.layout, NULL, NULL);
+         break;
+      case TAB_SOUND_EDITOR:
+         elm_layout_content_set(tabs.layout, NULL, NULL);
+         break;
+      case TAB_COLORCLASS_EDITOR:
+         elm_layout_content_set(tabs.layout, NULL, NULL);
+         break;
+      case TAB_STYLE_EDITOR:
+         elm_layout_content_set(tabs.layout, NULL, NULL);
+         break;
+      case TAB_LAST:
+         elm_toolbar_item_selected_set(tabs.menu.item_home, true);
+         elm_layout_content_set(tabs.layout, NULL, tabs.menu.content);
       default:
          break;
      }
+
+#undef _TAB_HOME_CASE
 }
 
 static void
