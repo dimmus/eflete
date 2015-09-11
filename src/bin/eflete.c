@@ -49,12 +49,6 @@ colorselector_get(void)
    return ap.colorsel;
 }
 
-History *
-history_get(void)
-{
-   return ap.history;
-}
-
 Eina_Bool
 app_init()
 {

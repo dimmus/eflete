@@ -19,11 +19,6 @@ libete_a_SOURCES = \
 ../../src/bin/editor/change.c \
 ../../src/bin/editor/new_history.c \
 ../../src/bin/editor/editor_group.c \
-../../src/bin/history/history.c \
-../../src/bin/history/history_attribute.c \
-../../src/bin/history/history_state.c \
-../../src/bin/history/history_part.c \
-../../src/bin/history/history_ui.c \
 ../../src/bin/ui/history_ui.c \
 ../../src/bin/ui/part_list.c \
 ../../src/bin/ui/cursor.c \
@@ -120,7 +115,6 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/bin/logger \
 -I${top_srcdir}/src/bin/project_manager \
 -I${top_srcdir}/src/bin/config \
--I${top_srcdir}/src/bin/history \
 -I${top_srcdir}/src/bin/ui \
 -I${top_srcdir}/src/bin/ui/shortcuts \
 -I${top_srcdir}/src/bin/ui/container \

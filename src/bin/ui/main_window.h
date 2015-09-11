@@ -179,24 +179,6 @@ Eina_Bool
 ui_main_window_del(void);
 
 /**
- * Clear groupspace with highlight. Clear items from states, signals
- * groups and parts genlists.
- * Moved to own method for the separation of the interaction between the blocks.
- *
- * @ingroup Window
- */
-void
-ui_part_back(void);
-
-/**
- * This function will be called when back from style list button is clicked.
- *
- * @ingroup Window
- */
-void
-ui_style_back(void);
-
-/**
  * Update displayed information about current part state. Update part object
  * on workspace with new state parameters.
  * Moved to own method for the separation of the interaction between the blocks.
@@ -221,19 +203,6 @@ ui_state_select(Evas_Object *obj, Eina_Stringshare *state);
  */
 Evas_Object *
 ui_part_select(Part* part);
-
-/**
- * View style objects on workspace, load signals in list. Show, or update
- * information about group parameters.
- * Moved to own method for the separation of the interaction between the blocks.
- *
- * @param style The @Style structure object.
- * @return EINA_TRUE if successful, EINA_FALSE otherwise.
- *
- * @ingroup Window
- */
-Eina_Bool
-ui_style_clicked(Style *style);
 
 /**
  * Load project data to App_Data structure. Turn to work state for application.

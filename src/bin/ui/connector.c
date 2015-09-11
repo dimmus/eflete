@@ -35,219 +35,6 @@ static Eina_Bool
 _project_close_request(Eina_Bool changed);
 */
 
-static void
-_add_part_dialog(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   part_dialog_add();
-}
-
-static void
-_add_part_item_dialog(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info)
-{
-   Part *part = (Part *)event_info;
-
-   item_dialog_add(part);
-}
-
-static void
-_on_ws_part_unselect(void *data __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info)
-{
-   const char *part = (const char *)event_info;
-
-   assert(part != NULL);
-
-   ui_widget_list_part_selected_set(ui_block_widget_list_get(), part, false);
-   ui_states_list_data_unset();
-   //ui_property_part_unset(ui_block_property_get());
-}
-
-static void
-_del_part(void *data __UNUSED__,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
-{
-   Style *style = ap.project->current_style;
-   char *part_name = NULL;
-
-   assert(style != NULL);
-
-   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get());
-   if (!part)
-     {
-        NOTIFY_INFO(3, _("No part selected"));
-        return;
-     }
-   part_name = strdup(part->name);
-
-   /* In case when deleting part which is dragable area for another part,
-      reloading style into liveview crash application */
-   history_diff_add(style->obj, PART_TARGET, DEL, part_name);
-//   live_view_part_del(ap.live_view, part);
-   /*if (workspace_edit_object_part_del(ap.workspace, part->name))
-     ui_widget_list_selected_part_del(ui_block_widget_list_get(), style);*/
-
-   if (!style->parts)
-     {
-        ui_signal_list_data_unset(ap.block.signal_list);
-        _on_ws_part_unselect(NULL, ap.workspace, part_name);
-//        workspace_highlight_unset(ap.workspace);
-     }
-
-   free(part_name);
-   project_changed(true);
-}
-
-static void
-_del_part_item(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info)
-{
-   Eina_Stringshare *item_name = (Eina_Stringshare *)event_info;
-   Evas_Object *widget_tabs = ui_block_widget_list_get();
-
-   assert(widget_tabs != NULL);
-
-   Part *part = ui_widget_list_selected_part_get(widget_tabs);
-
-   assert(part != NULL);
-
-   if (workspace_edit_object_part_item_del(ap.workspace, part->name, item_name))
-     {
-        edje_edit_string_list_free(part->items);
-        part->items = edje_edit_part_items_list_get(ap.project->current_style->obj, part->name);
-        ui_widget_list_part_items_refresh(widget_tabs, part, false);
-     }
-   else
-     {
-        ERR("Failed to delete item")
-        abort();
-     }
-   workspace_edit_object_recalc(ap.workspace);
-   project_changed(true);
-}
-
-static void
-_above_part(void *data __UNUSED__,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
-{
-   Eina_Inlist *tmp_list = NULL;
-   Style *style = ap.project->current_style;
-   if (!ui_widget_list_selected_part_above(ui_block_widget_list_get(), style))
-      return;
-   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get());
-   if (!part) return;
-   history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
-   if (!workspace_edit_object_part_above(ap.workspace, part->name))
-     {
-        NOTIFY_ERROR(_("Internal edje error occurred on part move"));
-        ui_widget_list_selected_part_below(ui_block_widget_list_get(), style);
-     }
-   tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
-   Part *rel = EINA_INLIST_CONTAINER_GET(tmp_list->next, Part);
-   live_view_part_restack_above(ap.live_view, part, rel);
-   project_changed(true);
-}
-
-static void
-_below_part(void *data __UNUSED__,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
-{
-   Eina_Inlist *tmp_list = NULL;
-   Style *style = ap.project->current_style;
-   if (!ui_widget_list_selected_part_below(ui_block_widget_list_get(), style))
-      return;
-   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get());
-   if (!part) return;
-   history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
-   if (!workspace_edit_object_part_below(ap.workspace, part->name))
-     {
-        NOTIFY_ERROR(_("Internal edje error occurred on part move"));
-        ui_widget_list_selected_part_above(ui_block_widget_list_get(), style);
-     }
-
-   tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
-   if (!tmp_list->next)
-     live_view_part_restack_below(ap.live_view, part);
-   else
-     {
-        Part *rel = EINA_INLIST_CONTAINER_GET(tmp_list->next, Part);
-        live_view_part_restack_above(ap.live_view, part, rel);
-     }
-   project_changed(true);
-}
-
-static void
-_restack_part_above(void *data __UNUSED__,
-                    Evas_Object *obj __UNUSED__,
-                    void *event_info)
-{
-   Part *rel = (Part *)event_info;
-   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get());
-   Style *style = ap.project->current_style;
-   Eina_Inlist *tmp_list = NULL, *tmp_prev = NULL;
-
-   if ((!part) || (!style)) return;
-   history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
-   workspace_edit_object_part_restack(ap.workspace, part->name, rel->name, false);
-   live_view_part_restack_above(ap.live_view, part, rel);
-
-   tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
-   tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel));
-   project_changed(true);
-   if (!tmp_list) return;
-
-   style->parts = eina_inlist_remove(style->parts, tmp_list);
-   style->parts = eina_inlist_prepend_relative(style->parts, tmp_list, tmp_prev);
-}
-
-static void
-_restack_part_below(void *data __UNUSED__,
-                    Evas_Object *obj __UNUSED__,
-                    void *event_info)
-{
-   Part *rel = (Part *)event_info;
-   Style *style = ap.project->current_style;
-   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get());
-   Eina_Inlist *tmp_list = NULL, *tmp_prev = NULL;
-
-   if ((!part) || (!style)) return;
-   history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
-   workspace_edit_object_part_restack(ap.workspace, part->name, rel->name, true);
-   live_view_part_restack_below(ap.live_view, part);
-
-   tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
-   tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel));
-   project_changed(true);
-   if (!tmp_list) return;
-
-   style->parts = eina_inlist_remove(style->parts, tmp_list);
-   style->parts = eina_inlist_append_relative(style->parts, tmp_list, tmp_prev);
-}
-
-static void
-_show_part(void *data __UNUSED__,
-          Evas_Object *obj __UNUSED__,
-          void *event_info)
-{
-   const char *part_name = (const char *)event_info;
-
-   assert(part_name != NULL);
-
-   if (!workspace_edit_object_visible_set(ap.workspace, part_name, true))
-     {
-        ERR("Can't make workspace_edit_object visible");
-        abort();
-     }
-}
-
 /*
 static void
 _signal_select(void *data __UNUSED__,
@@ -281,22 +68,7 @@ _signal_select(void *data __UNUSED__,
 }
 */
 
-static void
-_hide_part(void *data __UNUSED__,
-          Evas_Object *obj __UNUSED__,
-          void *event_info)
-{
-   const char *part_name = (const char *)event_info;
-
-   assert(part_name != NULL);
-
-   if (!workspace_edit_object_visible_set(ap.workspace, part_name, false))
-     {
-        ERR("Can't hide workspace_edit_object");
-        abort();
-     }
-}
-
+/*
 static void
 _add_state(void *data __UNUSED__,
            Evas_Object *obj __UNUSED__,
@@ -340,7 +112,7 @@ _del_state(void *data __UNUSED__,
    free(split[0]);
    free(split);
 }
-
+*/
 static void
 _del_layout(void *data __UNUSED__,
             Evas_Object *obj __UNUSED__,
@@ -491,50 +263,6 @@ _add_style_dailog(void *data __UNUSED__,
    style_dialog_add();
 }
 
-static void
-_part_name_change(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info)
-{
-   const char *new_name = (const char *)event_info;
-
-   assert(new_name != NULL);
-
-   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get());
-
-   live_view_part_rename(ap.live_view, part, new_name);
-   ui_widget_list_part_update(ui_block_widget_list_get(), part->name);
-}
-
-static void
-_property_change(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info)
-{
-   Part *part = (Part *)event_info;
-
-   assert(part != NULL);
-
-   Evas_Object *prop = ui_block_property_get();
-
-   assert(prop != NULL);
-
-   project_changed(false);
-   //ui_property_state_set(prop, part);
-}
-
-static void
-_on_ws_part_select(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info)
-{
-   const char *part = (const char *)event_info;
-
-   assert(part != NULL);
-
-   ui_widget_list_part_selected_set(ui_block_widget_list_get(), part, true);
-}
-
 Widget *
 ui_widget_from_ap_get(void)
 {
@@ -580,156 +308,6 @@ ui_class_from_ap_get(void)
    parent_eoi = elm_genlist_item_parent_get(eoi);
    if (parent_eoi) eoi = parent_eoi;
    return elm_object_item_data_get(eoi);
-}
-
-
-void
-ui_part_back(void)
-{
-   Evas_Object *wl_list, *history_list;
-
-
-   wl_list = ui_block_widget_list_get();
-   evas_object_smart_callback_del_full(wl_list, "wl,part,item,add", _add_part_item_dialog, NULL);
-   evas_object_smart_callback_del_full(wl_list, "wl,part,item,del", _del_part_item, NULL);
-   evas_object_smart_callback_del_full(wl_list, "wl,part,add", _add_part_dialog, NULL);
-   evas_object_smart_callback_del_full(wl_list, "wl,part,del", _del_part, NULL);
-   evas_object_smart_callback_del_full(wl_list, "wl,part,above", _above_part, NULL);
-   evas_object_smart_callback_del_full(wl_list, "wl,part,below", _below_part, NULL);
-   evas_object_smart_callback_del_full(wl_list, "wl,part,show", _show_part, NULL);
-   evas_object_smart_callback_del_full(wl_list, "wl,part,hide", _hide_part, NULL);
-   evas_object_smart_callback_del_full(wl_list, "wl,part,moved,up",
-                                       _restack_part_above, NULL);
-   evas_object_smart_callback_del_full(wl_list, "wl,part,moved,down",
-                                       _restack_part_below, NULL);
-   history_list = ui_block_history_get();
-   evas_object_hide(history_list);
-
-   evas_object_smart_callback_del_full(ap.workspace, "part,name,changed",
-                                       _part_name_change, NULL);
-
-   //workspace_highlight_unset(ap.workspace);
-   //workspace_edit_object_unset(ap.workspace);
-   ui_states_list_data_unset();
-   ui_signal_list_data_unset(ap.block.signal_list);
-   ui_block_content_visible(ap.block.right_top, false);
-//   live_view_widget_style_unset(ap.live_view);
-
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
-
-   evas_object_smart_callback_del_full(ap.workspace, "ws,part,selected",
-                                       _on_ws_part_select, NULL);
-   evas_object_smart_callback_del_full(ap.workspace, "ws,part,unselected",
-                                       _on_ws_part_unselect, NULL);
-   evas_object_smart_callback_del_full(ap.workspace, "part,changed", _property_change, NULL);
-#ifdef HAVE_ENVENTOR
-   enventor_object_project_unload(ap.project);
-#endif /* HAVE_ENVENTOR */
-}
-
-/**
-  * may be usable for future API.
-  */
-void
-ui_style_back(void)
-{
-}
-
-Evas_Object *
-ui_part_select(Part* part)
-{
-   Evas_Object *prop;
-
-   assert(part != NULL);
-
-   prop = ui_block_property_get();
-
-   assert(prop != NULL);
-
-   //ui_property_part_set(prop, part);
-
-   ui_states_list_data_set(ap.project->current_style, part);
-
-   evas_object_smart_callback_del_full(ap.workspace, "part,name,changed",
-                                       _part_name_change, NULL);
-   evas_object_smart_callback_add(ap.workspace, "part,name,changed",
-                                  _part_name_change, NULL);
-
-   //ui_property_state_set(prop, part);
-/*   workspace_edit_object_part_state_set(ap.workspace, part);
-   workspace_highlight_unset(ap.workspace);
-   workspace_highlight_set(ap.workspace, part);*/
-   evas_object_smart_callback_del_full(ap.workspace, "part,changed", _property_change, NULL);
-   evas_object_smart_callback_add(ap.workspace, "part,changed", _property_change, NULL);
-
-   return ap.block.state_list;
-}
-
-/* FIXME: rename to style_clicked */
-Eina_Bool
-ui_style_clicked(Style *style)
-{
-   Evas_Object *wl_list, *prop, *history_list;
-   Style *_style, *_alias_style;
-
-   assert(ap.project != NULL);
-   assert(style != NULL);
-
-   _alias_style = style;
-   _style = style;
-   if (_alias_style->isAlias) _style = _alias_style->main_group;
-
-   wl_list = ui_block_widget_list_get();
-   evas_object_smart_callback_add(wl_list, "wl,part,add", _add_part_dialog, NULL);
-   evas_object_smart_callback_add(wl_list, "wl,part,del", _del_part, NULL);
-   evas_object_smart_callback_add(wl_list, "wl,part,above", _above_part, NULL);
-   evas_object_smart_callback_add(wl_list, "wl,part,below", _below_part, NULL);
-   evas_object_smart_callback_add(wl_list, "wl,part,show", _show_part, NULL);
-   evas_object_smart_callback_add(wl_list, "wl,part,hide", _hide_part, NULL);
-   evas_object_smart_callback_add(wl_list, "wl,part,moved,up", _restack_part_above, NULL);
-   evas_object_smart_callback_add(wl_list, "wl,part,moved,down",_restack_part_below, NULL);
-   evas_object_smart_callback_add(wl_list, "wl,part,item,add", _add_part_item_dialog, NULL);
-   evas_object_smart_callback_add(wl_list, "wl,part,item,del", _del_part_item, NULL);
-
-   TODO("need to move this callbacks to his blocks")
-   evas_object_smart_callback_del_full(ap.block.state_list, "stl,state,add", _add_state, NULL);
-   evas_object_smart_callback_add(ap.block.state_list, "stl,state,add", _add_state, NULL);
-   evas_object_smart_callback_del_full(ap.block.state_list, "stl,state,del", _del_state, NULL);
-   evas_object_smart_callback_add(ap.block.state_list, "stl,state,del", _del_state, NULL);
-
-//   evas_object_smart_callback_del_full(ap.block.signal_list, "sl,signal,select", _signal_select, NULL);
-//   evas_object_smart_callback_add(ap.block.signal_list, "sl,signal,select", _signal_select, NULL);
-   ui_signal_list_data_set(ap.block.signal_list, _style);
-
-   //workspace_edit_object_set(ap.workspace, _style, ap.project->dev);
-//   evas_object_smart_callback_add(ap.workspace, "ws,part,selected",
-//                                  _on_ws_part_select, NULL);
-   evas_object_smart_callback_add(ap.workspace, "ws,part,unselected",
-                                  _on_ws_part_unselect, NULL);
-
-   /* style properties */
-   prop = ui_block_property_get();
-   if (!prop)
-     {
-        prop = ui_property_add(ap.win);
-        ui_block_property_set(prop);
-     }
-
-//   ui_property_style_set(prop, _alias_style, ap.workspace);
-   evas_object_show(prop);
-   ap.project->current_style = _style;
-
-   pm_save_to_dev(ap.project, ap.project->current_style, true);
-
-   history_list = history_genlist_get(ap.history, ap.block.right_top);
-   history_module_add(_style->obj);
-   ui_block_history_set(history_list);
-   ui_block_content_visible(ap.block.right_top, true);
-
-//   live_view_widget_style_set(ap.live_view, ap.project, _style);
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, false);
-
-   return true;
 }
 
 static inline void
@@ -1797,6 +1375,7 @@ _on_state_selected(void *data __UNUSED__,
 }
 */
 
+/*
 static void
 _on_style_clicked(void *datai __UNUSED__,
                   Evas_Object *obj __UNUSED__,
@@ -1809,7 +1388,7 @@ _on_style_clicked(void *datai __UNUSED__,
    ui_style_clicked(_style);
    workspace_zoom_factor_set(ap.workspace, 1.0);
 }
-
+*/
 static void
 _on_part_selected(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
@@ -1825,6 +1404,7 @@ _on_part_selected(void *data __UNUSED__,
      evas_object_smart_callback_add(gl_states, "stl,state,select", _on_state_selected, NULL);*/
 }
 
+/*
 static void
 _on_part_back(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
@@ -1833,14 +1413,7 @@ _on_part_back(void *data __UNUSED__,
    workspace_zoom_factor_set(ap.workspace, 1.0);
    ui_part_back();
 }
-
-static void
-_on_style_back(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_data __UNUSED__)
-{
-   ui_style_back();
-}
+*/
 
 static void
 _on_part_item_selected(void *data __UNUSED__,
@@ -1870,10 +1443,7 @@ add_callbacks_wd(Evas_Object *wd_list)
 {
    assert(wd_list != NULL);
 
-   evas_object_smart_callback_add(wd_list, "wl,style,select", _on_style_clicked, NULL);
    evas_object_smart_callback_add(wd_list, "wl,part,select", _on_part_selected, NULL);
-   evas_object_smart_callback_add(wd_list, "wl,part,back", _on_part_back, NULL);
-   evas_object_smart_callback_add(wd_list, "wl,style,back", _on_style_back, NULL);
    evas_object_smart_callback_add(wd_list, "wl,part,item,select",
                                   _on_part_item_selected, NULL);
    evas_object_smart_callback_add(wd_list, "wl,part,item,unselect",

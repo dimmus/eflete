@@ -561,18 +561,22 @@ Eina_Bool
 _undo_cb(void)
 {
    SKIP_IN_ENVENTOR_MODE
-   if ((ap.project) && (ap.project->current_style))
+/*   if ((ap.project) && (ap.project->current_style))
      history_undo(ap.project->current_style->obj, 1);
-   return true;
+   return true;*/
+   return false;
+   TODO("Implement undo shortcut");
 }
 
 Eina_Bool
 _redo_cb(void)
 {
    SKIP_IN_ENVENTOR_MODE
-   if ((ap.project) && (ap.project->current_style))
+/*   if ((ap.project) && (ap.project->current_style))
      history_redo(ap.project->current_style->obj, 1);
-   return true;
+   return true;*/
+   return false;
+   TODO("Implement redo shortcut");
 }
 
 /*========================================================*/

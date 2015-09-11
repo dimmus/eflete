@@ -295,7 +295,8 @@ _menu_undo_cb(void *data,
    assert(ws != NULL);
 
    if (!ws->group) return;
-   history_undo(ws->group->edit_object, 1);
+   TODO("Implement undo")
+   /*history_undo(ws->group->edit_object, 1);*/
 }
 
 static void
@@ -308,7 +309,9 @@ _menu_redo_cb(void *data,
    assert(ws != NULL);
 
    if (!ws->group) return;
-   history_redo(ws->group->edit_object, 1);
+
+   TODO("Implement redo")
+   /* history_redo(ws->group->edit_object, 1); */
 }
 
 static void
@@ -715,11 +718,6 @@ _highlight_changed_cb(void *data,
                                        part->current_state->parsed_name, part->current_state->parsed_val,
                                        new_max_h);
           }
-        history_diff_add(sd->group->edit_object, PROPERTY, CONTAINER, VAL_INT, old_max_w, events->w,
-                         old_max_h, events->h, (void *)edje_edit_state_max_w_set,
-                         sd->group->name,
-                         (void *)edje_edit_state_max_h_set, "max size",
-                         part->name, part->current_state->parsed_name, part->current_state->parsed_val);
      }
    else
      {
@@ -751,12 +749,6 @@ _highlight_changed_cb(void *data,
                                          part->current_state->parsed_name, part->current_state->parsed_val,
                                          align_y);
           }
-        history_diff_add(sd->group->edit_object, PROPERTY, CONTAINER, VAL_DOUBLE, old_align_x,
-                         align_x, old_align_y, align_y,
-                         (void *)edje_edit_state_align_x_set,
-                         sd->group->name,
-                         (void *)edje_edit_state_align_y_set, "align",
-                         part->name, part->current_state->parsed_name, part->current_state->parsed_val);
      }
 
    project_changed(false);

@@ -136,14 +136,13 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
  * @param SUB The prefix of the attribute
  * @param VALUE The value of the attribute
  * @param TYPE The spinner value type: int, double
- * @param HISTORY_TYPE The history value type: VAL_INT, VAL_DOUBLE
  * @param MULTIPLIER The multiplier to convert the value to percent
  *
  * @note for internal usage in property_macros.h
  *
  * @ingroup Property_Macro
  */
-#define COMMON_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, ARGS) \
+#define COMMON_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, ARGS) \
 static void \
 _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj, \
@@ -151,17 +150,12 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    TYPE value = elm_spinner_value_get(obj); \
-   TYPE old_value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, value)) \
      { \
        ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
        abort(); \
      } \
-   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
-                    value, pd->group->name,\
-                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
-                    pd->part->name, pd->part->current_state->parsed_name, pd->part->current_state->parsed_val); \
    project_changed(false); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
@@ -234,16 +228,11 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
-   int old_value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
-   int value = item->index; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, (TYPE)item->index)) \
      { \
         ERR("Cann't apply value '%s' for attribute '"#TEXT"'.", item->title); \
         abort(); \
      } \
-   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_INT, old_value, \
-                    value, pd->group->name,\
-                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS_DIFF); \
    project_changed(false); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
@@ -416,15 +405,11 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Eina_Bool value = elm_check_state_get(obj); \
-   Eina_Bool old_value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS);\
    if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, value)) \
      { \
        ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
        abort(); \
      } \
-   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_INT, old_value, \
-                    value, pd->group->name,\
-                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS_DIFF); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
    project_changed(false); \
 }
@@ -521,16 +506,11 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
-   Eina_Stringshare *old_value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, (char *)item->title)) \
      { \
        ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
        abort(); \
      } \
-   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_STRING, old_value, \
-                    item->title, pd->group->name, \
-                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS); \
-   eina_stringshare_del(old_value); \
    project_changed(false); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
@@ -619,15 +599,10 @@ _on_##SUB##_##VALUE##_change(void *data, \
      return; \
    const char *text = elm_entry_entry_get(obj); \
    char *value = elm_entry_markup_to_utf8(text); \
-   const char *old_value =  edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
    edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, value); \
-   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_STRING, old_value, \
-                    value, pd->group->name,\
-                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE ARGS); \
    elm_object_focus_set(obj, true); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
    project_changed(false); \
-   eina_stringshare_del(old_value); \
    free(value); \
 }
 
@@ -900,12 +875,8 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
-   const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object, \
-                                                           pd->part->name);\
-   const char *value = NULL; \
    if (item->index != 0) \
      { \
-        value = item->title; \
         if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, \
                                              pd->part->name, item->title)) \
           { \
@@ -922,10 +893,6 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
         edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, pd->part->name, NULL); \
         pd->attributes.part.previous_source = 0; \
      } \
-   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_STRING, old_value, \
-                    value, pd->group->name,\
-                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
-                    pd->part->name, NULL, 0.0); \
    project_changed(true); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
@@ -1090,14 +1057,8 @@ _on_part_drag_##VALUE1##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Eina_Bool value = elm_check_state_get(obj); \
-   Eina_Bool old_value = edje_edit_part_drag_##VALUE1##_get(pd->group->edit_object, \
-                                                            pd->part->name);\
    edje_edit_part_drag_##VALUE1##_set(pd->group->edit_object, pd->part->name, value); \
    prop_part_drag_control_disable_set(pd, false); \
-   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_INT, old_value, \
-                    value, pd->group->name,\
-                    (void*)edje_edit_part_drag_##VALUE1##_set, #SUB"_"#VALUE1, \
-                     pd->part->name, NULL, 0.0); \
    project_changed(false); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 } \
@@ -1108,13 +1069,7 @@ _on_part_drag_##VALUE2##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    int value = elm_spinner_value_get(obj); \
-   int old_value = edje_edit_part_drag_##VALUE2##_get(pd->group->edit_object, \
-                                                         pd->part->name);\
    edje_edit_part_drag_##VALUE2##_set(pd->group->edit_object, pd->part->name, value); \
-   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_INT, old_value, \
-                    value, pd->group->name,\
-                    (void*)edje_edit_part_drag_##VALUE2##_set, #SUB"_"#VALUE2, \
-                     pd->part->name, NULL, 0.0); \
    project_changed(false); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
@@ -1249,7 +1204,6 @@ COMMON_2SPINNER_ADD(PART_ITEM, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  * @param SUB The prefix of main parameter of state attribute;
  * @param VALUE The value of state attribute.
  * @param TYPE The spinner value type: int, double
- * @param HISTORY_TYPE The history value type: VAL_INT, VAL_DOUBLE
  * @param MULTIPLIER The multiplier to convert the value to percent
  * @param DIF_VALUE opposite to VALUE attribute
  * @param CHECK function that compire DIF_VALUE and VALUE attribute
@@ -1258,7 +1212,7 @@ COMMON_2SPINNER_ADD(PART_ITEM, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  */
 TODO("Add support PART_ITEM attributes to history")
 TODO("After history support please refactor and merge this macro with STATE_MINMAX_ATTR_SPINNER_CALLBACK")
-#define PART_ITEM_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, DIF_VALUE, CHECK) \
+#define PART_ITEM_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, DIF_VALUE, CHECK) \
 static void \
 _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj, \
@@ -1293,13 +1247,12 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * @param SUB The prefix of main parameter of state attribute;
  * @param VALUE The value of state attribute.
  * @param TYPE The spinner value type: int, double
- * @param HISTORY_TYPE The history value type: VAL_INT, VAL_DOUBLE
  * @param MULTIPLIER The multiplier to convert the value to percent
  *
  * @ingroup Property_Macro
  */
 TODO("Add support PART_ITEM attributes to history")
-#define PART_ITEM_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
+#define PART_ITEM_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER) \
 static void \
 _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj, \
@@ -1426,12 +1379,11 @@ COMMON_2SPINNER_ADD(PART_ITEM_DOUBLEVAL, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBE
  * @param SUB The prefix of main parameter of state attribute;
  * @param VALUE The value of state attribute.
  * @param TYPE The spinner value type: int, double
- * @param HISTORY_TYPE The history value type: VAL_INT, VAL_DOUBLE
  * @param MULTIPLIER The multiplier to convert the value to percent
  *
  * @ingroup Property_Macro
  */
-#define PART_ITEM_DOUBLEVAL_ATTR_SPINNER_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
+#define PART_ITEM_DOUBLEVAL_ATTR_SPINNER_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER) \
    COMMON_2SPINNER_DOUBLEVAL_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER, PART_ITEM_ARGS)
 
 /*****************************************************************************/
@@ -1520,13 +1472,12 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
  * @param SUB The prefix of main parameter of state attribute;
  * @param VALUE The value of state attribute.
  * @param TYPE The spinner value type: int, double
- * @param HISTORY_TYPE The history value type: VAL_INT, VAL_DOUBLE
  * @param MULTIPLIER The multiplier to convert the value to percent
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
-   COMMON_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, STATE_ARGS)
+#define STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER) \
+   COMMON_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, STATE_ARGS)
 
 /**
  * Macro defines a callback for callbacks of min and max changes.
@@ -1534,7 +1485,6 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
  * @param SUB The prefix of main parameter of state attribute;
  * @param VALUE The value of state attribute.
  * @param TYPE The spinner value type: int, double
- * @param HISTORY_TYPE The history value type: VAL_INT, VAL_DOUBLE
  * @param MULTIPLIER The multiplier to convert the value to percent
  * @param DIF_VALUE opposite to VALUE attribute
  * @param CHECK function that compire DIF_VALUE and VALUE attribute
@@ -1542,7 +1492,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
  * @ingroup Property_Macro
  */
 TODO("merge STATE_MINMAX_... with GROUP_ATTR_2SPINNER... because they are really same")
-#define STATE_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER, DIF_VALUE, CHECK) \
+#define STATE_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, DIF_VALUE, CHECK) \
 static void \
 _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj, \
@@ -1550,7 +1500,6 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    TYPE value = elm_spinner_value_get(obj); \
-   TYPE old_value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object STATE_ARGS); \
    TYPE opposite_value = edje_edit_##SUB##_##DIF_VALUE##_get(pd->group->edit_object STATE_ARGS); \
    value /= MULTIPLIER; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object STATE_ARGS, value)) \
@@ -1567,10 +1516,6 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
           } \
         elm_spinner_value_set(pd->attributes.state.DIF_VALUE, value); \
      } \
-   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
-                    value, pd->group->name,\
-                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
-                    pd->part->name, pd->part->current_state->parsed_name, pd->part->current_state->parsed_val); \
    project_changed(false); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
@@ -1831,12 +1776,6 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
        abort(); \
      } \
    evas_object_color_set(pd->attributes.MEMBER.VALUE##_obj, r*a/255, g*a/255, b*a/255, a); \
-   if ((r != old_r) || (g != old_g) || (b != old_b) || (a != old_a)) \
-     history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_FOUR, old_r, old_g, old_b, \
-                      old_a, r, g, b, a, pd->group->name, \
-                      (void*)edje_edit_##SUB##_##VALUE##_set, #SUB"_"#VALUE, \
-                      pd->part->name, pd->part->current_state->parsed_name, \
-                      pd->part->current_state->parsed_val); \
    project_changed(false); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 } \
@@ -1912,20 +1851,11 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
-   const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object, \
-                                                           pd->part->name, \
-                                                           pd->part->current_state->parsed_name, \
-                                                           pd->part->current_state->parsed_val);\
    edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, pd->part->name, \
                                    pd->part->current_state->parsed_name, pd->part->current_state->parsed_val, \
                                    !strcmp(item->title, _("None")) ? NULL : item->title); \
-   history_diff_add(pd->group->edit_object, PROPERTY, MODIFY, VAL_STRING, old_value, \
-                    item->title, pd->group->name,\
-                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
-                    pd->part->name, pd->part->current_state->parsed_name, pd->part->current_state->parsed_val); \
    project_changed(true); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-   edje_edit_string_free(old_value); \
 }
 
 /*****************************************************************************/

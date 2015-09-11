@@ -36,7 +36,6 @@ live_view_test \
 live_view_prop_test \
 live_widget_test \
 about_window_test \
-history_test \
 colorselector_test \
 shortcuts_test
 
@@ -500,22 +499,6 @@ colorselector_test_SOURCES = \
 ../tests/test_colorselector/colorselector_color_get.c
 colorselector_test_CFLAGS = ${FLAGS}
 colorselector_test_LDADD = ${LD}
-
-history_test_SOURCES = \
-../tests/test_history/test_history.c \
-../tests/test_history/history_init.c \
-../tests/test_history/history_term.c \
-../tests/test_history/history_clear.c \
-../tests/test_history/history_module_del.c \
-../tests/test_history/history_module_add.c \
-../tests/test_history/history_diff_add.c \
-../tests/test_history/history_undo.c \
-../tests/test_history/history_redo.c \
-../tests/test_history/history_genlist_get.c \
-../tests/test_history/history_module_depth_set.c \
-../tests/test_history/history_module_depth_get.c
-history_test_CFLAGS = ${FLAGS}
-history_test_LDADD = ${LD}
 
 coverage:
 	echo "<html><body>" > ../coverage.html

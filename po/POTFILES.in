@@ -4,11 +4,6 @@ src/bin/config/config.c
 src/bin/eflete.c
 src/bin/external/enventor_module.c
 src/bin/external/syntax_color.c
-src/bin/history/history.c
-src/bin/history/history_attribute.c
-src/bin/history/history_part.c
-src/bin/history/history_state.c
-src/bin/history/history_ui.c
 src/bin/logger/logger.c
 src/bin/project_manager/group_manager.c
 src/bin/project_manager/project_manager.c

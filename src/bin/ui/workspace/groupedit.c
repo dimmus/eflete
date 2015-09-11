@@ -466,8 +466,6 @@ groupedit_edit_object_part_state_add(Evas_Object *obj, const char *part,
    if (ret)
      {
         evas_object_smart_changed(sd->obj);
-        history_diff_add(sd->group->edit_object, STATE_TARGET, ADD, "unsued", part, state,
-                         value, "state");
      }
    return ret;
 }
@@ -495,8 +493,6 @@ groupedit_edit_object_part_state_copy(Evas_Object *obj, const char *part,
    if (ret)
      {
         evas_object_smart_changed(sd->obj);
-        history_diff_add(sd->group->edit_object, STATE_TARGET, ADD, "unused", part, state_to,
-                         value_to, "state");
      }
    return ret;
 }
@@ -511,8 +507,6 @@ groupedit_edit_object_part_state_del(Evas_Object *obj, const char *part,
    assert(part != NULL);
    assert(state != NULL);
 
-   history_diff_add(sd->group->edit_object, STATE_TARGET, DEL, "unused", part, state, value,
-                    "state");
    ret = edje_edit_state_del(sd->group->edit_object, part, state, value);
 
    evas_object_smart_changed(sd->obj);

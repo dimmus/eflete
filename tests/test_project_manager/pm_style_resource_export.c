@@ -82,7 +82,7 @@ EFLETE_TEST(pm_style_resource_export_test_p)
                                 evas_object_evas_get(ap.win),
                                 ap.project->mmap_file);
    style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
-   ui_style_clicked(style);
+   //ui_style_clicked(style);
 
    result = pm_style_resource_export(ap.project, style, path);
    ck_assert_msg(result, "Failed export resources of group.");
