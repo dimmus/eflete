@@ -92,7 +92,6 @@ _content_set(void *data,
    Elm_Object_Item *toolbar_item = event_info;
 
    assert(tabs.layout != NULL);
-
    if (tabs.selected == toolbar_item) return;
    elm_toolbar_item_selected_set(tabs.selected, false);
    tabs.selected = toolbar_item;
@@ -121,9 +120,7 @@ _content_set(void *data,
         if (ap.project)
           ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
-        if (toolbar_item == tabs.menu.item_home)
-          tabs_menu_tab_open(TAB_LAST);
-        else if (toolbar_item == tabs.menu.item_sound)
+        if (toolbar_item == tabs.menu.item_sound)
           tabs_menu_tab_open(TAB_SOUND_EDITOR);
         else if (toolbar_item == tabs.menu.item_text)
           tabs_menu_tab_open(TAB_STYLE_EDITOR);
@@ -131,6 +128,8 @@ _content_set(void *data,
           tabs_menu_tab_open(TAB_IMAGE_EDITOR);
         else if (toolbar_item == tabs.menu.item_colorclass)
           tabs_menu_tab_open(TAB_COLORCLASS_EDITOR);
+        else
+          tabs_menu_tab_open(TAB_LAST);
      }
 
    /* call 'tab,changed' on tab click, and sent Group accociated with clicked
@@ -335,7 +334,6 @@ tabs_menu_tab_open(Tabs_Menu view)
    elm_toolbar_item_selected_set(tabs.menu.HOME_TAB, true); \
    elm_toolbar_item_selected_set(tabs.menu.item_home, true); \
    elm_layout_content_set(tabs.layout, NULL, tabs.menu.content);
-
    switch(view)
      {
         /* home case */
