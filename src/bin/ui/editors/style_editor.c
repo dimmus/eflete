@@ -494,7 +494,7 @@ _on_bt_style_add(Style_Editor *style_edit)
    assert(style_edit != NULL);
    assert(POPUP.name == NULL);
 
-   POPUP.dialog = elm_popup_add(style_edit->mwin);
+   POPUP.dialog = elm_popup_add(ap.win);
    elm_object_part_text_set(POPUP.dialog, "title,text", _("Add textblock style"));
 
    BOX_ADD(POPUP.dialog, box, false, false);
@@ -553,7 +553,7 @@ _on_bt_tag_add(Style_Editor *style_edit)
          style_edit->tag = glit_parent;
      }
 
-   POPUP.dialog = elm_popup_add(style_edit->mwin);
+   POPUP.dialog = elm_popup_add(ap.win);
    buf = eina_stringshare_printf(_("Add tag to style: %s"), style_name);
    elm_object_part_text_set(POPUP.dialog, "title,text", buf);
 
@@ -664,20 +664,6 @@ _item_style_label_get(void *data,
    return strdup(style_label);
 }
 
-static void
-_on_viewer_exit(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
-{
-   Style_Editor *style_edit = (Style_Editor *)data;
-
-   assert(style_edit != NULL);
-
-   TODO("Move to 'Apply'")
-   //workspace_edit_object_recalc(ap.workspace);
-   mw_del(style_edit->mwin);
-}
-
 static inline Evas_Object *
 _style_editor_search_field_create(Evas_Object *parent)
 {
@@ -785,7 +771,7 @@ _form_left_side(Style_Editor *style_edit)
         _itc_tags->func.del = NULL;
      }
 
-   layout = elm_layout_add(style_edit->mwin);
+   layout = elm_layout_add(ap.win);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_layout_theme_set(layout, "layout", "style_editor", "list");
    evas_object_show(layout);
@@ -838,7 +824,7 @@ _form_left_side(Style_Editor *style_edit)
    TODO("Remove when savings would work well")
    elm_object_disabled_set(combobox, true);
 
-   btn = elm_button_add(style_edit->mwin);
+   btn = elm_button_add(ap.win);
    evas_object_show(btn);
    ic = elm_icon_add(btn);
    elm_icon_standard_set(ic, "minus");
@@ -1154,7 +1140,7 @@ _style_item_##VALUE##_add(Evas_Object *layout, Style_Editor *style_edit) \
 #define STEP_SP 1.0
 
 #define COMBO_ADD(VALUE) \
-EWE_COMBOBOX_ADD(style_edit->mwin, widget); \
+EWE_COMBOBOX_ADD(ap.win, widget); \
 evas_object_smart_callback_add(widget, "selected", _on_##VALUE##_change, style_edit);
 
 #define STYLE_ADD(VALUE) \
@@ -1405,10 +1391,10 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
    assert(style_edit != NULL);
    assert(tabs != NULL);
 
-   SCROLLER_ADD(style_edit->mwin, scr);
+   SCROLLER_ADD(ap.win, scr);
    elm_scroller_policy_set(scr, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
 
-   layout = elm_layout_add(style_edit->mwin);
+   layout = elm_layout_add(ap.win);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_layout_theme_set(layout, "layout", "style_editor", "text");
    evas_object_show(layout);
@@ -1496,7 +1482,7 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *valu
    assert(tabs != NULL);
 
    Evas_Object *scr;
-   SCROLLER_ADD(style_edit->mwin, scr);
+   SCROLLER_ADD(ap.win, scr);
    elm_scroller_policy_set(scr, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
    BOX_ADD(scr, box_frames, EINA_FALSE, EINA_FALSE)
    elm_box_align_set(box_frames, 0.5, 0.0);
@@ -1645,9 +1631,9 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
    assert(style_edit != NULL);
    assert(tabs != NULL);
 
-   SCROLLER_ADD(style_edit->mwin, scr);
+   SCROLLER_ADD(ap.win, scr);
 
-   layout = elm_layout_add(style_edit->mwin);
+   layout = elm_layout_add(ap.win);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_layout_theme_set(layout, "layout", "style_editor", "glow");
    evas_object_show(layout);
@@ -1789,9 +1775,9 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value
    assert(tabs != NULL);
 
    Evas_Object *scr;
-   SCROLLER_ADD(style_edit->mwin, scr);
+   SCROLLER_ADD(ap.win, scr);
 
-   layout = elm_layout_add(style_edit->mwin);
+   layout = elm_layout_add(ap.win);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_layout_theme_set(layout, "layout", "style_editor", "lines");
    evas_object_show(layout);
@@ -1917,7 +1903,7 @@ _form_right_side(Style_Editor *style_edit)
 
    assert(style_edit != NULL);
 
-   layout = elm_layout_add(style_edit->mwin);
+   layout = elm_layout_add(ap.win);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_layout_theme_set(layout, "layout", "style_editor", "property");
    evas_object_show(layout);
@@ -1943,11 +1929,11 @@ _form_right_side(Style_Editor *style_edit)
 
    style_edit->prop.current_tab = TAB_EDITOR_TEXT;
 
-   BOX_ADD(style_edit->mwin, box_bg, true, false);
+   BOX_ADD(ap.win, box_bg, true, false);
    elm_box_padding_set(box_bg, 10, 0);
 
 #define _RADIO_ADD(RADIO, VALUE, IMAGE) \
-   RADIO = elm_radio_add(style_edit->mwin); \
+   RADIO = elm_radio_add(ap.win); \
    elm_object_style_set(RADIO, "style_editor"); \
    elm_radio_state_value_set(RADIO, VALUE); \
    evas_object_show(RADIO); \
@@ -1980,24 +1966,12 @@ _on_style_editor_close(void *data,
    free(style_edit);
 }
 
-static void
-_on_mwin_del(void * data __UNUSED__,
-             Evas *e __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
-{
-
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
-   ap.modal_editor--;
-}
-
 Evas_Object *
 style_editor_window_add(Project *project)
 {
    Evas_Object *panes, *panes_h;
-   Evas_Object *btn;
    Evas_Object *layout_left, *layout_right;
-   Evas_Object *bg, *ic;
+   Evas_Object *bg;
    Evas *canvas = NULL;
    Style_Editor *style_edit = NULL;
    Evas_Textblock_Style *ts = NULL;
@@ -2007,38 +1981,26 @@ style_editor_window_add(Project *project)
    assert(ap.win != NULL);
 
    style_edit = (Style_Editor *)mem_calloc(1, sizeof(Style_Editor));
-
    style_edit->pr = project;
-   style_edit->mwin = mw_add("dialog", _on_viewer_exit, style_edit);
 
-   assert(style_edit->mwin != NULL);
-
-   mw_title_set(style_edit->mwin, _("Textblock style manager"));
-   ic = elm_icon_add(style_edit->mwin);
-   elm_icon_standard_set(ic, "text");
-   mw_icon_set(style_edit->mwin, ic);
-   evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_FREE,
-                                        _on_style_editor_close, style_edit);
-
-   panes = elm_panes_add(style_edit->mwin);
+   panes = elm_panes_add(ap.win);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes, 0.2);
-   elm_object_part_content_set(style_edit->mwin, NULL, panes);
    evas_object_show(panes);
 
    layout_left = _form_left_side(style_edit);
    elm_object_part_content_set(panes, "left", layout_left);
    evas_object_show(layout_left);
 
-   panes_h = elm_panes_add(style_edit->mwin);
+   panes_h = elm_panes_add(ap.win);
    evas_object_size_hint_weight_set(panes_h, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_h, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_horizontal_set(panes_h, true);
    elm_object_part_content_set(panes, "right", panes_h);
    evas_object_show(panes_h);
 
-   style_edit->entry_prev = elm_layout_add(style_edit->mwin);
+   style_edit->entry_prev = elm_layout_add(ap.win);
    evas_object_size_hint_weight_set(style_edit->entry_prev, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    elm_layout_theme_set(style_edit->entry_prev, "layout", "style_editor", "preview");
@@ -2046,8 +2008,8 @@ style_editor_window_add(Project *project)
    elm_object_part_content_set(panes_h, "left", style_edit->entry_prev);
    elm_object_signal_emit(style_edit->entry_prev, "entry,hide", "eflete");
 
-   canvas = evas_object_evas_get(style_edit->mwin);
-   IMAGE_ADD_NEW(style_edit->mwin, bg, "bg", "tile");
+   canvas = evas_object_evas_get(ap.win);
+   IMAGE_ADD_NEW(ap.win, bg, "bg", "tile");
    elm_object_part_content_set(style_edit->entry_prev, "background", bg);
 
    style_edit->textblock_style = evas_object_textblock_add(canvas);
@@ -2064,20 +2026,10 @@ style_editor_window_add(Project *project)
    elm_object_part_content_set(panes_h, "right", layout_right);
    evas_object_show(layout_right);
 
-   BUTTON_ADD(style_edit->mwin, btn, _("Close viewer"));
-   evas_object_smart_callback_add(btn, "clicked", _on_viewer_exit, style_edit);
-   evas_object_show(btn);
-   elm_object_part_content_set(style_edit->mwin, "eflete.swallow.btn_close", btn);
-
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
-   evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, NULL);
-
-   evas_object_show(style_edit->mwin);
-   elm_object_focus_set(style_edit->style_search_data.search_entry, true);
-
    evas_textblock_style_free(ts);
-   ap.modal_editor++;
-   return style_edit->mwin;
+   evas_object_event_callback_add(panes, EVAS_CALLBACK_DEL,
+                                  _on_style_editor_close, style_edit);
+   return panes;
 }
 
 #undef FONT_DEFAULT
