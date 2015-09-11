@@ -65,6 +65,9 @@ struct _Tabs {
       Evas_Object *content_import_edc;
       /* editors */
       Evas_Object *content_image_editor;
+      Evas_Object *content_sound_editor;
+      Evas_Object *content_text_editor;
+      Evas_Object *content_colorclass_editor;
    } menu;
 };
 
@@ -247,6 +250,9 @@ _project_opened(void *data __UNUSED__,
                 void *ei __UNUSED__)
 {
    tabs.menu.content_image_editor = image_editor_window_add(ap.project, MULTIPLE);
+   tabs.menu.content_sound_editor = NULL;
+   tabs.menu.content_text_editor = NULL;
+   tabs.menu.content_colorclass_editor = NULL;
 
    elm_object_item_disabled_set(tabs.menu.item_image, false);
    elm_object_item_disabled_set(tabs.menu.item_sound, false);
@@ -260,6 +266,9 @@ _project_closed(void *data __UNUSED__,
                 void *ei __UNUSED__)
 {
    tabs.menu.content_image_editor = NULL;
+   tabs.menu.content_sound_editor = NULL;
+   tabs.menu.content_text_editor = NULL;
+   tabs.menu.content_colorclass_editor = NULL;
 
    elm_object_item_disabled_set(tabs.menu.item_image, true);
    elm_object_item_disabled_set(tabs.menu.item_sound, true);
