@@ -165,7 +165,7 @@ _on_button_add_clicked_cb(void *data __UNUSED__,
    assert(edit != NULL);
    assert(edit->name_validator == NULL);
 
-   edit->popup = elm_popup_add(edit->mwin);
+   edit->popup = elm_popup_add(ap.win);
    elm_object_part_text_set(edit->popup, "title,text", _("Add color class:"));
 
    edit->name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
@@ -427,19 +427,10 @@ _on_selected(void *data,
 
 /* Modal Window callbacks (closing and exiting from colorclass manager) */
 static void
-_on_mwin_del(void * data __UNUSED__,
-             Evas *e __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
-{
-
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
-   ap.modal_editor--;
-}
-static void
-_on_btn_apply(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_on_colorclass_editor_del(void * data,
+                          Evas *e __UNUSED__,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info __UNUSED__)
 {
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
    Eina_List *l;
@@ -471,33 +462,6 @@ _on_btn_apply(void *data,
      }
 
    eina_list_free(edit->unapplied_list);
-
-   //project_changed(true);
-
-   mw_del(edit->mwin);
-}
-static void
-_on_btn_cancel(void *data,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
-{
-   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
-   Eina_List *l;
-   Uns_List *it = NULL;
-   Colorclass_Item *ccl_it = NULL;
-
-   assert(edit != NULL);
-
-   EINA_LIST_FOREACH(edit->unapplied_list, l, it)
-     {
-        ccl_it = (Colorclass_Item *)it->data;
-
-        eina_stringshare_del(ccl_it->name);
-        free(ccl_it);
-        ccl_it = NULL;
-     }
-   eina_list_free(edit->unapplied_list);
-   mw_del(edit->mwin);
 }
 
 /* Search functions and creatings */
@@ -581,11 +545,11 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    assert(edit != NULL);
 
    /* Creating main layout of window */
-   edit->layout = elm_layout_add(edit->mwin);
+   edit->layout = elm_layout_add(ap.win);
+   evas_object_event_callback_add(edit->layout, EVAS_CALLBACK_DEL,
+                                  _on_colorclass_editor_del, edit);
    elm_layout_theme_set(edit->layout, "layout", "colorclass_manager", "default");
    evas_object_size_hint_weight_set(edit->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(edit->layout);
-   elm_win_inwin_content_set(edit->mwin, edit->layout);
 
    /* List of project's colorclasses */
    edit->genlist = elm_genlist_add(edit->layout);
@@ -618,7 +582,7 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    elm_object_part_content_set(edit->layout, "swallow.entry.bg", bg);
    evas_object_show(bg);
 
-   edit->edje_preview = edje_object_add(evas_object_evas_get(edit->mwin));
+   edit->edje_preview = edje_object_add(evas_object_evas_get(ap.win));
    if (!edje_object_file_set(edit->edje_preview,
                              EFLETE_THEME,
                              "elm/layout/colorclass_manager/preview"))
@@ -690,17 +654,6 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
                                   _on_button_delete_clicked_cb, edit);
    elm_object_part_content_set(edit->layout, "swallow.control.minus", button);
    elm_object_disabled_set(button, true);
-
-   /* window functional buttons (apply and cancel) */
-   BUTTON_ADD(edit->mwin, button, _("Cancel"));
-   evas_object_smart_callback_add(button, "clicked", _on_btn_cancel, edit);
-   elm_object_part_content_set(edit->mwin, "eflete.swallow.btn_close", button);
-
-   /* window functional buttons (apply and cancel) */
-   BUTTON_ADD(edit->mwin, button, _("Apply"));
-   evas_object_smart_callback_add(button, "clicked", _on_btn_apply, edit);
-   elm_object_part_content_set(edit->mwin, "eflete.swallow.btn_ok", button);
-   elm_object_disabled_set(button, true);
 }
 Eina_Bool
 _colorclass_manager_init(Colorclasses_Manager *edit)
@@ -734,7 +687,6 @@ _colorclass_manager_init(Colorclasses_Manager *edit)
 Evas_Object *
 colorclass_manager_add(Project *project)
 {
-   Evas_Object *ic;
    Colorclasses_Manager *edit = NULL;
 
    assert(project != NULL);
@@ -742,14 +694,7 @@ colorclass_manager_add(Project *project)
    edit = (Colorclasses_Manager *)mem_calloc(1, sizeof(Colorclasses_Manager));
    edit->changed = false;
    edit->pr = project;
-   edit->mwin = mw_add("dialog" , _on_btn_cancel, edit);
-
-   assert(edit->mwin != NULL);
-
-   mw_title_set(edit->mwin, _("Color class manager"));
-   ic = elm_icon_add(edit->mwin);
-   elm_icon_standard_set(ic, "color");
-   mw_icon_set(edit->mwin, ic);
+   assert(ap.win != NULL);
 
    _colorclass_main_layout_create(edit);
    if (!_colorclass_manager_init(edit))
@@ -758,12 +703,5 @@ colorclass_manager_add(Project *project)
         abort();
      }
 
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
-   evas_object_event_callback_add(edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, NULL);
-
-   evas_object_show(edit->mwin);
-
-   ap.modal_editor++;
-
-   return edit->mwin;
+   return edit->layout;
 }
