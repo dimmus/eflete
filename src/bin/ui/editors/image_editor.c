@@ -119,7 +119,6 @@ _image_editor_del(Image_Editor *img_edit)
    assert(img_edit != NULL);
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
-   ap.modal_editor--;
 
    evas_object_event_callback_del(main_window_get(), EVAS_CALLBACK_DEL, _on_mwin_del);
 
@@ -1231,7 +1230,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_event_callback_add(main_window_get(), EVAS_CALLBACK_DEL, _on_mwin_del, img_edit);
 
-   ap.modal_editor++;
    return img_edit->layout;
 }
 
