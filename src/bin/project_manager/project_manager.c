@@ -21,6 +21,7 @@
 #include "project_manager.h"
 #include "group_manager.h"
 #include "alloc.h"
+#include "editor.h"
 #ifndef _WIN32
 #include <sys/wait.h>
 #else
@@ -724,7 +725,7 @@ _project_save(void *data __UNUSED__,
 {
    ecore_thread_main_loop_begin();
    PROGRESS_SEND(_("Save project '%s'"), worker.project->name);
-   pm_save_to_dev(worker.project, NULL, true);
+   editor_save_all(worker.project->global_object);
 
    ecore_file_cp(worker.project->dev, worker.project->saved_edj);
 

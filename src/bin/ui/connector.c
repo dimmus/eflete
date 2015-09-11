@@ -650,9 +650,8 @@ project_save(void)
 /******************************************************************************/
 
 void
-project_changed(Eina_Bool save)
+project_changed(Eina_Bool save __UNUSED__)
 {
-   pm_save_to_dev(ap.project, ap.project->current_style, save);
    ap.project->changed = true;
    ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, false);
    /* for example this function will be called after adding layout, so no need

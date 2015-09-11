@@ -29,6 +29,7 @@ struct _Tabs_Item {
    Evas_Object *content; //panes
    Evas_Object *workspace;
    Evas_Object *live_view;
+   Eina_Bool need_recalc : 1;
 };
 
 typedef struct _Tabs_Item Tabs_Item;
@@ -97,6 +98,12 @@ _content_set(void *data,
         tabs.current_group = item->group;
         if (ap.project)
           ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, false);
+        if (item->need_recalc)
+          {
+             workspace_edit_object_recalc(tabs.current_workspace);
+             live_view_theme_update(tabs.current_live_view);
+             item->need_recalc = false;
+          }
      }
    else
      {
@@ -193,6 +200,28 @@ _project_changed(void *data __UNUSED__,
    live_view_theme_update(tabs.current_live_view);
 }
 
+static void
+_editor_saved(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *ei __UNUSED__)
+{
+   Eina_List *l;
+   Tabs_Item *item;
+
+   pm_dev_file_reload(ap.project);
+   EINA_LIST_FOREACH(tabs.items, l, item)
+     {
+        edje_object_mmap_set(item->group->edit_object, ap.project->mmap_file, item->group->name);
+        if (item->workspace == tabs.current_workspace)
+          {
+             workspace_edit_object_recalc(tabs.current_workspace);
+             live_view_theme_update(tabs.current_live_view);
+          }
+        else
+          item->need_recalc = true;
+     }
+}
+
 Evas_Object *
 tabs_add(void)
 {
@@ -241,6 +270,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_ADDED, _part_added, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_DELETED, _part_deleted, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _project_changed, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_SAVED, _editor_saved, NULL);
 
    return tabs.layout;
 }

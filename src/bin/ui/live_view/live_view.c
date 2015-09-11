@@ -234,7 +234,6 @@ live_view_theme_update(Evas_Object *object)
 
    if (!live->group->widget)
      {
-        eina_file_map_free(ap.project->mmap_file, live->object);
         edje_object_mmap_set(live->object, ap.project->mmap_file,
                              live->group->name);
         edje_object_calc_force(live->object);
