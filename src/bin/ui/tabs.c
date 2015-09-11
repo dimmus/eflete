@@ -139,9 +139,9 @@ static void
 _del_tab(Tabs_Item *item)
 {
    elm_object_item_del(item->toolbar_item);
+   gm_group_edit_object_unload(item->group);
    /* delete pans with workspace and liveview */
    evas_object_del(item->content);
-   gm_group_edit_object_unload(item->group);
    history_del(item->group->history);
    free(item);
 }
