@@ -299,6 +299,16 @@ pm_project_open(const char *path,
                 const void *data);
 
 /**
+ * Reloading dev file. Should be called after every save.
+ *
+ * @param project The project.
+ *
+ * @ingroup ProjectManager
+ */
+void
+pm_dev_file_reload(Project *project);
+
+/**
  * Internal save. Should be used after major changes that are affecting dev file.
  *
  * @param project The project what should be saved.

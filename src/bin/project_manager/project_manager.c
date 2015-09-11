@@ -691,6 +691,14 @@ pm_project_open(const char *path,
 }
 
 void
+pm_dev_file_reload(Project *pr)
+{
+   eina_file_close(pr->mmap_file);
+   pr->mmap_file = eina_file_open(pr->dev, false);
+   edje_object_mmap_set(pr->global_object, pr->mmap_file, EFLETE_INTERNAL_GROUP_NAME);
+}
+
+void
 pm_save_to_dev(Project *pr, Style *st, Eina_Bool save)
 {
    assert(pr != NULL);
