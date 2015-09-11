@@ -835,7 +835,7 @@ _on_button_apply_clicked_cb(void *data,
      evas_object_smart_callback_call(img_edit->win, SIG_IMAGE_SELECTED,
                                      (Eina_List *) names);
 
-   project_changed(false);
+   //project_changed(false);
    _image_editor_del(img_edit);
 }
 

@@ -18,7 +18,6 @@
  */
 
 #include "editor.h"
-#include "signals.h"
 
 #define MAX_SET(VAL, VAL_CAPS) \
 Eina_Bool \
@@ -53,6 +52,7 @@ editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, int new_value) 
    res = edje_edit_group_max_## VAL ##_set(obj, new_value); \
    TODO("Add signal to property here") \
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+   _editor_project_changed(); \
    return res; \
 }
 
@@ -92,6 +92,7 @@ editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, int new_value) 
    res = edje_edit_group_min_## VAL ##_set(obj, new_value); \
    TODO("Add signal to property here") \
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+   _editor_project_changed(); \
    return res; \
 }
 

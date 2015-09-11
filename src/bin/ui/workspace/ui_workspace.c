@@ -751,8 +751,8 @@ _highlight_changed_cb(void *data,
           }
      }
 
-   project_changed(false);
-   workspace_edit_object_recalc(ws_obj);
+   /*project_changed(false);
+   workspace_edit_object_recalc(ws_obj);*/
    evas_object_smart_callback_call(ws_obj, "part,changed", part);
 }
 

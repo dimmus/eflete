@@ -70,7 +70,7 @@ _cancel_clicked(void *data,
    ap.popup = NULL; \
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false); \
    ecore_job_add(_job_popup_del, data); \
-   project_changed(true);
+   /*project_changed(true);*/
 
 static void
 _swallow_add_on_click(void *data,

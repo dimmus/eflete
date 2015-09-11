@@ -699,7 +699,7 @@ _on_ok_cb(void *data,
              snd->is_saved = true;
           }
 
-        project_changed(true);
+        //project_changed(true);
      }
 
    multiselect = elm_gengrid_multi_select_get(edit->gengrid);
@@ -1559,8 +1559,9 @@ _on_delete_clicked_cb(void *data,
         elm_object_item_del(grid_it);
      }
 
+   /*
    if (deleted)
-     project_changed(true);
+     project_changed(true);*/
 }
 
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, "elm.label")

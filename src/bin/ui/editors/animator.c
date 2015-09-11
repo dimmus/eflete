@@ -199,7 +199,7 @@ _on_animator_save(void *data __UNUSED__,
    ui_signal_list_data_unset(ap.block.signal_list);
    ui_signal_list_data_set(ap.block.signal_list, style);
 //   live_view_widget_style_set(ap.live_view, ap.project, style);
-   project_changed(true);
+   //project_changed(true);
 }
 
 static void

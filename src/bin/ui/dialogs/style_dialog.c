@@ -264,7 +264,7 @@ _on_popup_btn_yes(void *data __UNUSED__,
         elm_genlist_item_selected_set(eoi, true);
      }
 
-   project_changed(true);
+   //project_changed(true);
 
    STRING_CLEAR;
    eina_stringshare_del(full_name);

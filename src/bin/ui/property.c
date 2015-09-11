@@ -566,7 +566,7 @@ TODO("Implement rename. Note: groups list must remain sorted")
    if (!edje_edit_group_name_set(pd->group->edit_object, value)) return;
 
    elm_object_focus_set(obj, true);
-   project_changed(false);
+   //project_changed(false);
    free(entry);
 }
 
@@ -886,7 +886,7 @@ _on_part_name_change(void *data,
         return;
      }
 
-   project_changed(false);
+   //project_changed(false);
 /*   workspace_edit_object_part_rename(pd->workspace, pd->part->name, value); */
    pd->part->name = value;
    pos = elm_entry_cursor_pos_get(obj);
@@ -1240,7 +1240,7 @@ _on_state_color_class_change(void *data,
 
    edje_edit_string_free(value);
 
-   project_changed(false);
+   //project_changed(false);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
 }
 
@@ -1678,7 +1678,7 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
                              pd->part->current_state->parsed_val, temp); \
    const char *text = eina_stringshare_printf("%s_%s", #SUB, #VALUE); \
    eina_stringshare_del(text); \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
@@ -1895,7 +1895,7 @@ _text_effect_update(Prop_Data *pd)
    edje_edit_part_effect_set(pd->group->edit_object, pd->part->name, effect);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-   project_changed(false);
+   //project_changed(false);
 }
 
 inline static void
@@ -2039,7 +2039,7 @@ _on_state_text_ellipsis_change(void *data,
                                          value))
      return;
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-   project_changed(false);
+   //project_changed(false);
 }
 
 static void
@@ -2068,7 +2068,7 @@ _on_state_text_ellipsis_toggle_change(void *data,
                                     pd->part->current_state->parsed_val,
                                     value);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-   project_changed(false);
+   //project_changed(false);
 }
 
 static void
@@ -2425,7 +2425,7 @@ TODO("uncomment after changing save API")
    elm_entry_entry_set(border_entry, NULL);
    evas_object_smart_callback_call(border_entry, "changed,user", NULL);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-   project_changed(false);
+   //project_changed(false);
 }
 
 static void
@@ -2463,7 +2463,7 @@ _del_tween_image(void *data,
                                  selected))
      {
         elm_object_item_del(it);
-        project_changed(false);
+        //project_changed(false);
      }
 }
 
@@ -2490,7 +2490,7 @@ _on_image_editor_tween_done(void *data,
           {
              elm_genlist_item_append(tween_list, _itc_tween, name, NULL,
                                      ELM_GENLIST_ITEM_NONE, NULL, NULL);
-             project_changed(false);
+             //project_changed(false);
           }
      }
    elm_frame_collapse_go(pd->attributes.state_image.tween, false);
@@ -2596,7 +2596,7 @@ _tween_image_moved(Evas_Object *data,
                                   image_name);
         next = elm_genlist_item_next_get(next);
      }
-   project_changed(false);
+   //project_changed(false);
 }
 
 Evas_Object *
@@ -2722,7 +2722,7 @@ _on_state_image_border_change(void *data,
                                     pd->part->current_state->parsed_name, pd->part->current_state->parsed_val,
                                     lb, rb, tb, bb);
 
-   project_changed(false);
+   //project_changed(false);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
 }
 
@@ -2972,7 +2972,7 @@ _on_part_item_padding_change(void *data,
    if (!edje_edit_part_item_padding_set(pd->group->edit_object, pd->part->name,
                                         pd->item_name, l, r, t, b))
      return;
-   project_changed(false);
+   //project_changed(false);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
 }
 

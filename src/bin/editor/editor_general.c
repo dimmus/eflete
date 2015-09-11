@@ -18,7 +18,6 @@
  */
 
 #include "editor.h"
-#include "signals.h"
 
 static inline Eina_Bool
 _editor_save(Evas_Object *edit_object, Eina_Bool current_group)

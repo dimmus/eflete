@@ -156,7 +156,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
        ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
        abort(); \
      } \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
@@ -233,7 +233,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
         ERR("Cann't apply value '%s' for attribute '"#TEXT"'.", item->title); \
         abort(); \
      } \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
@@ -261,7 +261,7 @@ _on_##MEMBER##_##VALUE1##_change(void *data, \
    edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
                                     (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE1) / MULTIPLIER, \
                                     (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE2) / MULTIPLIER); \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 } \
 static void \
@@ -273,7 +273,7 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
    edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
                                     (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE1) / MULTIPLIER, \
                                     (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE2) / MULTIPLIER); \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
@@ -411,7 +411,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
        abort(); \
      } \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-   project_changed(false); \
+   /*project_changed(false);*/ \
 }
 
 /**
@@ -454,7 +454,7 @@ _on_##MEMBER##_##VALUE1##_change(void *data, \
    edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
                                     elm_check_state_get(pd->attributes.MEMBER.VALUE1), \
                                     elm_check_state_get(pd->attributes.MEMBER.VALUE2)); \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 } \
 static void \
@@ -466,7 +466,7 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
    edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
                                     elm_check_state_get(pd->attributes.MEMBER.VALUE1), \
                                     elm_check_state_get(pd->attributes.MEMBER.VALUE2)); \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
@@ -511,7 +511,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
        ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
        abort(); \
      } \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
@@ -602,7 +602,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
    edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, value); \
    elm_object_focus_set(obj, true); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    free(value); \
 }
 
@@ -893,7 +893,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
         edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, pd->part->name, NULL); \
         pd->attributes.part.previous_source = 0; \
      } \
-   project_changed(true); \
+   /*project_changed(true);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
@@ -1059,7 +1059,7 @@ _on_part_drag_##VALUE1##_change(void *data, \
    Eina_Bool value = elm_check_state_get(obj); \
    edje_edit_part_drag_##VALUE1##_set(pd->group->edit_object, pd->part->name, value); \
    prop_part_drag_control_disable_set(pd, false); \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 } \
 static void \
@@ -1070,7 +1070,7 @@ _on_part_drag_##VALUE2##_change(void *data, \
    Prop_Data *pd = (Prop_Data *)data; \
    int value = elm_spinner_value_get(obj); \
    edje_edit_part_drag_##VALUE2##_set(pd->group->edit_object, pd->part->name, value); \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
@@ -1144,7 +1144,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    Ewe_Combobox_Item *item = ei; \
    edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, pd->part->name, \
                                    pd->item_name, item->title); \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
@@ -1236,7 +1236,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
           } \
         elm_spinner_value_set(pd->attributes.state.DIF_VALUE, value); \
      } \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
    COMMON_1SPINNER_UPDATE(SUB, DIF_VALUE, MEMBER, TYPE, MULTIPLIER, PART_ITEM_ARGS) \
 }
@@ -1266,7 +1266,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
        ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
        abort(); \
      } \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
@@ -1320,7 +1320,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
    edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object PART_ITEM_ARGS, (TYPE)item->index); \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
@@ -1516,7 +1516,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
           } \
         elm_spinner_value_set(pd->attributes.state.DIF_VALUE, value); \
      } \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
@@ -1776,7 +1776,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
        abort(); \
      } \
    evas_object_color_set(pd->attributes.MEMBER.VALUE##_obj, r*a/255, g*a/255, b*a/255, a); \
-   project_changed(false); \
+   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 } \
 static void \
@@ -1854,7 +1854,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, pd->part->name, \
                                    pd->part->current_state->parsed_name, pd->part->current_state->parsed_val, \
                                    !strcmp(item->title, _("None")) ? NULL : item->title); \
-   project_changed(true); \
+   /*project_changed(true);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 

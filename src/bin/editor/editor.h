@@ -23,6 +23,7 @@
 #define ALLOW_DIRECT_EDJE_EDIT_CALLS
 #include "eflete.h"
 #include "change.h"
+#include "signals.h"
 
 typedef enum {
    ATTRIBUTE_GROUP_MIN_W,
@@ -34,6 +35,13 @@ typedef enum {
    ATTRIBUTE_STATE_ALIGN_X,
    ATTRIBUTE_STATE_ALIGN_Y
 } Attribute;
+
+static inline void
+_editor_project_changed()
+{
+   ap.project->changed = true;
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_CHANGED, NULL);
+}
 
 /* General */
 Eina_Bool

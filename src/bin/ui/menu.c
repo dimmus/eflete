@@ -26,6 +26,7 @@
 #include "animator.h"
 #include "about_window.h"
 #include "tabs.h"
+#include "signals.h"
 
 static int _menu_delayed_event = 0;
 
@@ -212,6 +213,14 @@ _delay_menu_cb(void *data,
    ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
 }
 
+static void
+_project_changed(void *data __UNUSED__,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, false);
+}
+
 Menu *
 ui_menu_add(void)
 {
@@ -331,6 +340,9 @@ ui_menu_add(void)
 
    menu->window_menu = window_menu;
    menu->toolbar = toolbar;
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _project_changed, NULL);
+
    return menu;
 }
 

@@ -472,7 +472,7 @@ _on_btn_apply(void *data,
 
    eina_list_free(edit->unapplied_list);
 
-   project_changed(true);
+   //project_changed(true);
 
    mw_del(edit->mwin);
 }

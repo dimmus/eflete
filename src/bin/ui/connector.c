@@ -208,7 +208,7 @@ _add_layout_cb(void *data,
    eina_stringshare_del(name);
 
    ecore_job_add(_job_popup_close, NULL);
-   project_changed(true);
+   //project_changed(true);
    eina_stringshare_del(name);
    return;
 }
@@ -646,22 +646,6 @@ project_save(void)
      ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, true);
      ecore_main_loop_begin();
 }
-
-/******************************************************************************/
-
-void
-project_changed(Eina_Bool save __UNUSED__)
-{
-   ap.project->changed = true;
-   ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, false);
-   /* for example this function will be called after adding layout, so no need
-      in updating live view */
-
-/* call ap.win SIGNAL TEMPORARY*/
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_CHANGED, NULL);
-}
-
-/******************************************************************************/
 
 TODO("I think, this functionality need move to dialogs")
 static void
@@ -1185,7 +1169,7 @@ _selected_layout_delete(Evas_Object *genlist)
           }
      }
 
-   project_changed(true);
+   //project_changed(true);
    return true;
 }
 
@@ -1265,7 +1249,7 @@ _selected_style_delete(Evas_Object *genlist)
         wm_class_free(class_st);
      }*/
 
-   project_changed(true);
+   //project_changed(true);
 
    ui_widget_list_class_data_reload(genlist, widget->classes);
 

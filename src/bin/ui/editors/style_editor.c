@@ -424,7 +424,7 @@ _on_st_add_bt_ok(void *data,
 
    _on_popup_bt_cancel(style_edit, NULL, NULL);
 
-   project_changed(false);
+   //project_changed(false);
 }
 
 static void
@@ -470,7 +470,7 @@ _on_tag_add_bt_ok(void *data,
 
    _on_popup_bt_cancel(style_edit, NULL, NULL);
 
-   project_changed(false);
+   //project_changed(false);
 }
 
 static void
@@ -624,7 +624,7 @@ TODO("Fix me")
 //   ui_property_state_unset(ui_block_property_get());
 //   ui_property_state_set(ui_block_property_get(), part);
    elm_object_item_del(glit);
-   project_changed(false);
+   //project_changed(false);
 }
 
 /* For GenList, getting the content for showing. Tag Names. */
@@ -1065,7 +1065,7 @@ _on_##VALUE##_change(void *data, \
    _lines_colors_update(style_edit, TEXT); \
    _style_edit_update(style_edit); \
    eina_stringshare_del(value); \
-   project_changed(false); \
+   /*project_changed(false);*/ \
 }
 
 #define ITEM_COLOR_ADD(VALUE, TAG, TEXT) \

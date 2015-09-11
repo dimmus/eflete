@@ -89,7 +89,7 @@ _on_button_add_clicked(void *data __UNUSED__,
      }
 
    workspace_edit_object_recalc(ap.workspace);
-   project_changed(false);
+   //project_changed(false);
    ecore_job_add(_job_popup_close, NULL);
 }
 
