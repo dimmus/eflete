@@ -285,6 +285,7 @@ _default_shortcuts_get()
    ADD_SHORTCUT("j", 44, CTRL, "import_edj", false);
    ADD_SHORTCUT("s", 39, CTRL, "save", false);
    ADD_SHORTCUT("e", 26, CTRL, "export", false);
+   ADD_SHORTCUT("w", 25, CTRL, "close", false);
    ADD_SHORTCUT("q", 24, CTRL, "quit", false);
    ADD_SHORTCUT("z", 52, CTRL, "undo", false);
    ADD_SHORTCUT("y", 29, CTRL, "redo", false);
