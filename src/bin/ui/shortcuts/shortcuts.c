@@ -19,7 +19,6 @@
 
 #include "shortcuts.h"
 #include "main_window.h"
-#include "wizard.h"
 #include "style_editor.h"
 #include "image_editor.h"
 #include "sound_editor.h"
@@ -375,7 +374,7 @@ _new_theme_cb(void)
 {
    if (!project_close())
      return false;
-   wizard_new_project_add();
+   //wizard_new_project_add();
    return true;
 }
 
@@ -402,7 +401,7 @@ _import_edj_cb(void)
 {
    if (!project_close())
      return false;
-   wizard_import_edj_add();
+   //wizard_import_edj_add();
    return true;
 }
 

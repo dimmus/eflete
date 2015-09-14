@@ -78,9 +78,6 @@ src/bin/ui/shortcuts/shortcuts.c
 src/bin/ui/splash.c
 src/bin/ui/tab_home_open.c
 src/bin/ui/tabs.c
-src/bin/ui/wizard/wizard_common.c
-src/bin/ui/wizard/wizard_import_edc.c
-src/bin/ui/wizard/wizard_import_edj.c
 src/bin/ui/workspace/groupedit.c
 src/bin/ui/workspace/groupedit_box_layouts.c
 src/bin/ui/workspace/groupedit_calc.c

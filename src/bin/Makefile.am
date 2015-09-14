@@ -29,9 +29,6 @@ libete_a_SOURCES = \
 ../../src/bin/ui/project_close.c \
 ../../src/bin/ui/connector.c \
 ../../src/bin/ui/splash.c \
-../../src/bin/ui/wizard/wizard_common.c \
-../../src/bin/ui/wizard/wizard_import_edj.c \
-../../src/bin/ui/wizard/wizard_import_edc.c \
 ../../src/bin/ui/shortcuts/shortcuts.c \
 ../../src/bin/ui/container/container.c \
 ../../src/bin/ui/preference/preference.c \
@@ -129,7 +126,6 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/bin/ui/live_view \
 -I${top_srcdir}/src/bin/ui/live_view/elementary \
 -I${top_srcdir}/src/bin/ui/preference \
--I${top_srcdir}/src/bin/ui/wizard \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
 @EFLETE_DEFINE@
