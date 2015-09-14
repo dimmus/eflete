@@ -76,13 +76,26 @@ ui_main_window_del(void)
    return true;
 }
 
+static void
+_history_click(void *data __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
+{
+   elm_layout_content_set(ap.block.right_top, NULL, ap.block.history);
+}
+static void
+_signal_click(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   elm_layout_content_set(ap.block.right_top, NULL, ap.block.history);
+}
+
 Eina_Bool
 ui_main_window_add(void)
 {
    Config *config;
-   Evas_Object *bg, *navigator, *tabs;
-   Ewe_Tabs_Item *tab_item;
-
+   Evas_Object *bg, *navigator, *tabs, *toolbar;
 
    config_load();
    config = config_get();
@@ -151,14 +164,24 @@ ui_main_window_add(void)
    elm_object_part_content_set(ap.panes.right, "left", tabs);
 
    /* add tabs with history and signals */
-   ap.block.right_top = ewe_tabs_add(ap.win_layout);
-   tab_item = ewe_tabs_item_append(ap.block.right_top, NULL, _("History"), NULL);
+   ap.block.right_top = elm_layout_add(ap.win);
+   elm_layout_theme_set(ap.block.right_top, "layout", "tabs", "default");
+
+   toolbar = elm_toolbar_add(ap.block.right_top);
+   elm_object_style_set(toolbar, "editor_tabs_horizontal");
+   elm_layout_content_set(ap.block.right_top, "elm.swallow.toolbar", toolbar);
+   elm_toolbar_shrink_mode_set(toolbar, ELM_TOOLBAR_SHRINK_SCROLL);
+   elm_toolbar_select_mode_set(toolbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_toolbar_align_set(toolbar, 0.0);
+
+   elm_toolbar_item_append(toolbar, NULL, _("History"), _history_click, NULL);
+   elm_toolbar_item_append(toolbar, NULL, _("Signals"), _signal_click, NULL);
+
    ap.block.history = history_ui_add();
-   ewe_tabs_item_content_set(ap.block.right_top, tab_item, ap.block.history);
-   tab_item = ewe_tabs_item_append(ap.block.right_top, NULL, _("Signals"), NULL);
    ap.block.signals = ui_signal_list_add(ap.win);
-   ewe_tabs_item_content_set(ap.block.right_top, tab_item, ap.block.signals);
-   elm_object_disabled_set(ap.block.right_top, true);
+   elm_layout_content_set(ap.block.right_top, NULL, ap.block.history);
    elm_object_part_content_set(ap.panes.right_hor, "left", ap.block.right_top);
 
    ap.block.property = ui_property_add(ap.win);
