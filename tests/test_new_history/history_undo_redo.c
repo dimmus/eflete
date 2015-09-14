@@ -83,14 +83,14 @@ _function_type_int_redo_return_true(Evas_Object *obj, int val)
 EFLETE_TEST (history_undo_redo_test_p)
 {
    Change *change;
-   Diff_ *d1;
+   Diff *d1;
    eina_init();
    int sense = 42;
    Group *group = mem_calloc(1, sizeof(Group));
    pseudo_object = group->edit_object = (Evas_Object *) &sense;
    change = change_add("test");
    History_ *history = history_add(group);
-   d1 = mem_calloc(1, sizeof(Diff_));
+   d1 = mem_calloc(1, sizeof(Diff));
    d1->undo.type = FUNCTION_TYPE_INT;
    d1->undo.function = _function_type_int_undo_return_true;
    d1->undo.args.type_int.ival = 42;

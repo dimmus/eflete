@@ -26,7 +26,7 @@ editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, int new_value) 
    Eina_Bool res; \
    int old_value; \
    int min_value; \
-   Diff_ *diff; \
+   Diff *diff; \
    Attribute attribute = ATTRIBUTE_GROUP_MAX_##VAL_CAPS; \
  \
    assert(obj != NULL); \
@@ -40,7 +40,7 @@ editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, int new_value) 
  \
    if (change) \
      { \
-        diff = mem_calloc(1, sizeof(Diff_)); \
+        diff = mem_calloc(1, sizeof(Diff)); \
         diff->redo.type = FUNCTION_TYPE_INT; \
         diff->redo.function = editor_group_max_## VAL ##_set; \
         diff->redo.args.type_int.ival = new_value; \
@@ -66,7 +66,7 @@ editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, int new_value) 
    Eina_Bool res; \
    int old_value; \
    int max_value; \
-   Diff_ *diff; \
+   Diff *diff; \
    Attribute attribute = ATTRIBUTE_GROUP_MIN_##VAL_CAPS; \
  \
    assert(obj != NULL); \
@@ -80,7 +80,7 @@ editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, int new_value) 
  \
    if (change) \
      { \
-        diff = mem_calloc(1, sizeof(Diff_)); \
+        diff = mem_calloc(1, sizeof(Diff)); \
         diff->redo.type = FUNCTION_TYPE_INT; \
         diff->redo.function = editor_group_min_## VAL ##_set; \
         diff->redo.args.type_int.ival = new_value; \

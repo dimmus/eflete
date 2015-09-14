@@ -43,7 +43,7 @@ change_description_set(Change *change, const char *description)
 void
 change_free(Change *change)
 {
-   Diff_ *diff;
+   Diff *diff;
 
    assert(change != NULL);
 
@@ -54,7 +54,7 @@ change_free(Change *change)
    free(change);
 }
 void
-change_diff_add(Change *change, Diff_ *diff)
+change_diff_add(Change *change, Diff *diff)
 {
    assert(change != NULL);
    assert(diff != NULL);
@@ -63,9 +63,9 @@ change_diff_add(Change *change, Diff_ *diff)
 }
 
 void
-change_diff_merge_add(Change *change, Diff_ *diff)
+change_diff_merge_add(Change *change, Diff *diff)
 {
-   Diff_ *existing_diff;
+   Diff *existing_diff;
    Eina_List *l;
 
    assert(change != NULL);
@@ -86,7 +86,7 @@ Eina_Bool
 change_undo(Evas_Object *edit_object, Change *change)
 {
    Eina_List *l;
-   Diff_ *diff;
+   Diff *diff;
 
    assert(edit_object != NULL);
    assert(change != NULL);
@@ -103,7 +103,7 @@ Eina_Bool
 change_redo(Evas_Object *edit_object, Change *change)
 {
    Eina_List *l;
-   Diff_ *diff;
+   Diff *diff;
 
    assert(edit_object != NULL);
    assert(change != NULL);

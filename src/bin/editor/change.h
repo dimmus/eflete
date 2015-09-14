@@ -39,10 +39,10 @@ void
 change_free(Change *change);
 
 void
-change_diff_add(Change *change, Diff_ *diff);
+change_diff_add(Change *change, Diff *diff);
 
 void
-change_diff_merge_add(Change *change, Diff_ *diff);
+change_diff_merge_add(Change *change, Diff *diff);
 
 Eina_Bool
 change_undo(Evas_Object *edit_object, Change *change);
