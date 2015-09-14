@@ -664,7 +664,6 @@ _colorclass_manager_init(Colorclasses_Manager *edit)
 
    assert(edit != NULL);
    assert(edit->pr != NULL);
-   assert(edit->pr->colorclasses != NULL);
 
    EINA_LIST_FOREACH(edit->pr->colorclasses, l, res)
      {
