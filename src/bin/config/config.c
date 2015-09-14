@@ -289,11 +289,12 @@ _default_shortcuts_get()
    ADD_SHORTCUT("z", 52, CTRL, "undo", false);
    ADD_SHORTCUT("y", 29, CTRL, "redo", false);
 
-   ADD_SHORTCUT("1", 10, CTRL, "animator", false);
-   ADD_SHORTCUT("2", 11, CTRL, "image_editor", false);
-   ADD_SHORTCUT("3", 12, CTRL, "sound_editor", false);
-   ADD_SHORTCUT("4", 13, CTRL, "colorclass_viewer", false);
-   ADD_SHORTCUT("5", 14, CTRL, "style_editor", false);
+   ADD_SHORTCUT("1", 10, CTRL, "open_edj", false);
+   ADD_SHORTCUT("2", 11, CTRL, "tab.image_editor", false);
+   ADD_SHORTCUT("3", 12, CTRL, "tab.sound_editor", false);
+   ADD_SHORTCUT("4", 13, CTRL, "tab.style_editor", false);
+   ADD_SHORTCUT("5", 14, CTRL, "tab.colorclass_viewer", false);
+   ADD_SHORTCUT("6", 15, CTRL, "animator", false);
 
    ADD_SHORTCUT("Left", 113, CTRL, "widget_manager.style", false);
    ADD_SHORTCUT("Right", 114, CTRL, "widget_manager.layout", false);
