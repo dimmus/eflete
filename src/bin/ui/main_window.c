@@ -81,6 +81,7 @@ _history_click(void *data __UNUSED__,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
+   evas_object_hide(elm_layout_content_unset(ap.block.right_top, NULL));
    elm_layout_content_set(ap.block.right_top, NULL, ap.block.history);
 }
 static void
@@ -88,7 +89,8 @@ _signal_click(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   elm_layout_content_set(ap.block.right_top, NULL, ap.block.history);
+   evas_object_hide(elm_layout_content_unset(ap.block.right_top, NULL));
+   elm_layout_content_set(ap.block.right_top, NULL, ap.block.signals);
 }
 
 Eina_Bool
