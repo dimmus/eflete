@@ -21,6 +21,7 @@
 #include "change.h"
 
 typedef Eina_Bool (* function_type_int) (Evas_Object *, Change*, int);
+typedef Eina_Bool (* function_type_string_string_double_double) (Evas_Object *, Change*, const char *, const char *, double, double);
 
 static Eina_Bool
 _apply(Evas_Object *obj, Function_Info *fi)
@@ -31,6 +32,9 @@ _apply(Evas_Object *obj, Function_Info *fi)
          return true;
       case FUNCTION_TYPE_INT:
          return ((function_type_int)fi->function)(obj, NULL, fi->args.type_int.ival);
+      case FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE:
+         return ((function_type_string_string_double_double)fi->function)(obj, NULL, fi->args.type_ssdd.s1, fi->args.type_ssdd.s2, fi->args.type_ssdd.d1, fi->args.type_ssdd.d2);
+
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
      }
    return false;
@@ -67,6 +71,12 @@ diff_update(Diff *diff, Diff *new_diff)
       case FUNCTION_TYPE_NONE:
       case FUNCTION_TYPE_INT:
          break;
+      case FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE:
+         eina_stringshare_del(diff->redo.args.type_ssdd.s1);
+         eina_stringshare_del(diff->redo.args.type_ssdd.s2);
+         eina_stringshare_ref(new_diff->redo.args.type_ssdd.s1);
+         eina_stringshare_ref(new_diff->redo.args.type_ssdd.s2);
+         break;
          /* Do not forget to replace previous stringshares in existing_diff.redo
             if needed. */
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
@@ -85,6 +95,10 @@ diff_free(Diff *diff)
      {
       case FUNCTION_TYPE_NONE:
       case FUNCTION_TYPE_INT:
+         break;
+      case FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE:
+         eina_stringshare_del(diff->redo.args.type_ssdd.s1);
+         eina_stringshare_del(diff->redo.args.type_ssdd.s2);
          break;
          /* Do not forget to clean stringshares */
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
