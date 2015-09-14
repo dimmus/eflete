@@ -409,15 +409,15 @@ tabs_menu_tab_open(Tabs_Menu view)
          elm_toolbar_item_selected_set(tabs.menu.item_image, true);
          break;
       case TAB_SOUND_EDITOR:
-         elm_layout_content_set(tabs.layout, NULL, NULL);
+         elm_layout_content_set(tabs.layout, NULL, tabs.menu.content_image_editor);
          elm_toolbar_item_selected_set(tabs.menu.item_sound, true);
          break;
       case TAB_COLORCLASS_EDITOR:
-         elm_layout_content_set(tabs.layout, NULL, NULL);
+         elm_layout_content_set(tabs.layout, NULL, tabs.menu.content_colorclass_editor);
          elm_toolbar_item_selected_set(tabs.menu.item_colorclass, true);
          break;
       case TAB_STYLE_EDITOR:
-         elm_layout_content_set(tabs.layout, NULL, NULL);
+         elm_layout_content_set(tabs.layout, NULL, tabs.menu.content_text_editor);
          elm_toolbar_item_selected_set(tabs.menu.item_text, true);
          break;
       case TAB_LAST:
