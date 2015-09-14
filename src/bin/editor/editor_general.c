@@ -41,3 +41,18 @@ editor_save_all(Evas_Object *edit_object)
 {
    return _editor_save(edit_object, false);
 }
+
+Eina_Bool
+editor_internal_group_add(Evas_Object *edit_object)
+{
+   assert(edit_object != NULL);
+
+   if (edje_edit_group_exist(edit_object, EFLETE_INTERNAL_GROUP_NAME))
+     return true;
+
+   if (!edje_edit_group_add(edit_object, EFLETE_INTERNAL_GROUP_NAME))
+     return false;
+   if (!edje_edit_without_source_save(edit_object, false))
+     return false;
+   return true;
+}
