@@ -343,6 +343,9 @@ ui_property_state_container_set(Evas_Object *property);
 static void
 ui_property_state_container_unset(Evas_Object *property);
 
+static void
+prop_state_text_ellipsis_update(Prop_Data *pd);
+
 static Elm_Genlist_Item_Class *_itc_tween = NULL;
 
 static void
@@ -510,6 +513,71 @@ _on_editor_attribute_changed(void *data,
          break;
       case ATTRIBUTE_STATE_ALIGN_Y:
          COMMON_1SPINNER_UPDATE(state, align_y, state, double, 100, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL1_RELATIVE_X:
+         COMMON_1SPINNER_UPDATE(state, rel1_relative_x, state_object_area, double, 100, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL1_RELATIVE_Y:
+         COMMON_1SPINNER_UPDATE(state, rel1_relative_y, state_object_area, double, 100, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL2_RELATIVE_X:
+         COMMON_1SPINNER_UPDATE(state, rel2_relative_x, state_object_area, double, 100, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL2_RELATIVE_Y:
+         COMMON_1SPINNER_UPDATE(state, rel2_relative_y, state_object_area, double, 100, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL1_OFFSET_X:
+         COMMON_1SPINNER_UPDATE(state, rel1_offset_x, state_object_area, double, 1, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL1_OFFSET_Y:
+         COMMON_1SPINNER_UPDATE(state, rel1_offset_y, state_object_area, double, 1, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL2_OFFSET_X:
+         COMMON_1SPINNER_UPDATE(state, rel2_offset_x, state_object_area, double, 1, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL2_OFFSET_Y:
+         COMMON_1SPINNER_UPDATE(state, rel2_offset_y, state_object_area, double, 1, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_ASPECT_MIN:
+         COMMON_1SPINNER_UPDATE(state, aspect_min, state, double, 100, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_ASPECT_MAX:
+         COMMON_1SPINNER_UPDATE(state, aspect_max, state, double, 100, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
+         COMMON_1SPINNER_UPDATE(state_fill, origin_relative_x, state_fill, double, 100, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y:
+         COMMON_1SPINNER_UPDATE(state_fill, origin_relative_y, state_fill, double, 100, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X:
+         COMMON_1SPINNER_UPDATE(state_fill, origin_offset_x, state_fill, double, 1, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y:
+         COMMON_1SPINNER_UPDATE(state_fill, origin_offset_y, state_fill, double, 1, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X:
+         COMMON_1SPINNER_UPDATE(state_fill, size_relative_x, state_fill, double, 100, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y:
+         COMMON_1SPINNER_UPDATE(state_fill, size_relative_y, state_fill, double, 100, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X:
+         COMMON_1SPINNER_UPDATE(state_fill, size_offset_x, state_fill, double, 1, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y:
+         COMMON_1SPINNER_UPDATE(state_fill, size_offset_y, state_fill, double, 1, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_TEXT_ALIGN_X:
+         COMMON_1SPINNER_UPDATE(state_text, align_x, state_text, double, 100, STATE_ARGS);
+         COMMON_1SPINNER_UPDATE(state_text, align_x, state_textblock, double, 100, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_TEXT_ALIGN_Y:
+         COMMON_1SPINNER_UPDATE(state_text, align_y, state_text, double, 100, STATE_ARGS);
+         COMMON_1SPINNER_UPDATE(state_text, align_y, state_textblock, double, 100, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_TEXT_ELIPSIS:
+         prop_state_text_ellipsis_update(pd);
          break;
       /* Don't add 'default:'. Compiler must warn about missing cases */
      }
