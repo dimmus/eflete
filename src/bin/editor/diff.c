@@ -37,7 +37,7 @@ _apply(Evas_Object *obj, Function_Info *fi)
 }
 
 Eina_Bool
-diff_undo(Evas_Object *obj, Diff_ *diff)
+diff_undo(Evas_Object *obj, Diff *diff)
 {
    assert(obj != NULL);
    assert(diff != NULL);
@@ -46,7 +46,7 @@ diff_undo(Evas_Object *obj, Diff_ *diff)
 }
 
 Eina_Bool
-diff_redo(Evas_Object *obj, Diff_ *diff)
+diff_redo(Evas_Object *obj, Diff *diff)
 {
    assert(obj != NULL);
    assert(diff != NULL);
@@ -55,7 +55,7 @@ diff_redo(Evas_Object *obj, Diff_ *diff)
 }
 
 void
-diff_update(Diff_ *diff, Diff_ *new_diff)
+diff_update(Diff *diff, Diff *new_diff)
 {
    assert(diff != NULL);
    assert(new_diff != NULL);
@@ -77,7 +77,7 @@ diff_update(Diff_ *diff, Diff_ *new_diff)
 }
 
 void
-diff_free(Diff_ *diff)
+diff_free(Diff *diff)
 {
    assert(diff != NULL);
 

@@ -44,18 +44,18 @@ struct _Diff_ {
    Function_Info redo;
 };
 
-typedef struct _Diff_ Diff_;
+typedef struct _Diff_ Diff;
 
 Eina_Bool
-diff_undo(Evas_Object *obj, Diff_ *diff);
+diff_undo(Evas_Object *obj, Diff *diff);
 
 Eina_Bool
-diff_redo(Evas_Object *obj, Diff_ *diff);
+diff_redo(Evas_Object *obj, Diff *diff);
 
 void
-diff_update(Diff_ *diff, Diff_ *new_diff);
+diff_update(Diff *diff, Diff *new_diff);
 
 void
-diff_free(Diff_ *diff);
+diff_free(Diff *diff);
 
 #endif /* DIFF_H */

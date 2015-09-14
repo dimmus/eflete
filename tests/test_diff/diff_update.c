@@ -55,16 +55,16 @@ _function_type_int_redo_return_true(Evas_Object *obj __UNUSED__, int val __UNUSE
  * @step 3 check that d1.undo values are not changed
  * @step 3 check that d1.redo values are changed to d2.redo values
  * </td>
- * <td>Diff_ *d1, Diff_ *d2</td>
+ * <td>Diff *d1, Diff *d2</td>
  * <td>All checks passed</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (diff_update_test_p)
 {
-   Diff_ *d1, *d2;
+   Diff *d1, *d2;
 
-   d1 = mem_calloc(1, sizeof(Diff_));
+   d1 = mem_calloc(1, sizeof(Diff));
    d1->undo.type = FUNCTION_TYPE_INT;
    d1->undo.function = _function_type_int_undo_return_true;
    d1->undo.args.type_int.ival = 21;
@@ -72,7 +72,7 @@ EFLETE_TEST (diff_update_test_p)
    d1->redo.function = _function_type_int_redo_return_true;
    d1->redo.args.type_int.ival = 38;
 
-   d2 = mem_calloc(1, sizeof(Diff_));
+   d2 = mem_calloc(1, sizeof(Diff));
    d2->undo.type = FUNCTION_TYPE_INT;
    d2->undo.function = _function_type_int_undo_return_true;
    d2->undo.args.type_int.ival = 38;

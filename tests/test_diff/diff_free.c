@@ -53,16 +53,16 @@ _function_type_int_redo_return_true(Evas_Object *obj __UNUSED__, int val __UNUSE
  * @step 1 add one diff
  * @step 2 call diff_free
  * </td>
- * <td>Diff_ *diff</td>
+ * <td>Diff *diff</td>
  * <td>Not aborted</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (diff_free_test_p)
 {
-   Diff_ *d1;
+   Diff *d1;
 
-   d1 = mem_calloc(1, sizeof(Diff_));
+   d1 = mem_calloc(1, sizeof(Diff));
    d1->undo.type = FUNCTION_TYPE_INT;
    d1->undo.function = _function_type_int_undo_return_true;
    d1->undo.args.type_int.ival = 21;

@@ -46,7 +46,7 @@ static Evas_Object *pseudo_object;
  * @step 2 call undo/redo
  * @step 3 check that true returned
  * </td>
- * <td>Evas_Object *obj, Diff_ *diff</td>
+ * <td>Evas_Object *obj, Diff *diff</td>
  * <td>All checks passed</td>
  * </tr>
  * @}
@@ -54,7 +54,7 @@ static Evas_Object *pseudo_object;
 EFLETE_TEST (diff_undo_redo_test_p1)
 {
    int sense = 42;
-   Diff_ diff;
+   Diff diff;
    /* We don't need to create actual object. Only pointer to it is needed for checks */
    pseudo_object = (Evas_Object *) &sense;
 
@@ -126,7 +126,7 @@ _function_type_int_redo_return_false(Evas_Object *obj, int val)
  * @step 7 check that false returned
  * @step 8 check that correct functions were called
  * </td>
- * <td>Evas_Object *obj, Diff_ *diff</td>
+ * <td>Evas_Object *obj, Diff *diff</td>
  * <td>All checks passed</td>
  * </tr>
  * @}
@@ -134,7 +134,7 @@ _function_type_int_redo_return_false(Evas_Object *obj, int val)
 EFLETE_TEST (diff_undo_redo_test_p2)
 {
    int sense = 42;
-   Diff_ diff;
+   Diff diff;
    /* We don't need to create actual object. Only pointer to it is needed for checks */
    pseudo_object = (Evas_Object *) &sense;
 

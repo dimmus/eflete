@@ -96,13 +96,13 @@ EFLETE_TEST (change_diff_add_test_p)
 {
    eina_init();
    int sense = 42;
-   Diff_ *d1, *d2;
+   Diff *d1, *d2;
    Change *change;
    /* We don't need to create actual object. Only pointer to it is needed for checks */
    pseudo_object = (Evas_Object *) &sense;
    change = change_add("test");
 
-   d1 = mem_calloc(1, sizeof(Diff_));
+   d1 = mem_calloc(1, sizeof(Diff));
    d1->undo.type = FUNCTION_TYPE_INT;
    d1->undo.function = _function_type_int_undo_return_true;
    d1->undo.args.type_int.ival = 42;
@@ -110,7 +110,7 @@ EFLETE_TEST (change_diff_add_test_p)
    d1->redo.function = _function_type_int_redo_return_true;
    d1->redo.args.type_int.ival = 42;
 
-   d2 = mem_calloc(1, sizeof(Diff_));
+   d2 = mem_calloc(1, sizeof(Diff));
    d2->undo.type = FUNCTION_TYPE_INT;
    d2->undo.function = _function_type_int_undo_return_true;
    d2->undo.args.type_int.ival = 42;
