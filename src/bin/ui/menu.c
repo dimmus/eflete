@@ -179,16 +179,16 @@ _menu_cb(void *data __UNUSED__,
            }
          break;
       case MENU_EDITORS_IMAGE:
-         image_editor_window_add(ap.project, MULTIPLE);
+         tabs_menu_tab_open(TAB_IMAGE_EDITOR);
          break;
       case MENU_EDITORS_SOUND:
-         sound_editor_window_add(ap.project, SOUND_EDITOR_EDIT);
+         tabs_menu_tab_open(TAB_SOUND_EDITOR);
          break;
       case MENU_EDITORS_COLORCLASS:
-         colorclass_manager_add(ap.project);
+         tabs_menu_tab_open(TAB_COLORCLASS_EDITOR);
          break;
       case MENU_EDITORS_TEXT_STYLE:
-         style_editor_window_add(ap.project);
+         tabs_menu_tab_open(TAB_STYLE_EDITOR);
          break;
       case MENU_HELP_ABOUT:
          about_window_add();
