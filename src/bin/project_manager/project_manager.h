@@ -309,19 +309,6 @@ void
 pm_dev_file_reload(Project *project);
 
 /**
- * Internal save. Should be used after major changes that are affecting dev file.
- *
- * @param project The project what should be saved.
- * @param style Style wich oject will be used. If style is NULL random one will
- * be picked. In this case save will affect all groups.
- * @param save Defines if saving into edje_edit is required or not.
- *
- * @ingroup ProjectManager
- */
-void
-pm_save_to_dev(Project *project, Style *style, Eina_Bool save);
-
-/**
  * Save all changes in current project to the dev file.
  *
  * @param project The project what should be saved.

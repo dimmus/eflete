@@ -389,12 +389,8 @@ _project_special_group_add(Project *project)
    edje_edit_obj = edje_edit_object_add(e);
 
    edje_object_file_set(edje_edit_obj, project->saved_edj, eina_list_data_get(list));
+   editor_internal_group_add(edje_edit_obj);
 
-   if (!edje_edit_group_exist(edje_edit_obj, EFLETE_INTERNAL_GROUP_NAME))
-     {
-        edje_edit_group_add(edje_edit_obj, EFLETE_INTERNAL_GROUP_NAME);
-        edje_edit_without_source_save(edje_edit_obj, false);
-     }
    edje_edit_string_list_free(list);
    evas_object_del(edje_edit_obj);
    ecore_evas_free(project->ecore_evas);
@@ -697,26 +693,6 @@ pm_dev_file_reload(Project *pr)
 {
    eina_file_close(pr->mmap_file);
    pr->mmap_file = eina_file_open(pr->dev, false);
-   edje_object_mmap_set(pr->global_object, pr->mmap_file, EFLETE_INTERNAL_GROUP_NAME);
-}
-
-void
-pm_save_to_dev(Project *pr, Style *st, Eina_Bool save)
-{
-   assert(pr != NULL);
-
-   if (st)
-     {
-        if (save) edje_edit_without_source_save(st->obj, true);
-     }
-   else
-     {
-        if (save) edje_edit_without_source_save(pr->global_object, false);
-     }
-   /* reloading mmaped dev file to update cached groups */
-   eina_file_close(pr->mmap_file);
-   pr->mmap_file = eina_file_open(pr->dev, false);
-   if (st) edje_object_mmap_set(st->obj, pr->mmap_file, st->full_group_name);
    edje_object_mmap_set(pr->global_object, pr->mmap_file, EFLETE_INTERNAL_GROUP_NAME);
 }
 
@@ -1586,7 +1562,7 @@ _develop_export(void *data __UNUSED__,
 {
    PROGRESS_SEND(_("Export project as develop file"));
    PROGRESS_SEND(_("Export to file '%s'"), worker.edj);
-   edje_edit_save_all(worker.project->global_object);
+   editor_save_all(worker.project->global_object);
    eina_file_copy(worker.project->dev, worker.edj,
                   EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
                   NULL, NULL);

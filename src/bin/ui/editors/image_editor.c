@@ -777,7 +777,7 @@ _on_button_apply_clicked_cb(void *data,
         else if (edje_edit_image_add(img_edit->pr->global_object, unit->data))
           ap.project->nsimage_list = eina_list_append(ap.project->nsimage_list, unit);
      }
-   pm_save_to_dev(img_edit->pr, NULL, false);
+   //pm_save_to_dev(img_edit->pr, NULL, false);
 
    eina_list_free(img_edit->unapplied_list);
 
