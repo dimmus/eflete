@@ -372,9 +372,7 @@ _style_delete_cb(void)
 Eina_Bool
 _new_theme_cb(void)
 {
-   if (!project_close())
-     return false;
-   //wizard_new_project_add();
+   tabs_menu_tab_open(TAB_HOME_NEW_PROJECT);
    return true;
 }
 
@@ -399,9 +397,7 @@ _open_project_cb(void)
 Eina_Bool
 _import_edj_cb(void)
 {
-   if (!project_close())
-     return false;
-   //wizard_import_edj_add();
+   tabs_menu_tab_open(TAB_HOME_IMPORT_EDJ);
    return true;
 }
 
