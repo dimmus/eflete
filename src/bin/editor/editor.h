@@ -55,14 +55,18 @@ editor_internal_group_add(Evas_Object *edit_object);
 
 /* Group */
 Eina_Bool
-editor_group_min_w_set(Evas_Object *obj, Change *change, int new_val);
+editor_group_min_w_set(Evas_Object *obj, Change *change, Eina_Bool merge,
+                       int new_val);
 
 Eina_Bool
-editor_group_min_h_set(Evas_Object *obj, Change *change, int new_val);
+editor_group_min_h_set(Evas_Object *obj, Change *change, Eina_Bool merge,
+                       int new_val);
 
 Eina_Bool
-editor_group_max_w_set(Evas_Object *obj, Change *change, int new_val);
+editor_group_max_w_set(Evas_Object *obj, Change *change, Eina_Bool merge,
+                       int new_val);
 
 Eina_Bool
-editor_group_max_h_set(Evas_Object *obj, Change *change, int new_val);
+editor_group_max_h_set(Evas_Object *obj, Change *change, Eina_Bool merge,
+                       int new_val);
 #endif /* EDITOR_H */

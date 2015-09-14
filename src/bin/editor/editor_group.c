@@ -21,7 +21,8 @@
 
 #define MAX_SET(VAL, VAL_CAPS) \
 Eina_Bool \
-editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, int new_value) \
+editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge, \
+                               int new_value) \
 { \
    Eina_Bool res; \
    int old_value; \
@@ -47,7 +48,10 @@ editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, int new_value) 
         diff->undo.type = FUNCTION_TYPE_INT; \
         diff->undo.function = editor_group_max_## VAL ##_set; \
         diff->undo.args.type_int.ival = old_value; \
-        change_diff_merge_add(change, diff); \
+        if (merge) \
+          change_diff_merge_add(change, diff); \
+        else \
+          change_diff_add(change, diff); \
      } \
    res = edje_edit_group_max_## VAL ##_set(obj, new_value); \
    TODO("Add signal to property here") \
@@ -61,7 +65,8 @@ MAX_SET(h, H)
 
 #define MIN_SET(VAL, VAL_CAPS) \
 Eina_Bool \
-editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, int new_value) \
+editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge, \
+                               int new_value) \
 { \
    Eina_Bool res; \
    int old_value; \
@@ -87,7 +92,10 @@ editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, int new_value) 
         diff->undo.type = FUNCTION_TYPE_INT; \
         diff->undo.function = editor_group_min_## VAL ##_set; \
         diff->undo.args.type_int.ival = old_value; \
-        change_diff_merge_add(change, diff); \
+        if (merge) \
+          change_diff_merge_add(change, diff); \
+        else \
+          change_diff_add(change, diff); \
      } \
    res = edje_edit_group_min_## VAL ##_set(obj, new_value); \
    TODO("Add signal to property here") \

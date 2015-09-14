@@ -20,8 +20,9 @@
 #include "diff.h"
 #include "change.h"
 
-typedef Eina_Bool (* function_type_int) (Evas_Object *, Change*, int);
-typedef Eina_Bool (* function_type_string_string_double_double) (Evas_Object *, Change*, const char *, const char *, double, double);
+typedef Eina_Bool (* function_type_int) (Evas_Object *, Change*, Eina_Bool, int);
+typedef Eina_Bool (* function_type_string_string_double_double) (Evas_Object *, Change*, Eina_Bool,
+                                                                 const char *, const char *, double, double);
 
 static Eina_Bool
 _apply(Evas_Object *obj, Function_Info *fi)
@@ -31,9 +32,10 @@ _apply(Evas_Object *obj, Function_Info *fi)
       case FUNCTION_TYPE_NONE:
          return true;
       case FUNCTION_TYPE_INT:
-         return ((function_type_int)fi->function)(obj, NULL, fi->args.type_int.ival);
+         return ((function_type_int)fi->function)(obj, NULL, false, fi->args.type_int.ival);
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE:
-         return ((function_type_string_string_double_double)fi->function)(obj, NULL, fi->args.type_ssdd.s1, fi->args.type_ssdd.s2, fi->args.type_ssdd.d1, fi->args.type_ssdd.d2);
+         return ((function_type_string_string_double_double)fi->function)(obj, NULL, false,
+                  fi->args.type_ssdd.s1, fi->args.type_ssdd.s2, fi->args.type_ssdd.d1, fi->args.type_ssdd.d2);
 
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
      }

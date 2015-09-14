@@ -739,7 +739,7 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
    int value = (int)elm_spinner_value_get(obj); \
    if (pd->change) \
      { \
-        if (!editor_group_##SUB1##_##VALUE##_set(pd->group->edit_object, pd->change, value)) \
+        if (!editor_group_##SUB1##_##VALUE##_set(pd->group->edit_object, pd->change, true, value)) \
         { \
            ERR("editor_group_"#SUB1"_"#VALUE"_set failed"); \
            abort(); \
@@ -748,7 +748,7 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
    else \
      { \
         _on_group_##SUB1##_##VALUE##_start(data, obj, ei); \
-        if (!editor_group_##SUB1##_##VALUE##_set(pd->group->edit_object, pd->change, value)) \
+        if (!editor_group_##SUB1##_##VALUE##_set(pd->group->edit_object, pd->change, true, value)) \
         { \
            ERR("editor_group_"#SUB1"_"#VALUE"_set failed"); \
            abort(); \
