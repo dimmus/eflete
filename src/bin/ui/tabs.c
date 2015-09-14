@@ -23,6 +23,11 @@
 #include "new_history.h"
 #include "signals.h"
 
+#include "style_editor.h"
+#include "image_editor.h"
+#include "sound_editor.h"
+#include "animator.h"
+
 struct _Tabs_Item {
    Group *group;
    Elm_Object_Item *toolbar_item;
@@ -250,7 +255,7 @@ _project_opened(void *data __UNUSED__,
                 void *ei __UNUSED__)
 {
    tabs.menu.content_image_editor = image_editor_window_add(ap.project, MULTIPLE);
-   tabs.menu.content_sound_editor = NULL;
+   tabs.menu.content_sound_editor = sound_editor_window_add(ap.project, SOUND_EDITOR_EDIT);
    tabs.menu.content_text_editor = NULL;
    tabs.menu.content_colorclass_editor = NULL;
 
@@ -266,6 +271,7 @@ _project_closed(void *data __UNUSED__,
                 void *ei __UNUSED__)
 {
    evas_object_del(tabs.menu.content_image_editor);
+   evas_object_del(tabs.menu.content_sound_editor);
 
    tabs.menu.content_image_editor = NULL;
    tabs.menu.content_sound_editor = NULL;
