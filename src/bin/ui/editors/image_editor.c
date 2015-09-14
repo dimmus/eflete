@@ -63,7 +63,13 @@ struct _Image_Editor
    Evas_Object *layout;
    Search_Data image_search_data;
    Search_Data usage_search_data;
-   Evas_Object *tabs;
+   struct {
+      Evas_Object *tabs;
+      Evas_Object *image_info;
+      Evas_Object *image_usage;
+      Elm_Object_Item *item_image_info;
+      Elm_Object_Item *item_image_usage;
+   } property;
    Eina_List *unapplied_list;
    struct {
       Ewe_Tabs_Item *tab;
@@ -247,8 +253,7 @@ _image_info_update_usage_info(Image_Editor *img_edit, int list_count)
    elm_entry_entry_set(img_edit->usage_search_data.search_entry, "");
    img_edit->usage_search_data.last_item_found = NULL;
 
-   ewe_tabs_item_title_set(img_edit->tabs,
-                           img_edit->image_usage_fields.tab, title);
+   elm_object_item_part_text_set(img_edit->property.item_image_usage, NULL, title);
    eina_stringshare_del(title);
 }
 
@@ -1010,34 +1015,80 @@ _image_usage_layout_create(Image_Editor *img_edit, Evas_Object *parent)
                                   &(img_edit->usage_search_data));
    img_edit->usage_search_data.search_entry = entry;
    img_edit->usage_search_data.last_item_found = NULL;
+   evas_object_hide(layout);
    return layout;
 }
 
+static void
+_image_info_click(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   Image_Editor *img_edit = (Image_Editor *)data;
+
+   assert(img_edit != NULL);
+
+   evas_object_hide(elm_layout_content_unset(img_edit->property.tabs, NULL));
+   elm_layout_content_set(img_edit->property.tabs,
+                          NULL,
+                          img_edit->property.image_info);
+}
+static void
+_usage_info_click(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   Image_Editor *img_edit = (Image_Editor *)data;
+
+   assert(img_edit != NULL);
+
+   evas_object_hide(elm_layout_content_unset(img_edit->property.tabs, NULL));
+   elm_layout_content_set(img_edit->property.tabs,
+                          NULL,
+                          img_edit->property.image_usage);
+}
 
 static void
 _image_info_initiate(Image_Editor *img_edit)
 {
-   Ewe_Tabs_Item *it = NULL;
+   Evas_Object *toolbar;
 
    assert(img_edit != NULL);
 
-   img_edit->tabs = ewe_tabs_add(img_edit->layout);
-   elm_object_style_set(img_edit->tabs, "bookmark");
+   img_edit->property.tabs = elm_layout_add(img_edit->layout);
+   elm_layout_theme_set(img_edit->property.tabs, "layout", "tabs", "default");
 
-   it = ewe_tabs_item_append(img_edit->tabs, NULL, "Image Info", "bookmark");
-   ewe_tabs_item_content_set(img_edit->tabs, it,
-                             _image_info_box_create(img_edit));
-   it = ewe_tabs_item_append(img_edit->tabs, NULL, "", "bookmark");
-   ewe_tabs_item_content_set(img_edit->tabs, it,
-                             _image_usage_layout_create(img_edit,
-                                                        img_edit->layout));
-   img_edit->image_usage_fields.tab = it;
+   toolbar = elm_toolbar_add(img_edit->property.tabs);
+   elm_object_style_set(toolbar, "editor_tabs_horizontal");
+   elm_layout_content_set(img_edit->property.tabs, "elm.swallow.toolbar", toolbar);
+   elm_toolbar_shrink_mode_set(toolbar, ELM_TOOLBAR_SHRINK_SCROLL);
+   elm_toolbar_select_mode_set(toolbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_toolbar_align_set(toolbar, 0.0);
+
+   img_edit->property.item_image_info = elm_toolbar_item_append(toolbar, NULL,
+                                                                _("Image Info"),
+                                                                _image_info_click,
+                                                                img_edit);
+   img_edit->property.item_image_usage = elm_toolbar_item_append(toolbar, NULL,
+                                                                 _(""),
+                                                                 _usage_info_click,
+                                                                 img_edit);
+
+   img_edit->property.image_info = _image_info_box_create(img_edit);
+   img_edit->property.image_usage = _image_usage_layout_create(img_edit,
+                                                               img_edit->layout);
+
+   elm_layout_content_set(img_edit->property.tabs,
+                          NULL,
+                          img_edit->property.image_info);
 
    elm_object_part_content_set(img_edit->layout,
-                               "eflete.swallow.image_info", img_edit->tabs);
+                               "eflete.swallow.image_info", img_edit->property.tabs);
 
    _image_info_update_usage_info(img_edit, 0);
-   evas_object_show(img_edit->tabs);
+   evas_object_show(img_edit->property.tabs);
 }
 
 Eina_Bool
