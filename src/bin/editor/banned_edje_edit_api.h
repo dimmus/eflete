@@ -31,9 +31,9 @@
  ***********************************************************************************/
 
 /* General API */
-//#pragma GCC poison edje_edit_save
-//#pragma GCC poison edje_edit_save_all
-//#pragma GCC poison edje_edit_without_source_save
+#pragma GCC poison edje_edit_save
+#pragma GCC poison edje_edit_save_all
+#pragma GCC poison edje_edit_without_source_save
 
 /* groups API */
 //#pragma GCC poison edje_edit_group_add

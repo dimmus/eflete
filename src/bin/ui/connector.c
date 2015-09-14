@@ -195,7 +195,7 @@ _add_layout_cb(void *data,
         abort();
      }
 
-   pm_save_to_dev(ap.project, NULL, true);
+   //pm_save_to_dev(ap.project, NULL, true);
    layout = wm_style_add(name, name, LAYOUT, NULL);
    ap.project->layouts = eina_inlist_append(ap.project->layouts,
                                              EINA_INLIST_GET(layout));
@@ -570,7 +570,7 @@ _progress_end(void *data __UNUSED__, PM_Project_Result result)
         wm_styles_build_alias(ap.project->widgets,
                               ap.project->layouts);
         enventor_object_focus_set(ap.enventor, true);
-        pm_save_to_dev(ap.project, ap.project->current_style, true);
+        //pm_save_to_dev(ap.project, ap.project->current_style, true);
      }
 #endif /* HAVE_ENVENTOR */
 
@@ -1144,7 +1144,7 @@ _selected_layout_delete(Evas_Object *genlist)
         i--;
      }
 
-   pm_save_to_dev(ap.project, NULL, true);
+   //pm_save_to_dev(ap.project, NULL, true);
    evas_object_del(style->obj);
    if (!edje_edit_group_del(ap.project->global_object, style->full_group_name))
      {
@@ -1223,7 +1223,7 @@ _selected_style_delete(Evas_Object *genlist)
                 wm_style_free(alias_style);
           }
          /*Delete loaded object for unlock group in edj file*/
-        pm_save_to_dev(ap.project, NULL, true);
+        //pm_save_to_dev(ap.project, NULL, true);
         evas_object_del(style->obj);
         if (!edje_edit_group_del(ap.project->global_object, style->full_group_name))
           {

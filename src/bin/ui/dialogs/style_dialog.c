@@ -239,11 +239,11 @@ _on_popup_btn_yes(void *data __UNUSED__,
    if (wm_style_copy(dest_style->obj, source_style->full_group_name, full_name,
                      ap.project->dev, style))
      {
-        pm_save_to_dev(ap.project, source_style, true);
+        //pm_save_to_dev(ap.project, source_style, true);
         wm_style_data_load(style, evas_object_evas_get(ap.win),
                            ap.project->mmap_file);
         _reload_classes(dest_wdg->classes);
-        pm_save_to_dev(ap.project, style, true);
+        //pm_save_to_dev(ap.project, style, true);
 
         /* Selecting added style in genlist! */
         tabs = ui_block_widget_list_get();
