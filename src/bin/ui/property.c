@@ -579,6 +579,9 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_STATE_TEXT_ELIPSIS:
          prop_state_text_ellipsis_update(pd);
          break;
+      case ATTRIBUTE_STATE_TEXT_SIZE:
+        COMMON_1SPINNER_UPDATE(state_text, size, state_text, int,  1, STATE_ARGS);
+         break;
       /* Don't add 'default:'. Compiler must warn about missing cases */
      }
 }

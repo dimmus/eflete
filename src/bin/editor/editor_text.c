@@ -24,3 +24,42 @@ EDITOR_STATE_DOUBLE(text_align_x, ATTRIBUTE_STATE_TEXT_ALIGN_X)
 EDITOR_STATE_DOUBLE(text_align_y, ATTRIBUTE_STATE_TEXT_ALIGN_Y)
 
 EDITOR_STATE_DOUBLE(text_elipsis, ATTRIBUTE_STATE_TEXT_ELIPSIS)
+
+Eina_Bool
+editor_state_text_size_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                           const char *part_name, const char *state_name, double state_val, int new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_STATE_TEXT_SIZE;
+
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+   assert(new_val >= 0);
+
+   if (change)
+     {
+        double old_value = edje_edit_state_text_size_get(edit_object, part_name, state_name, state_val);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_INT;
+        diff->redo.function = editor_state_text_size_set;
+        diff->redo.args.type_ssdi.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssdi.s2 = eina_stringshare_add(state_name);
+        diff->redo.args.type_ssdi.d1 = state_val;
+        diff->redo.args.type_ssdi.i1 = new_val;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_INT;
+        diff->undo.function = editor_state_text_size_set;
+        diff->undo.args.type_ssdi.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssdi.s2 = eina_stringshare_add(state_name);
+        diff->undo.args.type_ssdi.d1 = state_val;
+        diff->undo.args.type_ssdi.i1 = old_value;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_state_text_size_set(edit_object, part_name, state_name, state_val, new_val))
+     return false;
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
