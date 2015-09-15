@@ -115,10 +115,23 @@ _open(void *data,
 #define FS_H 460
 
 static void
+_popup_obj_follow(void *data __UNUSED__,
+                  Evas *e __UNUSED__,
+                  Evas_Object *obj,
+                  void *event_info __UNUSED__)
+{
+   int x, y, w, h, nx, ny;
+
+   evas_object_geometry_get(obj, &x, &y, &w, &h);
+   nx = x - (FS_W - w);
+   ny = y + h;
+   evas_object_move(popup, nx, ny);
+}
+
+static void
 _fileselector_helper(Evas_Object *entry, const char *path, Elm_Fileselector_Filter_Func filter_cb)
 {
    Evas_Object *fs;
-   int x, y, w, h, nx, ny;
 
    popup = elm_layout_add(ap.win);
    elm_layout_theme_set(popup, "layout", "popup", "hint");
@@ -143,10 +156,9 @@ _fileselector_helper(Evas_Object *entry, const char *path, Elm_Fileselector_Filt
    evas_object_resize(fs, FS_W, FS_H);
    elm_layout_content_set(popup, "elm.swallow.content", fs);
 
-   evas_object_geometry_get(entry, &x, &y, &w, &h);
-   nx = x - (FS_W - w);
-   ny = y + h;
-   evas_object_move(popup, nx, ny);
+   _popup_obj_follow(NULL, NULL, entry, NULL);
+   evas_object_event_callback_add(entry, EVAS_CALLBACK_RESIZE, _popup_obj_follow, NULL);
+   evas_object_event_callback_add(entry, EVAS_CALLBACK_MOVE, _popup_obj_follow, NULL);
    evas_object_show(popup);
 }
 
@@ -193,10 +205,10 @@ popup_fileselector_edc_helper(Evas_Object *entry, const char *path)
 }
 
 static void
-_popup_pos(void *data __UNUSED__,
-           Evas *e __UNUSED__,
-           Evas_Object *obj __UNUSED__,
-           void *event_info __UNUSED__)
+_popup_win_follow(void *data __UNUSED__,
+                  Evas *e __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
 {
    int w, h, nx, ny;
 
@@ -227,8 +239,8 @@ popup_log_message_helper(const char *msg)
 
    elm_entry_entry_set(en, msg);
 
-   _popup_pos(NULL, NULL, NULL, NULL);
-   evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _popup_pos, NULL);
+   _popup_win_follow(NULL, NULL, NULL, NULL);
+   evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _popup_win_follow, NULL);
    evas_object_show(popup);
 }
 
