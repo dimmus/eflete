@@ -508,6 +508,12 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_STATE_MAX_H:
          COMMON_1SPINNER_UPDATE(state, max_h, state, int, 1, STATE_ARGS);
          break;
+      case ATTRIBUTE_STATE_MIN_W:
+         COMMON_1SPINNER_UPDATE(state, min_w, state, int, 1, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_MIN_H:
+         COMMON_1SPINNER_UPDATE(state, min_h, state, int, 1, STATE_ARGS);
+         break;
       case ATTRIBUTE_STATE_ALIGN_X:
          COMMON_1SPINNER_UPDATE(state, align_x, state, double, 100, STATE_ARGS);
          break;
