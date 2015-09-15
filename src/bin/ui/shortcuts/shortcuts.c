@@ -24,6 +24,7 @@
 #include "sound_editor.h"
 #include "animator.h"
 #include "tabs.h"
+#include "signals.h"
 
 #ifdef HAVE_ENVENTOR
    #define SKIP_IN_ENVENTOR_MODE \
@@ -441,6 +442,14 @@ _quit_cb(void)
    ui_main_window_del();
    return true;
 }
+/* close currently opened group tab */
+Eina_Bool
+_close_tab_cb(void)
+{
+   if (!ap.project) return false;
+   evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CLOSE, NULL);
+   return true;
+}
 
 Eina_Bool
 _style_editor_open_cb(void)
@@ -635,6 +644,7 @@ static Function_Set _sc_func_set_init[] =
      {"zoom.in", _zoom_in_cb},
      {"zoom.out", _zoom_out_cb},
      {"quit", _quit_cb},
+     {"close", _close_tab_cb},
      {"undo", _undo_cb},
      {"redo", _redo_cb},
      {"tab.style_editor", _style_editor_open_cb},

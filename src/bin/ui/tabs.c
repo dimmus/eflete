@@ -288,6 +288,19 @@ _project_closed(void *data __UNUSED__,
    tabs_menu_tab_open(TAB_LAST);
 }
 
+static void
+_tab_close_signal_cb(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *ei __UNUSED__)
+{
+   Tabs_Item *item = _find_tab(tabs.current_group);
+   if (item)
+     {
+        tabs.items = eina_list_remove(tabs.items, item);
+        _del_tab(item);
+     }
+}
+
 Evas_Object *
 tabs_add(void)
 {
@@ -375,6 +388,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_SAVED, _editor_saved, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_OPENED, _project_opened, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CLOSED, _project_closed, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CLOSE, _tab_close_signal_cb, NULL);
 
    return tabs.layout;
 }
