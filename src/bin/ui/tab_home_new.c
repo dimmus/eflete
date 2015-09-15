@@ -570,7 +570,7 @@ _tab_new_project_add(void)
    elm_object_part_text_set(tab_new.layout, "label.meta_comment", _("Comment:"));
    ENTRY_ADD(tab_new.layout, tab_new.meta_comment, false)
    elm_object_part_content_set(tab_new.layout, "swallow.meta_comment", tab_new.meta_comment);
-   elm_entry_entry_set(tab_new.meta_comment, _("Created with Eflete!"));
+   elm_entry_entry_set(tab_new.meta_comment, N_("Created with Eflete!"));
 
    /* check all */
    CHECK_ADD(tab_new.layout, tab_new.ch_all);

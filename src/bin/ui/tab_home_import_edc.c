@@ -513,7 +513,7 @@ _tab_import_edc_add(void)
    elm_object_part_text_set(tab_edc.layout, "label.meta_comment", _("Comment:"));
    ENTRY_ADD(tab_edc.layout, tab_edc.meta_comment, false)
    elm_object_part_content_set(tab_edc.layout, "swallow.meta_comment", tab_edc.meta_comment);
-   elm_entry_entry_set(tab_edc.meta_comment, _("Created with Eflete!"));
+   elm_entry_entry_set(tab_edc.meta_comment, N_("Created with Eflete!"));
 
    tab_edc.log = eina_strbuf_new();
 

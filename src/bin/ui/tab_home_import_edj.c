@@ -168,7 +168,7 @@ _tab_import_edj_add(void)
    elm_object_part_text_set(tab_edj.layout, "label.meta_comment", _("Comment:"));
    ENTRY_ADD(tab_edj.layout, tab_edj.meta_comment, false)
    elm_object_part_content_set(tab_edj.layout, "swallow.meta_comment", tab_edj.meta_comment);
-   elm_entry_entry_set(tab_edj.meta_comment, _("Created with Eflete!"));
+   elm_entry_entry_set(tab_edj.meta_comment, N_("Created with Eflete!"));
 
    return tab_edj.layout;
 }
