@@ -19,6 +19,7 @@
 
 #include "image_editor.h"
 #include "main_window.h"
+#include "editor.h"
 
 TODO("Rename this file to image_manager")
 
@@ -632,16 +633,20 @@ _on_image_done(void *data,
              free(res);
              continue;
           }
+        edje_edit_image_add(img_edit->pr->global_object, selected);
 
         it = (Item *)mem_malloc(sizeof(Item));
         it->image_name = eina_stringshare_add(file_name);
-        it->id = -1;
+        it->id = edje_edit_image_id_get(img_edit->pr->global_object, it->image_name);
         item = elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
                                               img_edit->group_items.linked,
                                               _grid_sel, img_edit);
         it->source = res->source;
         elm_gengrid_item_selected_set(item, true);
      }
+   editor_save_all(img_edit->pr->global_object);
+   TODO("Remove this line once edje_edit_image_add would be added into Editor Modulei and saving would work properly")
+   img_edit->pr->changed = true;
 del:
    ecore_job_add(_fs_del, img_edit);
 }
