@@ -72,7 +72,6 @@ struct _Image_Editor
    } property;
    Eina_List *unapplied_list;
    struct {
-      Ewe_Tabs_Item *tab;
       Evas_Object *genlist;
    } image_usage_fields;
    struct {

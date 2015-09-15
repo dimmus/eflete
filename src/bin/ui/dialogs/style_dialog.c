@@ -30,9 +30,11 @@ static Evas_Object *btn_add;
 static Elm_Validator_Regexp *class_validator = NULL;
 static Elm_Validator_Regexp *style_validator = NULL;
 
+TODO("outdated function because of eina_inlist of classes. Nope!")
 static void
-_reload_classes(Eina_Inlist *classes)
+_reload_classes(Eina_Inlist *classes __UNUSED__)
 {
+/*
    Evas_Object *gl_classes = NULL;
    const Evas_Object *nf = NULL;
    Elm_Object_Item *eoi = NULL;
@@ -48,6 +50,7 @@ _reload_classes(Eina_Inlist *classes)
    gl_classes = elm_object_item_part_content_get(eoi, NULL);
 
    ui_widget_list_class_data_reload(gl_classes, classes);
+*/
 }
 
 static void
@@ -97,10 +100,11 @@ _on_popup_btn_yes(void *data __UNUSED__,
    Evas_Object *widget_list = NULL, *eoi = NULL;
    Style *_style_find = NULL;
 
-   Evas_Object *tabs = NULL;
+/*   Evas_Object *tabs = NULL; */
    const Evas_Object *nf = NULL;
    Elm_Object_Item *nf_item = NULL;
-   Ewe_Tabs_Item *current_tab_item = NULL;
+TODO("Ewe_Tabs should be removed... Everything is changed now")
+/*   Ewe_Tabs_Item *current_tab_item = NULL; */
 
 #define STRING_CLEAR\
         eina_stringshare_del(style_name);\
@@ -246,9 +250,12 @@ _on_popup_btn_yes(void *data __UNUSED__,
         //pm_save_to_dev(ap.project, style, true);
 
         /* Selecting added style in genlist! */
-        tabs = ui_block_widget_list_get();
+/*        tabs = ui_block_widget_list_get(); */
+TODO("Remove this old function")
+/*
         current_tab_item = ewe_tabs_active_item_get(tabs);
         nf = ewe_tabs_item_content_get(tabs, current_tab_item);
+*/
         nf_item = elm_naviframe_top_item_get(nf);
         widget_list  = elm_object_item_part_content_get(nf_item, NULL);
 
