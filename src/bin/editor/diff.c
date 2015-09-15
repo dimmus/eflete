@@ -25,6 +25,8 @@ typedef Eina_Bool (* function_type_string_string_double_double) (Evas_Object *, 
                                                                  const char *, const char *, double, double);
 typedef Eina_Bool (* function_type_string_string_double_int) (Evas_Object *, Change*, Eina_Bool,
                                                               const char *, const char *, double, int);
+typedef Eina_Bool (* function_type_string_string_double_bool) (Evas_Object *, Change*, Eina_Bool,
+                                                               const char *, const char *, double, Eina_Bool);
 
 static Eina_Bool
 _apply(Evas_Object *obj, Function_Info *fi)
@@ -41,6 +43,9 @@ _apply(Evas_Object *obj, Function_Info *fi)
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_INT:
          return ((function_type_string_string_double_int)fi->function)(obj, NULL, false,
                   fi->args.type_ssdi.s1, fi->args.type_ssdi.s2, fi->args.type_ssdi.d1, fi->args.type_ssdi.i1);
+      case FUNCTION_TYPE_STRING_STRING_DOUBLE_BOOL:
+         return ((function_type_string_string_double_bool)fi->function)(obj, NULL, false,
+                  fi->args.type_ssdb.s1, fi->args.type_ssdb.s2, fi->args.type_ssdb.d1, fi->args.type_ssdb.b1);
 
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
      }
@@ -90,6 +95,12 @@ diff_update(Diff *diff, Diff *new_diff)
          eina_stringshare_ref(new_diff->redo.args.type_ssdi.s1);
          eina_stringshare_ref(new_diff->redo.args.type_ssdi.s2);
          break;
+      case FUNCTION_TYPE_STRING_STRING_DOUBLE_BOOL:
+         eina_stringshare_del(diff->redo.args.type_ssdb.s1);
+         eina_stringshare_del(diff->redo.args.type_ssdb.s2);
+         eina_stringshare_ref(new_diff->redo.args.type_ssdb.s1);
+         eina_stringshare_ref(new_diff->redo.args.type_ssdb.s2);
+         break;
          /* Do not forget to replace previous stringshares in existing_diff.redo
             if needed. */
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
@@ -116,6 +127,10 @@ diff_free(Diff *diff)
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_INT:
          eina_stringshare_del(diff->redo.args.type_ssdi.s1);
          eina_stringshare_del(diff->redo.args.type_ssdi.s2);
+         break;
+      case FUNCTION_TYPE_STRING_STRING_DOUBLE_BOOL:
+         eina_stringshare_del(diff->redo.args.type_ssdb.s1);
+         eina_stringshare_del(diff->redo.args.type_ssdb.s2);
          break;
          /* Do not forget to clean stringshares */
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
