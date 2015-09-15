@@ -192,6 +192,45 @@ popup_fileselector_edc_helper(Evas_Object *entry, const char *path)
    _fileselector_helper(entry, path, _edc_filter);
 }
 
+static void
+_popup_pos(void *data __UNUSED__,
+           Evas *e __UNUSED__,
+           Evas_Object *obj __UNUSED__,
+           void *event_info __UNUSED__)
+{
+   int w, h, nx, ny;
+
+   evas_object_geometry_get(ap.win, NULL, NULL, &w, &h);
+   nx = (w / 2) - (FS_W / 2);
+   ny = (h / 2) - (FS_H / 2);
+   evas_object_move(popup, nx, ny);
+}
+
+void
+popup_log_message_helper(const char *msg)
+{
+   Evas_Object *box, *en, *lab;
+
+   popup = elm_layout_add(ap.win);
+   elm_layout_theme_set(popup, "layout", "popup", "hint");
+   elm_layout_signal_callback_add(popup, "hint,dismiss", "eflete", _popup_dismiss, NULL);
+
+   BOX_ADD(popup, box, false, false)
+   elm_box_padding_set(box, 0, 6);
+   LABEL_ADD(popup, lab, _("<font_size=14>Import edc-file error"))
+   evas_object_show(lab);
+   ENTRY_ADD(box, en, false)
+   elm_entry_editable_set(en, false);
+   elm_box_pack_end(box, lab);
+   elm_box_pack_end(box, en);
+   elm_layout_content_set(popup, NULL, box);
+
+   elm_entry_entry_set(en, msg);
+
+   _popup_pos(NULL, NULL, NULL, NULL);
+   evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _popup_pos, NULL);
+   evas_object_show(popup);
+}
 
 #undef FS_W
 #undef FS_H
