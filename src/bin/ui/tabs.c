@@ -432,7 +432,7 @@ tabs_menu_tab_open(Tabs_Menu view)
          elm_toolbar_item_selected_set(tabs.menu.item_image, true);
          break;
       case TAB_SOUND_EDITOR:
-         elm_layout_content_set(tabs.layout, NULL, tabs.menu.content_image_editor);
+         elm_layout_content_set(tabs.layout, NULL, tabs.menu.content_sound_editor);
          elm_toolbar_item_selected_set(tabs.menu.item_sound, true);
          break;
       case TAB_COLORCLASS_EDITOR:
