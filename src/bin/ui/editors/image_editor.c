@@ -71,7 +71,6 @@ struct _Image_Editor
       Elm_Object_Item *item_image_info;
       Elm_Object_Item *item_image_usage;
    } property;
-   Eina_List *unapplied_list;
    struct {
       Evas_Object *genlist;
    } image_usage_fields;
@@ -610,10 +609,6 @@ _on_image_done(void *data,
           }
         file_name = ecore_file_file_get(selected);
 
-        image = mem_malloc(sizeof(Uns_List));
-        image->data = (void *)eina_stringshare_add(file_name);
-        image->act_type = ACTION_TYPE_ADD;
-
         res = mem_calloc(1, sizeof(External_Resource));
         res->name = eina_stringshare_add(file_name);
         res->source = eina_stringshare_printf("%s/images/%s", img_edit->pr->develop_path, file_name);
@@ -622,8 +617,6 @@ _on_image_done(void *data,
           {
              ecore_file_cp(selected, res->source);
 
-             img_edit->unapplied_list = eina_list_append(img_edit->unapplied_list,
-                                                         image);
              img_edit->pr->images = eina_list_sorted_insert(img_edit->pr->images, (Eina_Compare_Cb) resource_cmp, res);
           }
         else
@@ -644,7 +637,7 @@ _on_image_done(void *data,
         it->source = res->source;
         elm_gengrid_item_selected_set(item, true);
      }
-   editor_save_all(img_edit->pr->global_object);
+   editor_save(img_edit->pr->global_object);
    TODO("Remove this line once edje_edit_image_add would be added into Editor Modulei and saving would work properly")
    img_edit->pr->changed = true;
 del:
@@ -713,7 +706,6 @@ _on_button_delete_clicked_cb(void *data,
    Edje_Part_Image_Use *item;
    char buf[BUFF_MAX];
    int symbs = 0;
-   Uns_List *image = NULL;
    Eina_List *used;
 
    assert(img_edit != NULL);
@@ -730,12 +722,6 @@ _on_button_delete_clicked_cb(void *data,
         if (!used)
           {
              elm_object_item_del(grid_item);
-
-             image = mem_malloc(sizeof(Uns_List));
-             image->data = (void *)eina_stringshare_add(it->image_name);
-             image->act_type = ACTION_TYPE_DEL;
-             img_edit->unapplied_list = eina_list_append(img_edit->unapplied_list,
-                                                         image);
           }
         else
           {
