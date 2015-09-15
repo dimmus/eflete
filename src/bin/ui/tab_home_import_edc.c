@@ -51,6 +51,8 @@ struct _Tab_Home_Edc
    Evas_Object *meta_authors;
    Evas_Object *meta_licenses;
    Evas_Object *meta_comment;
+
+   Eina_Strbuf *log;
 };
 typedef struct _Tab_Home_Edc Tab_Home_Edc;
 
@@ -314,16 +316,25 @@ _edje_cc_opt_build(void)
    return buf;
 }
 
+Eina_Bool
+_progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
+{
+   elm_object_part_text_set(ap.splash, "label.info", progress_string);
+   eina_strbuf_append_printf(tab_edc.log, "%s", progress_string);
+   return true;
+}
+
 static Eina_Bool
 _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 {
    Eina_Strbuf *flags = _edje_cc_opt_build();
 
+   eina_strbuf_reset(tab_edc.log);
    pm_project_import_edc(elm_entry_entry_get(tab_edc.name),
                          elm_entry_entry_get(tab_edc.path),
                          elm_entry_entry_get(tab_edc.edc),
                          eina_strbuf_string_get(flags),
-                         progress_print,
+                         _progress_print,
                          progress_end,
                          NULL);
 
@@ -496,6 +507,8 @@ _tab_import_edc_add(void)
    ENTRY_ADD(tab_edc.layout, tab_edc.meta_comment, false)
    elm_object_part_content_set(tab_edc.layout, "swallow.meta_comment", tab_edc.meta_comment);
    elm_entry_entry_set(tab_edc.meta_comment, _("Created with Eflete!"));
+
+   tab_edc.log = eina_strbuf_new();
 
    return tab_edc.layout;
 }
