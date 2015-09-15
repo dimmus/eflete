@@ -27,6 +27,7 @@ typedef enum {
    FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE,
    FUNCTION_TYPE_STRING_STRING_DOUBLE_INT,
    FUNCTION_TYPE_STRING_STRING_DOUBLE_BOOL,
+   FUNCTION_TYPE_STRING_STRING_DOUBLE_STRING,
 } Function_Type;
 
 struct _Function_Info {
@@ -55,6 +56,12 @@ struct _Function_Info {
          double d1;
          Eina_Bool b1;
       } type_ssdb;
+      struct {
+         Eina_Stringshare *s1;
+         Eina_Stringshare *s2;
+         double d1;
+         Eina_Stringshare *s3;
+      } type_ssds;
    } args;              /**< function args not including Evas_Object * */
 };
 
