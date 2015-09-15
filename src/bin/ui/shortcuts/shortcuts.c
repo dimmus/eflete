@@ -255,40 +255,6 @@ _item_delete_cb(void)
    return true;
 }
 
-TODO("Remove those shortcut since there are no tabs called Widgets and Layouts. Now this shortcut is useless")
-Eina_Bool
-_widget_manager_layout_switch_cb(void)
-{
-/*
-   SKIP_IN_ENVENTOR_MODE
-   const Eina_List *tabs;
-   Evas_Object *nf = ui_block_widget_list_get();
-   tabs = ewe_tabs_items_list_get(nf);
-   tabs = eina_list_next(tabs);
-
-   assert(tabs != NULL);
-
-   ewe_tabs_active_item_set(nf, eina_list_data_get(tabs));
-*/
-   return true;
-}
-
-Eina_Bool
-_widget_manager_style_switch_cb(void)
-{
-/*
-   SKIP_IN_ENVENTOR_MODE
-   const Eina_List *tabs;
-   Evas_Object *nf = ui_block_widget_list_get();
-   tabs = ewe_tabs_items_list_get(nf);
-
-   assert(tabs != NULL);
-
-   ewe_tabs_active_item_set(nf, eina_list_data_get(tabs));
-*/
-   return true;
-}
-
 Eina_Bool
 _separate_mode_change_cb(void)
 {
@@ -664,8 +630,6 @@ static Function_Set _sc_func_set_init[] =
 /*   {"item.delete", _item_delete_cb}, this callback works unpredictable because of focus */
      {"separate_mode", _separate_mode_change_cb},
      {"style.create", _new_style_create_cb},
-     {"widget_manager.layout", _widget_manager_layout_switch_cb},
-     {"widget_manager.style", _widget_manager_style_switch_cb},
      {"highlight.align.show", _highlight_align_show_switch_cb},
      {"object_area.show", _object_area_show_switch_cb},
      {"zoom.in", _zoom_in_cb},

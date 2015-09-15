@@ -296,9 +296,6 @@ _default_shortcuts_get()
    ADD_SHORTCUT("5", 14, CTRL, "tab.colorclass_viewer", false);
    ADD_SHORTCUT("6", 15, CTRL, "animator", false);
 
-   ADD_SHORTCUT("Left", 113, CTRL, "widget_manager.style", false);
-   ADD_SHORTCUT("Right", 114, CTRL, "widget_manager.layout", false);
-
    ADD_SHORTCUT("equal", 21, CTRL, "zoom.in", false);
    ADD_SHORTCUT("minus", 20, CTRL, "zoom.out", false);
 
