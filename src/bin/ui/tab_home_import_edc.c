@@ -317,11 +317,18 @@ _edje_cc_opt_build(void)
 }
 
 Eina_Bool
-_progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
+_progress_print(void *data, Eina_Stringshare *progress_string)
 {
-   elm_object_part_text_set(ap.splash, "label.info", progress_string);
-   eina_strbuf_append_printf(tab_edc.log, "%s", progress_string);
-   return true;
+   eina_strbuf_append_printf(tab_edc.log, "%s<br>", progress_string);
+   return progress_print(data, progress_string);
+}
+
+void
+_progress_end(void *data, PM_Project_Result result)
+{
+   if (result == PM_PROJECT_ERROR)
+     popup_log_message_helper(eina_strbuf_string_get(tab_edc.log));
+   progress_end(data, result);
 }
 
 static Eina_Bool
@@ -335,7 +342,7 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
                          elm_entry_entry_get(tab_edc.edc),
                          eina_strbuf_string_get(flags),
                          _progress_print,
-                         progress_end,
+                         _progress_end,
                          NULL);
 
    eina_strbuf_free(flags);
