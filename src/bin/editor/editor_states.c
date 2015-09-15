@@ -143,3 +143,8 @@ editor_state_min_## VAL ##_set(Evas_Object *edit_object, Change *change, Eina_Bo
 
 MIN_SET(w, W)
 MIN_SET(h, H)
+
+EDITOR_STATE_BOOL(fixed_h, ATTRIBUTE_STATE_FIXED_H)
+EDITOR_STATE_BOOL(fixed_w, ATTRIBUTE_STATE_FIXED_W)
+EDITOR_STATE_BOOL(fill_smooth, ATTRIBUTE_STATE_FILL_SMOOTH)
+EDITOR_STATE_BOOL(visible, ATTRIBUTE_STATE_VISIBLE)

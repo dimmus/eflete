@@ -63,3 +63,10 @@ editor_state_text_size_set(Evas_Object *edit_object, Change *change, Eina_Bool m
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
+
+EDITOR_STATE_BOOL(text_fit_x, ATTRIBUTE_STATE_TEXT_FIT_X)
+EDITOR_STATE_BOOL(text_fit_y, ATTRIBUTE_STATE_TEXT_FIT_Y)
+EDITOR_STATE_BOOL(text_max_x, ATTRIBUTE_STATE_TEXT_MAX_X)
+EDITOR_STATE_BOOL(text_max_y, ATTRIBUTE_STATE_TEXT_MAX_Y)
+EDITOR_STATE_BOOL(text_min_x, ATTRIBUTE_STATE_TEXT_MIN_X)
+EDITOR_STATE_BOOL(text_min_y, ATTRIBUTE_STATE_TEXT_MIN_Y)

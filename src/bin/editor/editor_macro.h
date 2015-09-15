@@ -53,3 +53,40 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return true; \
 }
+
+#define EDITOR_STATE_BOOL(FUNC, ATTRIBUTE) \
+Eina_Bool \
+editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, \
+                            const char *part_name, const char *state_name, double state_val, Eina_Bool new_val) \
+{ \
+   Diff *diff; \
+   Attribute attribute = ATTRIBUTE; \
+   assert(edit_object != NULL); \
+   assert(part_name != NULL); \
+   assert(state_name != NULL); \
+   if (change) \
+     { \
+        Eina_Bool old_value = edje_edit_state_## FUNC ##_get(edit_object, part_name, state_name, state_val); \
+        diff = mem_calloc(1, sizeof(Diff)); \
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_BOOL; \
+        diff->redo.function = editor_state_## FUNC ##_set; \
+        diff->redo.args.type_ssdb.s1 = eina_stringshare_add(part_name); \
+        diff->redo.args.type_ssdb.s2 = eina_stringshare_add(state_name); \
+        diff->redo.args.type_ssdb.d1 = state_val; \
+        diff->redo.args.type_ssdb.b1 = new_val; \
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_BOOL; \
+        diff->undo.function = editor_state_## FUNC ##_set; \
+        diff->undo.args.type_ssdb.s1 = eina_stringshare_add(part_name); \
+        diff->undo.args.type_ssdb.s2 = eina_stringshare_add(state_name); \
+        diff->undo.args.type_ssdb.d1 = state_val; \
+        diff->undo.args.type_ssdb.b1 = old_value; \
+        if (merge) \
+          change_diff_merge_add(change, diff); \
+        else \
+          change_diff_add(change, diff); \
+     } \
+   if (!edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)) \
+     return false; \
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+   return true; \
+}

@@ -586,7 +586,41 @@ _on_editor_attribute_changed(void *data,
          prop_state_text_ellipsis_update(pd);
          break;
       case ATTRIBUTE_STATE_TEXT_SIZE:
-        COMMON_1SPINNER_UPDATE(state_text, size, state_text, int,  1, STATE_ARGS);
+         COMMON_1SPINNER_UPDATE(state_text, size, state_text, int,  1, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_TEXT_FIT_X:
+         COMMON_CHECK_UPDATE(state_text, fit_x, state_text, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_TEXT_FIT_Y:
+         COMMON_CHECK_UPDATE(state_text, fit_y, state_text, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_TEXT_MAX_X:
+         COMMON_CHECK_UPDATE(state_text, max_x, state_text, STATE_ARGS);
+         COMMON_CHECK_UPDATE(state_text, max_x, state_textblock, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_TEXT_MAX_Y:
+         COMMON_CHECK_UPDATE(state_text, max_y, state_text, STATE_ARGS);
+         COMMON_CHECK_UPDATE(state_text, max_y, state_textblock, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_TEXT_MIN_X:
+         COMMON_CHECK_UPDATE(state_text, min_x, state_text, STATE_ARGS);
+         COMMON_CHECK_UPDATE(state_text, min_x, state_textblock, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_TEXT_MIN_Y:
+         COMMON_CHECK_UPDATE(state_text, min_y, state_text, STATE_ARGS);
+         COMMON_CHECK_UPDATE(state_text, min_y, state_textblock, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FIXED_H:
+         COMMON_CHECK_UPDATE(state, fixed_h, state, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FIXED_W:
+         COMMON_CHECK_UPDATE(state, fixed_w, state, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_SMOOTH:
+         COMMON_CHECK_UPDATE(state_fill, smooth, state_fill, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_VISIBLE:
+         COMMON_CHECK_UPDATE(state, visible, state, STATE_ARGS);
          break;
       /* Don't add 'default:'. Compiler must warn about missing cases */
      }
