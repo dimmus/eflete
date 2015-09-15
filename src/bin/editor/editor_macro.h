@@ -24,6 +24,9 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
 { \
    Diff *diff; \
    Attribute attribute = ATTRIBUTE; \
+   assert(edit_object != NULL); \
+   assert(part_name != NULL); \
+   assert(state_name != NULL); \
    if (change) \
      { \
         double old_value = edje_edit_state_## FUNC ##_get(edit_object, part_name, state_name, state_val); \
