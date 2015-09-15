@@ -22,8 +22,6 @@
 
 #include <Elementary.h>
 
-#define FS_TITLE "fs_title"
-
 TODO("see large comment below")
 /**
  * ITEM_ADD use old kind of adding items and style that looks like
