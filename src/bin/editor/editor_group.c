@@ -80,7 +80,7 @@ editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
    old_value = edje_edit_group_min_## VAL ##_get(obj); \
    max_value = edje_edit_group_max_## VAL ##_get(obj); \
  \
-   if ((max_value < new_value)) \
+   if ((max_value < new_value) && (max_value != 0)) \
      new_value = max_value; \
  \
    if (change) \
