@@ -4,7 +4,6 @@ ACLOCAL_AMFLAGS = -I m4
 
 TESTS = \
 ewe_init_test \
-ewe_tabs_test \
 ewe_combobox_test \
 ewe_ruler_test \
 eflete_test \
@@ -135,33 +134,6 @@ ewe_combobox_test_SOURCES = \
 ../tests/test_ewe_combobox/ewe_combobox_select_item_set.c
 ewe_combobox_test_CFLAGS = ${FLAGS}
 ewe_combobox_test_LDADD = ${LD}
-
-ewe_tabs_test_SOURCES = \
-../tests/test_ewe_tabs/test_ewe_tabs.c \
-../tests/test_ewe_tabs/ewe_tabs_item_append.c \
-../tests/test_ewe_tabs/ewe_tabs_item_prepend.c \
-../tests/test_ewe_tabs/ewe_tabs_items_list_get.c \
-../tests/test_ewe_tabs/ewe_tabs_add.c \
-../tests/test_ewe_tabs/ewe_tabs_item_content_set.c \
-../tests/test_ewe_tabs/ewe_tabs_item_content_unset.c \
-../tests/test_ewe_tabs/ewe_tabs_item_content_get.c \
-../tests/test_ewe_tabs/ewe_tabs_item_icon_set.c \
-../tests/test_ewe_tabs/ewe_tabs_item_icon_unset.c \
-../tests/test_ewe_tabs/ewe_tabs_item_button_set.c \
-../tests/test_ewe_tabs/ewe_tabs_item_button_unset.c \
-../tests/test_ewe_tabs/ewe_tabs_active_item_set.c \
-../tests/test_ewe_tabs/ewe_tabs_active_item_get.c \
-../tests/test_ewe_tabs/ewe_tabs_item_title_set.c \
-../tests/test_ewe_tabs/ewe_tabs_item_title_get.c \
-../tests/test_ewe_tabs/ewe_tabs_item_del.c \
-../tests/test_ewe_tabs/ewe_tabs_item_disabled_set.c \
-../tests/test_ewe_tabs/ewe_tabs_item_disabled_get.c \
-../tests/test_ewe_tabs/ewe_tabs_orient_horizontal_set.c \
-../tests/test_ewe_tabs/ewe_tabs_orient_horizontal_get.c \
-../tests/test_ewe_tabs/ewe_tabs_elm_widget_style_set.c \
-../tests/test_ewe_tabs/ewe_tabs_elm_widget_style_get.c
-ewe_tabs_test_CFLAGS = ${FLAGS}
-ewe_tabs_test_LDADD = ${LD}
 
 eflete_test_SOURCES = \
 ../tests/test_eflete/test_eflete.c \

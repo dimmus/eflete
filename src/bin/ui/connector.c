@@ -122,13 +122,12 @@ _del_layout(void *data __UNUSED__,
 }
 
 static Evas_Object *
-_widgetlist_current_genlist_get(Type group_type)
+_widgetlist_current_genlist_get(Type __UNUSED__ group_type)
 {
-   Evas_Object *tabs = NULL;
+/*   Evas_Object *tabs = NULL;
    const Evas_Object *nf = NULL;
    Elm_Object_Item *nf_item = NULL;
    Ewe_Tabs_Item *current_tab_item = NULL;
-
 
    tabs = ui_block_widget_list_get();
    current_tab_item = ewe_tabs_active_item_get(tabs);
@@ -140,6 +139,8 @@ _widgetlist_current_genlist_get(Type group_type)
       nf_item = elm_naviframe_bottom_item_get(nf);
 
    return elm_object_item_part_content_get(nf_item, NULL);
+*/
+   return NULL;
 }
 
 static void

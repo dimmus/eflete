@@ -195,22 +195,24 @@ _image_part_choose_cb(void)
    return true;
 }
 */
-/* this one will delete part or style or layout or state.  */
 TODO("move this code or some of it's part to Connector")
+TODO("Change this shortcut function since there are not tabs inb widget_list anymore")
 Eina_Bool
 _item_delete_cb(void)
 {
-   SKIP_IN_ENVENTOR_MODE
+/*   SKIP_IN_ENVENTOR_MODE
    Elm_Object_Item *glit = NULL;
    Style *_style = NULL;
    Evas_Object *nf = NULL;
    Ewe_Tabs_Item *selected = NULL;
-   /* if widget list is in focus. Delete part, style or layout. */
+
+   COMMENT: if widget list is in focus. Delete part, style or layout.
    nf = ui_block_widget_list_get();
    if ((nf) && (elm_object_focus_get(nf)))
      {
         selected = ewe_tabs_active_item_get(nf);
-        /* try to delete layout */
+
+        COMMENT: try to delete layout
         if ((evas_object_data_get(nf, "layouts_tab") == selected) &&
             ((!ap.project->current_style) ||
              (ap.project->current_style->__type != LAYOUT)))
@@ -218,7 +220,8 @@ _item_delete_cb(void)
              evas_object_smart_callback_call(ap.block.left_top, "wl,layout,del", nf);
              return true;
           }
-        /* try to delete style */
+
+        COMMENT: try to delete style
         else if ((evas_object_data_get(nf, "widgets_tab") == selected) &&
             ((!ap.project->current_style) ||
              (ap.project->current_style->__type != STYLE)))
@@ -239,22 +242,24 @@ _item_delete_cb(void)
           }
      }
 
-   /* if state list is in focus */
+   COMMENT: if state list is in focus
    if (elm_object_focus_get(ap.block.state_list))
      {
         evas_object_smart_callback_call(ap.block.state_list, "stl,state,del", NULL);
         return true;
      }
 
-   /* try to delete part */
+   COMMENT: try to delete part
    evas_object_smart_callback_call(ui_block_widget_list_get(), "wl,part,del", NULL);
-
+*/
    return true;
 }
 
+TODO("Remove those shortcut since there are no tabs called Widgets and Layouts. Now this shortcut is useless")
 Eina_Bool
 _widget_manager_layout_switch_cb(void)
 {
+/*
    SKIP_IN_ENVENTOR_MODE
    const Eina_List *tabs;
    Evas_Object *nf = ui_block_widget_list_get();
@@ -264,12 +269,14 @@ _widget_manager_layout_switch_cb(void)
    assert(tabs != NULL);
 
    ewe_tabs_active_item_set(nf, eina_list_data_get(tabs));
+*/
    return true;
 }
 
 Eina_Bool
 _widget_manager_style_switch_cb(void)
 {
+/*
    SKIP_IN_ENVENTOR_MODE
    const Eina_List *tabs;
    Evas_Object *nf = ui_block_widget_list_get();
@@ -278,6 +285,7 @@ _widget_manager_style_switch_cb(void)
    assert(tabs != NULL);
 
    ewe_tabs_active_item_set(nf, eina_list_data_get(tabs));
+*/
    return true;
 }
 
@@ -300,9 +308,11 @@ _separate_mode_change_cb(void)
    return true;
 }
 
+TODO("Please remake this shortcut since there are no TABS anymore")
 Eina_Bool
 _new_style_create_cb(void)
 {
+/*
    SKIP_IN_ENVENTOR_MODE
    Elm_Object_Item *glit = NULL;
    Style *_style = NULL;
@@ -333,12 +343,15 @@ _new_style_create_cb(void)
                evas_object_smart_callback_call(ap.block.left_top, "wl,style,add", NULL);
           }
      }
+*/
    return true;
 }
 
+TODO("Please remake this shortcut since there are no TABS anymore")
 Eina_Bool
 _style_delete_cb(void)
 {
+/*
    SKIP_IN_ENVENTOR_MODE
    Elm_Object_Item *glit = NULL;
    Style *_style = NULL;
@@ -366,6 +379,7 @@ _style_delete_cb(void)
         if (_style->__type != WIDGET)
           evas_object_smart_callback_call(ap.block.left_top, "wl,style,del", NULL);
      }
+*/
    return true;
 }
 
@@ -424,22 +438,26 @@ _export_cb(void)
    return true;
 }
 
+TODO("Remove? Or modify since we don't have EWE_TABS anymore?")
 Eina_Bool
 _visual_tab_cb(void)
 {
+/*
    const Eina_List *tabs;
    Evas_Object *nf;
 
    nf = ui_block_property_get();
    tabs = ewe_tabs_items_list_get(nf);
    ewe_tabs_active_item_set(nf, eina_list_data_get(tabs));
-
+*/
    return true;
 }
 
+TODO("Remove? Or modify since we don't have EWE_TABS anymore?")
 Eina_Bool
 _code_tab_cb(void)
 {
+/*
    const Eina_List *tabs;
    Evas_Object *nf;
 
@@ -447,7 +465,7 @@ _code_tab_cb(void)
    tabs = ewe_tabs_items_list_get(nf);
    tabs = eina_list_next(tabs);
    ewe_tabs_active_item_set(nf, eina_list_data_get(tabs));
-
+*/
    return true;
 }
 
