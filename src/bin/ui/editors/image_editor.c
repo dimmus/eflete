@@ -584,6 +584,8 @@ _on_image_done(void *data,
    const Eina_List *images, *l;
    const char *selected = event_info;
    Uns_List *image = NULL;
+   External_Resource *res;
+   const char *file_name;
 
    Image_Editor *img_edit = (Image_Editor *)data;
 
@@ -591,7 +593,6 @@ _on_image_done(void *data,
 
    if ((!selected) || (!strcmp(selected, "")))
      goto del;
-
    images = elm_fileselector_selected_paths_get(obj);
 
    EINA_LIST_FOREACH(images, l, selected)
@@ -606,18 +607,39 @@ _on_image_done(void *data,
              WIN_NOTIFY_ERROR(obj, _("Unable to add folder"))
              continue;
           }
+        file_name = ecore_file_file_get(selected);
+
         image = mem_malloc(sizeof(Uns_List));
-        image->data = (void *)eina_stringshare_add(selected);
+        image->data = (void *)eina_stringshare_add(file_name);
         image->act_type = ACTION_TYPE_ADD;
-        img_edit->unapplied_list = eina_list_append(img_edit->unapplied_list,
-                                                    image);
+
+        res = mem_calloc(1, sizeof(External_Resource));
+        res->name = eina_stringshare_add(file_name);
+        res->source = eina_stringshare_printf("%s/images/%s", img_edit->pr->develop_path, file_name);
+
+        if (!ecore_file_exists(res->source))
+          {
+             ecore_file_cp(selected, res->source);
+
+             img_edit->unapplied_list = eina_list_append(img_edit->unapplied_list,
+                                                         image);
+             img_edit->pr->images = eina_list_sorted_insert(img_edit->pr->images, (Eina_Compare_Cb) resource_cmp, res);
+          }
+        else
+          {
+             WIN_NOTIFY_ERROR(obj, _("File exist"));
+             free(image);
+             free(res);
+             continue;
+          }
 
         it = (Item *)mem_malloc(sizeof(Item));
-        it->image_name = eina_stringshare_add(selected);
+        it->image_name = eina_stringshare_add(file_name);
         it->id = -1;
         item = elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
                                               img_edit->group_items.linked,
                                               _grid_sel, img_edit);
+        it->source = res->source;
         elm_gengrid_item_selected_set(item, true);
      }
 del:
@@ -1194,8 +1216,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
                                   _on_button_add_clicked_cb, img_edit);
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.add_btn", button);
-   TODO("REMOVE AFTER IMPLEMENT IN RIGHT WAY")
-   elm_object_disabled_set(button, true);
 
    button = elm_button_add(img_edit->layout);
    evas_object_show(button);
