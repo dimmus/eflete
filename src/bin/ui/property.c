@@ -705,6 +705,13 @@ _on_editor_attribute_changed(void *data,
          break;
       case ATTRIBUTE_STATE_IMAGE_BORDER:
          prop_state_image_border_update(pd);
+         break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
+         STATE_ATTR_1COMBOBOX_LIST_UPDATE(state_image, border_fill, state_image);
+         break;
+      case ATTRIBUTE_STATE_ASPECT_PREF:
+         STATE_ATTR_1COMBOBOX_LIST_UPDATE(state, aspect_pref, state);
+         break;
       /* Don't add 'default:'. Compiler must warn about missing cases */
      }
 }
