@@ -38,6 +38,9 @@ _tab_import_edj_add(void);
 Evas_Object *
 _tab_import_edc_add(void);
 
+Evas_Object *
+_tab_project_info_add(void);
+
 Eina_Bool
 progress_print(void *data, Eina_Stringshare *progress_string);
 
