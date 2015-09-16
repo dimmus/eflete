@@ -96,7 +96,8 @@ _validate(void *data __UNUSED__,
           Evas_Object *obj __UNUSED__,
           void *event_info __UNUSED__)
 {
-   if (elm_validator_regexp_status_get(tab_edc.name_validator) != ELM_REG_NOERROR)
+   if ((elm_validator_regexp_status_get(tab_edc.name_validator) != ELM_REG_NOERROR) ||
+       !eina_str_has_extension(elm_entry_entry_get(tab_edc.edc), ".edc"))
      elm_object_disabled_set(tab_edc.btn_create, true);
    else
      elm_object_disabled_set(tab_edc.btn_create, false);
@@ -425,6 +426,7 @@ _tab_import_edc_add(void)
    LAYOUT_PROP_ADD(tab_edc.box, _("Path to project:"), "tab_home", "item")
    ENTRY_ADD(item, tab_edc.edc, true)
    elm_layout_content_set(item, NULL, tab_edc.edc);
+   evas_object_smart_callback_add(tab_edc.edc, "changed", _validate, NULL);
    elm_box_pack_end(tab_edc.box, item);
    elipsis_btn_add(tab_edc.edc, _elipsis_edc, NULL);
    /* separator 1 */
