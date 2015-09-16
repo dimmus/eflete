@@ -346,6 +346,36 @@ ui_property_state_container_unset(Evas_Object *property);
 static void
 prop_state_text_ellipsis_update(Prop_Data *pd);
 
+static void
+prop_state_image_update(Prop_Data *pd);
+
+static void
+prop_state_color_class_update(Prop_Data *pd);
+
+static void
+prop_state_object_area_rel1_to_x_update(Prop_Data *pd);
+
+static void
+prop_state_object_area_rel1_to_y_update(Prop_Data *pd);
+
+static void
+prop_state_object_area_rel2_to_x_update(Prop_Data *pd);
+
+static void
+prop_state_object_area_rel2_to_y_update(Prop_Data *pd);
+
+static void
+prop_state_text_source_update(Prop_Data *pd);
+
+static void
+prop_state_text_update(Prop_Data *pd);
+
+static void
+prop_state_font_update(Prop_Data *pd);
+
+static void
+prop_state_textblock_style_update(Prop_Data *pd);
+
 static Elm_Genlist_Item_Class *_itc_tween = NULL;
 
 static void
@@ -621,6 +651,36 @@ _on_editor_attribute_changed(void *data,
          break;
       case ATTRIBUTE_STATE_VISIBLE:
          COMMON_CHECK_UPDATE(state, visible, state, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_IMAGE:
+         prop_state_image_update(pd);
+         break;
+      case ATTRIBUTE_STATE_COLOR_CLASS:
+         prop_state_color_class_update(pd);
+         break;
+      case ATTRIBUTE_STATE_REL1_TO_X:
+         prop_state_object_area_rel1_to_x_update(pd);
+         break;
+      case ATTRIBUTE_STATE_REL1_TO_Y:
+         prop_state_object_area_rel1_to_y_update(pd);
+         break;
+      case ATTRIBUTE_STATE_REL2_TO_X:
+         prop_state_object_area_rel2_to_x_update(pd);
+         break;
+      case ATTRIBUTE_STATE_REL2_TO_Y:
+         prop_state_object_area_rel2_to_y_update(pd);
+         break;
+      case ATTRIBUTE_STATE_TEXT_SOURCE:
+         prop_state_text_source_update(pd);
+         break;
+      case ATTRIBUTE_STATE_TEXT:
+         prop_state_text_update(pd);
+         break;
+      case ATTRIBUTE_STATE_FONT:
+         prop_state_font_update(pd);
+         break;
+      case ATTRIBUTE_STATE_TEXT_STYLE:
+         prop_state_textblock_style_update(pd);
          break;
       /* Don't add 'default:'. Compiler must warn about missing cases */
      }
