@@ -727,7 +727,7 @@ group { name: "elm/scroller/entry/default";
          target: "base_hbar";
       }
       program { name: "enable";
-         signal: "elm,state,enable";
+         signal: "elm,state,enabled";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
@@ -1127,7 +1127,7 @@ group { name: "elm/scroller/entry_single/default";
                   }
       }
       program { name: "enable";
-         signal: "elm,state,enable";
+         signal: "elm,state,enabled";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
