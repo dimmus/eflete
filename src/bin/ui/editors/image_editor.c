@@ -741,7 +741,7 @@ _on_button_delete_clicked_cb(void *data,
           {
              snprintf(buf + symbs, BUFF_MAX - symbs, _("<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"),
                       item->group, item->part, item->state.name, item->state.value);
-             symbs+= strlen(name);
+             symbs += strlen(name);
              break; TODO("remove this break after warning style remake")
           }
           edje_edit_image_usage_list_free(used_in);
@@ -1217,8 +1217,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
                                   _on_button_delete_clicked_cb, img_edit);
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.del_btn", button);
-   TODO("REMOVE AFTER IMPLEMENT IN RIGHT WAY")
-   elm_object_disabled_set(button, true);
 
    // Search line add
    search_entry = _image_editor_search_field_create(img_edit->layout);
