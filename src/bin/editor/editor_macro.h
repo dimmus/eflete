@@ -35,14 +35,14 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
         diff->redo.function = editor_state_## FUNC ##_set; \
         diff->redo.args.type_ssdd.s1 = eina_stringshare_add(part_name); \
         diff->redo.args.type_ssdd.s2 = eina_stringshare_add(state_name); \
-        diff->redo.args.type_ssdd.d1 = state_val; \
-        diff->redo.args.type_ssdd.d2 = new_val; \
+        diff->redo.args.type_ssdd.d3 = state_val; \
+        diff->redo.args.type_ssdd.d4 = new_val; \
         diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE; \
         diff->undo.function = editor_state_## FUNC ##_set; \
         diff->undo.args.type_ssdd.s1 = eina_stringshare_add(part_name); \
         diff->undo.args.type_ssdd.s2 = eina_stringshare_add(state_name); \
-        diff->undo.args.type_ssdd.d1 = state_val; \
-        diff->undo.args.type_ssdd.d2 = old_value; \
+        diff->undo.args.type_ssdd.d3 = state_val; \
+        diff->undo.args.type_ssdd.d4 = old_value; \
         if (merge) \
           change_diff_merge_add(change, diff); \
         else \
@@ -72,14 +72,14 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
         diff->redo.function = editor_state_## FUNC ##_set; \
         diff->redo.args.type_ssdb.s1 = eina_stringshare_add(part_name); \
         diff->redo.args.type_ssdb.s2 = eina_stringshare_add(state_name); \
-        diff->redo.args.type_ssdb.d1 = state_val; \
-        diff->redo.args.type_ssdb.b1 = new_val; \
+        diff->redo.args.type_ssdb.d3 = state_val; \
+        diff->redo.args.type_ssdb.b4 = new_val; \
         diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_BOOL; \
         diff->undo.function = editor_state_## FUNC ##_set; \
         diff->undo.args.type_ssdb.s1 = eina_stringshare_add(part_name); \
         diff->undo.args.type_ssdb.s2 = eina_stringshare_add(state_name); \
-        diff->undo.args.type_ssdb.d1 = state_val; \
-        diff->undo.args.type_ssdb.b1 = old_value; \
+        diff->undo.args.type_ssdb.d3 = state_val; \
+        diff->undo.args.type_ssdb.b4 = old_value; \
         if (merge) \
           change_diff_merge_add(change, diff); \
         else \
@@ -109,14 +109,14 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
         diff->redo.function = editor_state_## FUNC ##_set; \
         diff->redo.args.type_ssds.s1 = eina_stringshare_add(part_name); \
         diff->redo.args.type_ssds.s2 = eina_stringshare_add(state_name); \
-        diff->redo.args.type_ssds.d1 = state_val; \
-        diff->redo.args.type_ssds.s3 = eina_stringshare_add(new_val); \
+        diff->redo.args.type_ssds.d3 = state_val; \
+        diff->redo.args.type_ssds.s4 = eina_stringshare_add(new_val); \
         diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_STRING; \
         diff->undo.function = editor_state_## FUNC ##_set; \
         diff->undo.args.type_ssds.s1 = eina_stringshare_add(part_name); \
         diff->undo.args.type_ssds.s2 = eina_stringshare_add(state_name); \
-        diff->undo.args.type_ssds.d1 = state_val; \
-        diff->undo.args.type_ssds.s3 = old_value; /* assuming that getter returned stringshare */\
+        diff->undo.args.type_ssds.d3 = state_val; \
+        diff->undo.args.type_ssds.s4 = old_value; /* assuming that getter returned stringshare */\
         if (merge) \
           change_diff_merge_add(change, diff); \
         else \
@@ -146,14 +146,14 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
         diff->redo.function = editor_state_## FUNC ##_set; \
         diff->redo.args.type_ssds.s1 = eina_stringshare_add(part_name); \
         diff->redo.args.type_ssds.s2 = eina_stringshare_add(state_name); \
-        diff->redo.args.type_ssds.d1 = state_val; \
-        diff->redo.args.type_ssds.s3 = eina_stringshare_add(new_val); \
+        diff->redo.args.type_ssds.d3 = state_val; \
+        diff->redo.args.type_ssds.s4 = eina_stringshare_add(new_val); \
         diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_STRING; \
         diff->undo.function = editor_state_## FUNC ##_set; \
         diff->undo.args.type_ssds.s1 = eina_stringshare_add(part_name); \
         diff->undo.args.type_ssds.s2 = eina_stringshare_add(state_name); \
-        diff->undo.args.type_ssds.d1 = state_val; \
-        diff->undo.args.type_ssds.s3 = old_value; /* assuming that getter returned stringshare */\
+        diff->undo.args.type_ssds.d3 = state_val; \
+        diff->undo.args.type_ssds.s4 = old_value; /* assuming that getter returned stringshare */\
         if (merge) \
           change_diff_merge_add(change, diff); \
         else \
@@ -165,8 +165,8 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
            return false; \
         if (diff) \
           { \
-            eina_stringshare_del(diff->redo.args.type_ssds.s3); \
-            diff->redo.args.type_ssds.s3 = eina_stringshare_add(FALLBACK_VAL); \
+            eina_stringshare_del(diff->redo.args.type_ssds.s4); \
+            diff->redo.args.type_ssds.s4 = eina_stringshare_add(FALLBACK_VAL); \
           } \
      } \
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \

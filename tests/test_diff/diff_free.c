@@ -65,10 +65,10 @@ EFLETE_TEST (diff_free_test_p)
    d1 = mem_calloc(1, sizeof(Diff));
    d1->undo.type = FUNCTION_TYPE_INT;
    d1->undo.function = _function_type_int_undo_return_true;
-   d1->undo.args.type_int.ival = 21;
+   d1->undo.args.type_i.i1 = 21;
    d1->redo.type = FUNCTION_TYPE_INT;
    d1->redo.function = _function_type_int_redo_return_true;
-   d1->redo.args.type_int.ival = 38;
+   d1->redo.args.type_i.i1 = 38;
 
    diff_free(d1);
 }

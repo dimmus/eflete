@@ -44,10 +44,10 @@ editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
         diff = mem_calloc(1, sizeof(Diff)); \
         diff->redo.type = FUNCTION_TYPE_INT; \
         diff->redo.function = editor_group_max_## VAL ##_set; \
-        diff->redo.args.type_int.ival = new_value; \
+        diff->redo.args.type_i.i1 = new_value; \
         diff->undo.type = FUNCTION_TYPE_INT; \
         diff->undo.function = editor_group_max_## VAL ##_set; \
-        diff->undo.args.type_int.ival = old_value; \
+        diff->undo.args.type_i.i1 = old_value; \
         if (merge) \
           change_diff_merge_add(change, diff); \
         else \
@@ -88,10 +88,10 @@ editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
         diff = mem_calloc(1, sizeof(Diff)); \
         diff->redo.type = FUNCTION_TYPE_INT; \
         diff->redo.function = editor_group_min_## VAL ##_set; \
-        diff->redo.args.type_int.ival = new_value; \
+        diff->redo.args.type_i.i1 = new_value; \
         diff->undo.type = FUNCTION_TYPE_INT; \
         diff->undo.function = editor_group_min_## VAL ##_set; \
-        diff->undo.args.type_int.ival = old_value; \
+        diff->undo.args.type_i.i1 = old_value; \
         if (merge) \
           change_diff_merge_add(change, diff); \
         else \

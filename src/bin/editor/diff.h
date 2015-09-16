@@ -36,31 +36,31 @@ struct _Function_Info {
    union {
       /* One struct for each function type */
       struct {
-         int ival;
-      } type_int;
+         int i1;
+      } type_i;
       struct {
          Eina_Stringshare *s1;
          Eina_Stringshare *s2;
-         double d1;
-         double d2;
+         double d3;
+         double d4;
       } type_ssdd;
       struct {
          Eina_Stringshare *s1;
          Eina_Stringshare *s2;
-         double d1;
-         int i1;
+         double d3;
+         int i4;
       } type_ssdi;
       struct {
          Eina_Stringshare *s1;
          Eina_Stringshare *s2;
-         double d1;
-         Eina_Bool b1;
+         double d3;
+         Eina_Bool b4;
       } type_ssdb;
       struct {
          Eina_Stringshare *s1;
          Eina_Stringshare *s2;
-         double d1;
-         Eina_Stringshare *s3;
+         double d3;
+         Eina_Stringshare *s4;
       } type_ssds;
    } args;              /**< function args not including Evas_Object * */
 };

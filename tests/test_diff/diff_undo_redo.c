@@ -140,10 +140,10 @@ EFLETE_TEST (diff_undo_redo_test_p2)
 
    diff.undo.type = FUNCTION_TYPE_INT;
    diff.undo.function = _function_type_int_undo_return_true;
-   diff.undo.args.type_int.ival = 42;
+   diff.undo.args.type_i.i1 = 42;
    diff.redo.type = FUNCTION_TYPE_INT;
    diff.redo.function = _function_type_int_redo_return_true;
-   diff.redo.args.type_int.ival = 42;
+   diff.redo.args.type_i.i1 = 42;
    ck_assert(diff_undo(pseudo_object, &diff) == true);
    ck_assert(_function_type_int_undo_return_true_called);
    ck_assert(diff_redo(pseudo_object, &diff) == true);
@@ -151,10 +151,10 @@ EFLETE_TEST (diff_undo_redo_test_p2)
 
    diff.undo.type = FUNCTION_TYPE_INT;
    diff.undo.function = _function_type_int_undo_return_false;
-   diff.undo.args.type_int.ival = 24;
+   diff.undo.args.type_i.i1 = 24;
    diff.redo.type = FUNCTION_TYPE_INT;
    diff.redo.function = _function_type_int_redo_return_false;
-   diff.redo.args.type_int.ival = 24;
+   diff.redo.args.type_i.i1 = 24;
    ck_assert(diff_undo(pseudo_object, &diff) == false);
    ck_assert(_function_type_int_undo_return_false_called);
    ck_assert(diff_redo(pseudo_object, &diff) == false);

@@ -45,14 +45,14 @@ editor_state_text_size_set(Evas_Object *edit_object, Change *change, Eina_Bool m
         diff->redo.function = editor_state_text_size_set;
         diff->redo.args.type_ssdi.s1 = eina_stringshare_add(part_name);
         diff->redo.args.type_ssdi.s2 = eina_stringshare_add(state_name);
-        diff->redo.args.type_ssdi.d1 = state_val;
-        diff->redo.args.type_ssdi.i1 = new_val;
+        diff->redo.args.type_ssdi.d3 = state_val;
+        diff->redo.args.type_ssdi.i4 = new_val;
         diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_INT;
         diff->undo.function = editor_state_text_size_set;
         diff->undo.args.type_ssdi.s1 = eina_stringshare_add(part_name);
         diff->undo.args.type_ssdi.s2 = eina_stringshare_add(state_name);
-        diff->undo.args.type_ssdi.d1 = state_val;
-        diff->undo.args.type_ssdi.i1 = old_value;
+        diff->undo.args.type_ssdi.d3 = state_val;
+        diff->undo.args.type_ssdi.i4 = old_value;
         if (merge)
           change_diff_merge_add(change, diff);
         else
