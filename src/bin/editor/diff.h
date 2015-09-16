@@ -30,6 +30,7 @@ typedef enum {
    FUNCTION_TYPE_STRING_STRING_DOUBLE_STRING,
    FUNCTION_TYPE_STRING_STRING_DOUBLE_INT_INT_INT_INT,
    FUNCTION_TYPE_STRING_STRING_DOUBLE_UCHAR,
+   FUNCTION_TYPE_STRING_EDJETEXTEFFECT,
 } Function_Type;
 
 struct _Function_Info {
@@ -79,6 +80,10 @@ struct _Function_Info {
          double d3;
          unsigned char uc4;
       } type_ssduc;
+      struct {
+         Eina_Stringshare *s1;
+         Edje_Text_Effect ete2;
+      } type_sete;
    } args;              /**< function args not including Evas_Object * */
 };
 
