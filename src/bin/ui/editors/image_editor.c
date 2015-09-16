@@ -701,12 +701,11 @@ _on_button_delete_clicked_cb(void *data,
    Item *it = NULL;
    Eina_List *grid_list, *l, *l2;
    int notdeleted = 0;
-   Eina_List * in_use = NULL, *used_in = NULL;
-   char *name;
-   Edje_Part_Image_Use *item;
+   Eina_List * in_use = NULL;
    char buf[BUFF_MAX];
    int symbs = 0;
-   Eina_List *used;
+   External_Resource *res;
+   State *state;
 
    assert(img_edit != NULL);
    assert(img_edit->gengrid != NULL);
@@ -718,8 +717,9 @@ _on_button_delete_clicked_cb(void *data,
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
         it = elm_object_item_data_get(grid_item);
-        used = edje_edit_image_usage_list_get(img_edit->pr->global_object, it->image_name, EINA_TRUE);
-        if (!used)
+        res = pm_resource_get(img_edit->pr->images, it->image_name);
+
+        if (!res->used_in)
           {
              elm_object_item_del(grid_item);
           }
@@ -727,24 +727,23 @@ _on_button_delete_clicked_cb(void *data,
           {
              notdeleted++;
              if (notdeleted < 4)
-                in_use = eina_list_append(in_use, it->image_name);
+                in_use = eina_list_append(in_use, res);
              elm_gengrid_item_selected_set(grid_item, false);
           }
      }
    if (notdeleted == 1)
      {
-        name = eina_list_nth(in_use, 0);
-        used_in = edje_edit_image_usage_list_get(img_edit->pr->global_object, name, false);
+        res = eina_list_nth(in_use, 0);
+
         snprintf(buf, BUFF_MAX, _("Image is used in:"));
         symbs = strlen(buf);
-        EINA_LIST_FOREACH(used_in, l, item)
+        EINA_LIST_FOREACH(res->used_in, l, state)
           {
              snprintf(buf + symbs, BUFF_MAX - symbs, _("<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"),
-                      item->group, item->part, item->state.name, item->state.value);
-             symbs += strlen(name);
+                      state->part->group->name, state->part->name, state->parsed_name, state->parsed_val);
+             symbs += strlen(res->name);
              break; TODO("remove this break after warning style remake")
           }
-          edje_edit_image_usage_list_free(used_in);
         NOTIFY_WARNING("%s", buf);
      }
    else if (notdeleted >1)
@@ -754,16 +753,15 @@ _on_button_delete_clicked_cb(void *data,
                                          notdeleted),
                  notdeleted);
         symbs = strlen(buf);
-        EINA_LIST_FOREACH(in_use, l, name)
+        EINA_LIST_FOREACH(in_use, l, res)
           {
-             snprintf(buf + symbs, BUFF_MAX - symbs, "<br>%s", name);
-             symbs+= strlen(name);
+             snprintf(buf + symbs, BUFF_MAX - symbs, "<br>%s", res->name);
+             symbs += strlen(res->name);
           }
         if (notdeleted >= 4)
            snprintf(buf + symbs, BUFF_MAX - symbs, "<br>...");
         NOTIFY_WARNING("%s", buf);
      }
-   eina_list_free(in_use);
 }
 
 TODO("Refactor and uncomment when savings and other stuff of project would be more stable")
