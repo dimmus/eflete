@@ -57,7 +57,6 @@ struct _Search_Data
 
 struct _Image_Editor
 {
-   Project *pr;
    Evas_Object *win;
    Evas_Object *fs_win;
    Evas_Object *gengrid;
@@ -127,7 +126,6 @@ _image_editor_del(Image_Editor *img_edit)
 
    evas_object_event_callback_del(img_edit->layout, EVAS_CALLBACK_DEL, _on_image_editor_del);
 
-   img_edit->pr = NULL;
    elm_gengrid_item_class_free(gic);
    elm_genlist_item_class_free(_itc_group);
    elm_genlist_item_class_free(_itc_part);
@@ -209,7 +207,7 @@ _grid_content_get(void *data,
      }
    else if (!strcmp(part, "elm.swallow.end"))
      {
-        res = (Resource *) pm_resource_get(img_edit->pr->images, it->image_name);
+        res = (Resource *) pm_resource_get(ap.project->images, it->image_name);
         if (eina_list_count(res->used_in) == 0)
           {
              image_obj = elm_icon_add(grid);
@@ -468,7 +466,7 @@ _image_info_setup(Image_Editor *img_edit,
    img_edit->image_data_fields.image = image;
    evas_object_show(image);
 
-   comp =  edje_edit_image_compression_type_get(img_edit->pr->global_object, it->image_name);
+   comp =  edje_edit_image_compression_type_get(ap.project->global_object, it->image_name);
 
    if (comp != EDJE_EDIT_IMAGE_COMP_USER)
      {
@@ -485,7 +483,7 @@ _image_info_setup(Image_Editor *img_edit,
 
    if (comp == EDJE_EDIT_IMAGE_COMP_LOSSY)
      {
-        int quality = edje_edit_image_compression_rate_get(img_edit->pr->global_object,
+        int quality = edje_edit_image_compression_rate_get(ap.project->global_object,
                                                            it->image_name);
         elm_spinner_value_set(img_edit->image_data_fields.quality, quality);
      }
@@ -504,7 +502,7 @@ _image_info_setup(Image_Editor *img_edit,
 
    _image_info_type_setup(img_edit->image_data_fields.layout, it->image_name);
 
-   Resource *res = (Resource *) pm_resource_get(img_edit->pr->images, it->image_name);
+   Resource *res = (Resource *) pm_resource_get(ap.project->images, it->image_name);
    _image_info_update_usage_info(img_edit, eina_list_count(res->used_in));
    _image_info_usage_update(img_edit, res);
    evas_object_smart_calculate(img_edit->image_data_fields.layout);
@@ -611,13 +609,13 @@ _on_image_done(void *data,
 
         res = mem_calloc(1, sizeof(External_Resource));
         res->name = eina_stringshare_add(file_name);
-        res->source = eina_stringshare_printf("%s/images/%s", img_edit->pr->develop_path, file_name);
+        res->source = eina_stringshare_printf("%s/images/%s", ap.project->develop_path, file_name);
 
         if (!ecore_file_exists(res->source))
           {
              ecore_file_cp(selected, res->source);
 
-             img_edit->pr->images = eina_list_sorted_insert(img_edit->pr->images, (Eina_Compare_Cb) resource_cmp, res);
+             ap.project->images = eina_list_sorted_insert(ap.project->images, (Eina_Compare_Cb) resource_cmp, res);
           }
         else
           {
@@ -626,20 +624,20 @@ _on_image_done(void *data,
              free(res);
              continue;
           }
-        edje_edit_image_add(img_edit->pr->global_object, selected);
+        edje_edit_image_add(ap.project->global_object, selected);
 
         it = (Item *)mem_malloc(sizeof(Item));
         it->image_name = eina_stringshare_add(file_name);
-        it->id = edje_edit_image_id_get(img_edit->pr->global_object, it->image_name);
+        it->id = edje_edit_image_id_get(ap.project->global_object, it->image_name);
         item = elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
                                               img_edit->group_items.linked,
                                               _grid_sel, img_edit);
         it->source = res->source;
         elm_gengrid_item_selected_set(item, true);
      }
-   editor_save(img_edit->pr->global_object);
+   editor_save(ap.project->global_object);
    TODO("Remove this line once edje_edit_image_add would be added into Editor Modulei and saving would work properly")
-   img_edit->pr->changed = true;
+   ap.project->changed = true;
 del:
    ecore_job_add(_fs_del, img_edit);
 }
@@ -717,13 +715,13 @@ _on_button_delete_clicked_cb(void *data,
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
         it = elm_object_item_data_get(grid_item);
-        res = pm_resource_get(img_edit->pr->images, it->image_name);
+        res = pm_resource_get(ap.project->images, it->image_name);
 
         if (!res->used_in)
           {
              elm_object_item_del(grid_item);
-             edje_edit_image_del(img_edit->pr->global_object, it->image_name);
-             img_edit->pr->images = pm_resource_del(img_edit->pr->images, res);
+             edje_edit_image_del(ap.project->global_object, it->image_name);
+             ap.project->images = pm_resource_del(ap.project->images, res);
           }
         else
           {
@@ -765,9 +763,9 @@ _on_button_delete_clicked_cb(void *data,
         NOTIFY_WARNING("%s", buf);
      }
 
-   editor_save(img_edit->pr->global_object);
+   editor_save(ap.project->global_object);
    TODO("Remove this line once edje_edit_image_del would be added into Editor Modulei and saving would work properly")
-   img_edit->pr->changed = true;
+   ap.project->changed = true;
 }
 
 TODO("Refactor and uncomment when savings and other stuff of project would be more stable")
@@ -792,10 +790,10 @@ _on_button_apply_clicked_cb(void *data,
      {
         if (unit->act_type == ACTION_TYPE_DEL)
           {
-             if (edje_edit_image_del(img_edit->pr->global_object, unit->data))
+             if (edje_edit_image_del(ap.project->global_object, unit->data))
                ap.project->nsimage_list = eina_list_append(ap.project->nsimage_list, unit);
           }
-        else if (edje_edit_image_add(img_edit->pr->global_object, unit->data))
+        else if (edje_edit_image_add(ap.project->global_object, unit->data))
           ap.project->nsimage_list = eina_list_append(ap.project->nsimage_list, unit);
      }
    //pm_save_to_dev(img_edit->pr, NULL, false);
@@ -1119,7 +1117,7 @@ _image_editor_init(Image_Editor *img_edit)
    assert(img_edit != NULL);
 
    _image_editor_gengrid_group_items_add(img_edit);
-   images = img_edit->pr->images;
+   images = ap.project->images;
 
    if (images)
      {
@@ -1131,7 +1129,7 @@ _image_editor_init(Image_Editor *img_edit)
                    ERR("name not found for image #%d",counter);
                    continue;
                 }
-              it = _image_editor_gengrid_item_data_create(img_edit->pr->global_object,
+              it = _image_editor_gengrid_item_data_create(ap.project->global_object,
                                                           res);
               if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
                 elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
@@ -1162,7 +1160,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    assert(project != NULL);
 
    Image_Editor *img_edit = (Image_Editor *)mem_calloc(1, sizeof(Image_Editor));
-   img_edit->pr = project;
 
    img_edit->layout = elm_layout_add(main_window_get());
    elm_layout_theme_set(img_edit->layout, "layout", "image_editor", "default");
