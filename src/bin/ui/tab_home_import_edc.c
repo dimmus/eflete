@@ -423,7 +423,7 @@ _tab_import_edc_add(void)
    elm_box_pack_end(tab_edc.box, item);
    elipsis_btn_add(tab_edc.path, _elipsis, tab_edc.path);
    /* label.path */
-   LAYOUT_PROP_ADD(tab_edc.box, _("Path to project:"), "tab_home", "item")
+   LAYOUT_PROP_ADD(tab_edc.box, _("Path to edc-file:"), "tab_home", "item")
    ENTRY_ADD(item, tab_edc.edc, true)
    elm_layout_content_set(item, NULL, tab_edc.edc);
    evas_object_smart_callback_add(tab_edc.edc, "changed", _validate, NULL);
