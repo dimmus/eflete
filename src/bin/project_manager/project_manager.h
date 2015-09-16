@@ -711,6 +711,23 @@ pm_resource_usage_unsorted_add(Eina_List *list, Eina_Stringshare *name, void *us
 }
 
 /**
+ * Remove resource.
+ *
+ * @param list Resources list
+ * @param res Resource structure
+ *
+ * @ingroup ProjectManager.
+ */
+static inline Eina_List *
+pm_resource_del(Eina_List *list, void *res)
+{
+   assert(res != NULL);
+   assert(list != NULL);
+   list = eina_list_remove(list, res);
+   return list;
+}
+
+/**
  * Remove reference to resource.
  *
  * @param list Resources list

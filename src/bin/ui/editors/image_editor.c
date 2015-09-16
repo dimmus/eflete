@@ -722,6 +722,8 @@ _on_button_delete_clicked_cb(void *data,
         if (!res->used_in)
           {
              elm_object_item_del(grid_item);
+             edje_edit_image_del(img_edit->pr->global_object, it->image_name);
+             img_edit->pr->images = pm_resource_del(img_edit->pr->images, res);
           }
         else
           {
@@ -762,6 +764,10 @@ _on_button_delete_clicked_cb(void *data,
            snprintf(buf + symbs, BUFF_MAX - symbs, "<br>...");
         NOTIFY_WARNING("%s", buf);
      }
+
+   editor_save(img_edit->pr->global_object);
+   TODO("Remove this line once edje_edit_image_del would be added into Editor Modulei and saving would work properly")
+   img_edit->pr->changed = true;
 }
 
 TODO("Refactor and uncomment when savings and other stuff of project would be more stable")
