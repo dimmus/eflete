@@ -47,6 +47,20 @@ meta_controls_add(Evas_Object *layout, Meta_Data_Controls *meta)
 
 }
 
+void
+meta_controls_data_save(Meta_Data_Controls *meta)
+{
+   assert(meta != NULL);
+
+   pm_project_meta_data_set(ap.project,
+                            ap.project->name,
+                            elm_entry_entry_get(meta->version),
+                            elm_entry_entry_get(meta->authors),
+                            elm_entry_entry_get(meta->licenses),
+                            elm_entry_entry_get(meta->comment));
+
+}
+
 Eina_Bool
 progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
 {

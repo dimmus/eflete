@@ -35,6 +35,10 @@ typedef struct _Meta_Data_Controls Meta_Data_Controls;
 void
 meta_controls_add(Evas_Object *layout, Meta_Data_Controls *meta);
 
+/* save data from controls to project file */
+void
+meta_controls_data_save(Meta_Data_Controls *meta);
+
 Evas_Object *
 _tab_open_project_add(void);
 

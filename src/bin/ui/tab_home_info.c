@@ -95,12 +95,7 @@ _save(void *data __UNUSED__,
       void *event_info __UNUSED__)
 {
    assert(ap.project != NULL);
-   pm_project_meta_data_set(ap.project,
-                            ap.project->name,
-                            elm_entry_entry_get(tab_info.meta.version),
-                            elm_entry_entry_get(tab_info.meta.authors),
-                            elm_entry_entry_get(tab_info.meta.licenses),
-                            elm_entry_entry_get(tab_info.meta.comment));
+   meta_controls_data_save(&tab_info.meta);
    elm_object_disabled_set(tab_info.btn_save, true);
 }
 
