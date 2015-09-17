@@ -388,6 +388,9 @@ prop_state_color3_update(Prop_Data *pd);
 static void
 prop_state_image_border_update(Prop_Data *pd);
 
+inline static void
+_text_effect_update(Prop_Data *pd);
+
 static Elm_Genlist_Item_Class *_itc_tween = NULL;
 
 static void
@@ -711,6 +714,9 @@ _on_editor_attribute_changed(void *data,
          break;
       case ATTRIBUTE_STATE_ASPECT_PREF:
          STATE_ATTR_1COMBOBOX_LIST_UPDATE(state, aspect_pref, state);
+         break;
+      case ATTRIBUTE_PART_EFFECT:
+         _text_effect_update(pd);
          break;
       /* Don't add 'default:'. Compiler must warn about missing cases */
      }

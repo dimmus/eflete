@@ -1,0 +1,53 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2015 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
+#include "editor.h"
+#include "editor_macro.h"
+
+Eina_Bool
+editor_part_effect_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                       const char *part_name, Edje_Text_Effect new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_PART_EFFECT;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   if (change)
+     {
+        Edje_Text_Effect old_value = edje_edit_part_effect_get(edit_object, part_name);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_EDJETEXTEFFECT;
+        diff->redo.function = editor_part_effect_set;
+        diff->redo.args.type_sete.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_sete.ete2 = new_val;
+        diff->undo.type = FUNCTION_TYPE_STRING_EDJETEXTEFFECT;
+        diff->undo.function = editor_part_effect_set;
+        diff->undo.args.type_sete.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_sete.ete2 = old_value;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_effect_set(edit_object, part_name, new_val))
+     return false;
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+

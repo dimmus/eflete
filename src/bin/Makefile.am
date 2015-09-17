@@ -20,6 +20,7 @@ libete_a_SOURCES = \
 ../../src/bin/editor/new_history.c \
 ../../src/bin/editor/editor_general.c \
 ../../src/bin/editor/editor_group.c \
+../../src/bin/editor/editor_part.c \
 ../../src/bin/editor/editor_states.c \
 ../../src/bin/editor/editor_text.c \
 ../../src/bin/ui/history_ui.c \
