@@ -81,3 +81,7 @@ editor_part_ignore_flags_set(Evas_Object *edit_object, Change *change, Eina_Bool
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
+
+EDITOR_PART_BOOL(mouse_events, ATTRIBUTE_PART_MOUSE_EVENTS)
+EDITOR_PART_BOOL(repeat_events, ATTRIBUTE_PART_REPEAT_EVENTS)
+EDITOR_PART_BOOL(scale, ATTRIBUTE_PART_SCALE)

@@ -721,6 +721,15 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PART_IGNORE_FLAGS:
          PART_ATTR_1COMBOBOX_LIST_UPDATE(part, ignore_flags, part);
          break;
+      case ATTRIBUTE_PART_MOUSE_EVENTS:
+         PART_ATTR_1CHECK_UPDATE(part, mouse_events, part);
+         break;
+      case ATTRIBUTE_PART_REPEAT_EVENTS:
+         PART_ATTR_1CHECK_UPDATE(part, repeat_events, part);
+         break;
+      case ATTRIBUTE_PART_SCALE:
+         PART_ATTR_1CHECK_UPDATE(part, scale, part);
+         break;
       /* Don't add 'default:'. Compiler must warn about missing cases */
      }
 }
