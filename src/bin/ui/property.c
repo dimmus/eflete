@@ -718,6 +718,9 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PART_EFFECT:
          _text_effect_update(pd);
          break;
+      case ATTRIBUTE_PART_IGNORE_FLAGS:
+         PART_ATTR_1COMBOBOX_LIST_UPDATE(part, ignore_flags, part);
+         break;
       /* Don't add 'default:'. Compiler must warn about missing cases */
      }
 }

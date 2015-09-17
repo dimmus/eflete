@@ -51,3 +51,33 @@ editor_part_effect_set(Evas_Object *edit_object, Change *change, Eina_Bool merge
    return true;
 }
 
+Eina_Bool
+editor_part_ignore_flags_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                             const char *part_name, Evas_Event_Flags new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_PART_IGNORE_FLAGS;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   if (change)
+     {
+        Evas_Event_Flags old_value = edje_edit_part_ignore_flags_get(edit_object, part_name);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_EVASEVENTFLAGS;
+        diff->redo.function = editor_part_ignore_flags_set;
+        diff->redo.args.type_seef.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_seef.eef2 = new_val;
+        diff->undo.type = FUNCTION_TYPE_STRING_EVASEVENTFLAGS;
+        diff->undo.function = editor_part_ignore_flags_set;
+        diff->undo.args.type_seef.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_seef.eef2 = old_value;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_ignore_flags_set(edit_object, part_name, new_val))
+     return false;
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
