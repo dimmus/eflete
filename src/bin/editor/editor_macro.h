@@ -317,3 +317,35 @@ editor_part_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool m
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return true; \
 }
+
+#define EDITOR_STRING_STRING(FUNC, ATTRIBUTE) \
+Eina_Bool \
+editor_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, \
+                      const char *name, const char *new_val) \
+{ \
+   Diff *diff; \
+   Attribute attribute = ATTRIBUTE; \
+   assert(edit_object != NULL); \
+   assert(name != NULL); \
+   if (change) \
+     { \
+        Eina_Stringshare *old_value = edje_edit_## FUNC ##_get(edit_object, name); \
+        diff = mem_calloc(1, sizeof(Diff)); \
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING; \
+        diff->redo.function = editor_## FUNC ##_set; \
+        diff->redo.args.type_ssds.s1 = eina_stringshare_add(name); \
+        diff->redo.args.type_ssds.s2 = eina_stringshare_add(new_val); \
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING; \
+        diff->undo.function = editor_## FUNC ##_set; \
+        diff->undo.args.type_ssds.s1 = eina_stringshare_add(name); \
+        diff->undo.args.type_ssds.s2 = old_value; /* assuming that getter returned stringshare */\
+        if (merge) \
+          change_diff_merge_add(change, diff); \
+        else \
+          change_diff_add(change, diff); \
+     } \
+   if (!edje_edit_## FUNC ##_set(edit_object, name, new_val)) \
+     return false; \
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+   return true; \
+}

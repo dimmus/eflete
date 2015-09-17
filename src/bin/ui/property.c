@@ -397,6 +397,24 @@ prop_part_drag_x_step_x_update(Prop_Data *pd);
 static void
 prop_part_drag_y_step_y_update(Prop_Data *pd);
 
+static void
+prop_part_clip_to_update(Prop_Data *pd);
+
+static void
+prop_part_drag_confine_update(Prop_Data *pd);
+
+static void
+prop_part_drag_threshold_update(Prop_Data *pd);
+
+static void
+prop_part_drag_event_update(Prop_Data *pd);
+
+static void
+prop_part_source_update(Prop_Data *pd);
+
+static void
+prop_part_name_update(Prop_Data *pd);
+
 static Elm_Genlist_Item_Class *_itc_tween = NULL;
 
 static void
@@ -747,6 +765,24 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PART_DRAG_Y:
       case ATTRIBUTE_PART_DRAG_STEP_Y:
          prop_part_drag_y_step_y_update(pd);
+         break;
+      case ATTRIBUTE_PART_CLIP_TO:
+         prop_part_clip_to_update(pd);
+         break;
+      case ATTRIBUTE_PART_DRAG_CONFINE:
+         prop_part_drag_confine_update(pd);
+         break;
+      case ATTRIBUTE_PART_DRAG_THRESHOLD:
+         prop_part_drag_threshold_update(pd);
+         break;
+      case ATTRIBUTE_PART_DRAG_EVENT:
+         prop_part_drag_event_update(pd);
+         break;
+      case ATTRIBUTE_PART_NAME:
+         prop_part_name_update(pd);
+         break;
+      case ATTRIBUTE_PART_SOURCE:
+         prop_part_source_update(pd);
          break;
       /* Don't add 'default:'. Compiler must warn about missing cases */
      }

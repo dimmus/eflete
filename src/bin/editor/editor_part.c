@@ -92,3 +92,40 @@ EDITOR_PART_INT(drag_x, ATTRIBUTE_PART_DRAG_X)
 EDITOR_PART_INT(drag_y, ATTRIBUTE_PART_DRAG_Y)
 EDITOR_PART_INT(drag_step_x, ATTRIBUTE_PART_DRAG_STEP_X)
 EDITOR_PART_INT(drag_step_y, ATTRIBUTE_PART_DRAG_STEP_Y)
+
+EDITOR_STRING_STRING(part_clip_to, ATTRIBUTE_PART_CLIP_TO)
+EDITOR_STRING_STRING(part_drag_confine, ATTRIBUTE_PART_DRAG_CONFINE)
+EDITOR_STRING_STRING(part_drag_threshold, ATTRIBUTE_PART_DRAG_THRESHOLD)
+EDITOR_STRING_STRING(part_drag_event, ATTRIBUTE_PART_DRAG_EVENT)
+EDITOR_STRING_STRING(part_source, ATTRIBUTE_PART_SOURCE)
+
+Eina_Bool
+editor_part_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                     const char *name, const char *new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_PART_NAME;
+   assert(edit_object != NULL);
+   assert(name != NULL);
+   assert(new_val != NULL);
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->redo.function = editor_part_name_set;
+        diff->redo.args.type_ssds.s1 = eina_stringshare_add(name);
+        diff->redo.args.type_ssds.s2 = eina_stringshare_add(new_val);
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->undo.function = editor_part_name_set;
+        diff->undo.args.type_ssds.s1 = eina_stringshare_add(new_val);
+        diff->undo.args.type_ssds.s2 = eina_stringshare_add(name);
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_name_set(edit_object, name, new_val))
+     return false;
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
