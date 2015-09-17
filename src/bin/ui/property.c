@@ -376,6 +376,18 @@ prop_state_font_update(Prop_Data *pd);
 static void
 prop_state_textblock_style_update(Prop_Data *pd);
 
+static void
+prop_state_color_update(Prop_Data *pd);
+
+static void
+prop_state_color2_update(Prop_Data *pd);
+
+static void
+prop_state_color3_update(Prop_Data *pd);
+
+static void
+prop_state_image_border_update(Prop_Data *pd);
+
 static Elm_Genlist_Item_Class *_itc_tween = NULL;
 
 static void
@@ -682,6 +694,17 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_STATE_TEXT_STYLE:
          prop_state_textblock_style_update(pd);
          break;
+      case ATTRIBUTE_STATE_COLOR:
+         prop_state_color_update(pd);
+         break;
+      case ATTRIBUTE_STATE_COLOR2:
+         prop_state_color2_update(pd);
+         break;
+      case ATTRIBUTE_STATE_COLOR3:
+         prop_state_color3_update(pd);
+         break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER:
+         prop_state_image_border_update(pd);
       /* Don't add 'default:'. Compiler must warn about missing cases */
      }
 }

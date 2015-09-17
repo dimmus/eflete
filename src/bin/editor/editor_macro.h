@@ -172,3 +172,47 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return true; \
 }
+
+#define EDITOR_STATE_INT_INT_INT_INT(FUNC, ATTRIBUTE) \
+Eina_Bool \
+editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, \
+                            const char *part_name, const char *state_name, double state_val, int n4, int n5, int n6, int n7) \
+{ \
+   Diff *diff; \
+   int o4, o5, o6, o7; \
+   Attribute attribute = ATTRIBUTE; \
+   assert(edit_object != NULL); \
+   assert(part_name != NULL); \
+   assert(state_name != NULL); \
+   if (change) \
+     { \
+        edje_edit_state_## FUNC ##_get(edit_object, part_name, state_name, state_val, &o4, &o5, &o6, &o7); \
+        diff = mem_calloc(1, sizeof(Diff)); \
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_INT_INT_INT_INT; \
+        diff->redo.function = editor_state_## FUNC ##_set; \
+        diff->redo.args.type_ssdiiii.s1 = eina_stringshare_add(part_name); \
+        diff->redo.args.type_ssdiiii.s2 = eina_stringshare_add(state_name); \
+        diff->redo.args.type_ssdiiii.d3 = state_val; \
+        diff->redo.args.type_ssdiiii.i4 = n4; \
+        diff->redo.args.type_ssdiiii.i5 = n5; \
+        diff->redo.args.type_ssdiiii.i6 = n6; \
+        diff->redo.args.type_ssdiiii.i7 = n7; \
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_INT_INT_INT_INT; \
+        diff->undo.function = editor_state_## FUNC ##_set; \
+        diff->undo.args.type_ssdiiii.s1 = eina_stringshare_add(part_name); \
+        diff->undo.args.type_ssdiiii.s2 = eina_stringshare_add(state_name); \
+        diff->undo.args.type_ssdiiii.d3 = state_val; \
+        diff->undo.args.type_ssdiiii.i4 = o4; \
+        diff->undo.args.type_ssdiiii.i5 = o5; \
+        diff->undo.args.type_ssdiiii.i6 = o6; \
+        diff->undo.args.type_ssdiiii.i7 = o7; \
+        if (merge) \
+          change_diff_merge_add(change, diff); \
+        else \
+          change_diff_add(change, diff); \
+     } \
+   if (!edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, n4, n5, n6, n7)) \
+     return false; \
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+   return true; \
+}
