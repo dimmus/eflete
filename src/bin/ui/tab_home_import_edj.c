@@ -98,7 +98,8 @@ _validate(void *data __UNUSED__,
           Evas_Object *obj __UNUSED__,
           void *event_info __UNUSED__)
 {
-   if (elm_validator_regexp_status_get(tab_edj.name_validator) != ELM_REG_NOERROR)
+   if ((elm_validator_regexp_status_get(tab_edj.name_validator) != ELM_REG_NOERROR) ||
+       !eina_str_has_extension(elm_entry_entry_get(tab_edj.edj), ".edj"))
      elm_object_disabled_set(tab_edj.btn_create, true);
    else
      elm_object_disabled_set(tab_edj.btn_create, false);
@@ -149,6 +150,7 @@ _tab_import_edj_add(void)
    /* label.path */
    elm_object_part_text_set(tab_edj.layout, "label.edj", _("Path to edj-file:"));
    ENTRY_ADD(tab_edj.layout, tab_edj.edj, true)
+   evas_object_smart_callback_add(tab_edj.edj, "changed", _validate, NULL);
    elm_object_part_content_set(tab_edj.layout, "swallow.edj", tab_edj.edj);
    elipsis_btn_add(tab_edj.edj, _elipsis_edj, NULL);
 
