@@ -51,7 +51,6 @@ void
 meta_controls_data_save(Meta_Data_Controls *meta)
 {
    assert(meta != NULL);
-
    pm_project_meta_data_set(ap.project,
                             ap.project->name,
                             elm_entry_entry_get(meta->version),
@@ -69,8 +68,9 @@ progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
 }
 
 void
-progress_end(void *data __UNUSED__, PM_Project_Result result)
+progress_end(void *data, PM_Project_Result result)
 {
+   Meta_Data_Controls *meta = (Meta_Data_Controls *)data;
 
    switch (result)
      {
@@ -88,6 +88,7 @@ progress_end(void *data __UNUSED__, PM_Project_Result result)
         {
            ap.project = pm_project_thread_project_get();
            assert(ap.project);
+           meta_controls_data_save(meta);
 
            ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_BASE, false);
            ui_menu_disable_set(ap.menu, MENU_FILE_CLOSE_PROJECT, false);

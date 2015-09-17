@@ -47,7 +47,7 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
                          elm_entry_entry_get(tab_edj.edj),
                          progress_print,
                          progress_end,
-                         NULL);
+                         &tab_edj.meta);
 
    return true;
 }

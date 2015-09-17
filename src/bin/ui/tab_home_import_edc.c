@@ -341,7 +341,7 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
                          eina_strbuf_string_get(flags),
                          _progress_print,
                          _progress_end,
-                         NULL);
+                         &tab_edc.meta);
 
    eina_strbuf_free(flags);
    return true;
