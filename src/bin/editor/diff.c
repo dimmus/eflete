@@ -41,6 +41,8 @@ typedef Eina_Bool (* function_type_string_bool) (Evas_Object *, Change*, Eina_Bo
                                                  const char *, Eina_Bool);
 typedef Eina_Bool (* function_type_string_int) (Evas_Object *, Change*, Eina_Bool,
                                                 const char *, int);
+typedef Eina_Bool (* function_type_string_string) (Evas_Object *, Change*, Eina_Bool,
+                                                   const char *, const char *);
 
 static Eina_Bool
 _apply(Evas_Object *obj, Function_Info *fi)
@@ -81,6 +83,9 @@ _apply(Evas_Object *obj, Function_Info *fi)
       case FUNCTION_TYPE_STRING_INT:
          return ((function_type_string_int)fi->function)(obj, NULL, false,
                   fi->args.type_si.s1, fi->args.type_si.i2);
+      case FUNCTION_TYPE_STRING_STRING:
+         return ((function_type_string_string)fi->function)(obj, NULL, false,
+                  fi->args.type_ss.s1, fi->args.type_ss.s2);
 
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
      }
@@ -172,6 +177,12 @@ diff_update(Diff *diff, Diff *new_diff)
          eina_stringshare_del(diff->redo.args.type_si.s1);
          eina_stringshare_ref(new_diff->redo.args.type_si.s1);
          break;
+      case FUNCTION_TYPE_STRING_STRING:
+         eina_stringshare_del(diff->redo.args.type_ss.s1);
+         eina_stringshare_del(diff->redo.args.type_ss.s2);
+         eina_stringshare_ref(new_diff->redo.args.type_ss.s1);
+         eina_stringshare_ref(new_diff->redo.args.type_ss.s2);
+         break;
          /* Do not forget to replace previous stringshares in existing_diff.redo
             if needed. */
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
@@ -227,6 +238,10 @@ diff_free(Diff *diff)
          break;
       case FUNCTION_TYPE_STRING_INT:
          eina_stringshare_del(diff->redo.args.type_si.s1);
+         break;
+      case FUNCTION_TYPE_STRING_STRING:
+         eina_stringshare_del(diff->redo.args.type_ss.s1);
+         eina_stringshare_del(diff->redo.args.type_ss.s2);
          break;
          /* Do not forget to clean stringshares */
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
