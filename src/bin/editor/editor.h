@@ -101,6 +101,7 @@ typedef enum {
    ATTRIBUTE_PART_DRAG_EVENT,
    ATTRIBUTE_PART_NAME,
    ATTRIBUTE_PART_SOURCE,
+   ATTRIBUTE_GROUP_NAME,
 } Attribute;
 
 static inline void

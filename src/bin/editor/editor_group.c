@@ -164,3 +164,33 @@ editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
 
 MIN_SET(w, W)
 MIN_SET(h, H)
+
+Eina_Bool
+editor_group_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                      const char *new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_GROUP_NAME;
+   assert(edit_object != NULL);
+   assert(new_val != NULL);
+   if (change)
+     {
+        const char *old_value;
+        edje_object_file_get(edit_object, NULL, &old_value);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING;
+        diff->redo.function = editor_group_name_set;
+        diff->redo.args.type_ssds.s1 = eina_stringshare_add(new_val);
+        diff->undo.type = FUNCTION_TYPE_STRING;
+        diff->undo.function = editor_group_name_set;
+        diff->undo.args.type_ssds.s1 = eina_stringshare_add(old_value);
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_group_name_set(edit_object, new_val))
+     return false;
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}

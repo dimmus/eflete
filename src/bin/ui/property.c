@@ -415,6 +415,9 @@ prop_part_source_update(Prop_Data *pd);
 static void
 prop_part_name_update(Prop_Data *pd);
 
+static void
+prop_group_name_update(Prop_Data *pd);
+
 static Elm_Genlist_Item_Class *_itc_tween = NULL;
 
 static void
@@ -784,6 +787,9 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PART_SOURCE:
          prop_part_source_update(pd);
          break;
+      case ATTRIBUTE_GROUP_NAME:
+        prop_group_name_update(pd);
+        break;
       /* Don't add 'default:'. Compiler must warn about missing cases */
      }
 }
