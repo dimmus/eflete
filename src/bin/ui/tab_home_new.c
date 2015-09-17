@@ -455,7 +455,7 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
                          eina_strbuf_string_get(flags),
                          progress_print,
                          progress_end,
-                         NULL);
+                         &tab_new.meta);
 
    return true;
 }
