@@ -26,10 +26,7 @@ struct _Tab_Home_Info
    Evas_Object *btn_save;
 
    Evas_Object *label;
-   Evas_Object *meta_version;
-   Evas_Object *meta_authors;
-   Evas_Object *meta_licenses;
-   Evas_Object *meta_comment;
+   Meta_Data_Controls meta;
 };
 typedef struct _Tab_Home_Info Tab_Home_Info;
 Tab_Home_Info tab_info;
@@ -55,10 +52,10 @@ _info_set(Eina_Bool disabled, const char *name, const char *path,
    eina_strbuf_append_printf(buf, _(PROJECT_INFO), name, path,
                              img_count, snd_count, fnd_count);
    elm_object_text_set(tab_info.label, eina_strbuf_string_get(buf));
-   elm_entry_entry_set(tab_info.meta_version, version);
-   elm_entry_entry_set(tab_info.meta_authors, authors);
-   elm_entry_entry_set(tab_info.meta_licenses, licenses);
-   elm_entry_entry_set(tab_info.meta_comment, comment);
+   elm_entry_entry_set(tab_info.meta.version, version);
+   elm_entry_entry_set(tab_info.meta.authors, authors);
+   elm_entry_entry_set(tab_info.meta.licenses, licenses);
+   elm_entry_entry_set(tab_info.meta.comment, comment);
 
    eina_strbuf_free(buf);
 }
@@ -100,10 +97,10 @@ _save(void *data __UNUSED__,
    assert(ap.project != NULL);
    pm_project_meta_data_set(ap.project,
                             ap.project->name,
-                            elm_entry_entry_get(tab_info.meta_version),
-                            elm_entry_entry_get(tab_info.meta_authors),
-                            elm_entry_entry_get(tab_info.meta_licenses),
-                            elm_entry_entry_get(tab_info.meta_comment));
+                            elm_entry_entry_get(tab_info.meta.version),
+                            elm_entry_entry_get(tab_info.meta.authors),
+                            elm_entry_entry_get(tab_info.meta.licenses),
+                            elm_entry_entry_get(tab_info.meta.comment));
    elm_object_disabled_set(tab_info.btn_save, true);
 }
 
@@ -123,26 +120,11 @@ _tab_project_info_add(void)
    LABEL_ADD(tab_info.layout, tab_info.label, NULL)
    elm_object_part_content_set(tab_info.layout, "swallow.project_info", tab_info.label);
 
-   /* label.meta_version */
-   elm_object_part_text_set(tab_info.layout, "label.meta_version", _("Version of file:"));
-   ENTRY_ADD(tab_info.layout, tab_info.meta_version, true)
-   evas_object_smart_callback_add(tab_info.meta_version, "changed,user", _validate, NULL);
-   elm_object_part_content_set(tab_info.layout, "swallow.meta_version", tab_info.meta_version);
-   /* label.meta_authors */
-   elm_object_part_text_set(tab_info.layout, "label.meta_authors", _("Authors:"));
-   ENTRY_ADD(tab_info.layout, tab_info.meta_authors, false)
-   evas_object_smart_callback_add(tab_info.meta_authors, "changed,user", _validate, NULL);
-   elm_object_part_content_set(tab_info.layout, "swallow.meta_authors", tab_info.meta_authors);
-   /* label.meta_licenses */
-   elm_object_part_text_set(tab_info.layout, "label.meta_licenses", _("Licenses:"));
-   ENTRY_ADD(tab_info.layout, tab_info.meta_licenses, false)
-   evas_object_smart_callback_add(tab_info.meta_licenses, "changed,user", _validate, NULL);
-   elm_object_part_content_set(tab_info.layout, "swallow.meta_licenses", tab_info.meta_licenses);
-   /* label.meta_comment */
-   elm_object_part_text_set(tab_info.layout, "label.meta_comment", _("Comment:"));
-   ENTRY_ADD(tab_info.layout, tab_info.meta_comment, false)
-   evas_object_smart_callback_add(tab_info.meta_comment, "changed,user", _validate, NULL);
-   elm_object_part_content_set(tab_info.layout, "swallow.meta_comment", tab_info.meta_comment);
+   meta_controls_add(tab_info.layout, &tab_info.meta);
+   evas_object_smart_callback_add(tab_info.meta.version, "changed,user", _validate, NULL);
+   evas_object_smart_callback_add(tab_info.meta.authors, "changed,user", _validate, NULL);
+   evas_object_smart_callback_add(tab_info.meta.licenses, "changed,user", _validate, NULL);
+   evas_object_smart_callback_add(tab_info.meta.comment, "changed,user", _validate, NULL);
 
    evas_object_event_callback_add(tab_info.layout, EVAS_CALLBACK_SHOW, _show, NULL);
 
