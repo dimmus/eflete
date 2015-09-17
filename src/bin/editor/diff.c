@@ -37,6 +37,8 @@ typedef Eina_Bool (* function_type_string_edjetexteffect) (Evas_Object *, Change
                                                            const char *, Edje_Text_Effect);
 typedef Eina_Bool (* function_type_string_evaseventflags) (Evas_Object *, Change*, Eina_Bool,
                                                            const char *, Evas_Event_Flags);
+typedef Eina_Bool (* function_type_string_bool) (Evas_Object *, Change*, Eina_Bool,
+                                                 const char *, Eina_Bool);
 
 static Eina_Bool
 _apply(Evas_Object *obj, Function_Info *fi)
@@ -71,6 +73,9 @@ _apply(Evas_Object *obj, Function_Info *fi)
       case FUNCTION_TYPE_STRING_EVASEVENTFLAGS:
          return ((function_type_string_evaseventflags)fi->function)(obj, NULL, false,
                   fi->args.type_seef.s1, fi->args.type_seef.eef2);
+      case FUNCTION_TYPE_STRING_BOOL:
+         return ((function_type_string_bool)fi->function)(obj, NULL, false,
+                  fi->args.type_sb.s1, fi->args.type_sb.b2);
 
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
      }
@@ -154,6 +159,10 @@ diff_update(Diff *diff, Diff *new_diff)
          eina_stringshare_del(diff->redo.args.type_seef.s1);
          eina_stringshare_ref(new_diff->redo.args.type_seef.s1);
          break;
+      case FUNCTION_TYPE_STRING_BOOL:
+         eina_stringshare_del(diff->redo.args.type_sb.s1);
+         eina_stringshare_ref(new_diff->redo.args.type_sb.s1);
+         break;
          /* Do not forget to replace previous stringshares in existing_diff.redo
             if needed. */
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
@@ -203,6 +212,9 @@ diff_free(Diff *diff)
          break;
       case FUNCTION_TYPE_STRING_EVASEVENTFLAGS:
          eina_stringshare_del(diff->redo.args.type_seef.s1);
+         break;
+      case FUNCTION_TYPE_STRING_BOOL:
+         eina_stringshare_del(diff->redo.args.type_sb.s1);
          break;
          /* Do not forget to clean stringshares */
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
