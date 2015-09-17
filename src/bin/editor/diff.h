@@ -35,6 +35,7 @@ typedef enum {
    FUNCTION_TYPE_STRING_BOOL,
    FUNCTION_TYPE_STRING_INT,
    FUNCTION_TYPE_STRING_STRING,
+   FUNCTION_TYPE_STRING,
 } Function_Type;
 
 struct _Function_Info {
@@ -104,6 +105,9 @@ struct _Function_Info {
          Eina_Stringshare *s1;
          Eina_Stringshare *s2;
       } type_ss;
+      struct {
+         Eina_Stringshare *s1;
+      } type_s;
    } args;              /**< function args not including Evas_Object * */
 };
 
