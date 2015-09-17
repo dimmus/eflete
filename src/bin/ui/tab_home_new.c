@@ -98,12 +98,7 @@ struct _Tab_Home_New
 
    Evas_Object *name;
    Evas_Object *path;
-   Evas_Object *meta_version;
-   Evas_Object *meta_authors;
-   Evas_Object *meta_licenses;
-   Evas_Object *meta_comment;
-   Evas_Object *popup_fs;
-   Evas_Object *fs;
+   Meta_Data_Controls meta;
 
    Evas_Object *ch_all;
    Evas_Object *genlist;
@@ -551,26 +546,9 @@ _tab_new_project_add(void)
    ENTRY_ADD(tab_new.layout, tab_new.path, true)
    elm_object_part_content_set(tab_new.layout, "swallow.path", tab_new.path);
    elm_entry_entry_set(tab_new.path, profile_get()->general.projects_folder);
-
    elipsis_btn_add(tab_new.path, _elipsis, NULL);
 
-   /* label.meta_version */
-   elm_object_part_text_set(tab_new.layout, "label.meta_version", _("Version of file:"));
-   ENTRY_ADD(tab_new.layout, tab_new.meta_version, true)
-   elm_object_part_content_set(tab_new.layout, "swallow.meta_version", tab_new.meta_version);
-   /* label.meta_authors */
-   elm_object_part_text_set(tab_new.layout, "label.meta_authors", _("Authors:"));
-   ENTRY_ADD(tab_new.layout, tab_new.meta_authors, false)
-   elm_object_part_content_set(tab_new.layout, "swallow.meta_authors", tab_new.meta_authors);
-   /* label.meta_licenses */
-   elm_object_part_text_set(tab_new.layout, "label.meta_licenses", _("Licenses:"));
-   ENTRY_ADD(tab_new.layout, tab_new.meta_licenses, false)
-   elm_object_part_content_set(tab_new.layout, "swallow.meta_licenses", tab_new.meta_licenses);
-   /* label.meta_comment */
-   elm_object_part_text_set(tab_new.layout, "label.meta_comment", _("Comment:"));
-   ENTRY_ADD(tab_new.layout, tab_new.meta_comment, false)
-   elm_object_part_content_set(tab_new.layout, "swallow.meta_comment", tab_new.meta_comment);
-   elm_entry_entry_set(tab_new.meta_comment, N_("Created with Eflete!"));
+   meta_controls_add(tab_new.layout, &tab_new.meta);
 
    /* check all */
    CHECK_ADD(tab_new.layout, tab_new.ch_all);

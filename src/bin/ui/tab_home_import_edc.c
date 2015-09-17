@@ -47,10 +47,7 @@ struct _Tab_Home_Edc
    Eina_List *snd_dirs;
    Eina_List *vbr_dirs;
    Eina_List *data_dirs;
-   Evas_Object *meta_version;
-   Evas_Object *meta_authors;
-   Evas_Object *meta_licenses;
-   Evas_Object *meta_comment;
+   Meta_Data_Controls meta;
 
    Eina_Strbuf *log;
 };
@@ -499,23 +496,7 @@ _tab_import_edc_add(void)
    _btn_add_add(dir_data->item, _data_dir_add);
    elm_box_pack_end(tab_edc.box, dir_data->item);
 
-   /* label.meta_version */
-   elm_object_part_text_set(tab_edc.layout, "label.meta_version", _("Version of file:"));
-   ENTRY_ADD(tab_edc.layout, tab_edc.meta_version, true)
-   elm_object_part_content_set(tab_edc.layout, "swallow.meta_version", tab_edc.meta_version);
-   /* label.meta_authors */
-   elm_object_part_text_set(tab_edc.layout, "label.meta_authors", _("Authors:"));
-   ENTRY_ADD(tab_edc.layout, tab_edc.meta_authors, false)
-   elm_object_part_content_set(tab_edc.layout, "swallow.meta_authors", tab_edc.meta_authors);
-   /* label.meta_licenses */
-   elm_object_part_text_set(tab_edc.layout, "label.meta_licenses", _("Licenses:"));
-   ENTRY_ADD(tab_edc.layout, tab_edc.meta_licenses, false)
-   elm_object_part_content_set(tab_edc.layout, "swallow.meta_licenses", tab_edc.meta_licenses);
-   /* label.meta_comment */
-   elm_object_part_text_set(tab_edc.layout, "label.meta_comment", _("Comment:"));
-   ENTRY_ADD(tab_edc.layout, tab_edc.meta_comment, false)
-   elm_object_part_content_set(tab_edc.layout, "swallow.meta_comment", tab_edc.meta_comment);
-   elm_entry_entry_set(tab_edc.meta_comment, N_("Created with Eflete!"));
+   meta_controls_add(tab_edc.layout, &tab_edc.meta);
 
    tab_edc.log = eina_strbuf_new();
 

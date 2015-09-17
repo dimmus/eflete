@@ -21,6 +21,32 @@
 #include "tabs.h"
 #include "signals.h"
 
+void
+meta_controls_add(Evas_Object *layout, Meta_Data_Controls *meta)
+{
+   assert(layout != NULL);
+   assert(meta != NULL);
+
+   /* meta version */
+   elm_object_part_text_set(layout, "label.meta_version", _("Version of file:"));
+   ENTRY_ADD(layout, meta->version, true)
+   elm_object_part_content_set(layout, "swallow.meta_version", meta->version);
+   /* meta authors */
+   elm_object_part_text_set(layout, "label.meta_authors", _("Authors:"));
+   ENTRY_ADD(layout, meta->authors, false)
+   elm_object_part_content_set(layout, "swallow.meta_authors", meta->authors);
+   /* meta licenses */
+   elm_object_part_text_set(layout, "label.meta_licenses", _("Licenses:"));
+   ENTRY_ADD(layout, meta->licenses, false)
+   elm_object_part_content_set(layout, "swallow.meta_licenses", meta->licenses);
+   /* meta comment */
+   elm_object_part_text_set(layout, "label.meta_comment", _("Comment:"));
+   ENTRY_ADD(layout, meta->comment, false)
+   elm_object_part_content_set(layout, "swallow.meta_comment", meta->comment);
+   elm_entry_entry_set(meta->comment, N_("Created with Eflete!"));
+
+}
+
 Eina_Bool
 progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
 {

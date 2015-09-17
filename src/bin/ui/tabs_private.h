@@ -23,6 +23,18 @@
 #include "main_window.h"
 #include "navigator.h"
 
+struct _Meta_Data_Controls
+{
+   Evas_Object *version;
+   Evas_Object *authors;
+   Evas_Object *licenses;
+   Evas_Object *comment;
+};
+typedef struct _Meta_Data_Controls Meta_Data_Controls;
+
+void
+meta_controls_add(Evas_Object *layout, Meta_Data_Controls *meta);
+
 Evas_Object *
 _tab_open_project_add(void);
 
