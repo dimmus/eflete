@@ -104,6 +104,18 @@ editor_save_all(Evas_Object *edit_object);
 Eina_Bool
 editor_internal_group_add(Evas_Object *edit_object);
 
+Eina_Bool
+editor_group_add(Evas_Object *obj, const char *name);
+
+Eina_Bool
+editor_group_copy(Evas_Object *obj, const char *group_src, const char *group_dest);
+
+Eina_Bool
+editor_group_alias_add(Evas_Object *obj, const char *group_src, const char *group_alias);
+
+Eina_Bool
+editor_group_del(Evas_Object *obj, const char *name);
+
 /* Group */
 Eina_Bool
 editor_group_min_w_set(Evas_Object *obj, Change *change, Eina_Bool merge,

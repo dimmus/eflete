@@ -19,6 +19,64 @@
 
 #include "editor.h"
 
+Eina_Bool
+editor_group_add(Evas_Object *obj, const char *name)
+{
+   assert(obj != NULL);
+   assert(name != NULL);
+
+   if (!edje_edit_group_add(obj, name))
+     return false;
+   if (!editor_save_all(obj))
+     return false; /* i hope it will never happen */
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_GROUP_ADDED, (void *)name);
+   return true;
+}
+
+Eina_Bool
+editor_group_copy(Evas_Object *obj, const char *group_src, const char *group_dest)
+{
+   assert(obj != NULL);
+   assert(group_src != NULL);
+   assert(group_dest != NULL);
+
+   if (!edje_edit_group_copy(obj, group_src, group_dest))
+     return false;
+   if (!editor_save_all(obj))
+     return false; /* i hope it will never happen */
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_GROUP_ADDED, (void *)group_dest);
+   return true;
+}
+
+Eina_Bool
+editor_group_alias_add(Evas_Object *obj, const char *group_src, const char *group_alias)
+{
+   assert(obj != NULL);
+   assert(group_src != NULL);
+   assert(group_alias != NULL);
+
+   if (!edje_edit_group_alias_add(obj, group_src, group_alias))
+     return false;
+   if (!editor_save_all(obj))
+     return false; /* i hope it will never happen */
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_GROUP_ALIAS_ADDED, (void *)group_alias);
+   return true;
+}
+
+Eina_Bool
+editor_group_del(Evas_Object *obj, const char *name)
+{
+   assert(obj != NULL);
+   assert(name != NULL);
+
+   if (!edje_edit_group_del(obj, name))
+     return false;
+   if (!editor_save_all(obj))
+     return false; /* i hope it will never happen */
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_GROUP_DELETED, (void *)name);
+   return true;
+}
+
 #define MAX_SET(VAL, VAL_CAPS) \
 Eina_Bool \
 editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge, \
