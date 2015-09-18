@@ -101,30 +101,6 @@
 #define SIGNAL_PROPERTY_ATTRIBUTE_CHANGED "SIGNAL_PROPERTY_ATTRIBUTE_CHANGED"
 
 /**
- * emited when new group is added.
- * eventinfo - pointer to new group name
- *
- * @ingroup Window
- */
-#define SIGNAL_EDITOR_GROUP_ADDED "SIGNAL_EDITOR_GROUP_ADDED"
-
-/**
- * emited when new group alias is added.
- * eventinfo - pointer to new group name
- *
- * @ingroup Window
- */
-#define SIGNAL_EDITOR_GROUP_ALIAS_ADDED "SIGNAL_EDITOR_GROUP_ALIAS_ADDED"
-
-/**
- * emited when group is deleted.
- * eventinfo - pointer to deleted group name
- *
- * @ingroup Window
- */
-#define SIGNAL_EDITOR_GROUP_DELETED "SIGNAL_EDITOR_GROUP_DELETED"
-
-/**
  * emited when any attribute is changed in editor.
  * eventinfo - Pointer to Attribute
  *
