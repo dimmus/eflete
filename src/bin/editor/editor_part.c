@@ -47,6 +47,7 @@ editor_part_effect_set(Evas_Object *edit_object, Change *change, Eina_Bool merge
      }
    if (!edje_edit_part_effect_set(edit_object, part_name, new_val))
      return false;
+   _editor_project_changed();
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
@@ -78,6 +79,7 @@ editor_part_ignore_flags_set(Evas_Object *edit_object, Change *change, Eina_Bool
      }
    if (!edje_edit_part_ignore_flags_set(edit_object, part_name, new_val))
      return false;
+   _editor_project_changed();
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
@@ -126,6 +128,7 @@ editor_part_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
      }
    if (!edje_edit_part_name_set(edit_object, name, new_val))
      return false;
+   _editor_project_changed();
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }

@@ -60,6 +60,7 @@ editor_state_text_size_set(Evas_Object *edit_object, Change *change, Eina_Bool m
      }
    if (!edje_edit_state_text_size_set(edit_object, part_name, state_name, state_val, new_val))
      return false;
+   _editor_project_changed();
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }

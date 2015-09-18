@@ -87,8 +87,8 @@ editor_state_max_## VAL ##_set(Evas_Object *edit_object, Change *change, Eina_Bo
           change_diff_add(change, diff); \
      } \
    res = edje_edit_state_max_## VAL ##_set(edit_object, part_name, state_name, state_val, new_value); \
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    _editor_project_changed(); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return res; \
 }
 
@@ -136,8 +136,8 @@ editor_state_min_## VAL ##_set(Evas_Object *edit_object, Change *change, Eina_Bo
           change_diff_add(change, diff); \
      } \
    res = edje_edit_state_min_## VAL ##_set(edit_object, part_name, state_name, state_val, new_value); \
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    _editor_project_changed(); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return res; \
 }
 
