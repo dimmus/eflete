@@ -84,6 +84,7 @@ popup_want_action(const char *title,
    ecore_main_loop_begin();
 
    /* clear up before return the presed button */
+   elm_object_content_unset(popup);
    evas_object_del(popup);
    popup = NULL;
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);

@@ -371,6 +371,8 @@ project_close(void);
  * want to use in the popup. Func have a blocked behavior, while the popup button
  * not clicked, popup blocked the code runing, used ecore main loop iteration.
  *
+ * @note Popup have not delete the setted content. User must delete it manualy.
+ *
  * @param title The Popup title;
  * @param msg The Popup message, formated text;
  * @param content The user Evas_Object seted as content to popup;
