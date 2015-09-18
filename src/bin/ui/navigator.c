@@ -18,6 +18,8 @@
  */
 
 #include "navigator.h"
+#include "main_window.h"
+#include "editor.h"
 
 #define SIG_GROUP_OPEN "group,open"
 
@@ -31,7 +33,17 @@ typedef struct
    Elm_Genlist_Item_Class *itc_folder;
 } Navigator;
 
+typedef struct
+{
+   Evas_Object *box;
+   Evas_Object *entry;
+   Evas_Object *layout_combo;
+   Evas_Object *combobox;
+   Evas_Object *check;
+} Layout_Popup;
+
 static Navigator navigator;
+static Layout_Popup layout_p;
 
 static char *
 _group_item_label_get(void *data,
@@ -271,11 +283,82 @@ _on_clicked_double(void *data __UNUSED__,
 }
 
 static void
+_alias_ch(void *data __UNUSED__,
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
+{
+   if (elm_check_state_get(layout_p.check))
+     elm_layout_text_set(layout_p.layout_combo, NULL, _("alias of"));
+   else
+     elm_layout_text_set(layout_p.layout_combo, NULL, _("copy of"));
+}
+
+static void
+_group_sel(void *data __UNUSED__,
+           Evas_Object *obj __UNUSED__,
+           void *event_info)
+{
+    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info;
+    elm_object_disabled_set(layout_p.check, (item->index != 0) ? false : true);
+}
+
+static void
 _btn_add_group_cb(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
-   TODO("Implement group add dialog");
+   Evas_Object *item;
+   Popup_Button btn_res;
+   Group *group;
+   Eina_List *l;
+
+   BOX_ADD(ap.win, layout_p.box, false, false)
+   /* name: entry */
+   LAYOUT_PROP_ADD(layout_p.box, _("name"), "property", "1swallow")
+   ENTRY_ADD(layout_p.box, layout_p.entry, true)
+   elm_layout_content_set(item, NULL, layout_p.entry);
+   elm_box_pack_end(layout_p.box, item);
+   /* copy: combobox */
+   LAYOUT_PROP_ADD(layout_p.box, _("copy of"), "property", "1swallow")
+   layout_p.layout_combo = item;
+   EWE_COMBOBOX_ADD(item, layout_p.combobox)
+   evas_object_smart_callback_add(layout_p.combobox, "selected", _group_sel, NULL);
+   elm_layout_content_set(item, NULL, layout_p.combobox);
+   elm_box_pack_end(layout_p.box, item);
+   /* alias: check */
+   LAYOUT_PROP_ADD(layout_p.box, _("alias"), "property", "1swallow")
+   CHECK_ADD(item, layout_p.check)
+   evas_object_smart_callback_add(layout_p.check, "changed", _alias_ch, NULL);
+   elm_object_disabled_set(layout_p.check, true);
+   elm_layout_content_set(item, NULL, layout_p.check);
+   elm_box_pack_end(layout_p.box, item);
+
+   /* fill the combobox */
+   ewe_combobox_item_add(layout_p.combobox, _("None"));
+   EINA_LIST_FOREACH(ap.project->groups, l, group)
+     {
+        ewe_combobox_item_add(layout_p.combobox, group->name);
+     }
+   ewe_combobox_select_item_set(layout_p.combobox, 0);
+
+   btn_res = popup_want_action(_("Create a new layout"), NULL, layout_p.box, BTN_OK|BTN_CANCEL);
+   if (BTN_CANCEL == btn_res) goto close;
+
+   Ewe_Combobox_Item *combo_it;
+   combo_it = ewe_combobox_select_item_get(layout_p.combobox);
+   if (combo_it->index  == 0)
+     editor_group_add(ap.project->global_object, elm_entry_entry_get(layout_p.entry));
+   else
+     {
+        if (!elm_check_state_get(layout_p.check))
+          editor_group_copy(ap.project->global_object, combo_it->title, elm_entry_entry_get(layout_p.entry));
+        else
+          editor_group_alias_add(ap.project->global_object, combo_it->title, elm_entry_entry_get(layout_p.entry));
+     }
+   gm_group_add(ap.project, elm_entry_entry_get(layout_p.entry));
+
+close:
+   evas_object_del(layout_p.box);
 }
 
 static void
