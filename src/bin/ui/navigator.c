@@ -123,7 +123,7 @@ _get_prefix(const char *group_name, int level, int *symbols)
 {
    const char *pos;
    char prefix[BUFF_MAX];
-   int i;
+   int i, len;
 
    assert(group_name != NULL);
    assert(level >= 0);
@@ -134,9 +134,11 @@ _get_prefix(const char *group_name, int level, int *symbols)
         pos = strchr(pos + 1, '/');
      }
    if (!pos) return NULL;
-   *symbols = pos - group_name + 1;
-   strncpy(prefix, group_name, *symbols);
-   prefix[*symbols] = '\0';
+
+   len = pos - group_name + 1;
+   strncpy(prefix, group_name, len);
+   prefix[len] = '\0';
+   if (symbols) *symbols = len;
 
    return eina_stringshare_add(prefix);
 }
@@ -282,6 +284,102 @@ _on_clicked_double(void *data __UNUSED__,
      }
 }
 
+static Elm_Object_Item *
+_find_item(Elm_Object_Item *item, const char *name)
+{
+   while (item)
+     {
+        if (!strcmp(elm_object_item_text_get(item), name)) break;
+        item = elm_genlist_item_next_get(item);
+     }
+   return item;
+}
+
+static int
+_item_group_compare(const void *data1, const void *data2)
+{
+   const Elm_Object_Item *it1 = data1;
+   const Elm_Object_Item *it2 = data2;
+   if (elm_genlist_item_item_class_get(it1) == navigator.itc_folder) return -1;
+   if (elm_genlist_item_item_class_get(it2) == navigator.itc_folder) return -1;
+   const char *str1 = ((Group *)elm_object_item_data_get(it1))->name;
+   const char *str2 = ((Group *)elm_object_item_data_get(it2))->name;
+
+   if (!str1) return 1;
+   if (!str2) return -1;
+
+   return strcmp(str1, str2);
+}
+
+static int
+_item_prefix_compare(const void *data1, const void *data2)
+{
+   const Elm_Object_Item *it1 = data1;
+   const Elm_Object_Item *it2 = data2;
+   if (elm_genlist_item_item_class_get(it1) != navigator.itc_folder) return 1;
+   if (elm_genlist_item_item_class_get(it2) != navigator.itc_folder) return 1;
+
+   const char *str1 = elm_object_item_data_get(it1);
+   const char *str2 = elm_object_item_data_get(it2);
+
+   if (!str1) return 1;
+   if (!str2) return -1;
+
+   return strcmp(str1, str2);
+}
+
+static void
+_group_insert(Group *group)
+{
+   Elm_Object_Item *item, *parent = NULL;
+   char **arr;
+   unsigned int count, i;
+   Eina_Stringshare *prefix;
+   //elm_genlist_first_item_get
+   //elm_genlist_item_next_get
+   //elm_genlist_item_subitems_get
+   //elm_genlist_item_expanded_get
+   //
+   item = elm_genlist_first_item_get(navigator.genlist);
+   arr = eina_str_split_full(group->name, "/", 0, &count);
+
+   for (i = 0; i < count; i++)
+     {
+        parent = elm_genlist_item_parent_get(item);
+        item = _find_item(item, arr[i]);
+        if (!item) break;
+        if (elm_genlist_item_item_class_get(item) != navigator.itc_folder) break;
+        if (!elm_genlist_item_expanded_get(item)) goto exit;
+        item = eina_list_data_get(elm_genlist_item_subitems_get(item));
+     }
+
+   if (i != count - 1)
+     {
+        prefix = _get_prefix(group->name, i, NULL);
+        elm_genlist_item_sorted_insert(navigator.genlist,
+                                       navigator.itc_folder,
+                                       prefix,
+                                       parent,
+                                       ELM_GENLIST_ITEM_TREE,
+                                       _item_prefix_compare,
+                                       NULL,
+                                       NULL);
+     }
+   else
+     elm_genlist_item_sorted_insert(navigator.genlist,
+                                    navigator.itc_group,
+                                    group,
+                                    parent,
+                                    ELM_GENLIST_ITEM_NONE,
+                                    _item_group_compare,
+                                    NULL,
+                                    NULL);
+
+exit:
+   free(arr[0]);
+   free(arr);
+}
+
 static void
 _alias_ch(void *data __UNUSED__,
           Evas_Object *obj __UNUSED__,
@@ -355,7 +453,8 @@ _btn_add_group_cb(void *data __UNUSED__,
         else
           editor_group_alias_add(ap.project->global_object, combo_it->title, elm_entry_entry_get(layout_p.entry));
      }
-   gm_group_add(ap.project, elm_entry_entry_get(layout_p.entry));
+   group = gm_group_add(ap.project, elm_entry_entry_get(layout_p.entry));
+   _group_insert(group);
 
 close:
    evas_object_del(layout_p.box);
