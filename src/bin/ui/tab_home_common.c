@@ -50,7 +50,7 @@ meta_controls_add(Evas_Object *layout, Meta_Data_Controls *meta)
 void
 meta_controls_data_save(Meta_Data_Controls *meta)
 {
-   assert(meta != NULL);
+   if (meta == NULL) return;
    pm_project_meta_data_set(ap.project,
                             ap.project->name,
                             elm_entry_entry_get(meta->version),
