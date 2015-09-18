@@ -82,7 +82,6 @@ Eina_Bool \
 editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge, \
                                int new_value) \
 { \
-   Eina_Bool res; \
    int old_value; \
    int min_value; \
    Diff *diff; \
@@ -111,10 +110,11 @@ editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
         else \
           change_diff_add(change, diff); \
      } \
-   res = edje_edit_group_max_## VAL ##_set(obj, new_value); \
+   if (!edje_edit_group_max_## VAL ##_set(obj, new_value)) \
+     return false; \
    _editor_project_changed(); \
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
-   return res; \
+   return true; \
 }
 
 MAX_SET(w, W)
@@ -125,7 +125,6 @@ Eina_Bool \
 editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge, \
                                int new_value) \
 { \
-   Eina_Bool res; \
    int old_value; \
    int max_value; \
    Diff *diff; \
@@ -154,10 +153,11 @@ editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
         else \
           change_diff_add(change, diff); \
      } \
-   res = edje_edit_group_min_## VAL ##_set(obj, new_value); \
+   if (!edje_edit_group_min_## VAL ##_set(obj, new_value)) \
+     return false; \
    _editor_project_changed(); \
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
-   return res; \
+   return true; \
 }
 
 MIN_SET(w, W)
