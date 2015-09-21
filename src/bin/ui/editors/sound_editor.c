@@ -48,7 +48,6 @@ struct _Sound
    const char *name;
    const char *src;
    int tone_frq;
-   Eina_Bool is_saved;
 };
 
 struct _Item
@@ -59,7 +58,6 @@ struct _Item
    Edje_Edit_Sound_Comp comp;
    double rate;
    int tone_frq;
-   Eina_Bool is_added;
 };
 
 struct _Search_Data
@@ -120,7 +118,6 @@ struct _Sound_Editor
    Eina_Bool stopped : 1;
    Eina_Bool switched : 1;
    Eina_Bool added : 1;
-   Eina_Bool sound_was_added : 1;
 };
 
 static Elm_Gengrid_Item_Class *gic = NULL, *ggic = NULL;
@@ -640,78 +637,16 @@ _sound_editor_quit(Sound_Editor *edit)
 
 static void
 _on_sound_editor_del(void * data,
-            Evas *e __UNUSED__,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+                     Evas *e __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
 {
-   Eina_List *l, *l_next;
-   Sound *snd;
-
    Sound_Editor *edit = (Sound_Editor *)data;
 
    assert(edit != NULL);
 
-   if ((edit->pr->added_sounds) && (edit->sound_was_added))
-     {
-        EINA_LIST_REVERSE_FOREACH_SAFE(edit->pr->added_sounds, l, l_next, snd)
-          {
-             if (!snd->is_saved)
-               {
-                  edit->pr->added_sounds = eina_list_remove_list(edit->pr->added_sounds, l);
-                  eina_stringshare_del(snd->name);
-                  eina_stringshare_del(snd->src);
-                  free(snd);
-               }
-             else break;
-          }
-        if (!eina_list_count(edit->pr->added_sounds))
-          edit->pr->added_sounds = NULL;
-     }
-
    _sound_editor_quit(edit);
 }
-
-TODO("Refactor and uncomment when everything would be more stable")
-/*
-static void
-_on_ok_cb(void *data,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
-{
-   Eina_List *l;
-   Sound *snd;
-   Eina_Bool multiselect;
-   char *ei;
-
-   Sound_Editor *edit = (Sound_Editor *)data;
-
-   assert(edit != NULL);
-
-   if ((edit->pr->added_sounds) && (edit->sound_was_added))
-     {
-        EINA_LIST_FOREACH(edit->pr->added_sounds, l, snd)
-          {
-             if (!snd->tone_frq)
-               edje_edit_sound_sample_add(edit->pr->global_object, snd->name, snd->src);
-             else
-               edje_edit_sound_tone_add(edit->pr->global_object, snd->name, snd->tone_frq);
-             snd->is_saved = true;
-          }
-
-        //project_changed(true);
-     }
-
-   multiselect = elm_gengrid_multi_select_get(edit->gengrid);
-   if ((!multiselect) && (edit->selected))
-     {
-        ei = strdup(edit->selected);
-        evas_object_smart_callback_call(ap.win, SIG_SOUND_SELECTED, ei);
-        free(ei);
-     }
-
-   _sound_editor_quit(edit);
-}
-*/
 
 #define BT_ADD(PARENT, OBJ, ICON, ICON_STYLE) \
    OBJ = elm_button_add(PARENT); \
@@ -1280,25 +1215,17 @@ _add_sample_done(void *data,
         snd = (Sound *)mem_calloc(1, sizeof(Sound));
         snd->name = eina_stringshare_add(file_name);
         snd->src = eina_stringshare_add(res->source);
-TODO("remove")
-        snd->is_saved = false;
         it = (Item *)mem_calloc(1, sizeof(Item));
         it->sound_name = eina_stringshare_add(sound_name);
         it->format = _sound_format_get(selected);
         it->comp = EDJE_EDIT_SOUND_COMP_RAW;
         it->src = eina_stringshare_add(res->source);
-TODO("remove")
-        it->is_added = true;
         if (edit->mode != SOUND_EDITOR_SAMPLE_SELECT)
           elm_gengrid_item_insert_before(edit->gengrid, gic, it, edit->tone,
                                          _grid_sel_sample, edit);
         else
           elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_sample, edit);
 
-TODO("remove");
-        edit->pr->added_sounds = eina_list_append(edit->pr->added_sounds, snd);
-TODO("remove");
-        edit->sound_was_added = true;
         editor_save(ap.project->global_object);
         TODO("Remove this line once edje_edit_sound_sample_add would be added into Editor Module and saving would work properly")
         ap.project->changed = true;
@@ -1379,19 +1306,11 @@ _add_tone_done(void *data,
    snd = (Sound *)mem_calloc(1, sizeof(Sound));
    snd->name = tone_name;
    snd->tone_frq = frq;
-TODO("Remove and cleanup this variable\n")
-   snd->is_saved = false;
    it = (Item *)mem_calloc(1, sizeof(Item));
    it->sound_name = eina_stringshare_add(tone_name);
    it->tone_frq = frq;
    it->format = eina_stringshare_printf("%d", it->tone_frq);
-TODO("Remove and cleanup this variable\n")
-   it->is_added = true;
    elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
-
-TODO("Remove everything below\n")
-   edit->pr->added_sounds = eina_list_append(edit->pr->added_sounds, snd);
-   edit->sound_was_added = true;
 
    tone = mem_calloc(1, sizeof(External_Resource));
    tone->name = eina_stringshare_add(tone_name);
@@ -1585,6 +1504,7 @@ _on_delete_clicked_cb(void *data,
                {
                   edje_edit_sound_tone_del(edit->pr->global_object, item->sound_name);
                   ap.project->tones = pm_resource_del(ap.project->tones, res);
+                  elm_object_item_del(grid_it);
                }
              else if ((res->used_in) && (notdeleted < 4))
                {

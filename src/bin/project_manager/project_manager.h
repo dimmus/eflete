@@ -97,7 +97,6 @@ struct _Project
 
    Eina_File *mmap_file; /**< mmaped dev file*/
 
-   Eina_List *added_sounds;
    Eina_List *nsimage_list;
 
    TODO("Fix paths in enventor mode. Looks like enventor project can't be moved")
