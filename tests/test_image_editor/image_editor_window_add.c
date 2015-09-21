@@ -62,7 +62,7 @@ EFLETE_TEST (image_editor_window_add_test_p1)
    ui_main_window_add();
    ap.project = setup("image_editor_window_add_test_p1");
 
-   images = image_editor_window_add(ap.project, SINGLE);
+   images = image_editor_window_add(SINGLE);
    ck_assert_msg(images != NULL,
                  "cannot create image editor window in SINGLE mode");
 
@@ -106,7 +106,7 @@ EFLETE_TEST (image_editor_window_add_test_p2)
    ui_main_window_add();
    Project *project = setup("image_editor_window_add_test_p2");
 
-   images = image_editor_window_add(project, MULTIPLE);
+   images = image_editor_window_add(MULTIPLE);
    ck_assert_msg(images != NULL,
                  "cannot create image editor window in MULTIPLE mode");
 
