@@ -1325,11 +1325,13 @@ _add_tone_done(void *data,
 {
    Sound *snd;
    Item *it;
-   Eina_Stringshare *tone_name, *tmp_tone_name;
+   Eina_Stringshare *tone_name;
    const char *str_value;
    int frq;
    Eina_List *tones_list, *l;
    Eina_Bool exist = false;
+   Tone_Resource *tone;
+   External_Resource *sound;
 
    Sound_Editor *edit = (Sound_Editor *)data;
 
@@ -1337,18 +1339,17 @@ _add_tone_done(void *data,
 
    tone_name = eina_stringshare_add(elm_entry_entry_get(edit->tone_entry));
 
-   tones_list = edje_edit_sound_samples_list_get(edit->pr->global_object);
-   EINA_LIST_FOREACH(tones_list, l, tmp_tone_name)
-     if (tmp_tone_name == tone_name) /* they both are stringshares */
+   tones_list = edit->pr->tones;
+   EINA_LIST_FOREACH(tones_list, l, tone)
+     if (tone->name == tone_name) /* they both are stringshares */
        {
           exist = true;
           break;
        }
-   edje_edit_string_list_free(tones_list);
    if (!exist)
      {
-        EINA_LIST_FOREACH(edit->pr->added_sounds, l, snd)
-          if ((snd->name == tone_name) && (snd->tone_frq != 0))
+        EINA_LIST_FOREACH(edit->pr->sounds, l, sound)
+          if (sound->name == tone_name)
             {
                exist = true;
                break;
