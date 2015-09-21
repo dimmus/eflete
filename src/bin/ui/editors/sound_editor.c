@@ -1299,12 +1299,13 @@ _popup_close(void *data)
    assert(edit->tone_validator != NULL);
    assert(edit->frq_validator != NULL);
 
+   evas_object_del(edit->popup);
+
    elm_validator_regexp_free(edit->tone_validator);
    elm_validator_regexp_free(edit->frq_validator);
    edit->tone_validator = NULL;
    edit->frq_validator = NULL;
 
-   evas_object_del(edit->popup);
    elm_gengrid_item_selected_set(elm_gengrid_last_item_get(edit->gengrid), true);
 }
 
