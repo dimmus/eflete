@@ -1539,11 +1539,11 @@ _on_delete_clicked_cb(void *data,
 {
    Elm_Object_Item *grid_it;
    Item *item;
-   Sound *snd;
    Eina_List *list, *l, *l_next;
-   Eina_List *sl, *sl_next;
-   int selected, deleted = 0;
    Sound_Editor *edit = (Sound_Editor *)data;
+   External_Resource *res;
+   char buf[BUFF_MAX];
+   int symbs = 0, notdeleted = 0, selected = 0;
 
    assert(edit != NULL);
 
@@ -1556,37 +1556,55 @@ _on_delete_clicked_cb(void *data,
         return;
      }
 
+   snprintf(buf, BUFF_MAX, _("Unable to delete: "));
+   symbs = strlen(buf);
    EINA_LIST_FOREACH_SAFE(list, l, l_next, grid_it)
      {
         item = elm_object_item_data_get(grid_it);
-        if (!item->is_added)
+
+        if (!item->tone_frq)
           {
-             if (!item->tone_frq)
-               edje_edit_sound_sample_del(edit->pr->global_object, item->sound_name);
-             else
-               edje_edit_sound_tone_del(edit->pr->global_object, item->sound_name);
-             deleted++;
+             res = pm_resource_get(ap.project->sounds, item->sound_name);
+             if (!res->used_in)
+               {
+                  edje_edit_sound_sample_del(edit->pr->global_object, item->sound_name);
+                  ap.project->sounds = pm_resource_del(ap.project->sounds, res);
+                  elm_object_item_del(grid_it);
+               }
+             else if ((res->used_in) && (notdeleted < 4))
+               {
+                  snprintf(buf + symbs, BUFF_MAX - symbs, _("<br>Sound \"%s\""), res->name);
+                  symbs += strlen(res->name);
+                  notdeleted++;
+               }
           }
         else
           {
-             EINA_LIST_REVERSE_FOREACH_SAFE(edit->pr->added_sounds, sl, sl_next, snd)
+             res = pm_resource_get(ap.project->tones, item->sound_name);
+             if (!res->used_in)
                {
-                  if (!strcmp(item->sound_name, snd->name))
-                    {
-                       edit->pr->added_sounds = eina_list_remove_list(edit->pr->added_sounds, sl);
-                       eina_stringshare_del(snd->name);
-                       eina_stringshare_del(snd->src);
-                       free(snd);
-                    }
-                  break;
+                  edje_edit_sound_tone_del(edit->pr->global_object, item->sound_name);
+                  ap.project->tones = pm_resource_del(ap.project->tones, res);
+               }
+             else if ((res->used_in) && (notdeleted < 4))
+               {
+                  snprintf(buf + symbs, BUFF_MAX - symbs, _("<br>Tone \"%s\""), res->name);
+                  symbs += strlen(res->name);
+                  notdeleted++;
                }
           }
-        elm_object_item_del(grid_it);
      }
 
-   /*
-   if (deleted)
-     project_changed(true);*/
+   if (notdeleted >= 4)
+     snprintf(buf + symbs, BUFF_MAX - symbs, "<br>...");
+
+   if (notdeleted != 0)
+     NOTIFY_WARNING("%s<br>Used in Programs", buf);
+
+   editor_save(ap.project->global_object);
+   TODO("Remove this line once edje_edit_sound_..._del would be added into Editor Modulei and saving would work properly")
+   ap.project->changed = true;
+
 }
 
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, "elm.label")
@@ -1656,7 +1674,6 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    evas_object_show(btn);
    elm_object_part_content_set(edit->markup, "swallow.btn.del", btn);
    evas_object_show(btn);
-   elm_object_disabled_set(btn, true);
 
    ic = elm_icon_add(btn);
    elm_icon_standard_set(ic, "minus");
