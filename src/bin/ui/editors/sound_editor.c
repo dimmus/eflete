@@ -1333,7 +1333,6 @@ _add_tone_done(void *data,
    Eina_List *tones_list, *l;
    Eina_Bool exist = false;
    Tone_Resource *tone;
-   External_Resource *sound;
 
    Sound_Editor *edit = (Sound_Editor *)data;
 
@@ -1348,15 +1347,6 @@ _add_tone_done(void *data,
           exist = true;
           break;
        }
-   if (!exist)
-     {
-        EINA_LIST_FOREACH(edit->pr->sounds, l, sound)
-          if (sound->name == tone_name)
-            {
-               exist = true;
-               break;
-            }
-     }
    if (exist)
      {
         NOTIFY_WARNING(_("Tone with this name is already added to project"))
