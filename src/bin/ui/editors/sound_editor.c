@@ -68,7 +68,6 @@ struct _Search_Data
 
 struct _Sound_Editor
 {
-   Project *pr;
    Sound_Editor_Mode mode;
    Evas_Object *popup;
    Evas_Object *popup_btn_add;
@@ -160,7 +159,6 @@ _sound_editor_del(Sound_Editor *edit)
 #ifdef HAVE_AUDIO
    ecore_audio_shutdown();
 #endif
-   edit->pr = NULL;
    elm_gengrid_item_class_free(gic);
    elm_gengrid_item_class_free(ggic);
    evas_object_data_del(edit->markup, SND_EDIT_KEY);
@@ -1040,10 +1038,10 @@ _gengrid_content_fill(Sound_Editor *edit)
    External_Resource *res;
 
    assert(edit != NULL);
-   assert(edit->pr != NULL);
+   assert(ap.project != NULL);
 
-   sounds = edit->pr->sounds;
-   tones = edit->pr->tones;
+   sounds = ap.project->sounds;
+   tones = ap.project->tones;
 
    if (edit->mode != SOUND_EDITOR_TONE_SELECT)
      {
@@ -1059,8 +1057,8 @@ _gengrid_content_fill(Sound_Editor *edit)
                   it = (Item *)mem_calloc(1, sizeof(Item));
                   it->sound_name = eina_stringshare_add(res->name);
                   it->format = _sound_format_get(res->source);
-                  it->comp = edje_edit_sound_compression_type_get(edit->pr->global_object, it->sound_name);
-                  it->rate = edje_edit_sound_compression_rate_get(edit->pr->global_object, it->sound_name);
+                  it->comp = edje_edit_sound_compression_type_get(ap.project->global_object, it->sound_name);
+                  it->rate = edje_edit_sound_compression_rate_get(ap.project->global_object, it->sound_name);
                   it->src = eina_stringshare_add(res->source);
                   elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_sample, edit);
                }
@@ -1079,7 +1077,7 @@ _gengrid_content_fill(Sound_Editor *edit)
                {
                   it = (Item *)mem_calloc(1, sizeof(Item));
                   it->sound_name = eina_stringshare_add(res->name);
-                  it->tone_frq = edje_edit_sound_tone_frequency_get(edit->pr->global_object, it->sound_name);
+                  it->tone_frq = edje_edit_sound_tone_frequency_get(ap.project->global_object, it->sound_name);
                   it->format = eina_stringshare_printf("%d", it->tone_frq);
                   elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
                }
@@ -1175,7 +1173,7 @@ _add_sample_done(void *data,
    if ((!selected) || (!strcmp(selected, "")))
      goto del;
 
-   samples_list = edit->pr->sounds;
+   samples_list = ap.project->sounds;
 
    if ((ecore_file_exists(selected)) && (!ecore_file_is_dir(selected)))
      {
@@ -1210,7 +1208,7 @@ _add_sample_done(void *data,
              free(res);
           }
 
-        edje_edit_sound_sample_add(edit->pr->global_object, res->name, res->source);
+        edje_edit_sound_sample_add(ap.project->global_object, res->name, res->source);
 
         snd = (Sound *)mem_calloc(1, sizeof(Sound));
         snd->name = eina_stringshare_add(file_name);
@@ -1286,7 +1284,7 @@ _add_tone_done(void *data,
 
    tone_name = eina_stringshare_add(elm_entry_entry_get(edit->tone_entry));
 
-   tones_list = edit->pr->tones;
+   tones_list = ap.project->tones;
    EINA_LIST_FOREACH(tones_list, l, tone)
      if (tone->name == tone_name) /* they both are stringshares */
        {
@@ -1317,7 +1315,7 @@ _add_tone_done(void *data,
    tone->freq = frq;
    ap.project->tones = eina_list_sorted_insert(ap.project->tones, (Eina_Compare_Cb) resource_cmp, tone);
 
-   edje_edit_sound_tone_add(edit->pr->global_object, snd->name, snd->tone_frq);
+   edje_edit_sound_tone_add(ap.project->global_object, snd->name, snd->tone_frq);
    editor_save(ap.project->global_object);
    TODO("Remove this line once edje_edit_image_add would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
@@ -1486,7 +1484,7 @@ _on_delete_clicked_cb(void *data,
              res = pm_resource_get(ap.project->sounds, item->sound_name);
              if (!res->used_in)
                {
-                  edje_edit_sound_sample_del(edit->pr->global_object, item->sound_name);
+                  edje_edit_sound_sample_del(ap.project->global_object, item->sound_name);
                   ap.project->sounds = pm_resource_del(ap.project->sounds, res);
                   elm_object_item_del(grid_it);
                }
@@ -1502,7 +1500,7 @@ _on_delete_clicked_cb(void *data,
              res = pm_resource_get(ap.project->tones, item->sound_name);
              if (!res->used_in)
                {
-                  edje_edit_sound_tone_del(edit->pr->global_object, item->sound_name);
+                  edje_edit_sound_tone_del(ap.project->global_object, item->sound_name);
                   ap.project->tones = pm_resource_del(ap.project->tones, res);
                   elm_object_item_del(grid_it);
                }
@@ -1647,11 +1645,11 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
 }
 
 Evas_Object *
-sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
+sound_editor_window_add(Sound_Editor_Mode mode)
 {
    Sound_Editor *edit;
 
-   assert(project != NULL);
+   assert(ap.project != NULL);
 
 #ifdef HAVE_AUDIO
    ecore_audio_init();
@@ -1659,7 +1657,6 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
 
    edit = (Sound_Editor *)mem_calloc(1, sizeof(Sound_Editor));
    edit->mode = mode;
-   edit->pr = project;
 
    _sound_editor_main_markup_create(edit);
 
