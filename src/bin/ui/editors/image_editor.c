@@ -1151,13 +1151,13 @@ _image_editor_init(Image_Editor *img_edit)
 }
 
 Evas_Object *
-image_editor_window_add(Project *project, Image_Editor_Mode mode)
+image_editor_window_add(Image_Editor_Mode mode)
 {
    Evas_Object *button;
    Evas_Object *ic = NULL;
    Evas_Object *search_entry = NULL;
 
-   assert(project != NULL);
+   assert(ap.project != NULL);
 
    Image_Editor *img_edit = (Image_Editor *)mem_calloc(1, sizeof(Image_Editor));
 

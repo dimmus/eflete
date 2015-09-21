@@ -2719,7 +2719,7 @@ _on_state_image_choose(void *data,
 
    const char *selected = elm_entry_entry_get(pd->attributes.state_image.image);
 
-   img_edit = image_editor_window_add(ap.project, SINGLE);
+   img_edit = image_editor_window_add(SINGLE);
    image_editor_file_choose(img_edit, selected);
    evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED, _on_image_editor_done, pd);
 }
@@ -2784,7 +2784,7 @@ _add_tween_image(void *data,
    Evas_Object *img_edit;
    Evas_Object *tween_list = (Evas_Object *)data;
 
-   img_edit = image_editor_window_add(ap.project, TWEENS);
+   img_edit = image_editor_window_add(TWEENS);
    evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED,
                                   _on_image_editor_tween_done, tween_list);
 
