@@ -22,6 +22,7 @@
 
 #include "sound_editor.h"
 #include "main_window.h"
+#include "editor.h"
 
 TODO("Rename this file to sound_manager")
 
@@ -1369,15 +1370,29 @@ _add_tone_done(void *data,
    snd = (Sound *)mem_calloc(1, sizeof(Sound));
    snd->name = tone_name;
    snd->tone_frq = frq;
+TODO("Remove and cleanup this variable\n")
    snd->is_saved = false;
    it = (Item *)mem_calloc(1, sizeof(Item));
    it->sound_name = eina_stringshare_add(tone_name);
    it->tone_frq = frq;
    it->format = eina_stringshare_printf("%d", it->tone_frq);
+TODO("Remove and cleanup this variable\n")
    it->is_added = true;
    elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
+
+TODO("Remove everything below\n")
    edit->pr->added_sounds = eina_list_append(edit->pr->added_sounds, snd);
    edit->sound_was_added = true;
+
+   tone = mem_calloc(1, sizeof(External_Resource));
+   tone->name = eina_stringshare_add(tone_name);
+   tone->freq = frq;
+   ap.project->tones = eina_list_sorted_insert(ap.project->tones, (Eina_Compare_Cb) resource_cmp, tone);
+
+   edje_edit_sound_tone_add(edit->pr->global_object, snd->name, snd->tone_frq);
+   editor_save(ap.project->global_object);
+   TODO("Remove this line once edje_edit_image_add would be added into Editor Module and saving would work properly")
+   ap.project->changed = true;
 
    ecore_job_add(_popup_close, edit);
 }
