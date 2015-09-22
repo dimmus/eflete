@@ -131,7 +131,8 @@ _edit_object_part_item_add(Ws_Groupedit_Smart_Data *sd,
    if (type == EDJE_PART_TYPE_TABLE)
      {
         /*Position new item in cell with coords [0;0]*/
-        edje_edit_part_item_position_set(sd->group->edit_object, part, item, 0, 0);
+        edje_edit_part_item_position_col_set(sd->group->edit_object, part, item, 0);
+        edje_edit_part_item_position_row_set(sd->group->edit_object, part, item, 0);
         evas_object_table_pack(gp->draw, ge_item->border, 0, 0, 1, 1);
         evas_object_table_pack(gp->draw, ge_item->draw, 0, 0, 1, 1);
         evas_object_table_pack(gp->draw, ge_item->highlight, 0, 0, 1, 1);
@@ -1461,10 +1462,12 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    homogeneous = edje_edit_state_table_homogeneous_get(sd->group->edit_object, part, state, value);
    evas_object_table_homogeneous_set(gp->draw, homogeneous);
 
-   edje_edit_state_container_align_get(sd->group->edit_object, part, state, value, &align_x, &align_y);
+   align_x = edje_edit_state_container_align_x_get(sd->group->edit_object, part, state, value);
+   align_y = edje_edit_state_container_align_y_get(sd->group->edit_object, part, state, value);
    evas_object_table_align_set(gp->draw, align_x, align_y);
 
-   edje_edit_state_container_padding_get(sd->group->edit_object, part, state, value, &pad_l, &pad_r);
+   pad_l = edje_edit_state_container_padding_x_get(sd->group->edit_object, part, state, value);
+   pad_r = edje_edit_state_container_padding_y_get(sd->group->edit_object, part, state, value);
    evas_object_table_padding_set(gp->draw, pad_l, pad_r);
 
    _colors_get(gp, sd->group->edit_object, state, value, &r, &g, &b, &a, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
@@ -1483,8 +1486,10 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
         item_source = edje_edit_part_item_source_get(sd->group->edit_object, part, ge_item->name);
         edje_object_file_set(ge_item->draw, ap.project->dev, item_source);
 
-        edje_edit_part_item_position_get(sd->group->edit_object, part, ge_item->name, &pos_col, &pos_row);
-        edje_edit_part_item_span_get(sd->group->edit_object, part, ge_item->name, &span_col, &span_row);
+        pos_col = edje_edit_part_item_position_col_get(sd->group->edit_object, part, ge_item->name);
+        pos_row = edje_edit_part_item_position_row_get(sd->group->edit_object, part, ge_item->name);
+        span_col = edje_edit_part_item_span_col_get(sd->group->edit_object, part, ge_item->name);
+        span_row = edje_edit_part_item_span_row_get(sd->group->edit_object, part, ge_item->name);
 
         min_w = edje_edit_part_item_min_w_get(sd->group->edit_object, part, ge_item->name);
         min_h = edje_edit_part_item_min_h_get(sd->group->edit_object, part, ge_item->name);
@@ -1694,9 +1699,11 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    _colors_get(gp, sd->group->edit_object, state, value, &r, &g, &b, &a, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
    PART_STATE_FREE
 
-   edje_edit_state_container_align_get(sd->group->edit_object, part, state, value, &box_align_x, &box_align_y);
+   box_align_x = edje_edit_state_container_align_x_get(sd->group->edit_object, part, state, value);
+   box_align_y = edje_edit_state_container_align_y_get(sd->group->edit_object, part, state, value);
    evas_object_box_align_set(gp->draw, box_align_x, box_align_y);
-   edje_edit_state_container_padding_get(sd->group->edit_object, part, state, value, &pad_x, &pad_y);
+   pad_x = edje_edit_state_container_padding_x_get(sd->group->edit_object, part, state, value);
+   pad_y = edje_edit_state_container_padding_y_get(sd->group->edit_object, part, state, value);
    evas_object_box_padding_set(gp->draw, pad_x, pad_y);
 
    /* Changing layout according to edje_edit params! */
