@@ -64,7 +64,7 @@ EFLETE_TEST (sound_editor_file_choose_test_p)
    ui_main_window_add();
    ap.project = setup("sound_editor_file_choose_test_p");
    wm_widgets_list_objects_load(ap.project->widgets, evas_object_evas_get(ap.win), ap.project->mmap_file);
-   sound_editor = sound_editor_window_add(ap.project, SOUND_EDITOR_EDIT);
+   sound_editor = sound_editor_window_add(SOUND_EDITOR_EDIT);
 
    ck_assert_msg(sound_editor_file_choose(sound_editor, "key-tap") == EINA_TRUE,
                  "failure: cannot select file");
@@ -112,7 +112,7 @@ EFLETE_TEST (sound_editor_file_choose_test_n3)
 
    ui_main_window_add();
    ap.project = setup("sound_editor_file_choose_test_n3");
-   sound_editor = sound_editor_window_add(ap.project, SOUND_EDITOR_EDIT);
+   sound_editor = sound_editor_window_add(SOUND_EDITOR_EDIT);
 
    ck_assert_msg(sound_editor_file_choose(sound_editor, NULL) == EINA_FALSE, "Selected sound that not exist");
 

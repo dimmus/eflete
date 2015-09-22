@@ -62,7 +62,7 @@ EFLETE_TEST(sound_editor_window_add_test_p1)
    ui_main_window_add();
    ap.project = setup("sound_editor_window_add_test_p1");
 
-   sounds = sound_editor_window_add(ap.project, SOUND_EDITOR_EDIT);
+   sounds = sound_editor_window_add(SOUND_EDITOR_EDIT);
    ck_assert_msg(sounds != NULL, "cannot create sound editor window in SOUND_EDITOR_EDIT mode");
 
    evas_object_del(sounds);
@@ -105,7 +105,7 @@ EFLETE_TEST (sound_editor_window_add_test_p2)
    ap.project = setup("sound_editor_window_add_test_p2");
    ui_main_window_add();
 
-   sounds = sound_editor_window_add(ap.project, SOUND_EDITOR_SAMPLE_SELECT);
+   sounds = sound_editor_window_add(SOUND_EDITOR_SAMPLE_SELECT);
    ck_assert_msg(sounds != NULL, "cannot create sound editor window in SOUND_EDITOR_SAMPLE_SELECT mode");
 
    evas_object_del(sounds);
@@ -148,7 +148,7 @@ EFLETE_TEST (sound_editor_window_add_test_p3)
    ap.project = setup("sound_editor_window_add_test_p3");
    ui_main_window_add();
 
-   sounds = sound_editor_window_add(ap.project, SOUND_EDITOR_TONE_SELECT);
+   sounds = sound_editor_window_add(SOUND_EDITOR_TONE_SELECT);
    ck_assert_msg(sounds != NULL, "cannot create sound editor window in SOUND_EDITOR_TONE_SELECT mode");
 
    evas_object_del(sounds);
