@@ -265,7 +265,7 @@ ui_menu_add(void)
       elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_CLOSE_PROJECT, NULL, _("Close project"))
       elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXIT, NULL, _("Exit"))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXIT, NULL, _("Quit"))
          items_obj = elm_menu_item_object_get(menu->menu_items[MENU_FILE_EXIT]);
          elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-Q");
 /* ITEM_MENU_ADD(NULL, MENU_EDIT, NULL, _("Edit"))
