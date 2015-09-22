@@ -55,10 +55,8 @@ struct _Colorclasses_Manager
    Evas_Object *entry, *popup;
    Evas_Object *btn_add;
    Elm_Validator_Regexp *name_validator;
-   Eina_Bool changed;
    Search_Data style_search_data;
    Colorclass_Item *current_ccl;
-   Eina_List *unapplied_list;
 };
 
 /* BUTTON ADD AND REMOVE FUNCTIONS */
@@ -71,10 +69,8 @@ _on_add_popup_btn_add(void *data,
 
    assert(edit != NULL);
 
-   Colorclass_Item *it = NULL, *cc_it = NULL;
+   Colorclass_Item *it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
-   Uns_List *colorclass = NULL;
-   Eina_List *l;
    Colorclass_Resource *res;
 
    it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
@@ -95,37 +91,7 @@ _on_add_popup_btn_add(void *data,
         return;
      }
 
-TODO("REMOVE THIS SINCE IT'S NO MORE!")
-   EINA_LIST_FOREACH(edit->unapplied_list, l, colorclass)
-     {
-        cc_it = (Colorclass_Item *)colorclass->data;
-
-        if ((colorclass->act_type == ACTION_TYPE_DEL) &&
-            (!strcmp(it->name, cc_it->name)))
-          {
-             edit->unapplied_list = eina_list_remove_list(edit->unapplied_list, l);
-             eina_stringshare_del(cc_it->name);
-             free(cc_it);
-             free(colorclass);
-             cc_it = NULL;
-             colorclass = NULL;
-             break;
-          }
-        cc_it = NULL;
-        colorclass = NULL;
-     }
-
-   /* just a copy for list of unapplied, because "it" would be deleted. */
-   cc_it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
-   cc_it->name = eina_stringshare_add(it->name);
-
-TODO("Remove this as well")
-   colorclass = mem_malloc(sizeof(Uns_List));
-   colorclass->data = cc_it;
-   colorclass->act_type = ACTION_TYPE_ADD;
-   edit->unapplied_list = eina_list_append(edit->unapplied_list, colorclass);
-
-   edje_edit_color_class_add(ap.project->global_object, eina_stringshare_add(cc_it->name));
+   edje_edit_color_class_add(ap.project->global_object, eina_stringshare_add(it->name));
 
    glit_ccl = elm_genlist_item_append(edit->genlist, _itc_ccl, it, NULL,
                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
@@ -133,8 +99,6 @@ TODO("Remove this as well")
 
    evas_object_del(edit->popup);
    edit->popup = NULL;
-TODO("Surely delete this one below")
-   edit->changed = true;
 
    editor_save(ap.project->global_object);
    TODO("Remove this line once edje_edit_colorclass API would be added into Editor Module and saving would work properly")
@@ -223,40 +187,7 @@ _on_button_delete_clicked_cb(void *data __UNUSED__,
 
    assert(edit != NULL);
 
-   Uns_List *colorclass = NULL;
-   Colorclass_Item *cc_it = NULL;
-   Eina_List *l;
-
    if (!edit->current_ccl) return;
-
-   /* check if this is newly added */
-   EINA_LIST_FOREACH(edit->unapplied_list, l, colorclass)
-     {
-        cc_it = (Colorclass_Item *)colorclass->data;
-
-        if ((colorclass->act_type == ACTION_TYPE_ADD) &&
-            (!strcmp(edit->current_ccl->name, cc_it->name)))
-          {
-             edit->unapplied_list = eina_list_remove_list(edit->unapplied_list, l);
-             eina_stringshare_del(cc_it->name);
-             free(cc_it);
-             free(colorclass);
-             cc_it = NULL;
-             colorclass = NULL;
-             break;
-          }
-        cc_it = NULL;
-        colorclass = NULL;
-     }
-
-   TODO("Check if colorclass is exist in project, if not, no need to delete it.");
-   cc_it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
-   cc_it->name = eina_stringshare_add(edit->current_ccl->name);
-
-   colorclass = mem_malloc(sizeof(Uns_List));
-   colorclass->data = cc_it;
-   colorclass->act_type = ACTION_TYPE_DEL;
-   edit->unapplied_list = eina_list_append(edit->unapplied_list, colorclass);
 
    Elm_Object_Item *it = elm_genlist_selected_item_get(edit->genlist);
    Elm_Object_Item *next = elm_genlist_item_next_get(it);
@@ -334,7 +265,7 @@ _colorclass_update(Colorclasses_Manager *edit)
 {
    assert(edit != NULL);
 
-   Colorclass_Item *cc_it = NULL;
+   Colorclass_Item *cc_it = edit->current_ccl;
 
    edje_object_color_class_set(edit->edje_preview,
                                "colorclass_manager/text_example_colorclass",
@@ -344,7 +275,6 @@ _colorclass_update(Colorclasses_Manager *edit)
                                edit->current_ccl->b2, edit->current_ccl->a2,
                                edit->current_ccl->r3, edit->current_ccl->g3,
                                edit->current_ccl->b3, edit->current_ccl->a3);
-   cc_it = edit->current_ccl;
    edje_edit_color_class_colors_set(ap.project->global_object, cc_it->name,
                                     cc_it->r1, cc_it->g1,
                                     cc_it->b1, cc_it->a1,
@@ -352,51 +282,10 @@ _colorclass_update(Colorclasses_Manager *edit)
                                     cc_it->b2, cc_it->a2,
                                     cc_it->r3, cc_it->g3,
                                     cc_it->b3, cc_it->a3);
-printf("COS WE ARE CHANGE \n");
 
    editor_save(ap.project->global_object);
    TODO("Remove this line once edje_edit_colorclass API would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
-
-   /* check if this is newly added */
-   Eina_List *l;
-   Uns_List *colorclass = NULL;
-TODO("NO NEED - REMOVE")
-   EINA_LIST_FOREACH(edit->unapplied_list, l, colorclass)
-     {
-        cc_it = (Colorclass_Item *)colorclass->data;
-
-        if ((colorclass->act_type == ACTION_TYPE_ADD) &&
-            (!strcmp(edit->current_ccl->name, cc_it->name)))
-          {
-             cc_it->r1 = edit->current_ccl->r1; cc_it->g1 = edit->current_ccl->g1;
-             cc_it->b1 = edit->current_ccl->b1; cc_it->a1 = edit->current_ccl->a1;
-             cc_it->r2 = edit->current_ccl->r2; cc_it->g2 = edit->current_ccl->g2;
-             cc_it->b2 = edit->current_ccl->b2; cc_it->a2 = edit->current_ccl->a2;
-             cc_it->r3 = edit->current_ccl->r3; cc_it->g3 = edit->current_ccl->g3;
-             cc_it->b3 = edit->current_ccl->b3; cc_it->a3 = edit->current_ccl->a3;
-             return;
-          }
-        else if ((colorclass->act_type == ACTION_TYPE_DEL) &&
-                 (!strcmp(edit->current_ccl->name, cc_it->name)))
-          return;
-     }
-
-TODO("ALL OF BELOW - REMOVE")
-   cc_it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
-   cc_it->name = eina_stringshare_add(edit->current_ccl->name);
-
-   cc_it->r1 = edit->current_ccl->r1; cc_it->g1 =edit->current_ccl->g1;
-   cc_it->b1 = edit->current_ccl->b1; cc_it->a1 =edit->current_ccl->a1;
-   cc_it->r2 = edit->current_ccl->r2; cc_it->g2 =edit->current_ccl->g2;
-   cc_it->b2 = edit->current_ccl->b2; cc_it->a2 =edit->current_ccl->a2;
-   cc_it->r3 = edit->current_ccl->r3; cc_it->g3 =edit->current_ccl->g3;
-   cc_it->b3 = edit->current_ccl->b3; cc_it->a3 =edit->current_ccl->a3;
-
-   colorclass = mem_malloc(sizeof(Uns_List));
-   colorclass->data = (void *)cc_it;
-   colorclass->act_type = ACTION_TYPE_ADD;
-   edit->unapplied_list = eina_list_append(edit->unapplied_list, colorclass);
 }
 /* Colorselector widget callbacks */
 #define COLORSELECTOR_CALLBACK(NUMBER) \
@@ -414,7 +303,6 @@ _on_changed_##NUMBER(void *data, \
                                &edit->current_ccl->b##NUMBER, \
                                &edit->current_ccl->a##NUMBER); \
    _colorclass_update(edit); \
-   edit->changed = true; \
 }
 
 COLORSELECTOR_CALLBACK(1)
@@ -456,45 +344,6 @@ _on_selected(void *data,
    elm_object_disabled_set(edit->colorsel1, false);
    elm_object_disabled_set(edit->colorsel2, false);
    elm_object_disabled_set(edit->colorsel3, false);
-}
-
-/* Modal Window callbacks (closing and exiting from colorclass manager) */
-static void
-_on_colorclass_editor_del(void * data,
-                          Evas *e __UNUSED__,
-                          Evas_Object *obj __UNUSED__,
-                          void *event_info __UNUSED__)
-{
-   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
-   Eina_List *l;
-   Uns_List *it = NULL;
-   Colorclass_Item *ccl_it = NULL;
-
-   assert(edit != NULL);
-
-   EINA_LIST_FOREACH(edit->unapplied_list, l, it)
-     {
-        ccl_it = (Colorclass_Item *)it->data;
-
-        if (it->act_type == ACTION_TYPE_DEL)
-          edje_edit_color_class_del(ap.project->global_object, ccl_it->name);
-        else
-          {
-             edje_edit_color_class_add(ap.project->global_object, eina_stringshare_add(ccl_it->name));
-             edje_edit_color_class_colors_set(ap.project->global_object, ccl_it->name,
-                                              ccl_it->r1, ccl_it->g1,
-                                              ccl_it->b1, ccl_it->a1,
-                                              ccl_it->r2, ccl_it->g2,
-                                              ccl_it->b2, ccl_it->a2,
-                                              ccl_it->r3, ccl_it->g3,
-                                              ccl_it->b3, ccl_it->a3);
-          }
-        eina_stringshare_del(ccl_it->name);
-        free(ccl_it);
-        ccl_it = NULL;
-     }
-
-   eina_list_free(edit->unapplied_list);
 }
 
 /* Search functions and creatings */
@@ -579,8 +428,6 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
 
    /* Creating main layout of window */
    edit->layout = elm_layout_add(ap.win);
-   evas_object_event_callback_add(edit->layout, EVAS_CALLBACK_DEL,
-                                  _on_colorclass_editor_del, edit);
    elm_layout_theme_set(edit->layout, "layout", "colorclass_manager", "default");
    evas_object_size_hint_weight_set(edit->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
@@ -723,7 +570,6 @@ colorclass_manager_add()
    assert(ap.project != NULL);
 
    edit = (Colorclasses_Manager *)mem_calloc(1, sizeof(Colorclasses_Manager));
-   edit->changed = false;
    assert(ap.win != NULL);
 
    _colorclass_main_layout_create(edit);
