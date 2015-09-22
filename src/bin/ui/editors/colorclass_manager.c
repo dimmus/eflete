@@ -75,6 +75,7 @@ _on_add_popup_btn_add(void *data,
    Elm_Object_Item *glit_ccl = NULL;
    Uns_List *colorclass = NULL;
    Eina_List *l;
+   Colorclass_Resource *res;
 
    it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
    it->name = elm_entry_entry_get(edit->entry);
@@ -87,6 +88,12 @@ _on_add_popup_btn_add(void *data,
         free(it);
         return;
      }
+
+   res = mem_calloc(1, sizeof(Colorclass_Resource));
+   res->name = eina_stringshare_add(it->name);
+   ap.project->colorclasses = eina_list_sorted_insert(ap.project->colorclasses,
+                                                      (Eina_Compare_Cb) resource_cmp,
+                                                      res);
 
 TODO("REMOVE THIS SINCE IT'S NO MORE!")
    EINA_LIST_FOREACH(edit->unapplied_list, l, colorclass)
