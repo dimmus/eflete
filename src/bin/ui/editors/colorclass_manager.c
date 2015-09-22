@@ -22,6 +22,7 @@
 
 #include "colorclass_manager.h"
 #include "main_window.h"
+#include "editor.h"
 
 static Elm_Genlist_Item_Class *_itc_ccl = NULL;
 
@@ -87,6 +88,7 @@ _on_add_popup_btn_add(void *data,
         return;
      }
 
+TODO("REMOVE THIS SINCE IT'S NO MORE!")
    EINA_LIST_FOREACH(edit->unapplied_list, l, colorclass)
      {
         cc_it = (Colorclass_Item *)colorclass->data;
@@ -110,10 +112,13 @@ _on_add_popup_btn_add(void *data,
    cc_it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
    cc_it->name = eina_stringshare_add(it->name);
 
+TODO("Remove this as well")
    colorclass = mem_malloc(sizeof(Uns_List));
    colorclass->data = cc_it;
    colorclass->act_type = ACTION_TYPE_ADD;
    edit->unapplied_list = eina_list_append(edit->unapplied_list, colorclass);
+
+   edje_edit_color_class_add(ap.project->global_object, eina_stringshare_add(cc_it->name));
 
    glit_ccl = elm_genlist_item_append(edit->genlist, _itc_ccl, it, NULL,
                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
@@ -121,7 +126,12 @@ _on_add_popup_btn_add(void *data,
 
    evas_object_del(edit->popup);
    edit->popup = NULL;
+TODO("Surely delete this one below")
    edit->changed = true;
+
+   editor_save(ap.project->global_object);
+   TODO("Remove this line once edje_edit_colorclass API would be added into Editor Module and saving would work properly")
+   ap.project->changed = true;
 }
 static void
 _on_add_popup_btn_cancel(void *data,
@@ -644,7 +654,6 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    evas_object_smart_callback_add(button, "clicked",
                                   _on_button_add_clicked_cb, edit);
    elm_object_part_content_set(edit->layout, "swallow.control.add", button);
-   elm_object_disabled_set(button, true);
 
    button = elm_button_add(edit->layout);
    evas_object_show(button);
