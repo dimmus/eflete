@@ -29,6 +29,7 @@ editor_group_add(Evas_Object *obj, const char *name)
      return false;
    if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
+   _editor_project_changed();
    return true;
 }
 
@@ -43,6 +44,7 @@ editor_group_copy(Evas_Object *obj, const char *group_src, const char *group_des
      return false;
    if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
+   _editor_project_changed();
    return true;
 }
 
@@ -57,6 +59,7 @@ editor_group_alias_add(Evas_Object *obj, const char *group_src, const char *grou
      return false;
    if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
+   _editor_project_changed();
    return true;
 }
 
@@ -70,6 +73,7 @@ editor_group_del(Evas_Object *obj, const char *name)
      return false;
    if (!editor_save_all(obj))
      return false; /* i hope it will never happen */
+   _editor_project_changed();
    return true;
 }
 
