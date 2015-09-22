@@ -444,11 +444,11 @@ _on_colorclass_editor_del(void * data,
         ccl_it = (Colorclass_Item *)it->data;
 
         if (it->act_type == ACTION_TYPE_DEL)
-          edje_edit_color_class_del(edit->pr->global_object, ccl_it->name);
+          edje_edit_color_class_del(ap.project->global_object, ccl_it->name);
         else
           {
-             edje_edit_color_class_add(edit->pr->global_object, eina_stringshare_add(ccl_it->name));
-             edje_edit_color_class_colors_set(edit->pr->global_object, ccl_it->name,
+             edje_edit_color_class_add(ap.project->global_object, eina_stringshare_add(ccl_it->name));
+             edje_edit_color_class_colors_set(ap.project->global_object, ccl_it->name,
                                               ccl_it->r1, ccl_it->g1,
                                               ccl_it->b1, ccl_it->a1,
                                               ccl_it->r2, ccl_it->g2,
@@ -663,9 +663,9 @@ _colorclass_manager_init(Colorclasses_Manager *edit)
    Colorclass_Resource *res;
 
    assert(edit != NULL);
-   assert(edit->pr != NULL);
+   assert(ap.project != NULL);
 
-   EINA_LIST_FOREACH(edit->pr->colorclasses, l, res)
+   EINA_LIST_FOREACH(ap.project->colorclasses, l, res)
      {
         it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
 
@@ -684,15 +684,14 @@ _colorclass_manager_init(Colorclasses_Manager *edit)
 }
 
 Evas_Object *
-colorclass_manager_add(Project *project)
+colorclass_manager_add()
 {
    Colorclasses_Manager *edit = NULL;
 
-   assert(project != NULL);
+   assert(ap.project != NULL);
 
    edit = (Colorclasses_Manager *)mem_calloc(1, sizeof(Colorclasses_Manager));
    edit->changed = false;
-   edit->pr = project;
    assert(ap.win != NULL);
 
    _colorclass_main_layout_create(edit);
