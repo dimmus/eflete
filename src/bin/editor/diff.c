@@ -45,6 +45,8 @@ typedef Eina_Bool (* function_type_string_string) (Evas_Object *, Change*, Eina_
                                                    const char *, const char *);
 typedef Eina_Bool (* function_type_string) (Evas_Object *, Change*, Eina_Bool,
                                             const char *);
+typedef Eina_Bool (* function_type_string_string_edjeaspectcontrol) (Evas_Object *, Change*, Eina_Bool,
+                                                                     const char *, const char *, Edje_Aspect_Control);
 
 static Eina_Bool
 _apply(Evas_Object *obj, Function_Info *fi)
@@ -91,6 +93,9 @@ _apply(Evas_Object *obj, Function_Info *fi)
       case FUNCTION_TYPE_STRING:
          return ((function_type_string)fi->function)(obj, NULL, false,
                   fi->args.type_s.s1);
+      case FUNCTION_TYPE_STRING_STRING_EDJEASPECTCONTROL:
+         return ((function_type_string_string_edjeaspectcontrol)fi->function)(obj, NULL, false,
+                  fi->args.type_sseac.s1, fi->args.type_sseac.s2, fi->args.type_sseac.eac3);
 
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
      }
@@ -192,6 +197,12 @@ diff_update(Diff *diff, Diff *new_diff)
          eina_stringshare_del(diff->redo.args.type_s.s1);
          eina_stringshare_ref(new_diff->redo.args.type_s.s1);
          break;
+      case FUNCTION_TYPE_STRING_STRING_EDJEASPECTCONTROL:
+         eina_stringshare_del(diff->redo.args.type_sseac.s1);
+         eina_stringshare_del(diff->redo.args.type_sseac.s2);
+         eina_stringshare_ref(new_diff->redo.args.type_sseac.s1);
+         eina_stringshare_ref(new_diff->redo.args.type_sseac.s2);
+         break;
          /* Do not forget to replace previous stringshares in existing_diff.redo
             if needed. */
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
@@ -254,6 +265,10 @@ diff_free(Diff *diff)
          break;
       case FUNCTION_TYPE_STRING:
          eina_stringshare_del(diff->redo.args.type_s.s1);
+         break;
+      case FUNCTION_TYPE_STRING_STRING_EDJEASPECTCONTROL:
+         eina_stringshare_del(diff->redo.args.type_sseac.s1);
+         eina_stringshare_del(diff->redo.args.type_sseac.s2);
          break;
          /* Do not forget to clean stringshares */
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
