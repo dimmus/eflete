@@ -1226,9 +1226,11 @@ _add_sample_done(void *data,
 {
    Sound *snd;
    Item *it;
-   Eina_Stringshare *sound_name, *tmp_sound_name;
+   Eina_Stringshare *sound_name;
    Eina_List *samples_list, *l;
    Eina_Bool exist = false;
+   External_Resource *res;
+   const char *file_name;
 
    const char *selected = event_info;
    Sound_Editor *edit = (Sound_Editor *)data;
@@ -1238,51 +1240,68 @@ _add_sample_done(void *data,
    if ((!selected) || (!strcmp(selected, "")))
      goto del;
 
-   samples_list = edje_edit_sound_samples_list_get(edit->pr->global_object);
+   samples_list = edit->pr->sounds;
+
    if ((ecore_file_exists(selected)) && (!ecore_file_is_dir(selected)))
      {
-        sound_name = eina_stringshare_add(ecore_file_file_get(selected));
-
-        EINA_LIST_FOREACH(samples_list, l, tmp_sound_name)
-          if (tmp_sound_name == sound_name) /* they both are stringshares */
-            {
-               exist = true;
-               break;
-            }
-        edje_edit_string_list_free(samples_list);
-        if (!exist)
-          {
-             EINA_LIST_FOREACH(edit->pr->added_sounds, l, snd)
-               if ((snd->name == sound_name) && (!snd->tone_frq))
-                 {
-                    exist = true;
-                    break;
-                 }
-          }
+        file_name = ecore_file_file_get(selected);
+        sound_name = eina_stringshare_add(file_name);
+        EINA_LIST_FOREACH(samples_list, l, res)
+           if (res->name == sound_name) /* they both are stringshares */
+             {
+                exist = true;
+                break;
+             }
         if (exist)
           {
              WIN_NOTIFY_WARNING(obj, _("Sample with this name is already added to project"))
-             eina_stringshare_del(sound_name);
+                eina_stringshare_del(sound_name);
              return;
           }
 
+        res = mem_calloc(1, sizeof(External_Resource));
+        res->name = eina_stringshare_add(file_name);
+        res->source = eina_stringshare_printf("%s/images/%s", ap.project->develop_path, file_name);
+
+        if (!ecore_file_exists(res->source))
+          {
+             ecore_file_cp(selected, res->source);
+
+             ap.project->sounds = eina_list_sorted_insert(ap.project->sounds, (Eina_Compare_Cb) resource_cmp, res);
+          }
+        else
+          {
+             WIN_NOTIFY_ERROR(obj, _("File exist"));
+             free(res);
+          }
+
+        edje_edit_sound_sample_add(edit->pr->global_object, res->name, res->source);
+
         snd = (Sound *)mem_calloc(1, sizeof(Sound));
-        snd->name = sound_name;
-        snd->src = eina_stringshare_add(selected);
+        snd->name = eina_stringshare_add(file_name);
+        snd->src = eina_stringshare_add(res->source);
+TODO("remove")
         snd->is_saved = false;
         it = (Item *)mem_calloc(1, sizeof(Item));
         it->sound_name = eina_stringshare_add(sound_name);
         it->format = _sound_format_get(selected);
         it->comp = EDJE_EDIT_SOUND_COMP_RAW;
+        it->src = eina_stringshare_add(res->source);
+TODO("remove")
         it->is_added = true;
         if (edit->mode != SOUND_EDITOR_SAMPLE_SELECT)
           elm_gengrid_item_insert_before(edit->gengrid, gic, it, edit->tone,
                                          _grid_sel_sample, edit);
         else
-
           elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_sample, edit);
+
+TODO("remove");
         edit->pr->added_sounds = eina_list_append(edit->pr->added_sounds, snd);
+TODO("remove");
         edit->sound_was_added = true;
+        editor_save(ap.project->global_object);
+        TODO("Remove this line once edje_edit_sound_sample_add would be added into Editor Module and saving would work properly")
+        ap.project->changed = true;
      }
    else
      WIN_NOTIFY_ERROR(obj, _("Error while loading file.<br>File is not exist"));
