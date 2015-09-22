@@ -37,6 +37,7 @@ typedef enum {
    FUNCTION_TYPE_STRING_STRING,
    FUNCTION_TYPE_STRING,
    FUNCTION_TYPE_STRING_STRING_EDJEASPECTCONTROL,
+   FUNCTION_TYPE_STRING_STRING_DOUBLE,
 } Function_Type;
 
 struct _Function_Info {
@@ -114,6 +115,11 @@ struct _Function_Info {
          Eina_Stringshare *s2;
          Edje_Aspect_Control eac3;
       } type_sseac;
+      struct {
+         Eina_Stringshare *s1;
+         Eina_Stringshare *s2;
+         double d3;
+      } type_ssd;
    } args;              /**< function args not including Evas_Object * */
 };
 
