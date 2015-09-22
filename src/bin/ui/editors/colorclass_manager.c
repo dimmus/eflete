@@ -184,6 +184,11 @@ _on_button_delete_clicked_cb(void *data __UNUSED__,
                              void *event_info __UNUSED__)
 {
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
+   State *state;
+   char buf[BUFF_MAX];
+   int symbs = 0;
+   Eina_List *l;
+   Resource *res;
 
    assert(edit != NULL);
 
@@ -191,11 +196,29 @@ _on_button_delete_clicked_cb(void *data __UNUSED__,
 
    Elm_Object_Item *it = elm_genlist_selected_item_get(edit->genlist);
    Elm_Object_Item *next = elm_genlist_item_next_get(it);
+   Colorclass_Item *ccl = elm_object_item_data_get(it);
 
-   TODO("Fix me")
-//   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get());
-//   ui_property_state_unset(ui_block_property_get());
-//   ui_property_state_set(ui_block_property_get(), part);
+   res = pm_resource_get(ap.project->colorclasses, ccl->name);
+   if (!res->used_in)
+     {
+        edje_edit_color_class_del(ap.project->global_object, ccl->name);
+        ap.project->colorclasses = pm_resource_del(ap.project->colorclasses, res);
+        elm_object_item_del(it);
+     }
+   else
+     {
+        snprintf(buf, BUFF_MAX, _("Colorclass is used in:"));
+        symbs = strlen(buf);
+        EINA_LIST_FOREACH(res->used_in, l, state)
+          {
+             snprintf(buf + symbs, BUFF_MAX - symbs, _("<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"),
+                      state->part->group->name, state->part->name, state->parsed_name, state->parsed_val);
+             symbs += strlen(res->name);
+             break; TODO("remove this break after warning style remake")
+          }
+        NOTIFY_WARNING("%s", buf);
+        return;
+     }
 
    if (!next) next = elm_genlist_item_prev_get(it);
    if (next)
@@ -203,14 +226,16 @@ _on_button_delete_clicked_cb(void *data __UNUSED__,
    else
       edit->current_ccl = NULL;
 
-   elm_object_item_del(it);
-
    if (elm_genlist_items_count(edit->genlist) == 0)
      {
         elm_object_disabled_set(edit->colorsel1, true);
         elm_object_disabled_set(edit->colorsel2, true);
         elm_object_disabled_set(edit->colorsel3, true);
      }
+
+   editor_save(ap.project->global_object);
+   TODO("Remove this line once edje_edit_colorclass API would be added into Editor Module and saving would work properly")
+   ap.project->changed = true;
 }
 
 /* Changing background of preview */
@@ -532,7 +557,6 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    evas_object_smart_callback_add(button, "clicked",
                                   _on_button_delete_clicked_cb, edit);
    elm_object_part_content_set(edit->layout, "swallow.control.minus", button);
-   elm_object_disabled_set(button, true);
 }
 Eina_Bool
 _colorclass_manager_init(Colorclasses_Manager *edit)
