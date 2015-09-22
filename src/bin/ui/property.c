@@ -790,6 +790,9 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_GROUP_NAME:
         prop_group_name_update(pd);
         break;
+      case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
+        PART_ITEM_ATTR_1COMBOBOX_LIST_UPDATE(part_item, aspect_mode, part_item);
+        break;
       /* Don't add 'default:'. Compiler must warn about missing cases */
      }
 }

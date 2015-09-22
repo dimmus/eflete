@@ -102,6 +102,7 @@ typedef enum {
    ATTRIBUTE_PART_NAME,
    ATTRIBUTE_PART_SOURCE,
    ATTRIBUTE_GROUP_NAME,
+   ATTRIBUTE_PART_ITEM_ASPECT_MODE,
 } Attribute;
 
 static inline void

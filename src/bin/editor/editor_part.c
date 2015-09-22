@@ -132,3 +132,38 @@ editor_part_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
+
+Eina_Bool
+editor_part_item_aspect_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                 const char *part_name, const char *item_name, Edje_Aspect_Control new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_PART_ITEM_ASPECT_MODE;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(item_name != NULL);
+   if (change)
+     {
+        Edje_Aspect_Control old_value = edje_edit_part_ignore_flags_get(edit_object, part_name);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_EDJEASPECTCONTROL;
+        diff->redo.function = editor_part_item_aspect_mode_set;
+        diff->redo.args.type_sseac.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_sseac.s2 = eina_stringshare_add(item_name);
+        diff->redo.args.type_sseac.eac3 = new_val;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_EDJEASPECTCONTROL;
+        diff->undo.function = editor_part_item_aspect_mode_set;
+        diff->undo.args.type_sseac.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_sseac.s2 = eina_stringshare_add(item_name);
+        diff->undo.args.type_sseac.eac3 = old_value;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_item_aspect_mode_set(edit_object, part_name, item_name, new_val))
+     return false;
+   _editor_project_changed();
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
