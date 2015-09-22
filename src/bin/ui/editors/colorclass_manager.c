@@ -142,10 +142,10 @@ _on_add_popup_btn_cancel(void *data,
 
    assert(edit != NULL);
 
+   evas_object_del(edit->popup);
    elm_validator_regexp_free(edit->name_validator);
    edit->name_validator = NULL;
 
-   evas_object_del(edit->popup);
    edit->popup = NULL;
 }
 
