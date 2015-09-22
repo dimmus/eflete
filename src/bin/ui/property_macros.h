@@ -253,26 +253,26 @@ _on_##SUB##_##VALUE##_change(void *data, \
  */
 #define COMMON_2SPINNER_DOUBLEVAL_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER, ARGS) \
 static void \
-_on_##MEMBER##_##VALUE1##_change(void *data, \
+_on_##MEMBER##_##VALUE1##_change(void *data __UNUSED__, \
                                  Evas_Object *obj __UNUSED__, \
                                  void *event_info __UNUSED__) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   /*Prop_Data *pd = (Prop_Data *)data; \
    edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
                                     (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE1) / MULTIPLIER, \
-                                    (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE2) / MULTIPLIER); \
+                                    (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE2) / MULTIPLIER);*/ \
    /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 } \
 static void \
-_on_##MEMBER##_##VALUE2##_change(void *data, \
+_on_##MEMBER##_##VALUE2##_change(void *data __UNUSED__, \
                                  Evas_Object *obj __UNUSED__, \
                                  void *event_info __UNUSED__) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   /*Prop_Data *pd = (Prop_Data *)data; \
    edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
                                     (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE1) / MULTIPLIER, \
-                                    (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE2) / MULTIPLIER); \
+                                    (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE2) / MULTIPLIER);*/ \
    /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
@@ -292,10 +292,10 @@ _on_##MEMBER##_##VALUE2##_change(void *data, \
  * @ingroup Property_Macro
  */
 #define COMMON_2SPINNER_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER, ARGS) \
-   TYPE VALUE1, VALUE2; \
+   /*TYPE VALUE1, VALUE2; \
    edje_edit_##SUB##_##VALUE1##_get(pd->group->edit_object ARGS, &VALUE1, &VALUE2); \
    elm_spinner_value_set(pd->attributes.MEMBER.VALUE1, VALUE1 * MULTIPLIER); \
-   elm_spinner_value_set(pd->attributes.MEMBER.VALUE2, VALUE2 * MULTIPLIER);
+   elm_spinner_value_set(pd->attributes.MEMBER.VALUE2, VALUE2 * MULTIPLIER)*/;
 
 /**
  * Macro defines functions that create an item with label and 1 check for part
@@ -427,10 +427,10 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * @ingroup Property_Macro
  */
 #define COMMON_2CHECK_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, ARGS) \
-   Eina_Bool VALUE1, VALUE2; \
+   /*Eina_Bool VALUE1, VALUE2; \
    edje_edit_##SUB##_##VALUE1##_get(pd->group->edit_object ARGS, &VALUE1, &VALUE2); \
    elm_spinner_value_set(pd->attributes.MEMBER.VALUE1, VALUE1); \
-   elm_spinner_value_set(pd->attributes.MEMBER.VALUE2, VALUE2);
+   elm_spinner_value_set(pd->attributes.MEMBER.VALUE2, VALUE2)*/;
 
 /**
  * Macro defines a callback for attribute that controled by 2 checks and
@@ -446,26 +446,26 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  */
 #define COMMON_2CHECK_DOUBLEVAL_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, ARGS) \
 static void \
-_on_##MEMBER##_##VALUE1##_change(void *data, \
+_on_##MEMBER##_##VALUE1##_change(void *data __UNUSED__, \
                                  Evas_Object *obj __UNUSED__, \
                                  void *event_info __UNUSED__) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   /*Prop_Data *pd = (Prop_Data *)data; \
    edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
                                     elm_check_state_get(pd->attributes.MEMBER.VALUE1), \
-                                    elm_check_state_get(pd->attributes.MEMBER.VALUE2)); \
+                                    elm_check_state_get(pd->attributes.MEMBER.VALUE2));*/ \
    /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 } \
 static void \
-_on_##MEMBER##_##VALUE2##_change(void *data, \
+_on_##MEMBER##_##VALUE2##_change(void *data __UNUSED__, \
                                  Evas_Object *obj __UNUSED__, \
                                  void *event_info __UNUSED__) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
-   edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
+   /* Prop_Data *pd = (Prop_Data *)data; \
+    edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
                                     elm_check_state_get(pd->attributes.MEMBER.VALUE1), \
-                                    elm_check_state_get(pd->attributes.MEMBER.VALUE2)); \
+                                    elm_check_state_get(pd->attributes.MEMBER.VALUE2)); */ \
    /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
