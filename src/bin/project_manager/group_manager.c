@@ -472,28 +472,28 @@ gm_state_del(Project *pro, State *state)
       case EDJE_PART_TYPE_PROXY:
       case EDJE_PART_TYPE_BOX:
       case EDJE_PART_TYPE_TABLE:
-         USAGE_DEL(color_class, ap.project->colorclasses);
+         USAGE_DEL(color_class, pro->colorclasses);
          break;
       case EDJE_PART_TYPE_IMAGE:
-         USAGE_DEL(color_class, ap.project->colorclasses);
+         USAGE_DEL(color_class, pro->colorclasses);
 
-         USAGE_DEL(image, ap.project->images);
+         USAGE_DEL(image, pro->images);
 
          tween_list = edje_edit_state_tweens_list_get(state->part->group->edit_object,
                                                       state->part->name,
                                                       state->parsed_name,
                                                       state->parsed_val);
          EINA_LIST_FOREACH(tween_list, l, image_name)
-            pm_resource_usage_del(ap.project->images, image_name, state);
+            pm_resource_usage_del(pro->images, image_name, state);
          edje_edit_string_list_free(tween_list);
 
          break;
       case EDJE_PART_TYPE_TEXT:
-         USAGE_DEL(color_class, ap.project->colorclasses);
-         USAGE_DEL(font, ap.project->fonts);
+         USAGE_DEL(color_class, pro->colorclasses);
+         USAGE_DEL(font, pro->fonts);
          break;
       case EDJE_PART_TYPE_TEXTBLOCK:
-         USAGE_DEL(text_style, ap.project->styles);
+         USAGE_DEL(text_style, pro->styles);
          break;
       default:
          break;
