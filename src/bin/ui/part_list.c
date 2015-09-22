@@ -757,6 +757,7 @@ _on_btn_minus_clicked(void *data,
    Elm_Object_Item *glit;
    const Elm_Genlist_Item_Class* itc;
    Part_ *part;
+   Eina_Stringshare *part_name;
 
    assert(pl != NULL);
 
@@ -774,8 +775,11 @@ _on_btn_minus_clicked(void *data,
         evas_object_smart_callback_call(ap.win, SIGNAL_PART_DELETED, (void *)part);
 
         elm_object_item_del(glit);
+        /* part is freed after deletion so we need to save its name */
+        part_name = eina_stringshare_ref(part->name);
         gm_part_del(ap.project, part);
-        edje_edit_part_del(pl->group->edit_object, part->name);
+        edje_edit_part_del(pl->group->edit_object, part_name);
+        eina_stringshare_del(part_name);
      }
 
    TODO("Add state/item del here")
