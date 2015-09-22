@@ -18,6 +18,8 @@
  */
 
 #include "navigator.h"
+#include "main_window.h"
+#include "editor.h"
 
 #define SIG_GROUP_OPEN "group,open"
 
@@ -31,7 +33,17 @@ typedef struct
    Elm_Genlist_Item_Class *itc_folder;
 } Navigator;
 
+typedef struct
+{
+   Evas_Object *box;
+   Evas_Object *entry;
+   Evas_Object *layout_combo;
+   Evas_Object *combobox;
+   Evas_Object *check;
+} Layout_Popup;
+
 static Navigator navigator;
+static Layout_Popup layout_p;
 
 static char *
 _group_item_label_get(void *data,
@@ -111,7 +123,7 @@ _get_prefix(const char *group_name, int level, int *symbols)
 {
    const char *pos;
    char prefix[BUFF_MAX];
-   int i;
+   int i, len;
 
    assert(group_name != NULL);
    assert(level >= 0);
@@ -122,9 +134,11 @@ _get_prefix(const char *group_name, int level, int *symbols)
         pos = strchr(pos + 1, '/');
      }
    if (!pos) return NULL;
-   *symbols = pos - group_name + 1;
-   strncpy(prefix, group_name, *symbols);
-   prefix[*symbols] = '\0';
+
+   len = pos - group_name + 1;
+   strncpy(prefix, group_name, len);
+   prefix[len] = '\0';
+   if (symbols) *symbols = len;
 
    return eina_stringshare_add(prefix);
 }
@@ -270,12 +284,180 @@ _on_clicked_double(void *data __UNUSED__,
      }
 }
 
+static Elm_Object_Item *
+_find_item(Elm_Object_Item *item, const char *name)
+{
+   while (item)
+     {
+        if (!strcmp(elm_object_item_text_get(item), name)) break;
+        item = elm_genlist_item_next_get(item);
+     }
+   return item;
+}
+
+static int
+_item_group_compare(const void *data1, const void *data2)
+{
+   const Elm_Object_Item *it1 = data1;
+   const Elm_Object_Item *it2 = data2;
+   if (elm_genlist_item_item_class_get(it1) == navigator.itc_folder) return -1;
+   if (elm_genlist_item_item_class_get(it2) == navigator.itc_folder) return -1;
+   const char *str1 = ((Group *)elm_object_item_data_get(it1))->name;
+   const char *str2 = ((Group *)elm_object_item_data_get(it2))->name;
+
+   if (!str1) return 1;
+   if (!str2) return -1;
+
+   return strcmp(str1, str2);
+}
+
+static int
+_item_prefix_compare(const void *data1, const void *data2)
+{
+   const Elm_Object_Item *it1 = data1;
+   const Elm_Object_Item *it2 = data2;
+   if (elm_genlist_item_item_class_get(it1) != navigator.itc_folder) return 1;
+   if (elm_genlist_item_item_class_get(it2) != navigator.itc_folder) return 1;
+
+   const char *str1 = elm_object_item_data_get(it1);
+   const char *str2 = elm_object_item_data_get(it2);
+
+   if (!str1) return 1;
+   if (!str2) return -1;
+
+   return strcmp(str1, str2);
+}
+
+static void
+_group_insert(Group *group)
+{
+   Elm_Object_Item *item, *parent = NULL;
+   char **arr;
+   unsigned int count, i;
+   Eina_Stringshare *prefix;
+   //elm_genlist_first_item_get
+   //elm_genlist_item_next_get
+   //elm_genlist_item_subitems_get
+   //elm_genlist_item_expanded_get
+   //
+   item = elm_genlist_first_item_get(navigator.genlist);
+   arr = eina_str_split_full(group->name, "/", 0, &count);
+
+   for (i = 0; i < count; i++)
+     {
+        parent = elm_genlist_item_parent_get(item);
+        item = _find_item(item, arr[i]);
+        if (!item) break;
+        if (elm_genlist_item_item_class_get(item) != navigator.itc_folder) break;
+        if (!elm_genlist_item_expanded_get(item)) goto exit;
+        item = eina_list_data_get(elm_genlist_item_subitems_get(item));
+     }
+
+   if (i != count - 1)
+     {
+        prefix = _get_prefix(group->name, i, NULL);
+        elm_genlist_item_sorted_insert(navigator.genlist,
+                                       navigator.itc_folder,
+                                       prefix,
+                                       parent,
+                                       ELM_GENLIST_ITEM_TREE,
+                                       _item_prefix_compare,
+                                       NULL,
+                                       NULL);
+     }
+   else
+     elm_genlist_item_sorted_insert(navigator.genlist,
+                                    navigator.itc_group,
+                                    group,
+                                    parent,
+                                    ELM_GENLIST_ITEM_NONE,
+                                    _item_group_compare,
+                                    NULL,
+                                    NULL);
+
+exit:
+   free(arr[0]);
+   free(arr);
+}
+
+static void
+_alias_ch(void *data __UNUSED__,
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
+{
+   if (elm_check_state_get(layout_p.check))
+     elm_layout_text_set(layout_p.layout_combo, NULL, _("alias of"));
+   else
+     elm_layout_text_set(layout_p.layout_combo, NULL, _("copy of"));
+}
+
+static void
+_group_sel(void *data __UNUSED__,
+           Evas_Object *obj __UNUSED__,
+           void *event_info)
+{
+    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info;
+    elm_object_disabled_set(layout_p.check, (item->index != 0) ? false : true);
+}
+
 static void
 _btn_add_group_cb(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
-   TODO("Implement group add dialog");
+   Evas_Object *item;
+   Popup_Button btn_res;
+   Group *group;
+   Eina_List *l;
+
+   BOX_ADD(ap.win, layout_p.box, false, false)
+   /* name: entry */
+   LAYOUT_PROP_ADD(layout_p.box, _("name"), "property", "1swallow")
+   ENTRY_ADD(layout_p.box, layout_p.entry, true)
+   elm_layout_content_set(item, NULL, layout_p.entry);
+   elm_box_pack_end(layout_p.box, item);
+   /* copy: combobox */
+   LAYOUT_PROP_ADD(layout_p.box, _("copy of"), "property", "1swallow")
+   layout_p.layout_combo = item;
+   EWE_COMBOBOX_ADD(item, layout_p.combobox)
+   evas_object_smart_callback_add(layout_p.combobox, "selected", _group_sel, NULL);
+   elm_layout_content_set(item, NULL, layout_p.combobox);
+   elm_box_pack_end(layout_p.box, item);
+   /* alias: check */
+   LAYOUT_PROP_ADD(layout_p.box, _("alias"), "property", "1swallow")
+   CHECK_ADD(item, layout_p.check)
+   evas_object_smart_callback_add(layout_p.check, "changed", _alias_ch, NULL);
+   elm_object_disabled_set(layout_p.check, true);
+   elm_layout_content_set(item, NULL, layout_p.check);
+   elm_box_pack_end(layout_p.box, item);
+
+   /* fill the combobox */
+   ewe_combobox_item_add(layout_p.combobox, _("None"));
+   EINA_LIST_FOREACH(ap.project->groups, l, group)
+     {
+        ewe_combobox_item_add(layout_p.combobox, group->name);
+     }
+   ewe_combobox_select_item_set(layout_p.combobox, 0);
+
+   btn_res = popup_want_action(_("Create a new layout"), NULL, layout_p.box, BTN_OK|BTN_CANCEL);
+   if (BTN_CANCEL == btn_res) goto close;
+
+   Ewe_Combobox_Item *combo_it;
+   combo_it = ewe_combobox_select_item_get(layout_p.combobox);
+   if (combo_it->index  == 0)
+     editor_group_add(ap.project->global_object, elm_entry_entry_get(layout_p.entry));
+   else
+     {
+        if (!elm_check_state_get(layout_p.check))
+          editor_group_copy(ap.project->global_object, combo_it->title, elm_entry_entry_get(layout_p.entry));
+        else
+          editor_group_alias_add(ap.project->global_object, combo_it->title, elm_entry_entry_get(layout_p.entry));
+     }
+   group = gm_group_add(ap.project, elm_entry_entry_get(layout_p.entry));
+   _group_insert(group);
+
+close:
+   evas_object_del(layout_p.box);
 }
 
 static void
