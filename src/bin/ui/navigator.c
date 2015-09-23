@@ -329,17 +329,17 @@ _item_prefix_compare(const void *data1, const void *data2)
 }
 
 static void
-_group_insert(Group *group)
+_group_add(void *data __UNUSED__,
+           Evas_Object *obj __UNUSED__,
+           void *event_info)
 {
+   Group *group;
    Elm_Object_Item *item, *parent = NULL;
    char **arr;
    unsigned int count, i;
    Eina_Stringshare *prefix;
-   //elm_genlist_first_item_get
-   //elm_genlist_item_next_get
-   //elm_genlist_item_subitems_get
-   //elm_genlist_item_expanded_get
-   //
+
+   group = (Group *)event_info;
    item = elm_genlist_first_item_get(navigator.genlist);
    arr = eina_str_split_full(group->name, "/", 0, &count);
 
@@ -453,8 +453,7 @@ _btn_add_group_cb(void *data __UNUSED__,
         else
           editor_group_alias_add(ap.project->global_object, combo_it->title, elm_entry_entry_get(layout_p.entry));
      }
-   group = gm_group_add(ap.project, elm_entry_entry_get(layout_p.entry));
-   _group_insert(group);
+   gm_group_add(ap.project, elm_entry_entry_get(layout_p.entry));
 
 close:
    evas_object_del(layout_p.box);
@@ -614,6 +613,7 @@ navigator_add(void)
    evas_object_smart_callback_add(navigator.genlist, "expanded", _expanded_cb, NULL);
    evas_object_smart_callback_add(navigator.genlist, "contracted", _contracted_cb, NULL);
 
+   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_ADDED, _group_add, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DELETED, _group_del, NULL);
 
    TODO("Add deletion callback and free resources");

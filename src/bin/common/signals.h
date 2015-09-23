@@ -29,6 +29,14 @@
 #define SIGNAL_TAB_CHANGED "SIGNAL_TAB_CHANGED"
 
 /**
+ * emited when new group is added.
+ * eventinfo - pointer to Group object
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_GROUP_ADDED "SIGNAL_GROUP_ADDED"
+
+/**
  * emited when group is deleted.
  * eventinfo - pointer to group name (stringshare)
  *

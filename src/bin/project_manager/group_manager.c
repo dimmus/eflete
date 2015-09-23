@@ -368,6 +368,7 @@ gm_group_add(Project *pro, const char *group_name)
    pro->groups = eina_list_sorted_insert(pro->groups, (Eina_Compare_Cb) resource_cmp, group);
 
    _group_load(pro, group);
+   evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_ADDED, (void *)group);
    return group;
 }
 
