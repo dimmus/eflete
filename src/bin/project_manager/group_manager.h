@@ -113,8 +113,12 @@ Group *
 gm_group_add(Project *pro, const char *group_name);
 
 void
+gm_group_del(Project *pro, Group *group);
+
+void
 gm_state_del(Project *pro, State *state);
 
 void
 gm_part_del(Project *pro, Part_* part);
+
 #endif /* GROUP_MANAGER_H */
