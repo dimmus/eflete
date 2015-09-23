@@ -223,3 +223,45 @@ editor_part_item_source_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
+
+Eina_Bool
+editor_part_item_padding_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                             const char *part_name, const char *item_name, int n3, int n4, int n5, int n6)
+{
+   Diff *diff;
+   int o3, o4, o5, o6;
+   Attribute attribute = ATTRIBUTE_PART_ITEM_PADDING;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(item_name != NULL);
+   if (change)
+     {
+        edje_edit_part_item_padding_get(edit_object, part_name, item_name, &o3, &o4, &o5, &o6);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_INT_INT_INT_INT;
+        diff->redo.function = editor_part_item_padding_set;
+        diff->redo.args.type_ssiiii.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssiiii.s2 = eina_stringshare_add(item_name);
+        diff->redo.args.type_ssiiii.i3 = n3;
+        diff->redo.args.type_ssiiii.i4 = n4;
+        diff->redo.args.type_ssiiii.i5 = n5;
+        diff->redo.args.type_ssiiii.i6 = n6;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_INT_INT_INT_INT;
+        diff->undo.function = editor_part_item_padding_set;
+        diff->undo.args.type_ssiiii.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssiiii.s2 = eina_stringshare_add(item_name);
+        diff->undo.args.type_ssiiii.i3 = o3;
+        diff->undo.args.type_ssiiii.i4 = o4;
+        diff->undo.args.type_ssiiii.i5 = o5;
+        diff->undo.args.type_ssiiii.i6 = o6;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_item_padding_set(edit_object, part_name, item_name, n3, n4, n5, n6))
+     return false;
+   _editor_project_changed();
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
