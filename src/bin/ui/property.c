@@ -805,6 +805,36 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PART_ITEM_WEIGHT_Y:
         COMMON_1SPINNER_UPDATE(part_item, align_y, part_item, int,  1, PART_ITEM_ARGS);
         break;
+      case ATTRIBUTE_PART_ITEM_ASPECT_H:
+        COMMON_1SPINNER_UPDATE(part_item, aspect_h, part_item, int,  1, PART_ITEM_ARGS);
+        break;
+      case ATTRIBUTE_PART_ITEM_ASPECT_W:
+        COMMON_1SPINNER_UPDATE(part_item, aspect_w, part_item, int,  1, PART_ITEM_ARGS);
+        break;
+      case ATTRIBUTE_PART_ITEM_MAX_H:
+        COMMON_1SPINNER_UPDATE(part_item, max_h, part_item, int,  1, PART_ITEM_ARGS);
+        break;
+      case ATTRIBUTE_PART_ITEM_MAX_W:
+        COMMON_1SPINNER_UPDATE(part_item, max_w, part_item, int,  1, PART_ITEM_ARGS);
+        break;
+      case ATTRIBUTE_PART_ITEM_MIN_H:
+        COMMON_1SPINNER_UPDATE(part_item, min_h, part_item, int,  1, PART_ITEM_ARGS);
+        break;
+      case ATTRIBUTE_PART_ITEM_MIN_W:
+        COMMON_1SPINNER_UPDATE(part_item, min_w, part_item, int,  1, PART_ITEM_ARGS);
+        break;
+      case ATTRIBUTE_PART_ITEM_PREFER_H:
+        COMMON_1SPINNER_UPDATE(part_item, prefer_h, part_item, int,  1, PART_ITEM_ARGS);
+        break;
+      case ATTRIBUTE_PART_ITEM_PREFER_W:
+        COMMON_1SPINNER_UPDATE(part_item, prefer_w, part_item, int,  1, PART_ITEM_ARGS);
+        break;
+      case ATTRIBUTE_PART_ITEM_SPREAD_H:
+        COMMON_1SPINNER_UPDATE(part_item, spread_h, part_item, int,  1, PART_ITEM_ARGS);
+        break;
+      case ATTRIBUTE_PART_ITEM_SPREAD_W:
+        COMMON_1SPINNER_UPDATE(part_item, spread_w, part_item, int,  1, PART_ITEM_ARGS);
+        break;
       /* Don't add 'default:'. Compiler must warn about missing cases */
      }
 }

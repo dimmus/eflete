@@ -394,3 +394,39 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return true; \
 }
+
+#define EDITOR_PART_ITEM_INT(FUNC, ATTRIBUTE) \
+Eina_Bool \
+editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, \
+                                const char *part_name, const char *item_name, int new_val) \
+{ \
+   Diff *diff; \
+   Attribute attribute = ATTRIBUTE; \
+   assert(edit_object != NULL); \
+   assert(part_name != NULL); \
+   assert(item_name != NULL); \
+   if (change) \
+     { \
+        int old_value = edje_edit_part_item_## FUNC ##_get(edit_object, part_name, item_name); \
+        diff = mem_calloc(1, sizeof(Diff)); \
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_INT; \
+        diff->redo.function = editor_part_item_## FUNC ##_set; \
+        diff->redo.args.type_ssi.s1 = eina_stringshare_add(part_name); \
+        diff->redo.args.type_ssi.s2 = eina_stringshare_add(item_name); \
+        diff->redo.args.type_ssi.i3 = new_val; \
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_INT; \
+        diff->undo.function = editor_part_item_## FUNC ##_set; \
+        diff->undo.args.type_ssi.s1 = eina_stringshare_add(part_name); \
+        diff->undo.args.type_ssi.s2 = eina_stringshare_add(item_name); \
+        diff->undo.args.type_ssi.i3 = old_value; \
+        if (merge) \
+          change_diff_merge_add(change, diff); \
+        else \
+          change_diff_add(change, diff); \
+     } \
+   if (!edje_edit_part_item_## FUNC ##_set(edit_object, part_name, item_name, new_val)) \
+     return false; \
+   _editor_project_changed(); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+   return true; \
+}
