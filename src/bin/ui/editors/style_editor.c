@@ -598,6 +598,11 @@ _on_bt_del(void *data,
    const char *style_name, *tag;
 
    Style_Editor *style_edit = (Style_Editor *)data;
+   State *state;
+   char buf[BUFF_MAX];
+   int symbs = 0;
+   Eina_List *l;
+   Resource *res;
 
    assert(style_edit != NULL);
 
@@ -609,7 +614,26 @@ _on_bt_del(void *data,
    if (!glit_parent)
      {
         style_name = elm_object_item_part_text_get(glit, "elm.text");
-        edje_edit_style_del(edje_edit_obj, style_name);
+        res = pm_resource_get(ap.project->styles, style_name);
+        if (!res->used_in)
+          {
+             edje_edit_style_del(edje_edit_obj, style_name);
+             ap.project->colorclasses = pm_resource_del(ap.project->colorclasses, res);
+          }
+        else
+          {
+             snprintf(buf, BUFF_MAX, _("Style is used in:"));
+             symbs = strlen(buf);
+             EINA_LIST_FOREACH(res->used_in, l, state)
+               {
+                  snprintf(buf + symbs, BUFF_MAX - symbs, _("<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"),
+                           state->part->group->name, state->part->name, state->parsed_name, state->parsed_val);
+                  symbs += strlen(res->name);
+                  break; TODO("remove this break after warning style remake")
+               }
+             NOTIFY_WARNING("%s", buf);
+             return;
+          }
      }
    else
      {
@@ -624,12 +648,11 @@ _on_bt_del(void *data,
           edje_edit_style_tag_del(edje_edit_obj, style_name, tag);
      }
 
-TODO("Fix me")
-//   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get());
-//   ui_property_state_unset(ui_block_property_get());
-//   ui_property_state_set(ui_block_property_get(), part);
    elm_object_item_del(glit);
-   //project_changed(false);
+
+   editor_save(ap.project->global_object);
+   TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
+   ap.project->changed = true;
 }
 
 /* For GenList, getting the content for showing. Tag Names. */
@@ -826,7 +849,6 @@ _form_left_side(Style_Editor *style_edit)
    ewe_combobox_item_add(combobox, _("New tag"));
    evas_object_smart_callback_add(combobox, "selected", _on_bt_add, style_edit);
    elm_object_part_content_set(layout, "swallow.add_btn", combobox);
-   TODO("Remove when savings would work well")
 
    btn = elm_button_add(ap.win);
    evas_object_show(btn);
@@ -836,8 +858,6 @@ _form_left_side(Style_Editor *style_edit)
 
    evas_object_smart_callback_add(btn, "clicked", _on_bt_del, style_edit);
    elm_object_part_content_set(layout, "swallow.rm_btn", btn);
-   TODO("Remove when savings would work well")
-   elm_object_disabled_set(btn, true);
 
    return layout;
 }
