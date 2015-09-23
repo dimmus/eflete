@@ -386,6 +386,8 @@ gm_group_del(Project *pro, Group *group)
 
    /* Don't free the list data (Part), because data owners are another groups */
    group->used_in = eina_list_free(group->used_in);
+   if (group->main_group)
+     group->main_group->aliases = eina_list_remove(group->main_group->aliases, group);
    EINA_LIST_FREE(group->aliases, alias)
      {
         gm_group_del(pro, alias);
