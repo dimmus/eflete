@@ -367,6 +367,7 @@ _on_st_add_bt_ok(void *data,
    Elm_Object_Item *glit_style = NULL;
    Evas_Object *edje_edit_obj = NULL;
    Style_Editor *style_edit = (Style_Editor *)data;
+   Resource *res;
 
    assert(style_edit != NULL);
 
@@ -416,11 +417,12 @@ _on_st_add_bt_ok(void *data,
    elm_genlist_item_selected_set(glit_style, true);
    elm_genlist_item_bring_in(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
    elm_genlist_item_show(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
-   /* MUST to move to "Apply" function
-   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(NULL));
-   ui_property_state_unset(ui_block_property_get(NULL));
-   ui_property_state_set(ui_block_property_get(NULL), part);
-   */
+
+   res = mem_calloc(1, sizeof(Resource));
+   res->name = eina_stringshare_add(style_name);
+   ap.project->styles = eina_list_sorted_insert(ap.project->styles,
+                                                (Eina_Compare_Cb) resource_cmp,
+                                                res);
 
    _on_popup_bt_cancel(style_edit, NULL, NULL);
 
