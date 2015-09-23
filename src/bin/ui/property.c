@@ -793,6 +793,18 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
         PART_ITEM_ATTR_1COMBOBOX_LIST_UPDATE(part_item, aspect_mode, part_item);
         break;
+      case ATTRIBUTE_PART_ITEM_ALIGN_X:
+        COMMON_1SPINNER_UPDATE(part_item, align_x, part_item, double,  100, PART_ITEM_ARGS);
+        break;
+      case ATTRIBUTE_PART_ITEM_ALIGN_Y:
+        COMMON_1SPINNER_UPDATE(part_item, align_y, part_item, double,  100, PART_ITEM_ARGS);
+        break;
+      case ATTRIBUTE_PART_ITEM_WEIGHT_X:
+        COMMON_1SPINNER_UPDATE(part_item, align_x, part_item, int,  1, PART_ITEM_ARGS);
+        break;
+      case ATTRIBUTE_PART_ITEM_WEIGHT_Y:
+        COMMON_1SPINNER_UPDATE(part_item, align_y, part_item, int,  1, PART_ITEM_ARGS);
+        break;
       /* Don't add 'default:'. Compiler must warn about missing cases */
      }
 }
