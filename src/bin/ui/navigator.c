@@ -460,6 +460,24 @@ close:
    evas_object_del(layout_p.box);
 }
 
+static void
+_folder_del(const char *prefix)
+{
+   Eina_List *folders = NULL, *groups = NULL;
+   Eina_Stringshare *str;
+   Group *group;
+
+   _tree_items_get(prefix, &folders, &groups);
+   EINA_LIST_FREE(folders, str)
+     {
+       _folder_del(str);
+     }
+   EINA_LIST_FREE(groups, group)
+     {
+       gm_group_del(ap.project, group);
+     }
+}
+
 static int
 group_cmp(Resource *res1, const char *name)
 {
@@ -518,7 +536,7 @@ _btn_del_group_cb(void *data __UNUSED__,
    glit = elm_genlist_selected_item_get(navigator.genlist);
    if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
      {
-        TODO("Implement delete several group");
+        _folder_del(elm_object_item_data_get(glit));
         return;
      }
    else
