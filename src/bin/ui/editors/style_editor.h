@@ -38,13 +38,11 @@
  * Show the whole inwin window by using some data
  * about loaded project (edj file)
  *
- * @param project -currently opened project
- *
  * @return the inwin object that contain style viewer
  *
  * @ingroup TextStyle
  */
 Evas_Object *
-style_editor_window_add(Project *project);
+style_editor_window_add();
 
 #endif  /* STYLE_VIEWER_DIALOG_H */

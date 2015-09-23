@@ -52,7 +52,6 @@ struct _Search_Data
 
 struct _Style_Editor
 {
-   Project *pr;
    Evas_Object *mwin;
    Evas_Object *glist;
    Evas_Object *textblock_style;
@@ -305,7 +304,7 @@ _on_glit_selected(void *data,
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
 
-   edje_edit_obj = style_edit->pr->global_object;
+   edje_edit_obj = ap.project->global_object;
 
    if (!glit_parent)
      {
@@ -372,7 +371,7 @@ _on_st_add_bt_ok(void *data,
 
    const char *style_name = elm_entry_entry_get(POPUP.name);
 
-   edje_edit_obj = style_edit->pr->global_object;
+   edje_edit_obj = ap.project->global_object;
 
    if ((!style_name) || (strcmp(style_name, "") == 0))
      {
@@ -440,7 +439,7 @@ _on_tag_add_bt_ok(void *data,
 
    const char *style_name = elm_object_item_data_get(style_edit->tag);
    const char *tag_name = elm_entry_entry_get(POPUP.name);
-   edje_edit_obj = style_edit->pr->global_object;
+   edje_edit_obj = ap.project->global_object;
 
    if ((!tag_name) || (strcmp(tag_name, "") == 0))
      {
@@ -599,7 +598,7 @@ _on_bt_del(void *data,
    Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
    if (!glit) return;
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
-   edje_edit_obj = style_edit->pr->global_object;
+   edje_edit_obj = ap.project->global_object;
 
    if (!glit_parent)
      {
@@ -793,9 +792,9 @@ _form_left_side(Style_Editor *style_edit)
                                    EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(style_edit->glist, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
-   edje_edit_obj = style_edit->pr->global_object;
+   edje_edit_obj = ap.project->global_object;
 
-   styles = style_edit->pr->styles;
+   styles = ap.project->styles;
 
    EINA_LIST_FOREACH(styles, l_st, res)
      {
@@ -903,7 +902,7 @@ _tag_parse(Style_Editor *style_edit, const char *value, const char *text)
    assert(text != NULL);
 
    eina_strbuf_append(tag, CURRENT.stvalue);
-   edje_edit_obj = style_edit->pr->global_object;
+   edje_edit_obj = ap.project->global_object;
    stolen_buf = eina_strbuf_string_steal(tag);
    token = strtok(stolen_buf, " =+");
    while (token)
@@ -1967,7 +1966,7 @@ _on_style_editor_close(void *data,
 }
 
 Evas_Object *
-style_editor_window_add(Project *project)
+style_editor_window_add()
 {
    Evas_Object *panes, *panes_h;
    Evas_Object *layout_left, *layout_right;
@@ -1977,11 +1976,9 @@ style_editor_window_add(Project *project)
    Evas_Textblock_Style *ts = NULL;
    static const char *style_buf = FONT_DEFAULT"'";
 
-   assert(project != NULL);
-   assert(ap.win != NULL);
+   assert(ap.project != NULL);
 
    style_edit = (Style_Editor *)mem_calloc(1, sizeof(Style_Editor));
-   style_edit->pr = project;
 
    panes = elm_panes_add(ap.win);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
