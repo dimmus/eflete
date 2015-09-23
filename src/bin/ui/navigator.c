@@ -460,12 +460,88 @@ close:
    evas_object_del(layout_p.box);
 }
 
+static int
+group_cmp(Resource *res1, const char *name)
+{
+   return strncmp(res1->name, name, strlen(name));
+}
+
+static void
+_group_del(void *data __UNUSED__,
+           Evas_Object *obj __UNUSED__,
+           void *event_info)
+{
+   Eina_Stringshare *group_name;
+   Elm_Object_Item *item;
+   char **arr;
+   unsigned int depth, i;
+   Eina_List *stack = NULL, *l;
+   Eina_Strbuf *buf;
+
+   buf = eina_strbuf_new();
+   group_name = (Eina_Stringshare *)event_info;
+   fprintf(stdout, "%s\n", group_name);
+   item = elm_genlist_first_item_get(navigator.genlist);
+   arr = eina_str_split_full(group_name, "/", 0, &depth);
+   for (i = 0; i < depth; i++)
+     {
+        item  =_find_item(item, arr[i]);
+        eina_strbuf_append_printf(buf, "%s", arr[i]);
+        if (i != depth - 1) eina_strbuf_append(buf, "/");
+        if (!item) break;
+        if (!elm_genlist_item_expanded_get(item) &&
+            NULL != eina_list_search_sorted_list(ap.project->groups, (Eina_Compare_Cb)group_cmp, eina_strbuf_string_get(buf)))
+          break;
+        stack = eina_list_append(stack, item);
+        item = eina_list_data_get(elm_genlist_item_subitems_get(item));
+     }
+   EINA_LIST_REVERSE_FOREACH(stack, l, item)
+     {
+        if (0 == elm_genlist_item_subitems_count(item))
+          elm_object_item_del(item);
+     }
+
+   eina_strbuf_free(buf);
+   free(arr[0]);
+   free(arr);
+}
+
 static void
 _btn_del_group_cb(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
-   TODO("Implement group del dialog");
+   Popup_Button btn_res;
+   Group *group;
+   Elm_Object_Item *glit;
+
+   glit = elm_genlist_selected_item_get(navigator.genlist);
+   if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
+     {
+        TODO("Implement delete several group");
+        return;
+     }
+   else
+     {
+        group = (Group *)elm_object_item_data_get(glit);
+        /* if Group have an object then we cann't close tab with this object
+         * and delete it */
+        if (group->edit_object)
+          {
+             popup_want_action(_("Warning: Delete layout"),
+                               _("Cann't delete the opened layout. Please, "
+                                 "close the layout tab before delete it."),
+                               NULL, BTN_CANCEL);
+             return;
+          }
+        btn_res = popup_want_action(_("Confirm delete layout"),
+                                    _("Are you sure you want to delete the selected layout?<br>"
+                                      "All aliases will be delete too."),
+                                    NULL, BTN_OK|BTN_CANCEL);
+        if (BTN_CANCEL == btn_res) return;
+        editor_group_del(ap.project->global_object, group->name);
+        gm_group_del(ap.project, group);
+     }
 }
 
 Evas_Object *
@@ -519,6 +595,8 @@ navigator_add(void)
    evas_object_smart_callback_add(navigator.genlist, "contract,request", _contract_request_cb, NULL);
    evas_object_smart_callback_add(navigator.genlist, "expanded", _expanded_cb, NULL);
    evas_object_smart_callback_add(navigator.genlist, "contracted", _contracted_cb, NULL);
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DELETED, _group_del, NULL);
 
    TODO("Add deletion callback and free resources");
 
