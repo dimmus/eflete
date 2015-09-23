@@ -40,6 +40,7 @@ typedef enum {
    FUNCTION_TYPE_STRING_STRING_DOUBLE,
    FUNCTION_TYPE_STRING_STRING_INT,
    FUNCTION_TYPE_STRING_STRING_USHORT,
+   FUNCTION_TYPE_STRING_STRING_STRING,
 } Function_Type;
 
 struct _Function_Info {
@@ -132,6 +133,11 @@ struct _Function_Info {
          Eina_Stringshare *s2;
          unsigned short us3;
       } type_ssus;
+      struct {
+         Eina_Stringshare *s1;
+         Eina_Stringshare *s2;
+         Eina_Stringshare *s3;
+      } type_sss;
    } args;              /**< function args not including Evas_Object * */
 };
 
