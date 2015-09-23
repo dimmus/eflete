@@ -49,6 +49,8 @@ typedef Eina_Bool (* function_type_string_string_edjeaspectcontrol) (Evas_Object
                                                                      const char *, const char *, Edje_Aspect_Control);
 typedef Eina_Bool (* function_type_string_string_double) (Evas_Object *, Change*, Eina_Bool,
                                                           const char *, const char *, double);
+typedef Eina_Bool (* function_type_string_string_int) (Evas_Object *, Change*, Eina_Bool,
+                                                       const char *, const char *, int);
 
 static Eina_Bool
 _apply(Evas_Object *obj, Function_Info *fi)
@@ -101,6 +103,9 @@ _apply(Evas_Object *obj, Function_Info *fi)
       case FUNCTION_TYPE_STRING_STRING_DOUBLE:
          return ((function_type_string_string_double)fi->function)(obj, NULL, false,
                   fi->args.type_ssd.s1, fi->args.type_ssd.s2, fi->args.type_ssd.d3);
+      case FUNCTION_TYPE_STRING_STRING_INT:
+         return ((function_type_string_string_int)fi->function)(obj, NULL, false,
+                  fi->args.type_ssi.s1, fi->args.type_ssi.s2, fi->args.type_ssi.i3);
 
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
      }
@@ -214,6 +219,12 @@ diff_update(Diff *diff, Diff *new_diff)
          eina_stringshare_ref(new_diff->redo.args.type_ssd.s1);
          eina_stringshare_ref(new_diff->redo.args.type_ssd.s2);
          break;
+      case FUNCTION_TYPE_STRING_STRING_INT:
+         eina_stringshare_del(diff->redo.args.type_ssi.s1);
+         eina_stringshare_del(diff->redo.args.type_ssi.s2);
+         eina_stringshare_ref(new_diff->redo.args.type_ssi.s1);
+         eina_stringshare_ref(new_diff->redo.args.type_ssi.s2);
+         break;
          /* Do not forget to replace previous stringshares in existing_diff.redo
             if needed. */
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
@@ -284,6 +295,10 @@ diff_free(Diff *diff)
       case FUNCTION_TYPE_STRING_STRING_DOUBLE:
          eina_stringshare_del(diff->redo.args.type_ssd.s1);
          eina_stringshare_del(diff->redo.args.type_ssd.s2);
+         break;
+      case FUNCTION_TYPE_STRING_STRING_INT:
+         eina_stringshare_del(diff->redo.args.type_ssi.s1);
+         eina_stringshare_del(diff->redo.args.type_ssi.s2);
          break;
          /* Do not forget to clean stringshares */
          /* Don't add 'case default:'. Compiler should warn about new values in enum */
