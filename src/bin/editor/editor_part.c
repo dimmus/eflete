@@ -188,3 +188,38 @@ EDITOR_PART_ITEM_USHORT(span_col, ATTRIBUTE_PART_ITEM_SPAN_COL);
 EDITOR_PART_ITEM_USHORT(span_row, ATTRIBUTE_PART_ITEM_SPAN_ROW);
 EDITOR_PART_ITEM_USHORT(position_col, ATTRIBUTE_PART_ITEM_POSITION_COL);
 EDITOR_PART_ITEM_USHORT(position_row, ATTRIBUTE_PART_ITEM_POSITION_ROW);
+
+Eina_Bool
+editor_part_item_source_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                            const char *part_name, const char *item_name, const char *new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_PART_ITEM_SOURCE;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(item_name != NULL);
+   if (change)
+     {
+        Eina_Stringshare *old_value = edje_edit_part_item_source_get(edit_object, part_name, item_name);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_STRING;
+        diff->redo.function = editor_part_item_source_set;
+        diff->redo.args.type_sss.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_sss.s2 = eina_stringshare_add(item_name);
+        diff->redo.args.type_sss.s3 = eina_stringshare_add(new_val);
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_STRING;
+        diff->undo.function = editor_part_item_source_set;
+        diff->undo.args.type_sss.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_sss.s2 = eina_stringshare_add(item_name);
+        diff->undo.args.type_sss.s3 = old_value;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_item_source_set(edit_object, part_name, item_name, new_val))
+     return false;
+   _editor_project_changed();
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}

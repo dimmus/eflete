@@ -418,6 +418,9 @@ prop_part_name_update(Prop_Data *pd);
 static void
 prop_group_name_update(Prop_Data *pd);
 
+static void
+prop_part_item_source_update(Prop_Data *pd);
+
 static Elm_Genlist_Item_Class *_itc_tween = NULL;
 
 static void
@@ -842,6 +845,9 @@ _on_editor_attribute_changed(void *data,
          TODO("implement, old update macroses are broken atm");
         /*PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(part_item, span, span1, part_item, unsigned char, 1);
         PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(part_item, position, position1, part_item, unsigned short, 1);*/
+         break;
+      case ATTRIBUTE_PART_ITEM_SOURCE:
+         prop_part_item_source_update(pd);
          break;
       /* Don't add 'default:'. Compiler must warn about missing cases */
      }
