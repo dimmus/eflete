@@ -29,6 +29,14 @@
 #define SIGNAL_TAB_CHANGED "SIGNAL_TAB_CHANGED"
 
 /**
+ * emited when group is deleted.
+ * eventinfo - pointer to group name (stringshare)
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_GROUP_DELETED "SIGNAL_GROUP_DELETED"
+
+/**
  * emited when part is selected.
  * eventinfo - pointer to Part_ structure
  *

@@ -19,6 +19,7 @@
 
 #include "group_manager.h"
 #include "alloc.h"
+#include "signals.h"
 
 static inline void
 state_name_split(Eina_Stringshare *name, Eina_Stringshare **name_out, double *val_out)
@@ -368,6 +369,46 @@ gm_group_add(Project *pro, const char *group_name)
 
    _group_load(pro, group);
    return group;
+}
+
+void
+gm_group_del(Project *pro, Group *group)
+{
+   Group *alias;
+   Part_ *part;
+   Resource *program;
+   Eina_List *l, *ln;
+
+   assert(pro != NULL);
+   assert(group != NULL);
+   assert(group->edit_object == NULL);
+   assert(group->history == NULL);
+
+   /* Don't free the list data (Part), because data owners are another groups */
+   group->used_in = eina_list_free(group->used_in);
+   EINA_LIST_FREE(group->aliases, alias)
+     {
+        gm_group_del(pro, alias);
+     }
+   EINA_LIST_FOREACH_SAFE(group->parts, l, ln, part)
+     {
+        gm_part_del(pro, part);
+     }
+   EINA_LIST_FREE(group->programs, program)
+     {
+        eina_stringshare_del(program->name);
+        assert(program->used_in == NULL);
+        free(program);
+     }
+   pro->groups = eina_list_remove(pro->groups, group);
+   eina_stringshare_del(group->widget);
+   eina_stringshare_del(group->class);
+   eina_stringshare_del(group->style);
+   evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_DELETED, (void *)group->name);
+   /* delete group name after call signal, because the group name need in the
+    * callbacks */
+   eina_stringshare_del(group->name);
+   free(group);
 }
 
 void
