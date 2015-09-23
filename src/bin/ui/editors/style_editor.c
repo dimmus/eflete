@@ -23,6 +23,7 @@
 #include "style_editor.h"
 #include "main_window.h"
 #include "alloc.h"
+#include "editor.h"
 
 TODO("Rename this file to textblock_style_manager")
 
@@ -423,7 +424,9 @@ _on_st_add_bt_ok(void *data,
 
    _on_popup_bt_cancel(style_edit, NULL, NULL);
 
-   //project_changed(false);
+   editor_save(ap.project->global_object);
+   TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
+   ap.project->changed = true;
 }
 
 static void
@@ -469,7 +472,9 @@ _on_tag_add_bt_ok(void *data,
 
    _on_popup_bt_cancel(style_edit, NULL, NULL);
 
-   //project_changed(false);
+   editor_save(ap.project->global_object);
+   TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
+   ap.project->changed = true;
 }
 
 static void
@@ -491,7 +496,6 @@ _on_bt_style_add(Style_Editor *style_edit)
    Evas_Object *box, *item, *button;
 
    assert(style_edit != NULL);
-   assert(POPUP.name == NULL);
 
    POPUP.dialog = elm_popup_add(ap.win);
    elm_object_part_text_set(POPUP.dialog, "title,text", _("Add textblock style"));
@@ -821,7 +825,6 @@ _form_left_side(Style_Editor *style_edit)
    evas_object_smart_callback_add(combobox, "selected", _on_bt_add, style_edit);
    elm_object_part_content_set(layout, "swallow.add_btn", combobox);
    TODO("Remove when savings would work well")
-   elm_object_disabled_set(combobox, true);
 
    btn = elm_button_add(ap.win);
    evas_object_show(btn);
