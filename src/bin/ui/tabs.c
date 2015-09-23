@@ -462,6 +462,7 @@ _tab_close(void *data,
    Tabs_Item *item = (Tabs_Item *)data;
    tabs.items = eina_list_remove(tabs.items, item);
    _del_tab(item);
+   if (!tabs.items) tabs_menu_tab_open(TAB_HOME_PROJECT_INFO);
 }
 
 void
