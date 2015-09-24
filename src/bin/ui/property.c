@@ -860,8 +860,8 @@ _on_editor_attribute_changed(void *data,
          TODO("implement");
          //STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, align, align1, state_container, double, 100)
          break;
-      case ATTRIBUTE_STATE_CONTAINER_MIN_X:
-      case ATTRIBUTE_STATE_CONTAINER_MIN_Y:
+      case ATTRIBUTE_STATE_CONTAINER_MIN_V:
+      case ATTRIBUTE_STATE_CONTAINER_MIN_H:
          TODO("implement");
          //STATE_DOUBLEVAL_ATTR_2CHECK_UPDATE(state_container, min, min1, state_container)
          break;
