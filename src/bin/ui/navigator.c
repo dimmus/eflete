@@ -409,6 +409,7 @@ _btn_add_group_cb(void *data __UNUSED__,
    Popup_Button btn_res;
    Group *group;
    Eina_List *l;
+   Elm_Object_Item *glit;
 
    BOX_ADD(ap.win, layout_p.box, false, false)
    /* name: entry */
@@ -416,6 +417,8 @@ _btn_add_group_cb(void *data __UNUSED__,
    ENTRY_ADD(layout_p.box, layout_p.entry, true)
    elm_layout_content_set(item, NULL, layout_p.entry);
    elm_box_pack_end(layout_p.box, item);
+   glit = elm_genlist_selected_item_get(navigator.genlist);
+   if (glit) elm_entry_entry_set(layout_p.entry, elm_object_item_data_get(glit));
    /* copy: combobox */
    LAYOUT_PROP_ADD(layout_p.box, _("copy of"), "property", "1swallow")
    layout_p.layout_combo = item;
