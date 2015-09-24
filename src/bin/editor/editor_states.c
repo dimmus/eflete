@@ -49,6 +49,8 @@ EDITOR_STATE_DOUBLE(fill_size_offset_y, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y)
 EDITOR_STATE_DOUBLE(container_align_x, ATTRIBUTE_STATE_CONTAINER_ALIGN_X)
 EDITOR_STATE_DOUBLE(container_align_y, ATTRIBUTE_STATE_CONTAINER_ALIGN_Y)
 
+EDITOR_STATE_DOUBLE(minmul_h, ATTRIBUTE_STATE_MINMUL_H)
+EDITOR_STATE_DOUBLE(minmul_w, ATTRIBUTE_STATE_MINMUL_W)
 #define MAX_SET(VAL, VAL_CAPS) \
 Eina_Bool \
 editor_state_max_## VAL ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, \
