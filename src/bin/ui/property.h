@@ -31,7 +31,7 @@
 #include "syntax_color.h"
 #endif
 #include "widget_manager.h"
-#include "ui_workspace.h"
+#include "workspace.h"
 
 /**
  * Add a new Property widget.

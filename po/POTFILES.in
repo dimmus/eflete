@@ -82,5 +82,5 @@ src/bin/ui/workspace/groupedit.c
 src/bin/ui/workspace/groupedit_box_layouts.c
 src/bin/ui/workspace/groupedit_calc.c
 src/bin/ui/workspace/highlight.c
-src/bin/ui/workspace/ui_workspace.c
+src/bin/ui/workspace/workspace.c
 src/bin/main.c

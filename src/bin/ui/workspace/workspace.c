@@ -17,7 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "ui_workspace.h"
+#include "workspace.h"
 #include "main_window.h"
 #include "highlight.h"
 #include "groupedit.h"
@@ -1016,6 +1016,7 @@ _workspace_smart_resize(Evas_Object *o,
    evas_object_geometry_get(o, &ox, &oy, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
    evas_object_resize(sd->panes, w, h);
+
    evas_object_smart_changed(o);
 }
 

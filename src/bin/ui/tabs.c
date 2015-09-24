@@ -18,7 +18,7 @@
  */
 
 #include "tabs_private.h"
-#include "ui_workspace.h"
+#include "workspace.h"
 #include "tabs.h"
 #include "new_history.h"
 #include "signals.h"
