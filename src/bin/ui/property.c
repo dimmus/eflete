@@ -855,7 +855,20 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PART_ITEM_PADDING:
          prop_part_item_padding_update(pd);
          break;
-      /* Don't add 'default:'. Compiler must warn about missing cases */
+      case ATTRIBUTE_STATE_CONTAINER_ALIGN_X:
+      case ATTRIBUTE_STATE_CONTAINER_ALIGN_Y:
+         TODO("implement");
+         //STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, align, align1, state_container, double, 100)
+         break;
+      case ATTRIBUTE_STATE_CONTAINER_MIN_X:
+      case ATTRIBUTE_STATE_CONTAINER_MIN_Y:
+         TODO("implement");
+         //STATE_DOUBLEVAL_ATTR_2CHECK_UPDATE(state_container, min, min1, state_container)
+         break;
+      case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
+         STATE_ATTR_1COMBOBOX_LIST_UPDATE(state, table_homogeneous, state);
+         break;
+         /* Don't add 'default:'. Compiler must warn about missing cases */
      }
 }
 
