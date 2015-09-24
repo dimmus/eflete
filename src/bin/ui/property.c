@@ -868,6 +868,11 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
          STATE_ATTR_1COMBOBOX_LIST_UPDATE(state, table_homogeneous, state);
          break;
+      case ATTRIBUTE_STATE_CONTAINER_PADING_X:
+      case ATTRIBUTE_STATE_CONTAINER_PADING_Y:
+         TODO("implement");
+         //STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, padding, padding1, state_container, int, 1)
+         break;
          /* Don't add 'default:'. Compiler must warn about missing cases */
      }
 }
