@@ -148,14 +148,14 @@ exist_permission_check(const char *path, const char *name, const char *title)
                                "Do you want to replace it?</font_size><br>"
                                "The project folder '%s' already exist in '%s'. Replacing it will overwrite"
                                "<b>all</b> contents."), name, name, path);
-   btn_res = popup_want_action(title, eina_strbuf_string_get(buf_msg),
+   btn_res = popup_want_action(title, eina_strbuf_string_get(buf_msg), NULL,
                                NULL, BTN_REPLACE | BTN_CANCEL);
    if (btn_res == BTN_CANCEL) return;
    if (!ecore_file_can_write(eina_strbuf_string_get(buf)))
      {
         eina_strbuf_reset(buf_msg);
         eina_strbuf_append_printf(buf_msg, _("Haven't permision to overwrite '%s' in '%s'"), name, path);
-        popup_want_action("New project", eina_strbuf_string_get(buf_msg), NULL, BTN_OK);
+        popup_want_action("New project", eina_strbuf_string_get(buf_msg), NULL, NULL, BTN_OK);
      }
    ecore_file_recursive_rm(eina_strbuf_string_get(buf));
    eina_strbuf_free(buf_msg);

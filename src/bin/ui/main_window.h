@@ -372,10 +372,12 @@ project_close(void);
  * not clicked, popup blocked the code runing, used ecore main loop iteration.
  *
  * @note Popup have not delete the setted content. User must delete it manualy.
+ * @note The focused object should be in the popup content.
  *
  * @param title The Popup title;
  * @param msg The Popup message, formated text;
  * @param content The user Evas_Object seted as content to popup;
+ * @param to_focus The object what be focused after popup show;
  * @param p_btns The flags for set the popup buttons
  *
  * @ingroup Window
@@ -384,6 +386,7 @@ Popup_Button
 popup_want_action(const char *title,
                   const char *msg,
                   Evas_Object *content,
+                  Evas_Object *to_focus,
                   Popup_Button p_btns);
 
 void

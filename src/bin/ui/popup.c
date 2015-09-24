@@ -48,6 +48,7 @@ Popup_Button
 popup_want_action(const char *title,
                   const char *msg,
                   Evas_Object *content,
+                  Evas_Object *to_focus,
                   Popup_Button popup_btns)
 {
    Evas_Object *btn;
@@ -81,6 +82,7 @@ popup_want_action(const char *title,
      BTN_ADD(_("Cancel"), "button2", &_btn_cancel)
 
    evas_object_show(popup);
+   if (to_focus) elm_object_focus_set(to_focus, true);
    ecore_main_loop_begin();
 
    /* clear up before return the presed button */
