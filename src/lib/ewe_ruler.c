@@ -296,7 +296,6 @@ _ewe_ruler_step_set(Eo *obj,
      step = MIN_STEP;
    if (scale->mark_step == (int)step) return EINA_TRUE;
    scale->mark_step = step;
-   sd->size_changed = EINA_TRUE;
    evas_object_smart_changed(obj);
    return EINA_TRUE;
 }
@@ -321,7 +320,6 @@ _ewe_ruler_value_step_set(Eo *obj,
    if (!scale) scale = eina_list_data_get(sd->scales);
    if (!scale) return EINA_FALSE;
    scale->mark_value_step = step;
-   sd->size_changed = EINA_TRUE;
    evas_object_smart_changed(obj);
    return EINA_TRUE;
 }
@@ -407,7 +405,6 @@ _ewe_ruler_style_set(Eo *obj,
    int count = eina_list_count(scale->dashes);
    _delete_extra_dashes(scale, count);
 
-   sd->size_changed = EINA_TRUE;
    evas_object_smart_changed(obj);
    return EINA_TRUE;
 }
