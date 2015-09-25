@@ -47,7 +47,6 @@
 
 #define GROUP_ARGS
 #define PART_ARGS , pd->part->name
-#define PART_ARGS_DIFF , pd->part->name, NULL, 0.0
 #define PART_ITEM_ARGS , pd->part->name, pd->item_name
 #define STATE_ARGS , pd->part->name, pd->part->current_state->parsed_name, pd->part->current_state->parsed_val
 
@@ -97,6 +96,8 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
    evas_object_event_callback_priority_add(pd->attributes.MEMBER.VALUE1, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                           _on_spinner_mouse_wheel, NULL); \
+   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE1, "spinner,drag,start", _on_##MEMBER##_##VALUE1##_start, pd); \
+   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE1, "spinner,drag,stop", _on_##MEMBER##_##VALUE1##_stop, pd); \
    evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE1, "changed", _on_##MEMBER##_##VALUE1##_change, pd); \
    SPINNER_ADD(item, pd->attributes.MEMBER.VALUE2, MIN, MAX, STEP, true) \
    elm_spinner_label_format_set(pd->attributes.MEMBER.VALUE2, FMT); \
@@ -107,6 +108,8 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
    evas_object_event_callback_priority_add(pd->attributes.MEMBER.VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
+   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE2, "spinner,drag,start", _on_##MEMBER##_##VALUE2##_start, pd); \
+   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE2, "spinner,drag,stop", _on_##MEMBER##_##VALUE2##_stop, pd); \
    evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE2, "changed", _on_##MEMBER##_##VALUE2##_change, pd); \
    PREFIX##_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER); \
    return item; \
@@ -142,7 +145,36 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define COMMON_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, ARGS) \
+#define COMMON_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, ARGS, DESCRIPTION) \
+static void \
+_on_##MEMBER##_##VALUE##_start(void *data, \
+                               Evas_Object *obj __UNUSED__, \
+                               void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   assert(pd->change == NULL); \
+   pd->change = change_add(NULL); \
+   pd->old_##TYPE##_val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
+} \
+static void \
+_on_##MEMBER##_##VALUE##_stop(void *data, \
+                              Evas_Object *obj __UNUSED__, \
+                              void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Eina_Stringshare *msg; \
+   assert(pd->change != NULL); \
+   TYPE new_val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
+   if (new_val != pd->old_##TYPE##_val) \
+     { \
+        msg = eina_stringshare_printf(DESCRIPTION, pd->old_##TYPE##_val, new_val); \
+        change_description_set(pd->change, msg); \
+        history_change_add(pd->group->history, pd->change); \
+     } \
+   else \
+     change_free(pd->change); \
+   pd->change = NULL; \
+} \
 static void \
 _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj, \
@@ -151,12 +183,24 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    Prop_Data *pd = (Prop_Data *)data; \
    TYPE value = elm_spinner_value_get(obj); \
    value /= MULTIPLIER; \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, value)) \
+   if (pd->change) \
      { \
-       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
-       abort(); \
+        if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, pd->change, true ARGS, value)) \
+        { \
+           ERR("editor_group_"#SUB"_"#VALUE"_set failed"); \
+           abort(); \
+        } \
      } \
-   /*project_changed(false);*/ \
+   else \
+     { \
+        _on_##MEMBER##_##VALUE##_start(data, obj, ei); \
+        if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, pd->change, true ARGS, value)) \
+        { \
+           ERR("editor_"#SUB"_"#VALUE"_set failed"); \
+           abort(); \
+        } \
+        _on_##MEMBER##_##VALUE##_stop(data, obj, ei); \
+     } \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
@@ -220,7 +264,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, ARGS, ARGS_DIFF) \
+#define COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, ARGS) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
                           Evas_Object *obj __UNUSED__, \
@@ -236,66 +280,6 @@ _on_##SUB##_##VALUE##_change(void *data, \
    /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
-
-/**
- * Macro defines a callback for attribute that controled by 2 spinners and
- * edje edit functions returned, as arguments, two values at hte same time.
- *
- * @param SUB The prefix of main parameter of state attribute;
- * @param VALUE1 The first value of attribute
- * @param VALUE2 The second value of attribute
- * @param MEMBER The combobox member from Prop_Data structure
- * @param TYPE The type of given attribute
- * @param MULTIPLIER The multiplier to convert the value to percent
- * @param ARGS The edje edit function arguments
- *
- * @ingroup Property_Macro
- */
-#define COMMON_2SPINNER_DOUBLEVAL_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER, ARGS) \
-static void \
-_on_##MEMBER##_##VALUE1##_change(void *data __UNUSED__, \
-                                 Evas_Object *obj __UNUSED__, \
-                                 void *event_info __UNUSED__) \
-{ \
-   /*Prop_Data *pd = (Prop_Data *)data; \
-   edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
-                                    (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE1) / MULTIPLIER, \
-                                    (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE2) / MULTIPLIER);*/ \
-   /*project_changed(false);*/ \
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-} \
-static void \
-_on_##MEMBER##_##VALUE2##_change(void *data __UNUSED__, \
-                                 Evas_Object *obj __UNUSED__, \
-                                 void *event_info __UNUSED__) \
-{ \
-   /*Prop_Data *pd = (Prop_Data *)data; \
-   edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
-                                    (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE1) / MULTIPLIER, \
-                                    (TYPE)elm_spinner_value_get(pd->attributes.MEMBER.VALUE2) / MULTIPLIER);*/ \
-   /*project_changed(false);*/ \
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-}
-
-/**
- * Macro defines a update function for attribute that controled by 2 spinners
- * and edje edit functions returned, as arguments, two values at hte same time.
- *
- * @param SUB The prefix of main parameter of state attribute;
- * @param VALUE1 The first value of attribute
- * @param VALUE2 The second value of attribute
- * @param MEMBER The combobox member from Prop_Data structure
- * @param TYPE The type of given attribute
- * @param MULTIPLIER The multiplier to convert the value to percent
- * @param ARGS The edje edit function arguments
- *
- * @ingroup Property_Macro
- */
-#define COMMON_2SPINNER_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER, ARGS) \
-   /*TYPE VALUE1, VALUE2; \
-   edje_edit_##SUB##_##VALUE1##_get(pd->group->edit_object ARGS, &VALUE1, &VALUE2); \
-   elm_spinner_value_set(pd->attributes.MEMBER.VALUE1, VALUE1 * MULTIPLIER); \
-   elm_spinner_value_set(pd->attributes.MEMBER.VALUE2, VALUE2 * MULTIPLIER)*/;
 
 /**
  * Macro defines functions that create an item with label and 1 check for part
@@ -391,13 +375,12 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
  * @param VALUE The value of part attribute
  * @param MEMBER The check member from Prop_Data structure
  * @param ARGS The edje edit function arguments
- * @param ARGS_DIFF The edje edit function arguments for history
  *
  * @note for internal usage in property_macros.h
  *
  * @ingroup Property_Macro
  */
-#define COMMON_CHECK_CALLBACK(SUB, VALUE, MEMBER, ARGS, ARGS_DIFF) \
+#define COMMON_CHECK_CALLBACK(SUB, VALUE, MEMBER, ARGS) \
 static void \
 _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj, \
@@ -412,62 +395,6 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
      } \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
    /*project_changed(false);*/ \
-}
-
-/**
- * Macro defines a update function for attribute that controled by 2 checks
- * and edje edit functions returned, as arguments, two values at hte same time.
- *
- * @param SUB The prefix of main parameter of state attribute;
- * @param VALUE1 The first value of attribute
- * @param VALUE2 The second value of attribute
- * @param MEMBER The combobox member from Prop_Data structure
- * @param ARGS The edje edit function arguments
- *
- * @ingroup Property_Macro
- */
-#define COMMON_2CHECK_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, ARGS) \
-   /*Eina_Bool VALUE1, VALUE2; \
-   edje_edit_##SUB##_##VALUE1##_get(pd->group->edit_object ARGS, &VALUE1, &VALUE2); \
-   elm_spinner_value_set(pd->attributes.MEMBER.VALUE1, VALUE1); \
-   elm_spinner_value_set(pd->attributes.MEMBER.VALUE2, VALUE2)*/;
-
-/**
- * Macro defines a callback for attribute that controled by 2 checks and
- * edje edit functions returned, as arguments, two values at hte same time.
- *
- * @param SUB The prefix of main parameter of state attribute;
- * @param VALUE1 The first value of attribute
- * @param VALUE2 The second value of attribute
- * @param MEMBER The combobox member from Prop_Data structure
- * @param ARGS The edje edit function arguments
- *
- * @ingroup Property_Macro
- */
-#define COMMON_2CHECK_DOUBLEVAL_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, ARGS) \
-static void \
-_on_##MEMBER##_##VALUE1##_change(void *data __UNUSED__, \
-                                 Evas_Object *obj __UNUSED__, \
-                                 void *event_info __UNUSED__) \
-{ \
-   /*Prop_Data *pd = (Prop_Data *)data; \
-   edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
-                                    elm_check_state_get(pd->attributes.MEMBER.VALUE1), \
-                                    elm_check_state_get(pd->attributes.MEMBER.VALUE2));*/ \
-   /*project_changed(false);*/ \
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-} \
-static void \
-_on_##MEMBER##_##VALUE2##_change(void *data __UNUSED__, \
-                                 Evas_Object *obj __UNUSED__, \
-                                 void *event_info __UNUSED__) \
-{ \
-   /* Prop_Data *pd = (Prop_Data *)data; \
-    edje_edit_##SUB##_##VALUE1##_set(pd->group->edit_object ARGS, \
-                                    elm_check_state_get(pd->attributes.MEMBER.VALUE1), \
-                                    elm_check_state_get(pd->attributes.MEMBER.VALUE2)); */ \
-   /*project_changed(false);*/ \
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
 /**
@@ -494,11 +421,10 @@ _on_##MEMBER##_##VALUE2##_change(void *data __UNUSED__, \
  * @param VALUE The value of part attribute
  * @param TYPE The type of given attribute
  * @param ARGS The edje edit function arguments
- * @param ARGS_DIFF The edje edit function arguments for history
  *
  * @ingroup Property_Macro
  */
-#define COMMON_COMBOBOX_LIST_STRSHARE_CALLBACK(SUB, VALUE, MEMBER, ARGS, ARGS_DIFF) \
+#define COMMON_COMBOBOX_LIST_STRSHARE_CALLBACK(SUB, VALUE, MEMBER, ARGS) \
 static void \
 _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj __UNUSED__, \
@@ -828,7 +754,7 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
  * @ingroup Property_Macro
  */
 #define PART_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER) \
-   COMMON_CHECK_CALLBACK(SUB, VALUE, MEMBER, PART_ARGS, PART_ARGS_DIFF) \
+   COMMON_CHECK_CALLBACK(SUB, VALUE, MEMBER, PART_ARGS) \
 
 /*****************************************************************************/
 /*                       PART 1 COMBOBOX CONTROL                             */
@@ -939,7 +865,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * @ingroup Property_Macro
  */
 #define PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
-   COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, PART_ARGS, PART_ARGS_DIFF)
+   COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, PART_ARGS)
 
 /*****************************************************************************/
 /*                       PART 1COMBOBOX SOURCE UPDATE                        */
@@ -1205,70 +1131,11 @@ COMMON_2SPINNER_ADD(PART_ITEM, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  * @param VALUE The value of state attribute.
  * @param TYPE The spinner value type: int, double
  * @param MULTIPLIER The multiplier to convert the value to percent
- * @param DIF_VALUE opposite to VALUE attribute
- * @param CHECK function that compire DIF_VALUE and VALUE attribute
  *
  * @ingroup Property_Macro
  */
-TODO("Add support PART_ITEM attributes to history")
-TODO("After history support please refactor and merge this macro with STATE_MINMAX_ATTR_SPINNER_CALLBACK")
-#define PART_ITEM_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, DIF_VALUE, CHECK) \
-static void \
-_on_##MEMBER##_##VALUE##_change(void *data, \
-                                Evas_Object *obj, \
-                                void *ei __UNUSED__) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   TYPE value = elm_spinner_value_get(obj); \
-   TYPE opposite_value = edje_edit_##SUB##_##DIF_VALUE##_get(pd->group->edit_object PART_ITEM_ARGS); \
-   value /= MULTIPLIER; \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object PART_ITEM_ARGS, value)) \
-     { \
-       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
-       abort(); \
-     } \
-   if (value CHECK opposite_value) \
-     { \
-        if (!edje_edit_##SUB##_##DIF_VALUE##_set(pd->group->edit_object PART_ITEM_ARGS, value)) \
-          { \
-            ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
-            abort(); \
-          } \
-        elm_spinner_value_set(pd->attributes.state.DIF_VALUE, value); \
-     } \
-   /*project_changed(false);*/ \
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-   COMMON_1SPINNER_UPDATE(SUB, DIF_VALUE, MEMBER, TYPE, MULTIPLIER, PART_ITEM_ARGS) \
-}
-
-/**
- * Macro defines a callback for PART_ITEM2SPINNER_ADD.
- *
- * @param SUB The prefix of main parameter of state attribute;
- * @param VALUE The value of state attribute.
- * @param TYPE The spinner value type: int, double
- * @param MULTIPLIER The multiplier to convert the value to percent
- *
- * @ingroup Property_Macro
- */
-TODO("Add support PART_ITEM attributes to history")
-#define PART_ITEM_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER) \
-static void \
-_on_##MEMBER##_##VALUE##_change(void *data, \
-                                Evas_Object *obj, \
-                                void *ei __UNUSED__) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   TYPE value = elm_spinner_value_get(obj); \
-   value /= MULTIPLIER; \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object PART_ITEM_ARGS, value)) \
-     { \
-       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
-       abort(); \
-     } \
-   /*project_changed(false);*/ \
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-}
+#define PART_ITEM_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, DESCRIPTION) \
+   COMMON_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, PART_ITEM_ARGS, DESCRIPTION)
 
 /*****************************************************************************/
 /*                    PART ITEM 1 COMBOBOX LIST CONTROL                      */
@@ -1325,68 +1192,6 @@ _on_##SUB##_##VALUE##_change(void *data, \
 }
 
 /*****************************************************************************/
-/*                 PART ITEM 2 SPINNERS DOUBLEVAL CONTROL                    */
-/*****************************************************************************/
-/**
- * Macro defines a functions that create an item with label and 2 spinners for
- * part item attribute.
- *
- * @param TEXT The label text
- * @param SUB The prefix of main parameter of state attribute
- * @param VALUE1 The first value of state attribute
- * @param VALUE2 The second value of state attribute
- * @param MEMBER The spinner member from Prop_Data structure
- * @param MIN The min value of spinner
- * @param MAX The max value of spinner
- * @param STEP The step to increment or decrement the spinner value
- * @param FMT The format string of the displayed label
- * @param L1_START The text of label before first swallow
- * @param L1_END The text of label after first swallow
- * @param L2_START The text of label before second swallow
- * @param L2_END The text of label after second swallow
- * @param TOOLTIP1 The first spinner tooltip
- * @param TOOLTIP2 The second spinner tooltip
- * @param MULTIPLIER The multiplier to convert the value to percent. If it not
- *        needed set 1
- *
- * @ingroup Property_Macro
- */
-#define PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_ADD(TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
-                                              MIN, MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
-                                              TOOLTIP1, TOOLTIP2, MULTIPLIER) \
-COMMON_2SPINNER_ADD(PART_ITEM_DOUBLEVAL, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE,\
-                    MIN, MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
-                    TOOLTIP1, TOOLTIP2, MULTIPLIER)
-
-/**
- * Macro defines a function that updates control by PART_ITEM_ATTR_2SPINNER_ADD macro.
- *
- * @param SUB The prefix of main parameter of drag attribute
- * @param VALUE1 The first value of state attribute
- * @param VALUE2 The second value of state attribute
- * @param MEMBER The spinner member from Prop_Data structure
- * @param MULTIPLIER The multiplier to convert the value to percent. If it not
- *        needed set 1
- *
- * @ingroup Property_Macro
- */
-#define PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER) \
-   COMMON_2SPINNER_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER, PART_ITEM_ARGS)
-
-/**
- * Macro defines a callback for PART_ITEM2SPINNER_ADD.
- *
- * @param SUB The prefix of main parameter of state attribute;
- * @param VALUE The value of state attribute.
- * @param TYPE The spinner value type: int, double
- * @param MULTIPLIER The multiplier to convert the value to percent
- *
- * @ingroup Property_Macro
- */
-#define PART_ITEM_DOUBLEVAL_ATTR_SPINNER_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER) \
-   COMMON_2SPINNER_DOUBLEVAL_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER, PART_ITEM_ARGS)
-
-/*****************************************************************************/
 /*                           STATE 1 CHECK CONTROL                           */
 /*****************************************************************************/
 /**
@@ -1418,7 +1223,7 @@ COMMON_2SPINNER_ADD(PART_ITEM_DOUBLEVAL, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBE
  * @ingroup Property_Macro
  */
 #define STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER) \
-   COMMON_CHECK_CALLBACK(SUB, VALUE, MEMBER, STATE_ARGS, STATE_ARGS)
+   COMMON_CHECK_CALLBACK(SUB, VALUE, MEMBER, STATE_ARGS)
 
 /*****************************************************************************/
 /*                        STATE 1 SPINNER CONTROLS                           */
@@ -1476,49 +1281,8 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER) \
-   COMMON_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, STATE_ARGS)
-
-/**
- * Macro defines a callback for callbacks of min and max changes.
- *
- * @param SUB The prefix of main parameter of state attribute;
- * @param VALUE The value of state attribute.
- * @param TYPE The spinner value type: int, double
- * @param MULTIPLIER The multiplier to convert the value to percent
- * @param DIF_VALUE opposite to VALUE attribute
- * @param CHECK function that compire DIF_VALUE and VALUE attribute
- *
- * @ingroup Property_Macro
- */
-TODO("merge STATE_MINMAX_... with GROUP_ATTR_2SPINNER... because they are really same")
-#define STATE_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, DIF_VALUE, CHECK) \
-static void \
-_on_##MEMBER##_##VALUE##_change(void *data, \
-                                Evas_Object *obj, \
-                                void *ei __UNUSED__) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   TYPE value = elm_spinner_value_get(obj); \
-   TYPE opposite_value = edje_edit_##SUB##_##DIF_VALUE##_get(pd->group->edit_object STATE_ARGS); \
-   value /= MULTIPLIER; \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object STATE_ARGS, value)) \
-     { \
-       ERR("edje_edit_"#SUB"_"#VALUE"_set value '%d' is failed", value); \
-       abort(); \
-     } \
-   if ((value CHECK opposite_value) && (opposite_value != -1)) \
-     { \
-        if (!edje_edit_##SUB##_##DIF_VALUE##_set(pd->group->edit_object STATE_ARGS, value)) \
-          { \
-            ERR("edje_edit_"#SUB"_"#DIF_VALUE"_set value '%d' is failed", value); \
-            abort(); \
-          } \
-        elm_spinner_value_set(pd->attributes.state.DIF_VALUE, value); \
-     } \
-   /*project_changed(false);*/ \
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-}
+#define STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, DESCRIPTION) \
+   COMMON_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, STATE_ARGS, DESCRIPTION)
 
 /*****************************************************************************/
 /*                        STATE 2 SPINNER CONTROLS                           */
@@ -1607,8 +1371,8 @@ COMMON_2SPINNER_ADD(STATE, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  * @ingroup Property_Macro
  */
 #define STATE_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2, MEMBER) \
-   COMMON_CHECK_CALLBACK(SUB, VALUE1, MEMBER, STATE_ARGS, STATE_ARGS) \
-   COMMON_CHECK_CALLBACK(SUB, VALUE2, MEMBER, STATE_ARGS, STATE_ARGS)
+   COMMON_CHECK_CALLBACK(SUB, VALUE1, MEMBER, STATE_ARGS) \
+   COMMON_CHECK_CALLBACK(SUB, VALUE2, MEMBER, STATE_ARGS)
 
 /*****************************************************************************/
 /*                    STATE 1 COMBOBOX LIST CONTROL                          */
@@ -1652,7 +1416,7 @@ COMMON_2SPINNER_ADD(STATE, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  * @ingroup Property_Macro
  */
 #define STATE_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
-   COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, STATE_ARGS, STATE_ARGS)
+   COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, STATE_ARGS)
 
 /*****************************************************************************/
 /*                STATE 1 COMBOBOX STRSHARE LIST CONTROL                     */
@@ -1686,7 +1450,7 @@ COMMON_2SPINNER_ADD(STATE, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  * @ingroup Property_Macro
  */
 #define STATE_STRSHARE_ATR_1COMBOBOX_LIST_CALLBACK(SUB, VALUE, MEMBER) \
-   COMMON_COMBOBOX_LIST_STRSHARE_CALLBACK(SUB, VALUE, MEMBER, STATE_ARGS, STATE_ARGS)
+   COMMON_COMBOBOX_LIST_STRSHARE_CALLBACK(SUB, VALUE, MEMBER, STATE_ARGS)
 
 /*****************************************************************************/
 /*                          STATE 1 COLOR CONTROL                            */
@@ -1968,81 +1732,5 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
  */
 #define STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR) \
    COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, STATE_ARGS) \
-
-/*****************************************************************************/
-/*              STATE CONTAINER 2 SPINNERS DOUBLEVAL CONTROL                 */
-/*****************************************************************************/
-/**
- * Macro defines a functions that create an item with label and 2 spinners for
- * state container attribute.
- *
- * @see COMMON_2SPINNER_ADD
- *
- * @ingroup Property_Macro
- */
-#define STATE_DOUBLEVAL_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
-                                          MIN, MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
-                                          TOOLTIP1, TOOLTIP2, MULTIPLIER) \
-   COMMON_2SPINNER_ADD(STATE_DOUBLEVAL, TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE,\
-                       MIN, MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
-                       TOOLTIP1, TOOLTIP2, MULTIPLIER)
-
-/**
- * Macro defines a function that updates control by STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER_ADD macro.
- *
- * @see COMMON_2SPINNER_DOUBLEVAL_UPDATE
- *
- * @ingroup Property_Macro
- */
-#define STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER) \
-   COMMON_2SPINNER_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER, STATE_ARGS)
-
-/**
- * Macro defines a callback for STATE_CONTAINER_DOUBLEVAL_ATTR_2SPINNER_ADD.
- *
- * @see COMMON_2SPINNER_DOUBLEVAL_CALLBACK
- *
- * @ingroup Property_Macro
- */
-#define STATE_DOUBLEVAL_ATTR_2SPINNER_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER) \
-   COMMON_2SPINNER_DOUBLEVAL_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER, STATE_ARGS)
-
-/*****************************************************************************/
-/*               STATE CONTAINER 2 CHECK DOUBLEVAL CONTROL                   */
-/*****************************************************************************/
-/**
- * Macro defines a functions that create an item with label and 2 check for
- * state container attribute.
- *
- * @see COMMON_2CHECK_ADD
- *
- * @ingroup Property_Macro
- */
-#define STATE_DOUBLEVAL_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
-                                        L1_START, L1_END, L2_START, L2_END, \
-                                        TOOLTIP1, TOOLTIP2) \
-   COMMON_2CHECK_ADD(STATE_DOUBLEVAL, TEXT, SUB, VALUE1, VALUE2, MEMBER, \
-                     L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2)
-
-/**
- * Macro defines a function that updates control by STATE_CONTAINER_DOUBLEVAL_ATTR_2CHECK_ADD macro.
- *
- * @see COMMON_2CHECK_DOUBLEVAL_UPDATE
- *
- * @ingroup Property_Macro
- */
-#define STATE_DOUBLEVAL_ATTR_2CHECK_UPDATE(SUB, VALUE1, VALUE2, MEMBER) \
-   COMMON_2CHECK_DOUBLEVAL_UPDATE(SUB, VALUE1, VALUE2, MEMBER, STATE_ARGS)
-
-/**
- * Macro defines a callback for STATE_CONTAINER_DOUBLEVAL_ATTR_2CHECK_ADD.
- *
- * @see COMMON_2CHECK_DOUBLEVAL_CALLBACK
- *
- * @ingroup Property_Macro
- */
-#define STATE_DOUBLEVAL_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2, MEMBER) \
-   COMMON_2CHECK_DOUBLEVAL_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, STATE_ARGS)
-
 
 /** @} privatesection */

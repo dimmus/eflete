@@ -57,6 +57,7 @@ struct _Prop_Data
    Part_ *part;
    Change *change;
    int old_int_val;
+   double old_double_val;
    Evas_Object *layout;
    Evas_Object *scroller;
    Eina_Stringshare *item_name;
@@ -175,9 +176,9 @@ struct _Prop_Data
         } state_fill;
         struct {
              Evas_Object *frame;
-             Evas_Object *align, *align1;
-             Evas_Object *padding, *padding1;
-             Evas_Object *min, *min1;
+             Evas_Object *align_x, *align_y;
+             Evas_Object *padding_x, *padding_y;
+             Evas_Object *min_v, *min_h;
         } state_container;
         struct {
              Evas_Object *frame;
@@ -192,8 +193,8 @@ struct _Prop_Data
              Evas_Object *weight_x, *weight_y;
              Evas_Object *aspect_w, *aspect_h;
              Evas_Object *aspect_mode;
-             Evas_Object *position, *position1, *position_item; /* Only for items in part TABLE */
-             Evas_Object *span, *span1; /* Only for items in part TABLE */
+             Evas_Object *position_col, *position_row, *position_item; /* Only for items in part TABLE */
+             Evas_Object *span_col, *span_row; /* Only for items in part TABLE */
         } part_item;
    } attributes;
 };
@@ -846,8 +847,8 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PART_ITEM_POSITION_COL:
       case ATTRIBUTE_PART_ITEM_POSITION_ROW:
          TODO("implement, old update macroses are broken atm");
-        /*PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(part_item, span, span1, part_item, unsigned char, 1);
-        PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(part_item, position, position1, part_item, unsigned short, 1);*/
+        /*PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(part_item, span_col, span_row, part_item, unsigned char, 1);
+        PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(part_item, position_col, position_row, part_item, unsigned short, 1);*/
          break;
       case ATTRIBUTE_PART_ITEM_SOURCE:
          prop_part_item_source_update(pd);
@@ -858,12 +859,12 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_STATE_CONTAINER_ALIGN_X:
       case ATTRIBUTE_STATE_CONTAINER_ALIGN_Y:
          TODO("implement");
-         //STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, align, align1, state_container, double, 100)
+         //STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, align_x, align_y, state_container, double, 100)
          break;
       case ATTRIBUTE_STATE_CONTAINER_MIN_V:
       case ATTRIBUTE_STATE_CONTAINER_MIN_H:
          TODO("implement");
-         //STATE_DOUBLEVAL_ATTR_2CHECK_UPDATE(state_container, min, min1, state_container)
+         //STATE_DOUBLEVAL_ATTR_2CHECK_UPDATE(state_container, min_v, min_h, state_container)
          break;
       case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
          STATE_ATTR_1COMBOBOX_LIST_UPDATE(state, table_homogeneous, state);
@@ -871,7 +872,7 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_STATE_CONTAINER_PADING_X:
       case ATTRIBUTE_STATE_CONTAINER_PADING_Y:
          TODO("implement");
-         //STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, padding, padding1, state_container, int, 1)
+         //STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, padding_x, padding_y, state_container, int, 1)
          break;
       case ATTRIBUTE_STATE_MINMUL_H:
          COMMON_CHECK_UPDATE(state, minmul_h, state, STATE_ARGS);
@@ -1732,9 +1733,9 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
 
 #define STATE_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                             L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
-                            TYPE) \
-   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, MULTIPLIER) \
-   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, MULTIPLIER) \
+                            TYPE, DESC1, DESC2) \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, MULTIPLIER, DESC1) \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, MULTIPLIER, DESC2) \
    STATE_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, MAX, STEP, FMT, \
                            L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
@@ -1761,9 +1762,9 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
 
 #define STATE_MINMAX_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                             L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
-                            TYPE, DIF_VALUE1, DIF_VALUE2, CHECK) \
-   STATE_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, MULTIPLIER, DIF_VALUE1, CHECK) \
-   STATE_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, MULTIPLIER, DIF_VALUE2, CHECK) \
+                            TYPE, DESC1, DESC2) \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, MULTIPLIER, DESC1) \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, MULTIPLIER, DESC2) \
    STATE_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, MAX, STEP, FMT, \
                            L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
@@ -1775,13 +1776,19 @@ STATE_ATTR_1CHECK(_("visible"), state, visible, state,
                   _("Set visibility for part by current state"))
 STATE_MINMAX_ATTR_2SPINNER(_("min"), state, min_w, min_h, state, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
                     _("Minimal size of part width in pixels."), _("Minimal part height in pixels."),
-                    1, int, max_w, max_h, >)
+                    1, int,
+                    _("Parts min width changed from %d to %d"),
+                    _("Parts min height changed from %d to %d"))
 STATE_MINMAX_ATTR_2SPINNER(_("max"), state, max_w, max_h, state, -1.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
                     _("Maximal size of part width in pixels."), _("Maximal part height in pixels."),
-                    1, int, min_w, min_h, <)
+                    1, int,
+                    _("Parts max width changed from %d to %d"),
+                    _("Parts max height changed from %d to %d"))
 STATE_ATTR_2SPINNER(_("align"), state, align_x, align_y, state, 0, 100, 1, NULL, "x:", "%", "y:", "%",
                     _("Part align horizontally"), _("Part align vertically"),
-                    100, double)
+                    100, double,
+                    _("align x changed from %f to %f"),
+                    _("align y changed from %f to %f"))
 STATE_ATTR_2CHECK(_("fixed"), state, fixed_w, fixed_h, state, "w:", "", "h:", "",
                   _("This affects the minimum width calculation."),
                   _("This affects the minimum height calculation."))
@@ -1790,11 +1797,15 @@ STATE_ATTR_1COMBOBOX_LIST(_("aspect ratio mode"), state, aspect_pref, state, edj
 STATE_ATTR_2SPINNER(_("aspect ratio"), state, aspect_min, aspect_max, state, 0, 100, 1, NULL, "min:", "", "max:", "",
                    _("Normally width and height can be resized to any values independently"),
                    _("Normally width and height can be resized to any values independently"),
-                   100, double)
+                   100, double,
+                    _("aspect min changed from %f to %f"),
+                    _("aspect max changed from %f to %f"))
 STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, state, 0.0, 9999.0, 0.1, "%.1f", "w:", "", "h:", "",
                     _("The minimal part width value multiplier for current state"),
                     _("The minimal part height value multiplier for current state"),
-                    1, double)
+                    1, double,
+                    _("multiplier w changed from %f to %f"),
+                    _("multiplier h changed from %f to %f"))
 STATE_ATTR_COLOR(_("color"), state, color, state, _("Part main color"))
 
 STATE_ATTR_SOURCE_UPDATE(state, proxy_source, state, EDJE_PART_TYPE_SPACER, !=)
@@ -2059,9 +2070,9 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
 
 #define STATE_ATTR_2SPINNER_ICON(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                                  L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
-                                 TYPE) \
-   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, MULTIPLIER) \
-   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, MULTIPLIER) \
+                                 TYPE, DESC1, DESC2) \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, MULTIPLIER, DESC1) \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, MULTIPLIER, DESC2) \
    STATE_ATTR_2SPINNER_ADD(TEXT, "2swallow_pad", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, MAX, STEP, FMT, \
                            L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
@@ -2078,12 +2089,16 @@ STATE_ATTR_2SPINNER_ICON(_("align"), state, rel1_relative_x, rel1_relative_y, st
                          _("Define the position of left-up corner of the part's container. "
                            "Moves a corner to a relative position inside the container "
                            "by Y axis."),
-                         100, double)
+                         100, double,
+                         _("rel1 align x changed from %f to %f"),
+                         _("rel1 align y changed from %f to %f"))
 STATE_ATTR_2SPINNER_ICON(_("offset"), state, rel1_offset_x, rel1_offset_y, state_object_area,
                          -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
                          _("Left offset from relative position in pixels"),
                          _("Top offset from relative position in pixels"),
-                         1, int)
+                         1, int,
+                         _("rel1 offset x changed from %d to %d"),
+                         _("rel1 offset y changed from %d to %d"))
 STATE_ATTR_2COMBOBOX_V(_("relative to"), state, rel2_to_x, rel2_to_y, state_object_area,
                        _("Causes a corner to be positioned relatively to the X axis of another "
                          "part. Setting to \"\" will un-set this value"),
@@ -2097,12 +2112,16 @@ STATE_ATTR_2SPINNER_ICON(_("align"), state, rel2_relative_x, rel2_relative_y, st
                          _("Define the position of right-down corner of the part's container. "
                            "Moves a corner to a relative position inside the container "
                            "by Y axis."),
-                         100, double)
+                         100, double,
+                         _("rel2 align x changed from %f to %f"),
+                         _("rel2 align y changed from %f to %f"))
 STATE_ATTR_2SPINNER_ICON(_("offset"), state, rel2_offset_x, rel2_offset_y, state_object_area,
                          -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
                          _("Right offset from relative position in pixels"),
                          _("Bottom offset from relative position in pixels"),
-                         1, int)
+                         1, int,
+                         _("rel2 offset x changed from %d to %d"),
+                         _("rel2 offset y changed from %d to %d"))
 
 #define pd_obj_area pd->attributes.state_object_area
 static Eina_Bool
@@ -2207,8 +2226,8 @@ ui_property_state_obj_area_unset(Evas_Object *property)
 
 #define STATE_ATTR_1SPINNER(TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
                             L_START, L_END, TOOLTIP, MULTIPLIER, \
-                            TYPE) \
-   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER) \
+                            TYPE, DESC) \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, DESC) \
    STATE_ATTR_1SPINNER_ADD(TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
                            L_START, L_END, TOOLTIP, MULTIPLIER)
 
@@ -2216,11 +2235,14 @@ STATE_ATTR_1ENTRY(_("text"), state, text, state_text, NULL, _("The dispalyed tex
 STATE_ATTR_1ENTRY(_("font"), state, font, state_text, pd->attributes.state_text.validator,
                   _("The text font, posible set a font style. Ex: Sans:style=italic"))
 STATE_ATTR_1SPINNER(_("size"), state_text, size, state_text, 1, 128, 1, "%.0f", "", "pt",
-                    _("The font size"), 1, int)
+                    _("The font size"), 1, int,
+                    _("font size changed from %d to %d"))
 STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_text,
                     0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
                     _("Text horizontal align"), _("Text vertical align"),
-                    100, double)
+                    100, double,
+                    _("text horizontal align changed from %f to %f"),
+                    _("text vertical align changed from %f to %f"))
 STATE_ATTR_2CHECK(_("min"), state_text, min_x, min_y, state_text, "w:", "", "h:", "",
                   _("When any of the parameters is enabled it forces \t"
                   "the minimum size of the container to be equal to\t"
@@ -2627,7 +2649,9 @@ STATE_ATTR_COMBOBOX(_("style"), state_text, style, state_textblock,
 STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_textblock,
                     0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
                     _("Text horizontal align"), _("Text vertical align"),
-                    100, double)
+                    100, double,
+                    _("text horizontal align changed from %f to %f"),
+                    _("text vertical align changed from %f to %f"))
 STATE_ATTR_2CHECK(_("min"), state_text, min_x, min_y, state_textblock, "w:", "", "h:", "",
                   _("When any of the parameters is enabled it forces \t"
                   "the minimum size of the container to be equal to\t"
@@ -3195,24 +3219,32 @@ STATE_ATTR_2SPINNER_ICON(_("align"), state_fill, origin_relative_x, origin_relat
                          -500, 500, 1, NULL, "x:", "%", "y:", "%",
                          _("Sets the starting point X coordinate relatively to displayed element's content"),
                          _("Sets the starting point Y coordinate relatively to displayed element's content"),
-                         100, double)
+                         100, double,
+                         _("fill align x changed from %f to %f"),
+                         _("fill align y changed from %f to %f"))
 TODO("Fix offset edje_edit API: use int instead of double param")
 STATE_ATTR_2SPINNER_ICON(_("offset"), state_fill, origin_offset_x, origin_offset_y, state_fill,
                          -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
                          _("Affects the starting point a fixed number of pixels along X axis"),
                          _("Affects the starting point a fixed number of pixels along Y axis"),
-                         1, double)
+                         1, double,
+                         _("fill offset x changed from %f to %f"),
+                         _("fill offset y changed from %f to %f"))
 STATE_ATTR_2SPINNER_ICON(_("align"), state_fill, size_relative_x, size_relative_y, state_fill,
                          -500, 500, 1, NULL, "x:", "%", "y:", "%",
                          _("Value that represent the percentual value of the original size of the element by X axis"),
                          _("Value that represent the percentual value of the original size of the element by Y axis."),
-                         100, double)
+                         100, double,
+                         _("fill size align x changed from %f to %f"),
+                         _("fill size align y changed from %f to %f"))
 TODO("Fix offset edje_edit API: use int instead of double param")
 STATE_ATTR_2SPINNER_ICON(_("offset"), state_fill, size_offset_x, size_offset_y, state_fill,
                          -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
                          _("Affects the size of the tile a fixed number of pixels along X axis"),
                          _("Affects the size of the tile a fixed number of pixels along Y axis"),
-                         1, double)
+                         1, double,
+                         _("fill size offset x changed from %f to %f"),
+                         _("fill size offset y changed from %f to %f"))
 
 static Eina_Bool
 ui_property_state_fill_set(Evas_Object *property)
@@ -3414,20 +3446,11 @@ TODO("do not use collection lists from edje_edit directly")
    PART_ITEM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
    PART_ITEM_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
-#define PART_ITEM_MINMAX_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
-                                       L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
-                                       TYPE, DIF_VALUE1, DIF_VALUE2, CHECK) \
-   PART_ITEM_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, MULTIPLIER, DIF_VALUE1, CHECK) \
-   PART_ITEM_MINMAX_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, MULTIPLIER, DIF_VALUE2, CHECK) \
-   PART_ITEM_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, \
-                               MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
-                               TOOLTIP1, TOOLTIP2, MULTIPLIER)
-
 #define PART_ITEM_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                                 L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
-                                TYPE) \
-   PART_ITEM_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, MULTIPLIER) \
-   PART_ITEM_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, MULTIPLIER) \
+                                TYPE, DESC1, DESC2) \
+   PART_ITEM_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, MULTIPLIER, DESC1) \
+   PART_ITEM_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, MULTIPLIER, DESC2) \
    PART_ITEM_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, \
                                MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
                                TOOLTIP1, TOOLTIP2, MULTIPLIER)
@@ -3436,54 +3459,64 @@ TODO("do not use collection lists from edje_edit directly")
    PART_ITEM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
    PART_ITEM_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
 
-#define PART_ITEM_DOUBLEVAL_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
-                                          L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
-                                          TYPE) \
-   PART_ITEM_DOUBLEVAL_ATTR_SPINNER_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER) \
-   PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, \
-                                         MIN, MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
-                                         TOOLTIP1, TOOLTIP2, MULTIPLIER)
-
 PART_ITEM_ATTR_1COMBOBOX(_("source"), part_item, source, part_item, _("Sets the group this object will be made from."))
-PART_ITEM_MINMAX_ATTR_2SPINNER(_("min"), part_item, min_w, min_h, part_item,
+PART_ITEM_ATTR_2SPINNER(_("min"), part_item, min_w, min_h, part_item,
                     0.0, 999.0, 1.0, NULL, "x:", "%", "y:", "%",
                     _("Set the item minimum size hint width in pixels"), _("Set the item minimum size hint height in pixels"),
-                    1, int, max_w, max_h, >)
-PART_ITEM_MINMAX_ATTR_2SPINNER(_("max"), part_item, max_w, max_h, part_item,
+                    1, int,
+                    _("part item min width changed from %d to %d"),
+                    _("part item min heigth changed from %d to %d"))
+PART_ITEM_ATTR_2SPINNER(_("max"), part_item, max_w, max_h, part_item,
                     0.0, 999.0, 1.0, NULL, "x:", "%", "y:", "%",
                     _("Set the item maximum size hint width in pixels"), _("Set the item maximum size hint height in pixels"),
-                    1, int, min_w, min_h, <)
+                    1, int,
+                    _("part item min width changed from %d to %d"),
+                    _("part item min heigth changed from %d to %d"))
 PART_ITEM_ATTR_2SPINNER(_("prefer"), part_item, prefer_w, prefer_h, part_item,
                     0.0, 999.0, 1.0, NULL, "w:", "px", "h:", "px",
                     _("Set the item prefered size hint width in pixels"), _("Set the item prefered size hint height in pixels"),
-                    1, int)
+                    1, int,
+                    _("part item prefer width changed from %d to %d"),
+                    _("part item prefer heigth changed from %d to %d"))
 PART_ITEM_ATTR_2SPINNER(_("align"), part_item, align_x, align_y, part_item,
                     0.0, 999.0, 1.0, NULL, "x:", "px", "y:", "px",
                     _("Sets the alignment hint by x axiss"), _("Sets the alignment hint by y axiss"),
-                    100, double)
+                    100, double,
+                    _("part item align x changed from %f to %f"),
+                    _("part item align y changed from %f to %f"))
 PART_ITEM_ATTR_2SPINNER(_("weight"), part_item, weight_x, weight_y, part_item,
                     0.0, 999.0, 1.0, NULL, "x:", "", "y:", "",
                     _("Sets the weight hint by x axiss"),_("Sets the weight hint by y axiss"),
-                    1, int)
+                    1, int,
+                    _("part item weight x changed from %d to %d"),
+                    _("part item weight y changed from %d to %d"))
 PART_ITEM_ATTR_2SPINNER(_("aspect"), part_item, aspect_w, aspect_h, part_item,
                     0.0, 999.0, 1.0, NULL, "w:", "", "h:", "",
                     _("Set the item aspect width hint"), _("Set the item aspect height hint"),
-                    1, int)
+                    1, int,
+                    _("part item aspect width changed from %d to %d"),
+                    _("part item aspect height changed from %d to %d"))
 PART_ITEM_ATTR_2SPINNER(_("spread"), part_item, spread_w, spread_h, part_item,
                     1.0, 255.0, 1.0, NULL, "colunm:", "", "row:", "",
                     _("Replicate the item in width, starting from the current position"),
                     _("Replicate the item in height, starting from the current position"),
-                    1, int)
+                    1, int,
+                    _("part item spread width changed from %d to %d"),
+                    _("part item spread height changed from %d to %d"))
 PART_ITEM_ATTR_1COMBOBOX_LIST(_("aspect mode"), part_item, aspect_mode, part_item, int, edje_item_aspect_pref,
                               _("Sets the aspect control hints for this object."))
-PART_ITEM_DOUBLEVAL_ATTR_2SPINNER(_("span"), part_item, span, span1, part_item,
-                                  1.0, 999.0, 1.0, NULL, "column:", "", "row:", "",
-                                  _("Sets how many columns this item will use"), _("Sets how many rows this item will use"),
-                                  1, unsigned char)
-PART_ITEM_DOUBLEVAL_ATTR_2SPINNER(_("position"), part_item, position, position1, part_item,
-                                  0.0, 999.0, 1.0, NULL, "column:", "", "row:", "",
-                                  _("Sets the column position this item"), _("Sets the row position this item"),
-                                  1, unsigned short)
+PART_ITEM_ATTR_2SPINNER(_("span_col"), part_item, span_col, span_row, part_item,
+                        1.0, 999.0, 1.0, NULL, "column:", "", "row:", "",
+                        _("Sets how many columns this item will use"), _("Sets how many rows this item will use"),
+                        1, int,
+                        _("part item span col changed from %d to %d"),
+                        _("part item span row changed from %d to %d"))
+PART_ITEM_ATTR_2SPINNER(_("position"), part_item, position_col, position_row, part_item,
+                        0.0, 999.0, 1.0, NULL, "column:", "", "row:", "",
+                        _("Sets the column position this item"), _("Sets the row position this item"),
+                        1, int,
+                        _("part item position col changed from %d to %d"),
+                        _("part item position row changed from %d to %d"))
 
 static void
 _ui_property_part_item_set(Evas_Object *property, Part_ *part)
@@ -3523,11 +3556,11 @@ _ui_property_part_item_set(Evas_Object *property, Part_ *part)
         elm_box_pack_end(box, item);
         item = prop_part_item_spread_w_spread_h_add(box, pd);
         elm_box_pack_end(box, item);
-        item = prop_part_item_span_span1_add(box, pd);
+        item = prop_part_item_span_col_span_row_add(box, pd);
         elm_box_pack_end(box, item);
         prop_part_item_padding_add(box, pd);
 
-        pd_item.position_item = prop_part_item_position_position1_add(box, pd);
+        pd_item.position_item = prop_part_item_position_col_position_row_add(box, pd);
         evas_object_hide(pd_item.position_item);
 
         elm_box_pack_after(prop_box, pd_item.frame, pd->attributes.state_container.frame);
@@ -3545,8 +3578,8 @@ _ui_property_part_item_set(Evas_Object *property, Part_ *part)
         PART_ITEM_ATTR_1COMBOBOX_LIST_UPDATE(part_item, aspect_mode, part_item)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, aspect_w, aspect_h, part_item, int, 1)
         PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, spread_w, spread_h, part_item, int, 1)
-        PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(part_item, span, span1, part_item, unsigned char, 1);
-        PART_ITEM_DOUBLEVAL_ATTR_2SPINNER_UPDATE(part_item, position, position1, part_item, unsigned short, 1);
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, span_col, span_row, part_item, unsigned char, 1);
+        PART_ITEM_ATTR_2SPINNER_UPDATE(part_item, position_col, position_row, part_item, unsigned short, 1);
         prop_part_item_padding_update(pd);
 
         elm_box_pack_after(prop_box, pd_item.frame, pd->attributes.state_container.frame);
@@ -3594,34 +3627,24 @@ _ui_property_part_item_unset(Evas_Object *property)
 
 #define pd_container pd->attributes.state_container
 
-#define STATE_DOUBLEVAL_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
-                                      L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
-                                      TYPE) \
-   STATE_DOUBLEVAL_ATTR_2SPINNER_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER) \
-   STATE_DOUBLEVAL_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
-                                     MIN, MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
-                                     TOOLTIP1, TOOLTIP2, MULTIPLIER)
-#define STATE_DOUBLEVAL_ATTR_2CHECK(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
-                                    L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2) \
-   STATE_DOUBLEVAL_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2, MEMBER) \
-   STATE_DOUBLEVAL_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
-                                   L1_START, L1_END, L2_START, L2_END, \
-                                   TOOLTIP1, TOOLTIP2) \
-
-STATE_DOUBLEVAL_ATTR_2SPINNER(_("align"), state_container, align, align1, state_container,
-                              0.0, 100.0, 1.0, NULL, "x:", "%", "y:", "%",
-                              _("Change the position of the point of balance inside the container"),
-                              _("Change the position of the point of balance inside the container"),
-                              100, double)
-STATE_DOUBLEVAL_ATTR_2SPINNER(_("padding"), state_container, padding, padding1, state_container,
-                              0.0, 999.0, 1.0, NULL, "x:", "px", "y:", "px",
-                              _("Sets the horizontal space between cells in pixels"),
-                              _("Sets the vertcal space between cells in pixels"),
-                              1, int)
-STATE_DOUBLEVAL_ATTR_2CHECK(_("min"), state_container, min, min1, state_container,
-                            "x:", NULL, "y:", NULL,
-                            _("This affects the minimum width calculation"),
-                            _("This affects the minimum height calculation"))
+STATE_ATTR_2SPINNER(_("align"), state_container, align_x, align_y, state_container,
+                    0.0, 100.0, 1.0, NULL, "x:", "%", "y:", "%",
+                    _("Change the position of the point of balance inside the container"),
+                    _("Change the position of the point of balance inside the container"),
+                    100, double,
+                    _("Part container align x changed from %f to %f"),
+                    _("Part container glign y changed from %f to %f"))
+STATE_ATTR_2SPINNER(_("padding"), state_container, padding_x, padding_y, state_container,
+                    0.0, 999.0, 1.0, NULL, "x:", "px", "y:", "px",
+                    _("Sets the horizontal space between cells in pixels"),
+                    _("Sets the vertcal space between cells in pixels"),
+                    1, int,
+                    _("Part container padding x changed from %d to %d"),
+                    _("Part container padding y changed from %d to %d"))
+STATE_ATTR_2CHECK(_("min"), state_container, min_v, min_h, state_container,
+                  "x:", NULL, "y:", NULL,
+                  _("This affects the minimum width calculation"),
+                  _("This affects the minimum height calculation"))
 
 static Eina_Bool
 ui_property_state_container_set(Evas_Object *property)
@@ -3639,20 +3662,20 @@ ui_property_state_container_set(Evas_Object *property)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(pd_container.frame, box);
 
-        item = prop_state_container_align_align1_add(box, pd);
+        item = prop_state_container_align_x_align_y_add(box, pd);
         elm_box_pack_end(box, item);
-        item = prop_state_container_padding_padding1_add(box, pd);
+        item = prop_state_container_padding_x_padding_y_add(box, pd);
         elm_box_pack_end(box, item);
 
-        item = prop_state_container_min_min1_add(box, pd);
+        item = prop_state_container_min_v_min_h_add(box, pd);
         elm_box_pack_end(box, item);
         elm_box_pack_after(prop_box, pd_container.frame, pd->attributes.state_object_area.frame);
      }
    else
      {
-        STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, align, align1, state_container, double, 100)
-        STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, padding, padding1, state_container, int, 1)
-        STATE_DOUBLEVAL_ATTR_2CHECK_UPDATE(state_container, min, min1, state_container)
+        STATE_ATTR_2SPINNER_UPDATE(state_container, align_x, align_y, state_container, double, 100)
+        STATE_ATTR_2SPINNER_UPDATE(state_container, padding_x, padding_y, state_container, int, 1)
+        STATE_ATTR_2CHECK_UPDATE(state_container, min_v, min_h, state_container)
         elm_box_pack_after(prop_box, pd_container.frame, pd->attributes.state_object_area.frame);
         evas_object_show(pd_container.frame);
      }
