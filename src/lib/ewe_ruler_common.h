@@ -22,6 +22,7 @@
 typedef struct _Ewe_Ruler_Scale Ewe_Ruler_Scale;
 struct _Ewe_Ruler_Scale
 {
+   Evas_Object       *box;
    Eina_List         *dashes;
    Eina_List         *markers;
    Eina_Stringshare  *format;
