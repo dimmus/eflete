@@ -62,12 +62,12 @@ editor_state_max_## VAL ##_set(Evas_Object *edit_object, Change *change, Eina_Bo
    Attribute attribute = ATTRIBUTE_STATE_MAX_##VAL_CAPS; \
  \
    assert(edit_object != NULL); \
-   assert(new_value >= 0); \
+   assert(new_value >= -1); \
  \
    old_value = edje_edit_state_max_## VAL ##_get(edit_object, part_name, state_name, state_val); \
    min_value = edje_edit_state_min_## VAL ##_get(edit_object, part_name, state_name, state_val); \
  \
-   if ((min_value > new_value) && (new_value != 0)) \
+   if ((min_value > new_value) && (new_value != -1)) \
      new_value = min_value; \
  \
    if (change) \
@@ -116,7 +116,7 @@ editor_state_min_## VAL ##_set(Evas_Object *edit_object, Change *change, Eina_Bo
    old_value = edje_edit_state_min_## VAL ##_get(edit_object, part_name, state_name, state_val); \
    max_value = edje_edit_state_max_## VAL ##_get(edit_object, part_name, state_name, state_val); \
  \
-   if ((max_value < new_value) && (max_value != 0)) \
+   if ((max_value < new_value) && (max_value != -1)) \
      new_value = max_value; \
  \
    if (change) \
