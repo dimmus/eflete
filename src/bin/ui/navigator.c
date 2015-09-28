@@ -576,6 +576,22 @@ _btn_del_group_cb(void *data __UNUSED__,
      }
 }
 
+static void
+_selected_cb(void *data __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
+{
+   elm_object_disabled_set(navigator.btn_del, false);
+}
+
+static void
+_unselected_cb(void *data __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
+{
+   elm_object_disabled_set(navigator.btn_del, true);
+}
+
 Evas_Object *
 navigator_add(void)
 {
@@ -614,10 +630,13 @@ navigator_add(void)
    evas_object_smart_callback_add (navigator.btn_del, "clicked", _btn_del_group_cb, NULL);
    elm_object_style_set(navigator.btn_del, "anchor");
    elm_object_part_content_set(navigator.layout, "elm.swallow.bt0", navigator.btn_del);
+   elm_object_disabled_set(navigator.btn_del, true);
 
    navigator.genlist = elm_genlist_add(navigator.layout);
    evas_object_show(navigator.genlist);
    elm_object_content_set(navigator.layout, navigator.genlist);
+   evas_object_smart_callback_add (navigator.genlist, "selected", _selected_cb, NULL);
+   evas_object_smart_callback_add (navigator.genlist, "unselected", _unselected_cb, NULL);
 
    elm_object_text_set(navigator.layout, _("None"));
    elm_object_disabled_set(navigator.layout, true);
