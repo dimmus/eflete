@@ -25,6 +25,8 @@
 #include "eflete.h"
 #include "part_list.h"
 #include "signals.h"
+#include "new_history.h"
+#include "editor.h"
 
 struct _Ws_Menu
 {
@@ -120,6 +122,9 @@ struct _Ws_Smart_Data
         Evas_Object *space_hl; /**< A object area highlight*/
         Part_ *part; /**< Contain part name and it's state. need for callbacks of highlight. */
    } highlight;
+
+   Change *change;
+   int old_max_w, old_max_h;
 };
 typedef struct _Ws_Smart_Data Ws_Smart_Data;
 
@@ -672,6 +677,57 @@ _ws_mouse_move_cb(void *data, Evas *e,
 }
 
 static void
+_highlight_drag_start_cb(void *data,
+                         Evas_Object * obj __UNUSED__,
+                         void *ei __UNUSED__)
+{
+   Evas_Object *ws_obj = (Evas_Object *)data;
+   WS_DATA_GET(ws_obj, sd)
+   Part_ *part = sd->highlight.part;
+
+   assert(sd->change == NULL);
+
+   sd->old_max_w = edje_edit_state_max_w_get(sd->group->edit_object, part->name,
+                                             part->current_state->parsed_name,
+                                             part->current_state->parsed_val);
+   sd->old_max_h = edje_edit_state_max_h_get(sd->group->edit_object, part->name,
+                                             part->current_state->parsed_name,
+                                             part->current_state->parsed_val);
+   sd->change = change_add(NULL);
+}
+
+static void
+_highlight_drag_stop_cb(void *data,
+                        Evas_Object * obj __UNUSED__,
+                        void *ei __UNUSED__)
+{
+   Evas_Object *ws_obj = (Evas_Object *)data;
+   WS_DATA_GET(ws_obj, sd)
+   int new_max_w, new_max_h;
+   Eina_Stringshare *msg;
+   Part_ *part = sd->highlight.part;
+
+   assert(sd->change != NULL);
+
+   new_max_w = edje_edit_state_max_w_get(sd->group->edit_object, part->name,
+                                             part->current_state->parsed_name,
+                                             part->current_state->parsed_val);
+   new_max_h = edje_edit_state_max_h_get(sd->group->edit_object, part->name,
+                                             part->current_state->parsed_name,
+                                             part->current_state->parsed_val);
+   if ((new_max_h != sd->old_max_h) || (new_max_w != sd->old_max_w))
+     {
+        msg = eina_stringshare_printf(_("max size changed from [%dx%d] to [%dx%d]"), sd->old_max_w, sd->old_max_h, new_max_w, new_max_h);
+        change_description_set(sd->change, msg);
+        eina_stringshare_del(msg);
+        history_change_add(sd->group->history, sd->change);
+     }
+   else
+     change_free(sd->change);
+   sd->change = NULL;
+}
+
+static void
 _highlight_changed_cb(void *data,
                       Evas_Object * obj __UNUSED__,
                       void *ei)
@@ -708,15 +764,15 @@ _highlight_changed_cb(void *data,
         new_max_h = (events->h / sd->zoom.factor) <= min_h ? min_h : (events->h / sd->zoom.factor);
         if (new_max_w != old_max_w)
           {
-             edje_edit_state_max_w_set(sd->group->edit_object, part->name,
-                                       part->current_state->parsed_name, part->current_state->parsed_val,
-                                       new_max_w);
+             editor_state_max_w_set(sd->group->edit_object, sd->change, true, part->name,
+                                    part->current_state->parsed_name, part->current_state->parsed_val,
+                                    new_max_w);
           }
         if (new_max_h != old_max_h)
           {
-             edje_edit_state_max_h_set(sd->group->edit_object, part->name,
-                                       part->current_state->parsed_name, part->current_state->parsed_val,
-                                       new_max_h);
+             editor_state_max_h_set(sd->group->edit_object, sd->change, true, part->name,
+                                    part->current_state->parsed_name, part->current_state->parsed_val,
+                                    new_max_h);
           }
      }
    else
@@ -789,6 +845,10 @@ _workspace_highlight_set(Evas_Object *obj, Part_ *part)
                                        _ws_mouse_move_cb, obj);
         evas_object_smart_callback_add(sd->highlight.highlight, "hl,changed",
                                        _highlight_changed_cb, obj);
+        evas_object_smart_callback_add(sd->highlight.highlight, "hl,drag,start",
+                                       _highlight_drag_start_cb, obj);
+        evas_object_smart_callback_add(sd->highlight.highlight, "hl,drag,stop",
+                                       _highlight_drag_stop_cb, obj);
      }
    return true;
 }
@@ -811,6 +871,10 @@ _workspace_highlight_unset(Evas_Object *obj)
                                   _ws_mouse_move_cb);
    evas_object_smart_callback_del(sd->highlight.highlight, "hl,changed",
                                   _highlight_changed_cb);
+   evas_object_smart_callback_del(sd->highlight.highlight, "hl,drag,start",
+                                  _highlight_drag_start_cb);
+   evas_object_smart_callback_del(sd->highlight.highlight, "hl,drag,stop",
+                                  _highlight_drag_stop_cb);
    return true;
 }
 
