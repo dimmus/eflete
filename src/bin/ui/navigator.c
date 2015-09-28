@@ -400,6 +400,16 @@ _group_sel(void *data __UNUSED__,
     elm_object_disabled_set(layout_p.check, (item->index != 0) ? false : true);
 }
 
+static Eina_Bool
+_group_validator(void *data)
+{
+   Evas_Object *entry = (Evas_Object *)data;
+
+   if (edje_edit_group_exist(ap.project->global_object, elm_entry_entry_get(entry)))
+     return false;
+   return true;
+}
+
 static void
 _btn_add_group_cb(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
@@ -443,7 +453,8 @@ _btn_add_group_cb(void *data __UNUSED__,
    ewe_combobox_select_item_set(layout_p.combobox, 0);
 
    btn_res = popup_want_action(_("Create a new layout"), NULL, layout_p.box,
-                               layout_p.entry, BTN_OK|BTN_CANCEL, NULL, NULL);
+                               layout_p.entry, BTN_OK|BTN_CANCEL,
+                               _group_validator, layout_p.entry);
    if (BTN_CANCEL == btn_res) goto close;
 
    Ewe_Combobox_Item *combo_it;
