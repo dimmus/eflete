@@ -1774,8 +1774,8 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    STATE_ATTR_COLOR_LIST_UPDATE(SUB, VALUE, MEMBER) \
    STATE_ATTR_COLOR_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
-#define STATE_ATTR_COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
-   STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
+#define STATE_ATTR_COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP, DESCRIPTION) \
+   STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
    STATE_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 #define STATE_MINMAX_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
@@ -1832,7 +1832,8 @@ STATE_ATTR_COLOR(_("color"), state, color, state, _("Part main color"))
 STATE_ATTR_SOURCE_UPDATE(state, proxy_source, state, EDJE_PART_TYPE_SPACER, !=)
 STATE_ATTR_COMBOBOX(_("proxy source"), state, proxy_source, state,
                     _("Causes the part to use another part content as"
-                    "the content of this part. Only work with PROXY part."))
+                    "the content of this part. Only work with PROXY part."),
+                    _("proxy source changed to \"%s\""))
 STATE_STRSHARE_ATR_1COMBOBOX_LIST(_("box layout"), state, box_layout, state, edje_box_layouts,
                           _("The aspect control hints for this object"))
 STATE_ATTR_1COMBOBOX_LIST(_("table homogeneous"), state, table_homogeneous, state, edje_homogeneous,
@@ -2080,9 +2081,9 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
-#define STATE_ATTR_2COMBOBOX_V(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2) \
-   STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE1, MEMBER) \
-   STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE2, MEMBER) \
+#define STATE_ATTR_2COMBOBOX_V(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2, DESCRIPTION1, DESCRIPTION2) \
+   STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE1, MEMBER, DESCRIPTION1) \
+   STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE2, MEMBER, DESCRIPTION2) \
    STATE_ATTR_SOURCE_UPDATE(SUB, VALUE1, MEMBER, part->type, ==) \
    STATE_ATTR_SOURCE_UPDATE(SUB, VALUE2, MEMBER, part->type, ==) \
    STATE_ATTR_2COMBOBOX_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2)
@@ -2099,7 +2100,9 @@ STATE_ATTR_2COMBOBOX_V(_("relative to"), state, rel1_to_x, rel1_to_y, state_obje
                        _("Causes a corner to be positioned relatively to the X axis of another "
                          "part. Setting to \"\" will un-set this value"),
                        _("Causes a corner to be positioned relatively to the Y axis of another "
-                         "part. Setting to \"\" will un-set this value"))
+                         "part. Setting to \"\" will un-set this value"),
+                       _("rel1.to_x changed to \"%s\""),
+                       _("rel1.to_y changed to \"%s\""))
 STATE_ATTR_2SPINNER_ICON(_("align"), state, rel1_relative_x, rel1_relative_y, state_object_area,
                          -500, 500, 1, NULL, "x:", "%", "y:", "%",
                          _("Define the position of left-up corner of the part's container. "
@@ -2122,7 +2125,9 @@ STATE_ATTR_2COMBOBOX_V(_("relative to"), state, rel2_to_x, rel2_to_y, state_obje
                        _("Causes a corner to be positioned relatively to the X axis of another "
                          "part. Setting to \"\" will un-set this value"),
                        _("Causes a corner to be positioned relatively to the Y axis of another "
-                         "part. Setting to \"\" will un-set this value"))
+                         "part. Setting to \"\" will un-set this value"),
+                       _("rel2.to_x changed to \"%s\""),
+                       _("rel2.to_y changed to \"%s\""))
 STATE_ATTR_2SPINNER_ICON(_("align"), state, rel2_relative_x, rel2_relative_y, state_object_area,
                          -500, 500, 1, NULL, "x:", "%", "y:", "%",
                          _("Define the position of right-down corner of the part's container. "
@@ -2292,11 +2297,13 @@ STATE_ATTR_SOURCE_UPDATE(state_text, source, state_text, EDJE_PART_TYPE_TEXT, ==
 STATE_ATTR_COMBOBOX(_("source"), state_text, source, state_text,
                     _("Causes the part to use the text properties "
                       "(like font and size) of another part "
-                      "and update them as they change."))
+                      "and update them as they change."),
+                    _("source changed to \"%s\""))
 STATE_ATTR_SOURCE_UPDATE(state_text, text_source, state_text, EDJE_PART_TYPE_TEXT, ==)
 STATE_ATTR_COMBOBOX(_("text source"), state_text, text_source, state_text,
                     _("Causes the part to display the text content of "
-                      "another part and update them as they change."));
+                      "another part and update them as they change."),
+                    _("text source changed to \"%s\""))
 
 inline static void
 _text_effect_update(Prop_Data *pd)
@@ -2670,7 +2677,8 @@ PART_ATTR_SOURCE_UPDATE(state_textblock, source6);
 
 #define pd_textblock pd->attributes.state_textblock
 STATE_ATTR_COMBOBOX(_("style"), state_text, style, state_textblock,
-                    _("Set the text style of part."))
+                    _("Set the text style of part."),
+                    _("style changed to \"%s\""))
 STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_textblock,
                     0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
                     _("Text horizontal align"), _("Text vertical align"),

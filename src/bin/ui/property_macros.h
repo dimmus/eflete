@@ -1612,7 +1612,7 @@ PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
+#define STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
 static void \
 _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj __UNUSED__, \
@@ -1620,10 +1620,13 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
-   edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, pd->part->name, \
-                                   pd->part->current_state->parsed_name, pd->part->current_state->parsed_val, \
-                                   !strcmp(item->title, _("None")) ? NULL : item->title); \
-   /*project_changed(true);*/ \
+   Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION, !strcmp(item->title, _("None")) ? NULL : item->title); \
+   Change *change = change_add(msg); \
+   eina_stringshare_del(msg); \
+   editor_##SUB##_##VALUE##_set(pd->group->edit_object, change, false, pd->part->name, \
+         pd->part->current_state->parsed_name, pd->part->current_state->parsed_val, \
+         !strcmp(item->title, _("None")) ? NULL : item->title); \
+   history_change_add(pd->group->history, change); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
