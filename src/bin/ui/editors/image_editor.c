@@ -508,18 +508,6 @@ _image_info_setup(Image_Editor *img_edit,
    evas_object_smart_calculate(img_edit->image_data_fields.layout);
 }
 
-static void
-_search_reset_cb(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   Search_Data *search_data = data;
-
-   assert(search_data != NULL);
-
-   search_data->last_item_found = NULL;
-}
-
 /* item selection change callback */
 static void
 _grid_sel(void *data,
@@ -534,8 +522,11 @@ _grid_sel(void *data,
    int selected_images_count = eina_list_count(sel_list);
 
    if (selected_images_count == 1)
-     _image_info_setup(img_edit,
-                       elm_object_item_data_get(eina_list_data_get(sel_list)));
+     {
+        _image_info_setup(img_edit,
+                          elm_object_item_data_get(eina_list_data_get(sel_list)));
+        img_edit->image_search_data.last_item_found = eina_list_data_get(sel_list);
+     }
    else
      _image_info_reset(img_edit);
 }
@@ -1024,9 +1015,6 @@ _image_usage_layout_create(Image_Editor *img_edit, Evas_Object *parent)
                                   _on_usage_search_entry_changed_cb, img_edit);
    evas_object_smart_callback_add(entry, "activated",
                                   _search_next_genlist_item_cb, img_edit);
-   evas_object_smart_callback_add(img_edit->image_usage_fields.genlist,
-                                  "pressed", _search_reset_cb,
-                                  &(img_edit->usage_search_data));
    img_edit->usage_search_data.search_entry = entry;
    img_edit->usage_search_data.last_item_found = NULL;
    evas_object_hide(layout);
@@ -1227,8 +1215,6 @@ image_editor_window_add(Image_Editor_Mode mode)
                                   _on_images_search_entry_changed_cb, img_edit);
    evas_object_smart_callback_add(search_entry, "activated",
                                   _search_next_gengrid_item_cb, img_edit);
-   evas_object_smart_callback_add(img_edit->gengrid, "pressed", _search_reset_cb,
-                                  &(img_edit->image_search_data));
    img_edit->image_search_data.search_entry = search_entry;
    img_edit->image_search_data.last_item_found = NULL;
 
