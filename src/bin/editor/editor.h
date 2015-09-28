@@ -282,6 +282,42 @@ editor_state_container_padding_x_set(Evas_Object *obj, Change *change, Eina_Bool
 Eina_Bool
 editor_state_container_padding_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
       int new_val);
+Eina_Bool
+editor_state_visible_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val);
+Eina_Bool
+editor_state_fixed_w_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val);
+Eina_Bool
+editor_state_fixed_h_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val);
+Eina_Bool
+editor_state_text_min_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val);
+Eina_Bool
+editor_state_text_min_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val);
+Eina_Bool
+editor_state_text_max_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val);
+Eina_Bool
+editor_state_text_max_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val);
+Eina_Bool
+editor_state_text_fit_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val);
+Eina_Bool
+editor_state_text_fit_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val);
+Eina_Bool
+editor_state_fill_smooth_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val);
+Eina_Bool
+editor_state_container_min_v_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val);
+Eina_Bool
+editor_state_container_min_h_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val);
 
 /* Part */
 
@@ -339,5 +375,17 @@ editor_part_item_position_col_set(Evas_Object *obj, Change *change, Eina_Bool me
 Eina_Bool
 editor_part_item_position_row_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
       unsigned short new_val);
+Eina_Bool
+editor_part_scale_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      Eina_Bool new_val);
+Eina_Bool
+editor_part_mouse_events_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      Eina_Bool new_val);
+Eina_Bool
+editor_part_repeat_events_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      Eina_Bool new_val);
+Eina_Bool
+editor_part_multiline_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      Eina_Bool new_val);
 
 #endif /* EDITOR_H */

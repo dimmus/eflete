@@ -381,7 +381,7 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define COMMON_CHECK_CALLBACK(SUB, VALUE, MEMBER, ARGS) \
+#define COMMON_CHECK_CALLBACK(SUB, VALUE, MEMBER, ARGS, DESCRIPTION) \
 static void \
 _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj, \
@@ -389,13 +389,16 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Eina_Bool value = elm_check_state_get(obj); \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, value)) \
+   Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION, value?_("true"):_("false")); \
+   Change *change = change_add(msg); \
+   eina_stringshare_del(msg); \
+   if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, change, false ARGS, value)) \
      { \
-       ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
+       ERR("editor_"#SUB"_"#VALUE"_set failed"); \
        abort(); \
      } \
+   history_change_add(pd->group->history, change); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-   /*project_changed(false);*/ \
 }
 
 /**
@@ -755,8 +758,8 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define PART_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER) \
-   COMMON_CHECK_CALLBACK(SUB, VALUE, MEMBER, PART_ARGS) \
+#define PART_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
+   COMMON_CHECK_CALLBACK(SUB, VALUE, MEMBER, PART_ARGS, DESCRIPTION)
 
 /*****************************************************************************/
 /*                       PART 1 COMBOBOX CONTROL                             */
@@ -1224,8 +1227,8 @@ _on_##SUB##_##VALUE##_change(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER) \
-   COMMON_CHECK_CALLBACK(SUB, VALUE, MEMBER, STATE_ARGS)
+#define STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
+   COMMON_CHECK_CALLBACK(SUB, VALUE, MEMBER, STATE_ARGS, DESCRIPTION)
 
 /*****************************************************************************/
 /*                        STATE 1 SPINNER CONTROLS                           */
@@ -1372,9 +1375,9 @@ COMMON_2SPINNER_ADD(STATE, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2, MEMBER) \
-   COMMON_CHECK_CALLBACK(SUB, VALUE1, MEMBER, STATE_ARGS) \
-   COMMON_CHECK_CALLBACK(SUB, VALUE2, MEMBER, STATE_ARGS)
+#define STATE_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, DESCRIPTION1, DESCRIPTION2) \
+   COMMON_CHECK_CALLBACK(SUB, VALUE1, MEMBER, STATE_ARGS, DESCRIPTION1) \
+   COMMON_CHECK_CALLBACK(SUB, VALUE2, MEMBER, STATE_ARGS, DESCRIPTION2)
 
 /*****************************************************************************/
 /*                    STATE 1 COMBOBOX LIST CONTROL                          */

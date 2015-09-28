@@ -1343,8 +1343,8 @@ PART_ATTR_PARTS_LIST(part_drag, event, part_drag)
 
 PART_ATTR_SOURCE_UPDATE(part, source)
 
-#define PART_ATTR_1CHECK(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
-   PART_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER) \
+#define PART_ATTR_1CHECK(TEXT, SUB, VALUE, MEMBER, TOOLTIP, DESCRIPTION) \
+   PART_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
    PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 #define PART_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
@@ -1362,11 +1362,14 @@ PART_ATTR_SOURCE_UPDATE(part, source)
 
 /* part property */
 PART_ATTR_1CHECK(_("scalable"), part, scale, part,
-                 _("Specifies whether the part will scale it's size with an edje scaling factor"))
+                 _("Specifies whether the part will scale it's size with an edje scaling factor"),
+                 _("scalable changed to %s"))
 PART_ATTR_1CHECK(_("mouse events"), part, mouse_events, part,
-                 _("Enable mouse events in this part"))
+                 _("Enable mouse events in this part"),
+                 _("mouse events changed to %s"))
 PART_ATTR_1CHECK(_("event propagation"), part, repeat_events, part,
-                 _("Enable repeat mouse events to the parts below"))
+                 _("Enable repeat mouse events to the parts below"),
+                 _("event propagation changed to %s"))
 PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to, part,
                     _("Show only the area of part that coincides with another part's container"))
 PART_ATTR_1COMBOBOX_LIST(_("ignore flags"), part, ignore_flags, part, Evas_Event_Flags, edje_ignore_flags,
@@ -1730,8 +1733,8 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    return item;
 }
 
-#define STATE_ATTR_1CHECK(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
-   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER) \
+#define STATE_ATTR_1CHECK(TEXT, SUB, VALUE, MEMBER, TOOLTIP, DESCRIPTION) \
+   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
    STATE_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 #define STATE_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
@@ -1744,8 +1747,8 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
 
 #define STATE_ATTR_2CHECK(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
                           L1_START, L1_END, L2_START, L2_END, \
-                          TOOLTIP1, TOOLTIP2) \
-   STATE_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2, MEMBER) \
+                          TOOLTIP1, TOOLTIP2, DESCRIPTION1, DESCRIPTION2) \
+   STATE_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2, MEMBER, DESCRIPTION1, DESCRIPTION2) \
    STATE_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
                         L1_START, L1_END, L2_START, L2_END, \
                         TOOLTIP1, TOOLTIP2)
@@ -1776,7 +1779,8 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    STATE_STRSHARE_ATR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
 
 STATE_ATTR_1CHECK(_("visible"), state, visible, state,
-                  _("Set visibility for part by current state"))
+                  _("Set visibility for part by current state"),
+                  _("visible changed to %s"))
 STATE_MINMAX_ATTR_2SPINNER(_("min"), state, min_w, min_h, state, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
                     _("Minimal size of part width in pixels."), _("Minimal part height in pixels."),
                     1, int,
@@ -1794,7 +1798,9 @@ STATE_ATTR_2SPINNER(_("align"), state, align_x, align_y, state, 0, 100, 1, NULL,
                     _("align y changed from %f to %f"))
 STATE_ATTR_2CHECK(_("fixed"), state, fixed_w, fixed_h, state, "w:", "", "h:", "",
                   _("This affects the minimum width calculation."),
-                  _("This affects the minimum height calculation."))
+                  _("This affects the minimum height calculation."),
+                  _("fixed w changed to %s"),
+                  _("fixed h changed to %s"))
 STATE_ATTR_1COMBOBOX_LIST(_("aspect ratio mode"), state, aspect_pref, state, edje_aspect_pref,
                           _("The aspect control hints for this object."), unsigned char)
 STATE_ATTR_2SPINNER(_("aspect ratio"), state, aspect_min, aspect_max, state, 0, 100, 1, NULL, "min:", "", "max:", "",
@@ -2250,17 +2256,23 @@ STATE_ATTR_2CHECK(_("min"), state_text, min_x, min_y, state_text, "w:", "", "h:"
                   "the minimum size of the text."),
                   _("When any of the parameters is enabled it forces \t"
                   "the minimum size of the container to be equal to\t"
-                  "the minimum size of the text."))
+                  "the minimum size of the text."),
+                  _("min_x changed to %s"),
+                  _("min_y changed to %s"));
 STATE_ATTR_2CHECK(_("max"), state_text, max_x, max_y, state_text, "w:", "", "h:", "",
                   _("When any of the parameters is enabled it forces \t"
                   "the maximum size of the container to be equal to\t"
                   "the maximum size of the text."),
                   _("When any of the parameters is enabled it forces \t"
                   "the maximum size of the container to be equal to\t"
-                  "the maximum size of the text."));
+                  "the maximum size of the text."),
+                  _("max_x changed to %s"),
+                  _("max_y changed to %s"))
 STATE_ATTR_2CHECK(_("fit"), state_text, fit_x, fit_y, state_text, "w:", "", "h:", "",
                   _("Resize the text for it to fit in it's container by X axis"),
-                  _("Resize the text for it to fit in it's container by Y axis"))
+                  _("Resize the text for it to fit in it's container by Y axis"),
+                  _("fit_x changed to %s"),
+                  _("fit_y changed to %s"))
 STATE_ATTR_COLOR(_("shadow color"), state, color2, state_text, NULL)
 STATE_ATTR_COLOR(_("outline color"), state, color3, state_text, NULL)
 
@@ -2659,14 +2671,18 @@ STATE_ATTR_2CHECK(_("min"), state_text, min_x, min_y, state_textblock, "w:", "",
                   "the minimum size of the text."),
                   _("When any of the parameters is enabled it forces \t"
                   "the minimum size of the container to be equal to\t"
-                  "the minimum size of the text."))
+                  "the minimum size of the text."),
+                  _("text min_x changed to %s"),
+                  _("text min_y changed to %s"))
 STATE_ATTR_2CHECK(_("max"), state_text, max_x, max_y, state_textblock, "w:", "", "h:", "",
                   _("When any of the parameters is enabled it forces \t"
                   "the maximum size of the container to be equal to\t"
                   "the maximum size of the text."),
                   _("When any of the parameters is enabled it forces \t"
                   "the maximum size of the container to be equal to\t"
-                  "the maximum size of the text."));
+                  "the maximum size of the text."),
+                  _("text max_x changed to %s"),
+                  _("text max_y changed to %s"))
 PART_ATTR_1COMBOBOX_LIST(_("select mode"), part, select_mode, state_textblock, Edje_Edit_Select_Mode,
                          edje_select_mode, _("Sets the selection mode for a textblock part"))
 PART_ATTR_1COMBOBOX_LIST(_("entry mode"), part, entry_mode, state_textblock, Edje_Edit_Entry_Mode,
@@ -2676,7 +2692,8 @@ PART_ATTR_1COMBOBOX_LIST(_("pointer mode"), part, pointer_mode, state_textblock,
 PART_ATTR_1COMBOBOX_LIST(_("cursor mode"), part, cursor_mode, state_textblock, unsigned int,
                          edje_cursor_mode, _("Sets the cursor mode for a textblock part"))
 PART_ATTR_1CHECK(_("multiline"), part, multiline, state_textblock,
-                 _("It causes a textblock that is editable to allow multiple lines for editing"))
+                 _("It causes a textblock that is editable to allow multiple lines for editing"),
+                 _("multiline changed to %s"))
 PART_ATTR_1COMBOBOX(_("under selected text"), part, source, state_textblock,
                     _("Used for the group to be loaded and used for selection \t"
                     "display UNDER the selected text the source \t"
@@ -3215,7 +3232,8 @@ ui_property_state_image_unset(Evas_Object *property)
 STATE_ATTR_1COMBOBOX_LIST(_("type"), state_fill, type, state_fill, edje_fill_type,
                           _("Set the image fill type"), unsigned char)
 STATE_ATTR_1CHECK(_("smooth"), state_fill, smooth, state_fill,
-                  _("On/off image smooth on scaling"))
+                  _("On/off image smooth on scaling"),
+                  _("visible changed to %s"))
 STATE_ATTR_2SPINNER_ICON(_("align"), state_fill, origin_relative_x, origin_relative_y, state_fill,
                          -500, 500, 1, NULL, "x:", "%", "y:", "%",
                          _("Sets the starting point X coordinate relatively to displayed element's content"),
@@ -3645,7 +3663,9 @@ STATE_ATTR_2SPINNER(_("padding"), state_container, padding_x, padding_y, state_c
 STATE_ATTR_2CHECK(_("min"), state_container, min_v, min_h, state_container,
                   "x:", NULL, "y:", NULL,
                   _("This affects the minimum width calculation"),
-                  _("This affects the minimum height calculation"))
+                  _("This affects the minimum height calculation"),
+                  _("container min_x changed to %s"),
+                  _("container min_y changed to %s"))
 
 static Eina_Bool
 ui_property_state_container_set(Evas_Object *property)
