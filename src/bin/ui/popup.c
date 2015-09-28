@@ -27,6 +27,8 @@ static const Popup_Button _btn_save       = BTN_SAVE;
 static const Popup_Button _btn_replace    = BTN_REPLACE;
 static const Popup_Button _btn_dont_save  = BTN_DONT_SAVE;
 static const Popup_Button _btn_cancel     = BTN_CANCEL;
+static Popup_Validator_Func validator     = NULL;
+static void *user_data                    = NULL;
 
 static void
 _btn_cb(void *data,
@@ -34,6 +36,8 @@ _btn_cb(void *data,
         void *ei __UNUSED__)
 {
    btn_pressed = *((Popup_Button *)data);
+   if ((BTN_OK == btn_pressed) || (BTN_SAVE == btn_pressed) || (BTN_REPLACE == btn_pressed))
+     if (validator && (!validator(user_data))) return;
    ecore_main_loop_quit();
 }
 
@@ -49,12 +53,17 @@ popup_want_action(const char *title,
                   const char *msg,
                   Evas_Object *content,
                   Evas_Object *to_focus,
-                  Popup_Button popup_btns)
+                  Popup_Button popup_btns,
+                  Popup_Validator_Func func,
+                  void *data)
+
 {
    Evas_Object *btn;
 
    /* only one content will be setted to popup: or message, or used content */
    assert((msg != NULL) != (content != NULL));
+   validator = func;
+   user_data = data;
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
 
@@ -90,6 +99,9 @@ popup_want_action(const char *title,
    evas_object_del(popup);
    popup = NULL;
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+
+   validator = NULL;
+   user_data = NULL;
 
    return btn_pressed;
 }

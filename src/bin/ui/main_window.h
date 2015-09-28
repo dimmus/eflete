@@ -95,6 +95,15 @@ extern int MENU_ITEMS_LIST_STYLE_ONLY[];
 extern int MENU_ITEMS_LIST_MAIN[];
 extern int MENU_ITEMS_LIST_TEMPORARY[];
 
+/**
+ * The validation func for popup action.
+ *
+ * @param data The user data.
+ *
+ * @ingroup Window
+ */
+typedef Eina_Bool(* Popup_Validator_Func)(void *data);
+
 #define POPUP_BUTTON_MASK 0xf
 typedef enum _Popup_Button
 {
@@ -370,6 +379,8 @@ project_close(void);
  * text will be setted as content. And you can set define the buttons what you
  * want to use in the popup. Func have a blocked behavior, while the popup button
  * not clicked, popup blocked the code runing, used ecore main loop iteration.
+ * Vlidator called only click on the positive buttons like: BTN_OK, BTN_SAVE and
+ * BTN_REPLACE. Another buttons are negative.
  *
  * @note Popup have not delete the setted content. User must delete it manualy.
  * @note The focused object should be in the popup content.
@@ -378,7 +389,9 @@ project_close(void);
  * @param msg The Popup message, formated text;
  * @param content The user Evas_Object seted as content to popup;
  * @param to_focus The object what be focused after popup show;
- * @param p_btns The flags for set the popup buttons
+ * @param p_btns The flags for set the popup buttons;
+ * @param func The validation func, if returned EINA_FALSE popup not be closed;
+ * @param data The user data for validation func.
  *
  * @ingroup Window
  */
@@ -387,7 +400,9 @@ popup_want_action(const char *title,
                   const char *msg,
                   Evas_Object *content,
                   Evas_Object *to_focus,
-                  Popup_Button p_btns);
+                  Popup_Button p_btns,
+                  Popup_Validator_Func func,
+                  void *data);
 
 void
 popup_fileselector_folder_helper(Evas_Object *entry, const char *path);

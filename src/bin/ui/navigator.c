@@ -443,7 +443,7 @@ _btn_add_group_cb(void *data __UNUSED__,
    ewe_combobox_select_item_set(layout_p.combobox, 0);
 
    btn_res = popup_want_action(_("Create a new layout"), NULL, layout_p.box,
-                               layout_p.entry, BTN_OK|BTN_CANCEL);
+                               layout_p.entry, BTN_OK|BTN_CANCEL, NULL, NULL);
    if (BTN_CANCEL == btn_res) goto close;
 
    Ewe_Combobox_Item *combo_it;
@@ -552,13 +552,13 @@ _btn_del_group_cb(void *data __UNUSED__,
              popup_want_action(_("Warning: Delete layout"),
                                _("Cann't delete the opened layout. Please, "
                                  "close the layout tab before delete it."),
-                               NULL, NULL, BTN_CANCEL);
+                               NULL, NULL, BTN_CANCEL, NULL, NULL);
              return;
           }
         btn_res = popup_want_action(_("Confirm delete layout"),
                                     _("Are you sure you want to delete the selected layout?<br>"
                                       "All aliases will be delete too."),
-                                    NULL, NULL, BTN_OK|BTN_CANCEL);
+                                    NULL, NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
         if (BTN_CANCEL == btn_res) return;
         editor_group_del(ap.project->global_object, group->name);
         gm_group_del(ap.project, group);
