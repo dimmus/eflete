@@ -131,8 +131,8 @@ _edit_object_part_item_add(Ws_Groupedit_Smart_Data *sd,
    if (type == EDJE_PART_TYPE_TABLE)
      {
         /*Position new item in cell with coords [0;0]*/
-        edje_edit_part_item_position_col_set(sd->group->edit_object, part, item, 0);
-        edje_edit_part_item_position_row_set(sd->group->edit_object, part, item, 0);
+        /*edit_part_item_position_col_set(sd->group->edit_object, part, item, 0);
+        edje_edit_part_item_position_row_set(sd->group->edit_object, part, item, 0);*/
         evas_object_table_pack(gp->draw, ge_item->border, 0, 0, 1, 1);
         evas_object_table_pack(gp->draw, ge_item->draw, 0, 0, 1, 1);
         evas_object_table_pack(gp->draw, ge_item->highlight, 0, 0, 1, 1);

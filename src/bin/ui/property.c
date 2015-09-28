@@ -2050,13 +2050,11 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
                                         NULL); \
         value = NULL; \
      } \
-   int temp = edje_edit_state_min_w_get(pd->group->edit_object, pd->part->name, \
+/*   int temp = edje_edit_state_min_w_get(pd->group->edit_object, pd->part->name, \
                                        pd->part->current_state->parsed_name, pd->part->current_state->parsed_val); \
    edje_edit_state_min_w_set(pd->group->edit_object, pd->part->name, \
                              pd->part->current_state->parsed_name, \
-                             pd->part->current_state->parsed_val, temp); \
-   const char *text = eina_stringshare_printf("%s_%s", #SUB, #VALUE); \
-   eina_stringshare_del(text); \
+                             pd->part->current_state->parsed_val, temp); */\
    /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
