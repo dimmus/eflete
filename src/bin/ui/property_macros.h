@@ -169,6 +169,7 @@ _on_##MEMBER##_##VALUE##_stop(void *data, \
      { \
         msg = eina_stringshare_printf(DESCRIPTION, pd->old_##TYPE##_val, new_val); \
         change_description_set(pd->change, msg); \
+        eina_stringshare_del(msg); \
         history_change_add(pd->group->history, pd->change); \
      } \
    else \
