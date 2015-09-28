@@ -369,6 +369,9 @@ static void
 prop_state_text_source_update(Prop_Data *pd);
 
 static void
+prop_state_text_text_source_update(Prop_Data *pd);
+
+static void
 prop_state_text_update(Prop_Data *pd);
 
 static void
@@ -724,6 +727,9 @@ _on_editor_attribute_changed(void *data,
          break;
       case ATTRIBUTE_STATE_TEXT_SOURCE:
          prop_state_text_source_update(pd);
+         break;
+      case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
+         prop_state_text_text_source_update(pd);
          break;
       case ATTRIBUTE_STATE_TEXT:
          prop_state_text_update(pd);
