@@ -89,12 +89,6 @@ _add_dashes(Ewe_Ruler_Smart_Data *sd)
         int dashes_count = eina_list_count(scale->dashes);
         int new_dashes_count;
 
-        /* if object has 0 size removing all dashes */
-        if ((!sd->geometry.width) || (!sd->geometry.height))
-          {
-             _delete_extra_dashes(scale, dashes_count);
-             continue;
-          }
         if (sd->horizontal)
           new_dashes_count = (((sd->geometry.width / scale->mark_step) + 3) - dashes_count);
         else
