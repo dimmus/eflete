@@ -651,6 +651,7 @@ _on_group_##SUB1##_##VALUE##_stop(void *data, \
      { \
         msg = eina_stringshare_printf(DESCRIPTION, pd->old_int_val, new_int_val); \
         change_description_set(pd->change, msg); \
+        eina_stringshare_del(msg); \
         history_change_add(pd->group->history, pd->change); \
      } \
    else \
