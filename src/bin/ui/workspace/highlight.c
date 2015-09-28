@@ -234,6 +234,8 @@ _handler_down_cb(void *data,
    handler->dy = curY - handler->y;
 
    highlight->clicked = true;
+   evas_object_smart_callback_call(highlight->smart_object,
+                                   "hl,drag,start", NULL);
 }
 
 static void
@@ -427,6 +429,9 @@ _handler_up_cb(void *data,
    evas_object_move(handler->highlight->smart_object, x, y);
 
    handler->highlight->clicked = false;
+
+   evas_object_smart_callback_call(handler->highlight->smart_object,
+                                   "hl,drag,stop", NULL);
 }
 
 /*
