@@ -154,14 +154,17 @@ _genlist_label_get(void *data,
 
 static Evas_Object *
 _genlist_content_get(void *data,
-                     Evas_Object *obj,
+                     Evas_Object *obj __UNUSED__,
                      const char *part)
 {
    Evas_Object *check;
    Widget_Item_Data *widget_data = (Widget_Item_Data *)data;
    if (strcmp(part, "elm.swallow.icon")) return NULL;
 
-   CHECK_ADD(obj, check);
+   /* the old hack. sometimes edje get wrong style, from system defalt theme,
+    * for changed widget if widget is hidden */
+   TODO("find why load wrong style");
+   CHECK_ADD(ap.win, check);
    elm_object_focus_allow_set(check, false);
    elm_check_state_set(check, widget_data->check);
    evas_object_smart_callback_add(check, "changed", _check_widget, data);
