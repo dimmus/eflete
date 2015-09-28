@@ -764,6 +764,9 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PART_SCALE:
          PART_ATTR_1CHECK_UPDATE(part, scale, part);
          break;
+      case ATTRIBUTE_PART_MULTILINE:
+         PART_ATTR_1CHECK_UPDATE(part, multiline, state_textblock);
+         break;
       case ATTRIBUTE_PART_DRAG_COUNT_X:
       case ATTRIBUTE_PART_DRAG_COUNT_Y:
          TODO("Implement")
