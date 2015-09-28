@@ -77,6 +77,8 @@ _add_dashes(Ewe_Ruler_Smart_Data *sd)
 {
    Ewe_Ruler_Scale *scale;
    Eina_List *l;
+   Evas_Object *object;
+   Evas *canvas;
 
    sd->size_changed = EINA_FALSE;
    sd->position_changed = EINA_TRUE;
@@ -95,9 +97,7 @@ _add_dashes(Ewe_Ruler_Smart_Data *sd)
           new_dashes_count = (((sd->geometry.height / scale->mark_step) + 3) - dashes_count);
         if (new_dashes_count == 0) continue;
 
-        Evas_Object *object;
-        Evas *canvas = evas_object_evas_get(sd->obj);
-
+        canvas = evas_object_evas_get(sd->obj);
         if (new_dashes_count > 0)
           {
              for (; new_dashes_count > 0; new_dashes_count--)
