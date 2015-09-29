@@ -480,6 +480,10 @@ tabs_tab_add(Group *group)
         elm_toolbar_item_selected_set(item->toolbar_item, true);
         return;
      }
+   /* check the group history if tabs haven't tab with given group history MUST
+    * be NULL */
+   assert(group->history == NULL);
+
    gm_group_edit_object_load(ap.project, group, evas_object_evas_get(ap.win));
    group->history = history_add(group);
 
