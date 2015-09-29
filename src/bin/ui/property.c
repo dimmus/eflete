@@ -895,6 +895,9 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_STATE_MINMUL_W:
          COMMON_CHECK_UPDATE(state, minmul_w, state, STATE_ARGS);
          break;
+      case ATTRIBUTE_PART_SELECT_MODE:
+         PART_ATTR_1COMBOBOX_LIST_UPDATE(part, select_mode, state_textblock);
+         break;
          /* Don't add 'default:'. Compiler must warn about missing cases */
      }
 }
