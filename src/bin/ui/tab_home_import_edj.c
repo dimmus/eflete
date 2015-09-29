@@ -39,6 +39,23 @@ struct _Tab_Home_Edj
 typedef struct _Tab_Home_Edj Tab_Home_Edj;
 Tab_Home_Edj tab_edj;
 
+static void
+_progress_end(void *data, PM_Project_Result result)
+{
+   if (PM_PROJECT_SUCCESS == result)
+     {
+        elm_entry_entry_set(tab_edj.name, NULL);
+        elm_entry_entry_set(tab_edj.path, profile_get()->general.projects_folder);
+        elm_entry_entry_set(tab_edj.edj, NULL);
+        elm_entry_entry_set(tab_edj.meta.version, NULL);
+        elm_entry_entry_set(tab_edj.meta.authors, NULL);
+        elm_entry_entry_set(tab_edj.meta.licenses, NULL);
+        elm_entry_entry_set(tab_edj.meta.comment, N_("Created with Eflete!"));
+     }
+
+   progress_end(data, result);
+}
+
 static Eina_Bool
 _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 {
@@ -46,7 +63,7 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
                          elm_entry_entry_get(tab_edj.path),
                          elm_entry_entry_get(tab_edj.edj),
                          progress_print,
-                         progress_end,
+                         _progress_end,
                          &tab_edj.meta);
 
    return true;
