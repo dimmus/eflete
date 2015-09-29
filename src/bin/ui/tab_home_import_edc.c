@@ -85,9 +85,6 @@ _vbr_dir_del(void *data, Evas_Object *obj, void *event_info);
 static void
 _data_dir_del(void *data, Evas_Object *obj, void *event_info);
 
-
-
-
 static void
 _validate(void *data __UNUSED__,
           Evas_Object *obj __UNUSED__,
@@ -314,6 +311,18 @@ _edje_cc_opt_build(void)
    return buf;
 }
 
+static void
+_dirs_cleanup(Eina_List *list, Evas_Smart_Cb del_func)
+{
+   Dir_Data *data;
+
+   while (1 != eina_list_count(list))
+     {
+        data = eina_list_data_get(eina_list_last(list));
+        del_func(data, NULL, NULL);
+     }
+}
+
 Eina_Bool
 _progress_print(void *data, Eina_Stringshare *progress_string)
 {
@@ -321,11 +330,26 @@ _progress_print(void *data, Eina_Stringshare *progress_string)
    return progress_print(data, progress_string);
 }
 
-void
+static void
 _progress_end(void *data, PM_Project_Result result)
 {
-   if (result == PM_PROJECT_ERROR)
+   if (PM_PROJECT_ERROR == result)
      popup_log_message_helper(eina_strbuf_string_get(tab_edc.log));
+   if (PM_PROJECT_SUCCESS == result)
+     {
+        elm_entry_entry_set(tab_edc.name, NULL);
+        elm_entry_entry_set(tab_edc.path, profile_get()->general.projects_folder);
+        elm_entry_entry_set(tab_edc.edc, NULL);
+        _dirs_cleanup(tab_edc.img_dirs, _img_dir_del);
+        _dirs_cleanup(tab_edc.fnt_dirs, _fnt_dir_del);
+        _dirs_cleanup(tab_edc.snd_dirs, _snd_dir_del);
+        _dirs_cleanup(tab_edc.vbr_dirs, _vbr_dir_del);
+        _dirs_cleanup(tab_edc.data_dirs, _data_dir_del);
+        elm_entry_entry_set(tab_edc.meta.version, NULL);
+        elm_entry_entry_set(tab_edc.meta.authors, NULL);
+        elm_entry_entry_set(tab_edc.meta.licenses, NULL);
+        elm_entry_entry_set(tab_edc.meta.comment, N_("Created with Eflete!"));
+     }
    progress_end(data, result);
 }
 
