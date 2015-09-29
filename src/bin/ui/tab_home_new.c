@@ -418,6 +418,23 @@ _edc_code_generate(Eina_Stringshare *path)
 }
 
 /* SPLASH */
+
+static void
+_progress_end(void *data, PM_Project_Result result)
+{
+   if (PM_PROJECT_SUCCESS == result)
+     {
+        elm_entry_entry_set(tab_new.name, NULL);
+        elm_entry_entry_set(tab_new.path, profile_get()->general.projects_folder);
+        elm_entry_entry_set(tab_new.meta.version, NULL);
+        elm_entry_entry_set(tab_new.meta.authors, NULL);
+        elm_entry_entry_set(tab_new.meta.licenses, NULL);
+        elm_entry_entry_set(tab_new.meta.comment, N_("Created with Eflete!"));
+        _checks_set(false);
+     }
+   progress_end(data, result);
+}
+
 static Eina_Bool
 _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 {
@@ -457,7 +474,7 @@ _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
                          edc_path,
                          eina_strbuf_string_get(flags),
                          progress_print,
-                         progress_end,
+                         _progress_end,
                          &tab_new.meta);
 
    return true;
