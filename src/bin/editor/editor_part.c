@@ -298,3 +298,35 @@ editor_part_select_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
+
+Eina_Bool
+editor_part_entry_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                           const char *part_name, Edje_Edit_Entry_Mode new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_PART_ENTRY_MODE;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   if (change)
+     {
+        Edje_Edit_Entry_Mode old_value = edje_edit_part_entry_mode_get(edit_object, part_name);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_EDJEEDITENTRYMODE;
+        diff->redo.function = editor_part_entry_mode_set;
+        diff->redo.args.type_seeem.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_seeem.eeem2 = new_val;
+        diff->undo.type = FUNCTION_TYPE_STRING_EDJEEDITENTRYMODE;
+        diff->undo.function = editor_part_entry_mode_set;
+        diff->undo.args.type_seeem.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_seeem.eeem2 = old_value;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_entry_mode_set(edit_object, part_name, new_val))
+     return false;
+   _editor_project_changed();
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
