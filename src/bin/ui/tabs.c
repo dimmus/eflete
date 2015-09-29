@@ -170,6 +170,7 @@ _del_tab(Tabs_Item *item)
    /* delete pans with workspace and liveview */
    evas_object_del(item->content);
    history_del(item->group->history);
+   item->group->history = NULL;
    free(item);
 }
 
