@@ -29,6 +29,14 @@
 #define SIGNAL_TAB_CHANGED "SIGNAL_TAB_CHANGED"
 
 /**
+ * emited while user trying to close tab.
+ * eventinfo - pointer to given Group object.
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_TAB_CLOSE "SIGNAL_TAB_CLOSE"
+
+/**
  * emited when new group is added.
  * eventinfo - pointer to Group object
  *
@@ -162,14 +170,5 @@
  * @ingroup Window
  */
 #define SIGNAL_PROJECT_CLOSED "SIGNAL_PROJECT_CLOSED"
-
-/**
- * emited while user trying to close tab with a shortcut CTRL+W.
- * eventinfo - NULL
- *
- * @ingroup Window
- */
-#define SIGNAL_TAB_CLOSE "SIGNAL_TAB_CLOSE"
-
 
 #endif /* SIGNALS_H*/

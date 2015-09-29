@@ -447,7 +447,6 @@ Eina_Bool
 _close_tab_cb(void)
 {
    if (!ap.project) return false;
-   evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CLOSE, NULL);
    return true;
 }
 
