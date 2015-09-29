@@ -193,7 +193,6 @@ ui_main_window_add(void)
 
    ap.menu = ui_menu_add();
 
-   evas_object_smart_callback_add(navigator, "group,open", _navigator_group_open, NULL);
    //ui_panes_add();
    //ap.workspace = workspace_add(ap.block.canvas);
    //ui_block_ws_set(ap.workspace);
