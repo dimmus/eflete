@@ -899,8 +899,11 @@ _on_editor_attribute_changed(void *data,
          PART_ATTR_1COMBOBOX_LIST_UPDATE(part, select_mode, state_textblock);
          break;
       case ATTRIBUTE_PART_ENTRY_MODE:
-         PART_ATTR_1COMBOBOX_LIST_UPDATE(part, entry_mode, state_textblock)
-            break;
+         PART_ATTR_1COMBOBOX_LIST_UPDATE(part, entry_mode, state_textblock);
+         break;
+      case ATTRIBUTE_PART_POINTER_MODE:
+         PART_ATTR_1COMBOBOX_LIST_UPDATE(part, pointer_mode, state_textblock);
+         break;
          /* Don't add 'default:'. Compiler must warn about missing cases */
      }
 }
