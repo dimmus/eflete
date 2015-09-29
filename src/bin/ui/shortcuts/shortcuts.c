@@ -447,6 +447,7 @@ Eina_Bool
 _close_tab_cb(void)
 {
    if (!ap.project) return false;
+   tabs_current_tab_close();
    return true;
 }
 

@@ -79,6 +79,14 @@ void
 tabs_clean(void);
 
 /**
+ * Close the selected tab.
+ *
+ * @ingroup Tabs
+ */
+void
+tabs_current_tab_close(void);
+
+/**
  * Get pointer to active workspace
  *
  * @ingroup Tabs

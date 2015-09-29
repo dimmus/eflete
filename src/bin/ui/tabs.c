@@ -490,6 +490,18 @@ tabs_tab_add(Group *group)
 }
 
 void
+tabs_current_tab_close(void)
+{
+   Tabs_Item *item;
+
+   item = elm_object_item_data_get(tabs.selected);
+   if (!item) return;
+   tabs.items = eina_list_remove(tabs.items, item);
+   _del_tab(item);
+   if (!tabs.items) tabs_menu_tab_open(TAB_HOME_PROJECT_INFO);
+}
+
+void
 tabs_clean(void)
 {
    Tabs_Item *item;
