@@ -277,7 +277,7 @@ editor_part_select_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    assert(part_name != NULL);
    if (change)
      {
-        Edje_Text_Effect old_value = edje_edit_part_select_mode_get(edit_object, part_name);
+        Edje_Edit_Select_Mode old_value = edje_edit_part_select_mode_get(edit_object, part_name);
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING_EDJEEDITSELECTMODE;
         diff->redo.function = editor_part_select_mode_set;
