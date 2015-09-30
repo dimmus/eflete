@@ -417,6 +417,24 @@ static void
 prop_part_source_update(Prop_Data *pd);
 
 static void
+prop_state_textblock_source_update(Prop_Data *pd);
+
+static void
+prop_state_textblock_source2_update(Prop_Data *pd);
+
+static void
+prop_state_textblock_source3_update(Prop_Data *pd);
+
+static void
+prop_state_textblock_source4_update(Prop_Data *pd);
+
+static void
+prop_state_textblock_source5_update(Prop_Data *pd);
+
+static void
+prop_state_textblock_source6_update(Prop_Data *pd);
+
+static void
 prop_part_name_update(Prop_Data *pd);
 
 static void
@@ -808,6 +826,22 @@ _on_editor_attribute_changed(void *data,
          break;
       case ATTRIBUTE_PART_SOURCE:
          prop_part_source_update(pd);
+         prop_state_textblock_source_update(pd);
+         break;
+      case ATTRIBUTE_PART_SOURCE2:
+         prop_state_textblock_source2_update(pd);
+         break;
+      case ATTRIBUTE_PART_SOURCE3:
+         prop_state_textblock_source3_update(pd);
+         break;
+      case ATTRIBUTE_PART_SOURCE4:
+         prop_state_textblock_source4_update(pd);
+         break;
+      case ATTRIBUTE_PART_SOURCE5:
+         prop_state_textblock_source5_update(pd);
+         break;
+      case ATTRIBUTE_PART_SOURCE6:
+         prop_state_textblock_source6_update(pd);
          break;
       case ATTRIBUTE_GROUP_NAME:
         prop_group_name_update(pd);
