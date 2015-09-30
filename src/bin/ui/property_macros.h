@@ -265,7 +265,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, ARGS) \
+#define COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, ARGS, DESCRIPTION) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
                           Evas_Object *obj __UNUSED__, \
@@ -273,12 +273,15 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, (TYPE)item->index)) \
+   Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION, item->title); \
+   Change *change = change_add(msg); \
+   eina_stringshare_del(msg); \
+   if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, change, false ARGS, (TYPE)item->index)) \
      { \
         ERR("Cann't apply value '%s' for attribute '"#TEXT"'.", item->title); \
         abort(); \
      } \
-   /*project_changed(false);*/ \
+   history_change_add(pd->group->history, change); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
@@ -869,8 +872,8 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
-   COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, PART_ARGS)
+#define PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
+   COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, PART_ARGS, DESCRIPTION)
 
 /*****************************************************************************/
 /*                       PART 1COMBOBOX SOURCE UPDATE                        */
@@ -1420,8 +1423,8 @@ COMMON_2SPINNER_ADD(STATE, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
-   COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, STATE_ARGS)
+#define STATE_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
+   COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, STATE_ARGS, DESCRIPTION)
 
 /*****************************************************************************/
 /*                STATE 1 COMBOBOX STRSHARE LIST CONTROL                     */

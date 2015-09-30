@@ -1378,8 +1378,8 @@ PART_ATTR_SOURCE_UPDATE(part, source)
    PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
    PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
-#define PART_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, TYPE, LIST, TOOLTIP) \
-   PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
+#define PART_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, TYPE, LIST, TOOLTIP, DESCRIPTION) \
+   PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
    PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
 
 #define PART_ATTR_DRAG(TEXT, SUB, VALUE1, VALUE2) \
@@ -1400,7 +1400,8 @@ PART_ATTR_1CHECK(_("event propagation"), part, repeat_events, part,
 PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to, part,
                     _("Show only the area of part that coincides with another part's container"))
 PART_ATTR_1COMBOBOX_LIST(_("ignore flags"), part, ignore_flags, part, Evas_Event_Flags, edje_ignore_flags,
-                         _("Specifies whether events with the given flags should be ignored"))
+                         _("Specifies whether events with the given flags should be ignored"),
+                         _("ignore_flags changed to %s"))
 PART_ATTR_1COMBOBOX(_("group source"), part, source, part,
                     _("Used for the group to be loaded and used to display GROUP part."))
 /* part drag property */
@@ -1780,8 +1781,8 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
                         L1_START, L1_END, L2_START, L2_END, \
                         TOOLTIP1, TOOLTIP2)
 
-#define STATE_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP, TYPE) \
-   STATE_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
+#define STATE_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP, TYPE, DESCRIPTION) \
+   STATE_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
    STATE_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
 
 #define STATE_ATTR_COLOR(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
@@ -1829,7 +1830,8 @@ STATE_ATTR_2CHECK(_("fixed"), state, fixed_w, fixed_h, state, "w:", "", "h:", ""
                   _("fixed w changed to %s"),
                   _("fixed h changed to %s"))
 STATE_ATTR_1COMBOBOX_LIST(_("aspect ratio mode"), state, aspect_pref, state, edje_aspect_pref,
-                          _("The aspect control hints for this object."), unsigned char)
+                          _("The aspect control hints for this object."), unsigned char,
+                          _("aspect ratio mode changed to %s"))
 STATE_ATTR_2SPINNER(_("aspect ratio"), state, aspect_min, aspect_max, state, 0, 100, 1, NULL, "min:", "", "max:", "",
                    _("Normally width and height can be resized to any values independently"),
                    _("Normally width and height can be resized to any values independently"),
@@ -1852,7 +1854,8 @@ STATE_ATTR_COMBOBOX(_("proxy source"), state, proxy_source, state,
 STATE_STRSHARE_ATR_1COMBOBOX_LIST(_("box layout"), state, box_layout, state, edje_box_layouts,
                           _("The aspect control hints for this object"))
 STATE_ATTR_1COMBOBOX_LIST(_("table homogeneous"), state, table_homogeneous, state, edje_homogeneous,
-                          _("The table homogeneous mode"), unsigned char)
+                          _("The table homogeneous mode"), unsigned char,
+                          _("table homogeneous mode changed to %s"))
 
 static void
 _ui_property_part_state_set(Evas_Object *property, Part_ *part)
@@ -2719,13 +2722,17 @@ STATE_ATTR_2CHECK(_("max"), state_text, max_x, max_y, state_textblock, "w:", "",
                   _("text max_x changed to %s"),
                   _("text max_y changed to %s"))
 PART_ATTR_1COMBOBOX_LIST(_("select mode"), part, select_mode, state_textblock, Edje_Edit_Select_Mode,
-                         edje_select_mode, _("Sets the selection mode for a textblock part"))
+                         edje_select_mode, _("Sets the selection mode for a textblock part"),
+                         _("select mode changed to %s"))
 PART_ATTR_1COMBOBOX_LIST(_("entry mode"), part, entry_mode, state_textblock, Edje_Edit_Entry_Mode,
-                         edje_entry_mode, _("Sets the edit mode for a textblock part"))
+                         edje_entry_mode, _("Sets the edit mode for a textblock part"),
+                         _("entry mode changed to %s"))
 PART_ATTR_1COMBOBOX_LIST(_("pointer mode"), part, pointer_mode, state_textblock, Evas_Object_Pointer_Mode,
-                         edje_pointer_mode, _("Sets the mouse pointer behavior for a given part"))
+                         edje_pointer_mode, _("Sets the mouse pointer behavior for a given part"),
+                         _("pointer mode changed to %s"))
 PART_ATTR_1COMBOBOX_LIST(_("cursor mode"), part, cursor_mode, state_textblock, unsigned int,
-                         edje_cursor_mode, _("Sets the cursor mode for a textblock part"))
+                         edje_cursor_mode, _("Sets the cursor mode for a textblock part"),
+                         _("cursor mode changed to %s"))
 PART_ATTR_1CHECK(_("multiline"), part, multiline, state_textblock,
                  _("It causes a textblock that is editable to allow multiple lines for editing"),
                  _("multiline changed to %s"))
@@ -3195,7 +3202,8 @@ STATE_ATTR_1ENTRY(_("image"), state, image, state_image, NULL, NULL)
 STATE_ATTR_1ENTRY_ADD(_("border"), state_image, border, state_image,
                       pd->attributes.state_image.validator, _("Image's border values"))
 STATE_ATTR_1COMBOBOX_LIST(_("border fill"), state_image, border_fill, state_image,\
-                          edje_middle_type, NULL, unsigned char)
+                          edje_middle_type, NULL, unsigned char,
+                          _("border fill changed to %s"))
 
 static Eina_Bool
 ui_property_state_image_set(Evas_Object *property)
@@ -3265,7 +3273,8 @@ ui_property_state_image_unset(Evas_Object *property)
 
 #define pd_fill pd->attributes.state_fill
 STATE_ATTR_1COMBOBOX_LIST(_("type"), state_fill, type, state_fill, edje_fill_type,
-                          _("Set the image fill type"), unsigned char)
+                          _("Set the image fill type"), unsigned char,
+                          _("fill type changed to %s"))
 STATE_ATTR_1CHECK(_("smooth"), state_fill, smooth, state_fill,
                   _("On/off image smooth on scaling"),
                   _("visible changed to %s"))
