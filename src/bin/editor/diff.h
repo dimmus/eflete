@@ -42,6 +42,9 @@ typedef enum {
    FUNCTION_TYPE_STRING_STRING_USHORT,
    FUNCTION_TYPE_STRING_STRING_STRING,
    FUNCTION_TYPE_STRING_STRING_INT_INT_INT_INT,
+   FUNCTION_TYPE_STRING_EDJEEDITSELECTMODE,
+   FUNCTION_TYPE_STRING_EDJEEDITENTRYMODE,
+   FUNCTION_TYPE_STRING_EVASOBJECTPOINTERMODE,
 } Function_Type;
 
 struct _Function_Info {
@@ -147,6 +150,18 @@ struct _Function_Info {
          int i5;
          int i6;
       } type_ssiiii;
+      struct {
+         Eina_Stringshare *s1;
+         Edje_Edit_Select_Mode eesm2;
+      } type_seesm;
+      struct {
+         Eina_Stringshare *s1;
+         Edje_Edit_Entry_Mode eeem2;
+      } type_seeem;
+      struct {
+         Eina_Stringshare *s1;
+         Evas_Object_Pointer_Mode eopm2;
+      } type_seopm;
    } args;              /**< function args not including Evas_Object * */
 };
 
