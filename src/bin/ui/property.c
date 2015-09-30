@@ -907,6 +907,9 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PART_CURSOR_MODE:
          PART_ATTR_1COMBOBOX_LIST_UPDATE(part, cursor_mode, state_textblock)
          break;
+      case ATTRIBUTE_STATE_FILL_TYPE:
+         STATE_ATTR_1COMBOBOX_LIST_UPDATE(state_fill, type, state_fill);
+         break;
          /* Don't add 'default:'. Compiler must warn about missing cases */
      }
 }
