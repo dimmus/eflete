@@ -801,7 +801,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
  *
  * @ingroup Property_Macro
  */
-#define PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
+#define PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
 static void \
 _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj __UNUSED__, \
@@ -809,25 +809,26 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
+   Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION, item->title); \
+   Change *change = change_add(msg); \
+   eina_stringshare_del(msg); \
    if (item->index != 0) \
      { \
-        if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, \
-                                             pd->part->name, item->title)) \
+        if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, change, false, \
+                                          pd->part->name, item->title)) \
           { \
              ewe_combobox_select_item_set(obj, pd->attributes.part.previous_source); \
-             NOTIFY_ERROR(_("This source value will <br>" \
-                            "lead to Recursive Reference. <br>" \
-                            "Previous value restored.")); \
+             change_free(change); \
              return; \
           } \
         pd->attributes.part.previous_source = item->index; \
      } \
    else \
      { \
-        edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, pd->part->name, NULL); \
+        editor_##SUB##_##VALUE##_set(pd->group->edit_object, change, false, pd->part->name, NULL); \
         pd->attributes.part.previous_source = 0; \
      } \
-   /*project_changed(true);*/ \
+   history_change_add(pd->group->history, change); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 

@@ -453,4 +453,35 @@ Eina_Bool
 editor_part_cursor_mode_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       unsigned char);
 
+Eina_Bool
+editor_part_clip_to_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char *);
+Eina_Bool
+editor_part_source_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char *);
+Eina_Bool
+editor_part_drag_confine_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char *);
+Eina_Bool
+editor_part_drag_threshold_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char *);
+Eina_Bool
+editor_part_drag_event_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char *);
+Eina_Bool
+editor_part_source2_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char *);
+Eina_Bool
+editor_part_source3_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char *);
+Eina_Bool
+editor_part_source4_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char *);
+Eina_Bool
+editor_part_source5_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char *);
+Eina_Bool
+editor_part_source6_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char *);
+
 #endif /* EDITOR_H */

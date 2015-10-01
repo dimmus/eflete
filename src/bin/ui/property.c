@@ -1408,8 +1408,8 @@ PART_ATTR_SOURCE_UPDATE(part, source)
    PART_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
    PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
-#define PART_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
-   PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
+#define PART_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP, DESCRIPTION) \
+   PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
    PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 #define PART_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, TYPE, LIST, TOOLTIP, DESCRIPTION) \
@@ -1432,22 +1432,27 @@ PART_ATTR_1CHECK(_("event propagation"), part, repeat_events, part,
                  _("Enable repeat mouse events to the parts below"),
                  _("event propagation changed to %s"))
 PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to, part,
-                    _("Show only the area of part that coincides with another part's container"))
+                    _("Show only the area of part that coincides with another part's container"),
+                    _("clipper changed to %s"))
 PART_ATTR_1COMBOBOX_LIST(_("ignore flags"), part, ignore_flags, part, Evas_Event_Flags, edje_ignore_flags,
                          _("Specifies whether events with the given flags should be ignored"),
                          _("ignore_flags changed to %s"))
 PART_ATTR_1COMBOBOX(_("group source"), part, source, part,
-                    _("Used for the group to be loaded and used to display GROUP part."))
+                    _("Used for the group to be loaded and used to display GROUP part."),
+                    _("group source changed to %s"))
 /* part drag property */
 PART_ATTR_DRAG(_("axis X"), part_drag, x, step_x)
 PART_ATTR_DRAG(_("axis Y"), part_drag, y, step_y)
 PART_ATTR_1COMBOBOX(_("drag area"), part_drag, confine, part_drag,
-                    _("Limits the movement of the dragged part to another part's container"))
+                    _("Limits the movement of the dragged part to another part's container"),
+                    _("drag area changed to %s"))
 PART_ATTR_1COMBOBOX(_("threshold"), part_drag, threshold, part_drag,
-                    _("Movement of the dragged part can only start when it get moved enough to be outside of this threshold part"))
+                    _("Movement of the dragged part can only start when it get moved enough to be outside of this threshold part"),
+                    _("threshold changed to %s"))
 PART_ATTR_1COMBOBOX(_("forward events"), part_drag, event, part_drag,
                     _("It causes the part to forward the drag events "
-                    "to another part, thus ignoring them for itself."))
+                    "to another part, thus ignoring them for itself."),
+                    _("forward events changed to %s"))
 
 #define pd_part pd->attributes.part
 #define pd_drag pd->attributes.part_drag
@@ -2773,22 +2778,28 @@ PART_ATTR_1CHECK(_("multiline"), part, multiline, state_textblock,
 PART_ATTR_1COMBOBOX(_("under selected text"), part, source, state_textblock,
                     _("Used for the group to be loaded and used for selection \t"
                     "display UNDER the selected text the source \t"
-                    "of TEXTBLOCK part."))
+                    "of TEXTBLOCK part."),
+                    _("under selected text changed to %s"))
 PART_ATTR_1COMBOBOX(_("before selected text"), part, source2, state_textblock,
                     _("It is used for the group to be loaded and used for \t"
-                    "selection display OVER the selected text."))
+                    "selection display OVER the selected text."),
+                    _("before selected text changed to %s"))
 PART_ATTR_1COMBOBOX(_("under cursor"), part, source3, state_textblock,
                     _("It is used for the group to be loaded and used for \t"
-                    "cursor display UNDER the cursor position."))
+                    "cursor display UNDER the cursor position."),
+                    _("under cursor changed to %s"))
 PART_ATTR_1COMBOBOX(_("over cursor"), part, source4, state_textblock,
                     _("It is used for the group to be loaded and used \t"
-                    "for cursor display OVER the cursor position."))
+                    "for cursor display OVER the cursor position."),
+                    _("over cursor changed to %s"))
 PART_ATTR_1COMBOBOX(_("under anchor"), part, source5, state_textblock,
                     _("It is used for the group to be loaded and used for \t"
-                    "anchors display UNDER the anchor position."))
+                    "anchors display UNDER the anchor position."),
+                    _("under anchor changed to %s"))
 PART_ATTR_1COMBOBOX(_("over anchor"), part, source6, state_textblock,
                     _("It is used for the group to be loaded and used for \t"
-                    "anchor display OVER the anchor position."))
+                    "anchor display OVER the anchor position."),
+                    _("over anchor changed to %s"))
 
 static Eina_Bool
 ui_property_state_textblock_set(Evas_Object *property)
