@@ -152,6 +152,7 @@ _history_set(void *data __UNUSED__,
    Elm_Genlist_Item *it;
 
    elm_genlist_clear(hd.genlist);
+   hd.active_item = NULL;
 
    hd.history = (group) ? group->history : NULL;
    if (!hd.history)
