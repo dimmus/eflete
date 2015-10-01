@@ -554,6 +554,11 @@ _btn_del_group_cb(void *data __UNUSED__,
    glit = elm_genlist_selected_item_get(navigator.genlist);
    if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
      {
+        btn_res = popup_want_action(_("Confirm delete layouts"),
+                                    _("Are you sure you want to delete the selected layouts?<br>"
+                                      "All aliases will be delete too."),
+                                    NULL, NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
+        if (BTN_CANCEL == btn_res) return;
         _folder_del(elm_object_item_data_get(glit));
         return;
      }
