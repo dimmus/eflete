@@ -57,7 +57,7 @@
  * @ingroup Shortcuts
  */
 Eina_Bool
-shortcuts_profile_load(App_Data *ap, Profile *profile);
+shortcuts_profile_load(Profile *profile);
 
 /**
  * Initialize shortcut module.
@@ -71,7 +71,7 @@ shortcuts_profile_load(App_Data *ap, Profile *profile);
  * @ingroup Shortcuts
  */
 Eina_Bool
-shortcuts_init(App_Data *ap);
+shortcuts_init();
 
 /**
  * Initialize shortcut module.
@@ -85,6 +85,6 @@ shortcuts_init(App_Data *ap);
  * @ingroup Shortcuts
  */
 Eina_Bool
-shortcuts_shutdown(App_Data *ap);
+shortcuts_shutdown();
 
 #endif /* SHORTCUTS_H */

@@ -69,25 +69,20 @@ _create_toolbar(Evas_Object *obj, const char *class, const char *style)
 }
 
 Evas_Object *
-widget_toolbar_create(Evas_Object *parent, const Style *style)
+widget_toolbar_create(Evas_Object *parent, const Group *group)
 {
    assert(parent != NULL);
-   assert(style != NULL);
-
-   Eina_Stringshare *class;
-   Eina_Stringshare *style_name;
-
-   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+   assert(group != NULL);
+   assert(group->style != NULL);
+   assert(group->class != NULL);
 
    Evas_Object *object;
-   object = _create_toolbar(parent, class, style_name);
+   object = _create_toolbar(parent, group->class, group->style);
    evas_object_show(object);
 
    evas_object_data_set(object, SWALLOW_FUNC, on_swallow_check);
    evas_object_data_set(object, TEXT_FUNC, on_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, send_signal);
 
-   eina_stringshare_del(class);
-   eina_stringshare_del(style_name);
    return object;
 }

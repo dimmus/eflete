@@ -47,7 +47,7 @@
  * @step 1 Call ui_menu_add.
  * @step 2 Check returned value.
  * </td>
- * <td>(App_Data *) app_data</td>
+ * <td></td>
  * <td>All checks are passed</td>
  * </tr>
  * @}
@@ -55,17 +55,15 @@
 
 EFLETE_TEST(ui_menu_add_test_p)
 {
-   App_Data *app_data = NULL;
    Menu *ret = NULL;
 
    elm_init(0, 0);
    app_init();
-   app_data = app_data_get();
 
-   app_data->win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
-   app_data->win_layout = elm_layout_add(app_data->win);
+   ap.win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
+   ap.win_layout = elm_layout_add(ap.win);
 
-   ret = ui_menu_add(app_data);
+   ret = ui_menu_add();
    ck_assert_msg(ret != NULL, "Failed to create menu");
 
    app_shutdown();

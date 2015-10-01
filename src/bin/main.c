@@ -20,6 +20,8 @@
 #include <Ecore_Getopt.h>
 #include <regex.h>
 #include "main_window.h"
+#include "navigator.h"
+#include "signals.h"
 
 static char *open = NULL;
 static char *import_edj = NULL;
@@ -42,6 +44,7 @@ static const Ecore_Getopt options = {
       ECORE_GETOPT_STORE_STR(0, "name", N_("Name for new project that would be created in import process")),
       ECORE_GETOPT_STORE_STR(0, "path", N_("Path for project")),
       ECORE_GETOPT_STORE_TRUE(0, "replace", N_("Replace existing project")),
+      ECORE_GETOPT_STORE_TRUE('r', "reopen", "reopen last project"),
       ECORE_GETOPT_VERSION  ('v', "version"),
       ECORE_GETOPT_COPYRIGHT('c', "copyright"),
       ECORE_GETOPT_LICENSE  ('l', "license"),
@@ -50,46 +53,72 @@ static const Ecore_Getopt options = {
    }
 };
 
-void
+static void
 _import_end(void *data __UNUSED__, PM_Project_Result result)
 {
    Project *pro;
-   App_Data *ap;
-
-   ap = app_data_get();
 
    if (result == PM_PROJECT_SUCCESS)
      {
-        pro = pm_project_thread_project_get(ap->pr_thread);
-        ap->project = pro;
+        pro = pm_project_thread_project_get();
+        ap.project = pro;
 
-        wm_widgets_list_objects_load(pro->widgets,
-                                     evas_object_evas_get(ap->win),
-                                     pro->mmap_file);
-        wm_layouts_list_objects_load(pro->layouts,
-                                     evas_object_evas_get(ap->win),
-                                     pro->mmap_file);
-        wm_styles_build_alias(pro->widgets,
-                              pro->layouts);
+        ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+        ui_menu_disable_set(ap.menu, MENU_FILE_CLOSE_PROJECT, false);
+        navigator_project_set();
 
-        blocks_show(ap);
-
-        if (!eina_inlist_count(ap->project->widgets))
-          ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
-
-        STATUSBAR_PROJECT_PATH(ap, ap->project->pro_path);
-        STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
+        STATUSBAR_PROJECT_PATH(ap.project->pro_path);
+        STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
 
         NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
+        evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_OPENED, NULL);
      }
-     evas_object_show(ap->win);
+   evas_object_show(ap.win);
 }
 
-Eina_Bool
+void
+_open_end(void *data __UNUSED__, PM_Project_Result result)
+{
+   Project *pro;
+
+   if (result == PM_PROJECT_SUCCESS)
+     {
+        pro = pm_project_thread_project_get();
+        ap.project = pro;
+
+        ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+        ui_menu_disable_set(ap.menu, MENU_FILE_CLOSE_PROJECT, false);
+        navigator_project_set();
+
+        NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
+        STATUSBAR_PROJECT_PATH(ap.project->pro_path);
+        STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
+        evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_OPENED, NULL);
+     }
+   evas_object_show(ap.win);
+}
+
+static Eina_Bool
 _message_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
 {
    fprintf(stdout, "%s\n", progress_string);
    return true;
+}
+
+static void
+_open_project(void *data __UNUSED__)
+{
+   /* Ugly hack, but we need to do this.
+    * When we try to import edj file while ecore main loop not fully started
+    * we get a freeze. So for use the ecore and eina threads in the project
+    * manager need to itarate the main loop for initialize it.
+    * DO NOT DELETE: whith out iterate import from command line not worked! */
+   ecore_main_loop_iterate();
+
+   pm_project_open(open,
+                   _message_print,
+                   _open_end,
+                   NULL);
 }
 
 static void
@@ -102,17 +131,17 @@ _import_edj(void *data __UNUSED__)
     * DO NOT DELETE: whith out iterate import from command line not worked! */
    ecore_main_loop_iterate();
 
-   App_Data *ap = app_data_get();
-   ap->pr_thread = pm_project_import_edj(pro_name, pro_path, import_edj,
-                                         _message_print, _import_end, NULL);
-
+   pm_project_import_edj(pro_name, pro_path, import_edj,
+                         _message_print, _import_end, NULL);
 }
 
 EAPI_MAIN int
 elm_main(int argc, char **argv)
 {
-   Eina_Bool info_only = false;
+   Eina_Bool info_only = false, reopen = false;
    Eina_Stringshare *pro_folder;
+   Config *config;
+   Recent *r;
 
    Ecore_Getopt_Value values[] = {
      ECORE_GETOPT_VALUE_STR(open),
@@ -120,6 +149,7 @@ elm_main(int argc, char **argv)
      ECORE_GETOPT_VALUE_STR(pro_name),
      ECORE_GETOPT_VALUE_STR(pro_path),
      ECORE_GETOPT_VALUE_BOOL(pro_replace),
+     ECORE_GETOPT_VALUE_BOOL(reopen),
      ECORE_GETOPT_VALUE_BOOL(info_only),
      ECORE_GETOPT_VALUE_BOOL(info_only),
      ECORE_GETOPT_VALUE_BOOL(info_only),
@@ -144,32 +174,32 @@ elm_main(int argc, char **argv)
         CRIT("Could not find 'eflete_config.h'");
 #endif
 
-        App_Data *ap = app_data_get();
-        if (!ui_main_window_add(ap))
+        if (!ui_main_window_add())
           {
              app_shutdown();
              return -1;
           }
 
+        if (reopen)
+          {
+             config = config_get();
+             if (!config->recents)
+               {
+                  ERR(_("There are no previously opened projects yet."));
+                  return 1;
+               }
+             r = eina_list_data_get(config->recents);
+             open = r->path;
+             ecore_job_add(_open_project, NULL);
+             goto run;
+          }
         if (open)
           {
              if ((eina_str_has_suffix(open, ".pro")) &&
                  (ecore_file_exists(open)))
                {
-                  ap->project = pm_project_open(open);
-                  blocks_show(ap);
-                  wm_widgets_list_objects_load(ap->project->widgets,
-                                               evas_object_evas_get(ap->win),
-                                               ap->project->mmap_file);
-                  wm_layouts_list_objects_load(ap->project->layouts,
-                                               evas_object_evas_get(ap->win),
-                                               ap->project->mmap_file);
-                  wm_styles_build_alias(ap->project->widgets,
-                                        ap->project->layouts);
-
-                  if (!eina_inlist_count(ap->project->widgets))
-                    ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
-                  evas_object_show(ap->win);
+                  ecore_job_add(_open_project, NULL);
+                  goto run;
                }
              else
                {
@@ -217,9 +247,11 @@ elm_main(int argc, char **argv)
               }
             ecore_job_add(_import_edj, NULL);
             eina_stringshare_del(pro_folder); pro_folder = NULL;
+            goto run;
           }
-        else evas_object_show(ap->win);
 
+        evas_object_show(ap.win);
+run:
         elm_run();
 #ifdef HAVE_ENVENTOR
         enventor_shutdown();

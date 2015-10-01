@@ -36,13 +36,11 @@
 /**
  * Add new colorclass viewer inwin object.
  *
- * @param project A project that was early loaded.
- *
  * @return Pointer to inwin object.
  *
  * @ingroup Colorclass_Manager
  */
 Evas_Object *
-colorclass_manager_add(Project *project);
+colorclass_manager_add();
 
 #endif /* COLORCLASS_MANAGER_DIALOG_H */

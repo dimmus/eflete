@@ -68,95 +68,44 @@ _change_bg_cb(void *data,
    elm_object_part_content_set(live_layout, SWALLOW_BG, bg);
 }
 
-Live_View *
-live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit)
+static void
+_live_view_load_object(Live_View *live, Group *group)
 {
-   Live_View *live;
-   Evas_Object *bg;
-
-   assert(parent != NULL);
-
-   live = mem_calloc(1, sizeof(Live_View));
-
-   live->in_prog_edit = in_prog_edit;
-
-   live->parent = parent;
-   live->layout = elm_layout_add(parent);
-   elm_layout_theme_set(live->layout, "layout", "live_view", "toolbar");
-   bg = elm_bg_add(live->layout);
-   IMAGE_ADD_NEW(live->layout, bg, "bg", "tile");
-   evas_object_show(bg);
-
-   live->live_view = container_add(parent);
-   live->panel = elm_panel_add(parent);
-   live->property = live_view_property_add(live->panel, in_prog_edit);
-   elm_object_content_set(live->panel, live->property);
-   evas_object_smart_callback_add(live->property, "bg,changed", _change_bg_cb,
-                                  live->layout);
-   elm_panel_orient_set(live->panel, ELM_PANEL_ORIENT_RIGHT);
-   evas_object_size_hint_weight_set(live->panel, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(live->panel, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(live->panel);
-
-   elm_object_part_content_set(live->layout, SWALLOW_CONTENT, live->live_view);
-   elm_object_part_content_set(live->layout, SWALLOW_MENU, live->panel);
-   elm_object_part_content_set(live->layout, SWALLOW_BG, bg);
-   container_confine_set(live->live_view, bg);
-   evas_object_hide(live->live_view);
-   elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
-
-   return live;
-}
-
-Eina_Bool
-live_view_widget_style_set(Live_View *live, Project *project, Style *style)
-{
-   Eina_Stringshare *widget;
-   Eina_Bool ret = true;
-   Eina_Bool first_load;
    Eina_Bool using_layout = false;
-   int x, y;
 
+   assert(ap.project != NULL);
    assert(live != NULL);
-   assert(project != NULL);
-   assert(style != NULL);
+   assert(group != NULL);
 
-   first_load = live->object == NULL; /* fallback notifications should pop-up only on style load*/
-
-   Eina_Stringshare *version = edje_edit_data_value_get(style->obj, "version");
+   /* check version */
+   Eina_Stringshare *version = edje_edit_data_value_get(ap.project->global_object, "version");
    if ((!version) || (strcmp(version, "110")))
      {
-        if (first_load)
-          NOTIFY_INFO(3, _("Outdated version of file. Using fallback to layout"));
+        NOTIFY_INFO(3, _("Outdated version of file. Using fallback to layout"));
         using_layout = true;
      }
    eina_stringshare_del(version);
 
-   using_layout = using_layout || (style->__type == LAYOUT) || live->in_prog_edit;
-
-   /* sadly, but we should delete live object to reapply style */
-   live_view_widget_style_unset(live);
-
-   if (!using_layout)
+   /* If loaded gorup is widget, then fields widget/class/style would be filled */
+   if ((group->widget) && (!live->in_prog_edit))
      {
-        standard_widget_name_parse(style->full_group_name, &widget, NULL, NULL);
-
-        live->object = live_widget_create(widget, style, live->layout);
+        live->object = live_widget_create(group, live->layout);
 
         if (!live->object)
           {
-             if (first_load)
-               NOTIFY_INFO(3, _("Widget live view isn't implemented yet. Using fallback to layout"));
+             NOTIFY_INFO(3, _("Widget live view isn't implemented yet. Using fallback to layout"));
              using_layout = true;
           }
         else
           {
-             live_view_theme_update(live, project);
-             live_view_property_style_set(live->property, live->object, style, widget, live->parent);
+             live_view_theme_update(live->block);
           }
-
-        eina_stringshare_del(widget);
      }
+   else
+     {
+        using_layout = true;
+     }
+
    if (using_layout)
      {
         if (!live->in_prog_edit)
@@ -166,73 +115,127 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
         else
           {
              live->object = layout_prog_edit_create(live->layout);
-
              evas_object_freeze_events_set(live->object, true);
           }
-        if (!edje_object_mmap_set(live->object, project->mmap_file,
-                                  style->full_group_name))
+        if (!edje_object_mmap_set(live->object, ap.project->mmap_file,
+                                  group->name))
           {
              evas_object_del(live->object);
              live->object = elm_label_add(live->layout);
              elm_object_text_set(live->object, _("Failed to load live view object"));
-             ret = false;
           }
-        live_view_theme_update(live, project);
-        live_view_property_style_set(live->property, live->object, style, "edje", live->parent);
+        live_view_theme_update(live->block);
      }
+}
+
+static void
+_live_view_delete(void *data __UNUSED__,
+                  Evas *e __UNUSED__,
+                  Evas_Object *obj,
+                  void *event_info __UNUSED__)
+{
+   assert(obj != NULL);
+   Live_View *live = evas_object_data_get(obj, "live_view_structure");
+   assert(live != NULL);
+
+   if (!live_widget_del(live->object))
+     evas_object_del(live->object);
+
+   live_view_property_style_unset(live->property);
+   live_view_property_free(live->property);
+
+   free(live);
+   live = NULL;
+}
+
+Evas_Object *
+live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group)
+{
+   Live_View *live;
+   Evas_Object *bg;
+   Evas_Object *block;
+
+   assert(parent != NULL);
+
+   /* Create the very top object of live view */
+   block = elm_layout_add(parent);
+   elm_layout_theme_set(block, "layout", "block", "default");
+   elm_layout_text_set(block, "elm.text", _("Live View"));
+   evas_object_show(block);
+
+   /* Fill up live view structure */
+   live = mem_calloc(1, sizeof(Live_View));
+   live->in_prog_edit = in_prog_edit;
+   live->parent = parent;
+   live->group = group;
+   live->block = block;
+
+   live->panel = elm_panes_add(live->block);
+   evas_object_size_hint_weight_set(live->panel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(live->panel, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_panes_content_right_min_size_set(live->panel, 225);
+   elm_panes_content_right_size_set(live->panel, 0); /* default is min size */
+   elm_object_part_content_set(live->block, "elm.swallow.content", live->panel);
+   evas_object_show(live->panel);
+   /* Create main layout of entire live view */
+   live->layout = elm_layout_add(live->block);
+   elm_layout_theme_set(live->layout, "layout", "live_view", "toolbar");
+   elm_object_part_content_set(live->panel, "left", live->layout);
+   bg = elm_bg_add(live->layout);
+   IMAGE_ADD_NEW(live->layout, bg, "bg", "tile");
+   evas_object_show(bg);
+
+   /* Create container,  will hold live object inside (resizable container).
+      And create panes for having both live view property and live object. */
+   live->live_view = container_add(parent);
+   elm_object_part_content_set(live->layout, SWALLOW_CONTENT, live->live_view);
+   elm_object_part_content_set(live->layout, SWALLOW_BG, bg);
+   container_confine_set(live->live_view, bg);
+
+   /* save structure inside of an object */
+   evas_object_data_set(live->block, "live_view_structure", live);
+   _live_view_load_object(live, group);
+
    TODO("reapply swallows/texts")
    evas_object_show(live->live_view);
    evas_object_show(live->object);
    TODO("reapply comtainer size and position")
    container_content_set(live->live_view, live->object);
 
-   elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
+   live->property = live_view_property_add(live->block, group, in_prog_edit);
+   elm_object_part_content_set(live->panel, "right", live->property);
 
-   evas_object_geometry_get(live->live_view, NULL, NULL, &x, &y);
-   edje_object_part_drag_value_set(elm_layout_edje_get(live->layout),
-                                   "bottom_pad", x, y);
+   evas_object_smart_callback_add(live->property, "bg,changed", _change_bg_cb,
+                                  live->layout);
+   evas_object_event_callback_add(live->block, EVAS_CALLBACK_DEL,
+                                  _live_view_delete, NULL);
 
-   return ret;
+   return live->block;
 }
 
 Eina_Bool
-live_view_widget_style_unset(Live_View *live)
-{
-   assert(live != NULL);
-
-   if (!live->object) return false;
-
-   evas_object_hide(live->live_view);
-   elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
-   container_content_unset(live->live_view);
-   live_view_property_style_unset(live->property);
-   if (!live_widget_del(live->object))
-     evas_object_del(live->object);
-   live->object = NULL;
-   return true;
-}
-
-Eina_Bool
-live_view_theme_update(Live_View *live, Project *project)
+live_view_theme_update(Evas_Object *object)
 {
    Eina_Stringshare *path;
 
+   assert(object != NULL);
+   assert(ap.project != NULL);
+
+   Live_View *live = evas_object_data_get(object, "live_view_structure");
    assert(live != NULL);
-   assert(project != NULL);
    assert(live->object != NULL);
 
 #ifdef HAVE_ENVENTOR
-   if ((app_data_get())->enventor_mode)
-     path = eina_stringshare_printf("%s/tmp.edj", project->develop_path);
+   if ((ap.enventor_mode)
+     path = eina_stringshare_printf("%s/tmp.edj", ap.project->develop_path);
    else
 #endif /* HAVE_ENVENTOR */
-     path = eina_stringshare_add(project->dev);
+     path = eina_stringshare_add(ap.project->dev);
 
-   if (project->current_style->__type == LAYOUT)
+   if (!live->group->widget)
      {
-        eina_file_map_free(project->mmap_file, live->object);
-        edje_object_mmap_set(live->object, project->mmap_file,
-                             project->current_style->full_group_name);
+        edje_object_mmap_set(live->object, ap.project->mmap_file,
+                             live->group->name);
         edje_object_calc_force(live->object);
         eina_stringshare_del(path);
         return true;
@@ -249,31 +252,30 @@ live_view_theme_update(Live_View *live, Project *project)
 }
 
 Eina_Bool
-live_view_free(Live_View *live)
+live_view_part_add(Evas_Object *object, Part_ *part)
 {
+   assert(object != NULL);
+   assert(ap.project != NULL);
+
+   Live_View *live = evas_object_data_get(object, "live_view_structure");
+
    assert(live != NULL);
-
-   live_view_widget_style_unset(live);
-   live_view_property_free(live->property);
-
-   free(live);
-   live = NULL;
-   return true;
-}
-
-TODO("We need implementation here!~~ ")
-Eina_Bool
-live_view_part_add(Live_View *live, Part *part)
-{
-   assert(live != NULL);
+   assert(live->object != NULL);
    assert(part != NULL);
    return live_view_property_part_add(live->property, part);
 }
 
 Eina_Bool
-live_view_part_del(Live_View *live, Part *part)
+live_view_part_del(Evas_Object *object, Part_ *part)
 {
+   assert(object != NULL);
+   assert(ap.project != NULL);
+
+   Live_View *live = evas_object_data_get(object, "live_view_structure");
+
    assert(live != NULL);
+   assert(live->object != NULL);
+   assert(part != NULL);
    assert(part != NULL);
    return live_view_property_part_del(live->property, part);
 }
@@ -302,4 +304,15 @@ live_view_part_restack_below(Live_View *live, Part *part_move)
    assert(live != NULL);
    assert(part_move != NULL);
    return live_view_property_part_restack_below(live->property, part_move);
+}
+
+Evas_Object *
+live_view_live_object_get(Evas_Object *object)
+{
+   assert(object != NULL);
+   assert(ap.project != NULL);
+
+   Live_View *live = evas_object_data_get(object, "live_view_structure");
+
+   return live->object;
 }

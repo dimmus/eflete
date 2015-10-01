@@ -23,7 +23,7 @@
 struct _live_widget_item {
      const char *name;
      Evas_Object * (*func)(Evas_Object *parent,
-                           const Style  *style);
+                           const Group *group);
 };
 
 static struct _live_widget_item widgets[] =
@@ -65,22 +65,21 @@ static struct _live_widget_item widgets[] =
 };
 
 Evas_Object *
-live_widget_create(const char  *widget,
-                   const Style  *style,
+live_widget_create(Group *group,
                    Evas_Object *parent)
 {
    Evas_Object *object = NULL;
    unsigned int i;
 
-   assert(widget != NULL);
-   assert(style != NULL);
+   assert(group != NULL);
+   assert(group->widget != NULL);
    assert(parent != NULL);
 
    for (i = 0; widgets[i].name != NULL; i++)
      {
-        if (strcmp(widget, widgets[i].name) == 0)
+        if (strcmp(group->widget, widgets[i].name) == 0)
           {
-             object = widgets[i].func(parent, style);
+             object = widgets[i].func(parent, group);
              break;
           }
      }

@@ -57,13 +57,12 @@ TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
 
 /* do not allow unsafe sprintf. use snprintf instead */
 #pragma GCC poison sprintf
+#include "banned_edje_edit_api.h"
 
 #include "logger.h"
-#include "project_manager.h"
-#include "ui_workspace.h"
+#include "group_manager.h"
 #include "live_view.h"
 #include "notify.h"
-#include "history.h"
 
 /**
  * @typedef Shortcut_Module
@@ -81,19 +80,17 @@ struct _App_Data
    Evas_Object *win;
    Evas_Object *win_layout;
    Menu *menu;
+   TODO("Burn popup variable");
    Evas_Object *popup;
    Evas_Object *splash;
    Evas_Object *colorsel; /**< global colorselector. the one colorselector for
                             application. */
    Evas_Object *statusbar; /**< The statusbar object, which contain some items */
    int modal_editor; /**< count of open editors */
-   Project_Thread *pr_thread;
    struct {
       Evas_Object *left;
       Evas_Object *right;
-      Evas_Object *left_hor;
       Evas_Object *right_hor;
-      Evas_Object *center;
    } panes;
 
    struct {
@@ -102,14 +99,13 @@ struct _App_Data
       Evas_Object *state_list;
       Evas_Object *signal_list;
       Evas_Object *bottom_right;
-      Evas_Object *right_top, *right_top_btn;
-      Evas_Object *right_bottom;
+      Evas_Object *right_top, *history, *signals;
+      Evas_Object *property;
       Evas_Object *canvas;
    } block;
    Evas_Object *workspace;
    Live_View *live_view;
    Project *project;
-   History *history;
    Shortcut_Module *shortcuts; /**< Structure with data from shortcuts module */
 #ifdef HAVE_ENVENTOR
    Evas_Object *enventor;
@@ -123,6 +119,9 @@ struct _App_Data
  */
 typedef struct _App_Data App_Data;
 EAPI_MAIN int elm_main();
+
+/* The global Eflete_Data */
+extern App_Data ap;
 
 /**
  * This function inits all libraries required by this programm.
@@ -162,27 +161,6 @@ Evas_Object *
 win_layout_get(void);
 
 /**
- * Allocate memory for creating App_Data.
- *
- * @return link to created empty App_Data.
- *
- * @ingroup Eflete
- */
-App_Data *
-app_data_get(void);
-
-/**
- * This function will free allocated memory used for App_Data.
- *
- * @return EINA_TRUE application data freed succesfully.
- * EINA_FALSE failed to free application data.
- *
- * @ingroup Eflete
- */
-Eina_Bool
-app_free();
-
-/**
  * This function get pointer to main window of application.
  *
  * @return pointer to main window Evas_Object.
@@ -200,16 +178,6 @@ main_window_get(void);
  */
 Evas_Object *
 colorselector_get(void);
-
-/**
- * Get the history object pointer.
- * The history one for the entire application.
- *
- * @return pointer to history.
- * @ingroup Eflete
- */
-History *
-history_get(void);
 
 #define GET_IMAGE(IMG, PARENT, NAME) \
 { \

@@ -30,4 +30,5 @@ collections {
    #include "widgets/icon.edc"
    #include "widgets/colorselector.edc"
    #include "widgets/win.edc"
+   #include "widgets/fileselector.edc"
 }

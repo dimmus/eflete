@@ -23,12 +23,14 @@
 #include "animator.h"
 #include "animator_private.h"
 #include "main_window.h"
+#include "tabs.h"
 
+TODO("After all is done, cleanup this structure from non-important fields")
 struct _Animator
 {
    Evas_Object *mwin;
-   Live_View *live;
-   Style *style;
+   Live_View *live; /* delete */
+   Style *style; /* delete */
    const char *program;
    Evas_Object *program_area_layout;
    Evas_Object *prop_scroller;
@@ -52,6 +54,10 @@ struct _Animator
    } program_controls;
    Eina_Bool is_cycled : 1;
    Eina_Bool sequence_mode : 1;
+
+   Project *project;
+   Group *group;
+   Evas_Object *live_view;
 };
 
 typedef struct _Animator Animator;
@@ -59,6 +65,8 @@ typedef struct _Animator Animator;
 static Elm_Genlist_Item_Class *_itc_prog, *_itc_prog_after;
 
 /* onload callback for live object. needed to interrupt onload/onshow programs */
+
+/*
 static void
 _on_object_load(void *data,
                 Evas_Object *obj __UNUSED__,
@@ -71,6 +79,7 @@ _on_object_load(void *data,
 
    program_editor_program_reset(animator->program_editor);
 }
+*/
 
 /********************* callbacks for interaction with submodule ***************/
 static void
@@ -182,19 +191,15 @@ _on_program_cycle(void *data,
 }
 
 static void
-_on_animator_save(void *data,
+_on_animator_save(void *data __UNUSED__,
                   Evas_Object* obj __UNUSED__,
                   void *ei __UNUSED__)
 {
-   App_Data *ap = data;
-
-   assert(ap != NULL);
-
-   Style *style = ap->project->current_style;
-   ui_signal_list_data_unset(ap->block.signal_list);
-   ui_signal_list_data_set(ap->block.signal_list, style);
-   live_view_widget_style_set(ap->live_view, ap->project, style);
-   project_changed(true);
+   Style *style = ap.project->current_style;
+   ui_signal_list_data_unset(ap.block.signal_list);
+   ui_signal_list_data_set(ap.block.signal_list, style);
+//   live_view_widget_style_set(ap.live_view, ap.project, style);
+   //project_changed(true);
 }
 
 static void
@@ -203,17 +208,16 @@ _on_animator_close(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
-   App_Data *ap = app_data_get();
    Animator *animator = (Animator*)data;
 
    assert(animator != NULL);
 
    TODO("change this after discarding changes would be possible")
-   _on_animator_save(ap, NULL, NULL);
+//   _on_animator_save(NULL, NULL, NULL);
 
    program_editor_free(animator->program_editor);
 
-   live_view_free(animator->live);
+   evas_object_del(animator->live_view);
 
    animator->afters = eina_list_free(animator->afters);
 
@@ -238,7 +242,6 @@ _on_add_popup_bt_add(void *data,
                      void *ei __UNUSED__)
 {
    Elm_Object_Item *glit_prog = NULL;
-   //App_Data *ap = app_data_get();
    Animator *animator = (Animator*)data;
    Eina_Stringshare *name = elm_entry_entry_get(animator->popup.entry);
 
@@ -249,7 +252,7 @@ _on_add_popup_bt_add(void *data,
         NOTIFY_WARNING(_("Program's 'name can not be empty!"));
         return;
      }
-   if (!edje_edit_program_add(animator->style->obj, name))
+   if (!edje_edit_program_add(animator->group->edit_object, name))
      {
         NOTIFY_WARNING(_("Program's name must be unique!"));
         return;
@@ -264,8 +267,8 @@ _on_add_popup_bt_add(void *data,
    animator->popup.entry = NULL;
 
    /* move to "Apply"?
-   live_view_widget_style_set(animator->live, ap->project, animator->style);
-   edje_object_signal_callback_add(animator->live->object, "show", "",
+   live_view_widget_style_set(animator->live_view, ap.project, animator->style);
+   edje_object_signal_callback_add(animator->live_view, "show", "",
                                    _on_object_load, animator);
    */
 }
@@ -302,7 +305,7 @@ _on_bt_prog_del(void *data,
    const char *program_name = NULL;
 
    program_name = elm_object_item_part_text_get(glit, "elm.text");
-   if (!edje_edit_program_del(animator->style->obj, program_name))
+   if (!edje_edit_program_del(animator->group->edit_object, program_name))
      {
         ERR("Can't del program");
         abort();
@@ -417,17 +420,14 @@ _on_bt_mode_change(void *data,
 }
 
 static void
-_on_mwin_del(void * data,
+_on_mwin_del(void * data __UNUSED__,
              Evas *e __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
 
-   assert(ap != NULL);
-
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor--;
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+   ap.modal_editor--;
 }
 
 /********************* genlist callbacks **************************************/
@@ -438,7 +438,7 @@ _item_prog_del(void *data,
    eina_stringshare_del(data);
 }
 
-static void
+static void __UNUSED__
 _on_gen_prog_sel(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *ei)
@@ -471,7 +471,7 @@ _on_gen_prog_sel(void *data,
              animator->afters = eina_list_append(animator->afters,
                                                  eina_stringshare_add(program));
 
-             prog_afters = edje_edit_program_afters_get(animator->style->obj,
+             prog_afters = edje_edit_program_afters_get(animator->group->edit_object,
                                                         program);
              EINA_LIST_FOREACH(prog_afters, l, program)
                queue = eina_list_append(queue, eina_stringshare_add(program));
@@ -523,7 +523,7 @@ _gl_progs_add(Animator *animator)
    Eina_List *progs_list = NULL;
    Eina_List *l = NULL;
 
-   const char *prog_name = NULL;
+   Resource *res;
    Eina_Stringshare *item_data = NULL;
    Elm_Object_Item *glit = NULL;
 
@@ -555,11 +555,11 @@ _gl_progs_add(Animator *animator)
                            ELM_SCROLLER_POLICY_OFF);
    evas_object_show(gl_progs);
 
-   progs_list = edje_edit_programs_list_get(animator->style->obj);
-   EINA_LIST_FOREACH(progs_list, l, prog_name)
+   progs_list = animator->group->programs;
+   EINA_LIST_FOREACH(progs_list, l, res)
      {
-        if (!prog_name) continue; /* if the list has NULL item */
-        item_data = eina_stringshare_add(prog_name);
+        if (!res->name) continue; /* if the list has NULL item */
+        item_data = eina_stringshare_add(res->name);
         glit = elm_genlist_item_append(gl_progs, _itc_prog, item_data,
                                        NULL, ELM_GENLIST_ITEM_NONE,
                                        NULL, NULL);
@@ -568,14 +568,13 @@ _gl_progs_add(Animator *animator)
 
    evas_object_smart_callback_add(gl_progs, "selected", _on_gen_prog_sel,
                                   animator);
-   edje_edit_string_list_free(progs_list);
    elm_scroller_policy_set(gl_progs, ELM_SCROLLER_POLICY_AUTO,
                            ELM_SCROLLER_POLICY_AUTO);
    return gl_progs;
 }
 
 Evas_Object *
-animator_window_add(Style *style)
+animator_window_add(Project *project)
 {
    Evas_Object *top_layout;
    Evas_Object *panes;
@@ -584,17 +583,12 @@ animator_window_add(Style *style)
    Evas_Object *ic;
    Evas_Object *bt, *program_list_box;
    Animator *animator = NULL;
-   /* temporary solution, while it not moved to modal window */
-   App_Data *ap = app_data_get();
 
-   assert(style != NULL);
-   assert(style->obj != NULL);
-   assert(ap->project != NULL);
-
+   assert(project != NULL);
    animator = (Animator *)mem_calloc(1, sizeof(Animator));
-
-   animator->style = style;
    animator->mwin = mw_add("dialog", _on_animator_ok, animator);
+   animator->project = project;
+   animator->group = tabs_current_group_get();
 
    assert(animator->mwin != NULL);
 
@@ -613,14 +607,14 @@ animator_window_add(Style *style)
    elm_panes_horizontal_set(panes, true);
    evas_object_show(panes);
 
-   animator->live = live_view_add(animator->mwin, true);
-   live_view_widget_style_set(animator->live, ap->project, style);
-   edje_object_signal_callback_add(animator->live->object, "show", "",
-                                   _on_object_load, animator);
+   animator->live_view = live_view_add(animator->mwin, true, animator->group);
+   TODO("SPANK SPANK SPANK, forgetfull programmer! Where is comment about why do we need that object load?")
+//   edje_object_signal_callback_add(animator->live->object, "show", "",
+//                                   _on_object_load, animator);
 
    top_layout = elm_layout_add(animator->mwin);
    elm_layout_theme_set(top_layout, "layout", "animator", "live_view");
-   elm_layout_content_set(top_layout, "swallow.content", animator->live->layout);
+   elm_layout_content_set(top_layout, "swallow.content", animator->live_view);
    evas_object_show(top_layout);
 
    BUTTON_ADD(top_layout, bt, _("Play"));
@@ -662,12 +656,16 @@ animator_window_add(Style *style)
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_smart_callback_add(bt, "clicked", _on_bt_prog_add, animator);
    elm_box_pack_end(program_list_box, bt);
+   TODO("Disable for few commits, making animator back alive")
+   elm_object_disabled_set(bt, true);
 
    BUTTON_ADD(program_list_box, bt, _("Delete"));
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_smart_callback_add(bt, "clicked", _on_bt_prog_del, animator);
    elm_box_pack_end(program_list_box, bt);
    elm_object_part_content_set(bottom_panes, "left", program_list_box);
+   TODO("Disable for few commits, making animator back alive")
+   elm_object_disabled_set(bt, true);
 
    animator->program_area_layout = elm_layout_add(bottom_panes);
    elm_layout_theme_set(animator->program_area_layout, "layout", "animator", "program_area");
@@ -688,15 +686,19 @@ animator_window_add(Style *style)
                                scroller);
    animator->prop_scroller = scroller;
 
-   animator->program_editor = program_editor_add(animator->mwin, style,
-                                                 animator->live);
+   TODO("Fix it furtherly.. need to make compilable for now")
+   animator->program_editor = program_editor_add(animator->mwin,
+                                                 animator->group,
+                                                 animator->live_view);
    elm_object_content_set(animator->prop_scroller, animator->program_editor);
    evas_object_size_hint_weight_set(animator->program_editor, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(animator->program_editor, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(animator->program_editor);
 
-   animator->program_sequence = prog_sequence_add(animator->prop_scroller, style,
-                                                  animator->live);
+   TODO("Fix it furtherly.. need to make compilable for now")
+      animator->program_sequence = prog_sequence_add(animator->prop_scroller,
+                                                     animator->group,
+                                                     animator->live_view);
    evas_object_size_hint_weight_set(animator->program_sequence, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(animator->program_sequence, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
@@ -717,8 +719,10 @@ animator_window_add(Style *style)
                                   _on_program_scroll_cb, animator);
 
    BUTTON_ADD(animator->mwin, bt, _("Apply"));
-   evas_object_smart_callback_add(bt, "clicked", _on_animator_save, ap);
+   evas_object_smart_callback_add(bt, "clicked", _on_animator_save, NULL);
    elm_object_part_content_set(animator->mwin, "eflete.swallow.btn_ok", bt);
+   TODO("Disable for few commits, making animator back alive")
+   elm_object_disabled_set(bt, true);
 
    BUTTON_ADD(animator->mwin, bt, _("Ok"));
    evas_object_smart_callback_add(bt, "clicked", _on_animator_ok, animator);
@@ -728,12 +732,12 @@ animator_window_add(Style *style)
    elm_object_part_content_set(panes, "bottom", bottom_panes);
    elm_object_part_content_set(animator->mwin, NULL, panes);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
-   evas_object_event_callback_add(animator->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+   evas_object_event_callback_add(animator->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, NULL);
 
    evas_object_show(animator->mwin);
 
-   ap->modal_editor++;
+   ap.modal_editor++;
    return animator->mwin;
 }
 

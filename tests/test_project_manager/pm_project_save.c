@@ -18,6 +18,7 @@
  */
 
 #include "test_project_manager.h"
+#include "test_common.h"
 
 /**
  * @addtogroup project_manager_test
@@ -53,16 +54,8 @@
  * </tr>
  * @}
  */
-static void
-_test_end_cb(void *data __UNUSED__,
-             PM_Project_Result result __UNUSED__)
-{
-   ecore_main_loop_quit();
-}
-
 EFLETE_TEST (pm_project_save_test_p)
 {
-   Project_Thread *thread;
    Project *pro;
    Widget *widget;
    Class *class_st;
@@ -72,15 +65,8 @@ EFLETE_TEST (pm_project_save_test_p)
 
    elm_init(0,0);
    app_init();
-   ecore_file_recursive_rm("./UTC");
 
-   thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
-                                  NULL, _test_end_cb, NULL);
-   if (!thread)
-     ck_abort_msg("Project thread is not runned!");
-   ecore_main_loop_begin();
-
-   pro = pm_project_open("./UTC/UTC.pro");
+   pro = setup("pm_project_save_test_p");
    EINA_INLIST_FOREACH(pro->widgets, widget)
      {
         EINA_INLIST_FOREACH(widget->classes, class_st)
@@ -95,9 +81,7 @@ EFLETE_TEST (pm_project_save_test_p)
                }
           }
      }
-   thread = pm_project_save(pro, NULL, _test_end_cb, NULL);
-   if (!thread)
-     ck_abort_msg("Project save thread not runned!");
+   pm_project_save(pro, NULL, _test_end_cb, NULL);
    ecore_main_loop_begin();
 
    ef = eet_open("./UTC/UTC.dev.backup", EET_FILE_MODE_WRITE);
@@ -105,6 +89,7 @@ EFLETE_TEST (pm_project_save_test_p)
 
    eet_close(ef);
    pm_project_close(pro);
+   teardown("./pm_project_save_test_p");
    ecore_file_recursive_rm("./UTC");
 
    app_shutdown();

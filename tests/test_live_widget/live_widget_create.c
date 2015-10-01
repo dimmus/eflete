@@ -60,7 +60,7 @@ EFLETE_TEST(live_widget_create_test_p)
 
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   live = live_widget_create("radio", style, parent);
+//   live = live_widget_create("radio", style, parent);
    ck_assert_msg(live != NULL, "Failed to create live object.");
 
    wm_style_free(style);
@@ -96,11 +96,11 @@ EFLETE_TEST(live_widget_create_test_n1)
 
    Evas_Object *parent = NULL;
    Evas_Object *live = NULL;
-   Style *style = NULL;
+//   Style *style = NULL;
 
-   style = wm_style_add("game_with_you", "lets_play/game_with_you", STYLE, NULL);
+//   style = wm_style_add("game_with_you", "lets_play/game_with_you", STYLE, NULL);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   live = live_widget_create("fhtagn", style, parent);
+//   live = live_widget_create("fhtagn", style, parent);
    ck_assert_msg(live == NULL, "Something was created o.o");
 
    evas_object_del(parent);

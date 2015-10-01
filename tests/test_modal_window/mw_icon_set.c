@@ -54,14 +54,12 @@
 EFLETE_TEST (mw_icon_set_p)
 {
    Evas_Object *mw;
-   App_Data *app;
 
    elm_init(0,0);
    app_init();
-   app = app_data_get();
-   ui_main_window_add(app);
+   ui_main_window_add();
    mw = mw_add(NULL, NULL, NULL);
-   Evas_Object *ic = elm_icon_add(app->win);
+   Evas_Object *ic = elm_icon_add(ap.win);
    elm_image_file_set (ic, "./edj_build/radio_base.png", NULL);
 
    ck_assert_msg(mw_icon_set(mw, ic), "Can't set icon");

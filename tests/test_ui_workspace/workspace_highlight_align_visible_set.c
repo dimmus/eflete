@@ -63,20 +63,19 @@ EFLETE_TEST(workspace_highlight_align_visible_set_test_p1)
    elm_init(0, 0);
    app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   workspace = workspace_add(parent);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
    style->obj = edje_edit_object_add(e);
    edje_object_file_set(style->obj, "./edj_build/workspace_highlight_align_visible_set.edj",
                         style->full_group_name);
-   workspace_edit_object_set(workspace, style,
-                             "./edj_build/workspace_highlight_align_visible_set.edj");
+   //workspace_edit_object_set(workspace, style, "./edj_build/workspace_highlight_align_visible_set.edj");
 
    res = workspace_highlight_align_visible_set(workspace, EINA_TRUE);
    ck_assert_msg(res == EINA_TRUE, "Failed setting visibility for highlight's align handler");
 
    wm_style_free(style);
-   workspace_edit_object_unset(workspace);
+   //workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
    app_shutdown();
@@ -119,21 +118,20 @@ EFLETE_TEST(workspace_highlight_align_visible_set_test_p2)
    elm_init(0, 0);
    app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   workspace = workspace_add(parent);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
    style->obj = edje_edit_object_add(e);
    edje_object_file_set(style->obj, "./edj_build/workspace_highlight_align_visible_set.edj",
                         style->full_group_name);
-   workspace_edit_object_set(workspace, style,
-                             "./edj_build/workspace_highlight_align_visible_set.edj");
+   //workspace_edit_object_set(workspace, style, "./edj_build/workspace_highlight_align_visible_set.edj");
 
    workspace_highlight_align_visible_set(workspace, EINA_TRUE);
    res = workspace_highlight_align_visible_set(workspace, EINA_FALSE);
    ck_assert_msg(res == EINA_TRUE, "Failed setting visibility for highlight's align handler");
 
    wm_style_free(style);
-   workspace_edit_object_unset(workspace);
+   //workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
    app_shutdown();

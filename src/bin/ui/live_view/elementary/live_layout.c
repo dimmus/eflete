@@ -20,23 +20,19 @@
 #include "live_elementary_widgets.h"
 
 Evas_Object *
-widget_layout_create(Evas_Object *parent, const Style *style)
+widget_layout_create(Evas_Object *parent, const Group *group)
 {
    assert(parent != NULL);
-   assert(style != NULL);
-
-   Eina_Stringshare *class;
-   Eina_Stringshare *style_name;
-   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+   assert(group != NULL);
+   assert(group->style != NULL);
+   assert(group->class != NULL);
 
    Evas_Object *object = elm_layout_add(parent);
-   elm_layout_theme_set(object, "layout", class, style_name);
+   elm_layout_theme_set(object, "layout", group->class, group->style);
 
    evas_object_data_set(object, SWALLOW_FUNC, on_swallow_check);
    evas_object_data_set(object, TEXT_FUNC, on_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, send_signal);
 
-   eina_stringshare_del(class);
-   eina_stringshare_del(style_name);
    return object;
 }

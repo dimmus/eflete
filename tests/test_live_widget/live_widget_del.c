@@ -55,13 +55,13 @@ EFLETE_TEST(live_widget_del_test_p)
 {
    elm_init(0, 0);
 
-   Style *style = NULL;
+//   Style *style = NULL;
    Evas_Object *parent = NULL;
    Evas_Object *live = NULL;
 
-   style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
+//   style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   live = live_widget_create("radio", style, parent);
+//   live = live_widget_create("radio", style, parent);
    ck_assert_msg(live_widget_del(live), "it is not able to delete live object, something is wrong.");
 
    evas_object_del(parent);

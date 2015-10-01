@@ -56,16 +56,13 @@
 EFLETE_TEST (image_editor_window_add_test_p1)
 {
    elm_init(0,0);
-   setup("image_editor_window_add_test_p1");
 
-   App_Data *app;
    app_init();
    Evas_Object *images;
-   app = app_data_get();
-   ui_main_window_add(app);
-   app->project = pm_project_open("./image_editor_window_add_test_p1/image_editor_window_add_test_p1.pro");
+   ui_main_window_add();
+   ap.project = setup("image_editor_window_add_test_p1");
 
-   images = image_editor_window_add(app->project, SINGLE);
+   images = image_editor_window_add(SINGLE);
    ck_assert_msg(images != NULL,
                  "cannot create image editor window in SINGLE mode");
 
@@ -102,17 +99,14 @@ END_TEST
 EFLETE_TEST (image_editor_window_add_test_p2)
 {
    elm_init(0,0);
-   setup("image_editor_window_add_test_p2");
 
-   App_Data *app;
    app_init();
    Evas_Object *images;
 
-   app = app_data_get();
-   ui_main_window_add(app);
-   Project *project = pm_project_open("./image_editor_window_add_test_p2/image_editor_window_add_test_p2.pro");
+   ui_main_window_add();
+   Project *project = setup("image_editor_window_add_test_p2");
 
-   images = image_editor_window_add(project, MULTIPLE);
+   images = image_editor_window_add(MULTIPLE);
    ck_assert_msg(images != NULL,
                  "cannot create image editor window in MULTIPLE mode");
 

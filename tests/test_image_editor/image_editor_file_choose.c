@@ -58,19 +58,16 @@
 EFLETE_TEST (image_editor_file_choose_test_p)
 {
    elm_init(0,0);
-   setup("image_editor_file_choose_test_p");
 
-   App_Data *app;
    app_init();
    Evas_Object *images;
 
-   app = app_data_get();
-   ui_main_window_add(app);
-   app->project = pm_project_open("./image_editor_file_choose_test_p/image_editor_file_choose_test_p.pro");
-   wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win),
-                                app->project->mmap_file);
-   images = image_editor_window_add(app->project, SINGLE);
+   ui_main_window_add();
+   ap.project = setup("image_editor_file_choose_test_p");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win),
+                                ap.project->mmap_file);
+   images = image_editor_window_add(SINGLE);
 
    ck_assert_msg(image_editor_file_choose(images, "radio.png") == EINA_TRUE,
                  "failure: cannot select file");
@@ -110,19 +107,16 @@ END_TEST
 EFLETE_TEST (image_editor_file_choose_test_n1)
 {
    elm_init(0,0);
-   setup("image_editor_file_choose_test_n1");
 
-   App_Data *app;
    app_init();
    Evas_Object *images;
 
-   app = app_data_get();
-   ui_main_window_add(app);
-   app->project = pm_project_open("./image_editor_file_choose_test_n1/image_editor_file_choose_test_n1.pro");
-   wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win),
-                                app->project->mmap_file);
-   images = image_editor_window_add(app->project, SINGLE);
+   ui_main_window_add();
+   ap.project = setup("image_editor_file_choose_test_n1");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win),
+                                ap.project->mmap_file);
+   images = image_editor_window_add(SINGLE);
 
    ck_assert_msg(image_editor_file_choose(images, "not_correct_image_name") == EINA_FALSE,
                  "Selected image that not exist");
@@ -162,19 +156,16 @@ END_TEST
 EFLETE_TEST (image_editor_file_choose_test_n3)
 {
    elm_init(0,0);
-   setup("image_editor_file_choose_test_n3");
 
-   App_Data *app;
    app_init();
    Evas_Object *images;
 
-   app = app_data_get();
-   ui_main_window_add(app);
-   app->project = pm_project_open("./image_editor_file_choose_test_n3/image_editor_file_choose_test_n3.pro");
-   wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win),
-                                app->project->mmap_file);
-   images = image_editor_window_add(app->project, SINGLE);
+   ui_main_window_add();
+   ap.project = setup("image_editor_file_choose_test_n3");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win),
+                                ap.project->mmap_file);
+   images = image_editor_window_add(SINGLE);
 
    ck_assert_msg(image_editor_file_choose(images, NULL) == EINA_FALSE, "Selected image that not exist");
 

@@ -52,12 +52,10 @@
 EFLETE_TEST (colorselector_add_test_p)
 {
    elm_init(0,0);
-   App_Data *app;
 
    app_init();
-   app = app_data_get();
-   ui_main_window_add(app);
-   ck_assert_msg(colorselector_add(app->win) != NULL, "cannot create the Colorselector");
+   ui_main_window_add();
+   ck_assert_msg(colorselector_add(ap.win) != NULL, "cannot create the Colorselector");
 
    app_shutdown();
    elm_shutdown();

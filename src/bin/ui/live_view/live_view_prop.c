@@ -72,7 +72,7 @@ _on_scale_change(void *data,
    pd->current_scale = elm_spinner_value_get(obj) / 100;
    if (pd->live_object)
      {
-        if (!strcmp("edje", pd->widget))
+        if (!pd->group->widget)
           {
              edje_object_scale_set(pd->live_object, pd->current_scale);
              edje_object_calc_force(pd->live_object);
@@ -168,38 +168,34 @@ _default_text_hash_free_cb(void *data)
 }
 
 Eina_Bool
-live_view_property_style_set(Evas_Object *property,
-                             Evas_Object *object,
-                             Style *style,
-                             const char *widget,
-                             Evas_Object *parent)
+_live_view_property_load(Evas_Object *property,
+                         Live_View *live,
+                         Group *group,
+                         Evas_Object *parent)
 {
    Evas_Object *prop_box, *spinner, *check, *button;
    Evas_Object *item, *ic;
    const char *part_name;
    Eina_List *part_list = NULL, *part = NULL, *l = NULL;
-   Signal *sig = NULL;
    Edje_Part_Type part_type;
-   Eina_Bool swallow_parts_exists = false, text_parts_exists = false, signal_parts_exists = false;;
+   Eina_Bool swallow_parts_exists = false, text_parts_exists = false, signal_parts_exists = false;
    Evas_Object *image_bg = NULL;
    Evas_Object *radio_group = NULL;
    Evas_Object *radio = NULL;
 
    PROP_DATA_GET()
-   assert(object != NULL);
-   assert(style != NULL);
-   assert(widget != NULL);
-   assert(style->obj != NULL);
+   assert(live != NULL);
+   assert(live->object != NULL);
+   assert(group != NULL);
+   assert(group->edit_object != NULL);
    assert(parent != NULL);
 
-   pd->style = style;
+   pd->group = group;
    pd->parent = parent;
+   pd->live_object = live->object;
 
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
-
-   pd->widget = widget;
-   pd->live_object = object;
 
    prop_box = elm_object_content_get(pd->visual);
 
@@ -237,10 +233,10 @@ live_view_property_style_set(Evas_Object *property,
    if (!pd->prop_swallow.swallows)
      {
         FRAME_LIVE_VIEW_ADD(property, pd->prop_swallow.frame, true, _("Swallows"), pd->visual);
-        elm_object_style_set(pd->prop_swallow.frame, "live_view");
+        elm_object_style_set(pd->prop_swallow.frame, "icon");
 
         CHECK_ADD(prop_box, pd->prop_swallow.check);
-        elm_object_part_content_set(pd->prop_swallow.frame, "elm.swallow.check", pd->prop_swallow.check);
+        elm_object_part_content_set(pd->prop_swallow.frame, "elm.swallow.icon", pd->prop_swallow.check);
 
         BOX_ADD(pd->prop_swallow.frame, pd->prop_swallow.swallows, false, false)
         elm_box_padding_set(pd->prop_swallow.swallows, 0, 7);
@@ -256,10 +252,10 @@ live_view_property_style_set(Evas_Object *property,
    if (!pd->prop_text.texts)
      {
         FRAME_LIVE_VIEW_ADD(property, pd->prop_text.frame, true, _("Text"), pd->visual);
-        elm_object_style_set(pd->prop_text.frame, "live_view");
+        elm_object_style_set(pd->prop_text.frame, "icon");
 
         CHECK_ADD(prop_box, pd->prop_text.check);
-        elm_object_part_content_set(pd->prop_text.frame, "elm.swallow.check", pd->prop_text.check);
+        elm_object_part_content_set(pd->prop_text.frame, "elm.swallow.icon", pd->prop_text.check);
 
         BOX_ADD(pd->prop_text.frame, pd->prop_text.texts, false, false)
         elm_box_padding_set(pd->prop_text.texts, 0, 7);
@@ -275,7 +271,6 @@ live_view_property_style_set(Evas_Object *property,
    if ((!pd->in_prog_edit) && (!pd->prop_signal.signals))
      {
         FRAME_LIVE_VIEW_ADD(property, pd->prop_signal.frame, true, _("Signals"), pd->visual);
-        elm_object_style_set(pd->prop_signal.frame, "live_view");
 
         BOX_ADD(pd->prop_signal.frame, pd->prop_signal.signals, false, false)
         elm_box_align_set(pd->prop_signal.signals, 0.5, 0.0);
@@ -297,11 +292,11 @@ live_view_property_style_set(Evas_Object *property,
    evas_object_show(pd->prop_signal.signals);
 
    /* setting all swallows with rectangles */
-   part_list = edje_edit_parts_list_get(style->obj);
+   part_list = edje_edit_parts_list_get(group->edit_object);
 
    EINA_LIST_FOREACH(part_list, part, part_name)
      {
-        part_type = edje_edit_part_type_get(style->obj, part_name);
+        part_type = edje_edit_part_type_get(group->edit_object, part_name);
 
         if (part_type ==  EDJE_PART_TYPE_SWALLOW)
           {
@@ -343,16 +338,20 @@ live_view_property_style_set(Evas_Object *property,
    edje_edit_string_list_free(part_list);
    /* setting all signals for current widget or style except mouse-like ones */
    if (!pd->in_prog_edit)
-     pd->signals = wm_program_signals_list_get(style);
+     pd->signals = edje_edit_programs_list_get(group->edit_object);
 
-   EINA_LIST_FOREACH(pd->signals, l, sig)
+   Eina_Stringshare *prog_name, *sig_name, *source_name;
+   EINA_LIST_FOREACH(pd->signals, l, prog_name)
      {
-        if ((strcmp(sig->name, "drag") != 0) &&
-            (strncmp(sig->name, "mouse", strlen("mouse")) != 0))
+        sig_name = edje_edit_program_signal_get(group->edit_object, prog_name);
+        source_name = edje_edit_program_source_get(group->edit_object, prog_name);
+        if (!source_name) source_name = eina_stringshare_add("");
+        if ((sig_name) && (strcmp(sig_name, "drag") != 0) &&
+            (strncmp(sig_name, "mouse", strlen("mouse")) != 0))
           {
              signal_parts_exists = true;
              LAYOUT_PROP_ADD(pd->prop_signal.signals,
-                             sig->name,
+                             sig_name,
                              "live_view",
                              "signal")
 
@@ -363,14 +362,14 @@ live_view_property_style_set(Evas_Object *property,
              evas_object_smart_callback_add(button, "clicked",
                                             evas_object_data_get(pd->live_object, SIGNAL_FUNC),
                                             pd->live_object);
-             evas_object_data_set(button, SIGNAL_NAME, eina_stringshare_add(sig->name));
-             evas_object_data_set(button, SIGNAL_SOURCE, eina_stringshare_add(sig->source));
+             evas_object_data_set(button, SIGNAL_NAME, eina_stringshare_add(sig_name));
+             evas_object_data_set(button, SIGNAL_SOURCE, eina_stringshare_add(source_name));
 
              elm_object_part_content_set(item, "elm.swallow.content", button);
              elm_box_pack_end(pd->prop_signal.signals, item);
           }
      }
-   wm_program_signals_list_free(pd->signals);
+   edje_edit_string_list_free(pd->signals);
 
    if (!swallow_parts_exists)
      {
@@ -408,7 +407,7 @@ live_view_property_style_set(Evas_Object *property,
 
 TODO("We need implementation here!~~ ")
 Eina_Bool
-live_view_property_part_add(Evas_Object *property, Part *part)
+live_view_property_part_add(Evas_Object *property, Part_ *part)
 {
    Evas_Object *check;
    PROP_DATA_GET();
@@ -448,7 +447,7 @@ live_view_property_part_add(Evas_Object *property, Part *part)
 }
 
 Eina_Bool
-live_view_property_part_del(Evas_Object *property, Part *part)
+live_view_property_part_del(Evas_Object *property, Part_ *part)
 {
    Evas_Object *check, *item_box, *frame, *frame_check;
    Eina_List *items_list = NULL, *l;
@@ -576,14 +575,14 @@ live_view_property_part_restack_above(Evas_Object *property, Part *part_move, Pa
        (part_move->type != EDJE_PART_TYPE_SWALLOW))
      return false;
 
-   part_list = edje_edit_parts_list_get(pd->style->obj);
+   part_list = edje_edit_parts_list_get(pd->group->edit_object);
 
    /* start searching for part with same type from part_above point.
       We need to find name of this part. */
    after_above_list = eina_list_data_find_list(part_list, part_above->name);
    EINA_LIST_FOREACH(after_above_list, part, part_name)
      {
-        part_type = edje_edit_part_type_get(pd->style->obj, part_name);
+        part_type = edje_edit_part_type_get(pd->group->edit_object, part_name);
 
         if (!strcmp(part_name, part_move->name))
           return false;
@@ -677,17 +676,23 @@ live_view_property_part_restack_below(Evas_Object *property, Part *part_move)
 }
 
 Evas_Object *
-live_view_property_add(Evas_Object *parent, Eina_Bool in_prog_edit)
+live_view_property_add(Evas_Object *object, Group *group, Eina_Bool in_prog_edit)
 {
    Evas_Object *box, *scroller;
    Prop_Data *pd;
 
-   assert(parent != NULL);
+   assert(object != NULL);
+   assert(group != NULL);
+   assert(ap.project != NULL);
+
+   Live_View *live = evas_object_data_get(object, "live_view_structure");
+   assert(live != NULL);
+   assert(live->object != NULL);
 
    pd = mem_calloc(1, sizeof(Prop_Data));
 
    pd->in_prog_edit = in_prog_edit;
-   SCROLLER_ADD(parent, scroller);
+   SCROLLER_ADD(live->panel, scroller);
    BOX_ADD(scroller, box, false, false);
    elm_box_align_set(box, 0.5, 0.0);
    elm_object_content_set(scroller, box);
@@ -698,6 +703,9 @@ live_view_property_add(Evas_Object *parent, Eina_Bool in_prog_edit)
    pd->visual = scroller;
 
    evas_object_data_set(scroller, PROP_DATA, pd);
+
+   /* now filling data */
+   _live_view_property_load(scroller, live, group, object);
 
    return scroller;
 }
@@ -742,14 +750,14 @@ live_view_property_style_unset(Evas_Object *property)
      {
         evas_object_hide(pd->prop_swallow.frame);
         items_list = elm_box_children_get(pd->prop_swallow.swallows);
-        check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
+        check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.icon");
         elm_check_state_set(check, false);
      }
 
    EINA_LIST_FOREACH(items_list, l, check)
      {
         part_name = elm_object_part_text_get(check, NULL);
-        part_type = edje_edit_part_type_get(pd->style->obj, part_name);
+        part_type = edje_edit_part_type_get(pd->group->edit_object, part_name);
         evas_object_smart_callback_del_full(check, "changed",
                                             evas_object_data_get(pd->live_object, SWALLOW_FUNC),
                                             pd->live_object);
@@ -770,7 +778,7 @@ live_view_property_style_unset(Evas_Object *property)
    if (pd->prop_text.frame)
      {
         UPDATE_PROPERTY_FRAME(prop_box, pd->prop_text.frame, pd->prop_text.texts)
-        check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
+        check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.icon");
         elm_check_state_set(check, false);
      }
 

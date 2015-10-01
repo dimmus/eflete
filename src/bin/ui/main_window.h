@@ -40,7 +40,6 @@
 #include "string_common.h"
 
 #include "part_dialog.h"
-#include "state_dialog.h"
 #include "style_dialog.h"
 #include "item_dialog.h"
 #include "colorsel.h"
@@ -94,18 +93,37 @@ enum Menu_Item
 extern int MENU_ITEMS_LIST_BASE[];
 extern int MENU_ITEMS_LIST_STYLE_ONLY[];
 extern int MENU_ITEMS_LIST_MAIN[];
+extern int MENU_ITEMS_LIST_TEMPORARY[];
+
+/**
+ * The validation func for popup action.
+ *
+ * @param data The user data.
+ *
+ * @ingroup Window
+ */
+typedef Eina_Bool(* Popup_Validator_Func)(void *data);
+
+#define POPUP_BUTTON_MASK 0xf
+typedef enum _Popup_Button
+{
+   BTN_NONE       = 0,
+   BTN_OK         = (1 << 0),
+   BTN_CANCEL     = (1 << 1),
+   BTN_SAVE       = (1 << 2),
+   BTN_DONT_SAVE  = (1 << 3),
+   BTN_REPLACE    = (1 << 4)
+} Popup_Button;
 
 /**
  * Adds toolbar with menu and buttons to the given Elementary layout.
- *
- * @param ap The App_Data structure pointer.
  *
  * @return menu Menu object if successful, or NULL elthewhere.
  *
  * @ingroup Window
  */
 Menu *
-ui_menu_add(App_Data *ap);
+ui_menu_add(void);
 
 /**
  * Disable or enable menu item
@@ -152,140 +170,53 @@ typedef Eina_Bool
 /**
  * Adds main window object for Edje tool development.
  *
- * @param ap The App_Data structure pointer.
  * @return EINA_TRUE if window and subblocks created correct, EINA_FALSE if fail.
  *
  * @ingroup Window
  */
 Eina_Bool
-ui_main_window_add(App_Data *ap);
+ui_main_window_add(void);
 
 /**
  * Delete main window object for Edje tool development.
  *
- * @param ap The App_Data structure pointer.
  * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
  *
  * @ingroup Window
  */
 Eina_Bool
-ui_main_window_del(App_Data *ap) EINA_ARG_NONNULL(1);
-
-/**
- * Adds marked panes to the given Elementary layout.
- *
- * @param ap The App_Data structure pointer.
- * @return EINA_TRUE if all panes created and positioned correctly, EINA_FALSE
- * if fail create any one of panes.
- *
- * @ingroup Window
- */
-Eina_Bool
-ui_panes_add(App_Data *ap);
-
-/**
- * Toggles min sizes for left Pane.
- *
- * @param ap The App_Data structure pointer.
- * @param is_on value to toggle min sizes for left Pane ON/OFF.
- * @return EINA_TRUE if succeed, EINA_FALSE otherwise.
- *
- * @ingroup Window
- */
-Eina_Bool
-ui_panes_left_panes_min_size_toggle(App_Data *ap, Eina_Bool is_on);
-
-/**
- * Show panes element on main window
- *
- * @param ap The App_Data structure pointer.
- *
- * @ingroup Window
- * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
- */
-Eina_Bool
-ui_panes_show(App_Data *ap);
-
-/**
- * Hide panes element on main window
- *
- * @param ap The App_Data structure pointer.
- *
- * @ingroup Window
- * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
- */
-Eina_Bool
-ui_panes_hide(App_Data *ap);
-
-/**
- * Clear groupspace with highlight. Clear items from states, signals
- * groups and parts genlists.
- * Moved to own method for the separation of the interaction between the blocks.
- *
- * @param ap The App_Data structure pointer.
- *
- * @ingroup Window
- */
-void
-ui_part_back(App_Data *ap);
-
-/**
- * This function will be called when back from style list button is clicked.
- *
- * @param ap The App_Data structure pointer.
- *
- * @ingroup Window
- */
-void
-ui_style_back(App_Data *ap);
+ui_main_window_del(void);
 
 /**
  * Update displayed information about current part state. Update part object
  * on workspace with new state parameters.
  * Moved to own method for the separation of the interaction between the blocks.
  *
- * @param ap The App_Data structure pointer.
  * @param obj The Evas_Object pointer, wich pointed on states genlist.
  * @param state Name of the state to be set.
  *
  * @ingroup Window
  */
 void
-ui_state_select(App_Data *ap, Evas_Object *obj, Eina_Stringshare *state);
+ui_state_select(Evas_Object *obj, Eina_Stringshare *state);
 
 /**
  * Show information about properties of part. Highlight part object
  * on workspace.
  * Moved to own method for the separation of the interaction between the blocks.
  *
- * @param ap The App_Data structure pointer.
  * @param part The Part pointer.
  *
  * @return Evas_object pointer. States gen list object.
  * @ingroup Window
  */
 Evas_Object *
-ui_part_select(App_Data *ap, Part* part);
-
-/**
- * View style objects on workspace, load signals in list. Show, or update
- * information about group parameters.
- * Moved to own method for the separation of the interaction between the blocks.
- *
- * @param ap The App_Data structure pointer.
- * @param style The @Style structure object.
- * @return EINA_TRUE if successful, EINA_FALSE otherwise.
- *
- * @ingroup Window
- */
-Eina_Bool
-ui_style_clicked(App_Data *ap, Style *style);
+ui_part_select(Part* part);
 
 /**
  * Load project data to App_Data structure. Turn to work state for application.
  * Moved to own method for the separation of the interaction between the blocks.
  *
- * @param ap The App_Data structure pointer.
  * @param selected_file String with opened project file name.
  *
  * @return EINA_TRUE if successful, EINA_FALSE otherwise.
@@ -293,64 +224,59 @@ ui_style_clicked(App_Data *ap, Style *style);
  * @ingroup Window
  */
 Eina_Bool
-ui_edj_load(App_Data* ap, const char *selected_file);
+ui_edj_load(const char *selected_file);
 
 /**
  * Delete selected style/class/layout from current widget
  *
- * @param ap The App_Data structure pointer.
  * @param group_type type of group to be deleted.
  * @return EINA_TRUE if successful, EINA_FALSE otherwise.
  *
  * @ingroup Window
  */
 Eina_Bool
-ui_group_delete(App_Data *ap, Type group_type);
+ui_group_delete(Type group_type);
 
 /**
  * Open new theme from template file.
  *
- * @param ap The App_Data structure pointer.
  * @return EINA_TRUE if successful, EINA_FALSE otherwise.
  *
  * @ingroup Window
  */
 Eina_Bool
-new_theme_create(App_Data *ap);
+new_theme_create(void);
 
 /**
  * Ask user if he wants to close project
  *
- * @param ap The App_Data structure pointer.
  * @param msg The explanation text that will be shown to user. NULL for default message.
  * @return EINA_TRUE if roject is saved or user wants to discard changes, EINA_FALSE otherwise.
  *
  * @ingroup Window
  */
 Eina_Bool
-ui_close_project_request(App_Data *ap, const char *msg);
+ui_close_project_request(const char *msg);
 
 /**
  * Get data of widget user currently works with.
  *
- * @param ap The App_Data structure pointer.
  * @return Widget data structure.
  */
 Widget *
-ui_widget_from_ap_get(App_Data *ap);
+ui_widget_from_ap_get(void);
 
 /**
  * Get data of class user currently works with.
  *
- * @param ap The App_Data structure pointer.
  * @return Class data structure.
  */
 Class *
-ui_class_from_ap_get(App_Data *ap);
+ui_class_from_ap_get(void);
 
 /* FIXME: Add comments */
 Eina_Bool
-register_callbacks(App_Data *ap);
+register_callbacks(void);
 
 /**
  * Add callbacks to widget list. Callbacks are using next signals:
@@ -360,11 +286,10 @@ register_callbacks(App_Data *ap);
  * "wl,group,back",
  *
  * @param wd_list A pointer to widget list object.
- * @param ap The Apllication data.
  * @return EINA_TRUE if succeed, EINA_FALSE otherwise.
  */
 Eina_Bool
-add_callbacks_wd(Evas_Object *wd_list, App_Data *ap);
+add_callbacks_wd(Evas_Object *wd_list);
 
 /**
  * Switch code editing mode ON or OFF.
@@ -372,14 +297,13 @@ add_callbacks_wd(Evas_Object *wd_list, App_Data *ap);
  * blocks are hidden and only Widget List, Life Wiew and Code tab are available
  * for user.
  *
- * @param ap The App_Data structure pointer.
  * @param is_on value to toggle Code Editing mode ON/OFF.
  * @return EINA_TRUE if succeed, EINA_FALSE otherwise.
  *
  * @ingroup Window
  */
 Eina_Bool
-code_edit_mode_switch(App_Data *ap, Eina_Bool is_on);
+code_edit_mode_switch(Eina_Bool is_on);
 
 /**
  * The splash window with animation and info line.
@@ -414,14 +338,12 @@ splash_del(Evas_Object *obj);
 /**
  * Show the main layout blocks.
  *
- * @param ap The Eflete App_Data.
- *
  * @return EINA_TRUE on success, otherwise EINA_FALSE.
  *
  * @ingroup Window
  */
 Eina_Bool
-blocks_show(App_Data *ap);
+blocks_show(void);
 
 /**
  * Open existing project.
@@ -440,29 +362,60 @@ void
 project_save();
 
 /**
- * Mark the opened project as changed, and activate "Save project" button.
- *
- * @param save defines if saving into edje edit is required or not
- *
- * @ingroup Window
- */
-void
-project_changed(Eina_Bool save);
-
-/**
  * Requesting to change project (need to close it, to hide blocks, unset data,
  * etc).
  * This function will ask user what to do with opened project
  * (if it is changed).
- *
- * @param ap The Eflete App_Data.
  *
  * @return EINA_TRUE on success, otherwise EINA_FALSE.
  *
  * @ingroup Window
  */
 Eina_Bool
-project_close(App_Data *ap);
+project_close(void);
+
+/**
+ * Create and show popup with given title and content. Only one - Evas_Object or
+ * text will be setted as content. And you can set define the buttons what you
+ * want to use in the popup. Func have a blocked behavior, while the popup button
+ * not clicked, popup blocked the code runing, used ecore main loop iteration.
+ * Vlidator called only click on the positive buttons like: BTN_OK, BTN_SAVE and
+ * BTN_REPLACE. Another buttons are negative.
+ *
+ * @note Popup have not delete the setted content. User must delete it manualy.
+ * @note The focused object should be in the popup content.
+ *
+ * @param title The Popup title;
+ * @param msg The Popup message, formated text;
+ * @param content The user Evas_Object seted as content to popup;
+ * @param to_focus The object what be focused after popup show;
+ * @param p_btns The flags for set the popup buttons;
+ * @param func The validation func, if returned EINA_FALSE popup not be closed;
+ * @param data The user data for validation func.
+ *
+ * @ingroup Window
+ */
+Popup_Button
+popup_want_action(const char *title,
+                  const char *msg,
+                  Evas_Object *content,
+                  Evas_Object *to_focus,
+                  Popup_Button p_btns,
+                  Popup_Validator_Func func,
+                  void *data);
+
+void
+popup_fileselector_folder_helper(Evas_Object *entry, const char *path);
+
+void
+popup_fileselector_edj_helper(Evas_Object *entry, const char *path);
+
+void
+popup_fileselector_edc_helper(Evas_Object *entry, const char *path);
+
+void
+popup_log_message_helper(const char *msg);
+
 
 /**
  * Export project as develop edj file.
@@ -476,13 +429,12 @@ project_export_develop(void);
  * Update Statusbar field that contains time of last save of current
  * project file.
  *
- * @param ap The App_Data structure pointer.
  * @param is_autosave flag to inform if the function is called by
  *                    'autosave' functionality.
  * @ingroup Window
  */
 void
-save_time_info_update(App_Data *ap, Eina_Bool is_autosave);
+save_time_info_update(Eina_Bool is_autosave);
 
 /**
  * Call dialog window for request

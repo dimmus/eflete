@@ -44,9 +44,26 @@
  *
  */
 
+#include "group_manager.h"
+
 struct _Geom{
    int x, y, w, h;
 };
+
+/**
+ * emited when part is selected in groupedit.
+ * eventinfo - pointer to Part_ structure
+ *
+ * @ingroup Groupedit
+ */
+#define SIGNAL_GROUPEDIT_PART_SELECTED "SIGNAL_GROUPEDIT_PART_SELECTED"
+/**
+ * emited when part is unselected in groupedit.
+ * eventinfo - pointer to Part_ structure
+ *
+ * @ingroup Groupedit
+ */
+#define SIGNAL_GROUPEDIT_PART_UNSELECTED "SIGNAL_GROUPEDIT_PART_UNSELECTED"
 
 /**
  * Geometry of groupedit part primitive.
@@ -60,13 +77,14 @@ typedef struct _Geom Groupedit_Geom;
  * To delete groupedit object use evas_object_del.
  *
  * @param parent The parent object.
+ * @param group Group to be shown.
  *
  * @return The groupedit object.
  *
  * @ingroup Groupedit
  */
 Evas_Object *
-groupedit_add(Evas_Object *parent);
+groupedit_add(Evas_Object *parent, Group *group);
 
 TODO("aspect for groupedit")
 //Eina_Bool
@@ -74,36 +92,6 @@ TODO("aspect for groupedit")
 
 /******************************************************************************/
 /******************************************************************************/
-
-/**
- * Set the editable object, parts, which will be drawn in groupedit.
- *
- * @param obj The groupedit object,
- * @param edit_obj The object being edited,
- * @param file The editable object file, means the file was loaded from an
- *        object.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_edit_object_set(Evas_Object *obj,
-                          Evas_Object *edit_obj,
-                          const char *file);
-
-/**
- * Unset the editable object. All pictured parts from groupedit will be deleted.
- *
- * @param obj The groupedit object.
- *
- * @return The editable object will be returned, or NULL if object not set
- * setted.
- *
- * @ingroup Groupedit
- */
-Evas_Object *
-groupedit_edit_object_unset(Evas_Object *obj);
 
 /**
  * Recalculate all parts geometry for groupedit.
@@ -152,46 +140,40 @@ groupedit_edit_object_part_rename(Evas_Object *obj,
  * add groupedit part.
  *
  * @param obj The groupedit object,
- * @param part The name of the new part,
- * @param type The part type. See <a href="http://docs.enlightenment.org/auto/edje/group__Edje__Object__Part.html">Edje_Part_Type</a>,
- * @param data The string data, used for setting image name, with part type EDJE_PART_TYPE_IMAGE.
+ * @param part Pointer to Part_ sturcture,
  *
  * @return EINA_TRUE on success or EINA_FALSE, on errors.
  *
  * @ingroup Groupedit
  */
 Eina_Bool
-groupedit_edit_object_part_add(Evas_Object *obj, const char *part,
-                               Edje_Part_Type type, const char *data);
+groupedit_edit_object_part_add(Evas_Object *obj, Part_ *part);
 
 /**
  * Delete the part from groupedit and from editable object.
  *
  * @param obj The groupedit object,
- * @param part The name of the part, which will be deleted.
+ * @param part Pointer to part which will be deleted.
  *
  * @return EINA_TRUE on success or EINA_FALSE, on errors.
  *
  * @ingroup Groupedit
  */
 Eina_Bool
-groupedit_edit_object_part_del(Evas_Object *obj, const char *part);
+groupedit_edit_object_part_del(Evas_Object *obj, Part_ *part);
 
 /**
  * Set the current state value to the part.
  *
  * @param obj The groupedit object,
- * @param part The name of the part to set the state,
- * @param state Name of the state to set,
- * @param value Value of the state.
+ * @param part Pointer to Part_ structure
  *
  * @return EINA_TRUE on success or EINA_FALSE, on errors.
  *
  * @ingroup Groupedit
  */
 Eina_Bool
-groupedit_edit_object_part_state_set(Evas_Object *obj, const char *part,
-                                     const char *state, double value);
+groupedit_edit_object_part_state_set(Evas_Object *obj, Part_ *part);
 
 /**
  * Create new state for the give part.

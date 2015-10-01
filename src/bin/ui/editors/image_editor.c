@@ -19,6 +19,7 @@
 
 #include "image_editor.h"
 #include "main_window.h"
+#include "editor.h"
 
 TODO("Rename this file to image_manager")
 
@@ -37,6 +38,7 @@ struct _Item
 {
    int id;
    const char* image_name;
+   const char* source;
    Edje_Edit_Image_Comp comp_type;
 };
 
@@ -55,17 +57,20 @@ struct _Search_Data
 
 struct _Image_Editor
 {
-   Project *pr;
    Evas_Object *win;
    Evas_Object *fs_win;
    Evas_Object *gengrid;
    Evas_Object *layout;
    Search_Data image_search_data;
    Search_Data usage_search_data;
-   Evas_Object *tabs;
-   Eina_List *unapplied_list;
    struct {
-      Ewe_Tabs_Item *tab;
+      Evas_Object *tabs;
+      Evas_Object *image_info;
+      Evas_Object *image_usage;
+      Elm_Object_Item *item_image_info;
+      Elm_Object_Item *item_image_usage;
+   } property;
+   struct {
       Evas_Object *genlist;
    } image_usage_fields;
    struct {
@@ -100,10 +105,10 @@ _grid_label_get(void *data,
 }
 
 static void
-_on_mwin_del(void * data,
-             Evas *e __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+_on_image_editor_del(void * data,
+                     Evas *e __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
 {
    Image_Editor *img_edit = (Image_Editor *)data;
 
@@ -115,16 +120,12 @@ _on_mwin_del(void * data,
 static void
 _image_editor_del(Image_Editor *img_edit)
 {
-   App_Data *ap = app_data_get();
-
    assert(img_edit != NULL);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor--;
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
 
-   evas_object_event_callback_del(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del);
+   evas_object_event_callback_del(img_edit->layout, EVAS_CALLBACK_DEL, _on_image_editor_del);
 
-   img_edit->pr = NULL;
    elm_gengrid_item_class_free(gic);
    elm_genlist_item_class_free(_itc_group);
    elm_genlist_item_class_free(_itc_part);
@@ -133,10 +134,9 @@ _image_editor_del(Image_Editor *img_edit)
    _itc_group = NULL;
    _itc_part = NULL;
    _itc_state = NULL;
-   evas_object_data_del(img_edit->win, IMG_EDIT_KEY);
+   evas_object_data_del(img_edit->layout, IMG_EDIT_KEY);
    evas_object_data_del(img_edit->gengrid, IMG_EDIT_KEY);
    //evas_object_del(img_edit->gengrid);
-   mw_del(img_edit->win);
    _image_info_reset(img_edit);
    free(img_edit);
 }
@@ -146,27 +146,20 @@ _image_editor_image_setup(Evas_Object *image,
                           Image_Editor *img_edit,
                           const Item *it)
 {
-   Eina_Stringshare *str;
-
    assert(image != NULL);
    assert(img_edit != NULL);
    assert(it != NULL);
 
    if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
      {
-        if (ecore_file_exists(it->image_name))
-          evas_object_image_file_set(image, it->image_name, NULL);
+        if (ecore_file_exists(it->source))
+          elm_thumb_file_set(image, it->source, NULL);
         else
-          elm_image_file_set(image, EFLETE_THEME, "elm/image/icon/attention");
+          elm_thumb_file_set(image, EFLETE_THEME, "elm/image/icon/attention");
      }
    else
      {
-        str = eina_stringshare_printf("edje/images/%i", it->id);
-        if (it->id > -1)
-          elm_image_file_set(image, img_edit->pr->dev, str);
-        else
-          elm_image_file_set(image, it->image_name, NULL);
-        eina_stringshare_del(str);
+        elm_thumb_file_set(image, it->source, NULL);
      }
 }
 
@@ -184,57 +177,8 @@ _image_editor_image_create(Evas_Object *parent,
    return image;
 }
 
-/* functions for deferred creation of gengrid icons */
-#define MAX_ICON_SIZE 16
-static void
-_image_content_setup(void *data)
-{
-   int w, h;
-   Content_Init_Data *image_init_data = data;
-
-   assert(image_init_data != NULL);
-
-   _image_editor_image_setup(image_init_data->image_obj,
-                             image_init_data->image_editor,
-                             image_init_data->item_data);
-
-   elm_image_object_size_get(image_init_data->image_obj, &w, &h);
-   if ((w < MAX_ICON_SIZE) && (h < MAX_ICON_SIZE))
-     evas_object_size_hint_max_set(image_init_data->image_obj,
-                                   MAX_ICON_SIZE, MAX_ICON_SIZE);
-   else
-     elm_image_resizable_set(image_init_data->image_obj, false, true);
-   evas_object_show(image_init_data->image_obj);
-
-   free(image_init_data);
-}
-#undef MAX_ICON_SIZE
-
-TODO("Uncomment this function and its usage after usage list will be fixed in lib")
-/*
-static void
-_image_usage_icon_setup(void *data)
-{
-   Eina_List *used_in;
-   Evas_Object *edje_edit_obj;
-   Content_Init_Data *image_init_data = data;
-
-   GET_OBJ(image_init_data->image_editor->pr, edje_edit_obj);
-   used_in = edje_edit_image_usage_list_get(edje_edit_obj,
-                                            image_init_data->item_data->image_name,
-                                            false);
-   if (eina_list_count(used_in) == 0)
-     {
-        elm_image_file_set(image_init_data->image_obj, EFLETE_THEME, "elm/image/icon/attention");
-        elm_image_no_scale_set(image_init_data->image_obj, true);
-        evas_object_show(image_init_data->image_obj);
-     }
-   edje_edit_image_usage_list_free(used_in);
-
-   free(image_init_data);
-}*/
-
 /* icon fetching callback */
+#define MAX_ICON_SIZE 16
 static Evas_Object *
 _grid_content_get(void *data,
                   Evas_Object *obj,
@@ -243,6 +187,7 @@ _grid_content_get(void *data,
    Item *it = data;
    Evas_Object *image_obj = NULL;
    Evas_Object *grid = (Evas_Object *)obj;
+   Resource *res;
 
    assert(it != NULL);
    assert(grid != NULL);
@@ -251,26 +196,29 @@ _grid_content_get(void *data,
 
    assert(img_edit != NULL);
 
-   Content_Init_Data *image_init_data = mem_malloc(sizeof(Content_Init_Data));
-   image_init_data->item_data = it;
-   image_init_data->image_editor = img_edit;
-
    if (!strcmp(part, "elm.swallow.icon"))
      {
-        image_init_data->image_obj = elm_image_add(grid);
-        ecore_job_add(_image_content_setup, image_init_data);
-        image_obj = image_init_data->image_obj;
+        image_obj = elm_thumb_add(grid);
+        _image_editor_image_setup(image_obj, img_edit, it);
+        elm_thumb_reload(image_obj);
+        evas_object_show(image_obj);
+   /* functions for deferred creation of gengrid icons */
+   //ecore_job_add(_image_content_setup, image_init_data);
      }
    else if (!strcmp(part, "elm.swallow.end"))
      {
-        image_init_data->image_obj = elm_icon_add(grid);
-        /* ecore_job_add(_image_usage_icon_setup, image_init_data); */
-        image_obj = image_init_data->image_obj;
-        free(image_init_data);
+        res = (Resource *) pm_resource_get(ap.project->images, it->image_name);
+        if (eina_list_count(res->used_in) == 0)
+          {
+             image_obj = elm_icon_add(grid);
+             elm_image_file_set(image_obj, EFLETE_THEME, "elm/image/icon/attention");
+             evas_object_show(image_obj);
+          }
      }
 
    return image_obj;
 }
+#undef MAX_ICON_SIZE
 
 /* deletion callback */
 static void
@@ -302,8 +250,7 @@ _image_info_update_usage_info(Image_Editor *img_edit, int list_count)
    elm_entry_entry_set(img_edit->usage_search_data.search_entry, "");
    img_edit->usage_search_data.last_item_found = NULL;
 
-   ewe_tabs_item_title_set(img_edit->tabs,
-                           img_edit->image_usage_fields.tab, title);
+   elm_object_item_part_text_set(img_edit->property.item_image_usage, NULL, title);
    eina_stringshare_del(title);
 }
 
@@ -449,65 +396,53 @@ genlist_item_classes_init()
 
 
 static void
-_image_info_usage_update(Image_Editor *img_edit)
+_image_info_usage_update(Image_Editor *img_edit, Resource *res)
 {
-   Eina_List *usage_list, *l;
+   Eina_List *l;
    Evas_Object *list;
    Elm_Object_Item *it_group, *it_part;
-   Edje_Part_Image_Use *image;
    const char *cur_group = NULL;
    const char *cur_part = NULL;
-   Eina_Stringshare *state_name;
+   State *state;
 
    assert(img_edit != NULL);
+   assert(res != NULL);
 
    if (!img_edit->image_data_fields.image_name) return;
 
-   usage_list =
-      edje_edit_image_usage_list_get(img_edit->pr->global_object,
-                                     img_edit->image_data_fields.image_name,
-                                     false);
-   if (!eina_list_count(usage_list))
-     {
-        edje_edit_image_usage_list_free(usage_list);
-        return;
-     }
+   if (!eina_list_count(res->used_in))
+     return;
 
    genlist_item_classes_init();
 
    list = img_edit->image_usage_fields.genlist;
 
-   EINA_LIST_FOREACH(usage_list, l, image)
+   EINA_LIST_FOREACH(res->used_in, l, state)
      {
-        if ((!cur_group) || (strcmp(cur_group, image->group)))
+        if ((!cur_group) || (strcmp(cur_group, state->part->group->name)))
           {
              it_group = elm_genlist_item_append(list, _itc_group,
-                                                eina_stringshare_add(image->group),
+                                                eina_stringshare_add(state->part->group->name),
                                                 NULL, ELM_GENLIST_ITEM_NONE,
                                                 NULL, NULL);
-             cur_group = image->group;
+             cur_group = state->part->group->name;
              cur_part = NULL;
           }
-        if ((!cur_part) || (strcmp(cur_part, image->part)))
+        if ((!cur_part) || (strcmp(cur_part, state->part->name)))
           {
              it_part = elm_genlist_item_append(list, _itc_part,
-                                               eina_stringshare_add(image->part),
+                                               eina_stringshare_add(state->part->name),
                                                it_group, ELM_GENLIST_ITEM_NONE,
                                                NULL, NULL);
-             cur_part = image->part;
+             cur_part = state->part->name;
           }
-        if ((cur_part) && (!strcmp(cur_part, image->part)))
+        if ((cur_part) && (!strcmp(cur_part, state->part->name)))
           {
-             state_name = eina_stringshare_printf("\"%s\" %.1f",
-                                                  image->state.name,
-                                                  image->state.value);
-             elm_genlist_item_append(list, _itc_state, state_name,
+             elm_genlist_item_append(list, _itc_state, state->name,
                                      it_part, ELM_GENLIST_ITEM_NONE,
                                      NULL, NULL);
           }
-       }
-
-   edje_edit_image_usage_list_free(usage_list);
+     }
 }
 
 static void
@@ -517,7 +452,6 @@ _image_info_setup(Image_Editor *img_edit,
    Eina_Stringshare *str;
    Evas_Object *image;
    Edje_Edit_Image_Comp comp;
-   Eina_List *usage_list;
    int w, h;
 
    assert(img_edit != NULL);
@@ -532,7 +466,7 @@ _image_info_setup(Image_Editor *img_edit,
    img_edit->image_data_fields.image = image;
    evas_object_show(image);
 
-   comp =  edje_edit_image_compression_type_get(img_edit->pr->global_object, it->image_name);
+   comp =  edje_edit_image_compression_type_get(ap.project->global_object, it->image_name);
 
    if (comp != EDJE_EDIT_IMAGE_COMP_USER)
      {
@@ -549,7 +483,7 @@ _image_info_setup(Image_Editor *img_edit,
 
    if (comp == EDJE_EDIT_IMAGE_COMP_LOSSY)
      {
-        int quality = edje_edit_image_compression_rate_get(img_edit->pr->global_object,
+        int quality = edje_edit_image_compression_rate_get(ap.project->global_object,
                                                            it->image_name);
         elm_spinner_value_set(img_edit->image_data_fields.quality, quality);
      }
@@ -568,24 +502,10 @@ _image_info_setup(Image_Editor *img_edit,
 
    _image_info_type_setup(img_edit->image_data_fields.layout, it->image_name);
 
-   usage_list = edje_edit_image_usage_list_get(img_edit->pr->global_object,
-                                               it->image_name, false);
-   _image_info_update_usage_info(img_edit, eina_list_count(usage_list));
-   _image_info_usage_update(img_edit);
-   edje_edit_image_usage_list_free(usage_list);
+   Resource *res = (Resource *) pm_resource_get(ap.project->images, it->image_name);
+   _image_info_update_usage_info(img_edit, eina_list_count(res->used_in));
+   _image_info_usage_update(img_edit, res);
    evas_object_smart_calculate(img_edit->image_data_fields.layout);
-}
-
-static void
-_search_reset_cb(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   Search_Data *search_data = data;
-
-   assert(search_data != NULL);
-
-   search_data->last_item_found = NULL;
 }
 
 /* item selection change callback */
@@ -602,24 +522,29 @@ _grid_sel(void *data,
    int selected_images_count = eina_list_count(sel_list);
 
    if (selected_images_count == 1)
-     _image_info_setup(img_edit,
-                       elm_object_item_data_get(eina_list_data_get(sel_list)));
+     {
+        _image_info_setup(img_edit,
+                          elm_object_item_data_get(eina_list_data_get(sel_list)));
+        img_edit->image_search_data.last_item_found = eina_list_data_get(sel_list);
+     }
    else
      _image_info_reset(img_edit);
 }
 
 static inline Item *
 _image_editor_gengrid_item_data_create(Evas_Object *edje_edit_obj,
-                                       const char *image_name)
+                                       External_Resource *res)
 {
    assert(edje_edit_obj != NULL);
-   assert(image_name != NULL);
+   assert(res != NULL);
 
    Item *it = (Item *)mem_malloc(sizeof(Item));
-   it->image_name = eina_stringshare_add(image_name);
+   it->image_name = eina_stringshare_add(res->name);
    it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
    it->comp_type = edje_edit_image_compression_type_get(edje_edit_obj,
                                                         it->image_name);
+   it->source = res->source;
+
    return it;
 }
 
@@ -648,6 +573,8 @@ _on_image_done(void *data,
    const Eina_List *images, *l;
    const char *selected = event_info;
    Uns_List *image = NULL;
+   External_Resource *res;
+   const char *file_name;
 
    Image_Editor *img_edit = (Image_Editor *)data;
 
@@ -655,7 +582,6 @@ _on_image_done(void *data,
 
    if ((!selected) || (!strcmp(selected, "")))
      goto del;
-
    images = elm_fileselector_selected_paths_get(obj);
 
    EINA_LIST_FOREACH(images, l, selected)
@@ -670,20 +596,39 @@ _on_image_done(void *data,
              WIN_NOTIFY_ERROR(obj, _("Unable to add folder"))
              continue;
           }
-        image = mem_malloc(sizeof(Uns_List));
-        image->data = (void *)eina_stringshare_add(selected);
-        image->act_type = ACTION_TYPE_ADD;
-        img_edit->unapplied_list = eina_list_append(img_edit->unapplied_list,
-                                                    image);
+        file_name = ecore_file_file_get(selected);
+
+        res = mem_calloc(1, sizeof(External_Resource));
+        res->name = eina_stringshare_add(file_name);
+        res->source = eina_stringshare_printf("%s/images/%s", ap.project->develop_path, file_name);
+
+        if (!ecore_file_exists(res->source))
+          {
+             ecore_file_cp(selected, res->source);
+
+             ap.project->images = eina_list_sorted_insert(ap.project->images, (Eina_Compare_Cb) resource_cmp, res);
+          }
+        else
+          {
+             WIN_NOTIFY_ERROR(obj, _("File exist"));
+             free(image);
+             free(res);
+             continue;
+          }
+        edje_edit_image_add(ap.project->global_object, selected);
 
         it = (Item *)mem_malloc(sizeof(Item));
-        it->image_name = eina_stringshare_add(selected);
-        it->id = -1;
+        it->image_name = eina_stringshare_add(file_name);
+        it->id = edje_edit_image_id_get(ap.project->global_object, it->image_name);
         item = elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
                                               img_edit->group_items.linked,
                                               _grid_sel, img_edit);
+        it->source = res->source;
         elm_gengrid_item_selected_set(item, true);
      }
+   editor_save(ap.project->global_object);
+   TODO("Remove this line once edje_edit_image_add would be added into Editor Modulei and saving would work properly")
+   ap.project->changed = true;
 del:
    ecore_job_add(_fs_del, img_edit);
 }
@@ -745,13 +690,11 @@ _on_button_delete_clicked_cb(void *data,
    Item *it = NULL;
    Eina_List *grid_list, *l, *l2;
    int notdeleted = 0;
-   Eina_List * in_use = NULL, *used_in = NULL;
-   char *name;
-   Edje_Part_Image_Use *item;
+   Eina_List * in_use = NULL;
    char buf[BUFF_MAX];
    int symbs = 0;
-   Uns_List *image = NULL;
-   Eina_List *used;
+   External_Resource *res;
+   State *state;
 
    assert(img_edit != NULL);
    assert(img_edit->gengrid != NULL);
@@ -763,39 +706,35 @@ _on_button_delete_clicked_cb(void *data,
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
         it = elm_object_item_data_get(grid_item);
-        used = edje_edit_image_usage_list_get(img_edit->pr->global_object, it->image_name, EINA_TRUE);
-        if (!used)
+        res = pm_resource_get(ap.project->images, it->image_name);
+
+        if (!res->used_in)
           {
              elm_object_item_del(grid_item);
-
-             image = mem_malloc(sizeof(Uns_List));
-             image->data = (void *)eina_stringshare_add(it->image_name);
-             image->act_type = ACTION_TYPE_DEL;
-             img_edit->unapplied_list = eina_list_append(img_edit->unapplied_list,
-                                                         image);
+             edje_edit_image_del(ap.project->global_object, it->image_name);
+             ap.project->images = pm_resource_del(ap.project->images, res);
           }
         else
           {
              notdeleted++;
              if (notdeleted < 4)
-                in_use = eina_list_append(in_use, it->image_name);
+                in_use = eina_list_append(in_use, res);
              elm_gengrid_item_selected_set(grid_item, false);
           }
      }
    if (notdeleted == 1)
      {
-        name = eina_list_nth(in_use, 0);
-        used_in = edje_edit_image_usage_list_get(img_edit->pr->global_object, name, false);
+        res = eina_list_nth(in_use, 0);
+
         snprintf(buf, BUFF_MAX, _("Image is used in:"));
         symbs = strlen(buf);
-        EINA_LIST_FOREACH(used_in, l, item)
+        EINA_LIST_FOREACH(res->used_in, l, state)
           {
              snprintf(buf + symbs, BUFF_MAX - symbs, _("<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"),
-                      item->group, item->part, item->state.name, item->state.value);
-             symbs+= strlen(name);
+                      state->part->group->name, state->part->name, state->parsed_name, state->parsed_val);
+             symbs += strlen(res->name);
              break; TODO("remove this break after warning style remake")
           }
-          edje_edit_image_usage_list_free(used_in);
         NOTIFY_WARNING("%s", buf);
      }
    else if (notdeleted >1)
@@ -805,31 +744,23 @@ _on_button_delete_clicked_cb(void *data,
                                          notdeleted),
                  notdeleted);
         symbs = strlen(buf);
-        EINA_LIST_FOREACH(in_use, l, name)
+        EINA_LIST_FOREACH(in_use, l, res)
           {
-             snprintf(buf + symbs, BUFF_MAX - symbs, "<br>%s", name);
-             symbs+= strlen(name);
+             snprintf(buf + symbs, BUFF_MAX - symbs, "<br>%s", res->name);
+             symbs += strlen(res->name);
           }
         if (notdeleted >= 4)
            snprintf(buf + symbs, BUFF_MAX - symbs, "<br>...");
         NOTIFY_WARNING("%s", buf);
      }
-   eina_list_free(in_use);
+
+   editor_save(ap.project->global_object);
+   TODO("Remove this line once edje_edit_image_del would be added into Editor Modulei and saving would work properly")
+   ap.project->changed = true;
 }
 
-static void
-_on_button_close_clicked_cb(void *data,
-                            Evas_Object *obj __UNUSED__,
-                            void *event_info __UNUSED__)
-{
-   Image_Editor *img_edit = (Image_Editor *)data;
-
-   assert(img_edit != NULL);
-
-   eina_list_free(img_edit->unapplied_list);
-   _image_editor_del(img_edit);
-}
-
+TODO("Refactor and uncomment when savings and other stuff of project would be more stable")
+/*
 static void
 _on_button_apply_clicked_cb(void *data,
                             Evas_Object *obj __UNUSED__,
@@ -837,7 +768,6 @@ _on_button_apply_clicked_cb(void *data,
 {
    Image_Editor *img_edit = (Image_Editor *)data;
    Uns_List *unit = NULL;
-   App_Data *ap = app_data_get();
    Eina_List *l, *names = NULL;
    Eina_Bool multiselect = false;
    const Eina_List *items;
@@ -851,13 +781,13 @@ _on_button_apply_clicked_cb(void *data,
      {
         if (unit->act_type == ACTION_TYPE_DEL)
           {
-             if (edje_edit_image_del(img_edit->pr->global_object, unit->data))
-               ap->project->nsimage_list = eina_list_append(ap->project->nsimage_list, unit);
+             if (edje_edit_image_del(ap.project->global_object, unit->data))
+               ap.project->nsimage_list = eina_list_append(ap.project->nsimage_list, unit);
           }
-        else if (edje_edit_image_add(img_edit->pr->global_object, unit->data))
-          ap->project->nsimage_list = eina_list_append(ap->project->nsimage_list, unit);
+        else if (edje_edit_image_add(ap.project->global_object, unit->data))
+          ap.project->nsimage_list = eina_list_append(ap.project->nsimage_list, unit);
      }
-   pm_save_to_dev(img_edit->pr, NULL, false);
+   //pm_save_to_dev(img_edit->pr, NULL, false);
 
    eina_list_free(img_edit->unapplied_list);
 
@@ -880,7 +810,7 @@ _on_button_apply_clicked_cb(void *data,
         it = elm_gengrid_selected_item_get(img_edit->gengrid);
         if (!it)
           {
-            WIN_NOTIFY_WARNING(img_edit->win, _("Image not selected"));
+            WIN_NOTIFY_WARNING(main_window_get(), _("Image not selected"));
             return;
           }
         item = elm_object_item_data_get(it);
@@ -893,17 +823,19 @@ _on_button_apply_clicked_cb(void *data,
 
    if (!multiselect)
      {
+        TODO("FIX IT! This line breaks images with / in name");
         ei = strdup(ecore_file_file_get(item->image_name));
-        evas_object_smart_callback_call(img_edit->win, SIG_IMAGE_SELECTED, ei);
+        evas_object_smart_callback_call(main_window_get(), SIG_IMAGE_SELECTED, ei);
         free(ei);
      }
    else
-     evas_object_smart_callback_call(img_edit->win, SIG_IMAGE_SELECTED,
+     evas_object_smart_callback_call(main_window_get(), SIG_IMAGE_SELECTED,
                                      (Eina_List *) names);
 
-   project_changed(false);
+   //project_changed(false);
    _image_editor_del(img_edit);
 }
+*/
 
 ITEM_SEARCH_FUNC(genlist, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE, NULL)
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, NULL)
@@ -1083,39 +1015,82 @@ _image_usage_layout_create(Image_Editor *img_edit, Evas_Object *parent)
                                   _on_usage_search_entry_changed_cb, img_edit);
    evas_object_smart_callback_add(entry, "activated",
                                   _search_next_genlist_item_cb, img_edit);
-   evas_object_smart_callback_add(img_edit->image_usage_fields.genlist,
-                                  "pressed", _search_reset_cb,
-                                  &(img_edit->usage_search_data));
    img_edit->usage_search_data.search_entry = entry;
    img_edit->usage_search_data.last_item_found = NULL;
+   evas_object_hide(layout);
    return layout;
 }
 
+static void
+_image_info_click(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   Image_Editor *img_edit = (Image_Editor *)data;
+
+   assert(img_edit != NULL);
+
+   evas_object_hide(elm_layout_content_unset(img_edit->property.tabs, NULL));
+   elm_layout_content_set(img_edit->property.tabs,
+                          NULL,
+                          img_edit->property.image_info);
+}
+static void
+_usage_info_click(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   Image_Editor *img_edit = (Image_Editor *)data;
+
+   assert(img_edit != NULL);
+
+   evas_object_hide(elm_layout_content_unset(img_edit->property.tabs, NULL));
+   elm_layout_content_set(img_edit->property.tabs,
+                          NULL,
+                          img_edit->property.image_usage);
+}
 
 static void
 _image_info_initiate(Image_Editor *img_edit)
 {
-   Ewe_Tabs_Item *it = NULL;
+   Evas_Object *toolbar;
 
    assert(img_edit != NULL);
 
-   img_edit->tabs = ewe_tabs_add(img_edit->layout);
-   elm_object_style_set(img_edit->tabs, "bookmark");
+   img_edit->property.tabs = elm_layout_add(img_edit->layout);
+   elm_layout_theme_set(img_edit->property.tabs, "layout", "tabs", "default");
 
-   it = ewe_tabs_item_append(img_edit->tabs, NULL, "Image Info", "bookmark");
-   ewe_tabs_item_content_set(img_edit->tabs, it,
-                             _image_info_box_create(img_edit));
-   it = ewe_tabs_item_append(img_edit->tabs, NULL, "", "bookmark");
-   ewe_tabs_item_content_set(img_edit->tabs, it,
-                             _image_usage_layout_create(img_edit,
-                                                        img_edit->layout));
-   img_edit->image_usage_fields.tab = it;
+   toolbar = elm_toolbar_add(img_edit->property.tabs);
+   elm_object_style_set(toolbar, "editor_tabs_horizontal");
+   elm_layout_content_set(img_edit->property.tabs, "elm.swallow.toolbar", toolbar);
+   elm_toolbar_shrink_mode_set(toolbar, ELM_TOOLBAR_SHRINK_SCROLL);
+   elm_toolbar_select_mode_set(toolbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_toolbar_align_set(toolbar, 0.0);
+
+   img_edit->property.item_image_info = elm_toolbar_item_append(toolbar, NULL,
+                                                                _("Image Info"),
+                                                                _image_info_click,
+                                                                img_edit);
+   img_edit->property.item_image_usage = elm_toolbar_item_append(toolbar, NULL,
+                                                                 _(""),
+                                                                 _usage_info_click,
+                                                                 img_edit);
+
+   img_edit->property.image_info = _image_info_box_create(img_edit);
+   img_edit->property.image_usage = _image_usage_layout_create(img_edit,
+                                                               img_edit->layout);
+
+   elm_layout_content_set(img_edit->property.tabs,
+                          NULL,
+                          img_edit->property.image_info);
 
    elm_object_part_content_set(img_edit->layout,
-                               "eflete.swallow.image_info", img_edit->tabs);
+                               "eflete.swallow.image_info", img_edit->property.tabs);
 
    _image_info_update_usage_info(img_edit, 0);
-   evas_object_show(img_edit->tabs);
+   evas_object_show(img_edit->property.tabs);
 }
 
 Eina_Bool
@@ -1123,27 +1098,27 @@ _image_editor_init(Image_Editor *img_edit)
 {
    Eina_List *l = NULL;
    Item *it = NULL;
-   const char* image_name = NULL;
    Eina_List *images = NULL;
    int counter = 0;
+   External_Resource *res;
 
    assert(img_edit != NULL);
 
    _image_editor_gengrid_group_items_add(img_edit);
-   images = edje_edit_images_list_get(img_edit->pr->global_object);
+   images = ap.project->images;
 
    if (images)
      {
-        EINA_LIST_FOREACH(images, l, image_name)
+        EINA_LIST_FOREACH(images, l, res)
            {
               counter++;
-              if (!image_name)
+              if (!res->name)
                 {
                    ERR("name not found for image #%d",counter);
                    continue;
                 }
-              it = _image_editor_gengrid_item_data_create(img_edit->pr->global_object,
-                                                          image_name);
+              it = _image_editor_gengrid_item_data_create(ap.project->global_object,
+                                                          res);
               if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
                 elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
                                         img_edit->group_items.included,
@@ -1155,7 +1130,6 @@ _image_editor_init(Image_Editor *img_edit)
            }
          elm_gengrid_item_bring_in(elm_gengrid_first_item_get(img_edit->gengrid),
                                    ELM_GENGRID_ITEM_SCROLLTO_TOP);
-         edje_edit_string_list_free(images);
      }
    elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_AUTO);
@@ -1165,37 +1139,18 @@ _image_editor_init(Image_Editor *img_edit)
 }
 
 Evas_Object *
-image_editor_window_add(Project *project, Image_Editor_Mode mode)
+image_editor_window_add(Image_Editor_Mode mode)
 {
    Evas_Object *button;
    Evas_Object *ic = NULL;
    Evas_Object *search_entry = NULL;
-   /* temporary solution, while it not moved to modal window */
-   App_Data *ap = app_data_get();
 
-   assert(project != NULL);
+   assert(ap.project != NULL);
 
    Image_Editor *img_edit = (Image_Editor *)mem_calloc(1, sizeof(Image_Editor));
-   img_edit->pr = project;
 
-   img_edit->win = mw_add("dialog", _on_button_close_clicked_cb, img_edit);
-
-   assert(img_edit->win != NULL);
-
-   if (mode == SINGLE)
-     mw_title_set(img_edit->win, _("Image manager: choose image"));
-   else if (mode == TWEENS)
-     mw_title_set(img_edit->win, _("Image manager: select tween images"));
-   else if (mode == MULTIPLE)
-     mw_title_set(img_edit->win, _("Image manager"));
-
-   ic = elm_icon_add(img_edit->win);
-   elm_icon_standard_set(ic, "image");
-   mw_icon_set(img_edit->win, ic);
-
-   img_edit->layout = elm_layout_add(img_edit->win);
+   img_edit->layout = elm_layout_add(main_window_get());
    elm_layout_theme_set(img_edit->layout, "layout", "image_editor", "default");
-   elm_win_inwin_content_set(img_edit->win, img_edit->layout);
 
    img_edit->gengrid = elm_gengrid_add(img_edit->layout);
    elm_object_part_content_set(img_edit->layout,
@@ -1208,9 +1163,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
 
    if (mode == SINGLE)
      {
-       elm_gengrid_multi_select_set(img_edit->gengrid, false);
-       evas_object_smart_callback_add(img_edit->gengrid, "clicked,double",
-                                      _on_button_apply_clicked_cb, img_edit);
+        elm_gengrid_multi_select_set(img_edit->gengrid, false);
      }
    else if (mode == MULTIPLE)
      {
@@ -1223,8 +1176,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
         elm_gengrid_multi_select_set(img_edit->gengrid, true);
         elm_gengrid_multi_select_mode_set(img_edit->gengrid,
                                           ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
-        evas_object_smart_callback_add(img_edit->gengrid, "clicked,double",
-                                       _on_button_apply_clicked_cb, img_edit);
      }
 
    elm_gengrid_select_mode_set(img_edit->gengrid, ELM_OBJECT_SELECT_MODE_ALWAYS);
@@ -1245,6 +1196,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
                                   _on_button_add_clicked_cb, img_edit);
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.add_btn", button);
+
    button = elm_button_add(img_edit->layout);
    evas_object_show(button);
    ic = elm_icon_add(button);
@@ -1263,24 +1215,10 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
                                   _on_images_search_entry_changed_cb, img_edit);
    evas_object_smart_callback_add(search_entry, "activated",
                                   _search_next_gengrid_item_cb, img_edit);
-   evas_object_smart_callback_add(img_edit->gengrid, "pressed", _search_reset_cb,
-                                  &(img_edit->image_search_data));
    img_edit->image_search_data.search_entry = search_entry;
    img_edit->image_search_data.last_item_found = NULL;
 
    _image_info_initiate(img_edit);
-
-   BUTTON_ADD(img_edit->win, button, _("Close"));
-   evas_object_smart_callback_add(button, "clicked", _on_button_close_clicked_cb,
-                                  img_edit);
-   elm_object_part_content_set(img_edit->win,
-                               "eflete.swallow.btn_close", button);
-
-   BUTTON_ADD(img_edit->win, button, _("Apply"));
-   evas_object_smart_callback_add(button, "clicked", _on_button_apply_clicked_cb,
-                                  img_edit);
-   elm_object_part_content_set(img_edit->win,
-                               "eflete.swallow.btn_ok", button);
 
    if (!gic)
      {
@@ -1291,7 +1229,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
         gic->func.del = _grid_del;
      }
 
-   evas_object_show(img_edit->win);
    elm_object_focus_set(search_entry, true);
    if (!_image_editor_init(img_edit))
      {
@@ -1299,13 +1236,12 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
         abort();
      }
    evas_object_data_set(img_edit->gengrid, IMG_EDIT_KEY, img_edit);
-   evas_object_data_set(img_edit->win, IMG_EDIT_KEY, img_edit);
+   evas_object_data_set(img_edit->layout, IMG_EDIT_KEY, img_edit);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
-   evas_object_event_callback_add(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del, img_edit);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+   evas_object_event_callback_add(img_edit->layout, EVAS_CALLBACK_DEL, _on_image_editor_del, img_edit);
 
-   ap->modal_editor++;
-   return img_edit->win;
+   return img_edit->layout;
 }
 
 Eina_Bool

@@ -24,6 +24,7 @@
 #include "groupedit.h"
 #include "common_macro.h"
 #include "logger.h"
+#include "group_manager.h"
 
 typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;
 typedef struct _Groupedit_Part Groupedit_Part;
@@ -32,7 +33,6 @@ typedef struct _Groupedit_Item Groupedit_Item;
 static const char SIG_CHANGED[] = "container,changed";
 static const char SIG_PART_SEPARETE_OPEN[] = "parts,separete,open";
 static const char SIG_PART_SEPARETE_CLOSE[] = "parts,separete,close";
-static const char SIG_PART_SELECTED[] = "part,selected";
 static const char SIG_PART_UNSELECTED[] = "part,unselected";
 static const char SIG_OBJ_AREA_CHANGED[] = "object,area,changed";
 static const char SIG_GEOMETRY_CHANGED[] = "geometry,changed";
@@ -46,7 +46,6 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_CHANGED, "(iiii)"},
    {SIG_PART_SEPARETE_OPEN, ""},
    {SIG_PART_SEPARETE_CLOSE, ""},
-   {SIG_PART_SELECTED, "s"},
    {SIG_PART_UNSELECTED, "s"},
    {SIG_OBJ_AREA_CHANGED, "(iiii)"},
    {SIG_GEOMETRY_CHANGED, "(iiii)"},
@@ -56,6 +55,7 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
 struct _Ws_Groupedit_Smart_Data
 {
    Evas_Object_Smart_Clipped_Data base;
+   Group *group;
    Evas *e;
    Evas_Object *obj;
    Evas_Object *event;
@@ -90,9 +90,7 @@ struct _Ws_Groupedit_Smart_Data
    } handler_BR;
    Eina_Bool handler_TL_pressed : 1;
    Eina_Bool handler_BR_pressed : 1;
-   const char *style;
-   Evas_Object *edit_obj;
-   const char *edit_obj_file;
+   Evas_Object *edit_obj_clipper;
    Eina_List *parts;
    struct {
       Evas_Object *obj;
@@ -138,12 +136,11 @@ struct _Ws_Groupedit_Smart_Data
  */
 struct _Groupedit_Part
 {
-   Eina_Stringshare *name;    /**< The part name.  */
+   Part_ *part;               /**< Pointer to part */
    Evas_Object *bg;           /**< The background, uses for container parts TABLE or BOX */
    Evas_Object *draw;         /**< The evas primitive to be draw in groupedit.
                                    The valid evas object types: image, rectangle,
                                    text and textblock.*/
-   Eina_Bool visible : 1;     /**< Visible or not on canvas. */
    Evas_Object *border;       /**< The object border, use for next part types:
                                    TEXT, TEXTBLOCK, SWALLOW, SPACER. In another
                                    case border has opacity 0. This object serves
@@ -176,11 +173,10 @@ Eina_Bool
 _parts_recalc(Ws_Groupedit_Smart_Data *sd);
 
 Eina_Bool
-_edit_object_part_add(Ws_Groupedit_Smart_Data *sd, const char *part,
-                      Edje_Part_Type type, const char *data);
+_edit_object_part_add(Ws_Groupedit_Smart_Data *sd, Part_ *part);
 
 Eina_Bool
-_edit_object_part_del(Ws_Groupedit_Smart_Data *sd, const char *part);
+_edit_object_part_del(Ws_Groupedit_Smart_Data *sd, Part_ *part);
 
 void
 _select_item_move_to_top(Ws_Groupedit_Smart_Data *sd);

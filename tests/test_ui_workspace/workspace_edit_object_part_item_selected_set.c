@@ -59,7 +59,7 @@ EFLETE_TEST(workspace_edit_object_part_item_selected_set_test_p1)
    Evas_Object *parent, *workspace;
    Style *style = NULL;
    Evas *e = NULL;
-   Part *part = NULL;
+//   Part *part = NULL;
    Eina_File *mmap_file = NULL;
    Eina_Stringshare *item, *part_name;
    const char *file = "./edj_build/workspace_edit_object_part_item_selected_set.edj";
@@ -70,19 +70,20 @@ EFLETE_TEST(workspace_edit_object_part_item_selected_set_test_p1)
    part_name = eina_stringshare_add("table");
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    mmap_file = eina_file_open(file, EINA_FALSE);
-   workspace = workspace_add(parent);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "layout/table", LAYOUT, NULL);
    wm_style_data_load(style, e, mmap_file);
-   workspace_edit_object_set(workspace, style, file);
-   part = wm_part_by_name_find(style, part_name);
-   workspace_highlight_set(workspace, part);
+   //workspace_edit_object_set(workspace, style, file);
+//   part = wm_part_by_name_find(style, part_name);
+//   workspace_highlight_set(workspace, part);
+   ck_assert(0);
 
    res = workspace_edit_object_part_item_selected_set(workspace, item, EINA_TRUE);
    ck_assert_msg(res == EINA_TRUE, "Failed change selection state of the part item");
 
    wm_style_free(style);
-   workspace_edit_object_unset(workspace);
+   //workspace_edit_object_unset(workspace);
    eina_file_close(mmap_file);
    eina_stringshare_del(item);
    eina_stringshare_del(part_name);
@@ -123,7 +124,7 @@ EFLETE_TEST(workspace_edit_object_part_item_selected_set_test_n1)
    Evas_Object *parent, *workspace;
    Style *style = NULL;
    Evas *e = NULL;
-   Part *part = NULL;
+//   Part *part = NULL;
    Eina_File *mmap_file = NULL;
    Eina_Stringshare *item, *part_name;
    const char *file = "./edj_build/workspace_edit_object_part_item_selected_set.edj";
@@ -134,19 +135,20 @@ EFLETE_TEST(workspace_edit_object_part_item_selected_set_test_n1)
    part_name = eina_stringshare_add("table");
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    mmap_file = eina_file_open(file, EINA_FALSE);
-   workspace = workspace_add(parent);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "layout/table", LAYOUT, NULL);
    wm_style_data_load(style, e, mmap_file);
-   workspace_edit_object_set(workspace, style, file);
-   part = wm_part_by_name_find(style, part_name);
-   workspace_highlight_set(workspace, part);
+   //workspace_edit_object_set(workspace, style, file);
+//   part = wm_part_by_name_find(style, part_name);
+//   workspace_highlight_set(workspace, part);
+   ck_assert(0);
 
    res = workspace_edit_object_part_item_selected_set(workspace, item, EINA_TRUE);
    ck_assert_msg(res == EINA_FALSE, "Change selection state of the unexist part item");
 
    wm_style_free(style);
-   workspace_edit_object_unset(workspace);
+   //workspace_edit_object_unset(workspace);
    eina_file_close(mmap_file);
    eina_stringshare_del(item);
    eina_stringshare_del(part_name);
@@ -195,17 +197,17 @@ EFLETE_TEST(workspace_edit_object_part_item_selected_set_test_n4)
    item = eina_stringshare_add("first");
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    mmap_file = eina_file_open(file, EINA_FALSE);
-   workspace = workspace_add(parent);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "layout/table", LAYOUT, NULL);
    wm_style_data_load(style, e, mmap_file);
-   workspace_edit_object_set(workspace, style, file);
+   //workspace_edit_object_set(workspace, style, file);
 
    res = workspace_edit_object_part_item_selected_set(workspace, item, EINA_TRUE);
    ck_assert_msg(res == EINA_FALSE, "Change selection state of the part item without part selection");
 
    wm_style_free(style);
-   workspace_edit_object_unset(workspace);
+   //workspace_edit_object_unset(workspace);
    eina_file_close(mmap_file);
    eina_stringshare_del(item);
    evas_object_del(workspace);

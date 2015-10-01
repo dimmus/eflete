@@ -14,13 +14,31 @@ group { name: "elm/label/base/default";
          scale: 1;
          clip_to: "label.text.clip";
          description { state: "default" 0.0;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 1.0;
             text {
-               style: "eflete_textblock_style";
-               min: 0 1;
+               style: "main_text";
+               align: 0.5 0.0;
             }
          }
+         description { state: "disabled" 0.0;
+            text {
+               style: "main_text_disabled";
+               align: 0.5 0.0;
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "enabled";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text";
+      }
+      program { name: "disabled";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "elm.text";
       }
    }
 }

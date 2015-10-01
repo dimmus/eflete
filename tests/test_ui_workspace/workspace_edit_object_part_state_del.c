@@ -58,33 +58,31 @@
 EFLETE_TEST(workspace_edit_object_part_state_del_test_p)
 {
    Eina_Bool res = EINA_FALSE;
-   App_Data *ap;
    Style *style = NULL;
    Evas *e = NULL;
    Eina_File *mmap_file = NULL;
 
    elm_init(0, 0);
    app_init();
-   ap = app_data_get();
-   ui_main_window_add(ap);
+   ui_main_window_add();
    mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_state_del.edj", EINA_FALSE);
-   e = evas_object_evas_get(ap->workspace);
+   e = evas_object_evas_get(ap.workspace);
    style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
-   workspace_edit_object_set(ap->workspace, style, "./edj_build/workspace_edit_object_part_state_del.edj");
-   history_genlist_get(ap->history, ap->workspace);
-   history_module_add(style->obj);
+   //workspace_edit_object_set(ap.workspace, style, "./edj_build/workspace_edit_object_part_state_del.edj");
+   /*history_genlist_get(ap.history, ap.workspace);
+   history_module_add(style->obj);*/
 
    res = edje_edit_state_exist(style->obj, "radio", "visible", 0.0);
    ck_assert_msg(res != EINA_FALSE, "State not exist in edje edit object");
-   res = workspace_edit_object_part_state_del(ap->workspace, "radio", "visible", 0.0);
+   res = workspace_edit_object_part_state_del(ap.workspace, "radio", "visible", 0.0);
    ck_assert_msg(res == EINA_TRUE, "Failed delete state from part, loaded into workspace");
    res = edje_edit_state_exist(style->obj, "radio", "visible", 0.0);
    ck_assert_msg(res == EINA_FALSE, "Deleted state still exist in edje edit object");
 
    wm_style_free(style);
    eina_file_close(mmap_file);
-   workspace_edit_object_unset(ap->workspace);
+   //workspace_edit_object_unset(ap.workspace);
    app_shutdown();
    elm_shutdown();
 }
@@ -122,32 +120,30 @@ END_TEST
 EFLETE_TEST(workspace_edit_object_part_state_del_test_p1)
 {
    Eina_Bool res = EINA_FALSE;
-   App_Data *ap;
    Style *style = NULL;
    Evas *e = NULL;
    Eina_File *mmap_file = NULL;
 
    elm_init(0, 0);
    app_init();
-   ap = app_data_get();
-   ui_main_window_add(ap);
+   ui_main_window_add();
    mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_state_del.edj", EINA_FALSE);
-   e = evas_object_evas_get(ap->workspace);
+   e = evas_object_evas_get(ap.workspace);
    style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
-   workspace_edit_object_set(ap->workspace, style, "./edj_build/workspace_edit_object_part_state_del.edj");
-   history_genlist_get(ap->history, ap->workspace);
-   history_module_add(style->obj);
-   workspace_edit_object_part_state_add(ap->workspace, "bg", "default", 0.5);
+   //workspace_edit_object_set(ap.workspace, style, "./edj_build/workspace_edit_object_part_state_del.edj");
+   /*history_genlist_get(ap.history, ap.workspace);
+   history_module_add(style->obj);*/
+   workspace_edit_object_part_state_add(ap.workspace, "bg", "default", 0.5);
 
-   res = workspace_edit_object_part_state_del(ap->workspace, "bg", "default", 0.5);
+   res = workspace_edit_object_part_state_del(ap.workspace, "bg", "default", 0.5);
    ck_assert_msg(res == EINA_TRUE, "Failed delete state from part, loaded into workspace");
    res = edje_edit_state_exist(style->obj, "bg", "default", 0.5);
    ck_assert_msg(res == EINA_FALSE, "Delete state still exist in edje edit object");
 
    wm_style_free(style);
    eina_file_close(mmap_file);
-   workspace_edit_object_unset(ap->workspace);
+   //workspace_edit_object_unset(ap.workspace);
    app_shutdown();
    elm_shutdown();
 }

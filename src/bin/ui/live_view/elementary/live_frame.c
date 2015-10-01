@@ -144,13 +144,11 @@ _frame_send_signal(void *data,
 }
 
 Evas_Object *
-widget_frame_create(Evas_Object *parent, const Style *style)
+widget_frame_create(Evas_Object *parent, const Group *group)
 {
    assert(parent != NULL);
-   assert(style != NULL);
-
-   Eina_Stringshare *style_name;
-   standard_widget_name_parse(style->full_group_name, NULL, NULL, &style_name);
+   assert(group != NULL);
+   assert(group->style != NULL);
 
    Evas_Object *object, *frame;
 
@@ -159,15 +157,14 @@ widget_frame_create(Evas_Object *parent, const Style *style)
 
    FRAME_ADD(object, frame, true, "");
    elm_box_pack_end(object, frame);
-   elm_object_style_set(frame, style_name);
+   elm_object_style_set(frame, group->style);
    FRAME_ADD(object, frame, true, "");
    elm_box_pack_end(object, frame);
-   elm_object_style_set(frame, style_name);
+   elm_object_style_set(frame, group->style);
 
    evas_object_data_set(object, SWALLOW_FUNC, _on_frame_swallow_check);
    evas_object_data_set(object, TEXT_FUNC, _on_frame_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, _frame_send_signal);
 
-   eina_stringshare_del(style_name);
    return object;
 }

@@ -54,10 +54,8 @@
 EFLETE_TEST(noti_info_show_test_p)
 {
    elm_init(0,0);
-   App_Data *app;
    app_init();
-   app = app_data_get();
-   ui_main_window_add(app);
+   ui_main_window_add();
    ck_assert_msg(noti_info_show(win_layout_get(), "text", 1),
                  "can't show notify with text");
    app_shutdown();

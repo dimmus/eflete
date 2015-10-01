@@ -25,10 +25,6 @@ Suite* test_suite (void) {
 
    tcase_add_test(tcase, groupedit_add_test_p);
 
-   tcase_add_test(tcase, groupedit_edit_object_set_test_p);
-
-   tcase_add_test(tcase, groupedit_edit_object_unset_test_p);
-
    tcase_add_test(tcase, groupedit_bg_set_test_p);
    tcase_add_test(tcase, groupedit_bg_set_test_p1);
 

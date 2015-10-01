@@ -22,19 +22,18 @@
 /* TODO: We can't set swallows or texts or even send signal into map...
    need some additional work on it */
 Evas_Object *
-widget_map_create(Evas_Object *parent, const Style *style)
+widget_map_create(Evas_Object *parent, const Group *group)
 {
    assert(parent != NULL);
-   assert(style != NULL);
+   assert(group != NULL);
+   assert(group->class != NULL);
+   assert(group->style != NULL);
 
-   Eina_Stringshare *style_name, *class;
    Elm_Map_Overlay *ovl1, *ovl2, *grp1;
-
-   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
 
    Evas_Object *object = elm_map_add(parent);
 
-   if (strcmp(class, "marker_bubble") == 0)
+   if (strcmp(group->class, "marker_bubble") == 0)
      {
         /* "marker_bubble" group */
         elm_map_overlay_bubble_add(object);
@@ -66,9 +65,7 @@ widget_map_create(Evas_Object *parent, const Style *style)
         /* "scale" group */
         elm_map_overlay_scale_add(object, 550, 720);
      }
-   elm_object_style_set(object, style_name);
+   elm_object_style_set(object, group->style);
 
-   eina_stringshare_del(class);
-   eina_stringshare_del(style_name);
    return object;
 }

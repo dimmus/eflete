@@ -47,17 +47,19 @@ _widget_list_get(Evas_Object *naviframe)
    return item_gl_widgets;
 }
 
+TODO("Outdated function! Remove! No more EWE_TABS")
 static inline Evas_Object *
-_current_naviframe_get(Evas_Object *tabs)
+_current_naviframe_get(Evas_Object *tabs __UNUSED__)
 {
-   Ewe_Tabs_Item *selected;
+/*   Ewe_Tabs_Item *selected;
 
    assert(tabs != NULL);
 
    selected = ewe_tabs_active_item_get(tabs);
    if (evas_object_data_get(tabs, WIDGETS_TAB_DATA_KEY) == selected)
       return evas_object_data_get(tabs, WIDGETS_NAVIFRAME_DATA_KEY);
-   return evas_object_data_get(tabs, LAYOUTS_NAVIFRAME_DATA_KEY);
+   return evas_object_data_get(tabs, LAYOUTS_NAVIFRAME_DATA_KEY); */
+   return NULL;
 }
 
 static Elm_Object_Item *
@@ -158,8 +160,7 @@ _on_item_add_clicked(void *data,
    assert(tabs != NULL);
 
    /* Checking number of groups */
-   App_Data *app = app_data_get();
-   Eina_List *groups = edje_file_collection_list(app->project->dev);
+   Eina_List *groups = edje_file_collection_list(ap.project->dev);
    unsigned int count = eina_list_count(groups);
    edje_file_collection_list_free(groups);
    if (count >= 2)
@@ -210,7 +211,7 @@ _item_part_content_get(void *data,
           elm_check_state_set(content, true);
         else
            elm_check_state_set(content, false);
-        elm_object_style_set(content, "widgetlist/default");
+        elm_object_style_set(content, "eye");
 
         evas_object_smart_callback_add(content, "changed", _on_check_click, _part);
         evas_object_data_set(content, PARTLIST_DATA_KEY, obj);
@@ -294,7 +295,7 @@ _item_part_item_content_get(void *data,
      }
    return NULL;
 }
-
+/*
 static char *
 _item_layout_label_get(void *data,
                       Evas_Object *obj __UNUSED__,
@@ -306,7 +307,7 @@ _item_layout_label_get(void *data,
    assert(layout->full_group_name != NULL);
 
    return strdup(layout->full_group_name);
-}
+}*/
 
 
 static char *
@@ -321,7 +322,7 @@ _item_style_label_get(void *data,
 
    return strdup(style->name);
 }
-
+/*
 static char *
 _item_widget_label_get(void *data,
                        Evas_Object *obj __UNUSED__,
@@ -334,7 +335,7 @@ _item_widget_label_get(void *data,
 
    return strdup(widget->name);
 }
-
+*/
 static char *
 _item_class_label_get(void *data,
                       Evas_Object *obj __UNUSED__,
@@ -450,7 +451,7 @@ _on_part_item_unselect(void *data,
 
    evas_object_smart_callback_call(tabs, "wl,part,item,unselect", (char *)item_name);
 }
-
+/*
 static void
 _layout_add_cb(void *data,
                Evas_Object *obj,
@@ -477,7 +478,7 @@ _layout_del_cb(void *data,
    assert(block != NULL);
 
    evas_object_smart_callback_call(block, "wl,layout,del", NULL);
-}
+}*/
 
 static void
 _unset_cur_style(void *data,
@@ -1022,11 +1023,12 @@ ui_widget_list_class_data_reload(Evas_Object *gl_classes, Eina_Inlist *classes)
    return true;
 }
 
+TODO("This is old function and PROBABLY won't be ever used again.")
 Evas_Object *
-ui_widget_list_add(Evas_Object *parent)
+ui_widget_list_add(Evas_Object *parent __UNUSED__)
 {
-   Evas_Object *tabs;
-   Evas_Object *nf_widgets, *nf_layouts;
+   Evas_Object *tabs = NULL;
+/*   Evas_Object *nf_widgets, *nf_layouts;
    Evas_Object *ic, *bt;
    Evas_Object *gl_widgets = NULL;
    Evas_Object *gl_layouts = NULL;
@@ -1055,8 +1057,10 @@ ui_widget_list_add(Evas_Object *parent)
         _itc_layout->func.del = NULL;
      }
    tabs = ewe_tabs_add(parent);
+
    widgets_tab = ewe_tabs_item_append(tabs, NULL, _("Themes"), NULL);
    layouts_tab = ewe_tabs_item_append(tabs, NULL, _("Layouts"), NULL);
+
 
 #define NAVI(TYPE, TEXT) \
    nf_##TYPE = elm_naviframe_add(tabs); \
@@ -1103,7 +1107,7 @@ ui_widget_list_add(Evas_Object *parent)
    evas_object_data_set(tabs, WIDGETS_NAVIFRAME_DATA_KEY, nf_widgets);
    evas_object_data_set(tabs, LAYOUTS_NAVIFRAME_DATA_KEY, nf_layouts);
    evas_object_data_set(tabs, WIDGETS_TAB_DATA_KEY, widgets_tab);
-   evas_object_data_set(tabs, LAYOUTS_TAB_DATA_KEY, layouts_tab);
+   evas_object_data_set(tabs, LAYOUTS_TAB_DATA_KEY, layouts_tab); */
 
    return tabs;
 }
@@ -1635,10 +1639,11 @@ ui_widget_list_style_parts_reload(Evas_Object *object, Style *style)
      }
 }
 
+TODO("Really old function! Remove!")
 Eina_Bool
-ui_widget_list_tab_activate(Evas_Object *object, unsigned int tab_index)
+ui_widget_list_tab_activate(Evas_Object *object __UNUSED__, unsigned int tab_index __UNUSED__)
 {
-   Ewe_Tabs_Item * tab_item;
+/*   Ewe_Tabs_Item * tab_item;
    const Eina_List *tabs_list;
 
    assert(object != NULL);
@@ -1647,7 +1652,7 @@ ui_widget_list_tab_activate(Evas_Object *object, unsigned int tab_index)
    tab_item = eina_list_nth(tabs_list, tab_index);
    if (!tab_item) return false;
 
-   ewe_tabs_active_item_set(object, tab_item);
+   ewe_tabs_active_item_set(object, tab_item); */
    return true;
 }
 

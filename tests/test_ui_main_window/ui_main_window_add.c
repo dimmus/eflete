@@ -51,7 +51,7 @@
  * @step 7 Check (App_Data)->live_view on NULL
  * @step 8 Check (App_Data)->color_sel on NULL
  * </td>
- * <td>(App_Data *) app_data</td>
+ * <td></td>
  * <td>All checks are passed</td>
  * </tr>
  * @}
@@ -59,21 +59,16 @@
 
 EFLETE_TEST(ui_main_window_add_test_p)
 {
-   App_Data *app_data = NULL;
    Eina_Bool ret = EINA_FALSE;
 
    elm_init(0, 0);
    app_init();
-   app_data = app_data_get();
 
-   ret = ui_main_window_add(app_data);
+   ret = ui_main_window_add();
    ck_assert_msg(ret == EINA_TRUE, "Failed to create main window");
-   ck_assert_msg(app_data->win != NULL, "Failed to create window object");
-   ck_assert_msg(app_data->win_layout != NULL, "Failed to create window layout");
-   ck_assert_msg(app_data->menu != NULL, "Failed to create window menu");
-   ck_assert_msg(app_data->workspace != NULL, "Failed to create workspace object");
-   ck_assert_msg(app_data->live_view != NULL, "Failed to create live view object");
-   ck_assert_msg(app_data->colorsel != NULL, "Failed to create color selector object");
+   ck_assert_msg(ap.win != NULL, "Failed to create window object");
+   ck_assert_msg(ap.win_layout != NULL, "Failed to create window layout");
+   ck_assert_msg(ap.menu != NULL, "Failed to create window menu");
 
    app_shutdown();
    elm_shutdown();

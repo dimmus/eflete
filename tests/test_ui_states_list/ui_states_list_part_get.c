@@ -58,7 +58,7 @@
  */
 EFLETE_TEST(ui_states_list_part_get_test_p1)
 {
-   Evas_Object *window, *gl_states;
+   Evas_Object *window;
    Evas *e;
    Style *style;
    Part *part, *states_list_part;
@@ -74,11 +74,11 @@ EFLETE_TEST(ui_states_list_part_get_test_p1)
    e = evas_object_evas_get(window);
    style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
-   gl_states = ui_states_list_add(window);
+   ui_states_list_add(window);
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
-   ui_states_list_data_set(gl_states, style, part);
+   ui_states_list_data_set(style, part);
 
-   states_list_part = ui_states_list_part_get(gl_states);
+   states_list_part = ui_states_list_part_get();
    ck_assert_msg(states_list_part != NULL,
                  "Part wasn't set.");
    ck_assert_str_eq(part->name, "bg");
@@ -115,57 +115,17 @@ END_TEST
  */
 EFLETE_TEST(ui_states_list_part_get_test_p2)
 {
-   Evas_Object *window, *gl_states;
-   Part *states_list_part;
-
-   elm_init(0,0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
-   window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   gl_states = ui_states_list_add(window);
-
-   states_list_part = ui_states_list_part_get(gl_states);
-   ck_assert_msg(states_list_part == NULL,
-                 "Part was set.");
-
-   elm_theme_extension_del(NULL, EFLETE_THEME);
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_states_list_part_get
- * @{
- * <tr>
- * <td>ui_states_list_part_get</td>
- * <td>ui_states_list_part_get_test_n1</td>
- * <td>
- * @precondition
- * @step 1 initialized elm.
- * @step 2 add theme extension "eflete theme".
- * @step 3 created Window.
- *
- * @procedure
- * @step 1 Call function ui_states_list_part_get(window).
- * @step 2 Check returned value.
- * </td>
- * <td>(Evas_Object *) window</td>
- * <td>NULL</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(ui_states_list_part_get_test_n1)
-{
    Evas_Object *window;
    Part *states_list_part;
 
    elm_init(0,0);
    elm_theme_extension_add(NULL, EFLETE_THEME);
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   ui_states_list_add(window);
 
-   states_list_part = ui_states_list_part_get(window);
+   states_list_part = ui_states_list_part_get();
    ck_assert_msg(states_list_part == NULL,
-                 "Wrong object contain part.");
+                 "Part was set.");
 
    elm_theme_extension_del(NULL, EFLETE_THEME);
 

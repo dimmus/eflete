@@ -24,57 +24,29 @@
 #include "win32.h"
 #endif
 
-App_Data *ap = NULL;
+App_Data ap;
 
 Evas_Object *
 win_layout_get(void)
 {
-   assert(ap != NULL);
-   assert(ap->win_layout != NULL);
+   assert(ap.win_layout != NULL);
 
-   return ap->win_layout;
-}
-
-App_Data *
-app_data_get(void)
-{
-   if (!ap)
-     ap = mem_calloc(1, sizeof (App_Data));
-   return ap;
+   return ap.win_layout;
 }
 
 Evas_Object *
 main_window_get(void)
 {
-   assert(ap != NULL);
-   assert(ap->win != NULL);
+   assert(ap.win != NULL);
 
-   return ap->win;
+   return ap.win;
 }
 
 Evas_Object *
 colorselector_get(void)
 {
-   assert(ap != NULL);
-   if (!ap->colorsel) ap->colorsel = colorselector_add(ap->win);
-   return ap->colorsel;
-}
-
-History *
-history_get(void)
-{
-   assert(ap != NULL);
-   return ap->history;
-}
-
-Eina_Bool
-app_free()
-{
-   assert(ap != NULL);
-   TODO("here need delete all created objects from ap!")
-   free(ap);
-   ap = NULL;
-   return true;
+   if (!ap.colorsel) ap.colorsel = colorselector_add(ap.win);
+   return ap.colorsel;
 }
 
 Eina_Bool
@@ -119,8 +91,7 @@ app_init()
    if (!ecore_file_exists(EFLETE_SETT_PATH))
      ecore_file_mkdir(EFLETE_SETT_PATH);
 
-   app_data_get();
-   if (!config_init(ap)) return false;
+   if (!config_init()) return false;
 
    if (!ewe_init(0, 0))
      {
@@ -128,14 +99,16 @@ app_init()
         return false;
      }
 
-   ap->theme = elm_theme_new();
+   ap.theme = elm_theme_new();
 #ifndef _WIN32
    char *theme = strdup(EFLETE_THEME);
 #else
    char *theme = escape_colons(EFLETE_THEME);
 #endif
-   elm_theme_set(ap->theme, theme);
+   elm_theme_set(ap.theme, theme);
    free(theme);
+
+   elm_need_ethumb();
 
    return true;
 }
@@ -143,21 +116,15 @@ app_init()
 Eina_Bool
 app_shutdown()
 {
-   assert(ap != NULL);
-
-   config_shutdown(ap);
-   elm_theme_free(ap->theme);
+   config_shutdown();
+   elm_theme_free(ap.theme);
    eina_shutdown();
    efreet_shutdown();
    ecore_shutdown();
    edje_shutdown();
    logger_shutdown();
    ewe_shutdown();
-   if (!app_free())
-     {
-        CRIT("Can't free application data.");
-        return false;
-     }
+
    return true;
 }
 

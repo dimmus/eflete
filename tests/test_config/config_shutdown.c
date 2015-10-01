@@ -52,7 +52,7 @@ EFLETE_TEST(config_shutdown_test_p)
    elm_init(0,0);
    app_init();
 
-   config_shutdown(app_data_get());
+   config_shutdown();
    ck_assert_msg(config_get() == NULL, "Config not initialized.");
 
    elm_shutdown();

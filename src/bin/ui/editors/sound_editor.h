@@ -51,7 +51,6 @@ sound_editor_added_sounds_free(Eina_List *add_snd);
  * Show the whole inwin window by using some data
  * about loaded project (edj file)
  *
- * @param project currently opened project
  * @param mode one of the following values:
  * @li SOUND_EDITOR_EDIT editor mode;
  * @li SOUND_EDITOR_SAMPLE_SELECT sample selector mode;
@@ -62,7 +61,7 @@ sound_editor_added_sounds_free(Eina_List *add_snd);
  * @ingroup Sound_Editor
  */
 Evas_Object *
-sound_editor_window_add(Project *project, Sound_Editor_Mode mode);
+sound_editor_window_add(Sound_Editor_Mode mode);
 
 /**
  * This function will select the sound item by it's name. It is very useful

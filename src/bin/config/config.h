@@ -53,13 +53,26 @@ struct _Config
    struct { /* take and save left panes size */
       double left; /**< position of left panes */
       double right; /**< position of right panes */
-      double left_hor; /**< position of left_hor panes */
       double right_hor; /**< position of right_hor panes */
-      double center; /**< position of center panes */
    } panes;
+   Eina_List *recents; /**< The list of recent projects */
    const char *profile; /**< profile name */
 };
 typedef struct _Config Config;
+
+/**
+ * @struct _Recent
+ *
+ * Containt data about early opened project.
+ * 
+ * @ingroup Config
+ */
+struct _Recent
+{
+   char *name;
+   char *path;
+};
+typedef struct _Recent Recent;
 
 /**
  * @enum _COLORS
@@ -194,45 +207,41 @@ typedef struct _Shortcuts Shortcuts;
 /**
  * Initialisation config module.
  *
- * @param ap App Data containing important information.
  * @return EINA_TRUE if init complete successful. EINA_FALSE overwise.
  *
  * @ingroup Config
  */
 Eina_Bool
-config_init(App_Data *ap);
+config_init(void);
 
 /**
  * Release the config module.
  *
- * @param ap App Data containing important information.
  * @return EINA_TRUE if init complete successful. EINA_FALSE overwise.
  *
  * @ingroup Config
  */
 Eina_Bool
-config_shutdown(App_Data *ap);
+config_shutdown(void);
 
 /**
  * Load the Eflete config.
  *
- * @param ap App Data containing important information.
- *
  * @ingroup Config
  */
 void
-config_load(App_Data *ap);
+config_load(void);
 
 /**
  * Save the Eflete config.
  *
  * @return EINA_TRUE if save complete successful. EINA_FALSE if fail
- * save data to disk.
+ *                   save data to disk.
  *
  * @ingroup Config
  */
 Eina_Bool
-config_save(App_Data *ap);
+config_save(void);
 
 /**
  * Get the Eflete config.
@@ -247,14 +256,31 @@ config_get(void);
 /**
  * Update data about sizes of Panes in configuration WITHOUT saving the Eflete config.
  *
- * @param ap The App_Data structure pointer.
- *
  * @return EINA_TRUE if succeed, EINA_FALSE otherwise.
  *
  * @ingroup Config
  */
 Eina_Bool
-config_panes_sizes_data_update(App_Data *ap);
+config_panes_sizes_data_update(void);
+
+/**
+ * Add new project data to recent list.
+ *
+ * @param name The project name;
+ * @param path The project path.
+ *
+ * @ingroup Config
+ */
+void
+config_recent_add(const char *name, const char *path);
+
+/**
+ * Clear the recent list.
+ *
+ * @ingroup Config
+ */
+void
+config_recent_list_clear(void);
 
 /**
  * Load the Eflete profile by name.

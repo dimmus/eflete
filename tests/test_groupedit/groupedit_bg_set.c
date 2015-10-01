@@ -61,7 +61,7 @@ EFLETE_TEST(groupedit_bg_set_test_p)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    image = evas_object_image_add(evas_object_evas_get(parent));
 
-   groupedit = groupedit_add(parent);
+   groupedit = groupedit_add(parent, NULL);
    res = groupedit_bg_set(groupedit, image);
    ck_assert_msg(res != EINA_FALSE, "Failed create groupedit object.");
    evas_object_del(image);
@@ -101,7 +101,7 @@ EFLETE_TEST(groupedit_bg_set_test_p1)
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
-   groupedit = groupedit_add(parent);
+   groupedit = groupedit_add(parent, NULL);
    res = groupedit_bg_set(groupedit, NULL);
    ck_assert_msg(res != EINA_FALSE, "Failed create groupedit object.");
    evas_object_del(parent);

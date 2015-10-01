@@ -86,23 +86,21 @@ _on_scroller_swallow_check(void *data,
 }
 
 Evas_Object *
-widget_scroller_create(Evas_Object *parent, const Style *style)
+widget_scroller_create(Evas_Object *parent, const Group *group)
 {
    assert(parent != NULL);
-   assert(style != NULL);
-
-   Eina_Stringshare *class;
-   Eina_Stringshare *style_name;
-   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+   assert(group != NULL);
+   assert(group->style != NULL);
+   assert(group->class != NULL);
 
    Evas_Object *object;
 
-   if ((strcmp(class, "entry") == 0) || (strcmp(class, "entry_single") == 0))
+   if ((strcmp(group->class, "entry") == 0) || (strcmp(group->class, "entry_single") == 0))
      {
         object = elm_entry_add(parent);
         evas_object_data_set(object, SWALLOW_FUNC, on_swallow_check);
         elm_entry_scrollable_set(object, true);
-        if (strcmp(class, "entry_single") == 0)
+        if (strcmp(group->class, "entry_single") == 0)
           elm_entry_single_line_set(object, true);
      }
    else
@@ -110,7 +108,7 @@ widget_scroller_create(Evas_Object *parent, const Style *style)
         object = elm_scroller_add(parent);
         evas_object_data_set(object, SWALLOW_FUNC, _on_scroller_swallow_check);
      }
-   elm_object_style_set(object, style_name);
+   elm_object_style_set(object, group->style);
 
    elm_scroller_policy_set(object, ELM_SCROLLER_POLICY_ON,
                            ELM_SCROLLER_POLICY_ON);
@@ -118,7 +116,5 @@ widget_scroller_create(Evas_Object *parent, const Style *style)
    evas_object_data_set(object, TEXT_FUNC, on_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, send_signal);
 
-   eina_stringshare_del(class);
-   eina_stringshare_del(style_name);
    return object;
 }

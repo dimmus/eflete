@@ -51,18 +51,16 @@
  */
 EFLETE_TEST(config_load_test_p)
 {
-   App_Data *ap;
    Config *config;
 
    elm_init(0,0);
-   ap = app_data_get();
    app_init();
-   ui_main_window_add(ap);
+   ui_main_window_add();
 
    config = config_get();
    ck_assert_msg(config != NULL, "Config not been loaded.");
 
-   app_free(ap);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST

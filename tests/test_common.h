@@ -30,23 +30,20 @@ teardown(const char *path)
    ecore_file_recursive_rm(path);
 }
 
-static void
+static Project *
 setup(const char *name)
 {
-   Project_Thread *thread;
    Project *pro;
 
    ecore_file_recursive_rm(name);
-   thread = pm_project_import_edj(name, ".", "./edj_build/"TEST_NAME".edj",
+   pm_project_import_edj(name, ".", "./edj_build/"TEST_NAME".edj",
          NULL, _test_end_cb, NULL);
-   if (!thread)
-      ck_abort_msg("Setup is failed! Project import not started.");
    ecore_main_loop_begin();
 
-   pro = pm_project_thread_project_get(thread);
+   pro = pm_project_thread_project_get();
    if (!pro)
       ck_abort_msg("Setup is failed! Project not imported");
-   pm_project_close(pro);
 
-   pm_project_thread_free(thread);
+   pm_project_thread_free();
+   return pro;
 }

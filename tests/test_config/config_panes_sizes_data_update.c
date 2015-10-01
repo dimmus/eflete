@@ -43,10 +43,10 @@
  * @step 4 create main window
  *
  * @procedure
- * @step 1 Call config_panes_sizes_data_update(ap)
+ * @step 1 Call config_panes_sizes_data_update(NULL)
  * @step 2 Check returned value
  * </td>
- * <td>App_Data *app_data</td>
+ * <td></td>
  * <td>EINA_TRUE</td>
  * </tr>
  * @}
@@ -55,17 +55,15 @@ EFLETE_TEST (config_panes_sizes_data_update_test_p)
 {
    elm_init(0, 0);
    elm_theme_extension_add(NULL, EFLETE_THEME);
-   App_Data *app_data;
    Eina_Bool result = EINA_FALSE;
 
    app_init();
-   app_data = app_data_get();
-   ui_main_window_add(app_data);
+   ui_main_window_add();
 
-   result = config_panes_sizes_data_update(app_data);
+   result = config_panes_sizes_data_update();
    ck_assert_msg(result == EINA_TRUE, "Could not update Panes sizes data");
 
-   evas_object_del(app_data->win);
+   evas_object_del(ap.win);
    elm_shutdown();
 }
 END_TEST

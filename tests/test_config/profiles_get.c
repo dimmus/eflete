@@ -54,13 +54,13 @@ EFLETE_TEST(profiles_get_test_p)
 
    elm_init(0,0);
    app_init();
-   config_load(app_data_get());
+   config_load();
 
    profiles = profiles_get();
    ck_assert_msg(profiles != NULL, "Config not loaded.");
 
    EINA_LIST_STRINGSHARE_FREE(profiles);
-   config_shutdown(app_data_get());
+   config_shutdown();
    elm_shutdown();
 }
 END_TEST

@@ -37,7 +37,6 @@ void pm_project_import_edc_test_p3(int);
 void pm_project_thread_cancel_test_p(int);
 
 void pm_project_thread_free_test_p(int);
-void pm_project_thread_free_test_n(int);
 
 void pm_project_open_test_p(int);
 

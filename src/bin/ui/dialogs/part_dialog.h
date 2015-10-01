@@ -45,6 +45,6 @@
  * @ingroup New_Part_Dialog
  */
 Evas_Object *
-part_dialog_add(App_Data *ap);
+part_dialog_add(void);
 
 #endif /* PART_DIALOG_H */

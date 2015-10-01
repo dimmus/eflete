@@ -63,21 +63,18 @@ _test_end_p1_cb(void *data __UNUSED__,
 
 EFLETE_TEST (pm_project_import_edc_test_p1)
 {
-   Project_Thread *thread;
    Project *pro;
 
    elm_init(0,0);
    app_init();
    ecore_file_recursive_rm("./UTC");
 
-   thread = pm_project_import_edc("UTC", ".", "./edj_build/radio.edc",
-                                  "-id ./edj_build -fd ./edj_build -sd ./edj_build",
-                                  NULL, _test_end_p1_cb, NULL);
+   pm_project_import_edc("UTC", ".", "./edj_build/radio.edc",
+                         "-id ./edj_build -fd ./edj_build -sd ./edj_build",
+                         NULL, _test_end_p1_cb, NULL);
    ecore_main_loop_begin();
 
-   ck_assert_msg(thread != NULL, "Thread for import radio.edc to new project not started!");
-
-   pro = pm_project_thread_project_get(thread);
+   pro = pm_project_thread_project_get();
    pm_project_close(pro);
    ecore_file_recursive_rm("./UTC");
 
@@ -118,7 +115,6 @@ _test_end_p2_cb(void *data __UNUSED__,
 
 EFLETE_TEST (pm_project_import_edc_test_p2)
 {
-   Project_Thread *thread;
    Project *pro;
    //Eina_Bool files_is = EINA_FALSE;
    //Eet_File *ef;
@@ -127,11 +123,9 @@ EFLETE_TEST (pm_project_import_edc_test_p2)
    app_init();
    ecore_file_recursive_rm("./UTC");
 
-   thread = pm_project_import_edc("UTC", ".", "./edj_build/radio.edc",
-                                  "-id ./edj_build -fd ./edj_build -sd ./edj_build",
-                                  NULL, _test_end_p2_cb, NULL);
-   if (!thread)
-     ck_abort_msg("Project thread not started!");
+   pm_project_import_edc("UTC", ".", "./edj_build/radio.edc",
+                         "-id ./edj_build -fd ./edj_build -sd ./edj_build",
+                         NULL, _test_end_p2_cb, NULL);
    ecore_main_loop_begin();
 
    /*
@@ -144,7 +138,7 @@ EFLETE_TEST (pm_project_import_edc_test_p2)
    ck_assert_msg(files_is != EINA_FALSE, "Specific project file not created.");
    */
 
-   pro = pm_project_thread_project_get(thread);
+   pro = pm_project_thread_project_get();
    pm_project_close(pro);
    ecore_file_recursive_rm("./UTC");
 
@@ -187,7 +181,6 @@ _test_progress_cb(void *data __UNUSED__,
 
 EFLETE_TEST (pm_project_import_edc_test_p3)
 {
-   Project_Thread *thread;
    Project *pro;
 
    elm_init(0,0);
@@ -195,16 +188,14 @@ EFLETE_TEST (pm_project_import_edc_test_p3)
    ecore_file_recursive_rm("./UTC");
 
    res = EINA_FALSE;
-   thread = pm_project_import_edc("UTC", ".", "./edj_build/radio.edc",
-                                  "-id ./edj_build -fd ./edj_build -sd ./edj_build",
-                                  _test_progress_cb, _test_end_p2_cb, NULL);
-   if (!thread)
-     ck_abort_msg("Project thread not started!");
+   pm_project_import_edc("UTC", ".", "./edj_build/radio.edc",
+                         "-id ./edj_build -fd ./edj_build -sd ./edj_build",
+                         _test_progress_cb, _test_end_p2_cb, NULL);
    ecore_main_loop_begin();
 
    ck_assert_msg(res, "Progress callback did't called!");
 
-   pro = pm_project_thread_project_get(thread);
+   pro = pm_project_thread_project_get();
    pm_project_close(pro);
    ecore_file_recursive_rm("./UTC");
 

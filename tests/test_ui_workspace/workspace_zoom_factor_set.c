@@ -54,27 +54,24 @@
  */
 EFLETE_TEST (workspace_zoom_factor_set_test_p)
 {
-   App_Data *app = NULL;
-   Style *style = NULL;
+   //Style *style = NULL;
 
    elm_init(0, 0);
    app_init();
-   setup("workspace_zoom_factor_get_test_p");
 
-   app = app_data_get();
-   ui_main_window_add(app);
-   app->project = pm_project_open("./workspace_zoom_factor_get_test_p/workspace_zoom_factor_get_test_p.pro");
-   wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->mmap_file);
-   blocks_show(app);
-   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
-   ui_style_clicked(app, style);
+   ui_main_window_add();
+   ap.project = setup("workspace_zoom_factor_get_test_p");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
+   blocks_show();
+   //style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
+   //ui_style_clicked(style);
 
-   ck_assert_msg(workspace_zoom_factor_set(app->workspace, 1.5), "Failed get zoom factor");
+   ck_assert_msg(workspace_zoom_factor_set(ap.workspace, 1.5), "Failed get zoom factor");
 
-   pm_project_close(app->project);
-   app->project = NULL;
-   ui_main_window_del(app);
+   pm_project_close(ap.project);
+   ap.project = NULL;
+   ui_main_window_del();
    app_shutdown();
    teardown("./workspace_zoom_factor_get_test_p");
    elm_shutdown();

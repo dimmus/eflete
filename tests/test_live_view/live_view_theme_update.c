@@ -62,27 +62,26 @@ EFLETE_TEST(live_view_theme_update_test_p1)
 {
    Evas *e = NULL;
    Evas_Object *parent = NULL;
-   Live_View *live = NULL;
+//  Live_View *live = NULL;
    Project *project = NULL;
    Style *style = NULL;
    Eina_Bool res = EINA_FALSE;
 
    elm_init(0, 0);
-   setup("live_view_theme_update_test_p1");
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_project_open("./live_view_theme_update_test_p1/live_view_theme_update_test_p1.pro");
+   project = setup("live_view_theme_update_test_p1");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, project->mmap_file);
    project->current_style = style;
-   live = live_view_add(parent, false);
-   live_view_widget_style_set(live, project, style);
+//   live = live_view_add(parent, false);
+//   live_view_widget_style_set(live, project, style);
 
-   res = live_view_theme_update(live, project);
+//   res = live_view_theme_update(live, project);
    ck_assert_msg(res == EINA_TRUE, "Failed update style for widget in live view.");
 
-   live_view_free(live);
+//   live_view_free(live);
    wm_style_free(style);
    evas_object_del(parent);
    teardown("./live_view_theme_update_test_p1");
@@ -122,27 +121,26 @@ EFLETE_TEST(live_view_theme_update_test_p2)
 {
    Evas *e = NULL;
    Evas_Object *parent = NULL;
-   Live_View *live = NULL;
+//   Live_View *live = NULL;
    Project *project = NULL;
    Style *layout = NULL;
    Eina_Bool res = EINA_FALSE;
 
    elm_init(0, 0);
-   setup("live_view_theme_update_test_p2");
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_project_open("./live_view_theme_update_test_p2/live_view_theme_update_test_p2.pro");
+   project = setup("live_view_theme_update_test_p2");
    e = evas_object_evas_get(parent);
    layout = wm_style_add("load/layout/test", "load/layout/test", LAYOUT, NULL);
    wm_style_data_load(layout, e, project->mmap_file);
    project->current_style = layout;
-   live = live_view_add(parent, false);
-   live_view_widget_style_set(live, project, layout);
+//   live = live_view_add(parent, false);
+//   live_view_widget_style_set(live, project, layout);
 
-   res = live_view_theme_update(live, project);
+//   res = live_view_theme_update(live, project);
    ck_assert_msg(res == EINA_TRUE, "Failed update style for layout in live view.");
 
-   live_view_free(live);
+//   live_view_free(live);
    wm_style_free(layout);
    evas_object_del(parent);
    teardown("./live_view_theme_update_test_p2");

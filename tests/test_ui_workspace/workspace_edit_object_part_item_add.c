@@ -71,11 +71,11 @@ EFLETE_TEST(workspace_edit_object_part_item_add_test_p1)
    source = eina_stringshare_add("elm/radio/base/def");
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    mmap_file = eina_file_open(file, EINA_FALSE);
-   workspace = workspace_add(parent);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "layout/table", LAYOUT, NULL);
    wm_style_data_load(style, e, mmap_file);
-   workspace_edit_object_set(workspace, style, file);
+   //workspace_edit_object_set(workspace, style, file);
 
    res = workspace_edit_object_part_item_add(workspace, part_name, item, source);
    ck_assert_msg(res == EINA_TRUE, "Failed add new item into part");
@@ -93,7 +93,7 @@ EFLETE_TEST(workspace_edit_object_part_item_add_test_p1)
 
    edje_edit_string_list_free(items);
    wm_style_free(style);
-   workspace_edit_object_unset(workspace);
+   //workspace_edit_object_unset(workspace);
    eina_file_close(mmap_file);
    eina_stringshare_del(item);
    eina_stringshare_del(part_name);
@@ -144,17 +144,17 @@ EFLETE_TEST(workspace_edit_object_part_item_add_test_n1)
    source = eina_stringshare_add("elm/radio/base/def");
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    mmap_file = eina_file_open(file, EINA_FALSE);
-   workspace = workspace_add(parent);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "layout/table", LAYOUT, NULL);
    wm_style_data_load(style, e, mmap_file);
-   workspace_edit_object_set(workspace, style, file);
+   //workspace_edit_object_set(workspace, style, file);
 
    res = workspace_edit_object_part_item_add(workspace, part_name, item, source);
    ck_assert_msg(res == EINA_FALSE, "Added new item into unexists part");
 
    wm_style_free(style);
-   workspace_edit_object_unset(workspace);
+   //workspace_edit_object_unset(workspace);
    eina_file_close(mmap_file);
    eina_stringshare_del(item);
    eina_stringshare_del(part_name);
@@ -207,17 +207,17 @@ EFLETE_TEST(workspace_edit_object_part_item_add_test_n2)
    source = eina_stringshare_add("elm/radio/base/def");
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    mmap_file = eina_file_open(file, EINA_FALSE);
-   workspace = workspace_add(parent);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "layout/table", LAYOUT, NULL);
    wm_style_data_load(style, e, mmap_file);
-   workspace_edit_object_set(workspace, style, file);
+   //workspace_edit_object_set(workspace, style, file);
 
    res = workspace_edit_object_part_item_add(workspace, part_name, item, source);
    ck_assert_msg(res == EINA_FALSE, "Added new item with name, that already exist");
 
    wm_style_free(style);
-   workspace_edit_object_unset(workspace);
+   //workspace_edit_object_unset(workspace);
    eina_file_close(mmap_file);
    eina_stringshare_del(item);
    eina_stringshare_del(part_name);
@@ -269,17 +269,17 @@ EFLETE_TEST(workspace_edit_object_part_item_add_test_n7)
    source = eina_stringshare_add("wrong_source");
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    mmap_file = eina_file_open(file, EINA_FALSE);
-   workspace = workspace_add(parent);
+   workspace = workspace_add(parent, NULL);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "layout/table", LAYOUT, NULL);
    wm_style_data_load(style, e, mmap_file);
-   workspace_edit_object_set(workspace, style, file);
+   //workspace_edit_object_set(workspace, style, file);
 
    res = workspace_edit_object_part_item_add(workspace, part_name, item, source);
    ck_assert_msg(res == EINA_FALSE, "Added new item with wrong source");
 
    wm_style_free(style);
-   workspace_edit_object_unset(workspace);
+   //workspace_edit_object_unset(workspace);
    eina_file_close(mmap_file);
    eina_stringshare_del(item);
    eina_stringshare_del(part_name);

@@ -52,12 +52,10 @@
 EFLETE_TEST (about_window_add_test_p)
 {
    elm_init(0,0);
-   App_Data *app;
    Evas_Object *about;
 
    app_init();
-   app = app_data_get();
-   ui_main_window_add(app);
+   ui_main_window_add();
    about = about_window_add();
    ck_assert_msg(about != NULL, "cannot create new About Window");
 

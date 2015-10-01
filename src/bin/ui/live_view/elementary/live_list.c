@@ -145,14 +145,12 @@ _list_send_signal(void *data,
 }
 
 Evas_Object *
-widget_list_create(Evas_Object *parent, const Style *style)
+widget_list_create(Evas_Object *parent, const Group *group)
 {
    assert(parent != NULL);
-   assert(style != NULL);
-
-   Eina_Stringshare *class;
-   Eina_Stringshare *style_name;
-   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+   assert(group != NULL);
+   assert(group->style != NULL);
+   assert(group->class != NULL);
 
    int i = 0;
    Evas_Object *object = elm_list_add(parent);
@@ -160,10 +158,10 @@ widget_list_create(Evas_Object *parent, const Style *style)
    for (i = 0; i < ELEMENTS_COUNT; i++)
      elm_list_item_append(object, _("No icons"), NULL, NULL, NULL, NULL);
 
-   if (strstr(class, "h_") == class)
+   if (strstr(group->class, "h_") == group->class)
      elm_list_horizontal_set(object, true);
 
-   if (strstr(class, "compress"))
+   if (strstr(group->class, "compress"))
      elm_list_mode_set(object, ELM_LIST_COMPRESS);
    else
      elm_list_mode_set(object, ELM_LIST_SCROLL);
@@ -172,9 +170,7 @@ widget_list_create(Evas_Object *parent, const Style *style)
    evas_object_data_set(object, TEXT_FUNC, _on_list_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, _list_send_signal);
 
-   elm_object_style_set(object, style_name);
+   elm_object_style_set(object, group->style);
 
-   eina_stringshare_del(class);
-   eina_stringshare_del(style_name);
    return object;
 }

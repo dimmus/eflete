@@ -54,30 +54,27 @@
  */
 EFLETE_TEST (animator_window_add_test_p)
 {
-   App_Data *app = NULL;
-   Style *style = NULL;
-   Evas_Object *manager;
+   //Style *style = NULL;
+   //Evas_Object *manager;
 
    elm_init(0, 0);
    app_init();
-   setup("animator_window_add_test_p");
 
-   app = app_data_get();
-   ui_main_window_add(app);
-   app->project = pm_project_open("./animator_window_add_test_p/animator_window_add_test_p.pro");
-   wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->mmap_file);
-   blocks_show(app);
-   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
-   ui_style_clicked(app, style);
+   ui_main_window_add();
+   ap.project = setup("animator_window_add_test_p");
+   wm_widgets_list_objects_load(ap.project->widgets,
+                                evas_object_evas_get(ap.win), ap.project->mmap_file);
+   blocks_show();
+   //style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
+//   ui_style_clicked(style);
 
-   manager = animator_window_add(style);
-   ck_assert_msg(manager != NULL, "cannot create new Animator");
+   //manager = animator_window_add(style);
+   ck_assert_msg(NULL != NULL, "cannot create new Animator");
 
-   evas_object_del(manager);
-   pm_project_close(app->project);
-   app->project = NULL;
-   ui_main_window_del(app);
+   //evas_object_del(manager);
+   pm_project_close(ap.project);
+   ap.project = NULL;
+   ui_main_window_del();
    app_shutdown();
    teardown("./animator_window_add_test_p");
    elm_shutdown();

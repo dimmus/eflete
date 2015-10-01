@@ -27,7 +27,3 @@
 void live_view_property_add_test_p(int);
 
 void live_view_property_free_test_p(int);
-
-void live_view_property_style_set_test_p(int);
-
-void live_view_property_style_unset_test_p(int);

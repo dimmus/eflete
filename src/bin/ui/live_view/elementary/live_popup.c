@@ -102,16 +102,15 @@ _on_popup_swallow_check(void *data,
 }
 
 Evas_Object *
-widget_popup_create(Evas_Object *parent, const Style *style)
+widget_popup_create(Evas_Object *parent, const Group *group)
 {
    assert(parent != NULL);
-   assert(style != NULL);
+   assert(group != NULL);
+   assert(group->style != NULL);
 
-   Eina_Stringshare *class;
-   Eina_Stringshare *style_name;
+   Eina_Stringshare *style_name = eina_stringshare_add(group->style);
    char **style_parsed = NULL;
    unsigned int count_split = 0;
-   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
 
    Evas_Object *object = elm_popup_add(parent);
    elm_object_part_text_set(object, "title,text", "");

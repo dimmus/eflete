@@ -53,12 +53,10 @@
 EFLETE_TEST (mw_title_set_p)
 {
    Evas_Object *mw;
-   App_Data *app;
 
    elm_init(0,0);
    app_init();
-   app = app_data_get();
-   ui_main_window_add(app);
+   ui_main_window_add();
    mw = mw_add(NULL, NULL, NULL);
 
    ck_assert_msg(mw_title_set(mw, "test text"), "Can't set title");

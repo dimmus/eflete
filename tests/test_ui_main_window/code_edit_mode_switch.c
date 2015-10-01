@@ -48,7 +48,7 @@
  * @step 3 Call code_edit_mode_switch(ap, false)
  * @step 4 Check returned value
  * </td>
- * <td>App_Data *app_data, Eina_Bool is_on</td>
+ * <td>App_Data *ap, Eina_Bool is_on</td>
  * <td>All checks passed</td>
  * </tr>
  * @}
@@ -57,19 +57,17 @@ EFLETE_TEST (code_edit_mode_switch_test_p)
 {
    elm_init(0, 0);
    elm_theme_extension_add(NULL, EFLETE_THEME);
-   App_Data *app_data;
    Eina_Bool result = EINA_FALSE;
 
    app_init();
-   app_data = app_data_get();
-   ui_main_window_add(app_data);
+   ui_main_window_add();
 
-   result = code_edit_mode_switch(app_data, true);
+   result = code_edit_mode_switch(true);
    ck_assert_msg(result == EINA_TRUE, "Could not switch Code Edit mode ON!");
-   result = code_edit_mode_switch(app_data, false);
+   result = code_edit_mode_switch(false);
    ck_assert_msg(result == EINA_TRUE, "Could not switch Code Edit mode OFF!");
 
-   evas_object_del(app_data->win);
+   evas_object_del(ap.win);
    elm_shutdown();
 }
 END_TEST

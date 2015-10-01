@@ -33,6 +33,7 @@ Config *config;
 Profile *profile;
 
 static Eet_Data_Descriptor *edd_base = NULL;
+static Eet_Data_Descriptor *edd_recent = NULL;
 static Eet_Data_Descriptor *edd_profile = NULL;
 static Eet_Data_Descriptor *edd_keys = NULL;
 static Eet_Data_Descriptor *edd_color = NULL;
@@ -42,6 +43,50 @@ _config_free(void)
 {
    free(config);
    config = NULL;
+}
+
+static void
+_recent_free(Recent *r)
+{
+   eina_stringshare_del(r->name);
+   eina_stringshare_del(r->path);
+   free(r);
+}
+
+void
+config_recent_list_clear(void)
+{
+   Recent *r;
+
+   EINA_LIST_FREE(config->recents, r)
+     {
+       _recent_free(r);
+     }
+   config->recents = NULL;
+}
+
+void
+config_recent_add(const char *name, const char *path)
+{
+   Recent *r;
+   Eina_List *l, *l_n;
+
+   assert(name != NULL);
+   assert(path != NULL);
+
+   EINA_LIST_FOREACH_SAFE(config->recents, l, l_n, r)
+      if (!strcmp(path, r->path))
+        config->recents = eina_list_remove_list(config->recents, l);
+
+   if (eina_list_count(config->recents) > 9)
+     config->recents = eina_list_remove_list(config->recents, eina_list_last(config->recents));
+
+   r = mem_malloc(sizeof(Recent));
+   r->name = strdup(name);
+   r->path = strdup(path);
+
+   config->recents = eina_list_prepend(config->recents, r);
+   config_save();
 }
 
 static void
@@ -64,12 +109,11 @@ _profile_free(void)
 }
 
 Eina_Bool
-config_init(App_Data *ap)
+config_init(void)
 {
    Eet_Data_Descriptor_Class eddc;
    Eet_Data_Descriptor_Class eddkc;
-
-   assert(ap != NULL);
+   Eet_Data_Descriptor_Class eddcr;
 
    /* Config descriptor */
    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof(eddc), "Config", sizeof(Config));
@@ -82,9 +126,13 @@ config_init(App_Data *ap)
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.left",        panes.left, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.right",       panes.right, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.left_hor",    panes.left_hor, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.right_hor",   panes.right_hor, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.center",      panes.center, EET_T_DOUBLE);
+
+   eet_eina_stream_data_descriptor_class_set(&eddcr, sizeof(eddcr), "Recent", sizeof(Recent));
+   edd_recent = eet_data_descriptor_stream_new(&eddcr);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_recent, Recent, "recent.name", name, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_recent, Recent, "recent.path", path, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_LIST(edd_base, Config, "recents",  recents, edd_recent);
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "profile", profile, EET_T_STRING);
 
@@ -163,7 +211,7 @@ config_init(App_Data *ap)
      (edd_profile, Profile, "shortcuts",    shortcuts, edd_keys);
 
    if (!edd_profile) return false;
-   if (!shortcuts_init(ap))
+   if (!shortcuts_init())
      {
         CRIT("Can't initialize the shortcut module");
         return false;
@@ -176,15 +224,20 @@ config_init(App_Data *ap)
 }
 
 Eina_Bool
-config_shutdown(App_Data *ap)
+config_shutdown(void)
 {
-   assert(ap != NULL);
 
    if (edd_base)
      {
         eet_data_descriptor_free(edd_base);
         edd_base = NULL;
      }
+   if (edd_recent)
+     {
+        eet_data_descriptor_free(edd_recent);
+        edd_recent = NULL;
+     }
+
    if (edd_color)
      {
         eet_data_descriptor_free(edd_color);
@@ -201,7 +254,7 @@ config_shutdown(App_Data *ap)
         edd_keys = NULL;
      }
    if (config) _config_free();
-   shortcuts_shutdown(ap);
+   shortcuts_shutdown(NULL);
 
    return true;
 }
@@ -232,18 +285,17 @@ _default_shortcuts_get()
    ADD_SHORTCUT("j", 44, CTRL, "import_edj", false);
    ADD_SHORTCUT("s", 39, CTRL, "save", false);
    ADD_SHORTCUT("e", 26, CTRL, "export", false);
+   ADD_SHORTCUT("w", 25, CTRL, "close", false);
    ADD_SHORTCUT("q", 24, CTRL, "quit", false);
    ADD_SHORTCUT("z", 52, CTRL, "undo", false);
    ADD_SHORTCUT("y", 29, CTRL, "redo", false);
 
-   ADD_SHORTCUT("1", 10, CTRL, "animator", false);
-   ADD_SHORTCUT("2", 11, CTRL, "image_editor", false);
-   ADD_SHORTCUT("3", 12, CTRL, "sound_editor", false);
-   ADD_SHORTCUT("4", 13, CTRL, "colorclass_viewer", false);
-   ADD_SHORTCUT("5", 14, CTRL, "style_editor", false);
-
-   ADD_SHORTCUT("Left", 113, CTRL, "widget_manager.style", false);
-   ADD_SHORTCUT("Right", 114, CTRL, "widget_manager.layout", false);
+   ADD_SHORTCUT("1", 10, CTRL, "open_edj", false);
+   ADD_SHORTCUT("2", 11, CTRL, "tab.image_editor", false);
+   ADD_SHORTCUT("3", 12, CTRL, "tab.sound_editor", false);
+   ADD_SHORTCUT("4", 13, CTRL, "tab.style_editor", false);
+   ADD_SHORTCUT("5", 14, CTRL, "tab.colorclass_viewer", false);
+   ADD_SHORTCUT("6", 15, CTRL, "animator", false);
 
    ADD_SHORTCUT("equal", 21, CTRL, "zoom.in", false);
    ADD_SHORTCUT("minus", 20, CTRL, "zoom.out", false);
@@ -341,20 +393,17 @@ _config_default_new(void)
    conf->window.h =           768;
    conf->panes.left =         0.0;
    conf->panes.right =        1.0;
-   conf->panes.left_hor =     0.7;
    conf->panes.right_hor =    0.3;
-   conf->panes.center =       0.65;
    conf->profile = strdup("default");
 
    return conf;
 }
 
 void
-config_load(App_Data *ap)
+config_load(void)
 {
    Eet_File *ef;
 
-   assert(ap != NULL);
 
    if (config) _config_free();
    ef = eet_open(CONFIG_FILE, EET_FILE_MODE_READ);
@@ -369,42 +418,36 @@ config_load(App_Data *ap)
 
    profile_load(config->profile);
 
-   shortcuts_profile_load(ap, profile_get());
+   shortcuts_profile_load(profile_get());
 #ifdef HAVE_ENVENTOR
-   enventor_object_profile_load(ap->enventor, profile_get());
+   enventor_object_profile_load(ap.enventor, profile_get());
 #endif /* HAVE_ENVENTOR */
 }
 
 Eina_Bool
-config_panes_sizes_data_update(App_Data *ap)
+config_panes_sizes_data_update(void)
 {
-   assert(ap != NULL);
 
    if (!config) return false;
 
    config->panes.left =
-     elm_panes_content_left_size_get(ap->panes.left);
+     elm_panes_content_left_size_get(ap.panes.left);
    config->panes.right =
-     elm_panes_content_left_size_get(ap->panes.right);
-   config->panes.left_hor =
-     elm_panes_content_left_size_get(ap->panes.left_hor);
+     elm_panes_content_left_size_get(ap.panes.right);
    config->panes.right_hor =
-     elm_panes_content_left_size_get(ap->panes.right_hor);
-   config->panes.center =
-     elm_panes_content_left_size_get(ap->panes.center);
+     elm_panes_content_left_size_get(ap.panes.right_hor);
 
    return true;
 }
 
 
 Eina_Bool
-config_save(App_Data *ap)
+config_save(void)
 {
    int x, y, w, h;
    Eet_File *ef;
    Eina_Bool ok;
 
-   assert(ap != NULL);
 
    if (!edd_base)
      {
@@ -412,7 +455,7 @@ config_save(App_Data *ap)
         return false;
      }
 
-   evas_object_geometry_get(ap->win, &x, &y, &w, &h);
+   evas_object_geometry_get(ap.win, &x, &y, &w, &h);
    if (profile->general.save_win_pos)
      {
         config->window.x =            x;
@@ -421,7 +464,7 @@ config_save(App_Data *ap)
         config->window.h =            h;
      }
    if (profile->general.save_ui)
-     config_panes_sizes_data_update(ap);
+     config_panes_sizes_data_update();
 
    profile_save(config->profile);
 

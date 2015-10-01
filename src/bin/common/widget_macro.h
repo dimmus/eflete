@@ -22,8 +22,6 @@
 
 #include <Elementary.h>
 
-#define FS_TITLE "fs_title"
-
 TODO("see large comment below")
 /**
  * ITEM_ADD use old kind of adding items and style that looks like
@@ -89,16 +87,6 @@ TODO("see large comment below")
    evas_object_size_hint_align_set(ENTRY, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    elm_entry_single_line_set(ENTRY, ISSINGLELINE); \
    elm_entry_scrollable_set(ENTRY, EINA_TRUE); \
-   evas_object_show(ENTRY);
-
-#define EWE_ENTRY_ADD(PARENT, ENTRY, ISSINGLELINE) \
-   ENTRY = ewe_entry_add(PARENT); \
-   evas_object_size_hint_weight_set(ENTRY, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
-   evas_object_size_hint_align_set(ENTRY, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   elm_entry_single_line_set(ENTRY, ISSINGLELINE); \
-   elm_entry_scrollable_set(ENTRY, EINA_TRUE); \
-   elm_scroller_policy_set(ENTRY, ELM_SCROLLER_POLICY_OFF, \
-                                  ELM_SCROLLER_POLICY_OFF); \
    evas_object_show(ENTRY);
 
 #define EWE_COMBOBOX_ADD(PARENT, COMBOBOX) \

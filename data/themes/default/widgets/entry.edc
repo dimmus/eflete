@@ -727,7 +727,7 @@ group { name: "elm/scroller/entry/default";
          target: "base_hbar";
       }
       program { name: "enable";
-         signal: "elm,state,enable";
+         signal: "elm,state,enabled";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
@@ -781,21 +781,21 @@ group { name: "elm/scroller/entry_single/default";
          description { state: "default" 0.0;
             min: 150 19;
             max: -1 19;
-            fixed: 1 1;
+            fixed: 0 1;
             color_class: "bg_entry";
             image {
                normal: "control-bg.png";
-               border: 8 8 8 8;
+               border: 8 8 8 9;
                middle: DEFAULT;
             }
          }
          description { state: "disabled" 0.0;
             min: 150 19;
             max: -1 19;
-            fixed: 1 1;
+            fixed: 0 1;
             image {
                normal: "control-bg-disabled.png";
-               border: 8 8 8 8;
+               border: 8 8 8 9;
                middle: DEFAULT;
             }
          }
@@ -895,7 +895,7 @@ group { name: "elm/scroller/entry_single/default";
             }
             rel2 {
                relative: 0.0 1.0;
-               offset: -7 -2;
+               offset: -7 -1;
                to_x: "elm.swallow.end";
                to_y: "bg";
             }
@@ -1127,7 +1127,7 @@ group { name: "elm/scroller/entry_single/default";
                   }
       }
       program { name: "enable";
-         signal: "elm,state,enable";
+         signal: "elm,state,enabled";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
@@ -1190,19 +1190,17 @@ group { name: "elm/entry/base-single/default";
          source4: "elm/entry/cursor/default";
          source6: "elm/entry/anchor/default";
          description { state: "default" 0.0;
+            min: 0 19;
             text {
                style: "main_text";
-               min: 1 1;
-               max: 0 0;
                ellipsis: -1;
                align: 0.0 0.5;
             }
          }
          description { state: "disabled" 0.0;
+            min: 0 19;
             text {
                style: "main_text_disable";
-               min: 1 1;
-               max: 0 0;
                ellipsis: -1;
                align: 0.0 0.5;
             }

@@ -39,9 +39,7 @@
  * Created widget will contain callback functions as a data in it, so they are able
  * to set up in Live View Propery for setting text and swallows of that widget.
  *
- * @param widget name of requested widget.
- * @param class name of class of requested widget.
- * @param style name of style of current widget.
+ * @param group current loaded widget.
  * @param parent Parent object of created widget.
  *
  * @return Evas_Object of created widget.
@@ -49,7 +47,7 @@
  * @ingroup Live_View_Widget
  */
 Evas_Object *
-live_widget_create(const char *widget, const Style *style, Evas_Object *parent);
+live_widget_create(Group *group, Evas_Object *parent);
 
 /**
  * Delete previously created widget object.

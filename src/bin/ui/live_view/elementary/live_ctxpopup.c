@@ -175,22 +175,12 @@ _labels_noicons_horizontal_30items_cb(void *data __UNUSED__, Evas_Object *obj, v
    elm_list_item_selected_set(event_info, EINA_FALSE);
 }
 
-static void
-_on_del(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
-{
-   Eina_Stringshare *style_name = event_info;
-   eina_stringshare_del(style_name);
-}
-
 Evas_Object *
-widget_ctxpopup_create(Evas_Object *parent, const Style *style)
+widget_ctxpopup_create(Evas_Object *parent, const Group *group)
 {
    assert(parent != NULL);
-   assert(style != NULL);
-
-   Eina_Stringshare *class;
-   Eina_Stringshare *style_name;
-   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+   assert(group != NULL);
+   assert(group->style != NULL);
 
    Evas_Object *list = elm_list_add(parent);
    evas_object_size_hint_weight_set(list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -219,14 +209,12 @@ widget_ctxpopup_create(Evas_Object *parent, const Style *style)
                         NULL, NULL, _labels_noicons_horizontal_3items_cb, NULL);
    elm_list_item_append(list, _("Click to show horizontal ctxpopup with labels and no icons (30 items)"),
                         NULL, NULL, _labels_noicons_horizontal_30items_cb, NULL);
-   evas_object_event_callback_add(list, EVAS_CALLBACK_FREE, _on_del, style_name);
    elm_list_go(list);
 
-   evas_object_data_set(list, "style_name", style_name);
+   evas_object_data_set(list, "style_name", group->style);
    evas_object_data_set(list, SWALLOW_FUNC, on_swallow_check);
    evas_object_data_set(list, TEXT_FUNC, on_text_check);
    evas_object_data_set(list, SIGNAL_FUNC, send_signal);
 
-   eina_stringshare_del(class);
    return list;
 }

@@ -52,14 +52,11 @@
  */
 EFLETE_TEST(shortcuts_profile_load_test_p)
 {
-   App_Data *ap;
-
    elm_init(0,0);
    app_init();
-   ap = app_data_get();
    profile_load("default");
 
-   ck_assert_msg(shortcuts_profile_load(ap, profile_get()), "Cant load profile.");
+   ck_assert_msg(shortcuts_profile_load(profile_get()), "Cant load profile.");
 
    app_shutdown();
    elm_shutdown();

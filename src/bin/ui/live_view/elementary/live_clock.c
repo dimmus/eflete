@@ -20,19 +20,17 @@
 #include "live_elementary_widgets.h"
 
 Evas_Object *
-widget_clock_create(Evas_Object *parent, const Style *style)
+widget_clock_create(Evas_Object *parent, const Group *group)
 {
    assert(parent != NULL);
-   assert(style != NULL);
-
-   Eina_Stringshare *class;
-   Eina_Stringshare *style_name;
-   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+   assert(group != NULL);
+   assert(group->class != NULL);
+   assert(group->style != NULL);
 
    Evas_Object *object = elm_clock_add(parent);
 
    unsigned int digit_edit;
-   if (strcmp(class, "flipdigit") == 0)
+   if (strcmp(group->class, "flipdigit") == 0)
      elm_clock_edit_set(object, true);
    /****************************************************************************
     * Enum  Elm_Clock_Edit_Mode are identifiers for which clock digits should
@@ -40,18 +38,18 @@ widget_clock_create(Evas_Object *parent, const Style *style)
     * mode variable ELM_CLOCK_EDIT_HOUR_DECIMAL is responsible for user editing
     * time. In this case time can be increased or decreased with step 12 hours.
     ***************************************************************************/
-   else if (strcmp(class, "flipampm") == 0)
+   else if (strcmp(group->class, "flipampm") == 0)
      {
         elm_clock_show_am_pm_set(object, true);
         elm_clock_edit_set(object, true);
         digit_edit = ELM_CLOCK_EDIT_HOUR_DECIMAL;
         elm_clock_edit_mode_set(object, digit_edit);
      }
-   else if (strcmp(class, "base-seconds") == 0)
+   else if (strcmp(group->class, "base-seconds") == 0)
      elm_clock_show_seconds_set(object, true);
-   else if (strcmp(class, "base-am_pm") == 0)
+   else if (strcmp(group->class, "base-am_pm") == 0)
      elm_clock_show_am_pm_set(object, true);
-   else if (strcmp(class, "base-all") == 0)
+   else if (strcmp(group->class, "base-all") == 0)
      {
         elm_clock_show_seconds_set(object, true);
         elm_clock_show_am_pm_set(object, true);
@@ -61,9 +59,7 @@ widget_clock_create(Evas_Object *parent, const Style *style)
    evas_object_data_set(object, TEXT_FUNC, on_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, send_signal);
 
-   elm_object_style_set(object, style_name);
+   elm_object_style_set(object, group->style);
 
-   eina_stringshare_del(class);
-   eina_stringshare_del(style_name);
    return object;
 }

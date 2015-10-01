@@ -60,24 +60,23 @@ _test_end_cb(void *data __UNUSED__,
 
 EFLETE_TEST (pm_project_open_test_p)
 {
-   Project_Thread *thread;
    Project *pro;
 
    elm_init(0,0);
    app_init();
    ecore_file_recursive_rm("./UTC");
 
-   thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
-                                  NULL, _test_end_cb, NULL);
-   if (!thread)
-     ck_abort_msg("Project thread is not runned!");
+   pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
+                         NULL, _test_end_cb, NULL);
    ecore_main_loop_begin();
 
-   pro = pm_project_thread_project_get(thread);
+   pro = pm_project_thread_project_get();
    pm_project_close(pro);
    pro = NULL;
 
-   pro = pm_project_open("./UTC/UTC.pro");
+   pm_project_open("./UTC/UTC.pro", NULL, _test_end_cb, NULL);
+   ecore_main_loop_begin();
+   pro = pm_project_thread_project_get();
    ck_assert_msg(pro != NULL, "Project does't opened.");
    pm_project_close(pro);
    ecore_file_recursive_rm("./UTC");

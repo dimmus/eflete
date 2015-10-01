@@ -30,41 +30,40 @@ static Evas_Object *btn_add;
 static Elm_Validator_Regexp *class_validator = NULL;
 static Elm_Validator_Regexp *style_validator = NULL;
 
+TODO("outdated function because of eina_inlist of classes. Nope!")
 static void
-_reload_classes(App_Data *ap, Eina_Inlist *classes)
+_reload_classes(Eina_Inlist *classes __UNUSED__)
 {
+/*
    Evas_Object *gl_classes = NULL;
    const Evas_Object *nf = NULL;
    Elm_Object_Item *eoi = NULL;
    Ewe_Tabs_Item *class_tab = NULL;
    Evas_Object *tabs = NULL;
 
-   assert(ap != NULL);
    assert(classes != NULL);
 
-   tabs = ui_block_widget_list_get(ap);
+   tabs = ui_block_widget_list_get();
    class_tab = ewe_tabs_active_item_get(tabs);
    nf = ewe_tabs_item_content_get(tabs, class_tab);
    eoi = elm_naviframe_top_item_get(nf);
    gl_classes = elm_object_item_part_content_get(eoi, NULL);
 
    ui_widget_list_class_data_reload(gl_classes, classes);
+*/
 }
 
 static void
-_job_popup_close(void *data)
+_job_popup_close(void *data __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-
-   assert(ap != NULL);
 
    elm_validator_regexp_free(class_validator);
    elm_validator_regexp_free(style_validator);
    class_validator = NULL;
    style_validator = NULL;
-   evas_object_del(ap->popup);
-   ap->popup = NULL;
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+   evas_object_del(ap.popup);
+   ap.popup = NULL;
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 static void
@@ -76,11 +75,10 @@ _popup_close_cb(void *data,
 }
 
 static void
-_on_popup_btn_yes(void *data,
+_on_popup_btn_yes(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *ei __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
    Eina_Stringshare *style_name = NULL;
    Eina_Stringshare *class_name = NULL;
    Eina_Stringshare *full_name = NULL;
@@ -102,18 +100,18 @@ _on_popup_btn_yes(void *data,
    Evas_Object *widget_list = NULL, *eoi = NULL;
    Style *_style_find = NULL;
 
-   Evas_Object *tabs = NULL;
+/*   Evas_Object *tabs = NULL; */
    const Evas_Object *nf = NULL;
    Elm_Object_Item *nf_item = NULL;
-   Ewe_Tabs_Item *current_tab_item = NULL;
+TODO("Ewe_Tabs should be removed... Everything is changed now")
+/*   Ewe_Tabs_Item *current_tab_item = NULL; */
 
 #define STRING_CLEAR\
         eina_stringshare_del(style_name);\
         eina_stringshare_del(class_name);\
 
-   assert(ap != NULL);
 
-   widget = ui_widget_from_ap_get(ap);
+   widget = ui_widget_from_ap_get();
 
    assert(widget != NULL);
 
@@ -123,7 +121,7 @@ _on_popup_btn_yes(void *data,
    full_name = eina_stringshare_printf("elm/%s/%s/%s", widget->name, class_name,
                                        style_name);
 
-   if (wm_style_object_find(ap->project->widgets, full_name))
+   if (wm_style_object_find(ap.project->widgets, full_name))
      {
         NOTIFY_WARNING(_("[%s] alredy exist. Type another style name."),
                       full_name);
@@ -132,7 +130,7 @@ _on_popup_btn_yes(void *data,
         return;
      }
 
-   EINA_INLIST_FOREACH_SAFE(ap->project->widgets, l, source_wdg)
+   EINA_INLIST_FOREACH_SAFE(ap.project->widgets, l, source_wdg)
      {
         if (!strcmp(source_wdg->name, widget->name)) break;
      }
@@ -140,12 +138,12 @@ _on_popup_btn_yes(void *data,
    if (!source_wdg)
      {
         NOTIFY_ERROR(_("Sorry, there are no templates for [%s]"), widget->name);
-        ecore_job_add(_job_popup_close, ap);
+        ecore_job_add(_job_popup_close, NULL);
         STRING_CLEAR;
         eina_stringshare_del(full_name);
         return;
      }
-   EINA_INLIST_FOREACH_SAFE(ap->project->widgets, l, dest_wdg)
+   EINA_INLIST_FOREACH_SAFE(ap.project->widgets, l, dest_wdg)
      {
         if (!strcmp(dest_wdg->name, widget->name)) break;
      }
@@ -243,18 +241,21 @@ _on_popup_btn_yes(void *data,
 
    /* call method, which copy all parts and their params into new style */
    if (wm_style_copy(dest_style->obj, source_style->full_group_name, full_name,
-                     ap->project->dev, style))
+                     ap.project->dev, style))
      {
-        pm_save_to_dev(ap->project, source_style, true);
-        wm_style_data_load(style, evas_object_evas_get(ap->win),
-                           ap->project->mmap_file);
-        _reload_classes(ap, dest_wdg->classes);
-        pm_save_to_dev(ap->project, style, true);
+        //pm_save_to_dev(ap.project, source_style, true);
+        wm_style_data_load(style, evas_object_evas_get(ap.win),
+                           ap.project->mmap_file);
+        _reload_classes(dest_wdg->classes);
+        //pm_save_to_dev(ap.project, style, true);
 
         /* Selecting added style in genlist! */
-        tabs = ui_block_widget_list_get(ap);
+/*        tabs = ui_block_widget_list_get(); */
+TODO("Remove this old function")
+/*
         current_tab_item = ewe_tabs_active_item_get(tabs);
         nf = ewe_tabs_item_content_get(tabs, current_tab_item);
+*/
         nf_item = elm_naviframe_top_item_get(nf);
         widget_list  = elm_object_item_part_content_get(nf_item, NULL);
 
@@ -270,11 +271,11 @@ _on_popup_btn_yes(void *data,
         elm_genlist_item_selected_set(eoi, true);
      }
 
-   project_changed(true);
+   //project_changed(true);
 
    STRING_CLEAR;
    eina_stringshare_del(full_name);
-   ecore_job_add(_job_popup_close, ap);
+   ecore_job_add(_job_popup_close, NULL);
 #undef STRING_CLEAR
 }
 
@@ -292,7 +293,7 @@ _on_entry_changed(void *data __UNUSED__,
 
 /* FIXME: change name to class_dialog_add */
 Eina_Bool
-style_dialog_add(App_Data *ap)
+style_dialog_add()
 {
    Evas_Object *box, *item, *button;
    Widget *widget = NULL;
@@ -303,11 +304,10 @@ style_dialog_add(App_Data *ap)
    Style *_style = NULL;
    Evas_Object *nf = NULL;
 
-   assert(ap != NULL);
    assert(class_validator == NULL);
    assert(style_validator == NULL);
 
-   widget = ui_widget_from_ap_get(ap);
+   widget = ui_widget_from_ap_get();
    class_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
    style_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
 
@@ -316,7 +316,7 @@ style_dialog_add(App_Data *ap)
    /* Checking if the source style is an alias.
       We can't clone aliases right now, it need lots of difficult code for that.
    */
-   nf = ui_block_widget_list_get(ap);
+   nf = ui_block_widget_list_get();
    nf = evas_object_data_get(nf, "nf_widgets");
    nf = elm_object_item_part_content_get(elm_naviframe_top_item_get(nf),
                                          "elm.swallow.content");
@@ -329,13 +329,13 @@ style_dialog_add(App_Data *ap)
 
    title = eina_stringshare_printf(_("Add style/class for \"%s\" widget"),
                                    widget->name);
-   ap->popup = elm_popup_add(ap->win_layout);
-   elm_object_part_text_set(ap->popup, "title,text", title);
-   elm_popup_orient_set(ap->popup, ELM_POPUP_ORIENT_CENTER);
+   ap.popup = elm_popup_add(ap.win_layout);
+   elm_object_part_text_set(ap.popup, "title,text", title);
+   elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
 
-   BOX_ADD(ap->popup, box, false, false);
+   BOX_ADD(ap.popup, box, false, false);
 
-   class_st = ui_class_from_ap_get(ap);
+   class_st = ui_class_from_ap_get();
    entry_text = eina_stringshare_add(class_st->name);
 
    LAYOUT_PROP_ADD(box, _("Class name:"), "property", "1swallow")
@@ -357,20 +357,20 @@ style_dialog_add(App_Data *ap)
 
    assert(class_st != NULL);
 
-   elm_object_content_set(ap->popup, box);
+   elm_object_content_set(ap.popup, box);
 
-   BUTTON_ADD(ap->popup, btn_add, _("Add"));
-   evas_object_smart_callback_add(btn_add, "clicked", _on_popup_btn_yes, ap);
-   elm_object_part_content_set(ap->popup, "button1", btn_add);
+   BUTTON_ADD(ap.popup, btn_add, _("Add"));
+   evas_object_smart_callback_add(btn_add, "clicked", _on_popup_btn_yes, NULL);
+   elm_object_part_content_set(ap.popup, "button1", btn_add);
    elm_object_disabled_set(btn_add, true);
 
-   BUTTON_ADD(ap->popup, button, _("Cancel"));
-   evas_object_smart_callback_add(button, "clicked", _popup_close_cb, ap);
-   elm_object_part_content_set(ap->popup, "button2", button);
+   BUTTON_ADD(ap.popup, button, _("Cancel"));
+   evas_object_smart_callback_add(button, "clicked", _popup_close_cb, NULL);
+   elm_object_part_content_set(ap.popup, "button2", button);
 
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
 
-   evas_object_show(ap->popup);
+   evas_object_show(ap.popup);
    elm_object_focus_set(entry_style, true);
 
    eina_stringshare_del(title);

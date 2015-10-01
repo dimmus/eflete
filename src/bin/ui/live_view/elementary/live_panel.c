@@ -39,25 +39,21 @@ _panel_orient_get(const char *class)
 }
 
 Evas_Object *
-widget_panel_create(Evas_Object *parent, const Style *style)
+widget_panel_create(Evas_Object *parent, const Group *group)
 {
    assert(parent != NULL);
-   assert(style != NULL);
-
-   Eina_Stringshare *class;
-   Eina_Stringshare *style_name;
-   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+   assert(group != NULL);
+   assert(group->class != NULL);
+   assert(group->style != NULL);
 
    Evas_Object *object = elm_panel_add(parent);
-   elm_panel_orient_set(object, _panel_orient_get(class));
+   elm_panel_orient_set(object, _panel_orient_get(group->class));
 
    evas_object_data_set(object, SWALLOW_FUNC, on_swallow_check);
    evas_object_data_set(object, TEXT_FUNC, on_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, send_signal);
 
-   elm_object_style_set(object, style_name);
+   elm_object_style_set(object, group->style);
 
-   eina_stringshare_del(class);
-   eina_stringshare_del(style_name);
    return object;
 }
