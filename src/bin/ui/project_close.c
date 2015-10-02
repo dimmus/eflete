@@ -105,7 +105,6 @@ project_close(void)
    //ui_property_style_unset(Evas_Object *property);
    //ui_signal_list_data_unset(Evas_Object *object);
    //history_clear(History *history);
-   tabs_menu_tab_open(TAB_HOME_OPEN_PROJECT);
 
    pm_project_close(ap.project);
    ap.project = NULL;
