@@ -60,25 +60,17 @@ struct _Colorclasses_Manager
 };
 
 /* BUTTON ADD AND REMOVE FUNCTIONS */
-static Eina_Bool
-_colorclass_validator(void *data)
+static void
+_validation(void *data,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
 {
-   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
+  Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
 
-   const char *name = elm_entry_entry_get(edit->entry);
-   if ((name == NULL) || (!strcmp(name, "")))
-     {
-        NOTIFY_WARNING(_("Color class name cannot be empty!"));
-        return false;
-     }
-   Elm_Object_Item *start_from = elm_genlist_first_item_get(edit->genlist);
-   if (elm_genlist_search_by_text_item_get(edit->genlist, start_from, "elm.text",
-                                           name, 0))
-     {
-        NOTIFY_WARNING(_("Color class name must be unique!"));
-        return false;
-     }
-   return true;
+  if (ELM_REG_NOERROR != elm_validator_regexp_status_get(edit->name_validator))
+    popup_buttons_disabled_set(BTN_OK, true);
+  else
+    popup_buttons_disabled_set(BTN_OK, false);
 }
 
 static void
@@ -102,9 +94,7 @@ _on_button_add_clicked_cb(void *data __UNUSED__,
    LAYOUT_PROP_ADD(box, _("Color class name: "), "property", "1swallow")
    ENTRY_ADD(box, edit->entry, true);
    eo_do(edit->entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, edit->name_validator));
-   /* TODO: disable button in new popup, so this line might be changed
    evas_object_smart_callback_add(edit->entry, "changed", _validation, edit);
-    */
    elm_object_part_text_set(edit->entry, "guide", _("Type new color class name here"));
    elm_object_part_content_set(item, "elm.swallow.content", edit->entry);
 
@@ -113,7 +103,7 @@ _on_button_add_clicked_cb(void *data __UNUSED__,
 
    Popup_Button btn_res = popup_want_action(_("Create a new layout"), NULL, box,
                                edit->entry, BTN_OK|BTN_CANCEL,
-                               _colorclass_validator, edit);
+                               NULL, NULL);
 
    if (BTN_CANCEL == btn_res) goto end;
 
