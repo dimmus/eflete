@@ -83,6 +83,7 @@ _on_button_add_clicked_cb(void *data __UNUSED__,
    Colorclass_Item *it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
    Colorclass_Resource *res;
+   Popup_Button btn_res;
 
    assert(edit != NULL);
 
@@ -101,7 +102,7 @@ _on_button_add_clicked_cb(void *data __UNUSED__,
    elm_box_pack_end(box, item);
    elm_box_pack_end(box, edit->entry);
 
-   Popup_Button btn_res = popup_want_action(_("Create a new layout"), NULL, box,
+   btn_res = popup_want_action(_("Create a new layout"), NULL, box,
                                edit->entry, BTN_OK|BTN_CANCEL,
                                NULL, NULL);
 
