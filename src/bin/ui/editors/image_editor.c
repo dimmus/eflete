@@ -58,7 +58,6 @@ struct _Search_Data
 struct _Image_Editor
 {
    Evas_Object *win;
-   Evas_Object *fs_win;
    Evas_Object *gengrid;
    Evas_Object *layout;
    Search_Data image_search_data;
@@ -224,6 +223,7 @@ _grid_del(void *data,
    assert(it != NULL);
 
    eina_stringshare_del(it->image_name);
+   eina_stringshare_del(it->source);
    free(it);
 }
 
@@ -392,54 +392,39 @@ _image_editor_gengrid_item_data_create(Evas_Object *edje_edit_obj,
    it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
    it->comp_type = edje_edit_image_compression_type_get(edje_edit_obj,
                                                         it->image_name);
-   it->source = res->source;
+   it->source = eina_stringshare_add(res->source);
 
    return it;
 }
 
-static void
-_fs_del(void *data)
-{
-   Image_Editor *edit = (Image_Editor *)data;
-
-   assert(edit != NULL);
-   assert(edit->fs_win != NULL);
-
-   evas_object_del(edit->fs_win);
-   edit->fs_win = NULL;
-}
-
-static void
+Eina_Bool
 _on_image_done(void *data,
-               Evas_Object *obj,
+               Evas_Object *obj __UNUSED__,
                void *event_info)
 {
    Item *it = NULL;
    Elm_Object_Item *item = NULL;
    const Eina_List *images, *l;
-   const char *selected = event_info;
+   const char *selected;
    Uns_List *image = NULL;
    External_Resource *res;
    const char *file_name;
 
    Image_Editor *img_edit = (Image_Editor *)data;
+   images = (Eina_List *)event_info;
 
    assert(img_edit != NULL);
-
-   if ((!selected) || (!strcmp(selected, "")))
-     goto del;
-   images = elm_fileselector_selected_paths_get(obj);
 
    EINA_LIST_FOREACH(images, l, selected)
      {
         if (!ecore_file_exists(selected))
           {
-             WIN_NOTIFY_ERROR(obj, _("File not exist"));
+             ERR(_("File not exist"));
              continue;
           }
         if (ecore_file_is_dir(selected))
           {
-             WIN_NOTIFY_ERROR(obj, _("Unable to add folder"))
+             ERR(_("Unable to add folder"))
              continue;
           }
         file_name = ecore_file_file_get(selected);
@@ -456,49 +441,26 @@ _on_image_done(void *data,
           }
         else
           {
-             WIN_NOTIFY_ERROR(obj, _("File exist"));
+             ERR(_("File exist"));
              free(image);
              free(res);
              continue;
           }
         edje_edit_image_add(ap.project->global_object, selected);
+        editor_save(ap.project->global_object);
+        TODO("Remove this line once edje_edit_image_add would be added into Editor Modulei and saving would work properly")
+        ap.project->changed = true;
 
         it = (Item *)mem_malloc(sizeof(Item));
         it->image_name = eina_stringshare_add(file_name);
         it->id = edje_edit_image_id_get(ap.project->global_object, it->image_name);
         item = elm_gengrid_item_append(img_edit->gengrid, gic, it, _grid_sel, img_edit);
 
-        it->source = res->source;
+        it->source = eina_stringshare_add(res->source);
         elm_gengrid_item_selected_set(item, true);
      }
-   editor_save(ap.project->global_object);
-   TODO("Remove this line once edje_edit_image_add would be added into Editor Modulei and saving would work properly")
-   ap.project->changed = true;
-del:
-   ecore_job_add(_fs_del, img_edit);
-}
 
-static Eina_Bool
-_images_filter(const char *path,
-               Eina_Bool dir,
-               void *data __UNUSED__)
-{
-   int i;
-   Eina_Bool res;
-   const char *image_formats[] = { "png", "jpg", "jpeg", "jfif", "xpm", "tif",
-                                   "tiff", "gif", "pbm", "pgm", "ppm", "pnm",
-                                   "bmp", "wbmp", "webp", "psd", "tga", NULL};
-
-   if (dir) return true;
-
-   i = 0;
-   while(image_formats[i])
-     {
-        res = eina_str_has_extension(path, image_formats[i++]);
-        if (res) return true;
-     }
-
-   return false;
+   return true;
 }
 
 static void
@@ -506,23 +468,13 @@ _on_button_add_clicked_cb(void *data,
                           Evas_Object *obj __UNUSED__,
                           void *event_info __UNUSED__)
 {
-   Evas_Object *fs, *ic;
-   Image_Editor *edit = data;
-
-   assert(edit != NULL);
-
-   edit->fs_win  = mw_add(NULL, NULL, NULL);
-   mw_title_set(edit->fs_win, "Add image to the library");
-   ic = elm_icon_add(edit->fs_win);
-   elm_icon_standard_set(ic, "folder");
-   mw_icon_set(edit->fs_win, ic);
-   evas_object_show(edit->fs_win);
-
-   FILESELECTOR_ADD(fs, edit->fs_win, _on_image_done, data);
-   elm_fileselector_custom_filter_append(fs, _images_filter, NULL, _("Images files"));
-   elm_fileselector_mime_types_filter_append(fs, "*", _("All files"));
-   elm_fileselector_multi_select_set(fs, true);
-   elm_win_inwin_content_set(edit->fs_win, fs);
+   popup_fileselector_image_helper(NULL,
+                                   obj,
+                                   NULL,
+                                   _on_image_done,
+                                   data,
+                                   true,
+                                   false);
 }
 
 static void

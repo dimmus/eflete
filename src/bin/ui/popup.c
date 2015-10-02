@@ -308,6 +308,35 @@ popup_fileselector_edc_helper(const char *title, Evas_Object *follow_up, const c
    _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _edc_filter);
 }
 
+static Eina_Bool
+_images_filter(const char *path,
+               Eina_Bool dir,
+               void *data __UNUSED__)
+{
+   int i;
+   Eina_Bool res;
+   const char *image_formats[] = { "png", "jpg", "jpeg", "jfif", "xpm", "tif",
+                                   "tiff", "gif", "pbm", "pgm", "ppm", "pnm",
+                                   "bmp", "wbmp", "webp", "psd", "tga", NULL};
+   if (dir) return true;
+   i = 0;
+   while(image_formats[i])
+     {
+        res = eina_str_has_extension(path, image_formats[i++]);
+        if (res) return true;
+     }
+
+   return false;
+}
+
+void
+popup_fileselector_image_helper(const char *title, Evas_Object *follow_up, const char *path,
+                                Helper_Done_Cb func, void *data,
+                                Eina_Bool multi, Eina_Bool is_save)
+{
+   _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _images_filter);
+}
+
 void
 popup_log_message_helper(const char *msg)
 {
