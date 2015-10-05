@@ -801,7 +801,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
  *
  * @ingroup Property_Macro
  */
-#define PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
+#define PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, ARGS, DESCRIPTION) \
 static void \
 _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj __UNUSED__, \
@@ -814,8 +814,8 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    eina_stringshare_del(msg); \
    if (item->index != 0) \
      { \
-        if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, change, false, \
-                                          pd->part->name, item->title)) \
+        if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, change, false \
+                                          ARGS, item->title)) \
           { \
              ewe_combobox_select_item_set(obj, pd->attributes.part.previous_source); \
              change_free(change); \
@@ -825,7 +825,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
      } \
    else \
      { \
-        editor_##SUB##_##VALUE##_set(pd->group->edit_object, change, false, pd->part->name, NULL); \
+        editor_##SUB##_##VALUE##_set(pd->group->edit_object, change, false ARGS, NULL); \
         pd->attributes.part.previous_source = 0; \
      } \
    history_change_add(pd->group->history, change); \
@@ -1120,19 +1120,8 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define PART_ITEM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
-static void \
-_on_##MEMBER##_##VALUE##_change(void *data, \
-                                Evas_Object *obj __UNUSED__, \
-                                void *ei) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   Ewe_Combobox_Item *item = ei; \
-   edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, pd->part->name, \
-                                   pd->item_name, item->title); \
-   /*project_changed(false);*/ \
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-}
+#define PART_ITEM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
+   PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, PART_ITEM_ARGS, DESCRIPTION)
 
 /*****************************************************************************/
 /*                    PART ITEM 2 SPINNER CONTROLS                           */

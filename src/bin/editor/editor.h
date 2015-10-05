@@ -426,6 +426,9 @@ Eina_Bool
 editor_part_item_position_row_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
       unsigned short new_val);
 Eina_Bool
+editor_part_item_source_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
+      const char * new_val);
+Eina_Bool
 editor_part_scale_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       Eina_Bool new_val);
 Eina_Bool

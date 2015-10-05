@@ -1409,7 +1409,7 @@ PART_ATTR_SOURCE_UPDATE(part, source)
    PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 #define PART_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP, DESCRIPTION) \
-   PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
+   PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, PART_ARGS, DESCRIPTION) \
    PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 #define PART_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, TYPE, LIST, TOOLTIP, DESCRIPTION) \
@@ -3550,8 +3550,8 @@ TODO("do not use collection lists from edje_edit directly")
    edje_mmap_collection_list_free(collections);
 }
 
-#define PART_ITEM_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
-   PART_ITEM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
+#define PART_ITEM_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP, DESCRIPTION) \
+   PART_ITEM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
    PART_ITEM_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 #define PART_ITEM_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
@@ -3567,7 +3567,8 @@ TODO("do not use collection lists from edje_edit directly")
    PART_ITEM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
    PART_ITEM_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
 
-PART_ITEM_ATTR_1COMBOBOX(_("source"), part_item, source, part_item, _("Sets the group this object will be made from."))
+PART_ITEM_ATTR_1COMBOBOX(_("source"), part_item, source, part_item, _("Sets the group this object will be made from."),
+                         _("changed source to %s"))
 PART_ITEM_ATTR_2SPINNER(_("min"), part_item, min_w, min_h, part_item,
                     0.0, 999.0, 1.0, NULL, "x:", "%", "y:", "%",
                     _("Set the item minimum size hint width in pixels"), _("Set the item minimum size hint height in pixels"),
