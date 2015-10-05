@@ -38,7 +38,7 @@ _btn_cb(void *data,
    btn_pressed = *((Popup_Button *)data);
    if ((BTN_OK == btn_pressed) || (BTN_SAVE == btn_pressed) || (BTN_REPLACE == btn_pressed))
      if (validator && (!validator(user_data))) return;
-   ecore_main_loop_quit();
+   eflete_main_loop_quit();
 }
 
 #define BTN_ADD(TEXT, PLACE, DATA) \
@@ -92,7 +92,7 @@ popup_want_action(const char *title,
 
    evas_object_show(popup);
    if (to_focus) elm_object_focus_set(to_focus, true);
-   ecore_main_loop_begin();
+   eflete_main_loop_begin();
 
    /* clear up before return the presed button */
    elm_object_content_unset(popup);
