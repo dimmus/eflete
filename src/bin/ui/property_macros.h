@@ -944,6 +944,8 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    SPINNER_ADD(item, pd->attributes.SUB.VALUE2, 0.0, 9999.0, 1.0, true) \
    elm_spinner_label_format_set(pd->attributes.SUB.VALUE2, N_("%.0f")); \
    if (tooltip2) elm_object_tooltip_text_set(pd->attributes.SUB.VALUE2, tooltip2); \
+   evas_object_smart_callback_add(pd->attributes.SUB.VALUE2, "spinner,drag,start", _on_part_drag_##VALUE2##_start, pd); \
+   evas_object_smart_callback_add(pd->attributes.SUB.VALUE2, "spinner,drag,stop", _on_part_drag_##VALUE2##_stop, pd); \
    evas_object_smart_callback_add(pd->attributes.SUB.VALUE2, "changed", _on_part_drag_##VALUE2##_change, pd); \
    evas_object_event_callback_priority_add(pd->attributes.SUB.VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
@@ -984,7 +986,7 @@ prop_part_drag_##VALUE1##_##VALUE2##_update(Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define PART_ATTR_DRAG_CALLBACK(SUB, VALUE1, VALUE2) \
+#define PART_ATTR_DRAG_CALLBACK(SUB, VALUE1, VALUE2, DESCRIPTION1, DESCRIPTION2) \
 static void \
 _on_part_drag_##VALUE1##_change(void *data, \
                                 Evas_Object *obj, \
@@ -992,20 +994,69 @@ _on_part_drag_##VALUE1##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Eina_Bool value = elm_check_state_get(obj); \
-   edje_edit_part_drag_##VALUE1##_set(pd->group->edit_object, pd->part->name, value); \
+   Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION1, value?_("true"):_("false")); \
+   Change *change = change_add(msg); \
+   eina_stringshare_del(msg); \
+   editor_part_drag_##VALUE1##_set(pd->group->edit_object, change, false, pd->part->name, value); \
    prop_part_drag_control_disable_set(pd, false); \
-   /*project_changed(false);*/ \
+   history_change_add(pd->group->history, change); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
+} \
+static void \
+_on_part_drag_##VALUE2##_start(void *data, \
+                               Evas_Object *obj __UNUSED__, \
+                               void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   assert(pd->change == NULL); \
+   pd->change = change_add(NULL); \
+   pd->old_int_val = edje_edit_##SUB##_##VALUE2##_get(pd->group->edit_object, pd->part->name); \
+} \
+static void \
+_on_part_drag_##VALUE2##_stop(void *data, \
+                              Evas_Object *obj __UNUSED__, \
+                              void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Eina_Stringshare *msg; \
+   assert(pd->change != NULL); \
+   int new_val = edje_edit_##SUB##_##VALUE2##_get(pd->group->edit_object, pd->part->name); \
+   if (new_val != pd->old_int_val) \
+     { \
+        msg = eina_stringshare_printf(DESCRIPTION2, pd->old_int_val, new_val); \
+        change_description_set(pd->change, msg); \
+        eina_stringshare_del(msg); \
+        history_change_add(pd->group->history, pd->change); \
+     } \
+   else \
+     change_free(pd->change); \
+   pd->change = NULL; \
 } \
 static void \
 _on_part_drag_##VALUE2##_change(void *data, \
                                 Evas_Object *obj, \
-                                void *event_info __UNUSED__) \
+                                void *ei) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    int value = elm_spinner_value_get(obj); \
-   edje_edit_part_drag_##VALUE2##_set(pd->group->edit_object, pd->part->name, value); \
-   /*project_changed(false);*/ \
+   if (pd->change) \
+     { \
+        if (!editor_##SUB##_##VALUE2##_set(pd->group->edit_object, pd->change, true, pd->part->name, value)) \
+        { \
+           ERR("editor_group_"#SUB"_"#VALUE2"_set failed"); \
+           abort(); \
+        } \
+     } \
+   else \
+     { \
+        _on_part_drag_##VALUE2##_start(data, obj, ei); \
+        if (!editor_##SUB##_##VALUE2##_set(pd->group->edit_object, pd->change, true, pd->part->name, value)) \
+        { \
+           ERR("editor_"#SUB"_"#VALUE2"_set failed"); \
+           abort(); \
+        } \
+        _on_part_drag_##VALUE2##_stop(data, obj, ei); \
+     } \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
