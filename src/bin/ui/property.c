@@ -3563,8 +3563,8 @@ TODO("do not use collection lists from edje_edit directly")
                                MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
                                TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
-#define PART_ITEM_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, TYPE, LIST, TOOLTIP) \
-   PART_ITEM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
+#define PART_ITEM_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, TYPE, LIST, TOOLTIP, DESCRIPTION) \
+   PART_ITEM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
    PART_ITEM_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
 
 PART_ITEM_ATTR_1COMBOBOX(_("source"), part_item, source, part_item, _("Sets the group this object will be made from."),
@@ -3612,8 +3612,9 @@ PART_ITEM_ATTR_2SPINNER(_("spread"), part_item, spread_w, spread_h, part_item,
                     1, int,
                     _("part item spread width changed from %d to %d"),
                     _("part item spread height changed from %d to %d"))
-PART_ITEM_ATTR_1COMBOBOX_LIST(_("aspect mode"), part_item, aspect_mode, part_item, int, edje_item_aspect_pref,
-                              _("Sets the aspect control hints for this object."))
+PART_ITEM_ATTR_1COMBOBOX_LIST(_("aspect mode"), part_item, aspect_mode, part_item, Edje_Aspect_Control, edje_item_aspect_pref,
+                              _("Sets the aspect control hints for this object."),
+                              _("aspect mode changed to %s"))
 PART_ITEM_ATTR_2SPINNER(_("span_col"), part_item, span_col, span_row, part_item,
                         1.0, 999.0, 1.0, NULL, "column:", "", "row:", "",
                         _("Sets how many columns this item will use"), _("Sets how many rows this item will use"),

@@ -1227,18 +1227,8 @@ COMMON_2SPINNER_ADD(PART_ITEM, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  *
  * @ingroup Property_Macro
  */
-#define PART_ITEM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
-static void \
-_on_##SUB##_##VALUE##_change(void *data, \
-                          Evas_Object *obj __UNUSED__, \
-                          void *event_info) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
-   edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object PART_ITEM_ARGS, (TYPE)item->index); \
-   /*project_changed(false);*/ \
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-}
+#define PART_ITEM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
+   COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, PART_ITEM_ARGS, DESCRIPTION)
 
 /*****************************************************************************/
 /*                           STATE 1 CHECK CONTROL                           */
