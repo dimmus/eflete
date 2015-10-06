@@ -253,6 +253,9 @@ Eina_Bool
 editor_state_text_size_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
       int new_val);
 Eina_Bool
+editor_state_text_elipsis_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      double new_val);
+Eina_Bool
 editor_state_text_align_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
       double new_val);
 Eina_Bool

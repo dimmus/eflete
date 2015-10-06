@@ -133,7 +133,7 @@ struct _Prop_Data
              Evas_Object *max_x, *max_y;
              Evas_Object *fit_x, *fit_y;
              Evas_Object *text_source;
-             Evas_Object *ellipsis_toggle, *ellipsis;
+             Evas_Object *elipsis_toggle, *elipsis;
              Evas_Object *effect, *effect_direction;
              Evas_Object *color2, *color2_obj;
              Evas_Object *color3, *color3_obj;
@@ -345,7 +345,7 @@ static void
 ui_property_state_container_unset(Evas_Object *property);
 
 static void
-prop_state_text_ellipsis_update(Prop_Data *pd);
+prop_state_text_elipsis_update(Prop_Data *pd);
 
 static void
 prop_state_image_update(Prop_Data *pd);
@@ -686,7 +686,7 @@ _on_editor_attribute_changed(void *data,
          COMMON_1SPINNER_UPDATE(state_text, align_y, state_textblock, double, 100, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_TEXT_ELIPSIS:
-         prop_state_text_ellipsis_update(pd);
+         prop_state_text_elipsis_update(pd);
          break;
       case ATTRIBUTE_STATE_TEXT_SIZE:
          COMMON_1SPINNER_UPDATE(state_text, size, state_text, int,  1, STATE_ARGS);
@@ -2509,57 +2509,39 @@ prop_part_text_effect_add(Evas_Object *parent, Prop_Data *pd)
 
 #define pd_text pd->attributes.state_text
 
-static void
-_on_state_text_ellipsis_change(void *data,
-                               Evas_Object *obj,
-                               void *event_info __UNUSED__)
-{
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   double value = elm_spinner_value_get(obj);
-   if (!edje_edit_state_text_elipsis_set(pd->group->edit_object,
-                                         pd->part->name,
-                                         pd->part->current_state->parsed_name,
-                                         pd->part->current_state->parsed_val,
-                                         value))
-     return;
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-   //project_changed(false);
-}
+COMMON_SPINNER_CALLBACK(state_text, elipsis, state_text, double, 1, STATE_ARGS,
+                        _("elipsis changed from %0.2f to %0.2f"))
 
 static void
-_on_state_text_ellipsis_toggle_change(void *data,
+_on_state_text_elipsis_toggle_change(void *data,
                                       Evas_Object *obj,
                                       void *event_info __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
-   double value;
+   Eina_Bool val;
+   Change *change;
 
    assert(pd != NULL);
 
-   if (elm_check_state_get(obj))
+   val = elm_check_state_get(obj);
+
+   if (val)
      {
-        elm_object_disabled_set(pd->attributes.state_text.ellipsis, false);
-        value = elm_spinner_value_get(pd->attributes.state_text.ellipsis);
+        elm_object_disabled_set(pd->attributes.state_text.elipsis, false);
+        change = change_add(_("elipsis turned on"));
+        editor_state_text_elipsis_set(pd->group->edit_object, change, false STATE_ARGS, 0.0);
      }
    else
      {
-        elm_object_disabled_set(pd->attributes.state_text.ellipsis, true);
-        value = -1.0;
+        elm_object_disabled_set(pd->attributes.state_text.elipsis, true);
+        change = change_add(_("elipsis turned off"));
+        editor_state_text_elipsis_set(pd->group->edit_object, change, false STATE_ARGS, -1.0);
      }
-   edje_edit_state_text_elipsis_set(pd->group->edit_object,
-                                    pd->part->name,
-                                    pd->part->current_state->parsed_name,
-                                    pd->part->current_state->parsed_val,
-                                    value);
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-   //project_changed(false);
+   history_change_add(pd->group->history, change);
 }
 
 static void
-prop_state_text_ellipsis_update(Prop_Data *pd)
+prop_state_text_elipsis_update(Prop_Data *pd)
 {
    double value;
 
@@ -2571,45 +2553,46 @@ prop_state_text_ellipsis_update(Prop_Data *pd)
                                             pd->part->current_state->parsed_val);
    if (value < 0)
      {
-        elm_check_state_set(pd->attributes.state_text.ellipsis_toggle, false);
-        elm_object_disabled_set(pd->attributes.state_text.ellipsis, true);
-        elm_spinner_value_set(pd->attributes.state_text.ellipsis, 0.0);
+        elm_check_state_set(pd->attributes.state_text.elipsis_toggle, false);
+        elm_object_disabled_set(pd->attributes.state_text.elipsis, true);
+        elm_spinner_value_set(pd->attributes.state_text.elipsis, 0.0);
      }
    else
      {
-        elm_check_state_set(pd->attributes.state_text.ellipsis_toggle, true);
-        elm_object_disabled_set(pd->attributes.state_text.ellipsis, false);
-        elm_spinner_value_set(pd->attributes.state_text.ellipsis, value);
+        elm_check_state_set(pd->attributes.state_text.elipsis_toggle, true);
+        elm_object_disabled_set(pd->attributes.state_text.elipsis, false);
+        elm_spinner_value_set(pd->attributes.state_text.elipsis, value);
      }
 }
 
 static Evas_Object *
-prop_state_text_ellipsis_add(Evas_Object *parent, Prop_Data *pd)
+prop_state_text_elipsis_add(Evas_Object *parent, Prop_Data *pd)
 {
    assert(parent != NULL);
    assert(pd != NULL);
 
-   PROPERTY_ITEM_ADD(parent, _("ellipsis"), "2swallow")
-   CHECK_ADD(item, pd->attributes.state_text.ellipsis_toggle)
-   elm_object_style_set(pd->attributes.state_text.ellipsis_toggle, "toggle");
-   elm_object_tooltip_text_set(pd->attributes.state_text.ellipsis_toggle,
-                               _("Turn on/off the text ellipsis"));
-   elm_layout_content_set(item, "swallow.content1", pd->attributes.state_text.ellipsis_toggle);
-   evas_object_smart_callback_add(pd->attributes.state_text.ellipsis_toggle, "changed",
-                                  _on_state_text_ellipsis_toggle_change, pd);
+   PROPERTY_ITEM_ADD(parent, _("elipsis"), "2swallow")
+   CHECK_ADD(item, pd->attributes.state_text.elipsis_toggle)
+   elm_object_style_set(pd->attributes.state_text.elipsis_toggle, "toggle");
+   elm_object_tooltip_text_set(pd->attributes.state_text.elipsis_toggle,
+                               _("Turn on/off the text elipsis"));
+   elm_layout_content_set(item, "swallow.content1", pd->attributes.state_text.elipsis_toggle);
+   evas_object_smart_callback_add(pd->attributes.state_text.elipsis_toggle, "changed",
+                                  _on_state_text_elipsis_toggle_change, pd);
 
-   SPINNER_ADD(item, pd->attributes.state_text.ellipsis, 0.0, 1.0, 0.1, true)
-   elm_spinner_label_format_set(pd->attributes.state_text.ellipsis, "%1.2f");
-   elm_object_tooltip_text_set(pd->attributes.state_text.ellipsis,
+   SPINNER_ADD(item, pd->attributes.state_text.elipsis, 0.0, 1.0, 0.1, true)
+   elm_spinner_label_format_set(pd->attributes.state_text.elipsis, "%1.2f");
+   elm_object_tooltip_text_set(pd->attributes.state_text.elipsis,
                                _("Cut text if biggest then part's area"
                                  "0.0 = fix the left side  1.0 = right side"));
-   elm_layout_content_set(item, "swallow.content2", pd->attributes.state_text.ellipsis);
-   evas_object_smart_callback_add(pd->attributes.state_text.ellipsis, "changed",
-                                  _on_state_text_ellipsis_change, pd);
-   evas_object_event_callback_priority_add(pd->attributes.state_text.ellipsis, EVAS_CALLBACK_MOUSE_WHEEL,
+   elm_layout_content_set(item, "swallow.content2", pd->attributes.state_text.elipsis);
+   evas_object_smart_callback_add(pd->attributes.state_text.elipsis, "spinner,drag,start", _on_state_text_elipsis_start, pd);
+   evas_object_smart_callback_add(pd->attributes.state_text.elipsis, "spinner,drag,stop", _on_state_text_elipsis_stop, pd);
+   evas_object_smart_callback_add(pd->attributes.state_text.elipsis, "changed", _on_state_text_elipsis_change, pd);
+   evas_object_event_callback_priority_add(pd->attributes.state_text.elipsis, EVAS_CALLBACK_MOUSE_WHEEL,
                                            EVAS_CALLBACK_PRIORITY_BEFORE, _on_spinner_mouse_wheel, NULL);
 
-   prop_state_text_ellipsis_update(pd);
+   prop_state_text_elipsis_update(pd);
    return item;
 }
 
@@ -2650,7 +2633,7 @@ ui_property_state_text_set(Evas_Object *property)
          elm_box_pack_end(box, item);
          item = prop_state_text_text_source_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_text_ellipsis_add(box, pd);
+         item = prop_state_text_elipsis_add(box, pd);
          elm_box_pack_end(box, item);
          item = prop_state_text_fit_x_fit_y_add(box, pd);
          elm_box_pack_end(box, item);
@@ -2677,7 +2660,7 @@ ui_property_state_text_set(Evas_Object *property)
         STATE_ATTR_2CHECK_UPDATE(state_text, max_x, max_y, state_text)
         prop_state_text_source_update(pd);
         prop_state_text_text_source_update(pd);
-        prop_state_text_ellipsis_update(pd);
+        prop_state_text_elipsis_update(pd);
         STATE_ATTR_2CHECK_UPDATE(state_text, fit_x, fit_y, state_text)
         prop_state_color2_update(pd);
         prop_state_color3_update(pd);
