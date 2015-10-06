@@ -157,6 +157,20 @@ _popup_obj_follow(void *data __UNUSED__,
 }
 
 static void
+_popup_win_follow(void *data __UNUSED__,
+                  Evas *e __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   int w, h, nx, ny;
+
+   evas_object_geometry_get(ap.win, NULL, NULL, &w, &h);
+   nx = (w / 2) - (FS_W / 2);
+   ny = (h / 2) - (FS_H / 2);
+   evas_object_move(popup, nx, ny);
+}
+
+static void
 _fileselector_helper(Evas_Object *entry, const char *path, Elm_Fileselector_Filter_Func filter_cb)
 {
    Evas_Object *fs;
@@ -184,9 +198,17 @@ _fileselector_helper(Evas_Object *entry, const char *path, Elm_Fileselector_Filt
    evas_object_resize(fs, FS_W, FS_H);
    elm_layout_content_set(popup, "elm.swallow.content", fs);
 
-   _popup_obj_follow(NULL, NULL, entry, NULL);
-   evas_object_event_callback_add(entry, EVAS_CALLBACK_RESIZE, _popup_obj_follow, NULL);
-   evas_object_event_callback_add(entry, EVAS_CALLBACK_MOVE, _popup_obj_follow, NULL);
+   if (entry)
+     {
+        _popup_obj_follow(NULL, NULL, entry, NULL);
+        evas_object_event_callback_add(entry, EVAS_CALLBACK_RESIZE, _popup_obj_follow, NULL);
+        evas_object_event_callback_add(entry, EVAS_CALLBACK_MOVE, _popup_obj_follow, NULL);
+     }
+   else
+     {
+        _popup_win_follow(NULL, NULL, entry, NULL);
+        evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _popup_win_follow, NULL);
+     }
    evas_object_show(popup);
 }
 
@@ -230,20 +252,6 @@ void
 popup_fileselector_edc_helper(Evas_Object *entry, const char *path)
 {
    _fileselector_helper(entry, path, _edc_filter);
-}
-
-static void
-_popup_win_follow(void *data __UNUSED__,
-                  Evas *e __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   int w, h, nx, ny;
-
-   evas_object_geometry_get(ap.win, NULL, NULL, &w, &h);
-   nx = (w / 2) - (FS_W / 2);
-   ny = (h / 2) - (FS_H / 2);
-   evas_object_move(popup, nx, ny);
 }
 
 void
