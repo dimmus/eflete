@@ -93,10 +93,16 @@ _recent_clear(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
+   Popup_Button btn_res;
+   btn_res = popup_want_action(_("Confirm clear recent list"),
+                               _("Are you sure you want to clear list of "
+                                 "recently opened projects?<br>"),
+                               NULL, NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
+   if (BTN_CANCEL == btn_res) return;
+
    config_recent_list_clear();
    _tab_open_project_recents_update();
 }
-
 
 Evas_Object *
 _tab_open_project_add(void)
