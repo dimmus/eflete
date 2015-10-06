@@ -1416,8 +1416,8 @@ PART_ATTR_SOURCE_UPDATE(part, source)
    PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
    PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
 
-#define PART_ATTR_DRAG(TEXT, SUB, VALUE1, VALUE2) \
-   PART_ATTR_DRAG_CALLBACK(SUB, VALUE1, VALUE2) \
+#define PART_ATTR_DRAG(TEXT, SUB, VALUE1, VALUE2, DESCRIPTION1, DESCRIPTION2) \
+   PART_ATTR_DRAG_CALLBACK(SUB, VALUE1, VALUE2, DESCRIPTION1, DESCRIPTION2) \
    PART_ATTR_DRAG_UPDATE(SUB, VALUE1, VALUE2) \
    PART_ATTR_DRAG_ADD(TEXT, SUB, VALUE1, VALUE2)
 
@@ -1441,8 +1441,8 @@ PART_ATTR_1COMBOBOX(_("group source"), part, source, part,
                     _("Used for the group to be loaded and used to display GROUP part."),
                     _("group source changed to %s"))
 /* part drag property */
-PART_ATTR_DRAG(_("axis X"), part_drag, x, step_x)
-PART_ATTR_DRAG(_("axis Y"), part_drag, y, step_y)
+PART_ATTR_DRAG(_("axis X"), part_drag, x, step_x, _("drag x changed to %s"), _("drag step x changed from %d to %d"))
+PART_ATTR_DRAG(_("axis Y"), part_drag, y, step_y, _("drag y changed to %s"), _("drag step y changed from %d to %d"))
 PART_ATTR_1COMBOBOX(_("drag area"), part_drag, confine, part_drag,
                     _("Limits the movement of the dragged part to another part's container"),
                     _("drag area changed to %s"))
