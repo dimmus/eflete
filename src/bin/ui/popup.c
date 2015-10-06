@@ -151,7 +151,7 @@ _popup_obj_follow(void *data __UNUSED__,
    int x, y, w, h, nx, ny;
 
    evas_object_geometry_get(obj, &x, &y, &w, &h);
-   nx = x - (FS_W - w);
+   nx = x - (FS_W + 12 - w);
    ny = y + h;
    evas_object_move(popup, nx, ny);
 }
@@ -165,18 +165,22 @@ _popup_win_follow(void *data __UNUSED__,
    int w, h, nx, ny;
 
    evas_object_geometry_get(ap.win, NULL, NULL, &w, &h);
-   nx = (w / 2) - (FS_W / 2);
-   ny = (h / 2) - (FS_H / 2);
+   fprintf(stdout, "%d %d\n", w, h);
+   nx = (w / 2) - ((FS_W + 12) / 2);
+   ny = (h / 2) - ((FS_H + 12) / 2);
    evas_object_move(popup, nx, ny);
 }
 
 static void
-_fileselector_helper(Evas_Object *entry, const char *path, Elm_Fileselector_Filter_Func filter_cb)
+_fileselector_helper(const char *title,
+                     Evas_Object *entry,
+                     const char *path,
+                     Elm_Fileselector_Filter_Func filter_cb)
 {
    Evas_Object *fs;
 
    popup = elm_layout_add(ap.win);
-   elm_layout_theme_set(popup, "layout", "popup", "hint");
+   elm_layout_theme_set(popup, "layout", "popup", title ? "hint_title" : "hint");
    elm_layout_signal_callback_add(popup, "hint,dismiss", "eflete", _popup_dismiss, NULL);
 
    fs = elm_fileselector_add(ap.win);
@@ -195,9 +199,11 @@ _fileselector_helper(Evas_Object *entry, const char *path, Elm_Fileselector_Filt
    evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
    /* one more hack, set text our text to button 'ok' */
    elm_object_text_set(elm_layout_content_get(fs, "elm.swallow.ok"), _("Open"));
+   evas_object_size_hint_min_set(fs, FS_W, FS_H);
    evas_object_resize(fs, FS_W, FS_H);
-   elm_layout_content_set(popup, "elm.swallow.content", fs);
 
+   if (title) elm_object_text_set(popup, title);
+   elm_layout_content_set(popup, "elm.swallow.content", fs);
    if (entry)
      {
         _popup_obj_follow(NULL, NULL, entry, NULL);
@@ -215,7 +221,7 @@ _fileselector_helper(Evas_Object *entry, const char *path, Elm_Fileselector_Filt
 void
 popup_fileselector_folder_helper(Evas_Object *entry, const char *path)
 {
-   _fileselector_helper(entry, path, NULL);
+   _fileselector_helper(NULL, entry, path, NULL);
 }
 
 static Eina_Bool
@@ -231,9 +237,9 @@ _edj_filter(const char *path,
 }
 
 void
-popup_fileselector_edj_helper(Evas_Object *entry, const char *path)
+popup_fileselector_edj_helper(const char *title, Evas_Object *entry, const char *path)
 {
-   _fileselector_helper(entry, path, _edj_filter);
+   _fileselector_helper(title, entry, path, _edj_filter);
 }
 
 static Eina_Bool
@@ -251,7 +257,7 @@ _edc_filter(const char *path,
 void
 popup_fileselector_edc_helper(Evas_Object *entry, const char *path)
 {
-   _fileselector_helper(entry, path, _edc_filter);
+   _fileselector_helper(NULL, entry, path, _edc_filter);
 }
 
 void

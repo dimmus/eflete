@@ -418,7 +418,7 @@ void
 popup_fileselector_folder_helper(Evas_Object *entry, const char *path);
 
 void
-popup_fileselector_edj_helper(Evas_Object *entry, const char *path);
+popup_fileselector_edj_helper(const char *title, Evas_Object *entry, const char *path);
 
 void
 popup_fileselector_edc_helper(Evas_Object *entry, const char *path);

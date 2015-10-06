@@ -130,7 +130,7 @@ _elipsis_edj(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   popup_fileselector_edj_helper(tab_edj.edj, NULL);
+   popup_fileselector_edj_helper(NULL, tab_edj.edj, NULL);
 }
 
 Evas_Object *
