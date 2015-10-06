@@ -1659,7 +1659,11 @@ _on_state_color_class_change(void *data,
    assert(pd != NULL);
 
    value = strcmp(item->title, "None") ? item->title : NULL;
-   edje_edit_state_color_class_set(pd->group->edit_object, pd->part->name,
+   Eina_Stringshare *msg = eina_stringshare_printf(_("color class changed to %s"), item->title);
+   Change *change = change_add(msg);
+   eina_stringshare_del(msg);
+   editor_state_color_class_set(pd->group->edit_object, change, false,
+                                   pd->part->name,
                                    pd->part->current_state->parsed_name,
                                    pd->part->current_state->parsed_val,
                                    value);
@@ -1683,6 +1687,7 @@ _on_state_color_class_change(void *data,
    edje_edit_string_free(value);
 
    //project_changed(false);
+   history_change_add(pd->group->history, change);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
 }
 
