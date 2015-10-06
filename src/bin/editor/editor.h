@@ -372,6 +372,19 @@ Eina_Bool
 editor_state_color_class_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
       const char * new_val);
 
+Eina_Bool
+editor_state_color_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int r, int g, int b, int a);
+
+Eina_Bool
+editor_state_color2_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int r, int g, int b, int a);
+
+Eina_Bool
+editor_state_color3_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int r, int g, int b, int a);
+
+
 /* Part */
 
 Eina_Bool

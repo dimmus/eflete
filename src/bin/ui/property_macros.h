@@ -1556,30 +1556,26 @@ prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_COLOR_CALLBACK(SUB, VALUE, MEMBER) \
+#define STATE_ATTR_COLOR_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
 static void \
 _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj, \
                                 void *event_info __UNUSED__) \
 { \
    int r, g, b, a; \
-   int old_r, old_g, old_b, old_a; \
    Prop_Data *pd = (Prop_Data *)data; \
-   edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object, pd->part->name, \
-                                   pd->part->current_state->parsed_name, \
-                                   pd->part->current_state->parsed_val, \
-                                   &old_r, &old_g, &old_b, &old_a); \
+   assert(pd->change != NULL); \
    colorselector_color_get(obj, &r, &g, &b, &a); \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, pd->part->name, \
-                                        pd->part->current_state->parsed_name, \
-                                        pd->part->current_state->parsed_val, \
-                                        r, g, b, a))\
+   if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, pd->change, true, \
+                                     pd->part->name, \
+                                     pd->part->current_state->parsed_name, \
+                                     pd->part->current_state->parsed_val, \
+                                     r, g, b, a))\
      { \
        ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
        abort(); \
      } \
    evas_object_color_set(pd->attributes.MEMBER.VALUE##_obj, r*a/255, g*a/255, b*a/255, a); \
-   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 } \
 static void \
@@ -1587,13 +1583,24 @@ _on_##MEMBER##_##VALUE##_dismissed(void *data, \
                                    Evas_Object *obj, \
                                    void *event_info __UNUSED__) \
 { \
+   int r, g, b, a; \
    Prop_Data *pd = (Prop_Data *)data; \
+   assert(pd->change != NULL); \
    evas_object_smart_callback_del_full(obj, "color,changed", \
                                        _on_##MEMBER##_##VALUE##_change, pd); \
    evas_object_smart_callback_del_full(obj, "palette,item,selected", \
                                        _on_##MEMBER##_##VALUE##_change, pd); \
    evas_object_smart_callback_del_full(obj, "dismissed", \
                                        _on_##MEMBER##_##VALUE##_dismissed, pd); \
+   edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object, pd->part->name, \
+                                   pd->part->current_state->parsed_name, \
+                                   pd->part->current_state->parsed_val, \
+                                   &r, &g, &b, &a); \
+   Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION, r, g, b, a); \
+   change_description_set(pd->change, msg); \
+   eina_stringshare_del(msg); \
+   history_change_add(pd->group->history, pd->change); \
+   pd->change = NULL; \
    evas_object_hide(obj); \
 } \
 static void \
@@ -1606,12 +1613,12 @@ _on_##MEMBER##_##VALUE##_clicked(void *data, \
    int r, g, b, a; \
    Evas_Object *colorsel; \
    Prop_Data *pd = (Prop_Data *)data; \
+   assert(pd->change == NULL); \
    colorsel = colorselector_get(); \
+   pd->change = change_add(NULL); \
    evas_object_color_get(pd->attributes.MEMBER.VALUE##_obj, &r, &g, &b, &a); \
    colorselector_color_set(colorsel, r, g, b, a); \
    evas_object_smart_callback_add(colorsel, "color,changed", \
-                                  _on_##MEMBER##_##VALUE##_change, pd); \
-   evas_object_smart_callback_add(colorsel, "palette,item,selected", \
                                   _on_##MEMBER##_##VALUE##_change, pd); \
    evas_object_smart_callback_add(colorsel, "dismissed", \
                                   _on_##MEMBER##_##VALUE##_dismissed, pd); \
