@@ -148,6 +148,79 @@ group { name: "elm/layout/popup/hint";
    }
 }
 
+group { name: "elm/layout/popup/hint_title";
+   images {
+      image: "hint-background.png" COMP;
+   }
+   parts {
+      part { name: "event";
+         repeat_events: 1;
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.offset: -9999 -9999;
+            rel2.offset: 9999 9999;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               to_y: "elm.text";
+               to_x: "elm.swallow.content";
+               offset: -7 -7;
+            }
+            rel2 {
+               to: "elm.swallow.content";
+               offset: 6 6;
+            }
+            image {
+               normal: "hint-background.png";
+               border: 5 5 3 3;
+            }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 1 1;
+            color_class: "main";
+            rel1 {
+               to_x: "elm.swallow.content";
+               offset: 0 6;
+            }
+            rel2 {
+               to: "elm.swallow.content";
+               relative: 1.0 0.0;
+               offset: 0 -7;
+            }
+            text {
+               font: PT;
+               size: 16;
+               min: 1 1;
+               elipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+         }
+      }
+   }
+   programs {
+      program { name: "dismiss";
+         signal: "mouse,up,*";
+         source: "event";
+         action: SIGNAL_EMIT "hint,dismiss" "eflete";
+      }
+   }
+}
+
+
+
 group { name: "elm/layout/property/default";
    parts {
       part { name: "bg";
