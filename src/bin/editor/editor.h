@@ -522,5 +522,8 @@ editor_part_source5_set(Evas_Object *obj, Change *change, Eina_Bool merge, const
 Eina_Bool
 editor_part_source6_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       const char * new_val);
+Eina_Bool
+editor_part_effect_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      Edje_Text_Effect new_val);
 
 #endif /* EDITOR_H */

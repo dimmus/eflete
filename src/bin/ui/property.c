@@ -2376,13 +2376,15 @@ _text_effect_update(Prop_Data *pd)
    Edje_Text_Effect effect;
 
    assert(pd != NULL);
+   assert(pd->change != NULL);
 
    effect = ewe_combobox_select_item_get(pd->attributes.state_text.effect)->index |
             ewe_combobox_select_item_get(pd->attributes.state_text.effect_direction)->index << 4;
-   edje_edit_part_effect_set(pd->group->edit_object, pd->part->name, effect);
+   editor_part_effect_set(pd->group->edit_object, pd->change, false, pd->part->name, effect);
 
+   history_change_add(pd->group->history, pd->change);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-   //project_changed(false);
+   pd->change = NULL;
 }
 
 static void
@@ -2433,8 +2435,16 @@ _on_text_effect_direction_changed(void *data,
                                   Evas_Object *obj __UNUSED__,
                                   void *event_info __UNUSED__)
 {
-   assert(data != NULL);
+   Prop_Data *pd = (Prop_Data *)data;
+   Ewe_Combobox_Item *item;
 
+   assert(pd != NULL);
+   assert(pd->change == NULL);
+
+   item = ewe_combobox_select_item_get(pd->attributes.state_text.effect_direction);
+   Eina_Stringshare *msg = eina_stringshare_printf(_("effect direction changed to %s"), item->title);
+   pd->change = change_add(msg);
+   eina_stringshare_del(msg);
    _text_effect_update((Prop_Data *)data);
 }
 
@@ -2444,11 +2454,17 @@ _on_text_effect_changed(void *data,
                         void *event_info __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
+   Ewe_Combobox_Item *item;
 
    assert(pd != NULL);
+   assert(pd->change == NULL);
 
    _text_effect_contols_update(pd);
    ewe_combobox_select_item_set(pd->attributes.state_text.effect_direction, 0);
+   item = ewe_combobox_select_item_get(pd->attributes.state_text.effect);
+   Eina_Stringshare *msg = eina_stringshare_printf(_("effect changed to %s"), item->title);
+   pd->change = change_add(msg);
+   eina_stringshare_del(msg);
    _text_effect_update((Prop_Data *)data);
 }
 
