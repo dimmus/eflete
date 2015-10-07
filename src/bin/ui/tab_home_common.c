@@ -161,3 +161,14 @@ exist_permission_check(const char *path, const char *name, const char *title)
    eina_strbuf_free(buf_msg);
    eina_strbuf_free(buf);
 }
+
+void
+entry_path_set(void *data,
+               Evas_Object *obj __UNUSED__,
+               void *event_info)
+{
+   Evas_Object *entry = (Evas_Object *)data;
+   Eina_List *selected = (Eina_List *)event_info;
+
+   elm_entry_entry_set(entry, eina_list_data_get(selected));
+}

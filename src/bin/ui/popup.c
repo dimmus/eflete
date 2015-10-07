@@ -21,6 +21,9 @@
 
 static Popup_Button btn_pressed;
 static Evas_Object *popup;
+static Evas_Object *fs;
+static Evas_Smart_Cb dismiss_func;
+static void* func_data;
 
 static const Popup_Button _btn_ok         = BTN_OK;
 static const Popup_Button _btn_save       = BTN_SAVE;
@@ -130,13 +133,28 @@ _popup_dismiss(void *data __UNUSED__,
 }
 
 static void
-_open(void *data,
-      Evas_Object *obj,
+_done(void *data __UNUSED__,
+      Evas_Object *obj __UNUSED__,
       void *event_info __UNUSED__)
 {
-   Evas_Object *entry = (Evas_Object *)data;
-   elm_entry_entry_set(entry, elm_fileselector_selected_get(obj));
-   _popup_dismiss(NULL, NULL, NULL, NULL);
+   Eina_List *selected_paths = NULL;
+   Eina_Stringshare *selected;
+
+   if (dismiss_func)
+     {
+        if (elm_fileselector_multi_select_get(fs))
+          selected_paths = (Eina_List *)elm_fileselector_selected_paths_get(fs);
+        else
+          {
+             selected = elm_fileselector_selected_get(fs);
+             selected_paths = eina_list_append(selected_paths, selected);
+          }
+        ((Evas_Smart_Cb)dismiss_func)(func_data, NULL, selected_paths);
+     }
+   eina_list_free(selected_paths);
+   dismiss_func = NULL;
+   func_data = NULL;
+   _popup_dismiss(NULL, NULL, data, NULL);
 }
 
 #define FS_W 430
@@ -175,9 +193,12 @@ static void
 _fileselector_helper(const char *title,
                      Evas_Object *follow_up,
                      const char *path,
+                     Evas_Smart_Cb func,
+                     void *data,
                      Elm_Fileselector_Filter_Func filter_cb)
 {
-   Evas_Object *fs;
+   dismiss_func = func;
+   func_data = data;
 
    popup = elm_layout_add(ap.win);
    elm_layout_theme_set(popup, "layout", "popup", title ? "hint_title" : "hint");
@@ -193,8 +214,8 @@ _fileselector_helper(const char *title,
    else elm_fileselector_folder_only_set(fs, true);
 
    elm_fileselector_path_set(fs, path ? path : getenv("HOME"));
-   evas_object_smart_callback_add(fs, "done", _open, follow_up);
-   evas_object_smart_callback_add(fs, "activated", _open, follow_up);
+   evas_object_smart_callback_add(fs, "done", _done, NULL);
+   evas_object_smart_callback_add(fs, "activated", _done, NULL);
    /* small hack, hide not necessary button */
    evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
    /* one more hack, set text our text to button 'ok' */
@@ -219,9 +240,10 @@ _fileselector_helper(const char *title,
 }
 
 void
-popup_fileselector_folder_helper(Evas_Object *follow_up, const char *path)
+popup_fileselector_folder_helper(Evas_Object *follow_up, const char *path,
+                                 Evas_Smart_Cb func, void *data)
 {
-   _fileselector_helper(NULL, follow_up, path, NULL);
+   _fileselector_helper(NULL, follow_up, path, func, data, NULL);
 }
 
 static Eina_Bool
@@ -237,9 +259,10 @@ _edj_filter(const char *path,
 }
 
 void
-popup_fileselector_edj_helper(const char *title, Evas_Object *follow_up, const char *path)
+popup_fileselector_edj_helper(const char *title, Evas_Object *follow_up, const char *path,
+                              Evas_Smart_Cb func, void *data)
 {
-   _fileselector_helper(title, follow_up, path, _edj_filter);
+   _fileselector_helper(title, follow_up, path, func, data, _edj_filter);
 }
 
 static Eina_Bool
@@ -255,9 +278,10 @@ _edc_filter(const char *path,
 }
 
 void
-popup_fileselector_edc_helper(Evas_Object *follow_up, const char *path)
+popup_fileselector_edc_helper(Evas_Object *follow_up, const char *path,
+                              Evas_Smart_Cb func, void *data)
 {
-   _fileselector_helper(NULL, follow_up, path, _edc_filter);
+   _fileselector_helper(NULL, follow_up, path, func, data, _edc_filter);
 }
 
 void
