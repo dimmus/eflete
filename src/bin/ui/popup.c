@@ -173,7 +173,7 @@ _popup_win_follow(void *data __UNUSED__,
 
 static void
 _fileselector_helper(const char *title,
-                     Evas_Object *entry,
+                     Evas_Object *follow_up,
                      const char *path,
                      Elm_Fileselector_Filter_Func filter_cb)
 {
@@ -193,8 +193,8 @@ _fileselector_helper(const char *title,
    else elm_fileselector_folder_only_set(fs, true);
 
    elm_fileselector_path_set(fs, path ? path : getenv("HOME"));
-   evas_object_smart_callback_add(fs, "done", _open, entry);
-   evas_object_smart_callback_add(fs, "activated", _open, entry);
+   evas_object_smart_callback_add(fs, "done", _open, follow_up);
+   evas_object_smart_callback_add(fs, "activated", _open, follow_up);
    /* small hack, hide not necessary button */
    evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
    /* one more hack, set text our text to button 'ok' */
@@ -204,24 +204,24 @@ _fileselector_helper(const char *title,
 
    if (title) elm_object_text_set(popup, title);
    elm_layout_content_set(popup, "elm.swallow.content", fs);
-   if (entry)
+   if (follow_up)
      {
-        _popup_obj_follow(NULL, NULL, entry, NULL);
-        evas_object_event_callback_add(entry, EVAS_CALLBACK_RESIZE, _popup_obj_follow, NULL);
-        evas_object_event_callback_add(entry, EVAS_CALLBACK_MOVE, _popup_obj_follow, NULL);
+        _popup_obj_follow(NULL, NULL, follow_up, NULL);
+        evas_object_event_callback_add(follow_up, EVAS_CALLBACK_RESIZE, _popup_obj_follow, NULL);
+        evas_object_event_callback_add(follow_up, EVAS_CALLBACK_MOVE, _popup_obj_follow, NULL);
      }
    else
      {
-        _popup_win_follow(NULL, NULL, entry, NULL);
+        _popup_win_follow(NULL, NULL, NULL, NULL);
         evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _popup_win_follow, NULL);
      }
    evas_object_show(popup);
 }
 
 void
-popup_fileselector_folder_helper(Evas_Object *entry, const char *path)
+popup_fileselector_folder_helper(Evas_Object *follow_up, const char *path)
 {
-   _fileselector_helper(NULL, entry, path, NULL);
+   _fileselector_helper(NULL, follow_up, path, NULL);
 }
 
 static Eina_Bool
@@ -237,9 +237,9 @@ _edj_filter(const char *path,
 }
 
 void
-popup_fileselector_edj_helper(const char *title, Evas_Object *entry, const char *path)
+popup_fileselector_edj_helper(const char *title, Evas_Object *follow_up, const char *path)
 {
-   _fileselector_helper(title, entry, path, _edj_filter);
+   _fileselector_helper(title, follow_up, path, _edj_filter);
 }
 
 static Eina_Bool
@@ -255,9 +255,9 @@ _edc_filter(const char *path,
 }
 
 void
-popup_fileselector_edc_helper(Evas_Object *entry, const char *path)
+popup_fileselector_edc_helper(Evas_Object *follow_up, const char *path)
 {
-   _fileselector_helper(NULL, entry, path, _edc_filter);
+   _fileselector_helper(NULL, follow_up, path, _edc_filter);
 }
 
 void
