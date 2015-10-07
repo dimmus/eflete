@@ -108,7 +108,8 @@ _elipsis(void *data,
 {
    popup_fileselector_folder_helper((Evas_Object *)data,
                                     elm_entry_entry_get(tab_edc.path),
-                                    entry_path_set, (Evas_Object *)data);
+                                    entry_path_set, (Evas_Object *)data,
+                                    false, false);
 }
 
 static void
@@ -118,7 +119,8 @@ _elipsis_edc(void *data __UNUSED__,
 {
    popup_fileselector_edc_helper(tab_edc.edc,
                                  NULL,
-                                 entry_path_set, tab_edc.edc);
+                                 entry_path_set, tab_edc.edc,
+                                 false, false);
 }
 
 static void

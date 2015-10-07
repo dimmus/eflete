@@ -193,6 +193,8 @@ static void
 _fileselector_helper(const char *title,
                      Evas_Object *follow_up,
                      const char *path,
+                     Eina_Bool multi,
+                     Eina_Bool is_save,
                      Evas_Smart_Cb func,
                      void *data,
                      Elm_Fileselector_Filter_Func filter_cb)
@@ -206,6 +208,8 @@ _fileselector_helper(const char *title,
 
    fs = elm_fileselector_add(ap.win);
    elm_fileselector_expandable_set(fs, false);
+   elm_fileselector_is_save_set(fs, is_save);
+   elm_fileselector_multi_select_set(fs, multi);
    if (filter_cb)
      {
         elm_fileselector_custom_filter_append(fs, filter_cb, NULL, "edj");
@@ -241,9 +245,10 @@ _fileselector_helper(const char *title,
 
 void
 popup_fileselector_folder_helper(Evas_Object *follow_up, const char *path,
-                                 Evas_Smart_Cb func, void *data)
+                                 Evas_Smart_Cb func, void *data,
+                                 Eina_Bool multi, Eina_Bool is_save)
 {
-   _fileselector_helper(NULL, follow_up, path, func, data, NULL);
+   _fileselector_helper(NULL, follow_up, path, multi, is_save, func, data, NULL);
 }
 
 static Eina_Bool
@@ -260,9 +265,10 @@ _edj_filter(const char *path,
 
 void
 popup_fileselector_edj_helper(const char *title, Evas_Object *follow_up, const char *path,
-                              Evas_Smart_Cb func, void *data)
+                              Evas_Smart_Cb func, void *data,
+                              Eina_Bool multi, Eina_Bool is_save)
 {
-   _fileselector_helper(title, follow_up, path, func, data, _edj_filter);
+   _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _edj_filter);
 }
 
 static Eina_Bool
@@ -279,9 +285,10 @@ _edc_filter(const char *path,
 
 void
 popup_fileselector_edc_helper(Evas_Object *follow_up, const char *path,
-                              Evas_Smart_Cb func, void *data)
+                              Evas_Smart_Cb func, void *data,
+                              Eina_Bool multi, Eina_Bool is_save)
 {
-   _fileselector_helper(NULL, follow_up, path, func, data, _edc_filter);
+   _fileselector_helper(NULL, follow_up, path, multi, is_save, func, data, _edc_filter);
 }
 
 void

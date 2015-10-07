@@ -124,7 +124,8 @@ _elipsis(void *data __UNUSED__,
 {
    popup_fileselector_folder_helper(tab_edj.path,
                                     elm_entry_entry_get(tab_edj.path),
-                                    entry_path_set, tab_edj.path);
+                                    entry_path_set, tab_edj.path,
+                                    false, false);
 }
 
 static void
@@ -133,7 +134,8 @@ _elipsis_edj(void *data __UNUSED__,
              void *event_info __UNUSED__)
 {
    popup_fileselector_edj_helper(NULL, tab_edj.edj, NULL,
-                                 entry_path_set, tab_edj.edj);
+                                 entry_path_set, tab_edj.edj,
+                                 false, false);
 }
 
 Evas_Object *
