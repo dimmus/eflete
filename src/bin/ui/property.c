@@ -1829,8 +1829,8 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    STATE_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
    STATE_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
 
-#define STATE_ATTR_COLOR(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
-   STATE_ATTR_COLOR_CALLBACK(SUB, VALUE, MEMBER) \
+#define STATE_ATTR_COLOR(TEXT, SUB, VALUE, MEMBER, TOOLTIP, DESCRIPTION) \
+   STATE_ATTR_COLOR_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
    STATE_ATTR_COLOR_LIST_UPDATE(SUB, VALUE, MEMBER) \
    STATE_ATTR_COLOR_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
@@ -1888,7 +1888,8 @@ STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, state, 0.0, 9999
                     1, double,
                     _("multiplier w changed from %f to %f"),
                     _("multiplier h changed from %f to %f"))
-STATE_ATTR_COLOR(_("color"), state, color, state, _("Part main color"))
+STATE_ATTR_COLOR(_("color"), state, color, state, _("Part main color"),
+                 _("color changed to [%d %d %d %d]"))
 
 STATE_ATTR_SOURCE_UPDATE(state, proxy_source, state, EDJE_PART_TYPE_SPACER, !=)
 STATE_ATTR_COMBOBOX(_("proxy source"), state, proxy_source, state,
@@ -2352,8 +2353,10 @@ STATE_ATTR_2CHECK(_("fit"), state_text, fit_x, fit_y, state_text, "w:", "", "h:"
                   _("Resize the text for it to fit in it's container by Y axis"),
                   _("fit_x changed to %s"),
                   _("fit_y changed to %s"))
-STATE_ATTR_COLOR(_("shadow color"), state, color2, state_text, NULL)
-STATE_ATTR_COLOR(_("outline color"), state, color3, state_text, NULL)
+STATE_ATTR_COLOR(_("shadow color"), state, color2, state_text, NULL,
+                 _("shadow color changed to [%d %d %d %d]"))
+STATE_ATTR_COLOR(_("outline color"), state, color3, state_text, NULL,
+                 _("outline color changed [%d %d %d %d]"))
 
 STATE_ATTR_SOURCE_UPDATE(state_text, source, state_text, EDJE_PART_TYPE_TEXT, ==)
 STATE_ATTR_COMBOBOX(_("source"), state_text, source, state_text,
