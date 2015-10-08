@@ -369,6 +369,9 @@ Eina_Bool
 editor_state_image_border_fill_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
       unsigned char new_val);
 Eina_Bool
+editor_state_image_border_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int new_val1, int new_val2, int new_val3, int new_val4);
+Eina_Bool
 editor_state_fill_type_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
       unsigned char new_val);
 Eina_Bool

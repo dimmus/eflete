@@ -160,7 +160,10 @@ struct _Prop_Data
         struct {
              Evas_Object *frame;
              Evas_Object *image;
-             Evas_Object *border;
+             Evas_Object *border_r;
+             Evas_Object *border_l;
+             Evas_Object *border_t;
+             Evas_Object *border_b;
              Elm_Validator_Regexp *validator;
              Evas_Object *border_fill;
              Evas_Object *tween;
@@ -2907,7 +2910,6 @@ _on_image_editor_done(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *event_info)
 {
-   Evas_Object * border_entry;
    Prop_Data *pd = (Prop_Data *)data;
    const char *value;
    const char *selected = (const char *)event_info;
@@ -2915,7 +2917,6 @@ _on_image_editor_done(void *data,
    assert(pd != NULL);
 
    if (!selected) return;
-   border_entry = elm_object_part_content_get(pd_image.border, "elm.swallow.content");
    value = elm_entry_entry_get(pd->attributes.state_image.image);
 
    if (strcmp(value, selected) == 0) return;
@@ -2926,8 +2927,6 @@ _on_image_editor_done(void *data,
 TODO("uncomment after changing save API")
 //   pm_save_to_dev(ap.project, pd->wm_style, false);
    evas_object_smart_callback_call(pd->attributes.state_image.image, "changed,user", NULL);
-   elm_entry_entry_set(border_entry, NULL);
-   evas_object_smart_callback_call(border_entry, "changed,user", NULL);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
    //project_changed(false);
 }
@@ -3188,71 +3187,126 @@ prop_item_state_image_tween_update(Evas_Object *tween, Prop_Data *pd)
    edje_edit_string_list_free(images_list);
 }
 
-static void
-_on_state_image_border_change(void *data,
-                              Evas_Object *obj,
-                              void *ei __UNUSED__)
+#define SPINNER_SET(SUB, VALUE, SPINNER, PART) \
+   SPINNER_ADD(item, SPINNER, 0.0, 999.0, 1.0, true) \
+   evas_object_smart_callback_add(SPINNER, "changed", \
+                                  _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(SPINNER, "spinner,drag,start", \
+                                  _on_##SUB##_##VALUE##_start, pd); \
+   evas_object_smart_callback_add(SPINNER, "spinner,drag,stop", \
+                                  _on_##SUB##_##VALUE##_stop, pd); \
+   evas_object_event_callback_priority_add(SPINNER, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                        EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                        _on_spinner_mouse_wheel, NULL); \
+   elm_layout_content_set(item, PART, SPINNER);
+
+#define ATTR_4SPINNERS(TEXT, SUB, VALUE, MEMBER, TOOLTIP, ARGS, DESCRIPTION) \
+static void \
+prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
 { \
-   unsigned int tok_elm;
-   char **c = NULL;
-   int lb = 0, rb = 0, tb = 0, bb = 0;
-   int old_lb, old_rb, old_tb, old_bb;
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   const char *value = elm_entry_entry_get(obj);
-   edje_edit_state_image_border_get(pd->group->edit_object, pd->part->name,
-                                    pd->part->current_state->parsed_name,
-                                    pd->part->current_state->parsed_val,
-                                    &old_lb, &old_rb, &old_tb, &old_bb);
-   if (elm_validator_regexp_status_get(pd->attributes.state_image.validator) != ELM_REG_NOERROR) return;
-   if (!value || !strcmp(value, ""))
-     lb = rb = tb = bb = 0;
-   else
-     {
-        c = eina_str_split_full (value, " ", 4, &tok_elm);
-        if (tok_elm < 4)
-          {
-             free(c[0]);
-             free(c);
-             return;
-          }
-        lb = atoi(c[0]); rb = atoi(c[1]); tb = atoi(c[2]); bb = atoi(c[3]);
-        free(c[0]);
-        free(c);
-     }
-   edje_edit_state_image_border_set(pd->group->edit_object, pd->part->name,
-                                    pd->part->current_state->parsed_name, pd->part->current_state->parsed_val,
-                                    lb, rb, tb, bb);
-
-   //project_changed(false);
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
+   assert(pd != NULL); \
+   int l = 0, r = 0, t = 0, b = 0; \
+   edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS ,&l, &r, &t, &b); \
+   elm_spinner_value_set(pd->attributes.MEMBER.VALUE##_l, l); \
+   elm_spinner_value_set(pd->attributes.MEMBER.VALUE##_r, r); \
+   elm_spinner_value_set(pd->attributes.MEMBER.VALUE##_t, t); \
+   elm_spinner_value_set(pd->attributes.MEMBER.VALUE##_b, b); \
+} \
+static void \
+_on_##SUB##_##VALUE##_start(void *data, \
+                            Evas_Object *obj __UNUSED__, \
+                            void *event_info __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   assert(pd->change == NULL); \
+   pd->change = change_add(NULL); \
+   edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS, \
+                                   &pd->old_int_val, &pd->old_int_val2, \
+                                   &pd->old_int_val3, &pd->old_int_val4); \
+} \
+static void \
+_on_##SUB##_##VALUE##_stop(void *data, \
+                           Evas_Object *obj __UNUSED__, \
+                           void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Eina_Stringshare *msg; \
+   assert(pd->change != NULL); \
+   int new_val, new_val2, new_val3, new_val4; \
+   edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS, \
+                                   &new_val, &new_val2, &new_val3, &new_val4); \
+   if ((new_val != pd->old_int_val) || \
+       (new_val2 != pd->old_int_val2) || \
+       (new_val3 != pd->old_int_val3) || \
+       (new_val4 != pd->old_int_val4)) \
+     { \
+        msg = eina_stringshare_printf(DESCRIPTION, new_val, new_val2, new_val3, new_val4); \
+        change_description_set(pd->change, msg); \
+        eina_stringshare_del(msg); \
+        history_change_add(pd->group->history, pd->change); \
+     } \
+   else \
+     change_free(pd->change); \
+   pd->change = NULL; \
+} \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj __UNUSED__, \
+                             void *event_info __UNUSED__) \
+{ \
+   int l, r, t, b; \
+   Prop_Data *pd = (Prop_Data *)data; \
+   assert(pd != NULL); \
+   l = (int)elm_spinner_value_get(pd->attributes.MEMBER.VALUE##_l); \
+   r = (int)elm_spinner_value_get(pd->attributes.MEMBER.VALUE##_r); \
+   t = (int)elm_spinner_value_get(pd->attributes.MEMBER.VALUE##_t); \
+   b = (int)elm_spinner_value_get(pd->attributes.MEMBER.VALUE##_b); \
+   if (pd->change) \
+     { \
+        if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, pd->change, true \
+                                          ARGS, l, r, t, b)) \
+          { \
+             ERR("editor_"#SUB"_"#VALUE"_set failed"); \
+             abort(); \
+          } \
+     } \
+   else \
+     { \
+        _on_##SUB##_##VALUE##_start(pd, obj, event_info); \
+        if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, pd->change, true \
+                                          ARGS, l, r, t, b)) \
+          { \
+             ERR("editor_"#SUB"_"#VALUE"_set failed"); \
+             abort(); \
+          } \
+        _on_##SUB##_##VALUE##_stop(pd, obj, event_info); \
+     } \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
+} \
+static void \
+prop_##SUB##_##VALUE##_add(Evas_Object *box, Prop_Data *pd) \
+{ \
+   Evas_Object *item; \
+   assert(box != NULL); \
+   assert(pd != NULL); \
+   LAYOUT_PROP_ADD(box, TEXT, "property", "2swallow"); \
+   elm_object_part_text_set(item, "label.swallow1.start", "left:"); \
+   SPINNER_SET(SUB, VALUE, pd->attributes.MEMBER.VALUE##_l, "swallow.content1") \
+   elm_object_part_text_set(item, "label.swallow2.start", "right:"); \
+   SPINNER_SET(SUB, VALUE, pd->attributes.MEMBER.VALUE##_r, "swallow.content2") \
+   elm_box_pack_end(box, item); \
+   LAYOUT_PROP_ADD(box, NULL, "property", "2swallow"); \
+   elm_object_part_text_set(item, "label.swallow1.start", "top:"); \
+   SPINNER_SET(SUB, VALUE, pd->attributes.MEMBER.VALUE##_t, "swallow.content1") \
+   elm_object_part_text_set(item, "label.swallow2.start", "bottom:"); \
+   SPINNER_SET(SUB, VALUE, pd->attributes.MEMBER.VALUE##_b, "swallow.content2") \
+   elm_box_pack_end(box, item); \
+   prop_##SUB##_##VALUE##_update(pd); \
 }
-
-static void
-prop_state_image_border_update(Prop_Data *pd)
-{
-   int l, r, t, b;
-
-   assert(pd != NULL);
-
-   char buff[strlen("255 255 255 255") + 1];
-   edje_edit_state_image_border_get(pd->group->edit_object, pd->part->name,
-                                    pd->part->current_state->parsed_name, pd->part->current_state->parsed_val,
-                                    &l, &r, &t, &b);
-   if (!l && !r && !t && !b)
-     elm_entry_entry_set(pd->attributes.state_image.border, NULL);
-   else
-     {
-        snprintf(buff, strlen("255 255 255 255") + 1, "%i %i %i %i", l, r, t, b);
-        elm_entry_entry_set(pd->attributes.state_image.border, buff);
-     }
-}
+ATTR_4SPINNERS(_("border"), state_image, border, state_image, NULL, STATE_ARGS,
+               _("border changed to [%d %d %d %d]"))
 
 STATE_ATTR_1ENTRY(_("image"), state, image, state_image, NULL, NULL)
-STATE_ATTR_1ENTRY_ADD(_("border"), state_image, border, state_image,
-                      pd->attributes.state_image.validator, _("Image's border values"))
 STATE_ATTR_1COMBOBOX_LIST(_("border fill"), state_image, border_fill, state_image,\
                           edje_middle_type, NULL, unsigned char,
                           _("border fill changed to %s"))
@@ -3280,8 +3334,7 @@ ui_property_state_image_set(Evas_Object *property)
 
         item = prop_state_image_add(box, pd, _on_state_image_choose);
         elm_box_pack_end(box, item);
-        item = prop_state_image_border_add(box, pd, NULL);
-        elm_box_pack_end(box, item);
+        prop_state_image_border_add(box, pd);
         item = prop_state_image_border_fill_add(box, pd);
         elm_box_pack_end(box, item);
 
@@ -3453,137 +3506,8 @@ ui_property_state_fill_unset(Evas_Object *property)
    evas_object_hide(pd_fill.frame);
 }
 #undef pd_fill
-
-
-static void
-prop_part_item_padding_update(Prop_Data *pd)
-{
-   assert(pd != NULL);
-
-   int l = 0, r = 0, t = 0, b = 0;
-
-   edje_edit_part_item_padding_get(pd->group->edit_object, pd->part->name,
-                                   pd->item_name, &l, &r, &t, &b);
-   elm_spinner_value_set(pd->attributes.part_item.padding_l, l);
-   elm_spinner_value_set(pd->attributes.part_item.padding_r, r);
-   elm_spinner_value_set(pd->attributes.part_item.padding_t, t);
-   elm_spinner_value_set(pd->attributes.part_item.padding_b, b);
-}
-
-static void
-_on_part_item_padding_start(void *data,
-                            Evas_Object *obj __UNUSED__,
-                            void *event_info __UNUSED__)
-{
-   Prop_Data *pd = (Prop_Data *)data;
-   assert(pd->change == NULL);
-   pd->change = change_add(NULL);
-   edje_edit_part_item_padding_get(pd->group->edit_object, pd->part->name, pd->item_name,
-                                   &pd->old_int_val, &pd->old_int_val2,
-                                   &pd->old_int_val3, &pd->old_int_val4);
-}
-static void
-_on_part_item_padding_stop(void *data,
-                           Evas_Object *obj __UNUSED__,
-                           void *ei __UNUSED__)
-{
-   Prop_Data *pd = (Prop_Data *)data;
-   Eina_Stringshare *msg;
-   assert(pd->change != NULL);
-   int new_val, new_val2, new_val3, new_val4;
-   edje_edit_part_item_padding_get(pd->group->edit_object, pd->part->name, pd->item_name,
-                                   &new_val, &new_val2, &new_val3, &new_val4);
-   if ((new_val != pd->old_int_val) ||
-       (new_val2 != pd->old_int_val2) ||
-       (new_val3 != pd->old_int_val3) ||
-       (new_val4 != pd->old_int_val4))
-     {
-        msg = eina_stringshare_printf(_("item padding changed to [%d %d %d %d]"),
-                                      new_val, new_val2, new_val3, new_val4);
-        change_description_set(pd->change, msg);
-        eina_stringshare_del(msg);
-        history_change_add(pd->group->history, pd->change);
-     }
-   else
-     change_free(pd->change);
-   pd->change = NULL;
-}
-static void
-_on_part_item_padding_change(void *data,
-                             Evas_Object *obj __UNUSED__,
-                             void *event_info __UNUSED__)
-{
-   int l, r, t, b;
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   l = (int)elm_spinner_value_get(pd->attributes.part_item.padding_l);
-   r = (int)elm_spinner_value_get(pd->attributes.part_item.padding_r);
-   t = (int)elm_spinner_value_get(pd->attributes.part_item.padding_t);
-   b = (int)elm_spinner_value_get(pd->attributes.part_item.padding_b);
-   if (pd->change)
-     {
-        if (!editor_part_item_padding_set(pd->group->edit_object, pd->change, true,
-                                          pd->part->name, pd->item_name, l, r, t, b))
-          {
-             ERR("editor_part_item_padding_set failed");
-             abort();
-          }
-     }
-   else
-     {
-        _on_part_item_padding_start(pd, obj, event_info);
-        if (!editor_part_item_padding_set(pd->group->edit_object, pd->change, true,
-                                          pd->part->name, pd->item_name, l, r, t, b))
-          {
-             ERR("editor_part_item_padding_set failed");
-             abort();
-          }
-        _on_part_item_padding_stop(pd, obj, event_info);
-     }
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-}
-
-static void
-prop_part_item_padding_add(Evas_Object *box, Prop_Data *pd)
-{
-   Evas_Object *item;
-
-   assert(box != NULL);
-   assert(pd != NULL);
-
-   #define SPINNER_SET(SPINNER, PART) \
-      SPINNER_ADD(item, SPINNER, 0.0, 999.0, 1.0, true) \
-      evas_object_smart_callback_add(SPINNER, "changed", \
-                                     _on_part_item_padding_change, pd); \
-      evas_object_smart_callback_add(SPINNER, "spinner,drag,start", \
-                                     _on_part_item_padding_start, pd); \
-      evas_object_smart_callback_add(SPINNER, "spinner,drag,stop", \
-                                     _on_part_item_padding_stop, pd); \
-      evas_object_event_callback_priority_add(SPINNER, EVAS_CALLBACK_MOUSE_WHEEL, \
-                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
-                                           _on_spinner_mouse_wheel, NULL); \
-      elm_layout_content_set(item, PART, SPINNER);
-
-   LAYOUT_PROP_ADD(box, _("padding"), "property", "2swallow");
-   elm_object_part_text_set(item, "label.swallow1.start", "left:");
-   SPINNER_SET(pd->attributes.part_item.padding_l, "swallow.content1")
-   elm_object_part_text_set(item, "label.swallow2.start", "right:");
-   SPINNER_SET(pd->attributes.part_item.padding_r, "swallow.content2")
-   elm_box_pack_end(box, item);
-
-   LAYOUT_PROP_ADD(box, NULL, "property", "2swallow");
-   elm_object_part_text_set(item, "label.swallow1.start", "top:");
-   SPINNER_SET(pd->attributes.part_item.padding_t, "swallow.content1")
-   elm_object_part_text_set(item, "label.swallow2.start", "bottom:");
-   SPINNER_SET(pd->attributes.part_item.padding_b, "swallow.content2")
-   elm_box_pack_end(box, item);
-
-   prop_part_item_padding_update(pd);
-
-   #undef SPINNER_SET
-}
+ATTR_4SPINNERS(_("padding"), part_item, padding, part_item, NULL, PART_ITEM_ARGS,
+               _("item padding changed to [%d %d %d %d]"))
 
 #define pd_item pd->attributes.part_item
 
