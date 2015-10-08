@@ -183,7 +183,6 @@ _popup_win_follow(void *data __UNUSED__,
    int w, h, nx, ny;
 
    evas_object_geometry_get(ap.win, NULL, NULL, &w, &h);
-   fprintf(stdout, "%d %d\n", w, h);
    nx = (w / 2) - ((FS_W + 12) / 2);
    ny = (h / 2) - ((FS_H + 12) / 2);
    evas_object_move(popup, nx, ny);
