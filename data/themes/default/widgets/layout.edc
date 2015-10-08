@@ -2493,86 +2493,9 @@ group { name: "elm/layout/animator/program_area";
 #define BTNS_LARGE_SIZE_SET SET_SIZE(80, 25)
 #define BTNS_SMALL_SIZE_SET SET_SIZE(30, 22)
 
+
 group { name: "elm/layout/image_editor/default";
-   images {
-      image: "border_1.png" COMP;
-      image: "separator-vertical.png" COMP;
-   }
    parts {
-      part { name: "area.image_info";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            min: 330 0;
-            max: 330 -1;
-         }
-      }
-      part { name: "area.image_preview";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.5 0.0;
-            rel1 {
-               to: "area.image_info";
-            }
-         }
-      }
-      part { name: "image_preview_decoration";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            fixed: 1 1;
-            aspect: 1.0 1.0;
-            aspect_preference: BOTH;
-            color: 48 48 48 255;
-            rel1 {
-               to: "area.image_preview";
-            }
-            rel2 {
-               to: "area.image_preview";
-            }
-            image {
-               normal: "border_1.png";
-               border: 1 1 1 1;
-               middle: NONE;
-            }
-         }
-      }
-      part { name: "eflete.swallow.image";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            rel1 {
-               offset: 2 2;
-               to: "image_preview_decoration";
-            }
-            rel2 {
-               offset: -3 -3;
-               to: "image_preview_decoration";
-            }
-         }
-      }
-      part { name: "eflete.swallow.image_info";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            max: 400 -1;
-            rel1 {
-               relative: 0.0 1.0;
-               offset: 0 5;
-               to_x: "area.image_preview";
-               to_y: "image_preview_decoration";
-            }
-         }
-      }
-      part { name: "area.images_templates";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -9 -1;
-               to_x: "editor.decoration";
-            }
-         }
-      }
       part { name: "area.edit";
          type: SPACER;
          description { state: "default" 0.0;
@@ -2581,12 +2504,10 @@ group { name: "elm/layout/image_editor/default";
             min: 37 25;
             max: -1 25;
             rel1 {
-               to: "area.images_templates";
                offset: 0 2;
             }
             rel2 {
                relative: 1.0 0.0;
-               to: "area.images_templates";
             }
          }
       }
@@ -2608,8 +2529,8 @@ group { name: "elm/layout/image_editor/default";
       part { name: "eflete.swallow.search_area";
          type: SWALLOW;
          description { state: "default" 0.0;
-            fixed: 0 1;
             align: 0.0 0.0;
+            fixed: 0 1;
             max: 600 19;
             rel1 {
                to: "area.edit";
@@ -2670,27 +2591,7 @@ group { name: "elm/layout/image_editor/default";
             fixed: 1 1;
             rel1 {
                relative: 0.0 1.0;
-               to_x: "area.images_templates";
                to_y: "area.edit";
-            }
-            rel2 {
-               to: "area.images_templates";
-            }
-         }
-      }
-      part { name: "editor.decoration";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            max: 2 -1;
-            rel2 {
-               relative: 0.0 0.0;
-               offset: -7 -1;
-               to_x: "area.image_info";
-            }
-            image {
-               normal: "separator-vertical.png";
-               middle: DEFAULT;
             }
          }
       }
