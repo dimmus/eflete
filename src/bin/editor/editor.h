@@ -451,6 +451,9 @@ Eina_Bool
 editor_part_item_aspect_mode_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
       Edje_Aspect_Control new_val);
 Eina_Bool
+editor_part_item_padding_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
+      int new_val1, int new_val2, int new_val3, int new_val4);
+Eina_Bool
 editor_part_scale_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       Eina_Bool new_val);
 Eina_Bool

@@ -56,7 +56,7 @@ struct _Prop_Data
    Group *group;
    Part_ *part;
    Change *change;
-   int old_int_val;
+   int old_int_val, old_int_val2, old_int_val3, old_int_val4;
    double old_double_val;
    Evas_Object *layout;
    Evas_Object *scroller;
@@ -3471,6 +3471,44 @@ prop_part_item_padding_update(Prop_Data *pd)
 }
 
 static void
+_on_part_item_padding_start(void *data,
+                            Evas_Object *obj __UNUSED__,
+                            void *event_info __UNUSED__)
+{
+   Prop_Data *pd = (Prop_Data *)data;
+   assert(pd->change == NULL);
+   pd->change = change_add(NULL);
+   edje_edit_part_item_padding_get(pd->group->edit_object, pd->part->name, pd->item_name,
+                                   &pd->old_int_val, &pd->old_int_val2,
+                                   &pd->old_int_val3, &pd->old_int_val4);
+}
+static void
+_on_part_item_padding_stop(void *data,
+                           Evas_Object *obj __UNUSED__,
+                           void *ei __UNUSED__)
+{
+   Prop_Data *pd = (Prop_Data *)data;
+   Eina_Stringshare *msg;
+   assert(pd->change != NULL);
+   int new_val, new_val2, new_val3, new_val4;
+   edje_edit_part_item_padding_get(pd->group->edit_object, pd->part->name, pd->item_name,
+                                   &new_val, &new_val2, &new_val3, &new_val4);
+   if ((new_val != pd->old_int_val) ||
+       (new_val2 != pd->old_int_val2) ||
+       (new_val3 != pd->old_int_val3) ||
+       (new_val4 != pd->old_int_val4))
+     {
+        msg = eina_stringshare_printf(_("item padding changed to [%d %d %d %d]"),
+                                      new_val, new_val2, new_val3, new_val4);
+        change_description_set(pd->change, msg);
+        eina_stringshare_del(msg);
+        history_change_add(pd->group->history, pd->change);
+     }
+   else
+     change_free(pd->change);
+   pd->change = NULL;
+}
+static void
 _on_part_item_padding_change(void *data,
                              Evas_Object *obj __UNUSED__,
                              void *event_info __UNUSED__)
@@ -3484,10 +3522,26 @@ _on_part_item_padding_change(void *data,
    r = (int)elm_spinner_value_get(pd->attributes.part_item.padding_r);
    t = (int)elm_spinner_value_get(pd->attributes.part_item.padding_t);
    b = (int)elm_spinner_value_get(pd->attributes.part_item.padding_b);
-   if (!edje_edit_part_item_padding_set(pd->group->edit_object, pd->part->name,
-                                        pd->item_name, l, r, t, b))
-     return;
-   //project_changed(false);
+   if (pd->change)
+     {
+        if (!editor_part_item_padding_set(pd->group->edit_object, pd->change, true,
+                                          pd->part->name, pd->item_name, l, r, t, b))
+          {
+             ERR("editor_part_item_padding_set failed");
+             abort();
+          }
+     }
+   else
+     {
+        _on_part_item_padding_start(pd, obj, event_info);
+        if (!editor_part_item_padding_set(pd->group->edit_object, pd->change, true,
+                                          pd->part->name, pd->item_name, l, r, t, b))
+          {
+             ERR("editor_part_item_padding_set failed");
+             abort();
+          }
+        _on_part_item_padding_stop(pd, obj, event_info);
+     }
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
 }
 
@@ -3503,6 +3557,10 @@ prop_part_item_padding_add(Evas_Object *box, Prop_Data *pd)
       SPINNER_ADD(item, SPINNER, 0.0, 999.0, 1.0, true) \
       evas_object_smart_callback_add(SPINNER, "changed", \
                                      _on_part_item_padding_change, pd); \
+      evas_object_smart_callback_add(SPINNER, "spinner,drag,start", \
+                                     _on_part_item_padding_start, pd); \
+      evas_object_smart_callback_add(SPINNER, "spinner,drag,stop", \
+                                     _on_part_item_padding_stop, pd); \
       evas_object_event_callback_priority_add(SPINNER, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
