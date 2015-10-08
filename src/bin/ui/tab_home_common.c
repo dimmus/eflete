@@ -155,7 +155,7 @@ exist_permission_check(const char *path, const char *name, const char *title)
      {
         eina_strbuf_reset(buf_msg);
         eina_strbuf_append_printf(buf_msg, _("Haven't permision to overwrite '%s' in '%s'"), name, path);
-        popup_want_action("New project", eina_strbuf_string_get(buf_msg), NULL, NULL, BTN_OK, NULL, NULL);
+        popup_want_action(title, eina_strbuf_string_get(buf_msg), NULL, NULL, BTN_OK, NULL, NULL);
      }
    ecore_file_recursive_rm(eina_strbuf_string_get(buf));
    eina_strbuf_free(buf_msg);
