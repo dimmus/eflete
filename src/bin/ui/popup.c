@@ -146,7 +146,12 @@ _done(void *data __UNUSED__,
           selected_paths = (Eina_List *)elm_fileselector_selected_paths_get(fs);
         else
           {
-             selected = elm_fileselector_selected_get(fs);
+             if (elm_fileselector_is_save_get(fs))
+               selected = eina_stringshare_printf("%s/%s",
+                                                  elm_fileselector_path_get(fs),
+                                                  elm_fileselector_current_name_get(fs));
+             else
+               selected = elm_fileselector_path_get(fs);
              selected_paths = eina_list_append(selected_paths, selected);
           }
         ((Evas_Smart_Cb)dismiss_func)(func_data, NULL, selected_paths);
