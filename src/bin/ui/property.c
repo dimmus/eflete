@@ -392,8 +392,8 @@ prop_state_color3_update(Prop_Data *pd);
 static void
 prop_state_image_border_update(Prop_Data *pd);
 
-inline static void
-_text_effect_update(Prop_Data *pd);
+static void
+prop_part_text_effect_update(Prop_Data *pd);
 
 static void
 prop_part_drag_x_step_x_update(Prop_Data *pd);
@@ -780,7 +780,7 @@ _on_editor_attribute_changed(void *data,
          prop_state_proxy_source_update(pd);
          break;
       case ATTRIBUTE_PART_EFFECT:
-         _text_effect_update(pd);
+         prop_part_text_effect_update(pd);
          break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
          PART_ATTR_1COMBOBOX_LIST_UPDATE(part, ignore_flags, part);
@@ -2385,7 +2385,7 @@ _text_effect_update(Prop_Data *pd)
    //project_changed(false);
 }
 
-inline static void
+static void
 _text_effect_contols_update(Prop_Data *pd)
 {
    assert(pd != NULL);
