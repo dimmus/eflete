@@ -1305,6 +1305,8 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
    evas_object_event_callback_priority_add(pd->attributes.MEMBER.VALUE, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                           _on_spinner_mouse_wheel, NULL); \
+   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "spinner,drag,start", _on_##MEMBER##_##VALUE##_start, pd); \
+   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "spinner,drag,stop", _on_##MEMBER##_##VALUE##_stop, pd); \
    evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "changed", _on_##MEMBER##_##VALUE##_change, pd); \
    COMMON_1SPINNER_UPDATE(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, STATE_ARGS) \
    return item; \
