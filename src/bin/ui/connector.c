@@ -655,7 +655,6 @@ export_warning(Evas_Object *parent, const char *title, const char *msg)
    return result;
 }
 
-
 static Eina_Bool
 _export_splash_setup(void *data, Splash_Status status __UNUSED__)
 {

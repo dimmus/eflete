@@ -67,9 +67,6 @@ void
 elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data);
 
 void
-exist_permission_check(const char *path, const char *name, const char *title);
-
-void
 entry_path_set(void *data, Evas_Object *obj, void *event_info);
 
 
