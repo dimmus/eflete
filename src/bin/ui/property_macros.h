@@ -480,7 +480,11 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
         evas_object_show(btn); \
      } \
    else \
-     evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
+     { \
+       evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
+       evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "activated", _on_##SUB##_##VALUE##_activated, pd); \
+       evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "unfocused", _on_##SUB##_##VALUE##_activated, pd); \
+     } \
    if (VALIDATOR) \
       eo_do(pd->attributes.MEMBER.VALUE, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, VALIDATOR)); \
    if (TOOLTIP) elm_object_tooltip_text_set(pd->attributes.MEMBER.VALUE, TOOLTIP); \
@@ -506,7 +510,8 @@ prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
    const char *value; \
    value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
    char *text = elm_entry_utf8_to_markup(value); \
-   elm_entry_entry_set(pd->attributes.MEMBER.VALUE, text); \
+   if (strcmp(text, elm_entry_entry_get(pd->attributes.MEMBER.VALUE))) \
+     elm_entry_entry_set(pd->attributes.MEMBER.VALUE, text); \
    edje_edit_string_free(value); \
    free(text); \
 }
@@ -521,7 +526,7 @@ prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, ARGS) \
+#define COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, ARGS, DESCRIPTION) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
                              Evas_Object *obj, \
@@ -530,13 +535,31 @@ _on_##SUB##_##VALUE##_change(void *data, \
    Prop_Data *pd = (Prop_Data *)data; \
    if (VALIDATOR && (elm_validator_regexp_status_get(VALIDATOR)) != ELM_REG_NOERROR) \
      return; \
+   if (!pd->change) pd->change = change_add(NULL); \
    const char *text = elm_entry_entry_get(obj); \
    char *value = elm_entry_markup_to_utf8(text); \
-   edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, value); \
-   elm_object_focus_set(obj, true); \
+   editor_##SUB##_##VALUE##_set(pd->group->edit_object, pd->change, true ARGS, value); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-   /*project_changed(false);*/ \
    free(value); \
+} \
+static void \
+_on_##SUB##_##VALUE##_activated(void *data, \
+                                Evas_Object *obj __UNUSED__, \
+                                void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   if (VALIDATOR && (elm_validator_regexp_status_get(VALIDATOR)) != ELM_REG_NOERROR) \
+     return; \
+   if (!pd->change) \
+     return; \
+   Eina_Stringshare * val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
+   Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION, val); \
+   change_description_set(pd->change, msg); \
+   history_change_add(pd->group->history, pd->change); \
+   pd->change = NULL; \
+   prop_##SUB##_##VALUE##_update(pd); \
+   eina_stringshare_del(msg); \
+   eina_stringshare_del(val); \
 }
 
 /*****************************************************************************/
@@ -724,8 +747,8 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define GROUP_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR) \
-   COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, GROUP_ARGS) \
+#define GROUP_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, DESCRIPTION) \
+   COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, GROUP_ARGS, DESCRIPTION) \
 
 
 
@@ -1781,7 +1804,7 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR) \
-   COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, STATE_ARGS) \
+#define STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, DESCRIPTION) \
+   COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, STATE_ARGS, DESCRIPTION) \
 
 /** @} privatesection */

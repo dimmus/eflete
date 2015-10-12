@@ -1005,6 +1005,14 @@ TODO("Implement rename. Note: groups list must remain sorted")
    //project_changed(false);
    free(entry);
 }
+static void
+_on_group_name_activated(void *data __UNUSED__,
+                         Evas_Object *obj __UNUSED__,
+                         void *ei __UNUSED__)
+{
+return;
+TODO("Implement rename. Note: groups list must remain sorted")
+}
 
 #define GROUP_ATTR_2SPINNER(TEXT, SUB1, SUB2, VALUE1, VALUE2, DESCRIPTION1, DESCRIPTION2) \
    GROUP_ATTR_2SPINNER_CALLBACK(SUB1, SUB2, VALUE1, DESCRIPTION1) \
@@ -2309,8 +2317,8 @@ ui_property_state_obj_area_unset(Evas_Object *property)
 }
 #undef pd_obj_area
 
-#define STATE_ATTR_1ENTRY(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP) \
-   STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR) \
+#define STATE_ATTR_1ENTRY(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP, DESCRIPTION) \
+   STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, DESCRIPTION) \
    STATE_ATTR_1ENTRY_UPDATE(SUB, VALUE, MEMBER) \
    STATE_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP)
 
@@ -2321,9 +2329,11 @@ ui_property_state_obj_area_unset(Evas_Object *property)
    STATE_ATTR_1SPINNER_ADD(TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
                            L_START, L_END, TOOLTIP, MULTIPLIER)
 
-STATE_ATTR_1ENTRY(_("text"), state, text, state_text, NULL, _("The dispalyed text"))
+STATE_ATTR_1ENTRY(_("text"), state, text, state_text, NULL, _("The dispalyed text"),
+                  _("text changed to %s"))
 STATE_ATTR_1ENTRY(_("font"), state, font, state_text, pd->attributes.state_text.validator,
-                  _("The text font, posible set a font style. Ex: Sans:style=italic"))
+                  _("The text font, posible set a font style. Ex: Sans:style=italic"),
+                  _("font changed to %s"))
 STATE_ATTR_1SPINNER(_("size"), state_text, size, state_text, 1, 128, 1, "%.0f", "", "pt",
                     _("The font size"), 1, int,
                     _("font size changed from %d to %d"))
@@ -2921,14 +2931,8 @@ _on_image_editor_done(void *data,
 
    if (strcmp(value, selected) == 0) return;
    elm_entry_entry_set(pd->attributes.state_image.image, selected);
-   edje_edit_state_image_set(pd->group->edit_object, pd->part->name,
-                             pd->part->current_state->parsed_name,
-                             pd->part->current_state->parsed_val, selected);
-TODO("uncomment after changing save API")
-//   pm_save_to_dev(ap.project, pd->wm_style, false);
    evas_object_smart_callback_call(pd->attributes.state_image.image, "changed,user", NULL);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-   //project_changed(false);
 }
 
 static void
@@ -3306,7 +3310,8 @@ prop_##SUB##_##VALUE##_add(Evas_Object *box, Prop_Data *pd) \
 ATTR_4SPINNERS(_("border"), state_image, border, state_image, NULL, STATE_ARGS,
                _("border changed to [%d %d %d %d]"))
 
-STATE_ATTR_1ENTRY(_("image"), state, image, state_image, NULL, NULL)
+STATE_ATTR_1ENTRY(_("image"), state, image, state_image, NULL, NULL,
+                  _("image changed to %s"))
 STATE_ATTR_1COMBOBOX_LIST(_("border fill"), state_image, border_fill, state_image,\
                           edje_middle_type, NULL, unsigned char,
                           _("border fill changed to %s"))
