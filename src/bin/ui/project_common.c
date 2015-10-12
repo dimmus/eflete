@@ -48,3 +48,46 @@ exist_permission_check(const char *path, const char *name,
    ecore_file_recursive_rm(eina_strbuf_string_get(buf));
    eina_strbuf_free(buf);
 }
+
+Eina_Bool
+progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
+{
+   elm_object_part_text_set(ap.splash, "label.info", progress_string);
+   return true;
+}
+
+void
+progress_end(void *data __UNUSED__, PM_Project_Result result)
+{
+   switch (result)
+     {
+      case PM_PROJECT_ERROR:
+        {
+           NOTIFY_INFO(3, _("Can't open project."));
+           break;
+        }
+      case PM_PROJECT_CANCEL:
+        {
+           NOTIFY_INFO(3, _("Project opening canceled."));
+           break;
+        }
+      case PM_PROJECT_SUCCESS:
+        {
+           NOTIFY_INFO(3, _("Project '%s' is opened."), ap.project->name);
+           STATUSBAR_PROJECT_PATH(ap.project->pro_path);
+           STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
+           break;
+        }
+      default:
+        {
+           ERR("Wrong result");
+           abort();
+        }
+     }
+TODO("Don't forgot about Enventor")
+#ifdef HAVE_ENVENTOR
+#endif /* HAVE_ENVENTOR */
+
+   splash_del(ap.splash);
+   ap.splash = NULL;
+}

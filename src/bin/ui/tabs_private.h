@@ -22,6 +22,7 @@
 
 #include "main_window.h"
 #include "navigator.h"
+#include "project_common.h"
 
 struct _Meta_Data_Controls
 {
@@ -57,17 +58,13 @@ _tab_import_edc_add(void);
 Evas_Object *
 _tab_project_info_add(void);
 
-Eina_Bool
-progress_print(void *data, Eina_Stringshare *progress_string);
-
-void
-progress_end(void *data, PM_Project_Result result);
-
 void
 elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data);
 
 void
 entry_path_set(void *data, Evas_Object *obj, void *event_info);
 
+void
+_tabs_progress_end(void *data, PM_Project_Result result);
 
 #endif /* TABS_PRIVATE */

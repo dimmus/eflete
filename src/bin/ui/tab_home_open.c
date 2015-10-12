@@ -46,7 +46,7 @@ _setup_open_splash(void *data, Splash_Status status __UNUSED__)
 
    assert(path != NULL);
 
-   pm_project_open(path, progress_print, progress_end, NULL);
+   pm_project_open(path, progress_print, _tabs_progress_end, NULL);
    eina_stringshare_del(path);
 
    return true;

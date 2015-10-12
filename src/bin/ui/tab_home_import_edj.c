@@ -54,7 +54,7 @@ _progress_end(void *data, PM_Project_Result result)
         elm_entry_entry_set(tab_edj.meta.comment, N_("Created with Eflete!"));
      }
 
-   progress_end(data, result);
+   _tabs_progress_end(data, result);
 }
 
 static Eina_Bool
