@@ -18,7 +18,7 @@
  */
 
 #include "eflete.h"
-#include "ui_workspace.h"
+#include "workspace.h"
 #include "main_window.h"
 #include "utc_common.h"
 

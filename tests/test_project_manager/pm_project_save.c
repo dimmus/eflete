@@ -19,6 +19,7 @@
 
 #include "test_project_manager.h"
 #include "test_common.h"
+#include "editor.h"
 
 /**
  * @addtogroup project_manager_test
@@ -75,8 +76,8 @@ EFLETE_TEST (pm_project_save_test_p)
                {
                     EINA_INLIST_FOREACH(style->parts, part)
                       {
-                         edje_edit_state_min_w_set(style->obj, part->name,
-                                                   "default", 0.0, 10);
+                         editor_state_min_w_set(style->obj, NULL, false,
+                                                part->name, "default", 0.0, 10);
                       }
                }
           }

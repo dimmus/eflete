@@ -104,7 +104,7 @@ EFLETE_TEST (image_editor_window_add_test_p2)
    Evas_Object *images;
 
    ui_main_window_add();
-   Project *project = setup("image_editor_window_add_test_p2");
+   //Project *project = setup("image_editor_window_add_test_p2");
 
    images = image_editor_window_add(MULTIPLE);
    ck_assert_msg(images != NULL,
@@ -112,7 +112,7 @@ EFLETE_TEST (image_editor_window_add_test_p2)
 
    evas_object_del(images);
    app_shutdown();
-   teardown("./image_editor_window_add_test_p2");
+   //teardown("./image_editor_window_add_test_p2");
    elm_shutdown();
 }
 END_TEST
