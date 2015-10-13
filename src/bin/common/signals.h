@@ -200,4 +200,20 @@ typedef struct {
  */
 #define SIGNAL_PROJECT_CLOSED "SIGNAL_PROJECT_CLOSED"
 
+/**
+ * emited when image editor tab is clicked.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_IMAGE_EDITOR_TAB_CLICKED "SIGNAL_IMAGE_EDITOR_TAB_CLICKED"
+
+/**
+ * emited when image/images in image editor is/are selected.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_IMAGE_SELECTED "SIGNAL_IMAGE_SELECTED"
+
 #endif /* SIGNALS_H*/
