@@ -61,7 +61,7 @@ _tab_project_info_add(void);
 void
 elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data);
 
-void
+Eina_Bool
 entry_path_set(void *data, Evas_Object *obj, void *event_info);
 
 void

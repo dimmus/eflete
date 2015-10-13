@@ -75,7 +75,7 @@ elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data)
    elm_object_part_content_set(entry, "elm.swallow.elipsis", bt);
 }
 
-void
+Eina_Bool
 entry_path_set(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info)
@@ -84,6 +84,7 @@ entry_path_set(void *data,
    Eina_List *selected = (Eina_List *)event_info;
 
    elm_entry_entry_set(entry, eina_list_data_get(selected));
+   return true;
 }
 
 void

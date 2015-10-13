@@ -23,7 +23,7 @@ static Popup_Button btn_pressed;
 static Evas_Object *popup;
 static Evas_Object *helper;
 static Evas_Object *fs;
-static Evas_Smart_Cb dismiss_func;
+static Helper_Done_Cb dismiss_func;
 static void* func_data;
 
 static const Popup_Button _btn_ok         = BTN_OK;
@@ -140,6 +140,7 @@ _done(void *data __UNUSED__,
 {
    Eina_List *selected_paths = NULL;
    Eina_Stringshare *selected;
+   Eina_Bool res = true;
 
    if (dismiss_func)
      {
@@ -155,12 +156,16 @@ _done(void *data __UNUSED__,
                selected = elm_fileselector_path_get(fs);
              selected_paths = eina_list_append(selected_paths, selected);
           }
-        ((Evas_Smart_Cb)dismiss_func)(func_data, obj, selected_paths);
+        res = ((Helper_Done_Cb)dismiss_func)(func_data, obj, selected_paths);
      }
+
    eina_list_free(selected_paths);
-   dismiss_func = NULL;
-   func_data = NULL;
-   _helper_dismiss(NULL, NULL, data, NULL);
+   if (res)
+     {
+        dismiss_func = NULL;
+        func_data = NULL;
+        _helper_dismiss(NULL, NULL, data, NULL);
+     }
 }
 
 #define FS_W 430
@@ -200,7 +205,7 @@ _fileselector_helper(const char *title,
                      const char *path,
                      Eina_Bool multi,
                      Eina_Bool is_save,
-                     Evas_Smart_Cb func,
+                     Helper_Done_Cb func,
                      void *data,
                      Elm_Fileselector_Filter_Func filter_cb)
 {
@@ -258,7 +263,7 @@ _fileselector_helper(const char *title,
 
 void
 popup_fileselector_folder_helper(const char *title, Evas_Object *follow_up, const char *path,
-                                 Evas_Smart_Cb func, void *data,
+                                 Helper_Done_Cb func, void *data,
                                  Eina_Bool multi, Eina_Bool is_save)
 {
    _fileselector_helper(title, follow_up, path, multi, is_save, func, data, NULL);
@@ -278,7 +283,7 @@ _edj_filter(const char *path,
 
 void
 popup_fileselector_edj_helper(const char *title, Evas_Object *follow_up, const char *path,
-                              Evas_Smart_Cb func, void *data,
+                              Helper_Done_Cb func, void *data,
                               Eina_Bool multi, Eina_Bool is_save)
 {
    _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _edj_filter);
@@ -298,7 +303,7 @@ _edc_filter(const char *path,
 
 void
 popup_fileselector_edc_helper(const char *title, Evas_Object *follow_up, const char *path,
-                              Evas_Smart_Cb func, void *data,
+                              Helper_Done_Cb func, void *data,
                               Eina_Bool multi, Eina_Bool is_save)
 {
    _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _edc_filter);
