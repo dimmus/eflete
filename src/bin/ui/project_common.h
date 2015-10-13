@@ -20,7 +20,7 @@
 #ifndef PROJECT_COMMON_H
 #define PROJECT_COMMON_H
 
-void
+Eina_Bool
 exist_permission_check(const char *path, const char *name, const char *title, const char *msg);
 
 Eina_Bool

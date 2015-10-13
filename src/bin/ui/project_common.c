@@ -19,7 +19,7 @@
 
 #include "main_window.h"
 
-void
+Eina_Bool
 exist_permission_check(const char *path, const char *name,
                        const char *title, const char *msg)
 {
@@ -34,19 +34,21 @@ exist_permission_check(const char *path, const char *name,
     * So need to check there is the folder "path/name" */
    buf = eina_strbuf_new();
    eina_strbuf_append_printf(buf, "%s/%s", path, name);
-   if (!ecore_file_exists(eina_strbuf_string_get(buf))) return;
+   if (!ecore_file_exists(eina_strbuf_string_get(buf))) return false;
    btn_res = popup_want_action(title, msg, NULL,
                                NULL, BTN_REPLACE | BTN_CANCEL, NULL, NULL);
-   if (btn_res == BTN_CANCEL) return;
+   if (btn_res == BTN_CANCEL) return false;
    if (!ecore_file_can_write(eina_strbuf_string_get(buf)))
      {
         buf_msg = eina_strbuf_new();
         eina_strbuf_append_printf(buf_msg, _("Haven't permision to overwrite '%s' in '%s'"), name, path);
         popup_want_action(title, eina_strbuf_string_get(buf_msg), NULL, NULL, BTN_OK, NULL, NULL);
         eina_strbuf_free(buf_msg);
+        return false;
      }
    ecore_file_recursive_rm(eina_strbuf_string_get(buf));
    eina_strbuf_free(buf);
+   return true;
 }
 
 Eina_Bool

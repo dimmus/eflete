@@ -105,9 +105,10 @@ _import(void *data __UNUSED__,
                             elm_entry_entry_get(tab_edj.name),
                             elm_entry_entry_get(tab_edj.path));
 
-   exist_permission_check(elm_entry_entry_get(tab_edj.path),
-                          elm_entry_entry_get(tab_edj.name),
-                          _("Import edj-file"), eina_strbuf_string_get(buf));
+   if (!exist_permission_check(elm_entry_entry_get(tab_edj.path),
+                               elm_entry_entry_get(tab_edj.name),
+                               _("Import edj-file"), eina_strbuf_string_get(buf)))
+     return;
    eina_strbuf_free(buf);
    ap.splash = splash_add(ap.win,
                           _setup_open_splash,
