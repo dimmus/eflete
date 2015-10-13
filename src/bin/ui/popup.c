@@ -159,7 +159,8 @@ _done(void *data __UNUSED__,
         res = ((Helper_Done_Cb)dismiss_func)(func_data, obj, selected_paths);
      }
 
-   eina_list_free(selected_paths);
+   EINA_LIST_FREE(selected_paths, selected)
+      eina_stringshare_del(selected);
    if (res)
      {
         dismiss_func = NULL;
