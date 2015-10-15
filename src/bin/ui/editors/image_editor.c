@@ -453,14 +453,20 @@ _image_info_setup(Image_Editor *img_edit,
    assert(img_edit != NULL);
    assert(it != NULL);
 
-   _image_info_reset(img_edit);
    img_edit->image_data_fields.image_name = it->image_name;
 
    image = _image_editor_image_create(img_edit->layout, img_edit, it);
    evas_object_image_smooth_scale_set(image, false);
-   elm_object_part_content_set(img_edit->layout, "eflete.swallow.image", image);
    img_edit->image_data_fields.image = image;
    evas_object_show(image);
+
+   evas_object_data_set(image, "image_name", it->image_name);
+   evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, image);
+   return;
+
+
+////////////////////
+   elm_object_part_content_set(img_edit->layout, "eflete.swallow.image", image);
 
    comp =  edje_edit_image_compression_type_get(ap.project->global_object, it->image_name);
 
@@ -511,6 +517,7 @@ _grid_sel(void *data,
           void *event_info __UNUSED__)
 {
    Image_Editor *img_edit = (Image_Editor *)data;
+   Item *item = NULL;
 
    assert(img_edit != NULL);
 
@@ -519,12 +526,11 @@ _grid_sel(void *data,
 
    if (selected_images_count == 1)
      {
-        _image_info_setup(img_edit,
-                          elm_object_item_data_get(eina_list_data_get(sel_list)));
-        img_edit->image_search_data.last_item_found = eina_list_data_get(sel_list);
+        item = elm_object_item_data_get(eina_list_data_get(sel_list));
+        _image_info_setup(img_edit, item);
      }
    else
-     _image_info_reset(img_edit);
+     evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, NULL);
 }
 
 static inline Item *

@@ -129,10 +129,103 @@ prop_image_editor_compression_type_add(Evas_Object *parent, Image_Prop_Data *pd)
 }
 
 static void
-_on_image_selected(void *data __UNUSED__,
+_image_info_type_setup(Evas_Object *layout,
+                       const char *image_name)
+{
+   char buf[BUFF_MAX];
+
+   assert(layout != NULL);
+   assert(image_name != NULL);
+
+   const char *dot = strrchr(image_name, '.');
+   if ((!dot) || (dot == image_name))
+     {
+        elm_object_text_set(layout, _("Unknown"));
+        return;
+     }
+
+   if (eina_str_has_extension(image_name, ".png"))
+     snprintf(buf, BUFF_MAX, _("PNG image (%s)"), dot);
+   else if (eina_str_has_extension(image_name, ".gif"))
+     snprintf(buf, BUFF_MAX, _("GIF image (%s)"), dot);
+   else if (eina_str_has_extension(image_name, ".jpeg") ||
+            eina_str_has_extension(image_name, ".jpg") ||
+            eina_str_has_extension(image_name, ".jif") ||
+            eina_str_has_extension(image_name, ".jfif"))
+     snprintf(buf, BUFF_MAX, _("JPEG image (%s)"), dot);
+   else if (eina_str_has_extension(image_name, ".bmp"))
+     snprintf(buf, BUFF_MAX, _("BMP image (%s)"), dot);
+   else if (eina_str_has_extension(image_name, ".tif") ||
+            eina_str_has_extension(image_name, ".tiff"))
+     snprintf(buf, BUFF_MAX, _("TIFF image (%s)"), dot);
+   else
+     {
+        elm_object_text_set(layout, _("Unknown"));
+        return;
+     }
+   elm_object_text_set(layout, buf);
+}
+static void
+_on_image_selected(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
+   Evas_Object *image = (Evas_Object *)event_info;
+   Eina_Stringshare *image_name;
+   Edje_Edit_Image_Comp comp;
+   Eina_Stringshare *str;
+   int w, h;
+
+   Evas_Object *property = data;
+   IMAGE_PROP_DATA_GET()
+
+   if (image)
+     {
+        elm_object_part_content_set(pd->image_preview, "eflete.swallow.image", image);
+
+        image_name = evas_object_data_get(image, "image_name");
+
+        comp =  edje_edit_image_compression_type_get(ap.project->global_object, image_name);
+        if (comp != EDJE_EDIT_IMAGE_COMP_USER)
+          {
+             str = eina_stringshare_printf("edje/images/%i", edje_edit_image_id_get(ap.project->global_object, image_name));
+             elm_object_text_set(pd->location, str);
+             eina_stringshare_del(str);
+          }
+        else
+          elm_object_text_set(pd->location, image_name);
+
+        if (comp == EDJE_EDIT_IMAGE_COMP_LOSSY)
+          {
+             int quality = edje_edit_image_compression_rate_get(ap.project->global_object,
+                                                                image_name);
+             elm_spinner_value_set(pd->compression_quality, quality);
+          }
+        else
+          elm_spinner_value_set(pd->compression_quality, 0);
+
+        elm_image_object_size_get(image, &w, &h);
+        str = eina_stringshare_printf("%d", w);
+        elm_object_text_set(pd->size_width, str);
+        eina_stringshare_del(str);
+        str = eina_stringshare_printf("%d", h);
+        elm_object_text_set(pd->size_height, str);
+        eina_stringshare_del(str);
+
+        _image_info_type_setup(pd->type, image_name);
+     }
+   else
+     {
+        image = elm_object_part_content_unset(pd->image_preview, "eflete.swallow.image");
+        evas_object_del(image);
+        elm_object_text_set(pd->name, _(" - "));
+        elm_object_text_set(pd->location, _(" - "));
+        elm_object_text_set(pd->size_width, _(" - "));
+        elm_object_text_set(pd->size_height, _(" - "));
+        elm_object_text_set(pd->type, _(" - "));
+        ewe_combobox_select_item_set(pd->compression_type, 0);
+        elm_spinner_value_set(pd->compression_quality, 0);
+     }
 }
 
 Evas_Object *
