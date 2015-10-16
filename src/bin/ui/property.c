@@ -1293,18 +1293,16 @@ _ui_property_group_unset(Evas_Object *property)
 #undef pd_group
 
 static void
-_on_part_name_unfocus(void *data,
-                      Evas_Object *obj,
-                      void *ei __UNUSED__)
+prop_part_name_update(Prop_Data *pd)
 {
-   Prop_Data *pd = (Prop_Data *)data;
+   char *text;
 
    assert(pd != NULL);
 
-   const char *value = elm_entry_entry_get(obj);
-
-   if (strcmp(value, pd->part->name))
-     elm_entry_entry_set(obj, pd->part->name);
+   text = elm_entry_utf8_to_markup(pd->part->name);
+   if (strcmp(text, elm_entry_entry_get(pd->attributes.part.name)))
+     elm_entry_entry_set(pd->attributes.part.name, pd->part->name);
+   free(text);
 }
 
 static void
@@ -1313,38 +1311,39 @@ _on_part_name_change(void *data,
                      void *ei __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
-   int pos;
-   const char *value;
-
-   TODO("Fix rename");
-   return;
-
+   const char *text;
+   char *value;
    assert(pd != NULL);
    if (elm_validator_regexp_status_get(pd->attributes.part.validator) != ELM_REG_NOERROR)
      return;
-
-   value = elm_entry_entry_get(obj);
-   if (!edje_edit_part_name_set(pd->group->edit_object, pd->part->name, value))
+   if (!pd->change) pd->change = change_add(NULL);
+   text = elm_entry_entry_get(obj);
+   value = elm_entry_markup_to_utf8(text);
+   if (!editor_part_name_set(pd->group->edit_object, pd->change, true, pd->part->name, value))
      {
-        NOTIFY_INFO(5, "Wrong input value for name field");
-        return;
+        ERR("Wrong input value for name field");
+        abort();
      }
-
-   //project_changed(false);
-/*   workspace_edit_object_part_rename(pd->workspace, pd->part->name, value); */
-   pd->part->name = value;
-   pos = elm_entry_cursor_pos_get(obj);
-   elm_object_focus_set(obj, true);
-   elm_entry_cursor_pos_set(obj, pos);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
+   free(value);
 }
-
 static void
-prop_part_name_update(Prop_Data *pd)
+_on_part_name_activated(void *data,
+                        Evas_Object *obj __UNUSED__,
+                        void *ei __UNUSED__)
 {
+   Prop_Data *pd = (Prop_Data *)data;
    assert(pd != NULL);
-
-   elm_entry_entry_set(pd->attributes.part.name, pd->part->name);
+   if (elm_validator_regexp_status_get(pd->attributes.part.validator) != ELM_REG_NOERROR)
+     return;
+   if (!pd->change)
+     return;
+   Eina_Stringshare *msg = eina_stringshare_printf(_("part name changed to \"%s\""), pd->part->name);
+   change_description_set(pd->change, msg);
+   history_change_add(pd->group->history, pd->change);
+   pd->change = NULL;
+   prop_part_name_update(pd);
+   eina_stringshare_del(msg);
 }
 
 static Evas_Object *
@@ -1359,7 +1358,8 @@ prop_part_name_add(Evas_Object *parent, Prop_Data *pd)
    elm_entry_entry_set(pd->attributes.part.name, pd->part->name);
    elm_object_tooltip_text_set(pd->attributes.part.name, _("Selected part name"));
    evas_object_smart_callback_add(pd->attributes.part.name, "changed,user", _on_part_name_change, pd);
-   evas_object_smart_callback_add(pd->attributes.part.name, "unfocused", _on_part_name_unfocus, pd);
+   evas_object_smart_callback_add(pd->attributes.part.name, "unfocused", _on_part_name_activated, pd);
+   evas_object_smart_callback_add(pd->attributes.part.name, "activated", _on_part_name_activated, pd);
    elm_layout_content_set(item, "elm.swallow.content", pd->attributes.part.name);
    prop_part_name_update(pd);
 
