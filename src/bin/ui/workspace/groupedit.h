@@ -120,22 +120,6 @@ Evas_Object *
 groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part);
 
 /**
- * Renaming the part object with new name.
- *
- * @param obj The groupedit object,
- * @param part_old_name Old name of the part that is going to be renamed with new name.
- * @param part_new_name New name of the part that is going to be setted.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_edit_object_part_rename(Evas_Object *obj,
-                                  const char *part_old_name,
-                                  const char *part_new_name);
-
-/**
  * Add to groupedit a new part. The function add part to edje edit object and
  * add groupedit part.
  *

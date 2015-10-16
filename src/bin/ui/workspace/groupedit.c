@@ -314,31 +314,6 @@ groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part)
    return gp->border;
 }
 
-
-TODO("Fix part rename")
-Eina_Bool
-groupedit_edit_object_part_rename(Evas_Object *obj,
-                                  const char *part_old_name,
-                                  const char *part_new_name)
-{
-   Groupedit_Part *gp;
-   Groupedit_Part *gp2;
-   WS_GROUPEDIT_DATA_GET(obj, sd)
-
-   assert(part_old_name != NULL);
-   assert(part_new_name != NULL);
-
-   gp = _parts_list_find(sd->parts, part_old_name);
-   gp2 = _parts_list_find(sd->parts, part_new_name);
-
-   assert(gp != NULL);
-   assert(gp2 == NULL);
-
-/*   eina_stringshare_replace(&gp->name, part_new_name); */
-
-   return true;
-}
-
 Eina_Bool
 groupedit_edit_object_part_add(Evas_Object *obj, Part_ *part)
 {
