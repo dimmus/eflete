@@ -269,28 +269,6 @@ ui_property_image_add(Evas_Object *parent)
    item = prop_item_label_add(pd->box, &pd->size_height, _("image height"), _(" - "));
    elm_box_pack_end(pd->box, item);
 
-/*********************************/
-/*   ENTRY_ADD(layout, img_edit->image_data_fields.file_name, true);
-   elm_entry_editable_set(img_edit->image_data_fields.file_name, false);
-   elm_object_part_content_set(layout, "eflete.swallow.image_info.name",
-                               img_edit->image_data_fields.file_name);
-
-   EWE_COMBOBOX_ADD(layout, img_edit->image_data_fields.comp);
-   ewe_combobox_item_add(img_edit->image_data_fields.comp, "NONE");
-   ewe_combobox_item_add(img_edit->image_data_fields.comp, "RAW");
-   ewe_combobox_item_add(img_edit->image_data_fields.comp, "USER");
-   ewe_combobox_item_add(img_edit->image_data_fields.comp, "COMP");
-   ewe_combobox_item_add(img_edit->image_data_fields.comp, "LOSSY");
-   elm_object_disabled_set(img_edit->image_data_fields.comp, true);
-   elm_object_part_content_set(layout, "eflete.swallow.compression_type",
-                               img_edit->image_data_fields.comp);
-
-   SPINNER_ADD(layout, img_edit->image_data_fields.quality, 0, 100, 1, false);
-   elm_object_disabled_set(img_edit->image_data_fields.quality, true);
-   elm_object_part_content_set(layout, "eflete.swallow.compression_quality",
-                               img_edit->image_data_fields.quality); */
-/********************************/
-
    evas_object_smart_callback_add(ap.win, SIGNAL_IMAGE_SELECTED, _on_image_selected, pd->box);
 
    return pd->box;
