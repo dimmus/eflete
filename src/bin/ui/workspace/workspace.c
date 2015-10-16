@@ -1405,6 +1405,14 @@ ws_groupedit_get(Evas_Object *obj)
    return sd->groupedit;
 }
 
+void
+workspace_part_list_update_part(Evas_Object *obj, Part_ *part)
+{
+   WS_DATA_GET(obj, sd);
+   assert(part != NULL);
+
+   part_list_part_update(sd->part_list, part);
+}
 #define PADDING_SIZE 40
 
 Eina_Bool
@@ -1428,28 +1436,6 @@ workspace_edit_object_recalc(Evas_Object *obj)
         container_max_size_set(ap.live_view->live_view, max_w, max_h);
      }
    return groupedit_edit_object_recalc_all(sd->groupedit);
-}
-
-Eina_Bool
-workspace_edit_object_part_rename(Evas_Object *obj,
-                                  const char *old_name,
-                                  const char *new_name)
-{
-   Eina_Bool ret;
-   WS_DATA_GET(obj, sd);
-
-   assert(old_name != NULL);
-   assert(new_name != NULL);
-   assert(strcmp(old_name, ""));
-   assert(strcmp(new_name, ""));
-
-   if (!strcmp(old_name, new_name))
-     return false;
-
-   ret = groupedit_edit_object_part_rename(sd->groupedit, old_name, new_name);
-   if (ret)
-     evas_object_smart_callback_call(obj, "part,name,changed", (void *)new_name);
-   return ret;
 }
 
 Eina_Bool
