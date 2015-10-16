@@ -614,3 +614,13 @@ gm_part_del(Project *pro, Part_* part)
    eina_stringshare_del(part->name);
    free(part);
 }
+
+void
+gm_part_rename(Part_* part, const char *new_part_name)
+{
+   assert(part != NULL);
+   assert(new_part_name != NULL);
+
+   eina_stringshare_del(part->name);
+   part->name = eina_stringshare_add(new_part_name);
+}
