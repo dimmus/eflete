@@ -392,7 +392,6 @@ ui_workspace_test_SOURCES = \
 ../tests/test_ui_workspace/workspace_edit_object_part_state_del.c \
 ../tests/test_ui_workspace/workspace_edit_object_part_state_set.c \
 ../tests/test_ui_workspace/workspace_edit_object_recalc.c \
-../tests/test_ui_workspace/workspace_edit_object_part_rename.c \
 ../tests/test_ui_workspace/workspace_edit_object_visible_set.c \
 ../tests/test_ui_workspace/workspace_zoom_factor_get.c \
 ../tests/test_ui_workspace/workspace_zoom_factor_set.c \
