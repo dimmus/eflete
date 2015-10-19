@@ -31,6 +31,7 @@
 #include "string_common.h"
 #include "new_history.h"
 #include "editor.h"
+#include "validator.h"
 
 #include "syntax_color.h"
 
@@ -77,7 +78,7 @@ struct _Prop_Data
         struct {
              Evas_Object *frame;
              Evas_Object *name;
-             Elm_Validator_Regexp *validator;
+             Resource_Name_Validator *validator;
              Evas_Object *type;
              Evas_Object *scale, *scale_item;
              Evas_Object *mouse_events, *mouse_events_item;
@@ -1314,7 +1315,7 @@ _on_part_name_change(void *data,
    const char *text;
    char *value;
    assert(pd != NULL);
-   if (elm_validator_regexp_status_get(pd->attributes.part.validator) != ELM_REG_NOERROR)
+   if (resource_name_validator_status_get(pd->attributes.part.validator) != ELM_REG_NOERROR)
      return;
    if (!pd->change) pd->change = change_add(NULL);
    text = elm_entry_entry_get(obj);
@@ -1334,7 +1335,7 @@ _on_part_name_activated(void *data,
 {
    Prop_Data *pd = (Prop_Data *)data;
    assert(pd != NULL);
-   if (elm_validator_regexp_status_get(pd->attributes.part.validator) != ELM_REG_NOERROR)
+   if (resource_name_validator_status_get(pd->attributes.part.validator) != ELM_REG_NOERROR)
      return;
    if (!pd->change)
      return;
@@ -1354,7 +1355,9 @@ prop_part_name_add(Evas_Object *parent, Prop_Data *pd)
 
    PROPERTY_ITEM_ADD(parent,  _("name"), "1swallow");
    ENTRY_ADD(parent, pd->attributes.part.name, true);
-   eo_do(pd->attributes.part.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, pd->attributes.part.validator));
+   eo_do(pd->attributes.part.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, pd->attributes.part.validator));
+   resource_name_validator_list_set(pd->attributes.part.validator, &pd->part->group->parts, false);
+   resource_name_validator_resource_set(pd->attributes.part.validator, (Resource *)pd->part);
    elm_entry_entry_set(pd->attributes.part.name, pd->part->name);
    elm_object_tooltip_text_set(pd->attributes.part.name, _("Selected part name"));
    evas_object_smart_callback_add(pd->attributes.part.name, "changed,user", _on_part_name_change, pd);
@@ -1489,7 +1492,7 @@ _ui_property_part_set(Evas_Object *property, Part_ *part)
         elm_object_content_set(pd_part.frame, box);
 
         if (pd->attributes.part.validator == NULL)
-          pd->attributes.part.validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
+          pd->attributes.part.validator = resource_name_validator_new(PART_NAME_REGEX, NULL);
 
         item = prop_part_name_add(box, pd);
         elm_box_pack_end(box, item);
@@ -1549,6 +1552,8 @@ _ui_property_part_set(Evas_Object *property, Part_ *part)
         prop_part_drag_threshold_update(pd);
         prop_part_drag_event_update(pd);
      }
+   resource_name_validator_list_set(pd->attributes.part.validator, &part->group->parts, false);
+   resource_name_validator_resource_set(pd->attributes.part.validator, (Resource *)part);
 
    box = elm_object_content_get(pd_part.frame);
    if (pd->part->type == EDJE_PART_TYPE_SPACER)
