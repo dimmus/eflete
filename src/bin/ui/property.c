@@ -1882,8 +1882,8 @@ STATE_MINMAX_ATTR_2SPINNER(_("max"), state, max_w, max_h, state, -1.0, 9999.0, 1
 STATE_ATTR_2SPINNER(_("align"), state, align_x, align_y, state, 0, 100, 1, NULL, "x:", "%", "y:", "%",
                     _("Part align horizontally"), _("Part align vertically"),
                     100, double,
-                    _("align x changed from %f to %f"),
-                    _("align y changed from %f to %f"))
+                    _("align x changed from %.2f to %.2f"),
+                    _("align y changed from %.2f to %.2f"))
 STATE_ATTR_2CHECK(_("fixed"), state, fixed_w, fixed_h, state, "w:", "", "h:", "",
                   _("This affects the minimum width calculation."),
                   _("This affects the minimum height calculation."),
@@ -1896,14 +1896,14 @@ STATE_ATTR_2SPINNER(_("aspect ratio"), state, aspect_min, aspect_max, state, 0, 
                    _("Normally width and height can be resized to any values independently"),
                    _("Normally width and height can be resized to any values independently"),
                    100, double,
-                    _("aspect min changed from %f to %f"),
-                    _("aspect max changed from %f to %f"))
+                    _("aspect min changed from %.2f to %.2f"),
+                    _("aspect max changed from %.2f to %.2f"))
 STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, state, 0.0, 9999.0, 0.1, "%.1f", "w:", "", "h:", "",
                     _("The minimal part width value multiplier for current state"),
                     _("The minimal part height value multiplier for current state"),
                     1, double,
-                    _("multiplier w changed from %f to %f"),
-                    _("multiplier h changed from %f to %f"))
+                    _("multiplier w changed from %.2f to %.2f"),
+                    _("multiplier h changed from %.2f to %.2f"))
 STATE_ATTR_COLOR(_("color"), state, color, state, _("Part main color"),
                  _("color changed to [%d %d %d %d]"))
 
@@ -2191,8 +2191,8 @@ STATE_ATTR_2SPINNER_ICON(_("align"), state, rel1_relative_x, rel1_relative_y, st
                            "Moves a corner to a relative position inside the container "
                            "by Y axis."),
                          100, double,
-                         _("rel1 align x changed from %f to %f"),
-                         _("rel1 align y changed from %f to %f"))
+                         _("rel1 align x changed from %.2f to %.2f"),
+                         _("rel1 align y changed from %.2f to %.2f"))
 STATE_ATTR_2SPINNER_ICON(_("offset"), state, rel1_offset_x, rel1_offset_y, state_object_area,
                          -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
                          _("Left offset from relative position in pixels"),
@@ -2216,8 +2216,8 @@ STATE_ATTR_2SPINNER_ICON(_("align"), state, rel2_relative_x, rel2_relative_y, st
                            "Moves a corner to a relative position inside the container "
                            "by Y axis."),
                          100, double,
-                         _("rel2 align x changed from %f to %f"),
-                         _("rel2 align y changed from %f to %f"))
+                         _("rel2 align x changed from %.2f to %.2f"),
+                         _("rel2 align y changed from %.2f to %.2f"))
 STATE_ATTR_2SPINNER_ICON(_("offset"), state, rel2_offset_x, rel2_offset_y, state_object_area,
                          -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
                          _("Right offset from relative position in pixels"),
@@ -2346,8 +2346,8 @@ STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_text,
                     0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
                     _("Text horizontal align"), _("Text vertical align"),
                     100, double,
-                    _("text horizontal align changed from %f to %f"),
-                    _("text vertical align changed from %f to %f"))
+                    _("text horizontal align changed from %.2f to %.2f"),
+                    _("text vertical align changed from %.2f to %.2f"))
 STATE_ATTR_2CHECK(_("min"), state_text, min_x, min_y, state_text, "w:", "", "h:", "",
                   _("When any of the parameters is enabled it forces \t"
                   "the minimum size of the container to be equal to\t"
@@ -2765,8 +2765,8 @@ STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_textblock,
                     0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
                     _("Text horizontal align"), _("Text vertical align"),
                     100, double,
-                    _("text horizontal align changed from %f to %f"),
-                    _("text vertical align changed from %f to %f"))
+                    _("text horizontal align changed from %.2f to %.2f"),
+                    _("text vertical align changed from %.2f to %.2f"))
 STATE_ATTR_2CHECK(_("min"), state_text, min_x, min_y, state_textblock, "w:", "", "h:", "",
                   _("When any of the parameters is enabled it forces \t"
                   "the minimum size of the container to be equal to\t"
@@ -3398,31 +3398,31 @@ STATE_ATTR_2SPINNER_ICON(_("align"), state_fill, origin_relative_x, origin_relat
                          _("Sets the starting point X coordinate relatively to displayed element's content"),
                          _("Sets the starting point Y coordinate relatively to displayed element's content"),
                          100, double,
-                         _("fill align x changed from %f to %f"),
-                         _("fill align y changed from %f to %f"))
+                         _("fill align x changed from %.2f to %.2f"),
+                         _("fill align y changed from %.2f to %.2f"))
 TODO("Fix offset edje_edit API: use int instead of double param")
 STATE_ATTR_2SPINNER_ICON(_("offset"), state_fill, origin_offset_x, origin_offset_y, state_fill,
                          -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
                          _("Affects the starting point a fixed number of pixels along X axis"),
                          _("Affects the starting point a fixed number of pixels along Y axis"),
                          1, double,
-                         _("fill offset x changed from %f to %f"),
-                         _("fill offset y changed from %f to %f"))
+                         _("fill offset x changed from %.2f to %.2f"),
+                         _("fill offset y changed from %.2f to %.2f"))
 STATE_ATTR_2SPINNER_ICON(_("align"), state_fill, size_relative_x, size_relative_y, state_fill,
                          -500, 500, 1, NULL, "x:", "%", "y:", "%",
                          _("Value that represent the percentual value of the original size of the element by X axis"),
                          _("Value that represent the percentual value of the original size of the element by Y axis."),
                          100, double,
-                         _("fill size align x changed from %f to %f"),
-                         _("fill size align y changed from %f to %f"))
+                         _("fill size align x changed from %.2f to %.2f"),
+                         _("fill size align y changed from %.2f to %.2f"))
 TODO("Fix offset edje_edit API: use int instead of double param")
 STATE_ATTR_2SPINNER_ICON(_("offset"), state_fill, size_offset_x, size_offset_y, state_fill,
                          -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
                          _("Affects the size of the tile a fixed number of pixels along X axis"),
                          _("Affects the size of the tile a fixed number of pixels along Y axis"),
                          1, double,
-                         _("fill size offset x changed from %f to %f"),
-                         _("fill size offset y changed from %f to %f"))
+                         _("fill size offset x changed from %.2f to %.2f"),
+                         _("fill size offset y changed from %.2f to %.2f"))
 
 static Eina_Bool
 ui_property_state_fill_set(Evas_Object *property)
@@ -3590,8 +3590,8 @@ PART_ITEM_ATTR_2SPINNER(_("align"), part_item, align_x, align_y, part_item,
                     0.0, 999.0, 1.0, NULL, "x:", "px", "y:", "px",
                     _("Sets the alignment hint by x axiss"), _("Sets the alignment hint by y axiss"),
                     100, double,
-                    _("part item align x changed from %f to %f"),
-                    _("part item align y changed from %f to %f"))
+                    _("part item align x changed from %.2f to %.2f"),
+                    _("part item align y changed from %.2f to %.2f"))
 PART_ITEM_ATTR_2SPINNER(_("weight"), part_item, weight_x, weight_y, part_item,
                     0.0, 999.0, 1.0, NULL, "x:", "", "y:", "",
                     _("Sets the weight hint by x axiss"),_("Sets the weight hint by y axiss"),
@@ -3741,8 +3741,8 @@ STATE_ATTR_2SPINNER(_("align"), state_container, align_x, align_y, state_contain
                     _("Change the position of the point of balance inside the container"),
                     _("Change the position of the point of balance inside the container"),
                     100, double,
-                    _("Part container align x changed from %f to %f"),
-                    _("Part container glign y changed from %f to %f"))
+                    _("Part container align x changed from %.2f to %.2f"),
+                    _("Part container glign y changed from %.2f to %.2f"))
 STATE_ATTR_2SPINNER(_("padding"), state_container, padding_x, padding_y, state_container,
                     0.0, 999.0, 1.0, NULL, "x:", "px", "y:", "px",
                     _("Sets the horizontal space between cells in pixels"),
