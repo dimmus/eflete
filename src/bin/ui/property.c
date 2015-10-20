@@ -1669,12 +1669,23 @@ _on_state_color_class_change(void *data,
 {
    Prop_Data *pd = (Prop_Data *)data;
    int r, g, b, a, r2, g2, b2, a2, r3, g3, b3, a3;
-   Eina_Stringshare *value = NULL;
+   Eina_Stringshare *value = NULL, *old_value;
    Ewe_Combobox_Item *item = event_info;
 
    assert(pd != NULL);
 
    value = strcmp(item->title, "None") ? item->title : NULL;
+
+   old_value = edje_edit_state_color_class_get(pd->group->edit_object,
+                                               pd->part->name,
+                                               pd->part->current_state->parsed_name,
+                                               pd->part->current_state->parsed_val);
+   if (value == old_value) /* stringshares */
+     {
+        eina_stringshare_del(old_value);
+        return;
+     }
+   eina_stringshare_del(old_value);
    Eina_Stringshare *msg = eina_stringshare_printf(_("color class changed to %s"), item->title);
    Change *change = change_add(msg);
    eina_stringshare_del(msg);
