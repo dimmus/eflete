@@ -149,6 +149,26 @@ Eina_Bool
 app_shutdown(void);
 
 /**
+ * Start nested not blocked ecore main loop.
+ *
+ * @note Master Raster add to ecore_main_loop_begin the hard check to nested
+ * main loops. Now have no time to remake our popup behavior, and add this
+ * crutch. In further need to delete it.
+ *
+ * @ingroup Eflete
+ */
+void
+eflete_main_loop_begin(void);
+
+/**
+ * End nested main loop.
+ *
+ * @ingroup Eflete
+ */
+void
+eflete_main_loop_quit(void);
+
+/**
  * This function will return win_layout (if App_Data and win_layout exists).
  * If they are not exist, then this function will return NULL.
  * This function is usable for notification.

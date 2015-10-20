@@ -24,6 +24,7 @@
 #include "signals.h"
 #include "string_common.h"
 #include "main_window.h"
+#include "editor.h"
 
 #define PART_LIST_DATA "part_list_data"
 
@@ -783,6 +784,11 @@ _on_btn_minus_clicked(void *data,
      }
 
    TODO("Add state/item del here")
+
+   /* Need to save pl->group->edit_object, since we changed it */
+   editor_save_all(ap.project->global_object);
+   TODO("Remove this line once edje_edit_image_add would be added into Editor Modulei and saving would work properly")
+   ap.project->changed = true;
 }
 
 

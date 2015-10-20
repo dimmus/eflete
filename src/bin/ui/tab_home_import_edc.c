@@ -45,7 +45,7 @@ struct _Tab_Home_Edc
    Eina_List *img_dirs;
    Eina_List *fnt_dirs;
    Eina_List *snd_dirs;
-   Eina_List *vbr_dirs;
+   /* Eina_List *vbr_dirs; uncoment when vibration will be suported in the edje */
    Eina_List *data_dirs;
    Meta_Data_Controls meta;
 
@@ -64,8 +64,10 @@ _fnt_dir_add(void *data, Evas_Object *obj, void *event_info);
 static void
 _snd_dir_add(void *data, Evas_Object *obj, void *event_info);
 
+/*
 static void
 _vbr_dir_add(void *data, Evas_Object *obj, void *event_info);
+*/
 
 static void
 _data_dir_add(void *data, Evas_Object *obj, void *event_info);
@@ -79,8 +81,10 @@ _fnt_dir_del(void *data, Evas_Object *obj, void *event_info);
 static void
 _snd_dir_del(void *data, Evas_Object *obj, void *event_info);
 
+/*
 static void
 _vbr_dir_del(void *data, Evas_Object *obj, void *event_info);
+*/
 
 static void
 _data_dir_del(void *data, Evas_Object *obj, void *event_info);
@@ -102,7 +106,13 @@ _elipsis(void *data,
          Evas_Object *obj __UNUSED__,
          void *event_info __UNUSED__)
 {
-   popup_fileselector_folder_helper((Evas_Object *)data, elm_entry_entry_get(tab_edc.path));
+   popup_fileselector_folder_helper(NULL,
+                                    (Evas_Object *)data,
+                                    elm_entry_entry_get(tab_edc.path),
+                                    entry_path_set,
+                                    (Evas_Object *)data,
+                                    false,
+                                    false);
 }
 
 static void
@@ -110,7 +120,13 @@ _elipsis_edc(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   popup_fileselector_edc_helper(tab_edc.edc, NULL);
+   popup_fileselector_edc_helper(NULL,
+                                 tab_edc.edc,
+                                 NULL,
+                                 entry_path_set,
+                                 tab_edc.edc,
+                                 false,
+                                 false);
 }
 
 static void
@@ -177,6 +193,7 @@ _snd_dir_del(void *data,
    _dir_del(&tab_edc.snd_dirs, (Dir_Data *)data, _("Sounds directoies:"), _snd_dir_add);
 }
 
+/*
 static void
 _vbr_dir_del(void *data,
              Evas_Object *obj __UNUSED__,
@@ -184,6 +201,7 @@ _vbr_dir_del(void *data,
 {
    _dir_del(&tab_edc.vbr_dirs, (Dir_Data *)data, _("Vibrations directoies:"), _vbr_dir_add);
 }
+*/
 
 static void
 _data_dir_del(void *data,
@@ -258,6 +276,7 @@ _snd_dir_add(void *data __UNUSED__,
    _dir_add(tab_edc.snd_dirs, _snd_dir_del);
 }
 
+/*
 static void
 _vbr_dir_add(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
@@ -265,6 +284,7 @@ _vbr_dir_add(void *data __UNUSED__,
 {
    _dir_add(tab_edc.vbr_dirs, _vbr_dir_del);
 }
+*/
 
 static void
 _data_dir_add(void *data __UNUSED__,
@@ -297,11 +317,13 @@ _edje_cc_opt_build(void)
         if (elm_entry_is_empty(dir_data->entry)) continue;
         eina_strbuf_append_printf(buf, "-sd \"%s\"", elm_entry_entry_get(dir_data->entry));
      }
+   /*
    EINA_LIST_FOREACH(tab_edc.vbr_dirs, l, dir_data)
      {
         if (elm_entry_is_empty(dir_data->entry)) continue;
         eina_strbuf_append_printf(buf, "-vd \"%s\"", elm_entry_entry_get(dir_data->entry));
      }
+   */
    EINA_LIST_FOREACH(tab_edc.data_dirs, l, dir_data)
      {
         if (elm_entry_is_empty(dir_data->entry)) continue;
@@ -343,7 +365,7 @@ _progress_end(void *data, PM_Project_Result result)
         _dirs_cleanup(tab_edc.img_dirs, _img_dir_del);
         _dirs_cleanup(tab_edc.fnt_dirs, _fnt_dir_del);
         _dirs_cleanup(tab_edc.snd_dirs, _snd_dir_del);
-        _dirs_cleanup(tab_edc.vbr_dirs, _vbr_dir_del);
+        /* _dirs_cleanup(tab_edc.vbr_dirs, _vbr_dir_del); */
         _dirs_cleanup(tab_edc.data_dirs, _data_dir_del);
         elm_entry_entry_set(tab_edc.meta.version, NULL);
         elm_entry_entry_set(tab_edc.meta.authors, NULL);
@@ -499,20 +521,24 @@ _tab_import_edc_add(void)
    elm_box_pack_end(tab_edc.box, separ);
 
    /* first item for vibration dirs list */
+   /* UNCOMMENT it when vibration will be supported
    dir_data = _dir_item_add(_vbr_dir_del);
    elm_layout_text_set(dir_data->item, NULL, _("Virbration directoies:"));
    tab_edc.vbr_dirs = eina_list_append(tab_edc.vbr_dirs, dir_data);
    elm_object_disabled_set(dir_data->btn_del, true);
    _btn_add_add(dir_data->item, _vbr_dir_add);
    elm_box_pack_end(tab_edc.box, dir_data->item);
+   */
 
    /* separator 5 */
+   /* UNCOMMENT it when vibration will be supported
    separ = elm_separator_add(tab_edc.box);
    elm_separator_horizontal_set(separ, true);
    evas_object_show(separ);
    elm_box_pack_end(tab_edc.box, separ);
+   */
 
-   /* first item for vibration dirs list */
+   /* first item for data dirs list */
    dir_data = _dir_item_add(_data_dir_del);
    elm_layout_text_set(dir_data->item, NULL, _("Data directoies:"));
    tab_edc.data_dirs = eina_list_append(tab_edc.data_dirs, dir_data);

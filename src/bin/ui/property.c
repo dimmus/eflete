@@ -56,7 +56,7 @@ struct _Prop_Data
    Group *group;
    Part_ *part;
    Change *change;
-   int old_int_val;
+   int old_int_val, old_int_val2, old_int_val3, old_int_val4;
    double old_double_val;
    Evas_Object *layout;
    Evas_Object *scroller;
@@ -133,7 +133,7 @@ struct _Prop_Data
              Evas_Object *max_x, *max_y;
              Evas_Object *fit_x, *fit_y;
              Evas_Object *text_source;
-             Evas_Object *ellipsis_toggle, *ellipsis;
+             Evas_Object *elipsis_toggle, *elipsis;
              Evas_Object *effect, *effect_direction;
              Evas_Object *color2, *color2_obj;
              Evas_Object *color3, *color3_obj;
@@ -160,7 +160,10 @@ struct _Prop_Data
         struct {
              Evas_Object *frame;
              Evas_Object *image;
-             Evas_Object *border;
+             Evas_Object *border_r;
+             Evas_Object *border_l;
+             Evas_Object *border_t;
+             Evas_Object *border_b;
              Elm_Validator_Regexp *validator;
              Evas_Object *border_fill;
              Evas_Object *tween;
@@ -345,7 +348,7 @@ static void
 ui_property_state_container_unset(Evas_Object *property);
 
 static void
-prop_state_text_ellipsis_update(Prop_Data *pd);
+prop_state_text_elipsis_update(Prop_Data *pd);
 
 static void
 prop_state_image_update(Prop_Data *pd);
@@ -392,8 +395,8 @@ prop_state_color3_update(Prop_Data *pd);
 static void
 prop_state_image_border_update(Prop_Data *pd);
 
-inline static void
-_text_effect_update(Prop_Data *pd);
+static void
+prop_part_text_effect_update(Prop_Data *pd);
 
 static void
 prop_part_drag_x_step_x_update(Prop_Data *pd);
@@ -686,7 +689,7 @@ _on_editor_attribute_changed(void *data,
          COMMON_1SPINNER_UPDATE(state_text, align_y, state_textblock, double, 100, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_TEXT_ELIPSIS:
-         prop_state_text_ellipsis_update(pd);
+         prop_state_text_elipsis_update(pd);
          break;
       case ATTRIBUTE_STATE_TEXT_SIZE:
          COMMON_1SPINNER_UPDATE(state_text, size, state_text, int,  1, STATE_ARGS);
@@ -780,7 +783,7 @@ _on_editor_attribute_changed(void *data,
          prop_state_proxy_source_update(pd);
          break;
       case ATTRIBUTE_PART_EFFECT:
-         _text_effect_update(pd);
+         prop_part_text_effect_update(pd);
          break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
          PART_ATTR_1COMBOBOX_LIST_UPDATE(part, ignore_flags, part);
@@ -1001,6 +1004,14 @@ TODO("Implement rename. Note: groups list must remain sorted")
    elm_object_focus_set(obj, true);
    //project_changed(false);
    free(entry);
+}
+static void
+_on_group_name_activated(void *data __UNUSED__,
+                         Evas_Object *obj __UNUSED__,
+                         void *ei __UNUSED__)
+{
+return;
+TODO("Implement rename. Note: groups list must remain sorted")
 }
 
 #define GROUP_ATTR_2SPINNER(TEXT, SUB1, SUB2, VALUE1, VALUE2, DESCRIPTION1, DESCRIPTION2) \
@@ -1409,15 +1420,15 @@ PART_ATTR_SOURCE_UPDATE(part, source)
    PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 #define PART_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP, DESCRIPTION) \
-   PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
+   PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, PART_ARGS, DESCRIPTION) \
    PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 #define PART_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, TYPE, LIST, TOOLTIP, DESCRIPTION) \
    PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
    PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
 
-#define PART_ATTR_DRAG(TEXT, SUB, VALUE1, VALUE2) \
-   PART_ATTR_DRAG_CALLBACK(SUB, VALUE1, VALUE2) \
+#define PART_ATTR_DRAG(TEXT, SUB, VALUE1, VALUE2, DESCRIPTION1, DESCRIPTION2) \
+   PART_ATTR_DRAG_CALLBACK(SUB, VALUE1, VALUE2, DESCRIPTION1, DESCRIPTION2) \
    PART_ATTR_DRAG_UPDATE(SUB, VALUE1, VALUE2) \
    PART_ATTR_DRAG_ADD(TEXT, SUB, VALUE1, VALUE2)
 
@@ -1441,8 +1452,8 @@ PART_ATTR_1COMBOBOX(_("group source"), part, source, part,
                     _("Used for the group to be loaded and used to display GROUP part."),
                     _("group source changed to %s"))
 /* part drag property */
-PART_ATTR_DRAG(_("axis X"), part_drag, x, step_x)
-PART_ATTR_DRAG(_("axis Y"), part_drag, y, step_y)
+PART_ATTR_DRAG(_("axis X"), part_drag, x, step_x, _("drag x changed to %s"), _("drag step x changed from %d to %d"))
+PART_ATTR_DRAG(_("axis Y"), part_drag, y, step_y, _("drag y changed to %s"), _("drag step y changed from %d to %d"))
 PART_ATTR_1COMBOBOX(_("drag area"), part_drag, confine, part_drag,
                     _("Limits the movement of the dragged part to another part's container"),
                     _("drag area changed to %s"))
@@ -1659,7 +1670,11 @@ _on_state_color_class_change(void *data,
    assert(pd != NULL);
 
    value = strcmp(item->title, "None") ? item->title : NULL;
-   edje_edit_state_color_class_set(pd->group->edit_object, pd->part->name,
+   Eina_Stringshare *msg = eina_stringshare_printf(_("color class changed to %s"), item->title);
+   Change *change = change_add(msg);
+   eina_stringshare_del(msg);
+   editor_state_color_class_set(pd->group->edit_object, change, false,
+                                   pd->part->name,
                                    pd->part->current_state->parsed_name,
                                    pd->part->current_state->parsed_val,
                                    value);
@@ -1683,6 +1698,7 @@ _on_state_color_class_change(void *data,
    edje_edit_string_free(value);
 
    //project_changed(false);
+   history_change_add(pd->group->history, change);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
 }
 
@@ -1824,8 +1840,8 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    STATE_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
    STATE_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
 
-#define STATE_ATTR_COLOR(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
-   STATE_ATTR_COLOR_CALLBACK(SUB, VALUE, MEMBER) \
+#define STATE_ATTR_COLOR(TEXT, SUB, VALUE, MEMBER, TOOLTIP, DESCRIPTION) \
+   STATE_ATTR_COLOR_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
    STATE_ATTR_COLOR_LIST_UPDATE(SUB, VALUE, MEMBER) \
    STATE_ATTR_COLOR_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
@@ -1883,7 +1899,8 @@ STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, state, 0.0, 9999
                     1, double,
                     _("multiplier w changed from %f to %f"),
                     _("multiplier h changed from %f to %f"))
-STATE_ATTR_COLOR(_("color"), state, color, state, _("Part main color"))
+STATE_ATTR_COLOR(_("color"), state, color, state, _("Part main color"),
+                 _("color changed to [%d %d %d %d]"))
 
 STATE_ATTR_SOURCE_UPDATE(state, proxy_source, state, EDJE_PART_TYPE_SPACER, !=)
 STATE_ATTR_COMBOBOX(_("proxy source"), state, proxy_source, state,
@@ -2300,8 +2317,8 @@ ui_property_state_obj_area_unset(Evas_Object *property)
 }
 #undef pd_obj_area
 
-#define STATE_ATTR_1ENTRY(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP) \
-   STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR) \
+#define STATE_ATTR_1ENTRY(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP, DESCRIPTION) \
+   STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, DESCRIPTION) \
    STATE_ATTR_1ENTRY_UPDATE(SUB, VALUE, MEMBER) \
    STATE_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP)
 
@@ -2312,9 +2329,11 @@ ui_property_state_obj_area_unset(Evas_Object *property)
    STATE_ATTR_1SPINNER_ADD(TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
                            L_START, L_END, TOOLTIP, MULTIPLIER)
 
-STATE_ATTR_1ENTRY(_("text"), state, text, state_text, NULL, _("The dispalyed text"))
+STATE_ATTR_1ENTRY(_("text"), state, text, state_text, NULL, _("The dispalyed text"),
+                  _("text changed to %s"))
 STATE_ATTR_1ENTRY(_("font"), state, font, state_text, pd->attributes.state_text.validator,
-                  _("The text font, posible set a font style. Ex: Sans:style=italic"))
+                  _("The text font, posible set a font style. Ex: Sans:style=italic"),
+                  _("font changed to %s"))
 STATE_ATTR_1SPINNER(_("size"), state_text, size, state_text, 1, 128, 1, "%.0f", "", "pt",
                     _("The font size"), 1, int,
                     _("font size changed from %d to %d"))
@@ -2347,8 +2366,10 @@ STATE_ATTR_2CHECK(_("fit"), state_text, fit_x, fit_y, state_text, "w:", "", "h:"
                   _("Resize the text for it to fit in it's container by Y axis"),
                   _("fit_x changed to %s"),
                   _("fit_y changed to %s"))
-STATE_ATTR_COLOR(_("shadow color"), state, color2, state_text, NULL)
-STATE_ATTR_COLOR(_("outline color"), state, color3, state_text, NULL)
+STATE_ATTR_COLOR(_("shadow color"), state, color2, state_text, NULL,
+                 _("shadow color changed to [%d %d %d %d]"))
+STATE_ATTR_COLOR(_("outline color"), state, color3, state_text, NULL,
+                 _("outline color changed [%d %d %d %d]"))
 
 STATE_ATTR_SOURCE_UPDATE(state_text, source, state_text, EDJE_PART_TYPE_TEXT, ==)
 STATE_ATTR_COMBOBOX(_("source"), state_text, source, state_text,
@@ -2368,16 +2389,18 @@ _text_effect_update(Prop_Data *pd)
    Edje_Text_Effect effect;
 
    assert(pd != NULL);
+   assert(pd->change != NULL);
 
    effect = ewe_combobox_select_item_get(pd->attributes.state_text.effect)->index |
             ewe_combobox_select_item_get(pd->attributes.state_text.effect_direction)->index << 4;
-   edje_edit_part_effect_set(pd->group->edit_object, pd->part->name, effect);
+   editor_part_effect_set(pd->group->edit_object, pd->change, false, pd->part->name, effect);
 
+   history_change_add(pd->group->history, pd->change);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-   //project_changed(false);
+   pd->change = NULL;
 }
 
-inline static void
+static void
 _text_effect_contols_update(Prop_Data *pd)
 {
    assert(pd != NULL);
@@ -2425,8 +2448,16 @@ _on_text_effect_direction_changed(void *data,
                                   Evas_Object *obj __UNUSED__,
                                   void *event_info __UNUSED__)
 {
-   assert(data != NULL);
+   Prop_Data *pd = (Prop_Data *)data;
+   Ewe_Combobox_Item *item;
 
+   assert(pd != NULL);
+   assert(pd->change == NULL);
+
+   item = ewe_combobox_select_item_get(pd->attributes.state_text.effect_direction);
+   Eina_Stringshare *msg = eina_stringshare_printf(_("effect direction changed to %s"), item->title);
+   pd->change = change_add(msg);
+   eina_stringshare_del(msg);
    _text_effect_update((Prop_Data *)data);
 }
 
@@ -2436,11 +2467,17 @@ _on_text_effect_changed(void *data,
                         void *event_info __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
+   Ewe_Combobox_Item *item;
 
    assert(pd != NULL);
+   assert(pd->change == NULL);
 
    _text_effect_contols_update(pd);
    ewe_combobox_select_item_set(pd->attributes.state_text.effect_direction, 0);
+   item = ewe_combobox_select_item_get(pd->attributes.state_text.effect);
+   Eina_Stringshare *msg = eina_stringshare_printf(_("effect changed to %s"), item->title);
+   pd->change = change_add(msg);
+   eina_stringshare_del(msg);
    _text_effect_update((Prop_Data *)data);
 }
 
@@ -2501,57 +2538,39 @@ prop_part_text_effect_add(Evas_Object *parent, Prop_Data *pd)
 
 #define pd_text pd->attributes.state_text
 
-static void
-_on_state_text_ellipsis_change(void *data,
-                               Evas_Object *obj,
-                               void *event_info __UNUSED__)
-{
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   double value = elm_spinner_value_get(obj);
-   if (!edje_edit_state_text_elipsis_set(pd->group->edit_object,
-                                         pd->part->name,
-                                         pd->part->current_state->parsed_name,
-                                         pd->part->current_state->parsed_val,
-                                         value))
-     return;
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-   //project_changed(false);
-}
+COMMON_SPINNER_CALLBACK(state_text, elipsis, state_text, double, 1, STATE_ARGS,
+                        _("elipsis changed from %0.2f to %0.2f"))
 
 static void
-_on_state_text_ellipsis_toggle_change(void *data,
+_on_state_text_elipsis_toggle_change(void *data,
                                       Evas_Object *obj,
                                       void *event_info __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
-   double value;
+   Eina_Bool val;
+   Change *change;
 
    assert(pd != NULL);
 
-   if (elm_check_state_get(obj))
+   val = elm_check_state_get(obj);
+
+   if (val)
      {
-        elm_object_disabled_set(pd->attributes.state_text.ellipsis, false);
-        value = elm_spinner_value_get(pd->attributes.state_text.ellipsis);
+        elm_object_disabled_set(pd->attributes.state_text.elipsis, false);
+        change = change_add(_("elipsis turned on"));
+        editor_state_text_elipsis_set(pd->group->edit_object, change, false STATE_ARGS, 0.0);
      }
    else
      {
-        elm_object_disabled_set(pd->attributes.state_text.ellipsis, true);
-        value = -1.0;
+        elm_object_disabled_set(pd->attributes.state_text.elipsis, true);
+        change = change_add(_("elipsis turned off"));
+        editor_state_text_elipsis_set(pd->group->edit_object, change, false STATE_ARGS, -1.0);
      }
-   edje_edit_state_text_elipsis_set(pd->group->edit_object,
-                                    pd->part->name,
-                                    pd->part->current_state->parsed_name,
-                                    pd->part->current_state->parsed_val,
-                                    value);
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-   //project_changed(false);
+   history_change_add(pd->group->history, change);
 }
 
 static void
-prop_state_text_ellipsis_update(Prop_Data *pd)
+prop_state_text_elipsis_update(Prop_Data *pd)
 {
    double value;
 
@@ -2563,45 +2582,46 @@ prop_state_text_ellipsis_update(Prop_Data *pd)
                                             pd->part->current_state->parsed_val);
    if (value < 0)
      {
-        elm_check_state_set(pd->attributes.state_text.ellipsis_toggle, false);
-        elm_object_disabled_set(pd->attributes.state_text.ellipsis, true);
-        elm_spinner_value_set(pd->attributes.state_text.ellipsis, 0.0);
+        elm_check_state_set(pd->attributes.state_text.elipsis_toggle, false);
+        elm_object_disabled_set(pd->attributes.state_text.elipsis, true);
+        elm_spinner_value_set(pd->attributes.state_text.elipsis, 0.0);
      }
    else
      {
-        elm_check_state_set(pd->attributes.state_text.ellipsis_toggle, true);
-        elm_object_disabled_set(pd->attributes.state_text.ellipsis, false);
-        elm_spinner_value_set(pd->attributes.state_text.ellipsis, value);
+        elm_check_state_set(pd->attributes.state_text.elipsis_toggle, true);
+        elm_object_disabled_set(pd->attributes.state_text.elipsis, false);
+        elm_spinner_value_set(pd->attributes.state_text.elipsis, value);
      }
 }
 
 static Evas_Object *
-prop_state_text_ellipsis_add(Evas_Object *parent, Prop_Data *pd)
+prop_state_text_elipsis_add(Evas_Object *parent, Prop_Data *pd)
 {
    assert(parent != NULL);
    assert(pd != NULL);
 
-   PROPERTY_ITEM_ADD(parent, _("ellipsis"), "2swallow")
-   CHECK_ADD(item, pd->attributes.state_text.ellipsis_toggle)
-   elm_object_style_set(pd->attributes.state_text.ellipsis_toggle, "toggle");
-   elm_object_tooltip_text_set(pd->attributes.state_text.ellipsis_toggle,
-                               _("Turn on/off the text ellipsis"));
-   elm_layout_content_set(item, "swallow.content1", pd->attributes.state_text.ellipsis_toggle);
-   evas_object_smart_callback_add(pd->attributes.state_text.ellipsis_toggle, "changed",
-                                  _on_state_text_ellipsis_toggle_change, pd);
+   PROPERTY_ITEM_ADD(parent, _("elipsis"), "2swallow")
+   CHECK_ADD(item, pd->attributes.state_text.elipsis_toggle)
+   elm_object_style_set(pd->attributes.state_text.elipsis_toggle, "toggle");
+   elm_object_tooltip_text_set(pd->attributes.state_text.elipsis_toggle,
+                               _("Turn on/off the text elipsis"));
+   elm_layout_content_set(item, "swallow.content1", pd->attributes.state_text.elipsis_toggle);
+   evas_object_smart_callback_add(pd->attributes.state_text.elipsis_toggle, "changed",
+                                  _on_state_text_elipsis_toggle_change, pd);
 
-   SPINNER_ADD(item, pd->attributes.state_text.ellipsis, 0.0, 1.0, 0.1, true)
-   elm_spinner_label_format_set(pd->attributes.state_text.ellipsis, "%1.2f");
-   elm_object_tooltip_text_set(pd->attributes.state_text.ellipsis,
+   SPINNER_ADD(item, pd->attributes.state_text.elipsis, 0.0, 1.0, 0.1, true)
+   elm_spinner_label_format_set(pd->attributes.state_text.elipsis, "%1.2f");
+   elm_object_tooltip_text_set(pd->attributes.state_text.elipsis,
                                _("Cut text if biggest then part's area"
                                  "0.0 = fix the left side  1.0 = right side"));
-   elm_layout_content_set(item, "swallow.content2", pd->attributes.state_text.ellipsis);
-   evas_object_smart_callback_add(pd->attributes.state_text.ellipsis, "changed",
-                                  _on_state_text_ellipsis_change, pd);
-   evas_object_event_callback_priority_add(pd->attributes.state_text.ellipsis, EVAS_CALLBACK_MOUSE_WHEEL,
+   elm_layout_content_set(item, "swallow.content2", pd->attributes.state_text.elipsis);
+   evas_object_smart_callback_add(pd->attributes.state_text.elipsis, "spinner,drag,start", _on_state_text_elipsis_start, pd);
+   evas_object_smart_callback_add(pd->attributes.state_text.elipsis, "spinner,drag,stop", _on_state_text_elipsis_stop, pd);
+   evas_object_smart_callback_add(pd->attributes.state_text.elipsis, "changed", _on_state_text_elipsis_change, pd);
+   evas_object_event_callback_priority_add(pd->attributes.state_text.elipsis, EVAS_CALLBACK_MOUSE_WHEEL,
                                            EVAS_CALLBACK_PRIORITY_BEFORE, _on_spinner_mouse_wheel, NULL);
 
-   prop_state_text_ellipsis_update(pd);
+   prop_state_text_elipsis_update(pd);
    return item;
 }
 
@@ -2642,7 +2662,7 @@ ui_property_state_text_set(Evas_Object *property)
          elm_box_pack_end(box, item);
          item = prop_state_text_text_source_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_text_ellipsis_add(box, pd);
+         item = prop_state_text_elipsis_add(box, pd);
          elm_box_pack_end(box, item);
          item = prop_state_text_fit_x_fit_y_add(box, pd);
          elm_box_pack_end(box, item);
@@ -2669,7 +2689,7 @@ ui_property_state_text_set(Evas_Object *property)
         STATE_ATTR_2CHECK_UPDATE(state_text, max_x, max_y, state_text)
         prop_state_text_source_update(pd);
         prop_state_text_text_source_update(pd);
-        prop_state_text_ellipsis_update(pd);
+        prop_state_text_elipsis_update(pd);
         STATE_ATTR_2CHECK_UPDATE(state_text, fit_x, fit_y, state_text)
         prop_state_color2_update(pd);
         prop_state_color3_update(pd);
@@ -2900,7 +2920,6 @@ _on_image_editor_done(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *event_info)
 {
-   Evas_Object * border_entry;
    Prop_Data *pd = (Prop_Data *)data;
    const char *value;
    const char *selected = (const char *)event_info;
@@ -2908,21 +2927,12 @@ _on_image_editor_done(void *data,
    assert(pd != NULL);
 
    if (!selected) return;
-   border_entry = elm_object_part_content_get(pd_image.border, "elm.swallow.content");
    value = elm_entry_entry_get(pd->attributes.state_image.image);
 
    if (strcmp(value, selected) == 0) return;
    elm_entry_entry_set(pd->attributes.state_image.image, selected);
-   edje_edit_state_image_set(pd->group->edit_object, pd->part->name,
-                             pd->part->current_state->parsed_name,
-                             pd->part->current_state->parsed_val, selected);
-TODO("uncomment after changing save API")
-//   pm_save_to_dev(ap.project, pd->wm_style, false);
    evas_object_smart_callback_call(pd->attributes.state_image.image, "changed,user", NULL);
-   elm_entry_entry_set(border_entry, NULL);
-   evas_object_smart_callback_call(border_entry, "changed,user", NULL);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-   //project_changed(false);
 }
 
 static void
@@ -3181,71 +3191,127 @@ prop_item_state_image_tween_update(Evas_Object *tween, Prop_Data *pd)
    edje_edit_string_list_free(images_list);
 }
 
-static void
-_on_state_image_border_change(void *data,
-                              Evas_Object *obj,
-                              void *ei __UNUSED__)
+#define SPINNER_SET(SUB, VALUE, SPINNER, PART) \
+   SPINNER_ADD(item, SPINNER, 0.0, 999.0, 1.0, true) \
+   evas_object_smart_callback_add(SPINNER, "changed", \
+                                  _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(SPINNER, "spinner,drag,start", \
+                                  _on_##SUB##_##VALUE##_start, pd); \
+   evas_object_smart_callback_add(SPINNER, "spinner,drag,stop", \
+                                  _on_##SUB##_##VALUE##_stop, pd); \
+   evas_object_event_callback_priority_add(SPINNER, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                        EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                        _on_spinner_mouse_wheel, NULL); \
+   elm_layout_content_set(item, PART, SPINNER);
+
+#define ATTR_4SPINNERS(TEXT, SUB, VALUE, MEMBER, TOOLTIP, ARGS, DESCRIPTION) \
+static void \
+prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
 { \
-   unsigned int tok_elm;
-   char **c = NULL;
-   int lb = 0, rb = 0, tb = 0, bb = 0;
-   int old_lb, old_rb, old_tb, old_bb;
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   const char *value = elm_entry_entry_get(obj);
-   edje_edit_state_image_border_get(pd->group->edit_object, pd->part->name,
-                                    pd->part->current_state->parsed_name,
-                                    pd->part->current_state->parsed_val,
-                                    &old_lb, &old_rb, &old_tb, &old_bb);
-   if (elm_validator_regexp_status_get(pd->attributes.state_image.validator) != ELM_REG_NOERROR) return;
-   if (!value || !strcmp(value, ""))
-     lb = rb = tb = bb = 0;
-   else
-     {
-        c = eina_str_split_full (value, " ", 4, &tok_elm);
-        if (tok_elm < 4)
-          {
-             free(c[0]);
-             free(c);
-             return;
-          }
-        lb = atoi(c[0]); rb = atoi(c[1]); tb = atoi(c[2]); bb = atoi(c[3]);
-        free(c[0]);
-        free(c);
-     }
-   edje_edit_state_image_border_set(pd->group->edit_object, pd->part->name,
-                                    pd->part->current_state->parsed_name, pd->part->current_state->parsed_val,
-                                    lb, rb, tb, bb);
-
-   //project_changed(false);
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
+   assert(pd != NULL); \
+   int l = 0, r = 0, t = 0, b = 0; \
+   edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS ,&l, &r, &t, &b); \
+   elm_spinner_value_set(pd->attributes.MEMBER.VALUE##_l, l); \
+   elm_spinner_value_set(pd->attributes.MEMBER.VALUE##_r, r); \
+   elm_spinner_value_set(pd->attributes.MEMBER.VALUE##_t, t); \
+   elm_spinner_value_set(pd->attributes.MEMBER.VALUE##_b, b); \
+} \
+static void \
+_on_##SUB##_##VALUE##_start(void *data, \
+                            Evas_Object *obj __UNUSED__, \
+                            void *event_info __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   assert(pd->change == NULL); \
+   pd->change = change_add(NULL); \
+   edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS, \
+                                   &pd->old_int_val, &pd->old_int_val2, \
+                                   &pd->old_int_val3, &pd->old_int_val4); \
+} \
+static void \
+_on_##SUB##_##VALUE##_stop(void *data, \
+                           Evas_Object *obj __UNUSED__, \
+                           void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Eina_Stringshare *msg; \
+   assert(pd->change != NULL); \
+   int new_val, new_val2, new_val3, new_val4; \
+   edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS, \
+                                   &new_val, &new_val2, &new_val3, &new_val4); \
+   if ((new_val != pd->old_int_val) || \
+       (new_val2 != pd->old_int_val2) || \
+       (new_val3 != pd->old_int_val3) || \
+       (new_val4 != pd->old_int_val4)) \
+     { \
+        msg = eina_stringshare_printf(DESCRIPTION, new_val, new_val2, new_val3, new_val4); \
+        change_description_set(pd->change, msg); \
+        eina_stringshare_del(msg); \
+        history_change_add(pd->group->history, pd->change); \
+     } \
+   else \
+     change_free(pd->change); \
+   pd->change = NULL; \
+} \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj __UNUSED__, \
+                             void *event_info __UNUSED__) \
+{ \
+   int l, r, t, b; \
+   Prop_Data *pd = (Prop_Data *)data; \
+   assert(pd != NULL); \
+   l = (int)elm_spinner_value_get(pd->attributes.MEMBER.VALUE##_l); \
+   r = (int)elm_spinner_value_get(pd->attributes.MEMBER.VALUE##_r); \
+   t = (int)elm_spinner_value_get(pd->attributes.MEMBER.VALUE##_t); \
+   b = (int)elm_spinner_value_get(pd->attributes.MEMBER.VALUE##_b); \
+   if (pd->change) \
+     { \
+        if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, pd->change, true \
+                                          ARGS, l, r, t, b)) \
+          { \
+             ERR("editor_"#SUB"_"#VALUE"_set failed"); \
+             abort(); \
+          } \
+     } \
+   else \
+     { \
+        _on_##SUB##_##VALUE##_start(pd, obj, event_info); \
+        if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, pd->change, true \
+                                          ARGS, l, r, t, b)) \
+          { \
+             ERR("editor_"#SUB"_"#VALUE"_set failed"); \
+             abort(); \
+          } \
+        _on_##SUB##_##VALUE##_stop(pd, obj, event_info); \
+     } \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
+} \
+static void \
+prop_##SUB##_##VALUE##_add(Evas_Object *box, Prop_Data *pd) \
+{ \
+   Evas_Object *item; \
+   assert(box != NULL); \
+   assert(pd != NULL); \
+   LAYOUT_PROP_ADD(box, TEXT, "property", "2swallow"); \
+   elm_object_part_text_set(item, "label.swallow1.start", "left:"); \
+   SPINNER_SET(SUB, VALUE, pd->attributes.MEMBER.VALUE##_l, "swallow.content1") \
+   elm_object_part_text_set(item, "label.swallow2.start", "right:"); \
+   SPINNER_SET(SUB, VALUE, pd->attributes.MEMBER.VALUE##_r, "swallow.content2") \
+   elm_box_pack_end(box, item); \
+   LAYOUT_PROP_ADD(box, NULL, "property", "2swallow"); \
+   elm_object_part_text_set(item, "label.swallow1.start", "top:"); \
+   SPINNER_SET(SUB, VALUE, pd->attributes.MEMBER.VALUE##_t, "swallow.content1") \
+   elm_object_part_text_set(item, "label.swallow2.start", "bottom:"); \
+   SPINNER_SET(SUB, VALUE, pd->attributes.MEMBER.VALUE##_b, "swallow.content2") \
+   elm_box_pack_end(box, item); \
+   prop_##SUB##_##VALUE##_update(pd); \
 }
+ATTR_4SPINNERS(_("border"), state_image, border, state_image, NULL, STATE_ARGS,
+               _("border changed to [%d %d %d %d]"))
 
-static void
-prop_state_image_border_update(Prop_Data *pd)
-{
-   int l, r, t, b;
-
-   assert(pd != NULL);
-
-   char buff[strlen("255 255 255 255") + 1];
-   edje_edit_state_image_border_get(pd->group->edit_object, pd->part->name,
-                                    pd->part->current_state->parsed_name, pd->part->current_state->parsed_val,
-                                    &l, &r, &t, &b);
-   if (!l && !r && !t && !b)
-     elm_entry_entry_set(pd->attributes.state_image.border, NULL);
-   else
-     {
-        snprintf(buff, strlen("255 255 255 255") + 1, "%i %i %i %i", l, r, t, b);
-        elm_entry_entry_set(pd->attributes.state_image.border, buff);
-     }
-}
-
-STATE_ATTR_1ENTRY(_("image"), state, image, state_image, NULL, NULL)
-STATE_ATTR_1ENTRY_ADD(_("border"), state_image, border, state_image,
-                      pd->attributes.state_image.validator, _("Image's border values"))
+STATE_ATTR_1ENTRY(_("image"), state, image, state_image, NULL, NULL,
+                  _("image changed to %s"))
 STATE_ATTR_1COMBOBOX_LIST(_("border fill"), state_image, border_fill, state_image,\
                           edje_middle_type, NULL, unsigned char,
                           _("border fill changed to %s"))
@@ -3273,8 +3339,7 @@ ui_property_state_image_set(Evas_Object *property)
 
         item = prop_state_image_add(box, pd, _on_state_image_choose);
         elm_box_pack_end(box, item);
-        item = prop_state_image_border_add(box, pd, NULL);
-        elm_box_pack_end(box, item);
+        prop_state_image_border_add(box, pd);
         item = prop_state_image_border_fill_add(box, pd);
         elm_box_pack_end(box, item);
 
@@ -3446,79 +3511,8 @@ ui_property_state_fill_unset(Evas_Object *property)
    evas_object_hide(pd_fill.frame);
 }
 #undef pd_fill
-
-
-static void
-prop_part_item_padding_update(Prop_Data *pd)
-{
-   assert(pd != NULL);
-
-   int l = 0, r = 0, t = 0, b = 0;
-
-   edje_edit_part_item_padding_get(pd->group->edit_object, pd->part->name,
-                                   pd->item_name, &l, &r, &t, &b);
-   elm_spinner_value_set(pd->attributes.part_item.padding_l, l);
-   elm_spinner_value_set(pd->attributes.part_item.padding_r, r);
-   elm_spinner_value_set(pd->attributes.part_item.padding_t, t);
-   elm_spinner_value_set(pd->attributes.part_item.padding_b, b);
-}
-
-static void
-_on_part_item_padding_change(void *data,
-                             Evas_Object *obj __UNUSED__,
-                             void *event_info __UNUSED__)
-{
-   int l, r, t, b;
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   l = (int)elm_spinner_value_get(pd->attributes.part_item.padding_l);
-   r = (int)elm_spinner_value_get(pd->attributes.part_item.padding_r);
-   t = (int)elm_spinner_value_get(pd->attributes.part_item.padding_t);
-   b = (int)elm_spinner_value_get(pd->attributes.part_item.padding_b);
-   if (!edje_edit_part_item_padding_set(pd->group->edit_object, pd->part->name,
-                                        pd->item_name, l, r, t, b))
-     return;
-   //project_changed(false);
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-}
-
-static void
-prop_part_item_padding_add(Evas_Object *box, Prop_Data *pd)
-{
-   Evas_Object *item;
-
-   assert(box != NULL);
-   assert(pd != NULL);
-
-   #define SPINNER_SET(SPINNER, PART) \
-      SPINNER_ADD(item, SPINNER, 0.0, 999.0, 1.0, true) \
-      evas_object_smart_callback_add(SPINNER, "changed", \
-                                     _on_part_item_padding_change, pd); \
-      evas_object_event_callback_priority_add(SPINNER, EVAS_CALLBACK_MOUSE_WHEEL, \
-                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
-                                           _on_spinner_mouse_wheel, NULL); \
-      elm_layout_content_set(item, PART, SPINNER);
-
-   LAYOUT_PROP_ADD(box, _("padding"), "property", "2swallow");
-   elm_object_part_text_set(item, "label.swallow1.start", "left:");
-   SPINNER_SET(pd->attributes.part_item.padding_l, "swallow.content1")
-   elm_object_part_text_set(item, "label.swallow2.start", "right:");
-   SPINNER_SET(pd->attributes.part_item.padding_r, "swallow.content2")
-   elm_box_pack_end(box, item);
-
-   LAYOUT_PROP_ADD(box, NULL, "property", "2swallow");
-   elm_object_part_text_set(item, "label.swallow1.start", "top:");
-   SPINNER_SET(pd->attributes.part_item.padding_t, "swallow.content1")
-   elm_object_part_text_set(item, "label.swallow2.start", "bottom:");
-   SPINNER_SET(pd->attributes.part_item.padding_b, "swallow.content2")
-   elm_box_pack_end(box, item);
-
-   prop_part_item_padding_update(pd);
-
-   #undef SPINNER_SET
-}
+ATTR_4SPINNERS(_("padding"), part_item, padding, part_item, NULL, PART_ITEM_ARGS,
+               _("item padding changed to [%d %d %d %d]"))
 
 #define pd_item pd->attributes.part_item
 
@@ -3550,8 +3544,8 @@ TODO("do not use collection lists from edje_edit directly")
    edje_mmap_collection_list_free(collections);
 }
 
-#define PART_ITEM_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
-   PART_ITEM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
+#define PART_ITEM_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP, DESCRIPTION) \
+   PART_ITEM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
    PART_ITEM_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 #define PART_ITEM_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
@@ -3563,11 +3557,12 @@ TODO("do not use collection lists from edje_edit directly")
                                MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
                                TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
-#define PART_ITEM_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, TYPE, LIST, TOOLTIP) \
-   PART_ITEM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
+#define PART_ITEM_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, TYPE, LIST, TOOLTIP, DESCRIPTION) \
+   PART_ITEM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
    PART_ITEM_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
 
-PART_ITEM_ATTR_1COMBOBOX(_("source"), part_item, source, part_item, _("Sets the group this object will be made from."))
+PART_ITEM_ATTR_1COMBOBOX(_("source"), part_item, source, part_item, _("Sets the group this object will be made from."),
+                         _("changed source to %s"))
 PART_ITEM_ATTR_2SPINNER(_("min"), part_item, min_w, min_h, part_item,
                     0.0, 999.0, 1.0, NULL, "x:", "%", "y:", "%",
                     _("Set the item minimum size hint width in pixels"), _("Set the item minimum size hint height in pixels"),
@@ -3611,8 +3606,9 @@ PART_ITEM_ATTR_2SPINNER(_("spread"), part_item, spread_w, spread_h, part_item,
                     1, int,
                     _("part item spread width changed from %d to %d"),
                     _("part item spread height changed from %d to %d"))
-PART_ITEM_ATTR_1COMBOBOX_LIST(_("aspect mode"), part_item, aspect_mode, part_item, int, edje_item_aspect_pref,
-                              _("Sets the aspect control hints for this object."))
+PART_ITEM_ATTR_1COMBOBOX_LIST(_("aspect mode"), part_item, aspect_mode, part_item, Edje_Aspect_Control, edje_item_aspect_pref,
+                              _("Sets the aspect control hints for this object."),
+                              _("aspect mode changed to %s"))
 PART_ITEM_ATTR_2SPINNER(_("span_col"), part_item, span_col, span_row, part_item,
                         1.0, 999.0, 1.0, NULL, "column:", "", "row:", "",
                         _("Sets how many columns this item will use"), _("Sets how many rows this item will use"),

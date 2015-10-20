@@ -61,17 +61,52 @@ struct _Colorclasses_Manager
 
 /* BUTTON ADD AND REMOVE FUNCTIONS */
 static void
-_on_add_popup_btn_add(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      void *ei __UNUSED__)
+_validation(void *data,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
 {
+  Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
+
+  if (ELM_REG_NOERROR != elm_validator_regexp_status_get(edit->name_validator))
+    popup_buttons_disabled_set(BTN_OK, true);
+  else
+    popup_buttons_disabled_set(BTN_OK, false);
+}
+
+static void
+_on_button_add_clicked_cb(void *data __UNUSED__,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info __UNUSED__)
+{
+   Evas_Object *box, *item;
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
-
-   assert(edit != NULL);
-
    Colorclass_Item *it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
    Colorclass_Resource *res;
+   Popup_Button btn_res;
+
+   assert(edit != NULL);
+
+   box = elm_box_add(ap.win);
+   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+   edit->name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
+   LAYOUT_PROP_ADD(box, _("Color class name: "), "property", "1swallow")
+   ENTRY_ADD(box, edit->entry, true);
+   eo_do(edit->entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, edit->name_validator));
+   evas_object_smart_callback_add(edit->entry, "changed", _validation, edit);
+   elm_object_part_text_set(edit->entry, "guide", _("Type new color class name here"));
+   elm_object_part_content_set(item, "elm.swallow.content", edit->entry);
+
+   elm_box_pack_end(box, item);
+   elm_box_pack_end(box, edit->entry);
+
+   btn_res = popup_want_action(_("Create a new layout"), NULL, box,
+                               edit->entry, BTN_OK|BTN_CANCEL,
+                               NULL, NULL);
+
+   if (BTN_CANCEL == btn_res) goto end;
 
    it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
    it->name = elm_entry_entry_get(edit->entry);
@@ -81,20 +116,10 @@ _on_add_popup_btn_add(void *data,
    ap.project->colorclasses = eina_list_sorted_insert(ap.project->colorclasses,
                                                       (Eina_Compare_Cb) resource_cmp,
                                                       res);
-
-   Elm_Object_Item *start_from = elm_genlist_first_item_get(edit->genlist);
-   if (elm_genlist_search_by_text_item_get(edit->genlist, start_from, "elm.text",
-                                           it->name, 0))
-     {
-        NOTIFY_WARNING(_("Color class name must be unique!"));
-        free(it);
-        return;
-     }
-
    edje_edit_color_class_add(ap.project->global_object, eina_stringshare_add(it->name));
 
    glit_ccl = elm_genlist_item_append(edit->genlist, _itc_ccl, it, NULL,
-                                    ELM_GENLIST_ITEM_NONE, NULL, NULL);
+                                      ELM_GENLIST_ITEM_NONE, NULL, NULL);
    elm_genlist_item_selected_set(glit_ccl, EINA_TRUE);
 
    evas_object_del(edit->popup);
@@ -103,79 +128,9 @@ _on_add_popup_btn_add(void *data,
    editor_save(ap.project->global_object);
    TODO("Remove this line once edje_edit_colorclass API would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
-}
-static void
-_on_add_popup_btn_cancel(void *data,
-                         Evas_Object *obj __UNUSED__,
-                         void *ei __UNUSED__)
-{
-   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
 
-   assert(edit != NULL);
-
-   evas_object_del(edit->popup);
-   elm_validator_regexp_free(edit->name_validator);
-   edit->name_validator = NULL;
-
-   edit->popup = NULL;
-}
-
-static void
-_validation(void *data,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
-{
-   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
-
-   assert(edit != NULL);
-
-   if (elm_validator_regexp_status_get(edit->name_validator) != ELM_REG_NOERROR)
-     elm_object_disabled_set(edit->btn_add, true);
-   else
-     elm_object_disabled_set(edit->btn_add, false);
-}
-
-static void
-_on_button_add_clicked_cb(void *data __UNUSED__,
-                          Evas_Object *obj __UNUSED__,
-                          void *event_info __UNUSED__)
-{
-   Evas_Object *box, *bt_no, *item;
-   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
-
-   assert(edit != NULL);
-   assert(edit->name_validator == NULL);
-
-   edit->popup = elm_popup_add(ap.win);
-   elm_object_part_text_set(edit->popup, "title,text", _("Add color class:"));
-
-   edit->name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
-   box = elm_box_add(edit->popup);
-   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
-
-   LAYOUT_PROP_ADD(edit->popup, _("Color class name: "), "property", "1swallow")
-   ENTRY_ADD(item, edit->entry, true);
-   eo_do(edit->entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, edit->name_validator));
-   evas_object_smart_callback_add(edit->entry, "changed", _validation, edit);
-   elm_object_part_text_set(edit->entry, "guide", _("Type new color class name here"));
-   elm_object_part_content_set(item, "elm.swallow.content", edit->entry);
-
-   elm_box_pack_end(box, item);
-   elm_object_content_set(edit->popup, box);
-   evas_object_show(box);
-
-   BUTTON_ADD(edit->popup, edit->btn_add, _("Ok"));
-   evas_object_smart_callback_add(edit->btn_add, "clicked", _on_add_popup_btn_add, edit);
-   elm_object_part_content_set(edit->popup, "button1", edit->btn_add);
-
-   BUTTON_ADD(edit->popup, bt_no, _("Cancel"));
-   evas_object_smart_callback_add(bt_no, "clicked", _on_add_popup_btn_cancel,
-                                  edit);
-   elm_object_part_content_set(edit->popup, "button2", bt_no);
-
-   evas_object_show(edit->popup);
-   elm_object_focus_set(edit->entry, true);
+end:
+   evas_object_del(box);
 }
 
 static void

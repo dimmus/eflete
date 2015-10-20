@@ -536,7 +536,13 @@ _elipsis(void *data __UNUSED__,
          Evas_Object *obj __UNUSED__,
          void *event_info __UNUSED__)
 {
-   popup_fileselector_folder_helper(tab_new.path, elm_entry_entry_get(tab_new.path));
+   popup_fileselector_folder_helper(NULL,
+                                    tab_new.path,
+                                    elm_entry_entry_get(tab_new.path),
+                                    entry_path_set,
+                                    tab_new.path,
+                                    false,
+                                    false);
 }
 
 Evas_Object *

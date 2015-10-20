@@ -478,17 +478,20 @@ static void
 _folder_del(const char *prefix)
 {
    Eina_List *folders = NULL, *groups = NULL;
-   Eina_Stringshare *str;
+   Eina_Stringshare *tmp;
    Group *group;
 
    _tree_items_get(prefix, &folders, &groups);
-   EINA_LIST_FREE(folders, str)
+   EINA_LIST_FREE(folders, tmp)
      {
-       _folder_del(str);
+       _folder_del(tmp);
      }
    EINA_LIST_FREE(groups, group)
      {
+       tmp = eina_stringshare_add(group->name);
        gm_group_del(ap.project, group);
+       editor_group_del(ap.project->global_object, tmp);
+       eina_stringshare_del(tmp);
      }
 }
 
@@ -546,10 +549,16 @@ _btn_del_group_cb(void *data __UNUSED__,
    Popup_Button btn_res;
    Group *group;
    Elm_Object_Item *glit;
+   Eina_Stringshare *tmp;
 
    glit = elm_genlist_selected_item_get(navigator.genlist);
    if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
      {
+        btn_res = popup_want_action(_("Confirm delete layouts"),
+                                    _("Are you sure you want to delete the selected layouts?<br>"
+                                      "All aliases will be delete too."),
+                                    NULL, NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
+        if (BTN_CANCEL == btn_res) return;
         _folder_del(elm_object_item_data_get(glit));
         return;
      }
@@ -571,8 +580,10 @@ _btn_del_group_cb(void *data __UNUSED__,
                                       "All aliases will be delete too."),
                                     NULL, NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
         if (BTN_CANCEL == btn_res) return;
-        editor_group_del(ap.project->global_object, group->name);
+        tmp = eina_stringshare_add(group->name);
         gm_group_del(ap.project, group);
+        editor_group_del(ap.project->global_object, tmp);
+        eina_stringshare_del(tmp);
      }
 }
 

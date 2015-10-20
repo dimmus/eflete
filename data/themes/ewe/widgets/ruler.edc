@@ -6,7 +6,7 @@ group { name: "ewe/ruler/horizontal_background/default";
       part { name: "background";
          type: RECT;
          description { state: "default" 0.0;
-            color: RULER_BACKGROUND_COLOR;
+            color: 0 0 0 0;
          }
       }
    }

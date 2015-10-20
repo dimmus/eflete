@@ -21,82 +21,161 @@
 #include "tabs.h"
 #include "navigator.h"
 
-static Eina_Bool want_close;
-static Evas_Object *popup;
-
-static void
-_cancel_cb(void *data __UNUSED__,
-           Evas_Object *obj __UNUSED__,
-           void *ei __UNUSED__)
+static Eina_Bool
+_progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
 {
-   evas_object_hide(popup);
-   want_close = false;
-   ecore_main_loop_quit();
+   elm_object_part_text_set(ap.splash, "label.info", progress_string);
+
+   return true;
 }
 
 static void
-_save_cb(void *data __UNUSED__,
-         Evas_Object *obj __UNUSED__,
-         void *ei __UNUSED__)
+_progress_end(void *data __UNUSED__, PM_Project_Result result)
 {
-   evas_object_hide(popup);
-   want_close = true;
-   project_save();
-   ecore_main_loop_quit();
+
+   switch (result)
+     {
+      case PM_PROJECT_ERROR:
+        {
+           NOTIFY_INFO(3, _("Error: project not saved."));
+           break;
+        }
+      case PM_PROJECT_CANCEL:
+        {
+           NOTIFY_INFO(3, _("Saving canceled."));
+           break;
+        }
+      case PM_PROJECT_SUCCESS:
+        {
+           ap.project->changed = false;
+           break;
+        }
+      default:
+        {
+           ERR("Wrong result");
+           abort();
+        }
+     }
+
+#ifdef HAVE_ENVENTOR
+   if (ap.enventor_mode)
+     {
+        wm_widgets_list_objects_load(ap.project->widgets,
+                                     evas_object_evas_get(ap.win),
+                                     ap.project->mmap_file);
+        wm_layouts_list_objects_load(ap.project->layouts,
+                                     evas_object_evas_get(ap.win),
+                                     ap.project->mmap_file);
+        wm_styles_build_alias(ap.project->widgets,
+                              ap.project->layouts);
+        enventor_object_focus_set(ap.enventor, true);
+        //pm_save_to_dev(ap.project, ap.project->current_style, true);
+     }
+#endif /* HAVE_ENVENTOR */
+
+   splash_del(ap.splash);
+   ap.splash = NULL;
 }
 
-static void
-_discard_cb(void *data __UNUSED__,
-            Evas_Object *obj __UNUSED__,
-            void *ei __UNUSED__)
+static Eina_Bool
+_setup_save_splash(void *data, Splash_Status status __UNUSED__)
 {
-   evas_object_hide(popup);
-   want_close = true;
-   ecore_main_loop_quit();
+
+#ifdef HAVE_ENVENTOR
+   if (ap.enventor_mode)
+     {
+        enventor_object_file_version_update(ap.enventor, ap.project, "110");
+
+        pm_project_enventor_save(ap.project,
+                                 _progress_print,
+                                 _progress_end,
+                                 data);
+        pm_save_to_dev(ap.project, ap.project->current_style, true);
+     }
+   else
+     {
+#endif /* HAVE_ENVENTOR */
+        pm_project_save(ap.project,
+                        _progress_print,
+                        _progress_end,
+                        data);
+#ifdef HAVE_ENVENTOR
+     }
+#endif /* HAVE_ENVENTOR */
+
+   return true;
 }
 
-static void
-_popup_want_save(void)
+static Eina_Bool
+_teardown_save_splash(void *data __UNUSED__, Splash_Status status)
 {
-   Evas_Object *btn, *label;
-   Eina_Stringshare *title;
 
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+   if (status == SPLASH_SUCCESS)
+     STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
 
-   title = eina_stringshare_printf(_("Close project %s"), ap.project->name);
-   popup = elm_popup_add(ap.win_layout);
-   elm_object_part_text_set(popup, "title,text", title);
+   ap.project->changed = false;
 
-   BUTTON_ADD(popup, btn, _("Save"));
-   evas_object_smart_callback_add(btn, "clicked", _save_cb, NULL);
-   elm_object_part_content_set(popup, "button1", btn);
-   BUTTON_ADD(popup, btn, _("Don't save"));
-   evas_object_smart_callback_add(btn, "clicked", _discard_cb, NULL);
-   elm_object_part_content_set(popup, "button2", btn);
-   BUTTON_ADD(popup, btn, _("Cancel"));
-   evas_object_smart_callback_add(btn, "clicked", _cancel_cb, NULL);
-   elm_object_part_content_set(popup, "button3", btn);
-   LABEL_ADD(popup, label, _("Do you want to save changes?"));
-   elm_object_content_set(popup, label);
+   TODO("Check if this recalc is necessary");
+   if (ap.project->current_style)
+     workspace_edit_object_recalc(ap.workspace);
+   pm_project_thread_free();
 
-   evas_object_show(popup);
-   ecore_main_loop_begin();
-
-   evas_object_del(popup);
-   popup = NULL;
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
+   eflete_main_loop_quit();
+   return true;
 }
+
+void
+project_save(void)
+{
+   assert(ap.project != NULL);
+
+#ifdef HAVE_ENVENTOR
+   if (!ap.enventor_mode)
+#endif /* HAVE_ENVENTOR */
+     if (!ap.project->changed) return;
+   if (ap.splash) return;
+
+   ap.splash = splash_add(ap.win, _setup_save_splash, _teardown_save_splash, NULL, NULL);
+   evas_object_focus_set(ap.splash, true);
+   evas_object_show(ap.splash);
+
+#ifdef HAVE_ENVENTOR
+   if (!ap.enventor_mode)
+#endif /* HAVE_ENVENTOR */
+     ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, true);
+     eflete_main_loop_begin();
+}
+
 
 Eina_Bool
 project_close(void)
 {
+   Popup_Button btn_res;
+   Eina_Stringshare *title;
+
    assert(ap.project != NULL);
 
+   title = eina_stringshare_printf(_("Close project %s"), ap.project->name);
    if (ap.project->changed)
      {
-        _popup_want_save();
-        if (!want_close) return false;
+        btn_res = popup_want_action(title, _("Do you want to save changes?"), NULL,
+                                    NULL, BTN_OK|BTN_DONT_SAVE|BTN_CANCEL,
+                                    NULL, NULL);
+        switch (btn_res)
+          {
+           case BTN_OK:
+              project_save();
+              break;
+           case BTN_DONT_SAVE:
+              break;
+           case BTN_CANCEL:
+              return false;
+           default:
+              ERR("Popup return wrong value. Go to fix it!");
+              abort(); /* it's wrong value need to fix popup code or popup call */
+          }
      }
+   eina_stringshare_del(title);
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
@@ -105,7 +184,6 @@ project_close(void)
    //ui_property_style_unset(Evas_Object *property);
    //ui_signal_list_data_unset(Evas_Object *object);
    //history_clear(History *history);
-   tabs_menu_tab_open(TAB_HOME_OPEN_PROJECT);
 
    pm_project_close(ap.project);
    ap.project = NULL;

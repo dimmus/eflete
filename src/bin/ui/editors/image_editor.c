@@ -81,10 +81,6 @@ struct _Image_Editor
       Evas_Object *comp;
       Evas_Object *quality;
    } image_data_fields;
-   struct {
-      Elm_Object_Item *included;
-      Elm_Object_Item *linked;
-   } group_items;
 };
 
 static Elm_Gengrid_Item_Class *gic = NULL;
@@ -551,7 +547,6 @@ _image_editor_gengrid_item_data_create(Evas_Object *edje_edit_obj,
 static void
 _fs_del(void *data)
 {
-   Elm_Object_Item *it;
    Image_Editor *edit = (Image_Editor *)data;
 
    assert(edit != NULL);
@@ -559,8 +554,6 @@ _fs_del(void *data)
 
    evas_object_del(edit->fs_win);
    edit->fs_win = NULL;
-   it = elm_gengrid_item_prev_get(edit->group_items.linked);
-   elm_gengrid_item_selected_set(it, true);
 }
 
 static void
@@ -620,9 +613,8 @@ _on_image_done(void *data,
         it = (Item *)mem_malloc(sizeof(Item));
         it->image_name = eina_stringshare_add(file_name);
         it->id = edje_edit_image_id_get(ap.project->global_object, it->image_name);
-        item = elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
-                                              img_edit->group_items.linked,
-                                              _grid_sel, img_edit);
+        item = elm_gengrid_item_append(img_edit->gengrid, gic, it, _grid_sel, img_edit);
+
         it->source = res->source;
         elm_gengrid_item_selected_set(item, true);
      }
@@ -907,31 +899,6 @@ _search_next_gengrid_item_cb(void *data,
                         start_from);
 }
 
-static void
-_image_editor_gengrid_group_items_add(Image_Editor *img_edit)
-{
-   assert(img_edit != NULL);
-
-   Elm_Gengrid_Item_Class *ggic = elm_gengrid_item_class_new();
-
-   ggic->item_style = "group_index";
-   ggic->func.text_get = _grid_group_item_label_get;
-   ggic->func.content_get = NULL;
-   ggic->func.state_get = NULL;
-   ggic->func.del = _grid_group_item_del;
-
-   img_edit->group_items.included =
-      elm_gengrid_item_append(img_edit->gengrid, ggic,
-      eina_stringshare_add(_("<b>Include</b>")), NULL, NULL);
-   img_edit->group_items.linked =
-      elm_gengrid_item_append(img_edit->gengrid, ggic,
-      eina_stringshare_add(_("<b>Linked</b>")), NULL, NULL);
-
-   TODO("Add View group with images that are not included to the edj-file yet.")
-
-   elm_gengrid_item_class_free(ggic);
-}
-
 static Evas_Object *
 _image_info_box_create(Image_Editor *img_edit)
 {
@@ -1104,7 +1071,6 @@ _image_editor_init(Image_Editor *img_edit)
 
    assert(img_edit != NULL);
 
-   _image_editor_gengrid_group_items_add(img_edit);
    images = ap.project->images;
 
    if (images)
@@ -1119,14 +1085,8 @@ _image_editor_init(Image_Editor *img_edit)
                 }
               it = _image_editor_gengrid_item_data_create(ap.project->global_object,
                                                           res);
-              if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
-                elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
-                                        img_edit->group_items.included,
-                                        _grid_sel, img_edit);
-              else
-                elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
-                                               img_edit->group_items.linked,
-                                               _grid_sel, img_edit);
+
+              elm_gengrid_item_append(img_edit->gengrid, gic, it, _grid_sel, img_edit);
            }
          elm_gengrid_item_bring_in(elm_gengrid_first_item_get(img_edit->gengrid),
                                    ELM_GENGRID_ITEM_SCROLLTO_TOP);

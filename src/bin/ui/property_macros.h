@@ -480,7 +480,11 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
         evas_object_show(btn); \
      } \
    else \
-     evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
+     { \
+       evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
+       evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "activated", _on_##SUB##_##VALUE##_activated, pd); \
+       evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "unfocused", _on_##SUB##_##VALUE##_activated, pd); \
+     } \
    if (VALIDATOR) \
       eo_do(pd->attributes.MEMBER.VALUE, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, VALIDATOR)); \
    if (TOOLTIP) elm_object_tooltip_text_set(pd->attributes.MEMBER.VALUE, TOOLTIP); \
@@ -506,7 +510,8 @@ prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
    const char *value; \
    value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
    char *text = elm_entry_utf8_to_markup(value); \
-   elm_entry_entry_set(pd->attributes.MEMBER.VALUE, text); \
+   if (strcmp(text, elm_entry_entry_get(pd->attributes.MEMBER.VALUE))) \
+     elm_entry_entry_set(pd->attributes.MEMBER.VALUE, text); \
    edje_edit_string_free(value); \
    free(text); \
 }
@@ -521,7 +526,7 @@ prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, ARGS) \
+#define COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, ARGS, DESCRIPTION) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
                              Evas_Object *obj, \
@@ -530,13 +535,31 @@ _on_##SUB##_##VALUE##_change(void *data, \
    Prop_Data *pd = (Prop_Data *)data; \
    if (VALIDATOR && (elm_validator_regexp_status_get(VALIDATOR)) != ELM_REG_NOERROR) \
      return; \
+   if (!pd->change) pd->change = change_add(NULL); \
    const char *text = elm_entry_entry_get(obj); \
    char *value = elm_entry_markup_to_utf8(text); \
-   edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, value); \
-   elm_object_focus_set(obj, true); \
+   editor_##SUB##_##VALUE##_set(pd->group->edit_object, pd->change, true ARGS, value); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-   /*project_changed(false);*/ \
    free(value); \
+} \
+static void \
+_on_##SUB##_##VALUE##_activated(void *data, \
+                                Evas_Object *obj __UNUSED__, \
+                                void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   if (VALIDATOR && (elm_validator_regexp_status_get(VALIDATOR)) != ELM_REG_NOERROR) \
+     return; \
+   if (!pd->change) \
+     return; \
+   Eina_Stringshare * val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
+   Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION, val); \
+   change_description_set(pd->change, msg); \
+   history_change_add(pd->group->history, pd->change); \
+   pd->change = NULL; \
+   prop_##SUB##_##VALUE##_update(pd); \
+   eina_stringshare_del(msg); \
+   eina_stringshare_del(val); \
 }
 
 /*****************************************************************************/
@@ -724,8 +747,8 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define GROUP_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR) \
-   COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, GROUP_ARGS) \
+#define GROUP_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, DESCRIPTION) \
+   COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, GROUP_ARGS, DESCRIPTION) \
 
 
 
@@ -801,7 +824,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
  *
  * @ingroup Property_Macro
  */
-#define PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
+#define PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, ARGS, DESCRIPTION) \
 static void \
 _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj __UNUSED__, \
@@ -814,8 +837,8 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    eina_stringshare_del(msg); \
    if (item->index != 0) \
      { \
-        if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, change, false, \
-                                          pd->part->name, item->title)) \
+        if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, change, false \
+                                          ARGS, item->title)) \
           { \
              ewe_combobox_select_item_set(obj, pd->attributes.part.previous_source); \
              change_free(change); \
@@ -825,7 +848,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
      } \
    else \
      { \
-        editor_##SUB##_##VALUE##_set(pd->group->edit_object, change, false, pd->part->name, NULL); \
+        editor_##SUB##_##VALUE##_set(pd->group->edit_object, change, false ARGS, NULL); \
         pd->attributes.part.previous_source = 0; \
      } \
    history_change_add(pd->group->history, change); \
@@ -944,6 +967,8 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    SPINNER_ADD(item, pd->attributes.SUB.VALUE2, 0.0, 9999.0, 1.0, true) \
    elm_spinner_label_format_set(pd->attributes.SUB.VALUE2, N_("%.0f")); \
    if (tooltip2) elm_object_tooltip_text_set(pd->attributes.SUB.VALUE2, tooltip2); \
+   evas_object_smart_callback_add(pd->attributes.SUB.VALUE2, "spinner,drag,start", _on_part_drag_##VALUE2##_start, pd); \
+   evas_object_smart_callback_add(pd->attributes.SUB.VALUE2, "spinner,drag,stop", _on_part_drag_##VALUE2##_stop, pd); \
    evas_object_smart_callback_add(pd->attributes.SUB.VALUE2, "changed", _on_part_drag_##VALUE2##_change, pd); \
    evas_object_event_callback_priority_add(pd->attributes.SUB.VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
@@ -984,7 +1009,7 @@ prop_part_drag_##VALUE1##_##VALUE2##_update(Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define PART_ATTR_DRAG_CALLBACK(SUB, VALUE1, VALUE2) \
+#define PART_ATTR_DRAG_CALLBACK(SUB, VALUE1, VALUE2, DESCRIPTION1, DESCRIPTION2) \
 static void \
 _on_part_drag_##VALUE1##_change(void *data, \
                                 Evas_Object *obj, \
@@ -992,20 +1017,69 @@ _on_part_drag_##VALUE1##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Eina_Bool value = elm_check_state_get(obj); \
-   edje_edit_part_drag_##VALUE1##_set(pd->group->edit_object, pd->part->name, value); \
+   Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION1, value?_("true"):_("false")); \
+   Change *change = change_add(msg); \
+   eina_stringshare_del(msg); \
+   editor_part_drag_##VALUE1##_set(pd->group->edit_object, change, false, pd->part->name, value); \
    prop_part_drag_control_disable_set(pd, false); \
-   /*project_changed(false);*/ \
+   history_change_add(pd->group->history, change); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
+} \
+static void \
+_on_part_drag_##VALUE2##_start(void *data, \
+                               Evas_Object *obj __UNUSED__, \
+                               void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   assert(pd->change == NULL); \
+   pd->change = change_add(NULL); \
+   pd->old_int_val = edje_edit_##SUB##_##VALUE2##_get(pd->group->edit_object, pd->part->name); \
+} \
+static void \
+_on_part_drag_##VALUE2##_stop(void *data, \
+                              Evas_Object *obj __UNUSED__, \
+                              void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Eina_Stringshare *msg; \
+   assert(pd->change != NULL); \
+   int new_val = edje_edit_##SUB##_##VALUE2##_get(pd->group->edit_object, pd->part->name); \
+   if (new_val != pd->old_int_val) \
+     { \
+        msg = eina_stringshare_printf(DESCRIPTION2, pd->old_int_val, new_val); \
+        change_description_set(pd->change, msg); \
+        eina_stringshare_del(msg); \
+        history_change_add(pd->group->history, pd->change); \
+     } \
+   else \
+     change_free(pd->change); \
+   pd->change = NULL; \
 } \
 static void \
 _on_part_drag_##VALUE2##_change(void *data, \
                                 Evas_Object *obj, \
-                                void *event_info __UNUSED__) \
+                                void *ei) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    int value = elm_spinner_value_get(obj); \
-   edje_edit_part_drag_##VALUE2##_set(pd->group->edit_object, pd->part->name, value); \
-   /*project_changed(false);*/ \
+   if (pd->change) \
+     { \
+        if (!editor_##SUB##_##VALUE2##_set(pd->group->edit_object, pd->change, true, pd->part->name, value)) \
+        { \
+           ERR("editor_group_"#SUB"_"#VALUE2"_set failed"); \
+           abort(); \
+        } \
+     } \
+   else \
+     { \
+        _on_part_drag_##VALUE2##_start(data, obj, ei); \
+        if (!editor_##SUB##_##VALUE2##_set(pd->group->edit_object, pd->change, true, pd->part->name, value)) \
+        { \
+           ERR("editor_"#SUB"_"#VALUE2"_set failed"); \
+           abort(); \
+        } \
+        _on_part_drag_##VALUE2##_stop(data, obj, ei); \
+     } \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
@@ -1069,19 +1143,8 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define PART_ITEM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
-static void \
-_on_##MEMBER##_##VALUE##_change(void *data, \
-                                Evas_Object *obj __UNUSED__, \
-                                void *ei) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   Ewe_Combobox_Item *item = ei; \
-   edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, pd->part->name, \
-                                   pd->item_name, item->title); \
-   /*project_changed(false);*/ \
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-}
+#define PART_ITEM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
+   PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, PART_ITEM_ARGS, DESCRIPTION)
 
 /*****************************************************************************/
 /*                    PART ITEM 2 SPINNER CONTROLS                           */
@@ -1187,18 +1250,8 @@ COMMON_2SPINNER_ADD(PART_ITEM, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  *
  * @ingroup Property_Macro
  */
-#define PART_ITEM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
-static void \
-_on_##SUB##_##VALUE##_change(void *data, \
-                          Evas_Object *obj __UNUSED__, \
-                          void *event_info) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
-   edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object PART_ITEM_ARGS, (TYPE)item->index); \
-   /*project_changed(false);*/ \
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-}
+#define PART_ITEM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
+   COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, PART_ITEM_ARGS, DESCRIPTION)
 
 /*****************************************************************************/
 /*                           STATE 1 CHECK CONTROL                           */
@@ -1275,6 +1328,8 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
    evas_object_event_callback_priority_add(pd->attributes.MEMBER.VALUE, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                           _on_spinner_mouse_wheel, NULL); \
+   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "spinner,drag,start", _on_##MEMBER##_##VALUE##_start, pd); \
+   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "spinner,drag,stop", _on_##MEMBER##_##VALUE##_stop, pd); \
    evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "changed", _on_##MEMBER##_##VALUE##_change, pd); \
    COMMON_1SPINNER_UPDATE(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, STATE_ARGS) \
    return item; \
@@ -1526,30 +1581,26 @@ prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_COLOR_CALLBACK(SUB, VALUE, MEMBER) \
+#define STATE_ATTR_COLOR_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
 static void \
 _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj, \
                                 void *event_info __UNUSED__) \
 { \
    int r, g, b, a; \
-   int old_r, old_g, old_b, old_a; \
    Prop_Data *pd = (Prop_Data *)data; \
-   edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object, pd->part->name, \
-                                   pd->part->current_state->parsed_name, \
-                                   pd->part->current_state->parsed_val, \
-                                   &old_r, &old_g, &old_b, &old_a); \
+   assert(pd->change != NULL); \
    colorselector_color_get(obj, &r, &g, &b, &a); \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object, pd->part->name, \
-                                        pd->part->current_state->parsed_name, \
-                                        pd->part->current_state->parsed_val, \
-                                        r, g, b, a))\
+   if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, pd->change, true, \
+                                     pd->part->name, \
+                                     pd->part->current_state->parsed_name, \
+                                     pd->part->current_state->parsed_val, \
+                                     r, g, b, a))\
      { \
        ERR("edje_edit_"#SUB"_"#VALUE"_set failed"); \
        abort(); \
      } \
    evas_object_color_set(pd->attributes.MEMBER.VALUE##_obj, r*a/255, g*a/255, b*a/255, a); \
-   /*project_changed(false);*/ \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 } \
 static void \
@@ -1557,13 +1608,24 @@ _on_##MEMBER##_##VALUE##_dismissed(void *data, \
                                    Evas_Object *obj, \
                                    void *event_info __UNUSED__) \
 { \
+   int r, g, b, a; \
    Prop_Data *pd = (Prop_Data *)data; \
+   assert(pd->change != NULL); \
    evas_object_smart_callback_del_full(obj, "color,changed", \
                                        _on_##MEMBER##_##VALUE##_change, pd); \
    evas_object_smart_callback_del_full(obj, "palette,item,selected", \
                                        _on_##MEMBER##_##VALUE##_change, pd); \
    evas_object_smart_callback_del_full(obj, "dismissed", \
                                        _on_##MEMBER##_##VALUE##_dismissed, pd); \
+   edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object, pd->part->name, \
+                                   pd->part->current_state->parsed_name, \
+                                   pd->part->current_state->parsed_val, \
+                                   &r, &g, &b, &a); \
+   Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION, r, g, b, a); \
+   change_description_set(pd->change, msg); \
+   eina_stringshare_del(msg); \
+   history_change_add(pd->group->history, pd->change); \
+   pd->change = NULL; \
    evas_object_hide(obj); \
 } \
 static void \
@@ -1576,12 +1638,12 @@ _on_##MEMBER##_##VALUE##_clicked(void *data, \
    int r, g, b, a; \
    Evas_Object *colorsel; \
    Prop_Data *pd = (Prop_Data *)data; \
+   assert(pd->change == NULL); \
    colorsel = colorselector_get(); \
+   pd->change = change_add(NULL); \
    evas_object_color_get(pd->attributes.MEMBER.VALUE##_obj, &r, &g, &b, &a); \
    colorselector_color_set(colorsel, r, g, b, a); \
    evas_object_smart_callback_add(colorsel, "color,changed", \
-                                  _on_##MEMBER##_##VALUE##_change, pd); \
-   evas_object_smart_callback_add(colorsel, "palette,item,selected", \
                                   _on_##MEMBER##_##VALUE##_change, pd); \
    evas_object_smart_callback_add(colorsel, "dismissed", \
                                   _on_##MEMBER##_##VALUE##_dismissed, pd); \
@@ -1742,7 +1804,7 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR) \
-   COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, STATE_ARGS) \
+#define STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, DESCRIPTION) \
+   COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, STATE_ARGS, DESCRIPTION) \
 
 /** @} privatesection */

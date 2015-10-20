@@ -403,15 +403,31 @@ popup_want_action(const char *title,
                   Popup_Button p_btns,
                   Popup_Validator_Func func,
                   void *data);
+/**
+ * Disable the popup buttons.
+ *
+ * @param p_btns The flags for set the popup buttons;
+ * @param disabled The button disabled state.
+ *
+ * @ingroup Window
+ */
+void
+popup_buttons_disabled_set(Popup_Button p_btns, Eina_Bool disabled);
 
 void
-popup_fileselector_folder_helper(Evas_Object *entry, const char *path);
+popup_fileselector_folder_helper(const char *title, Evas_Object *follow_up, const char *path,
+                                 Evas_Smart_Cb func, void *data,
+                                 Eina_Bool multi, Eina_Bool is_save);
 
 void
-popup_fileselector_edj_helper(Evas_Object *entry, const char *path);
+popup_fileselector_edj_helper(const char *title, Evas_Object *follow_up, const char *path,
+                              Evas_Smart_Cb func, void *data,
+                              Eina_Bool multi, Eina_Bool is_save);
 
 void
-popup_fileselector_edc_helper(Evas_Object *entry, const char *path);
+popup_fileselector_edc_helper(const char *title, Evas_Object *follow_up, const char *path,
+                              Evas_Smart_Cb func, void *data,
+                              Eina_Bool multi, Eina_Bool is_save);
 
 void
 popup_log_message_helper(const char *msg);

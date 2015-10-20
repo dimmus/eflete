@@ -253,6 +253,9 @@ Eina_Bool
 editor_state_text_size_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
       int new_val);
 Eina_Bool
+editor_state_text_elipsis_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      double new_val);
+Eina_Bool
 editor_state_text_align_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
       double new_val);
 Eina_Bool
@@ -366,8 +369,37 @@ Eina_Bool
 editor_state_image_border_fill_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
       unsigned char new_val);
 Eina_Bool
+editor_state_image_border_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int new_val1, int new_val2, int new_val3, int new_val4);
+Eina_Bool
 editor_state_fill_type_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
       unsigned char new_val);
+Eina_Bool
+editor_state_color_class_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      const char * new_val);
+
+Eina_Bool
+editor_state_color_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int r, int g, int b, int a);
+
+Eina_Bool
+editor_state_color2_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int r, int g, int b, int a);
+
+Eina_Bool
+editor_state_color3_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int r, int g, int b, int a);
+
+Eina_Bool
+editor_state_text_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      const char * new_val);
+Eina_Bool
+editor_state_font_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      const char * new_val);
+Eina_Bool
+editor_state_image_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      const char * new_val);
+
 
 /* Part */
 
@@ -426,6 +458,15 @@ Eina_Bool
 editor_part_item_position_row_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
       unsigned short new_val);
 Eina_Bool
+editor_part_item_source_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
+      const char * new_val);
+Eina_Bool
+editor_part_item_aspect_mode_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
+      Edje_Aspect_Control new_val);
+Eina_Bool
+editor_part_item_padding_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
+      int new_val1, int new_val2, int new_val3, int new_val4);
+Eina_Bool
 editor_part_scale_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       Eina_Bool new_val);
 Eina_Bool
@@ -452,6 +493,20 @@ editor_part_pointer_mode_set(Evas_Object *obj, Change *change, Eina_Bool merge, 
 Eina_Bool
 editor_part_cursor_mode_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       unsigned char new_val);
+
+Eina_Bool
+editor_part_drag_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      int new_val);
+Eina_Bool
+editor_part_drag_step_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      int new_val);
+Eina_Bool
+editor_part_drag_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      int new_val);
+Eina_Bool
+editor_part_drag_step_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      int new_val);
+
 
 Eina_Bool
 editor_part_clip_to_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
@@ -483,5 +538,8 @@ editor_part_source5_set(Evas_Object *obj, Change *change, Eina_Bool merge, const
 Eina_Bool
 editor_part_source6_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       const char * new_val);
+Eina_Bool
+editor_part_effect_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      Edje_Text_Effect new_val);
 
 #endif /* EDITOR_H */

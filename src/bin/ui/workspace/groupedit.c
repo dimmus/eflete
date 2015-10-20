@@ -449,7 +449,7 @@ groupedit_edit_object_part_state_add(Evas_Object *obj, const char *part,
                                      const char *state, double value)
 {
    Eina_Bool ret;
-   const char *img = NULL;
+   //const char *img = NULL;
    WS_GROUPEDIT_DATA_GET(obj, sd);
 
    assert(part != NULL);
@@ -460,8 +460,8 @@ groupedit_edit_object_part_state_add(Evas_Object *obj, const char *part,
    ret = edje_edit_state_add(sd->group->edit_object, part, state, value);
    ret &= edje_edit_part_selected_state_set(sd->group->edit_object, part, state, value);
    TODO("WTF?");
-   img = edje_edit_state_image_get(sd->group->edit_object, part, "default", 0.0);
-   edje_edit_state_image_set(sd->group->edit_object, part, state, value, img);
+   //img = edje_edit_state_image_get(sd->group->edit_object, part, "default", 0.0);
+   //edje_edit_state_image_set(sd->group->edit_object, part, state, value, img);
 
    if (ret)
      {
@@ -476,7 +476,7 @@ groupedit_edit_object_part_state_copy(Evas_Object *obj, const char *part,
                                       const char *state_to, double value_to)
 {
    Eina_Bool ret;
-   const char *img = NULL;
+   //const char *img = NULL;
    WS_GROUPEDIT_DATA_GET(obj, sd);
 
    assert(part != NULL);
@@ -487,8 +487,8 @@ groupedit_edit_object_part_state_copy(Evas_Object *obj, const char *part,
                               state_to, value_to);
    ret &= edje_edit_part_selected_state_set(sd->group->edit_object, part, state_to, value_to);
    TODO("WTF?");
-   img = edje_edit_state_image_get(sd->group->edit_object, part, state_from, value_from);
-   edje_edit_state_image_set(sd->group->edit_object, part, state_to, value_to, img);
+   //img = edje_edit_state_image_get(sd->group->edit_object, part, state_from, value_from);
+   //edje_edit_state_image_set(sd->group->edit_object, part, state_to, value_to, img);
 
    if (ret)
      {
