@@ -203,6 +203,8 @@ _fileselector_helper(const char *title,
                      void *data,
                      Elm_Fileselector_Filter_Func filter_cb)
 {
+   Evas_Object *scroller;
+
    dismiss_func = func;
    func_data = data;
 
@@ -228,11 +230,17 @@ _fileselector_helper(const char *title,
    evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
    /* one more hack, set text our text to button 'ok' */
    elm_object_text_set(elm_layout_content_get(fs, "elm.swallow.ok"), _("Open"));
-   evas_object_size_hint_min_set(fs, FS_W, FS_H);
-   evas_object_resize(fs, FS_W, FS_H);
+   evas_object_size_hint_min_set(popup, FS_W, FS_H);
+   evas_object_resize(popup, FS_W, FS_H);
+
+   /* scroller is necessary to fix issues with fileselector size */
+   SCROLLER_ADD(ap.win, scroller);
+   elm_object_content_set(scroller, fs);
 
    if (title) elm_object_text_set(popup, title);
-   elm_layout_content_set(popup, "elm.swallow.content", fs);
+   elm_layout_content_set(popup, "elm.swallow.content", scroller);
+   evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
    if (follow_up)
      {
         _popup_obj_follow(NULL, NULL, follow_up, NULL);
