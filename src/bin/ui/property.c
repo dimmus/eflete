@@ -31,6 +31,7 @@
 #include "string_common.h"
 #include "new_history.h"
 #include "editor.h"
+#include "validator.h"
 
 #include "syntax_color.h"
 
@@ -77,7 +78,7 @@ struct _Prop_Data
         struct {
              Evas_Object *frame;
              Evas_Object *name;
-             Elm_Validator_Regexp *validator;
+             Resource_Name_Validator *validator;
              Evas_Object *type;
              Evas_Object *scale, *scale_item;
              Evas_Object *mouse_events, *mouse_events_item;
@@ -1293,18 +1294,16 @@ _ui_property_group_unset(Evas_Object *property)
 #undef pd_group
 
 static void
-_on_part_name_unfocus(void *data,
-                      Evas_Object *obj,
-                      void *ei __UNUSED__)
+prop_part_name_update(Prop_Data *pd)
 {
-   Prop_Data *pd = (Prop_Data *)data;
+   char *text;
 
    assert(pd != NULL);
 
-   const char *value = elm_entry_entry_get(obj);
-
-   if (strcmp(value, pd->part->name))
-     elm_entry_entry_set(obj, pd->part->name);
+   text = elm_entry_utf8_to_markup(pd->part->name);
+   if (strcmp(text, elm_entry_entry_get(pd->attributes.part.name)))
+     elm_entry_entry_set(pd->attributes.part.name, pd->part->name);
+   free(text);
 }
 
 static void
@@ -1313,38 +1312,39 @@ _on_part_name_change(void *data,
                      void *ei __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
-   int pos;
-   const char *value;
-
-   TODO("Fix rename");
-   return;
-
+   const char *text;
+   char *value;
    assert(pd != NULL);
-   if (elm_validator_regexp_status_get(pd->attributes.part.validator) != ELM_REG_NOERROR)
+   if (resource_name_validator_status_get(pd->attributes.part.validator) != ELM_REG_NOERROR)
      return;
-
-   value = elm_entry_entry_get(obj);
-   if (!edje_edit_part_name_set(pd->group->edit_object, pd->part->name, value))
+   if (!pd->change) pd->change = change_add(NULL);
+   text = elm_entry_entry_get(obj);
+   value = elm_entry_markup_to_utf8(text);
+   if (!editor_part_name_set(pd->group->edit_object, pd->change, true, pd->part->name, value))
      {
-        NOTIFY_INFO(5, "Wrong input value for name field");
-        return;
+        ERR("Wrong input value for name field");
+        abort();
      }
-
-   //project_changed(false);
-/*   workspace_edit_object_part_rename(pd->workspace, pd->part->name, value); */
-   pd->part->name = value;
-   pos = elm_entry_cursor_pos_get(obj);
-   elm_object_focus_set(obj, true);
-   elm_entry_cursor_pos_set(obj, pos);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
+   free(value);
 }
-
 static void
-prop_part_name_update(Prop_Data *pd)
+_on_part_name_activated(void *data,
+                        Evas_Object *obj __UNUSED__,
+                        void *ei __UNUSED__)
 {
+   Prop_Data *pd = (Prop_Data *)data;
    assert(pd != NULL);
-
-   elm_entry_entry_set(pd->attributes.part.name, pd->part->name);
+   if (resource_name_validator_status_get(pd->attributes.part.validator) != ELM_REG_NOERROR)
+     return;
+   if (!pd->change)
+     return;
+   Eina_Stringshare *msg = eina_stringshare_printf(_("part name changed to \"%s\""), pd->part->name);
+   change_description_set(pd->change, msg);
+   history_change_add(pd->group->history, pd->change);
+   pd->change = NULL;
+   prop_part_name_update(pd);
+   eina_stringshare_del(msg);
 }
 
 static Evas_Object *
@@ -1355,11 +1355,14 @@ prop_part_name_add(Evas_Object *parent, Prop_Data *pd)
 
    PROPERTY_ITEM_ADD(parent,  _("name"), "1swallow");
    ENTRY_ADD(parent, pd->attributes.part.name, true);
-   eo_do(pd->attributes.part.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, pd->attributes.part.validator));
+   eo_do(pd->attributes.part.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, pd->attributes.part.validator));
+   resource_name_validator_list_set(pd->attributes.part.validator, &pd->part->group->parts, false);
+   resource_name_validator_resource_set(pd->attributes.part.validator, (Resource *)pd->part);
    elm_entry_entry_set(pd->attributes.part.name, pd->part->name);
    elm_object_tooltip_text_set(pd->attributes.part.name, _("Selected part name"));
    evas_object_smart_callback_add(pd->attributes.part.name, "changed,user", _on_part_name_change, pd);
-   evas_object_smart_callback_add(pd->attributes.part.name, "unfocused", _on_part_name_unfocus, pd);
+   evas_object_smart_callback_add(pd->attributes.part.name, "unfocused", _on_part_name_activated, pd);
+   evas_object_smart_callback_add(pd->attributes.part.name, "activated", _on_part_name_activated, pd);
    elm_layout_content_set(item, "elm.swallow.content", pd->attributes.part.name);
    prop_part_name_update(pd);
 
@@ -1489,7 +1492,7 @@ _ui_property_part_set(Evas_Object *property, Part_ *part)
         elm_object_content_set(pd_part.frame, box);
 
         if (pd->attributes.part.validator == NULL)
-          pd->attributes.part.validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
+          pd->attributes.part.validator = resource_name_validator_new(PART_NAME_REGEX, NULL);
 
         item = prop_part_name_add(box, pd);
         elm_box_pack_end(box, item);
@@ -1549,6 +1552,8 @@ _ui_property_part_set(Evas_Object *property, Part_ *part)
         prop_part_drag_threshold_update(pd);
         prop_part_drag_event_update(pd);
      }
+   resource_name_validator_list_set(pd->attributes.part.validator, &part->group->parts, false);
+   resource_name_validator_resource_set(pd->attributes.part.validator, (Resource *)part);
 
    box = elm_object_content_get(pd_part.frame);
    if (pd->part->type == EDJE_PART_TYPE_SPACER)
@@ -1664,12 +1669,23 @@ _on_state_color_class_change(void *data,
 {
    Prop_Data *pd = (Prop_Data *)data;
    int r, g, b, a, r2, g2, b2, a2, r3, g3, b3, a3;
-   Eina_Stringshare *value = NULL;
+   Eina_Stringshare *value = NULL, *old_value;
    Ewe_Combobox_Item *item = event_info;
 
    assert(pd != NULL);
 
    value = strcmp(item->title, "None") ? item->title : NULL;
+
+   old_value = edje_edit_state_color_class_get(pd->group->edit_object,
+                                               pd->part->name,
+                                               pd->part->current_state->parsed_name,
+                                               pd->part->current_state->parsed_val);
+   if (value == old_value) /* stringshares */
+     {
+        eina_stringshare_del(old_value);
+        return;
+     }
+   eina_stringshare_del(old_value);
    Eina_Stringshare *msg = eina_stringshare_printf(_("color class changed to %s"), item->title);
    Change *change = change_add(msg);
    eina_stringshare_del(msg);
@@ -1877,8 +1893,8 @@ STATE_MINMAX_ATTR_2SPINNER(_("max"), state, max_w, max_h, state, -1.0, 9999.0, 1
 STATE_ATTR_2SPINNER(_("align"), state, align_x, align_y, state, 0, 100, 1, NULL, "x:", "%", "y:", "%",
                     _("Part align horizontally"), _("Part align vertically"),
                     100, double,
-                    _("align x changed from %f to %f"),
-                    _("align y changed from %f to %f"))
+                    _("align x changed from %.2f to %.2f"),
+                    _("align y changed from %.2f to %.2f"))
 STATE_ATTR_2CHECK(_("fixed"), state, fixed_w, fixed_h, state, "w:", "", "h:", "",
                   _("This affects the minimum width calculation."),
                   _("This affects the minimum height calculation."),
@@ -1891,14 +1907,14 @@ STATE_ATTR_2SPINNER(_("aspect ratio"), state, aspect_min, aspect_max, state, 0, 
                    _("Normally width and height can be resized to any values independently"),
                    _("Normally width and height can be resized to any values independently"),
                    100, double,
-                    _("aspect min changed from %f to %f"),
-                    _("aspect max changed from %f to %f"))
+                    _("aspect min changed from %.2f to %.2f"),
+                    _("aspect max changed from %.2f to %.2f"))
 STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, state, 0.0, 9999.0, 0.1, "%.1f", "w:", "", "h:", "",
                     _("The minimal part width value multiplier for current state"),
                     _("The minimal part height value multiplier for current state"),
                     1, double,
-                    _("multiplier w changed from %f to %f"),
-                    _("multiplier h changed from %f to %f"))
+                    _("multiplier w changed from %.2f to %.2f"),
+                    _("multiplier h changed from %.2f to %.2f"))
 STATE_ATTR_COLOR(_("color"), state, color, state, _("Part main color"),
                  _("color changed to [%d %d %d %d]"))
 
@@ -2186,8 +2202,8 @@ STATE_ATTR_2SPINNER_ICON(_("align"), state, rel1_relative_x, rel1_relative_y, st
                            "Moves a corner to a relative position inside the container "
                            "by Y axis."),
                          100, double,
-                         _("rel1 align x changed from %f to %f"),
-                         _("rel1 align y changed from %f to %f"))
+                         _("rel1 align x changed from %.2f to %.2f"),
+                         _("rel1 align y changed from %.2f to %.2f"))
 STATE_ATTR_2SPINNER_ICON(_("offset"), state, rel1_offset_x, rel1_offset_y, state_object_area,
                          -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
                          _("Left offset from relative position in pixels"),
@@ -2211,8 +2227,8 @@ STATE_ATTR_2SPINNER_ICON(_("align"), state, rel2_relative_x, rel2_relative_y, st
                            "Moves a corner to a relative position inside the container "
                            "by Y axis."),
                          100, double,
-                         _("rel2 align x changed from %f to %f"),
-                         _("rel2 align y changed from %f to %f"))
+                         _("rel2 align x changed from %.2f to %.2f"),
+                         _("rel2 align y changed from %.2f to %.2f"))
 STATE_ATTR_2SPINNER_ICON(_("offset"), state, rel2_offset_x, rel2_offset_y, state_object_area,
                          -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
                          _("Right offset from relative position in pixels"),
@@ -2341,8 +2357,8 @@ STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_text,
                     0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
                     _("Text horizontal align"), _("Text vertical align"),
                     100, double,
-                    _("text horizontal align changed from %f to %f"),
-                    _("text vertical align changed from %f to %f"))
+                    _("text horizontal align changed from %.2f to %.2f"),
+                    _("text vertical align changed from %.2f to %.2f"))
 STATE_ATTR_2CHECK(_("min"), state_text, min_x, min_y, state_text, "w:", "", "h:", "",
                   _("When any of the parameters is enabled it forces \t"
                   "the minimum size of the container to be equal to\t"
@@ -2760,8 +2776,8 @@ STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_textblock,
                     0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
                     _("Text horizontal align"), _("Text vertical align"),
                     100, double,
-                    _("text horizontal align changed from %f to %f"),
-                    _("text vertical align changed from %f to %f"))
+                    _("text horizontal align changed from %.2f to %.2f"),
+                    _("text vertical align changed from %.2f to %.2f"))
 STATE_ATTR_2CHECK(_("min"), state_text, min_x, min_y, state_textblock, "w:", "", "h:", "",
                   _("When any of the parameters is enabled it forces \t"
                   "the minimum size of the container to be equal to\t"
@@ -3393,31 +3409,31 @@ STATE_ATTR_2SPINNER_ICON(_("align"), state_fill, origin_relative_x, origin_relat
                          _("Sets the starting point X coordinate relatively to displayed element's content"),
                          _("Sets the starting point Y coordinate relatively to displayed element's content"),
                          100, double,
-                         _("fill align x changed from %f to %f"),
-                         _("fill align y changed from %f to %f"))
+                         _("fill align x changed from %.2f to %.2f"),
+                         _("fill align y changed from %.2f to %.2f"))
 TODO("Fix offset edje_edit API: use int instead of double param")
 STATE_ATTR_2SPINNER_ICON(_("offset"), state_fill, origin_offset_x, origin_offset_y, state_fill,
                          -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
                          _("Affects the starting point a fixed number of pixels along X axis"),
                          _("Affects the starting point a fixed number of pixels along Y axis"),
                          1, double,
-                         _("fill offset x changed from %f to %f"),
-                         _("fill offset y changed from %f to %f"))
+                         _("fill offset x changed from %.2f to %.2f"),
+                         _("fill offset y changed from %.2f to %.2f"))
 STATE_ATTR_2SPINNER_ICON(_("align"), state_fill, size_relative_x, size_relative_y, state_fill,
                          -500, 500, 1, NULL, "x:", "%", "y:", "%",
                          _("Value that represent the percentual value of the original size of the element by X axis"),
                          _("Value that represent the percentual value of the original size of the element by Y axis."),
                          100, double,
-                         _("fill size align x changed from %f to %f"),
-                         _("fill size align y changed from %f to %f"))
+                         _("fill size align x changed from %.2f to %.2f"),
+                         _("fill size align y changed from %.2f to %.2f"))
 TODO("Fix offset edje_edit API: use int instead of double param")
 STATE_ATTR_2SPINNER_ICON(_("offset"), state_fill, size_offset_x, size_offset_y, state_fill,
                          -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
                          _("Affects the size of the tile a fixed number of pixels along X axis"),
                          _("Affects the size of the tile a fixed number of pixels along Y axis"),
                          1, double,
-                         _("fill size offset x changed from %f to %f"),
-                         _("fill size offset y changed from %f to %f"))
+                         _("fill size offset x changed from %.2f to %.2f"),
+                         _("fill size offset y changed from %.2f to %.2f"))
 
 static Eina_Bool
 ui_property_state_fill_set(Evas_Object *property)
@@ -3585,8 +3601,8 @@ PART_ITEM_ATTR_2SPINNER(_("align"), part_item, align_x, align_y, part_item,
                     0.0, 999.0, 1.0, NULL, "x:", "px", "y:", "px",
                     _("Sets the alignment hint by x axiss"), _("Sets the alignment hint by y axiss"),
                     100, double,
-                    _("part item align x changed from %f to %f"),
-                    _("part item align y changed from %f to %f"))
+                    _("part item align x changed from %.2f to %.2f"),
+                    _("part item align y changed from %.2f to %.2f"))
 PART_ITEM_ATTR_2SPINNER(_("weight"), part_item, weight_x, weight_y, part_item,
                     0.0, 999.0, 1.0, NULL, "x:", "", "y:", "",
                     _("Sets the weight hint by x axiss"),_("Sets the weight hint by y axiss"),
@@ -3736,8 +3752,8 @@ STATE_ATTR_2SPINNER(_("align"), state_container, align_x, align_y, state_contain
                     _("Change the position of the point of balance inside the container"),
                     _("Change the position of the point of balance inside the container"),
                     100, double,
-                    _("Part container align x changed from %f to %f"),
-                    _("Part container glign y changed from %f to %f"))
+                    _("Part container align x changed from %.2f to %.2f"),
+                    _("Part container glign y changed from %.2f to %.2f"))
 STATE_ATTR_2SPINNER(_("padding"), state_container, padding_x, padding_y, state_container,
                     0.0, 999.0, 1.0, NULL, "x:", "px", "y:", "px",
                     _("Sets the horizontal space between cells in pixels"),

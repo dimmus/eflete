@@ -945,3 +945,26 @@ part_list_part_select(Evas_Object *obj, Part_ *part)
         elm_genlist_item_selected_set(elm_genlist_selected_item_get(pl->genlist), false);
      }
 }
+
+void
+part_list_part_update(Evas_Object *obj, Part_ *part)
+{
+   Part_ *pr;
+   Elm_Object_Item *part_item;
+   Part_List *pl = evas_object_data_get(obj, PART_LIST_DATA);
+
+   assert(pl != NULL);
+   assert(part != NULL);
+
+   part_item = elm_genlist_first_item_get(pl->genlist);
+   pr = elm_object_item_data_get(part_item);
+   while (pr != part)
+     {
+        part_item = elm_genlist_item_next_get(part_item);
+        pr = elm_object_item_data_get(part_item);
+
+        assert(pr != NULL);
+     }
+   assert(part_item != NULL);
+   elm_genlist_item_update(part_item);
+}

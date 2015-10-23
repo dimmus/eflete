@@ -18,7 +18,7 @@
  */
 
 #include "eflete.h"
-#include "ui_workspace.h"
+#include "workspace.h"
 #include "main_window.h"
 #include "utc_common.h"
 
@@ -45,9 +45,6 @@ void workspace_edit_object_part_item_del_test_p1(int);
 void workspace_edit_object_part_item_selected_set_test_n1(int);
 void workspace_edit_object_part_item_selected_set_test_n4(int);
 void workspace_edit_object_part_item_selected_set_test_p1(int);
-void workspace_edit_object_part_rename_test_n3(int);
-void workspace_edit_object_part_rename_test_p1(int);
-void workspace_edit_object_part_rename_test_p2(int);
 void workspace_edit_object_part_restack_test_p1(int);
 void workspace_edit_object_part_restack_test_p2(int);
 void workspace_edit_object_part_state_add_test_n(int);

@@ -56,4 +56,10 @@ part_list_add(Group *group);
  */
 void
 part_list_part_select(Evas_Object *obj, Part_ *part);
+
+/**
+ * @ingroup Partlist
+ */
+void
+part_list_part_update(Evas_Object *obj, Part_ *part);
 #endif /* PART_LIST_H */

@@ -220,6 +220,24 @@ _part_deleted(void *data __UNUSED__,
 }
 
 static void
+_part_renamed(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *ei)
+{
+   Rename *ren = ei;
+   Part_ *part;
+
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+   assert(ren != NULL);
+
+   part = pm_resource_unsorted_get(tabs.current_group->parts, ren->old_name);
+   gm_part_rename(part, ren->new_name);
+   workspace_part_list_update_part(tabs.current_workspace, part);
+   TODO("update live_view here");
+}
+
+static void
 _project_changed(void *data __UNUSED__,
                  Evas_Object *obj __UNUSED__,
                  void *ei __UNUSED__)
@@ -374,6 +392,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_ADDED, _part_added, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_DELETED, _part_deleted, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _project_changed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_SAVED, _editor_saved, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_OPENED, _project_opened, NULL);

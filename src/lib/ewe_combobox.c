@@ -70,10 +70,80 @@ _selected_cb(void *data,
    evas_object_smart_callback_call(sd->obj, "selected", item);
 }
 
-static Evas_Object *
+static void
+_combobox_geometry_calc(Evas *evas,
+                        Ewe_Combobox_Smart_Data *sd,
+                        int *width,
+                        int *height)
+{
+   int b_w, b_h, scr_h;
+   int top_widget_pos_x, top_widget_pos_y, sc_y_offset, list_count;
+   Evas_Coord combo_x, combo_y, combo_width, combo_height;
+   Eina_List *l;
+   Ewe_Combobox_Item *item;
+   int holds_item;
+
+   edje_object_size_min_calc(sd->combobox, NULL, &combo_height);
+   evas_object_geometry_get(sd->combobox, &combo_x, &combo_y, &combo_width, NULL);
+
+   evas_object_geometry_get(sd->top_win, &top_widget_pos_x, &top_widget_pos_y, NULL, NULL);
+   elm_win_screen_size_get(sd->top_win, NULL, &sc_y_offset, NULL, &scr_h);
+
+   scr_h += sc_y_offset;
+   combo_x += top_widget_pos_x;
+   combo_y += combo_height + top_widget_pos_y;
+
+   EINA_LIST_FOREACH(sd->items, l, item)
+     {
+        item->content = edje_object_add(evas);
+        if (item->style)
+          edje_object_file_set(item->content, EWE_THEME, item->style);
+        else
+          edje_object_file_set(item->content, EWE_THEME,
+                               "ewe/combobox/item/default");
+        evas_object_size_hint_min_set(item->content, combo_width, ITEM_H);
+        evas_object_size_hint_weight_set(item->content, EVAS_HINT_EXPAND, 0);
+        evas_object_size_hint_align_set(item->content, EVAS_HINT_FILL, 0.5);
+        edje_object_part_text_set(item->content, "ewe.text", item->title);
+        evas_object_show(item->content);
+        edje_object_size_min_calc(item->content, &b_w, NULL);
+        if ((*width) < b_w)
+          *width = b_w;
+     }
+
+   list_count = eina_list_count(sd->items);
+   *height = b_h = list_count * ITEM_H + ITEM_H / 4;
+
+   if (b_h > scr_h - combo_y)
+     {
+        holds_item = (scr_h - combo_y) / ITEM_H;
+        *height = holds_item * ITEM_H;
+        if (holds_item < MIN_ITEMS)
+          {
+             *height = b_h;
+             int tmp = combo_y;
+             combo_y -= combo_height + b_h;
+             if (combo_y < 0)
+               {
+                  combo_y = 0;
+                  *height = tmp - combo_height;
+               }
+          }
+     }
+
+   if ((*width) < combo_width)
+     (*width) = combo_width;
+
+   evas_object_geometry_set(sd->win, combo_x, combo_y, *width, *height);
+}
+
+static void
 _exp_window_create(Evas **evas, Ewe_Combobox_Smart_Data *sd)
 {
    Evas_Object *win;
+   Eina_List *l;
+   Ewe_Combobox_Item *item;
+   int height, width = 0;
 
    if (sd->win)
      {
@@ -88,11 +158,13 @@ _exp_window_create(Evas **evas, Ewe_Combobox_Smart_Data *sd)
    elm_win_shaped_set(win, EINA_TRUE);
    sd->win = win;
    evas_object_smart_callback_add(sd->win, "unfocused", _focus_out_cb, sd);
-   evas_object_show(win);
    *evas = evas_object_evas_get(win);
+   _combobox_geometry_calc(*evas, sd, &width, &height);
+   evas_object_show(win);
 
    sd->expander = edje_object_add(*evas);
    edje_object_file_set(sd->expander, EWE_THEME, "ewe/combobox/expander/default");
+   evas_object_resize(sd->expander, width, height);
    evas_object_show(sd->expander);
 
    sd->scroller = elm_scroller_add(win);
@@ -109,89 +181,28 @@ _exp_window_create(Evas **evas, Ewe_Combobox_Smart_Data *sd)
    evas_object_box_align_set(sd->items_box, 0.0, 0.0);
    evas_object_box_layout_set(sd->items_box, evas_object_box_layout_vertical, NULL, NULL);
    evas_object_show(sd->items_box);
-   return win;
+
+   EINA_LIST_FOREACH(sd->items, l, item)
+     {
+        evas_object_box_append(sd->items_box, item->content);
+        edje_object_signal_callback_add(item->content, "select", "ewe",
+                                        _selected_cb, item);
+     }
 }
 
 static void
 _ewe_combobox_expand(Evas_Object *obj)
 {
-   int b_w, b_h, scr_h, window_width = 0;
-   int top_widget_pos_x, top_widget_pos_y, sc_y_offset, list_count;
-   Eina_List *l;
-   Evas_Coord combo_x, combo_y, combo_width, combo_height, expander_h;
-   Evas_Object *popup_win;
    Evas *evas = NULL;
-   Ewe_Combobox_Item *item;
-   int holds_item;
 
    EWE_COMBOBOX_DATA_GET(obj, sd);
 
-   edje_object_size_min_calc(sd->combobox, NULL, &combo_height);
    sd->expanded = EINA_TRUE;
-   evas_object_geometry_get(sd->combobox, &combo_x, &combo_y, &combo_width, NULL);
    edje_object_signal_emit(sd->combobox, "ewe,state,expanded", "ewe");
    edje_object_signal_emit(sd->combobox, "btn,hide", "ewe");
 
-   evas_object_geometry_get(sd->top_win, &top_widget_pos_x, &top_widget_pos_y, NULL, NULL);
-   elm_win_screen_size_get(sd->top_win, NULL, &sc_y_offset, NULL, &scr_h);
+   _exp_window_create(&evas, sd);
 
-   scr_h += sc_y_offset;
-   combo_x += top_widget_pos_x;
-   combo_y += combo_height + top_widget_pos_y;
-
-   popup_win = _exp_window_create(&evas, sd);
-
-   EINA_LIST_FOREACH(sd->items, l, item)
-     {
-        item->content = edje_object_add(evas);
-        if (item->style)
-          edje_object_file_set(item->content, EWE_THEME, item->style);
-        else
-          edje_object_file_set(item->content, EWE_THEME,
-                               "ewe/combobox/item/default");
-        evas_object_size_hint_min_set(item->content, combo_width, ITEM_H);
-        evas_object_size_hint_weight_set(item->content, EVAS_HINT_EXPAND, 0);
-        evas_object_size_hint_align_set(item->content, EVAS_HINT_FILL, 0.5);
-        edje_object_part_text_set(item->content, "ewe.text", item->title);
-        evas_object_show(item->content);
-        edje_object_size_min_calc(item->content, &b_w, NULL);
-        if (window_width < b_w)
-          window_width = b_w;
-        evas_object_box_append(sd->items_box, item->content);
-        edje_object_signal_callback_add(item->content, "select", "ewe",
-                                        _selected_cb, item);
-     }
-
-   list_count = eina_list_count(sd->items);
-   expander_h = b_h = list_count * ITEM_H + ITEM_H / 4;
-
-   if (b_h > scr_h - combo_y)
-     {
-        holds_item = (scr_h - combo_y) / ITEM_H;
-        expander_h = holds_item * ITEM_H;
-        if (holds_item < MIN_ITEMS)
-          {
-             expander_h = b_h;
-             int tmp = combo_y;
-             combo_y -= combo_height + b_h;
-             if (combo_y < 0)
-               {
-                  combo_y = 0;
-                  expander_h = tmp - combo_height;
-               }
-          }
-     }
-
-   if (window_width > combo_width)
-     {
-        evas_object_resize(sd->expander, window_width, expander_h);
-        evas_object_geometry_set(popup_win, combo_x, combo_y, window_width, expander_h);
-     }
-   else
-     {
-        evas_object_resize(sd->expander, combo_width, expander_h);
-        evas_object_geometry_set(popup_win, combo_x, combo_y, combo_width, expander_h);
-     }
    evas_object_smart_callback_call(sd->obj, "expanded", evas);
 }
 

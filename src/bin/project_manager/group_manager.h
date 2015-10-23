@@ -121,4 +121,7 @@ gm_state_del(Project *pro, State *state);
 void
 gm_part_del(Project *pro, Part_* part);
 
+void
+gm_part_rename(Part_* part, const char *new_part_name);
+
 #endif /* GROUP_MANAGER_H */

@@ -273,6 +273,9 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
+   TYPE old_val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
+   if (item->index == old_val) \
+     return; \
    Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION, item->title); \
    Change *change = change_add(msg); \
    eina_stringshare_del(msg); \
@@ -832,6 +835,14 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
+   Eina_Stringshare *old_val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
+   if (((item->index != 0) && (item->title == old_val)) /*stringshares*/ || \
+       ((item->index == 0) && (old_val == NULL))) \
+     { \
+       eina_stringshare_del(old_val); \
+       return; \
+     } \
+   eina_stringshare_del(old_val); \
    Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION, item->title); \
    Change *change = change_add(msg); \
    eina_stringshare_del(msg); \
@@ -1686,6 +1697,15 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
+   Eina_Stringshare *old_val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object, \
+         pd->part->name, pd->part->current_state->parsed_name, pd->part->current_state->parsed_val); \
+   if (((item->index != 0) && (item->title == old_val)) /*stringshares*/ || \
+       ((item->index == 0) && (old_val == NULL))) \
+     { \
+       eina_stringshare_del(old_val); \
+       return; \
+     } \
+   eina_stringshare_del(old_val); \
    Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION, !strcmp(item->title, _("None")) ? NULL : item->title); \
    Change *change = change_add(msg); \
    eina_stringshare_del(msg); \

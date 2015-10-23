@@ -84,6 +84,18 @@
  */
 #define SIGNAL_PART_DELETED "SIGNAL_PART_DELETED"
 
+typedef struct {
+   const char *old_name;
+   const char *new_name;
+} Rename;
+/**
+ * emited when part is renamed.
+ * eventinfo - pointer to Rename structure
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_PART_RENAMED "SIGNAL_PART_RENAMED"
+
 /**
  * emited when new state is added.
  * eventinfo - pointer to State structure

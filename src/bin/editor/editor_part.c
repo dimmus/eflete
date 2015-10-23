@@ -112,6 +112,7 @@ editor_part_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                      const char *name, const char *new_val)
 {
    Diff *diff;
+   Rename ren;
    Attribute attribute = ATTRIBUTE_PART_NAME;
    assert(edit_object != NULL);
    assert(name != NULL);
@@ -121,12 +122,12 @@ editor_part_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING_STRING;
         diff->redo.function = editor_part_name_set;
-        diff->redo.args.type_ssds.s1 = eina_stringshare_add(name);
-        diff->redo.args.type_ssds.s2 = eina_stringshare_add(new_val);
+        diff->redo.args.type_ss.s1 = eina_stringshare_add(name);
+        diff->redo.args.type_ss.s2 = eina_stringshare_add(new_val);
         diff->undo.type = FUNCTION_TYPE_STRING_STRING;
         diff->undo.function = editor_part_name_set;
-        diff->undo.args.type_ssds.s1 = eina_stringshare_add(new_val);
-        diff->undo.args.type_ssds.s2 = eina_stringshare_add(name);
+        diff->undo.args.type_ss.s1 = eina_stringshare_add(new_val);
+        diff->undo.args.type_ss.s2 = eina_stringshare_add(name);
         if (merge)
           change_diff_merge_add(change, diff);
         else
@@ -135,6 +136,9 @@ editor_part_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
    if (!edje_edit_part_name_set(edit_object, name, new_val))
      return false;
    _editor_project_changed();
+   ren.old_name = name;
+   ren.new_name = new_val;
+   evas_object_smart_callback_call(ap.win, SIGNAL_PART_RENAMED, &ren);
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
