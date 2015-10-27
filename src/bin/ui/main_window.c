@@ -87,12 +87,12 @@ _history_click(void *data __UNUSED__,
    elm_layout_content_set(ap.block.right_top, NULL, ap.block.history);
 }
 static void
-_signal_click(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_property_click(void *data __UNUSED__,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
 {
    evas_object_hide(elm_layout_content_unset(ap.block.right_top, NULL));
-   elm_layout_content_set(ap.block.right_top, NULL, ap.block.signals);
+   elm_layout_content_set(ap.block.right_top, NULL, ap.block.property);
 }
 
 Eina_Bool
@@ -149,16 +149,10 @@ ui_main_window_add(void)
    evas_object_size_hint_align_set(ap.panes.right, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(ap.panes.left, "right", ap.panes.right);
 
-   ap.panes.right_hor = elm_panes_add(ap.win);
-   elm_panes_horizontal_set(ap.panes.right_hor, true);
-   evas_object_size_hint_weight_set(ap.panes.right_hor, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(ap.panes.right_hor, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_part_content_set(ap.panes.right, "right", ap.panes.right_hor);
-
    /* apply the panes size from config */
    elm_panes_content_left_size_set(ap.panes.left, config->panes.left);
    elm_panes_content_left_size_set(ap.panes.right, config->panes.right);
-   elm_panes_content_left_size_set(ap.panes.right_hor, config->panes.right_hor);
+   elm_panes_content_right_size_set(ap.panes.right, config->panes.tabs_size);
 
    navigator = navigator_add();
    evas_object_smart_callback_add(navigator, "group,open", _navigator_group_open, NULL);
@@ -180,16 +174,13 @@ ui_main_window_add(void)
    evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_toolbar_align_set(toolbar, 0.0);
 
+   elm_toolbar_item_append(toolbar, NULL, _("Properties"), _property_click, NULL);
    elm_toolbar_item_append(toolbar, NULL, _("History"), _history_click, NULL);
-   elm_toolbar_item_append(toolbar, NULL, _("Signals"), _signal_click, NULL);
-
-   ap.block.history = history_ui_add();
-   ap.block.signals = ui_signal_list_add(ap.win);
-   elm_layout_content_set(ap.block.right_top, NULL, ap.block.history);
-   elm_object_part_content_set(ap.panes.right_hor, "left", ap.block.right_top);
 
    ap.block.property = ui_property_add(ap.win);
-   elm_object_part_content_set(ap.panes.right_hor, "right", ap.block.property);
+   elm_layout_content_set(ap.block.right_top, NULL, ap.block.property);
+   ap.block.history = history_ui_add();
+   elm_object_part_content_set(ap.panes.right, "right", ap.block.right_top);
 
    ap.menu = ui_menu_add();
 
