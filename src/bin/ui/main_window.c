@@ -78,12 +78,21 @@ ui_main_window_del(void)
    return true;
 }
 
+/*
+ * It's necessary to avoid warning: implicit declaration of function
+ * 'elm_widget_sub_object_add' on compilation stage, which occurrs because of
+ * Elementary.h file isn't contain directly elm_widget.h file (where
+ * 'elm_widget_sub_object_add' function declared)
+ */
+Eina_Bool elm_widget_sub_object_add(Evas_Object *obj, Evas_Object *sobj);
+
 static void
 _history_click(void *data __UNUSED__,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
    evas_object_hide(elm_layout_content_unset(ap.block.right_top, NULL));
+   elm_widget_sub_object_add(ap.block.right_top, ap.block.property);
    elm_layout_content_set(ap.block.right_top, NULL, ap.block.history);
 }
 static void
@@ -92,6 +101,7 @@ _property_click(void *data __UNUSED__,
                 void *event_info __UNUSED__)
 {
    evas_object_hide(elm_layout_content_unset(ap.block.right_top, NULL));
+   elm_widget_sub_object_add(ap.block.right_top, ap.block.history);
    elm_layout_content_set(ap.block.right_top, NULL, ap.block.property);
 }
 
