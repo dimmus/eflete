@@ -1262,9 +1262,22 @@ _on_part_list_part_state_select(void *data,
 }
 
 static void
-_on_part_unselect(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+_on_groupedit_part_unselect(void *data,
+                            Evas_Object *obj __UNUSED__,
+                            void *event_info __UNUSED__)
+{
+   Evas_Object *workspace = (Evas_Object *)data;
+
+   WS_DATA_GET(workspace, sd);
+
+   _workspace_highlight_unset(workspace);
+   part_list_part_select(sd->part_list, NULL);
+}
+
+static void
+_on_part_list_part_unselect(void *data,
+                            Evas_Object *obj __UNUSED__,
+                            void *event_info __UNUSED__)
 {
    Evas_Object *workspace = (Evas_Object *)data;
 
@@ -1328,7 +1341,10 @@ workspace_add(Evas_Object *parent, Group *group)
    container_handler_size_set(sd->container.obj, 8, 8, 8, 8);
    evas_object_smart_callback_add(sd->groupedit, SIGNAL_GROUPEDIT_PART_SELECTED,
                                   _on_groupedit_part_select, obj);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PART_UNSELECTED, _on_part_unselect, obj);
+   evas_object_smart_callback_add(sd->groupedit, SIGNAL_GROUPEDIT_PART_UNSELECTED,
+                                  _on_groupedit_part_unselect, obj);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PART_UNSELECTED,
+                                  _on_part_list_part_unselect, obj);
    evas_object_smart_callback_add(sd->groupedit, "container,changed",
                                   _ws_ruler_abs_zero_move_cb, obj);
    evas_object_smart_callback_add(sd->groupedit, "object,area,changed",

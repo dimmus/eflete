@@ -223,61 +223,15 @@ group { name: "elm/layout/popup/hint_title";
 
 group { name: "elm/layout/property/default";
    parts {
-      part { name: "bg";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: DARK_GREY_BG_COLOR;
-         }
-      }
-      part { name: "separator";
-         type: RECT;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            max: -1 1;
-            color: 25 25 26 255;
-            rel1 {
-               to_y: "elm.text";
-            }
-            rel2 {
-               offset: 0 3;
-               to_y: "elm.text";
-            }
-         }
-      }
       part { name: "bg_content";
          type: RECT;
          description { state: "default" 0.0;
             color: LIGHT_GREY_BG_COLOR;
-            rel1 {
-               to_y: "separator";
-               relative: 0.0 1.0;
-            }
-         }
-      }
-      part { name: "elm.text";
-         type: TEXT;
-         description { state: "default" 0.0;
-            color: FN_COL_LIGHT_GREY;
-            min: 0 22;
-            max: -1 22;
-            align: 0.0 0.0;
-            text {
-               align: 0.0 0.5;
-               min: 1 0;
-               font: PT;
-               size: 13;
-               ellipsis: -1;
-            }
-            rel1.offset: 18 3;
          }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
          description { state: "default" 0.0;
-            rel1 {
-               relative: 0.0 1.0;
-               to_y: "separator";
-            }
          }
       }
 
