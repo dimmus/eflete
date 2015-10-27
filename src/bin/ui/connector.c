@@ -1380,7 +1380,7 @@ Eina_Bool
 code_edit_mode_switch(Eina_Bool is_on)
 {
    Config *config;
-   double left = 0.0, right_hor = 0.0;
+   double left = 0.0/*, tabs_size = 0.0*/;
 
 
     if (is_on)
@@ -1395,12 +1395,12 @@ code_edit_mode_switch(Eina_Bool is_on)
 
          //center = config->panes.center;
          left = config->panes.left;
-         right_hor = config->panes.right_hor;
+         //tabs_size = config->panes.tabs_size;
       }
 
    //_panes_pos_setup(ap.panes.center, center, is_on);
    _panes_pos_setup(ap.panes.left, left, is_on);
-   _panes_pos_setup(ap.panes.right_hor, right_hor, is_on);
+   //_panes_pos_setup(ap.panes.right, tabs_size, is_on);
    //ui_panes_left_panes_min_size_toggle(!is_on);
 
    return true;

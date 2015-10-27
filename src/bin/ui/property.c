@@ -963,7 +963,6 @@ ui_property_add(Evas_Object *parent)
    pd = mem_calloc(1, sizeof(Prop_Data));
    pd->layout = elm_layout_add(parent);
    elm_layout_theme_set(pd->layout, "layout", "property", "default");
-   elm_layout_text_set(pd->layout, NULL, _("Properties"));
 
    SCROLLER_ADD(pd->layout, scroller);
    BOX_ADD(scroller, box, EINA_FALSE, EINA_FALSE);

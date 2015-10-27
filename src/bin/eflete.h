@@ -90,7 +90,6 @@ struct _App_Data
    struct {
       Evas_Object *left;
       Evas_Object *right;
-      Evas_Object *right_hor;
    } panes;
 
    struct {
@@ -99,8 +98,7 @@ struct _App_Data
       Evas_Object *state_list;
       Evas_Object *signal_list;
       Evas_Object *bottom_right;
-      Evas_Object *right_top, *history, *signals;
-      Evas_Object *property;
+      Evas_Object *right_top, *history, *property;
       Evas_Object *canvas;
    } block;
    Evas_Object *workspace;
