@@ -235,8 +235,6 @@ _fileselector_helper(const char *title,
    evas_object_smart_callback_add(fs, "activated", _done, NULL);
    /* small hack, hide not necessary button */
    evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
-   /* one more hack, set text our text to button 'ok' */
-   elm_object_text_set(elm_layout_content_get(fs, "elm.swallow.ok"), _("Open"));
    evas_object_size_hint_min_set(helper, FS_W, FS_H);
    evas_object_resize(helper, FS_W, FS_H);
 
