@@ -230,7 +230,7 @@ _fileselector_helper(const char *title,
      }
    else elm_fileselector_folder_only_set(fs, true);
 
-   elm_fileselector_path_set(fs, path ? path : getenv("HOME"));
+   elm_fileselector_path_set(fs, path ? path : profile_get()->general.projects_folder);
    evas_object_smart_callback_add(fs, "done", _done, NULL);
    evas_object_smart_callback_add(fs, "activated", _done, NULL);
    /* small hack, hide not necessary button */
