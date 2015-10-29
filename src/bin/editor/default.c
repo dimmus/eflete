@@ -61,3 +61,39 @@ EDITOR_STATE_DOUBLE_RESET(container_align_y, 0.5, 0.5)
 EDITOR_STATE_DOUBLE_RESET(minmul_h, 0.0, 0.0)
 EDITOR_STATE_DOUBLE_RESET(minmul_w, 0.0, 0.0)
 
+#define EDITOR_INT_DEFAULT_CHECK(FUNC, PROTO_ARGS, ARGS, DEF_VAL) \
+Eina_Bool \
+editor_##FUNC##_default_is(Evas_Object *edit_object, PROTO_ARGS) \
+{ \
+   assert(edit_object != NULL); \
+   int val = edje_edit_##FUNC##_get(edit_object, ARGS); \
+   return val == DEF_VAL; \
+}
+
+#define EDITOR_INT_RESET(FUNC, PROTO_ARGS, ARGS, RESET_VAL) \
+Eina_Bool \
+editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
+{ \
+   assert(edit_object != NULL); \
+   if (!editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
+   return editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL); \
+}
+
+#define EDITOR_STATE_INT_RESET(FUNC, DEF_VAL, RESET_VAL) \
+EDITOR_INT_DEFAULT_CHECK(state_##FUNC, EDITOR_STATE_ARGS_PROTO, EDITOR_STATE_ARGS, DEF_VAL) \
+EDITOR_INT_RESET(state_##FUNC, EDITOR_STATE_ARGS_PROTO, EDITOR_STATE_ARGS, RESET_VAL)
+
+EDITOR_STATE_INT_RESET(rel1_offset_x, 0, 0)
+EDITOR_STATE_INT_RESET(rel1_offset_y, 0, 0)
+EDITOR_STATE_INT_RESET(rel2_offset_x, -1, -1)
+EDITOR_STATE_INT_RESET(rel2_offset_y, -1, -1)
+EDITOR_STATE_INT_RESET(max_w, -1, -1)
+EDITOR_STATE_INT_RESET(max_h, -1, -1)
+EDITOR_STATE_INT_RESET(min_w, 0, 0)
+EDITOR_STATE_INT_RESET(min_h, 0, 0)
+EDITOR_STATE_INT_RESET(fill_origin_offset_x, 0, 0)
+EDITOR_STATE_INT_RESET(fill_origin_offset_y, 0, 0)
+EDITOR_STATE_INT_RESET(fill_size_offset_x, -1, -1)
+EDITOR_STATE_INT_RESET(fill_size_offset_y, -1, -1)
+EDITOR_STATE_INT_RESET(container_padding_x, 0, 0)
+EDITOR_STATE_INT_RESET(container_padding_y, 0, 0)

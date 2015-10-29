@@ -87,4 +87,62 @@ Eina_Bool
 editor_minmul_w_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
 Eina_Bool
 editor_minmul_w_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+
+
+Eina_Bool
+editor_rel1_offset_x_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_rel1_offset_x_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_rel1_offset_y_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_rel1_offset_y_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_rel2_offset_x_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_rel2_offset_x_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_rel2_offset_y_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_rel2_offset_y_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_max_w_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_max_w_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_max_h_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_max_h_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_min_w_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_min_w_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_min_h_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_min_h_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_fill_origin_offset_x_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_fill_origin_offset_x_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_fill_origin_offset_y_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_fill_origin_offset_y_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_fill_size_offset_x_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_fill_size_offset_x_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_fill_size_offset_y_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_fill_size_offset_y_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_container_padding_x_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_container_padding_x_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_container_padding_y_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_container_padding_y_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
 #endif /* DEFAULT_H */
