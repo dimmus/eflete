@@ -145,4 +145,30 @@ Eina_Bool
 editor_container_padding_y_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
 Eina_Bool
 editor_container_padding_y_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+
+
+Eina_Bool
+editor_fixed_h_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_fixed_h_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_fixed_w_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_fixed_w_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_fill_smooth_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_fill_smooth_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_visible_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_visible_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_container_min_h_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_container_min_h_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_container_min_v_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_container_min_v_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
 #endif /* DEFAULT_H */
