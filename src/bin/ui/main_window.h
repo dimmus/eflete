@@ -104,6 +104,19 @@ extern int MENU_ITEMS_LIST_TEMPORARY[];
  */
 typedef Eina_Bool(* Popup_Validator_Func)(void *data);
 
+/**
+ * The fileselector helper callback.
+ *
+ * @param data The user data;
+ * @param obj The fileselector from helper;
+ * @param event_info The eina_list with the selected paths.
+ *
+ * @return EINA_TRUE if all good and you happy, overwise all bad EINA_FALSE.
+ *
+ * @ingroup Window
+ */
+typedef Eina_Bool(* Helper_Done_Cb)(void *data, Evas_Object *obj, void *event_info);
+
 #define POPUP_BUTTON_MASK 0xf
 typedef enum _Popup_Button
 {
@@ -416,17 +429,17 @@ popup_buttons_disabled_set(Popup_Button p_btns, Eina_Bool disabled);
 
 void
 popup_fileselector_folder_helper(const char *title, Evas_Object *follow_up, const char *path,
-                                 Evas_Smart_Cb func, void *data,
+                                 Helper_Done_Cb func, void *data,
                                  Eina_Bool multi, Eina_Bool is_save);
 
 void
 popup_fileselector_edj_helper(const char *title, Evas_Object *follow_up, const char *path,
-                              Evas_Smart_Cb func, void *data,
+                              Helper_Done_Cb func, void *data,
                               Eina_Bool multi, Eina_Bool is_save);
 
 void
 popup_fileselector_edc_helper(const char *title, Evas_Object *follow_up, const char *path,
-                              Evas_Smart_Cb func, void *data,
+                              Helper_Done_Cb func, void *data,
                               Eina_Bool multi, Eina_Bool is_save);
 
 void

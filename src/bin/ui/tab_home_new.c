@@ -23,6 +23,7 @@
 #include "tabs_private.h"
 #include "tabs.h"
 #include "main_window.h"
+#include "project_common.h"
 
 struct _Widget_Item_Data
 {
@@ -432,7 +433,7 @@ _progress_end(void *data, PM_Project_Result result)
         elm_entry_entry_set(tab_new.meta.comment, N_("Created with Eflete!"));
         _checks_set(false);
      }
-   progress_end(data, result);
+   _tabs_progress_end(data, result);
 }
 
 static Eina_Bool
@@ -504,13 +505,27 @@ _on_create(void *data __UNUSED__,
            Evas_Object *obj __UNUSED__,
            void *event_info __UNUSED__)
 {
+   Eina_Strbuf *buf;
+
    if (ap.project)
      if (!project_close())
        return;
 
-   exist_permission_check(elm_entry_entry_get(tab_new.path),
-                          elm_entry_entry_get(tab_new.name),
-                          _("New project"));
+   buf = eina_strbuf_new();
+   eina_strbuf_append_printf(buf,
+                            _("<font_size=16>A project folder named '%s' already exist."
+                              "Do you want to replace it?</font_size><br>"
+                              "The project folder '%s' already exist in '%s'. Replacing it will overwrite"
+                              "<b>all</b> contents."),
+                            elm_entry_entry_get(tab_new.name),
+                            elm_entry_entry_get(tab_new.name),
+                            elm_entry_entry_get(tab_new.path));
+
+   if (!exist_permission_check(elm_entry_entry_get(tab_new.path),
+                               elm_entry_entry_get(tab_new.name),
+                               _("New project"), eina_strbuf_string_get(buf)))
+     return;
+   eina_strbuf_free(buf);
    ap.splash = splash_add(ap.win,
                           _setup_open_splash,
                           _teardown_open_splash,

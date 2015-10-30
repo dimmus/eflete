@@ -21,8 +21,9 @@
 
 static Popup_Button btn_pressed;
 static Evas_Object *popup;
+static Evas_Object *helper;
 static Evas_Object *fs;
-static Evas_Smart_Cb dismiss_func;
+static Helper_Done_Cb dismiss_func;
 static void* func_data;
 
 static const Popup_Button _btn_ok         = BTN_OK;
@@ -124,21 +125,22 @@ popup_buttons_disabled_set(Popup_Button popup_btns, Eina_Bool disabled)
 }
 
 static void
-_popup_dismiss(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               const char *signal __UNUSED__,
-               const char *source __UNUSED__)
+_helper_dismiss(void *data __UNUSED__,
+                Evas_Object *obj __UNUSED__,
+                const char *signal __UNUSED__,
+                const char *source __UNUSED__)
 {
-   evas_object_del(popup);
+   evas_object_del(helper);
 }
 
 static void
 _done(void *data __UNUSED__,
-      Evas_Object *obj __UNUSED__,
+      Evas_Object *obj,
       void *event_info __UNUSED__)
 {
    Eina_List *selected_paths = NULL;
    Eina_Stringshare *selected;
+   Eina_Bool res = true;
 
    if (dismiss_func)
      {
@@ -154,33 +156,38 @@ _done(void *data __UNUSED__,
                selected = elm_fileselector_path_get(fs);
              selected_paths = eina_list_append(selected_paths, selected);
           }
-        ((Evas_Smart_Cb)dismiss_func)(func_data, NULL, selected_paths);
+        res = ((Helper_Done_Cb)dismiss_func)(func_data, obj, selected_paths);
      }
-   eina_list_free(selected_paths);
-   dismiss_func = NULL;
-   func_data = NULL;
-   _popup_dismiss(NULL, NULL, data, NULL);
+
+   EINA_LIST_FREE(selected_paths, selected)
+      eina_stringshare_del(selected);
+   if (res)
+     {
+        dismiss_func = NULL;
+        func_data = NULL;
+        _helper_dismiss(NULL, NULL, data, NULL);
+     }
 }
 
 #define FS_W 430
 #define FS_H 460
 
 static void
-_popup_obj_follow(void *data __UNUSED__,
-                  Evas *e __UNUSED__,
-                  Evas_Object *obj,
-                  void *event_info __UNUSED__)
+_helper_obj_follow(void *data __UNUSED__,
+                   Evas *e __UNUSED__,
+                   Evas_Object *obj,
+                   void *event_info __UNUSED__)
 {
    int x, y, w, h, nx, ny;
 
    evas_object_geometry_get(obj, &x, &y, &w, &h);
-   nx = x - (FS_W + 12 - w);
+   nx = x - (FS_W + 12 - w); /* 12 - it's a helper border */
    ny = y + h;
-   evas_object_move(popup, nx, ny);
+   evas_object_move(helper, nx, ny);
 }
 
 static void
-_popup_win_follow(void *data __UNUSED__,
+_helper_win_follow(void *data __UNUSED__,
                   Evas *e __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
@@ -190,7 +197,7 @@ _popup_win_follow(void *data __UNUSED__,
    evas_object_geometry_get(ap.win, NULL, NULL, &w, &h);
    nx = (w / 2) - ((FS_W + 12) / 2);
    ny = (h / 2) - ((FS_H + 12) / 2);
-   evas_object_move(popup, nx, ny);
+   evas_object_move(helper, nx, ny);
 }
 
 static void
@@ -199,7 +206,7 @@ _fileselector_helper(const char *title,
                      const char *path,
                      Eina_Bool multi,
                      Eina_Bool is_save,
-                     Evas_Smart_Cb func,
+                     Helper_Done_Cb func,
                      void *data,
                      Elm_Fileselector_Filter_Func filter_cb)
 {
@@ -208,9 +215,9 @@ _fileselector_helper(const char *title,
    dismiss_func = func;
    func_data = data;
 
-   popup = elm_layout_add(ap.win);
-   elm_layout_theme_set(popup, "layout", "popup", title ? "hint_title" : "hint");
-   elm_layout_signal_callback_add(popup, "hint,dismiss", "eflete", _popup_dismiss, NULL);
+   helper = elm_layout_add(ap.win);
+   elm_layout_theme_set(helper, "layout", "popup", title ? "hint_title" : "hint");
+   elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, NULL);
 
    fs = elm_fileselector_add(ap.win);
    elm_fileselector_expandable_set(fs, false);
@@ -223,41 +230,41 @@ _fileselector_helper(const char *title,
      }
    else elm_fileselector_folder_only_set(fs, true);
 
-   elm_fileselector_path_set(fs, path ? path : getenv("HOME"));
+   elm_fileselector_path_set(fs, path ? path : profile_get()->general.projects_folder);
    evas_object_smart_callback_add(fs, "done", _done, NULL);
    evas_object_smart_callback_add(fs, "activated", _done, NULL);
    /* small hack, hide not necessary button */
    evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
    /* one more hack, set text our text to button 'ok' */
    elm_object_text_set(elm_layout_content_get(fs, "elm.swallow.ok"), _("Open"));
-   evas_object_size_hint_min_set(popup, FS_W, FS_H);
-   evas_object_resize(popup, FS_W, FS_H);
+   evas_object_size_hint_min_set(helper, FS_W, FS_H);
+   evas_object_resize(helper, FS_W, FS_H);
 
    /* scroller is necessary to fix issues with fileselector size */
    SCROLLER_ADD(ap.win, scroller);
    elm_object_content_set(scroller, fs);
 
-   if (title) elm_object_text_set(popup, title);
-   elm_layout_content_set(popup, "elm.swallow.content", scroller);
+   if (title) elm_object_text_set(helper, title);
+   elm_layout_content_set(helper, "elm.swallow.content", scroller);
    evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
    if (follow_up)
      {
-        _popup_obj_follow(NULL, NULL, follow_up, NULL);
-        evas_object_event_callback_add(follow_up, EVAS_CALLBACK_RESIZE, _popup_obj_follow, NULL);
-        evas_object_event_callback_add(follow_up, EVAS_CALLBACK_MOVE, _popup_obj_follow, NULL);
+        _helper_obj_follow(NULL, NULL, follow_up, NULL);
+        evas_object_event_callback_add(follow_up, EVAS_CALLBACK_RESIZE, _helper_obj_follow, NULL);
+        evas_object_event_callback_add(follow_up, EVAS_CALLBACK_MOVE, _helper_obj_follow, NULL);
      }
    else
      {
-        _popup_win_follow(NULL, NULL, NULL, NULL);
-        evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _popup_win_follow, NULL);
+        _helper_win_follow(NULL, NULL, NULL, NULL);
+        evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
      }
-   evas_object_show(popup);
+   evas_object_show(helper);
 }
 
 void
 popup_fileselector_folder_helper(const char *title, Evas_Object *follow_up, const char *path,
-                                 Evas_Smart_Cb func, void *data,
+                                 Helper_Done_Cb func, void *data,
                                  Eina_Bool multi, Eina_Bool is_save)
 {
    _fileselector_helper(title, follow_up, path, multi, is_save, func, data, NULL);
@@ -277,7 +284,7 @@ _edj_filter(const char *path,
 
 void
 popup_fileselector_edj_helper(const char *title, Evas_Object *follow_up, const char *path,
-                              Evas_Smart_Cb func, void *data,
+                              Helper_Done_Cb func, void *data,
                               Eina_Bool multi, Eina_Bool is_save)
 {
    _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _edj_filter);
@@ -297,7 +304,7 @@ _edc_filter(const char *path,
 
 void
 popup_fileselector_edc_helper(const char *title, Evas_Object *follow_up, const char *path,
-                              Evas_Smart_Cb func, void *data,
+                              Helper_Done_Cb func, void *data,
                               Eina_Bool multi, Eina_Bool is_save)
 {
    _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _edc_filter);
@@ -308,25 +315,25 @@ popup_log_message_helper(const char *msg)
 {
    Evas_Object *box, *en, *lab;
 
-   popup = elm_layout_add(ap.win);
-   elm_layout_theme_set(popup, "layout", "popup", "hint");
-   elm_layout_signal_callback_add(popup, "hint,dismiss", "eflete", _popup_dismiss, NULL);
+   helper = elm_layout_add(ap.win);
+   elm_layout_theme_set(helper, "layout", "popup", "hint");
+   elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, NULL);
 
-   BOX_ADD(popup, box, false, false)
+   BOX_ADD(helper, box, false, false)
    elm_box_padding_set(box, 0, 6);
-   LABEL_ADD(popup, lab, _("<font_size=14>Import edc-file error"))
+   LABEL_ADD(helper, lab, _("<font_size=14>Import edc-file error"))
    evas_object_show(lab);
    ENTRY_ADD(box, en, false)
    elm_entry_editable_set(en, false);
    elm_box_pack_end(box, lab);
    elm_box_pack_end(box, en);
-   elm_layout_content_set(popup, NULL, box);
+   elm_layout_content_set(helper, NULL, box);
 
    elm_entry_entry_set(en, msg);
 
-   _popup_win_follow(NULL, NULL, NULL, NULL);
-   evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _popup_win_follow, NULL);
-   evas_object_show(popup);
+   _helper_win_follow(NULL, NULL, NULL, NULL);
+   evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
+   evas_object_show(helper);
 }
 
 #undef FS_W

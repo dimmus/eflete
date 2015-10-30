@@ -46,7 +46,7 @@ _setup_open_splash(void *data, Splash_Status status __UNUSED__)
 
    assert(path != NULL);
 
-   pm_project_open(path, progress_print, progress_end, NULL);
+   pm_project_open(path, progress_print, _tabs_progress_end, NULL);
    eina_stringshare_del(path);
 
    return true;
@@ -120,7 +120,7 @@ _tab_open_project_add(void)
 
    tab.fs = elm_fileselector_add(ap.win);
    elm_fileselector_expandable_set(tab.fs, false);
-   elm_fileselector_path_set(tab.fs, getenv("HOME"));
+   elm_fileselector_path_set(tab.fs, profile_get()->general.projects_folder);
    elm_fileselector_custom_filter_append(tab.fs, _eflete_filter, NULL, "Eflete Files");
    evas_object_smart_callback_add(tab.fs, "done", _open, NULL);
    evas_object_smart_callback_add(tab.fs, "activated", _open, NULL);

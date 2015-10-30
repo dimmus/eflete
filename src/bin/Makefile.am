@@ -19,6 +19,7 @@ libete_a_SOURCES = \
 ../../src/bin/editor/diff.c \
 ../../src/bin/editor/change.c \
 ../../src/bin/editor/new_history.c \
+../../src/bin/editor/default.c \
 ../../src/bin/editor/editor_general.c \
 ../../src/bin/editor/editor_group.c \
 ../../src/bin/editor/editor_part.c \
@@ -31,6 +32,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/main_window.c \
 ../../src/bin/ui/popup.c \
 ../../src/bin/ui/project_close.c \
+../../src/bin/ui/project_common.c \
 ../../src/bin/ui/connector.c \
 ../../src/bin/ui/splash.c \
 ../../src/bin/ui/shortcuts/shortcuts.c \
