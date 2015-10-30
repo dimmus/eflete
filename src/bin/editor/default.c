@@ -126,3 +126,41 @@ EDITOR_STATE_BOOL_RESET(fill_smooth, true, true)
 EDITOR_STATE_BOOL_RESET(visible, true, true)
 EDITOR_STATE_BOOL_RESET(container_min_h, false, false)
 EDITOR_STATE_BOOL_RESET(container_min_v, false, false)
+
+#define EDITOR_NULL_STRING_DEFAULT_CHECK(FUNC, PROTO_ARGS, ARGS) \
+Eina_Bool \
+editor_##FUNC##_default_is(Evas_Object *edit_object, PROTO_ARGS) \
+{ \
+   Eina_Bool res; \
+   assert(edit_object != NULL); \
+   Eina_Stringshare *val = edje_edit_##FUNC##_get(edit_object, ARGS); \
+   if (val != NULL) \
+     { \
+       res = val == NULL; \
+       eina_stringshare_del(val); \
+     } \
+   else \
+     res = true; \
+   return res; \
+}
+
+#define EDITOR_NULL_STRING_RESET(FUNC, PROTO_ARGS, ARGS, RESET_VAL) \
+Eina_Bool \
+editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
+{ \
+   assert(edit_object != NULL); \
+   if (!editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
+   return editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL); \
+}
+
+#define EDITOR_STATE_NULL_STRING_RESET(FUNC, RESET_VAL) \
+EDITOR_NULL_STRING_DEFAULT_CHECK(state_##FUNC, EDITOR_STATE_ARGS_PROTO, EDITOR_STATE_ARGS) \
+EDITOR_NULL_STRING_RESET(state_##FUNC, EDITOR_STATE_ARGS_PROTO, EDITOR_STATE_ARGS, RESET_VAL)
+
+EDITOR_STATE_NULL_STRING_RESET(rel1_to_x, NULL)
+EDITOR_STATE_NULL_STRING_RESET(rel1_to_y, NULL)
+EDITOR_STATE_NULL_STRING_RESET(rel2_to_x, NULL)
+EDITOR_STATE_NULL_STRING_RESET(rel2_to_y, NULL)
+EDITOR_STATE_NULL_STRING_RESET(proxy_source, NULL)
+EDITOR_STATE_NULL_STRING_RESET(color_class, NULL)
+EDITOR_STATE_NULL_STRING_RESET(image, "")
