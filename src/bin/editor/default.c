@@ -164,3 +164,31 @@ EDITOR_STATE_NULL_STRING_RESET(rel2_to_y, NULL)
 EDITOR_STATE_NULL_STRING_RESET(proxy_source, NULL)
 EDITOR_STATE_NULL_STRING_RESET(color_class, NULL)
 EDITOR_STATE_NULL_STRING_RESET(image, "")
+
+#define EDITOR_INT_INT_INT_INT_DEFAULT_CHECK(FUNC, PROTO_ARGS, ARGS, DEF_VAL, DEF_VAL_2, DEF_VAL_3, DEF_VAL_4) \
+Eina_Bool \
+editor_##FUNC##_default_is(Evas_Object *edit_object, PROTO_ARGS) \
+{ \
+   assert(edit_object != NULL); \
+   int val, val2, val3, val4; \
+   edje_edit_##FUNC##_get(edit_object, ARGS, &val, &val2, &val3, &val4); \
+   return (val == DEF_VAL) && (val2 == DEF_VAL_2) && (val3 == DEF_VAL_3) && (val4 == DEF_VAL_4); \
+}
+
+#define EDITOR_INT_INT_INT_INT_RESET(FUNC, PROTO_ARGS, ARGS, RESET_VAL, RESET_VAL_2, RESET_VAL_3, RESET_VAL_4) \
+Eina_Bool \
+editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
+{ \
+   assert(edit_object != NULL); \
+   if (!editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
+   return editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL, RESET_VAL_2, RESET_VAL_3, RESET_VAL_4); \
+}
+
+#define EDITOR_STATE_INT_INT_INT_INT_RESET(FUNC, DEF_VAL, DEF_VAL_2, DEF_VAL_3, DEF_VAL_4) \
+EDITOR_INT_INT_INT_INT_DEFAULT_CHECK(state_##FUNC, EDITOR_STATE_ARGS_PROTO, EDITOR_STATE_ARGS, DEF_VAL, DEF_VAL_2, DEF_VAL_3, DEF_VAL_4) \
+EDITOR_INT_INT_INT_INT_RESET(state_##FUNC, EDITOR_STATE_ARGS_PROTO, EDITOR_STATE_ARGS, DEF_VAL, DEF_VAL_2, DEF_VAL_3, DEF_VAL_4)
+
+EDITOR_STATE_INT_INT_INT_INT_RESET(color, 255, 255, 255, 255)
+EDITOR_STATE_INT_INT_INT_INT_RESET(color2, 0, 0, 0, 255)
+EDITOR_STATE_INT_INT_INT_INT_RESET(color3, 0, 0, 0, 128)
+EDITOR_STATE_INT_INT_INT_INT_RESET(image_border, 0, 0, 0, 0)
