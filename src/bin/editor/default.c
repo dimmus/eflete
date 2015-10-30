@@ -192,3 +192,31 @@ EDITOR_STATE_INT_INT_INT_INT_RESET(color, 255, 255, 255, 255)
 EDITOR_STATE_INT_INT_INT_INT_RESET(color2, 0, 0, 0, 255)
 EDITOR_STATE_INT_INT_INT_INT_RESET(color3, 0, 0, 0, 128)
 EDITOR_STATE_INT_INT_INT_INT_RESET(image_border, 0, 0, 0, 0)
+
+
+#define EDITOR_UCHAR_DEFAULT_CHECK(FUNC, PROTO_ARGS, ARGS, DEF_VAL) \
+Eina_Bool \
+editor_##FUNC##_default_is(Evas_Object *edit_object, PROTO_ARGS) \
+{ \
+   assert(edit_object != NULL); \
+   unsigned char val = edje_edit_##FUNC##_get(edit_object, ARGS); \
+   return val == DEF_VAL; \
+}
+
+#define EDITOR_UCHAR_RESET(FUNC, PROTO_ARGS, ARGS, RESET_VAL) \
+Eina_Bool \
+editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
+{ \
+   assert(edit_object != NULL); \
+   if (!editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
+   return editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL); \
+}
+
+#define EDITOR_STATE_UCHAR_RESET(FUNC, DEF_VAL, RESET_VAL) \
+EDITOR_UCHAR_DEFAULT_CHECK(state_##FUNC, EDITOR_STATE_ARGS_PROTO, EDITOR_STATE_ARGS, DEF_VAL) \
+EDITOR_UCHAR_RESET(state_##FUNC, EDITOR_STATE_ARGS_PROTO, EDITOR_STATE_ARGS, RESET_VAL)
+
+EDITOR_STATE_UCHAR_RESET(image_border_fill, 0, 0)
+EDITOR_STATE_UCHAR_RESET(fill_type, 0, 0)
+EDITOR_STATE_UCHAR_RESET(aspect_pref, 0, 0)
+EDITOR_STATE_UCHAR_RESET(table_homogeneous, 0, 0)

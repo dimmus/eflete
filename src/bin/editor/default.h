@@ -219,4 +219,22 @@ Eina_Bool
 editor_state_image_border_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
 Eina_Bool
 editor_state_image_border_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+
+
+Eina_Bool
+editor_state_image_border_fill_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_image_border_fill_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_fill_type_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_fill_type_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_aspect_pref_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_aspect_pref_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_table_homogeneous_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_table_homogeneous_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
 #endif /* DEFAULT_H */
