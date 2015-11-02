@@ -1291,7 +1291,7 @@ workspace_add(Evas_Object *parent, Group *group)
 {
    Evas *e = NULL;
    Evas_Object *obj = NULL;
-   Evas_Coord x, y, w, h, ruler_ver_w, ruler_hor_h, hrb_w, hrb_h;
+   Evas_Coord ruler_ver_w, ruler_hor_h, hrb_w, hrb_h;
 
 
    assert(parent != NULL);
@@ -1406,9 +1406,6 @@ workspace_add(Evas_Object *parent, Group *group)
         container_min_size_set(ap.live_view->live_view, min_w, min_h);
         container_max_size_set(ap.live_view->live_view, max_w, max_h);
      }
-
-   evas_object_geometry_get(sd->scroller, &x, &y, &w, &h);
-   evas_object_resize(sd->container.obj, w - hrb_w, h - hrb_h);
 
    return obj;
 }
