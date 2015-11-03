@@ -63,6 +63,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/blocks/ui_block.c \
 ../../src/bin/ui/property.c \
 ../../src/bin/ui/property_group.c \
+../../src/bin/ui/property_image.c \
 ../../src/bin/ui/blocks/ui_widget_list.c \
 ../../src/bin/ui/blocks/ui_signal_list.c \
 ../../src/bin/ui/blocks/ui_states_list.c \
