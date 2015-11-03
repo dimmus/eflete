@@ -131,15 +131,30 @@ _content_set(void *data,
           ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
         if (toolbar_item == tabs.menu.item_sound)
-          tabs_menu_tab_open(TAB_SOUND_EDITOR);
+          {
+             tabs_menu_tab_open(TAB_SOUND_EDITOR);
+             evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
+          }
         else if (toolbar_item == tabs.menu.item_text)
-          tabs_menu_tab_open(TAB_STYLE_EDITOR);
+          {
+             tabs_menu_tab_open(TAB_STYLE_EDITOR);
+             evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
+          }
         else if (toolbar_item == tabs.menu.item_image)
-          tabs_menu_tab_open(TAB_IMAGE_EDITOR);
+          {
+             tabs_menu_tab_open(TAB_IMAGE_EDITOR);
+             evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_EDITOR_TAB_CLICKED, NULL);
+          }
         else if (toolbar_item == tabs.menu.item_colorclass)
-          tabs_menu_tab_open(TAB_COLORCLASS_EDITOR);
+          {
+             tabs_menu_tab_open(TAB_COLORCLASS_EDITOR);
+             evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
+          }
         else
-          tabs_menu_tab_open(TAB_LAST);
+          {
+             tabs_menu_tab_open(TAB_LAST);
+             evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
+          }
      }
 
    /* call 'tab,changed' on tab click, and sent Group accociated with clicked

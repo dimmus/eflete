@@ -25,7 +25,7 @@
 #define EFL_BETA_API_SUPPORT
 #define EFL_EO_API_SUPPORT
 
-#include "property_group.h"
+#include "property_private.h"
 #include "property_macros.h"
 #include "main_window.h"
 #include "string_common.h"
@@ -44,13 +44,13 @@
    Prop_Data *pd = evas_object_data_get(property, PROP_DATA); \
    assert(pd != NULL);
 
-/*
- * Callback is added for frames at property box to correct scroller
- * work while each frame would be expanded/collapsed
- */
-#define FRAME_PROPERTY_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE, SCROLLER) \
-FRAME_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE) \
-evas_object_smart_callback_add(FRAME, "clicked", _on_frame_click, SCROLLER);
+/* enum for identifying current property
+ (group's, image's, sound's or other kind of peroperty) */
+enum _Property_Type {
+   PROPERTY,
+   IMAGE_PROPERTY
+};
+typedef enum _Property_Type Property_Type;
 
 struct _Prop_Data
 {
@@ -59,8 +59,49 @@ struct _Prop_Data
    Evas_Object *sound_property;
    Evas_Object *colorclass_property;
    Evas_Object *layout;
+
+   Property_Type type;
 };
 typedef struct _Prop_Data Prop_Data;
+
+static void
+_on_different_clicked(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
+{
+   Evas_Object *property = data;
+   PROP_DATA_GET()
+
+   assert(pd != NULL);
+
+   ui_property_group_unset(pd->group_property);
+   elm_object_content_unset(pd->layout);
+
+   /* hide everything */
+   evas_object_hide(pd->group_property);
+   evas_object_hide(pd->image_property);
+
+   pd->type = PROPERTY;
+}
+
+static void
+_on_image_editor_clicked(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info __UNUSED__)
+{
+   Evas_Object *property = data;
+   PROP_DATA_GET()
+
+   assert(pd != NULL);
+
+   ui_property_group_unset(pd->group_property);
+   elm_object_content_unset(pd->layout);
+   elm_object_content_set(pd->layout, pd->image_property);
+   evas_object_hide(pd->group_property);
+   evas_object_show(pd->image_property);
+
+   pd->type = IMAGE_PROPERTY;
+}
 
 static void
 _on_tab_changed(void *data,
@@ -75,10 +116,22 @@ _on_tab_changed(void *data,
 
    if (!group)
      {
-        ui_property_group_unset(pd->group_property);
+        if (pd->type == PROPERTY)
+          ui_property_group_unset(pd->group_property);
         return;
      }
+   /* it has group here, and group's tab was clicked,
+      but if previous tab was image_property tab,
+      we need to remove it from there and set group property in there */
+   if (pd->type == IMAGE_PROPERTY)
+     {
+        elm_object_content_unset(pd->layout);
+        elm_object_content_set(pd->layout, pd->group_property);
+        evas_object_hide(pd->image_property);
+     }
    ui_property_group_set(pd->group_property, group);
+
+   pd->type = PROPERTY;
 
    if (!group->current_part) return;
    ui_property_part_set(pd->group_property, group->current_part);
@@ -100,12 +153,12 @@ ui_property_add(Evas_Object *parent)
    elm_object_content_set(pd->layout, pd->group_property);
    evas_object_data_set(pd->layout, PROP_DATA, pd);
 
-   /*
    pd->image_property = ui_property_image_add(pd->layout);
-    */
 
    /* register global callbacks */
    evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _on_tab_changed, pd->layout);
+   evas_object_smart_callback_add(ap.win, SIGNAL_IMAGE_EDITOR_TAB_CLICKED, _on_image_editor_clicked, pd->layout);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, _on_different_clicked, pd->layout);
 
    return pd->layout;
 }

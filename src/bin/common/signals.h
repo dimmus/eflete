@@ -201,6 +201,14 @@ typedef struct {
 #define SIGNAL_PROJECT_CLOSED "SIGNAL_PROJECT_CLOSED"
 
 /**
+ * emited when NOT editor tab and NOT group tab is clicked.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_DIFFERENT_TAB_CLICKED "SIGNAL_DIFFERENT_TAB_CLICKED"
+
+/**
  * emited when image editor tab is clicked.
  * eventinfo - NULL
  *
