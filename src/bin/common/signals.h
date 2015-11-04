@@ -146,7 +146,7 @@ typedef struct {
 
 /**
  * emited when state is added in editor.
- * eventinfo - stringshare with state name
+ * eventinfo - stringshare with full state name
  *
  * @ingroup Window
  */
@@ -154,7 +154,7 @@ typedef struct {
 
 /**
  * emited *before* state will be deleted in editor.
- * eventinfo - stringshare with state name
+ * eventinfo - stringshare with full state name
  *
  * @ingroup Window
  */

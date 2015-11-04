@@ -321,7 +321,7 @@ editor_state_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
    if (!edje_edit_state_add(edit_object, part_name, state_name, state_val))
      return false;
    _editor_project_changed();
-   event_info = eina_stringshare_add(state_name);
+   event_info = eina_stringshare_printf("%s %.2f", state_name, state_val);
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_ADDED, (void *)event_info);
    eina_stringshare_del(event_info);
    return true;
@@ -358,7 +358,7 @@ editor_state_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge __UN
    if (!edje_edit_state_copy(edit_object, part_name, from_name, from_val, state_name, state_val))
      return false;
    _editor_project_changed();
-   event_info = eina_stringshare_add(state_name);
+   event_info = eina_stringshare_printf("%s %.2f", state_name, state_val);
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_ADDED, (void *)event_info);
    eina_stringshare_del(event_info);
    return true;
@@ -373,7 +373,7 @@ editor_state_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
 
    assert(edit_object != NULL);
 
-   event_info = eina_stringshare_add(state_name);
+   event_info = eina_stringshare_printf("%s %.2f", state_name, state_val);
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_DEL, (void *)event_info);
    eina_stringshare_del(event_info);
    if (change)
