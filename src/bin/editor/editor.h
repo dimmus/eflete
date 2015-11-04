@@ -197,6 +197,12 @@ editor_group_max_h_set(Evas_Object *obj, Change *change, Eina_Bool merge,
 /* State */
 
 Eina_Bool
+editor_state_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                 const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                 const char *part_name, const char *state_name, double state_val);
+Eina_Bool
 editor_state_min_w_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
       int new_val);
 Eina_Bool

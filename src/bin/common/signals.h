@@ -143,6 +143,23 @@ typedef struct {
  * @ingroup Window
  */
 #define SIGNAL_EDITOR_ATTRIBUTE_CHANGED "SIGNAL_EDITOR_ATTRIBUTE_CHANGED"
+
+/**
+ * emited when state is added in editor.
+ * eventinfo - stringshare with state name
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_STATE_ADDED "SIGNAL_EDITOR_STATE_ADDED"
+
+/**
+ * emited *before* state will be deleted in editor.
+ * eventinfo - stringshare with state name
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_STATE_DEL "SIGNAL_EDITOR_STATE_DEL"
+
 /**
  * emited when project is changed in any way (through attribute, .
  * eventinfo - NULL

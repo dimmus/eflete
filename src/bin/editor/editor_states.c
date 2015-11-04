@@ -292,3 +292,73 @@ editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
 
    return res;
 }
+
+Eina_Bool
+editor_state_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                 const char *part_name, const char *state_name, double state_val)
+{
+   Diff *diff;
+   Eina_Stringshare *event_info;
+
+   assert(edit_object != NULL);
+
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE;
+        diff->redo.function = editor_state_add;
+        diff->redo.args.type_ssd.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssd.s2 = eina_stringshare_add(state_name);
+        diff->redo.args.type_ssd.d3 = state_val;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE;
+        diff->undo.function = editor_state_del;
+        diff->undo.args.type_ssd.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssd.s2 = eina_stringshare_add(state_name);
+        diff->undo.args.type_ssd.d3 = state_val;
+
+        change_diff_add(change, diff);
+     }
+   if (!edje_edit_state_add(edit_object, part_name, state_name, state_val))
+     return false;
+   _editor_project_changed();
+   event_info = eina_stringshare_add(state_name);
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_ADDED, (void *)event_info);
+   eina_stringshare_del(event_info);
+   return true;
+}
+
+Eina_Bool
+editor_state_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                 const char *part_name, const char *state_name, double state_val)
+{
+   Diff *diff;
+   Eina_Stringshare *event_info;
+
+   assert(edit_object != NULL);
+
+   event_info = eina_stringshare_add(state_name);
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_DEL, (void *)event_info);
+   eina_stringshare_del(event_info);
+   if (change)
+     {
+        if (!editor_state_reset(edit_object, change, false, part_name, state_name, state_val))
+          return false;
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE;
+        diff->redo.function = editor_state_del;
+        diff->redo.args.type_ssd.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssd.s2 = eina_stringshare_add(state_name);
+        diff->redo.args.type_ssd.d3 = state_val;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE;
+        diff->undo.function = editor_state_add;
+        diff->undo.args.type_ssd.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssd.s2 = eina_stringshare_add(state_name);
+        diff->undo.args.type_ssd.d3 = state_val;
+
+        change_diff_add(change, diff);
+     }
+   if (!edje_edit_state_del(edit_object, part_name, state_name, state_val))
+     return false;
+   _editor_project_changed();
+   return true;
+}
