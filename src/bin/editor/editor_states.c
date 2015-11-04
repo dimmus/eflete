@@ -185,3 +185,110 @@ EDITOR_STATE_UCHAR(table_homogeneous, ATTRIBUTE_STATE_TABLE_HOMOGENEOUS)
 
 EDITOR_STATE_INT(container_padding_x, ATTRIBUTE_STATE_CONTAINER_PADING_X)
 EDITOR_STATE_INT(container_padding_y, ATTRIBUTE_STATE_CONTAINER_PADING_Y)
+
+Eina_Bool
+editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                   const char *part_name, const char *state_name, double state_val)
+{
+   Eina_Bool res = true;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+
+   Edje_Part_Type type = edje_edit_part_type_get(edit_object, part_name);
+
+   switch (type)
+     {
+      case EDJE_PART_TYPE_TEXTBLOCK:
+         res = res && editor_state_text_style_reset(edit_object, change, part_name, state_name, state_val);
+      case EDJE_PART_TYPE_TEXT:
+         res = res && editor_state_text_align_x_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_text_align_y_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_text_elipsis_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_text_size_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_text_fit_x_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_text_fit_y_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_text_max_x_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_text_max_y_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_text_min_x_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_text_min_y_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_text_source_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_text_text_source_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_text_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_font_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_color2_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_color3_reset(edit_object, change, part_name, state_name, state_val);
+         break;
+      case EDJE_PART_TYPE_IMAGE:
+         res = res && editor_state_fill_origin_relative_x_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_origin_relative_y_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_size_relative_x_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_size_relative_y_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_origin_offset_x_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_origin_offset_y_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_size_offset_x_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_size_offset_y_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_smooth_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_type_reset(edit_object, change, part_name, state_name, state_val);
+
+         res = res && editor_state_image_border_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_image_border_fill_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_image_reset(edit_object, change, part_name, state_name, state_val);
+         break;
+      case EDJE_PART_TYPE_PROXY:
+         res = res && editor_state_fill_origin_relative_x_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_origin_relative_y_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_size_relative_x_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_size_relative_y_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_origin_offset_x_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_origin_offset_y_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_size_offset_x_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_size_offset_y_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_smooth_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_fill_type_reset(edit_object, change, part_name, state_name, state_val);
+
+         res = res && editor_state_proxy_source_reset(edit_object, change, part_name, state_name, state_val);
+         break;
+      case EDJE_PART_TYPE_TABLE:
+         res = res && editor_state_table_homogeneous_reset(edit_object, change, part_name, state_name, state_val);
+      case EDJE_PART_TYPE_BOX:
+         res = res && editor_state_container_align_x_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_container_align_y_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_container_padding_x_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_container_padding_y_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_container_min_h_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_container_min_v_reset(edit_object, change, part_name, state_name, state_val);
+      default:
+         break;
+     }
+   res = res && editor_state_align_x_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_align_y_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_aspect_max_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_aspect_min_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_aspect_pref_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_color_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_color_class_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_fixed_h_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_fixed_w_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_max_h_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_max_w_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_min_h_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_min_w_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_minmul_h_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_minmul_w_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_rel1_offset_x_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_rel1_offset_y_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_rel1_relative_x_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_rel1_relative_y_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_rel1_to_x_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_rel1_to_y_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_rel2_offset_x_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_rel2_offset_y_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_rel2_relative_x_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_rel2_relative_y_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_rel2_to_x_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_rel2_to_y_reset(edit_object, change, part_name, state_name, state_val);
+   res = res && editor_state_visible_reset(edit_object, change, part_name, state_name, state_val);
+
+   return res;
+}

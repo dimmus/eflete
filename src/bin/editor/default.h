@@ -24,6 +24,9 @@
 #include "editor.h"
 
 Eina_Bool
+editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val);
+
+Eina_Bool
 editor_state_rel1_relative_x_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
 Eina_Bool
 editor_state_rel1_relative_x_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);

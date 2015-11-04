@@ -24,6 +24,7 @@
 #include "eflete.h"
 #include "change.h"
 #include "signals.h"
+#include "default.h"
 
 typedef enum {
    ATTRIBUTE_GROUP_MIN_W,
