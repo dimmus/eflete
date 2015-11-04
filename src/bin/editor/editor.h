@@ -200,6 +200,10 @@ Eina_Bool
 editor_state_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                  const char *part_name, const char *state_name, double state_val);
 Eina_Bool
+editor_state_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                  const char *part_name, const char *from_name, double from_val,
+                                         const char *state_name, double state_val);
+Eina_Bool
 editor_state_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                  const char *part_name, const char *state_name, double state_val);
 Eina_Bool
