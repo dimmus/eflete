@@ -157,10 +157,12 @@ _done(void *data __UNUSED__,
              selected_paths = eina_list_append(selected_paths, selected);
           }
         res = ((Helper_Done_Cb)dismiss_func)(func_data, obj, selected_paths);
+
+        if (!elm_fileselector_multi_select_get(fs))
+          EINA_LIST_FREE(selected_paths, selected)
+             eina_stringshare_del(selected);
      }
 
-   EINA_LIST_FREE(selected_paths, selected)
-      eina_stringshare_del(selected);
    if (res)
      {
         dismiss_func = NULL;
