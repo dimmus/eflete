@@ -824,6 +824,7 @@ project_export_edc_group(void)
    elm_win_inwin_content_set(win, fs);
 }
 
+/*
 static void
 _on_export_edc_project_done(void *data,
                             Evas_Object *obj __UNUSED__,
@@ -939,6 +940,7 @@ project_export_edc_project(void)
 
    ap.modal_editor++;
 }
+*/
 
 /*************************** Close request popup ******************************/
 /*

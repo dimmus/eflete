@@ -75,3 +75,57 @@ project_export_develop(void)
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
    popup_fileselector_edj_helper("Export to develop edj-file", NULL, NULL, _export_dev, NULL, false, true);
 }
+
+static Eina_Bool
+_export_source_code_setup(void *data, Splash_Status status __UNUSED__)
+{
+   Eina_Stringshare *path = (Eina_Stringshare *)data;
+
+   assert(path != NULL);
+
+   pm_project_source_code_export(ap.project,
+                                 path,
+                                 progress_print,
+                                 progress_end,
+                                 NULL);
+   return true;
+}
+
+Eina_Bool
+_export_source_code(void *data __UNUSED__,
+                    Evas_Object *obj __UNUSED__, /* this is fileselector from popup */
+                    void *event_info)
+{
+   Eina_List *selected = (Eina_List *)event_info;
+   Eina_Stringshare *path;
+   Eina_Strbuf *buf;
+
+   assert(selected != NULL);
+
+   path = eina_stringshare_add((const char *)eina_list_data_get(selected));
+   buf = eina_strbuf_new();
+   eina_strbuf_append_printf(buf,
+                             _("<font_size=16>A project file '%s/%s' already exist."
+                               "Do you want to replace it?</font_size>"),
+                             path,
+                             ap.project->name);
+   if (!exist_permission_check(path,
+                               ap.project->name,
+                               _("Export to develop edj-file"),
+                               eina_strbuf_string_get(buf)))
+     return false;
+   eina_strbuf_free(buf);
+
+   ap.splash = splash_add(ap.win, _export_source_code_setup, _export_teardown, NULL, (void *)path);
+   evas_object_focus_set(ap.splash, true);
+   evas_object_show(ap.splash);
+
+   return true;
+}
+
+void
+project_export_edc_project(void)
+{
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+   popup_fileselector_folder_helper("Export source code", NULL, NULL, _export_source_code, NULL, false, false);
+}

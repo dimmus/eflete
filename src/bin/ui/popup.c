@@ -153,7 +153,7 @@ _done(void *data __UNUSED__,
                                                   elm_fileselector_path_get(fs),
                                                   elm_fileselector_current_name_get(fs));
              else
-               selected = elm_fileselector_selected_get(fs);
+               selected = eina_stringshare_add(elm_fileselector_selected_get(fs));
              selected_paths = eina_list_append(selected_paths, selected);
           }
         res = ((Helper_Done_Cb)dismiss_func)(func_data, obj, selected_paths);
