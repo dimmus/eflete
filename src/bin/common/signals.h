@@ -143,6 +143,23 @@ typedef struct {
  * @ingroup Window
  */
 #define SIGNAL_EDITOR_ATTRIBUTE_CHANGED "SIGNAL_EDITOR_ATTRIBUTE_CHANGED"
+
+/**
+ * emited when state is added in editor.
+ * eventinfo - stringshare with full state name
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_STATE_ADDED "SIGNAL_EDITOR_STATE_ADDED"
+
+/**
+ * emited *before* state will be deleted in editor.
+ * eventinfo - stringshare with full state name
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_STATE_DEL "SIGNAL_EDITOR_STATE_DEL"
+
 /**
  * emited when project is changed in any way (through attribute, .
  * eventinfo - NULL
@@ -182,5 +199,45 @@ typedef struct {
  * @ingroup Window
  */
 #define SIGNAL_PROJECT_CLOSED "SIGNAL_PROJECT_CLOSED"
+
+/**
+ * emited when NOT editor tab and NOT group tab is clicked.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_DIFFERENT_TAB_CLICKED "SIGNAL_DIFFERENT_TAB_CLICKED"
+
+/**
+ * emited when image editor tab is clicked.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_IMAGE_EDITOR_TAB_CLICKED "SIGNAL_IMAGE_EDITOR_TAB_CLICKED"
+
+/**
+ * emited when image/images in image editor is/are selected.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_IMAGE_SELECTED "SIGNAL_IMAGE_SELECTED"
+
+  /**
+ * emited when sound editor tab is clicked.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_SOUND_EDITOR_TAB_CLICKED "SIGNAL_SOUND_EDITOR_TAB_CLICKED"
+
+ /**
+ * emited when sound/sounds in sound editor is/are selected.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_SOUND_SELECTED "SIGNAL_SOUND_SELECTED"
 
 #endif /* SIGNALS_H*/

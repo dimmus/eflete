@@ -60,6 +60,9 @@ EDITOR_STATE_DOUBLE_RESET(container_align_x, 0.5, 0.5)
 EDITOR_STATE_DOUBLE_RESET(container_align_y, 0.5, 0.5)
 EDITOR_STATE_DOUBLE_RESET(minmul_h, 0.0, 0.0)
 EDITOR_STATE_DOUBLE_RESET(minmul_w, 0.0, 0.0)
+EDITOR_STATE_DOUBLE_RESET(text_align_x, 0.5, 0.5)
+EDITOR_STATE_DOUBLE_RESET(text_align_y, 0.5, 0.5)
+EDITOR_STATE_DOUBLE_RESET(text_elipsis, 0.0, 0.0)
 
 #define EDITOR_INT_DEFAULT_CHECK(FUNC, PROTO_ARGS, ARGS, DEF_VAL) \
 Eina_Bool \
@@ -97,6 +100,7 @@ EDITOR_STATE_INT_RESET(fill_size_offset_x, -1, -1)
 EDITOR_STATE_INT_RESET(fill_size_offset_y, -1, -1)
 EDITOR_STATE_INT_RESET(container_padding_x, 0, 0)
 EDITOR_STATE_INT_RESET(container_padding_y, 0, 0)
+EDITOR_STATE_INT_RESET(text_size, 0, 0)
 
 #define EDITOR_BOOL_DEFAULT_CHECK(FUNC, PROTO_ARGS, ARGS, DEF_VAL) \
 Eina_Bool \
@@ -126,6 +130,12 @@ EDITOR_STATE_BOOL_RESET(fill_smooth, true, true)
 EDITOR_STATE_BOOL_RESET(visible, true, true)
 EDITOR_STATE_BOOL_RESET(container_min_h, false, false)
 EDITOR_STATE_BOOL_RESET(container_min_v, false, false)
+EDITOR_STATE_BOOL_RESET(text_fit_x, false, false)
+EDITOR_STATE_BOOL_RESET(text_fit_y, false, false)
+EDITOR_STATE_BOOL_RESET(text_max_x, false, false)
+EDITOR_STATE_BOOL_RESET(text_max_y, false, false)
+EDITOR_STATE_BOOL_RESET(text_min_x, false, false)
+EDITOR_STATE_BOOL_RESET(text_min_y, false, false)
 
 #define EDITOR_NULL_STRING_DEFAULT_CHECK(FUNC, PROTO_ARGS, ARGS) \
 Eina_Bool \
@@ -164,6 +174,11 @@ EDITOR_STATE_NULL_STRING_RESET(rel2_to_y, NULL)
 EDITOR_STATE_NULL_STRING_RESET(proxy_source, NULL)
 EDITOR_STATE_NULL_STRING_RESET(color_class, NULL)
 EDITOR_STATE_NULL_STRING_RESET(image, "")
+EDITOR_STATE_NULL_STRING_RESET(text_source, NULL)
+EDITOR_STATE_NULL_STRING_RESET(text_text_source, NULL)
+EDITOR_STATE_NULL_STRING_RESET(text, NULL)
+EDITOR_STATE_NULL_STRING_RESET(font, NULL)
+EDITOR_STATE_NULL_STRING_RESET(text_style, NULL)
 
 #define EDITOR_INT_INT_INT_INT_DEFAULT_CHECK(FUNC, PROTO_ARGS, ARGS, DEF_VAL, DEF_VAL_2, DEF_VAL_3, DEF_VAL_4) \
 Eina_Bool \

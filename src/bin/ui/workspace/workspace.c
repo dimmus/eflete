@@ -951,6 +951,130 @@ _workspace_smart_add(Evas_Object *o)
    _workspace_parent_sc->add(o);
 }
 
+static void
+_zoom_part_add(Evas_Object *parent)
+{
+   Evas_Object *image, *slider_zoom;
+   Evas_Object *button_resize, *button_zoom;
+
+   button_resize = elm_button_add(parent);
+   elm_box_pack_end(parent, button_resize);
+   evas_object_show(button_resize);
+
+   button_zoom = elm_button_add(parent);
+   elm_box_pack_end(parent, button_zoom);
+   evas_object_show(button_zoom);
+
+   slider_zoom = elm_slider_add(parent);
+   image = elm_image_add(parent);
+   elm_image_file_set(image, EFLETE_IMG_PATH"scale-smaller.png", NULL);
+   elm_object_part_content_set(slider_zoom, "elm.swallow.icon", image);
+
+   image = elm_image_add(parent);
+   elm_image_file_set(image, EFLETE_IMG_PATH"scale-larger.png", NULL);
+   elm_object_part_content_set(slider_zoom, "elm.swallow.end", image);
+   elm_box_pack_end(parent, slider_zoom);
+   evas_object_show(slider_zoom);
+}
+
+static void
+_mode_part_add(Evas_Object *parent)
+{
+   Evas_Object *radio_mode, *radio_group;
+
+   radio_group = radio_mode = elm_radio_add(parent);
+   elm_radio_state_value_set(radio_mode, 1);
+   elm_box_pack_end(parent, radio_mode);
+   evas_object_show(radio_mode);
+
+   radio_mode = elm_radio_add(parent);
+   elm_radio_state_value_set(radio_mode, 2);
+   elm_box_pack_end(parent, radio_mode);
+   evas_object_show(radio_mode);
+   elm_radio_group_add(radio_mode, radio_group);
+
+   radio_mode = elm_radio_add(parent);
+   elm_radio_state_value_set(radio_mode, 3);
+   elm_box_pack_end(parent, radio_mode);
+   evas_object_show(radio_mode);
+   elm_radio_group_add(radio_mode, radio_group);
+
+   radio_mode = elm_radio_add(parent);
+   elm_radio_state_value_set(radio_mode, 4);
+   elm_box_pack_end(parent, radio_mode);
+   evas_object_show(radio_mode);
+   elm_radio_group_add(radio_mode, radio_group);
+
+   radio_mode = elm_radio_add(parent);
+   elm_radio_state_value_set(radio_mode, 5);
+   elm_box_pack_end(parent, radio_mode);
+   evas_object_show(radio_mode);
+   elm_radio_group_add(radio_mode, radio_group);
+}
+
+static void
+_resize_part_add(Evas_Object *parent)
+{
+   Evas_Object *check_binding, *image;
+   Evas_Object *spinner_widght, *spinner_height, *check_size_chanage;
+
+   image = elm_image_add(parent);
+   elm_image_resizable_set(image, EINA_TRUE, EINA_FALSE);
+   elm_image_aspect_fixed_set(image, EINA_TRUE);
+   elm_image_file_set(image, EFLETE_IMG_PATH"crop.png", NULL);
+   elm_box_pack_end(parent, image);
+   evas_object_show(image);
+
+   spinner_widght = elm_spinner_add(parent);
+   elm_box_pack_end(parent, spinner_widght);
+   evas_object_show(spinner_widght);
+
+   check_binding = elm_check_add(parent);
+   elm_box_pack_end(parent, check_binding);
+   evas_object_show(check_binding);
+
+   spinner_height = elm_spinner_add(parent);
+   elm_box_pack_end(parent, spinner_height);
+   evas_object_show(spinner_height);
+
+   check_size_chanage = elm_check_add(parent);
+   elm_box_pack_end(parent, check_size_chanage);
+   evas_object_show(check_size_chanage);
+}
+
+static void
+_bottom_panel_add(Evas_Object *parent)
+{
+
+#define SEPARATOR_ADD() \
+   separator = elm_separator_add(box); \
+   elm_box_pack_end(box, separator); \
+   evas_object_show(separator);
+
+   Evas_Object *box, *separator;
+
+   box = elm_box_add(parent);
+   elm_box_align_set(box, 0.0, 0.5);
+   elm_box_horizontal_set(box, true);
+   elm_box_padding_set(box, 6, 0);
+   elm_object_part_content_set(parent, "bottom_panel", box);
+   evas_object_show(box);
+
+   _zoom_part_add(box);
+
+   SEPARATOR_ADD()
+
+   _mode_part_add(box);
+
+   SEPARATOR_ADD()
+
+   _resize_part_add(box);
+
+   SEPARATOR_ADD()
+
+#undef SEPARATOR_ADD
+}
+
 static Eina_Bool
 _workspace_child_create(Evas_Object *o, Evas_Object *parent)
 {
@@ -1024,6 +1148,9 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
                                priv->events);
    elm_object_part_content_set(priv->scroller, "elm.swallow.button",
                                priv->button_separate);
+
+   /* Add bottom panel to workspace */
+   _bottom_panel_add(priv->scroller);
 
    Evas_Object *edje = elm_layout_edje_get(priv->scroller);
    priv->clipper = (Evas_Object *) edje_object_part_object_get(edje, "clipper");
@@ -1291,7 +1418,7 @@ workspace_add(Evas_Object *parent, Group *group)
 {
    Evas *e = NULL;
    Evas_Object *obj = NULL;
-   Evas_Coord x, y, w, h, ruler_ver_w, ruler_hor_h, hrb_w, hrb_h;
+   Evas_Coord ruler_ver_w, ruler_hor_h, hrb_w, hrb_h;
 
 
    assert(parent != NULL);
@@ -1406,9 +1533,6 @@ workspace_add(Evas_Object *parent, Group *group)
         container_min_size_set(ap.live_view->live_view, min_w, min_h);
         container_max_size_set(ap.live_view->live_view, max_w, max_h);
      }
-
-   evas_object_geometry_get(sd->scroller, &x, &y, &w, &h);
-   evas_object_resize(sd->container.obj, w - hrb_w, h - hrb_h);
 
    return obj;
 }

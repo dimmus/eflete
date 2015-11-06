@@ -23,13 +23,13 @@
 
 #include "main_window.h"
 #include "history_ui.h"
-#include "navigator.h"
+#include "project_navigator.h"
 #include "tabs.h"
 #include "shortcuts.h"
 #include "cursor.h"
 
 static void
-_navigator_group_open(void *data __UNUSED__,
+_project_navigator_group_open(void *data __UNUSED__,
                       Evas_Object *obj __UNUSED__,
                       void *event_info)
 {
@@ -109,7 +109,7 @@ Eina_Bool
 ui_main_window_add(void)
 {
    Config *config;
-   Evas_Object *bg, *navigator, *tabs, *toolbar;
+   Evas_Object *bg, *project_navigator, *tabs, *toolbar;
 
    config_load();
    config = config_get();
@@ -164,9 +164,9 @@ ui_main_window_add(void)
    elm_panes_content_left_size_set(ap.panes.right, config->panes.right);
    elm_panes_content_right_size_set(ap.panes.right, config->panes.tabs_size);
 
-   navigator = navigator_add();
-   evas_object_smart_callback_add(navigator, "group,open", _navigator_group_open, NULL);
-   elm_object_part_content_set(ap.panes.left, "left", navigator);
+   project_navigator = project_navigator_add();
+   evas_object_smart_callback_add(project_navigator, "group,open", _project_navigator_group_open, NULL);
+   elm_object_part_content_set(ap.panes.left, "left", project_navigator);
 
    tabs = tabs_add();
    elm_object_part_content_set(ap.panes.right, "left", tabs);

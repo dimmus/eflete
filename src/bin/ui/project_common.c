@@ -34,7 +34,7 @@ exist_permission_check(const char *path, const char *name,
     * So need to check there is the folder "path/name" */
    buf = eina_strbuf_new();
    eina_strbuf_append_printf(buf, "%s/%s", path, name);
-   if (!ecore_file_exists(eina_strbuf_string_get(buf))) return false;
+   if (!ecore_file_exists(eina_strbuf_string_get(buf))) return true;
    btn_res = popup_want_action(title, msg, NULL,
                                NULL, BTN_REPLACE | BTN_CANCEL, NULL, NULL);
    if (btn_res == BTN_CANCEL) return false;

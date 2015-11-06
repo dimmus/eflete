@@ -74,10 +74,7 @@ static int sad_callback_data[MENU_ITEMS_COUNT];
 struct _Menu
 {
    Elm_Object_Item *menu_items[MENU_ITEMS_COUNT];
-   Elm_Object_Item *toolbar_items[MENU_ITEMS_COUNT];
-
    Evas_Object *window_menu;
-   Evas_Object *toolbar;
 };
 
 struct _menu_event
@@ -221,7 +218,7 @@ _project_changed(void *data __UNUSED__,
 Menu *
 ui_menu_add(void)
 {
-   Evas_Object *window_menu, *toolbar, *items_obj;
+   Evas_Object *window_menu, *items_obj;
    Menu *menu;
    int i = 0;
 
@@ -306,29 +303,6 @@ ui_menu_add(void)
    elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE_IMPORT_EDC]);
 #undef ITEM_MENU_ADD
 
-   toolbar = elm_toolbar_add(ap.win);
-   elm_toolbar_shrink_mode_set(toolbar, ELM_TOOLBAR_SHRINK_MENU);
-   TODO("for this select mode need new style")
-   elm_toolbar_select_mode_set(toolbar, ELM_OBJECT_SELECT_MODE_NONE);
-   elm_toolbar_align_set(toolbar, 0.0);
-   evas_object_size_hint_weight_set(toolbar, 0.0, 0.0);
-   evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, 0.0);
-   elm_object_part_content_set(ap.win_layout, "eflete.swallow.toolbar", toolbar);
-   evas_object_show(toolbar);
-
-#define ITEM_TB_ADD(ID, ICON, LABEL) \
-   menu->toolbar_items[ID] = elm_toolbar_item_append(toolbar, ICON, LABEL, _delay_menu_cb, &sad_callback_data[ID]);
-
-   ITEM_TB_ADD(MENU_FILE_NEW_PROJECT, "file", _("New project"));
-   ITEM_TB_ADD(MENU_FILE_OPEN_PROJECT, "folder", _("Open project"));
-   ITEM_TB_ADD(MENU_FILE_SAVE, "save", _("Save project"));
-   ITEM_TB_ADD(MENU_EDITORS_ANIMATOR, "animator", _("Animator"));
-   ITEM_TB_ADD(MENU_EDITORS_IMAGE, "image", _("Image manager"));
-   ITEM_TB_ADD(MENU_EDITORS_SOUND, "sound", _("Sound manager"));
-   ITEM_TB_ADD(MENU_EDITORS_COLORCLASS, "color", _("Color class manager"));
-   ITEM_TB_ADD(MENU_EDITORS_TEXT_STYLE, "text", _("Textblock style manager"));
-
-#undef ITEM_TB_ADD
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
@@ -336,7 +310,6 @@ ui_menu_add(void)
    ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
 
    menu->window_menu = window_menu;
-   menu->toolbar = toolbar;
 
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _project_changed, NULL);
 
@@ -350,7 +323,6 @@ ui_menu_disable_set(Menu *menu, int mid, Eina_Bool flag)
    assert((mid > MENU_NULL) && (mid < MENU_ITEMS_COUNT));
 
    elm_object_item_disabled_set(menu->menu_items[mid], flag);
-   elm_object_item_disabled_set(menu->toolbar_items[mid], flag);
 
    return true;
 }

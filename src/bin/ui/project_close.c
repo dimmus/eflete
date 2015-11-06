@@ -19,7 +19,7 @@
 
 #include "main_window.h"
 #include "tabs.h"
-#include "navigator.h"
+#include "project_navigator.h"
 
 static Eina_Bool
 _progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
@@ -179,7 +179,7 @@ project_close(void)
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
-   navigator_project_unset();
+   project_navigator_project_unset();
    tabs_clean();
    //ui_property_style_unset(Evas_Object *property);
    //ui_signal_list_data_unset(Evas_Object *object);

@@ -20,7 +20,7 @@
 #include <Ecore_Getopt.h>
 #include <regex.h>
 #include "main_window.h"
-#include "navigator.h"
+#include "project_navigator.h"
 #include "signals.h"
 
 static char *open = NULL;
@@ -65,7 +65,7 @@ _import_end(void *data __UNUSED__, PM_Project_Result result)
 
         ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
         ui_menu_disable_set(ap.menu, MENU_FILE_CLOSE_PROJECT, false);
-        navigator_project_set();
+        project_navigator_project_set();
 
         STATUSBAR_PROJECT_PATH(ap.project->pro_path);
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
@@ -88,7 +88,7 @@ _open_end(void *data __UNUSED__, PM_Project_Result result)
 
         ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
         ui_menu_disable_set(ap.menu, MENU_FILE_CLOSE_PROJECT, false);
-        navigator_project_set();
+        project_navigator_project_set();
 
         NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
         STATUSBAR_PROJECT_PATH(ap.project->pro_path);

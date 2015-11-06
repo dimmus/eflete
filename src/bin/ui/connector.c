@@ -18,7 +18,7 @@
  */
 
 #include "main_window.h"
-#include "navigator.h"
+#include "project_navigator.h"
 #include "tabs.h"
 #include "signals.h"
 #include "preference.h"
@@ -387,7 +387,7 @@ _progress_pm_open_end(void *data __UNUSED__, PM_Project_Result result)
 
            ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
            ui_menu_disable_set(ap.menu, MENU_FILE_CLOSE_PROJECT, false);
-           navigator_project_set();
+           project_navigator_project_set();
 
            NOTIFY_INFO(3, _("Project '%s' is opened."), ap.project->name);
            STATUSBAR_PROJECT_PATH(ap.project->pro_path);
@@ -487,7 +487,7 @@ project_close(void)
         elm_layout_text_set(ap.win_layout, "eflete.project.time", _("Last saved: none"));
         ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_BASE, true);
         ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
-        navigator_project_unset();
+        project_navigator_project_unset();
         tabs_clean();
         pm_project_close(ap.project);
         ap.project = NULL;
@@ -531,6 +531,7 @@ _progress_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
    return true;
 }
 
+/*
 static void
 _progress_end(void *data __UNUSED__, PM_Project_Result result)
 {
@@ -573,11 +574,12 @@ _progress_end(void *data __UNUSED__, PM_Project_Result result)
         enventor_object_focus_set(ap.enventor, true);
         //pm_save_to_dev(ap.project, ap.project->current_style, true);
      }
-#endif /* HAVE_ENVENTOR */
+#endif
 
    splash_del(ap.splash);
    ap.splash = NULL;
 }
+*/
 
 TODO("I think, this functionality need move to dialogs")
 static void
@@ -655,6 +657,7 @@ export_warning(Evas_Object *parent, const char *title, const char *msg)
    return result;
 }
 
+/*
 static Eina_Bool
 _export_splash_setup(void *data, Splash_Status status __UNUSED__)
 {
@@ -753,6 +756,7 @@ project_export_develop(void)
    elm_win_inwin_content_set(win, fs);
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
 }
+*/
 
 static void
 _on_export_edc_group_done(void *data,
@@ -820,6 +824,7 @@ project_export_edc_group(void)
    elm_win_inwin_content_set(win, fs);
 }
 
+/*
 static void
 _on_export_edc_project_done(void *data,
                             Evas_Object *obj __UNUSED__,
@@ -935,6 +940,7 @@ project_export_edc_project(void)
 
    ap.modal_editor++;
 }
+*/
 
 /*************************** Close request popup ******************************/
 /*

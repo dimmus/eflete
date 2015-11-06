@@ -27,24 +27,24 @@
  * This widget is used to navigate in groups tree.
  *
  * This widget emits the following signals:
- * @li "navigator,group,selected": the user double clicked on the group name;
+ * @li "project_navigator,group,selected": the user double clicked on the group name;
  */
 #include "eflete.h"
 #include "group_manager.h"
 
 /**
- * Add navigator object. This object is a layout with two buttons: "plus" and
- * "minus", for add and delete layout from navigator. Also layout contaions a
+ * Add project_navigator object. This object is a layout with two buttons: "plus" and
+ * "minus", for add and delete layout from project_navigator. Also layout contaions a
  * genlist for view and navigate by layouts in given project.
  *
- * @return The navigator object
+ * @return The project_navigator object
  * @ingroup Navigator
  */
 Evas_Object *
-navigator_add(void);
+project_navigator_add(void);
 
 /**
- * Set the project to navigator. By project data navigator build a layouts
+ * Set the project to project_navigator. By project data project_navigator build a layouts
  * (styles) tree. Navigator used the global data (App_Data) for take a opened
  * project.
  *
@@ -53,7 +53,7 @@ navigator_add(void);
  * @ingroup Navigator
  */
 void
-navigator_project_set(void);
+project_navigator_project_set(void);
 
 /**
  * Unset the given project. Navigator delete all data from genlist and disable
@@ -62,6 +62,6 @@ navigator_project_set(void);
  * @ingroup Navigator
  */
 void
-navigator_project_unset(void);
+project_navigator_project_unset(void);
 
 #endif /* NAVIGATOR_H */

@@ -62,7 +62,7 @@
  * @param SUB The prefix of the attribute
  * @param VALUE1 The first value of the attribute
  * @param VALUE2 The second value of the attribute
- * @param MEMBER The spinner member from Prop_Data structure
+ * @param MEMBER The spinner member from Group_Prop_Data structure
  * @param MIN The min value of spinner
  * @param MAX The max value of spinner
  * @param STEP The step to increment or decrement the spinner value
@@ -84,7 +84,7 @@
                             MIN, MAX, STEP, FMT, L1_START, L1_END, L2_START, L2_END, \
                             TOOLTIP1, TOOLTIP2, MULTIPLIER) \
 static Evas_Object * \
-prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
+prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Group_Prop_Data *pd) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, STYLE) \
    SPINNER_ADD(item, pd->attributes.MEMBER.VALUE1, MIN, MAX, STEP, true) \
@@ -121,7 +121,7 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
  *
  * @param SUB The prefix of the attribute
  * @param VALUE The first value of the attribute
- * @param MEMBER The spinner member from Prop_Data structure
+ * @param MEMBER The spinner member from Group_Prop_Data structure
  * @param MULTIPLIER The multiplier to convert the value to percent. If it not
  *        needed set 1
  *
@@ -151,7 +151,7 @@ _on_##MEMBER##_##VALUE##_start(void *data, \
                                Evas_Object *obj __UNUSED__, \
                                void *ei __UNUSED__) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    assert(pd->change == NULL); \
    pd->change = change_add(NULL); \
    pd->old_##TYPE##_val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
@@ -161,7 +161,7 @@ _on_##MEMBER##_##VALUE##_stop(void *data, \
                               Evas_Object *obj __UNUSED__, \
                               void *ei __UNUSED__) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    Eina_Stringshare *msg; \
    assert(pd->change != NULL); \
    TYPE new_val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
@@ -181,7 +181,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj, \
                                 void *ei __UNUSED__) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    TYPE value = elm_spinner_value_get(obj); \
    value /= MULTIPLIER; \
    if (pd->change) \
@@ -214,7 +214,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * @param TEXT The label text
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMBER The combobox member from Prop_Data structure
+ * @param MEMBER The combobox member from Group_Prop_Data structure
  * @param LIST The predefined strings list
  * @param TOOLTIP The combobox tooltip
  * @param ARGS
@@ -225,7 +225,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  */
 #define COMMON_COMBOBOX_LIST_ADD(PREFIX, TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP, ARGS) \
 static Evas_Object * \
-prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, Prop_Data *pd) \
+prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, Group_Prop_Data *pd) \
 { \
    int i; \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
@@ -243,7 +243,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, Prop_Data *pd) \
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMBER The combobox member from Prop_Data structure
+ * @param MEMBER The combobox member from Group_Prop_Data structure
  * @param ARGS
  *
  * @note for internal usage in property_macros.h
@@ -271,7 +271,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
                           Evas_Object *obj __UNUSED__, \
                           void *event_info) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
    TYPE old_val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
    if (item->index == old_val) \
@@ -297,7 +297,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
  * @param TEXT The label text
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMBER The combobox member from Prop_Data structure
+ * @param MEMBER The combobox member from Group_Prop_Data structure
  * @param LIST The predefined strings list
  * @param TOOLTIP The combobox tooltip
  * @param ARGS The edje edit function arguments
@@ -308,7 +308,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
  */
 #define COMMON_CHECK_ADD(PREFIX, TEXT, SUB, VALUE, MEMBER, TOOLTIP, ARGS) \
 static Evas_Object * \
-prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, Prop_Data *pd) \
+prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, Group_Prop_Data *pd) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow_subtext") \
    CHECK_ADD(item, pd->attributes.MEMBER.VALUE) \
@@ -330,7 +330,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, Prop_Data *pd) \
  * @param SUB The prefix of main parameter of state attribute
  * @param VALUE1 The first value of state attribute
  * @param VALUE2 The second value of state attribute
- * @param MEMBER The check member from Prop_Data structure
+ * @param MEMBER The check member from Group_Prop_Data structure
  * @param TOOLTIP1 The first spinner tooltip
  * @param TOOLTIP2 The second spinner tooltip
  *
@@ -340,7 +340,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, Prop_Data *pd) \
                           L1_START, L1_END, L2_START, L2_END, \
                           TOOLTIP1, TOOLTIP2) \
 static Evas_Object * \
-prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
+prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Group_Prop_Data *pd) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
    CHECK_ADD(item, pd->attributes.MEMBER.VALUE1) \
@@ -365,7 +365,7 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMBER The combobox member from Prop_Data structure
+ * @param MEMBER The combobox member from Group_Prop_Data structure
  * @param ARGS The edje edit function arguments
  *
  * @note for internal usage in property_macros.h
@@ -380,7 +380,7 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMBER The check member from Prop_Data structure
+ * @param MEMBER The check member from Group_Prop_Data structure
  * @param ARGS The edje edit function arguments
  *
  * @note for internal usage in property_macros.h
@@ -393,7 +393,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj, \
                                 void *event_info __UNUSED__) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    Eina_Bool value = elm_check_state_get(obj); \
    Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION, value?_("true"):_("false")); \
    Change *change = change_add(msg); \
@@ -412,7 +412,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMBER The combobox member from Prop_Data structure
+ * @param MEMBER The combobox member from Group_Prop_Data structure
  * @param ARGS The edje edit function arguments
  *
  * @ingroup Property_Macro
@@ -440,7 +440,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj __UNUSED__, \
                                 void *event_info) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->group->edit_object ARGS, (char *)item->title)) \
      { \
@@ -457,7 +457,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * @param TEXT The label text
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMBER The entry member from Prop_Data structure
+ * @param MEMBER The entry member from Group_Prop_Data structure
  * @param VALIDATOR The entry validator
  * @param TOOLTIP The tooltip for combobox
  *
@@ -466,7 +466,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 #define COMMON_ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP) \
 static Evas_Object * \
 prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
-                           Prop_Data *pd, \
+                           Group_Prop_Data *pd, \
                            void *btn_func_cb) \
 { \
    Evas_Object *btn; \
@@ -501,14 +501,14 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMBER The entry member from Prop_Data structure
+ * @param MEMBER The entry member from Group_Prop_Data structure
  * @param ARGS The edje edit function arguments
  *
  * @ingroup Property_Macro
  */
 #define COMMON_ENTRY_UPDATE(SUB, VALUE, MEMBER, ARGS) \
 static void \
-prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
+prop_##SUB##_##VALUE##_update(Group_Prop_Data *pd) \
 { \
    const char *value; \
    value = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
@@ -535,7 +535,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
                              Evas_Object *obj, \
                              void *ei __UNUSED__) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    if (VALIDATOR && (elm_validator_regexp_status_get(VALIDATOR)) != ELM_REG_NOERROR) \
      return; \
    if (!pd->change) pd->change = change_add(NULL); \
@@ -550,7 +550,7 @@ _on_##SUB##_##VALUE##_activated(void *data, \
                                 Evas_Object *obj __UNUSED__, \
                                 void *ei __UNUSED__) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    if (VALIDATOR && (elm_validator_regexp_status_get(VALIDATOR)) != ELM_REG_NOERROR) \
      return; \
    if (!pd->change) \
@@ -583,7 +583,7 @@ _on_##SUB##_##VALUE##_activated(void *data, \
 #define GROUP_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2) \
 static Evas_Object * \
 prop_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
-                                             Prop_Data *pd, \
+                                             Group_Prop_Data *pd, \
                                              const char *tooltip1, \
                                              const char *tooltip2) \
 { \
@@ -628,7 +628,7 @@ prop_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
  */
 #define GROUP_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2) \
 static void \
-prop_group_##SUB##_##VALUE1##_##VALUE2##_update(Prop_Data *pd) \
+prop_group_##SUB##_##VALUE1##_##VALUE2##_update(Group_Prop_Data *pd) \
 { \
    elm_spinner_value_set(pd->attributes.group.SUB##_##VALUE1, edje_edit_group_##SUB##_##VALUE1##_get(pd->group->edit_object)); \
    elm_spinner_value_set(pd->attributes.group.SUB##_##VALUE2, edje_edit_group_##SUB##_##VALUE2##_get(pd->group->edit_object)); \
@@ -665,7 +665,7 @@ _on_group_##SUB1##_##VALUE##_start(void *data, \
                                    Evas_Object *obj __UNUSED__, \
                                    void *ei __UNUSED__) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    assert(pd->change == NULL); \
    pd->change = change_add(DESCRIPTION);\
    pd->old_int_val = edje_edit_group_##SUB1##_##VALUE##_get(pd->group->edit_object); \
@@ -675,7 +675,7 @@ _on_group_##SUB1##_##VALUE##_stop(void *data, \
                                   Evas_Object *obj __UNUSED__, \
                                   void *ei __UNUSED__) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    Eina_Stringshare *msg; \
    assert(pd->change != NULL); \
    int new_int_val = edje_edit_group_##SUB1##_##VALUE##_get(pd->group->edit_object); \
@@ -695,7 +695,7 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
                                     Evas_Object *obj, \
                                     void *ei __UNUSED__) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    int value = (int)elm_spinner_value_get(obj); \
    if (pd->change) \
      { \
@@ -800,14 +800,14 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
  * @param TEXT The label text
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMEBER The combobox member from Prop_Data structure
+ * @param MEMEBER The combobox member from Group_Prop_Data structure
  *
  * @ingroup Property_Macro
  */
 #define PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
 static Evas_Object * \
 prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
-                              Prop_Data *pd) \
+                              Group_Prop_Data *pd) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
    EWE_COMBOBOX_ADD(item, pd->attributes.MEMBER.VALUE) \
@@ -823,7 +823,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMEBER The combobox member from Prop_Data structure
+ * @param MEMEBER The combobox member from Group_Prop_Data structure
  *
  * @ingroup Property_Macro
  */
@@ -833,7 +833,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj __UNUSED__, \
                                 void *ei) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
    Eina_Stringshare *old_val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
    if (((item->index != 0) && (item->title == old_val)) /*stringshares*/ || \
@@ -876,7 +876,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * @param TEXT The label text
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMBER The combobox member from Prop_Data structure
+ * @param MEMBER The combobox member from Group_Prop_Data structure
  * @param LIST The predefined strings list
  * @param TOOLTIP The combobox tooltip
  *
@@ -923,7 +923,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  */
 #define PART_ATTR_SOURCE_UPDATE(MEMBER, VALUE) \
 static void \
-prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
+prop_##MEMBER##_##VALUE##_update(Group_Prop_Data *pd) \
 { \
    Eina_List *collections, *l; \
    const char *group, *value; \
@@ -965,7 +965,7 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
 #define PART_ATTR_DRAG_ADD(TEXT, SUB, VALUE1, VALUE2) \
 static Evas_Object * \
 prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
-                                       Prop_Data *pd, \
+                                       Group_Prop_Data *pd, \
                                        const char *tooltip1, \
                                        const char *tooltip2 ) \
 { \
@@ -1002,7 +1002,7 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
  */
 #define PART_ATTR_DRAG_UPDATE(SUB, VALUE1, VALUE2) \
 static void \
-prop_part_drag_##VALUE1##_##VALUE2##_update(Prop_Data *pd) \
+prop_part_drag_##VALUE1##_##VALUE2##_update(Group_Prop_Data *pd) \
 { \
    Eina_Bool ch_value; int st_value; \
    ch_value = edje_edit_part_drag_##VALUE1##_get(pd->group->edit_object, pd->part->name); \
@@ -1026,7 +1026,7 @@ _on_part_drag_##VALUE1##_change(void *data, \
                                 Evas_Object *obj, \
                                 void *event_info __UNUSED__) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    Eina_Bool value = elm_check_state_get(obj); \
    Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION1, value?_("true"):_("false")); \
    Change *change = change_add(msg); \
@@ -1041,7 +1041,7 @@ _on_part_drag_##VALUE2##_start(void *data, \
                                Evas_Object *obj __UNUSED__, \
                                void *ei __UNUSED__) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    assert(pd->change == NULL); \
    pd->change = change_add(NULL); \
    pd->old_int_val = edje_edit_##SUB##_##VALUE2##_get(pd->group->edit_object, pd->part->name); \
@@ -1051,7 +1051,7 @@ _on_part_drag_##VALUE2##_stop(void *data, \
                               Evas_Object *obj __UNUSED__, \
                               void *ei __UNUSED__) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    Eina_Stringshare *msg; \
    assert(pd->change != NULL); \
    int new_val = edje_edit_##SUB##_##VALUE2##_get(pd->group->edit_object, pd->part->name); \
@@ -1071,7 +1071,7 @@ _on_part_drag_##VALUE2##_change(void *data, \
                                 Evas_Object *obj, \
                                 void *ei) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    int value = elm_spinner_value_get(obj); \
    if (pd->change) \
      { \
@@ -1103,13 +1103,13 @@ _on_part_drag_##VALUE2##_change(void *data, \
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMEBER The combobox member from Prop_Data structure
+ * @param MEMEBER The combobox member from Group_Prop_Data structure
  *
  * @ingroup Property_Macro
  */
 #define PART_ATTR_PARTS_LIST(SUB, VALUE, MEMBER) \
 static void \
-prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
+prop_##MEMBER##_##VALUE##_update(Group_Prop_Data *pd) \
 { \
    Part_ *part; \
    Eina_List *l; \
@@ -1137,7 +1137,7 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
  * @param TEXT The label text
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMEBER The combobox member from Prop_Data structure
+ * @param MEMEBER The combobox member from Group_Prop_Data structure
  * @param TOOLTIP The combobox tooltip
  *
  * @ingroup Property_Macro
@@ -1150,7 +1150,7 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMEBER The combobox member from Prop_Data structure
+ * @param MEMEBER The combobox member from Group_Prop_Data structure
  *
  * @ingroup Property_Macro
  */
@@ -1168,7 +1168,7 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
  * @param SUB The prefix of main parameter of state attribute
  * @param VALUE1 The first value of state attribute
  * @param VALUE2 The second value of state attribute
- * @param MEMBER The spinner member from Prop_Data structure
+ * @param MEMBER The spinner member from Group_Prop_Data structure
  * @param MIN The min value of spinner
  * @param MAX The max value of spinner
  * @param STEP The step to increment or decrement the spinner value
@@ -1197,7 +1197,7 @@ COMMON_2SPINNER_ADD(PART_ITEM, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  * @param SUB The prefix of main parameter of drag attribute
  * @param VALUE1 The first value of state attribute
  * @param VALUE2 The second value of state attribute
- * @param MEMBER The spinner member from Prop_Data structure
+ * @param MEMBER The spinner member from Group_Prop_Data structure
  * @param MULTIPLIER The multiplier to convert the value to percent. If it not
  *        needed set 1
  *
@@ -1230,7 +1230,7 @@ COMMON_2SPINNER_ADD(PART_ITEM, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  * @param TEXT The label text
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMBER The combobox member from Prop_Data structure
+ * @param MEMBER The combobox member from Group_Prop_Data structure
  * @param LIST The predefined strings list
  * @param TOOLTIP The combobox tooltip
  *
@@ -1308,7 +1308,7 @@ COMMON_2SPINNER_ADD(PART_ITEM, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  * @param TEXT The label text
  * @param SUB The prefix of main parameter of state attribute
  * @param VALUE The value of state attribute
- * @param MEMBER The spinner member from Prop_Data structure
+ * @param MEMBER The spinner member from Group_Prop_Data structure
  * @param MIN The min value of spinner
  * @param MAX The max value of spinner
  * @param STEP The step to increment or decrement the spinner value
@@ -1327,7 +1327,7 @@ COMMON_2SPINNER_ADD(PART_ITEM, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
                                 TOOLTIP, MULTIPLIER) \
 static Evas_Object * \
 prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
-                              Prop_Data *pd) \
+                              Group_Prop_Data *pd) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
    SPINNER_ADD(item, pd->attributes.MEMBER.VALUE, MIN, MAX, STEP, true) \
@@ -1370,7 +1370,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
  * @param SUB The prefix of main parameter of state attribute
  * @param VALUE1 The first value of state attribute
  * @param VALUE2 The second value of state attribute
- * @param MEMBER The spinner member from Prop_Data structure
+ * @param MEMBER The spinner member from Group_Prop_Data structure
  * @param MIN The min value of spinner
  * @param MAX The max value of spinner
  * @param STEP The step to increment or decrement the spinner value
@@ -1399,7 +1399,7 @@ COMMON_2SPINNER_ADD(STATE, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  * @param SUB The prefix of main parameter of drag attribute
  * @param VALUE1 The first value of state attribute
  * @param VALUE2 The second value of state attribute
- * @param MEMBER The spinner member from Prop_Data structure
+ * @param MEMBER The spinner member from Group_Prop_Data structure
  * @param MULTIPLIER The multiplier to convert the value to percent. If it not
  *        needed set 1
  *
@@ -1459,7 +1459,7 @@ COMMON_2SPINNER_ADD(STATE, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  * @param TEXT The label text
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMBER The combobox member from Prop_Data structure
+ * @param MEMBER The combobox member from Group_Prop_Data structure
  * @param LIST The pointer to array of strings
  * @param TOOLTIP The tooltip for combobox
  *
@@ -1473,7 +1473,7 @@ COMMON_2SPINNER_ADD(STATE, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMBER The combobox member from Prop_Data structure
+ * @param MEMBER The combobox member from Group_Prop_Data structure
  *
  * @ingroup Property_Macro
  */
@@ -1537,7 +1537,7 @@ COMMON_2SPINNER_ADD(STATE, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  * @param TEXT The label text
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMBER The color member from Prop_Data structure
+ * @param MEMBER The color member from Group_Prop_Data structure
  * @param TOOLTIP The tooltip for combobox
  *
  * @ingroup Property_Macro
@@ -1545,7 +1545,7 @@ COMMON_2SPINNER_ADD(STATE, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
 #define STATE_ATTR_COLOR_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
 static Evas_Object * \
 prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
-                           Prop_Data *pd) \
+                           Group_Prop_Data *pd) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow_subtext") \
    pd->attributes.MEMBER.VALUE = elm_layout_add(item); \
@@ -1568,13 +1568,13 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMBER The color member from Prop_Data structure
+ * @param MEMBER The color member from Group_Prop_Data structure
  *
  * @ingroup Property_Macro
  */
 #define STATE_ATTR_COLOR_LIST_UPDATE(SUB, VALUE, MEMBER) \
 static void \
-prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
+prop_##SUB##_##VALUE##_update(Group_Prop_Data *pd) \
 { \
    int r, g, b, a; \
    edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object, pd->part->name, \
@@ -1588,7 +1588,7 @@ prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param MEMBER The color member from Prop_Data structure
+ * @param MEMBER The color member from Group_Prop_Data structure
  *
  * @ingroup Property_Macro
  */
@@ -1599,7 +1599,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                                 void *event_info __UNUSED__) \
 { \
    int r, g, b, a; \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    assert(pd->change != NULL); \
    colorselector_color_get(obj, &r, &g, &b, &a); \
    if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, pd->change, true, \
@@ -1620,7 +1620,7 @@ _on_##MEMBER##_##VALUE##_dismissed(void *data, \
                                    void *event_info __UNUSED__) \
 { \
    int r, g, b, a; \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    assert(pd->change != NULL); \
    evas_object_smart_callback_del_full(obj, "color,changed", \
                                        _on_##MEMBER##_##VALUE##_change, pd); \
@@ -1648,7 +1648,7 @@ _on_##MEMBER##_##VALUE##_clicked(void *data, \
    int x, y; \
    int r, g, b, a; \
    Evas_Object *colorsel; \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    assert(pd->change == NULL); \
    colorsel = colorselector_get(); \
    pd->change = change_add(NULL); \
@@ -1673,7 +1673,7 @@ _on_##MEMBER##_##VALUE##_clicked(void *data, \
  * @param TEXT The label text
  * @param SUB The prefix of main parameter of state attribute
  * @param VALUE The value of state attribute
- * @param MEMEBER The combobox member from Prop_Data structure
+ * @param MEMEBER The combobox member from Group_Prop_Data structure
  *
  * @ingroup Property_Macro
  */
@@ -1685,7 +1685,7 @@ PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
  *
  * @param SUB The prefix of main parameter of state attribute
  * @param VALUE The value of state attribute
- * @param MEMEBER The combobox member from Prop_Data structure
+ * @param MEMEBER The combobox member from Group_Prop_Data structure
  *
  * @ingroup Property_Macro
  */
@@ -1695,7 +1695,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj __UNUSED__, \
                                 void *ei) \
 { \
-   Prop_Data *pd = (Prop_Data *)data; \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
    Eina_Stringshare *old_val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object, \
          pd->part->name, pd->part->current_state->parsed_name, pd->part->current_state->parsed_val); \
@@ -1727,7 +1727,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * @param SUB The prefix of main parameter of state attribute
  * @param VALUE1 The first value of state attribute
  * @param VALUE2 The second value of state attribute
- * @param MEMEBER The combobox member from Prop_Data structure
+ * @param MEMEBER The combobox member from Group_Prop_Data structure
  * @paramram TOOLTIP1 The tooltip for first combobox
  * @paramram TOOLTIP2 The tooltip for second combobox
  *
@@ -1735,7 +1735,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  */
 #define STATE_ATTR_2COMBOBOX_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2) \
 static Evas_Object * \
-prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
+prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Group_Prop_Data *pd) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "2swallow_vertical_pad") \
    elm_object_part_text_set(item, "label.swallow1.start", _("x:")); \
@@ -1763,7 +1763,7 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
  *
  * @param SUB The prefix of main parameter
  * @param VALUE The 'source' value (ex: text_source)
- * @param MEMBER The entry member from Prop_Data structure
+ * @param MEMBER The entry member from Group_Prop_Data structure
  * @param PART_TYPE The part type that be excluded from dropdown list or
  *        only includeted to dropdown list, depending on the argument COMPARE
  * @param COMPARE The compare argument
@@ -1772,7 +1772,7 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
  */
 #define STATE_ATTR_SOURCE_UPDATE(SUB, VALUE, MEMBER, EXCLUDE_PART, COMPARE) \
 static void \
-prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
+prop_##MEMBER##_##VALUE##_update(Group_Prop_Data *pd) \
 { \
    Part_ *part; \
    Eina_List *l; \

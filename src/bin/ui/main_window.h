@@ -443,6 +443,11 @@ popup_fileselector_edc_helper(const char *title, Evas_Object *follow_up, const c
                               Eina_Bool multi, Eina_Bool is_save);
 
 void
+popup_fileselector_image_helper(const char *title, Evas_Object *follow_up, const char *path,
+                                Helper_Done_Cb func, void *data,
+                                Eina_Bool multi, Eina_Bool is_save);
+
+void
 popup_log_message_helper(const char *msg);
 
 

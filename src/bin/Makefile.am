@@ -31,8 +31,9 @@ libete_a_SOURCES = \
 ../../src/bin/ui/menu.c \
 ../../src/bin/ui/main_window.c \
 ../../src/bin/ui/popup.c \
-../../src/bin/ui/project_close.c \
 ../../src/bin/ui/project_common.c \
+../../src/bin/ui/project_close.c \
+../../src/bin/ui/project_export.c \
 ../../src/bin/ui/connector.c \
 ../../src/bin/ui/splash.c \
 ../../src/bin/ui/shortcuts/shortcuts.c \
@@ -51,7 +52,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/dialogs/colorsel.c \
 ../../src/bin/ui/dialogs/item_dialog.c \
 ../../src/bin/ui/modal_window/modal_window.c \
-../../src/bin/ui/navigator.c \
+../../src/bin/ui/project_navigator.c \
 ../../src/bin/ui/tabs.c \
 ../../src/bin/ui/tab_home_common.c \
 ../../src/bin/ui/tab_home_open.c \
@@ -61,6 +62,8 @@ libete_a_SOURCES = \
 ../../src/bin/ui/tab_home_info.c \
 ../../src/bin/ui/blocks/ui_block.c \
 ../../src/bin/ui/property.c \
+../../src/bin/ui/property_group.c \
+../../src/bin/ui/property_image.c \
 ../../src/bin/ui/blocks/ui_widget_list.c \
 ../../src/bin/ui/blocks/ui_signal_list.c \
 ../../src/bin/ui/blocks/ui_states_list.c \

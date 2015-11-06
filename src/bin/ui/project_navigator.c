@@ -17,7 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "navigator.h"
+#include "project_navigator.h"
 #include "main_window.h"
 #include "editor.h"
 
@@ -31,7 +31,7 @@ typedef struct
    Evas_Object *btn_del;
    Elm_Genlist_Item_Class *itc_group;
    Elm_Genlist_Item_Class *itc_folder;
-} Navigator;
+} Project_Navigator;
 
 typedef struct
 {
@@ -42,7 +42,7 @@ typedef struct
    Evas_Object *check;
 } Layout_Popup;
 
-static Navigator navigator;
+static Project_Navigator project_navigator;
 static Layout_Popup layout_p;
 
 static char *
@@ -237,8 +237,8 @@ _expanded_cb(void *data __UNUSED__,
    _tree_items_get(prefix, &folders, &groups);
    EINA_LIST_FREE(folders, prefix)
      {
-        elm_genlist_item_append(navigator.genlist,
-                                navigator.itc_folder,
+        elm_genlist_item_append(project_navigator.genlist,
+                                project_navigator.itc_folder,
                                 prefix,
                                 glit,
                                 ELM_GENLIST_ITEM_TREE,
@@ -247,8 +247,8 @@ _expanded_cb(void *data __UNUSED__,
      }
    EINA_LIST_FREE(groups, group)
      {
-        elm_genlist_item_append(navigator.genlist,
-                                navigator.itc_group,
+        elm_genlist_item_append(project_navigator.genlist,
+                                project_navigator.itc_group,
                                 group,
                                 glit,
                                 ELM_GENLIST_ITEM_NONE,
@@ -280,7 +280,7 @@ _on_clicked_double(void *data __UNUSED__,
    else
      {
         Group *group = (Group *)elm_object_item_data_get(glit);
-        evas_object_smart_callback_call(navigator.layout, SIG_GROUP_OPEN, group);
+        evas_object_smart_callback_call(project_navigator.layout, SIG_GROUP_OPEN, group);
      }
 }
 
@@ -300,8 +300,8 @@ _item_group_compare(const void *data1, const void *data2)
 {
    const Elm_Object_Item *it1 = data1;
    const Elm_Object_Item *it2 = data2;
-   if (elm_genlist_item_item_class_get(it1) == navigator.itc_folder) return -1;
-   if (elm_genlist_item_item_class_get(it2) == navigator.itc_folder) return -1;
+   if (elm_genlist_item_item_class_get(it1) == project_navigator.itc_folder) return -1;
+   if (elm_genlist_item_item_class_get(it2) == project_navigator.itc_folder) return -1;
    const char *str1 = ((Group *)elm_object_item_data_get(it1))->name;
    const char *str2 = ((Group *)elm_object_item_data_get(it2))->name;
 
@@ -316,8 +316,8 @@ _item_prefix_compare(const void *data1, const void *data2)
 {
    const Elm_Object_Item *it1 = data1;
    const Elm_Object_Item *it2 = data2;
-   if (elm_genlist_item_item_class_get(it1) != navigator.itc_folder) return 1;
-   if (elm_genlist_item_item_class_get(it2) != navigator.itc_folder) return 1;
+   if (elm_genlist_item_item_class_get(it1) != project_navigator.itc_folder) return 1;
+   if (elm_genlist_item_item_class_get(it2) != project_navigator.itc_folder) return 1;
 
    const char *str1 = elm_object_item_data_get(it1);
    const char *str2 = elm_object_item_data_get(it2);
@@ -340,7 +340,7 @@ _group_add(void *data __UNUSED__,
    Eina_Stringshare *prefix;
 
    group = (Group *)event_info;
-   item = elm_genlist_first_item_get(navigator.genlist);
+   item = elm_genlist_first_item_get(project_navigator.genlist);
    arr = eina_str_split_full(group->name, "/", 0, &count);
 
    for (i = 0; i < count; i++)
@@ -348,7 +348,7 @@ _group_add(void *data __UNUSED__,
         parent = elm_genlist_item_parent_get(item);
         item = _find_item(item, arr[i]);
         if (!item) break;
-        if (elm_genlist_item_item_class_get(item) != navigator.itc_folder) break;
+        if (elm_genlist_item_item_class_get(item) != project_navigator.itc_folder) break;
         if (!elm_genlist_item_expanded_get(item)) goto exit;
         item = eina_list_data_get(elm_genlist_item_subitems_get(item));
      }
@@ -356,8 +356,8 @@ _group_add(void *data __UNUSED__,
    if (i != count - 1)
      {
         prefix = _get_prefix(group->name, i, NULL);
-        elm_genlist_item_sorted_insert(navigator.genlist,
-                                       navigator.itc_folder,
+        elm_genlist_item_sorted_insert(project_navigator.genlist,
+                                       project_navigator.itc_folder,
                                        prefix,
                                        parent,
                                        ELM_GENLIST_ITEM_TREE,
@@ -366,8 +366,8 @@ _group_add(void *data __UNUSED__,
                                        NULL);
      }
    else
-     elm_genlist_item_sorted_insert(navigator.genlist,
-                                    navigator.itc_group,
+     elm_genlist_item_sorted_insert(project_navigator.genlist,
+                                    project_navigator.itc_group,
                                     group,
                                     parent,
                                     ELM_GENLIST_ITEM_NONE,
@@ -427,7 +427,7 @@ _btn_add_group_cb(void *data __UNUSED__,
    ENTRY_ADD(layout_p.box, layout_p.entry, true)
    elm_layout_content_set(item, NULL, layout_p.entry);
    elm_box_pack_end(layout_p.box, item);
-   glit = elm_genlist_selected_item_get(navigator.genlist);
+   glit = elm_genlist_selected_item_get(project_navigator.genlist);
    if (glit) elm_entry_entry_set(layout_p.entry, elm_object_item_data_get(glit));
    /* copy: combobox */
    LAYOUT_PROP_ADD(layout_p.box, _("copy of"), "property", "1swallow")
@@ -516,7 +516,7 @@ _group_del(void *data __UNUSED__,
    buf = eina_strbuf_new();
    group_name = (Eina_Stringshare *)event_info;
    fprintf(stdout, "%s\n", group_name);
-   item = elm_genlist_first_item_get(navigator.genlist);
+   item = elm_genlist_first_item_get(project_navigator.genlist);
    arr = eina_str_split_full(group_name, "/", 0, &depth);
    for (i = 0; i < depth; i++)
      {
@@ -551,7 +551,7 @@ _btn_del_group_cb(void *data __UNUSED__,
    Elm_Object_Item *glit;
    Eina_Stringshare *tmp;
 
-   glit = elm_genlist_selected_item_get(navigator.genlist);
+   glit = elm_genlist_selected_item_get(project_navigator.genlist);
    if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
      {
         btn_res = popup_want_action(_("Confirm delete layouts"),
@@ -592,7 +592,7 @@ _selected_cb(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   elm_object_disabled_set(navigator.btn_del, false);
+   elm_object_disabled_set(project_navigator.btn_del, false);
 }
 
 static void
@@ -600,86 +600,86 @@ _unselected_cb(void *data __UNUSED__,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
-   elm_object_disabled_set(navigator.btn_del, true);
+   elm_object_disabled_set(project_navigator.btn_del, true);
 }
 
 Evas_Object *
-navigator_add(void)
+project_navigator_add(void)
 {
    Evas_Object *icon;
 
    assert(ap.win != NULL);
 
-   navigator.itc_folder = elm_genlist_item_class_new();
-   navigator.itc_folder->item_style = "navigator";
-   navigator.itc_folder->func.text_get = _folder_item_label_get;
-   navigator.itc_folder->func.content_get = _folder_item_icon_get;
-   navigator.itc_folder->func.state_get = NULL;
-   navigator.itc_folder->func.del = _folder_item_del;
+   project_navigator.itc_folder = elm_genlist_item_class_new();
+   project_navigator.itc_folder->item_style = "project_navigator";
+   project_navigator.itc_folder->func.text_get = _folder_item_label_get;
+   project_navigator.itc_folder->func.content_get = _folder_item_icon_get;
+   project_navigator.itc_folder->func.state_get = NULL;
+   project_navigator.itc_folder->func.del = _folder_item_del;
 
-   navigator.itc_group = elm_genlist_item_class_new();
-   navigator.itc_group->item_style = "navigator";
-   navigator.itc_group->func.text_get = _group_item_label_get;
-   navigator.itc_group->func.content_get = _group_item_icon_get;
-   navigator.itc_group->func.state_get = NULL;
-   navigator.itc_group->func.del = NULL;
+   project_navigator.itc_group = elm_genlist_item_class_new();
+   project_navigator.itc_group->item_style = "project_navigator";
+   project_navigator.itc_group->func.text_get = _group_item_label_get;
+   project_navigator.itc_group->func.content_get = _group_item_icon_get;
+   project_navigator.itc_group->func.state_get = NULL;
+   project_navigator.itc_group->func.del = NULL;
 
-   navigator.layout = elm_layout_add(ap.win);
-   elm_layout_theme_set(navigator.layout, "layout", "navigator", "default");
-   evas_object_show(navigator.layout);
+   project_navigator.layout = elm_layout_add(ap.win);
+   elm_layout_theme_set(project_navigator.layout, "layout", "project_navigator", "default");
+   evas_object_show(project_navigator.layout);
 
-   navigator.btn_add = elm_button_add(navigator.layout);
-   ICON_STANDARD_ADD(navigator.btn_add, icon, true, "plus");
-   elm_object_part_content_set(navigator.btn_add, NULL, icon);
-   evas_object_smart_callback_add(navigator.btn_add, "clicked", _btn_add_group_cb, NULL);
-   elm_object_style_set(navigator.btn_add, "anchor");
-   elm_object_part_content_set(navigator.layout, "elm.swallow.bt1", navigator.btn_add);
+   project_navigator.btn_add = elm_button_add(project_navigator.layout);
+   ICON_STANDARD_ADD(project_navigator.btn_add, icon, true, "plus");
+   elm_object_part_content_set(project_navigator.btn_add, NULL, icon);
+   evas_object_smart_callback_add(project_navigator.btn_add, "clicked", _btn_add_group_cb, NULL);
+   elm_object_style_set(project_navigator.btn_add, "anchor");
+   elm_object_part_content_set(project_navigator.layout, "elm.swallow.bt1", project_navigator.btn_add);
 
-   navigator.btn_del = elm_button_add(navigator.layout);
-   ICON_STANDARD_ADD(navigator.btn_del, icon, true, "minus");
-   elm_object_part_content_set(navigator.btn_del, NULL, icon);
-   evas_object_smart_callback_add (navigator.btn_del, "clicked", _btn_del_group_cb, NULL);
-   elm_object_style_set(navigator.btn_del, "anchor");
-   elm_object_part_content_set(navigator.layout, "elm.swallow.bt0", navigator.btn_del);
-   elm_object_disabled_set(navigator.btn_del, true);
+   project_navigator.btn_del = elm_button_add(project_navigator.layout);
+   ICON_STANDARD_ADD(project_navigator.btn_del, icon, true, "minus");
+   elm_object_part_content_set(project_navigator.btn_del, NULL, icon);
+   evas_object_smart_callback_add (project_navigator.btn_del, "clicked", _btn_del_group_cb, NULL);
+   elm_object_style_set(project_navigator.btn_del, "anchor");
+   elm_object_part_content_set(project_navigator.layout, "elm.swallow.bt0", project_navigator.btn_del);
+   elm_object_disabled_set(project_navigator.btn_del, true);
 
-   navigator.genlist = elm_genlist_add(navigator.layout);
-   evas_object_show(navigator.genlist);
-   elm_object_content_set(navigator.layout, navigator.genlist);
-   evas_object_smart_callback_add (navigator.genlist, "selected", _selected_cb, NULL);
-   evas_object_smart_callback_add (navigator.genlist, "unselected", _unselected_cb, NULL);
+   project_navigator.genlist = elm_genlist_add(project_navigator.layout);
+   evas_object_show(project_navigator.genlist);
+   elm_object_content_set(project_navigator.layout, project_navigator.genlist);
+   evas_object_smart_callback_add (project_navigator.genlist, "selected", _selected_cb, NULL);
+   evas_object_smart_callback_add (project_navigator.genlist, "unselected", _unselected_cb, NULL);
 
-   elm_object_text_set(navigator.layout, _("None"));
-   elm_object_disabled_set(navigator.layout, true);
+   elm_object_text_set(project_navigator.layout, _("None"));
+   elm_object_disabled_set(project_navigator.layout, true);
 
-   evas_object_smart_callback_add(navigator.genlist, "clicked,double", _on_clicked_double, NULL);
-   evas_object_smart_callback_add(navigator.genlist, "expand,request", _expand_request_cb, NULL);
-   evas_object_smart_callback_add(navigator.genlist, "contract,request", _contract_request_cb, NULL);
-   evas_object_smart_callback_add(navigator.genlist, "expanded", _expanded_cb, NULL);
-   evas_object_smart_callback_add(navigator.genlist, "contracted", _contracted_cb, NULL);
+   evas_object_smart_callback_add(project_navigator.genlist, "clicked,double", _on_clicked_double, NULL);
+   evas_object_smart_callback_add(project_navigator.genlist, "expand,request", _expand_request_cb, NULL);
+   evas_object_smart_callback_add(project_navigator.genlist, "contract,request", _contract_request_cb, NULL);
+   evas_object_smart_callback_add(project_navigator.genlist, "expanded", _expanded_cb, NULL);
+   evas_object_smart_callback_add(project_navigator.genlist, "contracted", _contracted_cb, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_ADDED, _group_add, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DELETED, _group_del, NULL);
 
    TODO("Add deletion callback and free resources");
 
-   return navigator.layout;
+   return project_navigator.layout;
 }
 
 void
-navigator_project_set(void)
+project_navigator_project_set(void)
 {
    Eina_List *folders = NULL, *groups = NULL;
    Eina_Stringshare *prefix;
    Group *group;
 
-   elm_object_text_set(navigator.layout, ap.project->name);
+   elm_object_text_set(project_navigator.layout, ap.project->name);
    _tree_items_get("", &folders, &groups);
 
    EINA_LIST_FREE(folders, prefix)
      {
-        elm_genlist_item_append(navigator.genlist,
-                                navigator.itc_folder,
+        elm_genlist_item_append(project_navigator.genlist,
+                                project_navigator.itc_folder,
                                 prefix,
                                 NULL,
                                 ELM_GENLIST_ITEM_TREE,
@@ -688,8 +688,8 @@ navigator_project_set(void)
      }
    EINA_LIST_FREE(groups, group)
      {
-        elm_genlist_item_append(navigator.genlist,
-                                navigator.itc_group,
+        elm_genlist_item_append(project_navigator.genlist,
+                                project_navigator.itc_group,
                                 group,
                                 NULL,
                                 ELM_GENLIST_ITEM_NONE,
@@ -697,13 +697,13 @@ navigator_project_set(void)
                                 NULL);
      }
 
-   elm_object_disabled_set(navigator.layout, false);
+   elm_object_disabled_set(project_navigator.layout, false);
 }
 
 void
-navigator_project_unset(void)
+project_navigator_project_unset(void)
 {
-   elm_object_text_set(navigator.layout, _("None"));
-   elm_genlist_clear(navigator.genlist);
-   elm_object_disabled_set(navigator.layout, true);
+   elm_object_text_set(project_navigator.layout, _("None"));
+   elm_genlist_clear(project_navigator.genlist);
+   elm_object_disabled_set(project_navigator.layout, true);
 }

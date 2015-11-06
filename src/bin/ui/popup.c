@@ -153,14 +153,16 @@ _done(void *data __UNUSED__,
                                                   elm_fileselector_path_get(fs),
                                                   elm_fileselector_current_name_get(fs));
              else
-               selected = elm_fileselector_path_get(fs);
+               selected = eina_stringshare_add(elm_fileselector_selected_get(fs));
              selected_paths = eina_list_append(selected_paths, selected);
           }
         res = ((Helper_Done_Cb)dismiss_func)(func_data, obj, selected_paths);
+
+        if (!elm_fileselector_multi_select_get(fs))
+          EINA_LIST_FREE(selected_paths, selected)
+             eina_stringshare_del(selected);
      }
 
-   EINA_LIST_FREE(selected_paths, selected)
-      eina_stringshare_del(selected);
    if (res)
      {
         dismiss_func = NULL;
@@ -235,8 +237,6 @@ _fileselector_helper(const char *title,
    evas_object_smart_callback_add(fs, "activated", _done, NULL);
    /* small hack, hide not necessary button */
    evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
-   /* one more hack, set text our text to button 'ok' */
-   elm_object_text_set(elm_layout_content_get(fs, "elm.swallow.ok"), _("Open"));
    evas_object_size_hint_min_set(helper, FS_W, FS_H);
    evas_object_resize(helper, FS_W, FS_H);
 
@@ -308,6 +308,35 @@ popup_fileselector_edc_helper(const char *title, Evas_Object *follow_up, const c
                               Eina_Bool multi, Eina_Bool is_save)
 {
    _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _edc_filter);
+}
+
+static Eina_Bool
+_images_filter(const char *path,
+               Eina_Bool dir,
+               void *data __UNUSED__)
+{
+   int i;
+   Eina_Bool res;
+   const char *image_formats[] = { "png", "jpg", "jpeg", "jfif", "xpm", "tif",
+                                   "tiff", "gif", "pbm", "pgm", "ppm", "pnm",
+                                   "bmp", "wbmp", "webp", "psd", "tga", NULL};
+   if (dir) return true;
+   i = 0;
+   while(image_formats[i])
+     {
+        res = eina_str_has_extension(path, image_formats[i++]);
+        if (res) return true;
+     }
+
+   return false;
+}
+
+void
+popup_fileselector_image_helper(const char *title, Evas_Object *follow_up, const char *path,
+                                Helper_Done_Cb func, void *data,
+                                Eina_Bool multi, Eina_Bool is_save)
+{
+   _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _images_filter);
 }
 
 void

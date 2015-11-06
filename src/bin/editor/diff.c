@@ -29,6 +29,8 @@ typedef Eina_Bool (* function_type_string_string_double_bool) (Evas_Object *, Ch
                                                                const char *, const char *, double, Eina_Bool);
 typedef Eina_Bool (* function_type_string_string_double_string) (Evas_Object *, Change*, Eina_Bool,
                                                                  const char *, const char *, double, const char *);
+typedef Eina_Bool (* function_type_string_string_double_string_double) (Evas_Object *, Change*, Eina_Bool,
+                                                                        const char *, const char *, double, const char *, double);
 typedef Eina_Bool (* function_type_string_string_double_int_int_int_int) (Evas_Object *, Change*, Eina_Bool,
                                                                           const char *, const char *, double, int, int, int, int);
 typedef Eina_Bool (* function_type_string_string_double_uchar) (Evas_Object *, Change*, Eina_Bool,
@@ -87,6 +89,9 @@ _apply(Evas_Object *obj, Function_Info *fi)
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_STRING:
          return ((function_type_string_string_double_string)fi->function)(obj, NULL, false,
                   fi->args.type_ssds.s1, fi->args.type_ssds.s2, fi->args.type_ssds.d3, fi->args.type_ssds.s4);
+      case FUNCTION_TYPE_STRING_STRING_DOUBLE_STRING_DOUBLE:
+         return ((function_type_string_string_double_string_double)fi->function)(obj, NULL, false,
+                  fi->args.type_ssdsd.s1, fi->args.type_ssdsd.s2, fi->args.type_ssdsd.d3, fi->args.type_ssdsd.s4, fi->args.type_ssdsd.d5);
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_INT_INT_INT_INT:
          return ((function_type_string_string_double_int_int_int_int)fi->function)(obj, NULL, false,
                   fi->args.type_ssdiiii.s1, fi->args.type_ssdiiii.s2, fi->args.type_ssdiiii.d3, fi->args.type_ssdiiii.i4, fi->args.type_ssdiiii.i5, fi->args.type_ssdiiii.i6, fi->args.type_ssdiiii.i7);
@@ -203,6 +208,14 @@ diff_update(Diff *diff, Diff *new_diff)
          eina_stringshare_ref(new_diff->redo.args.type_ssds.s1);
          eina_stringshare_ref(new_diff->redo.args.type_ssds.s2);
          eina_stringshare_ref(new_diff->redo.args.type_ssds.s4);
+         break;
+      case FUNCTION_TYPE_STRING_STRING_DOUBLE_STRING_DOUBLE:
+         eina_stringshare_del(diff->redo.args.type_ssdsd.s1);
+         eina_stringshare_del(diff->redo.args.type_ssdsd.s2);
+         eina_stringshare_del(diff->redo.args.type_ssdsd.s4);
+         eina_stringshare_ref(new_diff->redo.args.type_ssdsd.s1);
+         eina_stringshare_ref(new_diff->redo.args.type_ssdsd.s2);
+         eina_stringshare_ref(new_diff->redo.args.type_ssdsd.s4);
          break;
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_INT_INT_INT_INT:
          eina_stringshare_del(diff->redo.args.type_ssdiiii.s1);
@@ -331,6 +344,11 @@ diff_free(Diff *diff)
          eina_stringshare_del(diff->redo.args.type_ssds.s1);
          eina_stringshare_del(diff->redo.args.type_ssds.s2);
          eina_stringshare_del(diff->redo.args.type_ssds.s4);
+         break;
+      case FUNCTION_TYPE_STRING_STRING_DOUBLE_STRING_DOUBLE:
+         eina_stringshare_del(diff->redo.args.type_ssdsd.s1);
+         eina_stringshare_del(diff->redo.args.type_ssdsd.s2);
+         eina_stringshare_del(diff->redo.args.type_ssdsd.s4);
          break;
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_INT_INT_INT_INT:
          eina_stringshare_del(diff->redo.args.type_ssdiiii.s1);

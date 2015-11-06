@@ -464,8 +464,12 @@ pm_project_style_source_code_export(Project *pro, Style *style, const char *file
  *
  * @ingroup ProjectManager.
  */
-Eina_Bool
-pm_project_source_code_export(Project *pro, const char *dir_path);
+void
+pm_project_source_code_export(Project *project,
+                              const char *path,
+                              PM_Project_Progress_Cb func_progress,
+                              PM_Project_End_Cb func_end,
+                              const void *data);
 
 /**
  * Export the edj develop file from current project. The develop edj file

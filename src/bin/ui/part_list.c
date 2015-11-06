@@ -25,6 +25,7 @@
 #include "string_common.h"
 #include "main_window.h"
 #include "editor.h"
+#include "new_history.h"
 
 #define PART_LIST_DATA "part_list_data"
 
@@ -605,11 +606,9 @@ _popup_add_state_ok_clicked(void *data,
    const char *name;
    double val;
    Part_ *part;
-   State *state, *state_from;
-   Eina_Stringshare *full_state_name;
-   Elm_Object_Item *glit;
-   const Eina_List *l;
-   Eina_Bool items_expanded = false;
+   State *state_from;
+   Eina_Stringshare *msg;
+   Change *change;
 
    assert(pl != NULL);
 
@@ -621,20 +620,46 @@ _popup_add_state_ok_clicked(void *data,
    item = ewe_combobox_select_item_get(pl->popup.combobox_dup);
    if (item->index == 0)
      {
-        edje_edit_state_add(pl->group->edit_object, part->name, name, val);
-        /* if (type == EDJE_PART_IMAGE) */
-        TODO("Add noimage here")
+        msg = eina_stringshare_printf(_("added new state \"%s\" %.2f"), name, val);
+        change = change_add(msg);
+        editor_state_add(pl->group->edit_object, change, false,
+                         part->name, name, val);
      }
    else
      {
         state_from = pm_resource_get(part->states, item->title);
-        edje_edit_state_copy(pl->group->edit_object, part->name,
-                             state_from->parsed_name, state_from->parsed_val,
-                             name, val);
+        msg = eina_stringshare_printf(_("added new state \"%s\" %.2f as copy of \"%s\" %.2f"),
+                                      name, val, state_from->parsed_name, state_from->parsed_val);
+        change = change_add(msg);
+        editor_state_copy(pl->group->edit_object, change, false,
+                          part->name,
+                          state_from->parsed_name, state_from->parsed_val,
+                          name, val);
      }
-   full_state_name = eina_stringshare_printf("%s %.2f", name, val);
+
+   history_change_add(pl->group->history, change);
+   eina_stringshare_del(msg);
+   ecore_job_add(_job_popup_del, pl);
+}
+
+static void
+_editor_state_added_cb(void *data,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info)
+{
+   Part_List *pl = data;
+   Eina_Stringshare *full_state_name = event_info;
+   Part_ *part;
+   State *state;
+   Eina_Bool items_expanded = false;
+   Elm_Object_Item *glit;
+   const Eina_List *l;
+
+   assert(pl != NULL);
+   assert(full_state_name != NULL);
+
+   part = elm_object_item_data_get(pl->selected_part_item);
    state = gm_state_add(ap.project, part, full_state_name);
-   eina_stringshare_del(full_state_name);
 
    /* callback should be called before selection to allow some additional loading */
    evas_object_smart_callback_call(ap.win, SIGNAL_STATE_ADDED, (void *)state);
@@ -662,7 +687,6 @@ _popup_add_state_ok_clicked(void *data,
              break;
           }
      }
-   ecore_job_add(_job_popup_del, pl);
 }
 
 static void
@@ -911,6 +935,8 @@ part_list_add(Group *group)
    elm_menu_item_icon_name_set(menu_item, "type_spacer");
 
    pl->name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, pl);
 
    TODO("Add deletion callback and free resources");
    return pl->layout;
