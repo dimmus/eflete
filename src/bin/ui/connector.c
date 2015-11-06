@@ -18,7 +18,7 @@
  */
 
 #include "main_window.h"
-#include "navigator.h"
+#include "project_navigator.h"
 #include "tabs.h"
 #include "signals.h"
 #include "preference.h"
@@ -387,7 +387,7 @@ _progress_pm_open_end(void *data __UNUSED__, PM_Project_Result result)
 
            ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
            ui_menu_disable_set(ap.menu, MENU_FILE_CLOSE_PROJECT, false);
-           navigator_project_set();
+           project_navigator_project_set();
 
            NOTIFY_INFO(3, _("Project '%s' is opened."), ap.project->name);
            STATUSBAR_PROJECT_PATH(ap.project->pro_path);
@@ -487,7 +487,7 @@ project_close(void)
         elm_layout_text_set(ap.win_layout, "eflete.project.time", _("Last saved: none"));
         ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_BASE, true);
         ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
-        navigator_project_unset();
+        project_navigator_project_unset();
         tabs_clean();
         pm_project_close(ap.project);
         ap.project = NULL;

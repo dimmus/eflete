@@ -21,7 +21,7 @@
 #define TABS_PRIVATE
 
 #include "main_window.h"
-#include "navigator.h"
+#include "project_navigator.h"
 #include "project_common.h"
 
 struct _Meta_Data_Controls
