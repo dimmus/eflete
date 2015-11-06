@@ -34,18 +34,11 @@
    Image_Prop_Data *pd = evas_object_data_get(property, IMAGE_PROP_DATA); \
    assert(pd != NULL);
 
-/*
- * Callback is added for frames at property box to correct scroller
- * work while each frame would be expanded/collapsed
- */
-#define FRAME_PROPERTY_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE, SCROLLER) \
-FRAME_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE) \
-evas_object_smart_callback_add(FRAME, "clicked", _on_frame_click, SCROLLER);
-
 struct _Image_Prop_Data
 {
    Evas_Object *box;
    Evas_Object *image_preview;
+   Evas_Object *preview_frame;
 
    Evas_Object *name;
    Evas_Object *location;
@@ -243,12 +236,14 @@ ui_property_image_add(Evas_Object *parent)
    elm_box_align_set(pd->box, 0.5, 0.0);
    evas_object_hide(pd->box);
 
+   FRAME_PROPERTY_ADD(pd->box, pd->preview_frame, true, _("Preview"), pd->box)
    pd->image_preview = elm_layout_add(parent);
    elm_layout_theme_set(pd->image_preview, "layout", "image_editor", "preview");
-   elm_box_pack_end(pd->box, pd->image_preview);
    evas_object_size_hint_weight_set(pd->image_preview, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(pd->image_preview, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(pd->image_preview);
+   elm_object_content_set(pd->preview_frame, pd->image_preview);
+   elm_box_pack_end(pd->box, pd->preview_frame);
 
    evas_object_data_set(pd->box, IMAGE_PROP_DATA, pd);
 

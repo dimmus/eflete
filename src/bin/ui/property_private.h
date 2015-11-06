@@ -52,4 +52,10 @@ ui_property_part_state_set(Evas_Object *parent, Part_ *part);
 Evas_Object *
 ui_property_image_add(Evas_Object *parent);
 
+/* TODO: put this function into a certain place */
+void
+_on_frame_click(void *data,
+                Evas_Object *obj,
+                void *event_info);
+
 #endif /* UI_PROPERTY_1_H */

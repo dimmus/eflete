@@ -44,6 +44,35 @@
    Prop_Data *pd = evas_object_data_get(property, PROP_DATA); \
    assert(pd != NULL);
 
+TODO("remove this hack after scroller would be fixed")
+/*
+ * Hack start
+ */
+void
+_on_frame_click(void *data,
+                Evas_Object *obj,
+                void *event_info __UNUSED__)
+{
+   Evas_Object *scroller = (Evas_Object *)data;
+   Evas_Object *box, *frame_box;
+   int h_box, h_frame_box, h_scr, y_reg, h_reg, y_frame;
+   box = elm_object_content_get(scroller);
+   evas_object_geometry_get(scroller, NULL, NULL, NULL, &h_scr);
+   evas_object_geometry_get(box, NULL, NULL, NULL, &h_box);
+   frame_box = elm_object_content_get(obj);
+   evas_object_geometry_get(frame_box, NULL, &y_frame, NULL, &h_frame_box);
+   elm_scroller_region_get(scroller, NULL, &y_reg, NULL, &h_reg);
+   elm_scroller_region_bring_in(scroller, 0.0, y_reg + 1, 0.0, h_reg);
+   if (!elm_frame_collapse_get(obj))
+     {
+        if (h_box == h_scr + y_reg)
+          elm_scroller_region_show(scroller, 0.0, y_reg + h_frame_box, 0.0, h_reg);
+        else
+          elm_scroller_region_bring_in(scroller, 0.0, y_reg + 1, 0.0, h_reg);
+     }
+}
+/* Hack end */
+
 /* enum for identifying current property
  (group's, image's, sound's or other kind of peroperty) */
 enum _Property_Type {

@@ -28,6 +28,23 @@
  * be used.
  */
 
+#define PROP_ITEM_UNSET(BOX, ITEM) \
+   if (ITEM) \
+     {\
+        evas_object_smart_callback_del(ITEM, "clicked", _on_frame_click); \
+        elm_box_unpack(BOX, ITEM); \
+        evas_object_del(ITEM); \
+        ITEM = NULL; \
+     }
+/*
+ * Callback is added for frames at property box to correct scroller
+ * work while each frame would be expanded/collapsed
+ * TODO: Documentation
+ */
+#define FRAME_PROPERTY_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE, SCROLLER) \
+FRAME_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE) \
+evas_object_smart_callback_add(FRAME, "clicked", _on_frame_click, SCROLLER);
+
 /**
  * Create new layout with style "elm/layout/property/STYLE".
  * Macro develop for property items, can use in simular cases.

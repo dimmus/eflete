@@ -44,14 +44,6 @@
    Group_Prop_Data *pd = evas_object_data_get(property, GROUP_PROP_DATA); \
    assert(pd != NULL);
 
-/*
- * Callback is added for frames at property box to correct scroller
- * work while each frame would be expanded/collapsed
- */
-#define FRAME_PROPERTY_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE, SCROLLER) \
-FRAME_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE) \
-evas_object_smart_callback_add(FRAME, "clicked", _on_frame_click, SCROLLER);
-
 struct _Group_Prop_Data
 {
    Group *group;
@@ -452,35 +444,6 @@ _on_spinner_mouse_wheel(void *data __UNUSED__,
    Evas_Event_Mouse_Wheel *mev = event_info;
    mev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
 }
-
-TODO("remove this hack after scroller would be fixed")
-/*
- * Hack start
- */
-static void
-_on_frame_click(void *data,
-                Evas_Object *obj,
-                void *event_info __UNUSED__)
-{
-   Evas_Object *scroller = (Evas_Object *)data;
-   Evas_Object *box, *frame_box;
-   int h_box, h_frame_box, h_scr, y_reg, h_reg, y_frame;
-   box = elm_object_content_get(scroller);
-   evas_object_geometry_get(scroller, NULL, NULL, NULL, &h_scr);
-   evas_object_geometry_get(box, NULL, NULL, NULL, &h_box);
-   frame_box = elm_object_content_get(obj);
-   evas_object_geometry_get(frame_box, NULL, &y_frame, NULL, &h_frame_box);
-   elm_scroller_region_get(scroller, NULL, &y_reg, NULL, &h_reg);
-   elm_scroller_region_bring_in(scroller, 0.0, y_reg + 1, 0.0, h_reg);
-   if (!elm_frame_collapse_get(obj))
-     {
-        if (h_box == h_scr + y_reg)
-          elm_scroller_region_show(scroller, 0.0, y_reg + h_frame_box, 0.0, h_reg);
-        else
-          elm_scroller_region_bring_in(scroller, 0.0, y_reg + 1, 0.0, h_reg);
-     }
-}
-/* Hack end */
 
 static Evas_Object *
 prop_item_label_add(Evas_Object *parent,
@@ -1576,15 +1539,6 @@ ui_property_part_set(Evas_Object *property, Part_ *part)
      elm_scroller_region_show(pd->scroller, 0.0, y_reg + h_box, 0.0, h_reg);
 }
 
-#define PROP_ITEM_UNSET(BOX, ITEM) \
-   if (ITEM) \
-     {\
-        evas_object_smart_callback_del(ITEM, "clicked", _on_frame_click); \
-        elm_box_unpack(BOX, ITEM); \
-        evas_object_del(ITEM); \
-        ITEM = NULL; \
-     }
-
 static void
 _ui_property_part_unset(Evas_Object *property)
 {
@@ -1616,7 +1570,6 @@ _ui_property_part_unset(Evas_Object *property)
    PROP_ITEM_UNSET(prop_box, pd->attributes.part_item.frame)
 }
 
-#undef PROP_ITEM_UNSET
 #undef pd_part
 #undef pd_drag
 
