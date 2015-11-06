@@ -75,7 +75,6 @@ _on_different_clicked(void *data,
    assert(pd != NULL);
 
    ui_property_group_unset(pd->group_property);
-   elm_object_content_unset(pd->layout);
 
    /* hide everything */
    evas_object_hide(pd->group_property);
