@@ -1205,6 +1205,7 @@ _add_sample_done(void *data,
           {
              WIN_NOTIFY_ERROR(obj, _("File exist"));
              free(res);
+             goto del;
           }
 
         edje_edit_sound_sample_add(ap.project->global_object, res->name, res->source);
