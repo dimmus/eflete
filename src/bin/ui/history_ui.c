@@ -211,6 +211,5 @@ history_ui_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _history_set, NULL);
 
    TODO("Add clean-up callbacks here")
-   evas_object_show(hd.layout);
    return hd.layout;
 }
