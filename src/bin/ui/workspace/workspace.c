@@ -962,6 +962,7 @@ _zoom_part_add(Evas_Object *parent)
    evas_object_show(button_resize);
 
    button_zoom = elm_button_add(parent);
+   elm_object_text_set(button_zoom, N_("100%"));
    elm_box_pack_end(parent, button_zoom);
    evas_object_show(button_zoom);
 
