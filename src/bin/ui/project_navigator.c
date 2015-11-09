@@ -348,7 +348,7 @@ _group_add(void *data __UNUSED__,
    item = elm_genlist_first_item_get(project_navigator.genlist);
    arr = eina_str_split_full(group->name, "/", 0, &count);
 
-   for (i = 0; i < count; i++)
+   for (i = 0; i < count - 1; i++)
      {
         parent = elm_genlist_item_parent_get(item);
         item = _find_item(item, arr[i]);
