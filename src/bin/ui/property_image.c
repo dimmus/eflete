@@ -34,6 +34,12 @@
    Image_Prop_Data *pd = evas_object_data_get(property, IMAGE_PROP_DATA); \
    assert(pd != NULL);
 
+typedef struct _Search_Data Search_Data;
+struct _Search_Data
+{
+   Evas_Object *search_entry;
+   Elm_Object_Item *last_item_found;
+};
 struct _Image_Prop_Data
 {
    Evas_Object *box;
@@ -49,6 +55,10 @@ struct _Image_Prop_Data
    Evas_Object *size_height;
    Evas_Object *usage_list;
    Evas_Object *info_frame;
+
+   Search_Data usage_search_data;
+   Evas_Object *usage_genlist;
+   Evas_Object *usage_frame;
 
    Eina_Stringshare *selected_image;
 };
@@ -222,11 +232,93 @@ _on_image_selected(void *data,
      }
 }
 
+ITEM_SEARCH_FUNC(genlist, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE, NULL)
+static void
+_on_usage_search_entry_changed_cb(void *data,
+                                  Evas_Object *obj __UNUSED__,
+                                  void *event_info __UNUSED__)
+{
+   Image_Prop_Data *pd = data;
+
+   assert(pd != NULL);
+
+   _genlist_item_search(pd->usage_genlist,
+                        &(pd->usage_search_data),
+                        pd->usage_search_data.last_item_found);
+}
+static void
+_search_next_genlist_item_cb(void *data,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info __UNUSED__)
+{
+   Image_Prop_Data *pd = data;
+   Elm_Object_Item *start_from = NULL;
+
+   assert(pd != NULL);
+
+   if (pd->usage_search_data.last_item_found)
+     {
+        start_from =
+           elm_genlist_item_next_get(pd->usage_search_data.last_item_found);
+     }
+
+   _genlist_item_search(pd->usage_genlist,
+                        &(pd->usage_search_data), start_from);
+}
+static inline Evas_Object *
+_image_editor_search_field_create(Evas_Object *parent)
+{
+   Evas_Object *entry, *icon;
+
+   assert(parent != NULL);
+
+   ENTRY_ADD(parent, entry, true);
+   elm_object_part_text_set(entry, "guide", _("Search"));
+   ICON_STANDARD_ADD(entry, icon, true, "search");
+   elm_object_part_content_set(entry, "elm.swallow.end", icon);
+   return entry;
+}
+static Evas_Object *
+_image_usage_layout_create(Image_Prop_Data *pd)
+{
+   Evas_Object *layout = NULL;
+   Evas_Object *genlist = NULL;
+   Evas_Object *entry = NULL;
+   Evas_Object *parent = NULL;
+
+   assert(pd != NULL);
+   parent = pd->usage_frame;
+
+   layout = elm_layout_add(parent);
+   elm_layout_theme_set(layout, "layout", "image_editor", "usage_info");
+   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(layout);
+
+   genlist = elm_genlist_add(layout);
+   evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(genlist);
+   elm_object_part_content_set(layout, "eflete.swallow.genlist", genlist);
+   pd->usage_genlist = genlist;
+
+   entry = _image_editor_search_field_create(layout);
+   elm_object_part_content_set(layout, "eflete.swallow.search_line", entry);
+   evas_object_smart_callback_add(entry, "changed",
+                                  _on_usage_search_entry_changed_cb, pd);
+   evas_object_smart_callback_add(entry, "activated",
+                                  _search_next_genlist_item_cb, pd);
+   pd->usage_search_data.search_entry = entry;
+   pd->usage_search_data.last_item_found = NULL;
+   evas_object_hide(layout);
+   return layout;
+}
+
 Evas_Object *
 ui_property_image_add(Evas_Object *parent)
 {
    Image_Prop_Data *pd;
-   Evas_Object *item, *box;
+   Evas_Object *item, *box, *layout;
 
    assert(parent != NULL);
 
@@ -268,6 +360,16 @@ ui_property_image_add(Evas_Object *parent)
    elm_box_pack_end(box, item);
    elm_object_content_set(pd->info_frame, box);
    elm_box_pack_end(pd->box, pd->info_frame);
+
+   /* Frame with usage */
+   FRAME_PROPERTY_ADD(pd->box, pd->usage_frame, true, _("Usage"), pd->box)
+   BOX_ADD(pd->info_frame, box, false, false);
+   elm_box_align_set(box, 0.5, 0.0);
+
+   layout = _image_usage_layout_create(pd);
+
+   elm_object_content_set(pd->usage_frame, layout);
+   elm_box_pack_end(pd->box, pd->usage_frame);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_IMAGE_SELECTED, _on_image_selected, pd->box);
 
