@@ -61,31 +61,9 @@ struct _Image_Editor
    Evas_Object *gengrid;
    Evas_Object *layout;
    Search_Data image_search_data;
-   Search_Data usage_search_data;
-   struct {
-      Evas_Object *tabs;
-      Evas_Object *image_info;
-      Evas_Object *image_usage;
-      Elm_Object_Item *item_image_info; //kill
-      Elm_Object_Item *item_image_usage; //kill
-   } property;
-   struct {
-      Evas_Object *genlist;
-   } image_usage_fields;
-   struct {
-      const char  *image_name;
-      Evas_Object *layout;
-      Evas_Object *image;
-      Evas_Object *file_name;
-      Evas_Object *comp;
-      Evas_Object *quality;
-   } image_data_fields;
 };
 
 static Elm_Gengrid_Item_Class *gic = NULL;
-static Elm_Genlist_Item_Class *_itc_group = NULL;
-static Elm_Genlist_Item_Class *_itc_part = NULL;
-static Elm_Genlist_Item_Class *_itc_state = NULL;
 
 static void _image_editor_del(Image_Editor *img_edit);
 
@@ -121,13 +99,7 @@ _image_editor_del(Image_Editor *img_edit)
    evas_object_event_callback_del(img_edit->layout, EVAS_CALLBACK_DEL, _on_image_editor_del);
 
    elm_gengrid_item_class_free(gic);
-   elm_genlist_item_class_free(_itc_group);
-   elm_genlist_item_class_free(_itc_part);
-   elm_genlist_item_class_free(_itc_state);
    gic = NULL;
-   _itc_group = NULL;
-   _itc_part = NULL;
-   _itc_state = NULL;
    evas_object_data_del(img_edit->layout, IMG_EDIT_KEY);
    evas_object_data_del(img_edit->gengrid, IMG_EDIT_KEY);
    //evas_object_del(img_edit->gengrid);
@@ -228,116 +200,6 @@ _grid_del(void *data,
 }
 
 static void
-_grid_group_item_del(void *data, Evas_Object *obj __UNUSED__)
-{
-   if (data)
-     eina_stringshare_del(data);
-}
-
-static char *
-_grid_group_item_label_get(void *data,
-                           Evas_Object *obj __UNUSED__,
-                           const char  *part)
-{
-   if ((part) && (!strcmp(part, "elm.text")))
-     return strdup(data);
-   else
-     return NULL;
-}
-
-static inline void
-genlist_item_classes_init()
-{
-   if (!_itc_group)
-     {
-        _itc_group = elm_genlist_item_class_new();
-        _itc_group->item_style = "title";
-        _itc_group->func.text_get = _grid_group_item_label_get;
-        _itc_group->func.content_get = NULL;
-        _itc_group->func.state_get = NULL;
-        _itc_group->func.del = _grid_group_item_del;
-     }
-   if (!_itc_part)
-     {
-        _itc_part = elm_genlist_item_class_new();
-        _itc_part->item_style = "default";
-        _itc_part->func.text_get = _grid_group_item_label_get;
-        _itc_part->func.content_get = NULL;
-        _itc_part->func.state_get = NULL;
-        _itc_part->func.del = _grid_group_item_del;
-     }
-   if (!_itc_state)
-     {
-        _itc_state = elm_genlist_item_class_new();
-        _itc_state->item_style = "default";
-        _itc_state->func.text_get = _grid_group_item_label_get;
-        _itc_state->func.content_get = NULL;
-        _itc_state->func.state_get = NULL;
-        _itc_state->func.del = _grid_group_item_del;
-     }
-}
-
-/*
-USABLE FOR GENLIST OF IMAGE USAGE
-
-be used like this:
->   Resource *res = (Resource *) pm_resource_get(ap.project->images, it->image_name);
->   _image_info_update_usage_info(img_edit, eina_list_count(res->used_in));
->   _image_info_usage_update(img_edit, res);
->   evas_object_smart_calculate(img_edit->image_data_fields.layout);
-
-static void
-_image_info_usage_update(Image_Editor *img_edit, Resource *res)
-{
-   Eina_List *l;
-   Evas_Object *list;
-   Elm_Object_Item *it_group, *it_part;
-   const char *cur_group = NULL;
-   const char *cur_part = NULL;
-   State *state;
-
-   assert(img_edit != NULL);
-   assert(res != NULL);
-
-   if (!img_edit->image_data_fields.image_name) return;
-
-   if (!eina_list_count(res->used_in))
-     return;
-
-   genlist_item_classes_init();
-
-   list = img_edit->image_usage_fields.genlist;
-
-   EINA_LIST_FOREACH(res->used_in, l, state)
-     {
-        if ((!cur_group) || (strcmp(cur_group, state->part->group->name)))
-          {
-             it_group = elm_genlist_item_append(list, _itc_group,
-                                                eina_stringshare_add(state->part->group->name),
-                                                NULL, ELM_GENLIST_ITEM_NONE,
-                                                NULL, NULL);
-             cur_group = state->part->group->name;
-             cur_part = NULL;
-          }
-        if ((!cur_part) || (strcmp(cur_part, state->part->name)))
-          {
-             it_part = elm_genlist_item_append(list, _itc_part,
-                                               eina_stringshare_add(state->part->name),
-                                               it_group, ELM_GENLIST_ITEM_NONE,
-                                               NULL, NULL);
-             cur_part = state->part->name;
-          }
-        if ((cur_part) && (!strcmp(cur_part, state->part->name)))
-          {
-             elm_genlist_item_append(list, _itc_state, state->name,
-                                     it_part, ELM_GENLIST_ITEM_NONE,
-                                     NULL, NULL);
-          }
-     }
-}
-*/
-
-static void
 _image_info_setup(Image_Editor *img_edit,
                   const Item* it)
 {
@@ -346,11 +208,8 @@ _image_info_setup(Image_Editor *img_edit,
    assert(img_edit != NULL);
    assert(it != NULL);
 
-   img_edit->image_data_fields.image_name = it->image_name;
-
    image = _image_editor_image_create(img_edit->layout, img_edit, it);
    evas_object_image_smooth_scale_set(image, false);
-   img_edit->image_data_fields.image = image;
    evas_object_show(image);
 
    evas_object_data_set(image, "image_name", it->image_name);
@@ -556,85 +415,6 @@ _on_button_delete_clicked_cb(void *data,
    ap.project->changed = true;
 }
 
-TODO("Refactor and uncomment when savings and other stuff of project would be more stable")
-/*
-static void
-_on_button_apply_clicked_cb(void *data,
-                            Evas_Object *obj __UNUSED__,
-                            void *event_info __UNUSED__)
-{
-   Image_Editor *img_edit = (Image_Editor *)data;
-   Uns_List *unit = NULL;
-   Eina_List *l, *names = NULL;
-   Eina_Bool multiselect = false;
-   const Eina_List *items;
-   Elm_Object_Item *it;
-   Item *item = NULL;
-   char *ei;
-
-   assert(img_edit != NULL);
-
-   EINA_LIST_FOREACH(img_edit->unapplied_list, l, unit)
-     {
-        if (unit->act_type == ACTION_TYPE_DEL)
-          {
-             if (edje_edit_image_del(ap.project->global_object, unit->data))
-               ap.project->nsimage_list = eina_list_append(ap.project->nsimage_list, unit);
-          }
-        else if (edje_edit_image_add(ap.project->global_object, unit->data))
-          ap.project->nsimage_list = eina_list_append(ap.project->nsimage_list, unit);
-     }
-   //pm_save_to_dev(img_edit->pr, NULL, false);
-
-   eina_list_free(img_edit->unapplied_list);
-
-   assert(img_edit->gengrid != NULL);
-
-   multiselect = elm_gengrid_multi_select_get(img_edit->gengrid);
-
-   if (multiselect)
-     {
-        items = elm_gengrid_selected_items_get(img_edit->gengrid);
-        EINA_LIST_FOREACH((Eina_List *)items, l, it)
-          {
-             item = elm_object_item_data_get(it);
-             if (!item) continue;
-             names = eina_list_append(names, eina_stringshare_add(item->image_name));
-          }
-     }
-   else
-     {
-        it = elm_gengrid_selected_item_get(img_edit->gengrid);
-        if (!it)
-          {
-            WIN_NOTIFY_WARNING(main_window_get(), _("Image not selected"));
-            return;
-          }
-        item = elm_object_item_data_get(it);
-        if (!item)
-          {
-             _image_editor_del(img_edit);
-             return;
-          }
-     }
-
-   if (!multiselect)
-     {
-        TODO("FIX IT! This line breaks images with / in name");
-        ei = strdup(ecore_file_file_get(item->image_name));
-        evas_object_smart_callback_call(main_window_get(), SIG_IMAGE_SELECTED, ei);
-        free(ei);
-     }
-   else
-     evas_object_smart_callback_call(main_window_get(), SIG_IMAGE_SELECTED,
-                                     (Eina_List *) names);
-
-   //project_changed(false);
-   _image_editor_del(img_edit);
-}
-
-ITEM_SEARCH_FUNC(genlist, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE, NULL)
-*/
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, NULL)
 
 static void
@@ -649,44 +429,6 @@ _on_images_search_entry_changed_cb(void *data,
    _gengrid_item_search(img_edit->gengrid, &(img_edit->image_search_data),
                         img_edit->image_search_data.last_item_found);
 }
-
-/*
-DELETE LATER: USABLE FOR USAGE LIST
-
-static void
-_on_usage_search_entry_changed_cb(void *data,
-                                  Evas_Object *obj __UNUSED__,
-                                  void *event_info __UNUSED__)
-{
-   Image_Editor *img_edit = data;
-
-   assert(img_edit != NULL);
-
-   _genlist_item_search(img_edit->image_usage_fields.genlist,
-                        &(img_edit->usage_search_data),
-                        img_edit->usage_search_data.last_item_found);
-}
-
-static void
-_search_next_genlist_item_cb(void *data,
-                             Evas_Object *obj __UNUSED__,
-                             void *event_info __UNUSED__)
-{
-   Image_Editor *img_edit = data;
-   Elm_Object_Item *start_from = NULL;
-
-   assert(img_edit != NULL);
-
-   if (img_edit->usage_search_data.last_item_found)
-     {
-        start_from =
-           elm_genlist_item_next_get(img_edit->usage_search_data.last_item_found);
-     }
-
-   _genlist_item_search(img_edit->image_usage_fields.genlist,
-                        &(img_edit->usage_search_data), start_from);
-}
-*/
 
 static void
 _search_next_gengrid_item_cb(void *data,
@@ -721,45 +463,6 @@ _image_editor_search_field_create(Evas_Object *parent)
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
    return entry;
 }
-
-/*
-DELETE LATER: USABLE FOR USAGE LIST
-
-static Evas_Object *
-_image_usage_layout_create(Image_Editor *img_edit, Evas_Object *parent)
-{
-   Evas_Object *layout = NULL;
-   Evas_Object *genlist = NULL;
-   Evas_Object *entry = NULL;
-
-   assert(img_edit != NULL);
-   assert(parent != NULL);
-
-   layout = elm_layout_add(parent);
-   elm_layout_theme_set(layout, "layout", "image_editor", "usage_info");
-   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(layout);
-
-   genlist = elm_genlist_add(layout);
-   evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(genlist);
-   elm_object_part_content_set(layout, "eflete.swallow.genlist", genlist);
-   img_edit->image_usage_fields.genlist = genlist;
-
-   entry = _image_editor_search_field_create(layout);
-   elm_object_part_content_set(layout, "eflete.swallow.search_line", entry);
-   evas_object_smart_callback_add(entry, "changed",
-                                  _on_usage_search_entry_changed_cb, img_edit);
-   evas_object_smart_callback_add(entry, "activated",
-                                  _search_next_genlist_item_cb, img_edit);
-   img_edit->usage_search_data.search_entry = entry;
-   img_edit->usage_search_data.last_item_found = NULL;
-   evas_object_hide(layout);
-   return layout;
-}
-*/
 
 Eina_Bool
 _image_editor_init(Image_Editor *img_edit)
