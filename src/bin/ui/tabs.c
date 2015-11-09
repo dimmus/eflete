@@ -31,9 +31,7 @@
 struct _Tabs_Item {
    Group *group;
    Elm_Object_Item *toolbar_item;
-   Evas_Object *content; //panes
-   Evas_Object *workspace;
-   Evas_Object *live_view;
+   Evas_Object *content;
    Eina_Bool need_recalc : 1;
 };
 
@@ -47,7 +45,6 @@ struct _Tabs {
    Elm_Object_Item *selected;
    Eina_List *items;
    Evas_Object *current_workspace;
-   Evas_Object *current_live_view;
    Group *current_group;
    struct {
       Elm_Object_Item *item_home;
@@ -87,7 +84,6 @@ _content_unset(void)
 
    assert(tabs.layout != NULL);
    tabs.current_workspace = NULL;
-   tabs.current_live_view = NULL;
    tabs.current_group = NULL;
    content = elm_layout_content_unset(tabs.layout, NULL);
    evas_object_hide(content);
@@ -110,22 +106,19 @@ _content_set(void *data,
      {
         _content_unset();
         elm_layout_content_set(tabs.layout, NULL, item->content);
-        tabs.current_workspace = item->workspace;
-        tabs.current_live_view = item->live_view;
+        tabs.current_workspace = item->content;
         tabs.current_group = item->group;
         if (ap.project)
           ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, false);
         if (item->need_recalc)
           {
              workspace_edit_object_recalc(tabs.current_workspace);
-             live_view_theme_update(tabs.current_live_view);
              item->need_recalc = false;
           }
      }
    else
      {
         tabs.current_workspace = NULL;
-        tabs.current_live_view = NULL;
         tabs.current_group = NULL;
         if (ap.project)
           ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
@@ -218,7 +211,6 @@ _part_added(void *data __UNUSED__,
    assert(tabs.current_workspace != NULL);
 
    workspace_edit_object_part_add(tabs.current_workspace, part);
-   live_view_part_add(tabs.current_live_view, part);
 }
 
 static void
@@ -231,7 +223,6 @@ _part_deleted(void *data __UNUSED__,
    assert(tabs.current_workspace != NULL);
 
    workspace_edit_object_part_del(tabs.current_workspace, part);
-   live_view_part_del(tabs.current_live_view, part);
 }
 
 static void
@@ -269,8 +260,6 @@ _project_changed(void *data __UNUSED__,
                  void *ei __UNUSED__)
 {
    /* project may be changed in editors for example */
-   if (tabs.current_live_view == NULL) return;
-   live_view_theme_update(tabs.current_live_view);
 }
 
 static void
@@ -285,10 +274,9 @@ _editor_saved(void *data __UNUSED__,
    EINA_LIST_FOREACH(tabs.items, l, item)
      {
         edje_object_mmap_set(item->group->edit_object, ap.project->mmap_file, item->group->name);
-        if (item->workspace == tabs.current_workspace)
+        if (item->content == tabs.current_workspace)
           {
              workspace_edit_object_recalc(tabs.current_workspace);
-             live_view_theme_update(tabs.current_live_view);
           }
         else
           item->need_recalc = true;
@@ -521,12 +509,7 @@ tabs_tab_add(Group *group)
 
    item = mem_calloc(1, sizeof(Tabs_Item));
    item->group = group;
-   item->content = elm_panes_add(tabs.layout);
-   elm_panes_horizontal_set(item->content, true);
-   item->workspace = workspace_add(item->content, group);
-   item->live_view = live_view_add(item->content, false, group);
-   elm_object_part_content_set(item->content, "left", item->workspace);
-   elm_object_part_content_set(item->content, "right", item->live_view);
+   item->content = workspace_add(tabs.layout, group);
 
    item->toolbar_item = elm_toolbar_item_append(tabs.toolbar, NULL, group->name,
                                                _content_set, (void *)item);
