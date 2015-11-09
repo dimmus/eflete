@@ -1397,7 +1397,6 @@ _on_groupedit_part_unselect(void *data,
 
    WS_DATA_GET(workspace, sd);
 
-   workspace_highlight_unset(workspace);
    group_navigator_part_select(sd->group_navigator, NULL);
 }
 
