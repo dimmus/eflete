@@ -16,10 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
 
 #include "project_navigator.h"
 #include "main_window.h"
 #include "editor.h"
+#include "validator.h"
 
 #define SIG_GROUP_OPEN "group,open"
 
@@ -44,6 +48,7 @@ typedef struct
 
 static Project_Navigator project_navigator;
 static Layout_Popup layout_p;
+static Resource_Name_Validator *validator = NULL;
 
 static char *
 _group_item_label_get(void *data,
@@ -400,14 +405,15 @@ _group_sel(void *data __UNUSED__,
     elm_object_disabled_set(layout_p.check, (item->index != 0) ? false : true);
 }
 
-static Eina_Bool
-_group_validator(void *data)
+static void
+_group_validate(void *data __UNUSED__,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
 {
-   Evas_Object *entry = (Evas_Object *)data;
-
-   if (edje_edit_group_exist(ap.project->global_object, elm_entry_entry_get(entry)))
-     return false;
-   return true;
+   if (resource_name_validator_status_get(validator) != ELM_REG_NOERROR)
+     popup_buttons_disabled_set(BTN_OK, true);
+   else
+     popup_buttons_disabled_set(BTN_OK, false);
 }
 
 static void
@@ -421,10 +427,16 @@ _btn_add_group_cb(void *data __UNUSED__,
    Eina_List *l;
    Elm_Object_Item *glit;
 
+   assert(validator == NULL);
+
    BOX_ADD(ap.win, layout_p.box, false, false)
    /* name: entry */
+   validator = resource_name_validator_new(LAYOUT_NAME_REGEX, NULL);
+   resource_name_validator_list_set(validator, &ap.project->groups, false);
    LAYOUT_PROP_ADD(layout_p.box, _("name"), "property", "1swallow")
    ENTRY_ADD(layout_p.box, layout_p.entry, true)
+   evas_object_smart_callback_add(layout_p.entry, "changed", _group_validate, NULL);
+   eo_do(layout_p.entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, validator));
    elm_layout_content_set(item, NULL, layout_p.entry);
    elm_box_pack_end(layout_p.box, item);
    glit = elm_genlist_selected_item_get(project_navigator.genlist);
@@ -454,7 +466,7 @@ _btn_add_group_cb(void *data __UNUSED__,
 
    btn_res = popup_want_action(_("Create a new layout"), NULL, layout_p.box,
                                layout_p.entry, BTN_OK|BTN_CANCEL,
-                               _group_validator, layout_p.entry);
+                               NULL, layout_p.entry);
    if (BTN_CANCEL == btn_res) goto close;
 
    Ewe_Combobox_Item *combo_it;
@@ -472,6 +484,8 @@ _btn_add_group_cb(void *data __UNUSED__,
 
 close:
    evas_object_del(layout_p.box);
+   resource_name_validator_free(validator);
+   validator = NULL;
 }
 
 static void
@@ -611,21 +625,21 @@ project_navigator_add(void)
    assert(ap.win != NULL);
 
    project_navigator.itc_folder = elm_genlist_item_class_new();
-   project_navigator.itc_folder->item_style = "project_navigator";
+   project_navigator.itc_folder->item_style = "navigator";
    project_navigator.itc_folder->func.text_get = _folder_item_label_get;
    project_navigator.itc_folder->func.content_get = _folder_item_icon_get;
    project_navigator.itc_folder->func.state_get = NULL;
    project_navigator.itc_folder->func.del = _folder_item_del;
 
    project_navigator.itc_group = elm_genlist_item_class_new();
-   project_navigator.itc_group->item_style = "project_navigator";
+   project_navigator.itc_group->item_style = "navigator";
    project_navigator.itc_group->func.text_get = _group_item_label_get;
    project_navigator.itc_group->func.content_get = _group_item_icon_get;
    project_navigator.itc_group->func.state_get = NULL;
    project_navigator.itc_group->func.del = NULL;
 
    project_navigator.layout = elm_layout_add(ap.win);
-   elm_layout_theme_set(project_navigator.layout, "layout", "project_navigator", "default");
+   elm_layout_theme_set(project_navigator.layout, "layout", "navigator", "default");
    evas_object_show(project_navigator.layout);
 
    project_navigator.btn_add = elm_button_add(project_navigator.layout);
