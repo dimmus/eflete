@@ -895,8 +895,8 @@ _workspace_highlight_set(Evas_Object *obj, Part_ *part)
    return true;
 }
 
-static Eina_Bool
-_workspace_highlight_unset(Evas_Object *obj)
+Eina_Bool
+workspace_highlight_unset(Evas_Object *obj)
 {
    WS_DATA_GET(obj, sd)
    if ((!sd->highlight.highlight) || (!sd->highlight.space_hl)) return false;
@@ -1367,7 +1367,7 @@ _on_group_navigator_part_select(void *data,
    WS_DATA_GET(workspace, sd);
 
    TODO("Combine this methods to one")
-   _workspace_highlight_unset(workspace);
+   workspace_highlight_unset(workspace);
    _workspace_highlight_set(workspace, part);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_PART_SELECTED, (void *)part);
@@ -1397,20 +1397,8 @@ _on_groupedit_part_unselect(void *data,
 
    WS_DATA_GET(workspace, sd);
 
-   _workspace_highlight_unset(workspace);
+   workspace_highlight_unset(workspace);
    group_navigator_part_select(sd->group_navigator, NULL);
-}
-
-static void
-_on_group_navigator_part_unselect(void *data,
-                            Evas_Object *obj __UNUSED__,
-                            void *event_info __UNUSED__)
-{
-   Evas_Object *workspace = (Evas_Object *)data;
-
-   WS_DATA_GET(workspace, sd);
-
-   _workspace_highlight_unset(workspace);
 }
 
 Evas_Object *
@@ -1470,8 +1458,6 @@ workspace_add(Evas_Object *parent, Group *group)
                                   _on_groupedit_part_select, obj);
    evas_object_smart_callback_add(sd->groupedit, SIGNAL_GROUPEDIT_PART_UNSELECTED,
                                   _on_groupedit_part_unselect, obj);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PART_UNSELECTED,
-                                  _on_group_navigator_part_unselect, obj);
    evas_object_smart_callback_add(sd->groupedit, "container,changed",
                                   _ws_ruler_abs_zero_move_cb, obj);
    evas_object_smart_callback_add(sd->groupedit, "object,area,changed",
