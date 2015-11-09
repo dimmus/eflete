@@ -37,7 +37,7 @@
 struct _Image_Prop_Data
 {
    Evas_Object *box;
-   Evas_Object *image_preview;
+   Evas_Object *preview_image;
    Evas_Object *preview_frame;
 
    Evas_Object *name;
@@ -48,6 +48,7 @@ struct _Image_Prop_Data
    Evas_Object *size_width;
    Evas_Object *size_height;
    Evas_Object *usage_list;
+   Evas_Object *info_frame;
 
    Eina_Stringshare *selected_image;
 };
@@ -174,7 +175,7 @@ _on_image_selected(void *data,
 
    if (image)
      {
-        elm_object_part_content_set(pd->image_preview, "eflete.swallow.image", image);
+        elm_object_part_content_set(pd->preview_image, "eflete.swallow.image", image);
 
         image_name = evas_object_data_get(image, "image_name");
 
@@ -209,7 +210,7 @@ _on_image_selected(void *data,
      }
    else
      {
-        image = elm_object_part_content_unset(pd->image_preview, "eflete.swallow.image");
+        image = elm_object_part_content_unset(pd->preview_image, "eflete.swallow.image");
         evas_object_del(image);
         elm_object_text_set(pd->name, _(" - "));
         elm_object_text_set(pd->location, _(" - "));
@@ -225,44 +226,48 @@ Evas_Object *
 ui_property_image_add(Evas_Object *parent)
 {
    Image_Prop_Data *pd;
-   Evas_Object *item;
+   Evas_Object *item, *box;
 
    assert(parent != NULL);
 
    pd = mem_calloc(1, sizeof(Image_Prop_Data));
 
    /* editors */
-   BOX_ADD(parent, pd->box, EINA_FALSE, EINA_FALSE);
+   BOX_ADD(parent, pd->box, false, false);
    elm_box_align_set(pd->box, 0.5, 0.0);
    evas_object_hide(pd->box);
-
-   FRAME_PROPERTY_ADD(pd->box, pd->preview_frame, true, _("Preview"), pd->box)
-   pd->image_preview = elm_layout_add(parent);
-   elm_layout_theme_set(pd->image_preview, "layout", "image_editor", "preview");
-   evas_object_size_hint_weight_set(pd->image_preview, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(pd->image_preview, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(pd->image_preview);
-   elm_object_content_set(pd->preview_frame, pd->image_preview);
-   elm_box_pack_end(pd->box, pd->preview_frame);
-
    evas_object_data_set(pd->box, IMAGE_PROP_DATA, pd);
 
-   item = prop_item_label_add(pd->box, &pd->name, _("name"), _(" - "));
-   elm_box_pack_end(pd->box, item);
-   item = prop_item_label_add(pd->box, &pd->location, _("location"), _(" - "));
-   elm_box_pack_end(pd->box, item);
-   item = prop_item_label_add(pd->box, &pd->type, _("type"), _(" - "));
-   elm_box_pack_end(pd->box, item);
-   item = prop_image_editor_compression_type_add(pd->box, pd);
-   elm_box_pack_end(pd->box, item);
-   item = prop_image_editor_compression_quality_add(pd->box, pd);
-   elm_box_pack_end(pd->box, item);
+   /* Frame with preview */
+   FRAME_PROPERTY_ADD(pd->box, pd->preview_frame, true, _("Preview"), pd->box)
+   pd->preview_image = elm_layout_add(parent);
+   elm_layout_theme_set(pd->preview_image, "layout", "image_editor", "preview");
+   evas_object_size_hint_weight_set(pd->preview_image, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(pd->preview_image, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(pd->preview_image);
+   elm_object_content_set(pd->preview_frame, pd->preview_image);
+   elm_box_pack_end(pd->box, pd->preview_frame);
 
-   item = prop_item_label_add(pd->box, &pd->size_width, _("image width"), _(" - "));
-   elm_box_pack_end(pd->box, item);
-
-   item = prop_item_label_add(pd->box, &pd->size_height, _("image height"), _(" - "));
-   elm_box_pack_end(pd->box, item);
+   /* Frame with info */
+   FRAME_PROPERTY_ADD(pd->box, pd->info_frame, true, _("Info"), pd->box)
+   BOX_ADD(pd->info_frame, box, false, false);
+   elm_box_align_set(box, 0.5, 0.0);
+   item = prop_item_label_add(box, &pd->name, _("name"), _(" - "));
+   elm_box_pack_end(box, item);
+   item = prop_item_label_add(box, &pd->location, _("location"), _(" - "));
+   elm_box_pack_end(box, item);
+   item = prop_item_label_add(box, &pd->type, _("type"), _(" - "));
+   elm_box_pack_end(box, item);
+   item = prop_image_editor_compression_type_add(box, pd);
+   elm_box_pack_end(box, item);
+   item = prop_image_editor_compression_quality_add(box, pd);
+   elm_box_pack_end(box, item);
+   item = prop_item_label_add(box, &pd->size_width, _("image width"), _(" - "));
+   elm_box_pack_end(box, item);
+   item = prop_item_label_add(box, &pd->size_height, _("image height"), _(" - "));
+   elm_box_pack_end(box, item);
+   elm_object_content_set(pd->info_frame, box);
+   elm_box_pack_end(pd->box, pd->info_frame);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_IMAGE_SELECTED, _on_image_selected, pd->box);
 
