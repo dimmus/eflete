@@ -157,10 +157,6 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
         diff->undo.args.type_ssds.s2 = eina_stringshare_add(state_name); \
         diff->undo.args.type_ssds.d3 = state_val; \
         diff->undo.args.type_ssds.s4 = old_value; /* assuming that getter returned stringshare */\
-        if (merge) \
-          change_diff_merge_add(change, diff); \
-        else \
-          change_diff_add(change, diff); \
      } \
    if (!edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)) \
      { \
@@ -171,6 +167,13 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
             eina_stringshare_del(diff->redo.args.type_ssds.s4); \
             diff->redo.args.type_ssds.s4 = eina_stringshare_add(FALLBACK_VAL); \
           } \
+     } \
+   if (change) /* we should add diff only after all changes to it */\
+     { \
+        if (merge) \
+          change_diff_merge_add(change, diff); \
+        else \
+          change_diff_add(change, diff); \
      } \
    _editor_project_changed(); \
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
