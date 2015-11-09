@@ -31,7 +31,7 @@
    free(arr); \
 }
 
-#define LAYOUT_NAME_REGEX "^[^\\/][a-zA-Z0-9_\\.\\/]+[^\\/]$"
+#define LAYOUT_NAME_REGEX "^[^\\/]?[a-zA-Z0-9_\\.\\/]+[^\\/]?$"
 #define NAME_REGEX "^[a-zA-Z0-9_]+$"
 #define STATE_VALUE_REGEX "^((0?(\\.[0-9]+)?|1(\\.0+)?))?$"
 #define PART_NAME_REGEX "^[a-zA-Z0-9_\\.]+$"
