@@ -20,14 +20,14 @@
 #define EFL_BETA_API_SUPPORT
 #define EFL_EO_API_SUPPORT
 
-#include "part_list.h"
+#include "group_navigator.h"
 #include "signals.h"
 #include "string_common.h"
 #include "main_window.h"
 #include "editor.h"
 #include "new_history.h"
 
-#define PART_LIST_DATA "part_list_data"
+#define GROUP_NAVIGATOR_DATA "group_navigator_data"
 
 typedef struct
 {
@@ -277,7 +277,7 @@ _on_activated(void *data,
         part = elm_object_item_data_get(pl->selected_part_item);
         part->current_state = elm_object_item_data_get(glit);
 
-        evas_object_smart_callback_call(pl->layout, SIGNAL_PART_LIST_PART_STATE_SELECTED,
+        evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED,
                                         (void *)part);
      }
 }
@@ -426,7 +426,7 @@ _selected_cb(void *data,
         pl->selected_part_item = glit;
         part->current_item_name = item_name;
         pl->group->current_part = part;
-        evas_object_smart_callback_call(pl->layout, SIGNAL_PART_LIST_PART_SELECTED,
+        evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED,
                                         (void *)part);
         elm_genlist_item_item_class_update(glit, pl->itc_part_selected);
      }
@@ -508,7 +508,7 @@ _popup_add_part_ok_clicked(void *data,
                            void *event_info __UNUSED__)
 {
    const Edje_Part_Type type = *((const Edje_Part_Type *)data);
-   Part_List *pl = evas_object_data_get(obj, PART_LIST_DATA);
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    const char *name;
    Part_ *part;
    Elm_Object_Item *glit;
@@ -545,7 +545,7 @@ _on_menu_add_part_clicked(void *data,
                           void *ei __UNUSED__)
 {
    const Edje_Part_Type type = *((const Edje_Part_Type *)data);
-   Part_List *pl = evas_object_data_get(obj, PART_LIST_DATA);
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
 
    Eina_Stringshare *title;
    Evas_Object *box, *item;
@@ -570,7 +570,7 @@ _on_menu_add_part_clicked(void *data,
 
    elm_object_content_set(ap.popup, box);
    BUTTON_ADD(box, pl->popup.btn_add, _("Add"));
-   evas_object_data_set(pl->popup.btn_add, PART_LIST_DATA, pl);
+   evas_object_data_set(pl->popup.btn_add, GROUP_NAVIGATOR_DATA, pl);
    evas_object_smart_callback_add(pl->popup.btn_add, "clicked", _popup_add_part_ok_clicked, data);
    elm_object_part_content_set(ap.popup, "button1", pl->popup.btn_add);
    elm_object_disabled_set(pl->popup.btn_add, true);
@@ -694,7 +694,7 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
                            Evas_Object *obj __UNUSED__,
                            void *ei __UNUSED__)
 {
-   Part_List *pl = evas_object_data_get(obj, PART_LIST_DATA);
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Part_ *part;
    State *state;
    Eina_Stringshare *title;
@@ -817,7 +817,7 @@ _on_btn_minus_clicked(void *data,
 
 
 Evas_Object *
-part_list_add(Group *group)
+group_navigator_add(Group *group)
 {
    Evas_Object *icon;
    Part_List *pl;
@@ -830,10 +830,10 @@ part_list_add(Group *group)
 
    pl = mem_calloc(1, sizeof(Part_List));
    pl->layout = elm_layout_add(ap.win);
-   elm_layout_theme_set(pl->layout, "layout", "part_list", "default");
+   elm_layout_theme_set(pl->layout, "layout", "group_navigator", "default");
    evas_object_show(pl->layout);
 
-   evas_object_data_set(pl->layout, PART_LIST_DATA, pl);
+   evas_object_data_set(pl->layout, GROUP_NAVIGATOR_DATA, pl);
 
    pl->group = group;
 
@@ -907,7 +907,7 @@ part_list_add(Group *group)
    elm_object_text_set(pl->layout, pl->group->name);
 
    pl->menu = elm_menu_add(ap.win);
-   evas_object_data_set(pl->menu, PART_LIST_DATA, pl);
+   evas_object_data_set(pl->menu, GROUP_NAVIGATOR_DATA, pl);
 
    pl->add_state_menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("State"), _on_menu_add_state_clicked, NULL);
    elm_object_item_disabled_set(pl->add_state_menu_item, true);
@@ -943,11 +943,11 @@ part_list_add(Group *group)
 }
 
 void
-part_list_part_select(Evas_Object *obj, Part_ *part)
+group_navigator_part_select(Evas_Object *obj, Part_ *part)
 {
    Part_ *pr;
    Elm_Object_Item *part_item;
-   Part_List *pl = evas_object_data_get(obj, PART_LIST_DATA);
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
 
    assert(pl != NULL);
 
@@ -973,11 +973,11 @@ part_list_part_select(Evas_Object *obj, Part_ *part)
 }
 
 void
-part_list_part_update(Evas_Object *obj, Part_ *part)
+group_navigator_part_update(Evas_Object *obj, Part_ *part)
 {
    Part_ *pr;
    Elm_Object_Item *part_item;
-   Part_List *pl = evas_object_data_get(obj, PART_LIST_DATA);
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
 
    assert(pl != NULL);
    assert(part != NULL);

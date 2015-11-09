@@ -248,7 +248,7 @@ _part_renamed(void *data __UNUSED__,
 
    part = pm_resource_unsorted_get(tabs.current_group->parts, ren->old_name);
    gm_part_rename(part, ren->new_name);
-   workspace_part_list_update_part(tabs.current_workspace, part);
+   workspace_group_navigator_update_part(tabs.current_workspace, part);
    TODO("update live_view here");
 }
 

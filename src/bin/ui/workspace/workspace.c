@@ -23,7 +23,7 @@
 #include "groupedit.h"
 #include "container.h"
 #include "eflete.h"
-#include "part_list.h"
+#include "group_navigator.h"
 #include "signals.h"
 #include "new_history.h"
 #include "editor.h"
@@ -115,7 +115,7 @@ struct _Ws_Smart_Data
    Group *group;
 
    Evas_Object *panes;
-   Evas_Object *part_list;
+   Evas_Object *group_navigator;
 
    struct {
         Evas_Object *highlight; /**< A highlight object */
@@ -1353,11 +1353,11 @@ _on_groupedit_part_select(void *data,
 
    WS_DATA_GET(workspace, sd);
 
-   part_list_part_select(sd->part_list, part);
+   group_navigator_part_select(sd->group_navigator, part);
 }
 
 static void
-_on_part_list_part_select(void *data,
+_on_group_navigator_part_select(void *data,
                           Evas_Object *obj __UNUSED__,
                           void *event_info)
 {
@@ -1374,7 +1374,7 @@ _on_part_list_part_select(void *data,
 }
 
 static void
-_on_part_list_part_state_select(void *data,
+_on_group_navigator_part_state_select(void *data,
                                 Evas_Object *obj __UNUSED__,
                                 void *event_info)
 {
@@ -1398,11 +1398,11 @@ _on_groupedit_part_unselect(void *data,
    WS_DATA_GET(workspace, sd);
 
    _workspace_highlight_unset(workspace);
-   part_list_part_select(sd->part_list, NULL);
+   group_navigator_part_select(sd->group_navigator, NULL);
 }
 
 static void
-_on_part_list_part_unselect(void *data,
+_on_group_navigator_part_unselect(void *data,
                             Evas_Object *obj __UNUSED__,
                             void *event_info __UNUSED__)
 {
@@ -1432,15 +1432,15 @@ workspace_add(Evas_Object *parent, Group *group)
      }
    WS_DATA_GET(obj, sd);
 
-   sd->part_list = part_list_add(group);
-   evas_object_size_hint_weight_set(sd->part_list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(sd->part_list, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_smart_member_add(sd->part_list, obj);
-   elm_object_part_content_set(sd->panes, "right", sd->part_list);
-   evas_object_smart_callback_add(sd->part_list, SIGNAL_PART_LIST_PART_SELECTED,
-                                  _on_part_list_part_select, obj);
-   evas_object_smart_callback_add(sd->part_list, SIGNAL_PART_LIST_PART_STATE_SELECTED,
-                                  _on_part_list_part_state_select, obj);
+   sd->group_navigator = group_navigator_add(group);
+   evas_object_size_hint_weight_set(sd->group_navigator, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(sd->group_navigator, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_smart_member_add(sd->group_navigator, obj);
+   elm_object_part_content_set(sd->panes, "right", sd->group_navigator);
+   evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED,
+                                  _on_group_navigator_part_select, obj);
+   evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED,
+                                  _on_group_navigator_part_state_select, obj);
 
    /* create conteiner with handlers */
    sd->container.obj = container_add(sd->scroller);
@@ -1471,7 +1471,7 @@ workspace_add(Evas_Object *parent, Group *group)
    evas_object_smart_callback_add(sd->groupedit, SIGNAL_GROUPEDIT_PART_UNSELECTED,
                                   _on_groupedit_part_unselect, obj);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_UNSELECTED,
-                                  _on_part_list_part_unselect, obj);
+                                  _on_group_navigator_part_unselect, obj);
    evas_object_smart_callback_add(sd->groupedit, "container,changed",
                                   _ws_ruler_abs_zero_move_cb, obj);
    evas_object_smart_callback_add(sd->groupedit, "object,area,changed",
@@ -1546,12 +1546,12 @@ ws_groupedit_get(Evas_Object *obj)
 }
 
 void
-workspace_part_list_update_part(Evas_Object *obj, Part_ *part)
+workspace_group_navigator_update_part(Evas_Object *obj, Part_ *part)
 {
    WS_DATA_GET(obj, sd);
    assert(part != NULL);
 
-   part_list_part_update(sd->part_list, part);
+   group_navigator_part_update(sd->group_navigator, part);
 }
 #define PADDING_SIZE 40
 

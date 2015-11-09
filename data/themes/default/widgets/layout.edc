@@ -489,7 +489,7 @@ group { name: "elm/layout/navigator/default";
    }
 }
 
-group { name: "elm/layout/part_list/default";
+group { name: "elm/layout/group_navigator/default";
    parts {
       part { name: "bg";
          type: RECT;
