@@ -647,14 +647,14 @@ project_navigator_add(void)
    elm_object_part_content_set(project_navigator.btn_add, NULL, icon);
    evas_object_smart_callback_add(project_navigator.btn_add, "clicked", _btn_add_group_cb, NULL);
    elm_object_style_set(project_navigator.btn_add, "anchor");
-   elm_object_part_content_set(project_navigator.layout, "elm.swallow.bt1", project_navigator.btn_add);
+   elm_object_part_content_set(project_navigator.layout, "elm.swallow.btn1", project_navigator.btn_add);
 
    project_navigator.btn_del = elm_button_add(project_navigator.layout);
    ICON_STANDARD_ADD(project_navigator.btn_del, icon, true, "minus");
    elm_object_part_content_set(project_navigator.btn_del, NULL, icon);
    evas_object_smart_callback_add (project_navigator.btn_del, "clicked", _btn_del_group_cb, NULL);
    elm_object_style_set(project_navigator.btn_del, "anchor");
-   elm_object_part_content_set(project_navigator.layout, "elm.swallow.bt0", project_navigator.btn_del);
+   elm_object_part_content_set(project_navigator.layout, "elm.swallow.btn0", project_navigator.btn_del);
    elm_object_disabled_set(project_navigator.btn_del, true);
 
    project_navigator.genlist = elm_genlist_add(project_navigator.layout);

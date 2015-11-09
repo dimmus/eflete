@@ -830,25 +830,25 @@ group_navigator_add(Group *group)
 
    pl = mem_calloc(1, sizeof(Part_List));
    pl->layout = elm_layout_add(ap.win);
-   elm_layout_theme_set(pl->layout, "layout", "group_navigator", "default");
+   elm_layout_theme_set(pl->layout, "layout", "navigator", "default");
    evas_object_show(pl->layout);
 
    evas_object_data_set(pl->layout, GROUP_NAVIGATOR_DATA, pl);
 
    pl->group = group;
 
-#define BTN_ADD(BTN, ICON_NAME, CALLBACK) \
+#define BTN_ADD(BTN, SWALLOW, ICON_NAME, CALLBACK) \
    pl->BTN = elm_button_add(pl->layout); \
    ICON_STANDARD_ADD(pl->BTN, icon, true, ICON_NAME); \
    elm_object_part_content_set(pl->BTN, NULL, icon); \
    evas_object_smart_callback_add(pl->BTN, "clicked", CALLBACK, pl); \
    elm_object_style_set(pl->BTN, "anchor"); \
-   elm_object_part_content_set(pl->layout, "elm.swallow." #BTN, pl->BTN);
+   elm_object_part_content_set(pl->layout, SWALLOW, pl->BTN);
 
-   BTN_ADD(btn_add, "plus", _on_btn_plus_clicked);
-   BTN_ADD(btn_del, "minus", _on_btn_minus_clicked);
-   BTN_ADD(btn_up, "arrow_up", NULL);
-   BTN_ADD(btn_down, "arrow_down", NULL);
+   BTN_ADD(btn_add, "elm.swallow.btn3", "plus", _on_btn_plus_clicked);
+   BTN_ADD(btn_del, "elm.swallow.btn2", "minus", _on_btn_minus_clicked);
+   BTN_ADD(btn_down, "elm.swallow.btn1", "arrow_down", NULL);
+   BTN_ADD(btn_up, "elm.swallow.btn0", "arrow_up", NULL);
 
    elm_object_disabled_set(pl->btn_del, true);
 
