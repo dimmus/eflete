@@ -16,10 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
 
 #include "project_navigator.h"
 #include "main_window.h"
 #include "editor.h"
+#include "validator.h"
 
 #define SIG_GROUP_OPEN "group,open"
 
@@ -44,6 +48,7 @@ typedef struct
 
 static Project_Navigator project_navigator;
 static Layout_Popup layout_p;
+static Resource_Name_Validator *validator = NULL;
 
 static char *
 _group_item_label_get(void *data,
@@ -421,10 +426,15 @@ _btn_add_group_cb(void *data __UNUSED__,
    Eina_List *l;
    Elm_Object_Item *glit;
 
+   assert(validator == NULL);
+
    BOX_ADD(ap.win, layout_p.box, false, false)
    /* name: entry */
+   validator = resource_name_validator_new(LAYOUT_NAME_REGEX, NULL);
+   resource_name_validator_list_set(validator, &ap.project->groups, false);
    LAYOUT_PROP_ADD(layout_p.box, _("name"), "property", "1swallow")
    ENTRY_ADD(layout_p.box, layout_p.entry, true)
+   eo_do(layout_p.entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, validator));
    elm_layout_content_set(item, NULL, layout_p.entry);
    elm_box_pack_end(layout_p.box, item);
    glit = elm_genlist_selected_item_get(project_navigator.genlist);
@@ -472,6 +482,8 @@ _btn_add_group_cb(void *data __UNUSED__,
 
 close:
    evas_object_del(layout_p.box);
+   resource_name_validator_free(validator);
+   validator = NULL;
 }
 
 static void
