@@ -985,6 +985,7 @@ _mode_part_add(Evas_Object *parent)
 
    radio_group = radio_mode = elm_radio_add(parent);
    elm_radio_state_value_set(radio_mode, 1);
+   elm_radio_value_set(radio_mode, true);
    elm_box_pack_end(parent, radio_mode);
    evas_object_show(radio_mode);
 
