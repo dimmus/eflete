@@ -21,6 +21,7 @@
 #include "property_macros.h"
 #include "main_window.h"
 #include "string_common.h"
+#include "common_macro.h"
 #include "new_history.h"
 #include "editor.h"
 #include "validator.h"
@@ -63,6 +64,10 @@ struct _Image_Prop_Data
    Eina_Stringshare *selected_image;
 };
 typedef struct _Image_Prop_Data Image_Prop_Data;
+
+static Elm_Genlist_Item_Class *_itc_group = NULL;
+static Elm_Genlist_Item_Class *_itc_part = NULL;
+static Elm_Genlist_Item_Class *_itc_state = NULL;
 
 /* accroding to Edje_Edit.h */
 static const char *edje_image_compression[] = { N_("RAW"),
@@ -133,6 +138,53 @@ prop_image_editor_compression_type_add(Evas_Object *parent, Image_Prop_Data *pd)
 }
 
 static void
+_grid_group_item_del(void *data, Evas_Object *obj __UNUSED__)
+{
+   if (data)
+     eina_stringshare_del(data);
+}
+static char *
+_grid_group_item_label_get(void *data,
+                           Evas_Object *obj __UNUSED__,
+                           const char  *part)
+{
+   if ((part) && (!strcmp(part, "elm.text")))
+     return strdup(data);
+   else
+     return NULL;
+}
+static inline void
+genlist_item_classes_init()
+{
+   if (!_itc_group)
+     {
+        _itc_group = elm_genlist_item_class_new();
+        _itc_group->item_style = "title";
+        _itc_group->func.text_get = _grid_group_item_label_get;
+        _itc_group->func.content_get = NULL;
+        _itc_group->func.state_get = NULL;
+        _itc_group->func.del = _grid_group_item_del;
+     }
+   if (!_itc_part)
+     {
+        _itc_part = elm_genlist_item_class_new();
+        _itc_part->item_style = "default";
+        _itc_part->func.text_get = _grid_group_item_label_get;
+        _itc_part->func.content_get = NULL;
+        _itc_part->func.state_get = NULL;
+        _itc_part->func.del = _grid_group_item_del;
+     }
+   if (!_itc_state)
+     {
+        _itc_state = elm_genlist_item_class_new();
+        _itc_state->item_style = "default";
+        _itc_state->func.text_get = _grid_group_item_label_get;
+        _itc_state->func.content_get = NULL;
+        _itc_state->func.state_get = NULL;
+        _itc_state->func.del = _grid_group_item_del;
+     }
+}
+static void
 _image_info_type_setup(Evas_Object *layout,
                        const char *image_name)
 {
@@ -169,6 +221,77 @@ _image_info_type_setup(Evas_Object *layout,
      }
    elm_object_text_set(layout, buf);
 }
+static inline void
+_image_info_update_usage_info(Image_Prop_Data *pd, int list_count)
+{
+   Eina_Stringshare *title;
+
+   assert(pd != NULL);
+
+   if (list_count)
+     title = eina_stringshare_printf(_("Usage (%d)"), list_count);
+   else
+     title = eina_stringshare_add(_("Usage ( - )"));
+
+   elm_object_disabled_set(pd->usage_search_data.search_entry,
+                           !list_count);
+   elm_entry_entry_set(pd->usage_search_data.search_entry, "");
+   pd->usage_search_data.last_item_found = NULL;
+
+   elm_object_text_set(pd->usage_frame, title);
+   eina_stringshare_del(title);
+}
+static void
+_image_info_usage_update(Image_Prop_Data *pd, const char *image_name)
+{
+   Eina_List *l;
+   Evas_Object *list;
+   Elm_Object_Item *it_group, *it_part;
+   const char *cur_group = NULL;
+   const char *cur_part = NULL;
+   State *state;
+
+   assert(pd != NULL);
+   assert(image_name != NULL);
+
+   list = pd->usage_genlist;
+   elm_genlist_clear(list);
+   if (!pd->selected_image) return;
+
+   Resource *res = (Resource *) pm_resource_get(ap.project->images, image_name);
+   _image_info_update_usage_info(pd, eina_list_count(res->used_in));
+   if (!eina_list_count(res->used_in))
+     return;
+
+   genlist_item_classes_init();
+
+   EINA_LIST_FOREACH(res->used_in, l, state)
+     {
+        if ((!cur_group) || (strcmp(cur_group, state->part->group->name)))
+          {
+             it_group = elm_genlist_item_append(list, _itc_group,
+                                                eina_stringshare_add(state->part->group->name),
+                                                NULL, ELM_GENLIST_ITEM_NONE,
+                                                NULL, NULL);
+             cur_group = state->part->group->name;
+             cur_part = NULL;
+          }
+        if ((!cur_part) || (strcmp(cur_part, state->part->name)))
+          {
+             it_part = elm_genlist_item_append(list, _itc_part,
+                                               eina_stringshare_add(state->part->name),
+                                               it_group, ELM_GENLIST_ITEM_NONE,
+                                               NULL, NULL);
+             cur_part = state->part->name;
+          }
+        if ((cur_part) && (!strcmp(cur_part, state->part->name)))
+          {
+             elm_genlist_item_append(list, _itc_state, eina_stringshare_add(state->name),
+                                     it_part, ELM_GENLIST_ITEM_NONE,
+                                     NULL, NULL);
+          }
+     }
+}
 static void
 _on_image_selected(void *data,
                    Evas_Object *obj __UNUSED__,
@@ -188,6 +311,7 @@ _on_image_selected(void *data,
         elm_object_part_content_set(pd->preview_image, "eflete.swallow.image", image);
 
         image_name = evas_object_data_get(image, "image_name");
+        pd->selected_image = image_name;
 
         comp =  edje_edit_image_compression_type_get(ap.project->global_object, image_name);
         if (comp != EDJE_EDIT_IMAGE_COMP_USER)
@@ -217,6 +341,7 @@ _on_image_selected(void *data,
         eina_stringshare_del(str);
 
         _image_info_type_setup(pd->type, image_name);
+        _image_info_usage_update(pd, image_name);
      }
    else
      {
@@ -229,6 +354,7 @@ _on_image_selected(void *data,
         elm_object_text_set(pd->type, _(" - "));
         ewe_combobox_select_item_set(pd->compression_type, 0);
         elm_spinner_value_set(pd->compression_quality, 0);
+        pd->selected_image = NULL;
      }
 }
 
@@ -261,7 +387,6 @@ _search_next_genlist_item_cb(void *data,
         start_from =
            elm_genlist_item_next_get(pd->usage_search_data.last_item_found);
      }
-
    _genlist_item_search(pd->usage_genlist,
                         &(pd->usage_search_data), start_from);
 }
@@ -362,7 +487,7 @@ ui_property_image_add(Evas_Object *parent)
    elm_box_pack_end(pd->box, pd->info_frame);
 
    /* Frame with usage */
-   FRAME_PROPERTY_ADD(pd->box, pd->usage_frame, true, _("Usage"), pd->box)
+   FRAME_PROPERTY_ADD(pd->box, pd->usage_frame, true, _("Usage ( - )"), pd->box)
    BOX_ADD(pd->info_frame, box, false, false);
    elm_box_align_set(box, 0.5, 0.0);
 

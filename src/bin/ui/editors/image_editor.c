@@ -66,8 +66,8 @@ struct _Image_Editor
       Evas_Object *tabs;
       Evas_Object *image_info;
       Evas_Object *image_usage;
-      Elm_Object_Item *item_image_info;
-      Elm_Object_Item *item_image_usage;
+      Elm_Object_Item *item_image_info; //kill
+      Elm_Object_Item *item_image_usage; //kill
    } property;
    struct {
       Evas_Object *genlist;
@@ -227,7 +227,7 @@ _grid_del(void *data,
    free(it);
 }
 
-void
+static void
 _grid_group_item_del(void *data, Evas_Object *obj __UNUSED__)
 {
    if (data)
