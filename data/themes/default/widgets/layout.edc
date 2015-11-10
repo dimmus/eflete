@@ -2432,41 +2432,20 @@ group { name: "elm/layout/image_editor/preview";
 }
 
 group { name: "elm/layout/sound_editor/default";
-   images {
-      image: "separator-horizontal.png" COMP;
-   }
    parts {
-      part { name: "area.info";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            SET_SIZE(320, 200);
-         }
-      }
-      part { name: "area.player";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            SET_SIZE(320, 180);
-            rel2 {
-               relative: 1.0 0.0;
-               to_y: "area.info";
-            }
-         }
-      }
       part { name: "area.edit";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.0;
-            min: 0 40;
-            max: -1 40;
+            fixed: 1 1;
+            min: 37 25;
+            max: -1 25;
+            rel1 {
+               offset: 0 2;
+            }
             rel2 {
-               relative: 0.0 1.0;
-               offset: -7 -1;
-               to_x: "area.player";
+               relative: 1.0 0.0;
             }
          }
       }
@@ -2489,33 +2468,8 @@ group { name: "elm/layout/sound_editor/default";
             fixed: 1 1;
             rel1 {
                relative: 0.0 1.0;
-               to: "padding.edit_area";
+               to_y: "area.edit";
             }
-            rel2 {
-               relative: 0.0 1.0;
-               offset: -7 -1;
-               to_x: "area.player";
-            }
-         }
-      }
-      part { name: "player";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            fixed: 1 1;
-            rel1.to: "area.player";
-            rel2.to: "area.player";
-         }
-      }
-      part { name: "sound_info";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 0.5 0.0;
-            rel1 {
-               offset: 6 6;
-               to: "area.info";
-            }
-            rel2.to: "area.info";
          }
       }
       part { name: "swallow.search_area";
