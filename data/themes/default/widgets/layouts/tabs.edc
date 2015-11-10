@@ -1301,3 +1301,214 @@ group { name: "elm/layout/tab_home/item";
       }
    }
 }
+
+group { name: "elm/layout/tab_style/style_editor";
+   images {
+      image: "separator-vertical.png" COMP;
+      image: "separator-horizontal.png" COMP;
+   }
+   parts {
+      part { name: "top_pad";
+         type: SPACER;
+         description {
+            align: 0.5 0.0;
+            fixed: 0 1;
+            max: -1 20;
+         }
+      }
+      part { name: "left_pad";
+         type: SPACER;
+         description {
+            align: 0.0 0.0;
+            fixed: 1 0;
+            max: 6 -1;
+         }
+      }
+      part { name: "right_pad";
+         type: SPACER;
+         description {
+            align: 1.0 1.0;
+            fixed: 1 0;
+            max: 6 -1;
+         }
+      }
+      part { name: "bottom_pad";
+         type: SPACER;
+         description {
+            align: 0.0 1.0;
+            fixed: 0 1;
+            max: -1 6;
+         }
+      }
+      part { name: "label.preview";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 0 1;
+            max: -1 19;
+            color_class: "main";
+            text {
+               font: "PT";
+               size: 12;
+               align: 0.0 0.0;
+            }
+            rel1 {
+               to_y: "top_pad";
+               to_x: "left_pad";
+               relative: 1.0 1.0;
+            }
+         }
+      }
+      part { name: "elm.swallow.btn_apply";
+         type: SWALLOW;
+         description {
+            align: 1.0 1.0;
+            fixed: 1 1;
+            rel1 {
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to_x: "right_pad";
+               to_y: "bottom_pad";
+               relative: 0.0 0.0;
+            }
+         }
+      }
+      part { name: "separator_hor";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            min: 0 2;
+            max: -1 2;
+            align: 0.5 1.0;
+            image {
+               normal: "separator-horizontal.png";
+               middle: DEFAULT;
+            }
+            rel1 {
+               to_x: "left_pad";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "elm.swallow.btn_apply";
+               relative: 1.0 0.0;
+               offset: -1 -7;
+            }
+         }
+      }
+      part { name: "swallow.font_list";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            fixed: 1 0;
+            max: 300 -1;
+            rel1 {
+               to: "top_pad";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to: "separator_hor";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "sep_beetwen_list_pad";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            fixed: 1 0;
+            min: 6 1;
+            max: 6 -1;
+            rel1 {
+               to: "swallow.font_list";
+               relative: 0.0 0.0;
+            }
+            rel2 {
+               to: "swallow.font_list";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "separator_ver";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            fixed: 1 0;
+            min: 2 1;
+            max: 2 -1;
+            image {
+               normal: "separator-vertical.png";
+               middle: DEFAULT;
+            }
+            rel1 {
+               to_x: "sep_beetwen_list_pad";
+               to_y: "top_pad";
+               relative: 0.0 0.0;
+            }
+            rel2 {
+               to: "sep_beetwen_list_pad";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "pad_preview_vert_separ";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 0;
+            max: 6 -1;
+            rel1 {
+               to_y: "top_pad";
+               to_x: "left_pad";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "separator_ver";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "pad_preview";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            fixed: 0 1;
+            max: -1 6;
+            rel1 {
+               to: "label.preview";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "menu_container";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            fixed: 0 1;
+            max: -1 32;
+            rel1 {
+               to: "left_pad";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "pad_preview_vert_separ";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "swallow.preview";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1 {
+               to: "pad_preview";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to: "menu_container";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+   }
+}
