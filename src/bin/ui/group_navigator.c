@@ -774,6 +774,30 @@ _on_btn_plus_clicked(void *data,
 }
 
 static void
+_part_del(Part_List *pl,
+          Elm_Object_Item *glit)
+{
+   Part_ *part;
+   Eina_Stringshare *part_name;
+
+   assert(pl != NULL);
+   assert(glit != NULL);
+
+   part = elm_object_item_data_get(glit);
+   _unselect_part(pl);
+
+   /* This callbck should be called before actual part deletion */
+   evas_object_smart_callback_call(ap.win, SIGNAL_PART_DELETED, (void *)part);
+
+   elm_object_item_del(glit);
+   /* part is freed after deletion so we need to save its name */
+   part_name = eina_stringshare_ref(part->name);
+   gm_part_del(ap.project, part);
+   edje_edit_part_del(pl->group->edit_object, part_name);
+   eina_stringshare_del(part_name);
+}
+
+static void
 _on_btn_minus_clicked(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *ei __UNUSED__)
@@ -781,8 +805,6 @@ _on_btn_minus_clicked(void *data,
    Part_List *pl = data;
    Elm_Object_Item *glit;
    const Elm_Genlist_Item_Class* itc;
-   Part_ *part;
-   Eina_Stringshare *part_name;
 
    assert(pl != NULL);
 
@@ -793,22 +815,12 @@ _on_btn_minus_clicked(void *data,
    itc = elm_genlist_item_item_class_get(glit);
    if (itc == pl->itc_part_selected)
      {
-        part = elm_object_item_data_get(glit);
-        _unselect_part(pl);
-
-        /* This callbck should be called before actual part deletion */
-        evas_object_smart_callback_call(ap.win, SIGNAL_PART_DELETED, (void *)part);
-
-        elm_object_item_del(glit);
-        /* part is freed after deletion so we need to save its name */
-        part_name = eina_stringshare_ref(part->name);
-        gm_part_del(ap.project, part);
-        edje_edit_part_del(pl->group->edit_object, part_name);
-        eina_stringshare_del(part_name);
+        _part_del(pl, glit);
      }
 
    TODO("Add state/item del here")
 
+   TODO("Check if we still need this")
    /* Need to save pl->group->edit_object, since we changed it */
    editor_save_all(ap.project->global_object);
    TODO("Remove this line once edje_edit_image_add would be added into Editor Modulei and saving would work properly")
