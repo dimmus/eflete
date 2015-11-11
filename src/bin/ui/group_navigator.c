@@ -819,18 +819,17 @@ _state_del(Part_List *pl,
    assert(state != NULL);
    assert(strcmp(state->name, "default 0.00")); /* default state can't be deleted */
 
+   /* "default 0.0" is always first in states list */
+   subitems = elm_genlist_item_subitems_get(pl->selected_part_item);
+   default_glit = eina_list_data_get(subitems);
+
    /* resetting state */
    itc = elm_genlist_item_item_class_get(glit);
    if (itc == pl->itc_state_selected)
-     {
-        /* "default 0.0" is always first in states list */
-        subitems = elm_genlist_item_subitems_get(pl->selected_part_item);
-        default_glit = eina_list_data_get(subitems);
-
-        _on_activated(pl, NULL, default_glit);
-     }
+     _on_activated(pl, NULL, default_glit);
 
    elm_object_item_del(glit);
+   elm_genlist_item_selected_set(default_glit, true);
    part_name = state->part->name;
    state_name = eina_stringshare_ref(state->parsed_name);
    state_val = state->parsed_val;
