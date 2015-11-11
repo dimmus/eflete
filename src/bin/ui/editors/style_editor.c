@@ -1467,7 +1467,7 @@ ITEM_COLOR_ADD(underline_color, "underline_color", "underline_color")
 ITEM_COLOR_ADD(underline2_color, "underline2_color", "underline2_color")
 
 static void
-_text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
+_text_tab_update(Style_Editor *style_edit, Evas_Object *tabs __UNUSED__, const char *value)
 {
    Evas_Object *layout;
    Evas_Object *fonts_list, *font_size;
@@ -1856,7 +1856,7 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
 }*/
 
 static void
-_lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
+_lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs __UNUSED__, const char *value)
 {
    Evas_Object *layout;
    Evas_Object *font_strikethrough, *strikethrough_color;
