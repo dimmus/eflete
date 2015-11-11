@@ -87,6 +87,7 @@ struct _Ws_Smart_Data
    Evas_Object *scroller;        /**< A scroler with 'eflete/workspace' style. \
                                    Implement scrollable interface.*/
    char scroll_flag;             /**< Needed for control drag bar's in scroller*/
+   Evas_Object *bottom_box;
    Evas_Object *groupedit;       /**< A groupedit smart object, \
                                    needed for view and edit style.*/
 
@@ -952,126 +953,148 @@ _workspace_smart_add(Evas_Object *o)
 }
 
 static void
-_zoom_part_add(Evas_Object *parent)
+_mode_changed(void *data,
+              Evas_Object *obj,
+              void *event_info __UNUSED__)
+{
+   Ws_Smart_Data *sd = (Ws_Smart_Data *)data;
+
+   switch (elm_radio_state_value_get(obj))
+     {
+      case 1:
+         workspace_separate_mode_set(sd->obj, false);
+         break;
+      case 2:
+         workspace_separate_mode_set(sd->obj, true);
+         break;
+      case 3: break;
+      case 4: break;
+      case 5: break;
+      default: break;
+     }
+}
+
+static void
+_zoom_part_add(Ws_Smart_Data *sd)
 {
    Evas_Object *image, *slider_zoom;
    Evas_Object *button_resize, *button_zoom;
 
-   button_resize = elm_button_add(parent);
-   elm_box_pack_end(parent, button_resize);
+   button_resize = elm_button_add(sd->scroller);
+   elm_box_pack_end(sd->bottom_box, button_resize);
    evas_object_show(button_resize);
 
-   button_zoom = elm_button_add(parent);
+   button_zoom = elm_button_add(sd->scroller);
    elm_object_text_set(button_zoom, N_("100%"));
-   elm_box_pack_end(parent, button_zoom);
+   elm_box_pack_end(sd->bottom_box, button_zoom);
    evas_object_show(button_zoom);
 
-   slider_zoom = elm_slider_add(parent);
-   image = elm_image_add(parent);
+   slider_zoom = elm_slider_add(sd->scroller);
+   image = elm_image_add(sd->bottom_box);
    elm_image_file_set(image, EFLETE_IMG_PATH"scale-smaller.png", NULL);
    elm_object_part_content_set(slider_zoom, "elm.swallow.icon", image);
 
-   image = elm_image_add(parent);
+   image = elm_image_add(sd->scroller);
    elm_image_file_set(image, EFLETE_IMG_PATH"scale-larger.png", NULL);
    elm_object_part_content_set(slider_zoom, "elm.swallow.end", image);
-   elm_box_pack_end(parent, slider_zoom);
+   elm_box_pack_end(sd->bottom_box, slider_zoom);
    evas_object_show(slider_zoom);
 }
 
 static void
-_mode_part_add(Evas_Object *parent)
+_mode_part_add(Ws_Smart_Data *sd)
 {
    Evas_Object *radio_mode, *radio_group;
 
-   radio_group = radio_mode = elm_radio_add(parent);
+   radio_group = radio_mode = elm_radio_add(sd->scroller);
    elm_radio_state_value_set(radio_mode, 1);
    elm_radio_value_set(radio_mode, true);
-   elm_box_pack_end(parent, radio_mode);
+   evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
+   elm_box_pack_end(sd->bottom_box, radio_mode);
    evas_object_show(radio_mode);
 
-   radio_mode = elm_radio_add(parent);
+   radio_mode = elm_radio_add(sd->scroller);
    elm_radio_state_value_set(radio_mode, 2);
-   elm_box_pack_end(parent, radio_mode);
+   evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
+   elm_box_pack_end(sd->bottom_box, radio_mode);
    evas_object_show(radio_mode);
    elm_radio_group_add(radio_mode, radio_group);
 
-   radio_mode = elm_radio_add(parent);
+   radio_mode = elm_radio_add(sd->scroller);
    elm_radio_state_value_set(radio_mode, 3);
-   elm_box_pack_end(parent, radio_mode);
+   evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
+   elm_box_pack_end(sd->bottom_box, radio_mode);
    evas_object_show(radio_mode);
    elm_radio_group_add(radio_mode, radio_group);
 
-   radio_mode = elm_radio_add(parent);
+   radio_mode = elm_radio_add(sd->scroller);
    elm_radio_state_value_set(radio_mode, 4);
-   elm_box_pack_end(parent, radio_mode);
+   evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
+   elm_box_pack_end(sd->bottom_box, radio_mode);
    evas_object_show(radio_mode);
    elm_radio_group_add(radio_mode, radio_group);
 
-   radio_mode = elm_radio_add(parent);
+   radio_mode = elm_radio_add(sd->scroller);
    elm_radio_state_value_set(radio_mode, 5);
-   elm_box_pack_end(parent, radio_mode);
+   evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
+   elm_box_pack_end(sd->bottom_box, radio_mode);
    evas_object_show(radio_mode);
    elm_radio_group_add(radio_mode, radio_group);
 }
 
 static void
-_resize_part_add(Evas_Object *parent)
+_resize_part_add(Ws_Smart_Data *sd)
 {
    Evas_Object *check_binding, *image;
    Evas_Object *spinner_widght, *spinner_height, *check_size_chanage;
 
-   image = elm_image_add(parent);
+   image = elm_image_add(sd->scroller);
    elm_image_resizable_set(image, EINA_TRUE, EINA_FALSE);
    elm_image_aspect_fixed_set(image, EINA_TRUE);
    elm_image_file_set(image, EFLETE_IMG_PATH"crop.png", NULL);
-   elm_box_pack_end(parent, image);
+   elm_box_pack_end(sd->bottom_box, image);
    evas_object_show(image);
 
-   spinner_widght = elm_spinner_add(parent);
-   elm_box_pack_end(parent, spinner_widght);
+   spinner_widght = elm_spinner_add(sd->scroller);
+   elm_box_pack_end(sd->bottom_box, spinner_widght);
    evas_object_show(spinner_widght);
 
-   check_binding = elm_check_add(parent);
-   elm_box_pack_end(parent, check_binding);
+   check_binding = elm_check_add(sd->scroller);
+   elm_box_pack_end(sd->bottom_box, check_binding);
    evas_object_show(check_binding);
 
-   spinner_height = elm_spinner_add(parent);
-   elm_box_pack_end(parent, spinner_height);
+   spinner_height = elm_spinner_add(sd->scroller);
+   elm_box_pack_end(sd->bottom_box, spinner_height);
    evas_object_show(spinner_height);
 
-   check_size_chanage = elm_check_add(parent);
-   elm_box_pack_end(parent, check_size_chanage);
+   check_size_chanage = elm_check_add(sd->scroller);
+   elm_box_pack_end(sd->bottom_box, check_size_chanage);
    evas_object_show(check_size_chanage);
 }
 
 static void
-_bottom_panel_add(Evas_Object *parent)
+_bottom_panel_add(Ws_Smart_Data *sd)
 {
 
 #define SEPARATOR_ADD() \
-   separator = elm_separator_add(box); \
-   elm_box_pack_end(box, separator); \
+   separator = elm_separator_add(sd->bottom_box); \
+   elm_box_pack_end(sd->bottom_box, separator); \
    evas_object_show(separator);
 
-   Evas_Object *box, *separator;
+   Evas_Object *separator;
 
-   box = elm_box_add(parent);
-   elm_box_align_set(box, 0.0, 0.5);
-   elm_box_horizontal_set(box, true);
-   elm_box_padding_set(box, 6, 0);
-   elm_object_part_content_set(parent, "bottom_panel", box);
-   evas_object_show(box);
+   sd->bottom_box = elm_box_add(sd->scroller);
+   elm_box_align_set(sd->bottom_box, 0.0, 0.5);
+   elm_box_horizontal_set(sd->bottom_box, true);
+   elm_box_padding_set(sd->bottom_box, 6, 0);
+   elm_object_part_content_set(sd->scroller, "bottom_panel", sd->bottom_box);
+   evas_object_show(sd->bottom_box);
 
-   _zoom_part_add(box);
-
+   _zoom_part_add(sd);
    SEPARATOR_ADD()
-
-   _mode_part_add(box);
-
+   _mode_part_add(sd);
    SEPARATOR_ADD()
-
-   _resize_part_add(box);
-
+   _resize_part_add(sd);
    SEPARATOR_ADD()
 
 #undef SEPARATOR_ADD
@@ -1152,7 +1175,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
                                priv->button_separate);
 
    /* Add bottom panel to workspace */
-   _bottom_panel_add(priv->scroller);
+   _bottom_panel_add(priv);
 
    Evas_Object *edje = elm_layout_edje_get(priv->scroller);
    priv->clipper = (Evas_Object *) edje_object_part_object_get(edje, "clipper");
