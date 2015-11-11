@@ -58,4 +58,7 @@ _on_frame_click(void *data,
                 Evas_Object *obj,
                 void *event_info);
 
+Evas_Object *
+ui_property_sound_add(Evas_Object *parent);
+
 #endif /* UI_PROPERTY_1_H */
