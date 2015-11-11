@@ -1157,7 +1157,6 @@ _add_sample_done(void *data,
                  Evas_Object *obj,
                  void *event_info)
 {
-   Sound *snd;
    Item *it;
    Eina_Stringshare *sound_name;
    Eina_List *samples_list, *l;
@@ -1210,9 +1209,6 @@ _add_sample_done(void *data,
 
         edje_edit_sound_sample_add(ap.project->global_object, res->name, res->source);
 
-        snd = (Sound *)mem_calloc(1, sizeof(Sound));
-        snd->name = eina_stringshare_add(file_name);
-        snd->src = eina_stringshare_add(res->source);
         it = (Item *)mem_calloc(1, sizeof(Item));
         it->sound_name = eina_stringshare_add(sound_name);
         it->format = _sound_format_get(selected);
