@@ -401,6 +401,7 @@ _selected_cb(void *data,
              void *event_info)
 {
    Elm_Object_Item *glit = event_info;
+   Elm_Object_Item *glit_part;
    const Elm_Genlist_Item_Class* itc;
    Eina_Stringshare *item_name;
    Part_List *pl = data;
@@ -415,20 +416,21 @@ _selected_cb(void *data,
    else
      item_name = NULL;
 
-   while (elm_genlist_item_parent_get(glit))
-     glit = elm_genlist_item_parent_get(glit);
+   glit_part = glit;
+   while (elm_genlist_item_parent_get(glit_part))
+     glit_part = elm_genlist_item_parent_get(glit_part);
 
-   part = elm_object_item_data_get(glit);
-   if ((pl->selected_part_item != glit) || (part->current_item_name != item_name))
+   part = elm_object_item_data_get(glit_part);
+   if ((pl->selected_part_item != glit_part) || (part->current_item_name != item_name))
      {
         if (pl->selected_part_item)
           _unselect_part(pl);
-        pl->selected_part_item = glit;
+        pl->selected_part_item = glit_part;
         part->current_item_name = item_name;
         pl->group->current_part = part;
         evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED,
                                         (void *)part);
-        elm_genlist_item_item_class_update(glit, pl->itc_part_selected);
+        elm_genlist_item_item_class_update(glit_part, pl->itc_part_selected);
      }
    elm_object_item_disabled_set(pl->add_state_menu_item, false);
    if ((itc == pl->itc_item_caption) ||
