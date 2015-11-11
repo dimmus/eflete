@@ -798,6 +798,46 @@ _part_del(Part_List *pl,
 }
 
 static void
+_state_del(Part_List *pl,
+           Elm_Object_Item *glit)
+{
+   State *state;
+   const Elm_Genlist_Item_Class* itc;
+   const Eina_List *subitems;
+   Elm_Object_Item *default_glit;
+   Eina_Stringshare *part_name, *state_name;
+   double state_val;
+
+   assert(pl != NULL);
+   assert(pl->selected_part_item != NULL);
+   assert(glit != NULL);
+
+   state = elm_object_item_data_get(glit);
+
+   assert(state != NULL);
+   assert(strcmp(state->name, "default 0.00")); /* default state can't be deleted */
+
+   /* resetting state */
+   itc = elm_genlist_item_item_class_get(glit);
+   if (itc == pl->itc_state_selected)
+     {
+        /* "default 0.0" is always first in states list */
+        subitems = elm_genlist_item_subitems_get(pl->selected_part_item);
+        default_glit = eina_list_data_get(subitems);
+
+        _on_activated(pl, NULL, default_glit);
+     }
+
+   elm_object_item_del(glit);
+   part_name = state->part->name;
+   state_name = eina_stringshare_ref(state->parsed_name);
+   state_val = state->parsed_val;
+   gm_state_del(ap.project, state);
+   edje_edit_state_del(pl->group->edit_object, part_name, state_name, state_val);
+   eina_stringshare_del(state_name);
+}
+
+static void
 _on_btn_minus_clicked(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *ei __UNUSED__)
@@ -817,8 +857,8 @@ _on_btn_minus_clicked(void *data,
      {
         _part_del(pl, glit);
      }
-
-   TODO("Add state/item del here")
+   else if ((itc == pl->itc_state_selected) || (itc == pl->itc_state))
+      _state_del(pl, glit);
 
    TODO("Check if we still need this")
    /* Need to save pl->group->edit_object, since we changed it */
