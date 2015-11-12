@@ -161,7 +161,10 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    if (!edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)) \
      { \
         if (!edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, FALLBACK_VAL)) \
-           return false; \
+          { \
+             diff_free(diff); \
+             return false; \
+          } \
         if (diff) \
           { \
             eina_stringshare_del(diff->redo.args.type_ssds.s4); \
