@@ -488,6 +488,8 @@ ui_property_image_add(Evas_Object *parent)
 
    /* Frame with usage */
    FRAME_PROPERTY_ADD(pd->box, pd->usage_frame, true, _("Usage ( - )"), pd->box)
+   evas_object_size_hint_weight_set(pd->usage_frame, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(pd->usage_frame, EVAS_HINT_FILL, EVAS_HINT_FILL);
    BOX_ADD(pd->info_frame, box, false, false);
    elm_box_align_set(box, 0.5, 0.0);
 
