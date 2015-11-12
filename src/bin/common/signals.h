@@ -144,9 +144,13 @@ typedef struct {
  */
 #define SIGNAL_EDITOR_ATTRIBUTE_CHANGED "SIGNAL_EDITOR_ATTRIBUTE_CHANGED"
 
+typedef struct {
+   const char *part_name;
+   const char *state_name;
+} Editor_State;
 /**
  * emited when state is added in editor.
- * eventinfo - stringshare with full state name
+ * eventinfo - Editor_State struct
  *
  * @ingroup Window
  */
@@ -154,11 +158,11 @@ typedef struct {
 
 /**
  * emited *before* state will be deleted in editor.
- * eventinfo - stringshare with full state name
+ * eventinfo - Editor_State struct
  *
  * @ingroup Window
  */
-#define SIGNAL_EDITOR_STATE_DEL "SIGNAL_EDITOR_STATE_DEL"
+#define SIGNAL_EDITOR_STATE_DELETED "SIGNAL_EDITOR_STATE_DELETED"
 
 /**
  * emited when project is changed in any way (through attribute, .

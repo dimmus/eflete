@@ -650,7 +650,7 @@ _editor_state_added_cb(void *data,
                        void *event_info)
 {
    Part_List *pl = data;
-   Eina_Stringshare *full_state_name = event_info;
+   const Editor_State *editor_state = event_info;
    Part_ *part;
    State *state;
    Eina_Bool items_expanded = false;
@@ -658,10 +658,15 @@ _editor_state_added_cb(void *data,
    const Eina_List *l;
 
    assert(pl != NULL);
-   assert(full_state_name != NULL);
+   assert(editor_state != NULL);
 
    part = elm_object_item_data_get(pl->selected_part_item);
-   state = gm_state_add(ap.project, part, full_state_name);
+   if (strcmp(editor_state->part_name, part->name))
+     {
+        part = pm_resource_unsorted_get(part->group->parts, editor_state->part_name);
+        group_navigator_part_select(pl->layout, part);
+     }
+   state = gm_state_add(ap.project, part, editor_state->state_name);
 
    /* callback should be called before selection to allow some additional loading */
    evas_object_smart_callback_call(ap.win, SIGNAL_STATE_ADDED, (void *)state);
