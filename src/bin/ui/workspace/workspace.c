@@ -27,6 +27,7 @@
 #include "signals.h"
 #include "new_history.h"
 #include "editor.h"
+#include "demo.h"
 
 struct _Ws_Menu
 {
@@ -53,6 +54,16 @@ struct _Ws_Menu
    Elm_Object_Item *settings;
 };
 typedef struct _Ws_Menu Ws_Menu;
+
+typedef enum
+{
+   MODE_NORMAL = 1,
+   MODE_SEPARATE,
+   /* MODE_ANIMATOR, */
+   /* MODE_CODE, */
+   MODE_DEMO,
+   MODE_LAST
+} Workspace_Mode;
 
 /**
  * @typedef Ws_Smart_Data
@@ -90,6 +101,8 @@ struct _Ws_Smart_Data
    Evas_Object *bottom_box;
    Evas_Object *groupedit;       /**< A groupedit smart object, \
                                    needed for view and edit style.*/
+   Workspace_Mode active_mode;
+   Evas_Object *active_mode_object;
 
    struct {
         Evas_Object *obj;        /**< Container that contains groupedit.*/
@@ -957,21 +970,48 @@ _mode_changed(void *data,
               Evas_Object *obj,
               void *event_info __UNUSED__)
 {
+   Workspace_Mode mode;
    Ws_Smart_Data *sd = (Ws_Smart_Data *)data;
 
-   switch (elm_radio_state_value_get(obj))
+   /* delete all object besides groupedit, because all these objects we created
+    * on mode chage. It's do for create, alwayes actual and correct object, and
+    * eliminates from updates, like live_view update mehanism. So, Profit! */
+   container_confine_unset(sd->container.obj);
+   if ((sd->active_mode == MODE_NORMAL) || (sd->active_mode == MODE_SEPARATE))
+     evas_object_hide(sd->groupedit);
+   else
+     evas_object_del(sd->active_mode_object);
+
+   mode = elm_radio_state_value_get(obj);
+   switch (mode)
      {
-      case 1:
+      case MODE_NORMAL:
+         container_content_set(sd->container.obj, sd->groupedit);
+         evas_object_show(sd->groupedit);
          workspace_separate_mode_set(sd->obj, false);
          break;
-      case 2:
+      case MODE_SEPARATE:
+         container_content_set(sd->container.obj, sd->groupedit);
+         evas_object_show(sd->groupedit);
          workspace_separate_mode_set(sd->obj, true);
+         container_border_hide(sd->container.obj);
          break;
-      case 3: break;
-      case 4: break;
-      case 5: break;
+      /* case MODE_ANIMATOR: break; */
+      /* case MODE_CODE: break; */
+      case MODE_DEMO:
+         {
+            /* return container to default state */
+            workspace_separate_mode_set(sd->obj, false);
+            container_border_show(sd->container.obj);
+
+            sd->active_mode_object = demo_add(sd->scroller, sd->group);
+            evas_object_show(sd->active_mode_object);
+            container_content_set(sd->container.obj, sd->active_mode_object);
+            break;
+         }
       default: break;
      }
+   sd->active_mode = mode;
 }
 
 static void
@@ -1007,35 +1047,39 @@ _mode_part_add(Ws_Smart_Data *sd)
    Evas_Object *radio_mode, *radio_group;
 
    radio_group = radio_mode = elm_radio_add(sd->scroller);
-   elm_radio_state_value_set(radio_mode, 1);
+   elm_radio_state_value_set(radio_mode, MODE_NORMAL);
    elm_radio_value_set(radio_mode, true);
    evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
    elm_box_pack_end(sd->bottom_box, radio_mode);
    evas_object_show(radio_mode);
 
    radio_mode = elm_radio_add(sd->scroller);
-   elm_radio_state_value_set(radio_mode, 2);
+   elm_radio_state_value_set(radio_mode, MODE_SEPARATE);
    evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
    elm_box_pack_end(sd->bottom_box, radio_mode);
    evas_object_show(radio_mode);
    elm_radio_group_add(radio_mode, radio_group);
 
+   /*
    radio_mode = elm_radio_add(sd->scroller);
-   elm_radio_state_value_set(radio_mode, 3);
+   elm_radio_state_value_set(radio_mode, MODE_ANIMATOR);
    evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
    elm_box_pack_end(sd->bottom_box, radio_mode);
    evas_object_show(radio_mode);
    elm_radio_group_add(radio_mode, radio_group);
+   */
 
+   /*
    radio_mode = elm_radio_add(sd->scroller);
-   elm_radio_state_value_set(radio_mode, 4);
+   elm_radio_state_value_set(radio_mode, MODE_CODE);
    evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
    elm_box_pack_end(sd->bottom_box, radio_mode);
    evas_object_show(radio_mode);
    elm_radio_group_add(radio_mode, radio_group);
+   */
 
    radio_mode = elm_radio_add(sd->scroller);
-   elm_radio_state_value_set(radio_mode, 5);
+   elm_radio_state_value_set(radio_mode, MODE_DEMO);
    evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
    elm_box_pack_end(sd->bottom_box, radio_mode);
    evas_object_show(radio_mode);
@@ -1176,6 +1220,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
 
    /* Add bottom panel to workspace */
    _bottom_panel_add(priv);
+   priv->active_mode = MODE_NORMAL;
 
    Evas_Object *edje = elm_layout_edje_get(priv->scroller);
    priv->clipper = (Evas_Object *) edje_object_part_object_get(edje, "clipper");
@@ -1537,12 +1582,15 @@ workspace_add(Evas_Object *parent, Group *group)
    max_h = edje_edit_group_max_h_get(sd->group->edit_object);
    container_min_size_set(sd->container.obj, min_w, min_h);
    container_max_size_set(sd->container.obj, max_w, max_h);
+
+   /*
    TODO("need refactoring (All communications beetween submodules should be implemented in ui_connector)")
    if (ap.live_view)
      {
         container_min_size_set(ap.live_view->live_view, min_w, min_h);
         container_max_size_set(ap.live_view->live_view, max_w, max_h);
      }
+   */
 
    return obj;
 }
@@ -1579,12 +1627,14 @@ workspace_edit_object_recalc(Evas_Object *obj)
    max_h = edje_edit_group_max_h_get(sd->group->edit_object);
    container_min_size_set(sd->container.obj, min_w, min_h);
    container_max_size_set(sd->container.obj, max_w, max_h);
+   /*
    TODO("need refactoring (All communications beetween submodules should be implemented in ui_connector)")
    if (ap.live_view)
      {
         container_min_size_set(ap.live_view->live_view, min_w, min_h);
         container_max_size_set(ap.live_view->live_view, max_w, max_h);
      }
+   */
    return groupedit_edit_object_recalc_all(sd->groupedit);
 }
 
