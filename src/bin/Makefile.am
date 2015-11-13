@@ -73,6 +73,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/workspace/groupedit.c \
 ../../src/bin/ui/workspace/groupedit_box_layouts.c \
 ../../src/bin/ui/workspace/highlight.c \
+../../src/bin/ui/live_view/demo.c \
 ../../src/bin/ui/live_view/live_view_prop.c \
 ../../src/bin/ui/live_view/live_view.c \
 ../../src/bin/ui/live_view/live_widget.c \
