@@ -37,6 +37,11 @@ typedef enum {
    SOUND_EDITOR_TONE_SELECT
 } Sound_Editor_Mode;
 
+typedef enum {
+   SOUND_TYPE_SAMPLE,
+   SOUND_TYPE_TONE
+} Sound_Type;
+
 /**
  * Delete added sounds from list
  *
