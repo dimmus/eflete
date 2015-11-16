@@ -169,6 +169,8 @@ _on_##MEMBER##_##VALUE##_start(void *data, \
                                void *ei __UNUSED__) \
 { \
    Group_Prop_Data *pd = (Group_Prop_Data *)data; \
+   elm_object_focus_set(obj, true); /* there are problems with unfocusing entry.
+                              elementary is too lazy to change focus in time */ \
    assert(pd->change == NULL); \
    pd->change = change_add(NULL); \
    pd->old_##TYPE##_val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
@@ -683,6 +685,8 @@ _on_group_##SUB1##_##VALUE##_start(void *data, \
                                    void *ei __UNUSED__) \
 { \
    Group_Prop_Data *pd = (Group_Prop_Data *)data; \
+   elm_object_focus_set(obj, true); /* there are problems with unfocusing entry.
+                              elementary is too lazy to change focus in time */ \
    assert(pd->change == NULL); \
    pd->change = change_add(DESCRIPTION);\
    pd->old_int_val = edje_edit_group_##SUB1##_##VALUE##_get(pd->group->edit_object); \
