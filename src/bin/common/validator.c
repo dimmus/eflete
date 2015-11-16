@@ -17,6 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 #include "validator.h"
+#include "alloc.h"
 #include <regex.h>
 
 struct _Resource_Name_Validator
@@ -54,7 +55,7 @@ resource_name_validator_new(const char *pattern, const char *sig)
 
    assert(pattern != NULL);
 
-   validator = calloc(1, sizeof(Resource_Name_Validator));
+   validator = mem_calloc(1, sizeof(Resource_Name_Validator));
    validator->signal = eina_stringshare_add(sig ? sig : "default");
    validator->status = regcomp(&validator->regex, pattern, REG_EXTENDED | REG_NOSUB) ? ELM_REG_BADPAT : ELM_REG_NOERROR;
 

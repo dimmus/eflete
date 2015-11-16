@@ -28,6 +28,23 @@
  * be used.
  */
 
+#define PROP_ITEM_UNSET(BOX, ITEM) \
+   if (ITEM) \
+     {\
+        evas_object_smart_callback_del(ITEM, "clicked", _on_frame_click); \
+        elm_box_unpack(BOX, ITEM); \
+        evas_object_del(ITEM); \
+        ITEM = NULL; \
+     }
+/*
+ * Callback is added for frames at property box to correct scroller
+ * work while each frame would be expanded/collapsed
+ * TODO: Documentation
+ */
+#define FRAME_PROPERTY_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE, SCROLLER) \
+FRAME_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE) \
+evas_object_smart_callback_add(FRAME, "clicked", _on_frame_click, SCROLLER);
+
 /**
  * Create new layout with style "elm/layout/property/STYLE".
  * Macro develop for property items, can use in simular cases.
@@ -152,6 +169,8 @@ _on_##MEMBER##_##VALUE##_start(void *data, \
                                void *ei __UNUSED__) \
 { \
    Group_Prop_Data *pd = (Group_Prop_Data *)data; \
+   elm_object_focus_set(obj, true); /* there are problems with unfocusing entry.
+                              elementary is too lazy to change focus in time */ \
    assert(pd->change == NULL); \
    pd->change = change_add(NULL); \
    pd->old_##TYPE##_val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
@@ -666,6 +685,8 @@ _on_group_##SUB1##_##VALUE##_start(void *data, \
                                    void *ei __UNUSED__) \
 { \
    Group_Prop_Data *pd = (Group_Prop_Data *)data; \
+   elm_object_focus_set(obj, true); /* there are problems with unfocusing entry.
+                              elementary is too lazy to change focus in time */ \
    assert(pd->change == NULL); \
    pd->change = change_add(DESCRIPTION);\
    pd->old_int_val = edje_edit_group_##SUB1##_##VALUE##_get(pd->group->edit_object); \

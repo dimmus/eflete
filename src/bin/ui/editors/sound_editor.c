@@ -1157,7 +1157,6 @@ _add_sample_done(void *data,
                  Evas_Object *obj,
                  void *event_info)
 {
-   Sound *snd;
    Item *it;
    Eina_Stringshare *sound_name;
    Eina_List *samples_list, *l;
@@ -1206,13 +1205,11 @@ _add_sample_done(void *data,
           {
              WIN_NOTIFY_ERROR(obj, _("File exist"));
              free(res);
+             goto del;
           }
 
         edje_edit_sound_sample_add(ap.project->global_object, res->name, res->source);
 
-        snd = (Sound *)mem_calloc(1, sizeof(Sound));
-        snd->name = eina_stringshare_add(file_name);
-        snd->src = eina_stringshare_add(res->source);
         it = (Item *)mem_calloc(1, sizeof(Item));
         it->sound_name = eina_stringshare_add(sound_name);
         it->format = _sound_format_get(selected);
@@ -1269,7 +1266,6 @@ _add_tone_done(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
-   Sound *snd;
    Item *it;
    Eina_Stringshare *tone_name;
    const char *str_value;
@@ -1301,9 +1297,6 @@ _add_tone_done(void *data,
    str_value = elm_entry_entry_get(edit->frq_entry);
    frq = atoi(str_value);
 
-   snd = (Sound *)mem_calloc(1, sizeof(Sound));
-   snd->name = tone_name;
-   snd->tone_frq = frq;
    it = (Item *)mem_calloc(1, sizeof(Item));
    it->sound_name = eina_stringshare_add(tone_name);
    it->tone_frq = frq;
@@ -1315,7 +1308,7 @@ _add_tone_done(void *data,
    tone->freq = frq;
    ap.project->tones = eina_list_sorted_insert(ap.project->tones, (Eina_Compare_Cb) resource_cmp, tone);
 
-   edje_edit_sound_tone_add(ap.project->global_object, snd->name, snd->tone_frq);
+   edje_edit_sound_tone_add(ap.project->global_object, tone_name, frq);
    editor_save(ap.project->global_object);
    TODO("Remove this line once edje_edit_image_add would be added into Editor Module and saving would work properly")
    ap.project->changed = true;

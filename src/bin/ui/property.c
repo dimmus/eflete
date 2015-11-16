@@ -44,11 +44,41 @@
    Prop_Data *pd = evas_object_data_get(property, PROP_DATA); \
    assert(pd != NULL);
 
+TODO("remove this hack after scroller would be fixed")
+/*
+ * Hack start
+ */
+void
+_on_frame_click(void *data,
+                Evas_Object *obj,
+                void *event_info __UNUSED__)
+{
+   Evas_Object *scroller = (Evas_Object *)data;
+   Evas_Object *box, *frame_box;
+   int h_box, h_frame_box, h_scr, y_reg, h_reg, y_frame;
+   box = elm_object_content_get(scroller);
+   evas_object_geometry_get(scroller, NULL, NULL, NULL, &h_scr);
+   evas_object_geometry_get(box, NULL, NULL, NULL, &h_box);
+   frame_box = elm_object_content_get(obj);
+   evas_object_geometry_get(frame_box, NULL, &y_frame, NULL, &h_frame_box);
+   elm_scroller_region_get(scroller, NULL, &y_reg, NULL, &h_reg);
+   elm_scroller_region_bring_in(scroller, 0.0, y_reg + 1, 0.0, h_reg);
+   if (!elm_frame_collapse_get(obj))
+     {
+        if (h_box == h_scr + y_reg)
+          elm_scroller_region_show(scroller, 0.0, y_reg + h_frame_box, 0.0, h_reg);
+        else
+          elm_scroller_region_bring_in(scroller, 0.0, y_reg + 1, 0.0, h_reg);
+     }
+}
+/* Hack end */
+
 /* enum for identifying current property
  (group's, image's, sound's or other kind of peroperty) */
 enum _Property_Type {
    PROPERTY,
-   IMAGE_PROPERTY
+   IMAGE_PROPERTY,
+   SOUND_PROPERTY
 };
 typedef enum _Property_Type Property_Type;
 
@@ -79,6 +109,7 @@ _on_different_clicked(void *data,
    /* hide everything */
    evas_object_hide(pd->group_property);
    evas_object_hide(pd->image_property);
+   evas_object_hide(pd->sound_property);
 
    pd->type = PROPERTY;
 }
@@ -98,8 +129,29 @@ _on_image_editor_clicked(void *data,
    elm_object_content_set(pd->layout, pd->image_property);
    evas_object_hide(pd->group_property);
    evas_object_show(pd->image_property);
+   evas_object_hide(pd->sound_property);
 
    pd->type = IMAGE_PROPERTY;
+}
+
+static void
+_on_sound_editor_clicked(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info __UNUSED__)
+{
+   Evas_Object *property = data;
+   PROP_DATA_GET()
+
+   assert(pd != NULL);
+
+   ui_property_group_unset(pd->group_property);
+   elm_object_content_unset(pd->layout);
+   elm_object_content_set(pd->layout, pd->sound_property);
+   evas_object_hide(pd->group_property);
+   evas_object_hide(pd->image_property);
+   evas_object_show(pd->sound_property);
+
+   pd->type = SOUND_PROPERTY;
 }
 
 static void
@@ -120,13 +172,14 @@ _on_tab_changed(void *data,
         return;
      }
    /* it has group here, and group's tab was clicked,
-      but if previous tab was image_property tab,
+      but if previous tab was image_property or sound_property tab,
       we need to remove it from there and set group property in there */
-   if (pd->type == IMAGE_PROPERTY)
+   if ((pd->type == IMAGE_PROPERTY) || (pd->type == SOUND_PROPERTY))
      {
         elm_object_content_unset(pd->layout);
         elm_object_content_set(pd->layout, pd->group_property);
         evas_object_hide(pd->image_property);
+        evas_object_hide(pd->sound_property);
      }
    ui_property_group_set(pd->group_property, group);
 
@@ -153,10 +206,12 @@ ui_property_add(Evas_Object *parent)
    evas_object_data_set(pd->layout, PROP_DATA, pd);
 
    pd->image_property = ui_property_image_add(pd->layout);
+   pd->sound_property = ui_property_sound_add(pd->layout);
 
    /* register global callbacks */
    evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _on_tab_changed, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_IMAGE_EDITOR_TAB_CLICKED, _on_image_editor_clicked, pd->layout);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_EDITOR_TAB_CLICKED, _on_sound_editor_clicked, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, _on_different_clicked, pd->layout);
 
    return pd->layout;

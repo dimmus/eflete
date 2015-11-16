@@ -26,7 +26,7 @@ libete_a_SOURCES = \
 ../../src/bin/editor/editor_states.c \
 ../../src/bin/editor/editor_text.c \
 ../../src/bin/ui/history_ui.c \
-../../src/bin/ui/part_list.c \
+../../src/bin/ui/group_navigator.c \
 ../../src/bin/ui/cursor.c \
 ../../src/bin/ui/menu.c \
 ../../src/bin/ui/main_window.c \
@@ -64,6 +64,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/property.c \
 ../../src/bin/ui/property_group.c \
 ../../src/bin/ui/property_image.c \
+../../src/bin/ui/property_sound.c \
 ../../src/bin/ui/blocks/ui_widget_list.c \
 ../../src/bin/ui/blocks/ui_signal_list.c \
 ../../src/bin/ui/blocks/ui_states_list.c \
@@ -72,6 +73,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/workspace/groupedit.c \
 ../../src/bin/ui/workspace/groupedit_box_layouts.c \
 ../../src/bin/ui/workspace/highlight.c \
+../../src/bin/ui/live_view/demo.c \
 ../../src/bin/ui/live_view/live_view_prop.c \
 ../../src/bin/ui/live_view/live_view.c \
 ../../src/bin/ui/live_view/live_widget.c \

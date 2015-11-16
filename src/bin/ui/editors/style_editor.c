@@ -172,7 +172,7 @@ static const char *style_table[][2] = {{"font", NULL},
                                        {"underline_dash_gap", NULL},
                                        {NULL, NULL},
                                        {"direction", NULL}};
-
+/*
 TODO("<number>, <number>% for align")
 static const char *font_horizontal_align[] = { N_("auto"),
                                                N_("center"),
@@ -189,7 +189,8 @@ static const char *font_horizontal_valign[] = { N_("top"),
                                                 N_("baseline"),
                                                 N_("base"),
                                                 NULL};
-
+*/
+/*
 static const char *font_glow_list[] = { N_("none"),
                                         N_("plain"),
                                         N_("shadow"),
@@ -213,23 +214,26 @@ static const char *direction_list[] = { N_("bottom_left"),
                                         N_("top"),
                                         N_("top_right"),
                                         NULL};
-
+*/
 static const char *underl_styles[] = { N_("single"),
                                        N_("double"),
                                        NULL};
-
 static Eina_Tmpstr*
 _tag_value_get(const char* text_style, char* a_tag);
+
 
 static void
 _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value);
 
+/*
 static void
 _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value);
+*/
 
+/*
 static void
 _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value);
-
+*/
 static void
 _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value);
 
@@ -276,8 +280,9 @@ _##VALUE##_update(Style_Editor *style_edit) \
    assert(style_edit != NULL); \
    _##VALUE##_tab_update(style_edit, style_edit->prop.tabs, CURRENT.stvalue); \
 }
-
+/*
 TAB_UPDATE(glow)
+*/
 TAB_UPDATE(lines)
 
 #undef TAB_UPDATE
@@ -342,10 +347,10 @@ _on_glit_selected(void *data,
      }
    else
      {
-        _text_tab_update(style_edit, style_edit->prop.tabs, eina_strbuf_string_get(style));
-        _format_tab_update(style_edit, style_edit->prop.tabs, eina_strbuf_string_get(style));
-        _glow_tab_update(style_edit, style_edit->prop.tabs, eina_strbuf_string_get(style));
-        _lines_tab_update(style_edit, style_edit->prop.tabs, eina_strbuf_string_get(style));
+        _text_tab_update(style_edit, NULL /*style_edit->prop.tabs*/, eina_strbuf_string_get(style));
+        //_format_tab_update(style_edit, NULL /*style_edit->prop.tabs*/, eina_strbuf_string_get(style));
+        //_glow_tab_update(style_edit, NULL /*style_edit->prop.tabs*/, eina_strbuf_string_get(style));
+        //_lines_tab_update(style_edit, NULL /*style_edit->prop.tabs*/, eina_strbuf_string_get(style));
 
         elm_object_signal_emit(style_edit->entry_prev, "entry,show", "eflete");
         eina_strbuf_append(style, "'");
@@ -767,23 +772,84 @@ _search_reset_cb(void *data,
    search_data->last_item_found = NULL;
 }
 
+static void
+_expand_request_cb(void *data __UNUSED__,
+                   Evas_Object *o __UNUSED__,
+                   void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, EINA_TRUE);
+}
+
+static void
+_expanded_cb(void *data,
+             Evas_Object *o __UNUSED__,
+             void *event_info)
+{
+   Style_Editor *style_edit = (Style_Editor *)data;
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   const char *name = elm_object_item_data_get(glit);
+   Eina_List *tags, *l_tg;
+   Elm_Object_Item *glit_tag;
+   char *tag;
+
+   tags = edje_edit_style_tags_list_get(ap.project->global_object, name);
+   EINA_LIST_FOREACH(tags, l_tg, tag)
+     {
+        glit_tag = elm_genlist_item_append(style_edit->glist, _itc_tags,
+                                           tag, glit, ELM_GENLIST_ITEM_NONE,
+                                           _on_glit_selected, style_edit);
+        elm_object_item_data_set(glit_tag, tag);
+     }
+   eina_list_free(tags);
+}
+
+static void
+_contract_request_cb(void *data __UNUSED__,
+                     Evas_Object *o __UNUSED__,
+                     void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, EINA_FALSE);
+}
+
+static void
+_contracted_cb(void *data __UNUSED__,
+               Evas_Object *o __UNUSED__,
+               void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_subitems_clear(glit);
+}
+
+static void
+_on_clicked_double(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+
+   if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
+     {
+        elm_genlist_item_expanded_set(glit, !elm_genlist_item_expanded_get(glit));
+     }
+}
+
 /* Creating the view of the mwin!!! */
 Evas_Object *
-_form_left_side(Style_Editor *style_edit)
+_form_right_side(Style_Editor *style_edit)
 {
-   Elm_Object_Item *glit_style, *glit_tag;
+   Elm_Object_Item *glit_style;
    Evas_Object *layout, *btn, *combobox, *search, *ic;
-   Eina_List *styles, *tags, *l_st, *l_tg;
-   char *tag;
+   Eina_List *styles, *l_st;
    Resource *res;
-   Evas_Object *edje_edit_obj = NULL;
 
    assert(style_edit != NULL);
 
    if (!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
-        _itc_style->item_style = "title";
+        _itc_style->item_style = "navigator";
         _itc_style->func.text_get = _item_style_label_get;
         _itc_style->func.content_get = NULL;
         _itc_style->func.state_get = NULL;
@@ -801,11 +867,12 @@ _form_left_side(Style_Editor *style_edit)
 
    layout = elm_layout_add(ap.win);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_theme_set(layout, "layout", "style_editor", "list");
+   elm_layout_theme_set(layout, "layout", "style_editor", "font_list");
+   elm_object_part_text_set(layout, "label.font_list", _("Font list"));
    evas_object_show(layout);
 
    search = _style_editor_search_field_create(layout);
-   elm_object_part_content_set(layout, "swallow.search_area", search);
+   elm_object_part_content_set(layout, "swallow.search", search);
    evas_object_smart_callback_add(search, "changed", _search_changed, style_edit);
    evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, style_edit);
    evas_object_smart_callback_add(style_edit->glist, "pressed", _search_reset_cb,
@@ -814,33 +881,27 @@ _form_left_side(Style_Editor *style_edit)
    style_edit->style_search_data.last_item_found = NULL;
 
    style_edit->glist = elm_genlist_add(layout);
-   elm_object_part_content_set(layout, "swallow/genlist", style_edit->glist);
+   elm_object_part_content_set(layout, "swallow.font_list", style_edit->glist);
+   evas_object_smart_callback_add(style_edit->glist, "clicked,double", _on_clicked_double, NULL);
+   evas_object_smart_callback_add(style_edit->glist, "expand,request", _expand_request_cb, NULL);
+   evas_object_smart_callback_add(style_edit->glist, "expanded", _expanded_cb, style_edit);
+   evas_object_smart_callback_add(style_edit->glist, "contract,request", _contract_request_cb, NULL);
+   evas_object_smart_callback_add(style_edit->glist, "contracted", _contracted_cb, NULL);
    evas_object_show(style_edit->glist);
 
    evas_object_size_hint_align_set(style_edit->glist, EVAS_HINT_FILL,
                                    EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(style_edit->glist, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
-   edje_edit_obj = ap.project->global_object;
 
    styles = ap.project->styles;
 
    EINA_LIST_FOREACH(styles, l_st, res)
      {
         glit_style = elm_genlist_item_append(style_edit->glist, _itc_style,
-                                             res->name, NULL, ELM_GENLIST_ITEM_GROUP,
+                                             res->name, NULL, ELM_GENLIST_ITEM_TREE,
                                              _on_glit_selected, style_edit);
         elm_object_item_data_set(glit_style, (char *)res->name);
-
-        tags = edje_edit_style_tags_list_get(edje_edit_obj, res->name);
-        EINA_LIST_FOREACH(tags, l_tg, tag)
-          {
-             glit_tag = elm_genlist_item_append(style_edit->glist, _itc_tags,
-                                     tag, glit_style, ELM_GENLIST_ITEM_NONE,
-                                    _on_glit_selected, style_edit);
-             elm_object_item_data_set(glit_tag, tag);
-          }
-        eina_list_free(tags);
      }
 
    EWE_COMBOBOX_ADD(layout, combobox);
@@ -848,7 +909,7 @@ _form_left_side(Style_Editor *style_edit)
    ewe_combobox_item_add(combobox, _("New style"));
    ewe_combobox_item_add(combobox, _("New tag"));
    evas_object_smart_callback_add(combobox, "selected", _on_bt_add, style_edit);
-   elm_object_part_content_set(layout, "swallow.add_btn", combobox);
+   elm_object_part_content_set(layout, "swallow.button_add", combobox);
 
    btn = elm_button_add(ap.win);
    evas_object_show(btn);
@@ -857,7 +918,7 @@ _form_left_side(Style_Editor *style_edit)
    elm_object_part_content_set(btn, NULL, ic);
 
    evas_object_smart_callback_add(btn, "clicked", _on_bt_del, style_edit);
-   elm_object_part_content_set(layout, "swallow.rm_btn", btn);
+   elm_object_part_content_set(layout, "swallow.button_rm", btn);
 
    return layout;
 }
@@ -1241,6 +1302,7 @@ _direction_item_##VALUE##_add(Evas_Object *item, Style_Editor *style_edit) \
    return widget; \
 }
 
+/*
 DIRECT_ADD(bl,"bottom_left", "bl", 0)
 DIRECT_ADD(b, "bottom", "b", 1)
 DIRECT_ADD(br, "bottom_right", "br", 2)
@@ -1249,7 +1311,7 @@ DIRECT_ADD(r, "right", "r", 4)
 DIRECT_ADD(tl, "top_left", "tl", 5)
 DIRECT_ADD(t, "top", "t", 6)
 DIRECT_ADD(tr, "top_right", "tr", 7)
-
+*/
 static Eina_Tmpstr*
 _tag_value_get(const char* text_style, char* a_tag)
 {
@@ -1355,6 +1417,7 @@ CHANGE_CALLBACK(font_size, "font_size", SPINNER, NULL)
 CHANGE_CALLBACK(font_style, "font_style", SEGMENT, NULL)
 CHANGE_CALLBACK(font_width, "font_width", COMBOBOX, NULL)
 CHANGE_CALLBACK(font_weight, "font_weight", COMBOBOX, NULL)
+/*
 CHANGE_CALLBACK(font_align, "align", COMBOBOX, NULL)
 CHANGE_CALLBACK(lmargin, "left_margin", SPINNER, NULL)
 CHANGE_CALLBACK(font_valign, "valign", COMBOBOX, NULL)
@@ -1366,6 +1429,7 @@ CHANGE_CALLBACK(font_password, "password", CHECK, NULL)
 CHANGE_CALLBACK(font_background, "backing", CHECK, NULL)
 CHANGE_CALLBACK(font_ellipsis, "ellipsis", PERCENT_SPINNER, NULL)
 CHANGE_CALLBACK(style, "style", COMBOBOX, _glow_update(style_edit))
+*/
 CHANGE_CALLBACK(strikethrough, "strikethrough", CHECK, NULL)
 CHANGE_CALLBACK(underline, "underline", CHECK, NULL)
 CHANGE_CALLBACK(underline_style, "underline", SEGMENT, NULL)
@@ -1376,6 +1440,7 @@ ITEM_TEXT_ADD("width", font_width, COMBO)
 ITEM_TEXT_ADD("style", font_style, STYLE)
 ITEM_TEXT_ADD("weight", font_weight, COMBO)
 ITEM_COLOR_ADD(text_color, "color", "color")
+/*
 ITEM_TEXT_ADD("align", font_align, COMBO)
 ITEM_TEXT_ADD("lmargin", lmargin, MARGIN_SPIN)
 ITEM_TEXT_ADD("valign", font_valign, COMBO)
@@ -1385,12 +1450,15 @@ ITEM_TEXT_ADD("line_size", line_size, SPIN)
 ITEM_TEXT_ADD("rel_size", rel_size, SPIN)
 ITEM_TEXT_ADD("password", font_password, CHK)
 ITEM_TEXT_ADD("background", font_background, CHK)
+*/
+/*
 ITEM_COLOR_ADD(font_backcolor, "backing_color", "backing_color")
 ITEM_TEXT_ADD("ellipsis", font_ellipsis, ELLIPSIS)
 ITEM_TEXT_ADD("style", style, COMBO)
 ITEM_COLOR_ADD(inner_glow, "glow_color", "glow_color")
 ITEM_COLOR_ADD(outer_glow, "glow2_color", "glow2_color")
 ITEM_COLOR_ADD(shadow_color, "shadow_color", "glow_color")
+*/
 ITEM_TEXT_ADD("strikethru", strikethrough, CHK)
 ITEM_TEXT_ADD("underl", underline, CHK)
 ITEM_TEXT_ADD("underline", underline_style, UNDERLINE)
@@ -1399,7 +1467,7 @@ ITEM_COLOR_ADD(underline_color, "underline_color", "underline_color")
 ITEM_COLOR_ADD(underline2_color, "underline2_color", "underline2_color")
 
 static void
-_text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
+_text_tab_update(Style_Editor *style_edit, Evas_Object *tabs __UNUSED__, const char *value)
 {
    Evas_Object *layout;
    Evas_Object *fonts_list, *font_size;
@@ -1413,7 +1481,7 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
    Eina_Bool flag = false;
 
    assert(style_edit != NULL);
-   assert(tabs != NULL);
+   //assert(tabs != NULL);
 
    SCROLLER_ADD(ap.win, scr);
    elm_scroller_policy_set(scr, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
@@ -1491,6 +1559,7 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
      elm_layout_content_set(style_edit->prop.content, NULL, scr);
 }
 
+/*
 static void
 _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
 {
@@ -1503,7 +1572,7 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *valu
    unsigned int i = 0;
 
    assert(style_edit != NULL);
-   assert(tabs != NULL);
+   //assert(tabs != NULL);
 
    Evas_Object *scr;
    SCROLLER_ADD(ap.win, scr);
@@ -1565,7 +1634,7 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *valu
         eina_tmpstr_del(rmargin);
      }
 
-   FRAME_ADD(tabs, frame2, false, _("Text format"))
+   //FRAME_ADD(tabs, frame2, false, _("Text format"))
    layout2 = elm_layout_add(frame2);
    evas_object_size_hint_weight_set(layout2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_weight_set(layout2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -1639,7 +1708,9 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *valu
    if (style_edit->prop.current_tab == TAB_EDITOR_FORMAT)
      elm_layout_content_set(style_edit->prop.content, NULL, scr);
 }
+*/
 
+/*
 static void
 _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
 {
@@ -1653,7 +1724,7 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
    int count = 0, direction = DEFAULT_DIRECTION;
 
    assert(style_edit != NULL);
-   assert(tabs != NULL);
+   //assert(tabs != NULL);
 
    SCROLLER_ADD(ap.win, scr);
 
@@ -1782,10 +1853,10 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
 
    if (style_edit->prop.current_tab == TAB_EDITOR_GLOW_SHADOW)
      elm_layout_content_set(style_edit->prop.content, NULL, scr);
-}
+}*/
 
 static void
-_lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value)
+_lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs __UNUSED__, const char *value)
 {
    Evas_Object *layout;
    Evas_Object *font_strikethrough, *strikethrough_color;
@@ -1796,7 +1867,7 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value
    unsigned int i = 0;
 
    assert(style_edit != NULL);
-   assert(tabs != NULL);
+   //assert(tabs != NULL);
 
    Evas_Object *scr;
    SCROLLER_ADD(ap.win, scr);
@@ -1874,6 +1945,7 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, const char *value
    if (style_edit->prop.current_tab == TAB_EDITOR_LINES)
      elm_layout_content_set(style_edit->prop.content, NULL, scr);
 }
+
 #undef COMBOBOX_VALUE
 #undef SEGMENT_VALUE
 #undef SPINNER_VALUE
@@ -1909,13 +1981,45 @@ _##PROPERTY##_tab_change(void *data, \
    style_edit->prop.current_tab = TAB_MARK; \
 }
 
+/*
 _TAB_CHANGE_CALLBACK(content_text, TAB_EDITOR_TEXT);
 _TAB_CHANGE_CALLBACK(content_format, TAB_EDITOR_FORMAT);
 _TAB_CHANGE_CALLBACK(content_glow_shadow, TAB_EDITOR_GLOW_SHADOW);
 _TAB_CHANGE_CALLBACK(content_lines, TAB_EDITOR_LINES);
+*/
 
 #undef _TAB_CHANGE_CALLBACK
 
+Evas_Object*
+_add_box_bg(Style_Editor *style_edit)
+{
+   Evas_Object *box_bg, *image_bg, *radio_group, *radio;
+
+   BOX_ADD(ap.win, box_bg, true, false);
+   elm_box_padding_set(box_bg, 6, 6);
+   elm_box_align_set(box_bg, 1.0, 0.5);
+
+#define _RADIO_ADD(RADIO, VALUE, IMAGE) \
+   RADIO = elm_radio_add(ap.win); \
+   elm_object_style_set(RADIO, "style_editor"); \
+   elm_radio_state_value_set(RADIO, VALUE); \
+   evas_object_show(RADIO); \
+   IMAGE_ADD_NEW(box_bg, image_bg, "preview", IMAGE); \
+   elm_object_part_content_set(RADIO, "bg", image_bg); \
+   evas_object_smart_callback_add(RADIO, "changed", _change_bg_cb, style_edit); \
+   elm_box_pack_end(box_bg, RADIO);
+
+   _RADIO_ADD(radio_group, 0, "bg-tile");
+   _RADIO_ADD(radio, 1, "bg-black");
+   elm_radio_group_add(radio, radio_group);
+   _RADIO_ADD(radio, 2, "bg-white");
+   elm_radio_group_add(radio, radio_group);
+#undef _RADIO_ADD
+
+   return box_bg;
+}
+
+/*
 Evas_Object*
 _form_right_side(Style_Editor *style_edit)
 {
@@ -1975,6 +2079,7 @@ _form_right_side(Style_Editor *style_edit)
    elm_object_part_content_set(layout, "menu_container", box_bg);
    return layout;
 }
+*/
 
 static void
 _on_style_editor_close(void *data,
@@ -1993,41 +2098,26 @@ _on_style_editor_close(void *data,
 Evas_Object *
 style_editor_window_add()
 {
-   Evas_Object *panes, *panes_h;
-   Evas_Object *layout_left, *layout_right;
-   Evas_Object *bg;
-   Evas *canvas = NULL;
-   Style_Editor *style_edit = NULL;
-   Evas_Textblock_Style *ts = NULL;
+   Evas_Object *main_layout, *layout_right;
+   Evas_Object *bg, *btn_apply, *box_bg;
+   Evas *canvas;
+   Evas_Textblock_Style *ts;
+   Style_Editor *style_edit;
    static const char *style_buf = FONT_DEFAULT"'";
 
    assert(ap.project != NULL);
 
    style_edit = (Style_Editor *)mem_calloc(1, sizeof(Style_Editor));
 
-   panes = elm_panes_add(ap.win);
-   evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_panes_content_left_size_set(panes, 0.2);
-   evas_object_show(panes);
+   main_layout = elm_layout_add(ap.win);
+   elm_layout_theme_set(main_layout, "layout", "tab_style", "style_editor");
+   elm_object_part_text_set(main_layout, "label.preview", _("Preview"));
 
-   layout_left = _form_left_side(style_edit);
-   elm_object_part_content_set(panes, "left", layout_left);
-   evas_object_show(layout_left);
-
-   panes_h = elm_panes_add(ap.win);
-   evas_object_size_hint_weight_set(panes_h, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(panes_h, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_panes_horizontal_set(panes_h, true);
-   elm_object_part_content_set(panes, "right", panes_h);
-   evas_object_show(panes_h);
-
-   style_edit->entry_prev = elm_layout_add(ap.win);
+   style_edit->entry_prev = elm_layout_add(main_layout);
    evas_object_size_hint_weight_set(style_edit->entry_prev, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    elm_layout_theme_set(style_edit->entry_prev, "layout", "style_editor", "preview");
    evas_object_show(style_edit->entry_prev);
-   elm_object_part_content_set(panes_h, "left", style_edit->entry_prev);
    elm_object_signal_emit(style_edit->entry_prev, "entry,hide", "eflete");
 
    canvas = evas_object_evas_get(ap.win);
@@ -2043,15 +2133,23 @@ style_editor_window_add()
    evas_object_textblock_text_markup_set(style_edit->textblock_style,
                        _("The quick brown fox jumps over the lazy dog"));
    evas_object_show(style_edit->textblock_style);
+   elm_object_part_content_set(main_layout, "swallow.preview", style_edit->entry_prev);
 
    layout_right = _form_right_side(style_edit);
-   elm_object_part_content_set(panes_h, "right", layout_right);
+   elm_object_part_content_set(main_layout, "swallow.font_list", layout_right);
    evas_object_show(layout_right);
 
+   box_bg = _add_box_bg(style_edit);
+   elm_object_part_content_set(main_layout, "menu_container", box_bg);
+
+   BUTTON_ADD(main_layout, btn_apply, _("Apply"))
+   elm_object_part_content_set(main_layout, "elm.swallow.btn_apply", btn_apply);
+
    evas_textblock_style_free(ts);
-   evas_object_event_callback_add(panes, EVAS_CALLBACK_DEL,
+   evas_object_event_callback_add(main_layout, EVAS_CALLBACK_DEL,
                                   _on_style_editor_close, style_edit);
-   return panes;
+
+   return main_layout;
 }
 
 #undef FONT_DEFAULT

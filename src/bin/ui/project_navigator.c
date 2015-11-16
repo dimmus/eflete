@@ -348,7 +348,7 @@ _group_add(void *data __UNUSED__,
    item = elm_genlist_first_item_get(project_navigator.genlist);
    arr = eina_str_split_full(group->name, "/", 0, &count);
 
-   for (i = 0; i < count; i++)
+   for (i = 0; i < count - 1; i++)
      {
         parent = elm_genlist_item_parent_get(item);
         item = _find_item(item, arr[i]);
@@ -440,7 +440,8 @@ _btn_add_group_cb(void *data __UNUSED__,
    elm_layout_content_set(item, NULL, layout_p.entry);
    elm_box_pack_end(layout_p.box, item);
    glit = elm_genlist_selected_item_get(project_navigator.genlist);
-   if (glit) elm_entry_entry_set(layout_p.entry, elm_object_item_data_get(glit));
+   if (glit && (elm_genlist_item_item_class_get(item) == project_navigator.itc_folder))
+     elm_entry_entry_set(layout_p.entry, elm_object_item_data_get(glit));
    /* copy: combobox */
    LAYOUT_PROP_ADD(layout_p.box, _("copy of"), "property", "1swallow")
    layout_p.layout_combo = item;
@@ -647,14 +648,14 @@ project_navigator_add(void)
    elm_object_part_content_set(project_navigator.btn_add, NULL, icon);
    evas_object_smart_callback_add(project_navigator.btn_add, "clicked", _btn_add_group_cb, NULL);
    elm_object_style_set(project_navigator.btn_add, "anchor");
-   elm_object_part_content_set(project_navigator.layout, "elm.swallow.bt1", project_navigator.btn_add);
+   elm_object_part_content_set(project_navigator.layout, "elm.swallow.btn1", project_navigator.btn_add);
 
    project_navigator.btn_del = elm_button_add(project_navigator.layout);
    ICON_STANDARD_ADD(project_navigator.btn_del, icon, true, "minus");
    elm_object_part_content_set(project_navigator.btn_del, NULL, icon);
    evas_object_smart_callback_add (project_navigator.btn_del, "clicked", _btn_del_group_cb, NULL);
    elm_object_style_set(project_navigator.btn_del, "anchor");
-   elm_object_part_content_set(project_navigator.layout, "elm.swallow.bt0", project_navigator.btn_del);
+   elm_object_part_content_set(project_navigator.layout, "elm.swallow.btn0", project_navigator.btn_del);
    elm_object_disabled_set(project_navigator.btn_del, true);
 
    project_navigator.genlist = elm_genlist_add(project_navigator.layout);

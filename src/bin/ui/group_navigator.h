@@ -17,8 +17,8 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#ifndef PART_LIST_H
-#define PART_LIST_H
+#ifndef GROUP_NAVIGATOR_H
+#define GROUP_NAVIGATOR_H
 
 #include "eflete.h"
 #include "group_manager.h"
@@ -35,7 +35,7 @@
  *
  * @ingroup Partlist
  */
-#define SIGNAL_PART_LIST_PART_SELECTED "SIGNAL_PART_LIST_PART_SELECTED"
+#define SIGNAL_GROUP_NAVIGATOR_PART_SELECTED "SIGNAL_GROUP_NAVIGATOR_PART_SELECTED"
 
 /**
  * emited when part state is activated in part list.
@@ -43,23 +43,23 @@
  *
  * @ingroup Partlist
  */
-#define SIGNAL_PART_LIST_PART_STATE_SELECTED "SIGNAL_PART_LIST_PART_STATE_SELECTED"
+#define SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED "SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED"
 
 /**
  * @ingroup Partlist
  */
 Evas_Object *
-part_list_add(Group *group);
+group_navigator_add(Group *group);
 
 /**
  * @ingroup Partlist
  */
 void
-part_list_part_select(Evas_Object *obj, Part_ *part);
+group_navigator_part_select(Evas_Object *obj, Part_ *part);
 
 /**
  * @ingroup Partlist
  */
 void
-part_list_part_update(Evas_Object *obj, Part_ *part);
-#endif /* PART_LIST_H */
+group_navigator_part_update(Evas_Object *obj, Part_ *part);
+#endif /* GROUP_NAVIGATOR_H */

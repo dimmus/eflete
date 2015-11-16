@@ -71,7 +71,7 @@ ws_groupedit_get(Evas_Object *obj);
  * @ingroup Workspace
  */
 void
-workspace_part_list_update_part(Evas_Object *obj, Part_ *part);
+workspace_group_navigator_update_part(Evas_Object *obj, Part_ *part);
 
 /**
  * Force recal for editable object from the workspace.

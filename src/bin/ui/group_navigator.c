@@ -20,14 +20,14 @@
 #define EFL_BETA_API_SUPPORT
 #define EFL_EO_API_SUPPORT
 
-#include "part_list.h"
+#include "group_navigator.h"
 #include "signals.h"
 #include "string_common.h"
 #include "main_window.h"
 #include "editor.h"
 #include "new_history.h"
 
-#define PART_LIST_DATA "part_list_data"
+#define GROUP_NAVIGATOR_DATA "group_navigator_data"
 
 typedef struct
 {
@@ -277,7 +277,7 @@ _on_activated(void *data,
         part = elm_object_item_data_get(pl->selected_part_item);
         part->current_state = elm_object_item_data_get(glit);
 
-        evas_object_smart_callback_call(pl->layout, SIGNAL_PART_LIST_PART_STATE_SELECTED,
+        evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED,
                                         (void *)part);
      }
 }
@@ -401,6 +401,7 @@ _selected_cb(void *data,
              void *event_info)
 {
    Elm_Object_Item *glit = event_info;
+   Elm_Object_Item *glit_part;
    const Elm_Genlist_Item_Class* itc;
    Eina_Stringshare *item_name;
    Part_List *pl = data;
@@ -415,20 +416,21 @@ _selected_cb(void *data,
    else
      item_name = NULL;
 
-   while (elm_genlist_item_parent_get(glit))
-     glit = elm_genlist_item_parent_get(glit);
+   glit_part = glit;
+   while (elm_genlist_item_parent_get(glit_part))
+     glit_part = elm_genlist_item_parent_get(glit_part);
 
-   part = elm_object_item_data_get(glit);
-   if ((pl->selected_part_item != glit) || (part->current_item_name != item_name))
+   part = elm_object_item_data_get(glit_part);
+   if ((pl->selected_part_item != glit_part) || (part->current_item_name != item_name))
      {
         if (pl->selected_part_item)
           _unselect_part(pl);
-        pl->selected_part_item = glit;
+        pl->selected_part_item = glit_part;
         part->current_item_name = item_name;
         pl->group->current_part = part;
-        evas_object_smart_callback_call(pl->layout, SIGNAL_PART_LIST_PART_SELECTED,
+        evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED,
                                         (void *)part);
-        elm_genlist_item_item_class_update(glit, pl->itc_part_selected);
+        elm_genlist_item_item_class_update(glit_part, pl->itc_part_selected);
      }
    elm_object_item_disabled_set(pl->add_state_menu_item, false);
    if ((itc == pl->itc_item_caption) ||
@@ -508,7 +510,7 @@ _popup_add_part_ok_clicked(void *data,
                            void *event_info __UNUSED__)
 {
    const Edje_Part_Type type = *((const Edje_Part_Type *)data);
-   Part_List *pl = evas_object_data_get(obj, PART_LIST_DATA);
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    const char *name;
    Part_ *part;
    Elm_Object_Item *glit;
@@ -545,7 +547,7 @@ _on_menu_add_part_clicked(void *data,
                           void *ei __UNUSED__)
 {
    const Edje_Part_Type type = *((const Edje_Part_Type *)data);
-   Part_List *pl = evas_object_data_get(obj, PART_LIST_DATA);
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
 
    Eina_Stringshare *title;
    Evas_Object *box, *item;
@@ -570,7 +572,7 @@ _on_menu_add_part_clicked(void *data,
 
    elm_object_content_set(ap.popup, box);
    BUTTON_ADD(box, pl->popup.btn_add, _("Add"));
-   evas_object_data_set(pl->popup.btn_add, PART_LIST_DATA, pl);
+   evas_object_data_set(pl->popup.btn_add, GROUP_NAVIGATOR_DATA, pl);
    evas_object_smart_callback_add(pl->popup.btn_add, "clicked", _popup_add_part_ok_clicked, data);
    elm_object_part_content_set(ap.popup, "button1", pl->popup.btn_add);
    elm_object_disabled_set(pl->popup.btn_add, true);
@@ -648,7 +650,7 @@ _editor_state_added_cb(void *data,
                        void *event_info)
 {
    Part_List *pl = data;
-   Eina_Stringshare *full_state_name = event_info;
+   const Editor_State *editor_state = event_info;
    Part_ *part;
    State *state;
    Eina_Bool items_expanded = false;
@@ -656,10 +658,15 @@ _editor_state_added_cb(void *data,
    const Eina_List *l;
 
    assert(pl != NULL);
-   assert(full_state_name != NULL);
+   assert(editor_state != NULL);
 
    part = elm_object_item_data_get(pl->selected_part_item);
-   state = gm_state_add(ap.project, part, full_state_name);
+   if (strcmp(editor_state->part_name, part->name))
+     {
+        part = pm_resource_unsorted_get(part->group->parts, editor_state->part_name);
+        group_navigator_part_select(pl->layout, part);
+     }
+   state = gm_state_add(ap.project, part, editor_state->state_name);
 
    /* callback should be called before selection to allow some additional loading */
    evas_object_smart_callback_call(ap.win, SIGNAL_STATE_ADDED, (void *)state);
@@ -694,7 +701,7 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
                            Evas_Object *obj __UNUSED__,
                            void *ei __UNUSED__)
 {
-   Part_List *pl = evas_object_data_get(obj, PART_LIST_DATA);
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Part_ *part;
    State *state;
    Eina_Stringshare *title;
@@ -774,6 +781,69 @@ _on_btn_plus_clicked(void *data,
 }
 
 static void
+_part_del(Part_List *pl,
+          Elm_Object_Item *glit)
+{
+   Part_ *part;
+   Eina_Stringshare *part_name;
+
+   assert(pl != NULL);
+   assert(glit != NULL);
+
+   part = elm_object_item_data_get(glit);
+   _unselect_part(pl);
+
+   /* This callbck should be called before actual part deletion */
+   evas_object_smart_callback_call(ap.win, SIGNAL_PART_DELETED, (void *)part);
+
+   elm_object_item_del(glit);
+   /* part is freed after deletion so we need to save its name */
+   part_name = eina_stringshare_ref(part->name);
+   gm_part_del(ap.project, part);
+   edje_edit_part_del(pl->group->edit_object, part_name);
+   eina_stringshare_del(part_name);
+}
+
+static void
+_state_del(Part_List *pl,
+           Elm_Object_Item *glit)
+{
+   State *state;
+   const Elm_Genlist_Item_Class* itc;
+   const Eina_List *subitems;
+   Elm_Object_Item *default_glit;
+   Eina_Stringshare *part_name, *state_name;
+   double state_val;
+
+   assert(pl != NULL);
+   assert(pl->selected_part_item != NULL);
+   assert(glit != NULL);
+
+   state = elm_object_item_data_get(glit);
+
+   assert(state != NULL);
+   assert(strcmp(state->name, "default 0.00")); /* default state can't be deleted */
+
+   /* "default 0.0" is always first in states list */
+   subitems = elm_genlist_item_subitems_get(pl->selected_part_item);
+   default_glit = eina_list_data_get(subitems);
+
+   /* resetting state */
+   itc = elm_genlist_item_item_class_get(glit);
+   if (itc == pl->itc_state_selected)
+     _on_activated(pl, NULL, default_glit);
+
+   elm_object_item_del(glit);
+   elm_genlist_item_selected_set(default_glit, true);
+   part_name = state->part->name;
+   state_name = eina_stringshare_ref(state->parsed_name);
+   state_val = state->parsed_val;
+   gm_state_del(ap.project, state);
+   edje_edit_state_del(pl->group->edit_object, part_name, state_name, state_val);
+   eina_stringshare_del(state_name);
+}
+
+static void
 _on_btn_minus_clicked(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *ei __UNUSED__)
@@ -781,8 +851,6 @@ _on_btn_minus_clicked(void *data,
    Part_List *pl = data;
    Elm_Object_Item *glit;
    const Elm_Genlist_Item_Class* itc;
-   Part_ *part;
-   Eina_Stringshare *part_name;
 
    assert(pl != NULL);
 
@@ -793,22 +861,12 @@ _on_btn_minus_clicked(void *data,
    itc = elm_genlist_item_item_class_get(glit);
    if (itc == pl->itc_part_selected)
      {
-        part = elm_object_item_data_get(glit);
-        _unselect_part(pl);
-
-        /* This callbck should be called before actual part deletion */
-        evas_object_smart_callback_call(ap.win, SIGNAL_PART_DELETED, (void *)part);
-
-        elm_object_item_del(glit);
-        /* part is freed after deletion so we need to save its name */
-        part_name = eina_stringshare_ref(part->name);
-        gm_part_del(ap.project, part);
-        edje_edit_part_del(pl->group->edit_object, part_name);
-        eina_stringshare_del(part_name);
+        _part_del(pl, glit);
      }
+   else if ((itc == pl->itc_state_selected) || (itc == pl->itc_state))
+      _state_del(pl, glit);
 
-   TODO("Add state/item del here")
-
+   TODO("Check if we still need this")
    /* Need to save pl->group->edit_object, since we changed it */
    editor_save_all(ap.project->global_object);
    TODO("Remove this line once edje_edit_image_add would be added into Editor Modulei and saving would work properly")
@@ -817,7 +875,7 @@ _on_btn_minus_clicked(void *data,
 
 
 Evas_Object *
-part_list_add(Group *group)
+group_navigator_add(Group *group)
 {
    Evas_Object *icon;
    Part_List *pl;
@@ -830,25 +888,25 @@ part_list_add(Group *group)
 
    pl = mem_calloc(1, sizeof(Part_List));
    pl->layout = elm_layout_add(ap.win);
-   elm_layout_theme_set(pl->layout, "layout", "part_list", "default");
+   elm_layout_theme_set(pl->layout, "layout", "navigator", "default");
    evas_object_show(pl->layout);
 
-   evas_object_data_set(pl->layout, PART_LIST_DATA, pl);
+   evas_object_data_set(pl->layout, GROUP_NAVIGATOR_DATA, pl);
 
    pl->group = group;
 
-#define BTN_ADD(BTN, ICON_NAME, CALLBACK) \
+#define BTN_ADD(BTN, SWALLOW, ICON_NAME, CALLBACK) \
    pl->BTN = elm_button_add(pl->layout); \
    ICON_STANDARD_ADD(pl->BTN, icon, true, ICON_NAME); \
    elm_object_part_content_set(pl->BTN, NULL, icon); \
    evas_object_smart_callback_add(pl->BTN, "clicked", CALLBACK, pl); \
    elm_object_style_set(pl->BTN, "anchor"); \
-   elm_object_part_content_set(pl->layout, "elm.swallow." #BTN, pl->BTN);
+   elm_object_part_content_set(pl->layout, SWALLOW, pl->BTN);
 
-   BTN_ADD(btn_add, "plus", _on_btn_plus_clicked);
-   BTN_ADD(btn_del, "minus", _on_btn_minus_clicked);
-   BTN_ADD(btn_up, "arrow_up", NULL);
-   BTN_ADD(btn_down, "arrow_down", NULL);
+   BTN_ADD(btn_add, "elm.swallow.btn3", "plus", _on_btn_plus_clicked);
+   BTN_ADD(btn_del, "elm.swallow.btn2", "minus", _on_btn_minus_clicked);
+   BTN_ADD(btn_down, "elm.swallow.btn1", "arrow_down", NULL);
+   BTN_ADD(btn_up, "elm.swallow.btn0", "arrow_up", NULL);
 
    elm_object_disabled_set(pl->btn_del, true);
 
@@ -907,7 +965,7 @@ part_list_add(Group *group)
    elm_object_text_set(pl->layout, pl->group->name);
 
    pl->menu = elm_menu_add(ap.win);
-   evas_object_data_set(pl->menu, PART_LIST_DATA, pl);
+   evas_object_data_set(pl->menu, GROUP_NAVIGATOR_DATA, pl);
 
    pl->add_state_menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("State"), _on_menu_add_state_clicked, NULL);
    elm_object_item_disabled_set(pl->add_state_menu_item, true);
@@ -943,11 +1001,11 @@ part_list_add(Group *group)
 }
 
 void
-part_list_part_select(Evas_Object *obj, Part_ *part)
+group_navigator_part_select(Evas_Object *obj, Part_ *part)
 {
    Part_ *pr;
    Elm_Object_Item *part_item;
-   Part_List *pl = evas_object_data_get(obj, PART_LIST_DATA);
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
 
    assert(pl != NULL);
 
@@ -973,11 +1031,11 @@ part_list_part_select(Evas_Object *obj, Part_ *part)
 }
 
 void
-part_list_part_update(Evas_Object *obj, Part_ *part)
+group_navigator_part_update(Evas_Object *obj, Part_ *part)
 {
    Part_ *pr;
    Elm_Object_Item *part_item;
-   Part_List *pl = evas_object_data_get(obj, PART_LIST_DATA);
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
 
    assert(pl != NULL);
    assert(part != NULL);

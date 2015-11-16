@@ -534,7 +534,10 @@ gm_state_del(Project *pro, State *state)
          break;
       case EDJE_PART_TYPE_TEXT:
          USAGE_DEL(color_class, pro->colorclasses);
-         USAGE_DEL(font, pro->fonts);
+         TODO("Uncomment this when font editor would be implemented,"
+              "or else it caused eflete to be aborted on part deletion");
+
+         /* USAGE_DEL(font, pro->fonts); */
          break;
       case EDJE_PART_TYPE_TEXTBLOCK:
          USAGE_DEL(text_style, pro->styles);

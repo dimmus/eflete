@@ -149,7 +149,7 @@ _random_name_generate(char *part_name, unsigned int length)
    if (workspace_edit_object_part_add(workspace, name, TYPE, DATA)) \
      ui_widget_list_part_add(widget_list, style, name); \
    history_diff_add(style->obj, PART_TARGET, ADD, name); \
-   live_view_part_add(ap.live_view, ui_widget_list_selected_part_get(widget_list)); \
+   /* live_view_part_add(ap.live_view, ui_widget_list_selected_part_get(widget_list)); */ \
    project_changed(true);
 
 #define PART_ADD(TYPE, FUNC) \
