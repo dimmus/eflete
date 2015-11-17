@@ -36,7 +36,7 @@ Eina_Bool \
 editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
 { \
    assert(edit_object != NULL); \
-   if (!editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
+   if (editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
    return editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL); \
 }
 
@@ -78,7 +78,7 @@ Eina_Bool \
 editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
 { \
    assert(edit_object != NULL); \
-   if (!editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
+   if (editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
    return editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL); \
 }
 
@@ -116,7 +116,7 @@ Eina_Bool \
 editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
 { \
    assert(edit_object != NULL); \
-   if (!editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
+   if (editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
    return editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL); \
 }
 
@@ -159,7 +159,7 @@ Eina_Bool \
 editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
 { \
    assert(edit_object != NULL); \
-   if (!editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
+   if (editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
    return editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL); \
 }
 
@@ -195,7 +195,7 @@ Eina_Bool \
 editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
 { \
    assert(edit_object != NULL); \
-   if (!editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
+   if (editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
    return editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL, RESET_VAL_2, RESET_VAL_3, RESET_VAL_4); \
 }
 
@@ -223,7 +223,7 @@ Eina_Bool \
 editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
 { \
    assert(edit_object != NULL); \
-   if (!editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
+   if (editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
    return editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL); \
 }
 
