@@ -34,6 +34,15 @@ static const Popup_Button _btn_cancel     = BTN_CANCEL;
 static Popup_Validator_Func validator     = NULL;
 static void *user_data                    = NULL;
 
+/* this one is for gengrid items */
+struct _Item
+{
+   const char* image_name;
+   const char* source;
+};
+typedef struct _Item Item;
+static Elm_Gengrid_Item_Class *gic = NULL;
+
 static void
 _btn_cb(void *data,
         Evas_Object *obj __UNUSED__,
@@ -174,6 +183,9 @@ _done(void *data __UNUSED__,
 #define FS_W 430
 #define FS_H 460
 
+#define GENGRID_W 522
+#define GENGRID_H 388
+
 static void
 _helper_obj_follow(void *data __UNUSED__,
                    Evas *e __UNUSED__,
@@ -201,6 +213,21 @@ _helper_win_follow(void *data __UNUSED__,
    ny = (h / 2) - ((FS_H + 12) / 2);
    evas_object_move(helper, nx, ny);
 }
+
+static void
+_helper_property_follow(void *data __UNUSED__,
+                        Evas *e __UNUSED__,
+                        Evas_Object *obj,
+                        void *event_info __UNUSED__)
+{
+   int x, y, w, h, nx, ny;
+
+   evas_object_geometry_get(obj, &x, &y, &w, &h);
+   nx = x - (GENGRID_W + 12 - w); /* 12 - it's a helper border */
+   ny = y + h;
+   evas_object_move(helper, nx, ny);
+}
+
 
 static void
 _fileselector_helper(const char *title,
@@ -339,6 +366,210 @@ popup_fileselector_image_helper(const char *title, Evas_Object *follow_up, const
    _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _images_filter);
 }
 
+#define ITEM_WIDTH 100
+#define ITEM_HEIGHT 115
+#define GROUP_ITEM_WIDTH 36
+#define GROUP_ITEM_HEIGHT 36
+
+static void
+_done_image(void *data __UNUSED__,
+            Evas_Object *obj,
+            void *event_info __UNUSED__)
+{
+   Eina_Bool res = true;
+   Item *item = NULL;
+   const Eina_List* sel_list;
+
+   if (dismiss_func)
+     {
+        TODO("Make multiselect for tweens and remake gengrid because of that?")
+        sel_list = elm_gengrid_selected_items_get(obj);
+        item = elm_object_item_data_get(eina_list_data_get(sel_list));
+        res = ((Helper_Done_Cb)dismiss_func)(func_data, obj, (char *)item->image_name);
+     }
+
+   if (res)
+     {
+        dismiss_func = NULL;
+        func_data = NULL;
+        _helper_dismiss(NULL, NULL, data, NULL);
+     }
+}
+
+/* deletion callback */
+static void
+_grid_del(void *data,
+          Evas_Object *obj __UNUSED__)
+{
+   Item *it = data;
+
+   assert(it != NULL);
+
+   eina_stringshare_del(it->image_name);
+   eina_stringshare_del(it->source);
+   free(it);
+}
+
+Eina_Bool
+_image_gengrid_init(Evas_Object *gengrid)
+{
+   Eina_List *l = NULL;
+   Item *it = NULL;
+   Eina_List *images = NULL;
+   int counter = 0;
+   External_Resource *res;
+
+   images = ap.project->images;
+
+   if (images)
+     {
+        EINA_LIST_FOREACH(images, l, res)
+           {
+              counter++;
+              if (!res->name)
+                {
+                   ERR("name not found for image #%d",counter);
+                   continue;
+                }
+              it = (Item *)mem_malloc(sizeof(Item));
+              it->image_name = eina_stringshare_add(res->name);
+              it->source = eina_stringshare_add(res->source);
+              elm_gengrid_item_append(gengrid, gic, it, NULL, NULL);
+           }
+         elm_gengrid_item_bring_in(elm_gengrid_first_item_get(gengrid),
+                                   ELM_GENGRID_ITEM_SCROLLTO_TOP);
+     }
+   elm_scroller_policy_set(gengrid, ELM_SCROLLER_POLICY_OFF,
+                           ELM_SCROLLER_POLICY_AUTO);
+   evas_object_smart_calculate(gengrid);
+
+   return true;
+}
+
+static char *
+_grid_label_get(void *data,
+                Evas_Object *obj __UNUSED__,
+                const char  *part __UNUSED__)
+{
+   const Item *it = data;
+   return strdup(it->image_name);
+}
+
+/* icon fetching callback */
+#define MAX_ICON_SIZE 16
+static Evas_Object *
+_grid_content_get(void *data,
+                  Evas_Object *obj,
+                  const char  *part)
+{
+   Item *it = data;
+   Evas_Object *image_obj = NULL;
+   Evas_Object *grid = (Evas_Object *)obj;
+   Resource *res;
+
+   assert(it != NULL);
+   assert(grid != NULL);
+
+   if (!strcmp(part, "elm.swallow.icon"))
+     {
+        image_obj = elm_thumb_add(grid);
+        elm_thumb_file_set(image_obj, it->source, NULL);
+        elm_thumb_reload(image_obj);
+        evas_object_show(image_obj);
+     }
+   else if (!strcmp(part, "elm.swallow.end"))
+     {
+        res = (Resource *) pm_resource_get(ap.project->images, it->image_name);
+        if (eina_list_count(res->used_in) == 0)
+          {
+             image_obj = elm_icon_add(grid);
+             elm_image_file_set(image_obj, EFLETE_THEME, "elm/image/icon/attention");
+             evas_object_show(image_obj);
+          }
+     }
+
+   return image_obj;
+}
+#undef MAX_ICON_SIZE
+
+void
+popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
+                           Helper_Done_Cb func, void *data,
+                           Eina_Bool multi)
+{
+   Evas_Object *gengrid, *entry, *icon;
+
+   dismiss_func = func;
+   func_data = data;
+
+   helper = elm_layout_add(ap.win);
+   elm_layout_theme_set(helper, "layout", "popup", title ? "hint_title" : "hint");
+   elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, NULL);
+
+   fs = elm_layout_add(helper);
+   elm_layout_theme_set(fs, "layout", "image_editor", "usage_info");
+   evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(fs);
+
+   gengrid = elm_gengrid_add(fs);
+   if (multi)
+     {
+        elm_gengrid_multi_select_set(gengrid, false);
+     }
+   else
+     {
+        elm_gengrid_multi_select_set(gengrid, true);
+        elm_gengrid_multi_select_mode_set(gengrid,
+                                          ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
+     }
+   elm_gengrid_item_size_set(gengrid, ITEM_WIDTH, ITEM_HEIGHT);
+   elm_gengrid_align_set(gengrid, 0.0, 0.0);
+   elm_scroller_policy_set(gengrid, ELM_SCROLLER_POLICY_OFF,
+                           ELM_SCROLLER_POLICY_OFF);
+   elm_object_part_content_set(fs, "eflete.swallow.genlist", gengrid);
+   evas_object_smart_callback_add(gengrid, "clicked,double", _done_image, NULL);
+
+   if (!gic)
+     {
+        gic = elm_gengrid_item_class_new();
+        gic->item_style = "default";
+        gic->func.text_get = _grid_label_get;
+        gic->func.content_get = _grid_content_get;
+        gic->func.del = _grid_del;
+     }
+
+   _image_gengrid_init(gengrid);
+
+   ENTRY_ADD(fs, entry, true);
+   elm_object_part_text_set(entry, "guide", _("Search"));
+   ICON_STANDARD_ADD(entry, icon, true, "search");
+   elm_object_part_content_set(entry, "elm.swallow.end", icon);
+   elm_object_part_content_set(fs, "eflete.swallow.search_line", entry);
+
+   /* small hack, hide not necessary button */
+   evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
+   evas_object_size_hint_min_set(helper, GENGRID_W, GENGRID_H);
+   evas_object_resize(helper, GENGRID_W, GENGRID_H);
+
+   if (title) elm_object_text_set(helper, title);
+   elm_layout_content_set(helper, "elm.swallow.content", fs);
+   evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   if (follow_up)
+     {
+        _helper_property_follow(NULL, NULL, follow_up, NULL);
+        evas_object_event_callback_add(follow_up, EVAS_CALLBACK_RESIZE, _helper_property_follow, NULL);
+        evas_object_event_callback_add(follow_up, EVAS_CALLBACK_MOVE, _helper_property_follow, NULL);
+     }
+   else
+     {
+        _helper_win_follow(NULL, NULL, NULL, NULL);
+        evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
+     }
+   evas_object_show(helper);
+}
+
 void
 popup_log_message_helper(const char *msg)
 {
@@ -367,3 +598,6 @@ popup_log_message_helper(const char *msg)
 
 #undef FS_W
 #undef FS_H
+
+#undef GENGRID_W
+#undef GENGRID_H

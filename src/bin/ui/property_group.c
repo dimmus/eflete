@@ -2845,24 +2845,35 @@ ui_property_state_textblock_unset(Evas_Object *property)
 
 #define pd_image pd->attributes.state_image
 
-static void
+Eina_Bool
 _on_image_editor_done(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *event_info)
 {
    Group_Prop_Data *pd = (Group_Prop_Data *)data;
+
    const char *value;
    const char *selected = (const char *)event_info;
 
-   assert(pd != NULL);
-
-   if (!selected) return;
+   if (!selected) return false;
    value = elm_entry_entry_get(pd->attributes.state_image.image);
 
-   if (strcmp(value, selected) == 0) return;
+   if (strcmp(value, selected) == 0) return false;
    elm_entry_entry_set(pd->attributes.state_image.image, selected);
+
+   Eina_Stringshare *msg = eina_stringshare_printf(_("image changes to %s"), selected);
+   Change *change = change_add(msg);
+   eina_stringshare_del(msg);
+   editor_state_image_set(pd->group->edit_object, change, false,
+                          pd->part->name,
+                          pd->part->current_state->parsed_name,
+                          pd->part->current_state->parsed_val,
+                          selected);
+
    evas_object_smart_callback_call(pd->attributes.state_image.image, "changed,user", NULL);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
+
+   return true;
 }
 
 static void
@@ -2870,16 +2881,15 @@ _on_state_image_choose(void *data,
                        Evas_Object *obj __UNUSED__,
                        void *ei __UNUSED__)
 {
-   Evas_Object *img_edit;
    Group_Prop_Data *pd = (Group_Prop_Data *)data;
 
    assert(pd != NULL);
 
-   const char *selected = elm_entry_entry_get(pd->attributes.state_image.image);
-
-   img_edit = image_editor_window_add(SINGLE);
-   image_editor_file_choose(img_edit, selected);
-   evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED, _on_image_editor_done, pd);
+   popup_gengrid_image_helper(NULL,
+                              pd->attributes.state_image.image,
+                              _on_image_editor_done,
+                              pd,
+                              false);
 }
 
 static void
