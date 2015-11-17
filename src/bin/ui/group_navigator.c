@@ -809,11 +809,10 @@ _state_del(Part_List *pl,
            Elm_Object_Item *glit)
 {
    State *state;
-   const Elm_Genlist_Item_Class* itc;
-   const Eina_List *subitems;
-   Elm_Object_Item *default_glit;
    Eina_Stringshare *part_name, *state_name;
    double state_val;
+   Eina_Stringshare *msg;
+   Change *change;
 
    assert(pl != NULL);
    assert(pl->selected_part_item != NULL);
@@ -824,9 +823,57 @@ _state_del(Part_List *pl,
    assert(state != NULL);
    assert(strcmp(state->name, "default 0.00")); /* default state can't be deleted */
 
-   /* "default 0.0" is always first in states list */
+   msg = eina_stringshare_printf(_("deleted state \"%s\" %.2f"), state->parsed_name, state->parsed_val);
+   change = change_add(msg);
+   eina_stringshare_del(msg);
+   part_name = eina_stringshare_ref(state->part->name);
+   state_name = eina_stringshare_ref(state->parsed_name);
+   state_val = state->parsed_val;
+   editor_state_del(pl->group->edit_object, change, false, part_name, state_name, state_val);
+   eina_stringshare_del(part_name);
+   eina_stringshare_del(state_name);
+   history_change_add(pl->group->history, change);
+}
+
+static void
+_editor_state_deleted_cb(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info)
+{
+   Part_List *pl = data;
+   const Editor_State *editor_state = event_info;
+   const Elm_Genlist_Item_Class* itc;
+   Part_ *part;
+   State *state = NULL;
+   Elm_Object_Item *glit;
+   Elm_Object_Item *default_glit;
+   const Eina_List *subitems;
+   const Eina_List *l;
+
+   assert(pl != NULL);
+   assert(editor_state != NULL);
+
+   part = elm_object_item_data_get(pl->selected_part_item);
+   if (strcmp(editor_state->part_name, part->name))
+     {
+        part = pm_resource_unsorted_get(part->group->parts, editor_state->part_name);
+        group_navigator_part_select(pl->layout, part);
+     }
+   elm_genlist_item_expanded_set(pl->selected_part_item, true);
+
    subitems = elm_genlist_item_subitems_get(pl->selected_part_item);
+   /* "default 0.0" is always first in states list */
    default_glit = eina_list_data_get(subitems);
+   EINA_LIST_FOREACH(subitems, l, glit)
+     {
+        state = elm_object_item_data_get(glit);
+        if (!strcmp(state->name, editor_state->state_name))
+          break;
+        else
+          state = NULL;
+     }
+
+   assert(state != NULL);
 
    /* resetting state */
    itc = elm_genlist_item_item_class_get(glit);
@@ -835,12 +882,7 @@ _state_del(Part_List *pl,
 
    elm_object_item_del(glit);
    elm_genlist_item_selected_set(default_glit, true);
-   part_name = state->part->name;
-   state_name = eina_stringshare_ref(state->parsed_name);
-   state_val = state->parsed_val;
    gm_state_del(ap.project, state);
-   edje_edit_state_del(pl->group->edit_object, part_name, state_name, state_val);
-   eina_stringshare_del(state_name);
 }
 
 static void
@@ -995,6 +1037,7 @@ group_navigator_add(Group *group)
    pl->name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, pl);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, pl);
 
    TODO("Add deletion callback and free resources");
    return pl->layout;
