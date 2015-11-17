@@ -106,11 +106,9 @@ _image_editor_del(Image_Editor *img_edit)
 
 static void
 _image_editor_image_setup(Evas_Object *image,
-                          Image_Editor *img_edit,
                           const Item *it)
 {
    assert(image != NULL);
-   assert(img_edit != NULL);
    assert(it != NULL);
 
    if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
@@ -128,15 +126,13 @@ _image_editor_image_setup(Evas_Object *image,
 
 static inline Evas_Object *
 _image_editor_image_create(Evas_Object *parent,
-                           Image_Editor *img_edit,
                            const Item *it)
 {
    assert(parent != NULL);
-   assert(img_edit != NULL);
    assert(it != NULL);
 
    Evas_Object *image = elm_image_add(parent);
-   _image_editor_image_setup(image, img_edit, it);
+   _image_editor_image_setup(image, it);
    return image;
 }
 
@@ -155,14 +151,10 @@ _grid_content_get(void *data,
    assert(it != NULL);
    assert(grid != NULL);
 
-   Image_Editor *img_edit = evas_object_data_get(grid, IMG_EDIT_KEY);
-
-   assert(img_edit != NULL);
-
    if (!strcmp(part, "elm.swallow.icon"))
      {
         image_obj = elm_thumb_add(grid);
-        _image_editor_image_setup(image_obj, img_edit, it);
+        _image_editor_image_setup(image_obj, it);
         elm_thumb_reload(image_obj);
         evas_object_show(image_obj);
    /* functions for deferred creation of gengrid icons */
@@ -206,7 +198,7 @@ _image_info_setup(Image_Editor *img_edit,
    assert(img_edit != NULL);
    assert(it != NULL);
 
-   image = _image_editor_image_create(img_edit->layout, img_edit, it);
+   image = _image_editor_image_create(img_edit->layout, it);
    evas_object_image_smooth_scale_set(image, false);
    evas_object_show(image);
 
