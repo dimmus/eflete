@@ -214,6 +214,9 @@ _on_tab_changed(void *data,
         evas_object_hide(pd->sound_property);
         evas_object_hide(pd->style_property);
      }
+
+   //evas_object_hide(elm_object_content_unset(pd->layout));
+   elm_object_content_set(pd->layout, pd->group_property);
    ui_property_group_set(pd->group_property, group);
 
    pd->type = PROPERTY;
