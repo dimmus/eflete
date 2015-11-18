@@ -403,3 +403,44 @@ editor_part_cursor_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
+
+Eina_Bool
+editor_part_item_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                       const char *part_name, const char *item_name)
+{
+   Eina_Bool res = true;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(item_name != NULL);
+
+   Edje_Part_Type type = edje_edit_part_type_get(edit_object, part_name);
+
+   assert((type == EDJE_PART_TYPE_TABLE) || (type == EDJE_PART_TYPE_BOX));
+
+   if (type == EDJE_PART_TYPE_TABLE)
+     {
+        res = res && editor_part_item_span_col_reset(edit_object, change, part_name, item_name);
+        res = res && editor_part_item_span_row_reset(edit_object, change, part_name, item_name);
+        res = res && editor_part_item_position_col_reset(edit_object, change, part_name, item_name);
+        res = res && editor_part_item_position_row_reset(edit_object, change, part_name, item_name);
+        res = res && editor_part_item_spread_h_reset(edit_object, change, part_name, item_name);
+        res = res && editor_part_item_spread_w_reset(edit_object, change, part_name, item_name);
+     }
+
+   res = res && editor_part_item_aspect_mode_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_aspect_h_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_aspect_w_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_max_h_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_max_w_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_min_h_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_min_w_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_prefer_h_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_prefer_w_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_align_x_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_align_y_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_weight_x_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_weight_y_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_padding_reset(edit_object, change, part_name, item_name);
+
+   return res;
+}
