@@ -518,6 +518,12 @@ Eina_Bool
 editor_part_drag_step_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       int new_val);
 Eina_Bool
+editor_part_drag_count_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      int new_val);
+Eina_Bool
+editor_part_drag_count_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      int new_val);
+Eina_Bool
 editor_part_name_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       const char *new_val);
 
