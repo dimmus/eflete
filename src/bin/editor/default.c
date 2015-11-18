@@ -211,3 +211,67 @@ EDITOR_INT_INT_INT_INT_RESET(part_item_##FUNC, EDITOR_PART_ITEM_ARGS_PROTO, EDIT
 EDITOR_PART_ITEM_INT_INT_INT_INT_RESET(padding, 0, 0, 0, 0)
 
 TODO("Add stub-group for part items and implement reseter")
+
+
+#define EDITOR_PART_ARGS_PROTO const char *part_name
+#define EDITOR_PART_ARGS part_name
+
+#define EDITOR_PART_SIMPLE_RESET(FUNC, DEF_VAL) \
+EDITOR_SIMPLE_DEFAULT_CHECK(part_##FUNC, EDITOR_PART_ARGS_PROTO, EDITOR_PART_ARGS, DEF_VAL) \
+EDITOR_RESET(part_##FUNC, EDITOR_PART_ARGS_PROTO, EDITOR_PART_ARGS, DEF_VAL)
+
+EDITOR_PART_SIMPLE_RESET(effect, EDJE_TEXT_EFFECT_NONE)
+EDITOR_PART_SIMPLE_RESET(ignore_flags, EVAS_EVENT_FLAG_NONE)
+EDITOR_PART_SIMPLE_RESET(mouse_events, true)
+EDITOR_PART_SIMPLE_RESET(repeat_events, false)
+EDITOR_PART_SIMPLE_RESET(scale, false)
+EDITOR_PART_SIMPLE_RESET(multiline, false)
+
+EDITOR_PART_SIMPLE_RESET(drag_count_x, 0)
+EDITOR_PART_SIMPLE_RESET(drag_count_y, 0)
+EDITOR_PART_SIMPLE_RESET(drag_x, 0)
+EDITOR_PART_SIMPLE_RESET(drag_y, 0)
+EDITOR_PART_SIMPLE_RESET(drag_step_x, 0)
+EDITOR_PART_SIMPLE_RESET(drag_step_y, 0)
+
+EDITOR_PART_SIMPLE_RESET(select_mode, 0)
+EDITOR_PART_SIMPLE_RESET(entry_mode, 0)
+EDITOR_PART_SIMPLE_RESET(cursor_mode, 0)
+
+Eina_Bool
+editor_part_pointer_mode_default_is(Evas_Object *edit_object, EDITOR_PART_ARGS_PROTO)
+{
+   assert(edit_object != NULL);
+   Edje_Part_Type type = edje_edit_part_type_get(edit_object, EDITOR_PART_ARGS);
+   return (((type == EDJE_PART_TYPE_SWALLOW ||
+             type == EDJE_PART_TYPE_GROUP ||
+             type == EDJE_PART_TYPE_EXTERNAL) &&
+             edje_edit_part_pointer_mode_get(edit_object, EDITOR_PART_ARGS) == EVAS_OBJECT_POINTER_MODE_NOGRAB)
+           ||(edje_edit_part_pointer_mode_get(edit_object, EDITOR_PART_ARGS) == EVAS_OBJECT_POINTER_MODE_AUTOGRAB));
+}
+Eina_Bool
+editor_part_pointer_mode_reset(Evas_Object *edit_object, Change *change, EDITOR_PART_ARGS_PROTO)
+{
+   assert(edit_object != NULL);
+   if (editor_part_pointer_mode_default_is(edit_object, EDITOR_PART_ARGS)) return true;
+   Edje_Part_Type type = edje_edit_part_type_get(edit_object, EDITOR_PART_ARGS);
+   Evas_Object_Pointer_Mode reset_value = (type == EDJE_PART_TYPE_SWALLOW ||
+                                           type == EDJE_PART_TYPE_GROUP ||
+                                           type == EDJE_PART_TYPE_EXTERNAL) ? EVAS_OBJECT_POINTER_MODE_NOGRAB : EVAS_OBJECT_POINTER_MODE_AUTOGRAB;
+   return editor_part_pointer_mode_set(edit_object, change, false, EDITOR_PART_ARGS, reset_value);
+}
+
+#define EDITOR_PART_NULL_STRING_RESET(FUNC, RESET_VAL) \
+EDITOR_NULL_STRING_DEFAULT_CHECK(part_##FUNC, EDITOR_PART_ARGS_PROTO, EDITOR_PART_ARGS) \
+EDITOR_RESET(part_##FUNC, EDITOR_PART_ARGS_PROTO, EDITOR_PART_ARGS, RESET_VAL)
+
+EDITOR_PART_NULL_STRING_RESET(clip_to, NULL)
+EDITOR_PART_NULL_STRING_RESET(drag_confine, NULL)
+EDITOR_PART_NULL_STRING_RESET(drag_threshold, NULL)
+EDITOR_PART_NULL_STRING_RESET(drag_event, NULL)
+EDITOR_PART_NULL_STRING_RESET(source, NULL)
+EDITOR_PART_NULL_STRING_RESET(source2, NULL)
+EDITOR_PART_NULL_STRING_RESET(source3, NULL)
+EDITOR_PART_NULL_STRING_RESET(source4, NULL)
+EDITOR_PART_NULL_STRING_RESET(source5, NULL)
+EDITOR_PART_NULL_STRING_RESET(source6, NULL)
