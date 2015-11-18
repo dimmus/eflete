@@ -78,7 +78,8 @@ _on_frame_click(void *data,
 enum _Property_Type {
    PROPERTY,
    IMAGE_PROPERTY,
-   SOUND_PROPERTY
+   SOUND_PROPERTY,
+   STYLE_PROPERTY
 };
 typedef enum _Property_Type Property_Type;
 
@@ -87,6 +88,7 @@ struct _Prop_Data
    Evas_Object *group_property;
    Evas_Object *image_property;
    Evas_Object *sound_property;
+   Evas_Object *style_property;
    Evas_Object *colorclass_property;
    Evas_Object *layout;
 
@@ -110,6 +112,7 @@ _on_different_clicked(void *data,
    evas_object_hide(pd->group_property);
    evas_object_hide(pd->image_property);
    evas_object_hide(pd->sound_property);
+   evas_object_hide(pd->style_property);
 
    pd->type = PROPERTY;
 }
@@ -128,8 +131,9 @@ _on_image_editor_clicked(void *data,
    elm_object_content_unset(pd->layout);
    elm_object_content_set(pd->layout, pd->image_property);
    evas_object_hide(pd->group_property);
-   evas_object_show(pd->image_property);
    evas_object_hide(pd->sound_property);
+   evas_object_hide(pd->style_property);
+   evas_object_show(pd->image_property);
 
    pd->type = IMAGE_PROPERTY;
 }
@@ -149,9 +153,31 @@ _on_sound_editor_clicked(void *data,
    elm_object_content_set(pd->layout, pd->sound_property);
    evas_object_hide(pd->group_property);
    evas_object_hide(pd->image_property);
+   evas_object_hide(pd->style_property);
    evas_object_show(pd->sound_property);
 
    pd->type = SOUND_PROPERTY;
+}
+
+static void
+_on_style_editor_clicked(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info __UNUSED__)
+{
+   Evas_Object *property = data;
+   PROP_DATA_GET()
+
+   assert(pd != NULL);
+
+   ui_property_group_unset(pd->group_property);
+   elm_object_content_unset(pd->layout);
+   elm_object_content_set(pd->layout, pd->style_property);
+   evas_object_hide(pd->group_property);
+   evas_object_hide(pd->image_property);
+   evas_object_hide(pd->sound_property);
+   evas_object_show(pd->style_property);
+
+   pd->type = STYLE_PROPERTY;
 }
 
 static void
@@ -168,18 +194,25 @@ _on_tab_changed(void *data,
    if (!group)
      {
         if (pd->type == PROPERTY)
-          ui_property_group_unset(pd->group_property);
+          {
+            elm_object_content_unset(pd->layout);
+            ui_property_group_unset(pd->group_property);
+          }
         return;
      }
    /* it has group here, and group's tab was clicked,
-      but if previous tab was image_property or sound_property tab,
+      but if previous tab was image_property, sound_property, style_property tab,
       we need to remove it from there and set group property in there */
-   if ((pd->type == IMAGE_PROPERTY) || (pd->type == SOUND_PROPERTY))
+   if (pd->type == IMAGE_PROPERTY ||
+       pd->type == STYLE_PROPERTY ||
+       pd->type == SOUND_PROPERTY ||
+       pd->type == PROPERTY)
      {
         elm_object_content_unset(pd->layout);
         elm_object_content_set(pd->layout, pd->group_property);
         evas_object_hide(pd->image_property);
         evas_object_hide(pd->sound_property);
+        evas_object_hide(pd->style_property);
      }
    ui_property_group_set(pd->group_property, group);
 
@@ -207,11 +240,12 @@ ui_property_add(Evas_Object *parent)
 
    pd->image_property = ui_property_image_add(pd->layout);
    pd->sound_property = ui_property_sound_add(pd->layout);
-
+   pd->style_property = ui_property_style_add(pd->layout);
    /* register global callbacks */
    evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _on_tab_changed, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_IMAGE_EDITOR_TAB_CLICKED, _on_image_editor_clicked, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_EDITOR_TAB_CLICKED, _on_sound_editor_clicked, pd->layout);
+   evas_object_smart_callback_add(ap.win, SIGNAL_STYLE_EDITOR_TAB_CLICKED, _on_style_editor_clicked, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, _on_different_clicked, pd->layout);
 
    return pd->layout;

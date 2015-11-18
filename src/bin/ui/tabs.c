@@ -131,7 +131,7 @@ _content_set(void *data,
         else if (toolbar_item == tabs.menu.item_text)
           {
              tabs_menu_tab_open(TAB_STYLE_EDITOR);
-             evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
+             evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_EDITOR_TAB_CLICKED, NULL);
           }
         else if (toolbar_item == tabs.menu.item_image)
           {

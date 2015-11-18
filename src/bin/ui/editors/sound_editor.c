@@ -753,7 +753,7 @@ _grid_del(void *data,
    eina_stringshare_del(it->format);
    free(it);
 }
-
+/*
 static Evas_Object *
 _sound_info_label_add(Evas_Object *box,
                       const char *label)
@@ -832,7 +832,7 @@ _sound_info_create(Evas_Object *parent, Sound_Editor *edit)
    _sample_info_create(parent, edit);
    _tone_info_create(parent, edit);
 }
-
+*/
 Eina_Stringshare *
 _sound_format_get(Eina_Stringshare *snd_src)
 {
@@ -891,6 +891,8 @@ _sample_info_setup(Sound_Editor *edit,
    eina_stringshare_del(duration);
    eina_stringshare_del(type);
    eina_stringshare_del(type_show);
+
+   evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_SELECTED, (void *)SOUND_TYPE_SAMPLE);
 }
 
 static void
@@ -914,6 +916,8 @@ _tone_info_setup(Sound_Editor *edit, const Item *it)
    elm_object_part_text_set(edit->snd_data.tone_duration, "label.value", duration);
    evas_object_show(edit->tone_box);
    eina_stringshare_del(duration);
+
+   evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_SELECTED, (void *)SOUND_TYPE_TONE);
 }
 #ifdef HAVE_AUDIO
 
@@ -1655,7 +1659,11 @@ sound_editor_window_add(Sound_Editor_Mode mode)
 
    _create_gengrid(edit->markup, edit);
 
-   _sound_info_create(edit->markup, edit);
+   /*
+    * TODO: there is necessary to remove this function from the file
+    * when it's implementation in 'property_sound.c' will be finished
+    */
+   //_sound_info_create(edit->markup, edit);
 
 #ifdef HAVE_AUDIO
    _sound_player_create(edit->markup, edit);

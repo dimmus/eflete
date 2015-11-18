@@ -244,4 +244,13 @@ typedef struct {
  */
 #define SIGNAL_SOUND_SELECTED "SIGNAL_SOUND_SELECTED"
 
+ /**
+ * emited when style editor tab is clicked.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_STYLE_EDITOR_TAB_CLICKED "SIGNAL_STYLE_EDITOR_TAB_CLICKED"
+
+
 #endif /* SIGNALS_H*/
