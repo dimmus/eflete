@@ -19,6 +19,7 @@
 
 #include "editor.h"
 #include "editor_macro.h"
+#include "string_common.h"
 
 Eina_Bool
 editor_part_effect_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
@@ -517,4 +518,73 @@ editor_part_item_del(Evas_Object *edit_object, Change *change, Eina_Bool merge _
      return false;
    _editor_project_changed();
    return true;
+}
+
+Eina_Bool
+editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                  const char *part_name)
+{
+   Eina_Bool res = true;
+   Eina_List *states, *items, *l;
+   Eina_Stringshare *state, *name;
+   double state_val;
+
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+
+   Edje_Part_Type type = edje_edit_part_type_get(edit_object, part_name);
+
+   if ((type == EDJE_PART_TYPE_TEXTBLOCK) || (type == EDJE_PART_TYPE_TEXT))
+     {
+        res = res && editor_part_effect_reset(edit_object, change, part_name);
+        res = res && editor_part_multiline_reset(edit_object, change, part_name);
+        res = res && editor_part_select_mode_reset(edit_object, change, part_name);
+        res = res && editor_part_entry_mode_reset(edit_object, change, part_name);
+        res = res && editor_part_cursor_mode_reset(edit_object, change, part_name);
+        res = res && editor_part_source_reset(edit_object, change, part_name);
+        res = res && editor_part_source2_reset(edit_object, change, part_name);
+        res = res && editor_part_source3_reset(edit_object, change, part_name);
+        res = res && editor_part_source4_reset(edit_object, change, part_name);
+        res = res && editor_part_source5_reset(edit_object, change, part_name);
+        res = res && editor_part_source6_reset(edit_object, change, part_name);
+     }
+   else if (type == EDJE_PART_TYPE_GROUP)
+     res = res && editor_part_source_reset(edit_object, change, part_name);
+
+   res = res && editor_part_ignore_flags_reset(edit_object, change, part_name);
+   res = res && editor_part_mouse_events_reset(edit_object, change, part_name);
+   res = res && editor_part_repeat_events_reset(edit_object, change, part_name);
+   res = res && editor_part_scale_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_count_x_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_count_y_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_x_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_y_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_step_x_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_step_y_reset(edit_object, change, part_name);
+   res = res && editor_part_clip_to_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_confine_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_threshold_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_event_reset(edit_object, change, part_name);
+   res = res && editor_part_pointer_mode_reset(edit_object, change, part_name);
+
+   states = edje_edit_part_states_list_get(edit_object, part_name);
+   assert(states != NULL);
+
+   /* Removing states. Default state can only be reseted */
+   res = res && editor_state_reset(edit_object, change, false, part_name, "default", 0.0);
+   EINA_LIST_FOREACH(eina_list_next(states), l, state)
+     {
+        state_name_split(state, &name, &state_val);
+        res = res && editor_state_del(edit_object, change, false, part_name, name, state_val);
+        eina_stringshare_del(name);
+     }
+   edje_edit_string_list_free(states);
+
+   /* removing part items */
+   items = edje_edit_part_items_list_get(edit_object, part_name);
+   EINA_LIST_FOREACH(items, l, name)
+      res = res && editor_part_item_del(edit_object, change, false, part_name, name);
+   edje_edit_string_list_free(items);
+
+   return res;
 }
