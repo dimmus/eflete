@@ -141,10 +141,8 @@ struct _Groupedit_Part
    Evas_Object *draw;         /**< The evas primitive to be draw in groupedit.
                                    The valid evas object types: image, rectangle,
                                    text and textblock.*/
-   Evas_Object *border;       /**< The object border, use for next part types:
-                                   TEXT, TEXTBLOCK, SWALLOW, SPACER. In another
-                                   case border has opacity 0. This object serves
-                                   for show the edje part geometry. */
+   Evas_Object *proxy_part;
+   Evas_Object *layout;
    Evas_Object *item;         /**< The object border in the separete mode */
    Eina_List *items;          /**< The items, for TABLE, BOX part types */
    Eina_List *fake_items;          /**< The items, for TABLE, BOX part types */

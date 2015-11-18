@@ -311,7 +311,7 @@ groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part)
 
    assert(gp != NULL);
 
-   return gp->border;
+   return gp->draw;
 }
 
 Eina_Bool
