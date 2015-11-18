@@ -133,53 +133,6 @@ popup_buttons_disabled_set(Popup_Button popup_btns, Eina_Bool disabled)
      elm_object_disabled_set(elm_object_part_content_get(popup, "button2"), disabled);
 }
 
-static void
-_helper_dismiss(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
-                const char *signal __UNUSED__,
-                const char *source __UNUSED__)
-{
-   evas_object_del(helper);
-}
-
-static void
-_done(void *data __UNUSED__,
-      Evas_Object *obj,
-      void *event_info __UNUSED__)
-{
-   Eina_List *selected_paths = NULL;
-   Eina_Stringshare *selected;
-   Eina_Bool res = true;
-
-   if (dismiss_func)
-     {
-        if (elm_fileselector_multi_select_get(fs))
-          selected_paths = (Eina_List *)elm_fileselector_selected_paths_get(fs);
-        else
-          {
-             if (elm_fileselector_is_save_get(fs))
-               selected = eina_stringshare_printf("%s/%s",
-                                                  elm_fileselector_path_get(fs),
-                                                  elm_fileselector_current_name_get(fs));
-             else
-               selected = eina_stringshare_add(elm_fileselector_selected_get(fs));
-             selected_paths = eina_list_append(selected_paths, selected);
-          }
-        res = ((Helper_Done_Cb)dismiss_func)(func_data, obj, selected_paths);
-
-        if (!elm_fileselector_multi_select_get(fs))
-          EINA_LIST_FREE(selected_paths, selected)
-             eina_stringshare_del(selected);
-     }
-
-   if (res)
-     {
-        dismiss_func = NULL;
-        func_data = NULL;
-        _helper_dismiss(NULL, NULL, data, NULL);
-     }
-}
-
 #define FS_W 430
 #define FS_H 460
 
@@ -230,6 +183,63 @@ _helper_property_follow(void *data __UNUSED__,
 
 
 static void
+_helper_dismiss(void *data __UNUSED__,
+                Evas_Object *obj __UNUSED__,
+                const char *signal __UNUSED__,
+                const char *source __UNUSED__)
+{
+   Evas_Object *follow_up = (Evas_Object *) data;
+
+   evas_object_event_callback_del_full(follow_up, EVAS_CALLBACK_RESIZE, _helper_obj_follow, NULL);
+   evas_object_event_callback_del_full(follow_up, EVAS_CALLBACK_MOVE, _helper_obj_follow, NULL);
+   evas_object_event_callback_del_full(follow_up, EVAS_CALLBACK_RESIZE, _helper_property_follow, NULL);
+   evas_object_event_callback_del_full(follow_up, EVAS_CALLBACK_MOVE, _helper_property_follow, NULL);
+
+   if (!follow_up)
+     evas_object_event_callback_del_full(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
+
+   evas_object_del(helper);
+}
+
+static void
+_done(void *data __UNUSED__,
+      Evas_Object *obj,
+      void *event_info __UNUSED__)
+{
+   Eina_List *selected_paths = NULL;
+   Eina_Stringshare *selected;
+   Eina_Bool res = true;
+
+   if (dismiss_func)
+     {
+        if (elm_fileselector_multi_select_get(fs))
+          selected_paths = (Eina_List *)elm_fileselector_selected_paths_get(fs);
+        else
+          {
+             if (elm_fileselector_is_save_get(fs))
+               selected = eina_stringshare_printf("%s/%s",
+                                                  elm_fileselector_path_get(fs),
+                                                  elm_fileselector_current_name_get(fs));
+             else
+               selected = eina_stringshare_add(elm_fileselector_selected_get(fs));
+             selected_paths = eina_list_append(selected_paths, selected);
+          }
+        res = ((Helper_Done_Cb)dismiss_func)(func_data, obj, selected_paths);
+
+        if (!elm_fileselector_multi_select_get(fs))
+          EINA_LIST_FREE(selected_paths, selected)
+             eina_stringshare_del(selected);
+     }
+
+   if (res)
+     {
+        dismiss_func = NULL;
+        func_data = NULL;
+        _helper_dismiss(data, NULL, NULL, NULL);
+     }
+}
+
+static void
 _fileselector_helper(const char *title,
                      Evas_Object *follow_up,
                      const char *path,
@@ -246,7 +256,7 @@ _fileselector_helper(const char *title,
 
    helper = elm_layout_add(ap.win);
    elm_layout_theme_set(helper, "layout", "popup", title ? "hint_title" : "hint");
-   elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, NULL);
+   elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, follow_up);
 
    fs = elm_fileselector_add(ap.win);
    elm_fileselector_expandable_set(fs, false);
@@ -260,8 +270,8 @@ _fileselector_helper(const char *title,
    else elm_fileselector_folder_only_set(fs, true);
 
    elm_fileselector_path_set(fs, path ? path : profile_get()->general.projects_folder);
-   evas_object_smart_callback_add(fs, "done", _done, NULL);
-   evas_object_smart_callback_add(fs, "activated", _done, NULL);
+   evas_object_smart_callback_add(fs, "done", _done, follow_up);
+   evas_object_smart_callback_add(fs, "activated", _done, follow_up);
    /* small hack, hide not necessary button */
    evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
    evas_object_size_hint_min_set(helper, FS_W, FS_H);
@@ -372,7 +382,7 @@ popup_fileselector_image_helper(const char *title, Evas_Object *follow_up, const
 #define GROUP_ITEM_HEIGHT 36
 
 static void
-_done_image(void *data __UNUSED__,
+_done_image(void *data,
             Evas_Object *obj,
             void *event_info __UNUSED__)
 {
@@ -392,7 +402,7 @@ _done_image(void *data __UNUSED__,
      {
         dismiss_func = NULL;
         func_data = NULL;
-        _helper_dismiss(NULL, NULL, data, NULL);
+        _helper_dismiss(data, NULL, NULL, NULL);
      }
 }
 
@@ -504,7 +514,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
 
    helper = elm_layout_add(ap.win);
    elm_layout_theme_set(helper, "layout", "popup", title ? "hint_title" : "hint");
-   elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, NULL);
+   elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, follow_up);
 
    fs = elm_layout_add(helper);
    elm_layout_theme_set(fs, "layout", "image_editor", "usage_info");
@@ -528,7 +538,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
    elm_scroller_policy_set(gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_OFF);
    elm_object_part_content_set(fs, "eflete.swallow.genlist", gengrid);
-   evas_object_smart_callback_add(gengrid, "clicked,double", _done_image, NULL);
+   evas_object_smart_callback_add(gengrid, "clicked,double", _done_image, follow_up);
 
    if (!gic)
      {
@@ -577,7 +587,7 @@ popup_log_message_helper(const char *msg)
 
    helper = elm_layout_add(ap.win);
    elm_layout_theme_set(helper, "layout", "popup", "hint");
-   elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, NULL);
+   elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, ap.win);
 
    BOX_ADD(helper, box, false, false)
    elm_box_padding_set(box, 0, 6);
