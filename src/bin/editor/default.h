@@ -386,5 +386,109 @@ editor_part_item_padding_default_is(Evas_Object *edit_object, const char *part_n
 Eina_Bool
 editor_part_item_padding_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *item_name);
 
+Eina_Bool
+editor_part_effect_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_effect_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_ignore_flags_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_ignore_flags_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_mouse_events_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_mouse_events_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_repeat_events_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_repeat_events_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_scale_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_scale_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_multiline_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_multiline_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_drag_count_x_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_drag_count_x_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_drag_count_y_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_drag_count_y_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_drag_x_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_drag_x_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_drag_y_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_drag_y_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_drag_step_x_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_drag_step_x_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_drag_step_y_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_drag_step_y_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_select_mode_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_select_mode_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_entry_mode_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_entry_mode_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_cursor_mode_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_cursor_mode_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_clip_to_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_clip_to_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_drag_confine_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_drag_confine_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_drag_threshold_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_drag_threshold_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_drag_event_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_drag_event_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_source_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_source_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_source2_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_source2_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_source3_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_source3_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_source4_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_source4_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_source5_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_source5_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_source6_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_source6_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_pointer_mode_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_pointer_mode_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 
 #endif /* DEFAULT_H */
