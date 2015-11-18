@@ -20,21 +20,7 @@
 #include "group_manager.h"
 #include "alloc.h"
 #include "signals.h"
-
-static inline void
-state_name_split(Eina_Stringshare *name, Eina_Stringshare **name_out, double *val_out)
-{
-   char **state_split;
-
-   assert(name != NULL);
-   assert(name_out != NULL || val_out != NULL);
-
-   state_split = eina_str_split(name, " ", 2);
-   if (name_out) *name_out = eina_stringshare_add(state_split[0]);
-   if (val_out) *val_out = atof(state_split[1]);
-   free(state_split[0]);
-   free(state_split);
-}
+#include "string_common.h"
 
 static void
 _group_name_parse(Group *group)
