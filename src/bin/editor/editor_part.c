@@ -444,3 +444,77 @@ editor_part_item_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge
 
    return res;
 }
+
+Eina_Bool
+editor_part_item_append(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                        const char *part_name, const char *item_name, const char *source_group)
+{
+   Diff *diff;
+   Editor_Item event_info;
+
+   assert(edit_object != NULL);
+
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_STRING;
+        diff->redo.function = editor_part_item_append;
+        diff->redo.args.type_sss.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_sss.s2 = eina_stringshare_add(item_name);
+        diff->redo.args.type_sss.s3 = eina_stringshare_add(source_group);
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->undo.function = editor_part_item_del;
+        diff->undo.args.type_ss.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ss.s2 = eina_stringshare_add(item_name);
+
+        change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_item_append(edit_object, part_name, item_name, source_group))
+     return false;
+   _editor_project_changed();
+   event_info.part_name = eina_stringshare_add(part_name);
+   event_info.item_name = eina_stringshare_add(item_name);
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, (void *)&event_info);
+   eina_stringshare_del(event_info.part_name);
+   eina_stringshare_del(event_info.item_name);
+   return true;
+}
+
+Eina_Bool
+editor_part_item_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                     const char *part_name, const char *item_name)
+{
+   Diff *diff;
+   Editor_Item event_info;
+   Eina_Stringshare *source_group;
+
+   assert(edit_object != NULL);
+
+   event_info.part_name = eina_stringshare_add(part_name);
+   event_info.item_name = eina_stringshare_add(item_name);
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, (void *)&event_info);
+   eina_stringshare_del(event_info.part_name);
+   eina_stringshare_del(event_info.item_name);
+   if (change)
+     {
+        source_group = edje_edit_part_item_source_get(edit_object, part_name, item_name);
+        if (!editor_part_item_reset(edit_object, change, false, part_name, item_name))
+          return false;
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->redo.function = editor_part_item_del;
+        diff->redo.args.type_ss.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ss.s2 = eina_stringshare_add(item_name);
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_STRING;
+        diff->undo.function = editor_part_item_append;
+        diff->undo.args.type_sss.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_sss.s2 = eina_stringshare_add(item_name);
+        diff->undo.args.type_sss.s3 = eina_stringshare_add(source_group);
+
+        change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_item_del(edit_object, part_name, item_name))
+     return false;
+   _editor_project_changed();
+   return true;
+}
