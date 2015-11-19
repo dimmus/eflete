@@ -47,6 +47,7 @@ struct _Sound_Prop_Data
 {
    Evas_Object *box;
    Evas_Object *sound_player;
+   Evas_Object *preview_sound_player;
    Evas_Object *sound_player_frame;
 
    Evas_Object *sample_box;
@@ -54,6 +55,14 @@ struct _Sound_Prop_Data
    Evas_Object *info_frame;
 
    struct {
+      Evas_Object *check;
+      Evas_Object *rewind;
+      Evas_Object *play;
+      Evas_Object *pause;
+   } player_data;
+
+   struct {
+      Evas_Object *teg;
       Evas_Object *tone_name;
       Evas_Object *tone_frq;
       Evas_Object *tone_duration;
@@ -137,6 +146,145 @@ prop_sound_editor_compression_type_add(Evas_Object *parent, Sound_Prop_Data *pd)
    elm_layout_content_set(item, "elm.swallow.content", pd->snd_data.compression_type);
 
    return item;
+}
+
+static void
+_play_sound(Sound_Prop_Data *edit EINA_UNUSED)
+{
+}
+
+static void
+_on_play_cb(void *data,
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
+{
+   _play_sound(data);
+}
+
+static void
+_on_prev_cb(void *data EINA_UNUSED,
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
+{
+}
+
+static void
+_on_next_cb(void *data EINA_UNUSED,
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
+{
+}
+
+static void
+_on_pause_cb(void *data EINA_UNUSED,
+             Evas_Object *obj EINA_UNUSED,
+             void *event_info EINA_UNUSED)
+{
+}
+
+static void
+_on_rewind_cb(void *data EINA_UNUSED,
+              Evas_Object *obj EINA_UNUSED,
+              void *event_info EINA_UNUSED)
+{
+}
+
+#define BT_ADD(PARENT, OBJ, ICON, ICON_STYLE) \
+   OBJ = elm_button_add(PARENT); \
+   evas_object_size_hint_align_set(OBJ, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   elm_object_style_set(OBJ, "anchor"); \
+   ICON_STANDARD_ADD(OBJ, ICON, false, ICON_STYLE) \
+   evas_object_show(OBJ); \
+   elm_object_part_content_set(OBJ, NULL, ICON);
+
+#define INFO_ADD(PARENT, ITEM, TEXT, STYLE) \
+   ITEM = elm_layout_add(PARENT); \
+   evas_object_size_hint_weight_set(ITEM, EVAS_HINT_EXPAND, 0.0); \
+   evas_object_size_hint_align_set(ITEM, EVAS_HINT_FILL, 0.0); \
+   elm_layout_theme_set(ITEM, "layout", "sound_editor", STYLE); \
+   elm_object_part_text_set(ITEM, "elm.text", TEXT); \
+   evas_object_show(ITEM);
+
+static char *
+_player_units_format(double val)
+{
+   char *units = mem_malloc(sizeof(char) * 16);
+   int tmp = (int)val;
+   snprintf(units, 16, "%02.0f:%02.0f", (double)(tmp / 60), (double)(tmp % 60));
+   return units;
+}
+
+static void
+_player_units_free(char *str)
+{
+   free(str);
+}
+
+static void
+_sound_player_create(Evas_Object *parent, Sound_Prop_Data *edit)
+{
+   Evas_Object *bt, *icon, *item;
+
+   assert(parent != NULL);
+   assert(edit != NULL);
+
+   edit->preview_sound_player = elm_layout_add(parent);
+   elm_layout_theme_set(edit->preview_sound_player, "layout", "sound_editor", "preview");
+   evas_object_size_hint_weight_set(edit->preview_sound_player, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(edit->preview_sound_player, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(edit->preview_sound_player);
+   elm_object_content_set(edit->sound_player_frame, edit->preview_sound_player);
+   elm_box_pack_end(edit->box, edit->sound_player_frame);
+
+   edit->sound_player = elm_layout_add(edit->preview_sound_player);
+   elm_layout_theme_set(edit->sound_player, "layout", "sound_editor", "player");
+   evas_object_size_hint_weight_set(edit->sound_player,
+                                    EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(edit->sound_player, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(edit->sound_player);
+   elm_object_part_content_set(edit->preview_sound_player, "eflete.swallow.sound_player", edit->sound_player);
+
+   edit->snd_data.teg = elm_icon_add(edit->sound_player);
+   evas_object_image_smooth_scale_set(edit->snd_data.teg, false);
+   evas_object_show(edit->snd_data.teg);
+   evas_object_size_hint_fill_set(edit->snd_data.teg, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(edit->snd_data.teg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_object_part_content_set(edit->sound_player, "eflete.swallow.teg",
+                               edit->snd_data.teg);
+
+   INFO_ADD(parent, item, _("Play on select:"), "item");
+   CHECK_ADD(item, edit->player_data.check);
+   elm_object_part_content_set(item, "swallow.second", edit->player_data.check);
+   elm_object_part_content_set(edit->sound_player, "eflete.swallow.check", item);
+
+   edit->player_data.rewind = elm_slider_add(edit->sound_player);
+   elm_slider_unit_format_set(edit->player_data.rewind, "%2.0f");
+   elm_slider_units_format_function_set(edit->player_data.rewind, _player_units_format,
+                                        _player_units_free);
+   evas_object_size_hint_align_set(edit->player_data.rewind, EVAS_HINT_FILL, 0.5);
+   evas_object_size_hint_weight_set(edit->player_data.rewind, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(edit->player_data.rewind);
+   elm_object_part_content_set(edit->sound_player, "eflete.swallow.fast", edit->player_data.rewind);
+   evas_object_smart_callback_add(edit->player_data.rewind, "changed", _on_rewind_cb, edit);
+
+   BT_ADD(edit->sound_player, bt, icon, "media_player/prev");
+   elm_object_part_content_set(edit->sound_player, "swallow.button.prev", bt);
+   evas_object_smart_callback_add(bt, "clicked", _on_prev_cb, edit);
+
+   BT_ADD(edit->sound_player, edit->player_data.play, icon, "media_player/play");
+   elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.play);
+   evas_object_smart_callback_add(edit->player_data.play, "clicked", _on_play_cb, edit);
+
+   BT_ADD(edit->sound_player, bt, icon, "media_player/next");
+   elm_object_part_content_set(edit->sound_player, "swallow.button.next", bt);
+   evas_object_smart_callback_add(bt, "clicked", _on_next_cb, edit);
+
+   edit->player_data.pause = elm_button_add(edit->sound_player);
+   elm_object_style_set(edit->player_data.pause, "anchor");
+   evas_object_size_hint_align_set(edit->player_data.pause, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   ICON_STANDARD_ADD(edit->player_data.pause, icon, false, "media_player/pause")
+   elm_object_part_content_set(edit->player_data.pause, NULL, icon);
+   evas_object_smart_callback_add(edit->player_data.pause, "clicked", _on_pause_cb, edit);
 }
 
 static void
@@ -256,6 +404,8 @@ _sound_info_create(Evas_Object *parent, Sound_Prop_Data *edit)
 
    _sample_info_create(parent, edit);
    _tone_info_create(parent, edit);
+
+   elm_box_pack_end(edit->box, edit->info_frame);
 }
 
 static void
@@ -300,18 +450,11 @@ ui_property_sound_add(Evas_Object *parent)
 
    /* Frame with sound player */
    FRAME_PROPERTY_ADD(pd->box, pd->sound_player_frame, true, _("Preview"), pd->box)
-   pd->sound_player = elm_layout_add(parent);
-   elm_layout_theme_set(pd->sound_player, "layout", "sound_editor", "player");
-   evas_object_size_hint_weight_set(pd->sound_player, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(pd->sound_player, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(pd->sound_player);
-   elm_object_content_set(pd->sound_player_frame, pd->sound_player);
-   elm_box_pack_end(pd->box, pd->sound_player_frame);
+   _sound_player_create(parent, pd);
 
    /* Frame with info */
    FRAME_PROPERTY_ADD(pd->box, pd->info_frame, true, _("Info"), pd->box)
    _sound_info_create(parent, pd);
-   elm_box_pack_end(pd->box, pd->info_frame);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_SELECTED, _on_sound_selected, pd->box);
 
