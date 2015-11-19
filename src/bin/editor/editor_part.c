@@ -588,3 +588,71 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UN
 
    return res;
 }
+
+Eina_Bool
+editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                const char *part_name, Edje_Part_Type type)
+{
+   Diff *diff;
+   Eina_Stringshare *event_info;
+
+   assert(edit_object != NULL);
+
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_EDJEPARTTYPE;
+        diff->redo.function = editor_part_item_append;
+        diff->redo.args.type_sept.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_sept.ept2 = type;
+        diff->undo.type = FUNCTION_TYPE_STRING;
+        diff->undo.function = editor_part_del;
+        diff->undo.args.type_s.s1 = eina_stringshare_add(part_name);
+
+        change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_add(edit_object, part_name, type))
+     return false;
+
+   _editor_project_changed();
+   event_info = eina_stringshare_add(part_name);
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ADDED, (void *)&event_info);
+   eina_stringshare_del(event_info);
+   return true;
+}
+
+Eina_Bool
+editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                const char *part_name)
+{
+   Diff *diff;
+   Eina_Stringshare *event_info;
+   Edje_Part_Type type;
+
+   assert(edit_object != NULL);
+
+   event_info = eina_stringshare_add(part_name);
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, (void *)&event_info);
+   eina_stringshare_del(event_info);
+
+   if (change)
+     {
+        type = edje_edit_part_type_get(edit_object, part_name);
+        if (!editor_part_reset(edit_object, change, false, part_name))
+          return false;
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING;
+        diff->redo.function = editor_part_del;
+        diff->redo.args.type_s.s1 = eina_stringshare_add(part_name);
+        diff->undo.type = FUNCTION_TYPE_STRING_EDJEPARTTYPE;
+        diff->undo.function = editor_part_add;
+        diff->undo.args.type_sept.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_sept.ept2 = type;
+
+        change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_del(edit_object, part_name))
+     return false;
+   _editor_project_changed();
+   return true;
+}
