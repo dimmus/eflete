@@ -494,8 +494,6 @@ editor_part_item_del(Evas_Object *edit_object, Change *change, Eina_Bool merge _
    event_info.part_name = eina_stringshare_add(part_name);
    event_info.item_name = eina_stringshare_add(item_name);
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, (void *)&event_info);
-   eina_stringshare_del(event_info.part_name);
-   eina_stringshare_del(event_info.item_name);
    if (change)
      {
         source_group = edje_edit_part_item_source_get(edit_object, part_name, item_name);
@@ -515,8 +513,14 @@ editor_part_item_del(Evas_Object *edit_object, Change *change, Eina_Bool merge _
         change_diff_add(change, diff);
      }
    if (!edje_edit_part_item_del(edit_object, part_name, item_name))
-     return false;
+     {
+        eina_stringshare_del(event_info.part_name);
+        eina_stringshare_del(event_info.item_name);
+        return false;
+     }
    _editor_project_changed();
+   eina_stringshare_del(event_info.part_name);
+   eina_stringshare_del(event_info.item_name);
    return true;
 }
 
@@ -633,7 +637,6 @@ editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
 
    event_info = eina_stringshare_add(part_name);
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, (void *)&event_info);
-   eina_stringshare_del(event_info);
 
    if (change)
      {
@@ -652,7 +655,11 @@ editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
         change_diff_add(change, diff);
      }
    if (!edje_edit_part_del(edit_object, part_name))
-     return false;
+     {
+        eina_stringshare_del(event_info);
+        return false;
+     }
+   eina_stringshare_del(event_info);
    _editor_project_changed();
    return true;
 }
