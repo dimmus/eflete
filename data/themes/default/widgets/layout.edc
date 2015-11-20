@@ -2541,6 +2541,17 @@ group { name: "elm/layout/image_editor/preview";
    }
 }
 
+group { name: "elm/layout/sound_editor/preview";
+   parts {
+      part { name: "eflete.swallow.sound_player";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            SET_SIZE(320, 180);
+         }
+      }
+   }
+}
+
 group { name: "elm/layout/image_editor/usage_info";
    parts {
       part { name: "padding.top.left";

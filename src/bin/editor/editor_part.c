@@ -19,6 +19,7 @@
 
 #include "editor.h"
 #include "editor_macro.h"
+#include "string_common.h"
 
 Eina_Bool
 editor_part_effect_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
@@ -401,5 +402,264 @@ editor_part_cursor_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      return false;
    _editor_project_changed();
    evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+Eina_Bool
+editor_part_item_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                       const char *part_name, const char *item_name)
+{
+   Eina_Bool res = true;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(item_name != NULL);
+
+   Edje_Part_Type type = edje_edit_part_type_get(edit_object, part_name);
+
+   assert((type == EDJE_PART_TYPE_TABLE) || (type == EDJE_PART_TYPE_BOX));
+
+   if (type == EDJE_PART_TYPE_TABLE)
+     {
+        res = res && editor_part_item_span_col_reset(edit_object, change, part_name, item_name);
+        res = res && editor_part_item_span_row_reset(edit_object, change, part_name, item_name);
+        res = res && editor_part_item_position_col_reset(edit_object, change, part_name, item_name);
+        res = res && editor_part_item_position_row_reset(edit_object, change, part_name, item_name);
+        res = res && editor_part_item_spread_h_reset(edit_object, change, part_name, item_name);
+        res = res && editor_part_item_spread_w_reset(edit_object, change, part_name, item_name);
+     }
+
+   res = res && editor_part_item_aspect_mode_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_aspect_h_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_aspect_w_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_max_h_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_max_w_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_min_h_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_min_w_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_prefer_h_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_prefer_w_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_align_x_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_align_y_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_weight_x_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_weight_y_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_padding_reset(edit_object, change, part_name, item_name);
+
+   return res;
+}
+
+Eina_Bool
+editor_part_item_append(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                        const char *part_name, const char *item_name, const char *source_group)
+{
+   Diff *diff;
+   Editor_Item event_info;
+
+   assert(edit_object != NULL);
+
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_STRING;
+        diff->redo.function = editor_part_item_append;
+        diff->redo.args.type_sss.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_sss.s2 = eina_stringshare_add(item_name);
+        diff->redo.args.type_sss.s3 = eina_stringshare_add(source_group);
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->undo.function = editor_part_item_del;
+        diff->undo.args.type_ss.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ss.s2 = eina_stringshare_add(item_name);
+
+        change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_item_append(edit_object, part_name, item_name, source_group))
+     return false;
+   _editor_project_changed();
+   event_info.part_name = eina_stringshare_add(part_name);
+   event_info.item_name = eina_stringshare_add(item_name);
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, (void *)&event_info);
+   eina_stringshare_del(event_info.part_name);
+   eina_stringshare_del(event_info.item_name);
+   return true;
+}
+
+Eina_Bool
+editor_part_item_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                     const char *part_name, const char *item_name)
+{
+   Diff *diff;
+   Editor_Item event_info;
+   Eina_Stringshare *source_group;
+
+   assert(edit_object != NULL);
+
+   event_info.part_name = eina_stringshare_add(part_name);
+   event_info.item_name = eina_stringshare_add(item_name);
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, (void *)&event_info);
+   if (change)
+     {
+        source_group = edje_edit_part_item_source_get(edit_object, part_name, item_name);
+        if (!editor_part_item_reset(edit_object, change, false, part_name, item_name))
+          return false;
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->redo.function = editor_part_item_del;
+        diff->redo.args.type_ss.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ss.s2 = eina_stringshare_add(item_name);
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_STRING;
+        diff->undo.function = editor_part_item_append;
+        diff->undo.args.type_sss.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_sss.s2 = eina_stringshare_add(item_name);
+        diff->undo.args.type_sss.s3 = eina_stringshare_add(source_group);
+
+        change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_item_del(edit_object, part_name, item_name))
+     {
+        eina_stringshare_del(event_info.part_name);
+        eina_stringshare_del(event_info.item_name);
+        return false;
+     }
+   _editor_project_changed();
+   eina_stringshare_del(event_info.part_name);
+   eina_stringshare_del(event_info.item_name);
+   return true;
+}
+
+Eina_Bool
+editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                  const char *part_name)
+{
+   Eina_Bool res = true;
+   Eina_List *states, *items, *l;
+   Eina_Stringshare *state, *name;
+   double state_val;
+
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+
+   Edje_Part_Type type = edje_edit_part_type_get(edit_object, part_name);
+
+   if ((type == EDJE_PART_TYPE_TEXTBLOCK) || (type == EDJE_PART_TYPE_TEXT))
+     {
+        res = res && editor_part_effect_reset(edit_object, change, part_name);
+        res = res && editor_part_multiline_reset(edit_object, change, part_name);
+        res = res && editor_part_select_mode_reset(edit_object, change, part_name);
+        res = res && editor_part_entry_mode_reset(edit_object, change, part_name);
+        res = res && editor_part_cursor_mode_reset(edit_object, change, part_name);
+        res = res && editor_part_source_reset(edit_object, change, part_name);
+        res = res && editor_part_source2_reset(edit_object, change, part_name);
+        res = res && editor_part_source3_reset(edit_object, change, part_name);
+        res = res && editor_part_source4_reset(edit_object, change, part_name);
+        res = res && editor_part_source5_reset(edit_object, change, part_name);
+        res = res && editor_part_source6_reset(edit_object, change, part_name);
+     }
+   else if (type == EDJE_PART_TYPE_GROUP)
+     res = res && editor_part_source_reset(edit_object, change, part_name);
+
+   res = res && editor_part_ignore_flags_reset(edit_object, change, part_name);
+   res = res && editor_part_mouse_events_reset(edit_object, change, part_name);
+   res = res && editor_part_repeat_events_reset(edit_object, change, part_name);
+   res = res && editor_part_scale_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_count_x_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_count_y_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_x_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_y_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_step_x_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_step_y_reset(edit_object, change, part_name);
+   res = res && editor_part_clip_to_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_confine_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_threshold_reset(edit_object, change, part_name);
+   res = res && editor_part_drag_event_reset(edit_object, change, part_name);
+   res = res && editor_part_pointer_mode_reset(edit_object, change, part_name);
+
+   states = edje_edit_part_states_list_get(edit_object, part_name);
+   assert(states != NULL);
+
+   /* Removing states. Default state can only be reseted */
+   res = res && editor_state_reset(edit_object, change, false, part_name, "default", 0.0);
+   EINA_LIST_FOREACH(eina_list_next(states), l, state)
+     {
+        state_name_split(state, &name, &state_val);
+        res = res && editor_state_del(edit_object, change, false, part_name, name, state_val);
+        eina_stringshare_del(name);
+     }
+   edje_edit_string_list_free(states);
+
+   /* removing part items */
+   items = edje_edit_part_items_list_get(edit_object, part_name);
+   EINA_LIST_FOREACH(items, l, name)
+      res = res && editor_part_item_del(edit_object, change, false, part_name, name);
+   edje_edit_string_list_free(items);
+
+   return res;
+}
+
+Eina_Bool
+editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                const char *part_name, Edje_Part_Type type)
+{
+   Diff *diff;
+   Eina_Stringshare *event_info;
+
+   assert(edit_object != NULL);
+
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_EDJEPARTTYPE;
+        diff->redo.function = editor_part_item_append;
+        diff->redo.args.type_sept.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_sept.ept2 = type;
+        diff->undo.type = FUNCTION_TYPE_STRING;
+        diff->undo.function = editor_part_del;
+        diff->undo.args.type_s.s1 = eina_stringshare_add(part_name);
+
+        change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_add(edit_object, part_name, type))
+     return false;
+
+   _editor_project_changed();
+   event_info = eina_stringshare_add(part_name);
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ADDED, (void *)&event_info);
+   eina_stringshare_del(event_info);
+   return true;
+}
+
+Eina_Bool
+editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                const char *part_name)
+{
+   Diff *diff;
+   Eina_Stringshare *event_info;
+   Edje_Part_Type type;
+
+   assert(edit_object != NULL);
+
+   event_info = eina_stringshare_add(part_name);
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, (void *)&event_info);
+
+   if (change)
+     {
+        type = edje_edit_part_type_get(edit_object, part_name);
+        if (!editor_part_reset(edit_object, change, false, part_name))
+          return false;
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING;
+        diff->redo.function = editor_part_del;
+        diff->redo.args.type_s.s1 = eina_stringshare_add(part_name);
+        diff->undo.type = FUNCTION_TYPE_STRING_EDJEPARTTYPE;
+        diff->undo.function = editor_part_add;
+        diff->undo.args.type_sept.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_sept.ept2 = type;
+
+        change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_del(edit_object, part_name))
+     {
+        eina_stringshare_del(event_info);
+        return false;
+     }
+   eina_stringshare_del(event_info);
+   _editor_project_changed();
    return true;
 }

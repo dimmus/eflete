@@ -533,6 +533,7 @@ _on_create(void *data __UNUSED__,
                           NULL);
    elm_object_focus_set(ap.splash, true);
    evas_object_show(ap.splash);
+   elm_check_state_set(tab_new.ch_all, false);
 }
 
 static void

@@ -164,6 +164,42 @@ typedef struct {
  */
 #define SIGNAL_EDITOR_STATE_DELETED "SIGNAL_EDITOR_STATE_DELETED"
 
+typedef struct {
+   const char *part_name;
+   const char *item_name;
+} Editor_Item;
+/**
+ * emited when item is added in editor.
+ * eventinfo - Editor_Item struct
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_PART_ITEM_ADDED "SIGNAL_EDITOR_PART_ITEM_ADDED"
+
+/**
+ * emited *before* item will be deleted in editor.
+ * eventinfo - Editor_Item struct
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_PART_ITEM_DELETED "SIGNAL_EDITOR_PART_ITEM_DELETED"
+
+/**
+ * emited when part is added in editor.
+ * eventinfo - stringshare with parts name
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_PART_ADDED "SIGNAL_EDITOR_PART_ADDED"
+
+/**
+ * emited *before* part will be deleted in editor.
+ * eventinfo - stringshare with parts name
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_PART_DELETED "SIGNAL_EDITOR_PART_DELETED"
+
 /**
  * emited when project is changed in any way (through attribute, .
  * eventinfo - NULL

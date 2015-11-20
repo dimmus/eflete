@@ -753,86 +753,7 @@ _grid_del(void *data,
    eina_stringshare_del(it->format);
    free(it);
 }
-/*
-static Evas_Object *
-_sound_info_label_add(Evas_Object *box,
-                      const char *label)
-{
-   Evas_Object *item;
-   INFO_ADD(box, item, label, "item");
-   elm_box_pack_end(box, item);
-   return item;
-}
 
-static void
-_sample_info_create(Evas_Object *parent, Sound_Editor *edit)
-{
-   Evas_Object *item;
-
-   assert(parent != NULL);
-   assert(edit != NULL);
-
-   BOX_ADD(parent, edit->sample_box, false, false);
-   elm_box_align_set(edit->sample_box, 0.5, 0.5);
-
-   edit->snd_data.file_name = _sound_info_label_add(edit->sample_box, _("file name:"));
-   edit->snd_data.duration = _sound_info_label_add(edit->sample_box, _("duration:"));
-   edit->snd_data.type = _sound_info_label_add(edit->sample_box, _("type:"));
-   edit->snd_data.size = _sound_info_label_add(edit->sample_box, _("size:"));
-
-   INFO_ADD(edit->sample_box, item, _("compression:"), "item");
-
-   EWE_COMBOBOX_ADD(item, edit->snd_data.comp);
-   ewe_combobox_item_add(edit->snd_data.comp, "NONE");
-   ewe_combobox_item_add(edit->snd_data.comp, "RAW");
-   ewe_combobox_item_add(edit->snd_data.comp, "COMP");
-   ewe_combobox_item_add(edit->snd_data.comp, "LOSSY");
-   ewe_combobox_item_add(edit->snd_data.comp, "AS_IS");
-   elm_object_disabled_set(edit->snd_data.comp, true);
-
-   elm_object_part_text_set(item, "label.property", _("quality:"));
-   SPINNER_ADD(item, edit->snd_data.quality, 45, 1000, 1, false);
-   elm_object_disabled_set(edit->snd_data.quality, true);
-   elm_object_part_content_set(item, "swallow.first", edit->snd_data.comp);
-   elm_object_part_content_set(item, "swallow.second", edit->snd_data.quality);
-
-   elm_box_pack_end(edit->sample_box, item);
-   evas_object_hide(edit->sample_box);
-}
-
-static void
-_tone_info_create(Evas_Object *parent, Sound_Editor *edit)
-{
-   Evas_Object *item;
-
-   assert(parent != NULL);
-   assert(edit != NULL);
-
-   BOX_ADD(parent, edit->tone_box, false, false);
-   elm_box_align_set(edit->tone_box, 0.5, 0.5);
-
-   edit->snd_data.tone_name = _sound_info_label_add(edit->tone_box, _("name:"));
-
-   INFO_ADD(edit->tone_box, item, "frequency:", "item");
-   SPINNER_ADD(edit->tone_box, edit->snd_data.tone_frq, 20, 20000, 10, false);
-   elm_object_disabled_set(edit->snd_data.tone_frq, true);
-   elm_object_part_content_set(item, "swallow.first", edit->snd_data.tone_frq);
-
-   edit->snd_data.tone_duration = _sound_info_label_add(edit->tone_box, _("duration:"));
-   elm_box_pack_end(edit->tone_box, item);
-   evas_object_hide(edit->tone_box);
-}
-
-static void
-_sound_info_create(Evas_Object *parent, Sound_Editor *edit)
-{
-   assert(parent != NULL);
-   assert(edit != NULL);
-
-   _sample_info_create(parent, edit);
-   _tone_info_create(parent, edit);
-}
-*/
 Eina_Stringshare *
 _sound_format_get(Eina_Stringshare *snd_src)
 {
@@ -859,65 +780,39 @@ _sample_info_setup(Sound_Editor *edit,
                    Eina_Stringshare *snd_src,
                    double len)
 {
-   Eina_Stringshare *duration, *type, *type_show;
-   Evas_Object *content;
+   Selected_Sound_Data *snd_data = mem_calloc(1, sizeof(Selected_Sound_Data));
 
    assert(edit != NULL);
    assert(it != NULL);
    assert(snd_src != NULL);
 
-   content = elm_object_part_content_unset(edit->markup, "sound_info");
-   evas_object_hide(content);
-
-   duration = eina_stringshare_printf("%.2f s", len);
-   elm_icon_standard_set(edit->snd_data.teg, "sound");
-   elm_object_part_content_set(edit->markup, "sound_info", edit->sample_box);
-
-   type = _sound_format_get(snd_src);
-   type_show = eina_stringshare_printf(_("%s Format Sound (.%s)"), it->format, type);
-
-   elm_object_part_text_set(edit->snd_data.file_name, "label.value", it->sound_name);
-   elm_object_part_text_set(edit->snd_data.duration, "label.value", duration);
-   elm_object_part_text_set(edit->snd_data.type, "label.value", type_show);
+   snd_data->sound_type = SOUND_TYPE_SAMPLE;
+   snd_data->file_name = it->sound_name;
+   snd_data->duration = len;
+   snd_data->snd_src = _sound_format_get(snd_src);//snd_src;
+   snd_data->format = it->format;
 #ifdef HAVE_AUDIO
-   Eina_Stringshare *size = eina_stringshare_printf("%.2f KB", edit->io.length / 1024.0);
-   elm_object_part_text_set(edit->snd_data.size, "label.value", size);
-   eina_stringshare_del(size);
+   snd_data->length = edit->io.length;
 #endif
-   ewe_combobox_select_item_set(edit->snd_data.comp, it->comp);
-   elm_spinner_value_set(edit->snd_data.quality, it->rate);
-   evas_object_show(edit->sample_box);
+   snd_data->compression_type = it->comp;
+   snd_data->quality = it->rate;
 
-   eina_stringshare_del(duration);
-   eina_stringshare_del(type);
-   eina_stringshare_del(type_show);
-
-   evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_SELECTED, (void *)SOUND_TYPE_SAMPLE);
+   evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_SELECTED, snd_data);
 }
 
 static void
-_tone_info_setup(Sound_Editor *edit, const Item *it)
+_tone_info_setup(Sound_Editor *edit __UNUSED__, const Item *it)
 {
-   Evas_Object *content;
-   Eina_Stringshare *duration;
+   Selected_Sound_Data *snd_data = mem_calloc(1, sizeof(Selected_Sound_Data));
 
-   assert(edit != NULL);
    assert(it != NULL);
 
-   content = elm_object_part_content_unset(edit->markup, "sound_info");
-   evas_object_hide(content);
+   snd_data->sound_type = SOUND_TYPE_TONE;
+   snd_data->file_name = it->sound_name;
+   snd_data->duration = TONE_PLAYING_DURATION;
+   snd_data->tone_frq = it->tone_frq;
 
-   duration = eina_stringshare_printf("%.1f s", TONE_PLAYING_DURATION);
-   elm_icon_standard_set(edit->snd_data.teg, "sound");
-   elm_object_part_content_set(edit->markup, "sound_info", edit->tone_box);
-
-   elm_object_part_text_set(edit->snd_data.tone_name, "label.value", it->sound_name);
-   elm_spinner_value_set(edit->snd_data.tone_frq, it->tone_frq);
-   elm_object_part_text_set(edit->snd_data.tone_duration, "label.value", duration);
-   evas_object_show(edit->tone_box);
-   eina_stringshare_del(duration);
-
-   evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_SELECTED, (void *)SOUND_TYPE_TONE);
+   evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_SELECTED, snd_data);
 }
 #ifdef HAVE_AUDIO
 
@@ -987,6 +882,8 @@ _grid_sel_sample(void *data,
           }
 #endif
      }
+   else
+     evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_SELECTED, NULL);
 }
 
 static void
