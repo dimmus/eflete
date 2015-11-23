@@ -620,7 +620,7 @@ editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
 
    _editor_project_changed();
    event_info = eina_stringshare_add(part_name);
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ADDED, (void *)&event_info);
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ADDED, (void *)event_info);
    eina_stringshare_del(event_info);
    return true;
 }
@@ -636,7 +636,7 @@ editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
    assert(edit_object != NULL);
 
    event_info = eina_stringshare_add(part_name);
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, (void *)&event_info);
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, (void *)event_info);
 
    if (change)
      {
