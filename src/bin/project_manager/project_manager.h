@@ -747,7 +747,7 @@ pm_resource_usage_del(Eina_List *list, Eina_Stringshare *name, void *usage_data)
 
    assert(res != NULL);
 
-   l_del = eina_list_search_sorted(res->used_in, (Eina_Compare_Cb)resource_cmp, usage_data);
+   l_del = eina_list_search_sorted_list(res->used_in, (Eina_Compare_Cb)resource_cmp, usage_data);
 
    assert(l_del);
 
@@ -771,7 +771,7 @@ pm_resource_usage_unsorted_del(Eina_List *list, Eina_Stringshare *name, void *us
 
    assert(res != NULL);
 
-   l_del = eina_list_search_sorted(res->used_in, (Eina_Compare_Cb)resource_cmp, usage_data);
+   l_del = eina_list_search_sorted_list(res->used_in, (Eina_Compare_Cb)resource_cmp, usage_data);
 
    assert(l_del);
 
