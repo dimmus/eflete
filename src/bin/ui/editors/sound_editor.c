@@ -713,16 +713,13 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    edit->markup = elm_layout_add(ap.win);
    elm_layout_theme_set(edit->markup, "layout", "sound_editor", "default");
    evas_object_size_hint_weight_set(edit->markup, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(edit->markup);
    evas_object_data_set(edit->markup, SND_EDIT_KEY, edit);
 
    evas_object_event_callback_add(edit->markup, EVAS_CALLBACK_DEL, _on_sound_editor_del, edit);
 
    btn = elm_button_add(edit->markup);
    evas_object_smart_callback_add(btn, "clicked", _on_delete_clicked_cb, edit);
-   evas_object_show(btn);
    elm_object_part_content_set(edit->markup, "swallow.btn.del", btn);
-   evas_object_show(btn);
 
    ic = elm_icon_add(btn);
    elm_icon_standard_set(ic, "minus");
@@ -766,7 +763,8 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
       break;
      }
    search = _sound_editor_search_field_create(edit->markup);
-   elm_object_part_content_set(edit->markup, "swallow.search_area", search);
+   evas_object_hide(search);
+   elm_layout_content_set(edit->markup, "swallow.search_area", search);
    evas_object_smart_callback_add(search, "changed", _search_changed, edit);
    evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, edit);
    evas_object_smart_callback_add(edit->gengrid, "pressed", _search_reset_cb,
