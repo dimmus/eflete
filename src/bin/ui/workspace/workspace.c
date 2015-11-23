@@ -1264,6 +1264,8 @@ _workspace_smart_del(Evas_Object *o)
 {
    WS_DATA_GET(o, sd);
 
+   evas_object_del(sd->highlight.space_hl);
+   evas_object_del(sd->highlight.highlight);
    _workspace_parent_sc->del(o);
 }
 
