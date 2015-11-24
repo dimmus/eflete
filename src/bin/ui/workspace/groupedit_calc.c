@@ -773,19 +773,6 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    PART_STATE_FREE
 }
 
-#define GP_GEOMETRY_SET \
-   if (gp->bg) \
-     { \
-        evas_object_resize(gp->bg, w * sd->zoom_factor, h * sd->zoom_factor); \
-        evas_object_move(gp->bg, x * sd->zoom_factor + xe + offset_x, \
-                                y * sd->zoom_factor + ye + offset_y); \
-     } \
-   /* evas_object_resize(gp->border, w * sd->zoom_factor, h * sd->zoom_factor); \
-     evas_object_move(gp->border, x * sd->zoom_factor + xe + offset_x, \
-                                y * sd->zoom_factor + ye + offset_y); */\
-   evas_object_resize(gp->item, sd->con_current_size->w, sd->con_current_size->h); \
-   evas_object_move(gp->item, xe + offset_x, ye + offset_y);
-
 #define GP_REAL_GEOMETRY_CALC(PART_X, PART_Y, ABS_X, ABS_Y) \
    w *= sd->zoom_factor; h *= sd->zoom_factor; \
    PART_X = x * sd->zoom_factor + xe + offset_x; \
@@ -883,8 +870,6 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
      }
 
 
-   GP_GEOMETRY_SET
-
    GP_REAL_GEOMETRY_CALC(part_x, part_y, abs_x, abs_y)
 
    if (gp->part->type == EDJE_PART_TYPE_BOX)
@@ -925,7 +910,6 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
    ZOOM_APPLY(gp->draw)
 }
 
-#undef GP_GEOMETRY_SET
 #undef GP_REAL_GEOMETRY_CALC
 #undef ZOOM_APPLY
 
@@ -1068,10 +1052,6 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
    gp->item = NULL;
 
 
-#define DRAW_ADD() \
-   gp->draw = elm_layout_add(sd->parent); \
-   elm_layout_theme_set(gp->draw, "layout", "groupview", "default"); \
-
 #define PART_VIEW_ADD() \
    gp->draw = elm_box_add(sd->parent); \
    elm_box_layout_set(gp->draw, evas_object_box_layout_stack, NULL, NULL); \
@@ -1156,10 +1136,6 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
 
    return gp;
 }
-
-#undef BORDER_ADD
-
-TODO("Fix part del")
 
 static void
 _part_draw_del(Ws_Groupedit_Smart_Data *sd, Part_ *part)
