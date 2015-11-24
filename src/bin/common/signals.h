@@ -288,5 +288,12 @@ typedef struct {
  */
 #define SIGNAL_STYLE_EDITOR_TAB_CLICKED "SIGNAL_STYLE_EDITOR_TAB_CLICKED"
 
+/**
+ * emited when style/styles in style editor is/are selected.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_STYLE_SELECTED "SIGNAL_STYLE_SELECTED"
 
 #endif /* SIGNALS_H*/

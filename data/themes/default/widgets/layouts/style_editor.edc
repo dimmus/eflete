@@ -1613,6 +1613,7 @@ group { name: "elm/layout/style_editor/direction";
       part { name: "area.bg";
          type: SPACER;
          description { state: "default" 0.0;
+            align: 0.0 0.5;
             FIXED_SIZE(40, 40);
          }
       }
