@@ -108,6 +108,7 @@ struct _Ws_Groupedit_Smart_Data
    double zoom_factor; /**< current zoom factor. */
    Evas_Coord downx;
    Evas_Coord downy;
+   Eina_Bool manual_calc : 1;
 };
 
 #define WS_GROUPEDIT_DATA_GET(o, ptr)  \

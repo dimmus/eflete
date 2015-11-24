@@ -703,6 +703,7 @@ _part_box_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 
    assert(gp->container == NULL);
 
+   fprintf(stdout, "%s\n", gp->part->name);
    gp->container = evas_object_box_add(sd->e);
    elm_box_pack_end(gp->draw, gp->container);
    evas_object_show(gp->container);
@@ -771,6 +772,16 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    evas_object_box_padding_set(gp->container, pad_x, pad_y);
 
    PART_STATE_FREE
+}
+
+static void
+_part_container_del(Groupedit_Part *gp)
+{
+   assert(gp->container != NULL);
+
+   elm_box_unpack(gp->draw, gp->container);
+   evas_object_del(gp->container);
+   gp->container = NULL;
 }
 
 #define GP_REAL_GEOMETRY_CALC(PART_X, PART_Y, ABS_X, ABS_Y) \
@@ -983,38 +994,43 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
                 edje_object_part_text_set(sd->group->edit_object, gp->part->name, gp->part->name);
               eina_stringshare_del(str);
               _common_param_update(gp, sd->group->edit_object);
-              _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
            case EDJE_PART_TYPE_RECTANGLE:
            case EDJE_PART_TYPE_GROUP:
               _common_param_update(gp, sd->group->edit_object);
-              _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
            case EDJE_PART_TYPE_IMAGE:
-              _image_param_update(gp, sd->group->edit_object);
-              _part_recalc_apply(sd, gp, offset_x, offset_y);
+              if (sd->manual_calc) _image_param_update(gp, sd->group->edit_object);
               break;
            case EDJE_PART_TYPE_PROXY: // it part like image
-              _proxy_param_update(gp, sd->group->edit_object);
-              _part_recalc_apply(sd, gp, offset_x, offset_y);
+              if (sd->manual_calc) _proxy_param_update(gp, sd->group->edit_object);
               break;
            case EDJE_PART_TYPE_TABLE:
+              if (sd->manual_calc)
+                {
+                   _part_container_del(gp);
+                   _part_table_add(sd, gp);
+                   _part_table_items_add(sd, gp);
+                }
               _table_param_update(sd, gp);
               _common_param_update(gp, sd->group->edit_object);
-              _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
            case EDJE_PART_TYPE_BOX:
+              if (sd->manual_calc)
+                {
+                   _part_container_del(gp);
+                   _part_box_add(sd, gp);
+                }
               _box_param_update(sd, gp);
               _common_param_update(gp, sd->group->edit_object);
-              _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
            case EDJE_PART_TYPE_SPACER:
            case EDJE_PART_TYPE_SWALLOW:
            case EDJE_PART_TYPE_EXTERNAL:
-              _part_recalc_apply(sd, gp, offset_x, offset_y);
            default:
               break;
           }
+        _part_recalc_apply(sd, gp, offset_x, offset_y);
         if (gp->part->visible)
           {
              evas_object_show(gp->bg);
@@ -1026,13 +1042,13 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
              evas_object_hide(gp->draw);
           }
      }
-     if (!sd->separated) _part_object_area_calc(sd);
-     else
-       {
-          if (sd->to_select) _select_item_move_to_top(sd);
-          evas_object_hide(sd->obj_area.obj);
-          evas_object_smart_callback_call(sd->obj, SIG_OBJ_AREA_CHANGED, sd->obj_area.geom);
-       }
+   if (!sd->separated) _part_object_area_calc(sd);
+   else
+     {
+        if (sd->to_select) _select_item_move_to_top(sd);
+        evas_object_hide(sd->obj_area.obj);
+        evas_object_smart_callback_call(sd->obj, SIG_OBJ_AREA_CHANGED, sd->obj_area.geom);
+     }
 
    evas_object_smart_callback_call(sd->obj, SIG_GEOMETRY_CHANGED, (void *)sd->real_size);
 
