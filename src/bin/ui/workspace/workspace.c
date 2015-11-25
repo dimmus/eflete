@@ -1882,28 +1882,3 @@ workspace_edit_object_part_item_selected_set(Evas_Object *obj,
    return groupedit_edit_object_part_item_selected_set(sd->groupedit, item_name,
                                                        selected);
 }
-
-Eina_Bool
-workspace_edit_object_part_item_add(Evas_Object *obj, Eina_Stringshare *part,
-                                    Eina_Stringshare *item,
-                                    Eina_Stringshare *source)
-{
-   WS_DATA_GET(obj, sd);
-   assert(part != NULL);
-   assert(item != NULL);
-   assert(source != NULL);
-
-   return groupedit_edit_object_part_item_add(sd->groupedit, part, item, source);
-}
-
-Eina_Bool
-workspace_edit_object_part_item_del(Evas_Object *obj, Eina_Stringshare *part,
-                                    Eina_Stringshare *item)
-{
-   WS_DATA_GET(obj, sd);
-   assert(part != NULL);
-   assert(item != NULL);
-
-   return groupedit_edit_object_part_item_del(sd->groupedit, part, item);
-}
-

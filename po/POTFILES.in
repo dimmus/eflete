@@ -79,7 +79,6 @@ src/bin/ui/splash.c
 src/bin/ui/tab_home_open.c
 src/bin/ui/tabs.c
 src/bin/ui/workspace/groupedit.c
-src/bin/ui/workspace/groupedit_box_layouts.c
 src/bin/ui/workspace/groupedit_calc.c
 src/bin/ui/workspace/highlight.c
 src/bin/ui/workspace/workspace.c

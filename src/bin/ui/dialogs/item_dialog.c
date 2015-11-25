@@ -58,7 +58,6 @@ _on_button_add_clicked(void *data __UNUSED__,
    assert(combobox != NULL);
    assert(part != NULL);
 
-   const char *name = elm_entry_entry_get(entry);
    Ewe_Combobox_Item *item = NULL;
 
    if (elm_entry_is_empty(entry))
@@ -75,18 +74,9 @@ _on_button_add_clicked(void *data __UNUSED__,
         return;
      }
 
-   if (workspace_edit_object_part_item_add(ap.workspace, part->name, name, item->title))
-     {
-       edje_edit_string_list_free(part->items);
-       part->items = edje_edit_part_items_list_get(ap.project->current_style->obj, part->name);
-       ui_widget_list_part_items_refresh(ui_block_widget_list_get(), part, true);
-     }
-   else
-     {
-        NOTIFY_ERROR(_("Item with typed name is already exist. <br>"
-                       "Please type different name for this item."))
-        return;
-     }
+   edje_edit_string_list_free(part->items);
+   part->items = edje_edit_part_items_list_get(ap.project->current_style->obj, part->name);
+   ui_widget_list_part_items_refresh(ui_block_widget_list_get(), part, true);
 
    workspace_edit_object_recalc(ap.workspace);
    //project_changed(false);

@@ -231,6 +231,7 @@ _groupedit_smart_calculate(Evas_Object *o)
                       priv->con_current_size->w,
                       priv->con_current_size->h);
 
+   priv->manual_calc = false;
    _parts_recalc(priv);
 
    evas_object_smart_callback_call(o, SIG_CHANGED, (void *)priv->con_current_size);
@@ -296,6 +297,7 @@ groupedit_edit_object_recalc_all(Evas_Object *obj)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd);
 
+   sd->manual_calc = true;
    return _parts_recalc(sd);
 }
 
@@ -311,7 +313,7 @@ groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part)
 
    assert(gp != NULL);
 
-   return gp->border;
+   return gp->draw;
 }
 
 Eina_Bool
@@ -332,31 +334,6 @@ groupedit_edit_object_part_del(Evas_Object *obj, Part_ *part)
    assert(part != NULL);
 
    return _edit_object_part_del(sd, part);
-}
-
-Eina_Bool
-groupedit_edit_object_part_item_add(Evas_Object *obj, Eina_Stringshare *part,
-                                    Eina_Stringshare *item, Eina_Stringshare *source)
-{
-   WS_GROUPEDIT_DATA_GET(obj, sd);
-
-   assert(part != NULL);
-   assert(item != NULL);
-   assert(source != NULL);
-
-   return _edit_object_part_item_add(sd, part, item, source);
-}
-
-Eina_Bool
-groupedit_edit_object_part_item_del(Evas_Object *obj, Eina_Stringshare *part,
-                                    Eina_Stringshare *item)
-{
-   WS_GROUPEDIT_DATA_GET(obj, sd);
-
-   assert(part != NULL);
-   assert(item != NULL);
-
-   return _edit_object_part_item_del(sd, part, item);
 }
 
 Eina_Bool
@@ -603,6 +580,7 @@ groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible
 
    assert(gp != NULL);
 
+   sd->manual_calc = true;
    _parts_recalc(sd);
    return true;
 }
@@ -684,36 +662,16 @@ groupedit_zoom_factor_set(Evas_Object *obj, double factor)
 Eina_Bool
 groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
                                              Eina_Stringshare *item_name,
-                                             Eina_Bool selected)
+                                             Eina_Bool selected __UNUSED__)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd);
    Groupedit_Part *gp = sd->selected;
-   Eina_List *l, *l_n;
-   Groupedit_Item *ge_item = NULL;
 
    if (!gp) return false;
 
    assert(item_name != NULL);
 
-   EINA_LIST_FOREACH_SAFE(gp->items, l, l_n, ge_item)
-     {
-        if (ge_item->name == item_name)
-          {
-             ge_item->selected = selected;
-             if (selected)
-               {
-                  edje_object_file_set(ge_item->highlight, EFLETE_THEME, "elm/image/border/2px");
-                  evas_object_color_set(ge_item->highlight, 0, 253, 255, 255);
-               }
-             else
-               {
-                  edje_object_file_set(ge_item->highlight, EFLETE_THEME, "elm/image/border/1px");
-                  evas_object_color_set(ge_item->highlight, 49, 140, 141, 255);
-               }
-             _parts_recalc(sd);
-             return true;
-          }
-     }
+   TODO("need to find a item in the list and emit signal for hilight it. NOT RECALC!!!!")
    return false;
 }
 

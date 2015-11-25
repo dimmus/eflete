@@ -118,6 +118,65 @@ group { name: "elm/layout/property/1swallow_subtext";
    }
 }
 
+group { name: "elm/layout/property/1swallow_direction";
+   parts {
+      part { name: "area.base";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 0 45;
+            max: -1 45;
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color_class: "main";
+            align: 0.0 0.0;
+            rel1 {
+               to_y: "area.base";
+            }
+            rel2 {
+               relative: 0.4 1.0;
+               to_y: "area.base";
+            }
+            text {
+               font: "PT";
+               size: 12;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "spacer_direction";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0 0;
+            FIXED_SIZE(4, 45);
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "elm.text";
+               to_y: "elm.text";
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "spacer_direction";
+               to_y: "elm.text";
+            }
+            rel2 {
+               relative: 1.0 0.9;
+               to_x: "spacer_direction";
+               to_y: "area.base";
+            }
+         }
+      }
+   }
+}
+
 group { name: "elm/layout/property/2swallow";
    parts {
       part { name: "area.content";

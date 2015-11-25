@@ -402,9 +402,7 @@ ui_workspace_test_SOURCES = \
 ../tests/test_ui_workspace/workspace_highlight_align_visible_set.c \
 ../tests/test_ui_workspace/workspace_object_area_visible_get.c \
 ../tests/test_ui_workspace/workspace_object_area_visible_set.c \
-../tests/test_ui_workspace/workspace_edit_object_part_item_selected_set.c \
-../tests/test_ui_workspace/workspace_edit_object_part_item_add.c \
-../tests/test_ui_workspace/workspace_edit_object_part_item_del.c
+../tests/test_ui_workspace/workspace_edit_object_part_item_selected_set.c
 ui_workspace_test_CFLAGS = ${FLAGS}
 ui_workspace_test_LDADD = ${LD}
 

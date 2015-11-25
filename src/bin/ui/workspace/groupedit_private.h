@@ -108,6 +108,7 @@ struct _Ws_Groupedit_Smart_Data
    double zoom_factor; /**< current zoom factor. */
    Evas_Coord downx;
    Evas_Coord downy;
+   Eina_Bool manual_calc : 1;
 };
 
 #define WS_GROUPEDIT_DATA_GET(o, ptr)  \
@@ -141,23 +142,17 @@ struct _Groupedit_Part
    Evas_Object *draw;         /**< The evas primitive to be draw in groupedit.
                                    The valid evas object types: image, rectangle,
                                    text and textblock.*/
-   Evas_Object *border;       /**< The object border, use for next part types:
-                                   TEXT, TEXTBLOCK, SWALLOW, SPACER. In another
-                                   case border has opacity 0. This object serves
-                                   for show the edje part geometry. */
+   Evas_Object *proxy_part;
+   Evas_Object *layout;
+   Evas_Object *container;    /**< Used for box/table parts */
    Evas_Object *item;         /**< The object border in the separete mode */
    Eina_List *items;          /**< The items, for TABLE, BOX part types */
-   Eina_List *fake_items;          /**< The items, for TABLE, BOX part types */
 };
 
 struct _Groupedit_Item
 {
    Eina_Stringshare *name;    /**< The item name.  */
-   Evas_Object *draw;         /**< The loaded edje object.*/
-   Evas_Object *border;       /**< The item border*/
-   Evas_Object *highlight;    /**< The item highlight */
-   Eina_List *spread;         /**< The spreaded items */
-   Eina_Bool selected : 1;    /**< Item is selected in widget list or not. */
+   Evas_Object *layout;       /**< The item border and hilight */
 };
 
 void
@@ -185,65 +180,8 @@ void
 _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd);
 
 Eina_Bool
-_edit_object_part_item_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
-                           Eina_Stringshare *item, Eina_Stringshare *source);
-Eina_Bool
 _edit_object_part_item_del(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
                            Eina_Stringshare *item);
-
-/**
- * Those are default layouts for BOX and their code are same like in
- * evas object box.
- * Those functions need to be always up to date.
- * They are required to be here for calculation real sizes and positions of
- * items (evas_object_geometry_get doesn't work well with items in box)
- */
-
-void
-_box_layout_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-void
-_box_layout_flow_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-void
-_box_layout_homogeneous_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-void
-_box_layout_homogeneous_max_size_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-void
-_box_layout_stack(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-void
-_box_layout_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-void
-_box_layout_flow_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-void
-_box_layout_homogeneous_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-void
-_box_layout_homogeneous_max_size_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-/* this is only for finding layout! */
-struct edje_box_layouts {
-   const char *name;
-   Evas_Object_Box_Layout cb;
-};
-/* box layout function <-> box layout name mapping */
-static const struct edje_box_layouts _edje_box_layouts[] = {
-   {"horizontal", _box_layout_horizontal},
-   {"horizontal_flow", _box_layout_flow_horizontal},
-   {"horizontal_homogeneous", _box_layout_homogeneous_horizontal},
-   {"horizontal_max", _box_layout_homogeneous_max_size_horizontal},
-   {"stack", _box_layout_stack},
-   {"vertical", _box_layout_vertical},
-   {"vertical_flow", _box_layout_flow_vertical},
-   {"vertical_homogeneous", _box_layout_homogeneous_vertical},
-   {"vertical_max", _box_layout_homogeneous_max_size_vertical},
-   {NULL, NULL}
-};
 
 /**
  * Stack part above above in groupedit module.

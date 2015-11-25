@@ -41,14 +41,8 @@ _move_border_to_top(Ws_Groupedit_Smart_Data *sd);
 static void
 _part_draw_del(Ws_Groupedit_Smart_Data *sd, Part_ *part);
 
-static Groupedit_Item *
-_item_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part, Eina_Stringshare *item);
-
 static void
 _item_draw_del(Groupedit_Item *ge_item);
-
-static Evas_Object *
-_part_container_add(Ws_Groupedit_Smart_Data *sd, Part_ *part, Eina_List **items);
 
 static void
 _part_object_area_calc(Ws_Groupedit_Smart_Data *sd);
@@ -61,12 +55,6 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
 
 static void
 _proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
-
-static void
-_textblock_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
-
-static void
-_group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, Evas_Object *parent);
 
 static void
 _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp);
@@ -105,77 +93,6 @@ _edit_object_part_del(Ws_Groupedit_Smart_Data *sd, Part_ *part)
    return true;
 }
 
-Eina_Bool
-_edit_object_part_item_add(Ws_Groupedit_Smart_Data *sd,
-                           Eina_Stringshare *part,
-                           Eina_Stringshare *item,
-                           Eina_Stringshare *source)
-{
-   Groupedit_Part *gp;
-   Groupedit_Item *ge_item = NULL;
-   unsigned char type = EDJE_PART_TYPE_NONE;
-
-   assert(sd != NULL);
-   assert(part != NULL);
-   assert(item != NULL);
-   assert(source != NULL);
-
-   gp = _parts_list_find(sd->parts, part);
-   if (!edje_edit_part_item_append(sd->group->edit_object, part, item, source))
-     return false;
-
-   ge_item = _item_draw_add(sd, gp->part, item);
-   if (!ge_item) return false;
-   type = edje_edit_part_type_get(sd->group->edit_object, part);
-
-   if (type == EDJE_PART_TYPE_TABLE)
-     {
-        /*Position new item in cell with coords [0;0]*/
-        /*edit_part_item_position_col_set(sd->group->edit_object, part, item, 0);
-        edje_edit_part_item_position_row_set(sd->group->edit_object, part, item, 0);*/
-        evas_object_table_pack(gp->draw, ge_item->border, 0, 0, 1, 1);
-        evas_object_table_pack(gp->draw, ge_item->draw, 0, 0, 1, 1);
-        evas_object_table_pack(gp->draw, ge_item->highlight, 0, 0, 1, 1);
-     }
-
-   gp->items = eina_list_append(gp->items, ge_item);
-   evas_object_smart_member_add(ge_item->border, gp->draw);
-   evas_object_smart_member_add(ge_item->draw, gp->draw);
-   evas_object_smart_member_add(ge_item->highlight, gp->draw);
-
-   evas_object_smart_changed(sd->obj);
-
-   return true;
-}
-
-Eina_Bool
-_edit_object_part_item_del(Ws_Groupedit_Smart_Data *sd __UNUSED__,
-                           Eina_Stringshare *part __UNUSED__,
-                           Eina_Stringshare *item __UNUSED__)
-{
-   Groupedit_Part *gp;
-   Groupedit_Item *ge_item = NULL;
-   Eina_List *l, *l_next;
-
-   gp = _parts_list_find(sd->parts, part);
-
-   if (!edje_edit_part_item_del(sd->group->edit_object, part, item))
-     return false;
-
-   EINA_LIST_FOREACH_SAFE(gp->items, l, l_next, ge_item)
-     {
-        if (ge_item->name == item) break;
-        ge_item = NULL;
-     }
-   if (!ge_item) return false;
-   evas_object_table_unpack(gp->draw, ge_item->draw);
-   gp->items = eina_list_remove(gp->items, ge_item);
-   _item_draw_del(ge_item);
-
-   evas_object_smart_changed(sd->obj);
-   return true;
-}
-
 static void
 _part_parts_layouts_update(Ws_Groupedit_Smart_Data *sd,
                            Groupedit_Part *ge_part,
@@ -192,17 +109,15 @@ _part_parts_layouts_update(Ws_Groupedit_Smart_Data *sd,
         evas_object_stack_below(sd->clipper, ge_part_to->draw);
         evas_object_stack_below(ge_part->bg, ge_part_to->draw);
         evas_object_stack_below(ge_part->draw, ge_part_to->draw);
-        evas_object_stack_below(ge_part->border, ge_part_to->draw);
         evas_object_stack_below(ge_part->item, ge_part_to->draw);
      }
    else
      {
-        evas_object_stack_above(sd->bg, ge_part_to->border);
-        evas_object_stack_above(sd->clipper, ge_part_to->border);
-        evas_object_stack_above(ge_part->item, ge_part_to->border);
-        evas_object_stack_above(ge_part->border, ge_part_to->border);
-        evas_object_stack_above(ge_part->draw, ge_part_to->border);
-        evas_object_stack_above(ge_part->bg, ge_part_to->border);
+        evas_object_stack_above(sd->bg, ge_part_to->draw);
+        evas_object_stack_above(sd->clipper, ge_part_to->draw);
+        evas_object_stack_above(ge_part->item, ge_part_to->draw);
+        evas_object_stack_above(ge_part->draw, ge_part_to->draw);
+        evas_object_stack_above(ge_part->bg, ge_part_to->draw);
      }
 }
 
@@ -361,17 +276,11 @@ _parts_list_free(Ws_Groupedit_Smart_Data *sd)
 static void
 _groupedit_part_free(Groupedit_Part *gp)
 {
-   Groupedit_Item *ge_item = NULL;
-   /* just in case */
-   Evas_Object *image = NULL;
+   Groupedit_Item *ge_item;
 
    assert(gp != NULL);
 
-   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
-   evas_object_del(image);
    evas_object_del(gp->draw);
-   evas_object_smart_member_del(gp->border);
-   evas_object_del(gp->border);
    if (gp->item)
      {
         evas_object_smart_member_del(gp->item);
@@ -382,12 +291,6 @@ _groupedit_part_free(Groupedit_Part *gp)
 
    EINA_LIST_FREE(gp->items, ge_item)
      _item_draw_del(ge_item);
-   EINA_LIST_FREE(gp->fake_items, ge_item)
-     {
-        evas_object_del(ge_item->border);
-        evas_object_del(ge_item->highlight);
-        free(ge_item);
-     }
    free(gp);
 }
 
@@ -462,7 +365,6 @@ _select_item_move_to_top(Ws_Groupedit_Smart_Data *sd)
    evas_object_raise(sd->clipper);
    evas_object_raise(sd->to_select->bg);
    evas_object_raise(sd->to_select->draw);
-   evas_object_raise(sd->to_select->border);
    evas_object_raise(sd->to_select->item);
    sd->selected = sd->to_select;
    edje_object_signal_emit(sd->selected->item, "item,selected", "eflete");
@@ -482,7 +384,7 @@ _part_separete_mod_mouse_click_cb(void *data,
 
    assert(gp != NULL);
 
-   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->border, "sd");
+   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->draw, "sd");
 
    assert(sd != NULL);
 
@@ -504,7 +406,7 @@ _part_separete_mod_mouse_in_cb(void *data,
 
    assert(gp != NULL);
 
-   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->border, "sd");
+   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->draw, "sd");
 
    assert(sd != NULL);
 
@@ -522,7 +424,7 @@ _part_separete_mod_mouse_out_cb(void *data,
 
    assert(gp != NULL);
 
-   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->border, "sd");
+   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->draw, "sd");
 
    assert(sd != NULL);
 
@@ -540,7 +442,7 @@ _part_select(void *data,
 
    assert(gp != NULL);
 
-   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->border, "sd");
+   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->draw, "sd");
 
    assert(sd != NULL);
 
@@ -552,18 +454,290 @@ _part_select(void *data,
                                   (void *)gp->part);
 }
 
-#define GP_GEOMETRY_SET \
-   if (gp->bg) \
-     { \
-        evas_object_resize(gp->bg, w * sd->zoom_factor, h * sd->zoom_factor); \
-        evas_object_move(gp->bg, x * sd->zoom_factor + xe + offset_x, \
-                                y * sd->zoom_factor + ye + offset_y); \
-     } \
-   evas_object_resize(gp->border, w * sd->zoom_factor, h * sd->zoom_factor); \
-   evas_object_move(gp->border, x * sd->zoom_factor + xe + offset_x, \
-                                y * sd->zoom_factor + ye + offset_y); \
-   evas_object_resize(gp->item, sd->con_current_size->w, sd->con_current_size->h); \
-   evas_object_move(gp->item, xe + offset_x, ye + offset_y);
+static void
+_part_table_items_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp, Eina_Stringshare ***items_draw)
+{
+   const Evas_Object *table;
+   Evas_Object *cell, *cell_content;
+   Eina_Stringshare *item_name, *item_source;
+   int w, h; /* Geometry values */
+   int min_w, max_w, min_h, max_h; /* Hints values */
+   int i, j, col, row;
+   unsigned char span_col, span_row;
+   Groupedit_Item *item;
+
+   assert(gp->container != NULL);
+   assert(gp->items == NULL);
+
+   table = edje_object_part_object_get(sd->group->edit_object, gp->part->name);
+   evas_object_table_col_row_size_get(table, &col, &row);
+   evas_object_table_clear(gp->container, true);
+
+   for (i = 0; i < col; i++)
+     {
+        for (j = 0; j < row; j++)
+          {
+             if (items_draw[i][j] == (Eina_Stringshare *) -1) continue;
+
+             span_col = 1;
+             span_row = 1;
+
+             cell = elm_layout_add(sd->parent);
+             evas_object_size_hint_align_set(cell, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+             elm_layout_theme_set(cell, "layout", "groupview", "default");
+             evas_object_show(cell);
+             elm_object_signal_emit(cell, "border,part_item", "eflete");
+             if (items_draw[i][j] != NULL)
+               {
+                  item_name = items_draw[i][j];
+                  span_col = edje_edit_part_item_span_col_get(sd->group->edit_object, gp->part->name, item_name);
+                  span_row = edje_edit_part_item_span_row_get(sd->group->edit_object, gp->part->name, item_name);
+
+                  cell_content = edje_object_add(sd->e);
+                  item_source = edje_edit_part_item_source_get(sd->group->edit_object, gp->part->name, item_name);
+                  edje_object_file_set(cell_content, ap.project->dev, item_source);
+                  eina_stringshare_del(item_source);
+                  /* hide this object, it need only for calculate cell size */
+                  evas_object_hide(cell_content);
+
+                  min_w = edje_edit_part_item_min_w_get(sd->group->edit_object, gp->part->name, item_name);
+                  min_h = edje_edit_part_item_min_h_get(sd->group->edit_object, gp->part->name, item_name);
+
+                  // Calculation according to box/table item implementation in efl 1.13 at edje_load.c
+                  if ((min_w <= 0) && (min_h <= 0))
+                    {
+                       edje_object_size_min_get(cell_content, &w, &h);
+                       if ((w <= 0) && (h <= 0))
+                         edje_object_size_min_calc(cell_content, &w, &h);
+                    }
+                  if (((min_w <= 0) && (min_h <= 0)) && ((w > 0) || (h > 0)))
+                    evas_object_size_hint_min_set(cell_content, w, h);
+                  else
+                    evas_object_size_hint_min_set(cell_content, min_w, min_h);
+
+                  max_w = edje_edit_part_item_max_w_get(sd->group->edit_object, gp->part->name, item_name);
+                  max_h = edje_edit_part_item_max_h_get(sd->group->edit_object, gp->part->name, item_name);
+                  evas_object_size_hint_max_set(cell_content, max_w, max_h);
+                  evas_object_table_pack(gp->container, cell_content, i, j, span_col, span_row);
+
+                  item = mem_malloc(sizeof(Groupedit_Item));
+                  item->name = eina_stringshare_add(item_name);
+                  item->layout = cell;
+                  gp->items = eina_list_append(gp->items, item);
+               }
+             evas_object_table_pack(gp->container, cell, i, j, span_col, span_row);
+          }
+     }
+}
+
+static void
+_part_table_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
+{
+
+   Eina_List *l;
+   Eina_Stringshare *str;
+   int span_c, span_r, col, row, i, j;
+   const Evas_Object *table;
+   Eina_Stringshare ***items_draw;
+
+   assert(gp->container == NULL);
+
+   gp->container = evas_object_table_add(sd->e);
+   elm_box_pack_end(gp->draw, gp->container);
+   evas_object_show(gp->container);
+
+   table = edje_object_part_object_get(sd->group->edit_object, gp->part->name);
+   evas_object_table_col_row_size_get(table, &col, &row);
+   fprintf(stdout, "%5d %5d\n", col, row);
+   items_draw = (Eina_Stringshare ***)mem_calloc(1, sizeof(Eina_Stringshare **) * col);
+   for (i = 0; i < col; i++)
+     items_draw[i] = (Eina_Stringshare **)mem_calloc(1, sizeof(Eina_Stringshare *) * row);
+   EINA_LIST_FOREACH(gp->part->items, l, str)
+     {
+        col = edje_edit_part_item_position_col_get(sd->group->edit_object, gp->part->name, str);
+        row = edje_edit_part_item_position_row_get(sd->group->edit_object, gp->part->name, str);
+        span_c = edje_edit_part_item_span_col_get(sd->group->edit_object, gp->part->name, str);
+        span_r = edje_edit_part_item_span_row_get(sd->group->edit_object, gp->part->name, str);
+
+        for (i = col; i < (col + span_c); i++)
+          {
+             for (j = row; j < (row + span_r); j++)
+               items_draw[i][j] = (Eina_Stringshare *) -1;
+          }
+        items_draw[col][row] = eina_stringshare_add(str);
+     }
+   _part_table_items_add(sd, gp, items_draw);
+
+   evas_object_table_col_row_size_get(table, &col, &row);
+   for (i = 0; i < col; i++)
+     {
+        for (j = 0; j < row; j++)
+          {
+             if (items_draw[i][j] == (Eina_Stringshare *) -1) continue;
+             eina_stringshare_del(items_draw[i][j]);
+          }
+     }
+   for (i = 0; i < col; i++)
+     free(items_draw[i]);
+   free(items_draw);
+
+
+}
+
+/* get from edje_util.c:2935 */
+struct edje_box_layout_builtin
+{
+   const char            *name;
+   Evas_Object_Box_Layout cb;
+};
+
+static Evas_Object_Box_Layout
+_edje_box_layout_builtin_find(const char *name)
+{
+   const struct edje_box_layout_builtin _edje_box_layout_builtin[] = {
+      {"horizontal", evas_object_box_layout_horizontal},
+      {"horizontal_flow", evas_object_box_layout_flow_horizontal},
+      {"horizontal_homogeneous", evas_object_box_layout_homogeneous_horizontal},
+      {"horizontal_max", evas_object_box_layout_homogeneous_max_size_horizontal},
+      {"stack", evas_object_box_layout_stack},
+      {"vertical", evas_object_box_layout_vertical},
+      {"vertical_flow", evas_object_box_layout_flow_vertical},
+      {"vertical_homogeneous", evas_object_box_layout_homogeneous_vertical},
+      {"vertical_max", evas_object_box_layout_homogeneous_max_size_vertical},
+      {NULL, NULL}
+   };
+   const struct edje_box_layout_builtin *base;
+
+   switch (name[0])
+     {
+      case 'h':
+        base = _edje_box_layout_builtin + 0;
+        break;
+
+      case 's':
+        base = _edje_box_layout_builtin + 4;
+        break;
+
+      case 'v':
+        base = _edje_box_layout_builtin + 5;
+        break;
+
+      default:
+        return NULL;
+     }
+
+   for (; (base->name) && (base->name[0] == name[0]); base++)
+     if (strcmp(base->name, name) == 0)
+       return base->cb;
+
+   return NULL;
+}
+
+static void
+_part_box_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
+{
+
+   Eina_List *l;
+   Eina_Stringshare *str, *item_source;
+   int spread_w, spread_h;
+   int min_w, min_h, max_w, max_h,  w, h, i;
+   Evas_Object *cell, *cell_content;
+   Groupedit_Item *item;
+
+   assert(gp->container == NULL);
+
+   fprintf(stdout, "%s\n", gp->part->name);
+   gp->container = evas_object_box_add(sd->e);
+   elm_box_pack_end(gp->draw, gp->container);
+   evas_object_show(gp->container);
+
+   EINA_LIST_FOREACH(gp->part->items, l, str)
+     {
+        spread_w = edje_edit_part_item_spread_w_get(sd->group->edit_object, gp->part->name, str);
+        spread_h = edje_edit_part_item_spread_h_get(sd->group->edit_object, gp->part->name, str);
+        for (i = 0; i < (spread_w * spread_h); i++)
+          {
+             cell = elm_layout_add(sd->parent);
+             evas_object_size_hint_align_set(cell, EVAS_HINT_FILL, EVAS_HINT_FILL);
+             elm_layout_theme_set(cell, "layout", "groupview", "default");
+             evas_object_show(cell);
+             elm_object_signal_emit(cell, "border,part_item", "eflete");
+
+             cell_content = edje_object_add(sd->e);
+             item_source = edje_edit_part_item_source_get(sd->group->edit_object, gp->part->name, str);
+             edje_object_file_set(cell_content, ap.project->dev, item_source);
+
+             min_w = edje_edit_part_item_min_w_get(sd->group->edit_object, gp->part->name, str);
+             min_h = edje_edit_part_item_min_h_get(sd->group->edit_object, gp->part->name, str);
+
+             if ((min_w <= 0) && (min_h <= 0))
+               {
+                  edje_object_size_min_get(cell_content, &w, &h);
+                  if ((w <= 0) && (h <= 0))
+                    edje_object_size_min_calc(cell_content, &w, &h);
+               }
+             if (((min_w <= 0) && (min_h <= 0)) && ((w > 0) || (h > 0)))
+               evas_object_size_hint_min_set(cell_content, w, h);
+             else
+               evas_object_size_hint_min_set(cell_content, min_w, min_h);
+             max_w = edje_edit_part_item_max_w_get(sd->group->edit_object, gp->part->name, str);
+             max_h = edje_edit_part_item_max_h_get(sd->group->edit_object, gp->part->name, str);
+             evas_object_size_hint_max_set(cell_content, max_w, max_h);
+
+             elm_object_content_set(cell, cell_content);
+             evas_object_hide(cell_content);
+             evas_object_box_append(gp->container, cell);
+             if (i == 0)
+               {
+                  item = mem_malloc(sizeof(Groupedit_Item));
+                  item->name = eina_stringshare_add(str);
+                  item->layout = cell;
+                  gp->items = eina_list_append(gp->items, item);
+               }
+          }
+     }
+}
+
+static void
+_box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
+{
+   double align_x = 0, align_y = 0;
+   int pad_x, pad_y;
+   Eina_Stringshare *layout;
+
+   assert(sd != NULL);
+   assert(gp != NULL);
+
+   PART_STATE_GET(sd->group->edit_object, gp->part->name)
+
+   layout = edje_edit_state_box_layout_get(sd->group->edit_object, gp->part->name, state, value);
+   evas_object_box_layout_set(gp->container, _edje_box_layout_builtin_find(layout), NULL, NULL);
+
+   align_x = edje_edit_state_container_align_x_get(sd->group->edit_object, gp->part->name, state, value);
+   align_y = edje_edit_state_container_align_y_get(sd->group->edit_object, gp->part->name, state, value);
+   evas_object_box_align_set(gp->container, align_x, align_y);
+
+   pad_x = edje_edit_state_container_padding_x_get(sd->group->edit_object, gp->part->name, state, value);
+   pad_y = edje_edit_state_container_padding_y_get(sd->group->edit_object, gp->part->name, state, value);
+   evas_object_box_padding_set(gp->container, pad_x, pad_y);
+
+   PART_STATE_FREE
+}
+
+static void
+_part_container_del(Groupedit_Part *gp)
+{
+   Groupedit_Item *item;
+   assert(gp->container != NULL);
+
+   EINA_LIST_FREE(gp->items, item)
+     _item_draw_del(item);
+
+   elm_box_unpack(gp->draw, gp->container);
+   evas_object_del(gp->container);
+   gp->container = NULL;
+}
 
 #define GP_REAL_GEOMETRY_CALC(PART_X, PART_Y, ABS_X, ABS_Y) \
    w *= sd->zoom_factor; h *= sd->zoom_factor; \
@@ -610,39 +784,6 @@ _part_select(void *data,
      }
 
 static void
-_part_text_recalc_apply(Ws_Groupedit_Smart_Data *sd,
-                        Groupedit_Part *gp,
-                        int offset_x,
-                        int offset_y)
-{
-   Evas_Coord x, y, xe, ye, ro_x, ro_y;
-   Evas_Coord part_x, part_y, abs_x, abs_y;
-   int w, h, ro_w, ro_h;
-   const Evas_Object *ro;
-
-   assert(sd != NULL);
-   assert(gp != NULL);
-
-   edje_object_part_geometry_get(sd->group->edit_object, gp->part->name, &x, &y, &w, &h);
-   evas_object_geometry_get(sd->group->edit_object, &xe, &ye, NULL, NULL);
-   ro = edje_object_part_object_get(sd->group->edit_object, gp->part->name);
-   evas_object_geometry_get(ro, &ro_x, &ro_y, &ro_w, &ro_h);
-
-   /* all of it because of text and textblock >:C */
-   ro_x = xe + offset_x + (ro_x - xe - offset_x) * sd->zoom_factor;
-   ro_y = ye + offset_y + (ro_y - ye - offset_y) * sd->zoom_factor;
-
-   evas_object_resize(gp->draw, ro_w, ro_h);
-   evas_object_move(gp->draw, ro_x + offset_x, ro_y + offset_y);
-
-   GP_GEOMETRY_SET
-
-   GP_REAL_GEOMETRY_CALC(part_x, part_y, abs_x, abs_y)
-
-   ZOOM_APPLY(gp->draw)
-}
-
-static void
 _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
                    Groupedit_Part *gp,
                    int offset_x,
@@ -650,8 +791,8 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
 {
    Evas_Coord x, y, xe, ye, w, h;
    Evas_Coord part_x, part_y, abs_x, abs_y;
-   Eina_List *l, *l_n, *l_sp, *l_sp_n;
-   Groupedit_Item *ge_item = NULL, *sp_item = NULL;
+   Evas_Coord ro_w, ro_h;
+   const Evas_Object *ro;
 
    assert(sd != NULL);
    assert(gp != NULL);
@@ -662,51 +803,42 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
    evas_object_resize(gp->draw, w, h);
    evas_object_move(gp->draw, (x * sd->zoom_factor + xe + offset_x),
                               (y * sd->zoom_factor + ye + offset_y));
+   evas_object_size_hint_min_set(gp->layout, w, h);
+   evas_object_size_hint_max_set(gp->layout, w, h);
 
+   if (gp->container) evas_object_size_hint_max_set(gp->container, w, h);
 
-   GP_GEOMETRY_SET
+   evas_object_resize(gp->container, w, h);
+   evas_object_move(gp->container, (x * sd->zoom_factor + xe + offset_x),
+                                   (y * sd->zoom_factor + ye + offset_y));
+
+   /* set the proxy part size */
+   ro = edje_object_part_object_get(sd->group->edit_object, gp->part->name);
+   evas_object_geometry_get(ro, NULL, NULL, &ro_w, &ro_h);
+   evas_object_size_hint_min_set(gp->proxy_part, ro_w, ro_h);
+   evas_object_size_hint_max_set(gp->proxy_part, ro_w, ro_h);
+
+   if (gp->part->type == EDJE_PART_TYPE_TEXT)
+     {
+        double x_align, y_align;
+
+        x_align = edje_edit_state_text_align_x_get(sd->group->edit_object,
+                                                   gp->part->name,
+                                                   gp->part->current_state->parsed_name,
+                                                   gp->part->current_state->parsed_val);
+        y_align = edje_edit_state_text_align_y_get(sd->group->edit_object,
+                                                   gp->part->name,
+                                                   gp->part->current_state->parsed_name,
+                                                   gp->part->current_state->parsed_val);
+        evas_object_size_hint_align_set(gp->proxy_part, x_align, y_align);
+     }
+
 
    GP_REAL_GEOMETRY_CALC(part_x, part_y, abs_x, abs_y)
-
-   if (gp->part->type == EDJE_PART_TYPE_BOX)
-     evas_object_smart_calculate(gp->draw);
-
-   /* We don't need xe or ye for box items */
-   xe = 0;
-   ye = 0;
-
-   if (gp->items)
-     {
-        EINA_LIST_FOREACH_SAFE(gp->items, l, l_n, ge_item)
-          {
-             evas_object_geometry_get(ge_item->border, &x, &y, &w, &h);
-             GP_REAL_GEOMETRY_CALC(part_x, part_y, abs_x, abs_y)
-
-             if (ge_item->spread)
-               {
-                  EINA_LIST_FOREACH_SAFE(ge_item->spread, l_sp, l_sp_n, sp_item)
-                    {
-                       /* If it is BOX then there are borders exists.
-                        * If border is not exist then it is TABLE's item.
-                        */
-                       if (gp->part->type == EDJE_PART_TYPE_BOX)
-                         evas_object_geometry_get(sp_item->border, &x, &y, &w, &h);
-                       else
-                         {
-                            evas_object_geometry_get(sp_item->draw, &x, &y, &w, &h);
-                            evas_object_smart_calculate(sp_item->draw);
-                         }
-
-                       GP_REAL_GEOMETRY_CALC(part_x, part_y, abs_x, abs_y)
-                    }
-               }
-          }
-     }
 
    ZOOM_APPLY(gp->draw)
 }
 
-#undef GP_GEOMETRY_SET
 #undef GP_REAL_GEOMETRY_CALC
 #undef ZOOM_APPLY
 
@@ -715,6 +847,7 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
 {
    Eina_List *l;
    Groupedit_Part *gp;
+   Eina_Stringshare *str;
    int i = 0, offset_x, offset_y;
 
    assert(sd != NULL);
@@ -770,200 +903,148 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
 
         switch (gp->part->type)
           {
-           case EDJE_PART_TYPE_RECTANGLE:
-              _common_param_update(gp, sd->group->edit_object);
-              _part_recalc_apply(sd, gp, offset_x, offset_y);
-              break;
            case EDJE_PART_TYPE_TEXT:
-              _common_param_update(gp, sd->group->edit_object);
-              _part_text_recalc_apply(sd, gp, offset_x, offset_y);
-              break;
-/*
-	  !!!uncomment this case after merging https://phab.enlightenment.org/D2940!!!
-
            case EDJE_PART_TYPE_TEXTBLOCK:
-             common_param_update(gp, sd->group->edit_object);
-              _part_recalc_apply(sd, gp, offset_x, offset_y);
+              str = edje_edit_state_text_get(sd->group->edit_object, gp->part->name,
+                                             gp->part->current_state->parsed_name,
+                                             gp->part->current_state->parsed_val);
+              if (!str)
+                edje_object_part_text_set(sd->group->edit_object, gp->part->name, gp->part->name);
+              eina_stringshare_del(str);
+              _common_param_update(gp, sd->group->edit_object);
               break;
-*/
-
+           case EDJE_PART_TYPE_RECTANGLE:
+           case EDJE_PART_TYPE_GROUP:
+              _common_param_update(gp, sd->group->edit_object);
+              break;
            case EDJE_PART_TYPE_IMAGE:
-              _image_param_update(gp, sd->group->edit_object);
-              _part_recalc_apply(sd, gp, offset_x, offset_y);
+              if (sd->manual_calc) _image_param_update(gp, sd->group->edit_object);
               break;
            case EDJE_PART_TYPE_PROXY: // it part like image
-              _proxy_param_update(gp, sd->group->edit_object);
-              _part_recalc_apply(sd, gp, offset_x, offset_y);
-              break;
-/* delete this case after merging https://phab.enlightenment.org/D2940 */
-           case EDJE_PART_TYPE_TEXTBLOCK:
-              _textblock_param_update(gp, sd->group->edit_object);
-              _part_recalc_apply(sd, gp, offset_x, offset_y);
-              break;
-           case EDJE_PART_TYPE_GROUP:
-              _group_param_update(gp, sd->group->edit_object, sd->obj);
-              _part_recalc_apply(sd, gp, offset_x, offset_y);
+              if (sd->manual_calc) _proxy_param_update(gp, sd->group->edit_object);
               break;
            case EDJE_PART_TYPE_TABLE:
+              if (sd->manual_calc)
+                {
+                   _part_container_del(gp);
+                   _part_table_add(sd, gp);
+                }
               _table_param_update(sd, gp);
-              _part_recalc_apply(sd, gp, offset_x, offset_y);
+              _common_param_update(gp, sd->group->edit_object);
               break;
            case EDJE_PART_TYPE_BOX:
+              if (sd->manual_calc)
+                {
+                   _part_container_del(gp);
+                   _part_box_add(sd, gp);
+                }
               _box_param_update(sd, gp);
-              _part_recalc_apply(sd, gp, offset_x, offset_y);
+              _common_param_update(gp, sd->group->edit_object);
               break;
            case EDJE_PART_TYPE_SPACER:
            case EDJE_PART_TYPE_SWALLOW:
            case EDJE_PART_TYPE_EXTERNAL:
-              _part_recalc_apply(sd, gp, offset_x, offset_y);
            default:
               break;
           }
+        _part_recalc_apply(sd, gp, offset_x, offset_y);
         if (gp->part->visible)
           {
              evas_object_show(gp->bg);
              evas_object_show(gp->draw);
-             evas_object_show(gp->border);
           }
         else
           {
              evas_object_hide(gp->bg);
              evas_object_hide(gp->draw);
-             evas_object_hide(gp->border);
           }
      }
-     if (!sd->separated) _part_object_area_calc(sd);
-     else
-       {
-          if (sd->to_select) _select_item_move_to_top(sd);
-          evas_object_hide(sd->obj_area.obj);
-          evas_object_smart_callback_call(sd->obj, SIG_OBJ_AREA_CHANGED, sd->obj_area.geom);
-       }
+   if (!sd->separated) _part_object_area_calc(sd);
+   else
+     {
+        if (sd->to_select) _select_item_move_to_top(sd);
+        evas_object_hide(sd->obj_area.obj);
+        evas_object_smart_callback_call(sd->obj, SIG_OBJ_AREA_CHANGED, sd->obj_area.geom);
+     }
 
    evas_object_smart_callback_call(sd->obj, SIG_GEOMETRY_CHANGED, (void *)sd->real_size);
 
    return true;
 }
-#define BORDER_ADD(R, G, B, A) \
-   IMAGE_ADD_NEW(sd->obj, gp->border, "border", "2px")\
-   evas_object_color_set(gp->border, R*A/255, G*A/255, B*A/255, A);
-
-#define IMAGE_PART_GROUP "eflete/groupedit/image/default"
-
-static void
-_image_delete(void *data __UNUSED__,
-              Evas *e __UNUSED__,
-              Evas_Object *obj,
-              void *event_info __UNUSED__)
-{
-   assert(obj != NULL);
-
-   Evas_Object *image = edje_object_part_swallow_get(obj, "swallow.image");
-   if (image) evas_object_del(image);
-}
 
 static Groupedit_Part *
 _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
 {
-   Evas_Object *o;
    Groupedit_Part *gp;
-   Evas_Object *image;
 
    assert(sd != NULL);
    assert(part != NULL);
 
    gp = mem_calloc(1, sizeof(Groupedit_Part));
    gp->part = part;
-   gp->border = NULL;
    gp->item = NULL;
+
+
+#define PART_VIEW_ADD() \
+   gp->draw = elm_box_add(sd->parent); \
+   elm_box_layout_set(gp->draw, evas_object_box_layout_stack, NULL, NULL); \
+   gp->layout = elm_layout_add(sd->parent); \
+   elm_layout_theme_set(gp->layout, "layout", "groupview", "default"); \
+   evas_object_show(gp->layout); \
+   elm_box_pack_end(gp->draw, gp->layout);
+
+#define PART_VIEW_PROXY_SET() \
+   gp->proxy_part = evas_object_image_filled_add(sd->e); \
+   elm_box_pack_end(gp->draw, gp->proxy_part); \
+   evas_object_show(gp->proxy_part); \
 
    switch (part->type)
      {
       case EDJE_PART_TYPE_RECTANGLE:
-         gp->draw = edje_object_add(sd->e);
-         if (!edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP))
-           ERR("Image can't be loaded.\n");
-         evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_DEL,
-                                        _image_delete, NULL);
-
-         image = evas_object_image_filled_add(sd->e);
-         edje_object_part_swallow(gp->draw, "swallow.image", image);
-
-         BORDER_ADD(0, 0, 0, 0)
+         PART_VIEW_ADD()
+         PART_VIEW_PROXY_SET()
          break;
       case EDJE_PART_TYPE_TEXT:
-         gp->draw = edje_object_add(sd->e);
-         if (!edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP))
-           ERR("Image can't be loaded.\n");
-         evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_DEL,
-                                        _image_delete, NULL);
-
-         image = evas_object_image_filled_add(sd->e);
-         edje_object_part_swallow(gp->draw, "swallow.image", image);
-
-         BORDER_ADD(122, 122, 122, 255)
-         break;
-/*
-	  !!!uncomment this case after merging https://phab.enlightenment.org/D2940!!!
       case EDJE_PART_TYPE_TEXTBLOCK:
-         gp->draw = edje_object_add(sd->e);
-         if (!edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP))
-           ERR("Image can't be loaded.\n");
-         evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_DEL,
-                                        _image_delete, NULL);
-
-         image = evas_object_image_filled_add(sd->e);
-         edje_object_part_swallow(gp->draw, "swallow.image", image);
-
-         BORDER_ADD(122, 122, 122, 255)
+         PART_VIEW_ADD()
+         PART_VIEW_PROXY_SET()
+         elm_object_signal_emit(gp->layout, "border,text", "eflete");
          break;
-*/
       case EDJE_PART_TYPE_IMAGE:
-         gp->draw = edje_object_add(sd->e);
-         if (!edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP))
-           ERR("Image can't be loaded.\n");
-         evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_DEL,
-                                        _image_delete, NULL);
-         o = evas_object_image_filled_add(sd->e);
-         edje_object_part_swallow(gp->draw, "swallow.image", o);
-         BORDER_ADD(0, 0, 0, 0)
+         PART_VIEW_ADD()
+         PART_VIEW_PROXY_SET()
+         elm_object_signal_emit(gp->layout, "border,text", "eflete");
          break;
       case EDJE_PART_TYPE_PROXY: // it part like image
-         gp->draw = edje_object_add(sd->e);
-         if (!edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP))
-           ERR("Image can't be loaded.\n");
-         evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_DEL,
-                                        _image_delete, NULL);
-         IMAGE_ADD_NEW(sd->obj, o, "bg", "proxy")
-         edje_object_part_swallow(gp->draw, "swallow.image", o);
-         BORDER_ADD(255, 112, 49, 255);
+         PART_VIEW_ADD()
+         PART_VIEW_PROXY_SET()
+         elm_object_signal_emit(gp->layout, "border,proxy", "eflete");
          break;
       case EDJE_PART_TYPE_SWALLOW:
-         IMAGE_ADD_NEW(sd->obj, gp->draw, "bg", "swallow")
-         BORDER_ADD(120, 103, 140, 255)
-         break;
-/* delete this case after merging https://phab.enlightenment.org/D2940 */
-      case EDJE_PART_TYPE_TEXTBLOCK:
-         gp->draw = evas_object_textblock_add(sd->e);
-         BORDER_ADD(122, 122, 122, 255)
+         PART_VIEW_ADD()
+         elm_object_signal_emit(gp->layout, "border,swallow", "eflete");
          break;
       case EDJE_PART_TYPE_SPACER:
-         IMAGE_ADD_NEW(sd->obj, gp->draw, "bg", "spacer")
-         BORDER_ADD(101, 117, 133, 255)
+         PART_VIEW_ADD()
+         elm_object_signal_emit(gp->layout, "border,spacer", "eflete");
          break;
       case EDJE_PART_TYPE_GROUP:
-         gp->draw = edje_object_add(sd->e);
-         BORDER_ADD(255, 109, 109, 255)
+         PART_VIEW_ADD()
+         PART_VIEW_PROXY_SET()
+         elm_object_signal_emit(gp->layout, "border,group", "eflete");
          break;
       case EDJE_PART_TYPE_TABLE:
-         IMAGE_ADD_NEW(sd->obj, gp->bg, "bg", "table")
-         gp->draw = _part_container_add(sd, part, &(gp->items));
-         BORDER_ADD(138, 125, 109, 255)
+         PART_VIEW_ADD()
+         PART_VIEW_PROXY_SET()
+         elm_object_signal_emit(gp->layout, "border,table", "eflete");
+         _part_table_add(sd, gp);
          break;
       case EDJE_PART_TYPE_BOX:
-         IMAGE_ADD_NEW(sd->obj, gp->bg, "bg", "box")
-         gp->draw = _part_container_add(sd, part, &(gp->items));
-         BORDER_ADD(124, 129, 102, 255)
+         PART_VIEW_ADD()
+         PART_VIEW_PROXY_SET()
+         elm_object_signal_emit(gp->layout, "border,box", "eflete");
+         _part_box_add(sd, gp);
+
          break;
       case EDJE_PART_TYPE_EXTERNAL:
       default:
@@ -976,21 +1057,17 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
          break;
      }
 
-   evas_object_data_set(gp->border, "sd", sd);
-   evas_object_event_callback_add(gp->border, EVAS_CALLBACK_MOUSE_DOWN,
+   evas_object_data_set(gp->draw, "sd", sd);
+   evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_MOUSE_DOWN,
                                   _part_select, gp);
 
    if (gp->bg)
      evas_object_smart_member_add(gp->bg, sd->obj);
    evas_object_smart_member_add(gp->draw, sd->obj);
-   evas_object_smart_member_add(gp->border, sd->obj);
+   //evas_object_smart_member_add(gp->border, sd->obj);
 
    return gp;
 }
-
-#undef BORDER_ADD
-
-TODO("Fix part del")
 
 static void
 _part_draw_del(Ws_Groupedit_Smart_Data *sd, Part_ *part)
@@ -1008,65 +1085,15 @@ _part_draw_del(Ws_Groupedit_Smart_Data *sd, Part_ *part)
    _groupedit_part_free(gp);
 }
 
-static Groupedit_Item *
-_item_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part,
-               Eina_Stringshare *item)
+static void
+_item_draw_del(Groupedit_Item *item)
 {
-   Groupedit_Item *ge_item = NULL;
-   Eina_Stringshare *item_source;
-
-   assert(sd != NULL);
-   assert(part != NULL);
    assert(item != NULL);
 
-   item_source = edje_edit_part_item_source_get(sd->group->edit_object, part->name, item);
-   if (item_source)
-     {
-        ge_item = (Groupedit_Item *)mem_calloc(1, sizeof(Groupedit_Item));
-        ge_item->name = eina_stringshare_add(item);
-
-        IMAGE_ADD_NEW(sd->obj, ge_item->border, "bg", "part_item")
-        evas_object_show(ge_item->border);
-        evas_object_size_hint_min_set(ge_item->border,    EVAS_HINT_FILL, EVAS_HINT_FILL);
-        evas_object_size_hint_align_set(ge_item->border,  EVAS_HINT_FILL, EVAS_HINT_FILL);
-        evas_object_size_hint_weight_set(ge_item->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
-
-        ge_item->draw = edje_object_add(sd->e);
-        edje_object_file_set(ge_item->draw, ap.project->dev, item_source);
-        evas_object_show(ge_item->draw);
-
-        IMAGE_ADD_NEW(sd->obj, ge_item->highlight, "border", "1px");
-        evas_object_size_hint_min_set(ge_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
-        evas_object_size_hint_align_set(ge_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
-        evas_object_size_hint_weight_set(ge_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
-        evas_object_color_set(ge_item->highlight, 49, 140, 141, 255);
-        evas_object_show(ge_item->highlight);
-     }
-   edje_edit_string_free(item_source);
-   return ge_item;
-}
-
-static void
-_item_draw_del(Groupedit_Item *ge_item)
-{
-   Groupedit_Item *spread_item = NULL;
-
-   assert(ge_item != NULL);
-
-   EINA_LIST_FREE(ge_item->spread, spread_item)
-     {
-        evas_object_del(spread_item->draw);
-        if (spread_item->highlight)
-          evas_object_del(spread_item->highlight);
-        if (spread_item->border)
-          evas_object_del(spread_item->border);
-        free(spread_item);
-     }
-   eina_stringshare_del(ge_item->name);
-   evas_object_del(ge_item->draw);
-   evas_object_del(ge_item->border);
-   evas_object_del(ge_item->highlight);
-   free(ge_item);
+   eina_stringshare_del(item->name);
+   /* no sence to delete ge_item->layout, because we recreate table/box on add
+    * and delete item event. It will be deleted with conteiner object. */
+   free(item);
 }
 
 static void
@@ -1081,36 +1108,6 @@ _move_border_to_top(Ws_Groupedit_Smart_Data *sd)
    evas_object_smart_member_add(sd->container, sd->obj);
    evas_object_smart_member_add(sd->handler_TL.obj, sd->obj);
    evas_object_smart_member_add(sd->handler_BR.obj, sd->obj);
-}
-
-static Evas_Object *
-_part_container_add(Ws_Groupedit_Smart_Data *sd, Part_ *part, Eina_List **items)
-{
-   Evas_Object *container;
-   Eina_List *l_items = NULL, *l_n_items = NULL;
-   Eina_Stringshare *item_name = NULL;
-   Groupedit_Item *ge_item = NULL;
-
-   assert(sd != NULL);
-   assert(part != NULL);
-
-   if (part->type == EDJE_PART_TYPE_BOX)
-     container = evas_object_box_add(sd->e);
-   else if (part->type == EDJE_PART_TYPE_TABLE)
-     container = evas_object_table_add(sd->e);
-   else
-     return NULL;
-   evas_object_show(container);
-
-   EINA_LIST_FOREACH_SAFE(part->items, l_items, l_n_items, item_name)
-     {
-        ge_item = _item_draw_add(sd, part, item_name);
-        *items = eina_list_append(*items, ge_item);
-     }
-
-   evas_object_smart_calculate(container);
-
-   return container;
 }
 
 static inline void
@@ -1254,7 +1251,6 @@ static void
 _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 {
    Evas_Load_Error err;
-   Evas_Object *image;
    const char *image_normal;
    const char *buf = NULL;
    int id;
@@ -1266,31 +1262,30 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 
    PART_STATE_GET(edit_obj, gp->part->name)
 
-   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
-
    image_normal = edje_edit_state_image_get(edit_obj, gp->part->name, state, value);
    if (!image_normal) return;
    id = edje_edit_image_id_get(edit_obj, image_normal);
-   buf = eina_stringshare_printf("edje/images/%i", id);
-   evas_object_image_file_set(image, ap.project->dev, buf);
-   err = evas_object_image_load_error_get(image);
-   if (err != EVAS_LOAD_ERROR_NONE)
-     WARN("Could not update image:\"%s\"\n",  evas_load_error_str(err));
    edje_edit_string_free(image_normal);
+   buf = eina_stringshare_printf("edje/images/%i", id);
+   //fprintf(stdout, "%s\n", buf);
+   evas_object_image_file_set(gp->proxy_part, ap.project->dev, buf);
+   err = evas_object_image_load_error_get(gp->proxy_part);
+   if (err != EVAS_LOAD_ERROR_NONE)
+     WARN("Could not update image:\"%s\"\n", evas_load_error_str(err));
 
    edje_edit_state_image_border_get(edit_obj, gp->part->name, state, value,
                                     &bl, &br, &bt, &bb);
-   evas_object_image_border_set(image, bl, br, bt, bb);
+   evas_object_image_border_set(gp->proxy_part, bl, br, bt, bb);
 
    middle  = edje_edit_state_image_border_fill_get(edit_obj, gp->part->name, state, value);
    if (middle == 0)
-     evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_NONE);
+     evas_object_image_border_center_fill_set(gp->proxy_part, EVAS_BORDER_FILL_NONE);
    else if (middle == 1)
-     evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_DEFAULT);
+     evas_object_image_border_center_fill_set(gp->proxy_part, EVAS_BORDER_FILL_DEFAULT);
    else if (middle == 2)
-     evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_SOLID);
+     evas_object_image_border_center_fill_set(gp->proxy_part, EVAS_BORDER_FILL_SOLID);
 
-   _image_proxy_common_param_update(image, gp, edit_obj);
+   _image_proxy_common_param_update(gp->proxy_part, gp, edit_obj);
 
    PART_STATE_FREE
    eina_stringshare_del(buf);
@@ -1299,7 +1294,6 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 static void
 _proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 {
-   Evas_Object *image, *source_image = NULL;
    const char *proxy_source;
    Ws_Groupedit_Smart_Data *sd;
    Groupedit_Part *source;
@@ -1307,546 +1301,60 @@ _proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
    assert(gp != NULL);
    assert(edit_obj != NULL);
 
-   assert(gp != NULL);
-   assert(edit_obj != NULL);
-
    PART_STATE_GET(edit_obj, gp->part->name)
 
-   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
-   evas_object_del(image);
-
-   sd = evas_object_data_get(gp->border, "sd");
+   sd = evas_object_data_get(gp->draw, "sd");
    proxy_source = edje_edit_state_proxy_source_get(edit_obj, gp->part->name, state, value);
    if (proxy_source)
      {
+        elm_object_signal_emit(gp->layout, "border,default", "eflete");
         source = _parts_list_find(sd->parts, proxy_source);
-        source_image = edje_object_part_swallow_get(source->draw, "swallow.image");
-        if (!source_image)
-          source_image = source->draw;
-        image = evas_object_image_add(sd->e);
-        edje_object_part_swallow(gp->draw, "swallow.image", image);
-        evas_object_image_source_set(image, source_image);
-        evas_object_image_source_clip_set(image, false);
-
-        _image_proxy_common_param_update(image, gp, edit_obj);
+        evas_object_image_source_set(gp->proxy_part, source->proxy_part);
+        evas_object_image_source_clip_set(gp->proxy_part, false);
+        _image_proxy_common_param_update(gp->proxy_part, gp, edit_obj);
      }
    else
      {
-         IMAGE_ADD_NEW(sd->obj, image, "bg", "proxy")
-         edje_object_part_swallow(gp->draw, "swallow.image", image);
+        elm_object_signal_emit(gp->layout, "border,proxy", "eflete");
      }
 }
 
 static void
 _common_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 {
-   Evas_Object *image;
-
    assert(gp != NULL);
    assert(edit_obj != NULL);
 
-   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
-
-   Evas_Object *text_part = (Evas_Object *)edje_object_part_object_get(edit_obj, gp->part->name);
-   evas_object_image_source_set(image, NULL);
-   evas_object_image_source_set(image, text_part);
-   evas_object_image_source_clip_set(image, false);
-}
-
-static void
-_textblock_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
-{
-   Evas_Textblock_Style *ts = NULL;
-   const Evas_Textblock_Style *obj_style;
-   const Evas_Object *get_style;
-   const char *text;
-   double valign;
-
-   assert(gp != NULL);
-   assert(edit_obj != NULL);
-
-   PART_STATE_GET(edit_obj, gp->part->name)
-
-   _color_apply(gp, edit_obj, state, value);
-
-   get_style = edje_object_part_object_get(edit_obj, gp->part->name);
-   obj_style = evas_object_textblock_style_get(get_style);
-   text = evas_textblock_style_get(obj_style);
-
-   ts = evas_textblock_style_new();
-   evas_textblock_style_set(ts, text);
-   evas_object_textblock_style_set(gp->draw, ts);
-   evas_textblock_style_free(ts);
-   valign = edje_edit_state_text_align_y_get(edit_obj, gp->part->name, state, value);
-   evas_object_textblock_valign_set(gp->draw, valign);
-
-   text = edje_edit_state_text_get(edit_obj, gp->part->name, state, value);
-   if (text) evas_object_textblock_text_markup_set(gp->draw, text);
-   else
-     {
-        edje_object_part_text_set(edit_obj, gp->part->name, gp->part->name);
-        evas_object_textblock_text_markup_set(gp->draw, gp->part->name);
-     }
-
-   PART_STATE_FREE
-   edje_edit_string_free(text);
-}
-
-static void
-_group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, Evas_Object *parent)
-{
-   Eina_Stringshare *source = edje_edit_part_source_get(edit_obj, gp->part->name);
-   Evas_Object *image = NULL;
-
-   assert(gp != NULL);
-   assert(edit_obj != NULL);
-   assert(parent != NULL);
-
-   PART_STATE_GET(edit_obj, gp->part->name)
-
-   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
-   evas_object_del(image);
-
-   if (!source)
-     {
-        edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP);
-        IMAGE_ADD_NEW(parent, image, "bg", "group");
-        edje_object_part_swallow(gp->draw, "swallow.image", image);
-     }
-   else
-     {
-        _color_apply(gp, edit_obj, state, value);
-        edje_object_file_set(gp->draw, ap.project->dev, source);
-     }
-
-   PART_STATE_FREE
-   if (source) edje_edit_string_free(source);
+   evas_object_image_source_set(gp->proxy_part, NULL);
+   evas_object_image_source_set(gp->proxy_part,
+                                (Evas_Object *)edje_object_part_object_get(edit_obj, gp->part->name));
+   evas_object_image_source_clip_set(gp->proxy_part, false);
 }
 
 static void
 _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 {
-   Groupedit_Item *ge_item = NULL, *spread_item = NULL;
-   Eina_List *l_items, *l_n_items;
-   Eina_Stringshare *part = gp->part->name;
-   Eina_Stringshare *item_source = NULL;
-
-   Evas_Object *child = NULL;
-   int w, h; /* Geometry values */
-   int min_w, max_w, prefer_w, min_h, max_h, prefer_h; /* Hints values */
-   int spread_col, spread_row; /* Position values */
-
-   short unsigned int pos_col = 0, pos_row = 0;
-   unsigned char span_col = 0, span_row = 0, homogeneous = 0;
-   Evas_Aspect_Control aspect = EVAS_ASPECT_CONTROL_NONE;
-   int aspect_x, aspect_y;
-   double align_x = 0, align_y = 0, weight_x = 0, weight_y = 0; /* Align object in cell */
-   int pad_l = 0, pad_r = 0, pad_t = 0, pad_b = 0;
-   int old_spread_row = 0, spread_pos_col = 0, spread_pos_row = 0;
-   int r = 0, g = 0, b = 0, a = 0;
-
-   /* fake_init - how much fake items, already created.
-    * fake_count - how much fake items needed for filling empty cells.
-    * fake_diff - deifference beetween fake_count and fake_init
-    */
-   int fake_init = 0, fake_count = 0, fake_diff = 0;
-   Eina_List *fake_l;
-   int i, k, col, row; /* counters for filling empty cells with fake items*/
-
-   assert(sd != NULL);
-   assert(gp != NULL);
-
-   TODO("get TABLE attributes from edje object, after implementing functions"
-        "in edje_edit libs. Until that time will be used default values.")
-   PART_STATE_GET(sd->group->edit_object, part)
-   homogeneous = edje_edit_state_table_homogeneous_get(sd->group->edit_object, part, state, value);
-   evas_object_table_homogeneous_set(gp->draw, homogeneous);
-
-   align_x = edje_edit_state_container_align_x_get(sd->group->edit_object, part, state, value);
-   align_y = edje_edit_state_container_align_y_get(sd->group->edit_object, part, state, value);
-   evas_object_table_align_set(gp->draw, align_x, align_y);
-
-   pad_l = edje_edit_state_container_padding_x_get(sd->group->edit_object, part, state, value);
-   pad_r = edje_edit_state_container_padding_y_get(sd->group->edit_object, part, state, value);
-   evas_object_table_padding_set(gp->draw, pad_l, pad_r);
-
-   _colors_get(gp, sd->group->edit_object, state, value, &r, &g, &b, &a, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-   PART_STATE_FREE
-
-   /* Unpack all fake items, before pack real */
-   fake_init = eina_list_count(gp->fake_items);
-   EINA_LIST_FOREACH(gp->fake_items, fake_l, ge_item)
-     {
-        evas_object_table_unpack(gp->draw, ge_item->border);
-        evas_object_table_unpack(gp->draw, ge_item->highlight);
-     }
-
-   EINA_LIST_FOREACH_SAFE(gp->items, l_items, l_n_items, ge_item)
-     {
-        item_source = edje_edit_part_item_source_get(sd->group->edit_object, part, ge_item->name);
-        edje_object_file_set(ge_item->draw, ap.project->dev, item_source);
-
-        pos_col = edje_edit_part_item_position_col_get(sd->group->edit_object, part, ge_item->name);
-        pos_row = edje_edit_part_item_position_row_get(sd->group->edit_object, part, ge_item->name);
-        span_col = edje_edit_part_item_span_col_get(sd->group->edit_object, part, ge_item->name);
-        span_row = edje_edit_part_item_span_row_get(sd->group->edit_object, part, ge_item->name);
-
-        min_w = edje_edit_part_item_min_w_get(sd->group->edit_object, part, ge_item->name);
-        min_h = edje_edit_part_item_min_h_get(sd->group->edit_object, part, ge_item->name);
-
-/* Calculation according to box/table item implementation in efl 1.13 at edje_load.c */
-        if ((min_w <= 0) && (min_h <= 0))
-          {
-             edje_object_size_min_get(ge_item->draw, &w, &h);
-             if ((w <= 0) && (h <= 0))
-               edje_object_size_min_calc(ge_item->draw, &w, &h);
-          }
-        if (((min_w <= 0) && (min_h <= 0)) && ((w > 0) || (h > 0)))
-          evas_object_size_hint_min_set(ge_item->draw, w, h);
-        else
-          {
-             w = min_w;
-             h = min_h;
-             evas_object_size_hint_min_set(ge_item->draw, min_w, min_h);
-          }
-        max_w = edje_edit_part_item_max_w_get(sd->group->edit_object, part, ge_item->name);
-        max_h = edje_edit_part_item_max_h_get(sd->group->edit_object, part, ge_item->name);
-        evas_object_size_hint_max_set(ge_item->draw, max_w, max_h);
-        prefer_w = edje_edit_part_item_prefer_w_get(sd->group->edit_object, part, ge_item->name);
-        prefer_h = edje_edit_part_item_prefer_h_get(sd->group->edit_object, part, ge_item->name);
-        evas_object_size_hint_request_set(ge_item->draw, prefer_w, prefer_h);
-        edje_edit_part_item_padding_get(sd->group->edit_object, part, ge_item->name, &pad_l, &pad_r, &pad_t, &pad_b);
-        evas_object_size_hint_padding_set(ge_item->draw, pad_l, pad_r, pad_t, pad_b);
-        align_x = edje_edit_part_item_align_x_get(sd->group->edit_object, part, ge_item->name);
-        align_y = edje_edit_part_item_align_y_get(sd->group->edit_object, part, ge_item->name);
-        evas_object_size_hint_align_set(ge_item->draw, align_x, align_y);
-        weight_x = edje_edit_part_item_weight_x_get(sd->group->edit_object, part, ge_item->name);
-        weight_y = edje_edit_part_item_weight_y_get(sd->group->edit_object, part, ge_item->name);
-        evas_object_size_hint_weight_set(ge_item->draw, weight_x, weight_y);
-        switch(edje_edit_part_item_aspect_mode_get(sd->group->edit_object, part, ge_item->name))
-          {
-           case EDJE_ASPECT_CONTROL_NONE: aspect = EVAS_ASPECT_CONTROL_NONE; break;
-           case EDJE_ASPECT_CONTROL_NEITHER: aspect = EVAS_ASPECT_CONTROL_NEITHER; break;
-           case EDJE_ASPECT_CONTROL_HORIZONTAL: aspect = EVAS_ASPECT_CONTROL_HORIZONTAL; break;
-           case EDJE_ASPECT_CONTROL_VERTICAL: aspect = EVAS_ASPECT_CONTROL_VERTICAL; break;
-           case EDJE_ASPECT_CONTROL_BOTH: aspect = EVAS_ASPECT_CONTROL_BOTH; break;
-          }
-        aspect_x = edje_edit_part_item_aspect_w_get(sd->group->edit_object, part, ge_item->name);
-        aspect_y = edje_edit_part_item_aspect_h_get(sd->group->edit_object, part, ge_item->name);
-        evas_object_size_hint_aspect_set(ge_item->draw, aspect, aspect_x, aspect_y);
-        evas_object_color_set(ge_item->draw, r, g, b, a);
-
-        evas_object_table_pack(gp->draw, ge_item->border, pos_col,
-                               pos_row, span_col, span_row);
-        evas_object_table_pack(gp->draw, ge_item->draw, pos_col, pos_row, span_col, span_row);
-        evas_object_table_pack(gp->draw, ge_item->highlight, pos_col,
-                               pos_row, span_col, span_row);
-
-        spread_col = edje_edit_part_item_spread_w_get(sd->group->edit_object, part, ge_item->name);
-        spread_row = edje_edit_part_item_spread_h_get(sd->group->edit_object, part, ge_item->name);
-
-        EINA_LIST_FREE(ge_item->spread, spread_item)
-          {
-             evas_object_table_unpack(gp->draw, spread_item->draw);
-             evas_object_smart_member_del(spread_item->border);
-             evas_object_smart_member_del(spread_item->draw);
-             evas_object_smart_member_del(spread_item->highlight);
-             evas_object_del(spread_item->border);
-             evas_object_del(spread_item->draw);
-             evas_object_del(spread_item->highlight);
-             free(spread_item);
-          }
-
-        old_spread_row = spread_row;
-
-        while((spread_col > 1) || (spread_row > 1))
-          {
-             spread_pos_col = pos_col + spread_col - 1 ;
-             spread_pos_row = pos_row + spread_row - 1;
-
-             spread_item = (Groupedit_Item *)mem_calloc(1, sizeof(Groupedit_Item));
-
-             spread_item->draw = edje_object_add(sd->e);
-             edje_object_file_set(spread_item->draw, ap.project->dev, item_source);
-             ge_item->spread = eina_list_append(ge_item->spread, spread_item);
-             evas_object_size_hint_max_set(spread_item->draw, max_w, max_h);
-             evas_object_size_hint_request_set(spread_item->draw, prefer_w, prefer_h);
-             evas_object_size_hint_min_set(spread_item->draw, min_w, min_h);
-             evas_object_size_hint_padding_set(spread_item->draw, pad_l, pad_r, pad_t, pad_b);
-             evas_object_size_hint_align_set(spread_item->draw, align_x, align_y);
-             evas_object_size_hint_weight_set(spread_item->draw, weight_x, weight_y);
-             evas_object_size_hint_aspect_set(spread_item->draw, aspect, aspect_x, aspect_y);
-
-             evas_object_table_pack(gp->draw, spread_item->draw, spread_pos_col,
-                                    spread_pos_row, span_col, span_row);
-
-
-             evas_object_show(spread_item->draw);
-             evas_object_smart_member_add(spread_item->draw, gp->draw);
-             if (spread_row > 1) spread_row--;
-             else if (spread_col > 1) {spread_col--; spread_row = old_spread_row; }
-             evas_object_color_set(spread_item->draw, r, g, b, a);
-          }
-
-        evas_object_smart_member_add(ge_item->border, gp->draw);
-        evas_object_smart_member_add(ge_item->draw, gp->draw);
-        evas_object_smart_member_add(ge_item->highlight, gp->draw);
-     }
-
-   /* Fill empty cells with fake items */
-   evas_object_table_col_row_size_get(gp->draw, &col, &row);
-   Eina_List *fake_queue = gp->fake_items;
-   Groupedit_Item *fake = NULL;
-   for (i = 0; i < col; i++)
-     {
-        for (k = 0; k < row; k++)
-          {
-             child = evas_object_table_child_get(gp->draw, i, k);
-             if (!child)
-               {
-                  fake = eina_list_data_get(fake_queue);
-                  fake_queue = eina_list_next(fake_queue);
-                  if (!fake)
-                    {
-                       /* If there are no already created fakes items, then create new */
-                       fake = (Groupedit_Item *)mem_calloc(1, sizeof(Groupedit_Item));
-                       IMAGE_ADD_NEW(sd->obj, fake->border, "bg", "part_item")
-                       evas_object_show(fake->border);
-                       evas_object_size_hint_min_set(fake->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
-                       evas_object_size_hint_align_set(fake->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
-                       evas_object_size_hint_weight_set(fake->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
-                       IMAGE_ADD_NEW(sd->obj, fake->highlight, "border", "1px");
-                       evas_object_size_hint_min_set(fake->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
-                       evas_object_size_hint_align_set(fake->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
-                       evas_object_size_hint_weight_set(fake->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
-                       evas_object_color_set(fake->highlight, 49, 140, 141, 255);
-                       evas_object_show(fake->highlight);
-                       gp->fake_items = eina_list_append(gp->fake_items, fake);
-                    }
-                  evas_object_table_pack(gp->draw, fake->border, i, k, 1, 1);
-                  evas_object_table_pack(gp->draw, fake->highlight, i, k, 1, 1);
-                  fake_count++;
-               }
-          }
-     }
-   fake_diff = fake_count - fake_init;
-   EINA_LIST_REVERSE_FOREACH(gp->fake_items, fake_l, fake)
-     {
-        if (fake_diff < 0)
-          {
-             evas_object_del(fake->border);
-             evas_object_del(fake->highlight);
-             free(fake);
-             gp->fake_items = eina_list_remove_list(gp->fake_items, fake_l);
-             fake_diff++;
-          }
-        else break;
-     }
-   evas_object_smart_calculate(gp->draw);
-}
-
-static Evas_Object_Box_Layout
-_box_layout_function_get(const char *primary, const char *fallback)
-{
-   const struct edje_box_layouts *base = _edje_box_layouts;
-   const struct edje_box_layouts *base_fallback = _edje_box_layouts;
-
-   if (primary)
-     {
-        for (; base->name; base++)
-          if (strcmp(base->name, primary) == 0)
-            return base->cb;
-     }
-   if (fallback)
-     {
-        for (; base_fallback->name; base_fallback++)
-          if (strcmp(base_fallback->name, fallback) == 0)
-            return base_fallback->cb;
-     }
-
-   return _box_layout_horizontal;
-}
-
-
-static void
-_box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
-{
-   Groupedit_Item *ge_item = NULL, *spread_item = NULL;
-   Eina_List *l_items, *l_n_items;
-   Eina_Stringshare *part = gp->part->name;
-   Eina_Stringshare *item_source = NULL;
-   Eina_Stringshare *primary_layout = NULL;
-   Eina_Stringshare *fallback_layout = NULL;
-
-   int w, h; /* Geometry values */
-   int min_w, max_w, prefer_w, min_h, max_h, prefer_h; /* Hints values */
-   int spread_col, spread_row, old_spread_row; /* Position values */
-   Evas_Aspect_Control aspect = EVAS_ASPECT_CONTROL_NONE;
-   int aspect_x, aspect_y;
-   double align_x = 0, align_y = 0, weight_x = 0, weight_y = 0; /* Align object in cell */
-   int pad_l = 0, pad_r = 0, pad_t = 0, pad_b = 0;
-   int r = 0, g = 0, b = 0, a = 0;
-   double box_align_x, box_align_y;
+   double align_x = 0, align_y = 0;
    int pad_x, pad_y;
+   unsigned char homogeneous;
 
    assert(sd != NULL);
    assert(gp != NULL);
 
-   TODO("get items from box and edje_unload them, remove them, destroy them")
-   evas_object_box_remove_all(gp->draw, false);
+   PART_STATE_GET(sd->group->edit_object, gp->part->name)
 
-   PART_STATE_GET(sd->group->edit_object, part)
-   _colors_get(gp, sd->group->edit_object, state, value, &r, &g, &b, &a, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+   homogeneous = edje_edit_state_table_homogeneous_get(sd->group->edit_object, gp->part->name, state, value);
+   evas_object_table_homogeneous_set(gp->container, homogeneous);
+
+   align_x = edje_edit_state_container_align_x_get(sd->group->edit_object, gp->part->name, state, value);
+   align_y = edje_edit_state_container_align_y_get(sd->group->edit_object, gp->part->name, state, value);
+   evas_object_table_align_set(gp->container, align_x, align_y);
+
+   pad_x = edje_edit_state_container_padding_x_get(sd->group->edit_object, gp->part->name, state, value);
+   pad_y = edje_edit_state_container_padding_y_get(sd->group->edit_object, gp->part->name, state, value);
+   evas_object_table_padding_set(gp->container, pad_x, pad_y);
+
    PART_STATE_FREE
-
-   box_align_x = edje_edit_state_container_align_x_get(sd->group->edit_object, part, state, value);
-   box_align_y = edje_edit_state_container_align_y_get(sd->group->edit_object, part, state, value);
-   evas_object_box_align_set(gp->draw, box_align_x, box_align_y);
-   pad_x = edje_edit_state_container_padding_x_get(sd->group->edit_object, part, state, value);
-   pad_y = edje_edit_state_container_padding_y_get(sd->group->edit_object, part, state, value);
-   evas_object_box_padding_set(gp->draw, pad_x, pad_y);
-
-   /* Changing layout according to edje_edit params! */
-   primary_layout = edje_edit_state_box_layout_get(sd->group->edit_object, part, state, value);
-   fallback_layout = edje_edit_state_box_alt_layout_get(sd->group->edit_object, part, state, value);
-   evas_object_box_layout_set(gp->draw,
-          _box_layout_function_get(primary_layout, fallback_layout), gp->items, NULL);
-   eina_stringshare_del(primary_layout);
-   eina_stringshare_del(fallback_layout);
-
-   EINA_LIST_FOREACH_SAFE(gp->items, l_items, l_n_items, ge_item)
-     {
-        evas_object_del(ge_item->draw);
-        ge_item->draw = edje_object_add(sd->e);
-        evas_object_show(ge_item->draw);
-
-        item_source = edje_edit_part_item_source_get(sd->group->edit_object, part, ge_item->name);
-        edje_object_file_set(ge_item->draw, ap.project->dev, item_source);
-
-        evas_object_box_append(gp->draw, ge_item->draw);
-
-        min_w = edje_edit_part_item_min_w_get(sd->group->edit_object, part, ge_item->name);
-        min_h = edje_edit_part_item_min_h_get(sd->group->edit_object, part, ge_item->name);
-
-        if ((min_w <= 0) && (min_h <= 0))
-          {
-             edje_object_size_min_get(ge_item->draw, &w, &h);
-             if ((w <= 0) && (h <= 0))
-               edje_object_size_min_calc(ge_item->draw, &w, &h);
-          }
-        if (((min_w <= 0) && (min_h <= 0)) && ((w > 0) || (h > 0)))
-          evas_object_size_hint_min_set(ge_item->draw, w, h);
-        else
-          {
-             w = min_w;
-             h = min_h;
-             evas_object_size_hint_min_set(ge_item->draw, min_w, min_h);
-          }
-        max_w = edje_edit_part_item_max_w_get(sd->group->edit_object, part, ge_item->name);
-        max_h = edje_edit_part_item_max_h_get(sd->group->edit_object, part, ge_item->name);
-        evas_object_size_hint_max_set(ge_item->draw, max_w, max_h);
-        prefer_w = edje_edit_part_item_prefer_w_get(sd->group->edit_object, part, ge_item->name);
-        prefer_h = edje_edit_part_item_prefer_h_get(sd->group->edit_object, part, ge_item->name);
-        evas_object_size_hint_request_set(ge_item->draw, prefer_w, prefer_h);
-        edje_edit_part_item_padding_get(sd->group->edit_object, part, ge_item->name, &pad_l, &pad_r, &pad_t, &pad_b);
-        evas_object_size_hint_padding_set(ge_item->draw, pad_l, pad_r, pad_t, pad_b);
-        align_x = edje_edit_part_item_align_x_get(sd->group->edit_object, part, ge_item->name);
-        align_y = edje_edit_part_item_align_y_get(sd->group->edit_object, part, ge_item->name);
-        evas_object_size_hint_align_set(ge_item->draw, align_x, align_y);
-        weight_x = edje_edit_part_item_weight_x_get(sd->group->edit_object, part, ge_item->name);
-        weight_y = edje_edit_part_item_weight_y_get(sd->group->edit_object, part, ge_item->name);
-        evas_object_size_hint_weight_set(ge_item->draw, weight_x, weight_y);
-        switch(edje_edit_part_item_aspect_mode_get(sd->group->edit_object, part, ge_item->name))
-          {
-           case EDJE_ASPECT_CONTROL_NONE: aspect = EVAS_ASPECT_CONTROL_NONE; break;
-           case EDJE_ASPECT_CONTROL_NEITHER: aspect = EVAS_ASPECT_CONTROL_NEITHER; break;
-           case EDJE_ASPECT_CONTROL_HORIZONTAL: aspect = EVAS_ASPECT_CONTROL_HORIZONTAL; break;
-           case EDJE_ASPECT_CONTROL_VERTICAL: aspect = EVAS_ASPECT_CONTROL_VERTICAL; break;
-           case EDJE_ASPECT_CONTROL_BOTH: aspect = EVAS_ASPECT_CONTROL_BOTH; break;
-          }
-        aspect_x = edje_edit_part_item_aspect_w_get(sd->group->edit_object, part, ge_item->name);
-        aspect_y = edje_edit_part_item_aspect_h_get(sd->group->edit_object, part, ge_item->name);
-        evas_object_size_hint_aspect_set(ge_item->draw, aspect, aspect_x, aspect_y);
-
-        spread_col = edje_edit_part_item_spread_w_get(sd->group->edit_object, part, ge_item->name);
-        spread_row = edje_edit_part_item_spread_h_get(sd->group->edit_object, part, ge_item->name);
-
-        EINA_LIST_FREE(ge_item->spread, spread_item)
-          {
-             evas_object_smart_member_del(spread_item->border);
-             evas_object_smart_member_del(spread_item->draw);
-             evas_object_smart_member_del(spread_item->highlight);
-             evas_object_del(spread_item->border);
-             evas_object_del(spread_item->draw);
-             evas_object_del(spread_item->highlight);
-             free(spread_item);
-          }
-        old_spread_row = spread_row;
-
-        while((spread_col > 1) || (spread_row > 1))
-          {
-             spread_item = (Groupedit_Item *)mem_calloc(1, sizeof(Groupedit_Item));
-
-             IMAGE_ADD_NEW(sd->obj, spread_item->border, "bg", "part_item")
-             evas_object_size_hint_min_set(spread_item->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
-             evas_object_size_hint_align_set(spread_item->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
-             evas_object_size_hint_weight_set(spread_item->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
-
-             IMAGE_ADD_NEW(sd->obj, spread_item->highlight, "border", "1px");
-             evas_object_size_hint_min_set(spread_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
-             evas_object_size_hint_align_set(spread_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
-             evas_object_size_hint_weight_set(spread_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
-
-             if (ge_item->selected)
-               {
-                  edje_object_file_set(spread_item->highlight, EFLETE_THEME, "elm/image/border/2px");
-                  evas_object_color_set(spread_item->highlight, 0, 253, 255, 255);
-               }
-             else
-               {
-                  edje_object_file_set(spread_item->highlight, EFLETE_THEME, "elm/image/border/1px");
-                  evas_object_color_set(spread_item->highlight, 49, 140, 141, 255);
-               }
-
-             spread_item->draw = edje_object_add(sd->e);
-             edje_object_file_set(spread_item->draw, ap.project->dev, item_source);
-             evas_object_size_hint_max_set(spread_item->draw, max_w, max_h);
-             evas_object_size_hint_request_set(spread_item->draw, prefer_w, prefer_h);
-             evas_object_size_hint_min_set(spread_item->draw, min_w, min_h);
-             evas_object_size_hint_padding_set(spread_item->draw, pad_l, pad_r, pad_t, pad_b);
-             evas_object_size_hint_align_set(spread_item->draw, align_x, align_y);
-             evas_object_size_hint_weight_set(spread_item->draw, weight_x, weight_y);
-             evas_object_size_hint_aspect_set(spread_item->draw, aspect, aspect_x, aspect_y);
-
-             ge_item->spread = eina_list_append(ge_item->spread, spread_item);
-             evas_object_box_append(gp->draw, spread_item->draw);
-
-             evas_object_smart_member_add(spread_item->draw, gp->draw);
-             evas_object_smart_member_add(spread_item->border, gp->draw);
-             evas_object_smart_member_add(spread_item->highlight, gp->draw);
-
-             evas_object_show(spread_item->border);
-             evas_object_show(spread_item->draw);
-             evas_object_show(spread_item->highlight);
-             evas_object_raise(spread_item->draw);
-             evas_object_raise(spread_item->highlight);
-             evas_object_lower(spread_item->border);
-
-             if (spread_row > 1) spread_row--;
-             else if (spread_col > 1) {spread_col--; spread_row = old_spread_row; }
-             evas_object_color_set(spread_item->draw, r, g, b, a);
-          }
-
-        evas_object_color_set(ge_item->draw, r, g, b, a);
-
-        evas_object_smart_member_add(ge_item->border, gp->draw);
-        evas_object_smart_member_add(ge_item->draw, gp->draw);
-        evas_object_smart_member_add(ge_item->highlight, gp->draw);
-        evas_object_raise(ge_item->highlight);
-
-        evas_object_show(ge_item->border);
-        evas_object_show(ge_item->highlight);
-     }
 }
 
 static void

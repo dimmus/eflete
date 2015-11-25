@@ -34,6 +34,16 @@
 #include "widget_macro.h"
 #include "string_common.h"
 
+struct _Style_Data
+{
+   const char *st_name;
+   const char *st_tag;
+   Eina_Stringshare *stvalue;
+   Eina_Strbuf *style;
+   Evas_Object *textblock_style;
+   Eina_Bool is_parent_item;
+};
+typedef struct _Style_Data Style_Data;
 /**
  * Show the whole inwin window by using some data
  * about loaded project (edj file)
