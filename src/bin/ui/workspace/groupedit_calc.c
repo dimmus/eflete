@@ -828,10 +828,6 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
 
    GP_REAL_GEOMETRY_CALC(part_x, part_y, abs_x, abs_y)
 
-   TODO("need to check it seems like extra action")
-   if (gp->part->type == EDJE_PART_TYPE_BOX)
-     evas_object_smart_calculate(gp->draw);
-
    ZOOM_APPLY(gp->draw)
 }
 
