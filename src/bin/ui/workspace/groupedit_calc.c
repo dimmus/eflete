@@ -563,6 +563,7 @@ _part_table_items_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp, Eina_Stri
                   cell = edje_object_add(sd->e);
                   item_source = edje_edit_part_item_source_get(sd->group->edit_object, gp->part->name, item_name);
                   edje_object_file_set(cell, ap.project->dev, item_source);
+                  eina_stringshare_del(item_source);
                   /* hide this object, it need only for calculate cell size */
                   evas_object_hide(cell);
 
