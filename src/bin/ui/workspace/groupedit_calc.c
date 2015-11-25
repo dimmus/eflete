@@ -555,7 +555,6 @@ _part_table_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    gp->items_draw = (Eina_Stringshare ***)mem_calloc(1, sizeof(Eina_Stringshare **) * col);
    for (i = 0; i < col; i++)
      gp->items_draw[i] = (Eina_Stringshare **)mem_calloc(1, sizeof(Eina_Stringshare *) * row);
-   fprintf(stdout, "groupedit %p\n", gp->part->items);
    EINA_LIST_FOREACH(gp->part->items, l, str)
      {
         col = edje_edit_part_item_position_col_get(sd->group->edit_object, gp->part->name, str);
