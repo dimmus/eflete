@@ -152,11 +152,7 @@ struct _Groupedit_Part
 struct _Groupedit_Item
 {
    Eina_Stringshare *name;    /**< The item name.  */
-   Evas_Object *draw;         /**< The loaded edje object.*/
-   Evas_Object *border;       /**< The item border*/
-   Evas_Object *highlight;    /**< The item highlight */
-   Eina_List *spread;         /**< The spreaded items */
-   Eina_Bool selected : 1;    /**< Item is selected in widget list or not. */
+   Evas_Object *layout;       /**< The item border and hilight */
 };
 
 void
@@ -183,9 +179,6 @@ _select_item_move_to_top(Ws_Groupedit_Smart_Data *sd);
 void
 _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd);
 
-Eina_Bool
-_edit_object_part_item_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
-                           Eina_Stringshare *item, Eina_Stringshare *source);
 Eina_Bool
 _edit_object_part_item_del(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
                            Eina_Stringshare *item);

@@ -346,7 +346,9 @@ groupedit_edit_object_part_item_add(Evas_Object *obj, Eina_Stringshare *part,
    assert(item != NULL);
    assert(source != NULL);
 
-   return _edit_object_part_item_add(sd, part, item, source);
+   /* return _edit_object_part_item_add(sd, part, item, source); */
+   TODO("delete this func, instead use _recalc")
+   return false;
 }
 
 Eina_Bool
@@ -358,7 +360,9 @@ groupedit_edit_object_part_item_del(Evas_Object *obj, Eina_Stringshare *part,
    assert(part != NULL);
    assert(item != NULL);
 
-   return _edit_object_part_item_del(sd, part, item);
+   /* return _edit_object_part_item_del(sd, part, item); */
+   TODO("delete this func, instead use _recalc")
+   return false;
 }
 
 Eina_Bool
@@ -687,37 +691,16 @@ groupedit_zoom_factor_set(Evas_Object *obj, double factor)
 Eina_Bool
 groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
                                              Eina_Stringshare *item_name,
-                                             Eina_Bool selected)
+                                             Eina_Bool selected __UNUSED__)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd);
    Groupedit_Part *gp = sd->selected;
-   Eina_List *l, *l_n;
-   Groupedit_Item *ge_item = NULL;
 
    if (!gp) return false;
 
    assert(item_name != NULL);
 
-   EINA_LIST_FOREACH_SAFE(gp->items, l, l_n, ge_item)
-     {
-        if (ge_item->name == item_name)
-          {
-             ge_item->selected = selected;
-             if (selected)
-               {
-                  edje_object_file_set(ge_item->highlight, EFLETE_THEME, "elm/image/border/2px");
-                  evas_object_color_set(ge_item->highlight, 0, 253, 255, 255);
-               }
-             else
-               {
-                  edje_object_file_set(ge_item->highlight, EFLETE_THEME, "elm/image/border/1px");
-                  evas_object_color_set(ge_item->highlight, 49, 140, 141, 255);
-               }
-             sd->manual_calc = true;
-             _parts_recalc(sd);
-             return true;
-          }
-     }
+   TODO("need to find a item in the list and emit signal for hilight it. NOT RECALC!!!!")
    return false;
 }
 
