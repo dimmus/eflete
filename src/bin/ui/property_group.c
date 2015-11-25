@@ -2892,14 +2892,14 @@ _on_state_image_choose(void *data,
                               false);
 }
 
-static void __UNUSED__
+static void
 _del_tween_image(void *data,
-                 Evas_Object *obj,
+                 Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-   Evas_Object *tween_list = elm_object_parent_widget_get(obj);
-   const char *selected = (const char *)data;
-   Elm_Object_Item *it = elm_genlist_selected_item_get(tween_list);
+   Evas_Object *tween_list = (Evas_Object *)data;
+   Elm_Object_Item *it = elm_gengrid_selected_item_get(tween_list);
+   Eina_Stringshare *selected  = elm_object_item_data_get(it);
    Group_Prop_Data *pd = evas_object_data_get(tween_list, GROUP_PROP_DATA);
 
    assert(pd != NULL);
@@ -2944,7 +2944,7 @@ _on_image_editor_tween_done(void *data,
    edje_edit_string_list_free(selected);
 }
 
-static void __UNUSED__
+static void
 _add_tween_image(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
@@ -3048,7 +3048,7 @@ _tween_image_moved(Evas_Object *data,
 Evas_Object *
 prop_item_state_image_tween_add(Evas_Object *box, Group_Prop_Data *pd)
 {
-   Evas_Object *tween_frame, *tween_list, *item;
+   Evas_Object *tween_frame, *tween_list, *item, *button, *icon;
    Eina_List *images_list, *l;
    char *image_name;
 
@@ -3095,15 +3095,19 @@ prop_item_state_image_tween_add(Evas_Object *box, Group_Prop_Data *pd)
    edje_edit_string_list_free(images_list);
    elm_object_content_set(item, tween_list);
 
-//   BUTTON_ADD(tween_frame, button, NULL)
-//   ICON_STANDARD_ADD(button, icon, true, "plus");
-//   elm_object_part_content_set(button, NULL, icon);
-//   evas_object_smart_callback_add(button, "clicked", _add_tween_image,
-//                                  tween_list);
-//   elm_object_style_set(button, "anchor");
-//   elm_object_part_content_set(tween_frame, "elm.swallow.add", button);
-//   evas_object_smart_callback_add(tween_list, "moved",
-//                                  (Evas_Smart_Cb)_tween_image_moved, pd);
+   BUTTON_ADD(tween_frame, button, NULL)
+   ICON_STANDARD_ADD(button, icon, true, "plus");
+   elm_object_part_content_set(button, NULL, icon);
+   evas_object_smart_callback_add(button, "clicked", _add_tween_image,
+                                  tween_list);
+   elm_layout_content_set(item, "elm.swallow.add", button);
+
+   BUTTON_ADD(tween_frame, button, NULL)
+   ICON_STANDARD_ADD(button, icon, true, "minus");
+   elm_object_part_content_set(button, NULL, icon);
+   evas_object_smart_callback_add(button, "clicked", _del_tween_image,
+                                  tween_list);
+   elm_layout_content_set(item, "elm.swallow.del", button);
 
    evas_object_show(tween_list);
 
