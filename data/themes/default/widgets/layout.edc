@@ -3447,7 +3447,6 @@ group { name: "elm/layout/groupview/default";
          image: "bg_group.png" COMP;
          image: "bg_table.png" COMP;
          image: "bg_box.png" COMP;
-         image: "bg_part_item.png" COMP;
       }
       part { name: "bg";
          type: IMAGE;
@@ -3471,7 +3470,6 @@ group { name: "elm/layout/groupview/default";
          BG(group,      bg_group.png)
          BG(table,      bg_table.png)
          BG(box,        bg_box.png)
-         BG(part_item,  bg_part_item.png)
 #undef BG
       }
       part { name: "border";
