@@ -365,12 +365,6 @@ _groupedit_part_free(Groupedit_Part *gp)
 
    EINA_LIST_FREE(gp->items, ge_item)
      _item_draw_del(ge_item);
-   EINA_LIST_FREE(gp->fake_items, ge_item)
-     {
-        evas_object_del(ge_item->border);
-        evas_object_del(ge_item->highlight);
-        free(ge_item);
-     }
    free(gp);
 }
 
