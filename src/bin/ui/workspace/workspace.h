@@ -355,35 +355,4 @@ workspace_edit_object_part_item_selected_set(Evas_Object *obj,
                                              Eina_Stringshare *item_name,
                                              Eina_Bool selected);
 
-/**
- * Add new item into container part.
- *
- * @param obj The workspace object.
- * @param part The name of the part, that will contain new item.
- * @param item The name of new item.
- * @param source The name of the group, that will used as source for item.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_edit_object_part_item_add(Evas_Object *obj, Eina_Stringshare *part,
-                                    Eina_Stringshare *item,
-                                    Eina_Stringshare *source);
-/**
- * Delete item from container part.
- *
- * @param obj The workspace object.
- * @param part The name of the part, that contain item.
- * @param item The name of deleting item.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_edit_object_part_item_del(Evas_Object *obj, Eina_Stringshare *part,
-                                    Eina_Stringshare *item);
-
 #endif /* UI_WORKSPACE_H */

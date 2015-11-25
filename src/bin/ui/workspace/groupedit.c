@@ -337,35 +337,6 @@ groupedit_edit_object_part_del(Evas_Object *obj, Part_ *part)
 }
 
 Eina_Bool
-groupedit_edit_object_part_item_add(Evas_Object *obj, Eina_Stringshare *part,
-                                    Eina_Stringshare *item, Eina_Stringshare *source)
-{
-   WS_GROUPEDIT_DATA_GET(obj, sd);
-
-   assert(part != NULL);
-   assert(item != NULL);
-   assert(source != NULL);
-
-   /* return _edit_object_part_item_add(sd, part, item, source); */
-   TODO("delete this func, instead use _recalc")
-   return false;
-}
-
-Eina_Bool
-groupedit_edit_object_part_item_del(Evas_Object *obj, Eina_Stringshare *part,
-                                    Eina_Stringshare *item)
-{
-   WS_GROUPEDIT_DATA_GET(obj, sd);
-
-   assert(part != NULL);
-   assert(item != NULL);
-
-   /* return _edit_object_part_item_del(sd, part, item); */
-   TODO("delete this func, instead use _recalc")
-   return false;
-}
-
-Eina_Bool
 groupedit_edit_object_part_above(Evas_Object *obj, const char *part)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd);
