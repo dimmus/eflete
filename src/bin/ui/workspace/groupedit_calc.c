@@ -643,6 +643,7 @@ _part_box_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    int spread_w, spread_h;
    int min_w, min_h, max_w, max_h,  w, h, i;
    Evas_Object *cell, *cell_content;
+   Groupedit_Item *item;
 
    assert(gp->container == NULL);
 
@@ -687,6 +688,13 @@ _part_box_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
              elm_object_content_set(cell, cell_content);
              evas_object_hide(cell_content);
              evas_object_box_append(gp->container, cell);
+             if (i == 0)
+               {
+                  item = mem_malloc(sizeof(Groupedit_Item));
+                  item->name = eina_stringshare_add(str);
+                  item->layout = cell;
+                  gp->items = eina_list_append(gp->items, item);
+               }
           }
      }
 }
