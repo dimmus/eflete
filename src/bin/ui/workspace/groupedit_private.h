@@ -193,60 +193,6 @@ _edit_object_part_item_del(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
                            Eina_Stringshare *item);
 
 /**
- * Those are default layouts for BOX and their code are same like in
- * evas object box.
- * Those functions need to be always up to date.
- * They are required to be here for calculation real sizes and positions of
- * items (evas_object_geometry_get doesn't work well with items in box)
- */
-
-void
-_box_layout_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-void
-_box_layout_flow_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-void
-_box_layout_homogeneous_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-void
-_box_layout_homogeneous_max_size_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-void
-_box_layout_stack(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-void
-_box_layout_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-void
-_box_layout_flow_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-void
-_box_layout_homogeneous_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-void
-_box_layout_homogeneous_max_size_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data);
-
-/* this is only for finding layout! */
-struct edje_box_layouts {
-   const char *name;
-   Evas_Object_Box_Layout cb;
-};
-/* box layout function <-> box layout name mapping */
-static const struct edje_box_layouts _edje_box_layouts[] = {
-   {"horizontal", _box_layout_horizontal},
-   {"horizontal_flow", _box_layout_flow_horizontal},
-   {"horizontal_homogeneous", _box_layout_homogeneous_horizontal},
-   {"horizontal_max", _box_layout_homogeneous_max_size_horizontal},
-   {"stack", _box_layout_stack},
-   {"vertical", _box_layout_vertical},
-   {"vertical_flow", _box_layout_flow_vertical},
-   {"vertical_homogeneous", _box_layout_homogeneous_vertical},
-   {"vertical_max", _box_layout_homogeneous_max_size_vertical},
-   {NULL, NULL}
-};
-
-/**
  * Stack part above above in groupedit module.
  * If part_above param is NULL, then part will restack above by one position,
  * in stack, else part will restack above part_above.
