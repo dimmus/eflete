@@ -145,7 +145,6 @@ struct _Groupedit_Part
    Evas_Object *proxy_part;
    Evas_Object *layout;
    Evas_Object *container;    /**< Used for box/table parts */
-   Eina_Stringshare ***items_draw;
    Evas_Object *item;         /**< The object border in the separete mode */
    Eina_List *items;          /**< The items, for TABLE, BOX part types */
    Eina_List *fake_items;          /**< The items, for TABLE, BOX part types */

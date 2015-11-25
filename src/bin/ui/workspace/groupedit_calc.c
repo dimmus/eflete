@@ -535,51 +535,14 @@ _part_select(void *data,
 }
 
 static void
-_part_table_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
-{
-
-   Eina_List *l;
-   Eina_Stringshare *str;
-   int span_c, span_r, col, row, i, j;
-   const Evas_Object *table;
-
-   assert(gp->container == NULL);
-
-   gp->container = evas_object_table_add(sd->e);
-   elm_box_pack_end(gp->draw, gp->container);
-   evas_object_show(gp->container);
-
-   table = edje_object_part_object_get(sd->group->edit_object, gp->part->name);
-   evas_object_table_col_row_size_get(table, &col, &row);
-   fprintf(stdout, "%5d %5d\n", col, row);
-   gp->items_draw = (Eina_Stringshare ***)mem_calloc(1, sizeof(Eina_Stringshare **) * col);
-   for (i = 0; i < col; i++)
-     gp->items_draw[i] = (Eina_Stringshare **)mem_calloc(1, sizeof(Eina_Stringshare *) * row);
-   EINA_LIST_FOREACH(gp->part->items, l, str)
-     {
-        col = edje_edit_part_item_position_col_get(sd->group->edit_object, gp->part->name, str);
-        row = edje_edit_part_item_position_row_get(sd->group->edit_object, gp->part->name, str);
-        span_c = edje_edit_part_item_span_col_get(sd->group->edit_object, gp->part->name, str);
-        span_r = edje_edit_part_item_span_row_get(sd->group->edit_object, gp->part->name, str);
-
-        for (i = col; i < (col + span_c); i++)
-          {
-             for (j = row; j < (row + span_r); j++)
-               gp->items_draw[i][j] = (Eina_Stringshare *) -1;
-          }
-        gp->items_draw[col][row] = eina_stringshare_add(str);
-     }
-}
-
-static void
-_part_table_items_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
+_part_table_items_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp, Eina_Stringshare ***items_draw)
 {
    const Evas_Object *table;
    Evas_Object *cell;
    Eina_Stringshare *item_name, *item_source;
    int w, h; /* Geometry values */
    int min_w, max_w, min_h, max_h; /* Hints values */
-   int i, k, col, row;
+   int i, j, col, row;
    unsigned char span_col, span_row;
 
    assert(gp->container != NULL);
@@ -590,16 +553,16 @@ _part_table_items_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 
    for (i = 0; i < col; i++)
      {
-        for (k = 0; k < row; k++)
+        for (j = 0; j < row; j++)
           {
-             if (gp->items_draw[i][k] == (Eina_Stringshare *) -1) continue;
+             if (items_draw[i][j] == (Eina_Stringshare *) -1) continue;
 
              span_col = 1;
              span_row = 1;
 
-             if (gp->items_draw[i][k] != NULL)
+             if (items_draw[i][j] != NULL)
                {
-                  item_name = gp->items_draw[i][k];
+                  item_name = items_draw[i][j];
                   span_col = edje_edit_part_item_span_col_get(sd->group->edit_object, gp->part->name, item_name);
                   span_row = edje_edit_part_item_span_row_get(sd->group->edit_object, gp->part->name, item_name);
 
@@ -627,7 +590,7 @@ _part_table_items_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
                   max_w = edje_edit_part_item_max_w_get(sd->group->edit_object, gp->part->name, item_name);
                   max_h = edje_edit_part_item_max_h_get(sd->group->edit_object, gp->part->name, item_name);
                   evas_object_size_hint_max_set(cell, max_w, max_h);
-                  evas_object_table_pack(gp->container, cell, i, k, span_col, span_row);
+                  evas_object_table_pack(gp->container, cell, i, j, span_col, span_row);
                }
              cell = elm_layout_add(sd->parent);
              evas_object_size_hint_align_set(cell, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -636,9 +599,63 @@ _part_table_items_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
              evas_object_show(cell);
              elm_object_signal_emit(cell, "border,part_item", "eflete");
 
-             evas_object_table_pack(gp->container, cell, i, k, span_col, span_row);
+             evas_object_table_pack(gp->container, cell, i, j, span_col, span_row);
           }
      }
+}
+
+static void
+_part_table_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
+{
+
+   Eina_List *l;
+   Eina_Stringshare *str;
+   int span_c, span_r, col, row, i, j;
+   const Evas_Object *table;
+   Eina_Stringshare ***items_draw;
+
+   assert(gp->container == NULL);
+
+   gp->container = evas_object_table_add(sd->e);
+   elm_box_pack_end(gp->draw, gp->container);
+   evas_object_show(gp->container);
+
+   table = edje_object_part_object_get(sd->group->edit_object, gp->part->name);
+   evas_object_table_col_row_size_get(table, &col, &row);
+   fprintf(stdout, "%5d %5d\n", col, row);
+   items_draw = (Eina_Stringshare ***)mem_calloc(1, sizeof(Eina_Stringshare **) * col);
+   for (i = 0; i < col; i++)
+     items_draw[i] = (Eina_Stringshare **)mem_calloc(1, sizeof(Eina_Stringshare *) * row);
+   EINA_LIST_FOREACH(gp->part->items, l, str)
+     {
+        col = edje_edit_part_item_position_col_get(sd->group->edit_object, gp->part->name, str);
+        row = edje_edit_part_item_position_row_get(sd->group->edit_object, gp->part->name, str);
+        span_c = edje_edit_part_item_span_col_get(sd->group->edit_object, gp->part->name, str);
+        span_r = edje_edit_part_item_span_row_get(sd->group->edit_object, gp->part->name, str);
+
+        for (i = col; i < (col + span_c); i++)
+          {
+             for (j = row; j < (row + span_r); j++)
+               items_draw[i][j] = (Eina_Stringshare *) -1;
+          }
+        items_draw[col][row] = eina_stringshare_add(str);
+     }
+   _part_table_items_add(sd, gp, items_draw);
+
+   evas_object_table_col_row_size_get(table, &col, &row);
+   for (i = 0; i < col; i++)
+     {
+        for (j = 0; j < row; j++)
+          {
+             if (items_draw[i][j] == (Eina_Stringshare *) -1) continue;
+             eina_stringshare_del(items_draw[i][j]);
+          }
+     }
+   for (i = 0; i < col; i++)
+     free(items_draw[i]);
+   free(items_draw);
+
+
 }
 
 /* get from edje_util.c:2935 */
@@ -1009,7 +1026,6 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
                 {
                    _part_container_del(gp);
                    _part_table_add(sd, gp);
-                   _part_table_items_add(sd, gp);
                 }
               _table_param_update(sd, gp);
               _common_param_update(gp, sd->group->edit_object);
@@ -1120,7 +1136,6 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
          PART_VIEW_PROXY_SET()
          elm_object_signal_emit(gp->layout, "border,table", "eflete");
          _part_table_add(sd, gp);
-         _part_table_items_add(sd, gp);
          break;
       case EDJE_PART_TYPE_BOX:
          PART_VIEW_ADD()
