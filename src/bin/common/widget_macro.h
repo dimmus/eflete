@@ -56,7 +56,6 @@ TODO("see large comment below")
    SCROLLER = elm_scroller_add(PARENT); \
    evas_object_size_hint_weight_set(SCROLLER, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(SCROLLER, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   elm_scroller_policy_set(SCROLLER, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF); \
    elm_scroller_policy_set(SCROLLER, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO); \
    evas_object_show(SCROLLER);
 
