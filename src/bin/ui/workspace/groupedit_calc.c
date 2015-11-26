@@ -568,7 +568,6 @@ _part_table_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 
    table = edje_object_part_object_get(sd->group->edit_object, gp->part->name);
    evas_object_table_col_row_size_get(table, &col, &row);
-   fprintf(stdout, "%5d %5d\n", col, row);
    items_draw = (Eina_Stringshare ***)mem_calloc(1, sizeof(Eina_Stringshare **) * col);
    for (i = 0; i < col; i++)
      items_draw[i] = (Eina_Stringshare **)mem_calloc(1, sizeof(Eina_Stringshare *) * row);
@@ -666,7 +665,6 @@ _part_box_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 
    assert(gp->container == NULL);
 
-   fprintf(stdout, "%s\n", gp->part->name);
    gp->container = evas_object_box_add(sd->e);
    elm_box_pack_before(gp->draw, gp->container, gp->proxy_part);
    evas_object_show(gp->container);
@@ -1238,7 +1236,6 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
    id = edje_edit_image_id_get(edit_obj, image_normal);
    edje_edit_string_free(image_normal);
    buf = eina_stringshare_printf("edje/images/%i", id);
-   //fprintf(stdout, "%s\n", buf);
    evas_object_image_file_set(gp->proxy_part, ap.project->dev, buf);
    err = evas_object_image_load_error_get(gp->proxy_part);
    if (err != EVAS_LOAD_ERROR_NONE)
