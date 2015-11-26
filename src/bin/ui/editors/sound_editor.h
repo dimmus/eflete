@@ -29,6 +29,12 @@
 
 #include "modal_window.h"
 
+#ifdef HAVE_AUDIO
+TODO("Check pulse_audio on configure and add COREAUDIO support")
+   #define HAVE_PULSE 1
+   #include <Ecore_Audio.h>
+#endif
+
 #define SIG_SOUND_SELECTED "sound_selected"
 
 typedef enum {
@@ -42,8 +48,21 @@ typedef enum {
    SOUND_TYPE_TONE
 } Sound_Type;
 
+typedef struct
+{
+   Eina_Stringshare *sound_name;
+   Eina_Stringshare *src;
+   Eina_Stringshare *format;
+   Edje_Edit_Sound_Comp comp;
+   double rate;
+   int tone_frq;
+} Item;
+
 typedef struct {
+   Evas_Object *markup;
+   Evas_Object *gengrid;
    Sound_Type sound_type;
+   Elm_Object_Item *tone;
    Eina_Stringshare *file_name;
    double duration;
    Eina_Stringshare *snd_src;
