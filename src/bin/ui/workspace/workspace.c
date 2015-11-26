@@ -913,6 +913,7 @@ Eina_Bool
 workspace_highlight_unset(Evas_Object *obj)
 {
    WS_DATA_GET(obj, sd)
+
    if ((!sd->highlight.highlight) || (!sd->highlight.space_hl)) return false;
    highlight_object_unfollow(sd->highlight.highlight);
    highlight_object_unfollow(sd->highlight.space_hl);
@@ -1439,6 +1440,7 @@ _on_group_navigator_part_select(void *data,
    TODO("Combine this methods to one")
    workspace_highlight_unset(workspace);
    _workspace_highlight_set(workspace, part);
+   groupedit_edit_object_part_item_selected_set(sd->groupedit, part->current_item_name, true);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_PART_SELECTED, (void *)part);
 }
@@ -1879,6 +1881,6 @@ workspace_edit_object_part_item_selected_set(Evas_Object *obj,
    WS_DATA_GET(obj, sd);
    assert(item_name != NULL);
 
-   return groupedit_edit_object_part_item_selected_set(sd->groupedit, item_name,
-                                                       selected);
+   groupedit_edit_object_part_item_selected_set(sd->groupedit, item_name, selected);
+   return true;
 }

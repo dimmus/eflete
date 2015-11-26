@@ -554,6 +554,9 @@ groupedit_edit_object_part_select(Evas_Object *obj, const char *part)
    else
      gp = NULL;
 
+   if (sd->selected && sd->selected->current_item)
+     elm_object_signal_emit(sd->selected->current_item->layout, "border,part_item,hilight,off", "eflete");
+
    if (!sd->separated) sd->selected = gp;
    else
      {
@@ -659,20 +662,33 @@ groupedit_zoom_factor_set(Evas_Object *obj, double factor)
    return true;
 }
 
-Eina_Bool
+void
 groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
                                              Eina_Stringshare *item_name,
-                                             Eina_Bool selected __UNUSED__)
+                                             Eina_Bool selected)
 {
+   Groupedit_Part *gp;
+   Groupedit_Item *item;
    WS_GROUPEDIT_DATA_GET(obj, sd);
-   Groupedit_Part *gp = sd->selected;
 
-   if (!gp) return false;
+   gp = sd->selected;
+   if (!gp) return;
 
-   assert(item_name != NULL);
+   if (!item_name) return;
+   item = _part_item_search(gp->items, item_name);
+   if (gp->current_item)
+     elm_object_signal_emit(gp->current_item->layout, "border,part_item,hilight,off", "eflete");
 
-   TODO("need to find a item in the list and emit signal for hilight it. NOT RECALC!!!!")
-   return false;
+   if (selected)
+     {
+        elm_object_signal_emit(item->layout, "border,part_item,hilight,on", "eflete");
+        gp->current_item = item;
+     }
+   else
+     {
+        elm_object_signal_emit(item->layout, "border,part_item,hilight,off", "eflete");
+        gp->current_item = NULL;
+     }
 }
 
 #undef MY_CLASS_NAME

@@ -397,11 +397,9 @@ groupedit_zoom_factor_set(Evas_Object *obj, double factor);
  * @param item_name The name of item, which selection should be changed.
  * @param selected If EINA_TRUE - item will be selected, otherwise unselected.
  *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
  * @ingroup Groupedit
  */
-Eina_Bool
+void
 groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
                                              Eina_Stringshare *item_name,
                                              Eina_Bool selected);
