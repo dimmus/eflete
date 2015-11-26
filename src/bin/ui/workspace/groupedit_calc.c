@@ -1130,81 +1130,33 @@ _move_border_to_top(Ws_Groupedit_Smart_Data *sd)
 }
 
 static inline void
-_colors_get(Groupedit_Part *gp, Evas_Object *edit_obj, const char *state, double value,
-            int *r, int *g, int *b, int *a,
-            int *r2, int *g2, int *b2, int *a2,
-            int *r3, int *g3, int *b3, int *a3)
+_color_apply(Groupedit_Part *gp, Evas_Object *edit_obj, const char *state, double value)
 {
+   int r, g, b, a;
    int cr, cg, cb, ca;
-   int cr2, cg2, cb2, ca2;
-   int cr3, cg3, cb3, ca3;
    Eina_Stringshare *color_class;
 
    assert(gp != NULL);
    assert(edit_obj != NULL);
    assert(state != NULL);
 
-   if (r || g || b || a)
-     edje_edit_state_color_get(edit_obj, gp->part->name, state, value, r, g, b, a);
-   if (r2 || g2 || b2 || a2)
-     edje_edit_state_color2_get(edit_obj, gp->part->name, state, value, r2, g2, b2, a2);
-   if (r3 || g3 || b3 || a3)
-     edje_edit_state_color3_get(edit_obj, gp->part->name, state, value, r3, g3, b3, a3);
-
+   edje_edit_state_color_get(edit_obj, gp->part->name, state, value, &r, &g, &b, &a);
    color_class = edje_edit_state_color_class_get(edit_obj, gp->part->name, state, value);
    if (color_class)
      {
         if (edje_edit_color_class_colors_get(edit_obj, color_class, &cr, &cg, &cb, &ca,
-                                             &cr2, &cg2, &cb2, &ca2,
-                                             &cr3, &cg3, &cb3, &ca3))
+                                             NULL, NULL, NULL, NULL,
+                                             NULL, NULL, NULL, NULL))
           {
-             if (r) *r = ((cr + 1) * *r) >> 8;
-             if (g) *g = ((cg + 1) * *g) >> 8;
-             if (b) *b = ((cb + 1) * *b) >> 8;
-             if (a) *a = ((ca + 1) * *a) >> 8;
-
-             if (r2) *r2 = ((cr2 + 1) * *r2) >> 8;
-             if (g2) *g2 = ((cg2 + 1) * *g2) >> 8;
-             if (b2) *b2 = ((cb2 + 1) * *b2) >> 8;
-             if (a2) *a2 = ((ca2 + 1) * *a2) >> 8;
-
-             if (r3) *r3 = ((cr3 + 1) * *r3) >> 8;
-             if (g3) *g3 = ((cg3 + 1) * *g3) >> 8;
-             if (b3) *b3 = ((cb3 + 1) * *b3) >> 8;
-             if (a3) *a3 = ((ca3 + 1) * *a3) >> 8;
+             r = ((cr + 1) * r) >> 8;
+             g = ((cg + 1) * g) >> 8;
+             b = ((cb + 1) * b) >> 8;
+             a = ((ca + 1) * a) >> 8;
           }
         eina_stringshare_del(color_class);
      }
-
-   if (a) evas_color_argb_premul(*a, r, g, b);
-   if (a2) evas_color_argb_premul(*a2, r2, g2, b2);
-   if (a3) evas_color_argb_premul(*a3, r3, g3, b3);
-}
-
-static inline void
-_color_apply(Groupedit_Part *gp, Evas_Object *edit_obj, const char *state, double value)
-{
-   int r, g, b, a;
-   int r2, g2, b2, a2;
-   int r3, g3, b3, a3;
-
-   assert(gp != NULL);
-   assert(edit_obj != NULL);
-   assert(state != NULL);
-
-   if (gp->part->type == EDJE_PART_TYPE_TEXT || gp->part->type == EDJE_PART_TYPE_TEXTBLOCK)
-     _colors_get(gp, edit_obj, state, value, &r, &g, &b, &a, &r2, &g2, &b2, &a2, &r3, &g3, &b3, &a3);
-   else
-     _colors_get(gp, edit_obj, state, value, &r, &g, &b, &a, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-
+   evas_color_argb_premul(a, &r, &g, &b);
    evas_object_color_set(gp->draw, r, g, b, a);
-   if (gp->part->type == EDJE_PART_TYPE_TEXT || gp->part->type == EDJE_PART_TYPE_TEXTBLOCK)
-     {
-        evas_object_text_shadow_color_set(gp->draw, r2, g2, b2, a2);
-        evas_object_text_outline_color_set(gp->draw, r3, g3, b3, a3);
-        evas_object_text_glow_color_set(gp->draw, r2, g2, b2, a2);
-        evas_object_text_glow2_color_set(gp->draw, r3, g3, b3, a3);
-     }
 }
 
 static void
