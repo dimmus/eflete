@@ -37,7 +37,6 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part);
 static void
 _move_border_to_top(Ws_Groupedit_Smart_Data *sd);
 
-
 static void
 _part_draw_del(Ws_Groupedit_Smart_Data *sd, Part_ *part);
 
@@ -311,6 +310,26 @@ _parts_list_find(Eina_List *parts, const char *part)
    return NULL;
 }
 
+Groupedit_Item *
+_part_item_search(Eina_List *items, const char *item_name)
+{
+   Eina_List *l;
+   Groupedit_Item *item;
+
+   assert(items != NULL);
+   assert(item_name != NULL);
+
+   EINA_LIST_FOREACH(items, l, item)
+     {
+        /* we are sure that all strings are stringshare, and for compare two
+         * strings enough compare they pointers */
+        if ((item->name == item_name))
+          return item;
+     }
+   return NULL;
+}
+
+
 void
 _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd)
 {
@@ -544,7 +563,7 @@ _part_table_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    assert(gp->container == NULL);
 
    gp->container = evas_object_table_add(sd->e);
-   elm_box_pack_end(gp->draw, gp->container);
+   elm_box_pack_before(gp->draw, gp->container, gp->proxy_part);
    evas_object_show(gp->container);
 
    table = edje_object_part_object_get(sd->group->edit_object, gp->part->name);
@@ -649,7 +668,7 @@ _part_box_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 
    fprintf(stdout, "%s\n", gp->part->name);
    gp->container = evas_object_box_add(sd->e);
-   elm_box_pack_end(gp->draw, gp->container);
+   elm_box_pack_before(gp->draw, gp->container, gp->proxy_part);
    evas_object_show(gp->container);
 
    EINA_LIST_FOREACH(gp->part->items, l, str)

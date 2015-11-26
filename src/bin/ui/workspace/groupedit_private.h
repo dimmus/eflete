@@ -147,6 +147,7 @@ struct _Groupedit_Part
    Evas_Object *container;    /**< Used for box/table parts */
    Evas_Object *item;         /**< The object border in the separete mode */
    Eina_List *items;          /**< The items, for TABLE, BOX part types */
+   Groupedit_Item *current_item;
 };
 
 struct _Groupedit_Item
@@ -163,6 +164,9 @@ _parts_list_free(Ws_Groupedit_Smart_Data *sd);
 
 Groupedit_Part *
 _parts_list_find(Eina_List *parts, const char *part);
+
+Groupedit_Item *
+_part_item_search(Eina_List *items, const char *item_name);
 
 Eina_Bool
 _parts_recalc(Ws_Groupedit_Smart_Data *sd);
