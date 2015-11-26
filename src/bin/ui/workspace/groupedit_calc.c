@@ -935,10 +935,10 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
               _common_param_update(gp, sd->group->edit_object);
               break;
            case EDJE_PART_TYPE_IMAGE:
-              if (sd->manual_calc) _image_param_update(gp, sd->group->edit_object);
+              _image_param_update(gp, sd->group->edit_object);
               break;
-           case EDJE_PART_TYPE_PROXY: // it part like image
-              if (sd->manual_calc) _proxy_param_update(gp, sd->group->edit_object);
+           case EDJE_PART_TYPE_PROXY:
+              _proxy_param_update(gp, sd->group->edit_object);
               break;
            case EDJE_PART_TYPE_TABLE:
               if (sd->manual_calc)
