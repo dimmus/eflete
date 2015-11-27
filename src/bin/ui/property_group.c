@@ -433,7 +433,7 @@ prop_part_item_padding_update(Group_Prop_Data *pd);
 static void
 prop_state_proxy_source_update(Group_Prop_Data *pd);
 
-static Elm_Genlist_Item_Class *_itc_tween = NULL;
+static Elm_Gengrid_Item_Class *_itc_tween = NULL;
 
 static void
 _on_spinner_mouse_wheel(void *data __UNUSED__,
@@ -2892,7 +2892,7 @@ _on_state_image_choose(void *data,
                               false);
 }
 
-static void
+static void __UNUSED__
 _del_tween_image(void *data,
                  Evas_Object *obj,
                  void *event_info __UNUSED__)
@@ -2944,7 +2944,7 @@ _on_image_editor_tween_done(void *data,
    edje_edit_string_list_free(selected);
 }
 
-static void
+static void __UNUSED__
 _add_tween_image(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
@@ -2957,6 +2957,15 @@ _add_tween_image(void *data,
                                   _on_image_editor_tween_done, tween_list);
 
    return;
+}
+
+static void
+_item_del(void *data,
+          Evas_Object *obj __UNUSED__)
+{
+   assert(data != NULL);
+
+   eina_stringshare_del(data);
 }
 
 static char *
@@ -2973,43 +2982,33 @@ _item_content_get(void *data, Evas_Object *obj, const char *part)
    const char* buf = NULL;
    const char *file = NULL, *group = NULL;
    Evas_Load_Error err;
-   Evas_Object *button, *image;
+   Evas_Object *image;
    Group_Prop_Data *pd = NULL;
 
    if (!strcmp(part, "elm.swallow.icon"))
-    {
-       pd = evas_object_data_get(obj, GROUP_PROP_DATA);
+     {
+        pd = evas_object_data_get(obj, GROUP_PROP_DATA);
 
-       assert(pd != NULL);
+        assert(pd != NULL);
 
-       edje_object_file_get((const Eo*)pd->group->edit_object, &file, &group);
-       image = evas_object_image_add(evas_object_evas_get(obj));
-       buf = eina_stringshare_printf("edje/images/%i",
-                        edje_edit_image_id_get(pd->group->edit_object, (const char*)data));
-       evas_object_image_file_set(image, file, buf);
-       err = evas_object_image_load_error_get(image);
-       if (err != EVAS_LOAD_ERROR_NONE)
-         {
-            WARN("Image [%s] from file [%s] loaded with errors", buf, file);
-            return NULL;
-         }
-       evas_object_image_filled_set(image, true);
-       return image;
-    }
-   if (!strcmp(part, "elm.swallow.end"))
-    {
-       BUTTON_ADD(obj, button, NULL)
-       ICON_STANDARD_ADD(button, image, true, "minus");
-       elm_object_part_content_set(button, NULL, image);
-       evas_object_smart_callback_add(button, "clicked", _del_tween_image,
-                                      (const char*)data);
-       elm_object_style_set(button, "anchor");
-       return button;
-    }
-    return NULL;
+        edje_object_file_get((const Eo*)pd->group->edit_object, &file, &group);
+        image = evas_object_image_add(evas_object_evas_get(obj));
+        buf = eina_stringshare_printf("edje/images/%i",
+                                      edje_edit_image_id_get(pd->group->edit_object, (const char*)data));
+        evas_object_image_file_set(image, file, buf);
+        err = evas_object_image_load_error_get(image);
+        if (err != EVAS_LOAD_ERROR_NONE)
+          {
+             WARN("Image [%s] from file [%s] loaded with errors", buf, file);
+             return NULL;
+          }
+        evas_object_image_filled_set(image, true);
+        return image;
+     }
+   return NULL;
 }
 
-static void
+static void __UNUSED__
 _tween_image_moved(Evas_Object *data,
                    Evas_Object *obj,
                    Elm_Object_Item *item EINA_UNUSED)
@@ -3049,8 +3048,7 @@ _tween_image_moved(Evas_Object *data,
 Evas_Object *
 prop_item_state_image_tween_add(Evas_Object *box, Group_Prop_Data *pd)
 {
-   Evas_Object *tween_frame, *tween_list;
-   Evas_Object *button, *icon;
+   Evas_Object *tween_frame, *tween_list, *item;
    Eina_List *images_list, *l;
    char *image_name;
 
@@ -3058,21 +3056,30 @@ prop_item_state_image_tween_add(Evas_Object *box, Group_Prop_Data *pd)
    assert(pd != NULL);
 
    FRAME_PROPERTY_ADD(box, tween_frame, true, _("Tweens"), pd->scroller)
-   elm_object_style_set(tween_frame, "tween");
+   elm_object_style_set(tween_frame, "outdent_top");
 
-   tween_list = elm_genlist_add(tween_frame);
-   elm_genlist_longpress_timeout_set(tween_list, 0.2);
-   elm_genlist_reorder_mode_set(tween_list, true);
+   item = elm_layout_add(tween_frame);
+   elm_layout_theme_set(item, "layout", "property", "tween");
+   evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0);
+   evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0);
+   evas_object_show(item);
+   elm_object_content_set(tween_frame, item);
+
+   tween_list = elm_gengrid_add(tween_frame);
+   elm_gengrid_item_size_set(tween_list, 96, 111);
+   elm_gengrid_align_set(tween_list, 0.0, 0.0);
+   elm_gengrid_horizontal_set(tween_list, true);
+
    evas_object_data_set(tween_list, GROUP_PROP_DATA, pd);
 
    if (!_itc_tween)
      {
-        _itc_tween = elm_genlist_item_class_new();
+        _itc_tween = elm_gengrid_item_class_new();
         _itc_tween->item_style = "default";
         _itc_tween->func.text_get = _item_label_get;
         _itc_tween->func.content_get = _item_content_get;
         _itc_tween->func.state_get = NULL;
-        _itc_tween->func.del = NULL;
+        _itc_tween->func.del = _item_del;
      }
 
    images_list = edje_edit_state_tweens_list_get(pd->group->edit_object,
@@ -3082,22 +3089,21 @@ prop_item_state_image_tween_add(Evas_Object *box, Group_Prop_Data *pd)
    if (!images_list) elm_frame_collapse_go(tween_frame, true);
    EINA_LIST_FOREACH(images_list, l, image_name)
      {
-       elm_genlist_item_append(tween_list, _itc_tween,
-                               eina_stringshare_add(image_name), NULL,
-                               ELM_GENLIST_ITEM_NONE, NULL, NULL);
+        elm_gengrid_item_append(tween_list, _itc_tween,
+                                eina_stringshare_add(image_name), NULL, NULL);
      }
    edje_edit_string_list_free(images_list);
-   elm_object_content_set(tween_frame, tween_list);
+   elm_object_content_set(item, tween_list);
 
-   BUTTON_ADD(tween_frame, button, NULL)
-   ICON_STANDARD_ADD(button, icon, true, "plus");
-   elm_object_part_content_set(button, NULL, icon);
-   evas_object_smart_callback_add(button, "clicked", _add_tween_image,
-                                  tween_list);
-   elm_object_style_set(button, "anchor");
-   elm_object_part_content_set(tween_frame, "elm.swallow.add", button);
-   evas_object_smart_callback_add(tween_list, "moved",
-                                  (Evas_Smart_Cb)_tween_image_moved, pd);
+//   BUTTON_ADD(tween_frame, button, NULL)
+//   ICON_STANDARD_ADD(button, icon, true, "plus");
+//   elm_object_part_content_set(button, NULL, icon);
+//   evas_object_smart_callback_add(button, "clicked", _add_tween_image,
+//                                  tween_list);
+//   elm_object_style_set(button, "anchor");
+//   elm_object_part_content_set(tween_frame, "elm.swallow.add", button);
+//   evas_object_smart_callback_add(tween_list, "moved",
+//                                  (Evas_Smart_Cb)_tween_image_moved, pd);
 
    evas_object_show(tween_list);
 
