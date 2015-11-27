@@ -808,8 +808,6 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
 {
    Evas_Coord x, y, xe, ye, w, h;
    Evas_Coord part_x, part_y, abs_x, abs_y;
-   Evas_Coord ro_w, ro_h;
-   const Evas_Object *ro;
 
    assert(sd != NULL);
    assert(gp != NULL);
@@ -820,24 +818,23 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
    evas_object_resize(gp->draw, w, h);
    evas_object_move(gp->draw, (x * sd->zoom_factor + xe + offset_x),
                               (y * sd->zoom_factor + ye + offset_y));
-   evas_object_size_hint_min_set(gp->layout, w, h);
-   evas_object_size_hint_max_set(gp->layout, w, h);
 
-   if (gp->container) evas_object_size_hint_max_set(gp->container, w, h);
-
-   evas_object_resize(gp->container, w, h);
-   evas_object_move(gp->container, (x * sd->zoom_factor + xe + offset_x),
-                                   (y * sd->zoom_factor + ye + offset_y));
-
-   /* set the proxy part size */
-   ro = edje_object_part_object_get(sd->group->edit_object, gp->part->name);
-   evas_object_geometry_get(ro, NULL, NULL, &ro_w, &ro_h);
-   evas_object_size_hint_min_set(gp->proxy_part, ro_w, ro_h);
-   evas_object_size_hint_max_set(gp->proxy_part, ro_w, ro_h);
+   if (gp->container)
+     {
+        evas_object_resize(gp->container, w, h);
+        evas_object_move(gp->container, (x * sd->zoom_factor + xe + offset_x),
+                         (y * sd->zoom_factor + ye + offset_y));
+     }
 
    if (gp->part->type == EDJE_PART_TYPE_TEXT)
      {
         double x_align, y_align;
+        const Evas_Object *ro;
+        Evas_Coord ro_w, ro_h;
+        ro = edje_object_part_object_get(sd->group->edit_object, gp->part->name);
+        evas_object_geometry_get(ro, NULL, NULL, &ro_w, &ro_h);
+        evas_object_resize(gp->proxy_part, ro_w, ro_h);
+
 
         x_align = edje_edit_state_text_align_x_get(sd->group->edit_object,
                                                    gp->part->name,
@@ -1006,12 +1003,16 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
    gp->draw = elm_box_add(sd->parent); \
    elm_box_layout_set(gp->draw, evas_object_box_layout_stack, NULL, NULL); \
    gp->layout = elm_layout_add(sd->parent); \
+   evas_object_size_hint_weight_set(gp->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   evas_object_size_hint_align_set(gp->layout, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    elm_layout_theme_set(gp->layout, "layout", "groupview", "default"); \
    evas_object_show(gp->layout); \
    elm_box_pack_end(gp->draw, gp->layout);
 
 #define PART_VIEW_PROXY_SET() \
    gp->proxy_part = evas_object_image_filled_add(sd->e); \
+   evas_object_size_hint_weight_set(gp->proxy_part, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   evas_object_size_hint_align_set(gp->proxy_part, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    elm_box_pack_end(gp->draw, gp->proxy_part); \
    evas_object_show(gp->proxy_part); \
 
