@@ -2850,13 +2850,16 @@ _on_image_editor_done(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *event_info)
 {
+   const char *value;
+   Eina_List *list_selected = (Eina_List *)event_info;
+   const char *selected;
+
    Group_Prop_Data *pd = (Group_Prop_Data *)data;
 
-   const char *value;
-   const char *selected = (const char *)event_info;
-
-   if (!selected) return false;
+   if (!list_selected) return false;
    value = elm_entry_entry_get(pd->attributes.state_image.image);
+
+   selected = eina_list_data_get(list_selected);
 
    if (strcmp(value, selected) == 0) return false;
    elm_entry_entry_set(pd->attributes.state_image.image, selected);
@@ -2920,30 +2923,27 @@ _on_image_editor_tween_done(void *data,
                             void *event_info)
 {
    Evas_Object *tween_list = (Evas_Object *)data;
-   const char *selected = (const char *)event_info;
-//   Eina_List *selected = (Eina_List *)ei;
-//   Eina_List *l = NULL;
-//   const char *name = NULL;
+   Eina_List *selected = (Eina_List *)event_info;
+   Eina_List *l = NULL;
+   const char *name = NULL;
    Group_Prop_Data *pd = evas_object_data_get(tween_list, GROUP_PROP_DATA);
 
    assert(pd != NULL);
 
    if (!selected) return false;
 
-//   EINA_LIST_FOREACH(selected, l, name)
-//     {
+   EINA_LIST_FOREACH(selected, l, name)
+     {
         if (edje_edit_state_tween_add(pd->group->edit_object, pd->part->name,
                                       pd->part->current_state->parsed_name,
-                                      pd->part->current_state->parsed_val, selected))
+                                      pd->part->current_state->parsed_val, name))
           {
              elm_gengrid_item_append(tween_list, _itc_tween,
-                                     eina_stringshare_add(selected), NULL, NULL);
+                                     eina_stringshare_add(name), NULL, NULL);
              //project_changed(false);
           }
-//     }
-   elm_frame_collapse_go(pd->attributes.state_image.tween, false);
+     }
    return true;
-//   edje_edit_string_list_free(selected);
 }
 
 static void
