@@ -1034,7 +1034,7 @@ group_navigator_add(Group *group)
    menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Spacer"), _on_menu_add_part_clicked, &_type_spacer);
    elm_menu_item_icon_name_set(menu_item, "type_spacer");
 
-   pl->name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
+   pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, pl);
