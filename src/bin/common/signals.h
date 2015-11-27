@@ -273,12 +273,20 @@ typedef struct {
 #define SIGNAL_SOUND_EDITOR_TAB_CLICKED "SIGNAL_SOUND_EDITOR_TAB_CLICKED"
 
  /**
- * emited when sound/sounds in sound editor is/are selected.
+ * emited when sound/sounds in sound editor is/are added/selected.
  * eventinfo - NULL
  *
  * @ingroup Window
  */
-#define SIGNAL_SOUND_SELECTED "SIGNAL_SOUND_SELECTED"
+#define SIGNAL_SOUND_ADD "SIGNAL_SOUND_ADD"
+
+ /**
+ * emited when sound/sounds in sound editor is/are deleted.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_SOUND_DEL "SIGNAL_SOUND_DEL"
 
  /**
  * emited when style editor tab is clicked.
