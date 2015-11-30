@@ -81,21 +81,29 @@ struct _Style_Tag_Entries
 
 static Elm_Genlist_Item_Class *_itc_style = NULL;
 static Elm_Genlist_Item_Class *_itc_tags = NULL;
+static Eina_Bool is_expanded_glitem = EINA_FALSE;
 
 static void
 _on_popup_bt_cancel(void *data,
-                    Evas_Object *obj __UNUSED__,
+                    Evas_Object *obj,
                     void *ei __UNUSED__)
 {
    Style_Editor *style_edit = (Style_Editor *)data;
 
    assert(style_edit != NULL);
    assert(POPUP.name_validator != NULL);
-   elm_validator_regexp_free(POPUP.name_validator);
-   POPUP.name_validator = NULL;
+
+   if (obj && is_expanded_glitem)
+     {
+        elm_genlist_item_expanded_set(elm_genlist_selected_item_get(style_edit->glist), false);
+        is_expanded_glitem = EINA_FALSE;
+     }
 
    evas_object_del(POPUP.dialog);
    POPUP.dialog = NULL;
+
+   elm_validator_regexp_free(POPUP.name_validator);
+   POPUP.name_validator = NULL;
 }
 
 static void
@@ -216,19 +224,15 @@ _on_st_add_bt_ok(void *data,
      }
 
    glit_style = elm_genlist_item_append(style_edit->glist, _itc_style,
-                                        style_name, NULL, ELM_GENLIST_ITEM_NONE,
+                                        style_name, NULL, ELM_GENLIST_ITEM_TREE,
                                         _on_glit_selected, style_edit);
    elm_object_item_data_set(glit_style, (char *)style_name);
 
-   elm_genlist_item_append(style_edit->glist, _itc_tags,
-                           "DEFAULT", glit_style, ELM_GENLIST_ITEM_NONE,
-                           _on_glit_selected, style_edit);
-
    TODO("Need refactoring after callback logic for modal window implementation")
 
+
    elm_genlist_item_selected_set(glit_style, true);
-   elm_genlist_item_bring_in(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
-   elm_genlist_item_show(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
+   elm_genlist_item_bring_in(glit_style, ELM_GENLIST_ITEM_SCROLLTO_TOP);
 
    res = mem_calloc(1, sizeof(Resource));
    res->name = eina_stringshare_add(style_name);
@@ -281,8 +285,7 @@ _on_tag_add_bt_ok(void *data,
                                       _on_glit_selected, style_edit);
    elm_object_item_data_set(glit_tag,(char *)tag_name);
    elm_genlist_item_selected_set(glit_tag, true);
-   elm_genlist_item_show(style_edit->tag, ELM_GENLIST_ITEM_SCROLLTO_IN);
-   elm_genlist_item_bring_in(glit_tag, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
+   elm_genlist_item_bring_in(glit_tag, ELM_GENLIST_ITEM_SCROLLTO_TOP);
 
    _on_popup_bt_cancel(style_edit, NULL, NULL);
 
@@ -361,8 +364,14 @@ _on_bt_tag_add(Style_Editor *style_edit)
 
    if (!glit_parent)
      {
-         style_name = elm_object_item_data_get(glit);
-         style_edit->tag = glit;
+        if (!elm_genlist_item_expanded_get(glit))
+          {
+             elm_genlist_item_expanded_set(glit, true);
+             is_expanded_glitem = EINA_TRUE;
+          }
+
+        style_name = elm_object_item_data_get(glit);
+        style_edit->tag = glit;
      }
    else
      {
