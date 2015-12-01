@@ -20,6 +20,7 @@
 #include "diff.h"
 #include "change.h"
 
+typedef Eina_Bool (* function_type_signalsblock) (Change*);
 typedef Eina_Bool (* function_type_int) (Evas_Object *, Change*, Eina_Bool, int);
 typedef Eina_Bool (* function_type_string_string_double_double) (Evas_Object *, Change*, Eina_Bool,
                                                                  const char *, const char *, double, double);
@@ -77,6 +78,8 @@ _apply(Evas_Object *obj, Function_Info *fi)
      {
       case FUNCTION_TYPE_NONE:
          return true;
+      case FUNCTION_TYPE_SIGNALSBLOCK:
+         return ((function_type_signalsblock)fi->function)(NULL);
       case FUNCTION_TYPE_INT:
          return ((function_type_int)fi->function)(obj, NULL, false, fi->args.type_i.i1);
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE:
@@ -191,6 +194,7 @@ diff_update(Diff *diff, Diff *new_diff)
      {
       case FUNCTION_TYPE_NONE:
       case FUNCTION_TYPE_INT:
+      case FUNCTION_TYPE_SIGNALSBLOCK:
          break;
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE:
          eina_stringshare_del(diff->redo.args.type_ssdd.s1);
@@ -340,6 +344,7 @@ diff_free(Diff *diff)
      {
       case FUNCTION_TYPE_NONE:
       case FUNCTION_TYPE_INT:
+      case FUNCTION_TYPE_SIGNALSBLOCK:
          break;
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE:
          eina_stringshare_del(diff->redo.args.type_ssdd.s1);
