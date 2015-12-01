@@ -28,7 +28,7 @@ _editor_save(Evas_Object *edit_object, Eina_Bool current_group)
    if (!edje_edit_without_source_save(edit_object, current_group))
      return false;
 
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_SAVED, NULL);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_SAVED, NULL);
    return true;
 }
 Eina_Bool

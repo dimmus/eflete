@@ -21,6 +21,7 @@
 #include "editor_macro.h"
 #include "string_common.h"
 
+extern int _editor_signals_blocked;
 Eina_Bool
 editor_part_effect_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                        const char *part_name, Edje_Text_Effect new_val)
@@ -49,7 +50,7 @@ editor_part_effect_set(Evas_Object *edit_object, Change *change, Eina_Bool merge
    if (!edje_edit_part_effect_set(edit_object, part_name, new_val))
      return false;
    _editor_project_changed();
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
 
@@ -81,7 +82,7 @@ editor_part_ignore_flags_set(Evas_Object *edit_object, Change *change, Eina_Bool
    if (!edje_edit_part_ignore_flags_set(edit_object, part_name, new_val))
      return false;
    _editor_project_changed();
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
 
@@ -139,8 +140,8 @@ editor_part_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
    _editor_project_changed();
    ren.old_name = name;
    ren.new_name = new_val;
-   evas_object_smart_callback_call(ap.win, SIGNAL_PART_RENAMED, &ren);
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_PART_RENAMED, &ren);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
 
@@ -175,7 +176,7 @@ editor_part_item_aspect_mode_set(Evas_Object *edit_object, Change *change, Eina_
    if (!edje_edit_part_item_aspect_mode_set(edit_object, part_name, item_name, new_val))
      return false;
    _editor_project_changed();
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
 
@@ -231,7 +232,7 @@ editor_part_item_source_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    if (!edje_edit_part_item_source_set(edit_object, part_name, item_name, new_val))
      return false;
    _editor_project_changed();
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
 
@@ -273,7 +274,7 @@ editor_part_item_padding_set(Evas_Object *edit_object, Change *change, Eina_Bool
    if (!edje_edit_part_item_padding_set(edit_object, part_name, item_name, n3, n4, n5, n6))
      return false;
    _editor_project_changed();
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
 
@@ -305,7 +306,7 @@ editor_part_select_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    if (!edje_edit_part_select_mode_set(edit_object, part_name, new_val))
      return false;
    _editor_project_changed();
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
 
@@ -337,7 +338,7 @@ editor_part_entry_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool m
    if (!edje_edit_part_entry_mode_set(edit_object, part_name, new_val))
      return false;
    _editor_project_changed();
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
 
@@ -369,7 +370,7 @@ editor_part_pointer_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool
    if (!edje_edit_part_pointer_mode_set(edit_object, part_name, new_val))
      return false;
    _editor_project_changed();
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
 
@@ -401,7 +402,7 @@ editor_part_cursor_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    if (!edje_edit_part_cursor_mode_set(edit_object, part_name, new_val))
      return false;
    _editor_project_changed();
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
 
@@ -475,7 +476,7 @@ editor_part_item_append(Evas_Object *edit_object, Change *change, Eina_Bool merg
    _editor_project_changed();
    event_info.part_name = eina_stringshare_add(part_name);
    event_info.item_name = eina_stringshare_add(item_name);
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, (void *)&event_info);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, (void *)&event_info);
    eina_stringshare_del(event_info.part_name);
    eina_stringshare_del(event_info.item_name);
    return true;
@@ -493,7 +494,7 @@ editor_part_item_del(Evas_Object *edit_object, Change *change, Eina_Bool merge _
 
    event_info.part_name = eina_stringshare_add(part_name);
    event_info.item_name = eina_stringshare_add(item_name);
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, (void *)&event_info);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, (void *)&event_info);
    if (change)
      {
         source_group = edje_edit_part_item_source_get(edit_object, part_name, item_name);
@@ -618,9 +619,10 @@ editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
    if (!edje_edit_part_add(edit_object, part_name, type))
      return false;
 
+   editor_save(edit_object);
    _editor_project_changed();
    event_info = eina_stringshare_add(part_name);
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ADDED, (void *)event_info);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ADDED, (void *)event_info);
    eina_stringshare_del(event_info);
    return true;
 }
@@ -636,7 +638,7 @@ editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
    assert(edit_object != NULL);
 
    event_info = eina_stringshare_add(part_name);
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, (void *)event_info);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_DELETED, (void *)event_info);
 
    if (change)
      {
@@ -660,6 +662,7 @@ editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
         return false;
      }
    eina_stringshare_del(event_info);
+   editor_save(edit_object);
    _editor_project_changed();
    return true;
 }
