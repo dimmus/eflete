@@ -525,11 +525,11 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
    gengrid = elm_gengrid_add(fs);
    if (multi)
      {
-        elm_gengrid_multi_select_set(gengrid, false);
+        elm_gengrid_multi_select_set(gengrid, true);
      }
    else
      {
-        elm_gengrid_multi_select_set(gengrid, true);
+        elm_gengrid_multi_select_set(gengrid, false);
         elm_gengrid_multi_select_mode_set(gengrid,
                                           ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
      }
