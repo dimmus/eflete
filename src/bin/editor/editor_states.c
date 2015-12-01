@@ -196,6 +196,8 @@ editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
    assert(part_name != NULL);
    assert(state_name != NULL);
 
+   you_shall_not_pass_editor_signals(change);
+
    Edje_Part_Type type = edje_edit_part_type_get(edit_object, part_name);
 
    switch (type)
@@ -290,6 +292,8 @@ editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
    res = res && editor_state_rel2_to_x_reset(edit_object, change, part_name, state_name, state_val);
    res = res && editor_state_rel2_to_y_reset(edit_object, change, part_name, state_name, state_val);
    res = res && editor_state_visible_reset(edit_object, change, part_name, state_name, state_val);
+
+   you_shall_pass_editor_signals(change);
 
    return res;
 }

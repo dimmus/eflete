@@ -537,6 +537,8 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UN
    assert(edit_object != NULL);
    assert(part_name != NULL);
 
+   you_shall_not_pass_editor_signals(change);
+
    Edje_Part_Type type = edje_edit_part_type_get(edit_object, part_name);
 
    if ((type == EDJE_PART_TYPE_TEXTBLOCK) || (type == EDJE_PART_TYPE_TEXT))
@@ -590,6 +592,8 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UN
    EINA_LIST_FOREACH(items, l, name)
       res = res && editor_part_item_del(edit_object, change, false, part_name, name);
    edje_edit_string_list_free(items);
+
+   you_shall_pass_editor_signals(change);
 
    return res;
 }
