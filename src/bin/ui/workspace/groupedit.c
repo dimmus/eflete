@@ -93,7 +93,6 @@ _groupedit_smart_add(Evas_Object *o)
 
    priv->obj = o;
    priv->con_current_size = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
-   priv->real_size = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
    priv->zoom_factor = 1.0;
    priv->parts = NULL;
    priv->obj_area.obj = edje_object_add(priv->e);
@@ -124,7 +123,6 @@ _groupedit_smart_del(Evas_Object *o)
    evas_object_hide(sd->group->edit_object);
    evas_object_del(sd->edit_obj_clipper);
 
-   free(sd->real_size);
    free(sd->con_current_size);
    free(sd->obj_area.geom);
 

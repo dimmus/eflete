@@ -80,7 +80,6 @@ struct _Ws_Groupedit_Smart_Data
       int h; /* default: -1, size is not limited */
    } con_size_max;
    Groupedit_Geom *con_current_size;
-   Groupedit_Geom *real_size;
    struct {
       Evas_Object *obj;
       int w, h;

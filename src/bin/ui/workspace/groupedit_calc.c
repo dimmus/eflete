@@ -601,8 +601,6 @@ _part_table_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    for (i = 0; i < col; i++)
      free(items_draw[i]);
    free(items_draw);
-
-
 }
 
 /* get from edje_util.c:2935 */
@@ -758,53 +756,6 @@ _part_container_del(Groupedit_Part *gp)
    gp->container = NULL;
 }
 
-#define GP_REAL_GEOMETRY_CALC(PART_X, PART_Y, ABS_X, ABS_Y) \
-   w *= sd->zoom_factor; h *= sd->zoom_factor; \
-   PART_X = x * sd->zoom_factor + xe + offset_x; \
-   PART_Y = y * sd->zoom_factor + ye + offset_y; \
-   ABS_X = abs(sd->real_size->x - PART_X); \
-   ABS_Y = abs(sd->real_size->y - PART_Y); \
-   if (PART_X > sd->real_size->x) \
-     w += ABS_X; \
-   else \
-     { \
-        sd->real_size->w += ABS_X; \
-        sd->real_size->x = PART_X; \
-     } \
-   if (PART_Y > sd->real_size->y) \
-     h += ABS_Y; \
-   else \
-     { \
-        sd->real_size->h += ABS_Y; \
-        sd->real_size->y = PART_Y; \
-     } \
-   if (sd->real_size->w < w) \
-     sd->real_size->w = w; \
-   if (sd->real_size->h < h) \
-     sd->real_size->h = h;
-
-#define ZOOM_APPLY(OBJECT) \
-   if (fabs(sd->zoom_factor - 1.0) > 0.00001) \
-     { \
-        evas_object_geometry_get(OBJECT, &x, &y, NULL, NULL); \
-        Evas_Map *m = evas_map_new(4); \
-        evas_map_smooth_set(m, false); \
-        evas_map_util_points_populate_from_object_full(m, OBJECT, 0); \
-        evas_map_util_zoom(m, sd->zoom_factor, sd->zoom_factor, x, y); \
-        evas_object_map_set(OBJECT, m); \
-        evas_object_map_enable_set(OBJECT, true); \
-        evas_map_free(m); \
-        evas_object_repeat_events_set(OBJECT, true); \
-     } \
-   else \
-     { \
-        evas_object_map_enable_set(OBJECT, false); \
-        evas_object_repeat_events_set(OBJECT, false); \
-     }
-
-#undef GP_REAL_GEOMETRY_CALC
-#undef ZOOM_APPLY
-
 static void
 _part_calc(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 {
@@ -857,12 +808,6 @@ _part_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    assert(sd != NULL);
 
    if (!sd->parts) return false;
-
-   evas_object_geometry_get(sd->obj, &sd->real_size->x,
-                            &sd->real_size->y,
-                            &sd->real_size->w,
-                            &sd->real_size->h);
-
 
    switch (gp->part->type)
      {
