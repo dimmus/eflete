@@ -866,16 +866,17 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
    gp->part = part;
    gp->item = NULL;
 
-#define PART_VIEW_ADD() \
-   gp->draw = elm_box_add(sd->parent); \
-   elm_box_layout_set(gp->draw, evas_object_box_layout_stack, NULL, NULL); \
-   gp->layout = elm_layout_add(sd->parent); \
-   evas_object_size_hint_weight_set(gp->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
-   evas_object_size_hint_align_set(gp->layout, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   elm_layout_theme_set(gp->layout, "layout", "groupview", "default"); \
-   evas_object_show(gp->layout); \
-   elm_box_pack_end(gp->draw, gp->layout); \
-   evas_object_show(gp->draw); \
+   gp->draw = elm_box_add(sd->parent);
+   elm_box_layout_set(gp->draw, evas_object_box_layout_stack, NULL, NULL);
+   evas_object_show(gp->draw);
+   elm_box_pack_end(sd->box, gp->draw);
+
+   gp->layout = elm_layout_add(sd->parent);
+   evas_object_size_hint_weight_set(gp->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(gp->layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_layout_theme_set(gp->layout, "layout", "groupview", "default");
+   evas_object_show(gp->layout);
+   elm_box_pack_end(gp->draw, gp->layout);
 
 #define PART_VIEW_PROXY_SET() \
    gp->proxy_part = evas_object_image_filled_add(sd->e); \
@@ -884,50 +885,40 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
    elm_box_pack_end(gp->draw, gp->proxy_part); \
    evas_object_show(gp->proxy_part); \
 
-   elm_box_pack_end(sd->box, gp->draw);
    switch (part->type)
      {
       case EDJE_PART_TYPE_RECTANGLE:
-         PART_VIEW_ADD()
          PART_VIEW_PROXY_SET()
          break;
       case EDJE_PART_TYPE_TEXT:
       case EDJE_PART_TYPE_TEXTBLOCK:
-         PART_VIEW_ADD()
          PART_VIEW_PROXY_SET()
          elm_object_signal_emit(gp->layout, "border,text", "eflete");
          break;
       case EDJE_PART_TYPE_IMAGE:
-         PART_VIEW_ADD()
          PART_VIEW_PROXY_SET()
          elm_object_signal_emit(gp->layout, "border,text", "eflete");
          break;
       case EDJE_PART_TYPE_PROXY: // it part like image
-         PART_VIEW_ADD()
          PART_VIEW_PROXY_SET()
          elm_object_signal_emit(gp->layout, "border,proxy", "eflete");
          break;
       case EDJE_PART_TYPE_SWALLOW:
-         PART_VIEW_ADD()
          elm_object_signal_emit(gp->layout, "border,swallow", "eflete");
          break;
       case EDJE_PART_TYPE_SPACER:
-         PART_VIEW_ADD()
          elm_object_signal_emit(gp->layout, "border,spacer", "eflete");
          break;
       case EDJE_PART_TYPE_GROUP:
-         PART_VIEW_ADD()
          PART_VIEW_PROXY_SET()
          elm_object_signal_emit(gp->layout, "border,group", "eflete");
          break;
       case EDJE_PART_TYPE_TABLE:
-         PART_VIEW_ADD()
          PART_VIEW_PROXY_SET()
          elm_object_signal_emit(gp->layout, "border,table", "eflete");
          _part_table_add(sd, gp);
          break;
       case EDJE_PART_TYPE_BOX:
-         PART_VIEW_ADD()
          PART_VIEW_PROXY_SET()
          elm_object_signal_emit(gp->layout, "border,box", "eflete");
          _part_box_add(sd, gp);
