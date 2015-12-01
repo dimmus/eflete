@@ -2914,47 +2914,54 @@ _del_tween_image(void *data,
      }
 }
 
-static void
+Eina_Bool
 _on_image_editor_tween_done(void *data,
                             Evas_Object *obj __UNUSED__,
-                            void *ei)
+                            void *event_info)
 {
    Evas_Object *tween_list = (Evas_Object *)data;
-   Eina_List *selected = (Eina_List *)ei;
-   Eina_List *l = NULL;
-   const char *name = NULL;
+   const char *selected = (const char *)event_info;
+//   Eina_List *selected = (Eina_List *)ei;
+//   Eina_List *l = NULL;
+//   const char *name = NULL;
    Group_Prop_Data *pd = evas_object_data_get(tween_list, GROUP_PROP_DATA);
 
    assert(pd != NULL);
 
-   if (!selected) return;
+   if (!selected) return false;
 
-   EINA_LIST_FOREACH(selected, l, name)
-     {
+//   EINA_LIST_FOREACH(selected, l, name)
+//     {
         if (edje_edit_state_tween_add(pd->group->edit_object, pd->part->name,
                                       pd->part->current_state->parsed_name,
-                                      pd->part->current_state->parsed_val, name))
+                                      pd->part->current_state->parsed_val, selected))
           {
-             elm_genlist_item_append(tween_list, _itc_tween, name, NULL,
-                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
+             elm_gengrid_item_append(tween_list, _itc_tween,
+                                     eina_stringshare_add(selected), NULL, NULL);
              //project_changed(false);
           }
-     }
+//     }
    elm_frame_collapse_go(pd->attributes.state_image.tween, false);
-   edje_edit_string_list_free(selected);
+   return true;
+//   edje_edit_string_list_free(selected);
 }
 
 static void
 _add_tween_image(void *data,
-                 Evas_Object *obj __UNUSED__,
+                 Evas_Object *obj,
                  void *event_info __UNUSED__)
 {
-   Evas_Object *img_edit;
    Evas_Object *tween_list = (Evas_Object *)data;
+   Group_Prop_Data *pd = evas_object_data_get(tween_list, GROUP_PROP_DATA);
 
-   img_edit = image_editor_window_add(TWEENS);
-   evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED,
-                                  _on_image_editor_tween_done, tween_list);
+   assert(pd != NULL);
+
+   TODO("Make it multiple selection here please")
+   popup_gengrid_image_helper(NULL,
+                              obj,
+                              _on_image_editor_tween_done,
+                              tween_list,
+                              true);
 
    return;
 }

@@ -507,7 +507,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
                            Helper_Done_Cb func, void *data,
                            Eina_Bool multi)
 {
-   Evas_Object *gengrid, *entry, *icon;
+   Evas_Object *gengrid, *entry, *icon, *button;
 
    dismiss_func = func;
    func_data = data;
@@ -526,6 +526,10 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
    if (multi)
      {
         elm_gengrid_multi_select_set(gengrid, true);
+
+        BUTTON_ADD(fs, button, _("Ok"))
+        elm_object_part_content_set(helper, "elm.swallow.ok", button);
+        evas_object_show(button);
      }
    else
      {
