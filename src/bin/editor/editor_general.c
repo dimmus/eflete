@@ -19,6 +19,7 @@
 
 #include "editor.h"
 
+int _editor_signals_blocked = 0;
 static inline Eina_Bool
 _editor_save(Evas_Object *edit_object, Eina_Bool current_group)
 {
@@ -54,5 +55,43 @@ editor_internal_group_add(Evas_Object *edit_object)
      return false;
    if (!edje_edit_without_source_save(edit_object, false))
      return false;
+   return true;
+}
+
+Eina_Bool
+you_shall_not_pass_editor_signals(Change *change)
+{
+   Diff *diff;
+
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_SIGNALSBLOCK;
+        diff->redo.function = you_shall_not_pass_editor_signals;
+        diff->undo.type = FUNCTION_TYPE_NONE;
+
+        change_diff_add(change, diff);
+     }
+   _editor_signals_blocked++;
+   return true;
+}
+
+Eina_Bool
+you_shall_pass_editor_signals(Change *change)
+{
+   Diff *diff;
+
+   assert(_editor_signals_blocked > 0);
+
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_SIGNALSBLOCK;
+        diff->redo.function = you_shall_pass_editor_signals;
+        diff->undo.type = FUNCTION_TYPE_NONE;
+
+        change_diff_add(change, diff);
+     }
+   _editor_signals_blocked--;
    return true;
 }

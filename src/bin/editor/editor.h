@@ -177,6 +177,12 @@ editor_group_alias_add(Evas_Object *obj, const char *group_src, const char *grou
 Eina_Bool
 editor_group_del(Evas_Object *obj, const char *name);
 
+Eina_Bool
+you_shall_not_pass_editor_signals(Change *change);
+
+Eina_Bool
+you_shall_pass_editor_signals(Change *change);
+
 /* Group */
 Eina_Bool
 editor_group_min_w_set(Evas_Object *obj, Change *change, Eina_Bool merge,
