@@ -171,9 +171,6 @@ Groupedit_Item *
 _part_item_search(Eina_List *items, const char *item_name);
 
 Eina_Bool
-_parts_recalc(Ws_Groupedit_Smart_Data *sd);
-
-Eina_Bool
 _edit_object_part_add(Ws_Groupedit_Smart_Data *sd, Part_ *part);
 
 Eina_Bool

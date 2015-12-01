@@ -237,7 +237,6 @@ _groupedit_smart_calculate(Evas_Object *o)
                       priv->con_current_size->h);
 
    priv->manual_calc = false;
-   _parts_recalc(priv);
 
    evas_object_smart_callback_call(o, SIG_CHANGED, (void *)priv->con_current_size);
 }
@@ -307,7 +306,8 @@ groupedit_edit_object_recalc_all(Evas_Object *obj)
    WS_GROUPEDIT_DATA_GET(obj, sd);
 
    sd->manual_calc = true;
-   return _parts_recalc(sd);
+   evas_object_smart_changed(sd->obj);
+   return true;
 }
 
 Evas_Object *
@@ -593,7 +593,7 @@ groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible
    assert(gp != NULL);
 
    sd->manual_calc = true;
-   _parts_recalc(sd);
+   evas_object_smart_changed(sd->obj);
    return true;
 }
 

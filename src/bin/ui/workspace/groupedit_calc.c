@@ -795,12 +795,6 @@ _part_calc(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 }
 
 Eina_Bool
-_parts_recalc(Ws_Groupedit_Smart_Data *sd __UNUSED__)
-{
-   return false;
-}
-
-Eina_Bool
 _part_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 {
    Eina_Stringshare *str;
