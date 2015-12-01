@@ -230,6 +230,13 @@ _groupedit_smart_calculate(Evas_Object *o)
    evas_object_resize(priv->group->edit_object,
                       priv->con_current_size->w,
                       priv->con_current_size->h);
+  evas_object_move(priv->box,
+                   priv->con_current_size->x,
+                   priv->con_current_size->y);
+
+   evas_object_resize(priv->box,
+                      priv->con_current_size->w,
+                      priv->con_current_size->h);
 
    priv->manual_calc = false;
    _parts_recalc(priv);
@@ -276,6 +283,10 @@ groupedit_add(Evas_Object *parent, Group *group)
    sd->group = group;
    evas_object_smart_member_add(sd->group->edit_object, obj);
 
+   sd->box = elm_box_add(parent);
+   elm_box_layout_set(sd->box, _parts_stack_layout, sd, NULL);
+   evas_object_show(sd->box);
+   evas_object_smart_member_add(sd->box, obj);
    _parts_list_new(sd);
 
    /* hide the editing object by using clipper (clipper is small, it's size is 0,0)

@@ -61,6 +61,7 @@ struct _Ws_Groupedit_Smart_Data
    Evas_Object *event;
    Evas_Object *container;
    Evas_Object *parent;
+   Evas_Object *box;
    /* Paddings which solve scroller issue,
       when container data move to 0,0 coords */
    struct {
@@ -138,6 +139,8 @@ struct _Ws_Groupedit_Smart_Data
 struct _Groupedit_Part
 {
    Part_ *part;               /**< Pointer to part */
+   Groupedit_Geom geom;
+   Groupedit_Geom object_area_geom;
    Evas_Object *bg;           /**< The background, uses for container parts TABLE or BOX */
    Evas_Object *draw;         /**< The evas primitive to be draw in groupedit.
                                    The valid evas object types: image, rectangle,
@@ -186,6 +189,11 @@ _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd);
 Eina_Bool
 _edit_object_part_item_del(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
                            Eina_Stringshare *item);
+
+void /* custom 'diagonal' layout */
+_parts_stack_layout(Evas_Object          *o,
+                    Evas_Object_Box_Data *p,
+                    void                 *data);
 
 /**
  * Stack part above above in groupedit module.
