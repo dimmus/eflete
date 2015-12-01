@@ -512,18 +512,35 @@ _popup_add_part_ok_clicked(void *data,
    const Edje_Part_Type type = *((const Edje_Part_Type *)data);
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    const char *name;
-   Part_ *part;
-   Elm_Object_Item *glit;
+   Eina_Stringshare *msg;
+   Change *change;
 
    assert(pl != NULL);
 
    name = elm_entry_entry_get(pl->popup.entry_name);
+   msg = eina_stringshare_printf(_("added new part \"%s\""), name);
+   change = change_add(msg);
+   editor_part_add(pl->group->edit_object, change, false, name, type);
 
-   edje_edit_part_add(pl->group->edit_object, name, type);
-   /* if (type == EDJE_PART_IMAGE) */
-   TODO("Add noimage here")
+   history_change_add(pl->group->history, change);
+   eina_stringshare_del(msg);
+   ecore_job_add(_job_popup_del, pl);
+}
 
-   part = gm_part_add(ap.project, pl->group, name);
+static void
+_editor_part_added_cb(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info)
+{
+   Part_List *pl = data;
+   Eina_Stringshare *part_name = event_info;
+   Part_ *part;
+   Elm_Object_Item *glit;
+
+   assert(pl != NULL);
+   assert(part_name != NULL);
+
+   part = gm_part_add(ap.project, pl->group, part_name);
 
    glit = elm_genlist_item_append(pl->genlist,
                                   pl->itc_part,
@@ -537,8 +554,6 @@ _popup_add_part_ok_clicked(void *data,
    evas_object_smart_callback_call(ap.win, SIGNAL_PART_ADDED, (void *)part);
 
    elm_genlist_item_selected_set(glit, true);
-
-   ecore_job_add(_job_popup_del, pl);
 }
 
 static void
@@ -786,21 +801,71 @@ _part_del(Part_List *pl,
 {
    Part_ *part;
    Eina_Stringshare *part_name;
+   Eina_Stringshare *msg;
+   Change *change;
 
    assert(pl != NULL);
    assert(glit != NULL);
 
    part = elm_object_item_data_get(glit);
-   _unselect_part(pl);
+
+   part_name = eina_stringshare_add(part->name);
+   msg = eina_stringshare_printf(_("deleted part \"%s\""), part_name);
+   change = change_add(msg);
+   editor_part_del(pl->group->edit_object, change, false, part_name);
+   history_change_add(pl->group->history, change);
+   eina_stringshare_del(msg);
+   eina_stringshare_del(part_name);
+}
+
+static Elm_Object_Item *
+_part_item_find(Part_List *pl, Part_ *part)
+{
+   Elm_Object_Item *part_item;
+   Part_ *pr;
+
+   assert(pl != NULL);
+   assert(part != NULL);
+
+   part_item = elm_genlist_first_item_get(pl->genlist);
+   pr = elm_object_item_data_get(part_item);
+   while (pr != part)
+     {
+        part_item = elm_genlist_item_next_get(part_item);
+        pr = elm_object_item_data_get(part_item);
+
+        assert(pr != NULL);
+     }
+   assert(part_item != NULL);
+   return part_item;
+}
+
+static void
+_editor_part_deleted_cb(void *data,
+                        Evas_Object *obj __UNUSED__,
+                        void *event_info)
+{
+   Part_List *pl = data;
+   Eina_Stringshare *part_name = event_info;
+   Part_ *part;
+   Elm_Object_Item *part_item;
+
+   assert(pl != NULL);
+   assert(part_name != NULL);
+
+   part = pm_resource_unsorted_get(pl->group->parts, part_name);
+
+   part_item = _part_item_find(pl, part);
+   if (pl->selected_part_item == part_item)
+     _unselect_part(pl);
 
    /* This callbck should be called before actual part deletion */
    evas_object_smart_callback_call(ap.win, SIGNAL_PART_DELETED, (void *)part);
 
-   elm_object_item_del(glit);
+   elm_object_item_del(part_item);
    /* part is freed after deletion so we need to save its name */
    part_name = eina_stringshare_ref(part->name);
    gm_part_del(ap.project, part);
-   edje_edit_part_del(pl->group->edit_object, part_name);
    eina_stringshare_del(part_name);
 }
 
@@ -829,6 +894,7 @@ _state_del(Part_List *pl,
    part_name = eina_stringshare_ref(state->part->name);
    state_name = eina_stringshare_ref(state->parsed_name);
    state_val = state->parsed_val;
+   TODO("recheck string args logic");
    editor_state_del(pl->group->edit_object, change, false, part_name, state_name, state_val);
    eina_stringshare_del(part_name);
    eina_stringshare_del(state_name);
@@ -1036,6 +1102,8 @@ group_navigator_add(Group *group)
 
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
 
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, pl);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, pl);
 
@@ -1046,7 +1114,6 @@ group_navigator_add(Group *group)
 void
 group_navigator_part_select(Evas_Object *obj, Part_ *part)
 {
-   Part_ *pr;
    Elm_Object_Item *part_item;
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
 
@@ -1054,16 +1121,7 @@ group_navigator_part_select(Evas_Object *obj, Part_ *part)
 
    if (part)
      {
-        part_item = elm_genlist_first_item_get(pl->genlist);
-        pr = elm_object_item_data_get(part_item);
-        while (pr != part)
-          {
-             part_item = elm_genlist_item_next_get(part_item);
-             pr = elm_object_item_data_get(part_item);
-
-             assert(pr != NULL);
-          }
-        assert(part_item != NULL);
+        part_item = _part_item_find(pl, part);
         elm_genlist_item_selected_set(part_item, true);
      }
    else
