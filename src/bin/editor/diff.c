@@ -163,7 +163,9 @@ diff_undo(Evas_Object *obj, Diff *diff)
    assert(obj != NULL);
    assert(diff != NULL);
 
-   return _apply(obj, &diff->undo);
+   Eina_Bool res = _apply(obj, &diff->undo);
+   assert(res);
+   return res;
 }
 
 Eina_Bool
@@ -172,7 +174,9 @@ diff_redo(Evas_Object *obj, Diff *diff)
    assert(obj != NULL);
    assert(diff != NULL);
 
-   return _apply(obj, &diff->redo);
+   Eina_Bool res = _apply(obj, &diff->redo);
+   assert(res);
+   return res;
 }
 
 void
