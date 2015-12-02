@@ -200,7 +200,6 @@ _groupedit_smart_calculate(Evas_Object *o)
 {
    Evas_Coord x, y, w, h;
    Evas_Coord px, py, pw, ph;
-   char buff[16];
 
    WS_GROUPEDIT_DATA_GET(o, priv)
    evas_object_geometry_get(priv->parent, &px, &py, &pw, &ph);
@@ -215,7 +214,6 @@ _groupedit_smart_calculate(Evas_Object *o)
         priv->con_current_size->y = y;
         priv->con_current_size->w = w;
         priv->con_current_size->h = h;
-        snprintf(buff, 16, "%i %i", priv->con_current_size->w, priv->con_current_size->h);
      }
 
    DBG("Groupedit geometry: x[%i] y[%i] w[%i] h[%i]", x, y, w, h);
