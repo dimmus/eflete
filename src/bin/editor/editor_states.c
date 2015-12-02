@@ -325,6 +325,12 @@ editor_state_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
      }
    if (!edje_edit_state_add(edit_object, part_name, state_name, state_val))
      return false;
+
+   /* fix incorrect default values */
+   TODO("Fix edje_edit")
+   if (edje_edit_part_type_get(edit_object, part_name) == EDJE_PART_TYPE_BOX)
+     edje_edit_state_box_layout_set(edit_object, part_name, state_name, state_val, "horizontal");
+
    _editor_project_changed();
    event_info.part_name = eina_stringshare_add(part_name);
    event_info.state_name = eina_stringshare_printf("%s %.2f", state_name, state_val);
