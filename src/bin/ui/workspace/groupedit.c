@@ -67,7 +67,6 @@ _groupedit_smart_add(Evas_Object *o)
                                   _unselect_part, o);
 
    priv->obj = o;
-   priv->geom = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
    priv->zoom_factor = 1.0;
    priv->parts = NULL;
    priv->separated = false;
@@ -89,8 +88,6 @@ _groupedit_smart_del(Evas_Object *o)
    evas_object_smart_member_del(sd->edit_obj_clipper);
    evas_object_hide(sd->group->edit_object);
    evas_object_del(sd->edit_obj_clipper);
-
-   free(sd->geom);
 
    _groupedit_parent_sc->del(o);
 }
@@ -174,13 +171,13 @@ _groupedit_smart_calculate(Evas_Object *o)
 
    evas_object_geometry_get(o, &x, &y, &w, &h);
 
-   if ((priv->geom->x != x) || (priv->geom->y != y) ||
-       (priv->geom->w != w) || (priv->geom->h != h))
+   if ((priv->geom.x != x) || (priv->geom.y != y) ||
+       (priv->geom.w != w) || (priv->geom.h != h))
      {
-        priv->geom->x = x;
-        priv->geom->y = y;
-        priv->geom->w = w;
-        priv->geom->h = h;
+        priv->geom.x = x;
+        priv->geom.y = y;
+        priv->geom.w = w;
+        priv->geom.h = h;
 
         evas_object_move(priv->group->edit_object,x ,y);
         evas_object_resize(priv->group->edit_object, w, h);
@@ -193,7 +190,7 @@ _groupedit_smart_calculate(Evas_Object *o)
    priv->manual_calc = false;
 
    DBG("Groupedit geometry: x[%i] y[%i] w[%i] h[%i]", x, y, w, h);
-   evas_object_smart_callback_call(o, SIG_CHANGED, (void *)priv->geom);
+   evas_object_smart_callback_call(o, SIG_CHANGED, &priv->geom);
 }
 
 /* this need for macro EVAS_SMART_SUBCLASS_NEW */

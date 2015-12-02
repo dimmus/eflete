@@ -62,7 +62,7 @@ struct _Ws_Groupedit_Smart_Data
    Evas_Object *container;
    Evas_Object *parent;
    Evas_Object *box;
-   Groupedit_Geom *geom;
+   Groupedit_Geom geom;
    /* Paddings which solve scroller issue,
       when container data move to 0,0 coords */
    struct {
