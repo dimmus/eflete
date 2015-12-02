@@ -51,6 +51,7 @@ typedef struct
 
    Evas_Object *menu;
    Elm_Object_Item *add_state_menu_item;
+   Elm_Object_Item *add_part_item_menu_item;
    Elm_Validator_Regexp *name_validator;
    struct {
         Evas_Object *entry_name;
@@ -391,6 +392,7 @@ _unselect_part(Part_List *pl)
    elm_genlist_item_item_class_update(pl->selected_part_item, pl->itc_part);
    pl->selected_part_item = NULL;
    elm_object_item_disabled_set(pl->add_state_menu_item, true);
+   elm_object_item_disabled_set(pl->add_part_item_menu_item, true);
    elm_object_disabled_set(pl->btn_del, true);
    evas_object_smart_callback_call(ap.win, SIGNAL_PART_UNSELECTED, (void *)part);
 }
@@ -433,6 +435,9 @@ _selected_cb(void *data,
         elm_genlist_item_item_class_update(glit_part, pl->itc_part_selected);
      }
    elm_object_item_disabled_set(pl->add_state_menu_item, false);
+   if ((part->type == EDJE_PART_TYPE_BOX) ||
+       (part->type == EDJE_PART_TYPE_TABLE))
+     elm_object_item_disabled_set(pl->add_part_item_menu_item, false);
    if ((itc == pl->itc_item_caption) ||
        (((itc == pl->itc_state) || (itc == pl->itc_state_selected)) &&
         (!strcmp(((State *)elm_object_item_data_get(glit))->name, "default 0.00"))))
@@ -780,6 +785,14 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
 }
 
 static void
+_on_menu_add_item_clicked(void *data __UNUSED__,
+                          Evas_Object *obj __UNUSED__,
+                          void *ei __UNUSED__)
+{
+   printf("_on_menu_add_item_clicked\n");
+}
+
+static void
 _on_btn_plus_clicked(void *data,
                      Evas_Object *obj,
                      void *ei __UNUSED__)
@@ -952,6 +965,13 @@ _editor_state_deleted_cb(void *data,
 }
 
 static void
+_item_del(Part_List *pl __UNUSED__,
+          Elm_Object_Item *glit __UNUSED__)
+{
+   printf("_item_del\n");
+}
+
+static void
 _on_btn_minus_clicked(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *ei __UNUSED__)
@@ -968,11 +988,11 @@ _on_btn_minus_clicked(void *data,
 
    itc = elm_genlist_item_item_class_get(glit);
    if (itc == pl->itc_part_selected)
-     {
-        _part_del(pl, glit);
-     }
+     _part_del(pl, glit);
    else if ((itc == pl->itc_state_selected) || (itc == pl->itc_state))
-      _state_del(pl, glit);
+     _state_del(pl, glit);
+   else if ((itc == pl->itc_item))
+     _item_del(pl, glit);
 
    TODO("Check if we still need this")
    /* Need to save pl->group->edit_object, since we changed it */
@@ -1077,6 +1097,8 @@ group_navigator_add(Group *group)
 
    pl->add_state_menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("State"), _on_menu_add_state_clicked, NULL);
    elm_object_item_disabled_set(pl->add_state_menu_item, true);
+   pl->add_part_item_menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Item"), _on_menu_add_item_clicked, NULL);
+   elm_object_item_disabled_set(pl->add_part_item_menu_item, true);
    menu_item = elm_menu_item_separator_add(pl->menu, NULL);
 
    menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Rectangle"), _on_menu_add_part_clicked, &_type_rect);
