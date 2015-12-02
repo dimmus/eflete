@@ -627,28 +627,32 @@ _edje_box_layout_builtin_find(const char *name)
    };
    const struct edje_box_layout_builtin *base;
 
-   switch (name[0])
+   if (name)
      {
-      case 'h':
-        base = _edje_box_layout_builtin + 0;
-        break;
+        switch (name[0])
+          {
+           case 'h':
+              base = _edje_box_layout_builtin + 0;
+              break;
 
-      case 's':
-        base = _edje_box_layout_builtin + 4;
-        break;
+           case 's':
+              base = _edje_box_layout_builtin + 4;
+              break;
 
-      case 'v':
-        base = _edje_box_layout_builtin + 5;
-        break;
+           case 'v':
+              base = _edje_box_layout_builtin + 5;
+              break;
 
-      default:
-        return NULL;
+           default:
+              return NULL;
+          }
+
+        for (; (base->name) && (base->name[0] == name[0]); base++)
+          if (strcmp(base->name, name) == 0)
+            return base->cb;
      }
-
-   for (; (base->name) && (base->name[0] == name[0]); base++)
-     if (strcmp(base->name, name) == 0)
-       return base->cb;
-
+   else
+     return _edje_box_layout_builtin[0].cb;
    return NULL;
 }
 
