@@ -92,7 +92,7 @@ _groupedit_smart_add(Evas_Object *o)
                                   _unselect_part, o);
 
    priv->obj = o;
-   priv->con_current_size = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
+   priv->geom = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
    priv->zoom_factor = 1.0;
    priv->parts = NULL;
    priv->obj_area.obj = edje_object_add(priv->e);
@@ -123,7 +123,7 @@ _groupedit_smart_del(Evas_Object *o)
    evas_object_hide(sd->group->edit_object);
    evas_object_del(sd->edit_obj_clipper);
 
-   free(sd->con_current_size);
+   free(sd->geom);
    free(sd->obj_area.geom);
 
    _groupedit_parent_sc->del(o);
@@ -202,41 +202,32 @@ _groupedit_smart_calculate(Evas_Object *o)
    Evas_Coord px, py, pw, ph;
 
    WS_GROUPEDIT_DATA_GET(o, priv)
-   evas_object_geometry_get(priv->parent, &px, &py, &pw, &ph);
+      evas_object_geometry_get(priv->parent, &px, &py, &pw, &ph);
    evas_object_resize(priv->event, pw, ph);
    evas_object_move(priv->event, px, py);
 
    evas_object_geometry_get(o, &x, &y, &w, &h);
 
-   if (!priv->separated)
+   if ((priv->geom->x != x) || (priv->geom->y != y) ||
+       (priv->geom->w != w) || (priv->geom->h != h))
      {
-        priv->con_current_size->x = x;
-        priv->con_current_size->y = y;
-        priv->con_current_size->w = w;
-        priv->con_current_size->h = h;
-     }
+        priv->geom->x = x;
+        priv->geom->y = y;
+        priv->geom->w = w;
+        priv->geom->h = h;
 
-   DBG("Groupedit geometry: x[%i] y[%i] w[%i] h[%i]", x, y, w, h);
-   if (!priv->separated)
-     {
-        evas_object_move(priv->group->edit_object,
-                         priv->con_current_size->x,
-                         priv->con_current_size->y);
+        evas_object_move(priv->group->edit_object,x ,y);
+        evas_object_resize(priv->group->edit_object, w, h);
+        evas_object_move(priv->box, x, y);
+        evas_object_resize(priv->box, w, h);
      }
-   evas_object_resize(priv->group->edit_object,
-                      priv->con_current_size->w,
-                      priv->con_current_size->h);
-  evas_object_move(priv->box,
-                   priv->con_current_size->x,
-                   priv->con_current_size->y);
-
-   evas_object_resize(priv->box,
-                      priv->con_current_size->w,
-                      priv->con_current_size->h);
+   else
+     elm_box_recalculate(priv->box);
 
    priv->manual_calc = false;
 
-   evas_object_smart_callback_call(o, SIG_CHANGED, (void *)priv->con_current_size);
+   DBG("Groupedit geometry: x[%i] y[%i] w[%i] h[%i]", x, y, w, h);
+   evas_object_smart_callback_call(o, SIG_CHANGED, (void *)priv->geom);
 }
 
 /* this need for macro EVAS_SMART_SUBCLASS_NEW */

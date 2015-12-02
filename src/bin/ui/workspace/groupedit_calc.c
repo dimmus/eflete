@@ -1235,7 +1235,7 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    y = (yc + (int)(hc * relative)) + offset;
    edje_edit_string_free(rel_to);
 
-   xc = xg; wc = sd->con_current_size->w;
+   xc = xg; wc = sd->geom->w;
    rel_to = edje_edit_state_rel2_to_x_get(sd->group->edit_object, name, state, value);
    relative = edje_edit_state_rel2_relative_x_get(sd->group->edit_object, name, state, value);
    offset = edje_edit_state_rel2_offset_x_get(sd->group->edit_object, name, state, value);
@@ -1248,7 +1248,7 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    if (w < 0) { x += w; w = 0; }
    edje_edit_string_free(rel_to);
 
-   yc = yg; hc = sd->con_current_size->h;
+   yc = yg; hc = sd->geom->h;
    rel_to = edje_edit_state_rel2_to_y_get(sd->group->edit_object, name, state, value);
    relative = edje_edit_state_rel2_relative_y_get(sd->group->edit_object, name, state, value);
    offset = edje_edit_state_rel2_offset_y_get(sd->group->edit_object, name, state, value);
