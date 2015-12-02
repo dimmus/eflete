@@ -35,9 +35,6 @@ static Groupedit_Part *
 _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part);
 
 static void
-_move_border_to_top(Ws_Groupedit_Smart_Data *sd);
-
-static void
 _part_draw_del(Ws_Groupedit_Smart_Data *sd, Part_ *part);
 
 static void
@@ -72,7 +69,6 @@ _edit_object_part_add(Ws_Groupedit_Smart_Data *sd,
 
    gp = _part_draw_add(sd, part);
    sd->parts = eina_list_append(sd->parts, gp);
-   _move_border_to_top(sd);
    evas_object_smart_changed(sd->obj);
 
    return true;
@@ -255,7 +251,6 @@ _parts_list_new(Ws_Groupedit_Smart_Data *sd)
         sd->parts = eina_list_append(sd->parts, gp);
      }
    evas_event_thaw(sd->e);
-   _move_border_to_top(sd);
 }
 
 void
@@ -976,20 +971,6 @@ _item_draw_del(Groupedit_Item *item)
    /* no sence to delete ge_item->layout, because we recreate table/box on add
     * and delete item event. It will be deleted with conteiner object. */
    free(item);
-}
-
-static void
-_move_border_to_top(Ws_Groupedit_Smart_Data *sd)
-{
-   assert(sd != NULL);
-
-   evas_object_smart_member_del(sd->container);
-   evas_object_smart_member_del(sd->handler_TL.obj);
-   evas_object_smart_member_del(sd->handler_BR.obj);
-
-   evas_object_smart_member_add(sd->container, sd->obj);
-   evas_object_smart_member_add(sd->handler_TL.obj, sd->obj);
-   evas_object_smart_member_add(sd->handler_BR.obj, sd->obj);
 }
 
 static inline void

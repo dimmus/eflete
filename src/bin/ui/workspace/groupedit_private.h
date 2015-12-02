@@ -59,17 +59,9 @@ struct _Ws_Groupedit_Smart_Data
    Evas *e;
    Evas_Object *obj;
    Evas_Object *event;
-   Evas_Object *container;
    Evas_Object *parent;
    Evas_Object *box;
    Groupedit_Geom geom;
-   /* Paddings which solve scroller issue,
-      when container data move to 0,0 coords */
-   struct {
-      int t_left;
-      int t_top;
-      int bottom;
-   } paddings;
    /* Minimal and maximum size of the container,
       i.e size of the edie_edit object */
    struct {
@@ -80,16 +72,6 @@ struct _Ws_Groupedit_Smart_Data
       int w; /* default: -1, size is not limited */
       int h; /* default: -1, size is not limited */
    } con_size_max;
-   struct {
-      Evas_Object *obj;
-      int w, h;
-   } handler_TL;
-   struct{
-      Evas_Object *obj;
-      int w, h;
-   } handler_BR;
-   Eina_Bool handler_TL_pressed : 1;
-   Eina_Bool handler_BR_pressed : 1;
    Evas_Object *edit_obj_clipper;
    Eina_List *parts;
    Eina_Bool separated : 1;
@@ -100,8 +82,6 @@ struct _Ws_Groupedit_Smart_Data
    Evas_Object *clipper;      /**< The background clipper, need to draw item bg
                                    in the separete mode.*/
    double zoom_factor; /**< current zoom factor. */
-   Evas_Coord downx;
-   Evas_Coord downy;
    Eina_Bool manual_calc : 1;
 };
 
