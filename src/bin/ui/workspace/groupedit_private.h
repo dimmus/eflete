@@ -92,12 +92,6 @@ struct _Ws_Groupedit_Smart_Data
    Eina_Bool handler_BR_pressed : 1;
    Evas_Object *edit_obj_clipper;
    Eina_List *parts;
-   struct {
-      Evas_Object *obj;
-      Groupedit_Geom *geom;
-      Eina_Bool visible : 1;
-      Eina_Bool show_now : 1;
-   } obj_area;
    Eina_Bool separated : 1;
    Groupedit_Part *selected;
    Groupedit_Part *to_select;

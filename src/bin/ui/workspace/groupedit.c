@@ -29,30 +29,6 @@ EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _groupedit,
                         evas_object_smart_clipped_class_get, _smart_callbacks);
 
 static void
-_style_set(Evas_Object *o, const char *style)
-{
-   char group[BUFF_MAX];
-   WS_GROUPEDIT_DATA_GET(o, sd)
-   assert(style != NULL);
-
-   #define GROUP_NAME(item, style) \
-      snprintf(group, BUFF_MAX, "eflete/groupedit/%s/%s", item, style);
-
-   GROUP_NAME("object_area", style)
-   if (!edje_object_file_set(sd->obj_area.obj, EFLETE_EDJ, group))
-     {
-        GROUP_NAME("object_area", "default")
-        if (!edje_object_file_set(sd->obj_area.obj, EFLETE_EDJ, group))
-          {
-             ERR("Could not set up default theme for object area!");
-             abort();
-          }
-     }
-
-   #undef GROUP_NAME
-}
-
-static void
 _unselect_part(void *data,
                Evas *e __UNUSED__,
                Evas_Object *obj __UNUSED__,
@@ -69,7 +45,6 @@ _unselect_part(void *data,
         if (!sd->selected) return;
         _selected_item_return_to_place(sd);
      }
-   evas_object_hide(sd->obj_area.obj);
    evas_object_smart_callback_call(o, SIGNAL_GROUPEDIT_PART_UNSELECTED,
                                    (void *)sd->selected->part);
    sd->selected = NULL;
@@ -95,19 +70,11 @@ _groupedit_smart_add(Evas_Object *o)
    priv->geom = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
    priv->zoom_factor = 1.0;
    priv->parts = NULL;
-   priv->obj_area.obj = edje_object_add(priv->e);
-   evas_object_repeat_events_set(priv->obj_area.obj, true);
-   priv->obj_area.visible = false;
-   priv->obj_area.show_now = false;
-   priv->obj_area.geom = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
    priv->separated = false;
    priv->selected = NULL;
    priv->to_select = NULL;
 
-   evas_object_smart_member_add(priv->obj_area.obj, o);
    evas_object_smart_member_add(priv->event, o);
-
-   _style_set(o, "default");
 }
 
 static void
@@ -124,7 +91,6 @@ _groupedit_smart_del(Evas_Object *o)
    evas_object_del(sd->edit_obj_clipper);
 
    free(sd->geom);
-   free(sd->obj_area.geom);
 
    _groupedit_parent_sc->del(o);
 }
@@ -468,26 +434,22 @@ groupedit_part_object_area_get(Evas_Object *obj)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd)
 
-   return sd->obj_area.obj;
+   return sd->obj;
 }
 
 void
-groupedit_part_object_area_visible_set(Evas_Object *obj, Eina_Bool visible)
+groupedit_part_object_area_visible_set(Evas_Object *obj, Eina_Bool visible __UNUSED__)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd);
-   sd->obj_area.visible = visible;
 
    if (!sd->selected) return;
-
-   if (visible) evas_object_show(sd->obj_area.obj);
-   else evas_object_hide(sd->obj_area.obj);
 }
 
 Eina_Bool
 groupedit_part_object_area_visible_get(Evas_Object *obj)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd);
-   return sd->obj_area.visible;
+   return false;
 }
 
 Eina_Bool
