@@ -409,7 +409,7 @@ _ewe_ruler_scale_add(Eo *obj,
 
    sd->scales = eina_list_append(sd->scales, ret);
 
-   ret->box = elm_box_add(evas_object_evas_get(obj));
+   ret->box = elm_box_add(obj);
    elm_box_align_set(ret->box, 0.0, 0.0);
    elm_box_horizontal_set(ret->box, sd->horizontal);
    evas_object_smart_member_add(ret->box, obj);

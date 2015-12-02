@@ -913,6 +913,7 @@ Eina_Bool
 workspace_highlight_unset(Evas_Object *obj)
 {
    WS_DATA_GET(obj, sd)
+
    if ((!sd->highlight.highlight) || (!sd->highlight.space_hl)) return false;
    highlight_object_unfollow(sd->highlight.highlight);
    highlight_object_unfollow(sd->highlight.space_hl);
@@ -1263,6 +1264,8 @@ _workspace_smart_del(Evas_Object *o)
 {
    WS_DATA_GET(o, sd);
 
+   evas_object_del(sd->highlight.space_hl);
+   evas_object_del(sd->highlight.highlight);
    _workspace_parent_sc->del(o);
 }
 
@@ -1439,6 +1442,7 @@ _on_group_navigator_part_select(void *data,
    TODO("Combine this methods to one")
    workspace_highlight_unset(workspace);
    _workspace_highlight_set(workspace, part);
+   groupedit_edit_object_part_item_selected_set(sd->groupedit, part->current_item_name, true);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_PART_SELECTED, (void *)part);
 }
@@ -1685,18 +1689,6 @@ workspace_edit_object_part_state_set(Evas_Object *obj, Part_ *part)
 }
 
 Eina_Bool
-workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,
-                                     const char *state, double value)
-{
-   WS_DATA_GET(obj, sd);
-   assert(part != NULL);
-   assert(state != NULL);
-
-   groupedit_edit_object_part_state_add(sd->groupedit, part, state, value);
-   return true; /* not check anyway */
-}
-
-Eina_Bool
 workspace_edit_object_part_restack(Evas_Object *obj,
                                    const char *part,
                                    const char *rel_part,
@@ -1710,34 +1702,6 @@ workspace_edit_object_part_restack(Evas_Object *obj,
       return groupedit_edit_object_part_move_above(sd->groupedit, part, rel_part);
    else
       return groupedit_edit_object_part_move_below(sd->groupedit, part, rel_part);
-}
-
-
-Eina_Bool
-workspace_edit_object_part_state_copy(Evas_Object *obj, const char *part,
-                                     const char *state_from, double value_from,
-                                     const char *state_to, double value_to)
-{
-   WS_DATA_GET(obj, sd);
-   assert(part != NULL);
-   assert(state_from != NULL);
-   assert(state_to != NULL);
-
-   groupedit_edit_object_part_state_copy(sd->groupedit, part, state_from,
-                                        value_from, state_to, value_to);
-   return true; /* not check anyway */
-}
-
-Eina_Bool
-workspace_edit_object_part_state_del(Evas_Object *obj, const char *part,
-                                     const char *state, double value)
-{
-   WS_DATA_GET(obj, sd);
-   assert(part != NULL);
-   assert(state != NULL);
-
-   groupedit_edit_object_part_state_del(sd->groupedit, part, state, value);
-   return true; /* not check anyway */
 }
 
 Eina_Bool
@@ -1879,6 +1843,6 @@ workspace_edit_object_part_item_selected_set(Evas_Object *obj,
    WS_DATA_GET(obj, sd);
    assert(item_name != NULL);
 
-   return groupedit_edit_object_part_item_selected_set(sd->groupedit, item_name,
-                                                       selected);
+   groupedit_edit_object_part_item_selected_set(sd->groupedit, item_name, selected);
+   return true;
 }

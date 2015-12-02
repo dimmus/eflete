@@ -59,15 +59,9 @@ struct _Ws_Groupedit_Smart_Data
    Evas *e;
    Evas_Object *obj;
    Evas_Object *event;
-   Evas_Object *container;
    Evas_Object *parent;
-   /* Paddings which solve scroller issue,
-      when container data move to 0,0 coords */
-   struct {
-      int t_left;
-      int t_top;
-      int bottom;
-   } paddings;
+   Evas_Object *box;
+   Groupedit_Geom geom;
    /* Minimal and maximum size of the container,
       i.e size of the edie_edit object */
    struct {
@@ -78,26 +72,8 @@ struct _Ws_Groupedit_Smart_Data
       int w; /* default: -1, size is not limited */
       int h; /* default: -1, size is not limited */
    } con_size_max;
-   Groupedit_Geom *con_current_size;
-   Groupedit_Geom *real_size;
-   struct {
-      Evas_Object *obj;
-      int w, h;
-   } handler_TL;
-   struct{
-      Evas_Object *obj;
-      int w, h;
-   } handler_BR;
-   Eina_Bool handler_TL_pressed : 1;
-   Eina_Bool handler_BR_pressed : 1;
    Evas_Object *edit_obj_clipper;
    Eina_List *parts;
-   struct {
-      Evas_Object *obj;
-      Groupedit_Geom *geom;
-      Eina_Bool visible : 1;
-      Eina_Bool show_now : 1;
-   } obj_area;
    Eina_Bool separated : 1;
    Groupedit_Part *selected;
    Groupedit_Part *to_select;
@@ -106,8 +82,6 @@ struct _Ws_Groupedit_Smart_Data
    Evas_Object *clipper;      /**< The background clipper, need to draw item bg
                                    in the separete mode.*/
    double zoom_factor; /**< current zoom factor. */
-   Evas_Coord downx;
-   Evas_Coord downy;
    Eina_Bool manual_calc : 1;
 };
 
@@ -138,6 +112,8 @@ struct _Ws_Groupedit_Smart_Data
 struct _Groupedit_Part
 {
    Part_ *part;               /**< Pointer to part */
+   Groupedit_Geom geom;
+   Groupedit_Geom object_area_geom;
    Evas_Object *bg;           /**< The background, uses for container parts TABLE or BOX */
    Evas_Object *draw;         /**< The evas primitive to be draw in groupedit.
                                    The valid evas object types: image, rectangle,
@@ -147,6 +123,7 @@ struct _Groupedit_Part
    Evas_Object *container;    /**< Used for box/table parts */
    Evas_Object *item;         /**< The object border in the separete mode */
    Eina_List *items;          /**< The items, for TABLE, BOX part types */
+   Groupedit_Item *current_item;
 };
 
 struct _Groupedit_Item
@@ -164,8 +141,8 @@ _parts_list_free(Ws_Groupedit_Smart_Data *sd);
 Groupedit_Part *
 _parts_list_find(Eina_List *parts, const char *part);
 
-Eina_Bool
-_parts_recalc(Ws_Groupedit_Smart_Data *sd);
+Groupedit_Item *
+_part_item_search(Eina_List *items, const char *item_name);
 
 Eina_Bool
 _edit_object_part_add(Ws_Groupedit_Smart_Data *sd, Part_ *part);
@@ -182,6 +159,11 @@ _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd);
 Eina_Bool
 _edit_object_part_item_del(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
                            Eina_Stringshare *item);
+
+void /* custom 'diagonal' layout */
+_parts_stack_layout(Evas_Object          *o,
+                    Evas_Object_Box_Data *p,
+                    void                 *data);
 
 /**
  * Stack part above above in groupedit module.

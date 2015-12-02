@@ -160,56 +160,6 @@ Eina_Bool
 groupedit_edit_object_part_state_set(Evas_Object *obj, Part_ *part);
 
 /**
- * Create new state for the give part.
- *
- * @param obj The groupedit object,
- * @param part The name of the part to add the new state,
- * @param state Name for the new state,
- * @param value The state value.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_edit_object_part_state_add(Evas_Object *obj, const char *part,
-                                     const char *state, double value);
-
-/**
- * Copy new state for the give part, from another state of this part.
- *
- * @param obj The groupedit object,
- * @param part Part that contain state.
- * @param state_from to copy from (not including state value).
- * @param value_from The value of the state to copy from.
- * @param state_to copy into (not including state value).
- * @param value_to The value of the state to copy into.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_edit_object_part_state_copy(Evas_Object *obj, const char *part,
-                                     const char *state_from, double value_from,
-                                     const char *state_to, double value_to);
-/**
- * Delete the given part state from the edje edit object.
- *
- * @param obj The groupedit object,
- * @param part Part that contain state,
- * @param state The current name of the state,
- * @param value The state value.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_edit_object_part_state_del(Evas_Object *obj, const char *part,
-                                     const char *state, double value);
-
-/**
  * Get the object with the object area geometry.
  *
  * @param obj The groupedit object.
@@ -397,11 +347,9 @@ groupedit_zoom_factor_set(Evas_Object *obj, double factor);
  * @param item_name The name of item, which selection should be changed.
  * @param selected If EINA_TRUE - item will be selected, otherwise unselected.
  *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
  * @ingroup Groupedit
  */
-Eina_Bool
+void
 groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
                                              Eina_Stringshare *item_name,
                                              Eina_Bool selected);

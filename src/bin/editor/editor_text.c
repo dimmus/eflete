@@ -20,6 +20,7 @@
 #include "editor.h"
 #include "editor_macro.h"
 
+extern int _editor_signals_blocked;
 EDITOR_STATE_DOUBLE(text_align_x, ATTRIBUTE_STATE_TEXT_ALIGN_X)
 EDITOR_STATE_DOUBLE(text_align_y, ATTRIBUTE_STATE_TEXT_ALIGN_Y)
 
@@ -61,7 +62,7 @@ editor_state_text_size_set(Evas_Object *edit_object, Change *change, Eina_Bool m
    if (!edje_edit_state_text_size_set(edit_object, part_name, state_name, state_val, new_val))
      return false;
    _editor_project_changed();
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
 

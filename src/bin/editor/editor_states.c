@@ -20,6 +20,7 @@
 #include "editor.h"
 #include "editor_macro.h"
 
+extern int _editor_signals_blocked;
 EDITOR_STATE_DOUBLE(rel1_relative_x, ATTRIBUTE_STATE_REL1_RELATIVE_X)
 EDITOR_STATE_DOUBLE(rel1_relative_y, ATTRIBUTE_STATE_REL1_RELATIVE_Y)
 EDITOR_STATE_DOUBLE(rel2_relative_x, ATTRIBUTE_STATE_REL2_RELATIVE_X)
@@ -93,7 +94,7 @@ editor_state_max_## VAL ##_set(Evas_Object *edit_object, Change *change, Eina_Bo
    if (!edje_edit_state_max_## VAL ##_set(edit_object, part_name, state_name, state_val, new_value)) \
      return false; \
    _editor_project_changed(); \
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return true; \
 }
 
@@ -142,7 +143,7 @@ editor_state_min_## VAL ##_set(Evas_Object *edit_object, Change *change, Eina_Bo
    if (!edje_edit_state_min_## VAL ##_set(edit_object, part_name, state_name, state_val, new_value)) \
      return false; \
    _editor_project_changed(); \
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return true; \
 }
 
@@ -194,6 +195,8 @@ editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(state_name != NULL);
+
+   you_shall_not_pass_editor_signals(change);
 
    Edje_Part_Type type = edje_edit_part_type_get(edit_object, part_name);
 
@@ -290,6 +293,8 @@ editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
    res = res && editor_state_rel2_to_y_reset(edit_object, change, part_name, state_name, state_val);
    res = res && editor_state_visible_reset(edit_object, change, part_name, state_name, state_val);
 
+   you_shall_pass_editor_signals(change);
+
    return res;
 }
 
@@ -320,10 +325,16 @@ editor_state_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
      }
    if (!edje_edit_state_add(edit_object, part_name, state_name, state_val))
      return false;
+
+   /* fix incorrect default values */
+   TODO("Fix edje_edit")
+   if (edje_edit_part_type_get(edit_object, part_name) == EDJE_PART_TYPE_BOX)
+     edje_edit_state_box_layout_set(edit_object, part_name, state_name, state_val, "horizontal");
+
    _editor_project_changed();
    event_info.part_name = eina_stringshare_add(part_name);
    event_info.state_name = eina_stringshare_printf("%s %.2f", state_name, state_val);
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_ADDED, (void *)&event_info);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_ADDED, (void *)&event_info);
    eina_stringshare_del(event_info.part_name);
    eina_stringshare_del(event_info.state_name);
    return true;
@@ -362,7 +373,7 @@ editor_state_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge __UN
    _editor_project_changed();
    event_info.part_name = eina_stringshare_add(part_name);
    event_info.state_name = eina_stringshare_printf("%s %.2f", state_name, state_val);
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_ADDED, (void *)&event_info);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_ADDED, (void *)&event_info);
    eina_stringshare_del(event_info.part_name);
    eina_stringshare_del(event_info.state_name);
    return true;
@@ -379,7 +390,7 @@ editor_state_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
 
    event_info.part_name = eina_stringshare_add(part_name);
    event_info.state_name = eina_stringshare_printf("%s %.2f", state_name, state_val);
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_DELETED, (void *)&event_info);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_DELETED, (void *)&event_info);
    if (change)
      {
         if (!editor_state_reset(edit_object, change, false, part_name, state_name, state_val))

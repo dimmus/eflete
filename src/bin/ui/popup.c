@@ -22,6 +22,7 @@
 static Popup_Button btn_pressed;
 static Evas_Object *popup;
 static Evas_Object *helper;
+static Evas_Object *gengrid;
 static Evas_Object *fs;
 static Helper_Done_Cb dismiss_func;
 static void* func_data;
@@ -383,19 +384,25 @@ popup_fileselector_image_helper(const char *title, Evas_Object *follow_up, const
 
 static void
 _done_image(void *data,
-            Evas_Object *obj,
+            Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
 {
    Eina_Bool res = true;
    Item *item = NULL;
-   const Eina_List* sel_list;
+   const Eina_List *sel_list, *l;
+   Eina_List *ret_list = NULL;
+   Elm_Object_Item *item_list;
 
    if (dismiss_func)
      {
-        TODO("Make multiselect for tweens and remake gengrid because of that?")
-        sel_list = elm_gengrid_selected_items_get(obj);
-        item = elm_object_item_data_get(eina_list_data_get(sel_list));
-        res = ((Helper_Done_Cb)dismiss_func)(func_data, obj, (char *)item->image_name);
+        sel_list = elm_gengrid_selected_items_get(gengrid);
+        EINA_LIST_FOREACH(sel_list, l, item_list)
+          {
+             item = elm_object_item_data_get(item_list);
+             ret_list = eina_list_append(ret_list, eina_stringshare_add(item->image_name));
+          }
+        res = ((Helper_Done_Cb)dismiss_func)(func_data, obj, ret_list);
+        eina_list_free(ret_list);
      }
 
    if (res)
@@ -421,7 +428,7 @@ _grid_del(void *data,
 }
 
 Eina_Bool
-_image_gengrid_init(Evas_Object *gengrid)
+_image_gengrid_init()
 {
    Eina_List *l = NULL;
    Item *it = NULL;
@@ -507,7 +514,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
                            Helper_Done_Cb func, void *data,
                            Eina_Bool multi)
 {
-   Evas_Object *gengrid, *entry, *icon;
+   Evas_Object *entry, *icon, *button;
 
    dismiss_func = func;
    func_data = data;
@@ -525,20 +532,25 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
    gengrid = elm_gengrid_add(fs);
    if (multi)
      {
-        elm_gengrid_multi_select_set(gengrid, false);
+        elm_gengrid_multi_select_set(gengrid, true);
+
+        BUTTON_ADD(fs, button, _("Ok"))
+        elm_object_part_content_set(helper, "elm.swallow.ok", button);
+        evas_object_smart_callback_add(button, "clicked", _done_image, follow_up);
+        evas_object_show(button);
      }
    else
      {
-        elm_gengrid_multi_select_set(gengrid, true);
+        elm_gengrid_multi_select_set(gengrid, false);
         elm_gengrid_multi_select_mode_set(gengrid,
                                           ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
+        evas_object_smart_callback_add(gengrid, "clicked,double", _done_image, follow_up);
      }
    elm_gengrid_item_size_set(gengrid, ITEM_WIDTH, ITEM_HEIGHT);
    elm_gengrid_align_set(gengrid, 0.0, 0.0);
    elm_scroller_policy_set(gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_OFF);
    elm_object_part_content_set(fs, "eflete.swallow.genlist", gengrid);
-   evas_object_smart_callback_add(gengrid, "clicked,double", _done_image, follow_up);
 
    if (!gic)
      {
@@ -549,7 +561,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
         gic->func.del = _grid_del;
      }
 
-   _image_gengrid_init(gengrid);
+   _image_gengrid_init();
 
    ENTRY_ADD(fs, entry, true);
    elm_object_part_text_set(entry, "guide", _("Search"));

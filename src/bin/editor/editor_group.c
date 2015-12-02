@@ -19,6 +19,7 @@
 
 #include "editor.h"
 
+extern int _editor_signals_blocked;
 Eina_Bool
 editor_group_add(Evas_Object *obj, const char *name)
 {
@@ -113,7 +114,7 @@ editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
    if (!edje_edit_group_max_## VAL ##_set(obj, new_value)) \
      return false; \
    _editor_project_changed(); \
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return true; \
 }
 
@@ -156,7 +157,7 @@ editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
    if (!edje_edit_group_min_## VAL ##_set(obj, new_value)) \
      return false; \
    _editor_project_changed(); \
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return true; \
 }
 
@@ -190,6 +191,6 @@ editor_group_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
    if (!edje_edit_group_name_set(edit_object, new_val))
      return false;
    _editor_project_changed();
-   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }

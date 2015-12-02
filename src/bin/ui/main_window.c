@@ -190,6 +190,8 @@ ui_main_window_add(void)
    ap.block.property = ui_property_add(ap.win);
    elm_layout_content_set(ap.block.right_top, NULL, ap.block.property);
    ap.block.history = history_ui_add();
+   evas_object_hide(ap.block.history);
+   elm_layout_content_set(ap.block.right_top, NULL, ap.block.property);
    elm_object_part_content_set(ap.panes.right, "right", ap.block.right_top);
 
    ap.menu = ui_menu_add();

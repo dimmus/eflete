@@ -86,9 +86,6 @@ group { name: "elm/layout/window/main";
 }
 
 group { name: "elm/layout/popup/hint";
-   images {
-      image: "hint-background.png" COMP;
-   }
    parts {
       part { name: "event";
          repeat_events: 1;
@@ -103,16 +100,15 @@ group { name: "elm/layout/popup/hint";
          type: IMAGE;
          description { state: "default" 0.0;
             rel1 {
-               to: "elm.swallow.content";
                offset: -6 -6;
             }
             rel2 {
-               to: "elm.swallow.content";
                offset: 6 6;
             }
             image {
                normal: "hint-background.png";
                border: 5 5 3 3;
+               middle: DEFAULT;
             }
          }
       }
@@ -120,8 +116,27 @@ group { name: "elm/layout/popup/hint";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.0;
-            rel1.offset: 6 6;
-            rel2.offset: -6 -6;
+            rel1 {
+               offset: 6 6;
+               to: "bg";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -7 -7;
+               to_x: "bg";
+               to_y: "elm.swallow.ok";
+            }
+         }
+      }
+      part { name: "elm.swallow.ok";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            max: 32 16;
+            rel2 {
+               offset: -7 -7;
+               to: "bg";
+            }
          }
       }
    }
@@ -133,6 +148,7 @@ group { name: "elm/layout/popup/hint";
       }
    }
 }
+
 
 group { name: "elm/layout/popup/hint_title";
    images {
@@ -3447,6 +3463,7 @@ group { name: "elm/layout/groupview/default";
          image: "bg_group.png" COMP;
          image: "bg_table.png" COMP;
          image: "bg_box.png" COMP;
+         image: "bg_part_item.png" COMP;
       }
       part { name: "bg";
          type: IMAGE;
@@ -3471,6 +3488,15 @@ group { name: "elm/layout/groupview/default";
          BG(table,      bg_table.png)
          BG(box,        bg_box.png)
 #undef BG
+         description { state: "part_item_hilight" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "bg_part_item.png";
+         }
+         description { state: "part_item_hilight" 1.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            image.normal: "bg_part_item.png";
+         }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
@@ -3522,5 +3548,19 @@ group { name: "elm/layout/groupview/default";
       PROGRAM(box)
       PROGRAM(part_item)
 #undef PROGRAM
+   }
+   program { name: "part_item_hilight_off";
+      source: "eflete";
+      filter: "border" "part_item" 0.0;
+      signal: "border,part_item,hilight,off";
+      action: STATE_SET part_item_hilight 0.0;
+      target: "bg";
+   }
+   program { name: "part_item_hilight_on";
+      source: "eflete";
+      filter: "border" "part_item" 0.0;
+      signal: "border,part_item,hilight,on";
+      action: STATE_SET part_item_hilight 1.0;
+      target: "bg";
    }
 }

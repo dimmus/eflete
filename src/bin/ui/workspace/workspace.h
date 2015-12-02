@@ -161,31 +161,6 @@ workspace_edit_object_part_restack(Evas_Object *obj,
 Eina_Bool
 workspace_edit_object_part_state_set(Evas_Object *obj, Part_ *part);
 
-Eina_Bool
-workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,
-                                     const char *state, double value);
-/**
- * Copy new state for the give part, from another state of this part.
- *
- * @param obj The groupedit object,
- * @param part Part that contain state.
- * @param state_from to copy from (not including state value).
- * @param value_from The value of the state to copy from.
- * @param state_to copy into (not including state value).
- * @param value_to The value of the state to copy into.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_edit_object_part_state_copy(Evas_Object *obj, const char *part,
-                                     const char *state_from, double value_from,
-                                     const char *state_to, double value_to);
-
-Eina_Bool
-workspace_edit_object_part_state_del(Evas_Object *obj, const char *part,
-                                     const char *state, double value);
 /**
  * Set a visibility for part of current groupedit object in the workspace.
  *
