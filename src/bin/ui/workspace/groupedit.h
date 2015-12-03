@@ -106,6 +106,26 @@ Eina_Bool
 groupedit_edit_object_recalc_all(Evas_Object *obj);
 
 /**
+ * Update the parts attributes, without recalculation.
+ *
+ * @paramaram obj The groupedit object.
+ *
+ * @ingroup Groupedit
+ */
+void
+groupedit_soft_update(Evas_Object *obj);
+
+/**
+ * Update the parts attributes, and recalculate them.
+ *
+ * @paramaram obj The groupedit object.
+ *
+ * @ingroup Groupedit
+ */
+void
+groupedit_hard_update(Evas_Object *obj);
+
+/**
  * Get the part object, which geometry corresponds to Edje part geometry from
  * editable object.
  *

@@ -1640,6 +1640,31 @@ workspace_edit_object_recalc(Evas_Object *obj)
    return groupedit_edit_object_recalc_all(sd->groupedit);
 }
 
+void
+workspace_edit_object_hard_update(Evas_Object *obj)
+{
+   WS_DATA_GET(obj, sd);
+   assert(sd->groupedit != NULL);
+
+   Evas_Coord min_w, max_w, min_h, max_h;
+   min_w = edje_edit_group_min_w_get(sd->group->edit_object);
+   min_h = edje_edit_group_min_h_get(sd->group->edit_object);
+   max_w = edje_edit_group_max_w_get(sd->group->edit_object);
+   max_h = edje_edit_group_max_h_get(sd->group->edit_object);
+   container_min_size_set(sd->container.obj, min_w, min_h);
+   container_max_size_set(sd->container.obj, max_w, max_h);
+
+   groupedit_hard_update(sd->groupedit);
+}
+
+void
+workspace_edit_object_soft_update(Evas_Object *obj)
+{
+   WS_DATA_GET(obj, sd);
+   assert(sd->groupedit != NULL);
+   groupedit_soft_update(sd->groupedit);
+}
+
 Eina_Bool
 workspace_edit_object_part_add(Evas_Object *obj, Part_ *part)
 {

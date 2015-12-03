@@ -262,6 +262,21 @@ groupedit_edit_object_recalc_all(Evas_Object *obj)
    return true;
 }
 
+void
+groupedit_soft_update(Evas_Object *obj)
+{
+   WS_GROUPEDIT_DATA_GET(obj, sd);
+   evas_object_smart_changed(sd->obj);
+}
+
+void
+groupedit_hard_update(Evas_Object *obj)
+{
+   WS_GROUPEDIT_DATA_GET(obj, sd);
+   sd->manual_calc = true;
+   evas_object_smart_changed(sd->obj);
+}
+
 Evas_Object *
 groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part)
 {
