@@ -1533,7 +1533,6 @@ workspace_add(Evas_Object *parent, Group *group)
                                   _ws_ruler_abs_zero_move_cb, obj);
    evas_object_smart_callback_add(sd->groupedit, "object,area,changed",
                                   _ws_ruler_rel_zero_move_cb, obj);
-   groupedit_bg_set(sd->groupedit, sd->background);
    elm_object_content_set(sd->scroller, sd->container.obj);
 
    /* getting size of rulers and handlers of container. Bottom and Left paddings

@@ -40,11 +40,6 @@ _unselect_part(void *data,
 
    if (ev->button != 1) return;
    if (!sd->selected) return;
-   if (sd->separated)
-     {
-        if (!sd->selected) return;
-        _selected_item_return_to_place(sd);
-     }
    evas_object_smart_callback_call(o, SIGNAL_GROUPEDIT_PART_UNSELECTED,
                                    (void *)sd->selected->part);
    sd->selected = NULL;
@@ -67,11 +62,9 @@ _groupedit_smart_add(Evas_Object *o)
                                   _unselect_part, o);
 
    priv->obj = o;
-   priv->zoom_factor = 1.0;
    priv->parts = NULL;
    priv->separated = false;
    priv->selected = NULL;
-   priv->to_select = NULL;
 
    evas_object_smart_member_add(priv->event, o);
 }
@@ -81,13 +74,10 @@ _groupedit_smart_del(Evas_Object *o)
 {
    WS_GROUPEDIT_DATA_GET(o, sd)
 
-   groupedit_bg_unset(o);
-
    _parts_list_free(sd);
    evas_object_smart_member_del(sd->group->edit_object);
-   evas_object_smart_member_del(sd->edit_obj_clipper);
+   evas_object_smart_member_del(sd->clipper);
    evas_object_hide(sd->group->edit_object);
-   evas_object_del(sd->edit_obj_clipper);
 
    _groupedit_parent_sc->del(o);
 }
@@ -122,7 +112,6 @@ _groupedit_smart_move(Evas_Object *o,
                       Evas_Coord y)
 {
    Evas_Coord ox, oy;
-   Evas_Object *bg;
    WS_GROUPEDIT_DATA_GET(o, sd)
 
    _groupedit_parent_sc->move(o, x, y);
@@ -130,17 +119,7 @@ _groupedit_smart_move(Evas_Object *o,
    evas_object_geometry_get(o, &ox, &oy, NULL, NULL);
    if ((ox == x) && (oy == y)) return;
 
-   if (sd->separated)
-     {
-        bg = evas_object_image_source_get(sd->bg);
-        evas_object_geometry_get(bg, &ox, &oy, NULL, NULL);
-        evas_object_move(sd->bg, ox, oy);
-        if (sd->selected)
-          {
-             evas_object_geometry_get(sd->selected->item, &ox, &oy, NULL, NULL);
-             evas_object_move(sd->clipper, ox, oy);
-          }
-     }
+   evas_object_smart_changed(o);
 }
 
 static void
@@ -241,11 +220,10 @@ groupedit_add(Evas_Object *parent, Group *group)
    /* hide the editing object by using clipper (clipper is small, it's size is 0,0)
     * with such clipper object invisible and calculate geometry. */
    evas_object_show(sd->group->edit_object);
-
-   sd->edit_obj_clipper = evas_object_rectangle_add(sd->e);
-   evas_object_clip_set(sd->group->edit_object, sd->edit_obj_clipper);
-   evas_object_smart_member_add(sd->edit_obj_clipper, obj);
-   evas_object_show(sd->edit_obj_clipper);
+   sd->clipper = evas_object_rectangle_add(sd->e);
+   evas_object_clip_set(sd->group->edit_object, sd->clipper);
+   evas_object_smart_member_add(sd->clipper, obj);
+   evas_object_show(sd->clipper);
 
    return obj;
 }
@@ -396,9 +374,10 @@ groupedit_part_object_area_visible_get(Evas_Object *obj)
 }
 
 Eina_Bool
-groupedit_edit_object_parts_separated(Evas_Object *obj,
-                                      Eina_Bool separated)
+groupedit_edit_object_parts_separated(Evas_Object *obj __UNUSED__,
+                                      Eina_Bool separated __UNUSED__)
 {
+#if 0
    int w, h, count;
    WS_GROUPEDIT_DATA_GET(obj, sd);
 
@@ -433,6 +412,7 @@ groupedit_edit_object_parts_separated(Evas_Object *obj,
         evas_object_smart_callback_call(obj, SIG_PART_SEPARETE_CLOSE, NULL);
         _selected_item_return_to_place(sd);
      }
+#endif /*  */
    return true;
 }
 
@@ -453,23 +433,13 @@ groupedit_edit_object_part_select(Evas_Object *obj, const char *part)
      {
         gp = _parts_list_find(sd->parts, part);
         assert(gp != NULL);
+        sd->selected = gp;
      }
    else
      gp = NULL;
 
    if (sd->selected && sd->selected->current_item)
      elm_object_signal_emit(sd->selected->current_item->layout, "border,part_item,hilight,off", "eflete");
-
-   if (!sd->separated) sd->selected = gp;
-   else
-     {
-        if (!part) _selected_item_return_to_place(sd);
-        else
-          {
-             if (gp) sd->to_select = gp;
-             _select_item_move_to_top(sd);
-          }
-     }
 }
 
 TODO("remove this from public API and use callback from part list");
@@ -491,76 +461,10 @@ groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible
    return true;
 }
 
-static void
-_bg_changed(void *data,
-                Evas *evas __UNUSED__,
-                Evas_Object *o,
-                void *einfo __UNUSED__)
-{
-   int w, h;
-   Evas_Object *bg = (Evas_Object *)data;
-
-   assert(o != NULL);
-   assert(bg != NULL);
-
-   evas_object_geometry_get(o, NULL, NULL, &w, &h);
-   evas_object_resize(bg, w, h);
-}
-
 Eina_Bool
-groupedit_bg_set(Evas_Object *obj, Evas_Object *bg)
-{
-   int w, h;
-
-   WS_GROUPEDIT_DATA_GET(obj, sd);
-
-   if (bg)
-     {
-        Evas_Object *old_bg = evas_object_image_source_get(sd->bg);
-        evas_object_event_callback_del_full(old_bg,
-                                            EVAS_CALLBACK_RESIZE,
-                                            _bg_changed, sd->bg);
-        evas_object_del(old_bg);
-     }
-
-   sd->bg = evas_object_image_filled_add(sd->e);
-   sd->clipper = evas_object_rectangle_add(sd->e);
-
-   evas_object_geometry_get(bg, NULL, NULL, &w, &h);
-   evas_object_image_source_set(sd->bg, bg);
-   evas_object_resize(sd->bg, w, h);
-   evas_object_event_callback_add(bg,
-                                  EVAS_CALLBACK_RESIZE,
-                                  _bg_changed, sd->bg);
-
-   evas_object_smart_member_add(sd->bg, obj);
-   evas_object_smart_member_add(sd->clipper, obj);
-
-   return true;
-}
-
-Evas_Object *
-groupedit_bg_unset(Evas_Object *obj)
-{
-   Evas_Object *bg;
-   WS_GROUPEDIT_DATA_GET(obj, sd);
-
-   bg = evas_object_image_source_get(sd->bg);
-   evas_object_event_callback_del_full(bg,
-                                       EVAS_CALLBACK_RESIZE,
-                                       _bg_changed, sd->bg);
-   evas_object_del(sd->bg);
-   sd->bg = NULL;
-
-   return bg;
-}
-
-Eina_Bool
-groupedit_zoom_factor_set(Evas_Object *obj, double factor)
+groupedit_zoom_factor_set(Evas_Object *obj, double factor __UNUSED__)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd);
-
-   sd->zoom_factor = factor;
 
    return true;
 }
