@@ -139,16 +139,17 @@ _item_label_get(void *data,
 
 static void
 _on_eye_clicked(void *data,
-                Evas_Object *obj __UNUSED__,
+                Evas_Object *obj,
                 void *event_data __UNUSED__)
 {
    Part_ *part = data;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
 
    assert(part != NULL);
+   assert(pl != NULL);
 
    part->visible = !part->visible;
-
-   TODO("Add signal here");
+   evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED, (void *)part);
 }
 
 static Evas_Object *
@@ -163,12 +164,11 @@ _part_content_get(void *data,
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
+        Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
         content = elm_check_add(obj);
-        if (_part->visible)
-          elm_check_state_set(content, true);
-        else
-           elm_check_state_set(content, false);
+        elm_check_state_set(content, _part->visible);
         elm_object_style_set(content, "eye");
+        evas_object_data_set(content, GROUP_NAVIGATOR_DATA, pl);
 
         evas_object_smart_callback_add(content, "changed", _on_eye_clicked, _part);
      }
@@ -1164,6 +1164,7 @@ group_navigator_add(Group *group)
    evas_object_smart_callback_add(pl->genlist, "expanded", _expanded_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "contracted", _contracted_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "selected", _selected_cb, pl);
+   evas_object_data_set(pl->genlist, GROUP_NAVIGATOR_DATA, pl);
 
    EINA_LIST_FOREACH(group->parts, l, part)
      {
