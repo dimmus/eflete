@@ -596,8 +596,6 @@ _sc_smart_move_cb(void *data,
    if ((groupedit_edit_object_parts_separated_is(sd->groupedit))
        && (sd->scroll_flag < 2))
      evas_object_smart_callback_call(sd->scroller, "vbar,drag", NULL);
-   else
-     groupedit_edit_object_recalc_all(sd->groupedit);
    sd->scroll_flag = 0;
 
    evas_object_geometry_get(object_area, &gs_x, &gs_y, &gs_w, &gs_h);
