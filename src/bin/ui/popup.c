@@ -35,6 +35,20 @@ static const Popup_Button _btn_cancel     = BTN_CANCEL;
 static Popup_Validator_Func validator     = NULL;
 static void *user_data                    = NULL;
 
+struct _Search_Data
+{
+   Evas_Object *search_entry;
+   Elm_Object_Item *last_item_found;
+};
+typedef struct _Search_Data Search_Data;
+struct _Helper_Data
+{
+   Evas_Object *gengrid;
+   Evas_Object *follow_up;
+   Search_Data image_search_data;
+};
+typedef struct _Helper_Data Helper_Data;
+
 /* this one is for gengrid items */
 struct _Item
 {
@@ -200,6 +214,9 @@ _helper_dismiss(void *data __UNUSED__,
      evas_object_event_callback_del_full(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
 
    evas_object_del(helper);
+
+   Helper_Data *helper_data = evas_object_data_get(helper, "STRUCT");
+   if (helper_data) free(helper_data);
 }
 
 static void
@@ -393,15 +410,17 @@ _done_image(void *data,
    Eina_List *ret_list = NULL;
    Elm_Object_Item *item_list;
 
+   Helper_Data *helper_data = (Helper_Data *)data;
+
    if (dismiss_func)
      {
-        sel_list = elm_gengrid_selected_items_get(gengrid);
+        sel_list = elm_gengrid_selected_items_get(helper_data->gengrid);
         EINA_LIST_FOREACH(sel_list, l, item_list)
           {
              item = elm_object_item_data_get(item_list);
              ret_list = eina_list_append(ret_list, eina_stringshare_add(item->image_name));
           }
-        res = ((Helper_Done_Cb)dismiss_func)(func_data, obj, ret_list);
+        res = ((Helper_Done_Cb)dismiss_func)(func_data, helper_data->gengrid, ret_list);
         eina_list_free(ret_list);
      }
 
@@ -409,7 +428,7 @@ _done_image(void *data,
      {
         dismiss_func = NULL;
         func_data = NULL;
-        _helper_dismiss(data, NULL, NULL, NULL);
+        _helper_dismiss(helper_data->follow_up, NULL, NULL, NULL);
      }
 }
 
@@ -509,18 +528,57 @@ _grid_content_get(void *data,
 }
 #undef MAX_ICON_SIZE
 
+ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, NULL)
+
+static void
+_on_images_search_entry_changed_cb(void *data,
+                                   Evas_Object *obj __UNUSED__,
+                                   void *event_info __UNUSED__)
+{
+   Helper_Data *helper_data = data;
+
+   assert(helper_data != NULL);
+
+   _gengrid_item_search(helper_data->gengrid, &(helper_data->image_search_data),
+                        helper_data->image_search_data.last_item_found);
+}
+
+static void
+_search_next_gengrid_item_cb(void *data,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info __UNUSED__)
+{
+   Helper_Data *helper_data = data;
+   Elm_Object_Item *start_from = NULL;
+
+   assert(helper_data != NULL);
+
+   if (helper_data->image_search_data.last_item_found)
+     {
+        start_from =
+           elm_gengrid_item_next_get(helper_data->image_search_data.last_item_found);
+     }
+
+   _gengrid_item_search(helper_data->gengrid, &(helper_data->image_search_data),
+                        start_from);
+}
+
 void
 popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
                            Helper_Done_Cb func, void *data,
                            Eina_Bool multi)
 {
    Evas_Object *entry, *icon, *button;
+   Helper_Data *helper_data = (Helper_Data *)mem_calloc(1, sizeof(Helper_Data));
 
    dismiss_func = func;
    func_data = data;
 
+   helper_data->follow_up = follow_up;
+
    helper = elm_layout_add(ap.win);
    elm_layout_theme_set(helper, "layout", "popup", title ? "hint_title" : "hint");
+   evas_object_data_set(helper, "STRUCT", helper_data);
    elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, follow_up);
 
    fs = elm_layout_add(helper);
@@ -530,13 +588,14 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
    evas_object_show(fs);
 
    gengrid = elm_gengrid_add(fs);
+   helper_data->gengrid = gengrid;
    if (multi)
      {
         elm_gengrid_multi_select_set(gengrid, true);
 
         BUTTON_ADD(fs, button, _("Ok"))
         elm_object_part_content_set(helper, "elm.swallow.ok", button);
-        evas_object_smart_callback_add(button, "clicked", _done_image, follow_up);
+        evas_object_smart_callback_add(button, "clicked", _done_image, helper_data);
         evas_object_show(button);
      }
    else
@@ -544,7 +603,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
         elm_gengrid_multi_select_set(gengrid, false);
         elm_gengrid_multi_select_mode_set(gengrid,
                                           ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
-        evas_object_smart_callback_add(gengrid, "clicked,double", _done_image, follow_up);
+        evas_object_smart_callback_add(gengrid, "clicked,double", _done_image, helper_data);
      }
    elm_gengrid_item_size_set(gengrid, ITEM_WIDTH, ITEM_HEIGHT);
    elm_gengrid_align_set(gengrid, 0.0, 0.0);
@@ -568,6 +627,12 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
    ICON_STANDARD_ADD(entry, icon, true, "search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
    elm_object_part_content_set(fs, "eflete.swallow.search_line", entry);
+   evas_object_smart_callback_add(entry, "changed",
+                                  _on_images_search_entry_changed_cb, helper_data);
+   evas_object_smart_callback_add(entry, "activated",
+                                  _search_next_gengrid_item_cb, helper_data);
+   helper_data->image_search_data.search_entry = entry;
+   helper_data->image_search_data.last_item_found = NULL;
 
    /* small hack, hide not necessary button */
    evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
