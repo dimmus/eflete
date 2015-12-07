@@ -46,6 +46,14 @@
 #define SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED "SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED"
 
 /**
+ * emited when part visibility is changed.
+ * eventinfo - pointer to Part_ structure
+ *
+ * @ingroup Partlist
+ */
+#define SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED "SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGE"
+
+/**
  * @ingroup Partlist
  */
 Evas_Object *

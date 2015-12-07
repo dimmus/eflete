@@ -596,8 +596,6 @@ _sc_smart_move_cb(void *data,
    if ((groupedit_edit_object_parts_separated_is(sd->groupedit))
        && (sd->scroll_flag < 2))
      evas_object_smart_callback_call(sd->scroller, "vbar,drag", NULL);
-   else
-     groupedit_edit_object_recalc_all(sd->groupedit);
    sd->scroll_flag = 0;
 
    evas_object_geometry_get(object_area, &gs_x, &gs_y, &gs_w, &gs_h);
@@ -1463,6 +1461,20 @@ _on_group_navigator_part_state_select(void *data,
 }
 
 static void
+_on_group_navigator_part_visible_changed(void *data,
+                                Evas_Object *obj __UNUSED__,
+                                void *event_info)
+{
+   Evas_Object *workspace = (Evas_Object *)data;
+   Part_ *part = event_info;
+
+   WS_DATA_GET(workspace, sd);
+
+   groupedit_part_visible_set(sd->groupedit, part);
+}
+
+
+static void
 _on_groupedit_part_unselect(void *data,
                             Evas_Object *obj __UNUSED__,
                             void *event_info __UNUSED__)
@@ -1502,6 +1514,9 @@ workspace_add(Evas_Object *parent, Group *group)
                                   _on_group_navigator_part_select, obj);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED,
                                   _on_group_navigator_part_state_select, obj);
+   evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED,
+                                  _on_group_navigator_part_visible_changed, obj);
+
 
    /* create conteiner with handlers */
    sd->container.obj = container_add(sd->scroller);
@@ -1535,7 +1550,6 @@ workspace_add(Evas_Object *parent, Group *group)
                                   _ws_ruler_abs_zero_move_cb, obj);
    evas_object_smart_callback_add(sd->groupedit, "object,area,changed",
                                   _ws_ruler_rel_zero_move_cb, obj);
-   groupedit_bg_set(sd->groupedit, sd->background);
    elm_object_content_set(sd->scroller, sd->container.obj);
 
    /* getting size of rulers and handlers of container. Bottom and Left paddings
@@ -1642,6 +1656,31 @@ workspace_edit_object_recalc(Evas_Object *obj)
    return groupedit_edit_object_recalc_all(sd->groupedit);
 }
 
+void
+workspace_edit_object_hard_update(Evas_Object *obj)
+{
+   WS_DATA_GET(obj, sd);
+   assert(sd->groupedit != NULL);
+
+   Evas_Coord min_w, max_w, min_h, max_h;
+   min_w = edje_edit_group_min_w_get(sd->group->edit_object);
+   min_h = edje_edit_group_min_h_get(sd->group->edit_object);
+   max_w = edje_edit_group_max_w_get(sd->group->edit_object);
+   max_h = edje_edit_group_max_h_get(sd->group->edit_object);
+   container_min_size_set(sd->container.obj, min_w, min_h);
+   container_max_size_set(sd->container.obj, max_w, max_h);
+
+   groupedit_hard_update(sd->groupedit);
+}
+
+void
+workspace_edit_object_soft_update(Evas_Object *obj)
+{
+   WS_DATA_GET(obj, sd);
+   assert(sd->groupedit != NULL);
+   groupedit_soft_update(sd->groupedit);
+}
+
 Eina_Bool
 workspace_edit_object_part_add(Evas_Object *obj, Part_ *part)
 {
@@ -1707,12 +1746,13 @@ workspace_edit_object_part_restack(Evas_Object *obj,
 Eina_Bool
 workspace_edit_object_visible_set(Evas_Object *obj,
                                   const char *part,
-                                  Eina_Bool visible)
+                                  Eina_Bool visible __UNUSED__)
 {
    WS_DATA_GET(obj, sd);
    assert(part != NULL);
 
-   return groupedit_part_visible_set(sd->groupedit, part, visible);
+   //groupedit_part_visible_set(sd->groupedit, part);
+   return true;
 }
 
 Eina_Bool

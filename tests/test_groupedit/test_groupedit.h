@@ -51,8 +51,3 @@ void groupedit_container_size_set_test_n(int);
 
 void groupedit_container_size_get_test_p(int);
 void groupedit_container_size_get_test_n(int);
-
-void groupedit_bg_set_test_p(int);
-void groupedit_bg_set_test_p1(int);
-
-void groupedit_bg_unset_test_p(int);

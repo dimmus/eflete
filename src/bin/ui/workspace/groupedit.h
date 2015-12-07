@@ -106,6 +106,26 @@ Eina_Bool
 groupedit_edit_object_recalc_all(Evas_Object *obj);
 
 /**
+ * Update the parts attributes, without recalculation.
+ *
+ * @paramaram obj The groupedit object.
+ *
+ * @ingroup Groupedit
+ */
+void
+groupedit_soft_update(Evas_Object *obj);
+
+/**
+ * Update the parts attributes, and recalculate them.
+ *
+ * @paramaram obj The groupedit object.
+ *
+ * @ingroup Groupedit
+ */
+void
+groupedit_hard_update(Evas_Object *obj);
+
+/**
  * Get the part object, which geometry corresponds to Edje part geometry from
  * editable object.
  *
@@ -229,43 +249,16 @@ void
 groupedit_edit_object_part_select(Evas_Object *obj, const char *part);
 
 /**
- * Set the bg image.
- *
- * @param obj The groupedit object,
- * @param bg The Evas image.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_bg_set(Evas_Object *obj, Evas_Object *bg);
-
-/**
- * Unset the bg image.
- *
- * @param obj The groupedit object.
- *
- * @return The image object.
- *
- * @ingroup Groupedit
- */
-Evas_Object *
-groupedit_bg_unset(Evas_Object *obj);
-
-/**
  * Set a visibility for groupedit part.
  *
  * @param obj The groupedit object
- * @param part The name of groupedit part to be showed of hided
+ * @param part The Part object to be showed of hided
  * @param visible Use EINA_TRUE to show, EINA_FALSE to hide part.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup Groupedit
  */
-Eina_Bool
-groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible);
+void
+groupedit_part_visible_set(Evas_Object *obj, Part_ *part);
 
 /**
  * Restack part above another part in groupedit module.

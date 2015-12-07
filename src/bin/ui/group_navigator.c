@@ -56,7 +56,7 @@ typedef struct
    struct {
         Evas_Object *entry_name;
         Evas_Object *spinner_value;
-        Evas_Object *combobox_dup;
+        Evas_Object *combobox;
         Evas_Object *btn_add;
         Evas_Object *btn_cancel;
    } popup;
@@ -139,16 +139,17 @@ _item_label_get(void *data,
 
 static void
 _on_eye_clicked(void *data,
-                Evas_Object *obj __UNUSED__,
+                Evas_Object *obj,
                 void *event_data __UNUSED__)
 {
    Part_ *part = data;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
 
    assert(part != NULL);
+   assert(pl != NULL);
 
    part->visible = !part->visible;
-
-   TODO("Add signal here");
+   evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED, (void *)part);
 }
 
 static Evas_Object *
@@ -163,12 +164,11 @@ _part_content_get(void *data,
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
+        Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
         content = elm_check_add(obj);
-        if (_part->visible)
-          elm_check_state_set(content, true);
-        else
-           elm_check_state_set(content, false);
+        elm_check_state_set(content, _part->visible);
         elm_object_style_set(content, "eye");
+        evas_object_data_set(content, GROUP_NAVIGATOR_DATA, pl);
 
         evas_object_smart_callback_add(content, "changed", _on_eye_clicked, _part);
      }
@@ -489,6 +489,30 @@ _state_validate(void *data,
 }
 
 static void
+_item_validate(void *data,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
+{
+   Part_List *pl = data;
+   const char *name, *item;
+   Part_ *part;
+   Eina_Bool valid;
+   Eina_List *l;
+
+   assert(pl != NULL);
+
+   part = elm_object_item_data_get(pl->selected_part_item);
+
+   name = elm_entry_entry_get(pl->popup.entry_name);
+   valid = (elm_validator_regexp_status_get(pl->name_validator) == ELM_REG_NOERROR);
+   valid = valid && (ewe_combobox_select_item_get(pl->popup.combobox) != NULL);
+   EINA_LIST_FOREACH(part->items, l, item)
+      valid = valid && strcmp(item, name);
+
+   elm_object_disabled_set(pl->popup.btn_add, !valid);
+}
+
+static void
 _job_popup_del(void *data)
 {
    Part_List *pl = data;
@@ -639,7 +663,7 @@ _popup_add_state_ok_clicked(void *data,
    val = elm_spinner_value_get(pl->popup.spinner_value);
    val = ((int) (val * 100)) / 100.0; /* only first two digets after point are used */
 
-   item = ewe_combobox_select_item_get(pl->popup.combobox_dup);
+   item = ewe_combobox_select_item_get(pl->popup.combobox);
    if (item->index == 0)
      {
         msg = eina_stringshare_printf(_("added new state \"%s\" %.2f"), name, val);
@@ -718,7 +742,7 @@ _editor_state_added_cb(void *data,
 
 static void
 _on_menu_add_state_clicked(void *data __UNUSED__,
-                           Evas_Object *obj __UNUSED__,
+                           Evas_Object *obj,
                            void *ei __UNUSED__)
 {
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
@@ -756,15 +780,15 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    elm_box_pack_end(box, item);
 
    LAYOUT_PROP_ADD(box, _("Duplicate state:"), "property", "1swallow")
-   EWE_COMBOBOX_ADD(item, pl->popup.combobox_dup)
+   EWE_COMBOBOX_ADD(item, pl->popup.combobox)
 
-   ewe_combobox_item_add(pl->popup.combobox_dup, _("None"));
-   ewe_combobox_select_item_set(pl->popup.combobox_dup, 0);
+   ewe_combobox_item_add(pl->popup.combobox, _("None"));
+   ewe_combobox_select_item_set(pl->popup.combobox, 0);
    EINA_LIST_FOREACH(part->states, l, state)
      {
-       ewe_combobox_item_add(pl->popup.combobox_dup, state->name);
+       ewe_combobox_item_add(pl->popup.combobox, state->name);
      }
-   elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox_dup);
+   elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
 
    elm_box_pack_end(box, item);
    elm_object_content_set(ap.popup, box);
@@ -785,11 +809,72 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
 }
 
 static void
+_popup_add_item_ok_clicked(void *data __UNUSED__,
+                           Evas_Object *obj __UNUSED__,
+                           void *event_info __UNUSED__)
+{
+   printf("_popup_add_item_ok_clicked\n");
+}
+
+static void
 _on_menu_add_item_clicked(void *data __UNUSED__,
-                          Evas_Object *obj __UNUSED__,
+                          Evas_Object *obj,
                           void *ei __UNUSED__)
 {
-   printf("_on_menu_add_item_clicked\n");
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   Part_ *part;
+   Group *group;
+   Eina_Stringshare *title;
+   Evas_Object *box, *item;
+   Eina_List *l;
+
+   assert(pl != NULL);
+
+   part = elm_object_item_data_get(pl->selected_part_item);
+
+   ap.popup = elm_popup_add(ap.win);
+   title = eina_stringshare_printf(_("Add new item to part \"%s\""), part->name);
+   elm_object_part_text_set(ap.popup, "title,text", title);
+   eina_stringshare_del(title);
+
+   BOX_ADD(ap.popup, box, false, false);
+   LAYOUT_PROP_ADD(box, _("Name:"), "property", "1swallow")
+   ENTRY_ADD(item, pl->popup.entry_name, true);
+   eo_do(pl->popup.entry_name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE,
+         elm_validator_regexp_helper, pl->name_validator));
+   evas_object_smart_callback_add(pl->popup.entry_name, "changed", _item_validate, pl);
+   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new item here."));
+   elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
+   elm_box_pack_end(box, item);
+
+   LAYOUT_PROP_ADD(box, _("Source group:"), "property", "1swallow")
+   EWE_COMBOBOX_ADD(item, pl->popup.combobox)
+   ewe_combobox_text_set(pl->popup.combobox, _("Select source group here."));
+   evas_object_smart_callback_add(pl->popup.combobox, "selected", _item_validate, pl);
+
+   EINA_LIST_FOREACH(ap.project->groups, l, group)
+     {
+        TODO("Add checks for recursion");
+        if (part->group != group)
+          ewe_combobox_item_add(pl->popup.combobox, group->name);
+     }
+   elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
+
+   elm_box_pack_end(box, item);
+   elm_object_content_set(ap.popup, box);
+
+   BUTTON_ADD(ap.popup, pl->popup.btn_add, _("Add"));
+   evas_object_smart_callback_add(pl->popup.btn_add, "clicked", _popup_add_item_ok_clicked, pl);
+   elm_object_part_content_set(ap.popup, "button1", pl->popup.btn_add);
+   elm_object_disabled_set(pl->popup.btn_add, true);
+
+   BUTTON_ADD(ap.popup, pl->popup.btn_cancel, _("Cancel"));
+   evas_object_smart_callback_add(pl->popup.btn_cancel, "clicked", _popup_cancel_clicked, pl);
+   elm_object_part_content_set(ap.popup, "button2", pl->popup.btn_cancel);
+
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+   evas_object_show(ap.popup);
+   elm_object_focus_set(pl->popup.entry_name, true);
 }
 
 static void
@@ -1068,6 +1153,7 @@ group_navigator_add(Group *group)
 
 
    pl->genlist = elm_genlist_add(pl->layout);
+   elm_genlist_homogeneous_set(pl->layout, true);
    elm_scroller_policy_set(pl->genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
    evas_object_show(pl->genlist);
    elm_object_content_set(pl->layout, pl->genlist);
@@ -1078,6 +1164,7 @@ group_navigator_add(Group *group)
    evas_object_smart_callback_add(pl->genlist, "expanded", _expanded_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "contracted", _contracted_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "selected", _selected_cb, pl);
+   evas_object_data_set(pl->genlist, GROUP_NAVIGATOR_DATA, pl);
 
    EINA_LIST_FOREACH(group->parts, l, part)
      {

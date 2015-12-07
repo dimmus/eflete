@@ -81,39 +81,10 @@ _edit_object_part_del(Ws_Groupedit_Smart_Data *sd, Part_ *part)
    assert(sd->parts != NULL);
    assert(part != NULL);
 
-   _selected_item_return_to_place(sd);
    _part_draw_del(sd, part);
    evas_object_smart_changed(sd->obj);
 
    return true;
-}
-
-static void
-_part_parts_layouts_update(Ws_Groupedit_Smart_Data *sd,
-                           Groupedit_Part *ge_part,
-                           Groupedit_Part *ge_part_to,
-                           Eina_Bool mode)
-{
-   assert(sd != NULL);
-   assert(ge_part != NULL);
-   assert(ge_part_to != NULL);
-
-   if (mode)
-     {
-        evas_object_stack_below(sd->bg, ge_part_to->draw);
-        evas_object_stack_below(sd->clipper, ge_part_to->draw);
-        evas_object_stack_below(ge_part->bg, ge_part_to->draw);
-        evas_object_stack_below(ge_part->draw, ge_part_to->draw);
-        evas_object_stack_below(ge_part->item, ge_part_to->draw);
-     }
-   else
-     {
-        evas_object_stack_above(sd->bg, ge_part_to->draw);
-        evas_object_stack_above(sd->clipper, ge_part_to->draw);
-        evas_object_stack_above(ge_part->item, ge_part_to->draw);
-        evas_object_stack_above(ge_part->draw, ge_part_to->draw);
-        evas_object_stack_above(ge_part->bg, ge_part_to->draw);
-     }
 }
 
 /**
@@ -145,7 +116,6 @@ _part_restack(Ws_Groupedit_Smart_Data *sd,
 
    ge_part = _parts_list_find(sd->parts, part);
    if (!ge_part) return false;
-   if (sd->separated) sd->to_select = ge_part;
    /* Here find part_to in parts stack. ge_part will be restack abow or below
     * ge_part_to object. */
    if (part_to)
@@ -172,13 +142,6 @@ _part_restack(Ws_Groupedit_Smart_Data *sd,
      sd->parts = eina_list_prepend_relative(sd->parts, ge_part, ge_part_to);
    else
      sd->parts = eina_list_append_relative(sd->parts, ge_part, ge_part_to);
-
-   if (sd->separated)
-     {
-        _select_item_move_to_top(sd);
-        return true;
-     }
-   _part_parts_layouts_update(sd, ge_part, ge_part_to, mode);
 
    return true;
 }
@@ -275,14 +238,6 @@ _groupedit_part_free(Groupedit_Part *gp)
    assert(gp != NULL);
 
    evas_object_del(gp->draw);
-   if (gp->item)
-     {
-        evas_object_smart_member_del(gp->item);
-        evas_object_del(gp->item);
-     }
-   if (gp->bg)
-     evas_object_del(gp->bg);
-
    EINA_LIST_FREE(gp->items, ge_item)
      _item_draw_del(ge_item);
    free(gp);
@@ -324,130 +279,6 @@ _part_item_search(Eina_List *items, const char *item_name)
    return NULL;
 }
 
-
-void
-_selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd)
-{
-   Groupedit_Part *gp;
-   Eina_List *l, *ln;
-   Eina_Bool is_below = false;
-
-   assert(sd != NULL);
-
-   if (!sd->selected) return;
-   l = eina_list_data_find_list(sd->parts, sd->selected);
-
-   ln = eina_list_prev(l);
-   if (!ln)
-     {
-        ln = eina_list_next(l);
-        if (!ln) return;
-        is_below = true;
-     }
-
-   gp = (Groupedit_Part *)eina_list_data_get(ln);
-   _part_parts_layouts_update(sd, sd->selected, gp, is_below);
-   DBG("Separete mode, return to place part %s. Restack %s the part %s",
-       (is_below) ? "belove" : "above", sd->selected->part->name, gp->part->name);
-
-   evas_object_hide(sd->clipper);
-   evas_object_clip_unset(sd->bg);
-   evas_object_hide(sd->bg);
-   edje_object_signal_emit(sd->selected->item, "item,unselected", "eflete");
-}
-
-void
-_select_item_move_to_top(Ws_Groupedit_Smart_Data *sd)
-{
-   assert(sd != NULL);
-
-   int x, y, w, h;
-   if (sd->selected == sd->to_select) return;
-   if (sd->selected) _selected_item_return_to_place(sd);
-
-   evas_object_geometry_get(sd->to_select->item, &x, &y, &w, &h);
-   evas_object_resize(sd->clipper, w, h);
-   evas_object_move(sd->clipper, x, y);
-
-   DBG("clipper geometry is %i %i %i %i", x, y, w, h);
-
-   evas_object_show(sd->bg);
-   evas_object_show(sd->clipper);
-   evas_object_clip_set(sd->bg, sd->clipper);
-
-   evas_object_raise(sd->bg);
-   evas_object_raise(sd->clipper);
-   evas_object_raise(sd->to_select->bg);
-   evas_object_raise(sd->to_select->draw);
-   evas_object_raise(sd->to_select->item);
-   sd->selected = sd->to_select;
-   edje_object_signal_emit(sd->selected->item, "item,selected", "eflete");
-   evas_object_geometry_get(sd->bg, &x, &y, &w, &h);
-   DBG("bg geometry is %i %i %i %i", x, y, w, h);
-
-   sd->to_select = NULL;
-}
-
-#if 0
-static void
-_part_separete_mod_mouse_click_cb(void *data,
-                                  Evas *e __UNUSED__,
-                                  Evas_Object *obj __UNUSED__,
-                                  void *event_info)
-{
-   Groupedit_Part *gp = (Groupedit_Part *)data;
-
-   assert(gp != NULL);
-
-   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->draw, "sd");
-
-   assert(sd != NULL);
-
-   Evas_Event_Mouse_Down *emd = (Evas_Event_Mouse_Down *)event_info;
-
-   if (emd->button != 1) return;
-   sd->to_select = gp;
-   evas_object_smart_callback_call(sd->obj, SIGNAL_GROUPEDIT_PART_SELECTED,
-                                  (void *)gp->part);
-}
-
-static void
-_part_separete_mod_mouse_in_cb(void *data,
-                               Evas *e __UNUSED__,
-                               Evas_Object *obj __UNUSED__,
-                               void *event_info __UNUSED__)
-{
-   Groupedit_Part *gp = (Groupedit_Part *)data;
-
-   assert(gp != NULL);
-
-   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->draw, "sd");
-
-   assert(sd != NULL);
-
-   if (sd->selected == gp) return;
-   edje_object_signal_emit(gp->item, "item,mouse,in", "eflete");
-}
-
-static void
-_part_separete_mod_mouse_out_cb(void *data,
-                                Evas *e __UNUSED__,
-                                Evas_Object *obj __UNUSED__,
-                                void *event_info __UNUSED__)
-{
-   Groupedit_Part *gp = (Groupedit_Part *)data;
-
-   assert(gp != NULL);
-
-   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->draw, "sd");
-
-   assert(sd != NULL);
-
-   if (sd->selected == gp) return;
-   edje_object_signal_emit(gp->item, "item,mouse,out", "eflete");
-}
-#endif /*  */
-
 static void
 _part_select(void *data,
              Evas *e __UNUSED__,
@@ -465,7 +296,6 @@ _part_select(void *data,
    Evas_Event_Mouse_Down *emd = (Evas_Event_Mouse_Down *)event_info;
 
    if (emd->button != 1) return;
-   sd->to_select = gp;
    evas_object_smart_callback_call(sd->obj, SIGNAL_GROUPEDIT_PART_SELECTED,
                                   (void *)gp->part);
 }
@@ -863,7 +693,6 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
 
    gp = mem_calloc(1, sizeof(Groupedit_Part));
    gp->part = part;
-   gp->item = NULL;
 
    gp->draw = elm_box_add(sd->parent);
    elm_box_layout_set(gp->draw, evas_object_box_layout_stack, NULL, NULL);
@@ -876,6 +705,8 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
    elm_layout_theme_set(gp->layout, "layout", "groupview", "default");
    evas_object_show(gp->layout);
    elm_box_pack_end(gp->draw, gp->layout);
+
+   gp->part->visible = true;
 
 #define PART_VIEW_PROXY_SET() \
    gp->proxy_part = evas_object_image_filled_add(sd->e); \
@@ -938,8 +769,6 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
    evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_MOUSE_DOWN,
                                   _part_select, gp);
 
-   if (gp->bg)
-     evas_object_smart_member_add(gp->bg, sd->obj);
    evas_object_smart_member_add(gp->draw, sd->obj);
    //evas_object_smart_member_add(gp->border, sd->obj);
 
@@ -1129,6 +958,7 @@ _proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
      }
    else
      {
+        evas_object_image_source_set(gp->proxy_part, NULL);
         elm_object_signal_emit(gp->layout, "border,proxy", "eflete");
      }
 }
@@ -1266,6 +1096,7 @@ _parts_stack_layout(Evas_Object          *o __UNUSED__,
         _part_object_area_calc(sd, gp);
         _part_calc(sd, gp);
         _part_update(sd, gp);
+        sd->manual_calc = false;
 
         evas_object_resize(gp->draw, gp->geom.w, gp->geom.h);
         evas_object_move(gp->draw, gp->geom.x, gp->geom.y);

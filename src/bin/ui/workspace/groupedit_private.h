@@ -62,26 +62,10 @@ struct _Ws_Groupedit_Smart_Data
    Evas_Object *parent;
    Evas_Object *box;
    Groupedit_Geom geom;
-   /* Minimal and maximum size of the container,
-      i.e size of the edie_edit object */
-   struct {
-      int w; /* default: 0 */
-      int h; /* default: 0 */
-   } con_size_min;
-   struct {
-      int w; /* default: -1, size is not limited */
-      int h; /* default: -1, size is not limited */
-   } con_size_max;
-   Evas_Object *edit_obj_clipper;
    Eina_List *parts;
-   Eina_Bool separated : 1;
    Groupedit_Part *selected;
-   Groupedit_Part *to_select;
-   Evas_Object *bg;  /**< The item background, it object overlaps
-                         enother groupedit part. */
-   Evas_Object *clipper;      /**< The background clipper, need to draw item bg
-                                   in the separete mode.*/
-   double zoom_factor; /**< current zoom factor. */
+   Evas_Object *clipper;
+   Eina_Bool separated : 1;
    Eina_Bool manual_calc : 1;
 };
 
@@ -89,12 +73,6 @@ struct _Ws_Groupedit_Smart_Data
    assert(o != NULL); \
    Ws_Groupedit_Smart_Data *ptr = evas_object_smart_data_get(o); \
    assert(ptr != NULL);
-
-/**
- * It a padding for parts layer in the separete mod.
- */
-#define SEP_ITEM_PAD_X 50
-#define SEP_ITEM_PAD_Y 30
 
 /**
  * Groupedit part this struct contains all object for draw edit object part in
@@ -114,14 +92,12 @@ struct _Groupedit_Part
    Part_ *part;               /**< Pointer to part */
    Groupedit_Geom geom;
    Groupedit_Geom object_area_geom;
-   Evas_Object *bg;           /**< The background, uses for container parts TABLE or BOX */
    Evas_Object *draw;         /**< The evas primitive to be draw in groupedit.
                                    The valid evas object types: image, rectangle,
                                    text and textblock.*/
    Evas_Object *proxy_part;
    Evas_Object *layout;
    Evas_Object *container;    /**< Used for box/table parts */
-   Evas_Object *item;         /**< The object border in the separete mode */
    Eina_List *items;          /**< The items, for TABLE, BOX part types */
    Groupedit_Item *current_item;
 };

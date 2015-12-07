@@ -407,8 +407,6 @@ ui_workspace_test_LDADD = ${LD}
 groupedit_test_SOURCES = \
 ../tests/test_groupedit/test_groupedit.c \
 ../tests/test_groupedit/groupedit_add.c \
-../tests/test_groupedit/groupedit_bg_set.c \
-../tests/test_groupedit/groupedit_bg_unset.c \
 ../tests/test_groupedit/groupedit_edit_object_part_above.c \
 ../tests/test_groupedit/groupedit_edit_object_part_below.c \
 ../tests/test_groupedit/groupedit_edit_object_part_draw_get.c \

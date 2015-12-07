@@ -624,13 +624,13 @@ editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
      return false;
 
    editor_save(edit_object);
+   _editor_project_changed();
 
    /* fix incorrect default values */
    TODO("Fix edje_edit")
    if (type == EDJE_PART_TYPE_BOX)
      edje_edit_state_box_layout_set(edit_object, part_name, "default", 0.0, "horizontal");
 
-   _editor_project_changed();
    event_info = eina_stringshare_add(part_name);
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ADDED, (void *)event_info);
    eina_stringshare_del(event_info);

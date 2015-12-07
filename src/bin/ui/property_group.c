@@ -2861,7 +2861,7 @@ _on_image_editor_done(void *data,
 
    selected = eina_list_data_get(list_selected);
 
-   if (strcmp(value, selected) == 0) return false;
+   if (strcmp(value, selected) == 0) return true;
    elm_entry_entry_set(pd->attributes.state_image.image, selected);
 
    Eina_Stringshare *msg = eina_stringshare_printf(_("image changes to %s"), selected);
@@ -2956,7 +2956,6 @@ _add_tween_image(void *data,
 
    assert(pd != NULL);
 
-   TODO("Make it multiple selection here please")
    popup_gengrid_image_helper(NULL,
                               obj,
                               _on_image_editor_tween_done,
