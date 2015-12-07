@@ -575,7 +575,6 @@ _btn_del_group_cb(void *data __UNUSED__,
                                     NULL, NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
         if (BTN_CANCEL == btn_res) return;
         _folder_del(elm_object_item_data_get(glit));
-        return;
      }
    else
      {
@@ -600,6 +599,7 @@ _btn_del_group_cb(void *data __UNUSED__,
         editor_group_del(ap.project->global_object, tmp);
         eina_stringshare_del(tmp);
      }
+   elm_object_disabled_set(project_navigator.btn_del, true);
 }
 
 static void
