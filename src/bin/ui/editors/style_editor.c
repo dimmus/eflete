@@ -542,7 +542,107 @@ _on_bt_add(void *data,
    else _on_bt_tag_add(style_edit);
 }
 
-ITEM_SEARCH_FUNC(genlist,ELM_GENLIST_ITEM_SCROLLTO_MIDDLE, "elm.text")
+static Eina_Bool
+_search_tag_item_node(Evas_Object *obj,
+                      Elm_Genlist_Item* item_start,
+                      Search_Data *search_data,
+                      Eina_Stringshare *str)
+{
+   Eina_List *tags, *l_tg;
+   char *tag;
+   Eina_Bool find_tag_item = EINA_FALSE;
+
+   if ((!elm_genlist_item_parent_get(item_start)) && (!elm_genlist_item_expanded_get(item_start)))
+     {
+        const char *name = elm_object_item_data_get(item_start);
+
+        tags = edje_edit_style_tags_list_get(ap.project->global_object, name);
+
+        EINA_LIST_FOREACH(tags, l_tg, tag)
+          {
+             if (strstr(tag, str))
+               {
+                  elm_genlist_item_expanded_set(item_start, true);
+                  search_data->last_item_found = elm_genlist_search_by_text_item_get(obj, item_start,
+                                                                        "elm.text", tag, 0);
+                  elm_genlist_item_selected_set(search_data->last_item_found, true);
+                  elm_genlist_item_bring_in(search_data->last_item_found, ELM_GENLIST_ITEM_SCROLLTO_TOP);
+                  elm_object_focus_set(search_data->search_entry, true);
+                  find_tag_item = EINA_TRUE;
+                  break;
+                }
+          }
+        eina_list_free(tags);
+     }
+
+   return find_tag_item;
+}
+
+static Eina_Bool
+_search_item_genlist_tree(Evas_Object *obj,
+                          Elm_Genlist_Item* item,
+                          Search_Data *search_data,
+                          Eina_Stringshare *str)
+{
+   const char *text_item = elm_object_item_data_get(item);
+   if (strstr(text_item, str))
+     {
+        elm_genlist_item_selected_set(item, true);
+        elm_genlist_item_bring_in(item, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
+        elm_object_focus_set(search_data->search_entry, true);
+
+        search_data->last_item_found = item;
+        return EINA_TRUE;
+     }
+   else
+     {
+        if (_search_tag_item_node(obj, item, search_data, str))
+          return EINA_TRUE;
+     }
+   return EINA_FALSE;
+}
+static void
+_genlist_item_search_first_search(Evas_Object *obj,
+                                  Search_Data *search_data,
+                                  Eina_Stringshare *str)
+{
+  Elm_Genlist_Item* item = elm_genlist_first_item_get(obj);
+  if (!item) return;
+
+  elm_genlist_item_bring_in(item, ELM_GENLIST_ITEM_SCROLLTO_TOP);
+
+  search_data->last_item_found = NULL;
+
+  for(; item; item = elm_genlist_item_next_get(item))
+    {
+        if (_search_item_genlist_tree(obj, item, search_data, str))
+          return;
+    }
+
+  search_data->last_item_found = NULL;
+}
+
+static void
+_genlist_item_search_next_search(Evas_Object *obj,
+                                 Search_Data *search_data,
+                                 Eina_Stringshare *str)
+{
+  Elm_Genlist_Item* item = NULL;
+
+  if (_search_tag_item_node(obj, search_data->last_item_found, search_data, str))
+    return;
+
+  if (search_data->last_item_found == elm_genlist_last_item_get(obj))
+    return;
+
+  for (item = elm_genlist_item_next_get(search_data->last_item_found); item; item = elm_genlist_item_next_get(item))
+    {
+        if (_search_item_genlist_tree(obj, item, search_data, str))
+          return;
+    }
+
+    search_data->last_item_found = NULL;
+}
 
 static void
 _search_changed(void *data,
@@ -552,9 +652,25 @@ _search_changed(void *data,
    Style_Editor *style_edit = data;
 
    assert(style_edit != NULL);
+   if (elm_entry_is_empty(style_edit->style_search_data.search_entry))
+     {
+       if (style_edit->style_search_data.last_item_found)
+         {
+            elm_genlist_item_selected_set(style_edit->style_search_data.last_item_found, false);
+            style_edit->style_search_data.last_item_found = NULL;
+         }
+       elm_genlist_item_bring_in(elm_genlist_first_item_get(style_edit->glist),
+                                                            ELM_GENLIST_ITEM_SCROLLTO_TOP);
+       return;
+     }
 
-   _genlist_item_search(style_edit->glist, &(style_edit->style_search_data),
-                        style_edit->style_search_data.last_item_found);
+   Eina_Stringshare *str = eina_stringshare_printf("%s",
+                                      elm_entry_entry_get(style_edit->style_search_data.search_entry));
+
+   _genlist_item_search_first_search(style_edit->glist, &(style_edit->style_search_data), str);
+
+   eina_stringshare_del(str);
+
 }
 
 static void
@@ -563,17 +679,17 @@ _search_nxt_gd_item(void *data,
                     void *event_info __UNUSED__)
 {
    Style_Editor *style_edit = data;
-   Elm_Object_Item *start_from = NULL;
 
    assert(style_edit != NULL);
-
    if (style_edit->style_search_data.last_item_found)
      {
-        start_from =
-           elm_genlist_item_next_get(style_edit->style_search_data.last_item_found);
+        Eina_Stringshare *str = eina_stringshare_printf("%s",
+                                           elm_entry_entry_get(style_edit->style_search_data.search_entry));
+
+        _genlist_item_search_next_search(style_edit->glist, &(style_edit->style_search_data), str);
+        eina_stringshare_del(str);
      }
 
-   _genlist_item_search(style_edit->glist, &(style_edit->style_search_data), start_from);
 }
 
 static void
@@ -584,7 +700,6 @@ _search_reset_cb(void *data,
    Search_Data *search_data = data;
 
    assert(search_data != NULL);
-
    search_data->last_item_found = NULL;
 }
 
