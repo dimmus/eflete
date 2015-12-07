@@ -1461,6 +1461,20 @@ _on_group_navigator_part_state_select(void *data,
 }
 
 static void
+_on_group_navigator_part_visible_changed(void *data,
+                                Evas_Object *obj __UNUSED__,
+                                void *event_info)
+{
+   Evas_Object *workspace = (Evas_Object *)data;
+   Part_ *part = event_info;
+
+   WS_DATA_GET(workspace, sd);
+
+   groupedit_part_visible_set(sd->groupedit, part);
+}
+
+
+static void
 _on_groupedit_part_unselect(void *data,
                             Evas_Object *obj __UNUSED__,
                             void *event_info __UNUSED__)
@@ -1500,6 +1514,9 @@ workspace_add(Evas_Object *parent, Group *group)
                                   _on_group_navigator_part_select, obj);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED,
                                   _on_group_navigator_part_state_select, obj);
+   evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED,
+                                  _on_group_navigator_part_visible_changed, obj);
+
 
    /* create conteiner with handlers */
    sd->container.obj = container_add(sd->scroller);
@@ -1729,12 +1746,13 @@ workspace_edit_object_part_restack(Evas_Object *obj,
 Eina_Bool
 workspace_edit_object_visible_set(Evas_Object *obj,
                                   const char *part,
-                                  Eina_Bool visible)
+                                  Eina_Bool visible __UNUSED__)
 {
    WS_DATA_GET(obj, sd);
    assert(part != NULL);
 
-   return groupedit_part_visible_set(sd->groupedit, part, visible);
+   //groupedit_part_visible_set(sd->groupedit, part);
+   return true;
 }
 
 Eina_Bool

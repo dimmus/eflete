@@ -706,6 +706,8 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
    evas_object_show(gp->layout);
    elm_box_pack_end(gp->draw, gp->layout);
 
+   gp->part->visible = true;
+
 #define PART_VIEW_PROXY_SET() \
    gp->proxy_part = evas_object_image_filled_add(sd->e); \
    evas_object_size_hint_weight_set(gp->proxy_part, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \

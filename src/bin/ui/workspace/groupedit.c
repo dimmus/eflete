@@ -444,21 +444,21 @@ groupedit_edit_object_part_select(Evas_Object *obj, const char *part)
 
 TODO("remove this from public API and use callback from part list");
 
-Eina_Bool
-groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible __UNUSED__)
+void
+groupedit_part_visible_set(Evas_Object *obj, Part_ *part)
 {
    Groupedit_Part *gp;
    WS_GROUPEDIT_DATA_GET(obj, sd);
 
    assert(part != NULL);
 
-   gp = _parts_list_find(sd->parts, part);
+   gp = _parts_list_find(sd->parts, part->name);
 
    assert(gp != NULL);
-
-   sd->manual_calc = true;
-   evas_object_smart_changed(sd->obj);
-   return true;
+   if (part->visible)
+     evas_object_show(gp->draw);
+   else
+     evas_object_hide(gp->draw);
 }
 
 Eina_Bool

@@ -252,15 +252,13 @@ groupedit_edit_object_part_select(Evas_Object *obj, const char *part);
  * Set a visibility for groupedit part.
  *
  * @param obj The groupedit object
- * @param part The name of groupedit part to be showed of hided
+ * @param part The Part object to be showed of hided
  * @param visible Use EINA_TRUE to show, EINA_FALSE to hide part.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup Groupedit
  */
-Eina_Bool
-groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible);
+void
+groupedit_part_visible_set(Evas_Object *obj, Part_ *part);
 
 /**
  * Restack part above another part in groupedit module.
