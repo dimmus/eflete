@@ -1129,6 +1129,7 @@ _proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
      }
    else
      {
+        evas_object_image_source_set(gp->proxy_part, NULL);
         elm_object_signal_emit(gp->layout, "border,proxy", "eflete");
      }
 }
