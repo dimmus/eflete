@@ -252,6 +252,8 @@ groupedit_hard_update(Evas_Object *obj)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd);
    sd->manual_calc = true;
+   TODO("Check what recalculation is needed. (don't forget add part_item)");
+   elm_box_recalculate(sd->box);
    evas_object_smart_changed(sd->obj);
 }
 
