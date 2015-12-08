@@ -1096,7 +1096,6 @@ _parts_stack_layout(Evas_Object          *o __UNUSED__,
         _part_object_area_calc(sd, gp);
         _part_calc(sd, gp);
         _part_update(sd, gp);
-        sd->manual_calc = false;
 
         evas_object_resize(gp->draw, gp->geom.w, gp->geom.h);
         evas_object_move(gp->draw, gp->geom.x, gp->geom.y);
@@ -1107,4 +1106,5 @@ _parts_stack_layout(Evas_Object          *o __UNUSED__,
              evas_object_move(gp->container, gp->geom.x, gp->geom.y);
           }
      }
+   sd->manual_calc = false;
 }
