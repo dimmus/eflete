@@ -474,6 +474,13 @@ editor_part_item_append(Evas_Object *edit_object, Change *change, Eina_Bool merg
    if (!edje_edit_part_item_append(edit_object, part_name, item_name, source_group))
      return false;
    _editor_project_changed();
+
+   /* fixing incorrect default item position */
+   if (!edje_edit_part_item_position_row_set(edit_object, part_name, item_name, 0))
+     return false;
+   if (!edje_edit_part_item_position_col_set(edit_object, part_name, item_name, 0))
+     return false;
+
    event_info.part_name = eina_stringshare_add(part_name);
    event_info.item_name = eina_stringshare_add(item_name);
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, (void *)&event_info);
