@@ -712,6 +712,7 @@ _editor_state_added_cb(void *data,
      }
    state = gm_state_add(ap.project, part, editor_state->state_name);
 
+   TODO("Check this signal")
    /* callback should be called before selection to allow some additional loading */
    evas_object_smart_callback_call(ap.win, SIGNAL_STATE_ADDED, (void *)state);
 
@@ -809,11 +810,77 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
 }
 
 static void
-_popup_add_item_ok_clicked(void *data __UNUSED__,
+_popup_add_item_ok_clicked(void *data,
                            Evas_Object *obj __UNUSED__,
                            void *event_info __UNUSED__)
 {
-   printf("_popup_add_item_ok_clicked\n");
+   Ewe_Combobox_Item *item;
+   Part_List *pl = data;
+   Part_ *part;
+   const char *name;
+   Eina_Stringshare *msg;
+   Change *change;
+
+   assert(pl != NULL);
+
+   part = elm_object_item_data_get(pl->selected_part_item);
+   name = elm_entry_entry_get(pl->popup.entry_name);
+   item = ewe_combobox_select_item_get(pl->popup.combobox);
+
+   msg = eina_stringshare_printf(_("added new item \"%s\" to part \"%s\""), name, part->name);
+   change = change_add(msg);
+   editor_part_item_append(pl->group->edit_object, change, false, part->name, name, item->title);
+
+   history_change_add(pl->group->history, change);
+   eina_stringshare_del(msg);
+   ecore_job_add(_job_popup_del, pl);
+}
+
+static void
+_editor_part_item_added_cb(void *data,
+                           Evas_Object *obj __UNUSED__,
+                           void *event_info)
+{
+   Part_List *pl = data;
+   const Editor_Item *editor_item = event_info;
+   Part_ *part;
+   Elm_Object_Item *items_glit, *glit;
+   const Eina_List *l;
+   Eina_Stringshare *item_name;
+
+   assert(pl != NULL);
+   assert(editor_item != NULL);
+
+   part = elm_object_item_data_get(pl->selected_part_item);
+   if (strcmp(editor_item->part_name, part->name))
+     {
+        part = pm_resource_unsorted_get(part->group->parts, editor_item->part_name);
+        group_navigator_part_select(pl->layout, part);
+     }
+
+   assert((part->type == EDJE_PART_TYPE_TABLE) ||
+          (part->type == EDJE_PART_TYPE_BOX));
+
+   item_name = eina_stringshare_add(editor_item->item_name);
+   part->items = eina_list_append(part->items, item_name);
+
+   /* callback should be called before selection to allow some additional loading */
+   evas_object_smart_callback_call(ap.win, SIGNAL_PART_ITEM_ADDED, (void *)part);
+
+   elm_genlist_item_expanded_set(pl->selected_part_item, true);
+   items_glit = eina_list_data_get(eina_list_last(elm_genlist_item_subitems_get(pl->selected_part_item)));
+   elm_genlist_item_update(items_glit);
+   elm_genlist_item_expanded_set(items_glit, false);
+   elm_genlist_item_expanded_set(items_glit, true);
+
+   EINA_LIST_FOREACH(elm_genlist_item_subitems_get(items_glit), l, glit)
+     {
+        if (elm_object_item_data_get(glit) == item_name) /* comparing stringshares */
+          {
+             elm_genlist_item_selected_set(glit, true);
+             break;
+          }
+     }
 }
 
 static void
@@ -1211,8 +1278,10 @@ group_navigator_add(Group *group)
 
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
 
+   TODO("Fix multi-tab logic");
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, pl);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, pl);
 

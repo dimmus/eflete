@@ -77,6 +77,14 @@
 #define SIGNAL_PART_ADDED "SIGNAL_PART_ADDED"
 
 /**
+ * emited when new part_item is added.
+ * eventinfo - pointer to Part_ structure
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_PART_ITEM_ADDED "SIGNAL_PART_ITEM_ADDED"
+
+/**
  * emited when part is deleted.
  * eventinfo - pointer to Part_ structure
  *
