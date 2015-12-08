@@ -1631,6 +1631,25 @@ workspace_group_navigator_update_part(Evas_Object *obj, Part_ *part)
 }
 #define PADDING_SIZE 40
 
+void
+workspace_groupview_soft_update(Evas_Object *obj)
+{
+   WS_DATA_GET(obj, sd);
+
+   assert(sd->groupedit != NULL);
+
+   groupedit_soft_update(sd->groupedit);
+}
+
+void
+workspace_groupview_hard_update(Evas_Object *obj)
+{
+   WS_DATA_GET(obj, sd);
+
+   assert(sd->groupedit != NULL);
+
+   groupedit_hard_update(sd->groupedit);
+}
 Eina_Bool
 workspace_edit_object_recalc(Evas_Object *obj)
 {

@@ -86,6 +86,26 @@ Eina_Bool
 workspace_edit_object_recalc(Evas_Object *obj);
 
 /**
+ * Update the parts attributes, without recalculation.
+ *
+ * @paramaram obj The workspace object.
+ *
+ * @ingroup Workspace
+ */
+void
+workspace_groupview_soft_update(Evas_Object *obj);
+
+/**
+ * Update the parts attributes, and recalculate them.
+ *
+ * @paramaram obj The workspace object.
+ *
+ * @ingroup Workspace
+ */
+void
+workspace_groupview_hard_update(Evas_Object *obj);
+
+/**
  * Add new part into style, which currently loaded into workspace.
  *
  * @param obj The workspace object.
