@@ -387,9 +387,26 @@ group { name: "elm/layout/block/default";
    }
 }
 
-group { name: "elm/layout/style_editor/font_list";
+group{ name: "elm/layout/colorclass_editor/preview";
    parts {
-      part { name: "label.font_list";
+      part { name: "swallow.entry.bg";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+         }
+      }
+      part { name: "swallow.entry";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1.to: "swallow.entry.bg";
+            rel2.to: "swallow.entry.bg";
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/style_color_editor/list";
+   parts {
+      part { name: "label.list";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
@@ -410,7 +427,7 @@ group { name: "elm/layout/style_editor/font_list";
             align: 0.0 0.0;
             FIXED_SIZE(31, 21);
             rel1 {
-               to: "label.font_list";
+               to: "label.list";
                relative: 1.0 0.0;
             }
          }
@@ -444,7 +461,7 @@ group { name: "elm/layout/style_editor/font_list";
             fixed: 0 1;
             max: -1 6;
             rel1 {
-               to: "label.font_list";
+               to: "label.list";
                relative: 0.0 1.0;
             }
          }
@@ -481,7 +498,7 @@ group { name: "elm/layout/style_editor/font_list";
             }
          }
       }
-      part { name: "swallow.font_list";
+      part { name: "swallow.list";
          type: SWALLOW;
          description { state: "default" 0.0;
             rel1 {

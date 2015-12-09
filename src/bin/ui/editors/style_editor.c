@@ -798,8 +798,8 @@ _form_right_side(Style_Editor *style_edit)
 
    layout = elm_layout_add(ap.win);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_theme_set(layout, "layout", "style_editor", "font_list");
-   elm_object_part_text_set(layout, "label.font_list", _("Font list"));
+   elm_layout_theme_set(layout, "layout", "style_color_editor", "list");
+   elm_object_part_text_set(layout, "label.list", _("Font list"));
    evas_object_show(layout);
 
    search = _style_editor_search_field_create(layout);
@@ -812,7 +812,7 @@ _form_right_side(Style_Editor *style_edit)
    style_edit->style_search_data.last_item_found = NULL;
 
    style_edit->glist = elm_genlist_add(layout);
-   elm_object_part_content_set(layout, "swallow.font_list", style_edit->glist);
+   elm_object_part_content_set(layout, "swallow.list", style_edit->glist);
    evas_object_smart_callback_add(style_edit->glist, "clicked,double", _on_clicked_double, NULL);
    evas_object_smart_callback_add(style_edit->glist, "expand,request", _expand_request_cb, NULL);
    evas_object_smart_callback_add(style_edit->glist, "expanded", _expanded_cb, style_edit);
@@ -952,7 +952,7 @@ style_editor_window_add()
    style_edit = (Style_Editor *)mem_calloc(1, sizeof(Style_Editor));
 
    main_layout = elm_layout_add(ap.win);
-   elm_layout_theme_set(main_layout, "layout", "tab_style", "style_editor");
+   elm_layout_theme_set(main_layout, "layout", "tab_style", "style_color_editor");
    elm_object_part_text_set(main_layout, "label.preview", _("Preview"));
 
    style_edit->entry_prev = elm_layout_add(main_layout);
@@ -978,7 +978,7 @@ style_editor_window_add()
    elm_object_part_content_set(main_layout, "swallow.preview", style_edit->entry_prev);
 
    layout_right = _form_right_side(style_edit);
-   elm_object_part_content_set(main_layout, "swallow.font_list", layout_right);
+   elm_object_part_content_set(main_layout, "swallow.list", layout_right);
    evas_object_show(layout_right);
 
    box_bg = _add_box_bg(style_edit);
