@@ -577,18 +577,28 @@ _part_container_del(Groupedit_Part *gp)
 static void
 _part_calc(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 {
-   Evas_Coord x, y, xe, ye, w, h;
+   Evas_Coord x, y, xe, ye, w, h, we, he;
+   int protrusion;
 
    assert(sd != NULL);
    assert(gp != NULL);
 
    edje_object_part_geometry_get(sd->group->edit_object, gp->part->name, &x, &y, &w, &h);
-   evas_object_geometry_get(sd->group->edit_object, &xe, &ye, NULL, NULL);
+   evas_object_geometry_get(sd->group->edit_object, &xe, &ye, &we, &he);
 
    gp->geom.x = x + xe;
    gp->geom.y = y + ye;
    gp->geom.w = w;
    gp->geom.h = h;
+
+   protrusion = abs((x <= 0) ? x : 0);
+   sd->protrusion.x = (protrusion > sd->protrusion.x) ? protrusion : sd->protrusion.x;
+   protrusion = abs((y <= 0) ? y : 0);
+   sd->protrusion.y = (protrusion > sd->protrusion.y) ? protrusion : sd->protrusion.y;
+   protrusion = ((x + w) > he) ? (x + w - we) : 0;
+   sd->protrusion.w = (protrusion > sd->protrusion.w) ? protrusion : sd->protrusion.w;
+   protrusion = ((y + h) > he) ? (y + h - he) : 0;
+   sd->protrusion.h = (protrusion > sd->protrusion.h) ? protrusion : sd->protrusion.h;
 
    if ((gp->part->type == EDJE_PART_TYPE_TEXT) ||
        (gp->part->type == EDJE_PART_TYPE_TEXTBLOCK))
@@ -1080,6 +1090,10 @@ _parts_stack_layout(Evas_Object          *o __UNUSED__,
    Eina_List *l;
 
    DBG("Recalc %p object. Object parts count: %d", sd->obj, eina_list_count(sd->parts))
+   sd->protrusion.x = 0;
+   sd->protrusion.y = 0;
+   sd->protrusion.w = 0;
+   sd->protrusion.h = 0;
    EINA_LIST_FOREACH(sd->parts, l, gp)
      {
         _part_object_area_calc(sd, gp);

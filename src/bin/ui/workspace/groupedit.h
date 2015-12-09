@@ -347,4 +347,18 @@ groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
                                              Eina_Stringshare *item_name,
                                              Eina_Bool selected);
 
+/**
+ * Protrusion values it's distinction of object geomentry, what calculated by
+ * smart object and real drawed geometry. The real drawed object geomentry
+ * needed for correct zoom.
+ *
+ * @param obj The groupedit object.
+ *
+ * @return The protrusion values.
+ *
+ * @ingroup Groupedit
+ */
+const Groupedit_Geom *
+groupedit_protrusion_get(Evas_Object *obj);
+
 #endif /* GROUPEDIT_H */

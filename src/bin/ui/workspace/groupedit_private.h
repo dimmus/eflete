@@ -62,6 +62,7 @@ struct _Ws_Groupedit_Smart_Data
    Evas_Object *parent;
    Evas_Object *box;
    Groupedit_Geom geom;
+   Groupedit_Geom protrusion;
    Eina_List *parts;
    Groupedit_Part *selected;
    Evas_Object *clipper;

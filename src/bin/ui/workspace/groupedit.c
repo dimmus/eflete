@@ -501,6 +501,14 @@ groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
      }
 }
 
+const Groupedit_Geom *
+groupedit_protrusion_get(Evas_Object *obj)
+{
+   WS_GROUPEDIT_DATA_GET(obj, sd);
+
+   return &sd->protrusion;
+}
+
 #undef MY_CLASS_NAME
 #undef WS_GROUPSPACE_DATA_GET
 #undef WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL
