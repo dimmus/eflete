@@ -475,10 +475,8 @@ editor_part_item_append(Evas_Object *edit_object, Change *change, Eina_Bool merg
      return false;
 
    /* fixing incorrect default item position */
-   if (!edje_edit_part_item_position_row_set(edit_object, part_name, item_name, 0))
-     return false;
-   if (!edje_edit_part_item_position_col_set(edit_object, part_name, item_name, 0))
-     return false;
+   edje_edit_part_item_position_row_set(edit_object, part_name, item_name, 0);
+   edje_edit_part_item_position_col_set(edit_object, part_name, item_name, 0);
 
    editor_save(edit_object);
    _editor_project_changed();
