@@ -346,25 +346,13 @@ _expanded_cb(void *data,
         part = elm_object_item_data_get(glit);
         EINA_LIST_FOREACH(part->items, l, item_name)
           {
-             if (first_item)
-               {
-                  elm_genlist_item_append(pl->genlist,
-                                          pl->itc_item,
-                                          item_name,
-                                          glit,
-                                          ELM_GENLIST_ITEM_NONE,
-                                          NULL,
-                                          NULL);
-                  first_item = false;
-               }
-             else
-               elm_genlist_item_prepend(pl->genlist,
-                                        pl->itc_item,
-                                        item_name,
-                                        glit,
-                                        ELM_GENLIST_ITEM_NONE,
-                                        NULL,
-                                        NULL);
+             elm_genlist_item_append(pl->genlist,
+                                     pl->itc_item,
+                                     item_name,
+                                     glit,
+                                     ELM_GENLIST_ITEM_NONE,
+                                     NULL,
+                                     NULL);
           }
      }
 }
