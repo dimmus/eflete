@@ -44,6 +44,7 @@ typedef struct _Search_Data Search_Data;
 struct _Helper_Data
 {
    Evas_Object *gengrid;
+   Evas_Object *button; /* to avoid eflete_main_loop_quit, look at 431 in here */
    Evas_Object *follow_up;
    Search_Data image_search_data;
 };
@@ -213,10 +214,10 @@ _helper_dismiss(void *data __UNUSED__,
    if (!follow_up)
      evas_object_event_callback_del_full(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
 
-   evas_object_del(helper);
-
    Helper_Data *helper_data = evas_object_data_get(helper, "STRUCT");
    if (helper_data) free(helper_data);
+
+   evas_object_del(helper);
 }
 
 static void
@@ -428,6 +429,12 @@ _done_image(void *data,
      {
         dismiss_func = NULL;
         func_data = NULL;
+        /* using eflete_main_loop_quit/begin doesn't work here since it blocks
+           thumbs inside of a gengrid.
+           though to avoid SIGSEV deleting button first and then popup works
+           perfectly good */
+        if (helper_data->button)
+          evas_object_del(helper_data->button);
         _helper_dismiss(helper_data->follow_up, NULL, NULL, NULL);
      }
 }
@@ -568,7 +575,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
                            Helper_Done_Cb func, void *data,
                            Eina_Bool multi)
 {
-   Evas_Object *entry, *icon, *button;
+   Evas_Object *entry, *icon;
    Helper_Data *helper_data = (Helper_Data *)mem_calloc(1, sizeof(Helper_Data));
 
    dismiss_func = func;
@@ -593,10 +600,10 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
      {
         elm_gengrid_multi_select_set(gengrid, true);
 
-        BUTTON_ADD(fs, button, _("Ok"))
-        elm_object_part_content_set(helper, "elm.swallow.ok", button);
-        evas_object_smart_callback_add(button, "clicked", _done_image, helper_data);
-        evas_object_show(button);
+        BUTTON_ADD(fs, helper_data->button, _("Ok"))
+        elm_object_part_content_set(helper, "elm.swallow.ok", helper_data->button);
+        evas_object_smart_callback_add(helper_data->button, "clicked", _done_image, helper_data);
+        evas_object_show(helper_data->button);
      }
    else
      {
@@ -654,6 +661,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
         _helper_win_follow(NULL, NULL, NULL, NULL);
         evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
      }
+
    evas_object_show(helper);
 }
 
