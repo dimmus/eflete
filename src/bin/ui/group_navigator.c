@@ -1105,10 +1105,61 @@ _editor_state_deleted_cb(void *data,
 }
 
 static void
-_item_del(Part_List *pl __UNUSED__,
-          Elm_Object_Item *glit __UNUSED__)
+_item_del(Part_List *pl,
+          Elm_Object_Item *glit)
 {
-   printf("_item_del\n");
+   Part_ *part;
+   Eina_Stringshare *item_name;
+   Eina_Stringshare *msg;
+   Change *change;
+
+   assert(pl != NULL);
+   assert(glit != NULL);
+   assert(pl->selected_part_item != NULL);
+
+   part = elm_object_item_data_get(pl->selected_part_item);
+   item_name = elm_object_item_data_get(glit);
+
+   assert(part != NULL);
+   assert(item_name != NULL);
+
+   msg = eina_stringshare_printf(_("deleted item \"%s\""), item_name);
+   change = change_add(msg);
+   eina_stringshare_del(msg);
+
+   eina_stringshare_ref(item_name);
+   editor_part_item_del(pl->group->edit_object, change, false, part->name, item_name);
+   eina_stringshare_del(item_name);
+
+   history_change_add(pl->group->history, change);
+}
+
+static void
+_editor_part_item_deleted_cb(void *data,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info)
+{
+   Part_List *pl = data;
+   const Editor_Item *editor_item = event_info;
+   Part_ *part;
+   Elm_Object_Item *items_glit;
+
+   assert(pl != NULL);
+   assert(editor_item != NULL);
+
+   part = elm_object_item_data_get(pl->selected_part_item);
+   if (strcmp(editor_item->part_name, part->name))
+     {
+        part = pm_resource_unsorted_get(part->group->parts, editor_item->part_name);
+        group_navigator_part_select(pl->layout, part);
+     }
+   elm_genlist_item_expanded_set(pl->selected_part_item, true);
+   items_glit = eina_list_data_get(eina_list_last(elm_genlist_item_subitems_get(pl->selected_part_item)));
+
+   elm_genlist_item_expanded_set(items_glit, false);
+   gm_part_item_del(ap.project, part, editor_item->item_name);
+   elm_genlist_item_update(items_glit);
+   elm_genlist_item_expanded_set(items_glit, true);
 }
 
 static void
@@ -1270,6 +1321,7 @@ group_navigator_add(Group *group)
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, pl);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, pl);
 
