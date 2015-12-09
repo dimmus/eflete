@@ -541,6 +541,25 @@ gm_state_del(Project *pro, State *state)
 }
 
 void
+gm_part_item_del(Project *pro, Part_ *part, Eina_Stringshare *item_name)
+{
+   Eina_List *l;
+
+   assert(pro != NULL);
+   assert(part != NULL);
+   assert(item_name != NULL);
+   assert((part->type ==  EDJE_PART_TYPE_BOX) ||
+          (part->type ==  EDJE_PART_TYPE_TABLE));
+
+   l = eina_list_data_find_list(part->items, item_name);
+
+   assert(l != NULL);
+
+   part->items = eina_list_remove_list(part->items, l);
+   eina_stringshare_del(item_name);
+}
+
+void
 gm_part_del(Project *pro, Part_* part)
 {
    State *state;
