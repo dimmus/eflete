@@ -382,6 +382,8 @@ _unselect_part(Part_List *pl)
    elm_object_item_disabled_set(pl->add_state_menu_item, true);
    elm_object_item_disabled_set(pl->add_part_item_menu_item, true);
    elm_object_disabled_set(pl->btn_del, true);
+   elm_object_disabled_set(pl->btn_down, true);
+   elm_object_disabled_set(pl->btn_up, true);
    evas_object_smart_callback_call(ap.win, SIGNAL_PART_UNSELECTED, (void *)part);
 }
 
@@ -391,8 +393,8 @@ _selected_cb(void *data,
              void *event_info)
 {
    Elm_Object_Item *glit = event_info;
-   Elm_Object_Item *glit_part;
-   const Elm_Genlist_Item_Class* itc;
+   Elm_Object_Item *glit_part, *next_item;
+   const Elm_Genlist_Item_Class* itc, *next_itc;
    Eina_Stringshare *item_name;
    Part_List *pl = data;
    Part_ *part;
@@ -426,12 +428,44 @@ _selected_cb(void *data,
    if ((part->type == EDJE_PART_TYPE_BOX) ||
        (part->type == EDJE_PART_TYPE_TABLE))
      elm_object_item_disabled_set(pl->add_part_item_menu_item, false);
+   /* enabling or disabling del button */
    if ((itc == pl->itc_item_caption) ||
        (((itc == pl->itc_state) || (itc == pl->itc_state_selected)) &&
         (!strcmp(((State *)elm_object_item_data_get(glit))->name, "default 0.00"))))
      elm_object_disabled_set(pl->btn_del, true);
    else
      elm_object_disabled_set(pl->btn_del, false);
+   /* enabling or disabling up and down buttons */
+   if ((itc == pl->itc_part_selected) || (itc == pl->itc_part))
+     {
+        if (elm_genlist_item_prev_get(glit) == NULL)
+          {
+             TODO("Update logic after adding 'parts' genlist item")
+             elm_object_disabled_set(pl->btn_down, false);
+             elm_object_disabled_set(pl->btn_up, true);
+          }
+        else
+          {
+             next_item = elm_genlist_item_next_get(glit);
+             while (next_item != NULL)
+               {
+                  next_itc = elm_genlist_item_item_class_get(next_item);
+                  if ((next_itc == pl->itc_part_selected) || (next_itc == pl->itc_part))
+                    break;
+                  next_item = elm_genlist_item_next_get(next_item);
+               }
+             if (next_item)
+               elm_object_disabled_set(pl->btn_down, false);
+             else
+               elm_object_disabled_set(pl->btn_down, true);
+             elm_object_disabled_set(pl->btn_up, false);
+          }
+     }
+   else
+     {
+        elm_object_disabled_set(pl->btn_down, true);
+        elm_object_disabled_set(pl->btn_up, true);
+     }
 }
 
 static void
@@ -1243,6 +1277,8 @@ group_navigator_add(Group *group)
    BTN_ADD(btn_up, "elm.swallow.btn0", "arrow_up", _on_btn_up_clicked);
 
    elm_object_disabled_set(pl->btn_del, true);
+   elm_object_disabled_set(pl->btn_down, true);
+   elm_object_disabled_set(pl->btn_up, true);
 
 #undef BTN_ADD
    pl->itc_part = elm_genlist_item_class_new();
