@@ -684,3 +684,54 @@ editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
    _editor_project_changed();
    return true;
 }
+
+Eina_Bool
+editor_part_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                    const char *part_name, const char *relative_part)
+{
+   Diff *diff;
+   Eina_Stringshare *old_relative_part;
+   Editor_Part_Restack event_info;
+
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+
+   if (change)
+     {
+        old_relative_part = edje_edit_part_below_get(edit_object, part_name);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->redo.function = editor_part_restack;
+        diff->redo.args.type_ss.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ss.s2 = eina_stringshare_add(relative_part);
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->undo.function = editor_part_restack;
+        diff->undo.args.type_ss.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ss.s2 = old_relative_part;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (relative_part)
+     {
+        if (!edje_edit_part_restack_part_below(edit_object, part_name, relative_part))
+          return false;
+     }
+   else
+     {
+        if (!edje_edit_part_restack_above(edit_object, part_name))
+          return false;
+     }
+
+   _editor_project_changed();
+   if (!_editor_signals_blocked)
+     {
+        event_info.part_name = eina_stringshare_add(part_name);
+        event_info.relative_part_name = eina_stringshare_add(relative_part);
+        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_RESTACKED, &event_info);
+        eina_stringshare_del(event_info.part_name);
+        eina_stringshare_del(event_info.relative_part_name);
+     }
+   return true;
+}
