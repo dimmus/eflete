@@ -185,21 +185,21 @@ EDITOR_PART_ITEM_DOUBLE(align_y, ATTRIBUTE_PART_ITEM_ALIGN_Y);
 EDITOR_PART_ITEM_DOUBLE(weight_x, ATTRIBUTE_PART_ITEM_WEIGHT_X);
 EDITOR_PART_ITEM_DOUBLE(weight_y, ATTRIBUTE_PART_ITEM_WEIGHT_Y);
 
-EDITOR_PART_ITEM_INT(aspect_h, ATTRIBUTE_PART_ITEM_ASPECT_H);
-EDITOR_PART_ITEM_INT(aspect_w, ATTRIBUTE_PART_ITEM_ASPECT_W);
-EDITOR_PART_ITEM_INT(max_h, ATTRIBUTE_PART_ITEM_MAX_H);
-EDITOR_PART_ITEM_INT(max_w, ATTRIBUTE_PART_ITEM_MAX_W);
-EDITOR_PART_ITEM_INT(min_h, ATTRIBUTE_PART_ITEM_MIN_H);
-EDITOR_PART_ITEM_INT(min_w, ATTRIBUTE_PART_ITEM_MIN_W);
-EDITOR_PART_ITEM_INT(prefer_h, ATTRIBUTE_PART_ITEM_PREFER_H);
-EDITOR_PART_ITEM_INT(prefer_w, ATTRIBUTE_PART_ITEM_PREFER_W);
-EDITOR_PART_ITEM_INT(spread_h, ATTRIBUTE_PART_ITEM_SPREAD_H);
-EDITOR_PART_ITEM_INT(spread_w, ATTRIBUTE_PART_ITEM_SPREAD_W);
+EDITOR_PART_ITEM_INT(aspect_h, ATTRIBUTE_PART_ITEM_ASPECT_H, false);
+EDITOR_PART_ITEM_INT(aspect_w, ATTRIBUTE_PART_ITEM_ASPECT_W, false);
+EDITOR_PART_ITEM_INT(max_h, ATTRIBUTE_PART_ITEM_MAX_H, false);
+EDITOR_PART_ITEM_INT(max_w, ATTRIBUTE_PART_ITEM_MAX_W, false);
+EDITOR_PART_ITEM_INT(min_h, ATTRIBUTE_PART_ITEM_MIN_H, false);
+EDITOR_PART_ITEM_INT(min_w, ATTRIBUTE_PART_ITEM_MIN_W, false);
+EDITOR_PART_ITEM_INT(prefer_h, ATTRIBUTE_PART_ITEM_PREFER_H, false);
+EDITOR_PART_ITEM_INT(prefer_w, ATTRIBUTE_PART_ITEM_PREFER_W, false);
+EDITOR_PART_ITEM_INT(spread_h, ATTRIBUTE_PART_ITEM_SPREAD_H, true);
+EDITOR_PART_ITEM_INT(spread_w, ATTRIBUTE_PART_ITEM_SPREAD_W, true);
 
-EDITOR_PART_ITEM_USHORT(span_col, ATTRIBUTE_PART_ITEM_SPAN_COL);
-EDITOR_PART_ITEM_USHORT(span_row, ATTRIBUTE_PART_ITEM_SPAN_ROW);
-EDITOR_PART_ITEM_USHORT(position_col, ATTRIBUTE_PART_ITEM_POSITION_COL);
-EDITOR_PART_ITEM_USHORT(position_row, ATTRIBUTE_PART_ITEM_POSITION_ROW);
+EDITOR_PART_ITEM_USHORT(span_col, ATTRIBUTE_PART_ITEM_SPAN_COL, true);
+EDITOR_PART_ITEM_USHORT(span_row, ATTRIBUTE_PART_ITEM_SPAN_ROW, true);
+EDITOR_PART_ITEM_USHORT(position_col, ATTRIBUTE_PART_ITEM_POSITION_COL, true);
+EDITOR_PART_ITEM_USHORT(position_row, ATTRIBUTE_PART_ITEM_POSITION_ROW, true);
 
 Eina_Bool
 editor_part_item_source_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
@@ -473,7 +473,14 @@ editor_part_item_append(Evas_Object *edit_object, Change *change, Eina_Bool merg
      }
    if (!edje_edit_part_item_append(edit_object, part_name, item_name, source_group))
      return false;
+
+   /* fixing incorrect default item position */
+   edje_edit_part_item_position_row_set(edit_object, part_name, item_name, 0);
+   edje_edit_part_item_position_col_set(edit_object, part_name, item_name, 0);
+
+   editor_save(edit_object);
    _editor_project_changed();
+
    event_info.part_name = eina_stringshare_add(part_name);
    event_info.item_name = eina_stringshare_add(item_name);
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, (void *)&event_info);
@@ -519,6 +526,7 @@ editor_part_item_del(Evas_Object *edit_object, Change *change, Eina_Bool merge _
         eina_stringshare_del(event_info.item_name);
         return false;
      }
+   editor_save(edit_object);
    _editor_project_changed();
    eina_stringshare_del(event_info.part_name);
    eina_stringshare_del(event_info.item_name);
@@ -674,5 +682,56 @@ editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
    eina_stringshare_del(event_info);
    editor_save(edit_object);
    _editor_project_changed();
+   return true;
+}
+
+Eina_Bool
+editor_part_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                    const char *part_name, const char *relative_part)
+{
+   Diff *diff;
+   Eina_Stringshare *old_relative_part;
+   Editor_Part_Restack event_info;
+
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+
+   if (change)
+     {
+        old_relative_part = edje_edit_part_below_get(edit_object, part_name);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->redo.function = editor_part_restack;
+        diff->redo.args.type_ss.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ss.s2 = eina_stringshare_add(relative_part);
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->undo.function = editor_part_restack;
+        diff->undo.args.type_ss.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ss.s2 = old_relative_part;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (relative_part)
+     {
+        if (!edje_edit_part_restack_part_below(edit_object, part_name, relative_part))
+          return false;
+     }
+   else
+     {
+        if (!edje_edit_part_restack_above(edit_object, part_name))
+          return false;
+     }
+
+   _editor_project_changed();
+   if (!_editor_signals_blocked)
+     {
+        event_info.part_name = eina_stringshare_add(part_name);
+        event_info.relative_part_name = eina_stringshare_add(relative_part);
+        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_RESTACKED, &event_info);
+        eina_stringshare_del(event_info.part_name);
+        eina_stringshare_del(event_info.relative_part_name);
+     }
    return true;
 }

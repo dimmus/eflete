@@ -77,6 +77,14 @@
 #define SIGNAL_PART_ADDED "SIGNAL_PART_ADDED"
 
 /**
+ * emited when new part_item is added.
+ * eventinfo - pointer to Part_ structure
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_PART_ITEM_ADDED "SIGNAL_PART_ITEM_ADDED"
+
+/**
  * emited when part is deleted.
  * eventinfo - pointer to Part_ structure
  *
@@ -199,6 +207,19 @@ typedef struct {
  * @ingroup Window
  */
 #define SIGNAL_EDITOR_PART_DELETED "SIGNAL_EDITOR_PART_DELETED"
+
+typedef struct {
+   const char *part_name;
+   const char *relative_part_name;
+} Editor_Part_Restack;
+/**
+ * emited when is restacked.
+ * eventinfo - Editor_Part_Restack struct
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_PART_RESTACKED "SIGNAL_EDITOR_PART_RESTACKED"
+
 
 /**
  * emited when project is changed in any way (through attribute, .

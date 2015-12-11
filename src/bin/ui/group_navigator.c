@@ -346,25 +346,13 @@ _expanded_cb(void *data,
         part = elm_object_item_data_get(glit);
         EINA_LIST_FOREACH(part->items, l, item_name)
           {
-             if (first_item)
-               {
-                  elm_genlist_item_append(pl->genlist,
-                                          pl->itc_item,
-                                          item_name,
-                                          glit,
-                                          ELM_GENLIST_ITEM_NONE,
-                                          NULL,
-                                          NULL);
-                  first_item = false;
-               }
-             else
-               elm_genlist_item_prepend(pl->genlist,
-                                        pl->itc_item,
-                                        item_name,
-                                        glit,
-                                        ELM_GENLIST_ITEM_NONE,
-                                        NULL,
-                                        NULL);
+             elm_genlist_item_append(pl->genlist,
+                                     pl->itc_item,
+                                     item_name,
+                                     glit,
+                                     ELM_GENLIST_ITEM_NONE,
+                                     NULL,
+                                     NULL);
           }
      }
 }
@@ -394,6 +382,8 @@ _unselect_part(Part_List *pl)
    elm_object_item_disabled_set(pl->add_state_menu_item, true);
    elm_object_item_disabled_set(pl->add_part_item_menu_item, true);
    elm_object_disabled_set(pl->btn_del, true);
+   elm_object_disabled_set(pl->btn_down, true);
+   elm_object_disabled_set(pl->btn_up, true);
    evas_object_smart_callback_call(ap.win, SIGNAL_PART_UNSELECTED, (void *)part);
 }
 
@@ -403,8 +393,8 @@ _selected_cb(void *data,
              void *event_info)
 {
    Elm_Object_Item *glit = event_info;
-   Elm_Object_Item *glit_part;
-   const Elm_Genlist_Item_Class* itc;
+   Elm_Object_Item *glit_part, *next_item;
+   const Elm_Genlist_Item_Class* itc, *next_itc;
    Eina_Stringshare *item_name;
    Part_List *pl = data;
    Part_ *part;
@@ -438,12 +428,44 @@ _selected_cb(void *data,
    if ((part->type == EDJE_PART_TYPE_BOX) ||
        (part->type == EDJE_PART_TYPE_TABLE))
      elm_object_item_disabled_set(pl->add_part_item_menu_item, false);
+   /* enabling or disabling del button */
    if ((itc == pl->itc_item_caption) ||
        (((itc == pl->itc_state) || (itc == pl->itc_state_selected)) &&
         (!strcmp(((State *)elm_object_item_data_get(glit))->name, "default 0.00"))))
      elm_object_disabled_set(pl->btn_del, true);
    else
      elm_object_disabled_set(pl->btn_del, false);
+   /* enabling or disabling up and down buttons */
+   if ((itc == pl->itc_part_selected) || (itc == pl->itc_part))
+     {
+        if (elm_genlist_item_prev_get(glit) == NULL)
+          {
+             TODO("Update logic after adding 'parts' genlist item")
+             elm_object_disabled_set(pl->btn_down, false);
+             elm_object_disabled_set(pl->btn_up, true);
+          }
+        else
+          {
+             next_item = elm_genlist_item_next_get(glit);
+             while (next_item != NULL)
+               {
+                  next_itc = elm_genlist_item_item_class_get(next_item);
+                  if ((next_itc == pl->itc_part_selected) || (next_itc == pl->itc_part))
+                    break;
+                  next_item = elm_genlist_item_next_get(next_item);
+               }
+             if (next_item)
+               elm_object_disabled_set(pl->btn_down, false);
+             else
+               elm_object_disabled_set(pl->btn_down, true);
+             elm_object_disabled_set(pl->btn_up, false);
+          }
+     }
+   else
+     {
+        elm_object_disabled_set(pl->btn_down, true);
+        elm_object_disabled_set(pl->btn_up, true);
+     }
 }
 
 static void
@@ -712,6 +734,7 @@ _editor_state_added_cb(void *data,
      }
    state = gm_state_add(ap.project, part, editor_state->state_name);
 
+   TODO("Check this signal")
    /* callback should be called before selection to allow some additional loading */
    evas_object_smart_callback_call(ap.win, SIGNAL_STATE_ADDED, (void *)state);
 
@@ -809,11 +832,77 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
 }
 
 static void
-_popup_add_item_ok_clicked(void *data __UNUSED__,
+_popup_add_item_ok_clicked(void *data,
                            Evas_Object *obj __UNUSED__,
                            void *event_info __UNUSED__)
 {
-   printf("_popup_add_item_ok_clicked\n");
+   Ewe_Combobox_Item *item;
+   Part_List *pl = data;
+   Part_ *part;
+   const char *name;
+   Eina_Stringshare *msg;
+   Change *change;
+
+   assert(pl != NULL);
+
+   part = elm_object_item_data_get(pl->selected_part_item);
+   name = elm_entry_entry_get(pl->popup.entry_name);
+   item = ewe_combobox_select_item_get(pl->popup.combobox);
+
+   msg = eina_stringshare_printf(_("added new item \"%s\" to part \"%s\""), name, part->name);
+   change = change_add(msg);
+   editor_part_item_append(pl->group->edit_object, change, false, part->name, name, item->title);
+
+   history_change_add(pl->group->history, change);
+   eina_stringshare_del(msg);
+   ecore_job_add(_job_popup_del, pl);
+}
+
+static void
+_editor_part_item_added_cb(void *data,
+                           Evas_Object *obj __UNUSED__,
+                           void *event_info)
+{
+   Part_List *pl = data;
+   const Editor_Item *editor_item = event_info;
+   Part_ *part;
+   Elm_Object_Item *items_glit, *glit;
+   const Eina_List *l;
+   Eina_Stringshare *item_name;
+
+   assert(pl != NULL);
+   assert(editor_item != NULL);
+
+   part = elm_object_item_data_get(pl->selected_part_item);
+   if (strcmp(editor_item->part_name, part->name))
+     {
+        part = pm_resource_unsorted_get(part->group->parts, editor_item->part_name);
+        group_navigator_part_select(pl->layout, part);
+     }
+
+   assert((part->type == EDJE_PART_TYPE_TABLE) ||
+          (part->type == EDJE_PART_TYPE_BOX));
+
+   item_name = eina_stringshare_add(editor_item->item_name);
+   part->items = eina_list_append(part->items, item_name);
+
+   /* callback should be called before selection to allow some additional loading */
+   evas_object_smart_callback_call(ap.win, SIGNAL_PART_ITEM_ADDED, (void *)part);
+
+   elm_genlist_item_expanded_set(pl->selected_part_item, true);
+   items_glit = eina_list_data_get(eina_list_last(elm_genlist_item_subitems_get(pl->selected_part_item)));
+   elm_genlist_item_update(items_glit);
+   elm_genlist_item_expanded_set(items_glit, false);
+   elm_genlist_item_expanded_set(items_glit, true);
+
+   EINA_LIST_FOREACH(elm_genlist_item_subitems_get(items_glit), l, glit)
+     {
+        if (elm_object_item_data_get(glit) == item_name) /* comparing stringshares */
+          {
+             elm_genlist_item_selected_set(glit, true);
+             break;
+          }
+     }
 }
 
 static void
@@ -1050,10 +1139,61 @@ _editor_state_deleted_cb(void *data,
 }
 
 static void
-_item_del(Part_List *pl __UNUSED__,
-          Elm_Object_Item *glit __UNUSED__)
+_item_del(Part_List *pl,
+          Elm_Object_Item *glit)
 {
-   printf("_item_del\n");
+   Part_ *part;
+   Eina_Stringshare *item_name;
+   Eina_Stringshare *msg;
+   Change *change;
+
+   assert(pl != NULL);
+   assert(glit != NULL);
+   assert(pl->selected_part_item != NULL);
+
+   part = elm_object_item_data_get(pl->selected_part_item);
+   item_name = elm_object_item_data_get(glit);
+
+   assert(part != NULL);
+   assert(item_name != NULL);
+
+   msg = eina_stringshare_printf(_("deleted item \"%s\""), item_name);
+   change = change_add(msg);
+   eina_stringshare_del(msg);
+
+   eina_stringshare_ref(item_name);
+   editor_part_item_del(pl->group->edit_object, change, false, part->name, item_name);
+   eina_stringshare_del(item_name);
+
+   history_change_add(pl->group->history, change);
+}
+
+static void
+_editor_part_item_deleted_cb(void *data,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info)
+{
+   Part_List *pl = data;
+   const Editor_Item *editor_item = event_info;
+   Part_ *part;
+   Elm_Object_Item *items_glit;
+
+   assert(pl != NULL);
+   assert(editor_item != NULL);
+
+   part = elm_object_item_data_get(pl->selected_part_item);
+   if (strcmp(editor_item->part_name, part->name))
+     {
+        part = pm_resource_unsorted_get(part->group->parts, editor_item->part_name);
+        group_navigator_part_select(pl->layout, part);
+     }
+   elm_genlist_item_expanded_set(pl->selected_part_item, true);
+   items_glit = eina_list_data_get(eina_list_last(elm_genlist_item_subitems_get(pl->selected_part_item)));
+
+   elm_genlist_item_expanded_set(items_glit, false);
+   gm_part_item_del(ap.project, part, editor_item->item_name);
+   elm_genlist_item_update(items_glit);
+   elm_genlist_item_expanded_set(items_glit, true);
 }
 
 static void
@@ -1086,6 +1226,21 @@ _on_btn_minus_clicked(void *data,
    ap.project->changed = true;
 }
 
+static void
+_on_btn_down_clicked(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *ei __UNUSED__)
+{
+   printf("btn_down clicked\n");
+}
+
+static void
+_on_btn_up_clicked(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *ei __UNUSED__)
+{
+   printf("btn_up clicked\n");
+}
 
 Evas_Object *
 group_navigator_add(Group *group)
@@ -1118,10 +1273,12 @@ group_navigator_add(Group *group)
 
    BTN_ADD(btn_add, "elm.swallow.btn3", "plus", _on_btn_plus_clicked);
    BTN_ADD(btn_del, "elm.swallow.btn2", "minus", _on_btn_minus_clicked);
-   BTN_ADD(btn_down, "elm.swallow.btn1", "arrow_down", NULL);
-   BTN_ADD(btn_up, "elm.swallow.btn0", "arrow_up", NULL);
+   BTN_ADD(btn_down, "elm.swallow.btn1", "arrow_down", _on_btn_down_clicked);
+   BTN_ADD(btn_up, "elm.swallow.btn0", "arrow_up", _on_btn_up_clicked);
 
    elm_object_disabled_set(pl->btn_del, true);
+   elm_object_disabled_set(pl->btn_down, true);
+   elm_object_disabled_set(pl->btn_up, true);
 
 #undef BTN_ADD
    pl->itc_part = elm_genlist_item_class_new();
@@ -1211,8 +1368,11 @@ group_navigator_add(Group *group)
 
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
 
+   TODO("Fix multi-tab logic");
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, pl);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, pl);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, pl);
 

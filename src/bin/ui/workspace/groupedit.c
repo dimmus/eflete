@@ -252,6 +252,8 @@ groupedit_hard_update(Evas_Object *obj)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd);
    sd->manual_calc = true;
+   TODO("Check what recalculation is needed. (don't forget add part_item)");
+   elm_box_recalculate(sd->box);
    evas_object_smart_changed(sd->obj);
 }
 
@@ -436,10 +438,11 @@ groupedit_edit_object_part_select(Evas_Object *obj, const char *part)
         sd->selected = gp;
      }
    else
-     gp = NULL;
-
-   if (sd->selected && sd->selected->current_item)
-     elm_object_signal_emit(sd->selected->current_item->layout, "border,part_item,hilight,off", "eflete");
+     {
+        if (sd->selected && sd->selected->current_item)
+          elm_object_signal_emit(sd->selected->current_item->layout, "border,part_item,hilight,off", "eflete");
+        sd->selected = NULL;
+     }
 }
 
 TODO("remove this from public API and use callback from part list");
@@ -482,18 +485,18 @@ groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
    if (!gp) return;
 
    if (!item_name) return;
-   item = _part_item_search(gp->items, item_name);
-   if (gp->current_item)
-     elm_object_signal_emit(gp->current_item->layout, "border,part_item,hilight,off", "eflete");
 
    if (selected)
      {
+        item = _part_item_search(gp->items, item_name);
+        if (gp->current_item)
+          elm_object_signal_emit(gp->current_item->layout, "border,part_item,hilight,off", "eflete");
         elm_object_signal_emit(item->layout, "border,part_item,hilight,on", "eflete");
         gp->current_item = item;
      }
    else
      {
-        elm_object_signal_emit(item->layout, "border,part_item,hilight,off", "eflete");
+        elm_object_signal_emit(gp->current_item->layout, "border,part_item,hilight,off", "eflete");
         gp->current_item = NULL;
      }
 }

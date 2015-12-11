@@ -401,7 +401,7 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
    return true; \
 }
 
-#define EDITOR_PART_ITEM_INT(FUNC, ATTRIBUTE) \
+#define EDITOR_PART_ITEM_INT(FUNC, ATTRIBUTE, SAVE) \
 Eina_Bool \
 editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, \
                                 const char *part_name, const char *item_name, int new_val) \
@@ -432,12 +432,13 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
      } \
    if (!edje_edit_part_item_## FUNC ##_set(edit_object, part_name, item_name, new_val)) \
      return false; \
+   if (SAVE) editor_save(edit_object); \
    _editor_project_changed(); \
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return true; \
 }
 
-#define EDITOR_PART_ITEM_USHORT(FUNC, ATTRIBUTE) \
+#define EDITOR_PART_ITEM_USHORT(FUNC, ATTRIBUTE, SAVE) \
 Eina_Bool \
 editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, \
                                 const char *part_name, const char *item_name, unsigned short new_val) \
@@ -468,6 +469,7 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
      } \
    if (!edje_edit_part_item_## FUNC ##_set(edit_object, part_name, item_name, new_val)) \
      return false; \
+   if (SAVE) editor_save(edit_object); \
    _editor_project_changed(); \
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return true; \

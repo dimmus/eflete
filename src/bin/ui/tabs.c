@@ -214,6 +214,16 @@ _part_added(void *data __UNUSED__,
 }
 
 static void
+_part_item_added(void *data __UNUSED__,
+                 Evas_Object *obj __UNUSED__,
+                 void *ei __UNUSED__)
+{
+   assert(tabs.current_workspace != NULL);
+
+   workspace_groupview_hard_update(tabs.current_workspace);
+}
+
+static void
 _part_deleted(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *ei)
@@ -408,6 +418,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_DELETED, _part_deleted, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_UNSELECTED, _part_unselected, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PART_ITEM_ADDED, _part_item_added, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _project_changed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_SAVED, _editor_saved, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_OPENED, _project_opened, NULL);

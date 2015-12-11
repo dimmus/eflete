@@ -1302,7 +1302,7 @@ group { name: "elm/layout/tab_home/item";
    }
 }
 
-group { name: "elm/layout/tab_style/style_editor";
+group { name: "elm/layout/tab_style/style_color_editor";
    images {
       image: "separator-vertical.png" COMP;
       image: "separator-horizontal.png" COMP;
@@ -1396,7 +1396,7 @@ group { name: "elm/layout/tab_style/style_editor";
             }
          }
       }
-      part { name: "swallow.font_list";
+      part { name: "swallow.list";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 1.0;
@@ -1420,11 +1420,11 @@ group { name: "elm/layout/tab_style/style_editor";
             min: 6 1;
             max: 6 -1;
             rel1 {
-               to: "swallow.font_list";
+               to: "swallow.list";
                relative: 0.0 0.0;
             }
             rel2 {
-               to: "swallow.font_list";
+               to: "swallow.list";
                relative: 0.0 1.0;
             }
          }
