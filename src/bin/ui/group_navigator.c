@@ -1192,6 +1192,21 @@ _on_btn_minus_clicked(void *data,
    ap.project->changed = true;
 }
 
+static void
+_on_btn_down_clicked(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *ei __UNUSED__)
+{
+   printf("btn_down clicked\n");
+}
+
+static void
+_on_btn_up_clicked(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *ei __UNUSED__)
+{
+   printf("btn_up clicked\n");
+}
 
 Evas_Object *
 group_navigator_add(Group *group)
@@ -1224,8 +1239,8 @@ group_navigator_add(Group *group)
 
    BTN_ADD(btn_add, "elm.swallow.btn3", "plus", _on_btn_plus_clicked);
    BTN_ADD(btn_del, "elm.swallow.btn2", "minus", _on_btn_minus_clicked);
-   BTN_ADD(btn_down, "elm.swallow.btn1", "arrow_down", NULL);
-   BTN_ADD(btn_up, "elm.swallow.btn0", "arrow_up", NULL);
+   BTN_ADD(btn_down, "elm.swallow.btn1", "arrow_down", _on_btn_down_clicked);
+   BTN_ADD(btn_up, "elm.swallow.btn0", "arrow_up", _on_btn_up_clicked);
 
    elm_object_disabled_set(pl->btn_del, true);
 
