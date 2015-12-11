@@ -2873,6 +2873,7 @@ _on_image_editor_done(void *data,
                           pd->part->current_state->parsed_val,
                           selected);
 
+   history_change_add(pd->group->history, change);
    evas_object_smart_callback_call(pd->attributes.state_image.image, "changed,user", NULL);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
 
