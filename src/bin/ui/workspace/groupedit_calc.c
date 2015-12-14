@@ -765,11 +765,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
      }
 
    evas_object_data_set(gp->draw, "sd", sd);
-   evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_MOUSE_DOWN,
-                                  _part_select, gp);
-
-   evas_object_smart_member_add(gp->draw, sd->obj);
-   //evas_object_smart_member_add(gp->border, sd->obj);
+   evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_MOUSE_DOWN, _part_select, gp);
 
    return gp;
 }
