@@ -1227,19 +1227,147 @@ _on_btn_minus_clicked(void *data,
 }
 
 static void
-_on_btn_down_clicked(void *data __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
-                     void *ei __UNUSED__)
+_part_restack(Part_List *pl, Elm_Object_Item *glit, Eina_Bool move_up)
 {
-   printf("btn_down clicked\n");
+   Part_ *part, *rel_part;
+   Elm_Object_Item *rel_glit;
+   Eina_Stringshare *msg;
+   Change *change;
+
+   assert(pl != NULL);
+   assert(glit != NULL);
+
+   if (move_up)
+     {
+        rel_glit = elm_genlist_item_prev_get(glit);
+        /* Finding where to move item. genlist don't allows to ignore subitems */
+        while ((rel_glit != NULL) && (elm_genlist_item_item_class_get(rel_glit) != pl->itc_part))
+          rel_glit = elm_genlist_item_prev_get(rel_glit);
+        assert(rel_glit != NULL); /* we shouldn't move up first item */
+        assert(elm_genlist_item_item_class_get(rel_glit) == pl->itc_part);
+     }
+   else
+     {
+        rel_glit = elm_genlist_item_next_get(glit);
+        while ((rel_glit != NULL) && (elm_genlist_item_item_class_get(rel_glit) != pl->itc_part))
+          rel_glit = elm_genlist_item_next_get(rel_glit);
+        assert(rel_glit != NULL); /* we shouldn't move down last item */
+        rel_glit = elm_genlist_item_next_get(rel_glit);
+        while ((rel_glit != NULL) && (elm_genlist_item_item_class_get(rel_glit) != pl->itc_part))
+          rel_glit = elm_genlist_item_next_get(rel_glit);
+
+        /* NULL after second loop means that part will be moved to first position */
+        assert((rel_glit == NULL) || (elm_genlist_item_item_class_get(rel_glit) == pl->itc_part));
+     }
+
+   part = elm_object_item_data_get(glit);
+   rel_part = elm_object_item_data_get(rel_glit);
+
+   if (rel_part)
+      msg = eina_stringshare_printf(_("part \"%s\" placed below part \"%s\" in the stack"), part->name, rel_part->name);
+   else
+      msg = eina_stringshare_printf(_("part \"%s\" restacked to the top of the stack"), part->name);
+   change = change_add(msg);
+   editor_part_restack(pl->group->edit_object, change, false,
+                       part->name,
+                       (rel_part) ? rel_part->name : NULL);
+   history_change_add(pl->group->history, change);
+   eina_stringshare_del(msg);
 }
 
 static void
-_on_btn_up_clicked(void *data __UNUSED__,
+_editor_part_restacked_cb(void *data,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info)
+{
+   Part_List *pl = data;
+   const Editor_Part_Restack *editor_part_restack = event_info;
+   Part_ *part, *rel_part = NULL;
+   Elm_Object_Item *glit, *rel_glit;
+
+   assert(pl != NULL);
+   assert(editor_part_restack != NULL);
+
+   part = elm_object_item_data_get(pl->selected_part_item);
+   if (strcmp(editor_part_restack->part_name, part->name))
+     {
+        part = pm_resource_unsorted_get(part->group->parts, editor_part_restack->part_name);
+        group_navigator_part_select(pl->layout, part);
+     }
+
+   glit = _part_item_find(pl, part);
+   assert(glit != NULL);
+   TODO("Update item insertion after adding top-level 'parts' item to group_navigator and delete this assert");
+   assert(elm_genlist_item_parent_get(glit) == NULL);
+   if (editor_part_restack->relative_part_name)
+     {
+        rel_part = pm_resource_unsorted_get(pl->group->parts, editor_part_restack->relative_part_name);
+        rel_glit = _part_item_find(pl, rel_part);
+        assert(rel_glit != NULL);
+
+        elm_genlist_item_insert_before(pl->genlist,
+                                       pl->itc_part_selected,
+                                       part,
+                                       NULL /* <- parent_item */,
+                                       rel_glit,
+                                       ELM_GENLIST_ITEM_TREE,
+                                       NULL,
+                                       NULL);
+     }
+   else
+     {
+        elm_genlist_item_append(pl->genlist,
+                                pl->itc_part_selected,
+                                part,
+                                NULL /* <- parent_item */,
+                                ELM_GENLIST_ITEM_TREE,
+                                NULL,
+                                NULL);
+     }
+   elm_object_item_del(glit);
+   group_navigator_part_select(pl->layout, part);
+   gm_part_restack(part, rel_part);
+   evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_RESTACKED, (void *)editor_part_restack);
+}
+
+static void
+_on_btn_down_clicked(void *data,
+                     Evas_Object *obj __UNUSED__,
+                     void *ei __UNUSED__)
+{
+   Part_List *pl = data;
+   Elm_Object_Item *glit;
+   const Elm_Genlist_Item_Class* itc;
+
+   assert(pl != NULL);
+
+   glit = elm_genlist_selected_item_get(pl->genlist);
+
+   assert(glit != NULL);
+
+   itc = elm_genlist_item_item_class_get(glit);
+   if (itc == pl->itc_part_selected)
+     _part_restack(pl, glit, false);
+}
+
+static void
+_on_btn_up_clicked(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *ei __UNUSED__)
 {
-   printf("btn_up clicked\n");
+   Part_List *pl = data;
+   Elm_Object_Item *glit;
+   const Elm_Genlist_Item_Class* itc;
+
+   assert(pl != NULL);
+
+   glit = elm_genlist_selected_item_get(pl->genlist);
+
+   assert(glit != NULL);
+
+   itc = elm_genlist_item_item_class_get(glit);
+   if (itc == pl->itc_part_selected)
+     _part_restack(pl, glit, true);
 }
 
 Evas_Object *
@@ -1373,6 +1501,7 @@ group_navigator_add(Group *group)
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, pl);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_RESTACKED, _editor_part_restacked_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, pl);
 
