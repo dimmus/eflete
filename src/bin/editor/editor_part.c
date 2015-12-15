@@ -698,7 +698,7 @@ editor_part_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge,
 
    if (change)
      {
-        old_relative_part = edje_edit_part_below_get(edit_object, part_name);
+        old_relative_part = edje_edit_part_above_get(edit_object, part_name);
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING_STRING;
         diff->redo.function = editor_part_restack;
