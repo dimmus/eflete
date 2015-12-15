@@ -697,9 +697,9 @@ editor_part_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge,
    assert(edit_object != NULL);
    assert(part_name != NULL);
 
+   old_relative_part = edje_edit_part_above_get(edit_object, part_name);
    if (change)
      {
-        old_relative_part = edje_edit_part_above_get(edit_object, part_name);
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING_STRING;
         diff->redo.function = editor_part_restack;
@@ -721,8 +721,11 @@ editor_part_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge,
      }
    else
      {
-        if (!edje_edit_part_restack_above(edit_object, part_name))
-          return false;
+        /* edje_edit don't allows to restack_above part that is already on top,
+           but it is needed to simplify adding part deletion to history */
+        if (old_relative_part != NULL)
+          if (!edje_edit_part_restack_above(edit_object, part_name))
+            return false;
      }
 
    _editor_project_changed();
