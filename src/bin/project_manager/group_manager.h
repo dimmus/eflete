@@ -127,4 +127,6 @@ gm_part_item_del(Project *pro, Part_ *part, Eina_Stringshare *item_name);
 void
 gm_part_rename(Part_* part, const char *new_part_name);
 
+void
+gm_part_restack(Part_ *part, Part_ *rel_part);
 #endif /* GROUP_MANAGER_H */

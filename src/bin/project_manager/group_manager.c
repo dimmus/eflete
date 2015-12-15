@@ -632,3 +632,22 @@ gm_part_rename(Part_* part, const char *new_part_name)
    eina_stringshare_del(part->name);
    part->name = eina_stringshare_add(new_part_name);
 }
+
+void
+gm_part_restack(Part_ *part, Part_ *rel_part)
+{
+   Eina_List *rel_l;
+
+   assert(part != NULL);
+
+   part->group->parts = eina_list_remove(part->group->parts, part);
+
+   if (rel_part)
+     {
+        rel_l = eina_list_data_find_list(part->group->parts, rel_part);
+        assert (rel_l != NULL);
+        part->group->parts = eina_list_prepend_relative_list(part->group->parts, part, rel_l);
+     }
+   else
+     part->group->parts = eina_list_append(part->group->parts, part);
+}
