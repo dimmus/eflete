@@ -581,6 +581,7 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UN
    res = res && editor_part_drag_threshold_reset(edit_object, change, part_name);
    res = res && editor_part_drag_event_reset(edit_object, change, part_name);
    res = res && editor_part_pointer_mode_reset(edit_object, change, part_name);
+   res = res && editor_part_restack(edit_object, change, false, part_name, NULL);
 
    states = edje_edit_part_states_list_get(edit_object, part_name);
    assert(states != NULL);
