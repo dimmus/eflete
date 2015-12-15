@@ -501,6 +501,8 @@ void
 tabs_tab_add(Group *group)
 {
    Tabs_Item *item;
+   Eina_Stringshare *msg;
+   Change *change;
 
    assert(group != NULL);
 
@@ -527,6 +529,11 @@ tabs_tab_add(Group *group)
    elm_toolbar_item_selected_set(item->toolbar_item, true);
    elm_object_item_signal_callback_add(item->toolbar_item, "tab,close", "eflete", _tab_close, (void *)item);
    tabs.items = eina_list_append(tabs.items, item);
+
+   msg = eina_stringshare_printf(_("open group \"%s\""), group->name);
+   change = change_add(msg);
+   history_change_add(group->history, change);
+   eina_stringshare_del(msg);
 }
 
 void
