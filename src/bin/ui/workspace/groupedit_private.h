@@ -143,27 +143,6 @@ _parts_stack_layout(Evas_Object          *o,
                     void                 *data);
 
 /**
- * Stack part above above in groupedit module.
- * If part_above param is NULL, then part will restack above by one position,
- * in stack, else part will restack above part_above.
- * Restack complete in three steps:
- *  - restack part in edje edit object. (Used edje_edit_part_restack* func's).
- *  - restack part in parts list, which stored in groupedit smart data.
- *  - restack evas primitive of part at canvas (Used evas_object_stack* func's).
- *
- * @param sd The groupedit smart data structure.
- * @param part The name of part to stack above.
- * @param part_above The name of part above which to stack.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-_edit_object_part_restack_above(Ws_Groupedit_Smart_Data *sd,
-                                const char *part,
-                                const char *part_above);
-/**
  * Stack part below below in groupedit module.
  * If part_below param is NULL, then part will restack below by one position,
  * in stack, else part will restack below part_below.

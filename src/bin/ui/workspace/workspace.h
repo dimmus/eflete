@@ -131,51 +131,6 @@ Eina_Bool
 workspace_edit_object_part_del(Evas_Object *obj, Part_ *part);
 
 /**
- * Stack part above above in workspace module. This function is a wrapper
- * on _edit_object_part_restack_above();
- *
- * @param obj The workspace object.
- * @param part The name of part, which need above above.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_edit_object_part_above(Evas_Object *obj, const char *part);
-
-/**
- * Stack part below below in workspace module. This function is a wrapper
- * on _edit_object_part_restack_below();
- *
- * @param obj The workspace object.
- * @param part The name of part, which need below below.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_edit_object_part_below(Evas_Object *obj, const char *part);
-
-/** Move the given part relative the next one.
- *
- * @param obj The workspace object.
- * @param part Name of part, which will reordered.
- * @param rel_part Name of part, which will be relative to reordering 'part'.
- * @param direct If EINA_TRUE, part will restack below, otherwise part will
- *   restack above rel_part.
- *
- * @return @c EINA_TRUE in case of success, @c EINA_FALSE otherwise.
- */
-
-Eina_Bool
-workspace_edit_object_part_restack(Evas_Object *obj,
-                                   const char *part,
-                                   const char *rel_part,
-                                   Eina_Bool direct);
-
-/**
  *
  */
 Eina_Bool

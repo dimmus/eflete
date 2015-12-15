@@ -293,47 +293,15 @@ groupedit_edit_object_part_del(Evas_Object *obj, Part_ *part)
 }
 
 Eina_Bool
-groupedit_edit_object_part_above(Evas_Object *obj, const char *part)
+groupedit_edit_object_part_restack(Evas_Object *obj,
+                                   const char *part,
+                                   const char *rel_part)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd);
 
    assert(part != NULL);
 
-   return _edit_object_part_restack_above(sd, part, NULL);
-}
-
-Eina_Bool
-groupedit_edit_object_part_below(Evas_Object *obj, const char *part)
-{
-   WS_GROUPEDIT_DATA_GET(obj, sd);
-
-   assert(part != NULL);
-
-   return _edit_object_part_restack_below(sd, part, NULL);
-}
-
-Eina_Bool
-groupedit_edit_object_part_move_above(Evas_Object *obj,
-                                      const char *part,
-                                      const char *above)
-{
-   WS_GROUPEDIT_DATA_GET(obj, sd);
-
-   assert(part != NULL);
-
-   return _edit_object_part_restack_above(sd, part, above);
-}
-
-Eina_Bool
-groupedit_edit_object_part_move_below(Evas_Object *obj,
-                                      const char *part,
-                                      const char *below)
-{
-   WS_GROUPEDIT_DATA_GET(obj, sd);
-
-   assert(part != NULL);
-
-   return _edit_object_part_restack_below(sd, part, below);
+   return _edit_object_part_restack_below(sd, part, rel_part);
 }
 
 Eina_Bool

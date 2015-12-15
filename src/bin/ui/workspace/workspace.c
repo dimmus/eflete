@@ -1446,6 +1446,19 @@ _on_group_navigator_part_select(void *data,
 }
 
 static void
+_on_group_navigator_part_restacked(void *data,
+                                   Evas_Object *obj __UNUSED__,
+                                   void *event_info)
+{
+   Evas_Object *workspace = (Evas_Object *)data;
+   Editor_Part_Restack *ei = event_info;
+
+   WS_DATA_GET(workspace, sd);
+
+   groupedit_edit_object_part_restack(sd->groupedit, ei->part_name, ei->relative_part_name);
+}
+
+static void
 _on_group_navigator_part_state_select(void *data,
                                 Evas_Object *obj __UNUSED__,
                                 void *event_info)
@@ -1512,6 +1525,8 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_part_content_set(sd->panes, "right", sd->group_navigator);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED,
                                   _on_group_navigator_part_select, obj);
+   evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_RESTACKED,
+                                  _on_group_navigator_part_restacked, obj);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED,
                                   _on_group_navigator_part_state_select, obj);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED,
@@ -1719,24 +1734,6 @@ workspace_edit_object_part_del(Evas_Object *obj, Part_ *part)
 }
 
 Eina_Bool
-workspace_edit_object_part_above(Evas_Object *obj, const char *part)
-{
-   WS_DATA_GET(obj, sd);
-   assert(part != NULL);
-
-   return groupedit_edit_object_part_above(sd->groupedit, part);
-}
-
-Eina_Bool
-workspace_edit_object_part_below(Evas_Object *obj, const char *part)
-{
-   WS_DATA_GET(obj, sd);
-   assert(part != NULL);
-
-   return groupedit_edit_object_part_below(sd->groupedit, part);
-}
-
-Eina_Bool
 workspace_edit_object_part_state_set(Evas_Object *obj, Part_ *part)
 {
    WS_DATA_GET(obj, sd);
@@ -1744,22 +1741,6 @@ workspace_edit_object_part_state_set(Evas_Object *obj, Part_ *part)
 
    TODO("fix state set from external sources");
    return false;
-}
-
-Eina_Bool
-workspace_edit_object_part_restack(Evas_Object *obj,
-                                   const char *part,
-                                   const char *rel_part,
-                                   Eina_Bool direct)
-{
-   WS_DATA_GET(obj, sd);
-   assert(part != NULL);
-   assert(rel_part != NULL);
-
-   if (!direct)
-      return groupedit_edit_object_part_move_above(sd->groupedit, part, rel_part);
-   else
-      return groupedit_edit_object_part_move_below(sd->groupedit, part, rel_part);
 }
 
 Eina_Bool

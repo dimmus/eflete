@@ -87,113 +87,35 @@ _edit_object_part_del(Ws_Groupedit_Smart_Data *sd, Part_ *part)
    return true;
 }
 
-/**
-  * Internal function, which provide restack parts at parts list and restack
-  * part primitives at canvas.
-  * If param part_to is NULL, part, which name stored at param part, will
-  * restack below or above at one position. Else part will restack to part which
-  * name stored at part_to.
-  *
-  * @param sd The groupedit smart data structure for get access to parts list.
-  * @param part The name of part to stack.
-  * @param part_to The name of part which to stack.
-  * @param mode If true operation restack above will be process, else is
-  * restack below.
-  *
-  * @return false on failure, true on success.
-  */
-static Eina_Bool
-_part_restack(Ws_Groupedit_Smart_Data *sd,
-              const char *part,
-              const char *part_to,
-              Eina_Bool mode)
-{
-   Eina_List *l = NULL;
-   Groupedit_Part *ge_part_to, *ge_part;
-
-   assert(sd != NULL);
-   assert(part != NULL);
-
-   ge_part = _parts_list_find(sd->parts, part);
-   if (!ge_part) return false;
-   /* Here find part_to in parts stack. ge_part will be restack abow or below
-    * ge_part_to object. */
-   if (part_to)
-     ge_part_to = _parts_list_find(sd->parts, part_to);
-   else
-     {
-        l = eina_list_data_find_list(sd->parts, ge_part);
-        if (mode)
-          ge_part_to = eina_list_data_get(eina_list_prev(l));
-        else
-          ge_part_to = eina_list_data_get(eina_list_next(l));
-     }
-
-   if (!ge_part_to) return false;
-
-   /* For changing position ge_part in Eina_List of parts, at first need to
-    * remove node with data ge_part, and for second prepend/append ge_part to
-    * list of parts. (Operation prepend use when restack above, and
-    * append if restack below)
-    */
-   sd->parts = eina_list_remove(sd->parts, ge_part);
-
-   if (mode)
-     sd->parts = eina_list_prepend_relative(sd->parts, ge_part, ge_part_to);
-   else
-     sd->parts = eina_list_append_relative(sd->parts, ge_part, ge_part_to);
-
-   return true;
-}
-
-Eina_Bool
-_edit_object_part_restack_above(Ws_Groupedit_Smart_Data *sd,
-                                const char *part,
-                                const char *part_above)
-{
-   Eina_Bool ret = false;
-
-   assert(sd != NULL);
-   assert(sd->parts != NULL);
-   assert(part != NULL);
-
-   if (part_above)
-     ret = edje_edit_part_restack_part_below(sd->group->edit_object, part, part_above);
-   else
-     ret = edje_edit_part_restack_below(sd->group->edit_object, part);
-
-   if (!ret)
-     {
-        ERR("Failed restack in edje_edit object");
-        abort();
-     }
-   _part_restack(sd, part, part_above, true);
-   evas_object_smart_changed(sd->obj);
-   return true;
-}
-
 Eina_Bool
 _edit_object_part_restack_below(Ws_Groupedit_Smart_Data *sd,
                                 const char *part,
-                                const char *part_below)
+                                const char *rel_part)
 {
-   Eina_Bool ret = false;
+   Groupedit_Part *ge_rel_part, *ge_part;
 
    assert(sd != NULL);
    assert(sd->parts != NULL);
    assert(part != NULL);
 
-   if (part_below)
-     ret = edje_edit_part_restack_part_above(sd->group->edit_object, part, part_below);
-   else
-     ret = edje_edit_part_restack_above(sd->group->edit_object, part);
+   ge_part = _parts_list_find(sd->parts, part);
+   assert(ge_part != NULL);
 
-   if (!ret)
+   sd->parts = eina_list_remove(sd->parts, ge_part);
+   elm_box_unpack(sd->box, ge_part->draw);
+   if (rel_part)
      {
-        ERR("Failed restack in edje_edit object");
-        abort();
+        ge_rel_part = _parts_list_find(sd->parts, rel_part);
+        assert(ge_rel_part != NULL);
+        sd->parts = eina_list_prepend_relative(sd->parts, ge_part, ge_rel_part);
+        elm_box_pack_before(sd->box, ge_part->draw, ge_rel_part->draw);
      }
-   _part_restack(sd, part, part_below, false);
+   else
+     {
+        sd->parts = eina_list_append(sd->parts, ge_part);
+        elm_box_pack_end(sd->box, ge_part->draw);
+     }
+
    evas_object_smart_changed(sd->obj);
    return true;
 }
@@ -1104,6 +1026,7 @@ _parts_stack_layout(Evas_Object          *o __UNUSED__,
              evas_object_resize(gp->container, gp->geom.w, gp->geom.h);
              evas_object_move(gp->container, gp->geom.x, gp->geom.y);
           }
+        evas_object_raise(gp->draw);
      }
    sd->manual_calc = false;
 }
