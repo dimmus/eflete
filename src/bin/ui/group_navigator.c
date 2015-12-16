@@ -438,28 +438,24 @@ _selected_cb(void *data,
    /* enabling or disabling up and down buttons */
    if ((itc == pl->itc_part_selected) || (itc == pl->itc_part))
      {
+        TODO("Update logic after adding 'parts' genlist item")
         if (elm_genlist_item_prev_get(glit) == NULL)
-          {
-             TODO("Update logic after adding 'parts' genlist item")
-             elm_object_disabled_set(pl->btn_down, false);
-             elm_object_disabled_set(pl->btn_up, true);
-          }
+          elm_object_disabled_set(pl->btn_up, true);
         else
+          elm_object_disabled_set(pl->btn_up, false);
+
+        next_item = elm_genlist_item_next_get(glit);
+        while (next_item != NULL)
           {
-             next_item = elm_genlist_item_next_get(glit);
-             while (next_item != NULL)
-               {
-                  next_itc = elm_genlist_item_item_class_get(next_item);
-                  if ((next_itc == pl->itc_part_selected) || (next_itc == pl->itc_part))
-                    break;
-                  next_item = elm_genlist_item_next_get(next_item);
-               }
-             if (next_item)
-               elm_object_disabled_set(pl->btn_down, false);
-             else
-               elm_object_disabled_set(pl->btn_down, true);
-             elm_object_disabled_set(pl->btn_up, false);
+             next_itc = elm_genlist_item_item_class_get(next_item);
+             if ((next_itc == pl->itc_part_selected) || (next_itc == pl->itc_part))
+               break;
+             next_item = elm_genlist_item_next_get(next_item);
           }
+        if (next_item)
+          elm_object_disabled_set(pl->btn_down, false);
+        else
+          elm_object_disabled_set(pl->btn_down, true);
      }
    else if ((itc == pl->itc_item))
      {
