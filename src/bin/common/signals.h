@@ -220,6 +220,19 @@ typedef struct {
  */
 #define SIGNAL_EDITOR_PART_RESTACKED "SIGNAL_EDITOR_PART_RESTACKED"
 
+typedef struct {
+   const char *part_name;
+   const char *part_item;
+   const char *relative_part_item;
+} Editor_Part_Item_Restack;
+/**
+ * emited when part item is restacked.
+ * eventinfo - Editor_Part_Item_Restack struct
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_PART_ITEM_RESTACKED "SIGNAL_EDITOR_PART_ITEM_RESTACKED"
+
 
 /**
  * emited when project is changed in any way (through attribute, .

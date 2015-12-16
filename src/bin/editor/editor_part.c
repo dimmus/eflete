@@ -739,3 +739,96 @@ editor_part_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge,
      }
    return true;
 }
+
+Eina_Bool
+editor_part_item_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                         const char *part_name, const char *part_item, const char *relative_part_item)
+{
+   Diff *diff;
+   Eina_Stringshare *old_relative_part_item;
+   Editor_Part_Item_Restack event_info;
+   Eina_List *items, *part_item_l, *l;
+   Eina_Stringshare *part_item_name, *relative_part_item_name, *item_name;
+   Change *virtual_change;
+   Eina_Bool res;
+
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(part_item != NULL);
+
+   items = edje_edit_part_items_list_get(edit_object, part_name);
+   assert(items != NULL);
+   part_item_name = eina_stringshare_add(part_item);
+   part_item_l = eina_list_data_find_list(items, part_item_name);
+
+   old_relative_part_item = eina_stringshare_add(eina_list_data_get(eina_list_next(part_item_l)));
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_STRING;
+        diff->redo.function = editor_part_item_restack;
+        diff->redo.args.type_sss.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_sss.s2 = eina_stringshare_add(part_item);
+        diff->redo.args.type_sss.s3 = eina_stringshare_add(relative_part_item);
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_STRING;
+        diff->undo.function = editor_part_item_restack;
+        diff->undo.args.type_sss.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_sss.s2 = eina_stringshare_add(part_item);
+        diff->undo.args.type_sss.s3 = old_relative_part_item;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+
+   virtual_change = change_add(NULL);
+   you_shall_not_pass_editor_signals(NULL);
+
+   if (relative_part_item)
+     {
+        relative_part_item_name = eina_stringshare_add(relative_part_item);
+        if (old_relative_part_item != relative_part_item_name)
+          {
+             EINA_LIST_REVERSE_FOREACH(items, l, item_name)
+               {
+                  if (item_name == part_item_name) continue;
+
+                  res = editor_part_item_del(edit_object, virtual_change, false, part_name, item_name);
+                  assert(res);
+
+                  if (item_name == relative_part_item_name) break;
+               }
+             res = editor_part_item_del(edit_object, virtual_change, false, part_name, part_item);
+             assert(res);
+             res = change_undo(edit_object, virtual_change);
+             assert(res);
+          }
+     }
+   else
+     {
+        if (eina_list_next(part_item_l))
+          {
+             res = editor_part_item_del(edit_object, virtual_change, false, part_name, part_item);
+             assert(res);
+             res = change_undo(edit_object, virtual_change);
+             assert(res);
+          }
+     }
+   you_shall_pass_editor_signals(NULL);
+   change_free(virtual_change);
+
+   edje_edit_string_list_free(items);
+
+   _editor_project_changed();
+   if (!_editor_signals_blocked)
+     {
+        event_info.part_name = eina_stringshare_add(part_name);
+        event_info.part_item = part_item_name;
+        event_info.relative_part_item = eina_stringshare_add(relative_part_item);
+        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, &event_info);
+        eina_stringshare_del(event_info.part_name);
+        eina_stringshare_del(event_info.part_item);
+        eina_stringshare_del(event_info.relative_part_item);
+     }
+   return true;
+}

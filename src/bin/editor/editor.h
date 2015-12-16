@@ -430,6 +430,9 @@ Eina_Bool
 editor_part_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                     const char *part_name, const char *relative_part);
 Eina_Bool
+editor_part_item_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                         const char *part_name, const char *part_item, const char *relative_part_item);
+Eina_Bool
 editor_part_item_append(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                         const char *part_name, const char *item_name, const char *source_group);
 Eina_Bool
