@@ -1459,6 +1459,18 @@ _on_group_navigator_part_restacked(void *data,
 }
 
 static void
+_on_group_navigator_part_item_restacked(void *data,
+                                        Evas_Object *obj __UNUSED__,
+                                        void *event_info __UNUSED__)
+{
+   Evas_Object *workspace = (Evas_Object *)data;
+
+   WS_DATA_GET(workspace, sd);
+
+   groupedit_hard_update(sd->groupedit);
+}
+
+static void
 _on_group_navigator_part_state_select(void *data,
                                 Evas_Object *obj __UNUSED__,
                                 void *event_info)
@@ -1527,6 +1539,8 @@ workspace_add(Evas_Object *parent, Group *group)
                                   _on_group_navigator_part_select, obj);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_RESTACKED,
                                   _on_group_navigator_part_restacked, obj);
+   evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_ITEM_RESTACKED,
+                                  _on_group_navigator_part_item_restacked, obj);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED,
                                   _on_group_navigator_part_state_select, obj);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED,

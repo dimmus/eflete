@@ -47,6 +47,14 @@
 #define SIGNAL_GROUP_NAVIGATOR_PART_RESTACKED "SIGNAL_GROUP_NAVIGATOR_PART_RESTACKED"
 
 /**
+ * emited when part_item is restacked in part list.
+ * eventinfo - pointer to Editor_Part_Item_Restack structure
+ *
+ * @ingroup Partlist
+ */
+#define SIGNAL_GROUP_NAVIGATOR_PART_ITEM_RESTACKED "SIGNAL_GROUP_NAVIGATOR_PART_ITEM_RESTACKED"
+
+/**
  * emited when part state is activated in part list.
  * eventinfo - pointer to Part_ structure
  *
