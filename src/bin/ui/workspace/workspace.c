@@ -28,6 +28,7 @@
 #include "new_history.h"
 #include "editor.h"
 #include "demo.h"
+#include "demo_group.h"
 
 struct _Ws_Menu
 {
@@ -130,6 +131,7 @@ struct _Ws_Smart_Data
 
    Evas_Object *panes;
    Evas_Object *group_navigator;
+   Evas_Object *demo_group;
 
    struct {
         Evas_Object *highlight; /**< A highlight object */
@@ -982,6 +984,7 @@ _mode_changed(void *data,
      evas_object_del(sd->active_mode_object);
 
    mode = elm_radio_state_value_get(obj);
+
    switch (mode)
      {
       case MODE_NORMAL:
@@ -1006,10 +1009,26 @@ _mode_changed(void *data,
             sd->active_mode_object = demo_add(sd->scroller, sd->group);
             evas_object_show(sd->active_mode_object);
             container_content_set(sd->container.obj, sd->active_mode_object);
+
+            elm_object_part_content_unset(sd->panes, "right");
+            evas_object_hide(sd->group_navigator);
+            elm_object_part_content_set(sd->panes, "right", sd->demo_group);
+            evas_object_show(sd->demo_group);
+
             break;
          }
       default: break;
      }
+
+   /* if last mode was demo... */
+   if (sd->active_mode == MODE_DEMO)
+     {
+        elm_object_part_content_unset(sd->panes, "right");
+        evas_object_hide(sd->demo_group);
+        elm_object_part_content_set(sd->panes, "right", sd->group_navigator);
+        evas_object_show(sd->group_navigator);
+     }
+
    sd->active_mode = mode;
 }
 
@@ -1546,6 +1565,11 @@ workspace_add(Evas_Object *parent, Group *group)
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED,
                                   _on_group_navigator_part_visible_changed, obj);
 
+   sd->demo_group = demo_group_add(group);
+   evas_object_size_hint_weight_set(sd->demo_group, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(sd->demo_group, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_smart_member_add(sd->demo_group, obj);
+   evas_object_hide(sd->demo_group);
 
    /* create conteiner with handlers */
    sd->container.obj = container_add(sd->scroller);
