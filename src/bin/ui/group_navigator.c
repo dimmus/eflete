@@ -461,6 +461,19 @@ _selected_cb(void *data,
              elm_object_disabled_set(pl->btn_up, false);
           }
      }
+   else if ((itc == pl->itc_item))
+     {
+        if (elm_genlist_item_item_class_get(elm_genlist_item_prev_get(glit)) == pl->itc_item)
+          elm_object_disabled_set(pl->btn_up, false);
+        else
+          elm_object_disabled_set(pl->btn_up, true);
+
+        next_item = elm_genlist_item_next_get(glit);
+        if (next_item && (elm_genlist_item_item_class_get(next_item) == pl->itc_item))
+          elm_object_disabled_set(pl->btn_down, false);
+        else
+          elm_object_disabled_set(pl->btn_down, true);
+     }
    else
      {
         elm_object_disabled_set(pl->btn_down, true);
