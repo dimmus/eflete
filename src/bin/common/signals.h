@@ -330,6 +330,14 @@ typedef struct {
  */
 #define SIGNAL_STYLE_EDITOR_TAB_CLICKED "SIGNAL_STYLE_EDITOR_TAB_CLICKED"
 
+ /**
+ * emited when colorclass editor tab is clicked.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_COLOR_EDITOR_TAB_CLICKED "SIGNAL_COLOR_EDITOR_TAB_CLICKED"
+
 /**
  * emited when style/styles in style editor is/are selected.
  * eventinfo - NULL
@@ -337,5 +345,13 @@ typedef struct {
  * @ingroup Window
  */
 #define SIGNAL_STYLE_SELECTED "SIGNAL_STYLE_SELECTED"
+
+/**
+ * emited when colorstyle/colorstyles in colorclass editor is/are selected.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_COLOR_SELECTED "SIGNAL_COLOR_SELECTED"
 
 #endif /* SIGNALS_H*/
