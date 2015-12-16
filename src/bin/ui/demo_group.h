@@ -20,10 +20,33 @@
 #ifndef DEMO_GROUP_H
 #define DEMO_GROUP_H
 
+#include "eflete.h"
+#include "group_manager.h"
+
 /**
  * @defgroup Partlist Partlist
  *
  * @ingroup EFLETE
  */
+
+/**
+ * emited when part is selected in part list while in demo mode.
+ * eventinfo - pointer to Part_ structure
+ *
+ * @ingroup Partlist
+ */
+#define SIGNAL_DEMO_GROUP_PART_SELECTED "SIGNAL_DEMO_GROUP_PART_SELECTED"
+
+/**
+ * @ingroup Partlist
+ */
+Evas_Object *
+demo_group_add(Group *group);
+
+/**
+ * @ingroup Partlist
+ */
+void
+demo_group_part_select(Evas_Object *obj, Part_ *part);
 
 #endif /* DEMO_GROUP_H */
