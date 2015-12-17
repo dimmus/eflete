@@ -406,6 +406,7 @@ editor_part_cursor_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    return true;
 }
 
+static Eina_Bool _part_item_restacking;
 Eina_Bool
 editor_part_item_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
                        const char *part_name, const char *item_name)
@@ -418,6 +419,8 @@ editor_part_item_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge
    Edje_Part_Type type = edje_edit_part_type_get(edit_object, part_name);
 
    assert((type == EDJE_PART_TYPE_TABLE) || (type == EDJE_PART_TYPE_BOX));
+
+   you_shall_not_pass_editor_signals(change);
 
    if (type == EDJE_PART_TYPE_TABLE)
      {
@@ -443,6 +446,10 @@ editor_part_item_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge
    res = res && editor_part_item_weight_x_reset(edit_object, change, part_name, item_name);
    res = res && editor_part_item_weight_y_reset(edit_object, change, part_name, item_name);
    res = res && editor_part_item_padding_reset(edit_object, change, part_name, item_name);
+   if (!_part_item_restacking)
+     res = res && editor_part_item_restack(edit_object, change, false, part_name, item_name, NULL);
+
+   you_shall_pass_editor_signals(change);
 
    return res;
 }
@@ -598,7 +605,7 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UN
 
    /* removing part items */
    items = edje_edit_part_items_list_get(edit_object, part_name);
-   EINA_LIST_FOREACH(items, l, name)
+   EINA_LIST_REVERSE_FOREACH(items, l, name)
       res = res && editor_part_item_del(edit_object, change, false, part_name, name);
    edje_edit_string_list_free(items);
 
@@ -784,6 +791,7 @@ editor_part_item_restack(Evas_Object *edit_object, Change *change, Eina_Bool mer
    virtual_change = change_add(NULL);
    you_shall_not_pass_editor_signals(NULL);
 
+   _part_item_restacking = true;
    if (relative_part_item)
      {
         relative_part_item_name = eina_stringshare_add(relative_part_item);
@@ -814,6 +822,8 @@ editor_part_item_restack(Evas_Object *edit_object, Change *change, Eina_Bool mer
              assert(res);
           }
      }
+
+   _part_item_restacking = false;
    you_shall_pass_editor_signals(NULL);
    change_free(virtual_change);
 
