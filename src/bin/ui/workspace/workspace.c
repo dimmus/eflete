@@ -1015,6 +1015,8 @@ _mode_changed(void *data,
             elm_object_part_content_set(sd->panes, "right", sd->demo_group);
             evas_object_show(sd->demo_group);
 
+            evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
+
             break;
          }
       default: break;
@@ -1027,6 +1029,7 @@ _mode_changed(void *data,
         evas_object_hide(sd->demo_group);
         elm_object_part_content_set(sd->panes, "right", sd->group_navigator);
         evas_object_show(sd->group_navigator);
+        evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, sd->group);
      }
 
    sd->active_mode = mode;

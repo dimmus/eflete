@@ -142,6 +142,12 @@ _selected_cb(void *data __UNUSED__,
              Evas_Object *o __UNUSED__,
              void *event_info __UNUSED__)
 {
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   Part_ *part = (Part_ *)elm_object_item_data_get(glit);
+
+   if ((part->type == EDJE_PART_TYPE_TEXT) ||
+       (part->type == EDJE_PART_TYPE_TEXTBLOCK))
+     evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_PART_CLICKED, part);
 }
 
 Evas_Object *

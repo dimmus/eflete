@@ -20,6 +20,19 @@
 #include "live_view.h"
 #include "live_view_prop.h"
 
+#include "signals.h"
+
+static void
+_set_text(void *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info)
+{
+   Part_ *part = (Part_ *) event_info;
+   Evas_Object *object = (Evas_Object *) data;
+
+   elm_object_part_text_set(object, part->name, part->content);
+}
+
 Evas_Object *
 demo_add(Evas_Object *parent, Group *group)
 {
@@ -49,6 +62,9 @@ demo_add(Evas_Object *parent, Group *group)
         TODO("Add frame to container with info that need this state is unstable"
              "and need to restart Eflete.");
      }
+
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, _set_text, obj);
 
    return obj;
 }

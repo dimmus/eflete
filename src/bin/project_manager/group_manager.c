@@ -632,6 +632,7 @@ gm_part_del(Project *pro, Part_* part)
    part->used_in = eina_list_free(part->used_in);
    part->group->parts = eina_list_remove(part->group->parts, part);
    eina_stringshare_del(part->name);
+   eina_stringshare_del(part->content);
    free(part);
 }
 
