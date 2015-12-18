@@ -70,6 +70,7 @@ typedef enum {
    ATTRIBUTE_STATE_FILL_SMOOTH,
    ATTRIBUTE_STATE_VISIBLE,
    ATTRIBUTE_STATE_IMAGE,
+   ATTRIBUTE_STATE_IMAGE_TWEEN,
    ATTRIBUTE_STATE_COLOR_CLASS,
    ATTRIBUTE_STATE_REL1_TO_X,
    ATTRIBUTE_STATE_REL1_TO_Y,
@@ -551,6 +552,14 @@ Eina_Bool
 editor_part_name_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       const char *new_val);
 
+Eina_Bool
+editor_state_tween_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                       const char *part_name, const char *state_name, double state_val,
+                       Eina_Stringshare *name);
+Eina_Bool
+editor_state_tween_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                       const char *part_name, const char *state_name, double state_val,
+                       Eina_Stringshare *name);
 
 Eina_Bool
 editor_part_clip_to_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
