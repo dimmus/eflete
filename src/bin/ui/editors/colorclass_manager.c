@@ -27,21 +27,12 @@
 static Elm_Genlist_Item_Class *_itc_ccl = NULL;
 
 typedef struct _Colorclasses_Manager Colorclasses_Manager;
-typedef struct _Colorclass_Item Colorclass_Item;
 typedef struct _Search_Data Search_Data;
 
 struct _Search_Data
 {
    Evas_Object *search_entry;
    Elm_Object_Item *last_item_found;
-};
-
-struct _Colorclass_Item
-{
-   Eina_Stringshare *name;
-   int r1, g1, b1, a1;
-   int r2, g2, b2, a2;
-   int r3, g3, b3, a3;
 };
 
 struct _Colorclasses_Manager
@@ -51,7 +42,6 @@ struct _Colorclasses_Manager
    Evas_Object *layout;
    Evas_Object *genlist;
    Evas_Object *edje_preview, *preview_layout;
-   Evas_Object *colorsel1, *colorsel2, *colorsel3;
    Evas_Object *entry, *popup;
    Evas_Object *btn_add;
    Elm_Validator_Regexp *name_validator;
@@ -181,13 +171,6 @@ _on_button_delete_clicked_cb(void *data __UNUSED__,
    else
       edit->current_ccl = NULL;
 
-   if (elm_genlist_items_count(edit->genlist) == 0)
-     {
-        elm_object_disabled_set(edit->colorsel1, true);
-        elm_object_disabled_set(edit->colorsel2, true);
-        elm_object_disabled_set(edit->colorsel3, true);
-     }
-
    editor_save(ap.project->global_object);
    TODO("Remove this line once edje_edit_colorclass API would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
@@ -241,57 +224,6 @@ _change_bg_cb(void *data,
    elm_object_part_content_set(preview_layout, "swallow.entry.bg", bg);
 }
 
-static void
-_colorclass_update(Colorclasses_Manager *edit)
-{
-   assert(edit != NULL);
-
-   Colorclass_Item *cc_it = edit->current_ccl;
-
-   edje_object_color_class_set(edit->edje_preview,
-                               "colorclass_manager/text_example_colorclass",
-                               edit->current_ccl->r1, edit->current_ccl->g1,
-                               edit->current_ccl->b1, edit->current_ccl->a1,
-                               edit->current_ccl->r2, edit->current_ccl->g2,
-                               edit->current_ccl->b2, edit->current_ccl->a2,
-                               edit->current_ccl->r3, edit->current_ccl->g3,
-                               edit->current_ccl->b3, edit->current_ccl->a3);
-   edje_edit_color_class_colors_set(ap.project->global_object, cc_it->name,
-                                    cc_it->r1, cc_it->g1,
-                                    cc_it->b1, cc_it->a1,
-                                    cc_it->r2, cc_it->g2,
-                                    cc_it->b2, cc_it->a2,
-                                    cc_it->r3, cc_it->g3,
-                                    cc_it->b3, cc_it->a3);
-
-   editor_save(ap.project->global_object);
-   TODO("Remove this line once edje_edit_colorclass API would be added into Editor Module and saving would work properly")
-   ap.project->changed = true;
-}
-/* Colorselector widget callbacks */
-#define COLORSELECTOR_CALLBACK(NUMBER) \
-static void \
-_on_changed_##NUMBER(void *data, \
-                     Evas_Object *obj __UNUSED__, \
-                     void *event_info __UNUSED__) \
-{ \
-   Colorclasses_Manager *edit = (Colorclasses_Manager *)data; \
-   assert(edit != NULL); \
-   if (!edit->current_ccl) return; \
-   elm_colorselector_color_get(edit->colorsel##NUMBER, \
-                               &edit->current_ccl->r##NUMBER, \
-                               &edit->current_ccl->g##NUMBER, \
-                               &edit->current_ccl->b##NUMBER, \
-                               &edit->current_ccl->a##NUMBER); \
-   _colorclass_update(edit); \
-}
-
-COLORSELECTOR_CALLBACK(1)
-COLORSELECTOR_CALLBACK(2)
-COLORSELECTOR_CALLBACK(3)
-
-#undef COLORSELECTOR_CALLBACK
-
 /* Callback on colorclass selection in list */
 static void
 _on_selected(void *data,
@@ -307,11 +239,10 @@ _on_selected(void *data,
 
    assert(ccl != NULL);
 
-   edit->current_ccl = ccl;
+   ColorClassData *current_color_data = (ColorClassData *)mem_malloc(sizeof(ColorClassData));
+   memset(current_color_data, 0x0, sizeof(ColorClassData));
 
-   elm_colorselector_color_set(edit->colorsel1, ccl->r1, ccl->g1, ccl->b1, ccl->a1);
-   elm_colorselector_color_set(edit->colorsel2, ccl->r2, ccl->g2, ccl->b2, ccl->a2);
-   elm_colorselector_color_set(edit->colorsel3, ccl->r3, ccl->g3, ccl->b3, ccl->a3);
+   edit->current_ccl = ccl;
 
    edje_object_color_class_set(edit->edje_preview,
                                "colorclass_manager/text_example_colorclass",
@@ -322,9 +253,9 @@ _on_selected(void *data,
                                ccl->r3, ccl->g3,
                                ccl->b3, ccl->a3);
 
-   elm_object_disabled_set(edit->colorsel1, false);
-   elm_object_disabled_set(edit->colorsel2, false);
-   elm_object_disabled_set(edit->colorsel3, false);
+   current_color_data->current_ccl = ccl;
+   current_color_data->edje_preview = edit->edje_preview;
+   evas_object_smart_callback_call(ap.win, SIGNAL_COLOR_SELECTED, current_color_data);
 }
 
 /* Search functions and creatings */
@@ -528,23 +459,6 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    BUTTON_ADD(edit->layout, btn_apply, _("Apply"))
    elm_object_part_content_set(edit->layout, "elm.swallow.btn_apply", btn_apply);
    elm_object_disabled_set(btn_apply, EINA_TRUE);
-
-   /* Creating colorselectors */
-#define ADD_COLORSEL(NUMBER, SWALLOW_NAME, COLORSEL_NAME) \
-   edit->colorsel##NUMBER = elm_colorselector_add(edit->layout); \
-   elm_colorselector_mode_set(edit->colorsel##NUMBER, ELM_COLORSELECTOR_ALL); \
-   elm_object_part_content_set(edit->layout, "swallow.colorselector."SWALLOW_NAME, edit->colorsel##NUMBER); \
-   elm_object_part_text_set(edit->layout, "text."SWALLOW_NAME, COLORSEL_NAME); \
-   evas_object_smart_callback_add(edit->colorsel##NUMBER, "changed,user", _on_changed_##NUMBER, edit); \
-   evas_object_smart_callback_add(edit->colorsel##NUMBER, "color,item,selected", _on_changed_##NUMBER, edit); \
-   elm_object_disabled_set(edit->colorsel##NUMBER, true);
-
-   ADD_COLORSEL(1, "object", _("Object color"));
-   ADD_COLORSEL(2, "outline", _("Outline color"));
-   ADD_COLORSEL(3, "shadow", _("Shadow color"));
-
-#undef ADD_COLORSEL
-
 }
 
 Eina_Bool

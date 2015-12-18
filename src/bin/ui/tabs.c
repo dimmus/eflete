@@ -141,7 +141,7 @@ _content_set(void *data,
         else if (toolbar_item == tabs.menu.item_colorclass)
           {
              tabs_menu_tab_open(TAB_COLORCLASS_EDITOR);
-             evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
+             evas_object_smart_callback_call(ap.win, SIGNAL_COLOR_EDITOR_TAB_CLICKED, NULL);
           }
         else
           {
