@@ -110,7 +110,7 @@ _live_view_load_object(Live_View *live, Group *group)
      {
         if (!live->in_prog_edit)
           {
-             live->object = layout_custom_create(live->layout);
+             live->object = layout_custom_create(live->layout, NULL);
           }
         else
           {

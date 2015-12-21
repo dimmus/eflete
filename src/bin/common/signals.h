@@ -354,4 +354,20 @@ typedef struct {
  */
 #define SIGNAL_DEMO_TEXT_SET "SIGNAL_DEMO_TEXT_SET"
 
+/**
+ * emited when part swallow is set with data in demo.
+ * eventinfo - part which contain important information like text, name, content.
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_DEMO_SWALLOW_SET "SIGNAL_DEMO_SWALLOW_SET"
+
+/**
+ * emited when program's signal is sent into demo.
+ * eventinfo - NULL.
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_DEMO_SIGNAL_SEND "SIGNAL_DEMO_SIGNAL_SEND"
+
 #endif /* SIGNALS_H*/

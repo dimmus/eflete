@@ -30,6 +30,8 @@
 #include "live_widgets.h"
 #include <Elementary.h>
 
+#include "signals.h"
+
 /**
  * Common Swallow callback that is used in most of simple widgets.
  *
@@ -74,7 +76,7 @@ send_signal(void *data, Evas_Object *obj, void *event_info);
  * !  !  !  !  !  !  !  !  !  !  !  !  !  !  !  !  ! *
  *****************************************************/
 Evas_Object *
-layout_custom_create(Evas_Object *parent);
+layout_custom_create(Evas_Object *parent, const Group *group);
 
 Evas_Object *
 widget_actionslider_create(Evas_Object *parent, const Group *group);
