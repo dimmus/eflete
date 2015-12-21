@@ -212,18 +212,6 @@ _part_item_added(void *data __UNUSED__,
 }
 
 static void
-_part_deleted(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *ei)
-{
-   Part_ *part = ei;
-
-   assert(tabs.current_workspace != NULL);
-
-   workspace_edit_object_part_del(tabs.current_workspace, part);
-}
-
-static void
 _part_renamed(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *ei)
@@ -334,6 +322,20 @@ _editor_part_added_cb(void *data __UNUSED__,
    workspace_part_add(tabs.current_workspace, part_name);
 }
 
+static void
+_editor_part_deleted_cb(void *data __UNUSED__,
+                        Evas_Object *obj __UNUSED__,
+                        void *event_info)
+{
+   Eina_Stringshare *part_name = event_info;
+
+   assert(part_name != NULL);
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+
+   workspace_part_del(tabs.current_workspace, part_name);
+}
+
 Evas_Object *
 tabs_add(void)
 {
@@ -416,7 +418,6 @@ tabs_add(void)
    elm_object_item_disabled_set(tabs.menu.item_colorclass, true);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PART_DELETED, _part_deleted, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_UNSELECTED, _part_unselected, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_ITEM_ADDED, _part_item_added, NULL);
@@ -426,7 +427,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CLOSED, _project_closed, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, NULL);
-   //evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, NULL);
    //evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, NULL);
    //evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, NULL);
    //evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_RESTACKED, _editor_part_restacked_cb, NULL);

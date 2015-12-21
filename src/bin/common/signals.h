@@ -69,28 +69,12 @@
 #define SIGNAL_PART_UNSELECTED "SIGNAL_PART_UNSELECTED"
 
 /**
- * emited when new part is added.
- * eventinfo - pointer to Part_ structure
- *
- * @ingroup Window
- */
-#define SIGNAL_PART_ADDED "SIGNAL_PART_ADDED"
-
-/**
  * emited when new part_item is added.
  * eventinfo - pointer to Part_ structure
  *
  * @ingroup Window
  */
 #define SIGNAL_PART_ITEM_ADDED "SIGNAL_PART_ITEM_ADDED"
-
-/**
- * emited when part is deleted.
- * eventinfo - pointer to Part_ structure
- *
- * @ingroup Window
- */
-#define SIGNAL_PART_DELETED "SIGNAL_PART_DELETED"
 
 typedef struct {
    const char *old_name;

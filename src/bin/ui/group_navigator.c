@@ -1027,33 +1027,20 @@ _part_item_find(Part_List *pl, Part_ *part)
    return part_item;
 }
 
-static void
-_editor_part_deleted_cb(void *data,
-                        Evas_Object *obj __UNUSED__,
-                        void *event_info)
+void
+group_navigator_part_del(Evas_Object *obj, Part_ *part)
 {
-   Part_List *pl = data;
-   Eina_Stringshare *part_name = event_info;
-   Part_ *part;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Elm_Object_Item *part_item;
 
    assert(pl != NULL);
-   assert(part_name != NULL);
-
-   part = pm_resource_unsorted_get(pl->group->parts, part_name);
+   assert(part != NULL);
 
    part_item = _part_item_find(pl, part);
    if (pl->selected_part_item == part_item)
      _unselect_part(pl);
 
-   /* This callbck should be called before actual part deletion */
-   evas_object_smart_callback_call(ap.win, SIGNAL_PART_DELETED, (void *)part);
-
    elm_object_item_del(part_item);
-   /* part is freed after deletion so we need to save its name */
-   part_name = eina_stringshare_ref(part->name);
-   gm_part_del(ap.project, part);
-   eina_stringshare_del(part_name);
 }
 
 static void
@@ -1597,7 +1584,6 @@ group_navigator_add(Group *group)
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
 
    TODO("Fix multi-tab logic");
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_RESTACKED, _editor_part_restacked_cb, pl);

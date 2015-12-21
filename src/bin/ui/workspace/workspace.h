@@ -118,17 +118,16 @@ void
 workspace_part_add(Evas_Object *obj, Eina_Stringshare *part_name);
 
 /**
- * Delete part from style, which currently loaded into workspace.
+ * Del part from group_edit and group_navigator.
+ * Part should be already deleted edit_object.
  *
  * @param obj The workspace object.
- * @param part Pointer to deleting part.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
+ * @param part_name name of deleted part
  *
  * @ingroup Workspace
  */
-Eina_Bool
-workspace_edit_object_part_del(Evas_Object *obj, Part_ *part);
+void
+workspace_part_del(Evas_Object *obj, Eina_Stringshare *part_name);
 
 /**
  *

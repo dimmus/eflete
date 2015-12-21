@@ -91,4 +91,7 @@ group_navigator_part_update(Evas_Object *obj, Part_ *part);
 
 void
 group_navigator_part_add(Evas_Object *obj, Part_ *part);
+
+void
+group_navigator_part_del(Evas_Object *obj, Part_ *part);
 #endif /* GROUP_NAVIGATOR_H */
