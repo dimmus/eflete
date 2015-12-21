@@ -106,17 +106,17 @@ void
 workspace_groupview_hard_update(Evas_Object *obj);
 
 /**
- * Add new part into style, which currently loaded into workspace.
+ * Add new part to group_edit and group_navigator.
+ * Part should be already added to edit_object.
  *
  * @param obj The workspace object.
- * @param part Pointer to Part_ structure.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
+ * @param part_name name of added part
  *
  * @ingroup Workspace
  */
-Eina_Bool
-workspace_edit_object_part_add(Evas_Object *obj, Part_ *part);
+void
+workspace_part_add(Evas_Object *obj, Eina_Stringshare *part_name);
+
 /**
  * Delete part from style, which currently loaded into workspace.
  *

@@ -587,20 +587,14 @@ _popup_add_part_ok_clicked(void *data,
    ecore_job_add(_job_popup_del, pl);
 }
 
-static void
-_editor_part_added_cb(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info)
+void
+group_navigator_part_add(Evas_Object *obj, Part_ *part)
 {
-   Part_List *pl = data;
-   Eina_Stringshare *part_name = event_info;
-   Part_ *part;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Elm_Object_Item *glit;
 
    assert(pl != NULL);
-   assert(part_name != NULL);
-
-   part = gm_part_add(ap.project, pl->group, part_name);
+   assert(part != NULL);
 
    glit = elm_genlist_item_append(pl->genlist,
                                   pl->itc_part,
@@ -609,10 +603,6 @@ _editor_part_added_cb(void *data,
                                   ELM_GENLIST_ITEM_TREE,
                                   NULL,
                                   NULL);
-
-   /* callback should be called before selection to allow some additional loading */
-   evas_object_smart_callback_call(ap.win, SIGNAL_PART_ADDED, (void *)part);
-
    elm_genlist_item_selected_set(glit, true);
 }
 
@@ -1607,7 +1597,6 @@ group_navigator_add(Group *group)
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
 
    TODO("Fix multi-tab logic");
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, pl);

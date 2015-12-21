@@ -1730,15 +1730,6 @@ workspace_edit_object_soft_update(Evas_Object *obj)
 }
 
 Eina_Bool
-workspace_edit_object_part_add(Evas_Object *obj, Part_ *part)
-{
-   WS_DATA_GET(obj, sd);
-   assert(part != NULL);
-
-   return groupedit_edit_object_part_add(sd->groupedit, part);
-}
-
-Eina_Bool
 workspace_edit_object_part_del(Evas_Object *obj, Part_ *part)
 {
    WS_DATA_GET(obj, sd);
@@ -1899,4 +1890,16 @@ workspace_edit_object_part_item_selected_set(Evas_Object *obj,
 
    groupedit_edit_object_part_item_selected_set(sd->groupedit, item_name, selected);
    return true;
+}
+
+void
+workspace_part_add(Evas_Object *obj, Eina_Stringshare *part_name)
+{
+   Part_ *part;
+   WS_DATA_GET(obj, sd);
+   assert(part_name != NULL);
+
+   part = gm_part_add(ap.project, sd->group, part_name);
+   groupedit_edit_object_part_add(sd->groupedit, part);
+   group_navigator_part_add(sd->group_navigator, part);
 }
