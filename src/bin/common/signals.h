@@ -323,6 +323,14 @@ typedef struct {
 #define SIGNAL_DEMO_TEXT_PART_CLICKED "SIGNAL_DEMO_TEXT_PART_CLICKED"
 
 /**
+ * emited when swallow part in demo is clicked.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_DEMO_SWALLOW_PART_CLICKED "SIGNAL_DEMO_SWALLOW_PART_CLICKED"
+
+/**
  * emited when style/styles in style editor is/are selected.
  * eventinfo - NULL
  *
@@ -340,7 +348,7 @@ typedef struct {
 
 /**
  * emited when part text is set with data in demo.
- * eventinfo - NULL
+ * eventinfo - part which contain important information like text, name, content.
  *
  * @ingroup Window
  */
