@@ -102,7 +102,10 @@ ui_property_demo_text_part_set(Evas_Object *property, Part_ *part)
 
    /* setting */
    if (part)
-     elm_object_text_set(pd->name, part->name);
+     {
+        elm_object_text_set(pd->name, part->name);
+        elm_entry_entry_set(pd->text, part->content);
+     }
 
    pd->part = part;
 
