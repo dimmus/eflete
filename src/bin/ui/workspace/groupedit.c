@@ -53,9 +53,7 @@ _groupedit_smart_add(Evas_Object *o)
 
    _groupedit_parent_sc->add(o);
 
-   priv->e = evas_object_evas_get(o);
-
-   priv->event = evas_object_rectangle_add(priv->e);
+   priv->event = evas_object_rectangle_add(evas_object_evas_get(o));
    evas_object_color_set(priv->event, 0, 0, 0, 0);
 
    evas_object_event_callback_add(priv->event, EVAS_CALLBACK_MOUSE_UP,
@@ -220,7 +218,7 @@ groupedit_add(Evas_Object *parent, Group *group)
    /* hide the editing object by using clipper (clipper is small, it's size is 0,0)
     * with such clipper object invisible and calculate geometry. */
    evas_object_show(sd->group->edit_object);
-   sd->clipper = evas_object_rectangle_add(sd->e);
+   sd->clipper = evas_object_rectangle_add(evas_object_evas_get(sd->obj));
    evas_object_clip_set(sd->group->edit_object, sd->clipper);
    evas_object_smart_member_add(sd->clipper, obj);
    evas_object_show(sd->clipper);

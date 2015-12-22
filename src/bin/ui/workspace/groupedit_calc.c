@@ -227,7 +227,7 @@ _conteiner_cell_sizer_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp, const
    Eina_Stringshare *item_source;
    int min_w, min_h, max_w, max_h, w, h;
 
-   cell_content = edje_object_add(sd->e);
+   cell_content = edje_object_add(evas_object_evas_get(sd->obj));
    item_source = edje_edit_part_item_source_get(sd->group->edit_object, gp->part->name, item_name);
    edje_object_file_set(cell_content, ap.project->dev, item_source);
    eina_stringshare_del(item_source);
@@ -319,7 +319,7 @@ _part_table_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 
    assert(gp->container == NULL);
 
-   gp->container = evas_object_table_add(sd->e);
+   gp->container = evas_object_table_add(evas_object_evas_get(sd->obj));
    elm_box_pack_before(gp->draw, gp->container, gp->proxy_part);
    evas_object_show(gp->container);
 
@@ -424,7 +424,7 @@ _part_box_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 
    assert(gp->container == NULL);
 
-   gp->container = evas_object_box_add(sd->e);
+   gp->container = evas_object_box_add(evas_object_evas_get(sd->obj));
    elm_box_pack_before(gp->draw, gp->container, gp->proxy_part);
    evas_object_show(gp->container);
 
@@ -628,7 +628,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
    gp->part->visible = true;
 
 #define PART_VIEW_PROXY_SET() \
-   gp->proxy_part = evas_object_image_filled_add(sd->e); \
+   gp->proxy_part = evas_object_image_filled_add(evas_object_evas_get(sd->obj)); \
    evas_object_size_hint_weight_set(gp->proxy_part, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(gp->proxy_part, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    elm_box_pack_end(gp->draw, gp->proxy_part); \
@@ -679,7 +679,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
           * Here created transparent rectangle as draw evas primitives.
           */
          TODO("add support for all part types.")
-         gp->draw = evas_object_rectangle_add(sd->e);
+         gp->draw = evas_object_rectangle_add(evas_object_evas_get(sd->obj));
          evas_object_color_set(gp->draw, 0, 0, 0, 0);
          break;
      }

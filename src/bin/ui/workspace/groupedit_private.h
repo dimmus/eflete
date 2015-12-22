@@ -56,7 +56,6 @@ struct _Ws_Groupedit_Smart_Data
 {
    Evas_Object_Smart_Clipped_Data base;
    Group *group;
-   Evas *e;
    Evas_Object *obj;
    Evas_Object *event;
    Evas_Object *parent;
