@@ -541,6 +541,18 @@ gm_state_del(Project *pro, State *state)
 }
 
 void
+gm_part_item_add(Project *pro, Part_ *part, Eina_Stringshare *item_name)
+{
+   assert(pro != NULL);
+   assert(part != NULL);
+   assert(item_name != NULL);
+   assert((part->type ==  EDJE_PART_TYPE_BOX) ||
+          (part->type ==  EDJE_PART_TYPE_TABLE));
+
+   part->items = eina_list_append(part->items, eina_stringshare_ref(item_name));
+}
+
+void
 gm_part_item_del(Project *pro, Part_ *part, Eina_Stringshare *item_name)
 {
    Eina_List *l;

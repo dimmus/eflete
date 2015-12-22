@@ -857,37 +857,15 @@ _popup_add_item_ok_clicked(void *data,
    ecore_job_add(_job_popup_del, pl);
 }
 
-static void
-_editor_part_item_added_cb(void *data,
-                           Evas_Object *obj __UNUSED__,
-                           void *event_info)
+void
+group_navigator_part_item_add(Evas_Object *obj, Part_ *part __UNUSED__, Eina_Stringshare * item_name)
 {
-   Part_List *pl = data;
-   const Editor_Item *editor_item = event_info;
-   Part_ *part;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Elm_Object_Item *items_glit, *glit;
    const Eina_List *l;
-   Eina_Stringshare *item_name;
 
    assert(pl != NULL);
-   assert(editor_item != NULL);
-
-   part = elm_object_item_data_get(pl->selected_part_item);
-   if (strcmp(editor_item->part_name, part->name))
-     {
-        part = pm_resource_unsorted_get(part->group->parts, editor_item->part_name);
-        group_navigator_part_select(pl->layout, part);
-     }
-
-   assert((part->type == EDJE_PART_TYPE_TABLE) ||
-          (part->type == EDJE_PART_TYPE_BOX));
-
-   item_name = eina_stringshare_add(editor_item->item_name);
-   TODO("move this logic to group_manager")
-   part->items = eina_list_append(part->items, item_name);
-
-   /* callback should be called before selection to allow some additional loading */
-   evas_object_smart_callback_call(ap.win, SIGNAL_PART_ITEM_ADDED, (void *)part);
+   assert(item_name != NULL);
 
    elm_genlist_item_expanded_set(pl->selected_part_item, true);
    items_glit = eina_list_data_get(eina_list_last(elm_genlist_item_subitems_get(pl->selected_part_item)));
@@ -1584,7 +1562,6 @@ group_navigator_add(Group *group)
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
 
    TODO("Fix multi-tab logic");
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_RESTACKED, _editor_part_restacked_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, _editor_part_item_restacked_cb, pl);

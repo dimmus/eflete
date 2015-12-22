@@ -96,16 +96,6 @@ void
 workspace_groupview_soft_update(Evas_Object *obj);
 
 /**
- * Update the parts attributes, and recalculate them.
- *
- * @paramaram obj The workspace object.
- *
- * @ingroup Workspace
- */
-void
-workspace_groupview_hard_update(Evas_Object *obj);
-
-/**
  * Add new part to group_edit and group_navigator.
  * Part should be already added to edit_object.
  *
@@ -116,6 +106,21 @@ workspace_groupview_hard_update(Evas_Object *obj);
  */
 void
 workspace_part_add(Evas_Object *obj, Eina_Stringshare *part_name);
+
+/**
+ * Add new part item to group_edit and group_navigator.
+ * Part should be already added to edit_object.
+ *
+ * @param obj The workspace object.
+ * @param part_name name of part
+ * @param item_name name of added part_item
+ *
+ * @ingroup Workspace
+ */
+void
+workspace_part_item_add(Evas_Object *obj,
+                        Eina_Stringshare *part_name,
+                        Eina_Stringshare *item_name);
 
 /**
  * Del part from group_edit and group_navigator.

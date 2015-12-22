@@ -109,6 +109,9 @@ gm_state_add(Project *pro, Part_ *part, const char *state_name);
 Part_ *
 gm_part_add(Project *pro, Group *group, Eina_Stringshare *part_name);
 
+void
+gm_part_item_add(Project *pro, Part_ *part, Eina_Stringshare *item_name);
+
 Group *
 gm_group_add(Project *pro, const char *group_name);
 
