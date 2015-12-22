@@ -174,7 +174,6 @@ static void
 _del_tab(Tabs_Item *item)
 {
    elm_object_item_del(item->toolbar_item);
-   gm_group_edit_object_unload(item->group);
    /* delete pans with workspace and liveview */
    evas_object_del(item->content);
    history_del(item->group->history);
@@ -589,7 +588,6 @@ tabs_tab_add(Group *group)
     * be NULL */
    assert(group->history == NULL);
 
-   gm_group_edit_object_load(ap.project, group, evas_object_evas_get(ap.win));
    group->history = history_add(group);
 
    item = mem_calloc(1, sizeof(Tabs_Item));
