@@ -149,7 +149,7 @@ _selected_cb(void *data __UNUSED__,
        (part->type == EDJE_PART_TYPE_TEXTBLOCK))
      evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_PART_CLICKED, part);
    else if (part->type == EDJE_PART_TYPE_SWALLOW)
-     evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_PART_CLICKED, NULL);
+     evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_PART_CLICKED, part);
    else /* empty everything */
      evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
 }
