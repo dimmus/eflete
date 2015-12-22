@@ -54,6 +54,11 @@ struct _Demo_Swallow_Prop_Data
 };
 typedef struct _Demo_Swallow_Prop_Data Demo_Swallow_Prop_Data;
 
+static const char *swallow_content_type[] = { N_("None"),
+                                         N_("Rectangle"),
+                                         N_("Picture"),
+                                         N_("Widget"),
+                                         NULL};
 
 TODO("move from here, property_demo_text and property_group all common stuff")
 static Evas_Object *
@@ -68,6 +73,30 @@ prop_item_label_add(Evas_Object *parent,
    PROPERTY_ITEM_ADD(parent, lab_text, "1swallow")
    LABEL_ADD(item, *label, text)
    elm_object_part_content_set(item, "elm.swallow.content", *label);
+   return item;
+}
+
+static void
+_on_content_set(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info)
+{
+   Demo_Swallow_Prop_Data *pd __UNUSED__ = (Demo_Swallow_Prop_Data *)data;
+   Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info;
+   if (item->index == 0)
+     return;
+}
+
+static Evas_Object *
+prop_swallow_content_add(Evas_Object *parent, Demo_Swallow_Prop_Data *pd)
+{
+   int i;
+   PROPERTY_ITEM_ADD(parent, _("Content Set"), "1swallow")
+   EWE_COMBOBOX_ADD(parent, pd->swallow_content)
+   for (i = 0; swallow_content_type[i]; ewe_combobox_item_add(pd->swallow_content, swallow_content_type[i]), i++) ;
+   evas_object_smart_callback_add(pd->swallow_content, "selected", _on_content_set, pd);
+   elm_layout_content_set(item, "elm.swallow.content", pd->swallow_content);
+   ewe_combobox_select_item_set(pd->swallow_content, 0);
    return item;
 }
 
@@ -107,6 +136,8 @@ ui_property_demo_swallow_add(Evas_Object *parent)
    /* Frame with info */
    elm_box_align_set(pd->box, 0.5, 0.0);
    item = prop_item_label_add(pd->box, &pd->name, _("name"), _(" - "));
+   elm_box_pack_end(pd->box, item);
+   item = prop_swallow_content_add(pd->box, pd);
    elm_box_pack_end(pd->box, item);
 
    return pd->box;
