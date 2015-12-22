@@ -1939,3 +1939,21 @@ workspace_part_item_del(Evas_Object *obj,
    gm_part_item_del(ap.project, part, item_name);
    group_navigator_part_item_del(sd->group_navigator, part, item_name);
 }
+
+void
+workspace_part_state_add(Evas_Object *obj,
+                         Eina_Stringshare *part_name,
+                         Eina_Stringshare *state_name)
+{
+   Part_ *part;
+   State *state;
+   WS_DATA_GET(obj, sd);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+
+   part = pm_resource_unsorted_get(sd->group->parts, part_name);
+
+   group_navigator_part_select(sd->group_navigator, part);
+   state = gm_state_add(ap.project, part, state_name);
+   group_navigator_part_state_add(sd->group_navigator, part, state);
+}

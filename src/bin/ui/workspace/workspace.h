@@ -123,6 +123,21 @@ workspace_part_item_add(Evas_Object *obj,
                         Eina_Stringshare *item_name);
 
 /**
+ * Add new part state to group_edit and group_navigator.
+ * Part should be already added to edit_object.
+ *
+ * @param obj The workspace object.
+ * @param part_name name of part
+ * @param state_name name of added part_state
+ *
+ * @ingroup Workspace
+ */
+void
+workspace_part_state_add(Evas_Object *obj,
+                         Eina_Stringshare *part_name,
+                         Eina_Stringshare *state_name);
+
+/**
  * Add new part item to group_edit and group_navigator.
  * Part should be already deleted from edit_object.
  *

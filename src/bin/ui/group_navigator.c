@@ -709,33 +709,17 @@ _popup_add_state_ok_clicked(void *data,
    ecore_job_add(_job_popup_del, pl);
 }
 
-static void
-_editor_state_added_cb(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       void *event_info)
+void
+group_navigator_part_state_add(Evas_Object *obj, Part_ *part, State *state)
 {
-   Part_List *pl = data;
-   const Editor_State *editor_state = event_info;
-   Part_ *part;
-   State *state;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Eina_Bool items_expanded = false;
    Elm_Object_Item *glit;
    const Eina_List *l;
 
    assert(pl != NULL);
-   assert(editor_state != NULL);
-
-   part = elm_object_item_data_get(pl->selected_part_item);
-   if (strcmp(editor_state->part_name, part->name))
-     {
-        part = pm_resource_unsorted_get(part->group->parts, editor_state->part_name);
-        group_navigator_part_select(pl->layout, part);
-     }
-   state = gm_state_add(ap.project, part, editor_state->state_name);
-
-   TODO("Check this signal")
-   /* callback should be called before selection to allow some additional loading */
-   evas_object_smart_callback_call(ap.win, SIGNAL_STATE_ADDED, (void *)state);
+   assert(part != NULL);
+   assert(state != NULL);
 
    if ((part->type == EDJE_PART_TYPE_TABLE) ||
        (part->type == EDJE_PART_TYPE_BOX))
@@ -1553,7 +1537,6 @@ group_navigator_add(Group *group)
    TODO("Fix multi-tab logic");
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_RESTACKED, _editor_part_restacked_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, _editor_part_item_restacked_cb, pl);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, pl);
 
    TODO("Add deletion callback and free resources");
