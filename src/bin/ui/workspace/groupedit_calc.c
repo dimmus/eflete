@@ -129,13 +129,11 @@ _parts_list_new(Ws_Groupedit_Smart_Data *sd)
 
    assert(sd != NULL);
 
-   evas_event_freeze(sd->e);
    EINA_LIST_FOREACH(sd->group->parts, l, part)
      {
         gp = _part_draw_add(sd, part);
         sd->parts = eina_list_append(sd->parts, gp);
      }
-   evas_event_thaw(sd->e);
 }
 
 void
