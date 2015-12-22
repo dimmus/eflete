@@ -1133,30 +1133,19 @@ _item_del(Part_List *pl,
    history_change_add(pl->group->history, change);
 }
 
-static void
-_editor_part_item_deleted_cb(void *data,
-                             Evas_Object *obj __UNUSED__,
-                             void *event_info)
+void
+group_navigator_part_item_del(Evas_Object *obj, Part_ *part __UNUSED__, Eina_Stringshare *item_name)
 {
-   Part_List *pl = data;
-   const Editor_Item *editor_item = event_info;
-   Part_ *part;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Elm_Object_Item *items_glit;
 
    assert(pl != NULL);
-   assert(editor_item != NULL);
+   assert(item_name != NULL);
 
-   part = elm_object_item_data_get(pl->selected_part_item);
-   if (strcmp(editor_item->part_name, part->name))
-     {
-        part = pm_resource_unsorted_get(part->group->parts, editor_item->part_name);
-        group_navigator_part_select(pl->layout, part);
-     }
    elm_genlist_item_expanded_set(pl->selected_part_item, true);
    items_glit = eina_list_data_get(eina_list_last(elm_genlist_item_subitems_get(pl->selected_part_item)));
 
    elm_genlist_item_expanded_set(items_glit, false);
-   gm_part_item_del(ap.project, part, editor_item->item_name);
    elm_genlist_item_update(items_glit);
    elm_genlist_item_expanded_set(items_glit, true);
 }
@@ -1562,7 +1551,6 @@ group_navigator_add(Group *group)
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
 
    TODO("Fix multi-tab logic");
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_RESTACKED, _editor_part_restacked_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, _editor_part_item_restacked_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, pl);

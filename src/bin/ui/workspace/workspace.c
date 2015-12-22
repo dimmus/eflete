@@ -1919,3 +1919,23 @@ workspace_part_item_add(Evas_Object *obj,
    groupedit_hard_update(sd->groupedit);
    group_navigator_part_item_add(sd->group_navigator, part, item_name);
 }
+
+void
+workspace_part_item_del(Evas_Object *obj,
+                        Eina_Stringshare *part_name,
+                        Eina_Stringshare *item_name)
+{
+   Part_ *part;
+   WS_DATA_GET(obj, sd);
+   assert(part_name != NULL);
+   assert(item_name != NULL);
+
+   part = pm_resource_unsorted_get(sd->group->parts, part_name);
+
+   assert((part->type == EDJE_PART_TYPE_TABLE) ||
+          (part->type == EDJE_PART_TYPE_BOX));
+
+   group_navigator_part_select(sd->group_navigator, part);
+   gm_part_item_del(ap.project, part, item_name);
+   group_navigator_part_item_del(sd->group_navigator, part, item_name);
+}
