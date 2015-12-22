@@ -43,6 +43,7 @@ struct _Demo_Swallow_Prop_Data
    Evas_Object *swallow_content;
 
    Evas_Object *color;
+   Evas_Object *color_obj;
    Evas_Object *picture;
    Evas_Object *widget;
 
@@ -99,6 +100,69 @@ prop_swallow_content_add(Evas_Object *parent, Demo_Swallow_Prop_Data *pd)
    ewe_combobox_select_item_set(pd->swallow_content, 0);
    return item;
 }
+static void
+_on_rectangle_color_change(void *data,
+                           Evas_Object *obj,
+                           void *event_info __UNUSED__)
+{
+   int r, g, b, a;
+   Demo_Swallow_Prop_Data *pd = (Demo_Swallow_Prop_Data *)data;
+   colorselector_color_get(obj, &r, &g, &b, &a);
+   evas_object_color_set(pd->color_obj, r*a/255, g*a/255, b*a/255, a);
+}
+static void
+_on_rectangle_color_dismissed(void *data,
+                              Evas_Object *obj,
+                              void *event_info __UNUSED__)
+{
+   Demo_Swallow_Prop_Data *pd = (Demo_Swallow_Prop_Data *)data;
+   evas_object_smart_callback_del_full(obj, "color,changed",
+                                       _on_rectangle_color_change, pd);
+   evas_object_smart_callback_del_full(obj, "palette,item,selected",
+                                       _on_rectangle_color_change, pd);
+   evas_object_smart_callback_del_full(obj, "dismissed",
+                                       _on_rectangle_color_dismissed, pd);
+   evas_object_hide(obj);
+}
+static void
+_on_color_clicked(void *data,
+                  Evas_Object *obj,
+                  const char *emission __UNUSED__,
+                  const char *source __UNUSED__)
+{
+   int x, y;
+   int r, g, b, a;
+   Evas_Object *colorsel;
+   Demo_Swallow_Prop_Data *pd = (Demo_Swallow_Prop_Data *)data;
+   colorsel = colorselector_get();
+   evas_object_color_get(pd->color_obj, &r, &g, &b, &a);
+   colorselector_color_set(colorsel, r, g, b, a);
+   evas_object_smart_callback_add(colorsel, "color,changed",
+                                  _on_rectangle_color_change, pd);
+   evas_object_smart_callback_add(colorsel, "dismissed",
+                                  _on_rectangle_color_dismissed, pd);
+   evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y);
+   evas_object_move(colorsel, x, y);
+   evas_object_show(colorsel);
+}
+
+static Evas_Object *
+prop_rectangle_color_add(Evas_Object *parent,
+                         Demo_Swallow_Prop_Data *pd)
+{
+   PROPERTY_ITEM_ADD(parent, _("Rectangle Color"), "1swallow_subtext")
+   pd->color = elm_layout_add(item);
+   elm_layout_theme_set(pd->color, "layout", "property", "color");
+   evas_object_size_hint_weight_set(pd->color,  EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(pd->color, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   pd->color_obj = elm_layout_add(parent);
+   elm_layout_theme_set(pd->color_obj, "image", "color", "color_set");
+   elm_layout_signal_callback_add(pd->color, "clicked", "eflete",
+                                  _on_color_clicked, pd);
+   elm_layout_content_set(pd->color, NULL, pd->color_obj);
+   elm_layout_content_set(item, NULL, pd->color);
+   return item;
+}
 
 void
 ui_property_demo_swallow_part_set(Evas_Object *property, Part_ *part)
@@ -138,6 +202,8 @@ ui_property_demo_swallow_add(Evas_Object *parent)
    item = prop_item_label_add(pd->box, &pd->name, _("name"), _(" - "));
    elm_box_pack_end(pd->box, item);
    item = prop_swallow_content_add(pd->box, pd);
+   elm_box_pack_end(pd->box, item);
+   item = prop_rectangle_color_add(pd->box, pd);
    elm_box_pack_end(pd->box, item);
 
    return pd->box;
