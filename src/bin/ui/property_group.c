@@ -877,6 +877,9 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_STATE_FILL_TYPE:
          STATE_ATTR_1COMBOBOX_LIST_UPDATE(state_fill, type, state_fill);
          break;
+      case ATTRIBUTE_STATE_IMAGE_TWEEN:
+/*         prop_item_state_image_tween_update(pd->attributes.state_image.tween, pd); */
+         break;
          /* Don't add 'default:'. Compiler must warn about missing cases */
      }
 }
