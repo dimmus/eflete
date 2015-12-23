@@ -182,6 +182,13 @@ workspace_part_del(Evas_Object *obj, Eina_Stringshare *part_name);
 /**
  *
  */
+void
+workspace_part_restack(Evas_Object *obj,
+                       Eina_Stringshare *part_name,
+                       Eina_Stringshare *relative_part_name);
+/**
+ *
+ */
 Eina_Bool
 workspace_edit_object_part_state_set(Evas_Object *obj, Part_ *part);
 

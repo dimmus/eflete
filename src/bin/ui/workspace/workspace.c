@@ -1468,19 +1468,6 @@ _on_group_navigator_part_select(void *data,
 }
 
 static void
-_on_group_navigator_part_restacked(void *data,
-                                   Evas_Object *obj __UNUSED__,
-                                   void *event_info)
-{
-   Evas_Object *workspace = (Evas_Object *)data;
-   Editor_Part_Restack *ei = event_info;
-
-   WS_DATA_GET(workspace, sd);
-
-   groupedit_edit_object_part_restack(sd->groupedit, ei->part_name, ei->relative_part_name);
-}
-
-static void
 _on_group_navigator_part_item_restacked(void *data,
                                         Evas_Object *obj __UNUSED__,
                                         void *event_info __UNUSED__)
@@ -1559,8 +1546,6 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_part_content_set(sd->panes, "right", sd->group_navigator);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED,
                                   _on_group_navigator_part_select, obj);
-   evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_RESTACKED,
-                                  _on_group_navigator_part_restacked, obj);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_ITEM_RESTACKED,
                                   _on_group_navigator_part_item_restacked, obj);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED,
@@ -2002,4 +1987,24 @@ workspace_part_state_del(Evas_Object *obj,
    group_navigator_part_select(sd->group_navigator, part);
    group_navigator_part_state_del(sd->group_navigator, part, state);
    gm_state_del(ap.project, state);
+}
+
+void
+workspace_part_restack(Evas_Object *obj,
+                       Eina_Stringshare *part_name,
+                       Eina_Stringshare *relative_part_name)
+{
+   Part_ *part, *rel_part = NULL;
+   WS_DATA_GET(obj, sd);
+   assert(part_name != NULL);
+
+   part = pm_resource_unsorted_get(sd->group->parts, part_name);
+   if (relative_part_name)
+     rel_part = pm_resource_unsorted_get(sd->group->parts, relative_part_name);
+
+   group_navigator_part_select(sd->group_navigator, part);
+   group_navigator_part_restack(sd->group_navigator, part, rel_part);
+   gm_part_restack(part, rel_part);
+
+   groupedit_edit_object_part_restack(sd->groupedit, part_name, relative_part_name);
 }

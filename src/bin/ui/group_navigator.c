@@ -1198,33 +1198,21 @@ _part_restack(Part_List *pl, Elm_Object_Item *glit, Eina_Bool move_up)
    eina_stringshare_del(msg);
 }
 
-static void
-_editor_part_restacked_cb(void *data,
-                          Evas_Object *obj __UNUSED__,
-                          void *event_info)
+void
+group_navigator_part_restack(Evas_Object *obj, Part_ *part, Part_ *rel_part)
 {
-   Part_List *pl = data;
-   const Editor_Part_Restack *editor_part_restack = event_info;
-   Part_ *part, *rel_part = NULL;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Elm_Object_Item *glit, *rel_glit;
 
    assert(pl != NULL);
-   assert(editor_part_restack != NULL);
-
-   part = elm_object_item_data_get(pl->selected_part_item);
-   if (strcmp(editor_part_restack->part_name, part->name))
-     {
-        part = pm_resource_unsorted_get(part->group->parts, editor_part_restack->part_name);
-        group_navigator_part_select(pl->layout, part);
-     }
+   assert(part != NULL);
 
    glit = _part_item_find(pl, part);
    assert(glit != NULL);
    TODO("Update item insertion after adding top-level 'parts' item to group_navigator and delete this assert");
    assert(elm_genlist_item_parent_get(glit) == NULL);
-   if (editor_part_restack->relative_part_name)
+   if (rel_part)
      {
-        rel_part = pm_resource_unsorted_get(pl->group->parts, editor_part_restack->relative_part_name);
         rel_glit = _part_item_find(pl, rel_part);
         assert(rel_glit != NULL);
 
@@ -1249,8 +1237,6 @@ _editor_part_restacked_cb(void *data,
      }
    elm_object_item_del(glit);
    group_navigator_part_select(pl->layout, part);
-   gm_part_restack(part, rel_part);
-   evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_RESTACKED, (void *)editor_part_restack);
 }
 
 static void
@@ -1520,7 +1506,6 @@ group_navigator_add(Group *group)
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
 
    TODO("Fix multi-tab logic");
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_RESTACKED, _editor_part_restacked_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, _editor_part_item_restacked_cb, pl);
 
    TODO("Add deletion callback and free resources");
