@@ -1037,45 +1037,31 @@ _state_del(Part_List *pl,
    history_change_add(pl->group->history, change);
 }
 
-static void
-_editor_state_deleted_cb(void *data,
-                         Evas_Object *obj __UNUSED__,
-                         void *event_info)
+void
+group_navigator_part_state_del(Evas_Object *obj, Part_ *part __UNUSED__, State *state)
 {
-   Part_List *pl = data;
-   const Editor_State *editor_state = event_info;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    const Elm_Genlist_Item_Class* itc;
-   Part_ *part;
-   State *state = NULL;
    Elm_Object_Item *glit;
    Elm_Object_Item *default_glit;
    const Eina_List *subitems;
    const Eina_List *l;
 
    assert(pl != NULL);
-   assert(editor_state != NULL);
+   assert(state != NULL);
 
-   part = elm_object_item_data_get(pl->selected_part_item);
-   if (strcmp(editor_state->part_name, part->name))
-     {
-        part = pm_resource_unsorted_get(part->group->parts, editor_state->part_name);
-        group_navigator_part_select(pl->layout, part);
-     }
    elm_genlist_item_expanded_set(pl->selected_part_item, true);
 
    subitems = elm_genlist_item_subitems_get(pl->selected_part_item);
    /* "default 0.0" is always first in states list */
    default_glit = eina_list_data_get(subitems);
+   /* find state's genlist item */
    EINA_LIST_FOREACH(subitems, l, glit)
      {
-        state = elm_object_item_data_get(glit);
-        if (!strcmp(state->name, editor_state->state_name))
+        if (elm_object_item_data_get(glit) == state)
           break;
-        else
-          state = NULL;
      }
-
-   assert(state != NULL);
+   assert(glit != NULL);
 
    /* resetting state */
    itc = elm_genlist_item_item_class_get(glit);
@@ -1084,7 +1070,6 @@ _editor_state_deleted_cb(void *data,
 
    elm_object_item_del(glit);
    elm_genlist_item_selected_set(default_glit, true);
-   gm_state_del(ap.project, state);
 }
 
 static void
@@ -1537,7 +1522,6 @@ group_navigator_add(Group *group)
    TODO("Fix multi-tab logic");
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_RESTACKED, _editor_part_restacked_cb, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, _editor_part_item_restacked_cb, pl);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, pl);
 
    TODO("Add deletion callback and free resources");
    return pl->layout;

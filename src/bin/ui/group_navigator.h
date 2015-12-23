@@ -103,4 +103,7 @@ group_navigator_part_item_del(Evas_Object *obj, Part_ *part, Eina_Stringshare * 
 
 void
 group_navigator_part_state_add(Evas_Object *obj, Part_ *part, State *state);
+
+void
+group_navigator_part_state_del(Evas_Object *obj, Part_ *part __UNUSED__, State *state);
 #endif /* GROUP_NAVIGATOR_H */

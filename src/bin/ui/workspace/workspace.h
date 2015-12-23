@@ -153,6 +153,21 @@ workspace_part_item_del(Evas_Object *obj,
                         Eina_Stringshare *item_name);
 
 /**
+ * Add new part state to group_edit and group_navigator.
+ * Part should be already deleted from edit_object.
+ *
+ * @param obj The workspace object.
+ * @param part_name name of part
+ * @param state_name name of deleted part_state
+ *
+ * @ingroup Workspace
+ */
+void
+workspace_part_state_del(Evas_Object *obj,
+                         Eina_Stringshare *part_name,
+                         Eina_Stringshare *state_name);
+
+/**
  * Del part from group_edit and group_navigator.
  * Part should be already deleted edit_object.
  *
