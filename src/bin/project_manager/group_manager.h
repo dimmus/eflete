@@ -133,4 +133,7 @@ gm_part_rename(Part_* part, const char *new_part_name);
 
 void
 gm_part_restack(Part_ *part, Part_ *rel_part);
+
+void
+gm_part_item_restack(Part_ *part, Eina_Stringshare *part_item, Eina_Stringshare *relative_part_item);
 #endif /* GROUP_MANAGER_H */

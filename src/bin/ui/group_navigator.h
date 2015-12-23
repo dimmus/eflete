@@ -38,14 +38,6 @@
 #define SIGNAL_GROUP_NAVIGATOR_PART_SELECTED "SIGNAL_GROUP_NAVIGATOR_PART_SELECTED"
 
 /**
- * emited when part_item is restacked in part list.
- * eventinfo - pointer to Editor_Part_Item_Restack structure
- *
- * @ingroup Partlist
- */
-#define SIGNAL_GROUP_NAVIGATOR_PART_ITEM_RESTACKED "SIGNAL_GROUP_NAVIGATOR_PART_ITEM_RESTACKED"
-
-/**
  * emited when part state is activated in part list.
  * eventinfo - pointer to Part_ structure
  *
@@ -96,8 +88,14 @@ void
 group_navigator_part_state_add(Evas_Object *obj, Part_ *part, State *state);
 
 void
-group_navigator_part_state_del(Evas_Object *obj, Part_ *part __UNUSED__, State *state);
+group_navigator_part_state_del(Evas_Object *obj, Part_ *part, State *state);
 
 void
 group_navigator_part_restack(Evas_Object *obj, Part_ *part, Part_ *rel_part);
+
+void
+group_navigator_part_item_restack(Evas_Object *obj,
+                                  Part_ *part,
+                                  Eina_Stringshare *part_item,
+                                  Eina_Stringshare *relative_part_item);
 #endif /* GROUP_NAVIGATOR_H */

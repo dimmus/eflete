@@ -1468,18 +1468,6 @@ _on_group_navigator_part_select(void *data,
 }
 
 static void
-_on_group_navigator_part_item_restacked(void *data,
-                                        Evas_Object *obj __UNUSED__,
-                                        void *event_info __UNUSED__)
-{
-   Evas_Object *workspace = (Evas_Object *)data;
-
-   WS_DATA_GET(workspace, sd);
-
-   groupedit_hard_update(sd->groupedit);
-}
-
-static void
 _on_group_navigator_part_state_select(void *data,
                                 Evas_Object *obj __UNUSED__,
                                 void *event_info)
@@ -1546,8 +1534,6 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_part_content_set(sd->panes, "right", sd->group_navigator);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED,
                                   _on_group_navigator_part_select, obj);
-   evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_ITEM_RESTACKED,
-                                  _on_group_navigator_part_item_restacked, obj);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED,
                                   _on_group_navigator_part_state_select, obj);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED,
@@ -2007,4 +1993,23 @@ workspace_part_restack(Evas_Object *obj,
    gm_part_restack(part, rel_part);
 
    groupedit_edit_object_part_restack(sd->groupedit, part_name, relative_part_name);
+}
+
+void
+workspace_part_item_restack(Evas_Object *obj,
+                            Eina_Stringshare *part_name,
+                            Eina_Stringshare *part_item_name,
+                            Eina_Stringshare *relative_part_item_name)
+{
+   Part_ *part;
+   WS_DATA_GET(obj, sd);
+   assert(part_item_name != NULL);
+
+   part = pm_resource_unsorted_get(sd->group->parts, part_name);
+
+   group_navigator_part_select(sd->group_navigator, part);
+   gm_part_item_restack(part, part_item_name, relative_part_item_name);
+   group_navigator_part_item_restack(sd->group_navigator, part, part_item_name, relative_part_item_name);
+
+   groupedit_hard_update(sd->groupedit);
 }

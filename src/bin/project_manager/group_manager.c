@@ -664,3 +664,18 @@ gm_part_restack(Part_ *part, Part_ *rel_part)
    else
      part->group->parts = eina_list_append(part->group->parts, part);
 }
+
+void
+gm_part_item_restack(Part_ *part, Eina_Stringshare *part_item, Eina_Stringshare *relative_part_item)
+{
+   assert(part != NULL);
+   assert(part_item != NULL);
+
+   part->items = eina_list_remove(part->items, part_item);
+   if (relative_part_item)
+     part->items = eina_list_prepend_relative(part->items,
+                                              part_item,
+                                              relative_part_item);
+   else
+     part->items = eina_list_append(part->items, part_item);
+}

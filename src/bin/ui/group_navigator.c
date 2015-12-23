@@ -1284,40 +1284,22 @@ _part_item_restack(Part_List *pl, Elm_Object_Item *glit, Eina_Bool move_up)
    eina_stringshare_del(msg);
 }
 
-static void
-_editor_part_item_restacked_cb(void *data,
-                               Evas_Object *obj __UNUSED__,
-                               void *event_info)
+void
+group_navigator_part_item_restack(Evas_Object *obj,
+                                  Part_ *part,
+                                  Eina_Stringshare *part_item,
+                                  Eina_Stringshare *relative_part_item __UNUSED__)
 {
-   Part_List *pl = data;
-   const Editor_Part_Item_Restack *editor_part_item_restack = event_info;
-   Part_ *part;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Elm_Object_Item *glit, *items_glit;
    const Eina_List *l;
 
    assert(pl != NULL);
-   assert(editor_part_item_restack != NULL);
-
-   part = elm_object_item_data_get(pl->selected_part_item);
-   if (strcmp(editor_part_item_restack->part_name, part->name))
-     {
-        part = pm_resource_unsorted_get(part->group->parts, editor_part_item_restack->part_name);
-        group_navigator_part_select(pl->layout, part);
-     }
+   assert(part != NULL);
+   assert(part_item != NULL);
 
    glit = _part_item_find(pl, part);
    assert(glit != NULL);
-
-   TODO("move this logic to group_manager")
-   part->items = eina_list_remove(part->items, editor_part_item_restack->part_item);
-   if (editor_part_item_restack->relative_part_item)
-     part->items = eina_list_prepend_relative(part->items,
-                  editor_part_item_restack->part_item,
-                  editor_part_item_restack->relative_part_item);
-   else
-     part->items = eina_list_append(part->items, editor_part_item_restack->part_item);
-
-   evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_ITEM_RESTACKED, (void *)editor_part_restack);
 
    elm_genlist_item_expanded_set(pl->selected_part_item, true);
    items_glit = eina_list_data_get(eina_list_last(elm_genlist_item_subitems_get(pl->selected_part_item)));
@@ -1326,7 +1308,7 @@ _editor_part_item_restacked_cb(void *data,
 
    EINA_LIST_FOREACH(elm_genlist_item_subitems_get(items_glit), l, glit)
      {
-        if (elm_object_item_data_get(glit) == editor_part_item_restack->part_item) /* comparing stringshares */
+        if (elm_object_item_data_get(glit) == part_item) /* comparing stringshares */
           {
              elm_genlist_item_selected_set(glit, true);
              break;
@@ -1504,9 +1486,6 @@ group_navigator_add(Group *group)
    elm_menu_item_icon_name_set(menu_item, "type_spacer");
 
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
-
-   TODO("Fix multi-tab logic");
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, _editor_part_item_restacked_cb, pl);
 
    TODO("Add deletion callback and free resources");
    return pl->layout;

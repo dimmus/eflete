@@ -186,6 +186,15 @@ void
 workspace_part_restack(Evas_Object *obj,
                        Eina_Stringshare *part_name,
                        Eina_Stringshare *relative_part_name);
+
+/**
+ *
+ */
+void
+workspace_part_item_restack(Evas_Object *obj,
+                            Eina_Stringshare *part_name,
+                            Eina_Stringshare *part_item_name,
+                            Eina_Stringshare *relative_part_item_name);
 /**
  *
  */
