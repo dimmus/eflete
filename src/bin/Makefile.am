@@ -10,7 +10,6 @@ libete_a_SOURCES = \
 ../../src/bin/common/string_common.c \
 ../../src/bin/common/validator.c \
 ../../src/bin/project_manager/group_manager.c \
-../../src/bin/project_manager/widget_manager.c \
 ../../src/bin/project_manager/project_manager.c \
 ../../src/bin/logger/logger.c \
 ../../src/bin/config/config.c \
@@ -35,7 +34,6 @@ libete_a_SOURCES = \
 ../../src/bin/ui/project_common.c \
 ../../src/bin/ui/project_close.c \
 ../../src/bin/ui/project_export.c \
-../../src/bin/ui/connector.c \
 ../../src/bin/ui/splash.c \
 ../../src/bin/ui/shortcuts/shortcuts.c \
 ../../src/bin/ui/container/container.c \
@@ -70,7 +68,6 @@ libete_a_SOURCES = \
 ../../src/bin/ui/property_color.c \
 ../../src/bin/ui/property_demo_swallow.c \
 ../../src/bin/ui/property_demo_text.c \
-../../src/bin/ui/blocks/ui_widget_list.c \
 ../../src/bin/ui/blocks/ui_signal_list.c \
 ../../src/bin/ui/blocks/ui_states_list.c \
 ../../src/bin/ui/workspace/workspace.c \

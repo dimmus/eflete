@@ -108,7 +108,8 @@ _menu_cb(void *data __UNUSED__,
          project_save();
          break;
       case MENU_FILE_EXPORT_EDC_GROUP:
-         project_export_edc_group();
+         TODO("Implement me")
+         /* project_export_edc_group(); */
          break;
       case MENU_FILE_EXPORT_EDC_PROJECT:
          project_export_edc_project();

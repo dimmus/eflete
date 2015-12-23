@@ -7,12 +7,9 @@ src/bin/external/syntax_color.c
 src/bin/logger/logger.c
 src/bin/project_manager/group_manager.c
 src/bin/project_manager/project_manager.c
-src/bin/project_manager/widget_manager.c
 src/bin/ui/blocks/ui_block.c
 src/bin/ui/blocks/ui_signal_list.c
 src/bin/ui/blocks/ui_states_list.c
-src/bin/ui/blocks/ui_widget_list.c
-src/bin/ui/connector.c
 src/bin/ui/container/container.c
 src/bin/ui/cursor.c
 src/bin/ui/dialogs/about_window.c
