@@ -49,7 +49,9 @@ struct _Demo_Swallow_Prop_Data
 
    Evas_Object *max_w, *max_h;
    Evas_Object *min_w, *min_h;
-   Evas_Object *hint_w, *hint_h;
+   Evas_Object *label_weight;
+   Evas_Object *weight_x, *weight_y;
+   Evas_Object *label_align;
    Evas_Object *align_x, *align_y;
 
    Part_ *part;
@@ -81,25 +83,25 @@ _on_##MEMBER##_##VALUE##_change(void *data __UNUSED__, \
    printf("Min now is [%d] \n", value); \
 }
 
-#define PROPERTY_SWALLOW_COMMON_2SPINNER_ADD(TEXT, VALUE1, VALUE2, MEMBER) \
+#define PROPERTY_SWALLOW_COMMON_2SPINNER_ADD(TEXT, VALUE1, VALUE2, MEMBER, MIN, MAX, LABEL_END) \
 PROPERTY_SWALLOW_COMMON_2SPINNER_CALLBACKS(MEMBER, VALUE1) \
 PROPERTY_SWALLOW_COMMON_2SPINNER_CALLBACKS(MEMBER, VALUE2) \
 static Evas_Object * \
 prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Demo_Swallow_Prop_Data *pd) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
-   SPINNER_ADD(item, pd->MEMBER##_##VALUE1, 0, 9999, 2.0, true) \
+   SPINNER_ADD(item, pd->MEMBER##_##VALUE1, MIN, MAX, 1.0, true) \
    elm_layout_content_set(item, "swallow.content1", pd->MEMBER##_##VALUE1); \
-   elm_layout_text_set(item, "label.swallow1.start", _("w:")); \
-   elm_layout_text_set(item, "label.swallow1.end", _("px")); \
+   elm_layout_text_set(item, "label.swallow1.start", _(""#VALUE1":")); \
+   elm_layout_text_set(item, "label.swallow1.end", LABEL_END); \
    evas_object_event_callback_priority_add(pd->MEMBER##_##VALUE1, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                           _on_spinner_mouse_wheel, NULL); \
    evas_object_smart_callback_add(pd->MEMBER##_##VALUE1, "changed", _on_##MEMBER##_##VALUE1##_change, pd); \
-   SPINNER_ADD(item, pd->MEMBER##_##VALUE2, 0, 9999, 2.0, true) \
+   SPINNER_ADD(item, pd->MEMBER##_##VALUE2, MIN, MAX, 1.0, true) \
    elm_layout_content_set(item, "swallow.content2", pd->MEMBER##_##VALUE2); \
-   elm_layout_text_set(item, "label.swallow2.start", _("h:")); \
-   elm_layout_text_set(item, "label.swallow2.end", _("px")); \
+   elm_layout_text_set(item, "label.swallow2.start", _(""#VALUE2":")); \
+   elm_layout_text_set(item, "label.swallow2.end", LABEL_END); \
    evas_object_event_callback_priority_add(pd->MEMBER##_##VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
@@ -108,10 +110,10 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Demo_Swallow_Prop
 }
 
 TODO("move from here, property_demo_text and property_group all common stuff")
-PROPERTY_SWALLOW_COMMON_2SPINNER_ADD(_("min"), w, h, min);
-
-
-PROPERTY_SWALLOW_COMMON_2SPINNER_ADD(_("max"), w, h, max);
+PROPERTY_SWALLOW_COMMON_2SPINNER_ADD(_("min"), w, h, min, 0, 9999, _("px"));
+PROPERTY_SWALLOW_COMMON_2SPINNER_ADD(_("max"), w, h, max, 0, 9999, _("px"));
+PROPERTY_SWALLOW_COMMON_2SPINNER_ADD(_("align"), x, y, align, -1, 100, _("%"));
+PROPERTY_SWALLOW_COMMON_2SPINNER_ADD(_("weight"), x, y, weight, -1, 100, _("%"));
 
 static Evas_Object *
 prop_item_label_add(Evas_Object *parent,
@@ -255,11 +257,23 @@ ui_property_demo_swallow_add(Evas_Object *parent)
    elm_box_pack_end(pd->box, item);
    item = prop_swallow_content_add(pd->box, pd);
    elm_box_pack_end(pd->box, item);
+
    item = prop_rectangle_color_add(pd->box, pd);
    elm_box_pack_end(pd->box, item);
+
    item = prop_min_w_h_add(pd->box, pd);
    elm_box_pack_end(pd->box, item);
    item = prop_max_w_h_add(pd->box, pd);
+   elm_box_pack_end(pd->box, item);
+
+   item = prop_item_label_add(pd->box, &pd->label_align, _("Note: align -1 is"), _("EVAS_HINT_FILL"));
+   elm_box_pack_end(pd->box, item);
+   item = prop_align_x_y_add(pd->box, pd);
+   elm_box_pack_end(pd->box, item);
+
+   item = prop_item_label_add(pd->box, &pd->label_weight, _("Note: weight 100 is"), _("EVAS_HINT_EXPAND"));
+   elm_box_pack_end(pd->box, item);
+   item = prop_weight_x_y_add(pd->box, pd);
    elm_box_pack_end(pd->box, item);
 
    return pd->box;
