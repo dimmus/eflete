@@ -1426,7 +1426,7 @@ ui_property_part_set(Evas_Object *property, Part_ *part)
 
         item = prop_part_name_add(box, pd);
         elm_box_pack_end(box, item);
-        item = prop_part_type_add(box, _("type"), wm_part_type_get(pd->part->type));
+        item = prop_part_type_add(box, _("type"), gm_part_type_text_get(pd->part->type));
         elm_box_pack_end(box, item);
         pd->attributes.part.scale_item = prop_part_scale_add(box, pd);
         elm_box_pack_end(box, pd->attributes.part.scale_item);
@@ -1468,7 +1468,7 @@ ui_property_part_set(Evas_Object *property, Part_ *part)
    else
      {
         prop_part_name_update(pd);
-        prop_part_type_update(wm_part_type_get(pd->part->type));
+        prop_part_type_update(gm_part_type_text_get(pd->part->type));
         PART_ATTR_1CHECK_UPDATE(part, scale, part)
         PART_ATTR_1CHECK_UPDATE(part, mouse_events, part)
         PART_ATTR_1CHECK_UPDATE(part, repeat_events, part)

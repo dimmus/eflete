@@ -679,3 +679,35 @@ gm_part_item_restack(Part_ *part, Eina_Stringshare *part_item, Eina_Stringshare 
    else
      part->items = eina_list_append(part->items, part_item);
 }
+
+/**
+ * ref http://docs.enlightenment.org/auto/edje/group__Edje__Object__Part.html
+ */
+static char *part_types[] = {
+     "NONE",
+     "RECTANGLE",
+     "TEXT",
+     "IMAGE",
+     "SWALLOW",
+     "TEXTBLOCK",
+     "GRADIENT",
+     "GROUP",
+     "BOX",
+     "TABLE",
+     "EXTERNAL",
+     "PROXY",
+     "SPACER",
+     "MESH NODE",
+     "LIGHT",
+     "CAMERA",
+     "SNAPSHOT"
+};
+static unsigned int part_types_count = 16;
+
+const char *
+gm_part_type_text_get(Edje_Part_Type part_type)
+{
+   assert(part_type <= part_types_count);
+
+   return part_types[part_type];
+}
