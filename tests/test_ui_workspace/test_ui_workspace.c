@@ -26,13 +26,9 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, workspace_add_test_p);
    tcase_add_test(tcase, workspace_edit_object_get_test_p);
    tcase_add_test(tcase, workspace_edit_object_get_test_p1);
-   tcase_add_test(tcase, workspace_edit_object_part_above_test_p);
    tcase_add_test(tcase, workspace_edit_object_part_add_test_p);
    tcase_add_test(tcase, workspace_edit_object_part_add_test_p1);
-   tcase_add_test(tcase, workspace_edit_object_part_below_test_p);
    tcase_add_test(tcase, workspace_edit_object_part_del_test_p);
-   tcase_add_test(tcase, workspace_edit_object_part_restack_test_p1);
-   tcase_add_test(tcase, workspace_edit_object_part_restack_test_p2);
    tcase_add_test(tcase, workspace_edit_object_part_state_set_test_n2);
    tcase_add_test(tcase, workspace_edit_object_part_state_set_test_p);
    tcase_add_test(tcase, workspace_edit_object_recalc_test_p);
