@@ -757,9 +757,6 @@ pm_project_close(Project *project)
    ecore_file_recursive_rm(resource_folder);
    eina_stringshare_del(resource_folder);
 
-   wm_widgets_list_free(project->widgets);
-   wm_layouts_list_free(project->layouts);
-
    evas_object_del(project->global_object);
    ecore_evas_free(project->ecore_evas);
 
