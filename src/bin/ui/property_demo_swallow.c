@@ -142,6 +142,7 @@ _on_content_##TYPE##_set(void *data, \
    Demo_Swallow_Prop_Data *pd __UNUSED__ = (Demo_Swallow_Prop_Data *)data; \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
    pd->part->TYPE = item->index; \
+   pd->part->change = true; \
 } \
 static Evas_Object * \
 prop_##TYPE##_add(Evas_Object *parent, Demo_Swallow_Prop_Data *pd) \
@@ -177,6 +178,8 @@ _on_rectangle_color_change(void *data,
    evas_object_color_set(pd->color_obj, r, g, b, a);
    if (pd->part->object)
      evas_object_color_set(pd->part->object, r, g, b, a);
+
+   evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, pd->part);
 }
 static void
 _on_rectangle_color_dismissed(void *data,

@@ -55,42 +55,82 @@ standard_widget_name_parse(const char *full_group_name,
 
 void
 on_swallow_check(void *data,
-                 Evas_Object *obj,
+                 Evas_Object *obj __UNUSED__,
                  void *ei __UNUSED__)
 {
-   Evas_Object *rect = NULL, *check = NULL, *ch;
-   Eina_List *item_list = NULL, *it;
-   Eina_Bool all_checks = true;
+   Demo_Part *part = (Demo_Part *)ei;
+   Evas_Object *object = (Evas_Object *) data;
+   Evas_Object *content = NULL;
 
-   Prop_Data *pd = (Prop_Data *)data;
+   int content_type = part->swallow_content;
+   int widget_type = part->swallow_content;
 
-   assert(pd != NULL);
-
-   Evas_Object *object = pd->live_object;
-   const char *part_name = elm_object_part_text_get(obj, NULL);
-   check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
-
-   if (elm_check_state_get(obj))
+   if (part->change)
      {
-        rect = evas_object_rectangle_add(object);
-        evas_object_color_set(rect, RECT_COLOR);
-        elm_object_part_content_set(object, part_name, rect);
-        item_list = elm_box_children_get(pd->prop_swallow.swallows);
-
-        EINA_LIST_FOREACH(item_list, it, ch)
+        /* if NONE - delete object */
+        if ((content_type == 0) && (part->object))
           {
-             if (elm_check_state_get(ch) == false)
-               all_checks = false;
+             content = elm_object_part_content_unset(object, part->name);
+             evas_object_del(content);
+             content = NULL;
           }
-        if (all_checks)
-          elm_check_state_set(check, true);
-        eina_list_free(item_list);
+        else if (content_type == 1) /* create rect */
+          {
+             content = evas_object_rectangle_add(object);
+          }
+        else if ((content_type == 2) && (part->image_path)) /* create picture */
+          {
+             content = elm_image_add(object);
+             elm_image_file_set(content, part->image_path, NULL);
+          }
+        else if ((content_type == 3) && (widget_type != 0)) /* create widget */
+          {
+             switch (widget_type)
+               {
+                case 1:
+                   content = elm_button_add(object);
+                   elm_object_text_set(content, _("User Text"));
+                   break;
+                case 2:
+                   content = elm_check_add(object);
+                   elm_object_text_set(content, _("User Text"));
+                   elm_check_state_set(content, true);
+                   break;
+                case 3:
+                   content = elm_slider_add(object);
+                   elm_slider_unit_format_set(content, "%1.2f units");
+                   elm_slider_indicator_format_set(content, "%1.2f");
+                   elm_slider_min_max_set(content, 0, 10);
+                   break;
+                case 4:
+                   content = elm_entry_add(object);
+                   elm_entry_single_line_set(content, false);
+                   break;
+                   content = elm_progressbar_add(object);
+                case 5:
+                   break;
+               }
+          }
+
+        part->object = content;
+        part->change = false;
+        elm_object_part_content_set(object, part->name, content);
      }
-   else
+
+   if (part->object)
      {
-        rect = elm_object_part_content_unset(object, part_name);
-        evas_object_del(rect);
-        if (elm_check_state_get(check)) elm_check_state_set(check, false);
+        evas_object_color_set(content,
+                              part->r,
+                              part->g,
+                              part->b,
+                              part->a);
+
+        evas_object_size_hint_min_set(content,
+                                      part->min_w,
+                                      part->min_h);
+        evas_object_size_hint_max_set(content,
+                                      part->min_w,
+                                      part->min_h);
      }
 }
 
