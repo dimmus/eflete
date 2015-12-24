@@ -221,19 +221,6 @@ Eina_Bool
 workspace_legend_visible_set(Evas_Object *obj);
 
 /**
- * Set highlight to selected part.
- *
- * @param obj The workspace object.
- * @param part Evas_Object pointer to selected part object.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_highlight_set(Evas_Object *obj, Part *part);
-
-/**
  * Unset highlight from previously selected part.
  *
  * @param obj The workspace object.

@@ -279,6 +279,7 @@ live_view_part_del(Evas_Object *object, Part_ *part)
    return live_view_property_part_del(live->property, part);
 }
 
+/*
 Eina_Bool
 live_view_part_rename(Live_View *live, Part *part, Eina_Stringshare *new_name)
 {
@@ -304,7 +305,7 @@ live_view_part_restack_below(Live_View *live, Part *part_move)
    assert(part_move != NULL);
    return live_view_property_part_restack_below(live->property, part_move);
 }
-
+*/
 Evas_Object *
 live_view_live_object_get(Evas_Object *object)
 {

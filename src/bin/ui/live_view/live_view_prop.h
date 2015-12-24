@@ -101,8 +101,8 @@ live_view_property_free(Evas_Object *property);
  *
  * @ingroup Live_View_Property
  */
-Eina_Bool
-live_view_property_style_set(Evas_Object *property, Evas_Object *object, Style *style, const char *widget, Evas_Object *parent);
+//Eina_Bool
+//live_view_property_style_set(Evas_Object *property, Evas_Object *object, Style *style, const char *widget, Evas_Object *parent);
 
 /**
  * Clear all data from to Live View Property widget.
@@ -122,7 +122,7 @@ live_view_property_part_add(Evas_Object *property, Part_ *part);
 
 Eina_Bool
 live_view_property_part_del(Evas_Object *property, Part_ *part);
-
+/*
 Eina_Bool
 live_view_property_part_rename(Evas_Object *property, Part *part, Eina_Stringshare *new_name);
 
@@ -131,5 +131,5 @@ live_view_property_part_restack_above(Evas_Object *property, Part *part_move, Pa
 
 Eina_Bool
 live_view_property_part_restack_below(Evas_Object *property, Part *part_move);
-
+*/
 #endif /* UI_LIVEVIEWPROP_HEADER_H */

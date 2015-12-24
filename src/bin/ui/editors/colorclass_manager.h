@@ -28,7 +28,6 @@
  */
 
 #include "eflete.h"
-#include "widget_manager.h"
 #include "modal_window.h"
 #include "widget_macro.h"
 #include "string_common.h"

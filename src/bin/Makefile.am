@@ -42,9 +42,6 @@ libete_a_SOURCES = \
 ../../src/bin/ui/editors/image_editor.c \
 ../../src/bin/ui/editors/sound_editor.c \
 ../../src/bin/ui/editors/colorclass_manager.c \
-../../src/bin/ui/editors/animator.c \
-../../src/bin/ui/editors/animator_program_editor.c \
-../../src/bin/ui/editors/animator_program_sequence.c \
 ../../src/bin/ui/dialogs/about_window.c \
 ../../src/bin/ui/dialogs/colorsel.c \
 ../../src/bin/ui/modal_window/modal_window.c \
