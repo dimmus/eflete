@@ -1636,14 +1636,6 @@ workspace_add(Evas_Object *parent, Group *group)
    return obj;
 }
 
-Evas_Object *
-ws_groupedit_get(Evas_Object *obj)
-{
-   WS_DATA_GET(obj, sd);
-
-   return sd->groupedit;
-}
-
 void
 workspace_group_navigator_update_part(Evas_Object *obj, Part_ *part)
 {
@@ -1712,28 +1704,6 @@ workspace_edit_object_soft_update(Evas_Object *obj)
    WS_DATA_GET(obj, sd);
    assert(sd->groupedit != NULL);
    groupedit_soft_update(sd->groupedit);
-}
-
-Eina_Bool
-workspace_edit_object_part_state_set(Evas_Object *obj, Part_ *part)
-{
-   WS_DATA_GET(obj, sd);
-   assert(part != NULL);
-
-   TODO("fix state set from external sources");
-   return false;
-}
-
-Eina_Bool
-workspace_edit_object_visible_set(Evas_Object *obj,
-                                  const char *part,
-                                  Eina_Bool visible __UNUSED__)
-{
-   WS_DATA_GET(obj, sd);
-   assert(part != NULL);
-
-   //groupedit_part_visible_set(sd->groupedit, part);
-   return true;
 }
 
 Eina_Bool
@@ -1854,18 +1824,6 @@ workspace_object_area_visible_get(Evas_Object *obj)
 {
    WS_DATA_GET(obj, sd);
    return groupedit_part_object_area_visible_get(sd->groupedit);
-}
-
-Eina_Bool
-workspace_edit_object_part_item_selected_set(Evas_Object *obj,
-                                             Eina_Stringshare *item_name,
-                                             Eina_Bool selected)
-{
-   WS_DATA_GET(obj, sd);
-   assert(item_name != NULL);
-
-   groupedit_edit_object_part_item_selected_set(sd->groupedit, item_name, selected);
-   return true;
 }
 
 void

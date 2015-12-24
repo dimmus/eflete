@@ -43,10 +43,4 @@
 Evas_Object *
 demo_group_add(Group *group);
 
-/**
- * @ingroup Partlist
- */
-void
-demo_group_part_select(Evas_Object *obj, Part_ *part);
-
 #endif /* DEMO_GROUP_H */

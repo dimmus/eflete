@@ -51,18 +51,6 @@ Evas_Object *
 workspace_add(Evas_Object *parent, Group *group);
 
 /**
- * Get the groupedit object, which loaded into workspace.
- *
- * @param obj The workspace object.
- *
- * @return The groupedit object or NULL if it didn't exist'.
- *
- * @ingroup Workspace
- */
-Evas_Object *
-ws_groupedit_get(Evas_Object *obj);
-
-/**
  * Update part info in part list
  *
  * @param obj The workspace object.
@@ -195,27 +183,6 @@ workspace_part_item_restack(Evas_Object *obj,
                             Eina_Stringshare *part_name,
                             Eina_Stringshare *part_item_name,
                             Eina_Stringshare *relative_part_item_name);
-/**
- *
- */
-Eina_Bool
-workspace_edit_object_part_state_set(Evas_Object *obj, Part_ *part);
-
-/**
- * Set a visibility for part of current groupedit object in the workspace.
- *
- * @param obj The workspace object
- * @param part The name of groupedit part to be showed of hided
- * @param visible Use EINA_TRUE to show, EINA_FALSE to hide part.
- *
- * @return EINA_TRUE, if it's showed/hided, EINA_FALSE otherwise
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_edit_object_visible_set(Evas_Object *obj,
-                                  const char *part,
-                                  Eina_Bool visible);
 
 /**
  * Set zoom factor for view zoommed style in groupspace.
@@ -352,22 +319,5 @@ workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool flag);
  */
 Eina_Bool
 workspace_object_area_visible_get(Evas_Object *obj);
-
-/**
- * Change selection state for given item on workspace. If item should be
- * selected if will be highlighted, or unhighlighted in otherwise.
- *
- * @param obj The workspace object.
- * @param item_name The name of item, which selection should be changed.
- * @param selected If EINA_TRUE - item will be selected, otherwise unselected.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_edit_object_part_item_selected_set(Evas_Object *obj,
-                                             Eina_Stringshare *item_name,
-                                             Eina_Bool selected);
 
 #endif /* UI_WORKSPACE_H */

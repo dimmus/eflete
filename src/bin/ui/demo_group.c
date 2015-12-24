@@ -234,11 +234,3 @@ demo_group_add(Group *group)
 
    return pl->layout;
 }
-
-void
-demo_group_part_select(Evas_Object *obj, Part_ *part __UNUSED__)
-{
-   Part_Demo_List *pl = evas_object_data_get(obj, DEMO_GROUP_DATA);
-
-   assert(pl != NULL);
-}
