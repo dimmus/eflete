@@ -30,6 +30,7 @@
 #include "eflete.h"
 #include "project_manager.h"
 #include "live_widgets.h"
+#include "demo_group.h"
 #include "widget_macro.h"
 
 /**

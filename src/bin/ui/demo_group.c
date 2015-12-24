@@ -32,6 +32,9 @@ typedef struct
 
    Elm_Object_Item *selected_part_item;
    Elm_Object_Item *it_swallow, *it_text, *it_signal;
+
+   Eina_List *swallow_list;
+   Eina_List *text_list;
 } Part_Demo_List;
 
 static Elm_Genlist_Item_Class *itc_group;
@@ -103,16 +106,14 @@ _expanded_cb(void *data,
    Elm_Object_Item *glit = event_info;
    Part_Demo_List *pl = data;
    Eina_List *l;
-   Part *part;
+   Demo_Part *part;
 
    TODO("remove this hack after https://phab.enlightenment.org/D2965 will be accepted");
    assert(pl != NULL);
 
-   EINA_LIST_FOREACH(pl->group->parts, l, part)
+   if (glit == pl->it_text)
      {
-        if ((glit == pl->it_text) &&
-            ((part->type == EDJE_PART_TYPE_TEXT) ||
-             (part->type == EDJE_PART_TYPE_TEXTBLOCK)))
+        EINA_LIST_FOREACH(pl->text_list, l, part)
           {
              elm_genlist_item_append(pl->genlist,
                                      itc_part,
@@ -122,8 +123,11 @@ _expanded_cb(void *data,
                                      NULL,
                                      NULL);
           }
-        else if ((glit == pl->it_swallow) &&
-                 (part->type == EDJE_PART_TYPE_SWALLOW))
+     }
+
+   if (glit == pl->it_swallow)
+     {
+        EINA_LIST_FOREACH(pl->swallow_list, l, part)
           {
              elm_genlist_item_append(pl->genlist,
                                      itc_part,
@@ -141,7 +145,7 @@ _selected_cb(void *data __UNUSED__,
              void *event_info __UNUSED__)
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-   Part *part = (Part *)elm_object_item_data_get(glit);
+   Demo_Part *part = (Demo_Part *)elm_object_item_data_get(glit);
 
    if ((part->type == EDJE_PART_TYPE_TEXT) ||
        (part->type == EDJE_PART_TYPE_TEXTBLOCK))
@@ -155,6 +159,10 @@ _selected_cb(void *data __UNUSED__,
 Evas_Object *
 demo_group_add(Group *group)
 {
+   Part *part;
+   Eina_List *l;
+   Demo_Part *demo_part;
+
    assert(group != NULL);
    assert(ap.win != NULL);
 
@@ -228,7 +236,50 @@ demo_group_add(Group *group)
                                            NULL,
                                            NULL);
 
+   EINA_LIST_FOREACH(pl->group->parts, l, part)
+     {
+        if ((part->type == EDJE_PART_TYPE_TEXT) ||
+            (part->type == EDJE_PART_TYPE_TEXTBLOCK))
+          {
+             demo_part = mem_calloc(1, sizeof(Demo_Part));
+             demo_part->name = eina_stringshare_add(part->name);
+             demo_part->type = part->type;
+             pl->text_list = eina_list_append(pl->text_list, demo_part);
+          }
+        else if (part->type == EDJE_PART_TYPE_SWALLOW)
+          {
+             demo_part = mem_calloc(1, sizeof(Demo_Part));
+             demo_part->name = eina_stringshare_add(part->name);
+             demo_part->type = part->type;
+             pl->swallow_list = eina_list_append(pl->swallow_list, demo_part);
+          }
+     }
+
    elm_object_text_set(pl->layout, pl->group->name);
 
    return pl->layout;
+}
+
+void
+demo_group_del(Evas_Object *demo)
+{
+   Part_Demo_List *pl = evas_object_data_get(demo, DEMO_GROUP_DATA);
+   Demo_Part *demo_part;
+
+   TODO("probably call for some content del? to remove content from demo?");
+   /* WILL DO IN ANOTHER COMMIT */
+
+   EINA_LIST_FREE(pl->swallow_list, demo_part)
+     {
+        eina_stringshare_del(demo_part->name);
+        free(demo_part);
+     }
+
+   EINA_LIST_FREE(pl->text_list, demo_part)
+     {
+        eina_stringshare_del(demo_part->name);
+        free(demo_part);
+     }
+
+   free(pl);
 }

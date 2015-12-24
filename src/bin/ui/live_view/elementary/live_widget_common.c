@@ -99,10 +99,10 @@ on_text_check(void *data,
               Evas_Object *obj __UNUSED__,
               void *ei)
 {
-   Part *part = (Part *)ei;
+   Demo_Part *part = (Demo_Part *)ei;
    Evas_Object *object = (Evas_Object *) data;
 
-   elm_object_part_text_set(object, part->name, part->content);
+   elm_object_part_text_set(object, part->name, part->text_content);
 }
 
 void

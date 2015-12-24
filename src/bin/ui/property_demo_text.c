@@ -32,7 +32,7 @@
 
 struct _Demo_Text_Prop_Data
 {
-   Part *part;
+   Demo_Part *part;
 
    Evas_Object *box;
    Evas_Object *name;
@@ -67,9 +67,9 @@ _on_part_name_change(void *data,
    text = elm_entry_entry_get(obj);
    value = elm_entry_markup_to_utf8(text);
 
-   if (pd->part->content)
-     eina_stringshare_del(pd->part->content);
-   pd->part->content = eina_stringshare_add(value);
+   if (pd->part->text_content)
+     eina_stringshare_del(pd->part->text_content);
+   pd->part->text_content = eina_stringshare_add(value);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_SET, pd->part);
 
@@ -92,7 +92,7 @@ prop_part_content_add(Evas_Object *parent, Demo_Text_Prop_Data *pd)
 }
 
 void
-ui_property_demo_text_part_set(Evas_Object *property, Part *part)
+ui_property_demo_text_part_set(Evas_Object *property, Demo_Part *part)
 {
    DEMO_TEXT_PROP_DATA_GET()
 
@@ -100,7 +100,7 @@ ui_property_demo_text_part_set(Evas_Object *property, Part *part)
    if (part)
      {
         elm_object_text_set(pd->name, part->name);
-        elm_entry_entry_set(pd->text, part->content);
+        elm_entry_entry_set(pd->text, part->text_content);
      }
 
    pd->part = part;

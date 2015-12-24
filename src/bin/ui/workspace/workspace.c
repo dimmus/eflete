@@ -1282,6 +1282,7 @@ _workspace_smart_del(Evas_Object *o)
 
    evas_object_del(sd->highlight.space_hl);
    evas_object_del(sd->highlight.highlight);
+   demo_group_del(sd->demo_group);
    _workspace_parent_sc->del(o);
 }
 

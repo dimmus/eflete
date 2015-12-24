@@ -44,7 +44,6 @@ struct _Part
    Eina_Stringshare * current_item_name; /**< name of selected item */
    Group *group;              /**< pointer to group */
    Eina_Bool visible;         /**< is part visible on workspace*/
-   Eina_Stringshare *content; /**< content for demo */
 };
 
 struct _Group
