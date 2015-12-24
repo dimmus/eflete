@@ -54,8 +54,6 @@ struct Demo_Part_
    int widget_number; /**< number of widget to be set up */
    Eina_Stringshare *image_path; /**< path to image to set up */
    int max_w, max_h, min_w, min_h; /**< object's size */
-   double weight_x, weight_y;
-   double align_x, align_y;
 };
 
 /**

@@ -72,12 +72,13 @@ _on_spinner_mouse_wheel(void *data __UNUSED__,
 
 #define PROPERTY_SWALLOW_COMMON_2SPINNER_CALLBACKS(MEMBER, VALUE) \
 static void \
-_on_##MEMBER##_##VALUE##_change(void *data __UNUSED__, \
+_on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj, \
                                 void *ei __UNUSED__) \
 { \
+   Demo_Swallow_Prop_Data *pd = (Demo_Swallow_Prop_Data *)data; \
    int value = elm_spinner_value_get(obj); \
-   printf("Min now is [%d] \n", value); \
+   pd->part->MEMBER##_##VALUE = value; \
 }
 
 #define PROPERTY_SWALLOW_COMMON_2SPINNER_ADD(TEXT, VALUE1, VALUE2, MEMBER, MIN, MAX, LABEL_END) \
@@ -109,8 +110,6 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Demo_Swallow_Prop
 TODO("move from here, property_demo_text and property_group all common stuff")
 PROPERTY_SWALLOW_COMMON_2SPINNER_ADD(_("min"), w, h, min, 0, 9999, _("px"));
 PROPERTY_SWALLOW_COMMON_2SPINNER_ADD(_("max"), w, h, max, 0, 9999, _("px"));
-PROPERTY_SWALLOW_COMMON_2SPINNER_ADD(_("align"), x, y, align, -1, 100, _("%"));
-PROPERTY_SWALLOW_COMMON_2SPINNER_ADD(_("weight"), x, y, weight, -1, 100, _("%"));
 
 static Evas_Object *
 prop_item_label_add(Evas_Object *parent,
@@ -298,6 +297,11 @@ ui_property_demo_swallow_part_set(Evas_Object *property, Demo_Part *part)
                               part->b,
                               part->a);
         elm_entry_entry_set(pd->picture, part->image_path);
+
+        elm_spinner_value_set(pd->min_w, part->min_w);
+        elm_spinner_value_set(pd->min_h, part->min_h);
+        elm_spinner_value_set(pd->max_w, part->max_w);
+        elm_spinner_value_set(pd->max_h, part->max_h);
      }
 
    pd->part = part;
@@ -337,16 +341,6 @@ ui_property_demo_swallow_add(Evas_Object *parent)
    item = prop_min_w_h_add(pd->box, pd);
    elm_box_pack_end(pd->box, item);
    item = prop_max_w_h_add(pd->box, pd);
-   elm_box_pack_end(pd->box, item);
-
-   item = prop_item_label_add(pd->box, &pd->label_align, _("Note: align -1 is"), _("EVAS_HINT_FILL"));
-   elm_box_pack_end(pd->box, item);
-   item = prop_align_x_y_add(pd->box, pd);
-   elm_box_pack_end(pd->box, item);
-
-   item = prop_item_label_add(pd->box, &pd->label_weight, _("Note: weight 100 is"), _("EVAS_HINT_EXPAND"));
-   elm_box_pack_end(pd->box, item);
-   item = prop_weight_x_y_add(pd->box, pd);
    elm_box_pack_end(pd->box, item);
 
    return pd->box;
