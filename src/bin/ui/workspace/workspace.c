@@ -1553,9 +1553,6 @@ workspace_add(Evas_Object *parent, Group *group)
 
    /* create groupedit - editable */
    sd->groupedit = groupedit_add(sd->scroller, group);
-   /* it temporary solution white not implemented preference module
-      and not finished config module */
-   evas_object_color_set(sd->groupedit, 0, 0, 0, 255);
    evas_object_smart_callback_add(sd->groupedit, "geometry,changed",
                                   _on_groupedit_geometry_changed, sd);
    container_content_set(sd->container.obj, sd->groupedit);
