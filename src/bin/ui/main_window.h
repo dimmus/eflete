@@ -39,9 +39,6 @@
 #include "notify.h"
 #include "string_common.h"
 
-#include "part_dialog.h"
-#include "style_dialog.h"
-#include "item_dialog.h"
 #include "colorsel.h"
 #include "colorclass_manager.h"
 

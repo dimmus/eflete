@@ -14,9 +14,6 @@ src/bin/ui/container/container.c
 src/bin/ui/cursor.c
 src/bin/ui/dialogs/about_window.c
 src/bin/ui/dialogs/colorsel.c
-src/bin/ui/dialogs/item_dialog.c
-src/bin/ui/dialogs/part_dialog.c
-src/bin/ui/dialogs/style_dialog.c
 src/bin/ui/editors/animator.c
 src/bin/ui/editors/animator_program_editor.c
 src/bin/ui/editors/animator_program_sequence.c
