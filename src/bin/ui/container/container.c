@@ -461,6 +461,7 @@ _container_smart_resize(Evas_Object *o,
    if ((ow == w) && (oh == h)) return;
 
    CONTAINER_DATA_GET(o, sd)
+   evas_object_size_hint_min_set(o, w, h);
 
    nw = w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w + sd->dx;
    nh = h + H_HEIGHT + sd->pad_left_top.h + sd->pad_right_bottom.h + sd->dy;
