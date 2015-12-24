@@ -38,7 +38,7 @@ struct _Tab_Home_Edj
 };
 
 typedef struct _Tab_Home_Edj Tab_Home_Edj;
-Tab_Home_Edj tab_edj;
+static Tab_Home_Edj tab_edj;
 
 static void
 _progress_end(void *data, PM_Project_Result result)

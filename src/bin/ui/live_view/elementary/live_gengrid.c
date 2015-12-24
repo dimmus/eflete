@@ -139,7 +139,7 @@ _gengrid_send_signal(void *data,
 
 
 /*********** GEN GRID CREATING FUNCTIONS ****************/
-char *
+static char *
 _grid_text_get(void        *data,
                Evas_Object *obj,
                const char  *part)

@@ -21,7 +21,7 @@
 
 static const char *item_style_name = NULL;
 
-void
+static void
 _pop_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Evas_Object *nf = data;
@@ -31,7 +31,7 @@ _pop_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED_
    elm_naviframe_item_pop(nf);
 }
 
-void
+static void
 _next_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
@@ -54,7 +54,7 @@ _next_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED
    eina_stringshare_del(find_part);
 }
 
-void
+static void
 _prev_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;

@@ -574,7 +574,7 @@ _sc_smart_drag_x_cb(void *data ,
      }
 }
 
-void
+static void
 _sc_smart_move_cb(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)

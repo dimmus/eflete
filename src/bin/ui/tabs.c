@@ -75,7 +75,7 @@ struct _Tabs {
 
 typedef struct _Tabs Tabs;
 
-Tabs tabs;
+static Tabs tabs;
 
 static void
 _content_unset(void)

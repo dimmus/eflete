@@ -246,7 +246,7 @@ _image_editor_gengrid_item_data_create(Evas_Object *edje_edit_obj,
    return it;
 }
 
-Eina_Bool
+static Eina_Bool
 _on_image_done(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info)
@@ -454,7 +454,7 @@ _image_editor_search_field_create(Evas_Object *parent)
    return entry;
 }
 
-Eina_Bool
+static Eina_Bool
 _image_editor_init(Image_Editor *img_edit)
 {
    Eina_List *l = NULL;

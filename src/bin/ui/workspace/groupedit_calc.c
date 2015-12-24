@@ -542,7 +542,7 @@ _part_calc(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
      }
 }
 
-Eina_Bool
+static Eina_Bool
 _part_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 {
    Eina_Stringshare *str;

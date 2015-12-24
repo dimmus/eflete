@@ -2851,7 +2851,7 @@ ui_property_state_textblock_unset(Evas_Object *property)
 
 #define pd_image pd->attributes.state_image
 
-Eina_Bool
+static Eina_Bool
 _on_image_editor_done(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *event_info)
@@ -2939,7 +2939,7 @@ _del_tween_image(void *data,
    history_change_add(pd->group->history, change);
 }
 
-Eina_Bool
+static Eina_Bool
 _on_image_editor_tween_done(void *data,
                             Evas_Object *obj __UNUSED__,
                             void *event_info)
@@ -3075,8 +3075,8 @@ _tween_image_moved(Evas_Object *data,
    //project_changed(false);
 }
 
-Evas_Object *
-prop_item_state_image_tween_add(Evas_Object *box, Group_Prop_Data *pd)
+static Evas_Object *
+_prop_item_state_image_tween_add(Evas_Object *box, Group_Prop_Data *pd)
 {
    Evas_Object *tween_frame, *tween_list, *item, *button, *icon;
    Eina_List *images_list, *l;
@@ -3326,7 +3326,7 @@ ui_property_state_image_set(Evas_Object *property)
         item = prop_state_image_border_fill_add(box, pd);
         elm_box_pack_end(box, item);
 
-        pd_image.tween = prop_item_state_image_tween_add(box, pd);
+        pd_image.tween = _prop_item_state_image_tween_add(box, pd);
         elm_box_pack_end(box, pd_image.tween);
 
         elm_box_pack_end(prop_box, image_frame);

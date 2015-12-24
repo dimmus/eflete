@@ -107,7 +107,7 @@ struct _Tab_Home_New
 };
 
 typedef struct _Tab_Home_New Tab_Home_New;
-Tab_Home_New tab_new;
+static Tab_Home_New tab_new;
 
 /* CHECK ALL AND NOT ALL */
 static void

@@ -767,7 +767,7 @@ _on_clicked_double(void *data __UNUSED__,
 }
 
 /* Creating the view of the mwin!!! */
-Evas_Object *
+static Evas_Object *
 _form_right_side(Style_Editor *style_edit)
 {
    Elm_Object_Item *glit_style;
@@ -894,7 +894,7 @@ _change_bg_cb(void *data,
    elm_object_part_content_set(style_edit->entry_prev, "background", bg);
 }
 
-Evas_Object*
+static Evas_Object*
 _add_box_bg(Style_Editor *style_edit)
 {
    Evas_Object *box_bg, *image_bg, *radio_group, *radio;

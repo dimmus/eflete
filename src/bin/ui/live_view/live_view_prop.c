@@ -167,7 +167,7 @@ _default_text_hash_free_cb(void *data)
    eina_stringshare_del(data);
 }
 
-Eina_Bool
+static Eina_Bool
 _live_view_property_load(Evas_Object *property,
                          Live_View *live,
                          Group *group,

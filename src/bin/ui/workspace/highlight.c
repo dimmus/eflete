@@ -486,7 +486,7 @@ _handler_mouse_out_cb(void *data,
 
 
 
-Handler *
+static Handler *
 _handler_object_add(Evas_Object *parent,
                     Highlight *highlight,
                     Handler_Type descr,

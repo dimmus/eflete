@@ -39,7 +39,7 @@ _export_develop_setup(void *data, Splash_Status status __UNUSED__)
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _export_dev(void *data __UNUSED__,
             Evas_Object *obj, /* this is fileselector from popup */
             void *event_info)
@@ -91,7 +91,7 @@ _export_source_code_setup(void *data, Splash_Status status __UNUSED__)
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _export_source_code(void *data __UNUSED__,
                     Evas_Object *obj __UNUSED__, /* this is fileselector from popup */
                     void *event_info)

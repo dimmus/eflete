@@ -461,7 +461,7 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    elm_object_disabled_set(btn_apply, EINA_TRUE);
 }
 
-Eina_Bool
+static Eina_Bool
 _colorclass_manager_init(Colorclasses_Manager *edit)
 {
    Eina_List *l = NULL;
