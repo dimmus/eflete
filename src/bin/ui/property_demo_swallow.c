@@ -133,6 +133,9 @@ _on_content_set(void *data,
 {
    Demo_Swallow_Prop_Data *pd __UNUSED__ = (Demo_Swallow_Prop_Data *)data;
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info;
+
+   pd->part->content_type = item->index;
+
    if (item->index == 0)
      return;
 }
@@ -302,6 +305,9 @@ ui_property_demo_swallow_part_set(Evas_Object *property, Demo_Part *part)
         elm_spinner_value_set(pd->min_h, part->min_h);
         elm_spinner_value_set(pd->max_w, part->max_w);
         elm_spinner_value_set(pd->max_h, part->max_h);
+
+        ewe_combobox_select_item_set(pd->swallow_content, part->content_type);
+        ewe_combobox_select_item_set(pd->swallow_content, part->widget_number);
      }
 
    pd->part = part;
