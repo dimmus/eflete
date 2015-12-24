@@ -60,6 +60,13 @@ static const char *swallow_content_type[] = { N_("None"),
                                               N_("Picture"),
                                               N_("Widget"),
                                               NULL};
+
+static const char *widget_type[] = { N_("button"),
+                                     N_("check"),
+                                     N_("slider"),
+                                     N_("entry"),
+                                     N_("progressbar"),
+                                     NULL};
 static void
 _on_spinner_mouse_wheel(void *data __UNUSED__,
                         Evas *e __UNUSED__,
@@ -126,32 +133,30 @@ prop_item_label_add(Evas_Object *parent,
    return item;
 }
 
-static void
-_on_content_set(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info)
-{
-   Demo_Swallow_Prop_Data *pd __UNUSED__ = (Demo_Swallow_Prop_Data *)data;
-   Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info;
-
-   pd->part->content_type = item->index;
-
-   if (item->index == 0)
-     return;
+#define PROPERTY_SWALLOW_COMMON_COMBOBOX_ADD(TYPE, LIST, TEXT) \
+static void \
+_on_content_##TYPE##_set(void *data, \
+                         Evas_Object *obj __UNUSED__, \
+                         void *event_info) \
+{ \
+   Demo_Swallow_Prop_Data *pd __UNUSED__ = (Demo_Swallow_Prop_Data *)data; \
+   Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
+   pd->part->TYPE = item->index; \
+} \
+static Evas_Object * \
+prop_##TYPE##_add(Evas_Object *parent, Demo_Swallow_Prop_Data *pd) \
+{ \
+   int i; \
+   PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
+   EWE_COMBOBOX_ADD(parent, pd->TYPE) \
+   for (i = 0; LIST[i]; ewe_combobox_item_add(pd->TYPE, LIST[i]), i++) ; \
+   evas_object_smart_callback_add(pd->TYPE, "selected", _on_content_##TYPE##_set, pd); \
+   elm_layout_content_set(item, "elm.swallow.content", pd->TYPE); \
+   ewe_combobox_select_item_set(pd->TYPE, 0); \
+   return item; \
 }
-
-static Evas_Object *
-prop_swallow_content_add(Evas_Object *parent, Demo_Swallow_Prop_Data *pd)
-{
-   int i;
-   PROPERTY_ITEM_ADD(parent, _("Content Set"), "1swallow")
-   EWE_COMBOBOX_ADD(parent, pd->swallow_content)
-   for (i = 0; swallow_content_type[i]; ewe_combobox_item_add(pd->swallow_content, swallow_content_type[i]), i++) ;
-   evas_object_smart_callback_add(pd->swallow_content, "selected", _on_content_set, pd);
-   elm_layout_content_set(item, "elm.swallow.content", pd->swallow_content);
-   ewe_combobox_select_item_set(pd->swallow_content, 0);
-   return item;
-}
+PROPERTY_SWALLOW_COMMON_COMBOBOX_ADD(swallow_content, swallow_content_type, _("Content"));
+PROPERTY_SWALLOW_COMMON_COMBOBOX_ADD(widget, widget_type, _("Widget"));
 
 static void
 _on_rectangle_color_change(void *data,
@@ -306,8 +311,8 @@ ui_property_demo_swallow_part_set(Evas_Object *property, Demo_Part *part)
         elm_spinner_value_set(pd->max_w, part->max_w);
         elm_spinner_value_set(pd->max_h, part->max_h);
 
-        ewe_combobox_select_item_set(pd->swallow_content, part->content_type);
-        ewe_combobox_select_item_set(pd->swallow_content, part->widget_number);
+        ewe_combobox_select_item_set(pd->swallow_content, part->swallow_content);
+        ewe_combobox_select_item_set(pd->widget, part->widget);
      }
 
    pd->part = part;
@@ -339,6 +344,8 @@ ui_property_demo_swallow_add(Evas_Object *parent)
    item = prop_swallow_content_add(pd->box, pd);
    elm_box_pack_end(pd->box, item);
    item = prop_image_path_add(pd->box, pd);
+   elm_box_pack_end(pd->box, item);
+   item = prop_widget_add(pd->box, pd);
    elm_box_pack_end(pd->box, item);
 
    item = prop_rectangle_color_add(pd->box, pd);

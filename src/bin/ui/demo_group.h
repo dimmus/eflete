@@ -49,9 +49,9 @@ struct Demo_Part_
 
    Eina_Stringshare *text_content; /**< text in demo (for TEXT parts) */
    Evas_Object *object; /**< object content in demo (for SWALLOW parts) */
-   int content_type; /**< type of content (picture, rectangle or widget) */
+   int swallow_content; /**< type of content (picture, rectangle or widget) */
    int r, g, b, a; /**< color of content */
-   int widget_number; /**< number of widget to be set up */
+   int widget; /**< number of widget to be set up */
    Eina_Stringshare *image_path; /**< path to image to set up */
    int max_w, max_h, min_w, min_h; /**< object's size */
 };
