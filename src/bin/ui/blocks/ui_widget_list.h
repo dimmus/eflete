@@ -43,7 +43,6 @@
 
 #include "main_window.h"
 #include "property.h"
-#include "ui_states_list.h"
 
 /**
  * Add a new 'widget list' object.

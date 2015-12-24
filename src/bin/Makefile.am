@@ -64,8 +64,6 @@ libete_a_SOURCES = \
 ../../src/bin/ui/property_color.c \
 ../../src/bin/ui/property_demo_swallow.c \
 ../../src/bin/ui/property_demo_text.c \
-../../src/bin/ui/blocks/ui_signal_list.c \
-../../src/bin/ui/blocks/ui_states_list.c \
 ../../src/bin/ui/workspace/workspace.c \
 ../../src/bin/ui/workspace/groupedit_calc.c \
 ../../src/bin/ui/workspace/groupedit.c \
