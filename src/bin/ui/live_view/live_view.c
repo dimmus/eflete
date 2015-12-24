@@ -190,7 +190,6 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group)
    live->live_view = container_add(parent);
    elm_object_part_content_set(live->layout, SWALLOW_CONTENT, live->live_view);
    elm_object_part_content_set(live->layout, SWALLOW_BG, bg);
-   container_confine_set(live->live_view, bg);
 
    /* save structure inside of an object */
    evas_object_data_set(live->block, "live_view_structure", live);
