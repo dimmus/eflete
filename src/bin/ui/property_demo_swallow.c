@@ -245,6 +245,9 @@ _on_image_done(void *data,
 
    elm_entry_entry_set(pd->picture, selected);
 
+   eina_stringshare_del(pd->part->image_path);
+   pd->part->image_path = eina_stringshare_add(selected);
+
    return true;
 }
 
@@ -294,6 +297,7 @@ ui_property_demo_swallow_part_set(Evas_Object *property, Demo_Part *part)
                               part->g,
                               part->b,
                               part->a);
+        elm_entry_entry_set(pd->picture, part->image_path);
      }
 
    pd->part = part;

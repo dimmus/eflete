@@ -272,6 +272,7 @@ demo_group_del(Evas_Object *demo)
    EINA_LIST_FREE(pl->swallow_list, demo_part)
      {
         eina_stringshare_del(demo_part->name);
+        eina_stringshare_del(demo_part->image_path);
         free(demo_part);
      }
 
