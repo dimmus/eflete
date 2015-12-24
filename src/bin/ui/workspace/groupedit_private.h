@@ -30,7 +30,6 @@ typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;
 typedef struct _Groupedit_Part Groupedit_Part;
 typedef struct _Groupedit_Item Groupedit_Item;
 
-static const char SIG_CHANGED[] = "container,changed";
 static const char SIG_PART_SEPARETE_OPEN[] = "parts,separete,open";
 static const char SIG_PART_SEPARETE_CLOSE[] = "parts,separete,close";
 static const char SIG_PART_UNSELECTED[] = "part,unselected";
@@ -43,7 +42,6 @@ static const char SWALLOW_FOR_EDIT[] = "gs.swallow.edit";
  * coming from elm layout): */
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    /* about types see here: http://docs.enlightenment.org/auto/evas/group__Evas__Keys.html#gaf0d4ce3d62a068eab1b89a34abb056ad */
-   {SIG_CHANGED, "(iiii)"},
    {SIG_PART_SEPARETE_OPEN, ""},
    {SIG_PART_SEPARETE_CLOSE, ""},
    {SIG_PART_UNSELECTED, "s"},
