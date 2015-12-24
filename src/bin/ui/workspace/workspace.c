@@ -1570,7 +1570,7 @@ workspace_add(Evas_Object *parent, Group *group)
                                   _on_groupedit_part_select, obj);
    evas_object_smart_callback_add(sd->groupedit, SIGNAL_GROUPEDIT_PART_UNSELECTED,
                                   _on_groupedit_part_unselect, obj);
-   evas_object_smart_callback_add(sd->groupedit, "container,changed",
+   evas_object_smart_callback_add(sd->groupedit, "geometry,changed",
                                   _ws_ruler_abs_zero_move_cb, obj);
    evas_object_smart_callback_add(sd->groupedit, "object,area,changed",
                                   _ws_ruler_rel_zero_move_cb, obj);
