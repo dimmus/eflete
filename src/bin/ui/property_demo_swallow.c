@@ -159,7 +159,17 @@ _on_rectangle_color_change(void *data,
    int r, g, b, a;
    Demo_Swallow_Prop_Data *pd = (Demo_Swallow_Prop_Data *)data;
    colorselector_color_get(obj, &r, &g, &b, &a);
-   evas_object_color_set(pd->color_obj, r*a/255, g*a/255, b*a/255, a);
+
+   evas_color_argb_premul(a, &r, &g, &b);
+
+   pd->part->r = r;
+   pd->part->g = g;
+   pd->part->b = b;
+   pd->part->a = a;
+
+   evas_object_color_set(pd->color_obj, r, g, b, a);
+   if (pd->part->object)
+     evas_object_color_set(pd->part->object, r, g, b, a);
 }
 static void
 _on_rectangle_color_dismissed(void *data,
@@ -279,6 +289,11 @@ ui_property_demo_swallow_part_set(Evas_Object *property, Demo_Part *part)
    if (part)
      {
         elm_object_text_set(pd->name, part->name);
+        evas_object_color_set(pd->color_obj,
+                              part->r,
+                              part->g,
+                              part->b,
+                              part->a);
      }
 
    pd->part = part;
