@@ -144,37 +144,37 @@ _groupedit_smart_calculate(Evas_Object *o)
    Evas_Coord x, y, w, h;
    Evas_Coord px, py, pw, ph;
 
-   WS_GROUPEDIT_DATA_GET(o, priv)
-      evas_object_geometry_get(priv->parent, &px, &py, &pw, &ph);
-   evas_object_resize(priv->event, pw, ph);
-   evas_object_move(priv->event, px, py);
+   WS_GROUPEDIT_DATA_GET(o, sd)
+      evas_object_geometry_get(sd->parent, &px, &py, &pw, &ph);
+   evas_object_resize(sd->event, pw, ph);
+   evas_object_move(sd->event, px, py);
 
    evas_object_geometry_get(o, &x, &y, &w, &h);
 
-   if ((priv->geom.x != x) || (priv->geom.y != y) ||
-       (priv->geom.w != w) || (priv->geom.h != h))
+   if ((sd->geom.x != x) || (sd->geom.y != y) ||
+       (sd->geom.w != w) || (sd->geom.h != h))
      {
-        priv->geom.x = x;
-        priv->geom.y = y;
-        priv->geom.w = w;
-        priv->geom.h = h;
+        sd->geom.x = x;
+        sd->geom.y = y;
+        sd->geom.w = w;
+        sd->geom.h = h;
 
-        evas_object_resize(priv->group->edit_object, w, h);
-        evas_object_resize(priv->box, w, h);
-        evas_object_resize(priv->fake_win, w, h);
+        evas_object_resize(sd->group->edit_object, w, h);
+        evas_object_resize(sd->box, w, h);
+        evas_object_resize(sd->fake_win, w, h);
 
         /* change the view port geometry */
-        evas_object_move(priv->proxy, x, y);
-        evas_object_resize(priv->proxy, w, h);
-        elm_win_render(priv->fake_win);
+        evas_object_move(sd->proxy, x, y);
+        evas_object_resize(sd->proxy, w, h);
+        elm_win_render(sd->fake_win);
      }
    else
-     elm_box_recalculate(priv->box);
+     elm_box_recalculate(sd->box);
 
-   priv->manual_calc = false;
+   sd->manual_calc = false;
 
    DBG("Groupedit geometry: x[%i] y[%i] w[%i] h[%i]", x, y, w, h);
-   evas_object_smart_callback_call(o, SIG_GEOMETRY_CHANGED, &priv->geom);
+   evas_object_smart_callback_call(o, SIG_GEOMETRY_CHANGED, &sd->geom);
 }
 
 /* this need for macro EVAS_SMART_SUBCLASS_NEW */
