@@ -86,6 +86,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    Demo_Swallow_Prop_Data *pd = (Demo_Swallow_Prop_Data *)data; \
    int value = elm_spinner_value_get(obj); \
    pd->part->MEMBER##_##VALUE = value; \
+   evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, pd->part); \
 }
 
 #define PROPERTY_SWALLOW_COMMON_2SPINNER_ADD(TEXT, VALUE1, VALUE2, MEMBER, MIN, MAX, LABEL_END) \
@@ -143,6 +144,7 @@ _on_content_##TYPE##_set(void *data, \
    Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info; \
    pd->part->TYPE = item->index; \
    pd->part->change = true; \
+   evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, pd->part); \
 } \
 static Evas_Object * \
 prop_##TYPE##_add(Evas_Object *parent, Demo_Swallow_Prop_Data *pd) \
@@ -257,6 +259,8 @@ _on_image_done(void *data,
 
    eina_stringshare_del(pd->part->image_path);
    pd->part->image_path = eina_stringshare_add(selected);
+
+   evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, pd->part);
 
    return true;
 }
