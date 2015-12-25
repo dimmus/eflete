@@ -114,10 +114,6 @@ _teardown_save_splash(void *data __UNUSED__, Splash_Status status)
      STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
 
    ap.project->changed = false;
-
-   TODO("Check if this recalc is necessary");
-   if (ap.project->current_style)
-     workspace_edit_object_recalc(ap.workspace);
    pm_project_thread_free();
 
    eflete_main_loop_quit();
