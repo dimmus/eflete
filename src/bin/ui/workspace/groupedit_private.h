@@ -55,8 +55,6 @@ struct _Ws_Groupedit_Smart_Data
    Evas_Object_Smart_Clipped_Data base;
    Group *group;
    Evas_Object *obj;
-   Evas_Object *fake_win;
-   Evas_Object *proxy;
    Evas_Object *event;
    Evas_Object *parent;
    Evas_Object *box;

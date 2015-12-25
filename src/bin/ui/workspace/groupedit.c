@@ -73,9 +73,11 @@ _groupedit_smart_del(Evas_Object *o)
    WS_GROUPEDIT_DATA_GET(o, sd)
 
    _parts_list_free(sd);
-   gm_group_edit_object_unload(sd->group);
+   evas_object_smart_member_del(sd->group->edit_object);
+   evas_object_smart_member_del(sd->clipper);
+   evas_object_hide(sd->group->edit_object);
 
-   evas_object_del(sd->fake_win);
+   gm_group_edit_object_unload(sd->group);
    _groupedit_parent_sc->del(o);
 }
 
@@ -87,8 +89,6 @@ _groupedit_smart_show(Evas_Object *o)
    WS_GROUPEDIT_DATA_GET(o, sd);
 
    evas_object_show(sd->event);
-   evas_object_show(sd->fake_win);
-   evas_object_show(sd->proxy);
 
    _groupedit_parent_sc->show(o);
 }
@@ -101,8 +101,6 @@ _groupedit_smart_hide(Evas_Object *o)
    WS_GROUPEDIT_DATA_GET(o, sd)
 
    evas_object_hide(sd->event);
-   evas_object_hide(sd->fake_win);
-   evas_object_hide(sd->proxy);
 
    _groupedit_parent_sc->hide(o);
 }
@@ -159,14 +157,10 @@ _groupedit_smart_calculate(Evas_Object *o)
         sd->geom.w = w;
         sd->geom.h = h;
 
+        evas_object_move(sd->group->edit_object,x ,y);
         evas_object_resize(sd->group->edit_object, w, h);
+        evas_object_move(sd->box, x, y);
         evas_object_resize(sd->box, w, h);
-        evas_object_resize(sd->fake_win, w, h);
-
-        /* change the view port geometry */
-        evas_object_move(sd->proxy, x, y);
-        evas_object_resize(sd->proxy, w, h);
-        elm_win_render(sd->fake_win);
      }
    else
      elm_box_recalculate(sd->box);
@@ -202,7 +196,6 @@ groupedit_add(Evas_Object *parent, Group *group)
 {
    Evas *e;
    Evas_Object *obj;
-   Elm_Theme *theme;
 
    assert(parent != NULL);
    assert(group != NULL);
@@ -212,33 +205,24 @@ groupedit_add(Evas_Object *parent, Group *group)
    WS_GROUPEDIT_DATA_GET(obj, sd);
    sd->parent = parent;
 
-   sd->fake_win = elm_win_add(ap.win, "inlined", ELM_WIN_INLINED_IMAGE);
-   elm_win_alpha_set(sd->fake_win, true);
-   evas_object_show(sd->fake_win);
-   sd->proxy = elm_win_inlined_image_object_get(sd->fake_win);
-   evas_object_smart_member_add(sd->proxy, obj);
-
-   gm_group_edit_object_load(ap.project, group, evas_object_evas_get(sd->fake_win));
-
-   theme = elm_theme_new();
-   elm_theme_copy(ap.theme, theme);
-   elm_object_theme_set(sd->fake_win, theme);
-   elm_theme_free(theme);
-
+   gm_group_edit_object_load(ap.project, group, evas_object_evas_get(ap.win));
    edje_object_animation_set(group->edit_object, false);
    TODO("set the state for all parts to default 0.0")
    sd->group = group;
+   evas_object_smart_member_add(sd->group->edit_object, obj);
 
-   sd->box = elm_box_add(sd->fake_win);
+   sd->box = elm_box_add(parent);
    elm_box_layout_set(sd->box, _parts_stack_layout, sd, NULL);
    evas_object_show(sd->box);
+   evas_object_smart_member_add(sd->box, obj);
    _parts_list_new(sd);
 
    /* hide the editing object by using clipper (clipper is small, it's size is 0,0)
     * with such clipper object invisible and calculate geometry. */
    evas_object_show(sd->group->edit_object);
-   sd->clipper = evas_object_rectangle_add(evas_object_evas_get(sd->fake_win));
+   sd->clipper = evas_object_rectangle_add(evas_object_evas_get(sd->obj));
    evas_object_clip_set(sd->group->edit_object, sd->clipper);
+   evas_object_smart_member_add(sd->clipper, obj);
    evas_object_show(sd->clipper);
 
    return obj;
