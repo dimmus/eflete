@@ -52,18 +52,19 @@
  */
 EFLETE_TEST(live_widget_create_test_p)
 {
+ck_assert(false);
    elm_init(0, 0);
 
-   Style *style = NULL;
+//   Style *style = NULL;
    Evas_Object *parent = NULL;
    Evas_Object *live = NULL;
 
-   style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
+//   style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 //   live = live_widget_create("radio", style, parent);
    ck_assert_msg(live != NULL, "Failed to create live object.");
 
-   wm_style_free(style);
+//   wm_style_free(style);
    evas_object_del(parent);
    elm_shutdown();
 }

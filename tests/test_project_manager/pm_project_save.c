@@ -58,17 +58,17 @@
 EFLETE_TEST (pm_project_save_test_p)
 {
    Project *pro;
-   Widget *widget;
+   /*Widget *widget;
    Class *class_st;
    Style *style;
    Part *part;
-   Eet_File *ef;
-
+   Eet_File *ef;*/
+ck_assert(false);
    elm_init(0,0);
    app_init();
 
    pro = setup("pm_project_save_test_p");
-   EINA_INLIST_FOREACH(pro->widgets, widget)
+/*   EINA_INLIST_FOREACH(pro->widgets, widget)
      {
         EINA_INLIST_FOREACH(widget->classes, class_st)
           {
@@ -88,7 +88,7 @@ EFLETE_TEST (pm_project_save_test_p)
    ef = eet_open("./UTC/UTC.dev.backup", EET_FILE_MODE_WRITE);
    ck_assert_msg(ef != NULL, "Project not saved!");
 
-   eet_close(ef);
+   eet_close(ef);*/
    pm_project_close(pro);
    teardown("./pm_project_save_test_p");
    ecore_file_recursive_rm("./UTC");

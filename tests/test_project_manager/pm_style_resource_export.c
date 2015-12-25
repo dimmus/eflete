@@ -65,10 +65,10 @@
 EFLETE_TEST(pm_style_resource_export_test_p)
 {
    Eina_Bool result = EINA_FALSE;
-   Style *style = NULL;
+   //Style *style = NULL;
    Eina_Stringshare *path = NULL;
    Eina_Stringshare *check_resource = NULL;
-
+ck_assert(false);
    elm_init(0,0);
    app_init();
    ecore_file_recursive_rm("./UTC");
@@ -78,13 +78,13 @@ EFLETE_TEST(pm_style_resource_export_test_p)
 
    ui_main_window_add();
    ap.project = setup("pm_style_resource_export_test_p");
-   wm_widgets_list_objects_load(ap.project->widgets,
+  /* wm_widgets_list_objects_load(ap.project->widgets,
                                 evas_object_evas_get(ap.win),
-                                ap.project->mmap_file);
-   style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
+                                ap.project->mmap_file);*/
+   //style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    //ui_style_clicked(style);
 
-   result = pm_style_resource_export(ap.project, style, path);
+   //result = pm_style_resource_export(ap.project, style, path);
    ck_assert_msg(result, "Failed export resources of group.");
    result = ecore_file_exists(check_resource);
    ck_assert_msg(result, "Exported image does not exist");

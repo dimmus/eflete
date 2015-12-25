@@ -57,14 +57,15 @@ EFLETE_TEST (animator_window_add_test_p)
    //Style *style = NULL;
    //Evas_Object *manager;
 
+ck_assert(false);
    elm_init(0, 0);
    app_init();
 
    ui_main_window_add();
    ap.project = setup("animator_window_add_test_p");
-   wm_widgets_list_objects_load(ap.project->widgets,
+/*   wm_widgets_list_objects_load(ap.project->widgets,
                                 evas_object_evas_get(ap.win), ap.project->mmap_file);
-   blocks_show();
+   blocks_show();*/
    //style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
 //   ui_style_clicked(style);
 

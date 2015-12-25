@@ -58,12 +58,14 @@ EFLETE_TEST (sound_editor_file_choose_test_p)
 {
    elm_init(0,0);
 
+   ck_assert(false);
    app_init();
    Evas_Object *sound_editor;
 
    ui_main_window_add();
    ap.project = setup("sound_editor_file_choose_test_p");
-   wm_widgets_list_objects_load(ap.project->widgets, evas_object_evas_get(ap.win), ap.project->mmap_file);
+
+   //wm_widgets_list_objects_load(ap.project->widgets, evas_object_evas_get(ap.win), ap.project->mmap_file);
    sound_editor = sound_editor_window_add(SOUND_EDITOR_EDIT);
 
    ck_assert_msg(sound_editor_file_choose(sound_editor, "key-tap") == EINA_TRUE,
