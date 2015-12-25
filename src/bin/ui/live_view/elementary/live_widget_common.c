@@ -68,7 +68,7 @@ on_swallow_check(void *data,
    if (part->change)
      {
         /* if NONE - delete object */
-        if ((content_type == 0) && (part->object))
+        if ((content_type == CONTENT_NONE) && (part->object))
           {
              content = elm_object_part_content_unset(object, part->name);
              evas_object_del(content);
@@ -76,39 +76,39 @@ on_swallow_check(void *data,
              part->object = NULL;
           }
 
-        if (content_type == 1) /* create rect */
+        if (content_type == CONTENT_RECTANGLE) /* create rect */
           {
              content = evas_object_rectangle_add(object);
           }
-        else if ((content_type == 2) && (part->image_path)) /* create picture */
+        else if ((content_type == CONTENT_IMAGE) && (part->image_path)) /* create picture */
           {
              content = elm_image_add(object);
              elm_image_file_set(content, part->image_path, NULL);
           }
-        else if (content_type == 3) /* create widget */
+        else if (content_type == CONTENT_WIDGET) /* create widget */
           {
              switch (widget_type)
                {
-                case 0:
+                case WIDGET_BUTTON:
                    content = elm_button_add(object);
                    elm_object_text_set(content, _("User Text"));
                    break;
-                case 1:
+                case WIDGET_CHECK:
                    content = elm_check_add(object);
                    elm_object_text_set(content, _("User Text"));
                    elm_check_state_set(content, true);
                    break;
-                case 2:
+                case WIDGET_SLIDER:
                    content = elm_slider_add(object);
                    elm_slider_unit_format_set(content, "%1.2f units");
                    elm_slider_indicator_format_set(content, "%1.2f");
                    elm_slider_min_max_set(content, 0, 10);
                    break;
-                case 3:
+                case WIDGET_ENTRY:
                    content = elm_entry_add(object);
                    elm_entry_single_line_set(content, false);
                    break;
-                case 4:
+                case WIDGET_PROGRESSBAR:
                    content = elm_progressbar_add(object);
                    break;
                }

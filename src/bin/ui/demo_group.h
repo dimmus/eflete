@@ -36,6 +36,23 @@
  */
 #define SIGNAL_DEMO_GROUP_PART_SELECTED "SIGNAL_DEMO_GROUP_PART_SELECTED"
 
+typedef enum _Swallow_Content_Type
+{
+   CONTENT_NONE = 0 ,  /**< None type value */
+   CONTENT_RECTANGLE,  /**< Rectangle type value */
+   CONTENT_IMAGE,  /**< Image type value */
+   CONTENT_WIDGET  /**< Widget type value */
+} Swallow_Content_Type;
+
+typedef enum _Swallow_Content_Widget_Type
+{
+   WIDGET_BUTTON = 0 ,  /**< button widget */
+   WIDGET_CHECK,  /**< check widget */
+   WIDGET_SLIDER,  /**< slider widget */
+   WIDGET_ENTRY,  /**< entry widget */
+   WIDGET_PROGRESSBAR /**< progressbar widget */
+} Swallow_Content_Widget_Type;
+
 /**
  * @typedef Demo_Part_
  * @ingroup DemoGroup
