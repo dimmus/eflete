@@ -136,7 +136,7 @@ Eina_Bool
 _edit_object_part_item_del(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
                            Eina_Stringshare *item);
 
-void /* custom 'diagonal' layout */
+void
 _parts_stack_layout(Evas_Object          *o,
                     Evas_Object_Box_Data *p,
                     void                 *data);
