@@ -33,8 +33,8 @@
 #include "enventor_module.h"
 #include "config.h"
 #include "common_macro.h"
-#include "ui_widget_list.h"
 #include "notify.h"
+#include "property.h"
 #include "string_common.h"
 
 #include "colorsel.h"
