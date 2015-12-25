@@ -63,7 +63,7 @@ on_swallow_check(void *data,
    Evas_Object *content = NULL;
 
    int content_type = part->swallow_content;
-   int widget_type = part->swallow_content;
+   int widget_type = part->widget;
 
    if (part->change)
      {
@@ -73,8 +73,10 @@ on_swallow_check(void *data,
              content = elm_object_part_content_unset(object, part->name);
              evas_object_del(content);
              content = NULL;
+             part->object = NULL;
           }
-        else if (content_type == 1) /* create rect */
+
+        if (content_type == 1) /* create rect */
           {
              content = evas_object_rectangle_add(object);
           }
@@ -83,31 +85,31 @@ on_swallow_check(void *data,
              content = elm_image_add(object);
              elm_image_file_set(content, part->image_path, NULL);
           }
-        else if ((content_type == 3) && (widget_type != 0)) /* create widget */
+        else if (content_type == 3) /* create widget */
           {
              switch (widget_type)
                {
-                case 1:
+                case 0:
                    content = elm_button_add(object);
                    elm_object_text_set(content, _("User Text"));
                    break;
-                case 2:
+                case 1:
                    content = elm_check_add(object);
                    elm_object_text_set(content, _("User Text"));
                    elm_check_state_set(content, true);
                    break;
-                case 3:
+                case 2:
                    content = elm_slider_add(object);
                    elm_slider_unit_format_set(content, "%1.2f units");
                    elm_slider_indicator_format_set(content, "%1.2f");
                    elm_slider_min_max_set(content, 0, 10);
                    break;
-                case 4:
+                case 3:
                    content = elm_entry_add(object);
                    elm_entry_single_line_set(content, false);
                    break;
+                case 4:
                    content = elm_progressbar_add(object);
-                case 5:
                    break;
                }
           }
@@ -129,8 +131,8 @@ on_swallow_check(void *data,
                                       part->min_w,
                                       part->min_h);
         evas_object_size_hint_max_set(content,
-                                      part->min_w,
-                                      part->min_h);
+                                      part->max_w,
+                                      part->max_h);
      }
 }
 
