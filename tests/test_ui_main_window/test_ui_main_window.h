@@ -26,8 +26,6 @@
 
 #define TEST_NAME "main_window"
 
-void add_callbacks_wd_test_p1(int);
-void code_edit_mode_switch_test_p(int);
 void ui_main_window_add_test_p(int);
 void ui_main_window_del_test_p(int);
 void ui_menu_add_test_p(int);

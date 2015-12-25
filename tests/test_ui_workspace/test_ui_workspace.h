@@ -28,19 +28,8 @@
  */
 
 void workspace_add_test_p(int);
-void workspace_edit_object_get_test_p(int);
-void workspace_edit_object_get_test_p1(int);
-void workspace_edit_object_part_above_test_p(int);
-void workspace_edit_object_part_add_test_p(int);
-void workspace_edit_object_part_add_test_p1(int);
-void workspace_edit_object_part_below_test_p(int);
-void workspace_edit_object_part_del_test_p(int);
-void workspace_edit_object_part_restack_test_p1(int);
-void workspace_edit_object_part_restack_test_p2(int);
-void workspace_edit_object_part_state_set_test_n2(int);
 void workspace_edit_object_part_state_set_test_p(int);
 void workspace_edit_object_recalc_test_p(int);
-void workspace_edit_object_visible_set_test_p(int);
 void workspace_highlight_align_visible_get_test_p1(int);
 void workspace_highlight_align_visible_get_test_p2(int);
 void workspace_highlight_align_visible_set_test_p1(int);

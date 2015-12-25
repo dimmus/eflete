@@ -68,30 +68,6 @@
  */
 #define SIGNAL_PART_UNSELECTED "SIGNAL_PART_UNSELECTED"
 
-/**
- * emited when new part is added.
- * eventinfo - pointer to Part_ structure
- *
- * @ingroup Window
- */
-#define SIGNAL_PART_ADDED "SIGNAL_PART_ADDED"
-
-/**
- * emited when new part_item is added.
- * eventinfo - pointer to Part_ structure
- *
- * @ingroup Window
- */
-#define SIGNAL_PART_ITEM_ADDED "SIGNAL_PART_ITEM_ADDED"
-
-/**
- * emited when part is deleted.
- * eventinfo - pointer to Part_ structure
- *
- * @ingroup Window
- */
-#define SIGNAL_PART_DELETED "SIGNAL_PART_DELETED"
-
 typedef struct {
    const char *old_name;
    const char *new_name;
@@ -220,6 +196,19 @@ typedef struct {
  */
 #define SIGNAL_EDITOR_PART_RESTACKED "SIGNAL_EDITOR_PART_RESTACKED"
 
+typedef struct {
+   const char *part_name;
+   const char *part_item;
+   const char *relative_part_item;
+} Editor_Part_Item_Restack;
+/**
+ * emited when part item is restacked.
+ * eventinfo - Editor_Part_Item_Restack struct
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_PART_ITEM_RESTACKED "SIGNAL_EDITOR_PART_ITEM_RESTACKED"
+
 
 /**
  * emited when project is changed in any way (through attribute, .
@@ -317,6 +306,38 @@ typedef struct {
  */
 #define SIGNAL_STYLE_EDITOR_TAB_CLICKED "SIGNAL_STYLE_EDITOR_TAB_CLICKED"
 
+ /**
+ * emited when colorclass editor tab is clicked.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_COLOR_EDITOR_TAB_CLICKED "SIGNAL_COLOR_EDITOR_TAB_CLICKED"
+
+/**
+ * emited when text part in demo is clicked.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_DEMO_TEXT_PART_CLICKED "SIGNAL_DEMO_TEXT_PART_CLICKED"
+
+/**
+ * emited when swallow part in demo is clicked.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_DEMO_SWALLOW_PART_CLICKED "SIGNAL_DEMO_SWALLOW_PART_CLICKED"
+
+/**
+ * emited when swallow part in demo is clicked.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_DEMO_SWALLOW_PART_CLICKED "SIGNAL_DEMO_SWALLOW_PART_CLICKED"
+
 /**
  * emited when style/styles in style editor is/are selected.
  * eventinfo - NULL
@@ -324,5 +345,37 @@ typedef struct {
  * @ingroup Window
  */
 #define SIGNAL_STYLE_SELECTED "SIGNAL_STYLE_SELECTED"
+
+/**
+ * emited when colorstyle/colorstyles in colorclass editor is/are selected.
+ * eventinfo - NULL
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_COLOR_SELECTED "SIGNAL_COLOR_SELECTED"
+
+/**
+ * emited when part text is set with data in demo.
+ * eventinfo - part which contain important information like text, name, content.
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_DEMO_TEXT_SET "SIGNAL_DEMO_TEXT_SET"
+
+/**
+ * emited when part swallow is set with data in demo.
+ * eventinfo - part which contain important information like text, name, content.
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_DEMO_SWALLOW_SET "SIGNAL_DEMO_SWALLOW_SET"
+
+/**
+ * emited when program's signal is sent into demo.
+ * eventinfo - NULL.
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_DEMO_SIGNAL_SEND "SIGNAL_DEMO_SIGNAL_SEND"
 
 #endif /* SIGNALS_H*/

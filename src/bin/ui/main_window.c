@@ -198,10 +198,8 @@ ui_main_window_add(void)
 
    //ui_panes_add();
    //ap.workspace = workspace_add(ap.block.canvas);
-   //ui_block_ws_set(ap.workspace);
    //evas_object_show(ap.workspace);
    //ap.live_view = live_view_add(ap.block.bottom_right, false);
-   //ui_block_live_view_set(ap.live_view->layout);
    //ap.colorsel = colorselector_add(ap.win);
    #ifdef HAVE_ENVENTOR
      ap.enventor= enventor_object_init(ap.win);

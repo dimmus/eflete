@@ -167,7 +167,7 @@ _default_text_hash_free_cb(void *data)
    eina_stringshare_del(data);
 }
 
-Eina_Bool
+static Eina_Bool
 _live_view_property_load(Evas_Object *property,
                          Live_View *live,
                          Group *group,
@@ -515,6 +515,7 @@ live_view_property_part_del(Evas_Object *property, Part_ *part)
    return true;
 }
 
+#if 0
 Eina_Bool
 live_view_property_part_rename(Evas_Object *property, Part *part, Eina_Stringshare *new_name)
 {
@@ -550,6 +551,7 @@ live_view_property_part_rename(Evas_Object *property, Part *part, Eina_Stringsha
 
    return true;
 }
+#endif
 
 #define IS_SWALLOW_MOVE (part_move->type == EDJE_PART_TYPE_SWALLOW)
 #define IS_SWALLOW_CURR (part_type == EDJE_PART_TYPE_SWALLOW)
@@ -560,6 +562,7 @@ live_view_property_part_rename(Evas_Object *property, Part *part, Eina_Stringsha
 #define IS_TEXT_OR_TEXTBLOCK_CURR \
   ((part_type == EDJE_PART_TYPE_TEXT) || (part_type == EDJE_PART_TYPE_TEXTBLOCK))
 
+#if 0
 Eina_Bool
 live_view_property_part_restack_above(Evas_Object *property, Part *part_move, Part *part_above)
 {
@@ -632,12 +635,14 @@ live_view_property_part_restack_above(Evas_Object *property, Part *part_move, Pa
 
    return true;
 }
+#endif
 
 #undef IS_SWALLOW_MOVE
 #undef IS_SWALLOW_CURR
 #undef IS_TEXT_OR_TEXTBLOCK_MOVE
 #undef IS_TEXT_OR_TEXTBLOCK_CURR
 
+#if 0
 Eina_Bool
 live_view_property_part_restack_below(Evas_Object *property, Part *part_move)
 {
@@ -674,6 +679,7 @@ live_view_property_part_restack_below(Evas_Object *property, Part *part_move)
    elm_box_pack_end(item_box, check_move);
    return true;
 }
+#endif
 
 Evas_Object *
 live_view_property_add(Evas_Object *object, Group *group, Eina_Bool in_prog_edit)

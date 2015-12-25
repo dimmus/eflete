@@ -541,6 +541,18 @@ gm_state_del(Project *pro, State *state)
 }
 
 void
+gm_part_item_add(Project *pro, Part_ *part, Eina_Stringshare *item_name)
+{
+   assert(pro != NULL);
+   assert(part != NULL);
+   assert(item_name != NULL);
+   assert((part->type ==  EDJE_PART_TYPE_BOX) ||
+          (part->type ==  EDJE_PART_TYPE_TABLE));
+
+   part->items = eina_list_append(part->items, eina_stringshare_ref(item_name));
+}
+
+void
 gm_part_item_del(Project *pro, Part_ *part, Eina_Stringshare *item_name)
 {
    Eina_List *l;
@@ -620,6 +632,7 @@ gm_part_del(Project *pro, Part_* part)
    part->used_in = eina_list_free(part->used_in);
    part->group->parts = eina_list_remove(part->group->parts, part);
    eina_stringshare_del(part->name);
+   eina_stringshare_del(part->content);
    free(part);
 }
 
@@ -631,4 +644,70 @@ gm_part_rename(Part_* part, const char *new_part_name)
 
    eina_stringshare_del(part->name);
    part->name = eina_stringshare_add(new_part_name);
+}
+
+void
+gm_part_restack(Part_ *part, Part_ *rel_part)
+{
+   Eina_List *rel_l;
+
+   assert(part != NULL);
+
+   part->group->parts = eina_list_remove(part->group->parts, part);
+
+   if (rel_part)
+     {
+        rel_l = eina_list_data_find_list(part->group->parts, rel_part);
+        assert (rel_l != NULL);
+        part->group->parts = eina_list_prepend_relative_list(part->group->parts, part, rel_l);
+     }
+   else
+     part->group->parts = eina_list_append(part->group->parts, part);
+}
+
+void
+gm_part_item_restack(Part_ *part, Eina_Stringshare *part_item, Eina_Stringshare *relative_part_item)
+{
+   assert(part != NULL);
+   assert(part_item != NULL);
+
+   part->items = eina_list_remove(part->items, part_item);
+   if (relative_part_item)
+     part->items = eina_list_prepend_relative(part->items,
+                                              part_item,
+                                              relative_part_item);
+   else
+     part->items = eina_list_append(part->items, part_item);
+}
+
+/**
+ * ref http://docs.enlightenment.org/auto/edje/group__Edje__Object__Part.html
+ */
+static char *part_types[] = {
+     "NONE",
+     "RECTANGLE",
+     "TEXT",
+     "IMAGE",
+     "SWALLOW",
+     "TEXTBLOCK",
+     "GRADIENT",
+     "GROUP",
+     "BOX",
+     "TABLE",
+     "EXTERNAL",
+     "PROXY",
+     "SPACER",
+     "MESH NODE",
+     "LIGHT",
+     "CAMERA",
+     "SNAPSHOT"
+};
+static unsigned int part_types_count = 16;
+
+const char *
+gm_part_type_text_get(Edje_Part_Type part_type)
+{
+   assert(part_type <= part_types_count);
+
+   return part_types[part_type];
 }

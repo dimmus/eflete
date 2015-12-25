@@ -212,9 +212,9 @@ widget_ctxpopup_create(Evas_Object *parent, const Group *group)
    elm_list_go(list);
 
    evas_object_data_set(list, "style_name", group->style);
-   evas_object_data_set(list, SWALLOW_FUNC, on_swallow_check);
-   evas_object_data_set(list, TEXT_FUNC, on_text_check);
-   evas_object_data_set(list, SIGNAL_FUNC, send_signal);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, list);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, list);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, list);
 
    return list;
 }

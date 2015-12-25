@@ -10,7 +10,6 @@ libete_a_SOURCES = \
 ../../src/bin/common/string_common.c \
 ../../src/bin/common/validator.c \
 ../../src/bin/project_manager/group_manager.c \
-../../src/bin/project_manager/widget_manager.c \
 ../../src/bin/project_manager/project_manager.c \
 ../../src/bin/logger/logger.c \
 ../../src/bin/config/config.c \
@@ -27,6 +26,7 @@ libete_a_SOURCES = \
 ../../src/bin/editor/editor_text.c \
 ../../src/bin/ui/history_ui.c \
 ../../src/bin/ui/group_navigator.c \
+../../src/bin/ui/demo_group.c \
 ../../src/bin/ui/cursor.c \
 ../../src/bin/ui/menu.c \
 ../../src/bin/ui/main_window.c \
@@ -34,7 +34,6 @@ libete_a_SOURCES = \
 ../../src/bin/ui/project_common.c \
 ../../src/bin/ui/project_close.c \
 ../../src/bin/ui/project_export.c \
-../../src/bin/ui/connector.c \
 ../../src/bin/ui/splash.c \
 ../../src/bin/ui/shortcuts/shortcuts.c \
 ../../src/bin/ui/container/container.c \
@@ -43,14 +42,8 @@ libete_a_SOURCES = \
 ../../src/bin/ui/editors/image_editor.c \
 ../../src/bin/ui/editors/sound_editor.c \
 ../../src/bin/ui/editors/colorclass_manager.c \
-../../src/bin/ui/editors/animator.c \
-../../src/bin/ui/editors/animator_program_editor.c \
-../../src/bin/ui/editors/animator_program_sequence.c \
-../../src/bin/ui/dialogs/part_dialog.c \
-../../src/bin/ui/dialogs/style_dialog.c \
 ../../src/bin/ui/dialogs/about_window.c \
 ../../src/bin/ui/dialogs/colorsel.c \
-../../src/bin/ui/dialogs/item_dialog.c \
 ../../src/bin/ui/modal_window/modal_window.c \
 ../../src/bin/ui/project_navigator.c \
 ../../src/bin/ui/tabs.c \
@@ -60,15 +53,14 @@ libete_a_SOURCES = \
 ../../src/bin/ui/tab_home_import_edj.c \
 ../../src/bin/ui/tab_home_import_edc.c \
 ../../src/bin/ui/tab_home_info.c \
-../../src/bin/ui/blocks/ui_block.c \
 ../../src/bin/ui/property.c \
 ../../src/bin/ui/property_group.c \
 ../../src/bin/ui/property_image.c \
 ../../src/bin/ui/property_sound.c \
 ../../src/bin/ui/property_style.c \
-../../src/bin/ui/blocks/ui_widget_list.c \
-../../src/bin/ui/blocks/ui_signal_list.c \
-../../src/bin/ui/blocks/ui_states_list.c \
+../../src/bin/ui/property_color.c \
+../../src/bin/ui/property_demo_swallow.c \
+../../src/bin/ui/property_demo_text.c \
 ../../src/bin/ui/workspace/workspace.c \
 ../../src/bin/ui/workspace/groupedit_calc.c \
 ../../src/bin/ui/workspace/groupedit.c \

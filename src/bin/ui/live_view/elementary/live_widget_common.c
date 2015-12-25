@@ -95,47 +95,13 @@ on_swallow_check(void *data,
 
 void
 on_text_check(void *data,
-              Evas_Object *obj,
-              void *ei __UNUSED__)
+              Evas_Object *obj __UNUSED__,
+              void *ei)
 {
-   Evas_Object *check = NULL, *ch;
-   Eina_List *item_list = NULL, *it;
-   Eina_Bool all_checks = true;
-   const char *default_text;
+   Part_ *part = (Part_ *)ei;
+   Evas_Object *object = (Evas_Object *) data;
 
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   Evas_Object *object = pd->live_object;
-   const char *part_name = elm_object_part_text_get(obj, NULL);
-   check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
-
-   if (elm_check_state_get(obj))
-     {
-        default_text = elm_object_part_text_get(object, part_name);
-        if (default_text)
-          eina_hash_add(pd->prop_text.default_text, part_name, eina_stringshare_add(default_text));
-        elm_object_part_text_set(object, part_name,
-                                 _("Look at it! This is absolutely and totally text"));
-        item_list = elm_box_children_get(pd->prop_text.texts);
-
-        EINA_LIST_FOREACH(item_list, it, ch)
-          {
-             if (elm_check_state_get(ch) == false)
-               all_checks = false;
-          }
-        if (all_checks)
-          elm_check_state_set(check, true);
-        eina_list_free(item_list);
-     }
-   else
-     {
-        default_text = eina_hash_find(pd->prop_text.default_text, part_name);
-        eina_hash_del(pd->prop_text.default_text, part_name, NULL);
-        elm_object_part_text_set(object, part_name, default_text);
-        if (elm_check_state_get(check)) elm_check_state_set(check, false);
-     }
+   elm_object_part_text_set(object, part->name, part->content);
 }
 
 void

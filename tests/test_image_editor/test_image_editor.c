@@ -24,9 +24,6 @@ Suite* test_suite (void) {
    TCase *tcase = tcase_create("TCase");
    tcase_add_test(tcase, image_editor_window_add_test_p1);
    tcase_add_test(tcase, image_editor_window_add_test_p2);
-   tcase_add_test(tcase, image_editor_file_choose_test_p);
-   tcase_add_test(tcase, image_editor_file_choose_test_n1);
-   tcase_add_test(tcase, image_editor_file_choose_test_n3);
    suite_add_tcase(suite, tcase);
    return suite;
 }

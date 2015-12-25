@@ -31,7 +31,7 @@ struct _Splash_Data
 
 typedef struct _Splash_Data Splash_Data;
 
-Splash_Data sdata;
+static Splash_Data sdata;
 
 static void
 _on_teardown(void *data __UNUSED__,

@@ -29,7 +29,6 @@
 
 #include "eflete.h"
 #include "modal_window.h"
-#include "widget_manager.h"
 #include "widget_macro.h"
 
 #define SIG_IMAGE_SELECTED "image_selected"
@@ -52,21 +51,5 @@ typedef enum {
  */
 Evas_Object *
 image_editor_window_add(Image_Editor_Mode mode);
-
-/**
- * This function will select the image by it's name. This function is very useful
- * with image property (setting another image).
- *
- * @param win Pointer to inwin object, which was created with
- * image_editor_add function.
- * @param selected Name of selected image. If selected param is NULL, this
- * function do nothing.
- *
- * @return EINA_TRUE if successful, EINA_FALSE otherwise.
- *
- * @ingroup ImageEditor
- */
-Eina_Bool
-image_editor_file_choose(Evas_Object *win, const char *selected);
 
 #endif /*IMAGE_EDITOR_H*/

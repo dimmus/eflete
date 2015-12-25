@@ -452,7 +452,7 @@ _grid_del(void *data,
    free(it);
 }
 
-Eina_Bool
+static Eina_Bool
 _image_gengrid_init(Helper_Data *helper_data)
 {
    Eina_List *l = NULL;

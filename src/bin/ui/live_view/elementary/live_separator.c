@@ -54,9 +54,9 @@ widget_separator_create(Evas_Object *parent, const Group *group)
 
 #undef _ADD_RECT
 
-   evas_object_data_set(object, SWALLOW_FUNC, on_swallow_check);
-   evas_object_data_set(object, TEXT_FUNC, on_text_check);
-   evas_object_data_set(object, SIGNAL_FUNC, send_signal);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, object);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, object);
 
    return object;
 }

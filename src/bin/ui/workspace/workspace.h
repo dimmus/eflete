@@ -51,18 +51,6 @@ Evas_Object *
 workspace_add(Evas_Object *parent, Group *group);
 
 /**
- * Get the groupedit object, which loaded into workspace.
- *
- * @param obj The workspace object.
- *
- * @return The groupedit object or NULL if it didn't exist'.
- *
- * @ingroup Workspace
- */
-Evas_Object *
-ws_groupedit_get(Evas_Object *obj);
-
-/**
  * Update part info in part list
  *
  * @param obj The workspace object.
@@ -74,16 +62,14 @@ void
 workspace_group_navigator_update_part(Evas_Object *obj, Part_ *part);
 
 /**
- * Force recal for editable object from the workspace.
+ * Update the parts attributes, with recalculation.
  *
- * @param obj The workspace object.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
+ * @paramaram obj The workspace object.
  *
  * @ingroup Workspace
  */
-Eina_Bool
-workspace_edit_object_recalc(Evas_Object *obj);
+void
+workspace_groupview_hard_update(Evas_Object *obj);
 
 /**
  * Update the parts attributes, without recalculation.
@@ -96,106 +82,105 @@ void
 workspace_groupview_soft_update(Evas_Object *obj);
 
 /**
- * Update the parts attributes, and recalculate them.
+ * Add new part to group_edit and group_navigator.
+ * Part should be already added to edit_object.
  *
- * @paramaram obj The workspace object.
+ * @param obj The workspace object.
+ * @param part_name name of added part
  *
  * @ingroup Workspace
  */
 void
-workspace_groupview_hard_update(Evas_Object *obj);
+workspace_part_add(Evas_Object *obj, Eina_Stringshare *part_name);
 
 /**
- * Add new part into style, which currently loaded into workspace.
+ * Add new part item to group_edit and group_navigator.
+ * Part should be already added to edit_object.
  *
  * @param obj The workspace object.
- * @param part Pointer to Part_ structure.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
+ * @param part_name name of part
+ * @param item_name name of added part_item
  *
  * @ingroup Workspace
  */
-Eina_Bool
-workspace_edit_object_part_add(Evas_Object *obj, Part_ *part);
+void
+workspace_part_item_add(Evas_Object *obj,
+                        Eina_Stringshare *part_name,
+                        Eina_Stringshare *item_name);
+
 /**
- * Delete part from style, which currently loaded into workspace.
+ * Add new part state to group_edit and group_navigator.
+ * Part should be already added to edit_object.
  *
  * @param obj The workspace object.
- * @param part Pointer to deleting part.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
+ * @param part_name name of part
+ * @param state_name name of added part_state
  *
  * @ingroup Workspace
  */
-Eina_Bool
-workspace_edit_object_part_del(Evas_Object *obj, Part_ *part);
+void
+workspace_part_state_add(Evas_Object *obj,
+                         Eina_Stringshare *part_name,
+                         Eina_Stringshare *state_name);
 
 /**
- * Stack part above above in workspace module. This function is a wrapper
- * on _edit_object_part_restack_above();
+ * Add new part item to group_edit and group_navigator.
+ * Part should be already deleted from edit_object.
  *
  * @param obj The workspace object.
- * @param part The name of part, which need above above.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
+ * @param part_name name of part
+ * @param item_name name of deleted part_item
  *
  * @ingroup Workspace
  */
-Eina_Bool
-workspace_edit_object_part_above(Evas_Object *obj, const char *part);
+void
+workspace_part_item_del(Evas_Object *obj,
+                        Eina_Stringshare *part_name,
+                        Eina_Stringshare *item_name);
 
 /**
- * Stack part below below in workspace module. This function is a wrapper
- * on _edit_object_part_restack_below();
+ * Add new part state to group_edit and group_navigator.
+ * Part should be already deleted from edit_object.
  *
  * @param obj The workspace object.
- * @param part The name of part, which need below below.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
+ * @param part_name name of part
+ * @param state_name name of deleted part_state
  *
  * @ingroup Workspace
  */
-Eina_Bool
-workspace_edit_object_part_below(Evas_Object *obj, const char *part);
+void
+workspace_part_state_del(Evas_Object *obj,
+                         Eina_Stringshare *part_name,
+                         Eina_Stringshare *state_name);
 
-/** Move the given part relative the next one.
+/**
+ * Del part from group_edit and group_navigator.
+ * Part should be already deleted edit_object.
  *
  * @param obj The workspace object.
- * @param part Name of part, which will reordered.
- * @param rel_part Name of part, which will be relative to reordering 'part'.
- * @param direct If EINA_TRUE, part will restack below, otherwise part will
- *   restack above rel_part.
- *
- * @return @c EINA_TRUE in case of success, @c EINA_FALSE otherwise.
- */
-
-Eina_Bool
-workspace_edit_object_part_restack(Evas_Object *obj,
-                                   const char *part,
-                                   const char *rel_part,
-                                   Eina_Bool direct);
-
-/**
- *
- */
-Eina_Bool
-workspace_edit_object_part_state_set(Evas_Object *obj, Part_ *part);
-
-/**
- * Set a visibility for part of current groupedit object in the workspace.
- *
- * @param obj The workspace object
- * @param part The name of groupedit part to be showed of hided
- * @param visible Use EINA_TRUE to show, EINA_FALSE to hide part.
- *
- * @return EINA_TRUE, if it's showed/hided, EINA_FALSE otherwise
+ * @param part_name name of deleted part
  *
  * @ingroup Workspace
  */
-Eina_Bool
-workspace_edit_object_visible_set(Evas_Object *obj,
-                                  const char *part,
-                                  Eina_Bool visible);
+void
+workspace_part_del(Evas_Object *obj, Eina_Stringshare *part_name);
+
+/**
+ *
+ */
+void
+workspace_part_restack(Evas_Object *obj,
+                       Eina_Stringshare *part_name,
+                       Eina_Stringshare *relative_part_name);
+
+/**
+ *
+ */
+void
+workspace_part_item_restack(Evas_Object *obj,
+                            Eina_Stringshare *part_name,
+                            Eina_Stringshare *part_item_name,
+                            Eina_Stringshare *relative_part_item_name);
 
 /**
  * Set zoom factor for view zoommed style in groupspace.
@@ -234,19 +219,6 @@ workspace_zoom_factor_get(Evas_Object *obj);
  */
 Eina_Bool
 workspace_legend_visible_set(Evas_Object *obj);
-
-/**
- * Set highlight to selected part.
- *
- * @param obj The workspace object.
- * @param part Evas_Object pointer to selected part object.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_highlight_set(Evas_Object *obj, Part *part);
 
 /**
  * Unset highlight from previously selected part.
@@ -332,22 +304,5 @@ workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool flag);
  */
 Eina_Bool
 workspace_object_area_visible_get(Evas_Object *obj);
-
-/**
- * Change selection state for given item on workspace. If item should be
- * selected if will be highlighted, or unhighlighted in otherwise.
- *
- * @param obj The workspace object.
- * @param item_name The name of item, which selection should be changed.
- * @param selected If EINA_TRUE - item will be selected, otherwise unselected.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_edit_object_part_item_selected_set(Evas_Object *obj,
-                                             Eina_Stringshare *item_name,
-                                             Eina_Bool selected);
 
 #endif /* UI_WORKSPACE_H */

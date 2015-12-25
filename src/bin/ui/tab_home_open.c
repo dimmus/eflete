@@ -27,7 +27,7 @@ struct _Tab_Home_Open {
 };
 
 typedef struct _Tab_Home_Open Tab_Home_Open;
-Tab_Home_Open tab;
+static Tab_Home_Open tab;
 
 static Eina_Bool
 _eflete_filter(const char *path,

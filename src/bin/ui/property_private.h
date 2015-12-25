@@ -30,7 +30,6 @@
 #ifndef HAVE_ENVENTOR
 #include "syntax_color.h"
 #endif
-#include "widget_manager.h"
 #include "workspace.h"
 
 
@@ -63,5 +62,20 @@ ui_property_sound_add(Evas_Object *parent);
 
 Evas_Object *
 ui_property_style_add(Evas_Object *parent);
+
+Evas_Object *
+ui_property_color_add(Evas_Object *parent);
+
+Evas_Object *
+ui_property_demo_text_add(Evas_Object *parent);
+
+void
+ui_property_demo_text_part_set(Evas_Object *property, Part_ *part);
+
+Evas_Object *
+ui_property_demo_swallow_add(Evas_Object *parent);
+
+void
+ui_property_demo_swallow_part_set(Evas_Object *property, Part_ *part);
 
 #endif /* UI_PROPERTY_1_H */

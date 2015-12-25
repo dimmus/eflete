@@ -438,28 +438,37 @@ _selected_cb(void *data,
    /* enabling or disabling up and down buttons */
    if ((itc == pl->itc_part_selected) || (itc == pl->itc_part))
      {
+        TODO("Update logic after adding 'parts' genlist item")
         if (elm_genlist_item_prev_get(glit) == NULL)
-          {
-             TODO("Update logic after adding 'parts' genlist item")
-             elm_object_disabled_set(pl->btn_down, false);
-             elm_object_disabled_set(pl->btn_up, true);
-          }
+          elm_object_disabled_set(pl->btn_up, true);
         else
+          elm_object_disabled_set(pl->btn_up, false);
+
+        next_item = elm_genlist_item_next_get(glit);
+        while (next_item != NULL)
           {
-             next_item = elm_genlist_item_next_get(glit);
-             while (next_item != NULL)
-               {
-                  next_itc = elm_genlist_item_item_class_get(next_item);
-                  if ((next_itc == pl->itc_part_selected) || (next_itc == pl->itc_part))
-                    break;
-                  next_item = elm_genlist_item_next_get(next_item);
-               }
-             if (next_item)
-               elm_object_disabled_set(pl->btn_down, false);
-             else
-               elm_object_disabled_set(pl->btn_down, true);
-             elm_object_disabled_set(pl->btn_up, false);
+             next_itc = elm_genlist_item_item_class_get(next_item);
+             if ((next_itc == pl->itc_part_selected) || (next_itc == pl->itc_part))
+               break;
+             next_item = elm_genlist_item_next_get(next_item);
           }
+        if (next_item)
+          elm_object_disabled_set(pl->btn_down, false);
+        else
+          elm_object_disabled_set(pl->btn_down, true);
+     }
+   else if ((itc == pl->itc_item))
+     {
+        if (elm_genlist_item_item_class_get(elm_genlist_item_prev_get(glit)) == pl->itc_item)
+          elm_object_disabled_set(pl->btn_up, false);
+        else
+          elm_object_disabled_set(pl->btn_up, true);
+
+        next_item = elm_genlist_item_next_get(glit);
+        if (next_item && (elm_genlist_item_item_class_get(next_item) == pl->itc_item))
+          elm_object_disabled_set(pl->btn_down, false);
+        else
+          elm_object_disabled_set(pl->btn_down, true);
      }
    else
      {
@@ -578,20 +587,14 @@ _popup_add_part_ok_clicked(void *data,
    ecore_job_add(_job_popup_del, pl);
 }
 
-static void
-_editor_part_added_cb(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info)
+void
+group_navigator_part_add(Evas_Object *obj, Part_ *part)
 {
-   Part_List *pl = data;
-   Eina_Stringshare *part_name = event_info;
-   Part_ *part;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Elm_Object_Item *glit;
 
    assert(pl != NULL);
-   assert(part_name != NULL);
-
-   part = gm_part_add(ap.project, pl->group, part_name);
+   assert(part != NULL);
 
    glit = elm_genlist_item_append(pl->genlist,
                                   pl->itc_part,
@@ -600,10 +603,6 @@ _editor_part_added_cb(void *data,
                                   ELM_GENLIST_ITEM_TREE,
                                   NULL,
                                   NULL);
-
-   /* callback should be called before selection to allow some additional loading */
-   evas_object_smart_callback_call(ap.win, SIGNAL_PART_ADDED, (void *)part);
-
    elm_genlist_item_selected_set(glit, true);
 }
 
@@ -710,33 +709,17 @@ _popup_add_state_ok_clicked(void *data,
    ecore_job_add(_job_popup_del, pl);
 }
 
-static void
-_editor_state_added_cb(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       void *event_info)
+void
+group_navigator_part_state_add(Evas_Object *obj, Part_ *part, State *state)
 {
-   Part_List *pl = data;
-   const Editor_State *editor_state = event_info;
-   Part_ *part;
-   State *state;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Eina_Bool items_expanded = false;
    Elm_Object_Item *glit;
    const Eina_List *l;
 
    assert(pl != NULL);
-   assert(editor_state != NULL);
-
-   part = elm_object_item_data_get(pl->selected_part_item);
-   if (strcmp(editor_state->part_name, part->name))
-     {
-        part = pm_resource_unsorted_get(part->group->parts, editor_state->part_name);
-        group_navigator_part_select(pl->layout, part);
-     }
-   state = gm_state_add(ap.project, part, editor_state->state_name);
-
-   TODO("Check this signal")
-   /* callback should be called before selection to allow some additional loading */
-   evas_object_smart_callback_call(ap.win, SIGNAL_STATE_ADDED, (void *)state);
+   assert(part != NULL);
+   assert(state != NULL);
 
    if ((part->type == EDJE_PART_TYPE_TABLE) ||
        (part->type == EDJE_PART_TYPE_BOX))
@@ -858,36 +841,15 @@ _popup_add_item_ok_clicked(void *data,
    ecore_job_add(_job_popup_del, pl);
 }
 
-static void
-_editor_part_item_added_cb(void *data,
-                           Evas_Object *obj __UNUSED__,
-                           void *event_info)
+void
+group_navigator_part_item_add(Evas_Object *obj, Part_ *part __UNUSED__, Eina_Stringshare * item_name)
 {
-   Part_List *pl = data;
-   const Editor_Item *editor_item = event_info;
-   Part_ *part;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Elm_Object_Item *items_glit, *glit;
    const Eina_List *l;
-   Eina_Stringshare *item_name;
 
    assert(pl != NULL);
-   assert(editor_item != NULL);
-
-   part = elm_object_item_data_get(pl->selected_part_item);
-   if (strcmp(editor_item->part_name, part->name))
-     {
-        part = pm_resource_unsorted_get(part->group->parts, editor_item->part_name);
-        group_navigator_part_select(pl->layout, part);
-     }
-
-   assert((part->type == EDJE_PART_TYPE_TABLE) ||
-          (part->type == EDJE_PART_TYPE_BOX));
-
-   item_name = eina_stringshare_add(editor_item->item_name);
-   part->items = eina_list_append(part->items, item_name);
-
-   /* callback should be called before selection to allow some additional loading */
-   evas_object_smart_callback_call(ap.win, SIGNAL_PART_ITEM_ADDED, (void *)part);
+   assert(item_name != NULL);
 
    elm_genlist_item_expanded_set(pl->selected_part_item, true);
    items_glit = eina_list_data_get(eina_list_last(elm_genlist_item_subitems_get(pl->selected_part_item)));
@@ -1027,33 +989,20 @@ _part_item_find(Part_List *pl, Part_ *part)
    return part_item;
 }
 
-static void
-_editor_part_deleted_cb(void *data,
-                        Evas_Object *obj __UNUSED__,
-                        void *event_info)
+void
+group_navigator_part_del(Evas_Object *obj, Part_ *part)
 {
-   Part_List *pl = data;
-   Eina_Stringshare *part_name = event_info;
-   Part_ *part;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Elm_Object_Item *part_item;
 
    assert(pl != NULL);
-   assert(part_name != NULL);
-
-   part = pm_resource_unsorted_get(pl->group->parts, part_name);
+   assert(part != NULL);
 
    part_item = _part_item_find(pl, part);
    if (pl->selected_part_item == part_item)
      _unselect_part(pl);
 
-   /* This callbck should be called before actual part deletion */
-   evas_object_smart_callback_call(ap.win, SIGNAL_PART_DELETED, (void *)part);
-
    elm_object_item_del(part_item);
-   /* part is freed after deletion so we need to save its name */
-   part_name = eina_stringshare_ref(part->name);
-   gm_part_del(ap.project, part);
-   eina_stringshare_del(part_name);
 }
 
 static void
@@ -1088,45 +1037,31 @@ _state_del(Part_List *pl,
    history_change_add(pl->group->history, change);
 }
 
-static void
-_editor_state_deleted_cb(void *data,
-                         Evas_Object *obj __UNUSED__,
-                         void *event_info)
+void
+group_navigator_part_state_del(Evas_Object *obj, Part_ *part __UNUSED__, State *state)
 {
-   Part_List *pl = data;
-   const Editor_State *editor_state = event_info;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    const Elm_Genlist_Item_Class* itc;
-   Part_ *part;
-   State *state = NULL;
    Elm_Object_Item *glit;
    Elm_Object_Item *default_glit;
    const Eina_List *subitems;
    const Eina_List *l;
 
    assert(pl != NULL);
-   assert(editor_state != NULL);
+   assert(state != NULL);
 
-   part = elm_object_item_data_get(pl->selected_part_item);
-   if (strcmp(editor_state->part_name, part->name))
-     {
-        part = pm_resource_unsorted_get(part->group->parts, editor_state->part_name);
-        group_navigator_part_select(pl->layout, part);
-     }
    elm_genlist_item_expanded_set(pl->selected_part_item, true);
 
    subitems = elm_genlist_item_subitems_get(pl->selected_part_item);
    /* "default 0.0" is always first in states list */
    default_glit = eina_list_data_get(subitems);
+   /* find state's genlist item */
    EINA_LIST_FOREACH(subitems, l, glit)
      {
-        state = elm_object_item_data_get(glit);
-        if (!strcmp(state->name, editor_state->state_name))
+        if (elm_object_item_data_get(glit) == state)
           break;
-        else
-          state = NULL;
      }
-
-   assert(state != NULL);
+   assert(glit != NULL);
 
    /* resetting state */
    itc = elm_genlist_item_item_class_get(glit);
@@ -1135,7 +1070,6 @@ _editor_state_deleted_cb(void *data,
 
    elm_object_item_del(glit);
    elm_genlist_item_selected_set(default_glit, true);
-   gm_state_del(ap.project, state);
 }
 
 static void
@@ -1168,30 +1102,19 @@ _item_del(Part_List *pl,
    history_change_add(pl->group->history, change);
 }
 
-static void
-_editor_part_item_deleted_cb(void *data,
-                             Evas_Object *obj __UNUSED__,
-                             void *event_info)
+void
+group_navigator_part_item_del(Evas_Object *obj, Part_ *part __UNUSED__, Eina_Stringshare *item_name)
 {
-   Part_List *pl = data;
-   const Editor_Item *editor_item = event_info;
-   Part_ *part;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Elm_Object_Item *items_glit;
 
    assert(pl != NULL);
-   assert(editor_item != NULL);
+   assert(item_name != NULL);
 
-   part = elm_object_item_data_get(pl->selected_part_item);
-   if (strcmp(editor_item->part_name, part->name))
-     {
-        part = pm_resource_unsorted_get(part->group->parts, editor_item->part_name);
-        group_navigator_part_select(pl->layout, part);
-     }
    elm_genlist_item_expanded_set(pl->selected_part_item, true);
    items_glit = eina_list_data_get(eina_list_last(elm_genlist_item_subitems_get(pl->selected_part_item)));
 
    elm_genlist_item_expanded_set(items_glit, false);
-   gm_part_item_del(ap.project, part, editor_item->item_name);
    elm_genlist_item_update(items_glit);
    elm_genlist_item_expanded_set(items_glit, true);
 }
@@ -1227,19 +1150,215 @@ _on_btn_minus_clicked(void *data,
 }
 
 static void
-_on_btn_down_clicked(void *data __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
-                     void *ei __UNUSED__)
+_part_restack(Part_List *pl, Elm_Object_Item *glit, Eina_Bool move_up)
 {
-   printf("btn_down clicked\n");
+   Part_ *part, *rel_part;
+   Elm_Object_Item *rel_glit;
+   Eina_Stringshare *msg;
+   Change *change;
+
+   assert(pl != NULL);
+   assert(glit != NULL);
+
+   if (move_up)
+     {
+        rel_glit = elm_genlist_item_prev_get(glit);
+        /* Finding where to move item. genlist don't allows to ignore subitems */
+        while ((rel_glit != NULL) && (elm_genlist_item_item_class_get(rel_glit) != pl->itc_part))
+          rel_glit = elm_genlist_item_prev_get(rel_glit);
+        assert(rel_glit != NULL); /* we shouldn't move up first item */
+        assert(elm_genlist_item_item_class_get(rel_glit) == pl->itc_part);
+     }
+   else
+     {
+        rel_glit = elm_genlist_item_next_get(glit);
+        while ((rel_glit != NULL) && (elm_genlist_item_item_class_get(rel_glit) != pl->itc_part))
+          rel_glit = elm_genlist_item_next_get(rel_glit);
+        assert(rel_glit != NULL); /* we shouldn't move down last item */
+        rel_glit = elm_genlist_item_next_get(rel_glit);
+        while ((rel_glit != NULL) && (elm_genlist_item_item_class_get(rel_glit) != pl->itc_part))
+          rel_glit = elm_genlist_item_next_get(rel_glit);
+
+        /* NULL after second loop means that part will be moved to first position */
+        assert((rel_glit == NULL) || (elm_genlist_item_item_class_get(rel_glit) == pl->itc_part));
+     }
+
+   part = elm_object_item_data_get(glit);
+   rel_part = elm_object_item_data_get(rel_glit);
+
+   if (rel_part)
+      msg = eina_stringshare_printf(_("part \"%s\" placed below part \"%s\" in the stack"), part->name, rel_part->name);
+   else
+      msg = eina_stringshare_printf(_("part \"%s\" restacked to the top of the stack"), part->name);
+   change = change_add(msg);
+   editor_part_restack(pl->group->edit_object, change, false,
+                       part->name,
+                       (rel_part) ? rel_part->name : NULL);
+   history_change_add(pl->group->history, change);
+   eina_stringshare_del(msg);
+}
+
+void
+group_navigator_part_restack(Evas_Object *obj, Part_ *part, Part_ *rel_part)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   Elm_Object_Item *glit, *rel_glit;
+
+   assert(pl != NULL);
+   assert(part != NULL);
+
+   glit = _part_item_find(pl, part);
+   assert(glit != NULL);
+   TODO("Update item insertion after adding top-level 'parts' item to group_navigator and delete this assert");
+   assert(elm_genlist_item_parent_get(glit) == NULL);
+   if (rel_part)
+     {
+        rel_glit = _part_item_find(pl, rel_part);
+        assert(rel_glit != NULL);
+
+        elm_genlist_item_insert_before(pl->genlist,
+                                       pl->itc_part_selected,
+                                       part,
+                                       NULL /* <- parent_item */,
+                                       rel_glit,
+                                       ELM_GENLIST_ITEM_TREE,
+                                       NULL,
+                                       NULL);
+     }
+   else
+     {
+        elm_genlist_item_append(pl->genlist,
+                                pl->itc_part_selected,
+                                part,
+                                NULL /* <- parent_item */,
+                                ELM_GENLIST_ITEM_TREE,
+                                NULL,
+                                NULL);
+     }
+   elm_object_item_del(glit);
+   group_navigator_part_select(pl->layout, part);
 }
 
 static void
-_on_btn_up_clicked(void *data __UNUSED__,
+_part_item_restack(Part_List *pl, Elm_Object_Item *glit, Eina_Bool move_up)
+{
+   Part_ *part;
+   Eina_Stringshare *part_item, *rel_part_item;
+   Elm_Object_Item *rel_glit;
+   Eina_Stringshare *msg;
+   Change *change;
+
+   assert(pl != NULL);
+   assert(glit != NULL);
+
+   if (move_up)
+     {
+        rel_glit = elm_genlist_item_prev_get(glit);
+        assert(rel_glit != NULL); /* we shouldn't move up first item */
+        assert(elm_genlist_item_item_class_get(rel_glit) == pl->itc_item);
+     }
+   else
+     {
+        rel_glit = elm_genlist_item_next_get(glit);
+        assert(rel_glit != NULL); /* we shouldn't move down last item */
+        rel_glit = elm_genlist_item_next_get(rel_glit);
+        if (elm_genlist_item_item_class_get(rel_glit) != pl->itc_item)
+          rel_glit = NULL;
+     }
+
+   part = elm_object_item_data_get(pl->selected_part_item);
+
+   part_item = elm_object_item_data_get(glit);
+   rel_part_item = elm_object_item_data_get(rel_glit);
+
+   if (rel_part_item)
+      msg = eina_stringshare_printf(_("part item \"%s\" placed below part item \"%s\" in the stack"), part_item, rel_part_item);
+   else
+      msg = eina_stringshare_printf(_("part item \"%s\" restacked to the top of the stack"), part_item);
+   change = change_add(msg);
+   editor_part_item_restack(pl->group->edit_object, change, false,
+                            part->name,
+                            part_item,
+                            rel_part_item);
+   history_change_add(pl->group->history, change);
+   eina_stringshare_del(msg);
+}
+
+void
+group_navigator_part_item_restack(Evas_Object *obj,
+                                  Part_ *part,
+                                  Eina_Stringshare *part_item,
+                                  Eina_Stringshare *relative_part_item __UNUSED__)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   Elm_Object_Item *glit, *items_glit;
+   const Eina_List *l;
+
+   assert(pl != NULL);
+   assert(part != NULL);
+   assert(part_item != NULL);
+
+   glit = _part_item_find(pl, part);
+   assert(glit != NULL);
+
+   elm_genlist_item_expanded_set(pl->selected_part_item, true);
+   items_glit = eina_list_data_get(eina_list_last(elm_genlist_item_subitems_get(pl->selected_part_item)));
+   elm_genlist_item_expanded_set(items_glit, false);
+   elm_genlist_item_expanded_set(items_glit, true);
+
+   EINA_LIST_FOREACH(elm_genlist_item_subitems_get(items_glit), l, glit)
+     {
+        if (elm_object_item_data_get(glit) == part_item) /* comparing stringshares */
+          {
+             elm_genlist_item_selected_set(glit, true);
+             break;
+          }
+     }
+}
+
+
+static void
+_on_btn_down_clicked(void *data,
+                     Evas_Object *obj __UNUSED__,
+                     void *ei __UNUSED__)
+{
+   Part_List *pl = data;
+   Elm_Object_Item *glit;
+   const Elm_Genlist_Item_Class* itc;
+
+   assert(pl != NULL);
+
+   glit = elm_genlist_selected_item_get(pl->genlist);
+
+   assert(glit != NULL);
+
+   itc = elm_genlist_item_item_class_get(glit);
+   if (itc == pl->itc_part_selected)
+     _part_restack(pl, glit, false);
+   else if (itc == pl->itc_item)
+     _part_item_restack(pl, glit, false);
+}
+
+static void
+_on_btn_up_clicked(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *ei __UNUSED__)
 {
-   printf("btn_up clicked\n");
+   Part_List *pl = data;
+   Elm_Object_Item *glit;
+   const Elm_Genlist_Item_Class* itc;
+
+   assert(pl != NULL);
+
+   glit = elm_genlist_selected_item_get(pl->genlist);
+
+   assert(glit != NULL);
+
+   itc = elm_genlist_item_item_class_get(glit);
+   if (itc == pl->itc_part_selected)
+     _part_restack(pl, glit, true);
+   else if (itc == pl->itc_item)
+     _part_item_restack(pl, glit, true);
 }
 
 Evas_Object *
@@ -1367,14 +1486,6 @@ group_navigator_add(Group *group)
    elm_menu_item_icon_name_set(menu_item, "type_spacer");
 
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
-
-   TODO("Fix multi-tab logic");
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, pl);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, pl);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, pl);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, pl);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, pl);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, pl);
 
    TODO("Add deletion callback and free resources");
    return pl->layout;

@@ -27,9 +27,6 @@
 void container_add_test_p(int);
 void container_border_hide_test_p(int);
 void container_border_show_test_p(int);
-void container_confine_set_test_p(int);
-void container_confine_unset_test_n1(int);
-void container_confine_unset_test_p(int);
 void container_container_size_get_test_p(int);
 void container_container_size_set_test_p1(int);
 void container_container_size_set_test_p2(int);

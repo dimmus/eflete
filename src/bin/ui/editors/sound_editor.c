@@ -113,7 +113,7 @@ _grid_del(void *data,
    free(it);
 }
 
-Eina_Stringshare *
+static Eina_Stringshare *
 _sound_format_get(Eina_Stringshare *snd_src)
 {
    Eina_Stringshare *type;

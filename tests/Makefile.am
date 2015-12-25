@@ -24,12 +24,8 @@ cursor_test \
 style_editor_test \
 highlight_test \
 ui_main_window_test \
-ui_signal_list_test \
-ui_states_list_test \
-ui_widget_list_test \
 groupedit_test \
 ui_workspace_test \
-widget_manager_test \
 animator_test \
 live_view_test \
 live_view_prop_test \
@@ -65,7 +61,6 @@ FLAGS = \
 -I${top_srcdir}/src/bin/ui/workspace/groupedit \
 -I${top_srcdir}/src/bin/ui/live_view \
 -I${top_srcdir}/src/bin/ui/live_view/elementary \
--I${top_srcdir}/src/bin/ui/signal_list \
 -I${top_srcdir}/src/bin/ui/shortcuts \
 -I${top_srcdir}/tests \
 @EFL_CFLAGS@ \
@@ -184,33 +179,6 @@ colorclass_manager_test_SOURCES = \
 colorclass_manager_test_CFLAGS = ${FLAGS}
 colorclass_manager_test_LDADD = ${LD}
 
-widget_manager_test_SOURCES = \
-../tests/test_widget_manager/test_widget_manager.c \
-../tests/test_widget_manager/wm_part_add.c \
-../tests/test_widget_manager/wm_class_add.c \
-../tests/test_widget_manager/wm_class_free.c \
-../tests/test_widget_manager/wm_part_current_state_set.c \
-../tests/test_widget_manager/wm_part_del.c \
-../tests/test_widget_manager/wm_part_type_get.c \
-../tests/test_widget_manager/wm_program_signals_list_get.c \
-../tests/test_widget_manager/wm_program_signals_list_free.c \
-../tests/test_widget_manager/wm_style_add.c \
-../tests/test_widget_manager/wm_style_copy.c \
-../tests/test_widget_manager/wm_style_free.c \
-../tests/test_widget_manager/wm_style_data_reload.c \
-../tests/test_widget_manager/wm_style_object_find.c \
-../tests/test_widget_manager/wm_styles_build_alias.c \
-../tests/test_widget_manager/wm_widget_add.c \
-../tests/test_widget_manager/wm_widget_free.c \
-../tests/test_widget_manager/wm_widget_list_free.c \
-../tests/test_widget_manager/wm_widget_list_new.c \
-../tests/test_widget_manager/wm_layouts_list_new.c \
-../tests/test_widget_manager/wm_layouts_list_objects_load.c \
-../tests/test_widget_manager/wm_widget_list_objects_load.c \
-../tests/test_widget_manager/wm_part_by_name_find.c
-widget_manager_test_CFLAGS = ${FLAGS}
-widget_manager_test_LDADD = ${LD}
-
 sound_editor_test_SOURCES = \
 ../tests/test_sound_editor/test_sound_editor.c \
 ../tests/test_sound_editor/sound_editor_window_add.c \
@@ -222,7 +190,6 @@ sound_editor_test_LDADD = ${LD}
 
 image_editor_test_SOURCES = \
 ../tests/test_image_editor/test_image_editor.c \
-../tests/test_image_editor/image_editor_file_choose.c \
 ../tests/test_image_editor/image_editor_window_add.c
 image_editor_test_CFLAGS = ${FLAGS}
 image_editor_test_LDADD = ${LD}
@@ -312,9 +279,7 @@ container_test_SOURCES = \
 ../tests/test_container/container_padding_size_set.c \
 ../tests/test_container/container_padding_size_get.c \
 ../tests/test_container/container_content_set.c \
-../tests/test_container/container_content_unset.c \
-../tests/test_container/container_confine_set.c \
-../tests/test_container/container_confine_unset.c
+../tests/test_container/container_content_unset.c
 container_test_CFLAGS = ${FLAGS}
 container_test_LDADD = ${LD}
 
@@ -341,9 +306,7 @@ ui_main_window_test_SOURCES = \
 ../tests/test_ui_main_window/ui_part_select.c \
 ../tests/test_ui_main_window/ui_state_select.c \
 ../tests/test_ui_main_window/ui_style_back.c \
-../tests/test_ui_main_window/ui_style_delete.c \
-../tests/test_ui_main_window/add_callbacks_wd.c \
-../tests/test_ui_main_window/code_edit_mode_switch.c
+../tests/test_ui_main_window/ui_style_delete.c
 ui_main_window_test_CFLAGS = ${FLAGS}
 ui_main_window_test_LDADD = ${LD}
 
@@ -354,53 +317,19 @@ ui_main_window_test_LDADD = ${LD}
 #preference_test_CFLAGS = ${FLAGS}
 #preference_test_LDADD = ${LD}
 
-ui_signal_list_test_SOURCES = \
-../tests/test_ui_signal_list/test_ui_signal_list.c \
-../tests/test_ui_signal_list/ui_signal_list_add.c \
-../tests/test_ui_signal_list/ui_signal_list_data_set.c \
-../tests/test_ui_signal_list/ui_signal_list_data_unset.c
-ui_signal_list_test_CFLAGS = ${FLAGS}
-ui_signal_list_test_LDADD = ${LD}
-
-ui_states_list_test_SOURCES = \
-../tests/test_ui_states_list/test_ui_states_list.c \
-../tests/test_ui_states_list/ui_states_list_add.c \
-../tests/test_ui_states_list/ui_states_list_data_set.c \
-../tests/test_ui_states_list/ui_states_list_data_unset.c \
-../tests/test_ui_states_list/ui_states_list_part_get.c
-ui_states_list_test_CFLAGS = ${FLAGS}
-ui_states_list_test_LDADD = ${LD}
-
-ui_widget_list_test_SOURCES = \
-../tests/test_ui_widget_list/test_ui_widget_list.c \
-../tests/test_ui_widget_list/ui_widget_list_add.c \
-../tests/test_ui_widget_list/ui_widget_list_data_set.c \
-../tests/test_ui_widget_list/ui_widget_list_title_set.c \
-../tests/test_ui_widget_list/ui_widget_list_tab_activate.c
-ui_widget_list_test_CFLAGS = ${FLAGS}
-ui_widget_list_test_LDADD = ${LD}
-
 ui_workspace_test_SOURCES = \
 ../tests/test_ui_workspace/test_ui_workspace.c \
 ../tests/test_ui_workspace/workspace_add.c \
-../tests/test_ui_workspace/workspace_edit_object_get.c \
-../tests/test_ui_workspace/workspace_edit_object_part_above.c \
-../tests/test_ui_workspace/workspace_edit_object_part_add.c \
-../tests/test_ui_workspace/workspace_edit_object_part_below.c \
-../tests/test_ui_workspace/workspace_edit_object_part_del.c \
 ../tests/test_ui_workspace/workspace_edit_object_part_state_set.c \
 ../tests/test_ui_workspace/workspace_edit_object_recalc.c \
-../tests/test_ui_workspace/workspace_edit_object_visible_set.c \
 ../tests/test_ui_workspace/workspace_zoom_factor_get.c \
 ../tests/test_ui_workspace/workspace_zoom_factor_set.c \
 ../tests/test_ui_workspace/workspace_separate_mode_set.c \
 ../tests/test_ui_workspace/workspace_separate_mode_get.c \
-../tests/test_ui_workspace/workspace_edit_object_part_restack.c \
 ../tests/test_ui_workspace/workspace_highlight_align_visible_get.c \
 ../tests/test_ui_workspace/workspace_highlight_align_visible_set.c \
 ../tests/test_ui_workspace/workspace_object_area_visible_get.c \
-../tests/test_ui_workspace/workspace_object_area_visible_set.c \
-../tests/test_ui_workspace/workspace_edit_object_part_item_selected_set.c
+../tests/test_ui_workspace/workspace_object_area_visible_set.c
 ui_workspace_test_CFLAGS = ${FLAGS}
 ui_workspace_test_LDADD = ${LD}
 

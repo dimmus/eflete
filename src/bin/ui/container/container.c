@@ -80,10 +80,6 @@ struct _Container_Smart_Data
    Eina_Stringshare *style;
    Evas_Coord downx;
    Evas_Coord downy;
-   struct {
-      Evas_Object *obj;
-      Evas_Coord x, y, w, h;
-   } confine;
    Evas_Coord dx, dy;
 };
 
@@ -221,14 +217,6 @@ _mouse_move_hTL_cb(void *data,
                   nx = x + (w - nw);
                }
              else nx = x + dx;
-             if ((sd->confine.obj) && (nx < sd->confine.x))
-               {
-                  if (nx != sd->confine.x)
-                    {
-                       nw = w + (x - sd->confine.x);
-                       nx = sd->confine.x;
-                    }
-               }
           }
      }
 
@@ -250,14 +238,6 @@ _mouse_move_hTL_cb(void *data,
                   ny = y + (h - nh);
                }
              else ny = y + dy;
-             if ((sd->confine.obj) && (ny < sd->confine.y))
-               {
-                  if (ny != sd->confine.y)
-                    {
-                       nh = h + (y - sd->confine.y);
-                       ny = sd->confine.y;
-                    }
-               }
           }
      }
 
@@ -317,13 +297,6 @@ _mouse_move_hBR_cb(void *data,
             && (sd->size->h + H_HEIGHT + dy >= sd->con_size_max.h + H_HEIGHT))
           nh = sd->con_size_max.h + H_HEIGHT + sd->dy + sd->pad_left_top.h + sd->pad_right_bottom.h;
         else nh = h + dy;
-     }
-   if (sd->confine.obj)
-     {
-        if ((sd->confine.x + sd->confine.w) < (x + nw))
-          nw = sd->confine.w - (x - sd->confine.x);
-        if ((sd->confine.y + sd->confine.h) < (y + nh))
-          nh = sd->confine.h - (y - sd->confine.y);
      }
    evas_object_resize(o, nw, nh);
 
@@ -432,7 +405,6 @@ _container_smart_add(Evas_Object *o)
    priv->size->h = 0;
    priv->handler_TL_pressed = false;
    priv->handler_BR_pressed = false;
-   priv->confine.obj = NULL;
 
    evas_object_smart_member_add(priv->bg, o);
    evas_object_smart_member_add(priv->container, o);
@@ -489,8 +461,7 @@ _container_smart_resize(Evas_Object *o,
    if ((ow == w) && (oh == h)) return;
 
    CONTAINER_DATA_GET(o, sd)
-   if (!sd->confine.obj)
-     evas_object_size_hint_min_set(o, w, h);
+   evas_object_size_hint_min_set(o, w, h);
 
    nw = w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w + sd->dx;
    nh = h + H_HEIGHT + sd->pad_left_top.h + sd->pad_right_bottom.h + sd->dy;
@@ -729,61 +700,6 @@ container_content_unset(Evas_Object *obj)
    ret = edje_object_part_swallow_get(sd->container, SWALLOW);
    edje_object_part_unswallow(sd->container, ret);
    return ret;
-}
-
-static void
-_confine_changed(void *data,
-                 Evas *e __UNUSED__,
-                 Evas_Object *obj,
-                 void *event_info __UNUSED__)
-{
-   Container_Smart_Data *sd = (Container_Smart_Data *)data;
-
-   assert(sd != NULL);
-
-   evas_object_geometry_get(obj,
-                            &sd->confine.x,
-                            &sd->confine.y,
-                            &sd->confine.w,
-                            &sd->confine.h);
-
-}
-
-Eina_Bool
-container_confine_set(Evas_Object *obj, Evas_Object *confine)
-{
-   CONTAINER_DATA_GET(obj, sd);
-
-   assert(confine != NULL);
-
-   sd->confine.obj = confine;
-   evas_object_geometry_get(confine,
-                            &sd->confine.x,
-                            &sd->confine.y,
-                            &sd->confine.w,
-                            &sd->confine.h);
-   evas_object_event_callback_add(confine, EVAS_CALLBACK_MOVE,
-                                  _confine_changed, sd);
-   evas_object_event_callback_add(confine, EVAS_CALLBACK_RESIZE,
-                                  _confine_changed, sd);
-
-   return true;
-}
-
-Eina_Bool
-container_confine_unset(Evas_Object *obj)
-{
-   CONTAINER_DATA_GET(obj, sd);
-
-   if (!sd->confine.obj) return false;
-
-   evas_object_event_callback_del_full(sd->confine.obj, EVAS_CALLBACK_MOVE,
-                                       _confine_changed, sd);
-   evas_object_event_callback_del_full(sd->confine.obj, EVAS_CALLBACK_RESIZE,
-                                       _confine_changed, sd);
-   sd->confine.obj = NULL;
-
-   return true;
 }
 
 Eina_Bool

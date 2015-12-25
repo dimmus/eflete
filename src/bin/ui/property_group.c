@@ -433,6 +433,9 @@ prop_part_item_padding_update(Group_Prop_Data *pd);
 static void
 prop_state_proxy_source_update(Group_Prop_Data *pd);
 
+static void
+prop_item_state_image_tween_update(Evas_Object *tween, Group_Prop_Data *pd);
+
 static Elm_Gengrid_Item_Class *_itc_tween = NULL;
 
 static void
@@ -876,6 +879,9 @@ _on_editor_attribute_changed(void *data,
          break;
       case ATTRIBUTE_STATE_FILL_TYPE:
          STATE_ATTR_1COMBOBOX_LIST_UPDATE(state_fill, type, state_fill);
+         break;
+      case ATTRIBUTE_STATE_IMAGE_TWEEN:
+         prop_item_state_image_tween_update(pd->attributes.state_image.tween, pd);
          break;
          /* Don't add 'default:'. Compiler must warn about missing cases */
      }
@@ -1420,7 +1426,7 @@ ui_property_part_set(Evas_Object *property, Part_ *part)
 
         item = prop_part_name_add(box, pd);
         elm_box_pack_end(box, item);
-        item = prop_part_type_add(box, _("type"), wm_part_type_get(pd->part->type));
+        item = prop_part_type_add(box, _("type"), gm_part_type_text_get(pd->part->type));
         elm_box_pack_end(box, item);
         pd->attributes.part.scale_item = prop_part_scale_add(box, pd);
         elm_box_pack_end(box, pd->attributes.part.scale_item);
@@ -1462,7 +1468,7 @@ ui_property_part_set(Evas_Object *property, Part_ *part)
    else
      {
         prop_part_name_update(pd);
-        prop_part_type_update(wm_part_type_get(pd->part->type));
+        prop_part_type_update(gm_part_type_text_get(pd->part->type));
         PART_ATTR_1CHECK_UPDATE(part, scale, part)
         PART_ATTR_1CHECK_UPDATE(part, mouse_events, part)
         PART_ATTR_1CHECK_UPDATE(part, repeat_events, part)
@@ -2845,7 +2851,7 @@ ui_property_state_textblock_unset(Evas_Object *property)
 
 #define pd_image pd->attributes.state_image
 
-Eina_Bool
+static Eina_Bool
 _on_image_editor_done(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *event_info)
@@ -2902,23 +2908,38 @@ _del_tween_image(void *data,
                  void *event_info __UNUSED__)
 {
    Evas_Object *tween_list = (Evas_Object *)data;
-   Elm_Object_Item *it = elm_gengrid_selected_item_get(tween_list);
-   Eina_Stringshare *selected  = elm_object_item_data_get(it);
+   const Eina_List *sel_list = elm_gengrid_selected_items_get(tween_list), *l;
+   Eina_List *selected = NULL;
+   Elm_Object_Item *it;
+   const char *name;
    Group_Prop_Data *pd = evas_object_data_get(tween_list, GROUP_PROP_DATA);
 
    assert(pd != NULL);
 
-   if ((!selected) || (!it) || (!pd)) return;
-   if (edje_edit_state_tween_del(pd->group->edit_object, pd->part->name,
-                                 pd->part->current_state->parsed_name, pd->part->current_state->parsed_val,
-                                 selected))
+   EINA_LIST_FOREACH(sel_list, l, it)
      {
-        elm_object_item_del(it);
-        //project_changed(false);
+        name = elm_object_item_data_get(it);
+        selected = eina_list_append(selected, eina_stringshare_add(name));
      }
+
+   Eina_Stringshare *msg = eina_stringshare_printf(_("removed %d tween images"),
+                                                   eina_list_count(sel_list));
+   Change *change = change_add(msg);
+   eina_stringshare_del(msg);
+   EINA_LIST_FOREACH(selected, l, name)
+     {
+        editor_state_tween_del(pd->group->edit_object, change, false,
+                               pd->part->name,
+                               pd->part->current_state->parsed_name,
+                               pd->part->current_state->parsed_val,
+                               name);
+        eina_stringshare_del(name);
+     }
+   eina_list_free(selected);
+   history_change_add(pd->group->history, change);
 }
 
-Eina_Bool
+static Eina_Bool
 _on_image_editor_tween_done(void *data,
                             Evas_Object *obj __UNUSED__,
                             void *event_info)
@@ -2932,18 +2953,20 @@ _on_image_editor_tween_done(void *data,
    assert(pd != NULL);
 
    if (!selected) return false;
-
+   Eina_Stringshare *msg = eina_stringshare_printf(_("added %d tween images"),
+                                                   eina_list_count(selected));
+   Change *change = change_add(msg);
+   eina_stringshare_del(msg);
    EINA_LIST_FOREACH(selected, l, name)
      {
-        if (edje_edit_state_tween_add(pd->group->edit_object, pd->part->name,
-                                      pd->part->current_state->parsed_name,
-                                      pd->part->current_state->parsed_val, name))
-          {
-             elm_gengrid_item_append(tween_list, _itc_tween,
-                                     eina_stringshare_add(name), NULL, NULL);
-             //project_changed(false);
-          }
+        editor_state_tween_add(pd->group->edit_object, change, false,
+                               pd->part->name,
+                               pd->part->current_state->parsed_name,
+                               pd->part->current_state->parsed_val,
+                               eina_stringshare_add(name));
      }
+   history_change_add(pd->group->history, change);
+
    return true;
 }
 
@@ -3052,8 +3075,8 @@ _tween_image_moved(Evas_Object *data,
    //project_changed(false);
 }
 
-Evas_Object *
-prop_item_state_image_tween_add(Evas_Object *box, Group_Prop_Data *pd)
+static Evas_Object *
+_prop_item_state_image_tween_add(Evas_Object *box, Group_Prop_Data *pd)
 {
    Evas_Object *tween_frame, *tween_list, *item, *button, *icon;
    Eina_List *images_list, *l;
@@ -3076,6 +3099,7 @@ prop_item_state_image_tween_add(Evas_Object *box, Group_Prop_Data *pd)
    elm_gengrid_item_size_set(tween_list, 96, 111);
    elm_gengrid_align_set(tween_list, 0.0, 0.0);
    elm_gengrid_horizontal_set(tween_list, true);
+   elm_gengrid_multi_select_set(tween_list, true);
 
    evas_object_data_set(tween_list, GROUP_PROP_DATA, pd);
 
@@ -3131,8 +3155,9 @@ prop_item_state_image_tween_update(Evas_Object *tween, Group_Prop_Data *pd)
    assert(tween != NULL);
    assert(pd != NULL);
 
-   tween_list = elm_object_content_get(tween);
-   elm_genlist_clear(tween_list);
+   /* Tween_List -> Item(Layout) -> Frame(Tween) */
+   tween_list = elm_object_content_get(elm_object_content_get(tween));
+   elm_gengrid_clear(tween_list);
    images_list = edje_edit_state_tweens_list_get(pd->group->edit_object,
                                                  pd->part->name,
                                                  pd->part->current_state->parsed_name,
@@ -3142,10 +3167,11 @@ prop_item_state_image_tween_update(Evas_Object *tween, Group_Prop_Data *pd)
 
    EINA_LIST_FOREACH(images_list, l, image_name)
      {
-       elm_genlist_item_append(tween_list, _itc_tween, image_name, NULL,
-                               ELM_GENLIST_ITEM_NONE, NULL, NULL);
+        elm_gengrid_item_append(tween_list, _itc_tween,
+                                eina_stringshare_add(image_name), NULL, NULL);
      }
    edje_edit_string_list_free(images_list);
+   evas_object_show(tween_list);
 }
 
 #define SPINNER_SET(SUB, VALUE, SPINNER, PART) \
@@ -3300,7 +3326,7 @@ ui_property_state_image_set(Evas_Object *property)
         item = prop_state_image_border_fill_add(box, pd);
         elm_box_pack_end(box, item);
 
-        pd_image.tween = prop_item_state_image_tween_add(box, pd);
+        pd_image.tween = _prop_item_state_image_tween_add(box, pd);
         elm_box_pack_end(box, pd_image.tween);
 
         elm_box_pack_end(prop_box, image_frame);

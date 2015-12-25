@@ -58,6 +58,8 @@
  */
 EFLETE_TEST(workspace_edit_object_part_state_set_test_p)
 {
+ck_assert(false);
+/*
    Eina_Bool res = EINA_FALSE;
    Evas_Object *parent, *workspace;
    Style *style = NULL;
@@ -95,66 +97,7 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_p)
    evas_object_del(workspace);
    evas_object_del(parent);
    app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup workspace_edit_object_part_state_set
- * @{
- * <tr>
- * <td>workspace_edit_object_part_state_set</td>
- * <td>workspace_edit_object_part_state_set_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 load extenstion theme from EFLETE_THEME file
- * @step 3 create parent window
- * @step 4 create workspace object
- * @step 5 create style object
- * @step 6 Create part object with many states. Non exist state as selected set.
- * @step 7 set edit object into workspace
- *
- * @procedure
- * @step 1 select part state with workspace_edit_object_part_state_set
- * @step 2 check returned value from function
- * </td>
- * <td>(Evas_Object *) workspace, (Part *) part</td>
- * <td>EINA_FALSE returned from function</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(workspace_edit_object_part_state_set_test_n2)
-{
-   Eina_Bool res = EINA_TRUE;
-   Evas_Object *parent, *workspace;
-   Style *style = NULL;
-   Part *part = NULL;
-   Evas *e = NULL;
-
-   elm_init(0, 0);
-   app_init();
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   workspace = workspace_add(parent, NULL);
-   e = evas_object_evas_get(parent);
-   style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
-   style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/workspace_edit_object_part_state_set.edj",
-                        style->full_group_name);
-   part = wm_part_add(style, "elm.text");
-   //workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_state_set.edj");
-   part->curr_state = eina_stringshare_add("non_exist");
-   part->curr_state_value = 2.0;
-
-//   res = workspace_edit_object_part_state_set(workspace, part);
-   ck_assert_msg(res == EINA_FALSE, "Set non exist state for part");
-
-   wm_style_free(style);
-   //workspace_edit_object_unset(workspace);
-   evas_object_del(workspace);
-   evas_object_del(parent);
-   app_shutdown();
-   elm_shutdown();
+   elm_shutdown();*/
 }
 END_TEST
 

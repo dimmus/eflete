@@ -38,10 +38,13 @@
  * information about project in the current folder.
  */
 
-#include "widget_manager.h"
-#include "logger.h"
+#define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT
+#include <Eina.h>
+#include <Ecore_Evas.h>
+#include <Edje_Edit.h>
 #include <Eet.h>
 #include <assert.h>
+#include "logger.h"
 
 /* don't forget to update on major changes */
 #define PROJECT_FILE_VERSION 3
@@ -79,13 +82,6 @@ struct _Project
    Eina_Stringshare *develop_path;
    /** compile options for release edj file. see edje_cc reference */
    Eina_Stringshare *release_options;
-
-   /** current editing group */
-   Style *current_style;
-   /** list of widgets and they styles in that theme */
-   Eina_Inlist *widgets;
-   /**< list of custom layouts int loaded theme */
-   Eina_Inlist *layouts;
 
    Eina_List *groups;
    Eina_List *images;
@@ -448,8 +444,8 @@ pm_project_resource_export(Project *pro, const char* dir_path);
  *
  * @ingroup ProjectManager.
  */
-Eina_Bool
-pm_project_style_source_code_export(Project *pro, Style *style, const char *file);
+//Eina_Bool
+//pm_project_style_source_code_export(Project *pro, Style *style, const char *file);
 
 /**
  * Export the source code of Project (for each style edje objects) to a directory
@@ -529,8 +525,8 @@ pm_project_enventor_save(Project *project,
  *
  * @ingroup ProjectManager.
  */
-Eina_Bool
-pm_style_resource_export(Project *pro, Style *style, Eina_Stringshare *path);
+//Eina_Bool
+//pm_style_resource_export(Project *pro, Style *style, Eina_Stringshare *path);
 
 
 /**

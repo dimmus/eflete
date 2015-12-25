@@ -138,7 +138,7 @@ _genlist_send_signal(void *data,
 }
 
 /*********** GEN LIST CREATING FUNCTIONS ****************/
-char *
+static char *
 _glist_text_get(void        *data,
                 Evas_Object *obj,
                 const char  *part)

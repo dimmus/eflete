@@ -47,6 +47,24 @@ group { name: "elm/layout/property/1swallow";
    }
 }
 
+group { name: "elm/layout/property/colorselector_item";
+   parts {
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            min: 0 250;
+            max: -1 -1;
+            rel1 {
+               offset: 0 3;
+            }
+            rel2 {
+               offset: -1 -4;
+            }
+         }
+      }
+   }
+}
+
 group { name: "elm/layout/property/1swallow_subtext";
    parts {
       part { name: "area.base";

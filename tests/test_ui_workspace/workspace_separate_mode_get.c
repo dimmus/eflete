@@ -56,6 +56,8 @@
  */
 EFLETE_TEST(workspace_separate_mode_get_test_p1)
 {
+ck_assert(false);
+/*
    Eina_Bool res = EINA_FALSE;
    Evas_Object *parent, *workspace;
    Style *style = NULL;
@@ -82,6 +84,7 @@ EFLETE_TEST(workspace_separate_mode_get_test_p1)
    evas_object_del(parent);
    app_shutdown();
    elm_shutdown();
+   */
 }
 END_TEST
 
@@ -111,6 +114,8 @@ END_TEST
  */
 EFLETE_TEST(workspace_separate_mode_get_test_p2)
 {
+ck_assert(false);
+/*
    Eina_Bool res = EINA_FALSE;
    Evas_Object *parent, *workspace;
    Style *style = NULL;
@@ -136,6 +141,7 @@ EFLETE_TEST(workspace_separate_mode_get_test_p2)
    evas_object_del(parent);
    app_shutdown();
    elm_shutdown();
+   */
 }
 END_TEST
 

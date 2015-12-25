@@ -40,15 +40,13 @@ demo_add(Evas_Object *parent, Group *group)
         }
      }
    /* if widget is not created, need use the layout */
-   obj = elm_layout_add(parent);
-   if (!elm_layout_file_set(obj, ap.project->dev, group->name))
+   if (!obj)
      {
-        ERR(N_("Could not load group '%s' from mapped file '%s'."), group->name, ap.project->dev)
-        evas_object_del(obj);
-        obj = NULL;
-        TODO("Add frame to container with info that need this state is unstable"
-             "and need to restart Eflete.");
+        ERR(N_("Widget live view isn't implemented yet. Using fallback to layout"))
+        obj = layout_custom_create(parent, group);
      }
+
+   assert(obj != NULL);
 
    return obj;
 }

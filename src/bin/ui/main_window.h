@@ -33,15 +33,10 @@
 #include "enventor_module.h"
 #include "config.h"
 #include "common_macro.h"
-#include "ui_widget_list.h"
-#include "ui_signal_list.h"
-#include "ui_block.h"
 #include "notify.h"
+#include "property.h"
 #include "string_common.h"
 
-#include "part_dialog.h"
-#include "style_dialog.h"
-#include "item_dialog.h"
 #include "colorsel.h"
 #include "colorclass_manager.h"
 
@@ -214,19 +209,6 @@ void
 ui_state_select(Evas_Object *obj, Eina_Stringshare *state);
 
 /**
- * Show information about properties of part. Highlight part object
- * on workspace.
- * Moved to own method for the separation of the interaction between the blocks.
- *
- * @param part The Part pointer.
- *
- * @return Evas_object pointer. States gen list object.
- * @ingroup Window
- */
-Evas_Object *
-ui_part_select(Part* part);
-
-/**
  * Load project data to App_Data structure. Turn to work state for application.
  * Moved to own method for the separation of the interaction between the blocks.
  *
@@ -238,17 +220,6 @@ ui_part_select(Part* part);
  */
 Eina_Bool
 ui_edj_load(const char *selected_file);
-
-/**
- * Delete selected style/class/layout from current widget
- *
- * @param group_type type of group to be deleted.
- * @return EINA_TRUE if successful, EINA_FALSE otherwise.
- *
- * @ingroup Window
- */
-Eina_Bool
-ui_group_delete(Type group_type);
 
 /**
  * Open new theme from template file.
@@ -270,53 +241,6 @@ new_theme_create(void);
  */
 Eina_Bool
 ui_close_project_request(const char *msg);
-
-/**
- * Get data of widget user currently works with.
- *
- * @return Widget data structure.
- */
-Widget *
-ui_widget_from_ap_get(void);
-
-/**
- * Get data of class user currently works with.
- *
- * @return Class data structure.
- */
-Class *
-ui_class_from_ap_get(void);
-
-/* FIXME: Add comments */
-Eina_Bool
-register_callbacks(void);
-
-/**
- * Add callbacks to widget list. Callbacks are using next signals:
- * "wl,group,select"
- * "wl,part,select",
- * "wl,part,back",
- * "wl,group,back",
- *
- * @param wd_list A pointer to widget list object.
- * @return EINA_TRUE if succeed, EINA_FALSE otherwise.
- */
-Eina_Bool
-add_callbacks_wd(Evas_Object *wd_list);
-
-/**
- * Switch code editing mode ON or OFF.
- * The Code Editing mode means that Workspace, States, History and Signals
- * blocks are hidden and only Widget List, Life Wiew and Code tab are available
- * for user.
- *
- * @param is_on value to toggle Code Editing mode ON/OFF.
- * @return EINA_TRUE if succeed, EINA_FALSE otherwise.
- *
- * @ingroup Window
- */
-Eina_Bool
-code_edit_mode_switch(Eina_Bool is_on);
 
 /**
  * The splash window with animation and info line.
@@ -347,16 +271,6 @@ splash_add(Evas_Object *parent,
  */
 void
 splash_del(Evas_Object *obj);
-
-/**
- * Show the main layout blocks.
- *
- * @return EINA_TRUE on success, otherwise EINA_FALSE.
- *
- * @ingroup Window
- */
-Eina_Bool
-blocks_show(void);
 
 /**
  * Open existing project.

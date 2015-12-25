@@ -110,7 +110,7 @@ _live_view_load_object(Live_View *live, Group *group)
      {
         if (!live->in_prog_edit)
           {
-             live->object = layout_custom_create(live->layout);
+             live->object = layout_custom_create(live->layout, NULL);
           }
         else
           {
@@ -190,7 +190,6 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit, Group *group)
    live->live_view = container_add(parent);
    elm_object_part_content_set(live->layout, SWALLOW_CONTENT, live->live_view);
    elm_object_part_content_set(live->layout, SWALLOW_BG, bg);
-   container_confine_set(live->live_view, bg);
 
    /* save structure inside of an object */
    evas_object_data_set(live->block, "live_view_structure", live);
@@ -280,6 +279,7 @@ live_view_part_del(Evas_Object *object, Part_ *part)
    return live_view_property_part_del(live->property, part);
 }
 
+/*
 Eina_Bool
 live_view_part_rename(Live_View *live, Part *part, Eina_Stringshare *new_name)
 {
@@ -305,7 +305,7 @@ live_view_part_restack_below(Live_View *live, Part *part_move)
    assert(part_move != NULL);
    return live_view_property_part_restack_below(live->property, part_move);
 }
-
+*/
 Evas_Object *
 live_view_live_object_get(Evas_Object *object)
 {

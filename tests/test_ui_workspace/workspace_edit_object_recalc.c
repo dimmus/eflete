@@ -57,6 +57,8 @@
  */
 EFLETE_TEST (workspace_edit_object_recalc_test_p)
 {
+ck_assert(false);
+   /*
    elm_init(0, 0);
    app_init();
    Evas_Object *parent, *workspace;
@@ -81,7 +83,7 @@ EFLETE_TEST (workspace_edit_object_recalc_test_p)
    evas_object_del(workspace);
    evas_object_del(parent);
    app_shutdown();
-   elm_shutdown();
+   elm_shutdown();*/
 }
 END_TEST
 

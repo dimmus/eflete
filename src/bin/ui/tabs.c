@@ -22,6 +22,7 @@
 #include "tabs.h"
 #include "new_history.h"
 #include "signals.h"
+#include "editor.h"
 
 #include "style_editor.h"
 #include "image_editor.h"
@@ -75,7 +76,7 @@ struct _Tabs {
 
 typedef struct _Tabs Tabs;
 
-Tabs tabs;
+static Tabs tabs;
 
 static void
 _content_unset(void)
@@ -112,7 +113,7 @@ _content_set(void *data,
           ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, false);
         if (item->need_recalc)
           {
-             workspace_edit_object_recalc(tabs.current_workspace);
+             workspace_groupview_hard_update(tabs.current_workspace);
              item->need_recalc = false;
           }
      }
@@ -141,7 +142,7 @@ _content_set(void *data,
         else if (toolbar_item == tabs.menu.item_colorclass)
           {
              tabs_menu_tab_open(TAB_COLORCLASS_EDITOR);
-             evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
+             evas_object_smart_callback_call(ap.win, SIGNAL_COLOR_EDITOR_TAB_CLICKED, NULL);
           }
         else
           {
@@ -174,7 +175,6 @@ static void
 _del_tab(Tabs_Item *item)
 {
    elm_object_item_del(item->toolbar_item);
-   gm_group_edit_object_unload(item->group);
    /* delete pans with workspace and liveview */
    evas_object_del(item->content);
    history_del(item->group->history);
@@ -195,44 +195,141 @@ _home_tab_change(void *data,
 static void
 _property_attribute_changed(void *data __UNUSED__,
                             Evas_Object *obj __UNUSED__,
-                            void *ei __UNUSED__)
+                            void *event_info)
 {
-   assert(tabs.current_workspace != NULL);
-   workspace_edit_object_recalc(tabs.current_workspace);
-}
-
-static void
-_part_added(void *data __UNUSED__,
-            Evas_Object *obj __UNUSED__,
-            void *ei)
-{
-   Part_ *part = ei;
+   Attribute *attr = event_info;
 
    assert(tabs.current_workspace != NULL);
 
-   workspace_edit_object_part_add(tabs.current_workspace, part);
-}
-
-static void
-_part_item_added(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *ei __UNUSED__)
-{
-   assert(tabs.current_workspace != NULL);
-
-   workspace_groupview_hard_update(tabs.current_workspace);
-}
-
-static void
-_part_deleted(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *ei)
-{
-   Part_ *part = ei;
-
-   assert(tabs.current_workspace != NULL);
-
-   workspace_edit_object_part_del(tabs.current_workspace, part);
+   switch ((int)*attr)
+     {
+      case ATTRIBUTE_GROUP_MIN_W:
+      case ATTRIBUTE_GROUP_MIN_H:
+      case ATTRIBUTE_GROUP_MAX_W:
+      case ATTRIBUTE_GROUP_MAX_H:
+      case ATTRIBUTE_STATE_MIN_W:
+      case ATTRIBUTE_STATE_MIN_H:
+      case ATTRIBUTE_STATE_MAX_W:
+      case ATTRIBUTE_STATE_MAX_H:
+      case ATTRIBUTE_STATE_ALIGN_X:
+      case ATTRIBUTE_STATE_ALIGN_Y:
+      case ATTRIBUTE_STATE_REL1_RELATIVE_X:
+      case ATTRIBUTE_STATE_REL1_RELATIVE_Y:
+      case ATTRIBUTE_STATE_REL2_RELATIVE_X:
+      case ATTRIBUTE_STATE_REL2_RELATIVE_Y:
+      case ATTRIBUTE_STATE_REL1_OFFSET_X:
+      case ATTRIBUTE_STATE_REL1_OFFSET_Y:
+      case ATTRIBUTE_STATE_REL2_OFFSET_X:
+      case ATTRIBUTE_STATE_REL2_OFFSET_Y:
+      case ATTRIBUTE_STATE_ASPECT_MIN:
+      case ATTRIBUTE_STATE_ASPECT_MAX:
+      case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
+      case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y:
+      case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X:
+      case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y:
+      case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X:
+      case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y:
+      case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X:
+      case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y:
+      case ATTRIBUTE_STATE_TEXT_ALIGN_X:
+      case ATTRIBUTE_STATE_TEXT_ALIGN_Y:
+      case ATTRIBUTE_STATE_TEXT_ELIPSIS:
+      case ATTRIBUTE_STATE_TEXT_SIZE:
+      case ATTRIBUTE_STATE_TEXT_FIT_X:
+      case ATTRIBUTE_STATE_TEXT_FIT_Y:
+      case ATTRIBUTE_STATE_TEXT_MAX_X:
+      case ATTRIBUTE_STATE_TEXT_MAX_Y:
+      case ATTRIBUTE_STATE_TEXT_MIN_X:
+      case ATTRIBUTE_STATE_TEXT_MIN_Y:
+      case ATTRIBUTE_STATE_FIXED_H:
+      case ATTRIBUTE_STATE_FIXED_W:
+      case ATTRIBUTE_STATE_IMAGE:
+      case ATTRIBUTE_STATE_IMAGE_TWEEN:
+      case ATTRIBUTE_STATE_REL1_TO_X:
+      case ATTRIBUTE_STATE_REL1_TO_Y:
+      case ATTRIBUTE_STATE_REL2_TO_X:
+      case ATTRIBUTE_STATE_REL2_TO_Y:
+      case ATTRIBUTE_STATE_TEXT_SOURCE:
+      case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
+      case ATTRIBUTE_STATE_TEXT:
+      case ATTRIBUTE_STATE_FONT:
+      case ATTRIBUTE_STATE_TEXT_STYLE:
+      case ATTRIBUTE_STATE_ASPECT_PREF:
+      case ATTRIBUTE_PART_EFFECT:
+      case ATTRIBUTE_PART_CLIP_TO:
+      case ATTRIBUTE_PART_DRAG_CONFINE:
+      case ATTRIBUTE_PART_SOURCE:
+      case ATTRIBUTE_PART_SOURCE2:
+      case ATTRIBUTE_PART_SOURCE3:
+      case ATTRIBUTE_PART_SOURCE4:
+      case ATTRIBUTE_PART_SOURCE5:
+      case ATTRIBUTE_PART_SOURCE6:
+      case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
+      case ATTRIBUTE_PART_ITEM_ALIGN_X:
+      case ATTRIBUTE_PART_ITEM_ALIGN_Y:
+      case ATTRIBUTE_PART_ITEM_WEIGHT_X:
+      case ATTRIBUTE_PART_ITEM_WEIGHT_Y:
+      case ATTRIBUTE_PART_ITEM_ASPECT_H:
+      case ATTRIBUTE_PART_ITEM_ASPECT_W:
+      case ATTRIBUTE_PART_ITEM_MAX_H:
+      case ATTRIBUTE_PART_ITEM_MAX_W:
+      case ATTRIBUTE_PART_ITEM_MIN_H:
+      case ATTRIBUTE_PART_ITEM_MIN_W:
+      case ATTRIBUTE_PART_ITEM_PREFER_H:
+      case ATTRIBUTE_PART_ITEM_PREFER_W:
+      case ATTRIBUTE_PART_ITEM_SPREAD_H:
+      case ATTRIBUTE_PART_ITEM_SPREAD_W:
+      case ATTRIBUTE_PART_ITEM_SPAN_COL:
+      case ATTRIBUTE_PART_ITEM_SPAN_ROW:
+      case ATTRIBUTE_PART_ITEM_POSITION_COL:
+      case ATTRIBUTE_PART_ITEM_POSITION_ROW:
+      case ATTRIBUTE_PART_ITEM_SOURCE:
+      case ATTRIBUTE_PART_ITEM_PADDING:
+      case ATTRIBUTE_STATE_CONTAINER_ALIGN_X:
+      case ATTRIBUTE_STATE_CONTAINER_ALIGN_Y:
+      case ATTRIBUTE_STATE_CONTAINER_MIN_H:
+      case ATTRIBUTE_STATE_CONTAINER_MIN_V:
+      case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
+      case ATTRIBUTE_STATE_CONTAINER_PADING_X:
+      case ATTRIBUTE_STATE_CONTAINER_PADING_Y:
+      case ATTRIBUTE_STATE_MINMUL_H:
+      case ATTRIBUTE_STATE_MINMUL_W:
+      case ATTRIBUTE_PART_MULTILINE:
+      case ATTRIBUTE_PART_ENTRY_MODE:
+      case ATTRIBUTE_STATE_FILL_TYPE:
+         workspace_groupview_hard_update(tabs.current_workspace);
+         break;
+      case ATTRIBUTE_STATE_FILL_SMOOTH:
+      case ATTRIBUTE_STATE_VISIBLE:
+      case ATTRIBUTE_STATE_COLOR_CLASS:
+      case ATTRIBUTE_STATE_COLOR:
+      case ATTRIBUTE_STATE_COLOR2:
+      case ATTRIBUTE_STATE_COLOR3:
+      case ATTRIBUTE_STATE_IMAGE_BORDER:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
+         workspace_groupview_soft_update(tabs.current_workspace);
+         break;
+      case ATTRIBUTE_PART_IGNORE_FLAGS:
+      case ATTRIBUTE_PART_MOUSE_EVENTS:
+      case ATTRIBUTE_PART_REPEAT_EVENTS:
+      case ATTRIBUTE_PART_SCALE:
+      case ATTRIBUTE_PART_DRAG_COUNT_X:
+      case ATTRIBUTE_PART_DRAG_COUNT_Y:
+      case ATTRIBUTE_PART_DRAG_X:
+      case ATTRIBUTE_PART_DRAG_Y:
+      case ATTRIBUTE_PART_DRAG_STEP_X:
+      case ATTRIBUTE_PART_DRAG_STEP_Y:
+      case ATTRIBUTE_PART_DRAG_THRESHOLD:
+      case ATTRIBUTE_PART_DRAG_EVENT:
+      case ATTRIBUTE_PART_NAME:
+      case ATTRIBUTE_GROUP_NAME:
+      case ATTRIBUTE_STATE_PROXY_SOURCE:
+      case ATTRIBUTE_PART_SELECT_MODE:
+      case ATTRIBUTE_PART_POINTER_MODE:
+      case ATTRIBUTE_PART_CURSOR_MODE:
+      default:
+         break;
+     }
 }
 
 static void
@@ -285,9 +382,7 @@ _editor_saved(void *data __UNUSED__,
      {
         edje_object_mmap_set(item->group->edit_object, ap.project->mmap_file, item->group->name);
         if (item->content == tabs.current_workspace)
-          {
-             workspace_edit_object_recalc(tabs.current_workspace);
-          }
+          workspace_groupview_hard_update(tabs.current_workspace);
         else
           item->need_recalc = true;
      }
@@ -330,6 +425,123 @@ _project_closed(void *data __UNUSED__,
    elm_object_item_disabled_set(tabs.menu.item_colorclass, true);
 
    tabs_menu_tab_open(TAB_LAST);
+}
+
+static void
+_editor_part_added_cb(void *data __UNUSED__,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info)
+{
+   Eina_Stringshare *part_name = event_info;
+
+   assert(part_name != NULL);
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+
+   workspace_part_add(tabs.current_workspace, part_name);
+}
+
+static void
+_editor_part_deleted_cb(void *data __UNUSED__,
+                        Evas_Object *obj __UNUSED__,
+                        void *event_info)
+{
+   Eina_Stringshare *part_name = event_info;
+
+   assert(part_name != NULL);
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+
+   workspace_part_del(tabs.current_workspace, part_name);
+}
+
+static void
+_editor_part_item_added_cb(void *data __UNUSED__,
+                           Evas_Object *obj __UNUSED__,
+                           void *event_info)
+{
+   const Editor_Item *editor_item = event_info;
+
+   assert(editor_item != NULL);
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+
+   workspace_part_item_add(tabs.current_workspace, editor_item->part_name, editor_item->item_name);
+}
+
+static void
+_editor_part_item_deleted_cb(void *data __UNUSED__,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info)
+{
+   const Editor_Item *editor_item = event_info;
+
+   assert(editor_item != NULL);
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+
+   workspace_part_item_del(tabs.current_workspace, editor_item->part_name, editor_item->item_name);
+}
+
+static void
+_editor_state_added_cb(void *data __UNUSED__,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info)
+{
+   const Editor_State *editor_state = event_info;
+
+   assert(editor_state != NULL);
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+
+   workspace_part_state_add(tabs.current_workspace, editor_state->part_name, editor_state->state_name);
+}
+
+static void
+_editor_state_deleted_cb(void *data __UNUSED__,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info)
+{
+   const Editor_State *editor_state = event_info;
+
+   assert(editor_state != NULL);
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+
+   workspace_part_state_del(tabs.current_workspace, editor_state->part_name, editor_state->state_name);
+}
+
+static void
+_editor_part_restacked_cb(void *data __UNUSED__,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info)
+{
+   const Editor_Part_Restack *editor_part_restack = event_info;
+
+   assert(editor_part_restack != NULL);
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+
+   workspace_part_restack(tabs.current_workspace,
+                          editor_part_restack->part_name,
+                          editor_part_restack->relative_part_name);
+}
+
+static void
+_editor_part_item_restacked_cb(void *data __UNUSED__,
+                               Evas_Object *obj __UNUSED__,
+                               void *event_info)
+{
+   const Editor_Part_Item_Restack *editor_part_item_restack = event_info;
+
+   assert(editor_part_item_restack != NULL);
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+
+   workspace_part_item_restack(tabs.current_workspace,
+                               editor_part_item_restack->part_name,
+                               editor_part_item_restack->part_item,
+                               editor_part_item_restack->relative_part_item);
 }
 
 Evas_Object *
@@ -413,16 +625,22 @@ tabs_add(void)
    elm_object_item_disabled_set(tabs.menu.item_text, true);
    elm_object_item_disabled_set(tabs.menu.item_colorclass, true);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PART_ADDED, _part_added, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PART_DELETED, _part_deleted, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_UNSELECTED, _part_unselected, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PART_ITEM_ADDED, _part_item_added, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _project_changed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_SAVED, _editor_saved, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_OPENED, _project_opened, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CLOSED, _project_closed, NULL);
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_DELETED, _editor_part_item_deleted_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_RESTACKED, _editor_part_restacked_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_RESTACKED, _editor_part_item_restacked_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_ADDED, _editor_state_added_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, NULL);
 
    return tabs.layout;
 }
@@ -501,6 +719,8 @@ void
 tabs_tab_add(Group *group)
 {
    Tabs_Item *item;
+   Eina_Stringshare *msg;
+   Change *change;
 
    assert(group != NULL);
 
@@ -515,7 +735,6 @@ tabs_tab_add(Group *group)
     * be NULL */
    assert(group->history == NULL);
 
-   gm_group_edit_object_load(ap.project, group, evas_object_evas_get(ap.win));
    group->history = history_add(group);
 
    item = mem_calloc(1, sizeof(Tabs_Item));
@@ -527,6 +746,11 @@ tabs_tab_add(Group *group)
    elm_toolbar_item_selected_set(item->toolbar_item, true);
    elm_object_item_signal_callback_add(item->toolbar_item, "tab,close", "eflete", _tab_close, (void *)item);
    tabs.items = eina_list_append(tabs.items, item);
+
+   msg = eina_stringshare_printf(_("open group \"%s\""), group->name);
+   change = change_add(msg);
+   history_change_add(group->history, change);
+   eina_stringshare_del(msg);
 }
 
 void

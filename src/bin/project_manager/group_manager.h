@@ -70,6 +70,7 @@ struct _Part_
    Eina_Stringshare * current_item_name; /**< name of selected item */
    Group *group;              /**< pointer to group */
    Eina_Bool visible;         /**< is part visible on workspace*/
+   Eina_Stringshare *content; /**< content for demo */
 };
 
 struct _Group
@@ -109,6 +110,9 @@ gm_state_add(Project *pro, Part_ *part, const char *state_name);
 Part_ *
 gm_part_add(Project *pro, Group *group, Eina_Stringshare *part_name);
 
+void
+gm_part_item_add(Project *pro, Part_ *part, Eina_Stringshare *item_name);
+
 Group *
 gm_group_add(Project *pro, const char *group_name);
 
@@ -127,4 +131,12 @@ gm_part_item_del(Project *pro, Part_ *part, Eina_Stringshare *item_name);
 void
 gm_part_rename(Part_* part, const char *new_part_name);
 
+void
+gm_part_restack(Part_ *part, Part_ *rel_part);
+
+void
+gm_part_item_restack(Part_ *part, Eina_Stringshare *part_item, Eina_Stringshare *relative_part_item);
+
+const char *
+gm_part_type_text_get(Edje_Part_Type part_type);
 #endif /* GROUP_MANAGER_H */

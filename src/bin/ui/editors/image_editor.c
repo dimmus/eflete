@@ -246,7 +246,7 @@ _image_editor_gengrid_item_data_create(Evas_Object *edje_edit_obj,
    return it;
 }
 
-Eina_Bool
+static Eina_Bool
 _on_image_done(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info)
@@ -454,7 +454,7 @@ _image_editor_search_field_create(Evas_Object *parent)
    return entry;
 }
 
-Eina_Bool
+static Eina_Bool
 _image_editor_init(Image_Editor *img_edit)
 {
    Eina_List *l = NULL;
@@ -593,47 +593,6 @@ image_editor_window_add(Image_Editor_Mode mode)
    evas_object_event_callback_add(img_edit->layout, EVAS_CALLBACK_DEL, _on_image_editor_del, img_edit);
 
    return img_edit->layout;
-}
-
-Eina_Bool
-image_editor_file_choose(Evas_Object *win, const char *selected)
-{
-   Elm_Object_Item *grid_item = NULL;
-   const Item* it = NULL;
-   Image_Editor *img_edit = NULL;
-
-   if (!selected) return false;
-
-   assert(win != NULL);
-
-   img_edit = evas_object_data_get(win, IMG_EDIT_KEY);
-
-   assert(img_edit != NULL);
-
-   grid_item = elm_gengrid_first_item_get(img_edit->gengrid);
-
-   while(grid_item)
-     {
-        const char* item_style =
-           elm_gengrid_item_item_class_get(grid_item)->item_style;
-        if (!strcmp(item_style, "group_index"))
-          {
-             grid_item = elm_gengrid_item_next_get(grid_item);
-             continue;
-          }
-
-        it = elm_object_item_data_get(grid_item);
-        if (!it) return false;
-        if (!strcmp(it->image_name, selected))
-          {
-             elm_gengrid_item_selected_set(grid_item, true);
-             elm_gengrid_item_bring_in(grid_item,
-                                       ELM_GENGRID_ITEM_SCROLLTO_MIDDLE);
-             return true;
-          }
-        grid_item = elm_gengrid_item_next_get(grid_item);
-     }
-   return false;
 }
 
 #undef ITEM_WIDTH

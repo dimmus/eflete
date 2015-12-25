@@ -1,6 +1,6 @@
-/**
+/*
  * Edje Theme Editor
- * Copyright (C) 2013-2014 Samsung Electronics.
+ * Copyright (C) 2013-2015 Samsung Electronics.
  *
  * This file is part of Edje Theme Editor.
  *
@@ -17,15 +17,30 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "ui_signal_list.h"
-#include "utc_common.h"
+#ifndef DEMO_GROUP_H
+#define DEMO_GROUP_H
 
-void ui_signal_list_add_test_p(int);
+#include "eflete.h"
+#include "group_manager.h"
 
-void ui_signal_list_data_set_test_p1(int);
-void ui_signal_list_data_set_test_p2(int);
-void ui_signal_list_data_set_test_p3(int);
-void ui_signal_list_data_set_test_p4(int);
+/**
+ * @defgroup Partlist Partlist
+ *
+ * @ingroup EFLETE
+ */
 
-void ui_signal_list_data_unset_test_p1(int);
-void ui_signal_list_data_unset_test_p2(int);
+/**
+ * emited when part is selected in part list while in demo mode.
+ * eventinfo - pointer to Part_ structure
+ *
+ * @ingroup Partlist
+ */
+#define SIGNAL_DEMO_GROUP_PART_SELECTED "SIGNAL_DEMO_GROUP_PART_SELECTED"
+
+/**
+ * @ingroup Partlist
+ */
+Evas_Object *
+demo_group_add(Group *group);
+
+#endif /* DEMO_GROUP_H */

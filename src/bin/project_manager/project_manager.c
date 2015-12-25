@@ -757,9 +757,6 @@ pm_project_close(Project *project)
    ecore_file_recursive_rm(resource_folder);
    eina_stringshare_del(resource_folder);
 
-   wm_widgets_list_free(project->widgets);
-   wm_layouts_list_free(project->layouts);
-
    evas_object_del(project->global_object);
    ecore_evas_free(project->ecore_evas);
 
@@ -1214,11 +1211,12 @@ _styles_resources_load(Project *project)
    edje_edit_string_list_free(styles);
 }
 
+TODO("rewrite")
+#if 0
 Eina_Bool
 pm_style_resource_export(Project *pro __UNUSED__ , Style *style __UNUSED__, Eina_Stringshare *path __UNUSED__)
 {
    return false;
-#if 0
    Eina_List *l, *l_next, *parts, *state_list, *l_states, *tween_list, *l_tween;
    Eina_List *programs;
 
@@ -1340,8 +1338,8 @@ pm_style_resource_export(Project *pro __UNUSED__ , Style *style __UNUSED__, Eina
      eina_stringshare_del(data);
 
    return true;
-#endif
 }
+#endif
 
 Eina_Bool
 pm_project_resource_export(Project *pro __UNUSED__, const char* dir_path __UNUSED__)
@@ -1349,6 +1347,8 @@ pm_project_resource_export(Project *pro __UNUSED__, const char* dir_path __UNUSE
    return false;
 }
 
+TODO("rewrite this")
+/*
 Eina_Bool
 pm_project_style_source_code_export(Project *pro, Style *style, const char *file)
 {
@@ -1377,7 +1377,7 @@ pm_project_style_source_code_export(Project *pro, Style *style, const char *file
    eina_stringshare_del(path);
    return true;
 }
-
+*/
 static void
 _external_resource_export(Eina_List *resources, const char *dst)
 {

@@ -261,22 +261,6 @@ void
 groupedit_part_visible_set(Evas_Object *obj, Part_ *part);
 
 /**
- * Restack part above another part in groupedit module.
- *
- * @param obj The groupedit object.
- * @param part The name of part, which need above above.
- * @param above Name of part for which will be moved 'part'.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_edit_object_part_move_above(Evas_Object *obj,
-                                      const char *part,
-                                      const char *above);
-
-/**
  * Restack part below another part in groupedit module.
  *
  * @param obj The groupedit object.
@@ -288,35 +272,9 @@ groupedit_edit_object_part_move_above(Evas_Object *obj,
  * @ingroup Groupedit
  */
 Eina_Bool
-groupedit_edit_object_part_move_below(Evas_Object *obj,
-                                      const char *part,
-                                      const char *below);
-
-/**
- * Stack part above above in groupedit module.
- *
- * @param obj The groupedit object.
- * @param part The name of part, which need above above.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_edit_object_part_above(Evas_Object *obj, const char *part);
-
-/**
- * Stack part below below in groupedit module.
- *
- * @param obj The groupedit object.
- * @param part The name of part, which need below below.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_edit_object_part_below(Evas_Object *obj, const char *part);
+groupedit_edit_object_part_restack(Evas_Object *obj,
+                                   const char *part,
+                                   const char *below);
 
 /**
  * Set zoom factor for view zoommed style in groupedit object.
@@ -346,5 +304,19 @@ void
 groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
                                              Eina_Stringshare *item_name,
                                              Eina_Bool selected);
+
+/**
+ * Protrusion values it's distinction of object geomentry, what calculated by
+ * smart object and real drawed geometry. The real drawed object geomentry
+ * needed for correct zoom.
+ *
+ * @param obj The groupedit object.
+ *
+ * @return The protrusion values.
+ *
+ * @ingroup Groupedit
+ */
+const Groupedit_Geom *
+groupedit_protrusion_get(Evas_Object *obj);
 
 #endif /* GROUPEDIT_H */

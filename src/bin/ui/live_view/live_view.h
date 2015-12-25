@@ -29,7 +29,6 @@
  * by using user's theme (already saved one).
  */
 
-#include "widget_manager.h"
 #include "project_manager.h"
 #include "common_macro.h"
 #include <Evas.h>
@@ -137,8 +136,8 @@ live_view_part_del(Evas_Object *object, Part_ *part);
  *
  * @ingroup Live_View
  */
-Eina_Bool
-live_view_part_rename(Live_View *live, Part *part, Eina_Stringshare *new_name);
+//Eina_Bool
+//live_view_part_rename(Live_View *live, Part *part, Eina_Stringshare *new_name);
 
 /**
  * Restack part in list of parts in live view property above given part.
@@ -155,8 +154,8 @@ live_view_part_rename(Live_View *live, Part *part, Eina_Stringshare *new_name);
  *
  * @ingroup Live_View
  */
-Eina_Bool
-live_view_part_restack_above(Live_View *live, Part *part_move, Part *part_above);
+//Eina_Bool
+//live_view_part_restack_above(Live_View *live, Part *part_move, Part *part_above);
 
 /**
  * Restack part in list of parts in live view property below given part.
@@ -173,8 +172,8 @@ live_view_part_restack_above(Live_View *live, Part *part_move, Part *part_above)
  *
  * @ingroup Live_View
  */
-Eina_Bool
-live_view_part_restack_below(Live_View *live, Part *part_move);
+//Eina_Bool
+//live_view_part_restack_below(Live_View *live, Part *part_move);
 
 /**
  * Get current live object.

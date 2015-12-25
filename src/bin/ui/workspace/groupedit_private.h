@@ -30,7 +30,6 @@ typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;
 typedef struct _Groupedit_Part Groupedit_Part;
 typedef struct _Groupedit_Item Groupedit_Item;
 
-static const char SIG_CHANGED[] = "container,changed";
 static const char SIG_PART_SEPARETE_OPEN[] = "parts,separete,open";
 static const char SIG_PART_SEPARETE_CLOSE[] = "parts,separete,close";
 static const char SIG_PART_UNSELECTED[] = "part,unselected";
@@ -43,7 +42,6 @@ static const char SWALLOW_FOR_EDIT[] = "gs.swallow.edit";
  * coming from elm layout): */
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    /* about types see here: http://docs.enlightenment.org/auto/evas/group__Evas__Keys.html#gaf0d4ce3d62a068eab1b89a34abb056ad */
-   {SIG_CHANGED, "(iiii)"},
    {SIG_PART_SEPARETE_OPEN, ""},
    {SIG_PART_SEPARETE_CLOSE, ""},
    {SIG_PART_UNSELECTED, "s"},
@@ -56,12 +54,12 @@ struct _Ws_Groupedit_Smart_Data
 {
    Evas_Object_Smart_Clipped_Data base;
    Group *group;
-   Evas *e;
    Evas_Object *obj;
    Evas_Object *event;
    Evas_Object *parent;
    Evas_Object *box;
    Groupedit_Geom geom;
+   Groupedit_Geom protrusion;
    Eina_List *parts;
    Groupedit_Part *selected;
    Evas_Object *clipper;
@@ -136,32 +134,11 @@ Eina_Bool
 _edit_object_part_item_del(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
                            Eina_Stringshare *item);
 
-void /* custom 'diagonal' layout */
+void
 _parts_stack_layout(Evas_Object          *o,
                     Evas_Object_Box_Data *p,
                     void                 *data);
 
-/**
- * Stack part above above in groupedit module.
- * If part_above param is NULL, then part will restack above by one position,
- * in stack, else part will restack above part_above.
- * Restack complete in three steps:
- *  - restack part in edje edit object. (Used edje_edit_part_restack* func's).
- *  - restack part in parts list, which stored in groupedit smart data.
- *  - restack evas primitive of part at canvas (Used evas_object_stack* func's).
- *
- * @param sd The groupedit smart data structure.
- * @param part The name of part to stack above.
- * @param part_above The name of part above which to stack.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-_edit_object_part_restack_above(Ws_Groupedit_Smart_Data *sd,
-                                const char *part,
-                                const char *part_above);
 /**
  * Stack part below below in groupedit module.
  * If part_below param is NULL, then part will restack below by one position,

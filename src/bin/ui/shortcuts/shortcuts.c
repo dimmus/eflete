@@ -153,7 +153,7 @@ _random_name_generate(char *part_name, unsigned int length)
    project_changed(true);
 
 #define PART_ADD(TYPE, FUNC) \
-Eina_Bool \
+static Eina_Bool \
 _##FUNC##_part_add_cb(void) \
 { \
    PART_FUNCTIONALITY(TYPE, NULL) \
@@ -256,7 +256,7 @@ _item_delete_cb(void)
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _separate_mode_change_cb(void)
 {
    Evas_Object *workspace = tabs_current_workspace_get();
@@ -276,7 +276,7 @@ _separate_mode_change_cb(void)
 }
 
 TODO("Please remake this shortcut since there are no TABS anymore")
-Eina_Bool
+static Eina_Bool
 _new_style_create_cb(void)
 {
 /*
@@ -315,10 +315,10 @@ _new_style_create_cb(void)
 }
 
 TODO("Please remake this shortcut since there are no TABS anymore")
-Eina_Bool
+/*
+static Eina_Bool
 _style_delete_cb(void)
 {
-/*
    SKIP_IN_ENVENTOR_MODE
    Elm_Object_Item *glit = NULL;
    Style *_style = NULL;
@@ -346,11 +346,11 @@ _style_delete_cb(void)
         if (_style->__type != WIDGET)
           evas_object_smart_callback_call(ap.block.left_top, "wl,style,del", NULL);
      }
-*/
    return true;
 }
+*/
 
-Eina_Bool
+static Eina_Bool
 _new_theme_cb(void)
 {
    tabs_menu_tab_open(TAB_HOME_NEW_PROJECT);
@@ -368,28 +368,28 @@ _open_edc_cb(void)
 }
 */
 
-Eina_Bool
+static Eina_Bool
 _open_project_cb(void)
 {
    tabs_menu_tab_open(TAB_HOME_OPEN_PROJECT);
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _import_edj_cb(void)
 {
    tabs_menu_tab_open(TAB_HOME_IMPORT_EDJ);
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _save_cb(void)
 {
    project_save();
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _save_as_cb(void)
 {
    if (!ap.project) return false;
@@ -397,7 +397,7 @@ _save_as_cb(void)
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _export_cb(void)
 {
    if (!ap.project) return false;
@@ -406,7 +406,7 @@ _export_cb(void)
 }
 
 TODO("Remove? Or modify since we don't have EWE_TABS anymore?")
-Eina_Bool
+static Eina_Bool
 _visual_tab_cb(void)
 {
 /*
@@ -421,7 +421,7 @@ _visual_tab_cb(void)
 }
 
 TODO("Remove? Or modify since we don't have EWE_TABS anymore?")
-Eina_Bool
+static Eina_Bool
 _code_tab_cb(void)
 {
 /*
@@ -436,14 +436,14 @@ _code_tab_cb(void)
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _quit_cb(void)
 {
    ui_main_window_del();
    return true;
 }
 /* close currently opened group tab */
-Eina_Bool
+static Eina_Bool
 _close_tab_cb(void)
 {
    if (!ap.project) return false;
@@ -451,7 +451,7 @@ _close_tab_cb(void)
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _style_editor_open_cb(void)
 {
    if (ap.project)
@@ -459,7 +459,7 @@ _style_editor_open_cb(void)
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _image_editor_open_cb(void)
 {
    if (ap.project)
@@ -467,7 +467,7 @@ _image_editor_open_cb(void)
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _sound_editor_open_cb(void)
 {
    if (ap.project)
@@ -475,7 +475,7 @@ _sound_editor_open_cb(void)
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _colorclass_manager_open_cb(void)
 {
    if (ap.project)
@@ -483,15 +483,15 @@ _colorclass_manager_open_cb(void)
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _animator_open_cb(void)
 {
-   if ((ap.project) && (tabs_current_group_get()))
-     animator_window_add(ap.project);
+/*   if ((ap.project) && (tabs_current_group_get()))
+     animator_window_add(ap.project);*/
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _highlight_align_show_switch_cb(void)
 {
    assert(ap.project != NULL);
@@ -507,7 +507,7 @@ _highlight_align_show_switch_cb(void)
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _object_area_show_switch_cb(void)
 {
    Evas_Object *workspace = tabs_current_workspace_get();
@@ -519,7 +519,7 @@ _object_area_show_switch_cb(void)
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _zoom_in_cb(void)
 {
    Evas_Object *workspace = tabs_current_workspace_get();
@@ -532,7 +532,7 @@ _zoom_in_cb(void)
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _zoom_out_cb(void)
 {
    Evas_Object *workspace = tabs_current_workspace_get();
@@ -545,7 +545,7 @@ _zoom_out_cb(void)
    return true;
 }
 
-Eina_Bool
+static Eina_Bool
 _undo_cb(void)
 {
    SKIP_IN_ENVENTOR_MODE
@@ -556,7 +556,7 @@ _undo_cb(void)
    TODO("Implement undo shortcut");
 }
 
-Eina_Bool
+static Eina_Bool
 _redo_cb(void)
 {
    SKIP_IN_ENVENTOR_MODE

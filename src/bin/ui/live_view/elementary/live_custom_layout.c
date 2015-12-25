@@ -19,135 +19,26 @@
 
 #include "live_view_prop.h"
 
-void
-on_layout_swallow_check(void *data,
-                        Evas_Object *obj,
-                        void *ei __UNUSED__)
-{
-   Evas_Object *rect = NULL, *check = NULL, *ch;
-   Eina_List *item_list = NULL;
-   Eina_Bool all_checks = true;
-
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   Evas_Object *object = pd->live_object;
-   const char *part_name = elm_object_part_text_get(obj, NULL);
-   check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
-
-   if (elm_check_state_get(obj))
-     {
-        if (edje_object_part_swallow_get(object, part_name))
-          return;
-        rect = evas_object_rectangle_add(object);
-        evas_object_color_set(rect, RECT_COLOR);
-        edje_object_part_swallow(object, part_name, rect);
-        item_list = elm_box_children_get(pd->prop_swallow.swallows);
-        EINA_LIST_FREE(item_list, ch)
-          {
-             if (elm_check_state_get(ch) == false)
-               all_checks = false;
-          }
-        if (all_checks)
-          elm_check_state_set(check, true);
-     }
-   else
-     {
-        rect = edje_object_part_swallow_get(object, part_name);
-        if (!rect) return;
-        edje_object_part_unswallow(object, rect);
-        evas_object_del(rect);
-        if (elm_check_state_get(check)) elm_check_state_set(check, false);
-     }
-}
-
-void
-on_layout_text_check(void *data,
-                     Evas_Object *obj,
-                     void *ei __UNUSED__)
-{
-   Evas_Object *check = NULL, *ch;
-   Eina_List *item_list = NULL;
-   Eina_Bool all_checks = true;
-   const char *default_text;
-
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   Evas_Object *object = pd->live_object;
-   const char *part_name = elm_object_part_text_get(obj, NULL);
-   check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
-
-   if (elm_check_state_get(obj))
-     {
-        default_text = edje_object_part_text_get(object, part_name);
-        if (default_text)
-          eina_hash_add(pd->prop_text.default_text, part_name, eina_stringshare_add(default_text));
-        edje_object_part_text_set(object, part_name,
-                                  _("Look at it! This is absolutely and totally text"));
-        item_list = elm_box_children_get(pd->prop_text.texts);
-
-        EINA_LIST_FREE(item_list, ch)
-          {
-             if (elm_check_state_get(ch) == false)
-               all_checks = false;
-          }
-        if (all_checks)
-          elm_check_state_set(check, true);
-     }
-   else
-     {
-        default_text = eina_hash_find(pd->prop_text.default_text, part_name);
-        eina_hash_del(pd->prop_text.default_text, part_name, NULL);
-        edje_object_part_text_set(object, part_name, default_text);
-        if (elm_check_state_get(check)) elm_check_state_set(check, false);
-     }
-}
-
-void
-send_layout_signal(void *data,
-                   Evas_Object *obj,
-                   void *ei __UNUSED__)
-{
-   Evas_Object *object = (Evas_Object *)data;
-
-   assert(object != NULL);
-
-   const char *name = evas_object_data_get(obj, SIGNAL_NAME);
-   const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
-
-   assert(name != NULL);
-   assert(source != NULL);
-
-   edje_object_signal_emit(object, name, source);
-}
-
-static void
-_on_swallow_clean(const char *part_name, Evas_Object *object)
-{
-   Evas_Object *rect = NULL;
-
-   assert(part_name != NULL);
-   assert(object != NULL);
-
-   rect = edje_object_part_swallow_get(object, part_name);
-   edje_object_part_unswallow(object, rect);
-   evas_object_del(rect);
-}
-
 Evas_Object *
-layout_custom_create(Evas_Object *parent)
+layout_custom_create(Evas_Object *parent, const Group *group)
 {
    assert(parent != NULL);
 
-   Evas_Object *object = edje_object_add(evas_object_evas_get(parent));
+   Evas_Object *obj = elm_layout_add(parent);
+   if (!elm_layout_file_set(obj, ap.project->dev, group->name))
+     {
+        ERR(N_("Could not load group '%s' from mapped file '%s'."), group->name, ap.project->dev)
+        evas_object_del(obj);
+        obj = NULL;
+        TODO("Add frame to container with info that need this state is unstable"
+             "and need to restart Eflete.");
+        return NULL;
+     }
 
-   evas_object_data_set(object, SWALLOW_FUNC, on_layout_swallow_check);
-   evas_object_data_set(object, SWALLOW_CLEAN_FUNC, _on_swallow_clean);
-   evas_object_data_set(object, TEXT_FUNC, on_layout_text_check);
-   evas_object_data_set(object, SIGNAL_FUNC, send_layout_signal);
+   TODO("DO swallow after text and signal (means free => SWALLOW_CLEAN_FUNC)")
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, obj);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, obj);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, obj);
 
-   return object;
+   return obj;
 }

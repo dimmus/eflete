@@ -212,36 +212,6 @@ Evas_Object *
 container_content_unset(Evas_Object *obj);
 
 /**
- * Set the confine object. The confine object make a moveble area for a
- * container.
- *
- * @param obj The Container object.
- * @param confine The confine object.
- *
- * @warning If you are setting container into swallow or layout, please, use
- *          use this function as well, because otherwise container won't work at
- *          all.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @ingroup Container
- */
-Eina_Bool
-container_confine_set(Evas_Object *obj, Evas_Object *confine);
-
-/**
- * Unset the confine object from the Container object.
- *
- * @param obj The Container object.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @ingroup Container
- */
-Eina_Bool
-container_confine_unset(Evas_Object *obj);
-
-/**
  * Hiding container (handlers and borders) of the Container object but not hiding
  * setted content.
  *

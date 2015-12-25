@@ -54,7 +54,7 @@ struct _Tab_Home_Edc
 };
 typedef struct _Tab_Home_Edc Tab_Home_Edc;
 
-Tab_Home_Edc tab_edc;
+static Tab_Home_Edc tab_edc;
 
 static void
 _img_dir_add(void *data, Evas_Object *obj, void *event_info);
@@ -346,7 +346,7 @@ _dirs_cleanup(Eina_List *list, Evas_Smart_Cb del_func)
      }
 }
 
-Eina_Bool
+static Eina_Bool
 _progress_print(void *data, Eina_Stringshare *progress_string)
 {
    eina_strbuf_append_printf(tab_edc.log, "%s<br>", progress_string);
