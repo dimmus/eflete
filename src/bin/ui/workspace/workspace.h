@@ -62,16 +62,14 @@ void
 workspace_group_navigator_update_part(Evas_Object *obj, Part_ *part);
 
 /**
- * Force recal for editable object from the workspace.
+ * Update the parts attributes, with recalculation.
  *
- * @param obj The workspace object.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
+ * @paramaram obj The workspace object.
  *
  * @ingroup Workspace
  */
-Eina_Bool
-workspace_edit_object_recalc(Evas_Object *obj);
+void
+workspace_groupview_hard_update(Evas_Object *obj);
 
 /**
  * Update the parts attributes, without recalculation.
