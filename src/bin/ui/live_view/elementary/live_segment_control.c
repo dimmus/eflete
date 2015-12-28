@@ -18,124 +18,23 @@
  */
 
 #include "live_elementary_widgets.h"
-#include "live_view_prop.h"
 
 static void
-_on_sc_swallow_check(void *data,
-                       Evas_Object *obj,
-                       void *ei __UNUSED__)
+_on_sc_swallow_check(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *ei __UNUSED__)
 {
-   Evas_Object *rect, *check = NULL, *ch;
-   Eina_List *item_list = NULL, *it;
-   Eina_Bool all_checks = true;
-   const char *text = NULL;
-   int i = 0, index = -1;
-   Elm_Object_Item *item = NULL;
-
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   Evas_Object *object = pd->live_object;
-   check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
-   item = elm_segment_control_item_selected_get(object);
-   if (item) index = elm_segment_control_item_index_get(item);
-   for (i = 0; i < 3; i++)
-     {
-        text = elm_segment_control_item_label_get(object, i);
-        if (elm_check_state_get(obj))
-          {
-             rect = elm_segment_control_item_icon_get(object, i);
-             if (rect) evas_object_del(rect);
-             rect = evas_object_rectangle_add(object);
-             evas_object_color_set(rect, HIGHLIGHT_COLOR);
-             elm_segment_control_item_del_at(object, i);
-             elm_segment_control_item_insert_at(object, rect, text, 0);
-
-             item_list = elm_box_children_get(pd->prop_swallow.swallows);
-
-             EINA_LIST_FOREACH(item_list, it, ch)
-               {
-                  if (elm_check_state_get(ch) == false)
-                    all_checks = false;
-               }
-             if (all_checks)
-               elm_check_state_set(check, true);
-             eina_list_free(item_list);
-          }
-        else
-          {
-             rect = elm_segment_control_item_icon_get(object, i);
-             if (rect) evas_object_del(rect);
-             elm_segment_control_item_del_at(object, i);
-             elm_segment_control_item_insert_at(object, NULL, text, 0);
-             if (elm_check_state_get(check)) elm_check_state_set(check, false);
-          }
-     }
-   if (index >= 0)
-     {
-        item = elm_segment_control_item_get(object, index);
-        elm_segment_control_item_selected_set(item, true);
-     }
+   TODO("Remake on_swallow_check, so that would be used everywhere.")
+   ERR(N_("Complex widgets are not implemented yet."))
 }
 
 static void
-_on_sc_text_check(void *data,
-                  Evas_Object *obj,
+_on_sc_text_check(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
                   void *ei __UNUSED__)
 {
-   Evas_Object *rect, *check = NULL, *ch;
-   Eina_List *item_list = NULL, *it;
-   Eina_Bool all_checks = true;
-   int i = 0, index = -1;
-   Elm_Object_Item *item = NULL;
-
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   Evas_Object *object = pd->live_object;
-   check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
-
-   item = elm_segment_control_item_selected_get(object);
-   if (item) index = elm_segment_control_item_index_get(item);
-   for (i = 0; i < 3; i++)
-     {
-        rect = elm_segment_control_item_icon_get(object, i);
-        if (rect)
-          {
-             evas_object_del(rect);
-             rect = evas_object_rectangle_add(object);
-             evas_object_color_set(rect, HIGHLIGHT_COLOR);
-          }
-        if (elm_check_state_get(obj))
-          {
-             elm_segment_control_item_del_at(object, i);
-             elm_segment_control_item_insert_at(object, rect, _("Text Example"), 0);
-
-             item_list = elm_box_children_get(pd->prop_text.texts);
-
-             EINA_LIST_FOREACH(item_list, it, ch)
-               {
-                  if (elm_check_state_get(ch) == false)
-                    all_checks = false;
-               }
-             if (all_checks)
-               elm_check_state_set(check, true);
-             eina_list_free(item_list);
-          }
-        else
-          {
-             elm_segment_control_item_del_at(object, i);
-             elm_segment_control_item_insert_at(object, rect, NULL, 0);
-             if (elm_check_state_get(check)) elm_check_state_set(check, false);
-          }
-     }
-   if (index >= 0)
-     {
-        item = elm_segment_control_item_get(object, index);
-        elm_segment_control_item_selected_set(item, true);
-     }
+   TODO("Remake on_text_check, so that would be used everywhere.")
+   ERR(N_("Complex widgets are not implemented yet."))
 }
 
 static void

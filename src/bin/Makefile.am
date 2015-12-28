@@ -65,10 +65,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/workspace/groupedit.c \
 ../../src/bin/ui/workspace/highlight.c \
 ../../src/bin/ui/live_view/demo.c \
-../../src/bin/ui/live_view/live_view_prop.c \
-../../src/bin/ui/live_view/live_view.c \
 ../../src/bin/ui/live_view/live_widget.c \
-../../src/bin/ui/live_view/live_prog_edit.c \
 ../../src/bin/ui/live_view/elementary/live_widget_common.c \
 ../../src/bin/ui/live_view/elementary/live_custom_layout.c \
 ../../src/bin/ui/live_view/elementary/live_actionslider.c \

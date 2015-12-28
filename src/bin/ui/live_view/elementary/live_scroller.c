@@ -17,73 +17,15 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "live_view_prop.h"
 #include "live_elementary_widgets.h"
 
 static void
-_on_scroller_swallow_check(void *data,
-                           Evas_Object *obj,
+_on_scroller_swallow_check(void *data __UNUSED__,
+                           Evas_Object *obj __UNUSED__,
                            void *ei __UNUSED__)
 {
-   Evas_Object *content = NULL, *check = NULL, *ch;
-   Eina_List *item_list = NULL, *it;
-   Eina_Bool all_checks = true;
-
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   Evas_Object *object = pd->live_object;
-   const char *part_name = elm_object_part_text_get(obj, NULL);
-   check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
-
-   if (elm_check_state_get(obj))
-     {
-        if (!strcmp(part_name, "elm.swallow.content"))
-          {
-             content = elm_table_add(object);
-             Evas_Object *bt;
-             int i, j;
-
-             for (j = 0; j < ELEMENTS_COUNT; j++)
-               {
-                  for (i = 0; i < ELEMENTS_COUNT; i++)
-                    {
-                       bt = elm_button_add(content);
-                       elm_table_pack(content, bt, i, j, 1, 1);
-                       elm_object_text_set(bt, _("Both"));
-                       evas_object_show(bt);
-                    }
-               }
-             elm_object_content_set(object, content);
-             evas_object_show(content);
-          }
-        else
-          {
-             content = evas_object_rectangle_add(object);
-             evas_object_color_set(content, HIGHLIGHT_COLOR);
-             elm_object_part_content_set(object, part_name, content);
-          }
-        item_list = elm_box_children_get(pd->prop_swallow.swallows);
-
-        EINA_LIST_FOREACH(item_list, it, ch)
-          {
-             if (elm_check_state_get(ch) == false)
-               all_checks = false;
-          }
-        if (all_checks)
-          elm_check_state_set(check, true);
-        eina_list_free(item_list);
-     }
-   else
-     {
-        if (!strcmp(part_name, "elm.swallow.content"))
-          content =  elm_object_content_unset(object);
-        else
-          content = elm_object_part_content_unset(object, part_name);
-        evas_object_del(content);
-        if (elm_check_state_get(check)) elm_check_state_set(check, false);
-     }
+   TODO("Remake on_swallow_check, so that would be used everywhere.")
+   ERR(N_("Complex widgets are not implemented yet."))
 }
 
 Evas_Object *

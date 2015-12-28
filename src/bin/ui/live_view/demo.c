@@ -17,9 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "live_view.h"
 #include "live_widget.h"
-#include "live_view_prop.h"
 #include "project_manager.h"
 #include "live_elementary_widgets.h"
 
