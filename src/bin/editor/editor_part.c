@@ -596,6 +596,7 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UN
    assert(states != NULL);
 
    /* Removing states. Default state can only be reseted */
+   res = res && editor_part_selected_state_set(edit_object, change, false, part_name, "default", 0.0);
    res = res && editor_state_reset(edit_object, change, false, part_name, "default", 0.0);
    EINA_LIST_FOREACH(eina_list_next(states), l, state)
      {
