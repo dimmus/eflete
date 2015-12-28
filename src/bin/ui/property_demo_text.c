@@ -20,7 +20,7 @@
 #include "property_private.h"
 #include "property_macros.h"
 #include "main_window.h"
-#include "new_history.h"
+#include "history.h"
 #include "project_manager.h"
 
 #define DEMO_TEXT_PROP_DATA "image_prop_data"

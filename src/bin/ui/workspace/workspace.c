@@ -24,7 +24,7 @@
 #include "container.h"
 #include "eflete.h"
 #include "group_navigator.h"
-#include "new_history.h"
+#include "history.h"
 #include "demo.h"
 #include "demo_group.h"
 #include "project_manager.h"

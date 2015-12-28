@@ -17,7 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "new_history.h"
+#include "history.h"
 #include "change.h"
 #include "project_manager.h"
 

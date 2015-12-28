@@ -28,7 +28,7 @@
 #include "property_private.h"
 #include "property_macros.h"
 #include "main_window.h"
-#include "new_history.h"
+#include "history.h"
 #include "validator.h"
 #include "group_navigator.h"
 #include "change.h"

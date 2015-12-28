@@ -17,7 +17,7 @@ libete_a_SOURCES = \
 ../../src/bin/external/enventor_module.c \
 ../../src/bin/editor/diff.c \
 ../../src/bin/editor/change.c \
-../../src/bin/editor/new_history.c \
+../../src/bin/editor/history.c \
 ../../src/bin/editor/default.c \
 ../../src/bin/editor/editor_general.c \
 ../../src/bin/editor/editor_group.c \

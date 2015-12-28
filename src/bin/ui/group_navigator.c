@@ -22,7 +22,7 @@
 
 #include "group_navigator.h"
 #include "main_window.h"
-#include "new_history.h"
+#include "history.h"
 #include "project_manager.h"
 #include "change.h"
 #include "widget_macro.h"

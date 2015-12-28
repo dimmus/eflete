@@ -20,7 +20,7 @@
 #include "tabs_private.h"
 #include "workspace.h"
 #include "tabs.h"
-#include "new_history.h"
+#include "history.h"
 #include "project_manager.h"
 #include "main_window.h"
 #include "change.h"

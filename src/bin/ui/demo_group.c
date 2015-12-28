@@ -18,7 +18,7 @@
  */
 #include "demo_group.h"
 #include "main_window.h"
-#include "new_history.h"
+#include "history.h"
 #include "project_manager.h"
 
 #define DEMO_GROUP_DATA "demo_group_data"
