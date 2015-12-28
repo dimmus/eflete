@@ -55,7 +55,7 @@ typedef struct _Resource Resource;
 typedef struct _Change Change;
 typedef struct _Diff_ Diff;
 typedef struct _Group Group;
-typedef struct _History_ History_;
+typedef struct _History History;
 typedef struct _State State;
 typedef struct _Part Part;
 typedef struct _Shortcuts Shortcuts;
