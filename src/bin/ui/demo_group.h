@@ -30,7 +30,7 @@
 
 /**
  * emited when part is selected in part list while in demo mode.
- * eventinfo - pointer to Part_ structure
+ * eventinfo - pointer to Part structure
  *
  * @ingroup Partlist
  */

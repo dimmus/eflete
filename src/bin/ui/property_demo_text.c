@@ -32,7 +32,7 @@
 
 struct _Demo_Text_Prop_Data
 {
-   Part_ *part;
+   Part *part;
 
    Evas_Object *box;
    Evas_Object *name;
@@ -92,7 +92,7 @@ prop_part_content_add(Evas_Object *parent, Demo_Text_Prop_Data *pd)
 }
 
 void
-ui_property_demo_text_part_set(Evas_Object *property, Part_ *part)
+ui_property_demo_text_part_set(Evas_Object *property, Part *part)
 {
    DEMO_TEXT_PROP_DATA_GET()
 

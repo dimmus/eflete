@@ -254,7 +254,7 @@ live_view_theme_update(Evas_Object *object)
 }
 
 Eina_Bool
-live_view_part_add(Evas_Object *object, Part_ *part)
+live_view_part_add(Evas_Object *object, Part *part)
 {
    assert(object != NULL);
    assert(ap.project != NULL);
@@ -268,7 +268,7 @@ live_view_part_add(Evas_Object *object, Part_ *part)
 }
 
 Eina_Bool
-live_view_part_del(Evas_Object *object, Part_ *part)
+live_view_part_del(Evas_Object *object, Part *part)
 {
    assert(object != NULL);
    assert(ap.project != NULL);

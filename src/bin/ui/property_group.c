@@ -47,7 +47,7 @@
 struct _Group_Prop_Data
 {
    Group *group;
-   Part_ *part;
+   Part *part;
    Change *change;
    int old_int_val, old_int_val2, old_int_val3, old_int_val4;
    double old_double_val;
@@ -287,7 +287,7 @@ static void
 _ui_property_part_state_unset(Evas_Object *property);
 
 static void
-_ui_property_part_item_set(Evas_Object *property, Part_ *part);
+_ui_property_part_item_set(Evas_Object *property, Part *part);
 
 static void
 _ui_property_part_item_unset(Evas_Object *property);
@@ -479,7 +479,7 @@ _on_part_selected(void *data,
 {
    Evas_Object *property = data;
    GROUP_PROP_DATA_GET()
-   Part_ *part = event_info;
+   Part *part = event_info;
 
    if (!part)
      {
@@ -506,7 +506,7 @@ _on_part_state_selected(void *data,
 {
    Evas_Object *property = data;
    GROUP_PROP_DATA_GET()
-   Part_ *part = event_info;
+   Part *part = event_info;
 
    if (!part)
      {
@@ -1302,7 +1302,7 @@ prop_part_name_add(Evas_Object *parent, Group_Prop_Data *pd)
 static void
 prop_part_clip_to_update(Group_Prop_Data *pd)
 {
-   Part_ *part;
+   Part *part;
    Eina_List *l;
    Eina_Stringshare *value;
 
@@ -1401,7 +1401,7 @@ PART_ATTR_1COMBOBOX(_("forward events"), part_drag, event, part_drag,
 #define pd_part pd->attributes.part
 #define pd_drag pd->attributes.part_drag
 void
-ui_property_part_set(Evas_Object *property, Part_ *part)
+ui_property_part_set(Evas_Object *property, Part *part)
 {
    Evas_Object *item;
    Evas_Object *box, *prop_box;
@@ -1850,7 +1850,7 @@ STATE_ATTR_1COMBOBOX_LIST(_("table homogeneous"), state, table_homogeneous, stat
                           _("table homogeneous mode changed to %s"))
 
 void
-ui_property_part_state_set(Evas_Object *property, Part_ *part)
+ui_property_part_state_set(Evas_Object *property, Part *part)
 {
    Evas_Object *item;
    Evas_Object *state_frame, *box, *prop_box;
@@ -3606,7 +3606,7 @@ PART_ITEM_ATTR_2SPINNER(_("position"), part_item, position_col, position_row, pa
                         _("part item position row changed from %d to %d"))
 
 static void
-_ui_property_part_item_set(Evas_Object *property, Part_ *part)
+_ui_property_part_item_set(Evas_Object *property, Part *part)
 {
    Evas_Object *item;
    Evas_Object *box, *prop_box;

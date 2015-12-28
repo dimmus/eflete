@@ -70,7 +70,7 @@ gm_group_edit_object_unload(Group *group)
 }
 
 State *
-gm_state_add(Project *pro, Part_ *part, const char *state_name)
+gm_state_add(Project *pro, Part *part, const char *state_name)
 {
    State *state;
    Eina_Stringshare *image_name, *name;
@@ -169,10 +169,10 @@ gm_state_add(Project *pro, Part_ *part, const char *state_name)
    return state;
 }
 
-Part_ *
+Part *
 gm_part_add(Project *pro, Group *group, const char *part_name)
 {
-   Part_ *part;
+   Part *part;
    Eina_List *states, *l;
    Eina_Stringshare *state_name, *group_name, *item_name;
 
@@ -180,7 +180,7 @@ gm_part_add(Project *pro, Group *group, const char *part_name)
    assert(group != NULL);
    assert(part_name != NULL);
 
-   part = mem_calloc(1, sizeof(Part_));
+   part = mem_calloc(1, sizeof(Part));
    part->name = eina_stringshare_add(part_name);
    part->group = group;
    part->type = edje_edit_part_type_get(group->edit_object, part_name);
@@ -247,7 +247,7 @@ _group_load(Project *pro, Group *group)
                     *state_full_name, *sample_name, *tone_name;
    Edje_Action_Type act;
    double state_val;
-   Part_ *part;
+   Part *part;
    State *state;
    Resource *program;
 
@@ -293,7 +293,7 @@ _group_load(Project *pro, Group *group)
                    eina_stringshare_del(state_name);
                    EINA_LIST_FOREACH(targets, lt, target_name)
                      {
-                        part = (Part_ *) pm_resource_unsorted_get(group->parts, target_name);
+                        part = (Part *) pm_resource_unsorted_get(group->parts, target_name);
                         state = (State *) pm_resource_get(part->states, state_full_name);
                         if (state)
                           state->used_in = eina_list_sorted_insert(state->used_in,
@@ -359,7 +359,7 @@ void
 gm_group_del(Project *pro, Group *group)
 {
    Group *alias;
-   Part_ *part;
+   Part *part;
    Resource *program;
    Eina_List *l, *ln;
 
@@ -432,7 +432,7 @@ gm_groups_free(Project *pro)
 {
    Group *group;
    Resource *program;
-   Part_ *part;
+   Part *part;
    State *state;
    Eina_Stringshare *item_name;
 
@@ -538,7 +538,7 @@ gm_state_del(Project *pro, State *state)
 }
 
 void
-gm_part_item_add(Project *pro, Part_ *part, Eina_Stringshare *item_name)
+gm_part_item_add(Project *pro, Part *part, Eina_Stringshare *item_name)
 {
    assert(pro != NULL);
    assert(part != NULL);
@@ -550,7 +550,7 @@ gm_part_item_add(Project *pro, Part_ *part, Eina_Stringshare *item_name)
 }
 
 void
-gm_part_item_del(Project *pro, Part_ *part, Eina_Stringshare *item_name)
+gm_part_item_del(Project *pro, Part *part, Eina_Stringshare *item_name)
 {
    Eina_List *l;
 
@@ -569,7 +569,7 @@ gm_part_item_del(Project *pro, Part_ *part, Eina_Stringshare *item_name)
 }
 
 void
-gm_part_del(Project *pro, Part_* part)
+gm_part_del(Project *pro, Part* part)
 {
    State *state;
    const char *group_name, *item_name;
@@ -634,7 +634,7 @@ gm_part_del(Project *pro, Part_* part)
 }
 
 void
-gm_part_rename(Part_* part, const char *new_part_name)
+gm_part_rename(Part* part, const char *new_part_name)
 {
    assert(part != NULL);
    assert(new_part_name != NULL);
@@ -644,7 +644,7 @@ gm_part_rename(Part_* part, const char *new_part_name)
 }
 
 void
-gm_part_restack(Part_ *part, Part_ *rel_part)
+gm_part_restack(Part *part, Part *rel_part)
 {
    Eina_List *rel_l;
 
@@ -663,7 +663,7 @@ gm_part_restack(Part_ *part, Part_ *rel_part)
 }
 
 void
-gm_part_item_restack(Part_ *part, Eina_Stringshare *part_item, Eina_Stringshare *relative_part_item)
+gm_part_item_restack(Part *part, Eina_Stringshare *part_item, Eina_Stringshare *relative_part_item)
 {
    assert(part != NULL);
    assert(part_item != NULL);

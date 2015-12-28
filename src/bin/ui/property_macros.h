@@ -1132,7 +1132,7 @@ _on_part_drag_##VALUE2##_change(void *data, \
 static void \
 prop_##MEMBER##_##VALUE##_update(Group_Prop_Data *pd) \
 { \
-   Part_ *part; \
+   Part *part; \
    Eina_List *l; \
    Eina_Stringshare *value; \
    ewe_combobox_items_list_free(pd->attributes.MEMBER.VALUE, true); \
@@ -1795,7 +1795,7 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Group_Prop_Data *
 static void \
 prop_##MEMBER##_##VALUE##_update(Group_Prop_Data *pd) \
 { \
-   Part_ *part; \
+   Part *part; \
    Eina_List *l; \
    Eina_Stringshare *value; \
    ewe_combobox_items_list_free(pd->attributes.MEMBER.VALUE, true); \

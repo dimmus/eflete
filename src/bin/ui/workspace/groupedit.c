@@ -275,7 +275,7 @@ groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part)
 }
 
 Eina_Bool
-groupedit_edit_object_part_add(Evas_Object *obj, Part_ *part)
+groupedit_edit_object_part_add(Evas_Object *obj, Part *part)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd);
 
@@ -285,7 +285,7 @@ groupedit_edit_object_part_add(Evas_Object *obj, Part_ *part)
 }
 
 Eina_Bool
-groupedit_edit_object_part_del(Evas_Object *obj, Part_ *part)
+groupedit_edit_object_part_del(Evas_Object *obj, Part *part)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd);
 
@@ -307,7 +307,7 @@ groupedit_edit_object_part_restack(Evas_Object *obj,
 }
 
 Eina_Bool
-groupedit_edit_object_part_state_set(Evas_Object *obj, Part_ *part)
+groupedit_edit_object_part_state_set(Evas_Object *obj, Part *part)
 {
    Eina_Bool ret;
    WS_GROUPEDIT_DATA_GET(obj, sd);
@@ -418,7 +418,7 @@ groupedit_edit_object_part_select(Evas_Object *obj, const char *part)
 TODO("remove this from public API and use callback from part list");
 
 void
-groupedit_part_visible_set(Evas_Object *obj, Part_ *part)
+groupedit_part_visible_set(Evas_Object *obj, Part *part)
 {
    Groupedit_Part *gp;
    WS_GROUPEDIT_DATA_GET(obj, sd);

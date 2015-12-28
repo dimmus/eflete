@@ -340,7 +340,7 @@ _part_renamed(void *data __UNUSED__,
               void *ei)
 {
    Rename *ren = ei;
-   Part_ *part;
+   Part *part;
 
    assert(tabs.current_group != NULL);
    assert(tabs.current_workspace != NULL);

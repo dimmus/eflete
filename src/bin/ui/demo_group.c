@@ -53,7 +53,7 @@ _part_label_get(void *data,
                 Evas_Object *obj __UNUSED__,
                 const char *pr __UNUSED__)
 {
-   Part_ *part = data;
+   Part *part = data;
 
    assert(part != NULL);
    assert(part->name != NULL);
@@ -103,7 +103,7 @@ _expanded_cb(void *data,
    Elm_Object_Item *glit = event_info;
    Part_Demo_List *pl = data;
    Eina_List *l;
-   Part_ *part;
+   Part *part;
 
    TODO("remove this hack after https://phab.enlightenment.org/D2965 will be accepted");
    assert(pl != NULL);
@@ -141,7 +141,7 @@ _selected_cb(void *data __UNUSED__,
              void *event_info __UNUSED__)
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-   Part_ *part = (Part_ *)elm_object_item_data_get(glit);
+   Part *part = (Part *)elm_object_item_data_get(glit);
 
    if ((part->type == EDJE_PART_TYPE_TEXT) ||
        (part->type == EDJE_PART_TYPE_TEXTBLOCK))

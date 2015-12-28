@@ -54,7 +54,7 @@
 
 /**
  * emited when part is selected.
- * eventinfo - pointer to Part_ structure
+ * eventinfo - pointer to Part structure
  *
  * @ingroup Window
  */
@@ -62,7 +62,7 @@
 
 /**
  * emited when part is unselected.
- * eventinfo - pointer to Part_ structure
+ * eventinfo - pointer to Part structure
  *
  * @ingroup Window
  */
@@ -90,7 +90,7 @@ typedef struct {
 
 /**
  * emited when part state changed.
- * eventinfo - pointer to Part_ structure
+ * eventinfo - pointer to Part structure
  *
  * @ingroup Window
  */
@@ -98,7 +98,7 @@ typedef struct {
 
 /**
  * emited when part item is selected.
- * eventinfo - pointer to Part_ structure
+ * eventinfo - pointer to Part structure
  *
  * @ingroup Window
  */
@@ -106,7 +106,7 @@ typedef struct {
 
 /**
  * emited when part item is unselected.
- * eventinfo - pointer to Part_ structure
+ * eventinfo - pointer to Part structure
  *
  * @ingroup Window
  */

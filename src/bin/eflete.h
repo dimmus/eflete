@@ -57,7 +57,7 @@ typedef struct _Diff_ Diff;
 typedef struct _Group Group;
 typedef struct _History_ History_;
 typedef struct _State State;
-typedef struct _Part_ Part_;
+typedef struct _Part Part;
 typedef struct _Shortcuts Shortcuts;
 
 #include "common_macro.h"

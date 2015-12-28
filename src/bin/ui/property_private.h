@@ -39,10 +39,10 @@ void
 ui_property_group_unset(Evas_Object *parent);
 
 void
-ui_property_part_set(Evas_Object *parent, Part_ *part);
+ui_property_part_set(Evas_Object *parent, Part *part);
 
 void
-ui_property_part_state_set(Evas_Object *parent, Part_ *part);
+ui_property_part_state_set(Evas_Object *parent, Part *part);
 
 Evas_Object *
 ui_property_image_add(Evas_Object *parent);
@@ -66,12 +66,12 @@ Evas_Object *
 ui_property_demo_text_add(Evas_Object *parent);
 
 void
-ui_property_demo_text_part_set(Evas_Object *property, Part_ *part);
+ui_property_demo_text_part_set(Evas_Object *property, Part *part);
 
 Evas_Object *
 ui_property_demo_swallow_add(Evas_Object *parent);
 
 void
-ui_property_demo_swallow_part_set(Evas_Object *property, Part_ *part);
+ui_property_demo_swallow_part_set(Evas_Object *property, Part *part);
 
 #endif /* UI_PROPERTY_1_H */

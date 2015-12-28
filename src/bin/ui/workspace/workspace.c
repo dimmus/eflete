@@ -136,7 +136,7 @@ struct _Ws_Smart_Data
    struct {
         Evas_Object *highlight; /**< A highlight object */
         Evas_Object *space_hl; /**< A object area highlight*/
-        Part_ *part; /**< Contain part name and it's state. need for callbacks of highlight. */
+        Part *part; /**< Contain part name and it's state. need for callbacks of highlight. */
    } highlight;
 
    Change *change;
@@ -696,7 +696,7 @@ _highlight_drag_start_cb(void *data,
    Evas_Object *ws_obj = (Evas_Object *)data;
    WS_DATA_GET(ws_obj, sd)
    Highlight_Events *events = (Highlight_Events *)ei;
-   Part_ *part = sd->highlight.part;
+   Part *part = sd->highlight.part;
 
    assert(sd->change == NULL);
 
@@ -732,7 +732,7 @@ _highlight_drag_stop_cb(void *data,
    int new_max_w, new_max_h;
    double new_align_x, new_align_y;
    Eina_Stringshare *msg;
-   Part_ *part = sd->highlight.part;
+   Part *part = sd->highlight.part;
 
    assert(sd->change != NULL);
 
@@ -787,7 +787,7 @@ _highlight_changed_cb(void *data,
    Evas_Object *ws_obj = (Evas_Object *)data;
    WS_DATA_GET(ws_obj, sd)
 
-   Part_ *part = sd->highlight.part;
+   Part *part = sd->highlight.part;
 
    if ((!sd->group) || (!part)) return;
    Evas_Object *obj_area = groupedit_part_object_area_get(sd->groupedit);
@@ -866,7 +866,7 @@ _highlight_changed_cb(void *data,
 }
 
 static Eina_Bool
-_workspace_highlight_set(Evas_Object *obj, Part_ *part)
+_workspace_highlight_set(Evas_Object *obj, Part *part)
 {
    Evas_Object *follow;
    WS_DATA_GET(obj, sd)
@@ -1438,7 +1438,7 @@ _on_groupedit_part_select(void *data,
                           void *event_info)
 {
    Evas_Object *workspace = (Evas_Object *)data;
-   Part_ *part = event_info;
+   Part *part = event_info;
 
    WS_DATA_GET(workspace, sd);
 
@@ -1451,7 +1451,7 @@ _on_group_navigator_part_select(void *data,
                           void *event_info)
 {
    Evas_Object *workspace = (Evas_Object *)data;
-   Part_ *part = event_info;
+   Part *part = event_info;
 
    WS_DATA_GET(workspace, sd);
 
@@ -1469,7 +1469,7 @@ _on_group_navigator_part_state_select(void *data,
                                 void *event_info)
 {
    Evas_Object *workspace = (Evas_Object *)data;
-   Part_ *part = event_info;
+   Part *part = event_info;
 
    WS_DATA_GET(workspace, sd);
 
@@ -1484,7 +1484,7 @@ _on_group_navigator_part_visible_changed(void *data,
                                 void *event_info)
 {
    Evas_Object *workspace = (Evas_Object *)data;
-   Part_ *part = event_info;
+   Part *part = event_info;
 
    WS_DATA_GET(workspace, sd);
 
@@ -1634,7 +1634,7 @@ workspace_add(Evas_Object *parent, Group *group)
 }
 
 void
-workspace_group_navigator_update_part(Evas_Object *obj, Part_ *part)
+workspace_group_navigator_update_part(Evas_Object *obj, Part *part)
 {
    WS_DATA_GET(obj, sd);
    assert(part != NULL);
@@ -1816,7 +1816,7 @@ workspace_object_area_visible_get(Evas_Object *obj)
 void
 workspace_part_add(Evas_Object *obj, Eina_Stringshare *part_name)
 {
-   Part_ *part;
+   Part *part;
    WS_DATA_GET(obj, sd);
    assert(part_name != NULL);
 
@@ -1828,7 +1828,7 @@ workspace_part_add(Evas_Object *obj, Eina_Stringshare *part_name)
 void
 workspace_part_del(Evas_Object *obj, Eina_Stringshare *part_name)
 {
-   Part_ *part;
+   Part *part;
    WS_DATA_GET(obj, sd);
    assert(part_name != NULL);
 
@@ -1843,7 +1843,7 @@ workspace_part_item_add(Evas_Object *obj,
                         Eina_Stringshare *part_name,
                         Eina_Stringshare *item_name)
 {
-   Part_ *part;
+   Part *part;
    WS_DATA_GET(obj, sd);
    assert(part_name != NULL);
    assert(item_name != NULL);
@@ -1864,7 +1864,7 @@ workspace_part_item_del(Evas_Object *obj,
                         Eina_Stringshare *part_name,
                         Eina_Stringshare *item_name)
 {
-   Part_ *part;
+   Part *part;
    WS_DATA_GET(obj, sd);
    assert(part_name != NULL);
    assert(item_name != NULL);
@@ -1884,7 +1884,7 @@ workspace_part_state_add(Evas_Object *obj,
                          Eina_Stringshare *part_name,
                          Eina_Stringshare *state_name)
 {
-   Part_ *part;
+   Part *part;
    State *state;
    WS_DATA_GET(obj, sd);
    assert(part_name != NULL);
@@ -1902,7 +1902,7 @@ workspace_part_state_del(Evas_Object *obj,
                          Eina_Stringshare *part_name,
                          Eina_Stringshare *state_name)
 {
-   Part_ *part;
+   Part *part;
    State *state;
    WS_DATA_GET(obj, sd);
    assert(part_name != NULL);
@@ -1921,7 +1921,7 @@ workspace_part_restack(Evas_Object *obj,
                        Eina_Stringshare *part_name,
                        Eina_Stringshare *relative_part_name)
 {
-   Part_ *part, *rel_part = NULL;
+   Part *part, *rel_part = NULL;
    WS_DATA_GET(obj, sd);
    assert(part_name != NULL);
 
@@ -1942,7 +1942,7 @@ workspace_part_item_restack(Evas_Object *obj,
                             Eina_Stringshare *part_item_name,
                             Eina_Stringshare *relative_part_item_name)
 {
-   Part_ *part;
+   Part *part;
    WS_DATA_GET(obj, sd);
    assert(part_item_name != NULL);
 

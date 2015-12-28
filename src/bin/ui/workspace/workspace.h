@@ -56,7 +56,7 @@ workspace_add(Evas_Object *parent, Group *group);
  * @ingroup Workspace
  */
 void
-workspace_group_navigator_update_part(Evas_Object *obj, Part_ *part);
+workspace_group_navigator_update_part(Evas_Object *obj, Part *part);
 
 /**
  * Update the parts attributes, with recalculation.

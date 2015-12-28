@@ -411,7 +411,7 @@ _live_view_property_load(Evas_Object *property,
 
 TODO("We need implementation here!~~ ")
 Eina_Bool
-live_view_property_part_add(Evas_Object *property, Part_ *part)
+live_view_property_part_add(Evas_Object *property, Part *part)
 {
    Evas_Object *check;
    PROP_DATA_GET();
@@ -451,7 +451,7 @@ live_view_property_part_add(Evas_Object *property, Part_ *part)
 }
 
 Eina_Bool
-live_view_property_part_del(Evas_Object *property, Part_ *part)
+live_view_property_part_del(Evas_Object *property, Part *part)
 {
    Evas_Object *check, *item_box, *frame, *frame_check;
    Eina_List *items_list = NULL, *l;

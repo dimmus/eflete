@@ -80,7 +80,7 @@ struct _Ws_Groupedit_Smart_Data
  */
 struct _Groupedit_Part
 {
-   Part_ *part;               /**< Pointer to part */
+   Part *part;               /**< Pointer to part */
    Groupedit_Geom geom;
    Groupedit_Geom object_area_geom;
    Evas_Object *draw;         /**< The evas primitive to be draw in groupedit.
@@ -112,10 +112,10 @@ Groupedit_Item *
 _part_item_search(Eina_List *items, const char *item_name);
 
 Eina_Bool
-_edit_object_part_add(Ws_Groupedit_Smart_Data *sd, Part_ *part);
+_edit_object_part_add(Ws_Groupedit_Smart_Data *sd, Part *part);
 
 Eina_Bool
-_edit_object_part_del(Ws_Groupedit_Smart_Data *sd, Part_ *part);
+_edit_object_part_del(Ws_Groupedit_Smart_Data *sd, Part *part);
 
 void
 _select_item_move_to_top(Ws_Groupedit_Smart_Data *sd);

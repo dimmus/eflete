@@ -51,7 +51,7 @@ struct _Demo_Swallow_Prop_Data
    Evas_Object *label_align;
    Evas_Object *align_x, *align_y;
 
-   Part_ *part;
+   Part *part;
 };
 typedef struct _Demo_Swallow_Prop_Data Demo_Swallow_Prop_Data;
 
@@ -271,7 +271,7 @@ prop_image_path_add(Evas_Object *parent,
 }
 
 void
-ui_property_demo_swallow_part_set(Evas_Object *property, Part_ *part)
+ui_property_demo_swallow_part_set(Evas_Object *property, Part *part)
 {
    DEMO_SWALLOW_PROP_DATA_GET()
 

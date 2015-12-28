@@ -29,10 +29,10 @@ struct _State
 
    Eina_Stringshare *parsed_name;  /**< parsed state name */
    double parsed_val;          /**< parsed state value */
-   Part_ *part;                /**< pointer to part */
+   Part *part;                /**< pointer to part */
 };
 
-struct _Part_
+struct _Part
 {
    Eina_Stringshare *name;    /**< part name */
    Eina_List *used_in;        /**< list of programs where part is used */
@@ -61,7 +61,7 @@ struct _Group
    Eina_List *programs;       /**< list of programs */
 
    Evas_Object *edit_object;  /**< object needed to access group with edje_edit functions. Should be NULL if group is not open */
-   Part_ *current_part;        /**< pointer to selected part */
+   Part *current_part;        /**< pointer to selected part */
 
    History_ *history;          /**< history of changes in the group */
 };
@@ -79,13 +79,13 @@ void
 gm_group_edit_object_unload(Group *group);
 
 State *
-gm_state_add(Project *pro, Part_ *part, const char *state_name);
+gm_state_add(Project *pro, Part *part, const char *state_name);
 
-Part_ *
+Part *
 gm_part_add(Project *pro, Group *group, Eina_Stringshare *part_name);
 
 void
-gm_part_item_add(Project *pro, Part_ *part, Eina_Stringshare *item_name);
+gm_part_item_add(Project *pro, Part *part, Eina_Stringshare *item_name);
 
 Group *
 gm_group_add(Project *pro, const char *group_name);
@@ -97,19 +97,19 @@ void
 gm_state_del(Project *pro, State *state);
 
 void
-gm_part_del(Project *pro, Part_* part);
+gm_part_del(Project *pro, Part* part);
 
 void
-gm_part_item_del(Project *pro, Part_ *part, Eina_Stringshare *item_name);
+gm_part_item_del(Project *pro, Part *part, Eina_Stringshare *item_name);
 
 void
-gm_part_rename(Part_* part, const char *new_part_name);
+gm_part_rename(Part* part, const char *new_part_name);
 
 void
-gm_part_restack(Part_ *part, Part_ *rel_part);
+gm_part_restack(Part *part, Part *rel_part);
 
 void
-gm_part_item_restack(Part_ *part, Eina_Stringshare *part_item, Eina_Stringshare *relative_part_item);
+gm_part_item_restack(Part *part, Eina_Stringshare *part_item, Eina_Stringshare *relative_part_item);
 
 const char *
 gm_part_type_text_get(Edje_Part_Type part_type);

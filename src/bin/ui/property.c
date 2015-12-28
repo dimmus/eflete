@@ -224,7 +224,7 @@ _on_text_part_clicked(void *data,
 {
    Evas_Object *property = data;
    PROP_DATA_GET()
-   Part_ *part = (Part_ *) event_info;
+   Part *part = (Part *) event_info;
 
    assert(pd != NULL);
 
@@ -250,7 +250,7 @@ _on_swallow_part_clicked(void *data,
 {
    Evas_Object *property = data;
    PROP_DATA_GET()
-   Part_ *part = (Part_ *) event_info;
+   Part *part = (Part *) event_info;
 
    assert(pd != NULL);
 

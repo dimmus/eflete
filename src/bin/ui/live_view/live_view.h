@@ -97,7 +97,7 @@ live_view_theme_update(Evas_Object *object);
  * @ingroup Live_View
  */
 Eina_Bool
-live_view_part_add(Evas_Object *object, Part_ *part);
+live_view_part_add(Evas_Object *object, Part *part);
 
 /**
  * Delete new part to live view properties list of parts.
@@ -113,7 +113,7 @@ live_view_part_add(Evas_Object *object, Part_ *part);
  * @ingroup Live_View
  */
 Eina_Bool
-live_view_part_del(Evas_Object *object, Part_ *part);
+live_view_part_del(Evas_Object *object, Part *part);
 
 /**
  * Rename part from list of parts in live view property.

@@ -114,10 +114,10 @@ live_view_property_style_unset(Evas_Object *property);
 /****** FUNCTIONS FOR CONNECTOR ***********/
 TODO("We need documentation here! ")
 Eina_Bool
-live_view_property_part_add(Evas_Object *property, Part_ *part);
+live_view_property_part_add(Evas_Object *property, Part *part);
 
 Eina_Bool
-live_view_property_part_del(Evas_Object *property, Part_ *part);
+live_view_property_part_del(Evas_Object *property, Part *part);
 /*
 Eina_Bool
 live_view_property_part_rename(Evas_Object *property, Part *part, Eina_Stringshare *new_name);
