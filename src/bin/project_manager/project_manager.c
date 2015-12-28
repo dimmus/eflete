@@ -17,12 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 #define _GNU_SOURCE
-#include "enventor_module.h"
 #include "project_manager.h"
-#include "group_manager.h"
-#include "signals.h"
-#include "alloc.h"
-#include "editor.h"
 #ifndef _WIN32
 #include <sys/wait.h>
 #else

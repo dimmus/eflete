@@ -28,14 +28,14 @@
 #include "property_private.h"
 #include "property_macros.h"
 #include "main_window.h"
-#include "string_common.h"
 #include "new_history.h"
-#include "editor.h"
 #include "validator.h"
+#include "group_navigator.h"
+#include "change.h"
+#include "project_manager.h"
+#include "colorsel.h"
 
 #include "syntax_color.h"
-
-#include "signals.h"
 
 #define GROUP_PROP_DATA "group_prop_data"
 

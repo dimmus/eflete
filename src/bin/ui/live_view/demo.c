@@ -18,7 +18,10 @@
  */
 
 #include "live_view.h"
+#include "live_widget.h"
 #include "live_view_prop.h"
+#include "project_manager.h"
+#include "live_elementary_widgets.h"
 
 Evas_Object *
 demo_add(Evas_Object *parent, Group *group)

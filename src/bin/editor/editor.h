@@ -20,10 +20,8 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
-#define ALLOW_DIRECT_EDJE_EDIT_CALLS
 #include "eflete.h"
-#include "change.h"
-#include "signals.h"
+#include "banned_edje_edit_api.h"
 #include "default.h"
 
 typedef enum {
@@ -149,12 +147,8 @@ typedef enum {
    ATTRIBUTE_STATE_FILL_TYPE,
 } Attribute;
 
-static inline void
-_editor_project_changed()
-{
-   ap.project->changed = true;
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_CHANGED, NULL);
-}
+void
+_editor_project_changed();
 
 /* General */
 Eina_Bool

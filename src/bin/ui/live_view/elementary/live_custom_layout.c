@@ -18,6 +18,7 @@
  */
 
 #include "live_view_prop.h"
+#include "live_elementary_widgets.h"
 
 Evas_Object *
 layout_custom_create(Evas_Object *parent, const Group *group)

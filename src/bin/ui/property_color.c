@@ -18,10 +18,11 @@
  */
 
 #include "property_private.h"
+#include "main_window.h"
+#include "colorsel.h"
 #include "property_macros.h"
-#include "signals.h"
-#include "editor.h"
 #include "colorclass_manager.h"
+#include "project_manager.h"
 
 typedef struct _Color_Prop_Data Color_Prop_Data;
 struct _Color_Prop_Data

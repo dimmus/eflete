@@ -27,11 +27,7 @@
  * This widget designed for show group and part details.
  */
 
-#ifndef HAVE_ENVENTOR
-#include "syntax_color.h"
-#endif
-#include "workspace.h"
-
+#include "eflete.h"
 
 Evas_Object *
 ui_property_group_add(Evas_Object *parent);

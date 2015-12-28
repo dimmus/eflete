@@ -18,7 +18,9 @@
  */
 #include "sound_editor.h"
 #include "main_window.h"
-#include "editor.h"
+#include "project_manager.h"
+#include "modal_window.h"
+#include "config.h"
 
 TODO("Rename this file to sound_manager")
 

@@ -19,7 +19,10 @@
 
 #include "tabs_private.h"
 #include "tabs.h"
-#include "signals.h"
+#include "main_window.h"
+#include "project_navigator.h"
+#include "config.h"
+#include "project_common.h"
 
 void
 meta_controls_add(Evas_Object *layout, Meta_Data_Controls *meta)

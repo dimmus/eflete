@@ -19,8 +19,11 @@
 
 #include "live_view.h"
 #include "live_view_prop.h"
-#include "notify.h"
+#include "live_widget.h"
+#include "live_widgets.h"
+#include "live_elementary_widgets.h"
 #include "container.h"
+#include "main_window.h"
 
 #define SWALLOW_BG "eflete.swallow.bg"
 #define SWALLOW_CONTENT "eflete.swallow.content"

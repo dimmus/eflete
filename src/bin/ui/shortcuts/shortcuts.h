@@ -44,7 +44,6 @@
  */
 
 #include "eflete.h"
-#include "config.h"
 
 /**
  * Setting shortcuts from user's profile.

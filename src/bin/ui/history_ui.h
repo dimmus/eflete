@@ -20,7 +20,6 @@
 #define HISTORY_UI_H
 
 #include "eflete.h"
-#include "new_history.h"
 
 Evas_Object *
 history_ui_add(void);

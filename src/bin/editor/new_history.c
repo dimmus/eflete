@@ -18,7 +18,8 @@
  */
 
 #include "new_history.h"
-#include "signals.h"
+#include "change.h"
+#include "project_manager.h"
 
 History_ *
 history_add(Group *group)

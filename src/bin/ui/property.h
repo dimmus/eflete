@@ -27,10 +27,7 @@
  * This widget designed for show group and part details.
  */
 
-#ifndef HAVE_ENVENTOR
-#include "syntax_color.h"
-#endif
-#include "workspace.h"
+#include "eflete.h"
 
 /**
  * Add a new Property widget.

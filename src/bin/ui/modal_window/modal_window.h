@@ -33,7 +33,6 @@
  */
 
 #include "eflete.h"
-#include "widget_macro.h"
 
 /**
  * Adds an modal window to the window.

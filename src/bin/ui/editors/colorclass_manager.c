@@ -22,7 +22,7 @@
 
 #include "colorclass_manager.h"
 #include "main_window.h"
-#include "editor.h"
+#include "project_manager.h"
 
 static Elm_Genlist_Item_Class *_itc_ccl = NULL;
 

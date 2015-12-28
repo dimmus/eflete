@@ -32,10 +32,7 @@
  * button on workspace object.
  */
 
-#include <Evas.h>
-#include <Elementary.h>
-#include <Ewe.h>
-#include "group_manager.h"
+#include "eflete.h"
 
 /**
  * Create a new Workspace object to the parent.

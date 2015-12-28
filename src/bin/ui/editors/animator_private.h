@@ -22,12 +22,7 @@
 #define NAME_CHANGED_CB "name_changed_cb"
 #define SCROLL_CB "scroll_cb"
 
-#define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT
 #include "eflete.h"
-#include "Edje_Edit.h"
-#include "Elementary.h"
-#include "common_macro.h"
-#include "logger.h"
 
 /* program sequence */
 Evas_Object *prog_sequence_add(Evas_Object *parent, Group *group, Evas_Object *live);

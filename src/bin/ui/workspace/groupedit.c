@@ -17,8 +17,10 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#include "groupedit.h"
 #include "groupedit_private.h"
 #include "cursor.h"
+#include "project_manager.h"
 
 #define MY_CLASS_NAME "Ws_Groupedit"
 

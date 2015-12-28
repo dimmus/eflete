@@ -168,11 +168,6 @@ struct _Profile
    Profile_Color colors[LAST]; /**< colors */
    Eina_List     *shortcuts; /**< user defined or default shortcuts */
 };
-/**
- * @typedef Profile
- * @ingroup Config
- */
-typedef struct _Profile Profile;
 
 /**
  * @struct _Shortcuts
@@ -197,12 +192,6 @@ struct _Shortcuts
    Eina_Bool        holdable; /**< Shows if shortcut function working only when
                                   key is being holded. */
 };
-
-/**
- * @typedef Shortcuts
- * @ingroup Config
- */
-typedef struct _Shortcuts Shortcuts;
 
 /**
  * Initialisation config module.

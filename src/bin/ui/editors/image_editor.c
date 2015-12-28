@@ -19,7 +19,7 @@
 
 #include "image_editor.h"
 #include "main_window.h"
-#include "editor.h"
+#include "project_manager.h"
 
 TODO("Rename this file to image_manager")
 

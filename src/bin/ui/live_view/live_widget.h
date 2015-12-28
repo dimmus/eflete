@@ -28,9 +28,7 @@
  * showing them in live view and in live view properties.
  */
 
-#include "live_view.h"
-#include <Evas.h>
-#include <Elementary.h>
+#include "eflete.h"
 
 /**
  * Create widget according to it's name, class and style.

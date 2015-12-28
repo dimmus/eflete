@@ -19,7 +19,9 @@
 
 #include "eflete.h"
 #include "main_window.h"
+#include "colorsel.h"
 #include "shortcuts.h"
+#include "config.h"
 #ifdef _WIN32
 #include "win32.h"
 #endif

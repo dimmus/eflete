@@ -17,6 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 #include "live_view_prop.h"
+#include "live_elementary_widgets.h"
 
 static Evas_Object *
 _create_toolbar(Evas_Object *obj, const char *class, const char *style)

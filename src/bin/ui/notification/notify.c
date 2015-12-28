@@ -18,6 +18,7 @@
  */
 
 #include "notify.h"
+#include "widget_macro.h"
 
 static void
 _notify_close (void *data,

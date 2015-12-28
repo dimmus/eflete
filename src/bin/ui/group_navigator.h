@@ -21,7 +21,6 @@
 #define GROUP_NAVIGATOR_H
 
 #include "eflete.h"
-#include "group_manager.h"
 
 /**
  * @defgroup Partlist Partlist

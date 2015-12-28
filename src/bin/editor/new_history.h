@@ -20,7 +20,6 @@
 #ifndef NEW_HISTORY_H
 #define NEW_HISTORY_H
 #include "eflete.h"
-#include "change.h"
 
 struct _History_ {
    Group *group;

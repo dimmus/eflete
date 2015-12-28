@@ -30,7 +30,6 @@
  * @li "project_navigator,group,selected": the user double clicked on the group name;
  */
 #include "eflete.h"
-#include "group_manager.h"
 
 /**
  * Add project_navigator object. This object is a layout with two buttons: "plus" and

@@ -20,13 +20,9 @@
 #include "property_private.h"
 #include "property_macros.h"
 #include "main_window.h"
-#include "string_common.h"
-#include "common_macro.h"
 #include "new_history.h"
-#include "editor.h"
 #include "validator.h"
-
-#include "signals.h"
+#include "project_manager.h"
 
 #define IMAGE_PROP_DATA "image_prop_data"
 

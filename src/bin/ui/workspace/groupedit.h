@@ -44,7 +44,7 @@
  *
  */
 
-#include "group_manager.h"
+#include "eflete.h"
 
 struct _Geom{
    int x, y, w, h;

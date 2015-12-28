@@ -21,7 +21,6 @@
 #define DEMO_GROUP_H
 
 #include "eflete.h"
-#include "group_manager.h"
 
 /**
  * @defgroup Partlist Partlist

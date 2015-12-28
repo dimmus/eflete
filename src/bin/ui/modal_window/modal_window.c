@@ -18,6 +18,7 @@
  */
 
 #include "modal_window.h"
+#include "widget_macro.h"
 
 #define FUNC_CLOSE "func_close"
 #define FUNC_DATA "func_data"

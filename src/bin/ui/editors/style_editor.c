@@ -22,8 +22,7 @@
 
 #include "style_editor.h"
 #include "main_window.h"
-#include "alloc.h"
-#include "editor.h"
+#include "project_manager.h"
 
 TODO("Rename this file to textblock_style_manager")
 

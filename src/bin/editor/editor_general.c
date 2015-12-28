@@ -17,7 +17,11 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#define ALLOW_DIRECT_EDJE_EDIT_CALLS
 #include "editor.h"
+#include "project_manager.h"
+#include "diff.h"
+#include "change.h"
 
 int _editor_signals_blocked = 0;
 static inline Eina_Bool
@@ -94,4 +98,11 @@ you_shall_pass_editor_signals(Change *change)
      }
    _editor_signals_blocked--;
    return true;
+}
+
+void
+_editor_project_changed()
+{
+   ap.project->changed = true;
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_CHANGED, NULL);
 }

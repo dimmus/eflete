@@ -18,6 +18,7 @@
  */
 
 #include "main_window.h"
+#include "project_manager.h"
 #include "project_common.h"
 
 static Eina_Bool

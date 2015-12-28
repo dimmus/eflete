@@ -17,10 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "group_manager.h"
-#include "alloc.h"
-#include "signals.h"
-#include "string_common.h"
+#include "project_manager.h"
 
 static void
 _group_name_parse(Group *group)

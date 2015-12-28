@@ -17,11 +17,9 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 #include "demo_group.h"
-#include "signals.h"
-#include "string_common.h"
 #include "main_window.h"
-#include "editor.h"
 #include "new_history.h"
+#include "project_manager.h"
 
 #define DEMO_GROUP_DATA "demo_group_data"
 

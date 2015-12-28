@@ -18,6 +18,7 @@
  */
 
 #include "live_view_prop.h"
+#include "live_elementary_widgets.h"
 
 Eina_Bool
 standard_widget_name_parse(const char *full_group_name,

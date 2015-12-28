@@ -29,7 +29,6 @@
  */
 
 #include "eflete.h"
-#include "widget_macro.h"
 
 /**
  * Show Error Notification with formated message

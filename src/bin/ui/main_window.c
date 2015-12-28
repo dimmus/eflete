@@ -27,6 +27,8 @@
 #include "tabs.h"
 #include "shortcuts.h"
 #include "cursor.h"
+#include "config.h"
+#include "property.h"
 
 static void
 _project_navigator_group_open(void *data __UNUSED__,

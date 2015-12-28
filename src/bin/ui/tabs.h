@@ -27,7 +27,7 @@
  * Tabs provide a open more the one layout to edit. Have a 'home' tab, where
  * user can create new, open, or import Eflete project.
  */
-#include "group_manager.h"
+#include "eflete.h"
 
 typedef enum {
    TAB_HOME_PROJECT_INFO = 0,

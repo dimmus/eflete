@@ -30,11 +30,7 @@
  * the widget.
  */
 
-#include "live_elementary_widgets.h"
-#include "widget_macro.h"
-#include "notify.h"
-#include <Evas.h>
-#include <Elementary.h>
+#include "eflete.h"
 
 TODO("Look through it and clean!")
 struct _Prop_Data

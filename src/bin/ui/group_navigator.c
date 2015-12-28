@@ -21,11 +21,11 @@
 #define EFL_EO_API_SUPPORT
 
 #include "group_navigator.h"
-#include "signals.h"
-#include "string_common.h"
 #include "main_window.h"
-#include "editor.h"
 #include "new_history.h"
+#include "project_manager.h"
+#include "change.h"
+#include "widget_macro.h"
 
 #define GROUP_NAVIGATOR_DATA "group_navigator_data"
 

@@ -46,6 +46,20 @@
    #define NGETTEXT(single, plur, n) (((n)==1)? (single):(plur))
 #endif /* localization */
 
+typedef struct _Shortcut_Module Shortcut_Module;
+typedef struct _Menu Menu;
+typedef struct _Live_View Live_View;
+typedef struct _Project Project;
+typedef struct _Profile Profile;
+typedef struct _Resource Resource;
+typedef struct _Change Change;
+typedef struct _Diff_ Diff;
+typedef struct _Group Group;
+typedef struct _History_ History_;
+typedef struct _State State;
+typedef struct _Part_ Part_;
+typedef struct _Shortcuts Shortcuts;
+
 #include "common_macro.h"
 TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
 #ifndef PATH_MAX
@@ -57,22 +71,15 @@ TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
 
 /* do not allow unsafe sprintf. use snprintf instead */
 #pragma GCC poison sprintf
-#include "banned_edje_edit_api.h"
 
+#include <Elementary.h>
 #include "logger.h"
-#include "group_manager.h"
-#include "live_view.h"
 #include "notify.h"
+#include "string_common.h"
+#include "editor.h"
+#include "signals.h"
 
-/**
- * @typedef Shortcut_Module
- * Private Structure, using for Shortcuts module, containing important
- * information for it.
- * @ingroup Eflete
- */
-typedef struct _Shortcut_Module Shortcut_Module;
-
-typedef struct _Menu Menu;
+#define EFLETE_INTERNAL_GROUP_NAME "___eflete_internal_group___"
 
 struct _App_Data
 {

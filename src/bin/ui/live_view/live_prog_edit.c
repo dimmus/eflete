@@ -18,6 +18,7 @@
  */
 
 #include "live_view_prop.h"
+#include "live_widgets.h"
 
 static void
 _on_swallow_check(void *data,

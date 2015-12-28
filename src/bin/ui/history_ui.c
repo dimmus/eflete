@@ -18,7 +18,10 @@
  */
 
 #include "history_ui.h"
-#include "signals.h"
+#include "change.h"
+#include "project_manager.h"
+#include "new_history.h"
+#include "widget_macro.h"
 
 typedef struct {
    Evas_Object *layout;

@@ -17,8 +17,9 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#include "groupedit.h"
 #include "groupedit_private.h"
-#include "alloc.h"
+#include "project_manager.h"
 
 #define PART_STATE_GET(obj, part) \
    const char *state; \

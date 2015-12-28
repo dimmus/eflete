@@ -17,11 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "logger.h"
-
-#ifdef HAVE_CONFIG_H
-   #include "eflete_config.h"
-#endif /* include eflete_config.h */
+#include "eflete.h"
 
 int _eflete_lod_dom = -1;
 

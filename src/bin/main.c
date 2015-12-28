@@ -21,7 +21,8 @@
 #include <regex.h>
 #include "main_window.h"
 #include "project_navigator.h"
-#include "signals.h"
+#include "project_manager.h"
+#include "config.h"
 
 static char *open = NULL;
 static char *import_edj = NULL;

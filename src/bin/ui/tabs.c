@@ -21,12 +21,14 @@
 #include "workspace.h"
 #include "tabs.h"
 #include "new_history.h"
-#include "signals.h"
-#include "editor.h"
+#include "project_manager.h"
+#include "main_window.h"
+#include "change.h"
 
 #include "style_editor.h"
 #include "image_editor.h"
 #include "sound_editor.h"
+#include "colorclass_manager.h"
 #include "animator.h"
 
 struct _Tabs_Item {

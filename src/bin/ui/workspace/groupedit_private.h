@@ -17,14 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT
 #include "eflete.h"
-#include "Edje_Edit.h"
-#include "Elementary.h"
-#include "groupedit.h"
-#include "common_macro.h"
-#include "logger.h"
-#include "group_manager.h"
 
 typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;
 typedef struct _Groupedit_Part Groupedit_Part;

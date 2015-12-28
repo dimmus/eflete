@@ -27,10 +27,10 @@
  * This folder mostly contains only Elementary Widgets
  */
 
+#include "eflete.h"
+#include "project_manager.h"
 #include "live_widgets.h"
-#include <Elementary.h>
-
-#include "signals.h"
+#include "widget_macro.h"
 
 /**
  * Common Swallow callback that is used in most of simple widgets.

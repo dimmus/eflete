@@ -30,7 +30,6 @@
  */
 
 #include "eflete.h"
-#include "modal_window.h"
 
 /**
  * Show the whole inwin window by using some data

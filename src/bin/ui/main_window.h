@@ -30,15 +30,7 @@
  */
 
 #include "eflete.h"
-#include "enventor_module.h"
-#include "config.h"
-#include "common_macro.h"
-#include "notify.h"
-#include "property.h"
-#include "string_common.h"
-
-#include "colorsel.h"
-#include "colorclass_manager.h"
+#include "widget_macro.h"
 
 enum Menu_Item
 {

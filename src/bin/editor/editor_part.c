@@ -17,9 +17,11 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#define ALLOW_DIRECT_EDJE_EDIT_CALLS
 #include "editor.h"
 #include "editor_macro.h"
-#include "string_common.h"
+#include "change.h"
+#include "diff.h"
 
 extern int _editor_signals_blocked;
 Eina_Bool

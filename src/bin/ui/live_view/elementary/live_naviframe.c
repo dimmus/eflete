@@ -18,6 +18,7 @@
  */
 
 #include "live_view_prop.h"
+#include "live_elementary_widgets.h"
 
 static const char *item_style_name = NULL;
 

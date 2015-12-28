@@ -20,9 +20,8 @@
 #ifndef TABS_PRIVATE
 #define TABS_PRIVATE
 
-#include "main_window.h"
-#include "project_navigator.h"
-#include "project_common.h"
+#include "eflete.h"
+#include "project_manager.h"
 
 struct _Meta_Data_Controls
 {

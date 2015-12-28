@@ -18,8 +18,6 @@
  */
 
 #include "highlight.h"
-#include "alloc.h"
-#include "common_macro.h"
 #include "cursor.h"
 
 #define SIZE 30

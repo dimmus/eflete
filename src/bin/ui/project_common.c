@@ -18,6 +18,7 @@
  */
 
 #include "main_window.h"
+#include "project_manager.h"
 
 Eina_Bool
 exist_permission_check(const char *path, const char *name,

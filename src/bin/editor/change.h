@@ -20,14 +20,12 @@
 #ifndef CHANGE_H
 #define CHANGE_H
 #include "eflete.h"
-#include "diff.h"
 
 struct _Change {
    Eina_Stringshare *description;
    Eina_List *diffs;
    Eina_Bool reverted : 1;
 };
-typedef struct _Change Change;
 
 Change *
 change_add(const char *description);

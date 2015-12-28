@@ -20,33 +20,7 @@
 #ifndef GROUP_MANAGER_H
 #define GROUP_MANAGER_H
 
-#define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT
-
-#include <Eina.h>
-#include <Ecore_Evas.h>
-#include <Edje_Edit.h>
-#include <assert.h>
-#include "project_manager.h"
-#define EFLETE_INTERNAL_GROUP_NAME "___eflete_internal_group___"
-
-typedef struct _History_ History_;
-/**
- * @typedef State
- * @ingroup GroupManager
- */
-typedef struct _State State;
-
-/**
- * @typedef Part_
- * @ingroup GroupManager
- */
-typedef struct _Part_ Part_;
-
-/**
- * @typedef Group
- * @ingroup GroupManager
- */
-typedef struct _Group Group;
+#include "eflete.h"
 
 struct _State
 {

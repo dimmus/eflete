@@ -29,13 +29,7 @@
  * by using user's theme (already saved one).
  */
 
-#include "project_manager.h"
-#include "common_macro.h"
-#include <Evas.h>
-#include <Elementary.h>
-
-#include "group_manager.h"
-#include "live_widget.h"
+#include "eflete.h"
 
 /**
  * @typedef Live_View
@@ -56,7 +50,6 @@ struct _Live_View
    Eina_Bool in_prog_edit; /**< Flag is this liveview in program editor */
    Group *group;
 };
-typedef struct _Live_View Live_View;
 
 TODO("update documentation")
 /**

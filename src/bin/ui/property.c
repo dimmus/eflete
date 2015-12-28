@@ -28,14 +28,11 @@
 #include "property_private.h"
 #include "property_macros.h"
 #include "main_window.h"
-#include "string_common.h"
 #include "new_history.h"
-#include "editor.h"
 #include "validator.h"
+#include "project_manager.h"
 
 #include "syntax_color.h"
-
-#include "signals.h"
 
 #define PROP_DATA "prop_data"
 

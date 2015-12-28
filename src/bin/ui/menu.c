@@ -25,7 +25,7 @@
 #include "animator.h"
 #include "about_window.h"
 #include "tabs.h"
-#include "signals.h"
+#include "workspace.h"
 
 static int _menu_delayed_event = 0;
 

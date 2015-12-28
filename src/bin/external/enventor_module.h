@@ -20,13 +20,13 @@
 #ifndef ENVENTOR_MODULE_H
 #define ENVENTOR_MODULE_H
 
+TODO("check this define")
 #ifdef HAVE_ENVENTOR
    #define ENVENTOR_BETA_API_SUPPORT
    #include "Enventor.h"
 #endif /* HAVE_ENVENTOR */
 
 #include "eflete.h"
-#include "config.h"
 
 /**
  * @defgroup Enventor Enventor library support

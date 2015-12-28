@@ -20,9 +20,7 @@
 #ifndef HIGHLIGHT_H
 #define HIGHLIGHT_H
 
-#include <Evas.h>
-#include <Elementary.h>
-#include "common_macro.h"
+#include "eflete.h"
 
 TODO("THIS PART IS STILL BEING DEVELOPED. MAKE t, l, r, b and cc parts please!")
 /**

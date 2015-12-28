@@ -191,8 +191,6 @@ struct _Diff_ {
    Function_Info redo;
 };
 
-typedef struct _Diff_ Diff;
-
 Eina_Bool
 diff_undo(Evas_Object *obj, Diff *diff);
 

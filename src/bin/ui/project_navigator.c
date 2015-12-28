@@ -22,8 +22,8 @@
 
 #include "project_navigator.h"
 #include "main_window.h"
-#include "editor.h"
 #include "validator.h"
+#include "project_manager.h"
 
 #define SIG_GROUP_OPEN "group,open"
 

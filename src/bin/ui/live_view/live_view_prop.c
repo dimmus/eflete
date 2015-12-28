@@ -18,6 +18,10 @@
  */
 
 #include "live_view_prop.h"
+#include "live_widgets.h"
+#include "live_view.h"
+#include "main_window.h"
+#include "project_manager.h"
 
 #define PROP_DATA "prop_data"
 #define PROP_DATA_GET() \
