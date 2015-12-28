@@ -167,19 +167,6 @@ Eina_Bool
 groupedit_edit_object_part_del(Evas_Object *obj, Part *part);
 
 /**
- * Set the current state value to the part.
- *
- * @param obj The groupedit object,
- * @param part Pointer to Part structure
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_edit_object_part_state_set(Evas_Object *obj, Part *part);
-
-/**
  * Get the object with the object area geometry.
  *
  * @param obj The groupedit object.

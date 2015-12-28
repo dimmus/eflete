@@ -106,6 +106,20 @@ workspace_part_item_add(Evas_Object *obj,
                         Eina_Stringshare *item_name);
 
 /**
+ * Select state in group_navigator.
+ * Part should be already selected.
+ *
+ * @param obj The workspace object.
+ * @param part_name name of part
+ * @param state_name name of selected part_state
+ *
+ * @ingroup Workspace
+ */
+void
+workspace_part_state_select(Evas_Object *obj,
+                            Eina_Stringshare *part_name,
+                            Eina_Stringshare *state_name);
+/**
  * Add new part state to group_edit and group_navigator.
  * Part should be already added to edit_object.
  *

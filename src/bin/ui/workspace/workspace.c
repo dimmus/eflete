@@ -1464,21 +1464,6 @@ _on_group_navigator_part_select(void *data,
 }
 
 static void
-_on_group_navigator_part_state_select(void *data,
-                                Evas_Object *obj __UNUSED__,
-                                void *event_info)
-{
-   Evas_Object *workspace = (Evas_Object *)data;
-   Part *part = event_info;
-
-   WS_DATA_GET(workspace, sd);
-
-   groupedit_edit_object_part_state_set(sd->groupedit, part);
-
-   evas_object_smart_callback_call(ap.win, SIGNAL_PART_STATE_SELECTED, (void *)part);
-}
-
-static void
 _on_group_navigator_part_visible_changed(void *data,
                                 Evas_Object *obj __UNUSED__,
                                 void *event_info)
@@ -1530,8 +1515,6 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_part_content_set(sd->panes, "right", sd->group_navigator);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED,
                                   _on_group_navigator_part_select, obj);
-   evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED,
-                                  _on_group_navigator_part_state_select, obj);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED,
                                   _on_group_navigator_part_visible_changed, obj);
 
@@ -1895,6 +1878,24 @@ workspace_part_state_add(Evas_Object *obj,
    group_navigator_part_select(sd->group_navigator, part);
    state = gm_state_add(ap.project, part, state_name);
    group_navigator_part_state_add(sd->group_navigator, part, state);
+}
+
+void
+workspace_part_state_select(Evas_Object *obj,
+                            Eina_Stringshare *part_name,
+                            Eina_Stringshare *state_name)
+{
+   Part *part;
+   State *state;
+   WS_DATA_GET(obj, sd);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+
+   part = pm_resource_unsorted_get(sd->group->parts, part_name);
+   state = pm_resource_get(part->states, state_name);
+
+   groupedit_soft_update(sd->groupedit);
+   group_navigator_part_state_select(sd->group_navigator, state);
 }
 
 void

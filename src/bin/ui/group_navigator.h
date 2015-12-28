@@ -37,14 +37,6 @@
 #define SIGNAL_GROUP_NAVIGATOR_PART_SELECTED "SIGNAL_GROUP_NAVIGATOR_PART_SELECTED"
 
 /**
- * emited when part state is activated in part list.
- * eventinfo - pointer to Part structure
- *
- * @ingroup Partlist
- */
-#define SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED "SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED"
-
-/**
  * emited when part visibility is changed.
  * eventinfo - pointer to Part structure
  *
@@ -70,6 +62,9 @@ group_navigator_part_select(Evas_Object *obj, Part *part);
 void
 group_navigator_part_update(Evas_Object *obj, Part *part);
 
+
+void
+group_navigator_part_state_select(Evas_Object *obj, State *state);
 
 void
 group_navigator_part_add(Evas_Object *obj, Part *part);

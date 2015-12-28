@@ -253,9 +253,7 @@ _on_activated(void *data,
 {
    Part_List *pl = data;
    const Elm_Genlist_Item_Class* itc;
-   Elm_Object_Item *selected;
-   const Eina_List *subitems, *l;
-   Part *part;
+   State *state;
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
 
    assert(pl != NULL);
@@ -263,6 +261,27 @@ _on_activated(void *data,
 
    itc = elm_genlist_item_item_class_get(glit);
    if (itc == pl->itc_state)
+     {
+        state = elm_object_item_data_get(glit);
+        editor_part_selected_state_set(pl->group->edit_object, NULL, false,
+                                       state->part->name,
+                                       state->parsed_name,
+                                       state->parsed_val);
+     }
+}
+
+void
+group_navigator_part_state_select(Evas_Object *obj, State *state)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   const Eina_List *subitems, *l;
+   Elm_Object_Item *selected;
+   Part *part;
+
+   assert(pl != NULL);
+   assert(state != NULL);
+
+   if (elm_genlist_item_expanded_get(pl->selected_part_item))
      {
         /* unselecting previous selected state */
         subitems = elm_genlist_item_subitems_get(pl->selected_part_item);
@@ -273,14 +292,17 @@ _on_activated(void *data,
         elm_genlist_item_item_class_update(selected, pl->itc_state);
 
         /* selecting new one */
-        elm_genlist_item_item_class_update(glit, pl->itc_state_selected);
-
-        part = elm_object_item_data_get(pl->selected_part_item);
-        part->current_state = elm_object_item_data_get(glit);
-
-        evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED,
-                                        (void *)part);
+        EINA_LIST_FOREACH(subitems, l, selected)
+           if (elm_object_item_data_get(selected) == state)
+             break;
+        assert(selected != NULL);
+        elm_genlist_item_item_class_update(selected, pl->itc_state_selected);
      }
+
+   part = elm_object_item_data_get(pl->selected_part_item);
+   part->current_state = state;
+
+   evas_object_smart_callback_call(ap.win, SIGNAL_PART_STATE_SELECTED, (void *)part);
 }
 
 static void

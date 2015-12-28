@@ -430,6 +430,20 @@ _project_closed(void *data __UNUSED__,
 }
 
 static void
+_editor_part_state_selected_cb(void *data __UNUSED__,
+                               Evas_Object *obj __UNUSED__,
+                               void *event_info)
+{
+   const Editor_State *editor_state = event_info;
+
+   assert(editor_state != NULL);
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+
+   workspace_part_state_select(tabs.current_workspace, editor_state->part_name, editor_state->state_name);
+}
+
+static void
 _editor_part_added_cb(void *data __UNUSED__,
                       Evas_Object *obj __UNUSED__,
                       void *event_info)
@@ -635,6 +649,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CLOSED, _project_closed, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_STATE_SELECTED, _editor_part_state_selected_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, NULL);

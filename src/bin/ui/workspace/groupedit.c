@@ -306,22 +306,6 @@ groupedit_edit_object_part_restack(Evas_Object *obj,
    return _edit_object_part_restack_below(sd, part, rel_part);
 }
 
-Eina_Bool
-groupedit_edit_object_part_state_set(Evas_Object *obj, Part *part)
-{
-   Eina_Bool ret;
-   WS_GROUPEDIT_DATA_GET(obj, sd);
-
-   assert(part != NULL);
-
-   ret = edje_edit_part_selected_state_set(sd->group->edit_object,
-                                           part->name,
-                                           part->current_state->parsed_name,
-                                           part->current_state->parsed_val);
-   evas_object_smart_changed(sd->obj);
-   return ret;
-}
-
 Evas_Object *
 groupedit_part_object_area_get(Evas_Object *obj)
 {
