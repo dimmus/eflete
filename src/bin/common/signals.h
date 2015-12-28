@@ -209,6 +209,14 @@ typedef struct {
  */
 #define SIGNAL_EDITOR_PART_ITEM_RESTACKED "SIGNAL_EDITOR_PART_ITEM_RESTACKED"
 
+/**
+ * emited when part state is selected.
+ * eventinfo - EEditor_State struct
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_PART_STATE_SELECTED "SIGNAL_EDITOR_PART_STATE_SELECTED"
+
 
 /**
  * emited when project is changed in any way (through attribute, .

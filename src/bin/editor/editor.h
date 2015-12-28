@@ -416,6 +416,9 @@ editor_state_image_set(Evas_Object *obj, Change *change, Eina_Bool merge, const 
 /* Part */
 
 Eina_Bool
+editor_part_selected_state_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                               const char *part_name, const char *state_name, double state_val);
+Eina_Bool
 editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                 const char *part_name, Edje_Part_Type type);
 Eina_Bool
