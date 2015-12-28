@@ -218,6 +218,61 @@ prop_rectangle_color_add(Evas_Object *parent,
    return item;
 }
 
+static Eina_Bool
+_on_image_done(void *data,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
+{
+   const char *value;
+   const char *selected;
+   Eina_List *list_selected = (Eina_List *)event_info;
+   Demo_Swallow_Prop_Data *pd = (Demo_Swallow_Prop_Data *)data;
+
+   assert(pd != NULL);
+
+   if (!list_selected) return false;
+
+   value = elm_entry_entry_get(pd->picture);
+   selected = eina_list_data_get(list_selected);
+   if (strcmp(value, selected) == 0) return true;
+
+   elm_entry_entry_set(pd->picture, selected);
+
+   return true;
+}
+
+static void
+_image_selector(void *data,
+                Evas_Object *obj,
+                void *event_info __UNUSED__)
+{
+   popup_fileselector_image_helper(NULL,
+                                   obj,
+                                   NULL,
+                                   _on_image_done,
+                                   data,
+                                   false,
+                                   false);
+}
+
+static Evas_Object *
+prop_image_path_add(Evas_Object *parent,
+                    Demo_Swallow_Prop_Data *pd)
+{
+   Evas_Object *btn;
+   PROPERTY_ITEM_ADD(parent, "Picture:", "1swallow")
+   ENTRY_ADD(item, pd->picture, true)
+   btn = elm_button_add(parent);
+   elm_object_style_set(btn, "elipsis");
+   evas_object_smart_callback_add(btn, "clicked", _image_selector, pd);
+   evas_object_smart_callback_add(pd->picture, "clicked", _image_selector, pd);
+   elm_object_part_content_set(pd->picture, "elm.swallow.elipsis", btn);
+   elm_entry_editable_set(pd->picture, false);
+   evas_object_show(btn);
+   elm_layout_content_set(item, NULL, pd->picture);
+   return item;
+}
+
 void
 ui_property_demo_swallow_part_set(Evas_Object *property, Part_ *part)
 {
@@ -257,6 +312,8 @@ ui_property_demo_swallow_add(Evas_Object *parent)
    elm_box_pack_end(pd->box, item);
    item = prop_swallow_content_add(pd->box, pd);
    elm_box_pack_end(pd->box, item);
+   item = prop_image_path_add(pd->box, pd);
+   elm_box_pack_end(pd->box, item);
 
    item = prop_rectangle_color_add(pd->box, pd);
    elm_box_pack_end(pd->box, item);
@@ -278,4 +335,3 @@ ui_property_demo_swallow_add(Evas_Object *parent)
 
    return pd->box;
 }
-
