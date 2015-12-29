@@ -202,7 +202,7 @@ demo_group_add(Group *group)
 
    /* filling genlist */
    pl->genlist = elm_genlist_add(pl->layout);
-   elm_genlist_homogeneous_set(pl->layout, true);
+   elm_genlist_homogeneous_set(pl->genlist, true);
    elm_scroller_policy_set(pl->genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
    evas_object_show(pl->genlist);
    elm_object_content_set(pl->layout, pl->genlist);
