@@ -659,6 +659,7 @@ project_navigator_add(void)
    elm_object_disabled_set(project_navigator.btn_del, true);
 
    project_navigator.genlist = elm_genlist_add(project_navigator.layout);
+   elm_genlist_homogeneous_set(project_navigator.genlist, true);
    evas_object_show(project_navigator.genlist);
    elm_object_content_set(project_navigator.layout, project_navigator.genlist);
    evas_object_smart_callback_add (project_navigator.genlist, "selected", _selected_cb, NULL);
