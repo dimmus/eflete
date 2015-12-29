@@ -664,6 +664,7 @@ project_navigator_add(void)
    elm_object_content_set(project_navigator.layout, project_navigator.genlist);
    evas_object_smart_callback_add (project_navigator.genlist, "selected", _selected_cb, NULL);
    evas_object_smart_callback_add (project_navigator.genlist, "unselected", _unselected_cb, NULL);
+   elm_genlist_tree_effect_enabled_set(project_navigator.genlist, EINA_TRUE);
 
    elm_object_text_set(project_navigator.layout, _("None"));
    elm_object_disabled_set(project_navigator.layout, true);

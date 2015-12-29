@@ -347,6 +347,10 @@ group { name: "elm/genlist/tree/default/default";
             max: -1 1;
             color: 68 68 68 255;
          }
+         description { state: "hide" 0.0;
+            inherit: "default";
+            visible: 0;
+         }
       }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
@@ -364,6 +368,10 @@ group { name: "elm/genlist/tree/default/default";
                offset: -1 -4;
             }
          }
+         description { state: "hide" 0.0;
+            inherit: "default";
+            visible: 0;
+         }
       }
       part { name: "elm.swallow.pad";
          type: SWALLOW;
@@ -377,6 +385,10 @@ group { name: "elm/genlist/tree/default/default";
             rel2 {
                to_x: "elm.swallow.icon";
             }
+         }
+         description { state: "hide" 0.0;
+            inherit: "default";
+            visible: 0;
          }
       }
       part { name: "arrow";
@@ -394,6 +406,10 @@ group { name: "elm/genlist/tree/default/default";
                normal: "icon_arrow_right.png";
                middle: DEFAULT;
             }
+         }
+         description { state: "hide" 0.0;
+            inherit: "default";
+            visible: 0;
          }
          description { state: "selected" 0.0;
             align: 0.0 0.5;
@@ -432,6 +448,10 @@ group { name: "elm/genlist/tree/default/default";
                align: 0.0 0.5;
             }
          }
+         description { state: "hide" 0.0;
+            inherit: "default";
+            visible: 0;
+         }
       }
       part { name: "elm.swallow.penult";
          type: SWALLOW;
@@ -465,12 +485,20 @@ group { name: "elm/genlist/tree/default/default";
                offset: -7 -4;
             }
          }
+         description { state: "hide" 0.0;
+            inherit: "default";
+            visible: 0;
+         }
       }
       part { name: "disclip";
          type: RECT;
          repeat_events: 1;
          description { state: "default" 0.0;
             color: 255 255 255 0;
+         }
+         description { state: "hide" 0.0;
+            inherit: "default";
+            visible: 0;
          }
       }
    }
@@ -486,6 +514,19 @@ group { name: "elm/genlist/tree/default/default";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
+      }
+      program { name: "item_hide";
+         signal: "elm,state,contract_flip";
+         source: "elm";
+         action: STATE_SET "hide" 0.00;
+         target: "separator";
+         target: "elm.swallow.icon";
+         target: "elm.swallow.icon";
+         target: "arrow";
+         target: "elm.text";
+         target: "elm.swallow.penult";
+         target: "elm.swallow.end";
+         target: "disclip";
       }
       program { name: "unreorder";
          signal: "elm,state,reorder,disable";
@@ -677,6 +718,7 @@ group { name: "elm/genlist/tree/navigator/default";
       }
    }
 }
+
 group { name: "elm/genlist/item/navigator/default";
    inherit: "elm/genlist/item/default/default";
    parts {
