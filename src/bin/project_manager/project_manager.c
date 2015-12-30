@@ -335,8 +335,6 @@ _project_open_internal(Project *project)
 
    project->changed = false;
    project->close_request = false;
-/*   project->widgets = wm_widgets_list_new(project->dev);
-     project->layouts = wm_layouts_list_new(project->dev); */
    project->ecore_evas = ecore_evas_buffer_new(0, 0);
    project->global_object = edje_edit_object_add(ecore_evas_get(project->ecore_evas));
    edje_object_mmap_set(project->global_object, project->mmap_file, EFLETE_INTERNAL_GROUP_NAME);
