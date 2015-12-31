@@ -310,9 +310,9 @@ group { name: "elm/radio/base/style_editor";
 }
 
 #define WORKSPACE_RADIO(STYLE, IMG) \
-group { name: "elm/radio/base/"STYLE; \
+group { name: "elm/radio/base/radio_"STYLE; \
    images { \
-      image: IMG COMP; \
+      image: "icon_"IMG COMP; \
       image: "icon_select.png" COMP; \
    } \
    parts { \
@@ -352,7 +352,7 @@ group { name: "elm/radio/base/"STYLE; \
             rel2.to: "radio"; \
             align: 0.5 0.5; \
             image { \
-               normal: IMG; \
+               normal: "icon_"IMG; \
                middle: DEFAULT; \
             } \
          } \
@@ -412,11 +412,11 @@ group { name: "elm/radio/base/"STYLE; \
    } \
 }
 
-WORKSPACE_RADIO("radio_normal", "icon_normal.png")
-WORKSPACE_RADIO("radio_separate", "icon_separate.png")
-WORKSPACE_RADIO("radio_animator", "icon_animator.png")
-WORKSPACE_RADIO("radio_code", "icon_code.png")
-WORKSPACE_RADIO("radio_demo", "icon_demo.png")
+WORKSPACE_RADIO("normal", "normal.png")
+WORKSPACE_RADIO("separate", "separate.png")
+WORKSPACE_RADIO("animator", "animator.png")
+WORKSPACE_RADIO("code", "code.png")
+WORKSPACE_RADIO("demo", "demo.png")
 
 #define DIRECTION_ADD(DIRECT) \
 group { name: "elm/radio/base/"DIRECT; \
