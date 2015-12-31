@@ -42,7 +42,7 @@ int MENU_ITEMS_LIST_BASE[] = {
    MENU_VIEW_RULERS_ABS,
    MENU_VIEW_RULERS_REL,
    MENU_VIEW_RULERS_BOTH,
-   MENU_VIEW_WORKSPACE_OBJECT_AREA,
+/*   MENU_VIEW_WORKSPACE_OBJECT_AREA, */
    MENU_EDITORS_IMAGE,
    MENU_EDITORS_SOUND,
    MENU_EDITORS_COLORCLASS,
@@ -307,9 +307,13 @@ ui_menu_add(void)
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
-   TODO("remove both lines after implementation this features")
+   TODO("remove lines after implementation this features")
    ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
    ui_menu_disable_set(menu, MENU_FILE_EXPORT_EDC_GROUP, true);
+   ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_ZOOM_IN, true);
+   ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_ZOOM_OUT, true);
+   ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_SEPARATE, true);
+   ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_OBJECT_AREA, true);
 
    menu->window_menu = window_menu;
 
