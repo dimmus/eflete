@@ -413,6 +413,9 @@ group { name: "elm/radio/base/"STYLE; \
 }
 
 WORKSPACE_RADIO("radio_normal", "icon_normal.png")
+WORKSPACE_RADIO("radio_separate", "icon_separate.png")
+WORKSPACE_RADIO("radio_animator", "icon_animator.png")
+WORKSPACE_RADIO("radio_code", "icon_code.png")
 WORKSPACE_RADIO("radio_demo", "icon_demo.png")
 
 #define DIRECTION_ADD(DIRECT) \
