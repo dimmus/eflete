@@ -982,6 +982,7 @@ _mode_changed(void *data,
      {
       case MODE_NORMAL:
          container_content_set(sd->container.obj, sd->groupedit);
+         if (sd->highlight.part) evas_object_show(sd->highlight.highlight);
          evas_object_show(sd->group_navigator);
          evas_object_show(sd->groupedit);
          workspace_separate_mode_set(sd->obj, false);
@@ -1008,6 +1009,7 @@ _mode_changed(void *data,
 
             elm_object_part_content_unset(sd->panes, "right");
             evas_object_hide(sd->group_navigator);
+            evas_object_hide(sd->highlight.highlight);
             elm_object_part_content_set(sd->panes, "right", sd->demo_group);
             evas_object_show(sd->demo_group);
 
