@@ -108,7 +108,6 @@ struct _App_Data
       Evas_Object *right_top, *history, *property;
       Evas_Object *canvas;
    } block;
-   Evas_Object *workspace;
    Live_View *live_view;
    Project *project;
    Shortcut_Module *shortcuts; /**< Structure with data from shortcuts module */

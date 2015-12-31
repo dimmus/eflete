@@ -73,8 +73,6 @@ ui_main_window_del(void)
 
    config_save();
    INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
-   /* FIXME: when be implemented multi workspace feature, remove this line */
-   evas_object_del(ap.workspace);
    elm_exit();
 
    return true;
