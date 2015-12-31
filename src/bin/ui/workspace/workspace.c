@@ -1064,6 +1064,7 @@ _mode_part_add(Ws_Smart_Data *sd)
    Evas_Object *radio_mode, *radio_group;
 
    radio_group = radio_mode = elm_radio_add(sd->scroller);
+   elm_object_style_set(radio_mode, "radio_normal");
    elm_radio_state_value_set(radio_mode, MODE_NORMAL);
    elm_radio_value_set(radio_mode, true);
    evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
@@ -1098,6 +1099,7 @@ _mode_part_add(Ws_Smart_Data *sd)
    */
 
    radio_mode = elm_radio_add(sd->scroller);
+   elm_object_style_set(radio_mode, "radio_demo");
    elm_radio_state_value_set(radio_mode, MODE_DEMO);
    evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
    elm_box_pack_end(sd->bottom_box, radio_mode);
