@@ -115,7 +115,7 @@ group { name: "elm/panes/vertical/default";
          description { state: "focused" 0.0;
             min: 4 0;
             max: 4 -1;
-            color_class: "select";
+            color_class: "select_dark";
             rel1 {
                to: "bar";
             }
@@ -126,7 +126,7 @@ group { name: "elm/panes/vertical/default";
          description { state: "clicked" 0.0;
             min: 4 0;
             max: 4 -1;
-            color_class: "select_dark";
+            color_class: "select";
             rel1 {
                to: "bar";
             }
@@ -394,7 +394,7 @@ group { name: "elm/panes/horizontal/default";
          description { state: "focused" 0.0;
             min: 0 4;
             max: -1 4;
-            color_class: "select";
+            color_class: "select_dark";
             rel1 {
                offset: 0 1;
                to: "bar";
@@ -407,7 +407,7 @@ group { name: "elm/panes/horizontal/default";
          description { state: "clicked" 0.0;
             min: 0 4;
             max: -1 4;
-            color_class: "select_dark";
+            color_class: "select";
             rel1 {
                offset: 0 1;
                to: "bar";
