@@ -17,114 +17,24 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "live_view_prop.h"
+#include "live_elementary_widgets.h"
 
 static void
-_on_multibutton_swallow_check(void *data,
-                              Evas_Object *obj,
+_on_multibutton_swallow_check(void *data __UNUSED__,
+                              Evas_Object *obj __UNUSED__,
                               void *ei __UNUSED__)
 {
-   Evas_Object *rect = NULL, *check = NULL, *ch;
-   Eina_List *item_list = NULL, *it;
-   Eina_Bool all_checks = true;
-   Elm_Object_Item *multi_item = NULL;
-
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   Evas_Object *object = pd->live_object;
-   const char *part_name = elm_object_part_text_get(obj, NULL);
-   check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
-
-   if (elm_check_state_get(obj))
-     {
-        multi_item = elm_multibuttonentry_first_item_get(object);
-        while (multi_item)
-          {
-             rect = evas_object_rectangle_add(object);
-             evas_object_color_set(rect, RECT_COLOR);
-             elm_object_part_content_set(multi_item, part_name, rect);
-             multi_item = elm_multibuttonentry_item_next_get(multi_item);
-          }
-        item_list = elm_box_children_get(pd->prop_swallow.swallows);
-
-        EINA_LIST_FOREACH(item_list, it, ch)
-          {
-             if (elm_check_state_get(ch) == false)
-               all_checks = false;
-          }
-        if (all_checks)
-          elm_check_state_set(check, true);
-        eina_list_free(item_list);
-     }
-   else
-     {
-        multi_item = elm_multibuttonentry_first_item_get(object);
-        while (multi_item)
-          {
-             rect = elm_object_part_content_unset(multi_item, part_name);
-             evas_object_del(rect);
-             multi_item = elm_multibuttonentry_item_next_get(multi_item);
-          }
-        if (elm_check_state_get(check)) elm_check_state_set(check, false);
-     }
+   TODO("Remake on_swallow_check, so that would be used everywhere.")
+   ERR(N_("Complex widgets are not implemented yet."))
 }
 
 static void
-_on_multibutton_text_check(void *data,
-                           Evas_Object *obj,
+_on_multibutton_text_check(void *data __UNUSED__,
+                           Evas_Object *obj __UNUSED__,
                            void *ei __UNUSED__)
 {
-   Evas_Object *check = NULL, *ch;
-   Eina_List *item_list = NULL, *it;
-   Eina_Bool all_checks = true;
-   Elm_Object_Item *multi_item = NULL;
-   const char *default_text;
-
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   Evas_Object *object = pd->live_object;
-   const char *part_name = elm_object_part_text_get(obj, NULL);
-   check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
-
-   if (elm_check_state_get(obj))
-     {
-        multi_item = elm_multibuttonentry_first_item_get(object);
-        default_text = elm_object_item_part_text_get(multi_item, part_name);
-        if (default_text)
-          eina_hash_add(pd->prop_text.default_text, part_name, eina_stringshare_add(default_text));
-        while (multi_item)
-          {
-             elm_object_item_part_text_set(multi_item, part_name,
-                                 _("Look at it! This is absolutely and totally text"));
-             multi_item = elm_multibuttonentry_item_next_get(multi_item);
-          }
-        item_list = elm_box_children_get(pd->prop_text.texts);
-
-        EINA_LIST_FOREACH(item_list, it, ch)
-          {
-             if (elm_check_state_get(ch) == false)
-               all_checks = false;
-          }
-        if (all_checks)
-          elm_check_state_set(check, true);
-        eina_list_free(item_list);
-     }
-   else
-     {
-        default_text = eina_hash_find(pd->prop_text.default_text, part_name);
-        eina_hash_del(pd->prop_text.default_text, part_name, NULL);
-        multi_item = elm_multibuttonentry_first_item_get(object);
-        while (multi_item)
-          {
-             elm_object_item_part_text_set(multi_item, part_name, default_text);
-             multi_item = elm_multibuttonentry_item_next_get(multi_item);
-          }
-        if (elm_check_state_get(check)) elm_check_state_set(check, false);
-     }
+   TODO("Remake on_text_check, so that would be used everywhere.")
+   ERR(N_("Complex widgets are not implemented yet."))
 }
 
 static void

@@ -17,24 +17,25 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "new_history.h"
-#include "signals.h"
+#include "history.h"
+#include "change.h"
+#include "project_manager.h"
 
-History_ *
+History *
 history_add(Group *group)
 {
-   History_ *history;
+   History *history;
 
    assert(group != NULL);
 
-   history = mem_calloc(1, sizeof(History_));
+   history = mem_calloc(1, sizeof(History));
    history->group = group;
 
    return history;
 }
 
 void
-history_del(History_ *history)
+history_del(History *history)
 {
    Change *change;
 
@@ -46,7 +47,7 @@ history_del(History_ *history)
 }
 
 void
-history_change_add(History_ *history, Change *change)
+history_change_add(History *history, Change *change)
 {
    Eina_List *undone, *l, *l_n;
    Change *undone_change;
@@ -70,7 +71,7 @@ history_change_add(History_ *history, Change *change)
 }
 
 Eina_Bool
-history_undo_(History_ *history)
+history_undo(History *history)
 {
    assert(history != NULL);
    assert(history->current_change != NULL);
@@ -83,20 +84,20 @@ history_undo_(History_ *history)
 }
 
 Eina_Bool
-history_undo_all(History_ *history)
+history_undo_all(History *history)
 {
    assert(history != NULL);
    assert(history->current_change != NULL);
 
    while (history->current_change != NULL)
-     if (!history_undo_(history))
+     if (!history_undo(history))
        return false;
 
    return true;
 }
 
 Eina_Bool
-history_redo_(History_ *history)
+history_redo(History *history)
 {
    assert(history != NULL);
 

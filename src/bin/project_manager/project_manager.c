@@ -17,12 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 #define _GNU_SOURCE
-#include "enventor_module.h"
 #include "project_manager.h"
-#include "group_manager.h"
-#include "signals.h"
-#include "alloc.h"
-#include "editor.h"
 #ifndef _WIN32
 #include <sys/wait.h>
 #else
@@ -340,8 +335,6 @@ _project_open_internal(Project *project)
 
    project->changed = false;
    project->close_request = false;
-/*   project->widgets = wm_widgets_list_new(project->dev);
-     project->layouts = wm_layouts_list_new(project->dev); */
    project->ecore_evas = ecore_evas_buffer_new(0, 0);
    project->global_object = edje_edit_object_add(ecore_evas_get(project->ecore_evas));
    edje_object_mmap_set(project->global_object, project->mmap_file, EFLETE_INTERNAL_GROUP_NAME);
@@ -1379,7 +1372,7 @@ pm_project_style_source_code_export(Project *pro, Style *style, const char *file
 }
 */
 static void
-_external_resource_export(Eina_List *resources, const char *dst)
+_external_resources_export(Eina_List *resources, const char *dst)
 {
    Eina_Strbuf *buf;
    Eina_List *l;
@@ -1435,21 +1428,21 @@ _source_code_export(void *data __UNUSED__, Eina_Thread *thread __UNUSED__)
      {
         eina_strbuf_append_printf(buf, "%s/%s/images/", worker.path, worker.project->name);
         ecore_file_mkdir(eina_strbuf_string_get(buf));
-        _external_resource_export(worker.project->images, eina_strbuf_string_get(buf));
+        _external_resources_export(worker.project->images, eina_strbuf_string_get(buf));
         eina_strbuf_reset(buf);
      }
    if (worker.project->sounds)
      {
         eina_strbuf_append_printf(buf, "%s/%s/sounds/", worker.path, worker.project->name);
         ecore_file_mkdir(eina_strbuf_string_get(buf));
-        _external_resource_export(worker.project->sounds, eina_strbuf_string_get(buf));
+        _external_resources_export(worker.project->sounds, eina_strbuf_string_get(buf));
         eina_strbuf_reset(buf);
      }
    if (worker.project->fonts)
      {
         eina_strbuf_append_printf(buf, "%s/%s/fonts/", worker.path, worker.project->name);
         ecore_file_mkdir(eina_strbuf_string_get(buf));
-        _external_resource_export(worker.project->fonts, eina_strbuf_string_get(buf));
+        _external_resources_export(worker.project->fonts, eina_strbuf_string_get(buf));
         eina_strbuf_reset(buf);
      }
 

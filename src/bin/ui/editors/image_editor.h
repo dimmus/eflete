@@ -28,8 +28,6 @@
  */
 
 #include "eflete.h"
-#include "modal_window.h"
-#include "widget_macro.h"
 
 #define SIG_IMAGE_SELECTED "image_selected"
 

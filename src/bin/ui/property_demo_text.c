@@ -20,12 +20,8 @@
 #include "property_private.h"
 #include "property_macros.h"
 #include "main_window.h"
-#include "string_common.h"
-#include "common_macro.h"
-#include "new_history.h"
-#include "editor.h"
-
-#include "signals.h"
+#include "history.h"
+#include "project_manager.h"
 
 #define DEMO_TEXT_PROP_DATA "image_prop_data"
 
@@ -36,8 +32,10 @@
 
 struct _Demo_Text_Prop_Data
 {
-   Part_ *part;
+   Demo_Part *part;
 
+   Evas_Object *scroller;
+   Evas_Object *frame;
    Evas_Object *box;
    Evas_Object *name;
    Evas_Object *text;
@@ -71,9 +69,9 @@ _on_part_name_change(void *data,
    text = elm_entry_entry_get(obj);
    value = elm_entry_markup_to_utf8(text);
 
-   if (pd->part->content)
-     eina_stringshare_del(pd->part->content);
-   pd->part->content = eina_stringshare_add(value);
+   if (pd->part->text_content)
+     eina_stringshare_del(pd->part->text_content);
+   pd->part->text_content = eina_stringshare_add(value);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_SET, pd->part);
 
@@ -96,7 +94,7 @@ prop_part_content_add(Evas_Object *parent, Demo_Text_Prop_Data *pd)
 }
 
 void
-ui_property_demo_text_part_set(Evas_Object *property, Part_ *part)
+ui_property_demo_text_part_set(Evas_Object *property, Demo_Part *part)
 {
    DEMO_TEXT_PROP_DATA_GET()
 
@@ -104,7 +102,7 @@ ui_property_demo_text_part_set(Evas_Object *property, Part_ *part)
    if (part)
      {
         elm_object_text_set(pd->name, part->name);
-        elm_entry_entry_set(pd->text, part->content);
+        elm_entry_entry_set(pd->text, part->text_content);
      }
 
    pd->part = part;
@@ -117,17 +115,27 @@ Evas_Object *
 ui_property_demo_text_add(Evas_Object *parent)
 {
    Demo_Text_Prop_Data *pd;
-   Evas_Object *item;
+   Evas_Object *item, *scroller, *box;
 
    assert(parent != NULL);
 
    pd = mem_calloc(1, sizeof(Demo_Text_Prop_Data));
 
+   SCROLLER_ADD(parent, scroller);
+   BOX_ADD(scroller, box, false, false);
+   elm_box_align_set(box, 0.5, 0.0);
+   elm_object_content_set(scroller, box);
+   pd->scroller = scroller;
+   elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+
+   evas_object_data_set(pd->scroller, DEMO_TEXT_PROP_DATA, pd);
+
    /* editors */
-   BOX_ADD(parent, pd->box, false, false);
+   FRAME_ADD(box, pd->frame, true, _("Demo Text Property"))
+   elm_box_pack_end(box, pd->frame);
+   BOX_ADD(pd->frame, pd->box, false, false)
    elm_box_align_set(pd->box, 0.5, 0.0);
    evas_object_hide(pd->box);
-   evas_object_data_set(pd->box, DEMO_TEXT_PROP_DATA, pd);
 
    /* Frame with info */
    elm_box_align_set(pd->box, 0.5, 0.0);
@@ -136,5 +144,7 @@ ui_property_demo_text_add(Evas_Object *parent)
    item = prop_part_content_add(pd->box, pd);
    elm_box_pack_end(pd->box, item);
 
-   return pd->box;
+   elm_object_content_set(pd->frame, pd->box);
+
+   return pd->scroller;
 }

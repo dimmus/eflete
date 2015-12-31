@@ -18,13 +18,13 @@
  */
 
 #include "main_window.h"
+#include "project_manager.h"
 #include "project_common.h"
 
 static Eina_Bool
 _export_teardown(void *data, Splash_Status status __UNUSED__)
 {
    eina_stringshare_del(data);
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
    return true;
 }
 
@@ -72,7 +72,6 @@ _export_dev(void *data __UNUSED__,
 void
 project_export_develop(void)
 {
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
    popup_fileselector_edj_helper("Export to develop edj-file", NULL, NULL, _export_dev, NULL, false, true);
 }
 
@@ -126,6 +125,5 @@ _export_source_code(void *data __UNUSED__,
 void
 project_export_edc_project(void)
 {
-   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
    popup_fileselector_folder_helper("Export source code", NULL, NULL, _export_source_code, NULL, false, false);
 }

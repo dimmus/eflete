@@ -24,6 +24,7 @@
 #include "tabs.h"
 #include "main_window.h"
 #include "project_common.h"
+#include "config.h"
 
 struct _Tab_Home_Edj
 {

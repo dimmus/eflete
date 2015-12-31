@@ -17,9 +17,11 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#define ALLOW_DIRECT_EDJE_EDIT_CALLS
 #include "editor.h"
 #include "editor_macro.h"
-#include "string_common.h"
+#include "change.h"
+#include "diff.h"
 
 extern int _editor_signals_blocked;
 Eina_Bool
@@ -594,6 +596,7 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UN
    assert(states != NULL);
 
    /* Removing states. Default state can only be reseted */
+   res = res && editor_part_selected_state_set(edit_object, change, false, part_name, "default", 0.0);
    res = res && editor_state_reset(edit_object, change, false, part_name, "default", 0.0);
    EINA_LIST_FOREACH(eina_list_next(states), l, state)
      {
@@ -892,6 +895,48 @@ editor_part_item_restack(Evas_Object *edit_object, Change *change, Eina_Bool mer
         eina_stringshare_del(event_info.part_name);
         eina_stringshare_del(event_info.part_item);
         eina_stringshare_del(event_info.relative_part_item);
+     }
+   return true;
+}
+
+Eina_Bool
+editor_part_selected_state_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                               const char *part_name, const char *state_name, double state_val)
+{
+   Diff *diff;
+   Editor_State event_info;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+   if (change)
+     {
+        double old_val = 0.0;
+        Eina_Stringshare *old_state = edje_edit_part_selected_state_get(edit_object, part_name, &old_val);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE;
+        diff->redo.function = editor_part_selected_state_set;
+        diff->redo.args.type_ssd.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssd.s2 = eina_stringshare_add(state_name);
+        diff->redo.args.type_ssd.d3 = state_val;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE;
+        diff->undo.function = editor_part_selected_state_set;
+        diff->undo.args.type_ssd.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssd.s2 = old_state;
+        diff->undo.args.type_ssd.d3 = old_val;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_selected_state_set(edit_object, part_name, state_name, state_val))
+     return false;
+   if (!_editor_signals_blocked)
+     {
+        event_info.part_name = eina_stringshare_add(part_name);
+        event_info.state_name = eina_stringshare_printf("%s %.2f", state_name, state_val);
+        evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_STATE_SELECTED, &event_info);
+        eina_stringshare_del(event_info.part_name);
+        eina_stringshare_del(event_info.state_name);
      }
    return true;
 }

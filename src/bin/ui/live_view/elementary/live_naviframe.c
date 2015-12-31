@@ -17,189 +17,26 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "live_view_prop.h"
+#include "live_elementary_widgets.h"
 
 static const char *item_style_name = NULL;
 
 static void
-_pop_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
-{
-   Evas_Object *nf = data;
-
-   assert(nf != NULL);
-
-   elm_naviframe_item_pop(nf);
-}
-
-static void
-_next_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
-{
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   Evas_Object *nf = pd->live_object, *bt = NULL;
-   Eina_Stringshare *find_part = eina_stringshare_add("elm.swallow.prev_btn");
-
-//   if (wm_part_by_name_find(pd->style, find_part))
-     {
-        bt = elm_button_add(nf);
-        elm_object_text_set(bt, _("Back"));
-        evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-        evas_object_smart_callback_add(bt, "clicked", _pop_page_cb, nf);
-        evas_object_show(bt);
-     }
-
-   elm_naviframe_item_push(nf, _("Page Next"), bt, NULL, NULL, item_style_name);
-   eina_stringshare_del(find_part);
-}
-
-static void
-_prev_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
-{
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   Evas_Object *nf = pd->live_object, *bt = NULL;
-   Eina_Stringshare *find_part = eina_stringshare_add("elm.swallow.next_btn");
-
-//   if (wm_part_by_name_find(pd->style, find_part))
-     {
-        bt = elm_button_add(nf);
-        elm_object_text_set(bt, _("Back"));
-        evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-        evas_object_smart_callback_add(bt, "clicked", _pop_page_cb, nf);
-        evas_object_show(bt);
-     }
-
-   elm_naviframe_item_push(nf, _("Page Prev"), NULL, bt, NULL, item_style_name);
-   eina_stringshare_del(find_part);
-}
-
-static void
-_on_naviframe_swallow_check(void *data,
-                            Evas_Object *obj,
+_on_naviframe_swallow_check(void *data __UNUSED__,
+                            Evas_Object *obj __UNUSED__,
                             void *ei __UNUSED__)
 {
-   Evas_Object *content = NULL, *check = NULL, *ch;
-   Eina_List *item_list = NULL, *it;
-   Eina_Bool all_checks = true;
-
-   Evas_Object *bt;
-   Elm_Object_Item *item_main, *item_current;
-
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   Evas_Object *object = pd->live_object;
-   const char *part_name = elm_object_part_text_get(obj, NULL);
-   check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
-
-   item_current = evas_object_data_get(object, "main_page");
-   item_main = elm_naviframe_top_item_get(object);
-   if (item_current != item_main)
-     elm_naviframe_item_pop(object);
-
-   if (elm_check_state_get(obj))
-     {
-        if (!strcmp(part_name, "elm.swallow.prev_btn"))
-          {
-             bt = elm_button_add(object);
-             elm_object_text_set(bt, _("Prev page"));
-             evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-             evas_object_smart_callback_add(bt, "clicked", _prev_page_cb, pd);
-             evas_object_show(bt);
-
-             elm_object_part_content_set(object, part_name, bt);
-          }
-        else if (!strcmp(part_name, "elm.swallow.next_btn"))
-          {
-             bt = elm_button_add(object);
-             elm_object_text_set(bt, _("Next page"));
-             evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-             evas_object_smart_callback_add(bt, "clicked", _next_page_cb, pd);
-             evas_object_show(bt);
-
-             elm_object_part_content_set(object, part_name, bt);
-          }
-        else
-          {
-             content = evas_object_rectangle_add(object);
-             evas_object_color_set(content, HIGHLIGHT_COLOR);
-             elm_object_part_content_set(object, part_name, content);
-          }
-        item_list = elm_box_children_get(pd->prop_swallow.swallows);
-
-        EINA_LIST_FOREACH(item_list, it, ch)
-          {
-             if (elm_check_state_get(ch) == false)
-               all_checks = false;
-          }
-        if (all_checks)
-          elm_check_state_set(check, true);
-        eina_list_free(item_list);
-     }
-   else
-     {
-        content = elm_object_part_content_unset(object, part_name);
-        evas_object_del(content);
-        if (elm_check_state_get(check)) elm_check_state_set(check, false);
-     }
+   TODO("Remake on_swallow_check, so that would be used everywhere.")
+   ERR(N_("Complex widgets are not implemented yet."))
 }
 
 static void
-_on_naviframe_text_check(void *data,
-                         Evas_Object *obj,
+_on_naviframe_text_check(void *data __UNUSED__,
+                         Evas_Object *obj __UNUSED__,
                          void *ei __UNUSED__)
 {
-   Evas_Object *check = NULL, *ch;
-   Eina_List *item_list = NULL, *it;
-   Eina_Bool all_checks = true;
-   const char *default_text;
-
-   Elm_Object_Item *item_main, *item_current;
-
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   Evas_Object *object = pd->live_object;
-   const char *part_name = elm_object_part_text_get(obj, NULL);
-   check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
-
-   item_current = evas_object_data_get(object, "main_page");
-   item_main = elm_naviframe_top_item_get(object);
-   if (item_current != item_main)
-     elm_naviframe_item_pop(object);
-
-   if (elm_check_state_get(obj))
-     {
-        default_text = elm_object_part_text_get(object, part_name);
-        if (default_text)
-          eina_hash_add(pd->prop_text.default_text, part_name,
-                        eina_stringshare_add(default_text));
-        elm_object_part_text_set(object, part_name,
-                                 _("Look at it! This is absolutely and totally text"));
-        item_list = elm_box_children_get(pd->prop_text.texts);
-
-        EINA_LIST_FOREACH(item_list, it, ch)
-          {
-             if (elm_check_state_get(ch) == false)
-               all_checks = false;
-          }
-        if (all_checks)
-          elm_check_state_set(check, true);
-        eina_list_free(item_list);
-     }
-   else
-     {
-        default_text = eina_hash_find(pd->prop_text.default_text, part_name);
-        eina_hash_del(pd->prop_text.default_text, part_name, NULL);
-        elm_object_part_text_set(object, part_name, default_text);
-        if (elm_check_state_get(check)) elm_check_state_set(check, false);
-     }
+   TODO("Remake on_text_check, so that would be used everywhere.")
+   ERR(N_("Complex widgets are not implemented yet."))
 }
 
 static void

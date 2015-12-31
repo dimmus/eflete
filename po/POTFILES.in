@@ -52,9 +52,6 @@ src/bin/ui/live_view/elementary/live_slider.c
 src/bin/ui/live_view/elementary/live_spinner.c
 src/bin/ui/live_view/elementary/live_toolbar.c
 src/bin/ui/live_view/elementary/live_widget_common.c
-src/bin/ui/live_view/live_prog_edit.c
-src/bin/ui/live_view/live_view.c
-src/bin/ui/live_view/live_view_prop.c
 src/bin/ui/live_view/live_widget.c
 src/bin/ui/main_window.c
 src/bin/ui/menu.c

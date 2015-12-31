@@ -30,15 +30,7 @@
  */
 
 #include "eflete.h"
-#include "enventor_module.h"
-#include "config.h"
-#include "common_macro.h"
-#include "notify.h"
-#include "property.h"
-#include "string_common.h"
-
-#include "colorsel.h"
-#include "colorclass_manager.h"
+#include "widget_macro.h"
 
 enum Menu_Item
 {
@@ -65,15 +57,13 @@ enum Menu_Item
       MENU_VIEW_WORKSPACE,
          MENU_VIEW_WORKSPACE_ZOOM_IN,
          MENU_VIEW_WORKSPACE_ZOOM_OUT,
-         MENU_VIEW_WORKSPACE_SEPARATE,
          MENU_VIEW_WORKSPACE_OBJECT_AREA,
-      MENU_VIEW_RULERS,
-         MENU_VIEW_RULERS_SHOW,
-         MENU_VIEW_RULERS_ABS,
-         MENU_VIEW_RULERS_REL,
-         MENU_VIEW_RULERS_BOTH,
+         MENU_VIEW_RULERS,
+            MENU_VIEW_RULERS_SHOW,
+            MENU_VIEW_RULERS_ABS,
+            MENU_VIEW_RULERS_REL,
+            MENU_VIEW_RULERS_BOTH,
    MENU_EDITORS,
-      MENU_EDITORS_ANIMATOR,
       MENU_EDITORS_IMAGE,
       MENU_EDITORS_SOUND,
       MENU_EDITORS_COLORCLASS,

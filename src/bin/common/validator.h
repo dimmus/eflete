@@ -20,8 +20,7 @@
 #ifndef VALIDATOR_H
 #define VALIDATOR_H
 
-#include <Elementary.h>
-#include "project_manager.h"
+#include "eflete.h"
 
 typedef struct _Resource_Name_Validator Resource_Name_Validator;
 

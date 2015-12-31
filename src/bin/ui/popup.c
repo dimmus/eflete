@@ -18,6 +18,9 @@
  */
 
 #include "main_window.h"
+#include "widget_macro.h"
+#include "project_manager.h"
+#include "config.h"
 
 static Popup_Button btn_pressed;
 static Evas_Object *popup;

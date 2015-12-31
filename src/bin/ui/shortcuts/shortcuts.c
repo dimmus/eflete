@@ -24,7 +24,8 @@
 #include "sound_editor.h"
 #include "animator.h"
 #include "tabs.h"
-#include "signals.h"
+#include "workspace.h"
+#include "config.h"
 
 #ifdef HAVE_ENVENTOR
    #define SKIP_IN_ENVENTOR_MODE \

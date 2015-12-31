@@ -28,14 +28,11 @@
 #include "property_private.h"
 #include "property_macros.h"
 #include "main_window.h"
-#include "string_common.h"
-#include "new_history.h"
-#include "editor.h"
+#include "history.h"
 #include "validator.h"
+#include "project_manager.h"
 
 #include "syntax_color.h"
-
-#include "signals.h"
 
 #define PROP_DATA "prop_data"
 
@@ -227,7 +224,7 @@ _on_text_part_clicked(void *data,
 {
    Evas_Object *property = data;
    PROP_DATA_GET()
-   Part_ *part = (Part_ *) event_info;
+   Demo_Part *part = (Demo_Part *) event_info;
 
    assert(pd != NULL);
 
@@ -253,7 +250,7 @@ _on_swallow_part_clicked(void *data,
 {
    Evas_Object *property = data;
    PROP_DATA_GET()
-   Part_ *part = (Part_ *) event_info;
+   Demo_Part *part = (Demo_Part *) event_info;
 
    assert(pd != NULL);
 

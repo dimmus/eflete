@@ -17,14 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT
 #include "eflete.h"
-#include "Edje_Edit.h"
-#include "Elementary.h"
-#include "groupedit.h"
-#include "common_macro.h"
-#include "logger.h"
-#include "group_manager.h"
 
 typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;
 typedef struct _Groupedit_Part Groupedit_Part;
@@ -87,7 +80,7 @@ struct _Ws_Groupedit_Smart_Data
  */
 struct _Groupedit_Part
 {
-   Part_ *part;               /**< Pointer to part */
+   Part *part;               /**< Pointer to part */
    Groupedit_Geom geom;
    Groupedit_Geom object_area_geom;
    Evas_Object *draw;         /**< The evas primitive to be draw in groupedit.
@@ -119,10 +112,10 @@ Groupedit_Item *
 _part_item_search(Eina_List *items, const char *item_name);
 
 Eina_Bool
-_edit_object_part_add(Ws_Groupedit_Smart_Data *sd, Part_ *part);
+_edit_object_part_add(Ws_Groupedit_Smart_Data *sd, Part *part);
 
 Eina_Bool
-_edit_object_part_del(Ws_Groupedit_Smart_Data *sd, Part_ *part);
+_edit_object_part_del(Ws_Groupedit_Smart_Data *sd, Part *part);
 
 void
 _select_item_move_to_top(Ws_Groupedit_Smart_Data *sd);

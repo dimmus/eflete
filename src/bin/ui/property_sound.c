@@ -23,13 +23,9 @@
 #include "property_private.h"
 #include "property_macros.h"
 #include "main_window.h"
-#include "string_common.h"
-#include "new_history.h"
-#include "editor.h"
+#include "history.h"
 #include "sound_editor.h"
 #include "validator.h"
-
-#include "signals.h"
 
 #define UPDATE_FREQUENCY 1.0 / 30.0
 #define TONE_PLAYING_DURATION 2.0

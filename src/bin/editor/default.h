@@ -21,7 +21,6 @@
 #define DEFAULT_H
 
 #include "eflete.h"
-#include "editor.h"
 
 Eina_Bool
 editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val);

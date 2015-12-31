@@ -27,7 +27,7 @@
  * Show sounds and tones, which are used in project.
  */
 
-#include "modal_window.h"
+#include "eflete.h"
 
 #ifdef HAVE_AUDIO
 TODO("Check pulse_audio on configure and add COREAUDIO support")

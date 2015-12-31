@@ -18,6 +18,7 @@
  */
 
 #include "live_widget.h"
+#include "live_widgets.h"
 #include "live_elementary_widgets.h"
 
 struct _live_widget_item {

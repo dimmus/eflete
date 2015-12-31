@@ -32,10 +32,7 @@
  * button on workspace object.
  */
 
-#include <Evas.h>
-#include <Elementary.h>
-#include <Ewe.h>
-#include "group_manager.h"
+#include "eflete.h"
 
 /**
  * Create a new Workspace object to the parent.
@@ -59,7 +56,7 @@ workspace_add(Evas_Object *parent, Group *group);
  * @ingroup Workspace
  */
 void
-workspace_group_navigator_update_part(Evas_Object *obj, Part_ *part);
+workspace_group_navigator_update_part(Evas_Object *obj, Part *part);
 
 /**
  * Update the parts attributes, with recalculation.
@@ -108,6 +105,20 @@ workspace_part_item_add(Evas_Object *obj,
                         Eina_Stringshare *part_name,
                         Eina_Stringshare *item_name);
 
+/**
+ * Select state in group_navigator.
+ * Part should be already selected.
+ *
+ * @param obj The workspace object.
+ * @param part_name name of part
+ * @param state_name name of selected part_state
+ *
+ * @ingroup Workspace
+ */
+void
+workspace_part_state_select(Evas_Object *obj,
+                            Eina_Stringshare *part_name,
+                            Eina_Stringshare *state_name);
 /**
  * Add new part state to group_edit and group_navigator.
  * Part should be already added to edit_object.

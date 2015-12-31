@@ -19,6 +19,7 @@
 
 #include "tabs_private.h"
 #include "tabs.h"
+#include "main_window.h"
 
 struct _Tab_Home_Info
 {

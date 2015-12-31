@@ -20,13 +20,15 @@
 #include "tabs_private.h"
 #include "workspace.h"
 #include "tabs.h"
-#include "new_history.h"
-#include "signals.h"
-#include "editor.h"
+#include "history.h"
+#include "project_manager.h"
+#include "main_window.h"
+#include "change.h"
 
 #include "style_editor.h"
 #include "image_editor.h"
 #include "sound_editor.h"
+#include "colorclass_manager.h"
 #include "animator.h"
 
 struct _Tabs_Item {
@@ -338,7 +340,7 @@ _part_renamed(void *data __UNUSED__,
               void *ei)
 {
    Rename *ren = ei;
-   Part_ *part;
+   Part *part;
 
    assert(tabs.current_group != NULL);
    assert(tabs.current_workspace != NULL);
@@ -425,6 +427,20 @@ _project_closed(void *data __UNUSED__,
    elm_object_item_disabled_set(tabs.menu.item_colorclass, true);
 
    tabs_menu_tab_open(TAB_LAST);
+}
+
+static void
+_editor_part_state_selected_cb(void *data __UNUSED__,
+                               Evas_Object *obj __UNUSED__,
+                               void *event_info)
+{
+   const Editor_State *editor_state = event_info;
+
+   assert(editor_state != NULL);
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+
+   workspace_part_state_select(tabs.current_workspace, editor_state->part_name, editor_state->state_name);
 }
 
 static void
@@ -633,6 +649,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CLOSED, _project_closed, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_STATE_SELECTED, _editor_part_state_selected_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ADDED, _editor_part_added_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_DELETED, _editor_part_deleted_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PART_ITEM_ADDED, _editor_part_item_added_cb, NULL);

@@ -36,9 +36,6 @@
  */
 
 #include "eflete.h"
-#include "modal_window.h"
-#include "widget_macro.h"
-#include "string_common.h"
 
 /**
  * Add new program editor inwin object.

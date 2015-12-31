@@ -19,6 +19,9 @@
 
 #include "tabs_private.h"
 #include "tabs.h"
+#include "main_window.h"
+#include "project_common.h"
+#include "config.h"
 
 struct _Tab_Home_Open {
    Evas_Object *layout;

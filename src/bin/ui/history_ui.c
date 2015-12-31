@@ -18,14 +18,17 @@
  */
 
 #include "history_ui.h"
-#include "signals.h"
+#include "change.h"
+#include "project_manager.h"
+#include "history.h"
+#include "widget_macro.h"
 
 typedef struct {
    Evas_Object *layout;
    Evas_Object *genlist;
    Evas_Object *btn_undo_all;
    Evas_Object *btn_clean;
-   History_ *history;
+   History *history;
    Elm_Genlist_Item_Class *itc_change;
    Elm_Genlist_Item *active_item;
 } History_UI_data;
@@ -82,7 +85,7 @@ _item_selected(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *ei)
         /* undo */
         while (eina_list_data_get(hd.history->current_change) != change)
           {
-             if (!history_undo_(hd.history))
+             if (!history_undo(hd.history))
                {
                   ERR("Can't undo change. Something is wrong with object");
                   TODO("Add error handling here");
@@ -96,7 +99,7 @@ _item_selected(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *ei)
         /* redo */
         while (eina_list_data_get(hd.history->current_change) != change)
           {
-             if (!history_redo_(hd.history))
+             if (!history_redo(hd.history))
                {
                   ERR("Can't redo change. Something is wrong with object");
                   TODO("Add error handling here");

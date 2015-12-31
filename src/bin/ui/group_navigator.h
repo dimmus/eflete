@@ -21,7 +21,6 @@
 #define GROUP_NAVIGATOR_H
 
 #include "eflete.h"
-#include "group_manager.h"
 
 /**
  * @defgroup Partlist Partlist
@@ -31,23 +30,15 @@
 
 /**
  * emited when part is selected in part list.
- * eventinfo - pointer to Part_ structure
+ * eventinfo - pointer to Part structure
  *
  * @ingroup Partlist
  */
 #define SIGNAL_GROUP_NAVIGATOR_PART_SELECTED "SIGNAL_GROUP_NAVIGATOR_PART_SELECTED"
 
 /**
- * emited when part state is activated in part list.
- * eventinfo - pointer to Part_ structure
- *
- * @ingroup Partlist
- */
-#define SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED "SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED"
-
-/**
  * emited when part visibility is changed.
- * eventinfo - pointer to Part_ structure
+ * eventinfo - pointer to Part structure
  *
  * @ingroup Partlist
  */
@@ -63,39 +54,42 @@ group_navigator_add(Group *group);
  * @ingroup Partlist
  */
 void
-group_navigator_part_select(Evas_Object *obj, Part_ *part);
+group_navigator_part_select(Evas_Object *obj, Part *part);
 
 /**
  * @ingroup Partlist
  */
 void
-group_navigator_part_update(Evas_Object *obj, Part_ *part);
+group_navigator_part_update(Evas_Object *obj, Part *part);
 
 
 void
-group_navigator_part_add(Evas_Object *obj, Part_ *part);
+group_navigator_part_state_select(Evas_Object *obj, State *state);
 
 void
-group_navigator_part_del(Evas_Object *obj, Part_ *part);
+group_navigator_part_add(Evas_Object *obj, Part *part);
 
 void
-group_navigator_part_item_add(Evas_Object *obj, Part_ *part, Eina_Stringshare * item_name);
+group_navigator_part_del(Evas_Object *obj, Part *part);
 
 void
-group_navigator_part_item_del(Evas_Object *obj, Part_ *part, Eina_Stringshare * item_name);
+group_navigator_part_item_add(Evas_Object *obj, Part *part, Eina_Stringshare * item_name);
 
 void
-group_navigator_part_state_add(Evas_Object *obj, Part_ *part, State *state);
+group_navigator_part_item_del(Evas_Object *obj, Part *part, Eina_Stringshare * item_name);
 
 void
-group_navigator_part_state_del(Evas_Object *obj, Part_ *part, State *state);
+group_navigator_part_state_add(Evas_Object *obj, Part *part, State *state);
 
 void
-group_navigator_part_restack(Evas_Object *obj, Part_ *part, Part_ *rel_part);
+group_navigator_part_state_del(Evas_Object *obj, Part *part, State *state);
+
+void
+group_navigator_part_restack(Evas_Object *obj, Part *part, Part *rel_part);
 
 void
 group_navigator_part_item_restack(Evas_Object *obj,
-                                  Part_ *part,
+                                  Part *part,
                                   Eina_Stringshare *part_item,
                                   Eina_Stringshare *relative_part_item);
 #endif /* GROUP_NAVIGATOR_H */

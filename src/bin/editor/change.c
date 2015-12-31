@@ -18,6 +18,7 @@
  */
 
 #include "change.h"
+#include "diff.h"
 
 Change *
 change_add(const char *description)

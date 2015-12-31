@@ -34,6 +34,7 @@ group { name: "elm/layout/property/1swallow";
       part { name: "elm.swallow.content";
          type: SWALLOW;
          description { state: "default" 0.0;
+            fixed: 0 1;
             rel1 {
                relative: 0.4 0.0;
                offset: 3 0;
@@ -102,6 +103,7 @@ group { name: "elm/layout/property/1swallow_subtext";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.5;
+            fixed: 1 1;
             rel1 {
                relative: 0.4 0.0;
                offset: 3 0;

@@ -25,7 +25,7 @@
 #include "animator.h"
 #include "about_window.h"
 #include "tabs.h"
-#include "signals.h"
+#include "workspace.h"
 
 static int _menu_delayed_event = 0;
 
@@ -42,7 +42,7 @@ int MENU_ITEMS_LIST_BASE[] = {
    MENU_VIEW_RULERS_ABS,
    MENU_VIEW_RULERS_REL,
    MENU_VIEW_RULERS_BOTH,
-   MENU_VIEW_WORKSPACE_OBJECT_AREA,
+/*   MENU_VIEW_WORKSPACE_OBJECT_AREA, */
    MENU_EDITORS_IMAGE,
    MENU_EDITORS_SOUND,
    MENU_EDITORS_COLORCLASS,
@@ -52,9 +52,8 @@ int MENU_ITEMS_LIST_BASE[] = {
 };
 
 int MENU_ITEMS_LIST_STYLE_ONLY[] = {
-   MENU_EDITORS_ANIMATOR,
    MENU_VIEW_WORKSPACE,
-   MENU_FILE_EXPORT_EDC_GROUP,
+   /* MENU_FILE_EXPORT_EDC_GROUP, */
 
    MENU_NULL
 };
@@ -134,44 +133,30 @@ _menu_cb(void *data __UNUSED__,
          break;
       case MENU_VIEW_WORKSPACE_ZOOM_IN:
            {
-              double current_factor = workspace_zoom_factor_get(ap.workspace);
-              workspace_zoom_factor_set(ap.workspace, current_factor + 0.1);
+              double current_factor = workspace_zoom_factor_get(tabs_current_workspace_get());
+              workspace_zoom_factor_set(tabs_current_workspace_get(), current_factor + 0.1);
            }
          break;
       case MENU_VIEW_WORKSPACE_ZOOM_OUT:
            {
-              double current_factor = workspace_zoom_factor_get(ap.workspace);
-              workspace_zoom_factor_set(ap.workspace, current_factor - 0.1);
-           }
-         break;
-      case MENU_VIEW_WORKSPACE_SEPARATE:
-           {
-              Eina_Bool sep = workspace_separate_mode_get(ap.workspace);
-              workspace_separate_mode_set(ap.workspace, !sep);
+              double current_factor = workspace_zoom_factor_get(tabs_current_workspace_get());
+              workspace_zoom_factor_set(tabs_current_workspace_get(), current_factor - 0.1);
            }
          break;
       case MENU_VIEW_RULERS_SHOW:
-         evas_object_smart_callback_call(ap.workspace, "ruler,toggle", strdup("rulers"));
+         evas_object_smart_callback_call(tabs_current_workspace_get(), "ruler,toggle", strdup("rulers"));
          break;
       case MENU_VIEW_RULERS_ABS:
-         evas_object_smart_callback_call(ap.workspace, "ruler,toggle", strdup("abs"));
+         evas_object_smart_callback_call(tabs_current_workspace_get(), "ruler,toggle", strdup("abs"));
          break;
       case MENU_VIEW_RULERS_REL:
-         evas_object_smart_callback_call(ap.workspace, "ruler,toggle", strdup("rel"));
+         evas_object_smart_callback_call(tabs_current_workspace_get(), "ruler,toggle", strdup("rel"));
          break;
       case MENU_VIEW_RULERS_BOTH:
-         evas_object_smart_callback_call(ap.workspace, "ruler,toggle", strdup("abs&rel"));
+         evas_object_smart_callback_call(tabs_current_workspace_get(), "ruler,toggle", strdup("abs&rel"));
          break;
       case MENU_VIEW_WORKSPACE_OBJECT_AREA:
-         evas_object_smart_callback_call(ap.workspace, "highlight,visible", NULL);
-         break;
-      case MENU_EDITORS_ANIMATOR:
-           {
-              if (!ap.project)
-                NOTIFY_WARNING(_("Please open the widget style for editing style programs!"))
- /*             else
-                animator_window_add(ap.project);*/
-           }
+         evas_object_smart_callback_call(tabs_current_workspace_get(), "highlight,visible", NULL);
          break;
       case MENU_EDITORS_IMAGE:
          tabs_menu_tab_open(TAB_IMAGE_EDITOR);
@@ -274,18 +259,14 @@ ui_menu_add(void)
          ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_ZOOM_IN, NULL, _("Zoom in"))
          ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_ZOOM_OUT, NULL, _("Zoom out"))
          elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_VIEW_WORKSPACE]);
-         ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_SEPARATE, NULL, _("Separate"))
          ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_OBJECT_AREA, NULL, _("Show/Hide object area"))
-      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS, NULL, _("Rulers"))
-         ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_SHOW, NULL, _("Show/Hide rulers"))
-         elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_VIEW_RULERS]);
-         ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_ABS, NULL, _("Absolute scale"))
-         ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_REL, NULL, _("Relative scale"))
-         ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_BOTH, NULL, _("Both"))
+         ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_RULERS, NULL, _("Rulers"))
+            ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_SHOW, NULL, _("Show/Hide rulers"))
+            elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_VIEW_RULERS]);
+            ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_ABS, NULL, _("Absolute scale"))
+            ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_REL, NULL, _("Relative scale"))
+            ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_BOTH, NULL, _("Both"))
    ITEM_MENU_ADD(MENU_NULL, MENU_EDITORS, NULL, _("Edit"))
-      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_ANIMATOR, "animator", _("Animator"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_ANIMATOR]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-1");
       ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_IMAGE, "image", _("Image manager"))
       items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_IMAGE]);
       elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-2");
@@ -307,8 +288,12 @@ ui_menu_add(void)
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
-   TODO("remove both lines after implementation this features")
+   TODO("remove lines after implementation this features")
    ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
+   ui_menu_disable_set(menu, MENU_FILE_EXPORT_EDC_GROUP, true);
+   ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_ZOOM_IN, true);
+   ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_ZOOM_OUT, true);
+   ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_OBJECT_AREA, true);
 
    menu->window_menu = window_menu;
 

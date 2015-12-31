@@ -31,8 +31,6 @@
  * application.
  */
 
-#include "eflete.h"
-
 #define TERM_MESSAGE "Could not allocate memory! Maybe not enough a memory. Application will be terminated!"
 /**
  * Allocates a block of size bytes of memory, returning a pointer to the

@@ -20,11 +20,6 @@
 #ifndef PROJECT_MANAGER_H
 #define PROJECT_MANAGER_H
 
-#ifdef HAVE_CONFIG_H
-   #include "eflete_config.h"
-#endif /* include eflete_config.h */
-
-
 /**
  * @defgroup ProjectManager Project Manager
  * @ingroup Eflete
@@ -38,13 +33,8 @@
  * information about project in the current folder.
  */
 
-#define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT
-#include <Eina.h>
-#include <Ecore_Evas.h>
-#include <Edje_Edit.h>
-#include <Eet.h>
-#include <assert.h>
-#include "logger.h"
+#include <eflete.h>
+#include "group_manager.h"
 
 /* don't forget to update on major changes */
 #define PROJECT_FILE_VERSION 3
@@ -143,12 +133,6 @@ enum _PM_Project_Result
    PM_PROJECT_ERROR,
    PM_PROJECT_LAST
 };
-
-/**
- * @typedef Project
- * @ingroup ProjectManager
- */
-typedef struct _Project Project;
 
 /**
  * @typedef Build
@@ -542,12 +526,6 @@ struct _Resource
    Eina_Stringshare *name;
    Eina_List *used_in;
 };
-
-/**
- * @typedef Resource
- * @ingroup ProjectManager
- */
-typedef struct _Resource Resource;
 
 /**
  * @struct _External_Resource

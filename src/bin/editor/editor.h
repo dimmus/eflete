@@ -20,10 +20,8 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
-#define ALLOW_DIRECT_EDJE_EDIT_CALLS
 #include "eflete.h"
-#include "change.h"
-#include "signals.h"
+#include "banned_edje_edit_api.h"
 #include "default.h"
 
 typedef enum {
@@ -149,12 +147,8 @@ typedef enum {
    ATTRIBUTE_STATE_FILL_TYPE,
 } Attribute;
 
-static inline void
-_editor_project_changed()
-{
-   ap.project->changed = true;
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_CHANGED, NULL);
-}
+void
+_editor_project_changed();
 
 /* General */
 Eina_Bool
@@ -421,6 +415,9 @@ editor_state_image_set(Evas_Object *obj, Change *change, Eina_Bool merge, const 
 
 /* Part */
 
+Eina_Bool
+editor_part_selected_state_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                               const char *part_name, const char *state_name, double state_val);
 Eina_Bool
 editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                 const char *part_name, Edje_Part_Type type);

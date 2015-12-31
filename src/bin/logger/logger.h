@@ -20,9 +20,6 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <Eina.h>
-#include "common_macro.h"
-
 /**
  * @defgroup Logger Logger
  * @ingroup Eflete

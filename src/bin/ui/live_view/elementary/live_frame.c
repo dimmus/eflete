@@ -17,109 +17,25 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "live_view_prop.h"
+#include "live_elementary_widgets.h"
+#include "widget_macro.h"
 
 static void
-_on_frame_swallow_check(void *data,
-                        Evas_Object *obj,
+_on_frame_swallow_check(void *data __UNUSED__,
+                        Evas_Object *obj __UNUSED__,
                         void *ei __UNUSED__)
 {
-   Evas_Object *rect = NULL, *frame_obj = NULL, *check = NULL, *ch, *box __UNUSED__;
-   Eina_List* frame_list = NULL, *item_list = NULL, *it;
-   Eina_List *l = NULL;
-   Eina_Bool all_checks = true;
-
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   Evas_Object *object = pd->live_object;
-   frame_list = elm_box_children_get(object);
-   const char *part_name = elm_object_part_text_get(obj, NULL);
-   check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
-
-   if (elm_check_state_get(obj))
-     {
-        EINA_LIST_FOREACH(frame_list, l, frame_obj)
-          {
-             rect = evas_object_rectangle_add(frame_obj);
-             if (!strcmp(part_name, "elm.swallow.content"))
-               evas_object_size_hint_min_set(rect, 120, 70);
-             evas_object_color_set(rect, HIGHLIGHT_COLOR);
-             elm_object_part_content_set(frame_obj, part_name, rect);
-          }
-        item_list = elm_box_children_get(pd->prop_swallow.swallows);
-
-        EINA_LIST_FOREACH(item_list, it, ch)
-          {
-             if (elm_check_state_get(ch) == false)
-               all_checks = false;
-          }
-        if (all_checks)
-          elm_check_state_set(check, true);
-        eina_list_free(item_list);
-     }
-   else
-     {
-        EINA_LIST_FOREACH(frame_list, l, frame_obj)
-          {
-             rect = elm_object_part_content_unset(frame_obj, part_name);
-             evas_object_del(rect);
-          }
-        if (elm_check_state_get(check)) elm_check_state_set(check, false);
-     }
-   eina_list_free(frame_list);
+   TODO("Remake on_swallow_check, so that would be used everywhere.")
+   ERR(N_("Complex widgets are not implemented yet."))
 }
 
 static void
-_on_frame_text_check(void *data,
-                     Evas_Object *obj,
+_on_frame_text_check(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
                      void *ei __UNUSED__)
 {
-   Evas_Object *frame_obj = NULL, *check = NULL, *ch;
-   Eina_List* frame_list = NULL, *item_list = NULL, *it;
-   Eina_List *l = NULL;
-   Eina_Bool all_checks = true;
-   const char *default_text;
-
-   Prop_Data *pd = (Prop_Data *)data;
-
-   assert(pd != NULL);
-
-   Evas_Object *object = pd->live_object;
-   frame_list = elm_box_children_get(object);
-   const char *part_name = elm_object_part_text_get(obj, NULL);
-   check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
-
-   if (elm_check_state_get(obj))
-     {
-        frame_obj = eina_list_data_get(frame_list);
-        default_text = elm_object_part_text_get(frame_obj, part_name);
-        if (default_text)
-          eina_hash_add(pd->prop_text.default_text, part_name, eina_stringshare_add(default_text));
-
-        EINA_LIST_FOREACH(frame_list, l, frame_obj)
-          elm_object_part_text_set(frame_obj, part_name, _("Text Example"));
-
-        item_list = elm_box_children_get(pd->prop_text.texts);
-        EINA_LIST_FOREACH(item_list, it, ch)
-          {
-             if (elm_check_state_get(ch) == false)
-               all_checks = false;
-          }
-        if (all_checks)
-          elm_check_state_set(check, true);
-        eina_list_free(item_list);
-     }
-   else
-     {
-        default_text = eina_hash_find(pd->prop_text.default_text, part_name);
-        eina_hash_del(pd->prop_text.default_text, part_name, NULL);
-        EINA_LIST_FOREACH(frame_list, l, frame_obj)
-          elm_object_part_text_set(frame_obj, part_name, default_text);
-        if (elm_check_state_get(check)) elm_check_state_set(check, false);
-     }
-   eina_list_free(frame_list);
+   TODO("Remake on_text_check, so that would be used everywhere.")
+   ERR(N_("Complex widgets are not implemented yet."))
 }
 
 static void

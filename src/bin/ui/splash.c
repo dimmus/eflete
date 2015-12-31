@@ -18,6 +18,7 @@
  */
 
 #include "main_window.h"
+#include "widget_macro.h"
 
 struct _Splash_Data
 {

@@ -22,8 +22,7 @@
 
 #include "style_editor.h"
 #include "main_window.h"
-#include "alloc.h"
-#include "editor.h"
+#include "project_manager.h"
 
 TODO("Rename this file to textblock_style_manager")
 
@@ -819,6 +818,7 @@ _form_right_side(Style_Editor *style_edit)
    evas_object_smart_callback_add(style_edit->glist, "contract,request", _contract_request_cb, NULL);
    evas_object_smart_callback_add(style_edit->glist, "contracted", _contracted_cb, NULL);
    evas_object_show(style_edit->glist);
+   elm_genlist_tree_effect_enabled_set(style_edit->glist, EINA_TRUE);
 
    evas_object_size_hint_align_set(style_edit->glist, EVAS_HINT_FILL,
                                    EVAS_HINT_FILL);

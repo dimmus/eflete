@@ -17,8 +17,10 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#include "groupedit.h"
 #include "groupedit_private.h"
 #include "cursor.h"
+#include "project_manager.h"
 
 #define MY_CLASS_NAME "Ws_Groupedit"
 
@@ -273,7 +275,7 @@ groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part)
 }
 
 Eina_Bool
-groupedit_edit_object_part_add(Evas_Object *obj, Part_ *part)
+groupedit_edit_object_part_add(Evas_Object *obj, Part *part)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd);
 
@@ -283,7 +285,7 @@ groupedit_edit_object_part_add(Evas_Object *obj, Part_ *part)
 }
 
 Eina_Bool
-groupedit_edit_object_part_del(Evas_Object *obj, Part_ *part)
+groupedit_edit_object_part_del(Evas_Object *obj, Part *part)
 {
    WS_GROUPEDIT_DATA_GET(obj, sd);
 
@@ -302,22 +304,6 @@ groupedit_edit_object_part_restack(Evas_Object *obj,
    assert(part != NULL);
 
    return _edit_object_part_restack_below(sd, part, rel_part);
-}
-
-Eina_Bool
-groupedit_edit_object_part_state_set(Evas_Object *obj, Part_ *part)
-{
-   Eina_Bool ret;
-   WS_GROUPEDIT_DATA_GET(obj, sd);
-
-   assert(part != NULL);
-
-   ret = edje_edit_part_selected_state_set(sd->group->edit_object,
-                                           part->name,
-                                           part->current_state->parsed_name,
-                                           part->current_state->parsed_val);
-   evas_object_smart_changed(sd->obj);
-   return ret;
 }
 
 Evas_Object *
@@ -416,7 +402,7 @@ groupedit_edit_object_part_select(Evas_Object *obj, const char *part)
 TODO("remove this from public API and use callback from part list");
 
 void
-groupedit_part_visible_set(Evas_Object *obj, Part_ *part)
+groupedit_part_visible_set(Evas_Object *obj, Part *part)
 {
    Groupedit_Part *gp;
    WS_GROUPEDIT_DATA_GET(obj, sd);

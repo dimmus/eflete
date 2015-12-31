@@ -27,11 +27,8 @@
  * This widget designed for show group and part details.
  */
 
-#ifndef HAVE_ENVENTOR
-#include "syntax_color.h"
-#endif
-#include "workspace.h"
-
+#include "eflete.h"
+#include "demo_group.h"
 
 Evas_Object *
 ui_property_group_add(Evas_Object *parent);
@@ -43,10 +40,10 @@ void
 ui_property_group_unset(Evas_Object *parent);
 
 void
-ui_property_part_set(Evas_Object *parent, Part_ *part);
+ui_property_part_set(Evas_Object *parent, Part *part);
 
 void
-ui_property_part_state_set(Evas_Object *parent, Part_ *part);
+ui_property_part_state_set(Evas_Object *parent, Part *part);
 
 Evas_Object *
 ui_property_image_add(Evas_Object *parent);
@@ -70,12 +67,12 @@ Evas_Object *
 ui_property_demo_text_add(Evas_Object *parent);
 
 void
-ui_property_demo_text_part_set(Evas_Object *property, Part_ *part);
+ui_property_demo_text_part_set(Evas_Object *property, Demo_Part *part);
 
 Evas_Object *
 ui_property_demo_swallow_add(Evas_Object *parent);
 
 void
-ui_property_demo_swallow_part_set(Evas_Object *property, Part_ *part);
+ui_property_demo_swallow_part_set(Evas_Object *property, Demo_Part *part);
 
 #endif /* UI_PROPERTY_1_H */

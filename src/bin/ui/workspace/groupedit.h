@@ -44,7 +44,7 @@
  *
  */
 
-#include "group_manager.h"
+#include "eflete.h"
 
 struct _Geom{
    int x, y, w, h;
@@ -52,14 +52,14 @@ struct _Geom{
 
 /**
  * emited when part is selected in groupedit.
- * eventinfo - pointer to Part_ structure
+ * eventinfo - pointer to Part structure
  *
  * @ingroup Groupedit
  */
 #define SIGNAL_GROUPEDIT_PART_SELECTED "SIGNAL_GROUPEDIT_PART_SELECTED"
 /**
  * emited when part is unselected in groupedit.
- * eventinfo - pointer to Part_ structure
+ * eventinfo - pointer to Part structure
  *
  * @ingroup Groupedit
  */
@@ -144,14 +144,14 @@ groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part);
  * add groupedit part.
  *
  * @param obj The groupedit object,
- * @param part Pointer to Part_ sturcture,
+ * @param part Pointer to Part sturcture,
  *
  * @return EINA_TRUE on success or EINA_FALSE, on errors.
  *
  * @ingroup Groupedit
  */
 Eina_Bool
-groupedit_edit_object_part_add(Evas_Object *obj, Part_ *part);
+groupedit_edit_object_part_add(Evas_Object *obj, Part *part);
 
 /**
  * Delete the part from groupedit and from editable object.
@@ -164,20 +164,7 @@ groupedit_edit_object_part_add(Evas_Object *obj, Part_ *part);
  * @ingroup Groupedit
  */
 Eina_Bool
-groupedit_edit_object_part_del(Evas_Object *obj, Part_ *part);
-
-/**
- * Set the current state value to the part.
- *
- * @param obj The groupedit object,
- * @param part Pointer to Part_ structure
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_edit_object_part_state_set(Evas_Object *obj, Part_ *part);
+groupedit_edit_object_part_del(Evas_Object *obj, Part *part);
 
 /**
  * Get the object with the object area geometry.
@@ -258,7 +245,7 @@ groupedit_edit_object_part_select(Evas_Object *obj, const char *part);
  * @ingroup Groupedit
  */
 void
-groupedit_part_visible_set(Evas_Object *obj, Part_ *part);
+groupedit_part_visible_set(Evas_Object *obj, Part *part);
 
 /**
  * Restack part below another part in groupedit module.

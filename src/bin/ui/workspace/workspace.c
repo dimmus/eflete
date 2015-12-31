@@ -24,11 +24,11 @@
 #include "container.h"
 #include "eflete.h"
 #include "group_navigator.h"
-#include "signals.h"
-#include "new_history.h"
-#include "editor.h"
+#include "history.h"
 #include "demo.h"
 #include "demo_group.h"
+#include "project_manager.h"
+#include "change.h"
 
 struct _Ws_Menu
 {
@@ -59,7 +59,7 @@ typedef struct _Ws_Menu Ws_Menu;
 typedef enum
 {
    MODE_NORMAL = 1,
-   MODE_SEPARATE,
+   /* MODE_SEPARATE, */
    /* MODE_ANIMATOR, */
    /* MODE_CODE, */
    MODE_DEMO,
@@ -118,8 +118,6 @@ struct _Ws_Smart_Data
         Evas_Object *obj;        /**< elm_menu object */
         Ws_Menu items;           /**< Context menu items structure*/
    } menu;
-   Evas_Object *button_separate; /**< A button object, which switch (on/off)\
-                                   separate mode of groupedit.*/
    Eina_List *guides;            /**< A guides list. Not implemented yet*/
    struct {
         double factor;           /**< zoom factor, coefficient for view \
@@ -136,7 +134,7 @@ struct _Ws_Smart_Data
    struct {
         Evas_Object *highlight; /**< A highlight object */
         Evas_Object *space_hl; /**< A object area highlight*/
-        Part_ *part; /**< Contain part name and it's state. need for callbacks of highlight. */
+        Part *part; /**< Contain part name and it's state. need for callbacks of highlight. */
    } highlight;
 
    Change *change;
@@ -642,22 +640,17 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
      {
         container_border_hide(sd->container.obj);
 
-        ui_menu_disable_set(ap.menu, MENU_VIEW_WORKSPACE_SEPARATE, true);
         Ws_Menu *items = &sd->menu.items;
         elm_object_item_disabled_set(items->mode_normal, true);
         elm_object_item_disabled_set(items->mode_separate, true);
-        elm_object_disabled_set(sd->button_separate, true);
      }
    else
      {
         container_border_show(sd->container.obj);
 
-        ui_menu_disable_set(ap.menu, MENU_VIEW_WORKSPACE_SEPARATE, false);
-
         Ws_Menu *items = &sd->menu.items;
         elm_object_item_disabled_set(items->mode_normal, false);
         elm_object_item_disabled_set(items->mode_separate, false);
-        elm_object_disabled_set(sd->button_separate, false);
      }
 
    return true;
@@ -696,7 +689,7 @@ _highlight_drag_start_cb(void *data,
    Evas_Object *ws_obj = (Evas_Object *)data;
    WS_DATA_GET(ws_obj, sd)
    Highlight_Events *events = (Highlight_Events *)ei;
-   Part_ *part = sd->highlight.part;
+   Part *part = sd->highlight.part;
 
    assert(sd->change == NULL);
 
@@ -732,7 +725,7 @@ _highlight_drag_stop_cb(void *data,
    int new_max_w, new_max_h;
    double new_align_x, new_align_y;
    Eina_Stringshare *msg;
-   Part_ *part = sd->highlight.part;
+   Part *part = sd->highlight.part;
 
    assert(sd->change != NULL);
 
@@ -787,7 +780,7 @@ _highlight_changed_cb(void *data,
    Evas_Object *ws_obj = (Evas_Object *)data;
    WS_DATA_GET(ws_obj, sd)
 
-   Part_ *part = sd->highlight.part;
+   Part *part = sd->highlight.part;
 
    if ((!sd->group) || (!part)) return;
    Evas_Object *obj_area = groupedit_part_object_area_get(sd->groupedit);
@@ -866,7 +859,7 @@ _highlight_changed_cb(void *data,
 }
 
 static Eina_Bool
-_workspace_highlight_set(Evas_Object *obj, Part_ *part)
+_workspace_highlight_set(Evas_Object *obj, Part *part)
 {
    Evas_Object *follow;
    WS_DATA_GET(obj, sd)
@@ -974,7 +967,7 @@ _mode_changed(void *data,
    /* delete all object besides groupedit, because all these objects we created
     * on mode chage. It's do for create, alwayes actual and correct object, and
     * eliminates from updates, like live_view update mehanism. So, Profit! */
-   if ((sd->active_mode == MODE_NORMAL) || (sd->active_mode == MODE_SEPARATE))
+   if ((sd->active_mode == MODE_NORMAL)/* || (sd->active_mode == MODE_SEPARATE) */)
      evas_object_hide(sd->groupedit);
    else
      evas_object_del(sd->active_mode_object);
@@ -985,15 +978,19 @@ _mode_changed(void *data,
      {
       case MODE_NORMAL:
          container_content_set(sd->container.obj, sd->groupedit);
+         if (sd->highlight.part) evas_object_show(sd->highlight.highlight);
+         evas_object_show(sd->group_navigator);
          evas_object_show(sd->groupedit);
          workspace_separate_mode_set(sd->obj, false);
          break;
+      /*
       case MODE_SEPARATE:
          container_content_set(sd->container.obj, sd->groupedit);
          evas_object_show(sd->groupedit);
          workspace_separate_mode_set(sd->obj, true);
          container_border_hide(sd->container.obj);
          break;
+         */
       /* case MODE_ANIMATOR: break; */
       /* case MODE_CODE: break; */
       case MODE_DEMO:
@@ -1008,6 +1005,7 @@ _mode_changed(void *data,
 
             elm_object_part_content_unset(sd->panes, "right");
             evas_object_hide(sd->group_navigator);
+            evas_object_hide(sd->highlight.highlight);
             elm_object_part_content_set(sd->panes, "right", sd->demo_group);
             evas_object_show(sd->demo_group);
 
@@ -1031,6 +1029,7 @@ _mode_changed(void *data,
    sd->active_mode = mode;
 }
 
+/*
 static void
 _zoom_part_add(Ws_Smart_Data *sd)
 {
@@ -1057,6 +1056,7 @@ _zoom_part_add(Ws_Smart_Data *sd)
    elm_box_pack_end(sd->bottom_box, slider_zoom);
    evas_object_show(slider_zoom);
 }
+*/
 
 static void
 _mode_part_add(Ws_Smart_Data *sd)
@@ -1064,21 +1064,26 @@ _mode_part_add(Ws_Smart_Data *sd)
    Evas_Object *radio_mode, *radio_group;
 
    radio_group = radio_mode = elm_radio_add(sd->scroller);
+   elm_object_style_set(radio_mode, "radio_normal");
    elm_radio_state_value_set(radio_mode, MODE_NORMAL);
    elm_radio_value_set(radio_mode, true);
    evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
    elm_box_pack_end(sd->bottom_box, radio_mode);
    evas_object_show(radio_mode);
 
+   /*
    radio_mode = elm_radio_add(sd->scroller);
+   elm_object_style_set(radio_mode, "radio_separate");
    elm_radio_state_value_set(radio_mode, MODE_SEPARATE);
    evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
    elm_box_pack_end(sd->bottom_box, radio_mode);
    evas_object_show(radio_mode);
    elm_radio_group_add(radio_mode, radio_group);
+   */
 
    /*
    radio_mode = elm_radio_add(sd->scroller);
+   elm_object_style_set(radio_mode, "radio_animator");
    elm_radio_state_value_set(radio_mode, MODE_ANIMATOR);
    evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
    elm_box_pack_end(sd->bottom_box, radio_mode);
@@ -1088,6 +1093,7 @@ _mode_part_add(Ws_Smart_Data *sd)
 
    /*
    radio_mode = elm_radio_add(sd->scroller);
+   elm_object_style_set(radio_mode, "radio_code");
    elm_radio_state_value_set(radio_mode, MODE_CODE);
    evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
    elm_box_pack_end(sd->bottom_box, radio_mode);
@@ -1096,6 +1102,7 @@ _mode_part_add(Ws_Smart_Data *sd)
    */
 
    radio_mode = elm_radio_add(sd->scroller);
+   elm_object_style_set(radio_mode, "radio_demo");
    elm_radio_state_value_set(radio_mode, MODE_DEMO);
    evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
    elm_box_pack_end(sd->bottom_box, radio_mode);
@@ -1103,6 +1110,7 @@ _mode_part_add(Ws_Smart_Data *sd)
    elm_radio_group_add(radio_mode, radio_group);
 }
 
+/*
 static void
 _resize_part_add(Ws_Smart_Data *sd)
 {
@@ -1132,6 +1140,7 @@ _resize_part_add(Ws_Smart_Data *sd)
    elm_box_pack_end(sd->bottom_box, check_size_chanage);
    evas_object_show(check_size_chanage);
 }
+*/
 
 static void
 _bottom_panel_add(Ws_Smart_Data *sd)
@@ -1142,7 +1151,7 @@ _bottom_panel_add(Ws_Smart_Data *sd)
    elm_box_pack_end(sd->bottom_box, separator); \
    evas_object_show(separator);
 
-   Evas_Object *separator;
+   //Evas_Object *separator;
 
    sd->bottom_box = elm_box_add(sd->scroller);
    elm_box_align_set(sd->bottom_box, 0.0, 0.5);
@@ -1151,12 +1160,16 @@ _bottom_panel_add(Ws_Smart_Data *sd)
    elm_object_part_content_set(sd->scroller, "bottom_panel", sd->bottom_box);
    evas_object_show(sd->bottom_box);
 
+   /*
    _zoom_part_add(sd);
    SEPARATOR_ADD()
+   */
    _mode_part_add(sd);
+   /*
    SEPARATOR_ADD()
    _resize_part_add(sd);
    SEPARATOR_ADD()
+   */
 
 #undef SEPARATOR_ADD
 }
@@ -1172,7 +1185,6 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    priv->obj = o;
 
    Evas *e = evas_object_evas_get(o);
-   Evas_Object *icon = NULL;
 
    /* Here create evas image, whitch will be background for workspace*/
    IMAGE_ADD_NEW(parent, priv->background, "bg", "tile");
@@ -1218,22 +1230,11 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
                                   _sc_smart_drag_x_cb, o);
    evas_object_smart_member_add(priv->scroller, o);
 
-   /* button for switch mode of view: separated or normal*/
-   priv->button_separate = elm_button_add(priv->scroller);
-   elm_object_style_set(priv->button_separate, "anchor");
-   IMAGE_ADD_NEW(priv->scroller, icon, "icon", "separate");
-   elm_object_part_content_set(priv->button_separate, NULL, icon);
-   evas_object_smart_callback_add(priv->button_separate, "clicked",
-                                  _separate_smart_on_click, o);
-   evas_object_smart_member_add(priv->button_separate, o);
-
    /* Add members of workspace into scroller markup field''s*/
    elm_object_part_content_set(priv->scroller, "elm.swallow.background",
                                priv->background);
    elm_object_part_content_set(priv->scroller, "elm.swallow.overlay",
                                priv->events);
-   elm_object_part_content_set(priv->scroller, "elm.swallow.button",
-                               priv->button_separate);
 
    /* Add bottom panel to workspace */
    _bottom_panel_add(priv);
@@ -1282,6 +1283,7 @@ _workspace_smart_del(Evas_Object *o)
 
    evas_object_del(sd->highlight.space_hl);
    evas_object_del(sd->highlight.highlight);
+   demo_group_del(sd->demo_group);
    _workspace_parent_sc->del(o);
 }
 
@@ -1292,13 +1294,10 @@ _workspace_smart_show(Evas_Object *o)
 
    WS_DATA_GET(o, sd)
 
-   evas_object_show(sd->button_separate);
    evas_object_show(sd->scroller);
    evas_object_show(sd->panes);
    evas_object_show(sd->events);
 
-   if (sd->groupedit)
-     evas_object_show(sd->groupedit);
    if (sd->ruler_hor)
      evas_object_show(sd->ruler_hor);
    if (sd->ruler_ver)
@@ -1315,11 +1314,9 @@ _workspace_smart_hide(Evas_Object *o)
 
    WS_DATA_GET(o, sd);
 
-   if (sd->groupedit) evas_object_hide(sd->groupedit);
    if (sd->ruler_hor) evas_object_hide(sd->ruler_hor);
    if (sd->ruler_ver) evas_object_hide(sd->ruler_ver);
 
-   evas_object_hide(sd->button_separate);
    evas_object_hide(sd->scroller);
    evas_object_hide(sd->panes);
    evas_object_hide(sd->events);
@@ -1438,7 +1435,7 @@ _on_groupedit_part_select(void *data,
                           void *event_info)
 {
    Evas_Object *workspace = (Evas_Object *)data;
-   Part_ *part = event_info;
+   Part *part = event_info;
 
    WS_DATA_GET(workspace, sd);
 
@@ -1451,7 +1448,7 @@ _on_group_navigator_part_select(void *data,
                           void *event_info)
 {
    Evas_Object *workspace = (Evas_Object *)data;
-   Part_ *part = event_info;
+   Part *part = event_info;
 
    WS_DATA_GET(workspace, sd);
 
@@ -1464,27 +1461,12 @@ _on_group_navigator_part_select(void *data,
 }
 
 static void
-_on_group_navigator_part_state_select(void *data,
-                                Evas_Object *obj __UNUSED__,
-                                void *event_info)
-{
-   Evas_Object *workspace = (Evas_Object *)data;
-   Part_ *part = event_info;
-
-   WS_DATA_GET(workspace, sd);
-
-   groupedit_edit_object_part_state_set(sd->groupedit, part);
-
-   evas_object_smart_callback_call(ap.win, SIGNAL_PART_STATE_SELECTED, (void *)part);
-}
-
-static void
 _on_group_navigator_part_visible_changed(void *data,
                                 Evas_Object *obj __UNUSED__,
                                 void *event_info)
 {
    Evas_Object *workspace = (Evas_Object *)data;
-   Part_ *part = event_info;
+   Part *part = event_info;
 
    WS_DATA_GET(workspace, sd);
 
@@ -1530,8 +1512,6 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_part_content_set(sd->panes, "right", sd->group_navigator);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED,
                                   _on_group_navigator_part_select, obj);
-   evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_STATE_SELECTED,
-                                  _on_group_navigator_part_state_select, obj);
    evas_object_smart_callback_add(sd->group_navigator, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED,
                                   _on_group_navigator_part_visible_changed, obj);
 
@@ -1568,7 +1548,7 @@ workspace_add(Evas_Object *parent, Group *group)
                                   _on_groupedit_part_unselect, obj);
    evas_object_smart_callback_add(sd->groupedit, "geometry,changed",
                                   _ws_ruler_abs_zero_move_cb, obj);
-   evas_object_smart_callback_add(sd->groupedit, "object,area,changed",
+   evas_object_smart_callback_add(sd->groupedit, "geometry,changed",
                                   _ws_ruler_rel_zero_move_cb, obj);
    elm_object_content_set(sd->scroller, sd->container.obj);
 
@@ -1634,7 +1614,7 @@ workspace_add(Evas_Object *parent, Group *group)
 }
 
 void
-workspace_group_navigator_update_part(Evas_Object *obj, Part_ *part)
+workspace_group_navigator_update_part(Evas_Object *obj, Part *part)
 {
    WS_DATA_GET(obj, sd);
    assert(part != NULL);
@@ -1816,7 +1796,7 @@ workspace_object_area_visible_get(Evas_Object *obj)
 void
 workspace_part_add(Evas_Object *obj, Eina_Stringshare *part_name)
 {
-   Part_ *part;
+   Part *part;
    WS_DATA_GET(obj, sd);
    assert(part_name != NULL);
 
@@ -1828,7 +1808,7 @@ workspace_part_add(Evas_Object *obj, Eina_Stringshare *part_name)
 void
 workspace_part_del(Evas_Object *obj, Eina_Stringshare *part_name)
 {
-   Part_ *part;
+   Part *part;
    WS_DATA_GET(obj, sd);
    assert(part_name != NULL);
 
@@ -1843,7 +1823,7 @@ workspace_part_item_add(Evas_Object *obj,
                         Eina_Stringshare *part_name,
                         Eina_Stringshare *item_name)
 {
-   Part_ *part;
+   Part *part;
    WS_DATA_GET(obj, sd);
    assert(part_name != NULL);
    assert(item_name != NULL);
@@ -1864,7 +1844,7 @@ workspace_part_item_del(Evas_Object *obj,
                         Eina_Stringshare *part_name,
                         Eina_Stringshare *item_name)
 {
-   Part_ *part;
+   Part *part;
    WS_DATA_GET(obj, sd);
    assert(part_name != NULL);
    assert(item_name != NULL);
@@ -1884,7 +1864,7 @@ workspace_part_state_add(Evas_Object *obj,
                          Eina_Stringshare *part_name,
                          Eina_Stringshare *state_name)
 {
-   Part_ *part;
+   Part *part;
    State *state;
    WS_DATA_GET(obj, sd);
    assert(part_name != NULL);
@@ -1898,11 +1878,29 @@ workspace_part_state_add(Evas_Object *obj,
 }
 
 void
+workspace_part_state_select(Evas_Object *obj,
+                            Eina_Stringshare *part_name,
+                            Eina_Stringshare *state_name)
+{
+   Part *part;
+   State *state;
+   WS_DATA_GET(obj, sd);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+
+   part = pm_resource_unsorted_get(sd->group->parts, part_name);
+   state = pm_resource_get(part->states, state_name);
+
+   groupedit_soft_update(sd->groupedit);
+   group_navigator_part_state_select(sd->group_navigator, state);
+}
+
+void
 workspace_part_state_del(Evas_Object *obj,
                          Eina_Stringshare *part_name,
                          Eina_Stringshare *state_name)
 {
-   Part_ *part;
+   Part *part;
    State *state;
    WS_DATA_GET(obj, sd);
    assert(part_name != NULL);
@@ -1921,7 +1919,7 @@ workspace_part_restack(Evas_Object *obj,
                        Eina_Stringshare *part_name,
                        Eina_Stringshare *relative_part_name)
 {
-   Part_ *part, *rel_part = NULL;
+   Part *part, *rel_part = NULL;
    WS_DATA_GET(obj, sd);
    assert(part_name != NULL);
 
@@ -1942,7 +1940,7 @@ workspace_part_item_restack(Evas_Object *obj,
                             Eina_Stringshare *part_item_name,
                             Eina_Stringshare *relative_part_item_name)
 {
-   Part_ *part;
+   Part *part;
    WS_DATA_GET(obj, sd);
    assert(part_item_name != NULL);
 

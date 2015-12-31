@@ -17,8 +17,9 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#include "groupedit.h"
 #include "groupedit_private.h"
-#include "alloc.h"
+#include "project_manager.h"
 
 #define PART_STATE_GET(obj, part) \
    const char *state; \
@@ -32,10 +33,10 @@ static void
 _groupedit_part_free(Groupedit_Part *gp);
 
 static Groupedit_Part *
-_part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part);
+_part_draw_add(Ws_Groupedit_Smart_Data *sd, Part *part);
 
 static void
-_part_draw_del(Ws_Groupedit_Smart_Data *sd, Part_ *part);
+_part_draw_del(Ws_Groupedit_Smart_Data *sd, Part *part);
 
 static void
 _item_draw_del(Groupedit_Item *ge_item);
@@ -60,7 +61,7 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp);
 
 Eina_Bool
 _edit_object_part_add(Ws_Groupedit_Smart_Data *sd,
-                      Part_ *part)
+                      Part *part)
 {
    Groupedit_Part *gp;
 
@@ -75,7 +76,7 @@ _edit_object_part_add(Ws_Groupedit_Smart_Data *sd,
 }
 
 Eina_Bool
-_edit_object_part_del(Ws_Groupedit_Smart_Data *sd, Part_ *part)
+_edit_object_part_del(Ws_Groupedit_Smart_Data *sd, Part *part)
 {
    assert(sd != NULL);
    assert(sd->parts != NULL);
@@ -125,7 +126,7 @@ _parts_list_new(Ws_Groupedit_Smart_Data *sd)
 {
    Groupedit_Part *gp;
    Eina_List *l;
-   Part_ *part;
+   Part *part;
 
    assert(sd != NULL);
 
@@ -603,7 +604,7 @@ _part_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 }
 
 static Groupedit_Part *
-_part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
+_part_draw_add(Ws_Groupedit_Smart_Data *sd, Part *part)
 {
    Groupedit_Part *gp;
 
@@ -691,7 +692,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part_ *part)
 }
 
 static void
-_part_draw_del(Ws_Groupedit_Smart_Data *sd, Part_ *part)
+_part_draw_del(Ws_Groupedit_Smart_Data *sd, Part *part)
 {
    Groupedit_Part *gp;
 

@@ -28,9 +28,6 @@
  */
 
 #include "eflete.h"
-#include "modal_window.h"
-#include "widget_macro.h"
-#include "string_common.h"
 
 typedef struct _Colorclass_Item Colorclass_Item;
 struct _Colorclass_Item

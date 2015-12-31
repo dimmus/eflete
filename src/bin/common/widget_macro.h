@@ -20,8 +20,6 @@
 #ifndef WIDGET_MACRO_H
 #define WIDGET_MACRO_H
 
-#include <Elementary.h>
-
 TODO("see large comment below")
 /**
  * ITEM_ADD use old kind of adding items and style that looks like

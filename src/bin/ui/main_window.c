@@ -27,6 +27,8 @@
 #include "tabs.h"
 #include "shortcuts.h"
 #include "cursor.h"
+#include "config.h"
+#include "property.h"
 
 static void
 _project_navigator_group_open(void *data __UNUSED__,
@@ -71,8 +73,6 @@ ui_main_window_del(void)
 
    config_save();
    INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
-   /* FIXME: when be implemented multi workspace feature, remove this line */
-   evas_object_del(ap.workspace);
    elm_exit();
 
    return true;

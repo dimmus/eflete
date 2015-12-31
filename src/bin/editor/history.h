@@ -20,31 +20,30 @@
 #ifndef NEW_HISTORY_H
 #define NEW_HISTORY_H
 #include "eflete.h"
-#include "change.h"
 
-struct _History_ {
+struct _History {
    Group *group;
    Eina_List *changes;
    Eina_List *current_change;
 };
-typedef struct _History_ History_;
+typedef struct _History History;
 
-History_ *
+History *
 history_add(Group *group);
 
 void
-history_del(History_ *history);
+history_del(History *history);
 
 void
-history_change_add(History_ *history, Change *change);
+history_change_add(History *history, Change *change);
 
 Eina_Bool
-history_undo_(History_ *history);
+history_undo(History *history);
 
 Eina_Bool
-history_undo_all(History_ *history);
+history_undo_all(History *history);
 
 Eina_Bool
-history_redo_(History_ *history);
+history_redo(History *history);
 
 #endif /* NEW_HISTORY_H */

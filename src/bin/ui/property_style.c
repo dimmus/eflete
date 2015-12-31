@@ -18,10 +18,10 @@
  */
 #include "property_private.h"
 #include "property_macros.h"
-#include "signals.h"
+#include "main_window.h"
 #include "style_editor.h"
 #include "colorsel.h"
-
+#include "project_manager.h"
 
 struct _Style_Prop_Data
 {

@@ -19,6 +19,7 @@
 
 #include "style_editor.h"
 #include "main_window.h"
+#include "modal_window.h"
 
 static void
 _on_mwin_del(void *data __UNUSED__,
