@@ -49,9 +49,6 @@ gm_group_edit_object_load(Project *pro, Group *group, Evas *e)
    assert(group->edit_object == NULL);
 
    group->edit_object = edje_edit_object_add(e);
-   edje_object_freeze(group->edit_object);
-   evas_object_freeze_events_set(group->edit_object, true);
-
    if (!edje_object_mmap_set(group->edit_object, pro->mmap_file, group->name))
      {
         ERR("Can't set mmap object");
