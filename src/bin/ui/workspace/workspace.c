@@ -118,8 +118,6 @@ struct _Ws_Smart_Data
         Evas_Object *obj;        /**< elm_menu object */
         Ws_Menu items;           /**< Context menu items structure*/
    } menu;
-   Evas_Object *button_separate; /**< A button object, which switch (on/off)\
-                                   separate mode of groupedit.*/
    Eina_List *guides;            /**< A guides list. Not implemented yet*/
    struct {
         double factor;           /**< zoom factor, coefficient for view \
@@ -645,7 +643,6 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
         Ws_Menu *items = &sd->menu.items;
         elm_object_item_disabled_set(items->mode_normal, true);
         elm_object_item_disabled_set(items->mode_separate, true);
-        elm_object_disabled_set(sd->button_separate, true);
      }
    else
      {
@@ -654,7 +651,6 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
         Ws_Menu *items = &sd->menu.items;
         elm_object_item_disabled_set(items->mode_normal, false);
         elm_object_item_disabled_set(items->mode_separate, false);
-        elm_object_disabled_set(sd->button_separate, false);
      }
 
    return true;
@@ -1184,7 +1180,6 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    priv->obj = o;
 
    Evas *e = evas_object_evas_get(o);
-   Evas_Object *icon = NULL;
 
    /* Here create evas image, whitch will be background for workspace*/
    IMAGE_ADD_NEW(parent, priv->background, "bg", "tile");
@@ -1230,22 +1225,11 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
                                   _sc_smart_drag_x_cb, o);
    evas_object_smart_member_add(priv->scroller, o);
 
-   /* button for switch mode of view: separated or normal*/
-   priv->button_separate = elm_button_add(priv->scroller);
-   elm_object_style_set(priv->button_separate, "anchor");
-   IMAGE_ADD_NEW(priv->scroller, icon, "icon", "separate");
-   elm_object_part_content_set(priv->button_separate, NULL, icon);
-   evas_object_smart_callback_add(priv->button_separate, "clicked",
-                                  _separate_smart_on_click, o);
-   evas_object_smart_member_add(priv->button_separate, o);
-
    /* Add members of workspace into scroller markup field''s*/
    elm_object_part_content_set(priv->scroller, "elm.swallow.background",
                                priv->background);
    elm_object_part_content_set(priv->scroller, "elm.swallow.overlay",
                                priv->events);
-   elm_object_part_content_set(priv->scroller, "elm.swallow.button",
-                               priv->button_separate);
 
    /* Add bottom panel to workspace */
    _bottom_panel_add(priv);
@@ -1305,7 +1289,6 @@ _workspace_smart_show(Evas_Object *o)
 
    WS_DATA_GET(o, sd)
 
-   evas_object_show(sd->button_separate);
    evas_object_show(sd->scroller);
    evas_object_show(sd->panes);
    evas_object_show(sd->events);
@@ -1329,7 +1312,6 @@ _workspace_smart_hide(Evas_Object *o)
    if (sd->ruler_hor) evas_object_hide(sd->ruler_hor);
    if (sd->ruler_ver) evas_object_hide(sd->ruler_ver);
 
-   evas_object_hide(sd->button_separate);
    evas_object_hide(sd->scroller);
    evas_object_hide(sd->panes);
    evas_object_hide(sd->events);
