@@ -54,7 +54,7 @@ int MENU_ITEMS_LIST_BASE[] = {
 int MENU_ITEMS_LIST_STYLE_ONLY[] = {
    MENU_EDITORS_ANIMATOR,
    MENU_VIEW_WORKSPACE,
-   MENU_FILE_EXPORT_EDC_GROUP,
+   /* MENU_FILE_EXPORT_EDC_GROUP, */
 
    MENU_NULL
 };
@@ -309,6 +309,7 @@ ui_menu_add(void)
 
    TODO("remove both lines after implementation this features")
    ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
+   ui_menu_disable_set(menu, MENU_FILE_EXPORT_EDC_GROUP, true);
 
    menu->window_menu = window_menu;
 
