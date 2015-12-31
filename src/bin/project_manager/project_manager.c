@@ -1372,7 +1372,7 @@ pm_project_style_source_code_export(Project *pro, Style *style, const char *file
 }
 */
 static void
-_external_resource_export(Eina_List *resources, const char *dst)
+_external_resources_export(Eina_List *resources, const char *dst)
 {
    Eina_Strbuf *buf;
    Eina_List *l;
@@ -1428,21 +1428,21 @@ _source_code_export(void *data __UNUSED__, Eina_Thread *thread __UNUSED__)
      {
         eina_strbuf_append_printf(buf, "%s/%s/images/", worker.path, worker.project->name);
         ecore_file_mkdir(eina_strbuf_string_get(buf));
-        _external_resource_export(worker.project->images, eina_strbuf_string_get(buf));
+        _external_resources_export(worker.project->images, eina_strbuf_string_get(buf));
         eina_strbuf_reset(buf);
      }
    if (worker.project->sounds)
      {
         eina_strbuf_append_printf(buf, "%s/%s/sounds/", worker.path, worker.project->name);
         ecore_file_mkdir(eina_strbuf_string_get(buf));
-        _external_resource_export(worker.project->sounds, eina_strbuf_string_get(buf));
+        _external_resources_export(worker.project->sounds, eina_strbuf_string_get(buf));
         eina_strbuf_reset(buf);
      }
    if (worker.project->fonts)
      {
         eina_strbuf_append_printf(buf, "%s/%s/fonts/", worker.path, worker.project->name);
         ecore_file_mkdir(eina_strbuf_string_get(buf));
-        _external_resource_export(worker.project->fonts, eina_strbuf_string_get(buf));
+        _external_resources_export(worker.project->fonts, eina_strbuf_string_get(buf));
         eina_strbuf_reset(buf);
      }
 
