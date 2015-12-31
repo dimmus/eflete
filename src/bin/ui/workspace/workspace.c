@@ -982,6 +982,7 @@ _mode_changed(void *data,
      {
       case MODE_NORMAL:
          container_content_set(sd->container.obj, sd->groupedit);
+         evas_object_show(sd->group_navigator);
          evas_object_show(sd->groupedit);
          workspace_separate_mode_set(sd->obj, false);
          break;
@@ -1307,8 +1308,6 @@ _workspace_smart_show(Evas_Object *o)
    evas_object_show(sd->panes);
    evas_object_show(sd->events);
 
-   if (sd->groupedit)
-     evas_object_show(sd->groupedit);
    if (sd->ruler_hor)
      evas_object_show(sd->ruler_hor);
    if (sd->ruler_ver)
@@ -1325,7 +1324,6 @@ _workspace_smart_hide(Evas_Object *o)
 
    WS_DATA_GET(o, sd);
 
-   if (sd->groupedit) evas_object_hide(sd->groupedit);
    if (sd->ruler_hor) evas_object_hide(sd->ruler_hor);
    if (sd->ruler_ver) evas_object_hide(sd->ruler_ver);
 
