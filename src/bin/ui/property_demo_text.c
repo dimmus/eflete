@@ -34,6 +34,8 @@ struct _Demo_Text_Prop_Data
 {
    Demo_Part *part;
 
+   Evas_Object *scroller;
+   Evas_Object *frame;
    Evas_Object *box;
    Evas_Object *name;
    Evas_Object *text;
@@ -113,17 +115,27 @@ Evas_Object *
 ui_property_demo_text_add(Evas_Object *parent)
 {
    Demo_Text_Prop_Data *pd;
-   Evas_Object *item;
+   Evas_Object *item, *scroller, *box;
 
    assert(parent != NULL);
 
    pd = mem_calloc(1, sizeof(Demo_Text_Prop_Data));
 
+   SCROLLER_ADD(parent, scroller);
+   BOX_ADD(scroller, box, false, false);
+   elm_box_align_set(box, 0.5, 0.0);
+   elm_object_content_set(scroller, box);
+   pd->scroller = scroller;
+   elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+
+   evas_object_data_set(pd->scroller, DEMO_TEXT_PROP_DATA, pd);
+
    /* editors */
-   BOX_ADD(parent, pd->box, false, false);
+   FRAME_ADD(box, pd->frame, true, _("Demo Text Property"))
+   elm_box_pack_end(box, pd->frame);
+   BOX_ADD(pd->frame, pd->box, false, false)
    elm_box_align_set(pd->box, 0.5, 0.0);
    evas_object_hide(pd->box);
-   evas_object_data_set(pd->box, DEMO_TEXT_PROP_DATA, pd);
 
    /* Frame with info */
    elm_box_align_set(pd->box, 0.5, 0.0);
@@ -132,5 +144,7 @@ ui_property_demo_text_add(Evas_Object *parent)
    item = prop_part_content_add(pd->box, pd);
    elm_box_pack_end(pd->box, item);
 
-   return pd->box;
+   elm_object_content_set(pd->frame, pd->box);
+
+   return pd->scroller;
 }
