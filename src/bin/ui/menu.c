@@ -52,7 +52,6 @@ int MENU_ITEMS_LIST_BASE[] = {
 };
 
 int MENU_ITEMS_LIST_STYLE_ONLY[] = {
-   MENU_EDITORS_ANIMATOR,
    MENU_VIEW_WORKSPACE,
    /* MENU_FILE_EXPORT_EDC_GROUP, */
 
@@ -158,14 +157,6 @@ _menu_cb(void *data __UNUSED__,
          break;
       case MENU_VIEW_WORKSPACE_OBJECT_AREA:
          evas_object_smart_callback_call(tabs_current_workspace_get(), "highlight,visible", NULL);
-         break;
-      case MENU_EDITORS_ANIMATOR:
-           {
-              if (!ap.project)
-                NOTIFY_WARNING(_("Please open the widget style for editing style programs!"))
- /*             else
-                animator_window_add(ap.project);*/
-           }
          break;
       case MENU_EDITORS_IMAGE:
          tabs_menu_tab_open(TAB_IMAGE_EDITOR);
@@ -276,9 +267,6 @@ ui_menu_add(void)
             ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_REL, NULL, _("Relative scale"))
             ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_BOTH, NULL, _("Both"))
    ITEM_MENU_ADD(MENU_NULL, MENU_EDITORS, NULL, _("Edit"))
-      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_ANIMATOR, "animator", _("Animator"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_ANIMATOR]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-1");
       ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_IMAGE, "image", _("Image manager"))
       items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_IMAGE]);
       elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-2");

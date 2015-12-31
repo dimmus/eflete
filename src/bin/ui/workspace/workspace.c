@@ -59,7 +59,7 @@ typedef struct _Ws_Menu Ws_Menu;
 typedef enum
 {
    MODE_NORMAL = 1,
-   MODE_SEPARATE,
+   /* MODE_SEPARATE, */
    /* MODE_ANIMATOR, */
    /* MODE_CODE, */
    MODE_DEMO,
@@ -971,7 +971,7 @@ _mode_changed(void *data,
    /* delete all object besides groupedit, because all these objects we created
     * on mode chage. It's do for create, alwayes actual and correct object, and
     * eliminates from updates, like live_view update mehanism. So, Profit! */
-   if ((sd->active_mode == MODE_NORMAL) || (sd->active_mode == MODE_SEPARATE))
+   if ((sd->active_mode == MODE_NORMAL)/* || (sd->active_mode == MODE_SEPARATE) */)
      evas_object_hide(sd->groupedit);
    else
      evas_object_del(sd->active_mode_object);
@@ -985,12 +985,14 @@ _mode_changed(void *data,
          evas_object_show(sd->groupedit);
          workspace_separate_mode_set(sd->obj, false);
          break;
+      /*
       case MODE_SEPARATE:
          container_content_set(sd->container.obj, sd->groupedit);
          evas_object_show(sd->groupedit);
          workspace_separate_mode_set(sd->obj, true);
          container_border_hide(sd->container.obj);
          break;
+         */
       /* case MODE_ANIMATOR: break; */
       /* case MODE_CODE: break; */
       case MODE_DEMO:
@@ -1028,6 +1030,7 @@ _mode_changed(void *data,
    sd->active_mode = mode;
 }
 
+/*
 static void
 _zoom_part_add(Ws_Smart_Data *sd)
 {
@@ -1054,6 +1057,7 @@ _zoom_part_add(Ws_Smart_Data *sd)
    elm_box_pack_end(sd->bottom_box, slider_zoom);
    evas_object_show(slider_zoom);
 }
+*/
 
 static void
 _mode_part_add(Ws_Smart_Data *sd)
@@ -1067,12 +1071,14 @@ _mode_part_add(Ws_Smart_Data *sd)
    elm_box_pack_end(sd->bottom_box, radio_mode);
    evas_object_show(radio_mode);
 
+   /*
    radio_mode = elm_radio_add(sd->scroller);
    elm_radio_state_value_set(radio_mode, MODE_SEPARATE);
    evas_object_smart_callback_add(radio_mode, "changed", _mode_changed, sd);
    elm_box_pack_end(sd->bottom_box, radio_mode);
    evas_object_show(radio_mode);
    elm_radio_group_add(radio_mode, radio_group);
+   */
 
    /*
    radio_mode = elm_radio_add(sd->scroller);
@@ -1100,6 +1106,7 @@ _mode_part_add(Ws_Smart_Data *sd)
    elm_radio_group_add(radio_mode, radio_group);
 }
 
+/*
 static void
 _resize_part_add(Ws_Smart_Data *sd)
 {
@@ -1129,6 +1136,7 @@ _resize_part_add(Ws_Smart_Data *sd)
    elm_box_pack_end(sd->bottom_box, check_size_chanage);
    evas_object_show(check_size_chanage);
 }
+*/
 
 static void
 _bottom_panel_add(Ws_Smart_Data *sd)
@@ -1139,7 +1147,7 @@ _bottom_panel_add(Ws_Smart_Data *sd)
    elm_box_pack_end(sd->bottom_box, separator); \
    evas_object_show(separator);
 
-   Evas_Object *separator;
+   //Evas_Object *separator;
 
    sd->bottom_box = elm_box_add(sd->scroller);
    elm_box_align_set(sd->bottom_box, 0.0, 0.5);
@@ -1148,12 +1156,16 @@ _bottom_panel_add(Ws_Smart_Data *sd)
    elm_object_part_content_set(sd->scroller, "bottom_panel", sd->bottom_box);
    evas_object_show(sd->bottom_box);
 
+   /*
    _zoom_part_add(sd);
    SEPARATOR_ADD()
+   */
    _mode_part_add(sd);
+   /*
    SEPARATOR_ADD()
    _resize_part_add(sd);
    SEPARATOR_ADD()
+   */
 
 #undef SEPARATOR_ADD
 }
