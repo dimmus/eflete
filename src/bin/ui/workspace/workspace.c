@@ -642,7 +642,6 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
      {
         container_border_hide(sd->container.obj);
 
-        ui_menu_disable_set(ap.menu, MENU_VIEW_WORKSPACE_SEPARATE, true);
         Ws_Menu *items = &sd->menu.items;
         elm_object_item_disabled_set(items->mode_normal, true);
         elm_object_item_disabled_set(items->mode_separate, true);
@@ -651,8 +650,6 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
    else
      {
         container_border_show(sd->container.obj);
-
-        ui_menu_disable_set(ap.menu, MENU_VIEW_WORKSPACE_SEPARATE, false);
 
         Ws_Menu *items = &sd->menu.items;
         elm_object_item_disabled_set(items->mode_normal, false);

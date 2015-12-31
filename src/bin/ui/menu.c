@@ -144,12 +144,6 @@ _menu_cb(void *data __UNUSED__,
               workspace_zoom_factor_set(tabs_current_workspace_get(), current_factor - 0.1);
            }
          break;
-      case MENU_VIEW_WORKSPACE_SEPARATE:
-           {
-              Eina_Bool sep = workspace_separate_mode_get(tabs_current_workspace_get());
-              workspace_separate_mode_set(tabs_current_workspace_get(), !sep);
-           }
-         break;
       case MENU_VIEW_RULERS_SHOW:
          evas_object_smart_callback_call(tabs_current_workspace_get(), "ruler,toggle", strdup("rulers"));
          break;
@@ -274,7 +268,6 @@ ui_menu_add(void)
          ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_ZOOM_IN, NULL, _("Zoom in"))
          ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_ZOOM_OUT, NULL, _("Zoom out"))
          elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_VIEW_WORKSPACE]);
-         ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_SEPARATE, NULL, _("Separate"))
          ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_OBJECT_AREA, NULL, _("Show/Hide object area"))
          ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_RULERS, NULL, _("Rulers"))
             ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_SHOW, NULL, _("Show/Hide rulers"))
@@ -312,7 +305,6 @@ ui_menu_add(void)
    ui_menu_disable_set(menu, MENU_FILE_EXPORT_EDC_GROUP, true);
    ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_ZOOM_IN, true);
    ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_ZOOM_OUT, true);
-   ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_SEPARATE, true);
    ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_OBJECT_AREA, true);
 
    menu->window_menu = window_menu;
