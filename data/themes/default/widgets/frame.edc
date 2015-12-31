@@ -132,7 +132,6 @@ group { name: "elm/frame/base/default";
          clip_to: "clipper";
          description { state: "default" 0.0;
             align: 0.5 0.0;
-            min: 0 150;
             rel1 {
                to: "clipper";
             }
