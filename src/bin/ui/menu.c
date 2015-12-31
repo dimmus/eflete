@@ -276,12 +276,12 @@ ui_menu_add(void)
          elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_VIEW_WORKSPACE]);
          ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_SEPARATE, NULL, _("Separate"))
          ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_OBJECT_AREA, NULL, _("Show/Hide object area"))
-      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS, NULL, _("Rulers"))
-         ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_SHOW, NULL, _("Show/Hide rulers"))
-         elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_VIEW_RULERS]);
-         ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_ABS, NULL, _("Absolute scale"))
-         ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_REL, NULL, _("Relative scale"))
-         ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_BOTH, NULL, _("Both"))
+         ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_RULERS, NULL, _("Rulers"))
+            ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_SHOW, NULL, _("Show/Hide rulers"))
+            elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_VIEW_RULERS]);
+            ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_ABS, NULL, _("Absolute scale"))
+            ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_REL, NULL, _("Relative scale"))
+            ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_BOTH, NULL, _("Both"))
    ITEM_MENU_ADD(MENU_NULL, MENU_EDITORS, NULL, _("Edit"))
       ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_ANIMATOR, "animator", _("Animator"))
       items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_ANIMATOR]);
