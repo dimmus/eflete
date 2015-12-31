@@ -8,8 +8,8 @@ towards theme editor and UI design, and not GUI over the edc syntax.
 Requirements:
 -------------
 
-   * efl (>= 1.14.0 && < 1.14.99)
-   * elementary (>= 1.14.0 && < 1.14.99)
+   * efl (>= 1.16.0 && < 1.16.2)
+   * elementary (>= 1.16.0 && < 1.16.2)
 
 Please note that some features may not quite function correctly or
 completely on EFL 1.14.0
