@@ -178,9 +178,6 @@ project_close(void)
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
    project_navigator_project_unset();
    tabs_clean();
-   //ui_property_style_unset(Evas_Object *property);
-   //ui_signal_list_data_unset(Evas_Object *object);
-   //history_clear(History *history);
 
    pm_project_close(ap.project);
    ap.project = NULL;
