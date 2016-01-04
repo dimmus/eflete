@@ -382,6 +382,7 @@ editor_state_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
 {
    Diff *diff;
    Editor_State event_info;
+   Edje_Part_Type type;
 
    assert(edit_object != NULL);
 
@@ -406,8 +407,11 @@ editor_state_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
 
    /* fix incorrect default values */
    TODO("Fix edje_edit")
-   if (edje_edit_part_type_get(edit_object, part_name) == EDJE_PART_TYPE_BOX)
+   type = edje_edit_part_type_get(edit_object, part_name);
+   if (type == EDJE_PART_TYPE_BOX)
      edje_edit_state_box_layout_set(edit_object, part_name, state_name, state_val, "horizontal");
+   else if (type == EDJE_PART_TYPE_IMAGE)
+     edje_edit_state_image_set(edit_object, part_name, state_name, state_val, EFLETE_DUMMY_IMAGE_NAME);
 
    _editor_project_changed();
    event_info.part_name = eina_stringshare_add(part_name);
