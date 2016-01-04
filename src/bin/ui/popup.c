@@ -476,6 +476,8 @@ _image_gengrid_init(Helper_Data *helper_data)
                    ERR("name not found for image #%d",counter);
                    continue;
                 }
+              if (!strcmp(res->name, EFLETE_DUMMY_IMAGE_NAME)) continue;
+
               it = (Item *)mem_malloc(sizeof(Item));
               it->image_name = eina_stringshare_add(res->name);
               it->source = eina_stringshare_add(res->source);
