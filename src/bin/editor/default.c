@@ -37,7 +37,10 @@ editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
 { \
    assert(edit_object != NULL); \
    if (editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
-   return editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL); \
+   if (editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL)) \
+     return true; \
+   CRIT("reset failed"); \
+   abort(); \
 }
 
 #define EDITOR_STATE_DOUBLE_RESET(FUNC, DEF_VAL) \
@@ -155,7 +158,10 @@ editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
 { \
    assert(edit_object != NULL); \
    if (editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
-   return editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL, RESET_VAL_2, RESET_VAL_3, RESET_VAL_4); \
+   if(editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL, RESET_VAL_2, RESET_VAL_3, RESET_VAL_4)) \
+     return true; \
+   CRIT("reset failed"); \
+   abort(); \
 }
 
 #define EDITOR_STATE_INT_INT_INT_INT_RESET(FUNC, DEF_VAL, DEF_VAL_2, DEF_VAL_3, DEF_VAL_4) \
@@ -258,7 +264,10 @@ editor_part_pointer_mode_reset(Evas_Object *edit_object, Change *change, EDITOR_
    Evas_Object_Pointer_Mode reset_value = (type == EDJE_PART_TYPE_SWALLOW ||
                                            type == EDJE_PART_TYPE_GROUP ||
                                            type == EDJE_PART_TYPE_EXTERNAL) ? EVAS_OBJECT_POINTER_MODE_NOGRAB : EVAS_OBJECT_POINTER_MODE_AUTOGRAB;
-   return editor_part_pointer_mode_set(edit_object, change, false, EDITOR_PART_ARGS, reset_value);
+   if (editor_part_pointer_mode_set(edit_object, change, false, EDITOR_PART_ARGS, reset_value))
+     return true;
+   CRIT("reset failed");
+   abort();
 }
 
 #define EDITOR_PART_NULL_STRING_RESET(FUNC, RESET_VAL) \
