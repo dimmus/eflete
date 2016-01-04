@@ -40,6 +40,8 @@ typedef struct
    Evas_Object *btn_up;
    Evas_Object *btn_down;
 
+   Elm_Genlist_Item_Class *itc_parts_caption;
+   Elm_Genlist_Item_Class *itc_programs_caption;
    Elm_Genlist_Item_Class *itc_part;
    Elm_Genlist_Item_Class *itc_part_selected;
    Elm_Genlist_Item_Class *itc_state;
@@ -48,6 +50,8 @@ typedef struct
    Elm_Genlist_Item_Class *itc_item;
 
    Elm_Object_Item *selected_part_item;
+   Elm_Object_Item *parts_caption_item;
+   Elm_Object_Item *programs_caption_item;
 
    Evas_Object *menu;
    Elm_Object_Item *add_state_menu_item;
@@ -108,7 +112,7 @@ _state_label_get(void *data,
 static char *
 _item_caption_label_get(void *data,
                         Evas_Object *obj __UNUSED__,
-                        const char *pr __UNUSED__)
+                        const char *pr)
 {
    Part *part = data;
    char buf[BUFF_MAX];
@@ -123,6 +127,39 @@ _item_caption_label_get(void *data,
    if (!strcmp(pr, "elm.text"))
      return strdup(_("items"));
 
+   return NULL;
+}
+
+static char *
+_parts_caption_label_get(void *data,
+                         Evas_Object *obj,
+                         const char *pr)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   const char *name = data;
+   char buf[BUFF_MAX];
+
+   if (!strcmp(pr, "elm.text"))
+     return strdup(name);
+   if (!strcmp(pr, "elm.text.end"))
+     {
+        snprintf(buf, BUFF_MAX, "%d", eina_list_count(pl->group->parts));
+        return strdup(buf);
+     }
+   return NULL;
+}
+
+static char *
+_programs_caption_label_get(void *data,
+                            Evas_Object *obj __UNUSED__,
+                            const char *pr)
+{
+   const char *name = data;
+
+   if (!strcmp(pr, "elm.text"))
+     return strdup(name);
+   if (!strcmp(pr, "elm.text.end"))
+      return strdup("0");
    return NULL;
 }
 
@@ -257,11 +294,12 @@ _on_activated(void *data,
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
 
    assert(pl != NULL);
-   assert(pl->selected_part_item != NULL);
 
    itc = elm_genlist_item_item_class_get(glit);
    if (itc == pl->itc_state)
      {
+        assert(pl->selected_part_item != NULL);
+
         state = elm_object_item_data_get(glit);
         editor_part_selected_state_set(pl->group->edit_object, NULL, false,
                                        state->part->name,
@@ -377,6 +415,19 @@ _expanded_cb(void *data,
                                      NULL);
           }
      }
+   else if (glit == pl->parts_caption_item)
+     {
+        EINA_LIST_FOREACH(pl->group->parts, l, part)
+          {
+             elm_genlist_item_append(pl->genlist,
+                                     pl->itc_part,
+                                     part,
+                                     pl->parts_caption_item,
+                                     ELM_GENLIST_ITEM_TREE,
+                                     NULL,
+                                     NULL);
+          }
+     }
 }
 
 static void
@@ -416,13 +467,21 @@ _selected_cb(void *data,
 {
    Elm_Object_Item *glit = event_info;
    Elm_Object_Item *glit_part, *next_item;
-   const Elm_Genlist_Item_Class* itc, *next_itc;
+   const Elm_Genlist_Item_Class* itc;
    Eina_Stringshare *item_name;
    Part_List *pl = data;
    Part *part;
+   const Eina_List *items_list;
 
    assert(pl != NULL);
 
+   if ((glit == pl->parts_caption_item) ||
+       (glit == pl->programs_caption_item))
+     {
+        if (pl->selected_part_item)
+          _unselect_part(pl);
+        return;
+     }
    itc = elm_genlist_item_item_class_get(glit);
 
    if (itc == pl->itc_item)
@@ -431,7 +490,8 @@ _selected_cb(void *data,
      item_name = NULL;
 
    glit_part = glit;
-   while (elm_genlist_item_parent_get(glit_part))
+   TODO("check for programs");
+   while (elm_genlist_item_parent_get(glit_part) != pl->parts_caption_item)
      glit_part = elm_genlist_item_parent_get(glit_part);
 
    part = elm_object_item_data_get(glit_part);
@@ -460,24 +520,16 @@ _selected_cb(void *data,
    /* enabling or disabling up and down buttons */
    if ((itc == pl->itc_part_selected) || (itc == pl->itc_part))
      {
-        TODO("Update logic after adding 'parts' genlist item")
-        if (elm_genlist_item_prev_get(glit) == NULL)
+        items_list = elm_genlist_item_subitems_get(pl->parts_caption_item);
+        if (glit == eina_list_data_get(items_list))
           elm_object_disabled_set(pl->btn_up, true);
         else
           elm_object_disabled_set(pl->btn_up, false);
 
-        next_item = elm_genlist_item_next_get(glit);
-        while (next_item != NULL)
-          {
-             next_itc = elm_genlist_item_item_class_get(next_item);
-             if ((next_itc == pl->itc_part_selected) || (next_itc == pl->itc_part))
-               break;
-             next_item = elm_genlist_item_next_get(next_item);
-          }
-        if (next_item)
-          elm_object_disabled_set(pl->btn_down, false);
-        else
+        if (glit == eina_list_data_get(eina_list_last(items_list)))
           elm_object_disabled_set(pl->btn_down, true);
+        else
+          elm_object_disabled_set(pl->btn_down, false);
      }
    else if ((itc == pl->itc_item))
      {
@@ -618,14 +670,24 @@ group_navigator_part_add(Evas_Object *obj, Part *part)
    assert(pl != NULL);
    assert(part != NULL);
 
-   glit = elm_genlist_item_append(pl->genlist,
-                                  pl->itc_part,
-                                  part,
-                                  NULL,
-                                  ELM_GENLIST_ITEM_TREE,
-                                  NULL,
-                                  NULL);
+   if (elm_genlist_item_expanded_get(pl->parts_caption_item))
+     {
+        glit = elm_genlist_item_append(pl->genlist,
+                                       pl->itc_part,
+                                       part,
+                                       pl->parts_caption_item,
+                                       ELM_GENLIST_ITEM_TREE,
+                                       NULL,
+                                       NULL);
+     }
+   else
+     {
+        elm_genlist_item_expanded_set(pl->parts_caption_item, EINA_TRUE);
+        glit = eina_list_data_get(eina_list_last(elm_genlist_item_subitems_get(pl->parts_caption_item)));
+
+     }
    elm_genlist_item_selected_set(glit, true);
+   elm_genlist_item_update(pl->parts_caption_item);
 }
 
 static void
@@ -993,16 +1055,21 @@ static Elm_Object_Item *
 _part_item_find(Part_List *pl, Part *part)
 {
    Elm_Object_Item *part_item;
+   const Eina_List *part_items;
    Part *pr;
 
    assert(pl != NULL);
    assert(part != NULL);
 
-   part_item = elm_genlist_first_item_get(pl->genlist);
+   elm_genlist_item_expanded_set(pl->parts_caption_item, true);
+   part_items = elm_genlist_item_subitems_get(pl->parts_caption_item);
+
+   part_item = eina_list_data_get(part_items);
    pr = elm_object_item_data_get(part_item);
    while (pr != part)
      {
-        part_item = elm_genlist_item_next_get(part_item);
+        part_items = eina_list_next(part_items);
+        part_item = eina_list_data_get(part_items);
         pr = elm_object_item_data_get(part_item);
 
         assert(pr != NULL);
@@ -1025,6 +1092,7 @@ group_navigator_part_del(Evas_Object *obj, Part *part)
      _unselect_part(pl);
 
    elm_object_item_del(part_item);
+   elm_genlist_item_update(pl->parts_caption_item);
 }
 
 static void
@@ -1229,35 +1297,38 @@ group_navigator_part_restack(Evas_Object *obj, Part *part, Part *rel_part)
    assert(pl != NULL);
    assert(part != NULL);
 
-   glit = _part_item_find(pl, part);
-   assert(glit != NULL);
-   TODO("Update item insertion after adding top-level 'parts' item to group_navigator and delete this assert");
-   assert(elm_genlist_item_parent_get(glit) == NULL);
-   if (rel_part)
+   if (elm_genlist_item_expanded_get(pl->parts_caption_item))
      {
-        rel_glit = _part_item_find(pl, rel_part);
-        assert(rel_glit != NULL);
+        glit = _part_item_find(pl, part);
+        assert(glit != NULL);
+        assert(elm_genlist_item_parent_get(glit) == pl->parts_caption_item);
 
-        elm_genlist_item_insert_before(pl->genlist,
-                                       pl->itc_part_selected,
-                                       part,
-                                       NULL /* <- parent_item */,
-                                       rel_glit,
-                                       ELM_GENLIST_ITEM_TREE,
-                                       NULL,
-                                       NULL);
+        if (rel_part)
+          {
+             rel_glit = _part_item_find(pl, rel_part);
+             assert(rel_glit != NULL);
+
+             elm_genlist_item_insert_before(pl->genlist,
+                                            pl->itc_part_selected,
+                                            part,
+                                            pl->parts_caption_item,
+                                            rel_glit,
+                                            ELM_GENLIST_ITEM_TREE,
+                                            NULL,
+                                            NULL);
+          }
+        else
+          {
+             elm_genlist_item_append(pl->genlist,
+                                     pl->itc_part_selected,
+                                     part,
+                                     pl->parts_caption_item,
+                                     ELM_GENLIST_ITEM_TREE,
+                                     NULL,
+                                     NULL);
+          }
+        elm_object_item_del(glit);
      }
-   else
-     {
-        elm_genlist_item_append(pl->genlist,
-                                pl->itc_part_selected,
-                                part,
-                                NULL /* <- parent_item */,
-                                ELM_GENLIST_ITEM_TREE,
-                                NULL,
-                                NULL);
-     }
-   elm_object_item_del(glit);
    group_navigator_part_select(pl->layout, part);
 }
 
@@ -1388,8 +1459,6 @@ group_navigator_add(Group *group)
 {
    Evas_Object *icon;
    Part_List *pl;
-   Eina_List *l;
-   Part *part;
    Elm_Object_Item *menu_item;
 
    assert(group != NULL);
@@ -1449,6 +1518,14 @@ group_navigator_add(Group *group)
    pl->itc_item_caption->item_style = "item";
    pl->itc_item_caption->func.text_get = _item_caption_label_get;
 
+   TODO("create new style or fix default (we need to set number at the end)");
+   pl->itc_parts_caption = elm_genlist_item_class_new();
+   pl->itc_parts_caption->item_style = "item";
+   pl->itc_parts_caption->func.text_get = _parts_caption_label_get;
+
+   pl->itc_programs_caption = elm_genlist_item_class_new();
+   pl->itc_programs_caption->item_style = "item";
+   pl->itc_programs_caption->func.text_get = _programs_caption_label_get;
 
    pl->genlist = elm_genlist_add(pl->layout);
    elm_genlist_homogeneous_set(pl->genlist, true);
@@ -1465,16 +1542,22 @@ group_navigator_add(Group *group)
    evas_object_data_set(pl->genlist, GROUP_NAVIGATOR_DATA, pl);
    /*elm_genlist_tree_effect_enabled_set(pl->genlist, EINA_TRUE);*/
 
-   EINA_LIST_FOREACH(group->parts, l, part)
-     {
-        elm_genlist_item_append(pl->genlist,
-                                pl->itc_part,
-                                part,
-                                NULL,
-                                ELM_GENLIST_ITEM_TREE,
-                                NULL,
-                                NULL);
-     }
+   pl->parts_caption_item = elm_genlist_item_append(pl->genlist,
+                                                    pl->itc_parts_caption,
+                                                    _("Parts"),
+                                                    NULL,
+                                                    ELM_GENLIST_ITEM_TREE,
+                                                    NULL,
+                                                    NULL);
+   elm_genlist_item_expanded_set(pl->parts_caption_item, true);
+   pl->programs_caption_item = elm_genlist_item_append(pl->genlist,
+                                                    pl->itc_programs_caption,
+                                                    _("Programs"),
+                                                    NULL,
+                                                    ELM_GENLIST_ITEM_TREE,
+                                                    NULL,
+                                                    NULL);
+
 
    elm_object_text_set(pl->layout, pl->group->name);
 
