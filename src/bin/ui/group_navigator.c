@@ -1463,7 +1463,7 @@ group_navigator_add(Group *group)
    evas_object_smart_callback_add(pl->genlist, "contracted", _contracted_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "selected", _selected_cb, pl);
    evas_object_data_set(pl->genlist, GROUP_NAVIGATOR_DATA, pl);
-   elm_genlist_tree_effect_enabled_set(pl->genlist, EINA_TRUE);
+   /*elm_genlist_tree_effect_enabled_set(pl->genlist, EINA_TRUE);*/
 
    EINA_LIST_FOREACH(group->parts, l, part)
      {
