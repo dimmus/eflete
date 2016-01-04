@@ -40,8 +40,7 @@ typedef struct
    Evas_Object *btn_up;
    Evas_Object *btn_down;
 
-   Elm_Genlist_Item_Class *itc_parts_caption;
-   Elm_Genlist_Item_Class *itc_programs_caption;
+   Elm_Genlist_Item_Class *itc_caption;
    Elm_Genlist_Item_Class *itc_part;
    Elm_Genlist_Item_Class *itc_part_selected;
    Elm_Genlist_Item_Class *itc_state;
@@ -119,38 +118,24 @@ _item_caption_label_get(void *data,
 }
 
 static char *
-_parts_caption_label_get(void *data,
-                         Evas_Object *obj,
-                         const char *pr)
+_caption_label_get(void *data,
+                   Evas_Object *obj,
+                   const char *pr)
 {
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
-   const char *name = data;
+   Eina_List **list = data;
    char buf[BUFF_MAX];
 
    if (!strcmp(pr, "elm.text"))
-     return strdup(name);
-   if (!strcmp(pr, "elm.text.end"))
      {
-        snprintf(buf, BUFF_MAX, "%d", eina_list_count(pl->group->parts));
-        return strdup(buf);
+        if (list == &pl->group->parts)
+          return strdup(_("Parts"));
+        else if (list == &pl->group->programs)
+          return strdup(_("Programs"));
      }
-   return NULL;
-}
-
-static char *
-_programs_caption_label_get(void *data,
-                            Evas_Object *obj,
-                            const char *pr)
-{
-   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
-   const char *name = data;
-   char buf[BUFF_MAX];
-
-   if (!strcmp(pr, "elm.text"))
-     return strdup(name);
    if (!strcmp(pr, "elm.text.end"))
      {
-        snprintf(buf, BUFF_MAX, "%d", eina_list_count(pl->group->programs));
+        snprintf(buf, BUFF_MAX, "%d", eina_list_count(*list));
         return strdup(buf);
      }
    return NULL;
@@ -1539,13 +1524,9 @@ group_navigator_add(Group *group)
    pl->itc_item_caption->func.text_get = _item_caption_label_get;
 
    TODO("create new style or fix default (we need to set number at the end)");
-   pl->itc_parts_caption = elm_genlist_item_class_new();
-   pl->itc_parts_caption->item_style = "item";
-   pl->itc_parts_caption->func.text_get = _parts_caption_label_get;
-
-   pl->itc_programs_caption = elm_genlist_item_class_new();
-   pl->itc_programs_caption->item_style = "item";
-   pl->itc_programs_caption->func.text_get = _programs_caption_label_get;
+   pl->itc_caption = elm_genlist_item_class_new();
+   pl->itc_caption->item_style = "item";
+   pl->itc_caption->func.text_get = _caption_label_get;
 
    pl->itc_program = elm_genlist_item_class_new();
    pl->itc_program->item_style = "default";
@@ -1567,16 +1548,16 @@ group_navigator_add(Group *group)
    /*elm_genlist_tree_effect_enabled_set(pl->genlist, EINA_TRUE);*/
 
    pl->parts_caption_item = elm_genlist_item_append(pl->genlist,
-                                                    pl->itc_parts_caption,
-                                                    _("Parts"),
+                                                    pl->itc_caption,
+                                                    &group->parts,
                                                     NULL,
                                                     ELM_GENLIST_ITEM_TREE,
                                                     NULL,
                                                     NULL);
    elm_genlist_item_expanded_set(pl->parts_caption_item, true);
    pl->programs_caption_item = elm_genlist_item_append(pl->genlist,
-                                                    pl->itc_programs_caption,
-                                                    _("Programs"),
+                                                    pl->itc_caption,
+                                                    &group->programs,
                                                     NULL,
                                                     ELM_GENLIST_ITEM_TREE,
                                                     NULL,
