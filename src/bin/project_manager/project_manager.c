@@ -377,6 +377,29 @@ _project_special_group_add(Project *project)
    ecore_thread_main_loop_end();
 }
 
+static void
+_project_dummy_image_add(Project *project)
+{
+   Evas *e;
+   Evas_Object *edje_edit_obj;
+
+   assert(project != NULL);
+
+   ecore_thread_main_loop_begin();
+
+   Ecore_Evas *ee = ecore_evas_buffer_new(0, 0);
+   e = ecore_evas_get(ee);
+   edje_edit_obj = edje_edit_object_add(e);
+
+   edje_object_file_set(edje_edit_obj, project->saved_edj, EFLETE_INTERNAL_GROUP_NAME);
+   edje_edit_image_add(edje_edit_obj, EFLETE_IMG_PATH EFLETE_DUMMY_IMAGE_NAME);
+
+   evas_object_del(edje_edit_obj);
+   ecore_evas_free(project->ecore_evas);
+
+   ecore_thread_main_loop_end();
+}
+
 static void *
 _project_import_edj(void *data,
                     Eina_Thread *thread __UNUSED__)
@@ -394,6 +417,7 @@ _project_import_edj(void *data,
    _project_edj_file_copy(worker);
    _copy_meta_data_to_pro(worker);
    _project_special_group_add(worker.project);
+   _project_dummy_image_add(worker.project);
    _project_open_internal(worker.project);
    THREAD_TESTCANCEL;
    PROGRESS_SEND(_("Import finished. Project '%s' created"), worker.project->name);
@@ -634,6 +658,12 @@ _project_open(void *data,
         PROGRESS_SEND(_("Updating project files to version 3"));
         _project_special_group_add(worker.project);
         worker.project->version = 3;
+     }
+   if (worker.project->version < 4) /* upgrade to version 4 */
+     {
+        PROGRESS_SEND(_("Updating project files to version 4"));
+        _project_dummy_image_add(worker.project);
+        worker.project->version = 4;
      }
    TODO("Add crash recovery prompt here")
 

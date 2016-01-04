@@ -37,7 +37,7 @@
 #include "group_manager.h"
 
 /* don't forget to update on major changes */
-#define PROJECT_FILE_VERSION 3
+#define PROJECT_FILE_VERSION 4
 
 typedef struct _Enventor_Data Enventor_Data;
 

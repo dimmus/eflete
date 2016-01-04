@@ -80,6 +80,7 @@ TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
 #include "signals.h"
 
 #define EFLETE_INTERNAL_GROUP_NAME "___eflete_internal_group___"
+#define EFLETE_DUMMY_IMAGE_NAME "___eflete_dummy_image___.png"
 
 struct _App_Data
 {
