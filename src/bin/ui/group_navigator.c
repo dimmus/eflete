@@ -48,6 +48,7 @@ typedef struct
    Elm_Genlist_Item_Class *itc_state_selected;
    Elm_Genlist_Item_Class *itc_item_caption;
    Elm_Genlist_Item_Class *itc_item;
+   Elm_Genlist_Item_Class *itc_program;
 
    Elm_Object_Item *selected_part_item;
    Elm_Object_Item *parts_caption_item;
@@ -84,29 +85,16 @@ static char *part_types[] = {
 static const unsigned int part_types_count = 12;
 
 static char *
-_part_label_get(void *data,
-                Evas_Object *obj __UNUSED__,
-                const char *pr __UNUSED__)
+_resource_label_get(void *data,
+                    Evas_Object *obj __UNUSED__,
+                    const char *pr __UNUSED__)
 {
-   Part *part = data;
+   Resource *res= data;
 
-   assert(part != NULL);
-   assert(part->name != NULL);
+   assert(res != NULL);
+   assert(res->name != NULL);
 
-   return strdup(part->name);
-}
-
-static char *
-_state_label_get(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 const char *pr __UNUSED__)
-{
-   State *state = data;
-
-   assert(state != NULL);
-   assert(state->name != NULL);
-
-   return strdup(state->name);
+   return strdup(res->name);
 }
 
 static char *
@@ -151,15 +139,20 @@ _parts_caption_label_get(void *data,
 
 static char *
 _programs_caption_label_get(void *data,
-                            Evas_Object *obj __UNUSED__,
+                            Evas_Object *obj,
                             const char *pr)
 {
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    const char *name = data;
+   char buf[BUFF_MAX];
 
    if (!strcmp(pr, "elm.text"))
      return strdup(name);
    if (!strcmp(pr, "elm.text.end"))
-      return strdup("0");
+     {
+        snprintf(buf, BUFF_MAX, "%d", eina_list_count(pl->group->programs));
+        return strdup(buf);
+     }
    return NULL;
 }
 
@@ -353,6 +346,7 @@ _expanded_cb(void *data,
    const Elm_Genlist_Item_Class* itc;
    Eina_List *l;
    Part *part;
+   Resource *res;
    State *state;
    Eina_Stringshare *item_name;
 
@@ -428,6 +422,19 @@ _expanded_cb(void *data,
                                      NULL);
           }
      }
+   else if (glit == pl->programs_caption_item)
+     {
+        EINA_LIST_FOREACH(pl->group->programs, l, res)
+          {
+             elm_genlist_item_append(pl->genlist,
+                                     pl->itc_program,
+                                     res,
+                                     pl->programs_caption_item,
+                                     ELM_GENLIST_ITEM_NONE,
+                                     NULL,
+                                     NULL);
+          }
+     }
 }
 
 static void
@@ -471,6 +478,7 @@ _selected_cb(void *data,
    Eina_Stringshare *item_name;
    Part_List *pl = data;
    Part *part;
+   Resource *res;
    const Eina_List *items_list;
 
    assert(pl != NULL);
@@ -484,70 +492,82 @@ _selected_cb(void *data,
      }
    itc = elm_genlist_item_item_class_get(glit);
 
-   if (itc == pl->itc_item)
-     item_name = elm_object_item_data_get(glit);
-   else
-     item_name = NULL;
-
-   glit_part = glit;
-   TODO("check for programs");
-   while (elm_genlist_item_parent_get(glit_part) != pl->parts_caption_item)
-     glit_part = elm_genlist_item_parent_get(glit_part);
-
-   part = elm_object_item_data_get(glit_part);
-   if ((pl->selected_part_item != glit_part) || (part->current_item_name != item_name))
+   TODO("refactor")
+   if (itc == pl->itc_program)
      {
         if (pl->selected_part_item)
           _unselect_part(pl);
-        pl->selected_part_item = glit_part;
-        part->current_item_name = item_name;
-        pl->group->current_part = part;
-        evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED,
-                                        (void *)part);
-        elm_genlist_item_item_class_update(glit_part, pl->itc_part_selected);
-     }
-   elm_object_item_disabled_set(pl->add_state_menu_item, false);
-   if ((part->type == EDJE_PART_TYPE_BOX) ||
-       (part->type == EDJE_PART_TYPE_TABLE))
-     elm_object_item_disabled_set(pl->add_part_item_menu_item, false);
-   /* enabling or disabling del button */
-   if ((itc == pl->itc_item_caption) ||
-       (((itc == pl->itc_state) || (itc == pl->itc_state_selected)) &&
-        (!strcmp(((State *)elm_object_item_data_get(glit))->name, "default 0.00"))))
-     elm_object_disabled_set(pl->btn_del, true);
-   else
-     elm_object_disabled_set(pl->btn_del, false);
-   /* enabling or disabling up and down buttons */
-   if ((itc == pl->itc_part_selected) || (itc == pl->itc_part))
-     {
-        items_list = elm_genlist_item_subitems_get(pl->parts_caption_item);
-        if (glit == eina_list_data_get(items_list))
-          elm_object_disabled_set(pl->btn_up, true);
-        else
-          elm_object_disabled_set(pl->btn_up, false);
 
-        if (glit == eina_list_data_get(eina_list_last(items_list)))
-          elm_object_disabled_set(pl->btn_down, true);
-        else
-          elm_object_disabled_set(pl->btn_down, false);
-     }
-   else if ((itc == pl->itc_item))
-     {
-        if (elm_genlist_item_item_class_get(elm_genlist_item_prev_get(glit)) == pl->itc_item)
-          elm_object_disabled_set(pl->btn_up, false);
-        else
-          elm_object_disabled_set(pl->btn_up, true);
-
-        next_item = elm_genlist_item_next_get(glit);
-        if (next_item && (elm_genlist_item_item_class_get(next_item) == pl->itc_item))
-          elm_object_disabled_set(pl->btn_down, false);
-        else
-          elm_object_disabled_set(pl->btn_down, true);
+        res = elm_object_item_data_get(glit);
+        evas_object_smart_callback_call(ap.win, SIGNAL_PROGRAM_SELECTED, (void *)res);
      }
    else
      {
-        elm_object_disabled_set(pl->btn_down, true);
-        elm_object_disabled_set(pl->btn_up, true);
+        if (itc == pl->itc_item)
+          item_name = elm_object_item_data_get(glit);
+        else
+          item_name = NULL;
+
+        glit_part = glit;
+        TODO("check for programs");
+        while (elm_genlist_item_parent_get(glit_part) != pl->parts_caption_item)
+          glit_part = elm_genlist_item_parent_get(glit_part);
+
+        part = elm_object_item_data_get(glit_part);
+        if ((pl->selected_part_item != glit_part) || (part->current_item_name != item_name))
+          {
+             if (pl->selected_part_item)
+               _unselect_part(pl);
+             pl->selected_part_item = glit_part;
+             part->current_item_name = item_name;
+             pl->group->current_part = part;
+             evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED,
+                                             (void *)part);
+             elm_genlist_item_item_class_update(glit_part, pl->itc_part_selected);
+          }
+        elm_object_item_disabled_set(pl->add_state_menu_item, false);
+        if ((part->type == EDJE_PART_TYPE_BOX) ||
+            (part->type == EDJE_PART_TYPE_TABLE))
+          elm_object_item_disabled_set(pl->add_part_item_menu_item, false);
+        /* enabling or disabling del button */
+        if ((itc == pl->itc_item_caption) ||
+            (((itc == pl->itc_state) || (itc == pl->itc_state_selected)) &&
+             (!strcmp(((State *)elm_object_item_data_get(glit))->name, "default 0.00"))))
+          elm_object_disabled_set(pl->btn_del, true);
+        else
+          elm_object_disabled_set(pl->btn_del, false);
+        /* enabling or disabling up and down buttons */
+        if ((itc == pl->itc_part_selected) || (itc == pl->itc_part))
+          {
+             items_list = elm_genlist_item_subitems_get(pl->parts_caption_item);
+             if (glit == eina_list_data_get(items_list))
+               elm_object_disabled_set(pl->btn_up, true);
+             else
+               elm_object_disabled_set(pl->btn_up, false);
+
+             if (glit == eina_list_data_get(eina_list_last(items_list)))
+               elm_object_disabled_set(pl->btn_down, true);
+             else
+               elm_object_disabled_set(pl->btn_down, false);
+          }
+        else if ((itc == pl->itc_item))
+          {
+             if (elm_genlist_item_item_class_get(elm_genlist_item_prev_get(glit)) == pl->itc_item)
+               elm_object_disabled_set(pl->btn_up, false);
+             else
+               elm_object_disabled_set(pl->btn_up, true);
+
+             next_item = elm_genlist_item_next_get(glit);
+             if (next_item && (elm_genlist_item_item_class_get(next_item) == pl->itc_item))
+               elm_object_disabled_set(pl->btn_down, false);
+             else
+               elm_object_disabled_set(pl->btn_down, true);
+          }
+        else
+          {
+             elm_object_disabled_set(pl->btn_down, true);
+             elm_object_disabled_set(pl->btn_up, true);
+          }
      }
 }
 
@@ -1493,22 +1513,22 @@ group_navigator_add(Group *group)
 #undef BTN_ADD
    pl->itc_part = elm_genlist_item_class_new();
    pl->itc_part->item_style = "part";
-   pl->itc_part->func.text_get = _part_label_get;
+   pl->itc_part->func.text_get = _resource_label_get;
    pl->itc_part->func.content_get = _part_content_get;
 
    TODO("Get rid of *_selected item classes. Use func.state_get instead")
    pl->itc_part_selected = elm_genlist_item_class_new();
    pl->itc_part_selected->item_style = "part_selected";
-   pl->itc_part_selected->func.text_get = _part_label_get;
+   pl->itc_part_selected->func.text_get = _resource_label_get;
    pl->itc_part_selected->func.content_get = _part_content_get;
 
    pl->itc_state = elm_genlist_item_class_new();
    pl->itc_state->item_style = "state";
-   pl->itc_state->func.text_get = _state_label_get;
+   pl->itc_state->func.text_get = _resource_label_get;
 
    pl->itc_state_selected = elm_genlist_item_class_new();
    pl->itc_state_selected->item_style = "state_selected";
-   pl->itc_state_selected->func.text_get = _state_label_get;
+   pl->itc_state_selected->func.text_get = _resource_label_get;
 
    pl->itc_item = elm_genlist_item_class_new();
    pl->itc_item->item_style = "item";
@@ -1526,6 +1546,10 @@ group_navigator_add(Group *group)
    pl->itc_programs_caption = elm_genlist_item_class_new();
    pl->itc_programs_caption->item_style = "item";
    pl->itc_programs_caption->func.text_get = _programs_caption_label_get;
+
+   pl->itc_program = elm_genlist_item_class_new();
+   pl->itc_program->item_style = "default";
+   pl->itc_program->func.text_get = _resource_label_get;
 
    pl->genlist = elm_genlist_add(pl->layout);
    elm_genlist_homogeneous_set(pl->genlist, true);

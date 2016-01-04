@@ -61,6 +61,14 @@
 #define SIGNAL_PART_SELECTED "SIGNAL_PART_SELECTED"
 
 /**
+ * emited when program is selected.
+ * eventinfo - pointer to Resource structure
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_PROGRAM_SELECTED "SIGNAL_PROGRAM_SELECTED"
+
+/**
  * emited when part is unselected.
  * eventinfo - pointer to Part structure
  *
