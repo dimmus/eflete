@@ -18,6 +18,7 @@
  */
 
 #include "main_window.h"
+#include "tabs.h"
 #include "project_manager.h"
 #include "project_common.h"
 
@@ -126,4 +127,63 @@ void
 project_export_edc_project(void)
 {
    popup_fileselector_folder_helper("Export source code", NULL, NULL, _export_source_code, NULL, false, false);
+}
+
+static Eina_Bool
+_export_group_source_code_setup(void *data, Splash_Status status __UNUSED__)
+{
+   Eina_Stringshare *path = (Eina_Stringshare *)data;
+
+   assert(path != NULL);
+
+   pm_group_source_code_export(ap.project,
+                               tabs_current_group_get(),
+                               path,
+                               progress_print,
+                               progress_end,
+                               NULL);
+   return true;
+}
+
+static Eina_Bool
+_export_group_source_code(void *data __UNUSED__,
+                          Evas_Object *obj __UNUSED__, /* this is fileselector from popup */
+                          void *event_info)
+{
+   Eina_List *selected = (Eina_List *)event_info;
+   Eina_Stringshare *path;
+   Eina_Strbuf *buf;
+   char *name;
+   Group *group;
+
+   assert(selected != NULL);
+
+   group = tabs_current_group_get();
+   name = strdup(group->name);
+   string_char_replace(name, '/', '_');
+
+   path = eina_stringshare_add((const char *)eina_list_data_get(selected));
+   buf = eina_strbuf_new();
+   eina_strbuf_append_printf(buf,
+                             _("<font_size=16>A project file '%s/%s' already exist."
+                               "Do you want to replace it?</font_size>"),
+                             path, name);
+   if (!exist_permission_check(path, name,
+                               _("Export group source code"),
+                               eina_strbuf_string_get(buf)))
+     return false;
+   eina_strbuf_free(buf);
+   free(name);
+
+   ap.splash = splash_add(ap.win, _export_group_source_code_setup, _export_teardown, NULL, (void *)path);
+   evas_object_focus_set(ap.splash, true);
+   evas_object_show(ap.splash);
+
+   return true;
+}
+
+void
+project_export_edc_group(void)
+{
+   popup_fileselector_folder_helper("Export group source code", NULL, NULL, _export_group_source_code, NULL, false, false);
 }
