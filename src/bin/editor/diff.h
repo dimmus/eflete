@@ -49,6 +49,7 @@ typedef enum {
    FUNCTION_TYPE_STRING_EDJEEDITENTRYMODE,
    FUNCTION_TYPE_STRING_EVASOBJECTPOINTERMODE,
    FUNCTION_TYPE_STRING_UCHAR,
+   FUNCTION_TYPE_STRING_EDJEACTIONTYPE,
 } Function_Type;
 
 struct _Function_Info {
@@ -181,6 +182,10 @@ struct _Function_Info {
          Eina_Stringshare *s1;
          unsigned char uc2;
       } type_suc;
+      struct {
+         Eina_Stringshare *s1;
+         Edje_Action_Type eat2;
+      } type_seat;
    } args;              /**< function args not including Evas_Object * */
 };
 
