@@ -3300,7 +3300,10 @@ prop_state_image_update(Group_Prop_Data *pd)
    const char *value;
    value = edje_edit_state_image_get(pd->group->edit_object STATE_ARGS);
    if (!strcmp(value, EFLETE_DUMMY_IMAGE_NAME))
-     value = _("None");
+     {
+        edje_edit_string_free(value);
+        value = eina_stringshare_add(_("None"));
+     }
    char *text = elm_entry_utf8_to_markup(value);
    if (strcmp(text, elm_entry_entry_get(pd->attributes.state_image.image)))
      elm_entry_entry_set(pd->attributes.state_image.image, text);
