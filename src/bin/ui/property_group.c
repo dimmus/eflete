@@ -3293,8 +3293,22 @@ prop_##SUB##_##VALUE##_add(Evas_Object *box, Group_Prop_Data *pd) \
 ATTR_4SPINNERS(_("border"), state_image, border, state_image, NULL, STATE_ARGS,
                _("border changed to [%d %d %d %d]"))
 
-STATE_ATTR_1ENTRY(_("image"), state, image, state_image, NULL, NULL,
-                  _("image changed to %s"))
+STATE_ATTR_1ENTRY_CALLBACK(state, image, NULL, _("image changed to %s"))
+static void
+prop_state_image_update(Group_Prop_Data *pd)
+{
+   const char *value;
+   value = edje_edit_state_image_get(pd->group->edit_object STATE_ARGS);
+   if (!strcmp(value, EFLETE_DUMMY_IMAGE_NAME))
+     value = _("None");
+   char *text = elm_entry_utf8_to_markup(value);
+   if (strcmp(text, elm_entry_entry_get(pd->attributes.state_image.image)))
+     elm_entry_entry_set(pd->attributes.state_image.image, text);
+   edje_edit_string_free(value);
+   free(text);
+}
+STATE_ATTR_1ENTRY_ADD("image", state, image, state_image, NULL, NULL)
+
 STATE_ATTR_1COMBOBOX_LIST(_("border fill"), state_image, border_fill, state_image,\
                           edje_middle_type, NULL, unsigned char,
                           _("border fill changed to %s"))
