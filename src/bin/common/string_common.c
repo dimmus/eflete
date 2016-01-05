@@ -47,3 +47,15 @@ state_name_split(Eina_Stringshare *name, Eina_Stringshare **name_out, double *va
    free(state_split[0]);
    free(state_split);
 }
+
+void
+string_char_replace(char *str, char src, char rep)
+{
+   assert(str != NULL);
+
+   while (*str != '\0')
+     {
+        if (*str == src) *str = rep;
+        str++;
+     }
+}
