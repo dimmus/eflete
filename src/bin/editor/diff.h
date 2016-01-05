@@ -50,6 +50,7 @@ typedef enum {
    FUNCTION_TYPE_STRING_EVASOBJECTPOINTERMODE,
    FUNCTION_TYPE_STRING_UCHAR,
    FUNCTION_TYPE_STRING_EDJEACTIONTYPE,
+   FUNCTION_TYPE_STRING_EDJECHANNEL,
 } Function_Type;
 
 struct _Function_Info {
@@ -186,6 +187,10 @@ struct _Function_Info {
          Eina_Stringshare *s1;
          Edje_Action_Type eat2;
       } type_seat;
+      struct {
+         Eina_Stringshare *s1;
+         Edje_Channel ec2;
+      } type_sec;
    } args;              /**< function args not including Evas_Object * */
 };
 
