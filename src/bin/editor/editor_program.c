@@ -117,3 +117,35 @@ editor_program_transition_from_current_set(Evas_Object *edit_object, Change *cha
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
+
+Eina_Bool
+editor_program_action_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                          const char *program, Edje_Action_Type new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_PROGRAM_ACTION;
+   assert(edit_object != NULL);
+   assert(program != NULL);
+   if (change)
+     {
+        Edje_Action_Type old_value = edje_edit_program_action_get(edit_object, program);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_EDJEACTIONTYPE;
+        diff->redo.function = editor_program_action_set;
+        diff->redo.args.type_seat.s1 = eina_stringshare_add(program);
+        diff->redo.args.type_seat.eat2 = new_val;
+        diff->undo.type = FUNCTION_TYPE_STRING_EDJEACTIONTYPE;
+        diff->undo.function = editor_program_action_set;
+        diff->undo.args.type_seat.s1 = eina_stringshare_add(program);
+        diff->undo.args.type_seat.eat2 = old_value;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_program_action_set(edit_object, program, new_val))
+     return false;
+   _editor_project_changed();
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}

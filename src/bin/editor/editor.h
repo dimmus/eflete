@@ -146,7 +146,8 @@ typedef enum {
    ATTRIBUTE_PART_CURSOR_MODE,
    ATTRIBUTE_STATE_FILL_TYPE,
    ATTRIBUTE_PROGRAM_TRANSITION_TYPE,
-   ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT
+   ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT,
+   ATTRIBUTE_PROGRAM_ACTION
 } Attribute;
 
 void
@@ -608,5 +609,8 @@ editor_program_transition_type_set(Evas_Object *edit_object, Change *change, Ein
 Eina_Bool
 editor_program_transition_from_current_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                                            const char *program, Eina_Bool new_val);
+Eina_Bool
+editor_program_action_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                          const char *program, Edje_Action_Type new_val);
 
 #endif /* EDITOR_H */
