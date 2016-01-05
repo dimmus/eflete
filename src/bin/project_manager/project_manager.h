@@ -416,20 +416,24 @@ Eina_Bool
 pm_project_resource_export(Project *pro, const char* dir_path);
 
 /**
- * Export the source code of Style (edje object) to file.
- * If file is NULL, file will be saved to develop folder of project by name
- * "tmp.edc"
+ * Export the source code of Group (edje object) to file.
  *
  * @param pro The opened project;
- * @param style The style to save the source code;
- * @param file The file for save.
- *
- * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ * @param group The group to save the source code;
+ * @param path The path for export source code;
+ * @param func_progress The user func for print export progress;
+ * @param func_end The user func for handle the end of export;
+ * @param data The user data;
  *
  * @ingroup ProjectManager.
  */
-//Eina_Bool
-//pm_project_style_source_code_export(Project *pro, Style *style, const char *file);
+void
+pm_group_source_code_export(Project *project,
+                            Group *group,
+                            const char *path,
+                            PM_Project_Progress_Cb func_progress,
+                            PM_Project_End_Cb func_end,
+                            const void *data);
 
 /**
  * Export the source code of Project (for each style edje objects) to a directory
