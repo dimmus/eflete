@@ -1418,6 +1418,27 @@ _external_resources_export(Eina_List *resources, const char *dst)
    eina_strbuf_free(buf);
 }
 
+static void
+_external_resource_export(Eina_List *resources, Eina_Stringshare *name, const char *dst)
+{
+   Eina_Strbuf *buf;
+   Eina_List *l;
+   External_Resource *res;
+
+   buf = eina_strbuf_new();
+   EINA_LIST_FOREACH(resources, l, res)
+     {
+        if (name == res->name)
+          {
+             eina_strbuf_append_printf(buf, "%s/%s", dst, res->name);
+             ecore_file_cp(res->source, eina_strbuf_string_get(buf));
+             eina_strbuf_reset(buf);
+             break;
+          }
+     }
+   eina_strbuf_free(buf);
+}
+
 static void *
 _source_code_export(void *data __UNUSED__, Eina_Thread *thread __UNUSED__)
 {
