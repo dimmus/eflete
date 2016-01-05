@@ -257,6 +257,7 @@
 //#pragma GCC poison edje_edit_program_transition_value2_set
 //#pragma GCC poison edje_edit_program_transition_time_set
 //#pragma GCC poison edje_edit_program_filter_part_set
+#pragma GCC poison edje_edit_program_channel_set
 
 /* Scripts API */
 //#pragma GCC poison edje_edit_script_set

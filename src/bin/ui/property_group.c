@@ -886,6 +886,7 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
       case ATTRIBUTE_PROGRAM_ACTION:
+      case ATTRIBUTE_PROGRAM_CHANNEL:
          TODO("implement");
          break;
          /* Don't add 'default:'. Compiler must warn about missing cases */
