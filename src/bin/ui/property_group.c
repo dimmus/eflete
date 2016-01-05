@@ -883,6 +883,10 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_STATE_IMAGE_TWEEN:
          prop_item_state_image_tween_update(pd->attributes.state_image.tween, pd);
          break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
+      case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
+         TODO("implement");
+         break;
          /* Don't add 'default:'. Compiler must warn about missing cases */
      }
 }
