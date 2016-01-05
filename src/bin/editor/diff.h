@@ -51,6 +51,7 @@ typedef enum {
    FUNCTION_TYPE_STRING_UCHAR,
    FUNCTION_TYPE_STRING_EDJEACTIONTYPE,
    FUNCTION_TYPE_STRING_EDJECHANNEL,
+   FUNCTION_TYPE_STRING_EDJETWEENMODE,
 } Function_Type;
 
 struct _Function_Info {
@@ -191,6 +192,10 @@ struct _Function_Info {
          Eina_Stringshare *s1;
          Edje_Channel ec2;
       } type_sec;
+      struct {
+         Eina_Stringshare *s1;
+         Edje_Tween_Mode etm2;
+      } type_setm;
    } args;              /**< function args not including Evas_Object * */
 };
 
