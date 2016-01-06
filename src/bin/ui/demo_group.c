@@ -35,6 +35,7 @@ typedef struct
 
    Eina_List *swallow_list;
    Eina_List *text_list;
+   Eina_List *signal_list;
 } Part_Demo_List;
 
 static Elm_Genlist_Item_Class *itc_group;
@@ -62,6 +63,18 @@ _part_label_get(void *data,
    assert(part->name != NULL);
 
    return strdup(part->name);
+}
+static char *
+_sig_label_get(void *data,
+                Evas_Object *obj __UNUSED__,
+                const char *pr __UNUSED__)
+{
+   Demo_Signal *prog = data;
+
+   assert(prog != NULL);
+   assert(prog->prog_name != NULL);
+
+   return strdup(prog->prog_name);
 }
 
 static void
@@ -107,6 +120,7 @@ _expanded_cb(void *data,
    Part_Demo_List *pl = data;
    Eina_List *l;
    Demo_Part *part;
+   Demo_Signal *sig;
 
    TODO("remove this hack after https://phab.enlightenment.org/D2965 will be accepted");
    assert(pl != NULL);
@@ -138,6 +152,20 @@ _expanded_cb(void *data,
                                      NULL);
           }
      }
+
+   if (glit == pl->it_signal)
+     {
+        EINA_LIST_FOREACH(pl->signal_list, l, sig)
+          {
+             elm_genlist_item_append(pl->genlist,
+                                     itc_signals,
+                                     sig,
+                                     pl->it_signal,
+                                     ELM_GENLIST_ITEM_NONE,
+                                     NULL,
+                                     NULL);
+          }
+     }
 }
 static void
 _selected_cb(void *data __UNUSED__,
@@ -155,6 +183,30 @@ _selected_cb(void *data __UNUSED__,
    else /* empty everything */
      evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
 }
+static void
+_clicked_cb(void *data,
+            Evas_Object *o __UNUSED__,
+            void *event_info __UNUSED__)
+{
+   Demo_Signal *signal = (Demo_Signal *)data;
+   evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SIGNAL_SEND, signal);
+}
+
+static Evas_Object *
+_content_get(void *data __UNUSED__,
+             Evas_Object *obj,
+             const char *part)
+{
+   Evas_Object *button = NULL, *ic = NULL;
+   if (!strcmp(part, "elm.swallow.end"))
+     {
+        BUTTON_ADD(obj, button, NULL);
+        ICON_STANDARD_ADD(button, ic, false, "impuls_in");
+        elm_object_part_content_set(button, NULL, ic);
+        evas_object_smart_callback_add(button, "clicked", _clicked_cb, data);
+     }
+   return button;
+}
 
 Evas_Object *
 demo_group_add(Group *group)
@@ -162,6 +214,7 @@ demo_group_add(Group *group)
    Part *part;
    Eina_List *l;
    Demo_Part *demo_part;
+   Demo_Signal *demo_sig;
 
    assert(group != NULL);
    assert(ap.win != NULL);
@@ -196,8 +249,9 @@ demo_group_add(Group *group)
    if (!itc_signals)
      {
         itc_signals = elm_genlist_item_class_new();
-        itc_signals->item_style = "item";
-        itc_signals->func.text_get = _group_label_get;
+        itc_signals->item_style = "signal";
+        itc_signals->func.text_get = _sig_label_get;
+        itc_signals->func.content_get = _content_get;
      }
 
    /* filling genlist */
@@ -255,6 +309,24 @@ demo_group_add(Group *group)
           }
      }
 
+   Resource *prog_name;
+   Eina_Stringshare *sig_name, *source_name;
+   EINA_LIST_FOREACH(pl->group->programs, l, prog_name)
+     {
+        sig_name = edje_edit_program_signal_get(pl->group->edit_object, prog_name->name);
+        source_name = edje_edit_program_source_get(pl->group->edit_object, prog_name->name);
+        if (!source_name) source_name = eina_stringshare_add("");
+        if ((sig_name) && (strcmp(sig_name, "drag") != 0) &&
+            (strncmp(sig_name, "mouse", strlen("mouse")) != 0))
+          {
+             demo_sig = mem_calloc(1, sizeof(Demo_Part));
+             demo_sig->prog_name = eina_stringshare_add(prog_name->name);
+             demo_sig->sig_name = eina_stringshare_add(sig_name);
+             demo_sig->source_name = eina_stringshare_add(source_name);
+             pl->signal_list = eina_list_append(pl->signal_list, demo_sig);
+          }
+     }
+
    elm_object_text_set(pl->layout, pl->group->name);
 
    return pl->layout;
@@ -265,6 +337,7 @@ demo_group_del(Evas_Object *demo)
 {
    Part_Demo_List *pl = evas_object_data_get(demo, DEMO_GROUP_DATA);
    Demo_Part *demo_part;
+   Demo_Signal *demo_sig;
 
    TODO("probably call for some content del? to remove content from demo?");
    /* WILL DO IN ANOTHER COMMIT */
@@ -280,6 +353,14 @@ demo_group_del(Evas_Object *demo)
      {
         eina_stringshare_del(demo_part->name);
         free(demo_part);
+     }
+
+   EINA_LIST_FREE(pl->signal_list, demo_sig)
+     {
+        eina_stringshare_del(demo_sig->prog_name);
+        eina_stringshare_del(demo_sig->sig_name);
+        eina_stringshare_del(demo_sig->source_name);
+        free(demo_sig);
      }
 
    free(pl);
