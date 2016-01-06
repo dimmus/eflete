@@ -668,6 +668,34 @@ group { name: "elm/genlist/item/state_selected/default";
    }
 }
 
+group { name: "elm/genlist/item/signal/default";
+   inherit: "elm/genlist/item/default/default";
+   parts {
+      part { name: "padding.signal_button";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            min: 7 1;
+            max: 7 1;
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+      }
+      part { name: "elm.swallow.end";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            FIXED_SIZE(45, 19);
+            rel1.to: "bg";
+            rel2 {
+               relative: 0.0 0.0;
+               to: "padding.signal_button";
+            }
+         }
+      }
+   }
+}
+
 group { name: "elm/genlist/tree/item/default";
    inherit: "elm/genlist/tree/default/default";
 
