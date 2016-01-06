@@ -219,6 +219,32 @@ _end_send(void *data __UNUSED__)
    func(udata, result);
 }
 
+static Eina_Bool
+_build_script_write(const char *path)
+{
+   FILE *f;
+   Eina_Bool res = true;
+   Eina_Strbuf *buf;
+
+   f = fopen(path, "w");
+   if (!f)
+     {
+        ERR("Could't open file '%s'", path);
+        res = false;
+        goto exit;
+     }
+
+   buf = eina_strbuf_new();
+   eina_strbuf_append_printf(buf, "#!/bin/sh\n");
+   eina_strbuf_append_printf(buf, "edje_cc -v generated.edc -id images/ -sd sounds/ -fd fonts/");
+   fputs(eina_strbuf_string_get(buf), f);
+   eina_strbuf_free(buf);
+
+exit:
+   fclose(f);
+   return res;
+}
+
 #define MKDIR(NAME) \
    tmp = eina_stringshare_printf("%s/"#NAME, pro->develop_path); \
    ecore_file_mkdir(tmp); \
@@ -1496,6 +1522,10 @@ _group_source_code_export(void *data, Eina_Thread *thread __UNUSED__)
         eina_stringshare_del(resource);
      }
 
+   eina_strbuf_reset(buf);
+   eina_strbuf_append_printf(buf, "%s/%s/build.sh", worker.path, name);
+   _build_script_write(eina_strbuf_string_get(buf));
+
    END_SEND(PM_PROJECT_SUCCESS);
 exit:
    eina_strbuf_free(buf);
@@ -1583,6 +1613,10 @@ _source_code_export(void *data __UNUSED__, Eina_Thread *thread __UNUSED__)
         _external_resources_export(worker.project->fonts, eina_strbuf_string_get(buf));
         eina_strbuf_reset(buf);
      }
+
+   eina_strbuf_reset(buf);
+   eina_strbuf_append_printf(buf, "%s/%s/build.sh", worker.path, worker.project->name);
+   _build_script_write(eina_strbuf_string_get(buf));
 
    END_SEND(PM_PROJECT_SUCCESS);
 exit:
