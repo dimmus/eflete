@@ -52,6 +52,7 @@ typedef enum {
    FUNCTION_TYPE_STRING_EDJEACTIONTYPE,
    FUNCTION_TYPE_STRING_EDJECHANNEL,
    FUNCTION_TYPE_STRING_EDJETWEENMODE,
+   FUNCTION_TYPE_STRING_DOUBLE,
 } Function_Type;
 
 struct _Function_Info {
@@ -196,6 +197,10 @@ struct _Function_Info {
          Eina_Stringshare *s1;
          Edje_Tween_Mode etm2;
       } type_setm;
+      struct {
+         Eina_Stringshare *s1;
+         double d2;
+      } type_sd;
    } args;              /**< function args not including Evas_Object * */
 };
 
