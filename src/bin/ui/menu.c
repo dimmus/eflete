@@ -115,6 +115,9 @@ _menu_cb(void *data __UNUSED__,
       case MENU_FILE_EXPORT_DEVELOP:
          project_export_develop();
          break;
+      case MENU_FILE_EXPORT_RELEASE:
+         project_export_release();
+         break;
       case MENU_FILE_CLOSE_PROJECT:
            {
               if (!project_close()) break;
@@ -288,7 +291,7 @@ ui_menu_add(void)
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
    TODO("remove lines after implementation this features")
-   ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
+   //ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
    ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_ZOOM_IN, true);
    ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_ZOOM_OUT, true);
    ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_OBJECT_AREA, true);
