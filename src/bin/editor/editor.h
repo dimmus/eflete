@@ -170,6 +170,7 @@ typedef enum {
    ATTRIBUTE_PROGRAM_SOURCE,
    ATTRIBUTE_PROGRAM_STATE,
    ATTRIBUTE_PROGRAM_STATE2,
+   ATTRIBUTE_PROGRAM_NAME,
 } Attribute;
 
 void
@@ -700,5 +701,8 @@ editor_program_state_set(Evas_Object *edit_object, Change *change, Eina_Bool mer
 Eina_Bool
 editor_program_state2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                           const char *program, const char *new_val);
+Eina_Bool
+editor_program_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                        const char *name, const char *new_val);
 
 #endif /* EDITOR_H */
