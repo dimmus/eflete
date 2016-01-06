@@ -148,18 +148,15 @@ on_text_check(void *data,
 
 void
 send_signal(void *data,
-             Evas_Object *obj,
-             void *ei __UNUSED__)
+             Evas_Object *obj __UNUSED__,
+             void *ei)
 {
+   Demo_Signal *sig = (Demo_Signal *)ei;
    Evas_Object *object = (Evas_Object *)data;
 
-   assert(data != NULL);
+   assert(sig != NULL);
+   assert(sig->sig_name != NULL);
+   assert(sig->source_name != NULL);
 
-   const char *name = evas_object_data_get(obj, SIGNAL_NAME);
-   const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
-
-   assert(name != NULL);
-   assert(source != NULL);
-
-   elm_layout_signal_emit(object, name, source);
+   elm_layout_signal_emit(object, sig->sig_name, sig->source_name);
 }
