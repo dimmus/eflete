@@ -311,24 +311,6 @@ _property_attribute_changed(void *data __UNUSED__,
       case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
          workspace_groupview_soft_update(tabs.current_workspace);
          break;
-      case ATTRIBUTE_PART_IGNORE_FLAGS:
-      case ATTRIBUTE_PART_MOUSE_EVENTS:
-      case ATTRIBUTE_PART_REPEAT_EVENTS:
-      case ATTRIBUTE_PART_SCALE:
-      case ATTRIBUTE_PART_DRAG_COUNT_X:
-      case ATTRIBUTE_PART_DRAG_COUNT_Y:
-      case ATTRIBUTE_PART_DRAG_X:
-      case ATTRIBUTE_PART_DRAG_Y:
-      case ATTRIBUTE_PART_DRAG_STEP_X:
-      case ATTRIBUTE_PART_DRAG_STEP_Y:
-      case ATTRIBUTE_PART_DRAG_THRESHOLD:
-      case ATTRIBUTE_PART_DRAG_EVENT:
-      case ATTRIBUTE_PART_NAME:
-      case ATTRIBUTE_GROUP_NAME:
-      case ATTRIBUTE_STATE_PROXY_SOURCE:
-      case ATTRIBUTE_PART_SELECT_MODE:
-      case ATTRIBUTE_PART_POINTER_MODE:
-      case ATTRIBUTE_PART_CURSOR_MODE:
       default:
          break;
      }
