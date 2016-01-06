@@ -148,7 +148,18 @@ typedef enum {
    ATTRIBUTE_PROGRAM_TRANSITION_TYPE,
    ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT,
    ATTRIBUTE_PROGRAM_ACTION,
-   ATTRIBUTE_PROGRAM_CHANNEL
+   ATTRIBUTE_PROGRAM_CHANNEL,
+   ATTRIBUTE_PROGRAM_TONE_DURATION,
+   ATTRIBUTE_PROGRAM_IN_FROM,
+   ATTRIBUTE_PROGRAM_IN_RANGE,
+   ATTRIBUTE_PROGRAM_TRANSITION_TIME,
+   ATTRIBUTE_PROGRAM_SAMPLE_SPEED,
+   ATTRIBUTE_PROGRAM_VALUE2,
+   ATTRIBUTE_PROGRAM_VALUE,
+   ATTRIBUTE_PROGRAM_TRANSITION_VALUE1,
+   ATTRIBUTE_PROGRAM_TRANSITION_VALUE2,
+   ATTRIBUTE_PROGRAM_TRANSITION_VALUE3,
+   ATTRIBUTE_PROGRAM_TRANSITION_VALUE4,
 } Attribute;
 
 void
@@ -616,5 +627,38 @@ editor_program_action_set(Evas_Object *edit_object, Change *change, Eina_Bool me
 Eina_Bool
 editor_program_channel_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                            const char *program, Edje_Channel new_val);
+Eina_Bool
+editor_program_tone_duration_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                 const char *program, double new_val);
+Eina_Bool
+editor_program_in_from_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                           const char *program, double new_val);
+Eina_Bool
+editor_program_in_range_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                            const char *program, double new_val);
+Eina_Bool
+editor_program_transition_time_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                   const char *program, double new_val);
+Eina_Bool
+editor_program_sample_speed_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                const char *program, double new_val);
+Eina_Bool
+editor_program_value2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                          const char *program, double new_val);
+Eina_Bool
+editor_program_value_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                         const char *program, double new_val);
+Eina_Bool
+editor_program_transition_value1_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val);
+Eina_Bool
+editor_program_transition_value2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val);
+Eina_Bool
+editor_program_transition_value3_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val);
+Eina_Bool
+editor_program_transition_value4_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val);
 
 #endif /* EDITOR_H */
