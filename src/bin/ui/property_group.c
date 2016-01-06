@@ -898,6 +898,16 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_TRANSITION_VALUE2:
       case ATTRIBUTE_PROGRAM_TRANSITION_VALUE3:
       case ATTRIBUTE_PROGRAM_TRANSITION_VALUE4:
+      case ATTRIBUTE_PROGRAM_FILTER_PART:
+      case ATTRIBUTE_PROGRAM_FILTER_STATE:
+      case ATTRIBUTE_PROGRAM_API_NAME:
+      case ATTRIBUTE_PROGRAM_API_DESCRIPTION:
+      case ATTRIBUTE_PROGRAM_SAMPLE_NAME:
+      case ATTRIBUTE_PROGRAM_TONE_NAME:
+      case ATTRIBUTE_PROGRAM_SIGNAL:
+      case ATTRIBUTE_PROGRAM_SOURCE:
+      case ATTRIBUTE_PROGRAM_STATE:
+      case ATTRIBUTE_PROGRAM_STATE2:
          TODO("implement");
          break;
          /* Don't add 'default:'. Compiler must warn about missing cases */

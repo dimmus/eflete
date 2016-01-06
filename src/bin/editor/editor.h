@@ -160,6 +160,16 @@ typedef enum {
    ATTRIBUTE_PROGRAM_TRANSITION_VALUE2,
    ATTRIBUTE_PROGRAM_TRANSITION_VALUE3,
    ATTRIBUTE_PROGRAM_TRANSITION_VALUE4,
+   ATTRIBUTE_PROGRAM_FILTER_PART,
+   ATTRIBUTE_PROGRAM_FILTER_STATE,
+   ATTRIBUTE_PROGRAM_API_NAME,
+   ATTRIBUTE_PROGRAM_API_DESCRIPTION,
+   ATTRIBUTE_PROGRAM_SAMPLE_NAME,
+   ATTRIBUTE_PROGRAM_TONE_NAME,
+   ATTRIBUTE_PROGRAM_SIGNAL,
+   ATTRIBUTE_PROGRAM_SOURCE,
+   ATTRIBUTE_PROGRAM_STATE,
+   ATTRIBUTE_PROGRAM_STATE2,
 } Attribute;
 
 void
@@ -660,5 +670,35 @@ editor_program_transition_value3_set(Evas_Object *edit_object, Change *change, E
 Eina_Bool
 editor_program_transition_value4_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                                      const char *program, double new_val);
+Eina_Bool
+editor_program_filter_part_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                               const char *program, const char *new_val);
+Eina_Bool
+editor_program_filter_state_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                const char *program, const char *new_val);
+Eina_Bool
+editor_program_api_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                            const char *program, const char *new_val);
+Eina_Bool
+editor_program_api_description_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                   const char *program, const char *new_val);
+Eina_Bool
+editor_program_sample_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                               const char *program, const char *new_val);
+Eina_Bool
+editor_program_tone_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                             const char *program, const char *new_val);
+Eina_Bool
+editor_program_signal_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                          const char *program, const char *new_val);
+Eina_Bool
+editor_program_source_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                          const char *program, const char *new_val);
+Eina_Bool
+editor_program_state_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                         const char *program, const char *new_val);
+Eina_Bool
+editor_program_state2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                          const char *program, const char *new_val);
 
 #endif /* EDITOR_H */
