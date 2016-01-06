@@ -89,6 +89,14 @@ typedef struct {
 #define SIGNAL_PART_RENAMED "SIGNAL_PART_RENAMED"
 
 /**
+ * emited when program is renamed.
+ * eventinfo - pointer to Rename structure
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_PROGRAM_RENAMED "SIGNAL_PROGRAM_RENAMED"
+
+/**
  * emited when new state is added.
  * eventinfo - pointer to State structure
  *
