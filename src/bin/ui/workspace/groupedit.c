@@ -79,7 +79,6 @@ _groupedit_smart_del(Evas_Object *o)
    evas_object_smart_member_del(sd->clipper);
    evas_object_hide(sd->group->edit_object);
 
-   gm_group_edit_object_unload(sd->group);
    _groupedit_parent_sc->del(o);
 }
 
@@ -207,8 +206,6 @@ groupedit_add(Evas_Object *parent, Group *group)
    WS_GROUPEDIT_DATA_GET(obj, sd);
    sd->parent = parent;
 
-   gm_group_edit_object_load(ap.project, group, evas_object_evas_get(ap.win));
-   edje_object_animation_set(group->edit_object, false);
    TODO("set the state for all parts to default 0.0")
    sd->group = group;
    evas_object_smart_member_add(sd->group->edit_object, obj);

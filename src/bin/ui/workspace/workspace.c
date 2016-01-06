@@ -1284,6 +1284,7 @@ _workspace_smart_del(Evas_Object *o)
    evas_object_del(sd->highlight.space_hl);
    evas_object_del(sd->highlight.highlight);
    demo_group_del(sd->demo_group);
+   gm_group_edit_object_unload(sd->group);
    _workspace_parent_sc->del(o);
 }
 
@@ -1493,7 +1494,6 @@ workspace_add(Evas_Object *parent, Group *group)
    Evas_Object *obj = NULL;
    Evas_Coord ruler_ver_w, ruler_hor_h, hrb_w, hrb_h;
 
-
    assert(parent != NULL);
 
    e = evas_object_evas_get(parent);
@@ -1504,6 +1504,9 @@ workspace_add(Evas_Object *parent, Group *group)
         return NULL;
      }
    WS_DATA_GET(obj, sd);
+
+   gm_group_edit_object_load(ap.project, group, evas_object_evas_get(ap.win));
+   edje_object_animation_set(group->edit_object, false);
 
    sd->group_navigator = group_navigator_add(group);
    evas_object_size_hint_weight_set(sd->group_navigator, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
