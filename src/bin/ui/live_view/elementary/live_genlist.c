@@ -40,24 +40,22 @@ _on_genlist_text_check(void *data __UNUSED__,
 
 static void
 _genlist_send_signal(void *data,
-                     Evas_Object *obj,
+                     Evas_Object *obj __UNUSED__,
                      void *ei __UNUSED__)
 {
+   Demo_Signal *sig = (Demo_Signal *)ei;
    Elm_Object_Item *item = NULL;
 
    assert(data != NULL);
 
    item = elm_genlist_first_item_get(data);
-
-   const char *name = evas_object_data_get(obj, SIGNAL_NAME);
-   const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
-
-   assert(name != NULL);
-   assert(source != NULL);
+   assert(sig != NULL);
+   assert(sig->sig_name != NULL);
+   assert(sig->source_name != NULL);
 
    while (item)
      {
-        elm_object_item_signal_emit(item, name, source);
+        elm_object_item_signal_emit(item, sig->sig_name, sig->source_name);
         item = elm_genlist_item_next_get(item);
      }
 }
@@ -253,17 +251,13 @@ widget_genlist_create(Evas_Object *parent, const Group *group)
    assert(group->class != NULL);
 
    Evas_Object *object;
-   Eina_List *swallow_list = NULL, *text_list = NULL;
 
    object = _create_genlist(parent, group->class, group->style);
    evas_object_show(object);
 
-   evas_object_data_set(object, SWALLOW_FUNC, _on_genlist_swallow_check);
-   evas_object_data_set(object, TEXT_FUNC, _on_genlist_text_check);
-   evas_object_data_set(object, SIGNAL_FUNC, _genlist_send_signal);
-
-   evas_object_data_set(object, SWALLOW_LIST, swallow_list);
-   evas_object_data_set(object, TEXT_LIST, text_list);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_genlist_swallow_check, object);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, _on_genlist_text_check, object);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _genlist_send_signal, object);
 
    return object;
 }
