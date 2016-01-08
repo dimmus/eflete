@@ -25,8 +25,21 @@ _on_genlist_swallow_check(void *data __UNUSED__,
                           Evas_Object *obj __UNUSED__,
                           void *ei __UNUSED__)
 {
-   TODO("Remake on_swallow_check, so that would be used everywhere.")
-   ERR(N_("Complex widgets are not implemented yet."))
+   Demo_Part *part = (Demo_Part *)ei;
+   Evas_Object *object = (Evas_Object *)data;
+   Eina_List *part_list = evas_object_data_get(object, SWALLOW_LIST);
+
+   if (!eina_list_data_find(part_list, part->name))
+     part_list =  eina_list_append(part_list, part);
+   evas_object_data_set(object, SWALLOW_LIST, part_list);
+
+   Elm_Object_Item *item = NULL;
+   item = elm_genlist_first_item_get(object);
+   while (item)
+     {
+        elm_genlist_item_update(item);
+        item = elm_genlist_item_next_get(item);
+     }
 }
 
 static void
@@ -98,17 +111,35 @@ _glist_content_get(void *data __UNUSED__,
                    const char  *part)
 {
    Eina_List *part_list = evas_object_data_get(obj, SWALLOW_LIST);
-
+   Demo_Part *demo_part;
    Eina_List *l = NULL;
-   const char *part_name = NULL;
 
-   EINA_LIST_FOREACH(part_list, l, part_name)
+   EINA_LIST_FOREACH(part_list, l, demo_part)
      {
-        if (!strcmp(part_name, part))
+        if (!strcmp(demo_part->name, part))
           {
-             Evas_Object *rect = evas_object_rectangle_add(obj);
-             evas_object_color_set(rect, HIGHLIGHT_COLOR);
-             return rect;
+             if ((demo_part->swallow_content == CONTENT_NONE) && (demo_part->object))
+               demo_part->object = NULL;
+             else if (demo_part->swallow_content != CONTENT_NONE)
+               demo_part->object = object_generate(demo_part, obj);
+
+             if (demo_part->object)
+               {
+                  evas_object_color_set(demo_part->object,
+                                        demo_part->r,
+                                        demo_part->g,
+                                        demo_part->b,
+                                        demo_part->a);
+
+                  evas_object_size_hint_min_set(demo_part->object,
+                                                demo_part->min_w,
+                                                demo_part->min_h);
+                  evas_object_size_hint_max_set(demo_part->object,
+                                                demo_part->max_w,
+                                                demo_part->max_h);
+               }
+
+             return demo_part->object;
           }
      }
 
