@@ -1492,7 +1492,7 @@ workspace_add(Evas_Object *parent, Group *group)
 {
    Evas *e = NULL;
    Evas_Object *obj = NULL;
-   Evas_Coord ruler_ver_w, ruler_hor_h, hrb_w, hrb_h;
+   Evas_Coord ruler_ver_w, ruler_hor_h;
 
    assert(parent != NULL);
 
@@ -1558,12 +1558,6 @@ workspace_add(Evas_Object *parent, Group *group)
    */
    evas_object_geometry_get(sd->ruler_ver, NULL, NULL, &ruler_ver_w, NULL);
    evas_object_geometry_get(sd->ruler_hor, NULL, NULL, NULL, &ruler_hor_h);
-   container_handler_size_get(sd->container.obj, NULL, NULL, &hrb_w, &hrb_h);
-   container_padding_size_set(sd->container.obj,
-                              PADDING_SIZE,
-                              PADDING_SIZE,
-                              PADDING_SIZE - ruler_ver_w - hrb_w,
-                              PADDING_SIZE - ruler_hor_h - hrb_h);
 
    elm_scroller_policy_set(sd->scroller, ELM_SCROLLER_POLICY_AUTO,
                            ELM_SCROLLER_POLICY_AUTO);
