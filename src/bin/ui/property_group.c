@@ -2991,7 +2991,7 @@ _on_image_editor_tween_done(void *data,
                                pd->part->name,
                                pd->part->current_state->parsed_name,
                                pd->part->current_state->parsed_val,
-                               eina_stringshare_add(name));
+                               name);
      }
    history_change_add(pd->group->history, change);
 

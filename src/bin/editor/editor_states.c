@@ -208,13 +208,13 @@ editor_state_tween_add(Evas_Object *edit_object, Change *change, Eina_Bool merge
         diff->redo.args.type_ssds.s1 = eina_stringshare_add(part_name);
         diff->redo.args.type_ssds.s2 = eina_stringshare_add(state_name);
         diff->redo.args.type_ssds.d3 = state_val;
-        diff->redo.args.type_ssds.s4 = name;
+        diff->redo.args.type_ssds.s4 = eina_stringshare_add(name);
         diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_STRING;
         diff->undo.function = editor_state_tween_del;
         diff->undo.args.type_ssds.s1 = eina_stringshare_add(part_name);
         diff->undo.args.type_ssds.s2 = eina_stringshare_add(state_name);
         diff->undo.args.type_ssds.d3 = state_val;
-        diff->undo.args.type_ssds.s4 = name;
+        diff->undo.args.type_ssds.s4 = eina_stringshare_add(name);
         if (merge)
           change_diff_merge_add(change, diff);
         else
@@ -245,13 +245,13 @@ editor_state_tween_del(Evas_Object *edit_object, Change *change, Eina_Bool merge
         diff->redo.args.type_ssds.s1 = eina_stringshare_add(part_name);
         diff->redo.args.type_ssds.s2 = eina_stringshare_add(state_name);
         diff->redo.args.type_ssds.d3 = state_val;
-        diff->redo.args.type_ssds.s4 = name;
+        diff->redo.args.type_ssds.s4 = eina_stringshare_add(name);
         diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_STRING;
         diff->undo.function = editor_state_tween_add;
         diff->undo.args.type_ssds.s1 = eina_stringshare_add(part_name);
         diff->undo.args.type_ssds.s2 = eina_stringshare_add(state_name);
         diff->undo.args.type_ssds.d3 = state_val;
-        diff->undo.args.type_ssds.s4 = name;
+        diff->undo.args.type_ssds.s4 = eina_stringshare_add(name);
         if (merge)
           change_diff_merge_add(change, diff);
         else
