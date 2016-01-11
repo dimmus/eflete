@@ -270,6 +270,8 @@ editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
                    const char *part_name, const char *state_name, double state_val)
 {
    Eina_Bool res = true;
+   Eina_List *tweens, *l;
+   Eina_Stringshare *tween;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(state_name != NULL);
@@ -315,6 +317,11 @@ editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
          res = res && editor_state_image_border_reset(edit_object, change, part_name, state_name, state_val);
          res = res && editor_state_image_border_fill_reset(edit_object, change, part_name, state_name, state_val);
          res = res && editor_state_image_reset(edit_object, change, part_name, state_name, state_val);
+
+         tweens = edje_edit_state_tweens_list_get(edit_object, part_name, state_name, state_val);
+         EINA_LIST_FOREACH(tweens, l, tween)
+            res = res && editor_state_tween_del(edit_object, change, false, part_name, state_name, state_val, tween);
+         edje_edit_string_list_free(tweens);
          break;
       case EDJE_PART_TYPE_PROXY:
          res = res && editor_state_fill_origin_relative_x_reset(edit_object, change, part_name, state_name, state_val);
