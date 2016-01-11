@@ -30,12 +30,25 @@ _on_genlist_swallow_check(void *data __UNUSED__,
 }
 
 static void
-_on_genlist_text_check(void *data __UNUSED__,
+_on_genlist_text_check(void *data,
                        Evas_Object *obj __UNUSED__,
-                       void *ei __UNUSED__)
+                       void *ei)
 {
-   TODO("Remake on_text_check, so that would be used everywhere.")
-   ERR(N_("Complex widgets are not implemented yet."))
+   Demo_Part *part = (Demo_Part *)ei;
+   Evas_Object *object = (Evas_Object *)data;
+   Eina_List *part_list = evas_object_data_get(object, TEXT_LIST);
+
+   if (!eina_list_data_find(part_list, part->name))
+     part_list =  eina_list_append(part_list, part);
+   evas_object_data_set(object, TEXT_LIST, part_list);
+
+   Elm_Object_Item *item = NULL;
+   item = elm_genlist_first_item_get(object);
+   while (item)
+     {
+        elm_genlist_item_update(item);
+        item = elm_genlist_item_next_get(item);
+     }
 }
 
 static void
@@ -62,20 +75,18 @@ _genlist_send_signal(void *data,
 
 /*********** GEN LIST CREATING FUNCTIONS ****************/
 static char *
-_glist_text_get(void        *data,
+_glist_text_get(void        *data __UNUSED__,
                 Evas_Object *obj,
                 const char  *part)
 {
    Eina_List *part_list = evas_object_data_get(obj, TEXT_LIST);
-
+   Demo_Part *demo_part;
    Eina_List *l = NULL;
-   const char *part_name = NULL;
-   const char *text = (char *) data;
 
-   EINA_LIST_FOREACH(part_list, l, part_name)
+   EINA_LIST_FOREACH(part_list, l, demo_part)
      {
-        if (!strcmp(part_name, part))
-          return strdup(text);
+        if (!strcmp(demo_part->name, part))
+          return strdup(demo_part->text_content);
      }
 
    return NULL;
@@ -218,7 +229,7 @@ _create_genlist(Evas_Object *obj, const char *class, const char *style)
      }
 
    for (i = 0; i < ELEMENTS_COUNT; i++)
-     elm_genlist_item_append(glist, ic, eina_stringshare_printf("Item #%d", i),
+     elm_genlist_item_append(glist, ic, NULL,
                              NULL, type, NULL, NULL);
 
    if (type ==  ELM_GENLIST_ITEM_TREE)
@@ -251,6 +262,7 @@ widget_genlist_create(Evas_Object *parent, const Group *group)
    assert(group->class != NULL);
 
    Evas_Object *object;
+   Eina_List *swallow_list = NULL, *text_list = NULL;
 
    object = _create_genlist(parent, group->class, group->style);
    evas_object_show(object);
@@ -258,6 +270,9 @@ widget_genlist_create(Evas_Object *parent, const Group *group)
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_genlist_swallow_check, object);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, _on_genlist_text_check, object);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _genlist_send_signal, object);
+
+   evas_object_data_set(object, SWALLOW_LIST, swallow_list);
+   evas_object_data_set(object, TEXT_LIST, text_list);
 
    return object;
 }
