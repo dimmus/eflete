@@ -337,3 +337,68 @@ editor_program_target_del(Evas_Object *edit_object, Change *change, Eina_Bool me
      evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
+
+Eina_Bool
+editor_program_after_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                         const char *program_name, Eina_Stringshare *after)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_PROGRAM_AFTER;
+   assert(edit_object != NULL);
+   assert(program_name != NULL);
+   assert(after != NULL);
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->redo.function = editor_program_after_add;
+        diff->redo.args.type_ss.s1 = eina_stringshare_add(program_name);
+        diff->redo.args.type_ss.s2 = eina_stringshare_add(after);
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->undo.function = editor_program_after_del;
+        diff->undo.args.type_ss.s1 = eina_stringshare_add(program_name);
+        diff->undo.args.type_ss.s2 = eina_stringshare_add(after);
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_program_after_add(edit_object, program_name, after))
+     return false;
+   _editor_project_changed();
+   if (!_editor_signals_blocked)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+Eina_Bool
+editor_program_after_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                         const char *program_name, Eina_Stringshare *after)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_PROGRAM_AFTER;
+   assert(edit_object != NULL);
+   assert(program_name != NULL);
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->redo.function = editor_program_after_del;
+        diff->redo.args.type_ss.s1 = eina_stringshare_add(program_name);
+        diff->redo.args.type_ss.s2 = eina_stringshare_add(after);
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->undo.function = editor_program_after_add;
+        diff->undo.args.type_ss.s1 = eina_stringshare_add(program_name);
+        diff->undo.args.type_ss.s2 = eina_stringshare_add(after);
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_program_after_del(edit_object, program_name, after))
+     return false;
+   _editor_project_changed();
+   if (!_editor_signals_blocked)
+     evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
