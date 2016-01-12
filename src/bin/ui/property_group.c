@@ -52,7 +52,6 @@ struct _Group_Prop_Data
    Evas_Object *layout;
    Evas_Object *scroller;
    Eina_Stringshare *item_name;
-   Eina_Strbuf *strbuf;
    struct {
         struct {
              Evas_Object *frame;
