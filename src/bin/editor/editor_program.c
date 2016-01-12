@@ -124,11 +124,43 @@ editor_program_action_set(Evas_Object *edit_object, Change *change, Eina_Bool me
 {
    Diff *diff;
    Attribute attribute = ATTRIBUTE_PROGRAM_ACTION;
+   Eina_Bool clean_targets = false;
+   Eina_List *targets, *l;
+   Eina_Stringshare *target;
+
    assert(edit_object != NULL);
    assert(program != NULL);
+
    if (change)
      {
         Edje_Action_Type old_value = edje_edit_program_action_get(edit_object, program);
+        switch (new_val)
+          {
+           case EDJE_ACTION_TYPE_STATE_SET:
+           case EDJE_ACTION_TYPE_SIGNAL_EMIT:
+           case EDJE_ACTION_TYPE_DRAG_VAL_SET:
+           case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
+           case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
+           case EDJE_ACTION_TYPE_FOCUS_SET:
+           case EDJE_ACTION_TYPE_FOCUS_OBJECT:
+              /*These actions have part as a target so targets list can be left untouched
+                if it was not list of programs (EDJE_ACTION_TYPE_ACTION_STOP) */
+              if (old_value == EDJE_ACTION_TYPE_ACTION_STOP)
+                clean_targets = true;
+           case EDJE_ACTION_TYPE_ACTION_STOP:
+              /*this action uses programs as targets*/
+           default:
+              /*other actions do not need targets so we need to delete them all */
+              clean_targets = true;
+          }
+        if (clean_targets)
+          {
+             targets = edje_edit_program_targets_get(edit_object, program);
+             EINA_LIST_FOREACH(targets, l, target)
+                editor_program_target_del(edit_object, change, false, program, target);
+             edje_edit_string_list_free(targets);
+          }
+
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING_EDJEACTIONTYPE;
         diff->redo.function = editor_program_action_set;
