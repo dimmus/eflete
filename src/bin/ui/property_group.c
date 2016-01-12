@@ -188,6 +188,9 @@ struct _Group_Prop_Data
              Evas_Object *position_col, *position_row, *position_item; /* Only for items in part TABLE */
              Evas_Object *span_col, *span_row; /* Only for items in part TABLE */
         } part_item;
+        struct {
+             Evas_Object *frame;
+        } program;
    } attributes;
 };
 typedef struct _Group_Prop_Data Group_Prop_Data;
@@ -287,6 +290,12 @@ _ui_property_part_item_set(Evas_Object *property, Part *part);
 
 static void
 _ui_property_part_item_unset(Evas_Object *property);
+
+static void
+_ui_property_program_set(Evas_Object *property, const char *program);
+
+static void
+_ui_property_program_unset(Evas_Object *property);
 
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property);
@@ -511,6 +520,19 @@ _on_part_state_selected(void *data,
         return;
      }
    ui_property_part_state_set(property, part);
+}
+
+static void
+_on_program_selected(void *data,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info)
+{
+   Evas_Object *property = data;
+   GROUP_PROP_DATA_GET()
+   Resource *res = event_info;
+
+   _on_part_selected(data, obj, NULL);
+   _ui_property_program_set(property, res->name);
 }
 
 static void
@@ -937,6 +959,7 @@ ui_property_group_add(Evas_Object *parent)
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_SELECTED, _on_part_selected, pd->scroller);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_UNSELECTED, _on_part_unselected, pd->scroller);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_STATE_SELECTED, _on_part_state_selected, pd->scroller);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROGRAM_SELECTED, _on_program_selected, pd->scroller);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _on_editor_attribute_changed, pd->scroller);
 
    return pd->scroller;
@@ -1374,6 +1397,34 @@ PART_ATTR_PARTS_LIST(part_drag, event, part_drag)
 
 PART_ATTR_SOURCE_UPDATE(part, source)
 
+static void
+_ui_property_program_set(Evas_Object *property, const char *program __UNUSED__)
+{
+   Evas_Object *prop_box, *box;
+   GROUP_PROP_DATA_GET()
+
+   prop_box = elm_object_content_get(pd->scroller);
+   if (!pd->attributes.program.frame)
+     {
+        FRAME_PROPERTY_ADD(property, pd->attributes.program.frame, true, _("Program property"), pd->scroller)
+        BOX_ADD(pd->attributes.program.frame, box, EINA_FALSE, EINA_FALSE)
+        elm_box_align_set(box, 0.5, 0.0);
+        elm_object_content_set(pd->attributes.program.frame, box);
+     }
+   elm_box_pack_end(prop_box, pd->attributes.program.frame);
+}
+
+static void
+_ui_property_program_unset(Evas_Object *property)
+{
+   Evas_Object *prop_box;
+
+   GROUP_PROP_DATA_GET()
+
+   prop_box = elm_object_content_get(pd->scroller);
+   PROP_ITEM_UNSET(prop_box, pd->attributes.program.frame);
+}
+
 #define PART_ATTR_1CHECK(TEXT, SUB, VALUE, MEMBER, TOOLTIP, DESCRIPTION) \
    PART_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
    PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
@@ -1440,6 +1491,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
    pd->part = part;
    prop_box = elm_object_content_get(pd->scroller);
 
+   _ui_property_program_unset(property);
    if (!pd_part.frame)
      {
         FRAME_PROPERTY_ADD(property, pd_part.frame, true, _("Part property"), pd->scroller)
