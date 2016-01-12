@@ -190,6 +190,8 @@ struct _Group_Prop_Data
         } part_item;
         struct {
              Evas_Object *frame;
+             Evas_Object *name;
+             const char *program;
         } program;
    } attributes;
 };
@@ -532,6 +534,7 @@ _on_program_selected(void *data,
    Resource *res = event_info;
 
    _on_part_selected(data, obj, NULL);
+   _ui_property_program_unset(property);
    _ui_property_program_set(property, res->name);
 }
 
@@ -1398,18 +1401,52 @@ PART_ATTR_PARTS_LIST(part_drag, event, part_drag)
 PART_ATTR_SOURCE_UPDATE(part, source)
 
 static void
-_ui_property_program_set(Evas_Object *property, const char *program __UNUSED__)
+_on_program_name_change(void *data __UNUSED__,
+                        Evas_Object *obj __UNUSED__,
+                        void *ei __UNUSED__)
 {
-   Evas_Object *prop_box, *box;
+   return;
+   TODO("Implement rename. Note: program(resource) list must remain sorted")
+}
+
+static void
+_on_program_name_activated(void *data __UNUSED__,
+                           Evas_Object *obj __UNUSED__,
+                           void *ei __UNUSED__)
+{
+   return;
+   TODO("Implement rename. Note: program(resource) list must remain sorted")
+}
+
+static void
+prop_program_name_update(Group_Prop_Data *pd)
+{
+   elm_entry_entry_set(pd->attributes.program.name, pd->attributes.program.program);
+}
+
+COMMON_ENTRY_ADD(_("name"), program, name, program, NULL, _("Name of the group."))
+
+static void
+_ui_property_program_set(Evas_Object *property, const char *program)
+{
+   Evas_Object *prop_box, *box, *item;
    GROUP_PROP_DATA_GET()
 
    prop_box = elm_object_content_get(pd->scroller);
+   pd->attributes.program.program = eina_stringshare_add(program);
    if (!pd->attributes.program.frame)
      {
         FRAME_PROPERTY_ADD(property, pd->attributes.program.frame, true, _("Program property"), pd->scroller)
         BOX_ADD(pd->attributes.program.frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(pd->attributes.program.frame, box);
+
+        item = prop_program_name_add(box, pd, NULL);
+        elm_box_pack_end(box, item);
+     }
+   else
+     {
+        prop_program_name_update(pd);
      }
    elm_box_pack_end(prop_box, pd->attributes.program.frame);
 }
@@ -1423,6 +1460,7 @@ _ui_property_program_unset(Evas_Object *property)
 
    prop_box = elm_object_content_get(pd->scroller);
    PROP_ITEM_UNSET(prop_box, pd->attributes.program.frame);
+   eina_stringshare_del(pd->attributes.program.program);
 }
 
 #define PART_ATTR_1CHECK(TEXT, SUB, VALUE, MEMBER, TOOLTIP, DESCRIPTION) \
