@@ -1536,9 +1536,6 @@ workspace_add(Evas_Object *parent, Group *group)
                                   _on_groupedit_geometry_changed, sd);
    container_content_set(sd->container.obj, sd->groupedit);
 
-   // ???
-   evas_object_focus_set(sd->groupedit, true);
-
    sd->group = group;
    elm_menu_item_icon_name_set(sd->menu.items.mode_normal,
                                EFLETE_IMG_PATH"context_menu-bullet.png");
