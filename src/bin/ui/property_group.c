@@ -35,8 +35,6 @@
 #include "project_manager.h"
 #include "colorsel.h"
 
-#include "syntax_color.h"
-
 #define GROUP_PROP_DATA "group_prop_data"
 
 #define GROUP_PROP_DATA_GET() \
@@ -54,7 +52,6 @@ struct _Group_Prop_Data
    Evas_Object *layout;
    Evas_Object *scroller;
    Eina_Stringshare *item_name;
-   color_data *color_data;
    Eina_Strbuf *strbuf;
    struct {
         struct {
