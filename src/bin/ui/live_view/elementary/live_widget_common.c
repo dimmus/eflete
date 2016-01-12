@@ -107,7 +107,7 @@ on_swallow_check(void *data,
 {
    Demo_Part *part = (Demo_Part *)ei;
    Evas_Object *object = (Evas_Object *) data;
-   Evas_Object *content = NULL;
+   Evas_Object *content;
 
    int content_type = part->swallow_content;
 
@@ -124,21 +124,21 @@ on_swallow_check(void *data,
 
         part->object = object_generate(part, object);
         part->change = false;
-        elm_object_part_content_set(object, part->name, content);
+        elm_object_part_content_set(object, part->name, part->object);
      }
 
    if (part->object)
      {
-        evas_object_color_set(content,
+        evas_object_color_set(part->object,
                               part->r,
                               part->g,
                               part->b,
                               part->a);
 
-        evas_object_size_hint_min_set(content,
+        evas_object_size_hint_min_set(part->object,
                                       part->min_w,
                                       part->min_h);
-        evas_object_size_hint_max_set(content,
+        evas_object_size_hint_max_set(part->object,
                                       part->max_w,
                                       part->max_h);
      }
