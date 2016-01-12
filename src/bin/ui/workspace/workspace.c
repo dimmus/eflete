@@ -140,6 +140,7 @@ struct _Ws_Smart_Data
    Change *change;
    int old_max_w, old_max_h;
    double old_align_x, old_align_y;
+   Eina_Bool first_calc : 1;
 };
 typedef struct _Ws_Smart_Data Ws_Smart_Data;
 
@@ -1326,6 +1327,19 @@ _workspace_smart_hide(Evas_Object *o)
 }
 
 static void
+_first_calc(Ws_Smart_Data *sd)
+{
+   Evas_Coord w, h;
+   Evas_Coord pad_w, pad_h;
+
+   evas_object_geometry_get(sd->clipper, NULL, NULL, &w, &h);
+   container_padding_size_get(sd->container.obj, NULL, NULL, &pad_w, &pad_h);
+
+   container_padding_size_set(sd->container.obj, w/4, h/4, pad_w, pad_h);
+   evas_object_resize(sd->container.obj, w/2, h/2);
+}
+
+static void
 _workspace_smart_resize(Evas_Object *o,
                         Evas_Coord w,
                         Evas_Coord h)
@@ -1337,6 +1351,12 @@ _workspace_smart_resize(Evas_Object *o,
    if ((ow == w) && (oh == h)) return;
    evas_object_resize(sd->panes, w, h);
 
+   if (sd->first_calc)
+     {
+        _first_calc(sd);
+        sd->first_calc = false;
+        return;
+     }
    evas_object_smart_changed(o);
 }
 
@@ -1395,9 +1415,11 @@ _on_groupedit_geometry_changed(void *data,
 
    assert(sd != NULL);
 
-   Container_Geom *geom __UNUSED__ = (Container_Geom *)event_info;
+   Container_Geom *geom = (Container_Geom *)event_info;
 
    Evas_Coord x, y, w, h, ruler_ver_w, ruler_hor_h, hrb_w, hrb_h;
+   Evas_Coord pad_xx, pad_yy;
+   container_padding_size_get(sd->container.obj, &pad_xx, &pad_yy, NULL, NULL);
 
    /* getting size of rulers and handlers of container. Bottom and Left paddings
       are calculating according to them
@@ -1422,8 +1444,10 @@ _on_groupedit_geometry_changed(void *data,
       Also we should compensate additional size of padding and ruler size
       (ruler covers most of top/left pads). */
    Evas_Coord pad_x, pad_y, pad_w, pad_h;
-   pad_x = PADDING_SIZE + abs(geom->x - x);
-   pad_y = PADDING_SIZE + abs(geom->y - y);
+   pad_x = pad_xx + (geom->x - x);
+   if (pad_x <= 0) pad_x = PADDING_SIZE + abs(geom->x - x);
+   pad_y = pad_yy + (geom->y - y);
+   if (pad_y <= 0) pad_y = PADDING_SIZE + abs(geom->y - y);
    pad_w = PADDING_SIZE + abs((geom->x + geom->w) - (x + w)) - ruler_ver_w - hrb_w;
    pad_h = PADDING_SIZE + abs((geom->y + geom->h) - (y + h)) - ruler_hor_h - hrb_h;
 
@@ -1504,6 +1528,7 @@ workspace_add(Evas_Object *parent, Group *group)
         return NULL;
      }
    WS_DATA_GET(obj, sd);
+   sd->first_calc = true;
 
    gm_group_edit_object_load(ap.project, group, evas_object_evas_get(ap.win));
    edje_object_animation_set(group->edit_object, false);
