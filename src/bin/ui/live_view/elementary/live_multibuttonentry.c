@@ -62,7 +62,6 @@ _on_multibutton_swallow_check(void *data,
                                            part->max_w,
                                            part->max_h);
           }
-        elm_object_item_part_text_set(multi_item, part->name, part->text_content);
         multi_item = elm_multibuttonentry_item_next_get(multi_item);
      }
 }
