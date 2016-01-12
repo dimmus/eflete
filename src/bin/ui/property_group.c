@@ -910,6 +910,7 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_STATE2:
       case ATTRIBUTE_PROGRAM_NAME:
       case ATTRIBUTE_PROGRAM_TARGET:
+      case ATTRIBUTE_PROGRAM_AFTER:
          TODO("implement");
          break;
          /* Don't add 'default:'. Compiler must warn about missing cases */
