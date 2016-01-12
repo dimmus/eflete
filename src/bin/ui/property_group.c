@@ -192,6 +192,7 @@ struct _Group_Prop_Data
              Evas_Object *frame;
              Evas_Object *name;
              const char *program;
+             Evas_Object *signal;
         } program;
    } attributes;
 };
@@ -298,6 +299,9 @@ _ui_property_program_set(Evas_Object *property, const char *program);
 
 static void
 _ui_property_program_unset(Evas_Object *property);
+
+static void
+prop_program_signal_update(Group_Prop_Data *pd);
 
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property);
@@ -904,6 +908,9 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_STATE_IMAGE_TWEEN:
          prop_item_state_image_tween_update(pd->attributes.state_image.tween, pd);
          break;
+      case ATTRIBUTE_PROGRAM_SIGNAL:
+         prop_program_signal_update(pd);
+         break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
       case ATTRIBUTE_PROGRAM_ACTION:
@@ -925,7 +932,6 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_API_DESCRIPTION:
       case ATTRIBUTE_PROGRAM_SAMPLE_NAME:
       case ATTRIBUTE_PROGRAM_TONE_NAME:
-      case ATTRIBUTE_PROGRAM_SIGNAL:
       case ATTRIBUTE_PROGRAM_SOURCE:
       case ATTRIBUTE_PROGRAM_STATE:
       case ATTRIBUTE_PROGRAM_STATE2:
@@ -1400,6 +1406,11 @@ PART_ATTR_PARTS_LIST(part_drag, event, part_drag)
 
 PART_ATTR_SOURCE_UPDATE(part, source)
 
+#define PROGRAMM_ATTR_1ENTRY(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP, DESCRIPTION) \
+   PROGRAM_ATTR_1ENTRY_UPDATE(SUB, VALUE, MEMBER) \
+   PROGRAM_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, DESCRIPTION) \
+   PROGRAM_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP)
+
 static void
 _on_program_name_change(void *data __UNUSED__,
                         Evas_Object *obj __UNUSED__,
@@ -1425,6 +1436,9 @@ prop_program_name_update(Group_Prop_Data *pd)
 }
 
 COMMON_ENTRY_ADD(_("name"), program, name, program, NULL, _("Name of the group."))
+PROGRAMM_ATTR_1ENTRY(_("signal"), program, signal, program, NULL,
+                     _("The signal name for triger"),
+                     _("signal changed to '%s'"))
 
 static void
 _ui_property_program_set(Evas_Object *property, const char *program)
@@ -1443,10 +1457,13 @@ _ui_property_program_set(Evas_Object *property, const char *program)
 
         item = prop_program_name_add(box, pd, NULL);
         elm_box_pack_end(box, item);
+        item = prop_program_signal_add(box, pd, NULL);
+        elm_box_pack_end(box, item);
      }
    else
      {
         prop_program_name_update(pd);
+        prop_program_signal_update(pd);
      }
    elm_box_pack_end(prop_box, pd->attributes.program.frame);
 }
