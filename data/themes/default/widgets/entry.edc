@@ -28,16 +28,15 @@ group { name: "elm/entry/base/default";
          source6: "elm/entry/anchor/default";
          description { state: "default" 0.0;
             text {
-               style: "main_text";
+               style: "entry_main_text";
                min: 1 1;
-               align: 0.0 0.0;
                elipsis: -1;
             }
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
             text {
-               style: "main_text_disabled";
+               style: "entry_main_text_disabled";
             }
          }
       }
@@ -1192,17 +1191,17 @@ group { name: "elm/entry/base-single/default";
          description { state: "default" 0.0;
             min: 0 19;
             text {
-               style: "main_text";
+               style: "entry_main_text";
+               min: 1 1;
                ellipsis: -1;
-               align: 0.0 0.5;
             }
          }
          description { state: "disabled" 0.0;
             min: 0 19;
             text {
-               style: "main_text_disable";
+               style: "entry_main_text_disable";
+               min: 1 1;
                ellipsis: -1;
-               align: 0.0 0.5;
             }
          }
       }
