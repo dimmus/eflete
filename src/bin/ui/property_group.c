@@ -59,8 +59,8 @@ struct _Group_Prop_Data
              Evas_Object *shared_check;
              Evas_Object *ctxpopup;
              Evas_Object *name;
-             Evas_Object *min_w, *min_h;
-             Evas_Object *max_w, *max_h;
+             Evas_Object *min_w, *min_h, *min_item;
+             Evas_Object *max_w, *max_h, *max_item;
              Evas_Object *current;
         } group;
         struct {
@@ -1232,14 +1232,14 @@ ui_property_group_set(Evas_Object *property, Group *group)
 
         item = prop_group_name_add(box, pd, NULL);
         elm_box_pack_end(box, item);
-        item = prop_group_min_w_h_add(box, pd,
-                                      _("Minimum group width in pixels."),
-                                      _("Minimum group height in pixels."));
-        elm_box_pack_end(box, item);
-        item = prop_group_max_w_h_add(box, pd,
-                                      _("Maximum group width in pixels."),
-                                      _("Maximum group height in pixels."));
-        elm_box_pack_end(box, item);
+        pd_group.min_item = prop_group_min_w_h_add(box, pd,
+                                                   _("Minimum group width in pixels."),
+                                                   _("Minimum group height in pixels."));
+        elm_box_pack_end(box, pd_group.min_item);
+        pd_group.max_item = prop_group_max_w_h_add(box, pd,
+                                                   _("Maximum group width in pixels."),
+                                                   _("Maximum group height in pixels."));
+        elm_box_pack_end(box, pd_group.max_item);
 
         elm_box_pack_start(prop_box, group_frame);
         pd_group.frame = group_frame;
@@ -1261,6 +1261,16 @@ ui_property_group_set(Evas_Object *property, Group *group)
      {
         elm_box_pack_start(prop_box, pd_group.info);
         evas_object_show(pd_group.info);
+     }
+   if (group->main_group != NULL)
+     {
+        elm_object_disabled_set(pd_group.min_item, true);
+        elm_object_disabled_set(pd_group.max_item, true);
+     }
+   else
+     {
+        elm_object_disabled_set(pd_group.min_item, false);
+        elm_object_disabled_set(pd_group.max_item, false);
      }
    elm_box_pack_start(prop_box, pd_group.shared_check);
 }
