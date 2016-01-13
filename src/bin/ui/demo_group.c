@@ -365,3 +365,115 @@ demo_group_del(Evas_Object *demo)
 
    free(pl);
 }
+
+void
+demo_group_part_add(Evas_Object *demo, Part *part)
+{
+   Part_Demo_List *pl = evas_object_data_get(demo, DEMO_GROUP_DATA);
+   Demo_Part *demo_part;
+
+   assert(part->name != NULL);
+
+   if ((part->type == EDJE_PART_TYPE_TEXT) ||
+       (part->type == EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        demo_part = mem_calloc(1, sizeof(Demo_Part));
+        demo_part->name = eina_stringshare_add(part->name);
+        demo_part->type = part->type;
+        pl->text_list = eina_list_append(pl->text_list, demo_part);
+        elm_genlist_item_append(pl->genlist,
+                                itc_part,
+                                demo_part,
+                                pl->it_text,
+                                ELM_GENLIST_ITEM_NONE,
+                                NULL,
+                                NULL);
+     }
+   else if (part->type == EDJE_PART_TYPE_SWALLOW)
+     {
+        demo_part = mem_calloc(1, sizeof(Demo_Part));
+        demo_part->name = eina_stringshare_add(part->name);
+        demo_part->type = part->type;
+        pl->swallow_list = eina_list_append(pl->swallow_list, demo_part);
+        elm_genlist_item_append(pl->genlist,
+                                itc_part,
+                                demo_part,
+                                pl->it_swallow,
+                                ELM_GENLIST_ITEM_NONE,
+                                NULL,
+                                NULL);
+     }
+}
+
+static void
+_part_item_del(Elm_Object_Item *pl, Demo_Part *part)
+{
+   Elm_Object_Item *part_item;
+   const Eina_List *part_items;
+   Demo_Part *pr;
+
+   assert(pl != NULL);
+   assert(part != NULL);
+
+   if (!elm_genlist_item_expanded_get(pl)) return;
+
+   part_items = elm_genlist_item_subitems_get(pl);
+
+   part_item = eina_list_data_get(part_items);
+   pr = elm_object_item_data_get(part_item);
+   while (pr->name != part->name)
+     {
+        part_items = eina_list_next(part_items);
+        part_item = eina_list_data_get(part_items);
+        pr = elm_object_item_data_get(part_item);
+
+        assert(pr != NULL);
+     }
+   assert(part_item != NULL);
+
+   elm_object_item_del(part_item);
+   elm_genlist_item_update(pl);
+   return;
+}
+
+void
+demo_group_part_del(Evas_Object *demo, Part *part)
+{
+   Part_Demo_List *pl = evas_object_data_get(demo, DEMO_GROUP_DATA);
+   Demo_Part *demo_part;
+   Eina_List *l;
+
+   assert(pl);
+   assert(part->name != NULL);
+
+   if ((part->type == EDJE_PART_TYPE_TEXT) ||
+       (part->type == EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        EINA_LIST_FOREACH(pl->text_list, l, demo_part)
+          {
+             if (demo_part->name == part->name)
+               {
+                  pl->text_list = eina_list_remove(pl->text_list, demo_part);
+                  _part_item_del(pl->it_text, demo_part);
+                  eina_stringshare_del(demo_part->name);
+                  free(demo_part);
+                  return;
+               }
+          }
+     }
+   else if (part->type == EDJE_PART_TYPE_SWALLOW)
+     {
+        EINA_LIST_FOREACH(pl->swallow_list, l, demo_part)
+          {
+             if (demo_part->name == part->name)
+               {
+                  pl->swallow_list = eina_list_remove(pl->swallow_list, demo_part);
+                  _part_item_del(pl->it_swallow, demo_part);
+                  eina_stringshare_del(demo_part->name);
+                  eina_stringshare_del(demo_part->image_path);
+                  free(demo_part);
+                  return;
+               }
+          }
+     }
+}

@@ -101,4 +101,16 @@ demo_group_add(Group *group);
 void
 demo_group_del(Evas_Object *demo_group);
 
+/**
+ * @ingroup DemoGroup
+ */
+void
+demo_group_part_add(Evas_Object *demo, Part *part);
+
+/**
+ * @ingroup DemoGroup
+ */
+void
+demo_group_part_del(Evas_Object *demo, Part *part);
+
 #endif /* DEMO_GROUP_H */
