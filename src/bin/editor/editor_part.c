@@ -683,7 +683,7 @@ editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
      {
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING_EDJEPARTTYPE;
-        diff->redo.function = editor_part_item_append;
+        diff->redo.function = editor_part_add;
         diff->redo.args.type_sept.s1 = eina_stringshare_add(part_name);
         diff->redo.args.type_sept.ept2 = type;
         diff->undo.type = FUNCTION_TYPE_STRING;
