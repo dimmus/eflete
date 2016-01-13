@@ -72,6 +72,7 @@ struct Demo_Part_
 
    Eina_Stringshare *text_content; /**< text in demo (for TEXT parts) */
    Evas_Object *object; /**< object content in demo (for SWALLOW parts) */
+   Eina_List *objects; /**< for demos containing several widgets to show (like radio) */
    int swallow_content; /**< type of content (picture, rectangle or widget) */
    int r, g, b, a; /**< color of content */
    int widget; /**< number of widget to be set up */
