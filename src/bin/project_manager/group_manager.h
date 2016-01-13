@@ -110,6 +110,12 @@ gm_part_restack(Part *part, Part *rel_part);
 void
 gm_part_item_restack(Part *part, Eina_Stringshare *part_item, Eina_Stringshare *relative_part_item);
 
+void
+gm_program_add(Project *pro, Group *group, Eina_Stringshare *program);
+
+void
+gm_program_del(Project *pro, Group *group, Eina_Stringshare *program);
+
 const char *
 gm_part_type_text_get(Edje_Part_Type part_type);
 #endif /* GROUP_MANAGER_H */
