@@ -402,3 +402,79 @@ editor_program_after_del(Evas_Object *edit_object, Change *change, Eina_Bool mer
      evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
+
+Eina_Bool
+editor_program_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                     const char *program_name)
+{
+   Eina_Bool res = true;
+   Eina_List *list, *l;
+   Eina_Stringshare *name;
+   assert(edit_object != NULL);
+   assert(program_name != NULL);
+
+   you_shall_not_pass_editor_signals(change);
+
+   Edje_Action_Type type = edje_edit_program_action_get(edit_object, program_name);
+
+   list = edje_edit_program_targets_get(edit_object, program_name);
+   EINA_LIST_FOREACH(list, l, name)
+      res = res && editor_program_target_del(edit_object, change, false, program_name, name);
+   edje_edit_string_list_free(list);
+
+   list = edje_edit_program_afters_get(edit_object, program_name);
+   EINA_LIST_FOREACH(list, l, name)
+      res = res && editor_program_after_del(edit_object, change, false, program_name, name);
+   edje_edit_string_list_free(list);
+
+   res = res && editor_program_filter_state_reset(edit_object, change, program_name);
+   res = res && editor_program_filter_part_reset(edit_object, change, program_name);
+   res = res && editor_program_in_from_reset(edit_object, change, program_name);
+   res = res && editor_program_in_range_reset(edit_object, change, program_name);
+   res = res && editor_program_api_name_reset(edit_object, change, program_name);
+   res = res && editor_program_api_description_reset(edit_object, change, program_name);
+   res = res && editor_program_signal_reset(edit_object, change, program_name);
+   res = res && editor_program_source_reset(edit_object, change, program_name);
+   switch (type)
+     {
+        case EDJE_ACTION_TYPE_STATE_SET:
+           res = res && editor_program_state_reset(edit_object, change, program_name);
+           res = res && editor_program_value_reset(edit_object, change, program_name);
+           res = res && editor_program_transition_time_reset(edit_object, change, program_name);
+           res = res && editor_program_transition_value1_reset(edit_object, change, program_name);
+           res = res && editor_program_transition_value2_reset(edit_object, change, program_name);
+           res = res && editor_program_transition_value3_reset(edit_object, change, program_name);
+           res = res && editor_program_transition_value4_reset(edit_object, change, program_name);
+           res = res && editor_program_transition_from_current_reset(edit_object, change, program_name);
+           res = res && editor_program_transition_type_reset(edit_object, change, program_name);
+           break;
+        case EDJE_ACTION_TYPE_SIGNAL_EMIT:
+           res = res && editor_program_state_reset(edit_object, change, program_name);
+           res = res && editor_program_state2_reset(edit_object, change, program_name);
+           break;
+        case EDJE_ACTION_TYPE_DRAG_VAL_SET:
+        case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
+        case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
+           res = res && editor_program_value_reset(edit_object, change, program_name);
+           res = res && editor_program_value2_reset(edit_object, change, program_name);
+           break;
+        case EDJE_ACTION_TYPE_SOUND_SAMPLE:
+           res = res && editor_program_sample_name_reset(edit_object, change, program_name);
+           res = res && editor_program_sample_speed_reset(edit_object, change, program_name);
+           res = res && editor_program_channel_reset(edit_object, change, program_name);
+           break;
+        case EDJE_ACTION_TYPE_SOUND_TONE:
+           res = res && editor_program_tone_name_reset(edit_object, change, program_name);
+           res = res && editor_program_tone_duration_reset(edit_object, change, program_name);
+           break;
+        case EDJE_ACTION_TYPE_ACTION_STOP:
+        default:
+           TODO("Add other action types when they will be supported");
+           break;
+     }
+   res = res && editor_program_action_reset(edit_object, change, program_name);
+
+   you_shall_pass_editor_signals(change);
+
+   return res;
+}
