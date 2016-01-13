@@ -718,5 +718,11 @@ editor_program_after_add(Evas_Object *edit_object, Change *change, Eina_Bool mer
 Eina_Bool
 editor_program_after_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                          const char *program_name, Eina_Stringshare *after);
+Eina_Bool
+editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                   const char *program_name);
+Eina_Bool
+editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                   const char *program_name);
 
 #endif /* EDITOR_H */
