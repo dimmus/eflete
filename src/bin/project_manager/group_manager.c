@@ -673,6 +673,44 @@ gm_part_item_restack(Part *part, Eina_Stringshare *part_item, Eina_Stringshare *
      part->items = eina_list_append(part->items, part_item);
 }
 
+void
+gm_program_add(Project *pro, Group *group, Eina_Stringshare *program_name)
+{
+   Resource *program;
+
+   assert(pro != NULL);
+   assert(program_name != NULL);
+   assert(group != NULL);
+
+   program = mem_calloc(1, sizeof(Resource));
+   program->name = eina_stringshare_add(program_name);
+   group->programs = eina_list_sorted_insert(group->programs, (Eina_Compare_Cb)resource_cmp, program);
+}
+
+void
+gm_program_del(Project *pro, Group *group, Eina_Stringshare *program_name)
+{
+   Eina_List *l;
+   Resource *program;
+
+   assert(pro != NULL);
+   assert(program_name != NULL);
+   assert(group != NULL);
+
+   program = pm_resource_get(group->programs, program_name);
+
+   assert(program != NULL);
+
+   l = eina_list_data_find_list(group->programs, program);
+
+   assert(l != NULL);
+
+   group->programs = eina_list_remove_list(group->programs, l);
+   eina_stringshare_del(program->name);
+   eina_list_free(program->used_in);
+   free(program);
+}
+
 /**
  * ref http://docs.enlightenment.org/auto/edje/group__Edje__Object__Part.html
  */

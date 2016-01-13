@@ -468,6 +468,7 @@ _selected_cb(void *data,
 
    assert(pl != NULL);
 
+   elm_object_disabled_set(pl->btn_del, true);
    if ((glit == pl->parts_caption_item) ||
        (glit == pl->programs_caption_item))
      {
@@ -483,6 +484,7 @@ _selected_cb(void *data,
         if (pl->selected_part_item)
           _unselect_part(pl);
 
+        elm_object_disabled_set(pl->btn_del, false);
         res = elm_object_item_data_get(glit);
         evas_object_smart_callback_call(ap.win, SIGNAL_PROGRAM_SELECTED, (void *)res);
      }
@@ -618,6 +620,26 @@ _item_validate(void *data,
    valid = valid && (ewe_combobox_select_item_get(pl->popup.combobox) != NULL);
    EINA_LIST_FOREACH(part->items, l, item)
       valid = valid && strcmp(item, name);
+
+   elm_object_disabled_set(pl->popup.btn_add, !valid);
+}
+
+static void
+_program_validate(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   Part_List *pl = data;
+   const char *name, *program;
+   Eina_Bool valid;
+   Eina_List *l;
+
+   assert(pl != NULL);
+
+   name = elm_entry_entry_get(pl->popup.entry_name);
+   valid = (elm_validator_regexp_status_get(pl->name_validator) == ELM_REG_NOERROR);
+   EINA_LIST_FOREACH(pl->group->programs, l, program)
+      valid = valid && strcmp(program, name);
 
    elm_object_disabled_set(pl->popup.btn_add, !valid);
 }
@@ -1018,6 +1040,135 @@ _on_menu_add_item_clicked(void *data __UNUSED__,
 }
 
 static void
+_popup_add_program_ok_clicked(void *data,
+                              Evas_Object *obj __UNUSED__,
+                              void *event_info __UNUSED__)
+{
+   Part_List *pl = data;
+   const char *name;
+   Eina_Stringshare *msg;
+   Change *change;
+
+   assert(pl != NULL);
+
+   name = elm_entry_entry_get(pl->popup.entry_name);
+
+   msg = eina_stringshare_printf(_("added new program \"%s\""), name);
+   change = change_add(msg);
+   editor_program_add(pl->group->edit_object, change, false, name);
+
+   history_change_add(pl->group->history, change);
+   eina_stringshare_del(msg);
+   ecore_job_add(_job_popup_del, pl);
+}
+
+static void
+_on_menu_add_program_clicked(void *data __UNUSED__,
+                             Evas_Object *obj,
+                             void *ei __UNUSED__)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   Evas_Object *box, *item;
+
+   assert(pl != NULL);
+
+   ap.popup = elm_popup_add(ap.win);
+   elm_object_part_text_set(ap.popup, "title,text", _("Add new program"));
+
+   BOX_ADD(ap.popup, box, false, false);
+   LAYOUT_PROP_ADD(box, _("Name:"), "property", "1swallow")
+   ENTRY_ADD(item, pl->popup.entry_name, true);
+   eo_do(pl->popup.entry_name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE,
+         elm_validator_regexp_helper, pl->name_validator));
+   evas_object_smart_callback_add(pl->popup.entry_name, "changed", _program_validate, pl);
+   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new program here."));
+   elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
+   elm_box_pack_end(box, item);
+
+   elm_object_content_set(ap.popup, box);
+
+   BUTTON_ADD(ap.popup, pl->popup.btn_add, _("Add"));
+   evas_object_smart_callback_add(pl->popup.btn_add, "clicked", _popup_add_program_ok_clicked, pl);
+   elm_object_part_content_set(ap.popup, "button1", pl->popup.btn_add);
+   elm_object_disabled_set(pl->popup.btn_add, true);
+
+   BUTTON_ADD(ap.popup, pl->popup.btn_cancel, _("Cancel"));
+   evas_object_smart_callback_add(pl->popup.btn_cancel, "clicked", _popup_cancel_clicked, pl);
+   elm_object_part_content_set(ap.popup, "button2", pl->popup.btn_cancel);
+
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+   evas_object_show(ap.popup);
+   elm_object_focus_set(pl->popup.entry_name, true);
+}
+
+void
+group_navigator_program_add(Evas_Object *obj, Eina_Stringshare *program)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   Elm_Object_Item *glit;
+   const Eina_List *l;
+   Resource *res;
+
+   assert(pl != NULL);
+   assert(program != NULL);
+
+   elm_genlist_item_expanded_set(pl->programs_caption_item, false);
+   elm_genlist_item_expanded_set(pl->programs_caption_item, true);
+   elm_genlist_item_update(pl->programs_caption_item);
+   EINA_LIST_FOREACH(elm_genlist_item_subitems_get(pl->programs_caption_item), l, glit)
+     {
+        res = elm_object_item_data_get(glit);
+        if (res->name == program) /* comparing stringshares */
+          {
+             elm_genlist_item_selected_set(glit, true);
+             break;
+          }
+     }
+}
+
+static void
+_program_del(Part_List *pl,
+             Elm_Object_Item *glit)
+{
+   Eina_Stringshare *msg;
+   Change *change;
+   Resource *program;
+
+   assert(pl != NULL);
+   assert(glit != NULL);
+
+   program = elm_object_item_data_get(glit);
+
+   assert(program != NULL);
+
+   msg = eina_stringshare_printf(_("deleted program \"%s\""), program->name);
+   change = change_add(msg);
+   eina_stringshare_del(msg);
+
+   eina_stringshare_ref(program->name);
+   editor_program_del(pl->group->edit_object, change, false, program->name);
+   eina_stringshare_del(program->name);
+
+   history_change_add(pl->group->history, change);
+}
+
+void
+group_navigator_program_del(Evas_Object *obj, Eina_Stringshare *program __UNUSED__)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   assert(pl != NULL);
+
+   elm_genlist_item_update(pl->programs_caption_item);
+   if (elm_genlist_item_expanded_get(pl->programs_caption_item))
+     {
+        elm_genlist_item_expanded_set(pl->programs_caption_item, false);
+        elm_genlist_item_expanded_set(pl->programs_caption_item, true);
+     }
+   elm_genlist_item_selected_set(pl->programs_caption_item, true);
+}
+
+static void
 _on_btn_plus_clicked(void *data,
                      Evas_Object *obj,
                      void *ei __UNUSED__)
@@ -1236,6 +1387,8 @@ _on_btn_minus_clicked(void *data,
      _state_del(pl, glit);
    else if ((itc == pl->itc_item))
      _item_del(pl, glit);
+   else if ((itc == pl->itc_program))
+     _program_del(pl, glit);
 
    TODO("Check if we still need this")
    /* Need to save pl->group->edit_object, since we changed it */
@@ -1594,6 +1747,8 @@ group_navigator_add(Group *group)
    elm_menu_item_icon_name_set(menu_item, "type_proxy");
    menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Spacer"), _on_menu_add_part_clicked, &_type_spacer);
    elm_menu_item_icon_name_set(menu_item, "type_spacer");
+   menu_item = elm_menu_item_separator_add(pl->menu, NULL);
+   elm_menu_item_add(pl->menu, NULL, NULL, _("Program"), _on_menu_add_program_clicked, NULL);
 
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
    if (group->main_group)
