@@ -478,3 +478,73 @@ editor_program_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge _
 
    return res;
 }
+
+Eina_Bool
+editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                const char *program_name)
+{
+   Diff *diff;
+   Eina_Stringshare *event_info;
+
+   assert(edit_object != NULL);
+
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING;
+        diff->redo.function = editor_program_add;
+        diff->redo.args.type_s.s1 = eina_stringshare_add(program_name);
+        diff->undo.type = FUNCTION_TYPE_STRING;
+        diff->undo.function = editor_program_del;
+        diff->undo.args.type_s.s1 = eina_stringshare_add(program_name);
+
+        change_diff_add(change, diff);
+     }
+   if (!edje_edit_program_add(edit_object, program_name))
+     return false;
+
+   editor_save(edit_object);
+   _editor_project_changed();
+
+   event_info = eina_stringshare_add(program_name);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_ADDED, (void *)event_info);
+   eina_stringshare_del(event_info);
+   return true;
+}
+
+Eina_Bool
+editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                const char *program_name)
+{
+   Diff *diff;
+   Eina_Stringshare *event_info;
+
+   assert(edit_object != NULL);
+
+   event_info = eina_stringshare_add(program_name);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_DELETED, (void *)event_info);
+
+   if (change)
+     {
+        if (!editor_program_reset(edit_object, change, false, program_name))
+          return false;
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING;
+        diff->redo.function = editor_program_del;
+        diff->redo.args.type_s.s1 = eina_stringshare_add(program_name);
+        diff->undo.type = FUNCTION_TYPE_STRING;
+        diff->undo.function = editor_program_add;
+        diff->undo.args.type_s.s1 = eina_stringshare_add(program_name);
+
+        change_diff_add(change, diff);
+     }
+   if (!edje_edit_program_del(edit_object, program_name))
+     {
+        eina_stringshare_del(event_info);
+        return false;
+     }
+   eina_stringshare_del(event_info);
+   editor_save(edit_object);
+   _editor_project_changed();
+   return true;
+}

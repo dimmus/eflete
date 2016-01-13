@@ -200,6 +200,22 @@ typedef struct {
  */
 #define SIGNAL_EDITOR_PART_DELETED "SIGNAL_EDITOR_PART_DELETED"
 
+/**
+ * emited when program is added in editor.
+ * eventinfo - stringshare with programs name
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_PROGRAM_ADDED "SIGNAL_EDITOR_PROGRAM_ADDED"
+
+/**
+ * emited *before* program will be deleted in editor.
+ * eventinfo - stringshare with programs name
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_PROGRAM_DELETED "SIGNAL_EDITOR_PROGRAM_DELETED"
+
 typedef struct {
    const char *part_name;
    const char *relative_part_name;
