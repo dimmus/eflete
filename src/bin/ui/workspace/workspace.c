@@ -49,9 +49,6 @@ struct _Ws_Menu
    Elm_Object_Item *zoom_normal;
    Elm_Object_Item *zoom_near;
 
-   Elm_Object_Item *mode_normal;
-   Elm_Object_Item *mode_separate;
-
    Elm_Object_Item *settings;
 };
 typedef struct _Ws_Menu Ws_Menu;
@@ -370,11 +367,6 @@ _init_ctx_menu(Ws_Smart_Data *ws, Evas_Object *parent)
    items->zoom_near = elm_menu_item_add(menu, items->zoom, NULL, _("200%"), _zoom_factor_200, ws->obj);
    elm_menu_item_separator_add(menu, NULL);
 
-   items->mode_normal = elm_menu_item_add(menu, NULL, NULL, _("Normal mode"), _normal_mode_click, ws);
-   elm_menu_item_icon_name_set(items->mode_normal, EFLETE_IMG_PATH"context_menu-bullet.png");
-   elm_object_item_disabled_set(items->mode_normal, true);
-   items->mode_separate = elm_menu_item_add(menu, NULL, NULL, _("Separate mode"), _separate_mode_click, ws);
-   elm_object_item_disabled_set(items->mode_separate, true);
    elm_menu_item_separator_add(menu, NULL);
    items->settings = elm_menu_item_add(menu, NULL, NULL, _("Settings..."), NULL, NULL);
    elm_object_item_disabled_set(items->settings, true);
@@ -638,21 +630,9 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
    ewe_ruler_step_set(sd->ruler_hor, NULL, DEFAULT_STEP * sd->zoom.factor);
 
    if (fabs(factor - 1.0) > 0.001)
-     {
-        container_border_hide(sd->container.obj);
-
-        Ws_Menu *items = &sd->menu.items;
-        elm_object_item_disabled_set(items->mode_normal, true);
-        elm_object_item_disabled_set(items->mode_separate, true);
-     }
+     container_border_hide(sd->container.obj);
    else
-     {
-        container_border_show(sd->container.obj);
-
-        Ws_Menu *items = &sd->menu.items;
-        elm_object_item_disabled_set(items->mode_normal, false);
-        elm_object_item_disabled_set(items->mode_separate, false);
-     }
+     container_border_show(sd->container.obj);
 
    return true;
 }
@@ -1562,10 +1542,6 @@ workspace_add(Evas_Object *parent, Group *group)
    container_content_set(sd->container.obj, sd->groupedit);
 
    sd->group = group;
-   elm_menu_item_icon_name_set(sd->menu.items.mode_normal,
-                               EFLETE_IMG_PATH"context_menu-bullet.png");
-   elm_menu_item_icon_name_set(sd->menu.items.mode_separate, "");
-
    container_handler_size_set(sd->container.obj, 8, 8, 8, 8);
    evas_object_smart_callback_add(sd->groupedit, SIGNAL_GROUPEDIT_PART_SELECTED,
                                   _on_groupedit_part_select, obj);
@@ -1608,8 +1584,6 @@ workspace_add(Evas_Object *parent, Group *group)
         evas_object_clip_set(sd->highlight.highlight, sd->clipper);
      }
 
-   elm_object_item_disabled_set(sd->menu.items.mode_normal, false);
-   elm_object_item_disabled_set(sd->menu.items.mode_separate, false);
    elm_object_item_disabled_set(sd->menu.items.zoom, false);
 
    Evas_Coord min_w, max_w, min_h, max_h;
@@ -1712,9 +1686,6 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
         evas_object_hide(sd->highlight.space_hl);
         evas_object_hide(sd->highlight.highlight);
 
-        elm_menu_item_icon_name_set(sd->menu.items.mode_separate,
-                                    EFLETE_IMG_PATH"context_menu-bullet.png");
-        elm_menu_item_icon_name_set(sd->menu.items.mode_normal, "");
      }
    else
      {
@@ -1730,10 +1701,6 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
         evas_object_hide(sd->highlight.space_hl);
         if (sd->highlight.part)
           evas_object_show(sd->highlight.highlight);
-
-        elm_menu_item_icon_name_set(sd->menu.items.mode_normal,
-                                    EFLETE_IMG_PATH"context_menu-bullet.png");
-        elm_menu_item_icon_name_set(sd->menu.items.mode_separate, "");
      }
 
    success = groupedit_edit_object_parts_separated(sd->groupedit, separate);
