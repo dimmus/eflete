@@ -937,6 +937,14 @@ _workspace_smart_add(Evas_Object *o)
    _workspace_parent_sc->add(o);
 }
 
+/*
+ * It's necessary to avoid warning: implicit declaration of function
+ * 'elm_widget_sub_object_add' on compilation stage, which occurrs because of
+ * Elementary.h file isn't contain directly elm_widget.h file (where
+ * 'elm_widget_sub_object_add' function declared)
+ */
+Eina_Bool elm_widget_sub_object_add(Evas_Object *obj, Evas_Object *sobj);
+
 static void
 _mode_changed(void *data,
               Evas_Object *obj,
@@ -984,8 +992,8 @@ _mode_changed(void *data,
             evas_object_show(sd->active_mode_object);
             container_content_set(sd->container.obj, sd->active_mode_object);
 
-            elm_object_part_content_unset(sd->panes, "right");
-            evas_object_hide(sd->group_navigator);
+            evas_object_hide(elm_object_part_content_unset(sd->panes, "right"));
+            elm_widget_sub_object_add(sd->panes, sd->group_navigator);
             evas_object_hide(sd->highlight.highlight);
             elm_object_part_content_set(sd->panes, "right", sd->demo_group);
             evas_object_show(sd->demo_group);
@@ -1000,8 +1008,8 @@ _mode_changed(void *data,
    /* if last mode was demo... */
    if (sd->active_mode == MODE_DEMO)
      {
-        elm_object_part_content_unset(sd->panes, "right");
-        evas_object_hide(sd->demo_group);
+        evas_object_hide(elm_object_part_content_unset(sd->panes, "right"));
+        elm_widget_sub_object_add(sd->panes, sd->demo_group);
         elm_object_part_content_set(sd->panes, "right", sd->group_navigator);
         evas_object_show(sd->group_navigator);
         evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, sd->group);
@@ -1789,6 +1797,7 @@ workspace_part_add(Evas_Object *obj, Eina_Stringshare *part_name)
    part = gm_part_add(ap.project, sd->group, part_name);
    groupedit_edit_object_part_add(sd->groupedit, part);
    group_navigator_part_add(sd->group_navigator, part);
+   demo_group_part_add(sd->demo_group, part);
 }
 
 void
@@ -1800,6 +1809,7 @@ workspace_part_del(Evas_Object *obj, Eina_Stringshare *part_name)
 
    part = pm_resource_unsorted_get(sd->group->parts, part_name);
    group_navigator_part_del(sd->group_navigator, part);
+   demo_group_part_del(sd->demo_group, part);
    groupedit_edit_object_part_del(sd->groupedit, part);
    gm_part_del(ap.project, part);
 }
