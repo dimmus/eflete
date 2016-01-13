@@ -1559,7 +1559,7 @@ pm_group_source_code_export(Project *project,
 static Eina_Bool
 _project_src_export(const char *path)
 {
-   Eina_Stringshare *code;
+   char *code;
    Eina_Strbuf *buf;
    FILE *f;
 
@@ -1584,7 +1584,7 @@ _project_src_export(const char *path)
    ecore_thread_main_loop_end();
 
    fputs(code, f);
-   edje_edit_string_free(code);
+   free(code);
    if (f) fclose(f);
 
    /* export resource */
