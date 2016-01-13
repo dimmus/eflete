@@ -951,7 +951,7 @@ _mode_changed(void *data,
    if ((sd->active_mode == MODE_NORMAL)/* || (sd->active_mode == MODE_SEPARATE) */)
      evas_object_hide(sd->groupedit);
    else
-     evas_object_hide(sd->active_mode_object);
+     evas_object_del(sd->active_mode_object);
 
    mode = elm_radio_state_value_get(obj);
 
@@ -980,8 +980,7 @@ _mode_changed(void *data,
             workspace_separate_mode_set(sd->obj, false);
             container_border_show(sd->container.obj);
 
-            if (!sd->active_mode_object)
-              sd->active_mode_object = demo_add(sd->scroller, sd->group);
+            sd->active_mode_object = demo_add(sd->scroller, sd->group);
             evas_object_show(sd->active_mode_object);
             container_content_set(sd->container.obj, sd->active_mode_object);
 
@@ -1267,7 +1266,6 @@ _workspace_smart_del(Evas_Object *o)
    evas_object_del(sd->highlight.highlight);
    demo_group_del(sd->demo_group);
    gm_group_edit_object_unload(sd->group);
-   evas_object_del(sd->active_mode_object);
    _workspace_parent_sc->del(o);
 }
 
