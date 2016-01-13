@@ -1554,7 +1554,6 @@ group_navigator_add(Group *group)
                                                     ELM_GENLIST_ITEM_TREE,
                                                     NULL,
                                                     NULL);
-   elm_genlist_item_expanded_set(pl->parts_caption_item, true);
    pl->programs_caption_item = elm_genlist_item_append(pl->genlist,
                                                     pl->itc_caption,
                                                     &group->programs,
@@ -1597,6 +1596,10 @@ group_navigator_add(Group *group)
    elm_menu_item_icon_name_set(menu_item, "type_spacer");
 
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
+   if (group->main_group)
+     elm_object_disabled_set(pl->layout, true);
+   else
+     elm_genlist_item_expanded_set(pl->parts_caption_item, true);
 
    TODO("Add deletion callback and free resources");
    return pl->layout;
