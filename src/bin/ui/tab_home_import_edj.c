@@ -126,7 +126,8 @@ _validate(void *data __UNUSED__,
           void *event_info __UNUSED__)
 {
    if ((elm_validator_regexp_status_get(tab_edj.name_validator) != ELM_REG_NOERROR) ||
-       !eina_str_has_extension(elm_entry_entry_get(tab_edj.edj), ".edj"))
+       !eina_str_has_extension(elm_entry_entry_get(tab_edj.edj), ".edj") ||
+       !ecore_file_exists(elm_entry_entry_get(tab_edj.edj)))
      elm_object_disabled_set(tab_edj.btn_create, true);
    else
      elm_object_disabled_set(tab_edj.btn_create, false);

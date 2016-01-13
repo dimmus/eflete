@@ -20,43 +20,81 @@
 #include "live_elementary_widgets.h"
 
 static void
-_on_list_swallow_check(void *data __UNUSED__,
-                       Evas_Object *obj __UNUSED__,
-                       void *ei __UNUSED__)
+_on_list_swallow_check(void *data,
+                       Evas_Object *obj,
+                       void *ei)
 {
-   TODO("Remake on_swallow_check, so that would be used everywhere.")
-   ERR(N_("Complex widgets are not implemented yet."))
+   Demo_Part *part = (Demo_Part *)ei;
+   Evas_Object *object = (Evas_Object *) data;
+
+   Elm_Object_Item *item = elm_list_first_item_get(object);
+
+   while (item)
+     {
+        if (part->object)
+          {
+             evas_object_del(part->object);
+             part->object = NULL;
+          }
+
+        if (part->swallow_content != CONTENT_NONE)
+          part->object = object_generate(part, obj);
+
+        if (part->object)
+          {
+             evas_object_color_set(part->object,
+                                   part->r,
+                                   part->g,
+                                   part->b,
+                                   part->a);
+
+             evas_object_size_hint_min_set(part->object,
+                                           part->min_w,
+                                           part->min_h);
+             evas_object_size_hint_max_set(part->object,
+                                           part->max_w,
+                                           part->max_h);
+          }
+        elm_object_item_part_content_set(item, part->name, part->object);
+        item = elm_list_item_next(item);
+     }
 }
 
 static void
-_on_list_text_check(void *data __UNUSED__,
+_on_list_text_check(void *data ,
                     Evas_Object *obj __UNUSED__,
-                    void *ei __UNUSED__)
+                    void *ei)
 {
-   TODO("Remake on_text_check, so that would be used everywhere.")
-   ERR(N_("Complex widgets are not implemented yet."))
+   Demo_Part *part = (Demo_Part *)ei;
+   Evas_Object *object = (Evas_Object *) data;
+
+   Elm_Object_Item *item = elm_list_first_item_get(object);
+
+   while (item)
+     {
+        elm_object_item_part_text_set(item, part->name, part->text_content);
+        item = elm_list_item_next(item);
+     }
 }
 
 static void
 _list_send_signal(void *data,
-                  Evas_Object *obj,
+                  Evas_Object *obj __UNUSED__,
                   void *ei __UNUSED__)
 {
+   Demo_Signal *sig = (Demo_Signal *)ei;
    Elm_Object_Item *item = NULL;
 
    assert(data != NULL);
 
    item = elm_list_first_item_get(data);
-
-   const char *name = evas_object_data_get(obj, SIGNAL_NAME);
-   const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
-
-   assert(name != NULL);
-   assert(source != NULL);
+   assert(sig != NULL);
+   assert(sig->sig_name != NULL);
+   assert(sig->source_name != NULL);
 
    while (item)
      {
-        elm_object_item_signal_emit(item, name, source);
+        elm_object_item_signal_emit(item, sig->sig_name, sig->source_name);
         item = elm_list_item_next(item);
      }
 }
@@ -83,9 +121,9 @@ widget_list_create(Evas_Object *parent, const Group *group)
    else
      elm_list_mode_set(object, ELM_LIST_SCROLL);
 
-   evas_object_data_set(object, SWALLOW_FUNC, _on_list_swallow_check);
-   evas_object_data_set(object, TEXT_FUNC, _on_list_text_check);
-   evas_object_data_set(object, SIGNAL_FUNC, _list_send_signal);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_list_swallow_check, object);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, _on_list_text_check, object);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _list_send_signal, object);
 
    elm_object_style_set(object, group->style);
 

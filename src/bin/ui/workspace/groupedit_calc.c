@@ -127,10 +127,15 @@ _parts_list_new(Ws_Groupedit_Smart_Data *sd)
    Groupedit_Part *gp;
    Eina_List *l;
    Part *part;
+   Eina_List *parts;
 
    assert(sd != NULL);
 
-   EINA_LIST_FOREACH(sd->group->parts, l, part)
+   if (!sd->group->main_group)
+     parts = sd->group->parts;
+   else
+     parts = sd->group->main_group->parts;
+   EINA_LIST_FOREACH(parts, l, part)
      {
         gp = _part_draw_add(sd, part);
         sd->parts = eina_list_append(sd->parts, gp);

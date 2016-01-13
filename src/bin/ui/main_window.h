@@ -369,6 +369,14 @@ void
 project_export_develop(void);
 
 /**
+ * Export project as release edj file.
+ *
+ * @ingroup Window
+ */
+void
+project_export_release(void);
+
+/**
  * Update Statusbar field that contains time of last save of current
  * project file.
  *

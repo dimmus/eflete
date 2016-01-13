@@ -59,6 +59,12 @@ typedef enum _Swallow_Content_Widget_Type
  */
 typedef struct Demo_Part_ Demo_Part;
 
+/**
+ * @typedef Demo_Signal_
+ * @ingroup DemoGroup
+ */
+typedef struct Demo_Signal_ Demo_Signal;
+
 struct Demo_Part_
 {
    Eina_Stringshare *name;    /**< part name */
@@ -66,6 +72,7 @@ struct Demo_Part_
 
    Eina_Stringshare *text_content; /**< text in demo (for TEXT parts) */
    Evas_Object *object; /**< object content in demo (for SWALLOW parts) */
+   Eina_List *objects; /**< for demos containing several widgets to show (like radio) */
    int swallow_content; /**< type of content (picture, rectangle or widget) */
    int r, g, b, a; /**< color of content */
    int widget; /**< number of widget to be set up */
@@ -73,6 +80,13 @@ struct Demo_Part_
    int max_w, max_h, min_w, min_h; /**< object's size */
    Eina_Bool change; /**< in case when content type is changed,
                           demo need to create new one */
+};
+
+struct Demo_Signal_
+{
+   Eina_Stringshare *prog_name;
+   Eina_Stringshare *sig_name;
+   Eina_Stringshare *source_name;
 };
 
 /**

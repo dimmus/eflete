@@ -145,6 +145,34 @@ typedef enum {
    ATTRIBUTE_PART_POINTER_MODE,
    ATTRIBUTE_PART_CURSOR_MODE,
    ATTRIBUTE_STATE_FILL_TYPE,
+   ATTRIBUTE_PROGRAM_TRANSITION_TYPE,
+   ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT,
+   ATTRIBUTE_PROGRAM_ACTION,
+   ATTRIBUTE_PROGRAM_CHANNEL,
+   ATTRIBUTE_PROGRAM_TONE_DURATION,
+   ATTRIBUTE_PROGRAM_IN_FROM,
+   ATTRIBUTE_PROGRAM_IN_RANGE,
+   ATTRIBUTE_PROGRAM_TRANSITION_TIME,
+   ATTRIBUTE_PROGRAM_SAMPLE_SPEED,
+   ATTRIBUTE_PROGRAM_VALUE2,
+   ATTRIBUTE_PROGRAM_VALUE,
+   ATTRIBUTE_PROGRAM_TRANSITION_VALUE1,
+   ATTRIBUTE_PROGRAM_TRANSITION_VALUE2,
+   ATTRIBUTE_PROGRAM_TRANSITION_VALUE3,
+   ATTRIBUTE_PROGRAM_TRANSITION_VALUE4,
+   ATTRIBUTE_PROGRAM_FILTER_PART,
+   ATTRIBUTE_PROGRAM_FILTER_STATE,
+   ATTRIBUTE_PROGRAM_API_NAME,
+   ATTRIBUTE_PROGRAM_API_DESCRIPTION,
+   ATTRIBUTE_PROGRAM_SAMPLE_NAME,
+   ATTRIBUTE_PROGRAM_TONE_NAME,
+   ATTRIBUTE_PROGRAM_SIGNAL,
+   ATTRIBUTE_PROGRAM_SOURCE,
+   ATTRIBUTE_PROGRAM_STATE,
+   ATTRIBUTE_PROGRAM_STATE2,
+   ATTRIBUTE_PROGRAM_NAME,
+   ATTRIBUTE_PROGRAM_TARGET,
+   ATTRIBUTE_PROGRAM_AFTER,
 } Attribute;
 
 void
@@ -591,5 +619,110 @@ editor_part_source6_set(Evas_Object *obj, Change *change, Eina_Bool merge, const
 Eina_Bool
 editor_part_effect_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       Edje_Text_Effect new_val);
+
+/* programs */
+Edje_Tween_Mode
+editor_program_transition_type_get(Evas_Object *edit_object, const char *program);
+#define edje_edit_program_transition_type_get editor_program_transition_type_get
+Eina_Bool
+editor_program_transition_from_current_get(Evas_Object *edit_object, const char *program);
+#define edje_edit_program_transition_from_current_get editor_program_transition_from_current_get
+
+Eina_Bool
+editor_program_transition_type_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                   const char *program, Edje_Tween_Mode new_val);
+Eina_Bool
+editor_program_transition_from_current_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                           const char *program, Eina_Bool new_val);
+Eina_Bool
+editor_program_action_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                          const char *program, Edje_Action_Type new_val);
+Eina_Bool
+editor_program_channel_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                           const char *program, Edje_Channel new_val);
+Eina_Bool
+editor_program_tone_duration_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                 const char *program, double new_val);
+Eina_Bool
+editor_program_in_from_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                           const char *program, double new_val);
+Eina_Bool
+editor_program_in_range_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                            const char *program, double new_val);
+Eina_Bool
+editor_program_transition_time_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                   const char *program, double new_val);
+Eina_Bool
+editor_program_sample_speed_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                const char *program, double new_val);
+Eina_Bool
+editor_program_value2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                          const char *program, double new_val);
+Eina_Bool
+editor_program_value_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                         const char *program, double new_val);
+Eina_Bool
+editor_program_transition_value1_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val);
+Eina_Bool
+editor_program_transition_value2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val);
+Eina_Bool
+editor_program_transition_value3_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val);
+Eina_Bool
+editor_program_transition_value4_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val);
+Eina_Bool
+editor_program_filter_part_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                               const char *program, const char *new_val);
+Eina_Bool
+editor_program_filter_state_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                const char *program, const char *new_val);
+Eina_Bool
+editor_program_api_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                            const char *program, const char *new_val);
+Eina_Bool
+editor_program_api_description_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                   const char *program, const char *new_val);
+Eina_Bool
+editor_program_sample_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                               const char *program, const char *new_val);
+Eina_Bool
+editor_program_tone_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                             const char *program, const char *new_val);
+Eina_Bool
+editor_program_signal_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                          const char *program, const char *new_val);
+Eina_Bool
+editor_program_source_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                          const char *program, const char *new_val);
+Eina_Bool
+editor_program_state_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                         const char *program, const char *new_val);
+Eina_Bool
+editor_program_state2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                          const char *program, const char *new_val);
+Eina_Bool
+editor_program_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                        const char *name, const char *new_val);
+Eina_Bool
+editor_program_target_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                          const char *program_name, Eina_Stringshare *target);
+Eina_Bool
+editor_program_target_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                          const char *program_name, Eina_Stringshare *target);
+Eina_Bool
+editor_program_after_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                         const char *program_name, Eina_Stringshare *after);
+Eina_Bool
+editor_program_after_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                         const char *program_name, Eina_Stringshare *after);
+Eina_Bool
+editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                   const char *program_name);
+Eina_Bool
+editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                   const char *program_name);
 
 #endif /* EDITOR_H */

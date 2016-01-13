@@ -219,6 +219,7 @@ _mouse_move_hTL_cb(void *data,
              else nx = x + dx;
           }
      }
+   sd->pad_left_top.w += dx;
 
    if (y1 + dy - sd->pad_left_top.h < bgy)
      {
@@ -240,6 +241,7 @@ _mouse_move_hTL_cb(void *data,
              else ny = y + dy;
           }
      }
+   sd->pad_left_top.h += dy;
 
    evas_object_resize(o, nw, nh);
    evas_object_move(o, nx, ny);

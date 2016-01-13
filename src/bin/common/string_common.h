@@ -54,4 +54,8 @@ sort_cb(const void *data1, const void *data2);
 
 void
 state_name_split(Eina_Stringshare *name, Eina_Stringshare **name_out, double *val_out);
+
+void
+string_char_replace(char *str, char src, char rep);
+
 #endif /* STRING_MACRO_H */

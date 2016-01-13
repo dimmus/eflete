@@ -477,6 +477,10 @@ _image_editor_init(Image_Editor *img_edit)
                    ERR("name not found for image #%d",counter);
                    continue;
                 }
+
+              /* skip dummy image */
+              if (!strcmp(res->name, EFLETE_DUMMY_IMAGE_NAME)) continue;
+
               it = _image_editor_gengrid_item_data_create(ap.project->global_object,
                                                           res);
 

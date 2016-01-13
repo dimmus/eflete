@@ -49,9 +49,6 @@ struct _Ws_Menu
    Elm_Object_Item *zoom_normal;
    Elm_Object_Item *zoom_near;
 
-   Elm_Object_Item *mode_normal;
-   Elm_Object_Item *mode_separate;
-
    Elm_Object_Item *settings;
 };
 typedef struct _Ws_Menu Ws_Menu;
@@ -140,6 +137,7 @@ struct _Ws_Smart_Data
    Change *change;
    int old_max_w, old_max_h;
    double old_align_x, old_align_y;
+   Eina_Bool first_calc : 1;
 };
 typedef struct _Ws_Smart_Data Ws_Smart_Data;
 
@@ -369,11 +367,6 @@ _init_ctx_menu(Ws_Smart_Data *ws, Evas_Object *parent)
    items->zoom_near = elm_menu_item_add(menu, items->zoom, NULL, _("200%"), _zoom_factor_200, ws->obj);
    elm_menu_item_separator_add(menu, NULL);
 
-   items->mode_normal = elm_menu_item_add(menu, NULL, NULL, _("Normal mode"), _normal_mode_click, ws);
-   elm_menu_item_icon_name_set(items->mode_normal, EFLETE_IMG_PATH"context_menu-bullet.png");
-   elm_object_item_disabled_set(items->mode_normal, true);
-   items->mode_separate = elm_menu_item_add(menu, NULL, NULL, _("Separate mode"), _separate_mode_click, ws);
-   elm_object_item_disabled_set(items->mode_separate, true);
    elm_menu_item_separator_add(menu, NULL);
    items->settings = elm_menu_item_add(menu, NULL, NULL, _("Settings..."), NULL, NULL);
    elm_object_item_disabled_set(items->settings, true);
@@ -637,21 +630,9 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
    ewe_ruler_step_set(sd->ruler_hor, NULL, DEFAULT_STEP * sd->zoom.factor);
 
    if (fabs(factor - 1.0) > 0.001)
-     {
-        container_border_hide(sd->container.obj);
-
-        Ws_Menu *items = &sd->menu.items;
-        elm_object_item_disabled_set(items->mode_normal, true);
-        elm_object_item_disabled_set(items->mode_separate, true);
-     }
+     container_border_hide(sd->container.obj);
    else
-     {
-        container_border_show(sd->container.obj);
-
-        Ws_Menu *items = &sd->menu.items;
-        elm_object_item_disabled_set(items->mode_normal, false);
-        elm_object_item_disabled_set(items->mode_separate, false);
-     }
+     container_border_show(sd->container.obj);
 
    return true;
 }
@@ -1284,6 +1265,7 @@ _workspace_smart_del(Evas_Object *o)
    evas_object_del(sd->highlight.space_hl);
    evas_object_del(sd->highlight.highlight);
    demo_group_del(sd->demo_group);
+   gm_group_edit_object_unload(sd->group);
    _workspace_parent_sc->del(o);
 }
 
@@ -1325,6 +1307,19 @@ _workspace_smart_hide(Evas_Object *o)
 }
 
 static void
+_first_calc(Ws_Smart_Data *sd)
+{
+   Evas_Coord w, h;
+   Evas_Coord pad_w, pad_h;
+
+   evas_object_geometry_get(sd->clipper, NULL, NULL, &w, &h);
+   container_padding_size_get(sd->container.obj, NULL, NULL, &pad_w, &pad_h);
+
+   container_padding_size_set(sd->container.obj, w/4, h/4, pad_w, pad_h);
+   evas_object_resize(sd->container.obj, w/2, h/2);
+}
+
+static void
 _workspace_smart_resize(Evas_Object *o,
                         Evas_Coord w,
                         Evas_Coord h)
@@ -1336,6 +1331,12 @@ _workspace_smart_resize(Evas_Object *o,
    if ((ow == w) && (oh == h)) return;
    evas_object_resize(sd->panes, w, h);
 
+   if (sd->first_calc)
+     {
+        _first_calc(sd);
+        sd->first_calc = false;
+        return;
+     }
    evas_object_smart_changed(o);
 }
 
@@ -1394,9 +1395,11 @@ _on_groupedit_geometry_changed(void *data,
 
    assert(sd != NULL);
 
-   Container_Geom *geom __UNUSED__ = (Container_Geom *)event_info;
+   Container_Geom *geom = (Container_Geom *)event_info;
 
    Evas_Coord x, y, w, h, ruler_ver_w, ruler_hor_h, hrb_w, hrb_h;
+   Evas_Coord pad_xx, pad_yy;
+   container_padding_size_get(sd->container.obj, &pad_xx, &pad_yy, NULL, NULL);
 
    /* getting size of rulers and handlers of container. Bottom and Left paddings
       are calculating according to them
@@ -1421,8 +1424,10 @@ _on_groupedit_geometry_changed(void *data,
       Also we should compensate additional size of padding and ruler size
       (ruler covers most of top/left pads). */
    Evas_Coord pad_x, pad_y, pad_w, pad_h;
-   pad_x = PADDING_SIZE + abs(geom->x - x);
-   pad_y = PADDING_SIZE + abs(geom->y - y);
+   pad_x = pad_xx + (geom->x - x);
+   if (pad_x <= 0) pad_x = PADDING_SIZE + abs(geom->x - x);
+   pad_y = pad_yy + (geom->y - y);
+   if (pad_y <= 0) pad_y = PADDING_SIZE + abs(geom->y - y);
    pad_w = PADDING_SIZE + abs((geom->x + geom->w) - (x + w)) - ruler_ver_w - hrb_w;
    pad_h = PADDING_SIZE + abs((geom->y + geom->h) - (y + h)) - ruler_hor_h - hrb_h;
 
@@ -1491,8 +1496,7 @@ workspace_add(Evas_Object *parent, Group *group)
 {
    Evas *e = NULL;
    Evas_Object *obj = NULL;
-   Evas_Coord ruler_ver_w, ruler_hor_h, hrb_w, hrb_h;
-
+   Evas_Coord ruler_ver_w, ruler_hor_h;
 
    assert(parent != NULL);
 
@@ -1504,6 +1508,10 @@ workspace_add(Evas_Object *parent, Group *group)
         return NULL;
      }
    WS_DATA_GET(obj, sd);
+   sd->first_calc = true;
+
+   gm_group_edit_object_load(ap.project, group, evas_object_evas_get(ap.win));
+   edje_object_animation_set(group->edit_object, false);
 
    sd->group_navigator = group_navigator_add(group);
    evas_object_size_hint_weight_set(sd->group_navigator, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -1533,14 +1541,7 @@ workspace_add(Evas_Object *parent, Group *group)
                                   _on_groupedit_geometry_changed, sd);
    container_content_set(sd->container.obj, sd->groupedit);
 
-   // ???
-   evas_object_focus_set(sd->groupedit, true);
-
    sd->group = group;
-   elm_menu_item_icon_name_set(sd->menu.items.mode_normal,
-                               EFLETE_IMG_PATH"context_menu-bullet.png");
-   elm_menu_item_icon_name_set(sd->menu.items.mode_separate, "");
-
    container_handler_size_set(sd->container.obj, 8, 8, 8, 8);
    evas_object_smart_callback_add(sd->groupedit, SIGNAL_GROUPEDIT_PART_SELECTED,
                                   _on_groupedit_part_select, obj);
@@ -1558,12 +1559,6 @@ workspace_add(Evas_Object *parent, Group *group)
    */
    evas_object_geometry_get(sd->ruler_ver, NULL, NULL, &ruler_ver_w, NULL);
    evas_object_geometry_get(sd->ruler_hor, NULL, NULL, NULL, &ruler_hor_h);
-   container_handler_size_get(sd->container.obj, NULL, NULL, &hrb_w, &hrb_h);
-   container_padding_size_set(sd->container.obj,
-                              PADDING_SIZE,
-                              PADDING_SIZE,
-                              PADDING_SIZE - ruler_ver_w - hrb_w,
-                              PADDING_SIZE - ruler_hor_h - hrb_h);
 
    elm_scroller_policy_set(sd->scroller, ELM_SCROLLER_POLICY_AUTO,
                            ELM_SCROLLER_POLICY_AUTO);
@@ -1589,8 +1584,6 @@ workspace_add(Evas_Object *parent, Group *group)
         evas_object_clip_set(sd->highlight.highlight, sd->clipper);
      }
 
-   elm_object_item_disabled_set(sd->menu.items.mode_normal, false);
-   elm_object_item_disabled_set(sd->menu.items.mode_separate, false);
    elm_object_item_disabled_set(sd->menu.items.zoom, false);
 
    Evas_Coord min_w, max_w, min_h, max_h;
@@ -1693,9 +1686,6 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
         evas_object_hide(sd->highlight.space_hl);
         evas_object_hide(sd->highlight.highlight);
 
-        elm_menu_item_icon_name_set(sd->menu.items.mode_separate,
-                                    EFLETE_IMG_PATH"context_menu-bullet.png");
-        elm_menu_item_icon_name_set(sd->menu.items.mode_normal, "");
      }
    else
      {
@@ -1711,10 +1701,6 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
         evas_object_hide(sd->highlight.space_hl);
         if (sd->highlight.part)
           evas_object_show(sd->highlight.highlight);
-
-        elm_menu_item_icon_name_set(sd->menu.items.mode_normal,
-                                    EFLETE_IMG_PATH"context_menu-bullet.png");
-        elm_menu_item_icon_name_set(sd->menu.items.mode_separate, "");
      }
 
    success = groupedit_edit_object_parts_separated(sd->groupedit, separate);

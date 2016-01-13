@@ -66,6 +66,7 @@ evas_object_smart_callback_add(FRAME, "clicked", _on_frame_click, SCROLLER);
 #define PART_ARGS , pd->part->name
 #define PART_ITEM_ARGS , pd->part->name, pd->item_name
 #define STATE_ARGS , pd->part->name, pd->part->current_state->parsed_name, pd->part->current_state->parsed_val
+#define PROGRAM_ARGS , pd->attributes.program.program
 
 /*****************************************************************************/
 /*                      COMMON ATTRIBUTE CONTOLS MACRO                       */
@@ -774,7 +775,40 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
 #define GROUP_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, DESCRIPTION) \
    COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, GROUP_ARGS, DESCRIPTION) \
 
+/*****************************************************************************/
+/*                        PROGRAM 1 ENTRY CONTROL                            */
+/*****************************************************************************/
+/**
+ * Macro defines functions that create an item with label and 1 entry for program
+ * attribute.
+ *
+ * @see COMMON_ENTRY_ADD
+ *
+ * @ingroup Property_Macro
+ */
+#define PROGRAM_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP) \
+   COMMON_ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP)
 
+/**
+ * Macro defines a function that updates control by PROGRAM_ATTR_1ENTRY_ADD macro.
+ *
+ * @see COMMON_ENTRY_UPDATE
+ *
+ * @ingroup Property_Macro
+ */
+#define PROGRAM_ATTR_1ENTRY_UPDATE(SUB, VALUE, MEMBER) \
+   COMMON_ENTRY_UPDATE(SUB, VALUE, MEMBER, PROGRAM_ARGS) \
+
+/**
+ * Macro defines a callback for STATE_ATTR_1ENTRY_ADD.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ *
+ * @ingroup Property_Macro
+ */
+#define PROGRAM_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, DESCRIPTION) \
+   COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, PROGRAM_ARGS, DESCRIPTION) \
 
 /*****************************************************************************/
 /*                         PART 1 CHECK CONTROL                              */

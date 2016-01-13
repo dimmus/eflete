@@ -52,6 +52,54 @@ standard_widget_name_parse(const char *full_group_name,
    return true;
 }
 
+Evas_Object *
+object_generate(Demo_Part *part, Evas_Object *object)
+{
+   Evas_Object *content = NULL;
+
+   int content_type = part->swallow_content;
+   int widget_type = part->widget;
+
+   if (content_type == CONTENT_RECTANGLE) /* create rect */
+     {
+        content = evas_object_rectangle_add(object);
+     }
+   else if ((content_type == CONTENT_IMAGE) && (part->image_path)) /* create picture */
+     {
+        content = elm_image_add(object);
+        elm_image_file_set(content, part->image_path, NULL);
+     }
+   else if (content_type == CONTENT_WIDGET) /* create widget */
+     {
+        switch (widget_type)
+          {
+           case WIDGET_BUTTON:
+              content = elm_button_add(object);
+              elm_object_text_set(content, _("User Text"));
+              break;
+           case WIDGET_CHECK:
+              content = elm_check_add(object);
+              elm_object_text_set(content, _("User Text"));
+              elm_check_state_set(content, true);
+              break;
+           case WIDGET_SLIDER:
+              content = elm_slider_add(object);
+              elm_slider_unit_format_set(content, "%1.2f units");
+              elm_slider_indicator_format_set(content, "%1.2f");
+              elm_slider_min_max_set(content, 0, 10);
+              break;
+           case WIDGET_ENTRY:
+              content = elm_entry_add(object);
+              elm_entry_single_line_set(content, false);
+              break;
+           case WIDGET_PROGRESSBAR:
+              content = elm_progressbar_add(object);
+              break;
+          }
+     }
+   return content;
+}
+
 void
 on_swallow_check(void *data,
                  Evas_Object *obj __UNUSED__,
@@ -59,10 +107,9 @@ on_swallow_check(void *data,
 {
    Demo_Part *part = (Demo_Part *)ei;
    Evas_Object *object = (Evas_Object *) data;
-   Evas_Object *content = NULL;
+   Evas_Object *content;
 
    int content_type = part->swallow_content;
-   int widget_type = part->widget;
 
    if (part->change)
      {
@@ -75,61 +122,23 @@ on_swallow_check(void *data,
              part->object = NULL;
           }
 
-        if (content_type == CONTENT_RECTANGLE) /* create rect */
-          {
-             content = evas_object_rectangle_add(object);
-          }
-        else if ((content_type == CONTENT_IMAGE) && (part->image_path)) /* create picture */
-          {
-             content = elm_image_add(object);
-             elm_image_file_set(content, part->image_path, NULL);
-          }
-        else if (content_type == CONTENT_WIDGET) /* create widget */
-          {
-             switch (widget_type)
-               {
-                case WIDGET_BUTTON:
-                   content = elm_button_add(object);
-                   elm_object_text_set(content, _("User Text"));
-                   break;
-                case WIDGET_CHECK:
-                   content = elm_check_add(object);
-                   elm_object_text_set(content, _("User Text"));
-                   elm_check_state_set(content, true);
-                   break;
-                case WIDGET_SLIDER:
-                   content = elm_slider_add(object);
-                   elm_slider_unit_format_set(content, "%1.2f units");
-                   elm_slider_indicator_format_set(content, "%1.2f");
-                   elm_slider_min_max_set(content, 0, 10);
-                   break;
-                case WIDGET_ENTRY:
-                   content = elm_entry_add(object);
-                   elm_entry_single_line_set(content, false);
-                   break;
-                case WIDGET_PROGRESSBAR:
-                   content = elm_progressbar_add(object);
-                   break;
-               }
-          }
-
-        part->object = content;
+        part->object = object_generate(part, object);
         part->change = false;
-        elm_object_part_content_set(object, part->name, content);
+        elm_object_part_content_set(object, part->name, part->object);
      }
 
    if (part->object)
      {
-        evas_object_color_set(content,
+        evas_object_color_set(part->object,
                               part->r,
                               part->g,
                               part->b,
                               part->a);
 
-        evas_object_size_hint_min_set(content,
+        evas_object_size_hint_min_set(part->object,
                                       part->min_w,
                                       part->min_h);
-        evas_object_size_hint_max_set(content,
+        evas_object_size_hint_max_set(part->object,
                                       part->max_w,
                                       part->max_h);
      }
@@ -148,18 +157,15 @@ on_text_check(void *data,
 
 void
 send_signal(void *data,
-             Evas_Object *obj,
-             void *ei __UNUSED__)
+             Evas_Object *obj __UNUSED__,
+             void *ei)
 {
+   Demo_Signal *sig = (Demo_Signal *)ei;
    Evas_Object *object = (Evas_Object *)data;
 
-   assert(data != NULL);
+   assert(sig != NULL);
+   assert(sig->sig_name != NULL);
+   assert(sig->source_name != NULL);
 
-   const char *name = evas_object_data_get(obj, SIGNAL_NAME);
-   const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
-
-   assert(name != NULL);
-   assert(source != NULL);
-
-   elm_layout_signal_emit(object, name, source);
+   elm_layout_signal_emit(object, sig->sig_name, sig->source_name);
 }

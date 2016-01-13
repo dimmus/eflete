@@ -24,37 +24,86 @@ _on_sc_swallow_check(void *data __UNUSED__,
                      Evas_Object *obj __UNUSED__,
                      void *ei __UNUSED__)
 {
-   TODO("Remake on_swallow_check, so that would be used everywhere.")
-   ERR(N_("Complex widgets are not implemented yet."))
+   Demo_Part *part = (Demo_Part *)ei;
+   Elm_Object_Item *item = NULL;
+   int i;
+
+   Evas_Object *object = (Evas_Object *) data;
+
+   item = elm_segment_control_item_selected_get(object);
+
+   for (i = 0; i < 3; i++)
+     {
+        TODO("Three items at the same time (store it somehow and free later)")
+        item = elm_segment_control_item_get(object, i);
+        if (part->object)
+          {
+             evas_object_del(part->object);
+             part->object = NULL;
+          }
+
+        part->object = object_generate(part, object);
+        part->change = false;
+        elm_object_item_part_content_set(item, part->name, part->object);
+
+        if (part->object)
+          {
+             evas_object_color_set(part->object,
+                                   part->r,
+                                   part->g,
+                                   part->b,
+                                   part->a);
+
+             evas_object_size_hint_min_set(part->object,
+                                           part->min_w,
+                                           part->min_h);
+             evas_object_size_hint_max_set(part->object,
+                                           part->max_w,
+                                           part->max_h);
+          }
+     }
 }
 
 static void
-_on_sc_text_check(void *data __UNUSED__,
+_on_sc_text_check(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *ei __UNUSED__)
 {
-   TODO("Remake on_text_check, so that would be used everywhere.")
-   ERR(N_("Complex widgets are not implemented yet."))
+   Demo_Part *part = (Demo_Part *)ei;
+   Elm_Object_Item *item = NULL;
+   int i;
+
+   Evas_Object *object = (Evas_Object *) data;
+
+   item = elm_segment_control_item_selected_get(object);
+
+   for (i = 0; i < 3; i++)
+     {
+        item = elm_segment_control_item_get(object, i);
+        elm_object_item_part_text_set(item, part->name, part->text_content);
+     }
 }
 
 static void
 _sc_send_signal(void *data,
-                Evas_Object *obj,
-                void *ei __UNUSED__)
+                Evas_Object *obj __UNUSED__,
+                void *ei)
 {
+   Demo_Signal *sig = (Demo_Signal *)ei;
+   int i;
+
    Elm_Object_Item *item = NULL;
-   int i = 0;
 
-   const char *name = evas_object_data_get(obj, SIGNAL_NAME);
-   const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
+   assert(data != NULL);
 
-   assert(name != NULL);
-   assert(source != NULL);
+   assert(sig != NULL);
+   assert(sig->sig_name != NULL);
+   assert(sig->source_name != NULL);
 
    for (i = 0; i < 3; i++)
      {
         item = elm_segment_control_item_get(data, i);
-        elm_object_item_signal_emit(item, name, source);
+        elm_object_item_signal_emit(item, sig->sig_name, sig->source_name);
      }
 }
 
@@ -70,9 +119,9 @@ widget_segment_control_create(Evas_Object *parent, const Group *group)
    elm_segment_control_item_insert_at(object, NULL, NULL, 2);
    elm_segment_control_item_insert_at(object, NULL, NULL, 3);
 
-   evas_object_data_set(object, SWALLOW_FUNC, _on_sc_swallow_check);
-   evas_object_data_set(object, TEXT_FUNC, _on_sc_text_check);
-   evas_object_data_set(object, SIGNAL_FUNC, _sc_send_signal);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_sc_swallow_check, object);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, _on_sc_text_check, object);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _sc_send_signal, object);
 
    elm_object_style_set(object, group->style);
 

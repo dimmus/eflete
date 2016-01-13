@@ -97,7 +97,8 @@ _validate(void *data __UNUSED__,
           void *event_info __UNUSED__)
 {
    if ((elm_validator_regexp_status_get(tab_edc.name_validator) != ELM_REG_NOERROR) ||
-       !eina_str_has_extension(elm_entry_entry_get(tab_edc.edc), ".edc"))
+       !eina_str_has_extension(elm_entry_entry_get(tab_edc.edc), ".edc") ||
+       !ecore_file_exists(elm_entry_entry_get(tab_edc.edc)))
      elm_object_disabled_set(tab_edc.btn_create, true);
    else
      elm_object_disabled_set(tab_edc.btn_create, false);
@@ -375,6 +376,7 @@ _progress_end(void *data, PM_Project_Result result)
         elm_entry_entry_set(tab_edc.meta.comment, N_("Created with Eflete!"));
      }
    _tabs_progress_end(data, result);
+   progress_end(NULL, result);
 }
 
 static Eina_Bool

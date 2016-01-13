@@ -476,6 +476,8 @@ _image_gengrid_init(Helper_Data *helper_data)
                    ERR("name not found for image #%d",counter);
                    continue;
                 }
+              if (!strcmp(res->name, EFLETE_DUMMY_IMAGE_NAME)) continue;
+
               it = (Item *)mem_malloc(sizeof(Item));
               it->image_name = eina_stringshare_add(res->name);
               it->source = eina_stringshare_add(res->source);
@@ -674,6 +676,8 @@ popup_log_message_helper(const char *msg)
    helper = elm_layout_add(ap.win);
    elm_layout_theme_set(helper, "layout", "popup", "hint");
    elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, ap.win);
+   evas_object_size_hint_min_set(helper, FS_W, FS_H);
+   evas_object_resize(helper, FS_W, FS_H);
 
    BOX_ADD(helper, box, false, false)
    elm_box_padding_set(box, 0, 6);

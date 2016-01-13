@@ -61,6 +61,14 @@
 #define SIGNAL_PART_SELECTED "SIGNAL_PART_SELECTED"
 
 /**
+ * emited when program is selected.
+ * eventinfo - pointer to Resource structure
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_PROGRAM_SELECTED "SIGNAL_PROGRAM_SELECTED"
+
+/**
  * emited when part is unselected.
  * eventinfo - pointer to Part structure
  *
@@ -79,6 +87,14 @@ typedef struct {
  * @ingroup Window
  */
 #define SIGNAL_PART_RENAMED "SIGNAL_PART_RENAMED"
+
+/**
+ * emited when program is renamed.
+ * eventinfo - pointer to Rename structure
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_PROGRAM_RENAMED "SIGNAL_PROGRAM_RENAMED"
 
 /**
  * emited when new state is added.
@@ -183,6 +199,22 @@ typedef struct {
  * @ingroup Window
  */
 #define SIGNAL_EDITOR_PART_DELETED "SIGNAL_EDITOR_PART_DELETED"
+
+/**
+ * emited when program is added in editor.
+ * eventinfo - stringshare with programs name
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_PROGRAM_ADDED "SIGNAL_EDITOR_PROGRAM_ADDED"
+
+/**
+ * emited *before* program will be deleted in editor.
+ * eventinfo - stringshare with programs name
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_PROGRAM_DELETED "SIGNAL_EDITOR_PROGRAM_DELETED"
 
 typedef struct {
    const char *part_name;

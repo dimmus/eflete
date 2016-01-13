@@ -24,6 +24,7 @@ libete_a_SOURCES = \
 ../../src/bin/editor/editor_part.c \
 ../../src/bin/editor/editor_states.c \
 ../../src/bin/editor/editor_text.c \
+../../src/bin/editor/editor_program.c \
 ../../src/bin/ui/history_ui.c \
 ../../src/bin/ui/group_navigator.c \
 ../../src/bin/ui/demo_group.c \

@@ -37,7 +37,10 @@ editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
 { \
    assert(edit_object != NULL); \
    if (editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
-   return editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL); \
+   if (editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL)) \
+     return true; \
+   CRIT("reset failed"); \
+   abort(); \
 }
 
 #define EDITOR_STATE_DOUBLE_RESET(FUNC, DEF_VAL) \
@@ -132,12 +135,12 @@ EDITOR_STATE_NULL_STRING_RESET(rel2_to_x, NULL)
 EDITOR_STATE_NULL_STRING_RESET(rel2_to_y, NULL)
 EDITOR_STATE_NULL_STRING_RESET(proxy_source, NULL)
 EDITOR_STATE_NULL_STRING_RESET(color_class, NULL)
-EDITOR_STATE_NULL_STRING_RESET(image, "")
+EDITOR_STATE_NULL_STRING_RESET(image, EFLETE_DUMMY_IMAGE_NAME)
 EDITOR_STATE_NULL_STRING_RESET(text_source, NULL)
 EDITOR_STATE_NULL_STRING_RESET(text_text_source, NULL)
-EDITOR_STATE_NULL_STRING_RESET(text, NULL)
+EDITOR_STATE_NULL_STRING_RESET(text, "")
 EDITOR_STATE_NULL_STRING_RESET(font, NULL)
-EDITOR_STATE_NULL_STRING_RESET(text_style, NULL)
+EDITOR_STATE_NULL_STRING_RESET(text_style, "")
 
 #define EDITOR_INT_INT_INT_INT_DEFAULT_CHECK(FUNC, PROTO_ARGS, ARGS, DEF_VAL, DEF_VAL_2, DEF_VAL_3, DEF_VAL_4) \
 Eina_Bool \
@@ -155,7 +158,10 @@ editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
 { \
    assert(edit_object != NULL); \
    if (editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
-   return editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL, RESET_VAL_2, RESET_VAL_3, RESET_VAL_4); \
+   if(editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL, RESET_VAL_2, RESET_VAL_3, RESET_VAL_4)) \
+     return true; \
+   CRIT("reset failed"); \
+   abort(); \
 }
 
 #define EDITOR_STATE_INT_INT_INT_INT_RESET(FUNC, DEF_VAL, DEF_VAL_2, DEF_VAL_3, DEF_VAL_4) \
@@ -258,7 +264,10 @@ editor_part_pointer_mode_reset(Evas_Object *edit_object, Change *change, EDITOR_
    Evas_Object_Pointer_Mode reset_value = (type == EDJE_PART_TYPE_SWALLOW ||
                                            type == EDJE_PART_TYPE_GROUP ||
                                            type == EDJE_PART_TYPE_EXTERNAL) ? EVAS_OBJECT_POINTER_MODE_NOGRAB : EVAS_OBJECT_POINTER_MODE_AUTOGRAB;
-   return editor_part_pointer_mode_set(edit_object, change, false, EDITOR_PART_ARGS, reset_value);
+   if (editor_part_pointer_mode_set(edit_object, change, false, EDITOR_PART_ARGS, reset_value))
+     return true;
+   CRIT("reset failed");
+   abort();
 }
 
 #define EDITOR_PART_NULL_STRING_RESET(FUNC, RESET_VAL) \
@@ -275,3 +284,41 @@ EDITOR_PART_NULL_STRING_RESET(source3, NULL)
 EDITOR_PART_NULL_STRING_RESET(source4, NULL)
 EDITOR_PART_NULL_STRING_RESET(source5, NULL)
 EDITOR_PART_NULL_STRING_RESET(source6, NULL)
+
+#define EDITOR_PROGRAM_ARGS_PROTO const char *program_name
+#define EDITOR_PROGRAM_ARGS program_name
+
+#define EDITOR_PROGRAM_SIMPLE_RESET(FUNC, DEF_VAL) \
+EDITOR_SIMPLE_DEFAULT_CHECK(program_##FUNC, EDITOR_PROGRAM_ARGS_PROTO, EDITOR_PROGRAM_ARGS, DEF_VAL) \
+EDITOR_RESET(program_##FUNC, EDITOR_PROGRAM_ARGS_PROTO, EDITOR_PROGRAM_ARGS, DEF_VAL)
+
+EDITOR_PROGRAM_SIMPLE_RESET(transition_type, EDJE_TWEEN_MODE_LINEAR)
+EDITOR_PROGRAM_SIMPLE_RESET(transition_from_current, false)
+EDITOR_PROGRAM_SIMPLE_RESET(action, EDJE_ACTION_TYPE_NONE)
+EDITOR_PROGRAM_SIMPLE_RESET(channel, EDJE_CHANNEL_EFFECT)
+EDITOR_PROGRAM_SIMPLE_RESET(tone_duration, 0.1)
+EDITOR_PROGRAM_SIMPLE_RESET(in_from, 0)
+EDITOR_PROGRAM_SIMPLE_RESET(in_range, 0)
+EDITOR_PROGRAM_SIMPLE_RESET(transition_time, 0)
+EDITOR_PROGRAM_SIMPLE_RESET(sample_speed, 1.0)
+EDITOR_PROGRAM_SIMPLE_RESET(value, 0)
+EDITOR_PROGRAM_SIMPLE_RESET(value2, 0)
+EDITOR_PROGRAM_SIMPLE_RESET(transition_value1, 0)
+EDITOR_PROGRAM_SIMPLE_RESET(transition_value2, 0)
+EDITOR_PROGRAM_SIMPLE_RESET(transition_value3, 0)
+EDITOR_PROGRAM_SIMPLE_RESET(transition_value4, 0)
+
+#define EDITOR_PROGRAM_NULL_STRING_RESET(FUNC, RESET_VAL) \
+EDITOR_NULL_STRING_DEFAULT_CHECK(program_##FUNC, EDITOR_PROGRAM_ARGS_PROTO, EDITOR_PROGRAM_ARGS) \
+EDITOR_RESET(program_##FUNC, EDITOR_PROGRAM_ARGS_PROTO, EDITOR_PROGRAM_ARGS, RESET_VAL)
+TODO("fix edje_edit API to accept NULL")
+EDITOR_PROGRAM_NULL_STRING_RESET(filter_part, "")
+EDITOR_PROGRAM_NULL_STRING_RESET(filter_state, "")
+EDITOR_PROGRAM_NULL_STRING_RESET(api_name, NULL)
+EDITOR_PROGRAM_NULL_STRING_RESET(api_description, NULL)
+EDITOR_PROGRAM_NULL_STRING_RESET(sample_name, "")
+EDITOR_PROGRAM_NULL_STRING_RESET(tone_name, "")
+EDITOR_PROGRAM_NULL_STRING_RESET(signal, "")
+EDITOR_PROGRAM_NULL_STRING_RESET(source, "")
+EDITOR_PROGRAM_NULL_STRING_RESET(state, "")
+EDITOR_PROGRAM_NULL_STRING_RESET(state2, "")

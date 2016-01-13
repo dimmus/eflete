@@ -492,4 +492,55 @@ editor_part_pointer_mode_default_is(Evas_Object *edit_object, const char *part_n
 Eina_Bool
 editor_part_pointer_mode_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 
+Eina_Bool
+editor_program_transition_type_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_from_current_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_action_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_channel_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_tone_duration_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_in_from_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_in_range_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_time_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_sample_speed_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_value_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_value2_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_value1_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_value2_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_value3_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_value4_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_filter_part_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_filter_state_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_api_name_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_api_description_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_sample_name_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_tone_name_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_signal_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_source_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_state_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_state2_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+
 #endif /* DEFAULT_H */

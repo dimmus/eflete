@@ -53,7 +53,7 @@ int MENU_ITEMS_LIST_BASE[] = {
 
 int MENU_ITEMS_LIST_STYLE_ONLY[] = {
    MENU_VIEW_WORKSPACE,
-   /* MENU_FILE_EXPORT_EDC_GROUP, */
+   MENU_FILE_EXPORT_EDC_GROUP,
 
    MENU_NULL
 };
@@ -107,14 +107,16 @@ _menu_cb(void *data __UNUSED__,
          project_save();
          break;
       case MENU_FILE_EXPORT_EDC_GROUP:
-         TODO("Implement me")
-         /* project_export_edc_group(); */
+         project_export_edc_group();
          break;
       case MENU_FILE_EXPORT_EDC_PROJECT:
          project_export_edc_project();
          break;
       case MENU_FILE_EXPORT_DEVELOP:
          project_export_develop();
+         break;
+      case MENU_FILE_EXPORT_RELEASE:
+         project_export_release();
          break;
       case MENU_FILE_CLOSE_PROJECT:
            {
@@ -289,8 +291,7 @@ ui_menu_add(void)
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
    TODO("remove lines after implementation this features")
-   ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
-   ui_menu_disable_set(menu, MENU_FILE_EXPORT_EDC_GROUP, true);
+   //ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
    ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_ZOOM_IN, true);
    ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_ZOOM_OUT, true);
    ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_OBJECT_AREA, true);
