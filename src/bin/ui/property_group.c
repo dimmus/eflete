@@ -194,6 +194,7 @@ struct _Group_Prop_Data
              const char *program;
              Evas_Object *signal;
              Evas_Object *source;
+             Evas_Object *action;
         } program;
    } attributes;
 };
@@ -282,6 +283,17 @@ static const char *edje_box_layouts[] = { N_("horizontal"),
                                           N_("stack"),
                                           // N_("Custom Layout"), not implemented yet
                                           NULL};
+static const char *
+edje_program_actions[] = { N_("None"),
+                           N_("state set"),
+                           N_("signal emit"),
+                           N_("drag value"),
+                           N_("drag value step"),
+                           N_("drag value page"),
+                           N_("play sample"),
+                           N_("play tone"),
+                           N_("action stop"),
+                           NULL};
 
 static void
 _ui_property_part_unset(Evas_Object *property);
@@ -306,6 +318,9 @@ prop_program_signal_update(Group_Prop_Data *pd);
 
 static void
 prop_program_source_update(Group_Prop_Data *pd);
+
+static void
+prop_program_action_update(Group_Prop_Data *pd);
 
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property);
@@ -918,9 +933,11 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_SOURCE:
          prop_program_source_update(pd);
          break;
+      case ATTRIBUTE_PROGRAM_ACTION:
+         prop_program_action_update(pd);
+         break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
-      case ATTRIBUTE_PROGRAM_ACTION:
       case ATTRIBUTE_PROGRAM_CHANNEL:
       case ATTRIBUTE_PROGRAM_TONE_DURATION:
       case ATTRIBUTE_PROGRAM_IN_FROM:
@@ -1458,6 +1475,118 @@ PROGRAMM_ATTR_1ENTRY(_("signal"), program, signal, program, NULL,
 PROGRAMM_ATTR_1ENTRY(_("source"), program, source, program, NULL,
                      _("The source of signal"),
                      _("signal source is changed to '%s'"))
+static void
+prop_program_action_update(Group_Prop_Data *pd)
+{
+   Edje_Action_Type type = EDJE_ACTION_TYPE_NONE;
+
+   type = edje_edit_program_action_get(pd->group->edit_object, pd->attributes.program.program);
+   switch (type)
+     {
+      case EDJE_ACTION_TYPE_NONE:
+         ewe_combobox_select_item_set(pd->attributes.program.action, 0);
+         break;
+      case EDJE_ACTION_TYPE_STATE_SET:
+         ewe_combobox_select_item_set(pd->attributes.program.action, 1);
+         break;
+      case EDJE_ACTION_TYPE_SIGNAL_EMIT:
+         ewe_combobox_select_item_set(pd->attributes.program.action, 2);
+         break;
+      case EDJE_ACTION_TYPE_DRAG_VAL_SET:
+         ewe_combobox_select_item_set(pd->attributes.program.action, 3);
+         break;
+      case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
+         ewe_combobox_select_item_set(pd->attributes.program.action, 4);
+         break;
+      case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
+         ewe_combobox_select_item_set(pd->attributes.program.action, 5);
+         break;
+      case EDJE_ACTION_TYPE_SOUND_SAMPLE:
+         ewe_combobox_select_item_set(pd->attributes.program.action, 6);
+         break;
+      case EDJE_ACTION_TYPE_SOUND_TONE:
+         ewe_combobox_select_item_set(pd->attributes.program.action, 7);
+         break;
+      case EDJE_ACTION_TYPE_ACTION_STOP:
+         ewe_combobox_select_item_set(pd->attributes.program.action, 8);
+         break;
+      default:
+         ewe_combobox_select_item_set(pd->attributes.program.action, 0);
+         break;
+     }
+}
+
+static void
+_on_program_action_change(void *data,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info)
+{
+   Group_Prop_Data *pd = (Group_Prop_Data *)data;
+   Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info;
+   Edje_Action_Type old_type, new_type = EDJE_ACTION_TYPE_NONE;
+   Eina_Stringshare *msg;
+   Change *change;
+
+   old_type = edje_edit_program_action_get(pd->group->edit_object, pd->attributes.program.program);
+   switch (item->index)
+     {
+      case 0:
+         new_type = EDJE_ACTION_TYPE_NONE;
+         break;
+      case 1:
+         new_type = EDJE_ACTION_TYPE_STATE_SET;
+         break;
+      case 2:
+         new_type = EDJE_ACTION_TYPE_SIGNAL_EMIT;
+         break;
+      case 3:
+         new_type = EDJE_ACTION_TYPE_DRAG_VAL_SET;
+         break;
+      case 4:
+         new_type = EDJE_ACTION_TYPE_DRAG_VAL_STEP;
+         break;
+      case 5:
+         new_type = EDJE_ACTION_TYPE_DRAG_VAL_PAGE;
+         break;
+      case 6:
+         new_type = EDJE_ACTION_TYPE_SOUND_SAMPLE;
+         break;
+      case 7:
+         new_type = EDJE_ACTION_TYPE_SOUND_TONE;
+         break;
+      case 8:
+         new_type = EDJE_ACTION_TYPE_ACTION_STOP;
+         break;
+     }
+   if (old_type == new_type) return;
+   msg = eina_stringshare_printf(_("The program action changed to '%s'"), item->title);
+   change = change_add(msg);
+   eina_stringshare_del(msg);
+   if (!editor_program_action_set(pd->group->edit_object, change, false, pd->attributes.program.program, new_type))
+     {
+        ERR("Cann't apply value '%s' for attribute 'action'.", item->title);
+        abort();
+     }
+   history_change_add(pd->group->history, change);
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
+}
+
+static Evas_Object *
+prop_program_action_add(Evas_Object *parent, Group_Prop_Data *pd)
+{
+   int i;
+
+   PROPERTY_ITEM_ADD(parent, _("action"), "1swallow")
+   EWE_COMBOBOX_ADD(parent, pd->attributes.program.action)
+   for (i = 0; edje_program_actions[i]; i++)
+      ewe_combobox_item_add(pd->attributes.program.action, edje_program_actions[i]);
+   elm_object_tooltip_text_set(pd->attributes.program.action, _("The program action type"));
+   evas_object_smart_callback_add(pd->attributes.program.action, "selected", _on_program_action_change, pd);
+   elm_layout_content_set(item, "elm.swallow.content", pd->attributes.program.action);
+   prop_program_action_update(pd);
+
+   return item;
+}
 
 static void
 _ui_property_program_set(Evas_Object *property, const char *program)
@@ -1480,12 +1609,15 @@ _ui_property_program_set(Evas_Object *property, const char *program)
         elm_box_pack_end(box, item);
         item = prop_program_source_add(box, pd, NULL);
         elm_box_pack_end(box, item);
+        item = prop_program_action_add(box, pd);
+        elm_box_pack_end(box, item);
      }
    else
      {
         prop_program_name_update(pd);
         prop_program_signal_update(pd);
         prop_program_source_update(pd);
+        prop_program_action_update(pd);
      }
    elm_box_pack_end(prop_box, pd->attributes.program.frame);
 }
