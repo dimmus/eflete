@@ -998,6 +998,7 @@ _mode_changed(void *data,
             elm_object_part_content_set(sd->panes, "right", sd->demo_group);
             evas_object_show(sd->demo_group);
 
+            demo_group_demo_update(sd->demo_group);
             evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
 
             break;

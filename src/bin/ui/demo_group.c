@@ -477,3 +477,24 @@ demo_group_part_del(Evas_Object *demo, Part *part)
           }
      }
 }
+
+void
+demo_group_demo_update(Evas_Object *demo)
+{
+   Part_Demo_List *pl = evas_object_data_get(demo, DEMO_GROUP_DATA);
+   Demo_Part *part;
+   Eina_List *l;
+
+   assert(pl);
+
+   EINA_LIST_FOREACH(pl->text_list, l, part)
+     {
+        evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_SET, part);
+     }
+   EINA_LIST_FOREACH(pl->swallow_list, l, part)
+     {
+        if (part->object)
+          part->change = true;
+        evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, part);
+     }
+}
