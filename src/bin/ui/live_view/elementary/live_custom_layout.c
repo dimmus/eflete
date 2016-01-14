@@ -35,7 +35,6 @@ layout_custom_create(Evas_Object *parent, const Group *group)
         return NULL;
      }
 
-   TODO("DO swallow after text and signal (means free => SWALLOW_CLEAN_FUNC)")
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, obj);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, obj);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, obj);
