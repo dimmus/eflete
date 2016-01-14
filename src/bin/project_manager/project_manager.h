@@ -33,7 +33,7 @@
  * information about project in the current folder.
  */
 
-#include <eflete.h>
+#include "eflete.h"
 #include "group_manager.h"
 
 /* don't forget to update on major changes */
