@@ -904,10 +904,10 @@ _on_editor_attribute_changed(void *data,
          //STATE_DOUBLEVAL_ATTR_2SPINNER_UPDATE(state_container, padding_x, padding_y, state_container, int, 1)
          break;
       case ATTRIBUTE_STATE_MINMUL_H:
-         COMMON_CHECK_UPDATE(state, minmul_h, state, STATE_ARGS);
+         COMMON_1SPINNER_UPDATE(state, minmul_h, state, double, 1, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_MINMUL_W:
-         COMMON_CHECK_UPDATE(state, minmul_w, state, STATE_ARGS);
+         COMMON_1SPINNER_UPDATE(state, minmul_w, state, double, 1, STATE_ARGS);
          break;
       case ATTRIBUTE_PART_SELECT_MODE:
          PART_ATTR_1COMBOBOX_LIST_UPDATE(part, select_mode, state_textblock);
