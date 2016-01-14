@@ -92,4 +92,11 @@ group_navigator_part_item_restack(Evas_Object *obj,
                                   Part *part,
                                   Eina_Stringshare *part_item,
                                   Eina_Stringshare *relative_part_item);
+
+void
+group_navigator_program_add(Evas_Object *obj, Eina_Stringshare *program);
+
+void
+group_navigator_program_del(Evas_Object *obj, Eina_Stringshare *program);
+
 #endif /* GROUP_NAVIGATOR_H */

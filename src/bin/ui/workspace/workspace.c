@@ -1938,3 +1938,23 @@ workspace_part_item_restack(Evas_Object *obj,
 
    groupedit_hard_update(sd->groupedit);
 }
+
+void
+workspace_program_add(Evas_Object *obj, Eina_Stringshare *program_name)
+{
+   WS_DATA_GET(obj, sd);
+   assert(program_name != NULL);
+
+   gm_program_add(ap.project, sd->group, program_name);
+   group_navigator_program_add(sd->group_navigator, program_name);
+}
+
+void
+workspace_program_del(Evas_Object *obj, Eina_Stringshare *program_name)
+{
+   WS_DATA_GET(obj, sd);
+   assert(program_name != NULL);
+
+   gm_program_del(ap.project, sd->group, program_name);
+   group_navigator_program_del(sd->group_navigator, program_name);
+}
