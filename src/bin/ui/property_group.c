@@ -1038,7 +1038,7 @@ TODO("Implement rename. Note: groups list must remain sorted")
  *
  * Second: we need to get the different names for layouts and for styles. */
 #define edje_edit_group_name_get(OBJ) \
-   pd->group->name
+   eina_stringshare_add(pd->group->name)
 
 #define GROUP_ATTR_1ENTRY(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP) \
    GROUP_ATTR_1ENTRY_UPDATE(SUB, VALUE, MEMBER) \
