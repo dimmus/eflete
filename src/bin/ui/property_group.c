@@ -196,6 +196,10 @@ struct _Group_Prop_Data
              Evas_Object *source;
              Evas_Object *action;
              Evas_Object *action_params; /* it's a frame */
+             Evas_Object *state;
+             Evas_Object *state2;
+             Evas_Object *value;
+             Evas_Object *value2;
              Evas_Object *target;
              Evas_Object *target_box;
              Evas_Object *targets_frame; /* it's a frame */
@@ -325,6 +329,12 @@ prop_program_source_update(Group_Prop_Data *pd);
 
 static void
 prop_program_action_update(Group_Prop_Data *pd);
+
+static void
+prop_program_state_update(Group_Prop_Data *pd);
+
+static void
+prop_program_state2_update(Group_Prop_Data *pd);
 
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property);
@@ -938,11 +948,19 @@ _on_editor_attribute_changed(void *data,
          prop_program_source_update(pd);
          break;
       case ATTRIBUTE_PROGRAM_ACTION:
-      case ATTRIBUTE_PROGRAM_STATE:
-      case ATTRIBUTE_PROGRAM_STATE2:
-      case ATTRIBUTE_PROGRAM_VALUE:
-      case ATTRIBUTE_PROGRAM_VALUE2:
          prop_program_action_update(pd);
+         break;
+      case ATTRIBUTE_PROGRAM_STATE:
+         prop_program_state_update(pd);
+         break;
+      case ATTRIBUTE_PROGRAM_STATE2:
+         prop_program_state2_update(pd);
+         break;
+      case ATTRIBUTE_PROGRAM_VALUE:
+         COMMON_1SPINNER_UPDATE(program, value, program, double, 1, PROGRAM_ARGS)
+         break;
+      case ATTRIBUTE_PROGRAM_VALUE2:
+         COMMON_1SPINNER_UPDATE(program, value2, program, double, 1, PROGRAM_ARGS)
          break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
@@ -1472,6 +1490,20 @@ prop_program_name_update(Group_Prop_Data *pd)
    elm_entry_entry_set(pd->attributes.program.name, pd->attributes.program.program);
 }
 
+static void
+prop_program_state_update(Group_Prop_Data *pd)
+{
+   elm_entry_entry_set(pd->attributes.program.state,
+                       edje_edit_program_state_get(pd->group->edit_object, pd->attributes.program.program));
+}
+
+static void
+prop_program_state2_update(Group_Prop_Data *pd)
+{
+   elm_entry_entry_set(pd->attributes.program.state2,
+                       edje_edit_program_state2_get(pd->group->edit_object, pd->attributes.program.program));
+}
+
 COMMON_ENTRY_ADD(_("name"), program, name, program, NULL, _("Name of the group."))
 PROGRAMM_ATTR_1ENTRY(_("signal"), program, signal, program, NULL,
                      _("The signal name for triger"),
@@ -1480,27 +1512,23 @@ PROGRAMM_ATTR_1ENTRY(_("source"), program, source, program, NULL,
                      _("The source of signal"),
                      _("signal source is changed to '%s'"))
 
-/* this dummy for make posible to reuse COMMON_ENTRY_CALLBACK */
-#define prop_program_state_update(PD)
-#define prop_program_state2_update(PD)
-
 COMMON_ENTRY_CALLBACK(program, state, NULL, PROGRAM_ARGS, _("Program action state is changed to '%s'"))
 COMMON_ENTRY_CALLBACK(program, state2, NULL, PROGRAM_ARGS, _("Program action state2 is changed to '%s'"))
 COMMON_SPINNER_CALLBACK(program, value, program, double, 1, PROGRAM_ARGS, _("Program action value is changed from %f to %f"))
+COMMON_SPINNER_CALLBACK(program, value2, program, double, 1, PROGRAM_ARGS, _("Program action value is changed from %f to %f"))
 
 static Evas_Object *
 _prop_action_state_add(Group_Prop_Data *pd, Evas_Object *parent, const char *title, const char *tooltip)
 {
-   Evas_Object *control;
-
    PROPERTY_ITEM_ADD(parent, title, "1swallow")
-   ENTRY_ADD(item, control, true);
-   elm_entry_entry_set(control, edje_edit_program_state_get(pd->group->edit_object, pd->attributes.program.program));
-   evas_object_smart_callback_add(control, "changed,user", _on_program_state_change, pd);
-   evas_object_smart_callback_add(control, "activated", _on_program_state_activated, pd);
-   evas_object_smart_callback_add(control, "unfocused", _on_program_state_activated, pd);
-   elm_object_tooltip_text_set(control, tooltip);
-   elm_layout_content_set(item, NULL, control);
+   ENTRY_ADD(item, pd->attributes.program.state, true);
+   elm_entry_entry_set(pd->attributes.program.state,
+                       edje_edit_program_state_get(pd->group->edit_object, pd->attributes.program.program));
+   evas_object_smart_callback_add(pd->attributes.program.state, "changed,user", _on_program_state_change, pd);
+   evas_object_smart_callback_add(pd->attributes.program.state, "activated", _on_program_state_activated, pd);
+   evas_object_smart_callback_add(pd->attributes.program.state, "unfocused", _on_program_state_activated, pd);
+   elm_object_tooltip_text_set(pd->attributes.program.state, tooltip);
+   elm_layout_content_set(item, NULL, pd->attributes.program.state);
 
    return item;
 }
@@ -1508,16 +1536,15 @@ _prop_action_state_add(Group_Prop_Data *pd, Evas_Object *parent, const char *tit
 static Evas_Object *
 _prop_action_state2_add(Group_Prop_Data *pd, Evas_Object *parent, const char *title, const char *tooltip)
 {
-   Evas_Object *control;
-
    PROPERTY_ITEM_ADD(parent, title, "1swallow")
-   ENTRY_ADD(item, control, true);
-   elm_entry_entry_set(control, edje_edit_program_state2_get(pd->group->edit_object, pd->attributes.program.program));
-   evas_object_smart_callback_add(control, "changed,user", _on_program_state2_change, pd);
-   evas_object_smart_callback_add(control, "activated", _on_program_state2_activated, pd);
-   evas_object_smart_callback_add(control, "unfocused", _on_program_state2_activated, pd);
-   elm_object_tooltip_text_set(control, tooltip);
-   elm_layout_content_set(item, NULL, control);
+   ENTRY_ADD(item, pd->attributes.program.state2, true)
+   elm_entry_entry_set(pd->attributes.program.state2,
+                       edje_edit_program_state2_get(pd->group->edit_object, pd->attributes.program.program));
+   evas_object_smart_callback_add(pd->attributes.program.state2, "changed,user", _on_program_state2_change, pd);
+   evas_object_smart_callback_add(pd->attributes.program.state2, "activated", _on_program_state2_activated, pd);
+   evas_object_smart_callback_add(pd->attributes.program.state2, "unfocused", _on_program_state2_activated, pd);
+   elm_object_tooltip_text_set(pd->attributes.program.state2, tooltip);
+   elm_layout_content_set(item, NULL, pd->attributes.program.state2);
 
    return item;
 }
@@ -1525,17 +1552,33 @@ _prop_action_state2_add(Group_Prop_Data *pd, Evas_Object *parent, const char *ti
 static Evas_Object *
 _prop_action_value_add(Group_Prop_Data *pd, Evas_Object *parent, const char *title, const char *tooltip)
 {
-   Evas_Object *control;
-
    PROPERTY_ITEM_ADD(parent, title, "2swallow")
-   SPINNER_ADD(item, control, 0.0, 1.0, 0.1, true);
-   elm_spinner_label_format_set(control, "%.2f");
-   elm_spinner_value_set(control, edje_edit_program_value_get(pd->group->edit_object, pd->attributes.program.program));
-   evas_object_smart_callback_add(control, "changed", _on_program_value_change, pd);
-   evas_object_smart_callback_add(control, "spinner,drag,start", _on_program_value_start, pd);
-   evas_object_smart_callback_add(control, "spinner,drag,stop", _on_program_value_stop, pd);
-   elm_object_tooltip_text_set(control, tooltip);
-   elm_layout_content_set(item, "swallow.content1", control);
+   SPINNER_ADD(item, pd->attributes.program.value, 0.0, 1.0, 0.1, true);
+   elm_spinner_label_format_set(pd->attributes.program.value, "%.2f");
+   elm_spinner_value_set(pd->attributes.program.value,
+                         edje_edit_program_value_get(pd->group->edit_object, pd->attributes.program.program));
+   evas_object_smart_callback_add(pd->attributes.program.value, "changed", _on_program_value_change, pd);
+   evas_object_smart_callback_add(pd->attributes.program.value, "spinner,drag,start", _on_program_value_start, pd);
+   evas_object_smart_callback_add(pd->attributes.program.value, "spinner,drag,stop", _on_program_value_stop, pd);
+   elm_object_tooltip_text_set(pd->attributes.program.value, tooltip);
+   elm_layout_content_set(item, "swallow.content1", pd->attributes.program.value);
+
+   return item;
+}
+
+static Evas_Object *
+_prop_action_value2_add(Group_Prop_Data *pd, Evas_Object *parent, const char *title, const char *tooltip)
+{
+   PROPERTY_ITEM_ADD(parent, title, "2swallow")
+   SPINNER_ADD(item, pd->attributes.program.value2, 0.0, 1.0, 0.1, true);
+   elm_spinner_label_format_set(pd->attributes.program.value2, "%.2f");
+   elm_spinner_value_set(pd->attributes.program.value2,
+                         edje_edit_program_value2_get(pd->group->edit_object, pd->attributes.program.program));
+   evas_object_smart_callback_add(pd->attributes.program.value2, "changed", _on_program_value2_change, pd);
+   evas_object_smart_callback_add(pd->attributes.program.value2, "spinner,drag,start", _on_program_value2_start, pd);
+   evas_object_smart_callback_add(pd->attributes.program.value2, "spinner,drag,stop", _on_program_value2_stop, pd);
+   elm_object_tooltip_text_set(pd->attributes.program.value2, tooltip);
+   elm_layout_content_set(item, "swallow.content1", pd->attributes.program.value2);
 
    return item;
 }
@@ -1565,6 +1608,14 @@ _program_action_param_set(Group_Prop_Data *pd, Edje_Action_Type type)
          item = _prop_action_state_add(pd, box, _("signal name"), "");
          elm_box_pack_end(box, item);
          item = _prop_action_state2_add(pd, box, _("emmiter"), "");
+         elm_box_pack_end(box, item);
+         break;
+      case EDJE_ACTION_TYPE_DRAG_VAL_SET:
+      case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
+      case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
+         item = _prop_action_value_add(pd, box, _("axis X"), "");
+         elm_box_pack_end(box, item);
+         item = _prop_action_value2_add(pd, box, _("axis Y"), "");
          elm_box_pack_end(box, item);
          break;
       case EDJE_ACTION_TYPE_NONE:
