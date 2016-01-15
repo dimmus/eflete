@@ -195,6 +195,7 @@ struct _Group_Prop_Data
              Evas_Object *signal;
              Evas_Object *source;
              Evas_Object *action;
+             Evas_Object *action_params; /* it's a frame */
         } program;
    } attributes;
 };
@@ -1475,6 +1476,141 @@ PROGRAMM_ATTR_1ENTRY(_("signal"), program, signal, program, NULL,
 PROGRAMM_ATTR_1ENTRY(_("source"), program, source, program, NULL,
                      _("The source of signal"),
                      _("signal source is changed to '%s'"))
+
+static void
+_entry_program_state_change(void *data,
+                            Evas_Object *obj,
+                            void *ei __UNUSED__)
+{
+   Group_Prop_Data *pd = (Group_Prop_Data *)data;
+
+   if (!pd->change) pd->change = change_add(NULL);
+   const char *text = elm_entry_entry_get(obj);
+   char *value = elm_entry_markup_to_utf8(text);
+   editor_program_state_set(pd->group->edit_object, pd->change, true, pd->attributes.program.program, value);
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
+   free(value);
+}
+
+static void
+_entry_program_state_activated(void *data,
+                               Evas_Object *obj __UNUSED__,
+                               void *ei __UNUSED__)
+{
+   Group_Prop_Data *pd = (Group_Prop_Data *)data;
+
+   if (!pd->change) return;
+   Eina_Stringshare * val = edje_edit_program_state_get(pd->group->edit_object, pd->attributes.program.program);
+   Eina_Stringshare *msg = eina_stringshare_printf(_("Program action changed to '%s'"), val);
+   change_description_set(pd->change, msg);
+   history_change_add(pd->group->history, pd->change);
+   pd->change = NULL;
+   eina_stringshare_del(msg);
+   eina_stringshare_del(val);
+}
+
+static void
+_spinner_program_value_start(void *data,
+                             Evas_Object *obj __UNUSED__,
+                             void *ei __UNUSED__)
+{
+   Group_Prop_Data *pd = (Group_Prop_Data *)data;
+
+   assert(pd->change == NULL);
+
+   elm_object_focus_set(obj, true); /* there are problems with unfocusing entry.
+                              elementary is too lazy to change focus in time */
+   pd->change = change_add(NULL);
+   pd->old_double_val = edje_edit_program_value_get(pd->group->edit_object, pd->attributes.program.program);
+}
+
+static void
+_spinner_program_value_stop(void *data,
+                            Evas_Object *obj __UNUSED__,
+                            void *ei __UNUSED__)
+{
+   Group_Prop_Data *pd = (Group_Prop_Data *)data;
+   Eina_Stringshare *msg;
+
+   assert(pd->change != NULL);
+
+   double new_val = edje_edit_program_value_get(pd->group->edit_object, pd->attributes.program.program);
+   if (new_val != pd->old_double_val)
+     {
+        msg = eina_stringshare_printf(_("Propgram action value changed from %f to %f"), pd->old_double_val, new_val);
+        change_description_set(pd->change, msg);
+        eina_stringshare_del(msg);
+        history_change_add(pd->group->history, pd->change);
+     }
+   else
+     change_free(pd->change);
+   pd->change = NULL;
+}
+
+static void
+_spinner_program_value_change(void *data,
+                              Evas_Object *obj,
+                              void *ei __UNUSED__)
+{
+   Group_Prop_Data *pd = (Group_Prop_Data *)data;
+
+   double value = elm_spinner_value_get(obj);
+   if (!pd->change) _spinner_program_value_start(data, obj, ei);
+   if (!editor_program_value_set(pd->group->edit_object, pd->change, true, pd->attributes.program.program, value))
+     {
+        ERR("editor_program_value_set failed");
+        abort();
+     }
+   if (!pd->change) _spinner_program_value_stop(data, obj, ei);
+
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
+}
+
+static void
+_program_action_param_set(Group_Prop_Data *pd, Edje_Action_Type type)
+{
+   Evas_Object *box, *item, *control;
+
+   elm_frame_collapse_set(pd->attributes.program.action_params, false);
+   elm_object_disabled_set(pd->attributes.program.action_params, false);
+
+   //evas_object_del(elm_object_content_get(pd->attributes.program.action_params));
+   BOX_ADD(pd->attributes.program.action_params, box, false, false)
+   elm_box_align_set(box, 0.5, 0.0);
+   elm_object_content_set(pd->attributes.program.action_params, box);
+
+   switch (type)
+     {
+      case EDJE_ACTION_TYPE_STATE_SET:
+         LAYOUT_PROP_ADD(box, _("state name"), "property", "1swallow")
+         ENTRY_ADD(item, control, true);
+         elm_entry_entry_set(control, edje_edit_program_state_get(pd->group->edit_object, pd->attributes.program.program));
+         evas_object_smart_callback_add(control, "changed,user", _entry_program_state_change, pd);
+         evas_object_smart_callback_add(control, "activated", _entry_program_state_activated, pd);
+         evas_object_smart_callback_add(control, "unfocused", _entry_program_state_activated, pd);
+         elm_object_tooltip_text_set(control, "");
+         elm_layout_content_set(item, NULL, control);
+         elm_box_pack_end(box, item);
+         LAYOUT_PROP_ADD(box, _("state value"), "property", "2swallow")
+         SPINNER_ADD(item, control, 0.0, 1.0, 0.1, true);
+         elm_spinner_label_format_set(control, "%.2f"); \
+         elm_spinner_value_set(control, edje_edit_program_value_get(pd->group->edit_object, pd->attributes.program.program));
+         evas_object_smart_callback_add(control, "changed", _spinner_program_value_change, pd);
+         evas_object_smart_callback_add(control, "spinner,drag,start", _spinner_program_value_start, pd);
+         evas_object_smart_callback_add(control, "spinner,drag,stop", _spinner_program_value_stop, pd);
+         elm_object_tooltip_text_set(control, "");
+         elm_layout_content_set(item, "swallow.content1", control);
+         elm_box_pack_end(box, item);
+
+         break;
+      case EDJE_ACTION_TYPE_NONE:
+      default:
+         elm_frame_collapse_set(pd->attributes.program.action_params, true);
+         elm_object_disabled_set(pd->attributes.program.action_params, true);
+         break;
+     }
+}
+
 static void
 prop_program_action_update(Group_Prop_Data *pd)
 {
@@ -1485,33 +1621,43 @@ prop_program_action_update(Group_Prop_Data *pd)
      {
       case EDJE_ACTION_TYPE_NONE:
          ewe_combobox_select_item_set(pd->attributes.program.action, 0);
+         _program_action_param_set(pd, EDJE_ACTION_TYPE_NONE);
          break;
       case EDJE_ACTION_TYPE_STATE_SET:
          ewe_combobox_select_item_set(pd->attributes.program.action, 1);
+         _program_action_param_set(pd, EDJE_ACTION_TYPE_STATE_SET);
          break;
       case EDJE_ACTION_TYPE_SIGNAL_EMIT:
          ewe_combobox_select_item_set(pd->attributes.program.action, 2);
+         _program_action_param_set(pd, EDJE_ACTION_TYPE_SIGNAL_EMIT);
          break;
       case EDJE_ACTION_TYPE_DRAG_VAL_SET:
          ewe_combobox_select_item_set(pd->attributes.program.action, 3);
+         _program_action_param_set(pd, EDJE_ACTION_TYPE_DRAG_VAL_SET);
          break;
       case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
          ewe_combobox_select_item_set(pd->attributes.program.action, 4);
+         _program_action_param_set(pd, EDJE_ACTION_TYPE_DRAG_VAL_STEP);
          break;
       case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
          ewe_combobox_select_item_set(pd->attributes.program.action, 5);
+         _program_action_param_set(pd, EDJE_ACTION_TYPE_DRAG_VAL_PAGE);
          break;
       case EDJE_ACTION_TYPE_SOUND_SAMPLE:
          ewe_combobox_select_item_set(pd->attributes.program.action, 6);
+         _program_action_param_set(pd, EDJE_ACTION_TYPE_SOUND_SAMPLE);
          break;
       case EDJE_ACTION_TYPE_SOUND_TONE:
          ewe_combobox_select_item_set(pd->attributes.program.action, 7);
+         _program_action_param_set(pd, EDJE_ACTION_TYPE_SOUND_TONE);
          break;
       case EDJE_ACTION_TYPE_ACTION_STOP:
          ewe_combobox_select_item_set(pd->attributes.program.action, 8);
+         _program_action_param_set(pd, EDJE_ACTION_TYPE_ACTION_STOP);
          break;
       default:
          ewe_combobox_select_item_set(pd->attributes.program.action, 0);
+         _program_action_param_set(pd, EDJE_ACTION_TYPE_NONE);
          break;
      }
 }
@@ -1583,7 +1729,6 @@ prop_program_action_add(Evas_Object *parent, Group_Prop_Data *pd)
    elm_object_tooltip_text_set(pd->attributes.program.action, _("The program action type"));
    evas_object_smart_callback_add(pd->attributes.program.action, "selected", _on_program_action_change, pd);
    elm_layout_content_set(item, "elm.swallow.content", pd->attributes.program.action);
-   prop_program_action_update(pd);
 
    return item;
 }
@@ -1611,6 +1756,12 @@ _ui_property_program_set(Evas_Object *property, const char *program)
         elm_box_pack_end(box, item);
         item = prop_program_action_add(box, pd);
         elm_box_pack_end(box, item);
+        FRAME_PROPERTY_ADD(box, pd->attributes.program.action_params, true, _("Action params"), pd->scroller)
+        elm_object_style_set(pd->attributes.program.action_params, "outdent_top");
+        elm_box_pack_end(box,pd->attributes.program.action_params);
+        /* as frame needed for create the action params controls, update the
+         * action ites */
+        prop_program_action_update(pd);
      }
    else
      {
