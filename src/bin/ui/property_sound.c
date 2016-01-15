@@ -179,6 +179,12 @@ prop_sound_editor_compression_type_add(Evas_Object *parent, Sound_Prop_Data *pd)
 }
 
 static void
+_on_grid_clicked(void *data, Evas_Object *obj, void *event_info);
+static void
+_on_sound_editor_del(void * data, Evas_Object *obj, void *event_info);
+
+TODO("Check app logic: why sound editor is deleted on each project close?")
+static void
 _sound_editor_del(Sound_Prop_Data *edit)
 {
    assert(edit != NULL);
@@ -191,6 +197,9 @@ _sound_editor_del(Sound_Prop_Data *edit)
    evas_object_data_del(edit->markup, SND_EDIT_KEY);
    eina_stringshare_del(edit->selected);
    free(edit);
+
+   evas_object_smart_callback_del(ap.win, SIGNAL_SOUND_ADD, _on_grid_clicked);
+   evas_object_smart_callback_del(ap.win, SIGNAL_SOUND_DEL, _on_sound_editor_del);
 }
 
 static void
