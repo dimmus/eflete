@@ -807,6 +807,7 @@ tabs_clean(void)
      {
         _del_tab(item);
      }
+   tabs.selected = NULL;
    tabs.items = NULL;
 }
 
