@@ -33,6 +33,88 @@ group { name: "elm/layout/tabs/default";
    }
 }
 
+group { name: "elm/layout/tabs/property";
+   parts {
+      part { name: "elm.swallow.toolbar";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            max: -1 27;
+            align: 0.0 0.0;
+         }
+      }
+      part { name: "bg_content";
+         type: RECT;
+         description {
+            color: 81 82 84 255;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "elm.swallow.toolbar";
+            }
+         }
+      }
+      part { name: "elm.swallow.property";
+         type: SWALLOW;
+         description { state:   "default" 0.0;
+            visible: 0;
+            rel1 {
+               offset: 3 3;
+               relative: 0.0 1.0;
+               to: "elm.swallow.toolbar";
+            }
+            rel2 {
+               offset: -4 -4;
+            }
+         }
+         description { state:   "property" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description { state:   "history" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "elm.swallow.history";
+         type: SWALLOW;
+         description { state:   "default" 0.0;
+            visible: 0;
+            rel1 {
+               offset: 3 3;
+               relative: 0.0 1.0;
+               to: "elm.swallow.toolbar";
+            }
+            rel2 {
+               offset: -4 -4;
+            }
+         }
+         description { state:   "history" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description { state:   "property" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+   }
+   programs {
+      program { name: "property_show";
+         signal: "property,show";
+         source: "eflete";
+         action: STATE_SET "property" 0.0;
+         target: "elm.swallow.history";
+         target: "elm.swallow.property";
+      }
+      program { name: "history_show";
+         signal: "history,show";
+         source: "eflete";
+         action: STATE_SET "history" 0.0;
+         target: "elm.swallow.history";
+         target: "elm.swallow.property";
+      }
+   }
+}
+
 group { name: "elm/layout/tab_home/default";
    images {
       image: "section-border.png" COMP;
