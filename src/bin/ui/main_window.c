@@ -78,31 +78,19 @@ ui_main_window_del(void)
    return true;
 }
 
-/*
- * It's necessary to avoid warning: implicit declaration of function
- * 'elm_widget_sub_object_add' on compilation stage, which occurrs because of
- * Elementary.h file isn't contain directly elm_widget.h file (where
- * 'elm_widget_sub_object_add' function declared)
- */
-Eina_Bool elm_widget_sub_object_add(Evas_Object *obj, Evas_Object *sobj);
-
 static void
 _history_click(void *data __UNUSED__,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
-   evas_object_hide(elm_layout_content_unset(ap.block.right_top, NULL));
-   elm_widget_sub_object_add(ap.block.right_top, ap.block.property);
-   elm_layout_content_set(ap.block.right_top, NULL, ap.block.history);
+   elm_layout_signal_emit(ap.block.right_top, "history,show", "eflete");
 }
 static void
 _property_click(void *data __UNUSED__,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
-   evas_object_hide(elm_layout_content_unset(ap.block.right_top, NULL));
-   elm_widget_sub_object_add(ap.block.right_top, ap.block.history);
-   elm_layout_content_set(ap.block.right_top, NULL, ap.block.property);
+   elm_layout_signal_emit(ap.block.right_top, "property,show", "eflete");
 }
 
 Eina_Bool
@@ -173,7 +161,7 @@ ui_main_window_add(void)
 
    /* add tabs with history and signals */
    ap.block.right_top = elm_layout_add(ap.win);
-   elm_layout_theme_set(ap.block.right_top, "layout", "tabs", "default");
+   elm_layout_theme_set(ap.block.right_top, "layout", "tabs", "property");
 
    toolbar = elm_toolbar_add(ap.block.right_top);
    elm_object_style_set(toolbar, "editor_tabs_horizontal");
@@ -188,10 +176,9 @@ ui_main_window_add(void)
    elm_toolbar_item_append(toolbar, NULL, _("History"), _history_click, NULL);
 
    ap.block.property = ui_property_add(ap.win);
-   elm_layout_content_set(ap.block.right_top, NULL, ap.block.property);
+   elm_layout_content_set(ap.block.right_top, "elm.swallow.property", ap.block.property);
    ap.block.history = history_ui_add();
-   evas_object_hide(ap.block.history);
-   elm_layout_content_set(ap.block.right_top, NULL, ap.block.property);
+   elm_layout_content_set(ap.block.right_top, "elm.swallow.history", ap.block.history);
    elm_object_part_content_set(ap.panes.right, "right", ap.block.right_top);
 
    ap.menu = ui_menu_add();
