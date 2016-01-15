@@ -478,7 +478,7 @@ _selected_cb(void *data,
      }
    itc = elm_genlist_item_item_class_get(glit);
 
-   TODO("refactor")
+   TODO("REFACTOR")
    if (itc == pl->itc_program)
      {
         if (pl->selected_part_item)
@@ -503,7 +503,7 @@ _selected_cb(void *data,
         part = elm_object_item_data_get(glit_part);
         if ((pl->selected_part_item != glit_part) || (part->current_item_name != item_name))
           {
-             if (pl->selected_part_item)
+             if ((pl->group->current_part != part) && (pl->selected_part_item))
                _unselect_part(pl);
              pl->selected_part_item = glit_part;
              part->current_item_name = item_name;
