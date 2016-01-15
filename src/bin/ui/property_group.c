@@ -336,6 +336,9 @@ prop_program_state_update(Group_Prop_Data *pd);
 static void
 prop_program_state2_update(Group_Prop_Data *pd);
 
+static void
+prop_program_targets_update(Group_Prop_Data *pd);
+
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property);
 
@@ -961,6 +964,8 @@ _on_editor_attribute_changed(void *data,
          break;
       case ATTRIBUTE_PROGRAM_VALUE2:
          COMMON_1SPINNER_UPDATE(program, value2, program, double, 1, PROGRAM_ARGS)
+      case ATTRIBUTE_PROGRAM_TARGET:
+         prop_program_targets_update(pd);
          break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
@@ -981,7 +986,6 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_SAMPLE_NAME:
       case ATTRIBUTE_PROGRAM_TONE_NAME:
       case ATTRIBUTE_PROGRAM_NAME:
-      case ATTRIBUTE_PROGRAM_TARGET:
       case ATTRIBUTE_PROGRAM_AFTER:
          TODO("implement");
          break;
@@ -1751,13 +1755,15 @@ prop_program_action_add(Evas_Object *parent, Group_Prop_Data *pd)
 static void
 _add_target(void *data, Evas_Object *obj, void *event_info);
 
+#define COMBOBOX_TARGET "Combobox_Target"
+
 static void
 _del_target(void *data,
             Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
 {
    Evas_Object *item = (Evas_Object *)data;
-   Evas_Object *ic, *button, *new_item;
+   Evas_Object *ic, *button, *new_item, *target_combo;
    Group_Prop_Data *pd = evas_object_data_get(item, GROUP_PROP_DATA);
    Eina_List *items = elm_box_children_get(pd->attributes.program.target_box);
    /* check the first item, if deleted object the first in the list, we need to
@@ -1775,6 +1781,23 @@ _del_target(void *data,
      }
 
    elm_box_unpack(pd->attributes.program.target_box, item);
+   target_combo = elm_layout_content_get(item, NULL);
+   Eina_Stringshare *value = evas_object_data_get(target_combo, COMBOBOX_TARGET);
+   if (value)
+     {
+        Eina_Stringshare *msg = eina_stringshare_printf(_("removed target %s from program %s"),
+                                                        value,
+                                                        pd->attributes.program.program);
+        Change *change = change_add(msg);
+        eina_stringshare_del(msg);
+        editor_program_target_del(pd->group->edit_object, change, false,
+                                  pd->attributes.program.program,
+                                  value);
+        history_change_add(pd->group->history, change);
+
+        evas_object_data_del(target_combo, COMBOBOX_TARGET);
+        eina_stringshare_del(value);
+     }
    evas_object_del(item);
    items = elm_box_children_get(pd->attributes.program.target_box);
    if (eina_list_count(items) == 1)
@@ -1782,6 +1805,41 @@ _del_target(void *data,
         button = elm_layout_content_get(eina_list_data_get(items), "swallow.button_del");
         elm_object_disabled_set(button, true);
      }
+}
+static void
+_on_target_change(void *data,
+                  Evas_Object *obj,
+                  void *ei)
+{
+   Group_Prop_Data *pd = (Group_Prop_Data *)data;
+   Ewe_Combobox_Item *item = ei;
+
+   Eina_Stringshare *old_val = evas_object_data_get(obj, COMBOBOX_TARGET);
+   if ((old_val) && (item->title == old_val))
+     {
+       eina_stringshare_del(old_val);
+       return;
+     }
+
+   Eina_Stringshare *msg = eina_stringshare_printf(_("changing target from %s to %s in program %s"),
+                                                   old_val, item->title,
+                                                   pd->attributes.program.program);
+   Change *change = change_add(msg);
+   if (old_val)
+     {
+        eina_stringshare_del(msg);
+        editor_program_target_del(pd->group->edit_object, change, false,
+                                  pd->attributes.program.program,
+                                  old_val);
+        evas_object_data_del(obj, COMBOBOX_TARGET);
+        eina_stringshare_del(old_val);
+     }
+
+   editor_program_target_add(pd->group->edit_object, change, false,
+                             pd->attributes.program.program,
+                             item->title);
+   evas_object_data_set(obj, COMBOBOX_TARGET, eina_stringshare_add(item->title));
+   history_change_add(pd->group->history, change);
 }
 static void
 _add_target(void *data,
@@ -1828,6 +1886,8 @@ _add_target(void *data,
    evas_object_smart_callback_add(button, "clicked", _del_target, item);
    elm_layout_content_set(item, "swallow.button_del", button);
 
+   evas_object_smart_callback_add(target_combo, "selected",
+                                  _on_target_change, pd);
    elm_box_pack_end(pd->attributes.program.target_box, item);
 }
 
@@ -1856,9 +1916,11 @@ prop_program_targets_update(Group_Prop_Data *pd)
         target_combo = elm_layout_content_get(item, NULL);
         target = eina_list_data_get(targets);
         ewe_combobox_text_set(target_combo, target);
+        evas_object_data_set(target_combo, COMBOBOX_TARGET, eina_stringshare_add(target));
         targets = eina_list_next(targets);
      }
 }
+
 
 static Evas_Object *
 prop_program_target_add(Evas_Object *parent, Group_Prop_Data *pd)
@@ -1901,11 +1963,13 @@ prop_program_target_add(Evas_Object *parent, Group_Prop_Data *pd)
    evas_object_smart_callback_add(button, "clicked", _del_target, item);
    elm_object_disabled_set(button, true);
 
-//   evas_object_smart_callback_add(item, "selected",
-//                                  _on_##MEMBER##_##VALUE1##_change, pd);
+   evas_object_smart_callback_add(target_combo, "selected",
+                                  _on_target_change, pd);
 
    return item;
 }
+
+#undef COMBOBOX_TARGET
 
 static void
 _ui_property_program_set(Evas_Object *property, const char *program)
