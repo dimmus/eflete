@@ -575,7 +575,7 @@ _on_##SUB##_##VALUE##_activated(void *data, \
      return; \
    if (!pd->change) \
      return; \
-   Eina_Stringshare * val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
+   Eina_Stringshare *val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
    Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION, val); \
    change_description_set(pd->change, msg); \
    history_change_add(pd->group->history, pd->change); \
