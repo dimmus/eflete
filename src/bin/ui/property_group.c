@@ -1477,104 +1477,56 @@ PROGRAMM_ATTR_1ENTRY(_("source"), program, source, program, NULL,
                      _("The source of signal"),
                      _("signal source is changed to '%s'"))
 
-static void
-_entry_program_state_change(void *data,
-                            Evas_Object *obj,
-                            void *ei __UNUSED__)
-{
-   Group_Prop_Data *pd = (Group_Prop_Data *)data;
+/* this dummy for make posible to reuse COMMON_ENTRY_CALLBACK */
+#define prop_program_state_update(PD)
 
-   if (!pd->change) pd->change = change_add(NULL);
-   const char *text = elm_entry_entry_get(obj);
-   char *value = elm_entry_markup_to_utf8(text);
-   editor_program_state_set(pd->group->edit_object, pd->change, true, pd->attributes.program.program, value);
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-   free(value);
+COMMON_ENTRY_CALLBACK(program, state, NULL, PROGRAM_ARGS, _("Program action state is changed to '%s'"))
+COMMON_SPINNER_CALLBACK(program, value, program, double, 1, PROGRAM_ARGS, _("Program action value is changed from %f to %f"))
+
+static Evas_Object *
+_prop_action_state_add(Group_Prop_Data *pd, Evas_Object *parent, const char *title, const char *tooltip)
+{
+   Evas_Object *control;
+
+   PROPERTY_ITEM_ADD(parent, title, "1swallow")
+   ENTRY_ADD(item, control, true);
+   elm_entry_entry_set(control, edje_edit_program_state_get(pd->group->edit_object, pd->attributes.program.program));
+   evas_object_smart_callback_add(control, "changed,user", _on_program_state_change, pd);
+   evas_object_smart_callback_add(control, "activated", _on_program_state_activated, pd);
+   evas_object_smart_callback_add(control, "unfocused", _on_program_state_activated, pd);
+   elm_object_tooltip_text_set(control, tooltip);
+   elm_layout_content_set(item, NULL, control);
+
+   return item;
 }
 
-static void
-_entry_program_state_activated(void *data,
-                               Evas_Object *obj __UNUSED__,
-                               void *ei __UNUSED__)
+static Evas_Object *
+_prop_action_value_add(Group_Prop_Data *pd, Evas_Object *parent, const char *title, const char *tooltip)
 {
-   Group_Prop_Data *pd = (Group_Prop_Data *)data;
+   Evas_Object *control;
 
-   if (!pd->change) return;
-   Eina_Stringshare * val = edje_edit_program_state_get(pd->group->edit_object, pd->attributes.program.program);
-   Eina_Stringshare *msg = eina_stringshare_printf(_("Program action changed to '%s'"), val);
-   change_description_set(pd->change, msg);
-   history_change_add(pd->group->history, pd->change);
-   pd->change = NULL;
-   eina_stringshare_del(msg);
-   eina_stringshare_del(val);
-}
+   PROPERTY_ITEM_ADD(parent, title, "2swallow")
+   SPINNER_ADD(item, control, 0.0, 1.0, 0.1, true);
+   elm_spinner_label_format_set(control, "%.2f");
+   elm_spinner_value_set(control, edje_edit_program_value_get(pd->group->edit_object, pd->attributes.program.program));
+   evas_object_smart_callback_add(control, "changed", _on_program_value_change, pd);
+   evas_object_smart_callback_add(control, "spinner,drag,start", _on_program_value_start, pd);
+   evas_object_smart_callback_add(control, "spinner,drag,stop", _on_program_value_stop, pd);
+   elm_object_tooltip_text_set(control, tooltip);
+   elm_layout_content_set(item, "swallow.content1", control);
 
-static void
-_spinner_program_value_start(void *data,
-                             Evas_Object *obj __UNUSED__,
-                             void *ei __UNUSED__)
-{
-   Group_Prop_Data *pd = (Group_Prop_Data *)data;
-
-   assert(pd->change == NULL);
-
-   elm_object_focus_set(obj, true); /* there are problems with unfocusing entry.
-                              elementary is too lazy to change focus in time */
-   pd->change = change_add(NULL);
-   pd->old_double_val = edje_edit_program_value_get(pd->group->edit_object, pd->attributes.program.program);
-}
-
-static void
-_spinner_program_value_stop(void *data,
-                            Evas_Object *obj __UNUSED__,
-                            void *ei __UNUSED__)
-{
-   Group_Prop_Data *pd = (Group_Prop_Data *)data;
-   Eina_Stringshare *msg;
-
-   assert(pd->change != NULL);
-
-   double new_val = edje_edit_program_value_get(pd->group->edit_object, pd->attributes.program.program);
-   if (new_val != pd->old_double_val)
-     {
-        msg = eina_stringshare_printf(_("Propgram action value changed from %f to %f"), pd->old_double_val, new_val);
-        change_description_set(pd->change, msg);
-        eina_stringshare_del(msg);
-        history_change_add(pd->group->history, pd->change);
-     }
-   else
-     change_free(pd->change);
-   pd->change = NULL;
-}
-
-static void
-_spinner_program_value_change(void *data,
-                              Evas_Object *obj,
-                              void *ei __UNUSED__)
-{
-   Group_Prop_Data *pd = (Group_Prop_Data *)data;
-
-   double value = elm_spinner_value_get(obj);
-   if (!pd->change) _spinner_program_value_start(data, obj, ei);
-   if (!editor_program_value_set(pd->group->edit_object, pd->change, true, pd->attributes.program.program, value))
-     {
-        ERR("editor_program_value_set failed");
-        abort();
-     }
-   if (!pd->change) _spinner_program_value_stop(data, obj, ei);
-
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
+   return item;
 }
 
 static void
 _program_action_param_set(Group_Prop_Data *pd, Edje_Action_Type type)
 {
-   Evas_Object *box, *item, *control;
+   Evas_Object *box, *item;
 
    elm_frame_collapse_set(pd->attributes.program.action_params, false);
    elm_object_disabled_set(pd->attributes.program.action_params, false);
 
-   //evas_object_del(elm_object_content_get(pd->attributes.program.action_params));
+   evas_object_del(elm_object_content_get(pd->attributes.program.action_params));
    BOX_ADD(pd->attributes.program.action_params, box, false, false)
    elm_box_align_set(box, 0.5, 0.0);
    elm_object_content_set(pd->attributes.program.action_params, box);
@@ -1582,26 +1534,10 @@ _program_action_param_set(Group_Prop_Data *pd, Edje_Action_Type type)
    switch (type)
      {
       case EDJE_ACTION_TYPE_STATE_SET:
-         LAYOUT_PROP_ADD(box, _("state name"), "property", "1swallow")
-         ENTRY_ADD(item, control, true);
-         elm_entry_entry_set(control, edje_edit_program_state_get(pd->group->edit_object, pd->attributes.program.program));
-         evas_object_smart_callback_add(control, "changed,user", _entry_program_state_change, pd);
-         evas_object_smart_callback_add(control, "activated", _entry_program_state_activated, pd);
-         evas_object_smart_callback_add(control, "unfocused", _entry_program_state_activated, pd);
-         elm_object_tooltip_text_set(control, "");
-         elm_layout_content_set(item, NULL, control);
+         item = _prop_action_state_add(pd, box, _("state name"), "");
          elm_box_pack_end(box, item);
-         LAYOUT_PROP_ADD(box, _("state value"), "property", "2swallow")
-         SPINNER_ADD(item, control, 0.0, 1.0, 0.1, true);
-         elm_spinner_label_format_set(control, "%.2f"); \
-         elm_spinner_value_set(control, edje_edit_program_value_get(pd->group->edit_object, pd->attributes.program.program));
-         evas_object_smart_callback_add(control, "changed", _spinner_program_value_change, pd);
-         evas_object_smart_callback_add(control, "spinner,drag,start", _spinner_program_value_start, pd);
-         evas_object_smart_callback_add(control, "spinner,drag,stop", _spinner_program_value_stop, pd);
-         elm_object_tooltip_text_set(control, "");
-         elm_layout_content_set(item, "swallow.content1", control);
+         item = _prop_action_value_add(pd, box, _("state value"), "");
          elm_box_pack_end(box, item);
-
          break;
       case EDJE_ACTION_TYPE_NONE:
       default:
