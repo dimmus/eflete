@@ -938,6 +938,10 @@ _on_editor_attribute_changed(void *data,
          prop_program_source_update(pd);
          break;
       case ATTRIBUTE_PROGRAM_ACTION:
+      case ATTRIBUTE_PROGRAM_STATE:
+      case ATTRIBUTE_PROGRAM_STATE2:
+      case ATTRIBUTE_PROGRAM_VALUE:
+      case ATTRIBUTE_PROGRAM_VALUE2:
          prop_program_action_update(pd);
          break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
@@ -948,8 +952,6 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_IN_RANGE:
       case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
       case ATTRIBUTE_PROGRAM_SAMPLE_SPEED:
-      case ATTRIBUTE_PROGRAM_VALUE2:
-      case ATTRIBUTE_PROGRAM_VALUE:
       case ATTRIBUTE_PROGRAM_TRANSITION_VALUE1:
       case ATTRIBUTE_PROGRAM_TRANSITION_VALUE2:
       case ATTRIBUTE_PROGRAM_TRANSITION_VALUE3:
@@ -960,8 +962,6 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_API_DESCRIPTION:
       case ATTRIBUTE_PROGRAM_SAMPLE_NAME:
       case ATTRIBUTE_PROGRAM_TONE_NAME:
-      case ATTRIBUTE_PROGRAM_STATE:
-      case ATTRIBUTE_PROGRAM_STATE2:
       case ATTRIBUTE_PROGRAM_NAME:
       case ATTRIBUTE_PROGRAM_TARGET:
       case ATTRIBUTE_PROGRAM_AFTER:
@@ -1482,8 +1482,10 @@ PROGRAMM_ATTR_1ENTRY(_("source"), program, source, program, NULL,
 
 /* this dummy for make posible to reuse COMMON_ENTRY_CALLBACK */
 #define prop_program_state_update(PD)
+#define prop_program_state2_update(PD)
 
 COMMON_ENTRY_CALLBACK(program, state, NULL, PROGRAM_ARGS, _("Program action state is changed to '%s'"))
+COMMON_ENTRY_CALLBACK(program, state2, NULL, PROGRAM_ARGS, _("Program action state2 is changed to '%s'"))
 COMMON_SPINNER_CALLBACK(program, value, program, double, 1, PROGRAM_ARGS, _("Program action value is changed from %f to %f"))
 
 static Evas_Object *
@@ -1497,6 +1499,23 @@ _prop_action_state_add(Group_Prop_Data *pd, Evas_Object *parent, const char *tit
    evas_object_smart_callback_add(control, "changed,user", _on_program_state_change, pd);
    evas_object_smart_callback_add(control, "activated", _on_program_state_activated, pd);
    evas_object_smart_callback_add(control, "unfocused", _on_program_state_activated, pd);
+   elm_object_tooltip_text_set(control, tooltip);
+   elm_layout_content_set(item, NULL, control);
+
+   return item;
+}
+
+static Evas_Object *
+_prop_action_state2_add(Group_Prop_Data *pd, Evas_Object *parent, const char *title, const char *tooltip)
+{
+   Evas_Object *control;
+
+   PROPERTY_ITEM_ADD(parent, title, "1swallow")
+   ENTRY_ADD(item, control, true);
+   elm_entry_entry_set(control, edje_edit_program_state2_get(pd->group->edit_object, pd->attributes.program.program));
+   evas_object_smart_callback_add(control, "changed,user", _on_program_state2_change, pd);
+   evas_object_smart_callback_add(control, "activated", _on_program_state2_activated, pd);
+   evas_object_smart_callback_add(control, "unfocused", _on_program_state2_activated, pd);
    elm_object_tooltip_text_set(control, tooltip);
    elm_layout_content_set(item, NULL, control);
 
@@ -1540,6 +1559,12 @@ _program_action_param_set(Group_Prop_Data *pd, Edje_Action_Type type)
          item = _prop_action_state_add(pd, box, _("state name"), "");
          elm_box_pack_end(box, item);
          item = _prop_action_value_add(pd, box, _("state value"), "");
+         elm_box_pack_end(box, item);
+         break;
+      case EDJE_ACTION_TYPE_SIGNAL_EMIT:
+         item = _prop_action_state_add(pd, box, _("signal name"), "");
+         elm_box_pack_end(box, item);
+         item = _prop_action_state2_add(pd, box, _("emmiter"), "");
          elm_box_pack_end(box, item);
          break;
       case EDJE_ACTION_TYPE_NONE:
