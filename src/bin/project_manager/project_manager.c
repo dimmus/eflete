@@ -515,7 +515,7 @@ _project_import_edc(void *data,
    pid_t exe_pid;
    int edje_cc_res = 0, waitpid_res = 0;
 
-   PROGRESS_SEND(_("Start import '%s' file as new project"), worker.edj);
+   PROGRESS_SEND(_("Start import '%s' file as new project"), worker.edc);
    PROGRESS_SEND(_("Creating a specifiec file and folders"));
    if (worker.func_progress)
      {
@@ -525,9 +525,9 @@ _project_import_edc(void *data,
    eina_file_mkdtemp("eflete_build_XXXXXX", &tmp_dirname);
    worker.edj = eina_stringshare_printf("%s/out.edj", tmp_dirname);
    cmd = eina_stringshare_printf("edje_cc -v %s %s %s",
-                                 worker.build_options,
                                  worker.edc,
-                                 worker.edj);
+                                 worker.edj,
+                                 worker.build_options);
    THREAD_TESTCANCEL;
    exe_cmd = ecore_exe_pipe_run(cmd, flags, NULL);
    exe_pid = ecore_exe_pid_get(exe_cmd);

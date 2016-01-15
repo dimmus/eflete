@@ -308,29 +308,29 @@ _edje_cc_opt_build(void)
    EINA_LIST_FOREACH(tab_edc.img_dirs, l, dir_data)
      {
         if (elm_entry_is_empty(dir_data->entry)) continue;
-        eina_strbuf_append_printf(buf, "-id \"%s\"", elm_entry_entry_get(dir_data->entry));
+        eina_strbuf_append_printf(buf, " -id \"%s\"", elm_entry_entry_get(dir_data->entry));
      }
    EINA_LIST_FOREACH(tab_edc.fnt_dirs, l, dir_data)
      {
         if (elm_entry_is_empty(dir_data->entry)) continue;
-        eina_strbuf_append_printf(buf, "-fd \"%s\"", elm_entry_entry_get(dir_data->entry));
+        eina_strbuf_append_printf(buf, " -fd \"%s\"", elm_entry_entry_get(dir_data->entry));
      }
    EINA_LIST_FOREACH(tab_edc.snd_dirs, l, dir_data)
      {
         if (elm_entry_is_empty(dir_data->entry)) continue;
-        eina_strbuf_append_printf(buf, "-sd \"%s\"", elm_entry_entry_get(dir_data->entry));
+        eina_strbuf_append_printf(buf, " -sd \"%s\"", elm_entry_entry_get(dir_data->entry));
      }
    /*
    EINA_LIST_FOREACH(tab_edc.vbr_dirs, l, dir_data)
      {
         if (elm_entry_is_empty(dir_data->entry)) continue;
-        eina_strbuf_append_printf(buf, "-vd \"%s\"", elm_entry_entry_get(dir_data->entry));
+        eina_strbuf_append_printf(buf, " -vd \"%s\"", elm_entry_entry_get(dir_data->entry));
      }
    */
    EINA_LIST_FOREACH(tab_edc.data_dirs, l, dir_data)
      {
         if (elm_entry_is_empty(dir_data->entry)) continue;
-        eina_strbuf_append_printf(buf, "-dd \"%s\"", elm_entry_entry_get(dir_data->entry));
+        eina_strbuf_append_printf(buf, " -dd \"%s\"", elm_entry_entry_get(dir_data->entry));
      }
 
    return buf;
@@ -376,7 +376,6 @@ _progress_end(void *data, PM_Project_Result result)
         elm_entry_entry_set(tab_edc.meta.comment, N_("Created with Eflete!"));
      }
    _tabs_progress_end(data, result);
-   progress_end(NULL, result);
 }
 
 static Eina_Bool
