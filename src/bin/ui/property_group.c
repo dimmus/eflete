@@ -1907,6 +1907,7 @@ prop_program_targets_update(Group_Prop_Data *pd)
 
    Eina_List *targets = edje_edit_program_targets_get(pd->group->edit_object,
                                                       pd->attributes.program.program);
+   targets = eina_list_sort(targets, eina_list_count(targets), (Eina_Compare_Cb) strcmp);
    int item_count = eina_list_count(items);
    int targets_count = eina_list_count(targets);
 
