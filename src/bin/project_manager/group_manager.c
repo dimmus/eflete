@@ -474,8 +474,8 @@ gm_groups_free(Project *pro)
 void
 gm_state_del(Project *pro, State *state)
 {
-   Eina_Stringshare *name, *image_name;
-   Eina_List *tween_list, *l;
+//   Eina_Stringshare *name, *image_name;
+//   Eina_List *tween_list, *l;
 
    assert(pro != NULL);
    assert(state != NULL);
@@ -490,6 +490,8 @@ gm_state_del(Project *pro, State *state)
         pm_resource_usage_del(USAGE_LIST, name, state); \
         edje_edit_string_free(name); \
      }
+TODO("fix usage adding on properties change before using this code")
+#if 0
    switch (state->part->type)
      {
       case EDJE_PART_TYPE_RECTANGLE:
@@ -525,6 +527,7 @@ gm_state_del(Project *pro, State *state)
       default:
          break;
      }
+#endif
    state->used_in = eina_list_free(state->used_in);
    state->part->states = eina_list_remove(state->part->states, state);
    eina_stringshare_del(state->parsed_name);
