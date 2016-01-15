@@ -1715,6 +1715,9 @@ _add_target(void *data,
    Group_Prop_Data *pd = (Group_Prop_Data *) data;
    Evas_Object *target_combo, *ic, *button, *item;
    Eina_List *items = elm_box_children_get(pd->attributes.program.target_box);
+   Eina_List *l;
+   Resource *program;
+   Part *part;
 
    if (eina_list_count(items) == 1)
      {
@@ -1728,6 +1731,17 @@ _add_target(void *data,
    evas_object_data_set(item, GROUP_PROP_DATA, pd);
 
    EWE_COMBOBOX_ADD(item, target_combo);
+   /* fill up with part and program list */
+   EINA_LIST_FOREACH(pd->group->parts, l, part)
+     {
+        ewe_combobox_item_add(target_combo, part->name);
+     }
+   EINA_LIST_FOREACH(pd->group->programs, l, program)
+     {
+        if (program->name == pd->attributes.program.program)
+          continue;
+        ewe_combobox_item_add(target_combo, program->name);
+     }
    elm_object_tooltip_text_set(target_combo, _("target can be part or program"));
    elm_layout_content_set(item, NULL, target_combo);
 
@@ -1741,10 +1755,42 @@ _add_target(void *data,
    elm_box_pack_end(pd->attributes.program.target_box, item);
 }
 
+static void
+prop_program_targets_update(Group_Prop_Data *pd)
+{
+   Evas_Object *target_combo, *item;
+   Eina_List *items = elm_box_children_get(pd->attributes.program.target_box);
+   int i = 0;
+   Eina_List *l;
+   Eina_Stringshare *target;
+
+   Eina_List *targets = edje_edit_program_targets_get(pd->group->edit_object,
+                                                      pd->attributes.program.program);
+   int item_count = eina_list_count(items);
+   int targets_count = eina_list_count(targets);
+
+   if (item_count < targets_count)
+     for (i = 0; i < targets_count - item_count; i++)
+       _add_target(pd, NULL, NULL);
+
+   items = elm_box_children_get(pd->attributes.program.target_box);
+   /* fill up with part and program list */
+   EINA_LIST_FOREACH(items, l, item)
+     {
+        target_combo = elm_layout_content_get(item, NULL);
+        target = eina_list_data_get(targets);
+        ewe_combobox_text_set(target_combo, target);
+        targets = eina_list_next(targets);
+     }
+}
+
 static Evas_Object *
 prop_program_target_add(Evas_Object *parent, Group_Prop_Data *pd)
 {
    Evas_Object *item, *target_combo, *button, *ic;
+   Eina_List *l;
+   Resource *program;
+   Part *part;
 
    LAYOUT_PROP_ADD(parent, NULL, "tab_home", "item")
    evas_object_data_set(item, GROUP_PROP_DATA, pd);
@@ -1757,6 +1803,17 @@ prop_program_target_add(Evas_Object *parent, Group_Prop_Data *pd)
    evas_object_smart_callback_add(button, "clicked", _add_target, pd);
 
    EWE_COMBOBOX_ADD(item, target_combo);
+   /* fill up with part and program list */
+   EINA_LIST_FOREACH(pd->group->parts, l, part)
+     {
+        ewe_combobox_item_add(target_combo, part->name);
+     }
+   EINA_LIST_FOREACH(pd->group->programs, l, program)
+     {
+        if (program->name == pd->attributes.program.program)
+          continue;
+        ewe_combobox_item_add(target_combo, program->name);
+     }
    elm_object_tooltip_text_set(target_combo, _("target can be part or program"));
    elm_layout_content_set(item, NULL, target_combo);
 
@@ -1767,6 +1824,9 @@ prop_program_target_add(Evas_Object *parent, Group_Prop_Data *pd)
    elm_layout_content_set(item, "swallow.button_del", button);
    evas_object_smart_callback_add(button, "clicked", _del_target, item);
    elm_object_disabled_set(button, true);
+
+//   evas_object_smart_callback_add(item, "selected",
+//                                  _on_##MEMBER##_##VALUE1##_change, pd);
 
    return item;
 }
@@ -1810,6 +1870,7 @@ _ui_property_program_set(Evas_Object *property, const char *program)
         elm_object_content_set(pd->attributes.program.targets_frame, pd->attributes.program.target_box);
         item = prop_program_target_add(pd->attributes.program.target_box, pd);
         elm_box_pack_end(pd->attributes.program.target_box, item);
+        prop_program_targets_update(pd);
      }
    else
      {
@@ -1817,6 +1878,7 @@ _ui_property_program_set(Evas_Object *property, const char *program)
         prop_program_signal_update(pd);
         prop_program_source_update(pd);
         prop_program_action_update(pd);
+        prop_program_targets_update(pd);
      }
    elm_box_pack_end(prop_box, pd->attributes.program.frame);
 }
