@@ -196,6 +196,9 @@ struct _Group_Prop_Data
              Evas_Object *source;
              Evas_Object *action;
              Evas_Object *action_params; /* it's a frame */
+             Evas_Object *target;
+             Evas_Object *target_box;
+             Evas_Object *targets_frame; /* it's a frame */
         } program;
    } attributes;
 };
@@ -1670,6 +1673,105 @@ prop_program_action_add(Evas_Object *parent, Group_Prop_Data *pd)
 }
 
 static void
+_add_target(void *data, Evas_Object *obj, void *event_info);
+
+static void
+_del_target(void *data,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
+{
+   Evas_Object *item = (Evas_Object *)data;
+   Evas_Object *ic, *button, *new_item;
+   Group_Prop_Data *pd = evas_object_data_get(item, GROUP_PROP_DATA);
+   Eina_List *items = elm_box_children_get(pd->attributes.program.target_box);
+   /* check the first item, if deleted object the first in the list, we need to
+    * set the label to next item and move btn_add */
+   if (eina_list_data_get(items) == item)
+     {
+        new_item = eina_list_data_get(eina_list_next(items));
+        button = elm_button_add(new_item);
+        ic = elm_icon_add(button);
+        elm_icon_standard_set(ic, "plus");
+        elm_object_part_content_set(button, NULL, ic);
+        elm_layout_content_set(item, "swallow.button_add", button);
+        evas_object_smart_callback_add(button, "clicked", _add_target, pd);
+        elm_layout_content_set(new_item, "swallow.button_add", button);
+     }
+
+   elm_box_unpack(pd->attributes.program.target_box, item);
+   evas_object_del(item);
+   items = elm_box_children_get(pd->attributes.program.target_box);
+   if (eina_list_count(items) == 1)
+     {
+        button = elm_layout_content_get(eina_list_data_get(items), "swallow.button_del");
+        elm_object_disabled_set(button, true);
+     }
+}
+static void
+_add_target(void *data,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
+{
+   Group_Prop_Data *pd = (Group_Prop_Data *) data;
+   Evas_Object *target_combo, *ic, *button, *item;
+   Eina_List *items = elm_box_children_get(pd->attributes.program.target_box);
+
+   if (eina_list_count(items) == 1)
+     {
+        /* enable the 'del' button of first item, make posible to delete the
+         * first item */
+        button = elm_layout_content_get(eina_list_data_get(items), "swallow.button_del");
+        elm_object_disabled_set(button, false);
+     }
+
+   LAYOUT_PROP_ADD(pd->attributes.program.target_box, NULL, "tab_home", "item")
+   evas_object_data_set(item, GROUP_PROP_DATA, pd);
+
+   EWE_COMBOBOX_ADD(item, target_combo);
+   elm_object_tooltip_text_set(target_combo, _("target can be part or program"));
+   elm_layout_content_set(item, NULL, target_combo);
+
+   button = elm_button_add(item);
+   ic = elm_icon_add(button);
+   elm_icon_standard_set(ic, "minus");
+   elm_object_part_content_set(button, NULL, ic);
+   evas_object_smart_callback_add(button, "clicked", _del_target, item);
+   elm_layout_content_set(item, "swallow.button_del", button);
+
+   elm_box_pack_end(pd->attributes.program.target_box, item);
+}
+
+static Evas_Object *
+prop_program_target_add(Evas_Object *parent, Group_Prop_Data *pd)
+{
+   Evas_Object *item, *target_combo, *button, *ic;
+
+   LAYOUT_PROP_ADD(parent, NULL, "tab_home", "item")
+   evas_object_data_set(item, GROUP_PROP_DATA, pd);
+
+   button = elm_button_add(item);
+   ic = elm_icon_add(button);
+   elm_icon_standard_set(ic, "plus");
+   elm_object_part_content_set(button, NULL, ic);
+   elm_layout_content_set(item, "swallow.button_add", button);
+   evas_object_smart_callback_add(button, "clicked", _add_target, pd);
+
+   EWE_COMBOBOX_ADD(item, target_combo);
+   elm_object_tooltip_text_set(target_combo, _("target can be part or program"));
+   elm_layout_content_set(item, NULL, target_combo);
+
+   button = elm_button_add(item);
+   ic = elm_icon_add(button);
+   elm_icon_standard_set(ic, "minus");
+   elm_object_part_content_set(button, NULL, ic);
+   elm_layout_content_set(item, "swallow.button_del", button);
+   evas_object_smart_callback_add(button, "clicked", _del_target, item);
+   elm_object_disabled_set(button, true);
+
+   return item;
+}
+
+static void
 _ui_property_program_set(Evas_Object *property, const char *program)
 {
    Evas_Object *prop_box, *box, *item;
@@ -1698,6 +1800,16 @@ _ui_property_program_set(Evas_Object *property, const char *program)
         /* as frame needed for create the action params controls, update the
          * action ites */
         prop_program_action_update(pd);
+
+        FRAME_PROPERTY_ADD(box, pd->attributes.program.targets_frame, true, _("Targets"), pd->scroller)
+        elm_object_style_set(pd->attributes.program.targets_frame, "outdent_top");
+        elm_box_pack_end(box, pd->attributes.program.targets_frame);
+
+        BOX_ADD(pd->attributes.program.targets_frame, pd->attributes.program.target_box, false, false)
+        elm_box_align_set(box, 0.5, 0.0);
+        elm_object_content_set(pd->attributes.program.targets_frame, pd->attributes.program.target_box);
+        item = prop_program_target_add(pd->attributes.program.target_box, pd);
+        elm_box_pack_end(pd->attributes.program.target_box, item);
      }
    else
      {
