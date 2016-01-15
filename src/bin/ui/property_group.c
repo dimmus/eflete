@@ -1870,11 +1870,16 @@ _add_target(void *data,
      {
         ewe_combobox_item_add(target_combo, part->name);
      }
-   EINA_LIST_FOREACH(pd->group->programs, l, program)
+   Edje_Action_Type type = edje_edit_program_action_get(pd->group->edit_object,
+                                                        pd->attributes.program.program);
+   if (type == EDJE_ACTION_TYPE_ACTION_STOP)
      {
-        if (program->name == pd->attributes.program.program)
-          continue;
-        ewe_combobox_item_add(target_combo, program->name);
+        EINA_LIST_FOREACH(pd->group->programs, l, program)
+          {
+             if (program->name == pd->attributes.program.program)
+               continue;
+             ewe_combobox_item_add(target_combo, program->name);
+          }
      }
    elm_object_tooltip_text_set(target_combo, _("target can be part or program"));
    elm_layout_content_set(item, NULL, target_combo);
@@ -1946,11 +1951,16 @@ prop_program_target_add(Evas_Object *parent, Group_Prop_Data *pd)
      {
         ewe_combobox_item_add(target_combo, part->name);
      }
-   EINA_LIST_FOREACH(pd->group->programs, l, program)
+   Edje_Action_Type type = edje_edit_program_action_get(pd->group->edit_object,
+                                                        pd->attributes.program.program);
+   if (type == EDJE_ACTION_TYPE_ACTION_STOP)
      {
-        if (program->name == pd->attributes.program.program)
-          continue;
-        ewe_combobox_item_add(target_combo, program->name);
+        EINA_LIST_FOREACH(pd->group->programs, l, program)
+          {
+             if (program->name == pd->attributes.program.program)
+               continue;
+             ewe_combobox_item_add(target_combo, program->name);
+          }
      }
    elm_object_tooltip_text_set(target_combo, _("target can be part or program"));
    elm_layout_content_set(item, NULL, target_combo);
