@@ -294,7 +294,7 @@ _fs_del(void *data)
 
 static void
 _add_sample_done(void *data,
-                 Evas_Object *obj,
+                 Evas_Object *obj __UNUSED__,
                  void *event_info)
 {
    Item *it;
@@ -326,8 +326,8 @@ _add_sample_done(void *data,
              }
         if (exist)
           {
-             WIN_NOTIFY_WARNING(obj, _("Sample with this name is already added to project"))
-                eina_stringshare_del(sound_name);
+             WARN(_("Sample '%s' is already added to project"), sound_name)
+             eina_stringshare_del(sound_name);
              return;
           }
 
@@ -343,7 +343,7 @@ _add_sample_done(void *data,
           }
         else
           {
-             WIN_NOTIFY_ERROR(obj, _("File exist"));
+             ERR(_("File '%s' exist"), res->name);
              free(res);
              goto del;
           }
@@ -366,7 +366,7 @@ _add_sample_done(void *data,
         ap.project->changed = true;
      }
    else
-     WIN_NOTIFY_ERROR(obj, _("Error while loading file.<br>File is not exist"));
+     ERR(_("File '%s' is not exist"), selected);
 
 del:
    ecore_job_add(_fs_del, edit);
@@ -429,7 +429,7 @@ _add_tone_done(void *data,
        }
    if (exist)
      {
-        NOTIFY_WARNING(_("Tone with this name is already added to project"))
+        WARN(_("Tone '%s' is already added to project"), tone_name)
         eina_stringshare_del(tone_name);
         return;
      }
@@ -602,7 +602,7 @@ _on_delete_clicked_cb(void *data,
 
    if ((!list) || (!selected))
      {
-        NOTIFY_WARNING("No selected items");
+        WARN("No selected items");
         return;
      }
 
@@ -650,7 +650,7 @@ _on_delete_clicked_cb(void *data,
      snprintf(buf + symbs, BUFF_MAX - symbs, "<br>...");
 
    if (notdeleted != 0)
-     NOTIFY_WARNING("%s<br>Used in Programs", buf);
+     WARN("'%s' used in Programs", buf);
 
    editor_save(ap.project->global_object);
    TODO("Remove this line once edje_edit_sound_..._del would be added into Editor Modulei and saving would work properly")

@@ -381,7 +381,7 @@ _on_button_delete_clicked_cb(void *data,
              symbs += strlen(res->name);
              break; TODO("remove this break after warning style remake")
           }
-        NOTIFY_WARNING("%s", buf);
+        WARN("%s", buf);
      }
    else if (notdeleted >1)
      {
@@ -397,7 +397,7 @@ _on_button_delete_clicked_cb(void *data,
           }
         if (notdeleted >= 4)
            snprintf(buf + symbs, BUFF_MAX - symbs, "<br>...");
-        NOTIFY_WARNING("%s", buf);
+        WARN("%s", buf);
      }
 
    editor_save(ap.project->global_object);

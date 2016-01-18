@@ -196,12 +196,12 @@ _on_st_add_bt_ok(void *data,
 
    if ((!style_name) || (strcmp(style_name, "") == 0))
      {
-        NOTIFY_WARNING(_("Style name can not be empty!"));
+        WARN(_("Style name can not be empty!"));
         return;
      }
    if (!edje_edit_style_add(edje_edit_obj, style_name))
      {
-        NOTIFY_WARNING(_("Style name must be unique!"));
+        WARN(_("Style name must be unique!"));
         return;
      }
    if (edje_edit_style_tag_add(edje_edit_obj, style_name, "DEFAULT"))
@@ -211,14 +211,14 @@ _on_st_add_bt_ok(void *data,
                                           "DEFAULT",
                                           "align=middle font=Sans font_size=24 color=#000000FF"))
           {
-             NOTIFY_WARNING(_("Failed to add tag value. Tag will be deleted"));
+             WARN(_("Failed to add tag value. Tag will be deleted"));
              edje_edit_style_tag_del(edje_edit_obj, style_name, "DEFAULT");
              return;
           }
      }
    else
      {
-        NOTIFY_WARNING(_("Failed to add tag."));
+        WARN(_("Failed to add tag."));
         return;
      }
 
@@ -263,18 +263,18 @@ _on_tag_add_bt_ok(void *data,
 
    if ((!tag_name) || (strcmp(tag_name, "") == 0))
      {
-        NOTIFY_WARNING(_("Tag name can not be empty!"));
+        WARN(_("Tag name can not be empty!"));
         return;
      }
    if (!edje_edit_style_tag_add(edje_edit_obj, style_name, tag_name))
      {
-        NOTIFY_WARNING(_("Tag name must be unique!"));
+        WARN(_("Tag name must be unique!"));
         return;
      }
    else
      if (!edje_edit_style_tag_value_set(edje_edit_obj, style_name, tag_name, ""))
        {
-          NOTIFY_WARNING(_("Failed to add tag value. Tag will be deleted"));
+          WARN(_("Failed to add tag value. Tag will be deleted"));
           edje_edit_style_tag_del(edje_edit_obj, style_name, tag_name);
           return;
        }
@@ -357,7 +357,7 @@ _on_bt_tag_add(Style_Editor *style_edit)
 
    if (!glit)
      {
-         NOTIFY_WARNING(_("Select a style!"));
+         WARN(_("Select a style!"));
          return;
      }
 
@@ -451,7 +451,7 @@ _on_bt_del(void *data,
                   symbs += strlen(res->name);
                   break; TODO("remove this break after warning style remake")
                }
-             NOTIFY_WARNING("%s", buf);
+             WARN("%s", buf);
              return;
           }
      }
@@ -461,7 +461,7 @@ _on_bt_del(void *data,
         tag = elm_object_item_part_text_get(glit, "elm.text");
         if (!strcmp(tag, "DEFAULT"))
           {
-             NOTIFY_WARNING(_("DEFAULT tag cannot be deleted!"));
+             WARN(_("DEFAULT tag cannot be deleted!"));
              return;
           }
         else

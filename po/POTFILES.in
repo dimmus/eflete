@@ -57,7 +57,6 @@ src/bin/ui/main_window.c
 src/bin/ui/menu.c
 src/bin/ui/modal_window/modal_window.c
 src/bin/ui/project_navigator.c
-src/bin/ui/notification/notify.c
 src/bin/ui/group_navigator.c
 src/bin/ui/preference/preference.c
 src/bin/ui/project_close.c
