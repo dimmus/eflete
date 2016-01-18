@@ -1835,10 +1835,10 @@ _on_target_change(void *data,
         eina_stringshare_del(old_val);
      }
 
+   evas_object_data_set(obj, COMBOBOX_TARGET, eina_stringshare_add(item->title));
    editor_program_target_add(pd->group->edit_object, change, false,
                              pd->attributes.program.program,
                              item->title);
-   evas_object_data_set(obj, COMBOBOX_TARGET, eina_stringshare_add(item->title));
    history_change_add(pd->group->history, change);
 }
 static void
@@ -1917,11 +1917,15 @@ prop_program_targets_update(Group_Prop_Data *pd)
 
    items = elm_box_children_get(pd->attributes.program.target_box);
    /* fill up with part and program list */
+   Eina_Stringshare *to_del;
    EINA_LIST_FOREACH(items, l, item)
      {
         target_combo = elm_layout_content_get(item, NULL);
         target = eina_list_data_get(targets);
         ewe_combobox_text_set(target_combo, target);
+        to_del = evas_object_data_get(target_combo, COMBOBOX_TARGET);
+        eina_stringshare_del(to_del);
+        evas_object_data_del(target_combo, COMBOBOX_TARGET);
         evas_object_data_set(target_combo, COMBOBOX_TARGET, eina_stringshare_add(target));
         targets = eina_list_next(targets);
      }
