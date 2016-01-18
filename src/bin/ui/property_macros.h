@@ -811,6 +811,51 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
    COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, PROGRAM_ARGS, DESCRIPTION) \
 
 /*****************************************************************************/
+/*                   PROGRAM 1 COMBOBOX LIST CONTROL                         */
+/*****************************************************************************/
+/**
+ * Macro defines functions that create an item with label and 1 combobox for program
+ * attribute. A predefined list fill the combobox.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param MEMBER The combobox member from Group_Prop_Data structure
+ * @param LIST The predefined strings list
+ * @param TOOLTIP The combobox tooltip
+ *
+ * @ingroup Property_Macro
+ */
+#define PROGRAM_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP) \
+   COMMON_COMBOBOX_LIST_ADD(PROGRAM, TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP, PROGRAM_ARGS)
+
+/**
+ * Macro defines a function that updates control by PROGRAM_ATTR_1COMBOBOX_LIST_ADD macro.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param MEMBER
+ *
+ * @ingroup Property_Macro
+ */
+#define PROGRAM_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE, MEMBER) \
+   COMMON_COMBOBOX_LIST_UPDATE(SUB, VALUE, MEMBER, PROGRAM_ARGS)
+
+/**
+ * Macro defines a callback for PROGRAM_ATTR_1COMBOBOX_ADD.
+ *
+ * @param TEXT The attribute name, for error message
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param TYPE The type of given attribute
+ *
+ * @ingroup Property_Macro
+ */
+#define PROGRAM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
+   COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, PROGRAM_ARGS, DESCRIPTION)
+
+
+/*****************************************************************************/
 /*                         PART 1 CHECK CONTROL                              */
 /*****************************************************************************/
 /**
