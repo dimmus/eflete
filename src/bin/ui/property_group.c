@@ -202,7 +202,7 @@ struct _Group_Prop_Data
              Evas_Object *value2;
              Evas_Object *sample_name;
              Evas_Object *sample_speed;
-             Evas_Object *channel;
+             Evas_Object *sample_channel;
              Evas_Object *target;
              Evas_Object *target_box;
              Evas_Object *targets_frame; /* it's a frame */
@@ -976,6 +976,9 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_SAMPLE_NAME:
          prop_program_sample_name_update(pd);
          break;
+      case ATTRIBUTE_PROGRAM_SAMPLE_SPEED:
+         COMMON_1SPINNER_UPDATE(program, sample_speed, program, int, 1, PROGRAM_ARGS)
+         break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
       case ATTRIBUTE_PROGRAM_CHANNEL:
@@ -983,7 +986,6 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_IN_FROM:
       case ATTRIBUTE_PROGRAM_IN_RANGE:
       case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
-      case ATTRIBUTE_PROGRAM_SAMPLE_SPEED:
       case ATTRIBUTE_PROGRAM_TRANSITION_VALUE1:
       case ATTRIBUTE_PROGRAM_TRANSITION_VALUE2:
       case ATTRIBUTE_PROGRAM_TRANSITION_VALUE3:
@@ -1528,6 +1530,7 @@ COMMON_ENTRY_CALLBACK(program, state, NULL, PROGRAM_ARGS, _("Program action stat
 COMMON_ENTRY_CALLBACK(program, state2, NULL, PROGRAM_ARGS, _("Program action state2 is changed to '%s'"))
 COMMON_SPINNER_CALLBACK(program, value, program, double, 1, PROGRAM_ARGS, _("Program action value is changed from %f to %f"))
 COMMON_SPINNER_CALLBACK(program, value2, program, double, 1, PROGRAM_ARGS, _("Program action value is changed from %f to %f"))
+COMMON_SPINNER_CALLBACK(program, sample_speed, program, int, 1, PROGRAM_ARGS, _("Program action value is changed from %d to %d"))
 
 static Evas_Object *
 _prop_action_state_add(Group_Prop_Data *pd, Evas_Object *parent, const char *title, const char *tooltip)
@@ -1641,6 +1644,23 @@ _prop_action_sample_name(Group_Prop_Data *pd, Evas_Object *parent)
    return item;
 }
 
+static Evas_Object *
+_prop_action_sample_speed_add(Group_Prop_Data *pd, Evas_Object *parent)
+{
+   PROPERTY_ITEM_ADD(parent, _("speed"), "2swallow")
+   SPINNER_ADD(item, pd->attributes.program.sample_speed, 0.0, 9999.0, 1.0, true);
+   elm_spinner_label_format_set(pd->attributes.program.sample_speed, "%.0f");
+   elm_spinner_value_set(pd->attributes.program.sample_speed,
+                         edje_edit_program_sample_speed_get(pd->group->edit_object, pd->attributes.program.program));
+   evas_object_smart_callback_add(pd->attributes.program.sample_speed, "changed", _on_program_sample_speed_change, pd);
+   evas_object_smart_callback_add(pd->attributes.program.sample_speed, "spinner,drag,start", _on_program_sample_speed_start, pd);
+   evas_object_smart_callback_add(pd->attributes.program.sample_speed, "spinner,drag,stop", _on_program_sample_speed_stop, pd);
+   elm_object_tooltip_text_set(pd->attributes.program.sample_speed, "");
+   elm_layout_content_set(item, "swallow.content1", pd->attributes.program.sample_speed);
+
+   return item;
+}
+
 static void
 _program_action_param_set(Group_Prop_Data *pd, Edje_Action_Type type)
 {
@@ -1678,6 +1698,8 @@ _program_action_param_set(Group_Prop_Data *pd, Edje_Action_Type type)
          break;
       case EDJE_ACTION_TYPE_SOUND_SAMPLE:
          item = _prop_action_sample_name(pd, box);
+         elm_box_pack_end(box, item);
+         item = _prop_action_sample_speed_add(pd, box);
          elm_box_pack_end(box, item);
          break;
       case EDJE_ACTION_TYPE_SOUND_TONE:
