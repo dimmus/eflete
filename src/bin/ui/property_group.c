@@ -1942,12 +1942,25 @@ _del_target(void *data,
             void *event_info __UNUSED__)
 {
    Evas_Object *item = (Evas_Object *)data;
-   Evas_Object *ic, *button, *new_item, *target_combo;
+   Evas_Object *ic, *button, *new_item, *target_combo, *first_item;
    Group_Prop_Data *pd = evas_object_data_get(item, GROUP_PROP_DATA);
    Eina_List *items = elm_box_children_get(pd->attributes.program.target_box);
+   Eina_Stringshare *current_title;
+
+   /* User clicked on Delete button while there are only one target.
+    * In here we should just disable button and clear Combobox into NULL */
+   if (eina_list_count(items) == 1)
+     {
+        first_item = eina_list_data_get(items);
+        target_combo = elm_layout_content_get(first_item, NULL);
+        ewe_combobox_text_set(target_combo, NULL);
+        button = elm_layout_content_get(first_item, "swallow.button_del");
+        elm_object_disabled_set(button, true);
+     }
+
    /* check the first item, if deleted object the first in the list, we need to
     * set the label to next item and move btn_add */
-   if (eina_list_data_get(items) == item)
+   if ((eina_list_data_get(items) == item) && (eina_list_count(items) != 1))
      {
         new_item = eina_list_data_get(eina_list_next(items));
         button = elm_button_add(new_item);
@@ -1959,7 +1972,6 @@ _del_target(void *data,
         elm_layout_content_set(new_item, "swallow.button_add", button);
      }
 
-   elm_box_unpack(pd->attributes.program.target_box, item);
    target_combo = elm_layout_content_get(item, NULL);
    Eina_Stringshare *value = evas_object_data_get(target_combo, COMBOBOX_TARGET);
    if (value)
@@ -1974,15 +1986,32 @@ _del_target(void *data,
                                   value);
         history_change_add(pd->group->history, change);
 
+        current_title = evas_object_data_get(target_combo, COMBOBOX_TARGET);
+        eina_stringshare_del(current_title);
         evas_object_data_del(target_combo, COMBOBOX_TARGET);
         eina_stringshare_del(value);
      }
-   evas_object_del(item);
+
+   /* detele and unpack object if there were more than one item */
+   if (eina_list_count(items) != 1)
+     {
+        elm_box_unpack(pd->attributes.program.target_box, item);
+        evas_object_del(item);
+     }
+
+   /* do a final check, if there are no items (only one) and its empty then
+    * just disable button */
    items = elm_box_children_get(pd->attributes.program.target_box);
    if (eina_list_count(items) == 1)
      {
-        button = elm_layout_content_get(eina_list_data_get(items), "swallow.button_del");
-        elm_object_disabled_set(button, true);
+        first_item = eina_list_data_get(items);
+        target_combo = elm_layout_content_get(first_item, NULL);
+        current_title = evas_object_data_get(target_combo, COMBOBOX_TARGET);
+        if (!current_title)
+          {
+             button = elm_layout_content_get(first_item, "swallow.button_del");
+             elm_object_disabled_set(button, true);
+          }
      }
 }
 static void
@@ -1992,12 +2021,22 @@ _on_target_change(void *data,
 {
    Group_Prop_Data *pd = (Group_Prop_Data *)data;
    Ewe_Combobox_Item *item = ei;
+   Evas_Object *first_item, *button;
+   Eina_List *items;
 
    Eina_Stringshare *old_val = evas_object_data_get(obj, COMBOBOX_TARGET);
    if ((old_val) && (item->title == old_val))
      {
        eina_stringshare_del(old_val);
        return;
+     }
+
+   items = elm_box_children_get(pd->attributes.program.target_box);
+   if (item->title)
+     {
+        first_item = eina_list_data_get(items);
+        button = elm_layout_content_get(first_item, "swallow.button_del");
+        elm_object_disabled_set(button, false);
      }
 
    Eina_Stringshare *msg = eina_stringshare_printf(_("changing target from %s to %s in program %s"),
@@ -2078,7 +2117,7 @@ _add_target(void *data,
 static void
 prop_program_targets_update(Group_Prop_Data *pd)
 {
-   Evas_Object *target_combo, *item;
+   Evas_Object *target_combo, *item, *button;
    Eina_List *items = elm_box_children_get(pd->attributes.program.target_box);
    int i = 0;
    Eina_List *l;
@@ -2094,7 +2133,11 @@ prop_program_targets_update(Group_Prop_Data *pd)
      for (i = 0; i < targets_count - item_count; i++)
        _add_target(pd, NULL, NULL);
 
-   items = elm_box_children_get(pd->attributes.program.target_box);
+   button = elm_layout_content_get(eina_list_data_get(items), "swallow.button_del");
+   if ((targets_count > 0) || (item_count > 1))
+     elm_object_disabled_set(button, false);
+   else
+     elm_object_disabled_set(button, true);
    /* fill up with part and program list */
    Eina_Stringshare *to_del;
    EINA_LIST_FOREACH(items, l, item)
