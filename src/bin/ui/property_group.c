@@ -211,6 +211,7 @@ struct _Group_Prop_Data
              Evas_Object *after;
              Evas_Object *after_box;
              Evas_Object *afters_frame; /* it's a frame */
+             Evas_Object *in_from, *in_range;
         } program;
    } attributes;
 };
@@ -1017,7 +1018,9 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
       case ATTRIBUTE_PROGRAM_IN_FROM:
+         COMMON_1SPINNER_UPDATE(program, in_range, program, double, 1, PROGRAM_ARGS)
       case ATTRIBUTE_PROGRAM_IN_RANGE:
+         COMMON_1SPINNER_UPDATE(program, in_from, program, double, 1, PROGRAM_ARGS)
       case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
       case ATTRIBUTE_PROGRAM_TRANSITION_VALUE1:
       case ATTRIBUTE_PROGRAM_TRANSITION_VALUE2:
@@ -1943,6 +1946,21 @@ prop_program_action_add(Evas_Object *parent, Group_Prop_Data *pd)
 PROGRAM_MULTIPLE_COMBOBOX(target, "Previous_Target", _("target can be part or program"), true)
 PROGRAM_MULTIPLE_COMBOBOX(after, "Previous_After", _("after can be program"), false)
 
+#define PROGRAM_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+                              L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
+                              TYPE, DESC1, DESC2) \
+   PROGRAM_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, MULTIPLIER, DESC1) \
+   PROGRAM_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, MULTIPLIER, DESC2) \
+   COMMON_2SPINNER_ADD(PROGRAM, TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, MAX, STEP, FMT, \
+                           L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
+
+PROGRAM_ATTR_2SPINNER(_("in"), program, in_from, in_range, program, 0.0, 9999.0, 0.1, "%.1f", "from:", "", "range:", "",
+                    _("Constant time to wait till program would start"),
+                    _("Random number of seconds (from 0 to 'range') added to constant time"),
+                    1, double,
+                    _("in from changed from %.2f to %.2f"),
+                    _("in range changed from %.2f to %.2f"))
+
 static void
 _ui_property_program_set(Evas_Object *property, const char *program)
 {
@@ -1963,6 +1981,8 @@ _ui_property_program_set(Evas_Object *property, const char *program)
         item = prop_program_signal_add(box, pd, NULL);
         elm_box_pack_end(box, item);
         item = prop_program_source_add(box, pd, NULL);
+        elm_box_pack_end(box, item);
+        item = prop_program_in_from_in_range_add(box, pd);
         elm_box_pack_end(box, item);
         item = prop_program_action_add(box, pd);
         elm_box_pack_end(box, item);

@@ -854,6 +854,25 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
 #define PROGRAM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
    COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, PROGRAM_ARGS, DESCRIPTION)
 
+/*****************************************************************************/
+/*                         PROGRAM 1 SPINNER CONTROL                         */
+/*****************************************************************************/
+/**
+ * Macro defines a callback for STATE_ATTR_1(2)SPINNER_ADD.
+ *
+ * @param SUB The prefix of main parameter of state attribute;
+ * @param VALUE The value of state attribute.
+ * @param TYPE The spinner value type: int, double
+ * @param MULTIPLIER The multiplier to convert the value to percent
+ *
+ * @ingroup Property_Macro
+ */
+#define PROGRAM_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, DESCRIPTION) \
+   COMMON_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, PROGRAM_ARGS, DESCRIPTION)
+
+#define PROGRAM_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, TYPE, MULTIPLIER) \
+   COMMON_1SPINNER_UPDATE(SUB, VALUE1, MEMBER, TYPE,  MULTIPLIER, PROGRAM_ARGS) \
+   COMMON_1SPINNER_UPDATE(SUB, VALUE2, MEMBER, TYPE,  MULTIPLIER, PROGRAM_ARGS)
 
 /*****************************************************************************/
 /*                         PART 1 CHECK CONTROL                              */
