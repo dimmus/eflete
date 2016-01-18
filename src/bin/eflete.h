@@ -74,7 +74,6 @@ TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
 
 #include <Elementary.h>
 #include "logger.h"
-#include "notify.h"
 #include "string_common.h"
 #include "editor.h"
 #include "signals.h"

@@ -381,7 +381,7 @@ _edc_code_generate(Eina_Stringshare *path)
                                             "%d widgets included due to dependencies:<br><br>",
                                             deps_count), deps_count);
 
-        NOTIFY_INFO(3, "%s", eina_strbuf_string_get(dep_message));
+        INFO("%s", eina_strbuf_string_get(dep_message));
      }
    eina_strbuf_free(dep_message);
    eina_strbuf_append(edc, "data.item: \"version\" \"110\";\n\n");

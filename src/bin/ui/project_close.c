@@ -38,12 +38,12 @@ _progress_end(void *data __UNUSED__, PM_Project_Result result)
      {
       case PM_PROJECT_ERROR:
         {
-           NOTIFY_INFO(3, _("Error: project not saved."));
+           ERR(_("Error: project not saved."));
            break;
         }
       case PM_PROJECT_CANCEL:
         {
-           NOTIFY_INFO(3, _("Saving canceled."));
+           INFO(_("Saving canceled."));
            break;
         }
       case PM_PROJECT_SUCCESS:

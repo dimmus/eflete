@@ -161,7 +161,7 @@ _on_button_delete_clicked_cb(void *data __UNUSED__,
              symbs += strlen(res->name);
              break; TODO("remove this break after warning style remake")
           }
-        NOTIFY_WARNING("%s", buf);
+        WARN("%s", buf);
         return;
      }
 

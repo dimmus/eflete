@@ -100,8 +100,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/live_view/elementary/live_spinner.c \
 ../../src/bin/ui/live_view/elementary/live_progressbar.c \
 ../../src/bin/ui/live_view/elementary/live_toolbar.c \
-../../src/bin/ui/live_view/elementary/live_naviframe.c \
-../../src/bin/ui/notification/notify.c
+../../src/bin/ui/live_view/elementary/live_naviframe.c
 
 eflete_SOURCES  = ../../src/bin/main.c
 
