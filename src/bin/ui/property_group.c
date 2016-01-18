@@ -1001,9 +1001,11 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_TONE_NAME:
          prop_program_tone_name_update(pd);
          break;
+      case ATTRIBUTE_PROGRAM_TONE_DURATION:
+         COMMON_1SPINNER_UPDATE(program, tone_duration, program, double, 1, PROGRAM_ARGS)
+         break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
-      case ATTRIBUTE_PROGRAM_TONE_DURATION:
       case ATTRIBUTE_PROGRAM_IN_FROM:
       case ATTRIBUTE_PROGRAM_IN_RANGE:
       case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
@@ -1556,6 +1558,7 @@ COMMON_SPINNER_CALLBACK(program, value, program, double, 1, PROGRAM_ARGS, _("Pro
 COMMON_SPINNER_CALLBACK(program, value2, program, double, 1, PROGRAM_ARGS, _("Program action value is changed from %f to %f"))
 COMMON_SPINNER_CALLBACK(program, sample_speed, program, int, 1, PROGRAM_ARGS, _("Program action value is changed from %d to %d"))
 PROGRAM_ATTR_1COMBOBOX_LIST(_("sample channel"), program, channel, program, sound_channel, unsigned char, _("Program action state is changed to '%s'"), "")
+COMMON_SPINNER_CALLBACK(program, tone_duration, program, double, 1, PROGRAM_ARGS, _("Program action value is changed from %f to %f"))
 
 static Evas_Object *
 _prop_action_state_add(Group_Prop_Data *pd, Evas_Object *parent, const char *title, const char *tooltip)
@@ -1732,6 +1735,23 @@ _prop_action_tone_name(Group_Prop_Data *pd, Evas_Object *parent)
    return item;
 }
 
+static Evas_Object *
+_prop_action_tone_duration_add(Group_Prop_Data *pd, Evas_Object *parent)
+{
+   PROPERTY_ITEM_ADD(parent, _("speed"), "2swallow")
+   SPINNER_ADD(item, pd->attributes.program.tone_duration, 0.1, 10.0, 0.1, true);
+   elm_spinner_label_format_set(pd->attributes.program.tone_duration, "%.1f");
+   elm_spinner_value_set(pd->attributes.program.tone_duration,
+                         edje_edit_program_tone_duration_get(pd->group->edit_object, pd->attributes.program.program));
+   evas_object_smart_callback_add(pd->attributes.program.tone_duration, "changed", _on_program_tone_duration_change, pd);
+   evas_object_smart_callback_add(pd->attributes.program.tone_duration, "spinner,drag,start", _on_program_tone_duration_start, pd);
+   evas_object_smart_callback_add(pd->attributes.program.tone_duration, "spinner,drag,stop", _on_program_tone_duration_stop, pd);
+   elm_object_tooltip_text_set(pd->attributes.program.tone_duration, "");
+   elm_layout_content_set(item, "swallow.content1", pd->attributes.program.tone_duration);
+
+   return item;
+}
+
 static void
 _program_action_param_set(Group_Prop_Data *pd, Edje_Action_Type type)
 {
@@ -1777,6 +1797,8 @@ _program_action_param_set(Group_Prop_Data *pd, Edje_Action_Type type)
          break;
       case EDJE_ACTION_TYPE_SOUND_TONE:
          item = _prop_action_tone_name(pd, box);
+         elm_box_pack_end(box, item);
+         item = _prop_action_tone_duration_add(pd, box);
          elm_box_pack_end(box, item);
          break;
       case EDJE_ACTION_TYPE_NONE:
