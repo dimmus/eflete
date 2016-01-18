@@ -829,13 +829,20 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 
    image_normal = edje_edit_state_image_get(edit_obj, gp->part->name, state, value);
    if (!image_normal) return;
-   id = edje_edit_image_id_get(edit_obj, image_normal);
-   edje_edit_string_free(image_normal);
-   buf = eina_stringshare_printf("edje/images/%i", id);
-   evas_object_image_file_set(gp->proxy_part, ap.project->dev, buf);
-   err = evas_object_image_load_error_get(gp->proxy_part);
-   if (err != EVAS_LOAD_ERROR_NONE)
-     WARN("Could not update image:\"%s\"\n", evas_load_error_str(err));
+   if (edje_edit_image_compression_type_get(edit_obj, image_normal) == EDJE_EDIT_IMAGE_COMP_USER)
+     {
+        evas_object_image_file_set(gp->proxy_part, image_normal, NULL);
+     }
+   else
+     {
+        id = edje_edit_image_id_get(edit_obj, image_normal);
+        edje_edit_string_free(image_normal);
+        buf = eina_stringshare_printf("edje/images/%i", id);
+        evas_object_image_file_set(gp->proxy_part, ap.project->dev, buf);
+        err = evas_object_image_load_error_get(gp->proxy_part);
+        if (err != EVAS_LOAD_ERROR_NONE)
+          WARN("Could not update image:\"%s\"\n", evas_load_error_str(err));
+     }
 
    edje_edit_state_image_border_get(edit_obj, gp->part->name, state, value,
                                     &bl, &br, &bt, &bb);
