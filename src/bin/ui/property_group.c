@@ -992,6 +992,7 @@ _on_editor_attribute_changed(void *data,
          break;
       case ATTRIBUTE_PROGRAM_VALUE2:
          COMMON_1SPINNER_UPDATE(program, value2, program, double, 1, PROGRAM_ARGS)
+         break;
       case ATTRIBUTE_PROGRAM_TARGET:
          prop_program_targets_update(pd);
          break;
