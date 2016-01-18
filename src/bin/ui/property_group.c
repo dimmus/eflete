@@ -202,7 +202,7 @@ struct _Group_Prop_Data
              Evas_Object *value2;
              Evas_Object *sample_name;
              Evas_Object *sample_speed;
-             Evas_Object *sample_channel;
+             Evas_Object *channel;
              Evas_Object *target;
              Evas_Object *target_box;
              Evas_Object *targets_frame; /* it's a frame */
@@ -305,6 +305,17 @@ edje_program_actions[] = { N_("None"),
                            N_("play tone"),
                            N_("action stop"),
                            NULL};
+
+static const char *
+sound_channel[] = { N_("effect"),
+                    N_("background"),
+                    N_("music"),
+                    N_("foreground"),
+                    N_("interface"),
+                    N_("input"),
+                    N_("alert"),
+                    N_("all"),
+                    NULL };
 
 static void
 _ui_property_part_unset(Evas_Object *property);
@@ -979,9 +990,11 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_SAMPLE_SPEED:
          COMMON_1SPINNER_UPDATE(program, sample_speed, program, int, 1, PROGRAM_ARGS)
          break;
+      case ATTRIBUTE_PROGRAM_CHANNEL:
+         PROGRAM_ATTR_1COMBOBOX_LIST_UPDATE(program, channel, program)
+         break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
-      case ATTRIBUTE_PROGRAM_CHANNEL:
       case ATTRIBUTE_PROGRAM_TONE_DURATION:
       case ATTRIBUTE_PROGRAM_IN_FROM:
       case ATTRIBUTE_PROGRAM_IN_RANGE:
@@ -1480,6 +1493,10 @@ PART_ATTR_SOURCE_UPDATE(part, source)
    PROGRAM_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, DESCRIPTION) \
    PROGRAM_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, VALIDATOR, TOOLTIP)
 
+#define PROGRAM_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, MEMBER, LIST, TYPE, DESCRIPTION, TOOLTIP) \
+   PROGRAM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
+   PROGRAM_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
+
 static void
 _on_program_name_change(void *data __UNUSED__,
                         Evas_Object *obj __UNUSED__,
@@ -1531,6 +1548,7 @@ COMMON_ENTRY_CALLBACK(program, state2, NULL, PROGRAM_ARGS, _("Program action sta
 COMMON_SPINNER_CALLBACK(program, value, program, double, 1, PROGRAM_ARGS, _("Program action value is changed from %f to %f"))
 COMMON_SPINNER_CALLBACK(program, value2, program, double, 1, PROGRAM_ARGS, _("Program action value is changed from %f to %f"))
 COMMON_SPINNER_CALLBACK(program, sample_speed, program, int, 1, PROGRAM_ARGS, _("Program action value is changed from %d to %d"))
+PROGRAM_ATTR_1COMBOBOX_LIST(_("sample channel"), program, channel, program, sound_channel, unsigned char, _("Program action state is changed to '%s'"), "")
 
 static Evas_Object *
 _prop_action_state_add(Group_Prop_Data *pd, Evas_Object *parent, const char *title, const char *tooltip)
@@ -1700,6 +1718,8 @@ _program_action_param_set(Group_Prop_Data *pd, Edje_Action_Type type)
          item = _prop_action_sample_name(pd, box);
          elm_box_pack_end(box, item);
          item = _prop_action_sample_speed_add(pd, box);
+         elm_box_pack_end(box, item);
+         item = prop_program_channel_add(box, pd);
          elm_box_pack_end(box, item);
          break;
       case EDJE_ACTION_TYPE_SOUND_TONE:
