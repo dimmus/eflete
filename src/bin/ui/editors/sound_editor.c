@@ -333,7 +333,7 @@ _add_sample_done(void *data,
 
         res = mem_calloc(1, sizeof(External_Resource));
         res->name = eina_stringshare_add(file_name);
-        res->source = eina_stringshare_printf("%s/images/%s", ap.project->develop_path, file_name);
+        res->source = eina_stringshare_printf("%s/sounds/%s", ap.project->develop_path, file_name);
 
         if (!ecore_file_exists(res->source))
           {
