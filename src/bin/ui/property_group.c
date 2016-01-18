@@ -200,6 +200,9 @@ struct _Group_Prop_Data
              Evas_Object *state2;
              Evas_Object *value;
              Evas_Object *value2;
+             Evas_Object *sample_name;
+             Evas_Object *sample_speed;
+             Evas_Object *channel;
              Evas_Object *target;
              Evas_Object *target_box;
              Evas_Object *targets_frame; /* it's a frame */
@@ -335,6 +338,9 @@ prop_program_state_update(Group_Prop_Data *pd);
 
 static void
 prop_program_state2_update(Group_Prop_Data *pd);
+
+static void
+prop_program_sample_name_update(Group_Prop_Data *pd);
 
 static void
 prop_program_targets_update(Group_Prop_Data *pd);
@@ -967,6 +973,9 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_TARGET:
          prop_program_targets_update(pd);
          break;
+      case ATTRIBUTE_PROGRAM_SAMPLE_NAME:
+         prop_program_sample_name_update(pd);
+         break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
       case ATTRIBUTE_PROGRAM_CHANNEL:
@@ -983,7 +992,6 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_FILTER_STATE:
       case ATTRIBUTE_PROGRAM_API_NAME:
       case ATTRIBUTE_PROGRAM_API_DESCRIPTION:
-      case ATTRIBUTE_PROGRAM_SAMPLE_NAME:
       case ATTRIBUTE_PROGRAM_TONE_NAME:
       case ATTRIBUTE_PROGRAM_NAME:
       case ATTRIBUTE_PROGRAM_AFTER:
@@ -1588,6 +1596,52 @@ _prop_action_value2_add(Group_Prop_Data *pd, Evas_Object *parent, const char *ti
 }
 
 static void
+prop_program_sample_name_update(Group_Prop_Data *pd)
+{
+   Eina_Stringshare *value;
+   Eina_List *l;
+   Resource *sample;
+
+   value = edje_edit_program_sample_name_get(pd->group->edit_object, pd->attributes.program.program);
+   ewe_combobox_text_set(pd->attributes.program.sample_name, value ? value : _("None"));
+   ewe_combobox_item_add(pd->attributes.program.sample_name, _("None"));
+   EINA_LIST_FOREACH(ap.project->sounds, l, sample)
+     {
+        ewe_combobox_item_add(pd->attributes.program.sample_name, sample->name);
+     }
+}
+
+static void
+_on_program_sample(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Group_Prop_Data *pd = (Group_Prop_Data *)data;
+   Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info;
+   Change *change = change_add("Change the action sount to '%s'");
+
+   if (!editor_program_sample_name_set(pd->group->edit_object, change, false, pd->attributes.program.program, item->title))
+     {
+        ERR("Cann't apply value '%s' for attribute 'program sample'.", item->title);
+        abort();
+     }
+   history_change_add(pd->group->history, change);
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
+}
+
+static Evas_Object *
+_prop_action_sample_name(Group_Prop_Data *pd, Evas_Object *parent)
+{
+   PROPERTY_ITEM_ADD(parent, "name", "1swallow")
+   EWE_COMBOBOX_ADD(item, pd->attributes.program.sample_name);
+   evas_object_smart_callback_add(pd->attributes.program.sample_name, "selected", _on_program_sample, pd);
+   elm_object_tooltip_text_set(pd->attributes.program.sample_name, "");
+   elm_layout_content_set(item, NULL, pd->attributes.program.sample_name);
+   prop_program_sample_name_update(pd);
+   return item;
+}
+
+static void
 _program_action_param_set(Group_Prop_Data *pd, Edje_Action_Type type)
 {
    Evas_Object *box, *item;
@@ -1622,6 +1676,11 @@ _program_action_param_set(Group_Prop_Data *pd, Edje_Action_Type type)
          item = _prop_action_value2_add(pd, box, _("axis Y"), "");
          elm_box_pack_end(box, item);
          break;
+      case EDJE_ACTION_TYPE_SOUND_SAMPLE:
+         item = _prop_action_sample_name(pd, box);
+         elm_box_pack_end(box, item);
+         break;
+      case EDJE_ACTION_TYPE_SOUND_TONE:
       case EDJE_ACTION_TYPE_NONE:
       default:
          elm_frame_collapse_set(pd->attributes.program.action_params, true);
