@@ -205,10 +205,8 @@ struct _Group_Prop_Data
              Evas_Object *channel;
              Evas_Object *tone_name;
              Evas_Object *tone_duration;
-             Evas_Object *target;
              Evas_Object *target_box;
              Evas_Object *targets_frame; /* it's a frame */
-             Evas_Object *after;
              Evas_Object *after_box;
              Evas_Object *afters_frame; /* it's a frame */
              Evas_Object *in_from, *in_range;
