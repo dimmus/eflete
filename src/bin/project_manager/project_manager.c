@@ -987,6 +987,7 @@ _image_resources_load(Project *project)
    e = ecore_evas_get(project->ecore_evas);
    im_total = eina_list_count(images);
    im_proc = 0;
+   Edje_Edit_Image_Comp comp_type;
    PROGRESS_SEND(_("Start image processing, total %d:"), im_total);
    EINA_LIST_FOREACH(images, l, image_name)
      {
@@ -1000,7 +1001,12 @@ _image_resources_load(Project *project)
 
         res = mem_calloc(1, sizeof(External_Resource));
         res->name = eina_stringshare_add(image_name);
-        res->source = eina_stringshare_printf("%s/%s", resource_folder, image_name);
+        comp_type = edje_edit_image_compression_type_get(project->global_object,
+                                                         res->name);
+        if (comp_type == EDJE_EDIT_IMAGE_COMP_USER)
+          res->source = eina_stringshare_add(image_name);
+        else
+          res->source = eina_stringshare_printf("%s/%s", resource_folder, image_name);
         project->images = eina_list_sorted_insert(project->images, (Eina_Compare_Cb) resource_cmp, res);
 
         if (!ecore_file_exists(res->source))
