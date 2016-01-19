@@ -350,6 +350,7 @@ ui_property_add(Evas_Object *parent)
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_PART_CLICKED, _on_text_part_clicked, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_PART_CLICKED, _on_swallow_part_clicked, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, _on_different_clicked, pd->layout);
+   evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CLOSE, _on_different_clicked, pd->layout);
 
    return pd->layout;
 }
