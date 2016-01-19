@@ -956,6 +956,33 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
 /*                         PROGRAM 1 SPINNER CONTROL                         */
 /*****************************************************************************/
 /**
+ * Macro defines a functions that create an item with label and 1 spinners.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of state attribute
+ * @param VALUE The value of state attribute
+ * @param MEMBER The spinner member from Group_Prop_Data structure
+ * @param MIN The min value of spinner
+ * @param MAX The max value of spinner
+ * @param STEP The step to increment or decrement the spinner value
+ * @param FMT The format string of the displayed label
+ * @param L_START The text of label before first swallow
+ * @param L_END The text of label after first swallow
+ * @param TOOLTIP The first spinner tooltip
+ * @param MULTIPLIER The multiplier to convert the value to percent. If it not
+ *        needed set 1
+ *
+ * @ingroup Property_Macro
+ */
+#define PROGRAM_ATTR_1SPINNER_ADD(TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
+                                  L_START, L_END, TOOLTIP, MULTIPLIER) \
+COMMON_1SPINNER_ADD(PROGRAM, TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
+                    L_START, L_END, TOOLTIP, MULTIPLIER) \
+
+#define PROGRAM_ATTR_1SPINNER_UPDATE(SUB, VALUE, MEMBER, TYPE, MULTIPLIER) \
+   COMMON_1SPINNER_UPDATE(SUB, VALUE, MEMBER, TYPE,  MULTIPLIER, PROGRAM_ARGS)
+
+/**
  * Macro defines a callback for STATE_ATTR_1(2)SPINNER_ADD.
  *
  * @param SUB The prefix of main parameter of state attribute;
