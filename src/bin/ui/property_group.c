@@ -2783,12 +2783,12 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
 }
 
-#define STATE_ATTR_2COMBOBOX_V(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2, DESCRIPTION1, DESCRIPTION2) \
+#define STATE_ATTR_2COMBOBOX_V(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2, DESCRIPTION1, DESCRIPTION2, LABEL1, LABEL2) \
    STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE1, MEMBER, DESCRIPTION1) \
    STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE2, MEMBER, DESCRIPTION2) \
    STATE_ATTR_SOURCE_UPDATE(SUB, VALUE1, MEMBER, part->type, ==) \
    STATE_ATTR_SOURCE_UPDATE(SUB, VALUE2, MEMBER, part->type, ==) \
-   STATE_ATTR_2COMBOBOX_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2)
+   STATE_ATTR_2COMBOBOX_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2, LABEL1, LABEL2)
 
 #define STATE_ATTR_2SPINNER_ICON(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                                  L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
@@ -2804,7 +2804,8 @@ STATE_ATTR_2COMBOBOX_V(_("relative to"), state, rel1_to_x, rel1_to_y, state_obje
                        _("Causes a corner to be positioned relatively to the Y axis of another "
                          "part. Setting to \"\" will un-set this value"),
                        _("rel1.to_x changed to \"%s\""),
-                       _("rel1.to_y changed to \"%s\""))
+                       _("rel1.to_y changed to \"%s\""),
+                       _("x:"), _("y:"))
 STATE_ATTR_2SPINNER_ICON(_("align"), state, rel1_relative_x, rel1_relative_y, state_object_area,
                          -500, 500, 1, NULL, "x:", "%", "y:", "%",
                          _("Define the position of left-up corner of the part's container. "
@@ -2829,7 +2830,8 @@ STATE_ATTR_2COMBOBOX_V(_("relative to"), state, rel2_to_x, rel2_to_y, state_obje
                        _("Causes a corner to be positioned relatively to the Y axis of another "
                          "part. Setting to \"\" will un-set this value"),
                        _("rel2.to_x changed to \"%s\""),
-                       _("rel2.to_y changed to \"%s\""))
+                       _("rel2.to_y changed to \"%s\""),
+                       _("x:"), _("y:"))
 STATE_ATTR_2SPINNER_ICON(_("align"), state, rel2_relative_x, rel2_relative_y, state_object_area,
                          -500, 500, 1, NULL, "x:", "%", "y:", "%",
                          _("Define the position of right-down corner of the part's container. "

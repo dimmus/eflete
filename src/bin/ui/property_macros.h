@@ -585,6 +585,43 @@ _on_##SUB##_##VALUE##_activated(void *data, \
    eina_stringshare_del(val); \
 }
 
+/**
+ * Macro defines a creating of COMMON_ATTR_2COMBOBOX.
+ *
+ * @param TEXT Text of attribute mix
+ * @param SUB The prefix of main parameter of attribute
+ * @param VALUE1 The first value of attribute
+ * @param VALUE2 The second value of attribute
+ * @param MEMBER position of attribute controls in struct
+ * @param TOOLTIP1 tooltip for first control
+ * @param TOOLTIP2 tooltip for second control
+ * @param LABEL1 label for first control
+ * @param LABEL2 label for second control
+ *
+ * @ingroup Property_Macro
+ */
+#define COMMON_ATTR_2COMBOBOX_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2, LABEL1, LABEL2) \
+static Evas_Object * \
+prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Group_Prop_Data *pd) \
+{ \
+   PROPERTY_ITEM_ADD(parent, TEXT, "2swallow_vertical_pad") \
+   elm_object_part_text_set(item, "label.swallow1.start", LABEL1); \
+   EWE_COMBOBOX_ADD(item, pd->attributes.MEMBER.VALUE1) \
+   if (TOOLTIP1) elm_object_tooltip_text_set(pd->attributes.MEMBER.VALUE1, TOOLTIP1); \
+   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE1, "selected", \
+                                  _on_##MEMBER##_##VALUE1##_change, pd); \
+   elm_object_part_content_set(item, "swallow.content1", pd->attributes.MEMBER.VALUE1); \
+   elm_object_part_text_set(item, "label.swallow2.start", LABEL2); \
+   EWE_COMBOBOX_ADD(item, pd->attributes.MEMBER.VALUE2) \
+   if (TOOLTIP2) elm_object_tooltip_text_set(pd->attributes.MEMBER.VALUE2, TOOLTIP2); \
+   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE2, "selected", \
+                                  _on_##MEMBER##_##VALUE2##_change, pd); \
+   elm_object_part_content_set(item, "swallow.content2", pd->attributes.MEMBER.VALUE2); \
+   prop_##MEMBER##_##VALUE1##_update(pd); \
+   prop_##MEMBER##_##VALUE2##_update(pd); \
+   return item; \
+}
+
 /*****************************************************************************/
 /*                         GROUP 2 CHECK CONTROL                             */
 /*****************************************************************************/
@@ -853,6 +890,27 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
  */
 #define PROGRAM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
    COMMON_COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, PROGRAM_ARGS, DESCRIPTION)
+
+/*****************************************************************************/
+/*                   PROGRAM 1 NORMAL COMBOBOX                               */
+/*****************************************************************************/
+
+/**
+ * Macro for functions that create an item with label and 1 combobox for state
+ * attribute.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of state attribute
+ * @param VALUE1 The first value of state attribute
+ * @param VALUE2 The second value of state attribute
+ * @param MEMEBER The combobox member from Group_Prop_Data structure
+ * @paramram TOOLTIP1 The tooltip for first combobox
+ * @paramram TOOLTIP2 The tooltip for second combobox
+ *
+ * @ingroup Property_Macro
+ */
+#define PROGRAM_2COMBOBOX_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2, LABEL1, LABEL2) \
+   COMMON_ATTR_2COMBOBOX_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2, LABEL1, LABEL2)
 
 /*****************************************************************************/
 /*                         PROGRAM 1 SPINNER CONTROL                         */
@@ -2101,6 +2159,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 /*****************************************************************************/
 /*                       STATE 2 COMBOBOX CONTROL                            */
 /*****************************************************************************/
+
 /**
  * Macro for functions that create an item with label and 1 combobox for state
  * attribute.
@@ -2115,27 +2174,8 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_2COMBOBOX_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2) \
-static Evas_Object * \
-prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Group_Prop_Data *pd) \
-{ \
-   PROPERTY_ITEM_ADD(parent, TEXT, "2swallow_vertical_pad") \
-   elm_object_part_text_set(item, "label.swallow1.start", _("x:")); \
-   EWE_COMBOBOX_ADD(item, pd->attributes.MEMBER.VALUE1) \
-   if (TOOLTIP1) elm_object_tooltip_text_set(pd->attributes.MEMBER.VALUE1, TOOLTIP1); \
-   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE1, "selected", \
-                                  _on_##MEMBER##_##VALUE1##_change, pd); \
-   elm_object_part_content_set(item, "swallow.content1", pd->attributes.MEMBER.VALUE1); \
-   elm_object_part_text_set(item, "label.swallow2.start", _("y:")); \
-   EWE_COMBOBOX_ADD(item, pd->attributes.MEMBER.VALUE2) \
-   if (TOOLTIP2) elm_object_tooltip_text_set(pd->attributes.MEMBER.VALUE2, TOOLTIP2); \
-   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE2, "selected", \
-                                  _on_##MEMBER##_##VALUE2##_change, pd); \
-   elm_object_part_content_set(item, "swallow.content2", pd->attributes.MEMBER.VALUE2); \
-   prop_##MEMBER##_##VALUE1##_update(pd); \
-   prop_##MEMBER##_##VALUE2##_update(pd); \
-   return item; \
-}
+#define STATE_ATTR_2COMBOBOX_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2, LABEL1, LABEL2) \
+   COMMON_ATTR_2COMBOBOX_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2, LABEL1, LABEL2)
 
 /*****************************************************************************/
 /*                       STATE 1COMBOBOX SOURCE UPDATE                       */
