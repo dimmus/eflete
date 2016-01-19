@@ -1387,10 +1387,11 @@ ui_property_group_unset(Evas_Object *property)
                                   _on_clicked, pd);
    evas_object_hide(pd_group.frame);
    evas_object_hide(pd_group.shared_check);
+   _ui_property_program_unset(property);
    _ui_property_part_unset(property);
    elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 
-  evas_object_hide(property);
+   evas_object_hide(property);
 }
 #undef pd_group
 

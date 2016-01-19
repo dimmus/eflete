@@ -181,6 +181,9 @@ _del_tab(Tabs_Item *item)
    evas_object_del(item->content);
    history_del(item->group->history);
    item->group->history = NULL;
+   if (item->group->current_part)
+     item->group->current_part->current_item_name = NULL;
+   item->group->current_part = NULL;
    evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CLOSE, item->group);
    free(item);
 }
