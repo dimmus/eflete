@@ -210,6 +210,7 @@ struct _Group_Prop_Data
              Evas_Object *after_box;
              Evas_Object *afters_frame; /* it's a frame */
              Evas_Object *in_from, *in_range;
+             Evas_Object *filter_part, *filter_state;
         } program;
    } attributes;
 };
@@ -365,6 +366,12 @@ prop_program_targets_update(Group_Prop_Data *pd);
 
 static void
 prop_program_afters_update(Group_Prop_Data *pd);
+
+static void
+prop_program_filter_part_update(Group_Prop_Data *pd);
+
+static void
+prop_program_filter_state_update(Group_Prop_Data *pd);
 
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property);
@@ -1036,7 +1043,11 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_TRANSITION_VALUE3:
       case ATTRIBUTE_PROGRAM_TRANSITION_VALUE4:
       case ATTRIBUTE_PROGRAM_FILTER_PART:
+         prop_program_filter_part_update(pd);
+         break;
       case ATTRIBUTE_PROGRAM_FILTER_STATE:
+         prop_program_filter_state_update(pd);
+         break;
       case ATTRIBUTE_PROGRAM_API_NAME:
       case ATTRIBUTE_PROGRAM_API_DESCRIPTION:
       case ATTRIBUTE_PROGRAM_NAME:
@@ -1954,8 +1965,101 @@ prop_program_action_add(Evas_Object *parent, Group_Prop_Data *pd)
    return item;
 }
 
+#define PROGRAM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION, UPDATE) \
+static void \
+_on_##MEMBER##_##VALUE##_change(void *data, \
+                                Evas_Object *obj __UNUSED__, \
+                                void *ei) \
+{ \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
+   Ewe_Combobox_Item *item = ei; \
+   Eina_Bool isNone = false; \
+   Eina_Stringshare *old_val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object \
+         PROGRAM_ARGS); \
+   if (((item->index != 0) && (item->title == old_val)) /*stringshares*/ || \
+       ((item->index == 0) && (old_val == NULL))) \
+     { \
+       eina_stringshare_del(old_val); \
+       return; \
+     } \
+   eina_stringshare_del(old_val); \
+   isNone = !strcmp(item->title, _("None")); \
+   Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION, isNone ? NULL : item->title); \
+   Change *change = change_add(msg); \
+   eina_stringshare_del(msg); \
+   editor_##SUB##_##VALUE##_set(pd->group->edit_object, change, false PROGRAM_ARGS, \
+         isNone ? NULL : item->title); \
+   history_change_add(pd->group->history, change); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
+   UPDATE \
+}
+
 PROGRAM_MULTIPLE_COMBOBOX(target, "Previous_Target", _("target can be part or program"), true)
 PROGRAM_MULTIPLE_COMBOBOX(after, "Previous_After", _("after can be program"), false)
+
+static void
+prop_program_filter_part_update(Group_Prop_Data *pd)
+{
+   Part *part;
+   Eina_List *l;
+   Eina_Stringshare *value;
+   ewe_combobox_items_list_free(pd->attributes.program.filter_part, true);
+   value = edje_edit_program_filter_part_get(pd->group->edit_object PROGRAM_ARGS);
+   ewe_combobox_item_add(pd->attributes.program.filter_part, _("None"));
+   ewe_combobox_text_set(pd->attributes.program.filter_part, value ? value : _("None"));
+   EINA_LIST_FOREACH(pd->group->parts, l, part)
+     {
+        ewe_combobox_item_add(pd->attributes.program.filter_part, part->name);
+     }
+   edje_edit_string_free(value);
+}
+
+static void
+prop_program_filter_state_update(Group_Prop_Data *pd)
+{
+   Part *part;
+   State *state;
+   Eina_List *l;
+   Eina_Stringshare *value, *part_name;
+   ewe_combobox_items_list_free(pd->attributes.program.filter_state, true);
+   part_name = edje_edit_program_filter_part_get(pd->group->edit_object PROGRAM_ARGS);
+   if (!part_name)
+     {
+        elm_object_disabled_set(pd->attributes.program.filter_state, true);
+        return;
+     }
+   else
+     elm_object_disabled_set(pd->attributes.program.filter_state, false);
+
+   value = edje_edit_program_filter_state_get(pd->group->edit_object PROGRAM_ARGS);
+   ewe_combobox_text_set(pd->attributes.program.filter_state, value);
+   part = pm_resource_unsorted_get(pd->group->parts, part_name);
+   EINA_LIST_FOREACH(part->states, l, state)
+     {
+        ewe_combobox_item_add(pd->attributes.program.filter_state, state->parsed_name);
+     }
+   edje_edit_string_free(value);
+   edje_edit_string_free(part_name);
+}
+
+#define UPDATE_PROGRAM_FILTER_STATE \
+  prop_program_filter_state_update(pd);
+
+#define PROGRAM_ATTR_2COMBOBOX(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2, DESCRIPTION1, DESCRIPTION2, LABEL1, LABEL2) \
+   PROGRAM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE1, MEMBER, DESCRIPTION1, UPDATE_PROGRAM_FILTER_STATE) \
+   PROGRAM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE2, MEMBER, DESCRIPTION2, ) \
+   PROGRAM_2COMBOBOX_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2, LABEL1, LABEL2)
+
+PROGRAM_ATTR_2COMBOBOX(_("filter"), program, filter_part, filter_state, program,
+                       _("Filter signals to be only accepted if the part is "
+                         "in certain state (part value)"),
+                       _("Filter signals to be only accepted if the part is "
+                         "in certain state (state value)"),
+                       _("filter part changed to \"%s\""),
+                       _("filter state changed to \"%s\""),
+                       _("part:"), _("state:"))
+
+#undef UPDATE_PROGRAM_FILTER_STATE
 
 #define PROGRAM_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                               L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
@@ -1997,6 +2101,8 @@ _ui_property_program_set(Evas_Object *property, const char *program)
         elm_box_pack_end(box, item);
         item = prop_program_action_add(box, pd);
         elm_box_pack_end(box, item);
+        item = prop_program_filter_part_filter_state_add(box, pd);
+        elm_box_pack_end(box, item);
         FRAME_PROPERTY_ADD(box, pd->attributes.program.action_params, true, _("Action params"), pd->scroller)
         elm_object_style_set(pd->attributes.program.action_params, "outdent_top");
         elm_box_pack_end(box,pd->attributes.program.action_params);
@@ -2034,6 +2140,8 @@ _ui_property_program_set(Evas_Object *property, const char *program)
         prop_program_signal_update(pd);
         prop_program_source_update(pd);
         prop_program_action_update(pd);
+        prop_program_filter_part_update(pd);
+        prop_program_filter_state_update(pd);
         prop_program_targets_update(pd);
         prop_program_afters_update(pd);
      }
