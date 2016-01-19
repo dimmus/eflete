@@ -205,6 +205,9 @@ struct _Group_Prop_Data
              Evas_Object *channel;
              Evas_Object *tone_name;
              Evas_Object *tone_duration;
+             Evas_Object *transition;
+             Evas_Object *transition_params;
+             Evas_Object *target;
              Evas_Object *target_box;
              Evas_Object *targets_frame; /* it's a frame */
              Evas_Object *after_box;
@@ -322,6 +325,18 @@ sound_channel[] = { N_("effect"),
                     N_("all"),
                     NULL };
 
+static const char *
+edje_program_transitions[] = { N_("None"),
+                               N_("linear"),
+                               N_("accelerate"),
+                               N_("decelerate"),
+                               N_("sinusoidal"),
+                               N_("devisior interpretation"),
+                               N_("bounce"),
+                               N_("spring"),
+                               N_("cubic bezier"),
+                               NULL};
+
 static void
 _ui_property_part_unset(Evas_Object *property);
 
@@ -348,6 +363,9 @@ prop_program_source_update(Group_Prop_Data *pd);
 
 static void
 prop_program_action_update(Group_Prop_Data *pd);
+
+static void
+prop_program_transition_update(Group_Prop_Data *pd);
 
 static void
 prop_program_state_update(Group_Prop_Data *pd);
@@ -1032,6 +1050,8 @@ _on_editor_attribute_changed(void *data,
          COMMON_1SPINNER_UPDATE(program, tone_duration, program, double, 1, PROGRAM_ARGS)
          break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
+         prop_program_transition_update(pd);
+         break;
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
       case ATTRIBUTE_PROGRAM_IN_FROM:
          COMMON_1SPINNER_UPDATE(program, in_range, program, double, 1, PROGRAM_ARGS)
@@ -1996,6 +2016,167 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    UPDATE \
 }
 
+static void
+_program_transition_param_set(Group_Prop_Data *pd, Edje_Tween_Mode type)
+{
+   Evas_Object *box;
+
+   elm_frame_collapse_set(pd->attributes.program.transition_params, false);
+   elm_object_disabled_set(pd->attributes.program.transition_params, false);
+
+   evas_object_del(elm_object_content_get(pd->attributes.program.transition_params));
+   BOX_ADD(pd->attributes.program.transition_params, box, false, false)
+   elm_box_align_set(box, 0.5, 0.0);
+   elm_object_content_set(pd->attributes.program.transition_params, box);
+
+   switch (type)
+     {
+      case EDJE_TWEEN_MODE_NONE:
+      case EDJE_TWEEN_MODE_LINEAR:
+      case EDJE_TWEEN_MODE_ACCELERATE_FACTOR:
+      case EDJE_TWEEN_MODE_DECELERATE_FACTOR:
+      case EDJE_TWEEN_MODE_SINUSOIDAL_FACTOR:
+      case EDJE_TWEEN_MODE_DIVISOR_INTERP:
+      case EDJE_TWEEN_MODE_BOUNCE:
+      case EDJE_TWEEN_MODE_SPRING:
+      case EDJE_TWEEN_MODE_CUBIC_BEZIER:
+      default:
+         break;
+     }
+}
+
+static void
+prop_program_transition_update(Group_Prop_Data *pd)
+{
+   Edje_Tween_Mode type = EDJE_TWEEN_MODE_NONE;
+
+   /* disable the transition controls, and enable it if action is STATE_SET */
+   if (EDJE_ACTION_TYPE_STATE_SET != edje_edit_program_action_get(pd->group->edit_object, pd->attributes.program.program))
+     {
+        elm_object_disabled_set(pd->attributes.program.transition, true);
+        elm_object_disabled_set(pd->attributes.program.transition_params, true);
+        ewe_combobox_select_item_set(pd->attributes.program.transition, 0);
+        return;
+     }
+   elm_object_disabled_set(pd->attributes.program.transition, false);
+   elm_object_disabled_set(pd->attributes.program.transition_params, false);
+
+   type = editor_program_transition_type_get(pd->group->edit_object, pd->attributes.program.program);
+   switch (type)
+     {
+      case EDJE_TWEEN_MODE_NONE:
+         ewe_combobox_select_item_set(pd->attributes.program.transition, 0);
+         _program_transition_param_set(pd, EDJE_TWEEN_MODE_NONE);
+         break;
+      case EDJE_TWEEN_MODE_LINEAR:
+         ewe_combobox_select_item_set(pd->attributes.program.transition, 1);
+         _program_transition_param_set(pd, EDJE_TWEEN_MODE_LINEAR);
+         break;
+      case EDJE_TWEEN_MODE_ACCELERATE_FACTOR:
+         ewe_combobox_select_item_set(pd->attributes.program.transition, 2);
+         _program_transition_param_set(pd, EDJE_TWEEN_MODE_ACCELERATE_FACTOR);
+         break;
+      case EDJE_TWEEN_MODE_DECELERATE_FACTOR:
+         ewe_combobox_select_item_set(pd->attributes.program.transition, 3);
+         _program_transition_param_set(pd, EDJE_TWEEN_MODE_DECELERATE_FACTOR);
+         break;
+      case EDJE_TWEEN_MODE_SINUSOIDAL_FACTOR:
+         ewe_combobox_select_item_set(pd->attributes.program.transition, 4);
+         _program_transition_param_set(pd, EDJE_TWEEN_MODE_SINUSOIDAL_FACTOR);
+         break;
+      case EDJE_TWEEN_MODE_DIVISOR_INTERP:
+         ewe_combobox_select_item_set(pd->attributes.program.transition, 5);
+         _program_transition_param_set(pd, EDJE_TWEEN_MODE_DIVISOR_INTERP);
+         break;
+      case EDJE_TWEEN_MODE_BOUNCE:
+         ewe_combobox_select_item_set(pd->attributes.program.transition, 6);
+         _program_transition_param_set(pd, EDJE_TWEEN_MODE_BOUNCE);
+         break;
+      case EDJE_TWEEN_MODE_SPRING:
+         ewe_combobox_select_item_set(pd->attributes.program.transition, 7);
+         _program_transition_param_set(pd, EDJE_TWEEN_MODE_SPRING);
+         break;
+      case EDJE_TWEEN_MODE_CUBIC_BEZIER:
+         ewe_combobox_select_item_set(pd->attributes.program.transition, 8);
+         _program_transition_param_set(pd, EDJE_TWEEN_MODE_CUBIC_BEZIER);
+         break;
+      default:
+         ewe_combobox_select_item_set(pd->attributes.program.transition, 0);
+         _program_transition_param_set(pd, EDJE_TWEEN_MODE_NONE);
+         break;
+     }
+}
+static void
+_on_program_transition_change(void *data,
+                              Evas_Object *obj __UNUSED__,
+                              void *event_info)
+{
+   Group_Prop_Data *pd = (Group_Prop_Data *)data;
+   Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info;
+   Edje_Tween_Mode old_type, new_type = EDJE_TWEEN_MODE_NONE;
+   Eina_Stringshare *msg;
+   Change *change;
+
+   old_type = editor_program_transition_type_get(pd->group->edit_object, pd->attributes.program.program);
+   switch (item->index)
+     {
+      case 0:
+         new_type = EDJE_TWEEN_MODE_NONE;
+         break;
+      case 1:
+         new_type = EDJE_TWEEN_MODE_LINEAR;
+         break;
+      case 2:
+         new_type = EDJE_TWEEN_MODE_ACCELERATE_FACTOR;
+         break;
+      case 3:
+         new_type = EDJE_TWEEN_MODE_DECELERATE_FACTOR;
+         break;
+      case 4:
+         new_type = EDJE_TWEEN_MODE_SINUSOIDAL_FACTOR;
+         break;
+      case 5:
+         new_type = EDJE_TWEEN_MODE_DIVISOR_INTERP;
+         break;
+      case 6:
+         new_type = EDJE_TWEEN_MODE_BOUNCE;
+         break;
+      case 7:
+         new_type = EDJE_TWEEN_MODE_SPRING;
+         break;
+      case 8:
+         new_type = EDJE_TWEEN_MODE_CUBIC_BEZIER;
+         break;
+     }
+   if (old_type == new_type) return;
+   msg = eina_stringshare_printf(_("The program transition changed to '%s'"), item->title);
+   change = change_add(msg);
+   eina_stringshare_del(msg);
+   if (!editor_program_transition_type_set(pd->group->edit_object, change, false, pd->attributes.program.program, new_type))
+     {
+        ERR("Cann't apply value '%s' for attribute 'transition'.", item->title);
+        abort();
+     }
+   history_change_add(pd->group->history, change);
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
+}
+
+static Evas_Object *
+prop_program_transition_add(Evas_Object *parent, Group_Prop_Data *pd)
+{
+   int i;
+
+   PROPERTY_ITEM_ADD(parent, _("transition"), "1swallow")
+   EWE_COMBOBOX_ADD(parent, pd->attributes.program.transition)
+   for (i = 0; edje_program_transitions[i]; i++)
+      ewe_combobox_item_add(pd->attributes.program.transition, edje_program_transitions[i]);
+   elm_object_tooltip_text_set(pd->attributes.program.transition, _("The program transition type"));
+   evas_object_smart_callback_add(pd->attributes.program.transition, "selected", _on_program_transition_change, pd);
+   elm_layout_content_set(item, "elm.swallow.content", pd->attributes.program.transition);
+
+   return item;
+}
+
 PROGRAM_MULTIPLE_COMBOBOX(target, "Previous_Target", _("target can be part or program"), true)
 PROGRAM_MULTIPLE_COMBOBOX(after, "Previous_After", _("after can be program"), false)
 
@@ -2111,6 +2292,14 @@ _ui_property_program_set(Evas_Object *property, const char *program)
         /* as frame needed for create the action params controls, update the
          * action ites */
         prop_program_action_update(pd);
+        item = prop_program_transition_add(box, pd);
+        elm_box_pack_end(box, item);
+        FRAME_PROPERTY_ADD(box, pd->attributes.program.transition_params, true, _("Transition params"), pd->scroller)
+        elm_object_style_set(pd->attributes.program.transition_params, "outdent_top");
+        elm_box_pack_end(box,pd->attributes.program.transition_params);
+        /* as frame needed for create the transition params controls, update the
+         * transition ites */
+        prop_program_transition_update(pd);
 
         /* targets */
         FRAME_PROPERTY_ADD(box, pd->attributes.program.targets_frame, true, _("Targets"), pd->scroller)
