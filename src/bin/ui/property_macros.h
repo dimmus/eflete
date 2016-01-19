@@ -72,6 +72,46 @@ evas_object_smart_callback_add(FRAME, "clicked", _on_frame_click, SCROLLER);
 /*                      COMMON ATTRIBUTE CONTOLS MACRO                       */
 /*****************************************************************************/
 /**
+ * Macro defines a functions that create an item with label and 1 spinners.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of state attribute
+ * @param VALUE The value of state attribute
+ * @param MEMBER The spinner member from Group_Prop_Data structure
+ * @param MIN The min value of spinner
+ * @param MAX The max value of spinner
+ * @param STEP The step to increment or decrement the spinner value
+ * @param FMT The format string of the displayed label
+ * @param L_START The text of label before first swallow
+ * @param L_END The text of label after first swallow
+ * @param TOOLTIP The first spinner tooltip
+ * @param MULTIPLIER The multiplier to convert the value to percent. If it not
+ *        needed set 1
+ *
+ * @ingroup Property_Macro
+ */
+#define COMMON_1SPINNER_ADD(PREFIX, TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
+                            L_START, L_END, TOOLTIP, MULTIPLIER) \
+static Evas_Object * \
+prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, Group_Prop_Data *pd) \
+{ \
+   PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
+   SPINNER_ADD(item, pd->attributes.MEMBER.VALUE, MIN, MAX, STEP, true) \
+   elm_spinner_label_format_set(pd->attributes.MEMBER.VALUE, FMT); \
+   elm_layout_content_set(item, "swallow.content1", pd->attributes.MEMBER.VALUE); \
+   elm_layout_text_set(item, "label.swallow1.start", L_START); \
+   elm_layout_text_set(item, "label.swallow1.end", L_END); \
+   if (TOOLTIP) elm_object_tooltip_text_set(pd->attributes.MEMBER.VALUE, TOOLTIP); \
+   evas_object_event_callback_priority_add(pd->attributes.MEMBER.VALUE, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                          _on_spinner_mouse_wheel, NULL); \
+   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "spinner,drag,start", _on_##MEMBER##_##VALUE##_start, pd); \
+   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "spinner,drag,stop", _on_##MEMBER##_##VALUE##_stop, pd); \
+   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "changed", _on_##MEMBER##_##VALUE##_change, pd); \
+   PREFIX##_ATTR_1SPINNER_UPDATE(SUB, VALUE, MEMBER, TYPE, MULTIPLIER) \
+   return item; \
+}
+/**
  * Macro defines a functions that create an item with label and 2 spinners.
  *
  * @param PREFIX The attribute prefix (STATE, PART, etc), used for define the
@@ -1761,30 +1801,24 @@ COMMON_2SPINNER_ADD(PART_ITEM, TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, TYPE, \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_1SPINNER_ADD(TEXT, SUB, VALUE, MEMBER, \
-                                MIN, MAX, STEP, FMT, \
-                                L_START, L_END, \
-                                TOOLTIP, MULTIPLIER) \
-static Evas_Object * \
-prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
-                              Group_Prop_Data *pd) \
-{ \
-   PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
-   SPINNER_ADD(item, pd->attributes.MEMBER.VALUE, MIN, MAX, STEP, true) \
-   elm_spinner_label_format_set(pd->attributes.MEMBER.VALUE, FMT); \
-   elm_layout_content_set(item, "swallow.content1", pd->attributes.MEMBER.VALUE); \
-   elm_layout_text_set(item, "label.swallow1.start", L_START); \
-   elm_layout_text_set(item, "label.swallow1.end", L_END); \
-   if (TOOLTIP) elm_object_tooltip_text_set(pd->attributes.MEMBER.VALUE, TOOLTIP); \
-   evas_object_event_callback_priority_add(pd->attributes.MEMBER.VALUE, EVAS_CALLBACK_MOUSE_WHEEL, \
-                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
-                                          _on_spinner_mouse_wheel, NULL); \
-   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "spinner,drag,start", _on_##MEMBER##_##VALUE##_start, pd); \
-   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "spinner,drag,stop", _on_##MEMBER##_##VALUE##_stop, pd); \
-   evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "changed", _on_##MEMBER##_##VALUE##_change, pd); \
-   COMMON_1SPINNER_UPDATE(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, STATE_ARGS) \
-   return item; \
-}
+#define STATE_ATTR_1SPINNER_ADD(TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
+                                L_START, L_END, TOOLTIP, MULTIPLIER) \
+COMMON_1SPINNER_ADD(STATE, TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
+                    L_START, L_END, TOOLTIP, MULTIPLIER)
+
+/**
+ * Macro defines a function that updates control by STATE_ATTR_1SPINNER_ADD macro.
+ *
+ * @param SUB The prefix of main parameter of drag attribute
+ * @param VALUE1 The first value of state attribute
+ * @param MEMBER The spinner member from Group_Prop_Data structure
+ * @param MULTIPLIER The multiplier to convert the value to percent. If it not
+ *        needed set 1
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_1SPINNER_UPDATE(SUB, VALUE, MEMBER, TYPE, MULTIPLIER) \
+   COMMON_1SPINNER_UPDATE(SUB, VALUE, MEMBER, TYPE,  MULTIPLIER, STATE_ARGS)
 
 /**
  * Macro defines a callback for STATE_ATTR_1(2)SPINNER_ADD.
