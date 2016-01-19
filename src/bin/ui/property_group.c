@@ -601,8 +601,19 @@ _on_program_selected(void *data,
    Resource *res = event_info;
 
    _on_part_selected(data, obj, NULL);
-   _ui_property_program_unset(property);
+   if (!res)
+     {
+        _ui_property_program_unset(property);
+        return;
+     }
    _ui_property_program_set(property, res->name);
+}
+static void
+_on_program_unselected(void *data,
+                    Evas_Object *obj,
+                    void *event_info __UNUSED__)
+{
+   _on_program_selected(data, obj, NULL);
 }
 
 static void
@@ -1060,6 +1071,7 @@ ui_property_group_add(Evas_Object *parent)
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_UNSELECTED, _on_part_unselected, pd->scroller);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_STATE_SELECTED, _on_part_state_selected, pd->scroller);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROGRAM_SELECTED, _on_program_selected, pd->scroller);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROGRAM_UNSELECTED, _on_program_unselected, pd->scroller);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _on_editor_attribute_changed, pd->scroller);
 
    return pd->scroller;
