@@ -1140,6 +1140,7 @@ _program_del(Part_List *pl,
    program = elm_object_item_data_get(glit);
 
    assert(program != NULL);
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROGRAM_UNSELECTED, (void *)program);
 
    msg = eina_stringshare_printf(_("deleted program \"%s\""), program->name);
    change = change_add(msg);

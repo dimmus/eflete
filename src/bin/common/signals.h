@@ -76,6 +76,14 @@
  */
 #define SIGNAL_PART_UNSELECTED "SIGNAL_PART_UNSELECTED"
 
+/**
+ * emited when program is unselected.
+ * eventinfo - pointer to Resource structure
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_PROGRAM_UNSELECTED "SIGNAL_PROGRAM_UNSELECTED"
+
 typedef struct {
    const char *old_name;
    const char *new_name;
