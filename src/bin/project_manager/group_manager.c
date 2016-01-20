@@ -391,6 +391,8 @@ gm_group_del(Project *pro, Group *group)
    /* delete group name after call signal, because the group name need in the
     * callbacks */
    eina_stringshare_del(group->name);
+   if (group->current_program)
+     eina_stringshare_del(group->current_program);
    free(group);
 }
 

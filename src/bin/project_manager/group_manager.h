@@ -61,6 +61,7 @@ struct _Group
 
    Evas_Object *edit_object;  /**< object needed to access group with edje_edit functions. Should be NULL if group is not open */
    Part *current_part;        /**< pointer to selected part */
+   Eina_Stringshare *current_program; /**< pointer to selected program */
 
    History *history;          /**< history of changes in the group */
 };
