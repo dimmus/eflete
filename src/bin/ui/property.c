@@ -301,6 +301,7 @@ _on_tab_changed(void *data,
      {
         elm_object_content_unset(pd->layout);
         elm_object_content_set(pd->layout, pd->group_property);
+        ui_property_group_unset(pd->group_property);
         evas_object_hide(pd->image_property);
         evas_object_hide(pd->sound_property);
         evas_object_hide(pd->style_property);
@@ -314,10 +315,15 @@ _on_tab_changed(void *data,
    ui_property_group_set(pd->group_property, group);
 
    pd->type = PROPERTY;
-
-   if (!group->current_part) return;
-   ui_property_part_set(pd->group_property, group->current_part);
-   ui_property_part_state_set(pd->group_property, group->current_part);
+   if (group->current_part)
+     {
+        ui_property_part_set(pd->group_property, group->current_part);
+        ui_property_part_state_set(pd->group_property, group->current_part);
+     }
+   if (group->current_program)
+     {
+        evas_object_smart_callback_call(ap.win, SIGNAL_PROGRAM_SELECTED, (void *)group->current_program);
+     }
 }
 
 Evas_Object *
@@ -350,7 +356,6 @@ ui_property_add(Evas_Object *parent)
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_PART_CLICKED, _on_text_part_clicked, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_PART_CLICKED, _on_swallow_part_clicked, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, _on_different_clicked, pd->layout);
-   evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CLOSE, _on_different_clicked, pd->layout);
 
    return pd->layout;
 }
