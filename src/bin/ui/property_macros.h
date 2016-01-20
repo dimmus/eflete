@@ -1367,6 +1367,7 @@ _add_##PARAM(void *data, \
    LAYOUT_PROP_ADD(pd->attributes.program.PARAM##_box, NULL, "tab_home", "item") \
    evas_object_data_set(item, GROUP_PROP_DATA, pd); \
    EWE_COMBOBOX_ADD(item, combo); \
+   ewe_combobox_text_set(combo, _("None")); \
    /* fill up with part and program list */ \
    if (ISNOTAFTER) \
      EINA_LIST_FOREACH(pd->group->parts, l, part) \
@@ -1428,6 +1429,8 @@ prop_program_##PARAM##s_update(Group_Prop_Data *pd) \
         eina_stringshare_del(to_del); \
         evas_object_data_del(combo, COMBOBOX_PREVIOUS); \
         evas_object_data_set(combo, COMBOBOX_PREVIOUS, eina_stringshare_add(value)); \
+        if (!value) \
+          ewe_combobox_text_set(combo, _("None")); \
         list = eina_list_next(list); \
      } \
 } \
@@ -1447,6 +1450,7 @@ prop_program_##PARAM##_add(Evas_Object *parent, Group_Prop_Data *pd) \
    elm_layout_content_set(item, "swallow.button_add", button); \
    evas_object_smart_callback_add(button, "clicked", _add_##PARAM, pd); \
    EWE_COMBOBOX_ADD(item, combo); \
+   ewe_combobox_text_set(combo, _("None")); \
    /* fill up with part and program list */ \
    EINA_LIST_FOREACH(pd->group->parts, l, part) \
      { \
