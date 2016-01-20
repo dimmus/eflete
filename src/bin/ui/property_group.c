@@ -1023,10 +1023,10 @@ _on_editor_attribute_changed(void *data,
          prop_program_state2_update(pd);
          break;
       case ATTRIBUTE_PROGRAM_VALUE:
-         COMMON_1SPINNER_UPDATE(program, value, program, double, 1, PROGRAM_ARGS)
+         PROGRAM_ATTR_1SPINNER_UPDATE(program, value, program, double, 1)
          break;
       case ATTRIBUTE_PROGRAM_VALUE2:
-         COMMON_1SPINNER_UPDATE(program, value2, program, double, 1, PROGRAM_ARGS)
+         PROGRAM_ATTR_1SPINNER_UPDATE(program, value2, program, double, 1)
          break;
       case ATTRIBUTE_PROGRAM_TARGET:
          prop_program_targets_update(pd);
@@ -1035,7 +1035,7 @@ _on_editor_attribute_changed(void *data,
          prop_program_sample_name_update(pd);
          break;
       case ATTRIBUTE_PROGRAM_SAMPLE_SPEED:
-         COMMON_1SPINNER_UPDATE(program, sample_speed, program, int, 1, PROGRAM_ARGS)
+         PROGRAM_ATTR_1SPINNER_UPDATE(program, sample_speed, program, int, 1)
          break;
       case ATTRIBUTE_PROGRAM_AFTER:
          prop_program_afters_update(pd);
@@ -1047,17 +1047,17 @@ _on_editor_attribute_changed(void *data,
          prop_program_tone_name_update(pd);
          break;
       case ATTRIBUTE_PROGRAM_TONE_DURATION:
-         COMMON_1SPINNER_UPDATE(program, tone_duration, program, double, 1, PROGRAM_ARGS)
+         PROGRAM_ATTR_1SPINNER_UPDATE(program, tone_duration, program, double, 1)
          break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
          prop_program_transition_update(pd);
          break;
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
       case ATTRIBUTE_PROGRAM_IN_FROM:
-         COMMON_1SPINNER_UPDATE(program, in_range, program, double, 1, PROGRAM_ARGS)
+         PROGRAM_ATTR_1SPINNER_UPDATE(program, in_range, program, double, 1)
          break;
       case ATTRIBUTE_PROGRAM_IN_RANGE:
-         COMMON_1SPINNER_UPDATE(program, in_from, program, double, 1, PROGRAM_ARGS)
+         PROGRAM_ATTR_1SPINNER_UPDATE(program, in_from, program, double, 1)
          break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
       case ATTRIBUTE_PROGRAM_TRANSITION_VALUE1:
@@ -1562,6 +1562,12 @@ PART_ATTR_SOURCE_UPDATE(part, source)
    PROGRAM_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE, DESCRIPTION) \
    PROGRAM_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, MEMBER, LIST, TOOLTIP)
 
+#define PROGRAM_ATTR_1SPINNER(TEXT, SUB, VALUE, MEMBER, TYPE, MIN, MAX, STEP, FMT, \
+                              L_START, L_END, TOOLTIP, MULTIPLIER, DESCRIPTION) \
+   PROGRAM_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, DESCRIPTION) \
+   PROGRAM_ATTR_1SPINNER_ADD(TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
+                             L_START, L_END, TOOLTIP, MULTIPLIER)
+
 static void
 _on_program_name_change(void *data __UNUSED__,
                         Evas_Object *obj __UNUSED__,
@@ -1602,18 +1608,20 @@ prop_program_state2_update(Group_Prop_Data *pd)
 
 COMMON_ENTRY_ADD(_("name"), program, name, program, NULL, _("Name of the group."))
 PROGRAMM_ATTR_1ENTRY(_("signal"), program, signal, program, NULL,
-                     _("The signal name for triger"),
-                     _("signal is changed to '%s'"))
+   _("The signal name for triger"), _("signal is changed to '%s'"))
 PROGRAMM_ATTR_1ENTRY(_("source"), program, source, program, NULL,
-                     _("The source of signal"),
-                     _("signal source is changed to '%s'"))
+   _("The source of signal"), _("signal source is changed to '%s'"))
+PROGRAM_ATTR_1SPINNER("don't forgot to change this title", program, value, program, double, 0.0, 1.0, 0.1, "%.2f",
+   NULL, NULL, "", 1, _("Program action value is changed from %f to %f"))
+PROGRAM_ATTR_1SPINNER("don't forgot to change this title", program, value2, program, double, 0.0, 1.0, 0.1, "%.2f",
+   NULL, NULL, "", 1, _("Program action value2 is changed from %f to %f"))
+PROGRAM_ATTR_1SPINNER("sample speed", program, sample_speed, program, int, 0.0, 9999.0, 1.0, "%.0f",
+   NULL, NULL, "", 1, _("Program sample speed is changed from %d to %d"))
+PROGRAM_ATTR_1COMBOBOX_LIST(_("sample channel"), program, channel, program, sound_channel, unsigned char,
+   _("Program action state is changed to '%s'"), "")
 
 COMMON_ENTRY_CALLBACK(program, state, NULL, PROGRAM_ARGS, _("Program action state is changed to '%s'"))
 COMMON_ENTRY_CALLBACK(program, state2, NULL, PROGRAM_ARGS, _("Program action state2 is changed to '%s'"))
-COMMON_SPINNER_CALLBACK(program, value, program, double, 1, PROGRAM_ARGS, _("Program action value is changed from %f to %f"))
-COMMON_SPINNER_CALLBACK(program, value2, program, double, 1, PROGRAM_ARGS, _("Program action value is changed from %f to %f"))
-COMMON_SPINNER_CALLBACK(program, sample_speed, program, int, 1, PROGRAM_ARGS, _("Program action value is changed from %d to %d"))
-PROGRAM_ATTR_1COMBOBOX_LIST(_("sample channel"), program, channel, program, sound_channel, unsigned char, _("Program action state is changed to '%s'"), "")
 COMMON_SPINNER_CALLBACK(program, tone_duration, program, double, 1, PROGRAM_ARGS, _("Program action value is changed from %f to %f"))
 
 static Evas_Object *
@@ -1644,40 +1652,6 @@ _prop_action_state2_add(Group_Prop_Data *pd, Evas_Object *parent, const char *ti
    evas_object_smart_callback_add(pd->attributes.program.state2, "unfocused", _on_program_state2_activated, pd);
    elm_object_tooltip_text_set(pd->attributes.program.state2, tooltip);
    elm_layout_content_set(item, NULL, pd->attributes.program.state2);
-
-   return item;
-}
-
-static Evas_Object *
-_prop_action_value_add(Group_Prop_Data *pd, Evas_Object *parent, const char *title, const char *tooltip)
-{
-   PROPERTY_ITEM_ADD(parent, title, "2swallow")
-   SPINNER_ADD(item, pd->attributes.program.value, 0.0, 1.0, 0.1, true);
-   elm_spinner_label_format_set(pd->attributes.program.value, "%.2f");
-   elm_spinner_value_set(pd->attributes.program.value,
-                         edje_edit_program_value_get(pd->group->edit_object, pd->attributes.program.program));
-   evas_object_smart_callback_add(pd->attributes.program.value, "changed", _on_program_value_change, pd);
-   evas_object_smart_callback_add(pd->attributes.program.value, "spinner,drag,start", _on_program_value_start, pd);
-   evas_object_smart_callback_add(pd->attributes.program.value, "spinner,drag,stop", _on_program_value_stop, pd);
-   elm_object_tooltip_text_set(pd->attributes.program.value, tooltip);
-   elm_layout_content_set(item, "swallow.content1", pd->attributes.program.value);
-
-   return item;
-}
-
-static Evas_Object *
-_prop_action_value2_add(Group_Prop_Data *pd, Evas_Object *parent, const char *title, const char *tooltip)
-{
-   PROPERTY_ITEM_ADD(parent, title, "2swallow")
-   SPINNER_ADD(item, pd->attributes.program.value2, 0.0, 1.0, 0.1, true);
-   elm_spinner_label_format_set(pd->attributes.program.value2, "%.2f");
-   elm_spinner_value_set(pd->attributes.program.value2,
-                         edje_edit_program_value2_get(pd->group->edit_object, pd->attributes.program.program));
-   evas_object_smart_callback_add(pd->attributes.program.value2, "changed", _on_program_value2_change, pd);
-   evas_object_smart_callback_add(pd->attributes.program.value2, "spinner,drag,start", _on_program_value2_start, pd);
-   evas_object_smart_callback_add(pd->attributes.program.value2, "spinner,drag,stop", _on_program_value2_stop, pd);
-   elm_object_tooltip_text_set(pd->attributes.program.value2, tooltip);
-   elm_layout_content_set(item, "swallow.content1", pd->attributes.program.value2);
 
    return item;
 }
@@ -1741,23 +1715,6 @@ _prop_action_sample_name(Group_Prop_Data *pd, Evas_Object *parent)
    elm_object_tooltip_text_set(pd->attributes.program.sample_name, "");
    elm_layout_content_set(item, NULL, pd->attributes.program.sample_name);
    prop_program_sample_name_update(pd);
-   return item;
-}
-
-static Evas_Object *
-_prop_action_sample_speed_add(Group_Prop_Data *pd, Evas_Object *parent)
-{
-   PROPERTY_ITEM_ADD(parent, _("speed"), "2swallow")
-   SPINNER_ADD(item, pd->attributes.program.sample_speed, 0.0, 9999.0, 1.0, true);
-   elm_spinner_label_format_set(pd->attributes.program.sample_speed, "%.0f");
-   elm_spinner_value_set(pd->attributes.program.sample_speed,
-                         edje_edit_program_sample_speed_get(pd->group->edit_object, pd->attributes.program.program));
-   evas_object_smart_callback_add(pd->attributes.program.sample_speed, "changed", _on_program_sample_speed_change, pd);
-   evas_object_smart_callback_add(pd->attributes.program.sample_speed, "spinner,drag,start", _on_program_sample_speed_start, pd);
-   evas_object_smart_callback_add(pd->attributes.program.sample_speed, "spinner,drag,stop", _on_program_sample_speed_stop, pd);
-   elm_object_tooltip_text_set(pd->attributes.program.sample_speed, "");
-   elm_layout_content_set(item, "swallow.content1", pd->attributes.program.sample_speed);
-
    return item;
 }
 
@@ -1826,7 +1783,8 @@ _program_action_param_set(Group_Prop_Data *pd, Edje_Action_Type type)
       case EDJE_ACTION_TYPE_STATE_SET:
          item = _prop_action_state_add(pd, box, _("state name"), "");
          elm_box_pack_end(box, item);
-         item = _prop_action_value_add(pd, box, _("state value"), "");
+         elm_object_text_set(item, _("state value"));
+         item = prop_program_value_add(box, pd);
          elm_box_pack_end(box, item);
          break;
       case EDJE_ACTION_TYPE_SIGNAL_EMIT:
@@ -1838,15 +1796,17 @@ _program_action_param_set(Group_Prop_Data *pd, Edje_Action_Type type)
       case EDJE_ACTION_TYPE_DRAG_VAL_SET:
       case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
       case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
-         item = _prop_action_value_add(pd, box, _("axis X"), "");
+         item = prop_program_value_add(box, pd);
+         elm_object_text_set(item, _("axis X"));
          elm_box_pack_end(box, item);
-         item = _prop_action_value2_add(pd, box, _("axis Y"), "");
+         item = prop_program_value2_add(box, pd);
+         elm_object_text_set(item, _("axis Y"));
          elm_box_pack_end(box, item);
          break;
       case EDJE_ACTION_TYPE_SOUND_SAMPLE:
          item = _prop_action_sample_name(pd, box);
          elm_box_pack_end(box, item);
-         item = _prop_action_sample_speed_add(pd, box);
+         item = prop_program_sample_speed_add(box, pd);
          elm_box_pack_end(box, item);
          item = prop_program_channel_add(box, pd);
          elm_box_pack_end(box, item);
