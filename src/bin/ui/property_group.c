@@ -1035,8 +1035,10 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
       case ATTRIBUTE_PROGRAM_IN_FROM:
          COMMON_1SPINNER_UPDATE(program, in_range, program, double, 1, PROGRAM_ARGS)
+         break;
       case ATTRIBUTE_PROGRAM_IN_RANGE:
          COMMON_1SPINNER_UPDATE(program, in_from, program, double, 1, PROGRAM_ARGS)
+         break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
       case ATTRIBUTE_PROGRAM_TRANSITION_VALUE1:
       case ATTRIBUTE_PROGRAM_TRANSITION_VALUE2:
