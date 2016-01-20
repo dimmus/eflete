@@ -474,6 +474,12 @@ _selected_cb(void *data,
      {
         if (pl->selected_part_item)
           _unselect_part(pl);
+        if (pl->group->current_program)
+          {
+             eina_stringshare_del(pl->group->current_program);
+             pl->group->current_program = NULL;
+          }
+        evas_object_smart_callback_call(ap.win, SIGNAL_PROGRAM_SELECTED, NULL);
         return;
      }
    itc = elm_genlist_item_item_class_get(glit);
@@ -492,7 +498,7 @@ _selected_cb(void *data,
         elm_object_disabled_set(pl->btn_del, false);
         res = elm_object_item_data_get(glit);
         pl->group->current_program = eina_stringshare_add(res->name);
-        evas_object_smart_callback_call(ap.win, SIGNAL_PROGRAM_SELECTED, (void *)res);
+        evas_object_smart_callback_call(ap.win, SIGNAL_PROGRAM_SELECTED, (void *)res->name);
      }
    else
      {

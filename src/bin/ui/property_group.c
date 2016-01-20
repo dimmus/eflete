@@ -629,15 +629,15 @@ _on_program_selected(void *data,
 {
    Evas_Object *property = data;
    GROUP_PROP_DATA_GET()
-   Resource *res = event_info;
+   const char *name = event_info;
 
    _on_part_selected(data, obj, NULL);
-   if (!res)
+   if (!name)
      {
         _ui_property_program_unset(property);
         return;
      }
-   _ui_property_program_set(property, res->name);
+   _ui_property_program_set(property, name);
 }
 static void
 _on_program_unselected(void *data,
