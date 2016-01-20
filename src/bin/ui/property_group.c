@@ -1984,35 +1984,6 @@ prop_program_action_add(Evas_Object *parent, Group_Prop_Data *pd)
    return item;
 }
 
-#define PROGRAM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION, UPDATE) \
-static void \
-_on_##MEMBER##_##VALUE##_change(void *data, \
-                                Evas_Object *obj __UNUSED__, \
-                                void *ei) \
-{ \
-   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
-   Ewe_Combobox_Item *item = ei; \
-   Eina_Bool isNone = false; \
-   Eina_Stringshare *old_val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object \
-         PROGRAM_ARGS); \
-   if (((item->index != 0) && (item->title == old_val)) /*stringshares*/ || \
-       ((item->index == 0) && (old_val == NULL))) \
-     { \
-       eina_stringshare_del(old_val); \
-       return; \
-     } \
-   eina_stringshare_del(old_val); \
-   isNone = !strcmp(item->title, _("None")); \
-   Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION, isNone ? NULL : item->title); \
-   Change *change = change_add(msg); \
-   eina_stringshare_del(msg); \
-   editor_##SUB##_##VALUE##_set(pd->group->edit_object, change, false PROGRAM_ARGS, \
-         isNone ? NULL : item->title); \
-   history_change_add(pd->group->history, change); \
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-   UPDATE \
-}
-
 static void
 _program_transition_param_set(Group_Prop_Data *pd, Edje_Tween_Mode type)
 {
@@ -2249,11 +2220,17 @@ prop_program_filter_part_update(Group_Prop_Data *pd)
    value = edje_edit_program_filter_part_get(pd->group->edit_object PROGRAM_ARGS);
    ewe_combobox_item_add(pd->attributes.program.filter_part, _("None"));
    ewe_combobox_text_set(pd->attributes.program.filter_part, value ? value : _("None"));
+   if (!value)
+     {
+        elm_object_disabled_set(pd->attributes.program.filter_state, true);
+        ewe_combobox_text_set(pd->attributes.program.filter_state, _("None"));
+     }
    EINA_LIST_FOREACH(pd->group->parts, l, part)
      {
         ewe_combobox_item_add(pd->attributes.program.filter_part, part->name);
      }
    edje_edit_string_free(value);
+   prop_program_filter_state_update(pd);
 }
 
 static void
@@ -2268,6 +2245,7 @@ prop_program_filter_state_update(Group_Prop_Data *pd)
    if (!part_name)
      {
         elm_object_disabled_set(pd->attributes.program.filter_state, true);
+        ewe_combobox_text_set(pd->attributes.program.filter_state, _("None"));
         return;
      }
    else
@@ -2284,24 +2262,85 @@ prop_program_filter_state_update(Group_Prop_Data *pd)
    edje_edit_string_free(part_name);
 }
 
-#define UPDATE_PROGRAM_FILTER_STATE \
-  prop_program_filter_state_update(pd);
+static void
+_on_program_filter_part_change(void *data,
+                               Evas_Object *obj __UNUSED__,
+                               void *ei)
+{
+   Group_Prop_Data *pd = (Group_Prop_Data *)data;
+   Ewe_Combobox_Item *item = ei;
+   Eina_Bool isNone = false;
+   Eina_Stringshare *old_val = edje_edit_program_filter_part_get(pd->group->edit_object
+         PROGRAM_ARGS);
+   Part *part;
+   State *state;
+   if (((item->index != 0) && (item->title == old_val)) /*stringshares*/ ||
+       ((item->index == 0) && (old_val == NULL)))
+     {
+       eina_stringshare_del(old_val);
+       return;
+     }
+   eina_stringshare_del(old_val);
+   isNone = !strcmp(item->title, _("None"));
+   Eina_Stringshare *msg = eina_stringshare_printf(_("filter part changed to \"%s\""),
+                                                   isNone ? NULL : item->title);
+   /* making change */
+   Change *change = change_add(msg);
+   eina_stringshare_del(msg);
+   editor_program_filter_part_set(pd->group->edit_object, change, false PROGRAM_ARGS,
+         isNone ? NULL : item->title);
 
-#define PROGRAM_ATTR_2COMBOBOX(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2, DESCRIPTION1, DESCRIPTION2, LABEL1, LABEL2) \
-   PROGRAM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE1, MEMBER, DESCRIPTION1, UPDATE_PROGRAM_FILTER_STATE) \
-   PROGRAM_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE2, MEMBER, DESCRIPTION2, ) \
-   PROGRAM_2COMBOBOX_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2, LABEL1, LABEL2)
+   if (isNone)
+     {
+        editor_program_filter_state_set(pd->group->edit_object, change, false PROGRAM_ARGS,
+                                        NULL);
+     }
+   else
+     {
+        part = pm_resource_unsorted_get(pd->group->parts, item->title);
+        state = eina_list_data_get(part->states);
+        editor_program_filter_state_set(pd->group->edit_object, change, false PROGRAM_ARGS,
+                                        state->parsed_name);
+     }
+   history_change_add(pd->group->history, change);
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
+   prop_program_filter_state_update(pd);
+}
+static void
+_on_program_filter_state_change(void *data,
+                                Evas_Object *obj __UNUSED__,
+                                void *ei)
+{
+   Group_Prop_Data *pd = (Group_Prop_Data *)data;
+   Ewe_Combobox_Item *item = ei;
+   Eina_Bool isNone = false;
+   Eina_Stringshare *old_val = edje_edit_program_filter_part_get(pd->group->edit_object
+         PROGRAM_ARGS);
+   if (((item->index != 0) && (item->title == old_val)) /*stringshares*/ ||
+       ((item->index == 0) && (old_val == NULL)))
+     {
+       eina_stringshare_del(old_val);
+       return;
+     }
+   eina_stringshare_del(old_val);
+   isNone = !strcmp(item->title, _("None"));
+   Eina_Stringshare *msg = eina_stringshare_printf(_("filter state changed to \"%s\""),
+                                                   isNone ? NULL : item->title);
+   Change *change = change_add(msg);
+   eina_stringshare_del(msg);
+   editor_program_filter_state_set(pd->group->edit_object, change, false PROGRAM_ARGS,
+         isNone ? NULL : item->title);
+   history_change_add(pd->group->history, change);
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
+   prop_program_filter_state_update(pd);
+}
 
-PROGRAM_ATTR_2COMBOBOX(_("filter"), program, filter_part, filter_state, program,
-                       _("Filter signals to be only accepted if the part is "
-                         "in certain state (part value)"),
-                       _("Filter signals to be only accepted if the part is "
-                         "in certain state (state value)"),
-                       _("filter part changed to \"%s\""),
-                       _("filter state changed to \"%s\""),
-                       _("part:"), _("state:"))
-
-#undef UPDATE_PROGRAM_FILTER_STATE
+PROGRAM_2COMBOBOX_ADD(_("filter"), program, filter_part, filter_state, program,
+                      _("Filter signals to be only accepted if the part is "
+                        "in certain state (part value)"),
+                      _("Filter signals to be only accepted if the part is "
+                        "in certain state (state value)"),
+                      _("part:"), _("state:"))
 
 #define PROGRAM_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                               L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
