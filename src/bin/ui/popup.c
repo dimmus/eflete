@@ -402,6 +402,34 @@ popup_fileselector_image_helper(const char *title, Evas_Object *follow_up, const
    _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _images_filter);
 }
 
+static Eina_Bool
+_sounds_filter(const char *path,
+               Eina_Bool dir,
+               void *data __UNUSED__)
+{
+   int i;
+   Eina_Bool res;
+   const char *sound_formats[] = { "wav", "ogg", "flac", NULL};
+
+   if (dir) return true;
+   i = 0;
+   while(sound_formats[i])
+     {
+        res = eina_str_has_extension(path, sound_formats[i++]);
+        if (res) return true;
+     }
+
+   return false;
+}
+
+void
+popup_fileselector_sound_helper(const char *title, Evas_Object *follow_up, const char *path,
+                                Helper_Done_Cb func, void *data,
+                                Eina_Bool multi, Eina_Bool is_save)
+{
+   _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _sounds_filter);
+}
+
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
 #define GROUP_ITEM_WIDTH 36
