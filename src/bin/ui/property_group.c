@@ -207,6 +207,12 @@ struct _Group_Prop_Data
              Evas_Object *tone_duration;
              Evas_Object *transition;
              Evas_Object *transition_params;
+             Evas_Object *transition_from_current;
+             Evas_Object *transition_time;
+             Evas_Object *transition_value1;
+             Evas_Object *transition_value2;
+             Evas_Object *transition_value3;
+             Evas_Object *transition_value4;
              Evas_Object *target;
              Evas_Object *target_box;
              Evas_Object *targets_frame; /* it's a frame */
@@ -641,6 +647,10 @@ _on_program_unselected(void *data,
    _on_program_selected(data, obj, NULL);
 }
 
+#define PROGRAM_ATTR_1CHECK_UPDATE(SUB, VALUE, MEMBER) \
+   elm_check_state_set(pd->attributes.program.transition_from_current, \
+                       editor_program_transition_from_current_get(pd->group->edit_object, pd->attributes.program.program));
+
 static void
 _on_editor_attribute_changed(void *data,
                              Evas_Object *obj __UNUSED__,
@@ -1052,18 +1062,30 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
          prop_program_transition_update(pd);
          break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
+         PROGRAM_ATTR_1SPINNER_UPDATE(program, transition_time, program, double, 1)
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_VALUE1:
+         PROGRAM_ATTR_1SPINNER_UPDATE(program, transition_value1, program, double, 1)
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_VALUE2:
+         PROGRAM_ATTR_1SPINNER_UPDATE(program, transition_value2, program, double, 1)
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_VALUE3:
+         PROGRAM_ATTR_1SPINNER_UPDATE(program, transition_value3, program, double, 1)
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_VALUE4:
+         PROGRAM_ATTR_1SPINNER_UPDATE(program, transition_value4, program, double, 1)
+         break;
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
+         PROGRAM_ATTR_1CHECK_UPDATE(program, transition_from_current, program)
+         break;
       case ATTRIBUTE_PROGRAM_IN_FROM:
          PROGRAM_ATTR_1SPINNER_UPDATE(program, in_range, program, double, 1)
          break;
       case ATTRIBUTE_PROGRAM_IN_RANGE:
          PROGRAM_ATTR_1SPINNER_UPDATE(program, in_from, program, double, 1)
          break;
-      case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
-      case ATTRIBUTE_PROGRAM_TRANSITION_VALUE1:
-      case ATTRIBUTE_PROGRAM_TRANSITION_VALUE2:
-      case ATTRIBUTE_PROGRAM_TRANSITION_VALUE3:
-      case ATTRIBUTE_PROGRAM_TRANSITION_VALUE4:
       case ATTRIBUTE_PROGRAM_FILTER_PART:
          prop_program_filter_part_update(pd);
          break;
@@ -1567,6 +1589,9 @@ PART_ATTR_SOURCE_UPDATE(part, source)
    PROGRAM_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, MULTIPLIER, DESCRIPTION) \
    PROGRAM_ATTR_1SPINNER_ADD(TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
                              L_START, L_END, TOOLTIP, MULTIPLIER)
+#define PROGRAM_ATTR_1CHECK(TEXT, SUB, VALUE, MEMBER, TOOLTIP, DESCRIPTION) \
+   PROGRAM_ATTR_CHECK_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
+   PROGRAM_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 static void
 _on_program_name_change(void *data __UNUSED__,
@@ -1615,10 +1640,22 @@ PROGRAM_ATTR_1SPINNER("don't forgot to change this title", program, value, progr
    NULL, NULL, "", 1, _("Program action value is changed from %f to %f"))
 PROGRAM_ATTR_1SPINNER("don't forgot to change this title", program, value2, program, double, 0.0, 1.0, 0.1, "%.2f",
    NULL, NULL, "", 1, _("Program action value2 is changed from %f to %f"))
-PROGRAM_ATTR_1SPINNER("sample speed", program, sample_speed, program, int, 0.0, 9999.0, 1.0, "%.0f",
+PROGRAM_ATTR_1SPINNER(_("sample speed"), program, sample_speed, program, int, 0.0, 9999.0, 1.0, "%.0f",
    NULL, NULL, "", 1, _("Program sample speed is changed from %d to %d"))
 PROGRAM_ATTR_1COMBOBOX_LIST(_("sample channel"), program, channel, program, sound_channel, unsigned char,
    _("Program action state is changed to '%s'"), "")
+PROGRAM_ATTR_1SPINNER(_("time"), program, transition_time, program, double, 0.0, 9999.0, 0.1, "%.2f",
+   NULL, NULL, "", 1, _("Program transition time is changed from %f to %f"))
+PROGRAM_ATTR_1SPINNER("don't forgot to change this title", program, transition_value1, program, double, 0.0, 9999.0, 0.1, "%.2f",
+   NULL, NULL, "", 1, _("Program transition value1 is changed from %f to %f"))
+PROGRAM_ATTR_1SPINNER("don't forgot to change this title", program, transition_value2, program, double, 0.0, 9999.0, 0.1, "%.2f",
+   NULL, NULL, "", 1, _("Program transition value1 is changed from %f to %f"))
+PROGRAM_ATTR_1SPINNER("don't forgot to change this title", program, transition_value3, program, double, 0.0, 9999.0, 0.1, "%.2f",
+   NULL, NULL, "", 1, _("Program transition value1 is changed from %f to %f"))
+PROGRAM_ATTR_1SPINNER("don't forgot to change this title", program, transition_value4, program, double, 0.0, 9999.0, 0.1, "%.2f",
+   NULL, NULL, "", 1, _("Program transition value1 is changed from %f to %f"))
+PROGRAM_ATTR_1CHECK(_("from current"), program, transition_from_current, program, "",
+                    _("Program transition attribure 'from current' is changed to %s'"))
 
 COMMON_ENTRY_CALLBACK(program, state, NULL, PROGRAM_ARGS, _("Program action state is changed to '%s'"))
 COMMON_ENTRY_CALLBACK(program, state2, NULL, PROGRAM_ARGS, _("Program action state2 is changed to '%s'"))
@@ -1783,8 +1820,8 @@ _program_action_param_set(Group_Prop_Data *pd, Edje_Action_Type type)
       case EDJE_ACTION_TYPE_STATE_SET:
          item = _prop_action_state_add(pd, box, _("state name"), "");
          elm_box_pack_end(box, item);
-         elm_object_text_set(item, _("state value"));
          item = prop_program_value_add(box, pd);
+         elm_object_text_set(item, _("state value"));
          elm_box_pack_end(box, item);
          break;
       case EDJE_ACTION_TYPE_SIGNAL_EMIT:
@@ -1979,7 +2016,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 static void
 _program_transition_param_set(Group_Prop_Data *pd, Edje_Tween_Mode type)
 {
-   Evas_Object *box;
+   Evas_Object *box, *item;
 
    elm_frame_collapse_set(pd->attributes.program.transition_params, false);
    elm_object_disabled_set(pd->attributes.program.transition_params, false);
@@ -1988,18 +2025,80 @@ _program_transition_param_set(Group_Prop_Data *pd, Edje_Tween_Mode type)
    BOX_ADD(pd->attributes.program.transition_params, box, false, false)
    elm_box_align_set(box, 0.5, 0.0);
    elm_object_content_set(pd->attributes.program.transition_params, box);
-
    switch (type)
      {
-      case EDJE_TWEEN_MODE_NONE:
       case EDJE_TWEEN_MODE_LINEAR:
+         item = prop_program_transition_from_current_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_time_add(box, pd);
+         elm_box_pack_end(box, item);
+         break;
       case EDJE_TWEEN_MODE_ACCELERATE_FACTOR:
       case EDJE_TWEEN_MODE_DECELERATE_FACTOR:
       case EDJE_TWEEN_MODE_SINUSOIDAL_FACTOR:
+         item = prop_program_transition_from_current_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_time_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_value1_add(box, pd);
+         elm_object_text_set(item, "factor");
+         elm_box_pack_end(box, item);
+         break;
       case EDJE_TWEEN_MODE_DIVISOR_INTERP:
+         item = prop_program_transition_from_current_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_time_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_value1_add(box, pd);
+         elm_object_text_set(item, "gradient");
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_value2_add(box, pd);
+         elm_object_text_set(item, "factor");
+         elm_box_pack_end(box, item);
+         break;
       case EDJE_TWEEN_MODE_BOUNCE:
+         item = prop_program_transition_from_current_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_time_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_value1_add(box, pd);
+         elm_object_text_set(item, "decay");
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_value2_add(box, pd);
+         elm_object_text_set(item, "bounces");
+         elm_box_pack_end(box, item);
+         break;
       case EDJE_TWEEN_MODE_SPRING:
+         item = prop_program_transition_from_current_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_time_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_value1_add(box, pd);
+         elm_object_text_set(item, "decay");
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_value2_add(box, pd);
+         elm_object_text_set(item, "swings");
+         elm_box_pack_end(box, item);
+         break;
       case EDJE_TWEEN_MODE_CUBIC_BEZIER:
+         item = prop_program_transition_from_current_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_time_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_value1_add(box, pd);
+         elm_object_text_set(item, "x1");
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_value2_add(box, pd);
+         elm_object_text_set(item, "y1");
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_value3_add(box, pd);
+         elm_object_text_set(item, "x2");
+         elm_box_pack_end(box, item);
+         item = prop_program_transition_value4_add(box, pd);
+         elm_object_text_set(item, "y2");
+         elm_box_pack_end(box, item);
+         break;
+      case EDJE_TWEEN_MODE_NONE:
       default:
          break;
      }
@@ -2291,6 +2390,7 @@ _ui_property_program_set(Evas_Object *property, const char *program)
         prop_program_signal_update(pd);
         prop_program_source_update(pd);
         prop_program_action_update(pd);
+        prop_program_transition_update(pd);
         prop_program_filter_part_update(pd);
         prop_program_filter_state_update(pd);
         prop_program_targets_update(pd);
