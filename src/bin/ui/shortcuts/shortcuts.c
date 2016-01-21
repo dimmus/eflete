@@ -354,6 +354,8 @@ _style_delete_cb(void)
 static Eina_Bool
 _new_theme_cb(void)
 {
+   if (ap.colorsel)
+     evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
    tabs_menu_tab_open(TAB_HOME_NEW_PROJECT);
    return true;
 }
@@ -372,6 +374,8 @@ _open_edc_cb(void)
 static Eina_Bool
 _open_project_cb(void)
 {
+   if (ap.colorsel)
+     evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
    tabs_menu_tab_open(TAB_HOME_OPEN_PROJECT);
    return true;
 }
@@ -379,6 +383,8 @@ _open_project_cb(void)
 static Eina_Bool
 _import_edj_cb(void)
 {
+   if (ap.colorsel)
+     evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
    tabs_menu_tab_open(TAB_HOME_IMPORT_EDJ);
    return true;
 }
@@ -455,6 +461,8 @@ _close_tab_cb(void)
 static Eina_Bool
 _style_editor_open_cb(void)
 {
+   if (ap.colorsel)
+     evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
    if (ap.project)
      tabs_menu_tab_open(TAB_STYLE_EDITOR);
    return true;
@@ -463,6 +471,8 @@ _style_editor_open_cb(void)
 static Eina_Bool
 _image_editor_open_cb(void)
 {
+   if (ap.colorsel)
+     evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
    if (ap.project)
      tabs_menu_tab_open(TAB_IMAGE_EDITOR);
    return true;
@@ -471,6 +481,8 @@ _image_editor_open_cb(void)
 static Eina_Bool
 _sound_editor_open_cb(void)
 {
+   if (ap.colorsel)
+     evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
    if (ap.project)
      tabs_menu_tab_open(TAB_SOUND_EDITOR);
    return true;
@@ -479,6 +491,8 @@ _sound_editor_open_cb(void)
 static Eina_Bool
 _colorclass_manager_open_cb(void)
 {
+   if (ap.colorsel)
+     evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
    if (ap.project)
      tabs_menu_tab_open(TAB_COLORCLASS_EDITOR);
    return true;
