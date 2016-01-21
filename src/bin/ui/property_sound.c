@@ -303,7 +303,6 @@ _play_finished_cb(void *data,
    eo_del(edit->io.in);
    edit->io.in = NULL;
    edit->player_data.playing = false;
-   ecore_main_loop_quit();
    return true;
 }
 
@@ -314,7 +313,6 @@ _out_fail(void *data EINA_UNUSED,
           void *event_info EINA_UNUSED)
 {
    eo_del(output);
-   ecore_main_loop_quit();
    return true;
 }
 
@@ -422,7 +420,6 @@ _tone_play(Sound_Prop_Data *edit, int tone_frq)
 
    edit->player_data.playing = true;
    edit->player_data.timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, edit);
-   ecore_main_loop_begin();
 }
 
 static void
@@ -479,7 +476,6 @@ _add_sound_play(Sound_Prop_Data *edit)
 
    edit->player_data.playing = true;
    edit->player_data.timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, edit);
-   ecore_main_loop_begin();
 }
 
 static void
@@ -542,7 +538,6 @@ _play_sound(Sound_Prop_Data *edit)
      eo_do(edit->io.in, value = ecore_audio_obj_in_seek(value, SEEK_SET));
 
    edit->player_data.timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, edit);
-   ecore_main_loop_begin();
 }
 
 static void
@@ -561,7 +556,6 @@ _interrupt_playing(Sound_Prop_Data *edit)
              ecore_timer_del(edit->player_data.timer);
              edit->player_data.timer = NULL;
           }
-        ecore_main_loop_quit();
         elm_object_part_content_unset(edit->sound_player, "swallow.button.play");
         evas_object_hide(edit->player_data.pause);
         elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.play);
