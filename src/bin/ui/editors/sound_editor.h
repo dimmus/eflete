@@ -38,12 +38,6 @@ TODO("Check pulse_audio on configure and add COREAUDIO support")
 #define SIG_SOUND_SELECTED "sound_selected"
 
 typedef enum {
-   SOUND_EDITOR_EDIT,
-   SOUND_EDITOR_SAMPLE_SELECT,
-   SOUND_EDITOR_TONE_SELECT
-} Sound_Editor_Mode;
-
-typedef enum {
    SOUND_TYPE_SAMPLE,
    SOUND_TYPE_TONE
 } Sound_Type;
@@ -77,16 +71,11 @@ typedef struct {
  * Show the whole inwin window by using some data
  * about loaded project (edj file)
  *
- * @param mode one of the following values:
- * @li SOUND_EDITOR_EDIT editor mode;
- * @li SOUND_EDITOR_SAMPLE_SELECT sample selector mode;
- * @li SOUND_EDITOR_TONE_SELECT tone selector mode.
- *
  * @return the inwin object that contain sound viewer
  *
  * @ingroup Sound_Editor
  */
 Evas_Object *
-sound_editor_window_add(Sound_Editor_Mode mode);
+sound_editor_window_add(void);
 
 #endif  /* SOUND_EDITOR_DIALOG_H */

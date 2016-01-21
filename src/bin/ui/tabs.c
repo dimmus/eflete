@@ -386,7 +386,7 @@ _project_opened(void *data __UNUSED__,
                 void *ei __UNUSED__)
 {
    tabs.menu.content_image_editor = image_editor_window_add(MULTIPLE);
-   tabs.menu.content_sound_editor = sound_editor_window_add(SOUND_EDITOR_EDIT);
+   tabs.menu.content_sound_editor = sound_editor_window_add();
    tabs.menu.content_text_editor = style_editor_window_add();
    tabs.menu.content_colorclass_editor = colorclass_manager_add();
 
