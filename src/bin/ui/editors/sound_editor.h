@@ -74,16 +74,6 @@ typedef struct {
 } Selected_Sound_Data;
 
 /**
- * Delete added sounds from list
- *
- * @param add_snd list with data
- *
- * @ingroup Sound_Editor
- */
-void
-sound_editor_added_sounds_free(Eina_List *add_snd);
-
-/**
  * Show the whole inwin window by using some data
  * about loaded project (edj file)
  *
@@ -98,21 +88,5 @@ sound_editor_added_sounds_free(Eina_List *add_snd);
  */
 Evas_Object *
 sound_editor_window_add(Sound_Editor_Mode mode);
-
-/**
- * This function will select the sound item by it's name. It is very useful
- * with sound property (setting another sound).
- *
- * @param win Pointer to inwin object, which was created with
- * sound_editor_window_add function.
- * @param selected Name of selected sound. If selected param is NULL, this
- * function do nothing.
- *
- * @return EINA_TRUE if successful or EINA_FALSE otherwise.
- *
- * @ingroup Sound_Editor
- */
-Eina_Bool
-sound_editor_file_choose(Evas_Object *win, const char *selected);
 
 #endif  /* SOUND_EDITOR_DIALOG_H */
