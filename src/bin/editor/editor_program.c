@@ -31,7 +31,7 @@ editor_program_transition_type_get(Evas_Object *edit_object, const char *program
    assert(edit_object != NULL);
    assert(program != NULL);
 
-   return edje_edit_program_transition_get(edit_object, program) & EDJE_TWEEN_MODE_MASK;
+   return edje_edit_program_transition_get(edit_object, program) & ~(EDJE_TWEEN_MODE_OPT_FROM_CURRENT);
 }
 
 Eina_Bool
@@ -40,7 +40,10 @@ editor_program_transition_from_current_get(Evas_Object *edit_object, const char 
    assert(edit_object != NULL);
    assert(program != NULL);
 
-   return edje_edit_program_transition_get(edit_object, program) & EDJE_TWEEN_MODE_OPT_FROM_CURRENT;
+   if (edje_edit_program_transition_get(edit_object, program) & EDJE_TWEEN_MODE_OPT_FROM_CURRENT)
+     return true;
+   else
+     return false;
 }
 
 Eina_Bool
