@@ -1000,6 +1000,29 @@ COMMON_1SPINNER_ADD(PROGRAM, TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
    COMMON_1SPINNER_UPDATE(SUB, VALUE2, MEMBER, TYPE,  MULTIPLIER, PROGRAM_ARGS)
 
 /*****************************************************************************/
+/*                       PROGRAM 1 CHECK CONTROL                             */
+/*****************************************************************************/
+/**
+ * Macro defines a functions that create an item with label and 1 check
+ *
+ * @see COMMON_2CHECK_ADD
+ *
+ * @ingroup Property_Macro
+ */
+#define PROGRAM_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
+   COMMON_CHECK_ADD(PROGRAM, TEXT, SUB, VALUE, MEMBER, TOOLTIP, PROGRAM_ARGS)
+
+/**
+ * Macro defines a callback for attribute that controled by check.
+ *
+ * @see COMMON_CHECK_CALLBACK
+ *
+ * @ingroup Property_Macro
+ */
+#define PROGRAM_ATTR_CHECK_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
+   COMMON_CHECK_CALLBACK(SUB, VALUE, MEMBER, PROGRAM_ARGS, DESCRIPTION)
+
+/*****************************************************************************/
 /*                         PART 1 CHECK CONTROL                              */
 /*****************************************************************************/
 /**
