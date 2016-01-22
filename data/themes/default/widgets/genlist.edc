@@ -427,6 +427,81 @@ group { name: "elm/genlist/tree/default/default";
             visible: 0;
          }
       }
+      part { name: "elm.text";
+         type: TEXT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            min: 0 26;
+            color_class: "main";
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 0;
+               to_x: "arrow";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -7 -1;
+               to_x: "elm.swallow.penult";
+            }
+            text {
+               font: "PT";
+               size: 12;
+               align: 0.0 0.5;
+            }
+         }
+         description { state: "hide" 0.0;
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      part { name: "elm.swallow.penult";
+         type: SWALLOW;
+         repeat_events: 0;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               offset: 0 3;
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -7 -4;
+               to_x: "elm.swallow.end";
+            }
+         }
+      }
+      part { name: "elm.swallow.end";
+         type: SWALLOW;
+         repeat_events: 0;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 0 3;
+            }
+            rel2 {
+               offset: -7 -4;
+            }
+         }
+         description { state: "hide" 0.0;
+            inherit: "default";
+            visible: 0;
+         }
+      }
+      part { name: "disclip";
+         type: RECT;
+         repeat_events: 0;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+         description { state: "hide" 0.0;
+            inherit: "default";
+            visible: 0;
+         }
+      }
       part { name: "arrow";
          type: IMAGE;
          description { state: "default" 0.0;
@@ -460,81 +535,6 @@ group { name: "elm/genlist/tree/default/default";
                normal: "icon_arrow_down.png";
                middle: DEFAULT;
             }
-         }
-      }
-      part { name: "elm.text";
-         type: TEXT;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            min: 0 26;
-            color_class: "main";
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 6 0;
-               to_x: "arrow";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               offset: -7 -1;
-               to_x: "elm.swallow.penult";
-            }
-            text {
-               font: "PT";
-               size: 12;
-               align: 0.0 0.5;
-            }
-         }
-         description { state: "hide" 0.0;
-            inherit: "default";
-            visible: 0;
-         }
-      }
-      part { name: "elm.swallow.penult";
-         type: SWALLOW;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            aspect: 1.0 1.0;
-            aspect_preference: VERTICAL;
-            rel1 {
-               offset: 0 3;
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               offset: -7 -4;
-               to_x: "elm.swallow.end";
-            }
-         }
-      }
-      part { name: "elm.swallow.end";
-         type: SWALLOW;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            aspect: 1.0 1.0;
-            aspect_preference: VERTICAL;
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 0 3;
-            }
-            rel2 {
-               offset: -7 -4;
-            }
-         }
-         description { state: "hide" 0.0;
-            inherit: "default";
-            visible: 0;
-         }
-      }
-      part { name: "disclip";
-         type: RECT;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            color: 255 255 255 0;
-         }
-         description { state: "hide" 0.0;
-            inherit: "default";
-            visible: 0;
          }
       }
    }
