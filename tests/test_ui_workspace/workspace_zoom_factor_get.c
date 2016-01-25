@@ -73,9 +73,9 @@ ck_assert(false);
    //blocks_show();
    //style = wm_style_object_find(ap.project->widgets, "elm/radio/base/def");
    //ui_style_clicked(style);
-   workspace_zoom_factor_set(ap.workspace, 1.5);
+//   workspace_zoom_factor_set(ap.workspace, 1.5);
 
-   ck_assert_msg(workspace_zoom_factor_get(ap.workspace) == 1.5, "Failed get zoom factor");
+//   ck_assert_msg(workspace_zoom_factor_get(ap.workspace) == 1.5, "Failed get zoom factor");
 
    pm_project_close(ap.project);
    ap.project = NULL;
