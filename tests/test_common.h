@@ -17,6 +17,8 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#include "project_manager.h"
+
 static void
 _test_end_cb(void *data __UNUSED__,
       PM_Project_Result result __UNUSED__)
