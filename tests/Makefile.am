@@ -17,7 +17,6 @@ image_editor_test \
 logger_test \
 container_test \
 modal_window_test \
-notify_test \
 project_manager_test \
 config_test \
 cursor_test \
@@ -207,14 +206,6 @@ modal_window_test_SOURCES =  \
 ../tests/test_modal_window/mw_icon_set.c
 modal_window_test_CFLAGS = ${FLAGS}
 modal_window_test_LDADD = ${LD}
-
-notify_test_SOURCES = \
-../tests/test_notify/test_notify.c \
-../tests/test_notify/noti_error_show_test.c \
-../tests/test_notify/noti_warning_show_test.c \
-../tests/test_notify/noti_info_show_test.c
-notify_test_CFLAGS = ${FLAGS}
-notify_test_LDADD = ${LD}
 
 project_manager_test_SOURCES = \
 ../tests/test_project_manager/test_project_manager.c \
