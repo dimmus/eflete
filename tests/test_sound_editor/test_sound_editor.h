@@ -27,10 +27,4 @@
 
 #define TEST_NAME "sound_editor"
 
-void sound_editor_window_add_test_p1(int);
-void sound_editor_window_add_test_p2(int);
-void sound_editor_window_add_test_p3(int);
-void sound_editor_added_sounds_free_test_n(int);
-
-void sound_editor_file_choose_test_p(int);
-void sound_editor_file_choose_test_n3(int);
+void sound_editor_window_add_test_p(int);
