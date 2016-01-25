@@ -89,7 +89,7 @@ EFLETE_TEST (history_undo_redo_test_p)
    Group *group = mem_calloc(1, sizeof(Group));
    pseudo_object = group->edit_object = (Evas_Object *) &sense;
    change = change_add("test");
-   History_ *history = history_add(group);
+   History *history = history_add(group);
    d1 = mem_calloc(1, sizeof(Diff));
    d1->undo.type = FUNCTION_TYPE_INT;
    d1->undo.function = _function_type_int_undo_return_true;
@@ -101,9 +101,9 @@ EFLETE_TEST (history_undo_redo_test_p)
    history_change_add(history, change);
    history_change_add(history, change);
 
-   ck_assert(history_undo_(history) == true);
+   ck_assert(history_undo(history) == true);
    ck_assert(_function_type_int_undo_return_true_called == 1);
-   ck_assert(history_redo_(history) == true);
+   ck_assert(history_redo(history) == true);
    ck_assert(_function_type_int_redo_return_true_called == 1);
    ck_assert(history_undo_all(history) == true);
    ck_assert(_function_type_int_undo_return_true_called == 3);

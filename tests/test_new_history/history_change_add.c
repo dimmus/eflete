@@ -59,7 +59,7 @@ EFLETE_TEST (history_change_add_test_p)
    group->edit_object = (Evas_Object *) &sense;
    change = change_add("test");
 
-   History_ *history = history_add(group);
+   History *history = history_add(group);
    history_change_add(history, change);
 
    eina_shutdown();
