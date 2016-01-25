@@ -17,8 +17,9 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "logger.h"
+#include "eflete.h"
 #include "utc_common.h"
+#include "logger.h"
 
 /**
  * @defgroup test_logger
