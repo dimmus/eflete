@@ -1380,8 +1380,6 @@ _add_##PARAM(void *data, \
      { \
         EINA_LIST_FOREACH(pd->group->programs, l, program) \
           { \
-             if (program->name == pd->attributes.program.program) \
-               continue; \
              ewe_combobox_item_add(combo, program->name); \
           } \
      } \
@@ -1452,18 +1450,17 @@ prop_program_##PARAM##_add(Evas_Object *parent, Group_Prop_Data *pd) \
    EWE_COMBOBOX_ADD(item, combo); \
    ewe_combobox_text_set(combo, _("None")); \
    /* fill up with part and program list */ \
-   EINA_LIST_FOREACH(pd->group->parts, l, part) \
-     { \
-        ewe_combobox_item_add(combo, part->name); \
-     } \
+   if (ISNOTAFTER) \
+     EINA_LIST_FOREACH(pd->group->parts, l, part) \
+       { \
+          ewe_combobox_item_add(combo, part->name); \
+       } \
    Edje_Action_Type type = edje_edit_program_action_get(pd->group->edit_object, \
                                                         pd->attributes.program.program); \
-   if (type == EDJE_ACTION_TYPE_ACTION_STOP) \
+   if ((type == EDJE_ACTION_TYPE_ACTION_STOP) || (!ISNOTAFTER))\
      { \
         EINA_LIST_FOREACH(pd->group->programs, l, program) \
           { \
-             if (program->name == pd->attributes.program.program) \
-               continue; \
              ewe_combobox_item_add(combo, program->name); \
           } \
      } \
