@@ -35,7 +35,7 @@
  * @{
  * <tr>
  * <td>sound_editor_window_add</td>
- * <td>sound_editor_window_add_test_p1</td>
+ * <td>sound_editor_window_add_test_p</td>
  * <td>
  * @precondition
  * @step 1 init elemantary
@@ -47,12 +47,12 @@
  * @step 1 Call sound_editor_window_add()
  * @step 2 Check returned pointer
  * </td>
- * <td>(Project *) project, SOUND_EDITOR_EDIT</td>
+ * <td>No data</td>
  * <td>returned pointer is not NULL</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(sound_editor_window_add_test_p1)
+EFLETE_TEST(sound_editor_window_add_test_p)
 {
    elm_init(0,0);
 
@@ -60,100 +60,14 @@ EFLETE_TEST(sound_editor_window_add_test_p1)
 
    app_init();
    ui_main_window_add();
-   ap.project = setup("sound_editor_window_add_test_p1");
+   ap.project = setup("sound_editor_window_add_test_p");
 
-   sounds = sound_editor_window_add(SOUND_EDITOR_EDIT);
-   ck_assert_msg(sounds != NULL, "cannot create sound editor window in SOUND_EDITOR_EDIT mode");
-
-   evas_object_del(sounds);
-   app_shutdown();
-   teardown("./sound_editor_window_add_test_p1");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup sound_editor_window_add
- * @{
- * <tr>
- * <td>sound_editor_window_add</td>
- * <td>sound_editor_window_add_test_p2</td>
- * <td>
- * @precondition
- * @step 1 init elemantary
- * @step 2 init app
- * @step 3 create main window
- * @step 4 load project
- *
- * @procedure
- * @step 1 call sound_editor_window_add
- * @step 2 check returned value
- *
- * </td>
- * <td>(Project *) project, SOUND_EDITOR_SAMPLE_SELECT</td>
- * <td>Not NULL Pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (sound_editor_window_add_test_p2)
-{
-   elm_init(0,0);
-
-   app_init();
-   Evas_Object *sounds;
-
-   ap.project = setup("sound_editor_window_add_test_p2");
-   ui_main_window_add();
-
-   sounds = sound_editor_window_add(SOUND_EDITOR_SAMPLE_SELECT);
-   ck_assert_msg(sounds != NULL, "cannot create sound editor window in SOUND_EDITOR_SAMPLE_SELECT mode");
+   sounds = sound_editor_window_add();
+   ck_assert_msg(sounds != NULL, "cannot create sound editor window");
 
    evas_object_del(sounds);
    app_shutdown();
-   teardown("./sound_editor_window_add_test_p2");
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup sound_editor_window_add
- * @{
- * <tr>
- * <td>sound_editor_window_add</td>
- * <td>sound_editor_window_add_test_p3</td>
- * <td>
- * @precondition
- * @step 1 init elemantary
- * @step 2 init app
- * @step 3 create main window
- * @step 4 load project
- *
- * @procedure
- * @step 1 call sound_editor_window_add
- * @step 2 check returned value
- *
- * </td>
- * <td>(Project *) project, SOUND_EDITOR_TONE_SELECT</td>
- * <td>Not NULL Pointer returned</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (sound_editor_window_add_test_p3)
-{
-   elm_init(0,0);
-
-   app_init();
-   Evas_Object *sounds;
-
-   ap.project = setup("sound_editor_window_add_test_p3");
-   ui_main_window_add();
-
-   sounds = sound_editor_window_add(SOUND_EDITOR_TONE_SELECT);
-   ck_assert_msg(sounds != NULL, "cannot create sound editor window in SOUND_EDITOR_TONE_SELECT mode");
-
-   evas_object_del(sounds);
-   app_shutdown();
-   teardown("./sound_editor_window_add_test_p3");
+   teardown("./sound_editor_window_add_test_p");
    elm_shutdown();
 }
 END_TEST
