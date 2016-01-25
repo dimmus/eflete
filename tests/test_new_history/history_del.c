@@ -56,7 +56,7 @@ EFLETE_TEST (history_del_test_p1)
    Group *group = mem_calloc(1, sizeof(Group));
    group->edit_object = (Evas_Object *) &sense;
 
-   History_ *history = history_add(group);
+   History *history = history_add(group);
    history_del(history);
 
    eina_shutdown();
@@ -93,7 +93,7 @@ EFLETE_TEST (history_del_test_p2)
    group->edit_object = (Evas_Object *) &sense;
    change = change_add("test");
 
-   History_ *history = history_add(group);
+   History *history = history_add(group);
    history_change_add(history, change);
    history_del(history);
 

@@ -21,6 +21,8 @@
 #include "utc_common.h"
 #include "config.h"
 #include "history.h"
+#include "change.h"
+#include "diff.h"
 
 void history_add_test_p(int);
 void history_del_test_p1(int);
