@@ -2287,8 +2287,6 @@ _on_program_filter_part_change(void *data,
    /* making change */
    Change *change = change_add(msg);
    eina_stringshare_del(msg);
-   editor_program_filter_part_set(pd->group->edit_object, change, false PROGRAM_ARGS,
-         isNone ? NULL : item->title);
 
    if (isNone)
      {
@@ -2302,6 +2300,10 @@ _on_program_filter_part_change(void *data,
         editor_program_filter_state_set(pd->group->edit_object, change, false PROGRAM_ARGS,
                                         state->parsed_name);
      }
+
+   editor_program_filter_part_set(pd->group->edit_object, change, false PROGRAM_ARGS,
+         isNone ? NULL : item->title);
+
    history_change_add(pd->group->history, change);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
    prop_program_filter_state_update(pd);
@@ -2314,7 +2316,7 @@ _on_program_filter_state_change(void *data,
    Group_Prop_Data *pd = (Group_Prop_Data *)data;
    Ewe_Combobox_Item *item = ei;
    Eina_Bool isNone = false;
-   Eina_Stringshare *old_val = edje_edit_program_filter_part_get(pd->group->edit_object
+   Eina_Stringshare *old_val = edje_edit_program_filter_state_get(pd->group->edit_object
          PROGRAM_ARGS);
    if (((item->index != 0) && (item->title == old_val)) /*stringshares*/ ||
        ((item->index == 0) && (old_val == NULL)))
@@ -2323,6 +2325,7 @@ _on_program_filter_state_change(void *data,
        return;
      }
    eina_stringshare_del(old_val);
+
    isNone = !strcmp(item->title, _("None"));
    Eina_Stringshare *msg = eina_stringshare_printf(_("filter state changed to \"%s\""),
                                                    isNone ? NULL : item->title);
