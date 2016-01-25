@@ -26,8 +26,6 @@ ui_main_window_test \
 groupedit_test \
 ui_workspace_test \
 animator_test \
-live_view_test \
-live_view_prop_test \
 live_widget_test \
 about_window_test \
 colorselector_test \
@@ -340,20 +338,6 @@ animator_test_SOURCES = \
 ../tests/test_animator/animator_window_add_test.c
 animator_test_CFLAGS = ${FLAGS}
 animator_test_LDADD = ${LD}
-
-live_view_test_SOURCES = \
-../tests/test_live_view/test_live_view.c \
-../tests/test_live_view/live_view_add.c \
-../tests/test_live_view/live_view_theme_update.c
-live_view_test_CFLAGS = ${FLAGS}
-live_view_test_LDADD = ${LD}
-
-live_view_prop_test_SOURCES = \
-../tests/test_live_view_prop/test_live_view_prop.c \
-../tests/test_live_view_prop/live_view_property_add.c \
-../tests/test_live_view_prop/live_view_property_free.c
-live_view_prop_test_CFLAGS = ${FLAGS}
-live_view_prop_test_LDADD = ${LD}
 
 live_widget_test_SOURCES = \
 ../tests/test_live_widget/test_live_widget.c \
