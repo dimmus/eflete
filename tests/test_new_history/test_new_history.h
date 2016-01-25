@@ -17,9 +17,10 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#include "group_manager.h"
 #include "utc_common.h"
 #include "config.h"
-#include "new_history.h"
+#include "history.h"
 
 void history_add_test_p(int);
 void history_del_test_p1(int);
