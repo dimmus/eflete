@@ -20,6 +20,7 @@
 #include "utc_common.h"
 #include "config.h"
 #include "change.h"
+#include "diff.h"
 
 void change_add_test_p(int);
 void change_free_test_p(int);
