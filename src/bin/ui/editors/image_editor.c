@@ -406,6 +406,7 @@ _on_button_delete_clicked_cb(void *data,
         WARN("%s", buf);
      }
 
+   evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, NULL);
    editor_save(ap.project->global_object);
    TODO("Remove this line once edje_edit_image_del would be added into Editor Modulei and saving would work properly")
    ap.project->changed = true;
