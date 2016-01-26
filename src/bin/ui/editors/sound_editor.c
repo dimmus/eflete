@@ -125,17 +125,22 @@ _sound_format_get(Eina_Stringshare *snd_src)
 static void
 _grid_sel_sample(void *data,
                  Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+                 void *event_info)
 {
    Sound_Editor *edit = (Sound_Editor *)data;
    Selected_Sound_Data *snd_data = mem_calloc(1, sizeof(Selected_Sound_Data));
+   External_Resource *res;
+   const Item *item;
 
    assert(edit != NULL);
 
    snd_data->markup = edit->markup;
    snd_data->gengrid = edit->gengrid;
    snd_data->sound_type = SOUND_TYPE_SAMPLE;
-   elm_object_disabled_set(edit->btn_del, false);
+
+   item = elm_object_item_data_get((Elm_Gengrid_Item *)event_info);
+   res = pm_resource_get(ap.project->sounds, item->sound_name);
+   if (!res->used_in) elm_object_disabled_set(edit->btn_del, false);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_SELECT, snd_data);
 }
@@ -146,6 +151,8 @@ _grid_sel_tone(void *data,
                void *event_info __UNUSED__) {
    Sound_Editor *edit = (Sound_Editor *)data;
    Selected_Sound_Data *snd_data = mem_calloc(1, sizeof(Selected_Sound_Data));
+   External_Resource *res;
+   const Item *item;
 
    assert(edit != NULL);
 
@@ -154,6 +161,10 @@ _grid_sel_tone(void *data,
    snd_data->sound_type = SOUND_TYPE_TONE;
    snd_data->tone = edit->tone;
    elm_object_disabled_set(edit->btn_del, false);
+
+   item = elm_object_item_data_get((Elm_Gengrid_Item *)event_info);
+   res = pm_resource_get(ap.project->tones, item->sound_name);
+   if (!res->used_in) elm_object_disabled_set(edit->btn_del, false);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_SELECT, snd_data);
 }
@@ -522,18 +533,11 @@ _on_delete_clicked_cb(void *data,
    Sound_Editor *edit = (Sound_Editor *)data;
    External_Resource *res;
    char buf[BUFF_MAX];
-   int symbs = 0, notdeleted = 0, selected = 0;
+   int symbs = 0, notdeleted = 0;
 
    assert(edit != NULL);
 
    list = (Eina_List *)elm_gengrid_selected_items_get(edit->gengrid);
-   selected = eina_list_count(list);
-
-   if ((!list) || (!selected))
-     {
-        WARN("No selected items");
-        return;
-     }
 
    snprintf(buf, BUFF_MAX, _("Unable to delete: "));
    symbs = strlen(buf);
