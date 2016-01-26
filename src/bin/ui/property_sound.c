@@ -1025,7 +1025,7 @@ ui_property_sound_add(Evas_Object *parent)
    FRAME_PROPERTY_ADD(pd->box, pd->info_frame, true, _("Info"), pd->box)
    _sound_info_create(parent, pd);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_ADD, _on_grid_clicked, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_SELECT, _on_grid_clicked, pd);
 
    return pd->box;
 }
