@@ -308,6 +308,7 @@ _on_image_selected(void *data,
 
         image_name = evas_object_data_get(image, "image_name");
         pd->selected_image = image_name;
+        elm_object_text_set(pd->name, image_name);
 
         comp =  edje_edit_image_compression_type_get(ap.project->global_object, image_name);
         if (comp != EDJE_EDIT_IMAGE_COMP_USER)
