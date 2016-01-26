@@ -20,7 +20,6 @@
 #include "main_window.h"
 #include "preference.h"
 #include "style_editor.h"
-#include "image_editor.h"
 #include "sound_editor.h"
 #include "animator.h"
 #include "about_window.h"
