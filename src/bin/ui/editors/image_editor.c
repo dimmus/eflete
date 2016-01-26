@@ -324,7 +324,7 @@ _on_button_add_clicked_cb(void *data,
                           void *event_info __UNUSED__)
 {
    popup_fileselector_image_helper(NULL,
-                                   obj,
+                                   NULL,
                                    NULL,
                                    _on_image_done,
                                    data,
