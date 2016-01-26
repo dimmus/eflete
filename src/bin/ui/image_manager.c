@@ -358,12 +358,7 @@ _on_button_delete_clicked_cb(void *data,
    Elm_Object_Item *grid_item = NULL;
    Item *it = NULL;
    Eina_List *grid_list, *l, *l2;
-   int notdeleted = 0;
-   Eina_List * in_use = NULL;
-   char buf[BUFF_MAX];
-   int symbs = 0;
    External_Resource *res;
-   State *state;
 
    assert(img_mng != NULL);
    assert(img_mng->gengrid != NULL);
@@ -384,43 +379,7 @@ _on_button_delete_clicked_cb(void *data,
              ap.project->images = pm_resource_del(ap.project->images, res);
           }
         else
-          {
-             notdeleted++;
-             if (notdeleted < 4)
-                in_use = eina_list_append(in_use, res);
-             elm_gengrid_item_selected_set(grid_item, false);
-          }
-     }
-   if (notdeleted == 1)
-     {
-        res = eina_list_nth(in_use, 0);
-
-        snprintf(buf, BUFF_MAX, _("Image is used in:"));
-        symbs = strlen(buf);
-        EINA_LIST_FOREACH(res->used_in, l, state)
-          {
-             snprintf(buf + symbs, BUFF_MAX - symbs, _("<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"),
-                      state->part->group->name, state->part->name, state->parsed_name, state->parsed_val);
-             symbs += strlen(res->name);
-             break; TODO("remove this break after warning style remake")
-          }
-        WARN("%s", buf);
-     }
-   else if (notdeleted >1)
-     {
-        snprintf(buf, BUFF_MAX, NGETTEXT("%d image in use:",
-                                         "%d images in use:",
-                                         notdeleted),
-                 notdeleted);
-        symbs = strlen(buf);
-        EINA_LIST_FOREACH(in_use, l, res)
-          {
-             snprintf(buf + symbs, BUFF_MAX - symbs, "<br>%s", res->name);
-             symbs += strlen(res->name);
-          }
-        if (notdeleted >= 4)
-           snprintf(buf + symbs, BUFF_MAX - symbs, "<br>...");
-        WARN("%s", buf);
+          elm_gengrid_item_selected_set(grid_item, false);
      }
 
    evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, NULL);
