@@ -585,6 +585,7 @@ _on_delete_clicked_cb(void *data,
    TODO("Remove this line once edje_edit_sound_..._del would be added into Editor Modulei and saving would work properly")
    ap.project->changed = true;
 
+   evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_UNSELECTED, NULL);
 }
 
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, "elm.label")
