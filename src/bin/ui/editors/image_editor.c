@@ -58,6 +58,7 @@ struct _Image_Editor
    Evas_Object *win;
    Evas_Object *gengrid;
    Evas_Object *layout;
+   Evas_Object *del_button;
    Search_Data image_search_data;
 };
 
@@ -219,6 +220,11 @@ _grid_sel(void *data,
 
    const Eina_List* sel_list = elm_gengrid_selected_items_get(img_edit->gengrid);
    int selected_images_count = eina_list_count(sel_list);
+
+   if (selected_images_count == 0)
+     elm_object_disabled_set(img_edit->del_button, true);
+   else
+     elm_object_disabled_set(img_edit->del_button, false);
 
    if (selected_images_count == 1)
      {
@@ -554,15 +560,16 @@ image_editor_window_add(Image_Editor_Mode mode)
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.add_btn", button);
 
-   button = elm_button_add(img_edit->layout);
-   evas_object_show(button);
-   ic = elm_icon_add(button);
+   img_edit->del_button = elm_button_add(img_edit->layout);
+   evas_object_show(img_edit->del_button);
+   ic = elm_icon_add(img_edit->del_button);
    elm_icon_standard_set(ic, "minus");
-   elm_object_part_content_set(button, NULL, ic);
-   evas_object_smart_callback_add(button, "clicked",
+   elm_object_part_content_set(img_edit->del_button, NULL, ic);
+   evas_object_smart_callback_add(img_edit->del_button, "clicked",
                                   _on_button_delete_clicked_cb, img_edit);
    elm_object_part_content_set(img_edit->layout,
-                               "eflete.swallow.del_btn", button);
+                               "eflete.swallow.del_btn", img_edit->del_button);
+   elm_object_disabled_set(img_edit->del_button, true);
 
    // Search line add
    search_entry = _image_editor_search_field_create(img_edit->layout);
