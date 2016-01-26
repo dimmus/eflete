@@ -38,16 +38,13 @@ typedef enum {
 } Image_Editor_Mode;
 
 /**
- * Add new image editor inwin object.
+ * Add new image editor layout for setting into tab.
  *
- * @param mode its enumerate: SINGLE if single-selection mode,
- *             MULTIPLE if multi-selection mode.
- *
- * @return Pointer to inwin object, which contain image grid and buttons.
+ * @return Pointer to layout object, which contain image grid and buttons.
  *
  * @ingroup ImageEditor
  */
 Evas_Object *
-image_editor_window_add(Image_Editor_Mode mode);
+image_manager_add(void);
 
 #endif /*IMAGE_EDITOR_H*/

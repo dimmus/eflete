@@ -504,7 +504,7 @@ _image_editor_init(Image_Editor *img_edit)
 }
 
 Evas_Object *
-image_editor_window_add(Image_Editor_Mode mode)
+image_manager_add()
 {
    Evas_Object *button;
    Evas_Object *ic = NULL;
@@ -525,22 +525,9 @@ image_editor_window_add(Image_Editor_Mode mode)
    elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_OFF);
 
-   if (mode == SINGLE)
-     {
-        elm_gengrid_multi_select_set(img_edit->gengrid, false);
-     }
-   else if (mode == MULTIPLE)
-     {
-        elm_gengrid_multi_select_set(img_edit->gengrid, true);
-        elm_gengrid_multi_select_mode_set(img_edit->gengrid,
-                                          ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
-     }
-   else if (mode == TWEENS)
-     {
-        elm_gengrid_multi_select_set(img_edit->gengrid, true);
-        elm_gengrid_multi_select_mode_set(img_edit->gengrid,
-                                          ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
-     }
+   elm_gengrid_multi_select_set(img_edit->gengrid, true);
+   elm_gengrid_multi_select_mode_set(img_edit->gengrid,
+                                     ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
 
    elm_gengrid_select_mode_set(img_edit->gengrid, ELM_OBJECT_SELECT_MODE_ALWAYS);
    evas_object_size_hint_weight_set(img_edit->gengrid,
