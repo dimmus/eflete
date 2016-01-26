@@ -1029,8 +1029,8 @@ group { name: "elm/layout/animator/program_area";
 #define BTNS_LARGE_SIZE_SET SET_SIZE(80, 25)
 #define BTNS_SMALL_SIZE_SET SET_SIZE(30, 22)
 
-
-group { name: "elm/layout/image_manager/default";
+group { name: "elm/layout/image_editor/default";
+   alias: "elm/layout/sound_editor/default";
    parts {
       part { name: "area.edit";
          type: SPACER;
@@ -1215,106 +1215,6 @@ group { name: "elm/layout/image_manager/usage_info";
                relative: 0.0 1.0;
             }
             rel2.to: "area.usage_info";
-         }
-      }
-   }
-}
-
-group { name: "elm/layout/sound_editor/default";
-   parts {
-      part { name: "area.edit";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            fixed: 1 1;
-            min: 37 25;
-            max: -1 25;
-            rel1 {
-               offset: 0 2;
-            }
-            rel2 {
-               relative: 1.0 0.0;
-            }
-         }
-      }
-      part { name: "padding.edit_area";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 1.0;
-            FIXED_SIZE(5, 5);
-            rel2 {
-               relative: 0.0 1.0;
-               to: "area.edit";
-            }
-         }
-      }
-      part { name: "gengrid";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            fixed: 1 1;
-            rel1 {
-               relative: 0.0 1.0;
-               to_y: "area.edit";
-            }
-         }
-      }
-      part { name: "swallow.search_area";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            min: 100 30;
-            max: 350 30;
-            fixed: 1 1;
-            rel1.to: "area.edit";
-            rel2 {
-               relative: 0.6 1.0;
-               to: "area.edit";
-            }
-         }
-      }
-      part { name: "swallow.btn.add";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            FIXED_SIZE(31, 21);
-            rel1.to_y: "area.edit";
-            rel2.to: "area.edit";
-         }
-      }
-      part { name: "btn_spacer";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            FIXED_SIZE(5, 5);
-            rel2 {
-               relative: 0.0 1.0;
-               to: "swallow.btn.add";
-            }
-         }
-      }
-      part { name: "swallow.btn.del";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            SET_SIZE(31, 21);
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 10 0;
-               to_x: "swallow.search_area";
-               to_y: "area.edit";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "btn_spacer";
-               to_y: "area.edit";
-            }
          }
       }
    }

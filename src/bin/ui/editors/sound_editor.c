@@ -238,7 +238,7 @@ _create_gengrid(Evas_Object *parent, Sound_Editor *editor)
    _gengrid_content_fill(editor);
 
    evas_object_show(editor->gengrid);
-   elm_object_part_content_set(editor->markup, "gengrid", editor->gengrid);
+   elm_object_part_content_set(editor->markup, "eflete.swallow.grid", editor->gengrid);
 }
 
 static inline Evas_Object *
@@ -644,7 +644,7 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
 
    edit->btn_del = elm_button_add(edit->markup);
    evas_object_smart_callback_add(edit->btn_del, "clicked", _on_delete_clicked_cb, edit);
-   elm_object_part_content_set(edit->markup, "swallow.btn.del", edit->btn_del);
+   elm_object_part_content_set(edit->markup, "eflete.swallow.del_btn", edit->btn_del);
 
    ic = elm_icon_add(edit->btn_del);
    elm_icon_standard_set(ic, "minus");
@@ -656,11 +656,11 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    ewe_combobox_item_add(edit->add_cmb, _("Sample"));
    ewe_combobox_item_add(edit->add_cmb, _("Tone"));
    evas_object_smart_callback_add(edit->add_cmb, "selected", _on_cmb_sel, edit);
-   elm_object_part_content_set(edit->markup, "swallow.btn.add", edit->add_cmb);
+   elm_object_part_content_set(edit->markup, "eflete.swallow.add_btn", edit->add_cmb);
 
    search = _sound_editor_search_field_create(edit->markup);
    evas_object_hide(search);
-   elm_layout_content_set(edit->markup, "swallow.search_area", search);
+   elm_layout_content_set(edit->markup, "eflete.swallow.search_area", search);
    evas_object_smart_callback_add(search, "changed", _search_changed, edit);
    evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, edit);
    evas_object_smart_callback_add(edit->gengrid, "pressed", _search_reset_cb,
