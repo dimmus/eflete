@@ -421,5 +421,14 @@ project_export_edc_project(void);
 void
 project_export_edc_group(void);
 
+/**
+ * Add new image editor layout for setting into tab.
+ *
+ * @return Pointer to layout object, which contain image grid and buttons.
+ *
+ * @ingroup Window
+ */
+Evas_Object *
+image_manager_add(void);
 
 #endif /* UI_MAIN_WINDOW_H */

@@ -17,15 +17,12 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "image_editor.h"
 #include "main_window.h"
 #include "project_manager.h"
 
-TODO("Rename this file to image_manager")
-
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
-#define IMG_EDIT_KEY "image_editor_key"
+#define IMG_MANAGER_KEY "image_manager_key"
 
 typedef struct _Image_Editor Image_Editor;
 typedef struct _Search_Data Search_Data;
@@ -99,8 +96,8 @@ _image_editor_del(Image_Editor *img_edit)
 
    elm_gengrid_item_class_free(gic);
    gic = NULL;
-   evas_object_data_del(img_edit->layout, IMG_EDIT_KEY);
-   evas_object_data_del(img_edit->gengrid, IMG_EDIT_KEY);
+   evas_object_data_del(img_edit->layout, IMG_MANAGER_KEY);
+   evas_object_data_del(img_edit->gengrid, IMG_MANAGER_KEY);
    //evas_object_del(img_edit->gengrid);
    free(img_edit);
 }
@@ -585,8 +582,8 @@ image_manager_add()
         ERR("Filed initialize image editor");
         abort();
      }
-   evas_object_data_set(img_edit->gengrid, IMG_EDIT_KEY, img_edit);
-   evas_object_data_set(img_edit->layout, IMG_EDIT_KEY, img_edit);
+   evas_object_data_set(img_edit->gengrid, IMG_MANAGER_KEY, img_edit);
+   evas_object_data_set(img_edit->layout, IMG_MANAGER_KEY, img_edit);
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_event_callback_add(img_edit->layout, EVAS_CALLBACK_DEL, _on_image_editor_del, img_edit);
@@ -596,4 +593,4 @@ image_manager_add()
 
 #undef ITEM_WIDTH
 #undef ITEM_HEIGHT
-#undef IMG_EDIT_KEY
+#undef IMG_MANAGER_KEY
