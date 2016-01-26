@@ -22,8 +22,6 @@
 #include "modal_window.h"
 #include "config.h"
 
-TODO("Rename this file to sound_manager")
-
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
 #define SND_EDIT_KEY "sound_editor_key"
@@ -50,6 +48,7 @@ struct _Sound_Editor
    Evas_Object *popup;
    Evas_Object *popup_btn_add;
    Evas_Object *add_cmb;
+   Evas_Object *btn_del;
    Evas_Object *tone_entry, *frq_entry;
    Elm_Validator_Regexp *tone_validator, *frq_validator;
    Evas_Object *gengrid;
@@ -144,6 +143,7 @@ _grid_sel_sample(void *data,
    snd_data->markup = edit->markup;
    snd_data->gengrid = edit->gengrid;
    snd_data->sound_type = SOUND_TYPE_SAMPLE;
+   elm_object_disabled_set(edit->btn_del, false);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_ADD, snd_data);
 }
@@ -151,8 +151,7 @@ _grid_sel_sample(void *data,
 static void
 _grid_sel_tone(void *data,
                Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
-{
+               void *event_info __UNUSED__) {
    Sound_Editor *edit = (Sound_Editor *)data;
    Selected_Sound_Data *snd_data = mem_calloc(1, sizeof(Selected_Sound_Data));
 
@@ -162,6 +161,7 @@ _grid_sel_tone(void *data,
    snd_data->gengrid = edit->gengrid;
    snd_data->sound_type = SOUND_TYPE_TONE;
    snd_data->tone = edit->tone;
+   elm_object_disabled_set(edit->btn_del, false);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_ADD, snd_data);
 }
@@ -631,7 +631,7 @@ _search_reset_cb(void *data __UNUSED__,
 static void
 _sound_editor_main_markup_create(Sound_Editor *edit)
 {
-   Evas_Object *btn, *ic, *search;
+   Evas_Object *ic, *search;
 
    assert(edit != NULL);
 
@@ -642,13 +642,14 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
 
    evas_object_event_callback_add(edit->markup, EVAS_CALLBACK_DEL, _on_sound_editor_del, edit);
 
-   btn = elm_button_add(edit->markup);
-   evas_object_smart_callback_add(btn, "clicked", _on_delete_clicked_cb, edit);
-   elm_object_part_content_set(edit->markup, "swallow.btn.del", btn);
+   edit->btn_del = elm_button_add(edit->markup);
+   evas_object_smart_callback_add(edit->btn_del, "clicked", _on_delete_clicked_cb, edit);
+   elm_object_part_content_set(edit->markup, "swallow.btn.del", edit->btn_del);
 
-   ic = elm_icon_add(btn);
+   ic = elm_icon_add(edit->btn_del);
    elm_icon_standard_set(ic, "minus");
-   elm_object_part_content_set(btn, NULL, ic);
+   elm_object_part_content_set(edit->btn_del, NULL, ic);
+   elm_object_disabled_set(edit->btn_del, true);
 
    EWE_COMBOBOX_ADD(edit->markup, edit->add_cmb);
    ewe_combobox_style_set(edit->add_cmb, "small");
