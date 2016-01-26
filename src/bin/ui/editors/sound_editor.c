@@ -195,8 +195,18 @@ _gengrid_content_fill(Sound_Editor *edit)
 }
 
 static void
-_create_gengrid(Evas_Object *parent,
-                Sound_Editor *editor)
+_grid_sel(void *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
+{
+   Sound_Editor *editor = (Sound_Editor *)data;
+
+   elm_object_disabled_set(editor->btn_del, true);
+   evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_UNSELECTED, NULL);
+}
+
+static void
+_create_gengrid(Evas_Object *parent, Sound_Editor *editor)
 {
    assert(parent != NULL);
    assert(editor != NULL);
@@ -205,6 +215,7 @@ _create_gengrid(Evas_Object *parent,
    elm_gengrid_item_size_set(editor->gengrid, ITEM_WIDTH, ITEM_HEIGHT);
    elm_gengrid_group_item_size_set(editor->gengrid, ITEM_HEIGHT/5, ITEM_HEIGHT/5);
    elm_gengrid_align_set(editor->gengrid, 0.0, 0.0);
+   evas_object_smart_callback_add(editor->gengrid, "unselected", _grid_sel, editor);
    elm_scroller_policy_set(editor->gengrid, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 
    elm_gengrid_multi_select_set(editor->gengrid, false);
