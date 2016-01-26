@@ -1002,6 +1002,33 @@ _on_grid_clicked(void *data,
      }
 }
 
+static void
+_sound_unselected(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   Evas_Object *item;
+   Sound_Prop_Data *pd = (Sound_Prop_Data *)data;
+
+   item = elm_object_part_content_get(pd->snd_data.file_name, "elm.swallow.content");
+   elm_object_text_set(item, _("-"));
+
+   item = elm_object_part_content_get(pd->snd_data.duration, "elm.swallow.content");
+   elm_object_text_set(item, _("-"));
+
+   item = elm_object_part_content_get(pd->snd_data.type, "elm.swallow.content");
+   elm_object_text_set(item, _("-"));
+
+   item = elm_object_part_content_get(pd->snd_data.size, "elm.swallow.content");
+   elm_object_text_set(item, _("-"));
+
+   item = elm_object_part_content_get(pd->snd_data.tone_name, "elm.swallow.content");
+   elm_object_text_set(item, _("-"));
+
+   item = elm_object_part_content_get(pd->snd_data.duration, "swallow.content1");
+   elm_object_text_set(item, _("-"));
+}
+
 Evas_Object *
 ui_property_sound_add(Evas_Object *parent)
 {
@@ -1026,6 +1053,7 @@ ui_property_sound_add(Evas_Object *parent)
    _sound_info_create(parent, pd);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_SELECT, _on_grid_clicked, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_UNSELECTED, _sound_unselected, pd);
 
    return pd->box;
 }
