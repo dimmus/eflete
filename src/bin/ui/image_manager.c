@@ -35,6 +35,7 @@ struct _Item
    const char* image_name;
    const char* source;
    Edje_Edit_Image_Comp comp_type;
+   Eina_Bool is_used;
 };
 
 struct _Content_Init_Data
@@ -160,12 +161,14 @@ _grid_content_get(void *data,
      }
    else if (!strcmp(part, "elm.swallow.end"))
      {
+        it->is_used = true;
         res = (Resource *) pm_resource_get(ap.project->images, it->image_name);
         if (eina_list_count(res->used_in) == 0)
           {
              image_obj = elm_icon_add(grid);
              elm_image_file_set(image_obj, EFLETE_THEME, "elm/image/icon/attention");
              evas_object_show(image_obj);
+             it->is_used = false;
           }
      }
 
@@ -212,24 +215,41 @@ _grid_sel(void *data,
 {
    Image_Manager *img_mng = (Image_Manager *)data;
    Item *item = NULL;
+   Eina_List *l;
+   Eina_List *sel_list;
+   Elm_Object_Item *grid_item = NULL;
 
    assert(img_mng != NULL);
 
-   const Eina_List* sel_list = elm_gengrid_selected_items_get(img_mng->gengrid);
+   sel_list = (Eina_List *)elm_gengrid_selected_items_get(img_mng->gengrid);
    int selected_images_count = eina_list_count(sel_list);
 
-   if (selected_images_count == 0)
+   /* if no selected images, disable delete button */
+   if (selected_images_count != 0)
      elm_object_disabled_set(img_mng->del_button, true);
-   else
-     elm_object_disabled_set(img_mng->del_button, false);
 
    if (selected_images_count == 1)
      {
         item = elm_object_item_data_get(eina_list_data_get(sel_list));
         _image_info_setup(img_mng, item);
+        /* if selected image is not used, we can delete it */
+        if (!item->is_used)
+          elm_object_disabled_set(img_mng->del_button, false);
      }
    else
-     evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, NULL);
+     {
+        /* if any of those is not used, set it able to delete */
+        EINA_LIST_FOREACH(sel_list, l, grid_item)
+          {
+             item = elm_object_item_data_get(grid_item);
+             if (!item->is_used)
+               {
+                  elm_object_disabled_set(img_mng->del_button, false);
+                  break;
+               }
+          }
+        evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, NULL);
+     }
 }
 
 static inline Item *
