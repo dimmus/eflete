@@ -215,9 +215,12 @@ static void
 _handler_down_cb(void *data,
                  Evas *evas,
                  Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+                 void *event_info)
 {
    Handler *handler = (Handler *)data;
+
+   Evas_Event_Mouse_Down *event = (Evas_Event_Mouse_Down *) event_info;
+   if (event->button != 1) return;
 
    assert(handler != NULL);
 
@@ -412,9 +415,12 @@ static void
 _handler_up_cb(void *data,
                Evas *evas __UNUSED__,
                Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+               void *event_info)
 {
    Handler *handler = (Handler *)data;
+
+   Evas_Event_Mouse_Down *event = (Evas_Event_Mouse_Down *) event_info;
+   if (event->button != 1) return;
 
    assert(handler != NULL);
 
