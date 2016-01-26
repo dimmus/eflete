@@ -24,7 +24,7 @@
 #define ITEM_HEIGHT 115
 #define IMG_MANAGER_KEY "image_manager_key"
 
-typedef struct _Image_Editor Image_Editor;
+typedef struct _Image_Manager Image_Manager;
 typedef struct _Search_Data Search_Data;
 typedef struct _Item Item;
 typedef struct _Content_Init_Data Content_Init_Data;
@@ -39,7 +39,7 @@ struct _Item
 
 struct _Content_Init_Data
 {
-   Image_Editor *image_editor;
+   Image_Manager *image_manager;
    Item *item_data;
    Evas_Object *image_obj;
 };
@@ -50,7 +50,7 @@ struct _Search_Data
    Elm_Object_Item *last_item_found;
 };
 
-struct _Image_Editor
+struct _Image_Manager
 {
    Evas_Object *win;
    Evas_Object *gengrid;
@@ -61,7 +61,7 @@ struct _Image_Editor
 
 static Elm_Gengrid_Item_Class *gic = NULL;
 
-static void _image_editor_del(Image_Editor *img_edit);
+static void _image_manager_del(Image_Manager *img_mng);
 
 static char *
 _grid_label_get(void *data,
@@ -73,37 +73,37 @@ _grid_label_get(void *data,
 }
 
 static void
-_on_image_editor_del(void * data,
+_on_image_manager_del(void * data,
                      Evas *e __UNUSED__,
                      Evas_Object *obj __UNUSED__,
                      void *event_info __UNUSED__)
 {
-   Image_Editor *img_edit = (Image_Editor *)data;
+   Image_Manager *img_mng = (Image_Manager *)data;
 
-   assert(img_edit != NULL);
+   assert(img_mng != NULL);
 
-   _image_editor_del(img_edit);
+   _image_manager_del(img_mng);
 }
 
 static void
-_image_editor_del(Image_Editor *img_edit)
+_image_manager_del(Image_Manager *img_mng)
 {
-   assert(img_edit != NULL);
+   assert(img_mng != NULL);
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
 
-   evas_object_event_callback_del(img_edit->layout, EVAS_CALLBACK_DEL, _on_image_editor_del);
+   evas_object_event_callback_del(img_mng->layout, EVAS_CALLBACK_DEL, _on_image_manager_del);
 
    elm_gengrid_item_class_free(gic);
    gic = NULL;
-   evas_object_data_del(img_edit->layout, IMG_MANAGER_KEY);
-   evas_object_data_del(img_edit->gengrid, IMG_MANAGER_KEY);
-   //evas_object_del(img_edit->gengrid);
-   free(img_edit);
+   evas_object_data_del(img_mng->layout, IMG_MANAGER_KEY);
+   evas_object_data_del(img_mng->gengrid, IMG_MANAGER_KEY);
+   //evas_object_del(img_mng->gengrid);
+   free(img_mng);
 }
 
 static void
-_image_editor_image_setup(Evas_Object *image,
+_image_manager_image_setup(Evas_Object *image,
                           const Item *it)
 {
    assert(image != NULL);
@@ -123,14 +123,14 @@ _image_editor_image_setup(Evas_Object *image,
 }
 
 static inline Evas_Object *
-_image_editor_image_create(Evas_Object *parent,
+_image_manager_image_create(Evas_Object *parent,
                            const Item *it)
 {
    assert(parent != NULL);
    assert(it != NULL);
 
    Evas_Object *image = elm_image_add(parent);
-   _image_editor_image_setup(image, it);
+   _image_manager_image_setup(image, it);
    return image;
 }
 
@@ -152,7 +152,7 @@ _grid_content_get(void *data,
    if (!strcmp(part, "elm.swallow.icon"))
      {
         image_obj = elm_thumb_add(grid);
-        _image_editor_image_setup(image_obj, it);
+        _image_manager_image_setup(image_obj, it);
         elm_thumb_reload(image_obj);
         evas_object_show(image_obj);
    /* functions for deferred creation of gengrid icons */
@@ -188,15 +188,15 @@ _grid_del(void *data,
 }
 
 static void
-_image_info_setup(Image_Editor *img_edit,
+_image_info_setup(Image_Manager *img_mng,
                   const Item* it)
 {
    Evas_Object *image;
 
-   assert(img_edit != NULL);
+   assert(img_mng != NULL);
    assert(it != NULL);
 
-   image = _image_editor_image_create(img_edit->layout, it);
+   image = _image_manager_image_create(img_mng->layout, it);
    evas_object_image_smooth_scale_set(image, false);
    evas_object_show(image);
 
@@ -210,30 +210,30 @@ _grid_sel(void *data,
           Evas_Object *obj __UNUSED__,
           void *event_info __UNUSED__)
 {
-   Image_Editor *img_edit = (Image_Editor *)data;
+   Image_Manager *img_mng = (Image_Manager *)data;
    Item *item = NULL;
 
-   assert(img_edit != NULL);
+   assert(img_mng != NULL);
 
-   const Eina_List* sel_list = elm_gengrid_selected_items_get(img_edit->gengrid);
+   const Eina_List* sel_list = elm_gengrid_selected_items_get(img_mng->gengrid);
    int selected_images_count = eina_list_count(sel_list);
 
    if (selected_images_count == 0)
-     elm_object_disabled_set(img_edit->del_button, true);
+     elm_object_disabled_set(img_mng->del_button, true);
    else
-     elm_object_disabled_set(img_edit->del_button, false);
+     elm_object_disabled_set(img_mng->del_button, false);
 
    if (selected_images_count == 1)
      {
         item = elm_object_item_data_get(eina_list_data_get(sel_list));
-        _image_info_setup(img_edit, item);
+        _image_info_setup(img_mng, item);
      }
    else
      evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, NULL);
 }
 
 static inline Item *
-_image_editor_gengrid_item_data_create(Evas_Object *edje_edit_obj,
+_image_manager_gengrid_item_data_create(Evas_Object *edje_edit_obj,
                                        External_Resource *res)
 {
    assert(edje_edit_obj != NULL);
@@ -262,10 +262,10 @@ _on_image_done(void *data,
    External_Resource *res;
    const char *file_name;
 
-   Image_Editor *img_edit = (Image_Editor *)data;
+   Image_Manager *img_mng = (Image_Manager *)data;
    images = (Eina_List *)event_info;
 
-   assert(img_edit != NULL);
+   assert(img_mng != NULL);
 
    EINA_LIST_FOREACH(images, l, selected)
      {
@@ -306,7 +306,7 @@ _on_image_done(void *data,
         it = (Item *)mem_malloc(sizeof(Item));
         it->image_name = eina_stringshare_add(file_name);
         it->id = edje_edit_image_id_get(ap.project->global_object, it->image_name);
-        item = elm_gengrid_item_append(img_edit->gengrid, gic, it, _grid_sel, img_edit);
+        item = elm_gengrid_item_append(img_mng->gengrid, gic, it, _grid_sel, img_mng);
 
         it->source = eina_stringshare_add(res->source);
         elm_gengrid_item_selected_set(item, true);
@@ -334,7 +334,7 @@ _on_button_delete_clicked_cb(void *data,
                              Evas_Object *obj __UNUSED__,
                              void *event_info __UNUSED__)
 {
-   Image_Editor *img_edit = (Image_Editor *)data;
+   Image_Manager *img_mng = (Image_Manager *)data;
    Elm_Object_Item *grid_item = NULL;
    Item *it = NULL;
    Eina_List *grid_list, *l, *l2;
@@ -345,10 +345,10 @@ _on_button_delete_clicked_cb(void *data,
    External_Resource *res;
    State *state;
 
-   assert(img_edit != NULL);
-   assert(img_edit->gengrid != NULL);
+   assert(img_mng != NULL);
+   assert(img_mng->gengrid != NULL);
 
-   grid_list = (Eina_List *)elm_gengrid_selected_items_get(img_edit->gengrid);
+   grid_list = (Eina_List *)elm_gengrid_selected_items_get(img_mng->gengrid);
 
    assert(grid_list != NULL);
 
@@ -416,12 +416,12 @@ _on_images_search_entry_changed_cb(void *data,
                                    Evas_Object *obj __UNUSED__,
                                    void *event_info __UNUSED__)
 {
-   Image_Editor *img_edit = data;
+   Image_Manager *img_mng = data;
 
-   assert(img_edit != NULL);
+   assert(img_mng != NULL);
 
-   _gengrid_item_search(img_edit->gengrid, &(img_edit->image_search_data),
-                        img_edit->image_search_data.last_item_found);
+   _gengrid_item_search(img_mng->gengrid, &(img_mng->image_search_data),
+                        img_mng->image_search_data.last_item_found);
 }
 
 static void
@@ -429,23 +429,23 @@ _search_next_gengrid_item_cb(void *data,
                              Evas_Object *obj __UNUSED__,
                              void *event_info __UNUSED__)
 {
-   Image_Editor *img_edit = data;
+   Image_Manager *img_mng = data;
    Elm_Object_Item *start_from = NULL;
 
-   assert(img_edit != NULL);
+   assert(img_mng != NULL);
 
-   if (img_edit->image_search_data.last_item_found)
+   if (img_mng->image_search_data.last_item_found)
      {
         start_from =
-           elm_gengrid_item_next_get(img_edit->image_search_data.last_item_found);
+           elm_gengrid_item_next_get(img_mng->image_search_data.last_item_found);
      }
 
-   _gengrid_item_search(img_edit->gengrid, &(img_edit->image_search_data),
+   _gengrid_item_search(img_mng->gengrid, &(img_mng->image_search_data),
                         start_from);
 }
 
 static inline Evas_Object *
-_image_editor_search_field_create(Evas_Object *parent)
+_image_manager_search_field_create(Evas_Object *parent)
 {
    Evas_Object *entry, *icon;
 
@@ -459,7 +459,7 @@ _image_editor_search_field_create(Evas_Object *parent)
 }
 
 static Eina_Bool
-_image_editor_init(Image_Editor *img_edit)
+_image_manager_init(Image_Manager *img_mng)
 {
    Eina_List *l = NULL;
    Item *it = NULL;
@@ -467,7 +467,7 @@ _image_editor_init(Image_Editor *img_edit)
    int counter = 0;
    External_Resource *res;
 
-   assert(img_edit != NULL);
+   assert(img_mng != NULL);
 
    images = ap.project->images;
 
@@ -485,17 +485,17 @@ _image_editor_init(Image_Editor *img_edit)
               /* skip dummy image */
               if (!strcmp(res->name, EFLETE_DUMMY_IMAGE_NAME)) continue;
 
-              it = _image_editor_gengrid_item_data_create(ap.project->global_object,
+              it = _image_manager_gengrid_item_data_create(ap.project->global_object,
                                                           res);
 
-              elm_gengrid_item_append(img_edit->gengrid, gic, it, _grid_sel, img_edit);
+              elm_gengrid_item_append(img_mng->gengrid, gic, it, _grid_sel, img_mng);
            }
-         elm_gengrid_item_bring_in(elm_gengrid_first_item_get(img_edit->gengrid),
+         elm_gengrid_item_bring_in(elm_gengrid_first_item_get(img_mng->gengrid),
                                    ELM_GENGRID_ITEM_SCROLLTO_TOP);
      }
-   elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
+   elm_scroller_policy_set(img_mng->gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_AUTO);
-   evas_object_smart_calculate(img_edit->gengrid);
+   evas_object_smart_calculate(img_mng->gengrid);
 
    return true;
 }
@@ -509,63 +509,63 @@ image_manager_add()
 
    assert(ap.project != NULL);
 
-   Image_Editor *img_edit = (Image_Editor *)mem_calloc(1, sizeof(Image_Editor));
+   Image_Manager *img_mng = (Image_Manager *)mem_calloc(1, sizeof(Image_Manager));
 
-   img_edit->layout = elm_layout_add(main_window_get());
-   elm_layout_theme_set(img_edit->layout, "layout", "image_editor", "default");
+   img_mng->layout = elm_layout_add(main_window_get());
+   elm_layout_theme_set(img_mng->layout, "layout", "image_manager", "default");
 
-   img_edit->gengrid = elm_gengrid_add(img_edit->layout);
-   elm_object_part_content_set(img_edit->layout,
-                               "eflete.swallow.grid", img_edit->gengrid);
-   elm_gengrid_item_size_set(img_edit->gengrid, ITEM_WIDTH, ITEM_HEIGHT);
-   elm_gengrid_align_set(img_edit->gengrid, 0.0, 0.0);
-   elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
+   img_mng->gengrid = elm_gengrid_add(img_mng->layout);
+   elm_object_part_content_set(img_mng->layout,
+                               "eflete.swallow.grid", img_mng->gengrid);
+   elm_gengrid_item_size_set(img_mng->gengrid, ITEM_WIDTH, ITEM_HEIGHT);
+   elm_gengrid_align_set(img_mng->gengrid, 0.0, 0.0);
+   elm_scroller_policy_set(img_mng->gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_OFF);
 
-   elm_gengrid_multi_select_set(img_edit->gengrid, true);
-   elm_gengrid_multi_select_mode_set(img_edit->gengrid,
+   elm_gengrid_multi_select_set(img_mng->gengrid, true);
+   elm_gengrid_multi_select_mode_set(img_mng->gengrid,
                                      ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
 
-   elm_gengrid_select_mode_set(img_edit->gengrid, ELM_OBJECT_SELECT_MODE_ALWAYS);
-   evas_object_size_hint_weight_set(img_edit->gengrid,
+   elm_gengrid_select_mode_set(img_mng->gengrid, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   evas_object_size_hint_weight_set(img_mng->gengrid,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(img_edit->gengrid,
+   evas_object_size_hint_align_set(img_mng->gengrid,
                                    EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_smart_callback_add(img_edit->gengrid, "unselected", _grid_sel,
-                                  img_edit);
-   evas_object_show(img_edit->gengrid);
+   evas_object_smart_callback_add(img_mng->gengrid, "unselected", _grid_sel,
+                                  img_mng);
+   evas_object_show(img_mng->gengrid);
 
-   button = elm_button_add(img_edit->layout);
+   button = elm_button_add(img_mng->layout);
    evas_object_show(button);
    ic = elm_icon_add(button);
    elm_icon_standard_set(ic, "plus");
    elm_object_part_content_set(button, NULL, ic);
    evas_object_smart_callback_add(button, "clicked",
-                                  _on_button_add_clicked_cb, img_edit);
-   elm_object_part_content_set(img_edit->layout,
+                                  _on_button_add_clicked_cb, img_mng);
+   elm_object_part_content_set(img_mng->layout,
                                "eflete.swallow.add_btn", button);
 
-   img_edit->del_button = elm_button_add(img_edit->layout);
-   evas_object_show(img_edit->del_button);
-   ic = elm_icon_add(img_edit->del_button);
+   img_mng->del_button = elm_button_add(img_mng->layout);
+   evas_object_show(img_mng->del_button);
+   ic = elm_icon_add(img_mng->del_button);
    elm_icon_standard_set(ic, "minus");
-   elm_object_part_content_set(img_edit->del_button, NULL, ic);
-   evas_object_smart_callback_add(img_edit->del_button, "clicked",
-                                  _on_button_delete_clicked_cb, img_edit);
-   elm_object_part_content_set(img_edit->layout,
-                               "eflete.swallow.del_btn", img_edit->del_button);
-   elm_object_disabled_set(img_edit->del_button, true);
+   elm_object_part_content_set(img_mng->del_button, NULL, ic);
+   evas_object_smart_callback_add(img_mng->del_button, "clicked",
+                                  _on_button_delete_clicked_cb, img_mng);
+   elm_object_part_content_set(img_mng->layout,
+                               "eflete.swallow.del_btn", img_mng->del_button);
+   elm_object_disabled_set(img_mng->del_button, true);
 
    // Search line add
-   search_entry = _image_editor_search_field_create(img_edit->layout);
-   elm_object_part_content_set(img_edit->layout,
+   search_entry = _image_manager_search_field_create(img_mng->layout);
+   elm_object_part_content_set(img_mng->layout,
                                "eflete.swallow.search_area", search_entry);
    evas_object_smart_callback_add(search_entry, "changed",
-                                  _on_images_search_entry_changed_cb, img_edit);
+                                  _on_images_search_entry_changed_cb, img_mng);
    evas_object_smart_callback_add(search_entry, "activated",
-                                  _search_next_gengrid_item_cb, img_edit);
-   img_edit->image_search_data.search_entry = search_entry;
-   img_edit->image_search_data.last_item_found = NULL;
+                                  _search_next_gengrid_item_cb, img_mng);
+   img_mng->image_search_data.search_entry = search_entry;
+   img_mng->image_search_data.last_item_found = NULL;
 
    if (!gic)
      {
@@ -577,18 +577,18 @@ image_manager_add()
      }
 
    elm_object_focus_set(search_entry, true);
-   if (!_image_editor_init(img_edit))
+   if (!_image_manager_init(img_mng))
      {
-        ERR("Filed initialize image editor");
+        ERR("Filed initialize image manager");
         abort();
      }
-   evas_object_data_set(img_edit->gengrid, IMG_MANAGER_KEY, img_edit);
-   evas_object_data_set(img_edit->layout, IMG_MANAGER_KEY, img_edit);
+   evas_object_data_set(img_mng->gengrid, IMG_MANAGER_KEY, img_mng);
+   evas_object_data_set(img_mng->layout, IMG_MANAGER_KEY, img_mng);
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
-   evas_object_event_callback_add(img_edit->layout, EVAS_CALLBACK_DEL, _on_image_editor_del, img_edit);
+   evas_object_event_callback_add(img_mng->layout, EVAS_CALLBACK_DEL, _on_image_manager_del, img_mng);
 
-   return img_edit->layout;
+   return img_mng->layout;
 }
 
 #undef ITEM_WIDTH
