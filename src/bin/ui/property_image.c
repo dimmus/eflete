@@ -351,6 +351,9 @@ _on_image_selected(void *data,
         ewe_combobox_select_item_set(pd->compression_type, 0);
         elm_spinner_value_set(pd->compression_quality, 0);
         pd->selected_image = NULL;
+
+        elm_genlist_clear(pd->usage_genlist);
+        _image_info_update_usage_info(pd, 0);
      }
 }
 
