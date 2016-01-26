@@ -136,7 +136,7 @@ _grid_sel_sample(void *data,
    snd_data->sound_type = SOUND_TYPE_SAMPLE;
    elm_object_disabled_set(edit->btn_del, false);
 
-   evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_ADD, snd_data);
+   evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_SELECT, snd_data);
 }
 
 static void
@@ -154,7 +154,7 @@ _grid_sel_tone(void *data,
    snd_data->tone = edit->tone;
    elm_object_disabled_set(edit->btn_del, false);
 
-   evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_ADD, snd_data);
+   evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_SELECT, snd_data);
 }
 
 static void

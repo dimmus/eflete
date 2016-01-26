@@ -336,7 +336,7 @@ typedef struct {
  *
  * @ingroup Window
  */
-#define SIGNAL_SOUND_ADD "SIGNAL_SOUND_ADD"
+#define SIGNAL_SOUND_SELECT "SIGNAL_SOUND_SELECT"
 
  /**
  * emited when sound/sounds in sound editor is/are deleted.
