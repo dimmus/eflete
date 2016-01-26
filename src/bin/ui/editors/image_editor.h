@@ -31,12 +31,6 @@
 
 #define SIG_IMAGE_SELECTED "image_selected"
 
-typedef enum {
-   SINGLE,
-   MULTIPLE,
-   TWEENS
-} Image_Editor_Mode;
-
 /**
  * Add new image editor layout for setting into tab.
  *
