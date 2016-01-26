@@ -46,7 +46,7 @@ check: Makefile
 	$(builddir)/program_editor_window_add_test.edj \
 	$(builddir)/style_editor.edj \
 	$(builddir)/test_project_manager.edj \
-	$(builddir)/image_editor.edj \
+	$(builddir)/image_manager.edj \
 	$(builddir)/ui_states_list_data_set.edj \
 	$(builddir)/ui_states_list_data_unset.edj \
 	$(builddir)/ui_states_list_part_get.edj \

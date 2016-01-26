@@ -13,7 +13,7 @@ diff_test \
 change_test \
 new_history_test \
 sound_editor_test \
-image_editor_test \
+image_manager_test \
 logger_test \
 container_test \
 modal_window_test \
@@ -183,11 +183,11 @@ sound_editor_test_SOURCES = \
 sound_editor_test_CFLAGS = ${FLAGS}
 sound_editor_test_LDADD = ${LD}
 
-image_editor_test_SOURCES = \
-../tests/test_image_editor/test_image_editor.c \
-../tests/test_image_editor/image_editor_window_add.c
-image_editor_test_CFLAGS = ${FLAGS}
-image_editor_test_LDADD = ${LD}
+image_manager_test_SOURCES = \
+../tests/test_image_manager/test_image_manager.c \
+../tests/test_image_manager/image_manager_add.c
+image_manager_test_CFLAGS = ${FLAGS}
+image_manager_test_LDADD = ${LD}
 
 logger_test_SOURCES = \
 ../tests/test_logger/test_logger.c \
