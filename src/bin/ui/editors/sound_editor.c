@@ -47,8 +47,9 @@ struct _Sound_Editor
 {
    Evas_Object *popup;
    Evas_Object *popup_btn_add;
-   Evas_Object *add_cmb;
+   Evas_Object *btn_add;
    Evas_Object *btn_del;
+   Evas_Object *menu;
    Evas_Object *tone_entry, *frq_entry;
    Elm_Validator_Regexp *tone_validator, *frq_validator;
    Evas_Object *gengrid;
@@ -495,16 +496,19 @@ _tone_add_cb(void *data,
 #undef INFO_ADD
 
 static void
-_on_cmb_sel(void *data,
-            Evas_Object *obj __UNUSED__,
-            void *event_info)
+_on_btn_plus_clicked(void *data,
+                     Evas_Object *obj,
+                     void *event_info __UNUSED__)
 {
-   Ewe_Combobox_Item *selected_item = event_info;
+   Sound_Editor *edit = (Sound_Editor *)data;
+   Evas_Coord x, y, h;
 
-   if (!selected_item->index)
-     _sample_add_cb(data, NULL, NULL);
-   else
-     _tone_add_cb(data, NULL, NULL);
+   assert(edit != NULL);
+
+   evas_object_geometry_get(obj, &x, &y, NULL, &h);
+
+   elm_menu_move(edit->menu, x, y + h);
+   evas_object_show(edit->menu);
 }
 
 static void
@@ -651,12 +655,17 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    elm_object_part_content_set(edit->btn_del, NULL, ic);
    elm_object_disabled_set(edit->btn_del, true);
 
-   EWE_COMBOBOX_ADD(edit->markup, edit->add_cmb);
-   ewe_combobox_style_set(edit->add_cmb, "small");
-   ewe_combobox_item_add(edit->add_cmb, _("Sample"));
-   ewe_combobox_item_add(edit->add_cmb, _("Tone"));
-   evas_object_smart_callback_add(edit->add_cmb, "selected", _on_cmb_sel, edit);
-   elm_object_part_content_set(edit->markup, "eflete.swallow.add_btn", edit->add_cmb);
+   edit->btn_add = elm_button_add(edit->markup);
+   evas_object_smart_callback_add(edit->btn_add, "clicked", _on_btn_plus_clicked, edit);
+   elm_object_part_content_set(edit->markup, "eflete.swallow.add_btn", edit->btn_add);
+
+   ic = elm_icon_add(edit->btn_add);
+   elm_icon_standard_set(ic, "plus");
+   elm_object_part_content_set(edit->btn_add, NULL, ic);
+
+   edit->menu = elm_menu_add(ap.win);
+   elm_menu_item_add(edit->menu, NULL, NULL, _("Sample"), _sample_add_cb, edit);
+   elm_menu_item_add(edit->menu, NULL, NULL, _("Tone"), _tone_add_cb, edit);
 
    search = _sound_editor_search_field_create(edit->markup);
    evas_object_hide(search);
