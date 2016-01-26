@@ -101,8 +101,6 @@ struct _Sound_Prop_Data
 };
 typedef struct _Sound_Prop_Data Sound_Prop_Data;
 
-static Elm_Gengrid_Item_Class *gic = NULL, *ggic = NULL;
-
 /* accroding to Edje_Edit.h */
 static const char *edje_sound_compression[] = { N_("RAW"),
                                                 N_("COMP"),
@@ -176,58 +174,6 @@ prop_sound_editor_compression_type_add(Evas_Object *parent, Sound_Prop_Data *pd)
    elm_layout_content_set(item, "elm.swallow.content", pd->snd_data.compression_type);
 
    return item;
-}
-
-static void
-_on_grid_clicked(void *data, Evas_Object *obj, void *event_info);
-static void
-_on_sound_editor_del(void * data, Evas_Object *obj, void *event_info);
-
-TODO("Check app logic: why sound editor is deleted on each project close?")
-static void
-_sound_editor_del(Sound_Prop_Data *edit)
-{
-   assert(edit != NULL);
-
-#ifdef HAVE_AUDIO
-   ecore_audio_shutdown();
-#endif
-   elm_gengrid_item_class_free(gic);
-   elm_gengrid_item_class_free(ggic);
-   evas_object_data_del(edit->markup, SND_EDIT_KEY);
-   eina_stringshare_del(edit->selected);
-   free(edit);
-
-   evas_object_smart_callback_del(ap.win, SIGNAL_SOUND_ADD, _on_grid_clicked);
-   evas_object_smart_callback_del(ap.win, SIGNAL_SOUND_DEL, _on_sound_editor_del);
-}
-
-static void
-_sound_editor_quit(Sound_Prop_Data *edit)
-{
-#ifdef HAVE_AUDIO
-   if (edit->player_data.playing)
-     _interrupt_playing(edit);
-   else if (edit->io.in)
-     {
-        eo_del(edit->io.in);
-        eo_del(edit->io.out);
-        eina_binbuf_free(edit->io.buf);
-     }
-#endif
-   _sound_editor_del(edit);
-}
-
-static void
-_on_sound_editor_del(void * data,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info __UNUSED__)
-{
-   Sound_Prop_Data *edit = (Sound_Prop_Data *)data;
-
-   assert(edit != NULL);
-
-   _sound_editor_quit(edit);
 }
 
 #ifdef HAVE_AUDIO
@@ -1080,7 +1026,6 @@ ui_property_sound_add(Evas_Object *parent)
    _sound_info_create(parent, pd);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_ADD, _on_grid_clicked, pd);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_DEL, _on_sound_editor_del, pd);
 
    return pd->box;
 }
