@@ -92,15 +92,6 @@ _grid_group_label_get(void *data,
 }
 
 static void
-_on_sound_editor_del(void * data __UNUSED__,
-                     Evas *e __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info __UNUSED__)
-{
-   evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_DEL, NULL);
-}
-
-static void
 _grid_del(void *data,
           Evas_Object *obj __UNUSED__)
 {
@@ -639,8 +630,6 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    elm_layout_theme_set(edit->markup, "layout", "sound_editor", "default");
    evas_object_size_hint_weight_set(edit->markup, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_data_set(edit->markup, SND_EDIT_KEY, edit);
-
-   evas_object_event_callback_add(edit->markup, EVAS_CALLBACK_DEL, _on_sound_editor_del, edit);
 
    edit->btn_del = elm_button_add(edit->markup);
    evas_object_smart_callback_add(edit->btn_del, "clicked", _on_delete_clicked_cb, edit);
