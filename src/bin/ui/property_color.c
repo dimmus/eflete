@@ -32,6 +32,9 @@ struct _Color_Prop_Data
    Evas_Object *colorsel1;
    Evas_Object *colorsel2;
    Evas_Object *colorsel3;
+   Evas_Object *colorsel1_layout;
+   Evas_Object *colorsel2_layout;
+   Evas_Object *colorsel3_layout;
    ColorClassData color_data;
 };
 
@@ -105,7 +108,8 @@ _colorselector_item_add(Evas_Object *box, Evas_Object *colorsel)
    evas_object_smart_callback_add(pd->colorsel##NUMBER, "changed,user", _on_changed_##NUMBER, pd); \
    evas_object_smart_callback_add(pd->colorsel##NUMBER, "color,item,selected", _on_changed_##NUMBER, pd); \
    evas_object_show(pd->colorsel##NUMBER); \
-   elm_box_pack_end(BOX, _colorselector_item_add(BOX, pd->colorsel##NUMBER));
+   pd->colorsel##NUMBER##_layout = _colorselector_item_add(BOX, pd->colorsel##NUMBER); \
+   elm_box_pack_end(BOX, pd->colorsel##NUMBER##_layout);
 
 static Evas_Object *
 _add_object_color_frame(Color_Prop_Data *pd, Evas_Object *parent)
@@ -150,47 +154,50 @@ _add_shadow_color_frame(Color_Prop_Data *pd, Evas_Object *parent)
 }
 
 static void
-_add_colorsel(Color_Prop_Data *pd)
-{
-   if (!is_colorselector_create)
-    {
-       ADD_COLORSEL(1, pd->box_object_color);
-       ADD_COLORSEL(2, pd->box_outline_color);
-       ADD_COLORSEL(3, pd->box_shadow_color);
-       is_colorselector_create = EINA_TRUE;
-    }
-}
-
-static void
 _on_color_selected(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info)
 {
    ColorClassData *current_color = (ColorClassData *)event_info;
    Color_Prop_Data *pd = (Color_Prop_Data *)data;
-   Colorclass_Item *ccl = current_color->current_ccl;
+   if (current_color)
+     {
+        Colorclass_Item *ccl = current_color->current_ccl;
 
-   _add_colorsel(pd);
+        if (!is_colorselector_create)
+          {
+             ADD_COLORSEL(1, pd->box_object_color);
+             ADD_COLORSEL(2, pd->box_outline_color);
+             ADD_COLORSEL(3, pd->box_shadow_color);
+             is_colorselector_create = EINA_TRUE;
+          }
+        else
+          {
+             elm_box_pack_end(pd->box_object_color, pd->colorsel1_layout);
+             evas_object_show(pd->colorsel1_layout);
+             elm_box_pack_end(pd->box_outline_color, pd->colorsel2_layout);
+             evas_object_show(pd->colorsel2_layout);
+             elm_box_pack_end(pd->box_shadow_color, pd->colorsel3_layout);
+             evas_object_show(pd->colorsel3_layout);
+          }
 
-   pd->color_data = *current_color;
+        pd->color_data = *current_color;
 
-   elm_colorselector_color_set(pd->colorsel1, ccl->r1, ccl->g1, ccl->b1, ccl->a1);
-   elm_colorselector_color_set(pd->colorsel2, ccl->r2, ccl->g2, ccl->b2, ccl->a2);
-   elm_colorselector_color_set(pd->colorsel3, ccl->r3, ccl->g3, ccl->b3, ccl->a3);
+        elm_colorselector_color_set(pd->colorsel1, ccl->r1, ccl->g1, ccl->b1, ccl->a1);
+        elm_colorselector_color_set(pd->colorsel2, ccl->r2, ccl->g2, ccl->b2, ccl->a2);
+        elm_colorselector_color_set(pd->colorsel3, ccl->r3, ccl->g3, ccl->b3, ccl->a3);
 
-   free(current_color);
-}
-
-static void
-_color_tab_change(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
-{
-   Color_Prop_Data *pd = (Color_Prop_Data *)data;
-   is_colorselector_create = EINA_FALSE;
-   elm_box_clear(pd->box_object_color);
-   elm_box_clear(pd->box_outline_color);
-   elm_box_clear(pd->box_shadow_color);
+        free(current_color);
+     }
+   else
+     {
+        elm_box_unpack(pd->box_object_color, pd->colorsel1_layout);
+        evas_object_hide(pd->colorsel1_layout);
+        elm_box_unpack(pd->box_outline_color, pd->colorsel2_layout);
+        evas_object_hide(pd->colorsel2_layout);
+        elm_box_unpack(pd->box_shadow_color, pd->colorsel3_layout);
+        evas_object_hide(pd->colorsel3_layout);
+     }
 }
 
 static void
@@ -228,7 +235,6 @@ ui_property_color_add(Evas_Object *parent)
    elm_box_pack_end(main_box, _add_shadow_color_frame(pd, main_box));
 
    evas_object_smart_callback_add(ap.win, SIGNAL_COLOR_SELECTED, _on_color_selected, pd);
-   evas_object_smart_callback_add(ap.win, SIGNAL_COLOR_EDITOR_TAB_CLICKED, _color_tab_change, pd);
    evas_object_event_callback_add(main_box, EVAS_CALLBACK_DEL, _on_property_color_del, pd);
 
    return scroller;
