@@ -128,10 +128,6 @@ _on_button_delete_clicked_cb(void *data __UNUSED__,
                              void *event_info __UNUSED__)
 {
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
-   State *state;
-   char buf[BUFF_MAX];
-   int symbs = 0;
-   Eina_List *l;
    Resource *res;
 
    assert(edit != NULL);
@@ -143,6 +139,15 @@ _on_button_delete_clicked_cb(void *data __UNUSED__,
    Colorclass_Item *ccl = elm_object_item_data_get(it);
 
    res = pm_resource_get(ap.project->colorclasses, ccl->name);
+   edje_edit_color_class_del(ap.project->global_object, ccl->name);
+   ap.project->colorclasses = pm_resource_del(ap.project->colorclasses, res);
+   elm_object_item_del(it);
+
+#if 0
+   State *state;
+   char buf[BUFF_MAX];
+   int symbs = 0;
+   Eina_List *l;
    if (!res->used_in)
      {
         edje_edit_color_class_del(ap.project->global_object, ccl->name);
@@ -163,6 +168,7 @@ _on_button_delete_clicked_cb(void *data __UNUSED__,
         WARN("%s", buf);
         return;
      }
+#endif
 
    if (!next) next = elm_genlist_item_prev_get(it);
    if (next)
