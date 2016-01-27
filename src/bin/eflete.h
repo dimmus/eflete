@@ -59,6 +59,7 @@ typedef struct _History History;
 typedef struct _State State;
 typedef struct _Part Part;
 typedef struct _Shortcuts Shortcuts;
+typedef struct _ColorClassData ColorClassData;
 
 #include "common_macro.h"
 TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
