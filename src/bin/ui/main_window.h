@@ -431,4 +431,19 @@ project_export_edc_group(void);
 Evas_Object *
 image_manager_add(void);
 
+typedef struct _Colorclass_Item Colorclass_Item;
+struct _Colorclass_Item
+{
+   Eina_Stringshare *name;
+   int r1, g1, b1, a1;
+   int r2, g2, b2, a2;
+   int r3, g3, b3, a3;
+};
+
+struct _ColorClassData
+{
+   Colorclass_Item *current_ccl;
+   Evas_Object *edje_preview;
+};
+
 #endif /* UI_MAIN_WINDOW_H */
