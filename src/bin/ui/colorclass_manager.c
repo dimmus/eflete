@@ -43,6 +43,7 @@ struct _Colorclasses_Manager
    Evas_Object *edje_preview, *preview_layout;
    Evas_Object *entry, *popup;
    Evas_Object *btn_add;
+   Evas_Object *del_button;
    Elm_Validator_Regexp *name_validator;
    Search_Data style_search_data;
    Colorclass_Item *current_ccl;
@@ -132,8 +133,6 @@ _on_button_delete_clicked_cb(void *data __UNUSED__,
 
    assert(edit != NULL);
 
-   if (!edit->current_ccl) return;
-
    Elm_Object_Item *it = elm_genlist_selected_item_get(edit->genlist);
    Elm_Object_Item *next = elm_genlist_item_next_get(it);
    Colorclass_Item *ccl = elm_object_item_data_get(it);
@@ -174,7 +173,10 @@ _on_button_delete_clicked_cb(void *data __UNUSED__,
    if (next)
       elm_genlist_item_selected_set(next, EINA_TRUE);
    else
-      edit->current_ccl = NULL;
+     {
+        edit->current_ccl = NULL;
+        elm_object_disabled_set(edit->del_button, EINA_TRUE);
+     }
 
    editor_save(ap.project->global_object);
    TODO("Remove this line once edje_edit_colorclass API would be added into Editor Module and saving would work properly")
@@ -229,7 +231,20 @@ _change_bg_cb(void *data,
    elm_object_part_content_set(preview_layout, "swallow.entry.bg", bg);
 }
 
-/* Callback on colorclass selection in list */
+/* Callback on colorclass (un)selection in list */
+
+static void
+_on_unselected(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
+{
+   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
+
+   assert(edit != NULL);
+
+   elm_object_disabled_set(edit->del_button, EINA_TRUE);
+}
+
 static void
 _on_selected(void *data,
              Evas_Object *obj __UNUSED__,
@@ -241,6 +256,7 @@ _on_selected(void *data,
 
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    Colorclass_Item *ccl = elm_object_item_data_get(glit);
+   elm_object_disabled_set(edit->del_button, EINA_FALSE);
 
    assert(ccl != NULL);
 
@@ -362,6 +378,7 @@ _form_list_side(Colorclasses_Manager *edit)
    evas_object_show(edit->genlist);
    elm_object_part_content_set(layout, "swallow.list", edit->genlist);
    evas_object_smart_callback_add(edit->genlist, "selected", _on_selected, edit);
+   evas_object_smart_callback_add(edit->genlist, "unselected", _on_unselected, edit);
 
    search = _manager_search_field_create(layout);
    elm_object_part_content_set(layout, "swallow.search", search);
@@ -381,13 +398,14 @@ _form_list_side(Colorclasses_Manager *edit)
                                   _on_button_add_clicked_cb, edit);
    elm_object_part_content_set(layout, "swallow.button_add", button);
 
-   button = elm_button_add(layout);
-   evas_object_show(button);
+   edit->del_button = elm_button_add(layout);
+   evas_object_show(edit->del_button);
    ICON_STANDARD_ADD(button, ic, true, "minus");
-   elm_object_part_content_set(button, NULL, ic);
-   evas_object_smart_callback_add(button, "clicked",
+   elm_object_part_content_set(edit->del_button, NULL, ic);
+   evas_object_smart_callback_add(edit->del_button, "clicked",
                                   _on_button_delete_clicked_cb, edit);
-   elm_object_part_content_set(layout, "swallow.button_rm", button);
+   elm_object_part_content_set(layout, "swallow.button_rm", edit->del_button);
+   elm_object_disabled_set(edit->del_button, EINA_TRUE);
 
    return layout;
 }
