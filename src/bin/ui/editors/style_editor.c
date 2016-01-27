@@ -941,7 +941,7 @@ Evas_Object *
 style_editor_window_add()
 {
    Evas_Object *main_layout, *layout_right;
-   Evas_Object *bg, *btn_apply, *box_bg;
+   Evas_Object *bg, *box_bg;
    Evas *canvas;
    Evas_Textblock_Style *ts;
    Style_Editor *style_edit;
@@ -983,9 +983,6 @@ style_editor_window_add()
 
    box_bg = _add_box_bg(style_edit);
    elm_object_part_content_set(main_layout, "menu_container", box_bg);
-
-   BUTTON_ADD(main_layout, btn_apply, _("Apply"))
-   elm_object_part_content_set(main_layout, "elm.swallow.btn_apply", btn_apply);
 
    evas_textblock_style_free(ts);
    evas_object_event_callback_add(main_layout, EVAS_CALLBACK_DEL,

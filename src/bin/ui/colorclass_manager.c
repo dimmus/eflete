@@ -410,7 +410,7 @@ _form_list_side(Colorclasses_Manager *edit)
 static void
 _colorclass_main_layout_create(Colorclasses_Manager *edit)
 {
-   Evas_Object *layout_list, *bg, *box_bg, *radio, *radio_group, *image_bg, *layout_bg, *btn_apply;
+   Evas_Object *layout_list, *bg, *box_bg, *radio, *radio_group, *image_bg, *layout_bg;
 
    assert(edit != NULL);
 
@@ -474,10 +474,6 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
 #undef _RADIO_ADD
 
    elm_object_part_content_set(edit->layout, "menu_container", box_bg);
-
-   BUTTON_ADD(edit->layout, btn_apply, _("Apply"))
-   elm_object_part_content_set(edit->layout, "elm.swallow.btn_apply", btn_apply);
-   elm_object_disabled_set(btn_apply, EINA_TRUE);
 }
 
 static Eina_Bool
