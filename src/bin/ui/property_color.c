@@ -26,6 +26,7 @@
 typedef struct _Color_Prop_Data Color_Prop_Data;
 struct _Color_Prop_Data
 {
+   Evas_Object *description;
    Evas_Object *box_object_color;
    Evas_Object *box_outline_color;
    Evas_Object *box_shadow_color;
@@ -206,11 +207,26 @@ _on_property_color_del(void * data,
    free(pd);
 }
 
+static Evas_Object *
+prop_part_desctiption_add(Evas_Object *parent, Color_Prop_Data *pd)
+{
+   assert(parent != NULL);
+   assert(pd != NULL);
+
+   PROPERTY_ITEM_ADD(parent,  _("description"), "1swallow");
+   ENTRY_ADD(parent, pd->description, true);
+   elm_object_disabled_set(pd->description, true);
+   elm_object_tooltip_text_set(pd->description, _("Set ColorClass'es description"));
+   elm_layout_content_set(item, "elm.swallow.content", pd->description);
+
+   return item;
+}
+
 Evas_Object *
 ui_property_color_add(Evas_Object *parent)
 {
    Color_Prop_Data *pd;
-   Evas_Object *scroller, *main_box;
+   Evas_Object *scroller, *main_box, *item;
 
    assert(parent != NULL);
 
@@ -224,6 +240,8 @@ ui_property_color_add(Evas_Object *parent)
 
    elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
 
+   item = prop_part_desctiption_add(main_box, pd);
+   elm_box_pack_end(main_box, item);
    elm_box_pack_end(main_box, _add_object_color_frame(pd, main_box));
    elm_box_pack_end(main_box, _add_outline_color_frame(pd, main_box));
    elm_box_pack_end(main_box, _add_shadow_color_frame(pd, main_box));
