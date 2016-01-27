@@ -40,12 +40,12 @@ libete_a_SOURCES = \
 ../../src/bin/ui/container/container.c \
 ../../src/bin/ui/editors/style_editor.c \
 ../../src/bin/ui/editors/sound_editor.c \
-../../src/bin/ui/editors/colorclass_manager.c \
 ../../src/bin/ui/dialogs/about_window.c \
 ../../src/bin/ui/dialogs/colorsel.c \
 ../../src/bin/ui/modal_window/modal_window.c \
 ../../src/bin/ui/project_navigator.c \
 ../../src/bin/ui/image_manager.c \
+../../src/bin/ui/colorclass_manager.c \
 ../../src/bin/ui/tabs.c \
 ../../src/bin/ui/tab_home_common.c \
 ../../src/bin/ui/tab_home_open.c \
