@@ -20,7 +20,6 @@
 #define EFL_BETA_API_SUPPORT
 #define EFL_EO_API_SUPPORT
 
-#include "colorclass_manager.h"
 #include "main_window.h"
 #include "project_manager.h"
 

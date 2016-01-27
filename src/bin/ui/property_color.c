@@ -21,7 +21,6 @@
 #include "main_window.h"
 #include "colorsel.h"
 #include "property_macros.h"
-#include "colorclass_manager.h"
 #include "project_manager.h"
 
 typedef struct _Color_Prop_Data Color_Prop_Data;

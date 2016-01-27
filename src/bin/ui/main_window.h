@@ -446,4 +446,15 @@ struct _ColorClassData
    Evas_Object *edje_preview;
 };
 
+/**
+ * Add new colorclass manager layout object.
+ *
+ * @return Pointer to layout object, which contain list of colorclasses,
+ * control buttons, etc.
+ *
+ * @ingroup Window
+ */
+Evas_Object *
+colorclass_manager_add();
+
 #endif /* UI_MAIN_WINDOW_H */

@@ -27,7 +27,6 @@
 
 #include "style_editor.h"
 #include "sound_editor.h"
-#include "colorclass_manager.h"
 #include "animator.h"
 
 struct _Tabs_Item {

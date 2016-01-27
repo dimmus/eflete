@@ -17,7 +17,6 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "colorclass_manager.h"
 #include "main_window.h"
 #include "utc_common.h"
 
