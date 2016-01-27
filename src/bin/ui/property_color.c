@@ -38,8 +38,6 @@ struct _Color_Prop_Data
    ColorClassData color_data;
 };
 
-static Eina_Bool is_colorselector_create = EINA_FALSE;
-
 static void
 _colorclass_update(Color_Prop_Data *pd)
 {
@@ -164,12 +162,11 @@ _on_color_selected(void *data,
      {
         Colorclass_Item *ccl = current_color->current_ccl;
 
-        if (!is_colorselector_create)
+        if (!pd->colorsel1_layout)
           {
              ADD_COLORSEL(1, pd->box_object_color);
              ADD_COLORSEL(2, pd->box_outline_color);
              ADD_COLORSEL(3, pd->box_shadow_color);
-             is_colorselector_create = EINA_TRUE;
           }
         else
           {
