@@ -36,13 +36,10 @@ struct _Search_Data
 
 struct _Colorclasses_Manager
 {
-   Project *pr;
-   Evas_Object *mwin;
    Evas_Object *layout;
    Evas_Object *genlist;
    Evas_Object *edje_preview, *preview_layout;
    Evas_Object *entry, *popup;
-   Evas_Object *btn_add;
    Evas_Object *del_button;
    Elm_Validator_Regexp *name_validator;
    Search_Data style_search_data;
