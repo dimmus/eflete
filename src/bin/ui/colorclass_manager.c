@@ -238,8 +238,7 @@ _on_selected(void *data,
 
    assert(ccl != NULL);
 
-   ColorClassData *current_color_data = (ColorClassData *)mem_malloc(sizeof(ColorClassData));
-   memset(current_color_data, 0x0, sizeof(ColorClassData));
+   ColorClassData *current_color_data = (ColorClassData *)mem_calloc(1, sizeof(ColorClassData));
 
    edit->current_ccl = ccl;
 
