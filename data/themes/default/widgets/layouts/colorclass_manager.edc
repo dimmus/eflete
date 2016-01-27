@@ -344,6 +344,7 @@ group {
             text {
                size: 29;
                min: 1 1;
+               fit: 1 1;
                ellipsis: -1;
                font: "arial";
             }
