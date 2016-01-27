@@ -508,8 +508,6 @@ _animator_open_cb(void)
 static Eina_Bool
 _highlight_align_show_switch_cb(void)
 {
-   assert(ap.project != NULL);
-
    Evas_Object *workspace = tabs_current_workspace_get();
 
    if (!workspace) return false;
