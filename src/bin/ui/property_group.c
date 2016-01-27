@@ -2720,11 +2720,10 @@ _on_state_color_class_change(void *data,
                                    pd->part->current_state->parsed_name,
                                    pd->part->current_state->parsed_val,
                                    value);
-
-   if (edje_edit_color_class_colors_get(pd->group->edit_object, item->title,
-                                        &r, &g, &b, &a,
-                                        &r2, &g2, &b2, &a2,
-                                        &r3, &g3, &b3, &a3))
+   if (value && edje_edit_color_class_colors_get(pd->group->edit_object, value,
+                                                 &r, &g, &b, &a,
+                                                 &r2, &g2, &b2, &a2,
+                                                 &r3, &g3, &b3, &a3))
      {
         evas_object_color_set(pd->attributes.state.color1, r * a / 255, g * a / 255, b * a / 255, a);
         evas_object_color_set(pd->attributes.state.color2, r2 * a2 / 255, g2 * a2 / 255, b2 * a2 / 255, a2);
