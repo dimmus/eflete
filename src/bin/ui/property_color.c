@@ -107,7 +107,7 @@ _colorselector_item_add(Evas_Object *box, Evas_Object *colorsel)
    evas_object_smart_callback_add(pd->colorsel##NUMBER, "color,item,selected", _on_changed_##NUMBER, pd); \
    evas_object_show(pd->colorsel##NUMBER); \
    pd->colorsel##NUMBER##_layout = _colorselector_item_add(BOX, pd->colorsel##NUMBER); \
-   elm_box_pack_end(BOX, pd->colorsel##NUMBER##_layout);
+   evas_object_hide(pd->colorsel##NUMBER##_layout);
 
 static Evas_Object *
 _add_object_color_frame(Color_Prop_Data *pd, Evas_Object *parent)
@@ -119,6 +119,8 @@ _add_object_color_frame(Color_Prop_Data *pd, Evas_Object *parent)
    BOX_ADD(frame_object, pd->box_object_color, EINA_FALSE, EINA_FALSE);
    elm_box_padding_set(pd->box_object_color, 6, 0);
    elm_object_content_set(frame_object, pd->box_object_color);
+
+   ADD_COLORSEL(1, pd->box_object_color);
 
    return frame_object;
 }
@@ -134,6 +136,8 @@ _add_outline_color_frame(Color_Prop_Data *pd, Evas_Object *parent)
    elm_box_padding_set(pd->box_outline_color, 6, 0);
    elm_object_content_set(frame_outline, pd->box_outline_color);
 
+   ADD_COLORSEL(2, pd->box_outline_color);
+
    return frame_outline;
 }
 
@@ -147,6 +151,8 @@ _add_shadow_color_frame(Color_Prop_Data *pd, Evas_Object *parent)
    BOX_ADD(frame_shadow, pd->box_shadow_color, EINA_FALSE, EINA_FALSE);
    elm_box_padding_set(pd->box_shadow_color, 6, 0);
    elm_object_content_set(frame_shadow, pd->box_shadow_color);
+
+   ADD_COLORSEL(3, pd->box_shadow_color);
 
    return frame_shadow;
 }
@@ -162,21 +168,12 @@ _on_color_selected(void *data,
      {
         Colorclass_Item *ccl = current_color->current_ccl;
 
-        if (!pd->colorsel1_layout)
-          {
-             ADD_COLORSEL(1, pd->box_object_color);
-             ADD_COLORSEL(2, pd->box_outline_color);
-             ADD_COLORSEL(3, pd->box_shadow_color);
-          }
-        else
-          {
-             elm_box_pack_end(pd->box_object_color, pd->colorsel1_layout);
-             evas_object_show(pd->colorsel1_layout);
-             elm_box_pack_end(pd->box_outline_color, pd->colorsel2_layout);
-             evas_object_show(pd->colorsel2_layout);
-             elm_box_pack_end(pd->box_shadow_color, pd->colorsel3_layout);
-             evas_object_show(pd->colorsel3_layout);
-          }
+        elm_box_pack_end(pd->box_object_color, pd->colorsel1_layout);
+        evas_object_show(pd->colorsel1_layout);
+        elm_box_pack_end(pd->box_outline_color, pd->colorsel2_layout);
+        evas_object_show(pd->colorsel2_layout);
+        elm_box_pack_end(pd->box_shadow_color, pd->colorsel3_layout);
+        evas_object_show(pd->colorsel3_layout);
 
         pd->color_data = *current_color;
 
