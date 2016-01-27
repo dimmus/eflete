@@ -275,7 +275,6 @@ _on_image_done(void *data,
                void *event_info)
 {
    Item *it = NULL;
-   Elm_Object_Item *item = NULL;
    const Eina_List *images, *l;
    const char *selected;
    Uns_List *image = NULL;
@@ -326,10 +325,9 @@ _on_image_done(void *data,
         it = (Item *)mem_malloc(sizeof(Item));
         it->image_name = eina_stringshare_add(file_name);
         it->id = edje_edit_image_id_get(ap.project->global_object, it->image_name);
-        item = elm_gengrid_item_append(img_mng->gengrid, gic, it, _grid_sel, img_mng);
+        elm_gengrid_item_append(img_mng->gengrid, gic, it, _grid_sel, img_mng);
 
         it->source = eina_stringshare_add(res->source);
-        elm_gengrid_item_selected_set(item, true);
      }
 
    return true;
