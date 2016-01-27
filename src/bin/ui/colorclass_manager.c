@@ -21,6 +21,7 @@
 #define EFL_EO_API_SUPPORT
 
 #include "main_window.h"
+#include "validator.h"
 #include "project_manager.h"
 
 static Elm_Genlist_Item_Class *_itc_ccl = NULL;
@@ -41,7 +42,7 @@ struct _Colorclasses_Manager
    Evas_Object *edje_preview, *preview_layout;
    Evas_Object *entry, *popup;
    Evas_Object *del_button;
-   Elm_Validator_Regexp *name_validator;
+   Resource_Name_Validator *name_validator;
    Search_Data style_search_data;
    Colorclass_Item *current_ccl;
 };
@@ -54,7 +55,7 @@ _validation(void *data,
 {
   Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
 
-  if (ELM_REG_NOERROR != elm_validator_regexp_status_get(edit->name_validator))
+  if (ELM_REG_NOERROR != resource_name_validator_status_get(edit->name_validator))
     popup_buttons_disabled_set(BTN_OK, true);
   else
     popup_buttons_disabled_set(BTN_OK, false);
@@ -78,10 +79,11 @@ _on_button_add_clicked_cb(void *data __UNUSED__,
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-   edit->name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
+   edit->name_validator = resource_name_validator_new(NAME_REGEX, NULL);
+   resource_name_validator_list_set(edit->name_validator, &ap.project->colorclasses, true);
    LAYOUT_PROP_ADD(box, _("Color class name: "), "property", "1swallow")
    ENTRY_ADD(box, edit->entry, true);
-   eo_do(edit->entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, edit->name_validator));
+   eo_do(edit->entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, edit->name_validator));
    evas_object_smart_callback_add(edit->entry, "changed", _validation, edit);
    elm_object_part_text_set(edit->entry, "guide", _("Type new color class name here"));
    elm_object_part_content_set(item, "elm.swallow.content", edit->entry);
@@ -117,6 +119,7 @@ _on_button_add_clicked_cb(void *data __UNUSED__,
    ap.project->changed = true;
 
 end:
+   resource_name_validator_free(edit->name_validator);
    evas_object_del(box);
 }
 
