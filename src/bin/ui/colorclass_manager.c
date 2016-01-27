@@ -173,6 +173,7 @@ _on_button_delete_clicked_cb(void *data __UNUSED__,
      {
         edit->current_ccl = NULL;
         elm_object_disabled_set(edit->del_button, EINA_TRUE);
+        evas_object_smart_callback_call(ap.win, SIGNAL_COLOR_SELECTED, NULL);
      }
 
    editor_save(ap.project->global_object);
