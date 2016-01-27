@@ -93,7 +93,7 @@ _on_button_add_clicked_cb(void *data __UNUSED__,
 
    btn_res = popup_want_action(_("Create a new layout"), NULL, box,
                                edit->entry, BTN_OK|BTN_CANCEL,
-                               NULL, NULL);
+                               NULL, edit->entry);
 
    if (BTN_CANCEL == btn_res) goto end;
 
