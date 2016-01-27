@@ -240,6 +240,7 @@ _on_unselected(void *data,
    assert(edit != NULL);
 
    elm_object_disabled_set(edit->del_button, EINA_TRUE);
+   evas_object_smart_callback_call(ap.win, SIGNAL_COLOR_SELECTED, NULL);
 }
 
 static void
