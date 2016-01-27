@@ -99,64 +99,32 @@ _colorselector_item_add(Evas_Object *box, Evas_Object *colorsel)
 }
 
    /* Creating colorselectors */
-#define ADD_COLORSEL(NUMBER, BOX) \
-   pd->colorsel##NUMBER = elm_colorselector_add(BOX); \
+#define ADD_FRAME_COLORSEL(NUMBER, NAME, TITLE) \
+Evas_Object * \
+prop_color_##NAME##_frame_add(Evas_Object *parent, Color_Prop_Data *pd) \
+{ \
+   Evas_Object *frame_object; \
+   FRAME_ADD(parent, frame_object, true, TITLE) \
+   BOX_ADD(frame_object, pd->box_##NAME##_color, false, false); \
+   elm_box_padding_set(pd->box_##NAME##_color, 6, 0); \
+   elm_object_content_set(frame_object, pd->box_##NAME##_color); \
+ \
+   pd->colorsel##NUMBER = elm_colorselector_add(pd->box_##NAME##_color); \
    elm_colorselector_mode_set(pd->colorsel##NUMBER, ELM_COLORSELECTOR_ALL); \
    evas_object_size_hint_weight_set(pd->colorsel##NUMBER, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(pd->colorsel##NUMBER, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    evas_object_smart_callback_add(pd->colorsel##NUMBER, "changed,user", _on_changed_##NUMBER, pd); \
    evas_object_smart_callback_add(pd->colorsel##NUMBER, "color,item,selected", _on_changed_##NUMBER, pd); \
    evas_object_show(pd->colorsel##NUMBER); \
-   pd->colorsel##NUMBER##_layout = _colorselector_item_add(BOX, pd->colorsel##NUMBER); \
-   evas_object_hide(pd->colorsel##NUMBER##_layout);
-
-static Evas_Object *
-_add_object_color_frame(Color_Prop_Data *pd, Evas_Object *parent)
-{
-   Evas_Object *frame_object;
-
-   FRAME_ADD(parent, frame_object, true, _("Object color"))
-
-   BOX_ADD(frame_object, pd->box_object_color, EINA_FALSE, EINA_FALSE);
-   elm_box_padding_set(pd->box_object_color, 6, 0);
-   elm_object_content_set(frame_object, pd->box_object_color);
-
-   ADD_COLORSEL(1, pd->box_object_color);
-
-   return frame_object;
+   pd->colorsel##NUMBER##_layout = _colorselector_item_add(pd->box_##NAME##_color, pd->colorsel##NUMBER); \
+   evas_object_hide(pd->colorsel##NUMBER##_layout); \
+ \
+   return frame_object; \
 }
 
-static Evas_Object *
-_add_outline_color_frame(Color_Prop_Data *pd, Evas_Object *parent)
-{
-   Evas_Object *frame_outline;
-
-   FRAME_ADD(parent, frame_outline, true, _("Outline color"))
-
-   BOX_ADD(frame_outline, pd->box_outline_color, EINA_FALSE, EINA_FALSE);
-   elm_box_padding_set(pd->box_outline_color, 6, 0);
-   elm_object_content_set(frame_outline, pd->box_outline_color);
-
-   ADD_COLORSEL(2, pd->box_outline_color);
-
-   return frame_outline;
-}
-
-static Evas_Object *
-_add_shadow_color_frame(Color_Prop_Data *pd, Evas_Object *parent)
-{
-   Evas_Object *frame_shadow;
-
-   FRAME_ADD(parent, frame_shadow, true, _("Shadow color"))
-
-   BOX_ADD(frame_shadow, pd->box_shadow_color, EINA_FALSE, EINA_FALSE);
-   elm_box_padding_set(pd->box_shadow_color, 6, 0);
-   elm_object_content_set(frame_shadow, pd->box_shadow_color);
-
-   ADD_COLORSEL(3, pd->box_shadow_color);
-
-   return frame_shadow;
-}
+ADD_FRAME_COLORSEL(1, object, _("Object color"))
+ADD_FRAME_COLORSEL(2, outline, _("Outline color"))
+ADD_FRAME_COLORSEL(3, shadow, _("Shadow color"))
 
 static void
 _on_color_selected(void *data,
@@ -267,9 +235,12 @@ ui_property_color_add(Evas_Object *parent)
 
    item = prop_color_desctiption_add(main_box, pd);
    elm_box_pack_end(main_box, item);
-   elm_box_pack_end(main_box, _add_object_color_frame(pd, main_box));
-   elm_box_pack_end(main_box, _add_outline_color_frame(pd, main_box));
-   elm_box_pack_end(main_box, _add_shadow_color_frame(pd, main_box));
+   item = prop_color_object_frame_add(main_box, pd);
+   elm_box_pack_end(main_box, item);
+   item = prop_color_outline_frame_add(main_box, pd);
+   elm_box_pack_end(main_box, item);
+   item = prop_color_shadow_frame_add(main_box, pd);
+   elm_box_pack_end(main_box, item);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_COLOR_SELECTED, _on_color_selected, pd);
    evas_object_event_callback_add(main_box, EVAS_CALLBACK_DEL, _on_property_color_del, pd);
