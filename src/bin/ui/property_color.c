@@ -165,6 +165,8 @@ _on_color_selected(void *data,
 {
    ColorClassData *current_color = (ColorClassData *)event_info;
    Color_Prop_Data *pd = (Color_Prop_Data *)data;
+   Eina_Stringshare *description;
+
    if (current_color)
      {
         Colorclass_Item *ccl = current_color->current_ccl;
@@ -181,6 +183,9 @@ _on_color_selected(void *data,
         elm_colorselector_color_set(pd->colorsel1, ccl->r1, ccl->g1, ccl->b1, ccl->a1);
         elm_colorselector_color_set(pd->colorsel2, ccl->r2, ccl->g2, ccl->b2, ccl->a2);
         elm_colorselector_color_set(pd->colorsel3, ccl->r3, ccl->g3, ccl->b3, ccl->a3);
+        description = edje_edit_color_class_description_get(ap.project->global_object, ccl->name);
+        elm_entry_entry_set(pd->description, description);
+        elm_object_disabled_set(pd->description, false);
 
         free(current_color);
      }
@@ -192,6 +197,8 @@ _on_color_selected(void *data,
         evas_object_hide(pd->colorsel2_layout);
         elm_box_unpack(pd->box_shadow_color, pd->colorsel3_layout);
         evas_object_hide(pd->colorsel3_layout);
+        elm_entry_entry_set(pd->description, "");
+        elm_object_disabled_set(pd->description, true);
      }
 }
 
@@ -207,8 +214,25 @@ _on_property_color_del(void * data,
    free(pd);
 }
 
+static void
+_on_description_change(void *data,
+                       Evas_Object *obj,
+                       void *ei __UNUSED__)
+{
+   Color_Prop_Data *pd = (Color_Prop_Data *)data;
+   const char *text;
+   assert(pd != NULL);
+   text = elm_entry_entry_get(obj);
+
+   Colorclass_Item *cc_it = pd->color_data.current_ccl;
+   edje_edit_color_class_description_set(ap.project->global_object, cc_it->name, text);
+
+   editor_save(ap.project->global_object);
+   TODO("Remove this line once edje_edit_colorclass API would be added into Editor Module and saving would work properly")
+   ap.project->changed = true;
+}
 static Evas_Object *
-prop_part_desctiption_add(Evas_Object *parent, Color_Prop_Data *pd)
+prop_color_desctiption_add(Evas_Object *parent, Color_Prop_Data *pd)
 {
    assert(parent != NULL);
    assert(pd != NULL);
@@ -217,6 +241,7 @@ prop_part_desctiption_add(Evas_Object *parent, Color_Prop_Data *pd)
    ENTRY_ADD(parent, pd->description, true);
    elm_object_disabled_set(pd->description, true);
    elm_object_tooltip_text_set(pd->description, _("Set ColorClass'es description"));
+   evas_object_smart_callback_add(pd->description, "changed,user", _on_description_change, pd);
    elm_layout_content_set(item, "elm.swallow.content", pd->description);
 
    return item;
@@ -240,7 +265,7 @@ ui_property_color_add(Evas_Object *parent)
 
    elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
 
-   item = prop_part_desctiption_add(main_box, pd);
+   item = prop_color_desctiption_add(main_box, pd);
    elm_box_pack_end(main_box, item);
    elm_box_pack_end(main_box, _add_object_color_frame(pd, main_box));
    elm_box_pack_end(main_box, _add_outline_color_frame(pd, main_box));
