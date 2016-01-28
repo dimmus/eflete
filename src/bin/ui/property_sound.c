@@ -90,7 +90,6 @@ struct _Sound_Prop_Data
       Evas_Object *teg;
       Evas_Object *tone_name;
       Evas_Object *tone_frq;
-      Evas_Object *tone_duration;
       Evas_Object *file_name;
       Evas_Object *duration;
       Evas_Object *type;
@@ -761,7 +760,6 @@ static void
 _tone_info_update(Sound_Prop_Data *pd, Selected_Sound_Data *snd_data)
 {
    Evas_Object *item;
-   Eina_Stringshare *duration;
 
    evas_object_hide(pd->sample_box);
    evas_object_show(pd->tone_box);
@@ -769,17 +767,10 @@ _tone_info_update(Sound_Prop_Data *pd, Selected_Sound_Data *snd_data)
    elm_object_content_unset(pd->info_frame);
    elm_object_content_set(pd->info_frame, pd->tone_box);
 
-   duration = eina_stringshare_printf("%.1f s", snd_data->duration);
-
    item = elm_object_part_content_get(pd->snd_data.tone_name, "elm.swallow.content");
    elm_object_text_set(item, snd_data->file_name);
 
    elm_spinner_value_set(pd->snd_data.tone_frq, snd_data->tone_frq);
-
-   item = elm_object_part_content_get(pd->snd_data.duration, "swallow.content1");
-   elm_object_text_set(item, duration);
-
-   eina_stringshare_del(duration);
 }
 
 #ifdef HAVE_AUDIO
@@ -957,9 +948,6 @@ _tone_info_create(Evas_Object *parent, Sound_Prop_Data *edit)
 
    item = prop_sound_editor_tone_frequency_add(edit->tone_box, edit);
    elm_box_pack_end(edit->tone_box, item);
-
-   edit->snd_data.tone_duration = prop_item_label_add(edit->tone_box, &edit->snd_data.tone_duration, _("duration:"), _(" - "));
-   elm_box_pack_end(edit->tone_box, edit->snd_data.tone_duration);
 
    evas_object_hide(edit->tone_box);
 }
