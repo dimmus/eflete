@@ -1029,8 +1029,8 @@ group { name: "elm/layout/animator/program_area";
 #define BTNS_LARGE_SIZE_SET SET_SIZE(80, 25)
 #define BTNS_SMALL_SIZE_SET SET_SIZE(30, 22)
 
-group { name: "elm/layout/image_editor/default";
-   alias: "elm/layout/sound_editor/default";
+group { name: "elm/layout/image_manager/default";
+   alias: "elm/layout/sound_manager/default";
    parts {
       part { name: "area.edit";
          type: SPACER;
