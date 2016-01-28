@@ -138,6 +138,8 @@ _grid_sel_sample(void *data,
    snd_data->markup = edit->markup;
    snd_data->gengrid = edit->gengrid;
    snd_data->sound_type = SOUND_TYPE_SAMPLE;
+   snd_data->compression_type = item->comp;
+   snd_data->quality = item->rate;
 
    res = pm_resource_get(ap.project->sounds, item->sound_name);
    if (!res->used_in) elm_object_disabled_set(edit->btn_del, false);
