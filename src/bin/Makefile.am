@@ -38,7 +38,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/splash.c \
 ../../src/bin/ui/shortcuts/shortcuts.c \
 ../../src/bin/ui/container/container.c \
-../../src/bin/ui/editors/style_editor.c \
+../../src/bin/ui/style_manager.c \
 ../../src/bin/ui/editors/sound_editor.c \
 ../../src/bin/ui/dialogs/about_window.c \
 ../../src/bin/ui/dialogs/colorsel.c \

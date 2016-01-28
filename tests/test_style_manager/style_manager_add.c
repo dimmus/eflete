@@ -17,15 +17,15 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "test_style_editor.h"
+#include "test_style_manager.h"
 #include "test_common.h"
 
 /**
- * @addtogroup style_editor_test
+ * @addtogroup style_manager_test
  * @{
  * @addtogroup style_manager_add
  * @{
- * style_editor
+ * style_manager
  * <TABLE>
  * @}
  */

@@ -44,7 +44,7 @@ check: Makefile
 	$(builddir)/groupedit_edit_object_set.edj \
 	$(builddir)/mw_icon_set.edj \
 	$(builddir)/program_editor_window_add_test.edj \
-	$(builddir)/style_editor.edj \
+	$(builddir)/style_manager.edj \
 	$(builddir)/test_project_manager.edj \
 	$(builddir)/image_manager.edj \
 	$(builddir)/ui_states_list_data_set.edj \

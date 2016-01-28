@@ -17,23 +17,13 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "test_style_editor.h"
+#include "utc_common.h"
+#include "main_window.h"
 
-Suite* test_suite (void) {
-   Suite *suite = suite_create("test_style_editor");
-   TCase *tcase = tcase_create("TCase");
-   tcase_add_test(tcase, style_manager_add_test_p);
-   suite_add_tcase(suite, tcase);
-   return suite;
-}
+/**
+ * @defgroup style_manager_test
+ */
 
-int main(void) {
-   int number_failed;
-   Suite *suite = test_suite();
-   SRunner *runner = srunner_create(suite);
-   srunner_set_xml(runner, "test_style_editor.xml");
-   srunner_run_all(runner, CK_VERBOSE);
-   number_failed = srunner_ntests_failed(runner);
-   srunner_free(runner);
-   return number_failed;
-}
+#define TEST_NAME "style_manager"
+
+void style_manager_add_test_p(int);
