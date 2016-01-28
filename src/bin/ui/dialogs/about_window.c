@@ -17,7 +17,6 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "style_editor.h"
 #include "main_window.h"
 #include "modal_window.h"
 
