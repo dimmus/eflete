@@ -36,6 +36,7 @@ struct _Style_Prop_Data
    Evas_Object *vert_align;
    Evas_Object *left_margin;
    Evas_Object *right_margin;
+   Evas_Object *wrap;
    Evas_Object *box_frame_position;
    // Text format frame data
    Evas_Object *tab_stops;
@@ -161,6 +162,12 @@ static const char *font_horizontal_valign[] = { N_("top"),
                                                 N_("base"),
                                                 NULL};
 
+static const char *text_wrap[] = { N_("none"),
+                                   N_("word"),
+                                   N_("char"),
+                                   N_("mixed"),
+                                   NULL};
+
 static const char *font_glow_list[] = { N_("none"),
                                         N_("plain"),
                                         N_("shadow"),
@@ -227,6 +234,16 @@ if (!ei) \
 Ewe_Combobox_Item *item = ei; \
 const char *value; \
 value = eina_stringshare_add(item->title);
+
+#define COMBOBOX_NONE_VALUE \
+Ewe_Combobox_Item *item = ei; \
+const char *value; \
+value = eina_stringshare_add(item->title); \
+if (!strcmp(value, _("none"))) \
+{ \
+   eina_stringshare_del(value); \
+   value = eina_stringshare_add(""); \
+}
 
 #define PERCENT_SPINNER_VALUE \
 const char *value = NULL; \
@@ -691,6 +708,7 @@ CHANGE_CALLBACK(hor_align, "align", COMBOBOX, NULL)
 CHANGE_CALLBACK(left_margin, "left_margin", SPINNER, NULL)
 CHANGE_CALLBACK(vert_align, "valign", COMBOBOX, NULL)
 CHANGE_CALLBACK(right_margin, "right_margin", SPINNER, NULL)
+CHANGE_CALLBACK(wrap, "wrap", COMBOBOX_NONE, NULL)
 CHANGE_CALLBACK(style, "style", COMBOBOX, _glow_shadow_update(pd))
 
 CHANGE_CALLBACK(check_s_color, "strikethrough", CHECK, NULL)
@@ -744,6 +762,9 @@ _add_position_part(Style_Prop_Data *pd)
 
    _prop_spin_add(_(""), _("right"), _("px"), pd->box_frame_position, &pd->right_margin, MARGIN_MIN_SP, MAX_SP, STEP_SP);
    evas_object_smart_callback_add(pd->right_margin, "changed", _on_right_margin_change, pd);
+
+   ADD_1SWALLOW_ITEM(_("Wrap:"), pd->box_frame_position, pd->wrap, item, EWE_COMBOBOX);
+   evas_object_smart_callback_add(pd->wrap, "selected", _on_wrap_change, pd);
 }
 
 static Evas_Object *
@@ -903,6 +924,8 @@ _position_text_option_update(Style_Prop_Data *pd, const char *value)
         if (!valign) valign = eina_tmpstr_add("baseline");
         Eina_Tmpstr *rmargin = _tag_value_get(value, "right_margin");
         if (!rmargin) rmargin = eina_tmpstr_add("0");
+        Eina_Tmpstr *vwrap = _tag_value_get(value, "wrap");
+        if (!vwrap) vwrap = eina_tmpstr_add("none");
 
         ewe_combobox_text_set(pd->hor_align, align);
         for (i = 0; font_horizontal_align[i] != NULL; i++)
@@ -913,9 +936,15 @@ _position_text_option_update(Style_Prop_Data *pd, const char *value)
         for (i = 0; font_horizontal_valign[i] != NULL; i++)
           ewe_combobox_item_add(pd->vert_align, font_horizontal_valign[i]);
         elm_spinner_value_set(pd->right_margin, atof(rmargin));
+
+        ewe_combobox_text_set(pd->wrap, vwrap);
+        for (i = 0; text_wrap[i] != NULL; i++)
+          ewe_combobox_item_add(pd->wrap, text_wrap[i]);
+
         eina_tmpstr_del(align);
         eina_tmpstr_del(lmargin);
         eina_tmpstr_del(valign);
+        eina_tmpstr_del(vwrap);
         eina_tmpstr_del(rmargin);
      }
 
@@ -1301,6 +1330,7 @@ ui_property_style_add(Evas_Object *parent)
 #undef ADD_COLOR_ELEMENT
 #undef SPINNER_VALUE
 #undef COMBOBOX_VALUE
+#undef COMBOBOX_NONE_VALUE
 #undef PERCENT_SPINNER_VALUE
 #undef CHECK_VALUE
 #undef SEGMENT_VALUE
