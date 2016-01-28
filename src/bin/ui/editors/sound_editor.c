@@ -143,12 +143,14 @@ _grid_sel_sample(void *data,
    if (!res->used_in) elm_object_disabled_set(edit->btn_del, false);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_SELECT, snd_data);
+   free(snd_data);
 }
 
 static void
 _grid_sel_tone(void *data,
                Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__) {
+               void *event_info __UNUSED__)
+{
    Sound_Editor *edit = (Sound_Editor *)data;
    Selected_Sound_Data *snd_data = mem_calloc(1, sizeof(Selected_Sound_Data));
    External_Resource *res;
@@ -167,6 +169,7 @@ _grid_sel_tone(void *data,
    if (!res->used_in) elm_object_disabled_set(edit->btn_del, false);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_SELECT, snd_data);
+   free(snd_data);
 }
 
 static void
