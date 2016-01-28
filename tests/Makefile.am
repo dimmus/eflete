@@ -20,7 +20,7 @@ modal_window_test \
 project_manager_test \
 config_test \
 cursor_test \
-style_editor_test \
+style_manager_test \
 highlight_test \
 ui_main_window_test \
 groupedit_test \
@@ -244,11 +244,11 @@ cursor_test_SOURCES = \
 cursor_test_CFLAGS = ${FLAGS}
 cursor_test_LDADD = ${LD}
 
-style_editor_test_SOURCES = \
-../tests/test_style_editor/test_style_editor.c \
-../tests/test_style_editor/style_manager_add.c
-style_editor_test_CFLAGS = ${FLAGS} -DEDC_PATH=\"${srcdir}/test_style_editor/data/\"
-style_editor_test_LDADD = ${LD}
+style_manager_test_SOURCES = \
+../tests/test_style_manager/test_style_manager.c \
+../tests/test_style_manager/style_manager_add.c
+style_manager_test_CFLAGS = ${FLAGS} -DEDC_PATH=\"${srcdir}/test_style_manager/data/\"
+style_manager_test_LDADD = ${LD}
 
 container_test_SOURCES = \
 ../tests/test_container/test_container.c \

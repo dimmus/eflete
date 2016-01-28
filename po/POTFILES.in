@@ -17,7 +17,7 @@ src/bin/ui/editors/animator_program_sequence.c
 src/bin/ui/colorclass_manager.c
 src/bin/ui/image_manager.c
 src/bin/ui/editors/sound_editor.c
-src/bin/ui/editors/style_editor.c
+src/bin/ui/style_manager.c
 src/bin/ui/live_view/elementary/live_actionslider.c
 src/bin/ui/live_view/elementary/live_bg.c
 src/bin/ui/live_view/elementary/live_bubble.c
