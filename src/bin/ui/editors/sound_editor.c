@@ -647,7 +647,7 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    assert(edit != NULL);
 
    edit->markup = elm_layout_add(ap.win);
-   elm_layout_theme_set(edit->markup, "layout", "sound_editor", "default");
+   elm_layout_theme_set(edit->markup, "layout", "sound_manager", "default");
    evas_object_size_hint_weight_set(edit->markup, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_data_set(edit->markup, SND_EDIT_KEY, edit);
 
