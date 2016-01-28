@@ -774,6 +774,8 @@ _tone_info_update(Sound_Prop_Data *pd, Selected_Sound_Data *snd_data)
    item = elm_object_part_content_get(pd->snd_data.tone_name, "elm.swallow.content");
    elm_object_text_set(item, snd_data->file_name);
 
+   elm_spinner_value_set(pd->snd_data.tone_frq, snd_data->tone_frq);
+
    item = elm_object_part_content_get(pd->snd_data.duration, "swallow.content1");
    elm_object_text_set(item, duration);
 

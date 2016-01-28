@@ -134,11 +134,11 @@ _grid_sel_sample(void *data,
 
    assert(edit != NULL);
 
+   item = elm_object_item_data_get((Elm_Gengrid_Item *)event_info);
    snd_data->markup = edit->markup;
    snd_data->gengrid = edit->gengrid;
    snd_data->sound_type = SOUND_TYPE_SAMPLE;
 
-   item = elm_object_item_data_get((Elm_Gengrid_Item *)event_info);
    res = pm_resource_get(ap.project->sounds, item->sound_name);
    if (!res->used_in) elm_object_disabled_set(edit->btn_del, false);
 
@@ -158,13 +158,14 @@ _grid_sel_tone(void *data,
 
    assert(edit != NULL);
 
+   item = elm_object_item_data_get((Elm_Gengrid_Item *)event_info);
    snd_data->markup = edit->markup;
    snd_data->gengrid = edit->gengrid;
    snd_data->sound_type = SOUND_TYPE_TONE;
    snd_data->tone = edit->tone;
+   snd_data->tone_frq = item->tone_frq;
    elm_object_disabled_set(edit->btn_del, false);
 
-   item = elm_object_item_data_get((Elm_Gengrid_Item *)event_info);
    res = pm_resource_get(ap.project->tones, item->sound_name);
    if (!res->used_in) elm_object_disabled_set(edit->btn_del, false);
 
