@@ -18,7 +18,6 @@
  */
 
 #include "utc_common.h"
-#include "style_editor.h"
 #include "main_window.h"
 
 /**

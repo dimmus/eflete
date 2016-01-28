@@ -457,4 +457,26 @@ struct _ColorClassData
 Evas_Object *
 colorclass_manager_add();
 
+struct _Style_Data
+{
+   const char *st_name;
+   const char *st_tag;
+   Eina_Stringshare *stvalue;
+   Eina_Strbuf *style;
+   Evas_Object *textblock_style;
+   Eina_Bool is_parent_item;
+};
+typedef struct _Style_Data Style_Data;
+
+/**
+ * Add new style manager layout object.
+ *
+ * @return Pointer to layout object, which contain list of styles,
+ * control buttons, etc.
+ *
+ * @ingroup Window
+ */
+Evas_Object *
+style_editor_window_add();
+
 #endif /* UI_MAIN_WINDOW_H */

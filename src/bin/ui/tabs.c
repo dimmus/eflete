@@ -25,7 +25,6 @@
 #include "main_window.h"
 #include "change.h"
 
-#include "style_editor.h"
 #include "sound_editor.h"
 #include "animator.h"
 
