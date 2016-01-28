@@ -752,6 +752,9 @@ _sample_info_update(Sound_Prop_Data *pd, Selected_Sound_Data *snd_data)
    item = elm_object_part_content_get(pd->snd_data.size, "elm.swallow.content");
    elm_object_text_set(item, size);
 
+   ewe_combobox_select_item_set(pd->snd_data.compression_type, snd_data->compression_type);
+   elm_spinner_value_set(pd->snd_data.compression_quality , snd_data->quality);
+
    eina_stringshare_del(duration);
    eina_stringshare_del(type);
 }
