@@ -501,7 +501,6 @@ _lines_colors_update(Style_Prop_Data *pd, const char *param)
 
    if (!strcmp(param, "underline"))
      {
-        printf("lines update\n");
         _lines_update(pd);
         val = _tag_value_get(CURRENT.stvalue, "underline_color");
         if (!val) _tag_parse(pd, WHITE_COLOR, "underline_color");
