@@ -173,7 +173,7 @@ PART_ADD(EDJE_PART_TYPE_BOX, box)
 /* different adding is for image */
 /*
 static void
-_on_image_editor_done(void *data __UNUSED__,
+_on_image_manager_done(void *data __UNUSED__,
                       Evas_Object *obj __UNUSED__,
                       void *event_info)
 {
@@ -190,8 +190,8 @@ _image_part_choose_cb(void)
    Evas_Object *img_edit;
 
 
-   img_edit = image_editor_window_add(ap.project, SINGLE);
-   evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED, _on_image_editor_done, NULL);
+   img_edit = image_manager_window_add(ap.project, SINGLE);
+   evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED, _on_image_manager_done, NULL);
    return true;
 }
 */
@@ -457,7 +457,7 @@ _close_tab_cb(void)
 }
 
 static Eina_Bool
-_style_editor_open_cb(void)
+_style_manager_open_cb(void)
 {
    if (ap.colorsel)
      evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
@@ -467,7 +467,7 @@ _style_editor_open_cb(void)
 }
 
 static Eina_Bool
-_image_editor_open_cb(void)
+_image_manager_open_cb(void)
 {
    if (ap.colorsel)
      evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
@@ -477,7 +477,7 @@ _image_editor_open_cb(void)
 }
 
 static Eina_Bool
-_sound_editor_open_cb(void)
+_sound_manager_open_cb(void)
 {
    if (ap.colorsel)
      evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
@@ -658,10 +658,10 @@ static Function_Set _sc_func_set_init[] =
      {"close", _close_tab_cb},
      {"undo", _undo_cb},
      {"redo", _redo_cb},
-     {"tab.style_editor", _style_editor_open_cb},
-     {"tab.image_editor", _image_editor_open_cb},
-     {"tab.sound_editor", _sound_editor_open_cb},
-     {"tab.colorclass_viewer", _colorclass_manager_open_cb},
+     {"tab.style_manager", _style_manager_open_cb},
+     {"tab.image_manager", _image_manager_open_cb},
+     {"tab.sound_manager", _sound_manager_open_cb},
+     {"tab.colorclass_manager", _colorclass_manager_open_cb},
      {"animator", _animator_open_cb},
      {NULL, NULL}
 };
@@ -675,7 +675,7 @@ _key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
    Key_Pair *key = mem_malloc(sizeof(Key_Pair));
 
 
-   if ((!ap.popup) && (!ap.modal_editor))
+   if (!ap.popup)
      {
         /*
          *  (ev->modifiers && 255) because modifiers contain both locks and modifs,
@@ -708,7 +708,7 @@ _key_unpress_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
    Eina_List *l;
 
 
-   if ((!ap.popup) && (!ap.modal_editor))
+   if (!ap.popup)
      {
         EINA_LIST_FOREACH(ap.shortcuts->holded_functions, l, sc_func)
           {

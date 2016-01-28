@@ -26,9 +26,7 @@ _on_mwin_del(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
-   ap.modal_editor--;
 }
 
 static void
@@ -87,6 +85,5 @@ about_window_add()
    elm_object_part_content_set(mwin, "eflete.swallow.btn_close", button);
 
    evas_object_show(mwin);
-   ap.modal_editor++;
    return mwin;
 }
