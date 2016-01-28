@@ -246,7 +246,7 @@ cursor_test_LDADD = ${LD}
 
 style_editor_test_SOURCES = \
 ../tests/test_style_editor/test_style_editor.c \
-../tests/test_style_editor/style_editor_window_add.c
+../tests/test_style_editor/style_manager_add.c
 style_editor_test_CFLAGS = ${FLAGS} -DEDC_PATH=\"${srcdir}/test_style_editor/data/\"
 style_editor_test_LDADD = ${LD}
 

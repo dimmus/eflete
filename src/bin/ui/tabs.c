@@ -384,7 +384,7 @@ _project_opened(void *data __UNUSED__,
 {
    tabs.menu.content_image_editor = image_manager_add();
    tabs.menu.content_sound_editor = sound_editor_window_add();
-   tabs.menu.content_text_editor = style_editor_window_add();
+   tabs.menu.content_text_editor = style_manager_add();
    tabs.menu.content_colorclass_editor = colorclass_manager_add();
 
    elm_object_item_disabled_set(tabs.menu.item_image, false);

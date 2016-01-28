@@ -937,7 +937,7 @@ _on_style_editor_close(void *data,
 }
 
 Evas_Object *
-style_editor_window_add()
+style_manager_add()
 {
    Evas_Object *main_layout, *layout_right;
    Evas_Object *bg, *box_bg;

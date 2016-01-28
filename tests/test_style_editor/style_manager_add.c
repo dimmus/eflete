@@ -23,7 +23,7 @@
 /**
  * @addtogroup style_editor_test
  * @{
- * @addtogroup style_editor_window_add
+ * @addtogroup style_manager_add
  * @{
  * style_editor
  * <TABLE>
@@ -31,11 +31,11 @@
  */
 
 /**
- * @addtogroup style_editor_window_add
+ * @addtogroup style_manager_add
  * @{
  * <tr>
- * <td>style_editor_window_add</td>
- * <td>style_editor_window_add_test_p</td>
+ * <td>style_manager_add</td>
+ * <td>style_manager_add_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialized elm and app
@@ -43,7 +43,7 @@
  * @step 3 project opened
  *
  * @procedure
- * @step 1 Call style_editor_window_add()
+ * @step 1 Call style_manager_add()
  * @step 2 Check  returned pointer
  * </td>
  * <td>Project *project</td>
@@ -51,25 +51,25 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(style_editor_window_add_test_p)
+EFLETE_TEST(style_manager_add_test_p)
 {
    elm_init(0,0);
 
    app_init();
-   ap.project = setup("style_editor_window_add_test_p");
+   ap.project = setup("style_manager_add_test_p");
 
    ui_main_window_add();
-   ck_assert_msg(style_editor_window_add(ap.project) != NULL,
+   ck_assert_msg(style_manager_add(ap.project) != NULL,
                  "Unable to create style editor");
 
    elm_shutdown();
-   teardown("./style_editor_window_add_test_p");
+   teardown("./style_manager_add_test_p");
    app_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup style_editor_window_add
+ * @addtogroup style_manager_add
  * @{
  * </TABLE>
  * @}
