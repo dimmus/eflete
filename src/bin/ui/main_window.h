@@ -477,6 +477,6 @@ typedef struct _Style_Data Style_Data;
  * @ingroup Window
  */
 Evas_Object *
-style_editor_window_add();
+style_manager_add();
 
 #endif /* UI_MAIN_WINDOW_H */

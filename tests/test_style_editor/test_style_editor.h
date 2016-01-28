@@ -26,4 +26,4 @@
 
 #define TEST_NAME "style_editor"
 
-void style_editor_window_add_test_p(int);
+void style_manager_add_test_p(int);
