@@ -30,6 +30,21 @@ TODO("Rename this file to textblock_style_manager")
 #define DEFAULT_DIRECTION 2
 #define WHITE_COLOR "#FFF"
 
+#define TEST_TEXT \
+"<\t>By the time London returned home, his stepfather had died." \
+"It then became his responsibility to provide for his family all by himself." \
+"Desperate for a job, he spent entire days walking around the Oakland business district." \
+"Occasionally he found a temporary job. He pawned his watch, bicycle," \
+"Mackintosh, and started writing again.<br/>" \
+"<\t>He carefully studied different stories published in magazines," \
+"trying to learn the secret of their popularity." \
+"He referred to the works of famous writers." \
+"By reading many of them he learned about the craft of constructing a plot," \
+"about creating a particular style. Rudyard Kipling captured his attention." \
+"He reached the conclusion that to write well he needed to write concisely" \
+"and he needed to tell about strong human emotions and vivid characters.<br/>" \
+"(c) Jack London. THE NORTHERN TALES. (NEW BATTLES. CHAPTER 5)"
+
 typedef struct _Style_Tag_Entries Style_Tag_Entries;
 typedef struct _Style_entries Style_Entries;
 typedef struct _Style_Editor Style_Editor;
@@ -971,8 +986,7 @@ style_manager_add()
    ts = evas_textblock_style_new();
    evas_textblock_style_set(ts, style_buf);
    evas_object_textblock_style_set(style_edit->textblock_style, ts);
-   evas_object_textblock_text_markup_set(style_edit->textblock_style,
-                       _("The quick brown fox <\t>jumps over the lazy dog"));
+   evas_object_textblock_text_markup_set(style_edit->textblock_style, TEST_TEXT);
    evas_object_show(style_edit->textblock_style);
    elm_object_part_content_set(main_layout, "swallow.preview", style_edit->entry_prev);
 
