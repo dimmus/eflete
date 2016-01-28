@@ -94,7 +94,6 @@ struct _App_Data
    Evas_Object *colorsel; /**< global colorselector. the one colorselector for
                             application. */
    Evas_Object *statusbar; /**< The statusbar object, which contain some items */
-   int modal_editor; /**< count of open editors */
    struct {
       Evas_Object *left;
       Evas_Object *right;

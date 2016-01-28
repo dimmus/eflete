@@ -512,7 +512,7 @@ _item_style_label_get(void *data,
 }
 
 static inline Evas_Object *
-_style_editor_search_field_create(Evas_Object *parent)
+_style_manager_search_field_create(Evas_Object *parent)
 {
    Evas_Object *entry, *icon;
 
@@ -800,7 +800,7 @@ _form_right_side(Style_Editor *style_edit)
    elm_object_part_text_set(layout, "label.list", _("Font list"));
    evas_object_show(layout);
 
-   search = _style_editor_search_field_create(layout);
+   search = _style_manager_search_field_create(layout);
    elm_object_part_content_set(layout, "swallow.search", search);
    evas_object_smart_callback_add(search, "changed", _search_changed, style_edit);
    evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, style_edit);
@@ -923,7 +923,7 @@ _add_box_bg(Style_Editor *style_edit)
 }
 
 static void
-_on_style_editor_close(void *data,
+_on_style_manager_close(void *data,
                         Evas *e __UNUSED__,
                         Evas_Object *obj __UNUSED__,
                         void *event_info __UNUSED__)
@@ -972,7 +972,7 @@ style_manager_add()
    evas_textblock_style_set(ts, style_buf);
    evas_object_textblock_style_set(style_edit->textblock_style, ts);
    evas_object_textblock_text_markup_set(style_edit->textblock_style,
-                       _("The quick brown fox jumps over the lazy dog"));
+                       _("The quick brown fox <\t>jumps over the lazy dog"));
    evas_object_show(style_edit->textblock_style);
    elm_object_part_content_set(main_layout, "swallow.preview", style_edit->entry_prev);
 
@@ -985,7 +985,7 @@ style_manager_add()
 
    evas_textblock_style_free(ts);
    evas_object_event_callback_add(main_layout, EVAS_CALLBACK_DEL,
-                                  _on_style_editor_close, style_edit);
+                                  _on_style_manager_close, style_edit);
 
    return main_layout;
 }
