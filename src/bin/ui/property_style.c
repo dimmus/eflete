@@ -459,6 +459,7 @@ _tag_value_get(const char* text_style, char* a_tag)
 
    strcpy(tag_list_copy, text_style);
    token = strtok(tag_list_copy, " ");
+
    while (token)
      {
         char* equals_sign = strchr(token, '=');
@@ -468,7 +469,11 @@ _tag_value_get(const char* text_style, char* a_tag)
              if (!strcmp(token, a_tag))
                {
                   equals_sign++;
-                  result = eina_tmpstr_add(equals_sign);
+
+                  if (token[strlen(token) - 1] != '\'')
+                    result = eina_tmpstr_add(equals_sign);
+                  else
+                    result = eina_tmpstr_add_length(equals_sign, strlen(token) - 1);
                   if (!strstr(FONT_DEFAULT, a_tag)) break;
                }
           }
@@ -979,7 +984,7 @@ _position_text_option_update(Style_Prop_Data *pd, const char *value)
         if (!_hex_to_rgb(bcolor, &r, &g, &b, &a))
           ERR("This error should not happen in style editor... Contact devs please!");
         evas_object_color_set(pd->bg_color, r*a/255, g*a/255, b*a/255, a);
-        elm_spinner_value_set(pd->replace_ellisis, atof(ellipsis));
+        elm_spinner_value_set(pd->replace_ellisis, atof(ellipsis) * 100);
         eina_tmpstr_del(tabstops);
         eina_tmpstr_del(linesize);
         eina_tmpstr_del(linerelsize);
