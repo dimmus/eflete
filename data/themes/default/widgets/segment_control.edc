@@ -22,18 +22,15 @@ group { name: "elm/segment_control/base/default";
 }
 group { name: "elm/segment_control/item/default";
    images {
-      image: "Button_v3_left.png" COMP;
-      image: "Button_v3_left_disabled.png" COMP;
-      image: "Button_v3_mid.png" COMP;
-      image: "Button_v3_mid_disabled.png" COMP;
-      image: "Button_v3_mid_hover.png" COMP;
-      image: "Button_v3_mid_pressed.png" COMP;
-      image: "Button_v3_right.png" COMP;
-      image: "Button_v3_right_disabled.png" COMP;
-      image: "Button_v3_right_hover.png" COMP;
-      image: "Button_v3_right_pressed.png" COMP;
-      image: "button_v3_left_hover.png" COMP;
-      image: "button_v3_left_pressed.png" COMP;
+      image: "segment_control_center.png" COMP;
+      image: "segment_control_end.png" COMP;
+      image: "segment_control_start.png" COMP;
+      image: "segment_control_pressed_center.png" COMP;
+      image: "segment_control_pressed_end.png" COMP;
+      image: "segment_control_pressed_start.png" COMP;
+      image: "segment_control_dim_enter.png" COMP;
+      image: "segment_control_dim_end.png" COMP;
+      image: "segment_control_dim_start.png" COMP;
    }
    parts {
       part { name: "segment";
@@ -47,8 +44,8 @@ group { name: "elm/segment_control/item/default";
             visible: 1;
             MIN_MAX;
             image {
-               normal: "Button_v3_left.png";
-               border:  4 4 3 5;
+               normal: "segment_control_start.png";
+               border:  4 4 9 9;
                middle: SOLID;
             }
          }
@@ -57,8 +54,8 @@ group { name: "elm/segment_control/item/default";
             visible: 1;
             MIN_MAX;
             image {
-               normal: "Button_v3_right.png";
-               border: 4 4 3 5;
+               normal: "segment_control_end.png";
+               border: 4 4 9 9;
                middle: SOLID;
             }
          }
@@ -67,8 +64,8 @@ group { name: "elm/segment_control/item/default";
             visible: 1;
             MIN_MAX;
             image {
-               normal: "Button_v3_mid.png";
-               border: 1 1 3 5;
+               normal: "segment_control_center.png";
+               border: 4 4 9 9;
                middle: SOLID;
             }
          }
@@ -77,8 +74,8 @@ group { name: "elm/segment_control/item/default";
             visible: 1;
             MIN_MAX;
             image {
-               normal: "button_v3_left_hover.png";
-               border:  4 4 3 5;
+               normal: "segment_control_pressed_start.png";
+               border:  4 4 9 9;
                middle: SOLID;
             }
          }
@@ -87,8 +84,8 @@ group { name: "elm/segment_control/item/default";
             visible: 1;
             MIN_MAX;
             image {
-               normal: "Button_v3_right_hover.png";
-               border: 4 4 3 5;
+               normal: "segment_control_pressed_end.png";
+               border: 4 4 9 9;
                middle: SOLID;
             }
          }
@@ -97,8 +94,8 @@ group { name: "elm/segment_control/item/default";
             visible: 1;
             MIN_MAX;
             image {
-               normal: "Button_v3_mid_hover.png";
-               border: 1 1 3 5;
+               normal: "segment_control_pressed_center.png";
+               border: 4 4 9 9;
                middle: SOLID;
             }
          }
@@ -107,8 +104,8 @@ group { name: "elm/segment_control/item/default";
             visible: 1;
             MIN_MAX;
             image {
-               normal: "button_v3_left_pressed.png";
-               border:  4 4 3 5;
+               normal: "segment_control_pressed_start.png";
+               border:  4 4 9 9;
                middle: SOLID;
             }
          }
@@ -117,8 +114,8 @@ group { name: "elm/segment_control/item/default";
             visible: 1;
             MIN_MAX;
             image {
-               normal: "Button_v3_right_pressed.png";
-               border: 4 4 3 5;
+               normal: "segment_control_pressed_end.png";
+               border: 4 4 9 9;
                middle: SOLID;
             }
          }
@@ -127,8 +124,8 @@ group { name: "elm/segment_control/item/default";
             visible: 1;
             MIN_MAX;
             image {
-               normal: "Button_v3_mid_pressed.png";
-               border: 1 1 3 5;
+               normal: "segment_control_pressed_center.png";
+               border: 4 4 9 9;
                middle: SOLID;
             }
          }
