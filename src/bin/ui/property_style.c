@@ -277,6 +277,9 @@ _on_##VALUE##_change(void *data, \
    _lines_colors_update(pd, TEXT); \
    _style_edit_update(pd); \
    eina_stringshare_del(value); \
+   editor_save(ap.project->global_object); \
+   TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly") \
+   ap.project->changed = true; \
 }
 
 static void
@@ -647,6 +650,9 @@ _on_##VALUE##_change(void *data, \
    evas_object_color_set(color, r*a/255, g*a/255, b*a/255, a); \
    _style_edit_update(pd); \
    eina_stringshare_del(value); \
+   editor_save(ap.project->global_object); \
+   TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly") \
+   ap.project->changed = true; \
 } \
 static void \
 _on_##VALUE##_dismissed(void *data, \
