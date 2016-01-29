@@ -62,6 +62,7 @@ struct _Style_Editor
    Evas_Object *glist;
    Evas_Object *textblock_style;
    Evas_Object *entry_prev;
+   Evas_Object *button_del;
    Search_Data style_search_data;
    struct {
       const char *st_name;
@@ -130,6 +131,18 @@ _on_popup_bt_cancel(void *data,
 }
 
 static void
+_on_unselected_cb(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   Style_Editor *style_edit = (Style_Editor *)data;
+   assert(style_edit != NULL);
+
+   elm_object_disabled_set(style_edit->button_del, true);
+   evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, NULL);
+}
+
+static void
 _on_glit_selected(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info)
@@ -145,6 +158,7 @@ _on_glit_selected(void *data,
    Style_Editor *style_edit = (Style_Editor *)data;
    assert(style_edit != NULL);
 
+   elm_object_disabled_set(style_edit->button_del, false);
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
 
    Eina_Strbuf *style = eina_strbuf_new();
@@ -173,6 +187,8 @@ _on_glit_selected(void *data,
      {
         style_name = elm_object_item_data_get(glit_parent);
         tag = (char *)elm_object_item_data_get(glit);
+        if (!strcmp(tag, "DEFAULT"))
+          elm_object_disabled_set(style_edit->button_del, true);
         value = edje_edit_style_tag_value_get(edje_edit_obj, style_name, tag);
         eina_strbuf_append(style, value);
      }
@@ -198,6 +214,7 @@ _on_glit_selected(void *data,
                                       EVAS_HINT_FILL);
         evas_textblock_style_free(ts);
      }
+
    evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, current_style);
 }
 
@@ -442,10 +459,6 @@ _on_bt_del(void *data,
    const char *style_name, *tag;
 
    Style_Editor *style_edit = (Style_Editor *)data;
-   State *state;
-   char buf[BUFF_MAX];
-   int symbs = 0;
-   Eina_List *l;
    Resource *res;
 
    assert(style_edit != NULL);
@@ -459,40 +472,20 @@ _on_bt_del(void *data,
      {
         style_name = elm_object_item_part_text_get(glit, "elm.text");
         res = pm_resource_get(ap.project->styles, style_name);
-        if (!res->used_in)
-          {
-             edje_edit_style_del(edje_edit_obj, style_name);
-             ap.project->colorclasses = pm_resource_del(ap.project->colorclasses, res);
-          }
-        else
-          {
-             snprintf(buf, BUFF_MAX, _("Style is used in:"));
-             symbs = strlen(buf);
-             EINA_LIST_FOREACH(res->used_in, l, state)
-               {
-                  snprintf(buf + symbs, BUFF_MAX - symbs, _("<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"),
-                           state->part->group->name, state->part->name, state->parsed_name, state->parsed_val);
-                  symbs += strlen(res->name);
-                  break; TODO("remove this break after warning style remake")
-               }
-             WARN("%s", buf);
-             return;
-          }
+        edje_edit_style_del(edje_edit_obj, style_name);
+        ap.project->styles = pm_resource_del(ap.project->styles, res);
      }
    else
      {
         style_name = elm_object_item_part_text_get(glit_parent, "elm.text");
         tag = elm_object_item_part_text_get(glit, "elm.text");
-        if (!strcmp(tag, "DEFAULT"))
-          {
-             WARN(_("DEFAULT tag cannot be deleted!"));
-             return;
-          }
-        else
-          edje_edit_style_tag_del(edje_edit_obj, style_name, tag);
+        edje_edit_style_tag_del(edje_edit_obj, style_name, tag);
      }
 
    elm_object_item_del(glit);
+
+   elm_object_disabled_set(style_edit->button_del, true);
+   evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, NULL);
 
    editor_save(ap.project->global_object);
    TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
@@ -794,7 +787,7 @@ static Evas_Object *
 _form_right_side(Style_Editor *style_edit)
 {
    Elm_Object_Item *glit_style;
-   Evas_Object *layout, *btn, *combobox, *search, *ic;
+   Evas_Object *layout, *combobox, *search, *ic;
    Eina_List *styles, *l_st;
    Resource *res;
 
@@ -841,6 +834,7 @@ _form_right_side(Style_Editor *style_edit)
    evas_object_smart_callback_add(style_edit->glist, "expanded", _expanded_cb, style_edit);
    evas_object_smart_callback_add(style_edit->glist, "contract,request", _contract_request_cb, NULL);
    evas_object_smart_callback_add(style_edit->glist, "contracted", _contracted_cb, NULL);
+   evas_object_smart_callback_add(style_edit->glist, "unselected", _on_unselected_cb, style_edit);
    evas_object_show(style_edit->glist);
    /*elm_genlist_tree_effect_enabled_set(style_edit->glist, EINA_TRUE);*/
 
@@ -866,14 +860,15 @@ _form_right_side(Style_Editor *style_edit)
    evas_object_smart_callback_add(combobox, "selected", _on_bt_add, style_edit);
    elm_object_part_content_set(layout, "swallow.button_add", combobox);
 
-   btn = elm_button_add(ap.win);
-   evas_object_show(btn);
-   ic = elm_icon_add(btn);
+   style_edit->button_del = elm_button_add(ap.win);
+   evas_object_show(style_edit->button_del);
+   ic = elm_icon_add(style_edit->button_del);
    elm_icon_standard_set(ic, "minus");
-   elm_object_part_content_set(btn, NULL, ic);
+   elm_object_part_content_set(style_edit->button_del, NULL, ic);
 
-   evas_object_smart_callback_add(btn, "clicked", _on_bt_del, style_edit);
-   elm_object_part_content_set(layout, "swallow.button_rm", btn);
+   evas_object_smart_callback_add(style_edit->button_del, "clicked", _on_bt_del, style_edit);
+   elm_object_part_content_set(layout, "swallow.button_rm", style_edit->button_del);
+   elm_object_disabled_set(style_edit->button_del, true);
 
    return layout;
 }

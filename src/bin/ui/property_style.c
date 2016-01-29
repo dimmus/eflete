@@ -1267,8 +1267,10 @@ _on_style_selected(void *data ,
    Evas_Object *property = (Evas_Object *)data;
    STYLE_PROP_DATA_GET()
 
-   CURRENT = *current_style;
    _clear_prop_style(pd);
+   if (!current_style) return;
+
+   CURRENT = *current_style;
    if (!CURRENT.is_parent_item)
      {
         _add_text_part(pd);
