@@ -22,6 +22,7 @@
 
 #include "main_window.h"
 #include "project_manager.h"
+#include "validator.h"
 
 TODO("Rename this file to textblock_style_manager")
 
@@ -69,7 +70,7 @@ struct _Style_Editor
    } current_style;
    struct {
       Evas_Object *name;
-      Elm_Validator_Regexp *name_validator;
+      Resource_Name_Validator *name_validator;
       Evas_Object *btn_add;
       Evas_Object *dialog;
    } popup;
@@ -115,7 +116,7 @@ _on_popup_bt_cancel(void *data,
    evas_object_del(POPUP.dialog);
    POPUP.dialog = NULL;
 
-   elm_validator_regexp_free(POPUP.name_validator);
+   resource_name_validator_free(POPUP.name_validator);
    POPUP.name_validator = NULL;
 }
 
@@ -207,11 +208,6 @@ _on_st_add_bt_ok(void *data,
 
    edje_edit_obj = ap.project->global_object;
 
-   if ((!style_name) || (strcmp(style_name, "") == 0))
-     {
-        WARN(_("Style name can not be empty!"));
-        return;
-     }
    if (!edje_edit_style_add(edje_edit_obj, style_name))
      {
         WARN(_("Style name must be unique!"));
@@ -239,9 +235,6 @@ _on_st_add_bt_ok(void *data,
                                         style_name, NULL, ELM_GENLIST_ITEM_TREE,
                                         _on_glit_selected, style_edit);
    elm_object_item_data_set(glit_style, (char *)style_name);
-
-   TODO("Need refactoring after callback logic for modal window implementation")
-
 
    elm_genlist_item_selected_set(glit_style, true);
    elm_genlist_item_bring_in(glit_style, ELM_GENLIST_ITEM_SCROLLTO_TOP);
@@ -274,11 +267,6 @@ _on_tag_add_bt_ok(void *data,
    const char *tag_name = elm_entry_entry_get(POPUP.name);
    edje_edit_obj = ap.project->global_object;
 
-   if ((!tag_name) || (strcmp(tag_name, "") == 0))
-     {
-        WARN(_("Tag name can not be empty!"));
-        return;
-     }
    if (!edje_edit_style_tag_add(edje_edit_obj, style_name, tag_name))
      {
         WARN(_("Tag name must be unique!"));
@@ -313,7 +301,7 @@ _validate(void *data,
 {
    Style_Editor *style_edit = (Style_Editor *)data;
 
-   if (elm_validator_regexp_status_get(POPUP.name_validator) != ELM_REG_NOERROR)
+   if (ELM_REG_NOERROR != resource_name_validator_status_get(POPUP.name_validator))
      elm_object_disabled_set(POPUP.btn_add, true);
    else
      elm_object_disabled_set(POPUP.btn_add, false);
@@ -332,9 +320,10 @@ _on_bt_style_add(Style_Editor *style_edit)
    BOX_ADD(POPUP.dialog, box, false, false);
 
    LAYOUT_PROP_ADD(box, _("Style name:"), "property", "1swallow")
-   POPUP.name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
+   POPUP.name_validator = resource_name_validator_new(NAME_REGEX, NULL);
+   resource_name_validator_list_set(POPUP.name_validator, &ap.project->styles, true);
    ENTRY_ADD(item, POPUP.name, true);
-   eo_do(POPUP.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, POPUP.name_validator));
+   eo_do(POPUP.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, POPUP.name_validator));
    evas_object_smart_callback_add(POPUP.name, "changed", _validate, style_edit);
    elm_object_part_text_set(POPUP.name, "guide", _("Type a new style name"));
    elm_object_part_content_set(item, "elm.swallow.content", POPUP.name);
@@ -398,9 +387,10 @@ _on_bt_tag_add(Style_Editor *style_edit)
    BOX_ADD(POPUP.dialog, box, false, false);
 
    LAYOUT_PROP_ADD(box, "Tag name:", "property", "1swallow")
-   POPUP.name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
+   POPUP.name_validator = resource_name_validator_new(NAME_REGEX, NULL);
+   resource_name_validator_list_set(POPUP.name_validator, &ap.project->styles, true);
    ENTRY_ADD(item, POPUP.name, true);
-   eo_do(POPUP.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, POPUP.name_validator));
+   eo_do(POPUP.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, POPUP.name_validator));
    evas_object_smart_callback_add(POPUP.name, "changed", _validate, style_edit);
    elm_object_part_text_set(POPUP.name, "guide", _("Type a new tag name."));
    elm_object_part_content_set(item, "elm.swallow.content", POPUP.name);
