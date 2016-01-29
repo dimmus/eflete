@@ -73,6 +73,7 @@ struct _Style_Editor
       Resource_Name_Validator *name_validator;
       Evas_Object *btn_add;
       Evas_Object *dialog;
+      Eina_List *buf_resources;
    } popup;
    Elm_Object_Item *tag;
 };
@@ -103,6 +104,7 @@ _on_popup_bt_cancel(void *data,
                     void *ei __UNUSED__)
 {
    Style_Editor *style_edit = (Style_Editor *)data;
+   Resource *res;
 
    assert(style_edit != NULL);
    assert(POPUP.name_validator != NULL);
@@ -118,6 +120,13 @@ _on_popup_bt_cancel(void *data,
 
    resource_name_validator_free(POPUP.name_validator);
    POPUP.name_validator = NULL;
+
+   EINA_LIST_FREE(POPUP.buf_resources, res)
+     {
+        eina_stringshare_del(res->name);
+        free(res);
+     }
+   POPUP.buf_resources = NULL;
 }
 
 static void
@@ -356,6 +365,9 @@ _on_bt_tag_add(Style_Editor *style_edit)
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
    const char *style_name;
    Eina_Stringshare *buf;
+   Eina_List *tags, *l_tg;
+   char *tag;
+   Resource *res;
 
    if (!glit)
      {
@@ -380,6 +392,15 @@ _on_bt_tag_add(Style_Editor *style_edit)
          style_edit->tag = glit_parent;
      }
 
+   tags = edje_edit_style_tags_list_get(ap.project->global_object, style_name);
+   EINA_LIST_FOREACH(tags, l_tg, tag)
+     {
+        res = mem_calloc(1, sizeof(Resource));
+        res->name = eina_stringshare_add(tag);
+        POPUP.buf_resources = eina_list_sorted_insert(POPUP.buf_resources, (Eina_Compare_Cb) resource_cmp, res);
+     }
+   eina_list_free(tags);
+
    POPUP.dialog = elm_popup_add(ap.win);
    buf = eina_stringshare_printf(_("Add tag to style: %s"), style_name);
    elm_object_part_text_set(POPUP.dialog, "title,text", buf);
@@ -388,7 +409,7 @@ _on_bt_tag_add(Style_Editor *style_edit)
 
    LAYOUT_PROP_ADD(box, "Tag name:", "property", "1swallow")
    POPUP.name_validator = resource_name_validator_new(NAME_REGEX, NULL);
-   resource_name_validator_list_set(POPUP.name_validator, &ap.project->styles, true);
+   resource_name_validator_list_set(POPUP.name_validator, &POPUP.buf_resources, true);
    ENTRY_ADD(item, POPUP.name, true);
    eo_do(POPUP.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, POPUP.name_validator));
    evas_object_smart_callback_add(POPUP.name, "changed", _validate, style_edit);
