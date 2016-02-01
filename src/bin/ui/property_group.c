@@ -1458,7 +1458,8 @@ prop_part_name_update(Group_Prop_Data *pd)
    assert(pd != NULL);
 
    text = elm_entry_utf8_to_markup(pd->part->name);
-   if (strcmp(text, elm_entry_entry_get(pd->attributes.part.name)))
+   TODO("check that text is not NULL should be not needed after refactor");
+   if ((elm_entry_entry_get(pd->attributes.part.name) != NULL) && (strcmp(text, elm_entry_entry_get(pd->attributes.part.name))))
      elm_entry_entry_set(pd->attributes.part.name, pd->part->name);
    free(text);
 }
