@@ -127,6 +127,7 @@ _apply(Evas_Object *obj, Function_Info *fi)
          return ((function_type_string_int)fi->function)(obj, NULL, false,
                   fi->args.type_si.s1, fi->args.type_si.i2);
       case FUNCTION_TYPE_STRING_STRING:
+      case FUNCTION_TYPE_STRING_STRING_RENAME:
          return ((function_type_string_string)fi->function)(obj, NULL, false,
                   fi->args.type_ss.s1, fi->args.type_ss.s2);
       case FUNCTION_TYPE_STRING:
@@ -288,6 +289,17 @@ diff_update(Diff *diff, Diff *new_diff)
          eina_stringshare_ref(new_diff->redo.args.type_ss.s1);
          eina_stringshare_ref(new_diff->redo.args.type_ss.s2);
          break;
+      case FUNCTION_TYPE_STRING_STRING_RENAME:
+         /* rename needs special update */
+         assert(diff->redo.type == diff->undo.type);
+
+         eina_stringshare_del(diff->undo.args.type_ss.s1);
+         diff->undo.args.type_ss.s1 = eina_stringshare_ref(new_diff->undo.args.type_ss.s1);
+         eina_stringshare_del(diff->redo.args.type_ss.s2);
+         diff->redo.args.type_ss.s2 = eina_stringshare_ref(new_diff->redo.args.type_ss.s2);
+         diff_free(new_diff);
+         /* using return because we don't want to replace redo field */
+         return;
       case FUNCTION_TYPE_STRING:
          eina_stringshare_del(diff->redo.args.type_s.s1);
          eina_stringshare_ref(new_diff->redo.args.type_s.s1);
@@ -428,6 +440,7 @@ diff_free(Diff *diff)
          eina_stringshare_del(diff->redo.args.type_si.s1);
          break;
       case FUNCTION_TYPE_STRING_STRING:
+      case FUNCTION_TYPE_STRING_STRING_RENAME:
          eina_stringshare_del(diff->redo.args.type_ss.s1);
          eina_stringshare_del(diff->redo.args.type_ss.s2);
          break;
