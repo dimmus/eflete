@@ -368,7 +368,6 @@ diff_update(Diff *diff, Diff *new_diff)
      }
 
    diff->redo = new_diff->redo;
-   diff->undo = new_diff->undo;
    diff_free(new_diff);
 }
 
