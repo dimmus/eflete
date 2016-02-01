@@ -253,11 +253,11 @@ editor_program_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merg
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
-        diff->redo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_RENAME;
         diff->redo.function = editor_program_name_set;
         diff->redo.args.type_ss.s1 = eina_stringshare_add(name);
         diff->redo.args.type_ss.s2 = eina_stringshare_add(new_val);
-        diff->undo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_RENAME;
         diff->undo.function = editor_program_name_set;
         diff->undo.args.type_ss.s1 = eina_stringshare_add(new_val);
         diff->undo.args.type_ss.s2 = eina_stringshare_add(name);
