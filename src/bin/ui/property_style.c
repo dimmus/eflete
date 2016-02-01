@@ -603,6 +603,7 @@ _add_1check_color_item(const char *text,
    Evas_Object *layout;
    PROPERTY_ITEM_ADD(box, text, "2swallow")
    CHECK_ADD(item, *object_left)
+   elm_object_style_set(*object_left, "toggle");
 
    ADD_COLOR_ELEMENT(*object_right, item, layout)
 
@@ -620,6 +621,7 @@ _add_1check_2button_item(const char *text,
 {
    PROPERTY_ITEM_ADD(box, text, "2swallow")
    CHECK_ADD(item, *object_left)
+   elm_object_style_set(*object_left, "toggle");
 
    SEGMENT_CONTROL_ADD(item, *object_right)
    elm_segment_control_item_add(*object_right, NULL, "single");
