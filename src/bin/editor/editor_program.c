@@ -150,6 +150,7 @@ editor_program_action_set(Evas_Object *edit_object, Change *change, Eina_Bool me
                 if it was not list of programs (EDJE_ACTION_TYPE_ACTION_STOP) */
               if (old_value == EDJE_ACTION_TYPE_ACTION_STOP)
                 clean_targets = true;
+              break;
            case EDJE_ACTION_TYPE_ACTION_STOP:
               /*this action uses programs as targets*/
            default:
