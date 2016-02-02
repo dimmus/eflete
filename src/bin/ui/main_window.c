@@ -153,7 +153,7 @@ ui_main_window_add(void)
    elm_panes_content_right_size_set(ap.panes.right, config->panes.tabs_size);
 
    project_navigator = project_navigator_add();
-   evas_object_smart_callback_add(project_navigator, "group,open", _project_navigator_group_open, NULL);
+   evas_object_smart_callback_add(project_navigator, SIGNAL_GROUP_OPEN, _project_navigator_group_open, NULL);
    elm_object_part_content_set(ap.panes.left, "left", project_navigator);
 
    tabs = tabs_add();
