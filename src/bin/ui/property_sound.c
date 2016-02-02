@@ -238,6 +238,8 @@ _play_finished_cb(void *data,
 
    eo_del(edit->io.in);
    edit->io.in = NULL;
+   eo_del(edit->io.out);
+   edit->io.out = NULL;
    edit->player_data.playing = false;
    return true;
 }
