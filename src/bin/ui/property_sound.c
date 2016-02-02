@@ -533,63 +533,6 @@ _on_play_cb(void *data,
 }
 
 static void
-_on_prev_cb(void *data,
-            Evas_Object *obj EINA_UNUSED,
-            void *event_info EINA_UNUSED)
-{
-   Elm_Object_Item *it, *first, *last;
-   Sound_Prop_Data *edit = (Sound_Prop_Data *)data;
-
-   assert(edit != NULL);
-
-   edit->player_data.switched = true;
-   first = elm_gengrid_first_item_get(edit->gengrid);
-   last = elm_gengrid_last_item_get(edit->gengrid);
-   it = elm_gengrid_selected_item_get(edit->gengrid);
-   it = elm_gengrid_item_prev_get(it);
-
-   if (it == first)
-     {
-        it = last;
-        if (last == edit->tone)
-          it = elm_gengrid_item_prev_get(edit->tone);
-     }
-   else if (it == edit->tone)
-     it = elm_gengrid_item_prev_get(edit->tone);
-
-   elm_gengrid_item_selected_set(it, true);
-}
-
-static void
-_on_next_cb(void *data EINA_UNUSED,
-            Evas_Object *obj EINA_UNUSED,
-            void *event_info EINA_UNUSED)
-{
-   Elm_Object_Item *it, *first, *last;
-   Sound_Prop_Data *edit = (Sound_Prop_Data *)data;
-
-   assert(edit != NULL);
-
-   edit->player_data.switched = true;
-   first = elm_gengrid_first_item_get(edit->gengrid);
-   last = elm_gengrid_last_item_get(edit->gengrid);
-   it = elm_gengrid_selected_item_get(edit->gengrid);
-   it = elm_gengrid_item_next_get(it);
-
-   if (!it)
-     it = elm_gengrid_item_next_get(first);
-   else if (it == edit->tone)
-     {
-        if (edit->tone == last)
-          it = elm_gengrid_item_next_get(first);
-        else
-          it = elm_gengrid_item_next_get(edit->tone);
-     }
-
-   elm_gengrid_item_selected_set(it, true);
-}
-
-static void
 _on_pause_cb(void *data EINA_UNUSED,
              Evas_Object *obj EINA_UNUSED,
              void *event_info EINA_UNUSED)
@@ -655,7 +598,7 @@ _player_units_free(char *str)
 static void
 _sound_player_create(Evas_Object *parent, Sound_Prop_Data *edit)
 {
-   Evas_Object *bt, *icon, *item;
+   Evas_Object *icon, *item;
 
    assert(parent != NULL);
    assert(edit != NULL);
@@ -699,17 +642,9 @@ _sound_player_create(Evas_Object *parent, Sound_Prop_Data *edit)
    elm_object_part_content_set(edit->sound_player, "eflete.swallow.fast", edit->player_data.rewind);
    evas_object_smart_callback_add(edit->player_data.rewind, "changed", _on_rewind_cb, edit);
 
-   BT_ADD(edit->sound_player, bt, icon, "media_player/prev");
-   elm_object_part_content_set(edit->sound_player, "swallow.button.prev", bt);
-   evas_object_smart_callback_add(bt, "clicked", _on_prev_cb, edit);
-
    BT_ADD(edit->sound_player, edit->player_data.play, icon, "media_player/play");
    elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.play);
    evas_object_smart_callback_add(edit->player_data.play, "clicked", _on_play_cb, edit);
-
-   BT_ADD(edit->sound_player, bt, icon, "media_player/next");
-   elm_object_part_content_set(edit->sound_player, "swallow.button.next", bt);
-   evas_object_smart_callback_add(bt, "clicked", _on_next_cb, edit);
 
    edit->player_data.pause = elm_button_add(edit->sound_player);
    elm_object_style_set(edit->player_data.pause, "anchor");
