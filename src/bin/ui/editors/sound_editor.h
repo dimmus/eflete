@@ -28,6 +28,7 @@
  */
 
 #include "eflete.h"
+#include "project_manager.h"
 
 #ifdef HAVE_AUDIO
 TODO("Check pulse_audio on configure and add COREAUDIO support")

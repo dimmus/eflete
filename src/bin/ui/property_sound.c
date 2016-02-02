@@ -47,9 +47,6 @@ evas_object_smart_callback_add(FRAME, "clicked", _on_frame_click, SCROLLER);
 
 struct _Sound_Prop_Data
 {
-   Evas_Object *markup;
-   Evas_Object *gengrid;
-
    Evas_Object *box;
    Evas_Object *sound_player;
    Evas_Object *preview_sound_player;
@@ -59,9 +56,7 @@ struct _Sound_Prop_Data
    Evas_Object *tone_box;
    Evas_Object *info_frame;
 
-   Elm_Object_Item *tone;
-   const char  *selected;
-   const char  *snd_src;
+   Sound_Data *snd;
 
 #ifdef HAVE_AUDIO
    struct {
@@ -83,7 +78,6 @@ struct _Sound_Prop_Data
       Eina_Bool playing : 1;
       Eina_Bool stopped : 1;
       Eina_Bool switched : 1;
-      Eina_Bool added : 1;
    } player_data;
 
    struct {
@@ -272,7 +266,6 @@ _rewind_cb(void *data)
 
    if (max == value)
      {
-        printf("3\n");
         elm_object_part_content_unset(edit->sound_player, "swallow.button.play");
         evas_object_hide(edit->player_data.pause);
         elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.play);
@@ -304,23 +297,11 @@ _create_io_stream(Sound_Prop_Data *edit)
 }
 
 static void
-_initialize_io_data(Sound_Prop_Data *edit)
-{
-   edit->io.offset = 0;
-
-   assert(edit != NULL);
-
-   _create_io_stream(edit);
-
-   eo_do(edit->io.in, ecore_audio_obj_name_set(edit->selected));
-   eo_do(edit->io.in, ecore_audio_obj_vio_set(&edit->io.vio, edit, NULL));
-}
-
-static void
-_tone_play(Sound_Prop_Data *edit, int tone_frq)
+_tone_play(Sound_Prop_Data *edit)
 {
    double value;
    Eina_Bool ret = false;
+   Tone_Resource *tone;
 
    assert(edit != NULL);
 
@@ -329,6 +310,7 @@ _tone_play(Sound_Prop_Data *edit, int tone_frq)
    elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.pause);
    evas_object_show(edit->player_data.pause);
 
+   tone = (Tone_Resource *)edit->snd->resource;
    if (edit->player_data.stopped)
      {
         eo_do(edit->io.in, ecore_audio_obj_paused_set(false));
@@ -340,8 +322,8 @@ _tone_play(Sound_Prop_Data *edit, int tone_frq)
    if (!edit->io.in)
      {
         edit->io.in = eo_add(ECORE_AUDIO_IN_TONE_CLASS, NULL);
-        eo_do(edit->io.in, ecore_audio_obj_name_set(edit->selected));
-        eo_do(edit->io.in, eo_key_data_set(ECORE_AUDIO_ATTR_TONE_FREQ, &tone_frq));
+        eo_do(edit->io.in, ecore_audio_obj_name_set(tone->name));
+        eo_do(edit->io.in, eo_key_data_set(ECORE_AUDIO_ATTR_TONE_FREQ, &tone->freq));
         eo_do(edit->io.in, ecore_audio_obj_in_length_set(TONE_PLAYING_DURATION));
         eo_do(edit->io.in, eo_event_callback_add(ECORE_AUDIO_IN_EVENT_IN_STOPPED,
                                                  _play_finished_cb, edit));
@@ -368,10 +350,11 @@ _tone_play(Sound_Prop_Data *edit, int tone_frq)
 }
 
 static void
-_add_sound_play(Sound_Prop_Data *edit)
+_sample_play(Sound_Prop_Data *edit)
 {
    double value;
    Eina_Bool ret = false;
+   External_Resource *sample;
 
    assert(edit != NULL);
 
@@ -390,9 +373,10 @@ _add_sound_play(Sound_Prop_Data *edit)
 
    if (!edit->io.in)
      {
+        sample = (External_Resource *)edit->snd->resource;
         _create_io_stream(edit);
-        eo_do(edit->io.in, ecore_audio_obj_name_set(edit->snd_src));
-        eo_do(edit->io.in, ret = ecore_audio_obj_source_set(edit->snd_src));
+        eo_do(edit->io.in, ecore_audio_obj_name_set(sample->source));
+        eo_do(edit->io.in, ret = ecore_audio_obj_source_set(sample->source));
         if (!ret)
           {
              ERR("Can not set source obj for added sample");
@@ -426,63 +410,12 @@ _add_sound_play(Sound_Prop_Data *edit)
 static void
 _play_sound(Sound_Prop_Data *edit)
 {
-   double value;
-   Eina_Bool ret = false;
-   Elm_Object_Item *g_item;
-   const Item *item;
-
    assert(edit != NULL);
 
-   g_item = elm_gengrid_selected_item_get(edit->gengrid);
-   if (!g_item)
-     return;
-
-   if (edit->player_data.added)
-     {
-        _add_sound_play(edit);
-        return;
-     }
-
-   item = elm_object_item_data_get(g_item);
-   if (item->tone_frq)
-     {
-        _tone_play(edit, item->tone_frq);
-        return;
-     }
-
-   elm_object_part_content_unset(edit->sound_player, "swallow.button.play");
-   evas_object_hide(edit->player_data.play);
-   elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.pause);
-   evas_object_show(edit->player_data.pause);
-
-   if (edit->player_data.stopped)
-     {
-        eo_do(edit->io.in, ecore_audio_obj_paused_set(false));
-        ecore_timer_thaw(edit->player_data.timer);
-        edit->player_data.stopped = false;
-        return;
-     }
-
-   if (!edit->io.in)
-     _initialize_io_data(edit);
-
-   eo_do(edit->io.out, ret = ecore_audio_obj_out_input_attach(edit->io.in));
-   if (!ret)
-     {
-        ERR("Couldn't attach input and output!");
-        elm_object_part_content_unset(edit->sound_player, "swallow.button.play");
-        evas_object_hide(edit->player_data.pause);
-        elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.play);
-        evas_object_show(edit->player_data.play);
-        return;
-     }
-   edit->player_data.playing = true;
-
-   value = elm_slider_value_get(edit->player_data.rewind);
-   if (value)
-     eo_do(edit->io.in, value = ecore_audio_obj_in_seek(value, SEEK_SET));
-
-   edit->player_data.timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, edit);
+   if (SOUND_TYPE_SAMPLE == edit->snd->type)
+     _sample_play(edit);
+   else
+     _tone_play(edit);
 }
 
 static void
@@ -521,7 +454,6 @@ _interrupt_playing(Sound_Prop_Data *edit)
 
    edit->player_data.stopped = false;
    edit->player_data.playing = false;
-   edit->player_data.added = false;
 }
 
 static void
@@ -660,10 +592,11 @@ _sound_player_create(Evas_Object *parent, Sound_Prop_Data *edit)
 }
 
 static void
-_sample_info_update(Sound_Prop_Data *pd, Selected_Sound_Data *snd_data)
+_sample_info_update(Sound_Prop_Data *pd, const char *name, double duration,
+                    const char *type, double size, double quality,
+                    Edje_Edit_Sound_Comp compression_type)
 {
-   Evas_Object *item;
-   Eina_Stringshare *duration, *type;
+   Eina_Stringshare *dur_label, *type_label, *size_label;
 
    evas_object_show(pd->sample_box);
    evas_object_hide(pd->tone_box);
@@ -671,174 +604,108 @@ _sample_info_update(Sound_Prop_Data *pd, Selected_Sound_Data *snd_data)
    elm_object_content_unset(pd->info_frame);
    elm_object_content_set(pd->info_frame, pd->sample_box);
 
-   duration = eina_stringshare_printf("%.2f s", snd_data->duration);
-   type = eina_stringshare_printf(_("%s Format Sound (.%s)"), snd_data->format, snd_data->snd_src);
+   dur_label = eina_stringshare_printf("%.2f s", duration);
+   type_label = eina_stringshare_printf(_("%s Format Sound"), type);
+   size_label = eina_stringshare_printf("%.2f KB", size / 1024.0);
 
-   item = elm_object_part_content_get(pd->snd_data.file_name, "elm.swallow.content");
-   elm_object_text_set(item, snd_data->file_name);
+   elm_object_text_set(pd->snd_data.file_name, name);
+   elm_object_text_set(pd->snd_data.duration, dur_label);
+   elm_object_text_set(pd->snd_data.type, type_label);
+   elm_object_text_set(pd->snd_data.size, size_label);
+   ewe_combobox_select_item_set(pd->snd_data.compression_type, compression_type);
+   elm_spinner_value_set(pd->snd_data.compression_quality, quality);
 
-   item = elm_object_part_content_get(pd->snd_data.duration, "elm.swallow.content");
-   elm_object_text_set(item, duration);
-
-   item = elm_object_part_content_get(pd->snd_data.type, "elm.swallow.content");
-   elm_object_text_set(item, type);
-
-   Eina_Stringshare *size = eina_stringshare_printf("%.2f KB", snd_data->length / 1024.0);
-   item = elm_object_part_content_get(pd->snd_data.size, "elm.swallow.content");
-   elm_object_text_set(item, size);
-
-   ewe_combobox_select_item_set(pd->snd_data.compression_type, snd_data->compression_type);
-   elm_spinner_value_set(pd->snd_data.compression_quality , snd_data->quality);
-
-   eina_stringshare_del(duration);
-   eina_stringshare_del(type);
+   eina_stringshare_del(dur_label);
+   eina_stringshare_del(type_label);
+   eina_stringshare_del(size_label);
 }
 
 static void
-_tone_info_update(Sound_Prop_Data *pd, Selected_Sound_Data *snd_data)
+_tone_info_update(Sound_Prop_Data *pd, const char *name, double tone_frq)
 {
-   Evas_Object *item;
-
    evas_object_hide(pd->sample_box);
    evas_object_show(pd->tone_box);
 
    elm_object_content_unset(pd->info_frame);
    elm_object_content_set(pd->info_frame, pd->tone_box);
 
-   item = elm_object_part_content_get(pd->snd_data.tone_name, "elm.swallow.content");
-   elm_object_text_set(item, snd_data->file_name);
-
-   elm_spinner_value_set(pd->snd_data.tone_frq, snd_data->tone_frq);
+   elm_object_text_set(pd->snd_data.tone_name, name);
+   elm_spinner_value_set(pd->snd_data.tone_frq, tone_frq);
 }
-
-#ifdef HAVE_AUDIO
-
-static void
-_added_sample_src_info_setup(Sound_Prop_Data *edit,
-                             double *len)
-{
-   Eina_Bool ret;
-
-   assert(edit != NULL);
-
-   _create_io_stream(edit);
-   eo_do(edit->io.in, ecore_audio_obj_name_set(edit->snd_src));
-   eo_do(edit->io.in, ret = ecore_audio_obj_source_set(edit->snd_src));
-   if (!ret)
-     ERR("Can not set source obj for added sample");
-   eo_do(edit->io.in, *len = ecore_audio_obj_in_length_get());
-   elm_slider_min_max_set(edit->player_data.rewind, 0, *len);
-   elm_slider_value_set(edit->player_data.rewind, 0.0);
-   edit->io.length = ecore_file_size(edit->snd_src);
-}
-#endif
 
 static void
 _grid_sample_selected(void *data,
-                              Evas_Object *obj __UNUSED__,
-                              void *event_info)
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info)
 {
    Sound_Prop_Data *edit = (Sound_Prop_Data *)data;
-   Selected_Sound_Data *snd_data = (Selected_Sound_Data *)event_info;
-
-   edit->markup = snd_data->markup;
-   edit->gengrid = snd_data->gengrid;
+   Sound_Data *snd = (Sound_Data *)event_info;
+   Eina_Bool ret;
+   External_Resource *sample;
 
    double len = 0.0;
-   const Item *item = NULL;
-   const Eina_List* sel_list = elm_gengrid_selected_items_get(edit->gengrid);
-   int count = eina_list_count(sel_list);
 #ifdef HAVE_AUDIO
    Eina_Bool auto_play = elm_check_state_get(edit->player_data.check);
 #endif
-
-   if (!edit->player_data.decoration)
-     {
-        elm_layout_signal_emit(edit->markup, "eflete,sound,clicked", "eflete");
-        edit->player_data.decoration = true;
-     }
+   edit->snd = snd;
 
 #ifdef HAVE_AUDIO
    _interrupt_playing(edit);
+
+   sample = (External_Resource *)snd->resource;
+   _create_io_stream(edit);
+   eo_do(edit->io.in, ecore_audio_obj_name_set(sample->source));
+   eo_do(edit->io.in, ret = ecore_audio_obj_source_set(sample->source));
+   if (!ret) ERR("Can not set source '%s' to obj sample", sample->source)
+   eo_do(edit->io.in, len = ecore_audio_obj_in_length_get());
+   elm_slider_min_max_set(edit->player_data.rewind, 0, len);
+   elm_slider_value_set(edit->player_data.rewind, 0.0);
+   edit->io.length = ecore_file_size(sample->source);
 #endif
 
-   if (count == 1)
+  _sample_info_update(edit, snd->name, len, snd->type_label,
+                      ecore_file_size(sample->source),
+                      edje_edit_sound_compression_rate_get(ap.project->global_object, snd->name),
+                      edje_edit_sound_compression_type_get(ap.project->global_object, snd->name));
+
+#ifdef HAVE_AUDIO
+   if ((edit->player_data.switched) || (auto_play))
      {
-        item = elm_object_item_data_get(eina_list_data_get(sel_list));
-        edit->selected = eina_stringshare_add(item->sound_name);
-
-        edit->snd_src = item->src;
-#ifdef HAVE_AUDIO
-        _added_sample_src_info_setup(edit, &len);
-#endif
-        snd_data->file_name = item->sound_name;
-        snd_data->duration = len;
-        snd_data->format = item->format;
-        snd_data->compression_type = item->comp;
-        snd_data->quality = item->rate;
-
-        _sample_info_update(edit, snd_data);
-        edit->player_data.added = true;
-#ifdef HAVE_AUDIO
-        if ((edit->player_data.switched) || (auto_play))
-          {
-             edit->player_data.switched = false;
-             _add_sound_play(edit);
-          }
-#endif
+        edit->player_data.switched = false;
+        _sample_play(edit);
      }
+#endif
 }
 
 static void
 _grid_tone_selected(void *data,
-               Evas_Object *obj __UNUSED__,
-               void *event_info)
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info)
 {
    Sound_Prop_Data *edit = (Sound_Prop_Data *)data;
-   Selected_Sound_Data *snd_data = (Selected_Sound_Data *)event_info;
-   const Item *item;
+   Sound_Data *snd = (Sound_Data *)event_info;
+   Tone_Resource *tone;
 
    assert(edit != NULL);
 
-   edit->markup = snd_data->markup;
-   edit->gengrid = snd_data->gengrid;
-   edit->tone = snd_data->tone;
-
-   const Eina_List* sel_list = elm_gengrid_selected_items_get(edit->gengrid);
-   int count = eina_list_count(sel_list);
-
-   if (!edit->player_data.decoration)
-     {
-        elm_layout_signal_emit(edit->markup, "eflete,sound,clicked", "eflete");
-        edit->player_data.decoration = true;
-     }
-
+   edit->snd = snd;
 #ifdef HAVE_AUDIO
    _interrupt_playing(edit);
 #endif
 
-   if (count == 1)
-     {
-        item = elm_object_item_data_get(eina_list_data_get(sel_list));
-        edit->selected = eina_stringshare_add(item->sound_name);
+   tone = (Tone_Resource *)snd->resource;
 
-        elm_slider_min_max_set(edit->player_data.rewind, 0.0, TONE_PLAYING_DURATION);
-        elm_slider_value_set(edit->player_data.rewind, 0.0);
+   elm_slider_min_max_set(edit->player_data.rewind, 0.0, TONE_PLAYING_DURATION);
+   elm_slider_value_set(edit->player_data.rewind, 0.0);
 
-        snd_data->file_name = item->sound_name;
-
-        _tone_info_update(edit, snd_data);
+   _tone_info_update(edit, tone->name, tone->freq);
 #ifdef HAVE_AUDIO
-        if (edit->player_data.switched)
-          {
-             edit->player_data.switched = false;
-             _tone_play(edit, item->tone_frq);
-             return;
-          }
-        if (elm_check_state_get(edit->player_data.check))
-          _tone_play(edit, item->tone_frq);
-#endif
+   if ((edit->player_data.switched) || (elm_check_state_get(edit->player_data.check)))
+     {
+        edit->player_data.switched = false;
+        _tone_play(edit);
      }
+#endif
 }
 
 static void
@@ -910,21 +777,21 @@ _on_grid_clicked(void *data,
                  void *event_info)
 {
    Sound_Prop_Data *edit = (Sound_Prop_Data *)data;
-   Selected_Sound_Data *snd_data = (Selected_Sound_Data *)event_info;
+   Sound_Data *snd = (Sound_Data *)event_info;
 
    assert(edit != NULL);
-   assert(snd_data != NULL);
+   assert(snd != NULL);
 
-   switch (snd_data->sound_type)
+   switch (snd->type)
      {
       case SOUND_TYPE_SAMPLE:
         {
-           _grid_sample_selected(edit, NULL, snd_data);
+           _grid_sample_selected(edit, NULL, snd);
            break;
         }
       case SOUND_TYPE_TONE:
         {
-           _grid_tone_selected(edit, NULL, snd_data);
+           _grid_tone_selected(edit, NULL, snd);
            break;
         }
      }
