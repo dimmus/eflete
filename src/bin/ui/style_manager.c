@@ -142,8 +142,7 @@ _on_glit_selected(void *data,
 
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
 
-   Style_Data *current_style = (Style_Data *)mem_malloc(sizeof(Style_Data));
-   memset(current_style, 0x0, sizeof(Style_Data));
+   Style_Data *current_style = (Style_Data *)mem_calloc(1, sizeof(Style_Data));
 
    edje_edit_obj = ap.project->global_object;
 
