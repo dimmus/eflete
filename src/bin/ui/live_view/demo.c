@@ -24,7 +24,7 @@
 Evas_Object *
 demo_add(Evas_Object *parent, Group *group)
 {
-   Evas_Object *obj;
+   Evas_Object *obj = NULL;
 
    if (group->widget)
      {
