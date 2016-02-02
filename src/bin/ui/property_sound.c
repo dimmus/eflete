@@ -302,11 +302,6 @@ _tone_play(Sound_Prop_Data *edit)
 
    assert(edit != NULL);
 
-   elm_object_part_content_unset(edit->sound_player, "swallow.button.play");
-   evas_object_hide(edit->player_data.play);
-   elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.pause);
-   evas_object_show(edit->player_data.pause);
-
    tone = (Tone_Resource *)edit->snd->resource;
    if (edit->player_data.stopped)
      {
@@ -355,11 +350,6 @@ _sample_play(Sound_Prop_Data *edit)
 
    assert(edit != NULL);
 
-   elm_object_part_content_unset(edit->sound_player, "swallow.button.play");
-   evas_object_hide(edit->player_data.play);
-   elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.pause);
-   evas_object_show(edit->player_data.pause);
-
    if (edit->player_data.stopped)
      {
         eo_do(edit->io.in, ecore_audio_obj_paused_set(false));
@@ -377,10 +367,6 @@ _sample_play(Sound_Prop_Data *edit)
         if (!ret)
           {
              ERR("Can not set source obj for added sample");
-             elm_object_part_content_unset(edit->sound_player, "swallow.button.play");
-             evas_object_hide(edit->player_data.pause);
-             elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.play);
-             evas_object_show(edit->player_data.play);
              return;
           }
      }
@@ -389,10 +375,6 @@ _sample_play(Sound_Prop_Data *edit)
    if (!ret)
      {
         ERR("Couldn't attach input and output!");
-        elm_object_part_content_unset(edit->sound_player, "swallow.button.play");
-        evas_object_hide(edit->player_data.pause);
-        elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.play);
-        evas_object_show(edit->player_data.play);
         return;
      }
 
@@ -402,17 +384,6 @@ _sample_play(Sound_Prop_Data *edit)
 
    edit->player_data.playing = true;
    edit->player_data.timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, edit);
-}
-
-static void
-_play_sound(Sound_Prop_Data *edit)
-{
-   assert(edit != NULL);
-
-   if (SOUND_TYPE_SAMPLE == edit->snd->type)
-     _sample_play(edit);
-   else
-     _tone_play(edit);
 }
 
 static void
@@ -458,7 +429,23 @@ _on_play_cb(void *data,
             Evas_Object *obj EINA_UNUSED,
             void *event_info EINA_UNUSED)
 {
-   _play_sound(data);
+   Sound_Prop_Data *edit = (Sound_Prop_Data *)data;
+
+   assert(edit != NULL);
+
+   switch (edit->snd->type)
+     {
+      case SOUND_TYPE_SAMPLE:
+         _sample_play(edit);
+         break;
+      case SOUND_TYPE_TONE:
+         _tone_play(edit);
+         break;
+     }
+   elm_object_part_content_unset(edit->sound_player, "swallow.button.play");
+   evas_object_hide(edit->player_data.play);
+   elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.pause);
+   evas_object_show(edit->player_data.pause);
 }
 
 static void
