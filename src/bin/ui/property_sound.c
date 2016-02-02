@@ -70,7 +70,6 @@ struct _Sound_Prop_Data
 
    struct {
       Ecore_Timer *timer;
-      Evas_Object *check;
       Evas_Object *rewind;
       Evas_Object *play;
       Evas_Object *pause;
@@ -530,7 +529,7 @@ _player_units_free(char *str)
 static void
 _sound_player_create(Evas_Object *parent, Sound_Prop_Data *edit)
 {
-   Evas_Object *icon, *item;
+   Evas_Object *icon;
 
    assert(parent != NULL);
    assert(edit != NULL);
@@ -558,11 +557,6 @@ _sound_player_create(Evas_Object *parent, Sound_Prop_Data *edit)
    evas_object_size_hint_weight_set(edit->snd_data.teg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_object_part_content_set(edit->sound_player, "eflete.swallow.teg",
                                edit->snd_data.teg);
-
-   INFO_ADD(parent, item, _("Play on select:"), "item");
-   CHECK_ADD(item, edit->player_data.check);
-   elm_object_part_content_set(item, "swallow.second", edit->player_data.check);
-   elm_object_part_content_set(edit->sound_player, "eflete.swallow.check", item);
 
    edit->player_data.rewind = elm_slider_add(edit->sound_player);
    elm_slider_unit_format_set(edit->player_data.rewind, "%2.0f");
@@ -644,9 +638,6 @@ _grid_sample_selected(void *data,
    External_Resource *sample;
 
    double len = 0.0;
-#ifdef HAVE_AUDIO
-   Eina_Bool auto_play = elm_check_state_get(edit->player_data.check);
-#endif
    edit->snd = snd;
 
 #ifdef HAVE_AUDIO
@@ -668,13 +659,6 @@ _grid_sample_selected(void *data,
                       edje_edit_sound_compression_rate_get(ap.project->global_object, snd->name),
                       edje_edit_sound_compression_type_get(ap.project->global_object, snd->name));
 
-#ifdef HAVE_AUDIO
-   if ((edit->player_data.switched) || (auto_play))
-     {
-        edit->player_data.switched = false;
-        _sample_play(edit);
-     }
-#endif
 }
 
 static void
@@ -699,13 +683,6 @@ _grid_tone_selected(void *data,
    elm_slider_value_set(edit->player_data.rewind, 0.0);
 
    _tone_info_update(edit, tone->name, tone->freq);
-#ifdef HAVE_AUDIO
-   if ((edit->player_data.switched) || (elm_check_state_get(edit->player_data.check)))
-     {
-        edit->player_data.switched = false;
-        _tone_play(edit);
-     }
-#endif
 }
 
 static void
