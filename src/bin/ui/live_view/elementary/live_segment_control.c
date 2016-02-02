@@ -25,12 +25,10 @@ _on_sc_swallow_check(void *data __UNUSED__,
                      void *ei __UNUSED__)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Elm_Object_Item *item = NULL;
+   Elm_Object_Item *item;
    int i;
 
    Evas_Object *object = (Evas_Object *) data;
-
-   item = elm_segment_control_item_selected_get(object);
 
    for (i = 0; i < 3; i++)
      {
@@ -70,12 +68,10 @@ _on_sc_text_check(void *data,
                   void *ei __UNUSED__)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Elm_Object_Item *item = NULL;
+   Elm_Object_Item *item;
    int i;
 
    Evas_Object *object = (Evas_Object *) data;
-
-   item = elm_segment_control_item_selected_get(object);
 
    for (i = 0; i < 3; i++)
      {
