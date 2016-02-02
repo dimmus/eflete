@@ -25,8 +25,6 @@
 #include "validator.h"
 #include "project_manager.h"
 
-#define SIG_GROUP_OPEN "group,open"
-
 typedef struct
 {
    Evas_Object *layout;
@@ -285,7 +283,7 @@ _on_clicked_double(void *data __UNUSED__,
    else
      {
         Group *group = (Group *)elm_object_item_data_get(glit);
-        evas_object_smart_callback_call(project_navigator.layout, SIG_GROUP_OPEN, group);
+        evas_object_smart_callback_call(project_navigator.layout, SIGNAL_GROUP_OPEN, group);
      }
 }
 

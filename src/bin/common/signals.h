@@ -45,6 +45,14 @@
 #define SIGNAL_GROUP_ADDED "SIGNAL_GROUP_ADDED"
 
 /**
+ * emited when group is opened.
+ * eventinfo - pointer to Group object
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_GROUP_OPEN "SIGNAL_GROUP_OPEN"
+
+/**
  * emited when group is deleted.
  * eventinfo - pointer to group name (stringshare)
  *
