@@ -36,37 +36,11 @@ TODO("Check pulse_audio on configure and add COREAUDIO support")
    #include <Ecore_Audio.h>
 #endif
 
-#define SIG_SOUND_SELECTED "sound_selected"
-
 typedef enum {
    SOUND_TYPE_SAMPLE,
    SOUND_TYPE_TONE
 } Sound_Type;
 
-typedef struct
-{
-   Eina_Stringshare *sound_name;
-   Eina_Stringshare *src;
-   Eina_Stringshare *format;
-   Edje_Edit_Sound_Comp comp;
-   double rate;
-   int tone_frq;
-} Item;
-
-typedef struct {
-   Evas_Object *markup;
-   Evas_Object *gengrid;
-   Sound_Type sound_type;
-   Elm_Object_Item *tone;
-   Eina_Stringshare *file_name;
-   double duration;
-   Eina_Stringshare *snd_src;
-   Eina_Stringshare *format;
-   int length;
-   Edje_Edit_Sound_Comp compression_type;
-   double quality;
-   int tone_frq;
-} Selected_Sound_Data;
 struct _Sound_Data {
    Sound_Type type;
    Resource *resource; /* for SAMPLE it's External_Resource, TONE - Tone_Resource */
