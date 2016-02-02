@@ -549,7 +549,7 @@ _selected_cb(void *data,
              else
                elm_object_disabled_set(pl->btn_down, false);
           }
-        else if ((itc == pl->itc_item))
+        else if (itc == pl->itc_item)
           {
              if (elm_genlist_item_item_class_get(elm_genlist_item_prev_get(glit)) == pl->itc_item)
                elm_object_disabled_set(pl->btn_up, false);
@@ -1400,9 +1400,9 @@ _on_btn_minus_clicked(void *data,
      _part_del(pl, glit);
    else if ((itc == pl->itc_state_selected) || (itc == pl->itc_state))
      _state_del(pl, glit);
-   else if ((itc == pl->itc_item))
+   else if (itc == pl->itc_item)
      _item_del(pl, glit);
-   else if ((itc == pl->itc_program))
+   else if (itc == pl->itc_program)
      _program_del(pl, glit);
 
    TODO("Check if we still need this")

@@ -180,7 +180,7 @@ _parts_list_find(Eina_List *parts, const char *part)
 
    EINA_LIST_FOREACH(parts, l, gp)
      {
-        if ((gp->part->name == part))
+        if (gp->part->name == part)
           return gp;
      }
    return NULL;
@@ -199,7 +199,7 @@ _part_item_search(Eina_List *items, const char *item_name)
      {
         /* we are sure that all strings are stringshare, and for compare two
          * strings enough compare they pointers */
-        if ((item->name == item_name))
+        if (item->name == item_name)
           return item;
      }
    return NULL;
