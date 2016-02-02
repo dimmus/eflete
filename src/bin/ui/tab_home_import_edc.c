@@ -238,21 +238,21 @@ _dir_item_add(Evas_Smart_Cb del_func)
 }
 
 static void
-_dir_add(Eina_List *dirs_list, Evas_Smart_Cb del_func)
+_dir_add(Eina_List **dirs_list, Evas_Smart_Cb del_func)
 {
    Dir_Data *dir_data, *tmp;
 
    dir_data = _dir_item_add(del_func);
-   if (eina_list_count(dirs_list) == 1)
+   if (eina_list_count(*dirs_list) == 1)
      {
         /* enable the 'del' button of first item, make posible to delete the
          * first item */
-        tmp = eina_list_data_get(dirs_list);
+        tmp = eina_list_data_get(*dirs_list);
         elm_object_disabled_set(tmp->btn_del, false);
      }
-   tmp = eina_list_data_get(eina_list_last(dirs_list));
+   tmp = eina_list_data_get(eina_list_last(*dirs_list));
    elm_box_pack_after(tab_edc.box, dir_data->item, tmp->item);
-   dirs_list = eina_list_append(dirs_list, dir_data);
+   *dirs_list = eina_list_append(*dirs_list, dir_data);
 }
 
 static void
@@ -260,7 +260,7 @@ _img_dir_add(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   _dir_add(tab_edc.img_dirs, _img_dir_del);
+   _dir_add(&tab_edc.img_dirs, _img_dir_del);
 }
 
 static void
@@ -268,7 +268,7 @@ _fnt_dir_add(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   _dir_add(tab_edc.fnt_dirs, _fnt_dir_del);
+   _dir_add(&tab_edc.fnt_dirs, _fnt_dir_del);
 }
 
 static void
@@ -276,7 +276,7 @@ _snd_dir_add(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   _dir_add(tab_edc.snd_dirs, _snd_dir_del);
+   _dir_add(&tab_edc.snd_dirs, _snd_dir_del);
 }
 
 /*
@@ -285,7 +285,7 @@ _vbr_dir_add(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   _dir_add(tab_edc.vbr_dirs, _vbr_dir_del);
+   _dir_add(&tab_edc.vbr_dirs, _vbr_dir_del);
 }
 */
 
@@ -294,7 +294,7 @@ _data_dir_add(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   _dir_add(tab_edc.data_dirs, _data_dir_del);
+   _dir_add(&tab_edc.data_dirs, _data_dir_del);
 }
 
 static Eina_Strbuf * /* need free by user side */
@@ -337,13 +337,13 @@ _edje_cc_opt_build(void)
 }
 
 static void
-_dirs_cleanup(Eina_List *list, Evas_Smart_Cb del_func)
+_dirs_cleanup(Eina_List **list, Evas_Smart_Cb del_func)
 {
    Dir_Data *data;
 
-   while (1 != eina_list_count(list))
+   while (1 != eina_list_count(*list))
      {
-        data = eina_list_data_get(eina_list_last(list));
+        data = eina_list_data_get(eina_list_last(*list));
         del_func(data, NULL, NULL);
      }
 }
@@ -365,11 +365,11 @@ _progress_end(void *data, PM_Project_Result result)
         elm_entry_entry_set(tab_edc.name, NULL);
         elm_entry_entry_set(tab_edc.path, profile_get()->general.projects_folder);
         elm_entry_entry_set(tab_edc.edc, NULL);
-        _dirs_cleanup(tab_edc.img_dirs, _img_dir_del);
-        _dirs_cleanup(tab_edc.fnt_dirs, _fnt_dir_del);
-        _dirs_cleanup(tab_edc.snd_dirs, _snd_dir_del);
-        /* _dirs_cleanup(tab_edc.vbr_dirs, _vbr_dir_del); */
-        _dirs_cleanup(tab_edc.data_dirs, _data_dir_del);
+        _dirs_cleanup(&tab_edc.img_dirs, _img_dir_del);
+        _dirs_cleanup(&tab_edc.fnt_dirs, _fnt_dir_del);
+        _dirs_cleanup(&tab_edc.snd_dirs, _snd_dir_del);
+        /* _dirs_cleanup(&tab_edc.vbr_dirs, _vbr_dir_del); */
+        _dirs_cleanup(&tab_edc.data_dirs, _data_dir_del);
         elm_entry_entry_set(tab_edc.meta.version, NULL);
         elm_entry_entry_set(tab_edc.meta.authors, NULL);
         elm_entry_entry_set(tab_edc.meta.licenses, NULL);
