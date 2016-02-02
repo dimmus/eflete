@@ -99,7 +99,12 @@ _grid_text_get(void *data __UNUSED__,
    EINA_LIST_FOREACH(part_list, l, demo_part)
      {
         if (!strcmp(demo_part->name, part))
-          return strdup(demo_part->text_content);
+          {
+             if (!demo_part->text_content)
+               return NULL;
+             else
+               return strdup(demo_part->text_content);
+          }
      }
 
    return NULL;
