@@ -956,7 +956,7 @@ _mode_changed(void *data,
    /* delete all object besides groupedit, because all these objects we created
     * on mode chage. It's do for create, alwayes actual and correct object, and
     * eliminates from updates, like live_view update mehanism. So, Profit! */
-   if ((sd->active_mode == MODE_NORMAL)/* || (sd->active_mode == MODE_SEPARATE) */)
+   if (sd->active_mode == MODE_NORMAL/* || (sd->active_mode == MODE_SEPARATE) */)
      evas_object_hide(sd->groupedit);
    else
      evas_object_del(sd->demo_object);
