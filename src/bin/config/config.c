@@ -266,13 +266,12 @@ _default_shortcuts_get()
    Shortcuts *shortcut;
 
 #define ADD_SHORTCUT(Name, Keycode, Modifiers, Descr, Holdable)              \
-   shortcut = mem_calloc(1, sizeof(Shortcuts));                                  \
-   if (!shortcut) return shortcuts;                                          \
+   shortcut = mem_calloc(1, sizeof(Shortcuts));                              \
    shortcut->keyname = eina_stringshare_add_length(Name, strlen(Name));      \
    shortcut->keycode = Keycode;                                              \
    shortcut->modifiers = Modifiers;                                          \
    shortcut->description = eina_stringshare_add_length(Descr, strlen(Descr));\
-   shortcut->holdable = Holdable;                                             \
+   shortcut->holdable = Holdable;                                            \
    shortcuts = eina_list_append(shortcuts, shortcut);
 
    /* No modifiers */
