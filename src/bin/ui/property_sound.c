@@ -852,14 +852,14 @@ _sample_info_create(Evas_Object *parent, Sound_Prop_Data *edit)
    BOX_ADD(edit->info_frame, edit->sample_box, false, false);
    elm_box_align_set(edit->sample_box, 0.5, 0.0);
 
-   edit->snd_data.file_name = prop_item_label_add(edit->sample_box, &edit->snd_data.file_name, _("file name:"), _(" - "));
-   elm_box_pack_end(edit->sample_box, edit->snd_data.file_name);
-   edit->snd_data.duration = prop_item_label_add(edit->sample_box, &edit->snd_data.duration, _("duration:"), _(" - "));
-   elm_box_pack_end(edit->sample_box, edit->snd_data.duration);
-   edit->snd_data.type = prop_item_label_add(edit->sample_box, &edit->snd_data.type, _("type:"), _(" - "));
-   elm_box_pack_end(edit->sample_box, edit->snd_data.type);
-   edit->snd_data.size = prop_item_label_add(edit->sample_box, &edit->snd_data.size, _("size:"), _(" - "));
-   elm_box_pack_end(edit->sample_box, edit->snd_data.size);
+   item = prop_item_label_add(edit->sample_box, &edit->snd_data.file_name, _("file name:"), _(" - "));
+   elm_box_pack_end(edit->sample_box, item);
+   item = prop_item_label_add(edit->sample_box, &edit->snd_data.duration, _("duration:"), _(" - "));
+   elm_box_pack_end(edit->sample_box, item);
+   item = prop_item_label_add(edit->sample_box, &edit->snd_data.type, _("type:"), _(" - "));
+   elm_box_pack_end(edit->sample_box, item);
+   item = prop_item_label_add(edit->sample_box, &edit->snd_data.size, _("size:"), _(" - "));
+   elm_box_pack_end(edit->sample_box, item);
 
    item = prop_sound_editor_compression_type_add(edit->sample_box, edit);
    elm_box_pack_end(edit->sample_box, item);
@@ -881,8 +881,8 @@ _tone_info_create(Evas_Object *parent, Sound_Prop_Data *edit)
    BOX_ADD(edit->info_frame, edit->tone_box, false, false);
    elm_box_align_set(edit->tone_box, 0.5, 0.0);
 
-   edit->snd_data.tone_name = prop_item_label_add(edit->tone_box, &edit->snd_data.tone_name, _("name:"), _(" - "));
-   elm_box_pack_end(edit->tone_box, edit->snd_data.tone_name);
+   item = prop_item_label_add(edit->tone_box, &edit->snd_data.tone_name, _("name:"), _(" - "));
+   elm_box_pack_end(edit->tone_box, item);
 
    item = prop_sound_editor_tone_frequency_add(edit->tone_box, edit);
    elm_box_pack_end(edit->tone_box, item);
@@ -935,26 +935,14 @@ _sound_unselected(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
-   Evas_Object *item;
    Sound_Prop_Data *pd = (Sound_Prop_Data *)data;
 
-   item = elm_object_part_content_get(pd->snd_data.file_name, "elm.swallow.content");
-   elm_object_text_set(item, _("-"));
-
-   item = elm_object_part_content_get(pd->snd_data.duration, "elm.swallow.content");
-   elm_object_text_set(item, _("-"));
-
-   item = elm_object_part_content_get(pd->snd_data.type, "elm.swallow.content");
-   elm_object_text_set(item, _("-"));
-
-   item = elm_object_part_content_get(pd->snd_data.size, "elm.swallow.content");
-   elm_object_text_set(item, _("-"));
-
-   item = elm_object_part_content_get(pd->snd_data.tone_name, "elm.swallow.content");
-   elm_object_text_set(item, _("-"));
-
-   item = elm_object_part_content_get(pd->snd_data.duration, "swallow.content1");
-   elm_object_text_set(item, _("-"));
+   elm_object_text_set(pd->snd_data.file_name, _("-"));
+   elm_object_text_set(pd->snd_data.duration, _("-"));
+   elm_object_text_set(pd->snd_data.type, _("-"));
+   elm_object_text_set(pd->snd_data.size, _("-"));
+   elm_object_text_set(pd->snd_data.tone_name, _("-"));
+   elm_object_text_set(pd->snd_data.duration, _("-"));
 }
 
 Evas_Object *
