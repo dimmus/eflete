@@ -158,7 +158,7 @@ editor_part_item_aspect_mode_set(Evas_Object *edit_object, Change *change, Eina_
    assert(item_name != NULL);
    if (change)
      {
-        Edje_Aspect_Control old_value = edje_edit_part_ignore_flags_get(edit_object, part_name);
+        Edje_Aspect_Control old_value = edje_edit_part_item_aspect_mode_get(edit_object, part_name, item_name);
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING_STRING_EDJEASPECTCONTROL;
         diff->redo.function = editor_part_item_aspect_mode_set;
