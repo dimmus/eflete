@@ -115,6 +115,11 @@ _content_set(void *data,
              workspace_groupview_hard_update(tabs.current_workspace);
              item->need_recalc = false;
           }
+
+        /* call 'tab,changed' on tab click, and sent Group accociated with clicked
+         * tab or NULL, if click on 'home' tab */
+        evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED,
+                                        item ? item->group : NULL);
      }
    else
      {
@@ -149,11 +154,6 @@ _content_set(void *data,
              evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
           }
      }
-
-   /* call 'tab,changed' on tab click, and sent Group accociated with clicked
-    * tab or NULL, if click on 'home' tab */
-   evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED,
-                                   item ? item->group : NULL);
 }
 
 static Tabs_Item *
