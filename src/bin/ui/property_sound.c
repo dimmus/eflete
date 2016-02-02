@@ -64,7 +64,6 @@ struct _Sound_Prop_Data
       const void *data;
       Ecore_Audio_Vio vio;
       Eo *in, *out;
-      Eina_Binbuf *buf;
    } io;
 #endif
 
@@ -73,8 +72,6 @@ struct _Sound_Prop_Data
       Evas_Object *rewind;
       Evas_Object *play;
       Evas_Object *pause;
-      Eina_Bool playing : 1;
-      Eina_Bool stopped : 1;
    } player_data;
 
    struct {
@@ -100,9 +97,6 @@ static const char *edje_sound_compression[] = { N_("RAW"),
 
 static Evas_Object *
 prop_sound_editor_compression_type_add(Evas_Object *property, Sound_Prop_Data *pd);
-
-static void
-_interrupt_playing(Sound_Prop_Data *edit);
 
 static Evas_Object *
 prop_item_label_add(Evas_Object *parent,
@@ -240,7 +234,6 @@ _play_finished_cb(void *data,
    edit->io.in = NULL;
    eo_del(edit->io.out);
    edit->io.out = NULL;
-   edit->player_data.playing = false;
    return true;
 }
 
@@ -305,13 +298,6 @@ _tone_play(Sound_Prop_Data *edit)
    assert(edit != NULL);
 
    tone = (Tone_Resource *)edit->snd->resource;
-   if (edit->player_data.stopped)
-     {
-        eo_do(edit->io.in, ecore_audio_obj_paused_set(false));
-        ecore_timer_thaw(edit->player_data.timer);
-        edit->player_data.stopped = false;
-        return;
-     }
 
    if (!edit->io.in)
      {
@@ -339,7 +325,6 @@ _tone_play(Sound_Prop_Data *edit)
    if (value)
      eo_do(edit->io.in, value = ecore_audio_obj_in_seek(value, SEEK_SET));
 
-   edit->player_data.playing = true;
    edit->player_data.timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, edit);
 }
 
@@ -351,14 +336,6 @@ _sample_play(Sound_Prop_Data *edit)
    External_Resource *sample;
 
    assert(edit != NULL);
-
-   if (edit->player_data.stopped)
-     {
-        eo_do(edit->io.in, ecore_audio_obj_paused_set(false));
-        ecore_timer_thaw(edit->player_data.timer);
-        edit->player_data.stopped = false;
-        return;
-     }
 
    if (!edit->io.in)
      {
@@ -384,46 +361,36 @@ _sample_play(Sound_Prop_Data *edit)
    if (value)
      eo_do(edit->io.in, value = ecore_audio_obj_in_seek(value, SEEK_SET));
 
-   edit->player_data.playing = true;
    edit->player_data.timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, edit);
 }
 
 static void
 _interrupt_playing(Sound_Prop_Data *edit)
 {
+   Eina_Bool ret;
+
    assert(edit != NULL);
 
-   Eina_Bool ret;
-   if (edit->player_data.playing)
+   if (!edit->io.in) return; /* case when previous sound playing is finished */
+   eo_do(edit->io.in, ret = ecore_audio_obj_paused_get());
+   if (ret)
      {
         eo_do(edit->io.out, ret = ecore_audio_obj_out_input_detach(edit->io.in));
-        if (!ret)
-          ERR("Could not detach input");
-        if (!edit->player_data.stopped)
-          {
-             ecore_timer_del(edit->player_data.timer);
-             edit->player_data.timer = NULL;
-          }
+        if (!ret) ERR("Could not detach input");
+
+        ecore_timer_del(edit->player_data.timer);
+        edit->player_data.timer = NULL;
+
         elm_object_part_content_unset(edit->sound_player, "swallow.button.play");
         evas_object_hide(edit->player_data.pause);
         elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.play);
         evas_object_show(edit->player_data.play);
-     }
-   if (edit->io.in)
-     {
+
         eo_del(edit->io.in);
         edit->io.in = NULL;
         eo_del(edit->io.out);
         edit->io.out = NULL;
      }
-   if (edit->io.buf)
-     {
-        eina_binbuf_free(edit->io.buf);
-        edit->io.buf = NULL;
-     }
-
-   edit->player_data.stopped = false;
-   edit->player_data.playing = false;
 }
 
 static void
@@ -432,8 +399,20 @@ _on_play_cb(void *data,
             void *event_info EINA_UNUSED)
 {
    Sound_Prop_Data *edit = (Sound_Prop_Data *)data;
+   Eina_Bool paused;
 
    assert(edit != NULL);
+
+   if (edit->io.in)
+     {
+        eo_do(edit->io.in, paused = ecore_audio_obj_paused_get());
+        if (paused)
+          {
+             eo_do(edit->io.in, ecore_audio_obj_paused_set(false));
+             ecore_timer_thaw(edit->player_data.timer);
+             return;
+          }
+     }
 
    switch (edit->snd->type)
      {
@@ -459,7 +438,6 @@ _on_pause_cb(void *data EINA_UNUSED,
 
    assert(edit != NULL);
 
-   edit->player_data.stopped = true;
    eo_do(edit->io.in, ecore_audio_obj_paused_set(true));
 
    ecore_timer_freeze(edit->player_data.timer);
