@@ -279,7 +279,6 @@ _mouse_move_hBR_cb(void *data,
 
    /* calc wigth and heght */
    TODO("need do refactoring here")
-   nw = w + dx;
    if (sd->size->w + H_WIGTH + dx <= sd->con_size_min.w + H_WIGTH)
      nw = sd->con_size_min.w + H_WIGTH + sd->dx + sd->pad_left_top.w + sd->pad_right_bottom.w;
    else
@@ -290,7 +289,6 @@ _mouse_move_hBR_cb(void *data,
         else nw = w + dx;
      }
 
-   nh = h + dy;
    if (sd->size->h + H_HEIGHT + dy <= sd->con_size_min.h + H_HEIGHT)
      nh = sd->con_size_min.h + H_HEIGHT + sd->dy + sd->pad_left_top.h + sd->pad_right_bottom.h;
    else
