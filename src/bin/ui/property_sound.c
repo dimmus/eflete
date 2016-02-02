@@ -73,10 +73,8 @@ struct _Sound_Prop_Data
       Evas_Object *rewind;
       Evas_Object *play;
       Evas_Object *pause;
-      Eina_Bool decoration : 1;
       Eina_Bool playing : 1;
       Eina_Bool stopped : 1;
-      Eina_Bool switched : 1;
    } player_data;
 
    struct {
