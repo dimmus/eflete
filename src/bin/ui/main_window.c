@@ -93,6 +93,23 @@ _property_click(void *data __UNUSED__,
    elm_layout_signal_emit(ap.block.right_top, "property,show", "eflete");
 }
 
+static void
+_show_history(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   elm_object_item_disabled_set(ap.block.item_history, false);
+}
+
+static void
+_hide_history(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   elm_object_item_disabled_set(ap.block.item_history, true);
+   elm_toolbar_item_selected_set(ap.block.item_property, true);
+}
+
 Eina_Bool
 ui_main_window_add(void)
 {
@@ -172,8 +189,16 @@ ui_main_window_add(void)
    evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_toolbar_align_set(toolbar, 0.0);
 
-   elm_toolbar_item_append(toolbar, NULL, _("Properties"), _property_click, NULL);
-   elm_toolbar_item_append(toolbar, NULL, _("History"), _history_click, NULL);
+   ap.block.item_property = elm_toolbar_item_append(toolbar, NULL, _("Properties"), _property_click, NULL);
+   ap.block.item_history = elm_toolbar_item_append(toolbar, NULL, _("History"), _history_click, NULL);
+   elm_object_item_disabled_set(ap.block.item_history, true);
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, _hide_history, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_IMAGE_EDITOR_TAB_CLICKED, _hide_history, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_EDITOR_TAB_CLICKED, _hide_history, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_STYLE_EDITOR_TAB_CLICKED, _hide_history, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_COLOR_EDITOR_TAB_CLICKED, _hide_history, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _show_history, NULL);
 
    ap.block.property = ui_property_add(ap.win);
    elm_layout_content_set(ap.block.right_top, "elm.swallow.property", ap.block.property);

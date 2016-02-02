@@ -106,6 +106,7 @@ struct _App_Data
       Evas_Object *signal_list;
       Evas_Object *bottom_right;
       Evas_Object *right_top, *history, *property;
+      Elm_Object_Item *item_history, *item_property;
       Evas_Object *canvas;
    } block;
    Live_View *live_view;
