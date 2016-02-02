@@ -42,6 +42,7 @@ struct _Style_Prop_Data
    Evas_Object *tab_stops;
    Evas_Object *line_size;
    Evas_Object *relative_size;
+   Evas_Object *check_ellipsis;
    Evas_Object *replace_ellisis;
    Evas_Object *check_psw;
    Evas_Object *check_color;
@@ -68,6 +69,7 @@ struct _Style_Prop_Data
 typedef struct _Style_Prop_Data Style_Prop_Data;
 
 #define MIN_SP - 1.0
+#define ELLIPSIS_MIN_SP 0.0
 #define MARGIN_MIN_SP 0.0
 #define MAX_SP 9999.0
 #define MAX_PERCENT 100.0
@@ -375,6 +377,7 @@ _tag_parse(Style_Prop_Data *pd, const char *value, const char *text)
    eina_strbuf_append(tag, CURRENT.stvalue);
    edje_edit_obj = ap.project->global_object;
    stolen_buf = eina_strbuf_string_steal(tag);
+
    token = strtok(stolen_buf, " =+");
    while (token)
      {
@@ -633,6 +636,23 @@ _add_1check_2button_item(const char *text,
    elm_box_pack_end(box, item);
 }
 
+static void
+_add_1check_spinner_item(const char *text,
+                         Evas_Object *box,
+                         Evas_Object **object_left,
+                         Evas_Object **object_right)
+{
+   PROPERTY_ITEM_ADD(box, text, "2swallow")
+   CHECK_ADD(item, *object_left)
+   elm_object_style_set(*object_left, "toggle");
+
+   SPINNER_ADD(item, *object_right, ELLIPSIS_MIN_SP, MAX_SP, STEP_SP, true)
+
+   elm_layout_content_set(item, "swallow.content1", *object_left);
+   elm_layout_content_set(item, "swallow.content2", *object_right);
+
+   elm_box_pack_end(box, item);
+}
 
 #define CALLBACKS_COLOR_ADD(VALUE, TAG) \
 static void \
@@ -715,6 +735,32 @@ CHANGE_CALLBACK(relative_size, "linerelsize", SPINNER, NULL)
 CHANGE_CALLBACK(check_psw, "password", CHECK, NULL)
 CHANGE_CALLBACK(check_color, "backing", CHECK, NULL)
 CHANGE_CALLBACK(replace_ellisis, "ellipsis", PERCENT_SPINNER, NULL)
+static void
+_on_check_ellipsis_change(void *data,
+                          Evas_Object *obj EINA_UNUSED,
+                          void *ei EINA_UNUSED)
+{
+   Style_Prop_Data *pd = (Style_Prop_Data *)data;
+   assert(pd != NULL);
+   Eina_Stringshare *value;
+   if (!elm_check_state_get(obj))
+     {
+        value = eina_stringshare_add("-1.0");
+        elm_object_disabled_set(pd->replace_ellisis, true);
+     }
+   else
+     {
+        value = eina_stringshare_add("0.0");
+        elm_object_disabled_set(pd->replace_ellisis, false);
+     }
+
+   elm_spinner_value_set(pd->replace_ellisis, 0.0);
+   _tag_parse(pd, value, "ellipsis");
+
+   _lines_colors_update(pd, "ellipsis");
+   _style_edit_update(pd);
+   eina_stringshare_del(value);
+}
 
 CHANGE_CALLBACK(hor_align, "align", COMBOBOX, NULL)
 CHANGE_CALLBACK(left_margin, "left_margin", SPINNER, NULL)
@@ -810,8 +856,9 @@ _add_text_format_part(Style_Prop_Data *pd)
    ADD_1SWALLOW_ITEM(_("Password field:"), pd->box_format_frame, pd->check_psw, item, CHECK);
    evas_object_smart_callback_add(pd->check_psw, "changed", _on_check_psw_change, pd);
 
-   _prop_spin_add(_("Replace overflow characters with ellisis:"), _(""), _(""), pd->box_format_frame, &pd->replace_ellisis, MIN_SP, MAX_PERCENT, STEP_SP);
+   _add_1check_spinner_item(_("Replace overflow characters with ellisis:"), pd->box_format_frame, &pd->check_ellipsis, &pd->replace_ellisis);
    evas_object_smart_callback_add(pd->replace_ellisis, "changed", _on_replace_ellisis_change, pd);
+   evas_object_smart_callback_add(pd->check_ellipsis, "changed", _on_check_ellipsis_change, pd);
 
    _prop_spin_add(_("Line relative size:"), _(""), _("px"), pd->box_format_frame, &pd->relative_size, MIN_SP, MAX_SP, STEP_SP);
    evas_object_smart_callback_add(pd->relative_size, "changed", _on_relative_size_change, pd);
@@ -971,8 +1018,19 @@ _position_text_option_update(Style_Prop_Data *pd, const char *value)
         Eina_Tmpstr *password = _tag_value_get(value, "password");
         if ((!password) || (!strcmp(password, "off"))) pass = EINA_FALSE;
         else pass = EINA_TRUE;
+
         Eina_Tmpstr *ellipsis = _tag_value_get(value, "ellipsis");
-        if (!ellipsis) ellipsis = eina_tmpstr_add("0");
+        if (!ellipsis) ellipsis = eina_tmpstr_add("-1.0");
+
+        Eina_Tmpstr *check_ellipsis = _tag_value_get(value, "check_ellipsis");
+        if ((!check_ellipsis) || (!strcmp(check_ellipsis, "off")))
+          {
+             elm_object_disabled_set(pd->replace_ellisis, true);
+             ellipsis = eina_tmpstr_add("-1.0");
+          }
+        else
+          elm_object_disabled_set(pd->replace_ellisis, false);
+
         Eina_Tmpstr *bground = _tag_value_get(value, "backing");
         if ((!bground) || (!strcmp(bground, "off"))) bg = EINA_FALSE;
         else bg = EINA_TRUE;
