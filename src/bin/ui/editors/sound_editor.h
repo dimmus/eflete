@@ -66,6 +66,13 @@ typedef struct {
    double quality;
    int tone_frq;
 } Selected_Sound_Data;
+struct _Sound_Data {
+   Sound_Type type;
+   Resource *resource; /* for SAMPLE it's External_Resource, TONE - Tone_Resource */
+   Eina_Stringshare *name;
+   Eina_Stringshare *type_label;
+};
+typedef struct _Sound_Data Sound_Data;
 
 /**
  * Show the whole inwin window by using some data
