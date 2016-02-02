@@ -252,7 +252,7 @@ exit:
    eina_stringshare_del(tmp)
 
 static Project *
-_project_files_create()
+_project_files_create(void)
 {
    Project *pro;
    Eina_Stringshare *folder_path, *pro_path, *tmp;
@@ -312,7 +312,7 @@ _project_files_create()
 #undef MKDIR
 
 static void
-_copy_meta_data_to_pro()
+_copy_meta_data_to_pro(void)
 {
    Eet_File *ef;
    char *name, *authors, *version, *license, *comment;
@@ -337,7 +337,7 @@ _copy_meta_data_to_pro()
 }
 
 static Eina_Bool
-_project_edj_file_copy()
+_project_edj_file_copy(void)
 {
    Eina_Stringshare *src, *dst;
    Eina_Bool result;
@@ -434,14 +434,14 @@ _project_import_edj(void *data,
 
    PROGRESS_SEND(_("Start import '%s' file as new project"), worker.edj);
    PROGRESS_SEND(_("Creating a specifiec file and folders"));
-   worker.project = _project_files_create(worker);
+   worker.project = _project_files_create();
    TODO("Add correct error handling here (if project == NULL). Probably we should add negative TC where directory already exist");
    THREAD_TESTCANCEL;
    worker.project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker.path, worker.name, worker.name);
    THREAD_TESTCANCEL;
    PROGRESS_SEND(_("Import processing"));
-   _project_edj_file_copy(worker);
-   _copy_meta_data_to_pro(worker);
+   _project_edj_file_copy();
+   _copy_meta_data_to_pro();
    _project_special_group_add(worker.project);
    _project_dummy_image_add(worker.project);
    _project_open_internal(worker.project);
