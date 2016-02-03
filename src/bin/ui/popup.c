@@ -626,7 +626,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
    elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, follow_up);
 
    fs = elm_layout_add(helper);
-   elm_layout_theme_set(fs, "layout", "image_editor", "usage_info");
+   elm_layout_theme_set(fs, "layout", "image_manager", "usage_info");
    evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(fs);
