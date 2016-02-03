@@ -75,8 +75,12 @@ config_recent_add(const char *name, const char *path)
    assert(path != NULL);
 
    EINA_LIST_FOREACH_SAFE(config->recents, l, l_n, r)
-      if (!strcmp(path, r->path))
-        config->recents = eina_list_remove_list(config->recents, l);
+     {
+        if (!strcmp(path, r->path))
+          config->recents = eina_list_remove_list(config->recents, l);
+        if (!ecore_file_exists(r->path))
+          config->recents = eina_list_remove(config->recents, r);
+     }
 
    if (eina_list_count(config->recents) > 9)
      config->recents = eina_list_remove_list(config->recents, eina_list_last(config->recents));
@@ -401,6 +405,19 @@ _config_default_new(void)
    return conf;
 }
 
+static void
+_update_recents(Config *conf)
+{
+   Recent *r;
+   Eina_List *l, *l_n;
+
+   EINA_LIST_FOREACH_SAFE(conf->recents, l, l_n, r)
+     {
+        if (!ecore_file_exists(r->path))
+          conf->recents = eina_list_remove(conf->recents, r);
+     }
+}
+
 void
 config_load(void)
 {
@@ -419,6 +436,8 @@ config_load(void)
      config = _config_default_new();
 
    profile_load(config->profile);
+
+   _update_recents(config);
 
    shortcuts_profile_load(profile_get());
 #ifdef HAVE_ENVENTOR
