@@ -1740,7 +1740,7 @@ group_navigator_add(Group *group)
    elm_object_item_disabled_set(pl->add_state_menu_item, true);
    pl->add_part_item_menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Item"), _on_menu_add_item_clicked, NULL);
    elm_object_item_disabled_set(pl->add_part_item_menu_item, true);
-   menu_item = elm_menu_item_separator_add(pl->menu, NULL);
+   elm_menu_item_separator_add(pl->menu, NULL);
 
    menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Rectangle"), _on_menu_add_part_clicked, &_type_rect);
    elm_menu_item_icon_name_set(menu_item, "type_rectangle");
@@ -1762,7 +1762,7 @@ group_navigator_add(Group *group)
    elm_menu_item_icon_name_set(menu_item, "type_proxy");
    menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Spacer"), _on_menu_add_part_clicked, &_type_spacer);
    elm_menu_item_icon_name_set(menu_item, "type_spacer");
-   menu_item = elm_menu_item_separator_add(pl->menu, NULL);
+   elm_menu_item_separator_add(pl->menu, NULL);
    elm_menu_item_add(pl->menu, NULL, NULL, _("Program"), _on_menu_add_program_clicked, NULL);
 
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
