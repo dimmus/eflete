@@ -391,8 +391,11 @@ _tag_parse(Style_Prop_Data *pd, const char *value, const char *text)
         else if (strstr(token, "shadow"))
           {
              style_table[DIRECTION_NUM][1] = eina_stringshare_add(strchr(token, ','));
-             style_length = (int)(strlen(token) - strlen(style_table[DIRECTION_NUM][1]));
-             style_table[exist][1] = eina_stringshare_add_length(token, style_length);
+             if (style_table[DIRECTION_NUM][1])
+               {
+                  style_length = (int)(strlen(token) - strlen(style_table[DIRECTION_NUM][1]));
+                  style_table[exist][1] = eina_stringshare_add_length(token, style_length);
+               }
           }
         else
           {
@@ -1096,6 +1099,24 @@ DIRECT_ADD(tl, "top_left", "tl", 5)
 DIRECT_ADD(t, "top", "t", 6)
 DIRECT_ADD(tr, "top_right", "tr", 7)
 
+static Eina_Bool
+_check_value(const char *list[], const char *value)
+{
+   Eina_Bool not_exist = true;
+   int i = 0;
+
+   for (i = 0; list[i] != NULL; i++)
+     {
+        if (!strcmp(value, list[i]))
+          {
+             not_exist = false;
+             break;
+          }
+     }
+
+   return not_exist;
+}
+
 static void
 _glow_shadow_prop_update(Style_Prop_Data *pd, const char *value)
 {
@@ -1152,6 +1173,13 @@ _glow_shadow_prop_update(Style_Prop_Data *pd, const char *value)
              token = strtok(0, " ");
           }
         free(style_copy);
+
+        if (!_check_value(font_glow_list, style))
+          {
+             eina_tmpstr_del(style);
+             style = eina_tmpstr_add("none");
+             ERR("Wrong style name. Find who did this loaded Edj-Theme and slap his face.");
+          }
 
         if (strstr(style, "shadow"))
           {
