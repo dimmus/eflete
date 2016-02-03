@@ -263,21 +263,18 @@ _conteiner_cell_sizer_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp, const
 }
 
 static void
-_part_table_items_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp, Eina_List ***items_draw)
+_part_table_items_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp, Eina_List ***items_draw, int col, int row)
 {
-   const Evas_Object *table;
    Evas_Object *cell, *cell_content;
    Eina_List *l;
    Eina_Stringshare *item_name;
-   int i, j, col, row;
+   int i, j;
    unsigned char span_col, span_row;
    Groupedit_Item *item;
 
    assert(gp->container != NULL);
    assert(gp->items == NULL);
 
-   table = edje_object_part_object_get(sd->group->edit_object, gp->part->name);
-   evas_object_table_col_row_size_get(table, &col, &row);
    evas_object_table_clear(gp->container, true);
 
    for (i = 0; i < col; i++)
@@ -319,7 +316,7 @@ _part_table_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 
    Eina_List *l;
    Eina_Stringshare *str;
-   int span_c, span_r, col, row, i, j;
+   int span_c, span_r, col, row, col_pos, row_pos, i, j;
    const Evas_Object *table;
    Eina_List ***items_draw;
 
@@ -336,22 +333,21 @@ _part_table_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
      items_draw[i] = (Eina_List **)mem_calloc(1, sizeof(Eina_List *) * row);
    EINA_LIST_FOREACH(gp->part->items, l, str)
      {
-        col = edje_edit_part_item_position_col_get(sd->group->edit_object, gp->part->name, str);
-        row = edje_edit_part_item_position_row_get(sd->group->edit_object, gp->part->name, str);
+        col_pos = edje_edit_part_item_position_col_get(sd->group->edit_object, gp->part->name, str);
+        row_pos = edje_edit_part_item_position_row_get(sd->group->edit_object, gp->part->name, str);
         span_c = edje_edit_part_item_span_col_get(sd->group->edit_object, gp->part->name, str);
         span_r = edje_edit_part_item_span_row_get(sd->group->edit_object, gp->part->name, str);
 
-        if (items_draw[col][row] == (Eina_List *)-1) items_draw[col][row] = NULL;
-        items_draw[col][row] = eina_list_append(items_draw[col][row], str);
-        for (i = col; i < (col + span_c); i++)
+        if (items_draw[col_pos][row_pos] == (Eina_List *)-1) items_draw[col_pos][row_pos] = NULL;
+        items_draw[col_pos][row_pos] = eina_list_append(items_draw[col_pos][row_pos], str);
+        for (i = col_pos; i < (col_pos + span_c); i++)
           {
-             for (j = row; j < (row + span_r); j++)
+             for (j = row_pos; j < (row_pos + span_r); j++)
                if (!items_draw[i][j]) items_draw[i][j] = (Eina_List *) -1;
           }
      }
-   _part_table_items_add(sd, gp, items_draw);
+   _part_table_items_add(sd, gp, items_draw, col, row);
 
-   evas_object_table_col_row_size_get(table, &col, &row);
    for (i = 0; i < col; i++)
      {
         for (j = 0; j < row; j++)
