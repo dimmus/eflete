@@ -23,8 +23,8 @@
 #include "property_private.h"
 #include "property_macros.h"
 #include "main_window.h"
+#include "project_manager.h"
 #include "history.h"
-#include "sound_editor.h"
 #include "validator.h"
 
 #define UPDATE_FREQUENCY 1.0 / 30.0

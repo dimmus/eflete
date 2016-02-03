@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
-#include "sound_editor.h"
 #include "main_window.h"
 #include "project_manager.h"
 #include "modal_window.h"
@@ -630,7 +629,7 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
 }
 
 Evas_Object *
-sound_editor_window_add(void)
+sound_manager_add(void)
 {
    Sound_Editor *edit;
 

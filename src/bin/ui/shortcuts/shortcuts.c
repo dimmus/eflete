@@ -19,7 +19,6 @@
 
 #include "shortcuts.h"
 #include "main_window.h"
-#include "sound_editor.h"
 #include "animator.h"
 #include "tabs.h"
 #include "workspace.h"
