@@ -127,7 +127,7 @@ group { name: "elm/layout/colorclass_manager/default";
             align: 0.5 0.0;
             fixed: 1 0;
             max: 265 -1;
-            color: FN_COL_SPINNER_MAIN;
+            color_class: "main_alternative";
             rel1 {
                relative: 0.0 1.0;
                to_x: "swallow.entry";
@@ -172,7 +172,7 @@ group { name: "elm/layout/colorclass_manager/default";
             align: 0.5 0.0;
             fixed: 1 0;
             max: 265 -1;
-            color: FN_COL_SPINNER_MAIN;
+            color_class: "main_alternative";
             rel1 {
                relative: 0.33 1.0;
                to_x: "swallow.entry";
@@ -218,7 +218,7 @@ group { name: "elm/layout/colorclass_manager/default";
             align: 0.5 0.0;
             fixed: 1 0;
             max: 265 -1;
-            color: FN_COL_SPINNER_MAIN;
+            color_class: "main_alternative";
             rel1 {
                relative: 0.66 1.0;
                to_x: "swallow.entry";
