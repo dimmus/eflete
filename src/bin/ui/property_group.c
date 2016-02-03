@@ -1383,6 +1383,8 @@ ui_property_group_set(Evas_Object *property, Group *group)
         elm_object_content_set(group_frame, box);
 
         item = prop_group_name_add(box, pd, NULL);
+        elm_object_disabled_set(pd_group.name, true);
+
         elm_box_pack_end(box, item);
         pd_group.min_item = prop_group_min_w_h_add(box, pd,
                                                    _("Minimum group width in pixels."),
@@ -2377,6 +2379,7 @@ _ui_property_program_set(Evas_Object *property, const char *program)
         elm_object_content_set(pd->attributes.program.frame, box);
 
         item = prop_program_name_add(box, pd, NULL);
+        elm_object_disabled_set(pd->attributes.program.name, true);
         elm_box_pack_end(box, item);
         item = prop_program_signal_add(box, pd, NULL);
         elm_box_pack_end(box, item);
