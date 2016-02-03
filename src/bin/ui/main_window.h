@@ -32,6 +32,12 @@
 #include "eflete.h"
 #include "widget_macro.h"
 
+#ifdef HAVE_AUDIO
+TODO("Check pulse_audio on configure and add COREAUDIO support")
+   #define HAVE_PULSE 1
+   #include <Ecore_Audio.h>
+#endif
+
 enum Menu_Item
 {
    /* Needed as parent for top level menu items and as end mark in items lists */
@@ -478,5 +484,29 @@ typedef struct _Style_Data Style_Data;
  */
 Evas_Object *
 style_manager_add();
+
+typedef enum {
+   SOUND_TYPE_SAMPLE,
+   SOUND_TYPE_TONE
+} Sound_Type;
+
+struct _Sound_Data {
+   Sound_Type type;
+   Resource *resource; /* for SAMPLE it's External_Resource, TONE - Tone_Resource */
+   Eina_Stringshare *name;
+   Eina_Stringshare *type_label;
+};
+typedef struct _Sound_Data Sound_Data;
+
+/**
+ * Add new sound manager layout object.
+ *
+ * @return Pointer to layout object, which contain list of sounds,
+ * control buttons, etc.
+ *
+ * @ingroup Window
+ */
+Evas_Object *
+sound_manager_add(void);
 
 #endif /* UI_MAIN_WINDOW_H */

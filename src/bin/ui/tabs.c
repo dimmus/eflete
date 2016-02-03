@@ -25,7 +25,6 @@
 #include "main_window.h"
 #include "change.h"
 
-#include "sound_editor.h"
 #include "animator.h"
 
 struct _Tabs_Item {
@@ -383,7 +382,7 @@ _project_opened(void *data __UNUSED__,
                 void *ei __UNUSED__)
 {
    tabs.menu.content_image_editor = image_manager_add();
-   tabs.menu.content_sound_editor = sound_editor_window_add();
+   tabs.menu.content_sound_editor = sound_manager_add();
    tabs.menu.content_text_editor = style_manager_add();
    tabs.menu.content_colorclass_editor = colorclass_manager_add();
 

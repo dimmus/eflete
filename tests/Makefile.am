@@ -12,7 +12,6 @@ colorclass_manager_test \
 diff_test \
 change_test \
 new_history_test \
-sound_editor_test \
 image_manager_test \
 logger_test \
 container_test \
@@ -175,13 +174,6 @@ colorclass_manager_test_SOURCES = \
 ../tests/test_colorclass_manager/colorclass_manager_add.c
 colorclass_manager_test_CFLAGS = ${FLAGS}
 colorclass_manager_test_LDADD = ${LD}
-
-sound_editor_test_SOURCES = \
-../tests/test_sound_editor/test_sound_editor.c \
-../tests/test_sound_editor/sound_editor_window_add.c
-
-sound_editor_test_CFLAGS = ${FLAGS}
-sound_editor_test_LDADD = ${LD}
 
 image_manager_test_SOURCES = \
 ../tests/test_image_manager/test_image_manager.c \
