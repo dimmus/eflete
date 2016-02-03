@@ -1132,16 +1132,6 @@ group { name: "elm/genlist/item_compress/history/default";
       }
    }
    programs {
-      program { name: "selected";
-         signal: "elm,state,selected";
-         source: "elm";
-         after: "state,selected";
-      }
-      program { name: "unselected";
-         signal: "elm,state,unselected";
-         source: "elm";
-         after: "state,unselected";
-      }
       program { name: "state,selected";
          signal: "elm,state,selected,active";
          source: "elm";
