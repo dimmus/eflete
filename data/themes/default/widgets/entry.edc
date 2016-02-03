@@ -778,7 +778,7 @@ group { name: "elm/scroller/entry_single/default";
       part { name: "bg";
          type: IMAGE;
          description { state: "default" 0.0;
-            min: 150 19;
+            min: 0 19;
             max: -1 19;
             fixed: 0 1;
             color_class: "bg_entry";
