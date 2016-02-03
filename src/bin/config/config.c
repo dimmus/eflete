@@ -393,7 +393,7 @@ _config_default_new(void)
    conf->window.y =           0;
    conf->window.w =           1366;
    conf->window.h =           768;
-   conf->panes.left =         0.0;
+   conf->panes.left =         0.2;
    conf->panes.right =        1.0;
    conf->panes.tabs_size =    0.3;
    conf->profile = strdup("default");
