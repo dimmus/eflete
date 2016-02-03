@@ -111,6 +111,11 @@ color_classes {
       color3: 0 0 0 0;
    }
    color_class { name: "bg_entry";
+      color: 46 48 49 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "bg_main_alternative";
       color: 35 37 38 255;
       color2: 0 0 0 0;
       color3: 0 0 0 0;
