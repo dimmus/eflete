@@ -479,10 +479,10 @@ _tag_value_get(const char* text_style, char* a_tag)
                {
                   equals_sign++;
 
-                  if (token[strlen(token) - 1] != '\'')
+                  if (equals_sign[strlen(equals_sign) - 1] != '\'')
                     result = eina_tmpstr_add(equals_sign);
                   else
-                    result = eina_tmpstr_add_length(equals_sign, strlen(token) - 1);
+                    result = eina_tmpstr_add_length(equals_sign, strlen(equals_sign) - 1);
                   if (!strstr(FONT_DEFAULT, a_tag)) break;
                }
           }
