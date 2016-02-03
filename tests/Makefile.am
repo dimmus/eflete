@@ -8,18 +8,15 @@ ewe_combobox_test \
 ewe_ruler_test \
 eflete_test \
 alloc_test \
-colorclass_manager_test \
 diff_test \
 change_test \
 new_history_test \
-image_manager_test \
 logger_test \
 container_test \
 modal_window_test \
 project_manager_test \
 config_test \
 cursor_test \
-style_manager_test \
 highlight_test \
 ui_main_window_test \
 groupedit_test \
@@ -169,18 +166,6 @@ new_history_test_SOURCES = \
 new_history_test_CFLAGS = ${FLAGS}
 new_history_test_LDADD = ${LD}
 
-colorclass_manager_test_SOURCES = \
-../tests/test_colorclass_manager/test_colorclass_manager.c \
-../tests/test_colorclass_manager/colorclass_manager_add.c
-colorclass_manager_test_CFLAGS = ${FLAGS}
-colorclass_manager_test_LDADD = ${LD}
-
-image_manager_test_SOURCES = \
-../tests/test_image_manager/test_image_manager.c \
-../tests/test_image_manager/image_manager_add.c
-image_manager_test_CFLAGS = ${FLAGS}
-image_manager_test_LDADD = ${LD}
-
 logger_test_SOURCES = \
 ../tests/test_logger/test_logger.c \
 ../tests/test_logger/logger_init.c \
@@ -235,12 +220,6 @@ cursor_test_SOURCES = \
 ../tests/test_cursor/cursor_type_get.c
 cursor_test_CFLAGS = ${FLAGS}
 cursor_test_LDADD = ${LD}
-
-style_manager_test_SOURCES = \
-../tests/test_style_manager/test_style_manager.c \
-../tests/test_style_manager/style_manager_add.c
-style_manager_test_CFLAGS = ${FLAGS} -DEDC_PATH=\"${srcdir}/test_style_manager/data/\"
-style_manager_test_LDADD = ${LD}
 
 container_test_SOURCES = \
 ../tests/test_container/test_container.c \
