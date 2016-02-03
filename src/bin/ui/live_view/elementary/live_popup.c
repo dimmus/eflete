@@ -29,10 +29,15 @@ _on_popup_swallow_check(void *data,
    Evas_Object *content;
    char *pointer = NULL;
    Eina_Stringshare *but_swallow = NULL, *title_swallow = NULL;
+   int num;
 
+   TODO("recheck this logic");
    pointer = strstr(part->name, "button");
-   if (pointer) but_swallow = eina_stringshare_printf("button%c",
-                                                      pointer[sizeof(pointer) - 2]);
+   if ((pointer) && (strlen(pointer) == strlen("button") + 1))
+     {
+        num = atoi(pointer + strlen("button"));
+        but_swallow = eina_stringshare_printf("button%d", num);
+     }
    if (!strcmp(part->name, "elm.swallow.title.icon"))
      title_swallow = eina_stringshare_add("title,icon");
 
