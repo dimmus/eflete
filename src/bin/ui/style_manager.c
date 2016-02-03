@@ -63,6 +63,7 @@ struct _Style_Editor
    Evas_Object *textblock_style;
    Evas_Object *entry_prev;
    Evas_Object *button_del;
+   Evas_Object *menu;
    Search_Data style_search_data;
    struct {
       const char *st_name;
@@ -334,9 +335,13 @@ _validate(void *data,
 }
 
 static void
-_on_bt_style_add(Style_Editor *style_edit)
+_on_bt_style_add(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
 {
    Evas_Object *box, *item, *button;
+
+   Style_Editor *style_edit = (Style_Editor *)data;
 
    assert(style_edit != NULL);
 
@@ -371,9 +376,13 @@ _on_bt_style_add(Style_Editor *style_edit)
 }
 
 static void
-_on_bt_tag_add(Style_Editor *style_edit)
+_on_bt_tag_add(void *data,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
 {
    Evas_Object *box, *item, *button;
+
+   Style_Editor *style_edit = (Style_Editor *)data;
 
    assert(style_edit != NULL);
    assert(POPUP.name_validator == NULL);
@@ -541,21 +550,6 @@ _style_manager_search_field_create(Evas_Object *parent)
    ICON_STANDARD_ADD(entry, icon, true, "search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
    return entry;
-}
-
-static void
-_on_bt_add(void *data,
-           Evas_Object *obj __UNUSED__,
-           void *event_info)
-{
-   Style_Editor *style_edit = (Style_Editor *)data;
-
-   assert(style_edit != NULL);
-
-   Ewe_Combobox_Item *selected_item = event_info;
-
-   if (!selected_item->index) _on_bt_style_add(style_edit);
-   else _on_bt_tag_add(style_edit);
 }
 
 static Eina_Bool
@@ -782,12 +776,28 @@ _on_clicked_double(void *data __UNUSED__,
      }
 }
 
+static void
+_on_bt_add(void *data,
+           Evas_Object *obj __UNUSED__,
+           void *event_info __UNUSED__)
+{
+   Style_Editor *style_edit = (Style_Editor *)data;
+   Evas_Coord x, y, h;
+
+   assert(style_edit != NULL);
+
+   evas_object_geometry_get(obj, &x, &y, NULL, &h);
+
+   elm_menu_move(style_edit->menu, x, y + h);
+   evas_object_show(style_edit->menu);
+}
+
 /* Creating the view of the mwin!!! */
 static Evas_Object *
 _form_right_side(Style_Editor *style_edit)
 {
    Elm_Object_Item *glit_style;
-   Evas_Object *layout, *combobox, *search, *ic;
+   Evas_Object *layout, *button_add, *search, *ic;
    Eina_List *styles, *l_st;
    Resource *res;
 
@@ -853,19 +863,23 @@ _form_right_side(Style_Editor *style_edit)
         elm_object_item_data_set(glit_style, (char *)res->name);
      }
 
-   EWE_COMBOBOX_ADD(layout, combobox);
-   ewe_combobox_style_set(combobox, "small");
-   ewe_combobox_item_add(combobox, _("New style"));
-   ewe_combobox_item_add(combobox, _("New tag"));
-   evas_object_smart_callback_add(combobox, "selected", _on_bt_add, style_edit);
-   elm_object_part_content_set(layout, "swallow.button_add", combobox);
+   style_edit->menu = elm_menu_add(ap.win);
+   elm_menu_item_add(style_edit->menu, NULL, NULL, _("New style"), _on_bt_style_add, style_edit);
+   elm_menu_item_add(style_edit->menu, NULL, NULL, _("New tag"), _on_bt_tag_add, style_edit);
+
+   button_add = elm_button_add(ap.win);
+   evas_object_show(button_add);
+   ic = elm_icon_add(button_add);
+   elm_icon_standard_set(ic, "plus");
+   elm_object_part_content_set(button_add, NULL, ic);
+   evas_object_smart_callback_add(button_add, "clicked", _on_bt_add, style_edit);
+   elm_object_part_content_set(layout, "swallow.button_add", button_add);
 
    style_edit->button_del = elm_button_add(ap.win);
    evas_object_show(style_edit->button_del);
    ic = elm_icon_add(style_edit->button_del);
    elm_icon_standard_set(ic, "minus");
    elm_object_part_content_set(style_edit->button_del, NULL, ic);
-
    evas_object_smart_callback_add(style_edit->button_del, "clicked", _on_bt_del, style_edit);
    elm_object_part_content_set(layout, "swallow.button_rm", style_edit->button_del);
    elm_object_disabled_set(style_edit->button_del, true);
