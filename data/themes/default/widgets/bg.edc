@@ -2,8 +2,7 @@ group { name: "elm/bg/base/default";
    parts {
       part { name: "base"; type: RECT;
          description { state: "default" 0.0;
-            color_class: "dialog_base";
-            color: DARK_GREY_BG_DISABLED_COLOR;
+            color_class: "bg_main";
          }
       }
       part { name: "elm.swallow.rectangle"; type: SWALLOW;
