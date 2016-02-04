@@ -1442,10 +1442,10 @@ group { name: "elm/genlist/base/default";
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
-            color_class: "bg_main";
+            color_class: "bg_scroller";
          }
          description { state: "disabled" 0.0;
-            color: 0 0 0 0;
+            color_class: "bg_scroller_disabled";
          }
       }
       part { name: "sb_vbar";
@@ -1484,10 +1484,8 @@ group { name: "elm/genlist/base/default";
          }
       }
       part { name: "sb_vbar_p1";
-         type: RECT;
-         clip_to: "sb_vbar";
+         type: SPACER;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
             rel1 {
                to: "sb_vbar";
             }
@@ -1498,10 +1496,8 @@ group { name: "elm/genlist/base/default";
          }
       }
       part { name: "sb_vbar_p2";
-         type: RECT;
-         clip_to: "sb_vbar";
+         type: SPACER;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
             rel1 {
                relative: 0.0 1.0;
                to: "elm.dragable.vbar";
@@ -1571,11 +1567,9 @@ group { name: "elm/genlist/base/default";
          }
       }
       part { name: "sb_hbar_p1";
-         type: RECT;
-         clip_to: "sb_hbar";
+         type: SPACER;
          description { state: "default" 0.0;
             fixed: 1 1;
-            color: 0 0 0 0;
             rel1 {
                to: "sb_hbar";
             }
@@ -1586,10 +1580,8 @@ group { name: "elm/genlist/base/default";
          }
       }
       part { name: "sb_hbar_p2";
-         type: RECT;
-         clip_to: "sb_hbar";
+         type: SPACER;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
             rel1 {
                relative: 1.0 0.0;
                to: "elm.dragable.hbar";
@@ -1882,25 +1874,6 @@ group { name: "elm/genlist/base/default";
             }
          }
       }
-      part { name: "shadow";
-         type: IMAGE;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            image {
-               normal: "section-border.png";
-               border: 10 10 10 11;
-               middle: DEFAULT;
-            }
-         }
-         description { state: "disabled" 0.0;
-            color: 255 255 255 127;
-            image {
-               normal: "section-border.png";
-               border: 10 10 10 11;
-               middle: DEFAULT;
-            }
-         }
-      }
    }
    programs {
       program { name: "v_mouse_down";
@@ -2033,20 +2006,18 @@ group { name: "elm/genlist/base/default";
          source: "elm";
          action: STATE_SET "disabled" 0.00;
          target: "bg";
-         target: "shadow";
       }
       program { name: "enabled";
          signal: "elm,state,enabled";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
-         target: "shadow";
       }
    }
 }
 
 #undef ITEM_HEIGHT
-#ungef BORDER_COLOR
+#undef BORDER_COLOR
 #undef LIST_BORDER_COLOR
 #undef LIST_ITEM_SELECTED_COLOR
 #undef LIGHT_BORDER_COLOR
