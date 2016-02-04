@@ -16,7 +16,6 @@ group { name: "elm/button/base/default";
             image {
                normal: "button_bg.png";
                border: 4 4 9 9;
-               middle: SOLID;
             }
          }
          description { state: "clicked" 0.0;
@@ -24,16 +23,13 @@ group { name: "elm/button/base/default";
             image {
                normal: "button_click_bg.png";
                border: 4 4 9 9;
-               middle: SOLID;
             }
          }
          description { state: "disabled" 0.0;
             min: 19 19;
-            color: 255 255 255 254;
             image {
                normal: "button_disabled_bg.png";
                border: 4 4 9 9;
-               middle: SOLID;
             }
          }
       }
@@ -710,7 +706,7 @@ group { name: "elm/button/base/recent";
       part { name: "event";
          type: RECT;
          description { state: "default" 0.0;
-            color: 255 255 255 0;
+            color: 0 0 0 0;
          }
       }
    }
@@ -775,6 +771,5 @@ group { name: "elm/button/base/recent";
          action: STATE_SET "default" 0.00;
          target: "focus";
       }
-
    }
 }
