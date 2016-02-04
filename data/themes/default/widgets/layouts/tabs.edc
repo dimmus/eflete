@@ -10,7 +10,7 @@ group { name: "elm/layout/tabs/default";
       part { name: "bg_content";
          type: RECT;
          description {
-            color: 81 82 84 255;
+            color_class: "bg_main";
             rel1 {
                relative: 0.0 1.0;
                to: "elm.swallow.toolbar";
@@ -45,7 +45,7 @@ group { name: "elm/layout/tabs/property";
       part { name: "bg_content";
          type: RECT;
          description {
-            color: 81 82 84 255;
+            color_class: "bg_main";
             rel1 {
                relative: 0.0 1.0;
                to: "elm.swallow.toolbar";
