@@ -806,7 +806,7 @@ _form_right_side(Style_Editor *style_edit)
    if (!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
-        _itc_style->item_style = "navigator";
+        _itc_style->item_style = "default";
         _itc_style->func.text_get = _item_style_label_get;
         _itc_style->func.content_get = NULL;
         _itc_style->func.state_get = NULL;
