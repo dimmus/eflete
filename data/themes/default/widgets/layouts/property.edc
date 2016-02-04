@@ -252,7 +252,7 @@ group { name: "elm/layout/property/2swallow";
          type: TEXT;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            color: 214 214 214 255;
+            color_class: "main";
             rel1 {
                to_y: "area.content";
             }
@@ -275,7 +275,7 @@ group { name: "elm/layout/property/2swallow";
             align: 1.0 0.5;
             min: 52 0;
             max: 52 -1;
-            color: 214 214 214 255;
+            color_class: "main";
             rel1 {
                to: "area.swallow1";
             }
@@ -311,7 +311,7 @@ group { name: "elm/layout/property/2swallow";
          type: TEXT;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            color: 214 214 214 255;
+            color_class: "main";
             rel1 {
                relative: 1.0 0.0;
                offset: 3 0;
@@ -334,7 +334,7 @@ group { name: "elm/layout/property/2swallow";
             align: 1.0 0.5;
             min: 52 0;
             max: 52 -1;
-            color: 214 214 214 255;
+            color_class: "main";
             rel1 {
                to: "area.swallow2";
             }
@@ -370,7 +370,7 @@ group { name: "elm/layout/property/2swallow";
          type: TEXT;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            color: 214 214 214 255;
+            color_class: "main";
             rel1 {
                relative: 1.0 0.0;
                offset: 3 0;
