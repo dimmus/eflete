@@ -629,6 +629,7 @@ group { name: "elm/genlist/tree/part/default";
       item: "contents" "elm.swallow.icon elm.swallow.end elm.swallow.penult";
       item: "stacking" "above";
       item: "selectraise" "on";
+      item: "states" "selected unselected";
    }
    parts {
       part { name: "bg";
@@ -816,16 +817,16 @@ group { name: "elm/genlist/tree/part/default";
       }
    }
    programs {
-      program { name: "selected";
-         signal: "elm,state,selected";
+      program { name: "state,selected";
+         signal: "elm,state,selected,active";
          source: "elm";
-         action: STATE_SET "selected" 0.00;
+         action: STATE_SET "selected" 0.0;
          target: "bg";
       }
-      program { name: "unselected";
-         signal: "elm,state,unselected";
+      program { name: "state,unselected";
+         signal: "elm,state,unselected,active";
          source: "elm";
-         action: STATE_SET "default" 0.00;
+         action: STATE_SET "default" 0.0;
          target: "bg";
       }
       program { name: "item_hide";
@@ -840,24 +841,6 @@ group { name: "elm/genlist/tree/part/default";
          target: "elm.swallow.penult";
          target: "elm.swallow.end";
          target: "disclip";
-      }
-      program { name: "unreorder";
-         signal: "elm,state,reorder,disable";
-         source: "elm";
-         action: STATE_SET "selected" 0.00;
-         target: "bg";
-         after: "selected";
-      }
-      program { name: "reorder";
-         signal: "elm,state,reorder,enabled";
-         source: "elm";
-         action: STATE_SET "reordered" 0.00;
-         target: "bg";
-      }
-      program { name: "unreordered";
-         signal: "elm,state,reorder,disabled";
-         source: "elm";
-         after: "go_active";
       }
       program { name: "expanded_sig";
          signal: "mouse,up,1";
@@ -876,18 +859,6 @@ group { name: "elm/genlist/tree/part/default";
          action: STATE_SET "default" 0.00;
          target: "arrow";
       }
-      program { name: "go_active";
-         signal: "elm,state,selected";
-         source: "elm";
-         action: STATE_SET "selected" 0.00;
-         target: "bg";
-      }
-      program { name: "go_passive";
-         signal: "elm,state,unselected";
-         source: "elm";
-         action: STATE_SET "default" 0.00;
-         target: "bg";
-      }
       program { name: "go_disabled";
          signal: "elm,state,disabled";
          source: "elm";
@@ -899,18 +870,6 @@ group { name: "elm/genlist/tree/part/default";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "disclip";
-      }
-   }
-}
-
-group { name: "elm/genlist/tree/part_selected/default";
-   inherit: "elm/genlist/tree/part/default";
-   parts {
-      part { name: "bg";
-         description { state: "default" 0.0;
-            color: 255 255 255 255;
-            color_class: "select";
-         }
       }
    }
 }
