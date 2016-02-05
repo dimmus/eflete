@@ -76,6 +76,9 @@ void
 gm_group_edit_object_load(Project *pro, Group *group, Evas *e);
 
 void
+gm_group_edit_object_reload(Project *pro, Group *group);
+
+void
 gm_group_edit_object_unload(Group *group);
 
 State *
