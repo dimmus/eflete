@@ -368,7 +368,7 @@ _editor_saved(void *data __UNUSED__,
    pm_dev_file_reload(ap.project);
    EINA_LIST_FOREACH(tabs.items, l, item)
      {
-        edje_object_mmap_set(item->group->edit_object, ap.project->mmap_file, item->group->name);
+        gm_group_edit_object_reload(ap.project, item->group);
         if (item->content == tabs.current_workspace)
           workspace_groupview_hard_update(tabs.current_workspace);
         else

@@ -57,6 +57,29 @@ gm_group_edit_object_load(Project *pro, Group *group, Evas *e)
 }
 
 void
+gm_group_edit_object_reload(Project *pro, Group *group)
+{
+   Part *part;
+   Eina_List *l;
+
+   assert(pro != NULL);
+   assert(group != NULL);
+   assert(group->edit_object != NULL);
+
+   if (!edje_object_mmap_set(group->edit_object, pro->mmap_file, group->name))
+     {
+        ERR("Can't set mmap object");
+        abort();
+     }
+
+   EINA_LIST_FOREACH(group->parts, l, part)
+      edje_edit_part_selected_state_set(group->edit_object,
+                                        part->name,
+                                        part->current_state->parsed_name,
+                                        part->current_state->parsed_val);
+}
+
+void
 gm_group_edit_object_unload(Group *group)
 {
    assert(group != NULL);
