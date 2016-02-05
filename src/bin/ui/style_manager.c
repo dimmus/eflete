@@ -1020,6 +1020,7 @@ style_manager_add()
    evas_object_event_callback_add(main_layout, EVAS_CALLBACK_DEL,
                                   _on_style_manager_close, style_edit);
 
+   evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, NULL);
    return main_layout;
 }
 

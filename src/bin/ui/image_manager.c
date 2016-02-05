@@ -474,6 +474,7 @@ _image_manager_init(Image_Manager *img_mng)
                            ELM_SCROLLER_POLICY_AUTO);
    evas_object_smart_calculate(img_mng->gengrid);
 
+   evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, NULL);
    return true;
 }
 
