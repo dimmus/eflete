@@ -315,6 +315,12 @@ group_navigator_part_state_select(Evas_Object *obj, State *state)
    assert(pl != NULL);
    assert(state != NULL);
 
+   part = elm_object_item_data_get(pl->selected_part_item);
+
+   TODO("replace this with assert after genlist double-click bug will be fixed");
+   if (state->part != part)
+     group_navigator_part_select(pl->layout, state->part);
+
    if (elm_genlist_item_expanded_get(pl->selected_part_item))
      {
         /* unselecting previous selected state */
@@ -333,10 +339,9 @@ group_navigator_part_state_select(Evas_Object *obj, State *state)
         elm_genlist_item_item_class_update(selected, pl->itc_state_selected);
      }
 
-   part = elm_object_item_data_get(pl->selected_part_item);
-   part->current_state = state;
+   state->part->current_state = state;
 
-   evas_object_smart_callback_call(ap.win, SIGNAL_PART_STATE_SELECTED, (void *)part);
+   evas_object_smart_callback_call(ap.win, SIGNAL_PART_STATE_SELECTED, (void *)state->part);
 }
 
 static void
