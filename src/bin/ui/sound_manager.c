@@ -645,5 +645,6 @@ sound_manager_add(void)
    _create_gengrid(edit->markup, edit);
    elm_object_focus_set(edit->sound_search_data.search_entry, true);
 
+   evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_UNSELECTED, NULL);
    return edit->markup;
 }
