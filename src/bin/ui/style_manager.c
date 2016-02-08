@@ -538,6 +538,36 @@ _item_style_label_get(void *data,
    return strdup(style_label);
 }
 
+static Evas_Object *
+_item_style_icon_get(void *data __UNUSED__,
+                     Evas_Object *obj,
+                     const char *part)
+{
+   Evas_Object *icon = NULL;
+
+   if (!strcmp(part, "elm.swallow.icon"))
+     {
+        ICON_STANDARD_ADD(obj, icon, true, "text_style");
+     }
+
+   return icon;
+}
+
+static Evas_Object *
+_item_tags_icon_get(void *data __UNUSED__,
+                    Evas_Object *obj,
+                    const char *part)
+{
+   Evas_Object *icon = NULL;
+
+   if (!strcmp(part, "elm.swallow.icon"))
+     {
+        ICON_STANDARD_ADD(obj, icon, true, "text_style_tag");
+     }
+
+   return icon;
+}
+
 static inline Evas_Object *
 _style_manager_search_field_create(Evas_Object *parent)
 {
@@ -806,18 +836,18 @@ _form_right_side(Style_Editor *style_edit)
    if (!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
-        _itc_style->item_style = "default";
+        _itc_style->item_style = "aligned";
         _itc_style->func.text_get = _item_style_label_get;
-        _itc_style->func.content_get = NULL;
+        _itc_style->func.content_get = _item_style_icon_get;
         _itc_style->func.state_get = NULL;
         _itc_style->func.del = NULL;
      }
    if (!_itc_tags)
      {
         _itc_tags= elm_genlist_item_class_new();
-        _itc_tags->item_style = "default";
+        _itc_tags->item_style = "aligned";
         _itc_tags->func.text_get = _item_tags_label_get;
-        _itc_tags->func.content_get = NULL;
+        _itc_tags->func.content_get = _item_tags_icon_get;
         _itc_tags->func.state_get = NULL;
         _itc_tags->func.del = NULL;
      }
