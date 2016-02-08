@@ -624,14 +624,14 @@ project_navigator_add(void)
    assert(ap.win != NULL);
 
    project_navigator.itc_folder = elm_genlist_item_class_new();
-   project_navigator.itc_folder->item_style = "default";
+   project_navigator.itc_folder->item_style = "aligned";
    project_navigator.itc_folder->func.text_get = _folder_item_label_get;
    project_navigator.itc_folder->func.content_get = _folder_item_icon_get;
    project_navigator.itc_folder->func.state_get = NULL;
    project_navigator.itc_folder->func.del = _folder_item_del;
 
    project_navigator.itc_group = elm_genlist_item_class_new();
-   project_navigator.itc_group->item_style = "default";
+   project_navigator.itc_group->item_style = "aligned";
    project_navigator.itc_group->func.text_get = _group_item_label_get;
    project_navigator.itc_group->func.content_get = _group_item_icon_get;
    project_navigator.itc_group->func.state_get = NULL;
