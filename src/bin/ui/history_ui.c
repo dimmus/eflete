@@ -91,6 +91,7 @@ _item_selected(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *ei)
                   TODO("Add error handling here");
                   abort();
                }
+             elm_genlist_item_fields_update(hd.active_item, "reverted", ELM_GENLIST_ITEM_FIELD_STATE);
              hd.active_item = elm_genlist_item_prev_get(hd.active_item);
           }
      }
@@ -105,12 +106,13 @@ _item_selected(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *ei)
                   TODO("Add error handling here");
                   abort();
                }
+             elm_genlist_item_fields_update(hd.active_item, "unselected", ELM_GENLIST_ITEM_FIELD_STATE);
              hd.active_item = (hd.active_item != NULL)?
                 elm_genlist_item_next_get(hd.active_item):
                 elm_genlist_first_item_get(hd.genlist);
           }
      }
-   elm_genlist_realized_items_update(hd.genlist);
+   elm_genlist_item_fields_update(hd.active_item, "selected", ELM_GENLIST_ITEM_FIELD_STATE);
    TODO("Add update workspace callback here");
 
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
@@ -235,6 +237,7 @@ history_ui_add(void)
 
    hd.genlist = elm_genlist_add(hd.layout);
    elm_genlist_mode_set(hd.genlist, ELM_LIST_COMPRESS);
+   elm_genlist_homogeneous_set(hd.genlist, true);
 
    hd.btn_clean = elm_button_add(hd.layout);
    ICON_STANDARD_ADD(hd.btn_clean, ic, true, "delete");
