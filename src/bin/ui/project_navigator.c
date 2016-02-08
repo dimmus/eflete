@@ -104,11 +104,14 @@ _group_item_icon_get(void *data,
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
-        ICON_STANDARD_ADD(obj, icon, true, "file");
-     }
-   if ((group->main_group != NULL) && (!strcmp(part, "elm.swallow.end")))
-     {
-        IMAGE_ADD_NEW(obj, icon, "icon", "alias_link");
+        if (group->main_group == NULL)
+          {
+             ICON_STANDARD_ADD(obj, icon, true, "file")
+          }
+        else
+          {
+             IMAGE_ADD_NEW(obj, icon, "icon", "alias_link");
+          }
      }
    return icon;
 }
