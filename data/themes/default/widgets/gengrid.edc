@@ -388,114 +388,60 @@ group { name: "elm/gengrid/item/sound_editor/default";
 #undef SOUND_EDITOR_HIGHLIGHT_COLOR
 #undef BORDER_PADDING
 
-#define GROUP_INDEX_H 25
-#define GROUP_INDEX_COLOR 9 130 194 255
-#define GROUP_INDEX_BG_COLOR 48 48 48 180
-
-group { "elm/gengrid/item/group_index/default";
-   images.image: "group_index_decoration.png" COMP;
-   data.item: "texts" "elm.text";
+group { name: "elm/gengrid/item/group_index/default";
+   data {
+      item: "texts" "elm.text";
+   }
    parts {
-      part { name: "left_spacer";
-         type: SPACER;
-         description { state: "default" 0.0;
-            SET_SIZE(4, GROUP_INDEX_H);
-            align: 0.0 0.0;
-         }
-      }
-      part { name: "right_spacer";
-         type: SPACER;
-         description { state: "default" 0.0;
-            SET_SIZE(4, GROUP_INDEX_H);
-            align: 1.0 1.0;
-         }
-      }
-      part { name: "base_bar";
+      part { name: "line_left";
          type: RECT;
          description { state: "default" 0.0;
-            color: GROUP_INDEX_BG_COLOR;
-            min: 5 GROUP_INDEX_H;
-            rel1 {
-               relative: 1.0 0.0;
-               to: "left_spacer";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to: "right_spacer";
-            }
-         }
-      }
-      part { name: "left_deco";
-         description { state: "default" 0.0;
-            color: GROUP_INDEX_COLOR;
-            image.normal: "group_index_decoration.png";
             align: 0.0 0.5;
-            SET_SIZE(GROUP_INDEX_H, 2);
-            rel1.to: "base_bar";
-            rel2.to: "base_bar";
-         }
-      }
-      part { name: "left_text_spacer";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            SET_SIZE(5, 2);
+            min: 25 2;
+            max: 25 2;
+            color_class: "select";
             rel1 {
-               relative: 1.0 0.0;
-               to: "left_deco";
+               offset: 3 0;
             }
          }
       }
       part { name: "elm.text";
-         type: TEXTBLOCK;
-         scale: 1;
+         type: TEXT;
          description { state: "default" 0.0;
-            color: GROUP_INDEX_COLOR;
             align: 0.0 0.5;
-            max: 70 20;
+            color_class: "select";
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 3 0;
+               to_x: "line_left";
+            }
             text {
-               align: 0.0 0.5;
-               style: "eflete_header_textblock_style";
+               font: "PT:style=bold";
+               size: 16;
+               min: 1 1;
                max: 1 1;
-            }
-            rel1 {
-               to_x: "left_text_spacer";
-               relative: 1.0 0.0;
+               elipsis: -1;
             }
          }
       }
-      part { name: "right_text_spacer";
-         type: SPACER;
+      part { name: "line_right";
+         type: RECT;
          description { state: "default" 0.0;
-            align: 0.0 0.0;
-            SET_SIZE(5, 2);
-            rel1 {
-               relative: 1.0 0.0;
-               to: "elm.text";
-            }
-         }
-      }
-
-      part { name: "right_deco";
-         description { state: "default" 0.0;
-            color: GROUP_INDEX_COLOR;
-            image.normal: "group_index_decoration.png";
-            align: 1.0 0.5;
-            min: GROUP_INDEX_H 2;
+            min: 0 2;
             max: -1 2;
+            color_class: "select";
             rel1 {
-               to_x: "right_text_spacer";
                relative: 1.0 0.0;
+               offset: 3 0;
+               to_x: "elm.text";
             }
-            rel2.to: "base_bar";
+            rel2 {
+               offset: -4 -1;
+            }
          }
       }
    }
 }
-
-#undef GROUP_INDEX_H
-#undef GROUP_INDEX_COLOR
-#undef GROUP_INDEX_BG_COLOR
 
 group { name: "elm/gengrid/base/default";
    inherit: "elm/genlist/base/default";
