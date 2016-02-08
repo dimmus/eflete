@@ -139,6 +139,8 @@ _on_change_added(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *ei)
                                   _item_selected,
                                   NULL);
 
+   /* unselect active item */
+   elm_genlist_item_fields_update(hd.active_item, "unselected", ELM_GENLIST_ITEM_FIELD_STATE);
    /* making item active before selection allows to skip callback */
    hd.active_item = glit;
    elm_genlist_item_selected_set(glit, true);
