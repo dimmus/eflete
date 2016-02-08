@@ -203,6 +203,19 @@ group { name: "elm/genlist/item/default/default";
    }
 }
 
+group { name: "elm/genlist/item/aligned/default";
+   inherit: "elm/genlist/item/default/default";
+   parts {
+      part { name: "elm.swallow.pad";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1.offset: 20 0;
+         }
+      }
+   }
+}
+
 group { name: "elm/genlist/item/title/default";
    data {
       item: "texts" "elm.text";
@@ -344,6 +357,7 @@ group { name: "elm/genlist/item/program_after/default";
 }
 
 group { name: "elm/genlist/tree/default/default";
+   alias: "elm/genlist/tree/aligned/default";
    data {
       item: "texts" "elm.text";
       item: "treesize" "20";
