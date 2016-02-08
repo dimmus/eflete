@@ -180,9 +180,11 @@ _part_content_get(void *data,
      {
         Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
         content = elm_check_add(obj);
+        edje_object_animation_set(elm_layout_edje_get(content), false);
         elm_check_state_set(content, _part->visible);
         elm_object_style_set(content, "eye");
         evas_object_data_set(content, GROUP_NAVIGATOR_DATA, pl);
+        edje_object_animation_set(elm_layout_edje_get(content), true);
 
         evas_object_smart_callback_add(content, "changed", _on_eye_clicked, _part);
      }
