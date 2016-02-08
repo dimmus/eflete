@@ -559,22 +559,18 @@ static Eina_Bool
 _undo_cb(void)
 {
    SKIP_IN_ENVENTOR_MODE
-/*   if ((ap.project) && (ap.project->current_style))
-     history_undo(ap.project->current_style->obj, 1);
-   return true;*/
-   return false;
-   TODO("Implement undo shortcut");
+
+   evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_UNDO, NULL);
+   return true;
 }
 
 static Eina_Bool
 _redo_cb(void)
 {
    SKIP_IN_ENVENTOR_MODE
-/*   if ((ap.project) && (ap.project->current_style))
-     history_redo(ap.project->current_style->obj, 1);
-   return true;*/
-   return false;
-   TODO("Implement redo shortcut");
+
+   evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_REDO, NULL);
+   return true;
 }
 
 /*========================================================*/

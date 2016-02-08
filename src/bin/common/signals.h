@@ -441,4 +441,19 @@ typedef struct {
  */
 #define SIGNAL_DEMO_SIGNAL_SEND "SIGNAL_DEMO_SIGNAL_SEND"
 
+/**
+ * emited when undo shortcut is pressed.
+ * eventinfo - NULL.
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_SHORTCUT_UNDO "SIGNAL_SHORTCUT_UNDO"
+/**
+ * emited redo shortcut is pressed.
+ * eventinfo - NULL.
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_SHORTCUT_REDO "SIGNAL_SHORTCUT_REDO"
+
 #endif /* SIGNALS_H*/
