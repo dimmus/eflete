@@ -180,6 +180,40 @@ _history_set(void *data __UNUSED__,
      }
 }
 
+static void
+_undo_shortcut(void *data __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void * ei __UNUSED__)
+{
+   Elm_Genlist_Item *glit;
+
+   if (!hd.history)
+     return;
+
+   assert(hd.active_item != NULL);
+
+   glit = elm_genlist_item_prev_get(hd.active_item);
+   if (glit)
+     elm_genlist_item_selected_set(glit, true);
+}
+
+static void
+_redo_shortcut(void *data __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void * ei __UNUSED__)
+{
+   Elm_Genlist_Item *glit;
+
+   if (!hd.history)
+     return;
+
+   assert(hd.active_item != NULL);
+
+   glit = elm_genlist_item_next_get(hd.active_item);
+   if (glit)
+     elm_genlist_item_selected_set(glit, true);
+}
+
 Evas_Object *
 history_ui_add(void)
 {
@@ -212,6 +246,8 @@ history_ui_add(void)
 
    evas_object_smart_callback_add(ap.win, SIGNAL_HISTORY_CHANGE_ADDED, _on_change_added, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _history_set, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_UNDO, _undo_shortcut, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_REDO, _redo_shortcut, NULL);
 
    TODO("Add clean-up callbacks here")
    return hd.layout;
