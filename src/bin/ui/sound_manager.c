@@ -150,7 +150,7 @@ _gengrid_content_fill(Sound_Editor *edit)
    assert(ap.project != NULL);
 
    snd = (Sound_Data *)mem_calloc(1, sizeof(Sound_Data));
-   snd->name = eina_stringshare_add(_("<b>Sound Samples</b>"));
+   snd->name = eina_stringshare_add(_("Sound Samples"));
    elm_gengrid_item_append(edit->gengrid, ggic, snd, NULL, NULL);
    EINA_LIST_FOREACH(ap.project->sounds, l, sample)
      {
@@ -163,7 +163,7 @@ _gengrid_content_fill(Sound_Editor *edit)
      }
 
    snd = (Sound_Data *)mem_calloc(1, sizeof(Sound_Data));
-   snd->name = eina_stringshare_add(_("<b>Sound Tones</b>"));
+   snd->name = eina_stringshare_add(_("Sound Tones"));
    edit->tone_header = elm_gengrid_item_append(edit->gengrid, ggic, snd, NULL, NULL);
    EINA_LIST_FOREACH(ap.project->tones, l, tone)
      {
@@ -195,7 +195,7 @@ _create_gengrid(Evas_Object *parent, Sound_Editor *editor)
 
    editor->gengrid = elm_gengrid_add(parent);
    elm_gengrid_item_size_set(editor->gengrid, ITEM_WIDTH, ITEM_HEIGHT);
-   elm_gengrid_group_item_size_set(editor->gengrid, ITEM_HEIGHT/5, ITEM_HEIGHT/5);
+   elm_gengrid_group_item_size_set(editor->gengrid, ITEM_HEIGHT/3, ITEM_HEIGHT/3);
    elm_gengrid_align_set(editor->gengrid, 0.0, 0.0);
    evas_object_smart_callback_add(editor->gengrid, "unselected", _grid_sel, editor);
    elm_scroller_policy_set(editor->gengrid, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
