@@ -340,4 +340,10 @@ workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool flag);
 Eina_Bool
 workspace_object_area_visible_get(Evas_Object *obj);
 
+
+
+TODO("remove after property refactor!!! HIGH LEVEL");
+Eina_Bool
+workspace_active_demo_mode_get(Evas_Object *obj);
+
 #endif /* UI_WORKSPACE_H */

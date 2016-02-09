@@ -1019,6 +1019,16 @@ _mode_changed(void *data,
    sd->active_mode = mode;
 }
 
+TODO("remove after property refactor!!! HIGH LEVEL");
+Eina_Bool
+workspace_active_demo_mode_get(Evas_Object *obj)
+{
+   WS_DATA_GET(obj, sd);
+   if (sd->active_mode == MODE_DEMO)
+     return true;
+   return false;
+}
+
 /*
 static void
 _zoom_part_add(Ws_Smart_Data *sd)
