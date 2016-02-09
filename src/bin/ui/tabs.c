@@ -119,6 +119,11 @@ _content_set(void *data,
          * tab or NULL, if click on 'home' tab */
         evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED,
                                         item ? item->group : NULL);
+
+        /* if workspace is in demo mode then change property */
+        TODO("Refactor property and remove this")
+        if (workspace_active_demo_mode_get(tabs.current_workspace))
+          evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
      }
    else
      {
