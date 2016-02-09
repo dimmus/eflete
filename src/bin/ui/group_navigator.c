@@ -1735,7 +1735,7 @@ group_navigator_add(Group *group)
 
    TODO("create new style or fix default (we need to set number at the end)");
    pl->itc_caption = elm_genlist_item_class_new();
-   pl->itc_caption->item_style = "item";
+   pl->itc_caption->item_style = "caption";
    pl->itc_caption->func.text_get = _caption_label_get;
 
    pl->itc_program = elm_genlist_item_class_new();
