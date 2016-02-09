@@ -153,6 +153,7 @@ _grid_content_get(void *data,
    if (!strcmp(part, "elm.swallow.icon"))
      {
         image_obj = elm_thumb_add(grid);
+        elm_object_style_set(image_obj, "noframe");
         _image_manager_image_setup(image_obj, it);
         elm_thumb_reload(image_obj);
         evas_object_show(image_obj);
