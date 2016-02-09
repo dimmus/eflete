@@ -1395,43 +1395,6 @@ _add_##PARAM(void *data, \
                                   _on_##PARAM##_change, pd); \
    elm_box_pack_end(pd->attributes.program.PARAM##_box, item); \
 } \
-static void \
-prop_program_##PARAM##s_update(Group_Prop_Data *pd) \
-{ \
-   Evas_Object *combo, *item, *button; \
-   Eina_List *items = elm_box_children_get(pd->attributes.program.PARAM##_box); \
-   int i = 0; \
-   Eina_List *l; \
-   Eina_Stringshare *value; \
-   Eina_List *list = edje_edit_program_##PARAM##s_get(pd->group->edit_object, \
-                                                      pd->attributes.program.program); \
-   list = eina_list_sort(list, eina_list_count(list), (Eina_Compare_Cb) strcmp); \
-   int item_count = eina_list_count(items); \
-   int list_count = eina_list_count(list); \
-   if (item_count < list_count) \
-     for (i = 0; i < list_count - item_count; i++) \
-       _add_##PARAM(pd, NULL, NULL); \
-   button = elm_layout_content_get(eina_list_data_get(items), "swallow.button_del"); \
-   if ((list_count > 0) || (item_count > 1)) \
-     elm_object_disabled_set(button, false); \
-   else \
-     elm_object_disabled_set(button, true); \
-   /* fill up with part and program list */ \
-   Eina_Stringshare *to_del; \
-   EINA_LIST_FOREACH(items, l, item) \
-     { \
-        combo = elm_layout_content_get(item, NULL); \
-        value = eina_list_data_get(list); \
-        ewe_combobox_text_set(combo, value); \
-        to_del = evas_object_data_get(combo, COMBOBOX_PREVIOUS); \
-        eina_stringshare_del(to_del); \
-        evas_object_data_del(combo, COMBOBOX_PREVIOUS); \
-        evas_object_data_set(combo, COMBOBOX_PREVIOUS, eina_stringshare_add(value)); \
-        if (!value) \
-          ewe_combobox_text_set(combo, _("None")); \
-        list = eina_list_next(list); \
-     } \
-} \
 static Evas_Object * \
 prop_program_##PARAM##_add(Evas_Object *parent, Group_Prop_Data *pd) \
 { \
@@ -1467,6 +1430,7 @@ prop_program_##PARAM##_add(Evas_Object *parent, Group_Prop_Data *pd) \
    elm_object_tooltip_text_set(combo, TOOLTIP); \
    elm_layout_content_set(item, NULL, combo); \
    button = elm_button_add(item); \
+   elm_object_disabled_set(button, true); \
    ic = elm_icon_add(button); \
    elm_icon_standard_set(ic, "minus"); \
    elm_object_part_content_set(button, NULL, ic); \
@@ -1476,6 +1440,38 @@ prop_program_##PARAM##_add(Evas_Object *parent, Group_Prop_Data *pd) \
    evas_object_smart_callback_add(combo, "selected", \
                                   _on_##PARAM##_change, pd); \
    return item; \
+} \
+static void \
+prop_program_##PARAM##s_update(Group_Prop_Data *pd) \
+{ \
+   Evas_Object *combo, *item; \
+   int i = 0; \
+   Eina_List *l; \
+   Eina_Stringshare *value; \
+   Eina_List *list = edje_edit_program_##PARAM##s_get(pd->group->edit_object, \
+                                                      pd->attributes.program.program); \
+   list = eina_list_sort(list, eina_list_count(list), (Eina_Compare_Cb) strcmp); \
+   elm_box_clear(pd->attributes.program.PARAM##_box); \
+   elm_box_pack_end(pd->attributes.program.PARAM##_box, prop_program_##PARAM##_add(pd->attributes.program.PARAM##_box, pd)); \
+   int list_count = eina_list_count(list); \
+   for (i = 0; i < list_count; i++) \
+     _add_##PARAM(pd, NULL, NULL); \
+   /* fill up with part and program list */ \
+   Eina_Stringshare *to_del; \
+   Eina_List *items = elm_box_children_get(pd->attributes.program.PARAM##_box); \
+   EINA_LIST_FOREACH(items, l, item) \
+     { \
+        combo = elm_layout_content_get(item, NULL); \
+        value = eina_list_data_get(list); \
+        ewe_combobox_text_set(combo, value); \
+        to_del = evas_object_data_get(combo, COMBOBOX_PREVIOUS); \
+        eina_stringshare_del(to_del); \
+        evas_object_data_del(combo, COMBOBOX_PREVIOUS); \
+        evas_object_data_set(combo, COMBOBOX_PREVIOUS, eina_stringshare_add(value)); \
+        if (!value) \
+          ewe_combobox_text_set(combo, _("None")); \
+        list = eina_list_next(list); \
+     } \
 }
 
 /*****************************************************************************/
