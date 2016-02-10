@@ -198,3 +198,16 @@ _tab_import_edj_add(void)
 
    return tab_edj.layout;
 }
+
+void
+_tab_import_edj_data_set(const char *name, const char *path, const char *edj)
+{
+   assert(tab_edj.layout != NULL);
+
+   elm_entry_entry_set(tab_edj.name, name);
+
+   if (path) elm_entry_entry_set(tab_edj.name, path);
+   else elm_entry_entry_set(tab_edj.path, profile_get()->general.projects_folder);
+
+   elm_entry_entry_set(tab_edj.edj, edj);
+}

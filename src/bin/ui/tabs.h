@@ -61,6 +61,14 @@ void
 tabs_menu_tab_open(Tabs_Menu view);
 
 /**
+ * Fill the import edj tab fields
+ *
+ * @ingroup Tabs
+ */
+void
+tabs_menu_import_edj_data_set(const char *name, const char *path, const char *edj);
+
+/**
  * Add new tab. This tab consist a workspace and a liveview.
  *
  * @param group The Group object
