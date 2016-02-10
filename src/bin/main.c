@@ -22,6 +22,9 @@
 #include "main_window.h"
 #include "project_navigator.h"
 #include "project_manager.h"
+#include "project_common.h"
+/* it's really bad idia, but need haven't time to make it correctly */
+#include "tabs_private.h"
 #include "config.h"
 
 static char *open = NULL;
@@ -76,27 +79,6 @@ _import_end(void *data __UNUSED__, PM_Project_Result result)
    evas_object_show(ap.win);
 }
 
-void
-_open_end(void *data __UNUSED__, PM_Project_Result result)
-{
-   Project *pro;
-
-   if (result == PM_PROJECT_SUCCESS)
-     {
-        pro = pm_project_thread_project_get();
-        ap.project = pro;
-
-        ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
-        ui_menu_disable_set(ap.menu, MENU_FILE_CLOSE_PROJECT, false);
-        project_navigator_project_set();
-
-        STATUSBAR_PROJECT_PATH(ap.project->pro_path);
-        STATUSBAR_PROJECT_SAVE_TIME_UPDATE();
-        evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_OPENED, NULL);
-     }
-   evas_object_show(ap.win);
-}
-
 static Eina_Bool
 _message_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
 {
@@ -104,20 +86,42 @@ _message_print(void *data __UNUSED__, Eina_Stringshare *progress_string)
    return true;
 }
 
+static Eina_Bool
+_setup_open_splash(void *data, Splash_Status status __UNUSED__)
+{
+   Eina_Stringshare *path = data;
+
+   assert(path != NULL);
+
+   pm_project_open(path, progress_print, _tabs_progress_end, NULL);
+   eina_stringshare_del(path);
+
+   return true;
+}
+
+static Eina_Bool
+_teardown_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+{
+   pm_project_thread_free();
+   return true;
+}
+
+static Eina_Bool
+_cancel_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
+{
+   pm_project_thread_cancel();
+   return true;
+}
+
 static void
 _open_project(void *data __UNUSED__)
 {
-   /* Ugly hack, but we need to do this.
-    * When we try to import edj file while ecore main loop not fully started
-    * we get a freeze. So for use the ecore and eina threads in the project
-    * manager need to itarate the main loop for initialize it.
-    * DO NOT DELETE: whith out iterate import from command line not worked! */
-   ecore_main_loop_iterate();
-
-   pm_project_open(open,
-                   _message_print,
-                   _open_end,
-                   NULL);
+   ap.splash = splash_add(ap.win,
+                          _setup_open_splash,
+                          _teardown_open_splash,
+                          _cancel_open_splash,
+                          (void *)eina_stringshare_add(open));
+   evas_object_show(ap.splash);
 }
 
 static void
@@ -249,8 +253,8 @@ elm_main(int argc, char **argv)
             goto run;
           }
 
-        evas_object_show(ap.win);
 run:
+        evas_object_show(ap.win);
         elm_run();
 #ifdef HAVE_ENVENTOR
         enventor_shutdown();
