@@ -1739,7 +1739,7 @@ group_navigator_add(Group *group)
    pl->itc_caption->func.text_get = _caption_label_get;
 
    pl->itc_program = elm_genlist_item_class_new();
-   pl->itc_program->item_style = "default";
+   pl->itc_program->item_style = "program";
    pl->itc_program->func.text_get = _resource_label_get;
 
    pl->genlist = elm_genlist_add(pl->layout);
