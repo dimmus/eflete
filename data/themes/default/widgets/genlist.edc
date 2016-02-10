@@ -821,16 +821,195 @@ group { name: "elm/genlist/tree/part/default";
 }
 
 group { name: "elm/genlist/item/state/default";
-   inherit: "elm/genlist/item/default/default";
-   alias: "elm/genlist/item/item/default";
+   data {
+      item: "texts" "elm.text";
+      item: "treesize" "20";
+      item: "contents" "elm.swallow.icon";
+   }
    parts {
       part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel2 {
+               offset: -1 -2;
+            }
+         }
          description { state: "selected" 0.0;
             color_class: "select_dark";
+            rel2 {
+               offset: -1 -2;
+            }
          }
-         description { state: "reorder" 0.0;
+      }
+      part { name: "separator";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            min: 0 1;
+            max: -1 1;
+            color: 68 68 68 255;
+         }
+      }
+      part { name: "elm.swallow.pad";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1 {
+               offset: -8 0;
+            }
+            rel2 {
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "elm.swallow.icon";
+         type: SWALLOW;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 14 14;
+            max: 14 14;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 3;
+               to_x: "elm.swallow.pad";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -1 -4;
+            }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            min: 0 26;
+            color_class: "main";
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 0;
+               to_x: "elm.swallow.icon";
+            }
+            rel2 {
+               offset: -7 -1;
+            }
+            text {
+               font: "PT";
+               size: 12;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "disclip";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+   }
+   programs {
+      program { name: "selected";
+         signal: "elm,state,selected";
+         source: "elm";
+         action: STATE_SET "selected" 0.00;
+         target: "bg";
+      }
+      program { name: "unselected";
+         signal: "elm,state,unselected";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+      }
+   }
+}
+group { name: "elm/genlist/item/item/default";
+   data {
+      item: "texts" "elm.text";
+      item: "treesize" "20";
+   }
+   parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel2 {
+               offset: -1 -2;
+            }
+         }
+         description { state: "selected" 0.0;
             color_class: "select_dark";
+            rel2 {
+               offset: -1 -2;
+            }
          }
+      }
+      part { name: "separator";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            min: 0 1;
+            max: -1 1;
+            color: 68 68 68 255;
+         }
+      }
+      part { name: "elm.swallow.pad";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1 {
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            min: 0 26;
+            color_class: "main";
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 0;
+               to_x: "elm.swallow.pad";
+            }
+            rel2 {
+               offset: -7 -1;
+            }
+            text {
+               font: "PT";
+               size: 12;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "disclip";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+   }
+   programs {
+      program { name: "selected";
+         signal: "elm,state,selected";
+         source: "elm";
+         action: STATE_SET "selected" 0.00;
+         target: "bg";
+      }
+      program { name: "unselected";
+         signal: "elm,state,unselected";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
       }
    }
 }
