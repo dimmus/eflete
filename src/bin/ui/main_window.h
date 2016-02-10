@@ -218,16 +218,6 @@ Eina_Bool
 ui_edj_load(const char *selected_file);
 
 /**
- * Open new theme from template file.
- *
- * @return EINA_TRUE if successful, EINA_FALSE otherwise.
- *
- * @ingroup Window
- */
-Eina_Bool
-new_theme_create(void);
-
-/**
  * Ask user if he wants to close project
  *
  * @param msg The explanation text that will be shown to user. NULL for default message.
@@ -267,14 +257,6 @@ splash_add(Evas_Object *parent,
  */
 void
 splash_del(Evas_Object *obj);
-
-/**
- * Open existing project.
- *
- * @ingroup Window
- */
-void
-project_open();
 
 /**
  * Save opened project.
