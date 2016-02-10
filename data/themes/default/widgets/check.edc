@@ -115,7 +115,7 @@ group { name: "elm/check/base/toggle";
             visible: 0;
             align: 0.0 0.5;
             max: 0 -1;
-            color: FN_COL_SPINNER_MAIN;
+            color_class: "main";
             rel1 {
                to_x: "padding.icon";
                relative: 1.0 0.0;
@@ -128,7 +128,7 @@ group { name: "elm/check/base/toggle";
          }
          description { state: "visible" 0.0;
             align: 0.0 0.5;
-            color: FN_COL_SPINNER_MAIN;
+            color_class: "main";
             rel1 {
                relative: 1.0 0.0;
                to_x: "padding.icon";
@@ -269,7 +269,7 @@ group { name: "elm/check/base/toggle";
          type: RECT;
          repeat_events: 1;
          description { state: "default" 0.0;
-            color: INVISIBLE_COLOR;
+            color: 0 0 0 0;
             rel1 {
                to_x: "elm.swallow.content";
                to_y: "base";
@@ -412,7 +412,8 @@ group { name: "elm/check/base/default";
          scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            color: 255 255 255 0;
+            visible: 0;
+            color_class: "main_alternative";
             rel1 {
                offset: 2 2;
                to: "bg";
@@ -427,7 +428,8 @@ group { name: "elm/check/base/default";
             }
          }
          description { state: "visible" 0.0;
-            color: 255 255 255 255;
+            visible: 1;
+            color_class: "main_alternative";
             rel1 {
                offset: 0 0;
                to: "bg";
@@ -442,7 +444,8 @@ group { name: "elm/check/base/default";
             }
          }
          description { state: "visible" 1.0;
-            color: 255 255 255 255;
+            visible: 1;
+            color_class: "main_alternative";
             rel1 {
                offset: 1 1;
                to: "bg";
@@ -698,7 +701,8 @@ group { name: "elm/check/base/eye";
          scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            color: 255 255 255 0;
+            visible: 0;
+            color_class: "main_alternative";
             rel1 {
                offset: 2 2;
                to: "bg";
@@ -713,6 +717,8 @@ group { name: "elm/check/base/eye";
             }
          }
          description { state: "visible" 0.0;
+            visible: 1;
+            color_class: "main_alternative";
             rel1 {
                offset: 0 0;
                to: "bg";
@@ -727,6 +733,8 @@ group { name: "elm/check/base/eye";
             }
          }
          description { state: "visible" 1.0;
+            visible: 1;
+            color_class: "main_alternative";
             rel1 {
                offset: 1 1;
                to: "bg";

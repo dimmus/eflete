@@ -83,14 +83,14 @@ group { name: "elm/ctxpopup/base/colorsel";
       part { name: "clip";
          type: RECT;
          description { state: "default" 0.0;
-            color: WHITE_INVISIBLE_COLOR;
+            color: 0 0 0 0;
             visible: 0;
             rel1.offset: -20 -20;
             rel2.offset: 19 19;
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            color: WHITE_VISIBLE_COLOR;
+            color: 255 255 255 255;
             visible: 1;
          }
       }
@@ -337,14 +337,14 @@ group { name: "elm/ctxpopup/base/info";
       part { name: "clip";
          type: RECT;
          description { state: "default" 0.0;
-            color: WHITE_INVISIBLE_COLOR;
+            color: 0 0 0 0;
             visible: 0;
             rel1.offset: -20 -20;
             rel2.offset: 19 19;
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            color: WHITE_VISIBLE_COLOR;
+            color: 255 255 255 255;
             visible: 1;
          }
       }

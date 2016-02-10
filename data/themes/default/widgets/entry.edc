@@ -139,10 +139,8 @@ group { name: "elm/scroller/entry/default";
          }
       }
       part { name: "sb_vbar_p1";
-         type: RECT;
-         clip_to: "sb_vbar";
+         type: SPACER;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
             rel1 {
                to: "sb_vbar";
             }
@@ -153,10 +151,8 @@ group { name: "elm/scroller/entry/default";
          }
       }
       part { name: "sb_vbar_p2";
-         type: RECT;
-         clip_to: "sb_vbar";
+         type: SPACER;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
             rel1 {
                relative: 0.0 1.0;
                to: "elm.dragable.vbar";
@@ -169,7 +165,6 @@ group { name: "elm/scroller/entry/default";
       part { name: "elm.dragable.vbar";
          type: RECT;
          scale: 1;
-         clip_to: "sb_vbar";
          dragable {
             x: 0 0 0;
             y: 1 1 0;
@@ -225,11 +220,9 @@ group { name: "elm/scroller/entry/default";
          }
       }
       part { name: "sb_hbar_p1";
-         type: RECT;
-         clip_to: "sb_hbar";
+         type: SPACER;
          description { state: "default" 0.0;
             fixed: 1 1;
-            color: 0 0 0 0;
             rel1 {
                to: "sb_hbar";
             }
@@ -240,10 +233,8 @@ group { name: "elm/scroller/entry/default";
          }
       }
       part { name: "sb_hbar_p2";
-         type: RECT;
-         clip_to: "sb_hbar";
+         type: SPACER;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
             rel1 {
                relative: 1.0 0.0;
                to: "elm.dragable.hbar";
@@ -536,7 +527,7 @@ group { name: "elm/scroller/entry/default";
          type: IMAGE;
          repeat_events: 1;
          description { state: "default" 0.0;
-            color: 255 255 255 0;
+            color: 0 0 0 0;
             rel1 {
                to: "bg";
             }
@@ -1048,7 +1039,7 @@ group { name: "elm/scroller/entry_single/default";
          type: IMAGE;
          repeat_events: 1;
          description { state: "default" 0.0;
-            color: 255 255 255 0;
+            color: 0 0 0 0;
             rel1 {
                to: "bg";
             }
@@ -1239,20 +1230,22 @@ group { name: "elm/entry/base-single/default";
    }
 }
 
-group { name: "elm/entry/base-single/spinner/live_view";
+group { name: "elm/entry/base-single/spinner/default";
    inherit: "elm/entry/base-single/default";
    parts {
       part { name: "elm.text";
          description { state: "default" 0.0;
-            text.style: "eflete_spinner_live_view_style";
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            text.style: "eflete_spinner_live_view_disabled_style";
+            min: 0 19;
+            text {
+               style: "entry_main_spinner_text";
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
       }
    }
 }
+
 
 group { name: "elm/entry/selection/default";
    parts {
@@ -1260,8 +1253,7 @@ group { name: "elm/entry/selection/default";
          type: RECT;
          mouse_events: 0;
          description { state: "default" 0.0;
-            color_class: "select_light";
-            color: 255 255 255 128;
+            color_class: "select";
          }
       }
    }
@@ -1290,7 +1282,7 @@ group { name: "elm/entry/cursor/default";
          description { state: "default" 0.0;
             min: 5 15;
             max: 5 15;
-            color: 255 255 255 0;
+            visible: 0;
             rel1 {
                offset: -2 -2;
             }
@@ -1304,6 +1296,7 @@ group { name: "elm/entry/cursor/default";
          description { state: "visible" 0.0;
             min: 5 15;
             max: 5 15;
+            visible: 1;
             rel1 {
                offset: -2 -2;
             }
