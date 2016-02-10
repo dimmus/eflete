@@ -51,6 +51,9 @@ _tab_open_project_recents_update();
 Evas_Object *
 _tab_import_edj_add(void);
 
+void
+_tab_import_edj_data_set(const char *name, const char *path, const char *edj);
+
 Evas_Object *
 _tab_import_edc_add(void);
 

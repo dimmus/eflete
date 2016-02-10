@@ -737,6 +737,12 @@ tabs_menu_tab_open(Tabs_Menu view)
 #undef _TAB_HOME_CASE
 }
 
+void
+tabs_menu_import_edj_data_set(const char *name, const char *path, const char *edj)
+{
+   _tab_import_edj_data_set(name, path, edj);
+}
+
 static void
 _tab_close(void *data,
            Elm_Object_Item *it __UNUSED__,
