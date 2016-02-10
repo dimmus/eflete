@@ -123,8 +123,7 @@ group { name: "elm/win/inwin/default";
       part { name: "elm.text.title";
          type: TEXT;
          description { state: "default" 0.0;
-            color: 223 219 210 255;
-            color3: 255 255 255 25;
+            color_class: "main";
             rel1 {
                relative: 1.0 1.0;
                offset: 22 0;
@@ -185,7 +184,7 @@ group { name: "elm/win/inwin/dialog";
       part { name: "block_events";
          type: RECT;
          description { state: "default" 0.0;
-            color: 255 0 0 0;
+            color: 0 0 0 0;
          }
          description { state: "clicked" 0.0;
             color: 255 0 0 50;
@@ -305,8 +304,7 @@ group { name: "elm/win/inwin/dialog";
       part { name: "elm.text.title";
          type: TEXT;
          description { state: "default" 0.0;
-            color: 223 219 210 255;
-            color3: 255 255 255 25;
+            color_class: "main_alternative";
             rel1 {
                relative: 1.0 1.0;
                offset: 22 0;

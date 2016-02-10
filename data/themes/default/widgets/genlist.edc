@@ -2,7 +2,6 @@
 #define BORDER_COLOR 34 35 36 255
 #define LIGHT_BORDER_COLOR 70 72 73 255
 #define LIST_BORDER_COLOR 45 46 47 255
-#define LIST_ITEM_SELECTED_COLOR 58 110 155 255
 #define LIST_ITEM_INACTIVE_COLOR 112 121 129 255
 #define BG_COLOR 39 42 43 255
 #define LIST_ITEM_REORDERED_COLOR 200 150 0 255
@@ -1623,7 +1622,7 @@ group { name: "elm/genlist/item/mode/default";
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
-            color: WHITE_VISIBLE_COLOR;
+            color: 255 255 255 255;
          }
       }
    }
@@ -1639,12 +1638,12 @@ group { name: "elm/genlist/item_compress/history/default";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            color: LIGHT_GREY_BG_COLOR;
+            color_class: "bg_main";
             rel2.offset: 0 -2;
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.0;
-            color: LIST_ITEM_SELECTED_COLOR;
+            color_class: "select";
          }
          description { state: "reverted" 0.0;
             inherit: "default" 0.0;
@@ -1743,7 +1742,7 @@ group { name: "elm/genlist/base/default";
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
-            color_class: "bg_main";
+            color_class: "bg_scroller";
          }
          description { state: "disabled" 0.0;
             color: 0 0 0 0;
@@ -2349,6 +2348,5 @@ group { name: "elm/genlist/base/default";
 #undef ITEM_HEIGHT
 #ungef BORDER_COLOR
 #undef LIST_BORDER_COLOR
-#undef LIST_ITEM_SELECTED_COLOR
 #undef LIGHT_BORDER_COLOR
 #undef BG_COLOR

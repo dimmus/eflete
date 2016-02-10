@@ -324,7 +324,7 @@ group { name: "elm/radio/base/radio_"STYLE; \
             visible: 0; \
             min: 24 24; \
             max: 24 24; \
-            color: 56 111 152 0; \
+            color_class: "select"; \
             image { \
                normal: "icon_select.png"; \
                middle: DEFAULT; \
@@ -333,7 +333,7 @@ group { name: "elm/radio/base/radio_"STYLE; \
          description { state: "visible" 0.0; \
             min: 24 24; \
             max: 24 24; \
-            color: 56 111 152 255; \
+            color_class: "select"; \
             image { \
                normal: "icon_select.png"; \
                middle: DEFAULT; \
@@ -347,7 +347,7 @@ group { name: "elm/radio/base/radio_"STYLE; \
          description { state: "default" 0.0; \
             min: 24 24; \
             max: 24 24; \
-            color: 182 182 182 255; \
+            color_class: "main_alternative"; \
             rel1.to: "radio"; \
             rel2.to: "radio"; \
             align: 0.5 0.5; \

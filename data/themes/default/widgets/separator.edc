@@ -86,7 +86,7 @@ group { name: "elm/separator/horizontal/icon";
          type: TEXT;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            color: LIGHT_GREY_FONT_COLOR;
+            color_class: "main";
             rel1 {
                relative: 1.0 0.0;
                to: "padding_icon_right";

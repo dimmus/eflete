@@ -10,7 +10,7 @@ group { name: "elm/layout/tabs/default";
       part { name: "bg_content";
          type: RECT;
          description {
-            color: 81 82 84 255;
+            color_class: "bg_main";
             rel1 {
                relative: 0.0 1.0;
                to: "elm.swallow.toolbar";
@@ -45,7 +45,7 @@ group { name: "elm/layout/tabs/property";
       part { name: "bg_content";
          type: RECT;
          description {
-            color: 81 82 84 255;
+            color_class: "bg_main";
             rel1 {
                relative: 0.0 1.0;
                to: "elm.swallow.toolbar";
@@ -123,7 +123,7 @@ group { name: "elm/layout/tab_home/default";
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
-            color_class: "bg_main";
+            color_class: "bg_scroller";
             rel1 {
                to: "border";
             }
@@ -135,7 +135,6 @@ group { name: "elm/layout/tab_home/default";
       part { name: "border";
          type: IMAGE;
          description { state: "default" 0.0;
-            color: 255 255 255 150;
             image {
                normal: "section-border.png";
                border: 10 10 10 11;
