@@ -264,7 +264,7 @@ splash_del(Evas_Object *obj);
  * @ingroup Window
  */
 void
-project_save();
+project_save(void);
 
 /**
  * Requesting to change project (need to close it, to hide blocks, unset data,
