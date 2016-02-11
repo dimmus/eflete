@@ -748,6 +748,12 @@ pm_resource_usage_del(Eina_List *list, Eina_Stringshare *name, void *usage_data)
 
    l_del = eina_list_search_sorted_list(res->used_in, (Eina_Compare_Cb)resource_cmp, usage_data);
 
+   TODO("remove this after fixing resource managment");
+   if (!l_del)
+     {
+        ERR("Can't delete resource \"%s\"", name);
+        return;
+     }
    assert(l_del);
 
    res->used_in = eina_list_remove_list(res->used_in, l_del);
@@ -772,6 +778,12 @@ pm_resource_usage_unsorted_del(Eina_List *list, Eina_Stringshare *name, void *us
 
    l_del = eina_list_search_sorted_list(res->used_in, (Eina_Compare_Cb)resource_cmp, usage_data);
 
+   TODO("remove this after fixing resource managment");
+   if (!l_del)
+     {
+        ERR("Can't delete resource \"%s\"", name);
+        return;
+     }
    assert(l_del);
 
    res->used_in = eina_list_remove_list(res->used_in, l_del);
