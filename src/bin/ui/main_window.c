@@ -218,5 +218,6 @@ ui_main_window_add(void)
    #endif /* HAVE_ENVENTOR */
    //register_callbacks();
 
+   elm_config_window_auto_focus_enable_set(false);
    return true;
 }
