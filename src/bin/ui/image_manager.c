@@ -373,6 +373,7 @@ _on_button_delete_clicked_cb(void *data,
 
         if (!res->used_in)
           {
+             ecore_file_unlink(res->source);
              elm_object_item_del(grid_item);
              edje_edit_image_del(ap.project->global_object, it->image_name);
              ap.project->images = pm_resource_del(ap.project->images, res);
