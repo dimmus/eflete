@@ -621,6 +621,9 @@ group { name: "elm/menu/separator/default";
 }
 
 group { name: "elm/menu/main_menu_submenu/default";
+   images {
+      image: "button_click_bg.png" COMP;
+   }
    parts {
       part { name: "base";
          type: SPACER;
@@ -636,27 +639,23 @@ group { name: "elm/menu/main_menu_submenu/default";
          }
       }
       part { name: "bg";
-         type: RECT;
+         type: IMAGE;
          description { state: "default" 0.0;
+            min: 19 19;
             visible: 0;
             rel1 {
-               to_x: "area.content";
-               to_y: "base";
+               to: "base";
             }
             rel2 {
-               to_x: "padding.end";
-               to_y: "base";
+               to: "base";
             }
          }
-         description { state: "selected" 0.0;
-            color: 242 241 240 255;
-            rel1 {
-               to_x: "area.content";
-               to_y: "base";
-            }
-            rel2 {
-               to_x: "padding.end";
-               to_y: "base";
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            image {
+               normal: "button_click_bg.png";
+               border: 4 4 9 9;
             }
          }
       }
@@ -691,25 +690,7 @@ group { name: "elm/menu/main_menu_submenu/default";
          type: TEXT;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "area.content";
-               to_y: "base";
-            }
-            rel2 {
-               to: "base";
-            }
-            text {
-               font: PT;
-               size: 13;
-               min: 1 1;
-               max: 1 0;
-               ellipsis: -1.0;
-            }
-         }
-         description { state: "selected" 0.0;
-            align: 0.0 0.5;
-            color: 76 76 76 255;
+            color_class: "main";
             rel1 {
                relative: 1.0 0.0;
                to_x: "area.content";
@@ -786,21 +767,19 @@ group { name: "elm/menu/main_menu_submenu/default";
       }
    }
    programs {
-      program { name: "highlighted";
-         signal: "mouse,in";
+      program { name: "clicked";
+         signal: "mouse,down,1";
          source: "event";
-         action: STATE_SET "selected" 0.00;
-         target: "elm.text";
+         action: STATE_SET "clicked" 0.00;
          target: "bg";
       }
-      program { name: "unhighlighted";
-         signal: "mouse,out";
+      program { name: "unclicked";
+         signal: "mouse,up,1";
          source: "event";
          action: STATE_SET "default" 0.00;
          target: "bg";
-         target: "elm.text";
       }
-      program { name: "clicked";
+      program { name: "clicked_event";
          signal: "mouse,up,1";
          source: "event";
          action: SIGNAL_EMIT "elm,action,click" "elm";
@@ -1235,7 +1214,7 @@ group { name: "elm/hover/base/main_menu_submenu/default";
          signal: "elm,action,slot,bottom,hide";
          source: "elm";
          action: STATE_SET "default" 0.0;
-         transition: DECELERATE 0.5;
+         transition: DECELERATE 0.2;
          target: "elm.swallow.slot.bottom";
       }
    }
