@@ -2436,6 +2436,15 @@ group { name: "elm/genlist/base/default";
             }
          }
       }
+      part { name: "disabler";
+         type: RECT;
+         description { state: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "disabled" 0.0;
+            color: 0 0 0 0;
+         }
+      }
    }
    programs {
       program { name: "v_mouse_down";
@@ -2569,6 +2578,7 @@ group { name: "elm/genlist/base/default";
          action: STATE_SET "disabled" 0.00;
          target: "bg";
          target: "shadow";
+         target: "disabler";
       }
       program { name: "enabled";
          signal: "elm,state,enabled";
@@ -2576,6 +2586,7 @@ group { name: "elm/genlist/base/default";
          action: STATE_SET "default" 0.00;
          target: "bg";
          target: "shadow";
+         target: "disabler";
       }
    }
 }
