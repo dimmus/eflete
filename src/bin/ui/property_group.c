@@ -1655,10 +1655,13 @@ COMMON_SPINNER_CALLBACK(program, tone_duration, program, double, 1, PROGRAM_ARGS
 static Evas_Object *
 _prop_action_state_add(Group_Prop_Data *pd, Evas_Object *parent, const char *title, const char *tooltip)
 {
+   Eina_Stringshare *state;
+
    PROPERTY_ITEM_ADD(parent, title, "1swallow")
    ENTRY_ADD(item, pd->attributes.program.state, true);
-   elm_entry_entry_set(pd->attributes.program.state,
-                       edje_edit_program_state_get(pd->group->edit_object, pd->attributes.program.program));
+   state = edje_edit_program_state_get(pd->group->edit_object, pd->attributes.program.program);
+   elm_entry_entry_set(pd->attributes.program.state, state);
+   eina_stringshare_del(state);
    evas_object_smart_callback_add(pd->attributes.program.state, "changed,user", _on_program_state_change, pd);
    evas_object_smart_callback_add(pd->attributes.program.state, "activated", _on_program_state_activated, pd);
    evas_object_smart_callback_add(pd->attributes.program.state, "unfocused", _on_program_state_activated, pd);
@@ -1671,10 +1674,13 @@ _prop_action_state_add(Group_Prop_Data *pd, Evas_Object *parent, const char *tit
 static Evas_Object *
 _prop_action_state2_add(Group_Prop_Data *pd, Evas_Object *parent, const char *title, const char *tooltip)
 {
+   Eina_Stringshare *state2;
+
    PROPERTY_ITEM_ADD(parent, title, "1swallow")
    ENTRY_ADD(item, pd->attributes.program.state2, true)
-   elm_entry_entry_set(pd->attributes.program.state2,
-                       edje_edit_program_state2_get(pd->group->edit_object, pd->attributes.program.program));
+   state2 = edje_edit_program_state2_get(pd->group->edit_object, pd->attributes.program.program);
+   elm_entry_entry_set(pd->attributes.program.state2, state2);
+   eina_stringshare_del(state2);
    evas_object_smart_callback_add(pd->attributes.program.state2, "changed,user", _on_program_state2_change, pd);
    evas_object_smart_callback_add(pd->attributes.program.state2, "activated", _on_program_state2_activated, pd);
    evas_object_smart_callback_add(pd->attributes.program.state2, "unfocused", _on_program_state2_activated, pd);
