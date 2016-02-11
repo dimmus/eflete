@@ -531,15 +531,24 @@ _group_del(void *data __UNUSED__,
 
    buf = eina_strbuf_new();
    group_name = (Eina_Stringshare *)event_info;
-   fprintf(stdout, "%s\n", group_name);
    item = elm_genlist_first_item_get(project_navigator.genlist);
    arr = eina_str_split_full(group_name, "/", 0, &depth);
    for (i = 0; i < depth; i++)
      {
         item  =_find_item(item, arr[i]);
         eina_strbuf_append_printf(buf, "%s", arr[i]);
-        if (i != depth - 1) eina_strbuf_append(buf, "/");
         if (!item) break;
+        if (i != depth - 1)
+          {
+             eina_strbuf_append(buf, "/");
+          }
+        else
+          {
+             if (elm_genlist_item_type_get(item) == ELM_GENLIST_ITEM_TREE)
+               item = _find_item(elm_genlist_item_next_get(item), arr[i]);
+             stack = eina_list_append(stack, item);
+             break;
+          }
         if (!elm_genlist_item_expanded_get(item) &&
             NULL != eina_list_search_sorted_list(ap.project->groups, (Eina_Compare_Cb)group_cmp, eina_strbuf_string_get(buf)))
           break;
