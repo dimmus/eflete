@@ -4,6 +4,56 @@ LOCALE_DIR = @LOCALE_DIR@
 
 bin_PROGRAMS = eflete
 
+includesub_HEADERS = \
+	eflete.h \
+	alloc/alloc.h \
+	common/common_macro.h \
+	common/signals.h \
+	common/string_common.h \
+	common/validator.h \
+	common/widget_macro.h \
+	common/win32.h \
+	config/config.h \
+	editor/banned_edje_edit_api.h \
+	editor/change.h \
+	editor/default.h \
+	editor/diff.h \
+	editor/editor.h \
+	editor/editor_macro.h \
+	editor/history.h \
+	external/enventor_module.h \
+	external/syntax_color.h \
+	logger/logger.h \
+	project_manager/group_manager.h \
+	project_manager/project_manager.h \
+	ui/cursor.h \
+	ui/demo_group.h \
+	ui/group_navigator.h \
+	ui/history_ui.h \
+	ui/main_window.h \
+	ui/project_common.h \
+	ui/project_navigator.h \
+	ui/property.h \
+	ui/property_macros.h \
+	ui/property_private.h \
+	ui/tabs.h \
+	ui/tabs_private.h \
+	ui/container/container.h \
+	ui/dialogs/about_window.h \
+	ui/dialogs/colorsel.h \
+	ui/live_view/demo.h \
+	ui/live_view/live_widget.h \
+	ui/live_view/live_widgets.h \
+	ui/live_view/elementary/live_elementary_widgets.h \
+	ui/modal_window/modal_window.h \
+	ui/preference/preference.h \
+	ui/shortcuts/shortcuts.h \
+	ui/workspace/groupedit.h \
+	ui/workspace/groupedit_private.h \
+	ui/workspace/highlight.h\
+	ui/workspace/workspace.h
+includesubdir = $(pkgincludedir)-@VMAJ@
+
 noinst_LIBRARIES = libete.a
 libete_a_SOURCES = \
 ../../src/bin/eflete.c \

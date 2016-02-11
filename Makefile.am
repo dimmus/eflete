@@ -1,11 +1,25 @@
-MAINTAINERCLEANFILES = Makefile.in
+AM_DISTCHECK_CONFIGURE_FLAGS = --with-tests=regular
 
-ACLOCAL_AMFLAGS = -I m4
 if CHECK_FOUND
 SUBDIRS = src data doc . tests/edj_build tests po
 else
 SUBDIRS = src data doc . po
 endif
+
+ACLOCAL_AMFLAGS = -I m4
+
+MAINTAINERCLEANFILES = Makefile.in \
+	$(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz \
+	$(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.bz2
+
+EXTRA_DIST = \
+	README \
+	AUTHORS \
+	COPYING \
+	m4/eflete.m4 \
+	m4/eflete_binary.m4 \
+	m4/ewe.m4 \
+	m4/ewe_binary.m4
 
 .PHONY: doc update-po report report_debug coverage
 if HAVE_DOXYGEN
@@ -42,5 +56,3 @@ update-po:
 
 coverage:
 	$(MAKE) $(AM_MAKEFLAGS) -C tests coverage
-
-EXTRA_DIST = config.rpath
