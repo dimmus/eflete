@@ -1189,7 +1189,7 @@ group { name: "elm/entry/base-single/default";
          description { state: "disabled" 0.0;
             min: 0 19;
             text {
-               style: "entry_main_text_disable";
+               style: "entry_main_text_disabled";
                min: 1 1;
                ellipsis: -1;
             }
