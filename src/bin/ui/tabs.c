@@ -25,8 +25,6 @@
 #include "main_window.h"
 #include "change.h"
 
-#include "animator.h"
-
 struct _Tabs_Item {
    Group *group;
    Elm_Object_Item *toolbar_item;
