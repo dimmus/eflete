@@ -1,10 +1,11 @@
 group { name: "elm/menu/item/default";
    parts {
       part { name: "base";
-         type: SPACER;
+         type: RECT;
          description { state: "default" 0.0;
             min: 0 21;
             max: -1 21;
+            color: 0 0 0 0;
             rel1 {
                offset: 1 1;
             }
@@ -17,7 +18,7 @@ group { name: "elm/menu/item/default";
          type: RECT;
          description { state: "default" 0.0;
             visible: 0;
-            color: MENU_HIGHLIGHT_COLOR;
+            color_class: "select";
             rel1 {
                to: "base";
             }
@@ -26,9 +27,10 @@ group { name: "elm/menu/item/default";
             }
          }
          description { state: "selected" 0.0;
-            color: MENU_HIGHLIGHT_COLOR;
+            color_class: "select";
             rel1 {
                to: "base";
+               offset: 1 1;
             }
             rel2 {
                to: "base";
@@ -146,7 +148,7 @@ group { name: "elm/menu/item/default";
       part { name: "clipper.content";
          type: RECT;
          description { state: "default" 0.0;
-            color: MENU_ICON_COLOR;
+            color_class: "main";
             rel1 {
                to: "area.content";
             }
@@ -155,16 +157,7 @@ group { name: "elm/menu/item/default";
             }
          }
          description { state: "disabled" 0.0;
-            color: MENU_ICON_DISABLE_COLOR;
-            rel1 {
-               to: "area.content";
-            }
-            rel2 {
-               to: "area.content";
-            }
-         }
-         description { state: "selected" 0.0;
-            color: MENU_ICON_FOCUSED_COLOR;
+            color_class: "main_disabled";
             rel1 {
                to: "area.content";
             }
@@ -176,7 +169,7 @@ group { name: "elm/menu/item/default";
       part { name: "clipper.text";
          type: RECT;
          description { state: "default" 0.0;
-            color: MENU_TEXT_COLOR;
+            color_class: "main";
             rel1 {
                relative: 1.0 0.0;
                to_x: "area.content";
@@ -188,7 +181,7 @@ group { name: "elm/menu/item/default";
             }
          }
          description { state: "disabled" 0.0;
-            color: MENU_TEXT_DISABLED_COLOR;
+            color_class: "main_disabled";
             rel1 {
                relative: 1.0 0.0;
                to_x: "area.content";
@@ -202,7 +195,7 @@ group { name: "elm/menu/item/default";
       part { name: "clipper.shortcut";
          type: RECT;
          description { state: "default" 0.0;
-            color: MENU_SHORTCUT_COLOR;
+            color_class: "main_alternative";
             rel1 {
                to_x: "elm.shortcut";
                to_y: "base";
@@ -211,8 +204,8 @@ group { name: "elm/menu/item/default";
                to: "base";
             }
          }
-         description { state: "selected" 0.0;
-            color: MENU_SHORTCUT_DISABLE_COLOR;
+         description { state: "disabled" 0.0;
+            color_class: "main_disabled";
             rel1 {
                to_x: "elm.shortcut";
                to_y: "base";
@@ -252,8 +245,6 @@ group { name: "elm/menu/item/default";
          source: "event";
          action: STATE_SET "selected" 0.00;
          target: "highlight";
-         target: "clipper.content";
-         target: "clipper.shortcut";
          after: "activate";
       }
       program { name: "unhighlighted";
@@ -262,7 +253,6 @@ group { name: "elm/menu/item/default";
          action: STATE_SET "default" 0.00;
          target: "highlight";
          target: "clipper.content";
-         target: "clipper.shortcut";
       }
       program { name: "disabled";
          signal: "elm,state,disabled";
@@ -270,6 +260,7 @@ group { name: "elm/menu/item/default";
          action: STATE_SET "disabled" 0.00;
          target: "clipper.content";
          target: "clipper.text";
+         target: "clipper.shortcut";
          target: "event";
       }
       program { name: "enabled";
@@ -278,6 +269,7 @@ group { name: "elm/menu/item/default";
          action: STATE_SET "default" 0.00;
          target: "clipper.content";
          target: "clipper.text";
+         target: "clipper.shortcut";
          target: "event";
       }
       program { name: "clicked";
@@ -334,7 +326,7 @@ group { name: "elm/menu/item_with_submenu/default";
          type: RECT;
          description { state: "default" 0.0;
             visible: 0;
-            color: MENU_HIGHLIGHT_COLOR;
+            color_class: "select";
             rel1 {
                to: "base";
             }
@@ -343,9 +335,10 @@ group { name: "elm/menu/item_with_submenu/default";
             }
          }
          description { state: "selected" 0.0;
-            color: MENU_HIGHLIGHT_COLOR;
+            color_class: "select";
             rel1 {
                to: "base";
+               offset: 1 1;
             }
             rel2 {
                to: "base";
@@ -462,16 +455,7 @@ group { name: "elm/menu/item_with_submenu/default";
       part { name: "clipper.content";
          type: RECT;
          description { state: "default" 0.0;
-            color: MENU_ICON_COLOR;
-            rel1 {
-               to: "area.content";
-            }
-            rel2 {
-               to: "area.content";
-            }
-         }
-         description { state: "selected" 0.0;
-            color: MENU_ICON_FOCUSED_COLOR;
+            color_class: "main";
             rel1 {
                to: "area.content";
             }
@@ -480,7 +464,7 @@ group { name: "elm/menu/item_with_submenu/default";
             }
          }
          description { state: "disabled" 0.0;
-            color: MENU_ICON_DISABLE_COLOR;
+            color_class: "main_disabled";
             rel1 {
                to: "area.content";
             }
@@ -492,7 +476,7 @@ group { name: "elm/menu/item_with_submenu/default";
       part { name: "clipper.text";
          type: RECT;
          description { state: "default" 0.0;
-            color: MENU_TEXT_COLOR;
+            color_class: "main";
             rel1 {
                relative: 1.0 0.0;
                to_x: "area.content";
@@ -503,7 +487,7 @@ group { name: "elm/menu/item_with_submenu/default";
             }
          }
          description { state: "disabled" 0.0;
-            color: MENU_TEXT_DISABLED_COLOR;
+            color_class: "main_disabled";
             rel1 {
                relative: 1.0 0.0;
                to_x: "area.content";
@@ -544,7 +528,6 @@ group { name: "elm/menu/item_with_submenu/default";
          source: "event";
          action: STATE_SET "selected" 0.00;
          target: "highlight";
-         target: "clipper.content";
          after: "activate";
       }
       program { name: "unhighlighted";
@@ -604,7 +587,7 @@ group { name: "elm/menu/item_with_submenu/default";
 
 group { name: "elm/menu/separator/default";
    images {
-      image: "context_menu-separator.png" COMP;
+      image: "separator-horizontal.png" COMP;
    }
    parts {
       part { name: "separator";
@@ -613,7 +596,7 @@ group { name: "elm/menu/separator/default";
             max: -1 2;
             rel1.offset: 1 0;
             rel2.offset: -2 0;
-            image.normal: "context_menu-separator.png";
+            image.normal: "separator-horizontal.png";
             fill.smooth: 0;
          }
       }
@@ -709,7 +692,7 @@ group { name: "elm/menu/main_menu_submenu/default";
          }
          description { state: "disabled" 0.0;
             align: 0.0 0.5;
-            color: 118 119 120 255;
+            color_class: "main_disabled";
             rel1 {
                relative: 1.0 0.0;
                to_x: "area.content";
@@ -803,225 +786,6 @@ group { name: "elm/menu/main_menu_submenu/default";
 
 //-------------------------hover----------------------------------------------//
 //In the hover used by the menu only the bottom part is used.
-group { name: "elm/hover/base/menu/default";
-   parts {
-      part { name: "elm.swallow.offset";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 0.0 0.0;
-         }
-      }
-      part { name: "elm.swallow.size";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 {
-               to: "elm.swallow.offset";
-               relative: 1.0 1.0;
-            }
-            rel2 {
-               to: "elm.swallow.offset";
-               relative: 1.0 1.0;
-            }
-         }
-      }
-      part { name: "base";
-         type: RECT;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-         }
-      }
-      part { name: "elm.swallow.slot.left";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-         }
-      }
-      part { name: "elm.swallow.slot.right";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-         }
-      }
-      part { name: "elm.swallow.slot.top";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-         }
-      }
-      part { name: "bottomclip";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 255 255 255 0;
-         }
-         description { state: "visible" 0.0;
-            color: 255 255 255 255;
-         }
-      }
-      part { name: "shadow";
-         clip_to: "bottomclip";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: MENU_BORDER_COLOR;
-            rel1 {
-               to: "bottom";
-               offset: -1  -1;
-            }
-            rel2 {
-               to: "bottom";
-               offset: 0 0;
-            }
-         }
-      }
-      part { name: "top";
-         clip_to: "bottomclip";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 155 120 0 255;
-            min: 0 23;
-            align: 0.0 0.0;
-            fixed: 0 1;
-            rel1.to: "bottom";
-            rel2 {
-               to_x: "bottom";
-               to_y: "shine";
-               offset: -1 0;
-            }
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-         }
-      }
-      part { name: "bg";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "bottomclip";
-         description { state: "default" 0.0;
-            color: 64 64 64 255;
-            rel1 {
-               to_x: "bottom";
-               to_y: "top";
-               relative: 0.0 1.0;
-            }
-            rel2.to: "bottom";
-         }
-      }
-      part { name: "bottom";
-         clip_to: "bottomclip";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: MENU_BG_COLOR;
-            rel1.to: "elm.swallow.slot.bottom";
-            rel2.to: "elm.swallow.slot.bottom";
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-         }
-      }
-      part { name: "elm.swallow.slot.bottom";
-         type: SWALLOW;
-         clip_to: "bottomclip";
-         description { state: "default" 0.0;
-            align: 0.5 0.0;
-            rel1 {
-               to: "elm.swallow.slot.middle";
-               relative: 0.0 1.0;
-               offset: 0 0;
-            }
-            rel2 {
-               to: "elm.swallow.slot.middle";
-               relative: 1.0 1.0;
-               offset: -1 0;
-            }
-         }
-      }
-      part { name: "bevel";
-         mouse_events: 0;
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-            rel1.to: "bottom";
-            rel2.to: "bottom";
-         }
-      }
-      part { name: "shine";
-         mouse_events: 1;
-         type: RECT;
-         repeat_events:1;
-         description { state: "default" 0.0;
-            FIXED_SIZE(69, 5)
-            color: 0 0 0 0;
-            rel1 {
-               to: "bottom";
-               offset: 0 -2;
-            }
-            rel2 {
-               to: "bottom";
-               relative: 1.0 0.0;
-               offset: -1 2;
-            }
-         }
-      }
-      part { name: "elm.swallow.slot.middle";
-         type: SWALLOW;
-         repeat_events:1;
-         description { state: "default" 0.0;
-            rel1.to: "elm.swallow.size";
-            rel2.to: "elm.swallow.size";
-         }
-      }
-   }
-   programs {
-      program { name: "end";
-         signal: "mouse,up,1";
-         source: "base";
-         action: SIGNAL_EMIT "elm,action,dismiss" "elm";
-      }
-      program { name: "bottomshow";
-         signal: "elm,action,slot,bottom,show";
-         source: "elm";
-         action: STATE_SET "visible" 0.0;
-         target: "bottomclip";
-         target: "bottom";
-         target: "elm.swallow.slot.bottom";
-      }
-      program { name: "bottomhide";
-         signal: "elm,action,slot,bottom,hide";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "bottomclip";
-         target: "bottom";
-         target: "elm.swallow.slot.bottom";
-      }
-   }
-}
-
-//In the hover used by the submenu only the bottom part is used
-//and no part should interact except the bottom area
-group { name: "elm/hover/base/submenu/default";
-   inherit: "elm/hover/base/menu/default";
-   parts {
-      part { name: "elm.swallow.offset";
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            rel1.offset: 2 0;
-         }
-      }
-      //here we don't catch events like the hover does
-      part { name: "base";
-         type: RECT;
-         repeat_events: 1;
-         description { state: "visible" 0.0;
-            color: 0 0 0 0;
-            visible: 0;
-         }
-      }
-   }
-}
-
 group { name: "elm/hover/base/main_menu/default";
    parts {
       part { name: "elm.swallow.offset";
@@ -1050,7 +814,7 @@ group { name: "elm/hover/base/main_menu/default";
          mouse_events: 0;
          type: RECT;
          description { state: "default" 0.0;
-            color: 59 61 62 255;
+            color_class: "bg_scroller";
             rel1.to_y: "bottom";
             rel2.to_y: "bottom";
          }
@@ -1092,13 +856,17 @@ group { name: "elm/hover/base/main_menu/default";
          signal: "elm,action,slot,bottom,show";
          source: "elm";
          action: STATE_SET "visible" 0.0;
-         transition: DECELERATE 0.3;
+         transition: ACCELERATE 0.3;
          target: "elm.swallow.slot.bottom";
       }
    }
 }
 
 group { name: "elm/hover/base/main_menu_submenu/default";
+   alias: "elm/hover/base/menu/default";
+   images {
+      image: "bg_tip_popup.png" COMP;
+   }
    parts {
       part { name: "base";
          type: RECT;
@@ -1137,16 +905,20 @@ group { name: "elm/hover/base/main_menu_submenu/default";
          }
       }
       part { name: "bg";
-         type: RECT; mouse_events: 1;
+         type: IMAGE; mouse_events: 1;
          clip_to: "bottomclip";
          description { state: "default" 0.0;
-         rel1 {
+            rel1 {
                to_x: "elm.swallow.slot.bottom";
                relative: 0.0 0.0;
                offset: 1 0;
             }
             rel2.to: "elm.swallow.slot.bottom";
-            color: MENU_BG_COLOR;
+            image {
+               normal: "bg_tip_popup.png";
+               middle: DEFAULT;
+               border: 2 2 2 2;
+            }
          }
       }
       part { name: "elm.swallow.slot.bottom";
@@ -1157,7 +929,6 @@ group { name: "elm/hover/base/main_menu_submenu/default";
             rel1 {
                to: "elm.swallow.slot.middle";
                relative: 0.0 1.0;
-               offset: 0 0;
             }
             rel2 {
                to: "elm.swallow.slot.middle";
@@ -1167,8 +938,7 @@ group { name: "elm/hover/base/main_menu_submenu/default";
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            rel1.offset: 0 6;
-            rel2.offset: -1 6;
+            rel1.offset: 0 -2;
             align: 0.5 0.0;
          }
       }
@@ -1207,15 +977,39 @@ group { name: "elm/hover/base/main_menu_submenu/default";
          signal: "elm,action,slot,bottom,show";
          source: "elm";
          action: STATE_SET "visible" 0.0;
-         transition: DECELERATE 0.3;
+         transition: ACCELERATE 0.3;
          target: "elm.swallow.slot.bottom";
       }
       program { name: "bottomhide";
          signal: "elm,action,slot,bottom,hide";
          source: "elm";
          action: STATE_SET "default" 0.0;
-         transition: DECELERATE 0.2;
+         transition: ACCELERATE 0.2;
          target: "elm.swallow.slot.bottom";
       }
    }
 }
+
+//In the hover used by the submenu only the bottom part is used
+//and no part should interact except the bottom area
+group { name: "elm/hover/base/submenu/default";
+   inherit: "elm/hover/base/main_menu_submenu/default";
+   parts {
+      part { name: "elm.swallow.offset";
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            rel1.offset: 2 0;
+         }
+      }
+      //here we don't catch events like the hover does
+      part { name: "base";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "visible" 0.0;
+            color: 0 0 0 0;
+            visible: 0;
+         }
+      }
+   }
+}
+
