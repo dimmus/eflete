@@ -136,6 +136,9 @@ tests/Doxyfile
 tests/edj_build/radio.edc
 libtool
 
+#tarballs
+*.tar.gz
+*.tar.bz2
 
 #localization
 *.gmo
