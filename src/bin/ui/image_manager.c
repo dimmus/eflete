@@ -385,6 +385,7 @@ _on_button_delete_clicked_cb(void *data,
    editor_save(ap.project->global_object);
    TODO("Remove this line once edje_edit_image_del would be added into Editor Modulei and saving would work properly")
    ap.project->changed = true;
+   elm_object_disabled_set(img_mng->del_button, true);
 }
 
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, NULL)
