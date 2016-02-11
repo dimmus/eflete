@@ -1620,20 +1620,6 @@ prop_program_name_update(Group_Prop_Data *pd)
    elm_entry_entry_set(pd->attributes.program.name, pd->attributes.program.program);
 }
 
-static void
-prop_program_state_update(Group_Prop_Data *pd)
-{
-   elm_entry_entry_set(pd->attributes.program.state,
-                       edje_edit_program_state_get(pd->group->edit_object, pd->attributes.program.program));
-}
-
-static void
-prop_program_state2_update(Group_Prop_Data *pd)
-{
-   elm_entry_entry_set(pd->attributes.program.state2,
-                       edje_edit_program_state2_get(pd->group->edit_object, pd->attributes.program.program));
-}
-
 COMMON_ENTRY_ADD(_("name"), program, name, program, NULL, _("Name of the group."))
 PROGRAMM_ATTR_1ENTRY(_("signal"), program, signal, program, NULL,
    _("The signal name for triger"), _("signal is changed to '%s'"))
@@ -1660,7 +1646,9 @@ PROGRAM_ATTR_1SPINNER("don't forgot to change this title", program, transition_v
 PROGRAM_ATTR_1CHECK(_("from current"), program, transition_from_current, program, "",
                     _("Program transition attribure 'from current' is changed to %s'"))
 
+COMMON_ENTRY_UPDATE(program, state, program, PROGRAM_ARGS)
 COMMON_ENTRY_CALLBACK(program, state, NULL, PROGRAM_ARGS, _("Program action state is changed to '%s'"))
+COMMON_ENTRY_UPDATE(program, state2, program, PROGRAM_ARGS)
 COMMON_ENTRY_CALLBACK(program, state2, NULL, PROGRAM_ARGS, _("Program action state2 is changed to '%s'"))
 COMMON_SPINNER_CALLBACK(program, tone_duration, program, double, 1, PROGRAM_ARGS, _("Program action value is changed from %f to %f"))
 
