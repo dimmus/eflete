@@ -1489,7 +1489,7 @@ _on_part_name_change(void *data,
    free(value);
 }
 static void
-_on_part_name_activated(void *data,
+_on_part_name_unfocused(void *data,
                         Evas_Object *obj __UNUSED__,
                         void *ei __UNUSED__)
 {
@@ -1521,8 +1521,7 @@ prop_part_name_add(Evas_Object *parent, Group_Prop_Data *pd)
    elm_entry_entry_set(pd->attributes.part.name, pd->part->name);
    elm_object_tooltip_text_set(pd->attributes.part.name, _("Selected part name"));
    evas_object_smart_callback_add(pd->attributes.part.name, "changed,user", _on_part_name_change, pd);
-   evas_object_smart_callback_add(pd->attributes.part.name, "unfocused", _on_part_name_activated, pd);
-   evas_object_smart_callback_add(pd->attributes.part.name, "activated", _on_part_name_activated, pd);
+   evas_object_smart_callback_add(pd->attributes.part.name, "unfocused", _on_part_name_unfocused, pd);
    elm_layout_content_set(item, "elm.swallow.content", pd->attributes.part.name);
    prop_part_name_update(pd);
 
