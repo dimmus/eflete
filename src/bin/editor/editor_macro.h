@@ -132,6 +132,46 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    return true; \
 }
 
+#define EDITOR_STATE_STRING_WITH_RESET(FUNC, ATTRIBUTE, SAVE, RESET) \
+Eina_Bool \
+editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, \
+                            const char *part_name, const char *state_name, double state_val, const char *new_val) \
+{ \
+   Diff *diff; \
+   Attribute attribute = ATTRIBUTE; \
+   assert(edit_object != NULL); \
+   assert(part_name != NULL); \
+   assert(state_name != NULL); \
+   if (change) \
+     { \
+        Eina_Stringshare *old_value = edje_edit_state_## FUNC ##_get(edit_object, part_name, state_name, state_val); \
+        diff = mem_calloc(1, sizeof(Diff)); \
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_STRING; \
+        diff->redo.function = editor_state_## FUNC ##_set; \
+        diff->redo.args.type_ssds.s1 = eina_stringshare_add(part_name); \
+        diff->redo.args.type_ssds.s2 = eina_stringshare_add(state_name); \
+        diff->redo.args.type_ssds.d3 = state_val; \
+        diff->redo.args.type_ssds.s4 = eina_stringshare_add(new_val); \
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_STRING; \
+        diff->undo.function = editor_state_## FUNC ##_set; \
+        diff->undo.args.type_ssds.s1 = eina_stringshare_add(part_name); \
+        diff->undo.args.type_ssds.s2 = eina_stringshare_add(state_name); \
+        diff->undo.args.type_ssds.d3 = state_val; \
+        diff->undo.args.type_ssds.s4 = old_value; /* assuming that getter returned stringshare */\
+        if (merge) \
+          change_diff_merge_add(change, diff); \
+        else \
+          change_diff_add(change, diff); \
+     } \
+   if (!edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)) \
+     return false; \
+   if (SAVE) editor_save(edit_object); \
+   _editor_project_changed(); \
+   if (!new_val) editor_state_## RESET ##_reset(edit_object, change, part_name, state_name, state_val); \
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+   return true; \
+}
+
 #define EDITOR_STATE_STRING_WITH_FALLBACK(FUNC, ATTRIBUTE, FALLBACK_VAL) \
 Eina_Bool \
 editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, \
