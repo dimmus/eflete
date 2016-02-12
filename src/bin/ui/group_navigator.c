@@ -718,6 +718,8 @@ _popup_add_part_ok_clicked(void *data,
 
    assert(pl != NULL);
 
+   if (elm_object_disabled_get(pl->popup.btn_add)) return;
+
    item = ewe_combobox_select_item_get(pl->popup.combobox);
    TODO("add data to combobox item to get rid of string comparsion")
 #define CHECK_TYPE(TYPE) (!strcmp(item->title, part_types[TYPE])) type = TYPE;
@@ -826,6 +828,7 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
    eo_do(pl->popup.entry_name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, pl->name_validator));
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new part here."));
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _on_entry_changed, pl);
+   evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_part_ok_clicked, pl);
    evas_object_show(pl->popup.entry_name);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
@@ -861,6 +864,8 @@ _popup_add_state_ok_clicked(void *data,
    Change *change;
 
    assert(pl != NULL);
+
+   if (elm_object_disabled_get(pl->popup.btn_add)) return;
 
    part = elm_object_item_data_get(pl->selected_part_item);
    name = elm_entry_entry_get(pl->popup.entry_name);
@@ -956,6 +961,7 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    eo_do(pl->popup.entry_name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE,
          elm_validator_regexp_helper, pl->name_validator));
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _state_validate, pl);
+   evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_state_ok_clicked, pl);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new state here."));
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
@@ -1010,6 +1016,8 @@ _popup_add_item_ok_clicked(void *data,
    Change *change;
 
    assert(pl != NULL);
+
+   if (elm_object_disabled_get(pl->popup.btn_add)) return;
 
    part = elm_object_item_data_get(pl->selected_part_item);
    name = elm_entry_entry_get(pl->popup.entry_name);
@@ -1077,6 +1085,7 @@ _on_menu_add_item_clicked(void *data __UNUSED__,
    eo_do(pl->popup.entry_name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE,
          elm_validator_regexp_helper, pl->name_validator));
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _item_validate, pl);
+   evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_item_ok_clicked, pl);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new item here."));
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
@@ -1123,6 +1132,8 @@ _popup_add_program_ok_clicked(void *data,
 
    assert(pl != NULL);
 
+   if (elm_object_disabled_get(pl->popup.btn_add)) return;
+
    name = elm_entry_entry_get(pl->popup.entry_name);
 
    msg = eina_stringshare_printf(_("added new program \"%s\""), name);
@@ -1153,6 +1164,7 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
    eo_do(pl->popup.entry_name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE,
          elm_validator_regexp_helper, pl->name_validator));
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _program_validate, pl);
+   evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_program_ok_clicked, pl);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new program here."));
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
