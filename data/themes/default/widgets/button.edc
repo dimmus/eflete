@@ -84,7 +84,6 @@ group { name: "elm/button/base/default";
             text {
                font: "PT";
                size: 12;
-               text_class: "button";
                min: 1 1;
                max: 1 1;
                ellipsis: -1.0;
@@ -104,7 +103,6 @@ group { name: "elm/button/base/default";
             text {
                font: "PT";
                size: 12;
-               text_class: "button";
                min: 1 1;
                max: 1 1;
                ellipsis: -1.0;
@@ -115,16 +113,15 @@ group { name: "elm/button/base/default";
             color3: 0 0 0 0;
             rel1 {
                relative: 1.0 0.0;
-               offset: 6 0;
+               offset: 12 0;
                to_x: "elm.swallow.content";
             }
             rel2 {
-               offset: -7 -1;
+               offset: -13 -1;
             }
             text {
                font: "PT";
                size: 12;
-               text_class: "button";
                min: 1 1;
                max: 1 1;
                ellipsis: -1.0;
@@ -348,7 +345,6 @@ group { name: "elm/button/base/anchor";
             text {
                font: "PT";
                size: 13;
-               text_class: "button";
                min: 1 1;
                max: 1 1;
                ellipsis: -1.0;
@@ -368,7 +364,6 @@ group { name: "elm/button/base/anchor";
             text {
                font: "PT";
                size: 13;
-               text_class: "button";
                min: 1 1;
                max: 1 1;
                ellipsis: -1.0;
@@ -388,7 +383,6 @@ group { name: "elm/button/base/anchor";
             text {
                font: "PT";
                size: 13;
-               text_class: "button";
                min: 1 1;
                max: 1 1;
                ellipsis: -1.0;
