@@ -2448,6 +2448,7 @@ _ui_property_program_unset(Evas_Object *property)
    prop_box = elm_object_content_get(pd->scroller);
    PROP_ITEM_UNSET(prop_box, pd->attributes.program.frame);
    eina_stringshare_del(pd->attributes.program.program);
+   pd->attributes.program.program = NULL;
 }
 
 #define PART_ATTR_1CHECK(TEXT, SUB, VALUE, MEMBER, TOOLTIP, DESCRIPTION) \
