@@ -93,7 +93,7 @@ EDITOR_STATE_SIMPLE_RESET(fill_size_offset_x, -1)
 EDITOR_STATE_SIMPLE_RESET(fill_size_offset_y, -1)
 EDITOR_STATE_SIMPLE_RESET(container_padding_x, 0)
 EDITOR_STATE_SIMPLE_RESET(container_padding_y, 0)
-EDITOR_STATE_SIMPLE_RESET(text_size, 0)
+EDITOR_STATE_SIMPLE_RESET(text_size, 12)
 
 EDITOR_STATE_SIMPLE_RESET(fixed_h, false)
 EDITOR_STATE_SIMPLE_RESET(fixed_w, false)
