@@ -774,6 +774,18 @@ group_navigator_part_add(Evas_Object *obj, Part *part)
 }
 
 static void
+_combobox_collapsed(void *data,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   Part_List *pl = data;
+
+   assert(pl != NULL);
+
+   elm_object_focus_set(pl->popup.entry_name, true);
+}
+
+static void
 _on_menu_add_part_clicked(void *data __UNUSED__,
                           Evas_Object *obj __UNUSED__,
                           void *ei __UNUSED__)
@@ -805,6 +817,7 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
      }
    ewe_combobox_select_item_set(pl->popup.combobox, 0);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
+   evas_object_smart_callback_add(pl->popup.combobox, "collapsed", _combobox_collapsed, pl);
 
    elm_box_pack_end(box, item);
 
