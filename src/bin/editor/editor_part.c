@@ -702,8 +702,10 @@ editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUS
    TODO("Fix edje_edit")
    if (type == EDJE_PART_TYPE_BOX)
      edje_edit_state_box_layout_set(edit_object, part_name, "default", 0.0, "horizontal");
-   else if (type == EDJE_PART_TYPE_IMAGE)
-     edje_edit_state_image_set(edit_object, part_name, "default", 0.0, EFLETE_DUMMY_IMAGE_NAME);
+
+   /* apply our default values */
+   if (!editor_part_reset(edit_object, NULL, false, part_name))
+     return false;
 
    event_info = eina_stringshare_add(part_name);
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_ADDED, (void *)event_info);
