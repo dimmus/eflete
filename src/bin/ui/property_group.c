@@ -3375,9 +3375,9 @@ STATE_ATTR_1ENTRY(_("text"), state, text, state_text, NULL, _("The dispalyed tex
 STATE_ATTR_1ENTRY(_("font"), state, font, state_text, pd->attributes.state_text.validator,
                   _("The text font, posible set a font style. Ex: Sans:style=italic"),
                   _("font changed to %s"))
-STATE_ATTR_1SPINNER(_("size"), state_text, size, state_text, 1, 128, 1, "%.0f", "", "pt",
+STATE_ATTR_1SPINNER(_("size"), state_text, size, state_text, 1, 128, 1, "%.0f", "", "px",
                     _("The font size"), 1, int,
-                    _("font size changed from %d to %d"))
+                    _("font size changed from %dpx to %dpx"))
 STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_text,
                     0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
                     _("Text horizontal align"), _("Text vertical align"),
