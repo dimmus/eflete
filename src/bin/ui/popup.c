@@ -99,6 +99,7 @@ popup_want_action(const char *title,
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
 
    popup = elm_popup_add(ap.win);
+   elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
    elm_object_part_text_set(popup, "title,text", title);
    elm_popup_content_text_wrap_type_set(popup, ELM_WRAP_WORD);
    if (msg) elm_object_text_set(popup, msg);
