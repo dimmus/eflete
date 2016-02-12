@@ -22,6 +22,7 @@
 #include "project_manager.h"
 #include "history.h"
 #include "widget_macro.h"
+#include "main_window.h"
 
 typedef struct {
    Evas_Object *layout;
@@ -29,6 +30,7 @@ typedef struct {
    Evas_Object *btn_undo_all;
    Evas_Object *btn_clean;
    History *history;
+   Group *group;
    Elm_Genlist_Item_Class *itc_change;
    Elm_Genlist_Item *active_item;
 } History_UI_data;
@@ -162,6 +164,7 @@ _history_set(void *data __UNUSED__,
    hd.active_item = NULL;
 
    hd.history = (group) ? group->history : NULL;
+   hd.group = group;
    if (!hd.history)
      return;
 
@@ -226,6 +229,29 @@ _on_undo_all(void *data __UNUSED__,
    elm_genlist_item_selected_set(elm_genlist_first_item_get(hd.genlist), true);
 }
 
+static void
+_on_clean(void *data __UNUSED__,
+          Evas_Object *obj __UNUSED__,
+          void *ei __UNUSED__)
+{
+   Popup_Button btn_res;
+   Change *change;
+
+   btn_res = popup_want_action(_("Confirm history clean-up"),
+                               _("Are you sure you want to clean history?<br>"
+                                 "This action can't be undone."),
+                               NULL, NULL, BTN_OK|BTN_CANCEL, NULL, NULL);
+   if (BTN_CANCEL == btn_res) return;
+
+   history_del(hd.group->history);
+   hd.group->history = history_add(hd.group);
+
+   change = change_add(_("history cleaned"));
+   history_change_add(hd.group->history, change);
+
+   _history_set(NULL, NULL, hd.group);
+}
+
 Evas_Object *
 history_ui_add(void)
 {
@@ -250,6 +276,7 @@ history_ui_add(void)
    hd.btn_clean = elm_button_add(hd.layout);
    ICON_STANDARD_ADD(hd.btn_clean, ic, true, "delete");
    elm_object_part_content_set(hd.btn_clean, NULL, ic);
+   evas_object_smart_callback_add(hd.btn_clean, "clicked", _on_clean, NULL);
    hd.btn_undo_all = elm_button_add(hd.layout);
    elm_object_text_set(hd.btn_undo_all, _("Discard"));
    evas_object_smart_callback_add(hd.btn_undo_all, "clicked", _on_undo_all, NULL);
