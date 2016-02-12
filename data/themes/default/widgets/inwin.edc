@@ -1,4 +1,7 @@
 group { name: "elm/win/inwin/default";
+   images {
+      image: "popup-header-bg.png" COMP;
+   }
    parts {
       part { name: "block_events";
          type: RECT;
@@ -180,6 +183,9 @@ group { name: "elm/win/inwin/default";
 }
 
 group { name: "elm/win/inwin/dialog";
+   images {
+      image: "popup-header-bg.png" COMP;
+   }
    parts {
       part { name: "block_events";
          type: RECT;
