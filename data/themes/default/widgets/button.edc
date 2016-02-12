@@ -90,8 +90,6 @@ group { name: "elm/button/base/default";
             }
          }
          description { state: "visible" 0.0;
-            color2: 0 0 0 0;
-            color3: 0 0 0 0;
             rel1 {
                relative: 1.0 0.0;
                offset: 6 0;
@@ -109,8 +107,6 @@ group { name: "elm/button/base/default";
             }
          }
          description { state: "textonly" 0.0;
-            color2: 0 0 0 0;
-            color3: 0 0 0 0;
             rel1 {
                relative: 1.0 0.0;
                offset: 12 0;
