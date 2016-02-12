@@ -801,6 +801,7 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
    assert(pl != NULL);
 
    ap.popup = elm_popup_add(ap.win);
+   elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
    title = eina_stringshare_printf(_("Add new part to group \"%s\""), pl->group->name);
    elm_object_part_text_set(ap.popup, "title,text", title);
    eina_stringshare_del(title);
@@ -951,6 +952,7 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    part = elm_object_item_data_get(pl->selected_part_item);
 
    ap.popup = elm_popup_add(ap.win);
+   elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
    title = eina_stringshare_printf(_("Add new state to part \"%s\""), part->name);
    elm_object_part_text_set(ap.popup, "title,text", title);
    eina_stringshare_del(title);
@@ -1075,6 +1077,7 @@ _on_menu_add_item_clicked(void *data __UNUSED__,
    part = elm_object_item_data_get(pl->selected_part_item);
 
    ap.popup = elm_popup_add(ap.win);
+   elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
    title = eina_stringshare_printf(_("Add new item to part \"%s\""), part->name);
    elm_object_part_text_set(ap.popup, "title,text", title);
    eina_stringshare_del(title);
@@ -1156,6 +1159,7 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
    assert(pl != NULL);
 
    ap.popup = elm_popup_add(ap.win);
+   elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
    elm_object_part_text_set(ap.popup, "title,text", _("Add new program"));
 
    BOX_ADD(ap.popup, box, false, false);
