@@ -218,6 +218,14 @@ _redo_shortcut(void *data __UNUSED__,
      elm_genlist_item_selected_set(glit, true);
 }
 
+static void
+_on_undo_all(void *data __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *ei __UNUSED__)
+{
+   elm_genlist_item_selected_set(elm_genlist_first_item_get(hd.genlist), true);
+}
+
 Evas_Object *
 history_ui_add(void)
 {
@@ -244,6 +252,7 @@ history_ui_add(void)
    elm_object_part_content_set(hd.btn_clean, NULL, ic);
    hd.btn_undo_all = elm_button_add(hd.layout);
    elm_object_text_set(hd.btn_undo_all, _("Discard"));
+   evas_object_smart_callback_add(hd.btn_undo_all, "clicked", _on_undo_all, NULL);
 
    elm_layout_content_set(hd.layout, NULL, hd.genlist);
    elm_layout_content_set(hd.layout, "elm.swallow.btn_clean", hd.btn_clean);
