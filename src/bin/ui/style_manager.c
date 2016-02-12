@@ -346,6 +346,7 @@ _on_bt_style_add(void *data,
    assert(style_edit != NULL);
 
    POPUP.dialog = elm_popup_add(ap.win);
+   elm_popup_orient_set(POPUP.dialog, ELM_POPUP_ORIENT_CENTER);
    elm_object_part_text_set(POPUP.dialog, "title,text", _("Add textblock style"));
 
    BOX_ADD(POPUP.dialog, box, false, false);
@@ -428,6 +429,7 @@ _on_bt_tag_add(void *data,
    eina_list_free(tags);
 
    POPUP.dialog = elm_popup_add(ap.win);
+   elm_popup_orient_set(POPUP.dialog, ELM_POPUP_ORIENT_CENTER);
    buf = eina_stringshare_printf(_("Add tag to style: %s"), style_name);
    elm_object_part_text_set(POPUP.dialog, "title,text", buf);
 

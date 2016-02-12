@@ -428,9 +428,9 @@ _tone_add_cb(void *data,
    Eina_Stringshare *title;
 
    popup = elm_popup_add(ap.win);
+   elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
    title = eina_stringshare_add(_("Add new tone to the project"));
    elm_object_part_text_set(popup, "title,text", title);
-   elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
    edit->popup = popup;
 
    assert(edit->tone_validator == NULL);
