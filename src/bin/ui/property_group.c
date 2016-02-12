@@ -2349,7 +2349,7 @@ PROGRAM_2COMBOBOX_ADD(_("filter"), program, filter_part, filter_state, program,
    COMMON_2SPINNER_ADD(PROGRAM, TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, TYPE, MIN, MAX, STEP, FMT, \
                            L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
-PROGRAM_ATTR_2SPINNER(_("in"), program, in_from, in_range, program, 0.0, 9999.0, 0.1, "%.1f", "from:", "", "range:", "",
+PROGRAM_ATTR_2SPINNER(_("in"), program, in_from, in_range, program, 0.0, 9999.0, 0.1, "%.1f", "from:", "sec", "range:", "sec",
                     _("Constant time to wait till program would start"),
                     _("Random number of seconds (from 0 to 'range') added to constant time"),
                     1, double,
