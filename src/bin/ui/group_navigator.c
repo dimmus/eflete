@@ -705,13 +705,13 @@ _popup_cancel_clicked(void *data,
 }
 
 static void
-_popup_add_part_ok_clicked(void *data __UNUSED__,
+_popup_add_part_ok_clicked(void *data,
                            Evas_Object *obj __UNUSED__,
                            void *event_info __UNUSED__)
 {
    Ewe_Combobox_Item *item;
    Edje_Part_Type type = EDJE_PART_TYPE_NONE;
-   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   Part_List *pl = data;
    const char *name;
    Eina_Stringshare *msg;
    Change *change;
@@ -832,8 +832,7 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
 
    elm_object_content_set(ap.popup, box);
    BUTTON_ADD(box, pl->popup.btn_add, _("Add"));
-   evas_object_data_set(pl->popup.btn_add, GROUP_NAVIGATOR_DATA, pl);
-   evas_object_smart_callback_add(pl->popup.btn_add, "clicked", _popup_add_part_ok_clicked, NULL);
+   evas_object_smart_callback_add(pl->popup.btn_add, "clicked", _popup_add_part_ok_clicked, pl);
    elm_object_part_content_set(ap.popup, "button1", pl->popup.btn_add);
    elm_object_disabled_set(pl->popup.btn_add, true);
 
