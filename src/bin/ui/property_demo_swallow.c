@@ -261,6 +261,7 @@ _on_image_done(void *data,
 
    eina_stringshare_del(pd->part->image_path);
    pd->part->image_path = eina_stringshare_add(selected);
+   pd->part->change = true;
 
    evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, pd->part);
 
