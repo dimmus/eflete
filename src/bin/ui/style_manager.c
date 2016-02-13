@@ -896,8 +896,8 @@ _form_right_side(Style_Editor *style_edit)
      }
 
    style_edit->menu = elm_menu_add(ap.win);
-   elm_menu_item_add(style_edit->menu, NULL, NULL, _("New style"), _on_bt_style_add, style_edit);
-   elm_menu_item_add(style_edit->menu, NULL, NULL, _("New tag"), _on_bt_tag_add, style_edit);
+   elm_menu_item_add(style_edit->menu, NULL, NULL, _("Style"), _on_bt_style_add, style_edit);
+   elm_menu_item_add(style_edit->menu, NULL, NULL, _("Tag"), _on_bt_tag_add, style_edit);
 
    button_add = elm_button_add(ap.win);
    evas_object_show(button_add);
