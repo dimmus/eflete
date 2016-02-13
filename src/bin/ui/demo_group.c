@@ -135,7 +135,6 @@ _expanded_cb(void *data,
    Demo_Part *part;
    Demo_Signal *sig;
 
-   TODO("remove this hack after https://phab.enlightenment.org/D2965 will be accepted");
    assert(pl != NULL);
 
    if (glit == pl->it_text)
@@ -301,6 +300,7 @@ demo_group_add(Group *group)
                                             ELM_GENLIST_ITEM_TREE,
                                             NULL,
                                             NULL);
+   elm_genlist_item_expanded_set(pl->it_swallow, true);
    pl->it_text =    elm_genlist_item_append(pl->genlist,
                                             itc_text,
                                             pl,
@@ -308,6 +308,7 @@ demo_group_add(Group *group)
                                             ELM_GENLIST_ITEM_TREE,
                                             NULL,
                                             NULL);
+   elm_genlist_item_expanded_set(pl->it_text, true);
    pl->it_signal =  elm_genlist_item_append(pl->genlist,
                                             itc_signal,
                                             pl,
@@ -315,6 +316,7 @@ demo_group_add(Group *group)
                                             ELM_GENLIST_ITEM_TREE,
                                             NULL,
                                             NULL);
+   elm_genlist_item_expanded_set(pl->it_signal, true);
 
    EINA_LIST_FOREACH(pl->group->parts, l, part)
      {
@@ -325,6 +327,13 @@ demo_group_add(Group *group)
              demo_part->name = eina_stringshare_add(part->name);
              demo_part->type = part->type;
              pl->text_list = eina_list_append(pl->text_list, demo_part);
+             elm_genlist_item_append(pl->genlist,
+                                     itc_part,
+                                     demo_part,
+                                     pl->it_text,
+                                     ELM_GENLIST_ITEM_NONE,
+                                     NULL,
+                                     NULL);
           }
         else if (part->type == EDJE_PART_TYPE_SWALLOW)
           {
@@ -336,6 +345,14 @@ demo_group_add(Group *group)
              demo_part->g = 255;
              demo_part->b = 255;
              pl->swallow_list = eina_list_append(pl->swallow_list, demo_part);
+             elm_genlist_item_append(pl->genlist,
+                                     itc_part,
+                                     demo_part,
+                                     pl->it_swallow,
+                                     ELM_GENLIST_ITEM_NONE,
+                                     NULL,
+                                     NULL);
+
           }
      }
 
@@ -354,6 +371,14 @@ demo_group_add(Group *group)
              demo_sig->sig_name = eina_stringshare_add(sig_name);
              demo_sig->source_name = eina_stringshare_add(source_name);
              pl->signal_list = eina_list_append(pl->signal_list, demo_sig);
+             elm_genlist_item_append(pl->genlist,
+                                     itc_signals,
+                                     demo_sig,
+                                     pl->it_signal,
+                                     ELM_GENLIST_ITEM_NONE,
+                                     NULL,
+                                     NULL);
+
           }
      }
 
