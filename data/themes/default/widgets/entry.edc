@@ -9,6 +9,9 @@ group { name: "elm/entry/base/default";
             rel2.to: "elm.text";
             text {
                style: "eflete_text_guide_style";
+               align: 0.5 0.0;
+               min: 1 1;
+               elipsis: -1;
             }
          }
          description { state: "hidden" 0.0;
@@ -29,6 +32,7 @@ group { name: "elm/entry/base/default";
          description { state: "default" 0.0;
             text {
                style: "entry_main_text";
+               align: 0.5 0.0;
                min: 1 1;
                elipsis: -1;
             }
