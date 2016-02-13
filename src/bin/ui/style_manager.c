@@ -64,6 +64,7 @@ struct _Style_Editor
    Evas_Object *entry_prev;
    Evas_Object *button_del;
    Evas_Object *menu;
+   Elm_Object_Item *menu_tag;
    Search_Data style_search_data;
    struct {
       const char *st_name;
@@ -819,9 +820,13 @@ _on_bt_add(void *data,
    assert(style_edit != NULL);
 
    evas_object_geometry_get(obj, &x, &y, NULL, &h);
-
    elm_menu_move(style_edit->menu, x, y + h);
    evas_object_show(style_edit->menu);
+
+   if (elm_genlist_selected_item_get(style_edit->glist))
+     elm_object_item_disabled_set(style_edit->menu_tag, false);
+   else
+     elm_object_item_disabled_set(style_edit->menu_tag, true);
 }
 
 /* Creating the view of the mwin!!! */
@@ -897,7 +902,7 @@ _form_right_side(Style_Editor *style_edit)
 
    style_edit->menu = elm_menu_add(ap.win);
    elm_menu_item_add(style_edit->menu, NULL, NULL, _("Style"), _on_bt_style_add, style_edit);
-   elm_menu_item_add(style_edit->menu, NULL, NULL, _("Tag"), _on_bt_tag_add, style_edit);
+   style_edit->menu_tag = elm_menu_item_add(style_edit->menu, NULL, NULL, _("Tag"), _on_bt_tag_add, style_edit);
 
    button_add = elm_button_add(ap.win);
    evas_object_show(button_add);
