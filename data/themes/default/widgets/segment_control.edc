@@ -7,7 +7,7 @@ group { name: "elm/segment_control/base/default";
    #define SEGMENT_STATE_SELECTED 3
    #define SEGMENT_STATUS_ENABLED 0
    #define SEGMENT_STATUS_DISABLED 1
-   #define MIN_MAX min: 0 24; max: -1 24;
+   #define MIN_MAX min: 0 19; max: -1 -1;
    parts {
       part { name: "bg";
          type: RECT;
@@ -15,12 +15,13 @@ group { name: "elm/segment_control/base/default";
          description {
             state: "default" 0.0;
             color: 0 0 0 0;
-            SET_SIZE(160, 26)
+            min: 100 19;
          }
       }
    }
 }
 group { name: "elm/segment_control/item/default";
+   /* TODO("Need to remake to programs with filters") */
    images {
       image: "segment_control_center.png" COMP;
       image: "segment_control_end.png" COMP;
@@ -157,7 +158,6 @@ group { name: "elm/segment_control/item/default";
          type: TEXT;
          mouse_events: 0;
          scale: 1;
-         effect: SHADOW BOTTOM;
          description {
             state: "default" 0.0;
             fixed: 1 1;
@@ -167,11 +167,13 @@ group { name: "elm/segment_control/item/default";
                offset: 0 -1;
             }
             rel2.offset: -6 -2;
-            color: FN_COL_DEFAULT;
+            color_class: "main";
             text {
-               font: FN;
-               size: 11;
-               text_class: "button";
+               font: "PT";
+               size: 12;
+               min: 1 1;
+               max: 1 1;
+               elipsis: -1;
             }
          }
          description { state: "pressed" 0.0;
@@ -181,7 +183,7 @@ group { name: "elm/segment_control/item/default";
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            color: FN_COL_DISABLE;
+            color_class: "main_disable";
          }
       }
       part { name: "disabler";
