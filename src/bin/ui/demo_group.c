@@ -38,20 +38,33 @@ typedef struct
    Eina_List *signal_list;
 } Part_Demo_List;
 
-static Elm_Genlist_Item_Class *itc_group;
+static Elm_Genlist_Item_Class *itc_swallow, *itc_text, *itc_signal;
 static Elm_Genlist_Item_Class *itc_part;
 static Elm_Genlist_Item_Class *itc_part_selected;
 static Elm_Genlist_Item_Class *itc_signals;
 
-static char *
-_group_label_get(void *data,
-                Evas_Object *obj __UNUSED__,
-                const char *pr __UNUSED__)
-{
-   assert(data);
-
-   return strdup(data);
+#define CAPTION_GENLIST_ITEM_TEXT_GET(TYPE, TITLE) \
+static char * \
+_##TYPE##_label_cb(void *data, \
+                   Evas_Object *obj __UNUSED__, \
+                   const char *part) \
+{ \
+   assert(data != NULL); \
+   char buf[5]; /* I'm really think that 5 symbol for parts count enough */ \
+   Part_Demo_List *pl = (Part_Demo_List *)data; \
+   if (!strcmp(part, "elm.text")) \
+     return strdup(TITLE); \
+   if (!strcmp(part, "elm.text.end")) \
+     { \
+        snprintf(buf, 5, "%d", eina_list_count(pl->TYPE##_list)); \
+        return strdup(buf); \
+     } \
+   return NULL; \
 }
+CAPTION_GENLIST_ITEM_TEXT_GET(swallow, "Swallows")
+CAPTION_GENLIST_ITEM_TEXT_GET(text, "Texts")
+CAPTION_GENLIST_ITEM_TEXT_GET(signal, "Signals")
+
 static char *
 _part_label_get(void *data,
                 Evas_Object *obj __UNUSED__,
@@ -228,12 +241,25 @@ demo_group_add(Group *group)
 
    pl->group = group;
    /* add some genlists */
-   if (!itc_group)
+   if (!itc_swallow)
      {
-        itc_group = elm_genlist_item_class_new();
-        itc_group->item_style = "part";
-        itc_group->func.text_get = _group_label_get;
+        itc_swallow = elm_genlist_item_class_new();
+        itc_swallow->item_style = "caption";
+        itc_swallow->func.text_get = _swallow_label_cb;
      }
+   if (!itc_text)
+     {
+        itc_text = elm_genlist_item_class_new();
+        itc_text->item_style = "caption";
+        itc_text->func.text_get = _text_label_cb;
+     }
+   if (!itc_signal)
+     {
+        itc_signal = elm_genlist_item_class_new();
+        itc_signal->item_style = "caption";
+        itc_signal->func.text_get = _signal_label_cb;
+     }
+
    if (!itc_part)
      {
         itc_part = elm_genlist_item_class_new();
@@ -269,26 +295,26 @@ demo_group_add(Group *group)
    evas_object_data_set(pl->genlist, DEMO_GROUP_DATA, pl);
 
    pl->it_swallow = elm_genlist_item_append(pl->genlist,
-                                        itc_group,
-                                        eina_stringshare_add("Swallows"),
-                                        NULL,
-                                        ELM_GENLIST_ITEM_TREE,
-                                        NULL,
-                                        NULL);
-   pl->it_text = elm_genlist_item_append(pl->genlist,
-                                     itc_group,
-                                     eina_stringshare_add("Text"),
-                                     NULL,
-                                     ELM_GENLIST_ITEM_TREE,
-                                     NULL,
-                                     NULL);
-   pl->it_signal = elm_genlist_item_append(pl->genlist,
-                                           itc_group,
-                                           eina_stringshare_add("Signals"),
-                                           NULL,
-                                           ELM_GENLIST_ITEM_TREE,
-                                           NULL,
-                                           NULL);
+                                            itc_swallow,
+                                            pl,
+                                            NULL,
+                                            ELM_GENLIST_ITEM_TREE,
+                                            NULL,
+                                            NULL);
+   pl->it_text =    elm_genlist_item_append(pl->genlist,
+                                            itc_text,
+                                            pl,
+                                            NULL,
+                                            ELM_GENLIST_ITEM_TREE,
+                                            NULL,
+                                            NULL);
+   pl->it_signal =  elm_genlist_item_append(pl->genlist,
+                                            itc_signal,
+                                            pl,
+                                            NULL,
+                                            ELM_GENLIST_ITEM_TREE,
+                                            NULL,
+                                            NULL);
 
    EINA_LIST_FOREACH(pl->group->parts, l, part)
      {
