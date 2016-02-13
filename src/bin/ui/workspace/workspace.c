@@ -906,6 +906,7 @@ workspace_highlight_unset(Evas_Object *obj)
    return true;
 }
 
+#if 0
 static void
 _sc_wheel_move(void *data,
                Evas *e __UNUSED__,
@@ -925,6 +926,7 @@ _sc_wheel_move(void *data,
         workspace_zoom_factor_set(workspace, factor - ev->z * 0.1);
      }
 }
+#endif /* #if 0 */
 
 static void
 _workspace_smart_add(Evas_Object *o)
@@ -1220,8 +1222,10 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    elm_object_part_content_set(priv->panes, "left",
                                priv->scroller);
 
+   /*
    evas_object_event_callback_add(priv->scroller, EVAS_CALLBACK_MOUSE_WHEEL,
                                   _sc_wheel_move, o);
+                                  */
    evas_object_smart_callback_add(priv->scroller, "scroll",
                                   _sc_smart_move_cb, o);
    evas_object_smart_callback_add(priv->scroller, "vbar,drag",
