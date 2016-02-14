@@ -129,7 +129,7 @@ static Evas_Object *
 prop_sound_editor_tone_frequency_add(Evas_Object *parent,
                                      Sound_Prop_Data *pd)
 {
-   PROPERTY_ITEM_ADD(parent, _("tone frequency"), "2swallow")
+   PROPERTY_ITEM_ADD(parent, _("requency"), "2swallow")
    SPINNER_ADD(item, pd->snd_data.tone_frq, 200, 20000, 10, false)
    elm_layout_content_set(item, "swallow.content1", pd->snd_data.tone_frq);
    elm_object_disabled_set(pd->snd_data.tone_frq, true);
@@ -661,13 +661,13 @@ _sample_info_create(Evas_Object *parent, Sound_Prop_Data *edit)
    BOX_ADD(edit->info_frame, edit->sample_box, false, false);
    elm_box_align_set(edit->sample_box, 0.5, 0.0);
 
-   item = prop_item_label_add(edit->sample_box, &edit->snd_data.file_name, _("file name:"), _(" - "));
+   item = prop_item_label_add(edit->sample_box, &edit->snd_data.file_name, _("file name"), _(" - "));
    elm_box_pack_end(edit->sample_box, item);
-   item = prop_item_label_add(edit->sample_box, &edit->snd_data.duration, _("duration:"), _(" - "));
+   item = prop_item_label_add(edit->sample_box, &edit->snd_data.duration, _("duration"), _(" - "));
    elm_box_pack_end(edit->sample_box, item);
-   item = prop_item_label_add(edit->sample_box, &edit->snd_data.type, _("type:"), _(" - "));
+   item = prop_item_label_add(edit->sample_box, &edit->snd_data.type, _("type"), _(" - "));
    elm_box_pack_end(edit->sample_box, item);
-   item = prop_item_label_add(edit->sample_box, &edit->snd_data.size, _("size:"), _(" - "));
+   item = prop_item_label_add(edit->sample_box, &edit->snd_data.size, _("size"), _(" - "));
    elm_box_pack_end(edit->sample_box, item);
 
    item = prop_sound_editor_compression_type_add(edit->sample_box, edit);
@@ -690,7 +690,7 @@ _tone_info_create(Evas_Object *parent, Sound_Prop_Data *edit)
    BOX_ADD(edit->info_frame, edit->tone_box, false, false);
    elm_box_align_set(edit->tone_box, 0.5, 0.0);
 
-   item = prop_item_label_add(edit->tone_box, &edit->snd_data.tone_name, _("name:"), _(" - "));
+   item = prop_item_label_add(edit->tone_box, &edit->snd_data.tone_name, _("name"), _(" - "));
    elm_box_pack_end(edit->tone_box, item);
 
    item = prop_sound_editor_tone_frequency_add(edit->tone_box, edit);
