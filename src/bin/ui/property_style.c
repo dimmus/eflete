@@ -779,17 +779,17 @@ CHANGE_CALLBACK(segment_ctrl, "underline", SEGMENT, NULL)
 static void
 _add_text_part(Style_Prop_Data *pd)
 {
-   ADD_1SWALLOW_ITEM(_("Font name:"), pd->box_frame_text, pd->font_name, item, EWE_COMBOBOX);
-   ADD_1SWALLOW_ITEM(_("Font style:"), pd->box_frame_text, pd->font_style, item, EWE_COMBOBOX);
+   ADD_1SWALLOW_ITEM(_("font name"), pd->box_frame_text, pd->font_name, item, EWE_COMBOBOX);
+   ADD_1SWALLOW_ITEM(_("font style"), pd->box_frame_text, pd->font_style, item, EWE_COMBOBOX);
    evas_object_smart_callback_add(pd->font_style, "selected", _on_font_style_change, pd);
    ADD_1SWALLOW_ITEM(_(""), pd->box_frame_text, pd->font_weight, item, EWE_COMBOBOX);
    evas_object_smart_callback_add(pd->font_weight, "selected", _on_font_weight_change, pd);
 
-   _prop_text_color_add(_("Color:"), pd->box_frame_text, &pd->font_color);
+   _prop_text_color_add(_("color"), pd->box_frame_text, &pd->font_color);
    evas_object_event_callback_add(pd->font_color, EVAS_CALLBACK_MOUSE_DOWN,
                                   _on_font_color_clicked, pd);
 
-   _prop_spin_add(_("Size:"), _(""), _("px"),
+   _prop_spin_add(_("size"), _(""), _("px"),
                   pd->box_frame_text, &pd->font_size, MIN_SP, MAX_SP, STEP_SP);
 
    evas_object_smart_callback_add(pd->font_size, "changed", _on_font_size_change, pd);
@@ -812,19 +812,19 @@ _add_text_frame(Style_Prop_Data *pd, Evas_Object *parent)
 static void
 _add_position_part(Style_Prop_Data *pd)
 {
-   ADD_1SWALLOW_ITEM(_("Horizontal align:"), pd->box_frame_position, pd->hor_align, item, EWE_COMBOBOX);
+   ADD_1SWALLOW_ITEM(_("horizontal align"), pd->box_frame_position, pd->hor_align, item, EWE_COMBOBOX);
    evas_object_smart_callback_add(pd->hor_align, "selected", _on_hor_align_change, pd);
 
-   ADD_1SWALLOW_ITEM(_("Vertical align:"), pd->box_frame_position, pd->vert_align, item, EWE_COMBOBOX);
+   ADD_1SWALLOW_ITEM(_("vertical align"), pd->box_frame_position, pd->vert_align, item, EWE_COMBOBOX);
    evas_object_smart_callback_add(pd->vert_align, "selected", _on_vert_align_change, pd);
 
-   _prop_spin_add(_("Margin:"), _("left"), _("px"), pd->box_frame_position, &pd->left_margin, MARGIN_MIN_SP, MAX_SP, STEP_SP);
+   _prop_spin_add(_("margin"), _("left"), _("px"), pd->box_frame_position, &pd->left_margin, MARGIN_MIN_SP, MAX_SP, STEP_SP);
    evas_object_smart_callback_add(pd->left_margin, "changed", _on_left_margin_change, pd);
 
    _prop_spin_add(_(""), _("right"), _("px"), pd->box_frame_position, &pd->right_margin, MARGIN_MIN_SP, MAX_SP, STEP_SP);
    evas_object_smart_callback_add(pd->right_margin, "changed", _on_right_margin_change, pd);
 
-   ADD_1SWALLOW_ITEM(_("Wrap:"), pd->box_frame_position, pd->wrap, item, EWE_COMBOBOX);
+   ADD_1SWALLOW_ITEM(_("wrap"), pd->box_frame_position, pd->wrap, item, EWE_COMBOBOX);
    evas_object_smart_callback_add(pd->wrap, "selected", _on_wrap_change, pd);
 }
 
@@ -845,25 +845,25 @@ _add_position_frame(Style_Prop_Data *pd, Evas_Object *parent)
 static void
 _add_text_format_part(Style_Prop_Data *pd)
 {
-   _prop_spin_add(_("Text tabstops:"), _(""), _("px"), pd->box_format_frame, &pd->tab_stops, MIN_SP, MAX_SP, STEP_SP);
+   _prop_spin_add(_("text tabstops"), _(""), _("px"), pd->box_format_frame, &pd->tab_stops, MIN_SP, MAX_SP, STEP_SP);
    evas_object_smart_callback_add(pd->tab_stops, "changed", _on_tab_stops_change, pd);
 
-   _prop_spin_add(_("Line size:"), _(""), _("px"), pd->box_format_frame, &pd->line_size, MIN_SP, MAX_SP, STEP_SP);
+   _prop_spin_add(_("line size"), _(""), _("px"), pd->box_format_frame, &pd->line_size, MIN_SP, MAX_SP, STEP_SP);
    evas_object_smart_callback_add(pd->line_size, "changed", _on_line_size_change, pd);
 
-   _add_1check_color_item(_("Background color"), pd->box_format_frame, &pd->check_color, &pd->bg_color);
+   _add_1check_color_item(_("background color"), pd->box_format_frame, &pd->check_color, &pd->bg_color);
    evas_object_smart_callback_add(pd->check_color, "changed", _on_check_color_change, pd);
    evas_object_event_callback_add(pd->bg_color, EVAS_CALLBACK_MOUSE_DOWN,
                                   _on_bg_color_clicked, pd);
 
-   ADD_1SWALLOW_ITEM(_("Password field:"), pd->box_format_frame, pd->check_psw, item, CHECK);
+   ADD_1SWALLOW_ITEM(_("password field"), pd->box_format_frame, pd->check_psw, item, CHECK);
    evas_object_smart_callback_add(pd->check_psw, "changed", _on_check_psw_change, pd);
 
-   _add_1check_spinner_item(_("Replace overflow characters with ellisis:"), pd->box_format_frame, &pd->check_ellipsis, &pd->replace_ellisis);
+   _add_1check_spinner_item(_("ellisis"), pd->box_format_frame, &pd->check_ellipsis, &pd->replace_ellisis);
    evas_object_smart_callback_add(pd->replace_ellisis, "changed", _on_replace_ellisis_change, pd);
    evas_object_smart_callback_add(pd->check_ellipsis, "changed", _on_check_ellipsis_change, pd);
 
-   _prop_spin_add(_("Line relative size:"), _(""), _("px"), pd->box_format_frame, &pd->relative_size, MIN_SP, MAX_SP, STEP_SP);
+   _prop_spin_add(_("line relative size"), _(""), _("px"), pd->box_format_frame, &pd->relative_size, MIN_SP, MAX_SP, STEP_SP);
    evas_object_smart_callback_add(pd->relative_size, "changed", _on_relative_size_change, pd);
 }
 
@@ -899,14 +899,14 @@ _add_glow_shadow_frame(Style_Prop_Data *pd, Evas_Object *parent)
 static void
 _add_inner_outer_part(Style_Prop_Data *pd)
 {
-   ADD_1SWALLOW_ITEM(_("Style:"), pd->box_glow_shadow, pd->style, item, EWE_COMBOBOX);
+   ADD_1SWALLOW_ITEM(_("style"), pd->box_glow_shadow, pd->style, item, EWE_COMBOBOX);
    evas_object_smart_callback_add(pd->style, "selected", _on_style_change, pd);
 
-   _prop_text_color_add(_("Outer glow color:"), pd->box_glow_shadow, &pd->outer_gl_color);
+   _prop_text_color_add(_("outer glow color"), pd->box_glow_shadow, &pd->outer_gl_color);
    evas_object_event_callback_add(pd->outer_gl_color, EVAS_CALLBACK_MOUSE_DOWN,
                                   _on_outer_gl_color_clicked, pd);
 
-   _prop_text_color_add(_("Inner glow color:"), pd->box_glow_shadow, &pd->inner_gl_color);
+   _prop_text_color_add(_("inner glow color"), pd->box_glow_shadow, &pd->inner_gl_color);
    evas_object_event_callback_add(pd->inner_gl_color, EVAS_CALLBACK_MOUSE_DOWN,
                                   _on_inner_gl_color_clicked, pd);
 }
@@ -917,7 +917,7 @@ _add_direction_item(Evas_Object *parent)
    Evas_Object *item_direction = elm_layout_add(parent);
    elm_layout_theme_set(item_direction, "layout", "style_editor", "direction");
    evas_object_show(item_direction);
-   PROPERTY_ITEM_ADD(parent, _("Direction:"), "1swallow_direction")
+   PROPERTY_ITEM_ADD(parent, _("direction"), "1swallow_direction")
    elm_layout_content_set(item, NULL, item_direction);
    elm_box_pack_end(parent, item);
 
@@ -927,10 +927,10 @@ _add_direction_item(Evas_Object *parent)
 static Evas_Object *
 _add_shadow_part(Style_Prop_Data *pd)
 {
-   ADD_1SWALLOW_ITEM(_("Style:"), pd->box_glow_shadow, pd->style, item, EWE_COMBOBOX);
+   ADD_1SWALLOW_ITEM(_("style"), pd->box_glow_shadow, pd->style, item, EWE_COMBOBOX);
    evas_object_smart_callback_add(pd->style, "selected", _on_style_change, pd);
 
-   _prop_text_color_add(_("Сolor:"), pd->box_glow_shadow, &pd->shadow_color);
+   _prop_text_color_add(_("color"), pd->box_glow_shadow, &pd->shadow_color);
    evas_object_event_callback_add(pd->shadow_color, EVAS_CALLBACK_MOUSE_DOWN,
                                   _on_shadow_color_clicked, pd);
 
@@ -940,16 +940,16 @@ _add_shadow_part(Style_Prop_Data *pd)
 static void
 _add_lines_part(Style_Prop_Data *pd)
 {
-   _add_1check_color_item(_("Strikethrough color"), pd->box_lines_frame, &pd->check_s_color, &pd->s_color);
+   _add_1check_color_item(_("strikethrough color"), pd->box_lines_frame, &pd->check_s_color, &pd->s_color);
    evas_object_smart_callback_add(pd->check_s_color, "changed", _on_check_s_color_change, pd);
    evas_object_event_callback_add(pd->s_color, EVAS_CALLBACK_MOUSE_DOWN,
                                   _on_s_color_clicked, pd);
 
-   _add_1check_2button_item(_("Underline"), pd->box_lines_frame, &pd->check_unline, &pd->segment_ctrl);
+   _add_1check_2button_item(_("underline"), pd->box_lines_frame, &pd->check_unline, &pd->segment_ctrl);
    evas_object_smart_callback_add(pd->check_unline, "changed", _on_check_unline_change, pd);
    evas_object_smart_callback_add(pd->segment_ctrl, "changed", _on_segment_ctrl_change, pd);
 
-   _prop_text_2color_add(_("Underline color:"), pd->box_lines_frame, &pd->outer_color_singl, &pd->outer_color_double);
+   _prop_text_2color_add(_("underline color"), pd->box_lines_frame, &pd->outer_color_singl, &pd->outer_color_double);
    evas_object_event_callback_add(pd->outer_color_singl, EVAS_CALLBACK_MOUSE_DOWN,
                                   _on_outer_color_singl_clicked, pd);
    evas_object_event_callback_add(pd->outer_color_double, EVAS_CALLBACK_MOUSE_DOWN,
