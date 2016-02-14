@@ -262,6 +262,12 @@ _add_sample_done(void *data,
         ERR(_("File '%s' is not exist"), selected);
         return false;
      }
+   if (ecore_file_is_dir(selected))
+     {
+        ERR(_("Unable to add folder"))
+        return true;
+     }
+
    file_name = ecore_file_file_get(selected);
    sound_name = eina_stringshare_add(file_name);
    EINA_LIST_FOREACH(samples_list, l, res)
