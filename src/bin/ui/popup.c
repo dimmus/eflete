@@ -299,8 +299,6 @@ _fileselector_helper(const char *title,
    elm_fileselector_path_set(fs, path ? path : profile_get()->general.projects_folder);
    evas_object_smart_callback_add(fs, "done", _done, follow_up);
    evas_object_smart_callback_add(fs, "activated", _done, follow_up);
-   /* small hack, hide not necessary button */
-   evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
    evas_object_size_hint_min_set(helper, FS_W, FS_H);
    evas_object_resize(helper, FS_W, FS_H);
 
