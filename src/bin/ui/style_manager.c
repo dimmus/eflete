@@ -905,6 +905,7 @@ _form_right_side(Style_Editor *style_edit)
    style_edit->menu_tag = elm_menu_item_add(style_edit->menu, NULL, NULL, _("Tag"), _on_bt_tag_add, style_edit);
 
    button_add = elm_button_add(ap.win);
+   elm_object_style_set(button_add, "anchor");
    evas_object_show(button_add);
    ic = elm_icon_add(button_add);
    elm_icon_standard_set(ic, "plus");
@@ -913,6 +914,7 @@ _form_right_side(Style_Editor *style_edit)
    elm_object_part_content_set(layout, "swallow.button_add", button_add);
 
    style_edit->button_del = elm_button_add(ap.win);
+   elm_object_style_set(style_edit->button_del, "anchor");
    evas_object_show(style_edit->button_del);
    ic = elm_icon_add(style_edit->button_del);
    elm_icon_standard_set(ic, "minus");

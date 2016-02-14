@@ -517,6 +517,7 @@ image_manager_add()
    evas_object_show(img_mng->gengrid);
 
    button = elm_button_add(img_mng->layout);
+   elm_object_style_set(button, "anchor");
    evas_object_show(button);
    ic = elm_icon_add(button);
    elm_icon_standard_set(ic, "plus");
@@ -527,6 +528,7 @@ image_manager_add()
                                "eflete.swallow.add_btn", button);
 
    img_mng->del_button = elm_button_add(img_mng->layout);
+   elm_object_style_set(img_mng->del_button, "anchor");
    evas_object_show(img_mng->del_button);
    ic = elm_icon_add(img_mng->del_button);
    elm_icon_standard_set(ic, "minus");

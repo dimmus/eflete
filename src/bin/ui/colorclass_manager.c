@@ -393,6 +393,7 @@ _form_list_side(Colorclasses_Manager *edit)
 
    /* Controls (add, remove) of colorclasses */
    button = elm_button_add(layout);
+   elm_object_style_set(button, "anchor");
    evas_object_show(button);
    ICON_STANDARD_ADD(button, ic, true, "plus");
    elm_object_part_content_set(button, NULL, ic);
@@ -401,6 +402,7 @@ _form_list_side(Colorclasses_Manager *edit)
    elm_object_part_content_set(layout, "swallow.button_add", button);
 
    edit->del_button = elm_button_add(layout);
+   elm_object_style_set(edit->del_button, "anchor");
    evas_object_show(edit->del_button);
    ICON_STANDARD_ADD(button, ic, true, "minus");
    elm_object_part_content_set(edit->del_button, NULL, ic);

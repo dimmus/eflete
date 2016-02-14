@@ -276,8 +276,8 @@ group { name: "elm/layout/style_color_editor/list";
       part { name: "swallow.button_rm";
          type: SWALLOW;
          description { state: "default" 0.0;
-            align: 0.0 0.0;
-            FIXED_SIZE(31, 21);
+            align: 1.0 0.0;
+            FIXED_SIZE(18, 19);
             rel1 {
                to: "label.list";
                relative: 1.0 0.0;
@@ -287,22 +287,22 @@ group { name: "elm/layout/style_color_editor/list";
       part { name: "pad_between_but";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0.0 0.0;
-            FIXED_SIZE(6, 21);
-            rel1 {
+            align: 1.0 0.0;
+            FIXED_SIZE(3, 21);
+            rel2 {
                to: "swallow.button_rm";
-               relative: 1.0 0.0;
+               relative: 0.0 0.0;
             }
          }
       }
       part { name: "swallow.button_add";
          type: SWALLOW;
          description { state: "default" 0.0;
-            align: 0.0 0.0;
-            FIXED_SIZE(31, 21);
-            rel1 {
+            align: 1.0 0.0;
+            FIXED_SIZE(18, 19);
+            rel2 {
                to: "pad_between_but";
-               relative: 1.0 0.0;
+               relative: 0.0 0.0;
             }
          }
       }
@@ -933,8 +933,8 @@ group { name: "elm/layout/image_manager/default";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 0.0;
-            min: 30 19;
-            max: 30 19;
+            min: 18 19;
+            max: 18 19;
             rel1 {
                to: "area.edit";
             }
@@ -947,8 +947,8 @@ group { name: "elm/layout/image_manager/default";
          type: SPACER;
          description { state: "default" 0.0;
             align: 1.0 1.0;
-            min: 6 6;
-            max: 6 6;
+            min: 3 3;
+            max: 3 3;
             rel1 {
                to: "area.edit";
             }
@@ -962,8 +962,8 @@ group { name: "elm/layout/image_manager/default";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 1.0;
-            min: 30 19;
-            max: 30 19;
+            min: 18 19;
+            max: 18 19;
             rel1 {
                to: "area.edit";
             }

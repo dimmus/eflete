@@ -597,6 +597,7 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    evas_object_data_set(edit->markup, SND_EDIT_KEY, edit);
 
    edit->btn_del = elm_button_add(edit->markup);
+   elm_object_style_set(edit->btn_del, "anchor");
    evas_object_smart_callback_add(edit->btn_del, "clicked", _on_delete_clicked_cb, edit);
    elm_object_part_content_set(edit->markup, "eflete.swallow.del_btn", edit->btn_del);
 
@@ -606,6 +607,7 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    elm_object_disabled_set(edit->btn_del, true);
 
    edit->btn_add = elm_button_add(edit->markup);
+   elm_object_style_set(edit->btn_add, "anchor");
    evas_object_smart_callback_add(edit->btn_add, "clicked", _on_btn_plus_clicked, edit);
    elm_object_part_content_set(edit->markup, "eflete.swallow.add_btn", edit->btn_add);
 
