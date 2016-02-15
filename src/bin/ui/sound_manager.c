@@ -16,6 +16,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
+
 #include "main_window.h"
 #include "project_manager.h"
 #include "modal_window.h"
@@ -448,7 +452,7 @@ _tone_add_cb(void *data,
    elm_object_content_set(popup, box);
    LAYOUT_PROP_ADD(box, _("Tone name:"), "property", "1swallow")
    ENTRY_ADD(item, edit->tone_entry, true);
-   //eo_do(edit->tone_entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, edit->tone_validator));
+   eo_do(edit->tone_entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, edit->tone_validator));
    evas_object_smart_callback_add(edit->tone_entry, "changed", _validation, edit);
    elm_object_part_text_set(edit->tone_entry, "guide", _("Type a new tone name"));
    /* need to manualy set not valid string for triggered validator */
@@ -458,7 +462,7 @@ _tone_add_cb(void *data,
 
    LAYOUT_PROP_ADD(box, _("Frequency:"), "property", "1swallow")
    ENTRY_ADD(item, edit->frq_entry, true);
-   //eo_do(edit->frq_entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, edit->frq_validator));
+   eo_do(edit->frq_entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, edit->frq_validator));
    evas_object_smart_callback_add(edit->frq_entry, "changed", _validation, edit);
    elm_object_part_text_set(edit->frq_entry, "guide", _("Type a frequency (20 - 20000)"));
    /* need to manualy set not valid string for triggered validator */
