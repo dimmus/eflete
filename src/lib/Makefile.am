@@ -60,4 +60,4 @@ ewe_combobox.eo.h \
 ewe_ruler.eo.c \
 ewe_ruler.eo.h
 
-EXTRA_DIST = $(BUILT_SOURCES)
+EXTRA_DIST = ewe_combobox.eo ewe_ruler.eo
