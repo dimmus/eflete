@@ -66,7 +66,7 @@ _on_button_add_clicked_cb(void *data __UNUSED__,
                           Evas_Object *obj __UNUSED__,
                           void *event_info __UNUSED__)
 {
-   Evas_Object *box, *item;
+   Evas_Object *item;
    Colorclasses_Manager *edit = (Colorclasses_Manager *)data;
    Colorclass_Item *it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
@@ -75,23 +75,16 @@ _on_button_add_clicked_cb(void *data __UNUSED__,
 
    assert(edit != NULL);
 
-   box = elm_box_add(ap.win);
-   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
-
    edit->name_validator = resource_name_validator_new(NAME_REGEX, NULL);
    resource_name_validator_list_set(edit->name_validator, &ap.project->colorclasses, true);
-   LAYOUT_PROP_ADD(box, _("Color class name: "), "property", "1swallow")
-   ENTRY_ADD(box, edit->entry, true);
+   LAYOUT_PROP_ADD(ap.win, _("Color class name: "), "property", "1swallow")
+   ENTRY_ADD(item, edit->entry, true);
    eo_do(edit->entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, edit->name_validator));
    evas_object_smart_callback_add(edit->entry, "changed", _validation, edit);
    elm_object_part_text_set(edit->entry, "guide", _("Type new color class name here"));
    elm_object_part_content_set(item, "elm.swallow.content", edit->entry);
 
-   elm_box_pack_end(box, item);
-   elm_box_pack_end(box, edit->entry);
-
-   btn_res = popup_want_action(_("Create a new layout"), NULL, box,
+   btn_res = popup_want_action(_("Create a new layout"), NULL, item,
                                edit->entry, BTN_OK|BTN_CANCEL,
                                NULL, edit->entry);
 
@@ -120,7 +113,7 @@ _on_button_add_clicked_cb(void *data __UNUSED__,
 
 end:
    resource_name_validator_free(edit->name_validator);
-   evas_object_del(box);
+   evas_object_del(item);
 }
 
 static void
