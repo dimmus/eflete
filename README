@@ -1,5 +1,3 @@
-
-
 EFL Edje Theme Editor (eflete)
 
 This is a EFL theme editor with some convenient functions. Eflete oriented
@@ -8,11 +6,11 @@ towards theme editor and UI design, and not GUI over the edc syntax.
 Requirements:
 -------------
 
-   * efl (>= 1.16.0 && < 1.16.2)
-   * elementary (>= 1.16.0 && < 1.16.2)
+   * efl (>= 1.17.0 && < 1.17.99)
+   * elementary (>= 1.17.0 && < 1.17.99)
 
 Please note that some features may not quite function correctly or
-completely on EFL 1.14.0
+completely on EFL 1.17.0
 
 Please see http://www.enlightenment.org for information on these.
 
