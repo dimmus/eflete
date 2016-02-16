@@ -60,7 +60,7 @@ src/bin/ui/project_navigator.c
 src/bin/ui/group_navigator.c
 src/bin/ui/preference/preference.c
 src/bin/ui/project_close.c
-src/bin/ui/property.c
+src/bin/ui/property/property.c
 src/bin/ui/shortcuts/shortcuts.c
 src/bin/ui/splash.c
 src/bin/ui/tab_home_open.c

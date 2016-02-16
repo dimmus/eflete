@@ -33,9 +33,7 @@ includesub_HEADERS = \
 	ui/main_window.h \
 	ui/project_common.h \
 	ui/project_navigator.h \
-	ui/property.h \
-	ui/property_macros.h \
-	ui/property_private.h \
+	ui/property/property.h \
 	ui/tabs.h \
 	ui/tabs_private.h \
 	ui/container/container.h \
@@ -103,14 +101,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/tab_home_import_edj.c \
 ../../src/bin/ui/tab_home_import_edc.c \
 ../../src/bin/ui/tab_home_info.c \
-../../src/bin/ui/property.c \
-../../src/bin/ui/property_group.c \
-../../src/bin/ui/property_image.c \
-../../src/bin/ui/property_sound.c \
-../../src/bin/ui/property_style.c \
-../../src/bin/ui/property_color.c \
-../../src/bin/ui/property_demo_swallow.c \
-../../src/bin/ui/property_demo_text.c \
+../../src/bin/ui/property/property.c \
 ../../src/bin/ui/workspace/workspace.c \
 ../../src/bin/ui/workspace/groupedit_calc.c \
 ../../src/bin/ui/workspace/groupedit.c \
@@ -165,6 +156,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/bin/project_manager \
 -I${top_srcdir}/src/bin/config \
 -I${top_srcdir}/src/bin/ui \
+-I${top_srcdir}/src/bin/ui/property \
 -I${top_srcdir}/src/bin/ui/shortcuts \
 -I${top_srcdir}/src/bin/ui/container \
 -I${top_srcdir}/src/bin/ui/blocks \
