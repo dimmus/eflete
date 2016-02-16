@@ -18,9 +18,39 @@
  */
 
 #include "property.h"
+#include "property_private.h"
+
+Property_Data pd;
 
 Evas_Object *
-property_add(Evas_Object *parent __UNUSED__)
+property_add(Evas_Object *parent)
 {
-   return NULL;
+   assert(parent != NULL);
+
+   pd.genlist = elm_genlist_add(parent);
+   return pd.genlist;
+}
+
+void
+property_mode_set(Property_Mode mode)
+{
+   assert (pd.genlist != NULL);
+
+   if (mode == pd.mode) return;
+
+   pd.mode = mode;
+   DBG("changing property mode to %d", mode);
+
+   elm_genlist_clear(pd.genlist);
+   switch (mode)
+     {
+      case PROPERTY_MODE_NONE:
+      case PROPERTY_MODE_GROUP:
+      case PROPERTY_MODE_COLOR_CLASS:
+      case PROPERTY_MODE_STYLE:
+      case PROPERTY_MODE_SOUND:
+      case PROPERTY_MODE_IMAGE:
+      case PROPERTY_MODE_DEMO:
+         break;
+     }
 }

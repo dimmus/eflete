@@ -17,20 +17,9 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "eflete.h"
+typedef struct {
+   Evas_Object *genlist;
+   Property_Mode mode;
+} Property_Data;
 
-typedef enum {
-   PROPERTY_MODE_NONE,
-   PROPERTY_MODE_GROUP,
-   PROPERTY_MODE_COLOR_CLASS,
-   PROPERTY_MODE_STYLE,
-   PROPERTY_MODE_SOUND,
-   PROPERTY_MODE_IMAGE,
-   PROPERTY_MODE_DEMO
-} Property_Mode;
-
-Evas_Object *
-property_add(Evas_Object *parent);
-
-void
-property_mode_set(Property_Mode mode);
+extern Property_Data pd;
