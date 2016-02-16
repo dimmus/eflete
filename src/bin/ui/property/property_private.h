@@ -17,9 +17,14 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#ifndef PROPERTY_PRIVATE_H
+#define PROPERTY_PRIVATE_H
+
 typedef struct {
    Evas_Object *genlist;
    Property_Mode mode;
 } Property_Data;
 
 extern Property_Data pd;
+
+#endif /* PROPERTY_PRIVATE_H */

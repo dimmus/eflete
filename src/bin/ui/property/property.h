@@ -17,6 +17,9 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#ifndef PROPERTY_H
+#define PROPERTY_H
+
 #include "eflete.h"
 
 typedef enum {
@@ -34,3 +37,5 @@ property_add(Evas_Object *parent);
 
 void
 property_mode_set(Property_Mode mode);
+
+#endif /* PROPERTY_H */
