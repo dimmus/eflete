@@ -1,4 +1,11 @@
-group { name: "elm/layout/property/1swallow";
+group { name: "elm/genlist/item/1swallow/default";
+   data {
+      item: "texts" "elm.text";
+      item: "treesize" "20";
+      item: "contents" "elm.swallow.content";
+      item: "stacking" "above";
+      item: "selectraise" "on";
+   }
    parts {
       part { name: "area.base";
          type: SPACER;
@@ -48,7 +55,13 @@ group { name: "elm/layout/property/1swallow";
    }
 }
 
-group { name: "elm/layout/property/colorselector_item";
+group { name: "elm/genlist/item/colorselector_item/default";
+   data {
+      item: "treesize" "20";
+      item: "contents" "elm.swallow.content";
+      item: "stacking" "above";
+      item: "selectraise" "on";
+   }
    parts {
       part { name: "elm.swallow.content";
          type: SWALLOW;
@@ -66,7 +79,14 @@ group { name: "elm/layout/property/colorselector_item";
    }
 }
 
-group { name: "elm/layout/property/1swallow_subtext";
+group { name: "elm/genlist/item/1swallow_subtext/default";
+   data {
+      item: "texts" "elm.text elm.subtext";
+      item: "treesize" "20";
+      item: "contents" "elm.swallow.content";
+      item: "stacking" "above";
+      item: "selectraise" "on";
+   }
    parts {
       part { name: "area.base";
          type: SPACER;
@@ -138,7 +158,14 @@ group { name: "elm/layout/property/1swallow_subtext";
    }
 }
 
-group { name: "elm/layout/property/1swallow_direction";
+group { name: "elm/genlist/item/1swallow_direction/default";
+   data {
+      item: "texts" "elm.text";
+      item: "treesize" "20";
+      item: "contents" "elm.swallow.content";
+      item: "stacking" "above";
+      item: "selectraise" "on";
+   }
    parts {
       part { name: "area.base";
          type: SPACER;
@@ -197,7 +224,14 @@ group { name: "elm/layout/property/1swallow_direction";
    }
 }
 
-group { name: "elm/layout/property/2swallow";
+group { name: "elm/genlist/item/2swallow/default";
+   data {
+      item: "texts" "elm.text label.swallow1.start label.swallow1.end label.swallow2.start label.swallow2.end";
+      item: "treesize" "20";
+      item: "contents" "swallow.content1 swallow.content2";
+      item: "stacking" "above";
+      item: "selectraise" "on";
+   }
    parts {
       part { name: "area.content";
          type: SPACER;
@@ -390,7 +424,14 @@ group { name: "elm/layout/property/2swallow";
    }
 }
 
-group { name: "elm/layout/property/2swallow_pad";
+group { name: "elm/genlist/item/2swallow_pad/default";
+   data {
+      item: "texts" "elm.text label.swallow1.start label.swallow1.end label.swallow2.start label.swallow2.end";
+      item: "treesize" "20";
+      item: "contents" "elm.swallow.content swallow.content1 swallow.content2";
+      item: "stacking" "above";
+      item: "selectraise" "on";
+   }
    parts {
       part { name: "area.content";
          type: SPACER;
@@ -600,7 +641,14 @@ group { name: "elm/layout/property/2swallow_pad";
    }
 }
 
-group { name: "elm/layout/property/2swallow_vertical";
+group { name: "elm/genlist/item/2swallow_vertical/default";
+   data {
+      item: "texts" "elm.text label.swallow1.start label.swallow1.end label.swallow2.start label.swallow2.end";
+      item: "treesize" "20";
+      item: "contents" "swallow.content1 swallow.content2";
+      item: "stacking" "above";
+      item: "selectraise" "on";
+   }
    parts {
       part { name: "area.content";
          type: SPACER;
@@ -824,7 +872,14 @@ group { name: "elm/layout/property/2swallow_vertical";
    }
 }
 
-group { name: "elm/layout/property/2swallow_vertical_pad";
+group { name: "elm/genlist/item/2swallow_vertical_pad/default";
+   data {
+      item: "texts" "elm.text label.swallow1.start label.swallow1.end label.swallow2.start label.swallow2.end";
+      item: "treesize" "20";
+      item: "contents" "swallow.content1 swallow.content2";
+      item: "stacking" "above";
+      item: "selectraise" "on";
+   }
    parts {
       part { name: "area.content";
          type: SPACER;
@@ -1046,7 +1101,13 @@ group { name: "elm/layout/property/2swallow_vertical_pad";
    }
 }
 
-group { name: "elm/layout/property/color";
+group { name: "elm/genlist/item/color/default";
+   data {
+      item: "treesize" "20";
+      item: "contents" "elm.swallow.content";
+      item: "stacking" "above";
+      item: "selectraise" "on";
+   }
    images {
       image: "color-background-50x19.png" COMP;
       image: "color-disable-50x19.png" COMP;
@@ -1171,7 +1232,13 @@ group { name: "elm/layout/property/color";
    }
 }
 
-group { name: "elm/layout/property/tween";
+group { name: "elm/genlist/item/tween/default";
+   data {
+      item: "treesize" "20";
+      item: "contents" "elm.swallow.add elm.swallow.del elm.swallow.content";
+      item: "stacking" "above";
+      item: "selectraise" "on";
+   }
    parts {
       part { name: "elm.swallow.add";
          type: SWALLOW;

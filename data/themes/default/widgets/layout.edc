@@ -1,7 +1,6 @@
 #include "layouts/style_editor.edc"
 #include "layouts/colorclass_manager.edc"
 #include "layouts/live_view_toolbar_helper.edc"
-#include "layouts/property.edc"
 #include "layouts/signal_list.edc"
 #include "layouts/history.edc"
 #include "layouts/tabs.edc"
