@@ -1102,19 +1102,19 @@ DIRECT_ADD(tr, "top_right", "tr", 7)
 static Eina_Bool
 _check_value(const char *list[], const char *value)
 {
-   Eina_Bool not_exist = true;
+   Eina_Bool exist = false;
    int i = 0;
 
    for (i = 0; list[i] != NULL; i++)
      {
         if (!strcmp(value, list[i]))
           {
-             not_exist = false;
+             exist = true;
              break;
           }
      }
 
-   return not_exist;
+   return exist;
 }
 
 static void
