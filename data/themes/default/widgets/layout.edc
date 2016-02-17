@@ -1952,7 +1952,7 @@ group { name: "elm/layout/groupview/default";
    }
 }
 
-#include "layouts/style_editor.edc"
+#include "layouts/style_manager.edc"
 #include "layouts/colorclass_manager.edc"
 #include "layouts/live_view_toolbar_helper.edc"
 #include "layouts/property.edc"
