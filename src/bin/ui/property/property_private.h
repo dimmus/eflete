@@ -53,4 +53,13 @@ struct _Property_Attribute {
    Eina_Bool expanded : 1; /**< if true initial state will be expanded */
    Eina_Bool realized : 1; /**< if item is not realized update callback will not be called */
 };
+
+
+/* dummy submodule. for implementation tests. will be deleted later */
+void
+property_dummy_init();
+
+Eina_List *
+property_dummy_items_get();
+
 #endif /* PROPERTY_PRIVATE_H */
