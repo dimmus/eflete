@@ -38,6 +38,68 @@ MODE_CB(_style_mode, PROPERTY_MODE_STYLE)
 MODE_CB(_color_class_mode, PROPERTY_MODE_COLOR_CLASS)
 MODE_CB(_group_mode, PROPERTY_MODE_GROUP)
 
+static void
+_items_add(Eina_List **items, Elm_Object_Item *parent)
+{
+   Property_Attribute *pa;
+
+   EINA_LIST_FREE(*items, pa)
+     {
+        pa->glit = elm_genlist_item_append(pd.genlist,
+                                           pa->itc,
+                                           pa,
+                                           parent,
+                                           (pa->expand_cb != NULL) ? ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE,
+                                           NULL,
+                                           NULL);
+        if (pa->expanded)
+          elm_genlist_item_expanded_set(pa->glit, true);
+
+     }
+}
+
+static void
+_expand_request_cb(void *data __UNUSED__,
+                   Evas_Object *o __UNUSED__,
+                   void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, true);
+}
+
+static void
+_contract_request_cb(void *data __UNUSED__,
+                     Evas_Object *o __UNUSED__,
+                     void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, false);
+}
+
+static void
+_expanded_cb(void *data __UNUSED__,
+             Evas_Object *o __UNUSED__,
+             void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   Property_Attribute *pa = elm_object_item_data_get(glit);
+   Eina_List *items;
+
+   assert(pa != NULL);
+   assert(pa->expand_cb != NULL);
+
+   items = pa->expand_cb(pa);
+   _items_add(&items, pa->glit);
+}
+
+static void
+_contracted_cb(void *data __UNUSED__,
+               Evas_Object *o __UNUSED__,
+               void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_subitems_clear(glit);
+}
 
 Evas_Object *
 property_add(Evas_Object *parent)
@@ -52,12 +114,20 @@ property_add(Evas_Object *parent)
    evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _group_mode, NULL);
 
    pd.genlist = elm_genlist_add(parent);
+
+   evas_object_smart_callback_add(pd.genlist, "expand,request", _expand_request_cb, NULL);
+   evas_object_smart_callback_add(pd.genlist, "contract,request", _contract_request_cb, NULL);
+   evas_object_smart_callback_add(pd.genlist, "expanded", _expanded_cb, NULL);
+   evas_object_smart_callback_add(pd.genlist, "contracted", _contracted_cb, NULL);
+
    return pd.genlist;
 }
 
 void
 property_mode_set(Property_Mode mode)
 {
+   Eina_List *items = NULL;
+
    assert (pd.genlist != NULL);
 
    if (mode == pd.mode) return;
@@ -77,4 +147,5 @@ property_mode_set(Property_Mode mode)
       case PROPERTY_MODE_DEMO:
          break;
      }
+   _items_add(&items, NULL);
 }
