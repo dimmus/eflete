@@ -169,7 +169,7 @@ group { name: "elm/layout/style_manager/default";
    }
 }
 
-group { name: "elm/layout/style_editor/preview";
+group { name: "elm/layout/style_manager/preview";
    parts {
       part {
          name: "background";

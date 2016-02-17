@@ -936,7 +936,7 @@ style_manager_add()
    elm_layout_text_set(main_layout, "elm.subtext", _("Font list"));
 
    style_edit->entry_prev = elm_layout_add(main_layout);
-   elm_layout_theme_set(style_edit->entry_prev, "layout", "style_editor", "preview");
+   elm_layout_theme_set(style_edit->entry_prev, "layout", "style_manager", "preview");
    evas_object_show(style_edit->entry_prev);
    elm_object_signal_emit(style_edit->entry_prev, "entry,hide", "eflete");
 
