@@ -27,4 +27,28 @@ typedef struct {
 
 extern Property_Data pd;
 
+typedef struct _Property_Attribute Property_Attribute;
+typedef void (* Property_Cb) (Property_Attribute *);
+typedef Eina_List * (* Property_Expand_Cb) (Property_Attribute *);
+
+typedef struct {
+   Evas_Object *control; /**< pointer to widget */
+   Property_Cb start_cb;
+   Property_Cb change_cd;
+   Property_Cb stop_cb;
+} Property_Action;
+
+struct _Property_Attribute {
+   Eina_Stringshare *name;
+   Attribute type;
+   void *data;
+   Elm_Genlist_Item_Class *itc;
+   Elm_Object_Item *glit; /**< reference to gennlist item iteself */
+   Property_Cb update_cb; /**< called when item is realized and control's values should be updated */
+   Property_Action action1; /**< first control */
+   Property_Action action2; /**< second control */
+   Property_Expand_Cb expand_cb; /**< if not NULL - item is tree node. This cb will be called to get subitems */
+   Eina_Bool expanded : 1; /**< if true initial state will be expanded */
+   Eina_Bool realized : 1; /**< if item is not realized update callback will not be called */
+};
 #endif /* PROPERTY_PRIVATE_H */
