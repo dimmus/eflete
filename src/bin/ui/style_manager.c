@@ -1003,8 +1003,8 @@ style_manager_add()
      }
 
    style_edit->menu = elm_menu_add(ap.win);
-   elm_menu_item_add(style_edit->menu, NULL, NULL, _("Style"), _on_bt_style_add, style_edit);
-   style_edit->menu_tag = elm_menu_item_add(style_edit->menu, NULL, NULL, _("Tag"), _on_bt_tag_add, style_edit);
+   elm_menu_item_add(style_edit->menu, NULL, "text_style", _("Style"), _on_bt_style_add, style_edit);
+   style_edit->menu_tag = elm_menu_item_add(style_edit->menu, NULL, "text_style_tag", _("Tag"), _on_bt_tag_add, style_edit);
 
    button_add = elm_button_add(ap.win);
    elm_object_style_set(button_add, "anchor");
