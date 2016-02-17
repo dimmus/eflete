@@ -34,6 +34,8 @@ includesub_HEADERS = \
 	ui/project_common.h \
 	ui/project_navigator.h \
 	ui/property/property.h \
+	ui/property/property_common.h \
+	ui/property/property_private.h \
 	ui/tabs.h \
 	ui/tabs_private.h \
 	ui/container/container.h \
@@ -102,6 +104,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/tab_home_import_edc.c \
 ../../src/bin/ui/tab_home_info.c \
 ../../src/bin/ui/property/property.c \
+../../src/bin/ui/property/property_common.c \
 ../../src/bin/ui/workspace/workspace.c \
 ../../src/bin/ui/workspace/groupedit_calc.c \
 ../../src/bin/ui/workspace/groupedit.c \

@@ -23,6 +23,8 @@
 typedef struct {
    Evas_Object *genlist;
    Property_Mode mode;
+
+   Elm_Genlist_Item_Class *itc_caption;
 } Property_Data;
 
 extern Property_Data pd;

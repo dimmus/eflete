@@ -19,6 +19,7 @@
 
 #include "property.h"
 #include "property_private.h"
+#include "property_common.h"
 
 Property_Data pd;
 
@@ -105,6 +106,8 @@ Evas_Object *
 property_add(Evas_Object *parent)
 {
    assert(parent != NULL);
+
+   property_common_itc_init();
 
    evas_object_smart_callback_add(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, _none_mode, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_IMAGE_EDITOR_TAB_CLICKED, _image_mode, NULL);
