@@ -1,11 +1,3 @@
-#include "layouts/style_editor.edc"
-#include "layouts/colorclass_manager.edc"
-#include "layouts/live_view_toolbar_helper.edc"
-#include "layouts/property.edc"
-#include "layouts/signal_list.edc"
-#include "layouts/history.edc"
-#include "layouts/tabs.edc"
-
 group { name: "elm/layout/window/main";
    images {
       image: "status-top_border-bg.png" COMP;
@@ -256,110 +248,164 @@ group{ name: "elm/layout/colorclass_editor/preview";
    }
 }
 
-group { name: "elm/layout/style_color_editor/list";
+group { name: "elm/layout/style_manager/default";
    parts {
-      part { name: "label.list";
+      part { name: "elm.text";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
-            fixed: 1 1;
+            fixed: 0 1;
+            max: -1 19;
             color_class: "main";
-            max: 232 19;
+            rel1 {
+               offset: 0 2;
+            }
+            rel2 {
+               offset: -7 -1;
+               to_x: "separator";
+            }
             text {
                font: "PT";
                size: 12;
-               align: 0.0 0.0;
+               max: 1 0;
             }
          }
       }
-      part { name: "swallow.button_rm";
+      part { name: "elm.swallow.preview";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
-            align: 1.0 0.0;
-            FIXED_SIZE(18, 19);
+            align: 0.0 0.5;
             rel1 {
-               to: "label.list";
-               relative: 1.0 0.0;
-            }
-         }
-      }
-      part { name: "pad_between_but";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            FIXED_SIZE(3, 21);
-            rel2 {
-               to: "swallow.button_rm";
-               relative: 0.0 0.0;
-            }
-         }
-      }
-      part { name: "swallow.button_add";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            FIXED_SIZE(18, 19);
-            rel2 {
-               to: "pad_between_but";
-               relative: 0.0 0.0;
-            }
-         }
-      }
-      part { name: "pad_list";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.5 0.0;
-            fixed: 0 1;
-            max: -1 6;
-            rel1 {
-               to: "label.list";
                relative: 0.0 1.0;
+               offset: 0 6;
+               to_y: "elm.text";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               offset: -7 -7;
+               to_x: "separator";
+               to_y: "elm.swallow.menu";
             }
          }
       }
-      part { name: "pad_bottom";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 1.0;
-            fixed: 1 1;
-            max: -1 6;
-         }
-      }
-      part { name: "swallow.search";
+      part { name: "elm.swallow.menu";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
-            align: 0.0 1.0;
-            fixed: 1 1;
+            align: 1.0 1.0;
+            fixed: 0 1;
             max: -1 19;
             rel2 {
-               to: "pad_bottom";
-               relative: 1.0 0.0;
+               offset: -1 -7;
+               to_x: "elm.swallow.preview";
             }
          }
       }
-      part { name: "pad_list_between_search";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 1.0;
-            fixed: 1 1;
-            max: -1 6;
-            rel2 {
-               to: "swallow.search";
-               relative: 1.0 0.0;
-            }
-         }
-      }
-      part { name: "swallow.list";
+      part { name: "elm.swallow.list";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
+            align: 1.0 1.0;
+            fixed: 1 0;
+            max: 300 -1;
             rel1 {
-               to: "pad_list";
                relative: 0.0 1.0;
+               offset: 0 6;
+               to_y: "elm.text";
             }
             rel2 {
-               to: "pad_list_between_search";
                relative: 1.0 0.0;
+               offset: -1 -6;
+               to_y: "elm.swallow.search";
+            }
+         }
+      }
+      part { name: "separator";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 0;
+            min: 2 1;
+            max: 2 -1;
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -7 -1;
+               to_x: "elm.swallow.list";
+            }
+            image {
+               normal: "separator-vertical.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "elm.subtext";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: -1 19;
+            color_class: "main";
+            rel1 {
+               offset: 0 2;
+               to_x: "elm.swallow.list";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "elm.swallow.btn_add";
+            }
+            text {
+               font: "PT";
+               size: 12;
+               max: 1 0;
+            }
+         }
+      }
+      part { name: "elm.swallow.btn_del";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            max: 18 19;
+            rel1 {
+               to_y: "elm.subtext";
+            }
+            rel2 {
+               to_y: "elm.subtext";
+            }
+         }
+      }
+      part { name: "elm.swallow.btn_add";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            max: 18 19;
+            rel1 {
+               to_y: "elm.subtext";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -4 -1;
+               to_x: "elm.swallow.btn_del";
+               to_y: "elm.subtext";
+            }
+         }
+      }
+      part { name: "elm.swallow.search";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            max: -1 19;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 0;
+               to_x: "separator";
+            }
+            rel2 {
+               offset: -1 -7;
             }
          }
       }
@@ -1905,3 +1951,13 @@ group { name: "elm/layout/groupview/default";
       target: "bg";
    }
 }
+
+#include "layouts/style_editor.edc"
+#include "layouts/colorclass_manager.edc"
+#include "layouts/live_view_toolbar_helper.edc"
+#include "layouts/property.edc"
+#include "layouts/signal_list.edc"
+#include "layouts/history.edc"
+#include "layouts/tabs.edc"
+
+
