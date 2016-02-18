@@ -38,6 +38,8 @@ typedef struct _Property_Action Property_Action;
 typedef struct {
    Evas_Object *genlist;
    Property_Mode mode;
+   Property_Action *started_action;
+   Property_Attribute *started_pa;
 
    Elm_Genlist_Item_Class *itc_caption;
    Elm_Genlist_Item_Class *itc_1swallow;
