@@ -196,7 +196,6 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          evas_object_smart_callback_add(content, "selected", _start_change_stop_cb, pa);
          return content;
       case PROPERTY_CONTROL_SPINNER:
-         TODO("handle min/max/step if they are needed");
          SPINNER_ADD(parent, content, 0.0, 9999.0, 1.0, true);
          evas_object_smart_callback_add(content, "spinner,drag,start", _start_cb, pa);
          evas_object_smart_callback_add(content, "spinner,drag,stop", _stop_cb, pa);
@@ -276,6 +275,8 @@ _1swallow_content_get(void *data,
      {
         content = _control_create(pa, &pa->action1, obj);
         pa->action1.control = content;
+        if (pa->action1.init_cb != NULL)
+          pa->action1.init_cb(pa, &pa->action1);
         return content;
      }
 
@@ -309,12 +310,16 @@ _2swallow_content_get(void *data,
      {
         content = _control_create(pa, &pa->action1, obj);
         pa->action1.control = content;
+        if (pa->action1.init_cb != NULL)
+          pa->action1.init_cb(pa, &pa->action1);
         return content;
      }
    if ((pa->action2.control_type != PROPERTY_CONTROL_NONE) && (!strcmp(part, "swallow.action2")))
      {
         content = _control_create(pa, &pa->action2, obj);
         pa->action2.control = content;
+        if (pa->action2.init_cb != NULL)
+          pa->action2.init_cb(pa, &pa->action2);
         return content;
      }
 

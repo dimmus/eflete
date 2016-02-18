@@ -62,6 +62,7 @@ struct _Property_Action {
       Attribute attribute; /**< type for group properties */
    } type; /**< submodule-specific enums */
    Evas_Object *control; /**< pointer to widget */
+   Property_Cb init_cb;
    Property_Cb start_cb;
    Property_Cb change_cb;
    Property_Cb stop_cb;
