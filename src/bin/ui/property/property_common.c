@@ -418,5 +418,14 @@ property_common_itc_init()
    pd.itc_2swallow->func.content_get = _2swallow_content_get;
 
    /* map control pairs to item classes */
-   pd.item_classes[PROPERTY_CONTROL_NONE][PROPERTY_CONTROL_NONE] = pd.itc_caption;
+   pd.item_classes[PROPERTY_CONTROL_NONE]     [PROPERTY_CONTROL_NONE]    = pd.itc_caption;
+
+   pd.item_classes[PROPERTY_CONTROL_ENTRY]    [PROPERTY_CONTROL_NONE]    = pd.itc_1swallow;
+   pd.item_classes[PROPERTY_CONTROL_COMBOBOX] [PROPERTY_CONTROL_NONE]    = pd.itc_1swallow;
+
+   pd.item_classes[PROPERTY_CONTROL_CHECK]    [PROPERTY_CONTROL_NONE]    = pd.itc_2swallow;
+   pd.item_classes[PROPERTY_CONTROL_CHECK]    [PROPERTY_CONTROL_CHECK]   = pd.itc_2swallow;
+   pd.item_classes[PROPERTY_CONTROL_CHECK]    [PROPERTY_CONTROL_SPINNER] = pd.itc_2swallow;
+   pd.item_classes[PROPERTY_CONTROL_SPINNER]  [PROPERTY_CONTROL_NONE]    = pd.itc_2swallow;
+   pd.item_classes[PROPERTY_CONTROL_SPINNER]  [PROPERTY_CONTROL_SPINNER] = pd.itc_2swallow;
 }
