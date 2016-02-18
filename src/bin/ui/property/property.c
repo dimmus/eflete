@@ -46,8 +46,10 @@ _items_add(Eina_List **items, Elm_Object_Item *parent)
 
    EINA_LIST_FREE(*items, pa)
      {
+        assert(pd.item_classes[pa->action1.control_type][pa->action2.control_type] != NULL);
+
         pa->glit = elm_genlist_item_append(pd.genlist,
-                                           pa->itc,
+                                           pd.item_classes[pa->action1.control_type][pa->action2.control_type],
                                            pa,
                                            parent,
                                            (pa->expand_cb != NULL) ? ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE,

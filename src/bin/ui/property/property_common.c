@@ -37,6 +37,10 @@ property_common_caption_text_get(void *data,
 void
 property_common_itc_init()
 {
+   /* init item classes */
    pd.itc_caption = elm_genlist_item_class_new();
    pd.itc_caption->func.text_get = property_common_caption_text_get;
+
+   /* map control pairs to item classes */
+   pd.item_classes[PROPERTY_CONTROL_NONE][PROPERTY_CONTROL_NONE] = pd.itc_caption;
 }

@@ -52,25 +52,19 @@ void
 property_dummy_init()
 {
    dummy_data.item1.name = eina_stringshare_add(_("Item 1"));
-   dummy_data.item1.itc = pd.itc_caption;
 
    dummy_data.item2.name = eina_stringshare_add(_("Item 2"));
-   dummy_data.item2.itc = pd.itc_caption;
    dummy_data.item2.expand_cb = _item2_subitems_get;
 
    dummy_data.item2_1.name = eina_stringshare_add(_("Item 2_1"));
-   dummy_data.item2_1.itc = pd.itc_caption;
 
    dummy_data.item2_2.name = eina_stringshare_add(_("Item 2_2"));
-   dummy_data.item2_2.itc = pd.itc_caption;
 
    dummy_data.item3.name = eina_stringshare_add(_("Item 3"));
-   dummy_data.item3.itc = pd.itc_caption;
    dummy_data.item3.expand_cb = _item3_subitems_get;
    dummy_data.item3.expanded = true;
 
    dummy_data.item3_1.name = eina_stringshare_add(_("Item 3_1"));
-   dummy_data.item3_1.itc = pd.itc_caption;
 }
 
 Eina_List *
