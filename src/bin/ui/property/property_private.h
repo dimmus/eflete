@@ -54,7 +54,9 @@ struct _Property_Action {
    Property_Control control_type;
    Eina_Stringshare *name;
    Eina_Stringshare *units;
-   Attribute attribute;
+   union {
+      Attribute attribute; /**< type for group properties */
+   } type; /**< submodule-specific enums */
    Evas_Object *control; /**< pointer to widget */
    Property_Cb start_cb;
    Property_Cb change_cb;
