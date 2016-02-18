@@ -40,6 +40,8 @@ typedef struct {
    Property_Mode mode;
 
    Elm_Genlist_Item_Class *itc_caption;
+   Elm_Genlist_Item_Class *itc_1swallow;
+   Elm_Genlist_Item_Class *itc_2swallow;
 
    /* Stores what item class to use with each pair of controls */
    Elm_Genlist_Item_Class *item_classes[PROPERTY_CONTROL_LAST][PROPERTY_CONTROL_LAST];

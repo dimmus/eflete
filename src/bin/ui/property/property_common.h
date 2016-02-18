@@ -23,10 +23,4 @@
 void
 property_common_itc_init();
 
-/******* COMMON LABEL_GET CALLBACKS *********/
-
-/* returns item_name without checking actual part */
-char *
-property_common_caption_text_get(void *data, Evas_Object *obj, const char *part);
-
 #endif /* PROPERTY_COMMON_H */

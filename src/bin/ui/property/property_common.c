@@ -21,17 +21,79 @@
 #include "property_private.h"
 #include "property_common.h"
 
-char *
-property_common_caption_text_get(void *data,
-                                 Evas_Object *obj __UNUSED__,
-                                 const char *part __UNUSED__)
+static char *
+_caption_text_get(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  const char *part)
 {
    Property_Attribute *pa = data;
 
    assert(pa != NULL);
-   assert(pa->name != NULL);
+   /* Check that item style is correct. Don't need this check in release build */
+   assert(!strcmp(part, "text.item.name"));
 
-   return strdup(pa->name);
+   if (pa->name != NULL)
+     return strdup(pa->name);
+
+   return NULL;
+}
+
+static char *
+_1swallow_text_get(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   const char *part)
+{
+   Property_Attribute *pa = data;
+
+   assert(pa != NULL);
+   /* Check that item style is correct. Don't need this check in release build */
+   assert((!strcmp(part, "text.item.name"))    ||
+          (!strcmp(part, "text.action1.name")) ||
+          (!strcmp(part, "text.action1.units")));
+
+   if ((pa->name != NULL) && (!strcmp(part, "text.item.name")))
+     return strdup(pa->name);
+
+   if ((pa->action1.name != NULL) && (!strcmp(part, "text.action1.name")))
+     return strdup(pa->action1.name);
+
+   if ((pa->action1.units != NULL) && (!strcmp(part, "text.action1.units")))
+     return strdup(pa->action1.units);
+
+   return NULL;
+}
+
+static char *
+_2swallow_text_get(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   const char *part)
+{
+   Property_Attribute *pa = data;
+
+   assert(pa != NULL);
+   /* Check that item style is correct. Don't need this check in release build */
+   assert((!strcmp(part, "text.item.name"))     ||
+          (!strcmp(part, "text.action1.name"))  ||
+          (!strcmp(part, "text.action1.units")) ||
+          (!strcmp(part, "text.action2.name"))  ||
+          (!strcmp(part, "text.action2.units")));
+
+   if ((pa->name != NULL) && (!strcmp(part, "text.item.name")))
+     return strdup(pa->name);
+
+   if ((pa->action1.name != NULL) && (!strcmp(part, "text.action1.name")))
+     return strdup(pa->action1.name);
+
+   if ((pa->action1.units != NULL) && (!strcmp(part, "text.action1.units")))
+     return strdup(pa->action1.units);
+
+   if ((pa->action2.name != NULL) && (!strcmp(part, "text.action2.name")))
+     return strdup(pa->action1.name);
+
+   if ((pa->action2.units != NULL) && (!strcmp(part, "text.action2.units")))
+     return strdup(pa->action1.units);
+
+   return NULL;
 }
 
 void
@@ -39,7 +101,13 @@ property_common_itc_init()
 {
    /* init item classes */
    pd.itc_caption = elm_genlist_item_class_new();
-   pd.itc_caption->func.text_get = property_common_caption_text_get;
+   pd.itc_caption->func.text_get = _caption_text_get;
+
+   pd.itc_1swallow = elm_genlist_item_class_new();
+   pd.itc_1swallow->func.text_get = _1swallow_text_get;
+
+   pd.itc_2swallow = elm_genlist_item_class_new();
+   pd.itc_2swallow->func.text_get = _2swallow_text_get;
 
    /* map control pairs to item classes */
    pd.item_classes[PROPERTY_CONTROL_NONE][PROPERTY_CONTROL_NONE] = pd.itc_caption;
