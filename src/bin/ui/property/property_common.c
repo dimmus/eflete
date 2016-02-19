@@ -406,14 +406,17 @@ property_common_itc_init()
 {
    /* init item classes */
    pd.itc_caption = elm_genlist_item_class_new();
+   pd.itc_caption->item_style = "caption";
    pd.itc_caption->func.text_get = _caption_text_get;
    pd.itc_caption->func.content_get = _caption_content_get;
 
    pd.itc_1swallow = elm_genlist_item_class_new();
+   pd.itc_1swallow->item_style = "1swallow";
    pd.itc_1swallow->func.text_get = _1swallow_text_get;
    pd.itc_1swallow->func.content_get = _1swallow_content_get;
 
    pd.itc_2swallow = elm_genlist_item_class_new();
+   pd.itc_2swallow->item_style = "2swallow";
    pd.itc_2swallow->func.text_get = _2swallow_text_get;
    pd.itc_2swallow->func.content_get = _2swallow_content_get;
 
