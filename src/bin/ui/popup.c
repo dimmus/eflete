@@ -231,13 +231,14 @@ _helper_dismiss(void *data __UNUSED__,
 static void
 _done(void *data __UNUSED__,
       Evas_Object *obj,
-      void *event_info __UNUSED__)
+      void *event_info)
 {
    Eina_List *selected_paths = NULL;
    Eina_Stringshare *selected;
-   Eina_Bool res = true;
+   Eina_Bool res = false;
 
-   if (dismiss_func)
+   if (!event_info) res = true;
+   if (!res && dismiss_func)
      {
         if (elm_fileselector_multi_select_get(fs))
           selected_paths = (Eina_List *)elm_fileselector_selected_paths_get(fs);
