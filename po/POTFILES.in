@@ -7,7 +7,6 @@ src/bin/external/syntax_color.c
 src/bin/logger/logger.c
 src/bin/project_manager/group_manager.c
 src/bin/project_manager/project_manager.c
-src/bin/ui/container/container.c
 src/bin/ui/cursor.c
 src/bin/ui/dialogs/about_window.c
 src/bin/ui/dialogs/colorsel.c
@@ -57,7 +56,6 @@ src/bin/ui/main_window.c
 src/bin/ui/menu.c
 src/bin/ui/modal_window/modal_window.c
 src/bin/ui/project_navigator.c
-src/bin/ui/group_navigator.c
 src/bin/ui/preference/preference.c
 src/bin/ui/project_close.c
 src/bin/ui/property.c
@@ -69,4 +67,7 @@ src/bin/ui/workspace/groupedit.c
 src/bin/ui/workspace/groupedit_calc.c
 src/bin/ui/workspace/highlight.c
 src/bin/ui/workspace/workspace.c
+src/bin/ui/workspace/container.c
+src/bin/ui/workspace/group_navigator.c
+src/bin/ui/workspace/demo_group.c
 src/bin/main.c
