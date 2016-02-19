@@ -1,5 +1,17 @@
 group { name: "elm/layout/tabs/default";
    parts {
+      part { name: "bg_toolbar";
+         type: RECT;
+         description {
+            color_class: "bg_main_alternative";
+            rel1 {
+               to: "elm.swallow.toolbar";
+            }
+            rel2 {
+               to: "elm.swallow.toolbar";
+            }
+         }
+      }
       part { name: "elm.swallow.toolbar";
          type: SWALLOW;
          description { state: "default" 0.0;
@@ -35,6 +47,18 @@ group { name: "elm/layout/tabs/default";
 
 group { name: "elm/layout/tabs/property";
    parts {
+      part { name: "bg_toolbar";
+         type: RECT;
+         description {
+            color_class: "bg_main_alternative";
+            rel1 {
+               to: "elm.swallow.toolbar";
+            }
+            rel2 {
+               to: "elm.swallow.toolbar";
+            }
+         }
+      }
       part { name: "elm.swallow.toolbar";
          type: SWALLOW;
          description { state: "default" 0.0;
