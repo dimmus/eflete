@@ -14,8 +14,8 @@ images {
 
 group { name: "elm/colorselector/palette/default";
    data {
-      item: "vertical_pad" "0";
-      item: "horizontal_pad" "0";
+      item: "vertical_pad" "10";
+      item: "horizontal_pad" "10";
    }
    parts {
       part { name: "elm.picker";
@@ -346,6 +346,7 @@ group { name: "elm/colorselector/item/default";
          description { state: "default" 0.0;
             min: 27 28;
             max: 27 28;
+            fixed: 1 1;
             visible: 0;
          }
       }
@@ -354,6 +355,7 @@ group { name: "elm/colorselector/item/default";
          description { state: "default" 0.0;
             min: 18 19;
             max: 18 19;
+            fixed: 1 1;
             image {
                normal: "color-background-3.png";
                middle: DEFAULT;
@@ -370,6 +372,7 @@ group { name: "elm/colorselector/item/default";
          description { state: "default" 0.0;
             min: 16 17;
             max: 16 17;
+            fixed: 1 1;
             rel1.offset: -1 -1;
          }
       }

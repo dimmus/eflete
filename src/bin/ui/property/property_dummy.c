@@ -34,6 +34,7 @@ typedef struct {
    Property_Attribute item7;
    Property_Attribute item8;
    Property_Attribute item9;
+   Property_Attribute item10;
 } Property_Dummy_Data;
 
 static Property_Dummy_Data dummy_data;
@@ -177,6 +178,12 @@ property_dummy_init()
    dummy_data.item9.action1.start_cb = _start_cb;
    dummy_data.item9.action1.stop_cb = _stop_cb;
    dummy_data.item9.action1.change_cb = _change_cb;
+
+   dummy_data.item10.name = eina_stringshare_add(_("Item 10"));
+   dummy_data.item10.action1.control_type = PROPERTY_CONTROL_COLORSEL;
+   dummy_data.item10.action1.start_cb = _start_cb;
+   dummy_data.item10.action1.stop_cb = _stop_cb;
+   dummy_data.item10.action1.change_cb = _change_cb;
 }
 
 Eina_List *
@@ -192,5 +199,6 @@ property_dummy_items_get()
    items = eina_list_append(items, &dummy_data.item7);
    items = eina_list_append(items, &dummy_data.item8);
    items = eina_list_append(items, &dummy_data.item9);
+   items = eina_list_append(items, &dummy_data.item10);
    return items;
 }
