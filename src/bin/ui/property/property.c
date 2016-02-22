@@ -115,9 +115,15 @@ _realized_cb(void *data __UNUSED__,
    assert(pa != NULL);
 
    if (pa->action1.init_cb != NULL)
-     pa->action1.init_cb(pa, &pa->action1);
+     {
+        DBG("calling init_cb of %s (%s)", pa->name, (pa->action1.name) ? pa->action1.name : "unnamed");
+        pa->action1.init_cb(pa, &pa->action1);
+     }
    if (pa->action2.init_cb != NULL)
-     pa->action2.init_cb(pa, &pa->action2);
+     {
+        DBG("calling init_cb of %s (%s)", pa->name, (pa->action2.name) ? pa->action2.name : "unnamed");
+        pa->action2.init_cb(pa, &pa->action2);
+     }
 }
 
 static void

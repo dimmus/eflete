@@ -35,7 +35,10 @@ _stop(Property_Attribute *pa, Property_Action *action)
         assert(pd.started_action == action);
         assert(pd.started_pa == pa);
         if (action->stop_cb)
-          action->stop_cb(pa, action);
+          {
+             DBG("calling stop_cb of %s (%s)", pa->name, (action->name) ? action->name : "unnamed");
+             action->stop_cb(pa, action);
+          }
         pd.started_pa = NULL;
         pd.started_action = NULL;
      }
@@ -51,7 +54,10 @@ _start(Property_Attribute *pa, Property_Action *action)
    if (pd.started_action)
      _stop(pd.started_pa, pd.started_action);
    if (action->start_cb)
-     action->start_cb(pa, action);
+     {
+        DBG("calling start_cb of %s (%s)", pa->name, (action->name) ? action->name : "unnamed");
+        action->start_cb(pa, action);
+     }
    pd.started_pa = pa;
    pd.started_action = action;
 }
@@ -66,7 +72,10 @@ _change(Property_Attribute *pa, Property_Action *action)
    assert(pd.started_pa == pa);
 
    if (action->change_cb)
-     action->change_cb(pa, action);
+     {
+        DBG("calling change_cb of %s (%s)", pa->name, (action->name) ? action->name : "unnamed");
+        action->change_cb(pa, action);
+     }
 }
 
 static void
