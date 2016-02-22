@@ -208,10 +208,9 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          evas_object_smart_callback_add(content, "unfocused", _stop_cb, pa);
          return content;
       case PROPERTY_CONTROL_COLOR:
-         TODO("Add color widget");
-         content = NULL;
-         /* evas_object_smart_callback_add(content, "changed", _start_change_cb, pa);
-         evas_object_smart_callback_add(content, "dissmissed", _stop_cb, pa); */
+         content = property_color_control_add(parent);
+         evas_object_smart_callback_add(content, "changed", _start_change_cb, pa);
+         evas_object_smart_callback_add(content, "dismissed", _stop_cb, pa);
          return content;
       case PROPERTY_CONTROL_NONE:
       case PROPERTY_CONTROL_LAST:
@@ -425,4 +424,5 @@ property_common_itc_init()
    pd.item_classes[PROPERTY_CONTROL_CHECK]    [PROPERTY_CONTROL_SPINNER] = pd.itc_2swallow;
    pd.item_classes[PROPERTY_CONTROL_SPINNER]  [PROPERTY_CONTROL_NONE]    = pd.itc_2swallow;
    pd.item_classes[PROPERTY_CONTROL_SPINNER]  [PROPERTY_CONTROL_SPINNER] = pd.itc_2swallow;
+   pd.item_classes[PROPERTY_CONTROL_COLOR]    [PROPERTY_CONTROL_NONE]    = pd.itc_2swallow;
 }

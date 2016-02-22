@@ -33,6 +33,7 @@ typedef struct {
    Property_Attribute item6;
    Property_Attribute item7;
    Property_Attribute item8;
+   Property_Attribute item9;
 } Property_Dummy_Data;
 
 static Property_Dummy_Data dummy_data;
@@ -99,6 +100,14 @@ _combo_init_cb(Property_Attribute *pa, Property_Action *action)
    ewe_combobox_item_add(action->control, "CItem3");
    ewe_combobox_select_item_set(action->control, 0);
 }
+
+static void
+_color_init_cb(Property_Attribute *pa, Property_Action *action)
+{
+   DBG("init of %s->%s", pa->name, action->name);
+   property_color_control_color_set(action->control, 0, 255, 0, 55);
+}
+
 void
 property_dummy_init()
 {
@@ -161,6 +170,13 @@ property_dummy_init()
    dummy_data.item8.action2.name = eina_stringshare_add(_("max:"));
    dummy_data.item8.action2.control_type = PROPERTY_CONTROL_SPINNER;
    dummy_data.item8.action2.units = eina_stringshare_add(_("px"));
+
+   dummy_data.item9.name = eina_stringshare_add(_("Item 9"));
+   dummy_data.item9.action1.control_type = PROPERTY_CONTROL_COLOR;
+   dummy_data.item9.action1.init_cb = _color_init_cb;
+   dummy_data.item9.action1.start_cb = _start_cb;
+   dummy_data.item9.action1.stop_cb = _stop_cb;
+   dummy_data.item9.action1.change_cb = _change_cb;
 }
 
 Eina_List *
@@ -175,5 +191,6 @@ property_dummy_items_get()
    items = eina_list_append(items, &dummy_data.item6);
    items = eina_list_append(items, &dummy_data.item7);
    items = eina_list_append(items, &dummy_data.item8);
+   items = eina_list_append(items, &dummy_data.item9);
    return items;
 }
