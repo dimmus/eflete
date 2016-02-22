@@ -104,6 +104,36 @@ _contracted_cb(void *data __UNUSED__,
    elm_genlist_item_subitems_clear(glit);
 }
 
+static void
+_realized_cb(void *data __UNUSED__,
+             Evas_Object *o __UNUSED__,
+             void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   Property_Attribute *pa = elm_object_item_data_get(glit);
+
+   assert(pa != NULL);
+
+   if (pa->action1.init_cb != NULL)
+     pa->action1.init_cb(pa, &pa->action1);
+   if (pa->action2.init_cb != NULL)
+     pa->action2.init_cb(pa, &pa->action2);
+}
+
+static void
+_unrealized_cb(void *data __UNUSED__,
+               Evas_Object *o __UNUSED__,
+               void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   Property_Attribute *pa = elm_object_item_data_get(glit);
+
+   assert(pa != NULL);
+
+   pa->action1.control = NULL;
+   pa->action2.control = NULL;
+}
+
 Evas_Object *
 property_add(Evas_Object *parent)
 {
@@ -126,6 +156,8 @@ property_add(Evas_Object *parent)
    evas_object_smart_callback_add(pd.genlist, "contract,request", _contract_request_cb, NULL);
    evas_object_smart_callback_add(pd.genlist, "expanded", _expanded_cb, NULL);
    evas_object_smart_callback_add(pd.genlist, "contracted", _contracted_cb, NULL);
+   evas_object_smart_callback_add(pd.genlist, "realized", _realized_cb, NULL);
+   evas_object_smart_callback_add(pd.genlist, "unrealized", _unrealized_cb, NULL);
 
    return pd.genlist;
 }
