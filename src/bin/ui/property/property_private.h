@@ -81,6 +81,15 @@ struct _Property_Attribute {
    Eina_Bool realized : 1; /**< if item is not realized update callback will not be called */
 };
 
+/* color_control */
+Evas_Object *
+property_color_control_add(Evas_Object *parent);
+
+void
+property_color_control_color_set(Evas_Object *control, int r, int g, int b, int a);
+
+void
+property_color_control_color_get(Evas_Object *control, int *r, int *g, int *b, int *a);
 
 /* dummy submodule. for implementation tests. will be deleted later */
 void
