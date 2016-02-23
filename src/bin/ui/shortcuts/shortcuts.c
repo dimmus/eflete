@@ -266,8 +266,10 @@ _separate_mode_change_cb(void)
    if (fabs(factor - 1.0) > 0.001)
      return false;
 
+   /*
    Eina_Bool sep = workspace_separate_mode_get(workspace);
    workspace_separate_mode_set(workspace, !sep);
+   */
 
    return true;
 }

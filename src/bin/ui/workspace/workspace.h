@@ -17,8 +17,8 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#ifndef UI_WORKSPACE_H
-#define UI_WORKSPACE_H
+#ifndef WORKSPACE_H
+#define WORKSPACE_H
 
 /**
  * @defgroup Workspace Workspace
@@ -268,29 +268,6 @@ Eina_Bool
 workspace_highlight_unset(Evas_Object *obj);
 
 /**
- * Turn on/off the separatr mode
- *
- * @param obj The workspace object,
- * @param separated ON/OFF (true/false) the separate mode,
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate);
-
-/**
- * Check if separate mode is activated.
- *
- * @param obj The workspace object.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_separate_mode_get(Evas_Object *obj);
-
-/**
  * Turn on/off the middle border of highlight (align) visibility.
  *
  * @param obj The workspace object,
@@ -346,4 +323,4 @@ TODO("remove after property refactor!!! HIGH LEVEL");
 Eina_Bool
 workspace_active_demo_mode_get(Evas_Object *obj);
 
-#endif /* UI_WORKSPACE_H */
+#endif /* WORKSPACE_H */
