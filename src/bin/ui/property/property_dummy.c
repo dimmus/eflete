@@ -35,6 +35,9 @@ typedef struct {
    Property_Attribute item8;
    Property_Attribute item9;
    Property_Attribute item10;
+   Property_Attribute item_controls;
+   Property_Attribute item_controls2;
+   Property_Attribute items[20];
 } Property_Dummy_Data;
 
 static Property_Dummy_Data dummy_data;
@@ -45,6 +48,31 @@ _item2_subitems_get(Property_Attribute *pa __UNUSED__)
    Eina_List *items = NULL;
    items = eina_list_append(items, &dummy_data.item2_1);
    items = eina_list_append(items, &dummy_data.item2_2);
+   return items;
+}
+
+static Eina_List *
+_item_controls_subitems_get(Property_Attribute *pa __UNUSED__)
+{
+   Eina_List *items = NULL;
+   items = eina_list_append(items, &dummy_data.item_controls2);
+   items = eina_list_append(items, &dummy_data.item4);
+   items = eina_list_append(items, &dummy_data.item5);
+   items = eina_list_append(items, &dummy_data.item6);
+   items = eina_list_append(items, &dummy_data.item7);
+   items = eina_list_append(items, &dummy_data.item8);
+   items = eina_list_append(items, &dummy_data.item9);
+   items = eina_list_append(items, &dummy_data.item10);
+   return items;
+}
+
+static Eina_List *
+_item_controls2_subitems_get(Property_Attribute *pa __UNUSED__)
+{
+   Eina_List *items = NULL;
+   int i;
+   for (i = 0; i<20; i++)
+      items = eina_list_append(items, &dummy_data.items[i]);
    return items;
 }
 
@@ -127,6 +155,7 @@ property_dummy_init()
 
    dummy_data.item3.name = eina_stringshare_add(_("Item 3"));
    dummy_data.item3.expand_cb = _item3_subitems_get;
+   dummy_data.item3.expandable = true;
    dummy_data.item3.expanded = true;
 
    dummy_data.item3_1.name = eina_stringshare_add(_("Item 3_1"));
@@ -134,7 +163,7 @@ property_dummy_init()
    dummy_data.item3_2.name = eina_stringshare_add(_("Item 3_2"));
 
    dummy_data.item4.name = eina_stringshare_add(_("Item 4"));
-   dummy_data.item4.action1.name = eina_stringshare_add(_("entry:"));
+   dummy_data.item4.action1.name = eina_stringshare_add(_("entry"));
    dummy_data.item4.action1.control_type = PROPERTY_CONTROL_ENTRY;
    dummy_data.item4.action1.init_cb = _init_cb;
    dummy_data.item4.action1.start_cb = _start_cb;
@@ -143,7 +172,7 @@ property_dummy_init()
    dummy_data.item4.action1.update_cb = _update_cb;
 
    dummy_data.item5.name = eina_stringshare_add(_("Item 5"));
-   dummy_data.item5.action1.name = eina_stringshare_add(_("comb:"));
+   dummy_data.item5.action1.name = eina_stringshare_add(_("comb"));
    dummy_data.item5.action1.control_type = PROPERTY_CONTROL_COMBOBOX;
    dummy_data.item5.action1.init_cb = _combo_init_cb;
    dummy_data.item5.action1.change_cb = _combo_change_cb;
@@ -151,24 +180,24 @@ property_dummy_init()
    dummy_data.item5.action1.stop_cb = _stop_cb;
 
    dummy_data.item6.name = eina_stringshare_add(_("Item 6"));
-   dummy_data.item6.action1.name = eina_stringshare_add(_("min:"));
+   dummy_data.item6.action1.name = eina_stringshare_add(_("min"));
    dummy_data.item6.action1.control_type = PROPERTY_CONTROL_SPINNER;
    dummy_data.item6.action1.units = eina_stringshare_add(_("px"));
-   dummy_data.item6.action2.name = eina_stringshare_add(_("max:"));
+   dummy_data.item6.action2.name = eina_stringshare_add(_("max"));
    dummy_data.item6.action2.control_type = PROPERTY_CONTROL_SPINNER;
    dummy_data.item6.action2.units = eina_stringshare_add(_("px"));
 
    dummy_data.item7.name = eina_stringshare_add(_("Item 7"));
    dummy_data.item7.icon_name = eina_stringshare_add(_("elm/image/icon/end-point"));
-   dummy_data.item7.action1.name = eina_stringshare_add(_("min:"));
+   dummy_data.item7.action1.name = eina_stringshare_add(_("min"));
    dummy_data.item7.action1.control_type = PROPERTY_CONTROL_SPINNER;
    dummy_data.item7.action1.units = eina_stringshare_add(_("px"));
 
    dummy_data.item8.name = eina_stringshare_add(_("Item 8"));
-   dummy_data.item8.action1.name = eina_stringshare_add(_("min:"));
+   dummy_data.item8.action1.name = eina_stringshare_add(_("min"));
    dummy_data.item8.action1.control_type = PROPERTY_CONTROL_CHECK;
    dummy_data.item8.action1.units = eina_stringshare_add(_("px"));
-   dummy_data.item8.action2.name = eina_stringshare_add(_("max:"));
+   dummy_data.item8.action2.name = eina_stringshare_add(_("max"));
    dummy_data.item8.action2.control_type = PROPERTY_CONTROL_SPINNER;
    dummy_data.item8.action2.units = eina_stringshare_add(_("px"));
 
@@ -184,6 +213,42 @@ property_dummy_init()
    dummy_data.item10.action1.start_cb = _start_cb;
    dummy_data.item10.action1.stop_cb = _stop_cb;
    dummy_data.item10.action1.change_cb = _change_cb;
+
+   dummy_data.item_controls.name = eina_stringshare_add(_("Item 2"));
+   dummy_data.item_controls.expand_cb = _item_controls_subitems_get;
+   dummy_data.item_controls.icon_name = eina_stringshare_add(_("elm/image/icon/end-point"));
+
+
+   dummy_data.item_controls2.name = eina_stringshare_add(_("Item 2"));
+   dummy_data.item_controls2.expand_cb = _item_controls2_subitems_get;
+   dummy_data.item_controls2.expandable = true;
+
+   int i = 0;
+   for (i = 0; i < 20; i ++)
+     {
+        if ((i/2)%2)
+          {
+             if (i%2 == 0)
+               {
+                  dummy_data.items[i].name = eina_stringshare_add(_("Item"));
+                  dummy_data.items[i].action1.name = eina_stringshare_add(_("x"));
+               }
+             else
+               dummy_data.items[i].action1.name = eina_stringshare_add(_("y"));
+             dummy_data.items[i].action1.control_type = PROPERTY_CONTROL_COMBOBOX;
+             dummy_data.items[i].action1.init_cb = _combo_init_cb;
+          }
+        else
+          {
+             dummy_data.items[i].name = eina_stringshare_add(_("Item"));
+             dummy_data.items[i].action1.control_type = PROPERTY_CONTROL_SPINNER;
+             dummy_data.items[i].action1.name = eina_stringshare_add(_("min"));
+             dummy_data.items[i].action1.units = eina_stringshare_add(_("p1"));
+             dummy_data.items[i].action2.control_type = PROPERTY_CONTROL_SPINNER;
+             dummy_data.items[i].action2.name = eina_stringshare_add(_("max"));
+             dummy_data.items[i].action2.units = eina_stringshare_add(_("p2"));
+          }
+     }
 }
 
 Eina_List *
@@ -193,12 +258,6 @@ property_dummy_items_get()
    items = eina_list_append(items, &dummy_data.item1);
    items = eina_list_append(items, &dummy_data.item2);
    items = eina_list_append(items, &dummy_data.item3);
-   items = eina_list_append(items, &dummy_data.item4);
-   items = eina_list_append(items, &dummy_data.item5);
-   items = eina_list_append(items, &dummy_data.item6);
-   items = eina_list_append(items, &dummy_data.item7);
-   items = eina_list_append(items, &dummy_data.item8);
-   items = eina_list_append(items, &dummy_data.item9);
-   items = eina_list_append(items, &dummy_data.item10);
+   items = eina_list_append(items, &dummy_data.item_controls);
    return items;
 }
