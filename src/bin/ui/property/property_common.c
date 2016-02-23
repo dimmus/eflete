@@ -402,10 +402,10 @@ _2swallow_text_get(void *data,
      return strdup(pa->action1.units);
 
    if ((pa->action2.name != NULL) && (!strcmp(part, "text.action2.name")))
-     return strdup(pa->action1.name);
+     return strdup(pa->action2.name);
 
    if ((pa->action2.units != NULL) && (!strcmp(part, "text.action2.units")))
-     return strdup(pa->action1.units);
+     return strdup(pa->action2.units);
 
    return NULL;
 }
