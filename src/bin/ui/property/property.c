@@ -156,6 +156,7 @@ property_add(Evas_Object *parent)
    evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _group_mode, NULL);
 
    pd.genlist = elm_genlist_add(parent);
+   elm_scroller_policy_set(pd.genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
    elm_object_style_set(pd.genlist, "property");
 
    evas_object_smart_callback_add(pd.genlist, "expand,request", _expand_request_cb, NULL);
