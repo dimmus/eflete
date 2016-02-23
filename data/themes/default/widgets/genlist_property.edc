@@ -1,3 +1,23 @@
+group { name: "elm/genlist/base/property";
+   inherit: "elm/genlist/base/default";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "shadow";
+         description { state: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "disabled" 0.0;
+            visible: 0;
+         }
+      }
+   }
+}
+
 group { name: "elm/genlist/item/caption/property";
    data {
       item: "treesize" "12";
