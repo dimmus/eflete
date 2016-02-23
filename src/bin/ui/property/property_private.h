@@ -77,8 +77,9 @@ struct _Property_Attribute {
    Elm_Object_Item *glit; /**< reference to gennlist item iteself */
    Property_Action action1; /**< first control */
    Property_Action action2; /**< second control */
-   Property_Expand_Cb expand_cb; /**< if not NULL - item is tree node. This cb will be called to get subitems */
-   Eina_Bool expanded : 1; /**< if true initial state will be expanded */
+   Property_Expand_Cb expand_cb; /**< This cb will be called to get subitems */
+   Eina_Bool expandable : 1; /**< if true  item is tree node */
+   Eina_Bool expanded : 1; /**< if true initial state will be expanded. */
    Eina_Bool realized : 1; /**< if item is not realized update callback will not be called */
 };
 
