@@ -35,6 +35,7 @@ typedef struct {
    Property_Attribute item8;
    Property_Attribute item9;
    Property_Attribute item10;
+   Property_Attribute item11;
    Property_Attribute item_controls;
    Property_Attribute item_controls2;
    Property_Attribute items[20];
@@ -71,6 +72,7 @@ _item_controls2_subitems_get(Property_Attribute *pa __UNUSED__)
 {
    Eina_List *items = NULL;
    int i;
+   items = eina_list_append(items, &dummy_data.item11);
    for (i = 0; i<20; i++)
       items = eina_list_append(items, &dummy_data.items[i]);
    return items;
@@ -135,6 +137,13 @@ _color_init_cb(Property_Attribute *pa, Property_Action *action)
 {
    DBG("init of %s->%s", pa->name, action->name);
    property_color_control_color_set(action->control, 0, 255, 0, 55);
+}
+
+static void
+_label_init_cb(Property_Attribute *pa, Property_Action *action)
+{
+   DBG("init of %s->%s", pa->name, action->name);
+   elm_object_text_set(action->control, _("default 0.0"));
 }
 
 void
@@ -214,10 +223,13 @@ property_dummy_init()
    dummy_data.item10.action1.stop_cb = _stop_cb;
    dummy_data.item10.action1.change_cb = _change_cb;
 
+   dummy_data.item11.name = eina_stringshare_add(_("State"));
+   dummy_data.item11.action1.control_type = PROPERTY_CONTROL_LABEL;
+   dummy_data.item11.action1.init_cb = _label_init_cb;
+
    dummy_data.item_controls.name = eina_stringshare_add(_("Item 2"));
    dummy_data.item_controls.expand_cb = _item_controls_subitems_get;
    dummy_data.item_controls.icon_name = eina_stringshare_add(_("elm/image/icon/end-point"));
-
 
    dummy_data.item_controls2.name = eina_stringshare_add(_("Item 2"));
    dummy_data.item_controls2.expand_cb = _item_controls2_subitems_get;
