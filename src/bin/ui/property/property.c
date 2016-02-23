@@ -155,6 +155,7 @@ property_add(Evas_Object *parent)
 
    property_common_itc_init();
    property_dummy_init();
+   property_group_init();
 
    evas_object_smart_callback_add(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, _none_mode, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_IMAGE_EDITOR_TAB_CLICKED, _image_mode, NULL);
@@ -196,6 +197,8 @@ property_mode_set(Property_Mode mode)
          items = property_dummy_items_get();
          break;
       case PROPERTY_MODE_GROUP:
+         items = property_group_items_get();
+         break;
       case PROPERTY_MODE_COLOR_CLASS:
       case PROPERTY_MODE_STYLE:
       case PROPERTY_MODE_SOUND:

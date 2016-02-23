@@ -101,4 +101,11 @@ property_dummy_init();
 Eina_List *
 property_dummy_items_get();
 
+/* property group */
+void
+property_group_init();
+
+Eina_List *
+property_group_items_get();
+
 #endif /* PROPERTY_PRIVATE_H */
