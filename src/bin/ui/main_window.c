@@ -160,6 +160,7 @@ ui_main_window_add(void)
    elm_object_part_content_set(ap.win_layout, "eflete.swallow.panes", ap.panes.left);
 
    ap.panes.right = elm_panes_add(ap.win);
+   elm_panes_content_right_min_size_set(ap.panes.right, 370);
    evas_object_size_hint_weight_set(ap.panes.right, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(ap.panes.right, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(ap.panes.left, "right", ap.panes.right);
