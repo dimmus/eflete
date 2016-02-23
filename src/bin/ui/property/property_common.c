@@ -228,6 +228,9 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          TODO("start/stop callbacks for this item type would be incorrect. Add correct one if needed");
          evas_object_smart_callback_add(content, "changed", _start_change_stop_cb, pa);
          return content;
+      case PROPERTY_CONTROL_LABEL:
+         content = elm_label_add(parent);
+         return content;
       case PROPERTY_CONTROL_NONE:
       case PROPERTY_CONTROL_LAST:
          CRIT("Wrong control type");
@@ -435,6 +438,7 @@ property_common_itc_init()
    pd.item_classes[PROPERTY_CONTROL_ENTRY]    [PROPERTY_CONTROL_NONE]    = pd.itc_1swallow;
    pd.item_classes[PROPERTY_CONTROL_COMBOBOX] [PROPERTY_CONTROL_NONE]    = pd.itc_1swallow;
    pd.item_classes[PROPERTY_CONTROL_COLORSEL] [PROPERTY_CONTROL_NONE]    = pd.itc_1swallow;
+   pd.item_classes[PROPERTY_CONTROL_LABEL]    [PROPERTY_CONTROL_NONE]    = pd.itc_1swallow;
 
    pd.item_classes[PROPERTY_CONTROL_CHECK]    [PROPERTY_CONTROL_NONE]    = pd.itc_2swallow;
    pd.item_classes[PROPERTY_CONTROL_CHECK]    [PROPERTY_CONTROL_CHECK]   = pd.itc_2swallow;
