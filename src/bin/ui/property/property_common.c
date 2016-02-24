@@ -413,6 +413,21 @@ _2swallow_text_get(void *data,
    return NULL;
 }
 
+static void
+_del(void *data,
+     Evas_Object *obj __UNUSED__)
+{
+   Property_Attribute *pa = data;
+
+   assert(pa != NULL);
+
+   pa->glit = NULL;
+
+   /* pa can be freed in this callback so you shouldn't use it below this line */
+   if (pa->del_cb)
+     pa->del_cb(pa);
+}
+
 void
 property_common_itc_init()
 {
@@ -421,16 +436,19 @@ property_common_itc_init()
    pd.itc_caption->item_style = "caption";
    pd.itc_caption->func.text_get = _caption_text_get;
    pd.itc_caption->func.content_get = _caption_content_get;
+   pd.itc_caption->func.del = _del;
 
    pd.itc_1swallow = elm_genlist_item_class_new();
    pd.itc_1swallow->item_style = "1swallow";
    pd.itc_1swallow->func.text_get = _1swallow_text_get;
    pd.itc_1swallow->func.content_get = _1swallow_content_get;
+   pd.itc_1swallow->func.del = _del;
 
    pd.itc_2swallow = elm_genlist_item_class_new();
    pd.itc_2swallow->item_style = "2swallow";
    pd.itc_2swallow->func.text_get = _2swallow_text_get;
    pd.itc_2swallow->func.content_get = _2swallow_content_get;
+   pd.itc_2swallow->func.del = _del;
 
    /* map control pairs to item classes */
    pd.item_classes[PROPERTY_CONTROL_NONE]     [PROPERTY_CONTROL_NONE]    = pd.itc_caption;

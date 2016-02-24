@@ -54,6 +54,7 @@ typedef struct {
 extern Property_Data pd;
 
 typedef void (* Property_Cb) (Property_Attribute *, Property_Action *);
+typedef void (* Property_Attribute_Del_Cb) (Property_Attribute *);
 typedef Eina_List * (* Property_Expand_Cb) (Property_Attribute *);
 
 struct _Property_Action {
@@ -79,6 +80,7 @@ struct _Property_Attribute {
    Property_Action action1; /**< first control */
    Property_Action action2; /**< second control */
    Property_Expand_Cb expand_cb; /**< This cb will be called to get subitems */
+   Property_Attribute_Del_Cb del_cb; /**< called when item is deleted from genlist */
    Eina_Bool expandable : 1; /**< if true  item is tree node */
    Eina_Bool expanded : 1; /**< if true initial state will be expanded. */
    Eina_Bool realized : 1; /**< if item is not realized update callback will not be called */
