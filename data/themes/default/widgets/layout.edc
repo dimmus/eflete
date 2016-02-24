@@ -1794,3 +1794,4 @@ group { name: "elm/layout/groupview/default";
 #include "layouts/property.edc"
 #include "layouts/history.edc"
 #include "layouts/tabs.edc"
+#include "layouts/workspace.edc"

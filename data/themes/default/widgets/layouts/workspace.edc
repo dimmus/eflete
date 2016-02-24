@@ -1,0 +1,200 @@
+group { name: "elm/layout/workspace/bg";
+   parts {
+      part { name: "bg0";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+         description { state: "black" 0.0;
+            color: 0 0 0 255;
+         }
+         description { state: "white" 0.0;
+         }
+      }
+      part { name: "bg1";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image {
+               normal: "bg_demo.png";
+               middle: DEFAULT;
+            }
+            fill {
+               type: TILE;
+            }
+         }
+         description { state: "black" 0.0;
+            color: 255 255 255 0;
+            image {
+               normal: "bg_demo.png";
+               middle: DEFAULT;
+            }
+            fill {
+               type: TILE;
+            }
+         }
+         description { state: "white" 0.0;
+            color: 255 255 255 0;
+            image {
+               normal: "bg_demo.png";
+               middle: DEFAULT;
+            }
+            fill {
+               type: TILE;
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "black";
+         signal: "elm,bg,black";
+         source: "eflete";
+         action: STATE_SET "black" 0.00;
+         transition: LINEAR 0.50000 CURRENT;
+         target: "bg0";
+         target: "bg1";
+      }
+      program { name: "white";
+         signal: "elm,bg,white";
+         source: "eflete";
+         action: STATE_SET "white" 0.50;
+         transition: LINEAR 0.50000 CURRENT;
+         target: "bg0";
+         target: "bg1";
+      }
+      program { name: "tile";
+         signal: "elm,bg,tile";
+         source: "eflete";
+         action: STATE_SET "default" 0.50;
+         transition: LINEAR 0.50000 CURRENT;
+         target: "bg0";
+         target: "bg1";
+      }
+   }
+}
+
+group { name: "elm/layout/workspace/scroller";
+   parts {
+      part { name: "elm.swallow.bg";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+         }
+      }
+      part { name: "area.ruler.cros";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: 25 25;
+         }
+         description { state: "hide" 0.0;
+            align: 0.0 0.0;
+            max: 0 0;
+         }
+      }
+      part { name: "elm.swallow.ruler_v";
+         type: SWALLOW;
+         scale: 1;
+         clip_to: "clipper.ruler_v";
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "area.ruler.cros";
+            }
+            rel2 {
+               to_x: "area.ruler.cros";
+            }
+         }
+      }
+      part { name: "clipper.ruler_v";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "elm.swallow.ruler_v";
+            }
+            rel2 {
+               to: "elm.swallow.ruler_v";
+            }
+         }
+      }
+      part { name: "elm.swallow.ruler_h";
+         type: SWALLOW;
+         scale: 1;
+         clip_to: "clipper.ruler_h";
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "area.ruler.cros";
+            }
+            rel2 {
+               to_y: "area.ruler.cros";
+            }
+         }
+      }
+      part { name: "clipper.ruler_h";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "elm.swallow.ruler_h";
+            }
+            rel2 {
+               to: "elm.swallow.ruler_h";
+            }
+         }
+      }
+      part { name: "elm.swallow.scroller";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "area.ruler.cros";
+            }
+         }
+      }
+      part { name: "elm.swallow.overlay";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "elm.swallow.scroller";
+            }
+            rel2 {
+               to: "elm.swallow.scroller";
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/workspace/toolbar";
+   parts {
+      part { name: "area.toolbar";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            max: -1 31;
+         }
+      }
+      part { name: "elm.swallow.toolbar";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            max: -1 19;
+            rel1 {
+               to: "area.toolbar";
+            }
+            rel2 {
+               to: "area.toolbar";
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel2 {
+               relative: 1.0 0.0;
+               to_y: "area.toolbar";
+            }
+         }
+      }
+   }
+}
