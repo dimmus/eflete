@@ -43,29 +43,35 @@ static void
 _items_add(Eina_List **items, Elm_Object_Item *parent)
 {
    Property_Attribute *pa;
-   Eina_List *subitems;
 
    EINA_LIST_FREE(*items, pa)
-     {
-        assert(pd.item_classes[pa->action1.control_type][pa->action2.control_type] != NULL);
+      property_item_add(pa, parent);
+}
 
-        pa->glit = elm_genlist_item_append(pd.genlist,
-                                           pd.item_classes[pa->action1.control_type][pa->action2.control_type],
-                                           pa,
-                                           parent,
-                                           (pa->expandable) ? ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE,
-                                           NULL,
-                                           NULL);
-        if (pa->expanded)
-          {
-             assert(pa->expandable);
-             elm_genlist_item_expanded_set(pa->glit, true);
-          }
-        else if ((!pa->expandable) && (pa->expand_cb != NULL))
-          {
-             subitems = pa->expand_cb(pa);
-             _items_add(&subitems, pa->glit);
-          }
+void
+property_item_add(Property_Attribute *pa, Elm_Object_Item *parent)
+{
+   Eina_List *subitems;
+
+   assert(pa != NULL);
+   assert(pd.item_classes[pa->action1.control_type][pa->action2.control_type] != NULL);
+
+   pa->glit = elm_genlist_item_append(pd.genlist,
+                                      pd.item_classes[pa->action1.control_type][pa->action2.control_type],
+                                      pa,
+                                      parent,
+                                      (pa->expandable) ? ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE,
+                                      NULL,
+                                      NULL);
+   if (pa->expanded)
+     {
+        assert(pa->expandable);
+        elm_genlist_item_expanded_set(pa->glit, true);
+     }
+   else if ((!pa->expandable) && (pa->expand_cb != NULL))
+     {
+        subitems = pa->expand_cb(pa);
+        _items_add(&subitems, pa->glit);
      }
 }
 
