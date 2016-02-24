@@ -83,6 +83,7 @@ _item3_subitems_get(Property_Attribute *pa __UNUSED__)
 {
    Eina_List *items = NULL;
    items = eina_list_append(items, &dummy_data.item3_1);
+   items = eina_list_append(items, &dummy_data.item3_2);
    return items;
 }
 
@@ -146,6 +147,31 @@ _label_init_cb(Property_Attribute *pa, Property_Action *action)
    elm_object_text_set(action->control, _("default 0.0"));
 }
 
+static void
+_del_cb(Property_Attribute *pa)
+{
+   DBG("del of %s", pa->name);
+   eina_stringshare_del(pa->name);
+   free(pa);
+}
+
+static Eina_List *
+_dynamic_subitems_get(Property_Attribute *pa __UNUSED__)
+{
+   Property_Attribute *new_pa;
+   Eina_List *items = NULL;
+   int i, num;
+   num = rand()%20;
+   for (i = 0; i < num; i++)
+     {
+        new_pa = mem_calloc(1, sizeof(Property_Attribute));
+        new_pa->name = eina_stringshare_printf("dynamic item #%d", i + 1);
+        new_pa->del_cb = _del_cb;
+        items = eina_list_append(items, new_pa);
+     }
+   return items;
+}
+
 void
 property_dummy_init()
 {
@@ -169,7 +195,9 @@ property_dummy_init()
 
    dummy_data.item3_1.name = eina_stringshare_add(_("Item 3_1"));
 
-   dummy_data.item3_2.name = eina_stringshare_add(_("Item 3_2"));
+   dummy_data.item3_2.name = eina_stringshare_add(_("Item 3_2 with dynamic subitems"));
+   dummy_data.item3_2.expandable = true;
+   dummy_data.item3_2.expand_cb = _dynamic_subitems_get;
 
    dummy_data.item4.name = eina_stringshare_add(_("Item 4"));
    dummy_data.item4.action1.name = eina_stringshare_add(_("entry"));
