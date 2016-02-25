@@ -51,6 +51,7 @@ _focus_out_cb(void *data,
    sd->expanded = EINA_FALSE;
    edje_object_signal_emit(sd->combobox, "ewe,state,default", "ewe");
    edje_object_signal_emit(sd->combobox, "btn,show", "ewe");
+   elm_object_scroll_freeze_pop(sd->obj);
    evas_object_smart_callback_call(sd->obj, "collapsed", NULL);
    ecore_job_add(_win_del, sd);
 }
@@ -203,6 +204,7 @@ _ewe_combobox_expand(Evas_Object *obj)
 
    _exp_window_create(&evas, sd);
 
+   elm_object_scroll_freeze_push(sd->obj);
    evas_object_smart_callback_call(sd->obj, "expanded", evas);
 }
 
