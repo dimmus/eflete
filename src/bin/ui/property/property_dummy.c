@@ -115,6 +115,8 @@ static void
 _init_cb(Property_Attribute *pa, Property_Action *action)
 {
    DBG("init of %s->%s", pa->name, action->name);
+   elm_entry_single_line_set(action->control, false);
+   evas_object_size_hint_min_set(action->control, 0, 400);
 }
 
 static void
@@ -161,12 +163,15 @@ _dynamic_subitems_get(Property_Attribute *pa __UNUSED__)
    Property_Attribute *new_pa;
    Eina_List *items = NULL;
    int i, num;
-   num = rand()%20;
+   /* num = rand()%200; */
+   num = 200;
    for (i = 0; i < num; i++)
      {
         new_pa = mem_calloc(1, sizeof(Property_Attribute));
         new_pa->name = eina_stringshare_printf("dynamic item #%d", i + 1);
         new_pa->del_cb = _del_cb;
+        new_pa->action1.control_type = PROPERTY_CONTROL_SPINNER;
+        new_pa->action2.control_type = PROPERTY_CONTROL_SPINNER;
         items = eina_list_append(items, new_pa);
      }
    return items;
@@ -193,11 +198,13 @@ property_dummy_init()
    dummy_data.item3.expandable = true;
    dummy_data.item3.expanded = true;
 
-   dummy_data.item3_1.name = eina_stringshare_add(_("Item 3_1"));
+   dummy_data.item3_1.name = eina_stringshare_add(_("Item 3_1 with dynamic subitems"));
+   dummy_data.item3_1.expandable = true;
+   dummy_data.item3_1.expand_cb = _dynamic_subitems_get;
 
-   dummy_data.item3_2.name = eina_stringshare_add(_("Item 3_2 with dynamic subitems"));
+   dummy_data.item3_2.name = eina_stringshare_add(_("Item 3_2"));
    dummy_data.item3_2.expandable = true;
-   dummy_data.item3_2.expand_cb = _dynamic_subitems_get;
+   dummy_data.item3_2.expand_cb = _item_controls_subitems_get;
 
    dummy_data.item4.name = eina_stringshare_add(_("Item 4"));
    dummy_data.item4.action1.name = eina_stringshare_add(_("entry"));
@@ -256,7 +263,7 @@ property_dummy_init()
    dummy_data.item11.action1.init_cb = _label_init_cb;
 
    dummy_data.item_controls.name = eina_stringshare_add(_("Item 2"));
-   dummy_data.item_controls.expand_cb = _item_controls_subitems_get;
+   dummy_data.item_controls.expand_cb = _dynamic_subitems_get;
    dummy_data.item_controls.icon_name = eina_stringshare_add(_("elm/image/icon/end-point"));
 
    dummy_data.item_controls2.name = eina_stringshare_add(_("Item 2"));
@@ -299,5 +306,6 @@ property_dummy_items_get()
    items = eina_list_append(items, &dummy_data.item2);
    items = eina_list_append(items, &dummy_data.item3);
    items = eina_list_append(items, &dummy_data.item_controls);
+   items = eina_list_append(items, &dummy_data.item4);
    return items;
 }
