@@ -86,13 +86,28 @@ _start_cb(void *data,
    Property_Attribute *pa = data;
 
    assert(pa != NULL);
+
    if (pa->action1.control == obj)
      {
+        /* hack to disable genlist scrolling while dragging spinner */
+        if (pa->action1.control_type == PROPERTY_CONTROL_SPINNER)
+          {
+             /* disable wheel scrolling */
+             elm_object_scroll_freeze_push(pa->action1.control);
+             /* disable page-up/page-down scrolling */
+             elm_object_focus_set(pd.genlist, false);
+          }
         _start(pa, &pa->action1);
      }
    else
      {
         assert (pa->action2.control == obj);
+
+        if (pa->action2.control_type == PROPERTY_CONTROL_SPINNER)
+          {
+             elm_object_scroll_freeze_push(pa->action2.control);
+             elm_object_focus_set(pd.genlist, false);
+          }
         _start(pa, &pa->action2);
      }
 }
@@ -107,11 +122,17 @@ _stop_cb(void *data,
    assert(pa != NULL);
    if (pa->action1.control == obj)
      {
+        /* enable scrolling after finishing spinner drag */
+        if (pa->action1.control_type == PROPERTY_CONTROL_SPINNER)
+          elm_object_scroll_freeze_pop(pa->action1.control);
         _stop(pa, &pa->action1);
      }
    else
      {
         assert (pa->action2.control == obj);
+
+        if (pa->action2.control_type == PROPERTY_CONTROL_SPINNER)
+          elm_object_scroll_freeze_pop(pa->action2.control);
         _stop(pa, &pa->action2);
      }
 }
