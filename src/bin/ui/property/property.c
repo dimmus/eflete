@@ -176,6 +176,7 @@ property_add(Evas_Object *parent)
    property_common_itc_init();
    property_dummy_init();
    property_color_class_manager_init();
+   property_image_manager_init();
    property_group_init();
 
    evas_object_smart_callback_add(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, _none_mode, NULL);
@@ -223,11 +224,13 @@ property_mode_set(Property_Mode mode)
          break;
       case PROPERTY_MODE_STYLE:
       case PROPERTY_MODE_SOUND:
-      case PROPERTY_MODE_IMAGE:
       case PROPERTY_MODE_DEMO:
          break;
       case PROPERTY_MODE_COLOR_CLASS:
          items = property_color_class_manager_items_get();
+         break;
+      case PROPERTY_MODE_IMAGE:
+         items = property_image_manager_items_get();
          break;
      }
    _items_add(&items, NULL);

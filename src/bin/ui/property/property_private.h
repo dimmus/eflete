@@ -120,6 +120,13 @@ property_color_class_manager_init();
 Eina_List *
 property_color_class_manager_items_get();
 
+/* image manager submodule */
+void
+property_image_manager_init();
+
+Eina_List *
+property_image_manager_items_get();
+
 /* dummy submodule. for implementation tests. will be deleted later */
 void
 property_dummy_init();
