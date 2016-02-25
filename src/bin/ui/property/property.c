@@ -138,6 +138,7 @@ _realized_cb(void *data __UNUSED__,
 
    assert(pa != NULL);
 
+   pa->realized = true;
    if (pa->action1.init_cb != NULL)
      {
         DBG("calling init_cb of %s (%s)", pa->name, (pa->action1.name) ? pa->action1.name : "unnamed");
@@ -147,6 +148,16 @@ _realized_cb(void *data __UNUSED__,
      {
         DBG("calling init_cb of %s (%s)", pa->name, (pa->action2.name) ? pa->action2.name : "unnamed");
         pa->action2.init_cb(pa, &pa->action2);
+     }
+   if (pa->action1.update_cb != NULL)
+     {
+        DBG("calling update_cb of %s (%s)", pa->name, (pa->action1.name) ? pa->action1.name : "unnamed");
+        pa->action1.update_cb(pa, &pa->action1);
+     }
+   if (pa->action2.update_cb != NULL)
+     {
+        DBG("calling update_cb of %s (%s)", pa->name, (pa->action2.name) ? pa->action2.name : "unnamed");
+        pa->action2.update_cb(pa, &pa->action2);
      }
 }
 
@@ -160,6 +171,7 @@ _unrealized_cb(void *data __UNUSED__,
 
    assert(pa != NULL);
 
+   pa->realized = false;
    pa->action1.control = NULL;
    pa->action2.control = NULL;
 }
