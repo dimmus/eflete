@@ -112,6 +112,14 @@ property_color_control_color_set(Evas_Object *control, int r, int g, int b, int 
 void
 property_color_control_color_get(Evas_Object *control, int *r, int *g, int *b, int *a);
 
+
+/* color class manager submodule */
+void
+property_color_class_manager_init();
+
+Eina_List *
+property_color_class_manager_items_get();
+
 /* dummy submodule. for implementation tests. will be deleted later */
 void
 property_dummy_init();
