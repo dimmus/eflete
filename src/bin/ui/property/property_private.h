@@ -57,12 +57,25 @@ typedef void (* Property_Cb) (Property_Attribute *, Property_Action *);
 typedef void (* Property_Attribute_Del_Cb) (Property_Attribute *);
 typedef Eina_List * (* Property_Expand_Cb) (Property_Attribute *);
 
+typedef enum {
+   PROPERTY_IMAGE_CONTROL_PREVIEW,
+   PROPERTY_IMAGE_CONTROL_NAME,
+   PROPERTY_IMAGE_CONTROL_LOCATION,
+   PROPERTY_IMAGE_CONTROL_TYPE,
+   PROPERTY_IMAGE_CONTROL_COMPRESSION,
+   PROPERTY_IMAGE_CONTROL_QUALITY,
+   PROPERTY_IMAGE_CONTROL_WIDTH,
+   PROPERTY_IMAGE_CONTROL_HEIGHT,
+   PROPERTY_IMAGE_CONTROL_LAST
+} Attribute_Image;
+
 struct _Property_Action {
    Property_Control control_type;
    Eina_Stringshare *name;
    Eina_Stringshare *units;
    union {
       Attribute attribute; /**< type for group properties */
+      Attribute_Image attribute_image; /**< type for group properties */
    } type; /**< submodule-specific enums */
    Evas_Object *control; /**< pointer to widget */
    Property_Cb init_cb;
