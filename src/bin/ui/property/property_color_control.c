@@ -45,6 +45,7 @@ _on_dismissed(void *data,
    evas_object_smart_callback_del_full(obj, "color,changed", _on_color_change, control);
    evas_object_smart_callback_del_full(obj, "dismissed", _on_dismissed, control);
 
+   elm_object_scroll_freeze_pop(control);
    evas_object_smart_callback_call(control, "dismissed", NULL);
 
    evas_object_hide(obj);
@@ -65,6 +66,7 @@ _on_color_clicked(void *data __UNUSED__,
    colorsel = colorselector_get();
    property_color_control_color_get(control, &r, &g, &b, &a);
    colorselector_color_set(colorsel, r, g, b, a);
+   elm_object_scroll_freeze_push(control);
    evas_object_smart_callback_add(colorsel, "color,changed", _on_color_change, control);
    evas_object_smart_callback_add(colorsel, "dismissed", _on_dismissed, control);
    evas_object_geometry_get(control, &x, &y, NULL, NULL);
