@@ -89,6 +89,12 @@ struct _Property_Attribute {
 void
 property_item_add(Property_Attribute *pa, Elm_Object_Item *parent);
 
+void
+property_item_update_recursively(Property_Attribute *pa);
+
+void
+property_item_update(Property_Attribute *pa);
+
 /* delete item from property only if it was added */
 static inline void
 property_item_del(Property_Attribute *pa)

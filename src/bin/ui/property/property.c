@@ -149,16 +149,7 @@ _realized_cb(void *data __UNUSED__,
         DBG("calling init_cb of %s (%s)", pa->name, (pa->action2.name) ? pa->action2.name : "unnamed");
         pa->action2.init_cb(pa, &pa->action2);
      }
-   if (pa->action1.update_cb != NULL)
-     {
-        DBG("calling update_cb of %s (%s)", pa->name, (pa->action1.name) ? pa->action1.name : "unnamed");
-        pa->action1.update_cb(pa, &pa->action1);
-     }
-   if (pa->action2.update_cb != NULL)
-     {
-        DBG("calling update_cb of %s (%s)", pa->name, (pa->action2.name) ? pa->action2.name : "unnamed");
-        pa->action2.update_cb(pa, &pa->action2);
-     }
+   property_item_update(pa);
 }
 
 static void
@@ -236,4 +227,40 @@ property_mode_set(Property_Mode mode)
          break;
      }
    _items_add(&items, NULL);
+}
+
+void
+property_item_update(Property_Attribute *pa)
+{
+   assert(pa != NULL);
+
+   if (!pa->realized) return;
+
+   if (pa->action1.update_cb != NULL)
+     {
+        DBG("calling update_cb of %s (%s)", pa->name, (pa->action1.name) ? pa->action1.name : "unnamed");
+        pa->action1.update_cb(pa, &pa->action1);
+     }
+   if (pa->action2.update_cb != NULL)
+     {
+        DBG("calling update_cb of %s (%s)", pa->name, (pa->action2.name) ? pa->action2.name : "unnamed");
+        pa->action2.update_cb(pa, &pa->action2);
+     }
+}
+
+void
+property_item_update_recursively(Property_Attribute *pa)
+{
+   const Eina_List *subitems, *l;
+   Elm_Object_Item *glit;
+
+   assert(pa != NULL);
+
+   if (!pa->realized) return;
+
+   property_item_update(pa);
+
+   subitems = elm_genlist_item_subitems_get(pa->glit);
+   EINA_LIST_FOREACH(subitems, l, glit)
+      property_item_update_recursively(elm_object_item_data_get(glit));
 }
