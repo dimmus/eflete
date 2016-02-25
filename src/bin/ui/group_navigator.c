@@ -506,7 +506,7 @@ _selected_cb(void *data,
              eina_stringshare_del(pl->group->current_program);
              pl->group->current_program = NULL;
           }
-        evas_object_smart_callback_call(ap.win, SIGNAL_PROGRAM_SELECTED, NULL);
+        evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_NAVIGATOR_UNSELECTED, NULL);
         return;
      }
    itc = elm_genlist_item_item_class_get(glit);
@@ -1228,7 +1228,6 @@ _program_del(Part_List *pl,
    program = elm_object_item_data_get(glit);
 
    assert(program != NULL);
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROGRAM_UNSELECTED, (void *)program);
 
    msg = eina_stringshare_printf(_("deleted program \"%s\""), program->name);
    change = change_add(msg);
@@ -1336,7 +1335,10 @@ group_navigator_part_del(Evas_Object *obj, Part *part)
 
    part_item = _part_item_find(pl, part);
    if (pl->selected_part_item == part_item)
-     _unselect_part(pl);
+     {
+        _unselect_part(pl);
+        evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_NAVIGATOR_UNSELECTED, NULL);
+     }
 
    elm_object_item_del(part_item);
    elm_genlist_item_update(pl->parts_caption_item);
@@ -1843,6 +1845,7 @@ group_navigator_part_select(Evas_Object *obj, Part *part)
    else
      {
         _unselect_part(pl);
+        evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_NAVIGATOR_UNSELECTED, NULL);
         elm_genlist_item_selected_set(elm_genlist_selected_item_get(pl->genlist), false);
      }
 }

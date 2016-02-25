@@ -99,12 +99,12 @@
 #define SIGNAL_PART_UNSELECTED "SIGNAL_PART_UNSELECTED"
 
 /**
- * emited when program is unselected.
+ * emited when everething in group_navigator is unselected.
  * eventinfo - pointer to Resource structure
  *
  * @ingroup Window
  */
-#define SIGNAL_PROGRAM_UNSELECTED "SIGNAL_PROGRAM_UNSELECTED"
+#define SIGNAL_GROUP_NAVIGATOR_UNSELECTED "SIGNAL_GROUP_NAVIGATOR_UNSELECTED"
 
 typedef struct {
    const char *old_name;
