@@ -51,9 +51,13 @@ struct _Workspace_Data
    Evas_Object *demo_navi;
    Evas_Object *toolbar;
    Evas_Object *panes_h; /* for set subobject like code, sequance etc */
-   Evas_Object *workspace_layout; /* layout for rulers and scroller */
-   Evas_Object *ruler_v, *ruler_h;
    struct {
+      Evas_Object *obj;
+      Ewe_Ruler_Marker *pointer;
+      Ewe_Ruler_Scale *scale_rel;
+   } ruler_v, ruler_h;
+   struct {
+      Evas_Object *layout;  /* layout for rulers and scroller */
       Evas_Object *scroller;
       Evas_Object *container;
       Evas_Object *bg;
@@ -68,6 +72,14 @@ struct _Workspace_Data
 };
 
 typedef struct _Workspace_Data Workspace_Data;
+
+#define RULER_ADD(RUL, SCAL, POINT) \
+   RUL = ewe_ruler_add(wd->normal.layout); \
+   SCAL = ewe_ruler_scale_add(RUL, "relative"); \
+   ewe_ruler_format_set(RUL, SCAL, "%.1f"); \
+   ewe_ruler_scale_visible_set(RUL, SCAL, false); \
+   ewe_ruler_value_step_set(RUL, SCAL, 0.5); \
+   POINT = ewe_ruler_marker_add(RUL, "pointer");
 
 Eina_Bool
 workspace_zoom_factor_set(Evas_Object *obj __UNUSED__, double factor __UNUSED__)
@@ -118,6 +130,7 @@ Evas_Object *
 workspace_add(Evas_Object *parent, Group *group)
 {
    Workspace_Data *wd;
+   Evas_Object *layout;
 
    assert(parent != NULL);
    assert(group != NULL);
@@ -129,7 +142,34 @@ workspace_add(Evas_Object *parent, Group *group)
    wd = mem_calloc(1, sizeof(Workspace_Data));
    wd->panes = elm_panes_add(parent);
    elm_panes_content_right_min_size_set(wd->panes, PANES_RIGHT_SIZE_MIN);
-   elm_panes_content_right_size_set(wd->panes, PANES_RIGHT_SIZE_MIN);
+   elm_panes_content_right_size_set(wd->panes, 0); /* set the default min size */
+
+   layout = elm_layout_add(wd->panes);
+   elm_layout_theme_set(layout, "layout", "workspace", "toolbar");
+   elm_object_part_content_set(wd->panes, "left", layout);
+
+   wd->panes_h = elm_panes_add(layout);
+   elm_panes_horizontal_set(wd->panes_h, true);
+   elm_panes_content_right_size_set(wd->panes_h, 0); /* set the default min size */
+   elm_layout_content_set(layout, NULL, wd->panes_h);
+
+   wd->normal.layout = elm_layout_add(wd->panes_h);
+   elm_layout_theme_set(wd->normal.layout, "layout", "workspace", "scroller");
+   elm_object_part_content_set(wd->panes_h, "left", wd->normal.layout);
+
+   RULER_ADD(wd->ruler_h.obj, wd->ruler_h.scale_rel, wd->ruler_h.pointer)
+   elm_layout_content_set(wd->normal.layout, "elm.swallow.ruler_h", wd->ruler_h.obj);
+   RULER_ADD(wd->ruler_v.obj, wd->ruler_v.scale_rel, wd->ruler_v.pointer)
+   ewe_ruler_horizontal_set(wd->ruler_v.obj, false);
+   elm_layout_content_set(wd->normal.layout, "elm.swallow.ruler_v", wd->ruler_v.obj);
+
+   /* create scroller for normal mode and set bg */
+   wd->normal.scroller = elm_scroller_add(wd->normal.layout);
+   elm_layout_content_set(wd->normal.layout, "elm.swallow.scroller", wd->normal.scroller);
+   wd->normal.bg = elm_layout_add(wd->normal.layout);
+   elm_layout_theme_set(wd->normal.bg, "layout", "workspace", "bg");
+   elm_object_part_content_set(wd->normal.scroller, "elm.swallow.background", wd->normal.bg);
+
    wd->group = group;
 
    evas_object_data_set(wd->panes, WORKSPACE_DATA, wd);
