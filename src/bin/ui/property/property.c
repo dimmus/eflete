@@ -109,6 +109,7 @@ _expanded_cb(void *data __UNUSED__,
    assert(pa != NULL);
    assert(pa->expand_cb != NULL);
 
+   pa->expanded = true;
    items = pa->expand_cb(pa);
    _items_add(&items, pa->glit);
 }
@@ -119,6 +120,11 @@ _contracted_cb(void *data __UNUSED__,
                void *event_info)
 {
    Elm_Object_Item *glit = event_info;
+   Property_Attribute *pa = elm_object_item_data_get(glit);
+
+   assert(pa != NULL);
+
+   pa->expanded = false;
    elm_genlist_item_subitems_clear(glit);
 }
 
