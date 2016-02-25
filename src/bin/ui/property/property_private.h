@@ -89,6 +89,13 @@ struct _Property_Attribute {
 void
 property_item_add(Property_Attribute *pa, Elm_Object_Item *parent);
 
+/* delete item from property only if it was added */
+static inline void
+property_item_del(Property_Attribute *pa)
+{
+   if (pa->glit) elm_object_item_del(pa->glit);
+}
+
 /* color_control */
 Evas_Object *
 property_color_control_add(Evas_Object *parent);
