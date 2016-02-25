@@ -293,6 +293,12 @@ _1swallow_content_get(void *data,
      {
         content = _control_create(pa, &pa->action1, obj);
         pa->action1.control = content;
+        if (pa->action1.init_cb != NULL)
+          {
+             DBG("calling init_cb of %s (%s)", pa->name, (pa->action1.name) ? pa->action1.name : "unnamed");
+             pa->action1.init_cb(pa, &pa->action1);
+          }
+
         return content;
      }
 
@@ -326,12 +332,24 @@ _2swallow_content_get(void *data,
      {
         content = _control_create(pa, &pa->action1, obj);
         pa->action1.control = content;
+        if (pa->action1.init_cb != NULL)
+          {
+             DBG("calling init_cb of %s (%s)", pa->name, (pa->action1.name) ? pa->action1.name : "unnamed");
+             pa->action1.init_cb(pa, &pa->action1);
+          }
+
         return content;
      }
    if ((pa->action2.control_type != PROPERTY_CONTROL_NONE) && (!strcmp(part, "swallow.action2")))
      {
         content = _control_create(pa, &pa->action2, obj);
         pa->action2.control = content;
+        if (pa->action2.init_cb != NULL)
+          {
+             DBG("calling init_cb of %s (%s)", pa->name, (pa->action2.name) ? pa->action2.name : "unnamed");
+             pa->action2.init_cb(pa, &pa->action2);
+          }
+
         return content;
      }
 
