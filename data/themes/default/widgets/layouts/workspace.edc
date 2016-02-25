@@ -74,11 +74,6 @@ group { name: "elm/layout/workspace/bg";
 
 group { name: "elm/layout/workspace/scroller";
    parts {
-      part { name: "elm.swallow.bg";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-         }
-      }
       part { name: "area.ruler.cros";
          type: SPACER;
          scale: 1;
@@ -89,6 +84,20 @@ group { name: "elm/layout/workspace/scroller";
          description { state: "hide" 0.0;
             align: 0.0 0.0;
             max: 0 0;
+         }
+      }
+      part { name: "bg.ruler_v";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color_class: "bg_entry";
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "area.ruler.cros";
+            }
+            rel2 {
+               to_x: "area.ruler.cros";
+            }
          }
       }
       part { name: "elm.swallow.ruler_v";
@@ -113,6 +122,20 @@ group { name: "elm/layout/workspace/scroller";
             }
             rel2 {
                to: "elm.swallow.ruler_v";
+            }
+         }
+      }
+      part { name: "bg.ruler_h";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color_class: "bg_entry";
+            rel1 {
+               relative: 0.0 0.0;
+               to: "area.ruler.cros";
+            }
+            rel2 {
+               to_y: "area.ruler.cros";
             }
          }
       }
@@ -172,6 +195,9 @@ group { name: "elm/layout/workspace/toolbar";
          description { state: "default" 0.0;
             align: 0.5 1.0;
             max: -1 31;
+            rel2 {
+               offset: -4 -1;
+            }
          }
       }
       part { name: "elm.swallow.toolbar";
@@ -191,8 +217,8 @@ group { name: "elm/layout/workspace/toolbar";
          type: SWALLOW;
          description { state: "default" 0.0;
             rel2 {
+               to: "area.toolbar";
                relative: 1.0 0.0;
-               to_y: "area.toolbar";
             }
          }
       }
