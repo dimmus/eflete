@@ -286,7 +286,7 @@ history_ui_add(void)
    elm_layout_content_set(hd.layout, "elm.swallow.btn_discard", hd.btn_undo_all);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_HISTORY_CHANGE_ADDED, _on_change_added, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _history_set, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_CHANGED, _history_set, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_UNDO, _undo_shortcut, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_REDO, _redo_shortcut, NULL);
 

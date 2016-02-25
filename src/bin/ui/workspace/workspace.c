@@ -1001,7 +1001,7 @@ _mode_changed(void *data,
             evas_object_show(sd->demo_group);
 
             demo_group_demo_update(sd->demo_group);
-            evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
+            evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_MODE_DEMO, NULL);
 
             break;
          }
@@ -1015,7 +1015,7 @@ _mode_changed(void *data,
         elm_widget_sub_object_add(sd->panes, sd->demo_group);
         elm_object_part_content_set(sd->panes, "right", sd->group_navigator);
         evas_object_show(sd->group_navigator);
-        evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, sd->group);
+        evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_MODE_GROUP, NULL);
      }
 
    sd->active_mode = mode;
