@@ -263,7 +263,8 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          elm_colorselector_mode_set(content, ELM_COLORSELECTOR_ALL);
          evas_object_size_hint_min_set(content, 200, 270);
          TODO("start/stop callbacks for this item type would be incorrect. Add correct one if needed");
-         evas_object_smart_callback_add(content, "changed", _start_change_stop_cb, pa);
+         evas_object_smart_callback_add(content, "changed,user", _start_change_stop_cb, pa);
+         evas_object_smart_callback_add(content, "color,item,selected", _start_change_stop_cb, pa);
          return content;
       case PROPERTY_CONTROL_LABEL:
          content = elm_label_add(parent);
