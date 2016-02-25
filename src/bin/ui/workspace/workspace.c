@@ -107,6 +107,22 @@ workspace_active_demo_mode_get(Evas_Object *obj __UNUSED__)
 }
 
 static void
+_rulers_pointer_move(void *data,
+                     Evas *e,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   Workspace_Data *wd = data;
+   Evas_Coord x, y, ruler_h_x, ruler_v_y;
+
+   evas_pointer_output_xy_get(e, &x, &y);
+   evas_object_geometry_get(wd->ruler_h.obj, &ruler_h_x, NULL, NULL, NULL);
+   evas_object_geometry_get(wd->ruler_v.obj, NULL, &ruler_v_y, NULL, NULL);
+   ewe_ruler_marker_absolute_set(wd->ruler_h.obj, wd->ruler_h.pointer, x - ruler_h_x);
+   ewe_ruler_marker_absolute_set(wd->ruler_v.obj, wd->ruler_v.pointer, y - ruler_v_y);
+}
+
+static void
 _job_workspace_del(void *data)
 {
    assert(data != NULL);
@@ -165,6 +181,7 @@ workspace_add(Evas_Object *parent, Group *group)
 
    /* create scroller for normal mode and set bg */
    wd->normal.scroller = elm_scroller_add(wd->normal.layout);
+   evas_object_event_callback_add(wd->normal.scroller, EVAS_CALLBACK_MOUSE_MOVE, _rulers_pointer_move, wd);
    elm_layout_content_set(wd->normal.layout, "elm.swallow.scroller", wd->normal.scroller);
    wd->normal.bg = elm_layout_add(wd->normal.layout);
    elm_layout_theme_set(wd->normal.bg, "layout", "workspace", "bg");
