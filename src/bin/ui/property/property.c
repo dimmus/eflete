@@ -57,6 +57,9 @@ property_item_add(Property_Attribute *pa, Elm_Object_Item *parent)
    assert(pa != NULL);
    assert(pd.item_classes[pa->action1.control_type][pa->action2.control_type] != NULL);
 
+   /* item is already added */
+   if (pa->glit) return;
+
    pa->glit = elm_genlist_item_append(pd.genlist,
                                       pd.item_classes[pa->action1.control_type][pa->action2.control_type],
                                       pa,
