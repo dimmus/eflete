@@ -22,6 +22,17 @@
 #include "property_common.h"
 #include "widget_macro.h"
 
+/* hack to disable spinner value changes when scrolling */
+static void
+_on_spinner_mouse_wheel(void *data __UNUSED__,
+                        Evas *e __UNUSED__,
+                        Evas_Object *obj __UNUSED__,
+                        void *event_info)
+{
+   Evas_Event_Mouse_Wheel *mev = event_info;
+   mev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+}
+
 /****************** controls creation functions *******************************/
 static void
 _stop(Property_Attribute *pa, Property_Action *action)
@@ -230,6 +241,11 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          evas_object_smart_callback_add(content, "spinner,drag,start", _start_cb, pa);
          evas_object_smart_callback_add(content, "spinner,drag,stop", _stop_cb, pa);
          evas_object_smart_callback_add(content, "changed", _start_change_stop_cb, pa);
+
+         evas_object_event_callback_priority_add(content,
+                                                 EVAS_CALLBACK_MOUSE_WHEEL,
+                                                 EVAS_CALLBACK_PRIORITY_BEFORE,
+                                                 _on_spinner_mouse_wheel, NULL);
          return content;
       case PROPERTY_CONTROL_ENTRY:
          ENTRY_ADD(parent, content, true);
