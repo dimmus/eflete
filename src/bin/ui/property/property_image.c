@@ -35,8 +35,7 @@ typedef struct {
    Property_Attribute item_width;
    Property_Attribute item_height;
 
-   Eina_Stringshare *image_name;
-   Evas_Object *image;
+   Image_Item *image;
 } Property_Image_Data;
 
 /* accroding to Edje_Edit.h */
@@ -89,9 +88,7 @@ _image_info_type_setup(Property_Action *action, const char *image_name)
 static void
 _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
 {
-   Edje_Edit_Image_Comp comp;
    Eina_Stringshare *str;
-   int w, h;
 
    if (!image_data.image)
      {
@@ -104,38 +101,29 @@ _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
       case PROPERTY_IMAGE_CONTROL_PREVIEW:
          break;
       case PROPERTY_IMAGE_CONTROL_NAME:
-         elm_object_text_set(action->control, image_data.image_name);
+         elm_object_text_set(action->control, image_data.image->image_name);
          break;
       case PROPERTY_IMAGE_CONTROL_LOCATION:
-         comp =  edje_edit_image_compression_type_get(ap.project->global_object,
-                                                      image_data.image_name);
-         if (comp != EDJE_EDIT_IMAGE_COMP_USER)
+         if (image_data.image->comp_type != EDJE_EDIT_IMAGE_COMP_USER)
            {
-              str = eina_stringshare_printf("edje/images/%i",
-                                            edje_edit_image_id_get(ap.project->global_object,
-                                                                   image_data.image_name));
+              str = eina_stringshare_printf("edje/images/%i", image_data.image->id);
               elm_object_text_set(action->control, str);
               eina_stringshare_del(str);
            }
          else
-           elm_object_text_set(action->control, image_data.image_name);
+           elm_object_text_set(action->control, image_data.image->image_name);
          break;
       case PROPERTY_IMAGE_CONTROL_TYPE:
-         _image_info_type_setup(action, image_data.image_name);
+         _image_info_type_setup(action, image_data.image->image_name);
          break;
       case PROPERTY_IMAGE_CONTROL_COMPRESSION:
-         comp =  edje_edit_image_compression_type_get(ap.project->global_object,
-                                                      image_data.image_name);
-         elm_object_text_set(action->control, edje_image_compression[comp]);
+         elm_object_text_set(action->control,
+                             edje_image_compression[image_data.image->comp_type]);
          break;
       case PROPERTY_IMAGE_CONTROL_QUALITY:
-         comp =  edje_edit_image_compression_type_get(ap.project->global_object,
-                                                      image_data.image_name);
-         if (comp == EDJE_EDIT_IMAGE_COMP_LOSSY)
+         if (image_data.image->comp_type == EDJE_EDIT_IMAGE_COMP_LOSSY)
            {
-              int quality = edje_edit_image_compression_rate_get(ap.project->global_object,
-                                                                 image_data.image_name);
-              str = eina_stringshare_printf("%i", quality);
+              str = eina_stringshare_printf("%i", image_data.image->quality);
               elm_object_text_set(action->control, str);
               eina_stringshare_del(str);
            }
@@ -143,16 +131,8 @@ _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
            elm_object_text_set(action->control, EMPTY_VALUE);
          break;
       case PROPERTY_IMAGE_CONTROL_WIDTH:
-         elm_image_object_size_get(image_data.image, &w, NULL);
-         str = eina_stringshare_printf("%d", w);
-         elm_object_text_set(action->control, str);
-         eina_stringshare_del(str);
          break;
       case PROPERTY_IMAGE_CONTROL_HEIGHT:
-         elm_image_object_size_get(image_data.image, NULL, &h);
-         str = eina_stringshare_printf("%d", h);
-         elm_object_text_set(action->control, str);
-         eina_stringshare_del(str);
          break;
       default:
          break;
@@ -164,21 +144,9 @@ _on_image_selected(void *data __UNUSED__,
                    Evas_Object *obj __UNUSED__,
                    void *event_info)
 {
-   Evas_Object *image = (Evas_Object *)event_info;
-   Eina_Stringshare *image_name;
+   Image_Item *image = (Image_Item *)event_info;
 
-   if (image)
-     {
-        image_name = evas_object_data_get(image, "image_name");
-        image_data.image_name = image_name;
-        image_data.image = image;
-
-     }
-   else
-     {
-        image_data.image_name = NULL;
-        image_data.image = NULL;
-     }
+   image_data.image = image;
 
    _update_cb(NULL, &image_data.item_name.action1);
    _update_cb(NULL, &image_data.item_type.action1);
