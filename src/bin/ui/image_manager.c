@@ -300,6 +300,8 @@ _on_image_done(void *data,
         it = (Image_Item *)mem_malloc(sizeof(Image_Item));
         it->image_name = eina_stringshare_add(file_name);
         it->id = edje_edit_image_id_get(ap.project->global_object, it->image_name);
+        it->comp_type = edje_edit_image_compression_type_get(ap.project->global_object,
+                                                             it->image_name);
         elm_gengrid_item_append(img_mng->gengrid, gic, it, _grid_sel, img_mng);
 
         it->source = eina_stringshare_add(res->source);
