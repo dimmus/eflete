@@ -237,6 +237,8 @@ _image_manager_gengrid_item_data_create(Evas_Object *edje_edit_obj,
    it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
    it->comp_type = edje_edit_image_compression_type_get(edje_edit_obj,
                                                         it->image_name);
+   it->quality = edje_edit_image_compression_rate_get(edje_edit_obj,
+                                                      it->image_name);
    it->source = eina_stringshare_add(res->source);
 
    return it;

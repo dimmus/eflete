@@ -415,6 +415,7 @@ struct _Image_Item
    const char* image_name;
    const char* source;
    Edje_Edit_Image_Comp comp_type;
+   int quality;
    Eina_Bool is_used;
 };
 
