@@ -26,22 +26,12 @@
 
 typedef struct _Image_Manager Image_Manager;
 typedef struct _Search_Data Search_Data;
-typedef struct _Item Item;
 typedef struct _Content_Init_Data Content_Init_Data;
-
-struct _Item
-{
-   int id;
-   const char* image_name;
-   const char* source;
-   Edje_Edit_Image_Comp comp_type;
-   Eina_Bool is_used;
-};
 
 struct _Content_Init_Data
 {
    Image_Manager *image_manager;
-   Item *item_data;
+   Image_Item *item_data;
    Evas_Object *image_obj;
 };
 
@@ -69,7 +59,7 @@ _grid_label_get(void *data,
                 Evas_Object *obj __UNUSED__,
                 const char  *part __UNUSED__)
 {
-   const Item *it = data;
+   const Image_Item *it = data;
    return strdup(it->image_name);
 }
 
@@ -105,7 +95,7 @@ _image_manager_del(Image_Manager *img_mng)
 
 static void
 _image_manager_image_setup(Evas_Object *image,
-                          const Item *it)
+                          const Image_Item *it)
 {
    assert(image != NULL);
    assert(it != NULL);
@@ -125,7 +115,7 @@ _image_manager_image_setup(Evas_Object *image,
 
 static inline Evas_Object *
 _image_manager_image_create(Evas_Object *parent,
-                           const Item *it)
+                           const Image_Item *it)
 {
    assert(parent != NULL);
    assert(it != NULL);
@@ -142,7 +132,7 @@ _grid_content_get(void *data,
                   Evas_Object *obj,
                   const char  *part)
 {
-   Item *it = data;
+   Image_Item *it = data;
    Evas_Object *image_obj = NULL;
    Evas_Object *grid = (Evas_Object *)obj;
    Resource *res;
@@ -182,7 +172,7 @@ static void
 _grid_del(void *data,
           Evas_Object *obj __UNUSED__)
 {
-   Item *it = data;
+   Image_Item *it = data;
 
    assert(it != NULL);
 
@@ -193,7 +183,7 @@ _grid_del(void *data,
 
 static void
 _image_info_setup(Image_Manager *img_mng,
-                  const Item* it)
+                  const Image_Item* it)
 {
    Evas_Object *image;
 
@@ -215,7 +205,7 @@ _grid_sel(void *data,
           void *event_info __UNUSED__)
 {
    Image_Manager *img_mng = (Image_Manager *)data;
-   Item *item = NULL;
+   Image_Item *item = NULL;
    Eina_List *l;
    Eina_List *sel_list;
    Elm_Object_Item *grid_item = NULL;
@@ -253,14 +243,14 @@ _grid_sel(void *data,
      }
 }
 
-static inline Item *
+static inline Image_Item *
 _image_manager_gengrid_item_data_create(Evas_Object *edje_edit_obj,
                                        External_Resource *res)
 {
    assert(edje_edit_obj != NULL);
    assert(res != NULL);
 
-   Item *it = (Item *)mem_malloc(sizeof(Item));
+   Image_Item *it = (Image_Item *)mem_malloc(sizeof(Image_Item));
    it->image_name = eina_stringshare_add(res->name);
    it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
    it->comp_type = edje_edit_image_compression_type_get(edje_edit_obj,
@@ -275,7 +265,7 @@ _on_image_done(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info)
 {
-   Item *it = NULL;
+   Image_Item *it = NULL;
    const Eina_List *images, *l;
    const char *selected;
    Uns_List *image = NULL;
@@ -323,7 +313,7 @@ _on_image_done(void *data,
         TODO("Remove this line once edje_edit_image_add would be added into Editor Modulei and saving would work properly")
         ap.project->changed = true;
 
-        it = (Item *)mem_malloc(sizeof(Item));
+        it = (Image_Item *)mem_malloc(sizeof(Image_Item));
         it->image_name = eina_stringshare_add(file_name);
         it->id = edje_edit_image_id_get(ap.project->global_object, it->image_name);
         elm_gengrid_item_append(img_mng->gengrid, gic, it, _grid_sel, img_mng);
@@ -355,7 +345,7 @@ _on_button_delete_clicked_cb(void *data,
 {
    Image_Manager *img_mng = (Image_Manager *)data;
    Elm_Object_Item *grid_item = NULL;
-   Item *it = NULL;
+   Image_Item *it = NULL;
    Eina_List *grid_list, *l, *l2;
    External_Resource *res;
 
@@ -442,7 +432,7 @@ static Eina_Bool
 _image_manager_init(Image_Manager *img_mng)
 {
    Eina_List *l = NULL;
-   Item *it = NULL;
+   Image_Item *it = NULL;
    Eina_List *images = NULL;
    int counter = 0;
    External_Resource *res;
