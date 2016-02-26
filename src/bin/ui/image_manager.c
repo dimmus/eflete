@@ -181,23 +181,6 @@ _grid_del(void *data,
    free(it);
 }
 
-static void
-_image_info_setup(Image_Manager *img_mng,
-                  const Image_Item* it)
-{
-   Evas_Object *image;
-
-   assert(img_mng != NULL);
-   assert(it != NULL);
-
-   image = _image_manager_image_create(img_mng->layout, it);
-   evas_object_image_smooth_scale_set(image, false);
-   evas_object_show(image);
-
-   evas_object_data_set(image, "image_name", it->image_name);
-   evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, image);
-}
-
 /* item selection change callback */
 static void
 _grid_sel(void *data,
@@ -222,7 +205,6 @@ _grid_sel(void *data,
    if (selected_images_count == 1)
      {
         item = elm_object_item_data_get(eina_list_data_get(sel_list));
-        _image_info_setup(img_mng, item);
         /* if selected image is not used, we can delete it */
         if (!item->is_used)
           elm_object_disabled_set(img_mng->del_button, false);
@@ -239,8 +221,8 @@ _grid_sel(void *data,
                   break;
                }
           }
-        evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, NULL);
      }
+   evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, item);
 }
 
 static inline Image_Item *
