@@ -263,8 +263,6 @@ property_item_update_recursively(Property_Attribute *pa)
 
    assert(pa != NULL);
 
-   if (!pa->realized) return;
-
    property_item_update(pa);
 
    subitems = elm_genlist_item_subitems_get(pa->glit);
