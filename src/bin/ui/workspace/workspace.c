@@ -49,7 +49,19 @@ struct _Workspace_Data
    Evas_Object *panes; /* equal to all workspace, this object returned in workspace_add */
    Evas_Object *group_navi;
    Evas_Object *demo_navi;
-   Evas_Object *toolbar;
+   struct {
+      Evas_Object *layout;
+      Evas_Object *obj;
+      struct {
+         Evas_Object *normal;
+         Evas_Object *demo;
+      } mode_switcher;
+      struct {
+         Evas_Object *tile;
+         Evas_Object *black;
+         Evas_Object *white;
+      } bg_switcher;
+   } toolbar;
    Evas_Object *panes_h; /* for set subobject like code, sequance etc */
    struct {
       Evas_Object *obj;
@@ -142,11 +154,39 @@ _workspace_del(void *data,
    ecore_job_add(_job_workspace_del, data);
 }
 
+static void
+_mode_cb(void *data,
+         Evas_Object *obj,
+         void *event_info __UNUSED__)
+{
+   Workspace_Data *wd = data;
+
+   wd->mode = elm_radio_state_value_get(obj);
+}
+
+static Evas_Object *
+_radio_switcher_add(Workspace_Data *wd,
+                    const char *style,
+                    Evas_Smart_Cb func,
+                    int state_value,
+                    Evas_Object *group)
+{
+   Evas_Object *radio;
+
+   radio = elm_radio_add(wd->panes);
+   elm_object_style_set(radio, style);
+   elm_radio_state_value_set(radio, state_value);
+   evas_object_smart_callback_add(radio, "changed", func, wd);
+   elm_radio_group_add(radio, group);
+
+   return radio;
+}
+
 Evas_Object *
 workspace_add(Evas_Object *parent, Group *group)
 {
    Workspace_Data *wd;
-   Evas_Object *layout;
+   Elm_Object_Item *tb_it;
 
    assert(parent != NULL);
    assert(group != NULL);
@@ -160,14 +200,33 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_panes_content_right_min_size_set(wd->panes, PANES_RIGHT_SIZE_MIN);
    elm_panes_content_right_size_set(wd->panes, 0); /* set the default min size */
 
-   layout = elm_layout_add(wd->panes);
-   elm_layout_theme_set(layout, "layout", "workspace", "toolbar");
-   elm_object_part_content_set(wd->panes, "left", layout);
+   wd->toolbar.layout = elm_layout_add(wd->panes);
+   elm_layout_theme_set(wd->toolbar.layout, "layout", "workspace", "toolbar");
+   elm_object_part_content_set(wd->panes, "left", wd->toolbar.layout);
 
-   wd->panes_h = elm_panes_add(layout);
+   /* add toolbar */
+   wd->toolbar.obj = elm_toolbar_add(wd->panes);
+   elm_toolbar_align_set(wd->toolbar.obj, 0.0);
+   elm_toolbar_shrink_mode_set(wd->toolbar.obj, ELM_TOOLBAR_SHRINK_SCROLL);
+   elm_toolbar_select_mode_set(wd->toolbar.obj, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   elm_layout_content_set(wd->toolbar.layout, "elm.swallow.toolbar", wd->toolbar.obj);
+
+   /* add to toolbar modes switcher */
+   wd->toolbar.mode_switcher.normal = _radio_switcher_add(wd, "radio_normal", _mode_cb, MODE_NORMAL, NULL);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.mode_switcher.normal);
+   wd->toolbar.mode_switcher.demo = _radio_switcher_add(wd, "radio_demo", _mode_cb, MODE_DEMO, wd->toolbar.mode_switcher.normal);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.mode_switcher.demo);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_toolbar_item_separator_set(tb_it, true);
+
+
+
+   wd->panes_h = elm_panes_add(wd->toolbar.layout);
    elm_panes_horizontal_set(wd->panes_h, true);
    elm_panes_content_right_size_set(wd->panes_h, 0); /* set the default min size */
-   elm_layout_content_set(layout, NULL, wd->panes_h);
+   elm_layout_content_set(wd->toolbar.layout, NULL, wd->panes_h);
 
    wd->normal.layout = elm_layout_add(wd->panes_h);
    elm_layout_theme_set(wd->normal.layout, "layout", "workspace", "scroller");
