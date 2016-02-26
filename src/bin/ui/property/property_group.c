@@ -20,11 +20,23 @@
 #include "property.h"
 #include "property_private.h"
 #include "group_manager.h"
+#include "history.h"
+#include "change.h"
 
 struct _Property_Group_Data {
    Group *group;
    Part *part;
    Eina_Stringshare *program;
+
+   /* data needed to correctly handle changes that will be passed to history module */
+   struct {
+      const char *format;
+      Change *change;
+      struct {
+         int int_val1;
+         Eina_Stringshare *str_val1;
+      } old, new;
+   } history;
 
    struct {
         struct {
@@ -232,6 +244,150 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
      }
 }
 
+static void
+_start_cb(Property_Attribute *pa, Property_Action *action)
+{
+   assert(pa != NULL);
+   assert(action != NULL);
+   assert(action->control != NULL);
+   assert(group_pd.history.change == NULL);
+
+   group_pd.history.change = change_add(NULL);
+
+   /* setting new and old to current value. this will be checked on stop to ignore
+      empty changes (i.e. from 0 to 0) */
+#define VAL(NAME) \
+ group_pd.history.new.NAME = group_pd.history.old.NAME
+
+   switch (action->type.attribute)
+     {
+      case ATTRIBUTE_GROUP_NAME:
+         group_pd.history.format = _("group name changed from %s to %s");
+         VAL(str_val1) = eina_stringshare_add(group_pd.group->name);
+         break;
+      case ATTRIBUTE_GROUP_MIN_W:
+         group_pd.history.format = _("group.min_w changed from %d to %d");
+         VAL(int_val1) = edje_edit_group_min_w_get(group_pd.group->edit_object);
+         break;
+      case ATTRIBUTE_GROUP_MIN_H:
+         group_pd.history.format = _("group.min_h changed from %d to %d");
+         VAL(int_val1) = edje_edit_group_min_h_get(group_pd.group->edit_object);
+         break;
+      case ATTRIBUTE_GROUP_MAX_W:
+         group_pd.history.format = _("group.max_w changed from %d to %d");
+         VAL(int_val1) = edje_edit_group_max_w_get(group_pd.group->edit_object);
+         break;
+      case ATTRIBUTE_GROUP_MAX_H:
+         group_pd.history.format = _("group.max_h changed from %d to %d");
+         VAL(int_val1) = edje_edit_group_max_h_get(group_pd.group->edit_object);
+         break;
+      default:
+         TODO("remove default case after all attributes will be added");
+         CRIT("start callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
+         abort();
+         break;
+     }
+#undef VAL
+}
+
+static void
+_change_cb(Property_Attribute *pa, Property_Action *action)
+{
+   double double_val1 = 0.0;
+
+   assert(pa != NULL);
+   assert(action != NULL);
+   assert(action->control != NULL);
+   assert(group_pd.history.change != NULL);
+
+   switch (action->control_type)
+     {
+      case PROPERTY_CONTROL_SPINNER:
+         double_val1 = elm_spinner_value_get(action->control);
+         break;
+      default:
+         break;
+     }
+
+   switch (action->type.attribute)
+     {
+      case ATTRIBUTE_GROUP_NAME:
+         TODO("implement group rename");
+         break;
+      case ATTRIBUTE_GROUP_MIN_W:
+         editor_group_min_w_set(group_pd.group->edit_object, group_pd.history.change, true, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_group_min_w_get(group_pd.group->edit_object);
+         break;
+      case ATTRIBUTE_GROUP_MIN_H:
+         editor_group_min_h_set(group_pd.group->edit_object, group_pd.history.change, true, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_group_min_h_get(group_pd.group->edit_object);
+         break;
+      case ATTRIBUTE_GROUP_MAX_W:
+         editor_group_max_w_set(group_pd.group->edit_object, group_pd.history.change, true, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_group_max_w_get(group_pd.group->edit_object);
+         break;
+      case ATTRIBUTE_GROUP_MAX_H:
+         editor_group_max_h_set(group_pd.group->edit_object, group_pd.history.change, true, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_group_max_h_get(group_pd.group->edit_object);
+         break;
+      default:
+         TODO("remove default case after all attributes will be added");
+         CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
+         abort();
+         break;
+     }
+}
+
+static void
+_stop_cb(Property_Attribute *pa, Property_Action *action)
+{
+   Eina_Stringshare *msg;
+
+   assert(pa != NULL);
+   assert(action != NULL);
+   assert(action->control != NULL);
+   assert(group_pd.history.change != NULL);
+
+#define CHECK_VAL(NAME) \
+ if (group_pd.history.new.NAME == group_pd.history.old.NAME) \
+   { \
+     change_free(group_pd.history.change); \
+     goto clean; \
+   }
+
+   switch (action->type.attribute)
+     {
+      case ATTRIBUTE_GROUP_NAME:
+         CHECK_VAL(str_val1);
+         msg = eina_stringshare_printf(group_pd.history.format,
+                                       group_pd.history.old.str_val1,
+                                       group_pd.history.new.str_val1);
+         break;
+      case ATTRIBUTE_GROUP_MIN_W:
+      case ATTRIBUTE_GROUP_MIN_H:
+      case ATTRIBUTE_GROUP_MAX_W:
+      case ATTRIBUTE_GROUP_MAX_H:
+         CHECK_VAL(int_val1);
+         msg = eina_stringshare_printf(group_pd.history.format,
+                                       group_pd.history.old.int_val1,
+                                       group_pd.history.new.int_val1);
+         break;
+      default:
+         TODO("remove default case after all attributes will be added");
+         CRIT("stop callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
+         abort();
+         break;
+     }
+   change_description_set(group_pd.history.change, msg);
+   history_change_add(group_pd.group->history, group_pd.history.change);
+   eina_stringshare_del(msg);
+#undef CHECK_VAL
+clean:
+   eina_stringshare_del(group_pd.history.new.str_val1);
+   eina_stringshare_del(group_pd.history.old.str_val1);
+   group_pd.history.change = NULL;
+}
+
 /* blocks */
 static inline void
 _action_internal(Property_Action *action, const char *name, const char *units,
@@ -243,6 +399,9 @@ _action_internal(Property_Action *action, const char *name, const char *units,
    action->type.attribute = attribute;
    action->update_cb = _update_cb;
    action->init_cb = _init_cb;
+   action->start_cb = _start_cb;
+   action->stop_cb = _stop_cb;
+   action->change_cb = _change_cb;
 }
 
 static inline void
