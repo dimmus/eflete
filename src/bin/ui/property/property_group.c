@@ -442,6 +442,9 @@ static inline void
 _action_internal(Property_Action *action, const char *name, const char *units,
                  Property_Control control_type, Attribute attribute)
 {
+   /* check that we haven't inited this action already */
+   assert(action->update_cb == NULL);
+
    action->name = name;
    action->units = units;
    action->control_type = control_type;
