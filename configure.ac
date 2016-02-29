@@ -1,4 +1,4 @@
-EFLETE_VERSION([0], [6], [0], [release])
+EFLETE_VERSION([0], [6], [0], [dev])
 AC_INIT([eflete], [eflete_version], [enlightenment-devel@lists.sourceforge.net],
         [eflete])
 AC_PREREQ([2.60])
@@ -18,7 +18,7 @@ m4_define([elm_version], [1.17])
 m4_define([efl_version_max], [1.17.9999])
 m4_define([elm_version_max], [1.17.9999])
 
-m4_define([enventor_version], [0.4.0])
+m4_define([enventor_version], [0.5.0])
 
 EWE_INIT
 EFLETE_INIT

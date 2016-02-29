@@ -46,6 +46,8 @@ IC("type_spacer",       "toolbar/type_spacer",      "menu/type_spacer",       "i
 
 IC("text_style",        "toolbar/text_style",       "menu/text_style",        "icon_text_style.png",     14, 0);
 IC("text_style_tag",    "toolbar/text_style_tag",   "menu/text_style_tag",    "icon_text_style_tag.png", 14, 0);
+IC("sound_sample",      "toolbar/sound_sample",     "menu/sound_sample",      "icon_sample.png",         14, 0);
+IC("sound_tone",        "toolbar/sound_tone",       "menu/sound_tone",        "icon_tone.png",           14, 0);
 
 IC("no_photo",          "photo/no_photo",           "anonim",                 "icon_head.png",           14, 0);
 #undef IC

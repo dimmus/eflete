@@ -27,8 +27,6 @@ includesub_HEADERS = \
 	project_manager/group_manager.h \
 	project_manager/project_manager.h \
 	ui/cursor.h \
-	ui/demo_group.h \
-	ui/group_navigator.h \
 	ui/history_ui.h \
 	ui/main_window.h \
 	ui/project_common.h \
@@ -38,7 +36,6 @@ includesub_HEADERS = \
 	ui/property/property_private.h \
 	ui/tabs.h \
 	ui/tabs_private.h \
-	ui/container/container.h \
 	ui/dialogs/about_window.h \
 	ui/dialogs/colorsel.h \
 	ui/live_view/demo.h \
@@ -51,6 +48,9 @@ includesub_HEADERS = \
 	ui/workspace/groupedit.h \
 	ui/workspace/groupedit_private.h \
 	ui/workspace/highlight.h\
+	ui/workspace/container.h \
+	ui/workspace/demo_group.h \
+	ui/workspace/group_navigator.h \
 	ui/workspace/workspace.h
 includesubdir = $(pkgincludedir)-@VMAJ@
 
@@ -76,8 +76,6 @@ libete_a_SOURCES = \
 ../../src/bin/editor/editor_text.c \
 ../../src/bin/editor/editor_program.c \
 ../../src/bin/ui/history_ui.c \
-../../src/bin/ui/group_navigator.c \
-../../src/bin/ui/demo_group.c \
 ../../src/bin/ui/cursor.c \
 ../../src/bin/ui/menu.c \
 ../../src/bin/ui/main_window.c \
@@ -87,7 +85,6 @@ libete_a_SOURCES = \
 ../../src/bin/ui/project_export.c \
 ../../src/bin/ui/splash.c \
 ../../src/bin/ui/shortcuts/shortcuts.c \
-../../src/bin/ui/container/container.c \
 ../../src/bin/ui/style_manager.c \
 ../../src/bin/ui/sound_manager.c \
 ../../src/bin/ui/dialogs/about_window.c \
@@ -114,6 +111,9 @@ libete_a_SOURCES = \
 ../../src/bin/ui/workspace/groupedit_calc.c \
 ../../src/bin/ui/workspace/groupedit.c \
 ../../src/bin/ui/workspace/highlight.c \
+../../src/bin/ui/workspace/demo_group.c \
+../../src/bin/ui/workspace/group_navigator.c \
+../../src/bin/ui/workspace/container.c \
 ../../src/bin/ui/live_view/demo.c \
 ../../src/bin/ui/live_view/live_widget.c \
 ../../src/bin/ui/live_view/elementary/live_widget_common.c \

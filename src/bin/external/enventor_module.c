@@ -111,9 +111,9 @@ enventor_object_project_load(Evas_Object *enventor, Project *project)
 
   enventor_object_file_set(enventor, project->enventor->file);
 
-  enventor_object_path_set(enventor, ENVENTOR_RES_FONT, project->res.fonts);
-  enventor_object_path_set(enventor, ENVENTOR_RES_IMAGE, project->res.images);
-  enventor_object_path_set(enventor, ENVENTOR_RES_SOUND, project->res.sounds);
+  enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_FONT, project->res.fonts);
+  enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_IMAGE, project->res.images);
+  enventor_object_path_set(enventor, ENVENTOR_PATH_TYPE_SOUND, project->res.sounds);
   return true;
 }
 

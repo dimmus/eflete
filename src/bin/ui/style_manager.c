@@ -829,103 +829,6 @@ _on_bt_add(void *data,
      elm_object_item_disabled_set(style_edit->menu_tag, true);
 }
 
-/* Creating the view of the mwin!!! */
-static Evas_Object *
-_form_right_side(Style_Editor *style_edit)
-{
-   Elm_Object_Item *glit_style;
-   Evas_Object *layout, *button_add, *search, *ic;
-   Eina_List *styles, *l_st;
-   Resource *res;
-
-   assert(style_edit != NULL);
-
-   if (!_itc_style)
-     {
-        _itc_style = elm_genlist_item_class_new();
-        _itc_style->item_style = "aligned";
-        _itc_style->func.text_get = _item_style_label_get;
-        _itc_style->func.content_get = _item_style_icon_get;
-        _itc_style->func.state_get = NULL;
-        _itc_style->func.del = NULL;
-     }
-   if (!_itc_tags)
-     {
-        _itc_tags= elm_genlist_item_class_new();
-        _itc_tags->item_style = "aligned";
-        _itc_tags->func.text_get = _item_tags_label_get;
-        _itc_tags->func.content_get = _item_tags_icon_get;
-        _itc_tags->func.state_get = NULL;
-        _itc_tags->func.del = NULL;
-     }
-
-   layout = elm_layout_add(ap.win);
-   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_theme_set(layout, "layout", "style_color_editor", "list");
-   elm_object_part_text_set(layout, "label.list", _("Font list"));
-   evas_object_show(layout);
-
-   search = _style_manager_search_field_create(layout);
-   elm_object_part_content_set(layout, "swallow.search", search);
-   evas_object_smart_callback_add(search, "changed", _search_changed, style_edit);
-   evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, style_edit);
-   evas_object_smart_callback_add(style_edit->glist, "pressed", _search_reset_cb,
-                                  &(style_edit->style_search_data));
-   style_edit->style_search_data.search_entry = search;
-   style_edit->style_search_data.last_item_found = NULL;
-
-   style_edit->glist = elm_genlist_add(layout);
-   elm_object_part_content_set(layout, "swallow.list", style_edit->glist);
-   evas_object_smart_callback_add(style_edit->glist, "clicked,double", _on_clicked_double, NULL);
-   evas_object_smart_callback_add(style_edit->glist, "expand,request", _expand_request_cb, NULL);
-   evas_object_smart_callback_add(style_edit->glist, "expanded", _expanded_cb, style_edit);
-   evas_object_smart_callback_add(style_edit->glist, "contract,request", _contract_request_cb, NULL);
-   evas_object_smart_callback_add(style_edit->glist, "contracted", _contracted_cb, NULL);
-   evas_object_smart_callback_add(style_edit->glist, "unselected", _on_unselected_cb, style_edit);
-   evas_object_show(style_edit->glist);
-   /*elm_genlist_tree_effect_enabled_set(style_edit->glist, EINA_TRUE);*/
-
-   evas_object_size_hint_align_set(style_edit->glist, EVAS_HINT_FILL,
-                                   EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(style_edit->glist, EVAS_HINT_EXPAND,
-                                    EVAS_HINT_EXPAND);
-
-   styles = ap.project->styles;
-
-   EINA_LIST_FOREACH(styles, l_st, res)
-     {
-        glit_style = elm_genlist_item_append(style_edit->glist, _itc_style,
-                                             res->name, NULL, ELM_GENLIST_ITEM_TREE,
-                                             _on_glit_selected, style_edit);
-        elm_object_item_data_set(glit_style, (char *)res->name);
-     }
-
-   style_edit->menu = elm_menu_add(ap.win);
-   elm_menu_item_add(style_edit->menu, NULL, NULL, _("Style"), _on_bt_style_add, style_edit);
-   style_edit->menu_tag = elm_menu_item_add(style_edit->menu, NULL, NULL, _("Tag"), _on_bt_tag_add, style_edit);
-
-   button_add = elm_button_add(ap.win);
-   elm_object_style_set(button_add, "anchor");
-   evas_object_show(button_add);
-   ic = elm_icon_add(button_add);
-   elm_icon_standard_set(ic, "plus");
-   elm_object_part_content_set(button_add, NULL, ic);
-   evas_object_smart_callback_add(button_add, "clicked", _on_bt_add, style_edit);
-   elm_object_part_content_set(layout, "swallow.button_add", button_add);
-
-   style_edit->button_del = elm_button_add(ap.win);
-   elm_object_style_set(style_edit->button_del, "anchor");
-   evas_object_show(style_edit->button_del);
-   ic = elm_icon_add(style_edit->button_del);
-   elm_icon_standard_set(ic, "minus");
-   elm_object_part_content_set(style_edit->button_del, NULL, ic);
-   evas_object_smart_callback_add(style_edit->button_del, "clicked", _on_bt_del, style_edit);
-   elm_object_part_content_set(layout, "swallow.button_rm", style_edit->button_del);
-   elm_object_disabled_set(style_edit->button_del, true);
-
-   return layout;
-}
-
 static void
 _change_bg_cb(void *data,
               Evas_Object *obj,
@@ -1012,9 +915,13 @@ _on_style_manager_close(void *data,
 Evas_Object *
 style_manager_add()
 {
-   Evas_Object *main_layout, *layout_right;
+   Evas_Object *main_layout;
    Evas_Object *bg, *box_bg;
    Evas *canvas;
+   Elm_Object_Item *glit_style;
+   Evas_Object *button_add, *search, *ic;
+   Eina_List *styles, *l_st;
+   Resource *res;
    Evas_Textblock_Style *ts;
    Style_Editor *style_edit;
    static const char *style_buf = FONT_DEFAULT"'";
@@ -1024,13 +931,12 @@ style_manager_add()
    style_edit = (Style_Editor *)mem_calloc(1, sizeof(Style_Editor));
 
    main_layout = elm_layout_add(ap.win);
-   elm_layout_theme_set(main_layout, "layout", "tab_style", "style_color_editor");
-   elm_object_part_text_set(main_layout, "label.preview", _("Preview"));
+   elm_layout_theme_set(main_layout, "layout", "style_manager", "default");
+   elm_object_part_text_set(main_layout, "elm.text", _("Preview"));
+   elm_layout_text_set(main_layout, "elm.subtext", _("Font list"));
 
    style_edit->entry_prev = elm_layout_add(main_layout);
-   evas_object_size_hint_weight_set(style_edit->entry_prev, EVAS_HINT_EXPAND,
-                                    EVAS_HINT_EXPAND);
-   elm_layout_theme_set(style_edit->entry_prev, "layout", "style_editor", "preview");
+   elm_layout_theme_set(style_edit->entry_prev, "layout", "style_manager", "preview");
    evas_object_show(style_edit->entry_prev);
    elm_object_signal_emit(style_edit->entry_prev, "entry,hide", "eflete");
 
@@ -1046,18 +952,84 @@ style_manager_add()
    evas_object_textblock_style_set(style_edit->textblock_style, ts);
    evas_object_textblock_text_markup_set(style_edit->textblock_style, TEST_TEXT);
    evas_object_show(style_edit->textblock_style);
-   elm_object_part_content_set(main_layout, "swallow.preview", style_edit->entry_prev);
+   elm_object_part_content_set(main_layout, "elm.swallow.preview", style_edit->entry_prev);
 
-   layout_right = _form_right_side(style_edit);
-   elm_object_part_content_set(main_layout, "swallow.list", layout_right);
-   evas_object_show(layout_right);
+   if (!_itc_style)
+     {
+        _itc_style = elm_genlist_item_class_new();
+        _itc_style->item_style = "aligned";
+        _itc_style->func.text_get = _item_style_label_get;
+        _itc_style->func.content_get = _item_style_icon_get;
+        _itc_style->func.state_get = NULL;
+        _itc_style->func.del = NULL;
+     }
+   if (!_itc_tags)
+     {
+        _itc_tags= elm_genlist_item_class_new();
+        _itc_tags->item_style = "aligned";
+        _itc_tags->func.text_get = _item_tags_label_get;
+        _itc_tags->func.content_get = _item_tags_icon_get;
+        _itc_tags->func.state_get = NULL;
+        _itc_tags->func.del = NULL;
+     }
+
+   search = _style_manager_search_field_create(main_layout);
+   elm_object_part_content_set(main_layout, "elm.swallow.search", search);
+   evas_object_smart_callback_add(search, "changed", _search_changed, style_edit);
+   evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, style_edit);
+   evas_object_smart_callback_add(style_edit->glist, "pressed", _search_reset_cb, &(style_edit->style_search_data));
+   style_edit->style_search_data.search_entry = search;
+   style_edit->style_search_data.last_item_found = NULL;
+
+   style_edit->glist = elm_genlist_add(main_layout);
+   elm_object_part_content_set(main_layout, "elm.swallow.list", style_edit->glist);
+   evas_object_smart_callback_add(style_edit->glist, "clicked,double", _on_clicked_double, NULL);
+   evas_object_smart_callback_add(style_edit->glist, "expand,request", _expand_request_cb, NULL);
+   evas_object_smart_callback_add(style_edit->glist, "expanded", _expanded_cb, style_edit);
+   evas_object_smart_callback_add(style_edit->glist, "contract,request", _contract_request_cb, NULL);
+   evas_object_smart_callback_add(style_edit->glist, "contracted", _contracted_cb, NULL);
+   evas_object_smart_callback_add(style_edit->glist, "unselected", _on_unselected_cb, style_edit);
+   evas_object_show(style_edit->glist);
+   /*elm_genlist_tree_effect_enabled_set(style_edit->glist, EINA_TRUE);*/
+
+   styles = ap.project->styles;
+
+   EINA_LIST_FOREACH(styles, l_st, res)
+     {
+        glit_style = elm_genlist_item_append(style_edit->glist, _itc_style,
+                                             res->name, NULL, ELM_GENLIST_ITEM_TREE,
+                                             _on_glit_selected, style_edit);
+        elm_object_item_data_set(glit_style, (char *)res->name);
+     }
+
+   style_edit->menu = elm_menu_add(ap.win);
+   elm_menu_item_add(style_edit->menu, NULL, "text_style", _("Style"), _on_bt_style_add, style_edit);
+   style_edit->menu_tag = elm_menu_item_add(style_edit->menu, NULL, "text_style_tag", _("Tag"), _on_bt_tag_add, style_edit);
+
+   button_add = elm_button_add(ap.win);
+   elm_object_style_set(button_add, "anchor");
+   evas_object_show(button_add);
+   ic = elm_icon_add(button_add);
+   elm_icon_standard_set(ic, "plus");
+   elm_object_part_content_set(button_add, NULL, ic);
+   evas_object_smart_callback_add(button_add, "clicked", _on_bt_add, style_edit);
+   elm_object_part_content_set(main_layout, "elm.swallow.btn_add", button_add);
+
+   style_edit->button_del = elm_button_add(ap.win);
+   elm_object_style_set(style_edit->button_del, "anchor");
+   evas_object_show(style_edit->button_del);
+   ic = elm_icon_add(style_edit->button_del);
+   elm_icon_standard_set(ic, "minus");
+   elm_object_part_content_set(style_edit->button_del, NULL, ic);
+   evas_object_smart_callback_add(style_edit->button_del, "clicked", _on_bt_del, style_edit);
+   elm_object_part_content_set(main_layout, "elm.swallow.btn_del", style_edit->button_del);
+   elm_object_disabled_set(style_edit->button_del, true);
 
    box_bg = _add_box_bg(style_edit);
-   elm_object_part_content_set(main_layout, "menu_container", box_bg);
+   elm_object_part_content_set(main_layout, "elm.swallow.menu", box_bg);
 
    evas_textblock_style_free(ts);
-   evas_object_event_callback_add(main_layout, EVAS_CALLBACK_DEL,
-                                  _on_style_manager_close, style_edit);
+   evas_object_event_callback_add(main_layout, EVAS_CALLBACK_DEL, _on_style_manager_close, style_edit);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, NULL);
    return main_layout;

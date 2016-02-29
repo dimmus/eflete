@@ -238,7 +238,9 @@ group { name: "elm/toolbar/base/tabs_horizontal";
          description { state: "default" 0.0;
             min: 0 27;
             max: -1 27;
-            color_class: "bg_main_alternative";
+            /* TODO check after merge */
+            //color_class: "bg_main_alternative";
+            color: 255 255 255 0;
          }
       }
       part { name: "separator";
@@ -250,6 +252,8 @@ group { name: "elm/toolbar/base/tabs_horizontal";
             /* Don't touch this color, it's color not defined in the color
              * class and taked from tab item picture (border of tab item) */
             color: 0 0 0 255;
+            /* TODO check after merge */
+            rel1.to_y: "base";
          }
       }
       part { name: "clipper_arrow_left";
@@ -761,7 +765,9 @@ group { name: "elm/toolbar/base/editor_tabs_horizontal";
          description { state: "default" 0.0;
             min: 0 27;
             max: -1 27;
-            color_class: "bg_main_alternative";
+            /* TODO check after merge */
+            //color_class: "bg_main_alternative";
+            color: 255 255 255 0;
          }
       }
       part { name: "separator";
@@ -773,6 +779,8 @@ group { name: "elm/toolbar/base/editor_tabs_horizontal";
             /* Don't touch this color, it's color not defined in the color
              * class and taked from tab item picture (border of tab item) */
             color: 0 0 0 255;
+            /* TODO check after merge */
+            rel2.to_y: "base";
          }
       }
       part { name: "clipper";

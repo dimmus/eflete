@@ -347,10 +347,12 @@ _item_ccl_del(void *data,
    ccl_it = NULL;
 }
 
-static Evas_Object *
-_form_list_side(Colorclasses_Manager *edit)
+static void
+_colorclass_main_layout_create(Colorclasses_Manager *edit)
 {
-   Evas_Object *layout, *search, *ic, *button;
+   Evas_Object *bg, *box_bg, *radio, *radio_group, *image_bg, *layout_bg, *search, *ic, *button;
+
+   assert(edit != NULL);
 
    if (!_itc_ccl)
      {
@@ -360,71 +362,43 @@ _form_list_side(Colorclasses_Manager *edit)
         _itc_ccl->func.del = _item_ccl_del;
      }
 
-   layout = elm_layout_add(ap.win);
-   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_theme_set(layout, "layout", "style_color_editor", "list");
-   elm_object_part_text_set(layout, "label.list", _("Color list"));
-   evas_object_show(layout);
+   /* Creating main layout of window */
+   edit->layout = elm_layout_add(ap.win);
+   elm_layout_theme_set(edit->layout, "layout", "colorclass_manager", "default");
+   elm_layout_text_set(edit->layout, "elm.text", _("Preview"));
+   elm_layout_text_set(edit->layout, "elm.subtext", _("Color classes list"));
 
-   /* List of project's colorclasses */
-   edit->genlist = elm_genlist_add(layout);
-   evas_object_size_hint_weight_set(edit->genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(edit->genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   edit->genlist = elm_genlist_add(edit->layout);
    evas_object_show(edit->genlist);
-   elm_object_part_content_set(layout, "swallow.list", edit->genlist);
+   elm_object_part_content_set(edit->layout, "elm.swallow.list", edit->genlist);
    evas_object_smart_callback_add(edit->genlist, "selected", _on_selected, edit);
    evas_object_smart_callback_add(edit->genlist, "unselected", _on_unselected, edit);
 
-   search = _manager_search_field_create(layout);
-   elm_object_part_content_set(layout, "swallow.search", search);
+   search = _manager_search_field_create(edit->layout);
+   elm_object_part_content_set(edit->layout, "elm.swallow.search", search);
    evas_object_smart_callback_add(search, "changed", _search_changed, edit);
    evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, edit);
-   evas_object_smart_callback_add(edit->genlist, "pressed", _search_reset_cb,
-                                  &(edit->style_search_data));
+   evas_object_smart_callback_add(edit->genlist, "pressed", _search_reset_cb, &(edit->style_search_data));
    edit->style_search_data.search_entry = search;
    edit->style_search_data.last_item_found = NULL;
 
    /* Controls (add, remove) of colorclasses */
-   button = elm_button_add(layout);
+   button = elm_button_add(edit->layout);
    elm_object_style_set(button, "anchor");
    evas_object_show(button);
    ICON_STANDARD_ADD(button, ic, true, "plus");
    elm_object_part_content_set(button, NULL, ic);
-   evas_object_smart_callback_add(button, "clicked",
-                                  _on_button_add_clicked_cb, edit);
-   elm_object_part_content_set(layout, "swallow.button_add", button);
+   evas_object_smart_callback_add(button, "clicked", _on_button_add_clicked_cb, edit);
+   elm_object_part_content_set(edit->layout, "elm.swallow.btn_add", button);
 
-   edit->del_button = elm_button_add(layout);
+   edit->del_button = elm_button_add(edit->layout);
    elm_object_style_set(edit->del_button, "anchor");
    evas_object_show(edit->del_button);
    ICON_STANDARD_ADD(button, ic, true, "minus");
    elm_object_part_content_set(edit->del_button, NULL, ic);
-   evas_object_smart_callback_add(edit->del_button, "clicked",
-                                  _on_button_delete_clicked_cb, edit);
-   elm_object_part_content_set(layout, "swallow.button_rm", edit->del_button);
+   evas_object_smart_callback_add(edit->del_button, "clicked", _on_button_delete_clicked_cb, edit);
+   elm_object_part_content_set(edit->layout, "elm.swallow.btn_del", edit->del_button);
    elm_object_disabled_set(edit->del_button, EINA_TRUE);
-
-   return layout;
-}
-
-static void
-_colorclass_main_layout_create(Colorclasses_Manager *edit)
-{
-   Evas_Object *layout_list, *bg, *box_bg, *radio, *radio_group, *image_bg, *layout_bg;
-
-   assert(edit != NULL);
-
-   /* Creating main layout of window */
-   edit->layout = elm_layout_add(ap.win);
-   elm_layout_theme_set(edit->layout, "layout", "tab_style", "style_color_editor");
-   evas_object_size_hint_weight_set(edit->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-
-   elm_object_part_text_set(edit->layout, "label.preview", _("Preview"));
-
-   layout_list = _form_list_side(edit);
-   elm_object_part_content_set(edit->layout, "swallow.list", layout_list);
-   evas_object_show(layout_list);
-
 
    layout_bg = elm_layout_add(edit->layout);
    elm_layout_theme_set(layout_bg, "layout", "colorclass_editor", "preview");
@@ -436,8 +410,7 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    evas_object_show(bg);
 
    edit->edje_preview = edje_object_add(evas_object_evas_get(layout_bg));
-   if (!edje_object_file_set(edit->edje_preview,
-                             EFLETE_THEME,
+   if (!edje_object_file_set(edit->edje_preview, EFLETE_THEME,
                              "elm/layout/colorclass_manager/preview"))
      {
         ERR("Couldn't load layout for text example field!");
@@ -449,11 +422,11 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    evas_object_show(edit->edje_preview);
    elm_object_part_content_set(layout_bg, "swallow.entry", edit->edje_preview);
 
-   elm_object_part_content_set(edit->layout, "swallow.preview", layout_bg);
+   elm_object_part_content_set(edit->layout, "elm.swallow.preview", layout_bg);
 
    /* Background changing radios */
    BOX_ADD(edit->layout, box_bg, true, false);
-   elm_box_padding_set(box_bg, 10, 0);
+   elm_box_padding_set(box_bg, 6, 0);
    elm_box_align_set(box_bg, 1.0, 0.5);
 
 #define _RADIO_ADD(RADIO, VALUE, IMAGE) \
@@ -473,7 +446,7 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    elm_radio_group_add(radio, radio_group);
 #undef _RADIO_ADD
 
-   elm_object_part_content_set(edit->layout, "menu_container", box_bg);
+   elm_object_part_content_set(edit->layout, "elm.swallow.menu", box_bg);
 }
 
 static Eina_Bool

@@ -626,8 +626,8 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    elm_object_part_content_set(edit->btn_add, NULL, ic);
 
    edit->menu = elm_menu_add(ap.win);
-   elm_menu_item_add(edit->menu, NULL, NULL, _("Sample"), _sample_add_cb, edit);
-   elm_menu_item_add(edit->menu, NULL, NULL, _("Tone"), _tone_add_cb, edit);
+   elm_menu_item_add(edit->menu, NULL, "sound_sample", _("Sample"), _sample_add_cb, edit);
+   elm_menu_item_add(edit->menu, NULL, "sound_tone", _("Tone"), _tone_add_cb, edit);
 
    search = _sound_editor_search_field_create(edit->markup);
    evas_object_hide(search);

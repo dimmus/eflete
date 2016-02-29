@@ -95,7 +95,7 @@ _image_manager_del(Image_Manager *img_mng)
 
 static void
 _image_manager_image_setup(Evas_Object *image,
-                          const Image_Item *it)
+                           const Image_Item *it)
 {
    assert(image != NULL);
    assert(it != NULL);
@@ -115,7 +115,7 @@ _image_manager_image_setup(Evas_Object *image,
 
 static inline Evas_Object *
 _image_manager_image_create(Evas_Object *parent,
-                           const Image_Item *it)
+                            const Image_Item *it)
 {
    assert(parent != NULL);
    assert(it != NULL);
@@ -205,6 +205,7 @@ _grid_sel(void *data,
    if (selected_images_count == 1)
      {
         item = elm_object_item_data_get(eina_list_data_get(sel_list));
+
         /* if selected image is not used, we can delete it */
         if (!item->is_used)
           elm_object_disabled_set(img_mng->del_button, false);
