@@ -49,6 +49,9 @@ struct _Property_Group_Data {
              Property_Attribute title;
              Property_Attribute name;
              Property_Attribute type;
+             Property_Attribute scale;
+             Property_Attribute mouse_events;
+             Property_Attribute repeat_events;
         } part;
         Property_Attribute state;
         Property_Attribute item;
@@ -190,6 +193,9 @@ _subitems_get(Property_Attribute *pa)
      {
          items = eina_list_append(items, &group_pd.items.part.name);
          items = eina_list_append(items, &group_pd.items.part.type);
+         items = eina_list_append(items, &group_pd.items.part.scale);
+         items = eina_list_append(items, &group_pd.items.part.mouse_events);
+         items = eina_list_append(items, &group_pd.items.part.repeat_events);
      }
    else
      {
@@ -217,6 +223,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_GROUP_MAX_H:
       case ATTRIBUTE_PART_NAME:
       case ATTRIBUTE_PART_TYPE:
+      case ATTRIBUTE_PART_SCALE:
+      case ATTRIBUTE_PART_MOUSE_EVENTS:
+      case ATTRIBUTE_PART_REPEAT_EVENTS:
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -230,6 +239,7 @@ static void
 _update_cb(Property_Attribute *pa, Property_Action *action)
 {
    int int_val1;
+   Eina_Bool bool_val1;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -261,6 +271,18 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_TYPE:
          elm_layout_text_set(action->control, NULL, gm_part_type_text_get(group_pd.part->type));
+         break;
+      case ATTRIBUTE_PART_SCALE:
+         bool_val1 = edje_edit_part_scale_get(group_pd.group->edit_object, group_pd.part->name);
+         elm_check_state_set(action->control, bool_val1);
+         break;
+      case ATTRIBUTE_PART_MOUSE_EVENTS:
+         bool_val1 = edje_edit_part_mouse_events_get(group_pd.group->edit_object, group_pd.part->name);
+         elm_check_state_set(action->control, bool_val1);
+         break;
+      case ATTRIBUTE_PART_REPEAT_EVENTS:
+         bool_val1 = edje_edit_part_repeat_events_get(group_pd.group->edit_object, group_pd.part->name);
+         elm_check_state_set(action->control, bool_val1);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -314,6 +336,15 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_TYPE:
          /* part type can't be changed */
          break;
+      case ATTRIBUTE_PART_SCALE:
+         group_pd.history.format = _("part scale %s");
+         break;
+      case ATTRIBUTE_PART_MOUSE_EVENTS:
+         group_pd.history.format = _("mouse events %s");
+         break;
+      case ATTRIBUTE_PART_REPEAT_EVENTS:
+         group_pd.history.format = _("repeat events %s");
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("start callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -328,6 +359,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
 {
    double double_val1 = 0.0;
    Eina_Stringshare *str_val1 = NULL;
+   Eina_Bool bool_val1 = false;;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -341,6 +373,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case PROPERTY_CONTROL_ENTRY:
          str_val1 = property_entry_get(action->control);
+         break;
+      case PROPERTY_CONTROL_CHECK:
+         bool_val1 = elm_check_state_get(action->control);
          break;
       default:
          break;
@@ -375,6 +410,15 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_TYPE:
          /* part type can't be changed */
          break;
+      case ATTRIBUTE_PART_SCALE:
+         editor_part_scale_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, bool_val1);
+         break;
+      case ATTRIBUTE_PART_MOUSE_EVENTS:
+         editor_part_mouse_events_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, bool_val1);
+         break;
+      case ATTRIBUTE_PART_REPEAT_EVENTS:
+         editor_part_repeat_events_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, bool_val1);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -386,6 +430,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
 static void
 _stop_cb(Property_Attribute *pa, Property_Action *action)
 {
+   Eina_Bool bool_val1;
    Eina_Stringshare *msg = NULL;
 
    assert(pa != NULL);
@@ -420,6 +465,21 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_TYPE:
          /* part type can't be changed */
+         break;
+      case ATTRIBUTE_PART_SCALE:
+         bool_val1 = edje_edit_part_scale_get(group_pd.group->edit_object, group_pd.part->name);
+         msg = eina_stringshare_printf(group_pd.history.format,
+                                       (bool_val1) ? _("turned on") : _("turned off"));
+         break;
+      case ATTRIBUTE_PART_MOUSE_EVENTS:
+         bool_val1 = edje_edit_part_mouse_events_get(group_pd.group->edit_object, group_pd.part->name);
+         msg = eina_stringshare_printf(group_pd.history.format,
+                                       (bool_val1) ? _("turned on") : _("turned off"));
+         break;
+      case ATTRIBUTE_PART_REPEAT_EVENTS:
+         bool_val1 = edje_edit_part_repeat_events_get(group_pd.group->edit_object, group_pd.part->name);
+         msg = eina_stringshare_printf(group_pd.history.format,
+                                       (bool_val1) ? _("turned on") : _("turned off"));
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -515,6 +575,15 @@ _init_part_block()
 
    group_pd.items.part.type.name = "type";
    _action1(&group_pd.items.part.type, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_PART_TYPE);
+
+   group_pd.items.part.scale.name = "scale";
+   _action1(&group_pd.items.part.scale, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_SCALE);
+
+   group_pd.items.part.mouse_events.name = "mouse events";
+   _action1(&group_pd.items.part.mouse_events, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_MOUSE_EVENTS);
+
+   group_pd.items.part.repeat_events.name = "repeat events";
+   _action1(&group_pd.items.part.repeat_events, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_REPEAT_EVENTS);
 }
 
 /* public */
