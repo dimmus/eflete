@@ -57,8 +57,8 @@ struct _Workspace_Data
          Evas_Object *demo;
       } mode_switcher;
       struct {
-         Evas_Object *tile;
          Evas_Object *black;
+         Evas_Object *tile;
          Evas_Object *white;
       } bg_switcher;
    } toolbar;
@@ -164,6 +164,35 @@ _mode_cb(void *data,
    wd->mode = elm_radio_state_value_get(obj);
 }
 
+static void
+_bg_cb(void *data,
+       Evas_Object *obj,
+       void *event_info __UNUSED__)
+{
+   Bg_Preview bg;
+   Workspace_Data *wd = data;
+   const char *signal = NULL;
+
+   bg = elm_radio_value_get(obj);
+   switch (bg)
+     {
+      case BG_PREVIEW_WHITE:
+         signal = "elm,bg,white";
+         break;
+      case BG_PREVIEW_TILE:
+         signal = "elm,bg,tile";
+         break;
+      case BG_PREVIEW_BLACK:
+         signal = "elm,bg,black";
+         break;
+     }
+   if (MODE_NORMAL == wd->mode)
+     elm_layout_signal_emit(wd->normal.bg, signal, "eflete");
+   else
+     elm_layout_signal_emit(wd->demo.bg, signal, "eflete");
+
+}
+
 static Evas_Object *
 _radio_switcher_add(Workspace_Data *wd,
                     const char *style,
@@ -220,8 +249,19 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.mode_switcher.demo);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_it, true);
+   elm_radio_value_set(wd->toolbar.mode_switcher.normal, 1);
 
-
+   /* add to toolbar bg switcher */
+   wd->toolbar.bg_switcher.white = _radio_switcher_add(wd, "bg_white", _bg_cb, BG_PREVIEW_WHITE, NULL);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.bg_switcher.white);
+   wd->toolbar.bg_switcher.tile = _radio_switcher_add(wd, "bg_tile", _bg_cb, BG_PREVIEW_TILE, wd->toolbar.bg_switcher.white);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.bg_switcher.tile);
+   wd->toolbar.bg_switcher.black = _radio_switcher_add(wd, "bg_black", _bg_cb, BG_PREVIEW_BLACK, wd->toolbar.bg_switcher.white);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.bg_switcher.black);
+   elm_radio_value_set(wd->toolbar.bg_switcher.white, 2);
 
    wd->panes_h = elm_panes_add(wd->toolbar.layout);
    elm_panes_horizontal_set(wd->panes_h, true);
@@ -247,6 +287,7 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_part_content_set(wd->normal.scroller, "elm.swallow.background", wd->normal.bg);
 
    wd->group = group;
+   wd->mode = MODE_NORMAL;
 
    evas_object_data_set(wd->panes, WORKSPACE_DATA, wd);
    evas_object_event_callback_add(wd->panes, EVAS_CALLBACK_DEL, _workspace_del, wd);
