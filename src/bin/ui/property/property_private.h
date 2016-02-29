@@ -155,4 +155,45 @@ property_group_init();
 Eina_List *
 property_group_items_get();
 
+/* entry functions */
+/* we need additional processing before elm_entry_entry_set and after
+   elm_entry_entry_get. So we shouldn't use them directly */
+static inline Eina_Stringshare *
+property_entry_get(Evas_Object *entry)
+{
+   Eina_Stringshare *text;
+   const char *markup;
+   char *utf8;
+
+   assert(entry != NULL);
+
+   markup = elm_entry_entry_get(entry);
+   utf8 = elm_entry_markup_to_utf8(markup);
+   text = eina_stringshare_add(utf8);
+   free(utf8);
+
+   return text;
+}
+
+static inline void
+property_entry_set(Evas_Object *entry, const char *text)
+{
+   char *markup;
+
+   assert(entry != NULL);
+
+   if (text != NULL)
+     {
+        markup = elm_entry_utf8_to_markup(text);
+        if (strcmp(markup, elm_entry_entry_get(entry)) != 0)
+          elm_entry_entry_set(entry, markup);
+        free(markup);
+     }
+   else
+     elm_entry_entry_set(entry, "");
+}
+
+#pragma GCC poison elm_entry_entry_get
+#pragma GCC poison elm_entry_entry_set
+
 #endif /* PROPERTY_PRIVATE_H */

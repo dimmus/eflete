@@ -96,15 +96,16 @@ COLORSELECTOR_CALLBACK(3)
 static void
 _change_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
 {
-   const char *text;
+   Eina_Stringshare *text;
 
-   text = elm_entry_entry_get(action->control);
+   text = property_entry_get(action->control);
 
    Colorclass_Item *cc_it = color_data.selected->current_ccl;
    edje_edit_color_class_description_set(ap.project->global_object, cc_it->name, text);
 
    editor_save(ap.project->global_object);
    ap.project->changed = true;
+   eina_stringshare_del(text);
 }
 
 static void
@@ -115,7 +116,8 @@ _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
      {
         description = edje_edit_color_class_description_get(ap.project->global_object,
                                                             color_data.selected->current_ccl->name);
-        elm_entry_entry_set(action->control, description);
+        property_entry_set(action->control, description);
+        edje_edit_string_free(description);
         elm_object_disabled_set(action->control, false);
      }
 }
@@ -141,7 +143,7 @@ _color_class_selected(void *data __UNUSED__,
         elm_object_item_disabled_set(color_data.item_outline_color.glit, true);
         elm_object_item_disabled_set(color_data.item_shadow_color.glit, true);
 
-        elm_entry_entry_set(color_data.item_description.action1.control, "");
+        property_entry_set(color_data.item_description.action1.control, "");
         elm_object_disabled_set(color_data.item_description.action1.control, true);
      }
    else

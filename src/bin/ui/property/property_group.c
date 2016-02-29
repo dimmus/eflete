@@ -218,7 +218,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
    switch (action->type.attribute)
      {
       case ATTRIBUTE_GROUP_NAME:
-         elm_entry_entry_set(action->control, group_pd.group->name);
+         property_entry_set(action->control, group_pd.group->name);
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          int_val1 = edje_edit_group_min_w_get(group_pd.group->edit_object);

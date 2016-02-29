@@ -502,7 +502,6 @@ _colorclass_manager_init(Colorclasses_Manager *edit)
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
 
-   evas_object_smart_callback_call(ap.win, SIGNAL_COLOR_SELECTED, NULL);
    return true;
 }
 
