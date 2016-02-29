@@ -45,7 +45,11 @@ struct _Property_Group_Data {
              Property_Attribute min;
              Property_Attribute max;
         } group;
-        Property_Attribute part;
+        struct {
+             Property_Attribute title;
+             Property_Attribute name;
+             Property_Attribute type;
+        } part;
         Property_Attribute state;
         Property_Attribute item;
         Property_Attribute program;
@@ -76,12 +80,14 @@ _on_part_selected(void *data __UNUSED__,
    DBG("selected part \"%s\"", group_pd.part->name);
    property_item_del(&group_pd.items.program);
 
-   property_item_add(&group_pd.items.part, NULL);
+   property_item_add(&group_pd.items.part.title, NULL);
    property_item_add(&group_pd.items.state, NULL);
    if (group_pd.part->current_item_name)
      property_item_add(&group_pd.items.item, NULL);
    else
      property_item_del(&group_pd.items.item);
+
+   property_item_update_recursively(&group_pd.items.part.title);
 }
 
 static void
@@ -92,7 +98,7 @@ _on_group_navigator_unselected(void *data __UNUSED__,
    DBG("unselected_cb\n");
    group_pd.part = NULL;
    group_pd.program = NULL;
-   property_item_del(&group_pd.items.part);
+   property_item_del(&group_pd.items.part.title);
    property_item_del(&group_pd.items.state);
    property_item_del(&group_pd.items.item);
    property_item_del(&group_pd.items.program);
@@ -120,7 +126,7 @@ _on_program_selected(void *data __UNUSED__,
    assert(group_pd.program != NULL);
 
    DBG("selected program \"%s\"", group_pd.program);
-   property_item_del(&group_pd.items.part);
+   property_item_del(&group_pd.items.part.title);
    property_item_del(&group_pd.items.state);
    property_item_del(&group_pd.items.item);
 
@@ -138,6 +144,13 @@ _on_group_changed(void *data __UNUSED__,
 
    DBG("group changed to \"%s\"", group_pd.group->name);
    group_pd.part = group_pd.group->current_part;
+   if (group_pd.part)
+     {
+        property_item_add(&group_pd.items.part.title, NULL);
+        property_item_update_recursively(&group_pd.items.part.title);
+     }
+   else
+     property_item_del(&group_pd.items.part.title);
    group_pd.program = group_pd.group->current_program;
    property_item_update_recursively(&group_pd.items.group.title);
 }
@@ -173,6 +186,11 @@ _subitems_get(Property_Attribute *pa)
          items = eina_list_append(items, &group_pd.items.group.min);
          items = eina_list_append(items, &group_pd.items.group.max);
      }
+   else if (pa == &group_pd.items.part.title)
+     {
+         items = eina_list_append(items, &group_pd.items.part.name);
+         items = eina_list_append(items, &group_pd.items.part.type);
+     }
    else
      {
         CRIT("items callback not found for %s", pa->name);
@@ -197,6 +215,8 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_GROUP_MIN_H:
       case ATTRIBUTE_GROUP_MAX_W:
       case ATTRIBUTE_GROUP_MAX_H:
+      case ATTRIBUTE_PART_NAME:
+      case ATTRIBUTE_PART_TYPE:
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -236,6 +256,12 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          int_val1 = edje_edit_group_max_h_get(group_pd.group->edit_object);
          elm_spinner_value_set(action->control, int_val1);
          break;
+      case ATTRIBUTE_PART_NAME:
+         property_entry_set(action->control, group_pd.part->name);
+         break;
+      case ATTRIBUTE_PART_TYPE:
+         elm_layout_text_set(action->control, NULL, gm_part_type_text_get(group_pd.part->type));
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -263,7 +289,7 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
      {
       case ATTRIBUTE_GROUP_NAME:
          group_pd.history.format = _("group name changed from %s to %s");
-         VAL(str_val1) = eina_stringshare_add(group_pd.group->name);
+         VAL(str_val1) = eina_stringshare_add(eina_stringshare_add(group_pd.group->name));
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          group_pd.history.format = _("group.min_w changed from %d to %d");
@@ -281,6 +307,13 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("group.max_h changed from %d to %d");
          VAL(int_val1) = edje_edit_group_max_h_get(group_pd.group->edit_object);
          break;
+      case ATTRIBUTE_PART_NAME:
+         group_pd.history.format = _("part name changed from %s to %s");
+         VAL(str_val1) = eina_stringshare_add(eina_stringshare_add(group_pd.part->name));
+         break;
+      case ATTRIBUTE_PART_TYPE:
+         /* part type can't be changed */
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("start callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -294,6 +327,7 @@ static void
 _change_cb(Property_Attribute *pa, Property_Action *action)
 {
    double double_val1 = 0.0;
+   Eina_Stringshare *str_val1 = NULL;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -304,6 +338,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
      {
       case PROPERTY_CONTROL_SPINNER:
          double_val1 = elm_spinner_value_get(action->control);
+         break;
+      case PROPERTY_CONTROL_ENTRY:
+         str_val1 = property_entry_get(action->control);
          break;
       default:
          break;
@@ -330,6 +367,14 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          editor_group_max_h_set(group_pd.group->edit_object, group_pd.history.change, true, double_val1);
          group_pd.history.new.int_val1 = edje_edit_group_max_h_get(group_pd.group->edit_object);
          break;
+      case ATTRIBUTE_PART_NAME:
+         editor_part_name_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, str_val1);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PART_TYPE:
+         /* part type can't be changed */
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -341,7 +386,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
 static void
 _stop_cb(Property_Attribute *pa, Property_Action *action)
 {
-   Eina_Stringshare *msg;
+   Eina_Stringshare *msg = NULL;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -358,6 +403,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
    switch (action->type.attribute)
      {
       case ATTRIBUTE_GROUP_NAME:
+      case ATTRIBUTE_PART_NAME:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.str_val1,
@@ -371,6 +417,9 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.int_val1,
                                        group_pd.history.new.int_val1);
+         break;
+      case ATTRIBUTE_PART_TYPE:
+         /* part type can't be changed */
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -450,14 +499,27 @@ _init_group_block()
    _action2(&group_pd.items.group.max, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_H);
 }
 
+static void
+_init_part_block()
+{
+   group_pd.items.part.title.name = "part";
+   group_pd.items.part.title.expandable = true;
+   group_pd.items.part.title.expanded = true;
+   group_pd.items.part.title.expand_cb = _subitems_get;
+
+   group_pd.items.part.name.name = "name";
+   _action1(&group_pd.items.part.name, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PART_NAME);
+
+   group_pd.items.part.type.name = "type";
+   _action1(&group_pd.items.part.type, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_PART_TYPE);
+}
+
 /* public */
 void
 property_group_init()
 {
    _init_group_block();
-
-   group_pd.items.part.name = "part";
-   group_pd.items.part.expandable = true;
+   _init_part_block();
 
    group_pd.items.state.name = "state";
    group_pd.items.state.expandable = true;
