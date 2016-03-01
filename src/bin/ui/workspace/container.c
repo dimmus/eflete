@@ -253,8 +253,6 @@ _mouse_move_hTL_cb(void *data,
    sd->downx = ev->cur.canvas.x;
    sd->downy = ev->cur.canvas.y;
 
-   sd->size->dx = dx;
-   sd->size->dy = dy;
    evas_object_smart_callback_call(o, SIG_HANDLER_TL_MOVE, (void *)sd->size);
 }
 
