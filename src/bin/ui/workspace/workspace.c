@@ -40,8 +40,7 @@ typedef enum
    /* MODE_SEPARATE, */
    /* MODE_ANIMATOR, */
    /* MODE_CODE, */
-   MODE_DEMO,
-   MODE_LAST
+   MODE_DEMO
 } Workspace_Mode;
 
 struct _Ruler {
@@ -155,14 +154,87 @@ _workspace_del(void *data,
    ecore_job_add(_job_workspace_del, data);
 }
 
+static Evas_Object *
+_radio_switcher_add(Workspace_Data *wd,
+                    const char *style,
+                    Evas_Smart_Cb func,
+                    int state_value,
+                    Evas_Object *group)
+{
+   Evas_Object *radio;
+
+   radio = elm_radio_add(wd->panes);
+   elm_object_style_set(radio, style);
+   elm_radio_state_value_set(radio, state_value);
+   evas_object_smart_callback_add(radio, "changed", func, wd);
+   elm_radio_group_add(radio, group);
+
+   return radio;
+}
+
+static void
+_ruler_add(Evas_Object *parent, Ruler *ruler, Eina_Bool scale_rel)
+{
+   ruler->obj = ewe_ruler_add(parent);
+   ruler->pointer = ewe_ruler_marker_add(ruler->obj, "pointer");
+
+   if (scale_rel)
+     {
+      ruler->scale_rel = ewe_ruler_scale_add(ruler->obj, "relative");
+      ewe_ruler_format_set(ruler->obj, ruler->scale_rel, "%.1f");
+      //ewe_ruler_scale_visible_set(ruler->obj, ruler->scale_rel, false);
+      ewe_ruler_value_step_set(ruler->obj, ruler->scale_rel, 0.5);
+     }
+}
+
+static void
+_scroll_area_add(Evas_Object *parent, Scroll_Area *area, Eina_Bool scale_rel)
+{
+   area->layout = elm_layout_add(parent);
+   elm_layout_theme_set(area->layout, "layout", "workspace", "scroller");
+
+   _ruler_add(area->layout, &area->ruler_h, scale_rel);
+   elm_layout_content_set(area->layout, "elm.swallow.ruler_h", area->ruler_h.obj);
+   _ruler_add(area->layout, &area->ruler_v, scale_rel);
+   ewe_ruler_horizontal_set(area->ruler_v.obj, false);
+   elm_layout_content_set(area->layout, "elm.swallow.ruler_v", area->ruler_v.obj);
+
+   /* create scroller for normal mode and set bg */
+   area->scroller = elm_scroller_add(area->layout);
+   evas_object_event_callback_add(area->scroller, EVAS_CALLBACK_MOUSE_MOVE, _rulers_pointer_move, area);
+   elm_layout_content_set(area->layout, "elm.swallow.scroller", area->scroller);
+   area->bg = elm_layout_add(area->layout);
+   elm_layout_theme_set(area->bg, "layout", "workspace", "bg");
+   elm_object_part_content_set(area->scroller, "elm.swallow.background", area->bg);
+}
+
 static void
 _mode_cb(void *data,
          Evas_Object *obj,
          void *event_info __UNUSED__)
 {
    Workspace_Data *wd = data;
+   Workspace_Mode mode;
+   Evas_Object *content;
 
-   wd->mode = elm_radio_state_value_get(obj);
+   mode = elm_radio_state_value_get(obj);
+   if (mode == wd->mode) return;
+
+   wd->mode = mode;
+   content = elm_object_part_content_unset(wd->panes_h, "left");
+   evas_object_hide(content);
+   switch (wd->mode)
+     {
+      case MODE_NORMAL:
+         elm_object_part_content_set(wd->panes_h, "left", wd->normal.layout);
+         evas_object_show(wd->normal.layout);
+         break;
+      case MODE_DEMO:
+         if (!wd->demo.layout) _scroll_area_add(wd->panes, &wd->demo, false);
+         elm_object_part_content_set(wd->panes_h, "left", wd->demo.layout);
+         evas_object_show(wd->demo.layout);
+         break;
+     }
 }
 
 static void
@@ -193,63 +265,6 @@ _bg_cb(void *data,
      elm_layout_signal_emit(wd->demo.bg, signal, "eflete");
 
 }
-
-static Evas_Object *
-_radio_switcher_add(Workspace_Data *wd,
-                    const char *style,
-                    Evas_Smart_Cb func,
-                    int state_value,
-                    Evas_Object *group)
-{
-   Evas_Object *radio;
-
-   radio = elm_radio_add(wd->panes);
-   elm_object_style_set(radio, style);
-   elm_radio_state_value_set(radio, state_value);
-   evas_object_smart_callback_add(radio, "changed", func, wd);
-   elm_radio_group_add(radio, group);
-
-   return radio;
-}
-
-static void
-_ruler_add(Evas_Object *parent, Ruler *ruler, Eina_Bool scale_rel)
-{
-   ruler->obj = ewe_ruler_add(parent);
-   ruler->pointer = ewe_ruler_marker_add(ruler->obj, "pointer");
-
-   if (scale_rel)
-     {
-      ruler->scale_rel = ewe_ruler_scale_add(ruler->obj, "relative");
-      ewe_ruler_format_set(ruler->obj, ruler->scale_rel, "%.1f");
-      ewe_ruler_scale_visible_set(ruler->obj, ruler->scale_rel, false);
-      ewe_ruler_value_step_set(ruler->obj, ruler->scale_rel, 0.5);
-     }
-}
-
-static void
-_scroll_area_add(Evas_Object *parent, Scroll_Area *area, Eina_Bool scale_rel)
-{
-   area->layout = elm_layout_add(parent);
-   elm_layout_theme_set(area->layout, "layout", "workspace", "scroller");
-
-   //RULER_ADD(area->ruler_h.obj, area->ruler_h.scale_rel, area->ruler_h.pointer)
-   _ruler_add(area->layout, &area->ruler_h, scale_rel);
-   elm_layout_content_set(area->layout, "elm.swallow.ruler_h", area->ruler_h.obj);
-   //RULER_ADD(area->ruler_v.obj, area->ruler_v.scale_rel, area->ruler_v.pointer)
-   _ruler_add(area->layout, &area->ruler_v, scale_rel);
-   ewe_ruler_horizontal_set(area->ruler_v.obj, false);
-   elm_layout_content_set(area->layout, "elm.swallow.ruler_v", area->ruler_v.obj);
-
-   /* create scroller for normal mode and set bg */
-   area->scroller = elm_scroller_add(area->layout);
-   evas_object_event_callback_add(area->scroller, EVAS_CALLBACK_MOUSE_MOVE, _rulers_pointer_move, area);
-   elm_layout_content_set(area->layout, "elm.swallow.scroller", area->scroller);
-   area->bg = elm_layout_add(area->layout);
-   elm_layout_theme_set(area->bg, "layout", "workspace", "bg");
-   elm_object_part_content_set(area->scroller, "elm.swallow.background", area->bg);
-}
-
 
 Evas_Object *
 workspace_add(Evas_Object *parent, Group *group)
