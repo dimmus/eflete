@@ -188,9 +188,51 @@ _ruler_add(Evas_Object *parent, Ruler *ruler, Eina_Bool scale_rel)
 }
 
 static void
-_scroll_area_add(Evas_Object *parent, Scroll_Area *area, Eina_Bool scale_rel)
+_container_rel1_moved(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info)
 {
-   area->layout = elm_layout_add(parent);
+   Scroll_Area *area = data;
+   Container_Geom *geom = event_info;
+   Evas_Coord x, y;
+
+   evas_object_geometry_get(area->ruler_h.obj, &x, NULL, NULL, NULL);
+   evas_object_geometry_get(area->ruler_v.obj, NULL, &y, NULL, NULL);
+
+   /* shift the abs scale zero mark */
+   ewe_ruler_zero_offset_set(area->ruler_h.obj, NULL, geom->x - x);
+   ewe_ruler_zero_offset_set(area->ruler_v.obj, NULL, geom->y - y);
+
+   /* shift the rel scale zero mark */
+   if (area->ruler_h.scale_rel)
+     {
+        ewe_ruler_zero_offset_set(area->ruler_h.obj, area->ruler_h.scale_rel, geom->x - x);
+        ewe_ruler_step_set(area->ruler_h.obj, area->ruler_h.scale_rel, geom->w);
+     }
+   if (area->ruler_v.scale_rel)
+     {
+        ewe_ruler_zero_offset_set(area->ruler_v.obj, area->ruler_v.scale_rel, geom->y - y);
+        ewe_ruler_step_set(area->ruler_v.obj, area->ruler_v.scale_rel, geom->h);
+     }
+}
+
+static void
+_container_rel2_moved(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info)
+{
+   Scroll_Area *area = data;
+   Container_Geom *geom = event_info;
+
+   ewe_ruler_step_set(area->ruler_h.obj, area->ruler_h.scale_rel, geom->w);
+   ewe_ruler_step_set(area->ruler_v.obj, area->ruler_v.scale_rel, geom->h);
+}
+
+
+static void
+_scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
+{
+   area->layout = elm_layout_add(wd->panes);
    elm_layout_theme_set(area->layout, "layout", "workspace", "scroller");
 
    _ruler_add(area->layout, &area->ruler_h, scale_rel);
@@ -206,6 +248,13 @@ _scroll_area_add(Evas_Object *parent, Scroll_Area *area, Eina_Bool scale_rel)
    area->bg = elm_layout_add(area->layout);
    elm_layout_theme_set(area->bg, "layout", "workspace", "bg");
    elm_object_part_content_set(area->scroller, "elm.swallow.background", area->bg);
+
+   area->container = container_add(area->scroller);
+   container_handler_size_set(area->container, 8, 8, 8, 8);
+   evas_object_smart_callback_add(area->container, "handler,TL,moved", _container_rel1_moved, area);
+   if (scale_rel)
+     evas_object_smart_callback_add(area->container, "handler,BR,moved", _container_rel2_moved, area);
+   elm_object_content_set(area->scroller, area->container);
 }
 
 static void
@@ -230,7 +279,7 @@ _mode_cb(void *data,
          evas_object_show(wd->normal.layout);
          break;
       case MODE_DEMO:
-         if (!wd->demo.layout) _scroll_area_add(wd->panes, &wd->demo, false);
+         if (!wd->demo.layout) _scroll_area_add(wd, &wd->demo, false);
          elm_object_part_content_set(wd->panes_h, "left", wd->demo.layout);
          evas_object_show(wd->demo.layout);
          break;
@@ -323,7 +372,7 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_panes_content_right_size_set(wd->panes_h, 0); /* set the default min size */
    elm_layout_content_set(wd->toolbar.layout, NULL, wd->panes_h);
 
-   _scroll_area_add(wd->panes, &wd->normal, true);
+   _scroll_area_add(wd, &wd->normal, true);
    elm_object_part_content_set(wd->panes_h, "left", wd->normal.layout);
 
    wd->group = group;
