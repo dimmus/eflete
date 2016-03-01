@@ -29,7 +29,7 @@ typedef struct _Container_Smart_Data Container_Smart_Data;
 
 static const char SIG_CHANGED[] = "container,changed";
 static const char SIG_HANDLER_TL_MOVE[] = "handler,TL,moved";
-static const char SIG_HANDLER_BR_MOVE[] = "handler,RB,moved";
+static const char SIG_HANDLER_BR_MOVE[] = "handler,BR,moved";
 
 static const char TEXT_TOOLTIP[] = "eflete.size.tooltip";
 static const char SWALLOW[] = "eflete.swallow.container";
