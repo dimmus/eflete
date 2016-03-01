@@ -310,12 +310,15 @@ _bg_cb(void *data,
      {
       case BG_PREVIEW_WHITE:
          signal = "elm,bg,white";
+         container_style_set(area->container, "default");
          break;
       case BG_PREVIEW_TILE:
          signal = "elm,bg,tile";
+         container_style_set(area->container, "default");
          break;
       case BG_PREVIEW_BLACK:
          signal = "elm,bg,black";
+         container_style_set(area->container, "white");
          break;
      }
    area->bg_preview = bg_mode;
