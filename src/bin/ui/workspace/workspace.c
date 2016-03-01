@@ -54,6 +54,7 @@ struct _Scroll_Area {
    Evas_Object *layout;  /* layout for rulers and scroller */
    Evas_Object *scroller;
    Evas_Object *bg;
+   Bg_Preview bg_preview;
    Evas_Object *container;
    Evas_Object *content; /* for normal mode - groupview, for demo - elm widget */
    Ruler ruler_v;
@@ -232,6 +233,8 @@ _container_rel2_moved(void *data,
 static void
 _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
 {
+   area->bg_preview = BG_PREVIEW_TILE;
+
    area->layout = elm_layout_add(wd->panes);
    elm_layout_theme_set(area->layout, "layout", "workspace", "scroller");
 
@@ -277,11 +280,13 @@ _mode_cb(void *data,
       case MODE_NORMAL:
          elm_object_part_content_set(wd->panes_h, "left", wd->normal.layout);
          evas_object_show(wd->normal.layout);
+         elm_radio_value_set(wd->toolbar.bg_switcher.white, wd->normal.bg_preview);
          break;
       case MODE_DEMO:
          if (!wd->demo.layout) _scroll_area_add(wd, &wd->demo, false);
          elm_object_part_content_set(wd->panes_h, "left", wd->demo.layout);
          evas_object_show(wd->demo.layout);
+         elm_radio_value_set(wd->toolbar.bg_switcher.white, wd->demo.bg_preview);
          break;
      }
 }
@@ -291,12 +296,17 @@ _bg_cb(void *data,
        Evas_Object *obj,
        void *event_info __UNUSED__)
 {
-   Bg_Preview bg;
+   Bg_Preview bg_mode;
    Workspace_Data *wd = data;
+   Scroll_Area *area;
    const char *signal = NULL;
 
-   bg = elm_radio_value_get(obj);
-   switch (bg)
+   bg_mode = elm_radio_value_get(obj);
+   if (MODE_NORMAL == wd->mode)
+     area = &wd->normal;
+   else
+     area = &wd->demo;
+   switch (bg_mode)
      {
       case BG_PREVIEW_WHITE:
          signal = "elm,bg,white";
@@ -308,10 +318,8 @@ _bg_cb(void *data,
          signal = "elm,bg,black";
          break;
      }
-   if (MODE_NORMAL == wd->mode)
-     elm_layout_signal_emit(wd->normal.bg, signal, "eflete");
-   else
-     elm_layout_signal_emit(wd->demo.bg, signal, "eflete");
+   area->bg_preview = bg_mode;
+   elm_layout_signal_emit(area->bg, signal, "eflete");
 
 }
 
@@ -365,7 +373,7 @@ workspace_add(Evas_Object *parent, Group *group)
    wd->toolbar.bg_switcher.black = _radio_switcher_add(wd, "bg_black", _bg_cb, BG_PREVIEW_BLACK, wd->toolbar.bg_switcher.white);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.bg_switcher.black);
-   elm_radio_value_set(wd->toolbar.bg_switcher.white, 2);
+   elm_radio_value_set(wd->toolbar.bg_switcher.white, BG_PREVIEW_TILE);
 
    wd->panes_h = elm_panes_add(wd->toolbar.layout);
    elm_panes_horizontal_set(wd->panes_h, true);
