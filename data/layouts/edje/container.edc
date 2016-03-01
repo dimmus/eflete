@@ -1,6 +1,6 @@
 group { name: "eflete/container/base/default";
    images {
-      image: "container_border.png" COMP;
+      image: "handler.png" COMP;
    }
    parts {
       part { name: "eflete.swallow.container";
@@ -34,8 +34,9 @@ group { name: "eflete/container/base/default";
          mouse_events: 0;
          scale: 1;
          description { state: "default" 0.0;
+            color: 0 0 0 255;
             image {
-               normal: "container_border.png";
+               normal: "handler.png";
                border: 2 2 2 2;
                middle: NONE;
             }
@@ -80,11 +81,7 @@ group { name: "eflete/container/base/default";
       }
    }
 }
-group { name: "eflete/container/base/scroller";
-   inherit_only: 1;
-   inherit: "eflete/container/base/default";
-   part_remove: "clipper";
-}
+
 group { name: "eflete/container/handler_TL/default";
    parts{
       part { name: "bg";
@@ -103,6 +100,39 @@ group { name: "eflete/container/handler_BR/default";
          scale: 1;
          description { state: "default" 0.0;
             color: 0 0 0 255;
+         }
+      }
+   }
+}
+
+group { name: "eflete/container/base/white";
+   inherit: "eflete/container/base/default";
+   parts {
+      part { name: "border";
+         description { state: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+   }
+}
+
+group { name: "eflete/container/handler_TL/white";
+   inherit: "eflete/container/handler_TL/default";
+   parts {
+      part { name: "bg";
+         description { state: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+   }
+}
+
+group { name: "eflete/container/handler_BR/white";
+   inherit: "eflete/container/handler_BR/default";
+   parts {
+      part { name: "bg";
+         description { state: "default" 0.0;
+            color: 255 255 255 255;
          }
       }
    }
