@@ -189,9 +189,9 @@ _ruler_add(Evas_Object *parent, Ruler *ruler, Eina_Bool scale_rel)
 }
 
 static void
-_container_rel1_moved(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info)
+_container_changed(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
 {
    Scroll_Area *area = data;
    Container_Geom *geom = event_info;
@@ -218,19 +218,6 @@ _container_rel1_moved(void *data,
 }
 
 static void
-_container_rel2_moved(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info)
-{
-   Scroll_Area *area = data;
-   Container_Geom *geom = event_info;
-
-   ewe_ruler_step_set(area->ruler_h.obj, area->ruler_h.scale_rel, geom->w);
-   ewe_ruler_step_set(area->ruler_v.obj, area->ruler_v.scale_rel, geom->h);
-}
-
-
-static void
 _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
 {
    area->bg_preview = BG_PREVIEW_TILE;
@@ -254,9 +241,7 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
 
    area->container = container_add(area->scroller);
    container_handler_size_set(area->container, 8, 8, 8, 8);
-   evas_object_smart_callback_add(area->container, "handler,TL,moved", _container_rel1_moved, area);
-   if (scale_rel)
-     evas_object_smart_callback_add(area->container, "handler,BR,moved", _container_rel2_moved, area);
+   evas_object_smart_callback_add(area->container, "container,changed", _container_changed, area);
    elm_object_content_set(area->scroller, area->container);
 }
 
