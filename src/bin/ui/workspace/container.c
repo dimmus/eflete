@@ -22,8 +22,9 @@
 
 #define MY_CLASS_NAME "Container"
 
-#define H_WIGTH (sd->handler_TL.w + sd->handler_BR.w)
-#define H_HEIGHT (sd->handler_TL.h + sd->handler_BR.h)
+#define BASE_PADDING 50
+#define H_WIGTH (sd->handler_TL.w + sd->handler_BR.w + (BASE_PADDING * 2))
+#define H_HEIGHT (sd->handler_TL.h + sd->handler_BR.h + (BASE_PADDING * 2))
 
 typedef struct _Container_Smart_Data Container_Smart_Data;
 
@@ -396,6 +397,9 @@ _container_smart_add(Evas_Object *o)
    evas_object_smart_member_add(priv->handler_BR.obj, o);
 
    _style_set(o, "default");
+   evas_object_resize(o,
+                      priv->handler_TL.w + priv->handler_BR.w + (BASE_PADDING * 2),
+                      priv->handler_TL.h + priv->handler_BR.h + (BASE_PADDING * 2));
 }
 
 static void
@@ -440,7 +444,7 @@ _container_smart_resize(Evas_Object *o,
                         Evas_Coord w,
                         Evas_Coord h)
 {
-   Evas_Coord ow, oh, nw, nh;
+   Evas_Coord ow, oh;
    evas_object_geometry_get(o, NULL, NULL, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
 
@@ -460,7 +464,10 @@ _container_smart_calculate(Evas_Object *o)
 
    CONTAINER_DATA_GET(o, priv)
    evas_object_geometry_get(o, &x, &y, &w, &h);
+
+   evas_object_move(priv->bg, x, y);
    evas_object_resize(priv->bg, w, h);
+
 
    htl_w = priv->handler_TL.w; htl_h = priv->handler_TL.h;
    hrb_w = priv->handler_BR.w; hrb_h = priv->handler_BR.h;
@@ -468,10 +475,10 @@ _container_smart_calculate(Evas_Object *o)
    if (priv->dx < 0) priv->dx = 0;
    if (priv->dy < 0) priv->dy = 0;
 
-   cw = w - (htl_w + hrb_w + priv->pad_left_top.w + priv->pad_right_bottom.w + priv->dx);
-   ch = h - (htl_h + hrb_h + priv->pad_left_top.h + priv->pad_right_bottom.h + priv->dy);
-   cx = x + priv->pad_left_top.w + htl_w + priv->dx;
-   cy = y + priv->pad_left_top.h + htl_h + priv->dy;
+   cw = w - (htl_w + hrb_w + priv->pad_left_top.w + priv->pad_right_bottom.w + priv->dx + (BASE_PADDING * 2));
+   ch = h - (htl_h + hrb_h + priv->pad_left_top.h + priv->pad_right_bottom.h + priv->dy + (BASE_PADDING * 2));
+   cx = x + priv->pad_left_top.w + htl_w + priv->dx + BASE_PADDING;
+   cy = y + priv->pad_left_top.h + htl_h + priv->dy + BASE_PADDING;
 
    /* calculating min and max of groups */
    if ((priv->con_size_min.w > cw) && (priv->con_size_min.w != 0))
@@ -483,8 +490,8 @@ _container_smart_calculate(Evas_Object *o)
    if ((priv->con_size_max.h < ch) && (priv->con_size_max.h != 0))
      ch = priv->con_size_max.h;
 
-   htl_x = x + priv->pad_left_top.w + priv->dx;
-   htl_y = y + priv->pad_left_top.h + priv->dy;
+   htl_x = x + priv->pad_left_top.w + priv->dx + BASE_PADDING;
+   htl_y = y + priv->pad_left_top.h + priv->dy + BASE_PADDING;
    hrb_x = htl_x + htl_w + cw;
    hrb_y = htl_y + htl_h + ch;
 
