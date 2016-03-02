@@ -94,20 +94,6 @@ EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _container,
                         Evas_Smart_Class, Evas_Smart_Class,
                         evas_object_smart_clipped_class_get, _smart_callbacks);
 
-static Eina_Bool
-_user_size_calc(Evas_Object *o)
-{
-   int nw, nh;
-   CONTAINER_DATA_GET(o, sd)
-
-   nw = sd->size->w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w + sd->dx;
-   nh = sd->size->h + H_HEIGHT + sd->pad_left_top.h + sd->pad_right_bottom.h + sd->dy;
-
-   evas_object_resize(o, nw, nh);
-
-   return true;
-}
-
 static void
 _mouse_down_hTL_cb(void *data,
                    Evas *e __UNUSED__,
@@ -458,13 +444,7 @@ _container_smart_resize(Evas_Object *o,
    evas_object_geometry_get(o, NULL, NULL, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
 
-   CONTAINER_DATA_GET(o, sd)
    evas_object_size_hint_min_set(o, w, h);
-
-   nw = w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w + sd->dx;
-   nh = h + H_HEIGHT + sd->pad_left_top.h + sd->pad_right_bottom.h + sd->dy;
-
-   evas_object_resize(o, nw, nh);
 
    evas_object_smart_changed(o);
 }
@@ -601,7 +581,8 @@ container_min_size_set(Evas_Object *obj, int w, int h)
    if (sd->size->w <= w) sd->size->w = w;
    if (sd->size->h <= h) sd->size->h = h;
 
-   return _user_size_calc(obj);
+   evas_object_smart_changed(obj);
+   return true;
 }
 
 Eina_Bool
@@ -619,7 +600,8 @@ container_max_size_set(Evas_Object *obj, int w, int h)
    if ((h != 0) && (sd->size->h > h))
      sd->size->h = h;
 
-   return _user_size_calc(obj);
+   evas_object_smart_changed(obj);
+   return true;
 }
 
 Eina_Bool
@@ -643,7 +625,8 @@ container_container_size_set(Evas_Object *obj, int w, int h)
         else sd->size->h = h;
      }
 
-   return _user_size_calc(obj);
+   evas_object_smart_changed(obj);
+   return true;
 }
 
 Eina_Bool
