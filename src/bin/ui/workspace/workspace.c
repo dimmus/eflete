@@ -218,6 +218,19 @@ _container_changed(void *data,
 }
 
 static void
+_container_TL_move(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Scroll_Area *area = data;
+   Container_Geom *geom = event_info;
+   Evas_Coord x, y, w, h;
+
+   elm_scroller_region_get(area->scroller, &x, &y, &w, &h);
+   elm_scroller_region_show(area->scroller, x - geom->dx, y - geom->dy, w, h);
+}
+
+static void
 _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
 {
    area->bg_preview = BG_PREVIEW_TILE;
@@ -242,6 +255,7 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
    area->container = container_add(area->scroller);
    container_handler_size_set(area->container, 8, 8, 8, 8);
    evas_object_smart_callback_add(area->container, "container,changed", _container_changed, area);
+   evas_object_smart_callback_add(area->container, "handler,TL,moved", _container_TL_move, area);
    elm_object_content_set(area->scroller, area->container);
 }
 
