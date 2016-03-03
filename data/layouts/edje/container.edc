@@ -6,7 +6,6 @@ group { name: "eflete/container/base/default";
       part { name: "eflete.swallow.container";
          type: SWALLOW;
          scale: 1;
-         clip_to: "clipper";
          description { state: "default" 0.0;
             visible: 1;
          }
@@ -46,11 +45,6 @@ group { name: "eflete/container/base/default";
          description { state: "hidden" 0.0;
             inherit: "default" 0.0;
             visible: 0;
-         }
-      }
-      part { name: "clipper";
-         type: RECT;
-         description { state: "default" 0.0;
          }
       }
    }
