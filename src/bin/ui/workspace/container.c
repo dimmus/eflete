@@ -156,18 +156,15 @@ _mouse_move_hTL_cb(void *data,
                    void *event_info)
 {
    Evas_Coord x1, y1, w1, h1, x2, y2, w2, h2, x, y, w, h;
-   Evas_Coord nx = 0, ny = 0, nw, nh;
-   Evas_Coord bgx, bgy, bgw, bgh;
+   Evas_Coord nx, ny, nw, nh;
    Evas_Coord dx, dy;
    Evas_Event_Mouse_Move *ev = event_info;
    Evas_Object *o = data;
 
    CONTAINER_DATA_GET(o, sd)
-   evas_object_geometry_get(o, &nx, &ny, &nw, &nh);
    evas_object_geometry_get(o, &x, &y, &w, &h);
    evas_object_geometry_get(sd->handler_TL.obj, &x1, &y1, &w1, &h1);
    evas_object_geometry_get(sd->handler_BR.obj, &x2, &y2, &w2, &h2);
-   evas_object_geometry_get(sd->bg, &bgx, &bgy, &bgw, &bgh);
    dx = (ev->cur.canvas.x - sd->downx);
    dy = (ev->cur.canvas.y - sd->downy);
 
@@ -186,49 +183,27 @@ _mouse_move_hTL_cb(void *data,
    sd->dx += dx;
    sd->dy += dy;
 
-   if (x1 + dx - sd->pad_left_top.w < bgx)
-     {
-        nw = w - dx;
-        TODO("need do refactoring here")
-        if (nw <= sd->con_size_min.w + H_WIGTH)
-          {
-             nw = sd->con_size_min.w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w;
-             nx = x + (w - nw);
-          }
-        else
-          {
-             if ((sd->con_size_max.w != 0)
-                 && (nw >= sd->con_size_max.w + H_WIGTH))
-               {
-                  nw = sd->con_size_max.w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w;
-                  nx = x + (w - nw);
-               }
-             else nx = x + dx;
-          }
-     }
+   /* calculate the x position and wight */
+   nw = w;
+   nx = x;
    sd->pad_left_top.w += dx;
-
-   if (y1 + dy - sd->pad_left_top.h < bgy)
+   if (sd->pad_left_top.w < 0)
      {
-        /* calc y and height */
-        nh = h - dy;
-        if (nh <= sd->con_size_min.h + H_HEIGHT)
-          {
-             nh = sd->con_size_min.h + H_HEIGHT + sd->pad_left_top.h + sd->pad_right_bottom.h;
-             ny = y + (h - nh);
-          }
-        else
-          {
-             if ((sd->con_size_max.h != 0)
-                 && (nh >= sd->con_size_max.h + H_HEIGHT))
-               {
-                  nh = sd->con_size_max.h + H_HEIGHT + sd->pad_left_top.h + sd->pad_right_bottom.h;
-                  ny = y + (h - nh);
-               }
-             else ny = y + dy;
-          }
+        nw = w + abs(dx);
+        sd->pad_left_top.w = 0;
+        nx += dx;
      }
+
+   /* calculate the y position and height */
+   nh = h;
+   ny = y;
    sd->pad_left_top.h += dy;
+   if (sd->pad_left_top.h < 0)
+     {
+        nh = h + abs(dy);
+        sd->pad_left_top.h = 0;
+        ny +=dy;
+     }
 
    evas_object_resize(o, nw, nh);
    evas_object_move(o, nx, ny);
