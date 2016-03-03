@@ -19,7 +19,6 @@ config_test \
 cursor_test \
 highlight_test \
 ui_main_window_test \
-groupedit_test \
 ui_workspace_test \
 animator_test \
 live_widget_test \
@@ -51,7 +50,6 @@ FLAGS = \
 -I${top_srcdir}/src/bin/ui/notification \
 -I${top_srcdir}/src/bin/ui/preference \
 -I${top_srcdir}/src/bin/ui/workspace \
--I${top_srcdir}/src/bin/ui/workspace/groupedit \
 -I${top_srcdir}/src/bin/ui/live_view \
 -I${top_srcdir}/src/bin/ui/live_view/elementary \
 -I${top_srcdir}/src/bin/ui/shortcuts \
@@ -290,19 +288,6 @@ ui_workspace_test_SOURCES = \
 ../tests/test_ui_workspace/workspace_object_area_visible_set.c
 ui_workspace_test_CFLAGS = ${FLAGS}
 ui_workspace_test_LDADD = ${LD}
-
-groupedit_test_SOURCES = \
-../tests/test_groupedit/test_groupedit.c \
-../tests/test_groupedit/groupedit_add.c \
-../tests/test_groupedit/groupedit_edit_object_part_above.c \
-../tests/test_groupedit/groupedit_edit_object_part_below.c \
-../tests/test_groupedit/groupedit_edit_object_part_draw_get.c \
-../tests/test_groupedit/groupedit_edit_object_part_select.c \
-../tests/test_groupedit/groupedit_edit_object_parts_separated.c \
-../tests/test_groupedit/groupedit_edit_object_parts_separated_is.c \
-../tests/test_groupedit/groupedit_edit_object_recalc_all.c
-groupedit_test_CFLAGS = ${FLAGS}
-groupedit_test_LDADD = ${LD}
 
 animator_test_SOURCES = \
 ../tests/test_animator/test_animator.c \
