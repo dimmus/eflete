@@ -20,7 +20,7 @@
 #include "workspace.h"
 #include "main_window.h"
 #include "highlight.h"
-#include "groupedit.h"
+#include "groupview.h"
 #include "container.h"
 #include "eflete.h"
 #include "group_navigator.h"

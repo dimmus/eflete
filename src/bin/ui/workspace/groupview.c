@@ -17,16 +17,16 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "groupedit.h"
-#include "groupedit_private.h"
+#include "groupview.h"
+#include "groupview_private.h"
 #include "cursor.h"
 #include "project_manager.h"
 
-#define MY_CLASS_NAME "Ws_Groupedit"
+#define MY_CLASS_NAME "Groupview"
 
-/* here we create and define some functions for creating our groupedit smart
+/* here we create and define some functions for creating our groupview smart
   object that is inherited from general Smart Object. */
-EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _groupedit,
+EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _groupview,
                         Evas_Smart_Class, Evas_Smart_Class,
                         evas_object_smart_clipped_class_get, _smart_callbacks);
 
@@ -38,7 +38,7 @@ _unselect_part(void *data,
 {
    Evas_Object *o = (Evas_Object *)data;
    Evas_Event_Mouse_Down *ev = event_info;
-   WS_GROUPEDIT_DATA_GET(o, sd)
+   GROUPVIEW_DATA_GET(o, sd)
 
    if (ev->button != 1) return;
    if (!sd->selected) return;
@@ -49,11 +49,11 @@ _unselect_part(void *data,
 
 /* create and setup a new example smart object's internals */
 static void
-_groupedit_smart_add(Evas_Object *o)
+_groupview_smart_add(Evas_Object *o)
 {
-   EVAS_SMART_DATA_ALLOC(o, Ws_Groupedit_Smart_Data)
+   EVAS_SMART_DATA_ALLOC(o, Groupview_Smart_Data)
 
-   _groupedit_parent_sc->add(o);
+   _groupview_parent_sc->add(o);
 
    priv->event = evas_object_rectangle_add(evas_object_evas_get(o));
    evas_object_color_set(priv->event, 0, 0, 0, 0);
@@ -70,51 +70,51 @@ _groupedit_smart_add(Evas_Object *o)
 }
 
 static void
-_groupedit_smart_del(Evas_Object *o)
+_groupview_smart_del(Evas_Object *o)
 {
-   WS_GROUPEDIT_DATA_GET(o, sd)
+   GROUPVIEW_DATA_GET(o, sd)
 
    _parts_list_free(sd);
    evas_object_smart_member_del(sd->group->edit_object);
    evas_object_smart_member_del(sd->clipper);
    evas_object_hide(sd->group->edit_object);
 
-   _groupedit_parent_sc->del(o);
+   _groupview_parent_sc->del(o);
 }
 
 static void
-_groupedit_smart_show(Evas_Object *o)
+_groupview_smart_show(Evas_Object *o)
 {
    if (evas_object_visible_get(o)) return;
 
-   WS_GROUPEDIT_DATA_GET(o, sd);
+   GROUPVIEW_DATA_GET(o, sd);
 
    evas_object_show(sd->event);
 
-   _groupedit_parent_sc->show(o);
+   _groupview_parent_sc->show(o);
 }
 
 static void
-_groupedit_smart_hide(Evas_Object *o)
+_groupview_smart_hide(Evas_Object *o)
 {
    if (!evas_object_visible_get(o)) return;
 
-   WS_GROUPEDIT_DATA_GET(o, sd)
+   GROUPVIEW_DATA_GET(o, sd)
 
    evas_object_hide(sd->event);
 
-   _groupedit_parent_sc->hide(o);
+   _groupview_parent_sc->hide(o);
 }
 
 static void
-_groupedit_smart_move(Evas_Object *o,
+_groupview_smart_move(Evas_Object *o,
                       Evas_Coord x,
                       Evas_Coord y)
 {
    Evas_Coord ox, oy;
-   WS_GROUPEDIT_DATA_GET(o, sd)
+   GROUPVIEW_DATA_GET(o, sd)
 
-   _groupedit_parent_sc->move(o, x, y);
+   _groupview_parent_sc->move(o, x, y);
 
    evas_object_geometry_get(o, &ox, &oy, NULL, NULL);
    if ((ox == x) && (oy == y)) return;
@@ -123,12 +123,12 @@ _groupedit_smart_move(Evas_Object *o,
 }
 
 static void
-_groupedit_smart_resize(Evas_Object *o,
+_groupview_smart_resize(Evas_Object *o,
                         Evas_Coord w,
                         Evas_Coord h)
 {
    Evas_Coord ow, oh;
-   WS_GROUPEDIT_DATA_GET(o, sd)
+   GROUPVIEW_DATA_GET(o, sd)
 
    evas_object_geometry_get(o, NULL, NULL, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
@@ -136,14 +136,14 @@ _groupedit_smart_resize(Evas_Object *o,
    evas_object_smart_changed(o);
 }
 
-/* groupedit geometry calculate */
+/* groupview geometry calculate */
 static void
-_groupedit_smart_calculate(Evas_Object *o)
+_groupview_smart_calculate(Evas_Object *o)
 {
    Evas_Coord x, y, w, h;
    Evas_Coord px, py, pw, ph;
 
-   WS_GROUPEDIT_DATA_GET(o, sd)
+   GROUPVIEW_DATA_GET(o, sd)
       evas_object_geometry_get(sd->parent, &px, &py, &pw, &ph);
    evas_object_resize(sd->event, pw, ph);
    evas_object_move(sd->event, px, py);
@@ -168,32 +168,32 @@ _groupedit_smart_calculate(Evas_Object *o)
 
    sd->manual_calc = false;
 
-   DBG("Groupedit geometry: x[%i] y[%i] w[%i] h[%i]", x, y, w, h);
+   DBG("Groupview geometry: x[%i] y[%i] w[%i] h[%i]", x, y, w, h);
    evas_object_smart_callback_call(o, SIG_GEOMETRY_CHANGED, &sd->geom);
 }
 
 /* this need for macro EVAS_SMART_SUBCLASS_NEW */
 static void
-_groupedit_smart_set_user(Evas_Smart_Class *sc)
+_groupview_smart_set_user(Evas_Smart_Class *sc)
 {
    assert(sc != NULL);
 
    evas_object_smart_clipped_smart_set(sc);
 
-   sc->add = _groupedit_smart_add;
-   sc->del = _groupedit_smart_del;
-   sc->show = _groupedit_smart_show;
-   sc->hide = _groupedit_smart_hide;
+   sc->add = _groupview_smart_add;
+   sc->del = _groupview_smart_del;
+   sc->show = _groupview_smart_show;
+   sc->hide = _groupview_smart_hide;
    sc->color_set = NULL;
 
    /* clipped smart object has no hook on resizes or calculations */
-   sc->move = _groupedit_smart_move;
-   sc->resize = _groupedit_smart_resize;
-   sc->calculate = _groupedit_smart_calculate;
+   sc->move = _groupview_smart_move;
+   sc->resize = _groupview_smart_resize;
+   sc->calculate = _groupview_smart_calculate;
 }
 
 Evas_Object *
-groupedit_add(Evas_Object *parent, Group *group)
+groupview_add(Evas_Object *parent, Group *group)
 {
    Evas *e;
    Evas_Object *obj;
@@ -202,8 +202,8 @@ groupedit_add(Evas_Object *parent, Group *group)
    assert(group != NULL);
 
    e = evas_object_evas_get(parent);
-   obj = evas_object_smart_add(e, _groupedit_smart_class_new());
-   WS_GROUPEDIT_DATA_GET(obj, sd);
+   obj = evas_object_smart_add(e, _groupview_smart_class_new());
+   GROUPVIEW_DATA_GET(obj, sd);
    sd->parent = parent;
 
    TODO("set the state for all parts to default 0.0")
@@ -230,9 +230,9 @@ groupedit_add(Evas_Object *parent, Group *group)
 /******************************************************************************/
 /******************************************************************************/
 Eina_Bool
-groupedit_edit_object_recalc_all(Evas_Object *obj)
+groupview_edit_object_recalc_all(Evas_Object *obj)
 {
-   WS_GROUPEDIT_DATA_GET(obj, sd);
+   GROUPVIEW_DATA_GET(obj, sd);
 
    sd->manual_calc = true;
    evas_object_smart_changed(sd->obj);
@@ -240,16 +240,16 @@ groupedit_edit_object_recalc_all(Evas_Object *obj)
 }
 
 void
-groupedit_soft_update(Evas_Object *obj)
+groupview_soft_update(Evas_Object *obj)
 {
-   WS_GROUPEDIT_DATA_GET(obj, sd);
+   GROUPVIEW_DATA_GET(obj, sd);
    evas_object_smart_changed(sd->obj);
 }
 
 void
-groupedit_hard_update(Evas_Object *obj)
+groupview_hard_update(Evas_Object *obj)
 {
-   WS_GROUPEDIT_DATA_GET(obj, sd);
+   GROUPVIEW_DATA_GET(obj, sd);
    sd->manual_calc = true;
    TODO("Check what recalculation is needed. (don't forget add part_item)");
    elm_box_recalculate(sd->box);
@@ -257,10 +257,10 @@ groupedit_hard_update(Evas_Object *obj)
 }
 
 Evas_Object *
-groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part)
+groupview_edit_object_part_draw_get(Evas_Object *obj, const char *part)
 {
-   Groupedit_Part *gp;
-   WS_GROUPEDIT_DATA_GET(obj, sd)
+   Groupview_Part *gp;
+   GROUPVIEW_DATA_GET(obj, sd)
 
    assert(part != NULL);
 
@@ -272,9 +272,9 @@ groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part)
 }
 
 Eina_Bool
-groupedit_edit_object_part_add(Evas_Object *obj, Part *part)
+groupview_edit_object_part_add(Evas_Object *obj, Part *part)
 {
-   WS_GROUPEDIT_DATA_GET(obj, sd);
+   GROUPVIEW_DATA_GET(obj, sd);
 
    assert(part != NULL);
 
@@ -282,9 +282,9 @@ groupedit_edit_object_part_add(Evas_Object *obj, Part *part)
 }
 
 Eina_Bool
-groupedit_edit_object_part_del(Evas_Object *obj, Part *part)
+groupview_edit_object_part_del(Evas_Object *obj, Part *part)
 {
-   WS_GROUPEDIT_DATA_GET(obj, sd);
+   GROUPVIEW_DATA_GET(obj, sd);
 
    assert(part != NULL);
 
@@ -292,11 +292,11 @@ groupedit_edit_object_part_del(Evas_Object *obj, Part *part)
 }
 
 Eina_Bool
-groupedit_edit_object_part_restack(Evas_Object *obj,
+groupview_edit_object_part_restack(Evas_Object *obj,
                                    const char *part,
                                    const char *rel_part)
 {
-   WS_GROUPEDIT_DATA_GET(obj, sd);
+   GROUPVIEW_DATA_GET(obj, sd);
 
    assert(part != NULL);
 
@@ -304,35 +304,35 @@ groupedit_edit_object_part_restack(Evas_Object *obj,
 }
 
 Evas_Object *
-groupedit_part_object_area_get(Evas_Object *obj)
+groupview_part_object_area_get(Evas_Object *obj)
 {
-   WS_GROUPEDIT_DATA_GET(obj, sd)
+   GROUPVIEW_DATA_GET(obj, sd)
 
    return sd->obj;
 }
 
 void
-groupedit_part_object_area_visible_set(Evas_Object *obj, Eina_Bool visible __UNUSED__)
+groupview_part_object_area_visible_set(Evas_Object *obj, Eina_Bool visible __UNUSED__)
 {
-   WS_GROUPEDIT_DATA_GET(obj, sd);
+   GROUPVIEW_DATA_GET(obj, sd);
 
    if (!sd->selected) return;
 }
 
 Eina_Bool
-groupedit_part_object_area_visible_get(Evas_Object *obj)
+groupview_part_object_area_visible_get(Evas_Object *obj)
 {
-   WS_GROUPEDIT_DATA_GET(obj, sd);
+   GROUPVIEW_DATA_GET(obj, sd);
    return false;
 }
 
 Eina_Bool
-groupedit_edit_object_parts_separated(Evas_Object *obj __UNUSED__,
+groupview_edit_object_parts_separated(Evas_Object *obj __UNUSED__,
                                       Eina_Bool separated __UNUSED__)
 {
 #if 0
    int w, h, count;
-   WS_GROUPEDIT_DATA_GET(obj, sd);
+   GROUPVIEW_DATA_GET(obj, sd);
 
    assert(sd->group->edit_object != NULL);
 
@@ -342,7 +342,7 @@ groupedit_edit_object_parts_separated(Evas_Object *obj __UNUSED__,
    sd->separated = separated;
    evas_object_geometry_get(obj, NULL, NULL, &w, &h);
    count = eina_list_count(sd->parts);
-   /* after resize the groupedit object it will be marked as dirty,
+   /* after resize the groupview object it will be marked as dirty,
       and parts will be recalced. */
    if (separated)
      {
@@ -357,7 +357,7 @@ groupedit_edit_object_parts_separated(Evas_Object *obj __UNUSED__,
    else
      {
         evas_object_resize(obj, w - (SEP_ITEM_PAD_X * count), h - (SEP_ITEM_PAD_Y * count));
-        /* emit the signal that the groupedit returned to the normal mode.
+        /* emit the signal that the groupview returned to the normal mode.
            send the name of selected item(part), for hilight and widget list
            events. */
         DBG("Separate mod off; selected part is %s",
@@ -370,17 +370,17 @@ groupedit_edit_object_parts_separated(Evas_Object *obj __UNUSED__,
 }
 
 Eina_Bool
-groupedit_edit_object_parts_separated_is(Evas_Object *obj)
+groupview_edit_object_parts_separated_is(Evas_Object *obj)
 {
-   WS_GROUPEDIT_DATA_GET(obj, sd);
+   GROUPVIEW_DATA_GET(obj, sd);
    return sd->separated;
 }
 
 void
-groupedit_edit_object_part_select(Evas_Object *obj, const char *part)
+groupview_edit_object_part_select(Evas_Object *obj, const char *part)
 {
-   Groupedit_Part *gp;
-   WS_GROUPEDIT_DATA_GET(obj, sd);
+   Groupview_Part *gp;
+   GROUPVIEW_DATA_GET(obj, sd);
 
    if (part)
      {
@@ -399,10 +399,10 @@ groupedit_edit_object_part_select(Evas_Object *obj, const char *part)
 TODO("remove this from public API and use callback from part list");
 
 void
-groupedit_part_visible_set(Evas_Object *obj, Part *part)
+groupview_part_visible_set(Evas_Object *obj, Part *part)
 {
-   Groupedit_Part *gp;
-   WS_GROUPEDIT_DATA_GET(obj, sd);
+   Groupview_Part *gp;
+   GROUPVIEW_DATA_GET(obj, sd);
 
    assert(part != NULL);
 
@@ -416,21 +416,21 @@ groupedit_part_visible_set(Evas_Object *obj, Part *part)
 }
 
 Eina_Bool
-groupedit_zoom_factor_set(Evas_Object *obj, double factor __UNUSED__)
+groupview_zoom_factor_set(Evas_Object *obj, double factor __UNUSED__)
 {
-   WS_GROUPEDIT_DATA_GET(obj, sd);
+   GROUPVIEW_DATA_GET(obj, sd);
 
    return true;
 }
 
 void
-groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
+groupview_edit_object_part_item_selected_set(Evas_Object *obj,
                                              Eina_Stringshare *item_name,
                                              Eina_Bool selected)
 {
-   Groupedit_Part *gp;
-   Groupedit_Item *item;
-   WS_GROUPEDIT_DATA_GET(obj, sd);
+   Groupview_Part *gp;
+   Groupview_Item *item;
+   GROUPVIEW_DATA_GET(obj, sd);
 
    gp = sd->selected;
    if (!gp) return;
@@ -452,14 +452,10 @@ groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
      }
 }
 
-const Groupedit_Geom *
-groupedit_protrusion_get(Evas_Object *obj)
+const Groupview_Geom *
+groupview_protrusion_get(Evas_Object *obj)
 {
-   WS_GROUPEDIT_DATA_GET(obj, sd);
+   GROUPVIEW_DATA_GET(obj, sd);
 
    return &sd->protrusion;
 }
-
-#undef MY_CLASS_NAME
-#undef WS_GROUPSPACE_DATA_GET
-#undef WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL
