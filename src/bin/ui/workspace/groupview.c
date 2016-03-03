@@ -119,7 +119,8 @@ _groupview_smart_move(Evas_Object *o,
    evas_object_geometry_get(o, &ox, &oy, NULL, NULL);
    if ((ox == x) && (oy == y)) return;
 
-   evas_object_smart_changed(o);
+   evas_object_move(sd->group->edit_object,x ,y);
+   evas_object_move(sd->box, x, y);
 }
 
 static void
@@ -158,9 +159,7 @@ _groupview_smart_calculate(Evas_Object *o)
         sd->geom.w = w;
         sd->geom.h = h;
 
-        evas_object_move(sd->group->edit_object,x ,y);
         evas_object_resize(sd->group->edit_object, w, h);
-        evas_object_move(sd->box, x, y);
         evas_object_resize(sd->box, w, h);
      }
    else
