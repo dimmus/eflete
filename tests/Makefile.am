@@ -20,8 +20,6 @@ cursor_test \
 highlight_test \
 ui_main_window_test \
 ui_workspace_test \
-animator_test \
-live_widget_test \
 about_window_test \
 colorselector_test \
 shortcuts_test
@@ -288,12 +286,6 @@ ui_workspace_test_SOURCES = \
 ../tests/test_ui_workspace/workspace_object_area_visible_set.c
 ui_workspace_test_CFLAGS = ${FLAGS}
 ui_workspace_test_LDADD = ${LD}
-
-animator_test_SOURCES = \
-../tests/test_animator/test_animator.c \
-../tests/test_animator/animator_window_add_test.c
-animator_test_CFLAGS = ${FLAGS}
-animator_test_LDADD = ${LD}
 
 live_widget_test_SOURCES = \
 ../tests/test_live_widget/test_live_widget.c \
