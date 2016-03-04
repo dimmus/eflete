@@ -451,7 +451,7 @@ groupview_edit_object_part_item_selected_set(Evas_Object *obj,
      }
 }
 
-const Groupview_Geom *
+Groupview_Geom *
 groupview_protrusion_get(Evas_Object *obj)
 {
    GROUPVIEW_DATA_GET(obj, sd);

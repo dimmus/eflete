@@ -82,6 +82,7 @@ struct _Container_Smart_Data
    Evas_Coord downx;
    Evas_Coord downy;
    Evas_Coord dx, dy;
+   Object_Protrusion_Get func;
 };
 
 #define CONTAINER_DATA_GET(o, ptr) \
@@ -737,8 +738,10 @@ container_padding_size_get(Evas_Object *obj, int *tl_w, int *tl_h, int *br_w, in
    return true;
 }
 
-#undef MY_CLASS_NAME
-#undef CONTAINER_DATA_GET
-#undef CONTAINER_DATA_GET_OR_RETURN_VAL
-#undef H_WIGTH
-#undef H_HEIGHT
+void
+container_protrusion_func_set(Evas_Object *obj, Object_Protrusion_Get func)
+{
+   CONTAINER_DATA_GET(obj, sd);
+
+   sd->func = func;
+}

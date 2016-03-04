@@ -303,7 +303,7 @@ groupview_edit_object_part_item_selected_set(Evas_Object *obj,
  *
  * @ingroup Groupview
  */
-const Groupview_Geom *
+Groupview_Geom *
 groupview_protrusion_get(Evas_Object *obj);
 
 #endif /* GROUPVIEW_H */

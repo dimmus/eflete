@@ -37,12 +37,15 @@
  */
 
 #include "eflete.h"
+#include "groupview.h"
 
 struct _Container_Geom {
    int x, y, w, h, dx, dy;
 };
 
 typedef struct _Container_Geom Container_Geom;
+
+typedef Groupview_Geom * (*Object_Protrusion_Get)(Evas_Object *obj);
 
 /**
  * Add new Container object to parent object.
@@ -280,5 +283,7 @@ container_padding_size_set(Evas_Object *obj, int tl_w, int tl_h, int rb_w, int r
 Eina_Bool
 container_padding_size_get(Evas_Object *obj, int *tl_w, int *tl_h, int *br_w, int *br_h);
 
+void
+container_protrusion_func_set(Evas_Object *obj, Object_Protrusion_Get func);
 
 #endif /* CONTAINER_H */
