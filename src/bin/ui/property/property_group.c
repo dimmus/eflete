@@ -52,6 +52,7 @@ struct _Property_Group_Data {
              Property_Attribute scale;
              Property_Attribute mouse_events;
              Property_Attribute repeat_events;
+             Property_Attribute clip_to;
         } part;
         Property_Attribute state;
         Property_Attribute item;
@@ -196,6 +197,7 @@ _subitems_get(Property_Attribute *pa)
          items = eina_list_append(items, &group_pd.items.part.scale);
          items = eina_list_append(items, &group_pd.items.part.mouse_events);
          items = eina_list_append(items, &group_pd.items.part.repeat_events);
+         items = eina_list_append(items, &group_pd.items.part.clip_to);
      }
    else
      {
@@ -226,6 +228,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_SCALE:
       case ATTRIBUTE_PART_MOUSE_EVENTS:
       case ATTRIBUTE_PART_REPEAT_EVENTS:
+      case ATTRIBUTE_PART_CLIP_TO:
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -240,6 +243,9 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
 {
    int int_val1;
    Eina_Bool bool_val1;
+   Eina_Stringshare *str_val1;
+   Eina_List *l;
+   Part *part;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -284,6 +290,21 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          bool_val1 = edje_edit_part_repeat_events_get(group_pd.group->edit_object, group_pd.part->name);
          elm_check_state_set(action->control, bool_val1);
          break;
+      case ATTRIBUTE_PART_CLIP_TO:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_part_clip_to_get(group_pd.group->edit_object, group_pd.part->name);
+         if (str_val1)
+           ewe_combobox_text_set(action->control, str_val1);
+         else
+           ewe_combobox_text_set(action->control, STR_NONE);
+         ewe_combobox_item_add(action->control, STR_NONE);
+         EINA_LIST_FOREACH(group_pd.group->parts, l, part)
+           {
+              if ((part->type == EDJE_PART_TYPE_RECTANGLE) && (part != group_pd.part))
+                ewe_combobox_item_add(action->control, part->name);
+           }
+         edje_edit_string_free(str_val1);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -310,7 +331,7 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
    switch (action->type.attribute)
      {
       case ATTRIBUTE_GROUP_NAME:
-         group_pd.history.format = _("group name changed from %s to %s");
+         group_pd.history.format = _("group name changed from \"%s\" to \"%s\"");
          VAL(str_val1) = eina_stringshare_add(eina_stringshare_add(group_pd.group->name));
          break;
       case ATTRIBUTE_GROUP_MIN_W:
@@ -330,7 +351,7 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          VAL(int_val1) = edje_edit_group_max_h_get(group_pd.group->edit_object);
          break;
       case ATTRIBUTE_PART_NAME:
-         group_pd.history.format = _("part name changed from %s to %s");
+         group_pd.history.format = _("part name changed from \"%s\" to \"%s\"");
          VAL(str_val1) = eina_stringshare_add(eina_stringshare_add(group_pd.part->name));
          break;
       case ATTRIBUTE_PART_TYPE:
@@ -344,6 +365,10 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_REPEAT_EVENTS:
          group_pd.history.format = _("repeat events %s");
+         break;
+      case ATTRIBUTE_PART_CLIP_TO:
+         group_pd.history.format = _("clip to changed from \"%s\" to \"%s\"");
+         VAL(str_val1) = edje_edit_part_clip_to_get(group_pd.group->edit_object, group_pd.part->name);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -360,6 +385,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
    double double_val1 = 0.0;
    Eina_Stringshare *str_val1 = NULL;
    Eina_Bool bool_val1 = false;;
+   Ewe_Combobox_Item *cb_item = NULL;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -377,6 +403,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_CONTROL_CHECK:
          bool_val1 = elm_check_state_get(action->control);
          break;
+      case PROPERTY_CONTROL_COMBOBOX:
+         TODO("change this after migrating to elm_combobox");
+         cb_item = ewe_combobox_select_item_get(action->control);
       default:
          break;
      }
@@ -419,6 +448,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_REPEAT_EVENTS:
          editor_part_repeat_events_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, bool_val1);
          break;
+      case ATTRIBUTE_PART_CLIP_TO:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         editor_part_clip_to_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, str_val1);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -453,6 +488,12 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.str_val1,
                                        group_pd.history.new.str_val1);
+         break;
+      case ATTRIBUTE_PART_CLIP_TO:
+         CHECK_VAL(str_val1);
+         msg = eina_stringshare_printf(group_pd.history.format,
+                                       (group_pd.history.old.str_val1) ? group_pd.history.old.str_val1 : STR_NONE,
+                                       (group_pd.history.new.str_val1) ? group_pd.history.new.str_val1 : STR_NONE);
          break;
       case ATTRIBUTE_GROUP_MIN_W:
       case ATTRIBUTE_GROUP_MIN_H:
@@ -584,6 +625,9 @@ _init_part_block()
 
    group_pd.items.part.repeat_events.name = "repeat events";
    _action1(&group_pd.items.part.repeat_events, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_REPEAT_EVENTS);
+
+   group_pd.items.part.clip_to.name = "clip to";
+   _action1(&group_pd.items.part.clip_to, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_CLIP_TO);
 }
 
 /* public */

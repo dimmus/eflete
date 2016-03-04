@@ -196,4 +196,8 @@ property_entry_set(Evas_Object *entry, const char *text)
 #pragma GCC poison elm_entry_entry_get
 #pragma GCC poison elm_entry_entry_set
 
+/* string constants */
+
+#define STR_NONE "None"
+
 #endif /* PROPERTY_PRIVATE_H */
