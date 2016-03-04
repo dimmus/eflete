@@ -53,6 +53,7 @@ struct _Property_Group_Data {
              Property_Attribute mouse_events;
              Property_Attribute repeat_events;
              Property_Attribute clip_to;
+             Property_Attribute ignore_flags;
         } part;
         Property_Attribute state;
         Property_Attribute item;
@@ -70,6 +71,11 @@ typedef struct _Property_Group_Update_Info Property_Group_Update_Info;
 
 /* array to find item by Attribute */
 static Property_Group_Update_Info attribute_map[ATTRIBUTE_LAST];
+
+/* mapping enums to strings */
+static const char *ignore_flags_strings[] = { STR_NONE,
+                                              "On hold",
+                                              NULL};
 
 /* global callbacks */
 static void
@@ -198,6 +204,7 @@ _subitems_get(Property_Attribute *pa)
          items = eina_list_append(items, &group_pd.items.part.mouse_events);
          items = eina_list_append(items, &group_pd.items.part.repeat_events);
          items = eina_list_append(items, &group_pd.items.part.clip_to);
+         items = eina_list_append(items, &group_pd.items.part.ignore_flags);
      }
    else
      {
@@ -205,6 +212,21 @@ _subitems_get(Property_Attribute *pa)
         abort();
      }
    return items;
+}
+
+static void
+_fill_combobox_with_enum(Evas_Object *control, const char **array)
+{
+   int i = 0;
+
+   assert(control != NULL);
+   assert(array != NULL);
+
+   while (array[i] != NULL)
+     {
+        ewe_combobox_item_add(control, array[i]);
+        ++i;
+     }
 }
 
 static void
@@ -229,6 +251,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_MOUSE_EVENTS:
       case ATTRIBUTE_PART_REPEAT_EVENTS:
       case ATTRIBUTE_PART_CLIP_TO:
+         break;
+      case ATTRIBUTE_PART_IGNORE_FLAGS:
+         _fill_combobox_with_enum(action->control, ignore_flags_strings);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -305,6 +330,10 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
            }
          edje_edit_string_free(str_val1);
          break;
+      case ATTRIBUTE_PART_IGNORE_FLAGS:
+         ewe_combobox_select_item_set(action->control,
+           (int) edje_edit_part_ignore_flags_get(group_pd.group->edit_object, group_pd.part->name));
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -327,12 +356,15 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       empty changes (i.e. from 0 to 0) */
 #define VAL(NAME) \
  group_pd.history.new.NAME = group_pd.history.old.NAME
+#define STR_VAL(NAME, VAL) \
+ group_pd.history.new.NAME = VAL; \
+ group_pd.history.old.NAME = eina_stringshare_add(group_pd.history.new.NAME);
 
    switch (action->type.attribute)
      {
       case ATTRIBUTE_GROUP_NAME:
          group_pd.history.format = _("group name changed from \"%s\" to \"%s\"");
-         VAL(str_val1) = eina_stringshare_add(eina_stringshare_add(group_pd.group->name));
+         STR_VAL(str_val1, eina_stringshare_add(group_pd.group->name));
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          group_pd.history.format = _("group.min_w changed from %d to %d");
@@ -352,7 +384,7 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_NAME:
          group_pd.history.format = _("part name changed from \"%s\" to \"%s\"");
-         VAL(str_val1) = eina_stringshare_add(eina_stringshare_add(group_pd.part->name));
+         STR_VAL(str_val1, eina_stringshare_add(group_pd.part->name));
          break;
       case ATTRIBUTE_PART_TYPE:
          /* part type can't be changed */
@@ -368,7 +400,13 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_CLIP_TO:
          group_pd.history.format = _("clip to changed from \"%s\" to \"%s\"");
-         VAL(str_val1) = edje_edit_part_clip_to_get(group_pd.group->edit_object, group_pd.part->name);
+         STR_VAL(str_val1, edje_edit_part_clip_to_get(group_pd.group->edit_object, group_pd.part->name));
+         break;
+      case ATTRIBUTE_PART_IGNORE_FLAGS:
+         group_pd.history.format = _("ignore_flags changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(
+            ignore_flags_strings[edje_edit_part_ignore_flags_get(group_pd.group->edit_object,
+                                                                 group_pd.part->name)]));
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -454,6 +492,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
+      case ATTRIBUTE_PART_IGNORE_FLAGS:
+         str_val1 = eina_stringshare_add(cb_item->title);
+         editor_part_ignore_flags_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, cb_item->index);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -490,6 +534,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
                                        group_pd.history.new.str_val1);
          break;
       case ATTRIBUTE_PART_CLIP_TO:
+      case ATTRIBUTE_PART_IGNORE_FLAGS:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (group_pd.history.old.str_val1) ? group_pd.history.old.str_val1 : STR_NONE,
@@ -628,6 +673,9 @@ _init_part_block()
 
    group_pd.items.part.clip_to.name = "clip to";
    _action1(&group_pd.items.part.clip_to, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_CLIP_TO);
+
+   group_pd.items.part.ignore_flags.name = "ignore flags";
+   _action1(&group_pd.items.part.ignore_flags, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_IGNORE_FLAGS);
 }
 
 /* public */
