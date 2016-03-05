@@ -87,7 +87,7 @@ struct _Workspace_Data
    struct {
       Evas_Object *obj;
       double size;
-   };
+   } code;
    Workspace_Mode mode;
    Group *group;
 };
