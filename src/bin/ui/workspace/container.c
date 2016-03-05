@@ -252,6 +252,29 @@ _container_smart_hide(Evas_Object *o)
 }
 
 static void
+_container_smart_move(Evas_Object *o,
+                      Evas_Coord x,
+                      Evas_Coord y)
+{
+   Evas_Coord ox, oy;
+   Groupview_Geom *geom = NULL;
+
+   evas_object_geometry_get(o, &ox, &oy, NULL, NULL);
+   if ((ox == x) && (oy == y)) return;
+
+   CONTAINER_DATA_GET(o, sd)
+
+   if (sd->func) geom = sd->func(sd->content);
+   sd->size.x = ox + BASE_PADDING + sd->pad_left_top.w + (geom ? geom->x : 0);
+   sd->size.y = oy + BASE_PADDING + sd->pad_left_top.h + (geom ? geom->y : 0);
+
+   evas_object_move(sd->container, sd->size.x, sd->size.y);
+   evas_object_move(sd->handler_BR.obj, sd->size.x + sd->size.w, sd->size.y + sd->size.h);
+
+   evas_object_smart_callback_call(o, SIG_CHANGED, &sd->size);
+}
+
+static void
 _container_smart_resize(Evas_Object *o,
                         Evas_Coord w,
                         Evas_Coord h)
@@ -338,6 +361,7 @@ _container_smart_set_user(Evas_Smart_Class *sc)
    sc->hide = _container_smart_hide;
 
    /* clipped smart object has no hook on resizes or calculations */
+   sc->move = _container_smart_move;
    sc->resize = _container_smart_resize;
    sc->calculate = _container_smart_calculate;
 }
