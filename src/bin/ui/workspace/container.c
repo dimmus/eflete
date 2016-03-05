@@ -29,7 +29,6 @@
 typedef struct _Container_Smart_Data Container_Smart_Data;
 
 static const char SIG_CHANGED[] = "container,changed";
-static const char SIG_HANDLER_TL_MOVE[] = "handler,TL,moved";
 static const char SIG_HANDLER_BR_MOVE[] = "handler,BR,moved";
 
 static const char TEXT_TOOLTIP[] = "eflete.size.tooltip";
@@ -37,7 +36,6 @@ static const char SWALLOW[] = "eflete.swallow.container";
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_CHANGED, "(iiii)"},
-   {SIG_HANDLER_TL_MOVE, "(ii)"},
    {SIG_HANDLER_BR_MOVE, "(ii)"},
    {NULL, NULL}
 };
@@ -69,15 +67,10 @@ struct _Container_Smart_Data
       Evas_Coord h;
    } pad_right_bottom;
    Container_Geom size;
-   struct {
-      Evas_Object *obj;
-      Evas_Coord w, h;
-   } handler_TL;
    struct{
       Evas_Object *obj;
       Evas_Coord w, h;
    } handler_BR;
-   Eina_Bool handler_TL_pressed : 1;
    Eina_Bool handler_BR_pressed : 1;
    Eina_Stringshare *style;
    Evas_Coord downx;
@@ -98,22 +91,6 @@ EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _container,
                         evas_object_smart_clipped_class_get, _smart_callbacks);
 
 static void
-_mouse_down_hTL_cb(void *data,
-                   Evas *e __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info)
-{
-   Evas_Event_Mouse_Down *ev = event_info;
-   if (ev->button != 1) return;
-
-   CONTAINER_DATA_GET(data, sd)
-   sd->downx = ev->canvas.x;
-   sd->downy = ev->canvas.y;
-   sd->handler_TL_pressed = true;
-   edje_object_signal_emit(sd->container, "tooltip,show", "eflete");
-}
-
-static void
 _mouse_down_hRB_cb(void *data,
                    Evas *e __UNUSED__,
                    Evas_Object *obj __UNUSED__,
@@ -130,17 +107,6 @@ _mouse_down_hRB_cb(void *data,
 }
 
 static void
-_mouse_up_hTL_cb(void *data,
-                 Evas *e __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   CONTAINER_DATA_GET(data, sd)
-   sd->handler_TL_pressed = false;
-   edje_object_signal_emit(sd->container, "tooltip,hide", "eflete");
-}
-
-static void
 _mouse_up_hRB_cb(void *data,
                  Evas *e __UNUSED__,
                  Evas_Object *obj __UNUSED__,
@@ -149,27 +115,6 @@ _mouse_up_hRB_cb(void *data,
    CONTAINER_DATA_GET(data, sd)
    sd->handler_BR_pressed = false;
    edje_object_signal_emit(sd->container, "tooltip,hide", "eflete");
-}
-
-static void
-_mouse_move_hTL_cb(void *data,
-                   Evas *e __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info)
-{
-   Evas_Object *o = data;
-   Evas_Event_Mouse_Move *ev = event_info;
-
-   CONTAINER_DATA_GET(o, sd)
-   if (!sd->handler_TL_pressed) return;
-
-   sd->dx += ev->cur.canvas.x - sd->downx;
-   sd->dy += ev->cur.canvas.y - sd->downy;
-   sd->downx = ev->cur.canvas.x;
-   sd->downy = ev->cur.canvas.y;
-
-   evas_object_smart_callback_call(o, SIG_HANDLER_TL_MOVE, &sd->size);
-   evas_object_smart_changed(o);
 }
 
 static void
@@ -212,16 +157,6 @@ _style_set(Evas_Object *o, const char *style)
              abort();
           }
      }
-   GROUP_NAME("handler_TL", style)
-   if (!edje_object_file_set(sd->handler_TL.obj, EFLETE_EDJ, group))
-     {
-        GROUP_NAME("handler_TL", "default")
-        if (!edje_object_file_set(sd->handler_TL.obj, EFLETE_EDJ, group))
-          {
-             ERR("Couldn't load default style for top-left handler of container.");
-             abort();
-          }
-     }
    GROUP_NAME("handler_BR", style)
    if (!edje_object_file_set(sd->handler_BR.obj, EFLETE_EDJ, group))
      {
@@ -249,16 +184,6 @@ _container_smart_add(Evas_Object *o)
    priv->e = evas_object_evas_get(o);
    priv->container = edje_object_add(priv->e);
 
-   priv->handler_TL.obj = edje_object_add(priv->e);
-   priv->handler_TL.w = priv->handler_TL.h = 5;
-   evas_object_event_callback_add(priv->handler_TL.obj, EVAS_CALLBACK_MOUSE_DOWN,
-                                  _mouse_down_hTL_cb, o);
-   evas_object_event_callback_add(priv->handler_TL.obj, EVAS_CALLBACK_MOUSE_UP,
-                                  _mouse_up_hTL_cb, o);
-   evas_object_event_callback_add(priv->handler_TL.obj, EVAS_CALLBACK_MOUSE_MOVE,
-                                  _mouse_move_hTL_cb, o);
-   cursor_type_set(priv->handler_TL.obj, CURSOR_SIZING);
-
    priv->handler_BR.obj = edje_object_add(priv->e);
    priv->handler_BR.w = priv->handler_BR.h = 5;
    evas_object_event_callback_add(priv->handler_BR.obj, EVAS_CALLBACK_MOUSE_DOWN,
@@ -285,12 +210,10 @@ _container_smart_add(Evas_Object *o)
    priv->size.y = 0;
    priv->size.w = 0;
    priv->size.h = 0;
-   priv->handler_TL_pressed = false;
    priv->handler_BR_pressed = false;
 
    evas_object_smart_member_add(priv->bg, o);
    evas_object_smart_member_add(priv->container, o);
-   evas_object_smart_member_add(priv->handler_TL.obj, o);
    evas_object_smart_member_add(priv->handler_BR.obj, o);
 
    _style_set(o, "default");
@@ -311,7 +234,6 @@ _container_smart_show(Evas_Object *o)
 {
    CONTAINER_DATA_GET(o, sd);
 
-   if (sd->handler_TL.obj) evas_object_show(sd->handler_TL.obj);
    if (sd->handler_BR.obj) evas_object_show(sd->handler_BR.obj);
    if (sd->bg) evas_object_show(sd->bg);
 
@@ -324,7 +246,6 @@ _container_smart_hide(Evas_Object *o)
 {
    CONTAINER_DATA_GET(o, sd)
 
-   if (sd->handler_TL.obj) evas_object_hide(sd->handler_TL.obj);
    if (sd->handler_BR.obj) evas_object_hide(sd->handler_BR.obj);
    if (sd->bg) evas_object_hide(sd->bg);
 
@@ -438,14 +359,10 @@ container_add(Evas_Object *parent)
 }
 
 Eina_Bool
-container_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hrb_w, int hrb_h)
+container_handler_size_set(Evas_Object *obj, int hrb_w, int hrb_h)
 {
    CONTAINER_DATA_GET(obj, sd);
 
-   if (htl_w < 5) sd->handler_TL.w = 5;
-   else sd->handler_TL.w = htl_w;
-   if (htl_h < 5) sd->handler_TL.h = 5;
-   else sd->handler_TL.h = htl_h;
    if (hrb_w < 5) sd->handler_BR.w = 5;
    else sd->handler_BR.w = hrb_w;
    if (hrb_h < 5) sd->handler_BR.h = 5;
@@ -455,12 +372,10 @@ container_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hrb_w, in
 }
 
 Eina_Bool
-container_handler_size_get(Evas_Object *obj, int *htl_w, int *htl_h, int *hbr_w, int *hbr_h)
+container_handler_size_get(Evas_Object *obj, int *hbr_w, int *hbr_h)
 {
    CONTAINER_DATA_GET(obj, sd);
 
-   if (htl_w) *htl_w = sd->handler_TL.w;
-   if (htl_h) *htl_h = sd->handler_TL.h;
    if (hbr_w) *hbr_w = sd->handler_BR.w;
    if (hbr_h) *hbr_h = sd->handler_BR.h;
 
@@ -587,8 +502,6 @@ container_border_hide(Evas_Object *obj)
 {
    CONTAINER_DATA_GET(obj, sd);
 
-   if (sd->handler_TL.obj)
-     evas_object_hide(sd->handler_TL.obj);
    if (sd->handler_BR.obj)
      evas_object_hide(sd->handler_BR.obj);
    if (sd->container)
@@ -602,8 +515,6 @@ container_border_show(Evas_Object *obj)
 {
    CONTAINER_DATA_GET(obj, sd)
 
-   if (sd->handler_TL.obj)
-     evas_object_show(sd->handler_TL.obj);
    if (sd->handler_BR.obj)
      evas_object_show(sd->handler_BR.obj);
    if (sd->container)

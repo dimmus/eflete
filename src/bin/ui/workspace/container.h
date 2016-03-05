@@ -64,12 +64,10 @@ container_add(Evas_Object *parent);
  * Set the size of Container handlers.
  *
  * @param obj The Container object,
- * @param htl_w wigth of top-left handler,
- * @param htl_h height of top-left handler,
  * @param hbr_w wigth of bottom-right handler,
  * @param hbr_h height of bottom-tight handler.
  *
- * @note if trying to set the htl_w, htl_h, hbr_w, hbr_h < 0, will be set 5.
+ * @note if trying to set the hbr_w, hbr_h < 0, will be set 5.
  *       The default handlers size is 5 (wight/hight)
  *
  * @return EINA_TRUE on success or EINA_FALSE, on errors.
@@ -77,14 +75,12 @@ container_add(Evas_Object *parent);
  * @ingroup Container
  */
 Eina_Bool
-container_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hrb_w, int hrb_h);
+container_handler_size_set(Evas_Object *obj, int hrb_w, int hrb_h);
 
 /**
  * Get the size of the Container handlers.
  *
  * @param obj The Container object,
- * @param htl_w pointer of int width of top-left handler,
- * @param htl_h pointer of int height of top-left handler,
  * @param hbr_w pointer of int width of bottom-right handler,
  * @param hbr_h pointer of int height of bottom-tight handler.
  *
@@ -93,7 +89,7 @@ container_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hrb_w, in
  * @ingroup Container
  */
 Eina_Bool
-container_handler_size_get(Evas_Object *obj, int *htl_w, int *htl_h, int *hbr_w, int *hbr_h);
+container_handler_size_get(Evas_Object *obj, int *hbr_w, int *hbr_h);
 
 /**
  * Set the minimal size of container.
