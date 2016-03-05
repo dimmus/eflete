@@ -23,8 +23,6 @@
 #define MY_CLASS_NAME "Container"
 
 #define BASE_PADDING 100
-#define H_WIGTH (sd->handler_TL.w + sd->handler_BR.w + (BASE_PADDING * 2))
-#define H_HEIGHT (sd->handler_TL.h + sd->handler_BR.h + (BASE_PADDING * 2))
 
 typedef struct _Container_Smart_Data Container_Smart_Data;
 
