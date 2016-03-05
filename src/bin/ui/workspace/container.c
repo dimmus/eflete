@@ -44,7 +44,6 @@ struct _Container_Smart_Data
    Evas *e;
    Evas_Object *obj;
    Evas_Object *container;
-   Evas_Object *bg; /* background is important for working in scroller. */
    Evas_Object *content;
    /* Minimal and maximum size of the container,
       i.e size of the edie_edit object */
@@ -192,9 +191,6 @@ _container_smart_add(Evas_Object *o)
                                   _mouse_move_hBR_cb, o);
    cursor_type_set(priv->handler_BR.obj, CURSOR_SIZING);
 
-   priv->bg = evas_object_rectangle_add(priv->e);
-   evas_object_color_set(priv->bg, 0, 0, 0, 0);
-
    priv->obj = o;
    priv->con_size_min.w = 0;
    priv->con_size_min.h = 0;
@@ -210,7 +206,6 @@ _container_smart_add(Evas_Object *o)
    priv->size.h = 0;
    priv->handler_BR_pressed = false;
 
-   evas_object_smart_member_add(priv->bg, o);
    evas_object_smart_member_add(priv->container, o);
    evas_object_smart_member_add(priv->handler_BR.obj, o);
 
@@ -234,7 +229,6 @@ _container_smart_show(Evas_Object *o)
    CONTAINER_DATA_GET(o, sd);
 
    if (sd->handler_BR.obj) evas_object_show(sd->handler_BR.obj);
-   if (sd->bg) evas_object_show(sd->bg);
 
    evas_object_show(sd->container);
    _container_parent_sc->show(o);
@@ -246,7 +240,6 @@ _container_smart_hide(Evas_Object *o)
    CONTAINER_DATA_GET(o, sd)
 
    if (sd->handler_BR.obj) evas_object_hide(sd->handler_BR.obj);
-   if (sd->bg) evas_object_hide(sd->bg);
 
    evas_object_hide(sd->container);
    _container_parent_sc->hide(o);
@@ -298,9 +291,6 @@ _container_smart_calculate(Evas_Object *o)
 
    CONTAINER_DATA_GET(o, sd)
    evas_object_geometry_get(o, &x, &y, &w, &h);
-
-   evas_object_move(sd->bg, x, y);
-   evas_object_resize(sd->bg, w, h);
 
    /* 1. calculate the container size */
    sd->size.w += sd->dx;
