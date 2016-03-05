@@ -275,8 +275,8 @@ _container_smart_add(Evas_Object *o)
    priv->obj = o;
    priv->con_size_min.w = 0;
    priv->con_size_min.h = 0;
-   priv->con_size_max.w = 0;
-   priv->con_size_max.h = 0;
+   priv->con_size_max.w = -1;
+   priv->con_size_max.h = -1;
    priv->pad_left_top.w = 0;
    priv->pad_left_top.h = 0;
    priv->pad_right_bottom.w = 0;
@@ -489,14 +489,12 @@ container_max_size_set(Evas_Object *obj, int w, int h)
 {
    CONTAINER_DATA_GET(obj, sd);
 
-   if (w < 0) sd->con_size_max.w = 0;
-   else sd->con_size_max.w = w;
-   if (h < 0) sd->con_size_max.h = 0;
-   else sd->con_size_max.h = h;
+   sd->con_size_max.w = w;
+   sd->con_size_max.h = h;
 
-   if ((w != 0) && (sd->size.w > w))
+   if ((w > -1) && (sd->size.w > w))
      sd->size.w = w;
-   if ((h != 0) && (sd->size.h > h))
+   if ((h > -1) && (sd->size.h > h))
      sd->size.h = h;
 
    evas_object_smart_changed(obj);
@@ -511,7 +509,7 @@ container_container_size_set(Evas_Object *obj, int w, int h)
    if (w <= sd->con_size_min.w) sd->size.w = sd->con_size_min.w;
    else
      {
-        if ((sd->con_size_max.w != 0) && (w > sd->con_size_max.w))
+        if ((sd->con_size_max.w > -1) && (w > sd->con_size_max.w))
           sd->size.w = sd->con_size_max.w;
         else sd->size.w = w;
      }
@@ -519,7 +517,7 @@ container_container_size_set(Evas_Object *obj, int w, int h)
    if (h <= sd->con_size_min.h) sd->size.h = sd->con_size_min.h;
    else
      {
-        if ((sd->con_size_max.h != 0) && (h > sd->con_size_max.h))
+        if ((sd->con_size_max.h > -1) && (h > sd->con_size_max.h))
           sd->size.h = sd->con_size_max.h;
         else sd->size.h = h;
      }
