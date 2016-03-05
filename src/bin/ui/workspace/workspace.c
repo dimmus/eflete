@@ -374,6 +374,9 @@ workspace_add(Evas_Object *parent, Group *group)
    container_content_set(wd->normal.container, wd->normal.content);
    container_protrusion_func_set(wd->normal.container, groupview_protrusion_get);
 
+   wd->group_navi = group_navigator_add(wd->panes, group);
+   elm_object_part_content_set(wd->panes, "right", wd->group_navi);
+
    wd->group = group;
    wd->mode = MODE_NORMAL;
 
