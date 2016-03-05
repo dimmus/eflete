@@ -295,58 +295,58 @@ _container_smart_calculate(Evas_Object *o)
    Groupview_Geom *geom = NULL;
    char buff[16];
 
-   CONTAINER_DATA_GET(o, priv)
+   CONTAINER_DATA_GET(o, sd)
    evas_object_geometry_get(o, &x, &y, &w, &h);
 
-   evas_object_move(priv->bg, x, y);
-   evas_object_resize(priv->bg, w, h);
+   evas_object_move(sd->bg, x, y);
+   evas_object_resize(sd->bg, w, h);
 
    /* 1. calculate the container size */
-   priv->size.w += priv->dx;
-   priv->size.h += priv->dy;
+   sd->size.w += sd->dx;
+   sd->size.h += sd->dy;
 
    /* check the boundary size values */
-   if (priv->size.w < 0) priv->size.w = 0;
-   if (priv->size.h < 0) priv->size.h = 0;
+   if (sd->size.w < 0) sd->size.w = 0;
+   if (sd->size.h < 0) sd->size.h = 0;
 
-   if ((priv->con_size_min.w > 0) && (priv->size.w < priv->con_size_min.w))
-     priv->size.w = priv->con_size_min.w;
-   if ((priv->con_size_min.h > 0) && (priv->size.h < priv->con_size_min.h))
-     priv->size.h = priv->con_size_min.h;
+   if ((sd->con_size_min.w > 0) && (sd->size.w < sd->con_size_min.w))
+     sd->size.w = sd->con_size_min.w;
+   if ((sd->con_size_min.h > 0) && (sd->size.h < sd->con_size_min.h))
+     sd->size.h = sd->con_size_min.h;
 
-   if ((priv->con_size_max.w > -1) && (priv->size.w > priv->con_size_max.w))
-     priv->size.w = priv->con_size_max.w;
-   if ((priv->con_size_max.h > -1) && (priv->size.h > priv->con_size_max.h))
-     priv->size.h = priv->con_size_max.h;
+   if ((sd->con_size_max.w > -1) && (sd->size.w > sd->con_size_max.w))
+     sd->size.w = sd->con_size_max.w;
+   if ((sd->con_size_max.h > -1) && (sd->size.h > sd->con_size_max.h))
+     sd->size.h = sd->con_size_max.h;
 
-   evas_object_resize(priv->container, priv->size.w, priv->size.h);
+   evas_object_resize(sd->container, sd->size.w, sd->size.h);
 
    /* 2. get the content protrusion */
-   if (priv->func) geom = priv->func(priv->content);
+   if (sd->func) geom = sd->func(sd->content);
 
    /* 3. calculate the container position relative to content protrusion */
-   priv->size.x = x + BASE_PADDING + priv->pad_left_top.w + (geom ? geom->x : 0);
-   priv->size.y = y + BASE_PADDING + priv->pad_left_top.h + (geom ? geom->y : 0);
-   evas_object_move(priv->container, priv->size.x, priv->size.y);
+   sd->size.x = x + BASE_PADDING + sd->pad_left_top.w + (geom ? geom->x : 0);
+   sd->size.y = y + BASE_PADDING + sd->pad_left_top.h + (geom ? geom->y : 0);
+   evas_object_move(sd->container, sd->size.x, sd->size.y);
 
    /* 4. move the handler */
-   hrb_x = priv->size.x + priv->size.w;
-   hrb_y = priv->size.y + priv->size.h;
-   evas_object_resize(priv->handler_BR.obj, priv->handler_BR.w, priv->handler_BR.h);
-   evas_object_move(priv->handler_BR.obj, hrb_x, hrb_y);
+   hrb_x = sd->size.x + sd->size.w;
+   hrb_y = sd->size.y + sd->size.h;
+   evas_object_resize(sd->handler_BR.obj, sd->handler_BR.w, sd->handler_BR.h);
+   evas_object_move(sd->handler_BR.obj, hrb_x, hrb_y);
 
    /* 5. calculate the full object size */
-   cw = (hrb_x + priv->handler_BR.w + (geom ? geom->w : 0) + BASE_PADDING) - x;
-   ch = (hrb_y + priv->handler_BR.h + (geom ? geom->h : 0) + BASE_PADDING) - y;
+   cw = (hrb_x + sd->handler_BR.w + (geom ? geom->w : 0) + BASE_PADDING) - x;
+   ch = (hrb_y + sd->handler_BR.h + (geom ? geom->h : 0) + BASE_PADDING) - y;
    evas_object_size_hint_min_set(o, cw, ch);
 
-   snprintf(buff, 16, "%i %i", priv->size.w, priv->size.h);
-   edje_object_part_text_set(priv->container, TEXT_TOOLTIP, buff);
+   snprintf(buff, 16, "%i %i", sd->size.w, sd->size.h);
+   edje_object_part_text_set(sd->container, TEXT_TOOLTIP, buff);
 
-   evas_object_smart_callback_call(o, SIG_CHANGED, &priv->size);
+   evas_object_smart_callback_call(o, SIG_CHANGED, &sd->size);
 
-   priv->dx = 0;
-   priv->dy = 0;
+   sd->dx = 0;
+   sd->dy = 0;
 }
 
 /* this need for macro EVAS_SMART_SUBCLASS_NEW */
