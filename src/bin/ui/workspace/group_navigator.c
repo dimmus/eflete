@@ -1704,16 +1704,16 @@ _on_btn_up_clicked(void *data,
 }
 
 Evas_Object *
-group_navigator_add(Group *group)
+group_navigator_add(Evas_Object *parent, Group *group)
 {
    Evas_Object *icon;
    Part_List *pl;
 
    assert(group != NULL);
-   assert(ap.win != NULL);
+   assert(parent != NULL);
 
    pl = mem_calloc(1, sizeof(Part_List));
-   pl->layout = elm_layout_add(ap.win);
+   pl->layout = elm_layout_add(parent);
    elm_layout_theme_set(pl->layout, "layout", "navigator", "default");
    evas_object_show(pl->layout);
 
