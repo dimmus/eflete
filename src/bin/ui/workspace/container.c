@@ -223,6 +223,7 @@ _container_smart_del(Evas_Object *o)
    CONTAINER_DATA_GET(o, sd)
 
    eina_stringshare_del(sd->style);
+   evas_object_del(sd->content);
 
    _container_parent_sc->del(o);
 }
