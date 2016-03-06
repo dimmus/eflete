@@ -57,7 +57,7 @@ _groupview_smart_add(Evas_Object *o)
    _groupview_parent_sc->add(o);
 
    priv->event = evas_object_rectangle_add(evas_object_evas_get(o));
-   evas_object_color_set(priv->event, 255, 0, 0, 50);
+   evas_object_color_set(priv->event, 0, 0, 0, 0);
 
    evas_object_event_callback_add(priv->event, EVAS_CALLBACK_MOUSE_UP, _unselect_part, o);
 
