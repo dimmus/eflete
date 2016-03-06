@@ -330,9 +330,30 @@ _part_select(void *data,
 
    assert(MODE_NORMAL == wd->mode);
 
-   part_obj = groupview_edit_object_part_draw_get(wd->normal.content, part->name);
-   highlight_object_follow(wd->normal.hilight, part_obj);
-   evas_object_show(wd->normal.hilight);
+   if (part)
+     {
+        part_obj = groupview_edit_object_part_draw_get(wd->normal.content, part->name);
+        highlight_object_follow(wd->normal.hilight, part_obj);
+        evas_object_show(wd->normal.hilight);
+     }
+   else
+     {
+        highlight_object_unfollow(wd->normal.hilight);
+        evas_object_hide(wd->normal.hilight);
+     }
+}
+
+static void
+_groupview_clicked(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Workspace_Data *wd = data;
+   Part *part = event_info;
+
+   assert(MODE_NORMAL == wd->mode);
+
+   group_navigator_part_select(wd->group_navi, part ? part : NULL);
 }
 
 Evas_Object *
@@ -397,6 +418,7 @@ workspace_add(Evas_Object *parent, Group *group)
    wd->normal.content = groupview_add(wd->normal.scroller, group);
    container_content_set(wd->normal.container, wd->normal.content);
    container_protrusion_func_set(wd->normal.container, groupview_protrusion_get);
+   evas_object_smart_callback_add(wd->normal.content, SIGNAL_GROUPVIEW_CLICKED, _groupview_clicked, wd);
 
    wd->group_navi = group_navigator_add(wd->panes, group);
    elm_object_part_content_set(wd->panes, "right", wd->group_navi);
