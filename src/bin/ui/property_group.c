@@ -596,13 +596,6 @@ _on_part_selected(void *data,
    if (part->current_item_name)
      _ui_property_part_item_set(property, part);
 }
-static void
-_on_part_unselected(void *data,
-                    Evas_Object *obj,
-                    void *event_info __UNUSED__)
-{
-   _on_part_selected(data, obj, NULL);
-}
 
 static void
 _on_part_state_selected(void *data,
@@ -1123,7 +1116,6 @@ ui_property_group_add(Evas_Object *parent)
 
    /* register global callbacks */
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_SELECTED, _on_part_selected, pd->scroller);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PART_UNSELECTED, _on_part_unselected, pd->scroller);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_STATE_SELECTED, _on_part_state_selected, pd->scroller);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROGRAM_SELECTED, _on_program_selected, pd->scroller);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROGRAM_UNSELECTED, _on_program_unselected, pd->scroller);
