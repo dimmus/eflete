@@ -459,7 +459,6 @@ _contracted_cb(void *data __UNUSED__,
 static void
 _unselect_part(Part_List *pl)
 {
-   Part *part;
    Elm_Object_Item *glit_part;
 
    assert(pl != NULL);
@@ -467,7 +466,6 @@ _unselect_part(Part_List *pl)
 
    pl->group->current_part->current_item_name = NULL;
    pl->group->current_part = NULL;
-   part = elm_object_item_data_get(pl->selected_part_item);
    glit_part = pl->selected_part_item;
    pl->selected_part_item = NULL;
    elm_genlist_item_fields_update(glit_part, "unselected", ELM_GENLIST_ITEM_FIELD_STATE);
@@ -476,7 +474,7 @@ _unselect_part(Part_List *pl)
    elm_object_disabled_set(pl->btn_del, true);
    elm_object_disabled_set(pl->btn_down, true);
    elm_object_disabled_set(pl->btn_up, true);
-   evas_object_smart_callback_call(ap.win, SIGNAL_PART_UNSELECTED, (void *)part);
+   evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, NULL);
 }
 
 static void
@@ -548,8 +546,7 @@ _selected_cb(void *data,
              part->current_item_name = item_name;
              pl->group->current_part = part;
              elm_genlist_item_fields_update(glit_part, "selected", ELM_GENLIST_ITEM_FIELD_STATE);
-             evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED,
-                                             (void *)part);
+             evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, part);
           }
         elm_object_item_disabled_set(pl->add_state_menu_item, false);
         if ((part->type == EDJE_PART_TYPE_BOX) ||
