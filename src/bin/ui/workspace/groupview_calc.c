@@ -222,8 +222,8 @@ _part_select(void *data,
    Evas_Event_Mouse_Down *emd = (Evas_Event_Mouse_Down *)event_info;
 
    if (emd->button != 1) return;
-   evas_object_smart_callback_call(sd->obj, SIGNAL_GROUPEDIT_PART_SELECTED,
-                                  (void *)gp->part);
+   sd->selected = gp;
+   evas_object_smart_callback_call(sd->obj, SIGNAL_GROUPVIEW_CLICKED, gp->part);
 }
 
 static Evas_Object *

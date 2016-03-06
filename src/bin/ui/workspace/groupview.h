@@ -56,14 +56,7 @@ struct _Geom{
  *
  * @ingroup Groupview
  */
-#define SIGNAL_GROUPEDIT_PART_SELECTED "SIGNAL_GROUPEDIT_PART_SELECTED"
-/**
- * emited when part is unselected in groupview.
- * eventinfo - pointer to Part structure
- *
- * @ingroup Groupview
- */
-#define SIGNAL_GROUPEDIT_PART_UNSELECTED "SIGNAL_GROUPEDIT_PART_UNSELECTED"
+#define SIGNAL_GROUPVIEW_CLICKED "SIGNAL_GROUPVIEW_CLICKED"
 
 /**
  * Geometry of groupview part primitive.

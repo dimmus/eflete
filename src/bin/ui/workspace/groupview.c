@@ -38,12 +38,13 @@ _unselect_part(void *data,
 {
    Evas_Object *o = (Evas_Object *)data;
    Evas_Event_Mouse_Down *ev = event_info;
+
    GROUPVIEW_DATA_GET(o, sd)
 
    if (ev->button != 1) return;
    if (!sd->selected) return;
-   evas_object_smart_callback_call(o, SIGNAL_GROUPEDIT_PART_UNSELECTED,
-                                   (void *)sd->selected->part);
+
+   evas_object_smart_callback_call(o, SIGNAL_GROUPVIEW_CLICKED, NULL);
    sd->selected = NULL;
 }
 
@@ -56,10 +57,9 @@ _groupview_smart_add(Evas_Object *o)
    _groupview_parent_sc->add(o);
 
    priv->event = evas_object_rectangle_add(evas_object_evas_get(o));
-   evas_object_color_set(priv->event, 0, 0, 0, 0);
+   evas_object_color_set(priv->event, 255, 0, 0, 50);
 
-   evas_object_event_callback_add(priv->event, EVAS_CALLBACK_MOUSE_UP,
-                                  _unselect_part, o);
+   evas_object_event_callback_add(priv->event, EVAS_CALLBACK_MOUSE_UP, _unselect_part, o);
 
    priv->obj = o;
    priv->parts = NULL;
