@@ -341,6 +341,7 @@ _part_select(void *data,
         highlight_object_unfollow(wd->normal.hilight);
         evas_object_hide(wd->normal.hilight);
      }
+   evas_object_smart_callback_call(ap.win, SIGNAL_PART_SELECTED, part);
 }
 
 static void
