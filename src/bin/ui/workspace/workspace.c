@@ -73,6 +73,11 @@ struct _Workspace_Data
       Evas_Object *layout;
       Evas_Object *obj;
       struct {
+         Evas_Object *fill;
+         Evas_Object *z100;
+         Evas_Object *slider;
+      } zoom;
+      struct {
          Evas_Object *normal;
          Evas_Object *demo;
       } mode_switcher;
@@ -155,6 +160,33 @@ _workspace_del(void *data,
                void *event_info __UNUSED__)
 {
    ecore_job_add(_job_workspace_del, data);
+}
+
+static void
+_zoom_controls_add(Workspace_Data *wd)
+{
+   Elm_Object_Item *tb_it;
+   Evas_Object *img;
+
+   wd->toolbar.zoom.fill = elm_button_add(wd->toolbar.obj);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.fill);
+
+   wd->toolbar.zoom.z100 = elm_button_add(wd->toolbar.obj);
+   elm_object_text_set(wd->toolbar.zoom.z100, _("100%"));
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.z100);
+
+   wd->toolbar.zoom.slider = elm_slider_add(wd->toolbar.obj);
+   IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_smaller")
+   elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.icon", img);
+   IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_larger")
+   elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.end", img);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.slider);
+
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_toolbar_item_separator_set(tb_it, true);
 }
 
 static Evas_Object *
@@ -248,6 +280,7 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
 
    wd->normal.clipper = evas_object_rectangle_add(wd->normal.layout);
    elm_object_part_content_set(area->scroller, "elm.swallow.overlay", wd->normal.clipper);
+
    wd->normal.hilight = highlight_add(wd->normal.layout);
    evas_object_color_set(wd->normal.hilight, HIGHLIGHT_COLOR);
    evas_object_clip_set(wd->normal.hilight, wd->normal.clipper);
@@ -398,6 +431,9 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_toolbar_shrink_mode_set(wd->toolbar.obj, ELM_TOOLBAR_SHRINK_SCROLL);
    elm_toolbar_select_mode_set(wd->toolbar.obj, ELM_OBJECT_SELECT_MODE_ALWAYS);
    elm_layout_content_set(wd->toolbar.layout, "elm.swallow.toolbar", wd->toolbar.obj);
+
+   /* add to toolbar the zoom controls */
+   _zoom_controls_add(wd);
 
    /* add to toolbar modes switcher */
    wd->toolbar.mode_switcher.normal = _radio_switcher_add(wd, "radio_normal", _mode_cb, MODE_NORMAL, NULL);
