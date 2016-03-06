@@ -344,6 +344,19 @@ _part_select(void *data,
 }
 
 static void
+_part_visible(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info)
+{
+   Workspace_Data *wd = data;
+   Part *part = event_info;
+
+   assert(MODE_NORMAL == wd->mode);
+
+   groupview_part_visible_set(wd->normal.content, part);
+}
+
+static void
 _groupview_clicked(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info)
@@ -423,6 +436,7 @@ workspace_add(Evas_Object *parent, Group *group)
    wd->group_navi = group_navigator_add(wd->panes, group);
    elm_object_part_content_set(wd->panes, "right", wd->group_navi);
    evas_object_smart_callback_add(wd->group_navi, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, _part_select, wd);
+   evas_object_smart_callback_add(wd->group_navi, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED, _part_visible, wd);
 
    wd->group = group;
    wd->mode = MODE_NORMAL;
