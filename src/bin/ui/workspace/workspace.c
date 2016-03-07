@@ -671,71 +671,183 @@ workspace_object_area_visible_get(Evas_Object *obj __UNUSED__)
 }
 
 void
-workspace_part_add(Evas_Object *obj __UNUSED__, Eina_Stringshare *part_name __UNUSED__)
+workspace_part_add(Evas_Object *obj, Eina_Stringshare *part_name)
 {
+   Part *part;
+   WS_DATA_GET(obj);
+   assert(part_name != NULL);
+
+   part = gm_part_add(ap.project, wd->group, part_name);
+   groupview_edit_object_part_add(wd->normal.content, part);
+   group_navigator_part_add(wd->group_navi, part);
+   demo_group_part_add(wd->demo_navi, part);
 }
 
 void
-workspace_part_del(Evas_Object *obj __UNUSED__, Eina_Stringshare *part_name __UNUSED__)
+workspace_part_del(Evas_Object *obj, Eina_Stringshare *part_name)
 {
+   Part *part;
+   WS_DATA_GET(obj);
+   assert(part_name != NULL);
+
+   part = pm_resource_unsorted_get(wd->group->parts, part_name);
+   group_navigator_part_del(wd->group_navi, part);
+   demo_group_part_del(wd->demo_navi, part);
+   groupview_edit_object_part_del(wd->normal.content, part);
+   gm_part_del(ap.project, part);
 }
 
 void
-workspace_part_item_add(Evas_Object *obj __UNUSED__,
-                        Eina_Stringshare *part_name __UNUSED__,
-                        Eina_Stringshare *item_name __UNUSED__)
+workspace_part_item_add(Evas_Object *obj,
+                        Eina_Stringshare *part_name,
+                        Eina_Stringshare *item_name)
 {
+   Part *part;
+   WS_DATA_GET(obj);
+   assert(part_name != NULL);
+   assert(item_name != NULL);
+
+   part = pm_resource_unsorted_get(wd->group->parts, part_name);
+
+   assert((part->type == EDJE_PART_TYPE_TABLE) ||
+          (part->type == EDJE_PART_TYPE_BOX));
+
+   group_navigator_part_select(wd->group_navi, part);
+   gm_part_item_add(ap.project, part, item_name);
+   groupview_hard_update(wd->normal.content);
+   group_navigator_part_item_add(wd->group_navi, part, item_name);
 }
 
 void
-workspace_part_item_del(Evas_Object *obj __UNUSED__,
-                        Eina_Stringshare *part_name __UNUSED__,
-                        Eina_Stringshare *item_name __UNUSED__)
+workspace_part_item_del(Evas_Object *obj,
+                        Eina_Stringshare *part_name,
+                        Eina_Stringshare *item_name)
 {
+   Part *part;
+   WS_DATA_GET(obj);
+   assert(part_name != NULL);
+   assert(item_name != NULL);
+
+   part = pm_resource_unsorted_get(wd->group->parts, part_name);
+
+   assert((part->type == EDJE_PART_TYPE_TABLE) ||
+          (part->type == EDJE_PART_TYPE_BOX));
+
+   group_navigator_part_select(wd->group_navi, part);
+   gm_part_item_del(ap.project, part, item_name);
+   group_navigator_part_item_del(wd->group_navi, part, item_name);
 }
 
 void
-workspace_part_state_add(Evas_Object *obj __UNUSED__,
-                         Eina_Stringshare *part_name __UNUSED__,
-                         Eina_Stringshare *state_name __UNUSED__)
+workspace_part_state_add(Evas_Object *obj,
+                         Eina_Stringshare *part_name,
+                         Eina_Stringshare *state_name)
 {
+   Part *part;
+   State *state;
+   WS_DATA_GET(obj);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+
+   part = pm_resource_unsorted_get(wd->group->parts, part_name);
+
+   group_navigator_part_select(wd->group_navi, part);
+   state = gm_state_add(ap.project, part, state_name);
+   group_navigator_part_state_add(wd->group_navi, part, state);
 }
 
 void
-workspace_part_state_select(Evas_Object *obj __UNUSED__,
-                            Eina_Stringshare *part_name __UNUSED__,
-                            Eina_Stringshare *state_name __UNUSED__)
+workspace_part_state_select(Evas_Object *obj,
+                            Eina_Stringshare *part_name,
+                            Eina_Stringshare *state_name)
 {
+   Part *part;
+   State *state;
+   WS_DATA_GET(obj);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+
+   part = pm_resource_unsorted_get(wd->group->parts, part_name);
+   state = pm_resource_get(part->states, state_name);
+
+   groupview_soft_update(wd->normal.content);
+   group_navigator_part_state_select(wd->group_navi, state);
 }
 
 void
-workspace_part_state_del(Evas_Object *obj __UNUSED__,
-                         Eina_Stringshare *part_name __UNUSED__,
-                         Eina_Stringshare *state_name __UNUSED__)
+workspace_part_state_del(Evas_Object *obj,
+                         Eina_Stringshare *part_name,
+                         Eina_Stringshare *state_name)
 {
+   Part *part;
+   State *state;
+   WS_DATA_GET(obj);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+
+   part = pm_resource_unsorted_get(wd->group->parts, part_name);
+   state = pm_resource_get(part->states, state_name);
+
+   group_navigator_part_select(wd->group_navi, part);
+   group_navigator_part_state_del(wd->group_navi, part, state);
+   gm_state_del(ap.project, state);
 }
 
 void
-workspace_part_restack(Evas_Object *obj __UNUSED__,
-                       Eina_Stringshare *part_name __UNUSED__,
-                       Eina_Stringshare *relative_part_name __UNUSED__)
+workspace_part_restack(Evas_Object *obj,
+                       Eina_Stringshare *part_name,
+                       Eina_Stringshare *relative_part_name)
 {
+   Part *part, *rel_part = NULL;
+   WS_DATA_GET(obj);
+   assert(part_name != NULL);
+
+   part = pm_resource_unsorted_get(wd->group->parts, part_name);
+   if (relative_part_name)
+     rel_part = pm_resource_unsorted_get(wd->group->parts, relative_part_name);
+
+   group_navigator_part_select(wd->group_navi, part);
+   group_navigator_part_restack(wd->group_navi, part, rel_part);
+   gm_part_restack(part, rel_part);
+
+   groupview_edit_object_part_restack(wd->normal.content, part_name, relative_part_name);
 }
 
 void
-workspace_part_item_restack(Evas_Object *obj __UNUSED__,
-                            Eina_Stringshare *part_name __UNUSED__,
-                            Eina_Stringshare *part_item_name __UNUSED__,
-                            Eina_Stringshare *relative_part_item_name __UNUSED__)
+workspace_part_item_restack(Evas_Object *obj,
+                            Eina_Stringshare *part_name,
+                            Eina_Stringshare *part_item_name,
+                            Eina_Stringshare *relative_part_item_name)
 {
+   Part *part;
+   WS_DATA_GET(obj);
+   assert(part_item_name != NULL);
+
+   part = pm_resource_unsorted_get(wd->group->parts, part_name);
+
+   group_navigator_part_select(wd->group_navi, part);
+   gm_part_item_restack(part, part_item_name, relative_part_item_name);
+   group_navigator_part_item_restack(wd->group_navi, part, part_item_name, relative_part_item_name);
+
+   groupview_hard_update(wd->normal.content);
 }
 
 void
-workspace_program_add(Evas_Object *obj __UNUSED__, Eina_Stringshare *program_name __UNUSED__)
+workspace_program_add(Evas_Object *obj, Eina_Stringshare *program_name)
 {
+   WS_DATA_GET(obj);
+   assert(program_name != NULL);
+
+   gm_program_add(ap.project, wd->group, program_name);
+   group_navigator_program_add(wd->group_navi, program_name);
 }
 
 void
-workspace_program_del(Evas_Object *obj __UNUSED__, Eina_Stringshare *program_name __UNUSED__)
+workspace_program_del(Evas_Object *obj, Eina_Stringshare *program_name)
 {
+   WS_DATA_GET(obj);
+   assert(program_name != NULL);
+
+   gm_program_del(ap.project, wd->group, program_name);
+   group_navigator_program_del(wd->group_navi, program_name);
 }
