@@ -82,6 +82,12 @@ struct _Workspace_Data
          Evas_Object *demo;
       } mode_switcher;
       struct {
+         Evas_Object *spinner_w;
+         Evas_Object *check_chain;
+         Evas_Object *spinner_h;
+         Evas_Object *check_lock;
+      } container_sizer;
+      struct {
          Evas_Object *black;
          Evas_Object *tile;
          Evas_Object *white;
@@ -184,6 +190,33 @@ _zoom_controls_add(Workspace_Data *wd)
    elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.end", img);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.slider);
+
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_toolbar_item_separator_set(tb_it, true);
+}
+
+static void
+_container_size_controls_add(Workspace_Data *wd)
+{
+   Elm_Object_Item *tb_it;
+
+   wd->toolbar.container_sizer.spinner_w = elm_spinner_add(wd->toolbar.obj);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.spinner_w);
+
+   wd->toolbar.container_sizer.check_chain = elm_check_add(wd->toolbar.obj);
+   elm_object_style_set(wd->toolbar.container_sizer.check_chain, "chain");
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.check_chain);
+
+   wd->toolbar.container_sizer.spinner_h = elm_spinner_add(wd->toolbar.obj);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.spinner_h);
+
+   wd->toolbar.container_sizer.check_lock = elm_check_add(wd->toolbar.obj);
+   elm_object_style_set(wd->toolbar.container_sizer.check_lock, "locker");
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.check_lock);
 
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_it, true);
@@ -445,6 +478,9 @@ workspace_add(Evas_Object *parent, Group *group)
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_it, true);
    elm_radio_value_set(wd->toolbar.mode_switcher.normal, 1);
+
+   /* add the container size controls */
+   _container_size_controls_add(wd);
 
    /* add to toolbar bg switcher */
    wd->toolbar.bg_switcher.white = _radio_switcher_add(wd, "bg_white", _bg_cb, BG_PREVIEW_WHITE, NULL);
