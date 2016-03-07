@@ -674,7 +674,7 @@ workspace_groupview_hard_update(Evas_Object *obj)
    max_w = edje_edit_group_max_w_get(wd->group->edit_object);
    max_h = edje_edit_group_max_h_get(wd->group->edit_object);
    container_min_size_set(wd->normal.container, min_w, min_h);
-   container_max_size_set(wd->normal.container, max_w, max_h);
+   container_max_size_set(wd->normal.container, (max_w == 0) ? -1 : max_w, (max_h == 0) ? -1 : max_h);
 
    groupview_hard_update(wd->normal.content);
 }
