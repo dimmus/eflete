@@ -282,4 +282,25 @@ container_padding_size_get(Evas_Object *obj, int *tl_w, int *tl_h, int *br_w, in
 void
 container_protrusion_func_set(Evas_Object *obj, Object_Protrusion_Get func);
 
+/**
+ * Set the size aspect.
+ *
+ * @param obj The Container obj,
+ * @param aspect The aspect value,
+ *
+ * @ingroup Container
+ */
+void
+container_aspect_set(Evas_Object *obj, double aspect);
+
+/**
+ * Get the container size aspect.
+ *
+ * @param obj The Container obj.
+ *
+ * @ingroup Container
+ */
+double
+container_aspect_get(Evas_Object *obj);
+
 #endif /* CONTAINER_H */

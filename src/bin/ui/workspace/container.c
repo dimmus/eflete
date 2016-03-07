@@ -69,6 +69,7 @@ struct _Container_Smart_Data
       Evas_Coord w, h;
    } handler_BR;
    Eina_Bool handler_BR_pressed : 1;
+   double aspect;
    Eina_Stringshare *style;
    Evas_Coord downx;
    Evas_Coord downy;
@@ -205,6 +206,7 @@ _container_smart_add(Evas_Object *o)
    priv->size.w = 0;
    priv->size.h = 0;
    priv->handler_BR_pressed = false;
+   priv->aspect = -1.0;
 
    evas_object_smart_member_add(priv->container, o);
    evas_object_smart_member_add(priv->handler_BR.obj, o);
@@ -294,7 +296,28 @@ _container_smart_calculate(Evas_Object *o)
 
    /* 1. calculate the container size */
    sd->size.w += sd->dx;
-   sd->size.h += sd->dy;
+   if (sd->aspect < 0)
+     sd->size.h += sd->dy;
+   else
+     sd->size.h = sd->size.w / sd->aspect;
+
+   /* check the boundary values, and force max size to be <= 9999 */
+   if (sd->size.w > sd->size.h)
+     {
+        if (sd->size.w > 9999)
+          {
+             sd->size.w = 9999;
+             sd->size.h = sd->size.w / sd->aspect;
+          }
+     }
+   else
+     {
+        if (sd->size.h > 9999)
+          {
+             sd->size.h = 9999;
+             sd->size.w = sd->size.h * sd->aspect;
+          }
+     }
 
    /* check the boundary size values */
    if (sd->size.w < 0) sd->size.w = 0;
@@ -586,4 +609,22 @@ container_protrusion_func_set(Evas_Object *obj, Object_Protrusion_Get func)
    CONTAINER_DATA_GET(obj, sd);
 
    sd->func = func;
+}
+
+void
+container_aspect_set(Evas_Object *obj, double aspect)
+{
+   CONTAINER_DATA_GET(obj, sd);
+
+   sd->aspect = aspect;
+
+   evas_object_smart_changed(obj);
+}
+
+double
+container_aspect_get(Evas_Object *obj)
+{
+   CONTAINER_DATA_GET(obj, sd);
+
+   return sd->aspect;
 }
