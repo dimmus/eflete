@@ -132,6 +132,20 @@ workspace_active_demo_mode_get(Evas_Object *obj __UNUSED__)
    return false;
 }
 
+/* return the current scroll area, accourdingly to selected mode */
+static Scroll_Area *
+_scroll_area_get(Workspace_Data *wd)
+{
+   switch (wd->mode)
+     {
+      case MODE_NORMAL:
+         return &wd->normal;
+      case MODE_DEMO:
+         return &wd->demo;
+     }
+   return NULL;
+}
+
 static void
 _rulers_pointer_move(void *data,
                      Evas *e,
@@ -196,11 +210,30 @@ _zoom_controls_add(Workspace_Data *wd)
 }
 
 static void
+_spinner_container_change(void *data,
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info __UNUSED__)
+{
+   Workspace_Data *wd = data;
+   Scroll_Area *area;
+   int w ,h;
+
+   area = _scroll_area_get(wd);
+   assert(area != NULL);
+
+   w = elm_spinner_value_get(wd->toolbar.container_sizer.spinner_w);
+   h = elm_spinner_value_get(wd->toolbar.container_sizer.spinner_h);
+   container_container_size_set(area->container, w, h);
+}
+
+static void
 _container_size_controls_add(Workspace_Data *wd)
 {
    Elm_Object_Item *tb_it;
 
    wd->toolbar.container_sizer.spinner_w = elm_spinner_add(wd->toolbar.obj);
+   elm_spinner_min_max_set(wd->toolbar.container_sizer.spinner_w, 0, 9999);
+   evas_object_smart_callback_add(wd->toolbar.container_sizer.spinner_w, "changed", _spinner_container_change, wd);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.spinner_w);
 
@@ -210,6 +243,8 @@ _container_size_controls_add(Workspace_Data *wd)
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.check_chain);
 
    wd->toolbar.container_sizer.spinner_h = elm_spinner_add(wd->toolbar.obj);
+   elm_spinner_min_max_set(wd->toolbar.container_sizer.spinner_h, 0, 9999);
+   evas_object_smart_callback_add(wd->toolbar.container_sizer.spinner_h, "changed", _spinner_container_change, wd);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.spinner_h);
 
@@ -260,9 +295,13 @@ _container_changed(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info)
 {
-   Scroll_Area *area = data;
+   Workspace_Data *wd = data;
    Container_Geom *geom = event_info;
    Evas_Coord x, y;
+   Scroll_Area *area;
+
+   area = _scroll_area_get(wd);
+   assert(area != NULL);
 
    evas_object_geometry_get(area->ruler_h.obj, &x, NULL, NULL, NULL);
    evas_object_geometry_get(area->ruler_v.obj, NULL, &y, NULL, NULL);
@@ -282,6 +321,11 @@ _container_changed(void *data,
         ewe_ruler_zero_offset_set(area->ruler_v.obj, area->ruler_v.scale_rel, geom->y - y);
         ewe_ruler_step_set(area->ruler_v.obj, area->ruler_v.scale_rel, geom->h);
      }
+
+   if (wd->toolbar.container_sizer.check_chain)
+     elm_check_state_set(wd->toolbar.container_sizer.check_chain, false);
+   elm_spinner_value_set(wd->toolbar.container_sizer.spinner_w, geom->w);
+   elm_spinner_value_set(wd->toolbar.container_sizer.spinner_h, geom->h);
 }
 
 static void
@@ -308,7 +352,7 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
 
    area->container = container_add(area->scroller);
    container_handler_size_set(area->container, 8, 8);
-   evas_object_smart_callback_add(area->container, "container,changed", _container_changed, area);
+   evas_object_smart_callback_add(area->container, "container,changed", _container_changed, wd);
    elm_object_content_set(area->scroller, area->container);
 
    wd->normal.clipper = evas_object_rectangle_add(wd->normal.layout);
@@ -327,6 +371,7 @@ _mode_cb(void *data,
    Workspace_Data *wd = data;
    Workspace_Mode mode;
    Evas_Object *content;
+   int w = 0, h = 0;
 
    mode = elm_radio_state_value_get(obj);
    if (mode == wd->mode) return;
@@ -340,14 +385,18 @@ _mode_cb(void *data,
          elm_object_part_content_set(wd->panes_h, "left", wd->normal.layout);
          evas_object_show(wd->normal.layout);
          elm_radio_value_set(wd->toolbar.bg_switcher.white, wd->normal.bg_preview);
+         container_container_size_get(wd->normal.container, &w, &h);
          break;
       case MODE_DEMO:
          if (!wd->demo.layout) _scroll_area_add(wd, &wd->demo, false);
          elm_object_part_content_set(wd->panes_h, "left", wd->demo.layout);
          evas_object_show(wd->demo.layout);
          elm_radio_value_set(wd->toolbar.bg_switcher.white, wd->demo.bg_preview);
+         container_container_size_get(wd->demo.container, &w, &h);
          break;
      }
+   elm_spinner_value_set(wd->toolbar.container_sizer.spinner_w, w);
+   elm_spinner_value_set(wd->toolbar.container_sizer.spinner_h, h);
 }
 
 static void
