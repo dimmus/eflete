@@ -379,6 +379,14 @@ _mode_cb(void *data,
    wd->mode = mode;
    content = elm_object_part_content_unset(wd->panes_h, "left");
    evas_object_hide(content);
+   content = elm_object_part_content_unset(wd->panes, "right");
+   evas_object_hide(content);
+   if (wd->demo.content)
+     {
+        evas_object_del(wd->demo.content);
+        wd->demo.content = NULL;
+     }
+
    switch (wd->mode)
      {
       case MODE_NORMAL:
@@ -386,13 +394,27 @@ _mode_cb(void *data,
          evas_object_show(wd->normal.layout);
          elm_radio_value_set(wd->toolbar.bg_switcher.white, wd->normal.bg_preview);
          container_container_size_get(wd->normal.container, &w, &h);
+
+         elm_object_part_content_set(wd->panes, "right", wd->group_navi);
+         evas_object_show(wd->group_navi);
+         evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, wd->group);
          break;
       case MODE_DEMO:
          if (!wd->demo.layout) _scroll_area_add(wd, &wd->demo, false);
          elm_object_part_content_set(wd->panes_h, "left", wd->demo.layout);
          evas_object_show(wd->demo.layout);
          elm_radio_value_set(wd->toolbar.bg_switcher.white, wd->demo.bg_preview);
+
+         wd->demo.content = demo_add(wd->demo.scroller, wd->group);
+         container_content_set(wd->demo.container, wd->demo.content);
+
          container_container_size_get(wd->demo.container, &w, &h);
+
+         elm_object_part_content_set(wd->panes, "right", wd->demo_navi);
+         evas_object_show(wd->demo_navi);
+         demo_group_demo_update(wd->demo_navi);
+
+         evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
          break;
      }
    elm_spinner_value_set(wd->toolbar.container_sizer.spinner_w, w);
@@ -559,6 +581,11 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_part_content_set(wd->panes, "right", wd->group_navi);
    evas_object_smart_callback_add(wd->group_navi, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, _part_select, wd);
    evas_object_smart_callback_add(wd->group_navi, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED, _part_visible, wd);
+
+   wd->demo_navi = demo_group_add(group);
+   evas_object_size_hint_weight_set(wd->demo_navi, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(wd->demo_navi, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_hide(wd->demo_navi);
 
    wd->group = group;
    wd->mode = MODE_NORMAL;
