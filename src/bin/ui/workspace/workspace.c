@@ -42,9 +42,9 @@
 typedef enum
 {
    MODE_NORMAL = 1,
+   MODE_CODE,
    /* MODE_SEPARATE, */
    /* MODE_ANIMATOR, */
-   /* MODE_CODE, */
    MODE_DEMO
 } Workspace_Mode;
 
@@ -84,6 +84,7 @@ struct _Workspace_Data
       } zoom;
       struct {
          Evas_Object *normal;
+         Evas_Object *code;
          Evas_Object *demo;
       } mode_switcher;
       struct {
@@ -162,6 +163,7 @@ _scroll_area_get(Workspace_Data *wd)
    switch (wd->mode)
      {
       case MODE_NORMAL:
+      case MODE_CODE:
          return &wd->normal;
       case MODE_DEMO:
          return &wd->demo;
@@ -397,6 +399,7 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
 
    /* create scroller for normal mode and set bg */
    area->scroller = elm_scroller_add(area->layout);
+   elm_scroller_policy_set(area->scroller, ELM_SCROLLER_POLICY_ON, ELM_SCROLLER_POLICY_ON);
    evas_object_event_callback_add(area->scroller, EVAS_CALLBACK_MOUSE_MOVE, _rulers_pointer_move, area);
    elm_layout_content_set(area->layout, "elm.swallow.scroller", area->scroller);
    area->bg = elm_layout_add(area->layout);
@@ -444,6 +447,7 @@ _mode_cb(void *data,
    switch (wd->mode)
      {
       case MODE_NORMAL:
+      case MODE_CODE:
          elm_object_part_content_set(wd->panes_h, "left", wd->normal.layout);
          evas_object_show(wd->normal.layout);
          elm_radio_value_set(wd->toolbar.bg_switcher.white, wd->normal.bg_preview);
@@ -496,7 +500,7 @@ _bg_cb(void *data,
    const char *signal = NULL;
 
    bg_mode = elm_radio_value_get(obj);
-   if (MODE_NORMAL == wd->mode)
+   if ((MODE_NORMAL == wd->mode) || (MODE_CODE == wd->mode))
      area = &wd->normal;
    else
      area = &wd->demo;
@@ -529,7 +533,7 @@ _part_select(void *data,
    Part *part = event_info;
    Evas_Object *part_obj;
 
-   assert(MODE_NORMAL == wd->mode);
+   assert((MODE_NORMAL == wd->mode) || (MODE_CODE == wd->mode));
 
    if (part)
      {
@@ -553,7 +557,7 @@ _part_visible(void *data,
    Workspace_Data *wd = data;
    Part *part = event_info;
 
-   assert(MODE_NORMAL == wd->mode);
+   assert((MODE_NORMAL == wd->mode) || (MODE_CODE == wd->mode));
 
    groupview_part_visible_set(wd->normal.content, part);
 }
@@ -566,7 +570,7 @@ _groupview_clicked(void *data,
    Workspace_Data *wd = data;
    Part *part = event_info;
 
-   assert(MODE_NORMAL == wd->mode);
+   assert((MODE_NORMAL == wd->mode) || (MODE_CODE == wd->mode));
 
    group_navigator_part_select(wd->group_navi, part ? part : NULL);
 }
@@ -610,6 +614,9 @@ workspace_add(Evas_Object *parent, Group *group)
    wd->toolbar.mode_switcher.normal = _radio_switcher_add(wd, "radio_normal", _mode_cb, MODE_NORMAL, NULL);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.mode_switcher.normal);
+   wd->toolbar.mode_switcher.code = _radio_switcher_add(wd, "radio_code", _mode_cb, MODE_CODE, wd->toolbar.mode_switcher.normal);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.mode_switcher.code);
    wd->toolbar.mode_switcher.demo = _radio_switcher_add(wd, "radio_demo", _mode_cb, MODE_DEMO, wd->toolbar.mode_switcher.normal);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.mode_switcher.demo);
