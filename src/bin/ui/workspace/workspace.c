@@ -34,6 +34,11 @@
 
 #define PANES_RIGHT_SIZE_MIN 225
 
+#define WS_DATA_GET(OBJ) \
+   assert(OBJ != NULL); \
+   Workspace_Data *wd = evas_object_data_get(OBJ, WORKSPACE_DATA); \
+   assert(wd != NULL);
+
 typedef enum
 {
    MODE_NORMAL = 1,
@@ -129,7 +134,8 @@ TODO("remove after property refactor!!! HIGH LEVEL");
 Eina_Bool
 workspace_active_demo_mode_get(Evas_Object *obj)
 {
-   Workspace_Data *wd = evas_object_data_get(obj, WORKSPACE_DATA);
+   WS_DATA_GET(obj);
+
    if (wd->mode == MODE_DEMO)
      return true;
    return false;
@@ -600,8 +606,13 @@ workspace_add(Evas_Object *parent, Group *group)
 }
 
 void
-workspace_group_navigator_update_part(Evas_Object *obj __UNUSED__, Part *part __UNUSED__)
+workspace_group_navigator_update_part(Evas_Object *obj, Part *part)
 {
+   WS_DATA_GET(obj);
+
+   assert(part != NULL);
+
+   group_navigator_part_update(wd->group_navi, part);
 }
 
 Eina_Bool
