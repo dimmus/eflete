@@ -127,8 +127,11 @@ workspace_highlight_unset(Evas_Object *obj __UNUSED__)
 
 TODO("remove after property refactor!!! HIGH LEVEL");
 Eina_Bool
-workspace_active_demo_mode_get(Evas_Object *obj __UNUSED__)
+workspace_active_demo_mode_get(Evas_Object *obj)
 {
+   Workspace_Data *wd = evas_object_data_get(obj, WORKSPACE_DATA);
+   if (wd->mode == MODE_DEMO)
+     return true;
    return false;
 }
 
