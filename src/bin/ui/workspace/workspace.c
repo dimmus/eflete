@@ -64,8 +64,6 @@ struct _Scroll_Area {
    Evas_Object *content; /* for normal mode - groupview, for demo - elm widget */
    Ruler ruler_v;
    Ruler ruler_h;
-   Evas_Object *hilight;
-   Evas_Object *clipper;
 };
 typedef struct _Scroll_Area Scroll_Area;
 
@@ -410,13 +408,6 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
    container_handler_size_set(area->container, 8, 8);
    evas_object_smart_callback_add(area->container, "container,changed", _container_changed, wd);
    elm_object_content_set(area->scroller, area->container);
-
-   wd->normal.clipper = evas_object_rectangle_add(wd->normal.layout);
-   elm_object_part_content_set(area->scroller, "elm.swallow.overlay", wd->normal.clipper);
-
-   wd->normal.hilight = highlight_add(wd->normal.layout);
-   evas_object_color_set(wd->normal.hilight, HIGHLIGHT_COLOR);
-   evas_object_clip_set(wd->normal.hilight, wd->normal.clipper);
 }
 
 static void
@@ -531,21 +522,9 @@ _part_select(void *data,
 {
    Workspace_Data *wd = data;
    Part *part = event_info;
-   Evas_Object *part_obj;
 
    assert((MODE_NORMAL == wd->mode) || (MODE_CODE == wd->mode));
 
-   if (part)
-     {
-        part_obj = groupview_edit_object_part_draw_get(wd->normal.content, part->name);
-        highlight_object_follow(wd->normal.hilight, part_obj);
-        evas_object_show(wd->normal.hilight);
-     }
-   else
-     {
-        highlight_object_unfollow(wd->normal.hilight);
-        evas_object_hide(wd->normal.hilight);
-     }
    evas_object_smart_callback_call(ap.win, SIGNAL_PART_SELECTED, part);
 }
 
