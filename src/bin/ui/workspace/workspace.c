@@ -141,6 +141,20 @@ workspace_active_demo_mode_get(Evas_Object *obj)
    return false;
 }
 
+static void
+_container_hints_set(Workspace_Data *wd)
+{
+   Evas_Coord min_w, max_w, min_h, max_h;
+
+   min_w = edje_edit_group_min_w_get(wd->group->edit_object);
+   min_h = edje_edit_group_min_h_get(wd->group->edit_object);
+   max_w = edje_edit_group_max_w_get(wd->group->edit_object);
+   max_h = edje_edit_group_max_h_get(wd->group->edit_object);
+
+   container_min_size_set(wd->normal.container, min_w, min_h);
+   container_max_size_set(wd->normal.container, (max_w == 0) ? -1 : max_w, (max_h == 0) ? -1 : max_h);
+}
+
 /* return the current scroll area, accourdingly to selected mode */
 static Scroll_Area *
 _scroll_area_get(Workspace_Data *wd)
@@ -575,6 +589,9 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_panes_content_right_min_size_set(wd->panes, PANES_RIGHT_SIZE_MIN);
    elm_panes_content_right_size_set(wd->panes, 0); /* set the default min size */
 
+   wd->group = group;
+   wd->mode = MODE_NORMAL;
+
    wd->toolbar.layout = elm_layout_add(wd->panes);
    elm_layout_theme_set(wd->toolbar.layout, "layout", "workspace", "toolbar");
    elm_object_part_content_set(wd->panes, "left", wd->toolbar.layout);
@@ -624,6 +641,7 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_part_content_set(wd->panes_h, "left", wd->normal.layout);
    wd->normal.content = groupview_add(wd->normal.scroller, group);
    container_content_set(wd->normal.container, wd->normal.content);
+   _container_hints_set(wd);
    container_protrusion_func_set(wd->normal.container, groupview_protrusion_get);
    evas_object_smart_callback_add(wd->normal.content, SIGNAL_GROUPVIEW_CLICKED, _groupview_clicked, wd);
 
@@ -636,9 +654,6 @@ workspace_add(Evas_Object *parent, Group *group)
    evas_object_size_hint_weight_set(wd->demo_navi, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(wd->demo_navi, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_hide(wd->demo_navi);
-
-   wd->group = group;
-   wd->mode = MODE_NORMAL;
 
    evas_object_data_set(wd->panes, WORKSPACE_DATA, wd);
    evas_object_event_callback_add(wd->panes, EVAS_CALLBACK_DEL, _workspace_del, wd);
@@ -668,14 +683,7 @@ workspace_groupview_hard_update(Evas_Object *obj)
    WS_DATA_GET(obj);
    assert(wd->normal.content != NULL);
 
-   Evas_Coord min_w, max_w, min_h, max_h;
-   min_w = edje_edit_group_min_w_get(wd->group->edit_object);
-   min_h = edje_edit_group_min_h_get(wd->group->edit_object);
-   max_w = edje_edit_group_max_w_get(wd->group->edit_object);
-   max_h = edje_edit_group_max_h_get(wd->group->edit_object);
-   container_min_size_set(wd->normal.container, min_w, min_h);
-   container_max_size_set(wd->normal.container, (max_w == 0) ? -1 : max_w, (max_h == 0) ? -1 : max_h);
-
+   _container_hints_set(wd);
    groupview_hard_update(wd->normal.content);
 }
 
