@@ -622,13 +622,28 @@ workspace_edit_object_recalc(Evas_Object *obj __UNUSED__)
 }
 
 void
-workspace_groupview_hard_update(Evas_Object *obj __UNUSED__)
+workspace_groupview_hard_update(Evas_Object *obj)
 {
+   WS_DATA_GET(obj);
+   assert(wd->normal.content != NULL);
+
+   Evas_Coord min_w, max_w, min_h, max_h;
+   min_w = edje_edit_group_min_w_get(wd->group->edit_object);
+   min_h = edje_edit_group_min_h_get(wd->group->edit_object);
+   max_w = edje_edit_group_max_w_get(wd->group->edit_object);
+   max_h = edje_edit_group_max_h_get(wd->group->edit_object);
+   container_min_size_set(wd->normal.container, min_w, min_h);
+   container_max_size_set(wd->normal.container, max_w, max_h);
+
+   groupview_hard_update(wd->normal.content);
 }
 
 void
-workspace_groupview_soft_update(Evas_Object *obj __UNUSED__)
+workspace_groupview_soft_update(Evas_Object *obj)
 {
+   WS_DATA_GET(obj);
+   assert(wd->normal.content != NULL);
+   groupview_soft_update(wd->normal.content);
 }
 
 Eina_Bool
