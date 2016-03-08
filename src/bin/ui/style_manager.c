@@ -356,7 +356,7 @@ _on_bt_style_add(void *data,
    POPUP.name_validator = resource_name_validator_new(NAME_REGEX, NULL);
    resource_name_validator_list_set(POPUP.name_validator, &ap.project->styles, true);
    ENTRY_ADD(item, POPUP.name, true);
-   eo_do(POPUP.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, POPUP.name_validator));
+   eo_event_callback_add(POPUP.name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, POPUP.name_validator);
    evas_object_smart_callback_add(POPUP.name, "changed", _validate, style_edit);
    elm_object_part_text_set(POPUP.name, "guide", _("Type a new style name"));
    elm_object_part_content_set(item, "elm.swallow.content", POPUP.name);
@@ -440,7 +440,7 @@ _on_bt_tag_add(void *data,
    POPUP.name_validator = resource_name_validator_new(NAME_REGEX, NULL);
    resource_name_validator_list_set(POPUP.name_validator, &POPUP.buf_resources, true);
    ENTRY_ADD(item, POPUP.name, true);
-   eo_do(POPUP.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, POPUP.name_validator));
+   eo_event_callback_add(POPUP.name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, POPUP.name_validator);
    evas_object_smart_callback_add(POPUP.name, "changed", _validate, style_edit);
    elm_object_part_text_set(POPUP.name, "guide", _("Type a new tag name."));
    elm_object_part_content_set(item, "elm.swallow.content", POPUP.name);

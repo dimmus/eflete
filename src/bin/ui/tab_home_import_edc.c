@@ -471,7 +471,7 @@ _tab_import_edc_add(void)
    /* label.name */
    LAYOUT_PROP_ADD(tab_edc.box, _("Project name:"), "tab_home", "item")
    ENTRY_ADD(item, tab_edc.name, true)
-   eo_do(tab_edc.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, tab_edc.name_validator));
+   eo_event_callback_add(tab_edc.name, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, tab_edc.name_validator);
    evas_object_smart_callback_add(tab_edc.name, "changed", _validate, NULL);
    elm_layout_content_set(item, NULL, tab_edc.name);
    elm_box_pack_end(tab_edc.box, item);

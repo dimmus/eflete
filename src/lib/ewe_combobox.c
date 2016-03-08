@@ -436,7 +436,7 @@ _ewe_combobox_evas_object_smart_add(Eo *obj, Ewe_Combobox_Smart_Data *sd)
 {
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
 
-   eo_do_super(obj, MY_CLASS, evas_obj_smart_add());
+   evas_obj_smart_add(eo_super(obj, MY_CLASS));
    elm_widget_sub_object_parent_add(obj);
 
    elm_widget_can_focus_set(obj, EINA_TRUE);
@@ -467,7 +467,7 @@ EOLIAN static void
 _ewe_combobox_evas_object_smart_show(Eo *obj EINA_UNUSED,
                                      Ewe_Combobox_Smart_Data *sd)
 {
-   eo_do_super(obj, MY_CLASS, evas_obj_smart_show());
+   evas_obj_smart_show(eo_super(obj, MY_CLASS));
    evas_object_show(sd->combobox);
 }
 
@@ -475,7 +475,7 @@ EOLIAN static void
 _ewe_combobox_evas_object_smart_hide(Eo *obj EINA_UNUSED,
                                      Ewe_Combobox_Smart_Data *sd)
 {
-   eo_do_super(obj, MY_CLASS, evas_obj_smart_hide());
+   evas_obj_smart_hide(eo_super(obj, MY_CLASS));
    evas_object_hide(sd->combobox);
 }
 
@@ -493,7 +493,7 @@ _ewe_combobox_evas_object_smart_move(Eo                      *obj,
                                      Evas_Coord              x,
                                      Evas_Coord              y)
 {
-   eo_do_super(obj, MY_CLASS, evas_obj_smart_move(x, y));
+   evas_obj_smart_move(eo_super(obj, MY_CLASS), x, y);
    evas_object_move(sd->combobox, x, y);
 }
 
@@ -505,7 +505,7 @@ _ewe_combobox_evas_object_smart_resize(Eo                      *obj,
 {
    int height = 0;
    edje_object_size_max_get(sd->combobox, NULL, &height);
-   eo_do_super(obj, MY_CLASS, evas_obj_smart_resize(w, height));
+   evas_obj_smart_resize(eo_super(obj, MY_CLASS), w, height);
    evas_object_resize(sd->combobox, w, height);
 }
 
@@ -514,11 +514,10 @@ _ewe_combobox_evas_object_smart_resize(Eo                      *obj,
 EOLIAN static Eo*
 _ewe_combobox_eo_base_constructor(Eo *obj, Ewe_Combobox_Smart_Data *sd)
 {
-   obj = eo_do_super_ret(obj, MY_CLASS, obj, eo_constructor());
+   obj = eo_constructor(eo_super(obj, MY_CLASS));
    sd->obj = obj;
-   eo_do(obj,
-         evas_obj_type_set(MY_CLASS_NAME_LEGACY),
-         evas_obj_smart_callbacks_descriptions_set(_smart_callbacks));
+   evas_obj_type_set(obj, MY_CLASS_NAME_LEGACY),
+   evas_obj_smart_callbacks_descriptions_set(obj, _smart_callbacks);
    return obj;
 }
 
