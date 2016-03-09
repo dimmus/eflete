@@ -325,14 +325,63 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
 }
 
 static void
+_groups_combobox_fill(Evas_Object *combo, const char *selected)
+{
+   Eina_List *l;
+   Group *group;
+
+   assert(combo != NULL);
+
+   if (selected)
+     ewe_combobox_text_set(combo, selected);
+   else
+     ewe_combobox_text_set(combo, STR_NONE);
+   ewe_combobox_item_add(combo, STR_NONE);
+   EINA_LIST_FOREACH(ap.project->groups, l, group)
+     {
+        if (group != group_pd.group)
+          ewe_combobox_item_add(combo, group->name);
+     }
+}
+
+static void
+_parts_combobox_fill(Evas_Object *combo, const char *selected, Edje_Part_Type allowed_type)
+{
+   Eina_List *l;
+   Part *part;
+
+   assert(combo != NULL);
+
+   if (selected)
+     ewe_combobox_text_set(combo, selected);
+   else
+     ewe_combobox_text_set(combo, STR_NONE);
+   ewe_combobox_item_add(combo, STR_NONE);
+
+   if (allowed_type)
+     {
+        EINA_LIST_FOREACH(group_pd.group->parts, l, part)
+          {
+             if ((part->type == allowed_type) && (part != group_pd.part))
+               ewe_combobox_item_add(combo, part->name);
+          }
+     }
+   else
+     {
+        EINA_LIST_FOREACH(group_pd.group->parts, l, part)
+          {
+             if (part != group_pd.part)
+               ewe_combobox_item_add(combo, part->name);
+          }
+     }
+}
+
+static void
 _update_cb(Property_Attribute *pa, Property_Action *action)
 {
    int int_val1;
    Eina_Bool bool_val1;
    Eina_Stringshare *str_val1;
-   Eina_List *l;
-   Group *group;
-   Part *part;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -380,16 +429,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_CLIP_TO:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_clip_to_get(group_pd.group->edit_object, group_pd.part->name);
-         if (str_val1)
-           ewe_combobox_text_set(action->control, str_val1);
-         else
-           ewe_combobox_text_set(action->control, STR_NONE);
-         ewe_combobox_item_add(action->control, STR_NONE);
-         EINA_LIST_FOREACH(group_pd.group->parts, l, part)
-           {
-              if ((part->type == EDJE_PART_TYPE_RECTANGLE) && (part != group_pd.part))
-                ewe_combobox_item_add(action->control, part->name);
-           }
+         _parts_combobox_fill(action->control, str_val1, EDJE_PART_TYPE_RECTANGLE);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
@@ -423,61 +463,25 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_DRAG_CONFINE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_drag_confine_get(group_pd.group->edit_object, group_pd.part->name);
-         if (str_val1)
-           ewe_combobox_text_set(action->control, str_val1);
-         else
-           ewe_combobox_text_set(action->control, STR_NONE);
-         ewe_combobox_item_add(action->control, STR_NONE);
-         EINA_LIST_FOREACH(group_pd.group->parts, l, part)
-           {
-              if (part != group_pd.part)
-                ewe_combobox_item_add(action->control, part->name);
-           }
+         _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_drag_threshold_get(group_pd.group->edit_object, group_pd.part->name);
-         if (str_val1)
-           ewe_combobox_text_set(action->control, str_val1);
-         else
-           ewe_combobox_text_set(action->control, STR_NONE);
-         ewe_combobox_item_add(action->control, STR_NONE);
-         EINA_LIST_FOREACH(group_pd.group->parts, l, part)
-           {
-              if (part != group_pd.part)
-                ewe_combobox_item_add(action->control, part->name);
-           }
+         _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_DRAG_EVENT:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_drag_event_get(group_pd.group->edit_object, group_pd.part->name);
-         if (str_val1)
-           ewe_combobox_text_set(action->control, str_val1);
-         else
-           ewe_combobox_text_set(action->control, STR_NONE);
-         ewe_combobox_item_add(action->control, STR_NONE);
-         EINA_LIST_FOREACH(group_pd.group->parts, l, part)
-           {
-              if (part != group_pd.part)
-                ewe_combobox_item_add(action->control, part->name);
-           }
+         _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_GROUP_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_source_get(group_pd.group->edit_object, group_pd.part->name);
-         if (str_val1)
-           ewe_combobox_text_set(action->control, str_val1);
-         else
-           ewe_combobox_text_set(action->control, STR_NONE);
-         ewe_combobox_item_add(action->control, STR_NONE);
-         EINA_LIST_FOREACH(ap.project->groups, l, group)
-           {
-              if (group != group_pd.group)
-                ewe_combobox_item_add(action->control, group->name);
-           }
+         _groups_combobox_fill(action->control, str_val1);
          edje_edit_string_free(str_val1);
          break;
       default:
