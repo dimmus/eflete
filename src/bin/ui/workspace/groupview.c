@@ -121,6 +121,8 @@ _groupview_smart_move(Evas_Object *o,
 
    evas_object_move(sd->group->edit_object,x ,y);
    evas_object_move(sd->box, x, y);
+
+   evas_object_smart_changed(o);
 }
 
 static void
@@ -145,14 +147,13 @@ _groupview_smart_calculate(Evas_Object *o)
    Evas_Coord px, py, pw, ph;
 
    GROUPVIEW_DATA_GET(o, sd)
-      evas_object_geometry_get(sd->parent, &px, &py, &pw, &ph);
+   evas_object_geometry_get(sd->parent, &px, &py, &pw, &ph);
    evas_object_resize(sd->event, pw, ph);
    evas_object_move(sd->event, px, py);
 
    evas_object_geometry_get(o, &x, &y, &w, &h);
 
-   if ((sd->geom.x != x) || (sd->geom.y != y) ||
-       (sd->geom.w != w) || (sd->geom.h != h))
+   if ((sd->geom.w != w) || (sd->geom.h != h))
      {
         sd->geom.x = x;
         sd->geom.y = y;
