@@ -22,6 +22,7 @@
 #include "group_manager.h"
 #include "history.h"
 #include "change.h"
+#include "project_manager.h"
 
 struct _Property_Group_Data {
    Group *group;
@@ -63,6 +64,10 @@ struct _Property_Group_Data {
                   Property_Attribute threshold;
                   Property_Attribute events;
              } dragable;
+             struct {
+                  Property_Attribute title;
+                  Property_Attribute source;
+             } type_group;
         } part;
         Property_Attribute state;
         Property_Attribute item;
@@ -105,6 +110,20 @@ _on_part_selected(void *data __UNUSED__,
      property_item_add(&group_pd.items.item, NULL);
    else
      property_item_del(&group_pd.items.item);
+
+   /* type-specific in part block */
+   if (group_pd.items.part.title.expanded)
+     {
+        property_item_del(&group_pd.items.part.type_group.title);
+        switch (group_pd.part->type)
+          {
+           case EDJE_PART_TYPE_GROUP:
+              property_item_add(&group_pd.items.part.type_group.title, group_pd.items.part.title.glit);
+              break;
+           default:
+              break;
+          }
+     }
 
    property_item_update_recursively(&group_pd.items.part.title);
 }
@@ -165,8 +184,7 @@ _on_group_changed(void *data __UNUSED__,
    group_pd.part = group_pd.group->current_part;
    if (group_pd.part)
      {
-        property_item_add(&group_pd.items.part.title, NULL);
-        property_item_update_recursively(&group_pd.items.part.title);
+        _on_part_selected(NULL, NULL, group_pd.part);
      }
    else
      property_item_del(&group_pd.items.part.title);
@@ -215,6 +233,14 @@ _subitems_get(Property_Attribute *pa)
          items = eina_list_append(items, &group_pd.items.part.clip_to);
          items = eina_list_append(items, &group_pd.items.part.ignore_flags);
          items = eina_list_append(items, &group_pd.items.part.dragable.title);
+         switch (group_pd.part->type)
+           {
+            case EDJE_PART_TYPE_GROUP:
+               items = eina_list_append(items, &group_pd.items.part.type_group.title);
+               break;
+            default:
+               break;
+           }
      }
    else if (pa == &group_pd.items.part.dragable.title)
      {
@@ -224,6 +250,10 @@ _subitems_get(Property_Attribute *pa)
          items = eina_list_append(items, &group_pd.items.part.dragable.confine);
          items = eina_list_append(items, &group_pd.items.part.dragable.threshold);
          items = eina_list_append(items, &group_pd.items.part.dragable.events);
+     }
+   else if (pa == &group_pd.items.part.type_group.title)
+     {
+         items = eina_list_append(items, &group_pd.items.part.type_group.source);
      }
    else
      {
@@ -277,6 +307,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_DRAG_CONFINE:
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
       case ATTRIBUTE_PART_DRAG_EVENT:
+      case ATTRIBUTE_PART_GROUP_SOURCE:
          break;
       case ATTRIBUTE_PART_DRAG_X:
       case ATTRIBUTE_PART_DRAG_Y:
@@ -300,6 +331,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
    Eina_Bool bool_val1;
    Eina_Stringshare *str_val1;
    Eina_List *l;
+   Group *group;
    Part *part;
 
    assert(pa != NULL);
@@ -433,6 +465,21 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
            }
          edje_edit_string_free(str_val1);
          break;
+      case ATTRIBUTE_PART_GROUP_SOURCE:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_part_source_get(group_pd.group->edit_object, group_pd.part->name);
+         if (str_val1)
+           ewe_combobox_text_set(action->control, str_val1);
+         else
+           ewe_combobox_text_set(action->control, STR_NONE);
+         ewe_combobox_item_add(action->control, STR_NONE);
+         EINA_LIST_FOREACH(ap.project->groups, l, group)
+           {
+              if (group != group_pd.group)
+                ewe_combobox_item_add(action->control, group->name);
+           }
+         edje_edit_string_free(str_val1);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -542,6 +589,10 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_DRAG_EVENT:
          group_pd.history.format = _("dragable event changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, edje_edit_part_drag_event_get(group_pd.group->edit_object, group_pd.part->name));
+         break;
+      case ATTRIBUTE_PART_GROUP_SOURCE:
+         group_pd.history.format = _("source changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_part_source_get(group_pd.group->edit_object, group_pd.part->name));
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -675,6 +726,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
+      case ATTRIBUTE_PART_GROUP_SOURCE:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         editor_part_group_source_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, str_val1);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -715,6 +772,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_DRAG_CONFINE:
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
       case ATTRIBUTE_PART_DRAG_EVENT:
+      case ATTRIBUTE_PART_GROUP_SOURCE:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (group_pd.history.old.str_val1) ? group_pd.history.old.str_val1 : STR_NONE,
@@ -865,6 +923,18 @@ _init_part_dragable_block()
 }
 
 static void
+_init_part_group_specific_block()
+{
+   group_pd.items.part.type_group.title.name = "type specific (GROUP)";
+   group_pd.items.part.type_group.title.expandable = true;
+   group_pd.items.part.type_group.title.expanded = true;
+   group_pd.items.part.type_group.title.expand_cb = _subitems_get;
+
+   group_pd.items.part.type_group.source.name = "source";
+   _action1(&group_pd.items.part.type_group.source, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_GROUP_SOURCE);
+}
+
+static void
 _init_part_block()
 {
    group_pd.items.part.title.name = "part";
@@ -902,6 +972,7 @@ property_group_init()
 {
    _init_group_block();
    _init_part_block();
+   _init_part_group_specific_block();
 
    group_pd.items.state.name = "state";
    group_pd.items.state.expandable = true;
