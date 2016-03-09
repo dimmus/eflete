@@ -373,7 +373,7 @@ editor_part_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool m
    return true; \
 }
 
-#define EDITOR_STRING_STRING(FUNC, ATTRIBUTE) \
+#define EDITOR_STRING_STRING(FUNC, REAL_FUNC, ATTRIBUTE) \
 Eina_Bool \
 editor_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, \
                       const char *name, const char *new_val) \
@@ -384,7 +384,7 @@ editor_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
    assert(name != NULL); \
    if (change) \
      { \
-        Eina_Stringshare *old_value = edje_edit_## FUNC ##_get(edit_object, name); \
+        Eina_Stringshare *old_value = edje_edit_## REAL_FUNC ##_get(edit_object, name); \
         diff = mem_calloc(1, sizeof(Diff)); \
         diff->redo.type = FUNCTION_TYPE_STRING_STRING; \
         diff->redo.function = editor_## FUNC ##_set; \
@@ -399,7 +399,7 @@ editor_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
         else \
           change_diff_add(change, diff); \
      } \
-   if (!edje_edit_## FUNC ##_set(edit_object, name, new_val)) \
+   if (!edje_edit_## REAL_FUNC ##_set(edit_object, name, new_val)) \
      return false; \
    _editor_project_changed(); \
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \

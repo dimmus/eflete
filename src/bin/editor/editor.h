@@ -105,6 +105,7 @@ typedef enum {
    ATTRIBUTE_PART_DRAG_EVENT,
    ATTRIBUTE_PART_NAME,
    ATTRIBUTE_PART_TYPE,
+   ATTRIBUTE_PART_GROUP_SOURCE,
    ATTRIBUTE_PART_SOURCE,
    ATTRIBUTE_PART_SOURCE2,
    ATTRIBUTE_PART_SOURCE3,
@@ -595,7 +596,7 @@ Eina_Bool
 editor_part_clip_to_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       const char * new_val);
 Eina_Bool
-editor_part_source_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+editor_part_group_source_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       const char * new_val);
 Eina_Bool
 editor_part_drag_confine_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
@@ -605,6 +606,9 @@ editor_part_drag_threshold_set(Evas_Object *obj, Change *change, Eina_Bool merge
       const char * new_val);
 Eina_Bool
 editor_part_drag_event_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char * new_val);
+Eina_Bool
+editor_part_source_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       const char * new_val);
 Eina_Bool
 editor_part_source2_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
