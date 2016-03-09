@@ -106,12 +106,12 @@ typedef enum {
    ATTRIBUTE_PART_NAME,
    ATTRIBUTE_PART_TYPE,
    ATTRIBUTE_PART_GROUP_SOURCE,
-   ATTRIBUTE_PART_SOURCE,
-   ATTRIBUTE_PART_SOURCE2,
-   ATTRIBUTE_PART_SOURCE3,
-   ATTRIBUTE_PART_SOURCE4,
-   ATTRIBUTE_PART_SOURCE5,
-   ATTRIBUTE_PART_SOURCE6,
+   ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER,
+   ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER,
+   ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER,
+   ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER,
+   ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER,
+   ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER,
    ATTRIBUTE_PART_ITEM_ASPECT_MODE,
    ATTRIBUTE_PART_ITEM_ALIGN_X,
    ATTRIBUTE_PART_ITEM_ALIGN_Y,
@@ -608,22 +608,22 @@ Eina_Bool
 editor_part_drag_event_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       const char * new_val);
 Eina_Bool
-editor_part_source_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+editor_part_textblock_selection_under_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       const char * new_val);
 Eina_Bool
-editor_part_source2_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+editor_part_textblock_selection_over_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       const char * new_val);
 Eina_Bool
-editor_part_source3_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+editor_part_textblock_cursor_under_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       const char * new_val);
 Eina_Bool
-editor_part_source4_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+editor_part_textblock_cursor_over_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       const char * new_val);
 Eina_Bool
-editor_part_source5_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+editor_part_textblock_anchors_under_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       const char * new_val);
 Eina_Bool
-editor_part_source6_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+editor_part_textblock_anchors_over_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       const char * new_val);
 Eina_Bool
 editor_part_effect_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,

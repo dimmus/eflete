@@ -464,29 +464,33 @@ editor_part_drag_event_default_is(Evas_Object *edit_object, const char *part_nam
 Eina_Bool
 editor_part_drag_event_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 Eina_Bool
-editor_part_source_default_is(Evas_Object *edit_object, const char *part_name);
+editor_part_group_source_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
-editor_part_source_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+editor_part_group_source_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 Eina_Bool
-editor_part_source2_default_is(Evas_Object *edit_object, const char *part_name);
+editor_part_textblock_selection_under_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
-editor_part_source2_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+editor_part_textblock_selection_under_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 Eina_Bool
-editor_part_source3_default_is(Evas_Object *edit_object, const char *part_name);
+editor_part_textblock_selection_over_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
-editor_part_source3_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+editor_part_textblock_selection_over_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 Eina_Bool
-editor_part_source4_default_is(Evas_Object *edit_object, const char *part_name);
+editor_part_textblock_cursor_under_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
-editor_part_source4_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+editor_part_textblock_cursor_under_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 Eina_Bool
-editor_part_source5_default_is(Evas_Object *edit_object, const char *part_name);
+editor_part_textblock_cursor_over_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
-editor_part_source5_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+editor_part_textblock_cursor_over_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 Eina_Bool
-editor_part_source6_default_is(Evas_Object *edit_object, const char *part_name);
+editor_part_textblock_anchors_under_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
-editor_part_source6_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+editor_part_textblock_anchors_under_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_textblock_anchors_over_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_textblock_anchors_over_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 Eina_Bool
 editor_part_pointer_mode_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool

@@ -105,12 +105,12 @@ EDITOR_STRING_STRING(part_drag_confine, part_drag_confine, ATTRIBUTE_PART_DRAG_C
 EDITOR_STRING_STRING(part_drag_threshold, part_drag_threshold, ATTRIBUTE_PART_DRAG_THRESHOLD)
 EDITOR_STRING_STRING(part_drag_event, part_drag_event, ATTRIBUTE_PART_DRAG_EVENT)
 EDITOR_STRING_STRING(part_group_source, part_source, ATTRIBUTE_PART_GROUP_SOURCE)
-EDITOR_STRING_STRING(part_source, part_source, ATTRIBUTE_PART_SOURCE)
-EDITOR_STRING_STRING(part_source2, part_source2, ATTRIBUTE_PART_SOURCE2)
-EDITOR_STRING_STRING(part_source3, part_source3, ATTRIBUTE_PART_SOURCE3)
-EDITOR_STRING_STRING(part_source4, part_source4, ATTRIBUTE_PART_SOURCE4)
-EDITOR_STRING_STRING(part_source5, part_source5, ATTRIBUTE_PART_SOURCE5)
-EDITOR_STRING_STRING(part_source6, part_source6, ATTRIBUTE_PART_SOURCE6)
+EDITOR_STRING_STRING(part_textblock_selection_under, part_source, ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER)
+EDITOR_STRING_STRING(part_textblock_selection_over, part_source2, ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER)
+EDITOR_STRING_STRING(part_textblock_cursor_under, part_source3, ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER)
+EDITOR_STRING_STRING(part_textblock_cursor_over, part_source4, ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER)
+EDITOR_STRING_STRING(part_textblock_anchors_under, part_source5, ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER)
+EDITOR_STRING_STRING(part_textblock_anchors_over, part_source6, ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER)
 
 Eina_Bool
 editor_part_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
@@ -566,15 +566,15 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UN
         res = res && editor_part_select_mode_reset(edit_object, change, part_name);
         res = res && editor_part_entry_mode_reset(edit_object, change, part_name);
         res = res && editor_part_cursor_mode_reset(edit_object, change, part_name);
-        res = res && editor_part_source_reset(edit_object, change, part_name);
-        res = res && editor_part_source2_reset(edit_object, change, part_name);
-        res = res && editor_part_source3_reset(edit_object, change, part_name);
-        res = res && editor_part_source4_reset(edit_object, change, part_name);
-        res = res && editor_part_source5_reset(edit_object, change, part_name);
-        res = res && editor_part_source6_reset(edit_object, change, part_name);
+        res = res && editor_part_textblock_selection_under_reset(edit_object, change, part_name);
+        res = res && editor_part_textblock_selection_over_reset(edit_object, change, part_name);
+        res = res && editor_part_textblock_cursor_under_reset(edit_object, change, part_name);
+        res = res && editor_part_textblock_cursor_over_reset(edit_object, change, part_name);
+        res = res && editor_part_textblock_anchors_under_reset(edit_object, change, part_name);
+        res = res && editor_part_textblock_anchors_over_reset(edit_object, change, part_name);
      }
    else if (type == EDJE_PART_TYPE_GROUP)
-     res = res && editor_part_source_reset(edit_object, change, part_name);
+     res = res && editor_part_group_source_reset(edit_object, change, part_name);
 
    res = res && editor_part_ignore_flags_reset(edit_object, change, part_name);
    res = res && editor_part_mouse_events_reset(edit_object, change, part_name);
@@ -645,24 +645,26 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UN
 
              eina_stringshare_del(name);
           }
-        #define RESET_PART_REF(ATT) \
-        ref = edje_edit_part_ ## ATT ## _get(edit_object, part); \
+        #define RESET_PART_REF(ATT, REAL_ATT) \
+        ref = edje_edit_part_ ## REAL_ATT ## _get(edit_object, part); \
         if (ref == part_name) \
           res = res && editor_part_ ## ATT ## _reset(edit_object, change, part);
 
-        RESET_PART_REF(clip_to);
-        RESET_PART_REF(drag_confine);
-        RESET_PART_REF(drag_threshold);
-        RESET_PART_REF(drag_event);
+        RESET_PART_REF(clip_to, clip_to);
+        RESET_PART_REF(drag_confine, drag_confine);
+        RESET_PART_REF(drag_threshold, drag_threshold);
+        RESET_PART_REF(drag_event, drag_event);
         if (type == EDJE_PART_TYPE_TEXTBLOCK)
           {
-             RESET_PART_REF(source);
-             RESET_PART_REF(source2);
-             RESET_PART_REF(source3);
-             RESET_PART_REF(source4);
-             RESET_PART_REF(source5);
-             RESET_PART_REF(source6);
+             RESET_PART_REF(textblock_selection_under, source);
+             RESET_PART_REF(textblock_selection_over, source2);
+             RESET_PART_REF(textblock_cursor_under, source3);
+             RESET_PART_REF(textblock_cursor_over, source4);
+             RESET_PART_REF(textblock_anchors_under, source5);
+             RESET_PART_REF(textblock_anchors_over, source6);
           }
+        if (type == EDJE_PART_TYPE_GROUP)
+          RESET_PART_REF(group_source, source);
 
      }
    edje_edit_string_list_free(parts);
