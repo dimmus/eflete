@@ -552,6 +552,7 @@ _groupview_clicked(void *data,
    assert((MODE_NORMAL == wd->mode) || (MODE_CODE == wd->mode));
 
    group_navigator_part_select(wd->group_navi, part ? part : NULL);
+   groupview_part_select(wd->normal.content, part ? part->name : NULL);
 }
 
 Evas_Object *

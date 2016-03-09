@@ -90,6 +90,8 @@ _groupview_smart_show(Evas_Object *o)
    GROUPVIEW_DATA_GET(o, sd);
 
    evas_object_show(sd->event);
+   if (sd->selected)
+     evas_object_show(sd->highlight);
 
    _groupview_parent_sc->show(o);
 }
@@ -102,6 +104,7 @@ _groupview_smart_hide(Evas_Object *o)
    GROUPVIEW_DATA_GET(o, sd)
 
    evas_object_hide(sd->event);
+   evas_object_hide(sd->highlight);
 
    _groupview_parent_sc->hide(o);
 }
@@ -215,6 +218,10 @@ groupview_add(Evas_Object *parent, Group *group)
    evas_object_show(sd->box);
    evas_object_smart_member_add(sd->box, obj);
    _parts_list_new(sd);
+
+   sd->highlight = highlight_add(sd->box);
+   evas_object_color_set(sd->highlight, HIGHLIGHT_COLOR);
+   evas_object_smart_member_add(sd->highlight, obj);
 
    /* hide the editing object by using clipper (clipper is small, it's size is 0,0)
     * with such clipper object invisible and calculate geometry. */
@@ -385,12 +392,15 @@ groupview_part_select(Evas_Object *obj, const char *part)
         gp = _parts_list_find(sd->parts, part);
         assert(gp != NULL);
         sd->selected = gp;
+        evas_object_geometry_set(sd->highlight, gp->geom.x, gp->geom.y, gp->geom.w, gp->geom.h);
+        evas_object_show(sd->highlight);
      }
    else
      {
         if (sd->selected && sd->selected->current_item)
           elm_object_signal_emit(sd->selected->current_item->layout, "border,part_item,hilight,off", "eflete");
         sd->selected = NULL;
+        evas_object_hide(sd->highlight);
      }
 }
 

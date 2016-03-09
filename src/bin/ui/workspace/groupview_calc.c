@@ -1036,5 +1036,13 @@ _parts_stack_layout(Evas_Object          *o __UNUSED__,
           }
         evas_object_raise(gp->draw);
      }
+
+   if (sd->selected)
+     evas_object_geometry_set(sd->highlight,
+                              sd->selected->geom.x,
+                              sd->selected->geom.y,
+                              sd->selected->geom.w,
+                              sd->selected->geom.h);
+
    sd->manual_calc = false;
 }

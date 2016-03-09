@@ -18,6 +18,7 @@
  */
 
 #include "eflete.h"
+#include "highlight.h"
 
 typedef struct _Groupview_Smart_Data Groupview_Smart_Data;
 typedef struct _Groupview_Part Groupview_Part;
@@ -53,6 +54,7 @@ struct _Groupview_Smart_Data
    Groupview_Geom protrusion;
    Eina_List *parts;
    Groupview_Part *selected;
+   Evas_Object *highlight;
    Evas_Object *clipper;
    Eina_Bool separated : 1;
    Eina_Bool manual_calc : 1;
