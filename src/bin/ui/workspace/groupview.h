@@ -79,10 +79,6 @@ typedef struct _Geom Groupview_Geom;
 Evas_Object *
 groupview_add(Evas_Object *parent, Group *group);
 
-TODO("aspect for groupview")
-//Eina_Bool
-//ws_groupview_aspect_set(Evas_Object *obj, double x, double y);
-
 /******************************************************************************/
 /******************************************************************************/
 
