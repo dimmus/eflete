@@ -54,6 +54,15 @@ struct _Property_Group_Data {
              Property_Attribute repeat_events;
              Property_Attribute clip_to;
              Property_Attribute ignore_flags;
+             struct {
+                  Property_Attribute title;
+                  Property_Attribute enable;
+                  Property_Attribute step;
+                  Property_Attribute count;
+                  Property_Attribute confine;
+                  Property_Attribute threshold;
+                  Property_Attribute events;
+             } dragable;
         } part;
         Property_Attribute state;
         Property_Attribute item;
@@ -205,6 +214,16 @@ _subitems_get(Property_Attribute *pa)
          items = eina_list_append(items, &group_pd.items.part.repeat_events);
          items = eina_list_append(items, &group_pd.items.part.clip_to);
          items = eina_list_append(items, &group_pd.items.part.ignore_flags);
+         items = eina_list_append(items, &group_pd.items.part.dragable.title);
+     }
+   else if (pa == &group_pd.items.part.dragable.title)
+     {
+         items = eina_list_append(items, &group_pd.items.part.dragable.enable);
+         items = eina_list_append(items, &group_pd.items.part.dragable.step);
+         items = eina_list_append(items, &group_pd.items.part.dragable.count);
+         items = eina_list_append(items, &group_pd.items.part.dragable.confine);
+         items = eina_list_append(items, &group_pd.items.part.dragable.threshold);
+         items = eina_list_append(items, &group_pd.items.part.dragable.events);
      }
    else
      {
@@ -251,6 +270,17 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_MOUSE_EVENTS:
       case ATTRIBUTE_PART_REPEAT_EVENTS:
       case ATTRIBUTE_PART_CLIP_TO:
+      case ATTRIBUTE_PART_DRAG_STEP_X:
+      case ATTRIBUTE_PART_DRAG_STEP_Y:
+      case ATTRIBUTE_PART_DRAG_COUNT_X:
+      case ATTRIBUTE_PART_DRAG_COUNT_Y:
+      case ATTRIBUTE_PART_DRAG_CONFINE:
+      case ATTRIBUTE_PART_DRAG_THRESHOLD:
+      case ATTRIBUTE_PART_DRAG_EVENT:
+         break;
+      case ATTRIBUTE_PART_DRAG_X:
+      case ATTRIBUTE_PART_DRAG_Y:
+         elm_spinner_min_max_set(action->control, -1, 1);
          break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
          _fill_combobox_with_enum(action->control, ignore_flags_strings);
@@ -334,6 +364,75 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_part_ignore_flags_get(group_pd.group->edit_object, group_pd.part->name));
          break;
+      case ATTRIBUTE_PART_DRAG_X:
+         int_val1 = edje_edit_part_drag_x_get(group_pd.group->edit_object, group_pd.part->name);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_DRAG_Y:
+         int_val1 = edje_edit_part_drag_y_get(group_pd.group->edit_object, group_pd.part->name);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_DRAG_STEP_X:
+         int_val1 = edje_edit_part_drag_step_x_get(group_pd.group->edit_object, group_pd.part->name);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_DRAG_STEP_Y:
+         int_val1 = edje_edit_part_drag_step_y_get(group_pd.group->edit_object, group_pd.part->name);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_DRAG_COUNT_X:
+         int_val1 = edje_edit_part_drag_count_x_get(group_pd.group->edit_object, group_pd.part->name);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_DRAG_COUNT_Y:
+         int_val1 = edje_edit_part_drag_count_y_get(group_pd.group->edit_object, group_pd.part->name);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_DRAG_CONFINE:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_part_drag_confine_get(group_pd.group->edit_object, group_pd.part->name);
+         if (str_val1)
+           ewe_combobox_text_set(action->control, str_val1);
+         else
+           ewe_combobox_text_set(action->control, STR_NONE);
+         ewe_combobox_item_add(action->control, STR_NONE);
+         EINA_LIST_FOREACH(group_pd.group->parts, l, part)
+           {
+              if (part != group_pd.part)
+                ewe_combobox_item_add(action->control, part->name);
+           }
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_PART_DRAG_THRESHOLD:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_part_drag_threshold_get(group_pd.group->edit_object, group_pd.part->name);
+         if (str_val1)
+           ewe_combobox_text_set(action->control, str_val1);
+         else
+           ewe_combobox_text_set(action->control, STR_NONE);
+         ewe_combobox_item_add(action->control, STR_NONE);
+         EINA_LIST_FOREACH(group_pd.group->parts, l, part)
+           {
+              if (part != group_pd.part)
+                ewe_combobox_item_add(action->control, part->name);
+           }
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_PART_DRAG_EVENT:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_part_drag_event_get(group_pd.group->edit_object, group_pd.part->name);
+         if (str_val1)
+           ewe_combobox_text_set(action->control, str_val1);
+         else
+           ewe_combobox_text_set(action->control, STR_NONE);
+         ewe_combobox_item_add(action->control, STR_NONE);
+         EINA_LIST_FOREACH(group_pd.group->parts, l, part)
+           {
+              if (part != group_pd.part)
+                ewe_combobox_item_add(action->control, part->name);
+           }
+         edje_edit_string_free(str_val1);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -407,6 +506,42 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          STR_VAL(str_val1, eina_stringshare_add(
             ignore_flags_strings[edje_edit_part_ignore_flags_get(group_pd.group->edit_object,
                                                                  group_pd.part->name)]));
+         break;
+      case ATTRIBUTE_PART_DRAG_X:
+         group_pd.history.format = _("dragable enable x changed from %d to %d");
+         VAL(int_val1) = edje_edit_part_drag_x_get(group_pd.group->edit_object, group_pd.part->name);
+         break;
+      case ATTRIBUTE_PART_DRAG_Y:
+         group_pd.history.format = _("dragable enable y changed from %d to %d");
+         VAL(int_val1) = edje_edit_part_drag_y_get(group_pd.group->edit_object, group_pd.part->name);
+         break;
+      case ATTRIBUTE_PART_DRAG_STEP_X:
+         group_pd.history.format = _("dragable step x changed from %d to %d");
+         VAL(int_val1) = edje_edit_part_drag_step_x_get(group_pd.group->edit_object, group_pd.part->name);
+         break;
+      case ATTRIBUTE_PART_DRAG_STEP_Y:
+         group_pd.history.format = _("dragable step y changed from %d to %d");
+         VAL(int_val1) = edje_edit_part_drag_step_y_get(group_pd.group->edit_object, group_pd.part->name);
+         break;
+      case ATTRIBUTE_PART_DRAG_COUNT_X:
+         group_pd.history.format = _("dragable count x changed from %d to %d");
+         VAL(int_val1) = edje_edit_part_drag_count_x_get(group_pd.group->edit_object, group_pd.part->name);
+         break;
+      case ATTRIBUTE_PART_DRAG_COUNT_Y:
+         group_pd.history.format = _("dragable count y changed from %d to %d");
+         VAL(int_val1) = edje_edit_part_drag_count_y_get(group_pd.group->edit_object, group_pd.part->name);
+         break;
+      case ATTRIBUTE_PART_DRAG_CONFINE:
+         group_pd.history.format = _("dragable confine changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_part_drag_confine_get(group_pd.group->edit_object, group_pd.part->name));
+         break;
+      case ATTRIBUTE_PART_DRAG_THRESHOLD:
+         group_pd.history.format = _("dragable threshold changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_part_drag_threshold_get(group_pd.group->edit_object, group_pd.part->name));
+         break;
+      case ATTRIBUTE_PART_DRAG_EVENT:
+         group_pd.history.format = _("dragable event changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_part_drag_event_get(group_pd.group->edit_object, group_pd.part->name));
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -498,6 +633,48 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
+      case ATTRIBUTE_PART_DRAG_X:
+         editor_part_drag_x_set(group_pd.group->edit_object, group_pd.history.change, true, group_pd.part->name, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_part_drag_x_get(group_pd.group->edit_object, group_pd.part->name);
+         break;
+      case ATTRIBUTE_PART_DRAG_Y:
+         editor_part_drag_y_set(group_pd.group->edit_object, group_pd.history.change, true, group_pd.part->name, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_part_drag_y_get(group_pd.group->edit_object, group_pd.part->name);
+         break;
+      case ATTRIBUTE_PART_DRAG_STEP_X:
+         editor_part_drag_step_x_set(group_pd.group->edit_object, group_pd.history.change, true, group_pd.part->name, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_part_drag_step_x_get(group_pd.group->edit_object, group_pd.part->name);
+         break;
+      case ATTRIBUTE_PART_DRAG_STEP_Y:
+         editor_part_drag_step_y_set(group_pd.group->edit_object, group_pd.history.change, true, group_pd.part->name, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_part_drag_step_y_get(group_pd.group->edit_object, group_pd.part->name);
+         break;
+      case ATTRIBUTE_PART_DRAG_COUNT_X:
+         editor_part_drag_count_x_set(group_pd.group->edit_object, group_pd.history.change, true, group_pd.part->name, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_part_drag_count_x_get(group_pd.group->edit_object, group_pd.part->name);
+         break;
+      case ATTRIBUTE_PART_DRAG_COUNT_Y:
+         editor_part_drag_count_y_set(group_pd.group->edit_object, group_pd.history.change, true, group_pd.part->name, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_part_drag_count_y_get(group_pd.group->edit_object, group_pd.part->name);
+         break;
+      case ATTRIBUTE_PART_DRAG_CONFINE:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         editor_part_drag_confine_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, str_val1);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PART_DRAG_THRESHOLD:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         editor_part_drag_threshold_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, str_val1);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PART_DRAG_EVENT:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         editor_part_drag_event_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, str_val1);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -535,6 +712,9 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_CLIP_TO:
       case ATTRIBUTE_PART_IGNORE_FLAGS:
+      case ATTRIBUTE_PART_DRAG_CONFINE:
+      case ATTRIBUTE_PART_DRAG_THRESHOLD:
+      case ATTRIBUTE_PART_DRAG_EVENT:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (group_pd.history.old.str_val1) ? group_pd.history.old.str_val1 : STR_NONE,
@@ -544,6 +724,12 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_GROUP_MIN_H:
       case ATTRIBUTE_GROUP_MAX_W:
       case ATTRIBUTE_GROUP_MAX_H:
+      case ATTRIBUTE_PART_DRAG_X:
+      case ATTRIBUTE_PART_DRAG_Y:
+      case ATTRIBUTE_PART_DRAG_STEP_X:
+      case ATTRIBUTE_PART_DRAG_STEP_Y:
+      case ATTRIBUTE_PART_DRAG_COUNT_X:
+      case ATTRIBUTE_PART_DRAG_COUNT_Y:
          CHECK_VAL(int_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.int_val1,
@@ -649,6 +835,36 @@ _init_group_block()
 }
 
 static void
+_init_part_dragable_block()
+{
+   group_pd.items.part.dragable.title.name = "dragable";
+   group_pd.items.part.dragable.title.expandable = true;
+   group_pd.items.part.dragable.title.expanded = false;
+   group_pd.items.part.dragable.title.expand_cb = _subitems_get;
+
+   group_pd.items.part.dragable.enable.name = "enable";
+   _action1(&group_pd.items.part.dragable.enable, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_X);
+   _action2(&group_pd.items.part.dragable.enable, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_Y);
+
+   group_pd.items.part.dragable.step.name = "step";
+   _action1(&group_pd.items.part.dragable.step, "x", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_X);
+   _action2(&group_pd.items.part.dragable.step, "y", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_Y);
+
+   group_pd.items.part.dragable.count.name = "count";
+   _action1(&group_pd.items.part.dragable.count, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_COUNT_X);
+   _action2(&group_pd.items.part.dragable.count, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_COUNT_Y);
+
+   group_pd.items.part.dragable.confine.name = "confine";
+   _action1(&group_pd.items.part.dragable.confine, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_CONFINE);
+
+   group_pd.items.part.dragable.threshold.name = "threshold";
+   _action1(&group_pd.items.part.dragable.threshold, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_THRESHOLD);
+
+   group_pd.items.part.dragable.events.name = "events";
+   _action1(&group_pd.items.part.dragable.events, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_EVENT);
+}
+
+static void
 _init_part_block()
 {
    group_pd.items.part.title.name = "part";
@@ -676,6 +892,8 @@ _init_part_block()
 
    group_pd.items.part.ignore_flags.name = "ignore flags";
    _action1(&group_pd.items.part.ignore_flags, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_IGNORE_FLAGS);
+
+   _init_part_dragable_block();
 }
 
 /* public */
