@@ -92,7 +92,7 @@ groupview_add(Evas_Object *parent, Group *group);
  * @ingroup Groupview
  */
 Eina_Bool
-groupview_edit_object_recalc_all(Evas_Object *obj);
+groupview_recalc_all(Evas_Object *obj);
 
 /**
  * Update the parts attributes, without recalculation.
@@ -126,7 +126,7 @@ groupview_hard_update(Evas_Object *obj);
  * @ingroup Groupview
  */
 Evas_Object *
-groupview_edit_object_part_draw_get(Evas_Object *obj, const char *part);
+groupview_part_draw_get(Evas_Object *obj, const char *part);
 
 /**
  * Add to groupview a new part. The function add part to edje edit object and
@@ -140,7 +140,7 @@ groupview_edit_object_part_draw_get(Evas_Object *obj, const char *part);
  * @ingroup Groupview
  */
 Eina_Bool
-groupview_edit_object_part_add(Evas_Object *obj, Part *part);
+groupview_part_add(Evas_Object *obj, Part *part);
 
 /**
  * Delete the part from groupview and from editable object.
@@ -153,7 +153,7 @@ groupview_edit_object_part_add(Evas_Object *obj, Part *part);
  * @ingroup Groupview
  */
 Eina_Bool
-groupview_edit_object_part_del(Evas_Object *obj, Part *part);
+groupview_part_del(Evas_Object *obj, Part *part);
 
 /**
  * Get the object with the object area geometry.
@@ -200,8 +200,7 @@ groupview_part_object_area_visible_get(Evas_Object *obj);
  * @ingroup Groupview
  */
 Eina_Bool
-groupview_edit_object_parts_separated(Evas_Object *obj,
-                                      Eina_Bool separated);
+groupview_parts_separated(Evas_Object *obj, Eina_Bool separated);
 
 /**
  * Check if separate mode is activated.
@@ -211,7 +210,7 @@ groupview_edit_object_parts_separated(Evas_Object *obj,
  * @ingroup Groupview
  */
 Eina_Bool
-groupview_edit_object_parts_separated_is(Evas_Object *obj);
+groupview_parts_separated_is(Evas_Object *obj);
 
 /**
  * Select the part in groupview.
@@ -222,7 +221,7 @@ groupview_edit_object_parts_separated_is(Evas_Object *obj);
  * @ingroup Groupview
  */
 void
-groupview_edit_object_part_select(Evas_Object *obj, const char *part);
+groupview_part_select(Evas_Object *obj, const char *part);
 
 /**
  * Set a visibility for groupview part.
@@ -248,9 +247,7 @@ groupview_part_visible_set(Evas_Object *obj, Part *part);
  * @ingroup Groupview
  */
 Eina_Bool
-groupview_edit_object_part_restack(Evas_Object *obj,
-                                   const char *part,
-                                   const char *below);
+groupview_part_restack(Evas_Object *obj, const char *part, const char *below);
 
 /**
  * Set zoom factor for view zoommed style in groupview object.
@@ -277,9 +274,7 @@ groupview_zoom_factor_set(Evas_Object *obj, double factor);
  * @ingroup Groupview
  */
 void
-groupview_edit_object_part_item_selected_set(Evas_Object *obj,
-                                             Eina_Stringshare *item_name,
-                                             Eina_Bool selected);
+groupview_part_item_selected_set(Evas_Object *obj, Eina_Stringshare *item_name, Eina_Bool selected);
 
 /**
  * Protrusion values it's distinction of object geomentry, what calculated by

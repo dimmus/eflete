@@ -713,7 +713,7 @@ workspace_part_add(Evas_Object *obj, Eina_Stringshare *part_name)
    assert(part_name != NULL);
 
    part = gm_part_add(ap.project, wd->group, part_name);
-   groupview_edit_object_part_add(wd->normal.content, part);
+   groupview_part_add(wd->normal.content, part);
    group_navigator_part_add(wd->group_navi, part);
    demo_group_part_add(wd->demo_navi, part);
 }
@@ -728,7 +728,7 @@ workspace_part_del(Evas_Object *obj, Eina_Stringshare *part_name)
    part = pm_resource_unsorted_get(wd->group->parts, part_name);
    group_navigator_part_del(wd->group_navi, part);
    demo_group_part_del(wd->demo_navi, part);
-   groupview_edit_object_part_del(wd->normal.content, part);
+   groupview_part_del(wd->normal.content, part);
    gm_part_del(ap.project, part);
 }
 
@@ -845,7 +845,7 @@ workspace_part_restack(Evas_Object *obj,
    group_navigator_part_restack(wd->group_navi, part, rel_part);
    gm_part_restack(part, rel_part);
 
-   groupview_edit_object_part_restack(wd->normal.content, part_name, relative_part_name);
+   groupview_part_restack(wd->normal.content, part_name, relative_part_name);
 }
 
 void

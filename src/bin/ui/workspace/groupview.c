@@ -229,7 +229,7 @@ groupview_add(Evas_Object *parent, Group *group)
 /******************************************************************************/
 /******************************************************************************/
 Eina_Bool
-groupview_edit_object_recalc_all(Evas_Object *obj)
+groupview_recalc_all(Evas_Object *obj)
 {
    GROUPVIEW_DATA_GET(obj, sd);
 
@@ -256,7 +256,7 @@ groupview_hard_update(Evas_Object *obj)
 }
 
 Evas_Object *
-groupview_edit_object_part_draw_get(Evas_Object *obj, const char *part)
+groupview_part_draw_get(Evas_Object *obj, const char *part)
 {
    Groupview_Part *gp;
    GROUPVIEW_DATA_GET(obj, sd)
@@ -271,7 +271,7 @@ groupview_edit_object_part_draw_get(Evas_Object *obj, const char *part)
 }
 
 Eina_Bool
-groupview_edit_object_part_add(Evas_Object *obj, Part *part)
+groupview_part_add(Evas_Object *obj, Part *part)
 {
    GROUPVIEW_DATA_GET(obj, sd);
 
@@ -281,7 +281,7 @@ groupview_edit_object_part_add(Evas_Object *obj, Part *part)
 }
 
 Eina_Bool
-groupview_edit_object_part_del(Evas_Object *obj, Part *part)
+groupview_part_del(Evas_Object *obj, Part *part)
 {
    GROUPVIEW_DATA_GET(obj, sd);
 
@@ -291,9 +291,7 @@ groupview_edit_object_part_del(Evas_Object *obj, Part *part)
 }
 
 Eina_Bool
-groupview_edit_object_part_restack(Evas_Object *obj,
-                                   const char *part,
-                                   const char *rel_part)
+groupview_part_restack(Evas_Object *obj, const char *part, const char *rel_part)
 {
    GROUPVIEW_DATA_GET(obj, sd);
 
@@ -326,8 +324,8 @@ groupview_part_object_area_visible_get(Evas_Object *obj)
 }
 
 Eina_Bool
-groupview_edit_object_parts_separated(Evas_Object *obj __UNUSED__,
-                                      Eina_Bool separated __UNUSED__)
+groupview_parts_separated(Evas_Object *obj __UNUSED__,
+                          Eina_Bool separated __UNUSED__)
 {
 #if 0
    int w, h, count;
@@ -369,14 +367,14 @@ groupview_edit_object_parts_separated(Evas_Object *obj __UNUSED__,
 }
 
 Eina_Bool
-groupview_edit_object_parts_separated_is(Evas_Object *obj)
+groupview_parts_separated_is(Evas_Object *obj)
 {
    GROUPVIEW_DATA_GET(obj, sd);
    return sd->separated;
 }
 
 void
-groupview_edit_object_part_select(Evas_Object *obj, const char *part)
+groupview_part_select(Evas_Object *obj, const char *part)
 {
    Groupview_Part *gp;
    GROUPVIEW_DATA_GET(obj, sd);
@@ -423,9 +421,9 @@ groupview_zoom_factor_set(Evas_Object *obj, double factor __UNUSED__)
 }
 
 void
-groupview_edit_object_part_item_selected_set(Evas_Object *obj,
-                                             Eina_Stringshare *item_name,
-                                             Eina_Bool selected)
+groupview_part_item_selected_set(Evas_Object *obj,
+                                 Eina_Stringshare *item_name,
+                                 Eina_Bool selected)
 {
    Groupview_Part *gp;
    Groupview_Item *item;
