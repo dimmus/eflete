@@ -35,6 +35,7 @@ struct _Property_Group_Data {
       Change *change;
       struct {
          int int_val1;
+         double double_val1;
          Eina_Stringshare *str_val1;
       } old, new;
    } history;
@@ -73,6 +74,15 @@ struct _Property_Group_Data {
              Property_Attribute title;
              Property_Attribute name;
              Property_Attribute visible;
+             struct {
+                  Property_Attribute title;
+                  Property_Attribute min;
+                  Property_Attribute max;
+                  Property_Attribute fixed;
+                  Property_Attribute minmul;
+                  Property_Attribute aspect_preference;
+                  Property_Attribute aspect;
+             } size;
         } state;
         Property_Attribute item;
         Property_Attribute program;
@@ -94,6 +104,12 @@ static Property_Group_Update_Info attribute_map[ATTRIBUTE_LAST];
 static const char *ignore_flags_strings[] = { STR_NONE,
                                               "On hold",
                                               NULL};
+static const char *aspect_preference_strings[] = { STR_NONE,
+                                                   "Vertical",
+                                                   "Horizontal",
+                                                   "Both",
+                                                   "Source",
+                                                   NULL};
 /* defines for args */
 #define EDIT_OBJ group_pd.group->edit_object
 #define PART_ARGS group_pd.part->name
@@ -261,6 +277,16 @@ _subitems_get(Property_Attribute *pa)
      {
          items = eina_list_append(items, &group_pd.items.state.name);
          items = eina_list_append(items, &group_pd.items.state.visible);
+         items = eina_list_append(items, &group_pd.items.state.size.title);
+     }
+   else if (pa == &group_pd.items.state.size.title)
+     {
+         items = eina_list_append(items, &group_pd.items.state.size.min);
+         items = eina_list_append(items, &group_pd.items.state.size.max);
+         items = eina_list_append(items, &group_pd.items.state.size.fixed);
+         items = eina_list_append(items, &group_pd.items.state.size.aspect_preference);
+         items = eina_list_append(items, &group_pd.items.state.size.aspect);
+         items = eina_list_append(items, &group_pd.items.state.size.minmul);
      }
    else if (pa == &group_pd.items.part.dragable.title)
      {
@@ -330,10 +356,28 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_DRAG_EVENT:
       case ATTRIBUTE_PART_GROUP_SOURCE:
       case ATTRIBUTE_STATE_VISIBLE:
+      case ATTRIBUTE_STATE_MIN_W:
+      case ATTRIBUTE_STATE_MIN_H:
+      case ATTRIBUTE_STATE_MINMUL_W:
+      case ATTRIBUTE_STATE_MINMUL_H:
+      case ATTRIBUTE_STATE_FIXED_W:
+      case ATTRIBUTE_STATE_FIXED_H:
+         break;
+      case ATTRIBUTE_STATE_MAX_W:
+      case ATTRIBUTE_STATE_MAX_H:
+         elm_spinner_min_max_set(action->control, -1, 9999);
          break;
       case ATTRIBUTE_PART_DRAG_X:
       case ATTRIBUTE_PART_DRAG_Y:
          elm_spinner_min_max_set(action->control, -1, 1);
+         break;
+      case ATTRIBUTE_STATE_ASPECT_MIN:
+      case ATTRIBUTE_STATE_ASPECT_MAX:
+         elm_spinner_step_set(action->control, 0.1);
+         elm_spinner_label_format_set(action->control, "%.2f");
+         break;
+      case ATTRIBUTE_STATE_ASPECT_PREF:
+         _fill_combobox_with_enum(action->control, aspect_preference_strings);
          break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
          _fill_combobox_with_enum(action->control, ignore_flags_strings);
@@ -402,6 +446,7 @@ static void
 _update_cb(Property_Attribute *pa, Property_Action *action)
 {
    int int_val1;
+   double double_val1;
    Eina_Bool bool_val1;
    Eina_Stringshare *str_val1;
 
@@ -512,6 +557,50 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_VISIBLE:
          bool_val1 = edje_edit_state_visible_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
+         break;
+      case ATTRIBUTE_STATE_MIN_W:
+         int_val1 = edje_edit_state_min_w_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_STATE_MIN_H:
+         int_val1 = edje_edit_state_min_h_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_STATE_MINMUL_W:
+         int_val1 = edje_edit_state_minmul_w_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_STATE_MINMUL_H:
+         int_val1 = edje_edit_state_minmul_h_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_STATE_FIXED_W:
+         bool_val1 = edje_edit_state_fixed_w_get(EDIT_OBJ, STATE_ARGS);
+         elm_check_state_set(action->control, bool_val1);
+         break;
+      case ATTRIBUTE_STATE_FIXED_H:
+         bool_val1 = edje_edit_state_fixed_h_get(EDIT_OBJ, STATE_ARGS);
+         elm_check_state_set(action->control, bool_val1);
+         break;
+      case ATTRIBUTE_STATE_MAX_W:
+         int_val1 = edje_edit_state_max_w_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_STATE_MAX_H:
+         int_val1 = edje_edit_state_max_h_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_STATE_ASPECT_MIN:
+         double_val1 = edje_edit_state_aspect_min_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_ASPECT_MAX:
+         double_val1 = edje_edit_state_aspect_max_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_ASPECT_PREF:
+         ewe_combobox_select_item_set(action->control,
+           (int) edje_edit_state_aspect_pref_get(EDIT_OBJ, STATE_ARGS));
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -633,6 +722,50 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_VISIBLE:
          group_pd.history.format = _("state visible %s");
          break;
+      case ATTRIBUTE_STATE_MIN_W:
+         group_pd.history.format = _("state min_w changed from %d to %d");
+         VAL(int_val1) = edje_edit_state_min_w_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_MIN_H:
+         group_pd.history.format = _("state min_h changed from %d to %d");
+         VAL(int_val1) = edje_edit_state_min_h_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_MINMUL_W:
+         group_pd.history.format = _("state minmul_w changed from %d to %d");
+         VAL(int_val1) = edje_edit_state_minmul_w_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_MINMUL_H:
+         group_pd.history.format = _("state minmul_h changed from %d to %d");
+         VAL(int_val1) = edje_edit_state_minmul_h_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FIXED_W:
+         group_pd.history.format = _("state fixed_w %s");
+         break;
+      case ATTRIBUTE_STATE_FIXED_H:
+         group_pd.history.format = _("state fixed_h %s");
+         break;
+      case ATTRIBUTE_STATE_MAX_W:
+         group_pd.history.format = _("state max_w changed from %d to %d");
+         VAL(int_val1) = edje_edit_state_max_w_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_MAX_H:
+         group_pd.history.format = _("state max_h changed from %d to %d");
+         VAL(int_val1) = edje_edit_state_max_h_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_ASPECT_MIN:
+         group_pd.history.format = _("state aspect_min changed from %.2f to %.2f");
+         VAL(int_val1) = edje_edit_state_aspect_min_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_ASPECT_MAX:
+         group_pd.history.format = _("state aspect_max changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_state_aspect_max_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_ASPECT_PREF:
+         group_pd.history.format = _("aspect preference changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(
+            aspect_preference_strings[edje_edit_state_aspect_pref_get(EDIT_OBJ, STATE_ARGS)]));
+         break;
+
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("start callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -777,6 +910,51 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_VISIBLE:
          editor_state_visible_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
          break;
+      case ATTRIBUTE_STATE_MIN_W:
+         editor_state_min_w_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_state_min_w_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_MIN_H:
+         editor_state_min_h_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_state_min_h_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_MINMUL_W:
+         editor_state_minmul_w_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_state_minmul_w_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_MINMUL_H:
+         editor_state_minmul_h_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_state_minmul_h_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FIXED_W:
+         editor_state_fixed_w_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         break;
+      case ATTRIBUTE_STATE_FIXED_H:
+         editor_state_fixed_h_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         break;
+      case ATTRIBUTE_STATE_MAX_W:
+         editor_state_max_w_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_state_max_w_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_MAX_H:
+         editor_state_max_h_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_state_max_h_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_ASPECT_MIN:
+         editor_state_aspect_min_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.double_val1 = edje_edit_state_aspect_min_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_ASPECT_MAX:
+         editor_state_aspect_max_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.double_val1 = edje_edit_state_aspect_max_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_ASPECT_PREF:
+         str_val1 = eina_stringshare_add(cb_item->title);
+         editor_state_aspect_pref_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item->index);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -819,6 +997,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
       case ATTRIBUTE_PART_DRAG_EVENT:
       case ATTRIBUTE_PART_GROUP_SOURCE:
+      case ATTRIBUTE_STATE_ASPECT_PREF:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (group_pd.history.old.str_val1) ? group_pd.history.old.str_val1 : STR_NONE,
@@ -834,10 +1013,27 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_DRAG_STEP_Y:
       case ATTRIBUTE_PART_DRAG_COUNT_X:
       case ATTRIBUTE_PART_DRAG_COUNT_Y:
+      case ATTRIBUTE_STATE_MIN_W:
+      case ATTRIBUTE_STATE_MIN_H:
+      case ATTRIBUTE_STATE_MINMUL_W:
+      case ATTRIBUTE_STATE_MINMUL_H:
+      case ATTRIBUTE_STATE_MAX_W:
+      case ATTRIBUTE_STATE_MAX_H:
          CHECK_VAL(int_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.int_val1,
                                        group_pd.history.new.int_val1);
+         break;
+      case ATTRIBUTE_STATE_ASPECT_MIN:
+      case ATTRIBUTE_STATE_ASPECT_MAX:
+         if (fabs(group_pd.history.new.double_val1 - group_pd.history.old.double_val1) < DBL_EPSILON)
+           {
+              change_free(group_pd.history.change);
+              goto clean;
+           }
+         msg = eina_stringshare_printf(group_pd.history.format,
+                                       group_pd.history.old.double_val1,
+                                       group_pd.history.new.double_val1);
          break;
       case ATTRIBUTE_PART_TYPE:
          /* part type can't be changed */
@@ -862,6 +1058,17 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (bool_val1) ? _("turned on") : _("turned off"));
          break;
+      case ATTRIBUTE_STATE_FIXED_W:
+         bool_val1 = edje_edit_state_fixed_w_get(EDIT_OBJ, STATE_ARGS);
+         msg = eina_stringshare_printf(group_pd.history.format,
+                                       (bool_val1) ? _("turned on") : _("turned off"));
+         break;
+      case ATTRIBUTE_STATE_FIXED_H:
+         bool_val1 = edje_edit_state_fixed_h_get(EDIT_OBJ, STATE_ARGS);
+         msg = eina_stringshare_printf(group_pd.history.format,
+                                       (bool_val1) ? _("turned on") : _("turned off"));
+         break;
+
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("stop callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -1018,6 +1225,38 @@ _init_part_block()
 }
 
 static void
+_init_state_size_block()
+{
+   group_pd.items.state.size.title.name = "size";
+   group_pd.items.state.size.title.expandable = true;
+   group_pd.items.state.size.title.expanded = true;
+   group_pd.items.state.size.title.expand_cb = _subitems_get;
+
+   group_pd.items.state.size.min.name = "min";
+   _action1(&group_pd.items.state.size.min, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MIN_W);
+   _action2(&group_pd.items.state.size.min, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MIN_H);
+
+   group_pd.items.state.size.max.name = "max";
+   _action1(&group_pd.items.state.size.max, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAX_W);
+   _action2(&group_pd.items.state.size.max, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAX_H);
+
+   group_pd.items.state.size.minmul.name = "minmul";
+   _action1(&group_pd.items.state.size.minmul, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_W);
+   _action2(&group_pd.items.state.size.minmul, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_H);
+
+   group_pd.items.state.size.fixed.name = "fixed";
+   _action1(&group_pd.items.state.size.fixed, "w", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_W);
+   _action2(&group_pd.items.state.size.fixed, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_H);
+
+   group_pd.items.state.size.aspect_preference.name = "aspect preference";
+   _action1(&group_pd.items.state.size.aspect_preference, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_ASPECT_PREF);
+
+   group_pd.items.state.size.aspect.name = "aspect";
+   _action1(&group_pd.items.state.size.aspect, "min", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MIN);
+   _action2(&group_pd.items.state.size.aspect, "max", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MAX);
+}
+
+static void
 _init_state_block()
 {
    group_pd.items.state.title.name = "state";
@@ -1030,6 +1269,8 @@ _init_state_block()
 
    group_pd.items.state.visible.name = "visible";
    _action1(&group_pd.items.state.visible, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_VISIBLE);
+
+   _init_state_size_block();
 }
 
 /* public */
