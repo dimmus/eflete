@@ -19,7 +19,6 @@
 
 #include "workspace.h"
 #include "main_window.h"
-#include "highlight.h"
 #include "groupview.h"
 #include "container.h"
 #include "eflete.h"
@@ -38,6 +37,11 @@
    assert(OBJ != NULL); \
    Workspace_Data *wd = evas_object_data_get(OBJ, WORKSPACE_DATA); \
    assert(wd != NULL);
+
+/* As the workspace can manage the one drag in one time, and only one workspace
+ * viewed, we can use the static Change for all workspace */
+static Change *change;
+static Evas_Coord part_w, part_h;
 
 typedef enum
 {
@@ -541,6 +545,9 @@ _part_visible(void *data,
    groupview_part_visible_set(wd->normal.content, part);
 }
 
+/******************************************************************************/
+/*                           GROUPVIEW CALLBACKS                              */
+/******************************************************************************/
 static void
 _groupview_clicked(void *data,
                    Evas_Object *obj __UNUSED__,
@@ -554,6 +561,64 @@ _groupview_clicked(void *data,
    group_navigator_part_select(wd->group_navi, part ? part : NULL);
    groupview_part_select(wd->normal.content, part ? part->name : NULL);
 }
+
+static void
+_groupview_hl_part_drag_start(void *data,
+                              Evas_Object *obj __UNUSED__,
+                              void *event_info)
+{
+   Workspace_Data *wd = data;
+   Groupview_HL_Event *event = event_info;
+
+   change = change_add(NULL);
+   part_w = edje_edit_state_max_w_get(wd->group->edit_object, event->part->name,
+                                      event->part->current_state->parsed_name,
+                                      event->part->current_state->parsed_val);
+   part_h = edje_edit_state_max_h_get(wd->group->edit_object, event->part->name,
+                                      event->part->current_state->parsed_name,
+                                      event->part->current_state->parsed_val);
+}
+
+static void
+_groupview_hl_part_changed(void *data,
+                           Evas_Object *obj __UNUSED__,
+                           void *event_info)
+{
+   Workspace_Data *wd = data;
+   Groupview_HL_Event *event = event_info;
+
+   editor_state_max_w_set(wd->group->edit_object, change, true, event->part->name,
+                          event->part->current_state->parsed_name,
+                          event->part->current_state->parsed_val,
+                          event->hl_event->w);
+   editor_state_max_h_set(wd->group->edit_object, change, true, event->part->name,
+                          event->part->current_state->parsed_name,
+                          event->part->current_state->parsed_val,
+                          event->hl_event->h);
+}
+
+static void
+_groupview_hl_part_drag_stop(void *data,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info)
+{
+   Workspace_Data *wd = data;
+   Groupview_HL_Event *event = event_info;
+   Eina_Stringshare *msg;
+
+   if ((part_w == event->hl_event->w) && (part_h == event->hl_event->h))
+     change_free(change);
+   else
+     {
+        msg = eina_stringshare_printf(_("max size changed from [%dx%d] to [%dx%d]"), part_w, part_h, event->hl_event->w, event->hl_event->h);
+        change_description_set(change, msg);
+        eina_stringshare_del(msg);
+        history_change_add(wd->group->history, change);
+     }
+
+   change = NULL;
+}
+/******************************************************************************/
 
 Evas_Object *
 workspace_add(Evas_Object *parent, Group *group)
@@ -631,6 +696,9 @@ workspace_add(Evas_Object *parent, Group *group)
    _container_hints_set(wd);
    container_protrusion_func_set(wd->normal.container, groupview_protrusion_get);
    evas_object_smart_callback_add(wd->normal.content, SIGNAL_GROUPVIEW_CLICKED, _groupview_clicked, wd);
+   evas_object_smart_callback_add(wd->normal.content, SIGNAL_GROUPVIEW_HL_PART_DRAG_START, _groupview_hl_part_drag_start, wd);
+   evas_object_smart_callback_add(wd->normal.content, SIGNAL_GROUPVIEW_HL_PART_CHANGED, _groupview_hl_part_changed, wd);
+   evas_object_smart_callback_add(wd->normal.content, SIGNAL_GROUPVIEW_HL_PART_DRAG_STOP, _groupview_hl_part_drag_stop, wd);
 
    wd->group_navi = group_navigator_add(wd->panes, group);
    elm_object_part_content_set(wd->panes, "right", wd->group_navi);
