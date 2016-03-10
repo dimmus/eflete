@@ -1038,11 +1038,19 @@ _parts_stack_layout(Evas_Object          *o __UNUSED__,
      }
 
    if (sd->selected)
-     evas_object_geometry_set(sd->highlight,
-                              sd->selected->geom.x,
-                              sd->selected->geom.y,
-                              sd->selected->geom.w,
-                              sd->selected->geom.h);
+     {
+        evas_object_geometry_set(sd->highlight,
+                                 sd->selected->geom.x,
+                                 sd->selected->geom.y,
+                                 sd->selected->geom.w,
+                                 sd->selected->geom.h);
+        if (sd->obj_area_visible)
+          evas_object_geometry_set(sd->object_area,
+                                   sd->selected->object_area_geom.x,
+                                   sd->selected->object_area_geom.y,
+                                   sd->selected->object_area_geom.w,
+                                   sd->selected->object_area_geom.h);
+     }
 
    sd->manual_calc = false;
 }

@@ -274,6 +274,11 @@ groupview_add(Evas_Object *parent, Group *group)
    evas_object_smart_member_add(sd->box, obj);
    _parts_list_new(sd);
 
+   sd->object_area = elm_layout_add(sd->parent);
+   elm_layout_theme_set(sd->object_area, "layout", "groupview", "object_area");
+   evas_object_repeat_events_set(sd->object_area, true);
+   evas_object_smart_member_add(sd->object_area, obj);
+
    sd->highlight = highlight_add(sd->box);
    evas_object_color_set(sd->highlight, HIGHLIGHT_COLOR);
    evas_object_smart_callback_add(sd->highlight, "hl,drag,start", _hl_part_drag_start_cb, sd);
@@ -375,18 +380,19 @@ groupview_part_object_area_get(Evas_Object *obj)
 }
 
 void
-groupview_part_object_area_visible_set(Evas_Object *obj, Eina_Bool visible __UNUSED__)
+groupview_part_object_area_visible_set(Evas_Object *obj, Eina_Bool visible)
 {
    GROUPVIEW_DATA_GET(obj, sd);
 
-   if (!sd->selected) return;
+   sd->obj_area_visible = visible;
 }
 
 Eina_Bool
 groupview_part_object_area_visible_get(Evas_Object *obj)
 {
    GROUPVIEW_DATA_GET(obj, sd);
-   return false;
+
+   return sd->obj_area_visible;
 }
 
 Eina_Bool
@@ -452,6 +458,15 @@ groupview_part_select(Evas_Object *obj, const char *part)
         sd->selected = gp;
         evas_object_geometry_set(sd->highlight, gp->geom.x, gp->geom.y, gp->geom.w, gp->geom.h);
         evas_object_show(sd->highlight);
+        if (sd->obj_area_visible)
+          {
+             evas_object_geometry_set(sd->object_area,
+                                      gp->object_area_geom.x,
+                                      gp->object_area_geom.y,
+                                      gp->object_area_geom.w,
+                                      gp->object_area_geom.h);
+             evas_object_show(sd->object_area);
+          }
      }
    else
      {
@@ -459,6 +474,7 @@ groupview_part_select(Evas_Object *obj, const char *part)
           elm_object_signal_emit(sd->selected->current_item->layout, "border,part_item,hilight,off", "eflete");
         sd->selected = NULL;
         evas_object_hide(sd->highlight);
+        evas_object_hide(sd->object_area);
      }
 }
 

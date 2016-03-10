@@ -55,7 +55,9 @@ struct _Groupview_Smart_Data
    Eina_List *parts;
    Groupview_Part *selected;
    Evas_Object *highlight;
+   Evas_Object *object_area;
    Evas_Object *clipper;
+   Eina_Bool obj_area_visible : 1;
    Eina_Bool separated : 1;
    Eina_Bool manual_calc : 1;
 };
