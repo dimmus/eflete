@@ -45,6 +45,7 @@
  */
 
 #include "eflete.h"
+#include "highlight.h"
 
 struct _Geom{
    int x, y, w, h;
@@ -57,6 +58,9 @@ struct _Geom{
  * @ingroup Groupview
  */
 #define SIGNAL_GROUPVIEW_CLICKED "SIGNAL_GROUPVIEW_CLICKED"
+#define SIGNAL_GROUPVIEW_HL_PART_DRAG_START "SIGNAL_GROUPVIEW_HL_PART_DRAG_START"
+#define SIGNAL_GROUPVIEW_HL_PART_CHANGED "SIGNAL_GROUPVIEW_HL_PART_CHANGED"
+#define SIGNAL_GROUPVIEW_HL_PART_DRAG_STOP "SIGNAL_GROUPVIEW_HL_PART_DRAG_STOP"
 
 /**
  * Geometry of groupview part primitive.
@@ -64,6 +68,13 @@ struct _Geom{
  * @ingroup Groupview
  */
 typedef struct _Geom Groupview_Geom;
+
+struct _Groupview_HL_Event {
+   Highlight_Events *hl_event;
+   Part *part;
+};
+
+typedef struct _Groupview_HL_Event Groupview_HL_Event;
 
 /**
  * Add new groupview object to parent object.

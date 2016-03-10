@@ -30,6 +30,61 @@ EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _groupview,
                         Evas_Smart_Class, Evas_Smart_Class,
                         evas_object_smart_clipped_class_get, _smart_callbacks);
 
+/******************************************************************************/
+/*                            HIGHLIGHT CALLBACKS                             */
+/******************************************************************************/
+static void
+_hl_part_drag_start_cb(void *data,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+   Groupview_Smart_Data *sd = data;
+   Groupview_HL_Event *event;
+
+   event = mem_malloc(sizeof(Groupview_HL_Event));
+   event->hl_event = event_info;
+   event->part = sd->selected->part;
+
+   evas_object_smart_callback_call(sd->obj, SIGNAL_GROUPVIEW_HL_PART_DRAG_START, event);
+
+   free(event);
+}
+
+static void
+_hl_part_changed_cb(void *data,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info)
+{
+   Groupview_Smart_Data *sd = data;
+   Groupview_HL_Event *event;
+
+   event = mem_malloc(sizeof(Groupview_HL_Event));
+   event->hl_event = event_info;
+   event->part = sd->selected->part;
+
+   evas_object_smart_callback_call(sd->obj, SIGNAL_GROUPVIEW_HL_PART_CHANGED, event);
+
+   free(event);
+}
+
+static void
+_hl_part_drag_stop_cb(void *data,
+                      Evas_Object * obj __UNUSED__,
+                      void *event_info)
+{
+   Groupview_Smart_Data *sd = data;
+   Groupview_HL_Event *event;
+
+   event = mem_malloc(sizeof(Groupview_HL_Event));
+   event->hl_event = event_info;
+   event->part = sd->selected->part;
+
+   evas_object_smart_callback_call(sd->obj, SIGNAL_GROUPVIEW_HL_PART_DRAG_STOP, event);
+
+   free(event);
+}
+/******************************************************************************/
+
 static void
 _unselect_part(void *data,
                Evas *e __UNUSED__,
@@ -221,6 +276,9 @@ groupview_add(Evas_Object *parent, Group *group)
 
    sd->highlight = highlight_add(sd->box);
    evas_object_color_set(sd->highlight, HIGHLIGHT_COLOR);
+   evas_object_smart_callback_add(sd->highlight, "hl,drag,start", _hl_part_drag_start_cb, sd);
+   evas_object_smart_callback_add(sd->highlight, "hl,changed", _hl_part_changed_cb, sd);
+   evas_object_smart_callback_add(sd->highlight, "hl,drag,stop", _hl_part_drag_stop_cb, sd);
    evas_object_smart_member_add(sd->highlight, obj);
 
    /* hide the editing object by using clipper (clipper is small, it's size is 0,0)
