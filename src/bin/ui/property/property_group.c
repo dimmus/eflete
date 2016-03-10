@@ -69,7 +69,11 @@ struct _Property_Group_Data {
                   Property_Attribute source;
              } type_group;
         } part;
-        Property_Attribute state;
+        struct {
+             Property_Attribute title;
+             Property_Attribute name;
+             Property_Attribute visible;
+        } state;
         Property_Attribute item;
         Property_Attribute program;
    } items;
@@ -105,7 +109,7 @@ _on_part_selected(void *data __UNUSED__,
    property_item_del(&group_pd.items.program);
 
    property_item_add(&group_pd.items.part.title, NULL);
-   property_item_add(&group_pd.items.state, NULL);
+   property_item_add(&group_pd.items.state.title, NULL);
    if (group_pd.part->current_item_name)
      property_item_add(&group_pd.items.item, NULL);
    else
@@ -126,6 +130,7 @@ _on_part_selected(void *data __UNUSED__,
      }
 
    property_item_update_recursively(&group_pd.items.part.title);
+   property_item_update_recursively(&group_pd.items.state.title);
 }
 
 static void
@@ -137,7 +142,7 @@ _on_group_navigator_unselected(void *data __UNUSED__,
    group_pd.part = NULL;
    group_pd.program = NULL;
    property_item_del(&group_pd.items.part.title);
-   property_item_del(&group_pd.items.state);
+   property_item_del(&group_pd.items.state.title);
    property_item_del(&group_pd.items.item);
    property_item_del(&group_pd.items.program);
 }
@@ -145,13 +150,14 @@ _on_group_navigator_unselected(void *data __UNUSED__,
 static void
 _on_part_state_selected(void *data __UNUSED__,
                         Evas_Object *obj __UNUSED__,
-                        void *event_info __UNUSED__)
+                        void *event_info)
 {
    Part *part = event_info;
 
    assert(group_pd.part == part);
 
    DBG("selected state \"%s\"", group_pd.part->current_state->name);
+   property_item_update_recursively(&group_pd.items.state.title);
 }
 
 static void
@@ -165,7 +171,7 @@ _on_program_selected(void *data __UNUSED__,
 
    DBG("selected program \"%s\"", group_pd.program);
    property_item_del(&group_pd.items.part.title);
-   property_item_del(&group_pd.items.state);
+   property_item_del(&group_pd.items.state.title);
    property_item_del(&group_pd.items.item);
 
    property_item_add(&group_pd.items.program, NULL);
@@ -187,7 +193,10 @@ _on_group_changed(void *data __UNUSED__,
         _on_part_selected(NULL, NULL, group_pd.part);
      }
    else
-     property_item_del(&group_pd.items.part.title);
+     {
+        property_item_del(&group_pd.items.part.title);
+        property_item_del(&group_pd.items.state.title);
+     }
    group_pd.program = group_pd.group->current_program;
    property_item_update_recursively(&group_pd.items.group.title);
 }
@@ -242,6 +251,11 @@ _subitems_get(Property_Attribute *pa)
                break;
            }
      }
+   else if (pa == &group_pd.items.state.title)
+     {
+         items = eina_list_append(items, &group_pd.items.state.name);
+         items = eina_list_append(items, &group_pd.items.state.visible);
+     }
    else if (pa == &group_pd.items.part.dragable.title)
      {
          items = eina_list_append(items, &group_pd.items.part.dragable.enable);
@@ -288,6 +302,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
    switch (action->type.attribute)
      {
       case ATTRIBUTE_GROUP_NAME:
+      case ATTRIBUTE_STATE_NAME:
          elm_object_disabled_set(action->control, true);
          break;
       case ATTRIBUTE_GROUP_MIN_W:
@@ -308,6 +323,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
       case ATTRIBUTE_PART_DRAG_EVENT:
       case ATTRIBUTE_PART_GROUP_SOURCE:
+      case ATTRIBUTE_STATE_VISIBLE:
          break;
       case ATTRIBUTE_PART_DRAG_X:
       case ATTRIBUTE_PART_DRAG_Y:
@@ -391,6 +407,9 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
      {
       case ATTRIBUTE_GROUP_NAME:
          property_entry_set(action->control, group_pd.group->name);
+         break;
+      case ATTRIBUTE_STATE_NAME:
+         property_entry_set(action->control, group_pd.part->current_state->name);
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          int_val1 = edje_edit_group_min_w_get(group_pd.group->edit_object);
@@ -484,6 +503,10 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          _groups_combobox_fill(action->control, str_val1);
          edje_edit_string_free(str_val1);
          break;
+      case ATTRIBUTE_STATE_VISIBLE:
+         bool_val1 = edje_edit_state_visible_get(group_pd.group->edit_object, group_pd.part->name, group_pd.part->current_state->parsed_name, group_pd.part->current_state->parsed_val);
+         elm_check_state_set(action->control, bool_val1);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -515,6 +538,10 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_GROUP_NAME:
          group_pd.history.format = _("group name changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, eina_stringshare_add(group_pd.group->name));
+         break;
+      case ATTRIBUTE_STATE_NAME:
+         group_pd.history.format = _("state name changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(group_pd.part->current_state->name));
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          group_pd.history.format = _("group.min_w changed from %d to %d");
@@ -598,6 +625,9 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("source changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, edje_edit_part_source_get(group_pd.group->edit_object, group_pd.part->name));
          break;
+      case ATTRIBUTE_STATE_VISIBLE:
+         group_pd.history.format = _("state visible %s");
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("start callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -642,6 +672,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
      {
       case ATTRIBUTE_GROUP_NAME:
          TODO("implement group rename");
+         break;
+      case ATTRIBUTE_STATE_NAME:
+         TODO("implement state rename");
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          editor_group_min_w_set(group_pd.group->edit_object, group_pd.history.change, true, double_val1);
@@ -736,6 +769,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
+      case ATTRIBUTE_STATE_VISIBLE:
+         editor_state_visible_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, group_pd.part->current_state->parsed_name, group_pd.part->current_state->parsed_val, bool_val1);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -766,6 +802,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
      {
       case ATTRIBUTE_GROUP_NAME:
       case ATTRIBUTE_PART_NAME:
+      case ATTRIBUTE_STATE_NAME:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.str_val1,
@@ -812,6 +849,11 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_REPEAT_EVENTS:
          bool_val1 = edje_edit_part_repeat_events_get(group_pd.group->edit_object, group_pd.part->name);
+         msg = eina_stringshare_printf(group_pd.history.format,
+                                       (bool_val1) ? _("turned on") : _("turned off"));
+         break;
+      case ATTRIBUTE_STATE_VISIBLE:
+         bool_val1 = edje_edit_state_visible_get(group_pd.group->edit_object, group_pd.part->name, group_pd.part->current_state->parsed_name, group_pd.part->current_state->parsed_val);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (bool_val1) ? _("turned on") : _("turned off"));
          break;
@@ -970,6 +1012,21 @@ _init_part_block()
    _init_part_dragable_block();
 }
 
+static void
+_init_state_block()
+{
+   group_pd.items.state.title.name = "state";
+   group_pd.items.state.title.expandable = true;
+   group_pd.items.state.title.expanded = true;
+   group_pd.items.state.title.expand_cb = _subitems_get;
+
+   group_pd.items.state.name.name = "name";
+   _action1(&group_pd.items.state.name, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_NAME);
+
+   group_pd.items.state.visible.name = "visible";
+   _action1(&group_pd.items.state.visible, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_VISIBLE);
+}
+
 /* public */
 void
 property_group_init()
@@ -977,9 +1034,7 @@ property_group_init()
    _init_group_block();
    _init_part_block();
    _init_part_group_specific_block();
-
-   group_pd.items.state.name = "state";
-   group_pd.items.state.expandable = true;
+   _init_state_block();
 
    group_pd.items.item.name = "item";
    group_pd.items.item.expandable = true;
@@ -1006,8 +1061,8 @@ property_group_items_get()
    items = eina_list_append(items, &group_pd.items.group.title);
    if (group_pd.part)
      {
-        items = eina_list_append(items, &group_pd.items.part);
-        items = eina_list_append(items, &group_pd.items.state);
+        items = eina_list_append(items, &group_pd.items.part.title);
+        items = eina_list_append(items, &group_pd.items.state.title);
         if (group_pd.part->current_item_name)
           items = eina_list_append(items, &group_pd.items.item);
      }
