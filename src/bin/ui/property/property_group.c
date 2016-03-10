@@ -94,6 +94,12 @@ static Property_Group_Update_Info attribute_map[ATTRIBUTE_LAST];
 static const char *ignore_flags_strings[] = { STR_NONE,
                                               "On hold",
                                               NULL};
+/* defines for args */
+#define EDIT_OBJ group_pd.group->edit_object
+#define PART_ARGS group_pd.part->name
+#define STATE_ARGS PART_ARGS, group_pd.part->current_state->parsed_name, group_pd.part->current_state->parsed_val
+#define CHANGE_MERGE group_pd.history.change, true
+#define CHANGE_NO_MERGE group_pd.history.change, false
 
 /* global callbacks */
 static void
@@ -105,7 +111,7 @@ _on_part_selected(void *data __UNUSED__,
 
    assert(group_pd.part != NULL);
 
-   DBG("selected part \"%s\"", group_pd.part->name);
+   DBG("selected part \"%s\"", PART_ARGS);
    property_item_del(&group_pd.items.program);
 
    property_item_add(&group_pd.items.part.title, NULL);
@@ -412,99 +418,99 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          property_entry_set(action->control, group_pd.part->current_state->name);
          break;
       case ATTRIBUTE_GROUP_MIN_W:
-         int_val1 = edje_edit_group_min_w_get(group_pd.group->edit_object);
+         int_val1 = edje_edit_group_min_w_get(EDIT_OBJ);
          elm_spinner_value_set(action->control, int_val1);
          break;
       case ATTRIBUTE_GROUP_MIN_H:
-         int_val1 = edje_edit_group_min_h_get(group_pd.group->edit_object);
+         int_val1 = edje_edit_group_min_h_get(EDIT_OBJ);
          elm_spinner_value_set(action->control, int_val1);
          break;
       case ATTRIBUTE_GROUP_MAX_W:
-         int_val1 = edje_edit_group_max_w_get(group_pd.group->edit_object);
+         int_val1 = edje_edit_group_max_w_get(EDIT_OBJ);
          elm_spinner_value_set(action->control, int_val1);
          break;
       case ATTRIBUTE_GROUP_MAX_H:
-         int_val1 = edje_edit_group_max_h_get(group_pd.group->edit_object);
+         int_val1 = edje_edit_group_max_h_get(EDIT_OBJ);
          elm_spinner_value_set(action->control, int_val1);
          break;
       case ATTRIBUTE_PART_NAME:
-         property_entry_set(action->control, group_pd.part->name);
+         property_entry_set(action->control, PART_ARGS);
          break;
       case ATTRIBUTE_PART_TYPE:
          elm_layout_text_set(action->control, NULL, gm_part_type_text_get(group_pd.part->type));
          break;
       case ATTRIBUTE_PART_SCALE:
-         bool_val1 = edje_edit_part_scale_get(group_pd.group->edit_object, group_pd.part->name);
+         bool_val1 = edje_edit_part_scale_get(EDIT_OBJ, PART_ARGS);
          elm_check_state_set(action->control, bool_val1);
          break;
       case ATTRIBUTE_PART_MOUSE_EVENTS:
-         bool_val1 = edje_edit_part_mouse_events_get(group_pd.group->edit_object, group_pd.part->name);
+         bool_val1 = edje_edit_part_mouse_events_get(EDIT_OBJ, PART_ARGS);
          elm_check_state_set(action->control, bool_val1);
          break;
       case ATTRIBUTE_PART_REPEAT_EVENTS:
-         bool_val1 = edje_edit_part_repeat_events_get(group_pd.group->edit_object, group_pd.part->name);
+         bool_val1 = edje_edit_part_repeat_events_get(EDIT_OBJ, PART_ARGS);
          elm_check_state_set(action->control, bool_val1);
          break;
       case ATTRIBUTE_PART_CLIP_TO:
          ewe_combobox_items_list_free(action->control, true);
-         str_val1 = edje_edit_part_clip_to_get(group_pd.group->edit_object, group_pd.part->name);
+         str_val1 = edje_edit_part_clip_to_get(EDIT_OBJ, PART_ARGS);
          _parts_combobox_fill(action->control, str_val1, EDJE_PART_TYPE_RECTANGLE);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
          ewe_combobox_select_item_set(action->control,
-           (int) edje_edit_part_ignore_flags_get(group_pd.group->edit_object, group_pd.part->name));
+           (int) edje_edit_part_ignore_flags_get(EDIT_OBJ, PART_ARGS));
          break;
       case ATTRIBUTE_PART_DRAG_X:
-         int_val1 = edje_edit_part_drag_x_get(group_pd.group->edit_object, group_pd.part->name);
+         int_val1 = edje_edit_part_drag_x_get(EDIT_OBJ, PART_ARGS);
          elm_spinner_value_set(action->control, int_val1);
          break;
       case ATTRIBUTE_PART_DRAG_Y:
-         int_val1 = edje_edit_part_drag_y_get(group_pd.group->edit_object, group_pd.part->name);
+         int_val1 = edje_edit_part_drag_y_get(EDIT_OBJ, PART_ARGS);
          elm_spinner_value_set(action->control, int_val1);
          break;
       case ATTRIBUTE_PART_DRAG_STEP_X:
-         int_val1 = edje_edit_part_drag_step_x_get(group_pd.group->edit_object, group_pd.part->name);
+         int_val1 = edje_edit_part_drag_step_x_get(EDIT_OBJ, PART_ARGS);
          elm_spinner_value_set(action->control, int_val1);
          break;
       case ATTRIBUTE_PART_DRAG_STEP_Y:
-         int_val1 = edje_edit_part_drag_step_y_get(group_pd.group->edit_object, group_pd.part->name);
+         int_val1 = edje_edit_part_drag_step_y_get(EDIT_OBJ, PART_ARGS);
          elm_spinner_value_set(action->control, int_val1);
          break;
       case ATTRIBUTE_PART_DRAG_COUNT_X:
-         int_val1 = edje_edit_part_drag_count_x_get(group_pd.group->edit_object, group_pd.part->name);
+         int_val1 = edje_edit_part_drag_count_x_get(EDIT_OBJ, PART_ARGS);
          elm_spinner_value_set(action->control, int_val1);
          break;
       case ATTRIBUTE_PART_DRAG_COUNT_Y:
-         int_val1 = edje_edit_part_drag_count_y_get(group_pd.group->edit_object, group_pd.part->name);
+         int_val1 = edje_edit_part_drag_count_y_get(EDIT_OBJ, PART_ARGS);
          elm_spinner_value_set(action->control, int_val1);
          break;
       case ATTRIBUTE_PART_DRAG_CONFINE:
          ewe_combobox_items_list_free(action->control, true);
-         str_val1 = edje_edit_part_drag_confine_get(group_pd.group->edit_object, group_pd.part->name);
+         str_val1 = edje_edit_part_drag_confine_get(EDIT_OBJ, PART_ARGS);
          _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
          ewe_combobox_items_list_free(action->control, true);
-         str_val1 = edje_edit_part_drag_threshold_get(group_pd.group->edit_object, group_pd.part->name);
+         str_val1 = edje_edit_part_drag_threshold_get(EDIT_OBJ, PART_ARGS);
          _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_DRAG_EVENT:
          ewe_combobox_items_list_free(action->control, true);
-         str_val1 = edje_edit_part_drag_event_get(group_pd.group->edit_object, group_pd.part->name);
+         str_val1 = edje_edit_part_drag_event_get(EDIT_OBJ, PART_ARGS);
          _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_GROUP_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
-         str_val1 = edje_edit_part_source_get(group_pd.group->edit_object, group_pd.part->name);
+         str_val1 = edje_edit_part_source_get(EDIT_OBJ, PART_ARGS);
          _groups_combobox_fill(action->control, str_val1);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_STATE_VISIBLE:
-         bool_val1 = edje_edit_state_visible_get(group_pd.group->edit_object, group_pd.part->name, group_pd.part->current_state->parsed_name, group_pd.part->current_state->parsed_val);
+         bool_val1 = edje_edit_state_visible_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
          break;
       default:
@@ -545,23 +551,23 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          group_pd.history.format = _("group.min_w changed from %d to %d");
-         VAL(int_val1) = edje_edit_group_min_w_get(group_pd.group->edit_object);
+         VAL(int_val1) = edje_edit_group_min_w_get(EDIT_OBJ);
          break;
       case ATTRIBUTE_GROUP_MIN_H:
          group_pd.history.format = _("group.min_h changed from %d to %d");
-         VAL(int_val1) = edje_edit_group_min_h_get(group_pd.group->edit_object);
+         VAL(int_val1) = edje_edit_group_min_h_get(EDIT_OBJ);
          break;
       case ATTRIBUTE_GROUP_MAX_W:
          group_pd.history.format = _("group.max_w changed from %d to %d");
-         VAL(int_val1) = edje_edit_group_max_w_get(group_pd.group->edit_object);
+         VAL(int_val1) = edje_edit_group_max_w_get(EDIT_OBJ);
          break;
       case ATTRIBUTE_GROUP_MAX_H:
          group_pd.history.format = _("group.max_h changed from %d to %d");
-         VAL(int_val1) = edje_edit_group_max_h_get(group_pd.group->edit_object);
+         VAL(int_val1) = edje_edit_group_max_h_get(EDIT_OBJ);
          break;
       case ATTRIBUTE_PART_NAME:
          group_pd.history.format = _("part name changed from \"%s\" to \"%s\"");
-         STR_VAL(str_val1, eina_stringshare_add(group_pd.part->name));
+         STR_VAL(str_val1, eina_stringshare_add(PART_ARGS));
          break;
       case ATTRIBUTE_PART_TYPE:
          /* part type can't be changed */
@@ -577,53 +583,52 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_CLIP_TO:
          group_pd.history.format = _("clip to changed from \"%s\" to \"%s\"");
-         STR_VAL(str_val1, edje_edit_part_clip_to_get(group_pd.group->edit_object, group_pd.part->name));
+         STR_VAL(str_val1, edje_edit_part_clip_to_get(EDIT_OBJ, PART_ARGS));
          break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
          group_pd.history.format = _("ignore_flags changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, eina_stringshare_add(
-            ignore_flags_strings[edje_edit_part_ignore_flags_get(group_pd.group->edit_object,
-                                                                 group_pd.part->name)]));
+            ignore_flags_strings[edje_edit_part_ignore_flags_get(EDIT_OBJ, PART_ARGS)]));
          break;
       case ATTRIBUTE_PART_DRAG_X:
          group_pd.history.format = _("dragable enable x changed from %d to %d");
-         VAL(int_val1) = edje_edit_part_drag_x_get(group_pd.group->edit_object, group_pd.part->name);
+         VAL(int_val1) = edje_edit_part_drag_x_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_Y:
          group_pd.history.format = _("dragable enable y changed from %d to %d");
-         VAL(int_val1) = edje_edit_part_drag_y_get(group_pd.group->edit_object, group_pd.part->name);
+         VAL(int_val1) = edje_edit_part_drag_y_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_STEP_X:
          group_pd.history.format = _("dragable step x changed from %d to %d");
-         VAL(int_val1) = edje_edit_part_drag_step_x_get(group_pd.group->edit_object, group_pd.part->name);
+         VAL(int_val1) = edje_edit_part_drag_step_x_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_STEP_Y:
          group_pd.history.format = _("dragable step y changed from %d to %d");
-         VAL(int_val1) = edje_edit_part_drag_step_y_get(group_pd.group->edit_object, group_pd.part->name);
+         VAL(int_val1) = edje_edit_part_drag_step_y_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_COUNT_X:
          group_pd.history.format = _("dragable count x changed from %d to %d");
-         VAL(int_val1) = edje_edit_part_drag_count_x_get(group_pd.group->edit_object, group_pd.part->name);
+         VAL(int_val1) = edje_edit_part_drag_count_x_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_COUNT_Y:
          group_pd.history.format = _("dragable count y changed from %d to %d");
-         VAL(int_val1) = edje_edit_part_drag_count_y_get(group_pd.group->edit_object, group_pd.part->name);
+         VAL(int_val1) = edje_edit_part_drag_count_y_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_CONFINE:
          group_pd.history.format = _("dragable confine changed from \"%s\" to \"%s\"");
-         STR_VAL(str_val1, edje_edit_part_drag_confine_get(group_pd.group->edit_object, group_pd.part->name));
+         STR_VAL(str_val1, edje_edit_part_drag_confine_get(EDIT_OBJ, PART_ARGS));
          break;
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
          group_pd.history.format = _("dragable threshold changed from \"%s\" to \"%s\"");
-         STR_VAL(str_val1, edje_edit_part_drag_threshold_get(group_pd.group->edit_object, group_pd.part->name));
+         STR_VAL(str_val1, edje_edit_part_drag_threshold_get(EDIT_OBJ, PART_ARGS));
          break;
       case ATTRIBUTE_PART_DRAG_EVENT:
          group_pd.history.format = _("dragable event changed from \"%s\" to \"%s\"");
-         STR_VAL(str_val1, edje_edit_part_drag_event_get(group_pd.group->edit_object, group_pd.part->name));
+         STR_VAL(str_val1, edje_edit_part_drag_event_get(EDIT_OBJ, PART_ARGS));
          break;
       case ATTRIBUTE_PART_GROUP_SOURCE:
          group_pd.history.format = _("source changed from \"%s\" to \"%s\"");
-         STR_VAL(str_val1, edje_edit_part_source_get(group_pd.group->edit_object, group_pd.part->name));
+         STR_VAL(str_val1, edje_edit_part_source_get(EDIT_OBJ, PART_ARGS));
          break;
       case ATTRIBUTE_STATE_VISIBLE:
          group_pd.history.format = _("state visible %s");
@@ -677,23 +682,23 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          TODO("implement state rename");
          break;
       case ATTRIBUTE_GROUP_MIN_W:
-         editor_group_min_w_set(group_pd.group->edit_object, group_pd.history.change, true, double_val1);
-         group_pd.history.new.int_val1 = edje_edit_group_min_w_get(group_pd.group->edit_object);
+         editor_group_min_w_set(EDIT_OBJ, CHANGE_MERGE, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_group_min_w_get(EDIT_OBJ);
          break;
       case ATTRIBUTE_GROUP_MIN_H:
-         editor_group_min_h_set(group_pd.group->edit_object, group_pd.history.change, true, double_val1);
-         group_pd.history.new.int_val1 = edje_edit_group_min_h_get(group_pd.group->edit_object);
+         editor_group_min_h_set(EDIT_OBJ, CHANGE_MERGE, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_group_min_h_get(EDIT_OBJ);
          break;
       case ATTRIBUTE_GROUP_MAX_W:
-         editor_group_max_w_set(group_pd.group->edit_object, group_pd.history.change, true, double_val1);
-         group_pd.history.new.int_val1 = edje_edit_group_max_w_get(group_pd.group->edit_object);
+         editor_group_max_w_set(EDIT_OBJ, CHANGE_MERGE, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_group_max_w_get(EDIT_OBJ);
          break;
       case ATTRIBUTE_GROUP_MAX_H:
-         editor_group_max_h_set(group_pd.group->edit_object, group_pd.history.change, true, double_val1);
-         group_pd.history.new.int_val1 = edje_edit_group_max_h_get(group_pd.group->edit_object);
+         editor_group_max_h_set(EDIT_OBJ, CHANGE_MERGE, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_group_max_h_get(EDIT_OBJ);
          break;
       case ATTRIBUTE_PART_NAME:
-         editor_part_name_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, str_val1);
+         editor_part_name_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1);
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
@@ -701,76 +706,76 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          /* part type can't be changed */
          break;
       case ATTRIBUTE_PART_SCALE:
-         editor_part_scale_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, bool_val1);
+         editor_part_scale_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, bool_val1);
          break;
       case ATTRIBUTE_PART_MOUSE_EVENTS:
-         editor_part_mouse_events_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, bool_val1);
+         editor_part_mouse_events_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, bool_val1);
          break;
       case ATTRIBUTE_PART_REPEAT_EVENTS:
-         editor_part_repeat_events_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, bool_val1);
+         editor_part_repeat_events_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, bool_val1);
          break;
       case ATTRIBUTE_PART_CLIP_TO:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
-         editor_part_clip_to_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, str_val1);
+         editor_part_clip_to_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1);
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
          str_val1 = eina_stringshare_add(cb_item->title);
-         editor_part_ignore_flags_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, cb_item->index);
+         editor_part_ignore_flags_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index);
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_DRAG_X:
-         editor_part_drag_x_set(group_pd.group->edit_object, group_pd.history.change, true, group_pd.part->name, double_val1);
-         group_pd.history.new.int_val1 = edje_edit_part_drag_x_get(group_pd.group->edit_object, group_pd.part->name);
+         editor_part_drag_x_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_part_drag_x_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_Y:
-         editor_part_drag_y_set(group_pd.group->edit_object, group_pd.history.change, true, group_pd.part->name, double_val1);
-         group_pd.history.new.int_val1 = edje_edit_part_drag_y_get(group_pd.group->edit_object, group_pd.part->name);
+         editor_part_drag_y_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_part_drag_y_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_STEP_X:
-         editor_part_drag_step_x_set(group_pd.group->edit_object, group_pd.history.change, true, group_pd.part->name, double_val1);
-         group_pd.history.new.int_val1 = edje_edit_part_drag_step_x_get(group_pd.group->edit_object, group_pd.part->name);
+         editor_part_drag_step_x_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_part_drag_step_x_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_STEP_Y:
-         editor_part_drag_step_y_set(group_pd.group->edit_object, group_pd.history.change, true, group_pd.part->name, double_val1);
-         group_pd.history.new.int_val1 = edje_edit_part_drag_step_y_get(group_pd.group->edit_object, group_pd.part->name);
+         editor_part_drag_step_y_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_part_drag_step_y_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_COUNT_X:
-         editor_part_drag_count_x_set(group_pd.group->edit_object, group_pd.history.change, true, group_pd.part->name, double_val1);
-         group_pd.history.new.int_val1 = edje_edit_part_drag_count_x_get(group_pd.group->edit_object, group_pd.part->name);
+         editor_part_drag_count_x_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_part_drag_count_x_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_COUNT_Y:
-         editor_part_drag_count_y_set(group_pd.group->edit_object, group_pd.history.change, true, group_pd.part->name, double_val1);
-         group_pd.history.new.int_val1 = edje_edit_part_drag_count_y_get(group_pd.group->edit_object, group_pd.part->name);
+         editor_part_drag_count_y_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_part_drag_count_y_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_CONFINE:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
-         editor_part_drag_confine_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, str_val1);
+         editor_part_drag_confine_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1);
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
-         editor_part_drag_threshold_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, str_val1);
+         editor_part_drag_threshold_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1);
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_DRAG_EVENT:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
-         editor_part_drag_event_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, str_val1);
+         editor_part_drag_event_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1);
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_GROUP_SOURCE:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
-         editor_part_group_source_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, str_val1);
+         editor_part_group_source_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1);
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_VISIBLE:
-         editor_state_visible_set(group_pd.group->edit_object, group_pd.history.change, false, group_pd.part->name, group_pd.part->current_state->parsed_name, group_pd.part->current_state->parsed_val, bool_val1);
+         editor_state_visible_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -838,22 +843,22 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
          /* part type can't be changed */
          break;
       case ATTRIBUTE_PART_SCALE:
-         bool_val1 = edje_edit_part_scale_get(group_pd.group->edit_object, group_pd.part->name);
+         bool_val1 = edje_edit_part_scale_get(EDIT_OBJ, PART_ARGS);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (bool_val1) ? _("turned on") : _("turned off"));
          break;
       case ATTRIBUTE_PART_MOUSE_EVENTS:
-         bool_val1 = edje_edit_part_mouse_events_get(group_pd.group->edit_object, group_pd.part->name);
+         bool_val1 = edje_edit_part_mouse_events_get(EDIT_OBJ, PART_ARGS);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (bool_val1) ? _("turned on") : _("turned off"));
          break;
       case ATTRIBUTE_PART_REPEAT_EVENTS:
-         bool_val1 = edje_edit_part_repeat_events_get(group_pd.group->edit_object, group_pd.part->name);
+         bool_val1 = edje_edit_part_repeat_events_get(EDIT_OBJ, PART_ARGS);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (bool_val1) ? _("turned on") : _("turned off"));
          break;
       case ATTRIBUTE_STATE_VISIBLE:
-         bool_val1 = edje_edit_state_visible_get(group_pd.group->edit_object, group_pd.part->name, group_pd.part->current_state->parsed_name, group_pd.part->current_state->parsed_val);
+         bool_val1 = edje_edit_state_visible_get(EDIT_OBJ, STATE_ARGS);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (bool_val1) ? _("turned on") : _("turned off"));
          break;
