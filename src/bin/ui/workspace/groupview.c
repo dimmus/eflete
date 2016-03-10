@@ -113,6 +113,7 @@ _groupview_smart_add(Evas_Object *o)
 
    priv->event = evas_object_rectangle_add(evas_object_evas_get(o));
    evas_object_color_set(priv->event, 0, 0, 0, 0);
+   evas_object_resize(priv->event, 9999, 9999);
 
    evas_object_event_callback_add(priv->event, EVAS_CALLBACK_MOUSE_UP, _unselect_part, o);
 
@@ -206,7 +207,6 @@ _groupview_smart_calculate(Evas_Object *o)
 
    GROUPVIEW_DATA_GET(o, sd)
    evas_object_geometry_get(sd->parent, &px, &py, &pw, &ph);
-   evas_object_resize(sd->event, pw, ph);
    evas_object_move(sd->event, px, py);
 
    evas_object_geometry_get(o, &x, &y, &w, &h);
