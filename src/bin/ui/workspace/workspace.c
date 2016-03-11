@@ -28,6 +28,7 @@
 #include "demo_group.h"
 #include "project_manager.h"
 #include "change.h"
+#include "syntax_color.h"
 
 #define WORKSPACE_DATA "workspace_data"
 
@@ -107,6 +108,7 @@ struct _Workspace_Data
    Scroll_Area demo;
    struct {
       Evas_Object *obj;
+      color_data *color_data;
       double size;
    } code;
    Workspace_Mode mode;
@@ -142,6 +144,23 @@ workspace_active_demo_mode_get(Evas_Object *obj)
    if (wd->mode == MODE_DEMO)
      return true;
    return false;
+}
+
+const char *
+_group_code_get(Workspace_Data *wd)
+{
+   Eina_Stringshare *code;
+   char *str;
+   const char *colored;
+
+   code = edje_edit_source_generate(wd->group->edit_object);
+   str = elm_entry_utf8_to_markup(code);
+   colored = color_apply(wd->code.color_data, str, strlen(str), NULL, NULL);
+
+   free(str);
+   eina_stringshare_del(code);
+
+   return colored;
 }
 
 static void
@@ -199,8 +218,21 @@ _workspace_del(void *data,
 
    Workspace_Data *wd = data;
    gm_group_edit_object_unload(wd->group);
+   color_term(wd->code.color_data);
 
    free(wd);
+}
+
+static void
+_on_save(void *data,
+         Evas_Object *obj __UNUSED__,
+         void *event_info __UNUSED__)
+{
+   assert(data != NULL);
+
+   Workspace_Data *wd = data;
+
+   elm_entry_entry_set(wd->code.obj, _group_code_get(wd));
 }
 
 static void
@@ -439,7 +471,9 @@ _mode_cb(void *data,
      {
       case MODE_CODE:
          elm_panes_fixed_set(wd->panes_h, false);
+         if (wd->code.size == -1) wd->code.size = 0.5;
          elm_panes_content_right_size_set(wd->panes_h, wd->code.size);
+         elm_entry_entry_set(wd->code.obj, _group_code_get(wd));
       case MODE_NORMAL:
          elm_object_part_content_set(wd->panes_h, "left", wd->normal.layout);
          evas_object_show(wd->normal.layout);
@@ -647,6 +681,7 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_panes_content_right_min_size_set(wd->panes, PANES_RIGHT_SIZE_MIN);
    elm_panes_content_right_size_set(wd->panes, 0); /* set the default min size */
 
+   wd->code.size = -1;
    wd->group = group;
    wd->mode = MODE_NORMAL;
 
@@ -699,6 +734,12 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_panes_content_right_size_set(wd->panes_h, 0); /* set the default min size */
    evas_object_smart_callback_add(wd->panes_h, "unpress", _panes_h_unpress, wd);
    elm_layout_content_set(wd->toolbar.layout, NULL, wd->panes_h);
+
+   ENTRY_ADD(wd->panes_h, wd->code.obj, false)
+   elm_entry_editable_set(wd->code.obj, false);
+   elm_object_part_content_set(wd->panes_h, "right", wd->code.obj);
+   wd->code.color_data = color_init(eina_strbuf_new());
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_SAVED, _on_save, wd);
 
    _scroll_area_add(wd, &wd->normal, true);
    elm_object_part_content_set(wd->panes_h, "left", wd->normal.layout);
