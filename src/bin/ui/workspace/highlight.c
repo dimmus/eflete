@@ -803,64 +803,6 @@ highlight_handler_mode_set(Evas_Object *hl, Highlight_Mode mode)
    return true;
 }
 
-static void
-_object_changed(void *data,
-                Evas *evas __UNUSED__,
-                Evas_Object *o,
-                void *einfo __UNUSED__)
-{
-   int x, y, w, h;
-   Evas_Object *hl = (Evas_Object *)data;
-   evas_object_geometry_get(o, &x, &y, &w, &h);
-   evas_object_resize(hl, w, h);
-   evas_object_move(hl, x, y);
-}
-
-Eina_Bool
-highlight_object_follow(Evas_Object *hl, Evas_Object *object)
-{
-   int x, y, w, h;
-   HIGHLIGHT_DATA_GET(hl, highlight)
-   assert(object != NULL);
-
-   if (highlight->object)
-     {
-        evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_RESIZE,
-                                            _object_changed, hl);
-        evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_MOVE,
-                                            _object_changed, hl);
-     }
-   evas_object_geometry_get(object, &x, &y, &w, &h);
-   evas_object_resize(hl, w, h);
-   evas_object_move(hl, x, y);
-
-   highlight->object = object;
-   evas_object_event_callback_add(object, EVAS_CALLBACK_RESIZE,
-                                  _object_changed, hl);
-   evas_object_event_callback_add(object, EVAS_CALLBACK_MOVE,
-                                  _object_changed, hl);
-
-
-   return true;
-}
-
-Eina_Bool
-highlight_object_unfollow(Evas_Object *hl)
-{
-   HIGHLIGHT_DATA_GET(hl, highlight)
-
-   if (highlight->object)
-     {
-        evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_RESIZE,
-                                            _object_changed, hl);
-        evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_MOVE,
-                                            _object_changed, hl);
-        highlight->object = NULL;
-     }
-
-   return true;
-}
-
 #undef SIZE
 #undef MINSIZE
 #undef MAXSIZE
