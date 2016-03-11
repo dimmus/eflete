@@ -802,11 +802,3 @@ highlight_handler_mode_set(Evas_Object *hl, Highlight_Mode mode)
    highlight->mode = mode;
    return true;
 }
-
-#undef SIZE
-#undef MINSIZE
-#undef MAXSIZE
-#undef COEFF
-#undef HIGHLIGHT_DATA_GET
-#undef HIGHLIGHT_DATA_GET_OR_RETURN_VAL
-#undef COLOR_CHECK
