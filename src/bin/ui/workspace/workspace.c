@@ -523,6 +523,7 @@ _part_select(void *data,
 
    assert((MODE_NORMAL == wd->mode) || (MODE_CODE == wd->mode));
 
+   groupview_part_select(wd->normal.content, part ? part->name : NULL);
    evas_object_smart_callback_call(ap.win, SIGNAL_PART_SELECTED, part);
 }
 
