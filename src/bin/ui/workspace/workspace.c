@@ -680,6 +680,7 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_radio_value_set(wd->toolbar.bg_switcher.white, BG_PREVIEW_TILE);
 
    wd->panes_h = elm_panes_add(wd->toolbar.layout);
+   elm_object_style_set(wd->panes_h, "pan_hide");
    elm_panes_horizontal_set(wd->panes_h, true);
    elm_panes_content_right_size_set(wd->panes_h, 0); /* set the default min size */
    elm_layout_content_set(wd->toolbar.layout, NULL, wd->panes_h);
