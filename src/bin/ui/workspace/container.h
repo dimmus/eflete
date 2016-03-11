@@ -211,30 +211,25 @@ Evas_Object *
 container_content_unset(Evas_Object *obj);
 
 /**
- * Hiding container (handlers and borders) of the Container object but not hiding
- * setted content.
+ * Lock the given container, hide the handler
  *
  * @param obj The Container object.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ * @param lock The lock flag, EINA_TRUE - lock, EINA_FALSE - unlock.
  *
  * @ingroup Container
  */
-Eina_Bool
-container_border_hide(Evas_Object *obj);
+void
+container_lock_set(Evas_Object *obj, Eina_Bool lock);
 
 /**
- * Showing container (handlers and borders) of the Container object but not
- * showing setted content.
+ * Get the lock state
  *
  * @param obj The Container object.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
  *
  * @ingroup Container
  */
 Eina_Bool
-container_border_show(Evas_Object *obj);
+container_lock_get(Evas_Object *obj);
 
 /**
  * Set the size of paddings before top left handler and after bottom right

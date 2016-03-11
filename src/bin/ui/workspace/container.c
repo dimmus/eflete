@@ -68,13 +68,14 @@ struct _Container_Smart_Data
       Evas_Object *obj;
       Evas_Coord w, h;
    } handler_BR;
-   Eina_Bool handler_BR_pressed : 1;
    double aspect;
    Eina_Stringshare *style;
    Evas_Coord downx;
    Evas_Coord downy;
    Evas_Coord dx, dy;
    Object_Protrusion_Get func;
+   Eina_Bool handler_BR_pressed : 1;
+   Eina_Bool lock : 1;
 };
 
 #define CONTAINER_DATA_GET(o, ptr) \
@@ -230,7 +231,7 @@ _container_smart_show(Evas_Object *o)
 {
    CONTAINER_DATA_GET(o, sd);
 
-   if (sd->handler_BR.obj) evas_object_show(sd->handler_BR.obj);
+   if (!sd->lock) evas_object_show(sd->handler_BR.obj);
 
    evas_object_show(sd->container);
    _container_parent_sc->show(o);
@@ -241,8 +242,7 @@ _container_smart_hide(Evas_Object *o)
 {
    CONTAINER_DATA_GET(o, sd)
 
-   if (sd->handler_BR.obj) evas_object_hide(sd->handler_BR.obj);
-
+   evas_object_hide(sd->handler_BR.obj);
    evas_object_hide(sd->container);
    _container_parent_sc->hide(o);
 }
@@ -533,30 +533,25 @@ container_content_unset(Evas_Object *obj)
    return ret;
 }
 
-Eina_Bool
-container_border_hide(Evas_Object *obj)
+void
+container_lock_set(Evas_Object *obj, Eina_Bool lock)
 {
    CONTAINER_DATA_GET(obj, sd);
 
-   if (sd->handler_BR.obj)
-     evas_object_hide(sd->handler_BR.obj);
-   if (sd->container)
-     edje_object_signal_emit(sd->container, "container,hide", "eflete");
+   sd->lock = lock;
 
-   return true;
+   if (lock)
+      evas_object_hide(sd->handler_BR.obj);
+   else
+      evas_object_show(sd->handler_BR.obj);
 }
 
 Eina_Bool
-container_border_show(Evas_Object *obj)
+container_lock_get(Evas_Object *obj)
 {
-   CONTAINER_DATA_GET(obj, sd)
+   CONTAINER_DATA_GET(obj, sd);
 
-   if (sd->handler_BR.obj)
-     evas_object_show(sd->handler_BR.obj);
-   if (sd->container)
-     edje_object_signal_emit(sd->container, "container,show", "eflete");
-
-   return true;
+   return sd->lock;
 }
 
 Eina_Bool
