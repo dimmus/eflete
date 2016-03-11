@@ -223,6 +223,24 @@ _workspace_del(void *data,
    free(wd);
 }
 
+/******************************************************************************/
+/*                              CODE RELOAD                                   */
+/******************************************************************************/
+static void
+_code_reload(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
+{
+   assert(data != NULL);
+
+   Workspace_Data *wd = data;
+   Evas_Object *layout;
+
+   elm_entry_entry_set(wd->code.obj, _group_code_get(wd));
+   layout = elm_object_part_content_unset(wd->code.obj, "elm.swallow.overlay");
+   evas_object_del(layout);
+}
+
 static void
 _on_save(void *data,
          Evas_Object *obj __UNUSED__,
@@ -230,10 +248,33 @@ _on_save(void *data,
 {
    assert(data != NULL);
 
-   Workspace_Data *wd = data;
-
-   elm_entry_entry_set(wd->code.obj, _group_code_get(wd));
+   _code_reload(data, NULL, NULL);
 }
+
+static void
+_on_project_changed(void *data,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   assert(data != NULL);
+
+   Workspace_Data *wd = data;
+   Evas_Object *layout, *btn;
+
+   layout = elm_object_part_content_get(wd->code.obj, "elm.swallow.overlay");
+   if (layout) return;
+
+   layout = elm_layout_add(wd->code.obj);
+   elm_layout_theme_set(layout, "layout", "entry", "overlay");
+   elm_object_text_set(layout, _("Project is changed"));
+   btn = elm_button_add(layout);
+   elm_object_text_set(btn, _("Reload"));
+   evas_object_smart_callback_add(btn, "clicked", _code_reload, wd);
+   elm_object_content_set(layout, btn);
+
+   elm_object_part_content_set(wd->code.obj, "elm.swallow.overlay", layout);
+}
+/******************************************************************************/
 
 static void
 _zoom_controls_add(Workspace_Data *wd)
@@ -740,6 +781,7 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_part_content_set(wd->panes_h, "right", wd->code.obj);
    wd->code.color_data = color_init(eina_strbuf_new());
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_SAVED, _on_save, wd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _on_project_changed, wd);
 
    _scroll_area_add(wd, &wd->normal, true);
    elm_object_part_content_set(wd->panes_h, "left", wd->normal.layout);
