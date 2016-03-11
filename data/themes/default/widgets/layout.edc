@@ -1822,6 +1822,45 @@ group { name: "elm/layout/groupview/object_area";
    }
 }
 
+group { name: "elm/layout/entry/overlay";
+   broadcast_signal: 0;
+   parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color_class: "bg_scroller_disabled";
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color_class: "main";
+            text {
+               font: "PT";
+               size: 12;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            rel1 {
+               relative: 0.5 1.0;
+               offset: 0 6;
+               to_y: "elm.text";
+            }
+            rel2 {
+               relative: 0.5 1.0;
+               offset: -1 6;
+               to_y: "elm.text";
+            }
+         }
+      }
+   }
+}
+
 #include "layouts/style_manager.edc"
 #include "layouts/colorclass_manager.edc"
 #include "layouts/live_view_toolbar_helper.edc"
