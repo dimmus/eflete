@@ -350,6 +350,22 @@ _container_aspect_change(void *data,
 }
 
 static void
+_container_lock(void *data,
+                Evas_Object *obj,
+                void *event_info __UNUSED__)
+{
+   Workspace_Data *wd = data;
+   Scroll_Area *area;
+   Eina_Bool lock;
+
+   area = _scroll_area_get(wd);
+   assert(area != NULL);
+
+   lock = elm_check_state_get(obj);
+   container_lock_set(area->container, lock);
+}
+
+static void
 _container_size_controls_add(Workspace_Data *wd)
 {
    Elm_Object_Item *tb_it;
@@ -376,6 +392,7 @@ _container_size_controls_add(Workspace_Data *wd)
 
    wd->toolbar.container_sizer.check_lock = elm_check_add(wd->toolbar.obj);
    elm_object_style_set(wd->toolbar.container_sizer.check_lock, "locker");
+   evas_object_smart_callback_add(wd->toolbar.container_sizer.check_lock, "changed", _container_lock, wd);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.check_lock);
 
@@ -551,6 +568,8 @@ _mode_cb(void *data,
      elm_check_state_set(wd->toolbar.container_sizer.check_chain, false);
    else
      elm_check_state_set(wd->toolbar.container_sizer.check_chain, true);
+
+   elm_check_state_set(wd->toolbar.container_sizer.check_lock, container_lock_get(area->container));
 
    container_container_size_get(area->container, &w, &h);
    elm_spinner_value_set(wd->toolbar.container_sizer.spinner_w, w);
