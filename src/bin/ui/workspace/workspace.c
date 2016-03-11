@@ -433,10 +433,14 @@ _mode_cb(void *data,
         wd->demo.content = NULL;
      }
 
+   elm_panes_fixed_set(wd->panes_h, true);
+   elm_panes_content_right_size_set(wd->panes_h, 0);
    switch (wd->mode)
      {
-      case MODE_NORMAL:
       case MODE_CODE:
+         elm_panes_fixed_set(wd->panes_h, false);
+         elm_panes_content_right_size_set(wd->panes_h, wd->code.size);
+      case MODE_NORMAL:
          elm_object_part_content_set(wd->panes_h, "left", wd->normal.layout);
          evas_object_show(wd->normal.layout);
          elm_radio_value_set(wd->toolbar.bg_switcher.white, wd->normal.bg_preview);
@@ -615,6 +619,16 @@ _groupview_hl_part_drag_stop(void *data,
 }
 /******************************************************************************/
 
+static void
+_panes_h_unpress(void *data,
+                 Evas_Object *obj,
+                 void *event_info __UNUSED__)
+{
+    Workspace_Data *wd = data;
+
+    wd->code.size = elm_panes_content_right_size_get(obj);
+}
+
 Evas_Object *
 workspace_add(Evas_Object *parent, Group *group)
 {
@@ -683,6 +697,7 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_style_set(wd->panes_h, "pan_hide");
    elm_panes_horizontal_set(wd->panes_h, true);
    elm_panes_content_right_size_set(wd->panes_h, 0); /* set the default min size */
+   evas_object_smart_callback_add(wd->panes_h, "unpress", _panes_h_unpress, wd);
    elm_layout_content_set(wd->toolbar.layout, NULL, wd->panes_h);
 
    _scroll_area_add(wd, &wd->normal, true);
