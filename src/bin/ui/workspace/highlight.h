@@ -196,26 +196,15 @@ Eina_Bool
 highlight_object_set(Evas_Object *hl, Evas_Object *obj);
 
 /**
- * Hide middle handler and doesn't show in any way!
+ * Set the visibility of  middle handler
  *
  * @param highlight The smart object that is represent a highlight.
- * @return EINA_TRUE - successfull, EINA_FALSE - otherwise.
+ * @param visible The visivibity flag
  *
  * @ingroup Highlight
  */
-Eina_Bool
-highlight_handler_align_hide(Evas_Object *hl);
-
-/**
- * Show middle handler and doesn't show in any way!
- *
- * @param highlight The smart object that is represent a highlight.
- * @return EINA_TRUE - successfull, EINA_FALSE - otherwise.
- *
- * @ingroup Highlight
- */
-Eina_Bool
-highlight_handler_align_show(Evas_Object *hl);
+void
+highlight_handler_align_visible_set(Evas_Object *hl, Eina_Bool visible);
 
 /**
  * Get middle handler's visibility!
