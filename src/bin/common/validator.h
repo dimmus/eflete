@@ -34,10 +34,7 @@ void
 resource_name_validator_free(Resource_Name_Validator *validator);
 Elm_Regexp_Status
 resource_name_validator_status_get(Resource_Name_Validator *validator);
-Eina_Bool
-resource_name_validator_helper(void *data,
-                               Eo *obj EINA_UNUSED,
-                               const Eo_Event_Description *desc EINA_UNUSED,
-                               void *event_info);
+EAPI Eina_Bool
+resource_name_validator_helper(void *data, const Eo_Event *event);
 
 #endif /* VALIDATOR_H */

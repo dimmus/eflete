@@ -79,7 +79,7 @@ _on_button_add_clicked_cb(void *data __UNUSED__,
    resource_name_validator_list_set(edit->name_validator, &ap.project->colorclasses, true);
    LAYOUT_PROP_ADD(ap.win, _("Color class name: "), "property", "1swallow")
    ENTRY_ADD(item, edit->entry, true);
-   eo_do(edit->entry, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, edit->name_validator));
+   eo_event_callback_add(edit->entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, edit->name_validator);
    evas_object_smart_callback_add(edit->entry, "changed", _validation, edit);
    elm_object_part_text_set(edit->entry, "guide", _("Type new color class name here"));
    elm_object_part_content_set(item, "elm.swallow.content", edit->entry);

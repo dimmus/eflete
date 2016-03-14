@@ -826,7 +826,7 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
 
    LAYOUT_PROP_ADD(box, _("Part name:"), "property", "1swallow")
    ENTRY_ADD(box, pl->popup.entry_name, true);
-   eo_do(pl->popup.entry_name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, pl->name_validator));
+   eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, pl->name_validator);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new part here."));
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _on_entry_changed, pl);
    evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_part_ok_clicked, pl);
@@ -960,8 +960,8 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    BOX_ADD(ap.popup, box, false, false);
    LAYOUT_PROP_ADD(box, _("Name:"), "property", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
-   eo_do(pl->popup.entry_name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE,
-         elm_validator_regexp_helper, pl->name_validator));
+   eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
+                         elm_validator_regexp_helper, pl->name_validator);
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _state_validate, pl);
    evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_state_ok_clicked, pl);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new state here."));
@@ -1085,8 +1085,8 @@ _on_menu_add_item_clicked(void *data __UNUSED__,
    BOX_ADD(ap.popup, box, false, false);
    LAYOUT_PROP_ADD(box, _("Name:"), "property", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
-   eo_do(pl->popup.entry_name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE,
-         elm_validator_regexp_helper, pl->name_validator));
+   eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
+                         elm_validator_regexp_helper, pl->name_validator);
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _item_validate, pl);
    evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_item_ok_clicked, pl);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new item here."));
@@ -1165,8 +1165,8 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
    BOX_ADD(ap.popup, box, false, false);
    LAYOUT_PROP_ADD(box, _("Name:"), "property", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
-   eo_do(pl->popup.entry_name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE,
-         elm_validator_regexp_helper, pl->name_validator));
+   eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
+                         elm_validator_regexp_helper, pl->name_validator);
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _program_validate, pl);
    evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_program_ok_clicked, pl);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new program here."));

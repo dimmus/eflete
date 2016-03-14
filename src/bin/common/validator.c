@@ -81,13 +81,10 @@ resource_name_validator_status_get(Resource_Name_Validator *validator)
 }
 
 Eina_Bool
-resource_name_validator_helper(void *data,
-                               Eo *obj EINA_UNUSED,
-                               const Eo_Event_Description *desc EINA_UNUSED,
-                               void *event_info)
+resource_name_validator_helper(void *data, const Eo_Event *event)
 {
    Resource *res;
-   Elm_Validate_Content *vc = event_info;
+   Elm_Validate_Content *vc = event->event_info;
    Resource_Name_Validator *validator = (Resource_Name_Validator *)data;
 
    assert(validator != NULL);

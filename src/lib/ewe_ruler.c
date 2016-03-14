@@ -727,7 +727,7 @@ _ewe_ruler_marker_style_get(Eo *obj EINA_UNUSED,
 EOLIAN static void
 _ewe_ruler_evas_object_smart_add(Eo *obj, Ewe_Ruler_Smart_Data *sd)
 {
-   eo_do_super(obj, MY_CLASS, evas_obj_smart_add());
+   evas_obj_smart_add(eo_super(obj, MY_CLASS));
    elm_widget_sub_object_parent_add(obj);
 
    sd->obj = obj;
@@ -809,7 +809,7 @@ EOLIAN static void
 _ewe_ruler_evas_object_smart_hide(Eo* obj, Ewe_Ruler_Smart_Data *sd)
 {
    if (!sd->ruler_visible) return;
-   eo_do_super(obj, MY_CLASS, evas_obj_smart_hide());
+   evas_obj_smart_hide(eo_super(obj, MY_CLASS));
    Ewe_Ruler_Scale *scale;
    Ewe_Ruler_Marker *marker;
    Eina_List *ls, *l;
@@ -838,7 +838,7 @@ _ewe_ruler_evas_object_smart_move(Eo *obj,
                                   Evas_Coord y)
 {
 
-   eo_do_super(obj, MY_CLASS, evas_obj_smart_move(x, y));
+   evas_obj_smart_move(eo_super(obj, MY_CLASS), x, y);
 
    evas_object_move(sd->clip, x, y);
    evas_object_move(sd->bg, x, y);
@@ -862,7 +862,7 @@ _ewe_ruler_evas_object_smart_resize(Eo *obj,
    sd->size_changed = EINA_TRUE;
    sd->geometry.width = w;
    sd->geometry.height = h;
-   eo_do_super(obj, MY_CLASS, evas_obj_smart_resize(w, h));
+   evas_obj_smart_resize(eo_super(obj, MY_CLASS), w, h);
    evas_object_resize(sd->clip, w, h);
    evas_object_resize(sd->bg, w, h);
 
@@ -906,7 +906,7 @@ _ewe_ruler_elm_widget_theme_apply(Eo *obj, Ewe_Ruler_Smart_Data *sd)
 {
    Eina_Bool int_ret;
    int count;
-   eo_do_super(obj, MY_CLASS, int_ret = elm_obj_widget_theme_apply());
+   int_ret = elm_obj_widget_theme_apply(eo_super(obj, MY_CLASS));
    if (!int_ret) return EINA_FALSE;
 
    Ewe_Ruler_Scale *scale;
@@ -953,11 +953,10 @@ ewe_ruler_add(Evas_Object *parent)
 EOLIAN static Eo*
 _ewe_ruler_eo_base_constructor(Eo *obj, Ewe_Ruler_Smart_Data *sd)
 {
-   obj = eo_do_super_ret(obj, MY_CLASS, obj, eo_constructor());
+   obj = eo_constructor(eo_super(obj, MY_CLASS));
    sd->obj = obj;
-   eo_do(obj,
-         evas_obj_type_set(MY_CLASS_NAME_LEGACY),
-         evas_obj_smart_callbacks_descriptions_set(_smart_callbacks));
+   evas_obj_type_set(obj, MY_CLASS_NAME_LEGACY);
+   evas_obj_smart_callbacks_descriptions_set(obj, _smart_callbacks);
    return obj;
 }
 
