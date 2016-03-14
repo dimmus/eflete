@@ -620,6 +620,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
 
    helper_data->follow_up = follow_up;
 
+   evas_object_del(helper);
    helper = elm_layout_add(ap.win);
    elm_layout_theme_set(helper, "layout", "popup", title ? "hint_title" : "hint");
    evas_object_data_set(helper, "STRUCT", helper_data);
