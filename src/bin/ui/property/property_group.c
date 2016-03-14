@@ -83,6 +83,17 @@ struct _Property_Group_Data {
                   Property_Attribute aspect_preference;
                   Property_Attribute aspect;
              } size;
+             struct {
+                  Property_Attribute title;
+                  Property_Attribute align;
+                  struct {
+                       Property_Attribute title;
+                       Property_Attribute to_x;
+                       Property_Attribute to_y;
+                       Property_Attribute relative;
+                       Property_Attribute offset;
+                  } rel1, rel2;
+             } position;
         } state;
         Property_Attribute item;
         Property_Attribute program;
@@ -278,6 +289,7 @@ _subitems_get(Property_Attribute *pa)
          items = eina_list_append(items, &group_pd.items.state.name);
          items = eina_list_append(items, &group_pd.items.state.visible);
          items = eina_list_append(items, &group_pd.items.state.size.title);
+         items = eina_list_append(items, &group_pd.items.state.position.title);
      }
    else if (pa == &group_pd.items.state.size.title)
      {
@@ -287,6 +299,26 @@ _subitems_get(Property_Attribute *pa)
          items = eina_list_append(items, &group_pd.items.state.size.aspect_preference);
          items = eina_list_append(items, &group_pd.items.state.size.aspect);
          items = eina_list_append(items, &group_pd.items.state.size.minmul);
+     }
+   else if (pa == &group_pd.items.state.position.title)
+     {
+         items = eina_list_append(items, &group_pd.items.state.position.align);
+         items = eina_list_append(items, &group_pd.items.state.position.rel1.title);
+         items = eina_list_append(items, &group_pd.items.state.position.rel2.title);
+     }
+   else if (pa == &group_pd.items.state.position.rel1.title)
+     {
+         items = eina_list_append(items, &group_pd.items.state.position.rel1.to_x);
+         items = eina_list_append(items, &group_pd.items.state.position.rel1.to_y);
+         items = eina_list_append(items, &group_pd.items.state.position.rel1.relative);
+         items = eina_list_append(items, &group_pd.items.state.position.rel1.offset);
+     }
+   else if (pa == &group_pd.items.state.position.rel2.title)
+     {
+         items = eina_list_append(items, &group_pd.items.state.position.rel2.to_x);
+         items = eina_list_append(items, &group_pd.items.state.position.rel2.to_y);
+         items = eina_list_append(items, &group_pd.items.state.position.rel2.relative);
+         items = eina_list_append(items, &group_pd.items.state.position.rel2.offset);
      }
    else if (pa == &group_pd.items.part.dragable.title)
      {
@@ -362,6 +394,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_MINMUL_H:
       case ATTRIBUTE_STATE_FIXED_W:
       case ATTRIBUTE_STATE_FIXED_H:
+      case ATTRIBUTE_STATE_REL1_TO_X:
+      case ATTRIBUTE_STATE_REL1_TO_Y:
+      case ATTRIBUTE_STATE_REL2_TO_X:
+      case ATTRIBUTE_STATE_REL2_TO_Y:
          break;
       case ATTRIBUTE_STATE_MAX_W:
       case ATTRIBUTE_STATE_MAX_H:
@@ -375,6 +411,26 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_ASPECT_MAX:
          elm_spinner_step_set(action->control, 0.1);
          elm_spinner_label_format_set(action->control, "%.2f");
+         break;
+      case ATTRIBUTE_STATE_ALIGN_X:
+      case ATTRIBUTE_STATE_ALIGN_Y:
+         elm_spinner_min_max_set(action->control, 0, 1);
+         elm_spinner_step_set(action->control, 0.1);
+         elm_spinner_label_format_set(action->control, "%.2f");
+         break;
+      case ATTRIBUTE_STATE_REL1_RELATIVE_X:
+      case ATTRIBUTE_STATE_REL1_RELATIVE_Y:
+      case ATTRIBUTE_STATE_REL2_RELATIVE_X:
+      case ATTRIBUTE_STATE_REL2_RELATIVE_Y:
+         elm_spinner_min_max_set(action->control, -10, 10);
+         elm_spinner_step_set(action->control, 0.1);
+         elm_spinner_label_format_set(action->control, "%.2f");
+         break;
+      case ATTRIBUTE_STATE_REL1_OFFSET_X:
+      case ATTRIBUTE_STATE_REL1_OFFSET_Y:
+      case ATTRIBUTE_STATE_REL2_OFFSET_X:
+      case ATTRIBUTE_STATE_REL2_OFFSET_Y:
+         elm_spinner_min_max_set(action->control, -9999, 9999);
          break;
       case ATTRIBUTE_STATE_ASPECT_PREF:
          _fill_combobox_with_enum(action->control, aspect_preference_strings);
@@ -602,6 +658,70 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_state_aspect_pref_get(EDIT_OBJ, STATE_ARGS));
          break;
+      case ATTRIBUTE_STATE_ALIGN_X:
+         double_val1 = edje_edit_state_align_x_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_ALIGN_Y:
+         double_val1 = edje_edit_state_align_y_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_REL1_TO_X:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_state_rel1_to_x_get(EDIT_OBJ, STATE_ARGS);
+         _parts_combobox_fill(action->control, str_val1, 0);
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_STATE_REL1_TO_Y:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_state_rel1_to_y_get(EDIT_OBJ, STATE_ARGS);
+         _parts_combobox_fill(action->control, str_val1, 0);
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_STATE_REL1_RELATIVE_X:
+         double_val1 = edje_edit_state_rel1_relative_x_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_REL1_RELATIVE_Y:
+         double_val1 = edje_edit_state_rel1_relative_y_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_REL1_OFFSET_X:
+         double_val1 = edje_edit_state_rel1_offset_x_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_REL1_OFFSET_Y:
+         double_val1 = edje_edit_state_rel1_offset_y_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_REL2_TO_X:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_state_rel2_to_x_get(EDIT_OBJ, STATE_ARGS);
+         _parts_combobox_fill(action->control, str_val1, 0);
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_STATE_REL2_TO_Y:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_state_rel2_to_y_get(EDIT_OBJ, STATE_ARGS);
+         _parts_combobox_fill(action->control, str_val1, 0);
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_STATE_REL2_RELATIVE_X:
+         double_val1 = edje_edit_state_rel2_relative_x_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_REL2_RELATIVE_Y:
+         double_val1 = edje_edit_state_rel2_relative_y_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_REL2_OFFSET_X:
+         double_val1 = edje_edit_state_rel2_offset_x_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_REL2_OFFSET_Y:
+         double_val1 = edje_edit_state_rel2_offset_y_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -764,6 +884,62 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("aspect preference changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, eina_stringshare_add(
             aspect_preference_strings[edje_edit_state_aspect_pref_get(EDIT_OBJ, STATE_ARGS)]));
+         break;
+      case ATTRIBUTE_STATE_ALIGN_X:
+         group_pd.history.format = _("align x changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_state_align_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_ALIGN_Y:
+         group_pd.history.format = _("align y changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_state_align_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL1_TO_X:
+         group_pd.history.format = _("rel1 to_x changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_state_rel1_to_x_get(EDIT_OBJ, STATE_ARGS));
+         break;
+      case ATTRIBUTE_STATE_REL1_TO_Y:
+         group_pd.history.format = _("rel1 to_y changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_state_rel1_to_y_get(EDIT_OBJ, STATE_ARGS));
+         break;
+      case ATTRIBUTE_STATE_REL1_RELATIVE_X:
+         group_pd.history.format = _("rel1 relative x changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_state_rel1_relative_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL1_RELATIVE_Y:
+         group_pd.history.format = _("rel1 relative y changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_state_rel1_relative_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL1_OFFSET_X:
+         group_pd.history.format = _("rel1 offset x changed from %d to %d");
+         VAL(int_val1) = edje_edit_state_rel1_offset_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL1_OFFSET_Y:
+         group_pd.history.format = _("rel1 offset y changed from %d to %d");
+         VAL(int_val1) = edje_edit_state_rel1_offset_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL2_TO_X:
+         group_pd.history.format = _("rel2 to_x changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_state_rel2_to_x_get(EDIT_OBJ, STATE_ARGS));
+         break;
+      case ATTRIBUTE_STATE_REL2_TO_Y:
+         group_pd.history.format = _("rel2 to_y changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_state_rel2_to_y_get(EDIT_OBJ, STATE_ARGS));
+         break;
+      case ATTRIBUTE_STATE_REL2_RELATIVE_X:
+         group_pd.history.format = _("rel2 relative x changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_state_rel2_relative_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL2_RELATIVE_Y:
+         group_pd.history.format = _("rel2 relative y changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_state_rel2_relative_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL2_OFFSET_X:
+         group_pd.history.format = _("rel2 offset x changed from %d to %d");
+         VAL(int_val1) = edje_edit_state_rel2_offset_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL2_OFFSET_Y:
+         group_pd.history.format = _("rel2 offset y changed from %d to %d");
+         VAL(int_val1) = edje_edit_state_rel2_offset_y_get(EDIT_OBJ, STATE_ARGS);
          break;
 
       default:
@@ -954,6 +1130,70 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
+      case ATTRIBUTE_STATE_ALIGN_X:
+         editor_state_align_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.double_val1 = edje_edit_state_align_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_ALIGN_Y:
+         editor_state_align_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.double_val1 = edje_edit_state_align_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL1_TO_X:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         editor_state_rel1_to_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_STATE_REL1_TO_Y:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         editor_state_rel1_to_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_STATE_REL1_RELATIVE_X:
+         editor_state_rel1_relative_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.double_val1 = edje_edit_state_rel1_relative_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL1_RELATIVE_Y:
+         editor_state_rel1_relative_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.double_val1 = edje_edit_state_rel1_relative_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL1_OFFSET_X:
+         editor_state_rel1_offset_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_state_rel1_offset_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL1_OFFSET_Y:
+         editor_state_rel1_offset_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_state_rel1_offset_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL2_TO_X:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         editor_state_rel2_to_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_STATE_REL2_TO_Y:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         editor_state_rel2_to_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_STATE_REL2_RELATIVE_X:
+         editor_state_rel2_relative_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.double_val1 = edje_edit_state_rel2_relative_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL2_RELATIVE_Y:
+         editor_state_rel2_relative_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.double_val1 = edje_edit_state_rel2_relative_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL2_OFFSET_X:
+         editor_state_rel2_offset_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_state_rel2_offset_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_REL2_OFFSET_Y:
+         editor_state_rel2_offset_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_state_rel2_offset_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
 
       default:
          TODO("remove default case after all attributes will be added");
@@ -998,6 +1238,10 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_DRAG_EVENT:
       case ATTRIBUTE_PART_GROUP_SOURCE:
       case ATTRIBUTE_STATE_ASPECT_PREF:
+      case ATTRIBUTE_STATE_REL1_TO_X:
+      case ATTRIBUTE_STATE_REL1_TO_Y:
+      case ATTRIBUTE_STATE_REL2_TO_X:
+      case ATTRIBUTE_STATE_REL2_TO_Y:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (group_pd.history.old.str_val1) ? group_pd.history.old.str_val1 : STR_NONE,
@@ -1019,6 +1263,10 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_MINMUL_H:
       case ATTRIBUTE_STATE_MAX_W:
       case ATTRIBUTE_STATE_MAX_H:
+      case ATTRIBUTE_STATE_REL1_OFFSET_X:
+      case ATTRIBUTE_STATE_REL1_OFFSET_Y:
+      case ATTRIBUTE_STATE_REL2_OFFSET_X:
+      case ATTRIBUTE_STATE_REL2_OFFSET_Y:
          CHECK_VAL(int_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.int_val1,
@@ -1026,6 +1274,12 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_ASPECT_MIN:
       case ATTRIBUTE_STATE_ASPECT_MAX:
+      case ATTRIBUTE_STATE_ALIGN_X:
+      case ATTRIBUTE_STATE_ALIGN_Y:
+      case ATTRIBUTE_STATE_REL1_RELATIVE_X:
+      case ATTRIBUTE_STATE_REL1_RELATIVE_Y:
+      case ATTRIBUTE_STATE_REL2_RELATIVE_X:
+      case ATTRIBUTE_STATE_REL2_RELATIVE_Y:
          if (fabs(group_pd.history.new.double_val1 - group_pd.history.old.double_val1) < DBL_EPSILON)
            {
               change_free(group_pd.history.change);
@@ -1257,6 +1511,61 @@ _init_state_size_block()
 }
 
 static void
+_init_state_position_block()
+{
+   group_pd.items.state.position.title.name = "position";
+   group_pd.items.state.position.title.expandable = true;
+   group_pd.items.state.position.title.expanded = true;
+   group_pd.items.state.position.title.expand_cb = _subitems_get;
+
+   group_pd.items.state.position.align.name = "align";
+   _action1(&group_pd.items.state.position.align, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ALIGN_X);
+   _action2(&group_pd.items.state.position.align, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ALIGN_Y);
+
+   /* rel1 */
+   group_pd.items.state.position.rel1.title.name = "rel1 (start point)";
+   group_pd.items.state.position.rel1.title.icon_name = eina_stringshare_add(_("elm/image/icon/start-point"));
+   group_pd.items.state.position.rel1.title.expand_cb = _subitems_get;
+
+   group_pd.items.state.position.rel1.to_x.name = "relative to";
+   _action1(&group_pd.items.state.position.rel1.to_x, "x", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_X);
+
+   group_pd.items.state.position.rel1.to_y.name = "";
+   _action1(&group_pd.items.state.position.rel1.to_y, "y", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_Y);
+
+   group_pd.items.state.position.rel1.relative.name = "relative";
+   group_pd.items.state.position.rel1.relative.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
+   _action1(&group_pd.items.state.position.rel1.relative, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_X);
+   _action2(&group_pd.items.state.position.rel1.relative, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_Y);
+
+   group_pd.items.state.position.rel1.offset.name = "offset";
+   group_pd.items.state.position.rel1.offset.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
+   _action1(&group_pd.items.state.position.rel1.offset, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_OFFSET_X);
+   _action2(&group_pd.items.state.position.rel1.offset, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_OFFSET_Y);
+
+   /* rel2 */
+   group_pd.items.state.position.rel2.title.name = "rel2 (end point)";
+   group_pd.items.state.position.rel2.title.icon_name = eina_stringshare_add(_("elm/image/icon/end-point"));
+   group_pd.items.state.position.rel2.title.expand_cb = _subitems_get;
+
+   group_pd.items.state.position.rel2.to_x.name = "relative to";
+   _action1(&group_pd.items.state.position.rel2.to_x, "x", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_X);
+
+   group_pd.items.state.position.rel2.to_y.name = "";
+   _action1(&group_pd.items.state.position.rel2.to_y, "y", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_Y);
+
+   group_pd.items.state.position.rel2.relative.name = "relative";
+   group_pd.items.state.position.rel2.relative.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
+   _action1(&group_pd.items.state.position.rel2.relative, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_X);
+   _action2(&group_pd.items.state.position.rel2.relative, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_Y);
+
+   group_pd.items.state.position.rel2.offset.name = "offset";
+   group_pd.items.state.position.rel2.offset.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
+   _action1(&group_pd.items.state.position.rel2.offset, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_X);
+   _action2(&group_pd.items.state.position.rel2.offset, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_Y);
+}
+
+static void
 _init_state_block()
 {
    group_pd.items.state.title.name = "state";
@@ -1271,6 +1580,7 @@ _init_state_block()
    _action1(&group_pd.items.state.visible, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_VISIBLE);
 
    _init_state_size_block();
+   _init_state_position_block();
 }
 
 /* public */
