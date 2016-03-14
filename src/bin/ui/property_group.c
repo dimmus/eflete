@@ -290,7 +290,8 @@ static const char *edje_text_effect_direction[] = { N_("Bottom Right"),
 
 static const char *edje_middle_type[] = { N_("None"),
                                           N_("Default"),
-                                          N_("Solid")};
+                                          N_("Solid"),
+                                          NULL};
 
 static const char *edje_homogeneous[] = { N_("None"),
                                           N_("Table"),
