@@ -154,15 +154,20 @@ _unrealized_cb(void *data __UNUSED__,
    assert(pa != NULL);
 
    pa->realized = false;
+   /* we need to manually remove content because genlist can later realize
+      new item with old content. o_O */
+   evas_object_del(elm_object_item_part_content_get(glit, "swallow.icon"));
    if (pa->action1.control)
      {
         /* forcing unfocus callback to stop entry change before setting control to NULL */
         elm_object_focus_set(pa->action1.control, false);
+        evas_object_del(pa->action1.control);
         pa->action1.control = NULL;
      }
    if (pa->action2.control)
      {
         elm_object_focus_set(pa->action2.control, false);
+        evas_object_del(pa->action2.control);
         pa->action2.control = NULL;
      }
    elm_object_focus_set(pd.genlist, true);
