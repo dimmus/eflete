@@ -221,10 +221,7 @@ _snd_file_tell(void *data, Eo *eo_obj EINA_UNUSED)
 #endif
 
 static Eina_Bool
-_play_finished_cb(void *data,
-                  Eo *in EINA_UNUSED,
-                  const Eo_Event_Description *desc EINA_UNUSED,
-                  void *event_info EINA_UNUSED)
+_play_finished_cb(void *data, const Eo_Event *event __UNUSED__)
 {
    Sound_Prop_Data *edit = (Sound_Prop_Data *)data;
 
@@ -238,12 +235,9 @@ _play_finished_cb(void *data,
 }
 
 static Eina_Bool
-_out_fail(void *data EINA_UNUSED,
-          Eo *output,
-          const Eo_Event_Description *desc EINA_UNUSED,
-          void *event_info EINA_UNUSED)
+_out_fail(void *data EINA_UNUSED, const Eo_Event *event)
 {
-   eo_del(output);
+   eo_del(event->obj);
    return true;
 }
 
@@ -281,11 +275,11 @@ _create_io_stream(Sound_Prop_Data *edit)
 
    assert(edit->io.out != NULL);
 
-   eo_do(edit->io.out, eo_event_callback_add(ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
-                                             _out_fail, NULL));
+   eo_event_callback_add(edit->io.out, ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
+                         _out_fail, NULL);
 
-   eo_do(edit->io.in, eo_event_callback_add(ECORE_AUDIO_IN_EVENT_IN_STOPPED,
-                                            _play_finished_cb, edit));
+   eo_event_callback_add(edit->io.in, ECORE_AUDIO_IN_EVENT_IN_STOPPED,
+                         _play_finished_cb, edit);
 }
 
 static void
@@ -302,19 +296,19 @@ _tone_play(Sound_Prop_Data *edit)
    if (!edit->io.in)
      {
         edit->io.in = eo_add(ECORE_AUDIO_IN_TONE_CLASS, NULL);
-        eo_do(edit->io.in, ecore_audio_obj_name_set(tone->name));
-        eo_do(edit->io.in, eo_key_data_set(ECORE_AUDIO_ATTR_TONE_FREQ, &tone->freq));
-        eo_do(edit->io.in, ecore_audio_obj_in_length_set(TONE_PLAYING_DURATION));
-        eo_do(edit->io.in, eo_event_callback_add(ECORE_AUDIO_IN_EVENT_IN_STOPPED,
-                                                 _play_finished_cb, edit));
+        ecore_audio_obj_name_set(edit->io.in, tone->name);
+        eo_key_data_set(edit->io.in, ECORE_AUDIO_ATTR_TONE_FREQ, &tone->freq);
+        ecore_audio_obj_in_length_set(edit->io.in, TONE_PLAYING_DURATION);
+        eo_event_callback_add(edit->io.in, ECORE_AUDIO_IN_EVENT_IN_STOPPED,
+                              _play_finished_cb, edit);
      }
 
    if (!edit->io.out)
      edit->io.out = eo_add(ECORE_AUDIO_OUT_PULSE_CLASS, NULL,
-                           eo_event_callback_add(ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
+                           eo_event_callback_add(eoid, ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
                                                  _out_fail, NULL));
 
-   eo_do(edit->io.out, ret = ecore_audio_obj_out_input_attach(edit->io.in));
+   ret = ecore_audio_obj_out_input_attach(edit->io.out, edit->io.in);
    if (!ret)
      {
         ERR("Couldn't attach input and output!");
@@ -323,7 +317,7 @@ _tone_play(Sound_Prop_Data *edit)
 
    value = elm_slider_value_get(edit->player_data.rewind);
    if (value)
-     eo_do(edit->io.in, value = ecore_audio_obj_in_seek(value, SEEK_SET));
+     value = ecore_audio_obj_in_seek(edit->io.in, value, SEEK_SET);
 
    edit->player_data.timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, edit);
 }
@@ -341,8 +335,8 @@ _sample_play(Sound_Prop_Data *edit)
      {
         sample = (External_Resource *)edit->snd->resource;
         _create_io_stream(edit);
-        eo_do(edit->io.in, ecore_audio_obj_name_set(sample->source));
-        eo_do(edit->io.in, ret = ecore_audio_obj_source_set(sample->source));
+        ecore_audio_obj_name_set(edit->io.in, sample->source);
+        ret = ecore_audio_obj_source_set(edit->io.in, sample->source);
         if (!ret)
           {
              ERR("Can not set source obj for added sample");
@@ -350,7 +344,7 @@ _sample_play(Sound_Prop_Data *edit)
           }
      }
 
-   eo_do(edit->io.out, ret = ecore_audio_obj_out_input_attach(edit->io.in));
+   ret = ecore_audio_obj_out_input_attach(edit->io.out, edit->io.in);
    if (!ret)
      {
         ERR("Couldn't attach input and output!");
@@ -359,7 +353,7 @@ _sample_play(Sound_Prop_Data *edit)
 
    value = elm_slider_value_get(edit->player_data.rewind);
    if (value)
-     eo_do(edit->io.in, value = ecore_audio_obj_in_seek(value, SEEK_SET));
+     value = ecore_audio_obj_in_seek(edit->io.in, value, SEEK_SET);
 
    edit->player_data.timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, edit);
 }
@@ -372,10 +366,10 @@ _interrupt_playing(Sound_Prop_Data *edit)
    assert(edit != NULL);
 
    if (!edit->io.in) return; /* case when previous sound playing is finished */
-   eo_do(edit->io.in, ret = ecore_audio_obj_paused_get());
+   ret = ecore_audio_obj_paused_get(edit->io.in);
    if (ret)
      {
-        eo_do(edit->io.out, ret = ecore_audio_obj_out_input_detach(edit->io.in));
+        ret = ecore_audio_obj_out_input_detach(edit->io.out, edit->io.in);
         if (!ret) ERR("Could not detach input");
 
         ecore_timer_del(edit->player_data.timer);
@@ -405,10 +399,10 @@ _on_play_cb(void *data,
 
    if (edit->io.in)
      {
-        eo_do(edit->io.in, paused = ecore_audio_obj_paused_get());
+        paused = ecore_audio_obj_paused_get(edit->io.in);
         if (paused)
           {
-             eo_do(edit->io.in, ecore_audio_obj_paused_set(false));
+             ecore_audio_obj_paused_set(edit->io.in, false);
              ecore_timer_thaw(edit->player_data.timer);
              return;
           }
@@ -438,7 +432,7 @@ _on_pause_cb(void *data EINA_UNUSED,
 
    assert(edit != NULL);
 
-   eo_do(edit->io.in, ecore_audio_obj_paused_set(true));
+   ecore_audio_obj_paused_set(edit->io.in, true);
 
    ecore_timer_freeze(edit->player_data.timer);
    elm_object_part_content_unset(edit->sound_player, "swallow.button.play");
@@ -457,7 +451,7 @@ _on_rewind_cb(void *data,
    assert(edit != NULL);
 
    double value = elm_slider_value_get(edit->player_data.rewind);
-   eo_do(edit->io.in, value = ecore_audio_obj_in_seek(value, SEEK_SET));
+   value = ecore_audio_obj_in_seek(edit->io.in, value, SEEK_SET);
 }
 
 #define BT_ADD(PARENT, OBJ, ICON, ICON_STYLE) \
@@ -610,10 +604,10 @@ _grid_sample_selected(void *data,
 
    sample = (External_Resource *)snd->resource;
    _create_io_stream(edit);
-   eo_do(edit->io.in, ecore_audio_obj_name_set(sample->source));
-   eo_do(edit->io.in, ret = ecore_audio_obj_source_set(sample->source));
+   ecore_audio_obj_name_set(edit->io.in, sample->source);
+   ret = ecore_audio_obj_source_set(edit->io.in, sample->source);
    if (!ret) ERR("Can not set source '%s' to obj sample", sample->source)
-   eo_do(edit->io.in, len = ecore_audio_obj_in_length_get());
+   len = ecore_audio_obj_in_length_get(edit->io.in);
    elm_slider_min_max_set(edit->player_data.rewind, 0, len);
    elm_slider_value_set(edit->player_data.rewind, 0.0);
    edit->io.length = ecore_file_size(sample->source);

@@ -1507,7 +1507,7 @@ prop_part_name_add(Evas_Object *parent, Group_Prop_Data *pd)
 
    PROPERTY_ITEM_ADD(parent,  _("name"), "1swallow");
    ENTRY_ADD(parent, pd->attributes.part.name, true);
-   eo_do(pd->attributes.part.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, pd->attributes.part.validator));
+   eo_event_callback_add(pd->attributes.part.name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, pd->attributes.part.validator);
    resource_name_validator_list_set(pd->attributes.part.validator, &pd->part->group->parts, false);
    resource_name_validator_resource_set(pd->attributes.part.validator, (Resource *)pd->part);
    elm_entry_entry_set(pd->attributes.part.name, pd->part->name);

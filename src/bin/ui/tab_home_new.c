@@ -583,7 +583,7 @@ _tab_new_project_add(void)
    /* label.name */
    elm_object_part_text_set(tab_new.layout, "label.name", _("Project name:"));
    ENTRY_ADD(tab_new.layout, tab_new.name, true)
-   eo_do(tab_new.name, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, tab_new.name_validator));
+   eo_event_callback_add(tab_new.name, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, tab_new.name_validator);
    evas_object_smart_callback_add(tab_new.name, "changed", _validate, NULL);
    elm_object_part_content_set(tab_new.layout, "swallow.name", tab_new.name);
    /* label.path */

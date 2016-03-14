@@ -549,7 +549,7 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
        evas_object_smart_callback_add(pd->attributes.MEMBER.VALUE, "unfocused", _on_##SUB##_##VALUE##_activated, pd); \
      } \
    if (VALIDATOR) \
-      eo_do(pd->attributes.MEMBER.VALUE, eo_event_callback_add(ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, VALIDATOR)); \
+      eo_event_callback_add(pd->attributes.MEMBER.VALUE, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, VALIDATOR); \
    if (TOOLTIP) elm_object_tooltip_text_set(pd->attributes.MEMBER.VALUE, TOOLTIP); \
    elm_layout_content_set(item, NULL, pd->attributes.MEMBER.VALUE); \
    prop_##SUB##_##VALUE##_update(pd); \
