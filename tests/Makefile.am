@@ -20,7 +20,6 @@ ui_workspace_test \
 colorselector_test \
 shortcuts_test
 
-
 check_PROGRAMS = ${TESTS}
 
 FLAGS = \
@@ -59,6 +58,27 @@ LD = $(top_builddir)/src/bin/libete.a \
 @ELEMENTARY_LIBS@ \
 ${top_builddir}/src/lib/libewe.la \
 @ENVENTOR_LIBS@
+
+include_HEADERS = \
+	../tests/test_common.h \
+	../tests/utc_common.h \
+	../tests/test_ewe_init/test_ewe_init.h \
+	../tests/test_ewe_ruler/test_ewe_ruler.h \
+	../tests/test_ewe_combobox/test_ewe_combobox.h \
+	../tests/test_eflete/test_eflete.h \
+	../tests/test_alloc/test_alloc.h \
+	../tests/test_diff/test_diff.h \
+	../tests/test_change/test_change.h \
+	../tests/test_new_history/test_new_history.h \
+	../tests/test_logger/test_logger.h \
+	../tests/test_modal_window/test_modal_window.h \
+	../tests/test_project_manager/test_project_manager.h \
+	../tests/test_config/test_config.h \
+	../tests/test_cursor/test_cursor.h \
+	../tests/test_ui_workspace/test_ui_workspace.h \
+	../tests/test_live_widget/test_live_widget.h \
+	../tests/test_shortcuts/test_shortcuts.h \
+	../tests/test_colorselector/test_colorselector.h
 
 ewe_init_test_SOURCES = \
 ../tests/test_ewe_init/test_ewe_init.c \
@@ -278,3 +298,6 @@ coverage:
 		echo "" ; \
 	done;
 	echo "</body></html>" >> ../coverage.html
+
+EXTRA_DIST = \
+	tests_report_generator.py

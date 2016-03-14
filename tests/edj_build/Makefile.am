@@ -92,3 +92,14 @@ check: Makefile
 	;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj
+
+EXTRA_DIST = \
+	radio_base.png \
+	radio2.png \
+	radio.png \
+	radio.edc.in \
+	PTS55F.ttf \
+	license.txt \
+	kbd-tap.wav
+
+
