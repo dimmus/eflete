@@ -754,7 +754,7 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_ASPECT_MIN:
          group_pd.history.format = _("state aspect_min changed from %.2f to %.2f");
-         VAL(int_val1) = edje_edit_state_aspect_min_get(EDIT_OBJ, STATE_ARGS);
+         VAL(double_val1) = edje_edit_state_aspect_min_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_ASPECT_MAX:
          group_pd.history.format = _("state aspect_max changed from %.2f to %.2f");
