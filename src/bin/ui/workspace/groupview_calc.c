@@ -17,8 +17,8 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "groupedit.h"
-#include "groupedit_private.h"
+#include "groupview.h"
+#include "groupview_private.h"
 #include "project_manager.h"
 
 #define PART_STATE_GET(obj, part) \
@@ -30,40 +30,40 @@
    edje_edit_string_free(state);
 
 static void
-_groupedit_part_free(Groupedit_Part *gp);
+_groupview_part_free(Groupview_Part *gp);
 
-static Groupedit_Part *
-_part_draw_add(Ws_Groupedit_Smart_Data *sd, Part *part);
-
-static void
-_part_draw_del(Ws_Groupedit_Smart_Data *sd, Part *part);
+static Groupview_Part *
+_part_draw_add(Groupview_Smart_Data *sd, Part *part);
 
 static void
-_item_draw_del(Groupedit_Item *ge_item);
+_part_draw_del(Groupview_Smart_Data *sd, Part *part);
 
 static void
-_part_object_area_calc(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp);
+_item_draw_del(Groupview_Item *ge_item);
 
 static void
-_common_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
+_part_object_area_calc(Groupview_Smart_Data *sd, Groupview_Part *gp);
 
 static void
-_image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
+_common_param_update(Groupview_Part *gp, Evas_Object *edit_obj);
 
 static void
-_proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
+_image_param_update(Groupview_Part *gp, Evas_Object *edit_obj);
 
 static void
-_table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp);
+_proxy_param_update(Groupview_Part *gp, Evas_Object *edit_obj);
 
 static void
-_box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp);
+_table_param_update(Groupview_Smart_Data *sd, Groupview_Part *gp);
+
+static void
+_box_param_update(Groupview_Smart_Data *sd, Groupview_Part *gp);
 
 Eina_Bool
-_edit_object_part_add(Ws_Groupedit_Smart_Data *sd,
+_edit_object_part_add(Groupview_Smart_Data *sd,
                       Part *part)
 {
-   Groupedit_Part *gp;
+   Groupview_Part *gp;
 
    assert(sd != NULL);
    assert(part != NULL);
@@ -76,7 +76,7 @@ _edit_object_part_add(Ws_Groupedit_Smart_Data *sd,
 }
 
 Eina_Bool
-_edit_object_part_del(Ws_Groupedit_Smart_Data *sd, Part *part)
+_edit_object_part_del(Groupview_Smart_Data *sd, Part *part)
 {
    assert(sd != NULL);
    assert(sd->parts != NULL);
@@ -89,11 +89,11 @@ _edit_object_part_del(Ws_Groupedit_Smart_Data *sd, Part *part)
 }
 
 Eina_Bool
-_edit_object_part_restack_below(Ws_Groupedit_Smart_Data *sd,
+_edit_object_part_restack_below(Groupview_Smart_Data *sd,
                                 const char *part,
                                 const char *rel_part)
 {
-   Groupedit_Part *ge_rel_part, *ge_part;
+   Groupview_Part *ge_rel_part, *ge_part;
 
    assert(sd != NULL);
    assert(sd->parts != NULL);
@@ -122,9 +122,9 @@ _edit_object_part_restack_below(Ws_Groupedit_Smart_Data *sd,
 }
 
 void
-_parts_list_new(Ws_Groupedit_Smart_Data *sd)
+_parts_list_new(Groupview_Smart_Data *sd)
 {
-   Groupedit_Part *gp;
+   Groupview_Part *gp;
    Eina_List *l;
    Part *part;
    Eina_List *parts;
@@ -143,23 +143,23 @@ _parts_list_new(Ws_Groupedit_Smart_Data *sd)
 }
 
 void
-_parts_list_free(Ws_Groupedit_Smart_Data *sd)
+_parts_list_free(Groupview_Smart_Data *sd)
 {
-   Groupedit_Part *gp;
+   Groupview_Part *gp;
 
    assert(sd != NULL);
 
    if (!sd->parts) return;
 
    EINA_LIST_FREE(sd->parts, gp)
-     _groupedit_part_free(gp);
+     _groupview_part_free(gp);
    sd->parts = NULL;
 }
 
 static void
-_groupedit_part_free(Groupedit_Part *gp)
+_groupview_part_free(Groupview_Part *gp)
 {
-   Groupedit_Item *ge_item;
+   Groupview_Item *ge_item;
 
    assert(gp != NULL);
 
@@ -169,11 +169,11 @@ _groupedit_part_free(Groupedit_Part *gp)
    free(gp);
 }
 
-Groupedit_Part *
+Groupview_Part *
 _parts_list_find(Eina_List *parts, const char *part)
 {
    Eina_List *l;
-   Groupedit_Part *gp;
+   Groupview_Part *gp;
 
    assert(parts != NULL);
    assert(part != NULL);
@@ -186,11 +186,11 @@ _parts_list_find(Eina_List *parts, const char *part)
    return NULL;
 }
 
-Groupedit_Item *
+Groupview_Item *
 _part_item_search(Eina_List *items, const char *item_name)
 {
    Eina_List *l;
-   Groupedit_Item *item;
+   Groupview_Item *item;
 
    assert(items != NULL);
    assert(item_name != NULL);
@@ -211,23 +211,23 @@ _part_select(void *data,
              Evas_Object *obj __UNUSED__,
              void *event_info)
 {
-   Groupedit_Part *gp = (Groupedit_Part *)data;
+   Groupview_Part *gp = (Groupview_Part *)data;
 
    assert(gp != NULL);
 
-   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->draw, "sd");
+   Groupview_Smart_Data *sd = evas_object_data_get(gp->draw, "sd");
 
    assert(sd != NULL);
 
    Evas_Event_Mouse_Down *emd = (Evas_Event_Mouse_Down *)event_info;
 
    if (emd->button != 1) return;
-   evas_object_smart_callback_call(sd->obj, SIGNAL_GROUPEDIT_PART_SELECTED,
-                                  (void *)gp->part);
+   sd->selected = gp;
+   evas_object_smart_callback_call(sd->obj, SIGNAL_GROUPVIEW_CLICKED, gp->part);
 }
 
 static Evas_Object *
-_conteiner_cell_sizer_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp, const char *item_name)
+_conteiner_cell_sizer_add(Groupview_Smart_Data *sd, Groupview_Part *gp, const char *item_name)
 {
    Evas_Object *cell_content;
    Eina_Stringshare *item_source;
@@ -263,14 +263,14 @@ _conteiner_cell_sizer_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp, const
 }
 
 static void
-_part_table_items_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp, Eina_List ***items_draw, int col, int row)
+_part_table_items_add(Groupview_Smart_Data *sd, Groupview_Part *gp, Eina_List ***items_draw, int col, int row)
 {
    Evas_Object *cell, *cell_content;
    Eina_List *l;
    Eina_Stringshare *item_name;
    int i, j;
    unsigned char span_col, span_row;
-   Groupedit_Item *item;
+   Groupview_Item *item;
 
    assert(gp->container != NULL);
    assert(gp->items == NULL);
@@ -300,7 +300,7 @@ _part_table_items_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp, Eina_List
                   cell_content = _conteiner_cell_sizer_add(sd, gp, item_name);
                   evas_object_table_pack(gp->container, cell_content, i, j, span_col, span_row);
 
-                  item = mem_malloc(sizeof(Groupedit_Item));
+                  item = mem_malloc(sizeof(Groupview_Item));
                   item->name = eina_stringshare_add(item_name);
                   item->layout = cell;
                   gp->items = eina_list_append(gp->items, item);
@@ -311,7 +311,7 @@ _part_table_items_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp, Eina_List
 }
 
 static void
-_part_table_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
+_part_table_add(Groupview_Smart_Data *sd, Groupview_Part *gp)
 {
 
    Eina_List *l;
@@ -415,14 +415,14 @@ _edje_box_layout_builtin_find(const char *name)
 }
 
 static void
-_part_box_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
+_part_box_add(Groupview_Smart_Data *sd, Groupview_Part *gp)
 {
 
    Eina_List *l;
    Eina_Stringshare *str;
    int i, spread_w, spread_h;
    Evas_Object *cell, *cell_content;
-   Groupedit_Item *item;
+   Groupview_Item *item;
 
    assert(gp->container == NULL);
 
@@ -447,7 +447,7 @@ _part_box_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
              evas_object_box_append(gp->container, cell);
              if (i == 0)
                {
-                  item = mem_malloc(sizeof(Groupedit_Item));
+                  item = mem_malloc(sizeof(Groupview_Item));
                   item->name = eina_stringshare_add(str);
                   item->layout = cell;
                   gp->items = eina_list_append(gp->items, item);
@@ -457,7 +457,7 @@ _part_box_add(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 }
 
 static void
-_box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
+_box_param_update(Groupview_Smart_Data *sd, Groupview_Part *gp)
 {
    double align_x = 0, align_y = 0;
    int pad_x, pad_y;
@@ -483,9 +483,9 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 }
 
 static void
-_part_container_del(Groupedit_Part *gp)
+_part_container_del(Groupview_Part *gp)
 {
-   Groupedit_Item *item;
+   Groupview_Item *item;
    assert(gp->container != NULL);
 
    EINA_LIST_FREE(gp->items, item)
@@ -497,7 +497,7 @@ _part_container_del(Groupedit_Part *gp)
 }
 
 static void
-_part_calc(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
+_part_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
 {
    Evas_Coord x, y, xe, ye, w, h, we, he;
    int protrusion;
@@ -545,7 +545,7 @@ _part_calc(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 }
 
 static Eina_Bool
-_part_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
+_part_update(Groupview_Smart_Data *sd, Groupview_Part *gp)
 {
    Eina_Stringshare *str;
 
@@ -604,15 +604,15 @@ _part_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    return true;
 }
 
-static Groupedit_Part *
-_part_draw_add(Ws_Groupedit_Smart_Data *sd, Part *part)
+static Groupview_Part *
+_part_draw_add(Groupview_Smart_Data *sd, Part *part)
 {
-   Groupedit_Part *gp;
+   Groupview_Part *gp;
 
    assert(sd != NULL);
    assert(part != NULL);
 
-   gp = mem_calloc(1, sizeof(Groupedit_Part));
+   gp = mem_calloc(1, sizeof(Groupview_Part));
    gp->part = part;
 
    gp->draw = elm_box_add(sd->parent);
@@ -694,9 +694,9 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, Part *part)
 }
 
 static void
-_part_draw_del(Ws_Groupedit_Smart_Data *sd, Part *part)
+_part_draw_del(Groupview_Smart_Data *sd, Part *part)
 {
-   Groupedit_Part *gp;
+   Groupview_Part *gp;
 
    assert(sd != NULL);
    assert(part != NULL);
@@ -706,11 +706,11 @@ _part_draw_del(Ws_Groupedit_Smart_Data *sd, Part *part)
    assert(gp != NULL);
 
    sd->parts = eina_list_remove(sd->parts, gp);
-   _groupedit_part_free(gp);
+   _groupview_part_free(gp);
 }
 
 static void
-_item_draw_del(Groupedit_Item *item)
+_item_draw_del(Groupview_Item *item)
 {
    assert(item != NULL);
 
@@ -721,7 +721,7 @@ _item_draw_del(Groupedit_Item *item)
 }
 
 static inline void
-_color_apply(Groupedit_Part *gp, Evas_Object *edit_obj, const char *state, double value)
+_color_apply(Groupview_Part *gp, Evas_Object *edit_obj, const char *state, double value)
 {
    int r, g, b, a;
    int cr, cg, cb, ca;
@@ -751,7 +751,7 @@ _color_apply(Groupedit_Part *gp, Evas_Object *edit_obj, const char *state, doubl
 }
 
 static void
-_image_proxy_common_param_update(Evas_Object *image, Groupedit_Part *gp, Evas_Object *edit_obj)
+_image_proxy_common_param_update(Evas_Object *image, Groupview_Part *gp, Evas_Object *edit_obj)
 {
    int x, y, w, h;
    int img_w, img_h;
@@ -810,7 +810,7 @@ _image_proxy_common_param_update(Evas_Object *image, Groupedit_Part *gp, Evas_Ob
 }
 
 static void
-_image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
+_image_param_update(Groupview_Part *gp, Evas_Object *edit_obj)
 {
    Evas_Load_Error err;
    const char *image_normal;
@@ -860,11 +860,11 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 }
 
 static void
-_proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
+_proxy_param_update(Groupview_Part *gp, Evas_Object *edit_obj)
 {
    const char *proxy_source;
-   Ws_Groupedit_Smart_Data *sd;
-   Groupedit_Part *source;
+   Groupview_Smart_Data *sd;
+   Groupview_Part *source;
 
    assert(gp != NULL);
    assert(edit_obj != NULL);
@@ -889,7 +889,7 @@ _proxy_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 }
 
 static void
-_common_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
+_common_param_update(Groupview_Part *gp, Evas_Object *edit_obj)
 {
    assert(gp != NULL);
    assert(edit_obj != NULL);
@@ -901,7 +901,7 @@ _common_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 }
 
 static void
-_table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
+_table_param_update(Groupview_Smart_Data *sd, Groupview_Part *gp)
 {
    double align_x = 0, align_y = 0;
    int pad_x, pad_y;
@@ -927,16 +927,16 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 }
 
 static void
-_part_object_area_calc(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
+_part_object_area_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
 {
    Eina_Stringshare *rel_to;
    int xc, yc, wc, hc;
-   int xg, yg, wg, hg; // groupedit geometry
+   int xg, yg, wg, hg; // groupview geometry
    int x = 0, w = 0, y = 0, h = 0;
    double relative;
    int offset;
 
-   Groupedit_Part *rel_part = NULL;
+   Groupview_Part *rel_part = NULL;
 
    assert(sd != NULL);
 
@@ -1011,8 +1011,8 @@ _parts_stack_layout(Evas_Object          *o __UNUSED__,
                     void                 *data)
 
 {
-   Ws_Groupedit_Smart_Data *sd = data;
-   Groupedit_Part *gp;
+   Groupview_Smart_Data *sd = data;
+   Groupview_Part *gp;
    Eina_List *l;
 
    DBG("Recalc %p object. Object parts count: %d", sd->obj, eina_list_count(sd->parts))
@@ -1036,5 +1036,21 @@ _parts_stack_layout(Evas_Object          *o __UNUSED__,
           }
         evas_object_raise(gp->draw);
      }
+
+   if (sd->selected)
+     {
+        evas_object_geometry_set(sd->highlight,
+                                 sd->selected->geom.x,
+                                 sd->selected->geom.y,
+                                 sd->selected->geom.w,
+                                 sd->selected->geom.h);
+        if (sd->obj_area_visible)
+          evas_object_geometry_set(sd->object_area,
+                                   sd->selected->object_area_geom.x,
+                                   sd->selected->object_area_geom.y,
+                                   sd->selected->object_area_geom.w,
+                                   sd->selected->object_area_geom.h);
+     }
+
    sd->manual_calc = false;
 }

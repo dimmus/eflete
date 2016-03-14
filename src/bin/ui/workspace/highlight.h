@@ -196,26 +196,15 @@ Eina_Bool
 highlight_object_set(Evas_Object *hl, Evas_Object *obj);
 
 /**
- * Hide middle handler and doesn't show in any way!
+ * Set the visibility of  middle handler
  *
  * @param highlight The smart object that is represent a highlight.
- * @return EINA_TRUE - successfull, EINA_FALSE - otherwise.
+ * @param visible The visivibity flag
  *
  * @ingroup Highlight
  */
-Eina_Bool
-highlight_handler_align_hide(Evas_Object *hl);
-
-/**
- * Show middle handler and doesn't show in any way!
- *
- * @param highlight The smart object that is represent a highlight.
- * @return EINA_TRUE - successfull, EINA_FALSE - otherwise.
- *
- * @ingroup Highlight
- */
-Eina_Bool
-highlight_handler_align_show(Evas_Object *hl);
+void
+highlight_handler_align_visible_set(Evas_Object *hl, Eina_Bool visible);
 
 /**
  * Get middle handler's visibility!
@@ -259,33 +248,5 @@ highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled);
  */
 Eina_Bool
 highlight_handler_mode_set(Evas_Object *hl, Highlight_Mode mode);
-
-/**
- * Follow highlight to the given object.
- *
- * That mean that if the highlighted object will be changed (resized or moved)
- * highlight will be also changed to fit the object's new size.
- *
- * @param hl The smart object that is represent a highlight.
- * @param object Evas_Object that is being highlighted.
- * @return EINA_TRUE - successfull, EINA_FALSE - otherwise.
- *
- * @ingroup Highlight
- */
-Eina_Bool
-highlight_object_follow(Evas_Object *hl, Evas_Object *object);
-
-/**
- * Unollow highlight from the given object.
- *
- * That mean that highlight is not following anymore.
- *
- * @param hl The smart object that is represent a highlight.
- * @return EINA_TRUE - successfull, EINA_FALSE - otherwise.
- *
- * @ingroup Highlight
- */
-Eina_Bool
-highlight_object_unfollow(Evas_Object *hl);
 
 #endif /* HIGHLIGHT_H */

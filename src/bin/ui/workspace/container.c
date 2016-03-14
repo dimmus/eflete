@@ -22,21 +22,18 @@
 
 #define MY_CLASS_NAME "Container"
 
-#define H_WIGTH (sd->handler_TL.w + sd->handler_BR.w)
-#define H_HEIGHT (sd->handler_TL.h + sd->handler_BR.h)
+#define BASE_PADDING 100
 
 typedef struct _Container_Smart_Data Container_Smart_Data;
 
 static const char SIG_CHANGED[] = "container,changed";
-static const char SIG_HANDLER_TL_MOVE[] = "handler,TL,moved";
-static const char SIG_HANDLER_BR_MOVE[] = "handler,RB,moved";
+static const char SIG_HANDLER_BR_MOVE[] = "handler,BR,moved";
 
 static const char TEXT_TOOLTIP[] = "eflete.size.tooltip";
 static const char SWALLOW[] = "eflete.swallow.container";
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_CHANGED, "(iiii)"},
-   {SIG_HANDLER_TL_MOVE, "(ii)"},
    {SIG_HANDLER_BR_MOVE, "(ii)"},
    {NULL, NULL}
 };
@@ -47,7 +44,7 @@ struct _Container_Smart_Data
    Evas *e;
    Evas_Object *obj;
    Evas_Object *container;
-   Evas_Object *bg; /* background is important for working in scroller. */
+   Evas_Object *content;
    /* Minimal and maximum size of the container,
       i.e size of the edie_edit object */
    struct {
@@ -66,21 +63,19 @@ struct _Container_Smart_Data
       Evas_Coord w;
       Evas_Coord h;
    } pad_right_bottom;
-   Container_Geom *size;
-   struct {
-      Evas_Object *obj;
-      Evas_Coord w, h;
-   } handler_TL;
+   Container_Geom size;
    struct{
       Evas_Object *obj;
       Evas_Coord w, h;
    } handler_BR;
-   Eina_Bool handler_TL_pressed : 1;
-   Eina_Bool handler_BR_pressed : 1;
+   double aspect;
    Eina_Stringshare *style;
    Evas_Coord downx;
    Evas_Coord downy;
    Evas_Coord dx, dy;
+   Object_Protrusion_Get func;
+   Eina_Bool handler_BR_pressed : 1;
+   Eina_Bool lock : 1;
 };
 
 #define CONTAINER_DATA_GET(o, ptr) \
@@ -93,36 +88,6 @@ struct _Container_Smart_Data
 EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _container,
                         Evas_Smart_Class, Evas_Smart_Class,
                         evas_object_smart_clipped_class_get, _smart_callbacks);
-
-static Eina_Bool
-_user_size_calc(Evas_Object *o)
-{
-   int nw, nh;
-   CONTAINER_DATA_GET(o, sd)
-
-   nw = sd->size->w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w + sd->dx;
-   nh = sd->size->h + H_HEIGHT + sd->pad_left_top.h + sd->pad_right_bottom.h + sd->dy;
-
-   evas_object_resize(o, nw, nh);
-
-   return true;
-}
-
-static void
-_mouse_down_hTL_cb(void *data,
-                   Evas *e __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info)
-{
-   Evas_Event_Mouse_Down *ev = event_info;
-   if (ev->button != 1) return;
-
-   CONTAINER_DATA_GET(data, sd)
-   sd->downx = ev->canvas.x;
-   sd->downy = ev->canvas.y;
-   sd->handler_TL_pressed = true;
-   edje_object_signal_emit(sd->container, "tooltip,show", "eflete");
-}
 
 static void
 _mouse_down_hRB_cb(void *data,
@@ -141,17 +106,6 @@ _mouse_down_hRB_cb(void *data,
 }
 
 static void
-_mouse_up_hTL_cb(void *data,
-                 Evas *e __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   CONTAINER_DATA_GET(data, sd)
-   sd->handler_TL_pressed = false;
-   edje_object_signal_emit(sd->container, "tooltip,hide", "eflete");
-}
-
-static void
 _mouse_up_hRB_cb(void *data,
                  Evas *e __UNUSED__,
                  Evas_Object *obj __UNUSED__,
@@ -163,153 +117,24 @@ _mouse_up_hRB_cb(void *data,
 }
 
 static void
-_mouse_move_hTL_cb(void *data,
-                   Evas *e __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info)
-{
-   Evas_Coord x1, y1, w1, h1, x2, y2, w2, h2, x, y, w, h;
-   Evas_Coord nx = 0, ny = 0, nw, nh;
-   Evas_Coord bgx, bgy, bgw, bgh;
-   Evas_Coord dx, dy;
-   Evas_Event_Mouse_Move *ev = event_info;
-   Evas_Object *o = data;
-
-   CONTAINER_DATA_GET(o, sd)
-   evas_object_geometry_get(o, &nx, &ny, &nw, &nh);
-   evas_object_geometry_get(o, &x, &y, &w, &h);
-   evas_object_geometry_get(sd->handler_TL.obj, &x1, &y1, &w1, &h1);
-   evas_object_geometry_get(sd->handler_BR.obj, &x2, &y2, &w2, &h2);
-   evas_object_geometry_get(sd->bg, &bgx, &bgy, &bgw, &bgh);
-   dx = (ev->cur.canvas.x - sd->downx);
-   dy = (ev->cur.canvas.y - sd->downy);
-
-   if (!sd->handler_TL_pressed) return;
-
-   Evas_Coord container_width = x2 - (x1 + w1 + dx);
-   Evas_Coord container_height = y2 - (y1 + h1 + dy);
-   if ((container_width < sd->con_size_min.w) ||
-       ((sd->con_size_max.w != 0) && (container_width > sd->con_size_max.w)))
-     dx = 0;
-
-   if ((container_height < sd->con_size_min.h) ||
-       ((sd->con_size_max.h != 0) && (container_height > sd->con_size_max.h)))
-     dy = 0;
-
-   sd->dx += dx;
-   sd->dy += dy;
-
-   if (x1 + dx - sd->pad_left_top.w < bgx)
-     {
-        nw = w - dx;
-        TODO("need do refactoring here")
-        if (nw <= sd->con_size_min.w + H_WIGTH)
-          {
-             nw = sd->con_size_min.w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w;
-             nx = x + (w - nw);
-          }
-        else
-          {
-             if ((sd->con_size_max.w != 0)
-                 && (nw >= sd->con_size_max.w + H_WIGTH))
-               {
-                  nw = sd->con_size_max.w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w;
-                  nx = x + (w - nw);
-               }
-             else nx = x + dx;
-          }
-     }
-   sd->pad_left_top.w += dx;
-
-   if (y1 + dy - sd->pad_left_top.h < bgy)
-     {
-        /* calc y and height */
-        nh = h - dy;
-        if (nh <= sd->con_size_min.h + H_HEIGHT)
-          {
-             nh = sd->con_size_min.h + H_HEIGHT + sd->pad_left_top.h + sd->pad_right_bottom.h;
-             ny = y + (h - nh);
-          }
-        else
-          {
-             if ((sd->con_size_max.h != 0)
-                 && (nh >= sd->con_size_max.h + H_HEIGHT))
-               {
-                  nh = sd->con_size_max.h + H_HEIGHT + sd->pad_left_top.h + sd->pad_right_bottom.h;
-                  ny = y + (h - nh);
-               }
-             else ny = y + dy;
-          }
-     }
-   sd->pad_left_top.h += dy;
-
-   evas_object_resize(o, nw, nh);
-   evas_object_move(o, nx, ny);
-
-   sd->size->dx = dx;
-   sd->size->dy = dy;
-   evas_object_smart_changed(o);
-
-   sd->downx = ev->cur.canvas.x;
-   sd->downy = ev->cur.canvas.y;
-
-   sd->size->dx = dx;
-   sd->size->dy = dy;
-   evas_object_smart_callback_call(o, SIG_HANDLER_TL_MOVE, (void *)sd->size);
-}
-
-static void
 _mouse_move_hBR_cb(void *data,
                    Evas *e __UNUSED__,
                    Evas_Object *obj __UNUSED__,
                    void *event_info)
 {
-   Evas_Coord x, y, w, h;
-   Evas_Coord nw, nh;
-   Evas_Coord dx, dy;
-   Evas_Event_Mouse_Move *ev = event_info;
    Evas_Object *o = data;
+   Evas_Event_Mouse_Move *ev = event_info;
 
    CONTAINER_DATA_GET(o, sd)
-   evas_object_geometry_get(o, &x, &y, &w, &h);
-   dx = (ev->cur.canvas.x - sd->downx);
-   dy = (ev->cur.canvas.y - sd->downy);
-
    if (!sd->handler_BR_pressed) return;
 
-   /* calc wigth and heght */
-   TODO("need do refactoring here")
-   if (sd->size->w + H_WIGTH + dx <= sd->con_size_min.w + H_WIGTH)
-     nw = sd->con_size_min.w + H_WIGTH + sd->dx + sd->pad_left_top.w + sd->pad_right_bottom.w;
-   else
-     {
-        if ((sd->con_size_max.w != 0)
-            && (sd->size->w + H_WIGTH + dx >= sd->con_size_max.w + H_WIGTH))
-          nw = sd->con_size_max.w + H_WIGTH + sd->dx + sd->pad_left_top.w + sd->pad_right_bottom.w;
-        else nw = w + dx;
-     }
-
-   if (sd->size->h + H_HEIGHT + dy <= sd->con_size_min.h + H_HEIGHT)
-     nh = sd->con_size_min.h + H_HEIGHT + sd->dy + sd->pad_left_top.h + sd->pad_right_bottom.h;
-   else
-     {
-        if ((sd->con_size_max.h != 0)
-            && (sd->size->h + H_HEIGHT + dy >= sd->con_size_max.h + H_HEIGHT))
-          nh = sd->con_size_max.h + H_HEIGHT + sd->dy + sd->pad_left_top.h + sd->pad_right_bottom.h;
-        else nh = h + dy;
-     }
-   evas_object_resize(o, nw, nh);
-
-   sd->size->dx = dx;
-   sd->size->dy = dy;
-   evas_object_smart_changed(o);
-
+   sd->dx += ev->cur.canvas.x - sd->downx;
+   sd->dy += ev->cur.canvas.y - sd->downy;
    sd->downx = ev->cur.canvas.x;
    sd->downy = ev->cur.canvas.y;
 
-   sd->size->dx = dx;
-   sd->size->dy = dy;
-   evas_object_smart_callback_call(o, SIG_HANDLER_BR_MOVE, (void *)sd->size);
+   evas_object_smart_callback_call(o, SIG_HANDLER_BR_MOVE, &sd->size);
+   evas_object_smart_changed(o);
 }
 
 static void
@@ -328,16 +153,6 @@ _style_set(Evas_Object *o, const char *style)
         if (!edje_object_file_set(sd->container, EFLETE_EDJ, group))
           {
              ERR("Couldn't load default style for base border of container.");
-             abort();
-          }
-     }
-   GROUP_NAME("handler_TL", style)
-   if (!edje_object_file_set(sd->handler_TL.obj, EFLETE_EDJ, group))
-     {
-        GROUP_NAME("handler_TL", "default")
-        if (!edje_object_file_set(sd->handler_TL.obj, EFLETE_EDJ, group))
-          {
-             ERR("Couldn't load default style for top-left handler of container.");
              abort();
           }
      }
@@ -368,16 +183,6 @@ _container_smart_add(Evas_Object *o)
    priv->e = evas_object_evas_get(o);
    priv->container = edje_object_add(priv->e);
 
-   priv->handler_TL.obj = edje_object_add(priv->e);
-   priv->handler_TL.w = priv->handler_TL.h = 5;
-   evas_object_event_callback_add(priv->handler_TL.obj, EVAS_CALLBACK_MOUSE_DOWN,
-                                  _mouse_down_hTL_cb, o);
-   evas_object_event_callback_add(priv->handler_TL.obj, EVAS_CALLBACK_MOUSE_UP,
-                                  _mouse_up_hTL_cb, o);
-   evas_object_event_callback_add(priv->handler_TL.obj, EVAS_CALLBACK_MOUSE_MOVE,
-                                  _mouse_move_hTL_cb, o);
-   cursor_type_set(priv->handler_TL.obj, CURSOR_SIZING);
-
    priv->handler_BR.obj = edje_object_add(priv->e);
    priv->handler_BR.w = priv->handler_BR.h = 5;
    evas_object_event_callback_add(priv->handler_BR.obj, EVAS_CALLBACK_MOUSE_DOWN,
@@ -388,27 +193,23 @@ _container_smart_add(Evas_Object *o)
                                   _mouse_move_hBR_cb, o);
    cursor_type_set(priv->handler_BR.obj, CURSOR_SIZING);
 
-   priv->bg = evas_object_rectangle_add(priv->e);
-   evas_object_color_set(priv->bg, 0, 0, 0, 0);
-
    priv->obj = o;
    priv->con_size_min.w = 0;
    priv->con_size_min.h = 0;
-   priv->con_size_max.w = 0;
-   priv->con_size_max.h = 0;
+   priv->con_size_max.w = -1;
+   priv->con_size_max.h = -1;
    priv->pad_left_top.w = 0;
    priv->pad_left_top.h = 0;
    priv->pad_right_bottom.w = 0;
    priv->pad_right_bottom.h = 0;
-   priv->size = (Container_Geom *)mem_calloc(1, sizeof(Container_Geom));
-   priv->size->w = 0;
-   priv->size->h = 0;
-   priv->handler_TL_pressed = false;
+   priv->size.x = 0;
+   priv->size.y = 0;
+   priv->size.w = 0;
+   priv->size.h = 0;
    priv->handler_BR_pressed = false;
+   priv->aspect = -1.0;
 
-   evas_object_smart_member_add(priv->bg, o);
    evas_object_smart_member_add(priv->container, o);
-   evas_object_smart_member_add(priv->handler_TL.obj, o);
    evas_object_smart_member_add(priv->handler_BR.obj, o);
 
    _style_set(o, "default");
@@ -420,7 +221,7 @@ _container_smart_del(Evas_Object *o)
    CONTAINER_DATA_GET(o, sd)
 
    eina_stringshare_del(sd->style);
-   free(sd->size);
+   evas_object_del(sd->content);
 
    _container_parent_sc->del(o);
 }
@@ -430,9 +231,7 @@ _container_smart_show(Evas_Object *o)
 {
    CONTAINER_DATA_GET(o, sd);
 
-   if (sd->handler_TL.obj) evas_object_show(sd->handler_TL.obj);
-   if (sd->handler_BR.obj) evas_object_show(sd->handler_BR.obj);
-   if (sd->bg) evas_object_show(sd->bg);
+   if (!sd->lock) evas_object_show(sd->handler_BR.obj);
 
    evas_object_show(sd->container);
    _container_parent_sc->show(o);
@@ -443,12 +242,32 @@ _container_smart_hide(Evas_Object *o)
 {
    CONTAINER_DATA_GET(o, sd)
 
-   if (sd->handler_TL.obj) evas_object_hide(sd->handler_TL.obj);
-   if (sd->handler_BR.obj) evas_object_hide(sd->handler_BR.obj);
-   if (sd->bg) evas_object_hide(sd->bg);
-
+   evas_object_hide(sd->handler_BR.obj);
    evas_object_hide(sd->container);
    _container_parent_sc->hide(o);
+}
+
+static void
+_container_smart_move(Evas_Object *o,
+                      Evas_Coord x,
+                      Evas_Coord y)
+{
+   Evas_Coord ox, oy;
+   Groupview_Geom *geom = NULL;
+
+   evas_object_geometry_get(o, &ox, &oy, NULL, NULL);
+   if ((ox == x) && (oy == y)) return;
+
+   CONTAINER_DATA_GET(o, sd)
+
+   if (sd->func) geom = sd->func(sd->content);
+   sd->size.x = ox + BASE_PADDING + sd->pad_left_top.w + (geom ? geom->x : 0);
+   sd->size.y = oy + BASE_PADDING + sd->pad_left_top.h + (geom ? geom->y : 0);
+
+   evas_object_move(sd->container, sd->size.x, sd->size.y);
+   evas_object_move(sd->handler_BR.obj, sd->size.x + sd->size.w, sd->size.y + sd->size.h);
+
+   evas_object_smart_callback_call(o, SIG_CHANGED, &sd->size);
 }
 
 static void
@@ -456,17 +275,9 @@ _container_smart_resize(Evas_Object *o,
                         Evas_Coord w,
                         Evas_Coord h)
 {
-   Evas_Coord ow, oh, nw, nh;
+   Evas_Coord ow, oh;
    evas_object_geometry_get(o, NULL, NULL, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
-
-   CONTAINER_DATA_GET(o, sd)
-   evas_object_size_hint_min_set(o, w, h);
-
-   nw = w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w + sd->dx;
-   nh = h + H_HEIGHT + sd->pad_left_top.h + sd->pad_right_bottom.h + sd->dy;
-
-   evas_object_resize(o, nw, nh);
 
    evas_object_smart_changed(o);
 }
@@ -475,59 +286,81 @@ static void
 _container_smart_calculate(Evas_Object *o)
 {
    Evas_Coord x, y, w, h;
-   Evas_Coord cx, cy, cw, ch;
-   Evas_Coord htl_x, htl_y, htl_w, htl_h;
-   Evas_Coord hrb_x, hrb_y, hrb_w, hrb_h;
+   Evas_Coord cw, ch;
+   Evas_Coord hrb_x, hrb_y;
+   Groupview_Geom *geom = NULL;
    char buff[16];
 
-   CONTAINER_DATA_GET(o, priv)
+   CONTAINER_DATA_GET(o, sd)
    evas_object_geometry_get(o, &x, &y, &w, &h);
-   evas_object_resize(priv->bg, w, h);
 
-   htl_w = priv->handler_TL.w; htl_h = priv->handler_TL.h;
-   hrb_w = priv->handler_BR.w; hrb_h = priv->handler_BR.h;
+   /* 1. calculate the container size */
+   sd->size.w += sd->dx;
+   if (sd->aspect < 0)
+     sd->size.h += sd->dy;
+   else
+     sd->size.h = sd->size.w / sd->aspect;
 
-   if (priv->dx < 0) priv->dx = 0;
-   if (priv->dy < 0) priv->dy = 0;
+   /* check the boundary values, and force max size to be <= 9999 */
+   if (sd->size.w > sd->size.h)
+     {
+        if (sd->size.w > 9999)
+          {
+             sd->size.w = 9999;
+             sd->size.h = sd->size.w / sd->aspect;
+          }
+     }
+   else
+     {
+        if (sd->size.h > 9999)
+          {
+             sd->size.h = 9999;
+             sd->size.w = sd->size.h * sd->aspect;
+          }
+     }
 
-   cw = w - (htl_w + hrb_w + priv->pad_left_top.w + priv->pad_right_bottom.w + priv->dx);
-   ch = h - (htl_h + hrb_h + priv->pad_left_top.h + priv->pad_right_bottom.h + priv->dy);
-   cx = x + priv->pad_left_top.w + htl_w + priv->dx;
-   cy = y + priv->pad_left_top.h + htl_h + priv->dy;
+   /* check the boundary size values */
+   if (sd->size.w < 0) sd->size.w = 0;
+   if (sd->size.h < 0) sd->size.h = 0;
 
-   /* calculating min and max of groups */
-   if ((priv->con_size_min.w > cw) && (priv->con_size_min.w != 0))
-     cw = priv->con_size_min.w;
-   if ((priv->con_size_max.w < cw) && (priv->con_size_max.w != 0))
-     cw = priv->con_size_max.w;
-   if ((priv->con_size_min.h > ch) && (priv->con_size_min.h != 0))
-     ch = priv->con_size_min.h;
-   if ((priv->con_size_max.h < ch) && (priv->con_size_max.h != 0))
-     ch = priv->con_size_max.h;
+   if ((sd->con_size_min.w > 0) && (sd->size.w < sd->con_size_min.w))
+     sd->size.w = sd->con_size_min.w;
+   if ((sd->con_size_min.h > 0) && (sd->size.h < sd->con_size_min.h))
+     sd->size.h = sd->con_size_min.h;
 
-   htl_x = x + priv->pad_left_top.w + priv->dx;
-   htl_y = y + priv->pad_left_top.h + priv->dy;
-   hrb_x = htl_x + htl_w + cw;
-   hrb_y = htl_y + htl_h + ch;
+   if ((sd->con_size_max.w > -1) && (sd->size.w > sd->con_size_max.w))
+     sd->size.w = sd->con_size_max.w;
+   if ((sd->con_size_max.h > -1) && (sd->size.h > sd->con_size_max.h))
+     sd->size.h = sd->con_size_max.h;
 
-   evas_object_resize(priv->container, cw, ch);
-   evas_object_move(priv->container, cx, cy);
+   evas_object_resize(sd->container, sd->size.w, sd->size.h);
 
-   priv->size->x = cx;
-   priv->size->y = cy;
-   priv->size->w = cw;
-   priv->size->h = ch;
+   /* 2. get the content protrusion */
+   if (sd->func) geom = sd->func(sd->content);
 
-   snprintf(buff, 16, "%i %i", priv->size->w, priv->size->h);
-   edje_object_part_text_set(priv->container, TEXT_TOOLTIP, buff);
+   /* 3. calculate the container position relative to content protrusion */
+   sd->size.x = x + BASE_PADDING + sd->pad_left_top.w + (geom ? geom->x : 0);
+   sd->size.y = y + BASE_PADDING + sd->pad_left_top.h + (geom ? geom->y : 0);
+   evas_object_move(sd->container, sd->size.x, sd->size.y);
 
-   evas_object_resize(priv->handler_TL.obj, htl_w, htl_h);
-   evas_object_move(priv->handler_TL.obj, htl_x, htl_y);
+   /* 4. move the handler */
+   hrb_x = sd->size.x + sd->size.w;
+   hrb_y = sd->size.y + sd->size.h;
+   evas_object_resize(sd->handler_BR.obj, sd->handler_BR.w, sd->handler_BR.h);
+   evas_object_move(sd->handler_BR.obj, hrb_x, hrb_y);
 
-   evas_object_resize(priv->handler_BR.obj, hrb_w, hrb_h);
-   evas_object_move(priv->handler_BR.obj, hrb_x, hrb_y);
+   /* 5. calculate the full object size */
+   cw = (hrb_x + sd->handler_BR.w + (geom ? geom->w : 0) + BASE_PADDING) - x;
+   ch = (hrb_y + sd->handler_BR.h + (geom ? geom->h : 0) + BASE_PADDING) - y;
+   evas_object_size_hint_min_set(o, cw, ch);
 
-   evas_object_smart_callback_call(o, SIG_CHANGED, (void *)priv->size);
+   snprintf(buff, 16, "%i %i", sd->size.w, sd->size.h);
+   edje_object_part_text_set(sd->container, TEXT_TOOLTIP, buff);
+
+   evas_object_smart_callback_call(o, SIG_CHANGED, &sd->size);
+
+   sd->dx = 0;
+   sd->dy = 0;
 }
 
 /* this need for macro EVAS_SMART_SUBCLASS_NEW */
@@ -542,6 +375,7 @@ _container_smart_set_user(Evas_Smart_Class *sc)
    sc->hide = _container_smart_hide;
 
    /* clipped smart object has no hook on resizes or calculations */
+   sc->move = _container_smart_move;
    sc->resize = _container_smart_resize;
    sc->calculate = _container_smart_calculate;
 }
@@ -561,14 +395,10 @@ container_add(Evas_Object *parent)
 }
 
 Eina_Bool
-container_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hrb_w, int hrb_h)
+container_handler_size_set(Evas_Object *obj, int hrb_w, int hrb_h)
 {
    CONTAINER_DATA_GET(obj, sd);
 
-   if (htl_w < 5) sd->handler_TL.w = 5;
-   else sd->handler_TL.w = htl_w;
-   if (htl_h < 5) sd->handler_TL.h = 5;
-   else sd->handler_TL.h = htl_h;
    if (hrb_w < 5) sd->handler_BR.w = 5;
    else sd->handler_BR.w = hrb_w;
    if (hrb_h < 5) sd->handler_BR.h = 5;
@@ -578,12 +408,10 @@ container_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hrb_w, in
 }
 
 Eina_Bool
-container_handler_size_get(Evas_Object *obj, int *htl_w, int *htl_h, int *hbr_w, int *hbr_h)
+container_handler_size_get(Evas_Object *obj, int *hbr_w, int *hbr_h)
 {
    CONTAINER_DATA_GET(obj, sd);
 
-   if (htl_w) *htl_w = sd->handler_TL.w;
-   if (htl_h) *htl_h = sd->handler_TL.h;
    if (hbr_w) *hbr_w = sd->handler_BR.w;
    if (hbr_h) *hbr_h = sd->handler_BR.h;
 
@@ -600,10 +428,11 @@ container_min_size_set(Evas_Object *obj, int w, int h)
    if (h < 0) sd->con_size_min.h = 0;
    else sd->con_size_min.h = h;
 
-   if (sd->size->w <= w) sd->size->w = w;
-   if (sd->size->h <= h) sd->size->h = h;
+   if (sd->size.w <= w) sd->size.w = w;
+   if (sd->size.h <= h) sd->size.h = h;
 
-   return _user_size_calc(obj);
+   evas_object_smart_changed(obj);
+   return true;
 }
 
 Eina_Bool
@@ -611,17 +440,16 @@ container_max_size_set(Evas_Object *obj, int w, int h)
 {
    CONTAINER_DATA_GET(obj, sd);
 
-   if (w < 0) sd->con_size_max.w = 0;
-   else sd->con_size_max.w = w;
-   if (h < 0) sd->con_size_max.h = 0;
-   else sd->con_size_max.h = h;
+   sd->con_size_max.w = w;
+   sd->con_size_max.h = h;
 
-   if ((w != 0) && (sd->size->w > w))
-     sd->size->w = w;
-   if ((h != 0) && (sd->size->h > h))
-     sd->size->h = h;
+   if ((w > -1) && (sd->size.w > w))
+     sd->size.w = w;
+   if ((h > -1) && (sd->size.h > h))
+     sd->size.h = h;
 
-   return _user_size_calc(obj);
+   evas_object_smart_changed(obj);
+   return true;
 }
 
 Eina_Bool
@@ -629,23 +457,24 @@ container_container_size_set(Evas_Object *obj, int w, int h)
 {
    CONTAINER_DATA_GET(obj, sd);
 
-   if (w <= sd->con_size_min.w) sd->size->w = sd->con_size_min.w;
+   if (w <= sd->con_size_min.w) sd->size.w = sd->con_size_min.w;
    else
      {
-        if ((sd->con_size_max.w != 0) && (w > sd->con_size_max.w))
-          sd->size->w = sd->con_size_max.w;
-        else sd->size->w = w;
+        if ((sd->con_size_max.w > -1) && (w > sd->con_size_max.w))
+          sd->size.w = sd->con_size_max.w;
+        else sd->size.w = w;
      }
 
-   if (h <= sd->con_size_min.h) sd->size->h = sd->con_size_min.h;
+   if (h <= sd->con_size_min.h) sd->size.h = sd->con_size_min.h;
    else
      {
-        if ((sd->con_size_max.h != 0) && (h > sd->con_size_max.h))
-          sd->size->h = sd->con_size_max.h;
-        else sd->size->h = h;
+        if ((sd->con_size_max.h > -1) && (h > sd->con_size_max.h))
+          sd->size.h = sd->con_size_max.h;
+        else sd->size.h = h;
      }
 
-   return _user_size_calc(obj);
+   evas_object_smart_changed(obj);
+   return true;
 }
 
 Eina_Bool
@@ -653,8 +482,8 @@ container_container_size_get(Evas_Object *obj, int *w, int *h)
 {
    CONTAINER_DATA_GET(obj, sd);
 
-   if (w) *w = sd->size->w;
-   if (h) *h = sd->size->h;
+   if (w) *w = sd->size.w;
+   if (h) *h = sd->size.h;
 
    return true;
 }
@@ -687,6 +516,7 @@ container_content_set(Evas_Object *obj, Evas_Object *content)
    assert(content != NULL);
 
    edje_object_part_swallow(sd->container, SWALLOW, content);
+   sd->content = content;
 
    return true;
 }
@@ -699,37 +529,29 @@ container_content_unset(Evas_Object *obj)
 
    ret = edje_object_part_swallow_get(sd->container, SWALLOW);
    edje_object_part_unswallow(sd->container, ret);
+   sd->content = NULL;
    return ret;
 }
 
-Eina_Bool
-container_border_hide(Evas_Object *obj)
+void
+container_lock_set(Evas_Object *obj, Eina_Bool lock)
 {
    CONTAINER_DATA_GET(obj, sd);
 
-   if (sd->handler_TL.obj)
-     evas_object_hide(sd->handler_TL.obj);
-   if (sd->handler_BR.obj)
-     evas_object_hide(sd->handler_BR.obj);
-   if (sd->container)
-     edje_object_signal_emit(sd->container, "container,hide", "eflete");
+   sd->lock = lock;
 
-   return true;
+   if (lock)
+      evas_object_hide(sd->handler_BR.obj);
+   else
+      evas_object_show(sd->handler_BR.obj);
 }
 
 Eina_Bool
-container_border_show(Evas_Object *obj)
+container_lock_get(Evas_Object *obj)
 {
-   CONTAINER_DATA_GET(obj, sd)
+   CONTAINER_DATA_GET(obj, sd);
 
-   if (sd->handler_TL.obj)
-     evas_object_show(sd->handler_TL.obj);
-   if (sd->handler_BR.obj)
-     evas_object_show(sd->handler_BR.obj);
-   if (sd->container)
-     edje_object_signal_emit(sd->container, "container,show", "eflete");
-
-   return true;
+   return sd->lock;
 }
 
 Eina_Bool
@@ -776,8 +598,28 @@ container_padding_size_get(Evas_Object *obj, int *tl_w, int *tl_h, int *br_w, in
    return true;
 }
 
-#undef MY_CLASS_NAME
-#undef CONTAINER_DATA_GET
-#undef CONTAINER_DATA_GET_OR_RETURN_VAL
-#undef H_WIGTH
-#undef H_HEIGHT
+void
+container_protrusion_func_set(Evas_Object *obj, Object_Protrusion_Get func)
+{
+   CONTAINER_DATA_GET(obj, sd);
+
+   sd->func = func;
+}
+
+void
+container_aspect_set(Evas_Object *obj, double aspect)
+{
+   CONTAINER_DATA_GET(obj, sd);
+
+   sd->aspect = aspect;
+
+   evas_object_smart_changed(obj);
+}
+
+double
+container_aspect_get(Evas_Object *obj)
+{
+   CONTAINER_DATA_GET(obj, sd);
+
+   return sd->aspect;
+}

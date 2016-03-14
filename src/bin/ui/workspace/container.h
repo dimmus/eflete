@@ -37,12 +37,15 @@
  */
 
 #include "eflete.h"
+#include "groupview.h"
 
 struct _Container_Geom {
    int x, y, w, h, dx, dy;
 };
 
 typedef struct _Container_Geom Container_Geom;
+
+typedef Groupview_Geom * (*Object_Protrusion_Get)(Evas_Object *obj);
 
 /**
  * Add new Container object to parent object.
@@ -61,12 +64,10 @@ container_add(Evas_Object *parent);
  * Set the size of Container handlers.
  *
  * @param obj The Container object,
- * @param htl_w wigth of top-left handler,
- * @param htl_h height of top-left handler,
  * @param hbr_w wigth of bottom-right handler,
  * @param hbr_h height of bottom-tight handler.
  *
- * @note if trying to set the htl_w, htl_h, hbr_w, hbr_h < 0, will be set 5.
+ * @note if trying to set the hbr_w, hbr_h < 0, will be set 5.
  *       The default handlers size is 5 (wight/hight)
  *
  * @return EINA_TRUE on success or EINA_FALSE, on errors.
@@ -74,14 +75,12 @@ container_add(Evas_Object *parent);
  * @ingroup Container
  */
 Eina_Bool
-container_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hrb_w, int hrb_h);
+container_handler_size_set(Evas_Object *obj, int hrb_w, int hrb_h);
 
 /**
  * Get the size of the Container handlers.
  *
  * @param obj The Container object,
- * @param htl_w pointer of int width of top-left handler,
- * @param htl_h pointer of int height of top-left handler,
  * @param hbr_w pointer of int width of bottom-right handler,
  * @param hbr_h pointer of int height of bottom-tight handler.
  *
@@ -90,7 +89,7 @@ container_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hrb_w, in
  * @ingroup Container
  */
 Eina_Bool
-container_handler_size_get(Evas_Object *obj, int *htl_w, int *htl_h, int *hbr_w, int *hbr_h);
+container_handler_size_get(Evas_Object *obj, int *hbr_w, int *hbr_h);
 
 /**
  * Set the minimal size of container.
@@ -212,30 +211,25 @@ Evas_Object *
 container_content_unset(Evas_Object *obj);
 
 /**
- * Hiding container (handlers and borders) of the Container object but not hiding
- * setted content.
+ * Lock the given container, hide the handler
  *
  * @param obj The Container object.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ * @param lock The lock flag, EINA_TRUE - lock, EINA_FALSE - unlock.
  *
  * @ingroup Container
  */
-Eina_Bool
-container_border_hide(Evas_Object *obj);
+void
+container_lock_set(Evas_Object *obj, Eina_Bool lock);
 
 /**
- * Showing container (handlers and borders) of the Container object but not
- * showing setted content.
+ * Get the lock state
  *
  * @param obj The Container object.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
  *
  * @ingroup Container
  */
 Eina_Bool
-container_border_show(Evas_Object *obj);
+container_lock_get(Evas_Object *obj);
 
 /**
  * Set the size of paddings before top left handler and after bottom right
@@ -280,5 +274,28 @@ container_padding_size_set(Evas_Object *obj, int tl_w, int tl_h, int rb_w, int r
 Eina_Bool
 container_padding_size_get(Evas_Object *obj, int *tl_w, int *tl_h, int *br_w, int *br_h);
 
+void
+container_protrusion_func_set(Evas_Object *obj, Object_Protrusion_Get func);
+
+/**
+ * Set the size aspect.
+ *
+ * @param obj The Container obj,
+ * @param aspect The aspect value,
+ *
+ * @ingroup Container
+ */
+void
+container_aspect_set(Evas_Object *obj, double aspect);
+
+/**
+ * Get the container size aspect.
+ *
+ * @param obj The Container obj.
+ *
+ * @ingroup Container
+ */
+double
+container_aspect_get(Evas_Object *obj);
 
 #endif /* CONTAINER_H */

@@ -45,8 +45,8 @@ includesub_HEADERS = \
 	ui/modal_window/modal_window.h \
 	ui/preference/preference.h \
 	ui/shortcuts/shortcuts.h \
-	ui/workspace/groupedit.h \
-	ui/workspace/groupedit_private.h \
+	ui/workspace/groupview.h \
+	ui/workspace/groupview_private.h \
 	ui/workspace/highlight.h\
 	ui/workspace/container.h \
 	ui/workspace/demo_group.h \
@@ -109,8 +109,8 @@ libete_a_SOURCES = \
 ../../src/bin/ui/property_demo_swallow.c \
 ../../src/bin/ui/property_demo_text.c \
 ../../src/bin/ui/workspace/workspace.c \
-../../src/bin/ui/workspace/groupedit_calc.c \
-../../src/bin/ui/workspace/groupedit.c \
+../../src/bin/ui/workspace/groupview_calc.c \
+../../src/bin/ui/workspace/groupview.c \
 ../../src/bin/ui/workspace/highlight.c \
 ../../src/bin/ui/workspace/demo_group.c \
 ../../src/bin/ui/workspace/group_navigator.c \

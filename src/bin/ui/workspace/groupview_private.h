@@ -18,14 +18,14 @@
  */
 
 #include "eflete.h"
+#include "highlight.h"
 
-typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;
-typedef struct _Groupedit_Part Groupedit_Part;
-typedef struct _Groupedit_Item Groupedit_Item;
+typedef struct _Groupview_Smart_Data Groupview_Smart_Data;
+typedef struct _Groupview_Part Groupview_Part;
+typedef struct _Groupview_Item Groupview_Item;
 
 static const char SIG_PART_SEPARETE_OPEN[] = "parts,separete,open";
 static const char SIG_PART_SEPARETE_CLOSE[] = "parts,separete,close";
-static const char SIG_PART_UNSELECTED[] = "part,unselected";
 static const char SIG_OBJ_AREA_CHANGED[] = "object,area,changed";
 static const char SIG_GEOMETRY_CHANGED[] = "geometry,changed";
 static const char TEXT_TOOLTIP[] = "gs.current.size.tooltip";
@@ -37,13 +37,12 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    /* about types see here: http://docs.enlightenment.org/auto/evas/group__Evas__Keys.html#gaf0d4ce3d62a068eab1b89a34abb056ad */
    {SIG_PART_SEPARETE_OPEN, ""},
    {SIG_PART_SEPARETE_CLOSE, ""},
-   {SIG_PART_UNSELECTED, "s"},
    {SIG_OBJ_AREA_CHANGED, "(iiii)"},
    {SIG_GEOMETRY_CHANGED, "(iiii)"},
    {NULL, NULL}
 };
 
-struct _Ws_Groupedit_Smart_Data
+struct _Groupview_Smart_Data
 {
    Evas_Object_Smart_Clipped_Data base;
    Group *group;
@@ -51,25 +50,28 @@ struct _Ws_Groupedit_Smart_Data
    Evas_Object *event;
    Evas_Object *parent;
    Evas_Object *box;
-   Groupedit_Geom geom;
-   Groupedit_Geom protrusion;
+   Groupview_Geom geom;
+   Groupview_Geom protrusion;
    Eina_List *parts;
-   Groupedit_Part *selected;
+   Groupview_Part *selected;
+   Evas_Object *highlight;
+   Evas_Object *object_area;
    Evas_Object *clipper;
+   Eina_Bool obj_area_visible : 1;
    Eina_Bool separated : 1;
    Eina_Bool manual_calc : 1;
 };
 
-#define WS_GROUPEDIT_DATA_GET(o, ptr)  \
+#define GROUPVIEW_DATA_GET(o, ptr)  \
    assert(o != NULL); \
-   Ws_Groupedit_Smart_Data *ptr = evas_object_smart_data_get(o); \
+   Groupview_Smart_Data *ptr = evas_object_smart_data_get(o); \
    assert(ptr != NULL);
 
 /**
- * Groupedit part this struct contains all object for draw edit object part in
- * groupedit object.
+ * Groupview part this struct contains all object for draw edit object part in
+ * groupview object.
  *
- * The evas objects of groupedit has next stack:
+ * The evas objects of groupview has next stack:
  *    in normal mode:
  *       - border;
  *       - draw;
@@ -78,53 +80,53 @@ struct _Ws_Groupedit_Smart_Data
  *       - border;
  *       - draw;
  */
-struct _Groupedit_Part
+struct _Groupview_Part
 {
    Part *part;               /**< Pointer to part */
-   Groupedit_Geom geom;
-   Groupedit_Geom object_area_geom;
-   Evas_Object *draw;         /**< The evas primitive to be draw in groupedit.
+   Groupview_Geom geom;
+   Groupview_Geom object_area_geom;
+   Evas_Object *draw;         /**< The evas primitive to be draw in groupview.
                                    The valid evas object types: image, rectangle,
                                    text and textblock.*/
    Evas_Object *proxy_part;
    Evas_Object *layout;
    Evas_Object *container;    /**< Used for box/table parts */
    Eina_List *items;          /**< The items, for TABLE, BOX part types */
-   Groupedit_Item *current_item;
+   Groupview_Item *current_item;
 };
 
-struct _Groupedit_Item
+struct _Groupview_Item
 {
    Eina_Stringshare *name;    /**< The item name.  */
    Evas_Object *layout;       /**< The item border and hilight */
 };
 
 void
-_parts_list_new(Ws_Groupedit_Smart_Data *sd);
+_parts_list_new(Groupview_Smart_Data *sd);
 
 void
-_parts_list_free(Ws_Groupedit_Smart_Data *sd);
+_parts_list_free(Groupview_Smart_Data *sd);
 
-Groupedit_Part *
+Groupview_Part *
 _parts_list_find(Eina_List *parts, const char *part);
 
-Groupedit_Item *
+Groupview_Item *
 _part_item_search(Eina_List *items, const char *item_name);
 
 Eina_Bool
-_edit_object_part_add(Ws_Groupedit_Smart_Data *sd, Part *part);
+_edit_object_part_add(Groupview_Smart_Data *sd, Part *part);
 
 Eina_Bool
-_edit_object_part_del(Ws_Groupedit_Smart_Data *sd, Part *part);
+_edit_object_part_del(Groupview_Smart_Data *sd, Part *part);
 
 void
-_select_item_move_to_top(Ws_Groupedit_Smart_Data *sd);
+_select_item_move_to_top(Groupview_Smart_Data *sd);
 
 void
-_selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd);
+_selected_item_return_to_place(Groupview_Smart_Data *sd);
 
 Eina_Bool
-_edit_object_part_item_del(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
+_edit_object_part_item_del(Groupview_Smart_Data *sd, Eina_Stringshare *part,
                            Eina_Stringshare *item);
 
 void
@@ -133,24 +135,24 @@ _parts_stack_layout(Evas_Object          *o,
                     void                 *data);
 
 /**
- * Stack part below below in groupedit module.
+ * Stack part below below in groupview module.
  * If part_below param is NULL, then part will restack below by one position,
  * in stack, else part will restack below part_below.
  * Restack complete in three steps:
- * - restack part in edje edit object. (Used edje_edit_part_restack* func's).
- * - restack part in parts list, which stored in groupedit smart data.
+ * - restack part in edje edit object. (Used edje_view_part_restack* func's).
+ * - restack part in parts list, which stored in groupview smart data.
  * - restack evas primitive of part at canvas (Used evas_object_stack* func's).
  *
- * @param sd The groupedit smart data structure.
+ * @param sd The groupview smart data structure.
  * @param part The name of part to stack below.
  * @param part_below The name of part below which to stack.
  *
  * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
- * @ingroup Groupedit
+ * @ingroup Groupview
  */
 Eina_Bool
-_edit_object_part_restack_below(Ws_Groupedit_Smart_Data *sd,
+_edit_object_part_restack_below(Groupview_Smart_Data *sd,
                                 const char *part,
                                 const char *part_below);
 

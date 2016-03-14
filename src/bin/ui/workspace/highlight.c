@@ -735,39 +735,31 @@ highlight_add(Evas_Object *parent)
    return obj;
 }
 
-Eina_Bool
-highlight_handler_align_show(Evas_Object *hl)
+void
+highlight_handler_align_visible_set(Evas_Object *hl, Eina_Bool visible)
 {
    HIGHLIGHT_DATA_GET(hl, highlight)
 
-   if (highlight->handlers_disabled) return false;
+   if (highlight->handlers_disabled) return;
 
-   highlight->middle_show = true;
+   highlight->middle_show = visible;
 
    /* If any of the handlers are hidden then probably mouse is corrently over
       the one of them and all other handlers (including Middle one) should be
       hidden aswell.
       In case if mode of the highlight is STATIC then we don't care about
       handler's visibility. */
-   if ((highlight->mode == HIGHLIGHT_STATIC_HANDLERS) ||
-       ((evas_object_visible_get(highlight->handler_RB->border)) &&
-        (evas_object_visible_get(highlight->handler_RT->border)) &&
-        (evas_object_visible_get(highlight->handler_LB->border)) &&
-        (evas_object_visible_get(highlight->handler_LT->border))))
+   if ((highlight->mode != HIGHLIGHT_STATIC_HANDLERS) ||
+       ((!evas_object_visible_get(highlight->handler_RB->border)) &&
+        (!evas_object_visible_get(highlight->handler_RT->border)) &&
+        (!evas_object_visible_get(highlight->handler_LB->border)) &&
+        (!evas_object_visible_get(highlight->handler_LT->border))))
+     return;
+
+   if (visible)
      evas_object_show(highlight->handler_MIDDLE->border);
-
-   return true;
-}
-
-Eina_Bool
-highlight_handler_align_hide(Evas_Object *hl)
-{
-   HIGHLIGHT_DATA_GET(hl, highlight)
-
-   highlight->middle_show = false;
-   evas_object_hide(highlight->handler_MIDDLE->border);
-
-   return true;
+   else
+     evas_object_hide(highlight->handler_MIDDLE->border);
 }
 
 Eina_Bool
@@ -810,69 +802,3 @@ highlight_handler_mode_set(Evas_Object *hl, Highlight_Mode mode)
    highlight->mode = mode;
    return true;
 }
-
-static void
-_object_changed(void *data,
-                Evas *evas __UNUSED__,
-                Evas_Object *o,
-                void *einfo __UNUSED__)
-{
-   int x, y, w, h;
-   Evas_Object *hl = (Evas_Object *)data;
-   evas_object_geometry_get(o, &x, &y, &w, &h);
-   evas_object_resize(hl, w, h);
-   evas_object_move(hl, x, y);
-}
-
-Eina_Bool
-highlight_object_follow(Evas_Object *hl, Evas_Object *object)
-{
-   int x, y, w, h;
-   HIGHLIGHT_DATA_GET(hl, highlight)
-   assert(object != NULL);
-
-   if (highlight->object)
-     {
-        evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_RESIZE,
-                                            _object_changed, hl);
-        evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_MOVE,
-                                            _object_changed, hl);
-     }
-   evas_object_geometry_get(object, &x, &y, &w, &h);
-   evas_object_resize(hl, w, h);
-   evas_object_move(hl, x, y);
-
-   highlight->object = object;
-   evas_object_event_callback_add(object, EVAS_CALLBACK_RESIZE,
-                                  _object_changed, hl);
-   evas_object_event_callback_add(object, EVAS_CALLBACK_MOVE,
-                                  _object_changed, hl);
-
-
-   return true;
-}
-
-Eina_Bool
-highlight_object_unfollow(Evas_Object *hl)
-{
-   HIGHLIGHT_DATA_GET(hl, highlight)
-
-   if (highlight->object)
-     {
-        evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_RESIZE,
-                                            _object_changed, hl);
-        evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_MOVE,
-                                            _object_changed, hl);
-        highlight->object = NULL;
-     }
-
-   return true;
-}
-
-#undef SIZE
-#undef MINSIZE
-#undef MAXSIZE
-#undef COEFF
-#undef HIGHLIGHT_DATA_GET
-#undef HIGHLIGHT_DATA_GET_OR_RETURN_VAL
-#undef COLOR_CHECK

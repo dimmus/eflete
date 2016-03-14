@@ -86,6 +86,13 @@ extern int MENU_ITEMS_LIST_STYLE_ONLY[];
 extern int MENU_ITEMS_LIST_MAIN[];
 extern int MENU_ITEMS_LIST_TEMPORARY[];
 
+typedef enum
+{
+   BG_PREVIEW_WHITE = 1,
+   BG_PREVIEW_TILE,
+   BG_PREVIEW_BLACK
+} Bg_Preview;
+
 /**
  * The validation func for popup action.
  *
