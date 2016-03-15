@@ -311,8 +311,8 @@ _property_attribute_changed(void *data __UNUSED__,
       case ATTRIBUTE_STATE_VISIBLE:
       case ATTRIBUTE_STATE_COLOR_CLASS:
       case ATTRIBUTE_STATE_COLOR:
-      case ATTRIBUTE_STATE_COLOR2:
-      case ATTRIBUTE_STATE_COLOR3:
+      case ATTRIBUTE_STATE_OUTLINE_COLOR:
+      case ATTRIBUTE_STATE_SHADOW_COLOR:
       case ATTRIBUTE_STATE_IMAGE_BORDER:
       case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
          workspace_groupview_soft_update(tabs.current_workspace);

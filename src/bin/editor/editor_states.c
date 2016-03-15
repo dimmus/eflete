@@ -176,11 +176,12 @@ EDITOR_STATE_STRING(color_class, ATTRIBUTE_STATE_COLOR_CLASS, true)
 TODO("Replace with image stub")
 EDITOR_STATE_STRING_WITH_FALLBACK(image, ATTRIBUTE_STATE_IMAGE, NULL)
 
-EDITOR_STATE_INT_INT_INT_INT(color, ATTRIBUTE_STATE_COLOR)
-EDITOR_STATE_INT_INT_INT_INT(color2, ATTRIBUTE_STATE_COLOR2)
-EDITOR_STATE_INT_INT_INT_INT(color3, ATTRIBUTE_STATE_COLOR3)
+EDITOR_STATE_INT_INT_INT_INT(color, color, ATTRIBUTE_STATE_COLOR)
+EDITOR_STATE_INT_INT_INT_INT(outline_color, color2, ATTRIBUTE_STATE_OUTLINE_COLOR)
+EDITOR_STATE_INT_INT_INT_INT(shadow_color, color3, ATTRIBUTE_STATE_SHADOW_COLOR)
 
-EDITOR_STATE_INT_INT_INT_INT(image_border, ATTRIBUTE_STATE_IMAGE_BORDER)
+
+EDITOR_STATE_INT_INT_INT_INT(image_border, image_border, ATTRIBUTE_STATE_IMAGE_BORDER)
 
 EDITOR_STATE_UCHAR(image_border_fill, ATTRIBUTE_STATE_IMAGE_BORDER_FILL)
 EDITOR_STATE_UCHAR(fill_type, ATTRIBUTE_STATE_FILL_TYPE)
@@ -299,8 +300,8 @@ editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
          res = res && editor_state_text_text_source_reset(edit_object, change, part_name, state_name, state_val);
          res = res && editor_state_text_reset(edit_object, change, part_name, state_name, state_val);
          res = res && editor_state_font_reset(edit_object, change, part_name, state_name, state_val);
-         res = res && editor_state_color2_reset(edit_object, change, part_name, state_name, state_val);
-         res = res && editor_state_color3_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_outline_color_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_shadow_color_reset(edit_object, change, part_name, state_name, state_val);
          break;
       case EDJE_PART_TYPE_IMAGE:
          res = res && editor_state_fill_origin_relative_x_reset(edit_object, change, part_name, state_name, state_val);

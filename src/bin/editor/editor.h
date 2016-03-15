@@ -84,8 +84,8 @@ typedef enum {
    ATTRIBUTE_STATE_FONT,
    ATTRIBUTE_STATE_TEXT_STYLE,
    ATTRIBUTE_STATE_COLOR,
-   ATTRIBUTE_STATE_COLOR2,
-   ATTRIBUTE_STATE_COLOR3,
+   ATTRIBUTE_STATE_OUTLINE_COLOR,
+   ATTRIBUTE_STATE_SHADOW_COLOR,
    ATTRIBUTE_STATE_IMAGE_BORDER,
    ATTRIBUTE_STATE_IMAGE_BORDER_FILL,
    ATTRIBUTE_STATE_ASPECT_PREF,
@@ -429,12 +429,16 @@ Eina_Bool
 editor_state_color_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
       int r, int g, int b, int a);
 
+#define edje_edit_state_outline_color_get edje_edit_state_color2_get
+#pragma GCC poison edje_edit_state_color2_get
 Eina_Bool
-editor_state_color2_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+editor_state_outline_color_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
       int r, int g, int b, int a);
 
+#define edje_edit_state_shadow_color_get edje_edit_state_color3_get
+#pragma GCC poison edje_edit_state_color3_get
 Eina_Bool
-editor_state_color3_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+editor_state_shadow_color_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
       int r, int g, int b, int a);
 
 Eina_Bool
