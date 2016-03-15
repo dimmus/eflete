@@ -23,13 +23,16 @@
 
 static void
 _on_color_change(void *data,
-                 Evas_Object *obj __UNUSED__,
+                 Evas_Object *obj,
                  void *event_info __UNUSED__)
 {
+   int r, g, b, a;
    Evas_Object *control = data;
 
    assert(control != NULL);
 
+   colorselector_color_get(obj, &r, &g, &b, &a);
+   property_color_control_color_set(control, r, g, b, a);
    evas_object_smart_callback_call(control, "changed", NULL);
 }
 
