@@ -80,6 +80,19 @@ static char *part_types[] = {
      N_("PROXY"),
      N_("SPACER")
 };
+static const char *program_actions[] = {
+     N_("NONE"),
+     N_("STATE SET"),
+     N_("SIGNAL EMIT"),
+     N_("DRAG VALUE SET"),
+     N_("DRAG VALUE STEP"),
+     N_("DRAG VALUE PAGE"),
+     N_("PLAY SAMPLE"),
+     N_("PLAY TONE"),
+     N_("ACTION STOP"),
+     NULL
+};
+
 static const unsigned int part_types_count = 12;
 
 static char *
@@ -666,18 +679,17 @@ _program_validate(void *data,
                   void *event_info __UNUSED__)
 {
    Part_List *pl = data;
-   const char *name, *program;
-   Eina_Bool valid;
-   Eina_List *l;
+   const char *program;
 
    assert(pl != NULL);
 
-   name = elm_entry_entry_get(pl->popup.entry_name);
-   valid = (elm_validator_regexp_status_get(pl->name_validator) == ELM_REG_NOERROR);
-   EINA_LIST_FOREACH(pl->group->programs, l, program)
-      valid = valid && strcmp(program, name);
+   program = elm_entry_entry_get(pl->popup.entry_name);
 
-   elm_object_disabled_set(pl->popup.btn_add, !valid);
+   if ((elm_validator_regexp_status_get(pl->name_validator) != ELM_REG_NOERROR) ||
+       (edje_edit_program_exist(pl->group->edit_object, program)))
+     elm_object_disabled_set(pl->popup.btn_add, true);
+   else
+     elm_object_disabled_set(pl->popup.btn_add, false);
 }
 
 static void
@@ -1125,6 +1137,8 @@ _popup_add_program_ok_clicked(void *data,
                               Evas_Object *obj __UNUSED__,
                               void *event_info __UNUSED__)
 {
+   Ewe_Combobox_Item *item;
+   Edje_Action_Type type = EDJE_ACTION_TYPE_NONE;
    Part_List *pl = data;
    const char *name;
    Eina_Stringshare *msg;
@@ -1134,11 +1148,44 @@ _popup_add_program_ok_clicked(void *data,
 
    if (elm_object_disabled_get(pl->popup.btn_add)) return;
 
+   item = ewe_combobox_select_item_get(pl->popup.combobox);
+   switch (item->index)
+     {
+      case 0:
+         type = EDJE_ACTION_TYPE_NONE;
+         break;
+      case 1:
+         type = EDJE_ACTION_TYPE_STATE_SET;
+         break;
+      case 2:
+         type = EDJE_ACTION_TYPE_SIGNAL_EMIT;
+         break;
+      case 3:
+         type = EDJE_ACTION_TYPE_DRAG_VAL_SET;
+         break;
+      case 4:
+         type = EDJE_ACTION_TYPE_DRAG_VAL_STEP;
+         break;
+      case 5:
+         type = EDJE_ACTION_TYPE_DRAG_VAL_PAGE;
+         break;
+      case 6:
+         type = EDJE_ACTION_TYPE_SOUND_SAMPLE;
+         break;
+      case 7:
+         type = EDJE_ACTION_TYPE_SOUND_TONE;
+         break;
+      case 8:
+         type = EDJE_ACTION_TYPE_ACTION_STOP;
+         break;
+     }
+
    name = elm_entry_entry_get(pl->popup.entry_name);
 
    msg = eina_stringshare_printf(_("added new program \"%s\""), name);
    change = change_add(msg);
    editor_program_add(pl->group->edit_object, change, false, name);
+   editor_program_action_set(pl->group->edit_object, change, false, name, type);
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
@@ -1152,6 +1199,7 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
 {
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Evas_Object *box, *item;
+   unsigned int i;
 
    assert(pl != NULL);
 
@@ -1168,6 +1216,20 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
    evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_program_ok_clicked, pl);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new program here."));
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
+   elm_box_pack_end(box, item);
+
+   LAYOUT_PROP_ADD(box, _("Transition type:"), "property", "1swallow")
+   EWE_COMBOBOX_ADD(item, pl->popup.combobox)
+   ewe_combobox_select_item_set(pl->popup.combobox, 0);
+
+   for (i = 0; program_actions[i]; i++)
+     {
+        ewe_combobox_item_add(pl->popup.combobox, program_actions[i]);
+     }
+   ewe_combobox_select_item_set(pl->popup.combobox, 0);
+   elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
+   evas_object_smart_callback_add(pl->popup.combobox, "collapsed", _combobox_collapsed, pl);
+
    elm_box_pack_end(box, item);
 
    elm_object_content_set(ap.popup, box);
