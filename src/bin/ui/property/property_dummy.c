@@ -164,7 +164,7 @@ _dynamic_subitems_get(Property_Attribute *pa __UNUSED__)
    Eina_List *items = NULL;
    int i, num;
    /* num = rand()%200; */
-   num = 200;
+   num = 0;
    for (i = 0; i < num; i++)
      {
         new_pa = mem_calloc(1, sizeof(Property_Attribute));
