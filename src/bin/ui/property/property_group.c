@@ -34,7 +34,7 @@ struct _Property_Group_Data {
       const char *format;
       Change *change;
       struct {
-         int int_val1;
+         int int_val1, int_val2, int_val3, int_val4;
          double double_val1;
          Eina_Stringshare *str_val1;
       } old, new;
@@ -94,6 +94,13 @@ struct _Property_Group_Data {
                        Property_Attribute offset;
                   } rel1, rel2;
              } position;
+             struct {
+                  Property_Attribute title;
+                  Property_Attribute color_class;
+                  Property_Attribute color;
+                  Property_Attribute outline_color;
+                  Property_Attribute shadow_color;
+             } colors;
         } state;
         Property_Attribute item;
         Property_Attribute program;
@@ -288,6 +295,11 @@ _subitems_get(Property_Attribute *pa)
      {
          items = eina_list_append(items, &group_pd.items.state.name);
          items = eina_list_append(items, &group_pd.items.state.visible);
+         if ((group_pd.part->type != EDJE_PART_TYPE_SWALLOW) &&
+             (group_pd.part->type != EDJE_PART_TYPE_SPACER))
+           {
+              items = eina_list_append(items, &group_pd.items.state.colors.title);
+           }
          items = eina_list_append(items, &group_pd.items.state.size.title);
          items = eina_list_append(items, &group_pd.items.state.position.title);
      }
@@ -305,6 +317,16 @@ _subitems_get(Property_Attribute *pa)
          items = eina_list_append(items, &group_pd.items.state.position.align);
          items = eina_list_append(items, &group_pd.items.state.position.rel1.title);
          items = eina_list_append(items, &group_pd.items.state.position.rel2.title);
+     }
+   else if (pa == &group_pd.items.state.colors.title)
+     {
+         items = eina_list_append(items, &group_pd.items.state.colors.color_class);
+         items = eina_list_append(items, &group_pd.items.state.colors.color);
+         if (group_pd.part->type == EDJE_PART_TYPE_TEXT)
+           {
+              items = eina_list_append(items, &group_pd.items.state.colors.outline_color);
+              items = eina_list_append(items, &group_pd.items.state.colors.shadow_color);
+           }
      }
    else if (pa == &group_pd.items.state.position.rel1.title)
      {
@@ -357,8 +379,53 @@ _fill_combobox_with_enum(Evas_Object *control, const char **array)
 }
 
 static void
+_color_class_colors_fill(void *data __UNUSED__,
+                         Evas_Object *combo,
+                         void *event_info __UNUSED__)
+{
+   int cc_val[12];
+   Evas_Object *color;
+   const Eina_List *items, *l;
+   Ewe_Combobox_Item *item;
+   Evas *canvas;
+
+   items = ewe_combobox_items_list_get(combo);
+   if (!items) return;
+
+   item = eina_list_data_get(items);
+   canvas = evas_object_evas_get(item->content);
+   items = eina_list_next(items);
+   EINA_LIST_FOREACH(items, l, item)
+     {
+        edje_edit_color_class_colors_get(EDIT_OBJ, item->title,
+                                         &cc_val[0], &cc_val[1], &cc_val[2], &cc_val[3],
+                                         &cc_val[4], &cc_val[5], &cc_val[6], &cc_val[7],
+                                         &cc_val[8], &cc_val[9], &cc_val[10], &cc_val[11]);
+        evas_color_argb_premul(cc_val[3], &cc_val[0], &cc_val[1], &cc_val[2]);
+        evas_color_argb_premul(cc_val[7], &cc_val[4], &cc_val[5], &cc_val[6]);
+        evas_color_argb_premul(cc_val[11], &cc_val[8], &cc_val[9], &cc_val[10]);
+        /* FIXME: this is bad solition, user shoud not use edje object for add contnent to a
+         * combobox item. Need to move combobox from edje ocject to layout. */
+        color = edje_object_add(canvas);
+        edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+        evas_object_color_set(color, cc_val[0], cc_val[1], cc_val[2], cc_val[3]);
+        edje_object_part_swallow(item->content, "swallow.color1", color);
+        color = edje_object_add(canvas);
+        edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+        evas_object_color_set(color, cc_val[4], cc_val[5], cc_val[6], cc_val[7]);
+        edje_object_part_swallow(item->content, "swallow.color2", color);
+        color = edje_object_add(canvas);
+        edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+        evas_object_color_set(color, cc_val[8], cc_val[9], cc_val[10], cc_val[11]);
+        edje_object_part_swallow(item->content, "swallow.color3", color);
+     }
+}
+
+static void
 _init_cb(Property_Attribute *pa, Property_Action *action)
 {
+   Evas_Object *color;
+
    assert(pa != NULL);
    assert(action != NULL);
    assert(action->control != NULL);
@@ -398,6 +465,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_REL1_TO_Y:
       case ATTRIBUTE_STATE_REL2_TO_X:
       case ATTRIBUTE_STATE_REL2_TO_Y:
+      case ATTRIBUTE_STATE_COLOR:
+      case ATTRIBUTE_STATE_OUTLINE_COLOR:
+      case ATTRIBUTE_STATE_SHADOW_COLOR:
          break;
       case ATTRIBUTE_STATE_MAX_W:
       case ATTRIBUTE_STATE_MAX_H:
@@ -437,6 +507,26 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
          _fill_combobox_with_enum(action->control, ignore_flags_strings);
+         break;
+      case ATTRIBUTE_STATE_COLOR_CLASS:
+         ewe_combobox_style_set(action->control, "color_class");
+
+         color = elm_image_add(action->control);
+         elm_image_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+         ewe_combobox_content_set(action->control, "swallow.color1", color);
+         evas_object_data_set(action->control, "color1", color);
+
+         color = elm_image_add(action->control);
+         elm_image_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+         ewe_combobox_content_set(action->control, "swallow.color2", color);
+         evas_object_data_set(action->control, "color2", color);
+
+         color = elm_image_add(action->control);
+         elm_image_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
+         ewe_combobox_content_set(action->control, "swallow.color3", color);
+         evas_object_data_set(action->control, "color3", color);
+
+         evas_object_smart_callback_add(action->control, "expanded", _color_class_colors_fill, NULL);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -499,9 +589,74 @@ _parts_combobox_fill(Evas_Object *combo, const char *selected, Edje_Part_Type al
 }
 
 static void
+_color_class_select(Evas_Object *combo, const char *selected)
+{
+   int cc_val[12];
+   Evas_Object *color;
+
+   assert(combo != NULL);
+
+   if (selected)
+     {
+        ewe_combobox_text_set(combo, selected);
+        edje_edit_color_class_colors_get(EDIT_OBJ, selected,
+                                         &cc_val[0], &cc_val[1], &cc_val[2], &cc_val[3],
+                                         &cc_val[4], &cc_val[5], &cc_val[6], &cc_val[7],
+                                         &cc_val[8], &cc_val[9], &cc_val[10], &cc_val[11]);
+        evas_color_argb_premul(cc_val[3], &cc_val[0], &cc_val[1], &cc_val[2]);
+        evas_color_argb_premul(cc_val[7], &cc_val[4], &cc_val[5], &cc_val[6]);
+        evas_color_argb_premul(cc_val[11], &cc_val[8], &cc_val[9], &cc_val[10]);
+
+        color = evas_object_data_get(combo, "color1");
+        evas_object_color_set(color, cc_val[0], cc_val[1], cc_val[2], cc_val[3]);
+
+        color = evas_object_data_get(combo, "color2");
+        evas_object_color_set(color, cc_val[4], cc_val[5], cc_val[6], cc_val[7]);
+
+        color = evas_object_data_get(combo, "color3");
+        evas_object_color_set(color, cc_val[8], cc_val[9], cc_val[10], cc_val[11]);
+     }
+   else
+     {
+        ewe_combobox_text_set(combo, STR_NONE);
+
+        color = evas_object_data_get(combo, "color1");
+        evas_object_color_set(color, 0, 0, 0, 0);
+
+        color = evas_object_data_get(combo, "color2");
+        evas_object_color_set(color, 0, 0, 0, 0);
+
+        color = evas_object_data_get(combo, "color3");
+        evas_object_color_set(color, 0, 0, 0, 0);
+     }
+}
+
+static void
+_color_classes_combobox_fill(Evas_Object *combo, const char *selected)
+{
+   Eina_List *cclist, *l;
+   Ewe_Combobox_Item *it;
+   Eina_Stringshare *color_class;
+
+   assert(combo != NULL);
+
+   _color_class_select(combo, selected);
+
+   cclist = edje_edit_color_classes_list_get(EDIT_OBJ);
+   ewe_combobox_item_add(combo, STR_NONE);
+   EINA_LIST_FOREACH(cclist, l, color_class)
+     {
+        it = ewe_combobox_item_add(combo, color_class);
+        ewe_combobox_item_style_set(combo, it, "color_class");
+     }
+
+   edje_edit_string_list_free(cclist);
+}
+
+static void
 _update_cb(Property_Attribute *pa, Property_Action *action)
 {
-   int int_val1;
+   int int_val1, int_val2, int_val3, int_val4;
    double double_val1;
    Eina_Bool bool_val1;
    Eina_Stringshare *str_val1;
@@ -722,6 +877,24 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          double_val1 = edje_edit_state_rel2_offset_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
          break;
+      case ATTRIBUTE_STATE_COLOR:
+         edje_edit_state_color_get(EDIT_OBJ, STATE_ARGS, &int_val1, &int_val2, &int_val3, &int_val4);
+         property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
+         break;
+      case ATTRIBUTE_STATE_OUTLINE_COLOR:
+         edje_edit_state_outline_color_get(EDIT_OBJ, STATE_ARGS, &int_val1, &int_val2, &int_val3, &int_val4);
+         property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
+         break;
+      case ATTRIBUTE_STATE_SHADOW_COLOR:
+         edje_edit_state_shadow_color_get(EDIT_OBJ, STATE_ARGS, &int_val1, &int_val2, &int_val3, &int_val4);
+         property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
+         break;
+      case ATTRIBUTE_STATE_COLOR_CLASS:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_state_color_class_get(EDIT_OBJ, STATE_ARGS);
+         _color_classes_combobox_fill(action->control, str_val1);
+         edje_edit_string_free(str_val1);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -733,6 +906,8 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
 static void
 _start_cb(Property_Attribute *pa, Property_Action *action)
 {
+   int r, g, b, a;
+
    assert(pa != NULL);
    assert(action != NULL);
    assert(action->control != NULL);
@@ -941,6 +1116,34 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("rel2 offset y changed from %d to %d");
          VAL(int_val1) = edje_edit_state_rel2_offset_y_get(EDIT_OBJ, STATE_ARGS);
          break;
+      case ATTRIBUTE_STATE_COLOR_CLASS:
+         group_pd.history.format = _("color class changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_state_color_class_get(EDIT_OBJ, STATE_ARGS));
+         break;
+      case ATTRIBUTE_STATE_COLOR:
+         group_pd.history.format = _("color changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]");
+         edje_edit_state_color_get(EDIT_OBJ, STATE_ARGS, &r, &g, &b, &a);
+         VAL(int_val1) = r;
+         VAL(int_val2) = g;
+         VAL(int_val3) = b;
+         VAL(int_val4) = a;
+         break;
+      case ATTRIBUTE_STATE_OUTLINE_COLOR:
+         group_pd.history.format = _("outline color changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]");
+         edje_edit_state_outline_color_get(EDIT_OBJ, STATE_ARGS, &r, &g, &b, &a);
+         VAL(int_val1) = r;
+         VAL(int_val2) = g;
+         VAL(int_val3) = b;
+         VAL(int_val4) = a;
+         break;
+      case ATTRIBUTE_STATE_SHADOW_COLOR:
+         group_pd.history.format = _("shadow color changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]");
+         edje_edit_state_shadow_color_get(EDIT_OBJ, STATE_ARGS, &r, &g, &b, &a);
+         VAL(int_val1) = r;
+         VAL(int_val2) = g;
+         VAL(int_val3) = b;
+         VAL(int_val4) = a;
+         break;
 
       default:
          TODO("remove default case after all attributes will be added");
@@ -955,6 +1158,7 @@ static void
 _change_cb(Property_Attribute *pa, Property_Action *action)
 {
    double double_val1 = 0.0;
+   int r, g, b, a;
    Eina_Stringshare *str_val1 = NULL;
    Eina_Bool bool_val1 = false;;
    Ewe_Combobox_Item *cb_item = NULL;
@@ -978,6 +1182,10 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_CONTROL_COMBOBOX:
          TODO("change this after migrating to elm_combobox");
          cb_item = ewe_combobox_select_item_get(action->control);
+         break;
+      case PROPERTY_CONTROL_COLOR:
+         property_color_control_color_get(action->control, &r, &g, &b, &a);
+         break;
       default:
          break;
      }
@@ -1194,6 +1402,37 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          editor_state_rel2_offset_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
          group_pd.history.new.int_val1 = edje_edit_state_rel2_offset_y_get(EDIT_OBJ, STATE_ARGS);
          break;
+      case ATTRIBUTE_STATE_COLOR_CLASS:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         _color_class_select(action->control, str_val1);
+         editor_state_color_class_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_STATE_COLOR:
+         editor_state_color_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, r, g, b, a);
+         edje_edit_state_color_get(EDIT_OBJ, STATE_ARGS, &r, &g, &b, &a);
+         group_pd.history.new.int_val1 = r;
+         group_pd.history.new.int_val2 = g;
+         group_pd.history.new.int_val3 = b;
+         group_pd.history.new.int_val4 = a;
+         break;
+      case ATTRIBUTE_STATE_OUTLINE_COLOR:
+         editor_state_outline_color_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, r, g, b, a);
+         edje_edit_state_outline_color_get(EDIT_OBJ, STATE_ARGS, &r, &g, &b, &a);
+         group_pd.history.new.int_val1 = r;
+         group_pd.history.new.int_val2 = g;
+         group_pd.history.new.int_val3 = b;
+         group_pd.history.new.int_val4 = a;
+         break;
+      case ATTRIBUTE_STATE_SHADOW_COLOR:
+         editor_state_shadow_color_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, r, g, b, a);
+         edje_edit_state_shadow_color_get(EDIT_OBJ, STATE_ARGS, &r, &g, &b, &a);
+         group_pd.history.new.int_val1 = r;
+         group_pd.history.new.int_val2 = g;
+         group_pd.history.new.int_val3 = b;
+         group_pd.history.new.int_val4 = a;
+         break;
 
       default:
          TODO("remove default case after all attributes will be added");
@@ -1242,6 +1481,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_REL1_TO_Y:
       case ATTRIBUTE_STATE_REL2_TO_X:
       case ATTRIBUTE_STATE_REL2_TO_Y:
+      case ATTRIBUTE_STATE_COLOR_CLASS:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (group_pd.history.old.str_val1) ? group_pd.history.old.str_val1 : STR_NONE,
@@ -1288,6 +1528,27 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.double_val1,
                                        group_pd.history.new.double_val1);
+         break;
+      case ATTRIBUTE_STATE_COLOR:
+      case ATTRIBUTE_STATE_OUTLINE_COLOR:
+      case ATTRIBUTE_STATE_SHADOW_COLOR:
+         if ((group_pd.history.new.int_val1 == group_pd.history.old.int_val1) &&
+             (group_pd.history.new.int_val2 == group_pd.history.old.int_val2) &&
+             (group_pd.history.new.int_val3 == group_pd.history.old.int_val3) &&
+             (group_pd.history.new.int_val4 == group_pd.history.old.int_val4))
+           {
+              change_free(group_pd.history.change);
+              goto clean;
+           }
+         msg = eina_stringshare_printf(group_pd.history.format,
+                                       group_pd.history.old.int_val1,
+                                       group_pd.history.old.int_val2,
+                                       group_pd.history.old.int_val3,
+                                       group_pd.history.old.int_val4,
+                                       group_pd.history.new.int_val1,
+                                       group_pd.history.new.int_val2,
+                                       group_pd.history.new.int_val3,
+                                       group_pd.history.new.int_val4);
          break;
       case ATTRIBUTE_PART_TYPE:
          /* part type can't be changed */
@@ -1566,6 +1827,27 @@ _init_state_position_block()
 }
 
 static void
+_init_state_colors_block()
+{
+   group_pd.items.state.colors.title.name = "colors";
+   group_pd.items.state.colors.title.expandable = true;
+   group_pd.items.state.colors.title.expanded = true;
+   group_pd.items.state.colors.title.expand_cb = _subitems_get;
+
+   group_pd.items.state.colors.color_class.name = "color class";
+   _action1(&group_pd.items.state.colors.color_class, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_COLOR_CLASS);
+
+   group_pd.items.state.colors.color.name = "color";
+   _action1(&group_pd.items.state.colors.color, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_COLOR);
+
+   group_pd.items.state.colors.outline_color.name = "outline color";
+   _action1(&group_pd.items.state.colors.outline_color, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_OUTLINE_COLOR);
+
+   group_pd.items.state.colors.shadow_color.name = "shadow color";
+   _action1(&group_pd.items.state.colors.shadow_color, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_SHADOW_COLOR);
+}
+
+static void
 _init_state_block()
 {
    group_pd.items.state.title.name = "state";
@@ -1581,6 +1863,7 @@ _init_state_block()
 
    _init_state_size_block();
    _init_state_position_block();
+   _init_state_colors_block();
 }
 
 /* public */
