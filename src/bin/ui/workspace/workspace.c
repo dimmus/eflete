@@ -496,6 +496,7 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
    container_handler_size_set(area->container, 8, 8);
    evas_object_smart_callback_add(area->container, "container,changed", _container_changed, wd);
    elm_object_content_set(area->scroller, area->container);
+   container_container_size_set(area->container, 350, 350);
 }
 
 static void
@@ -807,6 +808,7 @@ workspace_add(Evas_Object *parent, Group *group)
    wd->normal.content = groupview_add(wd->normal.scroller, group);
    container_content_set(wd->normal.container, wd->normal.content);
    _container_hints_set(wd);
+
    container_protrusion_func_set(wd->normal.container, groupview_protrusion_get);
    evas_object_smart_callback_add(wd->normal.content, SIGNAL_GROUPVIEW_CLICKED, _groupview_clicked, wd);
    evas_object_smart_callback_add(wd->normal.content, SIGNAL_GROUPVIEW_HL_PART_DRAG_START, _groupview_hl_part_drag_start, wd);
