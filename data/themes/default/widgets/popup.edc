@@ -186,6 +186,7 @@ group { name: "elm/popup/base/default";
       }
    }
    programs {
+      /*
       program { name: show_title_text;
          signal: "elm,state,title,text,visible";
          source: "elm";
@@ -198,7 +199,6 @@ group { name: "elm/popup/base/default";
          action: STATE_SET "default" 0.0;
          target: "elm.text.title";
       }
-      /*
       program { name: show_title_area;
          signal: "elm,state,title_area,visible";
          source: "elm";

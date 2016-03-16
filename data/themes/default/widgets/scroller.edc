@@ -452,15 +452,15 @@ group { name: "elm/scroller/base/default";
       program { name: "v_mouse_down";
          signal: "mouse,down,1*";
          source: "elm.dragable.vbar";
-         action: STATE_SET "clicked" 0.00;
-         target: "elm.dragable.vbar";
+         /*action: STATE_SET "clicked" 0.00;
+         target: "elm.dragable.vbar";*/
          after: "v_bar_selected";
       }
       program { name: "h_mouse_down";
          signal: "mouse,down,1*";
          source: "elm.dragable.hbar";
-         action: STATE_SET "clicked" 0.00;
-         target: "elm.dragable.hbar";
+         /*action: STATE_SET "clicked" 0.00;
+         target: "elm.dragable.hbar";*/
          after: "h_bar_selected";
       }
       program { name: "horizontal_scroll_down";

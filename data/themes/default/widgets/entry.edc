@@ -733,7 +733,7 @@ group { name: "elm/scroller/entry/default";
          action: STATE_SET "disabled" 0.00;
          target: "bg";
          target: "shadow";
-         target: "focus";
+         //target: "focus";
       }
       program { name: "validation_pass";
          signal: "validation,default,pass";
@@ -1132,7 +1132,7 @@ group { name: "elm/scroller/entry_single/default";
          action: STATE_SET "disabled" 0.00;
          target: "bg";
          target: "shadow";
-         target: "focus";
+         //target: "focus";
       }
       program { name: "validation_pass";
          signal: "validation,default,pass";
