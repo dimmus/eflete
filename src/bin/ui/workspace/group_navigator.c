@@ -732,31 +732,31 @@ _popup_add_part_ok_clicked(void *data,
    item = ewe_combobox_select_item_get(pl->popup.combobox);
    switch (item->index)
      {
-      case 1:
+      case 0:
          type = EDJE_PART_TYPE_RECTANGLE;
          break;
-      case 2:
+      case 1:
          type = EDJE_PART_TYPE_IMAGE;
          break;
-      case 3:
+      case 2:
          type = EDJE_PART_TYPE_SWALLOW;
          break;
-      case 4:
+      case 3:
          type = EDJE_PART_TYPE_TEXTBLOCK;
          break;
-      case 5:
+      case 4:
          type = EDJE_PART_TYPE_GROUP;
          break;
-      case 6:
+      case 5:
          type = EDJE_PART_TYPE_BOX;
          break;
-      case 7:
+      case 6:
          type = EDJE_PART_TYPE_TABLE;
          break;
-      case 8:
+      case 7:
          type = EDJE_PART_TYPE_PROXY;
          break;
-      case 9:
+      case 8:
          type = EDJE_PART_TYPE_SPACER;
          break;
      }
