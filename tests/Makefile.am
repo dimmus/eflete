@@ -12,12 +12,10 @@ diff_test \
 change_test \
 new_history_test \
 logger_test \
-container_test \
 modal_window_test \
 project_manager_test \
 config_test \
 cursor_test \
-highlight_test \
 ui_main_window_test \
 ui_workspace_test \
 about_window_test \
@@ -40,7 +38,6 @@ FLAGS = \
 -I${top_srcdir}/src/bin/config \
 -I${top_srcdir}/src/bin/history \
 -I${top_srcdir}/src/bin/ui \
--I${top_srcdir}/src/bin/ui/container \
 -I${top_srcdir}/src/bin/ui/blocks \
 -I${top_srcdir}/src/bin/ui/dialogs \
 -I${top_srcdir}/src/bin/ui/editors \
@@ -216,39 +213,6 @@ cursor_test_SOURCES = \
 ../tests/test_cursor/cursor_type_get.c
 cursor_test_CFLAGS = ${FLAGS}
 cursor_test_LDADD = ${LD}
-
-container_test_SOURCES = \
-../tests/test_container/test_container.c \
-../tests/test_container/container_add.c \
-../tests/test_container/container_container_size_set.c \
-../tests/test_container/container_container_size_get.c \
-../tests/test_container/container_min_size_set.c \
-../tests/test_container/container_max_size_set.c \
-../tests/test_container/container_handler_size_set.c \
-../tests/test_container/container_handler_size_get.c \
-../tests/test_container/container_style_get.c \
-../tests/test_container/container_style_set.c \
-../tests/test_container/container_border_hide.c \
-../tests/test_container/container_border_show.c \
-../tests/test_container/container_padding_size_set.c \
-../tests/test_container/container_padding_size_get.c \
-../tests/test_container/container_content_set.c \
-../tests/test_container/container_content_unset.c
-container_test_CFLAGS = ${FLAGS}
-container_test_LDADD = ${LD}
-
-highlight_test_SOURCES = \
-../tests/test_highlight/test_highlight.c \
-../tests/test_highlight/highlight_add.c \
-../tests/test_highlight/highlight_handler_disabled_set.c \
-../tests/test_highlight/highlight_handler_align_hide.c \
-../tests/test_highlight/highlight_handler_align_show.c \
-../tests/test_highlight/highlight_handler_align_visible_get.c \
-../tests/test_highlight/highlight_handler_mode_set.c \
-../tests/test_highlight/highlight_object_follow.c \
-../tests/test_highlight/highlight_object_unfollow.c
-highlight_test_CFLAGS = ${FLAGS}
-highlight_test_LDADD = ${LD}
 
 ui_main_window_test_SOURCES = \
 ../tests/test_ui_main_window/test_ui_main_window.c \
