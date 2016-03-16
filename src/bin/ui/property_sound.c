@@ -305,7 +305,7 @@ _tone_play(Sound_Prop_Data *edit)
 
    if (!edit->io.out)
      edit->io.out = eo_add(ECORE_AUDIO_OUT_PULSE_CLASS, NULL,
-                           eo_event_callback_add(eoid, ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
+                           eo_event_callback_add(eo_self, ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
                                                  _out_fail, NULL));
 
    ret = ecore_audio_obj_out_input_attach(edit->io.out, edit->io.in);
