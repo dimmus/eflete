@@ -4030,7 +4030,6 @@ _item_content_get(void *data, Evas_Object *obj, const char *part)
 {
    const char* buf = NULL;
    const char *file = NULL, *group = NULL;
-   Evas_Load_Error err;
    Evas_Object *image;
    Group_Prop_Data *pd = NULL;
 
@@ -4041,17 +4040,11 @@ _item_content_get(void *data, Evas_Object *obj, const char *part)
         assert(pd != NULL);
 
         edje_object_file_get((const Eo*)pd->group->edit_object, &file, &group);
-        image = evas_object_image_add(evas_object_evas_get(obj));
+        image = elm_thumb_add(obj);
+        elm_object_style_set(image, "noframe");
         buf = eina_stringshare_printf("edje/images/%i",
                                       edje_edit_image_id_get(pd->group->edit_object, (const char*)data));
-        evas_object_image_file_set(image, file, buf);
-        err = evas_object_image_load_error_get(image);
-        if (err != EVAS_LOAD_ERROR_NONE)
-          {
-             WARN("Image [%s] from file [%s] loaded with errors", buf, file);
-             return NULL;
-          }
-        evas_object_image_filled_set(image, true);
+        elm_thumb_file_set(image, file, buf);
         return image;
      }
    return NULL;
