@@ -12,10 +12,10 @@ struct _Ewe_Ruler_Smart_Data
    Eina_List         *scales;
    Eina_List         *markers;
    struct {
-      unsigned int   width;
-      unsigned int   height;
-      int            x;
-      int            y;
+      Evas_Coord     width;
+      Evas_Coord     height;
+      Evas_Coord     x;
+      Evas_Coord     y;
    } geometry;
    Eina_Bool         size_changed : 1;
    Eina_Bool         position_changed : 1;
