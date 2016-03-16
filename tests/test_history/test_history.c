@@ -17,10 +17,10 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "test_new_history.h"
+#include "test_history.h"
 
 Suite* test_suite (void) {
-   Suite *suite = suite_create("new_history_test");
+   Suite *suite = suite_create("history_test");
    TCase *tcase = tcase_create("TCase");
 
    tcase_add_test(tcase, history_add_test_p);
@@ -37,7 +37,7 @@ int main(void) {
    int number_failed;
    Suite *suite = test_suite();
    SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_new_history.xml");
+   srunner_set_xml (runner, "test_history.xml");
    srunner_run_all(runner, CK_VERBOSE);
    number_failed = srunner_ntests_failed(runner);
    srunner_free(runner);

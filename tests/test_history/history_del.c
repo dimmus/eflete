@@ -17,10 +17,10 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "test_new_history.h"
+#include "test_history.h"
 
 /**
- * @addtogroup new_history_test
+ * @addtogroup history_test
  * @{
  * @addtogroup history_del
  * @{

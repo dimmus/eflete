@@ -10,7 +10,7 @@ eflete_test \
 alloc_test \
 diff_test \
 change_test \
-new_history_test \
+history_test \
 logger_test \
 project_manager_test \
 config_test \
@@ -67,7 +67,7 @@ include_HEADERS = \
 	../tests/test_alloc/test_alloc.h \
 	../tests/test_diff/test_diff.h \
 	../tests/test_change/test_change.h \
-	../tests/test_new_history/test_new_history.h \
+	../tests/test_history/test_history.h \
 	../tests/test_logger/test_logger.h \
 	../tests/test_project_manager/test_project_manager.h \
 	../tests/test_config/test_config.h \
@@ -165,14 +165,14 @@ change_test_SOURCES = \
 change_test_CFLAGS = ${FLAGS}
 change_test_LDADD = ${LD}
 
-new_history_test_SOURCES = \
-../tests/test_new_history/test_new_history.c \
-../tests/test_new_history/history_add.c \
-../tests/test_new_history/history_del.c \
-../tests/test_new_history/history_change_add.c \
-../tests/test_new_history/history_undo_redo.c
-new_history_test_CFLAGS = ${FLAGS}
-new_history_test_LDADD = ${LD}
+history_test_SOURCES = \
+../tests/test_history/test_history.c \
+../tests/test_history/history_add.c \
+../tests/test_history/history_del.c \
+../tests/test_history/history_change_add.c \
+../tests/test_history/history_undo_redo.c
+history_test_CFLAGS = ${FLAGS}
+history_test_LDADD = ${LD}
 
 logger_test_SOURCES = \
 ../tests/test_logger/test_logger.c \
