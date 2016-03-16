@@ -855,13 +855,12 @@ _ewe_ruler_evas_object_smart_resize(Eo *obj,
                                     Evas_Coord w,
                                     Evas_Coord h)
 {
-   int delta_width = w - sd->geometry.width;
-   int delta_height = h - sd->geometry.height;
-   if ((delta_height == 0) && (delta_width == 0))
-     return;
+   if ((w == sd->geometry.width) && (h == sd->geometry.height)) return;
+
    sd->size_changed = EINA_TRUE;
    sd->geometry.width = w;
    sd->geometry.height = h;
+
    evas_obj_smart_resize(eo_super(obj, MY_CLASS), w, h);
    evas_object_resize(sd->clip, w, h);
    evas_object_resize(sd->bg, w, h);
