@@ -878,7 +878,13 @@ _ewe_ruler_evas_object_smart_calculate(Eo *obj EINA_UNUSED,
    int offset;
 
    if (sd->size_changed)
-     _add_dashes(sd);
+     {
+        _add_dashes(sd);
+        EINA_LIST_FOREACH(sd->scales, ls, scale)
+          {
+             _dashes_size_set(sd, scale);
+          }
+     }
    if (sd->position_changed)
      {
         EINA_LIST_FOREACH(sd->scales, ls, scale)
