@@ -1897,7 +1897,10 @@ group_navigator_add(Evas_Object *parent, Group *group)
    if (group->main_group)
      elm_object_disabled_set(pl->layout, true);
    else
-     elm_genlist_item_expanded_set(pl->parts_caption_item, true);
+     {
+        elm_genlist_item_expanded_set(pl->parts_caption_item, true);
+        elm_genlist_item_expanded_set(pl->programs_caption_item, true);
+     }
 
    TODO("Add deletion callback and free resources");
    return pl->layout;
