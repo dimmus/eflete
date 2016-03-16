@@ -34,7 +34,7 @@ static Evas_Object *pseudo_object;
 /* test stubs that check args, return specified value, and report what function was called */
 static int _function_type_int_undo_return_true_called = 0;
 static Eina_Bool
-_function_type_int_undo_return_true(Evas_Object *obj, int val)
+_function_type_int_undo_return_true(Evas_Object *obj, Change *change __UNUSED__, Eina_Bool merge __UNUSED__, int val)
 {
    ck_assert(obj == pseudo_object);
    ck_assert(val == 42);
@@ -44,7 +44,7 @@ _function_type_int_undo_return_true(Evas_Object *obj, int val)
 
 static int _function_type_int_redo_return_true_called = 0;
 static Eina_Bool
-_function_type_int_redo_return_true(Evas_Object *obj, int val)
+_function_type_int_redo_return_true(Evas_Object *obj, Change *change __UNUSED__, Eina_Bool merge __UNUSED__, int val)
 {
    ck_assert(obj == pseudo_object);
    ck_assert(val == 24);
