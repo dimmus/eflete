@@ -41,7 +41,6 @@ includesub_HEADERS = \
 	ui/live_view/live_widget.h \
 	ui/live_view/live_widgets.h \
 	ui/live_view/elementary/live_elementary_widgets.h \
-	ui/modal_window/modal_window.h \
 	ui/preference/preference.h \
 	ui/shortcuts/shortcuts.h \
 	ui/workspace/groupview.h \
@@ -87,7 +86,6 @@ libete_a_SOURCES = \
 ../../src/bin/ui/style_manager.c \
 ../../src/bin/ui/sound_manager.c \
 ../../src/bin/ui/dialogs/colorsel.c \
-../../src/bin/ui/modal_window/modal_window.c \
 ../../src/bin/ui/project_navigator.c \
 ../../src/bin/ui/image_manager.c \
 ../../src/bin/ui/colorclass_manager.c \
@@ -168,7 +166,6 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/bin/ui/blocks \
 -I${top_srcdir}/src/bin/ui/dialogs \
 -I${top_srcdir}/src/bin/ui/editors \
--I${top_srcdir}/src/bin/ui/modal_window \
 -I${top_srcdir}/src/bin/ui/notification \
 -I${top_srcdir}/src/bin/ui/workspace \
 -I${top_srcdir}/src/bin/ui/live_view \
