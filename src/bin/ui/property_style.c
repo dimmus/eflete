@@ -53,7 +53,7 @@ struct _Style_Prop_Data
    Evas_Object *outer_gl_color;
    Evas_Object *inner_gl_color;
    Evas_Object *shadow_color;
-   Evas_Object *direction[8];
+   Evas_Object *direction;
    Evas_Object *box_glow_shadow;
    //Lines frame data
    Evas_Object *check_s_color;
@@ -911,17 +911,37 @@ _add_inner_outer_part(Style_Prop_Data *pd)
                                   _on_inner_gl_color_clicked, pd);
 }
 
-static Evas_Object *
-_add_direction_item(Evas_Object *parent)
+static void
+_on_select_direction(void *data,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info)
 {
-   Evas_Object *item_direction = elm_layout_add(parent);
-   elm_layout_theme_set(item_direction, "layout", "style_editor", "direction");
-   evas_object_show(item_direction);
-   PROPERTY_ITEM_ADD(parent, _("direction"), "1swallow_direction")
-   elm_layout_content_set(item, NULL, item_direction);
-   elm_box_pack_end(parent, item);
+   Ewe_Combobox_Item *it = event_info;
+   Style_Prop_Data *pd = data;
 
-   return item_direction;
+   assert(pd != NULL);
+
+   eina_stringshare_del(style_table[DIRECTION_NUM][1]);
+   style_table[DIRECTION_NUM][1] = eina_stringshare_add(it->title);
+   _tag_parse(pd, it->title, "direction");
+   _style_edit_update(pd);
+}
+
+static Evas_Object *
+_add_direction_item(Evas_Object *parent, Style_Prop_Data *pd)
+{
+   int i;
+
+   pd->direction = ewe_combobox_add(parent);
+   evas_object_smart_callback_add(pd->direction, "selected", _on_select_direction, pd);
+   evas_object_show(pd->direction);
+   PROPERTY_ITEM_ADD(parent, _("direction"), "1swallow")
+   elm_layout_content_set(item, NULL, pd->direction);
+   elm_box_pack_end(parent, item);
+   for(i = 0; direction_list[i] != NULL; i++)
+     ewe_combobox_item_add(pd->direction, direction_list[i]);
+
+   return pd->direction;
 }
 
 static Evas_Object *
@@ -934,7 +954,7 @@ _add_shadow_part(Style_Prop_Data *pd)
    evas_object_event_callback_add(pd->shadow_color, EVAS_CALLBACK_MOUSE_DOWN,
                                   _on_shadow_color_clicked, pd);
 
-   return _add_direction_item(pd->box_glow_shadow);
+   return _add_direction_item(pd->box_glow_shadow, pd);
 }
 
 static void
@@ -1064,41 +1084,6 @@ _position_text_option_update(Style_Prop_Data *pd, const char *value)
      }
 }
 
-#define DIRECT_ADD(VALUE, TEXT, STYLE, VAL) \
-static void \
-_on_##VALUE##_select_direction(void *data, \
-                              Evas_Object *obj __UNUSED__, \
-                              void *event_info __UNUSED__) \
-{ \
-   Style_Prop_Data *pd = data; \
-   assert(pd != NULL); \
-   style_table[DIRECTION_NUM][1] = eina_stringshare_add(TEXT); \
-   _tag_parse(pd, TEXT, "direction"); \
-   _style_edit_update(pd); \
-} \
-static Evas_Object * \
-_direction_item_##VALUE##_add(Evas_Object *item, Style_Prop_Data *pd) \
-{ \
-   Evas_Object *widget; \
-\
-   assert(pd != NULL); \
-   RADIO_ADD(item, widget, VAL, ""); \
-   elm_object_style_set(widget, STYLE); \
-   elm_object_part_content_set(item, "swallow."TEXT, widget); \
-   evas_object_smart_callback_add(widget, "focused", _on_##VALUE##_select_direction, pd); \
-   return widget; \
-}
-
-
-DIRECT_ADD(bl,"bottom_left", "bl", 0)
-DIRECT_ADD(b, "bottom", "b", 1)
-DIRECT_ADD(br, "bottom_right", "br", 2)
-DIRECT_ADD(l, "left", "l", 3)
-DIRECT_ADD(r, "right", "r", 4)
-DIRECT_ADD(tl, "top_left", "tl", 5)
-DIRECT_ADD(t, "top", "t", 6)
-DIRECT_ADD(tr, "top_right", "tr", 7)
-
 static Eina_Bool
 _check_value(const char *list[], const char *value)
 {
@@ -1124,7 +1109,6 @@ _glow_shadow_prop_update(Style_Prop_Data *pd, const char *value)
    unsigned int i = 0;
    char *style_copy = NULL;
    char *token;
-   Evas_Object *item;
    int count = 0, direction = DEFAULT_DIRECTION;
 
    if (value)
@@ -1183,28 +1167,12 @@ _glow_shadow_prop_update(Style_Prop_Data *pd, const char *value)
 
         if (strstr(style, "shadow"))
           {
-             item = _add_shadow_part(pd);
+             _add_shadow_part(pd);
              if (!_hex_to_rgb(shadow, &r, &g, &b, &a))
                ERR("This error should not happen in style editor... Contact devs please!");
              evas_object_color_set(pd->shadow_color, r*a/255, g*a/255, b*a/255, a);
 
-             pd->direction[0] = _direction_item_bl_add(item, pd);
-             pd->direction[1] = _direction_item_b_add(item, pd);
-             elm_radio_group_add(pd->direction[1], pd->direction[0]);
-             pd->direction[2] = _direction_item_br_add(item, pd);
-             elm_radio_group_add(pd->direction[2], pd->direction[0]);
-             pd->direction[3] = _direction_item_l_add(item, pd);
-             elm_radio_group_add(pd->direction[3], pd->direction[0]);
-             pd->direction[4] = _direction_item_r_add(item, pd);
-             elm_radio_group_add(pd->direction[4], pd->direction[0]);
-             pd->direction[5] = _direction_item_tl_add(item, pd);
-             elm_radio_group_add(pd->direction[5], pd->direction[0]);
-             pd->direction[6] = _direction_item_t_add(item, pd);
-             elm_radio_group_add(pd->direction[6], pd->direction[0]);
-             pd->direction[7] = _direction_item_tr_add(item, pd);
-             elm_radio_group_add(pd->direction[7], pd->direction[0]);
-
-             elm_object_signal_emit(pd->direction[direction], "mouse,up,1", "events");
+             ewe_combobox_select_item_set(pd->direction, direction);
           }
         else
           {
