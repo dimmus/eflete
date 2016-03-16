@@ -498,4 +498,15 @@ typedef struct _Sound_Data Sound_Data;
 Evas_Object *
 sound_manager_add(void);
 
+/**
+ * Show the whole inwin window by using some data
+ * about loaded project (edj file)
+ *
+ * @return the inwin object that contain style viewer
+ *
+ * @ingroup Window
+ */
+Evas_Object *
+about_window_add(void);
+
 #endif /* UI_MAIN_WINDOW_H */

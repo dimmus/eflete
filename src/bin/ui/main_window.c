@@ -220,3 +220,41 @@ ui_main_window_add(void)
    elm_config_window_auto_focus_enable_set(false);
    return true;
 }
+
+Evas_Object *
+about_window_add(void)
+{
+   Evas_Object *label;
+
+   label = elm_label_add(ap.win);
+   elm_object_text_set(label,
+     "<color=#b6b6b6>"
+     "<b><align=center>"PACKAGE_NAME" v."VERSION"</align></b><br>"
+     "This application was written for Enlightenment project.<br>"
+     "It is designed to create and modify styles of Elementary widgets.<br>"
+     "<br>"
+     "Copyright (C) 2013 - 2015 Samsung Electronics.<br>"
+     "<br>"
+     "<align=center><b>Authors:</b><br>"
+     "Vyacheslav \"rimmed\" Reutskiy (v.reutskiy@samsung.com)<br>"
+     "Mykyta Biliavskyi (m.biliavskyi@samsung.com)<br>"
+     "Vitalii Vorobiov (vi.vorobiov@samsung.com)<br>"
+     "Andrii Kroitor (an.kroitor@samsung.com)<br>"
+     "Kateryna Fesyna (fesyna1@gmail.com)<br>"
+     "Maksym Volodin (mac9.ua@gmail.com)<br>"
+     "Igor Gala (igor.gala89@gmail.com)<br>"
+     "<br>"
+     "Olga Kolesnik (o.kolesnik@samsung.com)<br>"
+     "<br>"
+     "Oleg Dotsenko (o.dotsenko@samsung.com)<br>"
+     "Yurii Tsivun (y.tsivun@samsung.com)<br>"
+     "Dmitriy Samoylov (dm.samoylov@samsung.com)<br>"
+     "</align>");
+
+   elm_object_style_set(label, "slide_about");
+   elm_layout_signal_emit(label, "elm,state,slide,start", "elm");
+
+   popup_want_action(_("About"), NULL, label, NULL, BTN_CANCEL, NULL, NULL);
+   evas_object_del(label);
+   return NULL;
+}
