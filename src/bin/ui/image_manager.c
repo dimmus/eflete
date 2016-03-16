@@ -155,7 +155,6 @@ _grid_content_get(void *data,
         image_obj = elm_thumb_add(grid);
         elm_object_style_set(image_obj, "noframe");
         _image_manager_image_setup(image_obj, it);
-        elm_thumb_reload(image_obj);
         evas_object_show(image_obj);
    /* functions for deferred creation of gengrid icons */
    //ecore_job_add(_image_content_setup, image_init_data);
