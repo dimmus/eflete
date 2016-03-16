@@ -177,7 +177,7 @@ _img_dir_del(void *data,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   _dir_del(&tab_edc.img_dirs, (Dir_Data *)data, _("Images directoies:"), _img_dir_add);
+   _dir_del(&tab_edc.img_dirs, (Dir_Data *)data, _("Images directories:"), _img_dir_add);
 }
 
 static void
@@ -185,7 +185,7 @@ _fnt_dir_del(void *data,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   _dir_del(&tab_edc.fnt_dirs, (Dir_Data *)data, _("Fonts directoies:"), _fnt_dir_add);
+   _dir_del(&tab_edc.fnt_dirs, (Dir_Data *)data, _("Fonts directories:"), _fnt_dir_add);
 }
 
 static void
@@ -193,7 +193,7 @@ _snd_dir_del(void *data,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   _dir_del(&tab_edc.snd_dirs, (Dir_Data *)data, _("Sounds directoies:"), _snd_dir_add);
+   _dir_del(&tab_edc.snd_dirs, (Dir_Data *)data, _("Sounds directories:"), _snd_dir_add);
 }
 
 /*
@@ -202,7 +202,7 @@ _vbr_dir_del(void *data,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   _dir_del(&tab_edc.vbr_dirs, (Dir_Data *)data, _("Vibrations directoies:"), _vbr_dir_add);
+   _dir_del(&tab_edc.vbr_dirs, (Dir_Data *)data, _("Vibrations directories:"), _vbr_dir_add);
 }
 */
 
@@ -211,7 +211,7 @@ _data_dir_del(void *data,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   _dir_del(&tab_edc.data_dirs, (Dir_Data *)data, _("Data directoies:"), _data_dir_add);
+   _dir_del(&tab_edc.data_dirs, (Dir_Data *)data, _("Data directories:"), _data_dir_add);
 }
 
 static Dir_Data *
@@ -497,7 +497,7 @@ _tab_import_edc_add(void)
 
    /* first item for image dirs list */
    dir_data = _dir_item_add(_img_dir_del);
-   elm_layout_text_set(dir_data->item, NULL, _("Images directoies:"));
+   elm_layout_text_set(dir_data->item, NULL, _("Images directories:"));
    tab_edc.img_dirs = eina_list_append(tab_edc.img_dirs, dir_data);
    elm_object_disabled_set(dir_data->btn_del, true);
    _btn_add_add(dir_data->item, _img_dir_add);
@@ -511,7 +511,7 @@ _tab_import_edc_add(void)
 
    /* first item for font dirs list */
    dir_data = _dir_item_add(_fnt_dir_del);
-   elm_layout_text_set(dir_data->item, NULL, _("Font directoies:"));
+   elm_layout_text_set(dir_data->item, NULL, _("Font directories:"));
    tab_edc.fnt_dirs = eina_list_append(tab_edc.fnt_dirs, dir_data);
    elm_object_disabled_set(dir_data->btn_del, true);
    _btn_add_add(dir_data->item, _fnt_dir_add);
@@ -525,7 +525,7 @@ _tab_import_edc_add(void)
 
    /* first item for sound dirs list */
    dir_data = _dir_item_add(_snd_dir_del);
-   elm_layout_text_set(dir_data->item, NULL, _("Sound directoies:"));
+   elm_layout_text_set(dir_data->item, NULL, _("Sound directories:"));
    tab_edc.snd_dirs = eina_list_append(tab_edc.snd_dirs, dir_data);
    elm_object_disabled_set(dir_data->btn_del, true);
    _btn_add_add(dir_data->item, _snd_dir_add);
@@ -540,7 +540,7 @@ _tab_import_edc_add(void)
    /* first item for vibration dirs list */
    /* UNCOMMENT it when vibration will be supported
    dir_data = _dir_item_add(_vbr_dir_del);
-   elm_layout_text_set(dir_data->item, NULL, _("Virbration directoies:"));
+   elm_layout_text_set(dir_data->item, NULL, _("Virbration directories:"));
    tab_edc.vbr_dirs = eina_list_append(tab_edc.vbr_dirs, dir_data);
    elm_object_disabled_set(dir_data->btn_del, true);
    _btn_add_add(dir_data->item, _vbr_dir_add);
@@ -557,7 +557,7 @@ _tab_import_edc_add(void)
 
    /* first item for data dirs list */
    dir_data = _dir_item_add(_data_dir_del);
-   elm_layout_text_set(dir_data->item, NULL, _("Data directoies:"));
+   elm_layout_text_set(dir_data->item, NULL, _("Data directories:"));
    tab_edc.data_dirs = eina_list_append(tab_edc.data_dirs, dir_data);
    elm_object_disabled_set(dir_data->btn_del, true);
    _btn_add_add(dir_data->item, _data_dir_add);
