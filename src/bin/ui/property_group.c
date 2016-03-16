@@ -1993,13 +1993,12 @@ prop_program_transition_update(Group_Prop_Data *pd)
    /* disable the transition controls, and enable it if action is STATE_SET */
    if (EDJE_ACTION_TYPE_STATE_SET != edje_edit_program_action_get(pd->group->edit_object, pd->attributes.program.program))
      {
-        elm_object_disabled_set(pd->attributes.program.transition, true);
-        elm_object_disabled_set(pd->attributes.program.transition_params, true);
-        ewe_combobox_select_item_set(pd->attributes.program.transition, 0);
+         elm_object_disabled_set(pd->attributes.program.transition, true);
+         ewe_combobox_select_item_set(pd->attributes.program.transition, 0);
+         _program_transition_param_set(pd, EDJE_TWEEN_MODE_NONE);
         return;
      }
    elm_object_disabled_set(pd->attributes.program.transition, false);
-   elm_object_disabled_set(pd->attributes.program.transition_params, false);
 
    type = editor_program_transition_type_get(pd->group->edit_object, pd->attributes.program.program);
    switch (type)
