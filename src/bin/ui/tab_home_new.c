@@ -391,26 +391,34 @@ _edc_code_generate(Eina_Stringshare *path)
    eina_strbuf_append(edc, "      name: \"" EFLETE_INTERNAL_GROUP_NAME "\";\n");
    eina_strbuf_append(edc, "   }\n");
 
-   TODO("move fonts, colorclasses and macros to widgets where they are used");
-   eina_strbuf_append(edc, "   #include \"fonts.edc\"\n");
-   eina_strbuf_append(edc, "   #include \"colorclasses.edc\"\n");
-   eina_strbuf_append(edc, "   #include \"macros.edc\"\n");
-
-   _file_to_swap_copy(path, "fonts");
-   _file_to_swap_copy(path, "colorclasses");
-   _file_to_swap_copy(path, "macros");
-
-   _widgets_dependencies_generate(path, dep_edc);
-   eina_strbuf_append(edc, eina_strbuf_string_get(dep_edc));
-   eina_strbuf_free(dep_edc);
-
    while (widget_item_data_iterator->name)
      {
+        /* only include next blocks if at least one widget is checked */
         if (widget_item_data_iterator->check)
           {
-             eina_strbuf_append_printf(edc, "   #include \"%s.edc\"\n",
-                                       widget_item_data_iterator->name);
-             _file_to_swap_copy(path, widget_item_data_iterator->name);
+             eina_strbuf_append(edc, "   #include \"fonts.edc\"\n");
+             eina_strbuf_append(edc, "   #include \"colorclasses.edc\"\n");
+             eina_strbuf_append(edc, "   #include \"macros.edc\"\n");
+
+             _file_to_swap_copy(path, "fonts");
+             _file_to_swap_copy(path, "colorclasses");
+             _file_to_swap_copy(path, "macros");
+
+             _widgets_dependencies_generate(path, dep_edc);
+             eina_strbuf_append(edc, eina_strbuf_string_get(dep_edc));
+             eina_strbuf_free(dep_edc);
+             widget_item_data_iterator = widget_item_data;
+             while (widget_item_data_iterator->name)
+               {
+                  if (widget_item_data_iterator->check)
+                    {
+                       eina_strbuf_append_printf(edc, "   #include \"%s.edc\"\n",
+                                                 widget_item_data_iterator->name);
+                       _file_to_swap_copy(path, widget_item_data_iterator->name);
+                    }
+                  widget_item_data_iterator++;
+               }
+             break;
           }
         widget_item_data_iterator++;
      }
