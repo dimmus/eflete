@@ -16,9 +16,7 @@ modal_window_test \
 project_manager_test \
 config_test \
 cursor_test \
-ui_main_window_test \
 ui_workspace_test \
-about_window_test \
 colorselector_test \
 shortcuts_test
 
@@ -214,20 +212,6 @@ cursor_test_SOURCES = \
 cursor_test_CFLAGS = ${FLAGS}
 cursor_test_LDADD = ${LD}
 
-ui_main_window_test_SOURCES = \
-../tests/test_ui_main_window/test_ui_main_window.c \
-../tests/test_ui_main_window/ui_main_window_add.c \
-../tests/test_ui_main_window/ui_main_window_del.c \
-../tests/test_ui_main_window/ui_menu_add.c \
-../tests/test_ui_main_window/ui_menu_disable_set.c \
-../tests/test_ui_main_window/ui_menu_items_list_disable_set.c \
-../tests/test_ui_main_window/ui_part_select.c \
-../tests/test_ui_main_window/ui_state_select.c \
-../tests/test_ui_main_window/ui_style_back.c \
-../tests/test_ui_main_window/ui_style_delete.c
-ui_main_window_test_CFLAGS = ${FLAGS}
-ui_main_window_test_LDADD = ${LD}
-
 #preference_test_SOURCES = \
 #../tests/test_preference/test_preference.c \
 #../tests/test_preference/preference_add.c \
@@ -257,12 +241,6 @@ live_widget_test_SOURCES = \
 ../tests/test_live_widget/live_widget_del.c
 live_widget_test_CFLAGS = ${FLAGS}
 live_widget_test_LDADD = ${LD}
-
-about_window_test_SOURCES = \
-../tests/test_about_window/test_about_window.c \
-../tests/test_about_window/about_window_add.c
-about_window_test_CFLAGS = ${FLAGS}
-about_window_test_LDADD = ${LD}
 
 shortcuts_test_SOURCES = \
 ../tests/test_shortcuts/test_shortcuts.c \
