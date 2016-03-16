@@ -68,7 +68,7 @@ END_TEST
 /* test stubs that check args, return specified value, and report what function was called */
 static Eina_Bool _function_type_int_undo_return_true_called = false;
 static Eina_Bool
-_function_type_int_undo_return_true(Evas_Object *obj, int val)
+_function_type_int_undo_return_true(Evas_Object *obj, Change *change __UNUSED__, Eina_Bool merge __UNUSED__, int val)
 {
    ck_assert(obj == pseudo_object);
    ck_assert(val == 42);
@@ -76,34 +76,14 @@ _function_type_int_undo_return_true(Evas_Object *obj, int val)
    return true;
 }
 
-static Eina_Bool _function_type_int_undo_return_false_called = false;
-static Eina_Bool
-_function_type_int_undo_return_false(Evas_Object *obj, int val)
-{
-   ck_assert(obj == pseudo_object);
-   ck_assert(val == 24);
-   _function_type_int_undo_return_false_called = true;
-   return false;
-}
-
 static Eina_Bool _function_type_int_redo_return_true_called = false;
 static Eina_Bool
-_function_type_int_redo_return_true(Evas_Object *obj, int val)
+_function_type_int_redo_return_true(Evas_Object *obj, Change *change __UNUSED__, Eina_Bool merge __UNUSED__, int val)
 {
    ck_assert(obj == pseudo_object);
    ck_assert(val == 42);
    _function_type_int_redo_return_true_called = true;
    return true;
-}
-
-static Eina_Bool _function_type_int_redo_return_false_called = false;
-static Eina_Bool
-_function_type_int_redo_return_false(Evas_Object *obj, int val)
-{
-   ck_assert(obj == pseudo_object);
-   ck_assert(val == 24);
-   _function_type_int_redo_return_false_called = true;
-   return false;
 }
 
 /**
@@ -148,17 +128,6 @@ EFLETE_TEST (diff_undo_redo_test_p2)
    ck_assert(_function_type_int_undo_return_true_called);
    ck_assert(diff_redo(pseudo_object, &diff) == true);
    ck_assert(_function_type_int_redo_return_true_called);
-
-   diff.undo.type = FUNCTION_TYPE_INT;
-   diff.undo.function = _function_type_int_undo_return_false;
-   diff.undo.args.type_i.i1 = 24;
-   diff.redo.type = FUNCTION_TYPE_INT;
-   diff.redo.function = _function_type_int_redo_return_false;
-   diff.redo.args.type_i.i1 = 24;
-   ck_assert(diff_undo(pseudo_object, &diff) == false);
-   ck_assert(_function_type_int_undo_return_false_called);
-   ck_assert(diff_redo(pseudo_object, &diff) == false);
-   ck_assert(_function_type_int_redo_return_false_called);
 }
 END_TEST
 
