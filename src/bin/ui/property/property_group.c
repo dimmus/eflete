@@ -1596,7 +1596,9 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
 #undef CHECK_VAL
 clean:
    eina_stringshare_del(group_pd.history.new.str_val1);
+   group_pd.history.new.str_val1 = NULL;
    eina_stringshare_del(group_pd.history.old.str_val1);
+   group_pd.history.old.str_val1 = NULL;
    group_pd.history.change = NULL;
 }
 
