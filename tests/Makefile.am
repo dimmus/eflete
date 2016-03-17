@@ -15,7 +15,6 @@ logger_test \
 project_manager_test \
 config_test \
 cursor_test \
-ui_workspace_test \
 colorselector_test \
 shortcuts_test
 
@@ -39,7 +38,6 @@ FLAGS = \
 -I${top_srcdir}/src/bin/ui/editors \
 -I${top_srcdir}/src/bin/ui/notification \
 -I${top_srcdir}/src/bin/ui/preference \
--I${top_srcdir}/src/bin/ui/workspace \
 -I${top_srcdir}/src/bin/ui/live_view \
 -I${top_srcdir}/src/bin/ui/live_view/elementary \
 -I${top_srcdir}/src/bin/ui/shortcuts \
@@ -72,7 +70,6 @@ include_HEADERS = \
 	../tests/test_project_manager/test_project_manager.h \
 	../tests/test_config/test_config.h \
 	../tests/test_cursor/test_cursor.h \
-	../tests/test_ui_workspace/test_ui_workspace.h \
 	../tests/test_live_widget/test_live_widget.h \
 	../tests/test_shortcuts/test_shortcuts.h \
 	../tests/test_colorselector/test_colorselector.h
@@ -218,29 +215,6 @@ cursor_test_SOURCES = \
 ../tests/test_cursor/cursor_type_get.c
 cursor_test_CFLAGS = ${FLAGS}
 cursor_test_LDADD = ${LD}
-
-#preference_test_SOURCES = \
-#../tests/test_preference/test_preference.c \
-#../tests/test_preference/preference_add.c \
-#../tests/test_preference/preferences_project_autosave_update.c
-#preference_test_CFLAGS = ${FLAGS}
-#preference_test_LDADD = ${LD}
-
-ui_workspace_test_SOURCES = \
-../tests/test_ui_workspace/test_ui_workspace.c \
-../tests/test_ui_workspace/workspace_add.c \
-../tests/test_ui_workspace/workspace_edit_object_part_state_set.c \
-../tests/test_ui_workspace/workspace_edit_object_recalc.c \
-../tests/test_ui_workspace/workspace_zoom_factor_get.c \
-../tests/test_ui_workspace/workspace_zoom_factor_set.c \
-../tests/test_ui_workspace/workspace_separate_mode_set.c \
-../tests/test_ui_workspace/workspace_separate_mode_get.c \
-../tests/test_ui_workspace/workspace_highlight_align_visible_get.c \
-../tests/test_ui_workspace/workspace_highlight_align_visible_set.c \
-../tests/test_ui_workspace/workspace_object_area_visible_get.c \
-../tests/test_ui_workspace/workspace_object_area_visible_set.c
-ui_workspace_test_CFLAGS = ${FLAGS}
-ui_workspace_test_LDADD = ${LD}
 
 live_widget_test_SOURCES = \
 ../tests/test_live_widget/test_live_widget.c \
