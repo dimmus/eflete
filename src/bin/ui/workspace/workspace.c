@@ -236,6 +236,7 @@ _code_reload(void *data,
    Workspace_Data *wd = data;
    Evas_Object *layout;
 
+   if (MODE_CODE != wd->mode) return;
    elm_entry_entry_set(wd->code.obj, _group_code_get(wd));
    layout = elm_object_part_content_unset(wd->code.obj, "elm.swallow.overlay");
    evas_object_del(layout);
