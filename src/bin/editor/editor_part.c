@@ -25,23 +25,25 @@
 
 extern int _editor_signals_blocked;
 Eina_Bool
-editor_part_effect_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                       const char *part_name, Edje_Text_Effect new_val)
+editor_part_text_effect_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                            const char *part_name, Edje_Text_Effect new_val)
 {
    Diff *diff;
-   Attribute attribute = ATTRIBUTE_PART_EFFECT;
+   Attribute attribute = ATTRIBUTE_PART_TEXT_EFFECT;
    assert(edit_object != NULL);
    assert(part_name != NULL);
+   assert(new_val < EDJE_TEXT_EFFECT_LAST);
+
    if (change)
      {
-        Edje_Text_Effect old_value = edje_edit_part_effect_get(edit_object, part_name);
+        Edje_Text_Effect old_value = edje_edit_part_text_effect_get(edit_object, part_name);
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING_EDJETEXTEFFECT;
-        diff->redo.function = editor_part_effect_set;
+        diff->redo.function = editor_part_text_effect_set;
         diff->redo.args.type_sete.s1 = eina_stringshare_add(part_name);
         diff->redo.args.type_sete.ete2 = new_val;
         diff->undo.type = FUNCTION_TYPE_STRING_EDJETEXTEFFECT;
-        diff->undo.function = editor_part_effect_set;
+        diff->undo.function = editor_part_text_effect_set;
         diff->undo.args.type_sete.s1 = eina_stringshare_add(part_name);
         diff->undo.args.type_sete.ete2 = old_value;
         if (merge)
@@ -49,7 +51,41 @@ editor_part_effect_set(Evas_Object *edit_object, Change *change, Eina_Bool merge
         else
           change_diff_add(change, diff);
      }
-   if (!edje_edit_part_effect_set(edit_object, part_name, new_val))
+   if (!edje_edit_part_effect_set(edit_object, part_name, (new_val | edje_edit_part_text_shadow_direction_get(edit_object, part_name))))
+     return false;
+   _editor_project_changed();
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+Eina_Bool
+editor_part_text_shadow_direction_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                      const char *part_name, Edje_Text_Effect new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert((new_val & EDJE_TEXT_EFFECT_MASK_BASIC) == 0);
+
+   if (change)
+     {
+        Edje_Text_Effect old_value = edje_edit_part_text_shadow_direction_get(edit_object, part_name);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_EDJETEXTEFFECT;
+        diff->redo.function = editor_part_text_shadow_direction_set;
+        diff->redo.args.type_sete.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_sete.ete2 = new_val;
+        diff->undo.type = FUNCTION_TYPE_STRING_EDJETEXTEFFECT;
+        diff->undo.function = editor_part_text_shadow_direction_set;
+        diff->undo.args.type_sete.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_sete.ete2 = old_value;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_effect_set(edit_object, part_name, (new_val | edje_edit_part_text_effect_get(edit_object, part_name))))
      return false;
    _editor_project_changed();
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
@@ -561,7 +597,8 @@ editor_part_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __UN
 
    if ((type == EDJE_PART_TYPE_TEXTBLOCK) || (type == EDJE_PART_TYPE_TEXT))
      {
-        res = res && editor_part_effect_reset(edit_object, change, part_name);
+        res = res && editor_part_text_effect_reset(edit_object, change, part_name);
+        res = res && editor_part_text_shadow_direction_reset(edit_object, change, part_name);
         res = res && editor_part_multiline_reset(edit_object, change, part_name);
         res = res && editor_part_select_mode_reset(edit_object, change, part_name);
         res = res && editor_part_entry_mode_reset(edit_object, change, part_name);

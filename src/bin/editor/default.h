@@ -388,9 +388,13 @@ Eina_Bool
 editor_part_item_padding_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *item_name);
 
 Eina_Bool
-editor_part_effect_default_is(Evas_Object *edit_object, const char *part_name);
+editor_part_text_effect_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
-editor_part_effect_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+editor_part_text_effect_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_text_shadow_direction_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_text_shadow_direction_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 Eina_Bool
 editor_part_ignore_flags_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
