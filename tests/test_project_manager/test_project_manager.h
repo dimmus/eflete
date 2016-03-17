@@ -47,5 +47,3 @@ void pm_project_close_test_p(int);
 void pm_project_meta_data_set_test_p(int);
 
 void pm_project_meta_data_get_test_p(int);
-
-void pm_style_resource_export_test_p(int);

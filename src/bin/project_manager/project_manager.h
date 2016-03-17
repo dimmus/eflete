@@ -516,29 +516,6 @@ pm_project_enventor_save(Project *project,
                          const void *data) EINA_ARG_NONNULL(1);
 
 /**
- * Export the resources, that uses into given style.
- *
- * This function collect lists of the resources, that uses in tgiven style. It
- * can be images, sounds or fonts.
- * Export images into directory path/images, in case if image stored in edj
- * have path (like: O/border.png) path will restored (path/images/O/border.png).
- * Will exported all images for group, include images from tween lists.
- * Export sounds, that uses in programs. Will saved into directory path/sounds
- * Export fonts into directory path/fonts
- *
- * @param pro The opened project;
- * @param style The style to save the source code;
- * @param path The dir, where resources will stored.
- *
- * @return EINA_TRUE if resources exported successful or EINA_FALSE in otherwise.
- *
- * @ingroup ProjectManager.
- */
-//Eina_Bool
-//pm_style_resource_export(Project *pro, Style *style, Eina_Stringshare *path);
-
-
-/**
  * @struct _Resource
  *
  * Common structure for resources that can be used somewhere (images, sounds,

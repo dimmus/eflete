@@ -191,8 +191,7 @@ project_manager_test_SOURCES = \
 ../tests/test_project_manager/pm_project_save.c \
 ../tests/test_project_manager/pm_project_close.c \
 ../tests/test_project_manager/pm_project_meta_data_set.c \
-../tests/test_project_manager/pm_project_meta_data_get.c \
-../tests/test_project_manager/pm_style_resource_export.c
+../tests/test_project_manager/pm_project_meta_data_get.c
 project_manager_test_CFLAGS = ${FLAGS}
 project_manager_test_LDADD = ${LD}
 
