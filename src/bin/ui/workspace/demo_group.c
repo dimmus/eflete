@@ -220,6 +220,61 @@ _content_get(void *data __UNUSED__,
    return button;
 }
 
+static void
+_part_renamed(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *ei)
+{
+   Rename *ren = ei;
+   Eina_List *l;
+   Demo_Part *demo_part;
+   Part_Demo_List *pl = data;
+
+   Elm_Object_Item *part_item, *list_item = NULL;
+   const Eina_List *part_items;
+   Demo_Part *pr;
+
+   assert(ren != NULL);
+
+   EINA_LIST_FOREACH(pl->text_list, l, demo_part)
+     {
+        if (demo_part->name == ren->old_name)
+          {
+             eina_stringshare_del(demo_part->name);
+             demo_part->name = eina_stringshare_add(ren->new_name);
+
+             list_item = pl->it_text;
+          }
+     }
+
+   /* didn't found genlist item in text, search inside of swallow list */
+   if (!list_item)
+     {
+        EINA_LIST_FOREACH(pl->swallow_list, l, demo_part)
+          {
+             if (demo_part->name == ren->old_name)
+               {
+                  eina_stringshare_del(demo_part->name);
+                  demo_part->name = eina_stringshare_add(ren->new_name);
+                  list_item = pl->it_swallow;
+               }
+          }
+     }
+
+   elm_genlist_item_expanded_set(list_item, true);
+   part_items = elm_genlist_item_subitems_get(list_item);
+   part_item = eina_list_data_get(part_items);
+   pr = elm_object_item_data_get(part_item);
+   while (pr != demo_part)
+     {
+        part_items = eina_list_next(part_items);
+        part_item = eina_list_data_get(part_items);
+        pr = elm_object_item_data_get(part_item);
+        assert(pr != NULL);
+     }
+   elm_genlist_item_update(part_item);
+}
+
 Evas_Object *
 demo_group_add(Group *group)
 {
@@ -285,6 +340,7 @@ demo_group_add(Group *group)
    elm_scroller_policy_set(pl->genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
    evas_object_show(pl->genlist);
    elm_object_content_set(pl->layout, pl->genlist);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, pl);
    evas_object_smart_callback_add(pl->genlist, "clicked,double", _on_clicked_double, pl);
    evas_object_smart_callback_add(pl->genlist, "expand,request", _expand_request_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "contract,request", _contract_request_cb, pl);
