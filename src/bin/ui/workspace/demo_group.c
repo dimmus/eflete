@@ -521,6 +521,36 @@ demo_group_part_add(Evas_Object *demo, Part *part)
 }
 
 static void
+_program_item_del(Elm_Object_Item *pl, Demo_Signal *part)
+{
+   Elm_Object_Item *part_item;
+   const Eina_List *part_items;
+   Demo_Signal *pr;
+
+   assert(pl != NULL);
+   assert(part != NULL);
+
+   if (!elm_genlist_item_expanded_get(pl)) return;
+
+   part_items = elm_genlist_item_subitems_get(pl);
+
+   part_item = eina_list_data_get(part_items);
+   pr = elm_object_item_data_get(part_item);
+   while (pr->prog_name != part->prog_name)
+     {
+        part_items = eina_list_next(part_items);
+        part_item = eina_list_data_get(part_items);
+        pr = elm_object_item_data_get(part_item);
+
+        assert(pr != NULL);
+     }
+   assert(part_item != NULL);
+
+   elm_object_item_del(part_item);
+   elm_genlist_item_update(pl);
+   return;
+}
+static void
 _part_item_del(Elm_Object_Item *pl, Demo_Part *part)
 {
    Elm_Object_Item *part_item;
@@ -589,6 +619,31 @@ demo_group_part_del(Evas_Object *demo, Part *part)
                   free(demo_part);
                   return;
                }
+          }
+     }
+}
+
+void
+demo_group_program_del(Evas_Object *demo, Eina_Stringshare *program_name)
+{
+   Part_Demo_List *pl = evas_object_data_get(demo, DEMO_GROUP_DATA);
+   Demo_Signal *demo_sig;
+   Eina_List *l;
+
+   assert(pl);
+   assert(program_name != NULL);
+
+   EINA_LIST_FOREACH(pl->signal_list, l, demo_sig)
+     {
+        if (demo_sig->prog_name == program_name)
+          {
+             pl->signal_list = eina_list_remove(pl->signal_list, demo_sig);
+             _program_item_del(pl->it_signal, demo_sig);
+             eina_stringshare_del(demo_sig->prog_name);
+             eina_stringshare_del(demo_sig->sig_name);
+             eina_stringshare_del(demo_sig->source_name);
+             free(demo_sig);
+             return;
           }
      }
 }

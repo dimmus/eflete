@@ -1070,4 +1070,5 @@ workspace_program_del(Evas_Object *obj, Eina_Stringshare *program_name)
 
    gm_program_del(ap.project, wd->group, program_name);
    group_navigator_program_del(wd->group_navi, program_name);
+   demo_group_program_del(wd->demo_navi, program_name);
 }

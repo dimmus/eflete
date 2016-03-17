@@ -117,6 +117,12 @@ demo_group_part_del(Evas_Object *demo, Part *part);
  * @ingroup DemoGroup
  */
 void
+demo_group_program_del(Evas_Object *demo, Eina_Stringshare *program_name);
+
+/**
+ * @ingroup DemoGroup
+ */
+void
 demo_group_demo_update(Evas_Object *demo);
 
 #endif /* DEMO_GROUP_H */
