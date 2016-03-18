@@ -287,13 +287,13 @@ _on_demo_program_clicked(void *data,
 {
    Evas_Object *property = data;
    PROP_DATA_GET()
-   Demo_Part *part = (Demo_Part *) event_info;
+   Demo_Signal *part = (Demo_Signal *) event_info;
 
    assert(pd != NULL);
 
    ui_property_group_unset(pd->group_property);
    elm_object_content_unset(pd->layout);
-   elm_object_content_set(pd->layout, pd->demo_swallow_property);
+   elm_object_content_set(pd->layout, pd->demo_program_property);
    evas_object_hide(pd->group_property);
    evas_object_hide(pd->image_property);
    evas_object_hide(pd->sound_property);
@@ -302,7 +302,7 @@ _on_demo_program_clicked(void *data,
    evas_object_hide(pd->demo_swallow_property);
    evas_object_show(pd->demo_program_property);
 
-   ui_property_demo_swallow_part_set(pd->demo_swallow_property, part);
+   ui_property_demo_program_set(pd->demo_program_property, part);
 
    pd->type = DEMO_PROGRAM_PROPERTY;
 }

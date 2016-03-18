@@ -184,6 +184,7 @@ ui_property_demo_program_add(Evas_Object *parent)
    item = prop_item_label_add(pd->box, &pd->signal_name, _("emit signal"), _(" - "));
    elm_box_pack_end(pd->box, item);
    item = prop_item_label_add(pd->box, &pd->emitter, _("emitter"), _(" - "));
+   elm_box_pack_end(pd->box, item);
 
    elm_object_content_set(pd->frame, pd->box);
 
