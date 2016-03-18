@@ -216,7 +216,7 @@ _content_get(void *data __UNUSED__,
    if (!strcmp(part, "elm.swallow.end"))
      {
         BUTTON_ADD(obj, button, NULL);
-        ICON_STANDARD_ADD(button, ic, false, "impuls_in");
+        ICON_STANDARD_ADD(button, ic, false, "media_player/play");
         elm_object_part_content_set(button, NULL, ic);
         evas_object_smart_callback_add(button, "clicked", _clicked_cb, data);
      }
