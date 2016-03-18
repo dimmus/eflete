@@ -15,7 +15,6 @@ logger_test \
 project_manager_test \
 config_test \
 cursor_test \
-colorselector_test \
 shortcuts_test
 
 check_PROGRAMS = ${TESTS}
@@ -71,8 +70,7 @@ include_HEADERS = \
 	../tests/test_config/test_config.h \
 	../tests/test_cursor/test_cursor.h \
 	../tests/test_live_widget/test_live_widget.h \
-	../tests/test_shortcuts/test_shortcuts.h \
-	../tests/test_colorselector/test_colorselector.h
+	../tests/test_shortcuts/test_shortcuts.h
 
 ewe_init_test_SOURCES = \
 ../tests/test_ewe_init/test_ewe_init.c \
@@ -230,13 +228,6 @@ shortcuts_test_SOURCES = \
 ../tests/test_shortcuts/shortcuts_profile_load.c
 shortcuts_test_CFLAGS = ${FLAGS}
 shortcuts_test_LDADD = ${LD}
-
-colorselector_test_SOURCES = \
-../tests/test_colorselector/test_colorselector.c \
-../tests/test_colorselector/colorselector_add.c \
-../tests/test_colorselector/colorselector_color_get.c
-colorselector_test_CFLAGS = ${FLAGS}
-colorselector_test_LDADD = ${LD}
 
 coverage:
 	echo "<html><body>" > ../coverage.html
