@@ -242,7 +242,7 @@ _program_add(void *data,
 {
    Part_Demo_List *pl = data;
    Demo_Signal *demo_sig, *pr;
-   Eina_Stringshare *sig_name, *source_name;
+   Eina_Stringshare *sig_name, *source_name, *state1, *state2;
    Eina_Stringshare *program_name = ei;
    Eina_Bool correct = false;
    Elm_Object_Item *part_item;
@@ -264,6 +264,8 @@ _program_add(void *data,
 
    sig_name = edje_edit_program_signal_get(pl->group->edit_object, program_name);
    source_name = edje_edit_program_source_get(pl->group->edit_object, program_name);
+   state1 = edje_edit_program_state_get(pl->group->edit_object, program_name);
+   state2 = edje_edit_program_state2_get(pl->group->edit_object, program_name);
    if (!source_name) source_name = eina_stringshare_add("");
    if ((sig_name) && (strcmp(sig_name, "drag") != 0) &&
        (strncmp(sig_name, "mouse", strlen("mouse")) != 0))
@@ -276,6 +278,9 @@ _program_add(void *data,
         demo_sig->prog_name = eina_stringshare_add(program_name);
         demo_sig->sig_name = eina_stringshare_add(sig_name);
         demo_sig->source_name = eina_stringshare_add(source_name);
+        demo_sig->action = edje_edit_program_action_get(pl->group->edit_object, program_name);
+        demo_sig->emit_signal = eina_stringshare_add(state1);
+        demo_sig->emitter = eina_stringshare_add(state2);
         pl->signal_list = eina_list_append(pl->signal_list, demo_sig);
         elm_genlist_item_append(pl->genlist,
                                 itc_signals,
@@ -290,9 +295,13 @@ _program_add(void *data,
         eina_stringshare_del(pr->prog_name);
         eina_stringshare_del(pr->sig_name);
         eina_stringshare_del(pr->source_name);
+        eina_stringshare_del(pr->emit_signal);
+        eina_stringshare_del(pr->emitter);
         pr->prog_name = eina_stringshare_add(program_name);
         pr->sig_name = eina_stringshare_add(sig_name);
         pr->source_name = eina_stringshare_add(source_name);
+        pr->emit_signal = eina_stringshare_add(state1);
+        pr->emitter = eina_stringshare_add(state2);
         elm_genlist_item_update(part_item);
      }
    else if ((part_item) && (!correct)) /* if exists and data is NOT correct */
@@ -302,9 +311,15 @@ _program_add(void *data,
         eina_stringshare_del(pr->prog_name);
         eina_stringshare_del(pr->sig_name);
         eina_stringshare_del(pr->source_name);
+        eina_stringshare_del(pr->emit_signal);
+        eina_stringshare_del(pr->emitter);
         free(pr);
         elm_object_item_del(part_item);
      }
+   eina_stringshare_del(sig_name);
+   eina_stringshare_del(source_name);
+   eina_stringshare_del(state1);
+   eina_stringshare_del(state2);
 }
 
 
@@ -504,11 +519,13 @@ demo_group_add(Group *group)
      }
 
    Resource *prog_name;
-   Eina_Stringshare *sig_name, *source_name;
+   Eina_Stringshare *sig_name, *source_name, *state1, *state2;
    EINA_LIST_FOREACH(pl->group->programs, l, prog_name)
      {
         sig_name = edje_edit_program_signal_get(pl->group->edit_object, prog_name->name);
         source_name = edje_edit_program_source_get(pl->group->edit_object, prog_name->name);
+        state1 = edje_edit_program_state_get(pl->group->edit_object, prog_name->name);
+        state2 = edje_edit_program_state2_get(pl->group->edit_object, prog_name->name);
         if (!source_name) source_name = eina_stringshare_add("");
         if ((sig_name) && (strcmp(sig_name, "drag") != 0) &&
             (strncmp(sig_name, "mouse", strlen("mouse")) != 0))
@@ -517,6 +534,9 @@ demo_group_add(Group *group)
              demo_sig->prog_name = eina_stringshare_add(prog_name->name);
              demo_sig->sig_name = eina_stringshare_add(sig_name);
              demo_sig->source_name = eina_stringshare_add(source_name);
+             demo_sig->action = edje_edit_program_action_get(pl->group->edit_object, prog_name->name);
+             demo_sig->emit_signal = eina_stringshare_add(state1);
+             demo_sig->emitter = eina_stringshare_add(state2);
              pl->signal_list = eina_list_append(pl->signal_list, demo_sig);
              elm_genlist_item_append(pl->genlist,
                                      itc_signals,
@@ -527,6 +547,10 @@ demo_group_add(Group *group)
                                      NULL);
 
           }
+        eina_stringshare_del(sig_name);
+        eina_stringshare_del(source_name);
+        eina_stringshare_del(state1);
+        eina_stringshare_del(state2);
      }
 
    elm_object_text_set(pl->layout, pl->group->name);
@@ -562,6 +586,8 @@ demo_group_del(Evas_Object *demo)
         eina_stringshare_del(demo_sig->prog_name);
         eina_stringshare_del(demo_sig->sig_name);
         eina_stringshare_del(demo_sig->source_name);
+        eina_stringshare_del(demo_sig->emit_signal);
+        eina_stringshare_del(demo_sig->emitter);
         free(demo_sig);
      }
 
@@ -733,6 +759,8 @@ demo_group_program_del(Evas_Object *demo, Eina_Stringshare *program_name)
              eina_stringshare_del(demo_sig->prog_name);
              eina_stringshare_del(demo_sig->sig_name);
              eina_stringshare_del(demo_sig->source_name);
+             eina_stringshare_del(demo_sig->emit_signal);
+             eina_stringshare_del(demo_sig->emitter);
              free(demo_sig);
              return;
           }

@@ -86,8 +86,8 @@ ui_property_demo_program_set(Evas_Object *property, Demo_Signal *part)
    /* setting */
    if (part)
      {
-        elm_object_text_set(pd->signal, part->prog_name);
-        elm_object_text_set(pd->source, part->sig_name);
+        elm_object_text_set(pd->signal, part->sig_name);
+        elm_object_text_set(pd->source, part->source_name);
 
         switch (part->action)
           {
