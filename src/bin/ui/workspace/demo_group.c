@@ -513,7 +513,7 @@ demo_group_add(Group *group)
         if ((sig_name) && (strcmp(sig_name, "drag") != 0) &&
             (strncmp(sig_name, "mouse", strlen("mouse")) != 0))
           {
-             demo_sig = mem_calloc(1, sizeof(Demo_Part));
+             demo_sig = mem_calloc(1, sizeof(Demo_Signal));
              demo_sig->prog_name = eina_stringshare_add(prog_name->name);
              demo_sig->sig_name = eina_stringshare_add(sig_name);
              demo_sig->source_name = eina_stringshare_add(source_name);
