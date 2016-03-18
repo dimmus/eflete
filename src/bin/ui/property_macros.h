@@ -580,6 +580,57 @@ prop_##SUB##_##VALUE##_update(Group_Prop_Data *pd) \
 }
 
 /**
+ * Macro defines a callback for programs added by COMMON_ENTRY_ADD.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param VALIDATOR The entry validator
+ * @param ARGS The edje edit function arguments
+ *
+ * @ingroup Property_Macro
+ */
+#define PROGRAM_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, ARGS, DESCRIPTION) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
+{ \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
+   if (VALIDATOR && (elm_validator_regexp_status_get(VALIDATOR)) != ELM_REG_NOERROR) \
+     return; \
+   if (!pd->change) pd->change = change_add(NULL); \
+   const char *text = elm_entry_entry_get(obj); \
+   char *value = elm_entry_markup_to_utf8(text); \
+   if (strcmp(value, "") == 0) \
+     { \
+        free(value); \
+        value = NULL; \
+     } \
+   editor_##SUB##_##VALUE##_set(pd->group->edit_object, pd->change, true ARGS, value); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
+   if (value) free(value); \
+} \
+static void \
+_on_##SUB##_##VALUE##_activated(void *data, \
+                                Evas_Object *obj __UNUSED__, \
+                                void *ei __UNUSED__) \
+{ \
+   Group_Prop_Data *pd = (Group_Prop_Data *)data; \
+   if (VALIDATOR && (elm_validator_regexp_status_get(VALIDATOR)) != ELM_REG_NOERROR) \
+     return; \
+   if (!pd->change) \
+     return; \
+   Eina_Stringshare *val = edje_edit_##SUB##_##VALUE##_get(pd->group->edit_object ARGS); \
+   Eina_Stringshare *msg = eina_stringshare_printf(DESCRIPTION, val); \
+   change_description_set(pd->change, msg); \
+   history_change_add(pd->group->history, pd->change); \
+   pd->change = NULL; \
+   prop_##SUB##_##VALUE##_update(pd); \
+   eina_stringshare_del(msg); \
+   eina_stringshare_del(val); \
+}
+
+/**
  * Macro defines a callback for COMMON_ENTRY_ADD.
  *
  * @param SUB The prefix of main parameter of part attribute
@@ -885,7 +936,7 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
  * @ingroup Property_Macro
  */
 #define PROGRAM_ATTR_1ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, DESCRIPTION) \
-   COMMON_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, PROGRAM_ARGS, DESCRIPTION) \
+   PROGRAM_ENTRY_CALLBACK(SUB, VALUE, VALIDATOR, PROGRAM_ARGS, DESCRIPTION) \
 
 /*****************************************************************************/
 /*                   PROGRAM 1 COMBOBOX LIST CONTROL                         */
