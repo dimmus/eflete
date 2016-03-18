@@ -217,6 +217,14 @@ typedef struct {
 #define SIGNAL_EDITOR_PROGRAM_ADDED "SIGNAL_EDITOR_PROGRAM_ADDED"
 
 /**
+ * emited when program is being changed from property.
+ * eventinfo - stringshare with programs name
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_PROGRAM_UPDATE "SIGNAL_EDITOR_PROGRAM_UPDATE"
+
+/**
  * emited *before* program will be deleted in editor.
  * eventinfo - stringshare with programs name
  *

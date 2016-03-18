@@ -1013,9 +1013,13 @@ _on_editor_attribute_changed(void *data,
          break;
       case ATTRIBUTE_PROGRAM_SIGNAL:
          prop_program_signal_update(pd);
+         evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_UPDATE, (void *)eina_stringshare_add(pd->attributes.program.program));
+         eina_stringshare_del(pd->attributes.program.program);
          break;
       case ATTRIBUTE_PROGRAM_SOURCE:
          prop_program_source_update(pd);
+         evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_UPDATE, (void *)eina_stringshare_add(pd->attributes.program.program));
+         eina_stringshare_del(pd->attributes.program.program);
          break;
       case ATTRIBUTE_PROGRAM_ACTION:
          prop_program_action_update(pd);

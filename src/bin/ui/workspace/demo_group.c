@@ -43,6 +43,9 @@ static Elm_Genlist_Item_Class *itc_part;
 static Elm_Genlist_Item_Class *itc_part_selected;
 static Elm_Genlist_Item_Class *itc_signals;
 
+static void
+_program_item_del(Elm_Object_Item *pl, Demo_Signal *part);
+
 #define CAPTION_GENLIST_ITEM_TEXT_GET(TYPE, TITLE) \
 static char * \
 _##TYPE##_label_cb(void *data, \
@@ -220,6 +223,79 @@ _content_get(void *data __UNUSED__,
    return button;
 }
 
+void
+_program_add(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *ei)
+{
+   Part_Demo_List *pl = data;
+   Demo_Signal *demo_sig, *pr;
+   Eina_Stringshare *sig_name, *source_name;
+   Eina_Stringshare *program_name = ei;
+   Eina_Bool correct = false;
+   Elm_Object_Item *part_item;
+   const Eina_List *part_items;
+
+   assert(pl);
+
+   part_items = elm_genlist_item_subitems_get(pl->it_signal);
+   part_item = eina_list_data_get(part_items);
+   pr = elm_object_item_data_get(part_item);
+
+   /* find program */
+   while ((pr) && (pr->prog_name != program_name))
+     {
+        part_items = eina_list_next(part_items);
+        part_item = eina_list_data_get(part_items);
+        pr = elm_object_item_data_get(part_item);
+     }
+
+   sig_name = edje_edit_program_signal_get(pl->group->edit_object, program_name);
+   source_name = edje_edit_program_source_get(pl->group->edit_object, program_name);
+   if (!source_name) source_name = eina_stringshare_add("");
+   if ((sig_name) && (strcmp(sig_name, "drag") != 0) &&
+       (strncmp(sig_name, "mouse", strlen("mouse")) != 0))
+     correct = true;
+
+   /* if program is not exist */
+   if ((!part_item) && (correct))
+     {
+        demo_sig = mem_calloc(1, sizeof(Demo_Part));
+        demo_sig->prog_name = eina_stringshare_add(program_name);
+        demo_sig->sig_name = eina_stringshare_add(sig_name);
+        demo_sig->source_name = eina_stringshare_add(source_name);
+        pl->signal_list = eina_list_append(pl->signal_list, demo_sig);
+        elm_genlist_item_append(pl->genlist,
+                                itc_signals,
+                                demo_sig,
+                                pl->it_signal,
+                                ELM_GENLIST_ITEM_NONE,
+                                NULL,
+                                NULL);
+     }
+   else if ((part_item) && (correct)) /* if program exist and data is correct */
+     {
+        eina_stringshare_del(pr->prog_name);
+        eina_stringshare_del(pr->sig_name);
+        eina_stringshare_del(pr->source_name);
+        pr->prog_name = eina_stringshare_add(program_name);
+        pr->sig_name = eina_stringshare_add(sig_name);
+        pr->source_name = eina_stringshare_add(source_name);
+        elm_genlist_item_update(part_item);
+     }
+   else if ((part_item) && (!correct)) /* if exists and data is NOT correct */
+     {
+        pl->signal_list = eina_list_remove(pl->signal_list, pr);
+        _program_item_del(pl->it_signal, pr);
+        eina_stringshare_del(pr->prog_name);
+        eina_stringshare_del(pr->sig_name);
+        eina_stringshare_del(pr->source_name);
+        free(pr);
+        elm_object_item_del(part_item);
+     }
+}
+
+
 static void
 _part_renamed(void *data,
               Evas_Object *obj __UNUSED__,
@@ -340,7 +416,10 @@ demo_group_add(Group *group)
    elm_scroller_policy_set(pl->genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
    evas_object_show(pl->genlist);
    elm_object_content_set(pl->layout, pl->genlist);
+
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, pl);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_UPDATE, _program_add, pl);
+
    evas_object_smart_callback_add(pl->genlist, "clicked,double", _on_clicked_double, pl);
    evas_object_smart_callback_add(pl->genlist, "expand,request", _expand_request_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "contract,request", _contract_request_cb, pl);
