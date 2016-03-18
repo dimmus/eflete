@@ -75,4 +75,10 @@ ui_property_demo_swallow_add(Evas_Object *parent);
 void
 ui_property_demo_swallow_part_set(Evas_Object *property, Demo_Part *part);
 
+Evas_Object *
+ui_property_demo_program_add(Evas_Object *parent);
+
+void
+ui_property_demo_program_set(Evas_Object *property, Demo_Signal *part);
+
 #endif /* UI_PROPERTY_1_H */

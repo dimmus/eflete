@@ -87,6 +87,9 @@ struct Demo_Signal_
    Eina_Stringshare *prog_name;
    Eina_Stringshare *sig_name;
    Eina_Stringshare *source_name;
+   Eina_Stringshare *emit_signal;
+   Eina_Stringshare *emitter;
+   Edje_Action_Type action;
 };
 
 /**

@@ -79,7 +79,8 @@ enum _Property_Type {
    STYLE_PROPERTY,
    COLOR_PROPERTY,
    DEMO_TEXT_PROPERTY,
-   DEMO_SWALLOW_PROPERTY
+   DEMO_SWALLOW_PROPERTY,
+   DEMO_PROGRAM_PROPERTY
 };
 typedef enum _Property_Type Property_Type;
 
@@ -92,6 +93,7 @@ struct _Prop_Data
    Evas_Object *color_property;
    Evas_Object *demo_text_property;
    Evas_Object *demo_swallow_property;
+   Evas_Object *demo_program_property;
    Evas_Object *colorclass_property;
    Evas_Object *layout;
 
@@ -119,6 +121,7 @@ _on_different_clicked(void *data,
    evas_object_hide(pd->color_property);
    evas_object_hide(pd->demo_text_property);
    evas_object_hide(pd->demo_swallow_property);
+   evas_object_hide(pd->demo_program_property);
 
    pd->type = PROPERTY;
 }
@@ -142,6 +145,7 @@ _on_image_editor_clicked(void *data,
    evas_object_hide(pd->color_property);
    evas_object_hide(pd->demo_text_property);
    evas_object_hide(pd->demo_swallow_property);
+   evas_object_hide(pd->demo_program_property);
    evas_object_show(pd->image_property);
 
    pd->type = IMAGE_PROPERTY;
@@ -166,6 +170,7 @@ _on_sound_editor_clicked(void *data,
    evas_object_hide(pd->color_property);
    evas_object_hide(pd->demo_text_property);
    evas_object_hide(pd->demo_swallow_property);
+   evas_object_hide(pd->demo_program_property);
    evas_object_show(pd->sound_property);
 
    pd->type = SOUND_PROPERTY;
@@ -190,6 +195,7 @@ _on_style_editor_clicked(void *data,
    evas_object_hide(pd->color_property);
    evas_object_hide(pd->demo_text_property);
    evas_object_hide(pd->demo_swallow_property);
+   evas_object_hide(pd->demo_program_property);
    evas_object_show(pd->style_property);
 
    pd->type = STYLE_PROPERTY;
@@ -212,6 +218,9 @@ _on_color_editor_clicked(void *data,
    evas_object_hide(pd->image_property);
    evas_object_hide(pd->sound_property);
    evas_object_hide(pd->style_property);
+   evas_object_hide(pd->demo_text_property);
+   evas_object_hide(pd->demo_swallow_property);
+   evas_object_hide(pd->demo_program_property);
    evas_object_show(pd->color_property);
 
    pd->type = STYLE_PROPERTY;
@@ -236,6 +245,7 @@ _on_text_part_clicked(void *data,
    evas_object_hide(pd->sound_property);
    evas_object_hide(pd->style_property);
    evas_object_hide(pd->demo_swallow_property);
+   evas_object_hide(pd->demo_program_property);
    evas_object_show(pd->demo_text_property);
 
    ui_property_demo_text_part_set(pd->demo_text_property, part);
@@ -262,11 +272,39 @@ _on_swallow_part_clicked(void *data,
    evas_object_hide(pd->sound_property);
    evas_object_hide(pd->style_property);
    evas_object_hide(pd->demo_text_property);
+   evas_object_hide(pd->demo_program_property);
    evas_object_show(pd->demo_swallow_property);
 
    ui_property_demo_swallow_part_set(pd->demo_swallow_property, part);
 
    pd->type = DEMO_SWALLOW_PROPERTY;
+}
+
+static void
+_on_demo_program_clicked(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info __UNUSED__)
+{
+   Evas_Object *property = data;
+   PROP_DATA_GET()
+   Demo_Part *part = (Demo_Part *) event_info;
+
+   assert(pd != NULL);
+
+   ui_property_group_unset(pd->group_property);
+   elm_object_content_unset(pd->layout);
+   elm_object_content_set(pd->layout, pd->demo_swallow_property);
+   evas_object_hide(pd->group_property);
+   evas_object_hide(pd->image_property);
+   evas_object_hide(pd->sound_property);
+   evas_object_hide(pd->style_property);
+   evas_object_hide(pd->demo_text_property);
+   evas_object_hide(pd->demo_swallow_property);
+   evas_object_show(pd->demo_program_property);
+
+   ui_property_demo_swallow_part_set(pd->demo_swallow_property, part);
+
+   pd->type = DEMO_PROGRAM_PROPERTY;
 }
 
 static void
@@ -297,7 +335,7 @@ _on_tab_changed(void *data,
        pd->type == SOUND_PROPERTY ||
        pd->type == COLOR_PROPERTY ||
        pd->type == PROPERTY || pd->type == DEMO_TEXT_PROPERTY ||
-       pd->type == DEMO_SWALLOW_PROPERTY)
+       pd->type == DEMO_SWALLOW_PROPERTY || pd->type == DEMO_PROGRAM_PROPERTY)
      {
         elm_object_content_unset(pd->layout);
         elm_object_content_set(pd->layout, pd->group_property);
@@ -308,6 +346,7 @@ _on_tab_changed(void *data,
         evas_object_hide(pd->color_property);
         evas_object_hide(pd->demo_text_property);
         evas_object_hide(pd->demo_swallow_property);
+        evas_object_hide(pd->demo_program_property);
      }
 
    //evas_object_hide(elm_object_content_unset(pd->layout));
@@ -347,6 +386,7 @@ ui_property_add(Evas_Object *parent)
    pd->color_property = ui_property_color_add(pd->layout);
    pd->demo_text_property = ui_property_demo_text_add(pd->layout);
    pd->demo_swallow_property = ui_property_demo_swallow_add(pd->layout);
+   pd->demo_program_property = ui_property_demo_program_add(pd->layout);
    /* register global callbacks */
    evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _on_tab_changed, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_IMAGE_EDITOR_TAB_CLICKED, _on_image_editor_clicked, pd->layout);
@@ -355,6 +395,7 @@ ui_property_add(Evas_Object *parent)
    evas_object_smart_callback_add(ap.win, SIGNAL_COLOR_EDITOR_TAB_CLICKED, _on_color_editor_clicked, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_PART_CLICKED, _on_text_part_clicked, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_PART_CLICKED, _on_swallow_part_clicked, pd->layout);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_PROGRAM_PART_CLICKED, _on_demo_program_clicked, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, _on_different_clicked, pd->layout);
 
    return pd->layout;

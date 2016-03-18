@@ -394,12 +394,12 @@ typedef struct {
 #define SIGNAL_DEMO_SWALLOW_PART_CLICKED "SIGNAL_DEMO_SWALLOW_PART_CLICKED"
 
 /**
- * emited when swallow part in demo is clicked.
+ * emited when program in demo is clicked.
  * eventinfo - NULL
  *
  * @ingroup Window
  */
-#define SIGNAL_DEMO_SWALLOW_PART_CLICKED "SIGNAL_DEMO_SWALLOW_PART_CLICKED"
+#define SIGNAL_DEMO_PROGRAM_PART_CLICKED "SIGNAL_DEMO_PROGRAM_PART_CLICKED"
 
 /**
  * emited when style/styles in style editor is/are selected.
