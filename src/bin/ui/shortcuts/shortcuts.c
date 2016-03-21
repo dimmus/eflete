@@ -186,7 +186,10 @@ _zoom_out_cb(void)
 static Eina_Bool
 _undo_cb(void)
 {
+   Evas_Object *workspace = tabs_current_workspace_get();
+
    SKIP_IN_ENVENTOR_MODE
+   if (!workspace) return false;
 
    evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_UNDO, NULL);
    return true;
@@ -195,7 +198,10 @@ _undo_cb(void)
 static Eina_Bool
 _redo_cb(void)
 {
+   Evas_Object *workspace = tabs_current_workspace_get();
+
    SKIP_IN_ENVENTOR_MODE
+   if (!workspace) return false;
 
    evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_REDO, NULL);
    return true;
