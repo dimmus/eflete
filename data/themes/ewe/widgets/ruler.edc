@@ -106,7 +106,7 @@ group { name: "ewe/ruler/marker/vertical/pointer";
 
 //=====================   default scale  =========================//
 
-#define ITEM(i, sz) \
+#define ITEM(i, sz, FIXED) \
 part { name: "dash"#i; \
          type: RECT; \
          clip_to: "cliper"; \
@@ -115,6 +115,7 @@ part { name: "dash"#i; \
             align: 0.0 1.0; \
             min: 1 sz; \
             max: 1 sz; \
+            fixed: FIXED; \
             rel1.relative: 0.i 1.0; \
          } \
       }
@@ -174,21 +175,21 @@ group { name: "ewe/ruler/horizontal/dashes/default";
             }
          }
       }
-      ITEM(0, 10);
-      ITEM(1, 5);
-      ITEM(2, 5);
-      ITEM(3, 5);
-      ITEM(4, 5);
-      ITEM(5, 7);
-      ITEM(6, 5);
-      ITEM(7, 5);
-      ITEM(8, 5);
-      ITEM(9, 5);
+      ITEM(0, 10, 1 1);
+      ITEM(1, 5, 0 1);
+      ITEM(2, 5, 0 1);
+      ITEM(3, 5, 0 1);
+      ITEM(4, 5, 0 1);
+      ITEM(5, 7, 1 1);
+      ITEM(6, 5, 0 1);
+      ITEM(7, 5, 0 1);
+      ITEM(8, 5, 0 1);
+      ITEM(9, 5, 0 1);
    }
 }
 #undef ITEM
 
-#define ITEM_VER(i, sz) \
+#define ITEM_VER(i, sz, FIXED) \
 part { name: "dash"#i; \
          type: RECT; \
          clip_to: "cliper"; \
@@ -197,6 +198,7 @@ part { name: "dash"#i; \
             align: 1.0 0.0; \
             min: sz 1; \
             max: sz 1; \
+            fixed: FIXED; \
             rel1.relative: 1.0 0.i; \
          } \
       }
@@ -221,6 +223,7 @@ group { name: "ewe/ruler/vertical/dashes/default";
       part { name: "ewe.middle.text";
          description { state: "default" 0.0;
             align: 1.0 0.0;
+            fixed: 1 1;
             rel1 {
                to: "dash5";
                relative: 0.0 0.0;
@@ -233,16 +236,16 @@ group { name: "ewe/ruler/vertical/dashes/default";
             }
          }
       }
-      ITEM_VER(0, 10);
-      ITEM_VER(1, 5);
-      ITEM_VER(2, 5);
-      ITEM_VER(3, 5);
-      ITEM_VER(4, 5);
-      ITEM_VER(5, 7);
-      ITEM_VER(6, 5);
-      ITEM_VER(7, 5);
-      ITEM_VER(8, 5);
-      ITEM_VER(9, 5);
+      ITEM_VER(0, 10, 1 0);
+      ITEM_VER(1, 5, 1 0);
+      ITEM_VER(2, 5, 1 0);
+      ITEM_VER(3, 5, 1 0);
+      ITEM_VER(4, 5, 1 0);
+      ITEM_VER(5, 7, 1 0);
+      ITEM_VER(6, 5, 1 0);
+      ITEM_VER(7, 5, 1 0);
+      ITEM_VER(8, 5, 1 0);
+      ITEM_VER(9, 5, 1 0);
    }
 }
 #undef ITEM_VER
@@ -420,6 +423,7 @@ group { name: "ewe/ruler/horizontal/dashes/relative";
                max: 1 1;
                ellipsis: -1;
             }
+            fixed: 0 1;
             rel1 {
                offset: 0 2;
                to_x: "dash";
