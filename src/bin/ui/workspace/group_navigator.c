@@ -1236,7 +1236,7 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Transition type:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Action type:"), "property", "1swallow")
    EWE_COMBOBOX_ADD(item, pl->popup.combobox)
    ewe_combobox_select_item_set(pl->popup.combobox, 0);
 
