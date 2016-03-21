@@ -119,6 +119,7 @@ struct _Shortcut_Module
 static Eina_Bool
 _save_cb(void)
 {
+   if (!ap.project) return false;
    project_save();
    return true;
 }
