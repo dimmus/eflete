@@ -835,9 +835,19 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
    eina_stringshare_del(title);
 
    BOX_ADD(ap.popup, box, false, false);
+
+   LAYOUT_PROP_ADD(box, _("Part name:"), "property", "1swallow")
+   ENTRY_ADD(box, pl->popup.entry_name, true);
+   eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, pl->name_validator);
+   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new part here."));
+   evas_object_smart_callback_add(pl->popup.entry_name, "changed", _on_entry_changed, pl);
+   evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_part_ok_clicked, pl);
+   evas_object_show(pl->popup.entry_name);
+   elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
+   elm_box_pack_end(box, item);
+
    LAYOUT_PROP_ADD(box, _("Part type:"), "property", "1swallow")
    EWE_COMBOBOX_ADD(item, pl->popup.combobox)
-
    ewe_combobox_select_item_set(pl->popup.combobox, 0);
    for (type = EDJE_PART_TYPE_RECTANGLE; type <= EDJE_PART_TYPE_SPACER; type++)
      {
@@ -849,17 +859,6 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
    ewe_combobox_select_item_set(pl->popup.combobox, 0);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
    evas_object_smart_callback_add(pl->popup.combobox, "collapsed", _combobox_collapsed, pl);
-
-   elm_box_pack_end(box, item);
-
-   LAYOUT_PROP_ADD(box, _("Part name:"), "property", "1swallow")
-   ENTRY_ADD(box, pl->popup.entry_name, true);
-   eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, pl->name_validator);
-   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new part here."));
-   evas_object_smart_callback_add(pl->popup.entry_name, "changed", _on_entry_changed, pl);
-   evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_part_ok_clicked, pl);
-   evas_object_show(pl->popup.entry_name);
-   elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
 
    elm_object_content_set(ap.popup, box);
