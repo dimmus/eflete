@@ -112,332 +112,14 @@ struct _Shortcut_Module
    Eina_List *keys;             /* list of pointer to hash keys to be freed */
 };
 
-/*
-static void
-_random_name_generate(char *part_name, unsigned int length)
-{
-   unsigned int i = 0;
-
-   static const char CHARS[] =
-      "0123456789"
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-      "abcdefghijklmnopqrstuvwxyz";
-
-   assert(part_name != NULL);
-
-   for (i = 0; i < length - 1; ++i)
-     part_name[i] = CHARS[rand() % (sizeof(CHARS) - 1)];
-
-   part_name[length - 1] = 0;
-}
-*/
 /*========================================================*/
 /*               SHORTCUTS CB FUNCTION                    */
 /*========================================================*/
-
-#define PART_FUNCTIONALITY(TYPE, DATA) \
-   SKIP_IN_ENVENTOR_MODE \
-   Evas_Object *workspace = ap.workspace; \
-   Evas_Object *widget_list = ui_block_widget_list_get(); \
-   Style *style = NULL; \
-   assert(style != NULL); \
-   char name[9]; \
-   _random_name_generate(name, 9); \
-   if (workspace_edit_object_part_add(workspace, name, TYPE, DATA)) \
-     ui_widget_list_part_add(widget_list, style, name); \
-   history_diff_add(style->obj, PART_TARGET, ADD, name); \
-   /* live_view_part_add(ap.live_view, ui_widget_list_selected_part_get(widget_list)); */ \
-   project_changed(true);
-
-#define PART_ADD(TYPE, FUNC) \
-static Eina_Bool \
-_##FUNC##_part_add_cb(void) \
-{ \
-   PART_FUNCTIONALITY(TYPE, NULL) \
-   return true; \
-}
-
-/* Adding New Parts */
-/*
-PART_ADD(EDJE_PART_TYPE_SWALLOW, swallow)
-PART_ADD(EDJE_PART_TYPE_TEXTBLOCK, textblock)
-PART_ADD(EDJE_PART_TYPE_SPACER, spacer)
-PART_ADD(EDJE_PART_TYPE_TEXT, text)
-PART_ADD(EDJE_PART_TYPE_RECTANGLE, rectangle)
-PART_ADD(EDJE_PART_TYPE_PROXY, proxy)
-PART_ADD(EDJE_PART_TYPE_GROUP, group)
-PART_ADD(EDJE_PART_TYPE_BOX, box)
-*/
-/* different adding is for image */
-/*
-static void
-_on_image_manager_done(void *data __UNUSED__,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info)
-{
-   char *selected = (char *)event_info;
-
-
-   if (!selected) return;
-   PART_FUNCTIONALITY(EDJE_PART_TYPE_IMAGE, selected);
-}
-
-Eina_Bool
-_image_part_choose_cb(void)
-{
-   Evas_Object *img_edit;
-
-
-   img_edit = image_manager_window_add(ap.project, SINGLE);
-   evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED, _on_image_manager_done, NULL);
-   return true;
-}
-*/
-TODO("move this code or some of it's part to Connector")
-TODO("Change this shortcut function since there are not tabs inb widget_list anymore")
-Eina_Bool
-_item_delete_cb(void)
-{
-/*   SKIP_IN_ENVENTOR_MODE
-   Elm_Object_Item *glit = NULL;
-   Style *_style = NULL;
-   Evas_Object *nf = NULL;
-   Ewe_Tabs_Item *selected = NULL;
-
-   COMMENT: if widget list is in focus. Delete part, style or layout.
-   nf = ui_block_widget_list_get();
-   if ((nf) && (elm_object_focus_get(nf)))
-     {
-        selected = ewe_tabs_active_item_get(nf);
-
-        COMMENT: try to delete layout
-        if ((evas_object_data_get(nf, "layouts_tab") == selected) &&
-            ((!ap.project->current_style) ||
-             (ap.project->current_style->__type != LAYOUT)))
-          {
-             evas_object_smart_callback_call(ap.block.left_top, "wl,layout,del", nf);
-             return true;
-          }
-
-        COMMENT: try to delete style
-        else if ((evas_object_data_get(nf, "widgets_tab") == selected) &&
-            ((!ap.project->current_style) ||
-             (ap.project->current_style->__type != STYLE)))
-          {
-             nf = evas_object_data_get(nf, "nf_widgets");
-             nf = elm_object_item_part_content_get(elm_naviframe_top_item_get(nf),
-                                                   "elm.swallow.content");
-             glit = elm_genlist_selected_item_get(nf);
-             if (glit)
-               {
-                  _style = elm_object_item_data_get(glit);
-                  if (_style->__type != WIDGET)
-                    {
-                       evas_object_smart_callback_call(ap.block.left_top, "wl,style,del", NULL);
-                       return true;
-                    }
-               }
-          }
-     }
-
-   COMMENT: if state list is in focus
-   if (elm_object_focus_get(ap.block.state_list))
-     {
-        evas_object_smart_callback_call(ap.block.state_list, "stl,state,del", NULL);
-        return true;
-     }
-
-   COMMENT: try to delete part
-   evas_object_smart_callback_call(ui_block_widget_list_get(), "wl,part,del", NULL);
-*/
-   return true;
-}
-
-static Eina_Bool
-_separate_mode_change_cb(void)
-{
-   Evas_Object *workspace = tabs_current_workspace_get();
-
-   SKIP_IN_ENVENTOR_MODE
-
-   if (!workspace) return false;
-
-   double factor = workspace_zoom_factor_get(workspace);
-   if (fabs(factor - 1.0) > 0.001)
-     return false;
-
-   /*
-   Eina_Bool sep = workspace_separate_mode_get(workspace);
-   workspace_separate_mode_set(workspace, !sep);
-   */
-
-   return true;
-}
-
-TODO("Please remake this shortcut since there are no TABS anymore")
-static Eina_Bool
-_new_style_create_cb(void)
-{
-/*
-   SKIP_IN_ENVENTOR_MODE
-   Elm_Object_Item *glit = NULL;
-   Style *_style = NULL;
-   Evas_Object *nf = ui_block_widget_list_get();
-   Ewe_Tabs_Item *selected = ewe_tabs_active_item_get(nf);
-
-   if (!elm_object_focus_get(nf)) return false;
-   if (!ap.project) return false;
-
-   if ((evas_object_data_get(nf, "layouts_tab") == selected) &&
-       ((!ap.project->current_style) ||
-        (ap.project->current_style->__type != LAYOUT)))
-     {
-        evas_object_smart_callback_call(ap.block.left_top, "wl,layout,add", nf);
-     }
-   else if ((evas_object_data_get(nf, "widgets_tab") == selected) &&
-       ((!ap.project->current_style) ||
-        (ap.project->current_style->__type != STYLE)))
-     {
-        nf = evas_object_data_get(nf, "nf_widgets");
-        nf = elm_object_item_part_content_get(elm_naviframe_top_item_get(nf),
-                                              "elm.swallow.content");
-        glit = elm_genlist_selected_item_get(nf);
-        if (glit)
-          {
-             _style = elm_object_item_data_get(glit);
-             if (_style->__type != WIDGET)
-               evas_object_smart_callback_call(ap.block.left_top, "wl,style,add", NULL);
-          }
-     }
-*/
-   return true;
-}
-
-TODO("Please remake this shortcut since there are no TABS anymore")
-/*
-static Eina_Bool
-_style_delete_cb(void)
-{
-   SKIP_IN_ENVENTOR_MODE
-   Elm_Object_Item *glit = NULL;
-   Style *_style = NULL;
-   Evas_Object *nf = ui_block_widget_list_get();
-   Ewe_Tabs_Item *selected = ewe_tabs_active_item_get(nf);
-
-   if (!elm_object_focus_get(nf)) return false;
-   if (!ap.project) return false;
-
-   if ((evas_object_data_get(nf, "layouts_tab") == selected) &&
-       ((!ap.project->current_style) ||
-        (ap.project->current_style->__type != LAYOUT)))
-     {
-        evas_object_smart_callback_call(ap.block.left_top, "wl,layout,del", nf);
-     }
-   else if ((evas_object_data_get(nf, "widgets_tab") == selected) &&
-       ((!ap.project->current_style) ||
-        (ap.project->current_style->__type != STYLE)))
-     {
-        nf = evas_object_data_get(nf, "nf_widgets");
-        nf = elm_object_item_part_content_get(elm_naviframe_top_item_get(nf),
-                                              "elm.swallow.content");
-        glit = elm_genlist_selected_item_get(nf);
-        _style = elm_object_item_data_get(glit);
-        if (_style->__type != WIDGET)
-          evas_object_smart_callback_call(ap.block.left_top, "wl,style,del", NULL);
-     }
-   return true;
-}
-*/
-
-static Eina_Bool
-_new_theme_cb(void)
-{
-   if (ap.colorsel)
-     evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
-   tabs_menu_tab_open(TAB_HOME_NEW_PROJECT);
-   return true;
-}
-
-/*
-Eina_Bool
-_open_edc_cb(void)
-{
-   if (!project_close())
-     return false;
-   compile_dialog();
-   return true;
-}
-*/
-
-static Eina_Bool
-_open_project_cb(void)
-{
-   if (ap.colorsel)
-     evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
-   tabs_menu_tab_open(TAB_HOME_OPEN_PROJECT);
-   return true;
-}
-
-static Eina_Bool
-_import_edj_cb(void)
-{
-   if (ap.colorsel)
-     evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
-   tabs_menu_tab_open(TAB_HOME_IMPORT_EDJ);
-   return true;
-}
 
 static Eina_Bool
 _save_cb(void)
 {
    project_save();
-   return true;
-}
-
-static Eina_Bool
-_save_as_cb(void)
-{
-   if (!ap.project) return false;
-   project_export_develop();
-   return true;
-}
-
-static Eina_Bool
-_export_cb(void)
-{
-   if (!ap.project) return false;
-   project_export_edc_project();
-   return true;
-}
-
-TODO("Remove? Or modify since we don't have EWE_TABS anymore?")
-static Eina_Bool
-_visual_tab_cb(void)
-{
-/*
-   const Eina_List *tabs;
-   Evas_Object *nf;
-
-   nf = ui_block_property_get();
-   tabs = ewe_tabs_items_list_get(nf);
-   ewe_tabs_active_item_set(nf, eina_list_data_get(tabs));
-*/
-   return true;
-}
-
-TODO("Remove? Or modify since we don't have EWE_TABS anymore?")
-static Eina_Bool
-_code_tab_cb(void)
-{
-/*
-   const Eina_List *tabs;
-   Evas_Object *nf;
-
-   nf = ui_block_property_get();
-   tabs = ewe_tabs_items_list_get(nf);
-   tabs = eina_list_next(tabs);
-   ewe_tabs_active_item_set(nf, eina_list_data_get(tabs));
-*/
    return true;
 }
 
@@ -457,75 +139,19 @@ _close_tab_cb(void)
 }
 
 static Eina_Bool
-_style_manager_open_cb(void)
-{
-   if (ap.colorsel)
-     evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
-   if (ap.project)
-     tabs_menu_tab_open(TAB_STYLE_EDITOR);
-   return true;
-}
-
-static Eina_Bool
-_image_manager_open_cb(void)
-{
-   if (ap.colorsel)
-     evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
-   if (ap.project)
-     tabs_menu_tab_open(TAB_IMAGE_EDITOR);
-   return true;
-}
-
-static Eina_Bool
-_sound_manager_open_cb(void)
-{
-   if (ap.colorsel)
-     evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
-   if (ap.project)
-     tabs_menu_tab_open(TAB_SOUND_EDITOR);
-   return true;
-}
-
-static Eina_Bool
-_colorclass_manager_open_cb(void)
-{
-   if (ap.colorsel)
-     evas_object_smart_callback_call(ap.colorsel, "dismissed", NULL);
-   if (ap.project)
-     tabs_menu_tab_open(TAB_COLORCLASS_EDITOR);
-   return true;
-}
-
-static Eina_Bool
-_animator_open_cb(void)
-{
-/*   if ((ap.project) && (tabs_current_group_get()))
-     animator_window_add(ap.project);*/
-   return true;
-}
-
-static Eina_Bool
-_highlight_align_show_switch_cb(void)
-{
-   Evas_Object *workspace = tabs_current_workspace_get();
-
-   if (!workspace) return false;
-
-   SKIP_IN_ENVENTOR_MODE
-   Eina_Bool flag = workspace_highlight_align_visible_get(workspace);
-   workspace_highlight_align_visible_set(workspace, !flag);
-   workspace_object_area_visible_set(workspace, !flag);
-   return true;
-}
-
-static Eina_Bool
 _object_area_show_switch_cb(void)
 {
    Evas_Object *workspace = tabs_current_workspace_get();
+   Eina_Bool flag;
 
    SKIP_IN_ENVENTOR_MODE
    if (!workspace) return false;
-   Eina_Bool flag = workspace_object_area_visible_get(workspace);
+
+   flag = workspace_object_area_visible_get(workspace);
+   workspace_object_area_visible_set(workspace, !flag);
+
+   flag = workspace_highlight_align_visible_get(workspace);
+   workspace_highlight_align_visible_set(workspace, !flag);
    workspace_object_area_visible_set(workspace, !flag);
    return true;
 }
@@ -625,40 +251,14 @@ typedef struct _Function_Set Function_Set;
  */
 static Function_Set _sc_func_set_init[] =
 {
-     {"new_theme", _new_theme_cb},
-//     {"open_edc", _open_edc_cb},
-     {"open_edj", _open_project_cb},
-     {"import_edj", _import_edj_cb},
      {"save", _save_cb},
-     {"save_as", _save_as_cb},
-     {"export", _export_cb},
-     {"property.visual_tab", _visual_tab_cb},
-     {"property.code_tab", _code_tab_cb},
-/*     {"part.add.swallow", _swallow_part_add_cb},
-     {"part.add.textblock", _textblock_part_add_cb},
-     {"part.add.text", _text_part_add_cb},
-     {"part.add.rectangle", _rectangle_part_add_cb},
-     {"part.add.image", _image_part_choose_cb},
-     {"part.add.proxy", _proxy_part_add_cb},
-     {"part.add.spacer", _spacer_part_add_cb},
-     {"part.add.group", _group_part_add_cb},
-     {"part.add.box", _box_part_add_cb},*/
-/*   {"item.delete", _item_delete_cb}, this callback works unpredictable because of focus */
-     {"separate_mode", _separate_mode_change_cb},
-     {"style.create", _new_style_create_cb},
-     {"highlight.align.show", _highlight_align_show_switch_cb},
-     {"object_area.show", _object_area_show_switch_cb},
      {"zoom.in", _zoom_in_cb},
      {"zoom.out", _zoom_out_cb},
      {"quit", _quit_cb},
      {"close", _close_tab_cb},
      {"undo", _undo_cb},
      {"redo", _redo_cb},
-     {"tab.style_manager", _style_manager_open_cb},
-     {"tab.image_manager", _image_manager_open_cb},
-     {"tab.sound_manager", _sound_manager_open_cb},
-     {"tab.colorclass_manager", _colorclass_manager_open_cb},
-     {"animator", _animator_open_cb},
+     {"object_area.show", _object_area_show_switch_cb},
      {NULL, NULL}
 };
 static Eina_Hash *_sc_functions = NULL;

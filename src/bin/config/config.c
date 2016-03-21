@@ -278,52 +278,18 @@ _default_shortcuts_get()
    shortcut->holdable = Holdable;                                            \
    shortcuts = eina_list_append(shortcuts, shortcut);
 
-   /* No modifiers */
-   ADD_SHORTCUT("Delete", 119, 0, "item.delete", false);
-
    /* Ctrl- */
-   ADD_SHORTCUT("slash", 61, CTRL, "separate_mode", false);
-   ADD_SHORTCUT("n", 57, CTRL, "new_theme", false);
-   ADD_SHORTCUT("o", 32, CTRL, "open_edj", false);
-   ADD_SHORTCUT("j", 44, CTRL, "import_edj", false);
    ADD_SHORTCUT("s", 39, CTRL, "save", false);
-   ADD_SHORTCUT("e", 26, CTRL, "export", false);
    ADD_SHORTCUT("w", 25, CTRL, "close", false);
    ADD_SHORTCUT("q", 24, CTRL, "quit", false);
    ADD_SHORTCUT("z", 52, CTRL, "undo", false);
    ADD_SHORTCUT("y", 29, CTRL, "redo", false);
 
-   ADD_SHORTCUT("1", 10, CTRL, "open_edj", false);
-   ADD_SHORTCUT("2", 11, CTRL, "tab.image_manager", false);
-   ADD_SHORTCUT("3", 12, CTRL, "tab.sound_manager", false);
-   ADD_SHORTCUT("4", 13, CTRL, "tab.style_manager", false);
-   ADD_SHORTCUT("5", 14, CTRL, "tab.colorclass_manager", false);
-   ADD_SHORTCUT("6", 15, CTRL, "animator", false);
-
    ADD_SHORTCUT("equal", 21, CTRL, "zoom.in", false);
    ADD_SHORTCUT("minus", 20, CTRL, "zoom.out", false);
 
-   /* Alt- */
-   ADD_SHORTCUT("w", 25, ALT, "part.add.swallow", false);
-   ADD_SHORTCUT("b", 56, ALT, "part.add.textblock", false);
-   ADD_SHORTCUT("t", 28, ALT, "part.add.text", false);
-   ADD_SHORTCUT("r", 27, ALT, "part.add.rectangle", false);
-   ADD_SHORTCUT("i", 31, ALT, "part.add.image", false);
-   ADD_SHORTCUT("p", 33, ALT, "part.add.proxy", false);
-   ADD_SHORTCUT("s", 39, ALT, "part.add.spacer", false);
-   ADD_SHORTCUT("g", 42, ALT, "part.add.group", false);
-   ADD_SHORTCUT("x", 53, ALT, "part.add.box", false);
-
-   /* Ctrl-Shift- */
-   ADD_SHORTCUT("o", 32, CTRL + SHIFT, "open_edc", false);
-   ADD_SHORTCUT("s", 39, CTRL + SHIFT, "save_as", false);
-   ADD_SHORTCUT("v", 55, CTRL + SHIFT, "property.visual_tab", false);
-   ADD_SHORTCUT("c", 54, CTRL + SHIFT, "property.code_tab", false);
-   ADD_SHORTCUT("l", 46, CTRL + SHIFT, "style.create", false);
-
    /* Holdable keys. */
-   ADD_SHORTCUT("Alt_L", 64, CTRL, "highlight.align.show", true);
-   ADD_SHORTCUT("Alt_L", 64, 0, "object_area.show", true);
+   ADD_SHORTCUT("Ctrl_L", 37, 0, "object_area.show", true);
 
 #undef ADD_SHORTCUT
    return shortcuts;
