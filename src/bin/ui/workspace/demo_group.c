@@ -373,7 +373,6 @@ _part_renamed(void *data,
         part_items = eina_list_next(part_items);
         part_item = eina_list_data_get(part_items);
         pr = elm_object_item_data_get(part_item);
-        assert(pr != NULL);
      }
    elm_genlist_item_update(part_item);
 }
