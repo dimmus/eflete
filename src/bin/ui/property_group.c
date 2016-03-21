@@ -1024,6 +1024,7 @@ _on_editor_attribute_changed(void *data,
       case ATTRIBUTE_PROGRAM_ACTION:
          prop_program_action_update(pd);
          prop_program_transition_update(pd);
+         prop_program_targets_update(pd);
          break;
       case ATTRIBUTE_PROGRAM_STATE:
          prop_program_state_update(pd);
