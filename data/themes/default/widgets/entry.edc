@@ -757,7 +757,6 @@ group { name: "elm/scroller/entry/default";
 }
 
 group { name: "elm/scroller/entry_single/default";
-   alias: "elm/scroller/entry_single/fileselector/default";
    data {
       item: "focus_highlight" "on";
    }
@@ -1156,8 +1155,19 @@ group { name: "elm/scroller/entry_single/default";
    }
 }
 
+group { name: "elm/scroller/entry_single/fileselector/default";
+   inherit: "elm/scroller/entry_single/default";
+   parts {
+      part { name: "elm.swallow.content";
+         description { state: "default" 0.0;
+            rel1.offset: 1 0;
+            rel2.offset: -5 -1;
+         }
+      }
+   }
+}
+
 group { name: "elm/entry/base-single/default";
-   alias: "elm/entry/base-single/fileselector/default";
    parts {
       part { name: "elm.guide";
          type: TEXTBLOCK;
@@ -1182,7 +1192,7 @@ group { name: "elm/entry/base-single/default";
          multiline: 0;
          source: "elm/entry/selection/default";
          source4: "elm/entry/cursor/default";
-         source6: "elm/entry/anchor/default";
+         source5: "elm/entry/anchor/default";
          description { state: "default" 0.0;
             min: 0 19;
             text {
@@ -1235,6 +1245,32 @@ group { name: "elm/entry/base-single/default";
    }
 }
 
+group { name: "elm/entry/path/separator/default";
+   images.image: "entry-fileselector-separator.png" COMP;
+   parts {
+      image { "icon"; nomouse;
+         desc { "default";
+            image.normal: "entry-fileselector-separator.png";
+            min: 3 17;
+            max: 3 17;
+            fixed: 1 1;
+            rel1.offset: 3 0;
+         }
+      }
+   }
+}
+group { name: "elm/entry/base-single/fileselector/default";
+   inherit: "elm/entry/base-single/default";
+   data.item: "path_separator" "";
+   parts {
+      part { name: "elm.text";
+         description { state: "default" 0.0;
+            rel1.offset: 3 0;
+         }
+      }
+   }
+}
+
 group { name: "elm/entry/base-single/spinner/default";
    inherit: "elm/entry/base-single/default";
    parts {
@@ -1265,12 +1301,21 @@ group { name: "elm/entry/selection/default";
 }
 
 group { name: "elm/entry/anchor/default";
+   images {
+      image: "entry-fileselector-href.png" COMP;
+   }
    parts {
       part { name: "bg";
-         type: RECT;
+         type: IMAGE;
          mouse_events: 0;
          description { state: "default" 0.0;
-            color: 128 0 0 64;
+            image.normal: "entry-fileselector-href.png";
+            image.border: 0 4 0 0;
+            min: 4 17;
+            max: -1 17;
+            fixed: 0 1;
+            rel1.offset: -6 0;
+            rel2.offset: 10 -1;
          }
       }
    }
