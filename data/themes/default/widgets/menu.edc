@@ -839,7 +839,7 @@ group { name: "elm/hover/base/main_menu/default";
          clip_to: "bottomclip";
          description { state: "default" 0.0;
             align: 0.5 0.0;
-            fixed: 1 0;
+            fixed: 0 1;
             rel1 {
                to: "elm.swallow.size";
                relative: 0.0 1.0;
@@ -880,6 +880,7 @@ group { name: "elm/hover/base/main_menu_submenu/default";
          repeat_events: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
+            fixed: 1 1;
             rel2.relative: 0.0 0.0;
          }
       }
@@ -887,6 +888,7 @@ group { name: "elm/hover/base/main_menu_submenu/default";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.0;
+            fixed: 1 1;
             rel1 {
                to: "elm.swallow.offset";
                relative: 1.0 1.0;
@@ -926,6 +928,7 @@ group { name: "elm/hover/base/main_menu_submenu/default";
          clip_to: "bottomclip";
          description { state: "default" 0.0;
             align: 0.5 1.0;
+            fixed: 0 1;
             rel1 {
                to: "elm.swallow.slot.middle";
                relative: 0.0 1.0;
@@ -948,6 +951,7 @@ group { name: "elm/hover/base/main_menu_submenu/default";
          repeat_events:1;
          description { state: "default" 0.0;
             visible: 0;
+            fixed: 0 1;
             rel1 {
                to: "elm.swallow.slot.middle";
                relative: 0.0 1.0;

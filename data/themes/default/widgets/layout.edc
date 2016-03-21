@@ -1846,6 +1846,7 @@ group { name: "elm/layout/entry/overlay";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.5 0.0;
+            fixed: 1 1;
             rel1 {
                relative: 0.5 1.0;
                offset: 0 6;

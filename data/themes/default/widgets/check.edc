@@ -68,6 +68,7 @@ group { name: "elm/check/base/toggle";
          description { state: "default" 0.0;
             visible: 0;
             align: 0.0 0.5;
+            fixed: 1 0;
             rel2 {
                relative: 0.0 1.0;
             }
@@ -76,6 +77,7 @@ group { name: "elm/check/base/toggle";
             align: 0.0 0.5;
             min: 19 19;
             max: 0 0;
+            fixed: 1 0;
             rel2 {
                relative: 0.0 1.0;
             }
@@ -498,6 +500,7 @@ group { name: "elm/check/base/default";
             visible: 0;
             align: 0.0 0.5;
             max: 0 -1;
+            fixed: 1 0;
             rel1 {
                relative: 1.0 0.0;
                to_x: "bg";
@@ -787,6 +790,7 @@ group { name: "elm/check/base/eye";
             visible: 0;
             align: 0.0 0.5;
             max: 0 -1;
+            fixed: 1 0;
             rel1 {
                relative: 1.0 0.0;
                to_x: "bg";
@@ -799,6 +803,7 @@ group { name: "elm/check/base/eye";
          description { state: "visible" 0.0;
             align: 0.0 0.5;
             max: 0 -1;
+            fixed: 1 0;
             rel1 {
                relative: 1.0 0.0;
                offset: 6 0;

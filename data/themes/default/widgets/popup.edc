@@ -604,6 +604,7 @@ group { name: "elm/popup/buttons1/popup/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
+            fixed: 1 1;
             rel1 {
                relative: 1.0 0.5;
                offset: -12 0;
@@ -624,6 +625,7 @@ group { name: "elm/popup/buttons2/popup/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
+            fixed: 1 1;
             rel1 {
                relative: 0.0 0.5;
                offset: -12 0;
@@ -641,6 +643,7 @@ group { name: "elm/popup/buttons2/popup/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
+            fixed: 1 1;
             rel1 {
                relative: 1.0 0.5;
                offset: -12 0;
@@ -661,6 +664,7 @@ group { name: "elm/popup/buttons3/popup/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
+            fixed: 1 1;
             rel1 {
                relative: 0.0 0.5;
                offset: -12 0;
@@ -678,6 +682,7 @@ group { name: "elm/popup/buttons3/popup/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
+            fixed: 1 1;
             rel1 {
                relative: 0.0 0.5;
                offset: -12 0;
@@ -695,6 +700,7 @@ group { name: "elm/popup/buttons3/popup/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
+            fixed: 1 1;
             rel1 {
                relative: 1.0 0.5;
                offset: -12 0;

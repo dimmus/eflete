@@ -1028,6 +1028,7 @@ group { name: "elm/scroller/entry_single/default";
          description { state: "default" 0.0;
             align: 1.0 0.5;
             max: 19 -1;
+            fixed: 1 0;
             rel1 {
                relative: 1.0 0.0;
                offset: 0 1;

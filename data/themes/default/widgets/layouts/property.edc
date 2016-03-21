@@ -276,6 +276,7 @@ group { name: "elm/layout/property/2swallow";
             min: 52 0;
             max: 52 -1;
             color_class: "main";
+            fixed: 1 0;
             rel1 {
                to: "area.swallow1";
             }
@@ -335,6 +336,7 @@ group { name: "elm/layout/property/2swallow";
             min: 52 0;
             max: 52 -1;
             color_class: "main";
+            fixed: 1 0;
             rel1 {
                to: "area.swallow2";
             }
@@ -486,6 +488,7 @@ group { name: "elm/layout/property/2swallow_pad";
             min: 52 0;
             max: 52 -1;
             color_class: "main";
+            fixed: 1 0;
             rel1 {
                to: "area.swallow1";
             }
@@ -545,6 +548,7 @@ group { name: "elm/layout/property/2swallow_pad";
             min: 52 0;
             max: 52 -1;
             color_class: "main";
+            fixed: 1 0;
             rel1 {
                to: "area.swallow2";
             }
@@ -712,6 +716,7 @@ group { name: "elm/layout/property/2swallow_vertical";
             min: 52 0;
             max: 52 -1;
             color_class: "main";
+            fixed: 1 0;
             rel1 {
                to: "area.swallow1";
             }
@@ -770,6 +775,7 @@ group { name: "elm/layout/property/2swallow_vertical";
             min: 52 0;
             max: 52 -1;
             color_class: "main";
+            fixed: 1 0;
             rel1 {
                to: "area.swallow2";
             }
@@ -934,6 +940,7 @@ group { name: "elm/layout/property/2swallow_vertical_pad";
             min: 52 0;
             max: 52 -1;
             color_class: "main";
+            fixed: 1 0;
             rel1 {
                to: "area.swallow1";
             }
@@ -992,6 +999,7 @@ group { name: "elm/layout/property/2swallow_vertical_pad";
             min: 52 0;
             max: 52 -1;
             color_class: "main";
+            fixed: 1 0;
             rel1 {
                to: "area.swallow2";
             }

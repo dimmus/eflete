@@ -137,6 +137,7 @@ group { name: "elm/segment_control/item/default";
          clip_to: "disabler";
          description { state: "default" 0.0;
             align: 0.5 0.5;
+            fixed: 1 0;
             rel1.offset: 10 3;
             rel2.relative: 0.0 1.0;
             aspect: 1.0 1.0;
