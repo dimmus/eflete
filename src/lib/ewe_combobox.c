@@ -358,7 +358,8 @@ _ewe_combobox_select_item_set(Eo *obj EINA_UNUSED,
    Ewe_Combobox_Item *item;
    item = eina_list_nth(sd->items, index);
    sd->selected = item;
-   return edje_object_part_text_set(sd->combobox, "ewe.text", item->title);
+   edje_object_part_text_set(sd->combobox, "ewe.text", item->title);
+   return EINA_TRUE;
 }
 
 EOLIAN static Ewe_Combobox_Item *
