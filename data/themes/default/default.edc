@@ -30,4 +30,5 @@ collections {
    #include "widgets/win.edc"
    #include "widgets/fileselector.edc"
    #include "widgets/thumb.edc"
+   #include "widgets/hover.edc"
 }
