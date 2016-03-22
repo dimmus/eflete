@@ -298,4 +298,25 @@ container_aspect_set(Evas_Object *obj, double aspect);
 double
 container_aspect_get(Evas_Object *obj);
 
+/**
+ * Set the zoom factor, this attribute have effect to resize step.
+ *
+ * @param obj The Container obj,
+ * @param zoom The zoom factor.
+ *
+ * @ingroup Container
+ */
+void
+container_zoom_factor_set(Evas_Object *obj, double zoom);
+
+/**
+ * Get the zoom factor
+ *
+ * @param obj The Container obj.
+ *
+ * @ingroup Container
+ */
+double
+container_zoom_factor_get(Evas_Object *obj);
+
 #endif /* CONTAINER_H */

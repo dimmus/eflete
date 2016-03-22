@@ -70,6 +70,8 @@ struct _Container_Smart_Data
    } handler_BR;
    double aspect;
    Eina_Stringshare *style;
+   double zoom;
+   Container_Geom zoom1;
    Evas_Coord downx;
    Evas_Coord downy;
    Evas_Coord dx, dy;
@@ -133,7 +135,7 @@ _mouse_move_hBR_cb(void *data,
    sd->downx = ev->cur.canvas.x;
    sd->downy = ev->cur.canvas.y;
 
-   evas_object_smart_callback_call(o, SIG_HANDLER_BR_MOVE, &sd->size);
+   evas_object_smart_callback_call(o, SIG_HANDLER_BR_MOVE, &sd->zoom1);
    evas_object_smart_changed(o);
 }
 
@@ -208,6 +210,7 @@ _container_smart_add(Evas_Object *o)
    priv->size.h = 0;
    priv->handler_BR_pressed = false;
    priv->aspect = -1.0;
+   priv->zoom = 1.0;
 
    evas_object_smart_member_add(priv->container, o);
    evas_object_smart_member_add(priv->handler_BR.obj, o);
@@ -289,15 +292,16 @@ _container_smart_calculate(Evas_Object *o)
    Evas_Coord cw, ch;
    Evas_Coord hrb_x, hrb_y;
    Groupview_Geom *geom = NULL;
+   int divisior = 1;
    char buff[16];
 
    CONTAINER_DATA_GET(o, sd)
    evas_object_geometry_get(o, &x, &y, &w, &h);
 
    /* 1. calculate the container size */
-   sd->size.w += sd->dx;
+   sd->size.w += sd->zoom * (int)(sd->dx / sd->zoom);
    if (sd->aspect < 0)
-     sd->size.h += sd->dy;
+     sd->size.h += sd->zoom * (int)(sd->dy / sd->zoom);
    else
      sd->size.h = sd->size.w / sd->aspect;
 
@@ -323,15 +327,15 @@ _container_smart_calculate(Evas_Object *o)
    if (sd->size.w < 0) sd->size.w = 0;
    if (sd->size.h < 0) sd->size.h = 0;
 
-   if ((sd->con_size_min.w > 0) && (sd->size.w < sd->con_size_min.w))
-     sd->size.w = sd->con_size_min.w;
-   if ((sd->con_size_min.h > 0) && (sd->size.h < sd->con_size_min.h))
-     sd->size.h = sd->con_size_min.h;
+   if ((sd->con_size_min.w > 0) && (sd->size.w < sd->con_size_min.w * sd->zoom))
+     sd->size.w = sd->con_size_min.w * sd->zoom;
+   if ((sd->con_size_min.h > 0) && (sd->size.h < sd->con_size_min.h * sd->zoom))
+     sd->size.h = sd->con_size_min.h * sd->zoom;
 
-   if ((sd->con_size_max.w > -1) && (sd->size.w > sd->con_size_max.w))
-     sd->size.w = sd->con_size_max.w;
-   if ((sd->con_size_max.h > -1) && (sd->size.h > sd->con_size_max.h))
-     sd->size.h = sd->con_size_max.h;
+   if ((sd->con_size_max.w > -1) && (sd->size.w > sd->con_size_max.w * sd->zoom))
+     sd->size.w = sd->con_size_max.w * sd->zoom;
+   if ((sd->con_size_max.h > -1) && (sd->size.h > sd->con_size_max.h * sd->zoom))
+     sd->size.h = sd->con_size_max.h * sd->zoom;
 
    evas_object_resize(sd->container, sd->size.w, sd->size.h);
 
@@ -354,13 +358,26 @@ _container_smart_calculate(Evas_Object *o)
    ch = (hrb_y + sd->handler_BR.h + (geom ? geom->h : 0) + BASE_PADDING) - y;
    evas_object_size_hint_min_set(o, cw, ch);
 
-   snprintf(buff, 16, "%i %i", sd->size.w, sd->size.h);
+   if (fabs(sd->zoom - 1.0) < DBL_EPSILON)
+     {
+        sd->zoom1.w = sd->size.w;
+        sd->zoom1.h = sd->size.h;
+     }
+   else if (sd->handler_BR_pressed)
+     {
+        sd->zoom1.w = sd->size.w / sd->zoom;
+        sd->zoom1.h = sd->size.h / sd->zoom;
+     }
+   sd->zoom1.x = sd->size.x;
+   sd->zoom1.y = sd->size.y;
+   snprintf(buff, 16, "%i %i", sd->zoom1.w, sd->zoom1.h);
    edje_object_part_text_set(sd->container, TEXT_TOOLTIP, buff);
 
-   evas_object_smart_callback_call(o, SIG_CHANGED, &sd->size);
+   evas_object_smart_callback_call(o, SIG_CHANGED, &sd->zoom1);
 
-   sd->dx = 0;
-   sd->dy = 0;
+   if ((int)sd->zoom > 1) divisior = (int)sd->zoom;
+   sd->dx = sd->dx % divisior;
+   sd->dy = sd->dy % divisior;
 }
 
 /* this need for macro EVAS_SMART_SUBCLASS_NEW */
@@ -457,6 +474,7 @@ container_container_size_set(Evas_Object *obj, int w, int h)
 {
    CONTAINER_DATA_GET(obj, sd);
 
+   INFO ("%d\t%d", w, h);
    if (w <= sd->con_size_min.w) sd->size.w = sd->con_size_min.w;
    else
      {
@@ -472,6 +490,11 @@ container_container_size_set(Evas_Object *obj, int w, int h)
           sd->size.h = sd->con_size_max.h;
         else sd->size.h = h;
      }
+
+   sd->zoom1.w = w;
+   sd->zoom1.h = h;
+   sd->size.w *= sd->zoom;
+   sd->size.h *= sd->zoom;
 
    evas_object_smart_changed(obj);
    return true;
@@ -622,4 +645,21 @@ container_aspect_get(Evas_Object *obj)
    CONTAINER_DATA_GET(obj, sd);
 
    return sd->aspect;
+}
+
+void
+container_zoom_factor_set(Evas_Object *obj, double zoom)
+{
+   CONTAINER_DATA_GET(obj, sd);
+
+   sd->zoom = zoom;
+   container_container_size_set(obj, sd->zoom1.w, sd->zoom1.h);
+}
+
+double
+container_zoom_factor_get(Evas_Object *obj)
+{
+   CONTAINER_DATA_GET(obj, sd);
+
+   return sd->zoom;
 }
