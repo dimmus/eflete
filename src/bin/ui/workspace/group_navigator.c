@@ -1974,3 +1974,12 @@ group_navigator_add_program_request(Evas_Object *obj)
 {
    _on_menu_add_program_clicked(NULL, obj, NULL);
 }
+
+void
+group_navigator_delete_request(Evas_Object *obj)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   if (!elm_object_disabled_get(pl->btn_del))
+     _on_btn_minus_clicked(pl, NULL, NULL);
+}

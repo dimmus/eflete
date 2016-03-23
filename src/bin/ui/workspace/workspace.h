@@ -335,4 +335,7 @@ workspace_add_state_request(Evas_Object *obj);
 void
 workspace_add_program_request(Evas_Object *obj);
 
+void
+workspace_delete_request(Evas_Object *obj);
+
 #endif /* WORKSPACE_H */

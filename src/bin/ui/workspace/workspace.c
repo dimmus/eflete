@@ -1104,3 +1104,11 @@ workspace_add_program_request(Evas_Object *obj)
 
    group_navigator_add_program_request(wd->group_navi);
 }
+
+void
+workspace_delete_request(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+
+   group_navigator_delete_request(wd->group_navi);
+}

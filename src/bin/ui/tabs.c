@@ -601,6 +601,15 @@ _shortcut_add_program_cb(void *data __UNUSED__,
      workspace_add_program_request(tabs.current_workspace);
 }
 
+static void
+_shortcut_del_cb(void *data __UNUSED__,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_delete_request(tabs.current_workspace);
+}
+
 Evas_Object *
 tabs_add(void)
 {
@@ -705,6 +714,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_ITEM, _shortcut_add_part_item_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_STATE, _shortcut_add_state_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_PROGRAM, _shortcut_add_program_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_DEL, _shortcut_del_cb, NULL);
    return tabs.layout;
 }
 
