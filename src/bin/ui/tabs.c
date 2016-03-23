@@ -565,6 +565,42 @@ _editor_part_item_restacked_cb(void *data __UNUSED__,
                                editor_part_item_restack->relative_part_item);
 }
 
+static void
+_shortcut_add_part_cb(void *data __UNUSED__,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_add_part_request(tabs.current_workspace);
+}
+
+static void
+_shortcut_add_part_item_cb(void *data __UNUSED__,
+                           Evas_Object *obj __UNUSED__,
+                           void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_add_part_item_request(tabs.current_workspace);
+}
+
+static void
+_shortcut_add_state_cb(void *data __UNUSED__,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_add_state_request(tabs.current_workspace);
+}
+
+static void
+_shortcut_add_program_cb(void *data __UNUSED__,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_add_program_request(tabs.current_workspace);
+}
+
 Evas_Object *
 tabs_add(void)
 {
@@ -665,6 +701,10 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_ADDED, _editor_program_added_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_DELETED, _editor_program_deleted_cb, NULL);
 
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_PART, _shortcut_add_part_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_ITEM, _shortcut_add_part_item_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_STATE, _shortcut_add_state_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_PROGRAM, _shortcut_add_program_cb, NULL);
    return tabs.layout;
 }
 

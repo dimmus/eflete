@@ -323,4 +323,16 @@ TODO("remove after property refactor!!! HIGH LEVEL");
 Eina_Bool
 workspace_active_demo_mode_get(Evas_Object *obj);
 
+void
+workspace_add_part_request(Evas_Object *obj);
+
+void
+workspace_add_part_item_request(Evas_Object *obj);
+
+void
+workspace_add_state_request(Evas_Object *obj);
+
+void
+workspace_add_program_request(Evas_Object *obj);
+
 #endif /* WORKSPACE_H */

@@ -99,4 +99,16 @@ group_navigator_program_add(Evas_Object *obj, Eina_Stringshare *program);
 void
 group_navigator_program_del(Evas_Object *obj, Eina_Stringshare *program);
 
+void
+group_navigator_add_part_request(Evas_Object *obj);
+
+void
+group_navigator_add_part_item_request(Evas_Object *obj);
+
+void
+group_navigator_add_state_request(Evas_Object *obj);
+
+void
+group_navigator_add_program_request(Evas_Object *obj);
+
 #endif /* GROUP_NAVIGATOR_H */

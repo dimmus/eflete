@@ -817,7 +817,7 @@ _combobox_collapsed(void *data,
 
 static void
 _on_menu_add_part_clicked(void *data __UNUSED__,
-                          Evas_Object *obj __UNUSED__,
+                          Evas_Object *obj,
                           void *ei __UNUSED__)
 {
    Edje_Part_Type type;
@@ -1943,4 +1943,34 @@ group_navigator_part_update(Evas_Object *obj, Part *part)
 
         elm_genlist_item_update(part_item);
      }
+}
+
+void
+group_navigator_add_part_request(Evas_Object *obj)
+{
+   _on_menu_add_part_clicked(NULL, obj, NULL);
+}
+
+void
+group_navigator_add_part_item_request(Evas_Object *obj)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   if (!elm_object_item_disabled_get(pl->add_part_item_menu_item))
+     _on_menu_add_item_clicked(NULL, obj, NULL);
+}
+
+void
+group_navigator_add_state_request(Evas_Object *obj)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   if (!elm_object_item_disabled_get(pl->add_state_menu_item))
+     _on_menu_add_state_clicked(NULL, obj, NULL);
+}
+
+void
+group_navigator_add_program_request(Evas_Object *obj)
+{
+   _on_menu_add_program_clicked(NULL, obj, NULL);
 }

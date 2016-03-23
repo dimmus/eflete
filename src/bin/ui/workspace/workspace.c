@@ -1072,3 +1072,35 @@ workspace_program_del(Evas_Object *obj, Eina_Stringshare *program_name)
    group_navigator_program_del(wd->group_navi, program_name);
    demo_group_program_del(wd->demo_navi, program_name);
 }
+
+void
+workspace_add_part_request(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+
+   group_navigator_add_part_request(wd->group_navi);
+}
+
+void
+workspace_add_part_item_request(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+
+   group_navigator_add_part_item_request(wd->group_navi);
+}
+
+void
+workspace_add_state_request(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+
+   group_navigator_add_state_request(wd->group_navi);
+}
+
+void
+workspace_add_program_request(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+
+   group_navigator_add_program_request(wd->group_navi);
+}
