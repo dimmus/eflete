@@ -630,6 +630,16 @@ _unselected_cb(void *data __UNUSED__,
    elm_object_disabled_set(project_navigator.btn_del, true);
 }
 
+static void
+_shortcut_save_cb(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   if (!ap.project) return; /* when pressing ctrl + s without open project */
+
+   project_save();
+}
+
 Evas_Object *
 project_navigator_add(void)
 {
@@ -690,6 +700,7 @@ project_navigator_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_ADDED, _group_add, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DELETED, _group_del, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_GROUP, _btn_add_group_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_SAVE, _shortcut_save_cb, NULL);
 
    TODO("Add deletion callback and free resources");
 
