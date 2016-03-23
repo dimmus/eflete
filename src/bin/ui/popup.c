@@ -23,7 +23,6 @@
 #include "config.h"
 
 static Popup_Button btn_pressed;
-static Evas_Object *popup;
 static Evas_Object *helper;
 static Evas_Object *fs;
 static Helper_Done_Cb dismiss_func;
@@ -74,9 +73,9 @@ _btn_cb(void *data,
 
 #define BTN_ADD(TEXT, PLACE, DATA) \
 { \
-   BUTTON_ADD(popup, btn, TEXT); \
+   BUTTON_ADD(ap.popup, btn, TEXT); \
    evas_object_smart_callback_add(btn, "clicked", _btn_cb, DATA); \
-   elm_object_part_content_set(popup, PLACE, btn); \
+   elm_object_part_content_set(ap.popup, PLACE, btn); \
 }
 
 Popup_Button
@@ -91,19 +90,19 @@ popup_want_action(const char *title,
 {
    Evas_Object *btn;
 
-   /* only one content will be setted to popup: or message, or used content */
+   /* only one content will be setted to ap.popup: or message, or used content */
    assert((msg != NULL) != (content != NULL));
    validator = func;
    user_data = data;
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
 
-   popup = elm_popup_add(ap.win);
-   elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
-   elm_object_part_text_set(popup, "title,text", title);
-   elm_popup_content_text_wrap_type_set(popup, ELM_WRAP_WORD);
-   if (msg) elm_object_text_set(popup, msg);
-   if (content) elm_object_content_set(popup, content);
+   ap.popup = elm_popup_add(ap.win);
+   elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
+   elm_object_part_text_set(ap.popup, "title,text", title);
+   elm_popup_content_text_wrap_type_set(ap.popup, ELM_WRAP_WORD);
+   if (msg) elm_object_text_set(ap.popup, msg);
+   if (content) elm_object_content_set(ap.popup, content);
 
    if (popup_btns & BTN_OK)
      BTN_ADD(_("Ok"), "button1", &_btn_ok)
@@ -122,7 +121,7 @@ popup_want_action(const char *title,
    else
      BTN_ADD(_("Cancel"), "button2", &_btn_cancel)
 
-   evas_object_show(popup);
+   evas_object_show(ap.popup);
    if (to_focus) elm_object_focus_set(to_focus, true);
 
    TODO("Fix and refactor this weird behaviour. This is terrible decision")
@@ -132,9 +131,9 @@ popup_want_action(const char *title,
    eflete_main_loop_begin();
 
    /* clear up before return the presed button */
-   elm_object_content_unset(popup);
-   evas_object_del(popup);
-   popup = NULL;
+   elm_object_content_unset(ap.popup);
+   evas_object_del(ap.popup);
+   ap.popup = NULL;
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
 
    validator = NULL;
@@ -148,13 +147,13 @@ void
 popup_buttons_disabled_set(Popup_Button popup_btns, Eina_Bool disabled)
 {
    if ((popup_btns & BTN_OK) || (popup_btns & BTN_SAVE) || (popup_btns & BTN_REPLACE))
-     elm_object_disabled_set(elm_object_part_content_get(popup, "button1"), disabled);
+     elm_object_disabled_set(elm_object_part_content_get(ap.popup, "button1"), disabled);
    if (popup_btns & BTN_DONT_SAVE)
-     elm_object_disabled_set(elm_object_part_content_get(popup, "button2"), disabled);
+     elm_object_disabled_set(elm_object_part_content_get(ap.popup, "button2"), disabled);
    if ((popup_btns & BTN_CANCEL) && (popup_btns & BTN_DONT_SAVE))
-     elm_object_disabled_set(elm_object_part_content_get(popup, "button3"), disabled);
+     elm_object_disabled_set(elm_object_part_content_get(ap.popup, "button3"), disabled);
    if (popup_btns & BTN_CANCEL)
-     elm_object_disabled_set(elm_object_part_content_get(popup, "button2"), disabled);
+     elm_object_disabled_set(elm_object_part_content_get(ap.popup, "button2"), disabled);
 }
 
 #define FS_W 430
