@@ -216,6 +216,11 @@ ui_main_window_add(void)
      ap.enventor= enventor_object_init(ap.win);
    #endif /* HAVE_ENVENTOR */
    //register_callbacks();
+   if (!shortcuts_init())
+     {
+        CRIT("Can't initialize the shortcut module");
+        return false;
+     }
 
    elm_config_window_auto_focus_enable_set(false);
    return true;

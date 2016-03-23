@@ -215,11 +215,6 @@ config_init(void)
      (edd_profile, Profile, "shortcuts",    shortcuts, edd_keys);
 
    if (!edd_profile) return false;
-   if (!shortcuts_init())
-     {
-        CRIT("Can't initialize the shortcut module");
-        return false;
-     }
 
    config = NULL;
    profile = NULL;
@@ -258,7 +253,6 @@ config_shutdown(void)
         edd_keys = NULL;
      }
    if (config) _config_free();
-   shortcuts_shutdown(NULL);
 
    return true;
 }
@@ -279,6 +273,7 @@ _default_shortcuts_get()
    shortcuts = eina_list_append(shortcuts, shortcut);
 
    /* Ctrl- */
+   /*
    ADD_SHORTCUT("s", 39, CTRL, "save", false);
    ADD_SHORTCUT("w", 25, CTRL, "close", false);
    ADD_SHORTCUT("q", 24, CTRL, "quit", false);
@@ -287,7 +282,7 @@ _default_shortcuts_get()
 
    ADD_SHORTCUT("equal", 21, CTRL, "zoom.in", false);
    ADD_SHORTCUT("minus", 20, CTRL, "zoom.out", false);
-
+    */
    /* Holdable keys. */
    ADD_SHORTCUT("Ctrl_L", 37, 0, "object_area.show", true);
 

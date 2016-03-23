@@ -45,6 +45,28 @@
 
 #include "eflete.h"
 
+#define MOD_NONE 0
+#define MOD_SHIFT 1
+#define MOD_CTRL 2
+#define MOD_ALT 4
+#define MOD_SUPER  8
+
+typedef enum {
+   SHORTCUT_TYPE_NONE,
+
+   SHORTCUT_TYPE_REDO,
+   SHORTCUT_TYPE_UNDO,
+   SHORTCUT_TYPE_SAVE,
+   SHORTCUT_TYPE_ADD_GROUP,
+   SHORTCUT_TYPE_ADD_PART,
+   SHORTCUT_TYPE_ADD_STATE,
+   SHORTCUT_TYPE_ADD_ITEM,
+   SHORTCUT_TYPE_ADD_PROGRAM,
+   SHORTCUT_TYPE_DEL,
+
+   SHORTCUT_TYPE_LAST,
+} Shortcut_Type;
+
 /**
  * Setting shortcuts from user's profile.
  *

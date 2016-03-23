@@ -18,18 +18,6 @@
  */
 
 #include "shortcuts.h"
-#include "main_window.h"
-#include "tabs.h"
-#include "workspace.h"
-#include "config.h"
-
-#ifdef HAVE_ENVENTOR
-   #define SKIP_IN_ENVENTOR_MODE \
-      if (ap.enventor_mode) \
-        return false;
-#else
-   #define SKIP_IN_ENVENTOR_MODE
-#endif
 
 static inline unsigned int
 _keycode_convert(unsigned int keycode)
@@ -96,9 +84,19 @@ _keycode_convert(unsigned int keycode)
       KEY(132, 114) /* right */
    }
    DBG("notconverted mac keycode: %d", keycode);
+#undef KEY
 #endif
    return keycode;
 }
+
+struct _Shortcut
+{
+   unsigned int          keycode;
+   unsigned int          modifiers;
+   Shortcut_Type         type_press;
+   Shortcut_Type         type_unpress;
+};
+typedef struct _Shortcut Shortcut;
 
 struct _Shortcut_Module
 {
@@ -107,199 +105,103 @@ struct _Shortcut_Module
    Ecore_Event_Handler *shortcuts_handler_unpress; /**< handler for catching key
                                                         unpressing for
                                                         shortcuts */
-   Eina_Hash *shortcut_functions; /**< list of user's shortcuts */
-   Eina_List *holded_functions; /**< list of functions that is being held */
-   Eina_List *keys;             /* list of pointer to hash keys to be freed */
+   Eina_List *shortcuts;      /**< list of user's shortcuts */
+   Eina_List *held_shortcuts; /**< list of functions that is being held */
+   unsigned int last_modifiers;
 };
 
-/*========================================================*/
-/*               SHORTCUTS CB FUNCTION                    */
-/*========================================================*/
-
-static Eina_Bool
-_save_cb(void)
+static int
+_shortcut_cmp(Shortcut *s1, Shortcut *s2)
 {
-   if (!ap.project) return false;
-   project_save();
-   return true;
+   if (s1->modifiers == s2->modifiers)
+     return s1->keycode - s2->keycode;
+   return s1->modifiers - s2->modifiers;
 }
 
-static Eina_Bool
-_quit_cb(void)
+static void
+_shortcut_handle(Shortcut_Type type)
 {
-   ui_main_window_del();
-   return true;
+#define SHORTCUT(NAME) \
+ case SHORTCUT_TYPE_##NAME: \
+    evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_##NAME, NULL); \
+    break;
+
+   switch (type)
+     {
+        SHORTCUT(REDO);
+        SHORTCUT(UNDO);
+        SHORTCUT(SAVE);
+        SHORTCUT(ADD_GROUP);
+        SHORTCUT(ADD_PART);
+        SHORTCUT(ADD_STATE);
+        SHORTCUT(ADD_ITEM);
+        SHORTCUT(ADD_PROGRAM);
+        SHORTCUT(DEL);
+
+      case SHORTCUT_TYPE_NONE:
+         break;
+      case SHORTCUT_TYPE_LAST:
+         CRIT("Incorrect shortcut type");
+         abort();
+     }
 }
-/* close currently opened group tab */
-static Eina_Bool
-_close_tab_cb(void)
-{
-   if (!ap.project) return false;
-   tabs_current_tab_close();
-   return true;
-}
-
-static Eina_Bool
-_object_area_show_switch_cb(void)
-{
-   Evas_Object *workspace = tabs_current_workspace_get();
-   Eina_Bool flag;
-
-   SKIP_IN_ENVENTOR_MODE
-   if (!workspace) return false;
-
-   flag = workspace_object_area_visible_get(workspace);
-   workspace_object_area_visible_set(workspace, !flag);
-
-   flag = workspace_highlight_align_visible_get(workspace);
-   workspace_highlight_align_visible_set(workspace, !flag);
-   workspace_object_area_visible_set(workspace, !flag);
-   return true;
-}
-
-static Eina_Bool
-_zoom_in_cb(void)
-{
-   Evas_Object *workspace = tabs_current_workspace_get();
-
-   SKIP_IN_ENVENTOR_MODE
-   if (!workspace) return false;
-
-   double current_factor = workspace_zoom_factor_get(workspace);
-   workspace_zoom_factor_set(workspace, current_factor + 0.1);
-   return true;
-}
-
-static Eina_Bool
-_zoom_out_cb(void)
-{
-   Evas_Object *workspace = tabs_current_workspace_get();
-
-   SKIP_IN_ENVENTOR_MODE
-   if (!workspace) return false;
-
-   double current_factor = workspace_zoom_factor_get(workspace);
-   workspace_zoom_factor_set(workspace, current_factor - 0.1);
-   return true;
-}
-
-static Eina_Bool
-_undo_cb(void)
-{
-   Evas_Object *workspace = tabs_current_workspace_get();
-
-   SKIP_IN_ENVENTOR_MODE
-   if (!workspace) return false;
-
-   evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_UNDO, NULL);
-   return true;
-}
-
-static Eina_Bool
-_redo_cb(void)
-{
-   Evas_Object *workspace = tabs_current_workspace_get();
-
-   SKIP_IN_ENVENTOR_MODE
-   if (!workspace) return false;
-
-   evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_REDO, NULL);
-   return true;
-}
-
-/*========================================================*/
-/*                 HELPFULL STRUCTURES                    */
-/*========================================================*/
-
-/*
- * Pointer to a function that will be called after clicking on some shortcut.
- */
-typedef Eina_Bool (*Shortcut_Function_Cb)(void);
-struct _Shortcut_Function
-{
-   const char           *keyname;
-   unsigned int          keycode;
-   unsigned int          modifiers;
-   Eina_Bool             holdable;
-   Eina_Bool             held;
-   const char           *description;
-   Shortcut_Function_Cb  function;
-};
-typedef struct _Shortcut_Function Shortcut_Function;
-
-/*
- * Depending on keycode AND modifiers there could be different behaviour.
- * for example Ctrl + N (modifier = 2 and keycode = 57) is different from
- * Ctrl + Shift + N (modifier = 3 and keycode = 57).
- * So different function should be returned.
- * So this is actually Key to eina_hash_find.
- */
-struct _Key_Pair
-{
-   unsigned int modifiers;
-   unsigned int keycode;
-};
-typedef struct _Key_Pair Key_Pair;
-
-/*
- * Private structure, exists for creating hash of
- * "shortcut description" <=> "shortcut callback function"
- */
-struct _Function_Set
-{
-   const char           *descr;
-   Shortcut_Function_Cb  func;
-};
-typedef struct _Function_Set Function_Set;
-
-/*
- * Set of functions attached to it's definition.
- * When shortcut_init() is being called it generated
- */
-static Function_Set _sc_func_set_init[] =
-{
-     {"save", _save_cb},
-     {"zoom.in", _zoom_in_cb},
-     {"zoom.out", _zoom_out_cb},
-     {"quit", _quit_cb},
-     {"close", _close_tab_cb},
-     {"undo", _undo_cb},
-     {"redo", _redo_cb},
-     {"object_area.show", _object_area_show_switch_cb},
-     {NULL, NULL}
-};
-static Eina_Hash *_sc_functions = NULL;
 
 static Eina_Bool
 _key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Event_Key *ev = (Ecore_Event_Key *)event;
-   Shortcut_Function *sc_func;
-   Key_Pair *key = mem_malloc(sizeof(Key_Pair));
+   Shortcut sc, *shortcut;
 
+   /*
+    *  (ev->modifiers && 255) because modifiers contain both locks and modifs,
+    *  so if Caps Lock is clicked, then with MOD_SHIFT it will return not 1, but 257.
+    *  So we need to set a mask for real modifiers (Ctrl, Shift, Alt etc)
+    */
+   sc.modifiers = ev->modifiers & 255;
+   sc.keycode = _keycode_convert(ev->keycode);
+   switch(sc.keycode)
+     {
+      case 37: /*MOD_CTRL*/
+      case 105: /*MOD_CTRL*/
+         sc.modifiers |= MOD_CTRL;
+         break;
+      case 64: /*MOD_ALT*/
+      case 108: /*MOD_ALT*/
+         sc.modifiers |= MOD_ALT;
+         break;
+      case 50: /*MOD_SHIFT*/
+      case 62: /*MOD_SHIFT*/
+         sc.modifiers |= MOD_SHIFT;
+         break;
+      case 133: /*MOD_SUPER*/
+      case 134: /*MOD_SUPER*/
+         sc.modifiers |= MOD_SUPER;
+         break;
+      default:
+         break;
+     }
+   DBG("key_down: %s %d, mod: %d", ev->key, ev->keycode, ev->modifiers & 255);
+
+   ap.shortcuts->last_modifiers = sc.modifiers;
 
    if (!ap.popup)
      {
-        /*
-         *  (ev->modifiers && 255) because modifiers contain both locks and modifs,
-         *  so if Caps Lock is clicked, then with SHIFT it will return not 1, but 257.
-         *  So we need to set a mask for real modifiers (Ctrl, Shift, Alt etc)
-         */
-        key->modifiers = ev->modifiers & 255;
-        key->keycode = _keycode_convert(ev->keycode);
+        /* check if shortcut already pressed */
+        shortcut = eina_list_search_sorted(ap.shortcuts->held_shortcuts, (Eina_Compare_Cb)_shortcut_cmp, &sc);
+        if (shortcut)
+          return ECORE_CALLBACK_PASS_ON;
 
-        sc_func = eina_hash_find(ap.shortcuts->shortcut_functions, key);
-        if ((sc_func) && (!sc_func->holdable))
-          sc_func->function();
-        else if ((sc_func) && (sc_func->holdable) && (!sc_func->held))
+        shortcut = eina_list_search_sorted(ap.shortcuts->shortcuts, (Eina_Compare_Cb)_shortcut_cmp, &sc);
+        if (shortcut)
           {
-             sc_func->held = true;
-             ap.shortcuts->holded_functions = eina_list_append(ap.shortcuts->holded_functions, sc_func);
-             sc_func->function();
+             _shortcut_handle(shortcut->type_press);
+             ap.shortcuts->held_shortcuts = eina_list_sorted_insert(ap.shortcuts->held_shortcuts,
+                                                                    (Eina_Compare_Cb)_shortcut_cmp, shortcut);
+             if (shortcut->type_press != SHORTCUT_TYPE_NONE)
+               return ECORE_CALLBACK_DONE;
           }
      }
 
-   free(key);
    return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -307,68 +209,134 @@ static Eina_Bool
 _key_unpress_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Event_Key *ev = (Ecore_Event_Key *)event;
-   Shortcut_Function *sc_func;
-   Eina_List *l;
+   Shortcut sc, *shortcut;
+   unsigned int unpressed_modifiers;
+   Eina_List *l, *l_n;
 
-
-   if (!ap.popup)
+   /*
+    *  (ev->modifiers && 255) because modifiers contain both locks and modifs,
+    *  so if Caps Lock is clicked, then with SHIFT it will return not 1, but 257.
+    *  So we need to set a mask for real modifiers (Ctrl, Shift, Alt etc)
+    */
+   sc.modifiers = ev->modifiers & 255;
+   sc.keycode = _keycode_convert(ev->keycode);
+   switch(sc.keycode)
      {
-        EINA_LIST_FOREACH(ap.shortcuts->holded_functions, l, sc_func)
+      case 37: /*MOD_CTRL*/
+      case 105: /*MOD_CTRL*/
+         sc.modifiers &= ~MOD_CTRL;
+         break;
+      case 64: /*MOD_ALT*/
+      case 108: /*MOD_ALT*/
+         sc.modifiers &= ~MOD_ALT;
+         break;
+      case 50: /*MOD_SHIFT*/
+      case 62: /*MOD_SHIFT*/
+         sc.modifiers &= ~MOD_SHIFT;
+         break;
+      case 133: /*MOD_SUPER*/
+      case 134: /*MOD_SUPER*/
+         sc.modifiers &= ~MOD_SUPER;
+         break;
+      default:
+         break;
+     }
+   DBG("key_up  : %s %d, mod: %d", ev->key, ev->keycode, ev->modifiers & 255);
+
+   unpressed_modifiers = ap.shortcuts->last_modifiers & (~sc.modifiers);
+   EINA_LIST_FOREACH_SAFE(ap.shortcuts->held_shortcuts, l, l_n, shortcut)
+     {
+        if (shortcut->modifiers & unpressed_modifiers)
           {
-             if (ev->keycode == sc_func->keycode)
-               {
-                  sc_func->held = false;
-                  ap.shortcuts->holded_functions = eina_list_remove(ap.shortcuts->holded_functions, sc_func);
-                  sc_func->function();
-               }
+             _shortcut_handle(shortcut->type_unpress);
+             ap.shortcuts->held_shortcuts = eina_list_remove_list(ap.shortcuts->held_shortcuts, l);
           }
      }
+   ap.shortcuts->last_modifiers = sc.modifiers;
+   /* check if shortcut already pressed */
+   l = eina_list_search_sorted_list(ap.shortcuts->held_shortcuts, (Eina_Compare_Cb)_shortcut_cmp, &sc);
+   shortcut = eina_list_data_get(l);
+   if (!shortcut)
+     return ECORE_CALLBACK_PASS_ON;
+
+   _shortcut_handle(shortcut->type_unpress);
+   ap.shortcuts->held_shortcuts = eina_list_remove_list(ap.shortcuts->held_shortcuts, l);
+   if (shortcut->type_unpress != SHORTCUT_TYPE_NONE)
+     return ECORE_CALLBACK_DONE;
 
    return ECORE_CALLBACK_PASS_ON;
 }
 
-/* key_length for custom hash */
-static unsigned int
-_eina_int_key_length(const void *key __UNUSED__)
-{
-   return 0;
-}
-/* key_cmp for custom hash */
-static int
-_eina_int_key_cmp(const void *key1, int key1_length __UNUSED__,
-                  const void *key2, int key2_length __UNUSED__)
-{
-   Key_Pair *keys1 = (Key_Pair *)key1;
-   Key_Pair *keys2 = (Key_Pair *)key2;
-
-   unsigned int key_cmp = keys1->keycode - keys2->keycode;
-
-   if (key_cmp == 0)
-      return keys1->modifiers - keys2->modifiers;
-
-   return key_cmp;
-}
-/* key_free for custom hash */
 static void
-_eina_hash_free(void *data)
+_win_unfocused_cb(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
 {
-   Shortcut_Function *sc_func = data;
-   if (!sc_func) return;
-   free(sc_func);
+   Shortcut *shortcut;
+
+   EINA_LIST_FREE(ap.shortcuts->held_shortcuts, shortcut)
+      _shortcut_handle(shortcut->type_unpress);
 }
+
+static void
+_add_shortcut(Shortcut_Type type_press,
+              Shortcut_Type type_unpress,
+              unsigned int modifiers,
+              unsigned int keycode)
+{
+   Shortcut *sc;
+   assert(ap.shortcuts != NULL);
+
+   sc = mem_calloc(1, sizeof(Shortcut));
+   sc->type_press = type_press;
+   sc->type_unpress = type_unpress;
+   sc->keycode = keycode;
+   sc->modifiers = modifiers;
+
+   ap.shortcuts->shortcuts = eina_list_sorted_insert(ap.shortcuts->shortcuts, (Eina_Compare_Cb)_shortcut_cmp, sc);
+}
+
+static void
+_default_shortcuts_add()
+{
+   assert(ap.shortcuts != NULL);
+
+   _add_shortcut(SHORTCUT_TYPE_UNDO, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 52/*z*/);
+   _add_shortcut(SHORTCUT_TYPE_REDO, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 29/*y*/);
+   _add_shortcut(SHORTCUT_TYPE_SAVE, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 39/*s*/);
+   _add_shortcut(SHORTCUT_TYPE_ADD_GROUP, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 57/*n*/);
+   _add_shortcut(SHORTCUT_TYPE_ADD_PART, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 24/*q*/);
+   _add_shortcut(SHORTCUT_TYPE_ADD_STATE, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 25/*w*/);
+   _add_shortcut(SHORTCUT_TYPE_ADD_ITEM, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 26/*e*/);
+   _add_shortcut(SHORTCUT_TYPE_ADD_PROGRAM, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 27/*r*/);
+   _add_shortcut(SHORTCUT_TYPE_DEL, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 119/*del*/);
+}
+
 /*=============================================*/
 /*               PUBLIC API                    */
 /*=============================================*/
-
-#undef PART_ADD
-#undef PART_FUNCTIONALITY
-
-static Eina_Bool
-_shortcuts_main_add(void)
+Eina_Bool
+shortcuts_profile_load(Profile *profile __UNUSED__)
 {
+   return false;
+}
 
-   if (ap.shortcuts->shortcuts_handler)
-     return false;
+Eina_Bool
+shortcuts_init(void)
+{
+   assert(ap.shortcuts == NULL);
+   assert(ap.win != NULL);
+
+   ap.shortcuts = mem_calloc(1, sizeof(Shortcut_Module));
 
    ap.shortcuts->shortcuts_handler = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
                                                    _key_press_event_cb,
@@ -376,94 +344,9 @@ _shortcuts_main_add(void)
    ap.shortcuts->shortcuts_handler_unpress = ecore_event_handler_add(ECORE_EVENT_KEY_UP,
                                                                       _key_unpress_event_cb,
                                                                       NULL);
-   return true;
-}
+   evas_object_smart_callback_add(ap.win, "unfocused", _win_unfocused_cb, NULL);
 
-static Eina_Bool
-_shortcuts_main_del(void)
-{
-
-   assert(ap.shortcuts->shortcuts_handler != NULL);
-
-   ecore_event_handler_del(ap.shortcuts->shortcuts_handler);
-   ap.shortcuts->shortcuts_handler = NULL;
-   ecore_event_handler_del(ap.shortcuts->shortcuts_handler_unpress);
-   ap.shortcuts->shortcuts_handler_unpress = NULL;
-   eina_hash_free(ap.shortcuts->shortcut_functions);
-   ap.shortcuts->shortcut_functions = NULL;
-
-   return true;
-}
-
-Eina_Bool
-shortcuts_profile_load(Profile *profile)
-{
-   Shortcuts *sc;
-   Shortcut_Function *sc_func;
-   Eina_List *l;
-   Key_Pair *key;
-
-   assert(profile != NULL);
-   assert(profile->shortcuts != NULL);
-   assert(ap.shortcuts != NULL);
-
-   if (ap.shortcuts->shortcut_functions)
-     eina_hash_free(ap.shortcuts->shortcut_functions);
-   ap.shortcuts->shortcut_functions = eina_hash_new(EINA_KEY_LENGTH(_eina_int_key_length),
-                                                     EINA_KEY_CMP(_eina_int_key_cmp),
-                                                     EINA_KEY_HASH(eina_hash_int32),
-                                                     _eina_hash_free,
-                                                     8);
-
-   EINA_LIST_FOREACH(profile->shortcuts, l, sc)
-     {
-        key = mem_malloc(sizeof(Key_Pair));
-        key->keycode = sc->keycode;
-        key->modifiers = sc->modifiers;
-
-        sc_func = mem_calloc(1, sizeof(Shortcut_Function));
-        sc_func->keyname = sc->keyname;
-        sc_func->keycode = sc->keycode;
-        sc_func->modifiers = sc->modifiers;
-        sc_func->holdable = sc->holdable;
-        sc_func->held = false;
-        sc_func->description = sc->description;
-        sc_func->function = eina_hash_find(_sc_functions, sc->description);
-        if (!sc_func->function)
-          {
-             free(sc_func);
-             free(key);
-             continue;
-          }
-        if (eina_hash_find(ap.shortcuts->shortcut_functions, key) ||
-            (!eina_hash_direct_add(ap.shortcuts->shortcut_functions, key, sc_func)))
-          {
-             free(sc_func);
-             free(key);
-             return false;
-          }
-        ap.shortcuts->keys = eina_list_append(ap.shortcuts->keys, key);
-     }
-
-   return true;
-}
-
-Eina_Bool
-shortcuts_init(void)
-{
-   assert(_sc_functions == NULL);
-   assert(ap.shortcuts == NULL);
-
-   ap.shortcuts = mem_calloc(1, sizeof(Shortcut_Module));
-
-   Function_Set *_sc_func_set = _sc_func_set_init;
-   _sc_functions = eina_hash_string_superfast_new(NULL);
-   while (_sc_func_set->descr)
-     {
-        eina_hash_direct_add(_sc_functions, _sc_func_set->descr, _sc_func_set->func);
-        _sc_func_set++;
-     }
-   _shortcuts_main_add();
+   _default_shortcuts_add();
 
    return true;
 }
@@ -471,19 +354,13 @@ shortcuts_init(void)
 Eina_Bool
 shortcuts_shutdown(void)
 {
-   assert(_sc_functions != NULL);
    assert(ap.shortcuts != NULL);
+   assert(ap.shortcuts->shortcuts_handler != NULL);
 
-   Key_Pair *key;
-
-   _shortcuts_main_del();
-
-   eina_hash_free(_sc_functions);
-   _sc_functions = NULL;
-
-   EINA_LIST_FREE(ap.shortcuts->keys, key)
-     free(key);
-
+   ecore_event_handler_del(ap.shortcuts->shortcuts_handler);
+   ap.shortcuts->shortcuts_handler = NULL;
+   ecore_event_handler_del(ap.shortcuts->shortcuts_handler_unpress);
+   ap.shortcuts->shortcuts_handler_unpress = NULL;
    free(ap.shortcuts);
    ap.shortcuts = NULL;
 
