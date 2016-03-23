@@ -428,6 +428,8 @@ _btn_add_group_cb(void *data __UNUSED__,
    Eina_List *l;
    Elm_Object_Item *glit;
 
+   if (!ap.project) return; /* when pressing ctrl + n without open project */
+
    assert(validator == NULL);
 
    BOX_ADD(ap.win, layout_p.box, false, false)
@@ -687,6 +689,7 @@ project_navigator_add(void)
 
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_ADDED, _group_add, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DELETED, _group_del, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_GROUP, _btn_add_group_cb, NULL);
 
    TODO("Add deletion callback and free resources");
 
