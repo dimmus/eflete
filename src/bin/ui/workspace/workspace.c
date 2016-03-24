@@ -69,6 +69,7 @@ struct _Scroll_Area {
    Evas_Object *content; /* for normal mode - groupview, for demo - elm widget */
    Ruler ruler_v;
    Ruler ruler_h;
+   int w, h; /* the container size with zoom factor 1.0, calculated if aoom factor is not 1.0 */
 };
 typedef struct _Scroll_Area Scroll_Area;
 
@@ -113,21 +114,10 @@ struct _Workspace_Data
    } code;
    Workspace_Mode mode;
    Group *group;
+   double zoom_factor;
 };
 
 typedef struct _Workspace_Data Workspace_Data;
-
-Eina_Bool
-workspace_zoom_factor_set(Evas_Object *obj __UNUSED__, double factor __UNUSED__)
-{
-   return false;
-}
-
-double
-workspace_zoom_factor_get(Evas_Object *obj __UNUSED__)
-{
-   return -1.0;
-}
 
 Eina_Bool
 workspace_highlight_unset(Evas_Object *obj __UNUSED__)
@@ -278,6 +268,49 @@ _on_project_changed(void *data,
 /******************************************************************************/
 
 static void
+_members_zoom_set(Workspace_Data *wd)
+{
+   Scroll_Area *area;
+
+   DBG("Set the zoom factor %f in tab '%s'", wd->zoom_factor * 100, wd->group->name);
+   area = _scroll_area_get(wd);
+
+   container_zoom_factor_set(area->container, wd->zoom_factor);
+   groupview_zoom_factor_set(area->content, wd->zoom_factor);
+
+   ewe_ruler_step_set(area->ruler_h.obj, NULL, (int)(50 * wd->zoom_factor));
+   ewe_ruler_step_set(area->ruler_v.obj, NULL, (int)(50 * wd->zoom_factor));
+
+   Eina_Stringshare *str = eina_stringshare_printf("%d%%", (int)(wd->zoom_factor * 100));
+   elm_object_text_set(wd->toolbar.zoom.slider, str);
+   eina_stringshare_del(str);
+}
+
+static void
+_zoom100_cb(void *data,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
+{
+   Workspace_Data *wd = data;
+
+   wd->zoom_factor = 1.0;
+   elm_slider_value_set(wd->toolbar.zoom.slider, 100);
+
+   _members_zoom_set(wd);
+}
+
+static void
+_slider_zoom_cb(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   Workspace_Data *wd = data;
+
+   wd->zoom_factor = elm_slider_value_get(wd->toolbar.zoom.slider) / 100;
+   _members_zoom_set(wd);
+}
+
+static void
 _zoom_controls_add(Workspace_Data *wd)
 {
    Elm_Object_Item *tb_it;
@@ -289,10 +322,15 @@ _zoom_controls_add(Workspace_Data *wd)
 
    wd->toolbar.zoom.z100 = elm_button_add(wd->toolbar.obj);
    elm_object_text_set(wd->toolbar.zoom.z100, _("100%"));
+   evas_object_smart_callback_add(wd->toolbar.zoom.z100, "clicked", _zoom100_cb, wd);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.z100);
 
    wd->toolbar.zoom.slider = elm_slider_add(wd->toolbar.obj);
+   elm_slider_min_max_set(wd->toolbar.zoom.slider, 10.0, 1000.0);
+   elm_slider_value_set(wd->toolbar.zoom.slider, 100);
+   elm_slider_indicator_show_set(wd->toolbar.zoom.slider, true);
+   evas_object_smart_callback_add(wd->toolbar.zoom.slider, "changed", _slider_zoom_cb, wd);
    IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_smaller")
    elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.icon", img);
    IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_larger")
@@ -447,6 +485,9 @@ _container_changed(void *data,
    area = _scroll_area_get(wd);
    assert(area != NULL);
 
+   area->w = geom->w;
+   area->h = geom->h;
+
    evas_object_geometry_get(area->ruler_h.obj, &x, NULL, NULL, NULL);
    evas_object_geometry_get(area->ruler_v.obj, NULL, &y, NULL, NULL);
 
@@ -466,8 +507,8 @@ _container_changed(void *data,
         ewe_ruler_step_set(area->ruler_v.obj, area->ruler_v.scale_rel, (geom->h / 2));
      }
 
-   elm_spinner_value_set(wd->toolbar.container_sizer.spinner_w, geom->w);
-   elm_spinner_value_set(wd->toolbar.container_sizer.spinner_h, geom->h);
+   elm_spinner_value_set(wd->toolbar.container_sizer.spinner_w, area->w);
+   elm_spinner_value_set(wd->toolbar.container_sizer.spinner_h, area->h);
 }
 
 static void
@@ -759,6 +800,7 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_layout_content_set(wd->toolbar.layout, "elm.swallow.toolbar", wd->toolbar.obj);
 
    /* add to toolbar the zoom controls */
+   wd->zoom_factor = 1.0;
    _zoom_controls_add(wd);
 
    /* add to toolbar modes switcher */
@@ -1111,4 +1153,21 @@ workspace_delete_request(Evas_Object *obj)
    WS_DATA_GET(obj);
 
    group_navigator_delete_request(wd->group_navi);
+}
+
+void
+workspace_zoom_factor_set(Evas_Object *obj, double factor)
+{
+   WS_DATA_GET(obj);
+
+   wd->zoom_factor = factor;
+   elm_slider_value_set(wd->toolbar.zoom.slider, factor * 100);
+}
+
+double
+workspace_zoom_factor_get(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+
+   return wd->zoom_factor;
 }

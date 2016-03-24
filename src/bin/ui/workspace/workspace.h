@@ -224,11 +224,9 @@ workspace_part_item_restack(Evas_Object *obj,
  * @param factor A factor for scale. Where value 1.0 = 100% scale (not zoom
  * object). Minimum is 0.01, maximum is 20. (from 1% to 2000% zoom).
  *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
  * @ingroup Workspace
  */
-Eina_Bool
+void
 workspace_zoom_factor_set(Evas_Object *obj, double factor);
 
 /**
