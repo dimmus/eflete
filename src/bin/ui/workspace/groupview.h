@@ -70,8 +70,12 @@ struct _Geom{
 typedef struct _Geom Groupview_Geom;
 
 struct _Groupview_HL_Event {
-   Highlight_Events *hl_event;
    Part *part;
+   Evas_Coord x;
+   Evas_Coord y;
+   Evas_Coord w;
+   Evas_Coord h;
+   Handler_Type hl_type;
 };
 
 typedef struct _Groupview_HL_Event Groupview_HL_Event;
@@ -267,13 +271,22 @@ groupview_part_restack(Evas_Object *obj, const char *part, const char *below);
  * @param factor A factor for scale. Where value 1.0 = 100% scale (not zoom
  * object). Minimum is 0.01, maximum is 20. (from 1% to 2000% zoom).
  *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
+ * @ingroup Groupview
+ */
+void
+groupview_zoom_factor_set(Evas_Object *obj, double factor);
+
+/**
+ * Get the zoom factor.
+ *
+ * @param obj The groupview object.
+ *
+ * @return the zoom factor value
  *
  * @ingroup Groupview
  */
-Eina_Bool
-groupview_zoom_factor_set(Evas_Object *obj, double factor);
-
+double
+groupview_zoom_factor_get(Evas_Object *obj);
 
 /**
  * Change selection state for given item.

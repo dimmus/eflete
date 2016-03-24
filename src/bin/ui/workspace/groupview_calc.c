@@ -508,10 +508,10 @@ _part_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
    edje_object_part_geometry_get(sd->group->edit_object, gp->part->name, &x, &y, &w, &h);
    evas_object_geometry_get(sd->group->edit_object, &xe, &ye, &we, &he);
 
-   gp->geom.x = x + xe;
-   gp->geom.y = y + ye;
-   gp->geom.w = w;
-   gp->geom.h = h;
+   gp->geom.x = x * sd->zoom + xe;
+   gp->geom.y = y * sd->zoom + ye;
+   gp->geom.w = w * sd->zoom;
+   gp->geom.h = h * sd->zoom;
 
    protrusion = abs((x <= 0) ? x : 0);
    sd->protrusion.x = (protrusion > sd->protrusion.x) ? protrusion : sd->protrusion.x;

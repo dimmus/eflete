@@ -33,17 +33,30 @@ EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _groupview,
 /******************************************************************************/
 /*                            HIGHLIGHT CALLBACKS                             */
 /******************************************************************************/
+static Groupview_HL_Event *
+_grouopview_hl_event_new(Highlight_Events *event, Groupview_Smart_Data *sd)
+{
+   Groupview_HL_Event *ev;
+
+   ev = mem_malloc(sizeof(Groupview_HL_Event));
+
+   ev->part = sd->selected->part;
+   ev->x = event->x / sd->zoom;
+   ev->y = event->y / sd->zoom;
+   ev->w = event->w / sd->zoom;
+   ev->h = event->h / sd->zoom;
+   ev->hl_type = event->descr;
+
+   return ev;
+}
+
 static void
 _hl_part_drag_start_cb(void *data,
                        Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
+                       void *event_info)
 {
    Groupview_Smart_Data *sd = data;
-   Groupview_HL_Event *event;
-
-   event = mem_malloc(sizeof(Groupview_HL_Event));
-   event->hl_event = event_info;
-   event->part = sd->selected->part;
+   Groupview_HL_Event *event = _grouopview_hl_event_new(event_info, sd);
 
    evas_object_smart_callback_call(sd->obj, SIGNAL_GROUPVIEW_HL_PART_DRAG_START, event);
 
@@ -56,11 +69,7 @@ _hl_part_changed_cb(void *data,
                     void *event_info)
 {
    Groupview_Smart_Data *sd = data;
-   Groupview_HL_Event *event;
-
-   event = mem_malloc(sizeof(Groupview_HL_Event));
-   event->hl_event = event_info;
-   event->part = sd->selected->part;
+   Groupview_HL_Event *event = _grouopview_hl_event_new(event_info, sd);
 
    evas_object_smart_callback_call(sd->obj, SIGNAL_GROUPVIEW_HL_PART_CHANGED, event);
 
@@ -73,11 +82,7 @@ _hl_part_drag_stop_cb(void *data,
                       void *event_info)
 {
    Groupview_Smart_Data *sd = data;
-   Groupview_HL_Event *event;
-
-   event = mem_malloc(sizeof(Groupview_HL_Event));
-   event->hl_event = event_info;
-   event->part = sd->selected->part;
+   Groupview_HL_Event *event = _grouopview_hl_event_new(event_info, sd);
 
    evas_object_smart_callback_call(sd->obj, SIGNAL_GROUPVIEW_HL_PART_DRAG_STOP, event);
 
@@ -181,6 +186,9 @@ _groupview_smart_move(Evas_Object *o,
    evas_object_move(sd->group->edit_object,x ,y);
    evas_object_move(sd->box, x, y);
 
+   sd->zoom1.x = x;
+   sd->zoom1.y = y;
+
    evas_object_smart_changed(o);
 }
 
@@ -194,6 +202,9 @@ _groupview_smart_resize(Evas_Object *o,
 
    evas_object_geometry_get(o, NULL, NULL, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
+
+   sd->zoom1.w = w / sd->zoom;
+   sd->zoom1.h = h / sd->zoom;
 
    evas_object_smart_changed(o);
 }
@@ -218,7 +229,7 @@ _groupview_smart_calculate(Evas_Object *o)
         sd->geom.w = w;
         sd->geom.h = h;
 
-        evas_object_resize(sd->group->edit_object, w, h);
+        evas_object_resize(sd->group->edit_object, sd->zoom1.w, sd->zoom1.h);
         evas_object_resize(sd->box, w, h);
      }
    else
@@ -227,6 +238,7 @@ _groupview_smart_calculate(Evas_Object *o)
    sd->manual_calc = false;
 
    DBG("Groupview geometry: x[%i] y[%i] w[%i] h[%i]", x, y, w, h);
+   DBG("Edit object geometry: x[%i] y[%i] w[%i] h[%i]", sd->zoom1.x, sd->zoom1.y, sd->zoom1.w, sd->zoom1.h);
    evas_object_smart_callback_call(o, SIG_GEOMETRY_CHANGED, &sd->geom);
 }
 
@@ -263,6 +275,7 @@ groupview_add(Evas_Object *parent, Group *group)
    obj = evas_object_smart_add(e, _groupview_smart_class_new());
    GROUPVIEW_DATA_GET(obj, sd);
    sd->parent = parent;
+   sd->zoom = 1.0;
 
    TODO("set the state for all parts to default 0.0")
    sd->group = group;
@@ -497,12 +510,20 @@ groupview_part_visible_set(Evas_Object *obj, Part *part)
      evas_object_hide(gp->draw);
 }
 
-Eina_Bool
-groupview_zoom_factor_set(Evas_Object *obj, double factor __UNUSED__)
+void
+groupview_zoom_factor_set(Evas_Object *obj, double zoom)
 {
    GROUPVIEW_DATA_GET(obj, sd);
 
-   return true;
+   sd->zoom = zoom;
+}
+
+double
+groupview_zoom_factor_get(Evas_Object *obj)
+{
+   GROUPVIEW_DATA_GET(obj, sd);
+
+   return sd->zoom;
 }
 
 void

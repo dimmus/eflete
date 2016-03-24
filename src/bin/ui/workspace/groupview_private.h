@@ -52,6 +52,7 @@ struct _Groupview_Smart_Data
    Evas_Object *box;
    Groupview_Geom geom;
    Groupview_Geom protrusion;
+   Groupview_Geom zoom1;
    Eina_List *parts;
    Groupview_Part *selected;
    Evas_Object *highlight;
@@ -60,6 +61,7 @@ struct _Groupview_Smart_Data
    Eina_Bool obj_area_visible : 1;
    Eina_Bool separated : 1;
    Eina_Bool manual_calc : 1;
+   double zoom;
 };
 
 #define GROUPVIEW_DATA_GET(o, ptr)  \

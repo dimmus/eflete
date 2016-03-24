@@ -685,11 +685,11 @@ _groupview_hl_part_changed(void *data,
    editor_state_max_w_set(wd->group->edit_object, change, true, event->part->name,
                           event->part->current_state->parsed_name,
                           event->part->current_state->parsed_val,
-                          event->hl_event->w);
+                          event->w);
    editor_state_max_h_set(wd->group->edit_object, change, true, event->part->name,
                           event->part->current_state->parsed_name,
                           event->part->current_state->parsed_val,
-                          event->hl_event->h);
+                          event->h);
 }
 
 static void
@@ -701,11 +701,11 @@ _groupview_hl_part_drag_stop(void *data,
    Groupview_HL_Event *event = event_info;
    Eina_Stringshare *msg;
 
-   if ((part_w == event->hl_event->w) && (part_h == event->hl_event->h))
+   if ((part_w == event->w) && (part_h == event->h))
      change_free(change);
    else
      {
-        msg = eina_stringshare_printf(_("max size changed from [%dx%d] to [%dx%d]"), part_w, part_h, event->hl_event->w, event->hl_event->h);
+        msg = eina_stringshare_printf(_("max size changed from [%dx%d] to [%dx%d]"), part_w, part_h, event->w, event->h);
         change_description_set(change, msg);
         eina_stringshare_del(msg);
         history_change_add(wd->group->history, change);
