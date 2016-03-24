@@ -659,6 +659,42 @@ _shortcut_tab_close_cb(void *data __UNUSED__,
    tabs_current_tab_close();
 }
 
+static void
+_shortcut_tab_image_manager_cb(void *data __UNUSED__,
+                               Evas_Object *obj __UNUSED__,
+                               void *event_info __UNUSED__)
+{
+   if (!elm_object_item_disabled_get(tabs.menu.item_image))
+     elm_toolbar_item_selected_set(tabs.menu.item_image, true);
+}
+
+static void
+_shortcut_tab_sound_manager_cb(void *data __UNUSED__,
+                               Evas_Object *obj __UNUSED__,
+                               void *event_info __UNUSED__)
+{
+   if (!elm_object_item_disabled_get(tabs.menu.item_sound))
+     elm_toolbar_item_selected_set(tabs.menu.item_sound, true);
+}
+
+static void
+_shortcut_tab_color_class_manager_cb(void *data __UNUSED__,
+                                     Evas_Object *obj __UNUSED__,
+                                     void *event_info __UNUSED__)
+{
+   if (!elm_object_item_disabled_get(tabs.menu.item_colorclass))
+     elm_toolbar_item_selected_set(tabs.menu.item_colorclass, true);
+}
+
+static void
+_shortcut_tab_style_manager_cb(void *data __UNUSED__,
+                               Evas_Object *obj __UNUSED__,
+                               void *event_info __UNUSED__)
+{
+   if (!elm_object_item_disabled_get(tabs.menu.item_text))
+     elm_toolbar_item_selected_set(tabs.menu.item_text, true);
+}
+
 Evas_Object *
 tabs_add(void)
 {
@@ -768,6 +804,10 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_PREV, _shortcut_tab_prev_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_NUM, _shortcut_tab_num_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_CLOSE, _shortcut_tab_close_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_IMAGE_MANAGER, _shortcut_tab_image_manager_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_SOUND_MANAGER, _shortcut_tab_sound_manager_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_COLOR_CLASS_MANAGER, _shortcut_tab_color_class_manager_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_STYLE_MANAGER, _shortcut_tab_style_manager_cb, NULL);
    return tabs.layout;
 }
 

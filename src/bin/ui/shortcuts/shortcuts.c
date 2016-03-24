@@ -157,6 +157,10 @@ _shortcut_handle(Shortcut_Type type)
         SHORTCUT(TAB_NEXT);
         SHORTCUT(TAB_PREV);
         SHORTCUT(TAB_CLOSE);
+        SHORTCUT(TAB_IMAGE_MANAGER);
+        SHORTCUT(TAB_SOUND_MANAGER);
+        SHORTCUT(TAB_COLOR_CLASS_MANAGER);
+        SHORTCUT(TAB_STYLE_MANAGER);
 
       case SHORTCUT_TYPE_NONE:
          break;
@@ -372,6 +376,15 @@ _default_shortcuts_add()
 
    _add_shortcut(SHORTCUT_TYPE_TAB_CLOSE, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 25/*w*/);
+
+   _add_shortcut(SHORTCUT_TYPE_TAB_IMAGE_MANAGER, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 73/*F7*/);
+   _add_shortcut(SHORTCUT_TYPE_TAB_SOUND_MANAGER, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 74/*F8*/);
+   _add_shortcut(SHORTCUT_TYPE_TAB_STYLE_MANAGER, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 75/*F9*/);
+   _add_shortcut(SHORTCUT_TYPE_TAB_COLOR_CLASS_MANAGER, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 76/*F10*/);
 }
 
 /*=============================================*/
