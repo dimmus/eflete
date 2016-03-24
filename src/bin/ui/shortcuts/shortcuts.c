@@ -121,9 +121,16 @@ _shortcut_cmp(Shortcut *s1, Shortcut *s2)
 static void
 _shortcut_handle(Shortcut_Type type)
 {
+   int num;
 #define SHORTCUT(NAME) \
  case SHORTCUT_TYPE_##NAME: \
     evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_##NAME, NULL); \
+    break;
+
+#define SHORTCUT_NUM(NAME, SIGNAL, NUM) \
+ case SHORTCUT_TYPE_##NAME: \
+    num = NUM; \
+    evas_object_smart_callback_call(ap.win, SIGNAL, &num); \
     break;
 
    switch (type)
@@ -137,6 +144,19 @@ _shortcut_handle(Shortcut_Type type)
         SHORTCUT(ADD_ITEM);
         SHORTCUT(ADD_PROGRAM);
         SHORTCUT(DEL);
+        SHORTCUT_NUM(TAB_NUM1, SIGNAL_SHORTCUT_TAB_NUM, 1);
+        SHORTCUT_NUM(TAB_NUM2, SIGNAL_SHORTCUT_TAB_NUM, 2);
+        SHORTCUT_NUM(TAB_NUM3, SIGNAL_SHORTCUT_TAB_NUM, 3);
+        SHORTCUT_NUM(TAB_NUM4, SIGNAL_SHORTCUT_TAB_NUM, 4);
+        SHORTCUT_NUM(TAB_NUM5, SIGNAL_SHORTCUT_TAB_NUM, 5);
+        SHORTCUT_NUM(TAB_NUM6, SIGNAL_SHORTCUT_TAB_NUM, 6);
+        SHORTCUT_NUM(TAB_NUM7, SIGNAL_SHORTCUT_TAB_NUM, 7);
+        SHORTCUT_NUM(TAB_NUM8, SIGNAL_SHORTCUT_TAB_NUM, 8);
+        SHORTCUT_NUM(TAB_NUM9, SIGNAL_SHORTCUT_TAB_NUM, 9);
+        SHORTCUT_NUM(TAB_NUM10, SIGNAL_SHORTCUT_TAB_NUM, 10);
+        SHORTCUT(TAB_NEXT);
+        SHORTCUT(TAB_PREV);
+        SHORTCUT(TAB_CLOSE);
 
       case SHORTCUT_TYPE_NONE:
          break;
@@ -319,6 +339,39 @@ _default_shortcuts_add()
                  MOD_NONE, 27/*r*/);
    _add_shortcut(SHORTCUT_TYPE_DEL, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 119/*del*/);
+
+   _add_shortcut(SHORTCUT_TYPE_TAB_NUM1, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 10/*1*/);
+   _add_shortcut(SHORTCUT_TYPE_TAB_NUM2, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 11/*2*/);
+   _add_shortcut(SHORTCUT_TYPE_TAB_NUM3, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 12/*3*/);
+   _add_shortcut(SHORTCUT_TYPE_TAB_NUM4, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 13/*4*/);
+   _add_shortcut(SHORTCUT_TYPE_TAB_NUM5, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 14/*5*/);
+   _add_shortcut(SHORTCUT_TYPE_TAB_NUM6, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 15/*6*/);
+   _add_shortcut(SHORTCUT_TYPE_TAB_NUM7, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 16/*7*/);
+   _add_shortcut(SHORTCUT_TYPE_TAB_NUM8, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 17/*8*/);
+   _add_shortcut(SHORTCUT_TYPE_TAB_NUM9, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 18/*9*/);
+   _add_shortcut(SHORTCUT_TYPE_TAB_NUM10, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 19/*0*/);
+
+   _add_shortcut(SHORTCUT_TYPE_TAB_NEXT, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 23/*TAB*/);
+   _add_shortcut(SHORTCUT_TYPE_TAB_PREV, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL|MOD_SHIFT, 23/*TAB*/);
+   _add_shortcut(SHORTCUT_TYPE_TAB_NEXT, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 117/*PG_DOWN*/);
+   _add_shortcut(SHORTCUT_TYPE_TAB_PREV, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 112/*PG_UP*/);
+
+   _add_shortcut(SHORTCUT_TYPE_TAB_CLOSE, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 25/*w*/);
 }
 
 /*=============================================*/

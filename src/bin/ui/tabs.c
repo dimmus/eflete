@@ -610,6 +610,55 @@ _shortcut_del_cb(void *data __UNUSED__,
      workspace_delete_request(tabs.current_workspace);
 }
 
+static void
+_shortcut_tab_next_cb(void *data __UNUSED__,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
+{
+   Eina_List *l;
+   Tabs_Item *item;
+
+   l = eina_list_next(eina_list_data_find_list(tabs.items, elm_object_item_data_get(tabs.selected)));
+   item = eina_list_data_get(l);
+   if (item)
+     elm_toolbar_item_selected_set(item->toolbar_item, true);
+}
+
+static void
+_shortcut_tab_prev_cb(void *data __UNUSED__,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
+{
+   Eina_List *l;
+   Tabs_Item *item;
+
+   l = eina_list_prev(eina_list_data_find_list(tabs.items, elm_object_item_data_get(tabs.selected)));
+   item = eina_list_data_get(l);
+   if (item)
+     elm_toolbar_item_selected_set(item->toolbar_item, true);
+}
+
+static void
+_shortcut_tab_num_cb(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info)
+{
+   int num = *((int *)event_info);
+   Tabs_Item *item;
+
+   item = eina_list_nth(tabs.items, num - 1);
+   if (item)
+     elm_toolbar_item_selected_set(item->toolbar_item, true);
+}
+
+static void
+_shortcut_tab_close_cb(void *data __UNUSED__,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+   tabs_current_tab_close();
+}
+
 Evas_Object *
 tabs_add(void)
 {
@@ -715,6 +764,10 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_STATE, _shortcut_add_state_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_PROGRAM, _shortcut_add_program_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_DEL, _shortcut_del_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_NEXT, _shortcut_tab_next_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_PREV, _shortcut_tab_prev_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_NUM, _shortcut_tab_num_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_CLOSE, _shortcut_tab_close_cb, NULL);
    return tabs.layout;
 }
 
