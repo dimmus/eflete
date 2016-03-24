@@ -14,8 +14,7 @@ history_test \
 logger_test \
 project_manager_test \
 config_test \
-cursor_test \
-shortcuts_test
+cursor_test
 
 check_PROGRAMS = ${TESTS}
 
@@ -39,7 +38,6 @@ FLAGS = \
 -I${top_srcdir}/src/bin/ui/preference \
 -I${top_srcdir}/src/bin/ui/live_view \
 -I${top_srcdir}/src/bin/ui/live_view/elementary \
--I${top_srcdir}/src/bin/ui/shortcuts \
 -I${top_srcdir}/tests \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
@@ -69,8 +67,7 @@ include_HEADERS = \
 	../tests/test_project_manager/test_project_manager.h \
 	../tests/test_config/test_config.h \
 	../tests/test_cursor/test_cursor.h \
-	../tests/test_live_widget/test_live_widget.h \
-	../tests/test_shortcuts/test_shortcuts.h
+	../tests/test_live_widget/test_live_widget.h
 
 ewe_init_test_SOURCES = \
 ../tests/test_ewe_init/test_ewe_init.c \
@@ -220,14 +217,6 @@ live_widget_test_SOURCES = \
 ../tests/test_live_widget/live_widget_del.c
 live_widget_test_CFLAGS = ${FLAGS}
 live_widget_test_LDADD = ${LD}
-
-shortcuts_test_SOURCES = \
-../tests/test_shortcuts/test_shortcuts.c \
-../tests/test_shortcuts/shortcuts_init.c \
-../tests/test_shortcuts/shortcuts_shutdown.c \
-../tests/test_shortcuts/shortcuts_profile_load.c
-shortcuts_test_CFLAGS = ${FLAGS}
-shortcuts_test_LDADD = ${LD}
 
 coverage:
 	echo "<html><body>" > ../coverage.html
