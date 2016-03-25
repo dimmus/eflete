@@ -656,6 +656,8 @@ _shortcut_tab_close_cb(void *data __UNUSED__,
                        Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
+   /* trigger focus out callback on entries before closing tab */
+   elm_object_focus_set(tabs.toolbar, true);
    tabs_current_tab_close();
 }
 
