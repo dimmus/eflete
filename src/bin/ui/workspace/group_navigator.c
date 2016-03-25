@@ -1785,6 +1785,7 @@ group_navigator_add(Evas_Object *parent, Group *group)
 {
    Evas_Object *icon;
    Part_List *pl;
+   Elm_Object_Item *menu_item;
 
    assert(group != NULL);
    assert(parent != NULL);
@@ -1883,16 +1884,20 @@ group_navigator_add(Evas_Object *parent, Group *group)
    pl->menu = elm_menu_add(ap.win);
    evas_object_data_set(pl->menu, GROUP_NAVIGATOR_DATA, pl);
 
-   elm_menu_item_add(pl->menu, NULL, NULL, _("Part"), _on_menu_add_part_clicked, NULL);
+   menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Part"), _on_menu_add_part_clicked, NULL);
+   elm_object_part_text_set(elm_menu_item_object_get(menu_item), "elm.shortcut", "q");
    elm_menu_item_separator_add(pl->menu, NULL);
 
    pl->add_state_menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("State"), _on_menu_add_state_clicked, NULL);
+   elm_object_part_text_set(elm_menu_item_object_get(pl->add_state_menu_item), "elm.shortcut", "w");
    elm_object_item_disabled_set(pl->add_state_menu_item, true);
    pl->add_part_item_menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Item"), _on_menu_add_item_clicked, NULL);
+   elm_object_part_text_set(elm_menu_item_object_get(pl->add_part_item_menu_item), "elm.shortcut", "e");
    elm_object_item_disabled_set(pl->add_part_item_menu_item, true);
    elm_menu_item_separator_add(pl->menu, NULL);
 
-   elm_menu_item_add(pl->menu, NULL, NULL, _("Program"), _on_menu_add_program_clicked, NULL);
+   menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Program"), _on_menu_add_program_clicked, NULL);
+   elm_object_part_text_set(elm_menu_item_object_get(menu_item), "elm.shortcut", "r");
 
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
    if (group->main_group)
