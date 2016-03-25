@@ -491,7 +491,7 @@ image_manager_add()
 
    Image_Manager *img_mng = (Image_Manager *)mem_calloc(1, sizeof(Image_Manager));
 
-   img_mng->layout = elm_layout_add(main_window_get());
+   img_mng->layout = elm_layout_add(ap.win);
    elm_layout_theme_set(img_mng->layout, "layout", "image_manager", "default");
 
    img_mng->gengrid = elm_gengrid_add(img_mng->layout);

@@ -174,15 +174,6 @@ void
 eflete_main_loop_quit(void);
 
 /**
- * This function get pointer to main window of application.
- *
- * @return pointer to main window Evas_Object.
- * @ingroup Eflete
- */
-Evas_Object *
-main_window_get(void);
-
-/**
  * Get the colorselector object pointer.
  * The colorselector one for the entire application.
  *

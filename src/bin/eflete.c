@@ -31,14 +31,6 @@ App_Data ap;
 static Eina_Bool do_block = true;
 
 Evas_Object *
-main_window_get(void)
-{
-   assert(ap.win != NULL);
-
-   return ap.win;
-}
-
-Evas_Object *
 colorselector_get(void)
 {
    if (!ap.colorsel) ap.colorsel = colorselector_add(ap.win);

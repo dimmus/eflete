@@ -1315,7 +1315,7 @@ ui_property_group_set(Evas_Object *property, Group *group)
         evas_object_size_hint_align_set(pd_group.info, EVAS_HINT_FILL, 0.0);
         elm_layout_file_set(pd_group.info, EFLETE_EDJ, "eflete/property/item/info");
 
-        pd_group.ctxpopup = elm_ctxpopup_add(main_window_get());
+        pd_group.ctxpopup = elm_ctxpopup_add(ap.win);
         elm_ctxpopup_direction_priority_set(pd_group.ctxpopup,
                                             ELM_CTXPOPUP_DIRECTION_DOWN,
                                             ELM_CTXPOPUP_DIRECTION_DOWN,
