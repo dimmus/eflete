@@ -44,15 +44,6 @@
 static Change *change;
 static Evas_Coord part_w, part_h;
 
-typedef enum
-{
-   MODE_NORMAL = 1,
-   MODE_CODE,
-   /* MODE_SEPARATE, */
-   /* MODE_ANIMATOR, */
-   MODE_DEMO
-} Workspace_Mode;
-
 struct _Ruler {
    Evas_Object *obj;
    Ewe_Ruler_Marker *pointer;
@@ -560,7 +551,7 @@ _mode_cb(void *data,
    Scroll_Area *area = NULL;
    int w = 0, h = 0;
 
-   mode = elm_radio_state_value_get(obj);
+   mode = elm_radio_value_get(obj);
    if (mode == wd->mode) return;
 
    wd->mode = mode;
@@ -882,6 +873,15 @@ workspace_add(Evas_Object *parent, Group *group)
    evas_object_event_callback_add(wd->panes, EVAS_CALLBACK_DEL, _workspace_del, wd);
 
    return wd->panes;
+}
+
+void
+workspace_mode_set(Evas_Object *obj, Workspace_Mode mode)
+{
+   WS_DATA_GET(obj);
+
+   elm_radio_value_set(wd->toolbar.mode_switcher.normal, mode);
+   _mode_cb(wd, wd->toolbar.mode_switcher.normal, NULL);
 }
 
 void

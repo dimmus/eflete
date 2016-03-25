@@ -697,6 +697,33 @@ _shortcut_tab_style_manager_cb(void *data __UNUSED__,
      elm_toolbar_item_selected_set(tabs.menu.item_text, true);
 }
 
+static void
+_shortcut_mode_normal_cb(void *data __UNUSED__,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_mode_set(tabs.current_workspace, MODE_NORMAL);
+}
+
+static void
+_shortcut_mode_code_cb(void *data __UNUSED__,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_mode_set(tabs.current_workspace, MODE_CODE);
+}
+
+static void
+_shortcut_mode_demo_cb(void *data __UNUSED__,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_mode_set(tabs.current_workspace, MODE_DEMO);
+}
+
 Evas_Object *
 tabs_add(void)
 {
@@ -810,6 +837,9 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_SOUND_MANAGER, _shortcut_tab_sound_manager_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_COLOR_CLASS_MANAGER, _shortcut_tab_color_class_manager_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_STYLE_MANAGER, _shortcut_tab_style_manager_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_MODE_NORMAL, _shortcut_mode_normal_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_MODE_CODE, _shortcut_mode_code_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_MODE_DEMO, _shortcut_mode_demo_cb, NULL);
    return tabs.layout;
 }
 

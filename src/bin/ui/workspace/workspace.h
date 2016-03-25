@@ -34,6 +34,16 @@
 
 #include "eflete.h"
 
+typedef enum
+{
+   MODE_NORMAL = 1,
+   MODE_CODE,
+   /* MODE_SEPARATE, */
+   /* MODE_ANIMATOR, */
+   MODE_DEMO
+} Workspace_Mode;
+
+
 /**
  * Create a new Workspace object to the parent.
  *
@@ -336,4 +346,6 @@ workspace_add_program_request(Evas_Object *obj);
 void
 workspace_delete_request(Evas_Object *obj);
 
+void
+workspace_mode_set(Evas_Object *obj, Workspace_Mode mode);
 #endif /* WORKSPACE_H */
