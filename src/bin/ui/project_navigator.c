@@ -443,7 +443,7 @@ _btn_add_group_cb(void *data __UNUSED__,
    elm_layout_content_set(item, NULL, layout_p.entry);
    elm_box_pack_end(layout_p.box, item);
    glit = elm_genlist_selected_item_get(project_navigator.genlist);
-   if (glit && (elm_genlist_item_item_class_get(item) == project_navigator.itc_folder))
+   if (glit && (elm_genlist_item_item_class_get(glit) == project_navigator.itc_folder))
      elm_entry_entry_set(layout_p.entry, elm_object_item_data_get(glit));
    /* copy: combobox */
    LAYOUT_PROP_ADD(layout_p.box, _("copy of"), "property", "1swallow")
