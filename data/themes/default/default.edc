@@ -15,6 +15,7 @@ collections {
    #include "widgets/toolbar.edc"
    #include "widgets/button.edc"
    #include "widgets/spinner.edc"
+   #include "widgets/slider.edc"
    #include "widgets/segment_control.edc"
    #include "widgets/popup.edc"
    #include "widgets/ctxpopup.edc"
