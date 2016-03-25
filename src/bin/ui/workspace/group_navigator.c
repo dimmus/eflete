@@ -2013,3 +2013,19 @@ group_navigator_state_next_request(Evas_Object *obj)
           }
      }
 }
+
+void
+group_navigator_part_showhide_request(Evas_Object *obj)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   Part *part;
+
+   if (pl->selected_part_item != NULL)
+     {
+        part = elm_object_item_data_get(pl->selected_part_item);
+        if (part)
+          {
+             _on_eye_clicked(part, obj, NULL);
+          }
+     }
+}

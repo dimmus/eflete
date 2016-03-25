@@ -1189,3 +1189,11 @@ workspace_state_next_request(Evas_Object *obj)
 
    group_navigator_state_next_request(wd->group_navi);
 }
+
+void
+workspace_part_showhide_request(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+
+   group_navigator_part_showhide_request(wd->group_navi);
+}

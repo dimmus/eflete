@@ -116,4 +116,7 @@ group_navigator_delete_request(Evas_Object *obj);
 
 void
 group_navigator_state_next_request(Evas_Object *obj);
+
+void
+group_navigator_part_showhide_request(Evas_Object *obj);
 #endif /* GROUP_NAVIGATOR_H */
