@@ -235,9 +235,9 @@ _key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
         shortcut = eina_list_search_sorted(ap.shortcuts->shortcuts, (Eina_Compare_Cb)_shortcut_cmp, &sc);
         if (shortcut)
           {
-             _shortcut_handle(shortcut->type_press);
              ap.shortcuts->held_shortcuts = eina_list_sorted_insert(ap.shortcuts->held_shortcuts,
                                                                     (Eina_Compare_Cb)_shortcut_cmp, shortcut);
+             _shortcut_handle(shortcut->type_press);
              if (shortcut->type_press != SHORTCUT_TYPE_NONE)
                return ECORE_CALLBACK_DONE;
           }
