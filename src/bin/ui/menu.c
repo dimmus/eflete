@@ -266,16 +266,16 @@ ui_menu_add(void)
    ITEM_MENU_ADD(MENU_NULL, MENU_EDITORS, NULL, _("Edit"))
       ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_IMAGE, "image", _("Image manager"))
       items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_IMAGE]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-2");
+      elm_object_part_text_set(items_obj, "elm.shortcut", "F7");
       ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_SOUND, "sound", _("Sound manager"))
       items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_SOUND]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-3");
-      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_COLORCLASS, "color", _("Color class manager"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_COLORCLASS]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-4");
+      elm_object_part_text_set(items_obj, "elm.shortcut", "F8");
       ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_TEXT_STYLE, "text", _("Textblock styles manager"))
       items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_TEXT_STYLE]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-5");
+      elm_object_part_text_set(items_obj, "elm.shortcut", "F9");
+      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_COLORCLASS, "color", _("Color class manager"))
+      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_COLORCLASS]);
+      elm_object_part_text_set(items_obj, "elm.shortcut", "F10");
    ITEM_MENU_ADD(MENU_NULL, MENU_HELP, NULL, _("Help"))
       ITEM_MENU_ADD(MENU_HELP, MENU_HELP_ABOUT, NULL, _("About"))
 
