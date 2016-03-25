@@ -78,6 +78,11 @@ struct _Style_Editor
       Evas_Object *dialog;
       Eina_List *buf_resources;
    } popup;
+   struct {
+        Evas_Object *black;
+        Evas_Object *tile;
+        Evas_Object *white;
+   } bg_switcher;
    Elm_Object_Item *tag;
 };
 
@@ -830,70 +835,72 @@ _on_bt_add(void *data,
 }
 
 static void
-_change_bg_cb(void *data,
-              Evas_Object *obj,
-              void *event_info __UNUSED__)
+_bg_cb(void *data,
+       Evas_Object *obj,
+       void *event_info __UNUSED__)
 {
-   Style_Editor *style_edit = (Style_Editor *)data;
+   Bg_Preview bg_mode;
+   Style_Editor *edit = data;
+   const char *signal = NULL;
 
-   assert(style_edit != NULL);
+   Evas_Object *bg = elm_object_part_content_get(edit->entry_prev, "background");
 
-   int state = elm_radio_state_value_get(obj);
-   Evas_Object *bg = NULL;
-   Evas *canvas = evas_object_evas_get(obj);
-   switch (state)
+   bg_mode = elm_radio_value_get(obj);
+   switch (bg_mode)
      {
-      case 0:
-        {
-           IMAGE_ADD_NEW(obj, bg, "bg", "tile");
-           evas_object_show(bg);
-        }
-      break;
-      case 1:
-        {
-           bg = evas_object_rectangle_add(canvas);
-           evas_object_color_set(bg, 0, 0, 0, 255);
-           evas_object_show(bg);
-        }
-      break;
-      case 2:
-        {
-           bg = evas_object_rectangle_add(canvas);
-           evas_object_color_set(bg, 255, 255, 255, 255);
-           evas_object_show(bg);
-        }
-      break;
-      default:
-      break;
+      case BG_PREVIEW_WHITE:
+         signal = "elm,bg,white";
+         break;
+      case BG_PREVIEW_TILE:
+         signal = "elm,bg,tile";
+         break;
+      case BG_PREVIEW_BLACK:
+         signal = "elm,bg,black";
+         break;
      }
-   elm_object_part_content_set(style_edit->entry_prev, "background", bg);
+
+   elm_layout_signal_emit(bg, signal, "eflete");
+}
+
+static Evas_Object *
+_radio_switcher_add(Style_Editor *edit,
+                    const char *style,
+                    Evas_Smart_Cb func,
+                    int state_value,
+                    Evas_Object *group)
+{
+   Evas_Object *radio;
+
+   radio = elm_radio_add(ap.win);
+   evas_object_show(radio);
+   elm_object_style_set(radio, style);
+   elm_radio_state_value_set(radio, state_value);
+   evas_object_smart_callback_add(radio, "changed", func, edit);
+   elm_radio_group_add(radio, group);
+
+   return radio;
 }
 
 static Evas_Object*
-_add_box_bg(Style_Editor *style_edit)
+_add_box_bg(Style_Editor *edit)
 {
-   Evas_Object *box_bg, *image_bg, *radio_group, *radio;
+   Evas_Object *box_bg;
 
    BOX_ADD(ap.win, box_bg, true, false);
    elm_box_padding_set(box_bg, 6, 6);
    elm_box_align_set(box_bg, 1.0, 0.5);
 
-#define _RADIO_ADD(RADIO, VALUE, IMAGE) \
-   RADIO = elm_radio_add(ap.win); \
-   elm_object_style_set(RADIO, "style_editor"); \
-   elm_radio_state_value_set(RADIO, VALUE); \
-   evas_object_show(RADIO); \
-   IMAGE_ADD_NEW(box_bg, image_bg, "preview", IMAGE); \
-   elm_object_part_content_set(RADIO, "bg", image_bg); \
-   evas_object_smart_callback_add(RADIO, "changed", _change_bg_cb, style_edit); \
-   elm_box_pack_end(box_bg, RADIO);
+   /* add to toolbar bg switcher */
+   edit->bg_switcher.white = _radio_switcher_add(edit, "bg_white", _bg_cb, BG_PREVIEW_WHITE, NULL);
+   elm_box_pack_end(box_bg, edit->bg_switcher.white);
 
-   _RADIO_ADD(radio_group, 0, "bg-tile");
-   _RADIO_ADD(radio, 1, "bg-black");
-   elm_radio_group_add(radio, radio_group);
-   _RADIO_ADD(radio, 2, "bg-white");
-   elm_radio_group_add(radio, radio_group);
-#undef _RADIO_ADD
+   edit->bg_switcher.tile = _radio_switcher_add(edit, "bg_tile", _bg_cb, BG_PREVIEW_TILE, edit->bg_switcher.white);
+   elm_box_pack_end(box_bg, edit->bg_switcher.tile);
+
+   edit->bg_switcher.black = _radio_switcher_add(edit, "bg_black", _bg_cb, BG_PREVIEW_BLACK, edit->bg_switcher.white);
+   elm_box_pack_end(box_bg, edit->bg_switcher.black);
+
+   elm_radio_value_set(edit->bg_switcher.white, BG_PREVIEW_TILE);
 
    return box_bg;
 }
@@ -941,7 +948,10 @@ style_manager_add()
    elm_object_signal_emit(style_edit->entry_prev, "entry,hide", "eflete");
 
    canvas = evas_object_evas_get(ap.win);
-   IMAGE_ADD_NEW(ap.win, bg, "bg", "tile");
+
+   /* Entry preview to show colorclass */
+   bg = elm_layout_add(main_layout);
+   elm_layout_theme_set(bg, "layout", "workspace", "bg");
    elm_object_part_content_set(style_edit->entry_prev, "background", bg);
 
    style_edit->textblock_style = evas_object_textblock_add(canvas);
