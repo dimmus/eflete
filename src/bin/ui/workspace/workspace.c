@@ -271,10 +271,6 @@ _members_zoom_set(Workspace_Data *wd)
 
    ewe_ruler_step_set(area->ruler_h.obj, NULL, (int)(50 * wd->zoom_factor));
    ewe_ruler_step_set(area->ruler_v.obj, NULL, (int)(50 * wd->zoom_factor));
-
-   Eina_Stringshare *str = eina_stringshare_printf("%d%%", (int)(wd->zoom_factor * 100));
-   elm_object_text_set(wd->toolbar.zoom.slider, str);
-   eina_stringshare_del(str);
 }
 
 static void
@@ -328,7 +324,6 @@ _zoom_controls_add(Workspace_Data *wd)
    wd->toolbar.zoom.slider = elm_slider_add(wd->toolbar.obj);
    elm_slider_min_max_set(wd->toolbar.zoom.slider, 10.0, 1000.0);
    elm_slider_value_set(wd->toolbar.zoom.slider, 100);
-   elm_slider_indicator_show_set(wd->toolbar.zoom.slider, true);
    evas_object_smart_callback_add(wd->toolbar.zoom.slider, "changed", _slider_zoom_cb, wd);
    IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_smaller")
    elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.icon", img);
