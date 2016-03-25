@@ -204,6 +204,22 @@ _key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
       default:
          break;
      }
+
+   /* ignore hotkey if */
+   if (/* it is without modifier or with shift-only */
+      ((sc.modifiers == MOD_NONE) || (sc.modifiers == MOD_SHIFT)) &&
+      /* is not F1 - F12 */
+      (!(((sc.keycode >= 67 /*F1*/) &&
+          (sc.keycode <= 76 /*F10*/)) ||
+         (sc.keycode == 95 /*F11*/) ||
+         (sc.keycode == 96 /*F12*/)) ) &&
+      /* elm_entry is in focus */
+      (!strcmp("elm_entry", evas_object_type_get(elm_object_focused_object_get(ap.win)))))
+     {
+        DBG("entry focused, ignoring hotkeys with MOD_SHIFT or MODE_NONE");
+        return ECORE_CALLBACK_PASS_ON;
+     }
+
    DBG("key_down: %s %d, mod: %d", ev->key, ev->keycode, ev->modifiers & 255);
 
    ap.shortcuts->last_modifiers = sc.modifiers;
