@@ -1181,3 +1181,11 @@ workspace_zoom_factor_get(Evas_Object *obj)
 
    return wd->zoom_factor;
 }
+
+void
+workspace_state_next_request(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+
+   group_navigator_state_next_request(wd->group_navi);
+}

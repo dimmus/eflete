@@ -348,4 +348,7 @@ workspace_delete_request(Evas_Object *obj);
 
 void
 workspace_mode_set(Evas_Object *obj, Workspace_Mode mode);
+
+void
+workspace_state_next_request(Evas_Object *obj);
 #endif /* WORKSPACE_H */

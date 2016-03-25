@@ -1983,3 +1983,33 @@ group_navigator_delete_request(Evas_Object *obj)
    if (!elm_object_disabled_get(pl->btn_del))
      _on_btn_minus_clicked(pl, NULL, NULL);
 }
+
+void
+group_navigator_state_next_request(Evas_Object *obj)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   Part *part;
+   State *state;
+   Eina_List *l;
+
+   if (pl->selected_part_item != NULL)
+     {
+        part = elm_object_item_data_get(pl->selected_part_item);
+        if (eina_list_count(part->states) > 1)
+          {
+             l = eina_list_data_find_list(part->states, part->current_state);
+
+             assert(l != NULL);
+
+             if (eina_list_next(l) != NULL)
+               state = eina_list_data_get(eina_list_next(l));
+             else
+               state = eina_list_data_get(part->states);
+
+             editor_part_selected_state_set(pl->group->edit_object, NULL, false,
+                                            state->part->name,
+                                            state->parsed_name,
+                                            state->parsed_val);
+          }
+     }
+}
