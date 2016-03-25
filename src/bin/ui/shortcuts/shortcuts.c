@@ -135,6 +135,7 @@ _shortcut_handle(Shortcut_Type type)
 
    switch (type)
      {
+        SHORTCUT(QUIT);
         SHORTCUT(REDO);
         SHORTCUT(UNDO);
         SHORTCUT(SAVE);
@@ -340,6 +341,9 @@ static void
 _default_shortcuts_add()
 {
    assert(ap.shortcuts != NULL);
+
+   _add_shortcut(SHORTCUT_TYPE_QUIT, SHORTCUT_TYPE_NONE,
+                 MOD_CTRL, 24/*q*/);
 
    _add_shortcut(SHORTCUT_TYPE_UNDO, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 52/*z*/);

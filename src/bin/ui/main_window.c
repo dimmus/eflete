@@ -198,6 +198,7 @@ ui_main_window_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_STYLE_EDITOR_TAB_CLICKED, _hide_history, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_COLOR_EDITOR_TAB_CLICKED, _hide_history, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _show_history, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_QUIT, _on_done, NULL);
 
    ap.block.property = ui_property_add(ap.win);
    elm_layout_content_set(ap.block.right_top, "elm.swallow.property", ap.block.property);
