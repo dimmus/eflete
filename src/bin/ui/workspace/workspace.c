@@ -507,12 +507,12 @@ _container_changed(void *data,
    if (area->ruler_h.scale_rel)
      {
         ewe_ruler_zero_offset_set(area->ruler_h.obj, area->ruler_h.scale_rel, geom->x - x);
-        ewe_ruler_step_set(area->ruler_h.obj, area->ruler_h.scale_rel, (geom->w / 2));
+        ewe_ruler_step_set(area->ruler_h.obj, area->ruler_h.scale_rel, ((geom->w * wd->zoom_factor) / 2));
      }
    if (area->ruler_v.scale_rel)
      {
         ewe_ruler_zero_offset_set(area->ruler_v.obj, area->ruler_v.scale_rel, geom->y - y);
-        ewe_ruler_step_set(area->ruler_v.obj, area->ruler_v.scale_rel, (geom->h / 2));
+        ewe_ruler_step_set(area->ruler_v.obj, area->ruler_v.scale_rel, ((geom->h * wd->zoom_factor) / 2));
      }
 
    elm_spinner_value_set(wd->toolbar.container_sizer.spinner_w, area->w);
