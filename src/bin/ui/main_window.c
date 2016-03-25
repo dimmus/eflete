@@ -53,19 +53,9 @@ ui_main_window_del(void)
      if (!project_close())
        return false;
 
-   /*
-   if (!history_term(ap.history))
-     {
-        ERR("Failed terminate history module");
-        abort();
-     }
-   */
 #ifdef HAVE_ENVENTOR
    code_edit_mode_switch(false);
 #endif
-
-   /* FIXME: remove it from here */
-   //live_view_free(ap.live_view);
 
    free(ap.menu);
    ap.menu = NULL;
@@ -208,15 +198,10 @@ ui_main_window_add(void)
 
    ap.menu = ui_menu_add();
 
-   //ui_panes_add();
-   //ap.workspace = workspace_add(ap.block.canvas);
-   //evas_object_show(ap.workspace);
-   //ap.live_view = live_view_add(ap.block.bottom_right, false);
-   //ap.colorsel = colorselector_add(ap.win);
    #ifdef HAVE_ENVENTOR
      ap.enventor= enventor_object_init(ap.win);
    #endif /* HAVE_ENVENTOR */
-   //register_callbacks();
+
    if (!shortcuts_init())
      {
         CRIT("Can't initialize the shortcut module");
