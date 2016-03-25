@@ -174,18 +174,6 @@ void
 eflete_main_loop_quit(void);
 
 /**
- * This function will return win_layout (if App_Data and win_layout exists).
- * If they are not exist, then this function will return NULL.
- * This function is usable for notification.
- *
- * @return win_layout if exist, NULL if not exist.
- *
- * @ingroup Eflete
- */
-Evas_Object *
-win_layout_get(void);
-
-/**
  * This function get pointer to main window of application.
  *
  * @return pointer to main window Evas_Object.

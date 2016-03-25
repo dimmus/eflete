@@ -127,7 +127,6 @@ eflete_test_SOURCES = \
 ../tests/test_eflete/test_eflete.c \
 ../tests/test_eflete/app_init.c \
 ../tests/test_eflete/app_shutdown.c \
-../tests/test_eflete/win_layout_get.c \
 ../tests/test_eflete/main_window_get.c \
 ../tests/test_eflete/colorselector_get.c
 eflete_test_CFLAGS = ${FLAGS}

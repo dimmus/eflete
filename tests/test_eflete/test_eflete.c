@@ -25,8 +25,6 @@ Suite* test_suite (void) {
 
    tcase_add_test(tcase, app_init_test_p);
 
-   tcase_add_test(tcase, win_layout_get_test_p);
-
    tcase_add_test(tcase, app_shutdown_test_p1);
    tcase_add_test(tcase, app_shutdown_test_p2);
 

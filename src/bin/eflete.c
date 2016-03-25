@@ -31,14 +31,6 @@ App_Data ap;
 static Eina_Bool do_block = true;
 
 Evas_Object *
-win_layout_get(void)
-{
-   assert(ap.win_layout != NULL);
-
-   return ap.win_layout;
-}
-
-Evas_Object *
 main_window_get(void)
 {
    assert(ap.win != NULL);
