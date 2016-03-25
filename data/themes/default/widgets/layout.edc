@@ -1695,7 +1695,6 @@ group { name: "elm/layout/groupview/default";
             visible: 0;
             image {
                normal: "bg_proxy.png";
-               middle: SOLID;
             }
             fill.type: TILE;
          }
@@ -1736,6 +1735,7 @@ group { name: "elm/layout/groupview/default";
             image {
                normal: "border_1.png";
                border: 1 1 1 1;
+               middle: NONE;
             }
          }
 #define BORDER(NAME, COLOR) \
