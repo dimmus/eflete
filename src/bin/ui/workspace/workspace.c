@@ -311,6 +311,14 @@ _slider_zoom_cb(void *data,
 }
 
 static void
+_zoom_controls_disabled_set(Workspace_Data *wd, Eina_Bool disabled)
+{
+   elm_object_disabled_set(wd->toolbar.zoom.fill, disabled);
+   elm_object_disabled_set(wd->toolbar.zoom.z100, disabled);
+   elm_object_disabled_set(wd->toolbar.zoom.slider, disabled);
+}
+
+static void
 _zoom_controls_add(Workspace_Data *wd)
 {
    Elm_Object_Item *tb_it;
@@ -582,6 +590,7 @@ _mode_cb(void *data,
 
          elm_object_part_content_set(wd->panes, "right", wd->group_navi);
          evas_object_show(wd->group_navi);
+         _zoom_controls_disabled_set(wd, false);
          evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, wd->group);
 
          area = &wd->normal;
@@ -599,6 +608,7 @@ _mode_cb(void *data,
          evas_object_show(wd->demo_navi);
          demo_group_demo_update(wd->demo_navi);
 
+         _zoom_controls_disabled_set(wd, true);
          evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
 
          area = &wd->demo;
