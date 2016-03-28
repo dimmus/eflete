@@ -167,6 +167,9 @@ _shortcut_handle(Shortcut_Type type)
         SHORTCUT(MODE_NORMAL);
         SHORTCUT(MODE_CODE);
         SHORTCUT(MODE_DEMO);
+        SHORTCUT(ZOOM_IN);
+        SHORTCUT(ZOOM_OUT);
+        SHORTCUT(ZOOM_RESET);
 
       case SHORTCUT_TYPE_NONE:
          break;
@@ -421,6 +424,13 @@ _default_shortcuts_add()
                  MOD_NONE, 75/*F9*/);
    _add_shortcut(SHORTCUT_TYPE_TAB_COLOR_CLASS_MANAGER, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 76/*F10*/);
+
+   _add_shortcut(SHORTCUT_TYPE_ZOOM_IN, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 86/*KP_+*/);
+   _add_shortcut(SHORTCUT_TYPE_ZOOM_OUT, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 82/*KP_-*/);
+   _add_shortcut(SHORTCUT_TYPE_ZOOM_RESET, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 106/*KP_/ */);
 }
 
 /*=============================================*/

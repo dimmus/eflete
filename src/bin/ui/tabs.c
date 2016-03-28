@@ -742,6 +742,43 @@ _shortcut_mode_demo_cb(void *data __UNUSED__,
      workspace_mode_set(tabs.current_workspace, MODE_DEMO);
 }
 
+static void
+_shortcut_zoom_in_cb(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   double factor;
+
+   if (tabs.current_workspace)
+     {
+        factor = workspace_zoom_factor_get(tabs.current_workspace);
+        workspace_zoom_factor_set(tabs.current_workspace, factor + 0.1);
+     }
+}
+
+static void
+_shortcut_zoom_out_cb(void *data __UNUSED__,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
+{
+   double factor;
+
+   if (tabs.current_workspace)
+     {
+        factor = workspace_zoom_factor_get(tabs.current_workspace);
+        workspace_zoom_factor_set(tabs.current_workspace, factor - 0.1);
+     }
+}
+
+static void
+_shortcut_zoom_reset_cb(void *data __UNUSED__,
+                        Evas_Object *obj __UNUSED__,
+                        void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_zoom_factor_set(tabs.current_workspace, 1.0);
+}
+
 Evas_Object *
 tabs_add(void)
 {
@@ -860,6 +897,9 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_MODE_NORMAL, _shortcut_mode_normal_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_MODE_CODE, _shortcut_mode_code_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_MODE_DEMO, _shortcut_mode_demo_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ZOOM_IN, _shortcut_zoom_in_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ZOOM_OUT, _shortcut_zoom_out_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ZOOM_RESET, _shortcut_zoom_reset_cb, NULL);
    return tabs.layout;
 }
 
