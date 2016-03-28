@@ -56,8 +56,7 @@ int MENU_ITEMS_LIST_STYLE_ONLY[] = {
 int MENU_ITEMS_LIST_MAIN[] = {
    MENU_FILE,
    MENU_VIEW,
-   /*MENU_EDIT,*/
-   MENU_EDITORS,
+   MENU_EDIT,
    MENU_HELP,
 
    MENU_NULL
@@ -249,8 +248,21 @@ ui_menu_add(void)
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXIT, NULL, _("Quit"))
          items_obj = elm_menu_item_object_get(menu->menu_items[MENU_FILE_EXIT]);
          elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-Q");
-/* ITEM_MENU_ADD(NULL, MENU_EDIT, NULL, _("Edit"))
-      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PREFERENCE, NULL, _("Preference..."))*/
+   ITEM_MENU_ADD(MENU_NULL, MENU_EDIT, NULL, _("Edit"))
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_IMAGE, "image", _("Image manager"))
+      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_IMAGE]);
+      elm_object_part_text_set(items_obj, "elm.shortcut", "F7");
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_SOUND, "sound", _("Sound manager"))
+      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_SOUND]);
+      elm_object_part_text_set(items_obj, "elm.shortcut", "F8");
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_TEXT_STYLE, "text", _("Textblock styles manager"))
+      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_TEXT_STYLE]);
+      elm_object_part_text_set(items_obj, "elm.shortcut", "F9");
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_COLORCLASS, "color", _("Color class manager"))
+      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_COLORCLASS]);
+      elm_object_part_text_set(items_obj, "elm.shortcut", "F10");
+
+      /* ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PREFERENCE, NULL, _("Preference..."))*/
    ITEM_MENU_ADD(MENU_NULL, MENU_VIEW, NULL, _("View"))
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE, NULL, _("Workspace"))
          ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_ZOOM_IN, NULL, _("Zoom in"))
@@ -263,19 +275,6 @@ ui_menu_add(void)
             ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_ABS, NULL, _("Absolute scale"))
             ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_REL, NULL, _("Relative scale"))
             ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_BOTH, NULL, _("Both"))
-   ITEM_MENU_ADD(MENU_NULL, MENU_EDITORS, NULL, _("Edit"))
-      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_IMAGE, "image", _("Image manager"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_IMAGE]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "F7");
-      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_SOUND, "sound", _("Sound manager"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_SOUND]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "F8");
-      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_TEXT_STYLE, "text", _("Textblock styles manager"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_TEXT_STYLE]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "F9");
-      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_COLORCLASS, "color", _("Color class manager"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_COLORCLASS]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "F10");
    ITEM_MENU_ADD(MENU_NULL, MENU_HELP, NULL, _("Help"))
       ITEM_MENU_ADD(MENU_HELP, MENU_HELP_ABOUT, NULL, _("About"))
 
