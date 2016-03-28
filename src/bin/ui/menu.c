@@ -32,12 +32,6 @@ int MENU_ITEMS_LIST_BASE[] = {
    MENU_FILE_EXPORT_DEVELOP,
 /* MENU_FILE_EXPORT_RELEASE,*/
    MENU_FILE_CLOSE_PROJECT,
-   MENU_VIEW_RULERS,
-   MENU_VIEW_RULERS_SHOW,
-   MENU_VIEW_RULERS_ABS,
-   MENU_VIEW_RULERS_REL,
-   MENU_VIEW_RULERS_BOTH,
-/*   MENU_VIEW_WORKSPACE_OBJECT_AREA, */
    MENU_EDITORS_IMAGE,
    MENU_EDITORS_SOUND,
    MENU_EDITORS_COLORCLASS,
@@ -47,7 +41,13 @@ int MENU_ITEMS_LIST_BASE[] = {
 };
 
 int MENU_ITEMS_LIST_STYLE_ONLY[] = {
-   MENU_VIEW_WORKSPACE,
+   MENU_VIEW_WORKSPACE_ZOOM_IN,
+   MENU_VIEW_WORKSPACE_ZOOM_OUT,
+   //MENU_VIEW_WORKSPACE_OBJECT_AREA,
+   MENU_VIEW_RULERS_SHOW,
+   MENU_VIEW_RULERS_ABS,
+   MENU_VIEW_RULERS_REL,
+   MENU_VIEW_RULERS_BOTH,
    MENU_FILE_EXPORT_EDC_GROUP,
 
    MENU_NULL
@@ -66,7 +66,7 @@ static int sad_callback_data[MENU_ITEMS_COUNT];
 
 struct _Menu
 {
-   Elm_Object_Item *menu_items[MENU_ITEMS_COUNT];
+   Elm_Object_Item *items[MENU_ITEMS_COUNT];
    Evas_Object *window_menu;
 };
 
@@ -200,7 +200,7 @@ _project_changed(void *data __UNUSED__,
 Menu *
 ui_menu_add(void)
 {
-   Evas_Object *window_menu, *items_obj;
+   Evas_Object *window_menu;
    Menu *menu;
    int i = 0;
 
@@ -220,66 +220,61 @@ ui_menu_add(void)
    window_menu = elm_win_main_menu_get(ap.win);
 
 
-#define ITEM_MENU_ADD(PARENT_ID, ID, ICON, LABEL) \
-   menu->menu_items[ID] = elm_menu_item_add(window_menu, menu->menu_items[PARENT_ID], ICON, LABEL, _delay_menu_cb, &sad_callback_data[ID]);
+#define ITEM_MENU_ADD(PARENT_ID, ID, ICON, LABEL, SHORTCUT) \
+   do \
+     { \
+        menu->items[ID] = elm_menu_item_add(window_menu, menu->items[PARENT_ID], ICON, LABEL, _delay_menu_cb, &sad_callback_data[ID]); \
+        if (SHORTCUT) \
+          { \
+             Evas_Object *item_obj = elm_menu_item_object_get(menu->items[ID]);\
+             elm_object_part_text_set(item_obj, "elm.shortcut", SHORTCUT); \
+          } \
+     } \
+   while (0);
 
-   ITEM_MENU_ADD(MENU_NULL, MENU_FILE, NULL, _("File"))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_NEW_PROJECT, "file", _("New project"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_FILE_NEW_PROJECT]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-N");
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_OPEN_PROJECT, "folder", _("Open project"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_FILE_OPEN_PROJECT]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-O");
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDJ, NULL, _("Import edj-file"))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDC, NULL, _("Import edc-file"))
-      elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE, EFLETE_IMG_PATH"icon-save.png", _("Save"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_FILE_SAVE]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-S");
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export as edc"))
-         ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_GROUP, NULL, _("Group"))
-         ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_PROJECT, NULL, _("Project"))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT, NULL, _("Export as edj"))
-         ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_DEVELOP, NULL, _("Develop"))
-         ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_RELEASE, NULL, _("Release"))
-      elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_CLOSE_PROJECT, NULL, _("Close project"))
-      elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXIT, NULL, _("Quit"))
-         items_obj = elm_menu_item_object_get(menu->menu_items[MENU_FILE_EXIT]);
-         elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-Q");
-   ITEM_MENU_ADD(MENU_NULL, MENU_EDIT, NULL, _("Edit"))
-      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_IMAGE, "image", _("Image manager"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_IMAGE]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "F7");
-      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_SOUND, "sound", _("Sound manager"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_SOUND]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "F8");
-      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_TEXT_STYLE, "text", _("Textblock styles manager"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_TEXT_STYLE]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "F9");
-      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_COLORCLASS, "color", _("Color class manager"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_COLORCLASS]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "F10");
+#define ___(PARENT_ID) \
+   elm_menu_item_separator_add(window_menu, menu->items[PARENT_ID]);
 
+   ITEM_MENU_ADD(MENU_NULL, MENU_FILE, NULL, _("File"), NULL)
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_NEW_PROJECT, "file", _("New project"), NULL)
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_OPEN_PROJECT, "folder", _("Open project"), "Ctrl-O")
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDJ, NULL, _("Import edj-file"), NULL)
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDC, NULL, _("Import edc-file"), NULL)
+      ___(MENU_FILE);
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE, EFLETE_IMG_PATH"icon-save.png", _("Save"), "Ctrl-S")
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export as edc"), NULL)
+         ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_GROUP, NULL, _("Group"), NULL)
+         ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_PROJECT, NULL, _("Project"), NULL)
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT, NULL, _("Export as edj"), NULL)
+         ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_DEVELOP, NULL, _("Develop"), NULL)
+         ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_RELEASE, NULL, _("Release"), NULL)
+      ___(MENU_FILE);
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_CLOSE_PROJECT, NULL, _("Close project"), NULL)
+      ___(MENU_FILE);
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXIT, NULL, _("Quit"), "Ctrl-Q")
+
+   ITEM_MENU_ADD(MENU_NULL, MENU_EDIT, NULL, _("Edit"), NULL)
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_IMAGE, "image", _("Image manager"), "F7")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_SOUND, "sound", _("Sound manager"), "F8")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_TEXT_STYLE, "text", _("Textblock styles manager"), "F9")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_COLORCLASS, "color", _("Color class manager"), "F10")
       /* ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PREFERENCE, NULL, _("Preference..."))*/
-   ITEM_MENU_ADD(MENU_NULL, MENU_VIEW, NULL, _("View"))
-      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE, NULL, _("Workspace"))
-         ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_ZOOM_IN, NULL, _("Zoom in"))
-         ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_ZOOM_OUT, NULL, _("Zoom out"))
-         elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_VIEW_WORKSPACE]);
-         ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_OBJECT_AREA, NULL, _("Show/Hide object area"))
-         ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_RULERS, NULL, _("Rulers"))
-            ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_SHOW, NULL, _("Show/Hide rulers"))
-            elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_VIEW_RULERS]);
-            ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_ABS, NULL, _("Absolute scale"))
-            ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_REL, NULL, _("Relative scale"))
-            ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_BOTH, NULL, _("Both"))
-   ITEM_MENU_ADD(MENU_NULL, MENU_HELP, NULL, _("Help"))
-      ITEM_MENU_ADD(MENU_HELP, MENU_HELP_ABOUT, NULL, _("About"))
 
-   elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE_IMPORT_EDC]);
-#undef ITEM_MENU_ADD
+   ITEM_MENU_ADD(MENU_NULL, MENU_VIEW, NULL, _("View"), NULL)
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_ZOOM_IN, NULL, _("Zoom in"), "+")
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_ZOOM_OUT, NULL, _("Zoom out"), "-")
+      ___(MENU_VIEW);
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_OBJECT_AREA, NULL, _("Show/Hide object area"), NULL)
+      ___(MENU_VIEW);
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_SHOW, NULL, _("Show/Hide rulers"), NULL)
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_ABS, NULL, _("Absolute scale"), NULL)
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_REL, NULL, _("Relative scale"), NULL)
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_BOTH, NULL, _("Both scales"), NULL)
+
+   ITEM_MENU_ADD(MENU_NULL, MENU_HELP, NULL, _("Help"), NULL)
+      ITEM_MENU_ADD(MENU_HELP, MENU_HELP_ABOUT, NULL, _("About"), NULL)
+
+   elm_menu_item_separator_add(window_menu, menu->items[MENU_FILE_IMPORT_EDC]);
 
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
@@ -300,7 +295,7 @@ ui_menu_disable_set(Menu *menu, int mid, Eina_Bool flag)
    assert(menu != NULL);
    assert((mid > MENU_NULL) && (mid < MENU_ITEMS_COUNT));
 
-   elm_object_item_disabled_set(menu->menu_items[mid], flag);
+   elm_object_item_disabled_set(menu->items[mid], flag);
 
    return true;
 }
