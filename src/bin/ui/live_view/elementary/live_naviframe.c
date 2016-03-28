@@ -127,8 +127,16 @@ _on_naviframe_text_check(void *data __UNUSED__,
                          Evas_Object *obj __UNUSED__,
                          void *ei __UNUSED__)
 {
-   TODO("Remake on_text_check, so that would be used everywhere.")
-   ERR(N_("Complex widgets are not implemented yet."))
+   Demo_Part *part = (Demo_Part *)ei;
+   Evas_Object *object = (Evas_Object *) data;
+   Elm_Object_Item *item_main, *item_current;
+
+   item_current = evas_object_data_get(object, "main_page");
+   item_main = elm_naviframe_top_item_get(object);
+   if (item_current != item_main)
+     elm_naviframe_item_pop(object);
+
+   elm_object_part_text_set(object, part->name, part->text_content);
 }
 
 static void
