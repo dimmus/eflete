@@ -1698,6 +1698,9 @@ group { name: "elm/layout/groupview/default";
             }
             fill.type: TILE;
          }
+         description { state: "text" 0.0;
+            inherit: "default" 0.0;
+         }
 #define BG(NAME, IMG) \
    description { state: #NAME 0.0; \
       inherit: "default" 0.0; \
