@@ -1219,7 +1219,7 @@ _prop_item_alias_update(Group_Prop_Data *pd, int aliases_count)
    Evas_Object *label, *label_ctx;
    Eina_List *l;
    const char *text_info = NULL;
-   char *list_data;
+   Group *alias;
    Eina_Strbuf *text_ctx;
 
    assert(pd != NULL);
@@ -1241,12 +1241,12 @@ _prop_item_alias_update(Group_Prop_Data *pd, int aliases_count)
         int count = 1;
         text_ctx = eina_strbuf_new();
 
-        EINA_LIST_FOREACH(pd->group->aliases, l, list_data)
+        EINA_LIST_FOREACH(pd->group->aliases, l, alias)
           {
              const char *step = "%d. %s";
              if (eina_strbuf_length_get(text_ctx) > 0)
                eina_strbuf_append(text_ctx, "</br>");
-             step = eina_stringshare_printf(step, count++, list_data);
+             step = eina_stringshare_printf(step, count++, alias->name);
              eina_strbuf_append(text_ctx, step);
           }
 
@@ -1287,7 +1287,7 @@ ui_property_group_set(Evas_Object *property, Group *group)
    Eina_List *l;
    const char *text_info = NULL;
    int aliases_count = 0;
-   char *list_data;
+   Group *alias;
    Eina_Strbuf *text_ctx = NULL;
 
    GROUP_PROP_DATA_GET()
@@ -1335,12 +1335,12 @@ ui_property_group_set(Evas_Object *property, Group *group)
              int count = 1;
              text_ctx = eina_strbuf_new();
 
-             EINA_LIST_FOREACH(group->aliases, l, list_data)
+             EINA_LIST_FOREACH(group->aliases, l, alias)
                {
                   const char *step = "%d. %s";
                   if (eina_strbuf_length_get(text_ctx) > 0)
                     eina_strbuf_append(text_ctx, "</br>");
-                  step = eina_stringshare_printf(step, count++, list_data);
+                  step = eina_stringshare_printf(step, count++, alias->name);
                   eina_strbuf_append(text_ctx, step);
                }
              evas_object_event_callback_add(pd_group.info, EVAS_CALLBACK_MOUSE_DOWN,
