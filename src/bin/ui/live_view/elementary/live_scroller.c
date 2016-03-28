@@ -85,6 +85,17 @@ _on_scroller_swallow_check(void *data,
      }
 }
 
+void
+_demo_scroller_del(void *data __UNUSED__,
+                   Evas *evas __UNUSED__,
+                   Evas_Object *object,
+                   void *event_info __UNUSED__)
+{
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_scroller_swallow_check, object);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, object);
+}
+
 Evas_Object *
 widget_scroller_create(Evas_Object *parent, const Group *group)
 {
@@ -102,11 +113,13 @@ widget_scroller_create(Evas_Object *parent, const Group *group)
         elm_entry_scrollable_set(object, true);
         if (strcmp(group->class, "entry_single") == 0)
           elm_entry_single_line_set(object, true);
+        evas_object_event_callback_add(object, EVAS_CALLBACK_DEL, demo_object_del, NULL);
      }
    else
      {
         object = elm_scroller_add(parent);
         evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_scroller_swallow_check, object);
+        evas_object_event_callback_add(object, EVAS_CALLBACK_DEL, _demo_scroller_del, NULL);
      }
    elm_object_style_set(object, group->style);
 

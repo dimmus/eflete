@@ -104,6 +104,17 @@ _on_popup_swallow_check(void *data,
    eina_stringshare_del(title_swallow);
 }
 
+void
+_demo_popup_del(void *data __UNUSED__,
+                Evas *evas __UNUSED__,
+                Evas_Object *object,
+                void *event_info __UNUSED__)
+{
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_popup_swallow_check, object);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, object);
+}
+
 Evas_Object *
 widget_popup_create(Evas_Object *parent, const Group *group)
 {
@@ -130,6 +141,7 @@ widget_popup_create(Evas_Object *parent, const Group *group)
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_popup_swallow_check, object);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, object);
+   evas_object_event_callback_add(object, EVAS_CALLBACK_DEL, _demo_popup_del, NULL);
 
    elm_object_style_set(object, style_name);
    eina_stringshare_del(style_name);

@@ -101,6 +101,17 @@ object_generate(Demo_Part *part, Evas_Object *object)
 }
 
 void
+demo_object_del(void *data __UNUSED__,
+                Evas *evas __UNUSED__,
+                Evas_Object *object,
+                void *event_info __UNUSED__)
+{
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, object);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
+   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, object);
+}
+
+void
 on_swallow_check(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *ei __UNUSED__)

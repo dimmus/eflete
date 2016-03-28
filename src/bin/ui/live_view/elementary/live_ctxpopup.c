@@ -215,6 +215,7 @@ widget_ctxpopup_create(Evas_Object *parent, const Group *group)
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, list);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, list);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, list);
+   evas_object_event_callback_add(list, EVAS_CALLBACK_DEL, demo_object_del, NULL);
 
    return list;
 }

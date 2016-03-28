@@ -147,6 +147,19 @@ _on_click(void *data,
    evas_object_show(notify);
 }
 
+void
+_demo_noti_del(void *data,
+               Evas *evas __UNUSED__,
+               Evas_Object *object,
+               void *event_info __UNUSED__)
+{
+   Evas_Object *bx = (Evas_Object *)data;
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_notify_swallow_check, bx);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _notify_send_signal, object);
+}
+
 Evas_Object *
 widget_notify_create(Evas_Object *parent, const Group *group)
 {
@@ -178,6 +191,8 @@ widget_notify_create(Evas_Object *parent, const Group *group)
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_notify_swallow_check, bx);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, noti);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _notify_send_signal, noti);
+   evas_object_event_callback_add(noti, EVAS_CALLBACK_DEL, _demo_noti_del, bx);
+
    elm_object_style_set(noti, group->style);
    return object;
 }
