@@ -100,6 +100,8 @@ typedef struct _Shortcut Shortcut;
 
 struct _Shortcut_Module
 {
+   Ecore_Event_Handler *shortcuts_wheel_handler; /**< handler for catching mouse wheel\
+                                                   for shortcuts */
    Ecore_Event_Handler *shortcuts_handler; /**< handler for catching key presses\
                                                 for shortcuts */
    Ecore_Event_Handler *shortcuts_handler_unpress; /**< handler for catching key
@@ -177,6 +179,22 @@ _shortcut_handle(Shortcut_Type type)
          CRIT("Incorrect shortcut type");
          abort();
      }
+}
+
+static Eina_Bool
+_mouse_wheel_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
+{
+   Ecore_Event_Mouse_Wheel *ev = event;
+
+   if ((ev->modifiers & 255) != MOD_CTRL)
+     return ECORE_CALLBACK_PASS_ON;
+
+   if (ev->z > 0)
+     evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ZOOM_OUT, NULL);
+   else if (ev->z < 0)
+     evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ZOOM_IN, NULL);
+
+   return ECORE_CALLBACK_DONE;
 }
 
 static Eina_Bool
@@ -450,6 +468,9 @@ shortcuts_init(void)
 
    ap.shortcuts = mem_calloc(1, sizeof(Shortcut_Module));
 
+   ap.shortcuts->shortcuts_wheel_handler = ecore_event_handler_add(ECORE_EVENT_MOUSE_WHEEL,
+                                                                   _mouse_wheel_event_cb,
+                                                                   NULL);
    ap.shortcuts->shortcuts_handler = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
                                                    _key_press_event_cb,
                                                    NULL);
@@ -469,6 +490,8 @@ shortcuts_shutdown(void)
    assert(ap.shortcuts != NULL);
    assert(ap.shortcuts->shortcuts_handler != NULL);
 
+   ecore_event_handler_del(ap.shortcuts->shortcuts_wheel_handler);
+   ap.shortcuts->shortcuts_wheel_handler = NULL;
    ecore_event_handler_del(ap.shortcuts->shortcuts_handler);
    ap.shortcuts->shortcuts_handler = NULL;
    ecore_event_handler_del(ap.shortcuts->shortcuts_handler_unpress);
