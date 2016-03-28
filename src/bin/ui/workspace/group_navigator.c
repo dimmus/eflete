@@ -2106,6 +2106,7 @@ group_navigator_part_showhide_request(Evas_Object *obj)
 {
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Part *part;
+   Evas_Object *eye;
 
    assert(pl != NULL);
 
@@ -2114,6 +2115,10 @@ group_navigator_part_showhide_request(Evas_Object *obj)
         part = elm_object_item_data_get(pl->selected_part_item);
         if (part)
           {
+             eye = elm_object_item_part_content_get(pl->selected_part_item, "elm.swallow.icon");
+             if (eye) elm_check_state_set(eye, !elm_check_state_get(eye));
+             /* elementary not call callback if we change the check state, while it
+              * not fixed, we need this small hack */
              _on_eye_clicked(part, obj, NULL);
           }
      }
