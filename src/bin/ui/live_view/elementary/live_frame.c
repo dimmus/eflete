@@ -34,11 +34,9 @@ _on_frame_swallow_check(void *data,
 
    EINA_LIST_FREE(frame_list, frame_obj)
      {
-        int content_type = part->swallow_content;
-
         if (part->change)
           {
-             if ((content_type == CONTENT_NONE) && (part->object))
+             if (part->object)
                {
                   content = elm_object_part_content_unset(frame_obj, part->name);
                   evas_object_del(content);

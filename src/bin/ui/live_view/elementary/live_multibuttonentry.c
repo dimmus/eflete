@@ -27,14 +27,12 @@ _on_multibutton_swallow_check(void *data,
    Demo_Part *part = (Demo_Part *)ei;
    Elm_Object_Item *multi_item = elm_multibuttonentry_first_item_get(data);
    Evas_Object *content;
-   int content_type = part->swallow_content;
 
    while (multi_item)
      {
         if (part->change)
           {
-             /* if NONE - delete object */
-             if ((content_type == CONTENT_NONE) && (part->object))
+             if (part->object)
                {
                   content = elm_object_part_content_unset(multi_item, part->name);
                   evas_object_del(content);

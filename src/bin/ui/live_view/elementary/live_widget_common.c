@@ -109,12 +109,9 @@ on_swallow_check(void *data,
    Evas_Object *object = (Evas_Object *) data;
    Evas_Object *content;
 
-   int content_type = part->swallow_content;
-
    if (part->change)
      {
-        /* if NONE - delete object */
-        if ((content_type == CONTENT_NONE) && (part->object))
+        if (part->object)
           {
              content = elm_object_part_content_unset(object, part->name);
              evas_object_del(content);

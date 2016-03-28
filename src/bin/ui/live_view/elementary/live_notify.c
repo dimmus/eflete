@@ -27,12 +27,10 @@ _on_notify_swallow_check(void *data,
    Demo_Part *part = (Demo_Part *)ei;
    Evas_Object *object = (Evas_Object *) data;
 
-   int content_type = part->swallow_content;
-
    if (part->change)
      {
         /* if NONE - delete object */
-        if ((content_type == CONTENT_NONE) && (part->object))
+        if (part->object)
           {
              elm_box_unpack_all(object);
              evas_object_del(part->object);

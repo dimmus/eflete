@@ -41,11 +41,9 @@ _on_popup_swallow_check(void *data,
    if (!strcmp(part->name, "elm.swallow.title.icon"))
      title_swallow = eina_stringshare_add("title,icon");
 
-   int content_type = part->swallow_content;
-
    if (part->change)
      {
-        if ((content_type == CONTENT_NONE) && (part->object))
+        if (part->object)
           {
              if (but_swallow)
                {
