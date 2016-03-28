@@ -1194,3 +1194,11 @@ workspace_part_showhide_request(Evas_Object *obj)
 
    group_navigator_part_showhide_request(wd->group_navi);
 }
+
+void
+workspace_all_parts_showhide_request(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+
+   group_navigator_all_parts_showhide_request(wd->group_navi);
+}

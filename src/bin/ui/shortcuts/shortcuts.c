@@ -149,6 +149,7 @@ _shortcut_handle(Shortcut_Type type)
         SHORTCUT(DEL);
         SHORTCUT(STATE_NEXT);
         SHORTCUT(PART_SHOWHIDE);
+        SHORTCUT(ALL_PARTS_SHOWHIDE);
         SHORTCUT_NUM(TAB_NUM1, SIGNAL_SHORTCUT_TAB_NUM, 1);
         SHORTCUT_NUM(TAB_NUM2, SIGNAL_SHORTCUT_TAB_NUM, 2);
         SHORTCUT_NUM(TAB_NUM3, SIGNAL_SHORTCUT_TAB_NUM, 3);
@@ -393,6 +394,8 @@ _default_shortcuts_add()
                  MOD_NONE, 39/*s*/);
    _add_shortcut(SHORTCUT_TYPE_PART_SHOWHIDE, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 43/*h*/);
+   _add_shortcut(SHORTCUT_TYPE_ALL_PARTS_SHOWHIDE, SHORTCUT_TYPE_NONE,
+                 MOD_SHIFT, 43/*h*/);
 
    _add_shortcut(SHORTCUT_TYPE_TAB_NUM1, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 10/*1*/);

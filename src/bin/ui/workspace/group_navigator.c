@@ -2107,6 +2107,8 @@ group_navigator_part_showhide_request(Evas_Object *obj)
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Part *part;
 
+   assert(pl != NULL);
+
    if (pl->selected_part_item != NULL)
      {
         part = elm_object_item_data_get(pl->selected_part_item);
@@ -2115,4 +2117,18 @@ group_navigator_part_showhide_request(Evas_Object *obj)
              _on_eye_clicked(part, obj, NULL);
           }
      }
+}
+
+void
+group_navigator_all_parts_showhide_request(Evas_Object *obj)
+{
+   Evas_Object *eye;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   assert(pl != NULL);
+
+   _on_parts_eye_clicked(NULL, obj, NULL);
+   eye = elm_object_item_part_content_get(pl->parts_caption_item, "elm.swallow.icon");
+   if (eye)
+     elm_check_state_set(eye, _all_parts_visible(pl));
 }

@@ -629,6 +629,15 @@ _shortcut_part_showhide_cb(void *data __UNUSED__,
 }
 
 static void
+_shortcut_all_parts_showhide_cb(void *data __UNUSED__,
+                                Evas_Object *obj __UNUSED__,
+                                void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_all_parts_showhide_request(tabs.current_workspace);
+}
+
+static void
 _shortcut_tab_next_cb(void *data __UNUSED__,
                       Evas_Object *obj __UNUSED__,
                       void *event_info __UNUSED__)
@@ -886,6 +895,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_DEL, _shortcut_del_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_STATE_NEXT, _shortcut_state_next_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_PART_SHOWHIDE, _shortcut_part_showhide_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ALL_PARTS_SHOWHIDE, _shortcut_all_parts_showhide_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_NEXT, _shortcut_tab_next_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_PREV, _shortcut_tab_prev_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_NUM, _shortcut_tab_num_cb, NULL);
