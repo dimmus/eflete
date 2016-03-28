@@ -164,11 +164,58 @@ _item_label_get(void *data,
    return NULL;
 }
 
+static Eina_Bool
+_all_parts_visible(Part_List *pl)
+{
+   const Eina_List *l;
+   const Part *part;
+   Eina_Bool visible = true;
+
+   assert(pl != NULL);
+
+   EINA_LIST_FOREACH(pl->group->parts, l, part)
+      visible &= part->visible;
+
+   return visible;
+}
+
+static void
+_on_parts_eye_clicked(void *data __UNUSED__,
+                      Evas_Object *obj,
+                      void *event_data __UNUSED__)
+{
+   Evas_Object *eye;
+   Part *part;
+   const Eina_List *subitems, *l;
+   Elm_Object_Item *glit;
+   Eina_Bool visible;
+
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   assert(pl != NULL);
+
+   visible = !_all_parts_visible(pl);
+
+   EINA_LIST_FOREACH(pl->group->parts, l, part)
+     {
+        part->visible = visible;
+        evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED, (void *)part);
+     }
+
+   subitems = elm_genlist_item_subitems_get(pl->parts_caption_item);
+   EINA_LIST_FOREACH(subitems, l, glit)
+     {
+        eye = elm_object_item_part_content_get(glit, "elm.swallow.icon");
+        if (eye) elm_check_state_set(eye, visible);
+      }
+}
+
 static void
 _on_eye_clicked(void *data,
                 Evas_Object *obj,
                 void *event_data __UNUSED__)
 {
+   Evas_Object *eye;
    Part *part = data;
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
 
@@ -177,6 +224,40 @@ _on_eye_clicked(void *data,
 
    part->visible = !part->visible;
    evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED, (void *)part);
+
+   eye = elm_object_item_part_content_get(pl->parts_caption_item, "elm.swallow.icon");
+   if (eye)
+     elm_check_state_set(eye, _all_parts_visible(pl));
+}
+
+static Evas_Object *
+_caption_content_get(void *data,
+                     Evas_Object *obj,
+                     const char *part)
+{
+   Eina_List **list = data;
+   Evas_Object *content = NULL;
+   Eina_Bool visible = true;
+   Part *_part;
+   Eina_List *l;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   if (list == &pl->group->parts)
+     if (!strcmp(part, "elm.swallow.icon"))
+       {
+          content = elm_check_add(obj);
+          edje_object_animation_set(elm_layout_edje_get(content), false);
+          EINA_LIST_FOREACH(pl->group->parts, l, _part)
+             visible &= _part->visible;
+          elm_check_state_set(content, visible);
+          elm_object_style_set(content, "eye");
+          evas_object_data_set(content, GROUP_NAVIGATOR_DATA, pl);
+          edje_object_animation_set(elm_layout_edje_get(content), true);
+
+          evas_object_smart_callback_add(content, "changed", _on_parts_eye_clicked, NULL);
+       }
+
+   return content;
 }
 
 static Evas_Object *
@@ -1843,6 +1924,7 @@ group_navigator_add(Evas_Object *parent, Group *group)
    pl->itc_caption = elm_genlist_item_class_new();
    pl->itc_caption->item_style = "caption";
    pl->itc_caption->func.text_get = _caption_label_get;
+   pl->itc_caption->func.content_get = _caption_content_get;
 
    pl->itc_program = elm_genlist_item_class_new();
    pl->itc_program->item_style = "program";
