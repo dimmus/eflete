@@ -925,16 +925,30 @@ workspace_highlight_align_visible_get(Evas_Object *obj __UNUSED__)
    return false;
 }
 
-Eina_Bool
-workspace_object_area_visible_set(Evas_Object *obj __UNUSED__, Eina_Bool flag __UNUSED__)
+void
+workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool visible)
 {
-   return false;
+   Scroll_Area *area;
+
+   WS_DATA_GET(obj);
+
+   if ((MODE_NORMAL != wd->mode) && (MODE_CODE != wd->mode)) return;
+   area = _scroll_area_get(wd);
+
+   groupview_part_object_area_visible_set(area->content, visible);
 }
 
 Eina_Bool
-workspace_object_area_visible_get(Evas_Object *obj __UNUSED__)
+workspace_object_area_visible_get(Evas_Object *obj)
 {
-   return false;
+   Scroll_Area *area;
+
+   WS_DATA_GET(obj);
+
+   if ((MODE_NORMAL != wd->mode) && (MODE_CODE != wd->mode)) return false;
+   area = _scroll_area_get(wd);
+
+   return groupview_part_object_area_visible_get(area->content);
 }
 
 void

@@ -304,14 +304,12 @@ workspace_highlight_align_visible_get(Evas_Object *obj);
  * Turn on/off the object area visibility.
  *
  * @param obj The workspace object,
- * @param separated ON/OFF (true/false) the object area visibility,
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
+ * @param visible ON/OFF (true/false) the object area visibility,
  *
  * @ingroup Workspace
  */
-Eina_Bool
-workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool flag);
+void
+workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool visible);
 
 /**
  * Returns if the object area is visible
