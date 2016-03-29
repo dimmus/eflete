@@ -279,11 +279,7 @@ _on_clicked_double(void *data __UNUSED__,
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
 
-   if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
-     {
-        elm_genlist_item_expanded_set(glit, !elm_genlist_item_expanded_get(glit));
-     }
-   else
+   if (elm_genlist_item_type_get(glit) != ELM_GENLIST_ITEM_TREE)
      {
         Group *group = (Group *)elm_object_item_data_get(glit);
         evas_object_smart_callback_call(project_navigator.layout, SIGNAL_GROUP_OPEN, group);

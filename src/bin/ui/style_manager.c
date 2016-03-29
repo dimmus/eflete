@@ -802,19 +802,6 @@ _contracted_cb(void *data __UNUSED__,
 }
 
 static void
-_on_clicked_double(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info)
-{
-   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-
-   if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
-     {
-        elm_genlist_item_expanded_set(glit, !elm_genlist_item_expanded_get(glit));
-     }
-}
-
-static void
 _on_bt_add(void *data,
            Evas_Object *obj __UNUSED__,
            void *event_info __UNUSED__)
@@ -993,7 +980,6 @@ style_manager_add()
 
    style_edit->glist = elm_genlist_add(main_layout);
    elm_object_part_content_set(main_layout, "elm.swallow.list", style_edit->glist);
-   evas_object_smart_callback_add(style_edit->glist, "clicked,double", _on_clicked_double, NULL);
    evas_object_smart_callback_add(style_edit->glist, "expand,request", _expand_request_cb, NULL);
    evas_object_smart_callback_add(style_edit->glist, "expanded", _expanded_cb, style_edit);
    evas_object_smart_callback_add(style_edit->glist, "contract,request", _contract_request_cb, NULL);

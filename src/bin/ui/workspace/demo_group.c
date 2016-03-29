@@ -94,16 +94,6 @@ _sig_label_get(void *data,
 }
 
 static void
-_on_clicked_double(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info)
-{
-   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-
-   if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
-     elm_genlist_item_expanded_set(glit, !elm_genlist_item_expanded_get(glit));
-}
-static void
 _expand_request_cb(void *data __UNUSED__,
                    Evas_Object *o __UNUSED__,
                    void *event_info)
@@ -446,7 +436,6 @@ demo_group_add(Group *group)
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, pl);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_UPDATE, _program_add, pl);
 
-   evas_object_smart_callback_add(pl->genlist, "clicked,double", _on_clicked_double, pl);
    evas_object_smart_callback_add(pl->genlist, "expand,request", _expand_request_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "contract,request", _contract_request_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "expanded", _expanded_cb, pl);

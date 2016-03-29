@@ -365,17 +365,6 @@ _contract_request_cb(void *data __UNUSED__,
 }
 
 static void
-_on_clicked_double(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info)
-{
-   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-
-   if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
-     elm_genlist_item_expanded_set(glit, !elm_genlist_item_expanded_get(glit));
-}
-
-static void
 _on_activated(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info)
@@ -1935,7 +1924,6 @@ group_navigator_add(Evas_Object *parent, Group *group)
    elm_scroller_policy_set(pl->genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
    evas_object_show(pl->genlist);
    elm_object_content_set(pl->layout, pl->genlist);
-   evas_object_smart_callback_add(pl->genlist, "clicked,double", _on_clicked_double, pl);
    evas_object_smart_callback_add(pl->genlist, "activated", _on_activated, pl);
    evas_object_smart_callback_add(pl->genlist, "expand,request", _expand_request_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "contract,request", _contract_request_cb, pl);
