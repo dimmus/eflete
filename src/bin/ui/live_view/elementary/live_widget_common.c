@@ -118,6 +118,52 @@ object_generate(Demo_Part *part, Evas_Object *object)
                                         ELM_ICON_LOOKUP_THEME_FDO);
               elm_icon_standard_set(content, "home");
               break;
+           case WIDGET_COLORSELECTOR:
+              content = elm_colorselector_add(object);
+              elm_colorselector_mode_set(content, ELM_COLORSELECTOR_ALL);
+              break;
+           case WIDGET_FILESELECTOR:
+               content = elm_fileselector_add(object);
+               elm_fileselector_expandable_set(content, false);
+              break;
+           case WIDGET_DAYSELECTOR:
+              content = elm_dayselector_add(object);
+              break;
+           case WIDGET_DATETIME:
+              content = elm_datetime_add(object);
+              break;
+           case WIDGET_FRAME:
+              content = elm_frame_add(object);
+              elm_frame_autocollapse_set(content, true);
+              elm_object_text_set(content, _("User Text"));
+              break;
+           case WIDGET_PANEL:
+              content = elm_panel_add(object);
+              elm_panel_orient_set(content, ELM_PANEL_ORIENT_TOP);
+              elm_panel_toggle(content);
+              break;
+           case WIDGET_SEGMENT_CONTROL:
+              content = elm_segment_control_add(object);
+              elm_segment_control_item_insert_at(content, NULL, _("User Text"), 1);
+              elm_segment_control_item_insert_at(content, NULL, _("User Text"), 2);
+              elm_segment_control_item_insert_at(content, NULL, _("User Text"), 3);
+              break;
+           case WIDGET_CLOCK:
+              content = elm_clock_add(object);
+              elm_clock_show_seconds_set(content, true);
+              break;
+           case WIDGET_PANES:
+              content = elm_panes_add(object);
+              Evas_Object *bt = elm_button_add(content);
+              elm_object_text_set(bt, _("Left"));
+              evas_object_show(bt);
+              elm_object_part_content_set(content, "left", bt);
+
+              bt = elm_button_add(content);
+              elm_object_text_set(bt, _("Right"));
+              evas_object_show(bt);
+              elm_object_part_content_set(content, "right", bt);
+              break;
           }
      }
    return content;

@@ -57,6 +57,15 @@ typedef enum _Swallow_Content_Widget_Type
    WIDGET_MAP, /**< map widget */
    WIDGET_CALENDAR, /**< calendar widget */
    WIDGET_ICON, /**<icon widget */
+   WIDGET_COLORSELECTOR, /**<colorselector widget */
+   WIDGET_FILESELECTOR, /**<fileselector widget */
+   WIDGET_DAYSELECTOR, /**<dayselector widget */
+   WIDGET_DATETIME, /**<datetime widget */
+   WIDGET_FRAME, /**<frame widget */
+   WIDGET_PANEL, /**<panel widget */
+   WIDGET_SEGMENT_CONTROL, /**<segment_control widget */
+   WIDGET_CLOCK, /**<clock widget */
+   WIDGET_PANES, /**<panes widget */
 } Swallow_Content_Widget_Type;
 
 /**
