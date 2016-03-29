@@ -47,7 +47,7 @@ int MENU_ITEMS_LIST_STYLE_ONLY[] = {
    MENU_VIEW_WORKSPACE_ZOOM_IN,
    MENU_VIEW_WORKSPACE_ZOOM_OUT,
    MENU_VIEW_WORKSPACE_ZOOM_RESET,
-   //MENU_VIEW_WORKSPACE_OBJECT_AREA,
+   MENU_VIEW_WORKSPACE_OBJECT_AREA,
    MENU_VIEW_RULERS_SHOW,
    MENU_VIEW_RULERS_ABS,
    MENU_VIEW_RULERS_REL,
@@ -157,7 +157,7 @@ _menu_cb(void *data __UNUSED__,
          evas_object_smart_callback_call(tabs_current_workspace_get(), "ruler,toggle", strdup("abs&rel"));
          break;
       case MENU_VIEW_WORKSPACE_OBJECT_AREA:
-         evas_object_smart_callback_call(tabs_current_workspace_get(), "highlight,visible", NULL);
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_OBJECT_AREA, NULL);
          break;
       case MENU_EDIT_UNDO:
          evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_UNDO, NULL);
@@ -302,7 +302,7 @@ ui_menu_add(void)
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_ZOOM_OUT, NULL, _("Zoom out"), "-")
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_ZOOM_RESET, NULL, _("Reset zoom"), "/")
       ___(MENU_VIEW);
-      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_OBJECT_AREA, NULL, _("Show/Hide object area"), NULL)
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_OBJECT_AREA, NULL, _("Show object area"), "o")
       ___(MENU_VIEW);
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_SHOW, NULL, _("Show/Hide rulers"), NULL)
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_ABS, NULL, _("Absolute scale"), NULL)
@@ -316,9 +316,6 @@ ui_menu_add(void)
 
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
-
-   TODO("remove lines after implementation this features")
-   ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_OBJECT_AREA, true);
 
    menu->window_menu = window_menu;
 
