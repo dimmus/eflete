@@ -136,16 +136,10 @@ _menu_cb(void *data __UNUSED__,
          /* preferences_window_add(ap.project); */
          break;
       case MENU_VIEW_WORKSPACE_ZOOM_IN:
-           {
-              double current_factor = workspace_zoom_factor_get(tabs_current_workspace_get());
-              workspace_zoom_factor_set(tabs_current_workspace_get(), current_factor + 0.1);
-           }
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ZOOM_IN, NULL);
          break;
       case MENU_VIEW_WORKSPACE_ZOOM_OUT:
-           {
-              double current_factor = workspace_zoom_factor_get(tabs_current_workspace_get());
-              workspace_zoom_factor_set(tabs_current_workspace_get(), current_factor - 0.1);
-           }
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ZOOM_OUT, NULL);
         break;
       case MENU_VIEW_WORKSPACE_ZOOM_RESET:
          evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ZOOM_RESET, NULL);
