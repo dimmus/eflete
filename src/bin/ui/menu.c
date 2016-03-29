@@ -36,6 +36,7 @@ int MENU_ITEMS_LIST_BASE[] = {
    MENU_EDITORS_SOUND,
    MENU_EDITORS_COLORCLASS,
    MENU_EDITORS_TEXT_STYLE,
+   MENU_EDIT_GROUP_ADD,
 
    MENU_NULL
 };
@@ -51,6 +52,10 @@ int MENU_ITEMS_LIST_STYLE_ONLY[] = {
    MENU_VIEW_RULERS_REL,
    MENU_VIEW_RULERS_BOTH,
    MENU_FILE_EXPORT_EDC_GROUP,
+   MENU_EDIT_PART_ADD,
+   MENU_EDIT_STATE_ADD,
+   MENU_EDIT_ITEM_ADD,
+   MENU_EDIT_PROGRAM_ADD,
 
    MENU_NULL
 };
@@ -162,6 +167,22 @@ _menu_cb(void *data __UNUSED__,
       case MENU_EDIT_REDO:
          evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_REDO, NULL);
          break;
+      case MENU_EDIT_GROUP_ADD:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_GROUP, NULL);
+         break;
+      case MENU_EDIT_PART_ADD:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_PART, NULL);
+         break;
+      case MENU_EDIT_STATE_ADD:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_STATE, NULL);
+         break;
+      case MENU_EDIT_ITEM_ADD:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_ITEM, NULL);
+         break;
+      case MENU_EDIT_PROGRAM_ADD:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_PROGRAM, NULL);
+         break;
+
       case MENU_EDITORS_IMAGE:
          tabs_menu_tab_open(TAB_IMAGE_EDITOR);
          break;
@@ -264,6 +285,13 @@ ui_menu_add(void)
    ITEM_MENU_ADD(MENU_NULL, MENU_EDIT, NULL, _("Edit"), NULL)
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_UNDO, NULL, _("Undo"), "Ctrl-Z")
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_REDO, NULL, _("Redo"), "Ctrl-Y")
+      ___(MENU_EDIT);
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_GROUP_ADD, NULL, _("Add group"), "Ctrl-N")
+      ___(MENU_EDIT);
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PART_ADD, NULL, _("Add part"), "q")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_STATE_ADD, NULL, _("Add state"), "w")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_ITEM_ADD, NULL, _("Add item"), "e")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PROGRAM_ADD, NULL, _("Add program"), "r")
       ___(MENU_EDIT);
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_IMAGE, "image", _("Image manager"), "F7")
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_SOUND, "sound", _("Sound manager"), "F8")
