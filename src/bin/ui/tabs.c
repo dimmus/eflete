@@ -788,6 +788,20 @@ _shortcut_zoom_reset_cb(void *data __UNUSED__,
      workspace_zoom_factor_set(tabs.current_workspace, 1.0);
 }
 
+static void
+_shortcut_object_area_cb(void *data __UNUSED__,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info __UNUSED__)
+{
+   Eina_Bool visible;
+
+   if (tabs.current_workspace)
+     {
+        visible = workspace_object_area_visible_get(tabs.current_workspace);
+        workspace_object_area_visible_set(tabs.current_workspace, !visible);
+     }
+}
+
 Evas_Object *
 tabs_add(void)
 {
@@ -910,6 +924,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ZOOM_IN, _shortcut_zoom_in_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ZOOM_OUT, _shortcut_zoom_out_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ZOOM_RESET, _shortcut_zoom_reset_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_OBJECT_AREA, _shortcut_object_area_cb, NULL);
    return tabs.layout;
 }
 

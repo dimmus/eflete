@@ -173,6 +173,7 @@ _shortcut_handle(Shortcut_Type type)
         SHORTCUT(ZOOM_IN);
         SHORTCUT(ZOOM_OUT);
         SHORTCUT(ZOOM_RESET);
+        SHORTCUT(OBJECT_AREA);
 
       case SHORTCUT_TYPE_NONE:
          break;
@@ -452,6 +453,9 @@ _default_shortcuts_add()
                  MOD_NONE, 82/*KP_-*/);
    _add_shortcut(SHORTCUT_TYPE_ZOOM_RESET, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 106/*KP_/ */);
+   _add_shortcut(SHORTCUT_TYPE_OBJECT_AREA, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 32/*o*/);
+
 }
 
 /*=============================================*/
