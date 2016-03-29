@@ -46,6 +46,7 @@ int MENU_ITEMS_LIST_STYLE_ONLY[] = {
    MENU_EDIT_REDO,
    MENU_VIEW_WORKSPACE_ZOOM_IN,
    MENU_VIEW_WORKSPACE_ZOOM_OUT,
+   MENU_VIEW_WORKSPACE_ZOOM_RESET,
    //MENU_VIEW_WORKSPACE_OBJECT_AREA,
    MENU_VIEW_RULERS_SHOW,
    MENU_VIEW_RULERS_ABS,
@@ -145,6 +146,9 @@ _menu_cb(void *data __UNUSED__,
               double current_factor = workspace_zoom_factor_get(tabs_current_workspace_get());
               workspace_zoom_factor_set(tabs_current_workspace_get(), current_factor - 0.1);
            }
+        break;
+      case MENU_VIEW_WORKSPACE_ZOOM_RESET:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ZOOM_RESET, NULL);
          break;
       case MENU_VIEW_RULERS_SHOW:
          evas_object_smart_callback_call(tabs_current_workspace_get(), "ruler,toggle", strdup("rulers"));
@@ -302,6 +306,7 @@ ui_menu_add(void)
    ITEM_MENU_ADD(MENU_NULL, MENU_VIEW, NULL, _("View"), NULL)
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_ZOOM_IN, NULL, _("Zoom in"), "+")
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_ZOOM_OUT, NULL, _("Zoom out"), "-")
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_ZOOM_RESET, NULL, _("Reset zoom"), "/")
       ___(MENU_VIEW);
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_OBJECT_AREA, NULL, _("Show/Hide object area"), NULL)
       ___(MENU_VIEW);
