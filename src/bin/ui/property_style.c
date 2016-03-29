@@ -16,16 +16,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
+
 #include "property_private.h"
 #include "property_macros.h"
 #include "main_window.h"
 #include "colorsel.h"
 #include "project_manager.h"
+#include "validator.h"
 
 struct _Style_Prop_Data
 {
    //Text Frame Data
    Evas_Object *font_name;
+   Elm_Validator_Regexp *font_validator;
    Evas_Object *font_style;
    Evas_Object *font_color;
    Evas_Object *font_weight;
@@ -264,6 +271,12 @@ else value = eina_stringshare_add("off");
 Elm_Object_Item *item = ei; \
 const char *value; \
 value = eina_stringshare_add(elm_object_item_part_text_get(item, "elm.text"));
+
+#define FONT_VALUE \
+Eina_Stringshare *value; \
+if (elm_validator_regexp_status_get(pd->font_validator) != ELM_REG_NOERROR) \
+  return; \
+value = eina_stringshare_add(elm_entry_entry_get(obj));
 
 #define CHANGE_CALLBACK(VALUE, TEXT, WIDGET, FUNC) \
 static void \
@@ -728,6 +741,7 @@ CALLBACKS_COLOR_ADD(s_color, "strikethrough_color")
 CALLBACKS_COLOR_ADD(outer_color_singl, "underline_color")
 CALLBACKS_COLOR_ADD(outer_color_double, "underline2_color")
 
+CHANGE_CALLBACK(font_name, "font", FONT, NULL)
 CHANGE_CALLBACK(font_size, "font_size", SPINNER, NULL)
 CHANGE_CALLBACK(font_style, "font_width", COMBOBOX, NULL)
 CHANGE_CALLBACK(font_weight, "font_weight", COMBOBOX, NULL)
@@ -779,7 +793,18 @@ CHANGE_CALLBACK(segment_ctrl, "underline", SEGMENT, NULL)
 static void
 _add_text_part(Style_Prop_Data *pd)
 {
-   ADD_1SWALLOW_ITEM(_("font name"), pd->box_frame_text, pd->font_name, item, EWE_COMBOBOX);
+   /* unnamed block to suppress "error: declaration of 'item' shadows a previous local" */
+     {
+        PROPERTY_ITEM_ADD(pd->box_frame_text, _("font name"), "1swallow");
+        ENTRY_ADD(pd->box_frame_text, pd->font_name, true);
+        elm_layout_content_set(item, "elm.swallow.content", pd->font_name);
+        elm_box_pack_end(pd->box_frame_text, item);
+        evas_object_smart_callback_add(pd->font_name, "changed,user", _on_font_name_change, pd);
+        if (pd->font_validator == NULL)
+          pd->font_validator = elm_validator_regexp_new(FONT_STYLE_REGEX, NULL);
+        eo_event_callback_add(pd->font_name, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, pd->font_validator);
+     }
+
    ADD_1SWALLOW_ITEM(_("font style"), pd->box_frame_text, pd->font_style, item, EWE_COMBOBOX);
    evas_object_smart_callback_add(pd->font_style, "selected", _on_font_style_change, pd);
    ADD_1SWALLOW_ITEM(_(""), pd->box_frame_text, pd->font_weight, item, EWE_COMBOBOX);
@@ -1274,8 +1299,7 @@ _text_prop_update(Style_Prop_Data *pd, const char *value)
 
         Eina_Tmpstr *color = _tag_value_get(value, "color");
 
-        ewe_combobox_text_set(pd->font_name, font);
-        elm_object_disabled_set(pd->font_name, true);
+        elm_entry_entry_set(pd->font_name, font);
         elm_spinner_value_set(pd->font_size, atof(spin_val));
 
         ewe_combobox_text_set(pd->font_style, width);
