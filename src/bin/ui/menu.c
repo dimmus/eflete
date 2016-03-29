@@ -41,6 +41,8 @@ int MENU_ITEMS_LIST_BASE[] = {
 };
 
 int MENU_ITEMS_LIST_STYLE_ONLY[] = {
+   MENU_EDIT_UNDO,
+   MENU_EDIT_REDO,
    MENU_VIEW_WORKSPACE_ZOOM_IN,
    MENU_VIEW_WORKSPACE_ZOOM_OUT,
    //MENU_VIEW_WORKSPACE_OBJECT_AREA,
@@ -154,6 +156,12 @@ _menu_cb(void *data __UNUSED__,
       case MENU_VIEW_WORKSPACE_OBJECT_AREA:
          evas_object_smart_callback_call(tabs_current_workspace_get(), "highlight,visible", NULL);
          break;
+      case MENU_EDIT_UNDO:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_UNDO, NULL);
+         break;
+      case MENU_EDIT_REDO:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_REDO, NULL);
+         break;
       case MENU_EDITORS_IMAGE:
          tabs_menu_tab_open(TAB_IMAGE_EDITOR);
          break;
@@ -254,6 +262,9 @@ ui_menu_add(void)
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXIT, NULL, _("Quit"), "Ctrl-Q")
 
    ITEM_MENU_ADD(MENU_NULL, MENU_EDIT, NULL, _("Edit"), NULL)
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_UNDO, NULL, _("Undo"), "Ctrl-Z")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_REDO, NULL, _("Redo"), "Ctrl-Y")
+      ___(MENU_EDIT);
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_IMAGE, "image", _("Image manager"), "F7")
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_SOUND, "sound", _("Sound manager"), "F8")
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_TEXT_STYLE, "text", _("Textblock styles manager"), "F9")
