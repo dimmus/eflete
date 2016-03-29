@@ -68,6 +68,12 @@ static const char *widget_type[] = { N_("button"),
                                      N_("slider"),
                                      N_("entry"),
                                      N_("progressbar"),
+                                     N_("radio"),
+                                     N_("spinner"),
+                                     N_("label"),
+                                     N_("map"),
+                                     N_("calendar"),
+                                     N_("icon"),
                                      NULL};
 static void
 _on_spinner_mouse_wheel(void *data __UNUSED__,

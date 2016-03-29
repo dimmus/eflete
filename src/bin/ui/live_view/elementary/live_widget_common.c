@@ -95,6 +95,29 @@ object_generate(Demo_Part *part, Evas_Object *object)
            case WIDGET_PROGRESSBAR:
               content = elm_progressbar_add(object);
               break;
+           case WIDGET_RADIO:
+              content = elm_radio_add(object);
+              elm_object_text_set(content, _("User Text"));
+              break;
+           case WIDGET_SPINNER:
+              content = elm_spinner_add(object);
+              elm_spinner_min_max_set(content, -10, 10);
+              elm_spinner_step_set(content, 1);
+              break;
+           case WIDGET_LABEL:
+              content = elm_label_add(object);
+              elm_object_text_set(content, _("User Text"));
+              break;
+           case WIDGET_MAP:
+              content = elm_map_add(object);
+              elm_map_overlay_circle_add(content, -45, -45, 10);
+              break;
+           case WIDGET_ICON:
+              content = elm_icon_add(object);
+              elm_icon_order_lookup_set(content,
+                                        ELM_ICON_LOOKUP_THEME_FDO);
+              elm_icon_standard_set(content, "home");
+              break;
           }
      }
    return content;

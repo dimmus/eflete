@@ -50,7 +50,13 @@ typedef enum _Swallow_Content_Widget_Type
    WIDGET_CHECK,  /**< check widget */
    WIDGET_SLIDER,  /**< slider widget */
    WIDGET_ENTRY,  /**< entry widget */
-   WIDGET_PROGRESSBAR /**< progressbar widget */
+   WIDGET_PROGRESSBAR,  /**< progressbar widget */
+   WIDGET_RADIO, /**< radio widget */
+   WIDGET_SPINNER, /**< spinner widget */
+   WIDGET_LABEL, /**< label widget */
+   WIDGET_MAP, /**< map widget */
+   WIDGET_CALENDAR, /**< calendar widget */
+   WIDGET_ICON, /**<icon widget */
 } Swallow_Content_Widget_Type;
 
 /**
