@@ -1165,10 +1165,13 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
 {
    WS_DATA_GET(obj);
 
-   wd->zoom_factor = factor;
-   elm_slider_value_set(wd->toolbar.zoom.slider, factor * 100);
-   TODO("Fix elementary callbacks on changing value from code");
-   _slider_zoom_cb(wd, wd->toolbar.zoom.slider, NULL);
+   if (!elm_object_disabled_get(wd->toolbar.zoom.slider))
+     {
+        wd->zoom_factor = factor;
+        elm_slider_value_set(wd->toolbar.zoom.slider, factor * 100);
+        TODO("Fix elementary callbacks on changing value from code");
+        _slider_zoom_cb(wd, wd->toolbar.zoom.slider, NULL);
+     }
 }
 
 double
