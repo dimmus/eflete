@@ -54,7 +54,6 @@ typedef enum _Swallow_Content_Widget_Type
    WIDGET_RADIO, /**< radio widget */
    WIDGET_SPINNER, /**< spinner widget */
    WIDGET_LABEL, /**< label widget */
-   WIDGET_MAP, /**< map widget */
    WIDGET_CALENDAR, /**< calendar widget */
    WIDGET_ICON, /**<icon widget */
    WIDGET_COLORSELECTOR, /**<colorselector widget */
@@ -70,6 +69,7 @@ typedef enum _Swallow_Content_Widget_Type
    WIDGET_GENGRID, /**<gengrid widget */
    WIDGET_SCROLLER, /**<scroller widget */
    WIDGET_TOOLBAR, /**<toolbar widget */
+   WIDGET_MAP, /**< map widget */
 } Swallow_Content_Widget_Type;
 
 /**

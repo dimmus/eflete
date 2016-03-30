@@ -305,6 +305,7 @@ on_swallow_check(void *data,
 
    if (part->object)
      {
+        if (part->widget < WIDGET_GENLIST)
         evas_object_color_set(part->object,
                               part->r,
                               part->g,
