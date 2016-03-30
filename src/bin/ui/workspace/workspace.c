@@ -60,7 +60,6 @@ struct _Scroll_Area {
    Evas_Object *content; /* for normal mode - groupview, for demo - elm widget */
    Ruler ruler_v;
    Ruler ruler_h;
-   int w, h; /* the container size with zoom factor 1.0, calculated if aoom factor is not 1.0 */
 };
 typedef struct _Scroll_Area Scroll_Area;
 
@@ -473,17 +472,34 @@ _container_changed(void *data,
 {
    Workspace_Data *wd = data;
    Container_Geom *geom = event_info;
+   const Groupview_Geom *part_geom = NULL;
    Evas_Coord x, y;
+   Evas_Coord scale_x, scale_y, step_w, step_h;
    Scroll_Area *area;
 
    area = _scroll_area_get(wd);
    assert(area != NULL);
 
-   area->w = geom->w;
-   area->h = geom->h;
-
    evas_object_geometry_get(area->ruler_h.obj, &x, NULL, NULL, NULL);
    evas_object_geometry_get(area->ruler_v.obj, NULL, &y, NULL, NULL);
+
+   if (((MODE_NORMAL == wd->mode) || (MODE_CODE == wd->mode)) && area->content)
+     part_geom = groupview_part_selected_object_area_geom_get(area->content);
+   if (part_geom)
+     {
+        scale_x = part_geom->x - x;
+        scale_y = part_geom->y - y;
+        step_w = part_geom->w;
+        step_h = part_geom->h;
+     }
+   else
+     {
+        scale_x = geom->x - x;
+        scale_y = geom->y - y;
+        step_w = geom->w;
+        step_h = geom->h;
+     }
+
 
    /* shift the abs scale zero mark */
    ewe_ruler_zero_offset_set(area->ruler_h.obj, NULL, geom->x - x);
@@ -492,17 +508,17 @@ _container_changed(void *data,
    /* shift the rel scale zero mark */
    if (area->ruler_h.scale_rel)
      {
-        ewe_ruler_zero_offset_set(area->ruler_h.obj, area->ruler_h.scale_rel, geom->x - x);
-        ewe_ruler_step_set(area->ruler_h.obj, area->ruler_h.scale_rel, ((geom->w * wd->zoom_factor) / 2));
+        ewe_ruler_zero_offset_set(area->ruler_h.obj, area->ruler_h.scale_rel, scale_x);
+        ewe_ruler_step_set(area->ruler_h.obj, area->ruler_h.scale_rel, ((step_w * wd->zoom_factor) / 2));
      }
    if (area->ruler_v.scale_rel)
      {
-        ewe_ruler_zero_offset_set(area->ruler_v.obj, area->ruler_v.scale_rel, geom->y - y);
-        ewe_ruler_step_set(area->ruler_v.obj, area->ruler_v.scale_rel, ((geom->h * wd->zoom_factor) / 2));
+        ewe_ruler_zero_offset_set(area->ruler_v.obj, area->ruler_v.scale_rel, scale_y);
+        ewe_ruler_step_set(area->ruler_v.obj, area->ruler_v.scale_rel, ((step_h * wd->zoom_factor) / 2));
      }
 
-   elm_spinner_value_set(wd->toolbar.container_sizer.spinner_w, area->w);
-   elm_spinner_value_set(wd->toolbar.container_sizer.spinner_h, area->h);
+   elm_spinner_value_set(wd->toolbar.container_sizer.spinner_w, geom->w);
+   elm_spinner_value_set(wd->toolbar.container_sizer.spinner_h, geom->h);
 }
 
 static void
