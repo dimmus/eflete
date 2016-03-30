@@ -339,19 +339,16 @@ groupview_hard_update(Evas_Object *obj)
    evas_object_smart_changed(sd->obj);
 }
 
-Evas_Object *
-groupview_part_draw_get(Evas_Object *obj, const char *part)
+const Groupview_Geom *
+groupview_part_selected_geom_get(Evas_Object *obj)
 {
-   Groupview_Part *gp;
+   Groupview_Geom *geom = NULL;
+
    GROUPVIEW_DATA_GET(obj, sd)
 
-   assert(part != NULL);
+   if (sd->selected) geom = &sd->selected->geom;
 
-   gp = _parts_list_find(sd->parts, part);
-
-   assert(gp != NULL);
-
-   return gp->draw;
+   return geom;
 }
 
 Eina_Bool

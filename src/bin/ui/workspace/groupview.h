@@ -130,18 +130,16 @@ void
 groupview_hard_update(Evas_Object *obj);
 
 /**
- * Get the part object, which geometry corresponds to Edje part geometry from
- * editable object.
+ * Get the selected part geomentry.
  *
  * @param obj The groupview object,
- * @param part The part name, whose object need to get.
  *
- * @return The groupview part object, with geometry like Edje part.
+ * @return The Groupview_Geom, or NULL if any part is notselected
  *
  * @ingroup Groupview
  */
-Evas_Object *
-groupview_part_draw_get(Evas_Object *obj, const char *part);
+const Groupview_Geom *
+groupview_part_selected_geom_get(Evas_Object *obj);
 
 /**
  * Add to groupview a new part. The function add part to edje edit object and
