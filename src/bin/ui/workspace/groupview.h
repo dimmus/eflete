@@ -169,7 +169,7 @@ Eina_Bool
 groupview_part_del(Evas_Object *obj, Part *part);
 
 /**
- * Get the object with the object area geometry.
+ * Get the object area geometry.
  *
  * @param obj The groupview object.
  *
@@ -177,9 +177,8 @@ groupview_part_del(Evas_Object *obj, Part *part);
  *
  * @ingroup Groupview
  */
-Evas_Object *
-groupview_part_object_area_get(Evas_Object *obj);
-
+const Groupview_Geom *
+groupview_part_selected_object_area_geom_get(Evas_Object *obj);
 /**
  * Set the object area visibility.
  *

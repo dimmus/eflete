@@ -381,12 +381,16 @@ groupview_part_restack(Evas_Object *obj, const char *part, const char *rel_part)
    return _edit_object_part_restack_below(sd, part, rel_part);
 }
 
-Evas_Object *
-groupview_part_object_area_get(Evas_Object *obj)
+const Groupview_Geom *
+groupview_part_selected_object_area_geom_get(Evas_Object *obj)
 {
+   Groupview_Geom *geom = NULL;
+
    GROUPVIEW_DATA_GET(obj, sd)
 
-   return sd->obj;
+   if (sd->selected) geom = &sd->selected->object_area_geom;
+
+   return geom;
 }
 
 void
