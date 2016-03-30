@@ -15,6 +15,10 @@ EDJE_FLAGS_RESOURCES = -id $(top_srcdir)/data/resources/images
 filesdir = $(datadir)/eflete/themes/default
 files_DATA = eflete_elm.edj
 
+template_edjdir = $(datadir)/eflete/themes/default/template/edj
+template_edj_DATA = \
+   $(top_srcdir)/data/template/edj/*.edj
+
 template_edcdir = $(datadir)/eflete/themes/default/template/edc
 template_edc_DATA = \
    $(top_srcdir)/data/template/widgets/*.edc \
@@ -105,4 +109,4 @@ clean-local:
 	rm -f *.edj *.eet
 
 EXTRA_DIST = $(aimages_DATA) $(ewe_deps) $(eflete_deps) $(eflete_elm_deps) \
-	$(color_eet_deps) $(template_edc_DATA) $(template_img_DATA) $(template_snd_DATA)
+	$(color_eet_deps) $(template_edj_DATA) $(template_edc_DATA) $(template_img_DATA) $(template_snd_DATA)

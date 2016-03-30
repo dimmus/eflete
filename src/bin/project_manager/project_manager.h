@@ -73,6 +73,9 @@ struct _Project
    /** compile options for release edj file. see edje_cc reference */
    Eina_Stringshare *release_options;
 
+   /** The checked widgets. Used for loading just checked widgets. */
+   Eina_List *widgets;
+
    Eina_List *groups;
    Eina_List *images;
    Eina_List *sounds;
@@ -215,6 +218,7 @@ void
 pm_project_import_edj(const char *name,
                       const char *path,
                       const char *edj,
+                      Eina_List *list,
                       PM_Project_Progress_Cb func_progress,
                       PM_Project_End_Cb func_end,
                       const void *data) EINA_ARG_NONNULL(1, 2, 3);

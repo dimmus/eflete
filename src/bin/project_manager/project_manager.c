@@ -66,6 +66,8 @@ typedef struct
    const char *edc;
    /** edje_cc options. Used for 'new project' and 'import from edc'. */
    const char *build_options;
+   /** The checked widgets. Used for loading just checked widgets. */
+   Eina_List *widgets;
 } Project_Thread;
 
 
@@ -73,7 +75,7 @@ typedef struct
 
 static Project_Thread worker;
 #define WORKER_CREATE(FUNC_PROGRESS, FUNC_END, DATA, PROJECT, \
-                      NAME, PATH, EDJ, EDC, BUILD_OPTIONS) \
+                      NAME, PATH, EDJ, EDC, BUILD_OPTIONS, WIDGET_LIST) \
 { \
    worker.func_progress = FUNC_PROGRESS; \
    worker.func_end = FUNC_END; \
@@ -85,6 +87,7 @@ static Project_Thread worker;
    worker.edj = eina_stringshare_add(EDJ); \
    worker.edc = eina_stringshare_add(EDC); \
    worker.build_options = eina_stringshare_add(BUILD_OPTIONS); \
+   worker.widgets = WIDGET_LIST; \
 }
 
 #define WORKER_FREE() \
@@ -165,6 +168,7 @@ _project_descriptor_init(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "saved_edj", saved_edj, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "develop_path", develop_path, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "release_options", release_options, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_LIST_STRING(eed_project, Project, "widgets", widgets);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(eed_project, Project, "images", res.images);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(eed_project, Project, "sounds", res.sounds);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(eed_project, Project, "fonts", res.fonts);
@@ -282,6 +286,7 @@ _project_files_create(void)
    pro->dev = eina_stringshare_printf("%s/%s.dev", folder_path, worker.name);
    pro->saved_edj = eina_stringshare_printf("%s/%s.edj", folder_path, worker.name);
    pro->develop_path = eina_stringshare_printf("%s/develop", folder_path);
+   pro->widgets = worker.widgets;
 
    pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, worker.name);
    ecore_file_mkdir(pro->develop_path);
@@ -458,6 +463,7 @@ void
 pm_project_import_edj(const char *name,
                       const char *path,
                       const char *edj,
+                      Eina_List *list,
                       PM_Project_Progress_Cb func_progress,
                       PM_Project_End_Cb func_end ,
                       const void *data)
@@ -467,7 +473,7 @@ pm_project_import_edj(const char *name,
    assert(edj != NULL);
 
    WORKER_CREATE(func_progress, func_end, data, NULL,
-                 name, path, edj, NULL, NULL);
+                 name, path, edj, NULL, NULL, list);
 
    if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
                            (void *)_project_import_edj, NULL))
@@ -574,7 +580,7 @@ pm_project_import_edc(const char *name,
    assert(edc != NULL);
 
    WORKER_CREATE(func_progress, func_end, data, NULL,
-                 name, path, NULL, edc, import_options);
+                 name, path, NULL, edc, import_options, NULL);
 
    if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
                            (void *)_project_import_edc, NULL))
@@ -714,7 +720,7 @@ pm_project_open(const char *path,
    assert(path != NULL);
 
    WORKER_CREATE(func_progress, func_end, data, NULL,
-                 NULL, NULL, NULL, NULL, NULL);
+                 NULL, NULL, NULL, NULL, NULL, NULL);
 
    if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
                            (void *)_project_open, eina_stringshare_add(path)))
@@ -759,7 +765,7 @@ pm_project_save(Project *project,
    assert(project != NULL);
 
    WORKER_CREATE(func_progress, func_end, data, project,
-                 NULL, NULL, NULL, NULL, NULL);
+                 NULL, NULL, NULL, NULL, NULL, NULL);
 
    if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
                            (void *)_project_save, NULL))
@@ -1423,7 +1429,7 @@ pm_group_source_code_export(Project *project,
    assert(path != NULL);
 
    WORKER_CREATE(func_progress, func_end, data, project,
-                 NULL, path, NULL, NULL, data);
+                 NULL, path, NULL, NULL, data, NULL);
 
    if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
                            (void *)_group_source_code_export, (void *)group))
@@ -1522,7 +1528,7 @@ pm_project_source_code_export(Project *project,
    assert(path != NULL);
 
    WORKER_CREATE(func_progress, func_end, data, project,
-                 NULL, path, NULL, NULL, data);
+                 NULL, path, NULL, NULL, data, NULL);
 
    if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
                            (void *)_source_code_export, NULL))
@@ -1604,7 +1610,7 @@ pm_project_release_export(Project *project,
    assert(path != NULL);
 
    WORKER_CREATE(func_progress, func_end, data, project,
-                 NULL, NULL, path, NULL, data);
+                 NULL, NULL, path, NULL, data, NULL);
 
    if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
                            (void *)_release_export, NULL))
@@ -1641,7 +1647,7 @@ pm_project_develop_export(Project *project,
    assert(path != NULL);
 
    WORKER_CREATE(func_progress, func_end, data, project,
-                 NULL, NULL, path, NULL, data);
+                 NULL, NULL, path, NULL, data, NULL);
 
    if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
                            (void *)_develop_export, NULL))
@@ -1764,7 +1770,7 @@ pm_project_enventor_save(Project *project,
    assert(project != NULL);
 
    WORKER_CREATE(func_progress, func_end, data, project,
-                 NULL, NULL, NULL, NULL, NULL);
+                 NULL, NULL, NULL, NULL, NULL, NULL);
 
    if (!eina_thread_create(&worker.thread, EINA_THREAD_URGENT, -1,
                            (void *)_enventor_save, NULL))
