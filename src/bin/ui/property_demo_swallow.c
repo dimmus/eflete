@@ -83,6 +83,10 @@ static const char *widget_type[] = { N_("button"),
                                      N_("segment_control"),
                                      N_("clock"),
                                      N_("panes"),
+                                     N_("genlist"),
+                                     N_("gengrid"),
+                                     N_("scroller"),
+                                     N_("toolbar"),
                                      NULL};
 static void
 _on_spinner_mouse_wheel(void *data __UNUSED__,

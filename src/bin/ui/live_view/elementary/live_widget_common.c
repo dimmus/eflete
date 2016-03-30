@@ -52,10 +52,32 @@ standard_widget_name_parse(const char *full_group_name,
    return true;
 }
 
+static char *
+_gen_text_get(void        *data __UNUSED__,
+                Evas_Object *obj __UNUSED__,
+                const char  *part __UNUSED__)
+{
+   return strdup(_("User Text"));
+}
+static Evas_Object *
+_gen_content_get(void *data __UNUSED__,
+                   Evas_Object *obj,
+                   const char  *part __UNUSED__)
+{
+
+   Evas_Object *content = elm_button_add(obj);
+   elm_object_text_set(content, _("User Text"));
+   return content;
+}
 Evas_Object *
 object_generate(Demo_Part *part, Evas_Object *object)
 {
-   Evas_Object *content = NULL;
+   Evas_Object *content = NULL, *bt = NULL, *table = NULL;
+   Elm_Genlist_Item_Class *ic = NULL;
+   Elm_Gengrid_Item_Class *icg = NULL;
+   Elm_Object_Item *item;
+   Elm_Genlist_Item_Type type = 0;
+   unsigned int i = 0, j = 0;
 
    int content_type = part->swallow_content;
    int widget_type = part->widget;
@@ -154,7 +176,7 @@ object_generate(Demo_Part *part, Evas_Object *object)
               break;
            case WIDGET_PANES:
               content = elm_panes_add(object);
-              Evas_Object *bt = elm_button_add(content);
+              bt = elm_button_add(content);
               elm_object_text_set(bt, _("Left"));
               evas_object_show(bt);
               elm_object_part_content_set(content, "left", bt);
@@ -163,6 +185,83 @@ object_generate(Demo_Part *part, Evas_Object *object)
               elm_object_text_set(bt, _("Right"));
               evas_object_show(bt);
               elm_object_part_content_set(content, "right", bt);
+              break;
+           case WIDGET_GENLIST:
+              content = elm_genlist_add(object);
+              evas_object_size_hint_align_set(content, EVAS_HINT_FILL, EVAS_HINT_FILL);
+              evas_object_size_hint_weight_set(content, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+              elm_genlist_mode_set(content, ELM_LIST_SCROLL);
+              if (!ic)
+                {
+                   ic = elm_genlist_item_class_new();
+                   ic->func.text_get = _gen_text_get;
+                   ic->func.content_get = _gen_content_get;
+                   ic->func.state_get = NULL;
+                   ic->func.del = NULL;
+                }
+              for (i = 0; i < ELEMENTS_BIG_COUNT; i++)
+                elm_genlist_item_append(content, ic, NULL,
+                                        NULL, type, NULL, NULL);
+              elm_genlist_item_class_free(ic);
+              break;
+           case WIDGET_GENGRID:
+              content = elm_gengrid_add(object);
+              double scale = elm_config_scale_get();
+              elm_gengrid_item_size_set(content, scale * 100, scale * 100);
+              evas_object_size_hint_align_set(content, EVAS_HINT_FILL, EVAS_HINT_FILL);
+              evas_object_size_hint_weight_set(content, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+              if (!icg)
+                {
+                   icg = elm_gengrid_item_class_new();
+                   icg->func.text_get = _gen_text_get;
+                   icg->func.content_get = _gen_content_get;
+                   icg->func.state_get = NULL;
+                   icg->func.del = NULL;
+                }
+              for (i = 0; i < ELEMENTS_BIG_COUNT; i++)
+                elm_gengrid_item_append(content, icg, NULL, NULL, NULL);
+              elm_gengrid_item_class_free(icg);
+              break;
+           case WIDGET_SCROLLER:
+              content = elm_scroller_add(object);
+              elm_scroller_policy_set(object, ELM_SCROLLER_POLICY_ON,
+                                      ELM_SCROLLER_POLICY_ON);
+              table = elm_table_add(content);
+              for (j = 0; j < ELEMENTS_SMALL_COUNT; j++)
+                {
+                   for (i = 0; i < ELEMENTS_SMALL_COUNT; i++)
+                     {
+                        bt = elm_button_add(table);
+                        elm_object_text_set(bt, _("User Text"));
+                        elm_table_pack(table, bt, i, j, 1, 1);
+                        evas_object_show(bt);
+                     }
+                }
+              elm_object_content_set(content, table);
+              evas_object_show(table);
+              break;
+            case WIDGET_TOOLBAR:
+              content = elm_toolbar_add(object);
+
+              elm_toolbar_shrink_mode_set(content, ELM_TOOLBAR_SHRINK_EXPAND);
+
+              elm_toolbar_homogeneous_set(content, false);
+              elm_toolbar_standard_priority_set(content, 50);
+
+              bt = elm_button_add(content);
+              elm_object_part_text_set(bt, NULL, _("Object"));
+              item = elm_toolbar_item_append(content, NULL, NULL, NULL, NULL);
+              elm_toolbar_item_priority_set(item, 20 * i);
+              elm_object_item_part_content_set(item, NULL, bt);
+              item = elm_toolbar_item_append(content, "folder-new", _("Enabled"), NULL, NULL);
+              elm_toolbar_item_priority_set(item, 20 * i);
+              item = elm_toolbar_item_append(content, "folder-new", _("Disabled"), NULL, NULL);
+              elm_toolbar_item_priority_set(item, 20 * i);
+              elm_object_item_disabled_set(item, true);
+              item = elm_toolbar_item_append(content, NULL, NULL, NULL, NULL);
+              elm_toolbar_item_priority_set(item, 20 * i);
+              elm_toolbar_item_separator_set(item, true);
+
               break;
           }
      }
