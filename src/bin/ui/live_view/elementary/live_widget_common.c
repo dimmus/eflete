@@ -69,6 +69,43 @@ _gen_content_get(void *data __UNUSED__,
    elm_object_text_set(content, _("User Text"));
    return content;
 }
+static void
+_pop_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   Evas_Object *nf = data;
+
+   assert(nf != NULL);
+
+   elm_naviframe_item_pop(nf);
+}
+
+static void
+_next_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   Evas_Object *nf = (Evas_Object *)data, *bt;
+
+   bt = elm_button_add(nf);
+   elm_object_text_set(bt, _("Back"));
+   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_smart_callback_add(bt, "clicked", _pop_page_cb, nf);
+   evas_object_show(bt);
+
+   elm_naviframe_item_push(nf, _("Page Next"), bt, NULL, NULL, NULL);
+}
+
+static void
+_prev_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   Evas_Object *nf = (Evas_Object *)data, *bt;
+
+   bt = elm_button_add(nf);
+   elm_object_text_set(bt, _("Back"));
+   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_smart_callback_add(bt, "clicked", _pop_page_cb, nf);
+   evas_object_show(bt);
+
+   elm_naviframe_item_push(nf, _("Page Prev"), NULL, bt, NULL, NULL);
+}
 Evas_Object *
 object_generate(Demo_Part *part, Evas_Object *object)
 {
@@ -240,7 +277,7 @@ object_generate(Demo_Part *part, Evas_Object *object)
               elm_object_content_set(content, table);
               evas_object_show(table);
               break;
-            case WIDGET_TOOLBAR:
+           case WIDGET_TOOLBAR:
               content = elm_toolbar_add(object);
 
               elm_toolbar_shrink_mode_set(content, ELM_TOOLBAR_SHRINK_EXPAND);
@@ -269,8 +306,8 @@ object_generate(Demo_Part *part, Evas_Object *object)
                 {
                    bt = elm_button_add(content);
                    elm_object_text_set(bt, _("User Text"));
-                   bt = elm_button_add(content);
-                   elm_object_text_set(bt, _("User Text"));
+                   bt2 = elm_button_add(content);
+                   elm_object_text_set(bt2, _("User Text"));
                    elm_list_item_append(content, _("No icons"), bt, bt2, NULL, NULL);
                 }
               break;
@@ -312,6 +349,25 @@ object_generate(Demo_Part *part, Evas_Object *object)
                    elm_box_pack_end(content, bt);
                    evas_object_show(bt);
                 }
+              break;
+            case WIDGET_NAVIFRAME:
+              content = elm_naviframe_add(object);
+              evas_object_size_hint_weight_set(content, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+              elm_naviframe_prev_btn_auto_pushed_set(content, false);
+              item = elm_naviframe_item_push(content, _("Page 1"), NULL, NULL, NULL, NULL);
+              elm_object_item_part_text_set(item, "subtitle", _("Subtitle 1"));
+              elm_object_item_part_text_set(item, "title", _("Main Page"));
+              evas_object_data_set(content, "main_page", item);
+
+              bt = elm_button_add(content);
+              elm_object_text_set(bt, _("Prev page"));
+              elm_object_part_content_set(content, "elm.swallow.prev_btn", bt);
+              evas_object_smart_callback_add(bt, "clicked", _prev_page_cb, content);
+
+              bt2 = elm_button_add(content);
+              elm_object_text_set(bt2, _("Next page"));
+              elm_object_part_content_set(content, "elm.swallow.next_btn", bt2);
+              evas_object_smart_callback_add(bt2, "clicked", _next_page_cb, content);
               break;
           }
      }
