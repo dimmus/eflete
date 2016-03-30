@@ -72,7 +72,7 @@ _gen_content_get(void *data __UNUSED__,
 Evas_Object *
 object_generate(Demo_Part *part, Evas_Object *object)
 {
-   Evas_Object *content = NULL, *bt = NULL, *table = NULL;
+   Evas_Object *content = NULL, *bt = NULL, *bt2 = NULL, *table = NULL;
    Elm_Genlist_Item_Class *ic = NULL;
    Elm_Gengrid_Item_Class *icg = NULL;
    Elm_Object_Item *item;
@@ -227,9 +227,9 @@ object_generate(Demo_Part *part, Evas_Object *object)
               elm_scroller_policy_set(object, ELM_SCROLLER_POLICY_ON,
                                       ELM_SCROLLER_POLICY_ON);
               table = elm_table_add(content);
-              for (j = 0; j < ELEMENTS_SMALL_COUNT; j++)
+              for (j = 0; j < ELEMENTS_MID_COUNT; j++)
                 {
-                   for (i = 0; i < ELEMENTS_SMALL_COUNT; i++)
+                   for (i = 0; i < ELEMENTS_MID_COUNT; i++)
                      {
                         bt = elm_button_add(table);
                         elm_object_text_set(bt, _("User Text"));
@@ -262,6 +262,56 @@ object_generate(Demo_Part *part, Evas_Object *object)
               elm_toolbar_item_priority_set(item, 20 * i);
               elm_toolbar_item_separator_set(item, true);
 
+              break;
+            case WIDGET_LIST:
+              content = elm_list_add(object);
+              for (i = 0; i < ELEMENTS_BIG_COUNT; i++)
+                {
+                   bt = elm_button_add(content);
+                   elm_object_text_set(bt, _("User Text"));
+                   bt = elm_button_add(content);
+                   elm_object_text_set(bt, _("User Text"));
+                   elm_list_item_append(content, _("No icons"), bt, bt2, NULL, NULL);
+                }
+              break;
+            case WIDGET_GRID:
+              content = elm_grid_add(object);
+              elm_grid_size_set(content, 5, 5);
+              for (j = 0; j < ELEMENTS_SMALL_COUNT; j++)
+                {
+                   for (i = 0; i < ELEMENTS_SMALL_COUNT; i++)
+                     {
+                        bt = elm_button_add(content);
+                        elm_object_text_set(bt, _("User Text"));
+                        elm_grid_pack(content, bt, i, j, 1, 1);
+                        evas_object_show(bt);
+                     }
+                }
+              break;
+            case WIDGET_TABLE:
+              content = elm_grid_add(object);
+              elm_grid_size_set(content, 5, 5);
+              for (j = 0; j < ELEMENTS_SMALL_COUNT; j++)
+                {
+                   for (i = 0; i < ELEMENTS_SMALL_COUNT; i++)
+                     {
+                        bt = elm_button_add(table);
+                        elm_object_text_set(bt, _("User Text"));
+                        elm_table_pack(table, bt, i, j, 1, 1);
+                        evas_object_show(bt);
+                     }
+                }
+              break;
+            case WIDGET_BOX:
+              content = elm_box_add(object);
+              evas_object_size_hint_weight_set(content, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+              for (i = 0; i < ELEMENTS_SMALL_COUNT; i++)
+                {
+                   bt = elm_button_add(content);
+                   elm_object_text_set(bt, _("User Text"));
+                   elm_box_pack_end(content, bt);
+                   evas_object_show(bt);
+                }
               break;
           }
      }

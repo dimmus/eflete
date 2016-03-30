@@ -65,6 +65,10 @@ typedef enum _Swallow_Content_Widget_Type
    WIDGET_SEGMENT_CONTROL, /**<segment_control widget */
    WIDGET_CLOCK, /**<clock widget */
    WIDGET_PANES, /**<panes widget */
+   WIDGET_LIST, /**< list widget */
+   WIDGET_GRID, /**< grid widget */
+   WIDGET_TABLE, /**< table widget */
+   WIDGET_BOX, /**< box widget */
    WIDGET_GENLIST, /**<genlist widget */
    WIDGET_GENGRID, /**<gengrid widget */
    WIDGET_SCROLLER, /**<scroller widget */
