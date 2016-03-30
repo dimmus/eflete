@@ -398,6 +398,18 @@ groupview_part_object_area_visible_set(Evas_Object *obj, Eina_Bool visible)
    GROUPVIEW_DATA_GET(obj, sd);
 
    sd->obj_area_visible = visible;
+
+   if (sd->obj_area_visible && sd->selected)
+     {
+        evas_object_geometry_set(sd->object_area,
+                                 sd->selected->object_area_geom.x,
+                                 sd->selected->object_area_geom.y,
+                                 sd->selected->object_area_geom.w,
+                                 sd->selected->object_area_geom.h);
+        evas_object_show(sd->object_area);
+     }
+   else evas_object_hide(sd->object_area);
+
 }
 
 Eina_Bool
