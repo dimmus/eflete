@@ -177,6 +177,9 @@ group { name: "elm/segment_control/item/default";
                elipsis: -1;
             }
          }
+         description { state: "normal" 0.0;
+            inherit: "default" 0.0;
+         }
          description { state: "pressed" 0.0;
             inherit: "default" 0.0;
             visible: 1;
