@@ -370,7 +370,14 @@ object_generate(Demo_Part *part, Evas_Object *object)
               evas_object_smart_callback_add(bt2, "clicked", _next_page_cb, content);
               break;
           }
+        Elm_Theme *theme = elm_theme_new();
+        elm_theme_set(theme, ap.project->dev);
+        elm_object_theme_set(content, theme);
+        elm_theme_free(theme);
+
+        elm_object_style_set(content, part->content_style);
      }
+
    return content;
 }
 
