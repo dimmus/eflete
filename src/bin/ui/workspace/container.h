@@ -232,32 +232,6 @@ Eina_Bool
 container_lock_get(Evas_Object *obj);
 
 /**
- * Set the size of paddings before top left handler and after bottom right
- * handler.
- *
- * @param obj The Container object,
- * @param htl_w wigth of top-left padding,
- * @param htl_h height of top-left padding,
- * @param hbr_w wigth of bottom-right padding,
- * @param hbr_h height of bottom-tight padding.
- *
- * @warning Container will be having unexpected behaviour when paddings are way
- *          bigger than the size of Container.
- *          For example, it might happen when:
- *          (left top padding + right bottom padding) > (size of object).
- *          In previous case that is (15 + 15 > 20).
- *
- * @note if trying to set the htl_w, htl_h, hbr_w, hbr_h < 0, will be set 0.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors and if paddings are
- *         bigger than container object.
- *
- * @ingroup Container
- */
-Eina_Bool
-container_padding_size_set(Evas_Object *obj, int tl_w, int tl_h, int rb_w, int rb_h);
-
-/**
  * Get the size of paddings before top left handler and after bottom right
  * handler.
  *

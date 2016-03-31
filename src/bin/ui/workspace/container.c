@@ -55,14 +55,6 @@ struct _Container_Smart_Data
       Evas_Coord w; /* default: -1, size is not limited */
       Evas_Coord h; /* default: -1, size is not limited */
    } con_size_max;
-   struct {
-      Evas_Coord w;
-      Evas_Coord h;
-   } pad_left_top;
-   struct {
-      Evas_Coord w;
-      Evas_Coord h;
-   } pad_right_bottom;
    Container_Geom size;
    struct{
       Evas_Object *obj;
@@ -200,10 +192,6 @@ _container_smart_add(Evas_Object *o)
    priv->con_size_min.h = 0;
    priv->con_size_max.w = -1;
    priv->con_size_max.h = -1;
-   priv->pad_left_top.w = 0;
-   priv->pad_left_top.h = 0;
-   priv->pad_right_bottom.w = 0;
-   priv->pad_right_bottom.h = 0;
    priv->size.x = 0;
    priv->size.y = 0;
    priv->size.w = 0;
@@ -264,8 +252,8 @@ _container_smart_move(Evas_Object *o,
    CONTAINER_DATA_GET(o, sd)
 
    if (sd->func) geom = sd->func(sd->content);
-   sd->size.x = ox + BASE_PADDING + sd->pad_left_top.w + (geom ? geom->x : 0);
-   sd->size.y = oy + BASE_PADDING + sd->pad_left_top.h + (geom ? geom->y : 0);
+   sd->size.x = ox + BASE_PADDING + (geom ? geom->x : 0);
+   sd->size.y = oy + BASE_PADDING + (geom ? geom->y : 0);
 
    evas_object_move(sd->container, sd->size.x, sd->size.y);
    evas_object_move(sd->handler_BR.obj, sd->size.x + sd->size.w, sd->size.y + sd->size.h);
@@ -343,8 +331,8 @@ _container_smart_calculate(Evas_Object *o)
    if (sd->func) geom = sd->func(sd->content);
 
    /* 3. calculate the container position relative to content protrusion */
-   sd->size.x = x + BASE_PADDING + sd->pad_left_top.w + (geom ? geom->x : 0);
-   sd->size.y = y + BASE_PADDING + sd->pad_left_top.h + (geom ? geom->y : 0);
+   sd->size.x = x + BASE_PADDING + (geom ? geom->x : 0);
+   sd->size.y = y + BASE_PADDING + (geom ? geom->y : 0);
    evas_object_move(sd->container, sd->size.x, sd->size.y);
 
    /* 4. move the handler */
@@ -575,37 +563,6 @@ container_lock_get(Evas_Object *obj)
    CONTAINER_DATA_GET(obj, sd);
 
    return sd->lock;
-}
-
-Eina_Bool
-container_padding_size_set(Evas_Object *obj, int tl_w, int tl_h, int rb_w, int rb_h)
-{
-   CONTAINER_DATA_GET(obj, sd);
-
-   Evas_Coord x, y, w, h;
-   Evas_Coord tlw, tlh, rbw, rbh;
-   evas_object_geometry_get(obj, &x, &y, &w, &h);
-
-   tlw = sd->pad_left_top.w;
-   tlh = sd->pad_left_top.h;
-   rbw = sd->pad_right_bottom.w;
-   rbh = sd->pad_right_bottom.h;
-
-   if (tl_w < 0) sd->pad_left_top.w = 0;
-   else sd->pad_left_top.w = tl_w;
-   if (tl_h < 0) sd->pad_left_top.h = 0;
-   else sd->pad_left_top.h = tl_h;
-   if (rb_w < 0) sd->pad_right_bottom.w = 0;
-   else sd->pad_right_bottom.w = rb_w;
-   if (rb_h < 0) sd->pad_right_bottom.h = 0;
-   else sd->pad_right_bottom.h = rb_h;
-
-   evas_object_resize(obj, w + (rb_w - rbw) + (tl_w - tlw),
-                           h + (rb_h - rbh) + (tl_h - tlh));
-
-   evas_object_smart_changed(obj);
-
-   return true;
 }
 
 Eina_Bool
