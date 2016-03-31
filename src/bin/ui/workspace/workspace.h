@@ -251,6 +251,9 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor);
 double
 workspace_zoom_factor_get(Evas_Object *obj);
 
+void
+workspace_container_fill(Evas_Object *obj);
+
 /**
  * Switch beetwen show or hide mode of legend in workspace object.
  *

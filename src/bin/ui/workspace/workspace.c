@@ -1213,6 +1213,24 @@ workspace_zoom_factor_get(Evas_Object *obj)
 }
 
 void
+workspace_container_fill(Evas_Object *obj)
+{
+   Evas_Coord w, h;
+   int r, t, l, b;
+   Scroll_Area *area;
+
+   WS_DATA_GET(obj);
+
+   area = _scroll_area_get(wd);
+   /* get the bg size, because bg size not included the scrollbar size */
+   evas_object_geometry_get(area->bg, NULL, NULL, &w, &h);
+   container_padding_size_get(area->container, &r, &t, &l, &b);
+   w = (w - l - r) / wd->zoom_factor;
+   h = (h - t - b) / wd->zoom_factor;
+   container_container_size_set(area->container, w, h);
+}
+
+void
 workspace_state_next_request(Evas_Object *obj)
 {
    WS_DATA_GET(obj);
