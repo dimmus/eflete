@@ -29,8 +29,17 @@ _on_list_swallow_check(void *data,
 
    Elm_Object_Item *item = elm_list_first_item_get(object);
 
+   const char *part_name = part->name;
+
+   /* because elm_list is weird */
+   if (!strcmp(part_name, "elm.swallow.icon"))
+     part_name = "start";
+   else if (!strcmp(part_name, "elm.swallow.end"))
+     part_name = "end";
+
    while (item)
      {
+        part->object = elm_object_item_part_content_unset(item, part_name);
         if (part->object)
           {
              evas_object_del(part->object);
@@ -55,7 +64,8 @@ _on_list_swallow_check(void *data,
                                            part->max_w,
                                            part->max_h);
           }
-        elm_object_item_part_content_set(item, part->name, part->object);
+
+        elm_object_item_part_content_set(item, part_name, part->object);
         item = elm_list_item_next(item);
      }
 }
