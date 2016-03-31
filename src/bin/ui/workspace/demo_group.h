@@ -100,6 +100,7 @@ struct Demo_Part_
    int swallow_content; /**< type of content (picture, rectangle or widget) */
    int r, g, b, a; /**< color of content */
    int widget; /**< number of widget to be set up */
+   Eina_Stringshare *content_style; /**< number of widget to be set up */
    Eina_Stringshare *image_path; /**< path to image to set up */
    int max_w, max_h, min_w, min_h; /**< object's size */
    Eina_Bool change; /**< in case when content type is changed,

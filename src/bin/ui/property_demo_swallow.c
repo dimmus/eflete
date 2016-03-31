@@ -45,6 +45,7 @@ struct _Demo_Swallow_Prop_Data
    Evas_Object *color_obj;
    Evas_Object *picture;
    Evas_Object *widget;
+   Evas_Object *content_style;
 
    Evas_Object *max_w, *max_h;
    Evas_Object *min_w, *min_h;
@@ -324,6 +325,35 @@ prop_image_path_add(Evas_Object *parent,
    return item;
 }
 
+static void
+_on_style_change(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *ei __UNUSED__)
+{
+   Demo_Swallow_Prop_Data *pd = (Demo_Swallow_Prop_Data *)data;
+   assert(pd != NULL);
+   const char *value;
+
+   value = elm_entry_entry_get(pd->content_style);
+
+   eina_stringshare_del(pd->part->content_style);
+   pd->part->content_style = eina_stringshare_add(value);
+   pd->part->change = true;
+
+   evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, pd->part);
+}
+static Evas_Object *
+prop_style_set_add(Evas_Object *parent,
+                   Demo_Swallow_Prop_Data *pd)
+{
+   PROPERTY_ITEM_ADD(parent, "Content Style:", "1swallow")
+   ENTRY_ADD(item, pd->content_style, true)
+   elm_entry_entry_set(pd->content_style, "default");
+   evas_object_smart_callback_add(pd->content_style, "changed,user", _on_style_change, pd);
+   elm_layout_content_set(item, NULL, pd->content_style);
+   return item;
+}
+
 void
 ui_property_demo_swallow_part_set(Evas_Object *property, Demo_Part *part)
 {
@@ -339,6 +369,7 @@ ui_property_demo_swallow_part_set(Evas_Object *property, Demo_Part *part)
                               part->b,
                               part->a);
         elm_entry_entry_set(pd->picture, part->image_path);
+        elm_entry_entry_set(pd->content_style, part->content_style);
 
         elm_spinner_value_set(pd->min_w, part->min_w);
         elm_spinner_value_set(pd->min_h, part->min_h);
@@ -389,6 +420,8 @@ ui_property_demo_swallow_add(Evas_Object *parent)
    item = prop_image_path_add(pd->box, pd);
    elm_box_pack_end(pd->box, item);
    item = prop_widget_add(pd->box, pd);
+   elm_box_pack_end(pd->box, item);
+   item = prop_style_set_add(pd->box, pd);
    elm_box_pack_end(pd->box, item);
 
    item = prop_rectangle_color_add(pd->box, pd);

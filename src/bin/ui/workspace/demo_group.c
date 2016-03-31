@@ -476,6 +476,7 @@ demo_group_add(Group *group)
              demo_part = mem_calloc(1, sizeof(Demo_Part));
              demo_part->name = eina_stringshare_add(part->name);
              demo_part->type = part->type;
+             demo_part->content_style = eina_stringshare_add("default");
              pl->text_list = eina_list_append(pl->text_list, demo_part);
              elm_genlist_item_append(pl->genlist,
                                      itc_part,
@@ -490,6 +491,7 @@ demo_group_add(Group *group)
              demo_part = mem_calloc(1, sizeof(Demo_Part));
              demo_part->name = eina_stringshare_add(part->name);
              demo_part->type = part->type;
+             demo_part->content_style = eina_stringshare_add("default");
              demo_part->a = 255;
              demo_part->r = 255;
              demo_part->g = 255;
@@ -596,6 +598,7 @@ demo_group_part_add(Evas_Object *demo, Part *part)
         demo_part = mem_calloc(1, sizeof(Demo_Part));
         demo_part->name = eina_stringshare_add(part->name);
         demo_part->type = part->type;
+        demo_part->content_style = eina_stringshare_add("default");
         pl->text_list = eina_list_append(pl->text_list, demo_part);
         elm_genlist_item_append(pl->genlist,
                                 itc_part,
@@ -610,6 +613,7 @@ demo_group_part_add(Evas_Object *demo, Part *part)
         demo_part = mem_calloc(1, sizeof(Demo_Part));
         demo_part->name = eina_stringshare_add(part->name);
         demo_part->type = part->type;
+        demo_part->content_style = eina_stringshare_add("default");
         demo_part->a = 255;
         demo_part->r = 255;
         demo_part->g = 255;
