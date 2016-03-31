@@ -33,9 +33,9 @@ _on_scroller_swallow_check(void *data,
         content = elm_table_add(object);
         int i, j;
 
-        for (j = 0; j < ELEMENTS_COUNT; j++)
+        for (j = 0; j < ELEMENTS_MID_COUNT; j++)
           {
-             for (i = 0; i < ELEMENTS_COUNT; i++)
+             for (i = 0; i < ELEMENTS_MID_COUNT; i++)
                {
                   bt = object_generate(part, content);
                   if (bt)

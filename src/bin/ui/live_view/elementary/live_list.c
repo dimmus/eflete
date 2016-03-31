@@ -121,7 +121,7 @@ widget_list_create(Evas_Object *parent, const Group *group)
    int i = 0;
    Evas_Object *object = elm_list_add(parent);
 
-   for (i = 0; i < ELEMENTS_COUNT; i++)
+   for (i = 0; i < ELEMENTS_BIG_COUNT; i++)
      elm_list_item_append(object, _("No icons"), NULL, NULL, NULL, NULL);
 
    if (strstr(group->class, "h_") == group->class)

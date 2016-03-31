@@ -172,7 +172,7 @@ _glist_expanded_cb(void *data __UNUSED__,
         ic->func.state_get = NULL;
         ic->func.del = NULL;
      }
-   for (i = 0; i < ELEMENTS_COUNT; i++)
+   for (i = 0; i < ELEMENTS_MID_COUNT; i++)
      elm_genlist_item_append(obj, ic, eina_stringshare_printf("Item #%d", i),
                              tree_main, ELM_GENLIST_ITEM_NONE, NULL, NULL);
    elm_genlist_item_class_free(ic);
@@ -265,7 +265,7 @@ _create_genlist(Evas_Object *obj, const char *class, const char *style)
         ic->func.del = NULL;
      }
 
-   for (i = 0; i < ELEMENTS_COUNT; i++)
+   for (i = 0; i < ELEMENTS_MID_COUNT; i++)
      elm_genlist_item_append(glist, ic, NULL,
                              NULL, type, NULL, NULL);
 
