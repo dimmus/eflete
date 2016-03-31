@@ -1215,7 +1215,7 @@ workspace_zoom_factor_get(Evas_Object *obj)
 void
 workspace_container_fill(Evas_Object *obj)
 {
-   Evas_Coord w, h;
+   int w, h;
    int r, t, l, b;
    Scroll_Area *area;
 

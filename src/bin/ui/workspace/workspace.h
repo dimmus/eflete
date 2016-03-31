@@ -251,6 +251,13 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor);
 double
 workspace_zoom_factor_get(Evas_Object *obj);
 
+/**
+ * Resize the container to workspace size
+ *
+ * @param obj The workspace object.
+ *
+ * @ingroup Workspace
+ */
 void
 workspace_container_fill(Evas_Object *obj);
 
