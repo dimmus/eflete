@@ -567,5 +567,7 @@ _tab_import_edc_add(void)
 
    tab_edc.log = eina_strbuf_new();
 
+   evas_object_event_callback_add(tab_edc.layout, EVAS_CALLBACK_SHOW, _tab_default_focus, tab_edc.name);
+
    return tab_edc.layout;
 }

@@ -198,6 +198,8 @@ _tab_import_edj_add(void)
 
    meta_controls_add(tab_edj.layout, &tab_edj.meta);
 
+   evas_object_event_callback_add(tab_edj.layout, EVAS_CALLBACK_SHOW, _tab_default_focus, tab_edj.name);
+
    return tab_edj.layout;
 }
 

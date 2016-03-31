@@ -113,3 +113,16 @@ _tabs_progress_end(void *data, PM_Project_Result result)
 
    progress_end(data, result);
 }
+
+void
+_tab_default_focus(void *data,
+                   Evas *e __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   Evas_Object *target = data;
+
+   assert(target != NULL);
+
+   elm_object_focus_set(target, true);
+}

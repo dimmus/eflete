@@ -626,5 +626,7 @@ _tab_new_project_add(void)
    elm_genlist_item_class_free(itc);
    elm_object_part_content_set(tab_new.layout, "swallow.widgets", tab_new.genlist);
 
+   evas_object_event_callback_add(tab_new.layout, EVAS_CALLBACK_SHOW, _tab_default_focus, tab_new.name);
+
    return tab_new.layout;
 }
