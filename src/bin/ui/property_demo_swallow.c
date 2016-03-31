@@ -269,7 +269,7 @@ _on_image_done(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
-   const char *value;
+   char *value;
    const char *selected;
    Eina_List *list_selected = (Eina_List *)event_info;
    Demo_Swallow_Prop_Data *pd = (Demo_Swallow_Prop_Data *)data;
@@ -278,9 +278,10 @@ _on_image_done(void *data,
 
    if (!list_selected) return false;
 
-   value = elm_entry_entry_get(pd->picture);
+   value = elm_entry_markup_to_utf8(elm_entry_entry_get(obj));
    selected = eina_list_data_get(list_selected);
-   if (strcmp(value, selected) == 0) return true;
+   if (strcmp(value, selected) == 0)
+     goto end;
 
    elm_entry_entry_set(pd->picture, selected);
 
@@ -290,6 +291,8 @@ _on_image_done(void *data,
 
    evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, pd->part);
 
+end:
+   free(value);
    return true;
 }
 
@@ -332,15 +335,17 @@ _on_style_change(void *data,
 {
    Demo_Swallow_Prop_Data *pd = (Demo_Swallow_Prop_Data *)data;
    assert(pd != NULL);
-   const char *value;
+   char *value;
 
-   value = elm_entry_entry_get(pd->content_style);
+   value = elm_entry_markup_to_utf8(elm_entry_entry_get(obj));
 
    eina_stringshare_del(pd->part->content_style);
+
    pd->part->content_style = eina_stringshare_add(value);
    pd->part->change = true;
 
    evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, pd->part);
+   free(value);
 }
 static Evas_Object *
 prop_style_set_add(Evas_Object *parent,
