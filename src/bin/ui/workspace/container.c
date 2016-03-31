@@ -613,10 +613,10 @@ container_padding_size_get(Evas_Object *obj, int *tl_w, int *tl_h, int *br_w, in
 {
    CONTAINER_DATA_GET(obj, sd);
 
-   if (tl_w) *tl_w = sd->pad_left_top.w;
-   if (tl_h) *tl_h = sd->pad_left_top.h;
-   if (br_w) *br_w = sd->pad_right_bottom.w;
-   if (br_h) *br_h = sd->pad_right_bottom.h;
+   if (tl_w) *tl_w = BASE_PADDING;
+   if (tl_h) *tl_h = BASE_PADDING;
+   if (br_w) *br_w = BASE_PADDING;
+   if (br_h) *br_h = BASE_PADDING;
 
    return true;
 }
