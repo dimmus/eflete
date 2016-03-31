@@ -72,7 +72,7 @@ struct _Workspace_Data
       Evas_Object *layout;
       Evas_Object *obj;
       struct {
-         Evas_Object *fill;
+         Evas_Object *fit;
          Evas_Object *z100;
          Evas_Object *slider;
       } zoom;
@@ -286,6 +286,16 @@ _zoom100_cb(void *data,
 }
 
 static void
+_fit_cb(void *data,
+        Evas_Object *obj __UNUSED__,
+        void *event_info __UNUSED__)
+{
+   Workspace_Data *wd = data;
+
+   workspace_container_fit(wd->panes);
+}
+
+static void
 _slider_zoom_cb(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
@@ -299,7 +309,7 @@ _slider_zoom_cb(void *data,
 static void
 _zoom_controls_disabled_set(Workspace_Data *wd, Eina_Bool disabled)
 {
-   elm_object_disabled_set(wd->toolbar.zoom.fill, disabled);
+   elm_object_disabled_set(wd->toolbar.zoom.fit, disabled);
    elm_object_disabled_set(wd->toolbar.zoom.z100, disabled);
    elm_object_disabled_set(wd->toolbar.zoom.slider, disabled);
 }
@@ -310,9 +320,12 @@ _zoom_controls_add(Workspace_Data *wd)
    Elm_Object_Item *tb_it;
    Evas_Object *img;
 
-   wd->toolbar.zoom.fill = elm_button_add(wd->toolbar.obj);
+   wd->toolbar.zoom.fit = elm_button_add(wd->toolbar.obj);
+   evas_object_smart_callback_add(wd->toolbar.zoom.fit, "clicked", _fit_cb, wd);
+   IMAGE_ADD_NEW(wd->toolbar.zoom.fit, img, "icon", "fit")
+   elm_object_part_content_set(wd->toolbar.zoom.fit, NULL, img);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
-   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.fill);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.fit);
 
    wd->toolbar.zoom.z100 = elm_button_add(wd->toolbar.obj);
    elm_object_text_set(wd->toolbar.zoom.z100, _("100%"));
@@ -1228,6 +1241,32 @@ workspace_container_fill(Evas_Object *obj)
    w = (w - l - r) / wd->zoom_factor;
    h = (h - t - b) / wd->zoom_factor;
    container_container_size_set(area->container, w, h);
+}
+
+void
+workspace_container_fit(Evas_Object *obj)
+{
+   int w, h, cw, ch;
+   double zoom;
+   int r, t, l, b;
+   Scroll_Area *area;
+
+   WS_DATA_GET(obj);
+
+   if ((MODE_NORMAL != wd->mode) && (MODE_CODE != wd->mode)) return;
+
+   area = _scroll_area_get(wd);
+   /* get the bg size, because bg size not included the scrollbar size */
+   evas_object_geometry_get(area->bg, NULL, NULL, &w, &h);
+   container_container_size_get(area->container, &cw, &ch);
+   container_padding_size_get(area->container, &r, &t, &l, &b);
+
+   if (cw >= ch)
+     zoom = (w - l - r) / (double)cw;
+   else
+     zoom = (h - t - b) / (double)ch;
+
+   workspace_zoom_factor_set(obj, zoom);
 }
 
 void

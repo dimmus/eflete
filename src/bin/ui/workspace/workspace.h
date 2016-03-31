@@ -262,6 +262,16 @@ void
 workspace_container_fill(Evas_Object *obj);
 
 /**
+ * Fill the workspace
+ *
+ * @param obj The workspace object.
+ *
+ * @ingroup Workspace
+ */
+void
+workspace_container_fit(Evas_Object *obj);
+
+/**
  * Switch beetwen show or hide mode of legend in workspace object.
  *
  * @param obj The workspace object.
