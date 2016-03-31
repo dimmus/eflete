@@ -104,6 +104,7 @@ struct _Tab_Home_Edj
    Meta_Data_Controls meta;
 
    Evas_Object *ch_all;
+   Evas_Object *themes;
    Evas_Object *genlist;
 };
 
@@ -159,7 +160,16 @@ _edj_set()
 {
    Eina_Bool checked = _checked_get();
 
-   if (checked) elm_entry_entry_set(tab_edj.edj, EFLETE_TEMPLATE_EDJ_PATH"/default.edj");
+   if (checked)
+     {
+        Ewe_Combobox_Item *item = ewe_combobox_select_item_get(tab_edj.themes);
+        char buf[256];
+        if (item)
+          {
+             snprintf(buf, sizeof(buf), "%s/%s", EFLETE_TEMPLATE_EDJ_PATH, item->title);
+             elm_entry_entry_set(tab_edj.edj, buf);
+          }
+     }
    else elm_entry_entry_set(tab_edj.edj, "");
    elm_object_disabled_set(tab_edj.edj, checked);
 
@@ -228,6 +238,15 @@ _on_item_activated(void *data __UNUSED__,
 
    widget_data->check = !widget_data->check;
    elm_genlist_item_update(it);
+}
+
+static void
+_template_theme_changed(void *data __UNUSED__,
+                        Evas_Object *obj __UNUSED__,
+                        void *event_info __UNUSED__)
+{
+   _edj_set();
+
 }
 
 static void
@@ -365,6 +384,8 @@ _tab_import_edj_add(void)
 {
    Elm_Genlist_Item_Class *itc = NULL;
    Widget_Item_Data *widget_item_data_iterator = widget_item_data;
+   Eina_List *themes = NULL, *l = NULL;
+   char *theme;
 
    tab_edj.name_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
 
@@ -405,6 +426,15 @@ _tab_import_edj_add(void)
    evas_object_smart_callback_add(tab_edj.ch_all, "changed", _on_check_all, NULL);
    elm_object_part_content_set(tab_edj.layout, "swallow.all_widgets_check", tab_edj.ch_all);
    elm_object_part_text_set(tab_edj.layout, "label.widgets", _("Widgets:"));
+
+   /* template themes */
+   EWE_COMBOBOX_ADD(tab_edj.layout, tab_edj.themes);
+   elm_object_part_content_set(tab_edj.layout, "swallow.template_themes", tab_edj.themes);
+   ewe_combobox_text_set(tab_edj.themes, "template themes");
+   themes = ecore_file_ls(EFLETE_TEMPLATE_EDJ_PATH);
+   EINA_LIST_FOREACH(themes, l, theme)
+      ewe_combobox_item_add(tab_edj.themes, theme);
+   evas_object_smart_callback_add(tab_edj.themes, "selected", _template_theme_changed, NULL);
 
    /* genlist */
    tab_edj.genlist = elm_genlist_add(ap.win);

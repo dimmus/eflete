@@ -707,6 +707,31 @@ group { name: "elm/layout/tab_home/import_edj";
             rel1.to_y: "swallow.meta_version";
          }
       }
+      part { name: "label.widgets";
+         description { state: "default" 0.0;
+            rel2 {
+                relative: 0.0 1.0;
+                to_x: "swallow.all_widgets_check";
+            }
+            text.min: 1 0;
+            text.ellipsis: -1;
+         }
+      }
+      part { name: "swallow.template_themes";
+         type: SWALLOW;
+         insert_after: "label.widgets";
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1 0.0;
+               to: "label.widgets";
+               offset: 6 0;
+            }
+            rel2 {
+               to_x: "area.widgets_info";
+               to_y: "label.widgets";
+            }
+         }
+      }
    }
 }
    
