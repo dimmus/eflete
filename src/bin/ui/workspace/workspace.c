@@ -609,6 +609,7 @@ _mode_cb(void *data,
          evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, wd->group);
 
          area = &wd->normal;
+         ui_menu_disable_set(ap.menu, MENU_VIEW_WORKSPACE_FIT, false);
          break;
       case MODE_DEMO:
          if (!wd->demo.layout) _scroll_area_add(wd, &wd->demo, false);
@@ -627,6 +628,7 @@ _mode_cb(void *data,
          evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
 
          area = &wd->demo;
+         ui_menu_disable_set(ap.menu, MENU_VIEW_WORKSPACE_FIT, true);
          break;
      }
 
