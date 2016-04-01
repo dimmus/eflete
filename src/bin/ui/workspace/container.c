@@ -488,6 +488,14 @@ container_container_size_set(Evas_Object *obj, int w, int h)
    return true;
 }
 
+Container_Geom *
+container_geom_get(Evas_Object *obj)
+{
+   CONTAINER_DATA_GET(obj, sd);
+
+   return &sd->size;
+}
+
 Eina_Bool
 container_container_size_get(Evas_Object *obj, int *w, int *h)
 {

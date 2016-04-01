@@ -157,6 +157,16 @@ Eina_Bool
 container_container_size_get(Evas_Object *obj, int *w, int *h);
 
 /**
+ * Get the container geom
+ *
+ * @param obj The Container object.
+ *
+ * @ingroup Container
+ */
+Container_Geom *
+container_geom_get(Evas_Object *obj);
+
+/**
  * Set the new style to Container object.
  *
  * @param obj The Container object,

@@ -497,7 +497,8 @@ _container_changed(void *data,
    evas_object_geometry_get(area->ruler_v.obj, NULL, &y, NULL, NULL);
 
    if (((MODE_NORMAL == wd->mode) || (MODE_CODE == wd->mode)) && area->content)
-     part_geom = groupview_part_selected_object_area_geom_get(area->content);
+     if (groupview_part_object_area_visible_get(area->content))
+       part_geom = groupview_part_selected_object_area_geom_get(area->content);
    if (part_geom)
      {
         scale_x = part_geom->x - x;
