@@ -968,6 +968,7 @@ workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool visible)
    area = _scroll_area_get(wd);
 
    groupview_part_object_area_visible_set(area->content, visible);
+   _container_changed(wd, NULL, container_geom_get(area->container));
 }
 
 Eina_Bool
