@@ -574,7 +574,7 @@ _mode_cb(void *data,
    Workspace_Mode mode;
    Evas_Object *content;
    Scroll_Area *area = NULL;
-   int w = 0, h = 0;
+   const Container_Geom *geom;
 
    mode = elm_radio_value_get(obj);
    if (mode == wd->mode) return;
@@ -642,9 +642,9 @@ _mode_cb(void *data,
 
    elm_check_state_set(wd->toolbar.container_sizer.check_lock, container_lock_get(area->container));
 
-   container_container_size_get(area->container, &w, &h);
-   elm_spinner_value_set(wd->toolbar.container_sizer.spinner_w, w);
-   elm_spinner_value_set(wd->toolbar.container_sizer.spinner_h, h);
+   geom = container_geom_get(area->container);
+   elm_spinner_value_set(wd->toolbar.container_sizer.spinner_w, geom->w);
+   elm_spinner_value_set(wd->toolbar.container_sizer.spinner_h, geom->h);
 }
 
 static void
@@ -1250,10 +1250,11 @@ workspace_container_fill(Evas_Object *obj)
 void
 workspace_container_fit(Evas_Object *obj)
 {
-   int w, h, cw, ch;
+   int w, h;
    double zoom;
    int r, t, l, b;
    Scroll_Area *area;
+   const Container_Geom *geom;
 
    WS_DATA_GET(obj);
 
@@ -1262,13 +1263,13 @@ workspace_container_fit(Evas_Object *obj)
    area = _scroll_area_get(wd);
    /* get the bg size, because bg size not included the scrollbar size */
    evas_object_geometry_get(area->bg, NULL, NULL, &w, &h);
-   container_container_size_get(area->container, &cw, &ch);
+   geom = container_geom_get(area->container);
    container_padding_size_get(area->container, &r, &t, &l, &b);
 
-   if (cw >= ch)
-     zoom = (w - l - r) / (double)cw;
+   if (geom->w >= geom->h)
+     zoom = (w - l - r) / (double)geom->w;
    else
-     zoom = (h - t - b) / (double)ch;
+     zoom = (h - t - b) / (double)geom->h;
 
    workspace_zoom_factor_set(obj, zoom);
 }
