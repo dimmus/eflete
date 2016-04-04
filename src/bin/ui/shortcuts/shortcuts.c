@@ -108,6 +108,7 @@ struct _Shortcut_Module
                                                         unpressing for
                                                         shortcuts */
    Eina_List *shortcuts;      /**< list of user's shortcuts */
+   Eina_List *popup_shortcuts;/**< list of user's popup shortcuts */
    Eina_List *held_shortcuts; /**< list of functions that is being held */
    unsigned int last_modifiers;
 };
@@ -174,6 +175,8 @@ _shortcut_handle(Shortcut_Type type)
         SHORTCUT(ZOOM_OUT);
         SHORTCUT(ZOOM_RESET);
         SHORTCUT(OBJECT_AREA);
+        SHORTCUT(POPUP_CANCEL);
+        SHORTCUT(POPUP_DONE);
 
       case SHORTCUT_TYPE_NONE:
          break;
@@ -253,22 +256,20 @@ _key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
 
    ap.shortcuts->last_modifiers = sc.modifiers;
 
-   if (!ap.popup)
-     {
-        /* check if shortcut already pressed */
-        shortcut = eina_list_search_sorted(ap.shortcuts->held_shortcuts, (Eina_Compare_Cb)_shortcut_cmp, &sc);
-        if (shortcut)
-          return ECORE_CALLBACK_PASS_ON;
+   /* check if shortcut already pressed */
+   shortcut = eina_list_search_sorted(ap.shortcuts->held_shortcuts, (Eina_Compare_Cb)_shortcut_cmp, &sc);
+   if (shortcut)
+     return ECORE_CALLBACK_PASS_ON;
 
-        shortcut = eina_list_search_sorted(ap.shortcuts->shortcuts, (Eina_Compare_Cb)_shortcut_cmp, &sc);
-        if (shortcut)
-          {
-             ap.shortcuts->held_shortcuts = eina_list_sorted_insert(ap.shortcuts->held_shortcuts,
-                                                                    (Eina_Compare_Cb)_shortcut_cmp, shortcut);
-             _shortcut_handle(shortcut->type_press);
-             if (shortcut->type_press != SHORTCUT_TYPE_NONE)
-               return ECORE_CALLBACK_DONE;
-          }
+   shortcut = eina_list_search_sorted(ap.popup!=NULL ? ap.shortcuts->popup_shortcuts : ap.shortcuts->shortcuts,
+                                      (Eina_Compare_Cb)_shortcut_cmp, &sc);
+   if (shortcut)
+     {
+        ap.shortcuts->held_shortcuts = eina_list_sorted_insert(ap.shortcuts->held_shortcuts,
+                                                               (Eina_Compare_Cb)_shortcut_cmp, shortcut);
+        _shortcut_handle(shortcut->type_press);
+        if (shortcut->type_press != SHORTCUT_TYPE_NONE)
+          return ECORE_CALLBACK_DONE;
      }
 
    return ECORE_CALLBACK_PASS_ON;
@@ -348,7 +349,8 @@ _win_unfocused_cb(void *data __UNUSED__,
 }
 
 static void
-_add_shortcut(Shortcut_Type type_press,
+_add_shortcut(Eina_Bool popup,
+              Shortcut_Type type_press,
               Shortcut_Type type_unpress,
               unsigned int modifiers,
               unsigned int keycode)
@@ -362,7 +364,12 @@ _add_shortcut(Shortcut_Type type_press,
    sc->keycode = keycode;
    sc->modifiers = modifiers;
 
-   ap.shortcuts->shortcuts = eina_list_sorted_insert(ap.shortcuts->shortcuts, (Eina_Compare_Cb)_shortcut_cmp, sc);
+   if (popup)
+     ap.shortcuts->popup_shortcuts = eina_list_sorted_insert(ap.shortcuts->popup_shortcuts,
+                                                             (Eina_Compare_Cb)_shortcut_cmp, sc);
+   else
+     ap.shortcuts->shortcuts = eina_list_sorted_insert(ap.shortcuts->shortcuts,
+                                                       (Eina_Compare_Cb)_shortcut_cmp, sc);
 }
 
 static void
@@ -370,91 +377,98 @@ _default_shortcuts_add()
 {
    assert(ap.shortcuts != NULL);
 
-   _add_shortcut(SHORTCUT_TYPE_QUIT, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_QUIT, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 24/*q*/);
 
-   _add_shortcut(SHORTCUT_TYPE_UNDO, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_UNDO, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 52/*z*/);
-   _add_shortcut(SHORTCUT_TYPE_REDO, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_REDO, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 29/*y*/);
-   _add_shortcut(SHORTCUT_TYPE_SAVE, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_SAVE, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 39/*s*/);
-   _add_shortcut(SHORTCUT_TYPE_ADD_GROUP, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_ADD_GROUP, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 57/*n*/);
-   _add_shortcut(SHORTCUT_TYPE_ADD_PART, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_ADD_PART, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 24/*q*/);
-   _add_shortcut(SHORTCUT_TYPE_ADD_STATE, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_ADD_STATE, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 25/*w*/);
-   _add_shortcut(SHORTCUT_TYPE_ADD_ITEM, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_ADD_ITEM, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 26/*e*/);
-   _add_shortcut(SHORTCUT_TYPE_ADD_PROGRAM, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_ADD_PROGRAM, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 27/*r*/);
-   _add_shortcut(SHORTCUT_TYPE_DEL, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_DEL, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 119/*del*/);
-   _add_shortcut(SHORTCUT_TYPE_STATE_NEXT, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_STATE_NEXT, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 39/*s*/);
-   _add_shortcut(SHORTCUT_TYPE_PART_SHOWHIDE, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_PART_SHOWHIDE, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 43/*h*/);
-   _add_shortcut(SHORTCUT_TYPE_ALL_PARTS_SHOWHIDE, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_ALL_PARTS_SHOWHIDE, SHORTCUT_TYPE_NONE,
                  MOD_SHIFT, 43/*h*/);
 
-   _add_shortcut(SHORTCUT_TYPE_TAB_NUM1, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_NUM1, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 10/*1*/);
-   _add_shortcut(SHORTCUT_TYPE_TAB_NUM2, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_NUM2, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 11/*2*/);
-   _add_shortcut(SHORTCUT_TYPE_TAB_NUM3, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_NUM3, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 12/*3*/);
-   _add_shortcut(SHORTCUT_TYPE_TAB_NUM4, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_NUM4, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 13/*4*/);
-   _add_shortcut(SHORTCUT_TYPE_TAB_NUM5, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_NUM5, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 14/*5*/);
-   _add_shortcut(SHORTCUT_TYPE_TAB_NUM6, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_NUM6, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 15/*6*/);
-   _add_shortcut(SHORTCUT_TYPE_TAB_NUM7, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_NUM7, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 16/*7*/);
-   _add_shortcut(SHORTCUT_TYPE_TAB_NUM8, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_NUM8, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 17/*8*/);
-   _add_shortcut(SHORTCUT_TYPE_TAB_NUM9, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_NUM9, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 18/*9*/);
-   _add_shortcut(SHORTCUT_TYPE_TAB_NUM10, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_NUM10, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 19/*0*/);
 
-   _add_shortcut(SHORTCUT_TYPE_TAB_NEXT, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_NEXT, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 23/*TAB*/);
-   _add_shortcut(SHORTCUT_TYPE_TAB_PREV, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_PREV, SHORTCUT_TYPE_NONE,
                  MOD_CTRL|MOD_SHIFT, 23/*TAB*/);
-   _add_shortcut(SHORTCUT_TYPE_TAB_NEXT, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_NEXT, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 117/*PG_DOWN*/);
-   _add_shortcut(SHORTCUT_TYPE_TAB_PREV, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_PREV, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 112/*PG_UP*/);
 
-   _add_shortcut(SHORTCUT_TYPE_TAB_CLOSE, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_CLOSE, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 25/*w*/);
 
-   _add_shortcut(SHORTCUT_TYPE_MODE_NORMAL, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_MODE_NORMAL, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 67/*F1*/);
-   _add_shortcut(SHORTCUT_TYPE_MODE_CODE, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_MODE_CODE, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 68/*F2*/);
-   _add_shortcut(SHORTCUT_TYPE_MODE_DEMO, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_MODE_DEMO, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 69/*F3*/);
 
-   _add_shortcut(SHORTCUT_TYPE_TAB_IMAGE_MANAGER, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_IMAGE_MANAGER, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 73/*F7*/);
-   _add_shortcut(SHORTCUT_TYPE_TAB_SOUND_MANAGER, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_SOUND_MANAGER, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 74/*F8*/);
-   _add_shortcut(SHORTCUT_TYPE_TAB_STYLE_MANAGER, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_STYLE_MANAGER, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 75/*F9*/);
-   _add_shortcut(SHORTCUT_TYPE_TAB_COLOR_CLASS_MANAGER, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_TAB_COLOR_CLASS_MANAGER, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 76/*F10*/);
 
-   _add_shortcut(SHORTCUT_TYPE_ZOOM_IN, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_ZOOM_IN, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 86/*KP_+*/);
-   _add_shortcut(SHORTCUT_TYPE_ZOOM_OUT, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_ZOOM_OUT, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 82/*KP_-*/);
-   _add_shortcut(SHORTCUT_TYPE_ZOOM_RESET, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_ZOOM_RESET, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 106/*KP_/ */);
-   _add_shortcut(SHORTCUT_TYPE_OBJECT_AREA, SHORTCUT_TYPE_NONE,
+   _add_shortcut(false, SHORTCUT_TYPE_OBJECT_AREA, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 32/*o*/);
+
+   _add_shortcut(true, SHORTCUT_TYPE_POPUP_CANCEL, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 9/*ESC*/);
+   _add_shortcut(true, SHORTCUT_TYPE_POPUP_DONE, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 36/*ENTER*/);
+   _add_shortcut(true, SHORTCUT_TYPE_POPUP_DONE, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 104/*KP_ENTER*/);
 
 }
 
