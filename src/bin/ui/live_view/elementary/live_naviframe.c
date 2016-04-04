@@ -61,44 +61,43 @@ _prev_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED
 
 static void
 _on_naviframe_swallow_check(void *data __UNUSED__,
-                            Evas_Object *obj __UNUSED__,
-                            void *ei __UNUSED__)
+                            Evas_Object *obj,
+                            void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Evas_Object *object = (Evas_Object *) data;
    Elm_Object_Item *item_main, *item_current;
 
-   item_current = evas_object_data_get(object, "main_page");
-   item_main = elm_naviframe_top_item_get(object);
+   item_current = evas_object_data_get(obj, "main_page");
+   item_main = elm_naviframe_top_item_get(obj);
    if (item_current != item_main)
-     elm_naviframe_item_pop(object);
+     elm_naviframe_item_pop(obj);
 
    if (part->change)
      {
         if (part->object)
           {
-             elm_object_part_content_unset(object, part->name);
+             elm_object_part_content_unset(obj, part->name);
              evas_object_del(part->object);
              part->object = NULL;
           }
 
-        part->object = object_generate(part, object);
+        part->object = object_generate(part, obj);
         evas_object_show(part->object);
         if ((part->swallow_content == CONTENT_WIDGET) && (part->widget == WIDGET_BUTTON))
           {
              if (!strcmp(part->name, "elm.swallow.prev_btn"))
                {
                   elm_object_text_set(part->object, _("Prev page"));
-                  evas_object_smart_callback_add(part->object, "clicked", _prev_page_cb, object);
+                  evas_object_smart_callback_add(part->object, "clicked", _prev_page_cb, obj);
                }
              else if (!strcmp(part->name, "elm.swallow.next_btn"))
                {
                   elm_object_text_set(part->object, _("Next page"));
-                  evas_object_smart_callback_add(part->object, "clicked", _next_page_cb, object);
+                  evas_object_smart_callback_add(part->object, "clicked", _next_page_cb, obj);
                }
           }
         part->change = false;
-        elm_object_part_content_set(object, part->name, part->object);
+        elm_object_part_content_set(obj, part->name, part->object);
      }
 
    if (part->object)
@@ -120,28 +119,26 @@ _on_naviframe_swallow_check(void *data __UNUSED__,
 
 static void
 _on_naviframe_text_check(void *data __UNUSED__,
-                         Evas_Object *obj __UNUSED__,
-                         void *ei __UNUSED__)
+                         Evas_Object *obj,
+                         void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Evas_Object *object = (Evas_Object *) data;
    Elm_Object_Item *item_main, *item_current;
 
-   item_current = evas_object_data_get(object, "main_page");
-   item_main = elm_naviframe_top_item_get(object);
+   item_current = evas_object_data_get(obj, "main_page");
+   item_main = elm_naviframe_top_item_get(obj);
    if (item_current != item_main)
-     elm_naviframe_item_pop(object);
+     elm_naviframe_item_pop(obj);
 
-   elm_object_part_text_set(object, part->name, part->text_content);
+   elm_object_part_text_set(obj, part->name, part->text_content);
 }
 
 static void
-_naviframe_send_signal(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       void *ei __UNUSED__)
+_naviframe_send_signal(void *data __UNUSED__,
+                       Evas_Object *obj,
+                       void *ei)
 {
    Demo_Signal *sig = (Demo_Signal *)ei;
-   Evas_Object *object = (Evas_Object *)data;
 
    assert(sig != NULL);
    assert(sig->sig_name != NULL);
@@ -149,10 +146,10 @@ _naviframe_send_signal(void *data,
 
    Elm_Object_Item *item_main, *item_current;
 
-   item_current = evas_object_data_get(object, "main_page");
-   item_main = elm_naviframe_top_item_get(object);
+   item_current = evas_object_data_get(obj, "main_page");
+   item_main = elm_naviframe_top_item_get(obj);
    if (item_current != item_main)
-     item_current = elm_naviframe_item_pop(object);
+     item_current = elm_naviframe_item_pop(obj);
 
    elm_object_item_signal_emit(item_current, sig->sig_name, sig->source_name);
 }
@@ -188,9 +185,9 @@ widget_naviframe_create(Evas_Object *parent, const Group *group)
    elm_object_item_part_text_set(it, "title", _("Main Page"));
    evas_object_data_set(nf, "main_page", it);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_naviframe_swallow_check, nf);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, _on_naviframe_text_check, nf);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _naviframe_send_signal, nf);
+   evas_object_smart_callback_add(nf, SIGNAL_DEMO_SWALLOW_SET, _on_naviframe_swallow_check, NULL);
+   evas_object_smart_callback_add(nf, SIGNAL_DEMO_TEXT_SET, _on_naviframe_text_check, NULL);
+   evas_object_smart_callback_add(nf, SIGNAL_DEMO_SIGNAL_SEND, _naviframe_send_signal, NULL);
 
    elm_object_style_set(nf, style_name);
 

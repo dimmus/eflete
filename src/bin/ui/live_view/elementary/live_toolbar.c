@@ -80,10 +80,9 @@ widget_toolbar_create(Evas_Object *parent, const Group *group)
    object = _create_toolbar(parent, group->class, group->style);
    evas_object_show(object);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, object);
-   evas_object_event_callback_add(object, EVAS_CALLBACK_DEL, demo_object_del, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_TEXT_SET, on_text_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SIGNAL_SEND, send_signal, NULL);
 
    return object;
 }

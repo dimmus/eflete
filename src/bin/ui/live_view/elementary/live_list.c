@@ -20,14 +20,13 @@
 #include "live_elementary_widgets.h"
 
 static void
-_on_list_swallow_check(void *data,
+_on_list_swallow_check(void *data __UNUSED__,
                        Evas_Object *obj,
                        void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Evas_Object *object = (Evas_Object *) data;
 
-   Elm_Object_Item *item = elm_list_first_item_get(object);
+   Elm_Object_Item *item = elm_list_first_item_get(obj);
 
    const char *part_name = part->name;
 
@@ -71,14 +70,13 @@ _on_list_swallow_check(void *data,
 }
 
 static void
-_on_list_text_check(void *data ,
-                    Evas_Object *obj __UNUSED__,
+_on_list_text_check(void *data __UNUSED__,
+                    Evas_Object *obj,
                     void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Evas_Object *object = (Evas_Object *) data;
 
-   Elm_Object_Item *item = elm_list_first_item_get(object);
+   Elm_Object_Item *item = elm_list_first_item_get(obj);
 
    while (item)
      {
@@ -88,8 +86,8 @@ _on_list_text_check(void *data ,
 }
 
 static void
-_list_send_signal(void *data,
-                  Evas_Object *obj __UNUSED__,
+_list_send_signal(void *data __UNUSED__,
+                  Evas_Object *obj,
                   void *ei __UNUSED__)
 {
    Demo_Signal *sig = (Demo_Signal *)ei;
@@ -97,7 +95,7 @@ _list_send_signal(void *data,
 
    assert(data != NULL);
 
-   item = elm_list_first_item_get(data);
+   item = elm_list_first_item_get(obj);
    assert(sig != NULL);
    assert(sig->sig_name != NULL);
    assert(sig->source_name != NULL);
@@ -107,17 +105,6 @@ _list_send_signal(void *data,
         elm_object_item_signal_emit(item, sig->sig_name, sig->source_name);
         item = elm_list_item_next(item);
      }
-}
-
-void
-_demo_list_del(void *data __UNUSED__,
-               Evas *evas __UNUSED__,
-               Evas_Object *object,
-               void *event_info __UNUSED__)
-{
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_list_swallow_check, object);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_TEXT_SET, _on_list_text_check, object);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _list_send_signal, object);
 }
 
 Evas_Object *
@@ -142,10 +129,9 @@ widget_list_create(Evas_Object *parent, const Group *group)
    else
      elm_list_mode_set(object, ELM_LIST_SCROLL);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_list_swallow_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, _on_list_text_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _list_send_signal, object);
-   evas_object_event_callback_add(object, EVAS_CALLBACK_DEL, _demo_list_del, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SWALLOW_SET, _on_list_swallow_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_TEXT_SET, _on_list_text_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SIGNAL_SEND, _list_send_signal, NULL);
 
    elm_object_style_set(object, group->style);
 

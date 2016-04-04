@@ -33,10 +33,9 @@ widget_spinner_create(Evas_Object *parent, const Group *group)
    elm_spinner_min_max_set(object, -50.0, 250.0);
    elm_spinner_editable_set(object, true);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, object);
-   evas_object_event_callback_add(object, EVAS_CALLBACK_DEL, demo_object_del, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_TEXT_SET, on_text_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SIGNAL_SEND, send_signal, NULL);
 
    elm_object_style_set(object, group->style);
 

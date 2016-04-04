@@ -22,19 +22,18 @@
 
 static void
 _on_genlist_swallow_check(void *data __UNUSED__,
-                          Evas_Object *obj __UNUSED__,
-                          void *ei __UNUSED__)
+                          Evas_Object *obj,
+                          void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Evas_Object *object = (Evas_Object *)data;
-   Eina_List *part_list = evas_object_data_get(object, SWALLOW_LIST);
+   Eina_List *part_list = evas_object_data_get(obj, SWALLOW_LIST);
 
    if (!eina_list_data_find(part_list, part->name))
      part_list =  eina_list_append(part_list, part);
-   evas_object_data_set(object, SWALLOW_LIST, part_list);
+   evas_object_data_set(obj, SWALLOW_LIST, part_list);
 
    Elm_Object_Item *item = NULL;
-   item = elm_genlist_first_item_get(object);
+   item = elm_genlist_first_item_get(obj);
    while (item)
      {
         elm_genlist_item_update(item);
@@ -43,20 +42,19 @@ _on_genlist_swallow_check(void *data __UNUSED__,
 }
 
 static void
-_on_genlist_text_check(void *data,
-                       Evas_Object *obj __UNUSED__,
+_on_genlist_text_check(void *data __UNUSED__,
+                       Evas_Object *obj,
                        void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Evas_Object *object = (Evas_Object *)data;
-   Eina_List *part_list = evas_object_data_get(object, TEXT_LIST);
+   Eina_List *part_list = evas_object_data_get(obj, TEXT_LIST);
 
    if (!eina_list_data_find(part_list, part->name))
      part_list =  eina_list_append(part_list, part);
-   evas_object_data_set(object, TEXT_LIST, part_list);
+   evas_object_data_set(obj, TEXT_LIST, part_list);
 
    Elm_Object_Item *item = NULL;
-   item = elm_genlist_first_item_get(object);
+   item = elm_genlist_first_item_get(obj);
    while (item)
      {
         elm_genlist_item_update(item);
@@ -65,16 +63,16 @@ _on_genlist_text_check(void *data,
 }
 
 static void
-_genlist_send_signal(void *data,
-                     Evas_Object *obj __UNUSED__,
-                     void *ei __UNUSED__)
+_genlist_send_signal(void *data __UNUSED__,
+                     Evas_Object *obj,
+                     void *ei)
 {
    Demo_Signal *sig = (Demo_Signal *)ei;
    Elm_Object_Item *item = NULL;
 
    assert(data != NULL);
 
-   item = elm_genlist_first_item_get(data);
+   item = elm_genlist_first_item_get(obj);
    assert(sig != NULL);
    assert(sig->sig_name != NULL);
    assert(sig->source_name != NULL);
@@ -289,16 +287,6 @@ _create_genlist(Evas_Object *obj, const char *class, const char *style)
 }
 
 /*********** GEN LIST CREATING FUNCTIONS ****END*********/
-void
-_demo_genlist_del(void *data __UNUSED__,
-                  Evas *evas __UNUSED__,
-                  Evas_Object *object,
-                  void *event_info __UNUSED__)
-{
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_genlist_swallow_check, object);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_TEXT_SET, _on_genlist_text_check, object);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _genlist_send_signal, object);
-}
 
 Evas_Object *
 widget_genlist_create(Evas_Object *parent, const Group *group)
@@ -314,10 +302,9 @@ widget_genlist_create(Evas_Object *parent, const Group *group)
    object = _create_genlist(parent, group->class, group->style);
    evas_object_show(object);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_genlist_swallow_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, _on_genlist_text_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _genlist_send_signal, object);
-   evas_object_event_callback_add(object, EVAS_CALLBACK_DEL, _demo_genlist_del, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SWALLOW_SET, _on_genlist_swallow_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_TEXT_SET, _on_genlist_text_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SIGNAL_SEND, _genlist_send_signal, NULL);
 
    evas_object_data_set(object, SWALLOW_LIST, swallow_list);
    evas_object_data_set(object, TEXT_LIST, text_list);

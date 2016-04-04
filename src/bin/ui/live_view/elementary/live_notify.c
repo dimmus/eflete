@@ -22,7 +22,7 @@
 static void
 _on_notify_swallow_check(void *data,
                          Evas_Object *obj __UNUSED__,
-                         void *ei __UNUSED__)
+                         void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
    Evas_Object *object = (Evas_Object *) data;
@@ -62,18 +62,17 @@ _on_notify_swallow_check(void *data,
 }
 
 static void
-_notify_send_signal(void *data,
-                    Evas_Object *obj __UNUSED__,
+_notify_send_signal(void *data __UNUSED__,
+                    Evas_Object *obj,
                     void *ei)
 {
    Demo_Signal *sig = (Demo_Signal *)ei;
-   Evas_Object *object = (Evas_Object *)data;
 
    assert(sig != NULL);
    assert(sig->sig_name != NULL);
    assert(sig->source_name != NULL);
 
-   elm_layout_signal_emit(object, sig->sig_name, sig->source_name);
+   elm_layout_signal_emit(obj, sig->sig_name, sig->source_name);
 }
 
 static void
@@ -147,19 +146,6 @@ _on_click(void *data,
    evas_object_show(notify);
 }
 
-void
-_demo_noti_del(void *data,
-               Evas *evas __UNUSED__,
-               Evas_Object *object,
-               void *event_info __UNUSED__)
-{
-   Evas_Object *bx = (Evas_Object *)data;
-
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_notify_swallow_check, bx);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _notify_send_signal, object);
-}
-
 Evas_Object *
 widget_notify_create(Evas_Object *parent, const Group *group)
 {
@@ -188,10 +174,9 @@ widget_notify_create(Evas_Object *parent, const Group *group)
    object = elm_box_add(parent);
    elm_box_pack_end(object, btn);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_notify_swallow_check, bx);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, noti);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _notify_send_signal, noti);
-   evas_object_event_callback_add(noti, EVAS_CALLBACK_DEL, _demo_noti_del, bx);
+   evas_object_smart_callback_add(noti, SIGNAL_DEMO_SWALLOW_SET, _on_notify_swallow_check, bx);
+   evas_object_smart_callback_add(noti, SIGNAL_DEMO_TEXT_SET, on_text_check, NULL);
+   evas_object_smart_callback_add(noti, SIGNAL_DEMO_SIGNAL_SEND, _notify_send_signal, NULL);
 
    elm_object_style_set(noti, group->style);
    return object;

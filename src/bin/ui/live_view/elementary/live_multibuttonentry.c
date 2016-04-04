@@ -20,12 +20,12 @@
 #include "live_elementary_widgets.h"
 
 static void
-_on_multibutton_swallow_check(void *data,
-                              Evas_Object *obj __UNUSED__,
+_on_multibutton_swallow_check(void *data __UNUSED__,
+                              Evas_Object *obj,
                               void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Elm_Object_Item *multi_item = elm_multibuttonentry_first_item_get(data);
+   Elm_Object_Item *multi_item = elm_multibuttonentry_first_item_get(obj);
    Evas_Object *content;
 
    while (multi_item)
@@ -65,12 +65,12 @@ _on_multibutton_swallow_check(void *data,
 }
 
 static void
-_on_multibutton_text_check(void *data,
-                           Evas_Object *obj __UNUSED__,
+_on_multibutton_text_check(void *data __UNUSED__,
+                           Evas_Object *obj,
                            void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Elm_Object_Item *multi_item = elm_multibuttonentry_first_item_get(data);
+   Elm_Object_Item *multi_item = elm_multibuttonentry_first_item_get(obj);
 
    while (multi_item)
      {
@@ -80,8 +80,8 @@ _on_multibutton_text_check(void *data,
 }
 
 static void
-_multibutton_send_signal(void *data,
-                         Evas_Object *obj __UNUSED__,
+_multibutton_send_signal(void *data __UNUSED__,
+                         Evas_Object *obj,
                          void *ei)
 {
    Demo_Signal *sig = (Demo_Signal *)ei;
@@ -89,7 +89,7 @@ _multibutton_send_signal(void *data,
 
    assert(data != NULL);
 
-   item = elm_multibuttonentry_first_item_get(data);
+   item = elm_multibuttonentry_first_item_get(obj);
    assert(sig != NULL);
    assert(sig->sig_name != NULL);
    assert(sig->source_name != NULL);
@@ -99,17 +99,6 @@ _multibutton_send_signal(void *data,
         elm_object_item_signal_emit(item, sig->sig_name, sig->source_name);
         item = elm_multibuttonentry_item_next_get(item);
      }
-}
-
-void
-_demo_multibutton_del(void *data __UNUSED__,
-                      Evas *evas __UNUSED__,
-                      Evas_Object *object,
-                      void *event_info __UNUSED__)
-{
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_multibutton_swallow_check, object);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_TEXT_SET,    _on_multibutton_text_check, object);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _multibutton_send_signal, object);
 }
 
 Evas_Object *
@@ -138,17 +127,15 @@ widget_multibuttonentry_create(Evas_Object *parent, const Group *group)
    /** in case when we edit button gorup, we need to apply changes to items */
    if (strcmp(group->class, "btn") == 0)
      {
-        evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_multibutton_swallow_check, object);
-        evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET,    _on_multibutton_text_check, object);
-        evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _multibutton_send_signal, object);
-        evas_object_event_callback_add(object, EVAS_CALLBACK_DEL, _demo_multibutton_del, NULL);
+        evas_object_smart_callback_add(object, SIGNAL_DEMO_SWALLOW_SET, _on_multibutton_swallow_check, NULL);
+        evas_object_smart_callback_add(object, SIGNAL_DEMO_TEXT_SET,    _on_multibutton_text_check, NULL);
+        evas_object_smart_callback_add(object, SIGNAL_DEMO_SIGNAL_SEND, _multibutton_send_signal, NULL);
      }
    else /** on all other cases we need to apply changes to whole object */
      {
-        evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, object);
-        evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
-        evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, object);
-        evas_object_event_callback_add(object, EVAS_CALLBACK_DEL, demo_object_del, NULL);
+        evas_object_smart_callback_add(object, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, NULL);
+        evas_object_smart_callback_add(object, SIGNAL_DEMO_TEXT_SET, on_text_check, NULL);
+        evas_object_smart_callback_add(object, SIGNAL_DEMO_SIGNAL_SEND, send_signal, NULL);
      }
 
    /** closed button is group used for showing collapsed multibuttonentry only */

@@ -19,8 +19,6 @@
 
 #include "live_elementary_widgets.h"
 
-
-
 Evas_Object *
 widget_bg_create(Evas_Object *parent, const Group *group)
 {
@@ -30,10 +28,9 @@ widget_bg_create(Evas_Object *parent, const Group *group)
 
    Evas_Object *object = elm_bg_add(parent);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, object);
-   evas_object_event_callback_add(object, EVAS_CALLBACK_DEL, demo_object_del, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_TEXT_SET, on_text_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SIGNAL_SEND, send_signal, NULL);
 
    elm_object_style_set(object, group->style);
 

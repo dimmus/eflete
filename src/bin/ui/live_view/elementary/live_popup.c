@@ -20,12 +20,11 @@
 #include "live_elementary_widgets.h"
 
 static void
-_on_popup_swallow_check(void *data,
-                        Evas_Object *obj __UNUSED__,
+_on_popup_swallow_check(void *data __UNUSED__,
+                        Evas_Object *obj,
                         void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Evas_Object *object = (Evas_Object *) data;
    Evas_Object *content;
    char *pointer = NULL;
    Eina_Stringshare *but_swallow = NULL, *title_swallow = NULL;
@@ -47,18 +46,18 @@ _on_popup_swallow_check(void *data,
           {
              if (but_swallow)
                {
-                  content = elm_object_part_content_get(object, but_swallow);
-                  elm_object_part_content_unset(object, but_swallow);
+                  content = elm_object_part_content_get(obj, but_swallow);
+                  elm_object_part_content_unset(obj, but_swallow);
                }
              else if (title_swallow)
                {
-                  content = elm_object_part_content_get(object, part->name);
-                  elm_object_part_content_unset(object, part->name);
+                  content = elm_object_part_content_get(obj, part->name);
+                  elm_object_part_content_unset(obj, part->name);
                }
              else
                {
-                  content = elm_object_content_get(object);
-                  elm_object_content_unset(object);
+                  content = elm_object_content_get(obj);
+                  elm_object_content_unset(obj);
                }
              evas_object_del(content);
              content = NULL;
@@ -67,19 +66,19 @@ _on_popup_swallow_check(void *data,
 
         if (but_swallow)
           {
-             part->object = elm_button_add(object);
+             part->object = elm_button_add(obj);
              elm_object_text_set(part->object, "OK");
-             elm_object_part_content_set(object, but_swallow, part->object);
+             elm_object_part_content_set(obj, but_swallow, part->object);
           }
         else if (title_swallow)
           {
-             part->object = object_generate(part, object);
-             elm_object_part_content_set(object, title_swallow, part->object);
+             part->object = object_generate(part, obj);
+             elm_object_part_content_set(obj, title_swallow, part->object);
           }
         else
           {
-             part->object = object_generate(part, object);
-             elm_object_content_set(object, part->object);
+             part->object = object_generate(part, obj);
+             elm_object_content_set(obj, part->object);
           }
         part->change = false;
      }
@@ -102,17 +101,6 @@ _on_popup_swallow_check(void *data,
 
    eina_stringshare_del(but_swallow);
    eina_stringshare_del(title_swallow);
-}
-
-void
-_demo_popup_del(void *data __UNUSED__,
-                Evas *evas __UNUSED__,
-                Evas_Object *object,
-                void *event_info __UNUSED__)
-{
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_popup_swallow_check, object);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, object);
 }
 
 Evas_Object *
@@ -138,10 +126,9 @@ widget_popup_create(Evas_Object *parent, const Group *group)
    free(style_parsed[0]);
    free(style_parsed);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_popup_swallow_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, object);
-   evas_object_event_callback_add(object, EVAS_CALLBACK_DEL, _demo_popup_del, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SWALLOW_SET, _on_popup_swallow_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_TEXT_SET, on_text_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SIGNAL_SEND, send_signal, NULL);
 
    elm_object_style_set(object, style_name);
    eina_stringshare_del(style_name);

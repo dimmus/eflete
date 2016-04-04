@@ -49,10 +49,9 @@ widget_slider_create(Evas_Object *parent, const Group *group)
    elm_slider_indicator_format_set(object, "%1.2f");
    elm_slider_min_max_set(object, 0, 10);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, object);
-   evas_object_event_callback_add(object, EVAS_CALLBACK_DEL, demo_object_del, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_TEXT_SET, on_text_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SIGNAL_SEND, send_signal, NULL);
 
    elm_object_style_set(object, style_name);
 
