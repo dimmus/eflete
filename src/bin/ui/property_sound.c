@@ -510,7 +510,6 @@ _sound_player_create(Evas_Object *parent, Sound_Prop_Data *edit)
    elm_object_part_content_set(edit->preview_sound_player, "eflete.swallow.sound_player", edit->sound_player);
 
    edit->snd_data.teg = elm_icon_add(edit->sound_player);
-   evas_object_image_smooth_scale_set(edit->snd_data.teg, false);
    evas_object_show(edit->snd_data.teg);
    evas_object_size_hint_fill_set(edit->snd_data.teg, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(edit->snd_data.teg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
