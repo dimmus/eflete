@@ -21,12 +21,11 @@
 
 static void
 _on_radio_swallow_check(void *data __UNUSED__,
-                        Evas_Object *obj __UNUSED__,
-                        void *ei __UNUSED__)
+                        Evas_Object *obj,
+                        void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Evas_Object *object = (Evas_Object *) data;
-   Eina_List* radio_list = elm_box_children_get(object);
+   Eina_List* radio_list = elm_box_children_get(obj);
    Evas_Object *content, *radio_obj;
 
    int content_type = part->swallow_content;
@@ -43,7 +42,7 @@ _on_radio_swallow_check(void *data __UNUSED__,
              /* if NONE - delete object */
              if (content_type != CONTENT_NONE)
                {
-                  content = object_generate(part, object);
+                  content = object_generate(part, obj);
                   part->objects = eina_list_append(part->objects, content);
                   elm_object_part_content_set(radio_obj, part->name, content);
                }
@@ -69,12 +68,11 @@ _on_radio_swallow_check(void *data __UNUSED__,
 
 static void
 _on_radio_text_check(void *data __UNUSED__,
-                        Evas_Object *obj __UNUSED__,
-                        void *ei __UNUSED__)
+                     Evas_Object *obj,
+                     void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Evas_Object *object = (Evas_Object *) data;
-   Eina_List* radio_list = elm_box_children_get(object);
+   Eina_List* radio_list = elm_box_children_get(obj);
    Evas_Object *radio_obj;
 
    EINA_LIST_FREE(radio_list, radio_obj)
@@ -82,13 +80,12 @@ _on_radio_text_check(void *data __UNUSED__,
 }
 
 static void
-_radio_send_signal(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *ei __UNUSED__)
+_radio_send_signal(void *data __UNUSED__,
+                   Evas_Object *obj,
+                   void *ei)
 {
    Demo_Signal *sig = (Demo_Signal *)ei;
-   Evas_Object *object = (Evas_Object *)data;
-   Eina_List* radio_list = elm_box_children_get(object);
+   Eina_List* radio_list = elm_box_children_get(obj);
    Evas_Object *radio_obj = NULL;
 
    assert(sig != NULL);
@@ -97,17 +94,6 @@ _radio_send_signal(void *data,
 
    EINA_LIST_FREE(radio_list, radio_obj)
      elm_layout_signal_emit(radio_obj, sig->sig_name, sig->source_name);
-}
-
-void
-_demo_radio_del(void *data __UNUSED__,
-                Evas *evas __UNUSED__,
-                Evas_Object *object,
-                void *event_info __UNUSED__)
-{
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_radio_swallow_check, object);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_TEXT_SET, _on_radio_text_check, object);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _radio_send_signal, object);
 }
 
 Evas_Object *
@@ -137,10 +123,9 @@ widget_radio_create(Evas_Object *parent, const Group *group)
 
    elm_radio_value_set(rdg, 2);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_radio_swallow_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, _on_radio_text_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _radio_send_signal, object);
-   evas_object_event_callback_add(object, EVAS_CALLBACK_DEL, _demo_radio_del, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SWALLOW_SET, _on_radio_swallow_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_TEXT_SET, _on_radio_text_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SIGNAL_SEND, _radio_send_signal, NULL);
 
    return object;
 }

@@ -25,7 +25,6 @@
 #include "group_navigator.h"
 #include "history.h"
 #include "demo.h"
-#include "demo_group.h"
 #include "project_manager.h"
 #include "change.h"
 #include "syntax_color.h"
@@ -1390,4 +1389,31 @@ workspace_part_unselect_request(Evas_Object *obj)
    WS_DATA_GET(obj);
 
    group_navigator_part_select(wd->group_navi, NULL);
+}
+
+void
+workspace_demo_swallow_set(Evas_Object *obj, Demo_Part *part)
+{
+   WS_DATA_GET(obj);
+
+   if ((wd->demo.content) && (wd->mode == MODE_DEMO))
+     evas_object_smart_callback_call(wd->demo.content, SIGNAL_DEMO_SWALLOW_SET, part);
+}
+
+void
+workspace_demo_text_set(Evas_Object *obj, Demo_Part *part)
+{
+   WS_DATA_GET(obj);
+
+   if ((wd->demo.content) && (wd->mode == MODE_DEMO))
+     evas_object_smart_callback_call(wd->demo.content, SIGNAL_DEMO_TEXT_SET, part);
+}
+
+void
+workspace_demo_signal_set(Evas_Object *obj, Demo_Signal *sig)
+{
+   WS_DATA_GET(obj);
+
+   if ((wd->demo.content) && (wd->mode == MODE_DEMO))
+     evas_object_smart_callback_call(wd->demo.content, SIGNAL_DEMO_SIGNAL_SEND, sig);
 }

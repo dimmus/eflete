@@ -324,6 +324,36 @@ _property_attribute_changed(void *data __UNUSED__,
 }
 
 static void
+_demo_swallow_set(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *ei)
+{
+   assert(tabs.current_workspace != NULL);
+
+   workspace_demo_swallow_set(tabs.current_workspace, (Demo_Part *)ei);
+}
+
+static void
+_demo_text_set(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *ei)
+{
+   assert(tabs.current_workspace != NULL);
+
+   workspace_demo_text_set(tabs.current_workspace, (Demo_Part *)ei);
+}
+
+static void
+_demo_send_signal(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *ei)
+{
+   assert(tabs.current_workspace != NULL);
+
+   workspace_demo_signal_set(tabs.current_workspace, (Demo_Signal *)ei);
+}
+
+static void
 _part_renamed(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *ei)
@@ -923,6 +953,10 @@ tabs_add(void)
    elm_object_item_disabled_set(tabs.menu.item_sound, true);
    elm_object_item_disabled_set(tabs.menu.item_text, true);
    elm_object_item_disabled_set(tabs.menu.item_colorclass, true);
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _demo_swallow_set, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, _demo_text_set, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _demo_send_signal, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _project_changed, NULL);

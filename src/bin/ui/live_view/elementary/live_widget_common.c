@@ -387,33 +387,32 @@ demo_object_del(void *data __UNUSED__,
                 Evas_Object *object,
                 void *event_info __UNUSED__)
 {
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, object);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
-   evas_object_smart_callback_del_full(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, object);
+   evas_object_smart_callback_del_full(object, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, NULL);
+   evas_object_smart_callback_del_full(object, SIGNAL_DEMO_TEXT_SET, on_text_check, NULL);
+   evas_object_smart_callback_del_full(object, SIGNAL_DEMO_SIGNAL_SEND, send_signal, NULL);
 }
 
 void
-on_swallow_check(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *ei __UNUSED__)
+on_swallow_check(void *data __UNUSED__,
+                 Evas_Object *obj,
+                 void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Evas_Object *object = (Evas_Object *) data;
    Evas_Object *content;
 
    if (part->change)
      {
         if (part->object)
           {
-             content = elm_object_part_content_unset(object, part->name);
+             content = elm_object_part_content_unset(obj, part->name);
              evas_object_del(content);
              content = NULL;
              part->object = NULL;
           }
 
-        part->object = object_generate(part, object);
+        part->object = object_generate(part, obj);
         part->change = false;
-        elm_object_part_content_set(object, part->name, part->object);
+        elm_object_part_content_set(obj, part->name, part->object);
      }
 
    if (part->object)
@@ -435,27 +434,25 @@ on_swallow_check(void *data,
 }
 
 void
-on_text_check(void *data,
-              Evas_Object *obj __UNUSED__,
+on_text_check(void *data __UNUSED__,
+              Evas_Object *obj,
               void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Evas_Object *object = (Evas_Object *) data;
 
-   elm_object_part_text_set(object, part->name, part->text_content);
+   elm_object_part_text_set(obj, part->name, part->text_content);
 }
 
 void
-send_signal(void *data,
-             Evas_Object *obj __UNUSED__,
+send_signal(void *data __UNUSED__,
+             Evas_Object *obj,
              void *ei)
 {
    Demo_Signal *sig = (Demo_Signal *)ei;
-   Evas_Object *object = (Evas_Object *)data;
 
    assert(sig != NULL);
    assert(sig->sig_name != NULL);
    assert(sig->source_name != NULL);
 
-   elm_layout_signal_emit(object, sig->sig_name, sig->source_name);
+   elm_layout_signal_emit(obj, sig->sig_name, sig->source_name);
 }

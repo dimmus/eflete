@@ -33,6 +33,7 @@
  */
 
 #include "eflete.h"
+#include "demo_group.h"
 
 typedef enum
 {
@@ -382,5 +383,14 @@ workspace_all_parts_showhide_request(Evas_Object *obj);
 
 void
 workspace_part_unselect_request(Evas_Object *obj);
+
+void
+workspace_demo_swallow_set(Evas_Object *obj, Demo_Part *part);
+
+void
+workspace_demo_text_set(Evas_Object *obj, Demo_Part *part);
+
+void
+workspace_demo_signal_set(Evas_Object *obj, Demo_Signal *sig);
 
 #endif /* WORKSPACE_H */
