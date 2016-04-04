@@ -43,7 +43,7 @@
 #define COLOR_BLUE_DARK 58, 92, 126, 255
 #define ELEMENTS_SMALL_COUNT 5
 #define ELEMENTS_MID_COUNT   25
-#define ELEMENTS_BIG_COUNT   100
+#define ELEMENTS_BIG_COUNT   50
 
 typedef void (* Swallow_Clean_Func)(const char *, Evas_Object *);
 

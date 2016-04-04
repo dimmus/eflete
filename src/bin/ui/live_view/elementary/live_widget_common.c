@@ -302,7 +302,7 @@ object_generate(Demo_Part *part, Evas_Object *object)
               break;
             case WIDGET_LIST:
               content = elm_list_add(object);
-              for (i = 0; i < ELEMENTS_BIG_COUNT; i++)
+              for (i = 0; i < ELEMENTS_MID_COUNT; i++)
                 {
                    bt = elm_button_add(content);
                    elm_object_text_set(bt, _("User Text"));
