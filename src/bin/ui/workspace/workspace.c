@@ -43,6 +43,7 @@
  * viewed, we can use the static Change for all workspace */
 static Change *change;
 static Evas_Coord part_w, part_h;
+static double part_align_x, part_align_y;
 
 struct _Ruler {
    Evas_Object *obj;
@@ -736,12 +737,24 @@ _groupview_hl_part_drag_start(void *data,
    Groupview_HL_Event *event = event_info;
 
    change = change_add(NULL);
-   part_w = edje_edit_state_max_w_get(wd->group->edit_object, event->part->name,
-                                      event->part->current_state->parsed_name,
-                                      event->part->current_state->parsed_val);
-   part_h = edje_edit_state_max_h_get(wd->group->edit_object, event->part->name,
-                                      event->part->current_state->parsed_name,
-                                      event->part->current_state->parsed_val);
+   if (MIDDLE != event->hl_type)
+     {
+        part_w = edje_edit_state_max_w_get(wd->group->edit_object, event->part->name,
+                                           event->part->current_state->parsed_name,
+                                           event->part->current_state->parsed_val);
+        part_h = edje_edit_state_max_h_get(wd->group->edit_object, event->part->name,
+                                           event->part->current_state->parsed_name,
+                                           event->part->current_state->parsed_val);
+     }
+   else
+     {
+        part_align_x = edje_edit_state_align_x_get(wd->group->edit_object, event->part->name,
+                                                   event->part->current_state->parsed_name,
+                                                   event->part->current_state->parsed_val);
+        part_align_y = edje_edit_state_align_y_get(wd->group->edit_object, event->part->name,
+                                                   event->part->current_state->parsed_name,
+                                                   event->part->current_state->parsed_val);
+     }
 }
 
 static void
@@ -752,14 +765,39 @@ _groupview_hl_part_changed(void *data,
    Workspace_Data *wd = data;
    Groupview_HL_Event *event = event_info;
 
-   editor_state_max_w_set(wd->group->edit_object, change, true, event->part->name,
-                          event->part->current_state->parsed_name,
-                          event->part->current_state->parsed_val,
-                          event->w);
-   editor_state_max_h_set(wd->group->edit_object, change, true, event->part->name,
-                          event->part->current_state->parsed_name,
-                          event->part->current_state->parsed_val,
-                          event->h);
+   assert(wd->mode == MODE_NORMAL);
+
+   if (MIDDLE != event->hl_type)
+     {
+        editor_state_max_w_set(wd->group->edit_object, change, true, event->part->name,
+                               event->part->current_state->parsed_name,
+                               event->part->current_state->parsed_val,
+                               event->w);
+        editor_state_max_h_set(wd->group->edit_object, change, true, event->part->name,
+                               event->part->current_state->parsed_name,
+                               event->part->current_state->parsed_val,
+                               event->h);
+     }
+   else
+     {
+        const Groupview_Geom *geom;
+        geom = groupview_part_selected_object_area_geom_get(wd->normal.content);
+        double align_x = (double)(event->x - geom->x) / (double)(geom->w - event->w);
+        double align_y = (double)(event->y - geom->y) / (double)(geom->h - event->h);
+
+
+        if ((geom->w == event->w) || (align_x < 0)) align_x = 0;
+        if ((geom->h == event->h) || (align_y < 0)) align_y = 0;
+        if (align_x > 1.0) align_x = 1.0;
+        if (align_y > 1.0) align_y = 1.0;
+        editor_state_align_x_set(wd->group->edit_object, change, true, event->part->name,
+                                 event->part->current_state->parsed_name,
+                                 event->part->current_state->parsed_val, align_x);
+        editor_state_align_y_set(wd->group->edit_object, change, true, event->part->name,
+                                 event->part->current_state->parsed_name,
+                                 event->part->current_state->parsed_val, align_y);
+
+     }
 }
 
 static void
@@ -771,16 +809,37 @@ _groupview_hl_part_drag_stop(void *data,
    Groupview_HL_Event *event = event_info;
    Eina_Stringshare *msg;
 
-   if ((part_w == event->w) && (part_h == event->h))
-     change_free(change);
+   if (MIDDLE != event->hl_type)
+     {
+        if ((part_w == event->w) && (part_h == event->h))
+          change_free(change);
+        else
+          {
+             msg = eina_stringshare_printf(_("max size changed from [%dx%d] to [%dx%d]"), part_w, part_h, event->w, event->h);
+             change_description_set(change, msg);
+             eina_stringshare_del(msg);
+             history_change_add(wd->group->history, change);
+          }
+     }
    else
      {
-        msg = eina_stringshare_printf(_("max size changed from [%dx%d] to [%dx%d]"), part_w, part_h, event->w, event->h);
-        change_description_set(change, msg);
-        eina_stringshare_del(msg);
-        history_change_add(wd->group->history, change);
+        double align_x = edje_edit_state_align_x_get(wd->group->edit_object, event->part->name,
+                                                     event->part->current_state->parsed_name,
+                                                     event->part->current_state->parsed_val);
+        double align_y = edje_edit_state_align_y_get(wd->group->edit_object, event->part->name,
+                                                     event->part->current_state->parsed_name,
+                                                     event->part->current_state->parsed_val);
+        if ((align_x == part_align_x) && (align_y == part_align_y))
+          change_free(change);
+        else
+          {
+             msg = eina_stringshare_printf(_("align changed from [%fx%f] to [%fx%f]"),
+                                           part_align_x, part_align_y, align_x, align_y);
+             change_description_set(change, msg);
+             eina_stringshare_del(msg);
+             history_change_add(wd->group->history, change);
+          }
      }
-
    change = NULL;
 }
 /******************************************************************************/
@@ -790,9 +849,9 @@ _panes_h_unpress(void *data,
                  Evas_Object *obj,
                  void *event_info __UNUSED__)
 {
-    Workspace_Data *wd = data;
+   Workspace_Data *wd = data;
 
-    wd->code.size = elm_panes_content_right_size_get(obj);
+   wd->code.size = elm_panes_content_right_size_get(obj);
 }
 
 Evas_Object *

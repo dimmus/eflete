@@ -410,7 +410,7 @@ groupview_part_object_area_visible_set(Evas_Object *obj, Eina_Bool visible)
         evas_object_show(sd->object_area);
      }
    else evas_object_hide(sd->object_area);
-
+   highlight_handler_align_visible_set(sd->highlight, visible);
 }
 
 Eina_Bool
@@ -502,6 +502,7 @@ groupview_part_select(Evas_Object *obj, const char *part)
         evas_object_hide(sd->highlight);
         evas_object_hide(sd->object_area);
      }
+   highlight_handler_align_visible_set(sd->highlight, sd->obj_area_visible);
 }
 
 TODO("remove this from public API and use callback from part list");
