@@ -820,6 +820,20 @@ _shortcut_object_area_cb(void *data __UNUSED__,
      }
 }
 
+static void
+_shortcut_rulers_visibled_cb(void *data __UNUSED__,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info __UNUSED__)
+{
+   Eina_Bool visible;
+
+   if (tabs.current_workspace)
+     {
+        visible = workspace_rulers_visibled_get(tabs.current_workspace);
+        workspace_rulers_visibled_set(tabs.current_workspace, !visible);
+     }
+}
+
 Evas_Object *
 tabs_add(void)
 {
@@ -945,6 +959,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_FIT, _shortcut_fit_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_FILL, _shortcut_fill_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_OBJECT_AREA, _shortcut_object_area_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_RULERS_VISIBLED, _shortcut_rulers_visibled_cb, NULL);
    return tabs.layout;
 }
 

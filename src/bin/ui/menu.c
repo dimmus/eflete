@@ -153,7 +153,7 @@ _menu_cb(void *data __UNUSED__,
          evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_FILL, NULL);
          break;
       case MENU_VIEW_RULERS_SHOW:
-         evas_object_smart_callback_call(tabs_current_workspace_get(), "ruler,toggle", strdup("rulers"));
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_RULERS_VISIBLED, NULL);
          break;
       case MENU_VIEW_RULERS_ABS:
          evas_object_smart_callback_call(tabs_current_workspace_get(), "ruler,toggle", strdup("abs"));

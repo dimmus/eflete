@@ -60,6 +60,7 @@ struct _Scroll_Area {
    Evas_Object *content; /* for normal mode - groupview, for demo - elm widget */
    Ruler ruler_v;
    Ruler ruler_h;
+   Eina_Bool rulers_visibled : 1;
 };
 typedef struct _Scroll_Area Scroll_Area;
 
@@ -815,6 +816,8 @@ workspace_add(Evas_Object *parent, Group *group)
    wd->code.size = -1;
    wd->group = group;
    wd->mode = MODE_NORMAL;
+   wd->normal.rulers_visibled = true;
+   wd->demo.rulers_visibled = true;
 
    wd->toolbar.layout = elm_layout_add(wd->panes);
    elm_layout_theme_set(wd->toolbar.layout, "layout", "workspace", "toolbar");
@@ -1296,4 +1299,28 @@ workspace_all_parts_showhide_request(Evas_Object *obj)
    WS_DATA_GET(obj);
 
    group_navigator_all_parts_showhide_request(wd->group_navi);
+}
+
+void
+workspace_rulers_visibled_set(Evas_Object *obj, Eina_Bool visible)
+{
+   Scroll_Area *area;
+   WS_DATA_GET(obj);
+
+   area = _scroll_area_get(wd);
+   area->rulers_visibled = visible;
+   if (visible)
+     elm_layout_signal_emit(area->layout, "elm,state,rulers,show", "eflete");
+   else
+     elm_layout_signal_emit(area->layout, "elm,state,rulers,hide", "eflete");
+}
+
+Eina_Bool
+workspace_rulers_visibled_get(Evas_Object *obj)
+{
+   Scroll_Area *area;
+   WS_DATA_GET(obj);
+
+   area = _scroll_area_get(wd);
+   return area->rulers_visibled;
 }

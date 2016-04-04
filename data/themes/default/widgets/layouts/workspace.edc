@@ -105,6 +105,7 @@ group { name: "elm/layout/workspace/scroller";
          scale: 1;
          clip_to: "clipper.ruler_v";
          description { state: "default" 0.0;
+            align: 0.0 0.5;
             rel1 {
                relative: 0.0 1.0;
                to_y: "area.ruler.cros";
@@ -113,6 +114,18 @@ group { name: "elm/layout/workspace/scroller";
                to_x: "area.ruler.cros";
             }
          }
+         description { state: "hidden" 0.0;
+            align: 0.0 0.5;
+            max: 0 -1;
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "area.ruler.cros";
+            }
+            rel2 {
+               to_x: "area.ruler.cros";
+            }
+         }
+
       }
       part { name: "clipper.ruler_v";
          type: RECT;
@@ -144,6 +157,18 @@ group { name: "elm/layout/workspace/scroller";
          scale: 1;
          clip_to: "clipper.ruler_h";
          description { state: "default" 0.0;
+            align: 0.5. 0.0;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "area.ruler.cros";
+            }
+            rel2 {
+               to_y: "area.ruler.cros";
+            }
+         }
+         description { state: "hidden" 0.0;
+            align: 0.5. 0.0;
+            max: -1 0;
             rel1 {
                relative: 1.0 0.0;
                to_x: "area.ruler.cros";
@@ -169,7 +194,8 @@ group { name: "elm/layout/workspace/scroller";
          description { state: "default" 0.0;
             rel1 {
                relative: 1.0 1.0;
-               to: "area.ruler.cros";
+               to_x: "elm.swallow.ruler_v";
+               to_y: "elm.swallow.ruler_h";
             }
          }
       }
@@ -183,6 +209,24 @@ group { name: "elm/layout/workspace/scroller";
                to: "elm.swallow.scroller";
             }
          }
+      }
+   }
+   programs {
+      program { name: "hide_rulers";
+         signal: "elm,state,rulers,hide";
+         source: "eflete";
+         action: STATE_SET "hidden" 0.00;
+         transition: LINEAR 0.30000 CURRENT;
+         target: "elm.swallow.ruler_v";
+         target: "elm.swallow.ruler_h";
+      }
+      program { name: "show_rulers";
+         signal: "elm,state,rulers,show";
+         source: "eflete";
+         action: STATE_SET "default" 0.00;
+         transition: LINEAR 0.30000 CURRENT;
+         target: "elm.swallow.ruler_v";
+         target: "elm.swallow.ruler_h";
       }
    }
 }

@@ -376,4 +376,10 @@ workspace_part_showhide_request(Evas_Object *obj);
 void
 workspace_all_parts_showhide_request(Evas_Object *obj);
 
+void
+workspace_rulers_visibled_set(Evas_Object *obj, Eina_Bool visible);
+
+Eina_Bool
+workspace_rulers_visibled_get(Evas_Object *obj);
+
 #endif /* WORKSPACE_H */
