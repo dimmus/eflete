@@ -322,6 +322,26 @@ _property_attribute_changed(void *data __UNUSED__,
      }
 }
 
+void
+_on_save(void *data __UNUSED__,
+         Evas_Object *obj __UNUSED__,
+         void *event_info __UNUSED__)
+{
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+   workspace_code_reload(tabs.current_workspace);
+}
+
+void
+_on_project_changed(void *data __UNUSED__,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+   workspace_code_changed(tabs.current_workspace);
+}
+
 static void
 _demo_swallow_set(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
@@ -970,6 +990,9 @@ tabs_add(void)
    elm_object_item_disabled_set(tabs.menu.item_sound, true);
    elm_object_item_disabled_set(tabs.menu.item_text, true);
    elm_object_item_disabled_set(tabs.menu.item_colorclass, true);
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_SAVED, _on_save, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _on_project_changed, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _demo_swallow_set, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, _demo_text_set, NULL);
