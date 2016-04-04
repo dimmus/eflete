@@ -151,6 +151,7 @@ _shortcut_handle(Shortcut_Type type)
         SHORTCUT(STATE_NEXT);
         SHORTCUT(PART_SHOWHIDE);
         SHORTCUT(ALL_PARTS_SHOWHIDE);
+        SHORTCUT(PART_UNSELECT);
         SHORTCUT_NUM(TAB_NUM1, SIGNAL_SHORTCUT_TAB_NUM, 1);
         SHORTCUT_NUM(TAB_NUM2, SIGNAL_SHORTCUT_TAB_NUM, 2);
         SHORTCUT_NUM(TAB_NUM3, SIGNAL_SHORTCUT_TAB_NUM, 3);
@@ -244,7 +245,8 @@ _key_press_event_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
       (!(((sc.keycode >= 67 /*F1*/) &&
           (sc.keycode <= 76 /*F10*/)) ||
          (sc.keycode == 95 /*F11*/) ||
-         (sc.keycode == 96 /*F12*/)) ) &&
+         (sc.keycode == 96 /*F12*/) ||
+         (sc.keycode == 9 /*ESC*/)) ) &&
       /* elm_entry is in focus */
       (!strcmp("elm_entry", evas_object_type_get(elm_object_focused_object_get(ap.win)))))
      {
@@ -404,6 +406,8 @@ _default_shortcuts_add()
                  MOD_NONE, 43/*h*/);
    _add_shortcut(false, SHORTCUT_TYPE_ALL_PARTS_SHOWHIDE, SHORTCUT_TYPE_NONE,
                  MOD_SHIFT, 43/*h*/);
+   _add_shortcut(false, SHORTCUT_TYPE_PART_UNSELECT, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 9/*ESC*/);
 
    _add_shortcut(false, SHORTCUT_TYPE_TAB_NUM1, SHORTCUT_TYPE_NONE,
                  MOD_CTRL, 10/*1*/);

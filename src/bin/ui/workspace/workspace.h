@@ -343,7 +343,11 @@ workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool visible);
 Eina_Bool
 workspace_object_area_visible_get(Evas_Object *obj);
 
+void
+workspace_rulers_visibled_set(Evas_Object *obj, Eina_Bool visible);
 
+Eina_Bool
+workspace_rulers_visibled_get(Evas_Object *obj);
 
 TODO("remove after property refactor!!! HIGH LEVEL");
 Eina_Bool
@@ -377,9 +381,6 @@ void
 workspace_all_parts_showhide_request(Evas_Object *obj);
 
 void
-workspace_rulers_visibled_set(Evas_Object *obj, Eina_Bool visible);
-
-Eina_Bool
-workspace_rulers_visibled_get(Evas_Object *obj);
+workspace_part_unselect_request(Evas_Object *obj);
 
 #endif /* WORKSPACE_H */

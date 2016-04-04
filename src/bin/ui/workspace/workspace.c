@@ -1230,6 +1230,30 @@ workspace_program_del(Evas_Object *obj, Eina_Stringshare *program_name)
 }
 
 void
+workspace_rulers_visibled_set(Evas_Object *obj, Eina_Bool visible)
+{
+   Scroll_Area *area;
+   WS_DATA_GET(obj);
+
+   area = _scroll_area_get(wd);
+   area->rulers_visibled = visible;
+   if (visible)
+     elm_layout_signal_emit(area->layout, "elm,state,rulers,show", "eflete");
+   else
+     elm_layout_signal_emit(area->layout, "elm,state,rulers,hide", "eflete");
+}
+
+Eina_Bool
+workspace_rulers_visibled_get(Evas_Object *obj)
+{
+   Scroll_Area *area;
+   WS_DATA_GET(obj);
+
+   area = _scroll_area_get(wd);
+   return area->rulers_visibled;
+}
+
+void
 workspace_add_part_request(Evas_Object *obj)
 {
    WS_DATA_GET(obj);
@@ -1361,25 +1385,9 @@ workspace_all_parts_showhide_request(Evas_Object *obj)
 }
 
 void
-workspace_rulers_visibled_set(Evas_Object *obj, Eina_Bool visible)
+workspace_part_unselect_request(Evas_Object *obj)
 {
-   Scroll_Area *area;
    WS_DATA_GET(obj);
 
-   area = _scroll_area_get(wd);
-   area->rulers_visibled = visible;
-   if (visible)
-     elm_layout_signal_emit(area->layout, "elm,state,rulers,show", "eflete");
-   else
-     elm_layout_signal_emit(area->layout, "elm,state,rulers,hide", "eflete");
-}
-
-Eina_Bool
-workspace_rulers_visibled_get(Evas_Object *obj)
-{
-   Scroll_Area *area;
-   WS_DATA_GET(obj);
-
-   area = _scroll_area_get(wd);
-   return area->rulers_visibled;
+   group_navigator_part_select(wd->group_navi, NULL);
 }
