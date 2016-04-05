@@ -201,6 +201,18 @@ _workspace_del(void *data,
    gm_group_edit_object_unload(wd->group);
    color_term(wd->code.color_data);
 
+   TODO("remove after moving from smart object");
+   evas_object_del(wd->normal.layout);
+   evas_object_del(wd->normal.scroller);
+   evas_object_del(wd->normal.content);
+   evas_object_del(wd->normal.container);
+   evas_object_hide(wd->normal.container);
+   evas_object_del(wd->demo.layout);
+   evas_object_del(wd->demo.scroller);
+   evas_object_del(wd->demo.content);
+   evas_object_del(wd->demo.container);
+   evas_object_hide(wd->demo.container);
+
    free(wd);
 }
 
