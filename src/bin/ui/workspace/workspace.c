@@ -578,11 +578,56 @@ _menu_rulers_visible(void *data __UNUSED__,
    evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_RULERS_VISIBLED, NULL);
 }
 
-#define MENU_ITEM_ADD(MENU, PARENT, ICON, LABEL, CALLBACK, SHORTCUT, WIDGET) \
+static void
+_menu_ruler_abs(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   Workspace_Data *wd = data;
+   Scroll_Area *area;
+
+   area = _scroll_area_get(wd);
+   ewe_ruler_scale_visible_set(area->ruler_h.obj, NULL, true);
+   ewe_ruler_scale_visible_set(area->ruler_h.obj, area->ruler_h.scale_rel, false);
+   ewe_ruler_scale_visible_set(area->ruler_v.obj, NULL, true);
+   ewe_ruler_scale_visible_set(area->ruler_v.obj, area->ruler_v.scale_rel, false);
+}
+
+static void
+_menu_ruler_rel(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   Workspace_Data *wd = data;
+   Scroll_Area *area;
+
+   area = _scroll_area_get(wd);
+   ewe_ruler_scale_visible_set(area->ruler_h.obj, NULL, false);
+   ewe_ruler_scale_visible_set(area->ruler_h.obj, area->ruler_h.scale_rel, true);
+   ewe_ruler_scale_visible_set(area->ruler_v.obj, NULL, false);
+   ewe_ruler_scale_visible_set(area->ruler_v.obj, area->ruler_v.scale_rel, true);
+}
+
+static void
+_menu_rulers_both(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   Workspace_Data *wd = data;
+   Scroll_Area *area;
+
+   area = _scroll_area_get(wd);
+   ewe_ruler_scale_visible_set(area->ruler_h.obj, NULL, true);
+   ewe_ruler_scale_visible_set(area->ruler_h.obj, area->ruler_h.scale_rel, true);
+   ewe_ruler_scale_visible_set(area->ruler_v.obj, NULL, true);
+   ewe_ruler_scale_visible_set(area->ruler_v.obj, area->ruler_v.scale_rel, true);
+}
+
+#define MENU_ITEM_ADD(MENU, PARENT, ICON, LABEL, CALLBACK, SHORTCUT, WIDGET, DATA) \
    do \
      { \
         Elm_Object_Item *item; \
-        item = elm_menu_item_add(MENU, PARENT, ICON, LABEL, CALLBACK, NULL); \
+        item = elm_menu_item_add(MENU, PARENT, ICON, LABEL, CALLBACK, DATA); \
         if (SHORTCUT || WIDGET) \
           { \
              Evas_Object *item_obj = elm_menu_item_object_get(item);\
@@ -621,18 +666,18 @@ static void
 _menu_add(Workspace_Data *wd)
 {
    wd->menu.obj = elm_menu_add(ap.win);
-   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Undo"), _menu_undo, "Ctrl-Z", NULL);
-   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Redo"), _menu_redo, "Ctrl-Y", NULL);
+   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Undo"), _menu_undo, "Ctrl-Z", NULL, NULL);
+   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Redo"), _menu_redo, "Ctrl-Y", NULL, NULL);
    elm_menu_item_separator_add(wd->menu.obj, NULL);
-   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Show rulers"), _menu_rulers_visible, NULL, NULL);
+   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Show rulers"), _menu_rulers_visible, NULL, NULL, NULL);
 
    elm_menu_item_separator_add(wd->menu.obj, NULL);
    wd->menu.scale_abs = _radio_switcher_add(wd, NULL, NULL, 0, NULL);
-   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Absolute scale"), _menu_rulers_visible, NULL, wd->menu.scale_abs);
+   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Absolute scale"), _menu_ruler_abs, NULL, wd->menu.scale_abs, wd);
    wd->menu.scale_rel = _radio_switcher_add(wd, NULL, NULL, 1, wd->menu.scale_abs);
-   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Relative scale"), _menu_rulers_visible, NULL, wd->menu.scale_rel);
+   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Relative scale"), _menu_ruler_rel, NULL, wd->menu.scale_rel, wd);
    wd->menu.scale_both = _radio_switcher_add(wd, NULL, NULL, 2, wd->menu.scale_abs);
-   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Both scales"), _menu_rulers_visible, NULL, wd->menu.scale_both);
+   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Both scales"), _menu_rulers_both, NULL, wd->menu.scale_both, wd);
 }
 
 static void
