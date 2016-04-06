@@ -549,6 +549,64 @@ _container_changed(void *data,
 }
 
 static void
+_menu_undo(void *data __UNUSED__,
+           Evas_Object *obj __UNUSED__,
+           void *event_info __UNUSED__)
+{
+   evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_UNDO, NULL);
+}
+
+static void
+_menu_redo(void *data __UNUSED__,
+           Evas_Object *obj __UNUSED__,
+           void *event_info __UNUSED__)
+{
+   evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_REDO, NULL);
+}
+
+static void
+_menu_dismiss(void *data __UNUSED__,
+              Evas_Object *obj,
+              void *event_info __UNUSED__)
+{
+   evas_object_del(obj);
+}
+
+#define MENU_ITEM_ADD(MENU, PARENT, ICON, LABEL, CALLBACK, SHORTCUT) \
+   do \
+     { \
+        Elm_Object_Item *item; \
+        item = elm_menu_item_add(MENU, PARENT, ICON, LABEL, CALLBACK, NULL); \
+        if (SHORTCUT) \
+          { \
+             Evas_Object *item_obj = elm_menu_item_object_get(item);\
+             elm_object_part_text_set(item_obj, "elm.shortcut", SHORTCUT); \
+          } \
+     } \
+   while (0);
+
+static void
+_menu_cb(void *data,
+         Evas *e __UNUSED__,
+         Evas_Object *obj __UNUSED__,
+         void *event_info)
+{
+   Scroll_Area *area = data;
+   Evas_Event_Mouse_Down *ev = event_info;
+   Evas_Object *menu;
+
+   if (ev->button != 3) return;
+
+   menu = elm_menu_add(area->scroller);
+   evas_object_smart_callback_add(menu, "dismissed", _menu_dismiss, NULL);
+   MENU_ITEM_ADD(menu, NULL, NULL, _("Undo"), _menu_undo, "Ctrl-Z");
+   MENU_ITEM_ADD(menu, NULL, NULL, _("Redo"), _menu_redo, "Ctrl-Y");
+
+   elm_menu_move(menu, ev->canvas.x, ev->canvas.y);
+   evas_object_show(menu);
+}
+
+static void
 _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
 {
    area->bg_preview = BG_PREVIEW_TILE;
@@ -576,6 +634,9 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
    evas_object_smart_callback_add(area->container, "container,changed", _container_changed, wd);
    elm_object_content_set(area->scroller, area->container);
    container_container_size_set(area->container, 350, 350);
+
+   if (scale_rel) /* this bool like marker, if scale_rel is true we have the area for normal mode */
+     evas_object_event_callback_add(area->scroller, EVAS_CALLBACK_MOUSE_DOWN, _menu_cb, area);
 }
 
 static void
