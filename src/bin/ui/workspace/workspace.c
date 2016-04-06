@@ -1380,6 +1380,22 @@ workspace_state_next_request(Evas_Object *obj)
 }
 
 void
+workspace_part_next_request(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+
+   group_navigator_part_next_request(wd->group_navi);
+}
+
+void
+workspace_part_prev_request(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+
+   group_navigator_part_prev_request(wd->group_navi);
+}
+
+void
 workspace_part_showhide_request(Evas_Object *obj)
 {
    WS_DATA_GET(obj);

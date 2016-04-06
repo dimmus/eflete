@@ -149,6 +149,8 @@ _shortcut_handle(Shortcut_Type type)
         SHORTCUT(ADD_PROGRAM);
         SHORTCUT(DEL);
         SHORTCUT(STATE_NEXT);
+        SHORTCUT(PART_NEXT);
+        SHORTCUT(PART_PREV);
         SHORTCUT(PART_SHOWHIDE);
         SHORTCUT(ALL_PARTS_SHOWHIDE);
         SHORTCUT(PART_UNSELECT);
@@ -402,6 +404,10 @@ _default_shortcuts_add()
                  MOD_NONE, 119/*del*/);
    _add_shortcut(false, SHORTCUT_TYPE_STATE_NEXT, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 39/*s*/);
+   _add_shortcut(false, SHORTCUT_TYPE_PART_NEXT, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 53/*x*/);
+   _add_shortcut(false, SHORTCUT_TYPE_PART_PREV, SHORTCUT_TYPE_NONE,
+                 MOD_NONE, 52/*z*/);
    _add_shortcut(false, SHORTCUT_TYPE_PART_SHOWHIDE, SHORTCUT_TYPE_NONE,
                  MOD_NONE, 43/*h*/);
    _add_shortcut(false, SHORTCUT_TYPE_ALL_PARTS_SHOWHIDE, SHORTCUT_TYPE_NONE,

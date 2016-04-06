@@ -376,6 +376,12 @@ void
 workspace_state_next_request(Evas_Object *obj);
 
 void
+workspace_part_next_request(Evas_Object *obj);
+
+void
+workspace_part_prev_request(Evas_Object *obj);
+
+void
 workspace_part_showhide_request(Evas_Object *obj);
 
 void
