@@ -51,9 +51,6 @@ int MENU_ITEMS_LIST_STYLE_ONLY[] = {
    MENU_VIEW_WORKSPACE_FILL,
    MENU_VIEW_WORKSPACE_OBJECT_AREA,
    MENU_VIEW_RULERS_SHOW,
-   MENU_VIEW_RULERS_ABS,
-   MENU_VIEW_RULERS_REL,
-   MENU_VIEW_RULERS_BOTH,
    MENU_FILE_EXPORT_EDC_GROUP,
    MENU_EDIT_PART_ADD,
    MENU_EDIT_STATE_ADD,
@@ -154,15 +151,6 @@ _menu_cb(void *data __UNUSED__,
          break;
       case MENU_VIEW_RULERS_SHOW:
          evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_RULERS_VISIBLED, NULL);
-         break;
-      case MENU_VIEW_RULERS_ABS:
-         evas_object_smart_callback_call(tabs_current_workspace_get(), "ruler,toggle", strdup("abs"));
-         break;
-      case MENU_VIEW_RULERS_REL:
-         evas_object_smart_callback_call(tabs_current_workspace_get(), "ruler,toggle", strdup("rel"));
-         break;
-      case MENU_VIEW_RULERS_BOTH:
-         evas_object_smart_callback_call(tabs_current_workspace_get(), "ruler,toggle", strdup("abs&rel"));
          break;
       case MENU_VIEW_WORKSPACE_OBJECT_AREA:
          evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_OBJECT_AREA, NULL);
@@ -315,9 +303,6 @@ ui_menu_add(void)
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_OBJECT_AREA, NULL, _("Show object area"), "o")
       ___(MENU_VIEW);
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_SHOW, NULL, _("Show rulers"), NULL)
-      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_ABS, NULL, _("Absolute scale"), NULL)
-      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_REL, NULL, _("Relative scale"), NULL)
-      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_BOTH, NULL, _("Both scales"), NULL)
 
    ITEM_MENU_ADD(MENU_NULL, MENU_HELP, NULL, _("Help"), NULL)
       ITEM_MENU_ADD(MENU_HELP, MENU_HELP_ABOUT, NULL, _("About"), NULL)

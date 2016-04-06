@@ -96,6 +96,12 @@ struct _Workspace_Data
    } toolbar;
    Evas_Object *panes_h; /* for set subobject like code, sequance etc */
 
+   struct {
+      Evas_Object *obj;
+      Evas_Object *scale_abs;
+      Evas_Object *scale_rel;
+      Evas_Object *scale_both;
+   } menu;
    Scroll_Area normal;
    Scroll_Area demo;
    struct {
@@ -572,23 +578,16 @@ _menu_rulers_visible(void *data __UNUSED__,
    evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_RULERS_VISIBLED, NULL);
 }
 
-static void
-_menu_dismiss(void *data __UNUSED__,
-              Evas_Object *obj,
-              void *event_info __UNUSED__)
-{
-   evas_object_del(obj);
-}
-
-#define MENU_ITEM_ADD(MENU, PARENT, ICON, LABEL, CALLBACK, SHORTCUT) \
+#define MENU_ITEM_ADD(MENU, PARENT, ICON, LABEL, CALLBACK, SHORTCUT, WIDGET) \
    do \
      { \
         Elm_Object_Item *item; \
         item = elm_menu_item_add(MENU, PARENT, ICON, LABEL, CALLBACK, NULL); \
-        if (SHORTCUT) \
+        if (SHORTCUT || WIDGET) \
           { \
              Evas_Object *item_obj = elm_menu_item_object_get(item);\
-             elm_object_part_text_set(item_obj, "elm.shortcut", SHORTCUT); \
+             if (SHORTCUT) elm_object_part_text_set(item_obj, "elm.shortcut", SHORTCUT); \
+             if (WIDGET) elm_object_part_content_set(item_obj, "elm.swallow.content", WIDGET); \
           } \
      } \
    while (0);
@@ -599,21 +598,41 @@ _menu_cb(void *data,
          Evas_Object *obj __UNUSED__,
          void *event_info)
 {
-   Scroll_Area *area = data;
+   Workspace_Data *wd = data;
+   Scroll_Area *area;
    Evas_Event_Mouse_Down *ev = event_info;
-   Evas_Object *menu;
+   Eina_Bool sa, sr;
 
    if (ev->button != 3) return;
+   area = _scroll_area_get(wd);
 
-   menu = elm_menu_add(area->scroller);
-   evas_object_smart_callback_add(menu, "dismissed", _menu_dismiss, NULL);
-   MENU_ITEM_ADD(menu, NULL, NULL, _("Undo"), _menu_undo, "Ctrl-Z");
-   MENU_ITEM_ADD(menu, NULL, NULL, _("Redo"), _menu_redo, "Ctrl-Y");
-   elm_menu_item_separator_add(menu, NULL);
-   MENU_ITEM_ADD(menu, NULL, NULL, _("Show rulers"), _menu_rulers_visible, NULL);
+   sa = ewe_ruler_scale_visible_get(area->ruler_h.obj, NULL);
+   sr = ewe_ruler_scale_visible_get(area->ruler_h.obj, area->ruler_h.scale_rel);
 
-   elm_menu_move(menu, ev->canvas.x, ev->canvas.y);
-   evas_object_show(menu);
+   if (sa) elm_radio_value_set(wd->menu.scale_abs, 0);
+   if (sr) elm_radio_value_set(wd->menu.scale_abs, 1);
+   if (sa && sr) elm_radio_value_set(wd->menu.scale_abs, 2);
+
+   elm_menu_move(wd->menu.obj, ev->canvas.x, ev->canvas.y);
+   evas_object_show(wd->menu.obj);
+}
+
+static void
+_menu_add(Workspace_Data *wd)
+{
+   wd->menu.obj = elm_menu_add(ap.win);
+   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Undo"), _menu_undo, "Ctrl-Z", NULL);
+   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Redo"), _menu_redo, "Ctrl-Y", NULL);
+   elm_menu_item_separator_add(wd->menu.obj, NULL);
+   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Show rulers"), _menu_rulers_visible, NULL, NULL);
+
+   elm_menu_item_separator_add(wd->menu.obj, NULL);
+   wd->menu.scale_abs = _radio_switcher_add(wd, NULL, NULL, 0, NULL);
+   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Absolute scale"), _menu_rulers_visible, NULL, wd->menu.scale_abs);
+   wd->menu.scale_rel = _radio_switcher_add(wd, NULL, NULL, 1, wd->menu.scale_abs);
+   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Relative scale"), _menu_rulers_visible, NULL, wd->menu.scale_rel);
+   wd->menu.scale_both = _radio_switcher_add(wd, NULL, NULL, 2, wd->menu.scale_abs);
+   MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Both scales"), _menu_rulers_visible, NULL, wd->menu.scale_both);
 }
 
 static void
@@ -646,7 +665,7 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
    container_container_size_set(area->container, 350, 350);
 
    if (scale_rel) /* this bool like marker, if scale_rel is true we have the area for normal mode */
-     evas_object_event_callback_add(area->scroller, EVAS_CALLBACK_MOUSE_DOWN, _menu_cb, area);
+     evas_object_event_callback_add(area->scroller, EVAS_CALLBACK_MOUSE_DOWN, _menu_cb, wd);
 }
 
 static void
@@ -1039,6 +1058,8 @@ workspace_add(Evas_Object *parent, Group *group)
    evas_object_size_hint_weight_set(wd->demo_navi, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(wd->demo_navi, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_hide(wd->demo_navi);
+
+   _menu_add(wd);
 
    evas_object_data_set(wd->panes, WORKSPACE_DATA, wd);
    evas_object_event_callback_add(wd->panes, EVAS_CALLBACK_DEL, _workspace_del, wd);
