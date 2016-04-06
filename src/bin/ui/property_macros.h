@@ -33,8 +33,7 @@
      {\
         evas_object_smart_callback_del(ITEM, "clicked", _on_frame_click); \
         elm_box_unpack(BOX, ITEM); \
-        evas_object_del(ITEM); \
-        ITEM = NULL; \
+        evas_object_hide(ITEM); \
      }
 /*
  * Callback is added for frames at property box to correct scroller

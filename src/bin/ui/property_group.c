@@ -2353,6 +2353,7 @@ _ui_property_program_set(Evas_Object *property, const char *program)
         prop_program_filter_state_update(pd);
         prop_program_targets_update(pd);
         prop_program_afters_update(pd);
+        evas_object_show(pd->attributes.program.frame);
      }
    elm_box_pack_end(prop_box, pd->attributes.program.frame);
 }
@@ -2587,9 +2588,6 @@ _ui_property_part_unset(Evas_Object *property)
    */
    PROP_ITEM_UNSET(prop_box, pd->attributes.part.frame)
    PROP_ITEM_UNSET(prop_box, pd->attributes.state.frame)
-   evas_object_del(pd->attributes.state.color1);
-   evas_object_del(pd->attributes.state.color2);
-   evas_object_del(pd->attributes.state.color3);
    PROP_ITEM_UNSET(prop_box, pd->attributes.state_object_area.frame)
    PROP_ITEM_UNSET(prop_box, pd->attributes.state_text.frame)
    PROP_ITEM_UNSET(prop_box, pd->attributes.state_image.frame)
