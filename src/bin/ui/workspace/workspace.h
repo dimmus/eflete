@@ -345,10 +345,10 @@ Eina_Bool
 workspace_object_area_visible_get(Evas_Object *obj);
 
 void
-workspace_rulers_visibled_set(Evas_Object *obj, Eina_Bool visible);
+workspace_rulers_visible_set(Evas_Object *obj, Eina_Bool visible);
 
 Eina_Bool
-workspace_rulers_visibled_get(Evas_Object *obj);
+workspace_rulers_visible_get(Evas_Object *obj);
 
 TODO("remove after property refactor!!! HIGH LEVEL");
 Eina_Bool
