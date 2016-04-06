@@ -1117,9 +1117,10 @@ ui_property_group_add(Evas_Object *parent)
    elm_object_content_set(scroller, box);
 
    pd->scroller = scroller;
-   elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 
    evas_object_data_set(pd->scroller, GROUP_PROP_DATA, pd);
+
+   elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_ON);
 
    /* register global callbacks */
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_SELECTED, _on_part_selected, pd->scroller);
@@ -1297,8 +1298,6 @@ ui_property_group_set(Evas_Object *property, Group *group)
 
    evas_object_show(property);
 
-   elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
-
    pd->group = group;
 
    prop_box = elm_object_content_get(pd->scroller);
@@ -1445,7 +1444,6 @@ ui_property_group_unset(Evas_Object *property)
    evas_object_hide(pd_group.shared_check);
    _ui_property_program_unset(property);
    _ui_property_part_unset(property);
-   elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 
    evas_object_hide(property);
 }
@@ -2433,7 +2431,6 @@ ui_property_part_set(Evas_Object *property, Part *part)
    GROUP_PROP_DATA_GET()
    assert(part != NULL);
 
-   elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
    pd->part = part;
    prop_box = elm_object_content_get(pd->scroller);
 
@@ -2576,7 +2573,6 @@ _ui_property_part_unset(Evas_Object *property)
 
    GROUP_PROP_DATA_GET()
 
-   elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    prop_box = elm_object_content_get(pd->scroller);
 
    /*
@@ -3054,7 +3050,6 @@ ui_property_part_state_set(Evas_Object *property, Part *part)
           }
      }
 
-   elm_scroller_policy_set(pd->scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
    #undef pd_state
 }
 
