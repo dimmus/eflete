@@ -565,6 +565,14 @@ _menu_redo(void *data __UNUSED__,
 }
 
 static void
+_menu_rulers_visible(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_RULERS_VISIBLED, NULL);
+}
+
+static void
 _menu_dismiss(void *data __UNUSED__,
               Evas_Object *obj,
               void *event_info __UNUSED__)
@@ -601,6 +609,8 @@ _menu_cb(void *data,
    evas_object_smart_callback_add(menu, "dismissed", _menu_dismiss, NULL);
    MENU_ITEM_ADD(menu, NULL, NULL, _("Undo"), _menu_undo, "Ctrl-Z");
    MENU_ITEM_ADD(menu, NULL, NULL, _("Redo"), _menu_redo, "Ctrl-Y");
+   elm_menu_item_separator_add(menu, NULL);
+   MENU_ITEM_ADD(menu, NULL, NULL, _("Show rulers"), _menu_rulers_visible, NULL);
 
    elm_menu_move(menu, ev->canvas.x, ev->canvas.y);
    evas_object_show(menu);

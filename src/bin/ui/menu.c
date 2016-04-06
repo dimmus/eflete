@@ -314,7 +314,7 @@ ui_menu_add(void)
       ___(MENU_VIEW);
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_OBJECT_AREA, NULL, _("Show object area"), "o")
       ___(MENU_VIEW);
-      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_SHOW, NULL, _("Show/Hide rulers"), NULL)
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_SHOW, NULL, _("Show rulers"), NULL)
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_ABS, NULL, _("Absolute scale"), NULL)
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_REL, NULL, _("Relative scale"), NULL)
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_BOTH, NULL, _("Both scales"), NULL)
