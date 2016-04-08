@@ -49,6 +49,7 @@ _item_new(Evas_Object *ctxpopup, int item_num, const char *icon)
 
 static void
 _ctx_popup_create(Evas_Object *parent,
+                  Evas_Object *clipper,
                   Eina_Stringshare *style_name,
                   int item_blocks_count,
                   Eina_Bool horizontal,
@@ -63,7 +64,7 @@ _ctx_popup_create(Evas_Object *parent,
 
    Evas_Object *ctxpopup = elm_ctxpopup_add(parent);
    elm_object_style_set(ctxpopup, style_name);
-   evas_object_smart_callback_add(ctxpopup, "dismissed", _dismissed_cb, NULL);
+   evas_object_smart_callback_add(ctxpopup, "dismissed", _dismissed_cb, parent);
 
    elm_ctxpopup_horizontal_set(ctxpopup, horizontal);
 
@@ -77,13 +78,14 @@ _ctx_popup_create(Evas_Object *parent,
    evas_pointer_canvas_xy_get(evas_object_evas_get(parent), &x, &y);
    evas_object_move(ctxpopup, x, y);
    evas_object_show(ctxpopup);
+   evas_object_clip_set(ctxpopup, evas_object_clip_get(clipper));
 }
 
 static void
 _labels_icons_vertical_3items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
-   _ctx_popup_create(obj, style_name, 1, false, true, true);
+   _ctx_popup_create(obj, data, style_name, 1, false, true, true);
    elm_list_item_selected_set(event_info, EINA_FALSE);
 }
 
@@ -91,7 +93,7 @@ static void
 _nolabels_icons_vertical_3items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
-   _ctx_popup_create(obj, style_name, 1, false, true, false);
+   _ctx_popup_create(obj, data, style_name, 1, false, true, false);
    elm_list_item_selected_set(event_info, EINA_FALSE);
 }
 
@@ -99,7 +101,7 @@ static void
 _labels_noicons_vertical_3items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
-   _ctx_popup_create(obj, style_name, 1, false, false, true);
+   _ctx_popup_create(obj, data, style_name, 1, false, false, true);
    elm_list_item_selected_set(event_info, EINA_FALSE);
 }
 
@@ -107,7 +109,7 @@ static void
 _labels_icons_horizontal_3items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
-   _ctx_popup_create(obj, style_name, 1, true, true, true);
+   _ctx_popup_create(obj, data, style_name, 1, true, true, true);
    elm_list_item_selected_set(event_info, EINA_FALSE);
 }
 
@@ -115,7 +117,7 @@ static void
 _nolabels_icons_horizontal_3items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
-   _ctx_popup_create(obj, style_name, 1, true, true, false);
+   _ctx_popup_create(obj, data, style_name, 1, true, true, false);
    elm_list_item_selected_set(event_info, EINA_FALSE);
 }
 
@@ -123,7 +125,7 @@ static void
 _labels_noicons_horizontal_3items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
-   _ctx_popup_create(obj, style_name, 1, true, false, true);
+   _ctx_popup_create(obj, data, style_name, 1, true, false, true);
    elm_list_item_selected_set(event_info, EINA_FALSE);
 }
 
@@ -131,7 +133,7 @@ static void
 _labels_icons_vertical_30items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
-   _ctx_popup_create(obj, style_name, 10, false, true, true);
+   _ctx_popup_create(obj, data, style_name, 10, false, true, true);
    elm_list_item_selected_set(event_info, EINA_FALSE);
 }
 
@@ -139,7 +141,7 @@ static void
 _nolabels_icons_vertical_30items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
-   _ctx_popup_create(obj, style_name, 10, false, true, false);
+   _ctx_popup_create(obj, data, style_name, 10, false, true, false);
    elm_list_item_selected_set(event_info, EINA_FALSE);
 }
 
@@ -147,7 +149,7 @@ static void
 _labels_noicons_vertical_30items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
-   _ctx_popup_create(obj, style_name, 10, false, false, true);
+   _ctx_popup_create(obj, data, style_name, 10, false, false, true);
    elm_list_item_selected_set(event_info, EINA_FALSE);
 }
 
@@ -155,7 +157,7 @@ static void
 _labels_icons_horizontal_30items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
-   _ctx_popup_create(obj, style_name, 10, true, true, true);
+   _ctx_popup_create(obj, data, style_name, 10, true, true, true);
    elm_list_item_selected_set(event_info, EINA_FALSE);
 }
 
@@ -163,7 +165,7 @@ static void
 _nolabels_icons_horizontal_30items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
-   _ctx_popup_create(obj, style_name, 10, true, true, false);
+   _ctx_popup_create(obj, data, style_name, 10, true, true, false);
    elm_list_item_selected_set(event_info, EINA_FALSE);
 }
 
@@ -171,7 +173,7 @@ static void
 _labels_noicons_horizontal_30items_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info)
 {
    Eina_Stringshare *style_name = evas_object_data_get(obj, "style_name");
-   _ctx_popup_create(obj, style_name, 10, true, false, true);
+   _ctx_popup_create(obj, data, style_name, 10, true, false, true);
    elm_list_item_selected_set(event_info, EINA_FALSE);
 }
 
@@ -186,30 +188,32 @@ widget_ctxpopup_create(Evas_Object *parent, const Group *group)
    evas_object_size_hint_weight_set(list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_list_mode_set(list, ELM_LIST_COMPRESS);
    elm_list_item_append(list, _("Click to show vertical ctxpopup with icons and labels (3 items)"),
-                        NULL, NULL, _labels_icons_vertical_3items_cb, NULL);
+                        NULL, NULL, _labels_icons_vertical_3items_cb, parent);
    elm_list_item_append(list, _("Click to show vertical ctxpopup with icons and labels (30 items)"),
-                        NULL, NULL, _labels_icons_vertical_30items_cb, NULL);
+                        NULL, NULL, _labels_icons_vertical_30items_cb, parent);
    elm_list_item_append(list, _("Click to show vertical ctxpopup with icons and no labels (3 items)"),
-                        NULL, NULL, _nolabels_icons_vertical_3items_cb, NULL);
+                        NULL, NULL, _nolabels_icons_vertical_3items_cb, parent);
    elm_list_item_append(list, _("Click to show vertical ctxpopup with icons and no labels (30 items)"),
-                        NULL, NULL, _nolabels_icons_vertical_30items_cb, NULL);
+                        NULL, NULL, _nolabels_icons_vertical_30items_cb, parent);
    elm_list_item_append(list, _("Click to show vertical ctxpopup with labels and no icons (3 items)"),
-                        NULL, NULL, _labels_noicons_vertical_3items_cb, NULL);
+                        NULL, NULL, _labels_noicons_vertical_3items_cb, parent);
    elm_list_item_append(list, _("Click to show vertical ctxpopup with labels and no icons (30 items)"),
-                        NULL, NULL, _labels_noicons_vertical_30items_cb, NULL);
+                        NULL, NULL, _labels_noicons_vertical_30items_cb, parent);
    elm_list_item_append(list, _("Click to show horizontal ctxpopup with icons and labels (3 items)"),
-                        NULL, NULL, _labels_icons_horizontal_3items_cb, NULL);
+                        NULL, NULL, _labels_icons_horizontal_3items_cb, parent);
    elm_list_item_append(list, _("Click to show horizontal ctxpopup with icons and labels (30 items)"),
-                        NULL, NULL, _labels_icons_horizontal_30items_cb, NULL);
+                        NULL, NULL, _labels_icons_horizontal_30items_cb, parent);
    elm_list_item_append(list, _("Click to show horizontal ctxpopup with icons and no labels (3 items)"),
-                        NULL, NULL, _nolabels_icons_horizontal_3items_cb, NULL);
+                        NULL, NULL, _nolabels_icons_horizontal_3items_cb, parent);
    elm_list_item_append(list, _("Click to show horizontal ctxpopup with icons and no labels (30 items)"),
-                        NULL, NULL, _nolabels_icons_horizontal_30items_cb, NULL);
+                        NULL, NULL, _nolabels_icons_horizontal_30items_cb, parent);
    elm_list_item_append(list, _("Click to show horizontal ctxpopup with labels and no icons (3 items)"),
-                        NULL, NULL, _labels_noicons_horizontal_3items_cb, NULL);
+                        NULL, NULL, _labels_noicons_horizontal_3items_cb, parent);
    elm_list_item_append(list, _("Click to show horizontal ctxpopup with labels and no icons (30 items)"),
-                        NULL, NULL, _labels_noicons_horizontal_30items_cb, NULL);
+                        NULL, NULL, _labels_noicons_horizontal_30items_cb, parent);
    elm_list_go(list);
+
+   evas_object_clip_set(list, evas_object_clip_get(parent));
 
    evas_object_data_set(list, "style_name", group->style);
    evas_object_smart_callback_add(list, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, NULL);
