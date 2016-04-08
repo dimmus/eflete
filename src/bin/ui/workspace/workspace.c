@@ -1406,7 +1406,8 @@ workspace_add_part_request(Evas_Object *obj)
 {
    WS_DATA_GET(obj);
 
-   group_navigator_add_part_request(wd->group_navi);
+   if (wd->mode != MODE_DEMO)
+     group_navigator_add_part_request(wd->group_navi);
 }
 
 void
@@ -1414,7 +1415,8 @@ workspace_add_part_item_request(Evas_Object *obj)
 {
    WS_DATA_GET(obj);
 
-   group_navigator_add_part_item_request(wd->group_navi);
+   if (wd->mode != MODE_DEMO)
+     group_navigator_add_part_item_request(wd->group_navi);
 }
 
 void
@@ -1422,7 +1424,8 @@ workspace_add_state_request(Evas_Object *obj)
 {
    WS_DATA_GET(obj);
 
-   group_navigator_add_state_request(wd->group_navi);
+   if (wd->mode != MODE_DEMO)
+     group_navigator_add_state_request(wd->group_navi);
 }
 
 void
@@ -1430,7 +1433,8 @@ workspace_add_program_request(Evas_Object *obj)
 {
    WS_DATA_GET(obj);
 
-   group_navigator_add_program_request(wd->group_navi);
+   if (wd->mode != MODE_DEMO)
+     group_navigator_add_program_request(wd->group_navi);
 }
 
 void
@@ -1438,7 +1442,8 @@ workspace_delete_request(Evas_Object *obj)
 {
    WS_DATA_GET(obj);
 
-   group_navigator_delete_request(wd->group_navi);
+   if (wd->mode != MODE_DEMO)
+     group_navigator_delete_request(wd->group_navi);
 }
 
 void
@@ -1513,7 +1518,8 @@ workspace_state_next_request(Evas_Object *obj)
 {
    WS_DATA_GET(obj);
 
-   group_navigator_state_next_request(wd->group_navi);
+   if (wd->mode != MODE_DEMO)
+     group_navigator_state_next_request(wd->group_navi);
 }
 
 void
@@ -1521,7 +1527,8 @@ workspace_part_next_request(Evas_Object *obj)
 {
    WS_DATA_GET(obj);
 
-   group_navigator_part_next_request(wd->group_navi);
+   if (wd->mode != MODE_DEMO)
+     group_navigator_part_next_request(wd->group_navi);
 }
 
 void
@@ -1529,7 +1536,8 @@ workspace_part_prev_request(Evas_Object *obj)
 {
    WS_DATA_GET(obj);
 
-   group_navigator_part_prev_request(wd->group_navi);
+   if (wd->mode != MODE_DEMO)
+     group_navigator_part_prev_request(wd->group_navi);
 }
 
 void
@@ -1537,7 +1545,8 @@ workspace_part_showhide_request(Evas_Object *obj)
 {
    WS_DATA_GET(obj);
 
-   group_navigator_part_showhide_request(wd->group_navi);
+   if (wd->mode != MODE_DEMO)
+     group_navigator_part_showhide_request(wd->group_navi);
 }
 
 void
@@ -1545,7 +1554,8 @@ workspace_all_parts_showhide_request(Evas_Object *obj)
 {
    WS_DATA_GET(obj);
 
-   group_navigator_all_parts_showhide_request(wd->group_navi);
+   if (wd->mode != MODE_DEMO)
+     group_navigator_all_parts_showhide_request(wd->group_navi);
 }
 
 void
@@ -1553,7 +1563,8 @@ workspace_part_unselect_request(Evas_Object *obj)
 {
    WS_DATA_GET(obj);
 
-   group_navigator_part_select(wd->group_navi, NULL);
+   if (wd->mode != MODE_DEMO)
+     group_navigator_part_select(wd->group_navi, NULL);
 }
 
 void
