@@ -190,6 +190,7 @@ widget_naviframe_create(Evas_Object *parent, const Group *group)
    evas_object_smart_callback_add(nf, SIGNAL_DEMO_SIGNAL_SEND, _naviframe_send_signal, NULL);
 
    elm_object_style_set(nf, style_name);
+   evas_object_clip_set(nf, evas_object_clip_get(parent));
 
    return nf;
 }

@@ -55,6 +55,7 @@ widget_bubble_create(Evas_Object *parent, const Group *group)
    evas_object_smart_callback_add(object, SIGNAL_DEMO_SIGNAL_SEND, send_signal, NULL);
 
    elm_object_style_set(object, group->style);
+   evas_object_clip_set(object, evas_object_clip_get(parent));
 
    return object;
 }

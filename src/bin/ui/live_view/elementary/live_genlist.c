@@ -308,6 +308,7 @@ widget_genlist_create(Evas_Object *parent, const Group *group)
 
    evas_object_data_set(object, SWALLOW_LIST, swallow_list);
    evas_object_data_set(object, TEXT_LIST, text_list);
+   evas_object_clip_set(object, evas_object_clip_get(parent));
 
    return object;
 }

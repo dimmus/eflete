@@ -179,5 +179,6 @@ widget_notify_create(Evas_Object *parent, const Group *group)
    evas_object_smart_callback_add(noti, SIGNAL_DEMO_SIGNAL_SEND, _notify_send_signal, NULL);
 
    elm_object_style_set(noti, group->style);
+   evas_object_clip_set(noti, evas_object_clip_get(parent));
    return object;
 }
