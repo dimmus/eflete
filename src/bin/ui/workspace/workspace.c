@@ -38,6 +38,8 @@
    Workspace_Data *wd = evas_object_data_get(OBJ, WORKSPACE_DATA); \
    assert(wd != NULL);
 
+static int zoom_values[] = { 20, 50, 100, 200, 500, 0 };
+
 /* As the workspace can manage the one drag in one time, and only one workspace
  * viewed, we can use the static Change for all workspace */
 static Change *change;
@@ -74,7 +76,7 @@ struct _Workspace_Data
       Evas_Object *obj;
       struct {
          Evas_Object *fit;
-         Evas_Object *z100;
+         Evas_Object *cmb_zoom;
          Evas_Object *slider;
       } zoom;
       struct {
@@ -292,19 +294,6 @@ _members_zoom_set(Workspace_Data *wd)
 }
 
 static void
-_zoom100_cb(void *data,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
-{
-   Workspace_Data *wd = data;
-
-   wd->zoom_factor = 1.0;
-   elm_slider_value_set(wd->toolbar.zoom.slider, 100);
-
-   _members_zoom_set(wd);
-}
-
-static void
 _fit_cb(void *data,
         Evas_Object *obj __UNUSED__,
         void *event_info __UNUSED__)
@@ -319,9 +308,13 @@ _slider_zoom_cb(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
+   Eina_Stringshare *text;
    Workspace_Data *wd = data;
 
    wd->zoom_factor = elm_slider_value_get(wd->toolbar.zoom.slider) / 100;
+   text = eina_stringshare_printf("%d%%", (int)(wd->zoom_factor * 100));
+   ewe_combobox_text_set(wd->toolbar.zoom.cmb_zoom, text);
+   eina_stringshare_del(text);
    _members_zoom_set(wd);
 }
 
@@ -329,15 +322,31 @@ static void
 _zoom_controls_disabled_set(Workspace_Data *wd, Eina_Bool disabled)
 {
    elm_object_disabled_set(wd->toolbar.zoom.fit, disabled);
-   elm_object_disabled_set(wd->toolbar.zoom.z100, disabled);
+   elm_object_disabled_set(wd->toolbar.zoom.cmb_zoom, disabled);
    elm_object_disabled_set(wd->toolbar.zoom.slider, disabled);
+}
+
+static void
+_zoom_selected_cb(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info)
+{
+   Workspace_Data *wd = data;
+   Ewe_Combobox_Item *item = event_info;
+
+   wd->zoom_factor = zoom_values[item->index] / 100.0;
+   elm_slider_value_set(wd->toolbar.zoom.slider, zoom_values[item->index]);
+
+   _members_zoom_set(wd);
 }
 
 static void
 _zoom_controls_add(Workspace_Data *wd)
 {
+   int i = 0;
    Elm_Object_Item *tb_it;
    Evas_Object *img;
+   Eina_Stringshare *text;
 
    wd->toolbar.zoom.fit = elm_button_add(wd->toolbar.obj);
    evas_object_smart_callback_add(wd->toolbar.zoom.fit, "clicked", _fit_cb, wd);
@@ -346,11 +355,19 @@ _zoom_controls_add(Workspace_Data *wd)
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.fit);
 
-   wd->toolbar.zoom.z100 = elm_button_add(wd->toolbar.obj);
-   elm_object_text_set(wd->toolbar.zoom.z100, _("100%"));
-   evas_object_smart_callback_add(wd->toolbar.zoom.z100, "clicked", _zoom100_cb, wd);
+   EWE_COMBOBOX_ADD(wd->toolbar.obj, wd->toolbar.zoom.cmb_zoom);
+   evas_object_size_hint_min_set(wd->toolbar.zoom.cmb_zoom, 70, 0);
+   ewe_combobox_text_set(wd->toolbar.zoom.cmb_zoom, _("100%"));
+   evas_object_smart_callback_add(wd->toolbar.zoom.cmb_zoom, "selected", _zoom_selected_cb, wd);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
-   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.z100);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.cmb_zoom);
+   while (zoom_values[i])
+   {
+      text = eina_stringshare_printf("%d%%", zoom_values[i]);
+      ewe_combobox_item_add(wd->toolbar.zoom.cmb_zoom, text);
+      eina_stringshare_del(text);
+      i++;
+   }
 
    wd->toolbar.zoom.slider = elm_slider_add(wd->toolbar.obj);
    elm_slider_min_max_set(wd->toolbar.zoom.slider, 10.0, 1000.0);
@@ -1449,12 +1466,16 @@ workspace_delete_request(Evas_Object *obj)
 void
 workspace_zoom_factor_set(Evas_Object *obj, double factor)
 {
+   Eina_Stringshare *text;
    WS_DATA_GET(obj);
 
    if (!elm_object_disabled_get(wd->toolbar.zoom.slider))
      {
         wd->zoom_factor = factor;
         elm_slider_value_set(wd->toolbar.zoom.slider, factor * 100);
+        text = eina_stringshare_printf("%d%%", (int)(wd->zoom_factor * 100));
+        ewe_combobox_text_set(wd->toolbar.zoom.cmb_zoom, text);
+        eina_stringshare_del(text);
         TODO("Fix elementary callbacks on changing value from code");
         _slider_zoom_cb(wd, wd->toolbar.zoom.slider, NULL);
      }
