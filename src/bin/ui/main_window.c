@@ -106,7 +106,6 @@ ui_main_window_add(void)
    Config *config;
    Evas_Object *bg, *project_navigator, *tabs, *toolbar;
 
-   config_load();
    config = config_get();
 
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
