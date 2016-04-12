@@ -31,6 +31,10 @@
 static char *file = NULL;
 static char *pro_name = NULL;
 static char *pro_path = NULL;
+static Eina_List *img_dirs = NULL;
+static Eina_List *snd_dirs = NULL;
+static Eina_List *fnt_dirs = NULL;
+static Eina_List *data_dirs = NULL;
 
 #define _ERR_EXIT(MSG, ...) \
 do { \
@@ -55,6 +59,10 @@ static const Ecore_Getopt options = {
    {
       ECORE_GETOPT_STORE_STR(0, "name", N_("Name for new project that would be created in import process")),
       ECORE_GETOPT_STORE_STR(0, "path", N_("Path for project")),
+      ECORE_GETOPT_APPEND_METAVAR('i', "id", "Add image directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
+      ECORE_GETOPT_APPEND_METAVAR('s', "sd", "Add sound directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
+      ECORE_GETOPT_APPEND_METAVAR('f', "fd", "Add font directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
+      ECORE_GETOPT_APPEND_METAVAR('d', "dd", "Add data directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
       ECORE_GETOPT_STORE_TRUE('r', "reopen", "reopen last project"),
       ECORE_GETOPT_VERSION  ('v', "version"),
       ECORE_GETOPT_COPYRIGHT('c', "copyright"),
@@ -121,6 +129,25 @@ _import_edj(void *data __UNUSED__)
    tabs_menu_tab_open(TAB_HOME_IMPORT_EDJ);
 }
 
+static void
+_import_edc(void *data __UNUSED__)
+{
+   const char *name;
+   Eina_Tmpstr *proj_name;
+   if (pro_name)
+     {
+        tabs_menu_import_edc_data_set(pro_name, pro_path, file, img_dirs, snd_dirs, fnt_dirs, data_dirs);
+     }
+   else
+     {
+        name = ecore_file_file_get(file);
+        proj_name = eina_tmpstr_add_length(name, strlen(name) - 4);
+        tabs_menu_import_edc_data_set(proj_name, pro_path, file, img_dirs, snd_dirs, fnt_dirs, data_dirs);
+        eina_tmpstr_del(proj_name);
+     }
+   tabs_menu_tab_open(TAB_HOME_IMPORT_EDC);
+}
+
 EAPI_MAIN int
 elm_main(int argc, char **argv)
 {
@@ -132,6 +159,10 @@ elm_main(int argc, char **argv)
    Ecore_Getopt_Value values[] = {
      ECORE_GETOPT_VALUE_STR(pro_name),
      ECORE_GETOPT_VALUE_STR(pro_path),
+     ECORE_GETOPT_VALUE_LIST(img_dirs),
+     ECORE_GETOPT_VALUE_LIST(snd_dirs),
+     ECORE_GETOPT_VALUE_LIST(fnt_dirs),
+     ECORE_GETOPT_VALUE_LIST(data_dirs),
      ECORE_GETOPT_VALUE_BOOL(reopen),
      ECORE_GETOPT_VALUE_BOOL(info_only),
      ECORE_GETOPT_VALUE_BOOL(info_only),
@@ -175,6 +206,14 @@ elm_main(int argc, char **argv)
                _ERR_EXIT(_("--reopen is given but --name specified."));
              if (pro_path)
                _ERR_EXIT(_("--repoen is given but --path specified."));
+             if (img_dirs)
+               _ERR_EXIT(_("--reopen is given but --id specified."));
+             if (snd_dirs)
+               _ERR_EXIT(_("--reopen is given but --sd specified."));
+             if (fnt_dirs)
+               _ERR_EXIT(_("--reopen is given but --fd specified."));
+             if (data_dirs)
+               _ERR_EXIT(_("--reopen is given but --dd specified."));
 
              config = config_get();
              if (!config->recents)
@@ -198,13 +237,35 @@ elm_main(int argc, char **argv)
                     _ERR_EXIT(_("*.pro file is given but --name specified."));
                   if (pro_path)
                     _ERR_EXIT(_("*.pro file is given but --path specified."));
+                  if (img_dirs)
+                    _ERR_EXIT(_("*.pro file is given but --id specified."));
+                  if (snd_dirs)
+                    _ERR_EXIT(_("*.pro file is given but --sd specified."));
+                  if (fnt_dirs)
+                    _ERR_EXIT(_("*.pro file is given but --fd specified."));
+                  if (data_dirs)
+                    _ERR_EXIT(_("*.pro file is given but --dd specified."));
 
                   ecore_job_add(_open_project, NULL);
                   goto run;
                }
              else if (eina_str_has_suffix(file, ".edj"))
                {
+                  if (img_dirs)
+                    _ERR_EXIT(_("*.edj file is given but --id specified."));
+                  if (snd_dirs)
+                    _ERR_EXIT(_("*.edj file is given but --sd specified."));
+                  if (fnt_dirs)
+                    _ERR_EXIT(_("*.edj file is given but --fd specified."));
+                  if (data_dirs)
+                    _ERR_EXIT(_("*.edj file is given but --dd specified."));
+
                   ecore_job_add(_import_edj, NULL);
+                  goto run;
+               }
+             else if (eina_str_has_suffix(file, ".edc"))
+               {
+                  ecore_job_add(_import_edc, NULL);
                   goto run;
                }
              else
@@ -217,6 +278,14 @@ elm_main(int argc, char **argv)
                _ERR_EXIT(_("no file is given but --name specified."));
              if (pro_path)
                _ERR_EXIT(_("no file is given but --path specified."));
+             if (img_dirs)
+               _ERR_EXIT(_("no file is given but --id specified."));
+             if (snd_dirs)
+               _ERR_EXIT(_("no file is given but --sd specified."));
+             if (fnt_dirs)
+               _ERR_EXIT(_("no file is given but --fd specified."));
+             if (data_dirs)
+               _ERR_EXIT(_("no file is given but --dd specified."));
           }
 
 run:

@@ -571,3 +571,46 @@ _tab_import_edc_add(void)
 
    return tab_edc.layout;
 }
+
+void
+_tab_import_edc_data_set(const char *name, const char *path, const char *edc,
+                         const Eina_List *img, const Eina_List *snd, const Eina_List *fnt, const Eina_List *dd)
+{
+   Dir_Data *dir_data;
+   const Eina_List *l;
+   const char *str;
+
+   assert(tab_edc.layout != NULL);
+
+   elm_entry_entry_set(tab_edc.name, name);
+
+   if (path) elm_entry_entry_set(tab_edc.path, path);
+   else elm_entry_entry_set(tab_edc.path, profile_get()->general.projects_folder);
+
+   elm_entry_entry_set(tab_edc.edc, edc);
+
+   EINA_LIST_FOREACH(img, l, str)
+     {
+        dir_data = eina_list_data_get(eina_list_last(tab_edc.img_dirs));
+        elm_entry_entry_set(dir_data->entry, str);
+        _dir_add(&tab_edc.img_dirs, _img_dir_del);
+     }
+   EINA_LIST_FOREACH(snd, l, str)
+     {
+        dir_data = eina_list_data_get(eina_list_last(tab_edc.snd_dirs));
+        elm_entry_entry_set(dir_data->entry, str);
+        _dir_add(&tab_edc.snd_dirs, _snd_dir_del);
+     }
+   EINA_LIST_FOREACH(fnt, l, str)
+     {
+        dir_data = eina_list_data_get(eina_list_last(tab_edc.fnt_dirs));
+        elm_entry_entry_set(dir_data->entry, str);
+        _dir_add(&tab_edc.fnt_dirs, _fnt_dir_del);
+     }
+   EINA_LIST_FOREACH(dd, l, str)
+     {
+        dir_data = eina_list_data_get(eina_list_last(tab_edc.data_dirs));
+        elm_entry_entry_set(dir_data->entry, str);
+        _dir_add(&tab_edc.data_dirs, _data_dir_del);
+     }
+}

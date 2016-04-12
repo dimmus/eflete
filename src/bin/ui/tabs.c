@@ -1092,6 +1092,13 @@ tabs_menu_import_edj_data_set(const char *name, const char *path, const char *ed
    _tab_import_edj_data_set(name, path, edj);
 }
 
+void
+tabs_menu_import_edc_data_set(const char *name, const char *path, const char *edc,
+                              const Eina_List *img, const Eina_List *snd, const Eina_List *fnt, const Eina_List *dd)
+{
+   _tab_import_edc_data_set(name, path, edc, img, snd, fnt, dd);
+}
+
 static void
 _tab_close(void *data,
            Elm_Object_Item *it __UNUSED__,
