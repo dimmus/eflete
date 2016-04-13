@@ -58,12 +58,11 @@ EFLETE_TEST (config_panes_sizes_data_update_test_p)
    Eina_Bool result = EINA_FALSE;
 
    app_init();
-   ui_main_window_add();
+   config_load();
 
    result = config_panes_sizes_data_update();
    ck_assert_msg(result == EINA_TRUE, "Could not update Panes sizes data");
 
-   evas_object_del(ap.win);
    elm_shutdown();
 }
 END_TEST

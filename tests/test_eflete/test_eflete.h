@@ -19,6 +19,7 @@
 
 #include "utc_common.h"
 #include "eflete.h"
+#include "config.h"
 #include "main_window.h"
 
 /**

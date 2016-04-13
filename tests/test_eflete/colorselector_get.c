@@ -55,6 +55,7 @@ EFLETE_TEST (colorselector_get_test_p)
 {
    elm_init(0,0);
    app_init();
+   config_load();
    ui_main_window_add();
 
    ck_assert_msg(colorselector_get() != NULL, "Colorselector not exist");
