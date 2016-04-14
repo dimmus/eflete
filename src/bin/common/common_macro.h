@@ -94,8 +94,8 @@ _##_gen##_item_search(Evas_Object *obj, \
    str = eina_stringshare_printf("*%s*", \
                                  elm_entry_entry_get(search_data->search_entry)); \
  \
-   last_item_found = elm_##_gen##_search_by_text_item_get(obj, start_from, \
-                                                          PART_NAME, str, 0); \
+   last_item_found = elm_##_gen##_search_by_text_item_get(obj, start_from, PART_NAME, str, 0); \
+   eina_stringshare_del(str); \
    if (search_data->last_item_found == last_item_found) return; \
  \
    if (search_data->last_item_found) \
