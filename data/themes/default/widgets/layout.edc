@@ -884,7 +884,7 @@ group { name: "elm/layout/sound_editor/preview";
       part { name: "eflete.swallow.sound_player";
          type: SWALLOW;
          description { state: "default" 0.0;
-            SET_SIZE(320, 180);
+            SET_SIZE(320, 320);
          }
       }
    }
@@ -956,43 +956,17 @@ group { name: "elm/layout/image_manager/usage_info";
 
 group { name: "elm/layout/sound_editor/player";
    parts {
-      part { name: "padding.top";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            FIXED_SIZE(5, 5);
-         }
-      }
-      part { name: "padding.bottom";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            FIXED_SIZE(5, 5);
-         }
-      }
       part { name: "eflete.swallow.teg";
          type: SWALLOW;
          description { state: "default" 0.0;
             fixed: 1 1;
             rel1 {
-               to: "padding.top";
-               relative: 1.0 1.0;
+               offset: 3 3;
             }
             rel2 {
-               to_x: "padding.bottom";
-               to_y: "padding.teg";
-               relative: 0.0 0.0;
-            }
-         }
-      }
-      part { name: "padding.teg";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 1.0;
-            FIXED_SIZE(5, 10);
-            rel2 {
+               relative: 1.0 0.0;
+               offset: -4 -7;
                to_y: "eflete.swallow.fast";
-               relative: 0.0 0.0;
             }
          }
       }
@@ -1001,91 +975,12 @@ group { name: "elm/layout/sound_editor/player";
          description { state: "default" 0.0;
             align: 0.5 1.0;
             fixed: 1 1;
-            min: 0 10;
-            max: -1 10;
+            max: -1 19;
             rel1 {
-               to_x: "padding.top";
-               relative: 1.0 0.0;
+               offset: 3 0;
             }
             rel2 {
-               to_x: "padding.bottom";
-               to_y: "padding.fast";
-               relative: 0.0 0.0;
-            }
-         }
-      }
-      part { name: "padding.fast";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 1.0;
-            FIXED_SIZE(5, 10);
-            rel2 {
-               to_y: "swallow.button.play";
-               relative: 0.0 0.0;
-            }
-         }
-      }
-      part { name: "swallow.button.prev";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            FIXED_SIZE(19, 19);
-            rel1.to_x: "padding.top";
-            rel2 {
-               to_y: "padding.check";
-               relative: 0.4 0.0;
-            }
-         }
-      }
-      part { name: "swallow.button.play";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            FIXED_SIZE(19, 19);
-            rel1.to_x: "padding.top";
-            rel2 {
-               to_y: "padding.check";
-               relative: 0.5 0.0;
-            }
-
-         }
-      }
-      part { name: "swallow.button.next";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            FIXED_SIZE(19, 19);
-            rel1.to_x: "padding.top";
-            rel2 {
-               to_y: "padding.check";
-               relative: 0.6 0.0;
-            }
-         }
-      }
-      part { name: "padding.check";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 1.0;
-            FIXED_SIZE(5, 10);
-            rel2 {
-               to: "eflete.swallow.check";
-               relative: 0.0 0.0;
-            }
-         }
-      }
-      part { name: "eflete.swallow.check";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 0.0 1.0;
-            min: 0 10;
-            max: -1 10;
-            rel1 {
-               to: "padding.top";
-               relative: 1.0 1.0;
-            }
-            rel2 {
-               to_x: "swallow.button.play";
-               to_y: "padding.bottom";
+               offset: -4 -4;
             }
          }
       }
