@@ -630,3 +630,54 @@ _tab_new_project_add(void)
 
    return tab_new.layout;
 }
+
+static void
+_delayed_popup(void *data)
+{
+   char *msg = data;
+   popup_want_action(_("New project"), msg, NULL, NULL, BTN_OK, NULL, NULL);
+   free(msg);
+}
+
+void
+_tab_new_data_set(const char *name, const char *path, const Eina_List *widgets)
+{
+   const Eina_List *l;
+   const char *str;
+   Widget_Item_Data *widget_item_data_iterator;
+   Eina_Strbuf *buf = eina_strbuf_new();
+   Eina_Bool first_not_found = true;
+
+   assert(tab_new.layout != NULL);
+
+   elm_entry_entry_set(tab_new.name, name);
+
+   if (path) elm_entry_entry_set(tab_new.path, path);
+   else elm_entry_entry_set(tab_new.path, profile_get()->general.projects_folder);
+
+   EINA_LIST_FOREACH(widgets, l, str)
+     {
+        widget_item_data_iterator = widget_item_data;
+        while (widget_item_data_iterator->name)
+          {
+             if (!strcasecmp(str, widget_item_data_iterator->name))
+               break;
+             widget_item_data_iterator++;
+          }
+        if (widget_item_data_iterator->name)
+          widget_item_data_iterator->check = true;
+        else
+          {
+             eina_strbuf_append_printf(buf, first_not_found ? "%s" : ", %s", str);
+             first_not_found = false;
+          }
+     }
+   elm_genlist_realized_items_update(tab_new.genlist);
+   if (eina_strbuf_length_get(buf))
+     {
+        eina_strbuf_prepend(buf, _("Following widgets were not found and ignored: "));
+        ERR("%s", eina_strbuf_string_get(buf));
+        ecore_job_add(_delayed_popup, eina_strbuf_string_steal(buf));
+     }
+   eina_strbuf_free(buf);
+}

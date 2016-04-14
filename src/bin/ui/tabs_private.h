@@ -58,6 +58,9 @@ void
 _tab_import_edc_data_set(const char *name, const char *path, const char *edc,
                          const Eina_List *img, const Eina_List *snd, const Eina_List *fnt, const Eina_List *dd);
 
+void
+_tab_new_data_set(const char *name, const char *path, const Eina_List *widgets);
+
 Evas_Object *
 _tab_import_edc_add(void);
 

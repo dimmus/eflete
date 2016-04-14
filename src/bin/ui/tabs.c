@@ -1099,6 +1099,12 @@ tabs_menu_import_edc_data_set(const char *name, const char *path, const char *ed
    _tab_import_edc_data_set(name, path, edc, img, snd, fnt, dd);
 }
 
+void
+tabs_menu_new_data_set(const char *name, const char *path, const Eina_List *widgets)
+{
+   _tab_new_data_set(name, path, widgets);
+}
+
 static void
 _tab_close(void *data,
            Elm_Object_Item *it __UNUSED__,
