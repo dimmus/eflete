@@ -3917,6 +3917,7 @@ _on_state_image_choose(void *data,
                               _on_image_editor_done,
                               pd,
                               false);
+   popup_gengrid_helper_item_select(elm_entry_entry_get(pd->attributes.state_image.image));
 }
 
 static void

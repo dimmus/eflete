@@ -364,6 +364,8 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
                            Helper_Done_Cb func, void *data,
                            Eina_Bool multi);
 
+void
+popup_gengrid_helper_item_select(const char *item_title);
 
 /**
  * Export project as develop edj file.

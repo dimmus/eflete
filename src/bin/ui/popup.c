@@ -704,6 +704,18 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
 }
 
 void
+popup_gengrid_helper_item_select(const char *item_title)
+{
+   Elm_Object_Item *item;
+   Helper_Data *helper_data = evas_object_data_get(ap.popup, "STRUCT");
+
+   assert(helper_data != NULL);
+
+   item = elm_gengrid_search_by_text_item_get(helper_data->gengrid, NULL, "elm.text", item_title, 0);
+   elm_gengrid_item_selected_set(item, true);
+}
+
+void
 popup_log_message_helper(const char *msg)
 {
    Evas_Object *box, *en, *lab;
