@@ -529,6 +529,7 @@ _sound_player_create(Evas_Object *parent, Sound_Prop_Data *edit)
    BT_ADD(edit->sound_player, edit->player_data.play, icon, "media_player/play");
    elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.play);
    evas_object_smart_callback_add(edit->player_data.play, "clicked", _on_play_cb, edit);
+   elm_object_disabled_set(edit->player_data.play, true);
 
    edit->player_data.pause = elm_button_add(edit->sound_player);
    elm_object_style_set(edit->player_data.pause, "anchor");
@@ -730,6 +731,7 @@ _on_grid_clicked(void *data,
            break;
         }
      }
+   elm_object_disabled_set(edit->player_data.play, false);
 }
 
 static void
@@ -745,6 +747,8 @@ _sound_unselected(void *data,
    elm_object_text_set(pd->snd_data.size, _("-"));
    elm_object_text_set(pd->snd_data.tone_name, _("-"));
    elm_object_text_set(pd->snd_data.duration, _("-"));
+
+   elm_object_disabled_set(pd->player_data.play, true);
 }
 
 Evas_Object *
