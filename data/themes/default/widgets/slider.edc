@@ -7,6 +7,7 @@ group { name: "elm/slider/hidden/limit";
          description { state: "default" 0.0;
             visible: 0;
             align: 1.0 0.5;
+            fixed: 1 1;
             text {
                font: "FN";
                size: 10;
@@ -24,6 +25,7 @@ group { name: "elm/slider/hidden/limit";
          description { state: "default" 0.0;
             visible: 0;
             align: 1.0 0.5;
+            fixed: 1 1;
             color_class: "main";
             text {
                font: "PT:style=Bold";
