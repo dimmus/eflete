@@ -287,9 +287,9 @@ ui_menu_add(void)
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_ITEM_ADD, NULL, _("Add item"), "e")
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PROGRAM_ADD, NULL, _("Add program"), "r")
       ___(MENU_EDIT);
-      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_IMAGE, "image", _("Image manager"), "F7")
-      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_SOUND, "sound", _("Sound manager"), "F8")
-      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_TEXT_STYLE, "text", _("Textblock styles manager"), "F9")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_IMAGE, "image2", _("Image manager"), "F7")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_SOUND, "sound2", _("Sound manager"), "F8")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_TEXT_STYLE, "text2", _("Textblock styles manager"), "F9")
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_COLORCLASS, "color", _("Color class manager"), "F10")
       /* ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PREFERENCE, NULL, _("Preference..."))*/
 
