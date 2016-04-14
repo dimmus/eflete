@@ -252,9 +252,9 @@ _rewind_cb(void *data)
 
    if (max == value)
      {
-        elm_object_part_content_unset(edit->sound_player, "swallow.button.play");
+        elm_object_part_content_unset(edit->player_data.rewind, NULL);
         evas_object_hide(edit->player_data.pause);
-        elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.play);
+        elm_object_part_content_set(edit->player_data.rewind, NULL, edit->player_data.play);
         evas_object_show(edit->player_data.play);
         elm_slider_value_set(edit->player_data.rewind, 0.0);
         return ECORE_CALLBACK_CANCEL;
@@ -375,9 +375,9 @@ _interrupt_playing(Sound_Prop_Data *edit)
         ecore_timer_del(edit->player_data.timer);
         edit->player_data.timer = NULL;
 
-        elm_object_part_content_unset(edit->sound_player, "swallow.button.play");
+        elm_object_part_content_unset(edit->player_data.rewind, NULL);
         evas_object_hide(edit->player_data.pause);
-        elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.play);
+        elm_object_part_content_set(edit->player_data.rewind, NULL, edit->player_data.play);
         evas_object_show(edit->player_data.play);
 
         eo_del(edit->io.in);
@@ -417,9 +417,9 @@ _on_play_cb(void *data,
          _tone_play(edit);
          break;
      }
-   elm_object_part_content_unset(edit->sound_player, "swallow.button.play");
+   elm_object_part_content_unset(edit->player_data.rewind, NULL);
    evas_object_hide(edit->player_data.play);
-   elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.pause);
+   elm_object_part_content_set(edit->player_data.rewind, NULL, edit->player_data.pause);
    evas_object_show(edit->player_data.pause);
 }
 
@@ -435,9 +435,9 @@ _on_pause_cb(void *data EINA_UNUSED,
    ecore_audio_obj_paused_set(edit->io.in, true);
 
    ecore_timer_freeze(edit->player_data.timer);
-   elm_object_part_content_unset(edit->sound_player, "swallow.button.play");
+   elm_object_part_content_unset(edit->player_data.rewind, NULL);
    evas_object_hide(edit->player_data.pause);
-   elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.play);
+   elm_object_part_content_set(edit->player_data.rewind, NULL, edit->player_data.play);
    evas_object_show(edit->player_data.play);
 }
 
@@ -527,7 +527,7 @@ _sound_player_create(Evas_Object *parent, Sound_Prop_Data *edit)
    evas_object_smart_callback_add(edit->player_data.rewind, "changed", _on_rewind_cb, edit);
 
    BT_ADD(edit->sound_player, edit->player_data.play, icon, "media_player/play");
-   elm_object_part_content_set(edit->sound_player, "swallow.button.play", edit->player_data.play);
+   elm_object_part_content_set(edit->player_data.rewind, NULL, edit->player_data.play);
    evas_object_smart_callback_add(edit->player_data.play, "clicked", _on_play_cb, edit);
    elm_object_disabled_set(edit->player_data.play, true);
 
