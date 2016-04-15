@@ -1026,8 +1026,11 @@ _parts_stack_layout(Evas_Object          *o __UNUSED__,
         _part_calc(sd, gp);
         _part_update(sd, gp);
 
-        evas_object_resize(gp->draw, gp->geom.w, gp->geom.h);
-        evas_object_move(gp->draw, gp->geom.x, gp->geom.y);
+        if (gp->part->visible)
+          {
+             evas_object_resize(gp->draw, gp->geom.w, gp->geom.h);
+             evas_object_move(gp->draw, gp->geom.x, gp->geom.y);
+          }
 
         if (gp->container)
           {

@@ -519,7 +519,11 @@ groupview_part_visible_set(Evas_Object *obj, Part *part)
 
    assert(gp != NULL);
    if (part->visible)
-     evas_object_show(gp->draw);
+     {
+        evas_object_show(gp->draw);
+        evas_object_resize(gp->draw, gp->geom.w, gp->geom.h);
+        evas_object_move(gp->draw, gp->geom.x, gp->geom.y);
+     }
    else
      evas_object_hide(gp->draw);
 }
