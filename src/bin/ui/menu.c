@@ -309,6 +309,9 @@ ui_menu_add(void)
 
    elm_menu_item_separator_add(window_menu, menu->items[MENU_FILE_IMPORT_EDC]);
 
+   /* uncomment it, when release export will be implemented */
+   ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
+
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
