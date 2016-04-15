@@ -23,6 +23,7 @@
 #include "config.h"
 
 static Popup_Button btn_pressed;
+static Evas_Object *helper;
 static Evas_Object *fs;
 static Helper_Done_Cb dismiss_func;
 static void* func_data;
@@ -96,7 +97,6 @@ popup_want_action(const char *title,
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
 
-   evas_object_del(ap.popup);
    ap.popup = elm_popup_add(ap.win);
    elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
    elm_object_part_text_set(ap.popup, "title,text", title);
@@ -173,7 +173,7 @@ _helper_obj_follow(void *data __UNUSED__,
    evas_object_geometry_get(obj, &x, &y, &w, &h);
    nx = x - (FS_W + 12 - w); /* 12 - it's a helper border */
    ny = y + h;
-   evas_object_move(ap.popup, nx, ny);
+   evas_object_move(helper, nx, ny);
 }
 
 static void
@@ -187,7 +187,7 @@ _helper_win_follow(void *data __UNUSED__,
    evas_object_geometry_get(ap.win, NULL, NULL, &w, &h);
    nx = (w / 2) - ((FS_W + 12) / 2);
    ny = (h / 2) - ((FS_H + 12) / 2);
-   evas_object_move(ap.popup, nx, ny);
+   evas_object_move(helper, nx, ny);
 }
 
 static void
@@ -201,7 +201,7 @@ _helper_property_follow(void *data __UNUSED__,
    evas_object_geometry_get(obj, &x, &y, &w, &h);
    nx = x - (GENGRID_W + 12 - w); /* 12 - it's a helper border */
    ny = y + h;
-   evas_object_move(ap.popup, nx, ny);
+   evas_object_move(helper, nx, ny);
 }
 
 
@@ -221,11 +221,10 @@ _helper_dismiss(void *data __UNUSED__,
    if (!follow_up)
      evas_object_event_callback_del_full(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
 
-   Helper_Data *helper_data = evas_object_data_get(ap.popup, "STRUCT");
+   Helper_Data *helper_data = evas_object_data_get(helper, "STRUCT");
    if (helper_data) free(helper_data);
 
-   evas_object_del(ap.popup);
-   ap.popup = NULL;
+   evas_object_del(helper);
 }
 
 static void
@@ -282,10 +281,9 @@ _fileselector_helper(const char *title,
    dismiss_func = func;
    func_data = data;
 
-   evas_object_del(ap.popup);
-   ap.popup = elm_layout_add(ap.win);
-   elm_layout_theme_set(ap.popup, "layout", "popup", title ? "hint_title" : "hint");
-   elm_layout_signal_callback_add(ap.popup, "hint,dismiss", "eflete", _helper_dismiss, follow_up);
+   helper = elm_layout_add(ap.win);
+   elm_layout_theme_set(helper, "layout", "popup", title ? "hint_title" : "hint");
+   elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, follow_up);
 
    fs = elm_fileselector_add(ap.win);
    elm_fileselector_expandable_set(fs, false);
@@ -301,15 +299,15 @@ _fileselector_helper(const char *title,
    elm_fileselector_path_set(fs, path ? path : profile_get()->general.projects_folder);
    evas_object_smart_callback_add(fs, "done", _done, follow_up);
    evas_object_smart_callback_add(fs, "activated", _done, follow_up);
-   evas_object_size_hint_min_set(ap.popup, FS_W, FS_H);
-   evas_object_resize(ap.popup, FS_W, FS_H);
+   evas_object_size_hint_min_set(helper, FS_W, FS_H);
+   evas_object_resize(helper, FS_W, FS_H);
 
    /* scroller is necessary to fix issues with fileselector size */
    SCROLLER_ADD(ap.win, scroller);
    elm_object_content_set(scroller, fs);
 
-   if (title) elm_object_text_set(ap.popup, title);
-   elm_layout_content_set(ap.popup, "elm.swallow.content", scroller);
+   if (title) elm_object_text_set(helper, title);
+   elm_layout_content_set(helper, "elm.swallow.content", scroller);
    evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
    if (follow_up)
@@ -323,7 +321,7 @@ _fileselector_helper(const char *title,
         _helper_win_follow(NULL, NULL, NULL, NULL);
         evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
      }
-   evas_object_show(ap.popup);
+   evas_object_show(helper);
 }
 
 void
@@ -621,13 +619,13 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
 
    helper_data->follow_up = follow_up;
 
-   evas_object_del(ap.popup);
-   ap.popup = elm_layout_add(ap.win);
-   elm_layout_theme_set(ap.popup, "layout", "popup", title ? "hint_title" : "hint");
-   evas_object_data_set(ap.popup, "STRUCT", helper_data);
-   elm_layout_signal_callback_add(ap.popup, "hint,dismiss", "eflete", _helper_dismiss, follow_up);
+   evas_object_del(helper);
+   helper = elm_layout_add(ap.win);
+   elm_layout_theme_set(helper, "layout", "popup", title ? "hint_title" : "hint");
+   evas_object_data_set(helper, "STRUCT", helper_data);
+   elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, follow_up);
 
-   fs = elm_layout_add(ap.popup);
+   fs = elm_layout_add(helper);
    elm_layout_theme_set(fs, "layout", "image_manager", "usage_info");
    evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -639,7 +637,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
         elm_gengrid_multi_select_set(helper_data->gengrid, true);
 
         BUTTON_ADD(fs, helper_data->button, _("Ok"))
-        elm_object_part_content_set(ap.popup, "elm.swallow.ok", helper_data->button);
+        elm_object_part_content_set(helper, "elm.swallow.ok", helper_data->button);
         evas_object_smart_callback_add(helper_data->button, "clicked", _done_image, helper_data);
         evas_object_show(helper_data->button);
      }
@@ -681,11 +679,11 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
 
    /* small hack, hide not necessary button */
    evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
-   evas_object_size_hint_min_set(ap.popup, GENGRID_W, GENGRID_H);
-   evas_object_resize(ap.popup, GENGRID_W, GENGRID_H);
+   evas_object_size_hint_min_set(helper, GENGRID_W, GENGRID_H);
+   evas_object_resize(helper, GENGRID_W, GENGRID_H);
 
-   if (title) elm_object_text_set(ap.popup, title);
-   elm_layout_content_set(ap.popup, "elm.swallow.content", fs);
+   if (title) elm_object_text_set(helper, title);
+   elm_layout_content_set(helper, "elm.swallow.content", fs);
    evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
    if (follow_up)
@@ -700,7 +698,7 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
         evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
      }
 
-   evas_object_show(ap.popup);
+   evas_object_show(helper);
 }
 
 void
@@ -720,28 +718,27 @@ popup_log_message_helper(const char *msg)
 {
    Evas_Object *box, *en, *lab;
 
-   evas_object_del(ap.popup);
-   ap.popup = elm_layout_add(ap.win);
-   elm_layout_theme_set(ap.popup, "layout", "popup", "hint");
-   elm_layout_signal_callback_add(ap.popup, "hint,dismiss", "eflete", _helper_dismiss, ap.win);
-   evas_object_size_hint_min_set(ap.popup, FS_W, FS_H);
-   evas_object_resize(ap.popup, FS_W, FS_H);
+   helper = elm_layout_add(ap.win);
+   elm_layout_theme_set(helper, "layout", "popup", "hint");
+   elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, ap.win);
+   evas_object_size_hint_min_set(helper, FS_W, FS_H);
+   evas_object_resize(helper, FS_W, FS_H);
 
-   BOX_ADD(ap.popup, box, false, false)
+   BOX_ADD(helper, box, false, false)
    elm_box_padding_set(box, 0, 6);
-   LABEL_ADD(ap.popup, lab, _("<font_size=14>Import edc-file error"))
+   LABEL_ADD(helper, lab, _("<font_size=14>Import edc-file error"))
    evas_object_show(lab);
    ENTRY_ADD(box, en, false)
    elm_entry_editable_set(en, false);
    elm_box_pack_end(box, lab);
    elm_box_pack_end(box, en);
-   elm_layout_content_set(ap.popup, NULL, box);
+   elm_layout_content_set(helper, NULL, box);
 
    elm_entry_entry_set(en, msg);
 
    _helper_win_follow(NULL, NULL, NULL, NULL);
    evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
-   evas_object_show(ap.popup);
+   evas_object_show(helper);
 }
 
 #undef FS_W
