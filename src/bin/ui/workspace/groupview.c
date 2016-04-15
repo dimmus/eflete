@@ -188,8 +188,6 @@ _groupview_smart_move(Evas_Object *o,
 
    sd->zoom1.x = x;
    sd->zoom1.y = y;
-
-   evas_object_smart_changed(o);
 }
 
 static void
