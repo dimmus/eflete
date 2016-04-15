@@ -113,10 +113,7 @@ _content_set(void *data,
              item->need_recalc = false;
           }
 
-        /* call 'tab,changed' on tab click, and sent Group accociated with clicked
-         * tab or NULL, if click on 'home' tab */
-        evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED,
-                                        item ? item->group : NULL);
+        evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, item->group);
 
         /* if workspace is in demo mode then change property */
         TODO("Refactor property and remove this")
@@ -124,7 +121,9 @@ _content_set(void *data,
           evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
      }
    else
-     {
+          {
+        evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, NULL);
+
         tabs.current_workspace = NULL;
         tabs.current_group = NULL;
         if (ap.project)
