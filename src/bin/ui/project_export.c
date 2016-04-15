@@ -73,7 +73,13 @@ _export_dev(void *data __UNUSED__,
 void
 project_export_develop(void)
 {
+   Eina_Strbuf *buf;
+
    popup_fileselector_edj_helper("Export to develop edj-file", NULL, NULL, _export_dev, NULL, false, true);
+   buf = eina_strbuf_new();
+   eina_strbuf_append_printf(buf, "%s-develop.edj", ap.project->name);
+   popup_fileselector_file_set(eina_strbuf_string_get(buf));
+   eina_strbuf_free(buf);
 }
 
 static Eina_Bool

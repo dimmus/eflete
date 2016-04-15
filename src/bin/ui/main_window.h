@@ -357,6 +357,9 @@ popup_fileselector_sound_helper(const char *title, Evas_Object *follow_up, const
                                 Eina_Bool multi, Eina_Bool is_save);
 
 void
+popup_fileselector_file_set(const char *file);
+
+void
 popup_log_message_helper(const char *msg);
 
 void

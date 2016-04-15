@@ -429,6 +429,15 @@ popup_fileselector_sound_helper(const char *title, Evas_Object *follow_up, const
    _fileselector_helper(title, follow_up, path, multi, is_save, func, data, _sounds_filter);
 }
 
+void
+popup_fileselector_file_set(const char *file)
+{
+   Evas_Object *entry;
+
+   entry = elm_object_part_content_get(fs, "elm.swallow.filename");
+   elm_entry_entry_set(entry, file);
+}
+
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
 #define GROUP_ITEM_WIDTH 36
