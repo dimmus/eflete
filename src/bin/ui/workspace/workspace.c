@@ -928,7 +928,7 @@ _groupview_hl_part_changed(void *data,
    Workspace_Data *wd = data;
    Groupview_HL_Event *event = event_info;
 
-   assert(wd->mode == MODE_NORMAL);
+   assert((wd->mode == MODE_NORMAL) || (wd->mode == MODE_CODE));
 
    if (MIDDLE != event->hl_type)
      {
