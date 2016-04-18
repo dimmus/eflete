@@ -723,6 +723,64 @@ popup_gengrid_helper_item_select(const char *item_title)
 }
 
 void
+popup_colorselector_helper(const char *title, Evas_Object *follow_up,
+                           Helper_Done_Cb func, Helper_Done_Cb func_change __UNUSED__,
+                           void *data)
+{
+   Helper_Data *helper_data = (Helper_Data *)mem_calloc(1, sizeof(Helper_Data));
+
+   dismiss_func = func;
+   func_data = data;
+
+   helper_data->follow_up = follow_up;
+
+   evas_object_del(helper);
+   helper = elm_layout_add(ap.win);
+   elm_layout_theme_set(helper, "layout", "popup", title ? "hint_title" : "hint");
+   evas_object_data_set(helper, "STRUCT", helper_data);
+   elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, follow_up);
+
+   fs = elm_colorselector_add(helper);
+   elm_colorselector_mode_set(fs, ELM_COLORSELECTOR_ALL);
+   evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(fs);
+
+/*   evas_object_smart_callback_add(fs, "color,changed",
+                                  func_change, data);
+   evas_object_smart_callback_add(fs, "palette,item,selected",
+                                  func_change, data);
+*/
+   BUTTON_ADD(fs, helper_data->button, _("Ok"))
+   elm_object_part_content_set(helper, "elm.swallow.ok", helper_data->button);
+//   evas_object_smart_callback_add(helper_data->button, "clicked", _done_image, helper_data);
+   evas_object_show(helper_data->button);
+
+   /* small hack, hide not necessary button */
+   evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
+   evas_object_size_hint_min_set(helper, GENGRID_W / 2, GENGRID_H);
+   evas_object_resize(helper, GENGRID_W / 2, GENGRID_H);
+
+   if (title) elm_object_text_set(helper, title);
+   elm_layout_content_set(helper, "elm.swallow.content", fs);
+   evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   if (follow_up)
+     {
+        _helper_property_follow(NULL, NULL, follow_up, NULL);
+        evas_object_event_callback_add(follow_up, EVAS_CALLBACK_RESIZE, _helper_property_follow, NULL);
+        evas_object_event_callback_add(follow_up, EVAS_CALLBACK_MOVE, _helper_property_follow, NULL);
+     }
+   else
+     {
+        _helper_win_follow(NULL, NULL, NULL, NULL);
+        evas_object_event_callback_add(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
+     }
+
+   evas_object_show(helper);
+}
+
+void
 popup_log_message_helper(const char *msg)
 {
    Evas_Object *box, *en, *lab;
