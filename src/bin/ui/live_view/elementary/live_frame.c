@@ -75,7 +75,6 @@ _on_frame_text_check(void *data __UNUSED__,
    Demo_Part *part = (Demo_Part *)ei;
    Evas_Object *frame_obj = NULL;
 
-   assert(data != NULL);
    Eina_List *frame_list = elm_box_children_get(obj);
 
    EINA_LIST_FREE(frame_list, frame_obj)
@@ -89,8 +88,6 @@ _frame_send_signal(void *data __UNUSED__,
 {
    Demo_Signal *sig = (Demo_Signal *)ei;
    Evas_Object *frame_obj = NULL;
-
-   assert(data != NULL);
 
    Eina_List* frame_list = elm_box_children_get(obj);
    assert(sig != NULL);
