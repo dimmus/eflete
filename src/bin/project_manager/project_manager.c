@@ -853,8 +853,6 @@ pm_project_close(Project *project)
         free(style);
      }
 
-
-
    EINA_LIST_FREE(project->res.images, data)
       eina_stringshare_del(data);
    EINA_LIST_FREE(project->res.sounds, data)
