@@ -328,6 +328,17 @@ _import(void *data __UNUSED__,
        return;
 
    buf = eina_strbuf_new();
+   eina_strbuf_append_printf(buf, "%s/%s.pro",
+                             elm_entry_entry_get(tab_edj.path),
+                             elm_entry_entry_get(tab_edj.name));
+   if (!pm_lock_check(eina_strbuf_string_get(buf)))
+     {
+       popup_want_action(_("Import EDJ-file"), _("The given file is locked by another application"),
+                         NULL, NULL, BTN_OK, NULL, NULL);
+       return;
+     }
+
+   eina_strbuf_reset(buf);
    eina_strbuf_append_printf(buf,
                             _("<font_size=16>A project folder named '%s' already exist."
                               "Do you want to replace it?</font_size><br>"
