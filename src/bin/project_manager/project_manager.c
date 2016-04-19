@@ -1084,7 +1084,7 @@ _sound_resources_load(Project *project)
                       snd_proc, snd_total, sound_file);
 
         res = mem_calloc(1, sizeof(External_Resource));
-        res->name = eina_stringshare_add(sound_name);
+        res->name = eina_stringshare_add(sound_file);
         res->source = eina_stringshare_printf("%s/%s", resource_folder, sound_file);
         project->sounds = eina_list_sorted_insert(project->sounds, (Eina_Compare_Cb) resource_cmp, res);
 
@@ -1152,7 +1152,7 @@ _font_resources_load(Project *project)
                       fnt_proc, fnt_total, font_file);
 
         res = mem_calloc(1, sizeof(External_Resource));
-        res->name = eina_stringshare_add(font_name);
+        res->name = eina_stringshare_add(font_file);
         res->source = eina_stringshare_printf("%s/%s", resource_folder, font_file);
         project->fonts = eina_list_sorted_insert(project->fonts, (Eina_Compare_Cb) resource_cmp, res);
 
@@ -1285,13 +1285,21 @@ _external_resources_export(Eina_List *resources, const char *dst)
    Eina_Strbuf *buf;
    Eina_List *l;
    External_Resource *res;
+   char *path;
 
    buf = eina_strbuf_new();
    EINA_LIST_FOREACH(resources, l, res)
      {
         eina_strbuf_append_printf(buf, "%s/%s", dst, res->name);
+        path = ecore_file_dir_get(eina_strbuf_string_get(buf));
+        if (!ecore_file_is_dir(path))
+          {
+             ecore_file_mkpath(path);
+          }
         ecore_file_cp(res->source, eina_strbuf_string_get(buf));
         eina_strbuf_reset(buf);
+        free(path);
+        path = NULL;
      }
    eina_strbuf_free(buf);
 }
@@ -1302,6 +1310,7 @@ _external_resource_export(Eina_List *resources, Eina_Stringshare *name, const ch
    Eina_Strbuf *buf;
    Eina_List *l;
    External_Resource *res;
+   char *path;
 
    buf = eina_strbuf_new();
    EINA_LIST_FOREACH(resources, l, res)
@@ -1309,8 +1318,14 @@ _external_resource_export(Eina_List *resources, Eina_Stringshare *name, const ch
         if (name == res->name)
           {
              eina_strbuf_append_printf(buf, "%s/%s", dst, res->name);
+             path = ecore_file_dir_get(eina_strbuf_string_get(buf));
+             if (!ecore_file_is_dir(path))
+               {
+                  ecore_file_mkpath(path);
+               }
              ecore_file_cp(res->source, eina_strbuf_string_get(buf));
              eina_strbuf_reset(buf);
+             free(path);
              break;
           }
      }
@@ -1385,9 +1400,11 @@ _group_source_code_export(void *data, Eina_Thread *thread __UNUSED__)
              EINA_LIST_FOREACH(part->states, ls, state)
                {
                   resource = edje_edit_state_font_get(group->edit_object, part->name, state->parsed_name, state->parsed_val);
-                  PROGRESS_SEND(_("Export font '%s'"), resource);
-                  _external_resource_export(worker.project->fonts, resource, eina_strbuf_string_get(buf));
+                  Eina_Stringshare *font_res = edje_edit_font_path_get(group->edit_object, resource);
+                  PROGRESS_SEND(_("Export font '%s'"), font_res);
+                  _external_resource_export(worker.project->fonts, font_res, eina_strbuf_string_get(buf));
                   eina_stringshare_del(resource);
+                  eina_stringshare_del(font_res);
                }
           }
      }
