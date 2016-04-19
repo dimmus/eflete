@@ -136,6 +136,7 @@ enum _PM_Project_Result
    PM_PROJECT_SUCCESS,
    PM_PROJECT_CANCEL,
    PM_PROJECT_ERROR,
+   PM_PROJECT_LOCKED,
    PM_PROJECT_LAST
 };
 
@@ -520,6 +521,18 @@ pm_project_enventor_save(Project *project,
                          PM_Project_Progress_Cb func_progress,
                          PM_Project_End_Cb func_end,
                          const void *data) EINA_ARG_NONNULL(1);
+
+/**
+ * Check the lock of given file.
+ *
+ * @param path The path to checked file
+ *
+ * @return EINA_TRUE if file not locked, owerise EINA_FALSE.
+ *
+ * @ingroup ProjectManager
+ */
+Eina_Bool
+pm_lock_check(const char *path) EINA_ARG_NONNULL(1);
 
 /**
  * @struct _Resource

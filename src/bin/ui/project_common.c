@@ -82,6 +82,11 @@ progress_end(void *data __UNUSED__, PM_Project_Result result)
            ERR(_("Project opening canceled."));
            break;
         }
+      case PM_PROJECT_LOCKED:
+        {
+           ERR(_("Given project file is locked."));
+           break;
+        }
       case PM_PROJECT_SUCCESS:
         {
            INFO(_("Project '%s' is opened."), ap.project->name);

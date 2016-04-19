@@ -95,6 +95,12 @@ _tabs_progress_end(void *data, PM_Project_Result result)
 {
    Meta_Data_Controls *meta = (Meta_Data_Controls *)data;
 
+   if (PM_PROJECT_LOCKED == result)
+     {
+        progress_end(data, result);
+        popup_want_action(_("File is locked"), _("File locked by another application"), NULL, NULL, BTN_OK, NULL, NULL);
+        return;
+     }
    if (PM_PROJECT_SUCCESS != result) return;
 
    ap.project = pm_project_thread_project_get();

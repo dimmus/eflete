@@ -153,6 +153,33 @@ _project_dev_file_create(Project *pro)
 
 static Eet_Data_Descriptor *eed_project = NULL;
 
+static Eina_Bool
+_lock_try(const char *path, Eina_Bool check)
+{
+   struct flock lock, savelock;
+
+   int fd = open(path, O_RDWR);
+   lock.l_type    = F_WRLCK;   /* Test for any lock on any part of file. */
+   lock.l_whence  = SEEK_SET;
+   lock.l_start   = 0;
+   lock.l_len     = 0;
+   savelock = lock;
+   fcntl(fd, F_GETLK, &lock);  /* Overwrites lock structure with preventors. */
+   if ((lock.l_type == F_WRLCK) || (lock.l_type == F_RDLCK))
+     {
+        ERR("Process %d has a write lock already!", lock.l_pid);
+        return false;
+     }
+   /* if flag check is false not need to lock the file */
+   if (!check)
+     {
+        savelock.l_pid = getpid();
+        fcntl(fd, F_SETLK, &savelock);
+     }
+
+   return true;
+}
+
 static void
 _project_descriptor_init(void)
 {
@@ -426,12 +453,19 @@ _project_import_edj(void *data,
 {
    Eina_Bool send_end = (data) ? (*(Eina_Bool *)data) : true;
 
+   THREAD_TESTCANCEL;
+   worker.project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker.path, worker.name, worker.name);
+   if (!_lock_try(worker.project->pro_path, true))
+     {
+        /* really this case is unlickly, but we need handle it */
+        END_SEND(PM_PROJECT_LOCKED);
+        return NULL;
+     }
+
    PROGRESS_SEND(_("Start import '%s' file as new project"), worker.edj);
    PROGRESS_SEND(_("Creating a specifiec file and folders"));
    worker.project = _project_files_create();
    TODO("Add correct error handling here (if project == NULL). Probably we should add negative TC where directory already exist");
-   THREAD_TESTCANCEL;
-   worker.project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker.path, worker.name, worker.name);
    THREAD_TESTCANCEL;
    PROGRESS_SEND(_("Import processing"));
    _project_edj_file_copy();
@@ -623,6 +657,13 @@ _project_open(void *data,
    assert(path != NULL);
 
    edje_file_cache_flush();
+
+   if (!_lock_try(path, true))
+     {
+        /* really this case is unlickly, but we need handle it */
+        END_SEND(PM_PROJECT_LOCKED);
+        return NULL;
+     }
 
    PROGRESS_SEND(_("Opening project \"%s\""), path);
 
@@ -1769,4 +1810,11 @@ pm_project_enventor_save(Project *project,
         abort();
      }
 }
+
 #endif /* HAVE_ENVENTOR */
+
+Eina_Bool
+pm_lock_check(const char *path)
+{
+   return _lock_try(path, false);
+}
