@@ -163,7 +163,7 @@ popup_buttons_disabled_set(Popup_Button popup_btns, Eina_Bool disabled)
 #define GENGRID_H 388
 
 #define COLOR_W 261
-#define COLOR_H 280
+#define COLOR_H 300
 
 static void
 _helper_obj_follow(void *data __UNUSED__,
@@ -222,7 +222,7 @@ _helper_property_color_follow(void *data __UNUSED__,
 }
 
 static void
-_helper_colorclass_dismiss(void *data __UNUSED__,
+_helper_colorclass_dismiss(void *data,
                            Evas_Object *obj __UNUSED__,
                            const char *signal __UNUSED__,
                            const char *source __UNUSED__)
@@ -242,10 +242,24 @@ _helper_colorclass_dismiss(void *data __UNUSED__,
      ((Helper_Done_Cb)dismiss_func)(func_data, fs, NULL);
    dismiss_func = NULL;
    func_data = NULL;
+   /* using eflete_main_loop_quit/begin doesn't work here since it blocks
+      thumbs inside of a gengrid.
+      though to avoid SIGSEV deleting button first and then popup works
+      perfectly good */
+   if (helper_data->button)
+     evas_object_del(helper_data->button);
 
    if (helper_data) free(helper_data);
 
    evas_object_del(helper);
+}
+
+static void
+_colorclass_done(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   _helper_colorclass_dismiss(data, NULL, NULL, NULL);
 }
 
 static void
@@ -766,7 +780,7 @@ popup_gengrid_helper_item_select(const char *item_title)
 }
 
 void
-popup_colorselector_helper(const char *title, Evas_Object *follow_up,
+popup_colorselector_helper(Evas_Object *follow_up,
                            Helper_Done_Cb func, Evas_Smart_Cb func_change,
                            void *data, int r, int g, int b, int a)
 {
@@ -779,7 +793,7 @@ popup_colorselector_helper(const char *title, Evas_Object *follow_up,
 
    evas_object_del(helper);
    helper = elm_layout_add(ap.win);
-   elm_layout_theme_set(helper, "layout", "popup", title ? "hint_title" : "hint");
+   elm_layout_theme_set(helper, "layout", "popup", "hint");
    evas_object_data_set(helper, "STRUCT", helper_data);
    elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_colorclass_dismiss, helper_data);
 
@@ -799,7 +813,11 @@ popup_colorselector_helper(const char *title, Evas_Object *follow_up,
    evas_object_size_hint_min_set(helper, COLOR_W, COLOR_H);
    evas_object_resize(helper, COLOR_W, COLOR_H);
 
-   if (title) elm_object_text_set(helper, title);
+   BUTTON_ADD(fs, helper_data->button, _("Ok"))
+   elm_object_part_content_set(helper, "elm.swallow.ok", helper_data->button);
+   evas_object_smart_callback_add(helper_data->button, "clicked", _colorclass_done, helper_data);
+   evas_object_show(helper_data->button);
+
    elm_layout_content_set(helper, "elm.swallow.content", fs);
    evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);

@@ -2216,8 +2216,7 @@ _on_##MEMBER##_##VALUE##_clicked(void *data, \
    assert(pd->change == NULL); \
    pd->change = change_add(NULL); \
    evas_object_color_get(pd->attributes.MEMBER.VALUE##_obj, &r, &g, &b, &a); \
-   popup_colorselector_helper("Select some colors", \
-                              pd->attributes.MEMBER.VALUE##_obj, \
+   popup_colorselector_helper(pd->attributes.MEMBER.VALUE##_obj, \
                               _on_##MEMBER##_##VALUE##_dismissed, \
                               _on_##MEMBER##_##VALUE##_change, \
                               pd, r, g, b, a); \
