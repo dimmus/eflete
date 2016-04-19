@@ -587,11 +587,8 @@ _on_part_selected(void *data,
    GROUP_PROP_DATA_GET()
    Part *part = event_info;
 
-   if (!part)
-     {
-        _ui_property_part_unset(property);
-        return;
-     }
+   _ui_property_part_unset(property);
+   if (!part) return;
    ui_property_part_set(property, part);
    ui_property_part_state_set(property, part);
    if (part->current_item_name)
@@ -4723,21 +4720,16 @@ _ui_property_part_item_set(Evas_Object *property, Part *part)
 static void
 _ui_property_part_item_unset(Evas_Object *property)
 {
-   Evas_Object *prop_box, *item_box;
+   Evas_Object *prop_box;
 
    GROUP_PROP_DATA_GET()
 
    if (!pd_item.frame) return;
 
-   pd->item_name = NULL;
    prop_box = elm_object_content_get(pd->scroller);
-   elm_box_unpack(prop_box, pd_item.frame);
-
-   item_box = elm_object_content_get(pd_item.frame);
-   elm_box_unpack(item_box, pd_item.position_item);
-
-   evas_object_hide(pd_item.frame);
-   evas_object_hide(pd_item.position_item);
+   PROP_ITEM_UNSET(prop_box, pd_item.frame)
+   PROP_ITEM_UNSET(prop_box, pd_item.position_item)
+   pd->item_name = NULL;
 }
 #undef pd_item
 
