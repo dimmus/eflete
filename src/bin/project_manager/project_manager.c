@@ -18,6 +18,7 @@
  */
 #define _GNU_SOURCE
 #include "project_manager.h"
+#include <fcntl.h>
 #ifndef _WIN32
 #include <sys/wait.h>
 #else
@@ -181,20 +182,6 @@ _pm_project_descriptor_shutdown(void)
    eed_project = NULL;
 }
 
-static Eina_Bool
-_pm_project_descriptor_data_write(const char *path, Project *project)
-{
-   Eina_Bool ok = false;
-
-   Eet_File *ef = eet_open(path, EET_FILE_MODE_READ_WRITE);
-   if (ef)
-     ok = eet_data_write(ef, eed_project, PROJECT_FILE_KEY,
-                         project, compess_level);
-   eet_close(ef);
-
-   return ok;
-}
-
 static void
 _progress_send(void *data)
 {
@@ -289,16 +276,17 @@ _project_files_create(void)
    pro->widgets = worker.widgets;
 
    pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, worker.name);
+   pro->ef = eet_open(pro_path, EET_FILE_MODE_READ_WRITE);
    ecore_file_mkdir(pro->develop_path);
    MKDIR(images);
    MKDIR(sounds);
    MKDIR(fonts);
    eina_stringshare_del(folder_path);
-   if (!_pm_project_descriptor_data_write(pro_path, pro))
+
+   if (!eet_data_write(pro->ef, eed_project, PROJECT_FILE_KEY, pro, compess_level))
      error = true;
 
-   DBG("Create a specific project file '%s': %s", pro_path,
-       error ? "failsed" : "success");
+   DBG("Create a specific project file '%s': %s", pro_path, error ? "failsed" : "success");
    THREAD_TESTCANCEL;
    _pm_project_descriptor_shutdown();
    eina_stringshare_del(pro_path);
@@ -651,7 +639,6 @@ _project_open(void *data,
 
    worker.project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
    _pm_project_descriptor_shutdown();
-   eet_close(ef);
    if (!worker.project)
      {
         eina_stringshare_del(path);
@@ -659,6 +646,7 @@ _project_open(void *data,
         return NULL;
      }
 
+   worker.project->ef = ef;
    worker.project->pro_path = eina_stringshare_add(path);
 
    /* updating .dev file path */
@@ -879,6 +867,7 @@ pm_project_close(Project *project)
      free(project->enventor);
 #endif /* HAVE_ENVENTOR */
 
+   eet_close(project->ef);
    free(project);
    evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_CLOSED, NULL);
 
@@ -896,17 +885,12 @@ pm_project_meta_data_get(Project *project,
    char *tmp;
 
    assert(project != NULL);
+   assert(project->ef != NULL);
 
-   Eet_File *ef = eet_open(project->pro_path, EET_FILE_MODE_READ);
-   if (!ef)
-     {
-        ERR("Can't open proect file \"%s\" for read", project->pro_path);
-        return;
-     }
 #define DATA_READ(DATA, KEY) \
    if (DATA) \
      { \
-        tmp = eet_read(ef, KEY, NULL); \
+        tmp = eet_read(project->ef, KEY, NULL); \
         *DATA = eina_stringshare_add(tmp); \
         free(tmp); \
      }
@@ -916,8 +900,6 @@ pm_project_meta_data_get(Project *project,
    DATA_READ(version, PROJECT_KEY_FILE_VERSION);
    DATA_READ(license, PROJECT_KEY_LICENSE);
    DATA_READ(comment, PROJECT_KEY_COMMENT);
-
-   eet_close(ef);
 
 #undef DATA_READ
 }
@@ -934,20 +916,15 @@ pm_project_meta_data_set(Project *project,
    Eina_Bool res;
 
    assert(project != NULL);
+   assert(project->ef != NULL);
 
    res = true;
 
-   Eet_File *ef = eet_open(project->pro_path, EET_FILE_MODE_READ_WRITE);
-   if (!ef)
-     {
-        ERR("Can't open proect file \"%s\" for write", project->pro_path);
-        return false;
-     }
 #define DATA_WRITE(DATA, KEY) \
    if (DATA) \
      { \
         size = (strlen(DATA) + 1) * sizeof(char); \
-        bytes = eet_write(ef, KEY, DATA, size, compess_level); \
+        bytes = eet_write(project->ef, KEY, DATA, size, compess_level); \
         if (bytes <= 0 ) res = false; \
      }
 
@@ -956,8 +933,6 @@ pm_project_meta_data_set(Project *project,
    DATA_WRITE(version, PROJECT_KEY_FILE_VERSION);
    DATA_WRITE(license, PROJECT_KEY_LICENSE);
    DATA_WRITE(comment, PROJECT_KEY_COMMENT);
-
-   eet_close(ef);
 
 #undef DATA_WRITE
    return res;

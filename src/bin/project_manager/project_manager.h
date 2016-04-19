@@ -59,6 +59,8 @@ struct _Project
    Eina_Stringshare *name;
    /** project path */
    Eina_Stringshare *pro_path;
+   /** the .pro file descriptor */
+   Eet_File *ef;
    /** this is worrking file, all changes are happened in this file. */
    Eina_Stringshare *dev;
    /** ecore evas buffer for project objects */
