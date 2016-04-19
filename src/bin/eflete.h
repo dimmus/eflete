@@ -91,8 +91,6 @@ struct _App_Data
    TODO("Burn popup variable");
    Evas_Object *popup;
    Evas_Object *splash;
-   Evas_Object *colorsel; /**< global colorselector. the one colorselector for
-                            application. */
    Evas_Object *statusbar; /**< The statusbar object, which contain some items */
    struct {
       Evas_Object *left;
@@ -172,16 +170,6 @@ eflete_main_loop_begin(void);
  */
 void
 eflete_main_loop_quit(void);
-
-/**
- * Get the colorselector object pointer.
- * The colorselector one for the entire application.
- *
- * @return pointer to colorselector.
- * @ingroup Eflete
- */
-Evas_Object *
-colorselector_get(void);
 
 #define GET_IMAGE(IMG, PARENT, NAME) \
 { \

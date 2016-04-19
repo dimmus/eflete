@@ -19,7 +19,6 @@
 
 #include "property_private.h"
 #include "main_window.h"
-#include "colorsel.h"
 #include "property_macros.h"
 #include "project_manager.h"
 

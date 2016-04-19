@@ -19,7 +19,6 @@
 
 #include "eflete.h"
 #include "main_window.h"
-#include "colorsel.h"
 #include "shortcuts.h"
 #include "config.h"
 #ifdef _WIN32
@@ -29,13 +28,6 @@
 App_Data ap;
 
 static Eina_Bool do_block = true;
-
-Evas_Object *
-colorselector_get(void)
-{
-   if (!ap.colorsel) ap.colorsel = colorselector_add(ap.win);
-   return ap.colorsel;
-}
 
 void
 eflete_main_loop_begin(void)

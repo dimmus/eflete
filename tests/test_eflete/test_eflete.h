@@ -30,5 +30,3 @@ void app_init_test_p(int);
 
 void app_shutdown_test_p1(int);
 void app_shutdown_test_p2(int);
-
-void colorselector_get_test_p(int);

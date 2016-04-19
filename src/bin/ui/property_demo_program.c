@@ -22,7 +22,6 @@
 #include "main_window.h"
 #include "history.h"
 #include "validator.h"
-#include "colorsel.h"
 #include "project_manager.h"
 
 #define DEMO_PROGRAM_PROP_DATA "program_prop_data"

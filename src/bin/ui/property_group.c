@@ -33,7 +33,6 @@
 #include "group_navigator.h"
 #include "change.h"
 #include "project_manager.h"
-#include "colorsel.h"
 
 #define GROUP_PROP_DATA "group_prop_data"
 

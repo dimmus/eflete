@@ -24,7 +24,6 @@
 #include "property_private.h"
 #include "property_macros.h"
 #include "main_window.h"
-#include "colorsel.h"
 #include "project_manager.h"
 #include "validator.h"
 
@@ -680,31 +679,23 @@ _on_##VALUE##_change(void *data, \
    const char *value; \
    Style_Prop_Data *pd = (Style_Prop_Data *)data; \
    assert(pd != NULL); \
-   Evas_Object *color; \
-   color = evas_object_data_get(obj, "color"); \
-   colorselector_color_get(obj, &r, &g, &b, &a); \
+   elm_colorselector_color_get(obj, &r, &g, &b, &a); \
    value = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a); \
    _tag_parse(pd, value, TAG); \
-   evas_object_color_set(color, r*a/255, g*a/255, b*a/255, a); \
+   evas_object_color_set(pd->VALUE, r*a/255, g*a/255, b*a/255, a); \
    _style_edit_update(pd); \
    eina_stringshare_del(value); \
    editor_save(ap.project->global_object); \
    TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly") \
    ap.project->changed = true; \
 } \
-static void \
-_on_##VALUE##_dismissed(void *data, \
+static Eina_Bool \
+_on_##VALUE##_dismissed(void *data __UNUSED__, \
                         Evas_Object *obj, \
                         void *event_info __UNUSED__) \
 { \
-   Style_Prop_Data *pd = (Style_Prop_Data *)data; \
-   assert(pd != NULL); \
-   evas_object_smart_callback_del_full(obj, "color,changed", \
-                                      _on_##VALUE##_change, pd); \
-   evas_object_smart_callback_del_full(obj, "palette,item,selected", \
-                                       _on_##VALUE##_change, pd); \
-   evas_object_data_del(obj, "color"); \
    evas_object_hide(obj); \
+   return true; \
 } \
 static void \
 _on_##VALUE##_clicked(void *data, \
@@ -712,24 +703,14 @@ _on_##VALUE##_clicked(void *data, \
                       Evas_Object *obj, \
                       void *event_info __UNUSED__) \
 { \
-   int x, y; \
    int r, g, b, a; \
    Style_Prop_Data *pd = (Style_Prop_Data *)data; \
    assert(pd != NULL); \
-   Evas_Object *colorsel; \
-   colorsel = colorselector_get(); \
-   evas_object_data_set(colorsel, "color", obj); \
    evas_object_color_get(obj, &r, &g, &b, &a); \
-   colorselector_color_set(colorsel, r, g, b, a); \
-   evas_object_smart_callback_add(colorsel, "color,changed", \
-                                  _on_##VALUE##_change, pd); \
-   evas_object_smart_callback_add(colorsel, "palette,item,selected", \
-                                  _on_##VALUE##_change, pd); \
-   evas_object_smart_callback_add(colorsel, "dismissed", \
-                                  _on_##VALUE##_dismissed, pd); \
-   evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y); \
-   evas_object_move(colorsel, x, y); \
-   evas_object_show(colorsel); \
+   popup_colorselector_helper(pd->VALUE, \
+                              _on_##VALUE##_dismissed, \
+                              _on_##VALUE##_change, \
+                              pd, r, g, b, a); \
 }
 
 CALLBACKS_COLOR_ADD(font_color, "color")

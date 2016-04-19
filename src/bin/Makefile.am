@@ -36,7 +36,6 @@ includesub_HEADERS = \
 	ui/property_private.h \
 	ui/tabs.h \
 	ui/tabs_private.h \
-	ui/dialogs/colorsel.h \
 	ui/live_view/demo.h \
 	ui/live_view/live_widget.h \
 	ui/live_view/live_widgets.h \
@@ -85,7 +84,6 @@ libete_a_SOURCES = \
 ../../src/bin/ui/shortcuts/shortcuts.c \
 ../../src/bin/ui/style_manager.c \
 ../../src/bin/ui/sound_manager.c \
-../../src/bin/ui/dialogs/colorsel.c \
 ../../src/bin/ui/project_navigator.c \
 ../../src/bin/ui/image_manager.c \
 ../../src/bin/ui/colorclass_manager.c \
@@ -165,7 +163,6 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/bin/ui/shortcuts \
 -I${top_srcdir}/src/bin/ui/container \
 -I${top_srcdir}/src/bin/ui/blocks \
--I${top_srcdir}/src/bin/ui/dialogs \
 -I${top_srcdir}/src/bin/ui/editors \
 -I${top_srcdir}/src/bin/ui/notification \
 -I${top_srcdir}/src/bin/ui/workspace \

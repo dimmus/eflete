@@ -22,7 +22,6 @@
 #include "main_window.h"
 #include "history.h"
 #include "validator.h"
-#include "colorsel.h"
 #include "project_manager.h"
 
 #define DEMO_SWALLOW_PROP_DATA "image_prop_data"
@@ -195,7 +194,7 @@ _on_rectangle_color_change(void *data,
 {
    int r, g, b, a;
    Demo_Swallow_Prop_Data *pd = (Demo_Swallow_Prop_Data *)data;
-   colorselector_color_get(obj, &r, &g, &b, &a);
+   elm_colorselector_color_get(obj, &r, &g, &b, &a);
 
    evas_color_argb_premul(a, &r, &g, &b);
 
@@ -210,40 +209,29 @@ _on_rectangle_color_change(void *data,
 
    evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, pd->part);
 }
-static void
-_on_rectangle_color_dismissed(void *data,
+static Eina_Bool
+_on_rectangle_color_dismissed(void *data __UNUSED__,
                               Evas_Object *obj,
                               void *event_info __UNUSED__)
 {
-   Demo_Swallow_Prop_Data *pd = (Demo_Swallow_Prop_Data *)data;
-   evas_object_smart_callback_del_full(obj, "color,changed",
-                                       _on_rectangle_color_change, pd);
-   evas_object_smart_callback_del_full(obj, "palette,item,selected",
-                                       _on_rectangle_color_change, pd);
-   evas_object_smart_callback_del_full(obj, "dismissed",
-                                       _on_rectangle_color_dismissed, pd);
    evas_object_hide(obj);
+   return true;
 }
 static void
 _on_color_clicked(void *data,
-                  Evas_Object *obj,
+                  Evas_Object *obj __UNUSED__,
                   const char *emission __UNUSED__,
                   const char *source __UNUSED__)
 {
-   int x, y;
    int r, g, b, a;
-   Evas_Object *colorsel;
    Demo_Swallow_Prop_Data *pd = (Demo_Swallow_Prop_Data *)data;
-   colorsel = colorselector_get();
+   assert(pd != NULL);
+
    evas_object_color_get(pd->color_obj, &r, &g, &b, &a);
-   colorselector_color_set(colorsel, r, g, b, a);
-   evas_object_smart_callback_add(colorsel, "color,changed",
-                                  _on_rectangle_color_change, pd);
-   evas_object_smart_callback_add(colorsel, "dismissed",
-                                  _on_rectangle_color_dismissed, pd);
-   evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y);
-   evas_object_move(colorsel, x, y);
-   evas_object_show(colorsel);
+   popup_colorselector_helper(pd->color_obj,
+                              _on_rectangle_color_dismissed,
+                              _on_rectangle_color_change,
+                              pd, r, g, b, a);
 }
 
 static Evas_Object *

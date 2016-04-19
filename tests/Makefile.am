@@ -126,8 +126,7 @@ ewe_combobox_test_LDADD = ${LD}
 eflete_test_SOURCES = \
 ../tests/test_eflete/test_eflete.c \
 ../tests/test_eflete/app_init.c \
-../tests/test_eflete/app_shutdown.c \
-../tests/test_eflete/colorselector_get.c
+../tests/test_eflete/app_shutdown.c
 eflete_test_CFLAGS = ${FLAGS}
 eflete_test_LDADD = ${LD}
 
