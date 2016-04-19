@@ -714,7 +714,7 @@ void
 popup_gengrid_helper_item_select(const char *item_title)
 {
    Elm_Object_Item *item;
-   Helper_Data *helper_data = evas_object_data_get(ap.popup, "STRUCT");
+   Helper_Data *helper_data = evas_object_data_get(helper, "STRUCT");
 
    assert(helper_data != NULL);
 
