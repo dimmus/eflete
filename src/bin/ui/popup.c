@@ -118,7 +118,7 @@ popup_want_action(const char *title,
 
    if ((popup_btns & BTN_CANCEL) && (popup_btns & BTN_DONT_SAVE))
      BTN_ADD(_("Cancel"), "button3", &_btn_cancel)
-   else
+   else if (popup_btns & BTN_CANCEL)
      BTN_ADD(_("Cancel"), "button2", &_btn_cancel)
 
    evas_object_show(ap.popup);
