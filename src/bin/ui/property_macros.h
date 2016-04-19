@@ -2164,7 +2164,7 @@ prop_##SUB##_##VALUE##_update(Group_Prop_Data *pd) \
  * @ingroup Property_Macro
  */
 #define STATE_ATTR_COLOR_CALLBACK(SUB, VALUE, MEMBER, DESCRIPTION) \
-static Eina_Bool \
+static void \
 _on_##MEMBER##_##VALUE##_change(void *data, \
                                 Evas_Object *obj, \
                                 void *event_info __UNUSED__) \
@@ -2172,7 +2172,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    int r, g, b, a; \
    Group_Prop_Data *pd = (Group_Prop_Data *)data; \
    assert(pd->change != NULL); \
-   colorselector_color_get(obj, &r, &g, &b, &a); \
+   elm_colorselector_color_get(obj, &r, &g, &b, &a); \
    if (!editor_##SUB##_##VALUE##_set(pd->group->edit_object, pd->change, true, \
                                      pd->part->name, \
                                      pd->part->current_state->parsed_name, \
@@ -2184,7 +2184,6 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
      } \
    evas_object_color_set(pd->attributes.MEMBER.VALUE##_obj, r*a/255, g*a/255, b*a/255, a); \
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL); \
-   return true; \
 } \
 static Eina_Bool \
 _on_##MEMBER##_##VALUE##_dismissed(void *data, \
@@ -2212,12 +2211,16 @@ _on_##MEMBER##_##VALUE##_clicked(void *data, \
                                  const char *emission __UNUSED__, \
                                  const char *source __UNUSED__) \
 { \
+   int r, g, b, a; \
    Group_Prop_Data *pd = (Group_Prop_Data *)data; \
+   assert(pd->change == NULL); \
+   pd->change = change_add(NULL); \
+   evas_object_color_get(pd->attributes.MEMBER.VALUE##_obj, &r, &g, &b, &a); \
    popup_colorselector_helper("Select some colors", \
                               pd->attributes.MEMBER.VALUE##_obj, \
                               _on_##MEMBER##_##VALUE##_dismissed, \
                               _on_##MEMBER##_##VALUE##_change, \
-                              pd); \
+                              pd, r, g, b, a); \
 }
 
 /*****************************************************************************/

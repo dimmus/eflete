@@ -372,7 +372,8 @@ popup_gengrid_helper_item_select(const char *item_title);
 
 void
 popup_colorselector_helper(const char *title, Evas_Object *follow_up,
-                           Helper_Done_Cb func, Helper_Done_Cb func_change, void *data);
+                           Helper_Done_Cb func, Evas_Smart_Cb func_change,
+                           void *data, int r, int g, int b, int a);
 
 /**
  * Export project as develop edj file.

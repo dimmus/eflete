@@ -162,6 +162,9 @@ popup_buttons_disabled_set(Popup_Button popup_btns, Eina_Bool disabled)
 #define GENGRID_W 522
 #define GENGRID_H 388
 
+#define COLOR_W 261
+#define COLOR_H 280
+
 static void
 _helper_obj_follow(void *data __UNUSED__,
                    Evas *e __UNUSED__,
@@ -204,6 +207,46 @@ _helper_property_follow(void *data __UNUSED__,
    evas_object_move(helper, nx, ny);
 }
 
+static void
+_helper_property_color_follow(void *data __UNUSED__,
+                              Evas *e __UNUSED__,
+                              Evas_Object *obj,
+                              void *event_info __UNUSED__)
+{
+   int x, y, w, h, nx, ny;
+
+   evas_object_geometry_get(obj, &x, &y, &w, &h);
+   nx = x - (COLOR_W + 12 - w); /* 12 - it's a helper border */
+   ny = y + h;
+   evas_object_move(helper, nx, ny);
+}
+
+static void
+_helper_colorclass_dismiss(void *data __UNUSED__,
+                           Evas_Object *obj __UNUSED__,
+                           const char *signal __UNUSED__,
+                           const char *source __UNUSED__)
+{
+   Helper_Data *helper_data = (Helper_Data *)data;
+   Evas_Object *follow_up = helper_data->follow_up;
+
+   evas_object_event_callback_del_full(follow_up, EVAS_CALLBACK_RESIZE, _helper_obj_follow, NULL);
+   evas_object_event_callback_del_full(follow_up, EVAS_CALLBACK_MOVE, _helper_obj_follow, NULL);
+   evas_object_event_callback_del_full(follow_up, EVAS_CALLBACK_RESIZE, _helper_property_color_follow, NULL);
+   evas_object_event_callback_del_full(follow_up, EVAS_CALLBACK_MOVE, _helper_property_color_follow, NULL);
+
+   if (!follow_up)
+     evas_object_event_callback_del_full(ap.win, EVAS_CALLBACK_RESIZE, _helper_win_follow, NULL);
+
+   if (dismiss_func)
+     ((Helper_Done_Cb)dismiss_func)(func_data, fs, NULL);
+   dismiss_func = NULL;
+   func_data = NULL;
+
+   if (helper_data) free(helper_data);
+
+   evas_object_del(helper);
+}
 
 static void
 _helper_dismiss(void *data __UNUSED__,
@@ -724,8 +767,8 @@ popup_gengrid_helper_item_select(const char *item_title)
 
 void
 popup_colorselector_helper(const char *title, Evas_Object *follow_up,
-                           Helper_Done_Cb func, Helper_Done_Cb func_change __UNUSED__,
-                           void *data)
+                           Helper_Done_Cb func, Evas_Smart_Cb func_change,
+                           void *data, int r, int g, int b, int a)
 {
    Helper_Data *helper_data = (Helper_Data *)mem_calloc(1, sizeof(Helper_Data));
 
@@ -738,28 +781,23 @@ popup_colorselector_helper(const char *title, Evas_Object *follow_up,
    helper = elm_layout_add(ap.win);
    elm_layout_theme_set(helper, "layout", "popup", title ? "hint_title" : "hint");
    evas_object_data_set(helper, "STRUCT", helper_data);
-   elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_dismiss, follow_up);
+   elm_layout_signal_callback_add(helper, "hint,dismiss", "eflete", _helper_colorclass_dismiss, helper_data);
 
    fs = elm_colorselector_add(helper);
    elm_colorselector_mode_set(fs, ELM_COLORSELECTOR_ALL);
+   elm_colorselector_color_set(fs, r, g, b, a);
    evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(fs);
 
-/*   evas_object_smart_callback_add(fs, "color,changed",
-                                  func_change, data);
-   evas_object_smart_callback_add(fs, "palette,item,selected",
-                                  func_change, data);
-*/
-   BUTTON_ADD(fs, helper_data->button, _("Ok"))
-   elm_object_part_content_set(helper, "elm.swallow.ok", helper_data->button);
-//   evas_object_smart_callback_add(helper_data->button, "clicked", _done_image, helper_data);
-   evas_object_show(helper_data->button);
+   evas_object_smart_callback_add(fs, "changed", func_change, data);
+   evas_object_smart_callback_add(fs, "color,item,selected", func_change, data);
+   evas_object_smart_callback_add(fs, "color,item,longpressed", func_change, data);
 
    /* small hack, hide not necessary button */
    evas_object_hide(elm_layout_content_unset(fs, "elm.swallow.cancel"));
-   evas_object_size_hint_min_set(helper, GENGRID_W / 2, GENGRID_H);
-   evas_object_resize(helper, GENGRID_W / 2, GENGRID_H);
+   evas_object_size_hint_min_set(helper, COLOR_W, COLOR_H);
+   evas_object_resize(helper, COLOR_W, COLOR_H);
 
    if (title) elm_object_text_set(helper, title);
    elm_layout_content_set(helper, "elm.swallow.content", fs);
@@ -767,9 +805,9 @@ popup_colorselector_helper(const char *title, Evas_Object *follow_up,
    evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
    if (follow_up)
      {
-        _helper_property_follow(NULL, NULL, follow_up, NULL);
-        evas_object_event_callback_add(follow_up, EVAS_CALLBACK_RESIZE, _helper_property_follow, NULL);
-        evas_object_event_callback_add(follow_up, EVAS_CALLBACK_MOVE, _helper_property_follow, NULL);
+        _helper_property_color_follow(NULL, NULL, follow_up, NULL);
+        evas_object_event_callback_add(follow_up, EVAS_CALLBACK_RESIZE, _helper_property_color_follow, NULL);
+        evas_object_event_callback_add(follow_up, EVAS_CALLBACK_MOVE, _helper_property_color_follow, NULL);
      }
    else
      {
