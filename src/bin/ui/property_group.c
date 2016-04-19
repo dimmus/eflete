@@ -2483,8 +2483,6 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, item);
         item = prop_part_drag_event_add(box, pd);
         elm_box_pack_end(box, item);
-
-        elm_box_pack_after(prop_box, pd_part.frame, pd->attributes.group.frame);
      }
    else
      {
@@ -2557,6 +2555,9 @@ ui_property_part_set(Evas_Object *property, Part *part)
           elm_box_unpack(box, pd_part.source_item);
           evas_object_hide(pd_part.source_item);
        }
+
+   evas_object_show(pd_part.frame);
+   elm_box_pack_after(prop_box, pd_part.frame, pd->attributes.group.frame);
 
    prop_part_drag_control_disable_set(pd, true);
    evas_object_geometry_get(prop_box, NULL, NULL, NULL, &h_box);
