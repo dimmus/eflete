@@ -50,6 +50,7 @@ static const Ecore_Getopt options = {
    "%prog [OPTION]... [FILE]\n"
    "  if FILE is *.pro: open project\n"
    "  if FILE is *.edj: import edj\n"
+   "  if FILE is not specified but --name given: new project\n"
    ,
    VERSION,
    "(C) 2013-2016 Samsung Electronics.",
@@ -58,8 +59,8 @@ static const Ecore_Getopt options = {
    "and design to create and modify Elementary widgets styles.\n",
    EINA_TRUE,
    {
-      ECORE_GETOPT_STORE_STR(0, "name", N_("Name for new project that would be created in import process")),
-      ECORE_GETOPT_STORE_STR(0, "path", N_("Path for project")),
+      ECORE_GETOPT_STORE_STR(0, "name", N_("Name for new project")),
+      ECORE_GETOPT_STORE_STR(0, "path", N_("Path to project directory")),
       ECORE_GETOPT_APPEND_METAVAR('i', "id", "Add image directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
       ECORE_GETOPT_APPEND_METAVAR('s', "sd", "Add sound directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
       ECORE_GETOPT_APPEND_METAVAR('f', "fd", "Add font directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
@@ -299,7 +300,6 @@ elm_main(int argc, char **argv)
           }
         else
           {
-             TODO("Remove this after adding new project creation when --name is given without filename");
              if (!pro_name && pro_path)
                _ERR_EXIT(_("no file or --name are given but --path specified."));
              if (img_dirs)
