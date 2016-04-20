@@ -163,15 +163,16 @@ _lock_try(const char *path, Eina_Bool check)
    lock.l_whence  = SEEK_SET;
    lock.l_start   = 0;
    lock.l_len     = 0;
+   lock.l_pid     = 0;
    savelock = lock;
    fcntl(fd, F_GETLK, &lock);  /* Overwrites lock structure with preventors. */
-   if ((lock.l_type == F_WRLCK) || (lock.l_type == F_RDLCK))
+   if ((lock.l_pid != 0) && ((lock.l_type == F_WRLCK) || (lock.l_type == F_RDLCK)))
      {
         ERR("Process %d has a write lock already!", lock.l_pid);
         return false;
      }
    /* if flag check is false not need to lock the file */
-   if (!check)
+   if (check)
      {
         savelock.l_pid = getpid();
         fcntl(fd, F_SETLK, &savelock);
@@ -327,6 +328,8 @@ _project_files_create(void)
         free(pro);
         pro = NULL;
      }
+   eet_sync(pro->ef);
+
    return pro;
 }
 
@@ -453,8 +456,14 @@ _project_import_edj(void *data,
 {
    Eina_Bool send_end = (data) ? (*(Eina_Bool *)data) : true;
 
+   PROGRESS_SEND(_("Start import '%s' file as new project"), worker.edj);
+   PROGRESS_SEND(_("Creating a specifiec file and folders"));
+   worker.project = _project_files_create();
+   TODO("Add correct error handling here (if project == NULL). Probably we should add negative TC where directory already exist");
    THREAD_TESTCANCEL;
    worker.project->pro_path = eina_stringshare_printf("%s/%s/%s.pro", worker.path, worker.name, worker.name);
+   THREAD_TESTCANCEL;
+
    if (!_lock_try(worker.project->pro_path, true))
      {
         /* really this case is unlickly, but we need handle it */
@@ -462,11 +471,6 @@ _project_import_edj(void *data,
         return NULL;
      }
 
-   PROGRESS_SEND(_("Start import '%s' file as new project"), worker.edj);
-   PROGRESS_SEND(_("Creating a specifiec file and folders"));
-   worker.project = _project_files_create();
-   TODO("Add correct error handling here (if project == NULL). Probably we should add negative TC where directory already exist");
-   THREAD_TESTCANCEL;
    PROGRESS_SEND(_("Import processing"));
    _project_edj_file_copy();
    _copy_meta_data_to_pro();
@@ -474,8 +478,8 @@ _project_import_edj(void *data,
    _project_dummy_image_add(worker.project);
    _project_open_internal(worker.project);
    THREAD_TESTCANCEL;
-   PROGRESS_SEND(_("Import finished. Project '%s' created"), worker.project->name);
 
+   PROGRESS_SEND(_("Import finished. Project '%s' created"), worker.project->name);
    if (send_end) END_SEND(PM_PROJECT_SUCCESS);
 
    return NULL;
