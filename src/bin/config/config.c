@@ -299,12 +299,12 @@ _profile_update(Profile *prof)
 
    char *env_path = getenv("EFLETE_PROJECTS_DIR");
    prof->version                             = PROFILE_VERSION;
-   if ((!env_path) || (!ecore_file_exists(env_path)))
-     env_path = getenv("HOME");
 
-   if ((!prof->general.projects_folder) ||
+   if ((env_path) && (ecore_file_exists(env_path)))
+     prof->general.projects_folder = strdup(env_path);
+   else if ((!prof->general.projects_folder) ||
        (!ecore_file_exists(prof->general.projects_folder)))
-     prof->general.projects_folder  = strdup(env_path);
+     prof->general.projects_folder = getenv("HOME");
 
    if (!prof->shortcuts)
      prof->shortcuts                         = _default_shortcuts_get();
