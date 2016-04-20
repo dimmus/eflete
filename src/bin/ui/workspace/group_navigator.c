@@ -631,6 +631,8 @@ _selected_cb(void *data,
              elm_genlist_item_fields_update(glit_part, "selected", ELM_GENLIST_ITEM_FIELD_STATE);
              evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, part);
           }
+        else
+          part->current_item_name = NULL;
         elm_object_item_disabled_set(pl->add_state_menu_item, false);
         if ((part->type == EDJE_PART_TYPE_BOX) ||
             (part->type == EDJE_PART_TYPE_TABLE))

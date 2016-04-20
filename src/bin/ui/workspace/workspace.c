@@ -859,6 +859,8 @@ _part_select(void *data,
 
    groupview_part_select(wd->normal.content, part ? part->name : NULL);
    evas_object_smart_callback_call(ap.win, SIGNAL_PART_SELECTED, part);
+   if (part)
+     groupview_part_item_selected_set(wd->normal.content, part->current_item_name, part->current_item_name ? true : false);
 }
 
 static void

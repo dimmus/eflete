@@ -554,9 +554,7 @@ groupview_part_item_selected_set(Evas_Object *obj,
    gp = sd->selected;
    if (!gp) return;
 
-   if (!item_name) return;
-
-   if (selected)
+   if ((selected) && (item_name))
      {
         item = _part_item_search(gp->items, item_name);
         if (gp->current_item)
@@ -564,7 +562,7 @@ groupview_part_item_selected_set(Evas_Object *obj,
         elm_object_signal_emit(item->layout, "border,part_item,hilight,on", "eflete");
         gp->current_item = item;
      }
-   else
+   else if (gp->current_item)
      {
         elm_object_signal_emit(gp->current_item->layout, "border,part_item,hilight,off", "eflete");
         gp->current_item = NULL;
