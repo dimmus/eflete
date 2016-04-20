@@ -1,3 +1,6 @@
+type Ewe_Ruler_Scale: __undefined_type;
+type Ewe_Ruler_Marker: __undefined_type;
+
 class Ewe_Ruler (Elm.Widget)
 {
    eo_prefix: ewe_obj_ruler;
@@ -11,17 +14,17 @@ class Ewe_Ruler (Elm.Widget)
          set {
             [[Change the ruler's orientation to horizontal or vertical.
             ]]
-          return: Eina_Bool; [[EINA_TRUE if orientation was set or EINA_FALSE on failure.]]
+          return: bool; [[EINA_TRUE if orientation was set or EINA_FALSE on failure.]]
          }
          values {
-           horizontal: Eina_Bool;
+           horizontal: bool;
          }
       }
       @property step {
          set {
             [[Set step between marks of the ruler.
             ]]
-          return: Eina_Bool; [[EINA_TRUE if step was set or EINA_FALSE on failure.]]
+          return: bool; [[EINA_TRUE if step was set or EINA_FALSE on failure.]]
          }
          get {
             [[Get step between marks of the ruler.
@@ -42,7 +45,7 @@ class Ewe_Ruler (Elm.Widget)
          set {
             [[Set step between marks values of the scale
             ]]
-          return: Eina_Bool; [[ EINA_TRUE if step was set or EINA_FALSE on failure.]]
+          return: bool; [[ EINA_TRUE if step was set or EINA_FALSE on failure.]]
          }
          keys {
            scale: Ewe_Ruler_Scale*;
@@ -59,7 +62,7 @@ class Ewe_Ruler (Elm.Widget)
          set {
             [[Change the ruler's "zero pointer" mark position
             ]]
-         return: Eina_Bool; [[EINA_TRUE if offset was set or EINA_FALSE on failure.]]
+         return: bool; [[EINA_TRUE if offset was set or EINA_FALSE on failure.]]
          }
          keys {
            scale: Ewe_Ruler_Scale*;
@@ -78,7 +81,7 @@ class Ewe_Ruler (Elm.Widget)
          [[
           Set format string for given scale
          ]]
-         return: Eina_Bool; [[EINA_TRUE if format was setted or EINA_FALSE on failure.]]
+         return: bool; [[EINA_TRUE if format was setted or EINA_FALSE on failure.]]
          }
          keys {
            scale: Ewe_Ruler_Scale*;
@@ -97,7 +100,7 @@ class Ewe_Ruler (Elm.Widget)
          [[
           Set style for given scale
          ]]
-         return: Eina_Bool; [[EINA_TRUE if style was setted or EINA_FALSE on failure.]]
+         return: bool; [[EINA_TRUE if style was setted or EINA_FALSE on failure.]]
          }
          keys {
            scale: Ewe_Ruler_Scale*;
@@ -116,13 +119,13 @@ class Ewe_Ruler (Elm.Widget)
          [[
           Change the scale's visibility
          ]]
-         return: Eina_Bool; [[EINA_TRUE if offset was set or EINA_FALSE on failure.]]
+         return: bool; [[EINA_TRUE if offset was set or EINA_FALSE on failure.]]
          }
          keys {
            scale: Ewe_Ruler_Scale*;
          }
          values {
-           visible: Eina_Bool;
+           visible: bool;
          }
       }
       @property scale_middle_mark {
@@ -135,13 +138,13 @@ class Ewe_Ruler (Elm.Widget)
          [[
           Change the scale middle mark visibility
          ]]
-         return: Eina_Bool; [[ EINA_TRUE if middle_mark was set or EINA_FALSE on failure.]]
+         return: bool; [[ EINA_TRUE if middle_mark was set or EINA_FALSE on failure.]]
          }
          keys {
            scale: Ewe_Ruler_Scale*;
          }
          values {
-           middle_mark: Eina_Bool;
+           middle_mark: bool;
          }
       }
       @property marker_relative {
@@ -154,7 +157,7 @@ class Ewe_Ruler (Elm.Widget)
          [[
           Set marker to folow specified value on given scale
          ]]
-         return: Eina_Bool; [[ EINA_TRUE if position was set or EINA_FALSE on failure.]]
+         return: bool; [[ EINA_TRUE if position was set or EINA_FALSE on failure.]]
          }
          keys {
            marker: Ewe_Ruler_Marker*;
@@ -174,7 +177,7 @@ class Ewe_Ruler (Elm.Widget)
          [[
           Set marker absolute posiiton
          ]]
-         return: Eina_Bool; [[ EINA_TRUE if position was set or EINA_FALSE on failure.]]
+         return: bool; [[ EINA_TRUE if position was set or EINA_FALSE on failure.]]
          }
          keys {
            marker: Ewe_Ruler_Marker*;
@@ -193,13 +196,13 @@ class Ewe_Ruler (Elm.Widget)
          [[
           Change the marker's visibility
          ]]
-         return: Eina_Bool; [[EINA_TRUE if visibility was set or EINA_FALSE on failure.]]
+         return: bool; [[EINA_TRUE if visibility was set or EINA_FALSE on failure.]]
          }
          keys {
            marker: Ewe_Ruler_Marker*;
          }
          values {
-           visible: Eina_Bool;
+           visible: bool;
          }
       }
       @property marker_style {
@@ -212,7 +215,7 @@ class Ewe_Ruler (Elm.Widget)
          [[
           Set style for given marker
          ]]
-         return: Eina_Bool; [[ EINA_TRUE if style was setted or EINA_FALSE on failure.]]
+         return: bool; [[ EINA_TRUE if style was setted or EINA_FALSE on failure.]]
          }
          keys {
            marker: Ewe_Ruler_Marker*;
@@ -234,7 +237,7 @@ class Ewe_Ruler (Elm.Widget)
          [[
           Delete given scale from ruler.
          ]]
-         return: Eina_Bool; [[ EINA_TRUE on success, EIAN_FALSE on failure.]]
+         return: bool; [[ EINA_TRUE on success, EIAN_FALSE on failure.]]
          params {
             scale: Ewe_Ruler_Scale*;
          }
@@ -252,7 +255,7 @@ class Ewe_Ruler (Elm.Widget)
          [[
           Delete given marker from ruler.
          ]]
-         return: Eina_Bool; [[ EINA_TRUE on success, EIAN_FALSE on failure.]]
+         return: bool; [[ EINA_TRUE on success, EIAN_FALSE on failure.]]
          params {
             marker: Ewe_Ruler_Marker*;
          }
