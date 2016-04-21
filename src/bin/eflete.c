@@ -103,12 +103,17 @@ app_init()
 
    elm_need_ethumb();
 
+   ap.last_path = NULL;
+
    return true;
 }
 
 Eina_Bool
 app_shutdown()
 {
+   if (ap.last_path)
+     eina_stringshare_del(ap.last_path);
+
    config_shutdown();
    elm_theme_free(ap.theme);
    eina_shutdown();

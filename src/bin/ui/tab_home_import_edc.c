@@ -111,7 +111,7 @@ _elipsis(void *data,
 {
    popup_fileselector_folder_helper(NULL,
                                     (Evas_Object *)data,
-                                    elm_entry_entry_get(tab_edc.path),
+                                    elm_entry_entry_get(data),
                                     entry_path_set,
                                     (Evas_Object *)data,
                                     false,

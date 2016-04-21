@@ -90,6 +90,7 @@ struct _App_Data
    Menu *menu;
    TODO("Burn popup variable");
    Evas_Object *popup;
+   Eina_Stringshare *last_path;
    Evas_Object *splash;
    Evas_Object *statusbar; /**< The statusbar object, which contain some items */
    struct {

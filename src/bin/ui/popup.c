@@ -293,6 +293,10 @@ _done(void *data __UNUSED__,
    Eina_Stringshare *selected;
    Eina_Bool res = false;
 
+   if (ap.last_path)
+     eina_stringshare_del(ap.last_path);
+   ap.last_path = eina_stringshare_add(elm_fileselector_path_get(fs));
+
    if (!event_info) res = true;
    if (!res && dismiss_func)
      {
@@ -353,7 +357,8 @@ _fileselector_helper(const char *title,
      }
    else elm_fileselector_folder_only_set(fs, true);
 
-   elm_fileselector_path_set(fs, path ? path : profile_get()->general.projects_folder);
+   elm_fileselector_path_set(fs, (path && (strcmp(path, ""))) ? path :
+                             (ap.last_path) ? ap.last_path : profile_get()->general.projects_folder);
    evas_object_smart_callback_add(fs, "done", _done, follow_up);
    evas_object_smart_callback_add(fs, "activated", _done, follow_up);
    evas_object_size_hint_min_set(helper, FS_W, FS_H);
