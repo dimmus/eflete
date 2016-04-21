@@ -47,14 +47,23 @@ _export_dev(void *data __UNUSED__,
 {
    Eina_List *selected = (Eina_List *)event_info;
    Eina_Strbuf *buf;
+   const char *path = (const char *)eina_list_data_get(selected);
 
    assert(selected != NULL);
+
+   if (ecore_file_is_dir(path) || (strcmp(strrchr(path, '.'), ".edj")))
+     {
+        buf = eina_strbuf_new();
+        eina_strbuf_append_printf(buf, _("Please type in actual .edj file"));
+        popup_want_action(_("Export to develop edj-file"), eina_strbuf_string_get(buf), NULL, NULL, BTN_OK, NULL, NULL);
+        eina_strbuf_free(buf);
+        return false;
+     }
 
    buf = eina_strbuf_new();
    eina_strbuf_append_printf(buf,
                              _("<font_size=16>A project file '%s' already exist."
-                               "Do you want to replace it?</font_size>"),
-                             (const char *)eina_list_data_get(selected));
+                               "Do you want to replace it?</font_size>"), path);
    if (!exist_permission_check(elm_fileselector_path_get(obj),
                                elm_fileselector_current_name_get(obj),
                                _("Export to develop edj-file"),
@@ -63,7 +72,7 @@ _export_dev(void *data __UNUSED__,
    eina_strbuf_free(buf);
 
    ap.splash = splash_add(ap.win, _export_develop_setup, _export_teardown,
-                           NULL, (void *)eina_stringshare_add(eina_list_data_get(selected)));
+                           NULL, (void *)eina_stringshare_add(path));
    evas_object_focus_set(ap.splash, true);
    evas_object_show(ap.splash);
 
@@ -101,13 +110,23 @@ _export_release(void *data __UNUSED__,
    Eina_List *selected = (Eina_List *)event_info;
    Eina_Strbuf *buf;
 
+   const char *path = (const char *)eina_list_data_get(selected);
+
    assert(selected != NULL);
+
+   if (ecore_file_is_dir(path) || (strcmp(strrchr(path, '.'), ".edj")))
+     {
+        buf = eina_strbuf_new();
+        eina_strbuf_append_printf(buf, _("Please type in actual .edj file"));
+        popup_want_action(_("Export to develop edj-file"), eina_strbuf_string_get(buf), NULL, NULL, BTN_OK, NULL, NULL);
+        eina_strbuf_free(buf);
+        return false;
+     }
 
    buf = eina_strbuf_new();
    eina_strbuf_append_printf(buf,
                              _("<font_size=16>A project file '%s' already exist."
-                               "Do you want to replace it?</font_size>"),
-                             (const char *)eina_list_data_get(selected));
+                               "Do you want to replace it?</font_size>"), path);
    if (!exist_permission_check(elm_fileselector_path_get(obj),
                                elm_fileselector_current_name_get(obj),
                                _("Export to release edj-file"),
@@ -116,7 +135,7 @@ _export_release(void *data __UNUSED__,
    eina_strbuf_free(buf);
 
    ap.splash = splash_add(ap.win, _export_release_setup, _export_teardown,
-                           NULL, (void *)eina_stringshare_add(eina_list_data_get(selected)));
+                           NULL, (void *)eina_stringshare_add(path));
    evas_object_focus_set(ap.splash, true);
    evas_object_show(ap.splash);
 
