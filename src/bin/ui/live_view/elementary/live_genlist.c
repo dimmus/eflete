@@ -70,8 +70,6 @@ _genlist_send_signal(void *data __UNUSED__,
    Demo_Signal *sig = (Demo_Signal *)ei;
    Elm_Object_Item *item = NULL;
 
-   assert(data != NULL);
-
    item = elm_genlist_first_item_get(obj);
    assert(sig != NULL);
    assert(sig->sig_name != NULL);
