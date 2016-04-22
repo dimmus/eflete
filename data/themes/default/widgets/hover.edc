@@ -1,0 +1,163 @@
+group { name: "elm/hover/base/default";
+   data.item: "dismiss" "on";
+   script {
+      public on_dismiss = 0;
+   }
+   parts {
+      part { name: "elm.swallow.offset"; type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 0.0 0.0;
+            fixed: 1 1;
+         }
+      }
+      part { name: "elm.swallow.size"; type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1.to: "elm.swallow.offset";
+            rel1.relative: 1.0 1.0;
+            rel2.to: "elm.swallow.offset";
+            rel2.relative: 1.0 1.0;
+            fixed: 1 1;
+         }
+      }
+      part { name: "base"; type: RECT; mouse_events: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 64;
+         }
+      }
+      part { name: "box"; type: RECT; mouse_events: 0;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.to: "elm.swallow.size";
+            rel1.offset: -2 -2;
+            rel2.to: "elm.swallow.size";
+            rel2.offset: 1 1;
+         }
+      }
+      part { name: "elm.swallow.slot.left"; type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            rel1.to: "elm.swallow.slot.middle";
+            rel1.relative: 0.0 0.0;
+            rel1.offset: -1 0;
+            rel2.to: "elm.swallow.slot.middle";
+            rel2.relative: 0.0 1.0;
+            rel2.offset: -1 -1;
+            fixed: 1 0;
+         }
+      }
+      part { name: "elm.swallow.slot.top-left"; type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            rel1.to: "elm.swallow.slot.middle";
+            rel1.relative: 0.0 0.0;
+            rel1.offset: 0 0;
+            rel2.to: "elm.swallow.slot.middle";
+            rel2.relative: 0.0 0.0;
+            rel2.offset: -1 -1;
+            fixed: 1 1;
+         }
+      }
+      part { name: "elm.swallow.slot.top"; type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            rel1.to: "elm.swallow.slot.middle";
+            rel1.relative: 0.0 0.0;
+            rel1.offset: 0 -1;
+            rel2.to: "elm.swallow.slot.middle";
+            rel2.relative: 1.0 0.0;
+            rel2.offset: -1 -1;
+            fixed: 0 1;
+         }
+      }
+      part { name: "elm.swallow.slot.top-right"; type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 1.0;
+            rel1.to: "elm.swallow.slot.middle";
+            rel1.relative: 1.0 0.0;
+            rel1.offset: 0 0;
+            rel2.to: "elm.swallow.slot.middle";
+            rel2.relative: 1.0 0.0;
+            rel2.offset: -1 -1;
+            fixed: 1 1;
+         }
+      }
+      part { name: "elm.swallow.slot.right"; type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1.to: "elm.swallow.slot.middle";
+            rel1.relative: 1.0 0.0;
+            rel1.offset: 0 0;
+            rel2.to: "elm.swallow.slot.middle";
+            rel2.relative: 1.0 1.0;
+            rel2.offset: 0 -1;
+            fixed: 1 0;
+         }
+      }
+      part { name: "elm.swallow.slot.bottom-right"; type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1.to: "elm.swallow.slot.middle";
+            rel1.relative: 1.0 1.0;
+            rel1.offset: 0 0;
+            rel2.to: "elm.swallow.slot.middle";
+            rel2.relative: 1.0 1.0;
+            rel2.offset: -1 -1;
+            fixed: 1 1;
+         }
+      }
+      part { name: "elm.swallow.slot.bottom"; type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            rel1.to: "elm.swallow.slot.middle";
+            rel1.relative: 0.0 1.0;
+            rel1.offset: 0 0;
+            rel2.to: "elm.swallow.slot.middle";
+            rel2.relative: 1.0 1.0;
+            rel2.offset: -1 0;
+            fixed: 0 1;
+         }
+      }
+      part { name: "elm.swallow.slot.bottom-left"; type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            rel1.to: "elm.swallow.slot.middle";
+            rel1.relative: 0.0 1.0;
+            rel1.offset: 0 0;
+            rel2.to: "elm.swallow.slot.middle";
+            rel2.relative: 0.0 1.0;
+            rel2.offset: -1 0;
+            fixed: 1 1;
+         }
+      }
+      part { name: "elm.swallow.slot.middle"; type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1.to: "elm.swallow.size";
+            rel2.to: "elm.swallow.size";
+         }
+      }
+   }
+   programs {
+      program { name: "end";
+         signal: "mouse,up,*"; source: "base";
+         script {
+            if (get_int(on_dismiss) == 0) {
+               emit("elm,action,dismiss", "elm");
+               set_int(on_dismiss, 1);
+            }
+         }
+      }
+      program { name: "hide";
+         signal: "elm,action,hide"; source: "elm";
+         after: "hidefinished";
+      }
+      program { name: "hidefinished";
+         script {
+            set_int(on_dismiss, 0);
+            emit("elm,action,hide,finished", "elm");
+         }
+      }
+   }
+}

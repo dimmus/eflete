@@ -33,6 +33,14 @@ exist_permission_check(const char *path, const char *name,
    /* we alwayes imported and exported project to folder by given path, means
     * that we alwayes create a new folder for project or exported source.
     * So need to check there is the folder "path/name" */
+   if (!ecore_file_can_write(path))
+     {
+        buf_msg = eina_strbuf_new();
+        eina_strbuf_append_printf(buf_msg, _("Haven't permision to write '%s'"), path);
+        popup_want_action(title, eina_strbuf_string_get(buf_msg), NULL, NULL, BTN_OK, NULL, NULL);
+        eina_strbuf_free(buf_msg);
+        return false;
+     }
    buf = eina_strbuf_new();
    eina_strbuf_append_printf(buf, "%s/%s", path, name);
    if (!ecore_file_exists(eina_strbuf_string_get(buf))) return true;
@@ -72,6 +80,11 @@ progress_end(void *data __UNUSED__, PM_Project_Result result)
       case PM_PROJECT_CANCEL:
         {
            ERR(_("Project opening canceled."));
+           break;
+        }
+      case PM_PROJECT_LOCKED:
+        {
+           ERR(_("Given project file is locked."));
            break;
         }
       case PM_PROJECT_SUCCESS:

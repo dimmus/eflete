@@ -92,9 +92,8 @@ struct _App_Data
    Menu *menu;
    TODO("Burn popup variable");
    Evas_Object *popup;
+   Eina_Stringshare *last_path;
    Evas_Object *splash;
-   Evas_Object *colorsel; /**< global colorselector. the one colorselector for
-                            application. */
    Evas_Object *statusbar; /**< The statusbar object, which contain some items */
    struct {
       Evas_Object *left;
@@ -174,37 +173,6 @@ eflete_main_loop_begin(void);
  */
 void
 eflete_main_loop_quit(void);
-
-/**
- * This function will return win_layout (if App_Data and win_layout exists).
- * If they are not exist, then this function will return NULL.
- * This function is usable for notification.
- *
- * @return win_layout if exist, NULL if not exist.
- *
- * @ingroup Eflete
- */
-Evas_Object *
-win_layout_get(void);
-
-/**
- * This function get pointer to main window of application.
- *
- * @return pointer to main window Evas_Object.
- * @ingroup Eflete
- */
-Evas_Object *
-main_window_get(void);
-
-/**
- * Get the colorselector object pointer.
- * The colorselector one for the entire application.
- *
- * @return pointer to colorselector.
- * @ingroup Eflete
- */
-Evas_Object *
-colorselector_get(void);
 
 #define GET_IMAGE(IMG, PARENT, NAME) \
 { \

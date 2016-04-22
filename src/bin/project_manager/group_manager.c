@@ -282,6 +282,12 @@ _group_load(Project *pro, Group *group)
      {
         main_group_name = edje_edit_group_aliased_get(group->edit_object, group->name);
         group->main_group = pm_resource_get(pro->groups, main_group_name);
+        if (!(group->main_group))
+          {
+             group->main_group = mem_calloc(1, sizeof(Group));
+             group->main_group->name = eina_stringshare_add(main_group_name);
+             pro->groups = eina_list_append(pro->groups, group->main_group);
+          }
         group->main_group->aliases = eina_list_sorted_insert(group->main_group->aliases, (Eina_Compare_Cb)resource_cmp, group);
         edje_edit_string_free(main_group_name);
      }
@@ -419,12 +425,37 @@ gm_group_del(Project *pro, Group *group)
    free(group);
 }
 
+char *
+_get_widget_name(const Eina_Stringshare *group_name)
+{
+    int len = strlen(group_name);
+    int i;
+    char str[32];
+
+    if (group_name[0] != 'e') return NULL;
+    if (group_name[1] != 'l') return NULL;
+    if (group_name[2] != 'm') return NULL;
+    if (group_name[3] != '/') return NULL;
+
+    for (i = 4; i < len; i++)
+    {
+        if (group_name[i] == '/') break;
+        str[i - 4] = group_name[i];
+    }
+    str[i - 4] = '\0';
+
+    return strdup(str);
+}
+
 void
 gm_groups_load(Project *pro)
 {
-   Eina_List *collections, *l;
+   Eina_List *collections, *l, *wl;
    Eina_Stringshare *group_name;
+   const char *widget_name;
+   const char *checked_widget;
    Group *group;
+   Eina_Bool check;
 
    assert(pro != NULL);
    assert(pro->dev != NULL);
@@ -437,8 +468,23 @@ gm_groups_load(Project *pro)
    collections = eina_list_sort(collections, eina_list_count(collections), (Eina_Compare_Cb) strcmp);
    EINA_LIST_FOREACH(collections, l, group_name)
      {
+        check = false;
         if (!strcmp(group_name, EFLETE_INTERNAL_GROUP_NAME)) continue;
 
+        if (pro->widgets)
+          {
+             widget_name = _get_widget_name(group_name);
+             if (!widget_name) continue;
+             EINA_LIST_FOREACH(pro->widgets, wl, checked_widget)
+               {
+                  if (!strcmp(checked_widget, widget_name))
+                    {
+                       check = true;
+                       break;
+                    }
+               }
+             if (!check) continue;
+          }
         group = mem_calloc(1, sizeof(Group));
         group->name = eina_stringshare_add(group_name);
         pro->groups = eina_list_append(pro->groups, group);

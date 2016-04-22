@@ -279,11 +279,7 @@ _on_clicked_double(void *data __UNUSED__,
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
 
-   if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
-     {
-        elm_genlist_item_expanded_set(glit, !elm_genlist_item_expanded_get(glit));
-     }
-   else
+   if (elm_genlist_item_type_get(glit) != ELM_GENLIST_ITEM_TREE)
      {
         Group *group = (Group *)elm_object_item_data_get(glit);
         evas_object_smart_callback_call(project_navigator.layout, SIGNAL_GROUP_OPEN, group);
@@ -428,6 +424,8 @@ _btn_add_group_cb(void *data __UNUSED__,
    Eina_List *l;
    Elm_Object_Item *glit;
 
+   if (!ap.project) return; /* when pressing ctrl + n without open project */
+
    assert(validator == NULL);
 
    BOX_ADD(ap.win, layout_p.box, false, false)
@@ -441,7 +439,7 @@ _btn_add_group_cb(void *data __UNUSED__,
    elm_layout_content_set(item, NULL, layout_p.entry);
    elm_box_pack_end(layout_p.box, item);
    glit = elm_genlist_selected_item_get(project_navigator.genlist);
-   if (glit && (elm_genlist_item_item_class_get(item) == project_navigator.itc_folder))
+   if (glit && (elm_genlist_item_item_class_get(glit) == project_navigator.itc_folder))
      elm_entry_entry_set(layout_p.entry, elm_object_item_data_get(glit));
    /* copy: combobox */
    LAYOUT_PROP_ADD(layout_p.box, _("copy of"), "property", "1swallow")
@@ -628,6 +626,16 @@ _unselected_cb(void *data __UNUSED__,
    elm_object_disabled_set(project_navigator.btn_del, true);
 }
 
+static void
+_shortcut_save_cb(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   if (!ap.project) return; /* when pressing ctrl + s without open project */
+
+   project_save();
+}
+
 Evas_Object *
 project_navigator_add(void)
 {
@@ -687,6 +695,8 @@ project_navigator_add(void)
 
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_ADDED, _group_add, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DELETED, _group_del, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_GROUP, _btn_add_group_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_SAVE, _shortcut_save_cb, NULL);
 
    TODO("Add deletion callback and free resources");
 

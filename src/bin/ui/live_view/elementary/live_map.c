@@ -66,6 +66,7 @@ widget_map_create(Evas_Object *parent, const Group *group)
         elm_map_overlay_scale_add(object, 550, 720);
      }
    elm_object_style_set(object, group->style);
+   evas_object_clip_set(object, evas_object_clip_get(parent));
 
    return object;
 }

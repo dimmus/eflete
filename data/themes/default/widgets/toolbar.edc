@@ -2,38 +2,283 @@ group { name: "elm/toolbar/base/default";
    data {
       item: "icon_size" "16";
    }
+   images {
+      image: "icon_arrow_left.png" COMP;
+      image: "icon_arrow_right.png" COMP;
+   }
    parts {
-      part { name: "base";
+      part { name: "clipper_arrow_left";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
-            color_class: "bg_main";
+            visible: 0;
+            align: 0.0 0.5;
+            min: 18 0;
+            max: 18 -1;
+         }
+         description { state: "visible" 0.0;
+            align: 0.0 0.5;
+            min: 18 0;
+            max: 18 -1;
+         }
+      }
+      part { name: "arrow_left";
+         type: IMAGE;
+         scale: 1;
+         clip_to: "clipper_arrow_left";
+         description { state: "default" 0.0;
+            max: 16 16;
+            color_class: "main";
+            rel1 {
+               to_x: "clipper_arrow_left";
+               to_y: "elm.swallow.content";
+            }
+            rel2 {
+               to_x: "clipper_arrow_left";
+               to_y: "elm.swallow.content";
+            }
+            image {
+               normal: "icon_arrow_left.png";
+               middle: DEFAULT;
+            }
+         }
+         description { state: "focused" 0.0;
+            max: 16 16;
+            color_class: "select_light";
+            rel1 {
+               to_x: "clipper_arrow_left";
+               to_y: "elm.swallow.content";
+            }
+            rel2 {
+               to_x: "clipper_arrow_left";
+               to_y: "elm.swallow.content";
+            }
+            image {
+               normal: "icon_arrow_left.png";
+               middle: DEFAULT;
+            }
+         }
+         description { state: "clicked" 0.0;
+            max: 16 16;
+            color_class: "select";
+            rel1 {
+               to_x: "clipper_arrow_left";
+               to_y: "elm.swallow.content";
+            }
+            rel2 {
+               to_x: "clipper_arrow_left";
+               to_y: "elm.swallow.content";
+            }
+            image {
+               normal: "icon_arrow_left.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "clipper_arrow_right";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            visible: 0;
+            align: 1.0 0.5;
+            min: 18 0;
+            max: 18 -1;
+            color: 255 255 255 0;
+         }
+         description { state: "visible" 0.0;
+            align: 1.0 0.5;
+            min: 18 0;
+            max: 18 -1;
+         }
+      }
+      part { name: "arrow_right";
+         type: IMAGE;
+         scale: 1;
+         clip_to: "clipper_arrow_right";
+         description { state: "default" 0.0;
+            max: 16 16;
+            color_class: "main";
+            rel1 {
+               to_x: "clipper_arrow_right";
+               to_y: "elm.swallow.content";
+            }
+            rel2 {
+               to_x: "clipper_arrow_right";
+               to_y: "elm.swallow.content";
+            }
+            image {
+               normal: "icon_arrow_right.png";
+               middle: DEFAULT;
+            }
+         }
+         description { state: "focused" 0.0;
+            max: 16 16;
+            color_class: "select_light";
+            rel1 {
+               to_x: "clipper_arrow_right";
+               to_y: "elm.swallow.content";
+            }
+            rel2 {
+               to_x: "clipper_arrow_right";
+               to_y: "elm.swallow.content";
+            }
+            image {
+               normal: "icon_arrow_right.png";
+               middle: DEFAULT;
+            }
+         }
+         description { state: "clicked" 0.0;
+            max: 16 16;
+            color_class: "select";
+            rel1 {
+               to_x: "clipper_arrow_right";
+               to_y: "elm.swallow.content";
+            }
+            rel2 {
+               to_x: "clipper_arrow_right";
+               to_y: "elm.swallow.content";
+            }
+            image {
+               normal: "icon_arrow_right.png";
+               middle: DEFAULT;
+            }
          }
       }
       part { name: "clipper";
          type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
+            rel1 {
+               to: "elm.swallow.content";
+            }
+            rel2 {
+               to: "elm.swallow.content";
+            }
          }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
+         scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            rel2 {
+            min: 0 19;
+            rel1 {
                relative: 1.0 0.0;
-               to_y: "separator";
+               to_x: "clipper_arrow_left";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "clipper_arrow_right";
             }
          }
       }
-      part { name: "separator";
-         type: RECT;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            min: 0 1;
-            max: -1 1;
-            /* Don't touch this color, it's color not defined in the color
-             * class and taked from tab item picture (border of tab item) */
-            color: 0 0 0 255;
-         }
+   }
+   programs {
+      program { name: "arrow_left_focused";
+         signal: "mouse,in";
+         source: "arrow_left";
+         action: STATE_SET "focused" 0.00;
+         target: "arrow_left";
+      }
+      program { name: "arrow_left_unfocused";
+         signal: "mouse,out";
+         source: "arrow_left";
+         action: STATE_SET "default" 0.00;
+         target: "arrow_left";
+      }
+      program { name: "arrow_left_clicked";
+         signal: "mouse,down,1";
+         source: "arrow_left";
+         action: STATE_SET "clicked" 0.00;
+         target: "arrow_left";
+      }
+      program { name: "arrow_left_click_emit";
+         signal: "mouse,down,1";
+         source: "arrow_left";
+         action: SIGNAL_EMIT "elm,action,left" "elm";
+         after: "arrow_left_repeat";
+      }
+      program { name: "arrow_left_unclicked";
+         signal: "mouse,up,1";
+         source: "arrow_left";
+         action: STATE_SET "default" 0.00;
+         target: "arrow_left";
+      }
+      program { name: "arrow_left_repeat_stop";
+         signal: "mouse,up,1";
+         source: "arrow_left";
+         action: ACTION_STOP;
+         target: "arrow_left_repeat";
+      }
+      program { name: "arrow_left_show";
+         signal: "elm,action,show,left";
+         source: "elm";
+         action: STATE_SET "visible" 0.00;
+         target: "clipper_arrow_left";
+      }
+      program { name: "arrow_left_hide";
+         signal: "elm,action,hide,left";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "clipper_arrow_left";
+      }
+      program { name: "arrow_right_focused";
+         signal: "mouse,in";
+         source: "arrow_right";
+         action: STATE_SET "focused" 0.00;
+         target: "arrow_right";
+      }
+      program { name: "arrow_right_unfocused";
+         signal: "mouse,out";
+         source: "arrow_right";
+         action: STATE_SET "default" 0.00;
+         target: "arrow_right";
+      }
+      program { name: "arrow_right_clicked";
+         signal: "mouse,down,1";
+         source: "arrow_right";
+         action: STATE_SET "clicked" 0.00;
+         target: "arrow_right";
+      }
+      program { name: "arrow_right_click_emit";
+         signal: "mouse,down,1";
+         source: "arrow_right";
+         action: SIGNAL_EMIT "elm,action,right" "elm";
+         after: "arrow_right_repeat";
+      }
+      program { name: "arrow_right_unclicked";
+         signal: "mouse,up,1";
+         source: "arrow_right";
+         action: STATE_SET "default" 0.00;
+         target: "arrow_right";
+      }
+      program { name: "arrow_right_repeat_stop";
+         signal: "mouse,up,1";
+         source: "arrow_right";
+         action: ACTION_STOP;
+         target: "arrow_right_repeat";
+      }
+      program { name: "arrow_right_show";
+         signal: "elm,action,show,right";
+         source: "elm";
+         action: STATE_SET "visible" 0.00;
+         target: "clipper_arrow_right";
+      }
+      program { name: "arrow_right_hide";
+         signal: "elm,action,hide,right";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "clipper_arrow_right";
+      }
+      program { name: "arrow_left_repeat";
+         action: SIGNAL_EMIT "elm,action,left" "elm";
+         in: 0.30000 0.00000;
+         after: "arrow_left_repeat";
+      }
+      program { name: "arrow_right_repeat";
+         action: SIGNAL_EMIT "elm,action,right" "elm";
+         in: 0.30000 0.00000;
+         after: "arrow_right_repeat";
       }
    }
 }
@@ -220,6 +465,44 @@ group { name: "elm/toolbar/item/default";
       }
       program { name: "send_clicked";
          action: SIGNAL_EMIT "elm,action,click" "elm";
+      }
+   }
+}
+
+group { name: "elm/toolbar/object/default";
+   parts {
+      part { name: "elm.swallow.object";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               offset: 3 0;
+            }
+            rel2 {
+               offset: -4 -1;
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/toolbar/separator/default";
+   images {
+      image: "separator-vertical.png" COMP;
+   }
+   parts {
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            min: 2 0;
+            max: 2 -1;
+            image.normal: "separator-vertical.png";
+            rel1 {
+               offset: 3 0;
+            }
+            rel2 {
+               offset: -4 -1;
+            }
+         }
       }
    }
 }

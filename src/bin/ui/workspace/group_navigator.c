@@ -80,6 +80,19 @@ static char *part_types[] = {
      N_("PROXY"),
      N_("SPACER")
 };
+static const char *program_actions[] = {
+     N_("NONE"),
+     N_("STATE SET"),
+     N_("SIGNAL EMIT"),
+     N_("DRAG VALUE SET"),
+     N_("DRAG VALUE STEP"),
+     N_("DRAG VALUE PAGE"),
+     N_("PLAY SAMPLE"),
+     N_("PLAY TONE"),
+     N_("ACTION STOP"),
+     NULL
+};
+
 static const unsigned int part_types_count = 12;
 
 static char *
@@ -151,11 +164,58 @@ _item_label_get(void *data,
    return NULL;
 }
 
+static Eina_Bool
+_all_parts_visible(Part_List *pl)
+{
+   const Eina_List *l;
+   const Part *part;
+   Eina_Bool visible = true;
+
+   assert(pl != NULL);
+
+   EINA_LIST_FOREACH(pl->group->parts, l, part)
+      visible &= part->visible;
+
+   return visible;
+}
+
+static void
+_on_parts_eye_clicked(void *data __UNUSED__,
+                      Evas_Object *obj,
+                      void *event_data __UNUSED__)
+{
+   Evas_Object *eye;
+   Part *part;
+   const Eina_List *subitems, *l;
+   Elm_Object_Item *glit;
+   Eina_Bool visible;
+
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   assert(pl != NULL);
+
+   visible = !_all_parts_visible(pl);
+
+   EINA_LIST_FOREACH(pl->group->parts, l, part)
+     {
+        part->visible = visible;
+        evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED, (void *)part);
+     }
+
+   subitems = elm_genlist_item_subitems_get(pl->parts_caption_item);
+   EINA_LIST_FOREACH(subitems, l, glit)
+     {
+        eye = elm_object_item_part_content_get(glit, "elm.swallow.icon");
+        if (eye) elm_check_state_set(eye, visible);
+      }
+}
+
 static void
 _on_eye_clicked(void *data,
                 Evas_Object *obj,
                 void *event_data __UNUSED__)
 {
+   Evas_Object *eye;
    Part *part = data;
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
 
@@ -164,6 +224,40 @@ _on_eye_clicked(void *data,
 
    part->visible = !part->visible;
    evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED, (void *)part);
+
+   eye = elm_object_item_part_content_get(pl->parts_caption_item, "elm.swallow.icon");
+   if (eye)
+     elm_check_state_set(eye, _all_parts_visible(pl));
+}
+
+static Evas_Object *
+_caption_content_get(void *data,
+                     Evas_Object *obj,
+                     const char *part)
+{
+   Eina_List **list = data;
+   Evas_Object *content = NULL;
+   Eina_Bool visible = true;
+   Part *_part;
+   Eina_List *l;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   if (list == &pl->group->parts)
+     if (!strcmp(part, "elm.swallow.icon"))
+       {
+          content = elm_check_add(obj);
+          edje_object_animation_set(elm_layout_edje_get(content), false);
+          EINA_LIST_FOREACH(pl->group->parts, l, _part)
+             visible &= _part->visible;
+          elm_check_state_set(content, visible);
+          elm_object_style_set(content, "eye");
+          evas_object_data_set(content, GROUP_NAVIGATOR_DATA, pl);
+          edje_object_animation_set(elm_layout_edje_get(content), true);
+
+          evas_object_smart_callback_add(content, "changed", _on_parts_eye_clicked, NULL);
+       }
+
+   return content;
 }
 
 static Evas_Object *
@@ -268,17 +362,6 @@ _contract_request_cb(void *data __UNUSED__,
 {
    Elm_Object_Item *glit = event_info;
    elm_genlist_item_expanded_set(glit, EINA_FALSE);
-}
-
-static void
-_on_clicked_double(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info)
-{
-   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-
-   if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
-     elm_genlist_item_expanded_set(glit, !elm_genlist_item_expanded_get(glit));
 }
 
 static void
@@ -459,7 +542,6 @@ _contracted_cb(void *data __UNUSED__,
 static void
 _unselect_part(Part_List *pl)
 {
-   Part *part;
    Elm_Object_Item *glit_part;
 
    assert(pl != NULL);
@@ -467,7 +549,6 @@ _unselect_part(Part_List *pl)
 
    pl->group->current_part->current_item_name = NULL;
    pl->group->current_part = NULL;
-   part = elm_object_item_data_get(pl->selected_part_item);
    glit_part = pl->selected_part_item;
    pl->selected_part_item = NULL;
    elm_genlist_item_fields_update(glit_part, "unselected", ELM_GENLIST_ITEM_FIELD_STATE);
@@ -476,7 +557,6 @@ _unselect_part(Part_List *pl)
    elm_object_disabled_set(pl->btn_del, true);
    elm_object_disabled_set(pl->btn_down, true);
    elm_object_disabled_set(pl->btn_up, true);
-   evas_object_smart_callback_call(ap.win, SIGNAL_PART_UNSELECTED, (void *)part);
 }
 
 static void
@@ -548,9 +628,10 @@ _selected_cb(void *data,
              part->current_item_name = item_name;
              pl->group->current_part = part;
              elm_genlist_item_fields_update(glit_part, "selected", ELM_GENLIST_ITEM_FIELD_STATE);
-             evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED,
-                                             (void *)part);
+             evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, part);
           }
+        else
+          part->current_item_name = NULL;
         elm_object_item_disabled_set(pl->add_state_menu_item, false);
         if ((part->type == EDJE_PART_TYPE_BOX) ||
             (part->type == EDJE_PART_TYPE_TABLE))
@@ -669,18 +750,17 @@ _program_validate(void *data,
                   void *event_info __UNUSED__)
 {
    Part_List *pl = data;
-   const char *name, *program;
-   Eina_Bool valid;
-   Eina_List *l;
+   const char *program;
 
    assert(pl != NULL);
 
-   name = elm_entry_entry_get(pl->popup.entry_name);
-   valid = (elm_validator_regexp_status_get(pl->name_validator) == ELM_REG_NOERROR);
-   EINA_LIST_FOREACH(pl->group->programs, l, program)
-      valid = valid && strcmp(program, name);
+   program = elm_entry_entry_get(pl->popup.entry_name);
 
-   elm_object_disabled_set(pl->popup.btn_add, !valid);
+   if ((elm_validator_regexp_status_get(pl->name_validator) != ELM_REG_NOERROR) ||
+       (edje_edit_program_exist(pl->group->edit_object, program)))
+     elm_object_disabled_set(pl->popup.btn_add, true);
+   else
+     elm_object_disabled_set(pl->popup.btn_add, false);
 }
 
 static void
@@ -719,21 +799,40 @@ _popup_add_part_ok_clicked(void *data,
    assert(pl != NULL);
 
    if (elm_object_disabled_get(pl->popup.btn_add)) return;
-
    item = ewe_combobox_select_item_get(pl->popup.combobox);
-   TODO("add data to combobox item to get rid of string comparsion")
-#define CHECK_TYPE(TYPE) (!strcmp(item->title, part_types[TYPE])) type = TYPE;
-   if CHECK_TYPE(EDJE_PART_TYPE_RECTANGLE)
-   else if CHECK_TYPE(EDJE_PART_TYPE_TEXT)
-   else if CHECK_TYPE(EDJE_PART_TYPE_IMAGE)
-   else if CHECK_TYPE(EDJE_PART_TYPE_SWALLOW)
-   else if CHECK_TYPE(EDJE_PART_TYPE_TEXTBLOCK)
-   else if CHECK_TYPE(EDJE_PART_TYPE_GROUP)
-   else if CHECK_TYPE(EDJE_PART_TYPE_BOX)
-   else if CHECK_TYPE(EDJE_PART_TYPE_TABLE)
-   else if CHECK_TYPE(EDJE_PART_TYPE_PROXY)
-   else if CHECK_TYPE(EDJE_PART_TYPE_SPACER)
-#undef CHECK_TYPE
+   switch (item->index)
+     {
+      case 0:
+         type = EDJE_PART_TYPE_RECTANGLE;
+         break;
+      case 1:
+         type = EDJE_PART_TYPE_TEXT;
+         break;
+      case 2:
+         type = EDJE_PART_TYPE_IMAGE;
+         break;
+      case 3:
+         type = EDJE_PART_TYPE_SWALLOW;
+         break;
+      case 4:
+         type = EDJE_PART_TYPE_TEXTBLOCK;
+         break;
+      case 5:
+         type = EDJE_PART_TYPE_GROUP;
+         break;
+      case 6:
+         type = EDJE_PART_TYPE_BOX;
+         break;
+      case 7:
+         type = EDJE_PART_TYPE_TABLE;
+         break;
+      case 8:
+         type = EDJE_PART_TYPE_PROXY;
+         break;
+      case 9:
+         type = EDJE_PART_TYPE_SPACER;
+         break;
+     }
    assert(type != EDJE_PART_TYPE_NONE);
 
    name = elm_entry_entry_get(pl->popup.entry_name);
@@ -789,7 +888,7 @@ _combobox_collapsed(void *data,
 
 static void
 _on_menu_add_part_clicked(void *data __UNUSED__,
-                          Evas_Object *obj __UNUSED__,
+                          Evas_Object *obj,
                           void *ei __UNUSED__)
 {
    Edje_Part_Type type;
@@ -807,9 +906,19 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
    eina_stringshare_del(title);
 
    BOX_ADD(ap.popup, box, false, false);
+
+   LAYOUT_PROP_ADD(box, _("Part name:"), "property", "1swallow")
+   ENTRY_ADD(box, pl->popup.entry_name, true);
+   eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, pl->name_validator);
+   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new part here."));
+   evas_object_smart_callback_add(pl->popup.entry_name, "changed", _on_entry_changed, pl);
+   evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_part_ok_clicked, pl);
+   evas_object_show(pl->popup.entry_name);
+   elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
+   elm_box_pack_end(box, item);
+
    LAYOUT_PROP_ADD(box, _("Part type:"), "property", "1swallow")
    EWE_COMBOBOX_ADD(item, pl->popup.combobox)
-
    ewe_combobox_select_item_set(pl->popup.combobox, 0);
    for (type = EDJE_PART_TYPE_RECTANGLE; type <= EDJE_PART_TYPE_SPACER; type++)
      {
@@ -821,17 +930,6 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
    ewe_combobox_select_item_set(pl->popup.combobox, 0);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
    evas_object_smart_callback_add(pl->popup.combobox, "collapsed", _combobox_collapsed, pl);
-
-   elm_box_pack_end(box, item);
-
-   LAYOUT_PROP_ADD(box, _("Part name:"), "property", "1swallow")
-   ENTRY_ADD(box, pl->popup.entry_name, true);
-   eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, pl->name_validator);
-   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new part here."));
-   evas_object_smart_callback_add(pl->popup.entry_name, "changed", _on_entry_changed, pl);
-   evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_part_ok_clicked, pl);
-   evas_object_show(pl->popup.entry_name);
-   elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
 
    elm_object_content_set(ap.popup, box);
@@ -1128,6 +1226,8 @@ _popup_add_program_ok_clicked(void *data,
                               Evas_Object *obj __UNUSED__,
                               void *event_info __UNUSED__)
 {
+   Ewe_Combobox_Item *item;
+   Edje_Action_Type type = EDJE_ACTION_TYPE_NONE;
    Part_List *pl = data;
    const char *name;
    Eina_Stringshare *msg;
@@ -1137,11 +1237,44 @@ _popup_add_program_ok_clicked(void *data,
 
    if (elm_object_disabled_get(pl->popup.btn_add)) return;
 
+   item = ewe_combobox_select_item_get(pl->popup.combobox);
+   switch (item->index)
+     {
+      case 0:
+         type = EDJE_ACTION_TYPE_NONE;
+         break;
+      case 1:
+         type = EDJE_ACTION_TYPE_STATE_SET;
+         break;
+      case 2:
+         type = EDJE_ACTION_TYPE_SIGNAL_EMIT;
+         break;
+      case 3:
+         type = EDJE_ACTION_TYPE_DRAG_VAL_SET;
+         break;
+      case 4:
+         type = EDJE_ACTION_TYPE_DRAG_VAL_STEP;
+         break;
+      case 5:
+         type = EDJE_ACTION_TYPE_DRAG_VAL_PAGE;
+         break;
+      case 6:
+         type = EDJE_ACTION_TYPE_SOUND_SAMPLE;
+         break;
+      case 7:
+         type = EDJE_ACTION_TYPE_SOUND_TONE;
+         break;
+      case 8:
+         type = EDJE_ACTION_TYPE_ACTION_STOP;
+         break;
+     }
+
    name = elm_entry_entry_get(pl->popup.entry_name);
 
    msg = eina_stringshare_printf(_("added new program \"%s\""), name);
    change = change_add(msg);
    editor_program_add(pl->group->edit_object, change, false, name);
+   editor_program_action_set(pl->group->edit_object, change, false, name, type);
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
@@ -1155,6 +1288,7 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
 {
    Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
    Evas_Object *box, *item;
+   unsigned int i;
 
    assert(pl != NULL);
 
@@ -1171,6 +1305,20 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
    evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_program_ok_clicked, pl);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new program here."));
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
+   elm_box_pack_end(box, item);
+
+   LAYOUT_PROP_ADD(box, _("Action type:"), "property", "1swallow")
+   EWE_COMBOBOX_ADD(item, pl->popup.combobox)
+   ewe_combobox_select_item_set(pl->popup.combobox, 0);
+
+   for (i = 0; program_actions[i]; i++)
+     {
+        ewe_combobox_item_add(pl->popup.combobox, program_actions[i]);
+     }
+   ewe_combobox_select_item_set(pl->popup.combobox, 0);
+   elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
+   evas_object_smart_callback_add(pl->popup.combobox, "collapsed", _combobox_collapsed, pl);
+
    elm_box_pack_end(box, item);
 
    elm_object_content_set(ap.popup, box);
@@ -1322,6 +1470,35 @@ _part_item_find(Part_List *pl, Part *part)
      }
    assert(part_item != NULL);
    return part_item;
+}
+
+static void
+_select_next_part(Part_List *pl, Eina_Bool reverse)
+{
+   Elm_Object_Item *part_item;
+   const Eina_List *part_items, *l = NULL;
+
+   assert(pl != NULL);
+
+   part_items = elm_genlist_item_subitems_get(pl->parts_caption_item);
+   if (pl->selected_part_item)
+     l = eina_list_data_find_list(part_items, pl->selected_part_item);
+   if (reverse)
+     {
+        if (eina_list_prev(l))
+          l = eina_list_prev(l);
+        else
+          l = eina_list_last(l);
+     }
+   else
+     {
+        if (eina_list_next(l))
+          l = eina_list_next(l);
+        else
+          l = part_items;
+     }
+   part_item = eina_list_data_get(l);
+   elm_genlist_item_selected_set(part_item, true);
 }
 
 void
@@ -1706,16 +1883,17 @@ _on_btn_up_clicked(void *data,
 }
 
 Evas_Object *
-group_navigator_add(Group *group)
+group_navigator_add(Evas_Object *parent, Group *group)
 {
    Evas_Object *icon;
    Part_List *pl;
+   Elm_Object_Item *menu_item;
 
    assert(group != NULL);
-   assert(ap.win != NULL);
+   assert(parent != NULL);
 
    pl = mem_calloc(1, sizeof(Part_List));
-   pl->layout = elm_layout_add(ap.win);
+   pl->layout = elm_layout_add(parent);
    elm_layout_theme_set(pl->layout, "layout", "navigator", "default");
    evas_object_show(pl->layout);
 
@@ -1767,6 +1945,7 @@ group_navigator_add(Group *group)
    pl->itc_caption = elm_genlist_item_class_new();
    pl->itc_caption->item_style = "caption";
    pl->itc_caption->func.text_get = _caption_label_get;
+   pl->itc_caption->func.content_get = _caption_content_get;
 
    pl->itc_program = elm_genlist_item_class_new();
    pl->itc_program->item_style = "program";
@@ -1777,7 +1956,6 @@ group_navigator_add(Group *group)
    elm_scroller_policy_set(pl->genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
    evas_object_show(pl->genlist);
    elm_object_content_set(pl->layout, pl->genlist);
-   evas_object_smart_callback_add(pl->genlist, "clicked,double", _on_clicked_double, pl);
    evas_object_smart_callback_add(pl->genlist, "activated", _on_activated, pl);
    evas_object_smart_callback_add(pl->genlist, "expand,request", _expand_request_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "contract,request", _contract_request_cb, pl);
@@ -1808,22 +1986,29 @@ group_navigator_add(Group *group)
    pl->menu = elm_menu_add(ap.win);
    evas_object_data_set(pl->menu, GROUP_NAVIGATOR_DATA, pl);
 
-   elm_menu_item_add(pl->menu, NULL, NULL, _("Part"), _on_menu_add_part_clicked, NULL);
+   menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Part"), _on_menu_add_part_clicked, NULL);
+   elm_object_part_text_set(elm_menu_item_object_get(menu_item), "elm.shortcut", "q");
    elm_menu_item_separator_add(pl->menu, NULL);
 
    pl->add_state_menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("State"), _on_menu_add_state_clicked, NULL);
+   elm_object_part_text_set(elm_menu_item_object_get(pl->add_state_menu_item), "elm.shortcut", "w");
    elm_object_item_disabled_set(pl->add_state_menu_item, true);
    pl->add_part_item_menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Item"), _on_menu_add_item_clicked, NULL);
+   elm_object_part_text_set(elm_menu_item_object_get(pl->add_part_item_menu_item), "elm.shortcut", "e");
    elm_object_item_disabled_set(pl->add_part_item_menu_item, true);
    elm_menu_item_separator_add(pl->menu, NULL);
 
-   elm_menu_item_add(pl->menu, NULL, NULL, _("Program"), _on_menu_add_program_clicked, NULL);
+   menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Program"), _on_menu_add_program_clicked, NULL);
+   elm_object_part_text_set(elm_menu_item_object_get(menu_item), "elm.shortcut", "r");
 
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
    if (group->main_group)
      elm_object_disabled_set(pl->layout, true);
    else
-     elm_genlist_item_expanded_set(pl->parts_caption_item, true);
+     {
+        elm_genlist_item_expanded_set(pl->parts_caption_item, true);
+        elm_genlist_item_expanded_set(pl->programs_caption_item, true);
+     }
 
    TODO("Add deletion callback and free resources");
    return pl->layout;
@@ -1866,4 +2051,130 @@ group_navigator_part_update(Evas_Object *obj, Part *part)
 
         elm_genlist_item_update(part_item);
      }
+}
+
+void
+group_navigator_add_part_request(Evas_Object *obj)
+{
+   _on_menu_add_part_clicked(NULL, obj, NULL);
+}
+
+void
+group_navigator_add_part_item_request(Evas_Object *obj)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   if (!elm_object_item_disabled_get(pl->add_part_item_menu_item))
+     _on_menu_add_item_clicked(NULL, obj, NULL);
+}
+
+void
+group_navigator_add_state_request(Evas_Object *obj)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   if (!elm_object_item_disabled_get(pl->add_state_menu_item))
+     _on_menu_add_state_clicked(NULL, obj, NULL);
+}
+
+void
+group_navigator_add_program_request(Evas_Object *obj)
+{
+   _on_menu_add_program_clicked(NULL, obj, NULL);
+}
+
+void
+group_navigator_delete_request(Evas_Object *obj)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   if (!elm_object_disabled_get(pl->btn_del))
+     _on_btn_minus_clicked(pl, NULL, NULL);
+}
+
+void
+group_navigator_state_next_request(Evas_Object *obj)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   Part *part;
+   State *state;
+   Eina_List *l;
+
+   if (pl->selected_part_item != NULL)
+     {
+        part = elm_object_item_data_get(pl->selected_part_item);
+        if (eina_list_count(part->states) > 1)
+          {
+             l = eina_list_data_find_list(part->states, part->current_state);
+
+             assert(l != NULL);
+
+             if (eina_list_next(l) != NULL)
+               state = eina_list_data_get(eina_list_next(l));
+             else
+               state = eina_list_data_get(part->states);
+
+             editor_part_selected_state_set(pl->group->edit_object, NULL, false,
+                                            state->part->name,
+                                            state->parsed_name,
+                                            state->parsed_val);
+          }
+     }
+}
+
+void
+group_navigator_part_next_request(Evas_Object *obj)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   assert(pl != NULL);
+
+   _select_next_part(pl, false);
+}
+
+void
+group_navigator_part_prev_request(Evas_Object *obj)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   assert(pl != NULL);
+
+   _select_next_part(pl, true);
+}
+
+void
+group_navigator_part_showhide_request(Evas_Object *obj)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+   Part *part;
+   Evas_Object *eye;
+
+   assert(pl != NULL);
+
+   if (pl->selected_part_item != NULL)
+     {
+        part = elm_object_item_data_get(pl->selected_part_item);
+        if (part)
+          {
+             eye = elm_object_item_part_content_get(pl->selected_part_item, "elm.swallow.icon");
+             if (eye) elm_check_state_set(eye, !elm_check_state_get(eye));
+             /* elementary not call callback if we change the check state, while it
+              * not fixed, we need this small hack */
+             _on_eye_clicked(part, obj, NULL);
+          }
+     }
+}
+
+void
+group_navigator_all_parts_showhide_request(Evas_Object *obj)
+{
+   Evas_Object *eye;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   assert(pl != NULL);
+
+   _on_parts_eye_clicked(NULL, obj, NULL);
+   eye = elm_object_item_part_content_get(pl->parts_caption_item, "elm.swallow.icon");
+   if (eye)
+     elm_check_state_set(eye, _all_parts_visible(pl));
 }

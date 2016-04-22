@@ -52,8 +52,6 @@ Suite* test_suite (void) {
 
    tcase_add_test(tcase, pm_project_meta_data_get_test_p);
 
-   tcase_add_test(tcase, pm_style_resource_export_test_p);
-
    suite_add_tcase(suite, tcase);
    return suite;
 }

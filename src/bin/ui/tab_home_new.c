@@ -35,61 +35,61 @@ typedef struct _Widget_Item_Data Widget_Item_Data;
 
 static Widget_Item_Data widget_item_data[] =
    {
-     { N_("access"),           false },
-     { N_("actionslider"),     false },
-     { N_("bg"),               false },
-     { N_("border"),           false },
-     { N_("bubble"),           false },
-     { N_("button"),           false },
-     { N_("calendar"),         false },
-     { N_("check"),            false },
-     { N_("clock"),            false },
-     { N_("colorsel"),         false },
-     { N_("conform"),          false },
-     { N_("ctxpopup"),         false },
-     { N_("cursor"),           false },
-     { N_("datetime"),         false },
-     { N_("dayselector"),      false },
-     { N_("diskselector"),     false },
-     { N_("entry"),            false },
-     { N_("fileselector"),     false },
-     { N_("flipselector"),     false },
-     { N_("focus"),            false },
-     { N_("frame"),            false },
-     { N_("gengrid"),          false },
-     { N_("genlist"),          false },
-     { N_("hover"),            false },
-     { N_("icon"),             false },
-     { N_("index"),            false },
-     { N_("label"),            false },
-     { N_("layout"),           false },
-     { N_("list"),             false },
-     { N_("map"),              false },
-     { N_("menu"),             false },
-     { N_("multibuttonentry"), false },
-     { N_("naviframe"),        false },
-     { N_("notify"),           false },
-     { N_("panel"),            false },
-     { N_("panes"),            false },
-     { N_("photo"),            false },
-     { N_("photocam"),         false },
-     { N_("player"),           false },
-     { N_("pointer"),          false },
-     { N_("popup"),            false },
-     { N_("progress"),         false },
-     { N_("radio"),            false },
-     { N_("scroller"),         false },
-     { N_("segment_control"),  false },
-     { N_("separator"),        false },
-     { N_("slider"),           false },
-     { N_("slideshow"),        false },
-     { N_("spinner"),          false },
-     { N_("thumb"),            false },
-     { N_("toolbar"),          false },
-     { N_("tooltip"),          false },
-     { N_("video"),            false },
-     { N_("win"),              false },
-     { NULL,                   false }
+     { "access",           false },
+     { "actionslider",     false },
+     { "bg",               false },
+     { "border",           false },
+     { "bubble",           false },
+     { "button",           false },
+     { "calendar",         false },
+     { "check",            false },
+     { "clock",            false },
+     { "colorsel",         false },
+     { "conform",          false },
+     { "ctxpopup",         false },
+     { "cursor",           false },
+     { "datetime",         false },
+     { "dayselector",      false },
+     { "diskselector",     false },
+     { "entry",            false },
+     { "fileselector",     false },
+     { "flipselector",     false },
+     { "focus",            false },
+     { "frame",            false },
+     { "gengrid",          false },
+     { "genlist",          false },
+     { "hover",            false },
+     { "icon",             false },
+     { "index",            false },
+     { "label",            false },
+     { "layout",           false },
+     { "list",             false },
+     { "map",              false },
+     { "menu",             false },
+     { "multibuttonentry", false },
+     { "naviframe",        false },
+     { "notify",           false },
+     { "panel",            false },
+     { "panes",            false },
+     { "photo",            false },
+     { "photocam",         false },
+     { "player",           false },
+     { "pointer",          false },
+     { "popup",            false },
+     { "progress",         false },
+     { "radio",            false },
+     { "scroller",         false },
+     { "segment_control",  false },
+     { "separator",        false },
+     { "slider",           false },
+     { "slideshow",        false },
+     { "spinner",          false },
+     { "thumb",            false },
+     { "toolbar",          false },
+     { "tooltip",          false },
+     { "video",            false },
+     { "win",              false },
+     { NULL,               false }
    };
 
 struct _Tab_Home_New
@@ -391,26 +391,34 @@ _edc_code_generate(Eina_Stringshare *path)
    eina_strbuf_append(edc, "      name: \"" EFLETE_INTERNAL_GROUP_NAME "\";\n");
    eina_strbuf_append(edc, "   }\n");
 
-   TODO("move fonts, colorclasses and macros to widgets where they are used");
-   eina_strbuf_append(edc, "   #include \"fonts.edc\"\n");
-   eina_strbuf_append(edc, "   #include \"colorclasses.edc\"\n");
-   eina_strbuf_append(edc, "   #include \"macros.edc\"\n");
-
-   _file_to_swap_copy(path, "fonts");
-   _file_to_swap_copy(path, "colorclasses");
-   _file_to_swap_copy(path, "macros");
-
-   _widgets_dependencies_generate(path, dep_edc);
-   eina_strbuf_append(edc, eina_strbuf_string_get(dep_edc));
-   eina_strbuf_free(dep_edc);
-
    while (widget_item_data_iterator->name)
      {
+        /* only include next blocks if at least one widget is checked */
         if (widget_item_data_iterator->check)
           {
-             eina_strbuf_append_printf(edc, "   #include \"%s.edc\"\n",
-                                       widget_item_data_iterator->name);
-             _file_to_swap_copy(path, widget_item_data_iterator->name);
+             eina_strbuf_append(edc, "   #include \"fonts.edc\"\n");
+             eina_strbuf_append(edc, "   #include \"colorclasses.edc\"\n");
+             eina_strbuf_append(edc, "   #include \"macros.edc\"\n");
+
+             _file_to_swap_copy(path, "fonts");
+             _file_to_swap_copy(path, "colorclasses");
+             _file_to_swap_copy(path, "macros");
+
+             _widgets_dependencies_generate(path, dep_edc);
+             eina_strbuf_append(edc, eina_strbuf_string_get(dep_edc));
+             eina_strbuf_free(dep_edc);
+             widget_item_data_iterator = widget_item_data;
+             while (widget_item_data_iterator->name)
+               {
+                  if (widget_item_data_iterator->check)
+                    {
+                       eina_strbuf_append_printf(edc, "   #include \"%s.edc\"\n",
+                                                 widget_item_data_iterator->name);
+                       _file_to_swap_copy(path, widget_item_data_iterator->name);
+                    }
+                  widget_item_data_iterator++;
+               }
+             break;
           }
         widget_item_data_iterator++;
      }
@@ -618,5 +626,58 @@ _tab_new_project_add(void)
    elm_genlist_item_class_free(itc);
    elm_object_part_content_set(tab_new.layout, "swallow.widgets", tab_new.genlist);
 
+   evas_object_event_callback_add(tab_new.layout, EVAS_CALLBACK_SHOW, _tab_default_focus, tab_new.name);
+
    return tab_new.layout;
+}
+
+static void
+_delayed_popup(void *data)
+{
+   char *msg = data;
+   popup_want_action(_("New project"), msg, NULL, NULL, BTN_OK, NULL, NULL);
+   free(msg);
+}
+
+void
+_tab_new_data_set(const char *name, const char *path, const Eina_List *widgets)
+{
+   const Eina_List *l;
+   const char *str;
+   Widget_Item_Data *widget_item_data_iterator;
+   Eina_Strbuf *buf = eina_strbuf_new();
+   Eina_Bool first_not_found = true;
+
+   assert(tab_new.layout != NULL);
+
+   elm_entry_entry_set(tab_new.name, name);
+
+   if (path) elm_entry_entry_set(tab_new.path, path);
+   else elm_entry_entry_set(tab_new.path, profile_get()->general.projects_folder);
+
+   EINA_LIST_FOREACH(widgets, l, str)
+     {
+        widget_item_data_iterator = widget_item_data;
+        while (widget_item_data_iterator->name)
+          {
+             if (!strcasecmp(str, widget_item_data_iterator->name))
+               break;
+             widget_item_data_iterator++;
+          }
+        if (widget_item_data_iterator->name)
+          widget_item_data_iterator->check = true;
+        else
+          {
+             eina_strbuf_append_printf(buf, first_not_found ? "%s" : ", %s", str);
+             first_not_found = false;
+          }
+     }
+   elm_genlist_realized_items_update(tab_new.genlist);
+   if (eina_strbuf_length_get(buf))
+     {
+        eina_strbuf_prepend(buf, _("Following widgets were not found and ignored: "));
+        ERR("%s", eina_strbuf_string_get(buf));
+        ecore_job_add(_delayed_popup, eina_strbuf_string_steal(buf));
+     }
+   eina_strbuf_free(buf);
 }

@@ -53,6 +53,7 @@ group { name: "elm/label/base/slide_about";
       part { name: "label.text.clip";
          type: RECT;
          description { state: "default" 0.0;
+            min: 0 300;
          }
       }
       part { name: "elm.text";

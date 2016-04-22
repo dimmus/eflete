@@ -58,22 +58,27 @@ enum Menu_Item
       MENU_FILE_CLOSE_PROJECT,
       MENU_FILE_EXIT,
    MENU_EDIT,
-      MENU_EDIT_PREFERENCE,
-   MENU_VIEW,
-      MENU_VIEW_WORKSPACE,
-         MENU_VIEW_WORKSPACE_ZOOM_IN,
-         MENU_VIEW_WORKSPACE_ZOOM_OUT,
-         MENU_VIEW_WORKSPACE_OBJECT_AREA,
-         MENU_VIEW_RULERS,
-            MENU_VIEW_RULERS_SHOW,
-            MENU_VIEW_RULERS_ABS,
-            MENU_VIEW_RULERS_REL,
-            MENU_VIEW_RULERS_BOTH,
-   MENU_EDITORS,
+      MENU_EDIT_UNDO,
+      MENU_EDIT_REDO,
+      MENU_EDIT_GROUP_ADD,
+      MENU_EDIT_PART_ADD,
+      MENU_EDIT_STATE_ADD,
+      MENU_EDIT_ITEM_ADD,
+      MENU_EDIT_PROGRAM_ADD,
       MENU_EDITORS_IMAGE,
       MENU_EDITORS_SOUND,
       MENU_EDITORS_COLORCLASS,
       MENU_EDITORS_TEXT_STYLE,
+
+      MENU_EDIT_PREFERENCE,
+   MENU_VIEW,
+      MENU_VIEW_WORKSPACE_ZOOM_IN,
+      MENU_VIEW_WORKSPACE_ZOOM_OUT,
+      MENU_VIEW_WORKSPACE_ZOOM_RESET,
+      MENU_VIEW_WORKSPACE_FIT,
+      MENU_VIEW_WORKSPACE_FILL,
+      MENU_VIEW_WORKSPACE_OBJECT_AREA,
+      MENU_VIEW_RULERS_SHOW,
    MENU_HELP,
       MENU_HELP_ABOUT,
 
@@ -85,6 +90,13 @@ extern int MENU_ITEMS_LIST_BASE[];
 extern int MENU_ITEMS_LIST_STYLE_ONLY[];
 extern int MENU_ITEMS_LIST_MAIN[];
 extern int MENU_ITEMS_LIST_TEMPORARY[];
+
+typedef enum
+{
+   BG_PREVIEW_WHITE = 1,
+   BG_PREVIEW_TILE,
+   BG_PREVIEW_BLACK
+} Bg_Preview;
 
 /**
  * The validation func for popup action.
@@ -345,6 +357,9 @@ popup_fileselector_sound_helper(const char *title, Evas_Object *follow_up, const
                                 Eina_Bool multi, Eina_Bool is_save);
 
 void
+popup_fileselector_file_set(const char *file);
+
+void
 popup_log_message_helper(const char *msg);
 
 void
@@ -352,6 +367,13 @@ popup_gengrid_image_helper(const char *title, Evas_Object *follow_up,
                            Helper_Done_Cb func, void *data,
                            Eina_Bool multi);
 
+void
+popup_gengrid_helper_item_select(const char *item_title);
+
+void
+popup_colorselector_helper(Evas_Object *follow_up,
+                           Helper_Done_Cb func, Evas_Smart_Cb func_change,
+                           void *data, int r, int g, int b, int a);
 
 /**
  * Export project as develop edj file.
@@ -499,5 +521,16 @@ typedef struct _Sound_Data Sound_Data;
  */
 Evas_Object *
 sound_manager_add(void);
+
+/**
+ * Show the whole inwin window by using some data
+ * about loaded project (edj file)
+ *
+ * @return the inwin object that contain style viewer
+ *
+ * @ingroup Window
+ */
+Evas_Object *
+about_window_add(void);
 
 #endif /* UI_MAIN_WINDOW_H */

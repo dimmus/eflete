@@ -8,8 +8,6 @@ src/bin/logger/logger.c
 src/bin/project_manager/group_manager.c
 src/bin/project_manager/project_manager.c
 src/bin/ui/cursor.c
-src/bin/ui/dialogs/about_window.c
-src/bin/ui/dialogs/colorsel.c
 src/bin/ui/editors/animator.c
 src/bin/ui/editors/animator_program_editor.c
 src/bin/ui/editors/animator_program_sequence.c
@@ -54,7 +52,6 @@ src/bin/ui/live_view/elementary/live_widget_common.c
 src/bin/ui/live_view/live_widget.c
 src/bin/ui/main_window.c
 src/bin/ui/menu.c
-src/bin/ui/modal_window/modal_window.c
 src/bin/ui/project_navigator.c
 src/bin/ui/preference/preference.c
 src/bin/ui/project_close.c
@@ -63,8 +60,8 @@ src/bin/ui/shortcuts/shortcuts.c
 src/bin/ui/splash.c
 src/bin/ui/tab_home_open.c
 src/bin/ui/tabs.c
-src/bin/ui/workspace/groupedit.c
-src/bin/ui/workspace/groupedit_calc.c
+src/bin/ui/workspace/groupview.c
+src/bin/ui/workspace/groupview_calc.c
 src/bin/ui/workspace/highlight.c
 src/bin/ui/workspace/workspace.c
 src/bin/ui/workspace/container.c

@@ -70,7 +70,7 @@ EFLETE_TEST (pm_project_import_edj_test_p)
    ecore_file_recursive_rm("./UTC");
 
    pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
-                                  NULL, _end_cb, NULL);
+                         NULL, NULL, _end_cb, NULL);
    ecore_main_loop_begin();
 
    pro = pm_project_thread_project_get();
@@ -123,7 +123,7 @@ EFLETE_TEST (pm_project_import_edj_test_p1)
 
    res = EINA_FALSE;
    pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
-                                  _test_progress_cb, _end_cb, NULL);
+                         NULL, _test_progress_cb, _end_cb, NULL);
    ecore_main_loop_begin();
    ck_assert_msg(res, "Progress callback did't called!");
 
@@ -178,7 +178,7 @@ EFLETE_TEST (pm_project_import_edj_test_p2)
 
    res = EINA_FALSE;
    pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
-                         NULL, _test_end_cb, NULL);
+                         NULL, NULL, _test_end_cb, NULL);
    ecore_main_loop_begin();
    ck_assert_msg(res, "End callback did't called!");
 

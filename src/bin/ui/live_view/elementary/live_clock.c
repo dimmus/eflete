@@ -55,11 +55,12 @@ widget_clock_create(Evas_Object *parent, const Group *group)
         elm_clock_show_am_pm_set(object, true);
      }
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, object);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_TEXT_SET, on_text_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SIGNAL_SEND, send_signal, NULL);
 
    elm_object_style_set(object, group->style);
+   evas_object_clip_set(object, evas_object_clip_get(parent));
 
    return object;
 }

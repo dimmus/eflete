@@ -21,24 +21,21 @@
 #include "widget_macro.h"
 
 static void
-_on_frame_swallow_check(void *data,
-                        Evas_Object *obj __UNUSED__,
+_on_frame_swallow_check(void *data __UNUSED__,
+                        Evas_Object *obj,
                         void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
    Evas_Object *frame_obj = NULL;
    Evas_Object *content = NULL;
 
-   assert(data != NULL);
-   Eina_List *frame_list = elm_box_children_get(data);
+   Eina_List *frame_list = elm_box_children_get(obj);
 
    EINA_LIST_FREE(frame_list, frame_obj)
      {
-        int content_type = part->swallow_content;
-
         if (part->change)
           {
-             if ((content_type == CONTENT_NONE) && (part->object))
+             if (part->object)
                {
                   content = elm_object_part_content_unset(frame_obj, part->name);
                   evas_object_del(content);
@@ -71,31 +68,28 @@ _on_frame_swallow_check(void *data,
 }
 
 static void
-_on_frame_text_check(void *data,
-                     Evas_Object *obj __UNUSED__,
+_on_frame_text_check(void *data __UNUSED__,
+                     Evas_Object *obj,
                      void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
    Evas_Object *frame_obj = NULL;
 
-   assert(data != NULL);
-   Eina_List *frame_list = elm_box_children_get(data);
+   Eina_List *frame_list = elm_box_children_get(obj);
 
    EINA_LIST_FREE(frame_list, frame_obj)
      elm_object_part_text_set(frame_obj, part->name, part->text_content);
 }
 
 static void
-_frame_send_signal(void *data,
-                   Evas_Object *obj __UNUSED__,
+_frame_send_signal(void *data __UNUSED__,
+                   Evas_Object *obj,
                    void *ei)
 {
    Demo_Signal *sig = (Demo_Signal *)ei;
    Evas_Object *frame_obj = NULL;
 
-   assert(data != NULL);
-
-   Eina_List* frame_list = elm_box_children_get(data);
+   Eina_List* frame_list = elm_box_children_get(obj);
    assert(sig != NULL);
    assert(sig->sig_name != NULL);
    assert(sig->source_name != NULL);
@@ -123,9 +117,10 @@ widget_frame_create(Evas_Object *parent, const Group *group)
    elm_box_pack_end(object, frame);
    elm_object_style_set(frame, group->style);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_frame_swallow_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, _on_frame_text_check, object);
-   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _frame_send_signal, object);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SWALLOW_SET, _on_frame_swallow_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_TEXT_SET, _on_frame_text_check, NULL);
+   evas_object_smart_callback_add(object, SIGNAL_DEMO_SIGNAL_SEND, _frame_send_signal, NULL);
+   evas_object_clip_set(object, evas_object_clip_get(parent));
 
    return object;
 }

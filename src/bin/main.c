@@ -28,27 +28,44 @@
 #include "tabs_private.h"
 #include "config.h"
 
-static char *open = NULL;
-static char *import_edj = NULL;
+static char *file = NULL;
 static char *pro_name = NULL;
 static char *pro_path = NULL;
-static Eina_Bool pro_replace = false;
+static Eina_List *img_dirs = NULL;
+static Eina_List *snd_dirs = NULL;
+static Eina_List *fnt_dirs = NULL;
+static Eina_List *data_dirs = NULL;
+static Eina_List *widgets = NULL;
+
+#define _ERR_EXIT(MSG, ...) \
+do { \
+   printf(_("ERROR: ")); \
+   printf(MSG, ## __VA_ARGS__); \
+   printf(_("\nERROR: invalid options found. See --help.\n")); \
+   return 1; \
+} while (0);
 
 static const Ecore_Getopt options = {
    PACKAGE_NAME,
-   "%prog [options]",
+   "%prog [OPTION]... [FILE]\n"
+   "  if FILE is *.pro: open project\n"
+   "  if FILE is *.edj: import edj\n"
+   "  if FILE is not specified but --name given: new project\n"
+   ,
    VERSION,
-   "(C) 2013-2014 Samsung Electronics.",
+   "(C) 2013-2016 Samsung Electronics.",
    "GNU Library General Public License version 2",
-   N_("This application was written for Enlightenment, to use EFL\n"
-   "and design to create and modify Elementary widgets styles.\n"),
+   "This application was written for Enlightenment, to use EFL\n"
+   "and design to create and modify Elementary widgets styles.\n",
    EINA_TRUE,
    {
-      ECORE_GETOPT_STORE_STR('o', "open", N_("Eflete project file")),
-      ECORE_GETOPT_STORE_STR(0, "import-edj", N_("Import the edj file as new project")),
-      ECORE_GETOPT_STORE_STR(0, "name", N_("Name for new project that would be created in import process")),
-      ECORE_GETOPT_STORE_STR(0, "path", N_("Path for project")),
-      ECORE_GETOPT_STORE_TRUE(0, "replace", N_("Replace existing project")),
+      ECORE_GETOPT_STORE_STR(0, "name", N_("Name for new project")),
+      ECORE_GETOPT_STORE_STR(0, "path", N_("Path to project directory")),
+      ECORE_GETOPT_APPEND_METAVAR('i', "id", "Add image directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
+      ECORE_GETOPT_APPEND_METAVAR('s', "sd", "Add sound directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
+      ECORE_GETOPT_APPEND_METAVAR('f', "fd", "Add font directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
+      ECORE_GETOPT_APPEND_METAVAR('d', "dd", "Add data directory for edc compilation", "DIR_NAME", ECORE_GETOPT_TYPE_STR),
+      ECORE_GETOPT_APPEND_METAVAR('w', "widget", "Add widget to new project", "WIDGET_NAME", ECORE_GETOPT_TYPE_STR),
       ECORE_GETOPT_STORE_TRUE('r', "reopen", "reopen last project"),
       ECORE_GETOPT_VERSION  ('v', "version"),
       ECORE_GETOPT_COPYRIGHT('c', "copyright"),
@@ -92,15 +109,65 @@ _open_project(void *data __UNUSED__)
                           _setup_open_splash,
                           _teardown_open_splash,
                           _cancel_open_splash,
-                          (void *)eina_stringshare_add(open));
+                          (void *)eina_stringshare_add(file));
    evas_object_show(ap.splash);
 }
 
 static void
 _import_edj(void *data __UNUSED__)
 {
-   tabs_menu_import_edj_data_set(pro_name, pro_path, import_edj);
+   const char *name;
+   Eina_Tmpstr *proj_name;
+   if (pro_name)
+     {
+        tabs_menu_import_edj_data_set(pro_name, pro_path, file);
+     }
+   else
+     {
+        name = ecore_file_file_get(file);
+        proj_name = eina_tmpstr_add_length(name, strlen(name) - 4);
+        tabs_menu_import_edj_data_set(proj_name, pro_path, file);
+        eina_tmpstr_del(proj_name);
+     }
    tabs_menu_tab_open(TAB_HOME_IMPORT_EDJ);
+}
+
+static void
+_import_edc(void *data __UNUSED__)
+{
+   const char *name;
+   Eina_Tmpstr *proj_name;
+   if (pro_name)
+     {
+        tabs_menu_import_edc_data_set(pro_name, pro_path, file, img_dirs, snd_dirs, fnt_dirs, data_dirs);
+     }
+   else
+     {
+        name = ecore_file_file_get(file);
+        proj_name = eina_tmpstr_add_length(name, strlen(name) - 4);
+        tabs_menu_import_edc_data_set(proj_name, pro_path, file, img_dirs, snd_dirs, fnt_dirs, data_dirs);
+        eina_tmpstr_del(proj_name);
+     }
+   tabs_menu_tab_open(TAB_HOME_IMPORT_EDC);
+}
+
+static void
+_new_project(void *data __UNUSED__)
+{
+   const char *name;
+   Eina_Tmpstr *proj_name;
+   if (pro_name)
+     {
+        tabs_menu_new_data_set(pro_name, pro_path, widgets);
+     }
+   else
+     {
+        name = ecore_file_file_get(file);
+        proj_name = eina_tmpstr_add_length(name, strlen(name) - 4);
+        tabs_menu_new_data_set(proj_name, pro_path, widgets);
+        eina_tmpstr_del(proj_name);
+     }
+   tabs_menu_tab_open(TAB_HOME_NEW_PROJECT);
 }
 
 EAPI_MAIN int
@@ -109,13 +176,16 @@ elm_main(int argc, char **argv)
    Eina_Bool info_only = false, reopen = false;
    Config *config;
    Recent *r;
+   int pos;
 
    Ecore_Getopt_Value values[] = {
-     ECORE_GETOPT_VALUE_STR(open),
-     ECORE_GETOPT_VALUE_STR(import_edj),
      ECORE_GETOPT_VALUE_STR(pro_name),
      ECORE_GETOPT_VALUE_STR(pro_path),
-     ECORE_GETOPT_VALUE_BOOL(pro_replace),
+     ECORE_GETOPT_VALUE_LIST(img_dirs),
+     ECORE_GETOPT_VALUE_LIST(snd_dirs),
+     ECORE_GETOPT_VALUE_LIST(fnt_dirs),
+     ECORE_GETOPT_VALUE_LIST(data_dirs),
+     ECORE_GETOPT_VALUE_LIST(widgets),
      ECORE_GETOPT_VALUE_BOOL(reopen),
      ECORE_GETOPT_VALUE_BOOL(info_only),
      ECORE_GETOPT_VALUE_BOOL(info_only),
@@ -132,7 +202,15 @@ elm_main(int argc, char **argv)
    enventor_init(argc, argv);
 #endif
 
-   ecore_getopt_parse(&options, values, argc, argv);
+   pos = ecore_getopt_parse(&options, values, argc, argv);
+   if (pos < 0)
+     return 1;
+   if (pos < argc - 1)
+     _ERR_EXIT(_("Only one file should be specified."));
+
+   if (pos == argc -1)
+     file = argv[pos];
+
    if (!info_only)
      {
 #ifdef HAVE_CONFIG_H
@@ -141,46 +219,113 @@ elm_main(int argc, char **argv)
         CRIT("Could not find 'eflete_config.h'");
 #endif
 
+        config_load();
+
+        if (reopen)
+          {
+             if (file)
+               _ERR_EXIT(_("--reopen is given but file specified."));
+             if (pro_name)
+               _ERR_EXIT(_("--reopen is given but --name specified."));
+             if (pro_path)
+               _ERR_EXIT(_("--repoen is given but --path specified."));
+             if (img_dirs)
+               _ERR_EXIT(_("--reopen is given but --id specified."));
+             if (snd_dirs)
+               _ERR_EXIT(_("--reopen is given but --sd specified."));
+             if (fnt_dirs)
+               _ERR_EXIT(_("--reopen is given but --fd specified."));
+             if (data_dirs)
+               _ERR_EXIT(_("--reopen is given but --dd specified."));
+             if (widgets)
+               _ERR_EXIT(_("widgets can be added only to new project."));
+
+             config = config_get();
+             if (!config->recents)
+               _ERR_EXIT(_("There are no previously opened projects yet."));
+
+             r = eina_list_data_get(config->recents);
+             file = r->path;
+             ecore_job_add(_open_project, NULL);
+             goto run;
+          }
+        if (file)
+          {
+             if (!ecore_file_exists(file))
+               _ERR_EXIT(_("File '%s' doesn't exists."), file);
+             if (ecore_file_is_dir(file))
+               _ERR_EXIT(_("'%s' is a directory."), file);
+             if (widgets)
+               _ERR_EXIT(_("widgets can be added only to new project."));
+
+             if (eina_str_has_suffix(file, ".pro"))
+               {
+                  if (pro_name)
+                    _ERR_EXIT(_("*.pro file is given but --name specified."));
+                  if (pro_path)
+                    _ERR_EXIT(_("*.pro file is given but --path specified."));
+                  if (img_dirs)
+                    _ERR_EXIT(_("*.pro file is given but --id specified."));
+                  if (snd_dirs)
+                    _ERR_EXIT(_("*.pro file is given but --sd specified."));
+                  if (fnt_dirs)
+                    _ERR_EXIT(_("*.pro file is given but --fd specified."));
+                  if (data_dirs)
+                    _ERR_EXIT(_("*.pro file is given but --dd specified."));
+
+                  ecore_job_add(_open_project, NULL);
+                  goto run;
+               }
+             else if (eina_str_has_suffix(file, ".edj"))
+               {
+                  if (img_dirs)
+                    _ERR_EXIT(_("*.edj file is given but --id specified."));
+                  if (snd_dirs)
+                    _ERR_EXIT(_("*.edj file is given but --sd specified."));
+                  if (fnt_dirs)
+                    _ERR_EXIT(_("*.edj file is given but --fd specified."));
+                  if (data_dirs)
+                    _ERR_EXIT(_("*.edj file is given but --dd specified."));
+
+                  ecore_job_add(_import_edj, NULL);
+                  goto run;
+               }
+             else if (eina_str_has_suffix(file, ".edc"))
+               {
+                  ecore_job_add(_import_edc, NULL);
+                  goto run;
+               }
+             else
+               _ERR_EXIT(_("Wrong file extension."));
+          }
+        else
+          {
+             if (!pro_name && pro_path)
+               _ERR_EXIT(_("no file or --name are given but --path specified."));
+             if (img_dirs)
+               _ERR_EXIT(_("no file is given but --id specified."));
+             if (snd_dirs)
+               _ERR_EXIT(_("no file is given but --sd specified."));
+             if (fnt_dirs)
+               _ERR_EXIT(_("no file is given but --fd specified."));
+             if (data_dirs)
+               _ERR_EXIT(_("no file is given but --dd specified."));
+
+             if (pro_name)
+               {
+                  ecore_job_add(_new_project, NULL);
+                  goto run;
+               }
+             else if (widgets)
+               _ERR_EXIT(_("widgets can be added only to new project."));
+          }
+
+run:
         if (!ui_main_window_add())
           {
              app_shutdown();
              return -1;
           }
-
-        if (reopen)
-          {
-             config = config_get();
-             if (!config->recents)
-               {
-                  ERR(_("There are no previously opened projects yet."));
-                  return 1;
-               }
-             r = eina_list_data_get(config->recents);
-             open = r->path;
-             ecore_job_add(_open_project, NULL);
-             goto run;
-          }
-        if (open)
-          {
-             if ((eina_str_has_suffix(open, ".pro")) &&
-                 (ecore_file_exists(open)))
-               {
-                  ecore_job_add(_open_project, NULL);
-                  goto run;
-               }
-             else
-               {
-                  ERR(_("Can not open file '%s'. Wrong path or file format."), open);
-                  return 1;
-               }
-          }
-        if (import_edj)
-          {
-            ecore_job_add(_import_edj, NULL);
-            goto run;
-          }
-
-run:
         evas_object_show(ap.win);
         elm_run();
 #ifdef HAVE_ENVENTOR

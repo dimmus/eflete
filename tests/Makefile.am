@@ -10,23 +10,11 @@ eflete_test \
 alloc_test \
 diff_test \
 change_test \
-new_history_test \
+history_test \
 logger_test \
-container_test \
-modal_window_test \
 project_manager_test \
 config_test \
-cursor_test \
-highlight_test \
-ui_main_window_test \
-groupedit_test \
-ui_workspace_test \
-animator_test \
-live_widget_test \
-about_window_test \
-colorselector_test \
-shortcuts_test
-
+cursor_test
 
 check_PROGRAMS = ${TESTS}
 
@@ -43,18 +31,13 @@ FLAGS = \
 -I${top_srcdir}/src/bin/config \
 -I${top_srcdir}/src/bin/history \
 -I${top_srcdir}/src/bin/ui \
--I${top_srcdir}/src/bin/ui/container \
 -I${top_srcdir}/src/bin/ui/blocks \
 -I${top_srcdir}/src/bin/ui/dialogs \
 -I${top_srcdir}/src/bin/ui/editors \
--I${top_srcdir}/src/bin/ui/modal_window \
 -I${top_srcdir}/src/bin/ui/notification \
 -I${top_srcdir}/src/bin/ui/preference \
--I${top_srcdir}/src/bin/ui/workspace \
--I${top_srcdir}/src/bin/ui/workspace/groupedit \
 -I${top_srcdir}/src/bin/ui/live_view \
 -I${top_srcdir}/src/bin/ui/live_view/elementary \
--I${top_srcdir}/src/bin/ui/shortcuts \
 -I${top_srcdir}/tests \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
@@ -68,6 +51,23 @@ LD = $(top_builddir)/src/bin/libete.a \
 @ELEMENTARY_LIBS@ \
 ${top_builddir}/src/lib/libewe.la \
 @ENVENTOR_LIBS@
+
+include_HEADERS = \
+	../tests/test_common.h \
+	../tests/utc_common.h \
+	../tests/test_ewe_init/test_ewe_init.h \
+	../tests/test_ewe_ruler/test_ewe_ruler.h \
+	../tests/test_ewe_combobox/test_ewe_combobox.h \
+	../tests/test_eflete/test_eflete.h \
+	../tests/test_alloc/test_alloc.h \
+	../tests/test_diff/test_diff.h \
+	../tests/test_change/test_change.h \
+	../tests/test_history/test_history.h \
+	../tests/test_logger/test_logger.h \
+	../tests/test_project_manager/test_project_manager.h \
+	../tests/test_config/test_config.h \
+	../tests/test_cursor/test_cursor.h \
+	../tests/test_live_widget/test_live_widget.h
 
 ewe_init_test_SOURCES = \
 ../tests/test_ewe_init/test_ewe_init.c \
@@ -126,10 +126,7 @@ ewe_combobox_test_LDADD = ${LD}
 eflete_test_SOURCES = \
 ../tests/test_eflete/test_eflete.c \
 ../tests/test_eflete/app_init.c \
-../tests/test_eflete/app_shutdown.c \
-../tests/test_eflete/win_layout_get.c \
-../tests/test_eflete/main_window_get.c \
-../tests/test_eflete/colorselector_get.c
+../tests/test_eflete/app_shutdown.c
 eflete_test_CFLAGS = ${FLAGS}
 eflete_test_LDADD = ${LD}
 
@@ -157,14 +154,14 @@ change_test_SOURCES = \
 change_test_CFLAGS = ${FLAGS}
 change_test_LDADD = ${LD}
 
-new_history_test_SOURCES = \
-../tests/test_new_history/test_new_history.c \
-../tests/test_new_history/history_add.c \
-../tests/test_new_history/history_del.c \
-../tests/test_new_history/history_change_add.c \
-../tests/test_new_history/history_undo_redo.c
-new_history_test_CFLAGS = ${FLAGS}
-new_history_test_LDADD = ${LD}
+history_test_SOURCES = \
+../tests/test_history/test_history.c \
+../tests/test_history/history_add.c \
+../tests/test_history/history_del.c \
+../tests/test_history/history_change_add.c \
+../tests/test_history/history_undo_redo.c
+history_test_CFLAGS = ${FLAGS}
+history_test_LDADD = ${LD}
 
 logger_test_SOURCES = \
 ../tests/test_logger/test_logger.c \
@@ -172,15 +169,6 @@ logger_test_SOURCES = \
 ../tests/test_logger/logger_shutdown.c
 logger_test_CFLAGS = ${FLAGS}
 logger_test_LDADD = ${LD}
-
-modal_window_test_SOURCES =  \
-../tests/test_modal_window/test_modal_window.c \
-../tests/test_modal_window/mw_add.c \
-../tests/test_modal_window/mw_title_set.c \
-../tests/test_modal_window/mw_info_text_set.c \
-../tests/test_modal_window/mw_icon_set.c
-modal_window_test_CFLAGS = ${FLAGS}
-modal_window_test_LDADD = ${LD}
 
 project_manager_test_SOURCES = \
 ../tests/test_project_manager/test_project_manager.c \
@@ -192,8 +180,7 @@ project_manager_test_SOURCES = \
 ../tests/test_project_manager/pm_project_save.c \
 ../tests/test_project_manager/pm_project_close.c \
 ../tests/test_project_manager/pm_project_meta_data_set.c \
-../tests/test_project_manager/pm_project_meta_data_get.c \
-../tests/test_project_manager/pm_style_resource_export.c
+../tests/test_project_manager/pm_project_meta_data_get.c
 project_manager_test_CFLAGS = ${FLAGS}
 project_manager_test_LDADD = ${LD}
 
@@ -221,122 +208,12 @@ cursor_test_SOURCES = \
 cursor_test_CFLAGS = ${FLAGS}
 cursor_test_LDADD = ${LD}
 
-container_test_SOURCES = \
-../tests/test_container/test_container.c \
-../tests/test_container/container_add.c \
-../tests/test_container/container_container_size_set.c \
-../tests/test_container/container_container_size_get.c \
-../tests/test_container/container_min_size_set.c \
-../tests/test_container/container_max_size_set.c \
-../tests/test_container/container_handler_size_set.c \
-../tests/test_container/container_handler_size_get.c \
-../tests/test_container/container_style_get.c \
-../tests/test_container/container_style_set.c \
-../tests/test_container/container_border_hide.c \
-../tests/test_container/container_border_show.c \
-../tests/test_container/container_padding_size_set.c \
-../tests/test_container/container_padding_size_get.c \
-../tests/test_container/container_content_set.c \
-../tests/test_container/container_content_unset.c
-container_test_CFLAGS = ${FLAGS}
-container_test_LDADD = ${LD}
-
-highlight_test_SOURCES = \
-../tests/test_highlight/test_highlight.c \
-../tests/test_highlight/highlight_add.c \
-../tests/test_highlight/highlight_handler_disabled_set.c \
-../tests/test_highlight/highlight_handler_align_hide.c \
-../tests/test_highlight/highlight_handler_align_show.c \
-../tests/test_highlight/highlight_handler_align_visible_get.c \
-../tests/test_highlight/highlight_handler_mode_set.c \
-../tests/test_highlight/highlight_object_follow.c \
-../tests/test_highlight/highlight_object_unfollow.c
-highlight_test_CFLAGS = ${FLAGS}
-highlight_test_LDADD = ${LD}
-
-ui_main_window_test_SOURCES = \
-../tests/test_ui_main_window/test_ui_main_window.c \
-../tests/test_ui_main_window/ui_main_window_add.c \
-../tests/test_ui_main_window/ui_main_window_del.c \
-../tests/test_ui_main_window/ui_menu_add.c \
-../tests/test_ui_main_window/ui_menu_disable_set.c \
-../tests/test_ui_main_window/ui_menu_items_list_disable_set.c \
-../tests/test_ui_main_window/ui_part_select.c \
-../tests/test_ui_main_window/ui_state_select.c \
-../tests/test_ui_main_window/ui_style_back.c \
-../tests/test_ui_main_window/ui_style_delete.c
-ui_main_window_test_CFLAGS = ${FLAGS}
-ui_main_window_test_LDADD = ${LD}
-
-#preference_test_SOURCES = \
-#../tests/test_preference/test_preference.c \
-#../tests/test_preference/preference_add.c \
-#../tests/test_preference/preferences_project_autosave_update.c
-#preference_test_CFLAGS = ${FLAGS}
-#preference_test_LDADD = ${LD}
-
-ui_workspace_test_SOURCES = \
-../tests/test_ui_workspace/test_ui_workspace.c \
-../tests/test_ui_workspace/workspace_add.c \
-../tests/test_ui_workspace/workspace_edit_object_part_state_set.c \
-../tests/test_ui_workspace/workspace_edit_object_recalc.c \
-../tests/test_ui_workspace/workspace_zoom_factor_get.c \
-../tests/test_ui_workspace/workspace_zoom_factor_set.c \
-../tests/test_ui_workspace/workspace_separate_mode_set.c \
-../tests/test_ui_workspace/workspace_separate_mode_get.c \
-../tests/test_ui_workspace/workspace_highlight_align_visible_get.c \
-../tests/test_ui_workspace/workspace_highlight_align_visible_set.c \
-../tests/test_ui_workspace/workspace_object_area_visible_get.c \
-../tests/test_ui_workspace/workspace_object_area_visible_set.c
-ui_workspace_test_CFLAGS = ${FLAGS}
-ui_workspace_test_LDADD = ${LD}
-
-groupedit_test_SOURCES = \
-../tests/test_groupedit/test_groupedit.c \
-../tests/test_groupedit/groupedit_add.c \
-../tests/test_groupedit/groupedit_edit_object_part_above.c \
-../tests/test_groupedit/groupedit_edit_object_part_below.c \
-../tests/test_groupedit/groupedit_edit_object_part_draw_get.c \
-../tests/test_groupedit/groupedit_edit_object_part_select.c \
-../tests/test_groupedit/groupedit_edit_object_parts_separated.c \
-../tests/test_groupedit/groupedit_edit_object_parts_separated_is.c \
-../tests/test_groupedit/groupedit_edit_object_recalc_all.c
-groupedit_test_CFLAGS = ${FLAGS}
-groupedit_test_LDADD = ${LD}
-
-animator_test_SOURCES = \
-../tests/test_animator/test_animator.c \
-../tests/test_animator/animator_window_add_test.c
-animator_test_CFLAGS = ${FLAGS}
-animator_test_LDADD = ${LD}
-
 live_widget_test_SOURCES = \
 ../tests/test_live_widget/test_live_widget.c \
 ../tests/test_live_widget/live_widget_create.c \
 ../tests/test_live_widget/live_widget_del.c
 live_widget_test_CFLAGS = ${FLAGS}
 live_widget_test_LDADD = ${LD}
-
-about_window_test_SOURCES = \
-../tests/test_about_window/test_about_window.c \
-../tests/test_about_window/about_window_add.c
-about_window_test_CFLAGS = ${FLAGS}
-about_window_test_LDADD = ${LD}
-
-shortcuts_test_SOURCES = \
-../tests/test_shortcuts/test_shortcuts.c \
-../tests/test_shortcuts/shortcuts_init.c \
-../tests/test_shortcuts/shortcuts_shutdown.c \
-../tests/test_shortcuts/shortcuts_profile_load.c
-shortcuts_test_CFLAGS = ${FLAGS}
-shortcuts_test_LDADD = ${LD}
-
-colorselector_test_SOURCES = \
-../tests/test_colorselector/test_colorselector.c \
-../tests/test_colorselector/colorselector_add.c \
-../tests/test_colorselector/colorselector_color_get.c
-colorselector_test_CFLAGS = ${FLAGS}
-colorselector_test_LDADD = ${LD}
 
 coverage:
 	echo "<html><body>" > ../coverage.html
@@ -359,3 +236,6 @@ coverage:
 		echo "" ; \
 	done;
 	echo "</body></html>" >> ../coverage.html
+
+EXTRA_DIST = \
+	tests_report_generator.py

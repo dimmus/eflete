@@ -48,7 +48,7 @@
  * @ingroup Partlist
  */
 Evas_Object *
-group_navigator_add(Group *group);
+group_navigator_add(Evas_Object *parent, Group *group);
 
 /**
  * @ingroup Partlist
@@ -99,4 +99,33 @@ group_navigator_program_add(Evas_Object *obj, Eina_Stringshare *program);
 void
 group_navigator_program_del(Evas_Object *obj, Eina_Stringshare *program);
 
+void
+group_navigator_add_part_request(Evas_Object *obj);
+
+void
+group_navigator_add_part_item_request(Evas_Object *obj);
+
+void
+group_navigator_add_state_request(Evas_Object *obj);
+
+void
+group_navigator_add_program_request(Evas_Object *obj);
+
+void
+group_navigator_delete_request(Evas_Object *obj);
+
+void
+group_navigator_state_next_request(Evas_Object *obj);
+
+void
+group_navigator_part_next_request(Evas_Object *obj);
+
+void
+group_navigator_part_prev_request(Evas_Object *obj);
+
+void
+group_navigator_part_showhide_request(Evas_Object *obj);
+
+void
+group_navigator_all_parts_showhide_request(Evas_Object *obj);
 #endif /* GROUP_NAVIGATOR_H */

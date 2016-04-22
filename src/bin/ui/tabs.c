@@ -324,6 +324,36 @@ _property_attribute_changed(void *data __UNUSED__,
 }
 
 static void
+_demo_swallow_set(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *ei)
+{
+   assert(tabs.current_workspace != NULL);
+
+   workspace_demo_swallow_set(tabs.current_workspace, (Demo_Part *)ei);
+}
+
+static void
+_demo_text_set(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *ei)
+{
+   assert(tabs.current_workspace != NULL);
+
+   workspace_demo_text_set(tabs.current_workspace, (Demo_Part *)ei);
+}
+
+static void
+_demo_send_signal(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *ei)
+{
+   assert(tabs.current_workspace != NULL);
+
+   workspace_demo_signal_set(tabs.current_workspace, (Demo_Signal *)ei);
+}
+
+static void
 _part_renamed(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *ei)
@@ -338,18 +368,6 @@ _part_renamed(void *data __UNUSED__,
    part = pm_resource_unsorted_get(tabs.current_group->parts, ren->old_name);
    gm_part_rename(part, ren->new_name);
    workspace_group_navigator_update_part(tabs.current_workspace, part);
-   TODO("update live_view here");
-}
-
-static void
-_part_unselected(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *ei __UNUSED__)
-{
-   assert(tabs.current_group != NULL);
-   assert(tabs.current_workspace != NULL);
-
-   workspace_highlight_unset(tabs.current_workspace);
 }
 
 static void
@@ -577,6 +595,302 @@ _editor_part_item_restacked_cb(void *data __UNUSED__,
                                editor_part_item_restack->relative_part_item);
 }
 
+static void
+_shortcut_add_part_cb(void *data __UNUSED__,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_add_part_request(tabs.current_workspace);
+}
+
+static void
+_shortcut_add_part_item_cb(void *data __UNUSED__,
+                           Evas_Object *obj __UNUSED__,
+                           void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_add_part_item_request(tabs.current_workspace);
+}
+
+static void
+_shortcut_add_state_cb(void *data __UNUSED__,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_add_state_request(tabs.current_workspace);
+}
+
+static void
+_shortcut_add_program_cb(void *data __UNUSED__,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_add_program_request(tabs.current_workspace);
+}
+
+static void
+_shortcut_del_cb(void *data __UNUSED__,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_delete_request(tabs.current_workspace);
+}
+
+static void
+_shortcut_state_next_cb(void *data __UNUSED__,
+                        Evas_Object *obj __UNUSED__,
+                        void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_state_next_request(tabs.current_workspace);
+}
+
+static void
+_shortcut_part_next_cb(void *data __UNUSED__,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_part_next_request(tabs.current_workspace);
+}
+
+static void
+_shortcut_part_prev_cb(void *data __UNUSED__,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_part_prev_request(tabs.current_workspace);
+}
+
+static void
+_shortcut_part_showhide_cb(void *data __UNUSED__,
+                           Evas_Object *obj __UNUSED__,
+                           void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_part_showhide_request(tabs.current_workspace);
+}
+
+static void
+_shortcut_part_unselect_cb(void *data __UNUSED__,
+                           Evas_Object *obj __UNUSED__,
+                           void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_part_unselect_request(tabs.current_workspace);
+}
+
+static void
+_shortcut_all_parts_showhide_cb(void *data __UNUSED__,
+                                Evas_Object *obj __UNUSED__,
+                                void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_all_parts_showhide_request(tabs.current_workspace);
+}
+
+static void
+_shortcut_tab_next_cb(void *data __UNUSED__,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
+{
+   Eina_List *l;
+   Tabs_Item *item;
+
+   l = eina_list_next(eina_list_data_find_list(tabs.items, elm_object_item_data_get(tabs.selected)));
+   item = eina_list_data_get(l);
+   if (item)
+     elm_toolbar_item_selected_set(item->toolbar_item, true);
+}
+
+static void
+_shortcut_tab_prev_cb(void *data __UNUSED__,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
+{
+   Eina_List *l;
+   Tabs_Item *item;
+
+   l = eina_list_prev(eina_list_data_find_list(tabs.items, elm_object_item_data_get(tabs.selected)));
+   item = eina_list_data_get(l);
+   if (item)
+     elm_toolbar_item_selected_set(item->toolbar_item, true);
+}
+
+static void
+_shortcut_tab_num_cb(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info)
+{
+   int num = *((int *)event_info);
+   Tabs_Item *item;
+
+   item = eina_list_nth(tabs.items, num - 1);
+   if (item)
+     elm_toolbar_item_selected_set(item->toolbar_item, true);
+}
+
+static void
+_shortcut_tab_close_cb(void *data __UNUSED__,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+   /* trigger focus out callback on entries before closing tab */
+   elm_object_focus_set(tabs.toolbar, true);
+   tabs_current_tab_close();
+}
+
+static void
+_shortcut_tab_image_manager_cb(void *data __UNUSED__,
+                               Evas_Object *obj __UNUSED__,
+                               void *event_info __UNUSED__)
+{
+   if (!elm_object_item_disabled_get(tabs.menu.item_image))
+     elm_toolbar_item_selected_set(tabs.menu.item_image, true);
+}
+
+static void
+_shortcut_tab_sound_manager_cb(void *data __UNUSED__,
+                               Evas_Object *obj __UNUSED__,
+                               void *event_info __UNUSED__)
+{
+   if (!elm_object_item_disabled_get(tabs.menu.item_sound))
+     elm_toolbar_item_selected_set(tabs.menu.item_sound, true);
+}
+
+static void
+_shortcut_tab_color_class_manager_cb(void *data __UNUSED__,
+                                     Evas_Object *obj __UNUSED__,
+                                     void *event_info __UNUSED__)
+{
+   if (!elm_object_item_disabled_get(tabs.menu.item_colorclass))
+     elm_toolbar_item_selected_set(tabs.menu.item_colorclass, true);
+}
+
+static void
+_shortcut_tab_style_manager_cb(void *data __UNUSED__,
+                               Evas_Object *obj __UNUSED__,
+                               void *event_info __UNUSED__)
+{
+   if (!elm_object_item_disabled_get(tabs.menu.item_text))
+     elm_toolbar_item_selected_set(tabs.menu.item_text, true);
+}
+
+static void
+_shortcut_mode_normal_cb(void *data __UNUSED__,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_mode_set(tabs.current_workspace, MODE_NORMAL);
+}
+
+static void
+_shortcut_mode_code_cb(void *data __UNUSED__,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_mode_set(tabs.current_workspace, MODE_CODE);
+}
+
+static void
+_shortcut_mode_demo_cb(void *data __UNUSED__,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_mode_set(tabs.current_workspace, MODE_DEMO);
+}
+
+static void
+_shortcut_zoom_in_cb(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   double factor;
+
+   if (tabs.current_workspace)
+     {
+        factor = workspace_zoom_factor_get(tabs.current_workspace);
+        workspace_zoom_factor_set(tabs.current_workspace, factor + 0.1);
+     }
+}
+
+static void
+_shortcut_zoom_out_cb(void *data __UNUSED__,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
+{
+   double factor;
+
+   if (tabs.current_workspace)
+     {
+        factor = workspace_zoom_factor_get(tabs.current_workspace);
+        workspace_zoom_factor_set(tabs.current_workspace, factor - 0.1);
+     }
+}
+
+static void
+_shortcut_zoom_reset_cb(void *data __UNUSED__,
+                        Evas_Object *obj __UNUSED__,
+                        void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_zoom_factor_set(tabs.current_workspace, 1.0);
+}
+
+static void
+_shortcut_fill_cb(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_container_fill(tabs.current_workspace);
+}
+
+static void
+_shortcut_fit_cb(void *data __UNUSED__,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_container_fit(tabs.current_workspace);
+}
+
+static void
+_shortcut_object_area_cb(void *data __UNUSED__,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info __UNUSED__)
+{
+   Eina_Bool visible;
+
+   if (tabs.current_workspace)
+     {
+        visible = workspace_object_area_visible_get(tabs.current_workspace);
+        workspace_object_area_visible_set(tabs.current_workspace, !visible);
+     }
+}
+
+static void
+_shortcut_rulers_visible_cb(void *data __UNUSED__,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info __UNUSED__)
+{
+   Eina_Bool visible;
+
+   if (tabs.current_workspace)
+     {
+        visible = workspace_rulers_visible_get(tabs.current_workspace);
+        workspace_rulers_visible_set(tabs.current_workspace, !visible);
+     }
+}
+
 Evas_Object *
 tabs_add(void)
 {
@@ -658,8 +972,11 @@ tabs_add(void)
    elm_object_item_disabled_set(tabs.menu.item_text, true);
    elm_object_item_disabled_set(tabs.menu.item_colorclass, true);
 
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _demo_swallow_set, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, _demo_text_set, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _demo_send_signal, NULL);
+
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PART_UNSELECTED, _part_unselected, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _project_changed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_SAVED, _editor_saved, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_OPENED, _project_opened, NULL);
@@ -678,6 +995,35 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_ADDED, _editor_program_added_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_DELETED, _editor_program_deleted_cb, NULL);
 
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_PART, _shortcut_add_part_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_ITEM, _shortcut_add_part_item_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_STATE, _shortcut_add_state_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_PROGRAM, _shortcut_add_program_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_DEL, _shortcut_del_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_STATE_NEXT, _shortcut_state_next_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_PART_NEXT, _shortcut_part_next_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_PART_PREV, _shortcut_part_prev_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_PART_SHOWHIDE, _shortcut_part_showhide_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_PART_UNSELECT, _shortcut_part_unselect_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ALL_PARTS_SHOWHIDE, _shortcut_all_parts_showhide_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_NEXT, _shortcut_tab_next_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_PREV, _shortcut_tab_prev_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_NUM, _shortcut_tab_num_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_CLOSE, _shortcut_tab_close_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_IMAGE_MANAGER, _shortcut_tab_image_manager_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_SOUND_MANAGER, _shortcut_tab_sound_manager_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_COLOR_CLASS_MANAGER, _shortcut_tab_color_class_manager_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_STYLE_MANAGER, _shortcut_tab_style_manager_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_MODE_NORMAL, _shortcut_mode_normal_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_MODE_CODE, _shortcut_mode_code_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_MODE_DEMO, _shortcut_mode_demo_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ZOOM_IN, _shortcut_zoom_in_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ZOOM_OUT, _shortcut_zoom_out_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ZOOM_RESET, _shortcut_zoom_reset_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_FIT, _shortcut_fit_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_FILL, _shortcut_fill_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_OBJECT_AREA, _shortcut_object_area_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_RULERS_VISIBLED, _shortcut_rulers_visible_cb, NULL);
    return tabs.layout;
 }
 
@@ -744,6 +1090,19 @@ void
 tabs_menu_import_edj_data_set(const char *name, const char *path, const char *edj)
 {
    _tab_import_edj_data_set(name, path, edj);
+}
+
+void
+tabs_menu_import_edc_data_set(const char *name, const char *path, const char *edc,
+                              const Eina_List *img, const Eina_List *snd, const Eina_List *fnt, const Eina_List *dd)
+{
+   _tab_import_edc_data_set(name, path, edc, img, snd, fnt, dd);
+}
+
+void
+tabs_menu_new_data_set(const char *name, const char *path, const Eina_List *widgets)
+{
+   _tab_new_data_set(name, path, widgets);
 }
 
 static void

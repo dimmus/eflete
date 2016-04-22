@@ -18,7 +18,6 @@
  */
 
 #include "test_project_manager.h"
-#include "test_common.h"
 #include "editor.h"
 
 /**
@@ -55,43 +54,35 @@
  * </tr>
  * @}
  */
+static void
+_test_end_cb(void *data __UNUSED__,
+             PM_Project_Result result __UNUSED__)
+{
+   ecore_main_loop_quit();
+}
+
 EFLETE_TEST (pm_project_save_test_p)
 {
    Project *pro;
-   /*Widget *widget;
-   Class *class_st;
-   Style *style;
-   Part *part;
-   Eet_File *ef;*/
-ck_assert(false);
+
    elm_init(0,0);
    app_init();
+   ecore_file_recursive_rm("./UTC");
 
-   pro = setup("pm_project_save_test_p");
-/*   EINA_INLIST_FOREACH(pro->widgets, widget)
-     {
-        EINA_INLIST_FOREACH(widget->classes, class_st)
-          {
-             EINA_INLIST_FOREACH(class_st->styles, style)
-               {
-                    EINA_INLIST_FOREACH(style->parts, part)
-                      {
-                         editor_state_min_w_set(style->obj, NULL, false,
-                                                part->name, "default", 0.0, 10);
-                      }
-               }
-          }
-     }
-   pm_project_save(pro, NULL, _test_end_cb, NULL);
+   pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
+                         NULL, NULL, _test_end_cb, NULL);
    ecore_main_loop_begin();
 
-   ef = eet_open("./UTC/UTC.dev.backup", EET_FILE_MODE_WRITE);
-   ck_assert_msg(ef != NULL, "Project not saved!");
+   pro = pm_project_thread_project_get();
+   pm_project_thread_free();
 
-   eet_close(ef);*/
+   pm_project_save(pro, NULL, _test_end_cb, NULL);
+   ecore_main_loop_begin();
+   pm_project_thread_free();
+
    pm_project_close(pro);
-   teardown("./pm_project_save_test_p");
-   ecore_file_recursive_rm("./UTC");
+
+   ck_assert_msg(ecore_file_exists("./UTC/UTC.edj"), "Project does't saved.");
 
    app_shutdown();
    elm_shutdown();

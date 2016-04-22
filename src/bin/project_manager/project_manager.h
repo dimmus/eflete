@@ -59,6 +59,8 @@ struct _Project
    Eina_Stringshare *name;
    /** project path */
    Eina_Stringshare *pro_path;
+   /** the .pro file descriptor */
+   Eet_File *ef;
    /** this is worrking file, all changes are happened in this file. */
    Eina_Stringshare *dev;
    /** ecore evas buffer for project objects */
@@ -72,6 +74,9 @@ struct _Project
    Eina_Stringshare *develop_path;
    /** compile options for release edj file. see edje_cc reference */
    Eina_Stringshare *release_options;
+
+   /** The checked widgets. Used for loading just checked widgets. */
+   Eina_List *widgets;
 
    Eina_List *groups;
    Eina_List *images;
@@ -131,6 +136,7 @@ enum _PM_Project_Result
    PM_PROJECT_SUCCESS,
    PM_PROJECT_CANCEL,
    PM_PROJECT_ERROR,
+   PM_PROJECT_LOCKED,
    PM_PROJECT_LAST
 };
 
@@ -215,6 +221,7 @@ void
 pm_project_import_edj(const char *name,
                       const char *path,
                       const char *edj,
+                      Eina_List *list,
                       PM_Project_Progress_Cb func_progress,
                       PM_Project_End_Cb func_end,
                       const void *data) EINA_ARG_NONNULL(1, 2, 3);
@@ -516,27 +523,16 @@ pm_project_enventor_save(Project *project,
                          const void *data) EINA_ARG_NONNULL(1);
 
 /**
- * Export the resources, that uses into given style.
+ * Check the lock of given file.
  *
- * This function collect lists of the resources, that uses in tgiven style. It
- * can be images, sounds or fonts.
- * Export images into directory path/images, in case if image stored in edj
- * have path (like: O/border.png) path will restored (path/images/O/border.png).
- * Will exported all images for group, include images from tween lists.
- * Export sounds, that uses in programs. Will saved into directory path/sounds
- * Export fonts into directory path/fonts
+ * @param path The path to checked file
  *
- * @param pro The opened project;
- * @param style The style to save the source code;
- * @param path The dir, where resources will stored.
+ * @return EINA_TRUE if file not locked, owerise EINA_FALSE.
  *
- * @return EINA_TRUE if resources exported successful or EINA_FALSE in otherwise.
- *
- * @ingroup ProjectManager.
+ * @ingroup ProjectManager
  */
-//Eina_Bool
-//pm_style_resource_export(Project *pro, Style *style, Eina_Stringshare *path);
-
+Eina_Bool
+pm_lock_check(const char *path) EINA_ARG_NONNULL(1);
 
 /**
  * @struct _Resource

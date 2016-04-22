@@ -45,6 +45,20 @@ Evas_Object *
 object_generate(Demo_Part *part, Evas_Object *object);
 
 /**
+ * Common object deletion handler which delete and remove all callbacks
+ * (related to setting swallow and text) attached to window.
+ *
+ * Most of fields are unused. No data or event is required at all.
+ *
+ * @ingroup Live_Elementary_Widgets
+ */
+void
+demo_object_del(void *data,
+                Evas *evas,
+                Evas_Object *object,
+                void *event_info);
+
+/**
  * Common Swallow callback that is used in most of simple widgets.
  *
  * @param data data from callback register.

@@ -36,17 +36,14 @@ includesub_HEADERS = \
 	ui/property/property_private.h \
 	ui/tabs.h \
 	ui/tabs_private.h \
-	ui/dialogs/about_window.h \
-	ui/dialogs/colorsel.h \
 	ui/live_view/demo.h \
 	ui/live_view/live_widget.h \
 	ui/live_view/live_widgets.h \
 	ui/live_view/elementary/live_elementary_widgets.h \
-	ui/modal_window/modal_window.h \
 	ui/preference/preference.h \
 	ui/shortcuts/shortcuts.h \
-	ui/workspace/groupedit.h \
-	ui/workspace/groupedit_private.h \
+	ui/workspace/groupview.h \
+	ui/workspace/groupview_private.h \
 	ui/workspace/highlight.h\
 	ui/workspace/container.h \
 	ui/workspace/demo_group.h \
@@ -87,9 +84,6 @@ libete_a_SOURCES = \
 ../../src/bin/ui/shortcuts/shortcuts.c \
 ../../src/bin/ui/style_manager.c \
 ../../src/bin/ui/sound_manager.c \
-../../src/bin/ui/dialogs/about_window.c \
-../../src/bin/ui/dialogs/colorsel.c \
-../../src/bin/ui/modal_window/modal_window.c \
 ../../src/bin/ui/project_navigator.c \
 ../../src/bin/ui/image_manager.c \
 ../../src/bin/ui/colorclass_manager.c \
@@ -108,8 +102,8 @@ libete_a_SOURCES = \
 ../../src/bin/ui/property/property_image.c \
 ../../src/bin/ui/property/property_group.c \
 ../../src/bin/ui/workspace/workspace.c \
-../../src/bin/ui/workspace/groupedit_calc.c \
-../../src/bin/ui/workspace/groupedit.c \
+../../src/bin/ui/workspace/groupview_calc.c \
+../../src/bin/ui/workspace/groupview.c \
 ../../src/bin/ui/workspace/highlight.c \
 ../../src/bin/ui/workspace/demo_group.c \
 ../../src/bin/ui/workspace/group_navigator.c \
@@ -168,9 +162,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/bin/ui/shortcuts \
 -I${top_srcdir}/src/bin/ui/container \
 -I${top_srcdir}/src/bin/ui/blocks \
--I${top_srcdir}/src/bin/ui/dialogs \
 -I${top_srcdir}/src/bin/ui/editors \
--I${top_srcdir}/src/bin/ui/modal_window \
 -I${top_srcdir}/src/bin/ui/notification \
 -I${top_srcdir}/src/bin/ui/workspace \
 -I${top_srcdir}/src/bin/ui/live_view \

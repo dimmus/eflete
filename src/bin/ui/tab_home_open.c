@@ -82,6 +82,13 @@ _open(void *data __UNUSED__,
    selected = elm_fileselector_selected_get(tab.fs);
    if ((!selected) || !eina_str_has_suffix(selected, ".pro")) return;
 
+   if (!pm_lock_check(selected))
+     {
+       popup_want_action(_("Open project"), _("The given file is locked by another application"),
+                         NULL, NULL, BTN_OK, NULL, NULL);
+       return;
+     }
+
    ap.splash = splash_add(ap.win,
                           _setup_open_splash,
                           _teardown_open_splash,
@@ -149,6 +156,14 @@ _open_recent(void *data,
    if (ap.project)
      if (!project_close())
        return;
+
+   if (!pm_lock_check(r->path))
+     {
+       popup_want_action(_("Open project"), _("The given file is locked by another application"),
+                         NULL, NULL, BTN_OK, NULL, NULL);
+       return;
+     }
+
    ap.splash = splash_add(ap.win,
                           _setup_open_splash,
                           _teardown_open_splash,

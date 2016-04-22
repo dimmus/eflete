@@ -19,7 +19,7 @@
 
 #include "property.h"
 #include "property_private.h"
-#include "colorsel.h"
+#include "main_window.h"
 
 static void
 _on_color_change(void *data,
@@ -31,27 +31,25 @@ _on_color_change(void *data,
 
    assert(control != NULL);
 
-   colorselector_color_get(obj, &r, &g, &b, &a);
+   elm_colorselector_color_get(obj, &r, &g, &b, &a);
    property_color_control_color_set(control, r, g, b, a);
    evas_object_smart_callback_call(control, "changed", NULL);
 }
 
-static void
+static Eina_Bool
 _on_dismissed(void *data,
-                    Evas_Object *obj,
-                    void *event_info __UNUSED__)
+              Evas_Object *obj,
+              void *event_info __UNUSED__)
 {
    Evas_Object *control = data;
 
    assert(control != NULL);
 
-   evas_object_smart_callback_del_full(obj, "color,changed", _on_color_change, control);
-   evas_object_smart_callback_del_full(obj, "dismissed", _on_dismissed, control);
-
    elm_object_scroll_freeze_pop(control);
    evas_object_smart_callback_call(control, "dismissed", NULL);
 
    evas_object_hide(obj);
+   return true;
 }
 
 static void
@@ -60,21 +58,16 @@ _on_color_clicked(void *data __UNUSED__,
                   const char *emission __UNUSED__,
                   const char *source __UNUSED__)
 {
-   int x, y;
    int r, g, b, a;
-   Evas_Object *colorsel;
 
    assert(control != NULL);
 
-   colorsel = colorselector_get();
    property_color_control_color_get(control, &r, &g, &b, &a);
-   colorselector_color_set(colorsel, r, g, b, a);
+   popup_colorselector_helper(control,
+                              _on_dismissed,
+                              _on_color_change,
+                              control, r, g, b, a);
    elm_object_scroll_freeze_push(control);
-   evas_object_smart_callback_add(colorsel, "color,changed", _on_color_change, control);
-   evas_object_smart_callback_add(colorsel, "dismissed", _on_dismissed, control);
-   evas_object_geometry_get(control, &x, &y, NULL, NULL);
-   evas_object_move(colorsel, x, y);
-   evas_object_show(colorsel);
 }
 
 Evas_Object *

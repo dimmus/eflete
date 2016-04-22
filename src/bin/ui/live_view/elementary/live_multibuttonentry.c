@@ -20,21 +20,19 @@
 #include "live_elementary_widgets.h"
 
 static void
-_on_multibutton_swallow_check(void *data,
-                              Evas_Object *obj __UNUSED__,
+_on_multibutton_swallow_check(void *data __UNUSED__,
+                              Evas_Object *obj,
                               void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Elm_Object_Item *multi_item = elm_multibuttonentry_first_item_get(data);
+   Elm_Object_Item *multi_item = elm_multibuttonentry_first_item_get(obj);
    Evas_Object *content;
-   int content_type = part->swallow_content;
 
    while (multi_item)
      {
         if (part->change)
           {
-             /* if NONE - delete object */
-             if ((content_type == CONTENT_NONE) && (part->object))
+             if (part->object)
                {
                   content = elm_object_part_content_unset(multi_item, part->name);
                   evas_object_del(content);
@@ -67,12 +65,12 @@ _on_multibutton_swallow_check(void *data,
 }
 
 static void
-_on_multibutton_text_check(void *data,
-                           Evas_Object *obj __UNUSED__,
+_on_multibutton_text_check(void *data __UNUSED__,
+                           Evas_Object *obj,
                            void *ei)
 {
    Demo_Part *part = (Demo_Part *)ei;
-   Elm_Object_Item *multi_item = elm_multibuttonentry_first_item_get(data);
+   Elm_Object_Item *multi_item = elm_multibuttonentry_first_item_get(obj);
 
    while (multi_item)
      {
@@ -82,8 +80,8 @@ _on_multibutton_text_check(void *data,
 }
 
 static void
-_multibutton_send_signal(void *data,
-                         Evas_Object *obj __UNUSED__,
+_multibutton_send_signal(void *data __UNUSED__,
+                         Evas_Object *obj,
                          void *ei)
 {
    Demo_Signal *sig = (Demo_Signal *)ei;
@@ -91,7 +89,7 @@ _multibutton_send_signal(void *data,
 
    assert(data != NULL);
 
-   item = elm_multibuttonentry_first_item_get(data);
+   item = elm_multibuttonentry_first_item_get(obj);
    assert(sig != NULL);
    assert(sig->sig_name != NULL);
    assert(sig->source_name != NULL);
@@ -129,15 +127,15 @@ widget_multibuttonentry_create(Evas_Object *parent, const Group *group)
    /** in case when we edit button gorup, we need to apply changes to items */
    if (strcmp(group->class, "btn") == 0)
      {
-        evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _on_multibutton_swallow_check, object);
-        evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET,    _on_multibutton_text_check, object);
-        evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _multibutton_send_signal, object);
+        evas_object_smart_callback_add(object, SIGNAL_DEMO_SWALLOW_SET, _on_multibutton_swallow_check, NULL);
+        evas_object_smart_callback_add(object, SIGNAL_DEMO_TEXT_SET,    _on_multibutton_text_check, NULL);
+        evas_object_smart_callback_add(object, SIGNAL_DEMO_SIGNAL_SEND, _multibutton_send_signal, NULL);
      }
    else /** on all other cases we need to apply changes to whole object */
      {
-        evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, object);
-        evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, on_text_check, object);
-        evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, send_signal, object);
+        evas_object_smart_callback_add(object, SIGNAL_DEMO_SWALLOW_SET, on_swallow_check, NULL);
+        evas_object_smart_callback_add(object, SIGNAL_DEMO_TEXT_SET, on_text_check, NULL);
+        evas_object_smart_callback_add(object, SIGNAL_DEMO_SIGNAL_SEND, send_signal, NULL);
      }
 
    /** closed button is group used for showing collapsed multibuttonentry only */
@@ -155,6 +153,7 @@ widget_multibuttonentry_create(Evas_Object *parent, const Group *group)
    evas_object_size_hint_weight_set(object, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(object, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_smart_calculate(object);
+   evas_object_clip_set(object, evas_object_clip_get(parent));
 
    return object;
 }

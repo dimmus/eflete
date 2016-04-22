@@ -19,7 +19,6 @@
 
 #include "eflete.h"
 #include "main_window.h"
-#include "colorsel.h"
 #include "shortcuts.h"
 #include "config.h"
 #ifdef _WIN32
@@ -29,29 +28,6 @@
 App_Data ap;
 
 static Eina_Bool do_block = true;
-
-Evas_Object *
-win_layout_get(void)
-{
-   assert(ap.win_layout != NULL);
-
-   return ap.win_layout;
-}
-
-Evas_Object *
-main_window_get(void)
-{
-   assert(ap.win != NULL);
-
-   return ap.win;
-}
-
-Evas_Object *
-colorselector_get(void)
-{
-   if (!ap.colorsel) ap.colorsel = colorselector_add(ap.win);
-   return ap.colorsel;
-}
 
 void
 eflete_main_loop_begin(void)
@@ -127,12 +103,17 @@ app_init()
 
    elm_need_ethumb();
 
+   ap.last_path = NULL;
+
    return true;
 }
 
 Eina_Bool
 app_shutdown()
 {
+   if (ap.last_path)
+     eina_stringshare_del(ap.last_path);
+
    config_shutdown();
    elm_theme_free(ap.theme);
    eina_shutdown();

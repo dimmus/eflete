@@ -19,6 +19,7 @@
 
 #include "utc_common.h"
 #include "eflete.h"
+#include "config.h"
 #include "main_window.h"
 
 /**
@@ -27,11 +28,5 @@
 
 void app_init_test_p(int);
 
-void win_layout_get_test_p(int);
-
 void app_shutdown_test_p1(int);
 void app_shutdown_test_p2(int);
-
-void main_window_get_test_p(int);
-
-void colorselector_get_test_p(int);

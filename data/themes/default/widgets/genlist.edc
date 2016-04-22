@@ -52,6 +52,7 @@ group { name: "elm/genlist/item/default/default";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.5;
+            fixed: 1 0;
             rel2 {
                relative: 0.0 1.0;
             }
@@ -119,6 +120,7 @@ group { name: "elm/genlist/item/default/default";
             align: 1.0 0.5;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
+            fixed: 1 0;
             rel1 {
                relative: 1.0 0.0;
                offset: 0 3;
@@ -421,6 +423,7 @@ group { name: "elm/genlist/tree/default/default";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.5;
+            fixed: 1 0;
             rel2 {
                relative: 0.0 1.0;
             }
@@ -481,6 +484,7 @@ group { name: "elm/genlist/tree/default/default";
             align: 1.0 0.5;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
+            fixed: 1 0;
             rel1 {
                relative: 1.0 0.0;
                offset: 0 3;
@@ -494,6 +498,7 @@ group { name: "elm/genlist/tree/default/default";
             align: 1.0 0.5;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
+            fixed: 1 0;
             rel1 {
                relative: 1.0 0.0;
                offset: 0 3;
@@ -501,6 +506,13 @@ group { name: "elm/genlist/tree/default/default";
             rel2 {
                offset: -7 -4;
             }
+         }
+      }
+      part { name: "events";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
          }
       }
       part { name: "arrow";
@@ -645,6 +657,11 @@ group { name: "elm/genlist/tree/default/default";
          action: STATE_SET "default" 0.00;
          target: "disclip";
       }
+      program { name: "dbl_click";
+         signal: "mouse,down,1,double";
+         source: "events";
+         action: SIGNAL_EMIT "elm,action,expand,toggle" "elm";
+      }
    }
 }
 
@@ -688,6 +705,7 @@ group { name: "elm/genlist/tree/part/default";
             min: 14 14;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
+            fixed: 1 0;
             rel1 {
                offset: 6 3;
             }
@@ -726,6 +744,7 @@ group { name: "elm/genlist/tree/part/default";
             align: 1.0 0.5;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
+            fixed: 1 0;
             rel1 {
                relative: 1.0 0.0;
                offset: 0 3;
@@ -740,6 +759,13 @@ group { name: "elm/genlist/tree/part/default";
          repeat_events: 1;
          description { state: "default" 0.0;
             color: 255 255 255 0;
+         }
+      }
+      part { name: "events";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
          }
       }
       part { name: "arrow";
@@ -816,6 +842,11 @@ group { name: "elm/genlist/tree/part/default";
          action: STATE_SET "default" 0.00;
          target: "disclip";
       }
+      program { name: "dbl_click";
+         signal: "mouse,down,1,double";
+         source: "events";
+         action: SIGNAL_EMIT "elm,action,expand,toggle" "elm";
+      }
    }
 }
 
@@ -854,6 +885,7 @@ group { name: "elm/genlist/item/state/default";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.5;
+            fixed: 1 0;
             rel1 {
                offset: -8 0;
             }
@@ -960,6 +992,7 @@ group { name: "elm/genlist/item/item/default";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.5;
+            fixed: 1 0;
             rel1 {
                offset: 0 0;
             }
@@ -1087,6 +1120,7 @@ group { name: "elm/genlist/item/program/default";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.5;
+            fixed: 1 0;
             rel1 {
                offset: 26 0;
             }
@@ -1124,6 +1158,7 @@ group { name: "elm/genlist/item/program/default";
          description { state: "default" 0.0;
             align: 1.0 0.5;
             aspect: 1.0 1.0;
+            fixed: 1 0;
             aspect_preference: VERTICAL;
             rel1 {
                relative: 1.0 0.0;
@@ -1192,6 +1227,7 @@ group { name: "elm/genlist/tree/items_caption/default";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.5;
+            fixed: 1 0;
             rel2 {
                relative: 0.0 1.0;
             }
@@ -1240,6 +1276,13 @@ group { name: "elm/genlist/tree/items_caption/default";
                size: 12;
                align: 0.0 0.5;
             }
+         }
+      }
+      part { name: "events";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
          }
       }
       part { name: "arrow";
@@ -1339,6 +1382,11 @@ group { name: "elm/genlist/tree/items_caption/default";
          action: STATE_SET "default" 0.00;
          target: "disclip";
       }
+      program { name: "dbl_click";
+         signal: "mouse,down,1,double";
+         source: "events";
+         action: SIGNAL_EMIT "elm,action,expand,toggle" "elm";
+      }
    }
 }
 
@@ -1381,6 +1429,7 @@ group { name: "elm/genlist/tree/caption/default";
             min: 14 14;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
+            fixed: 1 0;
             rel1 {
                offset: 6 3;
             }
@@ -1451,6 +1500,13 @@ group { name: "elm/genlist/tree/caption/default";
                size: 12;
                align: 0.0 0.5;
             }
+         }
+      }
+      part { name: "events";
+         type: RECT;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
          }
       }
       part { name: "arrow";
@@ -1548,6 +1604,11 @@ group { name: "elm/genlist/tree/caption/default";
          action: STATE_SET "default" 0.00;
          target: "arrow";
       }
+      program { name: "dbl_click";
+         signal: "mouse,down,1,double";
+         source: "events";
+         action: SIGNAL_EMIT "elm,action,expand,toggle" "elm";
+      }
    }
 }
 
@@ -1597,6 +1658,7 @@ group { name: "elm/genlist/item/navigator/default";
    parts {
       part { name: "elm.swallow.icon";
          description { state: "default" 0.0;
+            fixed: 1 0;
             rel1 {
                relative: 1.0 0.0;
                offset: 26 3;
@@ -1609,6 +1671,7 @@ group { name: "elm/genlist/item/navigator/default";
       }
       part { name: "elm.swallow.pad";
          description { state: "default" 0.0;
+            fixed: 1 0;
             rel1 {
                to: "";
                relative: 0.0 0.0;
@@ -1674,6 +1737,7 @@ group { name: "elm/genlist/item/message/default";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.5;
+            fixed: 1 0;
             rel1 {
                offset: 6 0;
             }

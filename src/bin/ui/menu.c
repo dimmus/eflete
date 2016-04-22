@@ -19,7 +19,6 @@
 
 #include "main_window.h"
 #include "preference.h"
-#include "about_window.h"
 #include "tabs.h"
 #include "workspace.h"
 
@@ -33,23 +32,30 @@ int MENU_ITEMS_LIST_BASE[] = {
    MENU_FILE_EXPORT_DEVELOP,
 /* MENU_FILE_EXPORT_RELEASE,*/
    MENU_FILE_CLOSE_PROJECT,
-   MENU_VIEW_RULERS,
-   MENU_VIEW_RULERS_SHOW,
-   MENU_VIEW_RULERS_ABS,
-   MENU_VIEW_RULERS_REL,
-   MENU_VIEW_RULERS_BOTH,
-/*   MENU_VIEW_WORKSPACE_OBJECT_AREA, */
    MENU_EDITORS_IMAGE,
    MENU_EDITORS_SOUND,
    MENU_EDITORS_COLORCLASS,
    MENU_EDITORS_TEXT_STYLE,
+   MENU_EDIT_GROUP_ADD,
 
    MENU_NULL
 };
 
 int MENU_ITEMS_LIST_STYLE_ONLY[] = {
-   MENU_VIEW_WORKSPACE,
+   MENU_EDIT_UNDO,
+   MENU_EDIT_REDO,
+   MENU_VIEW_WORKSPACE_ZOOM_IN,
+   MENU_VIEW_WORKSPACE_ZOOM_OUT,
+   MENU_VIEW_WORKSPACE_ZOOM_RESET,
+   MENU_VIEW_WORKSPACE_FIT,
+   MENU_VIEW_WORKSPACE_FILL,
+   MENU_VIEW_WORKSPACE_OBJECT_AREA,
+   MENU_VIEW_RULERS_SHOW,
    MENU_FILE_EXPORT_EDC_GROUP,
+   MENU_EDIT_PART_ADD,
+   MENU_EDIT_STATE_ADD,
+   MENU_EDIT_ITEM_ADD,
+   MENU_EDIT_PROGRAM_ADD,
 
    MENU_NULL
 };
@@ -57,8 +63,7 @@ int MENU_ITEMS_LIST_STYLE_ONLY[] = {
 int MENU_ITEMS_LIST_MAIN[] = {
    MENU_FILE,
    MENU_VIEW,
-   /*MENU_EDIT,*/
-   MENU_EDITORS,
+   MENU_EDIT,
    MENU_HELP,
 
    MENU_NULL
@@ -68,7 +73,7 @@ static int sad_callback_data[MENU_ITEMS_COUNT];
 
 struct _Menu
 {
-   Elm_Object_Item *menu_items[MENU_ITEMS_COUNT];
+   Elm_Object_Item *items[MENU_ITEMS_COUNT];
    Evas_Object *window_menu;
 };
 
@@ -130,32 +135,48 @@ _menu_cb(void *data __UNUSED__,
          /* preferences_window_add(ap.project); */
          break;
       case MENU_VIEW_WORKSPACE_ZOOM_IN:
-           {
-              double current_factor = workspace_zoom_factor_get(tabs_current_workspace_get());
-              workspace_zoom_factor_set(tabs_current_workspace_get(), current_factor + 0.1);
-           }
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ZOOM_IN, NULL);
          break;
       case MENU_VIEW_WORKSPACE_ZOOM_OUT:
-           {
-              double current_factor = workspace_zoom_factor_get(tabs_current_workspace_get());
-              workspace_zoom_factor_set(tabs_current_workspace_get(), current_factor - 0.1);
-           }
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ZOOM_OUT, NULL);
+        break;
+      case MENU_VIEW_WORKSPACE_ZOOM_RESET:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ZOOM_RESET, NULL);
+         break;
+      case MENU_VIEW_WORKSPACE_FIT:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_FIT, NULL);
+         break;
+      case MENU_VIEW_WORKSPACE_FILL:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_FILL, NULL);
          break;
       case MENU_VIEW_RULERS_SHOW:
-         evas_object_smart_callback_call(tabs_current_workspace_get(), "ruler,toggle", strdup("rulers"));
-         break;
-      case MENU_VIEW_RULERS_ABS:
-         evas_object_smart_callback_call(tabs_current_workspace_get(), "ruler,toggle", strdup("abs"));
-         break;
-      case MENU_VIEW_RULERS_REL:
-         evas_object_smart_callback_call(tabs_current_workspace_get(), "ruler,toggle", strdup("rel"));
-         break;
-      case MENU_VIEW_RULERS_BOTH:
-         evas_object_smart_callback_call(tabs_current_workspace_get(), "ruler,toggle", strdup("abs&rel"));
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_RULERS_VISIBLED, NULL);
          break;
       case MENU_VIEW_WORKSPACE_OBJECT_AREA:
-         evas_object_smart_callback_call(tabs_current_workspace_get(), "highlight,visible", NULL);
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_OBJECT_AREA, NULL);
          break;
+      case MENU_EDIT_UNDO:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_UNDO, NULL);
+         break;
+      case MENU_EDIT_REDO:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_REDO, NULL);
+         break;
+      case MENU_EDIT_GROUP_ADD:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_GROUP, NULL);
+         break;
+      case MENU_EDIT_PART_ADD:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_PART, NULL);
+         break;
+      case MENU_EDIT_STATE_ADD:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_STATE, NULL);
+         break;
+      case MENU_EDIT_ITEM_ADD:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_ITEM, NULL);
+         break;
+      case MENU_EDIT_PROGRAM_ADD:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_PROGRAM, NULL);
+         break;
+
       case MENU_EDITORS_IMAGE:
          tabs_menu_tab_open(TAB_IMAGE_EDITOR);
          break;
@@ -202,7 +223,7 @@ _project_changed(void *data __UNUSED__,
 Menu *
 ui_menu_add(void)
 {
-   Evas_Object *window_menu, *items_obj;
+   Evas_Object *window_menu;
    Menu *menu;
    int i = 0;
 
@@ -222,75 +243,77 @@ ui_menu_add(void)
    window_menu = elm_win_main_menu_get(ap.win);
 
 
-#define ITEM_MENU_ADD(PARENT_ID, ID, ICON, LABEL) \
-   menu->menu_items[ID] = elm_menu_item_add(window_menu, menu->menu_items[PARENT_ID], ICON, LABEL, _delay_menu_cb, &sad_callback_data[ID]);
+#define ITEM_MENU_ADD(PARENT_ID, ID, ICON, LABEL, SHORTCUT) \
+   do \
+     { \
+        menu->items[ID] = elm_menu_item_add(window_menu, menu->items[PARENT_ID], ICON, LABEL, _delay_menu_cb, &sad_callback_data[ID]); \
+        if (SHORTCUT) \
+          { \
+             Evas_Object *item_obj = elm_menu_item_object_get(menu->items[ID]);\
+             elm_object_part_text_set(item_obj, "elm.shortcut", SHORTCUT); \
+          } \
+     } \
+   while (0);
 
-   ITEM_MENU_ADD(MENU_NULL, MENU_FILE, NULL, _("File"))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_NEW_PROJECT, "file", _("New project"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_FILE_NEW_PROJECT]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-N");
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_OPEN_PROJECT, "folder", _("Open project"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_FILE_OPEN_PROJECT]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-O");
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDJ, NULL, _("Import edj-file"))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDC, NULL, _("Import edc-file"))
-      elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE, EFLETE_IMG_PATH"icon-save.png", _("Save"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_FILE_SAVE]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-S");
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export as edc"))
-         ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_GROUP, NULL, _("Group"))
-         ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_PROJECT, NULL, _("Project"))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT, NULL, _("Export as edj"))
-         ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_DEVELOP, NULL, _("Develop"))
-         ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_RELEASE, NULL, _("Release"))
-      elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_CLOSE_PROJECT, NULL, _("Close project"))
-      elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXIT, NULL, _("Quit"))
-         items_obj = elm_menu_item_object_get(menu->menu_items[MENU_FILE_EXIT]);
-         elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-Q");
-/* ITEM_MENU_ADD(NULL, MENU_EDIT, NULL, _("Edit"))
-      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PREFERENCE, NULL, _("Preference..."))*/
-   ITEM_MENU_ADD(MENU_NULL, MENU_VIEW, NULL, _("View"))
-      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE, NULL, _("Workspace"))
-         ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_ZOOM_IN, NULL, _("Zoom in"))
-         ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_ZOOM_OUT, NULL, _("Zoom out"))
-         elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_VIEW_WORKSPACE]);
-         ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_OBJECT_AREA, NULL, _("Show/Hide object area"))
-         ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_RULERS, NULL, _("Rulers"))
-            ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_SHOW, NULL, _("Show/Hide rulers"))
-            elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_VIEW_RULERS]);
-            ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_ABS, NULL, _("Absolute scale"))
-            ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_REL, NULL, _("Relative scale"))
-            ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_BOTH, NULL, _("Both"))
-   ITEM_MENU_ADD(MENU_NULL, MENU_EDITORS, NULL, _("Edit"))
-      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_IMAGE, "image", _("Image manager"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_IMAGE]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-2");
-      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_SOUND, "sound", _("Sound manager"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_SOUND]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-3");
-      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_COLORCLASS, "color", _("Color class manager"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_COLORCLASS]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-4");
-      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_TEXT_STYLE, "text", _("Textblock styles manager"))
-      items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_TEXT_STYLE]);
-      elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-5");
-   ITEM_MENU_ADD(MENU_NULL, MENU_HELP, NULL, _("Help"))
-      ITEM_MENU_ADD(MENU_HELP, MENU_HELP_ABOUT, NULL, _("About"))
+#define ___(PARENT_ID) \
+   elm_menu_item_separator_add(window_menu, menu->items[PARENT_ID]);
 
-   elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE_IMPORT_EDC]);
-#undef ITEM_MENU_ADD
+   ITEM_MENU_ADD(MENU_NULL, MENU_FILE, NULL, _("File"), NULL)
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_NEW_PROJECT, "file", _("New project"), NULL)
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_OPEN_PROJECT, "folder", _("Open project"), "Ctrl-O")
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDJ, NULL, _("Import edj-file"), NULL)
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDC, NULL, _("Import edc-file"), NULL)
+      ___(MENU_FILE);
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE, EFLETE_IMG_PATH"icon-save.png", _("Save"), "Ctrl-S")
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export as edc"), NULL)
+         ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_GROUP, NULL, _("Group"), NULL)
+         ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_PROJECT, NULL, _("Project"), NULL)
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT, NULL, _("Export as edj"), NULL)
+         ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_DEVELOP, NULL, _("Develop"), NULL)
+         ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_RELEASE, NULL, _("Release"), NULL)
+      ___(MENU_FILE);
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_CLOSE_PROJECT, NULL, _("Close project"), NULL)
+      ___(MENU_FILE);
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXIT, NULL, _("Quit"), "Ctrl-Q")
+
+   ITEM_MENU_ADD(MENU_NULL, MENU_EDIT, NULL, _("Edit"), NULL)
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_UNDO, NULL, _("Undo"), "Ctrl-Z")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_REDO, NULL, _("Redo"), "Ctrl-Y")
+      ___(MENU_EDIT);
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_GROUP_ADD, NULL, _("Add group"), "Ctrl-N")
+      ___(MENU_EDIT);
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PART_ADD, NULL, _("Add part"), "q")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_STATE_ADD, NULL, _("Add state"), "w")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_ITEM_ADD, NULL, _("Add item"), "e")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PROGRAM_ADD, NULL, _("Add program"), "r")
+      ___(MENU_EDIT);
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_IMAGE, "image2", _("Image manager"), "F7")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_SOUND, "sound2", _("Sound manager"), "F8")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_TEXT_STYLE, "text2", _("Textblock styles manager"), "F9")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_COLORCLASS, "color", _("Color class manager"), "F10")
+      /* ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PREFERENCE, NULL, _("Preference..."))*/
+
+   ITEM_MENU_ADD(MENU_NULL, MENU_VIEW, NULL, _("View"), NULL)
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_ZOOM_IN, NULL, _("Zoom in"), "+")
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_ZOOM_OUT, NULL, _("Zoom out"), "-")
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_ZOOM_RESET, NULL, _("Reset zoom"), "/")
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_FIT, NULL, _("Fit container in Workspace"), NULL)
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_FILL, NULL, _("Fill workspace"), NULL)
+      ___(MENU_VIEW);
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_OBJECT_AREA, NULL, _("Show object area"), "o")
+      ___(MENU_VIEW);
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_SHOW, NULL, _("Show rulers"), NULL)
+
+   ITEM_MENU_ADD(MENU_NULL, MENU_HELP, NULL, _("Help"), NULL)
+      ITEM_MENU_ADD(MENU_HELP, MENU_HELP_ABOUT, NULL, _("About"), NULL)
+
+   elm_menu_item_separator_add(window_menu, menu->items[MENU_FILE_IMPORT_EDC]);
+
+   /* uncomment it, when release export will be implemented */
+   ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
 
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
-
-   TODO("remove lines after implementation this features")
-   //ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
-   ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_ZOOM_IN, true);
-   ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_ZOOM_OUT, true);
-   ui_menu_disable_set(menu, MENU_VIEW_WORKSPACE_OBJECT_AREA, true);
 
    menu->window_menu = window_menu;
 
@@ -305,7 +328,7 @@ ui_menu_disable_set(Menu *menu, int mid, Eina_Bool flag)
    assert(menu != NULL);
    assert((mid > MENU_NULL) && (mid < MENU_ITEMS_COUNT));
 
-   elm_object_item_disabled_set(menu->menu_items[mid], flag);
+   elm_object_item_disabled_set(menu->items[mid], flag);
 
    return true;
 }

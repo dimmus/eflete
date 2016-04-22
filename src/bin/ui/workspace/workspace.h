@@ -17,8 +17,8 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#ifndef UI_WORKSPACE_H
-#define UI_WORKSPACE_H
+#ifndef WORKSPACE_H
+#define WORKSPACE_H
 
 /**
  * @defgroup Workspace Workspace
@@ -33,6 +33,17 @@
  */
 
 #include "eflete.h"
+#include "demo_group.h"
+
+typedef enum
+{
+   MODE_NORMAL = 1,
+   MODE_CODE,
+   /* MODE_SEPARATE, */
+   /* MODE_ANIMATOR, */
+   MODE_DEMO
+} Workspace_Mode;
+
 
 /**
  * Create a new Workspace object to the parent.
@@ -224,11 +235,9 @@ workspace_part_item_restack(Evas_Object *obj,
  * @param factor A factor for scale. Where value 1.0 = 100% scale (not zoom
  * object). Minimum is 0.01, maximum is 20. (from 1% to 2000% zoom).
  *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
  * @ingroup Workspace
  */
-Eina_Bool
+void
 workspace_zoom_factor_set(Evas_Object *obj, double factor);
 
 /**
@@ -242,6 +251,26 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor);
  */
 double
 workspace_zoom_factor_get(Evas_Object *obj);
+
+/**
+ * Resize the container to workspace size
+ *
+ * @param obj The workspace object.
+ *
+ * @ingroup Workspace
+ */
+void
+workspace_container_fill(Evas_Object *obj);
+
+/**
+ * Fill the workspace
+ *
+ * @param obj The workspace object.
+ *
+ * @ingroup Workspace
+ */
+void
+workspace_container_fit(Evas_Object *obj);
 
 /**
  * Switch beetwen show or hide mode of legend in workspace object.
@@ -266,29 +295,6 @@ workspace_legend_visible_set(Evas_Object *obj);
  */
 Eina_Bool
 workspace_highlight_unset(Evas_Object *obj);
-
-/**
- * Turn on/off the separatr mode
- *
- * @param obj The workspace object,
- * @param separated ON/OFF (true/false) the separate mode,
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate);
-
-/**
- * Check if separate mode is activated.
- *
- * @param obj The workspace object.
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_separate_mode_get(Evas_Object *obj);
 
 /**
  * Turn on/off the middle border of highlight (align) visibility.
@@ -319,14 +325,12 @@ workspace_highlight_align_visible_get(Evas_Object *obj);
  * Turn on/off the object area visibility.
  *
  * @param obj The workspace object,
- * @param separated ON/OFF (true/false) the object area visibility,
- *
- * @return EINA_FALSE on failure, EINA_TRUE on success.
+ * @param visible ON/OFF (true/false) the object area visibility,
  *
  * @ingroup Workspace
  */
-Eina_Bool
-workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool flag);
+void
+workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool visible);
 
 /**
  * Returns if the object area is visible
@@ -340,10 +344,59 @@ workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool flag);
 Eina_Bool
 workspace_object_area_visible_get(Evas_Object *obj);
 
+void
+workspace_rulers_visible_set(Evas_Object *obj, Eina_Bool visible);
 
+Eina_Bool
+workspace_rulers_visible_get(Evas_Object *obj);
 
 TODO("remove after property refactor!!! HIGH LEVEL");
 Eina_Bool
 workspace_active_demo_mode_get(Evas_Object *obj);
 
-#endif /* UI_WORKSPACE_H */
+void
+workspace_add_part_request(Evas_Object *obj);
+
+void
+workspace_add_part_item_request(Evas_Object *obj);
+
+void
+workspace_add_state_request(Evas_Object *obj);
+
+void
+workspace_add_program_request(Evas_Object *obj);
+
+void
+workspace_delete_request(Evas_Object *obj);
+
+void
+workspace_mode_set(Evas_Object *obj, Workspace_Mode mode);
+
+void
+workspace_state_next_request(Evas_Object *obj);
+
+void
+workspace_part_next_request(Evas_Object *obj);
+
+void
+workspace_part_prev_request(Evas_Object *obj);
+
+void
+workspace_part_showhide_request(Evas_Object *obj);
+
+void
+workspace_all_parts_showhide_request(Evas_Object *obj);
+
+void
+workspace_part_unselect_request(Evas_Object *obj);
+
+void
+workspace_demo_swallow_set(Evas_Object *obj, Demo_Part *part);
+
+void
+workspace_demo_text_set(Evas_Object *obj, Demo_Part *part);
+
+void
+workspace_demo_signal_set(Evas_Object *obj, Demo_Signal *sig);
+
+#endif /* WORKSPACE_H */

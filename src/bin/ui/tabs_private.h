@@ -54,6 +54,13 @@ _tab_import_edj_add(void);
 void
 _tab_import_edj_data_set(const char *name, const char *path, const char *edj);
 
+void
+_tab_import_edc_data_set(const char *name, const char *path, const char *edc,
+                         const Eina_List *img, const Eina_List *snd, const Eina_List *fnt, const Eina_List *dd);
+
+void
+_tab_new_data_set(const char *name, const char *path, const Eina_List *widgets);
+
 Evas_Object *
 _tab_import_edc_add(void);
 
@@ -68,5 +75,8 @@ entry_path_set(void *data, Evas_Object *obj, void *event_info);
 
 void
 _tabs_progress_end(void *data, PM_Project_Result result);
+
+void
+_tab_default_focus(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 #endif /* TABS_PRIVATE */

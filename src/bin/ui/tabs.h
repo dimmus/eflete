@@ -69,6 +69,23 @@ void
 tabs_menu_import_edj_data_set(const char *name, const char *path, const char *edj);
 
 /**
+ * Fill the import edc tab fields
+ *
+ * @ingroup Tabs
+ */
+void
+tabs_menu_import_edc_data_set(const char *name, const char *path, const char *edc,
+                              const Eina_List *img, const Eina_List *snd, const Eina_List *fnt, const Eina_List *dd);
+
+/**
+ * Fill the new project tab fields
+ *
+ * @ingroup Tabs
+ */
+void
+tabs_menu_new_data_set(const char *name, const char *path, const Eina_List *widgets);
+
+/**
  * Add new tab. This tab consist a workspace and a liveview.
  *
  * @param group The Group object

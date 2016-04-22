@@ -95,6 +95,12 @@ _tabs_progress_end(void *data, PM_Project_Result result)
 {
    Meta_Data_Controls *meta = (Meta_Data_Controls *)data;
 
+   if (PM_PROJECT_LOCKED == result)
+     {
+        progress_end(data, result);
+        popup_want_action(_("File is locked"), _("File locked by another application"), NULL, NULL, BTN_OK, NULL, NULL);
+        return;
+     }
    if (PM_PROJECT_SUCCESS != result) return;
 
    ap.project = pm_project_thread_project_get();
@@ -112,4 +118,17 @@ _tabs_progress_end(void *data, PM_Project_Result result)
    evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_OPENED, NULL);
 
    progress_end(data, result);
+}
+
+void
+_tab_default_focus(void *data,
+                   Evas *e __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   Evas_Object *target = data;
+
+   assert(target != NULL);
+
+   elm_object_focus_set(target, true);
 }

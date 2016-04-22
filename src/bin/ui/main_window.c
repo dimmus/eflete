@@ -53,19 +53,9 @@ ui_main_window_del(void)
      if (!project_close())
        return false;
 
-   /*
-   if (!history_term(ap.history))
-     {
-        ERR("Failed terminate history module");
-        abort();
-     }
-   */
 #ifdef HAVE_ENVENTOR
    code_edit_mode_switch(false);
 #endif
-
-   /* FIXME: remove it from here */
-   //live_view_free(ap.live_view);
 
    free(ap.menu);
    ap.menu = NULL;
@@ -116,7 +106,6 @@ ui_main_window_add(void)
    Config *config;
    Evas_Object *bg, *project_navigator, *tabs, *toolbar;
 
-   config_load();
    config = config_get();
 
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
@@ -199,6 +188,7 @@ ui_main_window_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_STYLE_EDITOR_TAB_CLICKED, _hide_history, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_COLOR_EDITOR_TAB_CLICKED, _hide_history, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_CHANGED, _show_history, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_QUIT, _on_done, NULL);
 
    ap.block.property = property_add(ap.win);
    elm_layout_content_set(ap.block.right_top, "elm.swallow.property", ap.block.property);
@@ -208,16 +198,54 @@ ui_main_window_add(void)
 
    ap.menu = ui_menu_add();
 
-   //ui_panes_add();
-   //ap.workspace = workspace_add(ap.block.canvas);
-   //evas_object_show(ap.workspace);
-   //ap.live_view = live_view_add(ap.block.bottom_right, false);
-   //ap.colorsel = colorselector_add(ap.win);
    #ifdef HAVE_ENVENTOR
      ap.enventor= enventor_object_init(ap.win);
    #endif /* HAVE_ENVENTOR */
-   //register_callbacks();
+
+   if (!shortcuts_init())
+     {
+        CRIT("Can't initialize the shortcut module");
+        return false;
+     }
 
    elm_config_window_auto_focus_enable_set(false);
    return true;
+}
+
+Evas_Object *
+about_window_add(void)
+{
+   Evas_Object *label;
+
+   label = elm_label_add(ap.win);
+   elm_object_text_set(label,
+     "<color=#b6b6b6>"
+     "<b><align=center>"PACKAGE_NAME" v."VERSION"</align></b><br>"
+     "This application was written for Enlightenment project.<br>"
+     "It is designed to create and modify styles of Elementary widgets.<br>"
+     "<br>"
+     "Copyright (C) 2013 - 2015 Samsung Electronics.<br>"
+     "<br>"
+     "<align=center><b>Authors:</b><br>"
+     "Vyacheslav \"rimmed\" Reutskiy (v.reutskiy@samsung.com)<br>"
+     "Mykyta Biliavskyi (m.biliavskyi@samsung.com)<br>"
+     "Vitalii Vorobiov (vi.vorobiov@samsung.com)<br>"
+     "Andrii Kroitor (an.kroitor@samsung.com)<br>"
+     "Kateryna Fesyna (fesyna1@gmail.com)<br>"
+     "Maksym Volodin (mac9.ua@gmail.com)<br>"
+     "Igor Gala (igor.gala89@gmail.com)<br>"
+     "<br>"
+     "Olga Kolesnik (o.kolesnik@samsung.com)<br>"
+     "<br>"
+     "Oleg Dotsenko (o.dotsenko@samsung.com)<br>"
+     "Yurii Tsivun (y.tsivun@samsung.com)<br>"
+     "Dmitriy Samoylov (dm.samoylov@samsung.com)<br>"
+     "</align>");
+
+   elm_object_style_set(label, "slide_about");
+   elm_layout_signal_emit(label, "elm,state,slide,start", "elm");
+
+   popup_want_action(_("About"), NULL, label, NULL, BTN_CANCEL, NULL, NULL);
+   evas_object_del(label);
+   return NULL;
 }

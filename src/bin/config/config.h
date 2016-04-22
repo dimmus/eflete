@@ -31,10 +31,6 @@
 
 #include "eflete.h"
 
-#define SHIFT 1
-#define CTRL 2
-#define ALT 4
-
 /**
  * @struct _Config
  *

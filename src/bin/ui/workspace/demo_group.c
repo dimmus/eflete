@@ -43,6 +43,9 @@ static Elm_Genlist_Item_Class *itc_part;
 static Elm_Genlist_Item_Class *itc_part_selected;
 static Elm_Genlist_Item_Class *itc_signals;
 
+static void
+_program_item_del(Elm_Object_Item *pl, Demo_Signal *part);
+
 #define CAPTION_GENLIST_ITEM_TEXT_GET(TYPE, TITLE) \
 static char * \
 _##TYPE##_label_cb(void *data, \
@@ -90,16 +93,6 @@ _sig_label_get(void *data,
    return strdup(prog->prog_name);
 }
 
-static void
-_on_clicked_double(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info)
-{
-   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-
-   if (elm_genlist_item_type_get(glit) == ELM_GENLIST_ITEM_TREE)
-     elm_genlist_item_expanded_set(glit, !elm_genlist_item_expanded_get(glit));
-}
 static void
 _expand_request_cb(void *data __UNUSED__,
                    Evas_Object *o __UNUSED__,
@@ -180,21 +173,33 @@ _expanded_cb(void *data,
      }
 }
 static void
-_selected_cb(void *data __UNUSED__,
+_selected_cb(void *data,
              Evas_Object *o __UNUSED__,
-             void *event_info __UNUSED__)
+             void *event_info)
 {
-   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-   Demo_Part *part = (Demo_Part *)elm_object_item_data_get(glit);
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info, *plit;
+   Part_Demo_List *pl = data;
+   Demo_Signal *signal = NULL;
+   Demo_Part *part = NULL;
 
-   if ((part->type == EDJE_PART_TYPE_TEXT) ||
-       (part->type == EDJE_PART_TYPE_TEXTBLOCK))
+   plit = elm_genlist_item_parent_get(glit);
+   if (plit == pl->it_signal)
+     signal = (Demo_Signal *)elm_object_item_data_get(glit);
+   else
+     part = (Demo_Part *)elm_object_item_data_get(glit);
+
+   if ((plit == pl->it_text) &&
+       ((part->type == EDJE_PART_TYPE_TEXT) ||
+        (part->type == EDJE_PART_TYPE_TEXTBLOCK)))
      evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_PART_CLICKED, part);
-   else if (part->type == EDJE_PART_TYPE_SWALLOW)
+   else if ((plit == pl->it_swallow) && (part->type == EDJE_PART_TYPE_SWALLOW))
      evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_PART_CLICKED, part);
+   else if (plit == pl->it_signal)
+     evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_PROGRAM_PART_CLICKED, signal);
    else /* empty everything */
      evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
 }
+
 static void
 _clicked_cb(void *data,
             Evas_Object *o __UNUSED__,
@@ -213,11 +218,153 @@ _content_get(void *data __UNUSED__,
    if (!strcmp(part, "elm.swallow.end"))
      {
         BUTTON_ADD(obj, button, NULL);
-        ICON_STANDARD_ADD(button, ic, false, "impuls_in");
+        ICON_STANDARD_ADD(button, ic, false, "media_player/play");
         elm_object_part_content_set(button, NULL, ic);
         evas_object_smart_callback_add(button, "clicked", _clicked_cb, data);
      }
    return button;
+}
+
+void
+_program_add(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *ei)
+{
+   Part_Demo_List *pl = data;
+   Demo_Signal *demo_sig, *pr;
+   Eina_Stringshare *sig_name, *source_name, *state1, *state2;
+   Eina_Stringshare *program_name = ei;
+   Eina_Bool correct = false;
+   Elm_Object_Item *part_item;
+   const Eina_List *part_items;
+
+   assert(pl);
+
+   part_items = elm_genlist_item_subitems_get(pl->it_signal);
+   part_item = eina_list_data_get(part_items);
+   pr = elm_object_item_data_get(part_item);
+
+   /* find program */
+   while ((pr) && (pr->prog_name != program_name))
+     {
+        part_items = eina_list_next(part_items);
+        part_item = eina_list_data_get(part_items);
+        pr = elm_object_item_data_get(part_item);
+     }
+
+   sig_name = edje_edit_program_signal_get(pl->group->edit_object, program_name);
+   source_name = edje_edit_program_source_get(pl->group->edit_object, program_name);
+   state1 = edje_edit_program_state_get(pl->group->edit_object, program_name);
+   state2 = edje_edit_program_state2_get(pl->group->edit_object, program_name);
+   if (!source_name) source_name = eina_stringshare_add("");
+   if ((sig_name) && (strcmp(sig_name, "drag") != 0) &&
+       (strncmp(sig_name, "mouse", strlen("mouse")) != 0))
+     correct = true;
+
+   /* if program is not exist */
+   if ((!part_item) && (correct))
+     {
+        demo_sig = mem_calloc(1, sizeof(Demo_Signal));
+        demo_sig->prog_name = eina_stringshare_add(program_name);
+        demo_sig->sig_name = eina_stringshare_add(sig_name);
+        demo_sig->source_name = eina_stringshare_add(source_name);
+        demo_sig->action = edje_edit_program_action_get(pl->group->edit_object, program_name);
+        demo_sig->emit_signal = eina_stringshare_add(state1);
+        demo_sig->emitter = eina_stringshare_add(state2);
+        pl->signal_list = eina_list_append(pl->signal_list, demo_sig);
+        elm_genlist_item_append(pl->genlist,
+                                itc_signals,
+                                demo_sig,
+                                pl->it_signal,
+                                ELM_GENLIST_ITEM_NONE,
+                                NULL,
+                                NULL);
+     }
+   else if ((part_item) && (correct)) /* if program exist and data is correct */
+     {
+        eina_stringshare_del(pr->prog_name);
+        eina_stringshare_del(pr->sig_name);
+        eina_stringshare_del(pr->source_name);
+        eina_stringshare_del(pr->emit_signal);
+        eina_stringshare_del(pr->emitter);
+        pr->prog_name = eina_stringshare_add(program_name);
+        pr->sig_name = eina_stringshare_add(sig_name);
+        pr->source_name = eina_stringshare_add(source_name);
+        pr->emit_signal = eina_stringshare_add(state1);
+        pr->emitter = eina_stringshare_add(state2);
+        elm_genlist_item_update(part_item);
+     }
+   else if ((part_item) && (!correct)) /* if exists and data is NOT correct */
+     {
+        pl->signal_list = eina_list_remove(pl->signal_list, pr);
+        _program_item_del(pl->it_signal, pr);
+        eina_stringshare_del(pr->prog_name);
+        eina_stringshare_del(pr->sig_name);
+        eina_stringshare_del(pr->source_name);
+        eina_stringshare_del(pr->emit_signal);
+        eina_stringshare_del(pr->emitter);
+        free(pr);
+        elm_object_item_del(part_item);
+     }
+   eina_stringshare_del(sig_name);
+   eina_stringshare_del(source_name);
+   eina_stringshare_del(state1);
+   eina_stringshare_del(state2);
+}
+
+
+static void
+_part_renamed(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *ei)
+{
+   Rename *ren = ei;
+   Eina_List *l;
+   Demo_Part *demo_part;
+   Part_Demo_List *pl = data;
+
+   Elm_Object_Item *part_item, *list_item = NULL;
+   const Eina_List *part_items;
+   Demo_Part *pr;
+
+   assert(ren != NULL);
+
+   EINA_LIST_FOREACH(pl->text_list, l, demo_part)
+     {
+        if (demo_part->name == ren->old_name)
+          {
+             eina_stringshare_del(demo_part->name);
+             demo_part->name = eina_stringshare_add(ren->new_name);
+
+             list_item = pl->it_text;
+          }
+     }
+
+   /* didn't found genlist item in text, search inside of swallow list */
+   if (!list_item)
+     {
+        EINA_LIST_FOREACH(pl->swallow_list, l, demo_part)
+          {
+             if (demo_part->name == ren->old_name)
+               {
+                  eina_stringshare_del(demo_part->name);
+                  demo_part->name = eina_stringshare_add(ren->new_name);
+                  list_item = pl->it_swallow;
+               }
+          }
+     }
+
+   elm_genlist_item_expanded_set(list_item, true);
+   part_items = elm_genlist_item_subitems_get(list_item);
+   part_item = eina_list_data_get(part_items);
+   pr = elm_object_item_data_get(part_item);
+   while (pr != demo_part)
+     {
+        part_items = eina_list_next(part_items);
+        part_item = eina_list_data_get(part_items);
+        pr = elm_object_item_data_get(part_item);
+     }
+   elm_genlist_item_update(part_item);
 }
 
 Evas_Object *
@@ -285,7 +432,10 @@ demo_group_add(Group *group)
    elm_scroller_policy_set(pl->genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
    evas_object_show(pl->genlist);
    elm_object_content_set(pl->layout, pl->genlist);
-   evas_object_smart_callback_add(pl->genlist, "clicked,double", _on_clicked_double, pl);
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, pl);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_UPDATE, _program_add, pl);
+
    evas_object_smart_callback_add(pl->genlist, "expand,request", _expand_request_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "contract,request", _contract_request_cb, pl);
    evas_object_smart_callback_add(pl->genlist, "expanded", _expanded_cb, pl);
@@ -326,6 +476,7 @@ demo_group_add(Group *group)
              demo_part = mem_calloc(1, sizeof(Demo_Part));
              demo_part->name = eina_stringshare_add(part->name);
              demo_part->type = part->type;
+             demo_part->content_style = eina_stringshare_add("default");
              pl->text_list = eina_list_append(pl->text_list, demo_part);
              elm_genlist_item_append(pl->genlist,
                                      itc_part,
@@ -340,6 +491,7 @@ demo_group_add(Group *group)
              demo_part = mem_calloc(1, sizeof(Demo_Part));
              demo_part->name = eina_stringshare_add(part->name);
              demo_part->type = part->type;
+             demo_part->content_style = eina_stringshare_add("default");
              demo_part->a = 255;
              demo_part->r = 255;
              demo_part->g = 255;
@@ -357,19 +509,24 @@ demo_group_add(Group *group)
      }
 
    Resource *prog_name;
-   Eina_Stringshare *sig_name, *source_name;
+   Eina_Stringshare *sig_name, *source_name, *state1, *state2;
    EINA_LIST_FOREACH(pl->group->programs, l, prog_name)
      {
         sig_name = edje_edit_program_signal_get(pl->group->edit_object, prog_name->name);
         source_name = edje_edit_program_source_get(pl->group->edit_object, prog_name->name);
+        state1 = edje_edit_program_state_get(pl->group->edit_object, prog_name->name);
+        state2 = edje_edit_program_state2_get(pl->group->edit_object, prog_name->name);
         if (!source_name) source_name = eina_stringshare_add("");
         if ((sig_name) && (strcmp(sig_name, "drag") != 0) &&
             (strncmp(sig_name, "mouse", strlen("mouse")) != 0))
           {
-             demo_sig = mem_calloc(1, sizeof(Demo_Part));
+             demo_sig = mem_calloc(1, sizeof(Demo_Signal));
              demo_sig->prog_name = eina_stringshare_add(prog_name->name);
              demo_sig->sig_name = eina_stringshare_add(sig_name);
              demo_sig->source_name = eina_stringshare_add(source_name);
+             demo_sig->action = edje_edit_program_action_get(pl->group->edit_object, prog_name->name);
+             demo_sig->emit_signal = eina_stringshare_add(state1);
+             demo_sig->emitter = eina_stringshare_add(state2);
              pl->signal_list = eina_list_append(pl->signal_list, demo_sig);
              elm_genlist_item_append(pl->genlist,
                                      itc_signals,
@@ -380,6 +537,10 @@ demo_group_add(Group *group)
                                      NULL);
 
           }
+        eina_stringshare_del(sig_name);
+        eina_stringshare_del(source_name);
+        eina_stringshare_del(state1);
+        eina_stringshare_del(state2);
      }
 
    elm_object_text_set(pl->layout, pl->group->name);
@@ -415,6 +576,8 @@ demo_group_del(Evas_Object *demo)
         eina_stringshare_del(demo_sig->prog_name);
         eina_stringshare_del(demo_sig->sig_name);
         eina_stringshare_del(demo_sig->source_name);
+        eina_stringshare_del(demo_sig->emit_signal);
+        eina_stringshare_del(demo_sig->emitter);
         free(demo_sig);
      }
 
@@ -435,6 +598,7 @@ demo_group_part_add(Evas_Object *demo, Part *part)
         demo_part = mem_calloc(1, sizeof(Demo_Part));
         demo_part->name = eina_stringshare_add(part->name);
         demo_part->type = part->type;
+        demo_part->content_style = eina_stringshare_add("default");
         pl->text_list = eina_list_append(pl->text_list, demo_part);
         elm_genlist_item_append(pl->genlist,
                                 itc_part,
@@ -449,6 +613,7 @@ demo_group_part_add(Evas_Object *demo, Part *part)
         demo_part = mem_calloc(1, sizeof(Demo_Part));
         demo_part->name = eina_stringshare_add(part->name);
         demo_part->type = part->type;
+        demo_part->content_style = eina_stringshare_add("default");
         demo_part->a = 255;
         demo_part->r = 255;
         demo_part->g = 255;
@@ -464,6 +629,36 @@ demo_group_part_add(Evas_Object *demo, Part *part)
      }
 }
 
+static void
+_program_item_del(Elm_Object_Item *pl, Demo_Signal *part)
+{
+   Elm_Object_Item *part_item;
+   const Eina_List *part_items;
+   Demo_Signal *pr;
+
+   assert(pl != NULL);
+   assert(part != NULL);
+
+   if (!elm_genlist_item_expanded_get(pl)) return;
+
+   part_items = elm_genlist_item_subitems_get(pl);
+
+   part_item = eina_list_data_get(part_items);
+   pr = elm_object_item_data_get(part_item);
+   while (pr->prog_name != part->prog_name)
+     {
+        part_items = eina_list_next(part_items);
+        part_item = eina_list_data_get(part_items);
+        pr = elm_object_item_data_get(part_item);
+
+        assert(pr != NULL);
+     }
+   assert(part_item != NULL);
+
+   elm_object_item_del(part_item);
+   elm_genlist_item_update(pl);
+   return;
+}
 static void
 _part_item_del(Elm_Object_Item *pl, Demo_Part *part)
 {
@@ -533,6 +728,33 @@ demo_group_part_del(Evas_Object *demo, Part *part)
                   free(demo_part);
                   return;
                }
+          }
+     }
+}
+
+void
+demo_group_program_del(Evas_Object *demo, Eina_Stringshare *program_name)
+{
+   Part_Demo_List *pl = evas_object_data_get(demo, DEMO_GROUP_DATA);
+   Demo_Signal *demo_sig;
+   Eina_List *l;
+
+   assert(pl);
+   assert(program_name != NULL);
+
+   EINA_LIST_FOREACH(pl->signal_list, l, demo_sig)
+     {
+        if (demo_sig->prog_name == program_name)
+          {
+             pl->signal_list = eina_list_remove(pl->signal_list, demo_sig);
+             _program_item_del(pl->it_signal, demo_sig);
+             eina_stringshare_del(demo_sig->prog_name);
+             eina_stringshare_del(demo_sig->sig_name);
+             eina_stringshare_del(demo_sig->source_name);
+             eina_stringshare_del(demo_sig->emit_signal);
+             eina_stringshare_del(demo_sig->emitter);
+             free(demo_sig);
+             return;
           }
      }
 }
