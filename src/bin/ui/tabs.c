@@ -336,9 +336,13 @@ _on_project_changed(void *data __UNUSED__,
                     Evas_Object *obj __UNUSED__,
                     void *event_info __UNUSED__)
 {
-   assert(tabs.current_group != NULL);
-   assert(tabs.current_workspace != NULL);
-   workspace_code_changed(tabs.current_workspace);
+   Eina_List *l;
+   Tabs_Item *item;
+
+   EINA_LIST_FOREACH(tabs.items, l, item)
+     {
+        workspace_code_changed(item->content);
+     }
 }
 
 static void
