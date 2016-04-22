@@ -2126,6 +2126,8 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
    if (TOOLTIP) elm_object_tooltip_text_set(pd->attributes.MEMBER.VALUE, TOOLTIP); \
    pd->attributes.MEMBER.VALUE##_obj = elm_layout_add(parent); \
    elm_layout_theme_set(pd->attributes.MEMBER.VALUE##_obj, "image", "color", "color_set"); \
+   /* for entry */ \
+   elm_object_focus_allow_set(pd->attributes.MEMBER.VALUE##_obj, true); \
    elm_layout_signal_callback_add(pd->attributes.MEMBER.VALUE, "clicked", "eflete", \
                                   _on_##MEMBER##_##VALUE##_clicked, pd); \
    elm_layout_content_set(pd->attributes.MEMBER.VALUE, NULL, pd->attributes.MEMBER.VALUE##_obj); \
@@ -2213,6 +2215,8 @@ _on_##MEMBER##_##VALUE##_clicked(void *data, \
 { \
    int r, g, b, a; \
    Group_Prop_Data *pd = (Group_Prop_Data *)data; \
+   elm_object_focus_set(obj, true); /* there are problems with unfocusing entry.
+                              elementary is too lazy to change focus in time */ \
    assert(pd->change == NULL); \
    pd->change = change_add(NULL); \
    evas_object_color_get(pd->attributes.MEMBER.VALUE##_obj, &r, &g, &b, &a); \
