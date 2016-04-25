@@ -66,7 +66,7 @@ tabs_menu_tab_open(Tabs_Menu view);
  * @ingroup Tabs
  */
 void
-tabs_menu_import_edj_data_set(const char *name, const char *path, const char *edj);
+tabs_menu_import_edj_data_set(const char *name, const char *path, const char *edj, const Eina_List *widgets);
 
 /**
  * Fill the import edc tab fields

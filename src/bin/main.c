@@ -120,13 +120,13 @@ _import_edj(void *data __UNUSED__)
    Eina_Tmpstr *proj_name;
    if (pro_name)
      {
-        tabs_menu_import_edj_data_set(pro_name, pro_path, file);
+        tabs_menu_import_edj_data_set(pro_name, pro_path, file, widgets);
      }
    else
      {
         name = ecore_file_file_get(file);
         proj_name = eina_tmpstr_add_length(name, strlen(name) - 4);
-        tabs_menu_import_edj_data_set(proj_name, pro_path, file);
+        tabs_menu_import_edj_data_set(proj_name, pro_path, file, widgets);
         eina_tmpstr_del(proj_name);
      }
    tabs_menu_tab_open(TAB_HOME_IMPORT_EDJ);
@@ -255,8 +255,6 @@ elm_main(int argc, char **argv)
                _ERR_EXIT(_("File '%s' doesn't exists."), file);
              if (ecore_file_is_dir(file))
                _ERR_EXIT(_("'%s' is a directory."), file);
-             if (widgets)
-               _ERR_EXIT(_("widgets can be added only to new project."));
 
              if (eina_str_has_suffix(file, ".pro"))
                {
@@ -272,6 +270,8 @@ elm_main(int argc, char **argv)
                     _ERR_EXIT(_("*.pro file is given but --fd specified."));
                   if (data_dirs)
                     _ERR_EXIT(_("*.pro file is given but --dd specified."));
+                  if (widgets)
+                    _ERR_EXIT(_("widgets can be added only to new project."));
 
                   ecore_job_add(_open_project, NULL);
                   goto run;

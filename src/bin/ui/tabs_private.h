@@ -52,7 +52,7 @@ Evas_Object *
 _tab_import_edj_add(void);
 
 void
-_tab_import_edj_data_set(const char *name, const char *path, const char *edj);
+_tab_import_edj_data_set(const char *name, const char *path, const char *edj, const Eina_List *widgets);
 
 void
 _tab_import_edc_data_set(const char *name, const char *path, const char *edc,

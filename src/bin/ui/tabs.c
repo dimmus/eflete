@@ -1112,9 +1112,9 @@ tabs_menu_tab_open(Tabs_Menu view)
 }
 
 void
-tabs_menu_import_edj_data_set(const char *name, const char *path, const char *edj)
+tabs_menu_import_edj_data_set(const char *name, const char *path, const char *edj, const Eina_List *widgets)
 {
-   _tab_import_edj_data_set(name, path, edj);
+   _tab_import_edj_data_set(name, path, edj, widgets);
 }
 
 void

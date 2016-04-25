@@ -467,9 +467,23 @@ _tab_import_edj_add(void)
    return tab_edj.layout;
 }
 
-void
-_tab_import_edj_data_set(const char *name, const char *path, const char *edj)
+static void
+_delayed_popup(void *data)
 {
+   char *msg = data;
+   popup_want_action(_("Import edj-file"), msg, NULL, NULL, BTN_OK, NULL, NULL);
+   free(msg);
+}
+
+void
+_tab_import_edj_data_set(const char *name, const char *path, const char *edj, const Eina_List *widgets)
+{
+   const Eina_List *l;
+   const char *str;
+   Widget_Item_Data *widget_item_data_iterator;
+   Eina_Strbuf *buf = eina_strbuf_new();
+   Eina_Bool first_not_found = true;
+
    assert(tab_edj.layout != NULL);
 
    elm_entry_entry_set(tab_edj.name, name);
@@ -478,4 +492,30 @@ _tab_import_edj_data_set(const char *name, const char *path, const char *edj)
    else elm_entry_entry_set(tab_edj.path, profile_get()->general.projects_folder);
 
    elm_entry_entry_set(tab_edj.edj, edj);
+
+   EINA_LIST_FOREACH(widgets, l, str)
+     {
+        widget_item_data_iterator = widget_item_data;
+        while (widget_item_data_iterator->name)
+          {
+             if (!strcasecmp(str, widget_item_data_iterator->name))
+               break;
+             widget_item_data_iterator++;
+          }
+        if (widget_item_data_iterator->name)
+          widget_item_data_iterator->check = true;
+        else
+          {
+             eina_strbuf_append_printf(buf, first_not_found ? "%s" : ", %s", str);
+             first_not_found = false;
+          }
+     }
+   elm_genlist_realized_items_update(tab_edj.genlist);
+   if (eina_strbuf_length_get(buf))
+     {
+        eina_strbuf_prepend(buf, _("Following widgets were not found and ignored: "));
+        ERR("%s", eina_strbuf_string_get(buf));
+        ecore_job_add(_delayed_popup, eina_strbuf_string_steal(buf));
+     }
+   eina_strbuf_free(buf);
 }
