@@ -357,7 +357,7 @@ _on_bt_style_add(void *data,
 
    BOX_ADD(POPUP.dialog, box, false, false);
 
-   LAYOUT_PROP_ADD(box, _("Style name:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Style name:"), "popup", "1swallow")
    POPUP.name_validator = resource_name_validator_new(NAME_REGEX, NULL);
    resource_name_validator_list_set(POPUP.name_validator, &ap.project->styles, true);
    ENTRY_ADD(item, POPUP.name, true);
@@ -441,7 +441,7 @@ _on_bt_tag_add(void *data,
 
    BOX_ADD(POPUP.dialog, box, false, false);
 
-   LAYOUT_PROP_ADD(box, "Tag name:", "property", "1swallow")
+   LAYOUT_PROP_ADD(box, "Tag name:", "popup", "1swallow")
    POPUP.name_validator = resource_name_validator_new(NAME_REGEX, NULL);
    resource_name_validator_list_set(POPUP.name_validator, &POPUP.buf_resources, true);
    ENTRY_ADD(item, POPUP.name, true);

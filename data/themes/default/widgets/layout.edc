@@ -1885,7 +1885,7 @@ group { name: "elm/layout/entry/overlay";
    }
 }
 
-group { name: "elm/layout/property/1swallow";
+group { name: "elm/layout/popup/1swallow";
    parts {
       part { name: "area.base";
          type: SPACER;
@@ -1935,7 +1935,7 @@ group { name: "elm/layout/property/1swallow";
    }
 }
 
-group { name: "elm/layout/property/1swallow_subtext";
+group { name: "elm/layout/popup/1swallow_subtext";
    parts {
       part { name: "area.base";
          type: SPACER;

@@ -449,7 +449,7 @@ _tone_add_cb(void *data,
 
    BOX_ADD(popup, box, false, false);
    elm_object_content_set(popup, box);
-   LAYOUT_PROP_ADD(box, _("Tone name:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Tone name:"), "popup", "1swallow")
    ENTRY_ADD(item, edit->tone_entry, true);
    eo_event_callback_add(edit->tone_entry, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, edit->tone_validator);
    evas_object_smart_callback_add(edit->tone_entry, "changed", _validation, edit);
@@ -459,7 +459,7 @@ _tone_add_cb(void *data,
    elm_object_part_content_set(item, "elm.swallow.content", edit->tone_entry);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Frequency:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Frequency:"), "popup", "1swallow")
    ENTRY_ADD(item, edit->frq_entry, true);
    eo_event_callback_add(edit->frq_entry, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, edit->frq_validator);
    evas_object_smart_callback_add(edit->frq_entry, "changed", _validation, edit);

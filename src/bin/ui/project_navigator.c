@@ -432,7 +432,7 @@ _btn_add_group_cb(void *data __UNUSED__,
    /* name: entry */
    validator = resource_name_validator_new(LAYOUT_NAME_REGEX, NULL);
    resource_name_validator_list_set(validator, &ap.project->groups, false);
-   LAYOUT_PROP_ADD(layout_p.box, _("name"), "property", "1swallow")
+   LAYOUT_PROP_ADD(layout_p.box, _("name"), "popup", "1swallow")
    ENTRY_ADD(layout_p.box, layout_p.entry, true)
    evas_object_smart_callback_add(layout_p.entry, "changed", _group_validate, NULL);
    eo_event_callback_add(layout_p.entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, validator);
@@ -442,14 +442,14 @@ _btn_add_group_cb(void *data __UNUSED__,
    if (glit && (elm_genlist_item_item_class_get(glit) == project_navigator.itc_folder))
      elm_entry_entry_set(layout_p.entry, elm_object_item_data_get(glit));
    /* copy: combobox */
-   LAYOUT_PROP_ADD(layout_p.box, _("copy of"), "property", "1swallow")
+   LAYOUT_PROP_ADD(layout_p.box, _("copy of"), "popup", "1swallow")
    layout_p.layout_combo = item;
    EWE_COMBOBOX_ADD(item, layout_p.combobox)
    evas_object_smart_callback_add(layout_p.combobox, "selected", _group_sel, NULL);
    elm_layout_content_set(item, NULL, layout_p.combobox);
    elm_box_pack_end(layout_p.box, item);
    /* alias: check */
-   LAYOUT_PROP_ADD(layout_p.box, _("alias"), "property", "1swallow")
+   LAYOUT_PROP_ADD(layout_p.box, _("alias"), "popup", "1swallow")
    CHECK_ADD(item, layout_p.check)
    evas_object_smart_callback_add(layout_p.check, "changed", _alias_ch, NULL);
    elm_object_disabled_set(layout_p.check, true);

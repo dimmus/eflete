@@ -907,7 +907,7 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
 
    BOX_ADD(ap.popup, box, false, false);
 
-   LAYOUT_PROP_ADD(box, _("Part name:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Part name:"), "popup", "1swallow")
    ENTRY_ADD(box, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, pl->name_validator);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new part here."));
@@ -917,7 +917,7 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Part type:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Part type:"), "popup", "1swallow")
    EWE_COMBOBOX_ADD(item, pl->popup.combobox)
    ewe_combobox_select_item_set(pl->popup.combobox, 0);
    for (type = EDJE_PART_TYPE_RECTANGLE; type <= EDJE_PART_TYPE_SPACER; type++)
@@ -1056,7 +1056,7 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    eina_stringshare_del(title);
 
    BOX_ADD(ap.popup, box, false, false);
-   LAYOUT_PROP_ADD(box, _("Name:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Name:"), "popup", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
                          elm_validator_regexp_helper, pl->name_validator);
@@ -1066,7 +1066,7 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Value:"), "property", "1swallow_subtext")
+   LAYOUT_PROP_ADD(box, _("Value:"), "popup", "1swallow_subtext")
    SPINNER_ADD(item, pl->popup.spinner_value, 0.0, 1.0, 0.1, true);
    elm_spinner_label_format_set(pl->popup.spinner_value, "%1.2f");
    elm_object_part_text_set(item, "elm.subtext", _("Available values: 0.0 - 1.0"));
@@ -1074,7 +1074,7 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.spinner_value);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Duplicate state:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Duplicate state:"), "popup", "1swallow")
    EWE_COMBOBOX_ADD(item, pl->popup.combobox)
 
    ewe_combobox_item_add(pl->popup.combobox, _("None"));
@@ -1181,7 +1181,7 @@ _on_menu_add_item_clicked(void *data __UNUSED__,
    eina_stringshare_del(title);
 
    BOX_ADD(ap.popup, box, false, false);
-   LAYOUT_PROP_ADD(box, _("Name:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Name:"), "popup", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
                          elm_validator_regexp_helper, pl->name_validator);
@@ -1191,7 +1191,7 @@ _on_menu_add_item_clicked(void *data __UNUSED__,
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Source group:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Source group:"), "popup", "1swallow")
    EWE_COMBOBOX_ADD(item, pl->popup.combobox)
    ewe_combobox_text_set(pl->popup.combobox, _("Select source group here."));
    evas_object_smart_callback_add(pl->popup.combobox, "selected", _item_validate, pl);
@@ -1297,7 +1297,7 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
    elm_object_part_text_set(ap.popup, "title,text", _("Add new program"));
 
    BOX_ADD(ap.popup, box, false, false);
-   LAYOUT_PROP_ADD(box, _("Name:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Name:"), "popup", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
                          elm_validator_regexp_helper, pl->name_validator);
@@ -1307,7 +1307,7 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Action type:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Action type:"), "popup", "1swallow")
    EWE_COMBOBOX_ADD(item, pl->popup.combobox)
    ewe_combobox_select_item_set(pl->popup.combobox, 0);
 
