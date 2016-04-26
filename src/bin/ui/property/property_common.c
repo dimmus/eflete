@@ -489,6 +489,20 @@ _del(void *data,
      pa->del_cb(pa);
 }
 
+static Eina_Bool
+_filter(void *data,
+        Evas_Object *obj __UNUSED__,
+        void *key __UNUSED__)
+{
+   Property_Attribute *pa = data;
+
+   assert(pa != NULL);
+
+   if (pa->filter_cb)
+     return pa->filter_cb(pa);
+   return true;
+}
+
 void
 property_common_itc_init()
 {
@@ -498,18 +512,21 @@ property_common_itc_init()
    pd.itc_caption->func.text_get = _caption_text_get;
    pd.itc_caption->func.content_get = _caption_content_get;
    pd.itc_caption->func.del = _del;
+   pd.itc_caption->func.filter_get = _filter;
 
    pd.itc_1swallow = elm_genlist_item_class_new();
    pd.itc_1swallow->item_style = "1swallow";
    pd.itc_1swallow->func.text_get = _1swallow_text_get;
    pd.itc_1swallow->func.content_get = _1swallow_content_get;
    pd.itc_1swallow->func.del = _del;
+   pd.itc_1swallow->func.filter_get = _filter;
 
    pd.itc_2swallow = elm_genlist_item_class_new();
    pd.itc_2swallow->item_style = "2swallow";
    pd.itc_2swallow->func.text_get = _2swallow_text_get;
    pd.itc_2swallow->func.content_get = _2swallow_content_get;
    pd.itc_2swallow->func.del = _del;
+   pd.itc_2swallow->func.filter_get = _filter;
 
    /* map control pairs to item classes */
    pd.item_classes[PROPERTY_CONTROL_NONE]           [PROPERTY_CONTROL_NONE]     = pd.itc_caption;

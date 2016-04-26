@@ -55,8 +55,14 @@ typedef struct {
 extern Property_Data pd;
 
 typedef void (* Property_Cb) (Property_Attribute *, Property_Action *);
+typedef Eina_Bool (* Property_Attribute_Filter_Cb) (Property_Attribute *);
 typedef void (* Property_Attribute_Del_Cb) (Property_Attribute *);
 typedef Eina_List * (* Property_Expand_Cb) (Property_Attribute *);
+
+/* filter needs to be set to any non-zero value to be applied. Not in all cases
+   useful key can be given so we ignore its value and use 1 instead. */
+#define GENLIST_FILTER_APPLY(GEN) elm_genlist_filter_set(GEN, (void *)1);
+#pragma GCC poison elm_genlist_filter_set
 
 typedef enum {
    PROPERTY_IMAGE_CONTROL_PREVIEW,
@@ -94,6 +100,7 @@ struct _Property_Attribute {
    Property_Action action1; /**< first control */
    Property_Action action2; /**< second control */
    Property_Expand_Cb expand_cb; /**< This cb will be called to get subitems */
+   Property_Attribute_Filter_Cb filter_cb; /**< called when item is checked for being filtered */
    Property_Attribute_Del_Cb del_cb; /**< called when item is deleted from genlist */
    Eina_Bool expandable : 1; /**< if true  item is tree node */
    Eina_Bool expanded : 1; /**< if true initial state will be expanded. */
