@@ -298,35 +298,28 @@ _find_item(Elm_Object_Item *item, const char *name)
 }
 
 static int
-_item_group_compare(const void *data1, const void *data2)
+_items_compare(const void *data1, const void *data2)
 {
+   const char *str1;
+   const char *str2;
    const Elm_Object_Item *it1 = data1;
    const Elm_Object_Item *it2 = data2;
-   if (elm_genlist_item_item_class_get(it1) == project_navigator.itc_folder) return -1;
-   if (elm_genlist_item_item_class_get(it2) == project_navigator.itc_folder) return -1;
-   const char *str1 = ((Group *)elm_object_item_data_get(it1))->name;
-   const char *str2 = ((Group *)elm_object_item_data_get(it2))->name;
 
-   if (!str1) return 1;
-   if (!str2) return -1;
-
-   return strcmp(str1, str2);
-}
-
-static int
-_item_prefix_compare(const void *data1, const void *data2)
-{
-   const Elm_Object_Item *it1 = data1;
-   const Elm_Object_Item *it2 = data2;
-   if (elm_genlist_item_item_class_get(it1) != project_navigator.itc_folder) return 1;
-   if (elm_genlist_item_item_class_get(it2) != project_navigator.itc_folder) return 1;
-
-   const char *str1 = elm_object_item_data_get(it1);
-   const char *str2 = elm_object_item_data_get(it2);
-
-   if (!str1) return 1;
-   if (!str2) return -1;
-
+   /* add group */
+   if (elm_genlist_item_item_class_get(it1) == project_navigator.itc_group)
+     {
+        if (elm_genlist_item_item_class_get(it2) != project_navigator.itc_folder)
+          str2 = ((Group *)elm_object_item_data_get(it2))->name;
+        else return 1;
+        str1 = ((Group *)elm_object_item_data_get(it1))->name;
+     }
+   else /* add folder */
+     {
+        if (elm_genlist_item_item_class_get(it2) == project_navigator.itc_group)
+          str2 = elm_object_item_data_get(it2);
+        else return -1;
+        str1 = elm_object_item_data_get(it1);
+     }
    return strcmp(str1, str2);
 }
 
@@ -345,7 +338,7 @@ _group_add(void *data __UNUSED__,
    item = elm_genlist_first_item_get(project_navigator.genlist);
    arr = eina_str_split_full(group->name, "/", 0, &count);
 
-   for (i = 0; i < count - 1; i++)
+   for (i = 0; i < count; i++)
      {
         parent = elm_genlist_item_parent_get(item);
         item = _find_item(item, arr[i]);
@@ -363,7 +356,7 @@ _group_add(void *data __UNUSED__,
                                        prefix,
                                        parent,
                                        ELM_GENLIST_ITEM_TREE,
-                                       _item_prefix_compare,
+                                       _items_compare,
                                        NULL,
                                        NULL);
      }
@@ -373,7 +366,7 @@ _group_add(void *data __UNUSED__,
                                     group,
                                     parent,
                                     ELM_GENLIST_ITEM_NONE,
-                                    _item_group_compare,
+                                    _items_compare,
                                     NULL,
                                     NULL);
 
