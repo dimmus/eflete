@@ -39,79 +39,7 @@ struct _Property_Group_Data {
          Eina_Stringshare *str_val1;
       } old, new;
    } history;
-
-   struct {
-        struct {
-             Property_Attribute title;
-             Property_Attribute name;
-             Property_Attribute min;
-             Property_Attribute max;
-        } group;
-        struct {
-             Property_Attribute title;
-             Property_Attribute name;
-             Property_Attribute type;
-             Property_Attribute scale;
-             Property_Attribute mouse_events;
-             Property_Attribute repeat_events;
-             Property_Attribute clip_to;
-             Property_Attribute ignore_flags;
-             struct {
-                  Property_Attribute title;
-                  Property_Attribute enable;
-                  Property_Attribute step;
-                  Property_Attribute count;
-                  Property_Attribute confine;
-                  Property_Attribute threshold;
-                  Property_Attribute events;
-             } dragable;
-             struct {
-                  Property_Attribute title;
-                  Property_Attribute source;
-             } type_group;
-        } part;
-        struct {
-             Property_Attribute title;
-             Property_Attribute name;
-             Property_Attribute visible;
-             struct {
-                  Property_Attribute title;
-                  Property_Attribute min;
-                  Property_Attribute max;
-                  Property_Attribute fixed;
-                  Property_Attribute minmul;
-                  Property_Attribute aspect_preference;
-                  Property_Attribute aspect;
-             } size;
-             struct {
-                  Property_Attribute title;
-                  Property_Attribute align;
-                  struct {
-                       Property_Attribute title;
-                       Property_Attribute to_x;
-                       Property_Attribute to_y;
-                       Property_Attribute relative;
-                       Property_Attribute offset;
-                  } rel1, rel2;
-             } position;
-             struct {
-                  Property_Attribute title;
-                  Property_Attribute color_class;
-                  Property_Attribute color;
-                  Property_Attribute outline_color;
-                  Property_Attribute shadow_color;
-             } colors;
-             struct {
-                  Property_Attribute title;
-                  Property_Attribute text;
-                  Property_Attribute align;
-                  Property_Attribute min;
-                  Property_Attribute max;
-             } text_common;
-        } state;
-        Property_Attribute item;
-        Property_Attribute program;
-   } items;
+   Property_Attribute items[PROPERTY_GROUP_ITEM_LAST];
 };
 typedef struct _Property_Group_Data Property_Group_Data;
 static Property_Group_Data group_pd;
@@ -156,8 +84,8 @@ _on_part_selected(void *data __UNUSED__,
    group_pd.program = NULL;
 
    GENLIST_FILTER_APPLY(pd.genlist);
-   property_item_update_recursively(&group_pd.items.part.title);
-   property_item_update_recursively(&group_pd.items.state.title);
+   property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PART_TITLE]);
+   property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TITLE]);
 }
 
 static void
@@ -181,7 +109,7 @@ _on_part_state_selected(void *data __UNUSED__,
    assert(group_pd.part == part);
 
    DBG("selected state \"%s\"", group_pd.part->current_state->name);
-   property_item_update_recursively(&group_pd.items.state.title);
+   property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TITLE]);
 }
 
 static void
@@ -213,11 +141,11 @@ _on_group_changed(void *data __UNUSED__,
 
    group_pd.program = group_pd.group->current_program;
    GENLIST_FILTER_APPLY(pd.genlist);
-   property_item_update_recursively(&group_pd.items.group.title);
+   property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_GROUP_TITLE]);
    if (group_pd.part)
      {
-        property_item_update_recursively(&group_pd.items.part.title);
-        property_item_update_recursively(&group_pd.items.state.title);
+        property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PART_TITLE]);
+        property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TITLE]);
      }
 }
 
@@ -243,33 +171,41 @@ _filter_cb(Property_Attribute *pa)
 {
    assert(pa != NULL);
 
-   if ((pa == &group_pd.items.part.title) ||
-       (pa == &group_pd.items.state.title))
-       return group_pd.part != NULL;
-   else if (pa == &group_pd.items.item)
-     return group_pd.part &&
-        group_pd.part->current_item_name != NULL;
-   else if (pa == &group_pd.items.program)
-     return group_pd.program != NULL;
-   else if (pa == &group_pd.items.part.type_group.title)
-     return group_pd.part &&
-        group_pd.part->type == EDJE_PART_TYPE_GROUP;
-   else if (pa == &group_pd.items.state.colors.title)
-     return group_pd.part &&
-        group_pd.part->type != EDJE_PART_TYPE_SWALLOW &&
-        group_pd.part->type != EDJE_PART_TYPE_SPACER;
-   else if (pa == &group_pd.items.state.text_common.title)
-     return group_pd.part &&
-        (group_pd.part->type == EDJE_PART_TYPE_TEXT ||
-         group_pd.part->type == EDJE_PART_TYPE_TEXTBLOCK);
-   else if ((pa == &group_pd.items.state.colors.outline_color) ||
-            (pa == &group_pd.items.state.colors.shadow_color))
-     return group_pd.part &&
-        group_pd.part->type == EDJE_PART_TYPE_TEXT;
+   switch (pa->type.group_item)
+     {
+      case PROPERTY_GROUP_ITEM_PART_TITLE:
+      case PROPERTY_GROUP_ITEM_STATE_TITLE:
+         return group_pd.part != NULL;
 
-   TODO("Remove after caption items refactor");
-   CRIT("filter callback not found for %s", pa->name);
-   abort();
+      case PROPERTY_GROUP_ITEM_PART_ITEM_TITLE:
+         return group_pd.part &&
+            group_pd.part->current_item_name != NULL;
+
+      case PROPERTY_GROUP_ITEM_PROGRAM_TITLE:
+         return group_pd.program != NULL;
+
+      case PROPERTY_GROUP_ITEM_PART_TYPE_GROUP_TITLE:
+         return group_pd.part &&
+            group_pd.part->type == EDJE_PART_TYPE_GROUP;
+
+      case PROPERTY_GROUP_ITEM_STATE_COLORS_TITLE:
+         return group_pd.part &&
+            group_pd.part->type != EDJE_PART_TYPE_SWALLOW &&
+            group_pd.part->type != EDJE_PART_TYPE_SPACER;
+
+      case PROPERTY_GROUP_ITEM_STATE_COLORS_OUTLINE_COLOR:
+      case PROPERTY_GROUP_ITEM_STATE_COLORS_SHADOWCOLOR:
+         return group_pd.part &&
+            group_pd.part->type == EDJE_PART_TYPE_TEXT;
+
+      case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TITLE:
+         return group_pd.part &&
+            (group_pd.part->type == EDJE_PART_TYPE_TEXT ||
+             group_pd.part->type == EDJE_PART_TYPE_TEXTBLOCK);
+
+      default:
+         return true;
+     }
 }
 
 /* local callbacks */
@@ -279,96 +215,88 @@ _subitems_get(Property_Attribute *pa)
    Eina_List *items = NULL;
 
    assert(pa != NULL);
+#define APPEND(TYPE) items = eina_list_append(items, &group_pd.items[TYPE]);
+   switch (pa->type.group_item)
+     {
+      case PROPERTY_GROUP_ITEM_GROUP_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_GROUP_NAME);
+         APPEND(PROPERTY_GROUP_ITEM_GROUP_MIN);
+         APPEND(PROPERTY_GROUP_ITEM_GROUP_MAX);
+         break;
+      case PROPERTY_GROUP_ITEM_PART_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_PART_NAME);
+         APPEND(PROPERTY_GROUP_ITEM_PART_TYPE);
+         APPEND(PROPERTY_GROUP_ITEM_PART_SCALE);
+         APPEND(PROPERTY_GROUP_ITEM_PART_MOUSE_EVENTS);
+         APPEND(PROPERTY_GROUP_ITEM_PART_REPEAT_EVENTS);
+         APPEND(PROPERTY_GROUP_ITEM_PART_CLIP_TO);
+         APPEND(PROPERTY_GROUP_ITEM_PART_IGNORE_FLAGS);
+         APPEND(PROPERTY_GROUP_ITEM_PART_DRAGABLE_TITLE);
+         APPEND(PROPERTY_GROUP_ITEM_PART_TYPE_GROUP_TITLE);
+         break;
+      case PROPERTY_GROUP_ITEM_PART_DRAGABLE_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_PART_DRAGABLE_ENABLE);
+         APPEND(PROPERTY_GROUP_ITEM_PART_DRAGABLE_STEP);
+         APPEND(PROPERTY_GROUP_ITEM_PART_DRAGABLE_COUNT);
+         APPEND(PROPERTY_GROUP_ITEM_PART_DRAGABLE_CONFINE);
+         APPEND(PROPERTY_GROUP_ITEM_PART_DRAGABLE_THRESHOLD);
+         APPEND(PROPERTY_GROUP_ITEM_PART_DRAGABLE_EVENTS);
+         break;
+      case PROPERTY_GROUP_ITEM_PART_TYPE_GROUP_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_PART_TYPE_GROUP_SOURCE);
+         break;
+      case PROPERTY_GROUP_ITEM_STATE_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_STATE_NAME);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_VISIBLE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_COLORS_TITLE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_SIZE_TITLE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_TITLE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TITLE);
+         break;
+      case PROPERTY_GROUP_ITEM_STATE_SIZE_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_STATE_SIZE_MIN);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_SIZE_MAX);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_SIZE_MINMUL);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_SIZE_FIXED);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_SIZE_ASPECT_PREF);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_SIZE_ASPECT);
+         break;
+      case PROPERTY_GROUP_ITEM_STATE_POSITION_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_ALIGN);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TITLE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TITLE);
+         break;
+      case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_X);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_Y);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_RELATIVE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_OFFSET);
+         break;
+      case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_X);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_Y);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_RELATIVE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_OFFSET);
+         break;
+      case PROPERTY_GROUP_ITEM_STATE_COLORS_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_STATE_COLORS_COLOR_CLASS);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_COLORS_COLOR);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_COLORS_OUTLINE_COLOR);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_COLORS_SHADOWCOLOR);
+         break;
+      case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TEXT);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_ALIGN);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_MIN);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_MAX);
+         break;
+      default:
+         CRIT("items callback not found for %s", pa->name);
+         abort();
+     }
 
-   if (pa == &group_pd.items.group.title)
-     {
-         items = eina_list_append(items, &group_pd.items.group.name);
-         items = eina_list_append(items, &group_pd.items.group.min);
-         items = eina_list_append(items, &group_pd.items.group.max);
-     }
-   else if (pa == &group_pd.items.part.title)
-     {
-         items = eina_list_append(items, &group_pd.items.part.name);
-         items = eina_list_append(items, &group_pd.items.part.type);
-         items = eina_list_append(items, &group_pd.items.part.scale);
-         items = eina_list_append(items, &group_pd.items.part.mouse_events);
-         items = eina_list_append(items, &group_pd.items.part.repeat_events);
-         items = eina_list_append(items, &group_pd.items.part.clip_to);
-         items = eina_list_append(items, &group_pd.items.part.ignore_flags);
-         items = eina_list_append(items, &group_pd.items.part.dragable.title);
-         items = eina_list_append(items, &group_pd.items.part.type_group.title);
-     }
-   else if (pa == &group_pd.items.state.title)
-     {
-         items = eina_list_append(items, &group_pd.items.state.name);
-         items = eina_list_append(items, &group_pd.items.state.visible);
-         items = eina_list_append(items, &group_pd.items.state.colors.title);
-         items = eina_list_append(items, &group_pd.items.state.size.title);
-         items = eina_list_append(items, &group_pd.items.state.position.title);
-         items = eina_list_append(items, &group_pd.items.state.text_common.title);
-     }
-   else if (pa == &group_pd.items.state.size.title)
-     {
-         items = eina_list_append(items, &group_pd.items.state.size.min);
-         items = eina_list_append(items, &group_pd.items.state.size.max);
-         items = eina_list_append(items, &group_pd.items.state.size.fixed);
-         items = eina_list_append(items, &group_pd.items.state.size.aspect_preference);
-         items = eina_list_append(items, &group_pd.items.state.size.aspect);
-         items = eina_list_append(items, &group_pd.items.state.size.minmul);
-     }
-   else if (pa == &group_pd.items.state.position.title)
-     {
-         items = eina_list_append(items, &group_pd.items.state.position.align);
-         items = eina_list_append(items, &group_pd.items.state.position.rel1.title);
-         items = eina_list_append(items, &group_pd.items.state.position.rel2.title);
-     }
-   else if (pa == &group_pd.items.state.colors.title)
-     {
-         items = eina_list_append(items, &group_pd.items.state.colors.color_class);
-         items = eina_list_append(items, &group_pd.items.state.colors.color);
-         items = eina_list_append(items, &group_pd.items.state.colors.outline_color);
-         items = eina_list_append(items, &group_pd.items.state.colors.shadow_color);
-     }
-   else if (pa == &group_pd.items.state.position.rel1.title)
-     {
-         items = eina_list_append(items, &group_pd.items.state.position.rel1.to_x);
-         items = eina_list_append(items, &group_pd.items.state.position.rel1.to_y);
-         items = eina_list_append(items, &group_pd.items.state.position.rel1.relative);
-         items = eina_list_append(items, &group_pd.items.state.position.rel1.offset);
-     }
-   else if (pa == &group_pd.items.state.position.rel2.title)
-     {
-         items = eina_list_append(items, &group_pd.items.state.position.rel2.to_x);
-         items = eina_list_append(items, &group_pd.items.state.position.rel2.to_y);
-         items = eina_list_append(items, &group_pd.items.state.position.rel2.relative);
-         items = eina_list_append(items, &group_pd.items.state.position.rel2.offset);
-     }
-   else if (pa == &group_pd.items.part.dragable.title)
-     {
-         items = eina_list_append(items, &group_pd.items.part.dragable.enable);
-         items = eina_list_append(items, &group_pd.items.part.dragable.step);
-         items = eina_list_append(items, &group_pd.items.part.dragable.count);
-         items = eina_list_append(items, &group_pd.items.part.dragable.confine);
-         items = eina_list_append(items, &group_pd.items.part.dragable.threshold);
-         items = eina_list_append(items, &group_pd.items.part.dragable.events);
-     }
-   else if (pa == &group_pd.items.part.type_group.title)
-     {
-         items = eina_list_append(items, &group_pd.items.part.type_group.source);
-     }
-   else if (pa == &group_pd.items.state.text_common.title)
-     {
-         items = eina_list_append(items, &group_pd.items.state.text_common.text);
-         items = eina_list_append(items, &group_pd.items.state.text_common.align);
-         items = eina_list_append(items, &group_pd.items.state.text_common.min);
-         items = eina_list_append(items, &group_pd.items.state.text_common.max);
-     }
-   else
-     {
-        CRIT("items callback not found for %s", pa->name);
-        abort();
-     }
    return items;
+#undef APPEND
 }
 
 static void
@@ -1764,274 +1692,310 @@ _action2(Property_Attribute *pa, const char *name, const char *units,
 }
 
 static void
-_init_group_block()
+_init_items()
 {
-   group_pd.items.group.title.name = "group";
-   group_pd.items.group.title.expandable = true;
-   group_pd.items.group.title.expanded = true;
-   group_pd.items.group.title.expand_cb = _subitems_get;
+   Property_Group_Item it;
+#define IT group_pd.items[it]
+   for (it = 0 /* first element of enum */; it < PROPERTY_GROUP_ITEM_LAST; it++)
+     {
+        IT.type.group_item = it;
+        IT.filter_cb = _filter_cb;
+        switch(it)
+          {
+             /* group block */
+           case PROPERTY_GROUP_ITEM_GROUP_TITLE:
+              IT.name = "group";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_GROUP_ITEM_GROUP_NAME:
+              IT.name = "name";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_NAME);
+              break;
+           case PROPERTY_GROUP_ITEM_GROUP_MIN:
+              IT.name = "min";
+              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_W);
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_H);
+              break;
+           case PROPERTY_GROUP_ITEM_GROUP_MAX:
+              IT.name = "max";
+              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_W);
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_H);
+              break;
 
-   group_pd.items.group.name.name = "name";
-   _action1(&group_pd.items.group.name, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_NAME);
+              /* part block */
+           case PROPERTY_GROUP_ITEM_PART_TITLE:
+              IT.name = "part";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_GROUP_ITEM_PART_NAME:
+              IT.name = "name";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PART_NAME);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_TYPE:
+              IT.name = "type";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_PART_TYPE);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_SCALE:
+              IT.name = "scale";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_SCALE);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_MOUSE_EVENTS:
+              IT.name = "mouse events";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_MOUSE_EVENTS);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_REPEAT_EVENTS:
+              IT.name = "repeat events";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_REPEAT_EVENTS);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_CLIP_TO:
+              IT.name = "clip to";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_CLIP_TO);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_IGNORE_FLAGS:
+              IT.name = "ignore flags";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_IGNORE_FLAGS);
+              break;
 
-   group_pd.items.group.min.name = "min";
-   _action1(&group_pd.items.group.min, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_W);
-   _action2(&group_pd.items.group.min, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_H);
+           case PROPERTY_GROUP_ITEM_PART_TYPE_GROUP_TITLE:
+              IT.name = "type specific (GROUP)";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_GROUP_ITEM_PART_TYPE_GROUP_SOURCE:
+              IT.name = "source";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_GROUP_SOURCE);
+              break;
 
-   group_pd.items.group.max.name = "max";
-   _action1(&group_pd.items.group.max, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_W);
-   _action2(&group_pd.items.group.max, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_H);
-}
+              /* part.draggable block */
+           case PROPERTY_GROUP_ITEM_PART_DRAGABLE_TITLE:
+              IT.name = "dragable";
+              IT.expandable = true;
+              IT.expanded = false;
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_GROUP_ITEM_PART_DRAGABLE_ENABLE:
+              IT.name = "enable";
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_Y);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_DRAGABLE_STEP:
+              IT.name = "step";
+              _action1(&IT, "x", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_X);
+              _action2(&IT, "y", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_Y);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_DRAGABLE_COUNT:
+              IT.name = "count";
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_COUNT_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_COUNT_Y);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_DRAGABLE_CONFINE:
+              IT.name = "confine";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_CONFINE);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_DRAGABLE_THRESHOLD:
+              IT.name = "threshold";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_THRESHOLD);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_DRAGABLE_EVENTS:
+              IT.name = "events";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_EVENT);
 
-static void
-_init_part_dragable_block()
-{
-   group_pd.items.part.dragable.title.name = "dragable";
-   group_pd.items.part.dragable.title.expandable = true;
-   group_pd.items.part.dragable.title.expanded = false;
-   group_pd.items.part.dragable.title.expand_cb = _subitems_get;
+              /* state block */
+           case PROPERTY_GROUP_ITEM_STATE_TITLE:
+              IT.name = "state";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_NAME:
+              IT.name = "name";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_NAME);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_VISIBLE:
+              IT.name = "visible";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_VISIBLE);
+              break;
 
-   group_pd.items.part.dragable.enable.name = "enable";
-   _action1(&group_pd.items.part.dragable.enable, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_X);
-   _action2(&group_pd.items.part.dragable.enable, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_Y);
+              /* state size block */
+           case PROPERTY_GROUP_ITEM_STATE_SIZE_TITLE:
+              IT.name = "size";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_SIZE_MIN:
+              IT.name = "min";
+              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MIN_W);
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MIN_H);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_SIZE_MAX:
+              IT.name = "max";
+              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAX_W);
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAX_H);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_SIZE_MINMUL:
+              IT.name = "minmul";
+              _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_W);
+              _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_H);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_SIZE_FIXED:
+              IT.name = "fixed";
+              _action1(&IT, "w", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_W);
+              _action2(&IT, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_H);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_SIZE_ASPECT_PREF:
+              IT.name = "aspect preference";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_ASPECT_PREF);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_SIZE_ASPECT:
+              IT.name = "aspect";
+              _action1(&IT, "min", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MIN);
+              _action2(&IT, "max", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MAX);
+              break;
 
-   group_pd.items.part.dragable.step.name = "step";
-   _action1(&group_pd.items.part.dragable.step, "x", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_X);
-   _action2(&group_pd.items.part.dragable.step, "y", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_Y);
+              /* state position block */
+           case PROPERTY_GROUP_ITEM_STATE_POSITION_TITLE:
+              IT.name = "position";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_POSITION_ALIGN:
+              IT.name = "align";
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ALIGN_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ALIGN_Y);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TITLE:
+              IT.name = "rel1 (start point)";
+              IT.icon_name = eina_stringshare_add(_("elm/image/icon/start-point"));
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_X:
+              IT.name = "relative to";
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_X);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_Y:
+              IT.name = "";
+              _action1(&IT, "y", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_Y);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_RELATIVE:
+              IT.name = "relative";
+              IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_Y);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_OFFSET:
+              IT.name = "offset";
+              IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_OFFSET_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_OFFSET_Y);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TITLE:
+              IT.name = "rel2 (end point)";
+              IT.icon_name = eina_stringshare_add(_("elm/image/icon/end-point"));
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_X:
+              IT.name = "relative to";
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_X);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_Y:
+              IT.name = "";
+              _action1(&IT, "y", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_Y);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_RELATIVE:
+              IT.name = "relative";
+              IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_Y);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_OFFSET:
+              IT.name = "offset";
+              IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_Y);
+              break;
 
-   group_pd.items.part.dragable.count.name = "count";
-   _action1(&group_pd.items.part.dragable.count, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_COUNT_X);
-   _action2(&group_pd.items.part.dragable.count, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_COUNT_Y);
+              /* state colors block */
+           case PROPERTY_GROUP_ITEM_STATE_COLORS_TITLE:
+              IT.name = "colors";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_COLORS_COLOR_CLASS:
+              IT.name = "color class";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_COLOR_CLASS);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_COLORS_COLOR:
+              IT.name = "color";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_COLOR);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_COLORS_OUTLINE_COLOR:
+              IT.name = "outline color";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_OUTLINE_COLOR);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_COLORS_SHADOWCOLOR:
+              IT.name = "shadow color";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_SHADOW_COLOR);
+              break;
 
-   group_pd.items.part.dragable.confine.name = "confine";
-   _action1(&group_pd.items.part.dragable.confine, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_CONFINE);
+              /* state text common block */
+           case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TITLE:
+              IT.name = "text common";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TEXT:
+              IT.name = "text";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_TEXT);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_ALIGN:
+              IT.name = "align";
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_Y);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_MIN:
+              IT.name = "min";
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_Y);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_MAX:
+              IT.name = "max";
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_Y);
+              break;
 
-   group_pd.items.part.dragable.threshold.name = "threshold";
-   _action1(&group_pd.items.part.dragable.threshold, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_THRESHOLD);
+              /* part item block */
+           case PROPERTY_GROUP_ITEM_PART_ITEM_TITLE:
+              IT.name = "item";
+              IT.expandable = true;
+              break;
 
-   group_pd.items.part.dragable.events.name = "events";
-   _action1(&group_pd.items.part.dragable.events, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_EVENT);
-}
+              /* program block */
+           case PROPERTY_GROUP_ITEM_PROGRAM_TITLE:
+              IT.name = "program";
+              IT.expandable = true;
+              break;
 
-static void
-_init_part_group_specific_block()
-{
-   group_pd.items.part.type_group.title.name = "type specific (GROUP)";
-   group_pd.items.part.type_group.title.expandable = true;
-   group_pd.items.part.type_group.title.expanded = true;
-   group_pd.items.part.type_group.title.expand_cb = _subitems_get;
-   group_pd.items.part.type_group.title.filter_cb = _filter_cb;
-
-   group_pd.items.part.type_group.source.name = "source";
-   _action1(&group_pd.items.part.type_group.source, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_GROUP_SOURCE);
-}
-
-static void
-_init_part_block()
-{
-   group_pd.items.part.title.name = "part";
-   group_pd.items.part.title.expandable = true;
-   group_pd.items.part.title.expanded = true;
-   group_pd.items.part.title.expand_cb = _subitems_get;
-   group_pd.items.part.title.filter_cb = _filter_cb;
-
-   group_pd.items.part.name.name = "name";
-   _action1(&group_pd.items.part.name, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PART_NAME);
-
-   group_pd.items.part.type.name = "type";
-   _action1(&group_pd.items.part.type, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_PART_TYPE);
-
-   group_pd.items.part.scale.name = "scale";
-   _action1(&group_pd.items.part.scale, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_SCALE);
-
-   group_pd.items.part.mouse_events.name = "mouse events";
-   _action1(&group_pd.items.part.mouse_events, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_MOUSE_EVENTS);
-
-   group_pd.items.part.repeat_events.name = "repeat events";
-   _action1(&group_pd.items.part.repeat_events, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_REPEAT_EVENTS);
-
-   group_pd.items.part.clip_to.name = "clip to";
-   _action1(&group_pd.items.part.clip_to, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_CLIP_TO);
-
-   group_pd.items.part.ignore_flags.name = "ignore flags";
-   _action1(&group_pd.items.part.ignore_flags, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_IGNORE_FLAGS);
-
-   _init_part_dragable_block();
-}
-
-static void
-_init_state_size_block()
-{
-   group_pd.items.state.size.title.name = "size";
-   group_pd.items.state.size.title.expandable = true;
-   group_pd.items.state.size.title.expanded = true;
-   group_pd.items.state.size.title.expand_cb = _subitems_get;
-
-   group_pd.items.state.size.min.name = "min";
-   _action1(&group_pd.items.state.size.min, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MIN_W);
-   _action2(&group_pd.items.state.size.min, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MIN_H);
-
-   group_pd.items.state.size.max.name = "max";
-   _action1(&group_pd.items.state.size.max, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAX_W);
-   _action2(&group_pd.items.state.size.max, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAX_H);
-
-   group_pd.items.state.size.minmul.name = "minmul";
-   _action1(&group_pd.items.state.size.minmul, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_W);
-   _action2(&group_pd.items.state.size.minmul, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_H);
-
-   group_pd.items.state.size.fixed.name = "fixed";
-   _action1(&group_pd.items.state.size.fixed, "w", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_W);
-   _action2(&group_pd.items.state.size.fixed, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_H);
-
-   group_pd.items.state.size.aspect_preference.name = "aspect preference";
-   _action1(&group_pd.items.state.size.aspect_preference, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_ASPECT_PREF);
-
-   group_pd.items.state.size.aspect.name = "aspect";
-   _action1(&group_pd.items.state.size.aspect, "min", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MIN);
-   _action2(&group_pd.items.state.size.aspect, "max", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MAX);
-}
-
-static void
-_init_state_position_block()
-{
-   group_pd.items.state.position.title.name = "position";
-   group_pd.items.state.position.title.expandable = true;
-   group_pd.items.state.position.title.expanded = true;
-   group_pd.items.state.position.title.expand_cb = _subitems_get;
-
-   group_pd.items.state.position.align.name = "align";
-   _action1(&group_pd.items.state.position.align, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ALIGN_X);
-   _action2(&group_pd.items.state.position.align, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ALIGN_Y);
-
-   /* rel1 */
-   group_pd.items.state.position.rel1.title.name = "rel1 (start point)";
-   group_pd.items.state.position.rel1.title.icon_name = eina_stringshare_add(_("elm/image/icon/start-point"));
-   group_pd.items.state.position.rel1.title.expand_cb = _subitems_get;
-
-   group_pd.items.state.position.rel1.to_x.name = "relative to";
-   _action1(&group_pd.items.state.position.rel1.to_x, "x", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_X);
-
-   group_pd.items.state.position.rel1.to_y.name = "";
-   _action1(&group_pd.items.state.position.rel1.to_y, "y", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_Y);
-
-   group_pd.items.state.position.rel1.relative.name = "relative";
-   group_pd.items.state.position.rel1.relative.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
-   _action1(&group_pd.items.state.position.rel1.relative, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_X);
-   _action2(&group_pd.items.state.position.rel1.relative, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_Y);
-
-   group_pd.items.state.position.rel1.offset.name = "offset";
-   group_pd.items.state.position.rel1.offset.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
-   _action1(&group_pd.items.state.position.rel1.offset, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_OFFSET_X);
-   _action2(&group_pd.items.state.position.rel1.offset, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_OFFSET_Y);
-
-   /* rel2 */
-   group_pd.items.state.position.rel2.title.name = "rel2 (end point)";
-   group_pd.items.state.position.rel2.title.icon_name = eina_stringshare_add(_("elm/image/icon/end-point"));
-   group_pd.items.state.position.rel2.title.expand_cb = _subitems_get;
-
-   group_pd.items.state.position.rel2.to_x.name = "relative to";
-   _action1(&group_pd.items.state.position.rel2.to_x, "x", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_X);
-
-   group_pd.items.state.position.rel2.to_y.name = "";
-   _action1(&group_pd.items.state.position.rel2.to_y, "y", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_Y);
-
-   group_pd.items.state.position.rel2.relative.name = "relative";
-   group_pd.items.state.position.rel2.relative.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
-   _action1(&group_pd.items.state.position.rel2.relative, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_X);
-   _action2(&group_pd.items.state.position.rel2.relative, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_Y);
-
-   group_pd.items.state.position.rel2.offset.name = "offset";
-   group_pd.items.state.position.rel2.offset.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
-   _action1(&group_pd.items.state.position.rel2.offset, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_X);
-   _action2(&group_pd.items.state.position.rel2.offset, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_Y);
-}
-
-static void
-_init_state_colors_block()
-{
-   group_pd.items.state.colors.title.name = "colors";
-   group_pd.items.state.colors.title.expandable = true;
-   group_pd.items.state.colors.title.expanded = true;
-   group_pd.items.state.colors.title.expand_cb = _subitems_get;
-   group_pd.items.state.colors.title.filter_cb = _filter_cb;
-
-   group_pd.items.state.colors.color_class.name = "color class";
-   _action1(&group_pd.items.state.colors.color_class, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_COLOR_CLASS);
-
-   group_pd.items.state.colors.color.name = "color";
-   _action1(&group_pd.items.state.colors.color, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_COLOR);
-
-   group_pd.items.state.colors.outline_color.name = "outline color";
-   _action1(&group_pd.items.state.colors.outline_color, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_OUTLINE_COLOR);
-   group_pd.items.state.colors.outline_color.filter_cb = _filter_cb;
-
-   group_pd.items.state.colors.shadow_color.name = "shadow color";
-   _action1(&group_pd.items.state.colors.shadow_color, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_SHADOW_COLOR);
-   group_pd.items.state.colors.shadow_color.filter_cb = _filter_cb;
-}
-
-static void
-_init_state_text_common_block()
-{
-   group_pd.items.state.text_common.title.name = "text common";
-   group_pd.items.state.text_common.title.expandable = true;
-   group_pd.items.state.text_common.title.expanded = true;
-   group_pd.items.state.text_common.title.expand_cb = _subitems_get;
-   group_pd.items.state.text_common.title.filter_cb = _filter_cb;
-
-   group_pd.items.state.text_common.text.name = "text";
-   _action1(&group_pd.items.state.text_common.text, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_TEXT);
-
-   group_pd.items.state.text_common.align.name = "align";
-   _action1(&group_pd.items.state.text_common.align, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_X);
-   _action2(&group_pd.items.state.text_common.align, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_Y);
-
-   group_pd.items.state.text_common.min.name = "min";
-   _action1(&group_pd.items.state.text_common.min, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_X);
-   _action2(&group_pd.items.state.text_common.min, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_Y);
-
-   group_pd.items.state.text_common.max.name = "max";
-   _action1(&group_pd.items.state.text_common.max, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_X);
-   _action2(&group_pd.items.state.text_common.max, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_Y);
-}
-
-static void
-_init_state_block()
-{
-   group_pd.items.state.title.name = "state";
-   group_pd.items.state.title.expandable = true;
-   group_pd.items.state.title.expanded = true;
-   group_pd.items.state.title.expand_cb = _subitems_get;
-   group_pd.items.state.title.filter_cb = _filter_cb;
-
-   group_pd.items.state.name.name = "name";
-   _action1(&group_pd.items.state.name, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_NAME);
-
-   group_pd.items.state.visible.name = "visible";
-   _action1(&group_pd.items.state.visible, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_VISIBLE);
-
-   _init_state_size_block();
-   _init_state_position_block();
-   _init_state_colors_block();
-   _init_state_text_common_block();
+           case PROPERTY_GROUP_ITEM_LAST:
+              break;
+          }
+     }
+#undef IT
 }
 
 /* public */
 void
 property_group_init()
 {
-   _init_group_block();
-   _init_part_block();
-   _init_part_group_specific_block();
-   _init_state_block();
-
-   group_pd.items.item.name = "item";
-   group_pd.items.item.expandable = true;
-   group_pd.items.item.filter_cb = _filter_cb;
-
-   group_pd.items.program.name = "program";
-   group_pd.items.program.expandable = true;
-   group_pd.items.program.filter_cb = _filter_cb;
+   _init_items();
 
    /* register global callbacks */
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_CHANGED, _on_group_changed, NULL);
@@ -2049,11 +2013,11 @@ property_group_items_get()
 
    assert(group_pd.group != NULL);
 
-   items = eina_list_append(items, &group_pd.items.group.title);
-   items = eina_list_append(items, &group_pd.items.part.title);
-   items = eina_list_append(items, &group_pd.items.state.title);
-   items = eina_list_append(items, &group_pd.items.item);
-   items = eina_list_append(items, &group_pd.items.program);
+   items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_GROUP_TITLE]);
+   items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_PART_TITLE]);
+   items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_STATE_TITLE]);
+   items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_PART_ITEM_TITLE]);
+   items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_TITLE]);
 
    return items;
 }
