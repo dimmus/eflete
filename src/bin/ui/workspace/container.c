@@ -326,6 +326,7 @@ _container_smart_calculate(Evas_Object *o)
      sd->size.h = sd->con_size_max.h * sd->zoom;
 
    evas_object_resize(sd->container, sd->size.w, sd->size.h);
+   evas_object_resize(sd->content, sd->size.w, sd->size.h);
 
    /* 2. get the content protrusion */
    if (sd->func) geom = sd->func(sd->content);
