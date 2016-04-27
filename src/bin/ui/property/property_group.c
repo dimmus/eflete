@@ -1804,6 +1804,7 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_EVENTS:
               IT.name = "events";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_EVENT);
+              break;
 
               /* state block */
            case PROPERTY_GROUP_ITEM_STATE_TITLE:
