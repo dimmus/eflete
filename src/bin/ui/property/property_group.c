@@ -153,29 +153,9 @@ _on_part_selected(void *data __UNUSED__,
    assert(group_pd.part != NULL);
 
    DBG("selected part \"%s\"", PART_ARGS);
-   property_item_del(&group_pd.items.program);
+   group_pd.program = NULL;
 
-   property_item_add(&group_pd.items.part.title, NULL);
-   property_item_add(&group_pd.items.state.title, NULL);
-   if (group_pd.part->current_item_name)
-     property_item_add(&group_pd.items.item, NULL);
-   else
-     property_item_del(&group_pd.items.item);
-
-   /* type-specific in part block */
-   if (group_pd.items.part.title.expanded)
-     {
-        property_item_del(&group_pd.items.part.type_group.title);
-        switch (group_pd.part->type)
-          {
-           case EDJE_PART_TYPE_GROUP:
-              property_item_add(&group_pd.items.part.type_group.title, group_pd.items.part.title.glit);
-              break;
-           default:
-              break;
-          }
-     }
-
+   GENLIST_FILTER_APPLY(pd.genlist);
    property_item_update_recursively(&group_pd.items.part.title);
    property_item_update_recursively(&group_pd.items.state.title);
 }
@@ -188,10 +168,7 @@ _on_group_navigator_unselected(void *data __UNUSED__,
    DBG("unselected_cb\n");
    group_pd.part = NULL;
    group_pd.program = NULL;
-   property_item_del(&group_pd.items.part.title);
-   property_item_del(&group_pd.items.state.title);
-   property_item_del(&group_pd.items.item);
-   property_item_del(&group_pd.items.program);
+   GENLIST_FILTER_APPLY(pd.genlist);
 }
 
 static void
@@ -217,11 +194,9 @@ _on_program_selected(void *data __UNUSED__,
    assert(group_pd.program != NULL);
 
    DBG("selected program \"%s\"", group_pd.program);
-   property_item_del(&group_pd.items.part.title);
-   property_item_del(&group_pd.items.state.title);
-   property_item_del(&group_pd.items.item);
+   group_pd.part = NULL;
 
-   property_item_add(&group_pd.items.program, NULL);
+   GENLIST_FILTER_APPLY(pd.genlist);
 }
 
 static void
@@ -235,17 +210,15 @@ _on_group_changed(void *data __UNUSED__,
 
    DBG("group changed to \"%s\"", group_pd.group->name);
    group_pd.part = group_pd.group->current_part;
+
+   group_pd.program = group_pd.group->current_program;
+   GENLIST_FILTER_APPLY(pd.genlist);
+   property_item_update_recursively(&group_pd.items.group.title);
    if (group_pd.part)
      {
-        _on_part_selected(NULL, NULL, group_pd.part);
+        property_item_update_recursively(&group_pd.items.part.title);
+        property_item_update_recursively(&group_pd.items.state.title);
      }
-   else
-     {
-        property_item_del(&group_pd.items.part.title);
-        property_item_del(&group_pd.items.state.title);
-     }
-   group_pd.program = group_pd.group->current_program;
-   property_item_update_recursively(&group_pd.items.group.title);
 }
 
 static void
@@ -263,6 +236,40 @@ _on_editor_attribute_changed(void *data __UNUSED__,
 
    if (pa->realized)
      action->update_cb(pa, action);
+}
+
+static Eina_Bool
+_filter_cb(Property_Attribute *pa)
+{
+   assert(pa != NULL);
+
+   if ((pa == &group_pd.items.part.title) ||
+       (pa == &group_pd.items.state.title))
+       return group_pd.part != NULL;
+   else if (pa == &group_pd.items.item)
+     return group_pd.part &&
+        group_pd.part->current_item_name != NULL;
+   else if (pa == &group_pd.items.program)
+     return group_pd.program != NULL;
+   else if (pa == &group_pd.items.part.type_group.title)
+     return group_pd.part &&
+        group_pd.part->type == EDJE_PART_TYPE_GROUP;
+   else if (pa == &group_pd.items.state.colors.title)
+     return group_pd.part &&
+        group_pd.part->type != EDJE_PART_TYPE_SWALLOW &&
+        group_pd.part->type != EDJE_PART_TYPE_SPACER;
+   else if (pa == &group_pd.items.state.text_common.title)
+     return group_pd.part &&
+        (group_pd.part->type == EDJE_PART_TYPE_TEXT ||
+         group_pd.part->type == EDJE_PART_TYPE_TEXTBLOCK);
+   else if ((pa == &group_pd.items.state.colors.outline_color) ||
+            (pa == &group_pd.items.state.colors.shadow_color))
+     return group_pd.part &&
+        group_pd.part->type == EDJE_PART_TYPE_TEXT;
+
+   TODO("Remove after caption items refactor");
+   CRIT("filter callback not found for %s", pa->name);
+   abort();
 }
 
 /* local callbacks */
@@ -289,31 +296,16 @@ _subitems_get(Property_Attribute *pa)
          items = eina_list_append(items, &group_pd.items.part.clip_to);
          items = eina_list_append(items, &group_pd.items.part.ignore_flags);
          items = eina_list_append(items, &group_pd.items.part.dragable.title);
-         switch (group_pd.part->type)
-           {
-            case EDJE_PART_TYPE_GROUP:
-               items = eina_list_append(items, &group_pd.items.part.type_group.title);
-               break;
-            default:
-               break;
-           }
+         items = eina_list_append(items, &group_pd.items.part.type_group.title);
      }
    else if (pa == &group_pd.items.state.title)
      {
          items = eina_list_append(items, &group_pd.items.state.name);
          items = eina_list_append(items, &group_pd.items.state.visible);
-         if ((group_pd.part->type != EDJE_PART_TYPE_SWALLOW) &&
-             (group_pd.part->type != EDJE_PART_TYPE_SPACER))
-           {
-              items = eina_list_append(items, &group_pd.items.state.colors.title);
-           }
+         items = eina_list_append(items, &group_pd.items.state.colors.title);
          items = eina_list_append(items, &group_pd.items.state.size.title);
          items = eina_list_append(items, &group_pd.items.state.position.title);
-         if ((group_pd.part->type == EDJE_PART_TYPE_TEXT) ||
-             (group_pd.part->type == EDJE_PART_TYPE_TEXTBLOCK))
-           {
-              items = eina_list_append(items, &group_pd.items.state.text_common.title);
-           }
+         items = eina_list_append(items, &group_pd.items.state.text_common.title);
      }
    else if (pa == &group_pd.items.state.size.title)
      {
@@ -334,11 +326,8 @@ _subitems_get(Property_Attribute *pa)
      {
          items = eina_list_append(items, &group_pd.items.state.colors.color_class);
          items = eina_list_append(items, &group_pd.items.state.colors.color);
-         if (group_pd.part->type == EDJE_PART_TYPE_TEXT)
-           {
-              items = eina_list_append(items, &group_pd.items.state.colors.outline_color);
-              items = eina_list_append(items, &group_pd.items.state.colors.shadow_color);
-           }
+         items = eina_list_append(items, &group_pd.items.state.colors.outline_color);
+         items = eina_list_append(items, &group_pd.items.state.colors.shadow_color);
      }
    else if (pa == &group_pd.items.state.position.rel1.title)
      {
@@ -1831,6 +1820,7 @@ _init_part_group_specific_block()
    group_pd.items.part.type_group.title.expandable = true;
    group_pd.items.part.type_group.title.expanded = true;
    group_pd.items.part.type_group.title.expand_cb = _subitems_get;
+   group_pd.items.part.type_group.title.filter_cb = _filter_cb;
 
    group_pd.items.part.type_group.source.name = "source";
    _action1(&group_pd.items.part.type_group.source, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_GROUP_SOURCE);
@@ -1843,6 +1833,7 @@ _init_part_block()
    group_pd.items.part.title.expandable = true;
    group_pd.items.part.title.expanded = true;
    group_pd.items.part.title.expand_cb = _subitems_get;
+   group_pd.items.part.title.filter_cb = _filter_cb;
 
    group_pd.items.part.name.name = "name";
    _action1(&group_pd.items.part.name, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PART_NAME);
@@ -1962,6 +1953,7 @@ _init_state_colors_block()
    group_pd.items.state.colors.title.expandable = true;
    group_pd.items.state.colors.title.expanded = true;
    group_pd.items.state.colors.title.expand_cb = _subitems_get;
+   group_pd.items.state.colors.title.filter_cb = _filter_cb;
 
    group_pd.items.state.colors.color_class.name = "color class";
    _action1(&group_pd.items.state.colors.color_class, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_COLOR_CLASS);
@@ -1971,9 +1963,11 @@ _init_state_colors_block()
 
    group_pd.items.state.colors.outline_color.name = "outline color";
    _action1(&group_pd.items.state.colors.outline_color, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_OUTLINE_COLOR);
+   group_pd.items.state.colors.outline_color.filter_cb = _filter_cb;
 
    group_pd.items.state.colors.shadow_color.name = "shadow color";
    _action1(&group_pd.items.state.colors.shadow_color, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_SHADOW_COLOR);
+   group_pd.items.state.colors.shadow_color.filter_cb = _filter_cb;
 }
 
 static void
@@ -1983,6 +1977,7 @@ _init_state_text_common_block()
    group_pd.items.state.text_common.title.expandable = true;
    group_pd.items.state.text_common.title.expanded = true;
    group_pd.items.state.text_common.title.expand_cb = _subitems_get;
+   group_pd.items.state.text_common.title.filter_cb = _filter_cb;
 
    group_pd.items.state.text_common.text.name = "text";
    _action1(&group_pd.items.state.text_common.text, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_TEXT);
@@ -2007,6 +2002,7 @@ _init_state_block()
    group_pd.items.state.title.expandable = true;
    group_pd.items.state.title.expanded = true;
    group_pd.items.state.title.expand_cb = _subitems_get;
+   group_pd.items.state.title.filter_cb = _filter_cb;
 
    group_pd.items.state.name.name = "name";
    _action1(&group_pd.items.state.name, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_NAME);
@@ -2031,9 +2027,11 @@ property_group_init()
 
    group_pd.items.item.name = "item";
    group_pd.items.item.expandable = true;
+   group_pd.items.item.filter_cb = _filter_cb;
 
    group_pd.items.program.name = "program";
    group_pd.items.program.expandable = true;
+   group_pd.items.program.filter_cb = _filter_cb;
 
    /* register global callbacks */
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_CHANGED, _on_group_changed, NULL);
@@ -2052,15 +2050,10 @@ property_group_items_get()
    assert(group_pd.group != NULL);
 
    items = eina_list_append(items, &group_pd.items.group.title);
-   if (group_pd.part)
-     {
-        items = eina_list_append(items, &group_pd.items.part.title);
-        items = eina_list_append(items, &group_pd.items.state.title);
-        if (group_pd.part->current_item_name)
-          items = eina_list_append(items, &group_pd.items.item);
-     }
-   else if (group_pd.program)
-     items = eina_list_append(items, &group_pd.items.program);
+   items = eina_list_append(items, &group_pd.items.part.title);
+   items = eina_list_append(items, &group_pd.items.state.title);
+   items = eina_list_append(items, &group_pd.items.item);
+   items = eina_list_append(items, &group_pd.items.program);
 
    return items;
 }

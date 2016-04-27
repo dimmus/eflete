@@ -193,6 +193,7 @@ property_add(Evas_Object *parent)
    evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_MODE_DEMO, _demo_mode, NULL);
 
    pd.genlist = elm_genlist_add(parent);
+   elm_genlist_block_count_set(pd.genlist, 64);
    elm_scroller_policy_set(pd.genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
    elm_object_style_set(pd.genlist, "property");
 
@@ -239,6 +240,7 @@ property_mode_set(Property_Mode mode)
          break;
      }
    _items_add(&items, NULL);
+   GENLIST_FILTER_APPLY(pd.genlist);
 }
 
 void
