@@ -1610,6 +1610,9 @@ group { name: "elm/layout/groupview/default";
          BG(box,           bg_box.png)
          BG(object_area,   bg_object_area.png)
 #undef BG
+         description { state: "part_item" 0.0;
+            inherit: "default" 0.0;
+         }
          description { state: "part_item_hilight" 0.0;
             inherit: "default" 0.0;
             image.normal: "bg_part_item.png";
