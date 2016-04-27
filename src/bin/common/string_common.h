@@ -58,4 +58,7 @@ state_name_split(Eina_Stringshare *name, Eina_Stringshare **name_out, double *va
 void
 string_char_replace(char *str, char src, char rep);
 
+const char *
+widget_name_get(const Eina_Stringshare *group_name);
+
 #endif /* STRING_MACRO_H */

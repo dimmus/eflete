@@ -59,3 +59,25 @@ string_char_replace(char *str, char src, char rep)
         str++;
      }
 }
+
+const char *
+widget_name_get(const Eina_Stringshare *group_name)
+{
+    int len = strlen(group_name);
+    int i;
+    char str[32];
+
+    if (group_name[0] != 'e') return NULL;
+    if (group_name[1] != 'l') return NULL;
+    if (group_name[2] != 'm') return NULL;
+    if (group_name[3] != '/') return NULL;
+
+    for (i = 4; i < len; i++)
+    {
+        if (group_name[i] == '/') break;
+        str[i - 4] = group_name[i];
+    }
+    str[i - 4] = '\0';
+
+    return strdup(str);
+}

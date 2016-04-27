@@ -425,28 +425,6 @@ gm_group_del(Project *pro, Group *group)
    free(group);
 }
 
-char *
-_get_widget_name(const Eina_Stringshare *group_name)
-{
-    int len = strlen(group_name);
-    int i;
-    char str[32];
-
-    if (group_name[0] != 'e') return NULL;
-    if (group_name[1] != 'l') return NULL;
-    if (group_name[2] != 'm') return NULL;
-    if (group_name[3] != '/') return NULL;
-
-    for (i = 4; i < len; i++)
-    {
-        if (group_name[i] == '/') break;
-        str[i - 4] = group_name[i];
-    }
-    str[i - 4] = '\0';
-
-    return strdup(str);
-}
-
 void
 gm_groups_load(Project *pro)
 {
@@ -473,7 +451,7 @@ gm_groups_load(Project *pro)
 
         if (pro->widgets)
           {
-             widget_name = _get_widget_name(group_name);
+             widget_name = widget_name_get(group_name);
              if (!widget_name) continue;
              EINA_LIST_FOREACH(pro->widgets, wl, checked_widget)
                {
