@@ -57,6 +57,9 @@ static Property_Group_Update_Info attribute_map[ATTRIBUTE_LAST];
 static const char *ignore_flags_strings[] = { STR_NONE,
                                               "On hold",
                                               NULL};
+static const char *pointer_mode_strings[] = { "AUTOGRAB",
+                                              "NOGRAB",
+                                              NULL};
 static const char *aspect_preference_strings[] = { STR_NONE,
                                                    "Vertical",
                                                    "Horizontal",
@@ -184,6 +187,10 @@ _filter_cb(Property_Attribute *pa)
       case PROPERTY_GROUP_ITEM_PROGRAM_TITLE:
          return group_pd.program != NULL;
 
+      case PROPERTY_GROUP_ITEM_PART_POINTER_MODE:
+         return group_pd.part &&
+            group_pd.part->type != EDJE_PART_TYPE_SPACER;
+
       case PROPERTY_GROUP_ITEM_PART_TYPE_GROUP_TITLE:
          return group_pd.part &&
             group_pd.part->type == EDJE_PART_TYPE_GROUP;
@@ -231,6 +238,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PART_REPEAT_EVENTS);
          APPEND(PROPERTY_GROUP_ITEM_PART_CLIP_TO);
          APPEND(PROPERTY_GROUP_ITEM_PART_IGNORE_FLAGS);
+         APPEND(PROPERTY_GROUP_ITEM_PART_POINTER_MODE);
          APPEND(PROPERTY_GROUP_ITEM_PART_DRAGABLE_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_PART_TYPE_GROUP_TITLE);
          break;
@@ -451,6 +459,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_IGNORE_FLAGS:
          _fill_combobox_with_enum(action->control, ignore_flags_strings);
          break;
+      case ATTRIBUTE_PART_POINTER_MODE:
+         _fill_combobox_with_enum(action->control, pointer_mode_strings);
+         break;
       case ATTRIBUTE_STATE_COLOR_CLASS:
          ewe_combobox_style_set(action->control, "color_class");
 
@@ -659,6 +670,10 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_IGNORE_FLAGS:
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_part_ignore_flags_get(EDIT_OBJ, PART_ARGS));
+         break;
+      case ATTRIBUTE_PART_POINTER_MODE:
+         ewe_combobox_select_item_set(action->control,
+           (int) edje_edit_part_pointer_mode_get(EDIT_OBJ, PART_ARGS));
          break;
       case ATTRIBUTE_PART_DRAG_X:
          int_val1 = edje_edit_part_drag_x_get(EDIT_OBJ, PART_ARGS);
@@ -945,6 +960,11 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("ignore_flags changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, eina_stringshare_add(
             ignore_flags_strings[edje_edit_part_ignore_flags_get(EDIT_OBJ, PART_ARGS)]));
+         break;
+      case ATTRIBUTE_PART_POINTER_MODE:
+         group_pd.history.format = _("pointer mode changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(
+            pointer_mode_strings[edje_edit_part_pointer_mode_get(EDIT_OBJ, PART_ARGS)]));
          break;
       case ATTRIBUTE_PART_DRAG_X:
          group_pd.history.format = _("dragable enable x changed from %d to %d");
@@ -1239,6 +1259,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
+      case ATTRIBUTE_PART_POINTER_MODE:
+         str_val1 = eina_stringshare_add(cb_item->title);
+         editor_part_pointer_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       case ATTRIBUTE_PART_DRAG_X:
          editor_part_drag_x_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1);
          group_pd.history.new.int_val1 = edje_edit_part_drag_x_get(EDIT_OBJ, PART_ARGS);
@@ -1493,6 +1519,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_CLIP_TO:
       case ATTRIBUTE_PART_IGNORE_FLAGS:
+      case ATTRIBUTE_PART_POINTER_MODE:
       case ATTRIBUTE_PART_DRAG_CONFINE:
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
       case ATTRIBUTE_PART_DRAG_EVENT:
@@ -1758,6 +1785,10 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_IGNORE_FLAGS:
               IT.name = "ignore flags";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_IGNORE_FLAGS);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_POINTER_MODE:
+              IT.name = "pointer mode";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_POINTER_MODE);
               break;
 
            case PROPERTY_GROUP_ITEM_PART_TYPE_GROUP_TITLE:
