@@ -234,6 +234,7 @@ editor_part_item_source_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    if (!edje_edit_part_item_source_set(edit_object, part_name, item_name, new_val))
      return false;
    _editor_project_changed();
+   editor_save(edit_object);
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
