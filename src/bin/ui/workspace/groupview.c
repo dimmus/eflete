@@ -204,6 +204,11 @@ _groupview_smart_resize(Evas_Object *o,
    sd->zoom1.w = w / sd->zoom;
    sd->zoom1.h = h / sd->zoom;
 
+   evas_object_resize(sd->group->edit_object, sd->zoom1.w, sd->zoom1.h);
+   evas_object_resize(sd->box, w, h);
+   /* I hate box, we need force call the box calc for get the correct protrusion */
+   elm_box_recalculate(sd->box);
+
    evas_object_smart_changed(o);
 }
 
@@ -219,7 +224,6 @@ _groupview_smart_calculate(Evas_Object *o)
    evas_object_move(sd->event, px, py);
 
    evas_object_geometry_get(o, &x, &y, &w, &h);
-
    if ((sd->geom.w != w) || (sd->geom.h != h))
      {
         sd->geom.x = x;
@@ -227,12 +231,7 @@ _groupview_smart_calculate(Evas_Object *o)
         sd->geom.w = w;
         sd->geom.h = h;
 
-        evas_object_resize(sd->group->edit_object, sd->zoom1.w, sd->zoom1.h);
-        evas_object_resize(sd->box, w, h);
      }
-   else
-     elm_box_recalculate(sd->box);
-
    sd->manual_calc = false;
 
    DBG("Groupview geometry: x[%i] y[%i] w[%i] h[%i]", x, y, w, h);
