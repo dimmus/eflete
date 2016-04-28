@@ -198,6 +198,7 @@ _home_tab_change(void *data,
 {
    evas_object_hide(elm_layout_content_unset(tabs.menu.content, NULL));
    elm_layout_content_set(tabs.menu.content, NULL, data);
+   _tab_project_update();
 }
 
 static void
@@ -1105,6 +1106,7 @@ tabs_menu_tab_open(Tabs_Menu view)
       case TAB_LAST:
          elm_toolbar_item_selected_set(tabs.menu.item_home, true);
          elm_layout_content_set(tabs.layout, NULL, tabs.menu.content);
+         _tab_project_update();
       default:
          break;
      }

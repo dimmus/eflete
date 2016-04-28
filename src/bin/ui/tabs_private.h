@@ -68,6 +68,9 @@ Evas_Object *
 _tab_project_info_add(void);
 
 void
+_tab_project_update(void);
+
+void
 elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data);
 
 Eina_Bool
