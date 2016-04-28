@@ -229,8 +229,8 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PART_CLIP_TO);
          APPEND(PROPERTY_GROUP_ITEM_PART_IGNORE_FLAGS);
          APPEND(PROPERTY_GROUP_ITEM_PART_POINTER_MODE);
+         APPEND(PROPERTY_GROUP_ITEM_PART_GROUP_SOURCE);
          APPEND(PROPERTY_GROUP_ITEM_PART_DRAGABLE_TITLE);
-         APPEND(PROPERTY_GROUP_ITEM_PART_TYPE_GROUP_TITLE);
          break;
       case PROPERTY_GROUP_ITEM_PART_DRAGABLE_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_PART_DRAGABLE_ENABLE);
@@ -239,9 +239,6 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PART_DRAGABLE_CONFINE);
          APPEND(PROPERTY_GROUP_ITEM_PART_DRAGABLE_THRESHOLD);
          APPEND(PROPERTY_GROUP_ITEM_PART_DRAGABLE_EVENTS);
-         break;
-      case PROPERTY_GROUP_ITEM_PART_TYPE_GROUP_TITLE:
-         APPEND(PROPERTY_GROUP_ITEM_PART_TYPE_GROUP_SOURCE);
          break;
       case PROPERTY_GROUP_ITEM_STATE_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_NAME);
@@ -1787,17 +1784,10 @@ _init_items()
               IT.filter_data.part_types &= ~PART_SPACER;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_POINTER_MODE);
               break;
-
-           case PROPERTY_GROUP_ITEM_PART_TYPE_GROUP_TITLE:
-              IT.name = "type specific (GROUP)";
-              IT.expandable = true;
-              IT.expanded = true;
-              IT.expand_cb = _subitems_get;
-              IT.filter_data.part_types = PART_GROUP;
-              break;
-           case PROPERTY_GROUP_ITEM_PART_TYPE_GROUP_SOURCE:
+           case PROPERTY_GROUP_ITEM_PART_GROUP_SOURCE:
               IT.name = "source";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_GROUP_SOURCE);
+              IT.filter_data.part_types = PART_GROUP;
               break;
 
               /* part.draggable block */
