@@ -975,7 +975,7 @@ tabs_add(void)
    tabs.menu.tab_project_info =
       elm_toolbar_item_append(tabs.menu.tabs, NULL, _("Project info"), _home_tab_change, tabs.menu.content_project_info);
 
-   tabs.menu.item_home = elm_toolbar_item_append(tabs.toolbar_editors, "home", NULL,
+   tabs.menu.item_home = elm_toolbar_item_append(tabs.toolbar_editors, "go-home", NULL,
                                                  _content_set, NULL);
    tabs.menu.item_image = elm_toolbar_item_append(tabs.toolbar_editors, "image2", NULL,
                                                   _content_set, NULL);

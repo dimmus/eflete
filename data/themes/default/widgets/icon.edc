@@ -4,11 +4,11 @@
    images.image: File COMP; parts { part { name: "base"; \
    description { aspect: 1.0 1.0; aspect_preference: BOTH; \
    image.normal: File; } } } }
-IC("arrow_up",          "toolbar/arrow_up",         "menu/arrow_up",          "icon_arrow_up.png",       14, 0);
-IC("arrow_down",        "toolbar/arrow_down",       "menu/arrow_down",        "icon_arrow_down.png",     14, 0);
-IC("arrow_left",        "toolbar/arrow_left",       "menu/arrow_left",        "icon_arrow_left.png",     14, 0);
-IC("arrow_right",       "toolbar/arrow_right",      "menu/arrow_right",       "icon_arrow_right.png",    14, 0);
-IC("home",              "toolbar/home",             "menu/home",              "icon_home.png",           14, 0);
+IC("go-up",             "toolbar/go-up",            "menu/go-up",             "icon_arrow_up.png",       14, 0);
+IC("go-down",           "toolbar/go-down",          "menu/go-down",           "icon_arrow_down.png",     14, 0);
+IC("go-previous",       "toolbar/go-previous",      "menu/go-previous",       "icon_arrow_left.png",     14, 0);
+IC("go-next",           "toolbar/go-next",          "menu/go-next",           "icon_arrow_right.png",    14, 0);
+IC("go-home",           "toolbar/go-home",          "menu/go-home",           "icon_home.png",           14, 0);
 IC("image2",            "toolbar/image2",           "menu/image2",            "icon_image2.png",         14, 0);
 IC("sound2",            "toolbar/sound2",           "menu/sound2",            "icon_sound2.png",         14, 0);
 IC("text2",             "toolbar/text2",            "menu/text2",             "icon_text2.png",          14, 0);
