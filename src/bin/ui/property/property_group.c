@@ -72,6 +72,28 @@ static const char *ignore_flags_strings[] = { STR_NONE,
 static const char *pointer_mode_strings[] = { "AUTOGRAB",
                                               "NOGRAB",
                                               NULL};
+
+static const char *text_effect_strings[] = { STR_NONE,
+                                             "plain",
+                                             "outline",
+                                             "soft outline",
+                                             "shadow",
+                                             "soft shadow",
+                                             "outline shadow",
+                                             "outline soft shadow",
+                                             "far shadow",
+                                             "far soft shadow",
+                                             "glow",
+                                             NULL};
+static const char *text_shadow_direction_strings[] = { "bottom right",
+                                                       "bottom",
+                                                       "bottom left",
+                                                       "left",
+                                                       "top left",
+                                                       "top",
+                                                       "top right",
+                                                       "right",
+                                                       NULL};
 static const char *aspect_preference_strings[] = { STR_NONE,
                                                    "Vertical",
                                                    "Horizontal",
@@ -230,6 +252,8 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PART_IGNORE_FLAGS);
          APPEND(PROPERTY_GROUP_ITEM_PART_POINTER_MODE);
          APPEND(PROPERTY_GROUP_ITEM_PART_GROUP_SOURCE);
+         APPEND(PROPERTY_GROUP_ITEM_PART_TEXT_EFFECT);
+         APPEND(PROPERTY_GROUP_ITEM_PART_TEXT_SHADOW_DIRECTION);
          APPEND(PROPERTY_GROUP_ITEM_PART_DRAGABLE_TITLE);
          break;
       case PROPERTY_GROUP_ITEM_PART_DRAGABLE_TITLE:
@@ -449,6 +473,12 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_POINTER_MODE:
          _fill_combobox_with_enum(action->control, pointer_mode_strings);
          break;
+      case ATTRIBUTE_PART_TEXT_EFFECT:
+         _fill_combobox_with_enum(action->control, text_effect_strings);
+         break;
+      case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
+         _fill_combobox_with_enum(action->control, text_shadow_direction_strings);
+         break;
       case ATTRIBUTE_STATE_COLOR_CLASS:
          ewe_combobox_style_set(action->control, "color_class");
 
@@ -661,6 +691,15 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_POINTER_MODE:
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_part_pointer_mode_get(EDIT_OBJ, PART_ARGS));
+         break;
+      case ATTRIBUTE_PART_TEXT_EFFECT:
+         ewe_combobox_select_item_set(action->control,
+           (int) edje_edit_part_text_effect_get(EDIT_OBJ, PART_ARGS));
+         break;
+      case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
+         /* shodow directions are shifted by 4 in enum */
+         ewe_combobox_select_item_set(action->control,
+           (int) edje_edit_part_text_shadow_direction_get(EDIT_OBJ, PART_ARGS)>>4);
          break;
       case ATTRIBUTE_PART_DRAG_X:
          int_val1 = edje_edit_part_drag_x_get(EDIT_OBJ, PART_ARGS);
@@ -952,6 +991,17 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("pointer mode changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, eina_stringshare_add(
             pointer_mode_strings[edje_edit_part_pointer_mode_get(EDIT_OBJ, PART_ARGS)]));
+         break;
+      case ATTRIBUTE_PART_TEXT_EFFECT:
+         group_pd.history.format = _("text effect changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(
+            text_effect_strings[edje_edit_part_text_effect_get(EDIT_OBJ, PART_ARGS)]));
+         break;
+      case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
+         group_pd.history.format = _("shadow direction changed from \"%s\" to \"%s\"");
+         /* shodow directions are shifted by 4 in enum */
+         STR_VAL(str_val1, eina_stringshare_add(
+            text_shadow_direction_strings[edje_edit_part_text_shadow_direction_get(EDIT_OBJ, PART_ARGS)>>4]));
          break;
       case ATTRIBUTE_PART_DRAG_X:
          group_pd.history.format = _("dragable enable x changed from %d to %d");
@@ -1252,6 +1302,19 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
+      case ATTRIBUTE_PART_TEXT_EFFECT:
+         str_val1 = eina_stringshare_add(cb_item->title);
+         editor_part_text_effect_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
+         str_val1 = eina_stringshare_add(cb_item->title);
+         /* shodow directions are shifted by 4 in enum */
+         editor_part_text_shadow_direction_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index << 4);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       case ATTRIBUTE_PART_DRAG_X:
          editor_part_drag_x_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1);
          group_pd.history.new.int_val1 = edje_edit_part_drag_x_get(EDIT_OBJ, PART_ARGS);
@@ -1507,6 +1570,8 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_CLIP_TO:
       case ATTRIBUTE_PART_IGNORE_FLAGS:
       case ATTRIBUTE_PART_POINTER_MODE:
+      case ATTRIBUTE_PART_TEXT_EFFECT:
+      case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
       case ATTRIBUTE_PART_DRAG_CONFINE:
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
       case ATTRIBUTE_PART_DRAG_EVENT:
@@ -1876,6 +1941,18 @@ _init_items()
               IT.name = "aspect";
               _action1(&IT, "min", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MIN);
               _action2(&IT, "max", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MAX);
+              break;
+
+              /* part text */
+           case PROPERTY_GROUP_ITEM_PART_TEXT_EFFECT:
+              IT.name = "effect";
+              IT.filter_data.part_types = PART_TEXT;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXT_EFFECT);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_TEXT_SHADOW_DIRECTION:
+              IT.name = "shadow direction";
+              IT.filter_data.part_types = PART_TEXT;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION);
               break;
 
               /* state position block */
