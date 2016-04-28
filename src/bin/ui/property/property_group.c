@@ -24,6 +24,18 @@
 #include "change.h"
 #include "project_manager.h"
 
+#define PART_MASK(TYPE) (1 << TYPE)
+#define PART_RECTANGLE PART_MASK(EDJE_PART_TYPE_RECTANGLE)
+#define PART_TEXT PART_MASK(EDJE_PART_TYPE_TEXT)
+#define PART_IMAGE PART_MASK(EDJE_PART_TYPE_IMAGE)
+#define PART_SWALLOW PART_MASK(EDJE_PART_TYPE_SWALLOW)
+#define PART_TEXTBLOCK PART_MASK(EDJE_PART_TYPE_TEXTBLOCK)
+#define PART_GROUP PART_MASK(EDJE_PART_TYPE_GROUP)
+#define PART_BOX PART_MASK(EDJE_PART_TYPE_BOX)
+#define PART_TABLE PART_MASK(EDJE_PART_TYPE_TABLE)
+#define PART_PROXY PART_MASK(EDJE_PART_TYPE_PROXY)
+#define PART_SPACER PART_MASK(EDJE_PART_TYPE_SPACER)
+
 struct _Property_Group_Data {
    Group *group;
    Part *part;
@@ -187,31 +199,9 @@ _filter_cb(Property_Attribute *pa)
       case PROPERTY_GROUP_ITEM_PROGRAM_TITLE:
          return group_pd.program != NULL;
 
-      case PROPERTY_GROUP_ITEM_PART_POINTER_MODE:
-         return group_pd.part &&
-            group_pd.part->type != EDJE_PART_TYPE_SPACER;
-
-      case PROPERTY_GROUP_ITEM_PART_TYPE_GROUP_TITLE:
-         return group_pd.part &&
-            group_pd.part->type == EDJE_PART_TYPE_GROUP;
-
-      case PROPERTY_GROUP_ITEM_STATE_COLORS_TITLE:
-         return group_pd.part &&
-            group_pd.part->type != EDJE_PART_TYPE_SWALLOW &&
-            group_pd.part->type != EDJE_PART_TYPE_SPACER;
-
-      case PROPERTY_GROUP_ITEM_STATE_COLORS_OUTLINE_COLOR:
-      case PROPERTY_GROUP_ITEM_STATE_COLORS_SHADOWCOLOR:
-         return group_pd.part &&
-            group_pd.part->type == EDJE_PART_TYPE_TEXT;
-
-      case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TITLE:
-         return group_pd.part &&
-            (group_pd.part->type == EDJE_PART_TYPE_TEXT ||
-             group_pd.part->type == EDJE_PART_TYPE_TEXTBLOCK);
-
       default:
-         return true;
+         return !group_pd.part ||
+            (pa->filter_data.part_types & PART_MASK(group_pd.part->type));
      }
 }
 
@@ -1727,6 +1717,12 @@ _init_items()
      {
         IT.type.group_item = it;
         IT.filter_cb = _filter_cb;
+
+        /* default value: show for all supported part types */
+        IT.filter_data.part_types = PART_RECTANGLE | PART_TEXT | PART_IMAGE |
+           PART_SWALLOW | PART_TEXTBLOCK | PART_GROUP | PART_BOX | PART_TABLE |
+           PART_PROXY | PART_SPACER;
+
         switch(it)
           {
              /* group block */
@@ -1788,6 +1784,7 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PART_POINTER_MODE:
               IT.name = "pointer mode";
+              IT.filter_data.part_types &= ~PART_SPACER;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_POINTER_MODE);
               break;
 
@@ -1796,6 +1793,7 @@ _init_items()
               IT.expandable = true;
               IT.expanded = true;
               IT.expand_cb = _subitems_get;
+              IT.filter_data.part_types = PART_GROUP;
               break;
            case PROPERTY_GROUP_ITEM_PART_TYPE_GROUP_SOURCE:
               IT.name = "source";
@@ -1959,6 +1957,7 @@ _init_items()
               IT.expandable = true;
               IT.expanded = true;
               IT.expand_cb = _subitems_get;
+              IT.filter_data.part_types &= ~PART_SPACER & ~PART_SWALLOW;
               break;
            case PROPERTY_GROUP_ITEM_STATE_COLORS_COLOR_CLASS:
               IT.name = "color class";
@@ -1970,10 +1969,12 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_COLORS_OUTLINE_COLOR:
               IT.name = "outline color";
+              IT.filter_data.part_types = PART_TEXT;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_OUTLINE_COLOR);
               break;
            case PROPERTY_GROUP_ITEM_STATE_COLORS_SHADOWCOLOR:
               IT.name = "shadow color";
+              IT.filter_data.part_types = PART_TEXT;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_SHADOW_COLOR);
               break;
 
@@ -1983,6 +1984,7 @@ _init_items()
               IT.expandable = true;
               IT.expanded = true;
               IT.expand_cb = _subitems_get;
+              IT.filter_data.part_types = PART_TEXT | PART_TEXTBLOCK;
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TEXT:
               IT.name = "text";

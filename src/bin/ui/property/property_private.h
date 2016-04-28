@@ -176,6 +176,9 @@ struct _Property_Attribute {
    Property_Action action2; /**< second control */
    Property_Expand_Cb expand_cb; /**< This cb will be called to get subitems */
    Property_Attribute_Filter_Cb filter_cb; /**< called when item is checked for being filtered */
+   union {
+      int part_types;
+   } filter_data;
    Property_Attribute_Del_Cb del_cb; /**< called when item is deleted from genlist */
    Eina_Bool expandable : 1; /**< if true  item is tree node */
    Eina_Bool expanded : 1; /**< if true initial state will be expanded. */
