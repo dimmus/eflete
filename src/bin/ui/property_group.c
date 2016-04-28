@@ -4590,7 +4590,7 @@ PART_ITEM_ATTR_2SPINNER(_("prefer"), part_item, prefer_w, prefer_h, part_item,
                     _("part item prefer width changed from %d to %d"),
                     _("part item prefer heigth changed from %d to %d"))
 PART_ITEM_ATTR_2SPINNER(_("align"), part_item, align_x, align_y, part_item,
-                    0.0, 999.0, 1.0, NULL, "x:", "px", "y:", "px",
+                    0.0, 100.0, 1.0, NULL, "x:", "px", "y:", "px",
                     _("Sets the alignment hint by x axiss"), _("Sets the alignment hint by y axiss"),
                     100, double,
                     _("part item align x changed from %.2f to %.2f"),
