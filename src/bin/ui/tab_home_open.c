@@ -99,6 +99,28 @@ _open(void *data __UNUSED__,
 }
 
 static void
+_selected(void *data __UNUSED__,
+          Evas_Object *obj __UNUSED__,
+          void *event_info)
+{
+   const char *selected = event_info;
+   char *p = strrchr(selected, '.');
+
+   if ((!p) && (strcmp(p, "pro")))
+     elm_object_disabled_set(elm_layout_content_get(tab.fs, "elm.swallow.ok"), true);
+   else
+     elm_object_disabled_set(elm_layout_content_get(tab.fs, "elm.swallow.ok"), false);
+}
+/* because selected doesn't work with folders */
+static void
+_unselected(void *data __UNUSED__,
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
+{
+   elm_object_disabled_set(elm_layout_content_get(tab.fs, "elm.swallow.ok"), true);
+}
+
+static void
 _recent_clear(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
@@ -133,12 +155,17 @@ _tab_open_project_add(void)
    elm_fileselector_path_set(tab.fs, profile_get()->general.projects_folder);
    elm_fileselector_custom_filter_append(tab.fs, _eflete_filter, NULL, "Eflete Files");
    evas_object_smart_callback_add(tab.fs, "done", _open, NULL);
+   evas_object_smart_callback_add(tab.fs, "selected", _selected, NULL);
+   /* small hack for disabling 'Open' button when .pro is not selected */
+   evas_object_smart_callback_add(elm_layout_content_get(tab.fs, "elm.swallow.files"),
+                                  "unselected", _unselected, NULL);
    evas_object_smart_callback_add(tab.fs, "activated", _open, NULL);
    /* small hack, hide not necessary button */
    evas_object_hide(elm_layout_content_unset(tab.fs, "elm.swallow.filters"));
    evas_object_hide(elm_layout_content_unset(tab.fs, "elm.swallow.cancel"));
    /* one more hack, set text our text to button 'ok' */
    elm_object_text_set(elm_layout_content_get(tab.fs, "elm.swallow.ok"), _("Open"));
+   elm_object_disabled_set(elm_layout_content_get(tab.fs, "elm.swallow.ok"), true);
 
    elm_layout_content_set(tab.layout, "elm.swallow.fileselector", tab.fs);
 
