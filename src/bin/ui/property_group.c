@@ -1539,7 +1539,7 @@ prop_part_clip_to_update(Group_Prop_Data *pd)
    ewe_combobox_item_add(pd->attributes.part.clip_to, _("None"));
    EINA_LIST_FOREACH(pd->group->parts, l, part)
      {
-        if ((part != pd->part) && (part->type == EDJE_PART_TYPE_RECTANGLE))
+        if ((part != pd->part) && ((part->type == EDJE_PART_TYPE_RECTANGLE) || (part->type == EDJE_PART_TYPE_IMAGE)))
            ewe_combobox_item_add(pd->attributes.part.clip_to, part->name);
      }
    edje_edit_string_free(value);
