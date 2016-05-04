@@ -308,6 +308,11 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_ALIGN);
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_MIN);
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_MAX);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_FONT);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_SIZE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_FIT);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_SOURCE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_TEXT_SOURCE);
          break;
       default:
          CRIT("items callback not found for %s", pa->name);
@@ -424,10 +429,16 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_OUTLINE_COLOR:
       case ATTRIBUTE_STATE_SHADOW_COLOR:
       case ATTRIBUTE_STATE_TEXT:
+      case ATTRIBUTE_STATE_FONT:
       case ATTRIBUTE_STATE_TEXT_MIN_X:
       case ATTRIBUTE_STATE_TEXT_MIN_Y:
       case ATTRIBUTE_STATE_TEXT_MAX_X:
       case ATTRIBUTE_STATE_TEXT_MAX_Y:
+      case ATTRIBUTE_STATE_TEXT_FIT_X:
+      case ATTRIBUTE_STATE_TEXT_FIT_Y:
+      case ATTRIBUTE_STATE_TEXT_SIZE:
+      case ATTRIBUTE_STATE_TEXT_SOURCE:
+      case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
          break;
       case ATTRIBUTE_STATE_MAX_W:
       case ATTRIBUTE_STATE_MAX_H:
@@ -749,6 +760,18 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          _groups_combobox_fill(action->control, str_val1);
          edje_edit_string_free(str_val1);
          break;
+      case ATTRIBUTE_STATE_TEXT_SOURCE:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_state_text_source_get(EDIT_OBJ, STATE_ARGS);
+         _parts_combobox_fill(action->control, str_val1, EDJE_PART_TYPE_TEXT);
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_state_text_text_source_get(EDIT_OBJ, STATE_ARGS);
+         _parts_combobox_fill(action->control, str_val1, EDJE_PART_TYPE_TEXT);
+         edje_edit_string_free(str_val1);
+         break;
       case ATTRIBUTE_STATE_VISIBLE:
          bool_val1 = edje_edit_state_visible_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
@@ -884,6 +907,11 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          property_entry_set(action->control, str_val1);
          edje_edit_string_free(str_val1);
          break;
+      case ATTRIBUTE_STATE_FONT:
+         str_val1 = edje_edit_state_font_get(EDIT_OBJ, STATE_ARGS);
+         property_entry_set(action->control, str_val1);
+         edje_edit_string_free(str_val1);
+         break;
       case ATTRIBUTE_STATE_TEXT_MIN_X:
          bool_val1 = edje_edit_state_text_min_x_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
@@ -907,6 +935,18 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_ALIGN_Y:
          double_val1 = edje_edit_state_text_align_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_TEXT_FIT_X:
+         bool_val1 = edje_edit_state_text_fit_x_get(EDIT_OBJ, STATE_ARGS);
+         elm_check_state_set(action->control, bool_val1);
+         break;
+      case ATTRIBUTE_STATE_TEXT_FIT_Y:
+         bool_val1 = edje_edit_state_text_fit_y_get(EDIT_OBJ, STATE_ARGS);
+         elm_check_state_set(action->control, bool_val1);
+         break;
+      case ATTRIBUTE_STATE_TEXT_SIZE:
+         int_val1 = edje_edit_state_text_size_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -1043,6 +1083,14 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("source changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, edje_edit_part_source_get(EDIT_OBJ, PART_ARGS));
          break;
+      case ATTRIBUTE_STATE_TEXT_SOURCE:
+         group_pd.history.format = _("text source changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_state_text_source_get(EDIT_OBJ, STATE_ARGS));
+         break;
+      case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
+         group_pd.history.format = _("text text_source changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_state_text_text_source_get(EDIT_OBJ, STATE_ARGS));
+         break;
       case ATTRIBUTE_STATE_VISIBLE:
          group_pd.history.format = _("state visible %s");
          break;
@@ -1177,6 +1225,10 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("text changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, edje_edit_state_text_get(EDIT_OBJ, STATE_ARGS));
          break;
+      case ATTRIBUTE_STATE_FONT:
+         group_pd.history.format = _("font changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_state_font_get(EDIT_OBJ, STATE_ARGS));
+         break;
       case ATTRIBUTE_STATE_TEXT_MIN_X:
          group_pd.history.format = _("text min_x %s");
          break;
@@ -1189,6 +1241,12 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_MAX_Y:
          group_pd.history.format = _("text max_y %s");
          break;
+      case ATTRIBUTE_STATE_TEXT_FIT_X:
+         group_pd.history.format = _("text fit_x %s");
+         break;
+      case ATTRIBUTE_STATE_TEXT_FIT_Y:
+         group_pd.history.format = _("text fit_y %s");
+         break;
       case ATTRIBUTE_STATE_TEXT_ALIGN_X:
          group_pd.history.format = _("text align x changed from %.2f to %.2f");
          VAL(double_val1) = edje_edit_state_text_align_x_get(EDIT_OBJ, STATE_ARGS);
@@ -1196,6 +1254,10 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_ALIGN_Y:
          group_pd.history.format = _("text align y changed from %.2f to %.2f");
          VAL(double_val1) = edje_edit_state_text_align_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_TEXT_SIZE:
+         group_pd.history.format = _("text size changed from %d to %d");
+         VAL(int_val1) = edje_edit_state_text_size_get(EDIT_OBJ, STATE_ARGS);
          break;
 
       default:
@@ -1363,6 +1425,18 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
+      case ATTRIBUTE_STATE_TEXT_SOURCE:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         editor_state_text_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         editor_state_text_text_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       case ATTRIBUTE_STATE_VISIBLE:
          editor_state_visible_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
          break;
@@ -1510,6 +1584,11 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
+      case ATTRIBUTE_STATE_FONT:
+         editor_state_font_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, str_val1);
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       case ATTRIBUTE_STATE_TEXT_MIN_X:
          editor_state_text_min_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
          break;
@@ -1522,6 +1601,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_MAX_Y:
          editor_state_text_max_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
          break;
+      case ATTRIBUTE_STATE_TEXT_FIT_X:
+         editor_state_text_fit_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         break;
+      case ATTRIBUTE_STATE_TEXT_FIT_Y:
+         editor_state_text_fit_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         break;
       case ATTRIBUTE_STATE_TEXT_ALIGN_X:
          editor_state_text_align_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
          group_pd.history.new.double_val1 = edje_edit_state_text_align_x_get(EDIT_OBJ, STATE_ARGS);
@@ -1529,6 +1614,10 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_ALIGN_Y:
          editor_state_text_align_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
          group_pd.history.new.double_val1 = edje_edit_state_text_align_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_TEXT_SIZE:
+         editor_state_text_size_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.int_val1 = edje_edit_state_text_size_get(EDIT_OBJ, STATE_ARGS);
          break;
 
       default:
@@ -1576,6 +1665,8 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
       case ATTRIBUTE_PART_DRAG_EVENT:
       case ATTRIBUTE_PART_GROUP_SOURCE:
+      case ATTRIBUTE_STATE_TEXT_SOURCE:
+      case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
       case ATTRIBUTE_STATE_ASPECT_PREF:
       case ATTRIBUTE_STATE_REL1_TO_X:
       case ATTRIBUTE_STATE_REL1_TO_Y:
@@ -1583,6 +1674,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_REL2_TO_Y:
       case ATTRIBUTE_STATE_COLOR_CLASS:
       case ATTRIBUTE_STATE_TEXT:
+      case ATTRIBUTE_STATE_FONT:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (group_pd.history.old.str_val1) ? group_pd.history.old.str_val1 : STR_NONE,
@@ -1608,6 +1700,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_REL1_OFFSET_Y:
       case ATTRIBUTE_STATE_REL2_OFFSET_X:
       case ATTRIBUTE_STATE_REL2_OFFSET_Y:
+      case ATTRIBUTE_STATE_TEXT_SIZE:
          CHECK_VAL(int_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.int_val1,
@@ -1703,6 +1796,16 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_TEXT_MAX_Y:
          bool_val1 = edje_edit_state_text_max_y_get(EDIT_OBJ, STATE_ARGS);
+         msg = eina_stringshare_printf(group_pd.history.format,
+                                       (bool_val1) ? _("turned on") : _("turned off"));
+         break;
+      case ATTRIBUTE_STATE_TEXT_FIT_X:
+         bool_val1 = edje_edit_state_text_fit_x_get(EDIT_OBJ, STATE_ARGS);
+         msg = eina_stringshare_printf(group_pd.history.format,
+                                       (bool_val1) ? _("turned on") : _("turned off"));
+         break;
+      case ATTRIBUTE_STATE_TEXT_FIT_Y:
+         bool_val1 = edje_edit_state_text_fit_y_get(EDIT_OBJ, STATE_ARGS);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (bool_val1) ? _("turned on") : _("turned off"));
          break;
@@ -2047,7 +2150,7 @@ _init_items()
 
               /* state text common block */
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TITLE:
-              IT.name = "text common";
+              IT.name = "text";
               IT.expandable = true;
               IT.expanded = true;
               IT.expand_cb = _subitems_get;
@@ -2071,6 +2174,34 @@ _init_items()
               IT.name = "max";
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_X);
               _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_Y);
+              break;
+
+              /* state text block */
+           case PROPERTY_GROUP_ITEM_STATE_TEXT_FONT:
+              IT.name = "font";
+              IT.filter_data.part_types = PART_TEXT;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_FONT);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_TEXT_SIZE:
+              IT.name = "size";
+              IT.filter_data.part_types = PART_TEXT;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_SIZE);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_TEXT_FIT:
+              IT.name = "fit";
+              IT.filter_data.part_types = PART_TEXT;
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_FIT_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_FIT_Y);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_TEXT_SOURCE:
+              IT.name = "source";
+              IT.filter_data.part_types = PART_TEXT;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_SOURCE);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_TEXT_TEXT_SOURCE:
+              IT.name = "text source";
+              IT.filter_data.part_types = PART_TEXT;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_TEXT_SOURCE);
               break;
 
               /* part item block */
