@@ -399,4 +399,10 @@ workspace_demo_text_set(Evas_Object *obj, Demo_Part *part);
 void
 workspace_demo_signal_set(Evas_Object *obj, Demo_Signal *sig);
 
+void
+workspace_code_reload(Evas_Object *obj);
+
+void
+workspace_code_changed(Evas_Object *obj);
+
 #endif /* WORKSPACE_H */

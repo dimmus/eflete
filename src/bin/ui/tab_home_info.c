@@ -61,11 +61,8 @@ _info_set(Eina_Bool disabled, const char *name, const char *path,
    eina_strbuf_free(buf);
 }
 
-static void
-_show(void *data __UNUSED__,
-      Evas *e __UNUSED__,
-      Evas_Object *obj __UNUSED__,
-      void *event_info __UNUSED__)
+void
+_tab_project_update()
 {
    Eina_Stringshare *authors, *version, *license, *comment;
 
@@ -75,7 +72,7 @@ _show(void *data __UNUSED__,
      {
         pm_project_meta_data_get(ap.project, NULL, &authors, &version, &license, &comment);
         _info_set(false, ap.project->name, ap.project->pro_path,
-                  eina_list_count(ap.project->images),
+                  eina_list_count(ap.project->images) - 1, /* dummy image should not be counted */
                   eina_list_count(ap.project->sounds) + eina_list_count(ap.project->tones),
                   eina_list_count(ap.project->fonts),
                   authors, version, license, comment);
@@ -121,8 +118,6 @@ _tab_project_info_add(void)
    evas_object_smart_callback_add(tab_info.meta.authors, "changed,user", _validate, NULL);
    evas_object_smart_callback_add(tab_info.meta.licenses, "changed,user", _validate, NULL);
    evas_object_smart_callback_add(tab_info.meta.comment, "changed,user", _validate, NULL);
-
-   evas_object_event_callback_add(tab_info.layout, EVAS_CALLBACK_SHOW, _show, NULL);
 
    return tab_info.layout;
 }

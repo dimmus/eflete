@@ -372,13 +372,14 @@ group { name: "ewe/combobox/base/color_class";
             rel2 {
                relative: 0.0 1.0;
                offset: -7 -1;
-               to_x: "bg.color3";
+               to_x: "bg.color1";
                to_y: "base";
             }
             text {
                font: "PT";
                size: 12;
-               max: 1 1;
+               max: 0 1;
+               align: 0.0 0.5;
             }
          }
       }

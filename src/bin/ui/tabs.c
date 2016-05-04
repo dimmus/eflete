@@ -197,6 +197,7 @@ _home_tab_change(void *data,
 {
    evas_object_hide(elm_layout_content_unset(tabs.menu.content, NULL));
    elm_layout_content_set(tabs.menu.content, NULL, data);
+   _tab_project_update();
 }
 
 static void
@@ -320,6 +321,29 @@ _property_attribute_changed(void *data __UNUSED__,
          break;
       default:
          break;
+     }
+}
+
+void
+_on_save(void *data __UNUSED__,
+         Evas_Object *obj __UNUSED__,
+         void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_code_reload(tabs.current_workspace);
+}
+
+void
+_on_project_changed(void *data __UNUSED__,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   Eina_List *l;
+   Tabs_Item *item;
+
+   EINA_LIST_FOREACH(tabs.items, l, item)
+     {
+        workspace_code_changed(item->content);
      }
 }
 
@@ -953,7 +977,7 @@ tabs_add(void)
    tabs.menu.tab_project_info =
       elm_toolbar_item_append(tabs.menu.tabs, NULL, _("Project info"), _home_tab_change, tabs.menu.content_project_info);
 
-   tabs.menu.item_home = elm_toolbar_item_append(tabs.toolbar_editors, "home", NULL,
+   tabs.menu.item_home = elm_toolbar_item_append(tabs.toolbar_editors, "go-home", NULL,
                                                  _content_set, NULL);
    tabs.menu.item_image = elm_toolbar_item_append(tabs.toolbar_editors, "image2", NULL,
                                                   _content_set, NULL);
@@ -971,6 +995,9 @@ tabs_add(void)
    elm_object_item_disabled_set(tabs.menu.item_sound, true);
    elm_object_item_disabled_set(tabs.menu.item_text, true);
    elm_object_item_disabled_set(tabs.menu.item_colorclass, true);
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_SAVED, _on_save, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _on_project_changed, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_SET, _demo_swallow_set, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_SET, _demo_text_set, NULL);
@@ -1080,6 +1107,7 @@ tabs_menu_tab_open(Tabs_Menu view)
       case TAB_LAST:
          elm_toolbar_item_selected_set(tabs.menu.item_home, true);
          elm_layout_content_set(tabs.layout, NULL, tabs.menu.content);
+         _tab_project_update();
       default:
          break;
      }
