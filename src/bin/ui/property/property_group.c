@@ -539,7 +539,7 @@ _groups_combobox_fill(Evas_Object *combo, const char *selected)
 }
 
 static void
-_parts_combobox_fill(Evas_Object *combo, const char *selected, Edje_Part_Type allowed_type)
+_parts_combobox_fill(Evas_Object *combo, const char *selected, int allowed_types_mask)
 {
    Eina_List *l;
    Part *part;
@@ -552,11 +552,11 @@ _parts_combobox_fill(Evas_Object *combo, const char *selected, Edje_Part_Type al
      ewe_combobox_text_set(combo, STR_NONE);
    ewe_combobox_item_add(combo, STR_NONE);
 
-   if (allowed_type)
+   if (allowed_types_mask)
      {
         EINA_LIST_FOREACH(group_pd.group->parts, l, part)
           {
-             if ((part->type == allowed_type) && (part != group_pd.part))
+             if ((PART_MASK(part->type) & allowed_types_mask) && (part != group_pd.part))
                ewe_combobox_item_add(combo, part->name);
           }
      }
@@ -692,7 +692,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_CLIP_TO:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_clip_to_get(EDIT_OBJ, PART_ARGS);
-         _parts_combobox_fill(action->control, str_val1, EDJE_PART_TYPE_RECTANGLE);
+         _parts_combobox_fill(action->control, str_val1, PART_RECTANGLE | PART_IMAGE);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
@@ -763,13 +763,13 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_state_text_source_get(EDIT_OBJ, STATE_ARGS);
-         _parts_combobox_fill(action->control, str_val1, EDJE_PART_TYPE_TEXT);
+         _parts_combobox_fill(action->control, str_val1, PART_TEXT);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_state_text_text_source_get(EDIT_OBJ, STATE_ARGS);
-         _parts_combobox_fill(action->control, str_val1, EDJE_PART_TYPE_TEXT);
+         _parts_combobox_fill(action->control, str_val1, PART_TEXT);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_STATE_VISIBLE:
