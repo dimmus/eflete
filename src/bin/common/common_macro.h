@@ -59,6 +59,7 @@ do { \
 if (!(CALL)) \
 { \
    CRIT("Check ("#CALL ")==true failed"); \
+   abort(); \
 } \
 } while (0)
 
