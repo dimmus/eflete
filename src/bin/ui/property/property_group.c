@@ -49,6 +49,7 @@ struct _Property_Group_Data {
          int int_val1, int_val2, int_val3, int_val4;
          double double_val1;
          Eina_Stringshare *str_val1;
+         Eina_Bool bool_val1;
       } old, new;
    } history;
    Property_Attribute items[PROPERTY_GROUP_ITEM_LAST];
@@ -1361,12 +1362,15 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_SCALE:
          editor_part_scale_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, bool_val1);
+         group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_PART_MOUSE_EVENTS:
          editor_part_mouse_events_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, bool_val1);
+         group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_PART_REPEAT_EVENTS:
          editor_part_repeat_events_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, bool_val1);
+         group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_PART_CLIP_TO:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
@@ -1461,6 +1465,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_VISIBLE:
          editor_state_visible_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_MIN_W:
          editor_state_min_w_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
@@ -1480,9 +1485,11 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_FIXED_W:
          editor_state_fixed_w_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_FIXED_H:
          editor_state_fixed_h_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_MAX_W:
          editor_state_max_w_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
@@ -1613,21 +1620,27 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_TEXT_MIN_X:
          editor_state_text_min_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_MIN_Y:
          editor_state_text_min_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_MAX_X:
          editor_state_text_max_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_MAX_Y:
          editor_state_text_max_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_FIT_X:
          editor_state_text_fit_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_FIT_Y:
          editor_state_text_fit_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_ALIGN_X:
          editor_state_text_align_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
@@ -1647,6 +1660,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE:
          editor_state_text_elipsis_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, bool_val1 ? 0.0 : -1.0);
+         group_pd.history.new.bool_val1 = bool_val1;
          break;
 
       default:
@@ -1660,7 +1674,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
 static void
 _stop_cb(Property_Attribute *pa, Property_Action *action)
 {
-   Eina_Bool bool_val1;
    Eina_Stringshare *msg = NULL;
 
    assert(pa != NULL);
@@ -1780,69 +1793,21 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
          /* part type can't be changed */
          break;
       case ATTRIBUTE_PART_SCALE:
-         bool_val1 = edje_edit_part_scale_get(EDIT_OBJ, PART_ARGS);
-         msg = eina_stringshare_printf(group_pd.history.format,
-                                       (bool_val1) ? _("turned on") : _("turned off"));
-         break;
       case ATTRIBUTE_PART_MOUSE_EVENTS:
-         bool_val1 = edje_edit_part_mouse_events_get(EDIT_OBJ, PART_ARGS);
-         msg = eina_stringshare_printf(group_pd.history.format,
-                                       (bool_val1) ? _("turned on") : _("turned off"));
-         break;
       case ATTRIBUTE_PART_REPEAT_EVENTS:
-         bool_val1 = edje_edit_part_repeat_events_get(EDIT_OBJ, PART_ARGS);
-         msg = eina_stringshare_printf(group_pd.history.format,
-                                       (bool_val1) ? _("turned on") : _("turned off"));
-         break;
       case ATTRIBUTE_STATE_VISIBLE:
-         bool_val1 = edje_edit_state_visible_get(EDIT_OBJ, STATE_ARGS);
-         msg = eina_stringshare_printf(group_pd.history.format,
-                                       (bool_val1) ? _("turned on") : _("turned off"));
-         break;
       case ATTRIBUTE_STATE_FIXED_W:
-         bool_val1 = edje_edit_state_fixed_w_get(EDIT_OBJ, STATE_ARGS);
-         msg = eina_stringshare_printf(group_pd.history.format,
-                                       (bool_val1) ? _("turned on") : _("turned off"));
-         break;
       case ATTRIBUTE_STATE_FIXED_H:
-         bool_val1 = edje_edit_state_fixed_h_get(EDIT_OBJ, STATE_ARGS);
-         msg = eina_stringshare_printf(group_pd.history.format,
-                                       (bool_val1) ? _("turned on") : _("turned off"));
-         break;
       case ATTRIBUTE_STATE_TEXT_MIN_X:
-         bool_val1 = edje_edit_state_text_min_x_get(EDIT_OBJ, STATE_ARGS);
-         msg = eina_stringshare_printf(group_pd.history.format,
-                                       (bool_val1) ? _("turned on") : _("turned off"));
-         break;
       case ATTRIBUTE_STATE_TEXT_MIN_Y:
-         bool_val1 = edje_edit_state_text_min_y_get(EDIT_OBJ, STATE_ARGS);
-         msg = eina_stringshare_printf(group_pd.history.format,
-                                       (bool_val1) ? _("turned on") : _("turned off"));
-         break;
       case ATTRIBUTE_STATE_TEXT_MAX_X:
-         bool_val1 = edje_edit_state_text_max_x_get(EDIT_OBJ, STATE_ARGS);
-         msg = eina_stringshare_printf(group_pd.history.format,
-                                       (bool_val1) ? _("turned on") : _("turned off"));
-         break;
       case ATTRIBUTE_STATE_TEXT_MAX_Y:
-         bool_val1 = edje_edit_state_text_max_y_get(EDIT_OBJ, STATE_ARGS);
-         msg = eina_stringshare_printf(group_pd.history.format,
-                                       (bool_val1) ? _("turned on") : _("turned off"));
-         break;
       case ATTRIBUTE_STATE_TEXT_FIT_X:
-         bool_val1 = edje_edit_state_text_fit_x_get(EDIT_OBJ, STATE_ARGS);
-         msg = eina_stringshare_printf(group_pd.history.format,
-                                       (bool_val1) ? _("turned on") : _("turned off"));
-         break;
       case ATTRIBUTE_STATE_TEXT_FIT_Y:
-         bool_val1 = edje_edit_state_text_fit_y_get(EDIT_OBJ, STATE_ARGS);
-         msg = eina_stringshare_printf(group_pd.history.format,
-                                       (bool_val1) ? _("turned on") : _("turned off"));
-         break;
       case ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE:
-         bool_val1 = edje_edit_state_text_elipsis_get(EDIT_OBJ, STATE_ARGS) >= 0;
          msg = eina_stringshare_printf(group_pd.history.format,
-                                       (bool_val1) ? _("turned on") : _("turned off"));
+                                       (group_pd.history.new.bool_val1) ?
+                                       _("turned on") : _("turned off"));
          break;
 
       default:
