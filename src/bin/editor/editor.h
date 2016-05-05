@@ -632,6 +632,13 @@ editor_part_textblock_anchors_under_set(Evas_Object *obj, Change *change, Eina_B
 Eina_Bool
 editor_part_textblock_anchors_over_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       const char * new_val) EINA_WARN_UNUSED_RESULT;
+#define edje_edit_part_textblock_selection_under_get(...) (edje_edit_part_source_get(__VA_ARGS__))
+#define edje_edit_part_textblock_selection_over_get(...) (edje_edit_part_source2_get(__VA_ARGS__))
+#define edje_edit_part_textblock_cursor_under_get(...) (edje_edit_part_source3_get(__VA_ARGS__))
+#define edje_edit_part_textblock_cursor_over_get(...) (edje_edit_part_source4_get(__VA_ARGS__))
+#define edje_edit_part_textblock_anchors_under_get(...) (edje_edit_part_source5_get(__VA_ARGS__))
+#define edje_edit_part_textblock_anchors_over_get(...) (edje_edit_part_source6_get(__VA_ARGS__))
+
 #define edje_edit_part_text_effect_get(...) (edje_edit_part_effect_get(__VA_ARGS__) & EDJE_TEXT_EFFECT_MASK_BASIC)
 #define edje_edit_part_text_shadow_direction_get(...) (edje_edit_part_effect_get(__VA_ARGS__) & EDJE_TEXT_EFFECT_MASK_SHADOW_DIRECTION)
 #pragma GCC poison edje_edit_part_effect_get

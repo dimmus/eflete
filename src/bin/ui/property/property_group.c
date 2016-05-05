@@ -73,6 +73,17 @@ static const char *ignore_flags_strings[] = { STR_NONE,
 static const char *pointer_mode_strings[] = { "AUTOGRAB",
                                               "NOGRAB",
                                               NULL};
+static const char *select_mode_strings[] = { "DEFAULT",
+                                             "EXPLICIT",
+                                             NULL};
+static const char *entry_mode_strings[] = { STR_NONE,
+                                            "PLAIN",
+                                            "EDITABLE",
+                                            "PASSWORD",
+                                            NULL};
+static const char *cursor_mode_strings[] = { "UNDER",
+                                             "BEFORE",
+                                             NULL};
 
 static const char *text_effect_strings[] = { STR_NONE,
                                              "plain",
@@ -255,6 +266,16 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PART_GROUP_SOURCE);
          APPEND(PROPERTY_GROUP_ITEM_PART_TEXT_EFFECT);
          APPEND(PROPERTY_GROUP_ITEM_PART_TEXT_SHADOW_DIRECTION);
+         APPEND(PROPERTY_GROUP_ITEM_PART_SELECT_MODE);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ENTRY_MODE);
+         APPEND(PROPERTY_GROUP_ITEM_PART_CURSOR_MODE);
+         APPEND(PROPERTY_GROUP_ITEM_PART_MULTILINE);
+         APPEND(PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_SELECTION_UNDER);
+         APPEND(PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_SELECTION_OVER);
+         APPEND(PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_CURSOR_UNDER);
+         APPEND(PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_CURSOR_OVER);
+         APPEND(PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_ANCHORS_UNDER);
+         APPEND(PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_ANCHORS_OVER);
          APPEND(PROPERTY_GROUP_ITEM_PART_DRAGABLE_TITLE);
          break;
       case PROPERTY_GROUP_ITEM_PART_DRAGABLE_TITLE:
@@ -416,6 +437,13 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
       case ATTRIBUTE_PART_DRAG_EVENT:
       case ATTRIBUTE_PART_GROUP_SOURCE:
+      case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER:
+      case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER:
+      case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER:
+      case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER:
+      case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
+      case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
+      case ATTRIBUTE_PART_MULTILINE:
       case ATTRIBUTE_STATE_VISIBLE:
       case ATTRIBUTE_STATE_MIN_W:
       case ATTRIBUTE_STATE_MIN_H:
@@ -491,6 +519,15 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_POINTER_MODE:
          _fill_combobox_with_enum(action->control, pointer_mode_strings);
+         break;
+      case ATTRIBUTE_PART_SELECT_MODE:
+         _fill_combobox_with_enum(action->control, select_mode_strings);
+         break;
+      case ATTRIBUTE_PART_ENTRY_MODE:
+         _fill_combobox_with_enum(action->control, entry_mode_strings);
+         break;
+      case ATTRIBUTE_PART_CURSOR_MODE:
+         _fill_combobox_with_enum(action->control, cursor_mode_strings);
          break;
       case ATTRIBUTE_PART_TEXT_EFFECT:
          _fill_combobox_with_enum(action->control, text_effect_strings);
@@ -711,6 +748,18 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_part_pointer_mode_get(EDIT_OBJ, PART_ARGS));
          break;
+      case ATTRIBUTE_PART_SELECT_MODE:
+         ewe_combobox_select_item_set(action->control,
+           (int) edje_edit_part_select_mode_get(EDIT_OBJ, PART_ARGS));
+         break;
+      case ATTRIBUTE_PART_ENTRY_MODE:
+         ewe_combobox_select_item_set(action->control,
+           (int) edje_edit_part_entry_mode_get(EDIT_OBJ, PART_ARGS));
+         break;
+      case ATTRIBUTE_PART_CURSOR_MODE:
+         ewe_combobox_select_item_set(action->control,
+           (int) edje_edit_part_cursor_mode_get(EDIT_OBJ, PART_ARGS));
+         break;
       case ATTRIBUTE_PART_TEXT_EFFECT:
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_part_text_effect_get(EDIT_OBJ, PART_ARGS));
@@ -767,6 +816,46 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          str_val1 = edje_edit_part_source_get(EDIT_OBJ, PART_ARGS);
          _groups_combobox_fill(action->control, str_val1);
          edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_part_textblock_selection_under_get(EDIT_OBJ, PART_ARGS);
+         _groups_combobox_fill(action->control, str_val1);
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_part_textblock_cursor_under_get(EDIT_OBJ, PART_ARGS);
+         _groups_combobox_fill(action->control, str_val1);
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_part_textblock_anchors_under_get(EDIT_OBJ, PART_ARGS);
+         _groups_combobox_fill(action->control, str_val1);
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_part_textblock_selection_over_get(EDIT_OBJ, PART_ARGS);
+         _groups_combobox_fill(action->control, str_val1);
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_part_textblock_cursor_over_get(EDIT_OBJ, PART_ARGS);
+         _groups_combobox_fill(action->control, str_val1);
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_part_textblock_anchors_over_get(EDIT_OBJ, PART_ARGS);
+         _groups_combobox_fill(action->control, str_val1);
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_PART_MULTILINE:
+         bool_val1 = edje_edit_part_multiline_get(EDIT_OBJ, PART_ARGS);
+         elm_check_state_set(action->control, bool_val1);
          break;
       case ATTRIBUTE_STATE_TEXT_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
@@ -1048,6 +1137,21 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          STR_VAL(str_val1, eina_stringshare_add(
             pointer_mode_strings[edje_edit_part_pointer_mode_get(EDIT_OBJ, PART_ARGS)]));
          break;
+      case ATTRIBUTE_PART_SELECT_MODE:
+         group_pd.history.format = _("select mode changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(
+            select_mode_strings[edje_edit_part_select_mode_get(EDIT_OBJ, PART_ARGS)]));
+         break;
+      case ATTRIBUTE_PART_ENTRY_MODE:
+         group_pd.history.format = _("entry mode changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(
+            entry_mode_strings[edje_edit_part_entry_mode_get(EDIT_OBJ, PART_ARGS)]));
+         break;
+      case ATTRIBUTE_PART_CURSOR_MODE:
+         group_pd.history.format = _("cursor mode changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(
+            cursor_mode_strings[edje_edit_part_cursor_mode_get(EDIT_OBJ, PART_ARGS)]));
+         break;
       case ATTRIBUTE_PART_TEXT_EFFECT:
          group_pd.history.format = _("text effect changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, eina_stringshare_add(
@@ -1099,6 +1203,30 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("source changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, edje_edit_part_source_get(EDIT_OBJ, PART_ARGS));
          break;
+      case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER:
+         group_pd.history.format = _("selection under changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_part_textblock_selection_under_get(EDIT_OBJ, PART_ARGS));
+         break;
+      case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER:
+         group_pd.history.format = _("cursor under changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_part_textblock_cursor_under_get(EDIT_OBJ, PART_ARGS));
+         break;
+      case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER:
+         group_pd.history.format = _("anchors under changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_part_textblock_anchors_under_get(EDIT_OBJ, PART_ARGS));
+         break;
+      case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER:
+         group_pd.history.format = _("selection over changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_part_textblock_selection_over_get(EDIT_OBJ, PART_ARGS));
+         break;
+      case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
+         group_pd.history.format = _("cursor over changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_part_textblock_cursor_over_get(EDIT_OBJ, PART_ARGS));
+         break;
+      case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
+         group_pd.history.format = _("anchors over changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_part_textblock_anchors_over_get(EDIT_OBJ, PART_ARGS));
+         break;
       case ATTRIBUTE_STATE_TEXT_SOURCE:
          group_pd.history.format = _("text source changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, edje_edit_state_text_source_get(EDIT_OBJ, STATE_ARGS));
@@ -1106,6 +1234,9 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
          group_pd.history.format = _("text text_source changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, edje_edit_state_text_text_source_get(EDIT_OBJ, STATE_ARGS));
+         break;
+      case ATTRIBUTE_PART_MULTILINE:
+         group_pd.history.format = _("multiline %s");
          break;
       case ATTRIBUTE_STATE_VISIBLE:
          group_pd.history.format = _("state visible %s");
@@ -1390,6 +1521,24 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
+      case ATTRIBUTE_PART_SELECT_MODE:
+         str_val1 = eina_stringshare_add(cb_item->title);
+         CRIT_ON_FAIL(editor_part_select_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PART_ENTRY_MODE:
+         str_val1 = eina_stringshare_add(cb_item->title);
+         CRIT_ON_FAIL(editor_part_entry_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PART_CURSOR_MODE:
+         str_val1 = eina_stringshare_add(cb_item->title);
+         CRIT_ON_FAIL(editor_part_cursor_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       case ATTRIBUTE_PART_TEXT_EFFECT:
          str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_part_text_effect_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
@@ -1451,6 +1600,42 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
+      case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         CRIT_ON_FAIL(editor_part_textblock_selection_under_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         CRIT_ON_FAIL(editor_part_textblock_cursor_under_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         CRIT_ON_FAIL(editor_part_textblock_anchors_under_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         CRIT_ON_FAIL(editor_part_textblock_selection_over_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         CRIT_ON_FAIL(editor_part_textblock_cursor_over_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         CRIT_ON_FAIL(editor_part_textblock_anchors_over_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       case ATTRIBUTE_STATE_TEXT_SOURCE:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_state_text_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
@@ -1462,6 +1647,10 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_state_text_text_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PART_MULTILINE:
+         CRIT_ON_FAIL(editor_part_multiline_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, bool_val1));
+         group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_VISIBLE:
          CRIT_ON_FAIL(editor_state_visible_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
@@ -1701,12 +1890,21 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_CLIP_TO:
       case ATTRIBUTE_PART_IGNORE_FLAGS:
       case ATTRIBUTE_PART_POINTER_MODE:
+      case ATTRIBUTE_PART_SELECT_MODE:
+      case ATTRIBUTE_PART_ENTRY_MODE:
+      case ATTRIBUTE_PART_CURSOR_MODE:
       case ATTRIBUTE_PART_TEXT_EFFECT:
       case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
       case ATTRIBUTE_PART_DRAG_CONFINE:
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
       case ATTRIBUTE_PART_DRAG_EVENT:
       case ATTRIBUTE_PART_GROUP_SOURCE:
+      case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER:
+      case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER:
+      case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER:
+      case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER:
+      case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
+      case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
       case ATTRIBUTE_STATE_TEXT_SOURCE:
       case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
       case ATTRIBUTE_STATE_ASPECT_PREF:
@@ -1795,6 +1993,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_SCALE:
       case ATTRIBUTE_PART_MOUSE_EVENTS:
       case ATTRIBUTE_PART_REPEAT_EVENTS:
+      case ATTRIBUTE_PART_MULTILINE:
       case ATTRIBUTE_STATE_VISIBLE:
       case ATTRIBUTE_STATE_FIXED_W:
       case ATTRIBUTE_STATE_FIXED_H:
@@ -2056,6 +2255,58 @@ _init_items()
               IT.name = "shadow direction";
               IT.filter_data.part_types = PART_TEXT;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION);
+              break;
+
+              /* part textblock */
+           case PROPERTY_GROUP_ITEM_PART_SELECT_MODE:
+              IT.name = "select mode";
+              IT.filter_data.part_types = PART_TEXTBLOCK;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_SELECT_MODE);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_ENTRY_MODE:
+              IT.name = "entry mode";
+              IT.filter_data.part_types = PART_TEXTBLOCK;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ENTRY_MODE);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_CURSOR_MODE:
+              IT.name = "cursor mode";
+              IT.filter_data.part_types = PART_TEXTBLOCK;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_CURSOR_MODE);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_MULTILINE:
+              IT.name = "multiline";
+              IT.filter_data.part_types = PART_TEXTBLOCK;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_MULTILINE);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_SELECTION_UNDER:
+              IT.name = "selection under";
+              IT.filter_data.part_types = PART_TEXTBLOCK;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_SELECTION_OVER:
+              IT.name = "selection over";
+              IT.filter_data.part_types = PART_TEXTBLOCK;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_CURSOR_UNDER:
+              IT.name = "cursor under";
+              IT.filter_data.part_types = PART_TEXTBLOCK;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_CURSOR_OVER:
+              IT.name = "cursor over";
+              IT.filter_data.part_types = PART_TEXTBLOCK;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_ANCHORS_UNDER:
+              IT.name = "anchors under";
+              IT.filter_data.part_types = PART_TEXTBLOCK;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_ANCHORS_OVER:
+              IT.name = "anchors over";
+              IT.filter_data.part_types = PART_TEXTBLOCK;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER);
               break;
 
               /* state position block */
