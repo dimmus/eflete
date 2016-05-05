@@ -465,13 +465,13 @@ _btn_add_group_cb(void *data __UNUSED__,
    Ewe_Combobox_Item *combo_it;
    combo_it = ewe_combobox_select_item_get(layout_p.combobox);
    if (combo_it->index  == 0)
-     editor_group_add(ap.project->global_object, elm_entry_entry_get(layout_p.entry));
+     CRIT_ON_FAIL(editor_group_add(ap.project->global_object, elm_entry_entry_get(layout_p.entry)));
    else
      {
         if (!elm_check_state_get(layout_p.check))
-          editor_group_copy(ap.project->global_object, combo_it->title, elm_entry_entry_get(layout_p.entry));
+          CRIT_ON_FAIL(editor_group_copy(ap.project->global_object, combo_it->title, elm_entry_entry_get(layout_p.entry)));
         else
-          editor_group_alias_add(ap.project->global_object, combo_it->title, elm_entry_entry_get(layout_p.entry));
+          CRIT_ON_FAIL(editor_group_alias_add(ap.project->global_object, combo_it->title, elm_entry_entry_get(layout_p.entry)));
      }
    gm_group_add(ap.project, elm_entry_entry_get(layout_p.entry));
 
@@ -497,7 +497,7 @@ _folder_del(const char *prefix)
      {
        tmp = eina_stringshare_add(group->name);
        gm_group_del(ap.project, group);
-       editor_group_del(ap.project->global_object, tmp);
+       CRIT_ON_FAIL(editor_group_del(ap.project->global_object, tmp));
        eina_stringshare_del(tmp);
      }
 }
@@ -597,7 +597,7 @@ _btn_del_group_cb(void *data __UNUSED__,
         if (BTN_CANCEL == btn_res) return;
         tmp = eina_stringshare_add(group->name);
         gm_group_del(ap.project, group);
-        editor_group_del(ap.project->global_object, tmp);
+        CRIT_ON_FAIL(editor_group_del(ap.project->global_object, tmp));
         eina_stringshare_del(tmp);
      }
    elm_object_disabled_set(project_navigator.btn_del, true);

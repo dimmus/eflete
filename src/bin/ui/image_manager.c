@@ -293,7 +293,7 @@ _on_image_done(void *data,
              continue;
           }
         edje_edit_image_add(ap.project->global_object, selected);
-        editor_save(ap.project->global_object);
+        CRIT_ON_FAIL(editor_save(ap.project->global_object));
         TODO("Remove this line once edje_edit_image_add would be added into Editor Modulei and saving would work properly")
         ap.project->changed = true;
 
@@ -359,7 +359,7 @@ _on_button_delete_clicked_cb(void *data,
      }
 
    evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, NULL);
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit_image_del would be added into Editor Modulei and saving would work properly")
    ap.project->changed = true;
    elm_object_disabled_set(img_mng->del_button, true);

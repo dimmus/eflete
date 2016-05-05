@@ -1337,23 +1337,23 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          TODO("implement state rename");
          break;
       case ATTRIBUTE_GROUP_MIN_W:
-         editor_group_min_w_set(EDIT_OBJ, CHANGE_MERGE, double_val1);
+         CRIT_ON_FAIL(editor_group_min_w_set(EDIT_OBJ, CHANGE_MERGE, double_val1));
          group_pd.history.new.int_val1 = edje_edit_group_min_w_get(EDIT_OBJ);
          break;
       case ATTRIBUTE_GROUP_MIN_H:
-         editor_group_min_h_set(EDIT_OBJ, CHANGE_MERGE, double_val1);
+         CRIT_ON_FAIL(editor_group_min_h_set(EDIT_OBJ, CHANGE_MERGE, double_val1));
          group_pd.history.new.int_val1 = edje_edit_group_min_h_get(EDIT_OBJ);
          break;
       case ATTRIBUTE_GROUP_MAX_W:
-         editor_group_max_w_set(EDIT_OBJ, CHANGE_MERGE, double_val1);
+         CRIT_ON_FAIL(editor_group_max_w_set(EDIT_OBJ, CHANGE_MERGE, double_val1));
          group_pd.history.new.int_val1 = edje_edit_group_max_w_get(EDIT_OBJ);
          break;
       case ATTRIBUTE_GROUP_MAX_H:
-         editor_group_max_h_set(EDIT_OBJ, CHANGE_MERGE, double_val1);
+         CRIT_ON_FAIL(editor_group_max_h_set(EDIT_OBJ, CHANGE_MERGE, double_val1));
          group_pd.history.new.int_val1 = edje_edit_group_max_h_get(EDIT_OBJ);
          break;
       case ATTRIBUTE_PART_NAME:
-         editor_part_name_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1);
+         CRIT_ON_FAIL(editor_part_name_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
@@ -1361,231 +1361,231 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          /* part type can't be changed */
          break;
       case ATTRIBUTE_PART_SCALE:
-         editor_part_scale_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, bool_val1);
+         CRIT_ON_FAIL(editor_part_scale_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_PART_MOUSE_EVENTS:
-         editor_part_mouse_events_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, bool_val1);
+         CRIT_ON_FAIL(editor_part_mouse_events_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_PART_REPEAT_EVENTS:
-         editor_part_repeat_events_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, bool_val1);
+         CRIT_ON_FAIL(editor_part_repeat_events_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_PART_CLIP_TO:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
-         editor_part_clip_to_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1);
+         CRIT_ON_FAIL(editor_part_clip_to_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
          str_val1 = eina_stringshare_add(cb_item->title);
-         editor_part_ignore_flags_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index);
+         CRIT_ON_FAIL(editor_part_ignore_flags_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_POINTER_MODE:
          str_val1 = eina_stringshare_add(cb_item->title);
-         editor_part_pointer_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index);
+         CRIT_ON_FAIL(editor_part_pointer_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXT_EFFECT:
          str_val1 = eina_stringshare_add(cb_item->title);
-         editor_part_text_effect_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index);
+         CRIT_ON_FAIL(editor_part_text_effect_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
          str_val1 = eina_stringshare_add(cb_item->title);
          /* shodow directions are shifted by 4 in enum */
-         editor_part_text_shadow_direction_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index << 4);
+         CRIT_ON_FAIL(editor_part_text_shadow_direction_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index << 4));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_DRAG_X:
-         editor_part_drag_x_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_part_drag_x_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_part_drag_x_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_Y:
-         editor_part_drag_y_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_part_drag_y_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_part_drag_y_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_STEP_X:
-         editor_part_drag_step_x_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_part_drag_step_x_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_part_drag_step_x_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_STEP_Y:
-         editor_part_drag_step_y_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_part_drag_step_y_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_part_drag_step_y_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_COUNT_X:
-         editor_part_drag_count_x_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_part_drag_count_x_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_part_drag_count_x_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_COUNT_Y:
-         editor_part_drag_count_y_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_part_drag_count_y_set(EDIT_OBJ, CHANGE_MERGE, PART_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_part_drag_count_y_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_CONFINE:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
-         editor_part_drag_confine_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1);
+         CRIT_ON_FAIL(editor_part_drag_confine_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
-         editor_part_drag_threshold_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1);
+         CRIT_ON_FAIL(editor_part_drag_threshold_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_DRAG_EVENT:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
-         editor_part_drag_event_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1);
+         CRIT_ON_FAIL(editor_part_drag_event_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_GROUP_SOURCE:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
-         editor_part_group_source_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1);
+         CRIT_ON_FAIL(editor_part_group_source_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_SOURCE:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
-         editor_state_text_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1);
+         CRIT_ON_FAIL(editor_state_text_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
-         editor_state_text_text_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1);
+         CRIT_ON_FAIL(editor_state_text_text_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_VISIBLE:
-         editor_state_visible_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         CRIT_ON_FAIL(editor_state_visible_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_MIN_W:
-         editor_state_min_w_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_min_w_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_state_min_w_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_MIN_H:
-         editor_state_min_h_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_min_h_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_state_min_h_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_MINMUL_W:
-         editor_state_minmul_w_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_minmul_w_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_state_minmul_w_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_MINMUL_H:
-         editor_state_minmul_h_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_minmul_h_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_state_minmul_h_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_FIXED_W:
-         editor_state_fixed_w_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         CRIT_ON_FAIL(editor_state_fixed_w_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_FIXED_H:
-         editor_state_fixed_h_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         CRIT_ON_FAIL(editor_state_fixed_h_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_MAX_W:
-         editor_state_max_w_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_max_w_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_state_max_w_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_MAX_H:
-         editor_state_max_h_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_max_h_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_state_max_h_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_ASPECT_MIN:
-         editor_state_aspect_min_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_aspect_min_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_state_aspect_min_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_ASPECT_MAX:
-         editor_state_aspect_max_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_aspect_max_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_state_aspect_max_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_ASPECT_PREF:
          str_val1 = eina_stringshare_add(cb_item->title);
-         editor_state_aspect_pref_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item->index);
+         CRIT_ON_FAIL(editor_state_aspect_pref_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_ALIGN_X:
-         editor_state_align_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_align_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_state_align_x_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_ALIGN_Y:
-         editor_state_align_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_align_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_state_align_y_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_REL1_TO_X:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
-         editor_state_rel1_to_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1);
+         CRIT_ON_FAIL(editor_state_rel1_to_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_REL1_TO_Y:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
-         editor_state_rel1_to_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1);
+         CRIT_ON_FAIL(editor_state_rel1_to_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_REL1_RELATIVE_X:
-         editor_state_rel1_relative_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_rel1_relative_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_state_rel1_relative_x_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_REL1_RELATIVE_Y:
-         editor_state_rel1_relative_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_rel1_relative_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_state_rel1_relative_y_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_REL1_OFFSET_X:
-         editor_state_rel1_offset_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_rel1_offset_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_state_rel1_offset_x_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_REL1_OFFSET_Y:
-         editor_state_rel1_offset_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_rel1_offset_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_state_rel1_offset_y_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_REL2_TO_X:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
-         editor_state_rel2_to_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1);
+         CRIT_ON_FAIL(editor_state_rel2_to_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_REL2_TO_Y:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
-         editor_state_rel2_to_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1);
+         CRIT_ON_FAIL(editor_state_rel2_to_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_REL2_RELATIVE_X:
-         editor_state_rel2_relative_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_rel2_relative_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_state_rel2_relative_x_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_REL2_RELATIVE_Y:
-         editor_state_rel2_relative_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_rel2_relative_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_state_rel2_relative_y_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_REL2_OFFSET_X:
-         editor_state_rel2_offset_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_rel2_offset_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_state_rel2_offset_x_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_REL2_OFFSET_Y:
-         editor_state_rel2_offset_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_rel2_offset_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_state_rel2_offset_y_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_COLOR_CLASS:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          _color_class_select(action->control, str_val1);
-         editor_state_color_class_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1);
+         CRIT_ON_FAIL(editor_state_color_class_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_COLOR:
-         editor_state_color_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, r, g, b, a);
+         CRIT_ON_FAIL(editor_state_color_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, r, g, b, a));
          edje_edit_state_color_get(EDIT_OBJ, STATE_ARGS, &r, &g, &b, &a);
          group_pd.history.new.int_val1 = r;
          group_pd.history.new.int_val2 = g;
@@ -1593,7 +1593,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.int_val4 = a;
          break;
       case ATTRIBUTE_STATE_OUTLINE_COLOR:
-         editor_state_outline_color_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, r, g, b, a);
+         CRIT_ON_FAIL(editor_state_outline_color_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, r, g, b, a));
          edje_edit_state_outline_color_get(EDIT_OBJ, STATE_ARGS, &r, &g, &b, &a);
          group_pd.history.new.int_val1 = r;
          group_pd.history.new.int_val2 = g;
@@ -1601,7 +1601,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.int_val4 = a;
          break;
       case ATTRIBUTE_STATE_SHADOW_COLOR:
-         editor_state_shadow_color_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, r, g, b, a);
+         CRIT_ON_FAIL(editor_state_shadow_color_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, r, g, b, a));
          edje_edit_state_shadow_color_get(EDIT_OBJ, STATE_ARGS, &r, &g, &b, &a);
          group_pd.history.new.int_val1 = r;
          group_pd.history.new.int_val2 = g;
@@ -1609,57 +1609,57 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.int_val4 = a;
          break;
       case ATTRIBUTE_STATE_TEXT:
-         editor_state_text_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, str_val1);
+         CRIT_ON_FAIL(editor_state_text_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_FONT:
-         editor_state_font_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, str_val1);
+         CRIT_ON_FAIL(editor_state_font_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_MIN_X:
-         editor_state_text_min_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         CRIT_ON_FAIL(editor_state_text_min_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_MIN_Y:
-         editor_state_text_min_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         CRIT_ON_FAIL(editor_state_text_min_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_MAX_X:
-         editor_state_text_max_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         CRIT_ON_FAIL(editor_state_text_max_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_MAX_Y:
-         editor_state_text_max_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         CRIT_ON_FAIL(editor_state_text_max_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_FIT_X:
-         editor_state_text_fit_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         CRIT_ON_FAIL(editor_state_text_fit_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_FIT_Y:
-         editor_state_text_fit_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1);
+         CRIT_ON_FAIL(editor_state_text_fit_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_ALIGN_X:
-         editor_state_text_align_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_text_align_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_state_text_align_x_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_TEXT_ALIGN_Y:
-         editor_state_text_align_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_text_align_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_state_text_align_y_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_TEXT_SIZE:
-         editor_state_text_size_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_text_size_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_state_text_size_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_TEXT_ELIPSIS:
-         editor_state_text_elipsis_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         CRIT_ON_FAIL(editor_state_text_elipsis_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_state_text_elipsis_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE:
-         editor_state_text_elipsis_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, bool_val1 ? 0.0 : -1.0);
+         CRIT_ON_FAIL(editor_state_text_elipsis_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, bool_val1 ? 0.0 : -1.0));
          group_pd.history.new.bool_val1 = bool_val1;
          break;
 

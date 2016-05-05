@@ -56,7 +56,7 @@ _colorclass_update(ColorClassData *selected)
                                selected->current_ccl->r3, selected->current_ccl->g3,
                                selected->current_ccl->b3, selected->current_ccl->a3);
 
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    ap.project->changed = true;
 }
 
@@ -103,7 +103,7 @@ _change_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
    Colorclass_Item *cc_it = color_data.selected->current_ccl;
    edje_edit_color_class_description_set(ap.project->global_object, cc_it->name, text);
 
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    ap.project->changed = true;
    eina_stringshare_del(text);
 }

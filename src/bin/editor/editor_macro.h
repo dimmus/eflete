@@ -126,7 +126,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      } \
    if (!edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)) \
      return false; \
-   if (SAVE) editor_save(edit_object); \
+   if (SAVE) CRIT_ON_FAIL(editor_save(edit_object)); \
    _editor_project_changed(); \
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return true; \
@@ -165,7 +165,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      } \
    if (!edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)) \
      return false; \
-   if (SAVE) editor_save(edit_object); \
+   if (SAVE) CRIT_ON_FAIL(editor_save(edit_object)); \
    _editor_project_changed(); \
    if (!new_val) editor_state_## RESET ##_reset(edit_object, change, part_name, state_name, state_val); \
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
@@ -473,7 +473,7 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
      } \
    if (!edje_edit_part_item_## FUNC ##_set(edit_object, part_name, item_name, new_val)) \
      return false; \
-   if (SAVE) editor_save(edit_object); \
+   if (SAVE) CRIT_ON_FAIL(editor_save(edit_object)); \
    _editor_project_changed(); \
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return true; \
@@ -510,7 +510,7 @@ editor_part_item_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_B
      } \
    if (!edje_edit_part_item_## FUNC ##_set(edit_object, part_name, item_name, new_val)) \
      return false; \
-   if (SAVE) editor_save(edit_object); \
+   if (SAVE) CRIT_ON_FAIL(editor_save(edit_object)); \
    _editor_project_changed(); \
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return true; \
@@ -588,7 +588,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      } \
    if (!edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)) \
      return false; \
-   editor_save(edit_object); \
+   CRIT_ON_FAIL(editor_save(edit_object)); \
    _editor_project_changed(); \
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return true; \
@@ -627,7 +627,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      } \
    if (!edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)) \
      return false; \
-   editor_save(edit_object); \
+   CRIT_ON_FAIL(editor_save(edit_object)); \
    _editor_project_changed(); \
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return true; \

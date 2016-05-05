@@ -161,7 +161,7 @@ editor_program_action_set(Evas_Object *edit_object, Change *change, Eina_Bool me
           {
              targets = edje_edit_program_targets_get(edit_object, program);
              EINA_LIST_FOREACH(targets, l, target)
-                editor_program_target_del(edit_object, change, false, program, target);
+                CRIT_ON_FAIL(editor_program_target_del(edit_object, change, false, program, target));
              edje_edit_string_list_free(targets);
           }
 
@@ -507,7 +507,7 @@ editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
    if (!edje_edit_program_add(edit_object, program_name))
      return false;
 
-   editor_save(edit_object);
+   CRIT_ON_FAIL(editor_save(edit_object));
    _editor_project_changed();
 
    event_info = eina_stringshare_add(program_name);
@@ -548,7 +548,7 @@ editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
         return false;
      }
    eina_stringshare_del(event_info);
-   editor_save(edit_object);
+   CRIT_ON_FAIL(editor_save(edit_object));
    _editor_project_changed();
    return true;
 }

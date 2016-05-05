@@ -280,7 +280,7 @@ _on_st_add_bt_ok(void *data,
 
    _on_popup_bt_cancel(style_edit, NULL, NULL);
 
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
 }
@@ -322,7 +322,7 @@ _on_tag_add_bt_ok(void *data,
 
    _on_popup_bt_cancel(style_edit, NULL, NULL);
 
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
 }
@@ -504,7 +504,7 @@ _on_bt_del(void *data,
    elm_object_disabled_set(style_edit->button_del, true);
    evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, NULL);
 
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
 }

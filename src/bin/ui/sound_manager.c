@@ -312,7 +312,7 @@ _add_sample_done(void *data,
    snd->resource = (Resource *)res;
    elm_gengrid_item_insert_before(edit->gengrid, gic, snd, edit->tone_header, _grid_selected, edit);
 
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit_sound_sample_add would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
 
@@ -395,7 +395,7 @@ _add_tone_done(void *data,
    snd->resource = (Resource *)tone;
    elm_gengrid_item_append(edit->gengrid, gic, snd, _grid_selected, edit);
 
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit_image_add would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
 
@@ -538,7 +538,7 @@ _on_delete_clicked_cb(void *data,
           }
      }
 
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit_sound_..._del would be added into Editor Modulei and saving would work properly")
    ap.project->changed = true;
 
