@@ -313,6 +313,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_FIT);
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_SOURCE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_TEXT_SOURCE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_ELIPSIS);
          break;
       default:
          CRIT("items callback not found for %s", pa->name);
@@ -437,6 +438,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_FIT_X:
       case ATTRIBUTE_STATE_TEXT_FIT_Y:
       case ATTRIBUTE_STATE_TEXT_SIZE:
+      case ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE:
       case ATTRIBUTE_STATE_TEXT_SOURCE:
       case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
          break;
@@ -450,6 +452,11 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_ASPECT_MIN:
       case ATTRIBUTE_STATE_ASPECT_MAX:
+         elm_spinner_step_set(action->control, 0.1);
+         elm_spinner_label_format_set(action->control, "%.2f");
+         break;
+      case ATTRIBUTE_STATE_TEXT_ELIPSIS:
+         elm_spinner_min_max_set(action->control, 0, 1);
          elm_spinner_step_set(action->control, 0.1);
          elm_spinner_label_format_set(action->control, "%.2f");
          break;
@@ -948,6 +955,14 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          int_val1 = edje_edit_state_text_size_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, int_val1);
          break;
+      case ATTRIBUTE_STATE_TEXT_ELIPSIS:
+         double_val1 = edje_edit_state_text_elipsis_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         elm_object_disabled_set(action->control, double_val1 < 0);
+         elm_check_state_set(pa->action1.control, double_val1 >= 0);
+         break;
+      case ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE:
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -1258,6 +1273,13 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_SIZE:
          group_pd.history.format = _("text size changed from %d to %d");
          VAL(int_val1) = edje_edit_state_text_size_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_TEXT_ELIPSIS:
+         group_pd.history.format = _("text elipsis changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_state_text_elipsis_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE:
+         group_pd.history.format = _("text elipsis %s");
          break;
 
       default:
@@ -1619,6 +1641,13 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          editor_state_text_size_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
          group_pd.history.new.int_val1 = edje_edit_state_text_size_get(EDIT_OBJ, STATE_ARGS);
          break;
+      case ATTRIBUTE_STATE_TEXT_ELIPSIS:
+         editor_state_text_elipsis_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1);
+         group_pd.history.new.double_val1 = edje_edit_state_text_elipsis_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE:
+         editor_state_text_elipsis_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, bool_val1 ? 0.0 : -1.0);
+         break;
 
       default:
          TODO("remove default case after all attributes will be added");
@@ -1716,6 +1745,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_REL1_RELATIVE_Y:
       case ATTRIBUTE_STATE_REL2_RELATIVE_X:
       case ATTRIBUTE_STATE_REL2_RELATIVE_Y:
+      case ATTRIBUTE_STATE_TEXT_ELIPSIS:
          if (fabs(group_pd.history.new.double_val1 - group_pd.history.old.double_val1) < DBL_EPSILON)
            {
               change_free(group_pd.history.change);
@@ -1806,6 +1836,11 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_TEXT_FIT_Y:
          bool_val1 = edje_edit_state_text_fit_y_get(EDIT_OBJ, STATE_ARGS);
+         msg = eina_stringshare_printf(group_pd.history.format,
+                                       (bool_val1) ? _("turned on") : _("turned off"));
+         break;
+      case ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE:
+         bool_val1 = edje_edit_state_text_elipsis_get(EDIT_OBJ, STATE_ARGS) >= 0;
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (bool_val1) ? _("turned on") : _("turned off"));
          break;
@@ -2202,6 +2237,12 @@ _init_items()
               IT.name = "text source";
               IT.filter_data.part_types = PART_TEXT;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_TEXT_SOURCE);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_TEXT_ELIPSIS:
+              IT.name = "elipsis";
+              IT.filter_data.part_types = PART_TEXT;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE);
+              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ELIPSIS);
               break;
 
               /* part item block */
