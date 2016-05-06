@@ -332,6 +332,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_MAX);
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_FONT);
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_SIZE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_STYLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_FIT);
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_SOURCE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_TEXT_SOURCE);
@@ -470,6 +471,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE:
       case ATTRIBUTE_STATE_TEXT_SOURCE:
       case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
+      case ATTRIBUTE_STATE_TEXT_STYLE:
          break;
       case ATTRIBUTE_STATE_MAX_W:
       case ATTRIBUTE_STATE_MAX_H:
@@ -560,6 +562,25 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          CRIT("init callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
          abort();
          break;
+     }
+}
+
+static void
+_styles_combobox_fill(Evas_Object *combo, const char *selected)
+{
+   Eina_List *l;
+   Resource *style;
+
+   assert(combo != NULL);
+
+   if (selected)
+     ewe_combobox_text_set(combo, selected);
+   else
+     ewe_combobox_text_set(combo, STR_NONE);
+   ewe_combobox_item_add(combo, STR_NONE);
+   EINA_LIST_FOREACH(ap.project->styles, l, style)
+     {
+        ewe_combobox_item_add(combo, style->name);
      }
 }
 
@@ -867,6 +888,12 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_state_text_text_source_get(EDIT_OBJ, STATE_ARGS);
          _parts_combobox_fill(action->control, str_val1, PART_TEXT);
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_STATE_TEXT_STYLE:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_state_text_style_get(EDIT_OBJ, STATE_ARGS);
+         _styles_combobox_fill(action->control, str_val1);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_STATE_VISIBLE:
@@ -1234,6 +1261,10 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
          group_pd.history.format = _("text text_source changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, edje_edit_state_text_text_source_get(EDIT_OBJ, STATE_ARGS));
+         break;
+      case ATTRIBUTE_STATE_TEXT_STYLE:
+         group_pd.history.format = _("text style changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_state_text_style_get(EDIT_OBJ, STATE_ARGS));
          break;
       case ATTRIBUTE_PART_MULTILINE:
          group_pd.history.format = _("multiline %s");
@@ -1648,6 +1679,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
+      case ATTRIBUTE_STATE_TEXT_STYLE:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         CRIT_ON_FAIL(editor_state_text_style_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       case ATTRIBUTE_PART_MULTILINE:
          CRIT_ON_FAIL(editor_part_multiline_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
@@ -1907,6 +1944,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
       case ATTRIBUTE_STATE_TEXT_SOURCE:
       case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
+      case ATTRIBUTE_STATE_TEXT_STYLE:
       case ATTRIBUTE_STATE_ASPECT_PREF:
       case ATTRIBUTE_STATE_REL1_TO_X:
       case ATTRIBUTE_STATE_REL1_TO_Y:
@@ -2459,6 +2497,13 @@ _init_items()
               IT.filter_data.part_types = PART_TEXT;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE);
               _action2(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ELIPSIS);
+              break;
+
+              /* state textblock block */
+           case PROPERTY_GROUP_ITEM_STATE_TEXT_STYLE:
+              IT.name = "style";
+              IT.filter_data.part_types = PART_TEXTBLOCK;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_STYLE);
               break;
 
               /* part item block */
