@@ -84,6 +84,9 @@ static const char *entry_mode_strings[] = { STR_NONE,
 static const char *cursor_mode_strings[] = { "UNDER",
                                              "BEFORE",
                                              NULL};
+static const char *fill_type_strings[] = { "SCALE",
+                                           "TILE",
+                                           NULL};
 
 static const char *text_effect_strings[] = { STR_NONE,
                                              "plain",
@@ -293,6 +296,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_COLORS_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_SIZE_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_TITLE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TITLE);
          break;
       case PROPERTY_GROUP_ITEM_STATE_SIZE_TITLE:
@@ -319,6 +323,20 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_Y);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_RELATIVE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_OFFSET);
+         break;
+      case PROPERTY_GROUP_ITEM_STATE_FILL_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_TYPE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_SMOOTH);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_TITLE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_TITLE);
+         break;
+      case PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_RELATIVE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_OFFSET);
+         break;
+      case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_RELATIVE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_OFFSET);
          break;
       case PROPERTY_GROUP_ITEM_STATE_COLORS_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_COLORS_COLOR_CLASS);
@@ -448,6 +466,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_MULTILINE:
       case ATTRIBUTE_STATE_PROXY_SOURCE:
       case ATTRIBUTE_STATE_VISIBLE:
+      case ATTRIBUTE_STATE_FILL_SMOOTH:
       case ATTRIBUTE_STATE_MIN_W:
       case ATTRIBUTE_STATE_MIN_H:
       case ATTRIBUTE_STATE_MINMUL_W:
@@ -505,6 +524,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_REL1_RELATIVE_Y:
       case ATTRIBUTE_STATE_REL2_RELATIVE_X:
       case ATTRIBUTE_STATE_REL2_RELATIVE_Y:
+      case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
+      case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y:
+      case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X:
+      case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y:
          elm_spinner_min_max_set(action->control, -10, 10);
          elm_spinner_step_set(action->control, 0.1);
          elm_spinner_label_format_set(action->control, "%.2f");
@@ -513,6 +536,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_REL1_OFFSET_Y:
       case ATTRIBUTE_STATE_REL2_OFFSET_X:
       case ATTRIBUTE_STATE_REL2_OFFSET_Y:
+      case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X:
+      case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y:
+      case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X:
+      case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y:
          elm_spinner_min_max_set(action->control, -9999, 9999);
          break;
       case ATTRIBUTE_STATE_ASPECT_PREF:
@@ -532,6 +559,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_CURSOR_MODE:
          _fill_combobox_with_enum(action->control, cursor_mode_strings);
+         break;
+      case ATTRIBUTE_STATE_FILL_TYPE:
+         _fill_combobox_with_enum(action->control, fill_type_strings);
          break;
       case ATTRIBUTE_PART_TEXT_EFFECT:
          _fill_combobox_with_enum(action->control, text_effect_strings);
@@ -789,6 +819,10 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_part_cursor_mode_get(EDIT_OBJ, PART_ARGS));
          break;
+      case ATTRIBUTE_STATE_FILL_TYPE:
+         ewe_combobox_select_item_set(action->control,
+           (int) edje_edit_state_fill_type_get(EDIT_OBJ, STATE_ARGS));
+         break;
       case ATTRIBUTE_PART_TEXT_EFFECT:
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_part_text_effect_get(EDIT_OBJ, PART_ARGS));
@@ -908,6 +942,10 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          bool_val1 = edje_edit_state_visible_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
          break;
+      case ATTRIBUTE_STATE_FILL_SMOOTH:
+         bool_val1 = edje_edit_state_fill_smooth_get(EDIT_OBJ, STATE_ARGS);
+         elm_check_state_set(action->control, bool_val1);
+         break;
       case ATTRIBUTE_STATE_MIN_W:
          int_val1 = edje_edit_state_min_w_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, int_val1);
@@ -1014,6 +1052,38 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_REL2_OFFSET_Y:
          double_val1 = edje_edit_state_rel2_offset_y_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
+         double_val1 = edje_edit_state_fill_origin_relative_x_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y:
+         double_val1 = edje_edit_state_fill_origin_relative_y_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X:
+         double_val1 = edje_edit_state_fill_size_relative_x_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y:
+         double_val1 = edje_edit_state_fill_size_relative_y_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X:
+         double_val1 = edje_edit_state_fill_origin_offset_x_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y:
+         double_val1 = edje_edit_state_fill_origin_offset_y_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X:
+         double_val1 = edje_edit_state_fill_size_offset_x_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y:
+         double_val1 = edje_edit_state_fill_size_offset_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
          break;
       case ATTRIBUTE_STATE_COLOR:
@@ -1191,6 +1261,11 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          STR_VAL(str_val1, eina_stringshare_add(
             cursor_mode_strings[edje_edit_part_cursor_mode_get(EDIT_OBJ, PART_ARGS)]));
          break;
+      case ATTRIBUTE_STATE_FILL_TYPE:
+         group_pd.history.format = _("fill type changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(
+            fill_type_strings[edje_edit_state_fill_type_get(EDIT_OBJ, STATE_ARGS)]));
+         break;
       case ATTRIBUTE_PART_TEXT_EFFECT:
          group_pd.history.format = _("text effect changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, eina_stringshare_add(
@@ -1283,6 +1358,9 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_VISIBLE:
          group_pd.history.format = _("state visible %s");
+         break;
+      case ATTRIBUTE_STATE_FILL_SMOOTH:
+         group_pd.history.format = _("fill smooth %s");
          break;
       case ATTRIBUTE_STATE_MIN_W:
          group_pd.history.format = _("state min_w changed from %d to %d");
@@ -1382,6 +1460,38 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_REL2_OFFSET_Y:
          group_pd.history.format = _("rel2 offset y changed from %d to %d");
          VAL(int_val1) = edje_edit_state_rel2_offset_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
+         group_pd.history.format = _("fill origin relative x changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_state_fill_origin_relative_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y:
+         group_pd.history.format = _("fill origin relative y changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_state_fill_origin_relative_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X:
+         group_pd.history.format = _("fill size relative x changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_state_fill_size_relative_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y:
+         group_pd.history.format = _("fill size relative y changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_state_fill_size_relative_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X:
+         group_pd.history.format = _("fill origin offset x changed from %.2f to %.2f");
+         VAL(int_val1) = edje_edit_state_fill_origin_offset_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y:
+         group_pd.history.format = _("fill origin offset y changed from %.2f to %.2f");
+         VAL(int_val1) = edje_edit_state_fill_origin_offset_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X:
+         group_pd.history.format = _("fill size offset x changed from %.2f to %.2f");
+         VAL(int_val1) = edje_edit_state_fill_size_offset_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y:
+         group_pd.history.format = _("fill size offset y changed from %.2f to %.2f");
+         VAL(int_val1) = edje_edit_state_fill_size_offset_y_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_COLOR_CLASS:
          group_pd.history.format = _("color class changed from \"%s\" to \"%s\"");
@@ -1588,6 +1698,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
+      case ATTRIBUTE_STATE_FILL_TYPE:
+         str_val1 = eina_stringshare_add(cb_item->title);
+         CRIT_ON_FAIL(editor_state_fill_type_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item->index));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       case ATTRIBUTE_PART_TEXT_EFFECT:
          str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_part_text_effect_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
@@ -1711,6 +1827,10 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_state_visible_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
          break;
+      case ATTRIBUTE_STATE_FILL_SMOOTH:
+         CRIT_ON_FAIL(editor_state_fill_smooth_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
+         group_pd.history.new.bool_val1 = bool_val1;
+         break;
       case ATTRIBUTE_STATE_MIN_W:
          CRIT_ON_FAIL(editor_state_min_w_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_state_min_w_get(EDIT_OBJ, STATE_ARGS);
@@ -1820,6 +1940,38 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_REL2_OFFSET_Y:
          CRIT_ON_FAIL(editor_state_rel2_offset_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_state_rel2_offset_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
+         CRIT_ON_FAIL(editor_state_fill_origin_relative_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_state_fill_origin_relative_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y:
+         CRIT_ON_FAIL(editor_state_fill_origin_relative_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_state_fill_origin_relative_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X:
+         CRIT_ON_FAIL(editor_state_fill_size_relative_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_state_fill_size_relative_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y:
+         CRIT_ON_FAIL(editor_state_fill_size_relative_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_state_fill_size_relative_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X:
+         CRIT_ON_FAIL(editor_state_fill_origin_offset_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_state_fill_origin_offset_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y:
+         CRIT_ON_FAIL(editor_state_fill_origin_offset_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_state_fill_origin_offset_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X:
+         CRIT_ON_FAIL(editor_state_fill_size_offset_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_state_fill_size_offset_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y:
+         CRIT_ON_FAIL(editor_state_fill_size_offset_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_state_fill_size_offset_y_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_COLOR_CLASS:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
@@ -1949,6 +2101,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_SELECT_MODE:
       case ATTRIBUTE_PART_ENTRY_MODE:
       case ATTRIBUTE_PART_CURSOR_MODE:
+      case ATTRIBUTE_STATE_FILL_TYPE:
       case ATTRIBUTE_PART_TEXT_EFFECT:
       case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
       case ATTRIBUTE_PART_DRAG_CONFINE:
@@ -1997,6 +2150,10 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_REL1_OFFSET_Y:
       case ATTRIBUTE_STATE_REL2_OFFSET_X:
       case ATTRIBUTE_STATE_REL2_OFFSET_Y:
+      case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X:
+      case ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y:
+      case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X:
+      case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y:
       case ATTRIBUTE_STATE_TEXT_SIZE:
          CHECK_VAL(int_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
@@ -2013,6 +2170,10 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_REL1_RELATIVE_Y:
       case ATTRIBUTE_STATE_REL2_RELATIVE_X:
       case ATTRIBUTE_STATE_REL2_RELATIVE_Y:
+      case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
+      case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y:
+      case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X:
+      case ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y:
       case ATTRIBUTE_STATE_TEXT_ELIPSIS:
          if (fabs(group_pd.history.new.double_val1 - group_pd.history.old.double_val1) < DBL_EPSILON)
            {
@@ -2052,6 +2213,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_REPEAT_EVENTS:
       case ATTRIBUTE_PART_MULTILINE:
       case ATTRIBUTE_STATE_VISIBLE:
+      case ATTRIBUTE_STATE_FILL_SMOOTH:
       case ATTRIBUTE_STATE_FIXED_W:
       case ATTRIBUTE_STATE_FIXED_H:
       case ATTRIBUTE_STATE_TEXT_MIN_X:
@@ -2432,6 +2594,57 @@ _init_items()
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_X);
               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_Y);
+              break;
+
+              /* state fill block */
+           case PROPERTY_GROUP_ITEM_STATE_FILL_TITLE:
+              IT.name = "fill";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              IT.filter_data.part_types = PART_IMAGE | PART_PROXY;
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_FILL_TYPE:
+              IT.name = "type";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_FILL_TYPE);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_FILL_SMOOTH:
+              IT.name = "smooth";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FILL_SMOOTH);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_TITLE:
+              IT.name = "origin";
+              IT.icon_name = eina_stringshare_add(_("elm/image/icon/start-point"));
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_RELATIVE:
+              IT.name = "relative";
+              IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_OFFSET:
+              IT.name = "offset";
+              IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_TITLE:
+              IT.name = "size";
+              IT.icon_name = eina_stringshare_add(_("elm/image/icon/end-point"));
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_RELATIVE:
+              IT.name = "relative";
+              IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_OFFSET:
+              IT.name = "offset";
+              IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y);
               break;
 
               /* state colors block */
