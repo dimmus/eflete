@@ -203,7 +203,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
      { \
         if (!edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, FALLBACK_VAL)) \
           { \
-             diff_free(diff); \
+             if (diff) diff_free(diff); \
              return false; \
           } \
         if (diff) \
