@@ -289,6 +289,7 @@ _subitems_get(Property_Attribute *pa)
       case PROPERTY_GROUP_ITEM_STATE_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_NAME);
          APPEND(PROPERTY_GROUP_ITEM_STATE_VISIBLE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_PROXY_SOURCE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_COLORS_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_SIZE_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_TITLE);
@@ -445,6 +446,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
       case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
       case ATTRIBUTE_PART_MULTILINE:
+      case ATTRIBUTE_STATE_PROXY_SOURCE:
       case ATTRIBUTE_STATE_VISIBLE:
       case ATTRIBUTE_STATE_MIN_W:
       case ATTRIBUTE_STATE_MIN_H:
@@ -759,6 +761,12 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_clip_to_get(EDIT_OBJ, PART_ARGS);
          _parts_combobox_fill(action->control, str_val1, PART_RECTANGLE | PART_IMAGE);
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_STATE_PROXY_SOURCE:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_state_proxy_source_get(EDIT_OBJ, STATE_ARGS);
+         _parts_combobox_fill(action->control, str_val1, 0);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
@@ -1154,6 +1162,10 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("clip to changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, edje_edit_part_clip_to_get(EDIT_OBJ, PART_ARGS));
          break;
+      case ATTRIBUTE_STATE_PROXY_SOURCE:
+         group_pd.history.format = _("proxy source changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_state_proxy_source_get(EDIT_OBJ, STATE_ARGS));
+         break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
          group_pd.history.format = _("ignore_flags changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, eina_stringshare_add(
@@ -1537,6 +1549,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_CLIP_TO:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_part_clip_to_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_STATE_PROXY_SOURCE:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         CRIT_ON_FAIL(editor_state_proxy_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
@@ -1925,6 +1943,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
                                        group_pd.history.new.str_val1);
          break;
       case ATTRIBUTE_PART_CLIP_TO:
+      case ATTRIBUTE_STATE_PROXY_SOURCE:
       case ATTRIBUTE_PART_IGNORE_FLAGS:
       case ATTRIBUTE_PART_POINTER_MODE:
       case ATTRIBUTE_PART_SELECT_MODE:
@@ -2244,6 +2263,11 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_VISIBLE:
               IT.name = "visible";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_VISIBLE);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_PROXY_SOURCE:
+              IT.name = "proxy source";
+              IT.filter_data.part_types = PART_PROXY;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_PROXY_SOURCE);
               break;
 
               /* state size block */
