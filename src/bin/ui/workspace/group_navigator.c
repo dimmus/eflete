@@ -2029,7 +2029,8 @@ group_navigator_part_select(Evas_Object *obj, Part *part)
      }
    else
      {
-        _unselect_part(pl);
+        if (pl->selected_part_item)
+          _unselect_part(pl);
         evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_NAVIGATOR_UNSELECTED, NULL);
         elm_genlist_item_selected_set(elm_genlist_selected_item_get(pl->genlist), false);
      }
