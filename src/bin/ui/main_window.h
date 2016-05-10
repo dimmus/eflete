@@ -439,6 +439,7 @@ struct _Image_Item
    Edje_Edit_Image_Comp comp_type;
    int quality;
    Eina_Bool is_used;
+   int height, width;
 };
 
 /**

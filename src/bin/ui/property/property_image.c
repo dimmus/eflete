@@ -88,7 +88,6 @@ static void
 _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
 {
    Eina_Stringshare *str;
-   int w, h;
 
    if (!image_data.image)
      {
@@ -146,14 +145,12 @@ _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
            elm_object_text_set(action->control, EMPTY_VALUE);
          break;
       case PROPERTY_IMAGE_CONTROL_WIDTH:
-         elm_image_object_size_get(image_data.item_preview.action1.control, NULL, &h);
-         str = eina_stringshare_printf("%d", h);
+         str = eina_stringshare_printf("%d", image_data.image->width);
          elm_object_text_set(action->control, str);
          eina_stringshare_del(str);
          break;
       case PROPERTY_IMAGE_CONTROL_HEIGHT:
-         elm_image_object_size_get(image_data.item_preview.action1.control, &w, NULL);
-         str = eina_stringshare_printf("%d", h);
+         str = eina_stringshare_printf("%d", image_data.image->height);
          elm_object_text_set(action->control, str);
          eina_stringshare_del(str);
          break;

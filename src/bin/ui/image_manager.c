@@ -229,6 +229,8 @@ static inline Image_Item *
 _image_manager_gengrid_item_data_create(Evas_Object *edje_edit_obj,
                                        External_Resource *res)
 {
+   Evas_Object *img;
+
    assert(edje_edit_obj != NULL);
    assert(res != NULL);
 
@@ -240,6 +242,10 @@ _image_manager_gengrid_item_data_create(Evas_Object *edje_edit_obj,
    it->quality = edje_edit_image_compression_rate_get(edje_edit_obj,
                                                       it->image_name);
    it->source = eina_stringshare_add(res->source);
+
+   img = _image_manager_image_create(ap.project->global_object, it);
+   elm_image_object_size_get(img, &it->width, &it->height);
+   evas_object_del(img);
 
    return it;
 }
@@ -255,6 +261,7 @@ _on_image_done(void *data,
    Uns_List *image = NULL;
    External_Resource *res;
    const char *file_name;
+   Evas_Object *img;
 
    Image_Manager *img_mng = (Image_Manager *)data;
    images = (Eina_List *)event_info;
@@ -305,6 +312,9 @@ _on_image_done(void *data,
         elm_gengrid_item_append(img_mng->gengrid, gic, it, _grid_sel, img_mng);
 
         it->source = eina_stringshare_add(res->source);
+        img = _image_manager_image_create(ap.project->global_object, it);
+        elm_image_object_size_get(img, &it->width, &it->height);
+        evas_object_del(img);
      }
 
    return true;
