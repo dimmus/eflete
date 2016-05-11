@@ -133,7 +133,6 @@ static const char *aspect_preference_strings[] = { STR_NONE,
                                                    "Both",
                                                    "Source",
                                                    NULL};
-
 static const char *action_type[] = {"NONE",
                                     "STATE_SET",
                                     "ACTION_STOP",
@@ -160,7 +159,12 @@ static const char *action_type[] = {"NONE",
                                     "[NOT SUPPORTED] PHYSICS_ROT_SET",
                                     "[NOT SUPPORTED] VIBRATION_SAMPLE"};
 
-
+static const char *item_aspect_mode_strings[] = { STR_NONE,
+                                                  "Neither",
+                                                  "Vertical",
+                                                  "Horizontal",
+                                                  "Both",
+                                                  NULL};
 /* defines for args */
 #define EDIT_OBJ group_pd.group->edit_object
 #define PART_ARGS group_pd.part->name
@@ -440,9 +444,9 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PREFER);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ALIGN);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_WEIGHT);
-/*       APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT);
-         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SPREAD);
+ /*      APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SPREAD);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SPAN_COL);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PADDING); */
          break;
@@ -561,6 +565,8 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_MIN_H:
       case ATTRIBUTE_PART_ITEM_PREFER_W:
       case ATTRIBUTE_PART_ITEM_PREFER_H:
+      case ATTRIBUTE_PART_ITEM_ASPECT_W:
+      case ATTRIBUTE_PART_ITEM_ASPECT_H:
       case ATTRIBUTE_STATE_PROXY_SOURCE:
       case ATTRIBUTE_STATE_VISIBLE:
       case ATTRIBUTE_STATE_FILL_SMOOTH:
@@ -653,6 +659,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X:
       case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y:
          elm_spinner_min_max_set(action->control, -9999, 9999);
+         break;
+      case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
+         _fill_combobox_with_enum(action->control, item_aspect_mode_strings);
          break;
       case ATTRIBUTE_STATE_ASPECT_PREF:
          _fill_combobox_with_enum(action->control, aspect_preference_strings);
@@ -1089,6 +1098,18 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_ALIGN_Y:
          double_val1 = edje_edit_part_item_align_y_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
+         ewe_combobox_select_item_set(action->control,
+           (int) edje_edit_part_item_aspect_mode_get(EDIT_OBJ, ITEM_ARGS));
+         break;
+      case ATTRIBUTE_PART_ITEM_ASPECT_W:
+         int_val1 = edje_edit_part_item_aspect_w_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_ASPECT_H:
+         int_val1 = edje_edit_part_item_aspect_h_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
          break;
       case ATTRIBUTE_STATE_TEXT_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
@@ -1827,7 +1848,19 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("part item's align_y changed from %.2f to %.2f");
          VAL(double_val1) = edje_edit_part_item_align_y_get(EDIT_OBJ, ITEM_ARGS);
          break;
-
+      case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
+         group_pd.history.format = _("part item's aspect mode changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(
+            item_aspect_mode_strings[edje_edit_part_item_aspect_mode_get(EDIT_OBJ, ITEM_ARGS)]));
+         break;
+      case ATTRIBUTE_PART_ITEM_ASPECT_W:
+         group_pd.history.format = _("part item's aspect_w changed from %d to %d");
+         VAL(int_val1) = edje_edit_part_item_aspect_w_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_ASPECT_H:
+         group_pd.history.format = _("part item's aspect_h changed from %d to %d");
+         VAL(int_val1) = edje_edit_part_item_aspect_h_get(EDIT_OBJ, ITEM_ARGS);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("start callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -2393,6 +2426,20 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_part_item_align_y_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_part_item_align_y_get(EDIT_OBJ, ITEM_ARGS);
          break;
+      case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
+         str_val1 = eina_stringshare_add(cb_item->title);
+         CRIT_ON_FAIL(editor_part_item_aspect_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, ITEM_ARGS, cb_item->index));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PART_ITEM_ASPECT_W:
+         CRIT_ON_FAIL(editor_part_item_aspect_w_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_aspect_w_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_ASPECT_H:
+         CRIT_ON_FAIL(editor_part_item_aspect_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_aspect_h_get(EDIT_OBJ, ITEM_ARGS);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -2451,6 +2498,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
       case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
       case ATTRIBUTE_PART_ITEM_SOURCE:
+      case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
       case ATTRIBUTE_STATE_TEXT_SOURCE:
       case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
       case ATTRIBUTE_STATE_TEXT_STYLE:
@@ -2500,6 +2548,8 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_MAX_H:
       case ATTRIBUTE_PART_ITEM_PREFER_W:
       case ATTRIBUTE_PART_ITEM_PREFER_H:
+      case ATTRIBUTE_PART_ITEM_ASPECT_W:
+      case ATTRIBUTE_PART_ITEM_ASPECT_H:
          CHECK_VAL(int_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.int_val1,
@@ -3135,8 +3185,13 @@ _init_items()
               _action2(&IT, "y", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_WEIGHT_Y);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE:
+              IT.name = "aspect mode";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ITEM_ASPECT_MODE);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT:
+              IT.name = "aspect";
+              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ASPECT_W);
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ASPECT_H);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_SPREAD:
               break;
