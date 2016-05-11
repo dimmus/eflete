@@ -124,31 +124,37 @@ static const char *aspect_preference_strings[] = { STR_NONE,
 
 /* global callbacks */
 static void
-_on_part_selected(void *data __UNUSED__,
+_on_part_selected(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info)
 {
+   Property_Data *pd = data;
    group_pd.part = event_info;
 
+   assert(pd != NULL);
    assert(group_pd.part != NULL);
 
    DBG("selected part \"%s\"", PART_ARGS);
    group_pd.program = NULL;
 
-   GENLIST_FILTER_APPLY(pd.genlist);
+   GENLIST_FILTER_APPLY(pd->genlist);
    property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PART_TITLE]);
    property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TITLE]);
 }
 
 static void
-_on_group_navigator_unselected(void *data __UNUSED__,
+_on_group_navigator_unselected(void *data,
                                Evas_Object *obj __UNUSED__,
                                void *event_info __UNUSED__)
 {
+   Property_Data *pd = data;
+
+   assert(pd != NULL);
+
    DBG("unselected_cb\n");
    group_pd.part = NULL;
    group_pd.program = NULL;
-   GENLIST_FILTER_APPLY(pd.genlist);
+   GENLIST_FILTER_APPLY(pd->genlist);
 }
 
 static void
@@ -165,34 +171,38 @@ _on_part_state_selected(void *data __UNUSED__,
 }
 
 static void
-_on_program_selected(void *data __UNUSED__,
+_on_program_selected(void *data,
                      Evas_Object *obj __UNUSED__,
                      void *event_info)
 {
+   Property_Data *pd = data;
    group_pd.program = event_info;
 
+   assert(pd != NULL);
    assert(group_pd.program != NULL);
 
    DBG("selected program \"%s\"", group_pd.program);
    group_pd.part = NULL;
 
-   GENLIST_FILTER_APPLY(pd.genlist);
+   GENLIST_FILTER_APPLY(pd->genlist);
 }
 
 static void
-_on_group_changed(void *data __UNUSED__,
+_on_group_changed(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info)
 {
+   Property_Data *pd = data;
    group_pd.group = event_info;
 
+   assert(pd != NULL);
    assert(group_pd.group != NULL);
 
    DBG("group changed to \"%s\"", group_pd.group->name);
    group_pd.part = group_pd.group->current_part;
 
    group_pd.program = group_pd.group->current_program;
-   GENLIST_FILTER_APPLY(pd.genlist);
+   GENLIST_FILTER_APPLY(pd->genlist);
    property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_GROUP_TITLE]);
    if (group_pd.part)
      {
@@ -2764,17 +2774,19 @@ _init_items()
 
 /* public */
 void
-property_group_init()
+property_group_init(Property_Data *pd)
 {
+   assert(pd != NULL);
+
    _init_items();
 
    /* register global callbacks */
-   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_CHANGED, _on_group_changed, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PART_SELECTED, _on_part_selected, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_NAVIGATOR_UNSELECTED, _on_group_navigator_unselected, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PART_STATE_SELECTED, _on_part_state_selected, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PROGRAM_SELECTED, _on_program_selected, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _on_editor_attribute_changed, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_CHANGED, _on_group_changed, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PART_SELECTED, _on_part_selected, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_NAVIGATOR_UNSELECTED, _on_group_navigator_unselected, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PART_STATE_SELECTED, _on_part_state_selected, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROGRAM_SELECTED, _on_program_selected, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _on_editor_attribute_changed, pd);
 }
 
 Eina_List *

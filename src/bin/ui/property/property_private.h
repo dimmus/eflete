@@ -20,6 +20,11 @@
 #ifndef PROPERTY_PRIVATE_H
 #define PROPERTY_PRIVATE_H
 
+#define PROPERTY_DATA "prop_data"
+#define PROPERTY_DATA_GET(OBJ) \
+   Property_Data *pd = evas_object_data_get(OBJ, PROPERTY_DATA); \
+   assert(pd != NULL);
+
 enum _Property_Control {
    PROPERTY_CONTROL_NONE,
 
@@ -51,8 +56,6 @@ typedef struct {
    /* Stores what item class to use with each pair of controls */
    Elm_Genlist_Item_Class *item_classes[PROPERTY_CONTROL_LAST][PROPERTY_CONTROL_LAST];
 } Property_Data;
-
-extern Property_Data pd;
 
 typedef void (* Property_Cb) (Property_Attribute *, Property_Action *);
 typedef Eina_Bool (* Property_Attribute_Filter_Cb) (Property_Attribute *);
@@ -218,7 +221,7 @@ struct _Property_Attribute {
 };
 
 void
-property_item_add(Property_Attribute *pa, Elm_Object_Item *parent);
+property_item_add(Evas_Object *property, Property_Attribute *pa, Elm_Object_Item *parent);
 
 void
 property_item_update_recursively(Property_Attribute *pa);
@@ -246,31 +249,31 @@ property_color_control_color_get(Evas_Object *control, int *r, int *g, int *b, i
 
 /* color class manager submodule */
 void
-property_color_class_manager_init();
+property_color_class_manager_init(void);
 
 Eina_List *
-property_color_class_manager_items_get();
+property_color_class_manager_items_get(void);
 
 /* image manager submodule */
 void
-property_image_manager_init();
+property_image_manager_init(void);
 
 Eina_List *
-property_image_manager_items_get();
+property_image_manager_items_get(void);
 
 /* dummy submodule. for implementation tests. will be deleted later */
 void
-property_dummy_init();
+property_dummy_init(void);
 
 Eina_List *
-property_dummy_items_get();
+property_dummy_items_get(void);
 
 /* property group */
 void
-property_group_init();
+property_group_init(Property_Data *pd);
 
 Eina_List *
-property_group_items_get();
+property_group_items_get(void);
 
 /* entry functions */
 /* we need additional processing before elm_entry_entry_set and after

@@ -21,15 +21,14 @@
 #include "property_private.h"
 #include "property_common.h"
 
-Property_Data pd;
-
 #define MODE_CB(NAME, MODE) \
 static void \
-NAME(void *data __UNUSED__, \
+NAME(void *data, \
      Evas_Object *obj __UNUSED__, \
      void *event_info __UNUSED__) \
 { \
-   property_mode_set(MODE); \
+   Property_Data *pd = data; \
+   property_mode_set(pd->genlist, MODE); \
 }
 
 MODE_CB(_none_mode, PROPERTY_MODE_NONE)
@@ -41,27 +40,28 @@ MODE_CB(_group_mode, PROPERTY_MODE_GROUP)
 MODE_CB(_demo_mode, PROPERTY_MODE_DEMO)
 
 static void
-_items_add(Eina_List **items, Elm_Object_Item *parent)
+_items_add(Evas_Object *property, Eina_List **items, Elm_Object_Item *parent)
 {
    Property_Attribute *pa;
 
    EINA_LIST_FREE(*items, pa)
-      property_item_add(pa, parent);
+      property_item_add(property, pa, parent);
 }
 
 void
-property_item_add(Property_Attribute *pa, Elm_Object_Item *parent)
+property_item_add(Evas_Object *property, Property_Attribute *pa, Elm_Object_Item *parent)
 {
+   PROPERTY_DATA_GET(property);
    Eina_List *subitems;
 
    assert(pa != NULL);
-   assert(pd.item_classes[pa->action1.control_type][pa->action2.control_type] != NULL);
+   assert(pd->item_classes[pa->action1.control_type][pa->action2.control_type] != NULL);
 
    /* item is already added */
    if (pa->glit) return;
 
-   pa->glit = elm_genlist_item_append(pd.genlist,
-                                      pd.item_classes[pa->action1.control_type][pa->action2.control_type],
+   pa->glit = elm_genlist_item_append(pd->genlist,
+                                      pd->item_classes[pa->action1.control_type][pa->action2.control_type],
                                       pa,
                                       parent,
                                       (pa->expandable) ? ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE,
@@ -75,7 +75,7 @@ property_item_add(Property_Attribute *pa, Elm_Object_Item *parent)
    else if ((!pa->expandable) && (pa->expand_cb != NULL))
      {
         subitems = pa->expand_cb(pa);
-        _items_add(&subitems, pa->glit);
+        _items_add(property, &subitems, pa->glit);
      }
 }
 
@@ -99,7 +99,7 @@ _contract_request_cb(void *data __UNUSED__,
 
 static void
 _expanded_cb(void *data __UNUSED__,
-             Evas_Object *o __UNUSED__,
+             Evas_Object *obj,
              void *event_info)
 {
    Elm_Object_Item *glit = event_info;
@@ -111,7 +111,7 @@ _expanded_cb(void *data __UNUSED__,
 
    pa->expanded = true;
    items = pa->expand_cb(pa);
-   _items_add(&items, pa->glit);
+   _items_add(obj, &items, pa->glit);
 }
 
 static void
@@ -144,13 +144,15 @@ _realized_cb(void *data __UNUSED__,
 }
 
 static void
-_unrealized_cb(void *data __UNUSED__,
+_unrealized_cb(void *data,
                Evas_Object *o __UNUSED__,
                void *event_info)
 {
+   Property_Data *pd = data;
    Elm_Object_Item *glit = event_info;
    Property_Attribute *pa = elm_object_item_data_get(glit);
 
+   assert(pd != NULL);
    assert(pa != NULL);
 
    pa->realized = false;
@@ -170,56 +172,63 @@ _unrealized_cb(void *data __UNUSED__,
         evas_object_del(pa->action2.control);
         pa->action2.control = NULL;
      }
-   elm_object_focus_set(pd.genlist, true);
+   elm_object_focus_set(pd->genlist, true);
 }
 
 Evas_Object *
 property_add(Evas_Object *parent)
 {
+   Property_Data *pd;
+
    assert(parent != NULL);
 
-   property_common_itc_init();
+   pd = mem_calloc(1, sizeof(Property_Data));
+
+   property_common_itc_init(pd);
    property_dummy_init();
    property_color_class_manager_init();
    property_image_manager_init();
-   property_group_init();
+   property_group_init(pd);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, _none_mode, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_IMAGE_EDITOR_TAB_CLICKED, _image_mode, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_EDITOR_TAB_CLICKED, _sound_mode, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_STYLE_EDITOR_TAB_CLICKED, _style_mode, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_COLOR_EDITOR_TAB_CLICKED, _color_class_mode, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_MODE_GROUP, _group_mode, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_MODE_DEMO, _demo_mode, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, _none_mode, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_IMAGE_EDITOR_TAB_CLICKED, _image_mode, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_EDITOR_TAB_CLICKED, _sound_mode, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_STYLE_EDITOR_TAB_CLICKED, _style_mode, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_COLOR_EDITOR_TAB_CLICKED, _color_class_mode, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_MODE_GROUP, _group_mode, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_MODE_DEMO, _demo_mode, pd);
 
-   pd.genlist = elm_genlist_add(parent);
-   elm_genlist_block_count_set(pd.genlist, 64);
-   elm_scroller_policy_set(pd.genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
-   elm_object_style_set(pd.genlist, "property");
+   pd->genlist = elm_genlist_add(parent);
+   elm_genlist_block_count_set(pd->genlist, 64);
+   elm_scroller_policy_set(pd->genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
+   elm_object_style_set(pd->genlist, "property");
 
-   evas_object_smart_callback_add(pd.genlist, "expand,request", _expand_request_cb, NULL);
-   evas_object_smart_callback_add(pd.genlist, "contract,request", _contract_request_cb, NULL);
-   evas_object_smart_callback_add(pd.genlist, "expanded", _expanded_cb, NULL);
-   evas_object_smart_callback_add(pd.genlist, "contracted", _contracted_cb, NULL);
-   evas_object_smart_callback_add(pd.genlist, "realized", _realized_cb, NULL);
-   evas_object_smart_callback_add(pd.genlist, "unrealized", _unrealized_cb, NULL);
+   evas_object_data_set(pd->genlist, PROPERTY_DATA, pd);
 
-   return pd.genlist;
+   evas_object_smart_callback_add(pd->genlist, "expand,request", _expand_request_cb, pd);
+   evas_object_smart_callback_add(pd->genlist, "contract,request", _contract_request_cb, pd);
+   evas_object_smart_callback_add(pd->genlist, "expanded", _expanded_cb, pd);
+   evas_object_smart_callback_add(pd->genlist, "contracted", _contracted_cb, pd);
+   evas_object_smart_callback_add(pd->genlist, "realized", _realized_cb, pd);
+   evas_object_smart_callback_add(pd->genlist, "unrealized", _unrealized_cb, pd);
+
+   return pd->genlist;
 }
 
 void
-property_mode_set(Property_Mode mode)
+property_mode_set(Evas_Object *property, Property_Mode mode)
 {
+   PROPERTY_DATA_GET(property);
    Eina_List *items = NULL;
 
-   assert (pd.genlist != NULL);
+   assert (pd->genlist != NULL);
 
-   if (mode == pd.mode) return;
+   if (mode == pd->mode) return;
 
-   pd.mode = mode;
+   pd->mode = mode;
    DBG("changing property mode to %d", mode);
 
-   elm_genlist_clear(pd.genlist);
+   elm_genlist_clear(pd->genlist);
    switch (mode)
      {
       case PROPERTY_MODE_NONE:
@@ -239,8 +248,8 @@ property_mode_set(Property_Mode mode)
          items = property_image_manager_items_get();
          break;
      }
-   _items_add(&items, NULL);
-   GENLIST_FILTER_APPLY(pd.genlist);
+   _items_add(property, &items, NULL);
+   GENLIST_FILTER_APPLY(pd->genlist);
 }
 
 void

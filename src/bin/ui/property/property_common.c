@@ -35,52 +35,55 @@ _on_spinner_mouse_wheel(void *data __UNUSED__,
 
 /****************** controls creation functions *******************************/
 static void
-_stop(Property_Attribute *pa, Property_Action *action)
+_stop(Property_Data *pd, Property_Attribute *pa, Property_Action *action)
 {
+   assert(pd != NULL);
    assert(pa != NULL);
    assert(action != NULL);
    assert((action == &pa->action1) || (action == &pa->action2));
 
-   if (pd.started_action)
+   if (pd->started_action)
      {
-        assert(pd.started_action == action);
-        assert(pd.started_pa == pa);
+        assert(pd->started_action == action);
+        assert(pd->started_pa == pa);
         if (action->stop_cb)
           {
              DBG("calling stop_cb of %s (%s)", pa->name, (action->name) ? action->name : "unnamed");
              action->stop_cb(pa, action);
           }
-        pd.started_pa = NULL;
-        pd.started_action = NULL;
+        pd->started_pa = NULL;
+        pd->started_action = NULL;
      }
 }
 
 static void
-_start(Property_Attribute *pa, Property_Action *action)
+_start(Property_Data *pd, Property_Attribute *pa, Property_Action *action)
 {
+   assert(pd != NULL);
    assert(pa != NULL);
    assert(action != NULL);
    assert((action == &pa->action1) || (action == &pa->action2));
 
-   if (pd.started_action)
-     _stop(pd.started_pa, pd.started_action);
+   if (pd->started_action)
+     _stop(pd, pd->started_pa, pd->started_action);
    if (action->start_cb)
      {
         DBG("calling start_cb of %s (%s)", pa->name, (action->name) ? action->name : "unnamed");
         action->start_cb(pa, action);
      }
-   pd.started_pa = pa;
-   pd.started_action = action;
+   pd->started_pa = pa;
+   pd->started_action = action;
 }
 
 static void
-_change(Property_Attribute *pa, Property_Action *action)
+_change(Property_Data *pd, Property_Attribute *pa, Property_Action *action)
 {
+   assert(pd != NULL);
    assert(pa != NULL);
    assert(action != NULL);
    assert((action == &pa->action1) || (action == &pa->action2));
-   assert(pd.started_action == action);
-   assert(pd.started_pa == pa);
+   assert(pd->started_action == action);
+   assert(pd->started_pa == pa);
 
    if (action->change_cb)
      {
@@ -94,6 +97,7 @@ _start_cb(void *data,
           Evas_Object *obj,
           void *event_info __UNUSED__)
 {
+   PROPERTY_DATA_GET(obj);
    Property_Attribute *pa = data;
 
    assert(pa != NULL);
@@ -106,9 +110,9 @@ _start_cb(void *data,
              /* disable wheel scrolling */
              elm_object_scroll_freeze_push(pa->action1.control);
              /* disable page-up/page-down scrolling */
-             elm_object_focus_set(pd.genlist, false);
+             elm_object_focus_set(pd->genlist, false);
           }
-        _start(pa, &pa->action1);
+        _start(pd, pa, &pa->action1);
      }
    else
      {
@@ -117,9 +121,9 @@ _start_cb(void *data,
         if (pa->action2.control_type == PROPERTY_CONTROL_SPINNER)
           {
              elm_object_scroll_freeze_push(pa->action2.control);
-             elm_object_focus_set(pd.genlist, false);
+             elm_object_focus_set(pd->genlist, false);
           }
-        _start(pa, &pa->action2);
+        _start(pd, pa, &pa->action2);
      }
 }
 
@@ -128,6 +132,7 @@ _stop_cb(void *data,
          Evas_Object *obj,
          void *event_info __UNUSED__)
 {
+   PROPERTY_DATA_GET(obj);
    Property_Attribute *pa = data;
 
    assert(pa != NULL);
@@ -136,7 +141,7 @@ _stop_cb(void *data,
         /* enable scrolling after finishing spinner drag */
         if (pa->action1.control_type == PROPERTY_CONTROL_SPINNER)
           elm_object_scroll_freeze_pop(pa->action1.control);
-        _stop(pa, &pa->action1);
+        _stop(pd, pa, &pa->action1);
      }
    else
      {
@@ -144,7 +149,7 @@ _stop_cb(void *data,
 
         if (pa->action2.control_type == PROPERTY_CONTROL_SPINNER)
           elm_object_scroll_freeze_pop(pa->action2.control);
-        _stop(pa, &pa->action2);
+        _stop(pd, pa, &pa->action2);
      }
 }
 
@@ -153,30 +158,31 @@ _start_change_stop_cb(void *data,
                       Evas_Object *obj,
                       void *event_info __UNUSED__)
 {
+   PROPERTY_DATA_GET(obj);
    Property_Attribute *pa = data;
 
    assert(pa != NULL);
    if (pa->action1.control == obj)
      {
-        if (pd.started_action)
-          _change(pa, &pa->action1);
+        if (pd->started_action)
+          _change(pd, pa, &pa->action1);
         else
           {
-             _start(pa, &pa->action1);
-             _change(pa, &pa->action1);
-             _stop(pa, &pa->action1);
+             _start(pd, pa, &pa->action1);
+             _change(pd, pa, &pa->action1);
+             _stop(pd, pa, &pa->action1);
           }
      }
    else
      {
         assert (pa->action2.control == obj);
-        if (pd.started_action)
-          _change(pa, &pa->action2);
+        if (pd->started_action)
+          _change(pd, pa, &pa->action2);
         else
           {
-             _start(pa, &pa->action2);
-             _change(pa, &pa->action2);
-             _stop(pa, &pa->action2);
+             _start(pd, pa, &pa->action2);
+             _change(pd, pa, &pa->action2);
+             _stop(pd, pa, &pa->action2);
           }
      }
 }
@@ -186,28 +192,29 @@ _start_change_cb(void *data,
                  Evas_Object *obj,
                  void *event_info __UNUSED__)
 {
+   PROPERTY_DATA_GET(obj);
    Property_Attribute *pa = data;
 
    assert(pa != NULL);
    if (pa->action1.control == obj)
      {
-        if (pd.started_action)
-          _change(pa, &pa->action1);
+        if (pd->started_action)
+          _change(pd, pa, &pa->action1);
         else
           {
-             _start(pa, &pa->action1);
-             _change(pa, &pa->action1);
+             _start(pd, pa, &pa->action1);
+             _change(pd, pa, &pa->action1);
           }
      }
    else
      {
         assert (pa->action2.control == obj);
-        if (pd.started_action)
-          _change(pa, &pa->action2);
+        if (pd->started_action)
+          _change(pd, pa, &pa->action2);
         else
           {
-             _start(pa, &pa->action2);
-             _change(pa, &pa->action2);
+             _start(pd, pa, &pa->action2);
+             _change(pd, pa, &pa->action2);
           }
      }
 }
@@ -290,6 +297,7 @@ _caption_content_get(void *data,
                      Evas_Object *obj,
                      const char *part)
 {
+   PROPERTY_DATA_GET(obj);
    Eina_Bool res;
    Evas_Object *content;
    Property_Attribute *pa = data;
@@ -304,6 +312,7 @@ _caption_content_get(void *data,
         res = elm_image_file_set(content, EFLETE_THEME, pa->icon_name);
         assert(res == true);
 
+        evas_object_data_set(content, PROPERTY_DATA, pd);
         return content;
      }
 
@@ -315,6 +324,7 @@ _1swallow_content_get(void *data,
                       Evas_Object *obj,
                       const char *part)
 {
+   PROPERTY_DATA_GET(obj);
    Eina_Bool res;
    Evas_Object *content;
    Property_Attribute *pa = data;
@@ -330,6 +340,7 @@ _1swallow_content_get(void *data,
         res = elm_image_file_set(content, EFLETE_THEME, pa->icon_name);
         assert(res == true);
 
+        evas_object_data_set(content, PROPERTY_DATA, pd);
         return content;
      }
    if ((pa->action1.control_type != PROPERTY_CONTROL_NONE) && (!strcmp(part, "swallow.action1")))
@@ -342,6 +353,7 @@ _1swallow_content_get(void *data,
              pa->action1.init_cb(pa, &pa->action1);
           }
 
+        evas_object_data_set(content, PROPERTY_DATA, pd);
         return content;
      }
 
@@ -353,6 +365,7 @@ _2swallow_content_get(void *data,
                       Evas_Object *obj,
                       const char *part)
 {
+   PROPERTY_DATA_GET(obj);
    Eina_Bool res;
    Evas_Object *content;
    Property_Attribute *pa = data;
@@ -369,6 +382,7 @@ _2swallow_content_get(void *data,
         res = elm_image_file_set(content, EFLETE_THEME, pa->icon_name);
         assert(res == true);
 
+        evas_object_data_set(content, PROPERTY_DATA, pd);
         return content;
      }
    if ((pa->action1.control_type != PROPERTY_CONTROL_NONE) && (!strcmp(part, "swallow.action1")))
@@ -381,6 +395,7 @@ _2swallow_content_get(void *data,
              pa->action1.init_cb(pa, &pa->action1);
           }
 
+        evas_object_data_set(content, PROPERTY_DATA, pd);
         return content;
      }
    if ((pa->action2.control_type != PROPERTY_CONTROL_NONE) && (!strcmp(part, "swallow.action2")))
@@ -393,6 +408,7 @@ _2swallow_content_get(void *data,
              pa->action2.init_cb(pa, &pa->action2);
           }
 
+        evas_object_data_set(content, PROPERTY_DATA, pd);
         return content;
      }
 
@@ -504,43 +520,45 @@ _filter(void *data,
 }
 
 void
-property_common_itc_init()
+property_common_itc_init(Property_Data *pd)
 {
+   assert(pd != NULL);
+
    /* init item classes */
-   pd.itc_caption = elm_genlist_item_class_new();
-   pd.itc_caption->item_style = "caption";
-   pd.itc_caption->func.text_get = _caption_text_get;
-   pd.itc_caption->func.content_get = _caption_content_get;
-   pd.itc_caption->func.del = _del;
-   pd.itc_caption->func.filter_get = _filter;
+   pd->itc_caption = elm_genlist_item_class_new();
+   pd->itc_caption->item_style = "caption";
+   pd->itc_caption->func.text_get = _caption_text_get;
+   pd->itc_caption->func.content_get = _caption_content_get;
+   pd->itc_caption->func.del = _del;
+   pd->itc_caption->func.filter_get = _filter;
 
-   pd.itc_1swallow = elm_genlist_item_class_new();
-   pd.itc_1swallow->item_style = "1swallow";
-   pd.itc_1swallow->func.text_get = _1swallow_text_get;
-   pd.itc_1swallow->func.content_get = _1swallow_content_get;
-   pd.itc_1swallow->func.del = _del;
-   pd.itc_1swallow->func.filter_get = _filter;
+   pd->itc_1swallow = elm_genlist_item_class_new();
+   pd->itc_1swallow->item_style = "1swallow";
+   pd->itc_1swallow->func.text_get = _1swallow_text_get;
+   pd->itc_1swallow->func.content_get = _1swallow_content_get;
+   pd->itc_1swallow->func.del = _del;
+   pd->itc_1swallow->func.filter_get = _filter;
 
-   pd.itc_2swallow = elm_genlist_item_class_new();
-   pd.itc_2swallow->item_style = "2swallow";
-   pd.itc_2swallow->func.text_get = _2swallow_text_get;
-   pd.itc_2swallow->func.content_get = _2swallow_content_get;
-   pd.itc_2swallow->func.del = _del;
-   pd.itc_2swallow->func.filter_get = _filter;
+   pd->itc_2swallow = elm_genlist_item_class_new();
+   pd->itc_2swallow->item_style = "2swallow";
+   pd->itc_2swallow->func.text_get = _2swallow_text_get;
+   pd->itc_2swallow->func.content_get = _2swallow_content_get;
+   pd->itc_2swallow->func.del = _del;
+   pd->itc_2swallow->func.filter_get = _filter;
 
    /* map control pairs to item classes */
-   pd.item_classes[PROPERTY_CONTROL_NONE]           [PROPERTY_CONTROL_NONE]     = pd.itc_caption;
+   pd->item_classes[PROPERTY_CONTROL_NONE]           [PROPERTY_CONTROL_NONE]     = pd->itc_caption;
 
-   pd.item_classes[PROPERTY_CONTROL_ENTRY]          [PROPERTY_CONTROL_NONE]     = pd.itc_1swallow;
-   pd.item_classes[PROPERTY_CONTROL_COMBOBOX]       [PROPERTY_CONTROL_NONE]     = pd.itc_1swallow;
-   pd.item_classes[PROPERTY_CONTROL_COLORSEL]       [PROPERTY_CONTROL_NONE]     = pd.itc_1swallow;
-   pd.item_classes[PROPERTY_CONTROL_LABEL]          [PROPERTY_CONTROL_NONE]     = pd.itc_1swallow;
-   pd.item_classes[PROPERTY_CONTROL_IMAGE_PREVIEW]  [PROPERTY_CONTROL_NONE]     = pd.itc_1swallow;
+   pd->item_classes[PROPERTY_CONTROL_ENTRY]          [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
+   pd->item_classes[PROPERTY_CONTROL_COMBOBOX]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
+   pd->item_classes[PROPERTY_CONTROL_COLORSEL]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
+   pd->item_classes[PROPERTY_CONTROL_LABEL]          [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
+   pd->item_classes[PROPERTY_CONTROL_IMAGE_PREVIEW]  [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
 
-   pd.item_classes[PROPERTY_CONTROL_CHECK]          [PROPERTY_CONTROL_NONE]     = pd.itc_2swallow;
-   pd.item_classes[PROPERTY_CONTROL_CHECK]          [PROPERTY_CONTROL_CHECK]    = pd.itc_2swallow;
-   pd.item_classes[PROPERTY_CONTROL_CHECK]          [PROPERTY_CONTROL_SPINNER]  = pd.itc_2swallow;
-   pd.item_classes[PROPERTY_CONTROL_SPINNER]        [PROPERTY_CONTROL_NONE]     = pd.itc_2swallow;
-   pd.item_classes[PROPERTY_CONTROL_SPINNER]        [PROPERTY_CONTROL_SPINNER]  = pd.itc_2swallow;
-   pd.item_classes[PROPERTY_CONTROL_COLOR]          [PROPERTY_CONTROL_NONE]     = pd.itc_2swallow;
+   pd->item_classes[PROPERTY_CONTROL_CHECK]          [PROPERTY_CONTROL_NONE]     = pd->itc_2swallow;
+   pd->item_classes[PROPERTY_CONTROL_CHECK]          [PROPERTY_CONTROL_CHECK]    = pd->itc_2swallow;
+   pd->item_classes[PROPERTY_CONTROL_CHECK]          [PROPERTY_CONTROL_SPINNER]  = pd->itc_2swallow;
+   pd->item_classes[PROPERTY_CONTROL_SPINNER]        [PROPERTY_CONTROL_NONE]     = pd->itc_2swallow;
+   pd->item_classes[PROPERTY_CONTROL_SPINNER]        [PROPERTY_CONTROL_SPINNER]  = pd->itc_2swallow;
+   pd->item_classes[PROPERTY_CONTROL_COLOR]          [PROPERTY_CONTROL_NONE]     = pd->itc_2swallow;
 }
