@@ -83,20 +83,6 @@ mw_title_set(Evas_Object *object, const char *title);
 Eina_Bool
 mw_icon_set(Evas_Object *object, Evas_Object *icon);
 
-/**
- * Set the info text to a modal window.
- *
- * This set an info text tobe used as the help info for the given window.
- *
- * @param object The modal window object to set an info.
- * @param text The text to use for an info.
- * @return EINA_FALSE on error, EINA_TRUE otherwise
- *
- * @ingroup ModalWindow
- */
-Eina_Bool
-mw_info_text_set(Evas_Object *object, const char *text);
-
 void
 mw_del(Evas_Object *mw);
 
