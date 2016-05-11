@@ -437,10 +437,10 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SOURCE);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_MIN);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_MAX);
-/*       APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PREFER);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PREFER);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ALIGN);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_WEIGHT);
-         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE);
+/*       APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SPREAD);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SPAN_COL);
@@ -559,6 +559,8 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_SOURCE:
       case ATTRIBUTE_PART_ITEM_MIN_W:
       case ATTRIBUTE_PART_ITEM_MIN_H:
+      case ATTRIBUTE_PART_ITEM_PREFER_W:
+      case ATTRIBUTE_PART_ITEM_PREFER_H:
       case ATTRIBUTE_STATE_PROXY_SOURCE:
       case ATTRIBUTE_STATE_VISIBLE:
       case ATTRIBUTE_STATE_FILL_SMOOTH:
@@ -601,6 +603,13 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_DRAG_Y:
          elm_spinner_min_max_set(action->control, -1, 1);
          break;
+      case ATTRIBUTE_PART_ITEM_WEIGHT_X:
+      case ATTRIBUTE_PART_ITEM_WEIGHT_Y:
+         elm_spinner_min_max_set(action->control, -1, 1);
+         elm_spinner_step_set(action->control, 0.1);
+         elm_spinner_label_format_set(action->control, "%.2f");
+         break;
+         break;
       case ATTRIBUTE_STATE_ASPECT_MIN:
       case ATTRIBUTE_STATE_ASPECT_MAX:
       case ATTRIBUTE_PROGRAM_IN_FROM:
@@ -617,6 +626,8 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_ALIGN_Y:
       case ATTRIBUTE_STATE_TEXT_ALIGN_X:
       case ATTRIBUTE_STATE_TEXT_ALIGN_Y:
+      case ATTRIBUTE_PART_ITEM_ALIGN_X:
+      case ATTRIBUTE_PART_ITEM_ALIGN_Y:
          elm_spinner_min_max_set(action->control, 0, 1);
          elm_spinner_step_set(action->control, 0.1);
          elm_spinner_label_format_set(action->control, "%.2f");
@@ -1054,6 +1065,30 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_MAX_H:
          int_val1 = edje_edit_part_item_max_h_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_PREFER_W:
+         int_val1 = edje_edit_part_item_prefer_w_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_PREFER_H:
+         int_val1 = edje_edit_part_item_prefer_h_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_WEIGHT_X:
+         double_val1 = edje_edit_part_item_weight_x_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_WEIGHT_Y:
+         double_val1 = edje_edit_part_item_weight_y_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_ALIGN_X:
+         double_val1 = edje_edit_part_item_align_x_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_ALIGN_Y:
+         double_val1 = edje_edit_part_item_align_y_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
          break;
       case ATTRIBUTE_STATE_TEXT_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
@@ -1768,6 +1803,30 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("part item's max_h changed from %d to %d");
          VAL(int_val1) = edje_edit_part_item_max_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
+      case ATTRIBUTE_PART_ITEM_PREFER_W:
+         group_pd.history.format = _("part item's prefer_w changed from %d to %d");
+         VAL(int_val1) = edje_edit_part_item_prefer_w_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_PREFER_H:
+         group_pd.history.format = _("part item's prefer_h changed from %d to %d");
+         VAL(int_val1) = edje_edit_part_item_prefer_h_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_WEIGHT_X:
+         group_pd.history.format = _("part item's weight_x changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_part_item_weight_x_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_WEIGHT_Y:
+         group_pd.history.format = _("part item's weight_y changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_part_item_weight_y_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_ALIGN_X:
+         group_pd.history.format = _("part item's align_x changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_part_item_align_x_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_ALIGN_Y:
+         group_pd.history.format = _("part item's align_y changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_part_item_align_y_get(EDIT_OBJ, ITEM_ARGS);
+         break;
 
       default:
          TODO("remove default case after all attributes will be added");
@@ -2310,6 +2369,30 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_part_item_max_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_part_item_max_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
+      case ATTRIBUTE_PART_ITEM_PREFER_W:
+         CRIT_ON_FAIL(editor_part_item_prefer_w_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_prefer_w_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_PREFER_H:
+         CRIT_ON_FAIL(editor_part_item_prefer_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_prefer_h_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_WEIGHT_X:
+         CRIT_ON_FAIL(editor_part_item_weight_x_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_part_item_weight_x_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_WEIGHT_Y:
+         CRIT_ON_FAIL(editor_part_item_weight_y_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_part_item_weight_y_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_ALIGN_X:
+         CRIT_ON_FAIL(editor_part_item_align_x_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_part_item_align_x_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_ALIGN_Y:
+         CRIT_ON_FAIL(editor_part_item_align_y_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_part_item_align_y_get(EDIT_OBJ, ITEM_ARGS);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -2415,6 +2498,8 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_MIN_H:
       case ATTRIBUTE_PART_ITEM_MAX_W:
       case ATTRIBUTE_PART_ITEM_MAX_H:
+      case ATTRIBUTE_PART_ITEM_PREFER_W:
+      case ATTRIBUTE_PART_ITEM_PREFER_H:
          CHECK_VAL(int_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.int_val1,
@@ -2437,6 +2522,10 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_ELIPSIS:
       case ATTRIBUTE_PROGRAM_IN_FROM:
       case ATTRIBUTE_PROGRAM_IN_RANGE:
+      case ATTRIBUTE_PART_ITEM_ALIGN_X:
+      case ATTRIBUTE_PART_ITEM_ALIGN_Y:
+      case ATTRIBUTE_PART_ITEM_WEIGHT_X:
+      case ATTRIBUTE_PART_ITEM_WEIGHT_Y:
          if (fabs(group_pd.history.new.double_val1 - group_pd.history.old.double_val1) < DBL_EPSILON)
            {
               change_free(group_pd.history.change);
@@ -3031,10 +3120,19 @@ _init_items()
               _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MAX_H);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_PREFER:
+              IT.name = "prefer";
+              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PREFER_W);
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PREFER_H);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_ALIGN:
+              IT.name = "align";
+              _action1(&IT, "x", "%", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ALIGN_X);
+              _action2(&IT, "y", "%", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ALIGN_Y);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_WEIGHT:
+              IT.name = "weight";
+              _action1(&IT, "x", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_WEIGHT_X);
+              _action2(&IT, "y", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_WEIGHT_Y);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE:
               break;
