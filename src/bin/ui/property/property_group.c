@@ -164,6 +164,7 @@ static const char *action_type[] = {"NONE",
 /* defines for args */
 #define EDIT_OBJ group_pd.group->edit_object
 #define PART_ARGS group_pd.part->name
+#define ITEM_ARGS group_pd.part->name, group_pd.part->current_item_name
 #define STATE_ARGS PART_ARGS, group_pd.part->current_state->parsed_name, group_pd.part->current_state->parsed_val
 #define PROGRAM_ARGS group_pd.program
 #define CHANGE_MERGE group_pd.history.change, true
@@ -433,8 +434,8 @@ _subitems_get(Property_Attribute *pa)
          break;
       case PROPERTY_GROUP_ITEM_PART_ITEM_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_NAME);
-/*       APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SOURCE);
-         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_MIN);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SOURCE);
+ /*      APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_MIN);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_MAX);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PREFER);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ALIGN);
@@ -555,6 +556,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
       case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
       case ATTRIBUTE_PART_MULTILINE:
+      case ATTRIBUTE_PART_ITEM_SOURCE:
       case ATTRIBUTE_STATE_PROXY_SOURCE:
       case ATTRIBUTE_STATE_VISIBLE:
       case ATTRIBUTE_STATE_FILL_SMOOTH:
@@ -1023,6 +1025,12 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_MULTILINE:
          bool_val1 = edje_edit_part_multiline_get(EDIT_OBJ, PART_ARGS);
          elm_check_state_set(action->control, bool_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_SOURCE:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_part_item_source_get(EDIT_OBJ, ITEM_ARGS);
+         _groups_combobox_fill(action->control, str_val1);
+         edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_STATE_TEXT_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
@@ -1717,6 +1725,10 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          VAL(double_val1) = edje_edit_program_in_range_get(EDIT_OBJ, PROGRAM_ARGS);
          break;
 
+      case ATTRIBUTE_PART_ITEM_SOURCE:
+         group_pd.history.format = _("item's source changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_part_item_source_get(EDIT_OBJ, ITEM_ARGS));
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("start callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -2236,6 +2248,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.double_val1 = edje_edit_program_in_range_get(EDIT_OBJ, PROGRAM_ARGS);
          break;
 
+      case ATTRIBUTE_PART_ITEM_SOURCE:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         CRIT_ON_FAIL(editor_part_item_source_set(EDIT_OBJ, CHANGE_NO_MERGE, ITEM_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -2293,6 +2311,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER:
       case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
       case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
+      case ATTRIBUTE_PART_ITEM_SOURCE:
       case ATTRIBUTE_STATE_TEXT_SOURCE:
       case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
       case ATTRIBUTE_STATE_TEXT_STYLE:
@@ -2938,6 +2957,8 @@ _init_items()
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PART_ITEM_NAME);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_SOURCE:
+              IT.name = "item source";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ITEM_SOURCE);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_MIN:
               break;
