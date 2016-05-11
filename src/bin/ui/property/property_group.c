@@ -431,6 +431,20 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_SOURCE);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_IN);
          break;
+      case PROPERTY_GROUP_ITEM_PART_ITEM_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_NAME);
+/*       APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SOURCE);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_MIN);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_MAX);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PREFER);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ALIGN);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_WEIGHT);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SPREAD);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SPAN_COL);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PADDING); */
+         break;
       default:
          CRIT("items callback not found for %s", pa->name);
          abort();
@@ -512,6 +526,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_GROUP_NAME:
       case ATTRIBUTE_STATE_NAME:
       case ATTRIBUTE_PROGRAM_NAME:
+      case ATTRIBUTE_PART_ITEM_NAME:
          elm_object_disabled_set(action->control, true);
          break;
       case ATTRIBUTE_GROUP_MIN_W:
@@ -835,6 +850,9 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PROGRAM_NAME:
          property_entry_set(action->control, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_NAME:
+         property_entry_set(action->control, group_pd.part->current_item_name);
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          int_val1 = edje_edit_group_min_w_get(EDIT_OBJ);
@@ -1304,6 +1322,11 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("program name changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, eina_stringshare_add(PROGRAM_ARGS));
          break;
+      case ATTRIBUTE_PART_ITEM_NAME:
+         group_pd.history.format = _("part item's name changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(PROGRAM_ARGS));
+         break;
+
       case ATTRIBUTE_GROUP_MIN_W:
          group_pd.history.format = _("group.min_w changed from %d to %d");
          VAL(int_val1) = edje_edit_group_min_w_get(EDIT_OBJ);
@@ -1749,6 +1772,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PROGRAM_NAME:
          TODO("implement program rename");
+         break;
+      case ATTRIBUTE_PART_ITEM_NAME:
+         TODO("implement part's item rename");
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          CRIT_ON_FAIL(editor_group_min_w_set(EDIT_OBJ, CHANGE_MERGE, double_val1));
@@ -2241,6 +2267,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_NAME:
       case ATTRIBUTE_STATE_NAME:
       case ATTRIBUTE_PROGRAM_NAME:
+      case ATTRIBUTE_PART_ITEM_NAME:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.str_val1,
@@ -2386,7 +2413,6 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
                                        (group_pd.history.new.bool_val1) ?
                                        _("turned on") : _("turned off"));
          break;
-
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("stop callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -2904,6 +2930,34 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_ITEM_TITLE:
               IT.name = "item";
               IT.expandable = true;
+              IT.expand_cb = _subitems_get;
+              IT.filter_data.part_types = PART_BOX | PART_TABLE;
+              break;
+           case PROPERTY_GROUP_ITEM_PART_ITEM_NAME:
+              IT.name = "name";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PART_ITEM_NAME);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_ITEM_SOURCE:
+              break;
+           case PROPERTY_GROUP_ITEM_PART_ITEM_MIN:
+              break;
+           case PROPERTY_GROUP_ITEM_PART_ITEM_MAX:
+              break;
+           case PROPERTY_GROUP_ITEM_PART_ITEM_PREFER:
+              break;
+           case PROPERTY_GROUP_ITEM_PART_ITEM_ALIGN:
+              break;
+           case PROPERTY_GROUP_ITEM_PART_ITEM_WEIGHT:
+              break;
+           case PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE:
+              break;
+           case PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT:
+              break;
+           case PROPERTY_GROUP_ITEM_PART_ITEM_SPREAD:
+              break;
+           case PROPERTY_GROUP_ITEM_PART_ITEM_SPAN_COL:
+              break;
+           case PROPERTY_GROUP_ITEM_PART_ITEM_PADDING:
               break;
 
               /* program block */
