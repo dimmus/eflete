@@ -116,9 +116,13 @@ _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
      {
         description = edje_edit_color_class_description_get(ap.project->global_object,
                                                             color_data.selected->current_ccl->name);
-        property_entry_set(action->control, description);
+        TODO("recheck this case");
+        if (action->control)
+          {
+             property_entry_set(action->control, description);
+             elm_object_disabled_set(action->control, false);
+          }
         edje_edit_string_free(description);
-        elm_object_disabled_set(action->control, false);
      }
 }
 
@@ -143,8 +147,12 @@ _color_class_selected(void *data __UNUSED__,
         elm_object_item_disabled_set(color_data.item_outline_color.glit, true);
         elm_object_item_disabled_set(color_data.item_shadow_color.glit, true);
 
-        property_entry_set(color_data.item_description.action1.control, "");
-        elm_object_disabled_set(color_data.item_description.action1.control, true);
+        TODO("recheck this case");
+        if (color_data.item_description.action1.control)
+          {
+             property_entry_set(color_data.item_description.action1.control, "");
+             elm_object_disabled_set(color_data.item_description.action1.control, true);
+          }
      }
    else
      {
