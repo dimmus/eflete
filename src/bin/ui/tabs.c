@@ -125,6 +125,10 @@ _content_set(void *data,
      {
         tabs.current_workspace = NULL;
         tabs.current_group = NULL;
+
+        /* notify that group is changed */
+        evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_CHANGED, NULL);
+
         if (ap.project)
           ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 

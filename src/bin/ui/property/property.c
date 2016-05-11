@@ -21,24 +21,6 @@
 #include "property_private.h"
 #include "property_common.h"
 
-#define MODE_CB(NAME, MODE) \
-static void \
-NAME(void *data, \
-     Evas_Object *obj __UNUSED__, \
-     void *event_info __UNUSED__) \
-{ \
-   Property_Data *pd = data; \
-   property_mode_set(pd->genlist, MODE); \
-}
-
-MODE_CB(_none_mode, PROPERTY_MODE_NONE)
-MODE_CB(_image_mode, PROPERTY_MODE_IMAGE)
-MODE_CB(_sound_mode, PROPERTY_MODE_SOUND)
-MODE_CB(_style_mode, PROPERTY_MODE_STYLE)
-MODE_CB(_color_class_mode, PROPERTY_MODE_COLOR_CLASS)
-MODE_CB(_group_mode, PROPERTY_MODE_GROUP)
-MODE_CB(_demo_mode, PROPERTY_MODE_DEMO)
-
 static void
 _items_add(Evas_Object *property, Eina_List **items, Elm_Object_Item *parent)
 {
@@ -176,27 +158,15 @@ _unrealized_cb(void *data,
 }
 
 Evas_Object *
-property_add(Evas_Object *parent)
+property_add(Evas_Object *parent, Property_Mode mode)
 {
    Property_Data *pd;
+   Eina_List *items;
 
    assert(parent != NULL);
 
    pd = mem_calloc(1, sizeof(Property_Data));
-
    property_common_itc_init(pd);
-   property_dummy_init();
-   property_color_class_manager_init();
-   property_image_manager_init();
-   property_group_init(pd);
-
-   evas_object_smart_callback_add(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, _none_mode, pd);
-   evas_object_smart_callback_add(ap.win, SIGNAL_IMAGE_EDITOR_TAB_CLICKED, _image_mode, pd);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_EDITOR_TAB_CLICKED, _sound_mode, pd);
-   evas_object_smart_callback_add(ap.win, SIGNAL_STYLE_EDITOR_TAB_CLICKED, _style_mode, pd);
-   evas_object_smart_callback_add(ap.win, SIGNAL_COLOR_EDITOR_TAB_CLICKED, _color_class_mode, pd);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_MODE_GROUP, _group_mode, pd);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_MODE_DEMO, _demo_mode, pd);
 
    pd->genlist = elm_genlist_add(parent);
    elm_genlist_block_count_set(pd->genlist, 64);
@@ -212,29 +182,15 @@ property_add(Evas_Object *parent)
    evas_object_smart_callback_add(pd->genlist, "realized", _realized_cb, pd);
    evas_object_smart_callback_add(pd->genlist, "unrealized", _unrealized_cb, pd);
 
-   return pd->genlist;
-}
-
-void
-property_mode_set(Evas_Object *property, Property_Mode mode)
-{
-   PROPERTY_DATA_GET(property);
-   Eina_List *items = NULL;
-
-   assert (pd->genlist != NULL);
-
-   if (mode == pd->mode) return;
-
    pd->mode = mode;
-   DBG("changing property mode to %d", mode);
-
-   elm_genlist_clear(pd->genlist);
    switch (mode)
      {
       case PROPERTY_MODE_NONE:
+         property_dummy_init();
          items = property_dummy_items_get();
          break;
       case PROPERTY_MODE_GROUP:
+         property_group_init(pd);
          items = property_group_items_get();
          break;
       case PROPERTY_MODE_STYLE:
@@ -242,14 +198,17 @@ property_mode_set(Evas_Object *property, Property_Mode mode)
       case PROPERTY_MODE_DEMO:
          break;
       case PROPERTY_MODE_COLOR_CLASS:
+         property_color_class_manager_init();
          items = property_color_class_manager_items_get();
          break;
       case PROPERTY_MODE_IMAGE:
          items = property_image_manager_items_get();
          break;
      }
-   _items_add(property, &items, NULL);
+   _items_add(pd->genlist, &items, NULL);
    GENLIST_FILTER_APPLY(pd->genlist);
+
+   return pd->genlist;
 }
 
 void

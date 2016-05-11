@@ -196,14 +196,16 @@ _on_group_changed(void *data,
    group_pd.group = event_info;
 
    assert(pd != NULL);
-   assert(group_pd.group != NULL);
 
-   DBG("group changed to \"%s\"", group_pd.group->name);
-   group_pd.part = group_pd.group->current_part;
+   DBG("group changed to \"%s\"", group_pd.group ? group_pd.group->name : NULL);
+   group_pd.part = group_pd.group ? group_pd.group->current_part : NULL;
+   group_pd.program = group_pd.group ? group_pd.group->current_program : NULL;
 
-   group_pd.program = group_pd.group->current_program;
    GENLIST_FILTER_APPLY(pd->genlist);
-   property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_GROUP_TITLE]);
+
+   if (group_pd.group)
+     property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_GROUP_TITLE]);
+
    if (group_pd.part)
      {
         property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PART_TITLE]);
@@ -235,6 +237,8 @@ _filter_cb(Property_Attribute *pa)
 
    switch (pa->type.group_item)
      {
+      case PROPERTY_GROUP_ITEM_GROUP_TITLE:
+         return group_pd.group != NULL;
       case PROPERTY_GROUP_ITEM_PART_TITLE:
       case PROPERTY_GROUP_ITEM_STATE_TITLE:
          return group_pd.part != NULL;
@@ -2793,8 +2797,6 @@ Eina_List *
 property_group_items_get()
 {
    Eina_List *items = NULL;
-
-   assert(group_pd.group != NULL);
 
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_GROUP_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_PART_TITLE]);

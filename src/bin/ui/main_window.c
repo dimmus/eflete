@@ -190,7 +190,7 @@ ui_main_window_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_CHANGED, _show_history, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_QUIT, _on_done, NULL);
 
-   ap.block.property = property_add(ap.win);
+   ap.block.property = property_add(ap.win, PROPERTY_MODE_GROUP);
    elm_layout_content_set(ap.block.right_top, "elm.swallow.property", ap.block.property);
    ap.block.history = history_ui_add();
    elm_layout_content_set(ap.block.right_top, "elm.swallow.history", ap.block.history);

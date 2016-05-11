@@ -33,9 +33,6 @@ typedef enum {
 } Property_Mode;
 
 Evas_Object *
-property_add(Evas_Object *parent);
-
-void
-property_mode_set(Evas_Object *property, Property_Mode mode);
+property_add(Evas_Object *parent, Property_Mode mode);
 
 #endif /* PROPERTY_H */
