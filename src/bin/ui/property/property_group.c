@@ -714,18 +714,21 @@ _styles_combobox_fill(Evas_Object *combo, const char *selected)
 }
 
 static void
-_groups_combobox_fill(Evas_Object *combo, const char *selected)
+_groups_combobox_fill(Evas_Object *combo, const char *selected, Eina_Bool with_none)
 {
    Eina_List *l;
    Group *group;
 
-   assert(combo != NULL);
+   assert(with_none || selected != NULL);
 
    if (selected)
      ewe_combobox_text_set(combo, selected);
    else
      ewe_combobox_text_set(combo, STR_NONE);
-   ewe_combobox_item_add(combo, STR_NONE);
+
+   if (with_none)
+     ewe_combobox_item_add(combo, STR_NONE);
+
    EINA_LIST_FOREACH(ap.project->groups, l, group)
      {
         if (group != group_pd.group)
@@ -983,43 +986,43 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_GROUP_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_source_get(EDIT_OBJ, PART_ARGS);
-         _groups_combobox_fill(action->control, str_val1);
+         _groups_combobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_textblock_selection_under_get(EDIT_OBJ, PART_ARGS);
-         _groups_combobox_fill(action->control, str_val1);
+         _groups_combobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_textblock_cursor_under_get(EDIT_OBJ, PART_ARGS);
-         _groups_combobox_fill(action->control, str_val1);
+         _groups_combobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_textblock_anchors_under_get(EDIT_OBJ, PART_ARGS);
-         _groups_combobox_fill(action->control, str_val1);
+         _groups_combobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_textblock_selection_over_get(EDIT_OBJ, PART_ARGS);
-         _groups_combobox_fill(action->control, str_val1);
+         _groups_combobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_textblock_cursor_over_get(EDIT_OBJ, PART_ARGS);
-         _groups_combobox_fill(action->control, str_val1);
+         _groups_combobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_textblock_anchors_over_get(EDIT_OBJ, PART_ARGS);
-         _groups_combobox_fill(action->control, str_val1);
+         _groups_combobox_fill(action->control, str_val1, true);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_MULTILINE:
@@ -1029,7 +1032,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_item_source_get(EDIT_OBJ, ITEM_ARGS);
-         _groups_combobox_fill(action->control, str_val1);
+         _groups_combobox_fill(action->control, str_val1, false);
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_STATE_TEXT_SOURCE:
