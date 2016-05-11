@@ -446,9 +446,8 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_WEIGHT);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT);
- /*      APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SPREAD);
-         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SPAN_COL);
-         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PADDING); */
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SPREAD);
+   /*      APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PADDING); */
          break;
       default:
          CRIT("items callback not found for %s", pa->name);
@@ -604,6 +603,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_MAX_W:
       case ATTRIBUTE_PART_ITEM_MAX_H:
          elm_spinner_min_max_set(action->control, -1, 9999);
+         break;
+      case ATTRIBUTE_PART_ITEM_SPREAD_W:
+      case ATTRIBUTE_PART_ITEM_SPREAD_H:
+         elm_spinner_min_max_set(action->control, 1, 100);
          break;
       case ATTRIBUTE_PART_DRAG_X:
       case ATTRIBUTE_PART_DRAG_Y:
@@ -1109,6 +1112,14 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_ITEM_ASPECT_H:
          int_val1 = edje_edit_part_item_aspect_h_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_SPREAD_W:
+         int_val1 = edje_edit_part_item_spread_w_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_SPREAD_H:
+         int_val1 = edje_edit_part_item_spread_h_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
          break;
       case ATTRIBUTE_STATE_TEXT_SOURCE:
@@ -1861,6 +1872,14 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("part item's aspect_h changed from %d to %d");
          VAL(int_val1) = edje_edit_part_item_aspect_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
+      case ATTRIBUTE_PART_ITEM_SPREAD_W:
+         group_pd.history.format = _("part item's spread by rows changed from %d to %d");
+         VAL(int_val1) = edje_edit_part_item_spread_w_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_SPREAD_H:
+         group_pd.history.format = _("part item's spread by columns changed from %d to %d");
+         VAL(int_val1) = edje_edit_part_item_spread_h_get(EDIT_OBJ, ITEM_ARGS);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("start callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -2440,6 +2459,14 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_part_item_aspect_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_part_item_aspect_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
+      case ATTRIBUTE_PART_ITEM_SPREAD_W:
+         CRIT_ON_FAIL(editor_part_item_spread_w_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_spread_w_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_SPREAD_H:
+         CRIT_ON_FAIL(editor_part_item_spread_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_spread_h_get(EDIT_OBJ, ITEM_ARGS);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -2550,6 +2577,8 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_PREFER_H:
       case ATTRIBUTE_PART_ITEM_ASPECT_W:
       case ATTRIBUTE_PART_ITEM_ASPECT_H:
+      case ATTRIBUTE_PART_ITEM_SPREAD_W:
+      case ATTRIBUTE_PART_ITEM_SPREAD_H:
          CHECK_VAL(int_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.int_val1,
@@ -3194,10 +3223,14 @@ _init_items()
               _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ASPECT_H);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_SPREAD:
-              break;
-           case PROPERTY_GROUP_ITEM_PART_ITEM_SPAN_COL:
+              IT.name = "spread";
+              _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPREAD_W);
+              _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPREAD_H);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_PADDING:
+              break;
+
+           case PROPERTY_GROUP_ITEM_PART_ITEM_SPAN_COL:
               break;
 
               /* program block */
