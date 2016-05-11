@@ -12,7 +12,6 @@ diff_test \
 change_test \
 history_test \
 logger_test \
-modal_window_test \
 project_manager_test \
 config_test \
 cursor_test
@@ -35,7 +34,6 @@ FLAGS = \
 -I${top_srcdir}/src/bin/ui/blocks \
 -I${top_srcdir}/src/bin/ui/dialogs \
 -I${top_srcdir}/src/bin/ui/editors \
--I${top_srcdir}/src/bin/ui/modal_window \
 -I${top_srcdir}/src/bin/ui/notification \
 -I${top_srcdir}/src/bin/ui/preference \
 -I${top_srcdir}/src/bin/ui/live_view \
@@ -66,7 +64,6 @@ include_HEADERS = \
 	../tests/test_change/test_change.h \
 	../tests/test_history/test_history.h \
 	../tests/test_logger/test_logger.h \
-	../tests/test_modal_window/test_modal_window.h \
 	../tests/test_project_manager/test_project_manager.h \
 	../tests/test_config/test_config.h \
 	../tests/test_cursor/test_cursor.h \
@@ -172,15 +169,6 @@ logger_test_SOURCES = \
 ../tests/test_logger/logger_shutdown.c
 logger_test_CFLAGS = ${FLAGS}
 logger_test_LDADD = ${LD}
-
-modal_window_test_SOURCES =  \
-../tests/test_modal_window/test_modal_window.c \
-../tests/test_modal_window/mw_add.c \
-../tests/test_modal_window/mw_title_set.c \
-../tests/test_modal_window/mw_info_text_set.c \
-../tests/test_modal_window/mw_icon_set.c
-modal_window_test_CFLAGS = ${FLAGS}
-modal_window_test_LDADD = ${LD}
 
 project_manager_test_SOURCES = \
 ../tests/test_project_manager/test_project_manager.c \
