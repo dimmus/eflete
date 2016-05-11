@@ -52,6 +52,7 @@ src/bin/ui/live_view/elementary/live_widget_common.c
 src/bin/ui/live_view/live_widget.c
 src/bin/ui/main_window.c
 src/bin/ui/menu.c
+src/bin/ui/modal_window/modal_window.c
 src/bin/ui/project_navigator.c
 src/bin/ui/preference/preference.c
 src/bin/ui/project_close.c

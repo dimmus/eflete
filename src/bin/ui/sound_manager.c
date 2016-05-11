@@ -22,6 +22,7 @@
 
 #include "main_window.h"
 #include "project_manager.h"
+#include "modal_window.h"
 #include "config.h"
 
 #define ITEM_WIDTH 100
