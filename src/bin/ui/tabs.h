@@ -96,6 +96,14 @@ void
 tabs_tab_add(Group *group);
 
 /**
+ * Add home tab.
+ *
+ * @ingroup Tabs
+ */
+void
+tabs_home_tab_add(Tabs_Menu view);
+
+/**
  * Close all tabs
  *
  * @ingroup Tabs
