@@ -180,7 +180,7 @@ mw_add(Evas_Smart_Cb func, void *data)
    mw = elm_win_inwin_add(ap.win);
    elm_object_style_set(mw, "modal_window");
 
-   evas_object_focus_set(mw, EINA_TRUE);
+   evas_object_focus_set(mw, true);
 
    BUTTON_ADD(mw, bt_close, NULL);
    TODO("uncomment it when focus will be adequate"
