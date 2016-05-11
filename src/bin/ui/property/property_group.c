@@ -435,9 +435,9 @@ _subitems_get(Property_Attribute *pa)
       case PROPERTY_GROUP_ITEM_PART_ITEM_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_NAME);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SOURCE);
- /*      APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_MIN);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_MIN);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_MAX);
-         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PREFER);
+/*       APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PREFER);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ALIGN);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_WEIGHT);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE);
@@ -557,6 +557,8 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
       case ATTRIBUTE_PART_MULTILINE:
       case ATTRIBUTE_PART_ITEM_SOURCE:
+      case ATTRIBUTE_PART_ITEM_MIN_W:
+      case ATTRIBUTE_PART_ITEM_MIN_H:
       case ATTRIBUTE_STATE_PROXY_SOURCE:
       case ATTRIBUTE_STATE_VISIBLE:
       case ATTRIBUTE_STATE_FILL_SMOOTH:
@@ -591,6 +593,8 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_MAX_W:
       case ATTRIBUTE_STATE_MAX_H:
+      case ATTRIBUTE_PART_ITEM_MAX_W:
+      case ATTRIBUTE_PART_ITEM_MAX_H:
          elm_spinner_min_max_set(action->control, -1, 9999);
          break;
       case ATTRIBUTE_PART_DRAG_X:
@@ -1034,6 +1038,22 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          str_val1 = edje_edit_part_item_source_get(EDIT_OBJ, ITEM_ARGS);
          _groups_combobox_fill(action->control, str_val1, false);
          edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_MIN_W:
+         int_val1 = edje_edit_part_item_min_w_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_MIN_H:
+         int_val1 = edje_edit_part_item_min_h_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_MAX_W:
+         int_val1 = edje_edit_part_item_max_w_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_MAX_H:
+         int_val1 = edje_edit_part_item_max_h_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
          break;
       case ATTRIBUTE_STATE_TEXT_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
@@ -1732,6 +1752,23 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("item's source changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, edje_edit_part_item_source_get(EDIT_OBJ, ITEM_ARGS));
          break;
+      case ATTRIBUTE_PART_ITEM_MIN_W:
+         group_pd.history.format = _("part item's min_w changed from %d to %d");
+         VAL(int_val1) = edje_edit_part_item_min_w_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_MIN_H:
+         group_pd.history.format = _("part item's min_h changed from %d to %d");
+         VAL(int_val1) = edje_edit_part_item_min_h_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_MAX_W:
+         group_pd.history.format = _("part item's max_w changed from %d to %d");
+         VAL(int_val1) = edje_edit_part_item_max_w_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_MAX_H:
+         group_pd.history.format = _("part item's max_h changed from %d to %d");
+         VAL(int_val1) = edje_edit_part_item_max_h_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("start callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -2257,6 +2294,22 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
+      case ATTRIBUTE_PART_ITEM_MIN_W:
+         CRIT_ON_FAIL(editor_part_item_min_w_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_min_w_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_MIN_H:
+         CRIT_ON_FAIL(editor_part_item_min_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_min_h_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_MAX_W:
+         CRIT_ON_FAIL(editor_part_item_max_w_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_max_w_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_MAX_H:
+         CRIT_ON_FAIL(editor_part_item_max_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_part_item_max_h_get(EDIT_OBJ, ITEM_ARGS);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -2358,6 +2411,10 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X:
       case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y:
       case ATTRIBUTE_STATE_TEXT_SIZE:
+      case ATTRIBUTE_PART_ITEM_MIN_W:
+      case ATTRIBUTE_PART_ITEM_MIN_H:
+      case ATTRIBUTE_PART_ITEM_MAX_W:
+      case ATTRIBUTE_PART_ITEM_MAX_H:
          CHECK_VAL(int_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.int_val1,
@@ -2964,8 +3021,14 @@ _init_items()
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ITEM_SOURCE);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_MIN:
+              IT.name = "min";
+              _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MIN_W);
+              _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MIN_H);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_MAX:
+              IT.name = "max";
+              _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MAX_W);
+              _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MAX_H);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_PREFER:
               break;
