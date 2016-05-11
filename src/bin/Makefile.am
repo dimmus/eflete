@@ -12,6 +12,7 @@ includesub_HEADERS = \
 	common/string_common.h \
 	common/validator.h \
 	common/widget_macro.h \
+	common/widget_list.h \
 	common/win32.h \
 	config/config.h \
 	editor/banned_edje_edit_api.h \
@@ -57,6 +58,7 @@ libete_a_SOURCES = \
 ../../src/bin/eflete.c \
 ../../src/bin/common/string_common.c \
 ../../src/bin/common/validator.c \
+../../src/bin/common/widget_list.c \
 ../../src/bin/project_manager/group_manager.c \
 ../../src/bin/project_manager/project_manager.c \
 ../../src/bin/logger/logger.c \

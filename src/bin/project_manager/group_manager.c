@@ -18,6 +18,7 @@
  */
 
 #include "project_manager.h"
+#include "widget_list.h"
 
 static void
 _group_name_parse(Group *group)
@@ -428,10 +429,11 @@ gm_group_del(Project *pro, Group *group)
 void
 gm_groups_load(Project *pro)
 {
-   Eina_List *collections, *l, *wl;
+   Eina_List *collections, *l, *wl, *wll, *wlll;
    Eina_Stringshare *group_name;
    const char *widget_name;
-   const char *checked_widget;
+   Tree_Item_Data *widget, *style;
+   End_Item_Data *item_style;
    Group *group;
    Eina_Bool check;
 
@@ -453,12 +455,31 @@ gm_groups_load(Project *pro)
           {
              widget_name = widget_name_get(group_name);
              if (!widget_name) continue;
-             EINA_LIST_FOREACH(pro->widgets, wl, checked_widget)
+             EINA_LIST_FOREACH(pro->widgets, wl, widget)
                {
-                  if (!strcmp(checked_widget, widget_name))
+                  EINA_LIST_FOREACH(widget->list, wll, style)
                     {
-                       check = true;
-                       break;
+                       if (style->check)
+                         {
+                            if (!strcmp(widget->name, widget_name) &&
+                                style_name_check(group_name, style->name))
+                              {
+                                 check = true;
+                                 break;
+                              }
+                         }
+                       EINA_LIST_FOREACH(style->list, wlll, item_style)
+                         {
+                            if (item_style->check)
+                              {
+                                 if (!strcmp(widget->name, widget_name) &&
+                                     item_style_name_check(group_name, item_style->name, widget->list))
+                                   {
+                                      check = true;
+                                      break;
+                                   }
+                              }
+                         }
                     }
                }
              if (!check) continue;
