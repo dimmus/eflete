@@ -1,12 +1,9 @@
 group { name: "elm/win/inwin/default";
-   images {
-      image: "popup-header-bg.png" COMP;
-   }
    parts {
       part { name: "block_events";
          type: RECT;
          description { state: "default" 0.0;
-            color: 255 0 0 0;
+            color: 0 0 0 0;
          }
          description { state: "clicked" 0.0;
             color: 255 0 0 50;
@@ -15,281 +12,65 @@ group { name: "elm/win/inwin/default";
       part { name: "pop";
          type: IMAGE;
          description { state: "default" 0.0;
-            rel1 {
-               relative: 0.1 0.1;
-            }
-            rel2 {
-               relative: 0.9 0.9;
-            }
             image {
                normal: "popup-bg.png";
                border: 34 34 34 34;
-               middle: DEFAULT;
             }
+            rel1.relative: 0.1 0.1;
+            rel2.relative: 0.9 0.9;
          }
       }
-      part { name: "header";
-         type: IMAGE;
+      part { name: "base";
+         type: SPACER;
          description { state: "default" 0.0;
-            align: 0.5 0.0;
-            min: 0 31;
-            max: -1 31;
             rel1 {
-               offset: 21 21;
+               offset: 26 20;
                to: "pop";
             }
             rel2 {
-               offset: -21 -21;
+               offset: -27 -21;
                to: "pop";
-            }
-            image {
-               normal: "popup-header-bg.png";
-               border: 11 11 0 0;
-               middle: DEFAULT;
-            }
-         }
-      }
-      part { name: "header_space_rel1_padding";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 6 6;
-            max: 6 6;
-            rel1 {
-               to: "header";
-            }
-            rel2 {
-               to: "header";
-            }
-         }
-      }
-      part { name: "header_space_rel2_padding";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            min: 6 6;
-            max: 6 6;
-            rel1 {
-               to: "header";
-            }
-            rel2 {
-               to: "header";
-            }
-         }
-      }
-      part { name: "header_space";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-            rel1 {
-               relative: 1.0 1.0;
-               to: "header_space_rel1_padding";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to: "header_space_rel2_padding";
-            }
-         }
-      }
-      part { name: "elm.swallow.icon";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            min: 16 16;
-            max: 16 16;
-            rel1 {
-               to: "header_space";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               offset: -6 -1;
-               to_x: "elm.text.title";
-               to_y: "header_space";
-            }
-         }
-      }
-      part { name: "elm.swallow.close";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            fixed: 1 1;
-            max: 21 21;
-            aspect: 1.0 1.0;
-            rel1 {
-               to: "header_space";
-            }
-            rel2 {
-               to: "header_space";
             }
          }
       }
       part { name: "elm.text.title";
          type: TEXT;
          description { state: "default" 0.0;
+            align: 0.5 0.0;
+            fixed: 1 1;
+            min: 0 34;
+            max: -1 34;
             color_class: "main";
-            rel1 {
-               relative: 1.0 1.0;
-               offset: 22 0;
-               to: "header_space_rel1_padding";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               offset: -22 -1;
-               to: "header_space_rel2_padding";
-            }
             text {
-               font: "PT-Bold";
-               size: 15;
-               max: 1 1;
+               font: "PT:style=Bold";
+               size: 13;
             }
-         }
-      }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
-         description { state: "default" 0.0;
             rel1 {
-               relative: 1.0 1.0;
-               offset: 0 5;
-               to_x: "header_space_rel1_padding";
-               to_y: "header";
+               relative: 1.0 0.0;
+               offset: 3 0;
+               to_x: "elm.swallow.icon";
+               to_y: "base";
             }
             rel2 {
                relative: 0.0 1.0;
-               offset: -1 -27;
-               to_x: "header_space_rel2_padding";
-               to_y: "pop";
-            }
-         }
-      }
-   }
-   programs {
-      program { name: "block_clicked";
-         signal: "mouse,clicked,*";
-         source: "block_events";
-         action: SIGNAL_EMIT "elm,action,click" "elm";
-         after: "deeper_block_color";
-      }
-      program { name: "deeper_block_color";
-         action: STATE_SET "clicked" 0.00;
-         target: "block_events";
-         after: "default_block_color";
-      }
-      program { name: "default_block_color";
-         action: STATE_SET "default" 0.00;
-         transition: LINEAR 0.20000;
-         target: "block_events";
-      }
-   }
-}
-
-group { name: "elm/win/inwin/dialog";
-   images {
-      image: "popup-header-bg.png" COMP;
-   }
-   parts {
-      part { name: "block_events";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-         }
-         description { state: "clicked" 0.0;
-            color: 255 0 0 50;
-         }
-      }
-      part { name: "pop";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            rel1 {
-               relative: 0.1 0.1;
-            }
-            rel2 {
-               relative: 0.9 0.9;
-            }
-            image {
-               normal: "popup-bg.png";
-               border: 34 34 34 34;
-               middle: DEFAULT;
-            }
-         }
-      }
-      part { name: "header";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            align: 0.5 0.0;
-            min: 0 31;
-            max: -1 31;
-            rel1 {
-               offset: 21 21;
-               to: "pop";
-            }
-            rel2 {
-               offset: -21 -21;
-               to: "pop";
-            }
-            image {
-               normal: "popup-header-bg.png";
-               border: 11 11 0 0;
-               middle: DEFAULT;
-            }
-         }
-      }
-      part { name: "header_space_rel1_padding";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 6 6;
-            max: 6 6;
-            rel1 {
-               to: "header";
-            }
-            rel2 {
-               to: "header";
-            }
-         }
-      }
-      part { name: "header_space_rel2_padding";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            min: 6 6;
-            max: 6 6;
-            rel1 {
-               to: "header";
-            }
-            rel2 {
-               to: "header";
-            }
-         }
-      }
-      part { name: "header_space";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-            rel1 {
-               relative: 1.0 1.0;
-               to: "header_space_rel1_padding";
-            }
-            rel2 {
-               relative: 0.0 0.0;
-               to: "header_space_rel2_padding";
+               offset: -4 -1;
+               to_x: "elm.swallow.close";
+               to_y: "base";
             }
          }
       }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
          description { state: "default" 0.0;
-            align: 1.0 0.5;
+            align: 0.0 0.5;
+            fixed: 1 0;
             min: 16 16;
             max: 16 16;
             rel1 {
-               to: "header_space";
+               to_x: "base";
+               to_y: "elm.text.title";
             }
-            rel2 {
-               relative: 0.0 1.0;
-               offset: -6 -1;
-               to_x: "elm.text.title";
-               to_y: "header_space";
-            }
+            rel2.to_y: "elm.text.title";
          }
       }
       part { name: "elm.swallow.close";
@@ -297,86 +78,87 @@ group { name: "elm/win/inwin/dialog";
          description { state: "default" 0.0;
             align: 1.0 0.5;
             fixed: 1 1;
-            max: 21 21;
+            max: 16 16;
             aspect: 1.0 1.0;
             rel1 {
-               to: "header_space";
+               to_x: "base";
+               to_y: "elm.text.title";
             }
             rel2 {
-               to: "header_space";
+               to_x: "base";
+               to_y: "elm.text.title";
             }
          }
       }
-      part { name: "elm.text.title";
-         type: TEXT;
+      part { name: "separator.title";
+         type: IMAGE;
          description { state: "default" 0.0;
-            color_class: "main_alternative";
+            align: 0.5 0.0;
+            min: 0 2;
+            max: -1 2;
+            image.normal: "separator-horizontal.png";
             rel1 {
-               relative: 1.0 1.0;
-               offset: 22 0;
-               to: "header_space_rel1_padding";
+               relative: 0.0 1.0;
+               to_x: "base";
+               to_y: "elm.text.title";
             }
-            rel2 {
-               relative: 0.0 0.0;
-               offset: -22 -1;
-               to: "header_space_rel2_padding";
-            }
-            text {
-               font: "PT-Bold";
-               size: 15;
-               max: 1 1;
-            }
+            rel2.to_x: "base";
          }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
          description { state: "default" 0.0;
+            fixed: 1 0;
             rel1 {
-               relative: 1.0 1.0;
-               offset: 0 6;
-               to_x: "header_space_rel1_padding";
-               to_y: "header";
+               relative: 0.0 1.0;
+               to_x: "base";
+               to_y: "separator.title";
             }
             rel2 {
-               relative: 0.0 1.0;
-               offset: -1 -9;
-               to_x: "header_space_rel2_padding";
-               to_y: "decoration.button_box";
+               relative: 1.0 0.0;
+               to_x: "base";
+               to_y: "separator.buttons";
             }
          }
       }
-      part { name: "decoration.button_box";
+      part { name: "buttons.area";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            min: 0 34;
+            max: -1 34;
+            rel1.to: "base";
+            rel2.to: "base";
+         }
+      }
+      part { name: "separator.buttons";
          type: IMAGE;
          description { state: "default" 0.0;
             align: 0.5 1.0;
             fixed: 1 1;
             min: 0 2;
             max: -1 2;
-            rel1 {
-               offset: 6 0;
-               to_x: "header_space_rel1_padding";
-            }
+            image.normal: "separator-horizontal.png";
+            rel1.to: "base";
             rel2 {
-               offset: -1 -26;
-               to: "eflete.swallow.btn_close";
-            }
-            image {
-               normal: "separator-horizontal.png";
-               middle: DEFAULT;
+               relative: 1.0 0.0;
+               to_x: "base";
+               to_y: "buttons.area";
             }
          }
       }
       part { name: "eflete.swallow.btn_close";
          type: SWALLOW;
          description { state: "default" 0.0;
-            align: 1.0 1.0;
+            align: 1.0 0.5;
             fixed: 1 1;
-            min: 73 19;
-            max: 73 19;
+            rel1 {
+               relative: 1.0 0.5;
+               to: "buttons.area";
+            }
             rel2 {
-               offset: -8 -28;
-               to_x: "header_space_rel2_padding";
-               to_y: "pop";
+               relative: 1.0 0.5;
+               to: "buttons.area";
             }
          }
       }
@@ -385,11 +167,7 @@ group { name: "elm/win/inwin/dialog";
          description { state: "default" 0.0;
             align: 1.0 1.0;
             fixed: 1 1;
-            min: 75 19;
-            max: 75 19;
-            rel1 {
-               to: "eflete.swallow.btn_close";
-            }
+            rel1.to: "eflete.swallow.btn_close";
             rel2 {
                relative: 0.0 1.0;
                offset: -7 -1;
@@ -414,17 +192,6 @@ group { name: "elm/win/inwin/dialog";
          action: STATE_SET "default" 0.00;
          transition: LINEAR 0.20000;
          target: "block_events";
-      }
-   }
-}
-
-group { name: "elm/win/inwin/about_window";
-   inherit: "elm/win/inwin/dialog";
-   parts {
-      part { name: "pop";
-         description { state: "default" 0.0;
-            max: 400 400;
-         }
       }
    }
 }
