@@ -41,7 +41,6 @@
  * with anything other than the top-most window as its parameter, unless you are
  * fond of undefined behavior.
  *
- * @param style_name Inwin style. NULL for default.
  * @param func Inwin on_close callback.
  * @param data Additional data that will be passed to callback.
  * @return The new modal window or NULL if it cannot be created.
@@ -52,7 +51,7 @@
  * @ingroup ModalWindow
  */
 Evas_Object *
-mw_add(const char *style_name, Evas_Smart_Cb func, void *data);
+mw_add(Evas_Smart_Cb func, void *data);
 
 /**
  * Set the title of the modal window.

@@ -173,13 +173,12 @@ mw_del(Evas_Object *mw)
 }
 
 Evas_Object *
-mw_add(const char *style_name, Evas_Smart_Cb func, void *data)
+mw_add(Evas_Smart_Cb func, void *data)
 {
    Evas_Object *mw, *bt_close, *ic;
 
    mw = elm_win_inwin_add(ap.win);
-   if (style_name)
-     elm_object_style_set(mw, style_name);
+   elm_object_style_set(mw, "modal_window");
 
    evas_object_focus_set(mw, EINA_TRUE);
 

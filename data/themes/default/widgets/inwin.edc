@@ -1,4 +1,4 @@
-group { name: "elm/win/inwin/default";
+group { name: "elm/win/inwin/modal_window";
    parts {
       part { name: "block_events";
          type: RECT;
