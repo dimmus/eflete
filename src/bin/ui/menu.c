@@ -189,6 +189,9 @@ _menu_cb(void *data __UNUSED__,
       case MENU_EDITORS_TEXT_STYLE:
          tabs_menu_tab_open(TAB_STYLE_EDITOR);
          break;
+      case MENU_WINDOW_TAB_HOME:
+         tabs_home_tab_add(TAB_HOME_OPEN_PROJECT);
+         break;
       case MENU_HELP_ABOUT:
          about_window_add();
          break;
@@ -303,6 +306,9 @@ ui_menu_add(void)
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE_OBJECT_AREA, NULL, _("Show object area"), "o")
       ___(MENU_VIEW);
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_SHOW, NULL, _("Show rulers"), NULL)
+
+   ITEM_MENU_ADD(MENU_NULL, MENU_WINDOW, NULL, _("Window"), NULL)
+      ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_TAB_HOME, NULL, _("Home"), NULL)
 
    ITEM_MENU_ADD(MENU_NULL, MENU_HELP, NULL, _("Help"), NULL)
       ITEM_MENU_ADD(MENU_HELP, MENU_HELP_ABOUT, NULL, _("About"), NULL)

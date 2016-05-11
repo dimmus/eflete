@@ -139,8 +139,6 @@ _recent_clear(void *data __UNUSED__,
 Evas_Object *
 _tab_open_project_add(void)
 {
-   assert(tab.layout == NULL);
-
    tab.layout = elm_layout_add(ap.win);
    elm_layout_theme_set(tab.layout, "layout", "tab_home", "open_project");
    elm_layout_text_set(tab.layout, "elm.text.recent", _("Open recent"));
