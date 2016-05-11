@@ -239,7 +239,6 @@ group { name: "elm/layout/workspace/toolbar";
          description { state: "default" 0.0;
             align: 0.5 0.0;
             max: -1 31;
-            rel2.offset: -4 -1;
          }
       }
       part { name: "elm.swallow.toolbar";
