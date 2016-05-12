@@ -1613,6 +1613,8 @@ workspace_code_changed(Evas_Object *obj)
 Evas_Object *
 workspace_group_navigator_get(Evas_Object *obj)
 {
+   if (!obj) return group_navigator_dummy_get();
+
    WS_DATA_GET(obj);
    return wd->group_navi;
 }

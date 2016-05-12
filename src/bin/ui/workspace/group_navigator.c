@@ -29,6 +29,8 @@
 
 #define GROUP_NAVIGATOR_DATA "group_navigator_data"
 
+static Evas_Object *dummy_navi = NULL;
+
 typedef struct
 {
    Group *group;
@@ -94,6 +96,14 @@ static const char *program_actions[] = {
 };
 
 static const unsigned int part_types_count = 12;
+
+#define BTN_ADD(LAYOUT, BTN, SWALLOW, ICON_NAME) \
+   BTN = elm_button_add(LAYOUT); \
+   ICON_STANDARD_ADD(BTN, icon, true, ICON_NAME); \
+   elm_layout_content_set(BTN, NULL, icon); \
+   elm_object_style_set(BTN, "anchor"); \
+   elm_object_part_content_set(LAYOUT, SWALLOW, BTN);
+
 
 static char *
 _resource_label_get(void *data,
@@ -1900,24 +1910,19 @@ group_navigator_add(Evas_Object *parent, Group *group)
 
    pl->group = group;
 
-#define BTN_ADD(BTN, SWALLOW, ICON_NAME, CALLBACK) \
-   pl->BTN = elm_button_add(pl->layout); \
-   ICON_STANDARD_ADD(pl->BTN, icon, true, ICON_NAME); \
-   elm_object_part_content_set(pl->BTN, NULL, icon); \
-   evas_object_smart_callback_add(pl->BTN, "clicked", CALLBACK, pl); \
-   elm_object_style_set(pl->BTN, "anchor"); \
-   elm_object_part_content_set(pl->layout, SWALLOW, pl->BTN);
-
-   BTN_ADD(btn_add, "elm.swallow.btn3", "plus", _on_btn_plus_clicked);
-   BTN_ADD(btn_del, "elm.swallow.btn2", "minus", _on_btn_minus_clicked);
-   BTN_ADD(btn_down, "elm.swallow.btn1", "arrow_down", _on_btn_down_clicked);
-   BTN_ADD(btn_up, "elm.swallow.btn0", "arrow_up", _on_btn_up_clicked);
+   BTN_ADD(pl->layout, pl->btn_add, "elm.swallow.btn3", "plus");
+   evas_object_smart_callback_add(pl->btn_add, "clicked", _on_btn_plus_clicked, pl);
+   BTN_ADD(pl->layout, pl->btn_del, "elm.swallow.btn2", "minus");
+   evas_object_smart_callback_add(pl->btn_del, "clicked", _on_btn_minus_clicked, pl);
+   BTN_ADD(pl->layout, pl->btn_down, "elm.swallow.btn1", "arrow_down");
+   evas_object_smart_callback_add(pl->btn_down, "clicked", _on_btn_down_clicked, pl);
+   BTN_ADD(pl->layout, pl->btn_up, "elm.swallow.btn0", "arrow_up");
+   evas_object_smart_callback_add(pl->btn_up, "clicked", _on_btn_up_clicked, pl);
 
    elm_object_disabled_set(pl->btn_del, true);
    elm_object_disabled_set(pl->btn_down, true);
    elm_object_disabled_set(pl->btn_up, true);
 
-#undef BTN_ADD
    pl->itc_part = elm_genlist_item_class_new();
    pl->itc_part->item_style = "part";
    pl->itc_part->func.text_get = _resource_label_get;
@@ -2011,6 +2016,29 @@ group_navigator_add(Evas_Object *parent, Group *group)
 
    TODO("Add deletion callback and free resources");
    return pl->layout;
+}
+
+Evas_Object *
+group_navigator_dummy_get(void)
+{
+   Evas_Object *btn, *genlist, *icon;
+
+   if (dummy_navi) goto exit;
+
+   dummy_navi = elm_layout_add(ap.win);
+   elm_layout_theme_set(dummy_navi, "layout", "navigator", "default");
+   BTN_ADD(dummy_navi, btn, "elm.swallow.btn3", "plus");
+   BTN_ADD(dummy_navi, btn, "elm.swallow.btn2", "minus");
+   BTN_ADD(dummy_navi, btn, "elm.swallow.btn1", "arrow_down");
+   BTN_ADD(dummy_navi, btn, "elm.swallow.btn0", "arrow_up");
+
+   genlist = elm_genlist_add(dummy_navi);
+   elm_layout_content_set(dummy_navi, NULL, genlist);
+
+   elm_object_disabled_set(dummy_navi, true);
+exit:
+   evas_object_show(dummy_navi);
+   return dummy_navi;
 }
 
 void
