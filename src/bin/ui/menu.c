@@ -191,7 +191,7 @@ _menu_cb(void *data __UNUSED__,
          colorclass_manager_add();
          break;
       case MENU_WINDOW_MANAGER_TEXT_STYLE:
-         //tabs_menu_tab_open(TAB_STYLE_EDITOR);
+         style_manager_add();
          break;
       case MENU_HELP_ABOUT:
          about_window_add();
