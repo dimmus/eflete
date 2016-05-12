@@ -32,10 +32,10 @@ int MENU_ITEMS_LIST_BASE[] = {
    MENU_FILE_EXPORT_DEVELOP,
 /* MENU_FILE_EXPORT_RELEASE,*/
    MENU_FILE_CLOSE_PROJECT,
-   MENU_EDITORS_IMAGE,
-   MENU_EDITORS_SOUND,
-   MENU_EDITORS_COLORCLASS,
-   MENU_EDITORS_TEXT_STYLE,
+   MENU_WINDOW_MANAGER_IMAGE,
+   MENU_WINDOW_MANAGER_SOUND,
+   MENU_WINDOW_MANAGER_COLORCLASS,
+   MENU_WINDOW_MANAGER_TEXT_STYLE,
    MENU_EDIT_GROUP_ADD,
 
    MENU_NULL
@@ -177,20 +177,20 @@ _menu_cb(void *data __UNUSED__,
          evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_PROGRAM, NULL);
          break;
 
-      case MENU_EDITORS_IMAGE:
-         //tabs_menu_tab_open(TAB_IMAGE_EDITOR);
-         break;
-      case MENU_EDITORS_SOUND:
-         //tabs_menu_tab_open(TAB_SOUND_EDITOR);
-         break;
-      case MENU_EDITORS_COLORCLASS:
-         //tabs_menu_tab_open(TAB_COLORCLASS_EDITOR);
-         break;
-      case MENU_EDITORS_TEXT_STYLE:
-         //tabs_menu_tab_open(TAB_STYLE_EDITOR);
-         break;
       case MENU_WINDOW_TAB_HOME:
          tabs_home_tab_add(TAB_HOME_OPEN_PROJECT);
+         break;
+      case MENU_WINDOW_MANAGER_IMAGE:
+         //tabs_menu_tab_open(TAB_IMAGE_EDITOR);
+         break;
+      case MENU_WINDOW_MANAGER_SOUND:
+         //tabs_menu_tab_open(TAB_SOUND_EDITOR);
+         break;
+      case MENU_WINDOW_MANAGER_COLORCLASS:
+         //tabs_menu_tab_open(TAB_COLORCLASS_EDITOR);
+         break;
+      case MENU_WINDOW_MANAGER_TEXT_STYLE:
+         //tabs_menu_tab_open(TAB_STYLE_EDITOR);
          break;
       case MENU_HELP_ABOUT:
          about_window_add();
@@ -289,11 +289,6 @@ ui_menu_add(void)
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_STATE_ADD, NULL, _("Add state"), "w")
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_ITEM_ADD, NULL, _("Add item"), "e")
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PROGRAM_ADD, NULL, _("Add program"), "r")
-      ___(MENU_EDIT);
-      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_IMAGE, "image2", _("Image manager"), "F7")
-      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_SOUND, "sound2", _("Sound manager"), "F8")
-      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_TEXT_STYLE, "text2", _("Textblock styles manager"), "F9")
-      ITEM_MENU_ADD(MENU_EDIT, MENU_EDITORS_COLORCLASS, "color", _("Color class manager"), "F10")
       /* ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PREFERENCE, NULL, _("Preference..."))*/
 
    ITEM_MENU_ADD(MENU_NULL, MENU_VIEW, NULL, _("View"), NULL)
@@ -309,6 +304,11 @@ ui_menu_add(void)
 
    ITEM_MENU_ADD(MENU_NULL, MENU_WINDOW, NULL, _("Window"), NULL)
       ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_TAB_HOME, NULL, _("Home"), NULL)
+      ___(MENU_WINDOW);
+      ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_MANAGER_IMAGE, "image2", _("Image manager"), "F7")
+      ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_MANAGER_SOUND, "sound2", _("Sound manager"), "F8")
+      ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_MANAGER_TEXT_STYLE, "text2", _("Textblock styles manager"), "F9")
+      ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_MANAGER_COLORCLASS, "color", _("Color class manager"), "F10")
 
    ITEM_MENU_ADD(MENU_NULL, MENU_HELP, NULL, _("Help"), NULL)
       ITEM_MENU_ADD(MENU_HELP, MENU_HELP_ABOUT, NULL, _("About"), NULL)
