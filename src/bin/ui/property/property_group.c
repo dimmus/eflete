@@ -371,6 +371,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TITLE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_TITLE);
          break;
       case PROPERTY_GROUP_ITEM_STATE_SIZE_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_SIZE_MIN);
@@ -436,6 +437,10 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_SIGNAL);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_SOURCE);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_IN);
+      case PROPERTY_GROUP_ITEM_STATE_CONTAINER_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_ALIGN);
+//         APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_PADDING);
+//         APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_MIN);
          break;
       case PROPERTY_GROUP_ITEM_PART_ITEM_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_NAME);
@@ -649,6 +654,8 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_ALIGN_Y:
       case ATTRIBUTE_PART_ITEM_ALIGN_X:
       case ATTRIBUTE_PART_ITEM_ALIGN_Y:
+      case ATTRIBUTE_STATE_CONTAINER_ALIGN_X:
+      case ATTRIBUTE_STATE_CONTAINER_ALIGN_Y:
          elm_spinner_min_max_set(action->control, 0, 1);
          elm_spinner_step_set(action->control, 0.1);
          elm_spinner_label_format_set(action->control, "%.2f");
@@ -1069,6 +1076,16 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          bool_val1 = edje_edit_part_multiline_get(EDIT_OBJ, PART_ARGS);
          elm_check_state_set(action->control, bool_val1);
          break;
+
+      case ATTRIBUTE_STATE_CONTAINER_ALIGN_X:
+         double_val1 = edje_edit_state_container_align_x_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_CONTAINER_ALIGN_Y:
+         double_val1 = edje_edit_state_container_align_y_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+
       case ATTRIBUTE_PART_ITEM_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_item_source_get(EDIT_OBJ, ITEM_ARGS);
@@ -1860,6 +1877,15 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          VAL(double_val1) = edje_edit_program_in_range_get(EDIT_OBJ, PROGRAM_ARGS);
          break;
 
+      case ATTRIBUTE_STATE_CONTAINER_ALIGN_X:
+         group_pd.history.format = _("container's align_x changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_state_container_align_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_CONTAINER_ALIGN_Y:
+         group_pd.history.format = _("container's align_y changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_state_container_align_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+
       case ATTRIBUTE_PART_ITEM_SOURCE:
          group_pd.history.format = _("item's source changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, edje_edit_part_item_source_get(EDIT_OBJ, ITEM_ARGS));
@@ -2465,7 +2491,6 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_program_signal_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
-         break;
       case ATTRIBUTE_PROGRAM_SOURCE:
          CRIT_ON_FAIL(editor_program_source_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
@@ -2478,6 +2503,15 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_IN_RANGE:
          CRIT_ON_FAIL(editor_program_in_range_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_program_in_range_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+
+      case ATTRIBUTE_STATE_CONTAINER_ALIGN_X:
+         CRIT_ON_FAIL(editor_state_container_align_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_state_container_align_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_CONTAINER_ALIGN_Y:
+         CRIT_ON_FAIL(editor_state_container_align_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_state_container_align_y_get(EDIT_OBJ, STATE_ARGS);
          break;
 
       case ATTRIBUTE_PART_ITEM_SOURCE:
@@ -2731,6 +2765,8 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_ALIGN_Y:
       case ATTRIBUTE_PART_ITEM_WEIGHT_X:
       case ATTRIBUTE_PART_ITEM_WEIGHT_Y:
+      case ATTRIBUTE_STATE_CONTAINER_ALIGN_X:
+      case ATTRIBUTE_STATE_CONTAINER_ALIGN_Y:
          if (fabs(group_pd.history.new.double_val1 - group_pd.history.old.double_val1) < DBL_EPSILON)
            {
               change_free(group_pd.history.change);
@@ -3297,6 +3333,23 @@ _init_items()
               IT.name = "style";
               IT.filter_data.part_types = PART_TEXTBLOCK;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_STYLE);
+              break;
+
+              /* part item block */
+           case PROPERTY_GROUP_ITEM_STATE_CONTAINER_TITLE:
+              IT.name = "container";
+              IT.expandable = true;
+              IT.expand_cb = _subitems_get;
+              IT.filter_data.part_types = PART_BOX | PART_TABLE;
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_CONTAINER_ALIGN:
+              IT.name = "align";
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_Y);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_CONTAINER_PADDING:
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_CONTAINER_MIN:
               break;
 
               /* part item block */
