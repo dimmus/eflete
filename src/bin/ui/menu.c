@@ -188,7 +188,7 @@ _menu_cb(void *data __UNUSED__,
          sound_manager_add();
          break;
       case MENU_WINDOW_MANAGER_COLORCLASS:
-         //tabs_menu_tab_open(TAB_COLORCLASS_EDITOR);
+         colorclass_manager_add();
          break;
       case MENU_WINDOW_MANAGER_TEXT_STYLE:
          //tabs_menu_tab_open(TAB_STYLE_EDITOR);

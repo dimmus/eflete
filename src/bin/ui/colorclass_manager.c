@@ -23,6 +23,7 @@
 #include "main_window.h"
 #include "validator.h"
 #include "project_manager.h"
+#include "modal_window.h"
 
 static Elm_Genlist_Item_Class *_itc_ccl = NULL;
 
@@ -37,6 +38,7 @@ struct _Search_Data
 
 struct _Colorclasses_Manager
 {
+   Evas_Object *win;
    Evas_Object *layout;
    Evas_Object *genlist;
    Evas_Object *edje_preview, *preview_layout;
@@ -368,10 +370,16 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
      }
 
    /* Creating main layout of window */
+   edit->win = mw_add(NULL, NULL);
+   mw_title_set(edit->win, _("Color class manager"));
+   ic = elm_icon_add(edit->win);
+   elm_icon_standard_set(ic, "color");
+   mw_icon_set(edit->win, ic);
    edit->layout = elm_layout_add(ap.win);
    elm_layout_theme_set(edit->layout, "layout", "colorclass_manager", "default");
    elm_layout_text_set(edit->layout, "elm.text", _("Preview"));
    elm_layout_text_set(edit->layout, "elm.subtext", _("Color classes list"));
+   elm_object_content_set(edit->win, edit->layout);
 
    edit->genlist = elm_genlist_add(edit->layout);
    evas_object_show(edit->genlist);
@@ -497,5 +505,6 @@ colorclass_manager_add()
         abort();
      }
 
-   return edit->layout;
+   evas_object_show(edit->win);
+   return edit->win;
 }
