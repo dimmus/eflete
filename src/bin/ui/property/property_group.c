@@ -68,6 +68,7 @@ struct _Property_Group_Data {
          double double_val1;
          Eina_Stringshare *str_val1;
          Eina_Bool bool_val1;
+         unsigned short ushort_val1;
       } old, new;
    } history;
    Property_Attribute items[PROPERTY_GROUP_ITEM_LAST];
@@ -447,6 +448,8 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SPREAD);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SPAN);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_POSITION);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_H);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_V);
          break;
@@ -611,6 +614,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_ITEM_SPREAD_W:
       case ATTRIBUTE_PART_ITEM_SPREAD_H:
+      case ATTRIBUTE_PART_ITEM_SPAN_COL:
+      case ATTRIBUTE_PART_ITEM_SPAN_ROW:
+      case ATTRIBUTE_PART_ITEM_POSITION_COL:
+      case ATTRIBUTE_PART_ITEM_POSITION_ROW:
          elm_spinner_min_max_set(action->control, 1, 100);
          break;
       case ATTRIBUTE_PART_DRAG_X:
@@ -870,6 +877,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
 {
    int int_val1, int_val2, int_val3, int_val4;
    double double_val1;
+   unsigned short ushort_val1;
    Eina_Bool bool_val1;
    Eina_Stringshare *str_val1;
 
@@ -1126,6 +1134,22 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_SPREAD_H:
          int_val1 = edje_edit_part_item_spread_h_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_SPAN_COL:
+         ushort_val1 = edje_edit_part_item_span_col_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, ushort_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_SPAN_ROW:
+         ushort_val1 = edje_edit_part_item_span_row_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, ushort_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_POSITION_COL:
+         ushort_val1 = edje_edit_part_item_position_col_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, ushort_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_POSITION_ROW:
+         ushort_val1 = edje_edit_part_item_position_row_get(EDIT_OBJ, ITEM_ARGS);
+         elm_spinner_value_set(action->control, ushort_val1);
          break;
       case ATTRIBUTE_PART_ITEM_PADDING_LEFT:
          edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, &int_val1, NULL, NULL, NULL);
@@ -1901,6 +1925,22 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("part item's spread by columns changed from %d to %d");
          VAL(int_val1) = edje_edit_part_item_spread_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
+      case ATTRIBUTE_PART_ITEM_SPAN_COL:
+         group_pd.history.format = _("part item's span by columns changed from %hu to %hu");
+         VAL(ushort_val1) = edje_edit_part_item_span_col_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_SPAN_ROW:
+         group_pd.history.format = _("part item's span by rows changed from %hu to %hu");
+         VAL(ushort_val1) = edje_edit_part_item_span_row_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_POSITION_COL:
+         group_pd.history.format = _("part item's column position changed from %hu to %hu");
+         VAL(ushort_val1) = edje_edit_part_item_position_col_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_POSITION_ROW:
+         group_pd.history.format = _("part item's row position changed from %hu to %hu");
+         VAL(ushort_val1) = edje_edit_part_item_position_row_get(EDIT_OBJ, ITEM_ARGS);
+         break;
       case ATTRIBUTE_PART_ITEM_PADDING_LEFT:
          group_pd.history.format = _("part item's left padding changed from %d to %d");
          edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, &int_val1, NULL, NULL, NULL);
@@ -2508,6 +2548,22 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_part_item_spread_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_part_item_spread_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
+      case ATTRIBUTE_PART_ITEM_SPAN_COL:
+         CRIT_ON_FAIL(editor_part_item_span_col_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, (int)double_val1));
+         group_pd.history.new.ushort_val1 = edje_edit_part_item_span_col_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_SPAN_ROW:
+         CRIT_ON_FAIL(editor_part_item_span_row_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, (int)double_val1));
+         group_pd.history.new.ushort_val1 = edje_edit_part_item_span_row_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_POSITION_COL:
+         CRIT_ON_FAIL(editor_part_item_position_col_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, (int)double_val1));
+         group_pd.history.new.ushort_val1 = edje_edit_part_item_position_col_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_POSITION_ROW:
+         CRIT_ON_FAIL(editor_part_item_position_row_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, (int)double_val1));
+         group_pd.history.new.ushort_val1 = edje_edit_part_item_position_row_get(EDIT_OBJ, ITEM_ARGS);
+         break;
       case ATTRIBUTE_PART_ITEM_PADDING_TOP:
          CRIT_ON_FAIL(editor_part_item_padding_top_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
          edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, &group_pd.history.new.int_val1, NULL);
@@ -2644,6 +2700,15 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.int_val1,
                                        group_pd.history.new.int_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_SPAN_COL:
+      case ATTRIBUTE_PART_ITEM_SPAN_ROW:
+      case ATTRIBUTE_PART_ITEM_POSITION_COL:
+      case ATTRIBUTE_PART_ITEM_POSITION_ROW:
+         CHECK_VAL(ushort_val1);
+         msg = eina_stringshare_printf(group_pd.history.format,
+                                       group_pd.history.old.ushort_val1,
+                                       group_pd.history.new.ushort_val1);
          break;
       case ATTRIBUTE_STATE_ASPECT_MIN:
       case ATTRIBUTE_STATE_ASPECT_MAX:
@@ -3297,8 +3362,17 @@ _init_items()
               _action1(&IT, "top", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_TOP);
               _action2(&IT, "bottom", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_BOTTOM);
               break;
-
-           case PROPERTY_GROUP_ITEM_PART_ITEM_SPAN_COL:
+           case PROPERTY_GROUP_ITEM_PART_ITEM_SPAN:
+              IT.name = "span";
+              IT.filter_data.part_types = PART_TABLE;
+              _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPAN_COL);
+              _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPAN_ROW);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_ITEM_POSITION:
+              IT.name = "position";
+              IT.filter_data.part_types = PART_TABLE;
+              _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_POSITION_COL);
+              _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_POSITION_ROW);
               break;
 
               /* program block */
