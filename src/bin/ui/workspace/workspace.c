@@ -764,6 +764,7 @@ _mode_cb(void *data,
          break;
      }
 
+   evas_object_smart_callback_call(ap.win, SIGNAL_WORKSPACE_MODE_CHANGED, &wd->mode);
    assert (area != NULL);
 
    if (container_aspect_get(area->container) < 0)
