@@ -44,6 +44,7 @@ group { name: "elm/win/inwin/modal_window";
             text {
                font: "PT:style=Bold";
                size: 13;
+               align: 0.0 0.5;
             }
             rel1 {
                relative: 1.0 0.0;
