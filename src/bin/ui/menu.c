@@ -182,7 +182,7 @@ _menu_cb(void *data __UNUSED__,
          tabs_home_tab_add(TAB_HOME_OPEN_PROJECT);
          break;
       case MENU_WINDOW_MANAGER_IMAGE:
-         //tabs_menu_tab_open(TAB_IMAGE_EDITOR);
+         image_manager_add();
          break;
       case MENU_WINDOW_MANAGER_SOUND:
          //tabs_menu_tab_open(TAB_SOUND_EDITOR);
