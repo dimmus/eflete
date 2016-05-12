@@ -88,7 +88,7 @@ _content_unset(void)
    tabs.current_group = NULL;
    content = elm_layout_content_unset(tabs.layout, NULL);
    evas_object_hide(content);
-   content = elm_object_part_content_unset(ap.panes.left_ver, "right");
+   content = elm_layout_content_unset(ap.panes.left_ver, "right");
    evas_object_hide(content);
 }
 
