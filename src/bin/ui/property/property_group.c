@@ -205,6 +205,7 @@ _on_program_selected(void *data,
    group_pd.part = NULL;
 
    GENLIST_FILTER_APPLY(pd->genlist);
+   property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_TITLE]);
 }
 
 static void
@@ -395,6 +396,9 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_TEXT_SOURCE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_ELIPSIS);
          break;
+      case PROPERTY_GROUP_ITEM_PROGRAM_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_NAME);
+         break;
       default:
          CRIT("items callback not found for %s", pa->name);
          abort();
@@ -475,6 +479,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
      {
       case ATTRIBUTE_GROUP_NAME:
       case ATTRIBUTE_STATE_NAME:
+      case ATTRIBUTE_PROGRAM_NAME:
          elm_object_disabled_set(action->control, true);
          break;
       case ATTRIBUTE_GROUP_MIN_W:
@@ -790,6 +795,9 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_NAME:
          property_entry_set(action->control, group_pd.part->current_state->name);
+         break;
+      case ATTRIBUTE_PROGRAM_NAME:
+         property_entry_set(action->control, PROGRAM_ARGS);
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          int_val1 = edje_edit_group_min_w_get(EDIT_OBJ);
@@ -1234,6 +1242,10 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("state name changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, eina_stringshare_add(group_pd.part->current_state->name));
          break;
+      case ATTRIBUTE_PROGRAM_NAME:
+         group_pd.history.format = _("program name changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(PROGRAM_ARGS));
+         break;
       case ATTRIBUTE_GROUP_MIN_W:
          group_pd.history.format = _("group.min_w changed from %d to %d");
          VAL(int_val1) = edje_edit_group_min_w_get(EDIT_OBJ);
@@ -1657,6 +1669,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_NAME:
          TODO("implement state rename");
+         break;
+      case ATTRIBUTE_PROGRAM_NAME:
+         TODO("implement program rename");
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          CRIT_ON_FAIL(editor_group_min_w_set(EDIT_OBJ, CHANGE_MERGE, double_val1));
@@ -2127,6 +2142,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_GROUP_NAME:
       case ATTRIBUTE_PART_NAME:
       case ATTRIBUTE_STATE_NAME:
+      case ATTRIBUTE_PROGRAM_NAME:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.str_val1,
@@ -2789,6 +2805,12 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PROGRAM_TITLE:
               IT.name = "program";
               IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_NAME:
+              IT.name = "name";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_NAME);
               break;
 
            case PROPERTY_GROUP_ITEM_LAST:
