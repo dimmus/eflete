@@ -23,6 +23,7 @@
 #include "main_window.h"
 #include "project_manager.h"
 #include "validator.h"
+#include "modal_window.h"
 
 TODO("Rename this file to textblock_style_manager")
 
@@ -59,6 +60,7 @@ struct _Search_Data
 
 struct _Style_Editor
 {
+   Evas_Object *win;
    Evas_Object *glist;
    Evas_Object *textblock_style;
    Evas_Object *entry_prev;
@@ -924,10 +926,17 @@ style_manager_add()
 
    style_edit = (Style_Editor *)mem_calloc(1, sizeof(Style_Editor));
 
+   style_edit->win = mw_add(NULL, NULL);
+   mw_title_set(style_edit->win, _("Textblock style manager"));
+   ic = elm_icon_add(style_edit->win);
+   elm_icon_standard_set(ic, "text2");
+   mw_icon_set(style_edit->win, ic);
+
    main_layout = elm_layout_add(ap.win);
    elm_layout_theme_set(main_layout, "layout", "style_manager", "default");
    elm_object_part_text_set(main_layout, "elm.text", _("Preview"));
    elm_layout_text_set(main_layout, "elm.subtext", _("Font list"));
+   elm_object_content_set(style_edit->win, main_layout);
 
    style_edit->entry_prev = elm_layout_add(main_layout);
    elm_layout_theme_set(style_edit->entry_prev, "layout", "style_manager", "preview");
@@ -1028,9 +1037,7 @@ style_manager_add()
    evas_object_event_callback_add(main_layout, EVAS_CALLBACK_DEL, _on_style_manager_close, style_edit);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, NULL);
-   return main_layout;
-}
 
-#undef FONT_DEFAULT
-#undef POPUP
-#undef CURRENT
+   evas_object_show(style_edit->win);
+   return style_edit->win;
+}
