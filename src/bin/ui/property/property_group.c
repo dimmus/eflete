@@ -166,6 +166,10 @@ static const char *item_aspect_mode_strings[] = { STR_NONE,
                                                   "Horizontal",
                                                   "Both",
                                                   NULL};
+static const char *table_homogeneous_strings[] = { STR_NONE,
+                                                   "Table",
+                                                   "Item",
+                                                   NULL};
 /* defines for args */
 #define EDIT_OBJ group_pd.group->edit_object
 #define PART_ARGS group_pd.part->name
@@ -441,6 +445,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_ALIGN);
          APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_PADDING);
          APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_MIN);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_HOMOGENEOUS);
          break;
       case PROPERTY_GROUP_ITEM_PART_ITEM_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_NAME);
@@ -715,6 +720,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
          _fill_combobox_with_enum(action->control, text_shadow_direction_strings);
+         break;
+      case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
+         _fill_combobox_with_enum(action->control, table_homogeneous_strings);
          break;
       case ATTRIBUTE_STATE_COLOR_CLASS:
          ewe_combobox_style_set(action->control, "color_class");
@@ -1105,6 +1113,9 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          bool_val1 = edje_edit_state_container_min_h_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
          break;
+      case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
+         ewe_combobox_select_item_set(action->control,
+           (int) edje_edit_state_table_homogeneous_get(EDIT_OBJ, STATE_ARGS));
 
       case ATTRIBUTE_PART_ITEM_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
@@ -1919,6 +1930,11 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_CONTAINER_MIN_H:
          group_pd.history.format = _("container's min_y %s");
          break;
+      case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
+         group_pd.history.format = _("table homogeneous changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(
+            table_homogeneous_strings[edje_edit_state_table_homogeneous_get(EDIT_OBJ, STATE_ARGS)]));
+         break;
 
       case ATTRIBUTE_PART_ITEM_SOURCE:
          group_pd.history.format = _("item's source changed from \"%s\" to \"%s\"");
@@ -2563,6 +2579,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_state_container_min_h_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
          break;
+      case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
+         str_val1 = eina_stringshare_add(cb_item->title);
+         CRIT_ON_FAIL(editor_state_table_homogeneous_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item->index));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
 
       case ATTRIBUTE_PART_ITEM_SOURCE:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
@@ -2736,6 +2758,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_FONT:
       case ATTRIBUTE_PROGRAM_SIGNAL:
       case ATTRIBUTE_PROGRAM_SOURCE:
+      case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (group_pd.history.old.str_val1) ? group_pd.history.old.str_val1 : STR_NONE,
@@ -3410,6 +3433,11 @@ _init_items()
               IT.name = "min";
               _action1(&IT, "v", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_V);
               _action2(&IT, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_H);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_CONTAINER_HOMOGENEOUS:
+              IT.name = "homogeneous mode";
+              IT.filter_data.part_types = PART_TABLE;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TABLE_HOMOGENEOUS);
               break;
 
               /* part item block */
