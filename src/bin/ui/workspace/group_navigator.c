@@ -1914,9 +1914,9 @@ group_navigator_add(Evas_Object *parent, Group *group)
    evas_object_smart_callback_add(pl->btn_add, "clicked", _on_btn_plus_clicked, pl);
    BTN_ADD(pl->layout, pl->btn_del, "elm.swallow.btn2", "minus");
    evas_object_smart_callback_add(pl->btn_del, "clicked", _on_btn_minus_clicked, pl);
-   BTN_ADD(pl->layout, pl->btn_down, "elm.swallow.btn1", "arrow_down");
+   BTN_ADD(pl->layout, pl->btn_down, "elm.swallow.btn1", "go-down");
    evas_object_smart_callback_add(pl->btn_down, "clicked", _on_btn_down_clicked, pl);
-   BTN_ADD(pl->layout, pl->btn_up, "elm.swallow.btn0", "arrow_up");
+   BTN_ADD(pl->layout, pl->btn_up, "elm.swallow.btn0", "go-up");
    evas_object_smart_callback_add(pl->btn_up, "clicked", _on_btn_up_clicked, pl);
 
    elm_object_disabled_set(pl->btn_del, true);
@@ -2029,8 +2029,8 @@ group_navigator_dummy_get(void)
    elm_layout_theme_set(dummy_navi, "layout", "navigator", "default");
    BTN_ADD(dummy_navi, btn, "elm.swallow.btn3", "plus");
    BTN_ADD(dummy_navi, btn, "elm.swallow.btn2", "minus");
-   BTN_ADD(dummy_navi, btn, "elm.swallow.btn1", "arrow_down");
-   BTN_ADD(dummy_navi, btn, "elm.swallow.btn0", "arrow_up");
+   BTN_ADD(dummy_navi, btn, "elm.swallow.btn1", "go-down");
+   BTN_ADD(dummy_navi, btn, "elm.swallow.btn0", "go-up");
 
    genlist = elm_genlist_add(dummy_navi);
    elm_layout_content_set(dummy_navi, NULL, genlist);
