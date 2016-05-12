@@ -130,6 +130,7 @@ config_init(void)
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.left",        panes.left, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.right",       panes.right, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_base, Config, "panes.left_ver",    panes.left_ver, EET_T_DOUBLE);
 
    eet_eina_stream_data_descriptor_class_set(&eddcr, sizeof(eddcr), "Recent", sizeof(Recent));
    edd_recent = eet_data_descriptor_stream_new(&eddcr);
@@ -359,6 +360,7 @@ _config_default_new(void)
    conf->window.h =           768;
    conf->panes.left =         0.2;
    conf->panes.right =        0.3;
+   conf->panes.left_ver =     0.5;
    conf->profile = strdup("default");
 
    return conf;
@@ -414,6 +416,8 @@ config_panes_sizes_data_update(void)
      elm_panes_content_left_size_get(ap.panes.left);
    config->panes.right =
      elm_panes_content_left_size_get(ap.panes.right);
+   config->panes.left_ver =
+     elm_panes_content_left_size_get(ap.panes.left_ver);
 
    return true;
 }
