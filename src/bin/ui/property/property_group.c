@@ -24,7 +24,7 @@
 #include "change.h"
 #include "project_manager.h"
 
-#define PART_MASK(TYPE) (1 << TYPE)
+#define PART_MASK(TYPE) (1u << TYPE)
 #define PART_RECTANGLE PART_MASK(EDJE_PART_TYPE_RECTANGLE)
 #define PART_TEXT PART_MASK(EDJE_PART_TYPE_TEXT)
 #define PART_IMAGE PART_MASK(EDJE_PART_TYPE_IMAGE)
@@ -36,10 +36,28 @@
 #define PART_PROXY PART_MASK(EDJE_PART_TYPE_PROXY)
 #define PART_SPACER PART_MASK(EDJE_PART_TYPE_SPACER)
 
+/* +1 is needed because valid type can be 0 */
+#define ACTION_MASK(TYPE) (1u << (TYPE+1))
+#define ACTION_STATE_SET ACTION_MASK(EDJE_ACTION_TYPE_STATE_SET)
+#define ACTION_ACTION_STOP ACTION_MASK(EDJE_ACTION_TYPE_ACTION_STOP)
+#define ACTION_SIGNAL_EMIT ACTION_MASK(EDJE_ACTION_TYPE_SIGNAL_EMIT)
+#define ACTION_DRAG_VAL_SET ACTION_MASK(EDJE_ACTION_TYPE_DRAG_VAL_SET)
+#define ACTION_DRAG_VAL_STEP ACTION_MASK(EDJE_ACTION_TYPE_DRAG_VAL_STEP)
+#define ACTION_DRAG_VAL_PAGE ACTION_MASK(EDJE_ACTION_TYPE_DRAG_VAL_PAGE)
+#define ACTION_SCRIPT ACTION_MASK(EDJE_ACTION_TYPE_SCRIPT)
+#define ACTION_FOCUS_SET ACTION_MASK(EDJE_ACTION_TYPE_FOCUS_SET)
+#define ACTION_RESERVED00 ACTION_MASK(EDJE_ACTION_TYPE_RESERVED00)
+#define ACTION_FOCUS_OBJECT ACTION_MASK(EDJE_ACTION_TYPE_FOCUS_OBJECT)
+#define ACTION_PARAM_COPY ACTION_MASK(EDJE_ACTION_TYPE_PARAM_COPY)
+#define ACTION_PARAM_SET ACTION_MASK(EDJE_ACTION_TYPE_PARAM_SET)
+#define ACTION_SOUND_SAMPLE ACTION_MASK(EDJE_ACTION_TYPE_SOUND_SAMPLE)
+#define ACTION_SOUND_TONE ACTION_MASK(EDJE_ACTION_TYPE_SOUND_TONE)
+
 struct _Property_Group_Data {
    Group *group;
    Part *part;
    Eina_Stringshare *program;
+   Edje_Action_Type action_type;
 
    /* data needed to correctly handle changes that will be passed to history module */
    struct {
@@ -119,6 +137,7 @@ static const char *aspect_preference_strings[] = { STR_NONE,
 #define EDIT_OBJ group_pd.group->edit_object
 #define PART_ARGS group_pd.part->name
 #define STATE_ARGS PART_ARGS, group_pd.part->current_state->parsed_name, group_pd.part->current_state->parsed_val
+#define PROGRAM_ARGS group_pd.program
 #define CHANGE_MERGE group_pd.history.change, true
 #define CHANGE_NO_MERGE group_pd.history.change, false
 
@@ -181,6 +200,7 @@ _on_program_selected(void *data,
    assert(pd != NULL);
    assert(group_pd.program != NULL);
 
+   group_pd.action_type = edje_edit_program_action_get(EDIT_OBJ, PROGRAM_ARGS);
    DBG("selected program \"%s\"", group_pd.program);
    group_pd.part = NULL;
 
@@ -251,8 +271,12 @@ _filter_cb(Property_Attribute *pa)
          return group_pd.program != NULL;
 
       default:
-         return !group_pd.part ||
-            (pa->filter_data.part_types & PART_MASK(group_pd.part->type));
+         if (group_pd.part)
+           return !!(pa->filter_data.part_types & PART_MASK(group_pd.part->type));
+         else if (group_pd.program)
+           return !!(pa->filter_data.action_types & ACTION_MASK(group_pd.action_type));
+         else
+           return true;
      }
 }
 
@@ -2315,10 +2339,8 @@ _init_items()
         IT.type.group_item = it;
         IT.filter_cb = _filter_cb;
 
-        /* default value: show for all supported part types */
-        IT.filter_data.part_types = PART_RECTANGLE | PART_TEXT | PART_IMAGE |
-           PART_SWALLOW | PART_TEXTBLOCK | PART_GROUP | PART_BOX | PART_TABLE |
-           PART_PROXY | PART_SPACER;
+        /* default value: show for all types */
+        IT.filter_data.part_types = ~0u;
 
         switch(it)
           {
