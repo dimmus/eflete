@@ -1609,3 +1609,10 @@ workspace_code_changed(Evas_Object *obj)
 
    elm_object_part_content_set(wd->code.obj, "elm.swallow.overlay", layout);
 }
+
+Evas_Object *
+workspace_group_navigator_get(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+   return wd->group_navi;
+}
