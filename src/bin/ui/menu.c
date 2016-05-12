@@ -93,16 +93,16 @@ _menu_cb(void *data __UNUSED__,
    switch (menu_event->mid)
      {
       case MENU_FILE_NEW_PROJECT:
-         tabs_menu_tab_open(TAB_HOME_NEW_PROJECT);
+         //tabs_menu_tab_open(TAB_HOME_NEW_PROJECT);
          break;
       case MENU_FILE_OPEN_PROJECT:
-         tabs_menu_tab_open(TAB_HOME_OPEN_PROJECT);
+         //tabs_menu_tab_open(TAB_HOME_OPEN_PROJECT);
          break;
       case MENU_FILE_IMPORT_EDJ:
-         tabs_menu_tab_open(TAB_HOME_IMPORT_EDJ);
+         //tabs_menu_tab_open(TAB_HOME_IMPORT_EDJ);
          break;
       case MENU_FILE_IMPORT_EDC:
-         tabs_menu_tab_open(TAB_HOME_IMPORT_EDC);
+         //tabs_menu_tab_open(TAB_HOME_IMPORT_EDC);
          break;
       case MENU_FILE_SAVE:
          project_save();
@@ -122,7 +122,7 @@ _menu_cb(void *data __UNUSED__,
       case MENU_FILE_CLOSE_PROJECT:
            {
               if (!project_close()) break;
-              tabs_menu_tab_open(TAB_HOME_OPEN_PROJECT);
+              //tabs_menu_tab_open(TAB_HOME_OPEN_PROJECT);
               ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_BASE, true);
               ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
               ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, true);
@@ -178,16 +178,16 @@ _menu_cb(void *data __UNUSED__,
          break;
 
       case MENU_EDITORS_IMAGE:
-         tabs_menu_tab_open(TAB_IMAGE_EDITOR);
+         //tabs_menu_tab_open(TAB_IMAGE_EDITOR);
          break;
       case MENU_EDITORS_SOUND:
-         tabs_menu_tab_open(TAB_SOUND_EDITOR);
+         //tabs_menu_tab_open(TAB_SOUND_EDITOR);
          break;
       case MENU_EDITORS_COLORCLASS:
-         tabs_menu_tab_open(TAB_COLORCLASS_EDITOR);
+         //tabs_menu_tab_open(TAB_COLORCLASS_EDITOR);
          break;
       case MENU_EDITORS_TEXT_STYLE:
-         tabs_menu_tab_open(TAB_STYLE_EDITOR);
+         //tabs_menu_tab_open(TAB_STYLE_EDITOR);
          break;
       case MENU_WINDOW_TAB_HOME:
          tabs_home_tab_add(TAB_HOME_OPEN_PROJECT);
