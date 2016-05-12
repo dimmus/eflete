@@ -385,7 +385,13 @@ editor_part_item_weight_y_reset(Evas_Object *edit_object, Change *change, const 
 Eina_Bool
 editor_part_item_padding_default_is(Evas_Object *edit_object, const char *part_name, const char *item_name);
 Eina_Bool
-editor_part_item_padding_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *item_name);
+editor_part_item_padding_top_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *item_name);
+Eina_Bool
+editor_part_item_padding_bottom_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *item_name);
+Eina_Bool
+editor_part_item_padding_left_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *item_name);
+Eina_Bool
+editor_part_item_padding_right_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *item_name);
 
 Eina_Bool
 editor_part_text_effect_default_is(Evas_Object *edit_object, const char *part_name);

@@ -276,13 +276,15 @@ editor_part_item_source_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    return true;
 }
 
+/* PADDINGS */
+
 Eina_Bool
-editor_part_item_padding_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                             const char *part_name, const char *item_name, int n3, int n4, int n5, int n6)
+editor_part_item_padding_left_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                  const char *part_name, const char *item_name, int n3)
 {
    Diff *diff;
    int o3, o4, o5, o6;
-   Attribute attribute = ATTRIBUTE_PART_ITEM_PADDING;
+   Attribute attribute = ATTRIBUTE_PART_ITEM_PADDING_LEFT;
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(item_name != NULL);
@@ -290,33 +292,137 @@ editor_part_item_padding_set(Evas_Object *edit_object, Change *change, Eina_Bool
      {
         edje_edit_part_item_padding_get(edit_object, part_name, item_name, &o3, &o4, &o5, &o6);
         diff = mem_calloc(1, sizeof(Diff));
-        diff->redo.type = FUNCTION_TYPE_STRING_STRING_INT_INT_INT_INT;
-        diff->redo.function = editor_part_item_padding_set;
-        diff->redo.args.type_ssiiii.s1 = eina_stringshare_add(part_name);
-        diff->redo.args.type_ssiiii.s2 = eina_stringshare_add(item_name);
-        diff->redo.args.type_ssiiii.i3 = n3;
-        diff->redo.args.type_ssiiii.i4 = n4;
-        diff->redo.args.type_ssiiii.i5 = n5;
-        diff->redo.args.type_ssiiii.i6 = n6;
-        diff->undo.type = FUNCTION_TYPE_STRING_STRING_INT_INT_INT_INT;
-        diff->undo.function = editor_part_item_padding_set;
-        diff->undo.args.type_ssiiii.s1 = eina_stringshare_add(part_name);
-        diff->undo.args.type_ssiiii.s2 = eina_stringshare_add(item_name);
-        diff->undo.args.type_ssiiii.i3 = o3;
-        diff->undo.args.type_ssiiii.i4 = o4;
-        diff->undo.args.type_ssiiii.i5 = o5;
-        diff->undo.args.type_ssiiii.i6 = o6;
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_INT;
+        diff->redo.function = editor_part_item_padding_left_set;
+        diff->redo.args.type_ssi.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssi.s2 = eina_stringshare_add(item_name);
+        diff->redo.args.type_ssi.i3 = n3;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_INT;
+        diff->undo.function = editor_part_item_padding_left_set;
+        diff->undo.args.type_ssi.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssi.s2 = eina_stringshare_add(item_name);
+        diff->undo.args.type_ssi.i3 = o3;
         if (merge)
           change_diff_merge_add(change, diff);
         else
           change_diff_add(change, diff);
      }
-   if (!edje_edit_part_item_padding_set(edit_object, part_name, item_name, n3, n4, n5, n6))
+   if (!edje_edit_part_item_padding_set(edit_object, part_name, item_name, n3, o4, o5, o6))
      return false;
    _editor_project_changed();
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
    return true;
 }
+
+Eina_Bool
+editor_part_item_padding_right_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                   const char *part_name, const char *item_name, int n4)
+{
+   Diff *diff;
+   int o3, o4, o5, o6;
+   Attribute attribute = ATTRIBUTE_PART_ITEM_PADDING_RIGHT;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(item_name != NULL);
+   if (change)
+     {
+        edje_edit_part_item_padding_get(edit_object, part_name, item_name, &o3, &o4, &o5, &o6);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_INT;
+        diff->redo.function = editor_part_item_padding_right_set;
+        diff->redo.args.type_ssi.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssi.s2 = eina_stringshare_add(item_name);
+        diff->redo.args.type_ssi.i3 = n4;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_INT;
+        diff->undo.function = editor_part_item_padding_right_set;
+        diff->undo.args.type_ssi.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssi.s2 = eina_stringshare_add(item_name);
+        diff->undo.args.type_ssi.i3 = o4;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_item_padding_set(edit_object, part_name, item_name, o3, n4, o5, o6))
+     return false;
+   _editor_project_changed();
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+Eina_Bool
+editor_part_item_padding_top_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                 const char *part_name, const char *item_name, int n5)
+{
+   Diff *diff;
+   int o3, o4, o5, o6;
+   Attribute attribute = ATTRIBUTE_PART_ITEM_PADDING_TOP;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(item_name != NULL);
+   if (change)
+     {
+        edje_edit_part_item_padding_get(edit_object, part_name, item_name, &o3, &o4, &o5, &o6);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_INT;
+        diff->redo.function = editor_part_item_padding_top_set;
+        diff->redo.args.type_ssi.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssi.s2 = eina_stringshare_add(item_name);
+        diff->redo.args.type_ssi.i3 = n5;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_INT;
+        diff->undo.function = editor_part_item_padding_top_set;
+        diff->undo.args.type_ssi.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssi.s2 = eina_stringshare_add(item_name);
+        diff->undo.args.type_ssi.i3 = o5;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_item_padding_set(edit_object, part_name, item_name, o3, o4, n5, o6))
+     return false;
+   _editor_project_changed();
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+Eina_Bool
+editor_part_item_padding_bottom_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                    const char *part_name, const char *item_name, int n6)
+{
+   Diff *diff;
+   int o3, o4, o5, o6;
+   Attribute attribute = ATTRIBUTE_PART_ITEM_PADDING_BOTTOM;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(item_name != NULL);
+   if (change)
+     {
+        edje_edit_part_item_padding_get(edit_object, part_name, item_name, &o3, &o4, &o5, &o6);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_INT;
+        diff->redo.function = editor_part_item_padding_bottom_set;
+        diff->redo.args.type_ssi.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssi.s2 = eina_stringshare_add(item_name);
+        diff->redo.args.type_ssi.i3 = n6;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_INT;
+        diff->undo.function = editor_part_item_padding_bottom_set;
+        diff->undo.args.type_ssi.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssi.s2 = eina_stringshare_add(item_name);
+        diff->undo.args.type_ssi.i3 = o6;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_part_item_padding_set(edit_object, part_name, item_name, o3, o4, o5, n6))
+     return false;
+   _editor_project_changed();
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+/**********************/
 
 Eina_Bool
 editor_part_select_mode_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
@@ -485,7 +591,10 @@ editor_part_item_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge
    res = res && editor_part_item_align_y_reset(edit_object, change, part_name, item_name);
    res = res && editor_part_item_weight_x_reset(edit_object, change, part_name, item_name);
    res = res && editor_part_item_weight_y_reset(edit_object, change, part_name, item_name);
-   res = res && editor_part_item_padding_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_padding_top_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_padding_bottom_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_padding_left_reset(edit_object, change, part_name, item_name);
+   res = res && editor_part_item_padding_right_reset(edit_object, change, part_name, item_name);
    if (!_part_item_restacking)
      res = res && editor_part_item_restack(edit_object, change, false, part_name, item_name, NULL);
 

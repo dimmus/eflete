@@ -447,7 +447,6 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SPREAD);
-   /*      APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PADDING); */
          break;
       default:
          CRIT("items callback not found for %s", pa->name);

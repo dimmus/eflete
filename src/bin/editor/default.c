@@ -233,10 +233,22 @@ EDITOR_PART_ITEM_DOUBLE_RESET(align_y, 0.5)
 EDITOR_PART_ITEM_DOUBLE_RESET(weight_x, 0.0)
 EDITOR_PART_ITEM_DOUBLE_RESET(weight_y, 0.0)
 
-#define EDITOR_PART_ITEM_INT_INT_INT_INT_RESET(FUNC, DEF_VAL, DEF_VAL_2, DEF_VAL_3, DEF_VAL_4) \
-EDITOR_INT_INT_INT_INT_DEFAULT_CHECK(part_item_##FUNC, EDITOR_PART_ITEM_ARGS_PROTO, EDITOR_PART_ITEM_ARGS, DEF_VAL, DEF_VAL_2, DEF_VAL_3, DEF_VAL_4) \
-EDITOR_INT_INT_INT_INT_RESET(part_item_##FUNC, EDITOR_PART_ITEM_ARGS_PROTO, EDITOR_PART_ITEM_ARGS, DEF_VAL, DEF_VAL_2, DEF_VAL_3, DEF_VAL_4)
-EDITOR_PART_ITEM_INT_INT_INT_INT_RESET(padding, 0, 0, 0, 0)
+#define EDITOR_FOUR_INT_RESET(FUNC, TYPE, PROTO_ARGS, ARGS, RESET_VAL) \
+Eina_Bool \
+editor_##FUNC##_##TYPE##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
+{ \
+   assert(edit_object != NULL); \
+   if(editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
+   if(editor_##FUNC##_##TYPE##_set(edit_object, change, false, ARGS, RESET_VAL)) \
+     return true; \
+   CRIT("reset failed"); \
+   abort(); \
+}
+EDITOR_INT_INT_INT_INT_DEFAULT_CHECK(part_item_padding, EDITOR_PART_ITEM_ARGS_PROTO, EDITOR_PART_ITEM_ARGS, 0, 0, 0, 0)
+EDITOR_FOUR_INT_RESET(part_item_padding, top, EDITOR_PART_ITEM_ARGS_PROTO, EDITOR_PART_ITEM_ARGS, 0)
+EDITOR_FOUR_INT_RESET(part_item_padding, bottom, EDITOR_PART_ITEM_ARGS_PROTO, EDITOR_PART_ITEM_ARGS, 0)
+EDITOR_FOUR_INT_RESET(part_item_padding, left, EDITOR_PART_ITEM_ARGS_PROTO, EDITOR_PART_ITEM_ARGS, 0)
+EDITOR_FOUR_INT_RESET(part_item_padding, right, EDITOR_PART_ITEM_ARGS_PROTO, EDITOR_PART_ITEM_ARGS, 0)
 
 TODO("Add stub-group for part items and implement reseter")
 

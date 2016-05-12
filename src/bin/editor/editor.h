@@ -136,7 +136,10 @@ typedef enum {
    ATTRIBUTE_PART_ITEM_POSITION_COL,
    ATTRIBUTE_PART_ITEM_POSITION_ROW,
    ATTRIBUTE_PART_ITEM_SOURCE,
-   ATTRIBUTE_PART_ITEM_PADDING,
+   ATTRIBUTE_PART_ITEM_PADDING_TOP,
+   ATTRIBUTE_PART_ITEM_PADDING_BOTTOM,
+   ATTRIBUTE_PART_ITEM_PADDING_LEFT,
+   ATTRIBUTE_PART_ITEM_PADDING_RIGHT,
    ATTRIBUTE_STATE_CONTAINER_ALIGN_X,
    ATTRIBUTE_STATE_CONTAINER_ALIGN_Y,
    ATTRIBUTE_STATE_CONTAINER_MIN_H,
@@ -539,8 +542,17 @@ Eina_Bool
 editor_part_item_aspect_mode_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
       Edje_Aspect_Control new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_part_item_padding_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      int new_val1, int new_val2, int new_val3, int new_val4) EINA_WARN_UNUSED_RESULT;
+editor_part_item_padding_bottom_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
+      int new_val1) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_part_item_padding_top_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
+      int new_val1) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_part_item_padding_left_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
+      int new_val1) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_part_item_padding_right_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
+      int new_val1) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_scale_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
       Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
