@@ -447,6 +447,8 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_SPREAD);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_H);
+         APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_V);
          break;
       default:
          CRIT("items callback not found for %s", pa->name);
@@ -565,6 +567,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_PREFER_H:
       case ATTRIBUTE_PART_ITEM_ASPECT_W:
       case ATTRIBUTE_PART_ITEM_ASPECT_H:
+      case ATTRIBUTE_PART_ITEM_PADDING_TOP:
+      case ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
+      case ATTRIBUTE_PART_ITEM_PADDING_LEFT:
+      case ATTRIBUTE_PART_ITEM_PADDING_RIGHT:
       case ATTRIBUTE_STATE_PROXY_SOURCE:
       case ATTRIBUTE_STATE_VISIBLE:
       case ATTRIBUTE_STATE_FILL_SMOOTH:
@@ -1121,6 +1127,22 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          int_val1 = edje_edit_part_item_spread_h_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
          break;
+      case ATTRIBUTE_PART_ITEM_PADDING_LEFT:
+         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, &int_val1, NULL, NULL, NULL);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_PADDING_RIGHT:
+         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, &int_val1, NULL, NULL);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_PADDING_TOP:
+         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, &int_val1, NULL);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
+         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, NULL, &int_val1);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
       case ATTRIBUTE_STATE_TEXT_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_state_text_source_get(EDIT_OBJ, STATE_ARGS);
@@ -1388,7 +1410,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
 static void
 _start_cb(Property_Attribute *pa, Property_Action *action)
 {
-   int r, g, b, a;
+   int r, g, b, a, int_val1;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -1878,6 +1900,26 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_SPREAD_H:
          group_pd.history.format = _("part item's spread by columns changed from %d to %d");
          VAL(int_val1) = edje_edit_part_item_spread_h_get(EDIT_OBJ, ITEM_ARGS);
+         break;
+      case ATTRIBUTE_PART_ITEM_PADDING_LEFT:
+         group_pd.history.format = _("part item's left padding changed from %d to %d");
+         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, &int_val1, NULL, NULL, NULL);
+         VAL(int_val1) = int_val1;
+         break;
+      case ATTRIBUTE_PART_ITEM_PADDING_RIGHT:
+         group_pd.history.format = _("part item's right padding changed from %d to %d");
+         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, &int_val1, NULL, NULL);
+         VAL(int_val1) = int_val1;
+         break;
+      case ATTRIBUTE_PART_ITEM_PADDING_TOP:
+         group_pd.history.format = _("part item's top padding changed from %d to %d");
+         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, &int_val1, NULL);
+         VAL(int_val1) = int_val1;
+         break;
+      case ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
+         group_pd.history.format = _("part item's bottom padding changed from %d to %d");
+         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, NULL, &int_val1);
+         VAL(int_val1) = int_val1;
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -2466,6 +2508,22 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_part_item_spread_h_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_part_item_spread_h_get(EDIT_OBJ, ITEM_ARGS);
          break;
+      case ATTRIBUTE_PART_ITEM_PADDING_TOP:
+         CRIT_ON_FAIL(editor_part_item_padding_top_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, &group_pd.history.new.int_val1, NULL);
+         break;
+      case ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
+         CRIT_ON_FAIL(editor_part_item_padding_bottom_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, NULL, &group_pd.history.new.int_val1);
+         break;
+      case ATTRIBUTE_PART_ITEM_PADDING_LEFT:
+         CRIT_ON_FAIL(editor_part_item_padding_left_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, &group_pd.history.new.int_val1, NULL, NULL, NULL);
+         break;
+      case ATTRIBUTE_PART_ITEM_PADDING_RIGHT:
+         CRIT_ON_FAIL(editor_part_item_padding_right_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
+         edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, &group_pd.history.new.int_val1, NULL, NULL);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -2578,6 +2636,10 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_ASPECT_H:
       case ATTRIBUTE_PART_ITEM_SPREAD_W:
       case ATTRIBUTE_PART_ITEM_SPREAD_H:
+      case ATTRIBUTE_PART_ITEM_PADDING_LEFT:
+      case ATTRIBUTE_PART_ITEM_PADDING_RIGHT:
+      case ATTRIBUTE_PART_ITEM_PADDING_TOP:
+      case ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
          CHECK_VAL(int_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.int_val1,
@@ -3226,7 +3288,14 @@ _init_items()
               _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPREAD_W);
               _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPREAD_H);
               break;
-           case PROPERTY_GROUP_ITEM_PART_ITEM_PADDING:
+           case PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_H:
+              IT.name = "paddings";
+              _action1(&IT, "left", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_LEFT);
+              _action2(&IT, "right", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_RIGHT);
+              break;
+           case PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_V:
+              _action1(&IT, "top", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_TOP);
+              _action2(&IT, "bottom", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_BOTTOM);
               break;
 
            case PROPERTY_GROUP_ITEM_PART_ITEM_SPAN_COL:
