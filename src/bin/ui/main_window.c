@@ -143,14 +143,14 @@ ui_main_window_add(void)
 
    /* add panes to main window */
    ap.panes.left = elm_panes_add(ap.win);
-   evas_object_size_hint_weight_set(ap.panes.left, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(ap.panes.left, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(ap.win_layout, "eflete.swallow.panes", ap.panes.left);
 
    ap.panes.right = elm_panes_add(ap.win);
-   evas_object_size_hint_weight_set(ap.panes.right, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(ap.panes.right, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(ap.panes.left, "right", ap.panes.right);
+
+   ap.panes.left_ver = elm_panes_add(ap.win);
+   elm_panes_horizontal_set(ap.panes.left_ver, true);
+   elm_object_part_content_set(ap.panes.left, "left", ap.panes.left_ver);
 
    /* apply the panes size from config */
    elm_panes_content_left_size_set(ap.panes.left, config->panes.left);
@@ -159,7 +159,7 @@ ui_main_window_add(void)
 
    project_navigator = project_navigator_add();
    evas_object_smart_callback_add(project_navigator, SIGNAL_GROUP_OPEN, _project_navigator_group_open, NULL);
-   elm_object_part_content_set(ap.panes.left, "left", project_navigator);
+   elm_object_part_content_set(ap.panes.left_ver, "left", project_navigator);
 
    tabs = tabs_add();
    elm_object_part_content_set(ap.panes.right, "left", tabs);

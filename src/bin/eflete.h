@@ -96,6 +96,7 @@ struct _App_Data
    struct {
       Evas_Object *left;
       Evas_Object *right;
+      Evas_Object *left_ver;
    } panes;
 
    struct {

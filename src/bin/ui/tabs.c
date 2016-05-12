@@ -88,6 +88,8 @@ _content_unset(void)
    tabs.current_group = NULL;
    content = elm_layout_content_unset(tabs.layout, NULL);
    evas_object_hide(content);
+   content = elm_object_part_content_unset(ap.panes.left_ver, "right");
+   evas_object_hide(content);
 }
 
 static void
@@ -109,6 +111,7 @@ _content_set(void *data,
         elm_layout_content_set(tabs.layout, NULL, item->content);
         if (!item->group) return;
 
+        elm_object_part_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(item->content));
         tabs.current_workspace = item->content;
         tabs.current_group = item->group;
         if (ap.project)
