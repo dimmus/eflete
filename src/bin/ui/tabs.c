@@ -105,11 +105,15 @@ _content_set(void *data,
    elm_toolbar_item_selected_set(tabs.selected, false);
    tabs.selected = toolbar_item;
 
+   _content_unset();
    if (item)
      {
-        _content_unset();
         elm_layout_content_set(tabs.layout, NULL, item->content);
-        if (!item->group) return;
+        if (!item->group)
+          {
+             elm_object_part_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(NULL));
+             return;
+          }
 
         elm_object_part_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(item->content));
         tabs.current_workspace = item->content;
@@ -130,9 +134,10 @@ _content_set(void *data,
           evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
      }
    else
-          {
+     {
         evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, NULL);
 
+        elm_layout_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(NULL));
         tabs.current_workspace = NULL;
         tabs.current_group = NULL;
         if (ap.project)
@@ -1039,8 +1044,6 @@ void
 tabs_menu_tab_open(Tabs_Menu view)
 {
    assert(tabs.layout != NULL);
-
-   _content_unset();
 
    switch(view)
      {
