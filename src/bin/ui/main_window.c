@@ -155,7 +155,6 @@ ui_main_window_add(void)
    /* apply the panes size from config */
    elm_panes_content_left_size_set(ap.panes.left, config->panes.left);
    elm_panes_content_left_size_set(ap.panes.right, config->panes.right);
-   elm_panes_content_right_size_set(ap.panes.right, config->panes.tabs_size);
 
    project_navigator = project_navigator_add();
    evas_object_smart_callback_add(project_navigator, SIGNAL_GROUP_OPEN, _project_navigator_group_open, NULL);
