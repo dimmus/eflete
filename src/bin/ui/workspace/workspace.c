@@ -1617,5 +1617,7 @@ workspace_group_navigator_get(Evas_Object *obj)
    if (!obj) return group_navigator_dummy_get();
 
    WS_DATA_GET(obj);
+   if (MODE_DEMO == wd->mode)
+     return wd->demo_navi;
    return wd->group_navi;
 }

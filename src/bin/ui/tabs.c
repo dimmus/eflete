@@ -171,6 +171,19 @@ _content_set(void *data,
      }
 }
 
+static void
+_mode_changed(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   Evas_Object *content;
+
+   content = elm_layout_content_unset(ap.panes.left_ver, "right");
+   evas_object_hide(content);
+
+   elm_layout_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(tabs.current_workspace));
+}
+
 static Tabs_Item *
 _find_tab(Group *group)
 {
@@ -981,6 +994,8 @@ tabs_add(void)
    elm_object_item_disabled_set(tabs.menu.item_colorclass, true);
 
    tabs_home_tab_add(TAB_HOME_OPEN_PROJECT);
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_WORKSPACE_MODE_CHANGED, _mode_changed, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_SAVED, _on_save, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _on_project_changed, NULL);
