@@ -439,8 +439,8 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_IN);
       case PROPERTY_GROUP_ITEM_STATE_CONTAINER_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_ALIGN);
-//         APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_PADDING);
-//         APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_MIN);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_PADDING);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_MIN);
          break;
       case PROPERTY_GROUP_ITEM_PART_ITEM_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_NAME);
@@ -610,6 +610,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_STYLE:
       case ATTRIBUTE_PROGRAM_SIGNAL:
       case ATTRIBUTE_PROGRAM_SOURCE:
+      case ATTRIBUTE_STATE_CONTAINER_PADING_X:
+      case ATTRIBUTE_STATE_CONTAINER_PADING_Y:
+      case ATTRIBUTE_STATE_CONTAINER_MIN_V:
+      case ATTRIBUTE_STATE_CONTAINER_MIN_H:
          break;
       case ATTRIBUTE_STATE_MAX_W:
       case ATTRIBUTE_STATE_MAX_H:
@@ -1084,6 +1088,22 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_CONTAINER_ALIGN_Y:
          double_val1 = edje_edit_state_container_align_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_STATE_CONTAINER_PADING_X:
+         int_val1 = edje_edit_state_container_padding_x_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_STATE_CONTAINER_PADING_Y:
+         int_val1 = edje_edit_state_container_padding_y_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_STATE_CONTAINER_MIN_V:
+         bool_val1 = edje_edit_state_container_min_v_get(EDIT_OBJ, STATE_ARGS);
+         elm_check_state_set(action->control, bool_val1);
+         break;
+      case ATTRIBUTE_STATE_CONTAINER_MIN_H:
+         bool_val1 = edje_edit_state_container_min_h_get(EDIT_OBJ, STATE_ARGS);
+         elm_check_state_set(action->control, bool_val1);
          break;
 
       case ATTRIBUTE_PART_ITEM_SOURCE:
@@ -1885,6 +1905,20 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("container's align_y changed from %.2f to %.2f");
          VAL(double_val1) = edje_edit_state_container_align_y_get(EDIT_OBJ, STATE_ARGS);
          break;
+      case ATTRIBUTE_STATE_CONTAINER_PADING_X:
+         group_pd.history.format = _("container's padding_x changed from %d to %d");
+         VAL(int_val1) = edje_edit_state_container_padding_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_CONTAINER_PADING_Y:
+         group_pd.history.format = _("container's padding_y changed from %d to %d");
+         VAL(int_val1) = edje_edit_state_container_padding_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_CONTAINER_MIN_V:
+         group_pd.history.format = _("container's min_x %s");
+         break;
+      case ATTRIBUTE_STATE_CONTAINER_MIN_H:
+         group_pd.history.format = _("container's min_y %s");
+         break;
 
       case ATTRIBUTE_PART_ITEM_SOURCE:
          group_pd.history.format = _("item's source changed from \"%s\" to \"%s\"");
@@ -2513,6 +2547,22 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_state_container_align_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_state_container_align_y_get(EDIT_OBJ, STATE_ARGS);
          break;
+      case ATTRIBUTE_STATE_CONTAINER_PADING_X:
+         CRIT_ON_FAIL(editor_state_container_padding_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_state_container_padding_x_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_CONTAINER_PADING_Y:
+         CRIT_ON_FAIL(editor_state_container_padding_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_state_container_padding_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_CONTAINER_MIN_V:
+         CRIT_ON_FAIL(editor_state_container_min_v_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
+         group_pd.history.new.bool_val1 = bool_val1;
+         break;
+      case ATTRIBUTE_STATE_CONTAINER_MIN_H:
+         CRIT_ON_FAIL(editor_state_container_min_h_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
+         group_pd.history.new.bool_val1 = bool_val1;
+         break;
 
       case ATTRIBUTE_PART_ITEM_SOURCE:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
@@ -2716,6 +2766,8 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X:
       case ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y:
       case ATTRIBUTE_STATE_TEXT_SIZE:
+      case ATTRIBUTE_STATE_CONTAINER_PADING_X:
+      case ATTRIBUTE_STATE_CONTAINER_PADING_Y:
       case ATTRIBUTE_PART_ITEM_MIN_W:
       case ATTRIBUTE_PART_ITEM_MIN_H:
       case ATTRIBUTE_PART_ITEM_MAX_W:
@@ -2818,6 +2870,8 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_FIT_X:
       case ATTRIBUTE_STATE_TEXT_FIT_Y:
       case ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE:
+      case ATTRIBUTE_STATE_CONTAINER_MIN_V:
+      case ATTRIBUTE_STATE_CONTAINER_MIN_H:
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (group_pd.history.new.bool_val1) ?
                                        _("turned on") : _("turned off"));
@@ -3348,8 +3402,14 @@ _init_items()
               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_Y);
               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_PADDING:
+              IT.name = "padding";
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_PADING_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_PADING_Y);
               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_MIN:
+              IT.name = "min";
+              _action1(&IT, "v", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_V);
+              _action2(&IT, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_H);
               break;
 
               /* part item block */
