@@ -376,6 +376,7 @@ _on_project_changed(void *data __UNUSED__,
 
    EINA_LIST_FOREACH(tabs.items, l, item)
      {
+        if (!item->group) continue; /* skip home tab */
         workspace_code_changed(item->content);
      }
 }
@@ -446,6 +447,7 @@ _editor_saved(void *data __UNUSED__,
    pm_dev_file_reload(ap.project);
    EINA_LIST_FOREACH(tabs.items, l, item)
      {
+        if (!item->group) continue; /* skip home tab */
         gm_group_edit_object_reload(ap.project, item->group);
         if (item->content == tabs.current_workspace)
           workspace_groupview_hard_update(tabs.current_workspace);
