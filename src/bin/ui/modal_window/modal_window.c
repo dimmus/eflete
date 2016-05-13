@@ -20,9 +20,6 @@
 #include "modal_window.h"
 #include "widget_macro.h"
 
-#define FUNC_CLOSE "func_close"
-#define FUNC_DATA "func_data"
-
 static void
 _response_cb(void *data,
              Evas_Object *obj __UNUSED__,
@@ -148,19 +145,11 @@ _mw_close(void *data,
           Evas_Object *obj __UNUSED__,
           void *event_info __UNUSED__)
 {
-   Evas_Smart_Cb func;
-   void *func_data;
-   Evas_Object *mw;
-
-   mw = (Evas_Object *)data;
+   Evas_Object *mw = data;
 
    assert(mw != NULL);
 
-   func_data = evas_object_data_get(mw, FUNC_DATA);
-   func = evas_object_data_get(mw, FUNC_CLOSE);
-   if (func) func(func_data, mw, NULL);
-   else _anim_hide(elm_object_parent_widget_get(mw),
-                   evas_object_evas_get(mw), mw, NULL);
+   _anim_hide(elm_object_parent_widget_get(mw), evas_object_evas_get(mw), mw, NULL);
 }
 
 void
@@ -173,7 +162,7 @@ mw_del(Evas_Object *mw)
 }
 
 Evas_Object *
-mw_add(Evas_Smart_Cb func, void *data)
+mw_add(void)
 {
    Evas_Object *mw, *btn;
 
@@ -186,9 +175,6 @@ mw_add(Evas_Smart_Cb func, void *data)
    elm_object_style_set(btn, "close");
    evas_object_smart_callback_add(btn, "clicked", _mw_close, mw);
    elm_object_part_content_set(mw, "elm.swallow.close", btn);
-
-   evas_object_data_set(mw, FUNC_CLOSE, func);
-   evas_object_data_set(mw, FUNC_DATA, data);
 
    evas_object_event_callback_add(mw, EVAS_CALLBACK_SHOW, _anim_show, ap.win);
 

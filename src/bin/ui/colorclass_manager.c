@@ -370,7 +370,7 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
      }
 
    /* Creating main layout of window */
-   edit->win = mw_add(NULL, NULL);
+   edit->win = mw_add();
    mw_title_set(edit->win, _("Color class manager"));
    ic = elm_icon_add(edit->win);
    elm_icon_standard_set(ic, "color");
