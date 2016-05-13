@@ -175,25 +175,20 @@ mw_del(Evas_Object *mw)
 Evas_Object *
 mw_add(Evas_Smart_Cb func, void *data)
 {
-   Evas_Object *mw, *bt_close, *ic;
+   Evas_Object *mw, *btn;
 
    mw = elm_win_inwin_add(ap.win);
    elm_object_style_set(mw, "modal_window");
 
    evas_object_focus_set(mw, true);
 
-   BUTTON_ADD(mw, bt_close, NULL);
-   TODO("uncomment it when focus will be adequate"
-        "evas_object_event_callback_add(mw, EVAS_CALLBACK_KEY_DOWN, _on_key_down, bt_close);")
+   BUTTON_ADD(mw, btn, NULL);
+   elm_object_style_set(btn, "close");
+   evas_object_smart_callback_add(btn, "clicked", _mw_close, mw);
+   elm_object_part_content_set(mw, "elm.swallow.close", btn);
 
    evas_object_data_set(mw, FUNC_CLOSE, func);
    evas_object_data_set(mw, FUNC_DATA, data);
-   evas_object_smart_callback_add(bt_close, "clicked", _mw_close, mw);
-
-   ic = elm_icon_add(bt_close);
-   elm_icon_standard_set(ic, "window-close");
-   elm_layout_content_set(bt_close, "icon", ic);
-   elm_layout_content_set(mw, "elm.swallow.close", bt_close);
 
    evas_object_event_callback_add(mw, EVAS_CALLBACK_SHOW, _anim_show, ap.win);
 
