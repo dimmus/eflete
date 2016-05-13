@@ -602,7 +602,7 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
 
    assert(edit != NULL);
 
-   edit->win = mw_add(NULL, NULL);
+   edit->win = mw_add();
    mw_title_set(edit->win, _("Sound manager"));
    ic = elm_icon_add(edit->win);
    elm_icon_standard_set(ic, "sound2");

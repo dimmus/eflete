@@ -926,7 +926,7 @@ style_manager_add()
 
    style_edit = (Style_Editor *)mem_calloc(1, sizeof(Style_Editor));
 
-   style_edit->win = mw_add(NULL, NULL);
+   style_edit->win = mw_add();
    mw_title_set(style_edit->win, _("Textblock style manager"));
    ic = elm_icon_add(style_edit->win);
    elm_icon_standard_set(ic, "text2");

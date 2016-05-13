@@ -492,7 +492,7 @@ image_manager_add()
 
    Image_Manager *img_mng = (Image_Manager *)mem_calloc(1, sizeof(Image_Manager));
 
-   img_mng->win = mw_add(NULL, NULL);
+   img_mng->win = mw_add();
    mw_title_set(img_mng->win, _("Image manager"));
    ic = elm_icon_add(img_mng->win);
    elm_icon_standard_set(ic, "image2");
