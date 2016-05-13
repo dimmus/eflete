@@ -20,6 +20,9 @@
 #include "modal_window.h"
 #include "widget_macro.h"
 
+#define SIGNAL_DONE "done"
+#define SIGNAL_CANCEL "cancel"
+
 static void
 _response_cb(void *data,
              Evas_Object *obj __UNUSED__,
@@ -149,6 +152,20 @@ _mw_close(void *data,
 
    assert(mw != NULL);
 
+   evas_object_smart_callback_call(mw, SIGNAL_CANCEL, NULL);
+   _anim_hide(elm_object_parent_widget_get(mw), evas_object_evas_get(mw), mw, NULL);
+}
+
+static void
+_mw_done(void *data,
+         Evas_Object *obj __UNUSED__,
+         void *event_info __UNUSED__)
+{
+   Evas_Object *mw = data;
+
+   assert(mw != NULL);
+
+   evas_object_smart_callback_call(mw, SIGNAL_DONE, NULL);
    _anim_hide(elm_object_parent_widget_get(mw), evas_object_evas_get(mw), mw, NULL);
 }
 
@@ -168,6 +185,7 @@ mw_add(void)
 
    mw = elm_win_inwin_add(ap.win);
    elm_object_style_set(mw, "modal_window");
+   evas_object_event_callback_add(mw, EVAS_CALLBACK_SHOW, _anim_show, ap.win);
 
    evas_object_focus_set(mw, true);
 
@@ -176,8 +194,13 @@ mw_add(void)
    evas_object_smart_callback_add(btn, "clicked", _mw_close, mw);
    elm_object_part_content_set(mw, "elm.swallow.close", btn);
 
-   evas_object_event_callback_add(mw, EVAS_CALLBACK_SHOW, _anim_show, ap.win);
+   BUTTON_ADD(mw, btn, _("Cancel"))
+   evas_object_smart_callback_add(btn, "clicked", _mw_close, mw);
+   elm_object_part_content_set(mw, "eflete.swallow.btn_close", btn);
 
+   BUTTON_ADD(mw, btn, _("Ok"))
+   evas_object_smart_callback_add(btn, "clicked", _mw_done, mw);
+   elm_object_part_content_set(mw, "eflete.swallow.btn_ok", btn);
    return mw;
 }
 
