@@ -397,18 +397,12 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
 
    /* Controls (add, remove) of colorclasses */
    button = elm_button_add(edit->layout);
-   elm_object_style_set(button, "anchor");
-   evas_object_show(button);
-   ICON_STANDARD_ADD(button, ic, true, "plus");
-   elm_object_part_content_set(button, NULL, ic);
+   elm_object_style_set(button, "plus");
    evas_object_smart_callback_add(button, "clicked", _on_button_add_clicked_cb, edit);
    elm_object_part_content_set(edit->layout, "elm.swallow.btn_add", button);
 
    edit->del_button = elm_button_add(edit->layout);
-   elm_object_style_set(edit->del_button, "anchor");
-   evas_object_show(edit->del_button);
-   ICON_STANDARD_ADD(button, ic, true, "minus");
-   elm_object_part_content_set(edit->del_button, NULL, ic);
+   elm_object_style_set(edit->del_button, "minus");
    evas_object_smart_callback_add(edit->del_button, "clicked", _on_button_delete_clicked_cb, edit);
    elm_object_part_content_set(edit->layout, "elm.swallow.btn_del", edit->del_button);
    elm_object_disabled_set(edit->del_button, EINA_TRUE);

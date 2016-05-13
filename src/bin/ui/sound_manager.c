@@ -614,23 +614,15 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    elm_object_content_set(edit->win, edit->markup);
 
    edit->btn_del = elm_button_add(edit->markup);
-   elm_object_style_set(edit->btn_del, "anchor");
+   elm_object_style_set(edit->btn_del, "minus");
    evas_object_smart_callback_add(edit->btn_del, "clicked", _on_delete_clicked_cb, edit);
    elm_object_part_content_set(edit->markup, "eflete.swallow.del_btn", edit->btn_del);
-
-   ic = elm_icon_add(edit->btn_del);
-   elm_icon_standard_set(ic, "minus");
-   elm_object_part_content_set(edit->btn_del, NULL, ic);
    elm_object_disabled_set(edit->btn_del, true);
 
    edit->btn_add = elm_button_add(edit->markup);
-   elm_object_style_set(edit->btn_add, "anchor");
+   elm_object_style_set(edit->btn_add, "plus");
    evas_object_smart_callback_add(edit->btn_add, "clicked", _on_btn_plus_clicked, edit);
    elm_object_part_content_set(edit->markup, "eflete.swallow.add_btn", edit->btn_add);
-
-   ic = elm_icon_add(edit->btn_add);
-   elm_icon_standard_set(ic, "plus");
-   elm_object_part_content_set(edit->btn_add, NULL, ic);
 
    edit->menu = elm_menu_add(ap.win);
    elm_menu_item_add(edit->menu, NULL, "sound_sample", _("Sample"), _sample_add_cb, edit);

@@ -95,11 +95,9 @@ static const char *program_actions[] = {
      NULL
 };
 
-#define BTN_ADD(LAYOUT, BTN, SWALLOW, ICON_NAME) \
+#define BTN_ADD(LAYOUT, BTN, SWALLOW, STYLE) \
    BTN = elm_button_add(LAYOUT); \
-   ICON_STANDARD_ADD(BTN, icon, true, ICON_NAME); \
-   elm_layout_content_set(BTN, NULL, icon); \
-   elm_object_style_set(BTN, "anchor"); \
+   elm_object_style_set(BTN, STYLE); \
    elm_object_part_content_set(LAYOUT, SWALLOW, BTN);
 
 
@@ -1892,7 +1890,6 @@ _on_btn_up_clicked(void *data,
 Evas_Object *
 group_navigator_add(Evas_Object *parent, Group *group)
 {
-   Evas_Object *icon;
    Part_List *pl;
    Elm_Object_Item *menu_item;
 
@@ -1912,9 +1909,9 @@ group_navigator_add(Evas_Object *parent, Group *group)
    evas_object_smart_callback_add(pl->btn_add, "clicked", _on_btn_plus_clicked, pl);
    BTN_ADD(pl->layout, pl->btn_del, "elm.swallow.btn2", "minus");
    evas_object_smart_callback_add(pl->btn_del, "clicked", _on_btn_minus_clicked, pl);
-   BTN_ADD(pl->layout, pl->btn_down, "elm.swallow.btn1", "go-down");
+   BTN_ADD(pl->layout, pl->btn_down, "elm.swallow.btn1", "down");
    evas_object_smart_callback_add(pl->btn_down, "clicked", _on_btn_down_clicked, pl);
-   BTN_ADD(pl->layout, pl->btn_up, "elm.swallow.btn0", "go-up");
+   BTN_ADD(pl->layout, pl->btn_up, "elm.swallow.btn0", "up");
    evas_object_smart_callback_add(pl->btn_up, "clicked", _on_btn_up_clicked, pl);
 
    elm_object_disabled_set(pl->btn_del, true);
@@ -2019,7 +2016,7 @@ group_navigator_add(Evas_Object *parent, Group *group)
 Evas_Object *
 group_navigator_dummy_get(void)
 {
-   Evas_Object *btn, *genlist, *icon;
+   Evas_Object *btn, *genlist;
 
    if (dummy_navi) goto exit;
 
@@ -2027,8 +2024,8 @@ group_navigator_dummy_get(void)
    elm_layout_theme_set(dummy_navi, "layout", "navigator", "default");
    BTN_ADD(dummy_navi, btn, "elm.swallow.btn3", "plus");
    BTN_ADD(dummy_navi, btn, "elm.swallow.btn2", "minus");
-   BTN_ADD(dummy_navi, btn, "elm.swallow.btn1", "go-down");
-   BTN_ADD(dummy_navi, btn, "elm.swallow.btn0", "go-up");
+   BTN_ADD(dummy_navi, btn, "elm.swallow.btn1", "down");
+   BTN_ADD(dummy_navi, btn, "elm.swallow.btn0", "up");
 
    genlist = elm_genlist_add(dummy_navi);
    elm_layout_content_set(dummy_navi, NULL, genlist);
