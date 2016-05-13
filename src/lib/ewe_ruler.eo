@@ -1,10 +1,11 @@
 type Ewe_Ruler_Scale: __undefined_type;
 type Ewe_Ruler_Marker: __undefined_type;
 
-class Ewe_Ruler (Elm.Widget)
+class Ewe.Ruler (Elm.Widget)
 {
    legacy_prefix: ewe_ruler;
    eo_prefix: ewe_obj_ruler;
+   legacy_prefix: ewe_ruler;
    data: Ewe_Ruler_Smart_Data;
    methods {
       @property horizontal {
