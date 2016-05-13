@@ -95,8 +95,6 @@ static const char *program_actions[] = {
      NULL
 };
 
-static const unsigned int part_types_count = 12;
-
 #define BTN_ADD(LAYOUT, BTN, SWALLOW, ICON_NAME) \
    BTN = elm_button_add(LAYOUT); \
    ICON_STANDARD_ADD(BTN, icon, true, ICON_NAME); \

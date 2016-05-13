@@ -21,39 +21,6 @@
 #include <Eina.h>
 #include <assert.h>
 
-static const char *exception[] =
-{
-   "elm/map/marker/empty/",
-   "elm/map/marker/radio/",
-   "elm/map/circle/base/",
-   "elm/map/scale/base/",
-   "elm/scroller/panel/top/",
-   "elm/scroller/panel/bottom/",
-   "elm/scroller/panel/left/",
-   "elm/scroller/panel/right/",
-   "elm/index/base/vertical/",
-   "elm/index/item/vertical/",
-   "elm/index/item_odd/vertical/",
-   "elm/index/item/horizontal/",
-   "elm/index/item_odd/horizontal/",
-   "elm/colorselector/picker/base/",
-   "elm/colorselector/item/color/",
-   "elm/colorselector/image/colorbar_0/",
-   "elm/colorselector/image/colorbar_1/",
-   "elm/colorselector/image/colorbar_2/",
-   "elm/colorselector/image/colorbar_3/",
-   "elm/gengrid/item/default/",
-   "elm/entry/handler/start/",
-   "elm/entry/handler/end/",
-   "elm/entry/emoticon/wtf/",
-   "elm/popup/buttons1/popup/",
-   "elm/popup/buttons2/popup/",
-   "elm/popup/buttons3/popup/",
-   "elm/popup/content/popup/",
-   "elm/popup/item/popup/",
-   NULL
-};
-
 int
 sort_cb(const void *data1, const void *data2)
 {
