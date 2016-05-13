@@ -3,6 +3,7 @@ type Ewe_Ruler_Marker: __undefined_type;
 
 class Ewe.Ruler (Elm.Widget)
 {
+   legacy_prefix: ewe_ruler;
    eo_prefix: ewe_obj_ruler;
    legacy_prefix: ewe_ruler;
    data: Ewe_Ruler_Smart_Data;
