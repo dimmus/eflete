@@ -523,26 +523,14 @@ image_manager_add()
    evas_object_show(img_mng->gengrid);
 
    button = elm_button_add(img_mng->layout);
-   elm_object_style_set(button, "anchor");
-   evas_object_show(button);
-   ic = elm_icon_add(button);
-   elm_icon_standard_set(ic, "plus");
-   elm_object_part_content_set(button, NULL, ic);
-   evas_object_smart_callback_add(button, "clicked",
-                                  _on_button_add_clicked_cb, img_mng);
-   elm_object_part_content_set(img_mng->layout,
-                               "eflete.swallow.add_btn", button);
+   elm_object_style_set(button, "plus");
+   evas_object_smart_callback_add(button, "clicked", _on_button_add_clicked_cb, img_mng);
+   elm_object_part_content_set(img_mng->layout, "eflete.swallow.add_btn", button);
 
    img_mng->del_button = elm_button_add(img_mng->layout);
-   elm_object_style_set(img_mng->del_button, "anchor");
-   evas_object_show(img_mng->del_button);
-   ic = elm_icon_add(img_mng->del_button);
-   elm_icon_standard_set(ic, "minus");
-   elm_object_part_content_set(img_mng->del_button, NULL, ic);
-   evas_object_smart_callback_add(img_mng->del_button, "clicked",
-                                  _on_button_delete_clicked_cb, img_mng);
-   elm_object_part_content_set(img_mng->layout,
-                               "eflete.swallow.del_btn", img_mng->del_button);
+   elm_object_style_set(img_mng->del_button, "minus");
+   evas_object_smart_callback_add(img_mng->del_button, "clicked", _on_button_delete_clicked_cb, img_mng);
+   elm_object_part_content_set(img_mng->layout, "eflete.swallow.del_btn", img_mng->del_button);
    elm_object_disabled_set(img_mng->del_button, true);
 
    // Search line add

@@ -1012,20 +1012,12 @@ style_manager_add()
    style_edit->menu_tag = elm_menu_item_add(style_edit->menu, NULL, "text_style_tag", _("Tag"), _on_bt_tag_add, style_edit);
 
    button_add = elm_button_add(ap.win);
-   elm_object_style_set(button_add, "anchor");
-   evas_object_show(button_add);
-   ic = elm_icon_add(button_add);
-   elm_icon_standard_set(ic, "plus");
-   elm_object_part_content_set(button_add, NULL, ic);
+   elm_object_style_set(button_add, "plus");
    evas_object_smart_callback_add(button_add, "clicked", _on_bt_add, style_edit);
    elm_object_part_content_set(main_layout, "elm.swallow.btn_add", button_add);
 
    style_edit->button_del = elm_button_add(ap.win);
-   elm_object_style_set(style_edit->button_del, "anchor");
-   evas_object_show(style_edit->button_del);
-   ic = elm_icon_add(style_edit->button_del);
-   elm_icon_standard_set(ic, "minus");
-   elm_object_part_content_set(style_edit->button_del, NULL, ic);
+   elm_object_style_set(style_edit->button_del, "minus");
    evas_object_smart_callback_add(style_edit->button_del, "clicked", _on_bt_del, style_edit);
    elm_object_part_content_set(main_layout, "elm.swallow.btn_del", style_edit->button_del);
    elm_object_disabled_set(style_edit->button_del, true);
