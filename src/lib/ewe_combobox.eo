@@ -2,7 +2,6 @@ type Ewe_Combobox_Item: __undefined_type;
 
 class Ewe.Combobox (Elm.Widget)
 {
-   legacy_prefix: ewe_combobox;
    eo_prefix: ewe_obj_combobox;
    legacy_prefix: ewe_combobox;
    data: Ewe_Combobox_Smart_Data;
