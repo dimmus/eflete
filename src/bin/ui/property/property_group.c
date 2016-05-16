@@ -441,6 +441,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_SIGNAL);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_SOURCE);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_IN);
+         break;
       case PROPERTY_GROUP_ITEM_STATE_CONTAINER_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_ALIGN);
          APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_PADDING);
@@ -1116,7 +1117,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_state_table_homogeneous_get(EDIT_OBJ, STATE_ARGS));
-
+         break;
       case ATTRIBUTE_PART_ITEM_SOURCE:
          ewe_combobox_items_list_free(action->control, true);
          str_val1 = edje_edit_part_item_source_get(EDIT_OBJ, ITEM_ARGS);
