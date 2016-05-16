@@ -180,8 +180,161 @@ EDITOR_STATE_INT_INT_INT_INT(color, color, ATTRIBUTE_STATE_COLOR)
 EDITOR_STATE_INT_INT_INT_INT(outline_color, color2, ATTRIBUTE_STATE_OUTLINE_COLOR)
 EDITOR_STATE_INT_INT_INT_INT(shadow_color, color3, ATTRIBUTE_STATE_SHADOW_COLOR)
 
+/* IMAGE BORDER */
 
-EDITOR_STATE_INT_INT_INT_INT(image_border, image_border, ATTRIBUTE_STATE_IMAGE_BORDER)
+Eina_Bool
+editor_state_image_border_left_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                   const char *part_name, const char *state_name, double state_val, int n4)
+{
+   Diff *diff;
+   int o4, o5, o6, o7;
+   Attribute attribute = ATTRIBUTE_STATE_IMAGE_BORDER_LEFT;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+   edje_edit_state_image_border_get(edit_object, part_name, state_name, state_val, &o4, &o5, &o6, &o7);
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_INT;
+        diff->redo.function = editor_state_image_border_left_set;
+        diff->redo.args.type_ssdi.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssdi.s2 = eina_stringshare_add(state_name);
+        diff->redo.args.type_ssdi.d3 = state_val;
+        diff->redo.args.type_ssdi.i4 = n4;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_INT;
+        diff->undo.function = editor_state_image_border_left_set;
+        diff->undo.args.type_ssdi.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssdi.s2 = eina_stringshare_add(state_name);
+        diff->undo.args.type_ssdi.d3 = state_val;
+        diff->undo.args.type_ssdi.i4 = o4;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_state_image_border_set(edit_object, part_name, state_name, state_val, n4, o5, o6, o7))
+     return false;
+   _editor_project_changed();
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+Eina_Bool
+editor_state_image_border_right_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                    const char *part_name, const char *state_name, double state_val, int n5)
+{
+   Diff *diff;
+   int o4, o5, o6, o7;
+   Attribute attribute = ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+   edje_edit_state_image_border_get(edit_object, part_name, state_name, state_val, &o4, &o5, &o6, &o7);
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_INT;
+        diff->redo.function = editor_state_image_border_right_set;
+        diff->redo.args.type_ssdi.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssdi.s2 = eina_stringshare_add(state_name);
+        diff->redo.args.type_ssdi.d3 = state_val;
+        diff->redo.args.type_ssdi.i4 = n5;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_INT;
+        diff->undo.function = editor_state_image_border_right_set;
+        diff->undo.args.type_ssdi.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssdi.s2 = eina_stringshare_add(state_name);
+        diff->undo.args.type_ssdi.d3 = state_val;
+        diff->undo.args.type_ssdi.i4 = o5;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_state_image_border_set(edit_object, part_name, state_name, state_val, o4, n5, o6, o7))
+     return false;
+   _editor_project_changed();
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+Eina_Bool
+editor_state_image_border_top_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                  const char *part_name, const char *state_name, double state_val, int n6)
+{
+   Diff *diff;
+   int o4, o5, o6, o7;
+   Attribute attribute = ATTRIBUTE_STATE_IMAGE_BORDER_TOP;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+   edje_edit_state_image_border_get(edit_object, part_name, state_name, state_val, &o4, &o5, &o6, &o7);
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_INT;
+        diff->redo.function = editor_state_image_border_top_set;
+        diff->redo.args.type_ssdi.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssdi.s2 = eina_stringshare_add(state_name);
+        diff->redo.args.type_ssdi.d3 = state_val;
+        diff->redo.args.type_ssdi.i4 = n6;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_INT;
+        diff->undo.function = editor_state_image_border_top_set;
+        diff->undo.args.type_ssdi.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssdi.s2 = eina_stringshare_add(state_name);
+        diff->undo.args.type_ssdi.d3 = state_val;
+        diff->undo.args.type_ssdi.i4 = o6;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_state_image_border_set(edit_object, part_name, state_name, state_val, o4, o5, n6, o7))
+     return false;
+   _editor_project_changed();
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+Eina_Bool
+editor_state_image_border_bottom_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *part_name, const char *state_name, double state_val, int n7)
+{
+   Diff *diff;
+   int o4, o5, o6, o7;
+   Attribute attribute = ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+   edje_edit_state_image_border_get(edit_object, part_name, state_name, state_val, &o4, &o5, &o6, &o7);
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_INT;
+        diff->redo.function = editor_state_image_border_bottom_set;
+        diff->redo.args.type_ssdi.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssdi.s2 = eina_stringshare_add(state_name);
+        diff->redo.args.type_ssdi.d3 = state_val;
+        diff->redo.args.type_ssdi.i4 = n7;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_INT;
+        diff->undo.function = editor_state_image_border_bottom_set;
+        diff->undo.args.type_ssdi.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssdi.s2 = eina_stringshare_add(state_name);
+        diff->undo.args.type_ssdi.d3 = state_val;
+        diff->undo.args.type_ssdi.i4 = o7;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_state_image_border_set(edit_object, part_name, state_name, state_val, o4, o5, o6, n7))
+     return false;
+   _editor_project_changed();
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+/**********************/
 
 EDITOR_STATE_UCHAR(image_border_fill, ATTRIBUTE_STATE_IMAGE_BORDER_FILL)
 EDITOR_STATE_UCHAR(fill_type, ATTRIBUTE_STATE_FILL_TYPE)
@@ -315,7 +468,10 @@ editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
          res = res && editor_state_fill_smooth_reset(edit_object, change, part_name, state_name, state_val);
          res = res && editor_state_fill_type_reset(edit_object, change, part_name, state_name, state_val);
 
-         res = res && editor_state_image_border_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_image_border_top_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_image_border_bottom_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_image_border_left_reset(edit_object, change, part_name, state_name, state_val);
+         res = res && editor_state_image_border_right_reset(edit_object, change, part_name, state_name, state_val);
          res = res && editor_state_image_border_fill_reset(edit_object, change, part_name, state_name, state_val);
          res = res && editor_state_image_reset(edit_object, change, part_name, state_name, state_val);
 

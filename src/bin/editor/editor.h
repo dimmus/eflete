@@ -87,7 +87,10 @@ typedef enum {
    ATTRIBUTE_STATE_COLOR,
    ATTRIBUTE_STATE_OUTLINE_COLOR,
    ATTRIBUTE_STATE_SHADOW_COLOR,
-   ATTRIBUTE_STATE_IMAGE_BORDER,
+   ATTRIBUTE_STATE_IMAGE_BORDER_TOP,
+   ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM,
+   ATTRIBUTE_STATE_IMAGE_BORDER_LEFT,
+   ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT,
    ATTRIBUTE_STATE_IMAGE_BORDER_FILL,
    ATTRIBUTE_STATE_ASPECT_PREF,
    ATTRIBUTE_PART_TEXT_EFFECT,
@@ -429,8 +432,17 @@ Eina_Bool
 editor_state_image_border_fill_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
       unsigned char new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_state_image_border_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val1, int new_val2, int new_val3, int new_val4) EINA_WARN_UNUSED_RESULT;
+editor_state_image_border_left_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_image_border_right_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_image_border_top_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_image_border_bottom_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_fill_type_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
       unsigned char new_val) EINA_WARN_UNUSED_RESULT;

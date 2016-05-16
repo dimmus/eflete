@@ -284,7 +284,13 @@ editor_state_shadow_color_reset(Evas_Object *edit_object, Change *change, const 
 Eina_Bool
 editor_state_image_border_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
 Eina_Bool
-editor_state_image_border_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+editor_state_image_border_top_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_image_border_bottom_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_image_border_left_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_image_border_right_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
 
 
 Eina_Bool

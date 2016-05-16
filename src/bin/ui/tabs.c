@@ -356,7 +356,10 @@ _property_attribute_changed(void *data __UNUSED__,
       case ATTRIBUTE_STATE_COLOR:
       case ATTRIBUTE_STATE_OUTLINE_COLOR:
       case ATTRIBUTE_STATE_SHADOW_COLOR:
-      case ATTRIBUTE_STATE_IMAGE_BORDER:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_TOP:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_LEFT:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT:
       case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
          workspace_groupview_soft_update(tabs.current_workspace);
          break;

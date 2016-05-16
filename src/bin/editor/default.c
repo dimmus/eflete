@@ -193,7 +193,24 @@ EDITOR_INT_INT_INT_INT_RESET(state_##FUNC, EDITOR_STATE_ARGS_PROTO, EDITOR_STATE
 EDITOR_STATE_INT_INT_INT_INT_RESET(color, 255, 255, 255, 255)
 EDITOR_STATE_INT_INT_INT_INT_RESET(outline_color, 0, 0, 0, 255)
 EDITOR_STATE_INT_INT_INT_INT_RESET(shadow_color, 0, 0, 0, 128)
-EDITOR_STATE_INT_INT_INT_INT_RESET(image_border, 0, 0, 0, 0)
+
+#define EDITOR_FOUR_INT_RESET(FUNC, TYPE, PROTO_ARGS, ARGS, RESET_VAL) \
+Eina_Bool \
+editor_##FUNC##_##TYPE##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
+{ \
+   assert(edit_object != NULL); \
+   if(editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
+   if(editor_##FUNC##_##TYPE##_set(edit_object, change, false, ARGS, RESET_VAL)) \
+     return true; \
+   CRIT("reset failed"); \
+   abort(); \
+}
+
+EDITOR_INT_INT_INT_INT_DEFAULT_CHECK(state_image_border, EDITOR_STATE_ARGS_PROTO, EDITOR_STATE_ARGS, 0, 0, 0, 0)
+EDITOR_FOUR_INT_RESET(state_image_border, top, EDITOR_STATE_ARGS_PROTO, EDITOR_STATE_ARGS, 0)
+EDITOR_FOUR_INT_RESET(state_image_border, bottom, EDITOR_STATE_ARGS_PROTO, EDITOR_STATE_ARGS, 0)
+EDITOR_FOUR_INT_RESET(state_image_border, left, EDITOR_STATE_ARGS_PROTO, EDITOR_STATE_ARGS, 0)
+EDITOR_FOUR_INT_RESET(state_image_border, right, EDITOR_STATE_ARGS_PROTO, EDITOR_STATE_ARGS, 0)
 
 EDITOR_STATE_SIMPLE_RESET(image_border_fill, 1)
 EDITOR_STATE_SIMPLE_RESET(fill_type, 0)
@@ -233,17 +250,6 @@ EDITOR_PART_ITEM_DOUBLE_RESET(align_y, 0.5)
 EDITOR_PART_ITEM_DOUBLE_RESET(weight_x, 0.0)
 EDITOR_PART_ITEM_DOUBLE_RESET(weight_y, 0.0)
 
-#define EDITOR_FOUR_INT_RESET(FUNC, TYPE, PROTO_ARGS, ARGS, RESET_VAL) \
-Eina_Bool \
-editor_##FUNC##_##TYPE##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
-{ \
-   assert(edit_object != NULL); \
-   if(editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
-   if(editor_##FUNC##_##TYPE##_set(edit_object, change, false, ARGS, RESET_VAL)) \
-     return true; \
-   CRIT("reset failed"); \
-   abort(); \
-}
 EDITOR_INT_INT_INT_INT_DEFAULT_CHECK(part_item_padding, EDITOR_PART_ITEM_ARGS_PROTO, EDITOR_PART_ITEM_ARGS, 0, 0, 0, 0)
 EDITOR_FOUR_INT_RESET(part_item_padding, top, EDITOR_PART_ITEM_ARGS_PROTO, EDITOR_PART_ITEM_ARGS, 0)
 EDITOR_FOUR_INT_RESET(part_item_padding, bottom, EDITOR_PART_ITEM_ARGS_PROTO, EDITOR_PART_ITEM_ARGS, 0)
