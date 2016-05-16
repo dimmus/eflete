@@ -3435,8 +3435,8 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_MIN:
               IT.name = "min";
-              _action1(&IT, "v", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_V);
-              _action2(&IT, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_H);
+              _action1(&IT, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_H);
+              _action2(&IT, "v", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_V);
               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_HOMOGENEOUS:
               IT.name = "homogeneous mode";
