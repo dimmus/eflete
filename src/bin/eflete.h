@@ -100,16 +100,9 @@ struct _App_Data
    } panes;
 
    struct {
-      Evas_Object *left_top;
-      Evas_Object *left_bottom;
-      Evas_Object *state_list;
-      Evas_Object *signal_list;
-      Evas_Object *bottom_right;
       Evas_Object *right_top, *history, *property;
       Elm_Object_Item *item_history, *item_property;
-      Evas_Object *canvas;
    } block;
-   Live_View *live_view;
    Project *project;
    Shortcut_Module *shortcuts; /**< Structure with data from shortcuts module */
 #ifdef HAVE_ENVENTOR
