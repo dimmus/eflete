@@ -281,6 +281,9 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          evas_object_size_hint_min_set(content, 300, 300);
          evas_object_show(content);
          return content;
+      case PROPERTY_CONTROL_IMAGE_NORMAL:
+         content = property_image_normal_control_add(parent);
+         return content;
       case PROPERTY_CONTROL_NONE:
       case PROPERTY_CONTROL_LAST:
          CRIT("Wrong control type");
@@ -554,6 +557,7 @@ property_common_itc_init(Property_Data *pd)
    pd->item_classes[PROPERTY_CONTROL_COLORSEL]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_LABEL]          [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_IMAGE_PREVIEW]  [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
+   pd->item_classes[PROPERTY_CONTROL_IMAGE_NORMAL]   [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
 
    pd->item_classes[PROPERTY_CONTROL_CHECK]          [PROPERTY_CONTROL_NONE]     = pd->itc_2swallow;
    pd->item_classes[PROPERTY_CONTROL_CHECK]          [PROPERTY_CONTROL_CHECK]    = pd->itc_2swallow;
