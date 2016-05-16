@@ -98,9 +98,12 @@ struct _App_Data
       Evas_Object *right;
       Evas_Object *left_ver;
    } panes;
+   struct {
+      Evas_Object *group;
+   } property;
 
    struct {
-      Evas_Object *right_top, *history, *property;
+      Evas_Object *right_top, *history;
       Elm_Object_Item *item_history, *item_property;
    } block;
    Project *project;
