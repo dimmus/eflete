@@ -111,7 +111,7 @@ _tabs_progress_end(void *data, PM_Project_Result result)
    ui_menu_disable_set(ap.menu, MENU_FILE_CLOSE_PROJECT, false);
    ui_menu_disable_set(ap.menu, MENU_FILE_SAVE, true);
    project_navigator_project_set();
-   tabs_menu_tab_open(TAB_HOME_PROJECT_INFO);
+   //tabs_menu_tab_open(TAB_HOME_PROJECT_INFO);
 
    config_recent_add(ap.project->name, ap.project->pro_path);
    _tab_open_project_recents_update();

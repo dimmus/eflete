@@ -24,73 +24,11 @@
 #include "tabs.h"
 #include "main_window.h"
 #include "project_common.h"
+#include "widget_list.h"
 #include "config.h"
 
-struct _Widget_Item_Data
-{
-   const char *name;
-   Eina_Bool check;
-};
-typedef struct _Widget_Item_Data Widget_Item_Data;
-
-static Widget_Item_Data widget_item_data[] =
-   {
-     { N_("access"),           false },
-     { N_("actionslider"),     false },
-     { N_("bg"),               false },
-     { N_("border"),           false },
-     { N_("bubble"),           false },
-     { N_("button"),           false },
-     { N_("calendar"),         false },
-     { N_("check"),            false },
-     { N_("clock"),            false },
-     { N_("colorsel"),         false },
-     { N_("conform"),          false },
-     { N_("ctxpopup"),         false },
-     { N_("cursor"),           false },
-     { N_("datetime"),         false },
-     { N_("dayselector"),      false },
-     { N_("diskselector"),     false },
-     { N_("entry"),            false },
-     { N_("fileselector"),     false },
-     { N_("flipselector"),     false },
-     { N_("focus"),            false },
-     { N_("frame"),            false },
-     { N_("gengrid"),          false },
-     { N_("genlist"),          false },
-     { N_("hover"),            false },
-     { N_("icon"),             false },
-     { N_("index"),            false },
-     { N_("label"),            false },
-     { N_("layout"),           false },
-     { N_("list"),             false },
-     { N_("map"),              false },
-     { N_("menu"),             false },
-     { N_("multibuttonentry"), false },
-     { N_("naviframe"),        false },
-     { N_("notify"),           false },
-     { N_("panel"),            false },
-     { N_("panes"),            false },
-     { N_("photo"),            false },
-     { N_("photocam"),         false },
-     { N_("player"),           false },
-     { N_("pointer"),          false },
-     { N_("popup"),            false },
-     { N_("progress"),         false },
-     { N_("radio"),            false },
-     { N_("scroller"),         false },
-     { N_("segment_control"),  false },
-     { N_("separator"),        false },
-     { N_("slider"),           false },
-     { N_("slideshow"),        false },
-     { N_("spinner"),          false },
-     { N_("thumb"),            false },
-     { N_("toolbar"),          false },
-     { N_("tooltip"),          false },
-     { N_("video"),            false },
-     { N_("win"),              false },
-     { NULL,                   false }
-   };
+Eina_List *widget_list = NULL;
+const char *prev_edj_path = NULL;
 
 struct _Tab_Home_Edj
 {
@@ -111,17 +49,39 @@ struct _Tab_Home_Edj
 typedef struct _Tab_Home_Edj Tab_Home_Edj;
 static Tab_Home_Edj tab_edj;
 
+static char *_genlist_label_get(void *data,
+                                Evas_Object *obj,
+                                const char  *part);
+
+static Evas_Object *_genlist_content_get(void *data,
+                                         Evas_Object *obj,
+                                         const char *part);
+
+
 /* CHECK ALL AND NOT ALL */
 static void
 _checks_set(Eina_Bool check_val)
 {
-   Widget_Item_Data *widget_item_data_iterator = widget_item_data;
+   Tree_Item_Data *widget = NULL, *style = NULL;
+   End_Item_Data *item_style;
+   Eina_List *l, *ll, *lll;
 
-   while (widget_item_data_iterator->name)
+   EINA_LIST_FOREACH(widget_list, l, widget)
      {
-        if (widget_item_data_iterator->check != check_val)
-          widget_item_data_iterator->check = check_val;
-        widget_item_data_iterator++;
+        if (widget->check != check_val)
+          widget->check = check_val;
+
+        EINA_LIST_FOREACH(widget->list, ll, style)
+          {
+             if (style->check != check_val)
+               style->check = check_val;
+
+             EINA_LIST_FOREACH(style->list, lll, item_style)
+               {
+                  if (item_style->check != check_val)
+                    item_style->check = check_val;
+               }
+          }
      }
    elm_genlist_realized_items_update(tab_edj.genlist);
 }
@@ -129,51 +89,169 @@ _checks_set(Eina_Bool check_val)
 static Eina_Bool
 _checked_get(void)
 {
-   Widget_Item_Data *widget_item_data_iterator = widget_item_data;
+   Tree_Item_Data *widget = NULL, *style = NULL;
+   End_Item_Data *item_style;
+   Eina_List *l, *ll, *lll;
 
-   while (widget_item_data_iterator->name)
+   EINA_LIST_FOREACH(widget_list, l, widget)
      {
-        if (widget_item_data_iterator->check == EINA_TRUE)
-           return EINA_TRUE;
-        widget_item_data_iterator++;
+        if (widget->check)
+          return EINA_TRUE;
+
+        EINA_LIST_FOREACH(widget->list, ll, style)
+          {
+             if (style->check)
+               return EINA_TRUE;
+
+             EINA_LIST_FOREACH(style->list, lll, item_style)
+               {
+                  if (item_style->check)
+                    return EINA_TRUE;
+               }
+          }
      }
    return EINA_FALSE;
 }
 
 static void
-_validate(void *data __UNUSED__,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
+_validate()
 {
    if ((elm_validator_regexp_status_get(tab_edj.name_validator) != ELM_REG_NOERROR) ||
-       ((!eina_str_has_extension(elm_entry_entry_get(tab_edj.edj), ".edj") ||
-       !ecore_file_exists(elm_entry_entry_get(tab_edj.edj))) &&
-       !_checked_get()))
+       !eina_str_has_extension(elm_entry_entry_get(tab_edj.edj), ".edj") ||
+       !ecore_file_exists(elm_entry_entry_get(tab_edj.edj)) ||
+       (widget_list && !_checked_get()))
      elm_object_disabled_set(tab_edj.btn_create, true);
    else
      elm_object_disabled_set(tab_edj.btn_create, false);
+}
 
+static void
+_name_changed_cb(void *data __UNUSED__,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   _validate();
+}
+
+static void
+_edj_changed_cb(void *data __UNUSED__,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   const char *widget_name, *style_name, *item_style_name;
+   Eina_List *collections, *l, *ll;
+   Eina_Stringshare *group_name;
+   Tree_Item_Data *widget = NULL, *style = NULL;
+   End_Item_Data *item_style = NULL;
+   Elm_Genlist_Item_Class *itc = NULL;
+
+   if (prev_edj_path && !strcmp(prev_edj_path, elm_entry_entry_get(tab_edj.edj))) return;
+   prev_edj_path = elm_entry_entry_get(tab_edj.edj);
+
+   elm_genlist_clear(tab_edj.genlist);
+
+   EINA_LIST_FREE(widget_list, widget)
+     {
+        free(widget);
+     }
+   widget_list = NULL;
+
+   if (eina_str_has_extension(elm_entry_entry_get(tab_edj.edj), ".edj") &&
+       ecore_file_exists(elm_entry_entry_get(tab_edj.edj)))
+     {
+        collections = edje_file_collection_list(elm_entry_entry_get(tab_edj.edj));
+
+        assert(collections != NULL);
+
+        collections = eina_list_sort(collections, eina_list_count(collections), (Eina_Compare_Cb) strcmp);
+        EINA_LIST_FOREACH(collections, l, group_name)
+          {
+             if (!strcmp(group_name, EFLETE_INTERNAL_GROUP_NAME)) continue;
+             widget_name = widget_name_get(group_name);
+             if (!widget_name) continue;
+
+             EINA_LIST_FOREACH(widget_list, ll, widget)
+               {
+                  if (widget->name && !strcmp(widget->name, widget_name))
+                     break;
+               }
+             if (!widget)
+               {
+                  widget = mem_calloc(1, sizeof(Tree_Item_Data));
+                  widget->name = widget_name;
+                  widget->check = false;
+                  widget->list = NULL;
+                  widget_list = eina_list_append(widget_list, widget);
+               }
+
+             style_name = style_name_get(group_name);
+             if (style_name)
+               {
+                  EINA_LIST_FOREACH(widget->list, ll, style)
+                    {
+                       if (style->name && !strcmp(style->name, style_name))
+                         break;
+                    }
+                  if (!style)
+                    {
+                       style = mem_calloc(1, sizeof(Tree_Item_Data));
+                       style->name = style_name;
+                       style->check = false;
+                       style->list = NULL;
+                       widget->list = eina_list_append(widget->list, style);
+                    }
+               }
+
+             if (!strcmp(widget_name, "genlist"))
+               {
+                  item_style_name = item_style_name_get(group_name, widget->list);
+                  if (item_style_name)
+                    {
+                       EINA_LIST_FOREACH(style->list, ll, item_style)
+                         {
+                            if (item_style->name && !strcmp(item_style->name, item_style_name))
+                              break;
+                         }
+                       if (!item_style)
+                         {
+                            item_style = mem_calloc(1, sizeof(End_Item_Data));
+                            item_style->name = item_style_name;
+                            item_style->check = false;
+                            style->list = eina_list_append(style->list, item_style);
+                         }
+                    }
+               }
+          }
+
+        itc = elm_genlist_item_class_new();
+        itc->item_style = "aligned";
+        itc->func.text_get = _genlist_label_get;
+        itc->func.content_get = _genlist_content_get;
+
+        EINA_LIST_FOREACH(widget_list, l, widget)
+          {
+             elm_genlist_item_append(tab_edj.genlist, itc, widget,
+                                     NULL, ELM_GENLIST_ITEM_TREE, NULL, NULL);
+          }
+        elm_genlist_item_class_free(itc);
+     }
+
+   _validate();
 }
 
 static void
 _edj_set()
 {
-   Eina_Bool checked = _checked_get();
-
-   if (checked)
+   Ewe_Combobox_Item *item = ewe_combobox_select_item_get(tab_edj.themes);
+   char buf[256];
+   if (item)
      {
-        Ewe_Combobox_Item *item = ewe_combobox_select_item_get(tab_edj.themes);
-        char buf[256];
-        if (item)
-          {
-             snprintf(buf, sizeof(buf), "%s/%s", EFLETE_TEMPLATE_EDJ_PATH, item->title);
-             elm_entry_entry_set(tab_edj.edj, buf);
-          }
+        snprintf(buf, sizeof(buf), "%s/%s", EFLETE_TEMPLATE_EDJ_PATH, item->title);
+        elm_entry_entry_set(tab_edj.edj, buf);
      }
    else elm_entry_entry_set(tab_edj.edj, "");
-   elm_object_disabled_set(tab_edj.edj, checked);
 
-   _validate(NULL, NULL, NULL);
+   _validate();
 }
 
 static void
@@ -182,7 +260,7 @@ _on_check_all(void *data __UNUSED__,
               void *event_info __UNUSED__)
 {
    _checks_set(elm_check_state_get(obj));
-   _edj_set();
+   _validate();
 }
 
 /*  GENLIST  */
@@ -191,10 +269,25 @@ _check_widget(void *data,
               Evas_Object *obj,
               void *event_info __UNUSED__)
 {
-   Widget_Item_Data *widget_data = (Widget_Item_Data *)data;
+   Tree_Item_Data *widget_data = (Tree_Item_Data *)data;
    assert(widget_data != NULL);
+   Tree_Item_Data *style;
+   End_Item_Data *item_style;
+   Eina_List *l, *ll;
    widget_data->check = elm_check_state_get(obj);
-   _edj_set();
+
+   EINA_LIST_FOREACH(widget_data->list, l, style)
+     {
+        style->check = widget_data->check;
+
+        EINA_LIST_FOREACH(style->list, ll, item_style)
+          {
+             item_style->check = style->check;
+          }
+     }
+   elm_genlist_realized_items_update(tab_edj.genlist);
+
+   _validate();
 }
 
 static char *
@@ -202,7 +295,7 @@ _genlist_label_get(void *data,
                    Evas_Object *obj __UNUSED__,
                    const char  *part __UNUSED__)
 {
-   Widget_Item_Data *widget_data = (Widget_Item_Data *)data;
+   Tree_Item_Data *widget_data = (Tree_Item_Data *)data;
    assert(widget_data != NULL);
    return strdup(widget_data->name);
 }
@@ -213,7 +306,7 @@ _genlist_content_get(void *data,
                      const char *part)
 {
    Evas_Object *check;
-   Widget_Item_Data *widget_data = (Widget_Item_Data *)data;
+   Tree_Item_Data *widget_data = (Tree_Item_Data *)data;
    if (strcmp(part, "elm.swallow.icon")) return NULL;
 
    /* the old hack. sometimes edje get wrong style, from system defalt theme,
@@ -227,17 +320,120 @@ _genlist_content_get(void *data,
 }
 
 static void
+_check_style(void *data,
+              Evas_Object *obj,
+              void *event_info __UNUSED__)
+{
+   Tree_Item_Data *style_data = (Tree_Item_Data *)data;
+   assert(style_data != NULL);
+   End_Item_Data *item_style;
+   Eina_List *l;
+   style_data->check = elm_check_state_get(obj);
+
+   EINA_LIST_FOREACH(style_data->list, l, item_style)
+     {
+        item_style->check = style_data->check;
+     }
+   elm_genlist_realized_items_update(tab_edj.genlist);
+
+   _validate();
+}
+
+static char *
+_genlist_style_label_get(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   const char  *part __UNUSED__)
+{
+   Tree_Item_Data *style_data = (Tree_Item_Data *)data;
+   assert(style_data != NULL);
+   return strdup(style_data->name);
+}
+
+static Evas_Object *
+_genlist_style_content_get(void *data,
+                     Evas_Object *obj __UNUSED__,
+                     const char *part)
+{
+   Evas_Object *check;
+   Tree_Item_Data *style_data = (Tree_Item_Data *)data;
+   if (strcmp(part, "elm.swallow.icon")) return NULL;
+
+   /* the old hack. sometimes edje get wrong style, from system defalt theme,
+    * for changed widget if widget is hidden */
+   TODO("find why load wrong style");
+   CHECK_ADD(ap.win, check);
+   elm_object_focus_allow_set(check, false);
+   elm_check_state_set(check, style_data->check);
+   evas_object_smart_callback_add(check, "changed", _check_style, data);
+   return check;
+}
+
+static void
 _on_item_activated(void *data __UNUSED__,
                    Evas_Object *obj __UNUSED__,
                    void *event_info)
 {
    Elm_Object_Item *it = (Elm_Object_Item *)event_info;
-   Widget_Item_Data *widget_data = elm_object_item_data_get(it);
+   Tree_Item_Data *widget_data = elm_object_item_data_get(it);
 
    assert(widget_data != NULL);
 
    widget_data->check = !widget_data->check;
    elm_genlist_item_update(it);
+}
+
+static void
+_expand_request_cb(void *data __UNUSED__,
+                   Evas_Object *o __UNUSED__,
+                   void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, EINA_TRUE);
+}
+
+static void
+_contract_request_cb(void *data __UNUSED__,
+                     Evas_Object *o __UNUSED__,
+                     void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, EINA_FALSE);
+}
+
+static void
+_expanded_cb(void *data __UNUSED__,
+             Evas_Object *o __UNUSED__,
+             void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   Tree_Item_Data *parent = elm_object_item_data_get(glit);
+   Elm_Genlist_Item_Class *itc;
+   Tree_Item_Data *child;
+   Eina_List *l;
+
+   itc = elm_genlist_item_class_new();
+   itc->item_style = "aligned";
+   itc->func.text_get = _genlist_style_label_get;
+   itc->func.content_get = _genlist_style_content_get;
+
+   EINA_LIST_FOREACH(parent->list, l, child)
+     {
+        if (!(child->list))
+          elm_genlist_item_append(tab_edj.genlist, itc, child,
+                                  glit, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+        else
+          elm_genlist_item_append(tab_edj.genlist, itc, child,
+                                  glit, ELM_GENLIST_ITEM_TREE, NULL, NULL);
+     }
+}
+
+static void
+_contracted_cb(void *data __UNUSED__,
+               Evas_Object *o __UNUSED__,
+               void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_subitems_clear(glit);
 }
 
 static void
@@ -266,33 +462,13 @@ _progress_end(void *data, PM_Project_Result result)
    _tabs_progress_end(data, result);
 }
 
-Eina_List *
-_checked_widget_list_get()
-{
-   Widget_Item_Data *widget_item_data_iterator = widget_item_data;
-   Eina_List *list = NULL;
-
-   while (widget_item_data_iterator->name)
-     {
-        if (widget_item_data_iterator->check)
-          {
-             list = eina_list_append(list, widget_item_data_iterator->name);
-          }
-        widget_item_data_iterator++;
-     }
-
-     return list;
-}
-
 static Eina_Bool
 _setup_open_splash(void *data __UNUSED__, Splash_Status status __UNUSED__)
 {
-   Eina_List *checked_widgets = _checked_widget_list_get();
-
    pm_project_import_edj(elm_entry_entry_get(tab_edj.name),
                          elm_entry_entry_get(tab_edj.path),
                          elm_entry_entry_get(tab_edj.edj),
-                         checked_widgets,
+                         widget_list,
                          progress_print,
                          _progress_end,
                          &tab_edj.meta);
@@ -393,8 +569,6 @@ _elipsis_edj(void *data __UNUSED__,
 Evas_Object *
 _tab_import_edj_add(void)
 {
-   Elm_Genlist_Item_Class *itc = NULL;
-   Widget_Item_Data *widget_item_data_iterator = widget_item_data;
    Eina_List *themes = NULL, *l = NULL;
    char *theme;
 
@@ -412,7 +586,7 @@ _tab_import_edj_add(void)
    elm_object_part_text_set(tab_edj.layout, "label.name", _("Project name:"));
    ENTRY_ADD(tab_edj.layout, tab_edj.name, true)
    eo_event_callback_add(tab_edj.name, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, tab_edj.name_validator);
-   evas_object_smart_callback_add(tab_edj.name, "changed", _validate, NULL);
+   evas_object_smart_callback_add(tab_edj.name, "changed", _name_changed_cb, NULL);
    elm_object_part_content_set(tab_edj.layout, "swallow.name", tab_edj.name);
    /* label.path */
    elm_object_part_text_set(tab_edj.layout, "label.path", _("Path to project:"));
@@ -424,7 +598,7 @@ _tab_import_edj_add(void)
    /* label.path */
    elm_object_part_text_set(tab_edj.layout, "label.edj", _("Path to edj-file:"));
    ENTRY_ADD(tab_edj.layout, tab_edj.edj, true)
-   evas_object_smart_callback_add(tab_edj.edj, "changed", _validate, NULL);
+   evas_object_smart_callback_add(tab_edj.edj, "changed", _edj_changed_cb, NULL);
    elm_object_part_content_set(tab_edj.layout, "swallow.edj", tab_edj.edj);
    elipsis_btn_add(tab_edj.edj, _elipsis_edj, NULL);
 
@@ -450,26 +624,33 @@ _tab_import_edj_add(void)
    /* genlist */
    tab_edj.genlist = elm_genlist_add(ap.win);
    evas_object_smart_callback_add(tab_edj.genlist, "activated", _on_item_activated, NULL);
-   itc = elm_genlist_item_class_new();
-   itc->item_style = "default";
-   itc->func.text_get = _genlist_label_get;
-   itc->func.content_get = _genlist_content_get;
+   evas_object_smart_callback_add(tab_edj.genlist, "expand,request", _expand_request_cb, NULL);
+   evas_object_smart_callback_add(tab_edj.genlist, "contract,request", _contract_request_cb, NULL);
+   evas_object_smart_callback_add(tab_edj.genlist, "expanded", _expanded_cb, NULL);
+   evas_object_smart_callback_add(tab_edj.genlist, "contracted", _contracted_cb, NULL);
 
-   while (widget_item_data_iterator->name)
-     {
-        elm_genlist_item_append(tab_edj.genlist, itc, widget_item_data_iterator,
-                                NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
-        widget_item_data_iterator++;
-     }
-   elm_genlist_item_class_free(itc);
    elm_object_part_content_set(tab_edj.layout, "swallow.widgets", tab_edj.genlist);
 
    return tab_edj.layout;
 }
 
-void
-_tab_import_edj_data_set(const char *name, const char *path, const char *edj)
+static void
+_delayed_popup(void *data)
 {
+   char *msg = data;
+   popup_want_action(_("Import edj-file"), msg, NULL, NULL, BTN_OK, NULL, NULL);
+   free(msg);
+}
+
+void
+_tab_import_edj_data_set(const char *name, const char *path, const char *edj, const Eina_List *widgets)
+{
+   const Eina_List *l, *wl;
+   const char *str;
+   Eina_Strbuf *buf = eina_strbuf_new();
+   Eina_Bool first_not_found = true;
+   Tree_Item_Data *widget = NULL;
+
    assert(tab_edj.layout != NULL);
 
    elm_entry_entry_set(tab_edj.name, name);
@@ -478,4 +659,32 @@ _tab_import_edj_data_set(const char *name, const char *path, const char *edj)
    else elm_entry_entry_set(tab_edj.path, profile_get()->general.projects_folder);
 
    elm_entry_entry_set(tab_edj.edj, edj);
+   edje_message_signal_process();
+
+   EINA_LIST_FOREACH(widgets, l, str)
+     {
+        EINA_LIST_FOREACH(widget_list, wl, widget)
+          {
+             if (!strcasecmp(str, widget->name))
+               {
+                  widget->check = true;
+                  break;
+               }
+          }
+        if (!widget)
+          {
+             eina_strbuf_append_printf(buf, first_not_found ? "%s" : ", %s", str);
+             first_not_found = false;
+          }
+     }
+   elm_genlist_realized_items_update(tab_edj.genlist);
+   if (eina_strbuf_length_get(buf))
+     {
+        eina_strbuf_prepend(buf, _("Following widgets were not found and ignored: "));
+        ERR("%s", eina_strbuf_string_get(buf));
+        ecore_job_add(_delayed_popup, eina_strbuf_string_steal(buf));
+     }
+   eina_strbuf_free(buf);
+
+   _validate();
 }

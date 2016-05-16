@@ -19,6 +19,7 @@
 
 #include "main_window.h"
 #include "project_manager.h"
+#include "modal_window.h"
 
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
@@ -478,8 +479,14 @@ image_manager_add()
 
    Image_Manager *img_mng = (Image_Manager *)mem_calloc(1, sizeof(Image_Manager));
 
-   img_mng->layout = elm_layout_add(ap.win);
+   img_mng->win = mw_add();
+   mw_title_set(img_mng->win, _("Image manager"));
+   ic = elm_icon_add(img_mng->win);
+   elm_icon_standard_set(ic, "image2");
+   mw_icon_set(img_mng->win, ic);
+   img_mng->layout = elm_layout_add(img_mng->win);
    elm_layout_theme_set(img_mng->layout, "layout", "image_manager", "default");
+   elm_object_content_set(img_mng->win, img_mng->layout);
 
    img_mng->gengrid = elm_gengrid_add(img_mng->layout);
    elm_object_part_content_set(img_mng->layout,
@@ -503,26 +510,14 @@ image_manager_add()
    evas_object_show(img_mng->gengrid);
 
    button = elm_button_add(img_mng->layout);
-   elm_object_style_set(button, "anchor");
-   evas_object_show(button);
-   ic = elm_icon_add(button);
-   elm_icon_standard_set(ic, "plus");
-   elm_object_part_content_set(button, NULL, ic);
-   evas_object_smart_callback_add(button, "clicked",
-                                  _on_button_add_clicked_cb, img_mng);
-   elm_object_part_content_set(img_mng->layout,
-                               "eflete.swallow.add_btn", button);
+   elm_object_style_set(button, "plus");
+   evas_object_smart_callback_add(button, "clicked", _on_button_add_clicked_cb, img_mng);
+   elm_object_part_content_set(img_mng->layout, "eflete.swallow.add_btn", button);
 
    img_mng->del_button = elm_button_add(img_mng->layout);
-   elm_object_style_set(img_mng->del_button, "anchor");
-   evas_object_show(img_mng->del_button);
-   ic = elm_icon_add(img_mng->del_button);
-   elm_icon_standard_set(ic, "minus");
-   elm_object_part_content_set(img_mng->del_button, NULL, ic);
-   evas_object_smart_callback_add(img_mng->del_button, "clicked",
-                                  _on_button_delete_clicked_cb, img_mng);
-   elm_object_part_content_set(img_mng->layout,
-                               "eflete.swallow.del_btn", img_mng->del_button);
+   elm_object_style_set(img_mng->del_button, "minus");
+   evas_object_smart_callback_add(img_mng->del_button, "clicked", _on_button_delete_clicked_cb, img_mng);
+   elm_object_part_content_set(img_mng->layout, "eflete.swallow.del_btn", img_mng->del_button);
    elm_object_disabled_set(img_mng->del_button, true);
 
    // Search line add
@@ -557,9 +552,6 @@ image_manager_add()
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_event_callback_add(img_mng->layout, EVAS_CALLBACK_DEL, _on_image_manager_del, img_mng);
 
-   return img_mng->layout;
+   evas_object_show(img_mng->win);
+   return img_mng->win;
 }
-
-#undef ITEM_WIDTH
-#undef ITEM_HEIGHT
-#undef IMG_MANAGER_KEY

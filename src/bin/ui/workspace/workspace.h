@@ -405,4 +405,7 @@ workspace_code_reload(Evas_Object *obj);
 void
 workspace_code_changed(Evas_Object *obj);
 
+Evas_Object *
+workspace_group_navigator_get(Evas_Object *obj);
+
 #endif /* WORKSPACE_H */

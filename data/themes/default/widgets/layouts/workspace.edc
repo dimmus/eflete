@@ -237,11 +237,8 @@ group { name: "elm/layout/workspace/toolbar";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0.5 1.0;
+            align: 0.5 0.0;
             max: -1 31;
-            rel2 {
-               offset: -4 -1;
-            }
          }
       }
       part { name: "elm.swallow.toolbar";
@@ -249,21 +246,23 @@ group { name: "elm/layout/workspace/toolbar";
          scale: 1;
          description { state: "default" 0.0;
             max: -1 19;
-            rel1 {
-               to: "area.toolbar";
-            }
-            rel2 {
-               to: "area.toolbar";
-            }
+            rel1.to: "area.toolbar";
+            rel2.to: "area.toolbar";
          }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
          description { state: "default" 0.0;
-            rel2 {
+            fixed: 0 1;
+            rel1 {
+               relative: 0.0 1.0;
                to: "area.toolbar";
-               relative: 1.0 0.0;
             }
+            rel2 {
+               relative: 1.0 1.0;
+               to_x: "area.toolbar";
+            }
+
          }
       }
    }

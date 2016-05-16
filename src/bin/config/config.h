@@ -49,7 +49,7 @@ struct _Config
    struct { /* take and save left panes size */
       double left; /**< position of left panes */
       double right; /**< position of right panes */
-      double tabs_size; /**< position of tabs pane */
+      double left_ver; /**< position of panes between the project and group navi */
    } panes;
    Eina_List *recents; /**< The list of recent projects */
    const char *profile; /**< profile name */

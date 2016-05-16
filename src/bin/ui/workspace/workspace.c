@@ -68,11 +68,10 @@ typedef struct _Scroll_Area Scroll_Area;
 
 struct _Workspace_Data
 {
-   Evas_Object *panes; /* equal to all workspace, this object returned in workspace_add */
+   Evas_Object *layout; /* equal to whole workspace, this object returned in workspace_add */
    Evas_Object *group_navi;
    Evas_Object *demo_navi;
    struct {
-      Evas_Object *layout;
       Evas_Object *obj;
       struct {
          Evas_Object *fit;
@@ -267,7 +266,7 @@ _fit_cb(void *data,
 {
    Workspace_Data *wd = data;
 
-   workspace_container_fit(wd->panes);
+   workspace_container_fit(wd->layout);
 }
 
 static void
@@ -457,7 +456,7 @@ _radio_switcher_add(Workspace_Data *wd,
 {
    Evas_Object *radio;
 
-   radio = elm_radio_add(wd->panes);
+   radio = elm_radio_add(wd->layout);
    elm_object_style_set(radio, style);
    elm_radio_state_value_set(radio, state_value);
    evas_object_smart_callback_add(radio, "changed", func, wd);
@@ -669,7 +668,7 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
 {
    area->bg_preview = BG_PREVIEW_TILE;
 
-   area->layout = elm_layout_add(wd->panes);
+   area->layout = elm_layout_add(wd->layout);
    elm_layout_theme_set(area->layout, "layout", "workspace", "scroller");
 
    _ruler_add(area->layout, &area->ruler_h, scale_rel);
@@ -714,7 +713,7 @@ _mode_cb(void *data,
    wd->mode = mode;
    content = elm_object_part_content_unset(wd->panes_h, "left");
    evas_object_hide(content);
-   content = elm_object_part_content_unset(wd->panes, "right");
+   //content = elm_object_part_content_unset(wd->panes, "right");
    evas_object_hide(content);
    if (wd->demo.content)
      {
@@ -736,7 +735,7 @@ _mode_cb(void *data,
          evas_object_show(wd->normal.layout);
          elm_radio_value_set(wd->toolbar.bg_switcher.white, wd->normal.bg_preview);
 
-         elm_object_part_content_set(wd->panes, "right", wd->group_navi);
+         //elm_object_part_content_set(wd->panes, "right", wd->group_navi);
          evas_object_show(wd->group_navi);
          _zoom_controls_disabled_set(wd, false);
          evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_CHANGED, wd->group);
@@ -753,7 +752,7 @@ _mode_cb(void *data,
          wd->demo.content = demo_add(wd->demo.scroller, wd->group);
          container_content_set(wd->demo.container, wd->demo.content);
 
-         elm_object_part_content_set(wd->panes, "right", wd->demo_navi);
+         //elm_object_part_content_set(wd->panes, "right", wd->demo_navi);
          evas_object_show(wd->demo_navi);
          demo_group_demo_update(wd->demo_navi);
 
@@ -765,6 +764,7 @@ _mode_cb(void *data,
          break;
      }
 
+   evas_object_smart_callback_call(ap.win, SIGNAL_WORKSPACE_MODE_CHANGED, &wd->mode);
    assert (area != NULL);
 
    if (container_aspect_get(area->container) < 0)
@@ -1000,9 +1000,11 @@ workspace_add(Evas_Object *parent, Group *group)
    edje_object_animation_set(group->edit_object, false);
 
    wd = mem_calloc(1, sizeof(Workspace_Data));
+#if 0
    wd->panes = elm_panes_add(parent);
    elm_panes_content_right_min_size_set(wd->panes, PANES_RIGHT_SIZE_MIN);
    elm_panes_content_right_size_set(wd->panes, 0); /* set the default min size */
+#endif /* if 0 */
 
    wd->code.size = -1;
    wd->group = group;
@@ -1010,16 +1012,15 @@ workspace_add(Evas_Object *parent, Group *group)
    wd->normal.rulers_visible = true;
    wd->demo.rulers_visible = true;
 
-   wd->toolbar.layout = elm_layout_add(wd->panes);
-   elm_layout_theme_set(wd->toolbar.layout, "layout", "workspace", "toolbar");
-   elm_object_part_content_set(wd->panes, "left", wd->toolbar.layout);
+   wd->layout = elm_layout_add(parent);
+   elm_layout_theme_set(wd->layout, "layout", "workspace", "toolbar");
 
    /* add toolbar */
-   wd->toolbar.obj = elm_toolbar_add(wd->panes);
+   wd->toolbar.obj = elm_toolbar_add(wd->layout);
    elm_toolbar_align_set(wd->toolbar.obj, 0.0);
    elm_toolbar_shrink_mode_set(wd->toolbar.obj, ELM_TOOLBAR_SHRINK_SCROLL);
    elm_toolbar_select_mode_set(wd->toolbar.obj, ELM_OBJECT_SELECT_MODE_ALWAYS);
-   elm_layout_content_set(wd->toolbar.layout, "elm.swallow.toolbar", wd->toolbar.obj);
+   elm_layout_content_set(wd->layout, "elm.swallow.toolbar", wd->toolbar.obj);
 
    /* add to toolbar the zoom controls */
    wd->zoom_factor = 1.0;
@@ -1054,12 +1055,12 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.bg_switcher.black);
    elm_radio_value_set(wd->toolbar.bg_switcher.white, BG_PREVIEW_TILE);
 
-   wd->panes_h = elm_panes_add(wd->toolbar.layout);
+   wd->panes_h = elm_panes_add(wd->layout);
    elm_object_style_set(wd->panes_h, "pan_hide");
    elm_panes_horizontal_set(wd->panes_h, true);
    elm_panes_content_right_size_set(wd->panes_h, 0); /* set the default min size */
    evas_object_smart_callback_add(wd->panes_h, "unpress", _panes_h_unpress, wd);
-   elm_layout_content_set(wd->toolbar.layout, NULL, wd->panes_h);
+   elm_layout_content_set(wd->layout, NULL, wd->panes_h);
 
    ENTRY_ADD(wd->panes_h, wd->code.obj, false)
    elm_entry_editable_set(wd->code.obj, false);
@@ -1078,8 +1079,8 @@ workspace_add(Evas_Object *parent, Group *group)
    evas_object_smart_callback_add(wd->normal.content, SIGNAL_GROUPVIEW_HL_PART_CHANGED, _groupview_hl_part_changed, wd);
    evas_object_smart_callback_add(wd->normal.content, SIGNAL_GROUPVIEW_HL_PART_DRAG_STOP, _groupview_hl_part_drag_stop, wd);
 
-   wd->group_navi = group_navigator_add(wd->panes, group);
-   elm_object_part_content_set(wd->panes, "right", wd->group_navi);
+   wd->group_navi = group_navigator_add(parent, group);
+   //elm_object_part_content_set(wd->panes, "right", wd->group_navi);
    evas_object_smart_callback_add(wd->group_navi, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, _part_select, wd);
    evas_object_smart_callback_add(wd->group_navi, SIGNAL_GROUP_NAVIGATOR_PART_VISIBLE_CHANGED, _part_visible, wd);
 
@@ -1090,10 +1091,10 @@ workspace_add(Evas_Object *parent, Group *group)
 
    _menu_add(wd);
 
-   evas_object_data_set(wd->panes, WORKSPACE_DATA, wd);
-   evas_object_event_callback_add(wd->panes, EVAS_CALLBACK_DEL, _workspace_del, wd);
+   evas_object_data_set(wd->layout, WORKSPACE_DATA, wd);
+   evas_object_event_callback_add(wd->layout, EVAS_CALLBACK_DEL, _workspace_del, wd);
 
-   return wd->panes;
+   return wd->layout;
 }
 
 void
@@ -1608,4 +1609,15 @@ workspace_code_changed(Evas_Object *obj)
    elm_object_content_set(layout, btn);
 
    elm_object_part_content_set(wd->code.obj, "elm.swallow.overlay", layout);
+}
+
+Evas_Object *
+workspace_group_navigator_get(Evas_Object *obj)
+{
+   if (!obj) return group_navigator_dummy_get();
+
+   WS_DATA_GET(obj);
+   if (MODE_DEMO == wd->mode)
+     return wd->demo_navi;
+   return wd->group_navi;
 }

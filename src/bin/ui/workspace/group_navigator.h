@@ -50,6 +50,9 @@
 Evas_Object *
 group_navigator_add(Evas_Object *parent, Group *group);
 
+Evas_Object *
+group_navigator_dummy_get(void);
+
 /**
  * @ingroup Partlist
  */

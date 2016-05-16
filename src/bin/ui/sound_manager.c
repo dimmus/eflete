@@ -22,6 +22,7 @@
 
 #include "main_window.h"
 #include "project_manager.h"
+#include "modal_window.h"
 #include "config.h"
 
 #define ITEM_WIDTH 100
@@ -47,6 +48,7 @@ struct _Search_Data
 
 struct _Sound_Editor
 {
+   Evas_Object *win;
    Evas_Object *popup;
    Evas_Object *popup_btn_add;
    Evas_Object *btn_add;
@@ -600,29 +602,27 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
 
    assert(edit != NULL);
 
-   edit->markup = elm_layout_add(ap.win);
+   edit->win = mw_add();
+   mw_title_set(edit->win, _("Sound manager"));
+   ic = elm_icon_add(edit->win);
+   elm_icon_standard_set(ic, "sound2");
+   mw_icon_set(edit->win, ic);
+   edit->markup = elm_layout_add(edit->win);
    elm_layout_theme_set(edit->markup, "layout", "sound_manager", "default");
    evas_object_size_hint_weight_set(edit->markup, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_data_set(edit->markup, SND_EDIT_KEY, edit);
+   evas_object_data_set(edit->win, SND_EDIT_KEY, edit);
+   elm_object_content_set(edit->win, edit->markup);
 
    edit->btn_del = elm_button_add(edit->markup);
-   elm_object_style_set(edit->btn_del, "anchor");
+   elm_object_style_set(edit->btn_del, "minus");
    evas_object_smart_callback_add(edit->btn_del, "clicked", _on_delete_clicked_cb, edit);
    elm_object_part_content_set(edit->markup, "eflete.swallow.del_btn", edit->btn_del);
-
-   ic = elm_icon_add(edit->btn_del);
-   elm_icon_standard_set(ic, "minus");
-   elm_object_part_content_set(edit->btn_del, NULL, ic);
    elm_object_disabled_set(edit->btn_del, true);
 
    edit->btn_add = elm_button_add(edit->markup);
-   elm_object_style_set(edit->btn_add, "anchor");
+   elm_object_style_set(edit->btn_add, "plus");
    evas_object_smart_callback_add(edit->btn_add, "clicked", _on_btn_plus_clicked, edit);
    elm_object_part_content_set(edit->markup, "eflete.swallow.add_btn", edit->btn_add);
-
-   ic = elm_icon_add(edit->btn_add);
-   elm_icon_standard_set(ic, "plus");
-   elm_object_part_content_set(edit->btn_add, NULL, ic);
 
    edit->menu = elm_menu_add(ap.win);
    elm_menu_item_add(edit->menu, NULL, "sound_sample", _("Sample"), _sample_add_cb, edit);
@@ -657,5 +657,6 @@ sound_manager_add(void)
    elm_object_focus_set(edit->sound_search_data.search_entry, true);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_UNSELECTED, NULL);
-   return edit->markup;
+   evas_object_show(edit->win);
+   return edit->win;
 }

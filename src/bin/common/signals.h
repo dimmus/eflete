@@ -505,4 +505,11 @@ typedef struct {
  */
 #define SIGNAL_SHORTCUT_TAB_NUM "SIGNAL_SHORTCUT_TAB_NUM"
 
+/**
+ * emited when workspace is changed.
+ * event_info - pointer to mode (Workspace_Mode *)
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_WORKSPACE_MODE_CHANGED "SIGNAL_WORKSPACE_MODE_CHANGED"
 #endif /* SIGNALS_H*/

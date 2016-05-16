@@ -632,8 +632,6 @@ _shortcut_save_cb(void *data __UNUSED__,
 Evas_Object *
 project_navigator_add(void)
 {
-   Evas_Object *icon;
-
    assert(ap.win != NULL);
 
    project_navigator.itc_folder = elm_genlist_item_class_new();
@@ -655,17 +653,13 @@ project_navigator_add(void)
    evas_object_show(project_navigator.layout);
 
    project_navigator.btn_add = elm_button_add(project_navigator.layout);
-   ICON_STANDARD_ADD(project_navigator.btn_add, icon, true, "plus");
-   elm_object_part_content_set(project_navigator.btn_add, NULL, icon);
    evas_object_smart_callback_add(project_navigator.btn_add, "clicked", _btn_add_group_cb, NULL);
-   elm_object_style_set(project_navigator.btn_add, "anchor");
+   elm_object_style_set(project_navigator.btn_add, "plus");
    elm_object_part_content_set(project_navigator.layout, "elm.swallow.btn1", project_navigator.btn_add);
 
    project_navigator.btn_del = elm_button_add(project_navigator.layout);
-   ICON_STANDARD_ADD(project_navigator.btn_del, icon, true, "minus");
-   elm_object_part_content_set(project_navigator.btn_del, NULL, icon);
    evas_object_smart_callback_add (project_navigator.btn_del, "clicked", _btn_del_group_cb, NULL);
-   elm_object_style_set(project_navigator.btn_del, "anchor");
+   elm_object_style_set(project_navigator.btn_del, "minus");
    elm_object_part_content_set(project_navigator.layout, "elm.swallow.btn0", project_navigator.btn_del);
    elm_object_disabled_set(project_navigator.btn_del, true);
 

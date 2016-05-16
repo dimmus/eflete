@@ -12,6 +12,7 @@ includesub_HEADERS = \
 	common/string_common.h \
 	common/validator.h \
 	common/widget_macro.h \
+	common/widget_list.h \
 	common/win32.h \
 	config/config.h \
 	editor/banned_edje_edit_api.h \
@@ -40,6 +41,7 @@ includesub_HEADERS = \
 	ui/live_view/live_widget.h \
 	ui/live_view/live_widgets.h \
 	ui/live_view/elementary/live_elementary_widgets.h \
+	ui/modal_window/modal_window.h \
 	ui/preference/preference.h \
 	ui/shortcuts/shortcuts.h \
 	ui/workspace/groupview.h \
@@ -56,6 +58,7 @@ libete_a_SOURCES = \
 ../../src/bin/eflete.c \
 ../../src/bin/common/string_common.c \
 ../../src/bin/common/validator.c \
+../../src/bin/common/widget_list.c \
 ../../src/bin/project_manager/group_manager.c \
 ../../src/bin/project_manager/project_manager.c \
 ../../src/bin/logger/logger.c \
@@ -84,6 +87,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/shortcuts/shortcuts.c \
 ../../src/bin/ui/style_manager.c \
 ../../src/bin/ui/sound_manager.c \
+../../src/bin/ui/modal_window/modal_window.c \
 ../../src/bin/ui/project_navigator.c \
 ../../src/bin/ui/image_manager.c \
 ../../src/bin/ui/colorclass_manager.c \
@@ -163,6 +167,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/bin/ui/container \
 -I${top_srcdir}/src/bin/ui/blocks \
 -I${top_srcdir}/src/bin/ui/editors \
+-I${top_srcdir}/src/bin/ui/modal_window \
 -I${top_srcdir}/src/bin/ui/notification \
 -I${top_srcdir}/src/bin/ui/workspace \
 -I${top_srcdir}/src/bin/ui/live_view \
