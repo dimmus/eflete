@@ -3418,6 +3418,7 @@ _init_items()
               /* part item block */
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_TITLE:
               IT.name = "container";
+              IT.expanded = true;
               IT.expandable = true;
               IT.expand_cb = _subitems_get;
               IT.filter_data.part_types = PART_BOX | PART_TABLE;
@@ -3446,6 +3447,7 @@ _init_items()
               /* part item block */
            case PROPERTY_GROUP_ITEM_PART_ITEM_TITLE:
               IT.name = "item";
+              IT.expanded = true;
               IT.expandable = true;
               IT.expand_cb = _subitems_get;
               IT.filter_data.part_types = PART_BOX | PART_TABLE;
