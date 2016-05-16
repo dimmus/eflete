@@ -49,6 +49,7 @@ struct _Search_Data
 struct _Sound_Editor
 {
    Evas_Object *win;
+   Evas_Object *panes;
    Evas_Object *popup;
    Evas_Object *popup_btn_add;
    Evas_Object *btn_add;
@@ -596,6 +597,34 @@ _search_reset_cb(void *data __UNUSED__,
 }
 
 static void
+_property_hide(Sound_Editor *mng)
+{
+   Evas_Object *content;
+
+   /* unset and hide the image property */
+   content = elm_object_part_content_unset(mng->panes, "right");
+   evas_object_hide(content);
+}
+
+static void
+_mw_cancel(void *data,
+           Evas_Object *obj __UNUSED__,
+           void *event_info __UNUSED__)
+{
+   Sound_Editor *mng = data;
+   _property_hide(mng);
+}
+
+static void
+_mw_done(void *data,
+         Evas_Object *obj __UNUSED__,
+         void *event_info __UNUSED__)
+{
+   Sound_Editor *mng = data;
+   _property_hide(mng);
+}
+
+static void
 _sound_editor_main_markup_create(Sound_Editor *edit)
 {
    Evas_Object *ic, *search;
@@ -604,6 +633,8 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
 
    edit->win = mw_add();
    mw_title_set(edit->win, _("Sound manager"));
+   evas_object_smart_callback_add(edit->win, "cancel", _mw_cancel, edit);
+   evas_object_smart_callback_add(edit->win, "done", _mw_done, edit);
    ic = elm_icon_add(edit->win);
    elm_icon_standard_set(ic, "sound2");
    mw_icon_set(edit->win, ic);
@@ -611,7 +642,10 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    elm_layout_theme_set(edit->markup, "layout", "sound_manager", "default");
    evas_object_size_hint_weight_set(edit->markup, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_data_set(edit->win, SND_EDIT_KEY, edit);
-   elm_object_content_set(edit->win, edit->markup);
+   edit->panes = elm_panes_add(edit->win);
+   elm_object_content_set(edit->win, edit->panes);
+   elm_object_part_content_set(edit->panes, "left", edit->markup);
+   elm_object_part_content_set(edit->panes, "right", ap.property.sound_manager);
 
    edit->btn_del = elm_button_add(edit->markup);
    elm_object_style_set(edit->btn_del, "minus");

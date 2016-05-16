@@ -39,6 +39,7 @@ struct _Search_Data
 struct _Colorclasses_Manager
 {
    Evas_Object *win;
+   Evas_Object *panes;
    Evas_Object *layout;
    Evas_Object *genlist;
    Evas_Object *edje_preview, *preview_layout;
@@ -355,6 +356,34 @@ _radio_switcher_add(Colorclasses_Manager *edit,
 }
 
 static void
+_property_hide(Colorclasses_Manager *mng)
+{
+   Evas_Object *content;
+
+   /* unset and hide the image property */
+   content = elm_object_part_content_unset(mng->panes, "right");
+   evas_object_hide(content);
+}
+
+static void
+_mw_cancel(void *data,
+           Evas_Object *obj __UNUSED__,
+           void *event_info __UNUSED__)
+{
+   Colorclasses_Manager *mng = data;
+   _property_hide(mng);
+}
+
+static void
+_mw_done(void *data,
+         Evas_Object *obj __UNUSED__,
+         void *event_info __UNUSED__)
+{
+   Colorclasses_Manager *mng = data;
+   _property_hide(mng);
+}
+
+static void
 _colorclass_main_layout_create(Colorclasses_Manager *edit)
 {
    Evas_Object *bg, *box_bg, *layout_bg, *search, *ic, *button;
@@ -372,6 +401,8 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    /* Creating main layout of window */
    edit->win = mw_add();
    mw_title_set(edit->win, _("Color class manager"));
+   evas_object_smart_callback_add(edit->win, "cancel", _mw_cancel, edit);
+   evas_object_smart_callback_add(edit->win, "done", _mw_done, edit);
    ic = elm_icon_add(edit->win);
    elm_icon_standard_set(ic, "color");
    mw_icon_set(edit->win, ic);
@@ -379,7 +410,10 @@ _colorclass_main_layout_create(Colorclasses_Manager *edit)
    elm_layout_theme_set(edit->layout, "layout", "colorclass_manager", "default");
    elm_layout_text_set(edit->layout, "elm.text", _("Preview"));
    elm_layout_text_set(edit->layout, "elm.subtext", _("Color classes list"));
-   elm_object_content_set(edit->win, edit->layout);
+   edit->panes = elm_panes_add(edit->win);
+   elm_object_content_set(edit->win, edit->panes);
+   elm_object_part_content_set(edit->panes, "left", edit->layout);
+   elm_object_part_content_set(edit->panes, "right", ap.property.color_manager);
 
    edit->genlist = elm_genlist_add(edit->layout);
    evas_object_show(edit->genlist);

@@ -55,6 +55,7 @@ struct _Search_Data
 struct _Image_Manager
 {
    Evas_Object *win;
+   Evas_Object *panes;
    Evas_Object *gengrid;
    Evas_Object *layout;
    Evas_Object *del_button;
@@ -481,6 +482,34 @@ _image_manager_init(Image_Manager *img_mng)
    return true;
 }
 
+static void
+_property_hide(Image_Manager *mng)
+{
+   Evas_Object *content;
+
+   /* unset and hide the image property */
+   content = elm_object_part_content_unset(mng->panes, "right");
+   evas_object_hide(content);
+}
+
+static void
+_mw_cancel(void *data,
+           Evas_Object *obj __UNUSED__,
+           void *event_info __UNUSED__)
+{
+   Image_Manager *mng = data;
+   _property_hide(mng);
+}
+
+static void
+_mw_done(void *data,
+         Evas_Object *obj __UNUSED__,
+         void *event_info __UNUSED__)
+{
+   Image_Manager *mng = data;
+   _property_hide(mng);
+}
+
 Evas_Object *
 image_manager_add()
 {
@@ -494,12 +523,17 @@ image_manager_add()
 
    img_mng->win = mw_add();
    mw_title_set(img_mng->win, _("Image manager"));
+   evas_object_smart_callback_add(img_mng->win, "cancel", _mw_cancel, img_mng);
+   evas_object_smart_callback_add(img_mng->win, "done", _mw_done, img_mng);
    ic = elm_icon_add(img_mng->win);
    elm_icon_standard_set(ic, "image2");
    mw_icon_set(img_mng->win, ic);
    img_mng->layout = elm_layout_add(img_mng->win);
    elm_layout_theme_set(img_mng->layout, "layout", "image_manager", "default");
-   elm_object_content_set(img_mng->win, img_mng->layout);
+   img_mng->panes = elm_panes_add(img_mng->win);
+   elm_object_content_set(img_mng->win, img_mng->panes);
+   elm_object_part_content_set(img_mng->panes, "left", img_mng->layout);
+   elm_object_part_content_set(img_mng->panes, "right", ap.property.image_manager);
 
    img_mng->gengrid = elm_gengrid_add(img_mng->layout);
    elm_object_part_content_set(img_mng->layout,
