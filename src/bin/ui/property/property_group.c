@@ -427,6 +427,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_COLORS_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_SIZE_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_TITLE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_TITLE);
@@ -455,6 +456,13 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_Y);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_RELATIVE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_OFFSET);
+         break;
+      case PROPERTY_GROUP_ITEM_STATE_IMAGE_TITLE:
+//         APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_NORMAL);
+//         APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_TWEEN);
+//         APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_MIDDLE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_H);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_V);
          break;
       case PROPERTY_GROUP_ITEM_STATE_FILL_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_TYPE);
@@ -661,6 +669,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
       case ATTRIBUTE_PART_ITEM_PADDING_LEFT:
       case ATTRIBUTE_PART_ITEM_PADDING_RIGHT:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_TOP:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_LEFT:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT:
       case ATTRIBUTE_STATE_PROXY_SOURCE:
       case ATTRIBUTE_STATE_VISIBLE:
       case ATTRIBUTE_STATE_FILL_SMOOTH:
@@ -1500,6 +1512,22 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          double_val1 = edje_edit_state_rel2_offset_y_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
          break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_LEFT:
+         edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, &int_val1, NULL, NULL, NULL);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT:
+         edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, &int_val1, NULL, NULL);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_TOP:
+         edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, &int_val1, NULL);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM:
+         edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, NULL, &int_val1);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
       case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
          double_val1 = edje_edit_state_fill_origin_relative_x_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
@@ -2018,6 +2046,26 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_REL2_OFFSET_Y:
          group_pd.history.format = _("rel2 offset y changed from %d to %d");
          VAL(int_val1) = edje_edit_state_rel2_offset_y_get(EDIT_OBJ, STATE_ARGS);
+         break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_LEFT:
+         group_pd.history.format = _("image left border changed from %d to %d");
+         edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, &int_val1, NULL, NULL, NULL);
+         VAL(int_val1) = int_val1;
+         break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT:
+         group_pd.history.format = _("image right border changed from %d to %d");
+         edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, &int_val1, NULL, NULL);
+         VAL(int_val1) = int_val1;
+         break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_TOP:
+         group_pd.history.format = _("image top border changed from %d to %d");
+         edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, &int_val1, NULL);
+         VAL(int_val1) = int_val1;
+         break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM:
+         group_pd.history.format = _("image bottom border changed from %d to %d");
+         edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, NULL, &int_val1);
+         VAL(int_val1) = int_val1;
          break;
       case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
          group_pd.history.format = _("fill origin relative x changed from %.2f to %.2f");
@@ -2729,6 +2777,22 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_state_rel2_offset_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.int_val1 = edje_edit_state_rel2_offset_y_get(EDIT_OBJ, STATE_ARGS);
          break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_LEFT:
+         CRIT_ON_FAIL(editor_state_image_border_left_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, &group_pd.history.new.int_val1, NULL, NULL, NULL);
+         break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT:
+         CRIT_ON_FAIL(editor_state_image_border_right_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, &group_pd.history.new.int_val1, NULL, NULL);
+         break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_TOP:
+         CRIT_ON_FAIL(editor_state_image_border_top_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, &group_pd.history.new.int_val1, NULL);
+         break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM:
+         CRIT_ON_FAIL(editor_state_image_border_bottom_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, NULL, &group_pd.history.new.int_val1);
+         break;
       case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
          CRIT_ON_FAIL(editor_state_fill_origin_relative_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_state_fill_origin_relative_x_get(EDIT_OBJ, STATE_ARGS);
@@ -3206,6 +3270,10 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_PADDING_RIGHT:
       case ATTRIBUTE_PART_ITEM_PADDING_TOP:
       case ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_LEFT:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_TOP:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM:
          CHECK_VAL(int_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.int_val1,
@@ -3677,6 +3745,31 @@ _init_items()
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_X);
               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_Y);
+              break;
+
+              /* part image */
+           case PROPERTY_GROUP_ITEM_STATE_IMAGE_TITLE:
+              IT.name = "image";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              IT.filter_data.part_types = PART_IMAGE;
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_IMAGE_NORMAL:
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_IMAGE_TWEEN:
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_H:
+              IT.name = "border";
+              _action1(&IT, "left", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_LEFT);
+              _action2(&IT, "right", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_V:
+              IT.name = "";
+              _action1(&IT, "top", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_TOP);
+              _action2(&IT, "bottom", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM);
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_IMAGE_MIDDLE:
               break;
 
               /* state fill block */
