@@ -462,7 +462,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_OFFSET);
          break;
       case PROPERTY_GROUP_ITEM_STATE_IMAGE_TITLE:
-//         APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_NORMAL);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_NORMAL);
 //         APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_TWEEN);
          APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_MIDDLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_H);
@@ -634,6 +634,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_NAME:
       case ATTRIBUTE_PROGRAM_NAME:
       case ATTRIBUTE_PART_ITEM_NAME:
+      case ATTRIBUTE_STATE_IMAGE:
          elm_object_disabled_set(action->control, true);
          break;
       case ATTRIBUTE_GROUP_MIN_W:
@@ -1082,6 +1083,16 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_ITEM_NAME:
          property_entry_set(action->control, group_pd.part->current_item_name);
+         break;
+      case ATTRIBUTE_STATE_IMAGE:
+         str_val1 = edje_edit_state_image_get(EDIT_OBJ, STATE_ARGS);
+         if (!strcmp(str_val1, EFLETE_DUMMY_IMAGE_NAME))
+           {
+              edje_edit_string_free(str_val1);
+              str_val1 = eina_stringshare_add(_("None"));
+           }
+         property_entry_set(action->control, str_val1);
+         edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          int_val1 = edje_edit_group_min_w_get(EDIT_OBJ);
@@ -1789,6 +1800,10 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("part item's name changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, eina_stringshare_add(PROGRAM_ARGS));
          break;
+      case ATTRIBUTE_STATE_IMAGE:
+         group_pd.history.format = _("image changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(PROGRAM_ARGS));
+         break;
 
       case ATTRIBUTE_GROUP_MIN_W:
          group_pd.history.format = _("group.min_w changed from %d to %d");
@@ -2468,6 +2483,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_ITEM_NAME:
          TODO("implement part's item rename");
+         break;
+      case ATTRIBUTE_STATE_IMAGE:
+         TODO("implement image changings")
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          CRIT_ON_FAIL(editor_group_min_w_set(EDIT_OBJ, CHANGE_MERGE, double_val1));
@@ -3200,6 +3218,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_NAME:
       case ATTRIBUTE_PROGRAM_NAME:
       case ATTRIBUTE_PART_ITEM_NAME:
+      case ATTRIBUTE_STATE_IMAGE:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.str_val1,
@@ -3780,6 +3799,8 @@ _init_items()
               IT.filter_data.part_types = PART_IMAGE;
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_NORMAL:
+              IT.name = "image";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_NORMAL, ATTRIBUTE_STATE_IMAGE);
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_TWEEN:
               break;
