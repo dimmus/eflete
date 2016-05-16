@@ -631,9 +631,11 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_SPREAD_H:
       case ATTRIBUTE_PART_ITEM_SPAN_COL:
       case ATTRIBUTE_PART_ITEM_SPAN_ROW:
+         elm_spinner_min_max_set(action->control, 1, 100);
+         break;
       case ATTRIBUTE_PART_ITEM_POSITION_COL:
       case ATTRIBUTE_PART_ITEM_POSITION_ROW:
-         elm_spinner_min_max_set(action->control, 1, 100);
+         elm_spinner_min_max_set(action->control, 0, 100);
          break;
       case ATTRIBUTE_PART_DRAG_X:
       case ATTRIBUTE_PART_DRAG_Y:
