@@ -242,3 +242,52 @@ item_style_name_check(const Eina_Stringshare *group_name, const char *style_name
 
    return !strcmp(style_name, style);
 }
+
+const char *
+option_widget_name_get(const char *str, Eina_List **style_list)
+{
+   int len = strlen(str);
+   char widget[32], style[256];
+   Eina_List *list = NULL;
+   int i, first = 0;
+   Eina_Bool is_style = EINA_FALSE;
+
+   for (i = 0; i < len; i++)
+     {
+        if (str[i] == ':')
+          {
+             is_style = EINA_TRUE;
+             widget[i] = '\0';
+             first = i + 1;
+             continue;
+          }
+
+        if (!is_style)
+          {
+             widget[i] = str[i];
+          }
+        else
+          {
+             if (str[i] == ',')
+               {
+                  style[i - first] = '\0';
+                  list = eina_list_append(list, strdup(style));
+                  first = i + 1;
+                  continue;
+               }
+               style[i - first] = str[i];
+          }
+     }
+
+   if (!is_style)
+      widget[i] = '\0';
+   else
+     {
+        style[i - first] = '\0';
+        list = eina_list_append(list, strdup(style));
+     }
+
+   *style_list = list;
+
+   return strdup(widget);
+}

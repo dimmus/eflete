@@ -645,11 +645,13 @@ _delayed_popup(void *data)
 void
 _tab_import_edj_data_set(const char *name, const char *path, const char *edj, const Eina_List *widgets)
 {
-   const Eina_List *l, *wl;
-   const char *str;
+   const Eina_List *l, *wl, *wll, *wlll, *wllll;
+   Eina_List *style_list = NULL;
+   const char *str, *widget_name, *style_name;
    Eina_Strbuf *buf = eina_strbuf_new();
    Eina_Bool first_not_found = true;
-   Tree_Item_Data *widget = NULL;
+   Tree_Item_Data *widget = NULL, *style = NULL;
+   End_Item_Data *item_style = NULL;
 
    assert(tab_edj.layout != NULL);
 
@@ -663,17 +665,53 @@ _tab_import_edj_data_set(const char *name, const char *path, const char *edj, co
 
    EINA_LIST_FOREACH(widgets, l, str)
      {
+        widget_name = option_widget_name_get(str, &style_list);
+
         EINA_LIST_FOREACH(widget_list, wl, widget)
           {
-             if (!strcasecmp(str, widget->name))
+             if (!strcasecmp(widget_name, widget->name))
                {
-                  widget->check = true;
+                  if (!style_list)
+                    {
+                       EINA_LIST_FOREACH(widget->list, wll, style)
+                         {
+                            EINA_LIST_FOREACH(style->list, wlll, item_style)
+                              {
+                                 item_style->check = true;
+                              }
+                            style->check = true;
+                         }
+                       widget->check = true;
+                    }
+                  else
+                    {
+                       EINA_LIST_FOREACH(style_list, wlll, style_name)
+                         {
+                            EINA_LIST_FOREACH(widget->list, wll, style)
+                              {
+                                 if (!strcasecmp(style_name, style->name))
+                                   {
+                                      EINA_LIST_FOREACH(style->list, wllll, item_style)
+                                        {
+                                           item_style->check = true;
+                                        }
+                                      style->check = true;
+                                      break;
+                                   }
+                              }
+                            if (!style)
+                              {
+                                 eina_strbuf_append_printf(buf, first_not_found ? "%s(%s)" : ", %s(%s)", widget_name, style_name);
+                                 first_not_found = false;
+                              }
+                         }
+                    }
                   break;
                }
           }
         if (!widget)
           {
-             eina_strbuf_append_printf(buf, first_not_found ? "%s" : ", %s", str);
+             eina_strbuf_append_printf(buf, first_not_found ? "%s" : ", %s", widget_name);
              first_not_found = false;
           }
      }
