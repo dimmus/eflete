@@ -186,6 +186,10 @@ transition_type_strings[] = { STR_NONE,
                               "cubic bezier",
                               NULL};
 
+static const char *image_border_fill_strings[] = { STR_NONE,
+                                                   "Default",
+                                                   "Solid",
+                                                   NULL};
 /* defines for args */
 #define EDIT_OBJ group_pd.group->edit_object
 #define PART_ARGS group_pd.part->name
@@ -460,7 +464,7 @@ _subitems_get(Property_Attribute *pa)
       case PROPERTY_GROUP_ITEM_STATE_IMAGE_TITLE:
 //         APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_NORMAL);
 //         APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_TWEEN);
-//         APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_MIDDLE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_MIDDLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_H);
          APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_V);
          break;
@@ -835,6 +839,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
          _fill_combobox_with_enum(action->control, table_homogeneous_strings);
+         break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
+         _fill_combobox_with_enum(action->control, image_border_fill_strings);
          break;
       case ATTRIBUTE_STATE_COLOR_CLASS:
          ewe_combobox_style_set(action->control, "color_class");
@@ -1528,6 +1535,10 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, NULL, &int_val1);
          elm_spinner_value_set(action->control, int_val1);
          break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
+         ewe_combobox_select_item_set(action->control,
+           (int) edje_edit_state_image_border_fill_get(EDIT_OBJ, STATE_ARGS));
+         break;
       case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
          double_val1 = edje_edit_state_fill_origin_relative_x_get(EDIT_OBJ, STATE_ARGS);
          elm_spinner_value_set(action->control, double_val1);
@@ -2066,6 +2077,11 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("image bottom border changed from %d to %d");
          edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, NULL, &int_val1);
          VAL(int_val1) = int_val1;
+         break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
+         group_pd.history.format = _("border fill changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(
+            image_border_fill_strings[edje_edit_state_image_border_fill_get(EDIT_OBJ, STATE_ARGS)]));
          break;
       case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
          group_pd.history.format = _("fill origin relative x changed from %.2f to %.2f");
@@ -2793,6 +2809,13 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_state_image_border_bottom_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, NULL, &group_pd.history.new.int_val1);
          break;
+      case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
+         str_val1 = eina_stringshare_add(cb_item->title);
+         CRIT_ON_FAIL(editor_state_image_border_fill_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item->index));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+
       case ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X:
          CRIT_ON_FAIL(editor_state_fill_origin_relative_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_state_fill_origin_relative_x_get(EDIT_OBJ, STATE_ARGS);
@@ -3212,6 +3235,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_REL1_TO_Y:
       case ATTRIBUTE_STATE_REL2_TO_X:
       case ATTRIBUTE_STATE_REL2_TO_Y:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
       case ATTRIBUTE_STATE_COLOR_CLASS:
       case ATTRIBUTE_STATE_TEXT:
       case ATTRIBUTE_STATE_FONT:
@@ -3770,6 +3794,8 @@ _init_items()
               _action2(&IT, "bottom", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM);
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_MIDDLE:
+              IT.name = "border fill";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_IMAGE_BORDER_FILL);
               break;
 
               /* state fill block */
