@@ -93,6 +93,7 @@ struct _App_Data
    Eina_Stringshare *last_path;
    Evas_Object *splash;
    Evas_Object *statusbar; /**< The statusbar object, which contain some items */
+   Evas_Object *tabs;
    struct {
       Evas_Object *left;
       Evas_Object *right;
@@ -103,7 +104,7 @@ struct _App_Data
    } property;
 
    struct {
-      Evas_Object *right_top, *history;
+      Evas_Object *history;
       Elm_Object_Item *item_history, *item_property;
    } block;
    Project *project;

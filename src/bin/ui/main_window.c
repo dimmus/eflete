@@ -73,14 +73,14 @@ _history_click(void *data __UNUSED__,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
-   elm_layout_signal_emit(ap.block.right_top, "history,show", "eflete");
+   elm_layout_signal_emit(ap.tabs, "history,show", "eflete");
 }
 static void
 _property_click(void *data __UNUSED__,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
-   elm_layout_signal_emit(ap.block.right_top, "property,show", "eflete");
+   elm_layout_signal_emit(ap.tabs, "property,show", "eflete");
 }
 
 static void
@@ -165,12 +165,12 @@ ui_main_window_add(void)
    elm_object_part_content_set(ap.panes.right, "left", tabs);
 
    /* add tabs with history and signals */
-   ap.block.right_top = elm_layout_add(ap.win);
-   elm_layout_theme_set(ap.block.right_top, "layout", "tabs", "property");
+   ap.tabs = elm_layout_add(ap.win);
+   elm_layout_theme_set(ap.tabs, "layout", "tabs", "property");
 
-   toolbar = elm_toolbar_add(ap.block.right_top);
+   toolbar = elm_toolbar_add(ap.tabs);
    elm_object_style_set(toolbar, "editor_tabs_horizontal");
-   elm_layout_content_set(ap.block.right_top, "elm.swallow.toolbar", toolbar);
+   elm_layout_content_set(ap.tabs, "elm.swallow.toolbar", toolbar);
    elm_toolbar_shrink_mode_set(toolbar, ELM_TOOLBAR_SHRINK_SCROLL);
    elm_toolbar_select_mode_set(toolbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
    evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -190,10 +190,10 @@ ui_main_window_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_QUIT, _on_done, NULL);
 
    ap.property.group = ui_property_add(ap.win);
-   elm_layout_content_set(ap.block.right_top, "elm.swallow.property", ap.property.group);
+   elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.group);
    ap.block.history = history_ui_add();
-   elm_layout_content_set(ap.block.right_top, "elm.swallow.history", ap.block.history);
-   elm_object_part_content_set(ap.panes.right, "right", ap.block.right_top);
+   elm_layout_content_set(ap.tabs, "elm.swallow.history", ap.block.history);
+   elm_object_part_content_set(ap.panes.right, "right", ap.tabs);
 
    ap.menu = ui_menu_add();
 
