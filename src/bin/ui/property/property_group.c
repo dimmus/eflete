@@ -162,8 +162,8 @@ static const char *action_type[] = {"NONE",
 
 static const char *item_aspect_mode_strings[] = { STR_NONE,
                                                   "Neither",
-                                                  "Vertical",
                                                   "Horizontal",
+                                                  "Vertical",
                                                   "Both",
                                                   NULL};
 static const char *table_homogeneous_strings[] = { STR_NONE,
