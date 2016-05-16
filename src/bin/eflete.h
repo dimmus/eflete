@@ -101,6 +101,10 @@ struct _App_Data
    } panes;
    struct {
       Evas_Object *group;
+      Evas_Object *image_manager;
+      Evas_Object *sound_manager;
+      Evas_Object *style_manager;
+      Evas_Object *color_manager;
    } property;
 
    struct {

@@ -190,6 +190,10 @@ ui_main_window_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_QUIT, _on_done, NULL);
 
    ap.property.group = ui_property_add(ap.win);
+   ap.property.image_manager = ui_property_image_add(ap.win);
+   ap.property.sound_manager = ui_property_sound_add(ap.win);
+   ap.property.style_manager = ui_property_style_add(ap.win);
+   ap.property.color_manager = ui_property_color_add(ap.win);
    elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.group);
    ap.block.history = history_ui_add();
    elm_layout_content_set(ap.tabs, "elm.swallow.history", ap.block.history);

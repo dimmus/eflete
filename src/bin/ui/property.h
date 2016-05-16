@@ -40,4 +40,17 @@
 Evas_Object *
 ui_property_add(Evas_Object *parent);
 
+Evas_Object *
+ui_property_image_add(Evas_Object *parent);
+
+Evas_Object *
+ui_property_sound_add(Evas_Object *parent);
+
+Evas_Object *
+ui_property_style_add(Evas_Object *parent);
+
+Evas_Object *
+ui_property_color_add(Evas_Object *parent);
+
+
 #endif /* UI_PROPERTY_1_H */

@@ -126,6 +126,7 @@ _on_different_clicked(void *data,
    pd->type = PROPERTY;
 }
 
+#if 0
 static void
 _on_image_editor_clicked(void *data,
                          Evas_Object *obj __UNUSED__,
@@ -225,6 +226,7 @@ _on_color_editor_clicked(void *data,
 
    pd->type = STYLE_PROPERTY;
 }
+#endif /* if 0 */
 
 static void
 _on_text_part_clicked(void *data,
@@ -380,19 +382,23 @@ ui_property_add(Evas_Object *parent)
    elm_object_content_set(pd->layout, pd->group_property);
    evas_object_data_set(pd->layout, PROP_DATA, pd);
 
+   /*
    pd->image_property = ui_property_image_add(pd->layout);
    pd->sound_property = ui_property_sound_add(pd->layout);
    pd->style_property = ui_property_style_add(pd->layout);
    pd->color_property = ui_property_color_add(pd->layout);
+   */
    pd->demo_text_property = ui_property_demo_text_add(pd->layout);
    pd->demo_swallow_property = ui_property_demo_swallow_add(pd->layout);
    pd->demo_program_property = ui_property_demo_program_add(pd->layout);
    /* register global callbacks */
    evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _on_tab_changed, pd->layout);
+   /*
    evas_object_smart_callback_add(ap.win, SIGNAL_IMAGE_EDITOR_TAB_CLICKED, _on_image_editor_clicked, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_EDITOR_TAB_CLICKED, _on_sound_editor_clicked, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_STYLE_EDITOR_TAB_CLICKED, _on_style_editor_clicked, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_COLOR_EDITOR_TAB_CLICKED, _on_color_editor_clicked, pd->layout);
+   */
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_PART_CLICKED, _on_text_part_clicked, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_PART_CLICKED, _on_swallow_part_clicked, pd->layout);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_PROGRAM_PART_CLICKED, _on_demo_program_clicked, pd->layout);
