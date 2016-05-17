@@ -104,6 +104,17 @@ TODO("apply when popup will be fixed");
 //   elm_object_scroll_freeze_push(data);
 }
 
+void
+property_image_tween_append(Evas_Object *control, Eina_Stringshare *image)
+{
+   Evas_Object *tween_list;
+
+   assert(control != NULL);
+   tween_list = elm_layout_content_get(control, NULL);
+   elm_gengrid_item_append(tween_list, _itc_tween,
+                           eina_stringshare_add(image), NULL, NULL);
+}
+
 Evas_Object *
 property_image_tween_control_add(Evas_Object *parent)
 {

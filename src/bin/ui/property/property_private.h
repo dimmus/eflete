@@ -308,6 +308,9 @@ property_image_normal_control_add(Evas_Object *parent);
 Evas_Object *
 property_image_tween_control_add(Evas_Object *parent);
 
+void
+property_image_tween_append(Evas_Object *control, Eina_Stringshare *image);
+
 
 /* color class manager submodule */
 void

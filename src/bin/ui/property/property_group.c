@@ -1064,6 +1064,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
    unsigned short ushort_val1;
    Eina_Bool bool_val1;
    Eina_Stringshare *str_val1, *str_val2;
+   Eina_List *images_list, *l;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -1096,7 +1097,12 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_STATE_IMAGE_TWEEN:
-         /* IMPLEMENT SOME TWEENS SOON */
+         images_list = edje_edit_state_tweens_list_get(EDIT_OBJ, STATE_ARGS);
+         EINA_LIST_FOREACH(images_list, l, str_val1)
+           {
+              property_image_tween_append(action->control, eina_stringshare_add(str_val1));
+           }
+         edje_edit_string_list_free(images_list);
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          int_val1 = edje_edit_group_min_w_get(EDIT_OBJ);
