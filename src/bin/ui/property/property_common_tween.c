@@ -22,6 +22,8 @@
 #include "main_window.h"
 #include "project_manager.h"
 
+/* gengrid base functions */
+
 static Elm_Gengrid_Item_Class *_itc_tween = NULL;
 static char *
 _item_label_get(void *data,
@@ -61,6 +63,47 @@ _item_del(void *data,
    eina_stringshare_del(data);
 }
 
+/* tweens functions */
+
+static void
+_del_tween_image(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   Evas_Object *tween_list __UNUSED__ = (Evas_Object *)data;
+}
+
+static Eina_Bool
+_on_image_editor_tween_done(void *data,
+                            Evas_Object *obj __UNUSED__,
+                            void *event_info)
+{
+   Evas_Object *tween_list __UNUSED__ = (Evas_Object *)data;
+   Eina_List *selected = (Eina_List *)event_info;
+
+   if (!selected) return false;
+TODO("apply when popup will be fixed");
+//   elm_object_scroll_freeze_pop(tween_list);
+
+   return true;
+}
+
+static void
+_add_tween_image(void *data,
+                 Evas_Object *obj,
+                 void *event_info __UNUSED__)
+{
+   Evas_Object *tween_list = (Evas_Object *)data;
+
+   popup_gengrid_image_helper(NULL,
+                              obj,
+                              _on_image_editor_tween_done,
+                              tween_list,
+                              true);
+TODO("apply when popup will be fixed");
+//   elm_object_scroll_freeze_push(data);
+}
+
 Evas_Object *
 property_image_tween_control_add(Evas_Object *parent)
 {
@@ -95,15 +138,15 @@ property_image_tween_control_add(Evas_Object *parent)
    BUTTON_ADD(item, button, NULL)
    ICON_STANDARD_ADD(button, icon, true, "plus");
    elm_object_part_content_set(button, NULL, icon);
-//   evas_object_smart_callback_add(button, "clicked", _add_tween_image,
-//                                  tween_list);
+   evas_object_smart_callback_add(button, "clicked", _add_tween_image,
+                                  tween_list);
    elm_layout_content_set(item, "elm.swallow.add", button);
 
    BUTTON_ADD(item, button, NULL)
    ICON_STANDARD_ADD(button, icon, true, "minus");
    elm_object_part_content_set(button, NULL, icon);
-//   evas_object_smart_callback_add(button, "clicked", _del_tween_image,
-//                                  tween_list);
+   evas_object_smart_callback_add(button, "clicked", _del_tween_image,
+                                  tween_list);
    elm_layout_content_set(item, "elm.swallow.del", button);
 
    evas_object_show(tween_list);
