@@ -152,8 +152,8 @@ _mw_close(void *data,
 
    assert(mw != NULL);
 
-   evas_object_smart_callback_call(mw, SIGNAL_CANCEL, NULL);
    _anim_hide(elm_object_parent_widget_get(mw), evas_object_evas_get(mw), mw, NULL);
+   evas_object_smart_callback_call(mw, SIGNAL_CANCEL, NULL);
 }
 
 static void
@@ -165,8 +165,8 @@ _mw_done(void *data,
 
    assert(mw != NULL);
 
-   evas_object_smart_callback_call(mw, SIGNAL_DONE, NULL);
    _anim_hide(elm_object_parent_widget_get(mw), evas_object_evas_get(mw), mw, NULL);
+   evas_object_smart_callback_call(mw, SIGNAL_DONE, NULL);
 }
 
 void
