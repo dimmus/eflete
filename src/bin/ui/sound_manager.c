@@ -24,6 +24,7 @@
 #include "project_manager.h"
 #include "modal_window.h"
 #include "config.h"
+#include "validator.h"
 
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
@@ -49,12 +50,11 @@ struct _Sound_Manager
 {
    Evas_Object *win;
    Evas_Object *panes;
-   Evas_Object *popup;
-   Evas_Object *popup_btn_add;
    Evas_Object *btn_del;
    Evas_Object *menu;
    Evas_Object *tone_entry, *frq_entry;
-   Elm_Validator_Regexp *tone_validator, *frq_validator;
+   Resource_Name_Validator *tone_validator;
+   Elm_Validator_Regexp *frq_validator;
    Evas_Object *gengrid;
    Evas_Object *layout;
    Elm_Object_Item *tone_header;
@@ -264,57 +264,14 @@ _add_sample_done(void *data __UNUSED__,
 }
 
 static void
-_popup_close(void *data __UNUSED__)
-{
-   assert(mng.tone_validator != NULL);
-   assert(mng.frq_validator != NULL);
-
-   evas_object_del(mng.popup);
-
-   elm_validator_regexp_free(mng.tone_validator);
-   elm_validator_regexp_free(mng.frq_validator);
-   mng.tone_validator = NULL;
-   mng.frq_validator = NULL;
-
-   elm_gengrid_item_selected_set(elm_gengrid_last_item_get(mng.gengrid), true);
-}
-
-static void
-_add_tone_cancel(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   ecore_job_add(_popup_close, NULL);
-}
-
-static void
-_add_tone_done(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_tone_add(void)
 {
    Sound_Data *snd;
    Eina_Stringshare *tone_name;
    int frq;
-   Eina_List *tones_list, *l;
-   Eina_Bool exist = false;
    Tone_Resource *tone;
 
    tone_name = eina_stringshare_add(elm_entry_entry_get(mng.tone_entry));
-
-   tones_list = ap.project->tones;
-   EINA_LIST_FOREACH(tones_list, l, tone)
-     if (tone->name == tone_name) /* they both are stringshares */
-       {
-          exist = true;
-          break;
-       }
-   if (exist)
-     {
-        WARN(_("Tone '%s' is already added to project"), tone_name)
-        eina_stringshare_del(tone_name);
-        return;
-     }
-
    frq = atoi(elm_entry_entry_get(mng.frq_entry));
    edje_edit_sound_tone_add(ap.project->global_object, tone_name, frq);
 
@@ -333,8 +290,6 @@ _add_tone_done(void *data __UNUSED__,
    editor_save(ap.project->global_object);
    TODO("Remove this line once edje_edit_image_add would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
-
-   ecore_job_add(_popup_close, NULL);
 }
 
 static void
@@ -350,11 +305,11 @@ _validation(void *data __UNUSED__,
             Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
 {
-   if ((elm_validator_regexp_status_get(mng.tone_validator) != ELM_REG_NOERROR) ||
+   if ((resource_name_validator_status_get(mng.tone_validator) != ELM_REG_NOERROR) ||
        (elm_validator_regexp_status_get(mng.frq_validator) != ELM_REG_NOERROR))
-     elm_object_disabled_set(mng.popup_btn_add, true);
+     popup_buttons_disabled_set(BTN_OK, true);
    else
-     elm_object_disabled_set(mng.popup_btn_add, false);
+     popup_buttons_disabled_set(BTN_OK, false);
 }
 
 static void
@@ -362,53 +317,47 @@ _tone_add_cb(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   Evas_Object *popup, *box, *item, *bt_no;
-   Eina_Stringshare *title;
+   Evas_Object *box, *item;
+   Popup_Button btn_res;
 
-   popup = elm_popup_add(ap.win);
-   elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
-   title = eina_stringshare_add(_("Add new tone to the project"));
-   elm_object_part_text_set(popup, "title,text", title);
-   mng.popup = popup;
+   if (!mng.tone_validator)
+     {
+        mng.tone_validator = resource_name_validator_new(NAME_REGEX, NULL);
+        resource_name_validator_list_set(mng.tone_validator, &ap.project->tones, true);
+     }
+   if (!mng.frq_validator)
+     mng.frq_validator = elm_validator_regexp_new(FREQUENCY_REGEX, NULL);
 
-   assert(mng.tone_validator == NULL);
-   assert(mng.frq_validator == NULL);
-   mng.tone_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
-   mng.frq_validator = elm_validator_regexp_new(FREQUENCY_REGEX, NULL);
-
-   BOX_ADD(popup, box, false, false);
-   elm_object_content_set(popup, box);
-   LAYOUT_PROP_ADD(box, _("Tone name:"), "property", "1swallow")
+   BOX_ADD(mng.win, box, false, false);
+   LAYOUT_PROP_ADD(box, _("Tone name:"), "property", "1swallow");
    ENTRY_ADD(item, mng.tone_entry, true);
-   eo_event_callback_add(mng.tone_entry, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, mng.tone_validator);
+   eo_event_callback_add(mng.tone_entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.tone_validator);
    evas_object_smart_callback_add(mng.tone_entry, "changed", _validation, NULL);
    elm_object_part_text_set(mng.tone_entry, "guide", _("Type a new tone name"));
+   elm_object_part_content_set(item, "elm.swallow.content", mng.tone_entry);
    /* need to manualy set not valid string for triggered validator */
    elm_entry_entry_set(mng.tone_entry, NULL);
-   elm_object_part_content_set(item, "elm.swallow.content", mng.tone_entry);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Frequency:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Frequency:"), "property", "1swallow");
    ENTRY_ADD(item, mng.frq_entry, true);
    eo_event_callback_add(mng.frq_entry, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, mng.frq_validator);
    evas_object_smart_callback_add(mng.frq_entry, "changed", _validation, NULL);
    elm_object_part_text_set(mng.frq_entry, "guide", _("Type a frequency (20 - 20000)"));
+   elm_object_part_content_set(item, "elm.swallow.content", mng.frq_entry);
    /* need to manualy set not valid string for triggered validator */
    elm_entry_entry_set(mng.frq_entry, NULL);
-   elm_object_part_content_set(item, "elm.swallow.content", mng.frq_entry);
    elm_box_pack_end(box, item);
 
-   BUTTON_ADD(popup, mng.popup_btn_add, _("Add"));
-   evas_object_smart_callback_add (mng.popup_btn_add, "clicked", _add_tone_done, NULL);
-   elm_object_part_content_set(popup, "button1", mng.popup_btn_add);
-   elm_object_disabled_set(mng.popup_btn_add, true);
+   popup_buttons_disabled_set(BTN_OK, true);
+   btn_res = popup_want_action(_("Create a new layout"), NULL, box,
+                               mng.tone_entry, BTN_OK|BTN_CANCEL,
+                               NULL, mng.tone_entry);
+   if (BTN_CANCEL == btn_res) goto close;
+   _tone_add();
 
-   BUTTON_ADD(popup, bt_no, _("Cancel"));
-   evas_object_smart_callback_add (bt_no, "clicked", _add_tone_cancel, NULL);
-   elm_object_part_content_set(popup, "button2", bt_no);
-
-   evas_object_show(popup);
-   eina_stringshare_del(title);
+close:
+   evas_object_del(box);
 }
 
 #undef INFO_ADD
