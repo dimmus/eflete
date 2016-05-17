@@ -158,7 +158,7 @@ char* strrstr(char* str, const char* ptn)
                {
                   return &str[i];
                }
-             for (j = 1; j < strlen(ptn); j++)
+             for (j = 1; (j < strlen(ptn)) & (i > j); j++)
                {
                   if (str[i - j] != ptn[ptnlen - j])
                     {
