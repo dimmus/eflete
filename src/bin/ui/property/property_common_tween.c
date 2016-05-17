@@ -68,12 +68,29 @@ _item_del(void *data,
 
 /* tweens functions */
 
+static Eina_List *deleted_tweens;
+static Eina_List *added_tweens;
+
 static void
 _del_tween_image(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-   Evas_Object *tween_list __UNUSED__ = (Evas_Object *)data;
+   Evas_Object *control = (Evas_Object *)data;
+   Evas_Object *tween_list = elm_layout_content_get(control, NULL);
+   const Eina_List *sel_list = elm_gengrid_selected_items_get(tween_list), *l;
+   Eina_List *selected = NULL;
+   Elm_Object_Item *it;
+   const char *name;
+
+   EINA_LIST_FOREACH(sel_list, l, it)
+     {
+        name = elm_object_item_data_get(it);
+        deleted_tweens = eina_list_append(deleted_tweens, eina_stringshare_add(name));
+     }
+
+   eina_list_free(selected);
+   evas_object_smart_callback_call(control, "image,tween,changed", NULL);
 }
 
 static Eina_Bool
@@ -81,10 +98,19 @@ _on_image_editor_tween_done(void *data,
                             Evas_Object *obj __UNUSED__,
                             void *event_info)
 {
-   Evas_Object *tween_list __UNUSED__ = (Evas_Object *)data;
+   Evas_Object *control = (Evas_Object *)data;
+   Evas_Object *tween_list __UNUSED__ = elm_layout_content_get(control, NULL);
    Eina_List *selected = (Eina_List *)event_info;
+   Eina_List *l = NULL;
+   const char *name = NULL;
 
    if (!selected) return false;
+   EINA_LIST_FOREACH(selected, l, name)
+     {
+        added_tweens = eina_list_append(added_tweens, name);
+     }
+
+   evas_object_smart_callback_call(control, "image,tween,changed", NULL);
 TODO("apply when popup will be fixed");
 //   elm_object_scroll_freeze_pop(tween_list);
 
@@ -96,15 +122,55 @@ _add_tween_image(void *data,
                  Evas_Object *obj,
                  void *event_info __UNUSED__)
 {
-   Evas_Object *tween_list = (Evas_Object *)data;
+   Evas_Object *control = (Evas_Object *)data;
 
    popup_gengrid_image_helper(NULL,
                               obj,
                               _on_image_editor_tween_done,
-                              tween_list,
+                              control,
                               true);
 TODO("apply when popup will be fixed");
 //   elm_object_scroll_freeze_push(data);
+}
+
+Eina_List *
+property_image_tween_added_list_get()
+{
+   return added_tweens;
+}
+
+Eina_List *
+property_image_tween_deleted_list_get()
+{
+   return deleted_tweens;
+}
+
+void
+property_image_tween_lists_free()
+{
+   /* code taken from edje_edit_string_list_free */
+   while (added_tweens)
+     {
+        if (eina_list_data_get(added_tweens))
+          eina_stringshare_del(eina_list_data_get(added_tweens));
+        added_tweens = eina_list_remove(added_tweens, eina_list_data_get(added_tweens));
+     }
+   while (deleted_tweens)
+     {
+        if (eina_list_data_get(deleted_tweens))
+          eina_stringshare_del(eina_list_data_get(deleted_tweens));
+        deleted_tweens = eina_list_remove(deleted_tweens, eina_list_data_get(deleted_tweens));
+     }
+}
+
+void
+property_image_tween_cleanup(Evas_Object *control)
+{
+   Evas_Object *tween_list;
+
+   assert(control != NULL);
+   tween_list = elm_layout_content_get(control, NULL);
+   elm_gengrid_clear(tween_list);
 }
 
 void
@@ -153,14 +219,14 @@ property_image_tween_control_add(Evas_Object *parent)
    ICON_STANDARD_ADD(button, icon, true, "plus");
    elm_object_part_content_set(button, NULL, icon);
    evas_object_smart_callback_add(button, "clicked", _add_tween_image,
-                                  tween_list);
+                                  item);
    elm_layout_content_set(item, "elm.swallow.add", button);
 
    BUTTON_ADD(item, button, NULL)
    ICON_STANDARD_ADD(button, icon, true, "minus");
    elm_object_part_content_set(button, NULL, icon);
    evas_object_smart_callback_add(button, "clicked", _del_tween_image,
-                                  tween_list);
+                                  item);
    elm_layout_content_set(item, "elm.swallow.del", button);
 
    evas_object_show(tween_list);

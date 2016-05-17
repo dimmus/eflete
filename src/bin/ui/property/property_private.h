@@ -311,6 +311,18 @@ property_image_tween_control_add(Evas_Object *parent);
 void
 property_image_tween_append(Evas_Object *control, Eina_Stringshare *image);
 
+Eina_List *
+property_image_tween_added_list_get(void);
+
+Eina_List *
+property_image_tween_deleted_list_get(void);
+
+void
+property_image_tween_lists_free(void);
+
+void
+property_image_tween_cleanup(Evas_Object *control);
+
 
 /* color class manager submodule */
 void

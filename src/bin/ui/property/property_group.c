@@ -1098,6 +1098,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_IMAGE_TWEEN:
          images_list = edje_edit_state_tweens_list_get(EDIT_OBJ, STATE_ARGS);
+         property_image_tween_cleanup(action->control);
          EINA_LIST_FOREACH(images_list, l, str_val1)
            {
               property_image_tween_append(action->control, eina_stringshare_add(str_val1));
@@ -1822,7 +1823,7 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          STR_VAL(str_val1, tmp_str_val1);
          break;
       case ATTRIBUTE_STATE_IMAGE_TWEEN:
-         /* IMPLEMENT SOME TWEENS SOON */
+         group_pd.history.format = _("changed \"%d\" tween images");
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          group_pd.history.format = _("group.min_w changed from %d to %d");
@@ -2462,6 +2463,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
    Eina_Bool bool_val1 = false;;
    Ewe_Combobox_Item *cb_item = NULL;
 
+   Eina_List *deleted_tweens = NULL, *l;
+   Eina_List *added_tweens = NULL;
+
    assert(pa != NULL);
    assert(action != NULL);
    assert(action->control != NULL);
@@ -2485,6 +2489,10 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case PROPERTY_CONTROL_COLOR:
          property_color_control_color_get(action->control, &r, &g, &b, &a);
+         break;
+      case PROPERTY_CONTROL_IMAGE_TWEEN:
+         deleted_tweens = property_image_tween_deleted_list_get();
+         added_tweens = property_image_tween_added_list_get();
          break;
       default:
          break;
@@ -2510,7 +2518,17 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_IMAGE_TWEEN:
-         TODO("implement tween changes (that would be so hard actually!)");
+         EINA_LIST_FOREACH(added_tweens, l, str_val1)
+           {
+              CRIT_ON_FAIL(editor_state_tween_add(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
+           }
+         EINA_LIST_FOREACH(deleted_tweens, l, str_val1)
+           {
+              CRIT_ON_FAIL(editor_state_tween_del(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
+           }
+         group_pd.history.new.int_val1 = eina_list_count(added_tweens) +
+            eina_list_count(deleted_tweens);
+         property_image_tween_lists_free();
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          CRIT_ON_FAIL(editor_group_min_w_set(EDIT_OBJ, CHANGE_MERGE, double_val1));
@@ -3250,7 +3268,8 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
                                        group_pd.history.new.str_val1);
          break;
       case ATTRIBUTE_STATE_IMAGE_TWEEN:
-         /* WILL BE IMPLEMENTED SO SOON */
+         msg = eina_stringshare_printf(group_pd.history.format,
+                                       group_pd.history.new.int_val1);
          break;
       case ATTRIBUTE_PART_CLIP_TO:
       case ATTRIBUTE_STATE_PROXY_SOURCE:
