@@ -95,23 +95,24 @@ struct _App_Data
    Eina_Stringshare *last_path;
    Evas_Object *splash;
    Evas_Object *statusbar; /**< The statusbar object, which contain some items */
+   Evas_Object *tabs;
    struct {
       Evas_Object *left;
       Evas_Object *right;
       Evas_Object *left_ver;
    } panes;
+   struct {
+      Evas_Object *group;
+      Evas_Object *image_manager;
+      Evas_Object *sound_manager;
+      Evas_Object *style_manager;
+      Evas_Object *color_manager;
+   } property;
 
    struct {
-      Evas_Object *left_top;
-      Evas_Object *left_bottom;
-      Evas_Object *state_list;
-      Evas_Object *signal_list;
-      Evas_Object *bottom_right;
-      Evas_Object *right_top, *history, *property;
+      Evas_Object *history;
       Elm_Object_Item *item_history, *item_property;
-      Evas_Object *canvas;
    } block;
-   Live_View *live_view;
    Project *project;
    Shortcut_Module *shortcuts; /**< Structure with data from shortcuts module */
 #ifdef HAVE_ENVENTOR

@@ -19,6 +19,7 @@
 
 #include "modal_window.h"
 #include "widget_macro.h"
+#include "main_window.h"
 
 #define SIGNAL_DONE "done"
 #define SIGNAL_CANCEL "cancel"
@@ -90,6 +91,7 @@ _anim_show_finish(void *data,
    img = elm_layout_content_get(obj, "elm.swallow.content");
    evas_object_image_source_visible_set(img, true);
    evas_object_del(obj);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
 }
 
 static void
@@ -152,8 +154,9 @@ _mw_close(void *data,
 
    assert(mw != NULL);
 
-   evas_object_smart_callback_call(mw, SIGNAL_CANCEL, NULL);
    _anim_hide(elm_object_parent_widget_get(mw), evas_object_evas_get(mw), mw, NULL);
+   evas_object_smart_callback_call(mw, SIGNAL_CANCEL, NULL);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 static void
@@ -165,8 +168,9 @@ _mw_done(void *data,
 
    assert(mw != NULL);
 
-   evas_object_smart_callback_call(mw, SIGNAL_DONE, NULL);
    _anim_hide(elm_object_parent_widget_get(mw), evas_object_evas_get(mw), mw, NULL);
+   evas_object_smart_callback_call(mw, SIGNAL_DONE, NULL);
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 void

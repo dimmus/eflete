@@ -61,6 +61,8 @@ struct _Search_Data
 struct _Style_Editor
 {
    Evas_Object *win;
+   Evas_Object *layout;
+   Evas_Object *panes;
    Evas_Object *glist;
    Evas_Object *textblock_style;
    Evas_Object *entry_prev;
@@ -908,10 +910,37 @@ _on_style_manager_close(void *data,
    free(style_edit);
 }
 
+static void
+_property_hide(Style_Editor *mng)
+{
+   Evas_Object *content;
+
+   /* unset and hide the image property */
+   content = elm_object_part_content_unset(mng->panes, "right");
+   evas_object_hide(content);
+}
+
+static void
+_mw_cancel(void *data,
+           Evas_Object *obj __UNUSED__,
+           void *event_info __UNUSED__)
+{
+   Style_Editor *mng = data;
+   _property_hide(mng);
+}
+
+static void
+_mw_done(void *data,
+         Evas_Object *obj __UNUSED__,
+         void *event_info __UNUSED__)
+{
+   Style_Editor *mng = data;
+   _property_hide(mng);
+}
+
 Evas_Object *
 style_manager_add()
 {
-   Evas_Object *main_layout;
    Evas_Object *bg, *box_bg;
    Evas *canvas;
    Elm_Object_Item *glit_style;
@@ -928,17 +957,21 @@ style_manager_add()
 
    style_edit->win = mw_add();
    mw_title_set(style_edit->win, _("Textblock style manager"));
+   evas_object_smart_callback_add(style_edit->win, "cancel", _mw_cancel, style_edit);
+   evas_object_smart_callback_add(style_edit->win, "done", _mw_done, style_edit);
    ic = elm_icon_add(style_edit->win);
    elm_icon_standard_set(ic, "text2");
    mw_icon_set(style_edit->win, ic);
+   style_edit->layout = elm_layout_add(ap.win);
+   elm_layout_theme_set(style_edit->layout, "layout", "style_manager", "default");
+   elm_object_part_text_set(style_edit->layout, "elm.text", _("Preview"));
+   elm_layout_text_set(style_edit->layout, "elm.subtext", _("Font list"));
+   style_edit->panes = elm_panes_add(style_edit->win);
+   elm_object_content_set(style_edit->win, style_edit->panes);
+   elm_object_part_content_set(style_edit->panes, "left", style_edit->layout);
+   elm_object_part_content_set(style_edit->panes, "right", ap.property.style_manager);
 
-   main_layout = elm_layout_add(ap.win);
-   elm_layout_theme_set(main_layout, "layout", "style_manager", "default");
-   elm_object_part_text_set(main_layout, "elm.text", _("Preview"));
-   elm_layout_text_set(main_layout, "elm.subtext", _("Font list"));
-   elm_object_content_set(style_edit->win, main_layout);
-
-   style_edit->entry_prev = elm_layout_add(main_layout);
+   style_edit->entry_prev = elm_layout_add(style_edit->layout);
    elm_layout_theme_set(style_edit->entry_prev, "layout", "style_manager", "preview");
    evas_object_show(style_edit->entry_prev);
    elm_object_signal_emit(style_edit->entry_prev, "entry,hide", "eflete");
@@ -946,7 +979,7 @@ style_manager_add()
    canvas = evas_object_evas_get(ap.win);
 
    /* Entry preview to show colorclass */
-   bg = elm_layout_add(main_layout);
+   bg = elm_layout_add(style_edit->layout);
    elm_layout_theme_set(bg, "layout", "workspace", "bg");
    elm_object_part_content_set(style_edit->entry_prev, "background", bg);
 
@@ -958,7 +991,7 @@ style_manager_add()
    evas_object_textblock_style_set(style_edit->textblock_style, ts);
    evas_object_textblock_text_markup_set(style_edit->textblock_style, TEST_TEXT);
    evas_object_show(style_edit->textblock_style);
-   elm_object_part_content_set(main_layout, "elm.swallow.preview", style_edit->entry_prev);
+   elm_object_part_content_set(style_edit->layout, "elm.swallow.preview", style_edit->entry_prev);
 
    if (!_itc_style)
      {
@@ -979,16 +1012,16 @@ style_manager_add()
         _itc_tags->func.del = NULL;
      }
 
-   search = _style_manager_search_field_create(main_layout);
-   elm_object_part_content_set(main_layout, "elm.swallow.search", search);
+   search = _style_manager_search_field_create(style_edit->layout);
+   elm_object_part_content_set(style_edit->layout, "elm.swallow.search", search);
    evas_object_smart_callback_add(search, "changed", _search_changed, style_edit);
    evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, style_edit);
    evas_object_smart_callback_add(style_edit->glist, "pressed", _search_reset_cb, &(style_edit->style_search_data));
    style_edit->style_search_data.search_entry = search;
    style_edit->style_search_data.last_item_found = NULL;
 
-   style_edit->glist = elm_genlist_add(main_layout);
-   elm_object_part_content_set(main_layout, "elm.swallow.list", style_edit->glist);
+   style_edit->glist = elm_genlist_add(style_edit->layout);
+   elm_object_part_content_set(style_edit->layout, "elm.swallow.list", style_edit->glist);
    evas_object_smart_callback_add(style_edit->glist, "expand,request", _expand_request_cb, NULL);
    evas_object_smart_callback_add(style_edit->glist, "expanded", _expanded_cb, style_edit);
    evas_object_smart_callback_add(style_edit->glist, "contract,request", _contract_request_cb, NULL);
@@ -1014,19 +1047,19 @@ style_manager_add()
    button_add = elm_button_add(ap.win);
    elm_object_style_set(button_add, "plus");
    evas_object_smart_callback_add(button_add, "clicked", _on_bt_add, style_edit);
-   elm_object_part_content_set(main_layout, "elm.swallow.btn_add", button_add);
+   elm_object_part_content_set(style_edit->layout, "elm.swallow.btn_add", button_add);
 
    style_edit->button_del = elm_button_add(ap.win);
    elm_object_style_set(style_edit->button_del, "minus");
    evas_object_smart_callback_add(style_edit->button_del, "clicked", _on_bt_del, style_edit);
-   elm_object_part_content_set(main_layout, "elm.swallow.btn_del", style_edit->button_del);
+   elm_object_part_content_set(style_edit->layout, "elm.swallow.btn_del", style_edit->button_del);
    elm_object_disabled_set(style_edit->button_del, true);
 
    box_bg = _add_box_bg(style_edit);
-   elm_object_part_content_set(main_layout, "elm.swallow.menu", box_bg);
+   elm_object_part_content_set(style_edit->layout, "elm.swallow.menu", box_bg);
 
    evas_textblock_style_free(ts);
-   evas_object_event_callback_add(main_layout, EVAS_CALLBACK_DEL, _on_style_manager_close, style_edit);
+   evas_object_event_callback_add(style_edit->layout, EVAS_CALLBACK_DEL, _on_style_manager_close, style_edit);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, NULL);
 
