@@ -463,7 +463,7 @@ _subitems_get(Property_Attribute *pa)
          break;
       case PROPERTY_GROUP_ITEM_STATE_IMAGE_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_NORMAL);
-//         APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_TWEEN);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_TWEEN);
          APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_MIDDLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_H);
          APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_V);
@@ -637,6 +637,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_IMAGE:
          elm_object_disabled_set(action->control, true);
          break;
+      case ATTRIBUTE_STATE_IMAGE_TWEEN:
       case ATTRIBUTE_GROUP_MIN_W:
       case ATTRIBUTE_GROUP_MIN_H:
       case ATTRIBUTE_GROUP_MAX_W:
@@ -1093,6 +1094,9 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
            }
          property_entry_set(action->control, str_val1);
          edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_STATE_IMAGE_TWEEN:
+         /* IMPLEMENT SOME TWEENS SOON */
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          int_val1 = edje_edit_group_min_w_get(EDIT_OBJ);
@@ -1811,6 +1815,9 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
            }
          STR_VAL(str_val1, tmp_str_val1);
          break;
+      case ATTRIBUTE_STATE_IMAGE_TWEEN:
+         /* IMPLEMENT SOME TWEENS SOON */
+         break;
       case ATTRIBUTE_GROUP_MIN_W:
          group_pd.history.format = _("group.min_w changed from %d to %d");
          VAL(int_val1) = edje_edit_group_min_w_get(EDIT_OBJ);
@@ -2495,6 +2502,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_state_image_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_STATE_IMAGE_TWEEN:
+         TODO("implement tween changes (that would be so hard actually!)");
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          CRIT_ON_FAIL(editor_group_min_w_set(EDIT_OBJ, CHANGE_MERGE, double_val1));
@@ -3233,6 +3243,9 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
                                        group_pd.history.old.str_val1,
                                        group_pd.history.new.str_val1);
          break;
+      case ATTRIBUTE_STATE_IMAGE_TWEEN:
+         /* WILL BE IMPLEMENTED SO SOON */
+         break;
       case ATTRIBUTE_PART_CLIP_TO:
       case ATTRIBUTE_STATE_PROXY_SOURCE:
       case ATTRIBUTE_PART_IGNORE_FLAGS:
@@ -3812,6 +3825,8 @@ _init_items()
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_NORMAL, ATTRIBUTE_STATE_IMAGE);
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_TWEEN:
+              IT.name = "tween";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_TWEEN, ATTRIBUTE_STATE_IMAGE_TWEEN);
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_H:
               IT.name = "border";

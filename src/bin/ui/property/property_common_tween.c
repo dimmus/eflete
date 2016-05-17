@@ -70,8 +70,8 @@ property_image_tween_control_add(Evas_Object *parent)
 
    item = elm_layout_add(parent);
    elm_layout_theme_set(item, "layout", "property", "tween");
-   evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0);
+   evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(item, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(item);
 
    tween_list = elm_gengrid_add(item);
