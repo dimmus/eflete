@@ -43,12 +43,15 @@ _item_content_get(void *data, Evas_Object *obj, const char *part)
    if (!strcmp(part, "elm.swallow.icon"))
      {
         edje_object_file_get(ap.project->global_object, &file, &group);
-        image = elm_thumb_add(obj);
+        /* use image instead of thumbs (for now) because currently thumbs
+           doesn't show image from edje file correctly. */
+        TODO("use image resources from project folder instead of edje")
+        image = elm_image_add(obj);
         elm_object_style_set(image, "noframe");
         buf = eina_stringshare_printf("edje/images/%i",
                                       edje_edit_image_id_get(ap.project->global_object,
                                                              (const char*)data));
-        elm_thumb_file_set(image, file, buf);
+        elm_image_file_set(image, file, buf);
         return image;
      }
    return NULL;
