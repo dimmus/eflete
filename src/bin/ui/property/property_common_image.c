@@ -21,6 +21,45 @@
 #include "property_private.h"
 #include "main_window.h"
 
+static Eina_Bool
+_on_image_editor_done(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info)
+{
+   const char *value;
+   Eina_List *list_selected = (Eina_List *)event_info;
+   const char *selected;
+
+TODO("apply after helper popup would be fixed")
+//   elm_object_scroll_freeze_pop(data);
+
+   if (!list_selected) return false;
+   value = property_entry_get(data);
+
+   selected = eina_list_data_get(list_selected);
+
+   if (strcmp(value, selected) == 0) return true;
+   property_entry_set(data, selected);
+
+   evas_object_smart_callback_call(data, "changed", NULL);
+
+   return true;
+}
+
+static void
+_on_state_image_choose(void *data,
+                       Evas_Object *obj __UNUSED__,
+                       void *ei __UNUSED__)
+{
+   popup_gengrid_image_helper(NULL,
+                              data,
+                              _on_image_editor_done,
+                              data,
+                              false);
+TODO("apply after helper popup would be fixed")
+//   elm_object_scroll_freeze_push(data);
+}
+
 Evas_Object *
 property_image_normal_control_add(Evas_Object *parent)
 {
@@ -31,8 +70,8 @@ property_image_normal_control_add(Evas_Object *parent)
    ENTRY_ADD(parent, content, true);
    btn = elm_button_add(content);
    elm_object_style_set(btn, "elipsis");
-   //         evas_object_smart_callback_add(btn, "clicked", btn_func_cb, pd);
-   //         evas_object_smart_callback_add(content, "clicked", btn_func_cb, pd);
+   evas_object_smart_callback_add(btn, "clicked", _on_state_image_choose, content);
+   evas_object_smart_callback_add(content, "clicked", _on_state_image_choose, content);
    elm_object_part_content_set(content, "elm.swallow.elipsis", btn);
    elm_entry_editable_set(content, false);
    evas_object_show(btn);
