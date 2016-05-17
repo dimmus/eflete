@@ -288,16 +288,16 @@ _property_attribute_changed(void *data __UNUSED__,
       case ATTRIBUTE_PART_MULTILINE:
       case ATTRIBUTE_PART_ENTRY_MODE:
       case ATTRIBUTE_STATE_FILL_TYPE:
+      case ATTRIBUTE_STATE_COLOR:
          workspace_groupview_hard_update(tabs.current_workspace);
          break;
       case ATTRIBUTE_STATE_FILL_SMOOTH:
       case ATTRIBUTE_STATE_VISIBLE:
-      case ATTRIBUTE_STATE_COLOR_CLASS:
-      case ATTRIBUTE_STATE_COLOR:
-      case ATTRIBUTE_STATE_COLOR2:
-      case ATTRIBUTE_STATE_COLOR3:
       case ATTRIBUTE_STATE_IMAGE_BORDER:
       case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
+      case ATTRIBUTE_STATE_COLOR_CLASS:
+      case ATTRIBUTE_STATE_COLOR2:
+      case ATTRIBUTE_STATE_COLOR3:
          workspace_groupview_soft_update(tabs.current_workspace);
          break;
       default:
