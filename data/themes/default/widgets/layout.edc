@@ -2010,6 +2010,47 @@ group { name: "elm/layout/popup/1swallow_subtext";
    }
 }
 
+group { name: "elm/layout/property/tween";
+   parts {
+      part { name: "elm.swallow.add";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            min: 18 19;
+            max: 18 19;
+            fixed: 1 1;
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -8 -1;
+               to_x: "elm.swallow.del";
+            }
+         }
+      }
+      part { name: "elm.swallow.del";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            min: 18 19;
+            max: 18 19;
+            fixed: 1 1;
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            min: 0 120;
+            max: -1 150;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 8;
+               to_y: "elm.swallow.del";
+            }
+         }
+      }
+   }
+}
+
 #include "layouts/style_manager.edc"
 #include "layouts/colorclass_manager.edc"
 #include "layouts/live_view_toolbar_helper.edc"

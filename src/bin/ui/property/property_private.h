@@ -38,6 +38,7 @@ enum _Property_Control {
    PROPERTY_CONTROL_LABEL,
    PROPERTY_CONTROL_IMAGE_PREVIEW,
    PROPERTY_CONTROL_IMAGE_NORMAL,
+   PROPERTY_CONTROL_IMAGE_TWEEN,
 
    PROPERTY_CONTROL_LAST
 };
@@ -302,6 +303,10 @@ property_color_control_color_get(Evas_Object *control, int *r, int *g, int *b, i
 /* group image normal control */
 Evas_Object *
 property_image_normal_control_add(Evas_Object *parent);
+
+/* tween images control */
+Evas_Object *
+property_image_tween_control_add(Evas_Object *parent);
 
 
 /* color class manager submodule */

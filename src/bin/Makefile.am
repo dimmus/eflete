@@ -102,6 +102,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/property/property_common.c \
 ../../src/bin/ui/property/property_color_control.c \
 ../../src/bin/ui/property/property_common_image.c \
+../../src/bin/ui/property/property_common_tween.c \
 ../../src/bin/ui/property/property_dummy.c \
 ../../src/bin/ui/property/property_color.c \
 ../../src/bin/ui/property/property_image.c \
