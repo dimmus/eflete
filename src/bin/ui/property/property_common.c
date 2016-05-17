@@ -283,6 +283,7 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          return content;
       case PROPERTY_CONTROL_IMAGE_NORMAL:
          content = property_image_normal_control_add(parent);
+         evas_object_smart_callback_add(content, "image,changed", _start_change_stop_cb, pa);
          return content;
       case PROPERTY_CONTROL_NONE:
       case PROPERTY_CONTROL_LAST:

@@ -1766,6 +1766,7 @@ static void
 _start_cb(Property_Attribute *pa, Property_Action *action)
 {
    int r, g, b, a, int_val1;
+   Eina_Stringshare *tmp_str_val1;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -1802,9 +1803,14 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_IMAGE:
          group_pd.history.format = _("image changed from \"%s\" to \"%s\"");
-         STR_VAL(str_val1, eina_stringshare_add(PROGRAM_ARGS));
+         tmp_str_val1 = edje_edit_state_image_get(EDIT_OBJ, STATE_ARGS);
+         if (!strcmp(tmp_str_val1, EFLETE_DUMMY_IMAGE_NAME))
+           {
+              edje_edit_string_free(tmp_str_val1);
+              tmp_str_val1 = eina_stringshare_add(_("None"));
+           }
+         STR_VAL(str_val1, tmp_str_val1);
          break;
-
       case ATTRIBUTE_GROUP_MIN_W:
          group_pd.history.format = _("group.min_w changed from %d to %d");
          VAL(int_val1) = edje_edit_group_min_w_get(EDIT_OBJ);
@@ -2454,6 +2460,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          double_val1 = elm_spinner_value_get(action->control);
          break;
       case PROPERTY_CONTROL_ENTRY:
+      case PROPERTY_CONTROL_IMAGE_NORMAL:
          str_val1 = property_entry_get(action->control);
          break;
       case PROPERTY_CONTROL_CHECK:
@@ -2485,7 +2492,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          TODO("implement part's item rename");
          break;
       case ATTRIBUTE_STATE_IMAGE:
-         TODO("implement image changings")
+         CRIT_ON_FAIL(editor_state_image_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_GROUP_MIN_W:
          CRIT_ON_FAIL(editor_group_min_w_set(EDIT_OBJ, CHANGE_MERGE, double_val1));

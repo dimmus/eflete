@@ -41,7 +41,8 @@ TODO("apply after helper popup would be fixed")
    if (strcmp(value, selected) == 0) return true;
    property_entry_set(data, selected);
 
-   evas_object_smart_callback_call(data, "changed", NULL);
+   evas_object_smart_callback_call(data, "image,changed", NULL);
+   elm_object_scroll_freeze_pop(data);
 
    return true;
 }
