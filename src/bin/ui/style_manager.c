@@ -98,7 +98,7 @@ struct _Style_Tag_Entries
 static Style_Manager mng;
 static Elm_Genlist_Item_Class *_itc_style = NULL;
 static Elm_Genlist_Item_Class *_itc_tags = NULL;
-static Eina_Bool is_expanded_glitem = EINA_FALSE;
+static Eina_Bool is_expanded_glitem = false;
 
 static void
 _on_popup_bt_cancel(void *data __UNUSED__,
@@ -112,7 +112,7 @@ _on_popup_bt_cancel(void *data __UNUSED__,
    if (obj && is_expanded_glitem)
      {
         elm_genlist_item_expanded_set(elm_genlist_selected_item_get(mng.genlist), false);
-        is_expanded_glitem = EINA_FALSE;
+        is_expanded_glitem = false;
      }
 
    evas_object_del(POPUP.dialog);
@@ -194,7 +194,7 @@ _on_glit_selected(void *data __UNUSED__,
    if (!elm_genlist_item_parent_get(glit))
      {
         elm_object_signal_emit(mng.entry_prev, "entry,hide", "eflete");
-        current_style->is_parent_item = EINA_TRUE;
+        current_style->is_parent_item = true;
      }
    else
      {
@@ -381,7 +381,7 @@ _tab_add_cb(void *data __UNUSED__,
         if (!elm_genlist_item_expanded_get(glit))
           {
              elm_genlist_item_expanded_set(glit, true);
-             is_expanded_glitem = EINA_TRUE;
+             is_expanded_glitem = true;
           }
 
         style_name = elm_object_item_data_get(glit);
@@ -562,7 +562,7 @@ _search_tag_item_node(Evas_Object *obj,
 {
    Eina_List *tags, *l_tg;
    char *tag;
-   Eina_Bool find_tag_item = EINA_FALSE;
+   Eina_Bool find_tag_item = false;
 
    if ((!elm_genlist_item_parent_get(item_start)) && (!elm_genlist_item_expanded_get(item_start)))
      {
@@ -580,7 +580,7 @@ _search_tag_item_node(Evas_Object *obj,
                   elm_genlist_item_selected_set(search_data->last_item_found, true);
                   elm_genlist_item_bring_in(search_data->last_item_found, ELM_GENLIST_ITEM_SCROLLTO_TOP);
                   elm_object_focus_set(search_data->search_entry, true);
-                  find_tag_item = EINA_TRUE;
+                  find_tag_item = true;
                   break;
                 }
           }
@@ -604,14 +604,14 @@ _search_item_genlist_tree(Evas_Object *obj,
         elm_object_focus_set(search_data->search_entry, true);
 
         search_data->last_item_found = item;
-        return EINA_TRUE;
+        return true;
      }
    else
      {
         if (_search_tag_item_node(obj, item, search_data, str))
-          return EINA_TRUE;
+          return true;
      }
-   return EINA_FALSE;
+   return false;
 }
 static void
 _genlist_item_search_first_search(Evas_Object *obj,
@@ -715,7 +715,7 @@ _expand_request_cb(void *data __UNUSED__,
                    void *event_info)
 {
    Elm_Object_Item *glit = event_info;
-   elm_genlist_item_expanded_set(glit, EINA_TRUE);
+   elm_genlist_item_expanded_set(glit, true);
 }
 
 static void
@@ -746,7 +746,7 @@ _contract_request_cb(void *data __UNUSED__,
                      void *event_info)
 {
    Elm_Object_Item *glit = event_info;
-   elm_genlist_item_expanded_set(glit, EINA_FALSE);
+   elm_genlist_item_expanded_set(glit, false);
 }
 
 static void
