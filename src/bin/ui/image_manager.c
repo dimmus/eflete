@@ -162,7 +162,6 @@ _image_info_setup(const Image_Item* it)
    evas_object_show(image);
 
    evas_object_data_set(image, "image_name", it->image_name);
-   evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, image);
 }
 
 /* item selection change callback */
@@ -287,6 +286,10 @@ _on_image_done(void *data __UNUSED__,
         it->image_name = eina_stringshare_add(file_name);
         it->id = edje_edit_image_id_get(ap.project->global_object, it->image_name);
         elm_gengrid_item_append(mng.gengrid, gic, it, _grid_sel, NULL);
+        it->comp_type = edje_edit_image_compression_type_get(ap.project->global_object,
+                                                             it->image_name);
+        it->quality = edje_edit_image_compression_rate_get(ap.project->global_object,
+                                                           it->image_name);
 
         it->source = eina_stringshare_add(res->source);
         img = _image_manager_image_create(ap.project->global_object, it);
@@ -402,6 +405,7 @@ _image_manager_init(void)
    External_Resource *res;
 
    images = ap.project->images;
+printf("FIXN");
 
    if (images)
      {
@@ -428,6 +432,7 @@ _image_manager_init(void)
    evas_object_smart_calculate(mng.gengrid);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, NULL);
+printf("FIXN");
    return true;
 }
 
