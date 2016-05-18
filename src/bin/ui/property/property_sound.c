@@ -28,7 +28,8 @@
 
 struct _Property_Sound_Data {
    Sound_Data *snd;
-   External_Resource *tone, *sample;
+   External_Resource *sample;
+   Tone_Resource *tone;
    Property_Attribute items[PROPERTY_SOUND_ITEM_LAST];
 };
 typedef struct _Property_Sound_Data Property_Sound_Data;
@@ -63,6 +64,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_SOUND_ITEM_FILE_NAME:
          elm_object_disabled_set(action->control, true);
          break;
+      case PROPERTY_SOUND_ITEM_FREQ:
+         elm_spinner_min_max_set(action->control, 200, 20000);
+         elm_object_disabled_set(action->control, true);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("init callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -81,9 +86,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
    switch (pa->type.sound_item)
      {
       case PROPERTY_SOUND_ITEM_FILE_NAME:
-         if (!sound_pd.snd)
-           property_entry_set(action->control, "-");
-         else
+         if (sound_pd.snd)
            property_entry_set(action->control, sound_pd.snd->name);
          break;
       case PROPERTY_SOUND_ITEM_DURATION:
@@ -97,6 +100,8 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_SOUND_ITEM_COMPRESSION_QUALITY:
          break;
       case PROPERTY_SOUND_ITEM_FREQ:
+         if (sound_pd.tone)
+           elm_spinner_value_set(action->control, sound_pd.tone->freq);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -242,6 +247,8 @@ _init_items()
               break;
            case PROPERTY_SOUND_ITEM_FREQ:
               IT.filter_data.sound_types = SOUND_TONE;
+              IT.name = "frequency";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER);
               break;
 
            case PROPERTY_SOUND_ITEM_LAST:
@@ -267,7 +274,7 @@ _on_grid_clicked(void *data,
    else if (sound_pd.snd && sound_pd.snd->type == SOUND_TYPE_TONE)
      {
         sound_pd.sample = NULL;
-        sound_pd.tone = (External_Resource *)sound_pd.snd->resource;
+        sound_pd.tone = (Tone_Resource *)sound_pd.snd->resource;
      }
    else
      {
