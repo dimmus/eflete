@@ -441,6 +441,8 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_SIGNAL);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_SOURCE);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_IN);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_FILTER_PART);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE);
          break;
       case PROPERTY_GROUP_ITEM_STATE_CONTAINER_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_ALIGN);
@@ -620,6 +622,8 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_CONTAINER_PADING_Y:
       case ATTRIBUTE_STATE_CONTAINER_MIN_V:
       case ATTRIBUTE_STATE_CONTAINER_MIN_H:
+      case ATTRIBUTE_PROGRAM_FILTER_PART:
+      case ATTRIBUTE_PROGRAM_FILTER_STATE:
          break;
       case ATTRIBUTE_STATE_MAX_W:
       case ATTRIBUTE_STATE_MAX_H:
@@ -830,6 +834,50 @@ _parts_combobox_fill(Evas_Object *combo, const char *selected, int allowed_types
 }
 
 static void
+_part_states_combobox_fill(Evas_Object *combo, const char *part_name, const char *selected, Eina_Bool ignore_value)
+{
+   Eina_List *l;
+   Part *part;
+   State *state;
+   const char *state_name = NULL;
+
+   assert(combo != NULL);
+
+   if (selected)
+     ewe_combobox_text_set(combo, selected);
+   else
+     ewe_combobox_text_set(combo, STR_NONE);
+
+   if (!part_name)
+     {
+        elm_object_disabled_set(combo, true);
+        return;
+     }
+
+   elm_object_disabled_set(combo, false);
+
+   part = pm_resource_unsorted_get(group_pd.group->parts, part_name);
+
+   if (ignore_value)
+     {
+        /* skipping states with same name but different value */
+        EINA_LIST_FOREACH(part->states, l, state)
+          {
+             if (state_name && !strcmp(state_name, state->parsed_name))
+               continue;
+
+             ewe_combobox_item_add(combo, state->parsed_name);
+             state_name = state->parsed_name;
+          }
+     }
+   else
+     {
+        EINA_LIST_FOREACH(part->states, l, state)
+           ewe_combobox_item_add(combo, state->name);
+     }
+}
+
+static void
 _color_class_select(Evas_Object *combo, const char *selected)
 {
    int cc_val[12];
@@ -901,7 +949,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
    double double_val1;
    unsigned short ushort_val1;
    Eina_Bool bool_val1;
-   Eina_Stringshare *str_val1;
+   Eina_Stringshare *str_val1, *str_val2;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -1474,6 +1522,21 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          double_val1 = edje_edit_program_in_range_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
          break;
+      case ATTRIBUTE_PROGRAM_FILTER_PART:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_program_filter_part_get(EDIT_OBJ, PROGRAM_ARGS);
+         _parts_combobox_fill(action->control, str_val1, 0);
+         edje_edit_string_free(str_val1);
+         property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE]);
+         break;
+      case ATTRIBUTE_PROGRAM_FILTER_STATE:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_program_filter_state_get(EDIT_OBJ, PROGRAM_ARGS);
+         str_val2 = edje_edit_program_filter_part_get(EDIT_OBJ, PROGRAM_ARGS);
+         _part_states_combobox_fill(action->control, str_val2, str_val1, true);
+         edje_edit_string_free(str_val1);
+         edje_edit_string_free(str_val2);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -1910,7 +1973,14 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("program in.range changed from %.2f to %.2f");
          VAL(double_val1) = edje_edit_program_in_range_get(EDIT_OBJ, PROGRAM_ARGS);
          break;
-
+      case ATTRIBUTE_PROGRAM_FILTER_PART:
+         group_pd.history.format = _("filter part changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_program_filter_part_get(EDIT_OBJ, PROGRAM_ARGS));
+         break;
+      case ATTRIBUTE_PROGRAM_FILTER_STATE:
+         group_pd.history.format = _("filter state changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_program_filter_state_get(EDIT_OBJ, PROGRAM_ARGS));
+         break;
       case ATTRIBUTE_STATE_CONTAINER_ALIGN_X:
          group_pd.history.format = _("container's align_x changed from %.2f to %.2f");
          VAL(double_val1) = edje_edit_state_container_align_x_get(EDIT_OBJ, STATE_ARGS);
@@ -2557,7 +2627,19 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_program_in_range_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_program_in_range_get(EDIT_OBJ, PROGRAM_ARGS);
          break;
-
+      case ATTRIBUTE_PROGRAM_FILTER_PART:
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         CRIT_ON_FAIL(editor_program_filter_part_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE]);
+         break;
+      case ATTRIBUTE_PROGRAM_FILTER_STATE:
+         str_val1 = eina_stringshare_add(cb_item->title);
+         CRIT_ON_FAIL(editor_program_filter_state_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       case ATTRIBUTE_STATE_CONTAINER_ALIGN_X:
          CRIT_ON_FAIL(editor_state_container_align_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_state_container_align_x_get(EDIT_OBJ, STATE_ARGS);
@@ -2762,6 +2844,8 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_SIGNAL:
       case ATTRIBUTE_PROGRAM_SOURCE:
       case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
+      case ATTRIBUTE_PROGRAM_FILTER_PART:
+      case ATTRIBUTE_PROGRAM_FILTER_STATE:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (group_pd.history.old.str_val1) ? group_pd.history.old.str_val1 : STR_NONE,
@@ -3548,6 +3632,14 @@ _init_items()
               IT.name = "in";
               _action1(&IT, "from", "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_IN_FROM);
               _action2(&IT, "range", "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_IN_RANGE);
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_FILTER_PART:
+              IT.name = "filter";
+              _action1(&IT, "part", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_PART);
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE:
+              IT.name = "";
+              _action1(&IT, "state", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_STATE);
               break;
 
            case PROPERTY_GROUP_ITEM_LAST:
