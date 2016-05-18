@@ -1346,9 +1346,6 @@ _on_style_selected(void *data ,
 
         _glow_shadow_prop_update(pd, eina_strbuf_string_get(CURRENT.style));
      }
-
-   free(current_style);
-   eina_strbuf_free(CURRENT.style);
 }
 
 static void

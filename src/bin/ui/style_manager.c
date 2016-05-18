@@ -209,6 +209,10 @@ _on_glit_selected(void *data __UNUSED__,
      }
 
    evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, current_style);
+   /* free data for callbacks */
+   eina_stringshare_del(current_style->stvalue);
+   eina_strbuf_free(current_style->style);
+   free(current_style);
 }
 
 static void
