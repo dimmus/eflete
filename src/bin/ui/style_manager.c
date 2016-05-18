@@ -25,13 +25,8 @@
 #include "validator.h"
 #include "modal_window.h"
 
-TODO("Rename this file to textblock_style_manager")
-
-#define FONT_DEFAULT "DEFAULT='align=middle font=Sans font_size=24 color=#000000 "
-#define DIRECTION_NUM 39
-#define DEFAULT_DIRECTION 2
-#define WHITE_COLOR "#FFF"
-
+#define STYLE_DEFAULT         "DEFAULT"
+#define STYLE_DEFAULT_VALUE "align=middle font=Sans font_size=24 color=#000000 "
 #define TEST_TEXT \
 "<\t>By the time London returned home, his stepfather had died." \
 "It then became his responsibility to provide for his family all by himself." \
@@ -63,18 +58,13 @@ struct _Style_Manager
    Evas_Object *win;
    Evas_Object *layout;
    Evas_Object *panes;
-   Evas_Object *glist;
+   Evas_Object *genlist;
    Evas_Object *textblock_style;
    Evas_Object *entry_prev;
    Evas_Object *button_del;
    Evas_Object *menu;
    Elm_Object_Item *menu_tag;
    Search_Data style_search_data;
-   struct {
-      const char *st_name;
-      const char *st_tag;
-      Eina_Stringshare *stvalue;
-   } current_style;
    struct {
       Evas_Object *name;
       Resource_Name_Validator *name_validator;
@@ -104,7 +94,6 @@ struct _Style_Tag_Entries
 };
 
 #define POPUP mng.popup
-#define CURRENT mng.current_style
 
 static Style_Manager mng;
 static Elm_Genlist_Item_Class *_itc_style = NULL;
@@ -122,7 +111,7 @@ _on_popup_bt_cancel(void *data __UNUSED__,
 
    if (obj && is_expanded_glitem)
      {
-        elm_genlist_item_expanded_set(elm_genlist_selected_item_get(mng.glist), false);
+        elm_genlist_item_expanded_set(elm_genlist_selected_item_get(mng.genlist), false);
         is_expanded_glitem = EINA_FALSE;
      }
 
@@ -166,7 +155,7 @@ _on_glit_selected(void *data __UNUSED__,
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
 
    Eina_Strbuf *style = eina_strbuf_new();
-   eina_strbuf_append(style, FONT_DEFAULT);
+   eina_strbuf_append(style, STYLE_DEFAULT"='"STYLE_DEFAULT_VALUE);
 
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
 
@@ -191,7 +180,7 @@ _on_glit_selected(void *data __UNUSED__,
      {
         style_name = elm_object_item_data_get(glit_parent);
         tag = (char *)elm_object_item_data_get(glit);
-        if (!strcmp(tag, "DEFAULT"))
+        if (!strcmp(tag, STYLE_DEFAULT))
           elm_object_disabled_set(mng.button_del, true);
         value = edje_edit_style_tag_value_get(edje_edit_obj, style_name, tag);
         eina_strbuf_append(style, value);
@@ -240,15 +229,12 @@ _on_st_add_bt_ok(void *data __UNUSED__,
         WARN(_("Style name must be unique!"));
         return;
      }
-   if (edje_edit_style_tag_add(edje_edit_obj, style_name, "DEFAULT"))
+   if (edje_edit_style_tag_add(edje_edit_obj, style_name, STYLE_DEFAULT))
      {
-        if (!edje_edit_style_tag_value_set(edje_edit_obj,
-                                           style_name,
-                                          "DEFAULT",
-                                          "align=middle font=Sans font_size=24 color=#000000FF"))
+        if (!edje_edit_style_tag_value_set(edje_edit_obj, style_name, STYLE_DEFAULT, STYLE_DEFAULT_VALUE))
           {
              WARN(_("Failed to add tag value. Tag will be deleted"));
-             edje_edit_style_tag_del(edje_edit_obj, style_name, "DEFAULT");
+             edje_edit_style_tag_del(edje_edit_obj, style_name, STYLE_DEFAULT);
              return;
           }
      }
@@ -258,7 +244,7 @@ _on_st_add_bt_ok(void *data __UNUSED__,
         return;
      }
 
-   glit_style = elm_genlist_item_append(mng.glist, _itc_style,
+   glit_style = elm_genlist_item_append(mng.genlist, _itc_style,
                                         style_name, NULL, ELM_GENLIST_ITEM_TREE,
                                         _on_glit_selected, NULL);
    elm_object_item_data_set(glit_style, (char *)style_name);
@@ -303,7 +289,7 @@ _on_tag_add_bt_ok(void *data __UNUSED__,
           edje_edit_style_tag_del(edje_edit_obj, style_name, tag_name);
           return;
        }
-   glit_tag = elm_genlist_item_append(mng.glist, _itc_tags,
+   glit_tag = elm_genlist_item_append(mng.genlist, _itc_tags,
                                       tag_name, mng.tag,
                                       ELM_GENLIST_ITEM_NONE,
                                       _on_glit_selected, NULL);
@@ -376,7 +362,7 @@ _tab_add_cb(void *data __UNUSED__,
 
    assert(POPUP.name_validator == NULL);
 
-   Elm_Object_Item *glit = elm_genlist_selected_item_get(mng.glist);
+   Elm_Object_Item *glit = elm_genlist_selected_item_get(mng.genlist);
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
    const char *style_name;
    Eina_Stringshare *buf;
@@ -458,7 +444,7 @@ _btn_del_cb(void *data __UNUSED__,
    const char *style_name, *tag;
    Resource *res;
 
-   Elm_Object_Item *glit = elm_genlist_selected_item_get(mng.glist);
+   Elm_Object_Item *glit = elm_genlist_selected_item_get(mng.genlist);
    if (!glit) return;
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
    edje_edit_obj = ap.project->global_object;
@@ -682,7 +668,7 @@ _search_changed(void *data __UNUSED__,
             elm_genlist_item_selected_set(mng.style_search_data.last_item_found, false);
             mng.style_search_data.last_item_found = NULL;
          }
-       elm_genlist_item_bring_in(elm_genlist_first_item_get(mng.glist),
+       elm_genlist_item_bring_in(elm_genlist_first_item_get(mng.genlist),
                                                             ELM_GENLIST_ITEM_SCROLLTO_TOP);
        return;
      }
@@ -690,7 +676,7 @@ _search_changed(void *data __UNUSED__,
    Eina_Stringshare *str = eina_stringshare_printf("%s",
                                       elm_entry_entry_get(mng.style_search_data.search_entry));
 
-   _genlist_item_search_first_search(mng.glist, &(mng.style_search_data), str);
+   _genlist_item_search_first_search(mng.genlist, &(mng.style_search_data), str);
 
    eina_stringshare_del(str);
 
@@ -706,7 +692,7 @@ _search_nxt_gd_item(void *data __UNUSED__,
         Eina_Stringshare *str = eina_stringshare_printf("%s",
                                            elm_entry_entry_get(mng.style_search_data.search_entry));
 
-        _genlist_item_search_next_search(mng.glist, &(mng.style_search_data), str);
+        _genlist_item_search_next_search(mng.genlist, &(mng.style_search_data), str);
         eina_stringshare_del(str);
      }
 
@@ -746,7 +732,7 @@ _expanded_cb(void *data __UNUSED__,
    tags = edje_edit_style_tags_list_get(ap.project->global_object, name);
    EINA_LIST_FOREACH(tags, l_tg, tag)
      {
-        glit_tag = elm_genlist_item_append(mng.glist, _itc_tags,
+        glit_tag = elm_genlist_item_append(mng.genlist, _itc_tags,
                                            tag, glit, ELM_GENLIST_ITEM_NONE,
                                            _on_glit_selected, NULL);
         elm_object_item_data_set(glit_tag, tag);
@@ -783,7 +769,7 @@ _btn_add_cb(void *data __UNUSED__,
    elm_menu_move(mng.menu, x, y + h);
    evas_object_show(mng.menu);
 
-   if (elm_genlist_selected_item_get(mng.glist))
+   if (elm_genlist_selected_item_get(mng.genlist))
      elm_object_item_disabled_set(mng.menu_tag, false);
    else
      elm_object_item_disabled_set(mng.menu_tag, true);
@@ -892,7 +878,7 @@ _style_mamanger_init(void)
 
    EINA_LIST_FOREACH(ap.project->styles, l_st, res)
      {
-        glit_style = elm_genlist_item_append(mng.glist, _itc_style,
+        glit_style = elm_genlist_item_append(mng.genlist, _itc_style,
                                              res->name, NULL, ELM_GENLIST_ITEM_TREE,
                                              _on_glit_selected, NULL);
         elm_object_item_data_set(glit_style, (char *)res->name);
@@ -907,7 +893,7 @@ _project_closed_cb(void *data __UNUSED__,
    elm_object_signal_emit(mng.entry_prev, "entry,hide", "eflete");
    //elm_entry_entry_set(mng.entry_prev, "");
    evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, NULL);
-   elm_genlist_clear(mng.glist);
+   elm_genlist_clear(mng.genlist);
 }
 
 Evas_Object *
@@ -917,7 +903,6 @@ style_manager_add()
    Evas *canvas;
    Evas_Object *button_add, *search, *ic;
    Evas_Textblock_Style *ts;
-   static const char *style_buf = FONT_DEFAULT"'";
 
    assert(ap.project != NULL);
 
@@ -954,7 +939,7 @@ style_manager_add()
    elm_object_part_content_set(mng.entry_prev, "entry", mng.textblock_style);
    evas_object_textblock_valign_set(mng.textblock_style, 0.5);
    ts = evas_textblock_style_new();
-   evas_textblock_style_set(ts, style_buf);
+   evas_textblock_style_set(ts, STYLE_DEFAULT"='"STYLE_DEFAULT_VALUE"'");
    evas_object_textblock_style_set(mng.textblock_style, ts);
    evas_object_textblock_text_markup_set(mng.textblock_style, TEST_TEXT);
    evas_object_show(mng.textblock_style);
@@ -975,20 +960,20 @@ style_manager_add()
         _itc_tags->func.content_get = _item_tags_icon_get;
      }
 
-   mng.glist = elm_genlist_add(mng.layout);
-   elm_object_part_content_set(mng.layout, "elm.swallow.list", mng.glist);
-   evas_object_smart_callback_add(mng.glist, "expand,request", _expand_request_cb, NULL);
-   evas_object_smart_callback_add(mng.glist, "expanded", _expanded_cb, NULL);
-   evas_object_smart_callback_add(mng.glist, "contract,request", _contract_request_cb, NULL);
-   evas_object_smart_callback_add(mng.glist, "contracted", _contracted_cb, NULL);
-   evas_object_smart_callback_add(mng.glist, "unselected", _on_unselected_cb, NULL);
-   evas_object_show(mng.glist);
+   mng.genlist = elm_genlist_add(mng.layout);
+   elm_object_part_content_set(mng.layout, "elm.swallow.list", mng.genlist);
+   evas_object_smart_callback_add(mng.genlist, "expand,request", _expand_request_cb, NULL);
+   evas_object_smart_callback_add(mng.genlist, "expanded", _expanded_cb, NULL);
+   evas_object_smart_callback_add(mng.genlist, "contract,request", _contract_request_cb, NULL);
+   evas_object_smart_callback_add(mng.genlist, "contracted", _contracted_cb, NULL);
+   evas_object_smart_callback_add(mng.genlist, "unselected", _on_unselected_cb, NULL);
+   evas_object_show(mng.genlist);
 
    search = _style_manager_search_field_create(mng.layout);
    elm_object_part_content_set(mng.layout, "elm.swallow.search", search);
    evas_object_smart_callback_add(search, "changed", _search_changed, NULL);
    evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, NULL);
-   evas_object_smart_callback_add(mng.glist, "pressed", _search_reset_cb, &(mng.style_search_data));
+   evas_object_smart_callback_add(mng.genlist, "pressed", _search_reset_cb, &(mng.style_search_data));
    mng.style_search_data.search_entry = search;
    mng.style_search_data.last_item_found = NULL;
 
@@ -1016,7 +1001,7 @@ style_manager_add()
 done:
    /* if genlist is empty try to fill it. This happens if the managers called
     * first time or project was reopened */
-   if (!elm_genlist_realized_items_get(mng.glist))
+   if (!elm_genlist_realized_items_get(mng.genlist))
      _style_mamanger_init();
 
    elm_object_content_set(mng.win, mng.panes);
