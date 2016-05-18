@@ -68,6 +68,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_min_max_set(action->control, 200, 20000);
          elm_object_disabled_set(action->control, true);
          break;
+      case PROPERTY_SOUND_ITEM_DURATION:
+      case PROPERTY_SOUND_ITEM_TYPE:
+      case PROPERTY_SOUND_ITEM_SIZE:
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("init callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -79,6 +83,8 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
 static void
 _update_cb(Property_Attribute *pa, Property_Action *action)
 {
+   Eina_Stringshare *str_val1;
+
    assert(pa != NULL);
    assert(action != NULL);
    assert(action->control != NULL);
@@ -92,9 +98,21 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_SOUND_ITEM_DURATION:
          break;
       case PROPERTY_SOUND_ITEM_TYPE:
+         if (!sound_pd.snd)
+           elm_layout_text_set(action->control, NULL, "-");
+         else
+           elm_layout_text_set(action->control, NULL,
+                               eina_stringshare_printf(_("%s Format Sound"), sound_pd.snd->type_label));
          break;
       case PROPERTY_SOUND_ITEM_SIZE:
+         if (sound_pd.sample)
+           {
+              str_val1 = eina_stringshare_printf("%.2f KB", ecore_file_size(sound_pd.sample->source) / 1024.0);
+              elm_layout_text_set(action->control, NULL, str_val1);
+              eina_stringshare_del(str_val1);
+           }
          break;
+
       case PROPERTY_SOUND_ITEM_COMPRESSION_TYPE:
          break;
       case PROPERTY_SOUND_ITEM_COMPRESSION_QUALITY:
@@ -232,12 +250,17 @@ _init_items()
               break;
            case PROPERTY_SOUND_ITEM_DURATION:
               IT.filter_data.sound_types = SOUND_SAMPLE;
+              IT.name = "duration";
               break;
            case PROPERTY_SOUND_ITEM_TYPE:
               IT.filter_data.sound_types = SOUND_SAMPLE;
+              IT.name = "type";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
               break;
            case PROPERTY_SOUND_ITEM_SIZE:
               IT.filter_data.sound_types = SOUND_SAMPLE;
+              IT.name = "size";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
               break;
            case PROPERTY_SOUND_ITEM_COMPRESSION_TYPE:
               IT.filter_data.sound_types = SOUND_SAMPLE;
