@@ -288,9 +288,9 @@ editor_part_item_padding_left_set(Evas_Object *edit_object, Change *change, Eina
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(item_name != NULL);
+   edje_edit_part_item_padding_get(edit_object, part_name, item_name, &o3, &o4, &o5, &o6);
    if (change)
      {
-        edje_edit_part_item_padding_get(edit_object, part_name, item_name, &o3, &o4, &o5, &o6);
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING_STRING_INT;
         diff->redo.function = editor_part_item_padding_left_set;
@@ -324,9 +324,9 @@ editor_part_item_padding_right_set(Evas_Object *edit_object, Change *change, Ein
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(item_name != NULL);
+   edje_edit_part_item_padding_get(edit_object, part_name, item_name, &o3, &o4, &o5, &o6);
    if (change)
      {
-        edje_edit_part_item_padding_get(edit_object, part_name, item_name, &o3, &o4, &o5, &o6);
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING_STRING_INT;
         diff->redo.function = editor_part_item_padding_right_set;
@@ -360,9 +360,9 @@ editor_part_item_padding_top_set(Evas_Object *edit_object, Change *change, Eina_
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(item_name != NULL);
+   edje_edit_part_item_padding_get(edit_object, part_name, item_name, &o3, &o4, &o5, &o6);
    if (change)
      {
-        edje_edit_part_item_padding_get(edit_object, part_name, item_name, &o3, &o4, &o5, &o6);
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING_STRING_INT;
         diff->redo.function = editor_part_item_padding_top_set;
@@ -396,9 +396,9 @@ editor_part_item_padding_bottom_set(Evas_Object *edit_object, Change *change, Ei
    assert(edit_object != NULL);
    assert(part_name != NULL);
    assert(item_name != NULL);
+   edje_edit_part_item_padding_get(edit_object, part_name, item_name, &o3, &o4, &o5, &o6);
    if (change)
      {
-        edje_edit_part_item_padding_get(edit_object, part_name, item_name, &o3, &o4, &o5, &o6);
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING_STRING_INT;
         diff->redo.function = editor_part_item_padding_bottom_set;
