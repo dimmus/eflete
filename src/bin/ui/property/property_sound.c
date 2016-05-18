@@ -19,12 +19,12 @@
 
 #include "property.h"
 #include "property_private.h"
-#include "group_manager.h"
-#include "history.h"
-#include "change.h"
+#include "main_window.h"
 #include "project_manager.h"
 
 struct _Property_Sound_Data {
+   Sound_Data *snd;
+   External_Resource *tone, *sample;
    Property_Attribute items[PROPERTY_SOUND_ITEM_LAST];
 };
 typedef struct _Property_Sound_Data Property_Sound_Data;
@@ -47,6 +47,39 @@ typedef struct _Property_Sound_Update_Info Property_Sound_Update_Info;
 /* array to find item by Property_Item */
 static Property_Sound_Update_Info attribute_map[PROPERTY_SOUND_ITEM_LAST] __UNUSED__;
 
+static void
+_update_cb(Property_Attribute *pa, Property_Action *action)
+{
+   assert(pa != NULL);
+   assert(action != NULL);
+   assert(action->control != NULL);
+
+   switch (pa->type.sound_item)
+     {
+      case PROPERTY_SOUND_ITEM_FILE_NAME:
+         if (!sound_pd.snd)
+           property_entry_set(action->control, "-");
+         else
+           property_entry_set(action->control, sound_pd.snd->name);
+         break;
+      case PROPERTY_SOUND_ITEM_DURATION:
+         break;
+      case PROPERTY_SOUND_ITEM_TYPE:
+         break;
+      case PROPERTY_SOUND_ITEM_SIZE:
+         break;
+      case PROPERTY_SOUND_ITEM_COMPRESSION_TYPE:
+         break;
+      case PROPERTY_SOUND_ITEM_COMPRESSION_QUALITY:
+         break;
+      default:
+         TODO("remove default case after all attributes will be added");
+         CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
+         abort();
+         break;
+     }
+}
+
 /* blocks */
 static inline void
 _action_internal(Property_Action *action, const char *name, const char *units,
@@ -58,7 +91,7 @@ _action_internal(Property_Action *action, const char *name, const char *units,
    action->name = name;
    action->units = units;
    action->control_type = control_type;
-//   action->update_cb = _update_cb;
+   action->update_cb = _update_cb;
 //   action->init_cb = _init_cb;
 //   action->start_cb = _start_cb;
 //   action->stop_cb = _stop_cb;
@@ -170,6 +203,34 @@ _init_items()
 #undef IT
 }
 
+static void
+_on_grid_clicked(void *data,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info)
+{
+   Property_Data *pd = data;
+   sound_pd.snd = (Sound_Data *)event_info;
+
+   if (sound_pd.snd && sound_pd.snd->type == SOUND_TYPE_SAMPLE)
+     {
+        sound_pd.sample = (External_Resource *)sound_pd.snd->resource;
+        sound_pd.tone = NULL;
+     }
+   else if (sound_pd.snd && sound_pd.snd->type == SOUND_TYPE_TONE)
+     {
+        sound_pd.sample = NULL;
+        sound_pd.tone = (External_Resource *)sound_pd.snd->resource;
+     }
+   else
+     {
+        sound_pd.sample = NULL;
+        sound_pd.tone = NULL;
+     }
+
+   assert(pd != NULL);
+   property_item_update_recursively(&sound_pd.items[PROPERTY_SOUND_ITEM_INFO_TITLE]);
+}
+
 /* public */
 void
 property_sound_manager_init(Property_Data *pd)
@@ -179,9 +240,8 @@ property_sound_manager_init(Property_Data *pd)
    _init_items();
 
    /* register global callbacks */
-//   evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_SELECT, _on_grid_clicked, pd);
-//   evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_UNSELECTED, _sound_unselected, pd);
-//   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _on_editor_attribute_changed, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_SELECT, _on_grid_clicked, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_UNSELECTED, _on_grid_clicked, pd);
 }
 
 Eina_List *
