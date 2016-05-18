@@ -264,6 +264,7 @@ typedef enum {
    PROPERTY_SOUND_ITEM_SIZE,
    PROPERTY_SOUND_ITEM_COMPRESSION_TYPE,
    PROPERTY_SOUND_ITEM_COMPRESSION_QUALITY,
+   PROPERTY_SOUND_ITEM_FREQ,
 
    PROPERTY_SOUND_ITEM_LAST
 } Property_Sound_Item;
@@ -283,6 +284,7 @@ struct _Property_Attribute {
    Property_Attribute_Filter_Cb filter_cb; /**< called when item is checked for being filtered */
    union {
       unsigned int part_types;
+      unsigned int sound_types;
       unsigned int action_types;
    } filter_data;
    Property_Attribute_Del_Cb del_cb; /**< called when item is deleted from genlist */

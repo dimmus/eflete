@@ -22,6 +22,10 @@
 #include "main_window.h"
 #include "project_manager.h"
 
+#define SOUND_MASK(TYPE) (1u << TYPE)
+#define SOUND_SAMPLE SOUND_MASK(SOUND_TYPE_SAMPLE)
+#define SOUND_TONE SOUND_MASK(SOUND_TYPE_TONE)
+
 struct _Property_Sound_Data {
    Sound_Data *snd;
    External_Resource *tone, *sample;
@@ -45,7 +49,7 @@ struct _Property_Sound_Update_Info {
 typedef struct _Property_Sound_Update_Info Property_Sound_Update_Info;
 
 /* array to find item by Property_Item */
-static Property_Sound_Update_Info attribute_map[PROPERTY_SOUND_ITEM_LAST] __UNUSED__;
+static Property_Sound_Update_Info attribute_map[PROPERTY_SOUND_ITEM_LAST];
 
 static void
 _init_cb(Property_Attribute *pa, Property_Action *action)
@@ -92,6 +96,8 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case PROPERTY_SOUND_ITEM_COMPRESSION_QUALITY:
          break;
+      case PROPERTY_SOUND_ITEM_FREQ:
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -121,11 +127,11 @@ _action1(Property_Attribute *pa, const char *name, const char *units,
 {
    _action_internal(&pa->action1, name, units, control_type);
 
-   assert(attribute_map[control_type].pa == NULL);
-   assert(attribute_map[control_type].action == NULL);
+   assert(attribute_map[pa->type.sound_item].pa == NULL);
+   assert(attribute_map[pa->type.sound_item].action == NULL);
 
-   attribute_map[control_type].pa = pa;
-   attribute_map[control_type].action = &pa->action1;
+   attribute_map[pa->type.sound_item].pa = pa;
+   attribute_map[pa->type.sound_item].action = &pa->action1;
 }
 
 static inline void
@@ -134,11 +140,11 @@ _action2(Property_Attribute *pa, const char *name, const char *units,
 {
    _action_internal(&pa->action2, name, units, control_type);
 
-   assert(attribute_map[control_type].pa == NULL);
-   assert(attribute_map[control_type].action == NULL);
+   assert(attribute_map[pa->type.sound_item].pa == NULL);
+   assert(attribute_map[pa->type.sound_item].action == NULL);
 
-   attribute_map[control_type].pa = pa;
-   attribute_map[control_type].action = &pa->action2;
+   attribute_map[pa->type.sound_item].pa = pa;
+   attribute_map[pa->type.sound_item].action = &pa->action2;
 }
 
 
@@ -161,6 +167,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_SOUND_ITEM_SIZE);
          APPEND(PROPERTY_SOUND_ITEM_COMPRESSION_TYPE);
          APPEND(PROPERTY_SOUND_ITEM_COMPRESSION_QUALITY);
+         APPEND(PROPERTY_SOUND_ITEM_FREQ);
          break;
       default:
          CRIT("items callback not found for %s", pa->name);
@@ -171,6 +178,17 @@ _subitems_get(Property_Attribute *pa)
 #undef APPEND
 }
 
+static Eina_Bool
+_filter_cb(Property_Attribute *pa)
+{
+   assert(pa != NULL);
+
+   if (sound_pd.snd)
+     return !!(pa->filter_data.sound_types & SOUND_MASK(sound_pd.snd->type));
+   else
+     return false;
+}
+
 static void
 _init_items()
 {
@@ -179,6 +197,10 @@ _init_items()
    for (it = 0 /* first element of enum */; it < PROPERTY_SOUND_ITEM_LAST; it++)
      {
         IT.type.sound_item = it;
+        IT.filter_cb = _filter_cb;
+
+        /* default value: show for all types */
+        IT.filter_data.sound_types = ~0u;
         switch(it)
           {
              /* group block */
@@ -197,20 +219,29 @@ _init_items()
               IT.expandable = true;
               IT.expanded = true;
               IT.expand_cb = _subitems_get;
+              IT.filter_data.sound_types = SOUND_SAMPLE | SOUND_TONE;
               break;
            case PROPERTY_SOUND_ITEM_FILE_NAME:
               IT.name = "name";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY);
               break;
            case PROPERTY_SOUND_ITEM_DURATION:
+              IT.filter_data.sound_types = SOUND_SAMPLE;
               break;
            case PROPERTY_SOUND_ITEM_TYPE:
+              IT.filter_data.sound_types = SOUND_SAMPLE;
               break;
            case PROPERTY_SOUND_ITEM_SIZE:
+              IT.filter_data.sound_types = SOUND_SAMPLE;
               break;
            case PROPERTY_SOUND_ITEM_COMPRESSION_TYPE:
+              IT.filter_data.sound_types = SOUND_SAMPLE;
               break;
            case PROPERTY_SOUND_ITEM_COMPRESSION_QUALITY:
+              IT.filter_data.sound_types = SOUND_SAMPLE;
+              break;
+           case PROPERTY_SOUND_ITEM_FREQ:
+              IT.filter_data.sound_types = SOUND_TONE;
               break;
 
            case PROPERTY_SOUND_ITEM_LAST:
@@ -245,6 +276,8 @@ _on_grid_clicked(void *data,
      }
 
    assert(pd != NULL);
+
+   GENLIST_FILTER_APPLY(pd->genlist);
    property_item_update_recursively(&sound_pd.items[PROPERTY_SOUND_ITEM_INFO_TITLE]);
 }
 
