@@ -48,6 +48,26 @@ typedef struct _Property_Sound_Update_Info Property_Sound_Update_Info;
 static Property_Sound_Update_Info attribute_map[PROPERTY_SOUND_ITEM_LAST] __UNUSED__;
 
 static void
+_init_cb(Property_Attribute *pa, Property_Action *action)
+{
+   assert(pa != NULL);
+   assert(action != NULL);
+   assert(action->control != NULL);
+
+   switch (pa->type.sound_item)
+     {
+      case PROPERTY_SOUND_ITEM_FILE_NAME:
+         elm_object_disabled_set(action->control, true);
+         break;
+      default:
+         TODO("remove default case after all attributes will be added");
+         CRIT("init callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
+         abort();
+         break;
+     }
+}
+
+static void
 _update_cb(Property_Attribute *pa, Property_Action *action)
 {
    assert(pa != NULL);
@@ -92,10 +112,7 @@ _action_internal(Property_Action *action, const char *name, const char *units,
    action->units = units;
    action->control_type = control_type;
    action->update_cb = _update_cb;
-//   action->init_cb = _init_cb;
-//   action->start_cb = _start_cb;
-//   action->stop_cb = _stop_cb;
-//   action->change_cb = _change_cb;
+   action->init_cb = _init_cb;
 }
 
 static inline void
