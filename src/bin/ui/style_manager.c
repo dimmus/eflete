@@ -143,70 +143,41 @@ _on_glit_selected(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *event_info)
 {
-   Eina_List *tags = NULL;
-   Eina_List *l = NULL;
-   Evas_Object *edje_edit_obj = NULL;
-
-   const char *style_name = NULL;
-   const char *tag, *value = NULL;
+   const char *style_name, *tag, *value;
    Evas_Textblock_Style *ts = NULL;
+   Elm_Object_Item *glit, *glit_parent;
+   Eina_Strbuf *style;
 
    elm_object_disabled_set(mng.button_del, false);
-   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   glit = (Elm_Object_Item *)event_info;
+   glit_parent = elm_genlist_item_parent_get(glit);
 
-   Eina_Strbuf *style = eina_strbuf_new();
+   if (!glit_parent) return;
+
+   style = eina_strbuf_new();
    eina_strbuf_append(style, STYLE_DEFAULT"='"STYLE_DEFAULT_VALUE);
 
-   Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
+   style_name = elm_object_item_data_get(glit_parent);
+   tag = (char *)elm_object_item_data_get(glit);
+   if (!strcmp(tag, STYLE_DEFAULT))
+     elm_object_disabled_set(mng.button_del, true);
+   value = edje_edit_style_tag_value_get(ap.project->global_object, style_name, tag);
+   eina_strbuf_append(style, value);
+
+   elm_object_signal_emit(mng.entry_prev, "entry,show", "eflete");
+   eina_strbuf_append(style, "'");
+   ts = evas_textblock_style_new();
+   evas_textblock_style_set(ts, eina_strbuf_string_get(style));
+   evas_object_textblock_style_set(mng.textblock_style, ts);
+   evas_textblock_style_free(ts);
 
    Style_Data *current_style = (Style_Data *)mem_calloc(1, sizeof(Style_Data));
-
-   edje_edit_obj = ap.project->global_object;
-
-   if (!glit_parent)
-     {
-        style_name = (char *)elm_object_item_data_get(glit);
-        tags = edje_edit_style_tags_list_get(edje_edit_obj, style_name);
-
-        EINA_LIST_FOREACH(tags, l, tag)
-          {
-             value = edje_edit_style_tag_value_get(edje_edit_obj, style_name,
-                                                   tag);
-             eina_strbuf_append(style, value);
-          }
-        eina_list_free(tags);
-     }
-   else
-     {
-        style_name = elm_object_item_data_get(glit_parent);
-        tag = (char *)elm_object_item_data_get(glit);
-        if (!strcmp(tag, STYLE_DEFAULT))
-          elm_object_disabled_set(mng.button_del, true);
-        value = edje_edit_style_tag_value_get(edje_edit_obj, style_name, tag);
-        eina_strbuf_append(style, value);
-     }
-
    current_style->st_name = style_name;
    current_style->st_tag = tag;
    current_style->stvalue = eina_stringshare_add(value);
    current_style->style = style;
    current_style->textblock_style = mng.textblock_style;
-   if (!elm_genlist_item_parent_get(glit))
-     {
-        elm_object_signal_emit(mng.entry_prev, "entry,hide", "eflete");
-        current_style->is_parent_item = true;
-     }
-   else
-     {
-        elm_object_signal_emit(mng.entry_prev, "entry,show", "eflete");
-        eina_strbuf_append(style, "'");
-        ts = evas_textblock_style_new();
-        evas_textblock_style_set(ts, eina_strbuf_string_get(style));
-        evas_object_textblock_style_set(mng.textblock_style, ts);
-        evas_object_size_hint_max_set(mng.textblock_style, EVAS_HINT_FILL,
-                                      EVAS_HINT_FILL);
-        evas_textblock_style_free(ts);
-     }
+   edje_edit_string_free(value);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, current_style);
    /* free data for callbacks */
