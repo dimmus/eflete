@@ -252,10 +252,27 @@ typedef enum {
    PROPERTY_GROUP_ITEM_LAST
 } Property_Group_Item;
 
+/* Enum of property_sound items. */
+typedef enum {
+   PROPERTY_SOUND_ITEM_PREVIEW_TITLE,
+   PROPERTY_SOUND_ITEM_PLAYER,
+
+   PROPERTY_SOUND_ITEM_INFO_TITLE,
+   PROPERTY_SOUND_ITEM_FILE_NAME,
+   PROPERTY_SOUND_ITEM_DURATION,
+   PROPERTY_SOUND_ITEM_TYPE,
+   PROPERTY_SOUND_ITEM_SIZE,
+   PROPERTY_SOUND_ITEM_COMPRESSION_TYPE,
+   PROPERTY_SOUND_ITEM_COMPRESSION_QUALITY,
+
+   PROPERTY_SOUND_ITEM_LAST
+} Property_Sound_Item;
+
 struct _Property_Attribute {
    Eina_Stringshare *name;
    union {
       Property_Group_Item group_item;
+      Property_Sound_Item sound_item;
    } type;
    Eina_Stringshare *icon_name;
    void *data;
@@ -337,6 +354,13 @@ property_image_manager_init(void);
 
 Eina_List *
 property_image_manager_items_get(void);
+
+/* sound manager submodule */
+void
+property_sound_manager_init(Property_Data *pd);
+
+Eina_List *
+property_sound_manager_items_get(void);
 
 /* dummy submodule. for implementation tests. will be deleted later */
 void

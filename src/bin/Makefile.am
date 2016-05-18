@@ -106,6 +106,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/property/property_dummy.c \
 ../../src/bin/ui/property/property_color.c \
 ../../src/bin/ui/property/property_image.c \
+../../src/bin/ui/property/property_sound.c \
 ../../src/bin/ui/property/property_group.c \
 ../../src/bin/ui/workspace/workspace.c \
 ../../src/bin/ui/workspace/groupview_calc.c \

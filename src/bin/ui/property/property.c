@@ -194,7 +194,6 @@ property_add(Evas_Object *parent, Property_Mode mode)
          items = property_group_items_get();
          break;
       case PROPERTY_MODE_STYLE:
-      case PROPERTY_MODE_SOUND:
       case PROPERTY_MODE_DEMO:
          break;
       case PROPERTY_MODE_COLOR_CLASS:
@@ -204,6 +203,10 @@ property_add(Evas_Object *parent, Property_Mode mode)
       case PROPERTY_MODE_IMAGE:
          property_image_manager_init();
          items = property_image_manager_items_get();
+         break;
+      case PROPERTY_MODE_SOUND:
+         property_sound_manager_init(pd);
+         items = property_sound_manager_items_get();
          break;
      }
    _items_add(pd->genlist, &items, NULL);
