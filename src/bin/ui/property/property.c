@@ -169,7 +169,7 @@ property_add(Evas_Object *parent, Property_Mode mode)
    property_common_itc_init(pd);
 
    pd->genlist = elm_genlist_add(parent);
-   elm_genlist_block_count_set(pd->genlist, 64);
+   elm_genlist_block_count_set(pd->genlist, 256);
    elm_scroller_policy_set(pd->genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
    elm_object_style_set(pd->genlist, "property");
 
