@@ -679,9 +679,6 @@ Eina_Bool
 editor_program_transition_from_current_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                                            const char *program, Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_program_action_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                          const char *program, Edje_Action_Type new_val) EINA_WARN_UNUSED_RESULT;
-Eina_Bool
 editor_program_channel_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                            const char *program, Edje_Channel new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
@@ -776,7 +773,7 @@ editor_program_after_del(Evas_Object *edit_object, Change *change, Eina_Bool mer
                          const char *program_name, Eina_Stringshare *after) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                   const char *program_name) EINA_WARN_UNUSED_RESULT;
+                   const char *program_name, Edje_Action_Type type) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                    const char *program_name) EINA_WARN_UNUSED_RESULT;

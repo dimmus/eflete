@@ -1279,8 +1279,7 @@ _popup_add_program_ok_clicked(void *data,
 
    msg = eina_stringshare_printf(_("added new program \"%s\""), name);
    change = change_add(msg);
-   CRIT_ON_FAIL(editor_program_add(pl->group->edit_object, change, false, name));
-   CRIT_ON_FAIL(editor_program_action_set(pl->group->edit_object, change, false, name, type));
+   CRIT_ON_FAIL(editor_program_add(pl->group->edit_object, change, false, name, type));
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);

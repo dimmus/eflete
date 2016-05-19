@@ -511,8 +511,6 @@ editor_program_transition_type_reset(Evas_Object *edit_object, Change *change, c
 Eina_Bool
 editor_program_transition_from_current_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
-editor_program_action_reset(Evas_Object *edit_object, Change *change, const char *program_name);
-Eina_Bool
 editor_program_channel_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
 editor_program_tone_duration_reset(Evas_Object *edit_object, Change *change, const char *program_name);

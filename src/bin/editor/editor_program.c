@@ -122,71 +122,6 @@ editor_program_transition_from_current_set(Evas_Object *edit_object, Change *cha
 }
 
 Eina_Bool
-editor_program_action_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                          const char *program, Edje_Action_Type new_val)
-{
-   Diff *diff;
-   Attribute attribute = ATTRIBUTE_PROGRAM_ACTION;
-   Eina_Bool clean_targets = false;
-   Eina_List *targets, *l;
-   Eina_Stringshare *target;
-
-   assert(edit_object != NULL);
-   assert(program != NULL);
-
-   if (change)
-     {
-        Edje_Action_Type old_value = edje_edit_program_action_get(edit_object, program);
-        switch (new_val)
-          {
-           case EDJE_ACTION_TYPE_STATE_SET:
-           case EDJE_ACTION_TYPE_SIGNAL_EMIT:
-           case EDJE_ACTION_TYPE_DRAG_VAL_SET:
-           case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
-           case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
-           case EDJE_ACTION_TYPE_FOCUS_SET:
-           case EDJE_ACTION_TYPE_FOCUS_OBJECT:
-              /*These actions have part as a target so targets list can be left untouched
-                if it was not list of programs (EDJE_ACTION_TYPE_ACTION_STOP) */
-              if (old_value == EDJE_ACTION_TYPE_ACTION_STOP)
-                clean_targets = true;
-              break;
-           case EDJE_ACTION_TYPE_ACTION_STOP:
-              /*this action uses programs as targets*/
-           default:
-              /*other actions do not need targets so we need to delete them all */
-              clean_targets = true;
-          }
-        if (clean_targets)
-          {
-             targets = edje_edit_program_targets_get(edit_object, program);
-             EINA_LIST_FOREACH(targets, l, target)
-                CRIT_ON_FAIL(editor_program_target_del(edit_object, change, false, program, target));
-             edje_edit_string_list_free(targets);
-          }
-
-        diff = mem_calloc(1, sizeof(Diff));
-        diff->redo.type = FUNCTION_TYPE_STRING_EDJEACTIONTYPE;
-        diff->redo.function = editor_program_action_set;
-        diff->redo.args.type_seat.s1 = eina_stringshare_add(program);
-        diff->redo.args.type_seat.eat2 = new_val;
-        diff->undo.type = FUNCTION_TYPE_STRING_EDJEACTIONTYPE;
-        diff->undo.function = editor_program_action_set;
-        diff->undo.args.type_seat.s1 = eina_stringshare_add(program);
-        diff->undo.args.type_seat.eat2 = old_value;
-        if (merge)
-          change_diff_merge_add(change, diff);
-        else
-          change_diff_add(change, diff);
-     }
-   if (!edje_edit_program_action_set(edit_object, program, new_val))
-     return false;
-   _editor_project_changed();
-   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
-   return true;
-}
-
-Eina_Bool
 editor_program_channel_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                            const char *program, Edje_Channel new_val)
 {
@@ -481,7 +416,6 @@ editor_program_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge _
            TODO("Add other action types when they will be supported");
            break;
      }
-   res = res && editor_program_action_reset(edit_object, change, program_name);
 
    you_shall_pass_editor_signals(change);
 
@@ -490,7 +424,7 @@ editor_program_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge _
 
 Eina_Bool
 editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
-                const char *program_name)
+                   const char *program_name, Edje_Action_Type type)
 {
    Diff *diff;
    Eina_Stringshare *event_info;
@@ -500,9 +434,10 @@ editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
-        diff->redo.type = FUNCTION_TYPE_STRING;
+        diff->redo.type = FUNCTION_TYPE_STRING_EDJEACTIONTYPE;
         diff->redo.function = editor_program_add;
-        diff->redo.args.type_s.s1 = eina_stringshare_add(program_name);
+        diff->redo.args.type_seat.s1 = eina_stringshare_add(program_name);
+        diff->redo.args.type_seat.eat2 = type;
         diff->undo.type = FUNCTION_TYPE_STRING;
         diff->undo.function = editor_program_del;
         diff->undo.args.type_s.s1 = eina_stringshare_add(program_name);
@@ -510,6 +445,8 @@ editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
         change_diff_add(change, diff);
      }
    if (!edje_edit_program_add(edit_object, program_name))
+     return false;
+   if (!edje_edit_program_action_set(edit_object, program_name, type))
      return false;
 
    CRIT_ON_FAIL(editor_save(edit_object));
@@ -535,15 +472,17 @@ editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
 
    if (change)
      {
+        Edje_Action_Type type = edje_edit_program_action_get(edit_object, program_name);
         if (!editor_program_reset(edit_object, change, false, program_name))
           return false;
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING;
         diff->redo.function = editor_program_del;
         diff->redo.args.type_s.s1 = eina_stringshare_add(program_name);
-        diff->undo.type = FUNCTION_TYPE_STRING;
+        diff->undo.type = FUNCTION_TYPE_STRING_EDJEACTIONTYPE;
         diff->undo.function = editor_program_add;
-        diff->undo.args.type_s.s1 = eina_stringshare_add(program_name);
+        diff->undo.args.type_seat.s1 = eina_stringshare_add(program_name);
+        diff->undo.args.type_seat.eat2 = type;
 
         change_diff_add(change, diff);
      }
