@@ -35,13 +35,12 @@ struct _Property_Sound_Data {
 typedef struct _Property_Sound_Data Property_Sound_Data;
 static Property_Sound_Data sound_pd;
 
-/* mapping enums to strings (THIS WILL BE USED LATER KEEP IT IN HERE) */
-/*static const char *edje_sound_compression[] = { N_("RAW"),
+/* mapping enums to strings */
+static const char *edje_sound_compression[] = { N_("RAW"),
                                                 N_("COMP"),
                                                 N_("LOSSY"),
                                                 N_("AS_IS"),
                                                 NULL};
-*/
 
 struct _Property_Sound_Update_Info {
    Property_Attribute *pa;
@@ -51,6 +50,21 @@ typedef struct _Property_Sound_Update_Info Property_Sound_Update_Info;
 
 /* array to find item by Property_Item */
 static Property_Sound_Update_Info attribute_map[PROPERTY_SOUND_ITEM_LAST];
+
+static void
+_fill_combobox_with_enum(Evas_Object *control, const char **array)
+{
+   int i = 0;
+
+   assert(control != NULL);
+   assert(array != NULL);
+
+   while (array[i] != NULL)
+     {
+        ewe_combobox_item_add(control, array[i]);
+        ++i;
+     }
+}
 
 static void
 _init_cb(Property_Attribute *pa, Property_Action *action)
@@ -64,6 +78,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_SOUND_ITEM_FILE_NAME:
          elm_object_disabled_set(action->control, true);
          break;
+      case PROPERTY_SOUND_ITEM_COMPRESSION_QUALITY:
+         elm_object_disabled_set(action->control, true);
+         elm_spinner_label_format_set(action->control, "%.2f");
+         break;
       case PROPERTY_SOUND_ITEM_FREQ:
          elm_spinner_min_max_set(action->control, 200, 20000);
          elm_object_disabled_set(action->control, true);
@@ -71,6 +89,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_SOUND_ITEM_DURATION:
       case PROPERTY_SOUND_ITEM_TYPE:
       case PROPERTY_SOUND_ITEM_SIZE:
+         break;
+      case PROPERTY_SOUND_ITEM_COMPRESSION_TYPE:
+         elm_object_disabled_set(action->control, true);
+         _fill_combobox_with_enum(action->control, edje_sound_compression);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -84,6 +106,7 @@ static void
 _update_cb(Property_Attribute *pa, Property_Action *action)
 {
    Eina_Stringshare *str_val1;
+   double double_val1;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -98,9 +121,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_SOUND_ITEM_DURATION:
          break;
       case PROPERTY_SOUND_ITEM_TYPE:
-         if (!sound_pd.snd)
-           elm_layout_text_set(action->control, NULL, "-");
-         else
+         if (sound_pd.sample)
            elm_layout_text_set(action->control, NULL,
                                eina_stringshare_printf(_("%s Format Sound"), sound_pd.snd->type_label));
          break;
@@ -114,8 +135,18 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
 
       case PROPERTY_SOUND_ITEM_COMPRESSION_TYPE:
+         if (sound_pd.sample)
+           ewe_combobox_select_item_set(action->control,
+                                        (int) edje_edit_sound_compression_type_get(ap.project->global_object,
+                                                                                   sound_pd.snd->name));
          break;
       case PROPERTY_SOUND_ITEM_COMPRESSION_QUALITY:
+         if (sound_pd.sample)
+           {
+              double_val1 = edje_edit_sound_compression_rate_get(ap.project->global_object,
+                                                              sound_pd.snd->name);
+              elm_spinner_value_set(action->control, double_val1);
+           }
          break;
       case PROPERTY_SOUND_ITEM_FREQ:
          if (sound_pd.tone)
@@ -264,9 +295,13 @@ _init_items()
               break;
            case PROPERTY_SOUND_ITEM_COMPRESSION_TYPE:
               IT.filter_data.sound_types = SOUND_SAMPLE;
+              IT.name = "compression type";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX);
               break;
            case PROPERTY_SOUND_ITEM_COMPRESSION_QUALITY:
               IT.filter_data.sound_types = SOUND_SAMPLE;
+              IT.name = "compression quality";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER);
               break;
            case PROPERTY_SOUND_ITEM_FREQ:
               IT.filter_data.sound_types = SOUND_TONE;
