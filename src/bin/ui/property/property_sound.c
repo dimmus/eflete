@@ -86,7 +86,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_min_max_set(action->control, 200, 20000);
          elm_object_disabled_set(action->control, true);
          break;
+#ifdef HAVE_AUDIO
       case PROPERTY_SOUND_ITEM_DURATION:
+#endif
       case PROPERTY_SOUND_ITEM_TYPE:
       case PROPERTY_SOUND_ITEM_SIZE:
       case PROPERTY_SOUND_ITEM_FILE_NAME:
@@ -123,8 +125,10 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          if (sound_pd.sample)
            elm_layout_text_set(action->control, NULL, ecore_file_file_get(sound_pd.sample->source));
          break;
+#ifdef HAVE_AUDIO
       case PROPERTY_SOUND_ITEM_DURATION:
          break;
+#endif
       case PROPERTY_SOUND_ITEM_TYPE:
          if (sound_pd.sample)
            elm_layout_text_set(action->control, NULL,
@@ -222,7 +226,9 @@ _subitems_get(Property_Attribute *pa)
       case PROPERTY_SOUND_ITEM_INFO_TITLE:
          APPEND(PROPERTY_SOUND_ITEM_NAME);
          APPEND(PROPERTY_SOUND_ITEM_FILE_NAME);
+#ifdef HAVE_AUDIO
          APPEND(PROPERTY_SOUND_ITEM_DURATION);
+#endif
          APPEND(PROPERTY_SOUND_ITEM_TYPE);
          APPEND(PROPERTY_SOUND_ITEM_SIZE);
          APPEND(PROPERTY_SOUND_ITEM_COMPRESSION_TYPE);
@@ -290,10 +296,12 @@ _init_items()
               IT.filter_data.sound_types = SOUND_SAMPLE;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
               break;
+#ifdef HAVE_AUDIO
            case PROPERTY_SOUND_ITEM_DURATION:
               IT.filter_data.sound_types = SOUND_SAMPLE;
               IT.name = "duration";
               break;
+#endif
            case PROPERTY_SOUND_ITEM_TYPE:
               IT.filter_data.sound_types = SOUND_SAMPLE;
               IT.name = "type";
@@ -375,7 +383,9 @@ property_sound_manager_items_get()
 {
    Eina_List *items = NULL;
 
+#ifdef HAVE_AUDIO
    items = eina_list_append(items, &sound_pd.items[PROPERTY_SOUND_ITEM_PREVIEW_TITLE]);
+#endif
    items = eina_list_append(items, &sound_pd.items[PROPERTY_SOUND_ITEM_INFO_TITLE]);
 
    return items;
