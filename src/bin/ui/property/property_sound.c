@@ -75,7 +75,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
 
    switch (pa->type.sound_item)
      {
-      case PROPERTY_SOUND_ITEM_FILE_NAME:
+      case PROPERTY_SOUND_ITEM_NAME:
          elm_object_disabled_set(action->control, true);
          break;
       case PROPERTY_SOUND_ITEM_COMPRESSION_QUALITY:
@@ -89,6 +89,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_SOUND_ITEM_DURATION:
       case PROPERTY_SOUND_ITEM_TYPE:
       case PROPERTY_SOUND_ITEM_SIZE:
+      case PROPERTY_SOUND_ITEM_FILE_NAME:
          break;
       case PROPERTY_SOUND_ITEM_COMPRESSION_TYPE:
          elm_object_disabled_set(action->control, true);
@@ -114,9 +115,13 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
 
    switch (pa->type.sound_item)
      {
-      case PROPERTY_SOUND_ITEM_FILE_NAME:
+      case PROPERTY_SOUND_ITEM_NAME:
          if (sound_pd.snd)
            property_entry_set(action->control, sound_pd.snd->name);
+         break;
+      case PROPERTY_SOUND_ITEM_FILE_NAME:
+         if (sound_pd.sample)
+           elm_layout_text_set(action->control, NULL, ecore_file_file_get(sound_pd.sample->source));
          break;
       case PROPERTY_SOUND_ITEM_DURATION:
          break;
@@ -215,6 +220,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_SOUND_ITEM_PLAYER);
          break;
       case PROPERTY_SOUND_ITEM_INFO_TITLE:
+         APPEND(PROPERTY_SOUND_ITEM_NAME);
          APPEND(PROPERTY_SOUND_ITEM_FILE_NAME);
          APPEND(PROPERTY_SOUND_ITEM_DURATION);
          APPEND(PROPERTY_SOUND_ITEM_TYPE);
@@ -275,9 +281,14 @@ _init_items()
               IT.expand_cb = _subitems_get;
               IT.filter_data.sound_types = SOUND_SAMPLE | SOUND_TONE;
               break;
-           case PROPERTY_SOUND_ITEM_FILE_NAME:
+           case PROPERTY_SOUND_ITEM_NAME:
               IT.name = "name";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY);
+              break;
+           case PROPERTY_SOUND_ITEM_FILE_NAME:
+              IT.name = "file_name";
+              IT.filter_data.sound_types = SOUND_SAMPLE;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
               break;
            case PROPERTY_SOUND_ITEM_DURATION:
               IT.filter_data.sound_types = SOUND_SAMPLE;
