@@ -110,6 +110,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/property/property_sound.c \
 ../../src/bin/ui/property/property_group.c \
 ../../src/bin/ui/sound_player/sound_player.c \
+../../src/bin/ui/property/property_demo.c \
 ../../src/bin/ui/workspace/workspace.c \
 ../../src/bin/ui/workspace/groupview_calc.c \
 ../../src/bin/ui/workspace/groupview.c \

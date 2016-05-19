@@ -275,11 +275,38 @@ typedef enum {
    PROPERTY_SOUND_ITEM_LAST
 } Property_Sound_Item;
 
+/* Enum of property_demo items. */
+typedef enum {
+   PROPERTY_DEMO_ITEM_TEXT_TITLE,
+   PROPERTY_DEMO_ITEM_TEXT_NAME,
+   PROPERTY_DEMO_ITEM_TEXT_CONTENT,
+
+   PROPERTY_DEMO_ITEM_SWALLOW_TITLE,
+   PROPERTY_DEMO_ITEM_SWALLOW_NAME,
+   PROPERTY_DEMO_ITEM_SWALLOW_CONTENT,
+   PROPERTY_DEMO_ITEM_SWALLOW_PICTURE,
+   PROPERTY_DEMO_ITEM_SWALLOW_WIDGET,
+   PROPERTY_DEMO_ITEM_SWALLOW_STYLE,
+   PROPERTY_DEMO_ITEM_SWALLOW_RECTANGLE,
+   PROPERTY_DEMO_ITEM_SWALLOW_MIN,
+   PROPERTY_DEMO_ITEM_SWALLOW_MAX,
+
+   PROPERTY_DEMO_ITEM_PROGRAM_TITLE,
+   PROPERTY_DEMO_ITEM_PROGRAM_SIGNAL,
+   PROPERTY_DEMO_ITEM_PROGRAM_SOURCE,
+   PROPERTY_DEMO_ITEM_PROGRAM_ACTION,
+   PROPERTY_DEMO_ITEM_PROGRAM_EMIT,
+   PROPERTY_DEMO_ITEM_PROGRAM_EMITTER,
+
+   PROPERTY_DEMO_ITEM_LAST
+} Property_Demo_Item;
+
 struct _Property_Attribute {
    Eina_Stringshare *name;
    union {
       Property_Group_Item group_item;
       Property_Sound_Item sound_item;
+      Property_Demo_Item demo_item;
    } type;
    Eina_Stringshare *icon_name;
    void *data;
@@ -389,6 +416,13 @@ property_group_init(Property_Data *pd);
 
 Eina_List *
 property_group_items_get(void);
+
+/* property demo */
+void
+property_demo_init(Property_Data *pd);
+
+Eina_List *
+property_demo_items_get(void);
 
 /* entry functions */
 /* we need additional processing before elm_entry_entry_set and after
