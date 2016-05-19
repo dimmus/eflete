@@ -1102,7 +1102,7 @@ _sound_resources_load(Project *project)
                       snd_proc, snd_total, sound_file);
 
         res = mem_calloc(1, sizeof(External_Resource));
-        res->name = eina_stringshare_add(sound_file);
+        res->name = eina_stringshare_add(sound_name);
         res->source = eina_stringshare_printf("%s/%s", resource_folder, sound_file);
         project->sounds = eina_list_sorted_insert(project->sounds, (Eina_Compare_Cb) resource_cmp, res);
 
