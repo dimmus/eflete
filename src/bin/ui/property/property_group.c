@@ -38,6 +38,7 @@
 
 /* +1 is needed because valid type can be 0 */
 #define ACTION_MASK(TYPE) (1u << (TYPE+1))
+#define ACTION_NONE ACTION_MASK(EDJE_ACTION_TYPE_NONE)
 #define ACTION_STATE_SET ACTION_MASK(EDJE_ACTION_TYPE_STATE_SET)
 #define ACTION_ACTION_STOP ACTION_MASK(EDJE_ACTION_TYPE_ACTION_STOP)
 #define ACTION_SIGNAL_EMIT ACTION_MASK(EDJE_ACTION_TYPE_SIGNAL_EMIT)
@@ -443,6 +444,14 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_IN);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_FILTER_PART);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TITLE);
+         break;
+      case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_STATE);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_VALUE);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_EMIT_SIGNAL);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_EMIT_SOURCE);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_DRAG_VALUE);
          break;
       case PROPERTY_GROUP_ITEM_STATE_CONTAINER_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_ALIGN);
@@ -624,6 +633,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_CONTAINER_MIN_H:
       case ATTRIBUTE_PROGRAM_FILTER_PART:
       case ATTRIBUTE_PROGRAM_FILTER_STATE:
+      case ATTRIBUTE_PROGRAM_EMIT_SIGNAL:
+      case ATTRIBUTE_PROGRAM_EMIT_SOURCE:
+      case ATTRIBUTE_PROGRAM_STATE:
          break;
       case ATTRIBUTE_STATE_MAX_W:
       case ATTRIBUTE_STATE_MAX_H:
@@ -659,11 +671,13 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_step_set(action->control, 0.1);
          elm_spinner_label_format_set(action->control, "%.2f");
          break;
-      case ATTRIBUTE_STATE_TEXT_ELIPSIS:
-         elm_spinner_min_max_set(action->control, 0, 1);
+      case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
+      case ATTRIBUTE_PROGRAM_DRAG_VALUE_Y:
+         elm_spinner_min_max_set(action->control, -9999, 9999);
          elm_spinner_step_set(action->control, 0.1);
          elm_spinner_label_format_set(action->control, "%.2f");
          break;
+      case ATTRIBUTE_STATE_TEXT_ELIPSIS:
       case ATTRIBUTE_STATE_ALIGN_X:
       case ATTRIBUTE_STATE_ALIGN_Y:
       case ATTRIBUTE_STATE_TEXT_ALIGN_X:
@@ -672,6 +686,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_ALIGN_Y:
       case ATTRIBUTE_STATE_CONTAINER_ALIGN_X:
       case ATTRIBUTE_STATE_CONTAINER_ALIGN_Y:
+      case ATTRIBUTE_PROGRAM_VALUE:
          elm_spinner_min_max_set(action->control, 0, 1);
          elm_spinner_step_set(action->control, 0.1);
          elm_spinner_label_format_set(action->control, "%.2f");
@@ -1509,6 +1524,21 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          property_entry_set(action->control, str_val1);
          edje_edit_string_free(str_val1);
          break;
+      case ATTRIBUTE_PROGRAM_EMIT_SIGNAL:
+         str_val1 = edje_edit_program_emit_signal_get(EDIT_OBJ, PROGRAM_ARGS);
+         property_entry_set(action->control, str_val1);
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_PROGRAM_EMIT_SOURCE:
+         str_val1 = edje_edit_program_emit_source_get(EDIT_OBJ, PROGRAM_ARGS);
+         property_entry_set(action->control, str_val1);
+         edje_edit_string_free(str_val1);
+         break;
+      case ATTRIBUTE_PROGRAM_STATE:
+         str_val1 = edje_edit_program_state_get(EDIT_OBJ, PROGRAM_ARGS);
+         property_entry_set(action->control, str_val1);
+         edje_edit_string_free(str_val1);
+         break;
       case ATTRIBUTE_PROGRAM_SOURCE:
          str_val1 = edje_edit_program_source_get(EDIT_OBJ, PROGRAM_ARGS);
          property_entry_set(action->control, str_val1);
@@ -1520,6 +1550,18 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PROGRAM_IN_RANGE:
          double_val1 = edje_edit_program_in_range_get(EDIT_OBJ, PROGRAM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
+         double_val1 = edje_edit_program_drag_value_x_get(EDIT_OBJ, PROGRAM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PROGRAM_DRAG_VALUE_Y:
+         double_val1 = edje_edit_program_drag_value_y_get(EDIT_OBJ, PROGRAM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PROGRAM_VALUE:
+         double_val1 = edje_edit_program_value_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
          break;
       case ATTRIBUTE_PROGRAM_FILTER_PART:
@@ -1961,6 +2003,18 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("program signal changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, edje_edit_program_signal_get(EDIT_OBJ, PROGRAM_ARGS));
          break;
+      case ATTRIBUTE_PROGRAM_EMIT_SIGNAL:
+         group_pd.history.format = _("program emit signal changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_program_emit_signal_get(EDIT_OBJ, PROGRAM_ARGS));
+         break;
+      case ATTRIBUTE_PROGRAM_EMIT_SOURCE:
+         group_pd.history.format = _("program emit source changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_program_emit_source_get(EDIT_OBJ, PROGRAM_ARGS));
+         break;
+      case ATTRIBUTE_PROGRAM_STATE:
+         group_pd.history.format = _("program state changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_program_state_get(EDIT_OBJ, PROGRAM_ARGS));
+         break;
       case ATTRIBUTE_PROGRAM_SOURCE:
          group_pd.history.format = _("program source changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, edje_edit_program_source_get(EDIT_OBJ, PROGRAM_ARGS));
@@ -1972,6 +2026,18 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_IN_RANGE:
          group_pd.history.format = _("program in.range changed from %.2f to %.2f");
          VAL(double_val1) = edje_edit_program_in_range_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
+         group_pd.history.format = _("program drag value x changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_program_drag_value_x_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_DRAG_VALUE_Y:
+         group_pd.history.format = _("program drag value y changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_program_drag_value_y_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_VALUE:
+         group_pd.history.format = _("program value changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_program_value_get(EDIT_OBJ, PROGRAM_ARGS);
          break;
       case ATTRIBUTE_PROGRAM_FILTER_PART:
          group_pd.history.format = _("filter part changed from \"%s\" to \"%s\"");
@@ -2614,6 +2680,22 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_program_signal_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PROGRAM_EMIT_SIGNAL:
+         CRIT_ON_FAIL(editor_program_emit_signal_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PROGRAM_EMIT_SOURCE:
+         CRIT_ON_FAIL(editor_program_emit_source_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PROGRAM_STATE:
+         CRIT_ON_FAIL(editor_program_state_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       case ATTRIBUTE_PROGRAM_SOURCE:
          CRIT_ON_FAIL(editor_program_source_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
@@ -2626,6 +2708,18 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_IN_RANGE:
          CRIT_ON_FAIL(editor_program_in_range_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_program_in_range_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
+         CRIT_ON_FAIL(editor_program_drag_value_x_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_program_drag_value_x_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_DRAG_VALUE_Y:
+         CRIT_ON_FAIL(editor_program_drag_value_y_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_program_drag_value_y_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_VALUE:
+         CRIT_ON_FAIL(editor_program_value_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_program_value_get(EDIT_OBJ, PROGRAM_ARGS);
          break;
       case ATTRIBUTE_PROGRAM_FILTER_PART:
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
@@ -2842,6 +2936,9 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT:
       case ATTRIBUTE_STATE_FONT:
       case ATTRIBUTE_PROGRAM_SIGNAL:
+      case ATTRIBUTE_PROGRAM_EMIT_SIGNAL:
+      case ATTRIBUTE_PROGRAM_EMIT_SOURCE:
+      case ATTRIBUTE_PROGRAM_STATE:
       case ATTRIBUTE_PROGRAM_SOURCE:
       case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
       case ATTRIBUTE_PROGRAM_FILTER_PART:
@@ -2923,6 +3020,9 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_ELIPSIS:
       case ATTRIBUTE_PROGRAM_IN_FROM:
       case ATTRIBUTE_PROGRAM_IN_RANGE:
+      case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
+      case ATTRIBUTE_PROGRAM_DRAG_VALUE_Y:
+      case ATTRIBUTE_PROGRAM_VALUE:
       case ATTRIBUTE_PART_ITEM_ALIGN_X:
       case ATTRIBUTE_PART_ITEM_ALIGN_Y:
       case ATTRIBUTE_PART_ITEM_WEIGHT_X:
@@ -3640,6 +3740,39 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE:
               IT.name = "";
               _action1(&IT, "state", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_STATE);
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TITLE:
+              IT.name = "action params";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              IT.filter_data.action_types &= ~ACTION_NONE;
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_STATE:
+              IT.name = "state";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_STATE);
+              IT.filter_data.action_types = ACTION_STATE_SET;
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_VALUE:
+              IT.name = "value";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_VALUE);
+              IT.filter_data.action_types = ACTION_STATE_SET;
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_EMIT_SIGNAL:
+              IT.name = "signal";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_EMIT_SIGNAL);
+              IT.filter_data.action_types = ACTION_SIGNAL_EMIT;
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_EMIT_SOURCE:
+              IT.name = "source";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_EMIT_SOURCE);
+              IT.filter_data.action_types = ACTION_SIGNAL_EMIT;
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_DRAG_VALUE:
+              IT.name = "drag value";
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_DRAG_VALUE_X);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_DRAG_VALUE_Y);
+              IT.filter_data.action_types = ACTION_DRAG_VAL_SET | ACTION_DRAG_VAL_STEP | ACTION_DRAG_VAL_PAGE;
               break;
 
            case PROPERTY_GROUP_ITEM_LAST:
