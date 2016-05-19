@@ -255,7 +255,7 @@ _program_add(void *data,
    sig_name = edje_edit_program_signal_get(pl->group->edit_object, program_name);
    source_name = edje_edit_program_source_get(pl->group->edit_object, program_name);
    state1 = edje_edit_program_state_get(pl->group->edit_object, program_name);
-   state2 = edje_edit_program_state2_get(pl->group->edit_object, program_name);
+   state2 = edje_edit_program_emit_source_get(pl->group->edit_object, program_name);
    if (!source_name) source_name = eina_stringshare_add("");
    if ((sig_name) && (strcmp(sig_name, "drag") != 0) &&
        (strncmp(sig_name, "mouse", strlen("mouse")) != 0))
@@ -515,7 +515,7 @@ demo_group_add(Group *group)
         sig_name = edje_edit_program_signal_get(pl->group->edit_object, prog_name->name);
         source_name = edje_edit_program_source_get(pl->group->edit_object, prog_name->name);
         state1 = edje_edit_program_state_get(pl->group->edit_object, prog_name->name);
-        state2 = edje_edit_program_state2_get(pl->group->edit_object, prog_name->name);
+        state2 = edje_edit_program_emit_source_get(pl->group->edit_object, prog_name->name);
         if (!source_name) source_name = eina_stringshare_add("");
         if ((sig_name) && (strcmp(sig_name, "drag") != 0) &&
             (strncmp(sig_name, "mouse", strlen("mouse")) != 0))

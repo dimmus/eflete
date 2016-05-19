@@ -165,7 +165,6 @@ typedef enum {
    ATTRIBUTE_PROGRAM_IN_RANGE,
    ATTRIBUTE_PROGRAM_TRANSITION_TIME,
    ATTRIBUTE_PROGRAM_SAMPLE_SPEED,
-   ATTRIBUTE_PROGRAM_VALUE2,
    ATTRIBUTE_PROGRAM_VALUE,
    ATTRIBUTE_PROGRAM_TRANSITION_VALUE1,
    ATTRIBUTE_PROGRAM_TRANSITION_VALUE2,
@@ -180,7 +179,10 @@ typedef enum {
    ATTRIBUTE_PROGRAM_SIGNAL,
    ATTRIBUTE_PROGRAM_SOURCE,
    ATTRIBUTE_PROGRAM_STATE,
-   ATTRIBUTE_PROGRAM_STATE2,
+   ATTRIBUTE_PROGRAM_EMIT_SIGNAL,
+   ATTRIBUTE_PROGRAM_EMIT_SOURCE,
+   ATTRIBUTE_PROGRAM_DRAG_VALUE_X,
+   ATTRIBUTE_PROGRAM_DRAG_VALUE_Y,
    ATTRIBUTE_PROGRAM_NAME,
    ATTRIBUTE_PROGRAM_TARGET,
    ATTRIBUTE_PROGRAM_AFTER,
@@ -698,11 +700,17 @@ Eina_Bool
 editor_program_sample_speed_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                                 const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_program_value2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                          const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
-Eina_Bool
 editor_program_value_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                          const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+#define edje_edit_program_drag_value_x_get edje_edit_program_value_get
+Eina_Bool
+editor_program_drag_value_x_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+#define edje_edit_program_drag_value_y_get edje_edit_program_value2_get
+#pragma GCC poison edje_edit_program_value2_get
+Eina_Bool
+editor_program_drag_value_y_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_transition_value1_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                                      const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
@@ -742,9 +750,15 @@ editor_program_source_set(Evas_Object *edit_object, Change *change, Eina_Bool me
 Eina_Bool
 editor_program_state_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                          const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
+#define edje_edit_program_emit_signal_get edje_edit_program_state_get
 Eina_Bool
-editor_program_state2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                          const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
+editor_program_emit_signal_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                               const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
+#define edje_edit_program_emit_source_get edje_edit_program_state2_get
+#pragma GCC poison edje_edit_program_state2_get
+Eina_Bool
+editor_program_emit_source_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                           const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                         const char *name, const char *new_val) EINA_WARN_UNUSED_RESULT;

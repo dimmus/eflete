@@ -633,7 +633,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
    return true; \
 }
 
-#define EDITOR_PROGRAM_DOUBLE(FUNC, ATTRIBUTE) \
+#define EDITOR_PROGRAM_DOUBLE(FUNC, REAL_FUNC, ATTRIBUTE) \
 Eina_Bool \
 editor_program_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, \
                            const char *program, double new_val) \
@@ -659,14 +659,14 @@ editor_program_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Boo
         else \
           change_diff_add(change, diff); \
      } \
-   if (!edje_edit_program_## FUNC ##_set(edit_object, program, new_val)) \
+   if (!edje_edit_program_## REAL_FUNC ##_set(edit_object, program, new_val)) \
      return false; \
    _editor_project_changed(); \
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
    return true; \
 }
 
-#define EDITOR_PROGRAM_STRING(FUNC, ATTRIBUTE) \
+#define EDITOR_PROGRAM_STRING(FUNC, REAL_FUNC, ATTRIBUTE) \
 Eina_Bool \
 editor_program_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, \
                            const char *program, const char *new_val) \
@@ -692,7 +692,7 @@ editor_program_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Boo
         else \
           change_diff_add(change, diff); \
      } \
-   if (!edje_edit_program_## FUNC ##_set(edit_object, program, new_val)) \
+   if (!edje_edit_program_## REAL_FUNC ##_set(edit_object, program, new_val)) \
      return false; \
    _editor_project_changed(); \
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \

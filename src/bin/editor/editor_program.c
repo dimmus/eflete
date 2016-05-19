@@ -218,28 +218,33 @@ editor_program_channel_set(Evas_Object *edit_object, Change *change, Eina_Bool m
    return true;
 }
 
-EDITOR_PROGRAM_DOUBLE(tone_duration, ATTRIBUTE_PROGRAM_TONE_DURATION);
-EDITOR_PROGRAM_DOUBLE(in_from, ATTRIBUTE_PROGRAM_IN_FROM);
-EDITOR_PROGRAM_DOUBLE(in_range, ATTRIBUTE_PROGRAM_IN_RANGE);
-EDITOR_PROGRAM_DOUBLE(transition_time, ATTRIBUTE_PROGRAM_TRANSITION_TIME);
-EDITOR_PROGRAM_DOUBLE(sample_speed, ATTRIBUTE_PROGRAM_SAMPLE_SPEED);
-EDITOR_PROGRAM_DOUBLE(value2, ATTRIBUTE_PROGRAM_VALUE2);
-EDITOR_PROGRAM_DOUBLE(value, ATTRIBUTE_PROGRAM_VALUE);
-EDITOR_PROGRAM_DOUBLE(transition_value1, ATTRIBUTE_PROGRAM_TRANSITION_VALUE1);
-EDITOR_PROGRAM_DOUBLE(transition_value2, ATTRIBUTE_PROGRAM_TRANSITION_VALUE2);
-EDITOR_PROGRAM_DOUBLE(transition_value3, ATTRIBUTE_PROGRAM_TRANSITION_VALUE3);
-EDITOR_PROGRAM_DOUBLE(transition_value4, ATTRIBUTE_PROGRAM_TRANSITION_VALUE4);
+EDITOR_PROGRAM_DOUBLE(tone_duration, tone_duration, ATTRIBUTE_PROGRAM_TONE_DURATION);
+EDITOR_PROGRAM_DOUBLE(in_from, in_from, ATTRIBUTE_PROGRAM_IN_FROM);
+EDITOR_PROGRAM_DOUBLE(in_range, in_range, ATTRIBUTE_PROGRAM_IN_RANGE);
+EDITOR_PROGRAM_DOUBLE(transition_time, transition_time, ATTRIBUTE_PROGRAM_TRANSITION_TIME);
+EDITOR_PROGRAM_DOUBLE(sample_speed, sample_speed, ATTRIBUTE_PROGRAM_SAMPLE_SPEED);
+EDITOR_PROGRAM_DOUBLE(transition_value1, transition_value1, ATTRIBUTE_PROGRAM_TRANSITION_VALUE1);
+EDITOR_PROGRAM_DOUBLE(transition_value2, transition_value2, ATTRIBUTE_PROGRAM_TRANSITION_VALUE2);
+EDITOR_PROGRAM_DOUBLE(transition_value3, transition_value3, ATTRIBUTE_PROGRAM_TRANSITION_VALUE3);
+EDITOR_PROGRAM_DOUBLE(transition_value4, transition_value4, ATTRIBUTE_PROGRAM_TRANSITION_VALUE4);
 
-EDITOR_PROGRAM_STRING(filter_part, ATTRIBUTE_PROGRAM_FILTER_PART);
-EDITOR_PROGRAM_STRING(filter_state, ATTRIBUTE_PROGRAM_FILTER_STATE);
-EDITOR_PROGRAM_STRING(api_name, ATTRIBUTE_PROGRAM_API_NAME);
-EDITOR_PROGRAM_STRING(api_description, ATTRIBUTE_PROGRAM_API_DESCRIPTION);
-EDITOR_PROGRAM_STRING(sample_name, ATTRIBUTE_PROGRAM_SAMPLE_NAME);
-EDITOR_PROGRAM_STRING(tone_name, ATTRIBUTE_PROGRAM_TONE_NAME);
-EDITOR_PROGRAM_STRING(signal, ATTRIBUTE_PROGRAM_SIGNAL);
-EDITOR_PROGRAM_STRING(source, ATTRIBUTE_PROGRAM_SOURCE);
-EDITOR_PROGRAM_STRING(state, ATTRIBUTE_PROGRAM_STATE);
-EDITOR_PROGRAM_STRING(state2, ATTRIBUTE_PROGRAM_STATE2);
+EDITOR_PROGRAM_STRING(filter_part, filter_part, ATTRIBUTE_PROGRAM_FILTER_PART);
+EDITOR_PROGRAM_STRING(filter_state, filter_state, ATTRIBUTE_PROGRAM_FILTER_STATE);
+EDITOR_PROGRAM_STRING(api_name, api_name, ATTRIBUTE_PROGRAM_API_NAME);
+EDITOR_PROGRAM_STRING(api_description, api_description, ATTRIBUTE_PROGRAM_API_DESCRIPTION);
+EDITOR_PROGRAM_STRING(sample_name, sample_name, ATTRIBUTE_PROGRAM_SAMPLE_NAME);
+EDITOR_PROGRAM_STRING(tone_name, tone_name, ATTRIBUTE_PROGRAM_TONE_NAME);
+EDITOR_PROGRAM_STRING(signal, signal, ATTRIBUTE_PROGRAM_SIGNAL);
+EDITOR_PROGRAM_STRING(source, source, ATTRIBUTE_PROGRAM_SOURCE);
+
+EDITOR_PROGRAM_STRING(state, state, ATTRIBUTE_PROGRAM_STATE);
+EDITOR_PROGRAM_DOUBLE(value, value, ATTRIBUTE_PROGRAM_VALUE);
+
+EDITOR_PROGRAM_STRING(emit_signal, state, ATTRIBUTE_PROGRAM_EMIT_SIGNAL);
+EDITOR_PROGRAM_STRING(emit_source, state2, ATTRIBUTE_PROGRAM_EMIT_SOURCE);
+
+EDITOR_PROGRAM_DOUBLE(drag_value_x, value, ATTRIBUTE_PROGRAM_DRAG_VALUE_X);
+EDITOR_PROGRAM_DOUBLE(drag_value_y, value2, ATTRIBUTE_PROGRAM_DRAG_VALUE_Y);
 
 Eina_Bool
 editor_program_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
@@ -453,14 +458,14 @@ editor_program_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge _
            res = res && editor_program_transition_type_reset(edit_object, change, program_name);
            break;
         case EDJE_ACTION_TYPE_SIGNAL_EMIT:
-           res = res && editor_program_state_reset(edit_object, change, program_name);
-           res = res && editor_program_state2_reset(edit_object, change, program_name);
+           res = res && editor_program_emit_signal_reset(edit_object, change, program_name);
+           res = res && editor_program_emit_source_reset(edit_object, change, program_name);
            break;
         case EDJE_ACTION_TYPE_DRAG_VAL_SET:
         case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
         case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
-           res = res && editor_program_value_reset(edit_object, change, program_name);
-           res = res && editor_program_value2_reset(edit_object, change, program_name);
+           res = res && editor_program_drag_value_x_reset(edit_object, change, program_name);
+           res = res && editor_program_drag_value_y_reset(edit_object, change, program_name);
            break;
         case EDJE_ACTION_TYPE_SOUND_SAMPLE:
            res = res && editor_program_sample_name_reset(edit_object, change, program_name);

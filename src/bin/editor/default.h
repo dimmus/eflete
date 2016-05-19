@@ -527,7 +527,9 @@ editor_program_sample_speed_reset(Evas_Object *edit_object, Change *change, cons
 Eina_Bool
 editor_program_value_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
-editor_program_value2_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+editor_program_drag_value_x_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_drag_value_y_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
 editor_program_transition_value1_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
@@ -555,6 +557,8 @@ editor_program_source_reset(Evas_Object *edit_object, Change *change, const char
 Eina_Bool
 editor_program_state_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
-editor_program_state2_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+editor_program_emit_signal_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_emit_source_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 
 #endif /* DEFAULT_H */
