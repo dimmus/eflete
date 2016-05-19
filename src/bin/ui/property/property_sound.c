@@ -92,6 +92,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_SOUND_ITEM_TYPE:
       case PROPERTY_SOUND_ITEM_SIZE:
       case PROPERTY_SOUND_ITEM_FILE_NAME:
+      case PROPERTY_SOUND_ITEM_PLAYER:
          break;
       case PROPERTY_SOUND_ITEM_COMPRESSION_TYPE:
          elm_object_disabled_set(action->control, true);
@@ -160,6 +161,9 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_SOUND_ITEM_FREQ:
          if (sound_pd.tone)
            elm_spinner_value_set(action->control, sound_pd.tone->freq);
+         break;
+
+      case PROPERTY_SOUND_ITEM_PLAYER:
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -277,6 +281,7 @@ _init_items()
               IT.expand_cb = _subitems_get;
               break;
            case PROPERTY_SOUND_ITEM_PLAYER:
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SOUND_PLAYER);
               break;
 
               /* part block */

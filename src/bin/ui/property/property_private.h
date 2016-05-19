@@ -39,6 +39,7 @@ enum _Property_Control {
    PROPERTY_CONTROL_IMAGE_PREVIEW,
    PROPERTY_CONTROL_IMAGE_NORMAL,
    PROPERTY_CONTROL_IMAGE_TWEEN,
+   PROPERTY_CONTROL_SOUND_PLAYER,
 
    PROPERTY_CONTROL_LAST
 };
@@ -345,6 +346,9 @@ property_image_tween_lists_free(void);
 void
 property_image_tween_cleanup(Evas_Object *control);
 
+/* player control */
+Evas_Object *
+property_player_control_add(Evas_Object *parent);
 
 /* color class manager submodule */
 void
