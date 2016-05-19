@@ -17,6 +17,8 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#include "main_window.h"
+
 #ifndef PROPERTY_PRIVATE_H
 #define PROPERTY_PRIVATE_H
 
@@ -349,6 +351,9 @@ property_image_tween_cleanup(Evas_Object *control);
 /* player control */
 Evas_Object *
 property_player_control_add(Evas_Object *parent);
+
+void
+property_player_sound_set(Sound_Data *sound);
 
 /* color class manager submodule */
 void

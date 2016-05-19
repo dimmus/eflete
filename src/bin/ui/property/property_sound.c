@@ -19,6 +19,7 @@
 
 #include "property.h"
 #include "property_private.h"
+#include "sound_player.h"
 #include "main_window.h"
 #include "project_manager.h"
 
@@ -365,6 +366,8 @@ _on_grid_clicked(void *data,
      }
 
    assert(pd != NULL);
+
+   sound_player_sound_set(sound_pd.snd);
 
    GENLIST_FILTER_APPLY(pd->genlist);
    property_item_update_recursively(&sound_pd.items[PROPERTY_SOUND_ITEM_INFO_TITLE]);
