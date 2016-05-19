@@ -62,7 +62,7 @@ editor_internal_group_add(Evas_Object *edit_object)
    return true;
 }
 
-void
+Eina_Bool
 you_shall_not_pass_editor_signals(Change *change)
 {
    Diff *diff;
@@ -77,9 +77,10 @@ you_shall_not_pass_editor_signals(Change *change)
         change_diff_add(change, diff);
      }
    _editor_signals_blocked++;
+   return true;
 }
 
-void
+Eina_Bool
 you_shall_pass_editor_signals(Change *change)
 {
    Diff *diff;
@@ -96,6 +97,7 @@ you_shall_pass_editor_signals(Change *change)
         change_diff_add(change, diff);
      }
    _editor_signals_blocked--;
+   return true;
 }
 
 void

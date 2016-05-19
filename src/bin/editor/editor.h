@@ -215,10 +215,10 @@ editor_group_alias_add(Evas_Object *obj, const char *group_src, const char *grou
 Eina_Bool
 editor_group_del(Evas_Object *obj, const char *name) EINA_WARN_UNUSED_RESULT;
 
-void
+Eina_Bool
 you_shall_not_pass_editor_signals(Change *change);
 
-void
+Eina_Bool
 you_shall_pass_editor_signals(Change *change);
 
 /* Group */
