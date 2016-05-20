@@ -167,6 +167,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_CONTROL_SPINNER:
          double_val1 = elm_spinner_value_get(action->control);
          break;
+      case PROPERTY_CONTROL_IMAGE_SELECTOR:
       case PROPERTY_CONTROL_ENTRY:
          str_val1 = property_entry_get(action->control);
          break;
@@ -205,6 +206,13 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          if (demo_pd.part->content_style)
            eina_stringshare_del(demo_pd.part->content_style);
          demo_pd.part->content_style = eina_stringshare_add(str_val1);
+         evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
+         break;
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE:
+         if (demo_pd.part->image_path)
+           eina_stringshare_del(demo_pd.part->image_path);
+         demo_pd.part->image_path = eina_stringshare_add(str_val1);
+         demo_pd.part->change = true;
          evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_COLOR:
@@ -261,11 +269,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          ewe_combobox_select_item_set(action->control, demo_pd.part->swallow_content);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE:
-         property_color_control_color_set(action->control,
-                                          demo_pd.part->r,
-                                          demo_pd.part->g,
-                                          demo_pd.part->b,
-                                          demo_pd.part->a);
+         property_entry_set(action->control, demo_pd.part->image_path);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET:
          ewe_combobox_select_item_set(action->control, demo_pd.part->widget);
@@ -274,6 +278,11 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          property_entry_set(action->control, demo_pd.part->content_style);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_COLOR:
+         property_color_control_color_set(action->control,
+                                          demo_pd.part->r,
+                                          demo_pd.part->g,
+                                          demo_pd.part->b,
+                                          demo_pd.part->a);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_W:
          elm_spinner_value_set(action->control, demo_pd.part->min_w);
@@ -320,10 +329,12 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
 
    switch (action->type.attribute_demo)
      {
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE:
+         elm_object_disabled_set(action->control, true);
+         break;
       case ATTRIBUTE_DEMO_ITEM_TEXT_NAME:
       case ATTRIBUTE_DEMO_ITEM_TEXT_CONTENT:
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_NAME:
-      case ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE:
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE:
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_COLOR:
       case ATTRIBUTE_DEMO_ITEM_PROGRAM_SIGNAL:
@@ -454,6 +465,8 @@ _init_items()
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_DEMO_ITEM_SWALLOW_CONTENT);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_PICTURE:
+              IT.name = "image";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_SELECTOR, ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_WIDGET:
               IT.name = "widget";

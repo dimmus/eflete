@@ -295,6 +295,7 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          return content;
       case PROPERTY_CONTROL_IMAGE_SELECTOR:
          content = property_image_selector_get(parent);
+         evas_object_smart_callback_add(content, "changed,demo,image", _start_change_stop_cb, pa);
          evas_object_show(content);
          return content;
       case PROPERTY_CONTROL_NONE:
