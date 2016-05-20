@@ -78,6 +78,40 @@ _subitems_get(Property_Attribute *pa)
 #undef APPEND
 }
 
+static void
+_init_cb(Property_Attribute *pa, Property_Action *action)
+{
+   assert(pa != NULL);
+   assert(action != NULL);
+   assert(action->control != NULL);
+
+   switch (pa->type.demo_item)
+     {
+      case PROPERTY_DEMO_ITEM_TEXT_NAME:
+      case PROPERTY_DEMO_ITEM_TEXT_CONTENT:
+      case PROPERTY_DEMO_ITEM_SWALLOW_NAME:
+      case PROPERTY_DEMO_ITEM_SWALLOW_CONTENT:
+      case PROPERTY_DEMO_ITEM_SWALLOW_PICTURE:
+      case PROPERTY_DEMO_ITEM_SWALLOW_WIDGET:
+      case PROPERTY_DEMO_ITEM_SWALLOW_STYLE:
+      case PROPERTY_DEMO_ITEM_SWALLOW_RECTANGLE:
+      case PROPERTY_DEMO_ITEM_SWALLOW_MIN:
+      case PROPERTY_DEMO_ITEM_SWALLOW_MAX:
+      case PROPERTY_DEMO_ITEM_PROGRAM_SIGNAL:
+      case PROPERTY_DEMO_ITEM_PROGRAM_SOURCE:
+      case PROPERTY_DEMO_ITEM_PROGRAM_ACTION:
+      case PROPERTY_DEMO_ITEM_PROGRAM_EMIT:
+      case PROPERTY_DEMO_ITEM_PROGRAM_EMITTER:
+         break;
+
+      default:
+         TODO("remove default case after all attributes will be added");
+         CRIT("init callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
+         abort();
+         break;
+     }
+}
+
 /* blocks */
 static inline void
 _action_internal(Property_Action *action, const char *name, const char *units,
@@ -89,6 +123,7 @@ _action_internal(Property_Action *action, const char *name, const char *units,
    action->name = name;
    action->units = units;
    action->control_type = control_type;
+   action->init_cb = _init_cb;
 }
 
 static inline void
