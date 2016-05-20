@@ -41,6 +41,19 @@ struct _Property_Demo_Update_Info {
 };
 typedef struct _Property_Demo_Update_Info Property_Demo_Update_Info;
 
+static const char *program_actions[] = {
+     "NONE",
+     "STATE SET",
+     "SIGNAL EMIT",
+     "DRAG VALUE SET",
+     "DRAG VALUE STEP",
+     "DRAG VALUE PAGE",
+     "PLAY SAMPLE",
+     "PLAY TONE",
+     "ACTION STOP",
+     NULL
+};
+
 /* array to find item by Attribute */
 static Property_Demo_Update_Info attribute_map[PROPERTY_DEMO_ITEM_LAST];
 
@@ -116,19 +129,19 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
 
       case PROPERTY_DEMO_ITEM_PROGRAM_SIGNAL:
-         elm_layout_text_set(action->control, NULL, "-");
+         elm_layout_text_set(action->control, NULL, demo_pd.signal->sig_name);
          break;
       case PROPERTY_DEMO_ITEM_PROGRAM_SOURCE:
-         elm_layout_text_set(action->control, NULL, "-");
+         elm_layout_text_set(action->control, NULL, demo_pd.signal->source_name);
          break;
       case PROPERTY_DEMO_ITEM_PROGRAM_ACTION:
-         elm_layout_text_set(action->control, NULL, "-");
+         elm_layout_text_set(action->control, NULL, program_actions[demo_pd.signal->action]);
          break;
       case PROPERTY_DEMO_ITEM_PROGRAM_EMIT:
-         elm_layout_text_set(action->control, NULL, "-");
+         elm_layout_text_set(action->control, NULL, demo_pd.signal->emit_signal);
          break;
       case PROPERTY_DEMO_ITEM_PROGRAM_EMITTER:
-         elm_layout_text_set(action->control, NULL, "-");
+         elm_layout_text_set(action->control, NULL, demo_pd.signal->emitter);
          break;
       default:
          TODO("remove default case after all attributes will be added");
