@@ -155,6 +155,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
 {
    Eina_Stringshare *str_val1 = NULL;
    Ewe_Combobox_Item *cb_item = NULL;
+   double double_val1 = 0.0;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -162,6 +163,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
 
    switch (action->control_type)
      {
+      case PROPERTY_CONTROL_SPINNER:
+         double_val1 = elm_spinner_value_get(action->control);
+         break;
       case PROPERTY_CONTROL_ENTRY:
          str_val1 = property_entry_get(action->control);
          break;
@@ -198,6 +202,22 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          demo_pd.part->content_style = eina_stringshare_add(str_val1);
          demo_pd.part->change = true;
          evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_SET, demo_pd.part);
+         break;
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_W:
+         demo_pd.part->min_w = double_val1;
+         evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
+         break;
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_H:
+         demo_pd.part->min_h = double_val1;
+         evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
+         break;
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_W:
+         demo_pd.part->max_w = double_val1;
+         evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
+         break;
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_H:
+         demo_pd.part->max_h = double_val1;
+         evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -240,12 +260,16 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_RECTANGLE:
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_W:
+         elm_spinner_value_set(action->control, demo_pd.part->min_w);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_H:
+         elm_spinner_value_set(action->control, demo_pd.part->min_h);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_W:
+         elm_spinner_value_set(action->control, demo_pd.part->max_w);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_H:
+         elm_spinner_value_set(action->control, demo_pd.part->max_h);
          break;
 
       case ATTRIBUTE_DEMO_ITEM_PROGRAM_SIGNAL:
@@ -286,10 +310,6 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE:
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE:
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_RECTANGLE:
-      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_W:
-      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_H:
-      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_W:
-      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_H:
       case ATTRIBUTE_DEMO_ITEM_PROGRAM_SIGNAL:
       case ATTRIBUTE_DEMO_ITEM_PROGRAM_SOURCE:
       case ATTRIBUTE_DEMO_ITEM_PROGRAM_ACTION:
@@ -301,6 +321,12 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET:
          _fill_combobox_with_enum(action->control, widget_type);
+         break;
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_W:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_H:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_W:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_H:
+         elm_spinner_min_max_set(action->control, 0, 9999);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -424,8 +450,14 @@ _init_items()
            case PROPERTY_DEMO_ITEM_SWALLOW_RECTANGLE:
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_MIN:
+              IT.name = "min";
+              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_W);
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_H);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_MAX:
+              IT.name = "max";
+              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_W);
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_H);
               break;
 
            case PROPERTY_DEMO_ITEM_PROGRAM_TITLE:
