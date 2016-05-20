@@ -243,6 +243,39 @@ _init_items()
 #undef IT
 }
 
+static void
+_on_demo_part_clicked(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info)
+{
+   Property_Data *pd = data;
+   demo_pd.part = event_info;
+   demo_pd.signal = NULL;
+
+   GENLIST_FILTER_APPLY(pd->genlist);
+
+   if (demo_pd.part)
+     {
+        property_item_update_recursively(&demo_pd.items[PROPERTY_DEMO_ITEM_TEXT_TITLE]);
+        property_item_update_recursively(&demo_pd.items[PROPERTY_DEMO_ITEM_SWALLOW_TITLE]);
+     }
+}
+static void
+_on_demo_program_clicked(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info)
+{
+   Property_Data *pd = data;
+   demo_pd.part = NULL;
+   demo_pd.signal = event_info;
+
+   GENLIST_FILTER_APPLY(pd->genlist);
+
+   if (demo_pd.signal)
+     property_item_update_recursively(&demo_pd.items[PROPERTY_DEMO_ITEM_PROGRAM_TITLE]);
+}
+
+
 /* public */
 void
 property_demo_init(Property_Data *pd)
@@ -252,9 +285,9 @@ property_demo_init(Property_Data *pd)
    _init_items();
 
    /* register global callbacks */
-//   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_PART_CLICKED, _on_text_part_clicked, pd->layout);
-//   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_PART_CLICKED, _on_swallow_part_clicked, pd->layout);
-//   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_PROGRAM_PART_CLICKED, _on_demo_program_clicked, pd->layout);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_PART_CLICKED, _on_demo_part_clicked, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_PART_CLICKED, _on_demo_part_clicked, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_PROGRAM_PART_CLICKED, _on_demo_program_clicked, pd);
 }
 
 Eina_List *
