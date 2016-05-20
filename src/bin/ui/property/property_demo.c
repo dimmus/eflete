@@ -98,6 +98,40 @@ _subitems_get(Property_Attribute *pa)
 }
 
 static void
+_change_cb(Property_Attribute *pa, Property_Action *action)
+{
+   Eina_Stringshare *str_val1 = NULL;
+
+   assert(pa != NULL);
+   assert(action != NULL);
+   assert(action->control != NULL);
+
+   switch (action->control_type)
+     {
+      case PROPERTY_CONTROL_ENTRY:
+         str_val1 = property_entry_get(action->control);
+         break;
+      default:
+         break;
+     }
+
+   switch (pa->type.demo_item)
+     {
+      case PROPERTY_DEMO_ITEM_TEXT_CONTENT:
+         if (demo_pd.part->text_content)
+           eina_stringshare_del(demo_pd.part->text_content);
+         demo_pd.part->text_content = eina_stringshare_add(str_val1);
+         evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_SET, demo_pd.part);
+         break;
+      default:
+         TODO("remove default case after all attributes will be added");
+         CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
+         abort();
+         break;
+     }
+}
+
+static void
 _update_cb(Property_Attribute *pa, Property_Action *action)
 {
    assert(pa != NULL);
@@ -200,6 +234,7 @@ _action_internal(Property_Action *action, const char *name, const char *units,
    action->control_type = control_type;
    action->init_cb = _init_cb;
    action->update_cb = _update_cb;
+   action->change_cb = _change_cb;
 }
 
 static inline void
