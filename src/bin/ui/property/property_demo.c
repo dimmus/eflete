@@ -235,6 +235,9 @@ _init_items()
      {
         IT.type.demo_item = it;
         IT.filter_cb = _filter_cb;
+
+        /* default value: show for all types */
+        IT.filter_data.demo_types = ~0u;
         switch(it)
           {
            case PROPERTY_DEMO_ITEM_TEXT_TITLE:
