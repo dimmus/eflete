@@ -21,6 +21,12 @@
 #include "property_private.h"
 #include "demo_group.h"
 
+#define DEMO_MASK(TYPE) (1u << TYPE)
+#define DEMO_SIGNAL     DEMO_MASK(EDJE_PART_TYPE_NONE) /* in case of SIGNAL things are different */
+#define DEMO_TEXT       DEMO_MASK(EDJE_PART_TYPE_TEXT)
+#define DEMO_TEXTBLOCK  DEMO_MASK(EDJE_PART_TYPE_TEXTBLOCK)
+#define DEMO_SWALLOW    DEMO_MASK(EDJE_PART_TYPE_SWALLOW)
+
 struct _Property_Demo_Data {
    Demo_Part *part;
    Demo_Signal *signal;
@@ -152,6 +158,19 @@ _action2(Property_Attribute *pa, const char *name, const char *units,
    attribute_map[control_type].action = &pa->action2;
 }
 
+static Eina_Bool
+_filter_cb(Property_Attribute *pa)
+{
+   assert(pa != NULL);
+
+   if (demo_pd.part)
+     return !!(pa->filter_data.demo_types & DEMO_MASK(demo_pd.part->type));
+   else if (demo_pd.signal)
+     return !!(pa->filter_data.demo_types & DEMO_MASK(EDJE_PART_TYPE_NONE));
+   else
+     return false;
+}
+
 static void
 _init_items()
 {
@@ -160,6 +179,7 @@ _init_items()
    for (it = 0 /* first element of enum */; it < PROPERTY_DEMO_ITEM_LAST; it++)
      {
         IT.type.demo_item = it;
+        IT.filter_cb = _filter_cb;
         switch(it)
           {
            case PROPERTY_DEMO_ITEM_TEXT_TITLE:
@@ -167,6 +187,7 @@ _init_items()
               IT.expandable = true;
               IT.expanded = true;
               IT.expand_cb = _subitems_get;
+              IT.filter_data.demo_types = DEMO_TEXT | DEMO_TEXTBLOCK;
               break;
            case PROPERTY_DEMO_ITEM_TEXT_NAME:
               break;
@@ -178,6 +199,7 @@ _init_items()
               IT.expandable = true;
               IT.expanded = true;
               IT.expand_cb = _subitems_get;
+              IT.filter_data.demo_types = DEMO_SWALLOW;
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_NAME:
               break;
@@ -201,6 +223,7 @@ _init_items()
               IT.expandable = true;
               IT.expanded = true;
               IT.expand_cb = _subitems_get;
+              IT.filter_data.demo_types = DEMO_SIGNAL;
               break;
            case PROPERTY_DEMO_ITEM_PROGRAM_SIGNAL:
               break;

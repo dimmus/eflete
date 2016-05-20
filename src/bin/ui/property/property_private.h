@@ -319,6 +319,7 @@ struct _Property_Attribute {
       unsigned int part_types;
       unsigned int sound_types;
       unsigned int action_types;
+      unsigned int demo_types;
    } filter_data;
    Property_Attribute_Del_Cb del_cb; /**< called when item is deleted from genlist */
    Eina_Bool expandable : 1; /**< if true  item is tree node */
