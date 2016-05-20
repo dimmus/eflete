@@ -107,8 +107,10 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
    switch (pa->type.demo_item)
      {
       case PROPERTY_DEMO_ITEM_TEXT_NAME:
+         elm_layout_text_set(action->control, NULL, demo_pd.part->name);
          break;
       case PROPERTY_DEMO_ITEM_TEXT_CONTENT:
+         property_entry_set(action->control, demo_pd.part->text_content);
          break;
 
       case PROPERTY_DEMO_ITEM_SWALLOW_NAME:
@@ -261,8 +263,12 @@ _init_items()
               IT.filter_data.demo_types = DEMO_TEXT | DEMO_TEXTBLOCK;
               break;
            case PROPERTY_DEMO_ITEM_TEXT_NAME:
+              IT.name = "name";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
               break;
            case PROPERTY_DEMO_ITEM_TEXT_CONTENT:
+              IT.name = "content";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY);
               break;
 
            case PROPERTY_DEMO_ITEM_SWALLOW_TITLE:
