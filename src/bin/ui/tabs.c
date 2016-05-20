@@ -54,26 +54,12 @@ typedef struct _Tab_Home Tab_Home;
 struct _Tabs {
    Evas_Object *layout;
    Evas_Object *toolbar;
-//   Evas_Object *toolbar_editors;
    Evas_Object *box;
    Elm_Object_Item *selected;
    Eina_List *items;
    Evas_Object *current_workspace;
    Group *current_group;
    Tab_Home home;
-#if 0
-   struct {
-      Elm_Object_Item *item_sound;
-      Elm_Object_Item *item_text;
-      Elm_Object_Item *item_image;
-      Elm_Object_Item *item_colorclass;
-      /* editors */
-      Evas_Object *content_image_editor;
-      Evas_Object *content_sound_editor;
-      Evas_Object *content_text_editor;
-      Evas_Object *content_colorclass_editor;
-   } menu;
-#endif /* if 0 */
 };
 
 typedef struct _Tabs Tabs;
@@ -135,44 +121,6 @@ _content_set(void *data,
         if (workspace_active_demo_mode_get(tabs.current_workspace))
           evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
      }
-#if 0
-   else
-     {
-        evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, NULL);
-
-        elm_layout_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(NULL));
-        tabs.current_workspace = NULL;
-        tabs.current_group = NULL;
-        if (ap.project)
-          ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
-
-        if (toolbar_item == tabs.menu.item_sound)
-          {
-             tabs_menu_tab_open(TAB_SOUND_EDITOR);
-             evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_EDITOR_TAB_CLICKED, NULL);
-          }
-        else if (toolbar_item == tabs.menu.item_text)
-          {
-             tabs_menu_tab_open(TAB_STYLE_EDITOR);
-             evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_EDITOR_TAB_CLICKED, NULL);
-          }
-        else if (toolbar_item == tabs.menu.item_image)
-          {
-             tabs_menu_tab_open(TAB_IMAGE_EDITOR);
-             evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_EDITOR_TAB_CLICKED, NULL);
-          }
-        else if (toolbar_item == tabs.menu.item_colorclass)
-          {
-             tabs_menu_tab_open(TAB_COLORCLASS_EDITOR);
-             evas_object_smart_callback_call(ap.win, SIGNAL_COLOR_EDITOR_TAB_CLICKED, NULL);
-          }
-        else
-          {
-             tabs_menu_tab_open(TAB_LAST);
-             evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
-          }
-     }
-#endif /* if 0 */
 }
 
 static void
@@ -426,14 +374,6 @@ _part_renamed(void *data __UNUSED__,
    part = pm_resource_unsorted_get(tabs.current_group->parts, ren->old_name);
    gm_part_rename(part, ren->new_name);
    workspace_group_navigator_update_part(tabs.current_workspace, part);
-}
-
-static void
-_project_changed(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *ei __UNUSED__)
-{
-   /* project may be changed in editors for example */
 }
 
 static void
@@ -782,44 +722,6 @@ _shortcut_tab_close_cb(void *data __UNUSED__,
    tabs_current_tab_close();
 }
 
-#if 0
-static void
-_shortcut_tab_image_manager_cb(void *data __UNUSED__,
-                               Evas_Object *obj __UNUSED__,
-                               void *event_info __UNUSED__)
-{
-   if (!elm_object_item_disabled_get(tabs.menu.item_image))
-     elm_toolbar_item_selected_set(tabs.menu.item_image, true);
-}
-
-static void
-_shortcut_tab_sound_manager_cb(void *data __UNUSED__,
-                               Evas_Object *obj __UNUSED__,
-                               void *event_info __UNUSED__)
-{
-   if (!elm_object_item_disabled_get(tabs.menu.item_sound))
-     elm_toolbar_item_selected_set(tabs.menu.item_sound, true);
-}
-
-static void
-_shortcut_tab_color_class_manager_cb(void *data __UNUSED__,
-                                     Evas_Object *obj __UNUSED__,
-                                     void *event_info __UNUSED__)
-{
-   if (!elm_object_item_disabled_get(tabs.menu.item_colorclass))
-     elm_toolbar_item_selected_set(tabs.menu.item_colorclass, true);
-}
-
-static void
-_shortcut_tab_style_manager_cb(void *data __UNUSED__,
-                               Evas_Object *obj __UNUSED__,
-                               void *event_info __UNUSED__)
-{
-   if (!elm_object_item_disabled_get(tabs.menu.item_text))
-     elm_toolbar_item_selected_set(tabs.menu.item_text, true);
-}
-#endif /* if 0 */
-
 static void
 _shortcut_mode_normal_cb(void *data __UNUSED__,
                          Evas_Object *obj __UNUSED__,
@@ -944,19 +846,6 @@ tabs_add(void)
    elm_layout_content_set(tabs.layout, "elm.swallow.toolbar", tabs.box);
    evas_object_show(tabs.box);
 
-#if 0
-   /* adding toolbar for editors */
-   tabs.toolbar_editors = elm_toolbar_add(tabs.layout);
-   elm_object_style_set(tabs.toolbar_editors, "editor_tabs_horizontal");
-   elm_toolbar_shrink_mode_set(tabs.toolbar_editors, ELM_TOOLBAR_SHRINK_NONE);
-   elm_toolbar_select_mode_set(tabs.toolbar_editors, ELM_OBJECT_SELECT_MODE_ALWAYS);
-   evas_object_size_hint_weight_set(tabs.toolbar_editors, 0.0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(tabs.toolbar_editors, 0.0, EVAS_HINT_FILL);
-   elm_toolbar_align_set(tabs.toolbar_editors, 0.0);
-   elm_box_pack_end(tabs.box, tabs.toolbar_editors);
-   evas_object_show(tabs.toolbar_editors);
-   /* addind two different toolbars */
-#endif /* if 0 */
    tabs.toolbar = elm_toolbar_add(tabs.layout);
    elm_object_style_set(tabs.toolbar, "tabs_horizontal");
    elm_toolbar_shrink_mode_set(tabs.toolbar, ELM_TOOLBAR_SHRINK_SCROLL);
@@ -966,22 +855,6 @@ tabs_add(void)
    elm_toolbar_align_set(tabs.toolbar, 0.0);
    elm_box_pack_end(tabs.box, tabs.toolbar);
    evas_object_show(tabs.toolbar);
-
-#if 0
-   tabs.menu.item_image = elm_toolbar_item_append(tabs.toolbar_editors, "image2", NULL,
-                                                  _content_set, NULL);
-   tabs.menu.item_sound = elm_toolbar_item_append(tabs.toolbar_editors, "sound2", NULL,
-                                                  _content_set, NULL);
-   tabs.menu.item_text = elm_toolbar_item_append(tabs.toolbar_editors, "text2", NULL,
-                                                 _content_set, NULL);
-   tabs.menu.item_colorclass = elm_toolbar_item_append(tabs.toolbar_editors, "color", NULL,
-                                                       _content_set, NULL);
-
-   elm_object_item_disabled_set(tabs.menu.item_image, true);
-   elm_object_item_disabled_set(tabs.menu.item_sound, true);
-   elm_object_item_disabled_set(tabs.menu.item_text, true);
-   elm_object_item_disabled_set(tabs.menu.item_colorclass, true);
-#endif /* if 0 */
 
    tabs_home_tab_add(TAB_HOME_OPEN_PROJECT);
 
@@ -995,7 +868,6 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _demo_send_signal, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _project_changed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_SAVED, _editor_saved, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_OPENED, _project_opened, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CLOSED, _project_closed, NULL);
@@ -1028,10 +900,6 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_PREV, _shortcut_tab_prev_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_NUM, _shortcut_tab_num_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_CLOSE, _shortcut_tab_close_cb, NULL);
-//   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_IMAGE_MANAGER, _shortcut_tab_image_manager_cb, NULL);
-//   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_SOUND_MANAGER, _shortcut_tab_sound_manager_cb, NULL);
-//   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_COLOR_CLASS_MANAGER, _shortcut_tab_color_class_manager_cb, NULL);
-//   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_TAB_STYLE_MANAGER, _shortcut_tab_style_manager_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_MODE_NORMAL, _shortcut_mode_normal_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_MODE_CODE, _shortcut_mode_code_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_MODE_DEMO, _shortcut_mode_demo_cb, NULL);
@@ -1044,37 +912,6 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_RULERS_VISIBLED, _shortcut_rulers_visible_cb, NULL);
    return tabs.layout;
 }
-
-#if 0
-void
-tabs_menu_tab_open(Tabs_Menu view)
-{
-   assert(tabs.layout != NULL);
-
-   switch(view)
-     {
-      case TAB_IMAGE_EDITOR:
-         if (ap.project)
-           elm_layout_content_set(tabs.layout, NULL, tabs.menu.content_image_editor);
-         elm_toolbar_item_selected_set(tabs.menu.item_image, true);
-         break;
-      case TAB_SOUND_EDITOR:
-         elm_layout_content_set(tabs.layout, NULL, tabs.menu.content_sound_editor);
-         elm_toolbar_item_selected_set(tabs.menu.item_sound, true);
-         break;
-      case TAB_COLORCLASS_EDITOR:
-         elm_layout_content_set(tabs.layout, NULL, tabs.menu.content_colorclass_editor);
-         elm_toolbar_item_selected_set(tabs.menu.item_colorclass, true);
-         break;
-      case TAB_STYLE_EDITOR:
-         elm_layout_content_set(tabs.layout, NULL, tabs.menu.content_text_editor);
-         elm_toolbar_item_selected_set(tabs.menu.item_text, true);
-         break;
-      default:
-         break;
-     }
-}
-#endif /* if 0 */
 
 void
 tabs_menu_import_edj_data_set(const char *name, const char *path, const char *edj, const Eina_List *widgets)
