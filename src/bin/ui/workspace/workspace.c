@@ -761,6 +761,7 @@ _mode_cb(void *data,
 
          area = &wd->demo;
          ui_menu_disable_set(ap.menu, MENU_VIEW_WORKSPACE_FIT, true);
+         demo_group_property_update(wd->demo_navi);
          break;
      }
 
