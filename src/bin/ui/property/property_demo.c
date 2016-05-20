@@ -27,7 +27,7 @@ struct _Property_Demo_Data {
    Property_Attribute items[PROPERTY_DEMO_ITEM_LAST];
 };
 typedef struct _Property_Demo_Data Property_Demo_Data;
-static Property_Demo_Data group_pd;
+static Property_Demo_Data demo_pd;
 
 struct _Property_Demo_Update_Info {
    Property_Attribute *pa;
@@ -45,8 +45,8 @@ _subitems_get(Property_Attribute *pa)
    Eina_List *items = NULL;
 
    assert(pa != NULL);
-#define APPEND(TYPE) items = eina_list_append(items, &group_pd.items[TYPE]);
-   switch (pa->type.group_item)
+#define APPEND(TYPE) items = eina_list_append(items, &demo_pd.items[TYPE]);
+   switch (pa->type.demo_item)
      {
       case PROPERTY_DEMO_ITEM_TEXT_TITLE:
          APPEND(PROPERTY_DEMO_ITEM_TEXT_NAME);
@@ -156,9 +156,10 @@ static void
 _init_items()
 {
    Property_Demo_Item it;
-#define IT group_pd.items[it]
+#define IT demo_pd.items[it]
    for (it = 0 /* first element of enum */; it < PROPERTY_DEMO_ITEM_LAST; it++)
      {
+        IT.type.demo_item = it;
         switch(it)
           {
            case PROPERTY_DEMO_ITEM_TEXT_TITLE:
@@ -238,9 +239,9 @@ property_demo_items_get()
 {
    Eina_List *items = NULL;
 
-   items = eina_list_append(items, &group_pd.items[PROPERTY_DEMO_ITEM_TEXT_TITLE]);
-   items = eina_list_append(items, &group_pd.items[PROPERTY_DEMO_ITEM_SWALLOW_TITLE]);
-   items = eina_list_append(items, &group_pd.items[PROPERTY_DEMO_ITEM_PROGRAM_TITLE]);
+   items = eina_list_append(items, &demo_pd.items[PROPERTY_DEMO_ITEM_TEXT_TITLE]);
+   items = eina_list_append(items, &demo_pd.items[PROPERTY_DEMO_ITEM_SWALLOW_TITLE]);
+   items = eina_list_append(items, &demo_pd.items[PROPERTY_DEMO_ITEM_PROGRAM_TITLE]);
 
    return items;
 }
