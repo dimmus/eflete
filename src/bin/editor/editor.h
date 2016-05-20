@@ -166,10 +166,15 @@ typedef enum {
    ATTRIBUTE_PROGRAM_TRANSITION_TIME,
    ATTRIBUTE_PROGRAM_SAMPLE_SPEED,
    ATTRIBUTE_PROGRAM_VALUE,
-   ATTRIBUTE_PROGRAM_TRANSITION_VALUE1,
-   ATTRIBUTE_PROGRAM_TRANSITION_VALUE2,
-   ATTRIBUTE_PROGRAM_TRANSITION_VALUE3,
-   ATTRIBUTE_PROGRAM_TRANSITION_VALUE4,
+   ATTRIBUTE_PROGRAM_TRANSITION_FACTOR,
+   ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT,
+   ATTRIBUTE_PROGRAM_TRANSITION_DECAY,
+   ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES,
+   ATTRIBUTE_PROGRAM_TRANSITION_SWINGS,
+   ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X1,
+   ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y1,
+   ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2,
+   ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2,
    ATTRIBUTE_PROGRAM_FILTER_PART,
    ATTRIBUTE_PROGRAM_FILTER_STATE,
    ATTRIBUTE_PROGRAM_API_NAME,
@@ -708,18 +713,62 @@ editor_program_drag_value_x_set(Evas_Object *edit_object, Change *change, Eina_B
 Eina_Bool
 editor_program_drag_value_y_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                                 const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+
+#define edje_edit_program_transition_factor_get editor_program_transition_factor_get
+#define edje_edit_program_transition_gradient_get editor_program_transition_gradient_get
+#define edje_edit_program_transition_decay_get editor_program_transition_decay_get
+#define edje_edit_program_transition_bounces_get editor_program_transition_bounces_get
+#define edje_edit_program_transition_swings_get editor_program_transition_swings_get
+#define edje_edit_program_transition_bezier_x1_get editor_program_transition_bezier_x1_get
+#define edje_edit_program_transition_bezier_x2_get editor_program_transition_bezier_x2_get
+#define edje_edit_program_transition_bezier_y1_get editor_program_transition_bezier_y1_get
+#define edje_edit_program_transition_bezier_y2_get editor_program_transition_bezier_y2_get
+double
+editor_program_transition_factor_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_program_transition_value1_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+editor_program_transition_factor_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                                      const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+double
+editor_program_transition_gradient_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_program_transition_value2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+editor_program_transition_gradient_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                                      const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+double
+editor_program_transition_decay_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_program_transition_value3_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+editor_program_transition_decay_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                                      const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+double
+editor_program_transition_bounces_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_program_transition_value4_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+editor_program_transition_bounces_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                                      const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+double
+editor_program_transition_swings_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_program_transition_swings_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+double
+editor_program_transition_bezier_x1_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_program_transition_bezier_x1_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+double
+editor_program_transition_bezier_x2_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_program_transition_bezier_x2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+double
+editor_program_transition_bezier_y1_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_program_transition_bezier_y1_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+double
+editor_program_transition_bezier_y2_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_program_transition_bezier_y2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+
 Eina_Bool
 editor_program_filter_part_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                                const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;

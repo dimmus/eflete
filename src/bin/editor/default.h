@@ -529,13 +529,23 @@ editor_program_drag_value_x_reset(Evas_Object *edit_object, Change *change, cons
 Eina_Bool
 editor_program_drag_value_y_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
-editor_program_transition_value1_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+editor_program_transition_factor_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
-editor_program_transition_value2_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+editor_program_transition_gradient_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
-editor_program_transition_value3_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+editor_program_transition_decay_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
-editor_program_transition_value4_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+editor_program_transition_bounces_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_swings_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_bezier_x1_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_bezier_x2_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_bezier_y1_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_bezier_y2_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
 editor_program_filter_part_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
