@@ -131,10 +131,21 @@ _content_set(void *data,
         /* notify that group is changed */
         evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_CHANGED, item->group);
 
+        /* and update property */
         if (workspace_active_demo_mode_get(tabs.current_workspace))
-          evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_MODE_DEMO, NULL);
+          {
+             elm_layout_content_unset(ap.tabs, "elm.swallow.property");
+             evas_object_hide(ap.property.group);
+             elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.demo);
+             evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_MODE_DEMO, NULL);
+          }
         else
-          evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_MODE_GROUP, NULL);
+          {
+             elm_layout_content_unset(ap.tabs, "elm.swallow.property");
+             evas_object_hide(ap.property.demo);
+             elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.group);
+             evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_MODE_GROUP, NULL);
+          }
      }
 #if 0
    else
@@ -189,6 +200,20 @@ _mode_changed(void *data __UNUSED__,
    evas_object_hide(content);
 
    elm_layout_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(tabs.current_workspace));
+   Workspace_Mode mode = *((Workspace_Mode *)event_info);
+
+   if (mode == MODE_DEMO)
+     {
+        elm_layout_content_unset(ap.tabs, "elm.swallow.property");
+        evas_object_hide(ap.property.group);
+        elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.demo);
+     }
+   else
+     {
+        elm_layout_content_unset(ap.tabs, "elm.swallow.property");
+        evas_object_hide(ap.property.demo);
+        elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.group);
+     }
 }
 
 static Tabs_Item *

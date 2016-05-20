@@ -194,6 +194,7 @@ ui_main_window_add(void)
    ap.property.sound_manager = property_add(ap.win, PROPERTY_MODE_SOUND);
    ap.property.style_manager = property_add(ap.win, PROPERTY_MODE_STYLE);
    ap.property.color_manager = property_add(ap.win, PROPERTY_MODE_COLOR_CLASS);
+   ap.property.demo = property_add(ap.win, PROPERTY_MODE_DEMO);
    elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.group);
    ap.block.history = history_ui_add();
    elm_layout_content_set(ap.tabs, "elm.swallow.history", ap.block.history);

@@ -107,6 +107,7 @@ struct _App_Data
       Evas_Object *sound_manager;
       Evas_Object *style_manager;
       Evas_Object *color_manager;
+      Evas_Object *demo;
    } property;
 
    struct {
