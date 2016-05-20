@@ -115,7 +115,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_DEMO_ITEM_SWALLOW_PICTURE);
          APPEND(PROPERTY_DEMO_ITEM_SWALLOW_WIDGET);
          APPEND(PROPERTY_DEMO_ITEM_SWALLOW_STYLE);
-         APPEND(PROPERTY_DEMO_ITEM_SWALLOW_RECTANGLE);
+         APPEND(PROPERTY_DEMO_ITEM_SWALLOW_COLOR);
          APPEND(PROPERTY_DEMO_ITEM_SWALLOW_MIN);
          APPEND(PROPERTY_DEMO_ITEM_SWALLOW_MAX);
          break;
@@ -156,6 +156,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
    Eina_Stringshare *str_val1 = NULL;
    Ewe_Combobox_Item *cb_item = NULL;
    double double_val1 = 0.0;
+   int r, g, b, a;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -172,6 +173,10 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_CONTROL_COMBOBOX:
          TODO("change this after migrating to elm_combobox");
          cb_item = ewe_combobox_select_item_get(action->control);
+         break;
+      case PROPERTY_CONTROL_COLOR:
+         property_color_control_color_get(action->control, &r, &g, &b, &a);
+         break;
       default:
          break;
      }
@@ -200,8 +205,14 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          if (demo_pd.part->content_style)
            eina_stringshare_del(demo_pd.part->content_style);
          demo_pd.part->content_style = eina_stringshare_add(str_val1);
-         demo_pd.part->change = true;
-         evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_SET, demo_pd.part);
+         evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
+         break;
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_COLOR:
+         demo_pd.part->r = r;
+         demo_pd.part->g = g;
+         demo_pd.part->b = b;
+         demo_pd.part->a = a;
+         evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_W:
          demo_pd.part->min_w = double_val1;
@@ -250,6 +261,11 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          ewe_combobox_select_item_set(action->control, demo_pd.part->swallow_content);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE:
+         property_color_control_color_set(action->control,
+                                          demo_pd.part->r,
+                                          demo_pd.part->g,
+                                          demo_pd.part->b,
+                                          demo_pd.part->a);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET:
          ewe_combobox_select_item_set(action->control, demo_pd.part->widget);
@@ -257,7 +273,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE:
          property_entry_set(action->control, demo_pd.part->content_style);
          break;
-      case ATTRIBUTE_DEMO_ITEM_SWALLOW_RECTANGLE:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_COLOR:
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_W:
          elm_spinner_value_set(action->control, demo_pd.part->min_w);
@@ -309,7 +325,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_NAME:
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE:
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE:
-      case ATTRIBUTE_DEMO_ITEM_SWALLOW_RECTANGLE:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_COLOR:
       case ATTRIBUTE_DEMO_ITEM_PROGRAM_SIGNAL:
       case ATTRIBUTE_DEMO_ITEM_PROGRAM_SOURCE:
       case ATTRIBUTE_DEMO_ITEM_PROGRAM_ACTION:
@@ -447,7 +463,9 @@ _init_items()
               IT.name = "widget style";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE);
               break;
-           case PROPERTY_DEMO_ITEM_SWALLOW_RECTANGLE:
+           case PROPERTY_DEMO_ITEM_SWALLOW_COLOR:
+              IT.name = "color";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_DEMO_ITEM_SWALLOW_COLOR);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_MIN:
               IT.name = "min";
