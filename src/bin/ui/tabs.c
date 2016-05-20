@@ -456,23 +456,14 @@ _editor_saved(void *data __UNUSED__,
      }
 }
 
-#if 0
 static void
 _project_opened(void *data __UNUSED__,
                 Evas_Object *obj __UNUSED__,
                 void *ei __UNUSED__)
 {
-   tabs.menu.content_image_editor = image_manager_add();
-   tabs.menu.content_sound_editor = sound_manager_add();
-   tabs.menu.content_text_editor = style_manager_add();
-   tabs.menu.content_colorclass_editor = colorclass_manager_add();
 
-   elm_object_item_disabled_set(tabs.menu.item_image, false);
-   elm_object_item_disabled_set(tabs.menu.item_sound, false);
-   elm_object_item_disabled_set(tabs.menu.item_text, false);
-   elm_object_item_disabled_set(tabs.menu.item_colorclass, false);
+   tabs_home_tab_add(TAB_HOME_PROJECT_INFO);
 }
-#endif /* if 0 */
 
 static void
 _project_closed(void *data __UNUSED__,
@@ -1006,7 +997,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CHANGED, _project_changed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_SAVED, _editor_saved, NULL);
-   //evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_OPENED, _project_opened, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_OPENED, _project_opened, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CLOSED, _project_closed, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _property_attribute_changed, NULL);
