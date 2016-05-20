@@ -61,6 +61,37 @@ static const char *swallow_content_type[] = {
      "Widget",
      NULL};
 
+static const char *widget_type[] = { "button",
+                                     "check",
+                                     "slider",
+                                     "entry",
+                                     "progressbar",
+                                     "radio",
+                                     "spinner",
+                                     "label",
+                                     "calendar",
+                                     "icon",
+                                     "colorselector",
+                                     "fileselector",
+                                     "dayselector",
+                                     "datetime",
+                                     "frame",
+                                     "panel",
+                                     "segment_control",
+                                     "clock",
+                                     "panes",
+                                     "list",
+                                     "grid",
+                                     "table",
+                                     "box",
+                                     "naviframe",
+                                     "genlist",
+                                     "gengrid",
+                                     "scroller",
+                                     "toolbar",
+                                     "map",
+                                     NULL};
+
 /* array to find item by Attribute */
 static Property_Demo_Update_Info attribute_map[PROPERTY_DEMO_ITEM_LAST];
 
@@ -147,12 +178,26 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          if (demo_pd.part->text_content)
            eina_stringshare_del(demo_pd.part->text_content);
          demo_pd.part->text_content = eina_stringshare_add(str_val1);
+         demo_pd.part->change = true;
          evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_SET, demo_pd.part);
          break;
       case PROPERTY_DEMO_ITEM_SWALLOW_CONTENT:
          demo_pd.part->swallow_content = cb_item->index;
          demo_pd.part->change = true;
          evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
+         break;
+
+      case PROPERTY_DEMO_ITEM_SWALLOW_WIDGET:
+         demo_pd.part->widget = cb_item->index;
+         demo_pd.part->change = true;
+         evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
+         break;
+      case PROPERTY_DEMO_ITEM_SWALLOW_STYLE:
+         if (demo_pd.part->content_style)
+           eina_stringshare_del(demo_pd.part->content_style);
+         demo_pd.part->content_style = eina_stringshare_add(str_val1);
+         demo_pd.part->change = true;
+         evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_SET, demo_pd.part);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -187,8 +232,10 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_DEMO_ITEM_SWALLOW_PICTURE:
          break;
       case PROPERTY_DEMO_ITEM_SWALLOW_WIDGET:
+         ewe_combobox_select_item_set(action->control, demo_pd.part->widget);
          break;
       case PROPERTY_DEMO_ITEM_SWALLOW_STYLE:
+         property_entry_set(action->control, demo_pd.part->content_style);
          break;
       case PROPERTY_DEMO_ITEM_SWALLOW_RECTANGLE:
          break;
@@ -233,7 +280,6 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_DEMO_ITEM_TEXT_CONTENT:
       case PROPERTY_DEMO_ITEM_SWALLOW_NAME:
       case PROPERTY_DEMO_ITEM_SWALLOW_PICTURE:
-      case PROPERTY_DEMO_ITEM_SWALLOW_WIDGET:
       case PROPERTY_DEMO_ITEM_SWALLOW_STYLE:
       case PROPERTY_DEMO_ITEM_SWALLOW_RECTANGLE:
       case PROPERTY_DEMO_ITEM_SWALLOW_MIN:
@@ -246,6 +292,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case PROPERTY_DEMO_ITEM_SWALLOW_CONTENT:
          _fill_combobox_with_enum(action->control, swallow_content_type);
+         break;
+      case PROPERTY_DEMO_ITEM_SWALLOW_WIDGET:
+         _fill_combobox_with_enum(action->control, widget_type);
          break;
 
       default:
@@ -359,8 +408,12 @@ _init_items()
            case PROPERTY_DEMO_ITEM_SWALLOW_PICTURE:
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_WIDGET:
+              IT.name = "widget";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_STYLE:
+              IT.name = "widget style";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_RECTANGLE:
               break;
