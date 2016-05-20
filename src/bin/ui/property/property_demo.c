@@ -85,6 +85,60 @@ _subitems_get(Property_Attribute *pa)
 }
 
 static void
+_update_cb(Property_Attribute *pa, Property_Action *action)
+{
+   assert(pa != NULL);
+   assert(action != NULL);
+   assert(action->control != NULL);
+
+   switch (pa->type.demo_item)
+     {
+      case PROPERTY_DEMO_ITEM_TEXT_NAME:
+         break;
+      case PROPERTY_DEMO_ITEM_TEXT_CONTENT:
+         break;
+
+      case PROPERTY_DEMO_ITEM_SWALLOW_NAME:
+         break;
+      case PROPERTY_DEMO_ITEM_SWALLOW_CONTENT:
+         break;
+      case PROPERTY_DEMO_ITEM_SWALLOW_PICTURE:
+         break;
+      case PROPERTY_DEMO_ITEM_SWALLOW_WIDGET:
+         break;
+      case PROPERTY_DEMO_ITEM_SWALLOW_STYLE:
+         break;
+      case PROPERTY_DEMO_ITEM_SWALLOW_RECTANGLE:
+         break;
+      case PROPERTY_DEMO_ITEM_SWALLOW_MIN:
+         break;
+      case PROPERTY_DEMO_ITEM_SWALLOW_MAX:
+         break;
+
+      case PROPERTY_DEMO_ITEM_PROGRAM_SIGNAL:
+         elm_layout_text_set(action->control, NULL, "-");
+         break;
+      case PROPERTY_DEMO_ITEM_PROGRAM_SOURCE:
+         elm_layout_text_set(action->control, NULL, "-");
+         break;
+      case PROPERTY_DEMO_ITEM_PROGRAM_ACTION:
+         elm_layout_text_set(action->control, NULL, "-");
+         break;
+      case PROPERTY_DEMO_ITEM_PROGRAM_EMIT:
+         elm_layout_text_set(action->control, NULL, "-");
+         break;
+      case PROPERTY_DEMO_ITEM_PROGRAM_EMITTER:
+         elm_layout_text_set(action->control, NULL, "-");
+         break;
+      default:
+         TODO("remove default case after all attributes will be added");
+         CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
+         abort();
+         break;
+     }
+}
+
+static void
 _init_cb(Property_Attribute *pa, Property_Action *action)
 {
    assert(pa != NULL);
@@ -130,6 +184,7 @@ _action_internal(Property_Action *action, const char *name, const char *units,
    action->units = units;
    action->control_type = control_type;
    action->init_cb = _init_cb;
+   action->update_cb = _update_cb;
 }
 
 static inline void
@@ -138,11 +193,11 @@ _action1(Property_Attribute *pa, const char *name, const char *units,
 {
    _action_internal(&pa->action1, name, units, control_type);
 
-   assert(attribute_map[control_type].pa == NULL);
-   assert(attribute_map[control_type].action == NULL);
+   assert(attribute_map[pa->type.demo_item].pa == NULL);
+   assert(attribute_map[pa->type.demo_item].action == NULL);
 
-   attribute_map[control_type].pa = pa;
-   attribute_map[control_type].action = &pa->action1;
+   attribute_map[pa->type.demo_item].pa = pa;
+   attribute_map[pa->type.demo_item].action = &pa->action1;
 }
 
 static inline void
@@ -151,11 +206,11 @@ _action2(Property_Attribute *pa, const char *name, const char *units,
 {
    _action_internal(&pa->action2, name, units, control_type);
 
-   assert(attribute_map[control_type].pa == NULL);
-   assert(attribute_map[control_type].action == NULL);
+   assert(attribute_map[pa->type.demo_item].pa == NULL);
+   assert(attribute_map[pa->type.demo_item].action == NULL);
 
-   attribute_map[control_type].pa = pa;
-   attribute_map[control_type].action = &pa->action2;
+   attribute_map[pa->type.demo_item].pa = pa;
+   attribute_map[pa->type.demo_item].action = &pa->action2;
 }
 
 static Eina_Bool
@@ -226,14 +281,24 @@ _init_items()
               IT.filter_data.demo_types = DEMO_SIGNAL;
               break;
            case PROPERTY_DEMO_ITEM_PROGRAM_SIGNAL:
+              IT.name = "signal";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
               break;
            case PROPERTY_DEMO_ITEM_PROGRAM_SOURCE:
+              IT.name = "source";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
               break;
            case PROPERTY_DEMO_ITEM_PROGRAM_ACTION:
+              IT.name = "action";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
               break;
            case PROPERTY_DEMO_ITEM_PROGRAM_EMIT:
+              IT.name = "emit signal";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
               break;
            case PROPERTY_DEMO_ITEM_PROGRAM_EMITTER:
+              IT.name = "emitter";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
               break;
 
            case PROPERTY_DEMO_ITEM_LAST:
