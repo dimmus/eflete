@@ -93,7 +93,7 @@ static const char *widget_type[] = { "button",
                                      NULL};
 
 /* array to find item by Attribute */
-static Property_Demo_Update_Info attribute_map[PROPERTY_DEMO_ITEM_LAST];
+static Property_Demo_Update_Info attribute_map[ATTRIBUTE_DEMO_ITEM_LAST];
 
 /* local callbacks */
 static Eina_List *
@@ -172,27 +172,27 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
      }
 
-   switch (pa->type.demo_item)
+   switch (action->type.attribute_demo)
      {
-      case PROPERTY_DEMO_ITEM_TEXT_CONTENT:
+      case ATTRIBUTE_DEMO_ITEM_TEXT_CONTENT:
          if (demo_pd.part->text_content)
            eina_stringshare_del(demo_pd.part->text_content);
          demo_pd.part->text_content = eina_stringshare_add(str_val1);
          demo_pd.part->change = true;
          evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_SET, demo_pd.part);
          break;
-      case PROPERTY_DEMO_ITEM_SWALLOW_CONTENT:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_CONTENT:
          demo_pd.part->swallow_content = cb_item->index;
          demo_pd.part->change = true;
          evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
          break;
 
-      case PROPERTY_DEMO_ITEM_SWALLOW_WIDGET:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET:
          demo_pd.part->widget = cb_item->index;
          demo_pd.part->change = true;
          evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
          break;
-      case PROPERTY_DEMO_ITEM_SWALLOW_STYLE:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE:
          if (demo_pd.part->content_style)
            eina_stringshare_del(demo_pd.part->content_style);
          demo_pd.part->content_style = eina_stringshare_add(str_val1);
@@ -214,49 +214,53 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
    assert(action != NULL);
    assert(action->control != NULL);
 
-   switch (pa->type.demo_item)
+   switch (action->type.attribute_demo)
      {
-      case PROPERTY_DEMO_ITEM_TEXT_NAME:
+      case ATTRIBUTE_DEMO_ITEM_TEXT_NAME:
          elm_layout_text_set(action->control, NULL, demo_pd.part->name);
          break;
-      case PROPERTY_DEMO_ITEM_TEXT_CONTENT:
+      case ATTRIBUTE_DEMO_ITEM_TEXT_CONTENT:
          property_entry_set(action->control, demo_pd.part->text_content);
          break;
 
-      case PROPERTY_DEMO_ITEM_SWALLOW_NAME:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_NAME:
          elm_layout_text_set(action->control, NULL, demo_pd.part->name);
          break;
-      case PROPERTY_DEMO_ITEM_SWALLOW_CONTENT:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_CONTENT:
          ewe_combobox_select_item_set(action->control, demo_pd.part->swallow_content);
          break;
-      case PROPERTY_DEMO_ITEM_SWALLOW_PICTURE:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE:
          break;
-      case PROPERTY_DEMO_ITEM_SWALLOW_WIDGET:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET:
          ewe_combobox_select_item_set(action->control, demo_pd.part->widget);
          break;
-      case PROPERTY_DEMO_ITEM_SWALLOW_STYLE:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE:
          property_entry_set(action->control, demo_pd.part->content_style);
          break;
-      case PROPERTY_DEMO_ITEM_SWALLOW_RECTANGLE:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_RECTANGLE:
          break;
-      case PROPERTY_DEMO_ITEM_SWALLOW_MIN:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_W:
          break;
-      case PROPERTY_DEMO_ITEM_SWALLOW_MAX:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_H:
+         break;
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_W:
+         break;
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_H:
          break;
 
-      case PROPERTY_DEMO_ITEM_PROGRAM_SIGNAL:
+      case ATTRIBUTE_DEMO_ITEM_PROGRAM_SIGNAL:
          elm_layout_text_set(action->control, NULL, demo_pd.signal->sig_name);
          break;
-      case PROPERTY_DEMO_ITEM_PROGRAM_SOURCE:
+      case ATTRIBUTE_DEMO_ITEM_PROGRAM_SOURCE:
          elm_layout_text_set(action->control, NULL, demo_pd.signal->source_name);
          break;
-      case PROPERTY_DEMO_ITEM_PROGRAM_ACTION:
+      case ATTRIBUTE_DEMO_ITEM_PROGRAM_ACTION:
          elm_layout_text_set(action->control, NULL, program_actions[demo_pd.signal->action]);
          break;
-      case PROPERTY_DEMO_ITEM_PROGRAM_EMIT:
+      case ATTRIBUTE_DEMO_ITEM_PROGRAM_EMIT:
          elm_layout_text_set(action->control, NULL, demo_pd.signal->emit_signal);
          break;
-      case PROPERTY_DEMO_ITEM_PROGRAM_EMITTER:
+      case ATTRIBUTE_DEMO_ITEM_PROGRAM_EMITTER:
          elm_layout_text_set(action->control, NULL, demo_pd.signal->emitter);
          break;
       default:
@@ -274,29 +278,30 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
    assert(action != NULL);
    assert(action->control != NULL);
 
-   switch (pa->type.demo_item)
+   switch (action->type.attribute_demo)
      {
-      case PROPERTY_DEMO_ITEM_TEXT_NAME:
-      case PROPERTY_DEMO_ITEM_TEXT_CONTENT:
-      case PROPERTY_DEMO_ITEM_SWALLOW_NAME:
-      case PROPERTY_DEMO_ITEM_SWALLOW_PICTURE:
-      case PROPERTY_DEMO_ITEM_SWALLOW_STYLE:
-      case PROPERTY_DEMO_ITEM_SWALLOW_RECTANGLE:
-      case PROPERTY_DEMO_ITEM_SWALLOW_MIN:
-      case PROPERTY_DEMO_ITEM_SWALLOW_MAX:
-      case PROPERTY_DEMO_ITEM_PROGRAM_SIGNAL:
-      case PROPERTY_DEMO_ITEM_PROGRAM_SOURCE:
-      case PROPERTY_DEMO_ITEM_PROGRAM_ACTION:
-      case PROPERTY_DEMO_ITEM_PROGRAM_EMIT:
-      case PROPERTY_DEMO_ITEM_PROGRAM_EMITTER:
+      case ATTRIBUTE_DEMO_ITEM_TEXT_NAME:
+      case ATTRIBUTE_DEMO_ITEM_TEXT_CONTENT:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_NAME:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_RECTANGLE:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_W:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_H:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_W:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_H:
+      case ATTRIBUTE_DEMO_ITEM_PROGRAM_SIGNAL:
+      case ATTRIBUTE_DEMO_ITEM_PROGRAM_SOURCE:
+      case ATTRIBUTE_DEMO_ITEM_PROGRAM_ACTION:
+      case ATTRIBUTE_DEMO_ITEM_PROGRAM_EMIT:
+      case ATTRIBUTE_DEMO_ITEM_PROGRAM_EMITTER:
          break;
-      case PROPERTY_DEMO_ITEM_SWALLOW_CONTENT:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_CONTENT:
          _fill_combobox_with_enum(action->control, swallow_content_type);
          break;
-      case PROPERTY_DEMO_ITEM_SWALLOW_WIDGET:
+      case ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET:
          _fill_combobox_with_enum(action->control, widget_type);
          break;
-
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("init callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -308,7 +313,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
 /* blocks */
 static inline void
 _action_internal(Property_Action *action, const char *name, const char *units,
-                 Property_Control control_type)
+                 Property_Control control_type, Attribute_Demo_Item attribute)
 {
    /* check that we haven't inited this action already */
    assert(action->update_cb == NULL);
@@ -316,6 +321,7 @@ _action_internal(Property_Action *action, const char *name, const char *units,
    action->name = name;
    action->units = units;
    action->control_type = control_type;
+   action->type.attribute_demo = attribute;
    action->init_cb = _init_cb;
    action->update_cb = _update_cb;
    action->change_cb = _change_cb;
@@ -323,28 +329,28 @@ _action_internal(Property_Action *action, const char *name, const char *units,
 
 static inline void
 _action1(Property_Attribute *pa, const char *name, const char *units,
-         Property_Control control_type)
+         Property_Control control_type, Attribute_Demo_Item attribute)
 {
-   _action_internal(&pa->action1, name, units, control_type);
+   _action_internal(&pa->action1, name, units, control_type, attribute);
 
-   assert(attribute_map[pa->type.demo_item].pa == NULL);
-   assert(attribute_map[pa->type.demo_item].action == NULL);
+   assert(attribute_map[attribute].pa == NULL);
+   assert(attribute_map[attribute].action == NULL);
 
-   attribute_map[pa->type.demo_item].pa = pa;
-   attribute_map[pa->type.demo_item].action = &pa->action1;
+   attribute_map[attribute].pa = pa;
+   attribute_map[attribute].action = &pa->action1;
 }
 
 static inline void
 _action2(Property_Attribute *pa, const char *name, const char *units,
-         Property_Control control_type)
+         Property_Control control_type, Attribute_Demo_Item attribute)
 {
-   _action_internal(&pa->action2, name, units, control_type);
+   _action_internal(&pa->action2, name, units, control_type, attribute);
 
-   assert(attribute_map[pa->type.demo_item].pa == NULL);
-   assert(attribute_map[pa->type.demo_item].action == NULL);
+   assert(attribute_map[attribute].pa == NULL);
+   assert(attribute_map[attribute].action == NULL);
 
-   attribute_map[pa->type.demo_item].pa = pa;
-   attribute_map[pa->type.demo_item].action = &pa->action2;
+   attribute_map[attribute].pa = pa;
+   attribute_map[attribute].action = &pa->action2;
 }
 
 static Eina_Bool
@@ -383,11 +389,11 @@ _init_items()
               break;
            case PROPERTY_DEMO_ITEM_TEXT_NAME:
               IT.name = "name";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_DEMO_ITEM_TEXT_NAME);
               break;
            case PROPERTY_DEMO_ITEM_TEXT_CONTENT:
               IT.name = "content";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_DEMO_ITEM_TEXT_CONTENT);
               break;
 
            case PROPERTY_DEMO_ITEM_SWALLOW_TITLE:
@@ -399,21 +405,21 @@ _init_items()
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_NAME:
               IT.name = "name";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_DEMO_ITEM_SWALLOW_NAME);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_CONTENT:
               IT.name = "content";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_DEMO_ITEM_SWALLOW_CONTENT);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_PICTURE:
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_WIDGET:
               IT.name = "widget";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_STYLE:
               IT.name = "widget style";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_RECTANGLE:
               break;
@@ -431,23 +437,23 @@ _init_items()
               break;
            case PROPERTY_DEMO_ITEM_PROGRAM_SIGNAL:
               IT.name = "signal";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_DEMO_ITEM_PROGRAM_SIGNAL);
               break;
            case PROPERTY_DEMO_ITEM_PROGRAM_SOURCE:
               IT.name = "source";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_DEMO_ITEM_PROGRAM_SOURCE);
               break;
            case PROPERTY_DEMO_ITEM_PROGRAM_ACTION:
               IT.name = "action";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_DEMO_ITEM_PROGRAM_ACTION);
               break;
            case PROPERTY_DEMO_ITEM_PROGRAM_EMIT:
               IT.name = "emit signal";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_DEMO_ITEM_PROGRAM_EMIT);
               break;
            case PROPERTY_DEMO_ITEM_PROGRAM_EMITTER:
               IT.name = "emitter";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_DEMO_ITEM_PROGRAM_EMITTER);
               break;
 
            case PROPERTY_DEMO_ITEM_LAST:

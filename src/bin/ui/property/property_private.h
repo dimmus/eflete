@@ -84,6 +84,33 @@ typedef enum {
    PROPERTY_IMAGE_CONTROL_LAST
 } Attribute_Image;
 
+typedef enum {
+   ATTRIBUTE_DEMO_ITEM_TEXT_TITLE,
+   ATTRIBUTE_DEMO_ITEM_TEXT_NAME,
+   ATTRIBUTE_DEMO_ITEM_TEXT_CONTENT,
+
+   ATTRIBUTE_DEMO_ITEM_SWALLOW_TITLE,
+   ATTRIBUTE_DEMO_ITEM_SWALLOW_NAME,
+   ATTRIBUTE_DEMO_ITEM_SWALLOW_CONTENT,
+   ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE,
+   ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET,
+   ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE,
+   ATTRIBUTE_DEMO_ITEM_SWALLOW_RECTANGLE,
+   ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_W,
+   ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_H,
+   ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_W,
+   ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_H,
+
+   ATTRIBUTE_DEMO_ITEM_PROGRAM_TITLE,
+   ATTRIBUTE_DEMO_ITEM_PROGRAM_SIGNAL,
+   ATTRIBUTE_DEMO_ITEM_PROGRAM_SOURCE,
+   ATTRIBUTE_DEMO_ITEM_PROGRAM_ACTION,
+   ATTRIBUTE_DEMO_ITEM_PROGRAM_EMIT,
+   ATTRIBUTE_DEMO_ITEM_PROGRAM_EMITTER,
+
+   ATTRIBUTE_DEMO_ITEM_LAST
+} Attribute_Demo_Item;
+
 struct _Property_Action {
    Property_Control control_type;
    Eina_Stringshare *name;
@@ -91,6 +118,7 @@ struct _Property_Action {
    union {
       Attribute attribute; /**< type for group properties */
       Attribute_Image attribute_image; /**< type for group properties */
+      Attribute_Demo_Item attribute_demo; /**< type for demo properties */
    } type; /**< submodule-specific enums */
    Evas_Object *control; /**< pointer to widget */
    Property_Cb init_cb;
