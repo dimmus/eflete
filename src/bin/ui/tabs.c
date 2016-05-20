@@ -1127,6 +1127,7 @@ _tab_close(void *data,
 {
    Tabs_Item *item = (Tabs_Item *)data;
    tabs.items = eina_list_remove(tabs.items, item);
+   evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, NULL);
    _del_tab(item);
 }
 
@@ -1251,6 +1252,7 @@ tabs_current_tab_close(void)
    item = elm_object_item_data_get(tabs.selected);
    if (!item) return;
    tabs.items = eina_list_remove(tabs.items, item);
+   evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, NULL);
    _del_tab(item);
    //if (!tabs.items) tabs_menu_tab_open(TAB_HOME_PROJECT_INFO);
 }
@@ -1266,6 +1268,7 @@ tabs_clean(void)
      }
    tabs.selected = NULL;
    tabs.items = NULL;
+   evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, NULL);
 }
 
 Evas_Object *
