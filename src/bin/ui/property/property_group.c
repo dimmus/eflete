@@ -171,6 +171,21 @@ static const char *table_homogeneous_strings[] = { STR_NONE,
                                                    "Table",
                                                    "Item",
                                                    NULL};
+static const char *
+transition_type_strings[] = { STR_NONE,
+                              "linear",
+                              "sinusoidal",
+                              "accelerate",
+                              "decelerate",
+                              "accelerate factor",
+                              "decelerate factor",
+                              "sinusoidal factor",
+                              "devisior interpretation",
+                              "bounce",
+                              "spring",
+                              "cubic bezier",
+                              NULL};
+
 /* defines for args */
 #define EDIT_OBJ group_pd.group->edit_object
 #define PART_ARGS group_pd.part->name
@@ -452,6 +467,11 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_EMIT_SIGNAL);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_EMIT_SOURCE);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_DRAG_VALUE);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TITLE);
+         break;
+      case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TYPE);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TIME);
          break;
       case PROPERTY_GROUP_ITEM_STATE_CONTAINER_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_ALIGN);
@@ -668,6 +688,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_ASPECT_MAX:
       case ATTRIBUTE_PROGRAM_IN_FROM:
       case ATTRIBUTE_PROGRAM_IN_RANGE:
+      case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
          elm_spinner_step_set(action->control, 0.1);
          elm_spinner_label_format_set(action->control, "%.2f");
          break;
@@ -715,6 +736,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
          _fill_combobox_with_enum(action->control, item_aspect_mode_strings);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
+         _fill_combobox_with_enum(action->control, transition_type_strings);
          break;
       case ATTRIBUTE_STATE_ASPECT_PREF:
          _fill_combobox_with_enum(action->control, aspect_preference_strings);
@@ -1233,6 +1257,10 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          ewe_combobox_select_item_set(action->control,
            (int) edje_edit_part_item_aspect_mode_get(EDIT_OBJ, ITEM_ARGS));
          break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
+         ewe_combobox_select_item_set(action->control,
+           (int) editor_program_transition_type_get(EDIT_OBJ, PROGRAM_ARGS));
+         break;
       case ATTRIBUTE_PART_ITEM_ASPECT_W:
          int_val1 = edje_edit_part_item_aspect_w_get(EDIT_OBJ, ITEM_ARGS);
          elm_spinner_value_set(action->control, int_val1);
@@ -1550,6 +1578,10 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PROGRAM_IN_RANGE:
          double_val1 = edje_edit_program_in_range_get(EDIT_OBJ, PROGRAM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
+         double_val1 = edje_edit_program_transition_time_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
          break;
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
@@ -2027,6 +2059,10 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("program in.range changed from %.2f to %.2f");
          VAL(double_val1) = edje_edit_program_in_range_get(EDIT_OBJ, PROGRAM_ARGS);
          break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
+         group_pd.history.format = _("program's transition time changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_program_transition_time_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
          group_pd.history.format = _("program drag value x changed from %.2f to %.2f");
          VAL(double_val1) = edje_edit_program_drag_value_x_get(EDIT_OBJ, PROGRAM_ARGS);
@@ -2123,6 +2159,11 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("part item's aspect mode changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, eina_stringshare_add(
             item_aspect_mode_strings[edje_edit_part_item_aspect_mode_get(EDIT_OBJ, ITEM_ARGS)]));
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
+         group_pd.history.format = _("program's transition type changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(
+            transition_type_strings[editor_program_transition_type_get(EDIT_OBJ, PROGRAM_ARGS)]));
          break;
       case ATTRIBUTE_PART_ITEM_ASPECT_W:
          group_pd.history.format = _("part item's aspect_w changed from %d to %d");
@@ -2709,6 +2750,10 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_program_in_range_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_program_in_range_get(EDIT_OBJ, PROGRAM_ARGS);
          break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
+         CRIT_ON_FAIL(editor_program_transition_time_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_program_transition_time_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
          CRIT_ON_FAIL(editor_program_drag_value_x_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_program_drag_value_x_get(EDIT_OBJ, PROGRAM_ARGS);
@@ -2814,6 +2859,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
          str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_part_item_aspect_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, ITEM_ARGS, cb_item->index));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
+         str_val1 = eina_stringshare_add(cb_item->title);
+         CRIT_ON_FAIL(editor_program_transition_type_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
@@ -2943,6 +2994,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
       case ATTRIBUTE_PROGRAM_FILTER_PART:
       case ATTRIBUTE_PROGRAM_FILTER_STATE:
+      case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
          CHECK_VAL(str_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (group_pd.history.old.str_val1) ? group_pd.history.old.str_val1 : STR_NONE,
@@ -3020,6 +3072,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_ELIPSIS:
       case ATTRIBUTE_PROGRAM_IN_FROM:
       case ATTRIBUTE_PROGRAM_IN_RANGE:
+      case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_Y:
       case ATTRIBUTE_PROGRAM_VALUE:
@@ -3774,6 +3827,22 @@ _init_items()
               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_DRAG_VALUE_Y);
               IT.filter_data.action_types = ACTION_DRAG_VAL_SET | ACTION_DRAG_VAL_STEP | ACTION_DRAG_VAL_PAGE;
               break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TITLE:
+              IT.name = "transition";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              IT.filter_data.action_types = ACTION_STATE_SET;
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TYPE:
+              IT.name = "type";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_TRANSITION_TYPE);
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TIME:
+              IT.name = "time";
+              _action1(&IT, NULL, "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_TIME);
+              break;
+
 
            case PROPERTY_GROUP_ITEM_LAST:
               break;
