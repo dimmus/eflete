@@ -1097,14 +1097,22 @@ tabs_menu_new_data_set(const char *name, const char *path, const Eina_List *widg
 
 static void
 _tab_close(void *data,
-           Elm_Object_Item *it __UNUSED__,
+           Elm_Object_Item *it,
            const char *emission __UNUSED__,
            const char *source __UNUSED__)
 {
    Tabs_Item *item = (Tabs_Item *)data;
+   Evas_Object *content;
+
    tabs.items = eina_list_remove(tabs.items, item);
-   evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, NULL);
    _del_tab(item);
+   if (tabs.selected == it)
+     {
+        content = elm_layout_content_unset(ap.panes.left_ver, "right");
+        evas_object_hide(content);
+        elm_layout_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(NULL));
+        evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, NULL);
+     }
 }
 
 void
@@ -1226,11 +1234,7 @@ tabs_current_tab_close(void)
    Tabs_Item *item;
 
    item = elm_object_item_data_get(tabs.selected);
-   if (!item) return;
-   tabs.items = eina_list_remove(tabs.items, item);
-   evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, NULL);
-   _del_tab(item);
-   //if (!tabs.items) tabs_menu_tab_open(TAB_HOME_PROJECT_INFO);
+   _tab_close(item, NULL, NULL, NULL);
 }
 
 void
