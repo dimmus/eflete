@@ -291,6 +291,11 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          evas_object_smart_callback_add(content, "image,tween,changed", _start_change_stop_cb, pa);
       case PROPERTY_CONTROL_SOUND_PLAYER:
          content = sound_player_add(parent);
+         evas_object_show(content);
+         return content;
+      case PROPERTY_CONTROL_IMAGE_SELECTOR:
+         content = property_image_selector_get(parent);
+         evas_object_show(content);
          return content;
       case PROPERTY_CONTROL_NONE:
       case PROPERTY_CONTROL_LAST:
@@ -568,6 +573,7 @@ property_common_itc_init(Property_Data *pd)
    pd->item_classes[PROPERTY_CONTROL_IMAGE_NORMAL]   [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_IMAGE_TWEEN]    [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_SOUND_PLAYER]   [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
+   pd->item_classes[PROPERTY_CONTROL_IMAGE_SELECTOR] [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
 
    pd->item_classes[PROPERTY_CONTROL_CHECK]          [PROPERTY_CONTROL_NONE]     = pd->itc_2swallow;
    pd->item_classes[PROPERTY_CONTROL_CHECK]          [PROPERTY_CONTROL_CHECK]    = pd->itc_2swallow;

@@ -42,6 +42,7 @@ enum _Property_Control {
    PROPERTY_CONTROL_IMAGE_NORMAL,
    PROPERTY_CONTROL_IMAGE_TWEEN,
    PROPERTY_CONTROL_SOUND_PLAYER,
+   PROPERTY_CONTROL_IMAGE_SELECTOR,
 
    PROPERTY_CONTROL_LAST
 };
@@ -370,6 +371,10 @@ property_item_del(Property_Attribute *pa)
 {
    if (pa->glit) elm_object_item_del(pa->glit);
 }
+
+/* demo image path selector */
+Evas_Object *
+property_image_selector_get(Evas_Object *control);
 
 /* color_control */
 Evas_Object *
