@@ -355,6 +355,9 @@ Eina_Bool
 workspace_active_demo_mode_get(Evas_Object *obj);
 
 void
+workspace_demo_group_property_update(Evas_Object *obj);
+
+void
 workspace_add_part_request(Evas_Object *obj);
 
 void

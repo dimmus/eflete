@@ -159,4 +159,10 @@ demo_group_program_add(Evas_Object *demo, Eina_Stringshare *program_name);
 void
 demo_group_demo_update(Evas_Object *demo);
 
+/**
+ * @ingroup DemoGroup
+ */
+void
+demo_group_property_update(Evas_Object *demo);
+
 #endif /* DEMO_GROUP_H */

@@ -274,7 +274,17 @@ _on_demo_program_clicked(void *data,
    if (demo_pd.signal)
      property_item_update_recursively(&demo_pd.items[PROPERTY_DEMO_ITEM_PROGRAM_TITLE]);
 }
+static void
+_on_unclicked(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   Property_Data *pd = data;
+   demo_pd.part = NULL;
+   demo_pd.signal = NULL;
 
+   GENLIST_FILTER_APPLY(pd->genlist);
+}
 
 /* public */
 void
@@ -288,6 +298,7 @@ property_demo_init(Property_Data *pd)
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_TEXT_PART_CLICKED, _on_demo_part_clicked, pd);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SWALLOW_PART_CLICKED, _on_demo_part_clicked, pd);
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_PROGRAM_PART_CLICKED, _on_demo_program_clicked, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, _on_unclicked, pd);
 }
 
 Eina_List *

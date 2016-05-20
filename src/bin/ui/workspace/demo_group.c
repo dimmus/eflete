@@ -183,9 +183,10 @@ _selected_cb(void *data,
    Demo_Part *part = NULL;
 
    plit = elm_genlist_item_parent_get(glit);
+
    if (plit == pl->it_signal)
      signal = (Demo_Signal *)elm_object_item_data_get(glit);
-   else
+   else if ((plit == pl->it_text) || (plit == pl->it_swallow))
      part = (Demo_Part *)elm_object_item_data_get(glit);
 
    if ((plit == pl->it_text) &&
@@ -778,4 +779,34 @@ demo_group_demo_update(Evas_Object *demo)
           part->change = true;
         evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, part);
      }
+}
+
+void
+demo_group_property_update(Evas_Object *demo)
+{
+   Part_Demo_List *pl = evas_object_data_get(demo, DEMO_GROUP_DATA);
+   Elm_Object_Item *plit, *glit;
+   Demo_Part *part = NULL;
+   Demo_Signal *signal = NULL;
+
+   assert(pl);
+
+   glit = elm_genlist_selected_item_get(pl->genlist);
+   plit = elm_genlist_item_parent_get(glit);
+
+   if (plit == pl->it_signal)
+     signal = (Demo_Signal *)elm_object_item_data_get(glit);
+   else if ((plit == pl->it_text) || (plit == pl->it_swallow))
+     part = (Demo_Part *)elm_object_item_data_get(glit);
+
+   if ((plit == pl->it_text) &&
+       ((part->type == EDJE_PART_TYPE_TEXT) ||
+        (part->type == EDJE_PART_TYPE_TEXTBLOCK)))
+     evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_PART_CLICKED, part);
+   else if ((plit == pl->it_swallow) && (part->type == EDJE_PART_TYPE_SWALLOW))
+     evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_PART_CLICKED, part);
+   else if (plit == pl->it_signal)
+     evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_PROGRAM_PART_CLICKED, signal);
+   else /* empty everything */
+     evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
 }

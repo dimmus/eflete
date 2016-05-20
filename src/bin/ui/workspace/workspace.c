@@ -1376,6 +1376,14 @@ workspace_rulers_visible_set(Evas_Object *obj, Eina_Bool visible)
      elm_layout_signal_emit(area->layout, "elm,state,rulers,hide", "eflete");
 }
 
+void
+workspace_demo_group_property_update(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+   if (wd->mode == MODE_DEMO)
+     demo_group_property_update(wd->demo_navi);
+}
+
 Eina_Bool
 workspace_rulers_visible_get(Evas_Object *obj)
 {
