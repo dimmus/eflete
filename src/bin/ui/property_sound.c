@@ -227,9 +227,9 @@ _play_finished_cb(void *data, const Eo_Event *event __UNUSED__)
 
    assert(edit != NULL);
 
-   eo_del(edit->io.in);
+   eo_unref(edit->io.in);
    edit->io.in = NULL;
-   eo_del(edit->io.out);
+   eo_unref(edit->io.out);
    edit->io.out = NULL;
    return true;
 }
@@ -237,7 +237,7 @@ _play_finished_cb(void *data, const Eo_Event *event __UNUSED__)
 static Eina_Bool
 _out_fail(void *data EINA_UNUSED, const Eo_Event *event)
 {
-   eo_del(event->obj);
+   eo_unref(event->object);
    return true;
 }
 
@@ -380,9 +380,9 @@ _interrupt_playing(Sound_Prop_Data *edit)
         elm_object_part_content_set(edit->player_data.rewind, NULL, edit->player_data.play);
         evas_object_show(edit->player_data.play);
 
-        eo_del(edit->io.in);
+        eo_unref(edit->io.in);
         edit->io.in = NULL;
-        eo_del(edit->io.out);
+        eo_unref(edit->io.out);
         edit->io.out = NULL;
      }
 }
