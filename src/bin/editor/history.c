@@ -105,7 +105,7 @@ history_redo(History *history)
       eina_list_next(history->current_change) :
       history->changes;
 
-   assert(history->current_change != NULL);
+  if (!history->current_change) return true;
 
    if (!change_redo(history->group->edit_object, eina_list_data_get(history->current_change)))
      return false;
