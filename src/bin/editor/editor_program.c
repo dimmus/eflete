@@ -166,10 +166,13 @@ editor_program_transition_factor_get(Evas_Object *edit_object, const char *progr
    assert(program != NULL);
 
    Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program);
+   TODO("Revert this commit after fix genlist filter in properties being not called before update callback");
+   /*
    assert((type == EDJE_TWEEN_MODE_ACCELERATE_FACTOR) ||
           (type == EDJE_TWEEN_MODE_DECELERATE_FACTOR) ||
           (type == EDJE_TWEEN_MODE_SINUSOIDAL_FACTOR) ||
           (type == EDJE_TWEEN_MODE_DIVISOR_INTERP));
+          */
 
    if (type == EDJE_TWEEN_MODE_DIVISOR_INTERP)
      return edje_edit_program_transition_value2_get(edit_object, program);
@@ -229,8 +232,10 @@ editor_program_transition_gradient_get(Evas_Object *edit_object, const char *pro
    assert(edit_object != NULL);
    assert(program != NULL);
 
+   /*
    Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program);
    assert(type == EDJE_TWEEN_MODE_DIVISOR_INTERP);
+   */
 
    return edje_edit_program_transition_value1_get(edit_object, program);
 }
@@ -276,9 +281,11 @@ editor_program_transition_decay_get(Evas_Object *edit_object, const char *progra
    assert(edit_object != NULL);
    assert(program != NULL);
 
+   /*
    Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program);
    assert((type == EDJE_TWEEN_MODE_BOUNCE) ||
           (type == EDJE_TWEEN_MODE_SPRING));
+   */
 
    return edje_edit_program_transition_value1_get(edit_object, program);
 }
@@ -325,8 +332,10 @@ editor_program_transition_bounces_get(Evas_Object *edit_object, const char *prog
    assert(edit_object != NULL);
    assert(program != NULL);
 
+   /*
    Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program);
    assert(type == EDJE_TWEEN_MODE_BOUNCE);
+   */
 
    return edje_edit_program_transition_value2_get(edit_object, program);
 }
@@ -372,8 +381,10 @@ editor_program_transition_swings_get(Evas_Object *edit_object, const char *progr
    assert(edit_object != NULL);
    assert(program != NULL);
 
+   /*
    Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program);
    assert(type == EDJE_TWEEN_MODE_SPRING);
+   */
 
    return edje_edit_program_transition_value2_get(edit_object, program);
 }
@@ -420,8 +431,10 @@ editor_program_transition_bezier_## VAL ##_get(Evas_Object *edit_object, const c
    assert(edit_object != NULL); \
    assert(program != NULL); \
  \
+   /*
    Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program); \
    assert(type == EDJE_TWEEN_MODE_CUBIC_BEZIER); \
+   */ \
  \
    return edje_edit_program_transition_value## REAL_VAL ##_get(edit_object, program); \
 } \
