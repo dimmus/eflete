@@ -650,7 +650,7 @@ _bg_cb(void *data,
    const char *signal = NULL;
    Evas_Object *entry_prev = data;
 
-   Evas_Object *bg = elm_object_part_content_get(entry_prev, "background");
+   Evas_Object *bg = elm_object_part_content_get(entry_prev, "elm.swallow.background");
    bg_mode = elm_radio_value_get(obj);
    switch (bg_mode)
      {
@@ -791,7 +791,7 @@ style_manager_add()
    elm_object_part_content_set(mng.panes, "right", ap.property.style_manager);
 
    mng.entry_prev = elm_layout_add(mng.layout);
-   elm_layout_theme_set(mng.entry_prev, "layout", "style_manager", "preview");
+   elm_layout_theme_set(mng.entry_prev, "layout", "manager", "preview");
    evas_object_show(mng.entry_prev);
    elm_object_signal_emit(mng.entry_prev, "entry,hide", "eflete");
 
@@ -799,10 +799,10 @@ style_manager_add()
 
    bg = elm_layout_add(mng.layout);
    elm_layout_theme_set(bg, "layout", "workspace", "bg");
-   elm_object_part_content_set(mng.entry_prev, "background", bg);
+   elm_object_part_content_set(mng.entry_prev, "elm.swallow.background", bg);
 
    mng.textblock_style = evas_object_textblock_add(canvas);
-   elm_object_part_content_set(mng.entry_prev, "entry", mng.textblock_style);
+   elm_object_part_content_set(mng.entry_prev, "elm.swallow.entry", mng.textblock_style);
    evas_object_textblock_valign_set(mng.textblock_style, 0.5);
    ts = evas_textblock_style_new();
    evas_textblock_style_set(ts, STYLE_DEFAULT"='"STYLE_DEFAULT_VALUE"'");
