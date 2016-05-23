@@ -335,6 +335,44 @@ _filter_cb(Property_Attribute *pa)
      }
 }
 
+static Eina_Bool
+_transition_filter_cb(Property_Attribute *pa)
+{
+   if (!group_pd.program) return false;
+   if (group_pd.action_type != EDJE_ACTION_TYPE_STATE_SET) return false;
+
+   Edje_Tween_Mode type = editor_program_transition_type_get(EDIT_OBJ, group_pd.program);
+
+   assert(pa != NULL);
+
+   switch (type)
+     {
+      case EDJE_TWEEN_MODE_ACCELERATE_FACTOR:
+      case EDJE_TWEEN_MODE_DECELERATE_FACTOR:
+      case EDJE_TWEEN_MODE_SINUSOIDAL_FACTOR:
+         return (pa->type.group_item == PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_FACTOR);
+      case EDJE_TWEEN_MODE_DIVISOR_INTERP:
+         return ((pa->type.group_item == PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_FACTOR) ||
+                 (pa->type.group_item == PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_GRADIENT));
+      case EDJE_TWEEN_MODE_BOUNCE:
+         return ((pa->type.group_item == PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_DECAY) ||
+                 (pa->type.group_item == PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BOUNCES));
+      case EDJE_TWEEN_MODE_SPRING:
+         return ((pa->type.group_item == PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_DECAY) ||
+                 (pa->type.group_item == PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_SWINGS));
+      case EDJE_TWEEN_MODE_CUBIC_BEZIER:
+         return ((pa->type.group_item == PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BEZIER_POINT1) ||
+                 (pa->type.group_item == PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BEZIER_POINT2));
+      default:
+      case EDJE_TWEEN_MODE_NONE:
+      case EDJE_TWEEN_MODE_LINEAR:
+      case EDJE_TWEEN_MODE_SINUSOIDAL:
+      case EDJE_TWEEN_MODE_ACCELERATE:
+      case EDJE_TWEEN_MODE_DECELERATE:
+         return false;
+     }
+}
+
 /* local callbacks */
 static Eina_List *
 _subitems_get(Property_Attribute *pa)
@@ -472,6 +510,13 @@ _subitems_get(Property_Attribute *pa)
       case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TYPE);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TIME);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_FACTOR);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_GRADIENT);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_DECAY);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BOUNCES);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_SWINGS);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BEZIER_POINT1);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BEZIER_POINT2);
          break;
       case PROPERTY_GROUP_ITEM_STATE_CONTAINER_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_CONTAINER_ALIGN);
@@ -689,11 +734,20 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_IN_FROM:
       case ATTRIBUTE_PROGRAM_IN_RANGE:
       case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
+      case ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES:
+      case ATTRIBUTE_PROGRAM_TRANSITION_SWINGS:
          elm_spinner_step_set(action->control, 0.1);
          elm_spinner_label_format_set(action->control, "%.2f");
          break;
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_Y:
+      case ATTRIBUTE_PROGRAM_TRANSITION_FACTOR:
+      case ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT:
+      case ATTRIBUTE_PROGRAM_TRANSITION_DECAY:
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X1:
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y1:
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2:
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2:
          elm_spinner_min_max_set(action->control, -9999, 9999);
          elm_spinner_step_set(action->control, 0.1);
          elm_spinner_label_format_set(action->control, "%.2f");
@@ -994,6 +1048,8 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
    assert(action != NULL);
    assert(action->control != NULL);
 
+   PROPERTY_DATA_GET(action->control);
+
    switch (action->type.attribute)
      {
       case ATTRIBUTE_GROUP_NAME:
@@ -1260,6 +1316,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
          ewe_combobox_select_item_set(action->control,
            (int) editor_program_transition_type_get(EDIT_OBJ, PROGRAM_ARGS));
+         GENLIST_FILTER_APPLY(pd->genlist);
          break;
       case ATTRIBUTE_PART_ITEM_ASPECT_W:
          int_val1 = edje_edit_part_item_aspect_w_get(EDIT_OBJ, ITEM_ARGS);
@@ -1582,6 +1639,42 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
          double_val1 = edje_edit_program_transition_time_get(EDIT_OBJ, PROGRAM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_FACTOR:
+         double_val1 = edje_edit_program_transition_factor_get(EDIT_OBJ, PROGRAM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT:
+         double_val1 = edje_edit_program_transition_gradient_get(EDIT_OBJ, PROGRAM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_DECAY:
+         double_val1 = edje_edit_program_transition_decay_get(EDIT_OBJ, PROGRAM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES:
+         double_val1 = edje_edit_program_transition_bounces_get(EDIT_OBJ, PROGRAM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_SWINGS:
+         double_val1 = edje_edit_program_transition_swings_get(EDIT_OBJ, PROGRAM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X1:
+         double_val1 = edje_edit_program_transition_bezier_x1_get(EDIT_OBJ, PROGRAM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y1:
+         double_val1 = edje_edit_program_transition_bezier_y1_get(EDIT_OBJ, PROGRAM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2:
+         double_val1 = edje_edit_program_transition_bezier_x2_get(EDIT_OBJ, PROGRAM_ARGS);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2:
+         double_val1 = edje_edit_program_transition_bezier_y2_get(EDIT_OBJ, PROGRAM_ARGS);
          elm_spinner_value_set(action->control, double_val1);
          break;
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
@@ -2062,6 +2155,42 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
          group_pd.history.format = _("program's transition time changed from %.2f to %.2f");
          VAL(double_val1) = edje_edit_program_transition_time_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_FACTOR:
+         group_pd.history.format = _("program's transition factor changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_program_transition_factor_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT:
+         group_pd.history.format = _("program's transition gradient changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_program_transition_gradient_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_DECAY:
+         group_pd.history.format = _("program's transition decay changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_program_transition_decay_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES:
+         group_pd.history.format = _("program's transition bounces changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_program_transition_bounces_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_SWINGS:
+         group_pd.history.format = _("program's transition swings changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_program_transition_swings_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X1:
+         group_pd.history.format = _("program's transition bezier_x1 changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_program_transition_bezier_x1_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y1:
+         group_pd.history.format = _("program's transition bezier_y1 changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_program_transition_bezier_y1_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2:
+         group_pd.history.format = _("program's transition bezier_x2 changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_program_transition_bezier_x2_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2:
+         group_pd.history.format = _("program's transition bezier_y2 changed from %.2f to %.2f");
+         VAL(double_val1) = edje_edit_program_transition_bezier_y2_get(EDIT_OBJ, PROGRAM_ARGS);
          break;
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
          group_pd.history.format = _("program drag value x changed from %.2f to %.2f");
@@ -2754,6 +2883,42 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_program_transition_time_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_program_transition_time_get(EDIT_OBJ, PROGRAM_ARGS);
          break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_FACTOR:
+         CRIT_ON_FAIL(editor_program_transition_factor_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_program_transition_factor_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT:
+         CRIT_ON_FAIL(editor_program_transition_gradient_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_program_transition_gradient_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_DECAY:
+         CRIT_ON_FAIL(editor_program_transition_decay_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_program_transition_decay_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES:
+         CRIT_ON_FAIL(editor_program_transition_bounces_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_program_transition_bounces_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_SWINGS:
+         CRIT_ON_FAIL(editor_program_transition_swings_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_program_transition_swings_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X1:
+         CRIT_ON_FAIL(editor_program_transition_bezier_x1_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_program_transition_bezier_x1_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y1:
+         CRIT_ON_FAIL(editor_program_transition_bezier_y1_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_program_transition_bezier_y1_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2:
+         CRIT_ON_FAIL(editor_program_transition_bezier_x2_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_program_transition_bezier_x2_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2:
+         CRIT_ON_FAIL(editor_program_transition_bezier_y2_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
+         group_pd.history.new.double_val1 = edje_edit_program_transition_bezier_y2_get(EDIT_OBJ, PROGRAM_ARGS);
+         break;
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
          CRIT_ON_FAIL(editor_program_drag_value_x_set(EDIT_OBJ, CHANGE_MERGE, PROGRAM_ARGS, double_val1));
          group_pd.history.new.double_val1 = edje_edit_program_drag_value_x_get(EDIT_OBJ, PROGRAM_ARGS);
@@ -3073,6 +3238,15 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_IN_FROM:
       case ATTRIBUTE_PROGRAM_IN_RANGE:
       case ATTRIBUTE_PROGRAM_TRANSITION_TIME:
+      case ATTRIBUTE_PROGRAM_TRANSITION_FACTOR:
+      case ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT:
+      case ATTRIBUTE_PROGRAM_TRANSITION_DECAY:
+      case ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES:
+      case ATTRIBUTE_PROGRAM_TRANSITION_SWINGS:
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X1:
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y1:
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2:
+      case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2:
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_X:
       case ATTRIBUTE_PROGRAM_DRAG_VALUE_Y:
       case ATTRIBUTE_PROGRAM_VALUE:
@@ -3842,7 +4016,43 @@ _init_items()
               IT.name = "time";
               _action1(&IT, NULL, "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_TIME);
               break;
-
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_FACTOR:
+              IT.name = "factor";
+              IT.filter_cb = _transition_filter_cb;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_FACTOR);
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_GRADIENT:
+              IT.name = "gradient";
+              IT.filter_cb = _transition_filter_cb;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT);
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_DECAY:
+              IT.name = "decay";
+              IT.filter_cb = _transition_filter_cb;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_DECAY);
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BOUNCES:
+              IT.name = "bounces";
+              IT.filter_cb = _transition_filter_cb;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES);
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_SWINGS:
+              IT.name = "swings";
+              IT.filter_cb = _transition_filter_cb;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_SWINGS);
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BEZIER_POINT1:
+              IT.name = "point 1";
+              IT.filter_cb = _transition_filter_cb;
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X1);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y1);
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BEZIER_POINT2:
+              IT.name = "point 2";
+              IT.filter_cb = _transition_filter_cb;
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2);
+              break;
 
            case PROPERTY_GROUP_ITEM_LAST:
               break;
