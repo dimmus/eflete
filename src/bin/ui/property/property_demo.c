@@ -27,6 +27,11 @@
 #define DEMO_TEXTBLOCK  DEMO_MASK(EDJE_PART_TYPE_TEXTBLOCK)
 #define DEMO_SWALLOW    DEMO_MASK(EDJE_PART_TYPE_SWALLOW)
 
+#define DEMO_SWALLOW_NONE DEMO_MASK(CONTENT_NONE)
+#define DEMO_SWALLOW_RECT DEMO_MASK(CONTENT_RECTANGLE)
+#define DEMO_SWALLOW_IMAGE DEMO_MASK(CONTENT_IMAGE)
+#define DEMO_SWALLOW_WIDGET DEMO_MASK(CONTENT_WIDGET)
+
 struct _Property_Demo_Data {
    Demo_Part *part;
    Demo_Signal *signal;
@@ -162,6 +167,8 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
    assert(action != NULL);
    assert(action->control != NULL);
 
+   PROPERTY_DATA_GET(action->control);
+
    switch (action->control_type)
      {
       case PROPERTY_CONTROL_SPINNER:
@@ -194,6 +201,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_CONTENT:
          demo_pd.part->swallow_content = cb_item->index;
          demo_pd.part->change = true;
+         GENLIST_FILTER_APPLY(pd->genlist);
          evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);
          break;
 
@@ -419,6 +427,16 @@ _filter_cb(Property_Attribute *pa)
      return false;
 }
 
+static Eina_Bool
+_filter_swallow_cb(Property_Attribute *pa)
+{
+   assert(pa != NULL);
+   assert(demo_pd.part != NULL);
+   assert(demo_pd.part->type == EDJE_PART_TYPE_SWALLOW);
+
+   return !!(pa->filter_data.demo_types & DEMO_MASK(demo_pd.part->swallow_content));
+}
+
 static void
 _init_items()
 {
@@ -466,27 +484,39 @@ _init_items()
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_PICTURE:
               IT.name = "image";
+              IT.filter_cb = _filter_swallow_cb;
+              IT.filter_data.demo_types = DEMO_SWALLOW_IMAGE;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_SELECTOR, ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_WIDGET:
               IT.name = "widget";
+              IT.filter_cb = _filter_swallow_cb;
+              IT.filter_data.demo_types = DEMO_SWALLOW_WIDGET;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_STYLE:
               IT.name = "widget style";
+              IT.filter_cb = _filter_swallow_cb;
+              IT.filter_data.demo_types = DEMO_SWALLOW_WIDGET;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_COLOR:
               IT.name = "color";
+              IT.filter_cb = _filter_swallow_cb;
+              IT.filter_data.demo_types = ~DEMO_SWALLOW_NONE;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_DEMO_ITEM_SWALLOW_COLOR);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_MIN:
               IT.name = "min";
+              IT.filter_cb = _filter_swallow_cb;
+              IT.filter_data.demo_types = ~DEMO_SWALLOW_NONE;
               _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_W);
               _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_H);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_MAX:
               IT.name = "max";
+              IT.filter_cb = _filter_swallow_cb;
+              IT.filter_data.demo_types = ~DEMO_SWALLOW_NONE;
               _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_W);
               _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_H);
               break;
