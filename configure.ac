@@ -119,6 +119,23 @@ AM_GNU_GETTEXT([external])
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
 
 dnl custom flags
+
+dnl --enable-tizen
+TIZEN_DEF="#undef"
+want_tizen="no"
+AC_ARG_ENABLE([tizen],
+   [AC_HELP_STRING([--enable-tizen], [enable GUI for Tizen SDK. @<:@default=disabled@:>@])],
+   [want_tizen=$enableval], [])
+
+if test "x$want_tizen" = "xyes"; then
+   AC_DEFINE(HAVE_TIZEN, 1, [Support Tizen SDK GUI.])
+   TIZEN_DEF="#define"
+   summary_tizen="${GREEN}yes${RESET}"
+fi
+if test "x$want_tizen" = "xno"; then
+   summary_tizen="${RED}no${RESET}"
+fi
+
 dnl --enable-debug/--disable-debug
 EFLETE_DEBUG_DEF="#undef"
 want_eflete_debug="no"
@@ -241,9 +258,10 @@ echo "                   ${os_remark}"
 echo "  efl............: ${have_efl}"
 echo "  elementary.....: ${have_elm}"
 echo ""
-dnl echo "Features:"
+echo "Features:"
+echo "  tizen..........: ${summary_tizen}"
 dnl echo "  enventor.......: ${summery_enventor}"
-dnl echo ""
+echo ""
 echo "edje-cc path.....: ${edje_cc}"
 echo ""
 echo "Testing:"
