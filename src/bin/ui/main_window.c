@@ -68,43 +68,11 @@ ui_main_window_del(void)
    return true;
 }
 
-static void
-_history_click(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
-{
-   elm_layout_signal_emit(ap.tabs, "history,show", "eflete");
-}
-static void
-_property_click(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
-{
-   elm_layout_signal_emit(ap.tabs, "property,show", "eflete");
-}
-
-static void
-_show_history(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
-{
-   elm_object_item_disabled_set(ap.block.item_history, false);
-}
-
-static void
-_hide_history(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
-{
-   elm_object_item_disabled_set(ap.block.item_history, true);
-   elm_toolbar_item_selected_set(ap.block.item_property, true);
-}
-
 Eina_Bool
 ui_main_window_add(void)
 {
    Config *config;
-   Evas_Object *bg, *project_navigator, *tabs, *toolbar;
+   Evas_Object *bg, *project_navigator, *tabs;
 
    config = config_get();
 
@@ -164,40 +132,13 @@ ui_main_window_add(void)
    tabs = tabs_add();
    elm_object_part_content_set(ap.panes.right, "left", tabs);
 
-   /* add tabs with history and signals */
-   ap.tabs = elm_layout_add(ap.win);
-   elm_layout_theme_set(ap.tabs, "layout", "tabs", "property");
-
-   toolbar = elm_toolbar_add(ap.tabs);
-   elm_object_style_set(toolbar, "editor_tabs_horizontal");
-   elm_layout_content_set(ap.tabs, "elm.swallow.toolbar", toolbar);
-   elm_toolbar_shrink_mode_set(toolbar, ELM_TOOLBAR_SHRINK_SCROLL);
-   elm_toolbar_select_mode_set(toolbar, ELM_OBJECT_SELECT_MODE_ALWAYS);
-   evas_object_size_hint_weight_set(toolbar, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_toolbar_align_set(toolbar, 0.0);
-
-   ap.block.item_property = elm_toolbar_item_append(toolbar, NULL, _("Properties"), _property_click, NULL);
-   ap.block.item_history = elm_toolbar_item_append(toolbar, NULL, _("History"), _history_click, NULL);
-   elm_object_item_disabled_set(ap.block.item_history, true);
-
-   evas_object_smart_callback_add(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, _hide_history, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_IMAGE_EDITOR_TAB_CLICKED, _hide_history, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SOUND_EDITOR_TAB_CLICKED, _hide_history, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_STYLE_EDITOR_TAB_CLICKED, _hide_history, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_COLOR_EDITOR_TAB_CLICKED, _hide_history, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _show_history, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_QUIT, _on_done, NULL);
-
    ap.property.group = ui_property_add(ap.win);
    ap.property.image_manager = ui_property_image_add(ap.win);
    ap.property.sound_manager = ui_property_sound_add(ap.win);
    ap.property.style_manager = ui_property_style_add(ap.win);
    ap.property.color_manager = ui_property_color_add(ap.win);
    elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.group);
-   ap.block.history = history_ui_add();
-   elm_layout_content_set(ap.tabs, "elm.swallow.history", ap.block.history);
-   elm_object_part_content_set(ap.panes.right, "right", ap.tabs);
+   elm_object_part_content_set(ap.panes.right, "right", ap.property.group);
 
    ap.menu = ui_menu_add();
 
