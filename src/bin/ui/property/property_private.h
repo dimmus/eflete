@@ -112,6 +112,17 @@ typedef enum {
    ATTRIBUTE_DEMO_ITEM_LAST
 } Attribute_Demo_Item;
 
+typedef enum {
+   ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_TITLE,
+   ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_NAME,
+   ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT,
+   ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH,
+   ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_COLOR,
+   ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_SIZE,
+
+   ATTRIBUTE_TEXTBLOCK_ITEM_LAST
+} Attribute_Textblock_Item;
+
 struct _Property_Action {
    Property_Control control_type;
    Eina_Stringshare *name;
@@ -120,6 +131,7 @@ struct _Property_Action {
       Attribute attribute; /**< type for group properties */
       Attribute_Image attribute_image; /**< type for group properties */
       Attribute_Demo_Item attribute_demo; /**< type for demo properties */
+      Attribute_Textblock_Item attribute_textblock; /**< type for textblock properties */
    } type; /**< submodule-specific enums */
    Evas_Object *control; /**< pointer to widget */
    Property_Cb init_cb;
@@ -331,12 +343,25 @@ typedef enum {
    PROPERTY_DEMO_ITEM_LAST
 } Property_Demo_Item;
 
+/* Enum of property_textblock items. */
+typedef enum {
+   PROPERTY_TEXTBLOCK_ITEM_TEXT_TITLE,
+   PROPERTY_TEXTBLOCK_ITEM_TEXT_FONT_NAME,
+   PROPERTY_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT,
+   PROPERTY_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH,
+   PROPERTY_TEXTBLOCK_ITEM_TEXT_COLOR,
+   PROPERTY_TEXTBLOCK_ITEM_TEXT_SIZE,
+
+   PROPERTY_TEXTBLOCK_ITEM_LAST
+} Property_Textblock_Item;
+
 struct _Property_Attribute {
    Eina_Stringshare *name;
    union {
       Property_Group_Item group_item;
       Property_Sound_Item sound_item;
       Property_Demo_Item demo_item;
+      Property_Textblock_Item textblock_item;
    } type;
    Eina_Stringshare *icon_name;
    void *data;
@@ -350,6 +375,7 @@ struct _Property_Attribute {
       unsigned int sound_types;
       unsigned int action_types;
       unsigned int demo_types;
+      unsigned int textblock_types;
    } filter_data;
    Property_Attribute_Del_Cb del_cb; /**< called when item is deleted from genlist */
    Eina_Bool expandable : 1; /**< if true  item is tree node */
@@ -437,6 +463,13 @@ property_sound_manager_init(Property_Data *pd);
 
 Eina_List *
 property_sound_manager_items_get(void);
+
+/* textblock manager submodule */
+void
+property_textblock_manager_init(Property_Data *pd);
+
+Eina_List *
+property_textblock_manager_items_get(void);
 
 /* dummy submodule. for implementation tests. will be deleted later */
 void

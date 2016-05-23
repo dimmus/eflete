@@ -194,6 +194,8 @@ property_add(Evas_Object *parent, Property_Mode mode)
          items = property_group_items_get();
          break;
       case PROPERTY_MODE_STYLE:
+         property_textblock_manager_init(pd);
+         items = property_textblock_manager_items_get();
          break;
       case PROPERTY_MODE_COLOR_CLASS:
          property_color_class_manager_init();

@@ -109,6 +109,7 @@ libete_a_SOURCES = \
 ../../src/bin/ui/property/property_color.c \
 ../../src/bin/ui/property/property_image.c \
 ../../src/bin/ui/property/property_sound.c \
+../../src/bin/ui/property/property_textblock.c \
 ../../src/bin/ui/property/property_group.c \
 ../../src/bin/ui/sound_player/sound_player.c \
 ../../src/bin/ui/property/property_demo.c \
