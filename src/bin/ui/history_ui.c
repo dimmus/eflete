@@ -310,22 +310,16 @@ _list_update(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *ei __UNUSED__)
 {
-   Change *change = NULL;//ei;
+   Change *change = NULL;
    Eina_List *l = NULL;
 
    /* removing all reverted changes because the were deleted from history */
    ewe_combobox_items_list_free(hd_new.undo_cmbx, EINA_FALSE);
    ewe_combobox_items_list_free(hd_new.redo_cmbx, EINA_FALSE);
 
-   char *action = NULL;
-   if (data != NULL) action = (char *)data;
-   printf("\n%s:%s[%d]: %s List of changes: \n", __FILE__, __func__, __LINE__, action != NULL ? action : "");
    Eina_List *reverse_redo = NULL;
-   Change *cur_change = eina_list_data_get(hd_new.history->current_change);
    EINA_LIST_REVERSE_FOREACH(hd_new.history->changes, l, change)
      {
-        printf("\t\t%s\"%s\" is %sreverted\n", (change == cur_change) ? "-->" : "",
-               change->description, (change->reverted == EINA_FALSE) ? "non" : "");
         if (!change->reverted)
           ewe_combobox_item_add(hd_new.undo_cmbx, change->description);
         else
@@ -425,7 +419,7 @@ history_ui_add_2(void)
    assert(ap.win != NULL);
 
    hd_new.layout = elm_layout_add(ap.win);
-   elm_layout_theme_set(hd_new.layout, "layout", "history", "new");
+   elm_layout_theme_set(hd_new.layout, "layout", "history", "combobox");
 
    EWE_COMBOBOX_ADD(hd_new.layout, hd_new.undo_cmbx);
    ewe_combobox_style_set(hd_new.undo_cmbx, "undo");

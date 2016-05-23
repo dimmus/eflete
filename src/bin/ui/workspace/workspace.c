@@ -24,6 +24,7 @@
 #include "eflete.h"
 #include "group_navigator.h"
 #include "history.h"
+#include "history_ui.h"
 #include "demo.h"
 #include "project_manager.h"
 #include "change.h"
@@ -73,6 +74,7 @@ struct _Workspace_Data
    Evas_Object *demo_navi;
    struct {
       Evas_Object *obj;
+      Evas_Object *history;
       struct {
          Evas_Object *fit;
          Evas_Object *cmb_zoom;
@@ -1054,6 +1056,12 @@ workspace_add(Evas_Object *parent, Group *group)
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.bg_switcher.black);
    elm_radio_value_set(wd->toolbar.bg_switcher.white, BG_PREVIEW_TILE);
+
+   /*Add to toolbar history controls */
+   wd->toolbar.history =  history_ui_add_2();
+   evas_object_show(wd->toolbar.history);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.history);
 
    wd->panes_h = elm_panes_add(wd->layout);
    elm_object_style_set(wd->panes_h, "pan_hide");
