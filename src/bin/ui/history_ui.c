@@ -423,12 +423,11 @@ history_ui_add_2(void)
 
    EWE_COMBOBOX_ADD(hd_new.layout, hd_new.undo_cmbx);
    ewe_combobox_style_set(hd_new.undo_cmbx, "undo");
-
    elm_object_part_content_set(hd_new.layout, "undo", hd_new.undo_cmbx);
    evas_object_smart_callback_add(hd_new.undo_cmbx, "selected", _undo_item_selected, NULL);
 
    EWE_COMBOBOX_ADD(hd_new.layout, hd_new.redo_cmbx);
-   ewe_combobox_text_set(hd_new.redo_cmbx, "R");
+   ewe_combobox_style_set(hd_new.redo_cmbx, "redo");
    elm_object_part_content_set(hd_new.layout, "redo", hd_new.redo_cmbx);
    evas_object_smart_callback_add(hd_new.redo_cmbx, "selected", _redo_item_selected, NULL);
 
