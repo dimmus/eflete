@@ -409,7 +409,7 @@ colorclass_manager_add(void)
    elm_icon_standard_set(ic, "color");
    mw_icon_set(mng.win, ic);
    mng.layout = elm_layout_add(ap.win);
-   elm_layout_theme_set(mng.layout, "layout", "colorclass_manager", "default");
+   elm_layout_theme_set(mng.layout, "layout", "manager", "internal");
    elm_layout_text_set(mng.layout, "elm.text", _("Preview"));
    elm_layout_text_set(mng.layout, "elm.subtext", _("Color classes list"));
    mng.panes = elm_panes_add(mng.win);

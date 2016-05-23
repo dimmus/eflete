@@ -1763,6 +1763,158 @@ group { name: "elm/layout/entry/overlay";
    }
 }
 
+group { name: "elm/layout/manager/internal";
+   parts {
+      part { name: "elm.text";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 0 1;
+            max: -1 19;
+            color_class: "main";
+            text {
+               font: "PT";
+               size: 12;
+               max: 1 0;
+            }
+            rel1.offset: 0 2;
+            rel2 {
+               offset: -7 -1;
+               to_x: "separator";
+            }
+         }
+      }
+      part { name: "elm.swallow.preview";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 6;
+               to_y: "elm.text";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -4 -4;
+               to_y: "elm.swallow.menu";
+            }
+         }
+      }
+      part { name: "elm.swallow.menu";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            fixed: 0 1;
+            max: -1 19;
+            rel2 {
+               relative: 1.0 0.45;
+               to_x: "elm.swallow.preview";
+            }
+         }
+      }
+      part { name: "elm.swallow.list";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            fixed: 1 0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 3;
+               to_y: "elm.subtext";
+            }
+            rel2.offset: -4 -4;
+         }
+      }
+      part { name: "separator";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            fixed: 1 0;
+            min: 2 2;
+            max: -1 2;
+            image.normal: "separator-horizontal.png";
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 3;
+               to_y: "elm.swallow.menu";
+            }
+            rel2.offset: -4 -1;
+         }
+      }
+      part { name: "elm.subtext";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: -1 19;
+            color_class: "main";
+            text {
+               font: "PT";
+               size: 12;
+               max: 1 0;
+            }
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 3;
+               to_x: "elm.swallow.list";
+               to_y: "separator";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "elm.swallow.btn_add";
+            }
+         }
+      }
+      part { name: "elm.swallow.btn_del";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            max: 18 19;
+            rel1.to_y: "elm.subtext";
+            rel2 {
+               to_y: "elm.subtext";
+               offset: -4 -1;
+            }
+         }
+      }
+      part { name: "elm.swallow.btn_add";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            max: 18 19;
+            rel1.to_y: "elm.subtext";
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -4 -1;
+               to_x: "elm.swallow.btn_del";
+               to_y: "elm.subtext";
+            }
+         }
+      }
+      part { name: "elm.swallow.search";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: 300 19;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 0;
+               to: "elm.subtext";
+            }
+            rel2.offset: -1 -7;
+         }
+      }
+   }
+}
+
 #include "layouts/style_manager.edc"
 #include "layouts/colorclass_manager.edc"
 #include "layouts/live_view_toolbar_helper.edc"
