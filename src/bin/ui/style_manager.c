@@ -783,7 +783,7 @@ style_manager_add()
    if(mng.layout) goto done;
 
    mng.layout = elm_layout_add(ap.win);
-   elm_layout_theme_set(mng.layout, "layout", "style_manager", "default");
+   elm_layout_theme_set(mng.layout, "layout", "manager", "internal");
    elm_object_part_text_set(mng.layout, "elm.text", _("Preview"));
    elm_layout_text_set(mng.layout, "elm.subtext", _("Font list"));
    mng.panes = elm_panes_add(mng.win);
