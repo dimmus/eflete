@@ -24,7 +24,4 @@
 Evas_Object *
 history_ui_add(void);
 
-Evas_Object *
-history_ui_add_2(void);
-
 #endif /* HISTORY_UI_H */
