@@ -388,6 +388,9 @@ _project_open_internal(Project *project)
    project->ecore_evas = ecore_evas_buffer_new(0, 0);
    project->global_object = edje_edit_object_add(ecore_evas_get(project->ecore_evas));
    edje_object_mmap_set(project->global_object, project->mmap_file, EFLETE_INTERNAL_GROUP_NAME);
+   /* this member MUST be NULL for opened project. User cann't select the one
+    * or more widget from opened project */
+   project->widgets = NULL;
 
    _image_resources_load(project);
    _sound_resources_load(project);
