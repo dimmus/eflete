@@ -217,6 +217,7 @@ _on_selected(void *data __UNUSED__,
 
    current_color_data->current_ccl = ccl;
    current_color_data->edje_preview = mng.edje_preview;
+   elm_object_signal_emit(mng.preview_layout, "entry,show", "eflete");
    evas_object_smart_callback_call(ap.win, SIGNAL_COLOR_SELECTED, current_color_data);
 }
 
@@ -295,7 +296,7 @@ _bg_cb(void *data,
    const char *signal = NULL;
    Evas_Object *entry_prev = data;
 
-   Evas_Object *bg = elm_object_part_content_get(entry_prev, "background");
+   Evas_Object *bg = elm_object_part_content_get(entry_prev, "elm.swallow.background");
    bg_mode = elm_radio_value_get(obj);
    switch (bg_mode)
      {
@@ -388,7 +389,7 @@ _colorclass_manager_init(void)
 Evas_Object *
 colorclass_manager_add(void)
 {
-   Evas_Object *bg, *box_bg, *layout_bg, *search, *ic, *button;
+   Evas_Object *bg, *box_bg, *search, *ic, *button;
 
    assert(ap.project != NULL);
 
@@ -443,16 +444,17 @@ colorclass_manager_add(void)
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_del", mng.del_button);
    elm_object_disabled_set(mng.del_button, EINA_TRUE);
 
-   layout_bg = elm_layout_add(mng.layout);
-   elm_layout_theme_set(layout_bg, "layout", "colorclass_editor", "preview");
+   mng.preview_layout = elm_layout_add(mng.layout);
+   elm_layout_theme_set(mng.preview_layout, "layout", "manager", "preview");
+   elm_object_signal_emit(mng.preview_layout, "entry,hide", "eflete");
 
    /* Entry preview to show colorclass */
-   bg = elm_layout_add(layout_bg);
+   bg = elm_layout_add(mng.preview_layout);
    elm_layout_theme_set(bg, "layout", "workspace", "bg");
-   elm_object_part_content_set(layout_bg, "swallow.entry.bg", bg);
+   elm_object_part_content_set(mng.preview_layout, "elm.swallow.background", bg);
    evas_object_show(bg);
 
-   mng.edje_preview = edje_object_add(evas_object_evas_get(layout_bg));
+   mng.edje_preview = edje_object_add(evas_object_evas_get(mng.preview_layout));
    if (!edje_object_file_set(mng.edje_preview, EFLETE_THEME,
                              "elm/layout/colorclass_manager/preview"))
      {
@@ -463,9 +465,9 @@ colorclass_manager_add(void)
                        _("The quick brown fox jumps over the lazy dog"));
    evas_object_size_hint_align_set(mng.edje_preview, -1, -1);
    evas_object_show(mng.edje_preview);
-   elm_object_part_content_set(layout_bg, "swallow.entry", mng.edje_preview);
+   elm_object_part_content_set(mng.preview_layout, "elm.swallow.entry", mng.edje_preview);
 
-   elm_object_part_content_set(mng.layout, "elm.swallow.preview", layout_bg);
+   elm_object_part_content_set(mng.layout, "elm.swallow.preview", mng.preview_layout);
 
    /* Background changing radios */
    BOX_ADD(mng.layout, box_bg, true, false);
@@ -473,13 +475,13 @@ colorclass_manager_add(void)
    elm_box_align_set(box_bg, 1.0, 0.5);
 
    /* add to toolbar bg switcher */
-   mng.bg_switcher.white = _radio_switcher_add(mng.edje_preview, "bg_white", _bg_cb, BG_PREVIEW_WHITE, NULL);
+   mng.bg_switcher.white = _radio_switcher_add(mng.preview_layout, "bg_white", _bg_cb, BG_PREVIEW_WHITE, NULL);
    elm_box_pack_end(box_bg, mng.bg_switcher.white);
 
-   mng.bg_switcher.tile = _radio_switcher_add(mng.edje_preview, "bg_tile", _bg_cb, BG_PREVIEW_TILE, mng.bg_switcher.white);
+   mng.bg_switcher.tile = _radio_switcher_add(mng.preview_layout, "bg_tile", _bg_cb, BG_PREVIEW_TILE, mng.bg_switcher.white);
    elm_box_pack_end(box_bg, mng.bg_switcher.tile);
 
-   mng.bg_switcher.black = _radio_switcher_add(mng.edje_preview, "bg_black", _bg_cb, BG_PREVIEW_BLACK, mng.bg_switcher.white);
+   mng.bg_switcher.black = _radio_switcher_add(mng.preview_layout, "bg_black", _bg_cb, BG_PREVIEW_BLACK, mng.bg_switcher.white);
    elm_box_pack_end(box_bg, mng.bg_switcher.black);
 
    elm_radio_value_set(mng.bg_switcher.white, BG_PREVIEW_TILE);
