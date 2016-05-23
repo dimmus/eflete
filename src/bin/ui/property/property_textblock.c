@@ -201,6 +201,21 @@ _tag_value_get(const char* text_style, char* a_tag)
 /************************************************************************/
 
 /* local callbacks */
+static void
+_fill_combobox_with_enum(Evas_Object *control, const char **array)
+{
+   int i = 0;
+
+   assert(control != NULL);
+   assert(array != NULL);
+
+   while (array[i] != NULL)
+     {
+        ewe_combobox_item_add(control, array[i]);
+        ++i;
+     }
+}
+
 static Eina_List *
 _subitems_get(Property_Attribute *pa)
 {
@@ -229,12 +244,30 @@ _subitems_get(Property_Attribute *pa)
 static void
 _change_cb(Property_Attribute *pa, Property_Action *action)
 {
+   Eina_Stringshare *str_val1 = NULL;
+   Ewe_Combobox_Item *cb_item = NULL;
+   double double_val1 = 0.0;
+   int r, g, b, a;
+
    assert(pa != NULL);
    assert(action != NULL);
    assert(action->control != NULL);
 
    switch (action->control_type)
      {
+      case PROPERTY_CONTROL_SPINNER:
+         double_val1 = elm_spinner_value_get(action->control);
+         break;
+      case PROPERTY_CONTROL_ENTRY:
+         str_val1 = property_entry_get(action->control);
+         break;
+      case PROPERTY_CONTROL_COMBOBOX:
+         TODO("change this after migrating to elm_combobox");
+         cb_item = ewe_combobox_select_item_get(action->control);
+         break;
+      case PROPERTY_CONTROL_COLOR:
+         property_color_control_color_get(action->control, &r, &g, &b, &a);
+         break;
       default:
          break;
      }
@@ -242,14 +275,24 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
    switch (action->type.attribute_textblock)
      {
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_NAME:
+         if (tpd.font)
+           eina_stringshare_del(tpd.font);
+         tpd.font = eina_stringshare_add(str_val1);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
+         tpd.font_style_weight = cb_item->index;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH:
+         tpd.font_style_width = cb_item->index;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_COLOR:
+         tpd.color.r = r;
+         tpd.color.g = g;
+         tpd.color.b = b;
+         tpd.color.a = a;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_SIZE:
+         tpd.font_size = double_val1;
          break;
 
       default:
@@ -270,14 +313,23 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
    switch (action->type.attribute_textblock)
      {
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_NAME:
+         property_entry_set(action->control, tpd.font);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
+         ewe_combobox_select_item_set(action->control, tpd.font_style_weight);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH:
+         ewe_combobox_select_item_set(action->control, tpd.font_style_width);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_COLOR:
+         property_color_control_color_set(action->control,
+                                          tpd.color.r,
+                                          tpd.color.g,
+                                          tpd.color.b,
+                                          tpd.color.a);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_SIZE:
+         elm_spinner_value_set(action->control, tpd.font_size);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -297,14 +349,16 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
    switch (action->type.attribute_textblock)
      {
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_NAME:
-         break;
-      case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
-         break;
-      case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH:
-         break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_COLOR:
          break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
+         _fill_combobox_with_enum(action->control, font_weight_list);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH:
+         _fill_combobox_with_enum(action->control, font_width_list);
+         break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_SIZE:
+         elm_spinner_min_max_set(action->control, 1, 9999);
          break;
       default:
          TODO("remove default case after all attributes will be added");
