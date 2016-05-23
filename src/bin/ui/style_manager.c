@@ -25,13 +25,8 @@
 #include "validator.h"
 #include "modal_window.h"
 
-TODO("Rename this file to textblock_style_manager")
-
-#define FONT_DEFAULT "DEFAULT='align=middle font=Sans font_size=24 color=#000000 "
-#define DIRECTION_NUM 39
-#define DEFAULT_DIRECTION 2
-#define WHITE_COLOR "#FFF"
-
+#define STYLE_DEFAULT         "DEFAULT"
+#define STYLE_DEFAULT_VALUE "align=middle font=Sans font_size=24 color=#000000 "
 #define TEST_TEXT \
 "<\t>By the time London returned home, his stepfather had died." \
 "It then became his responsibility to provide for his family all by himself." \
@@ -49,7 +44,7 @@ TODO("Rename this file to textblock_style_manager")
 
 typedef struct _Style_Tag_Entries Style_Tag_Entries;
 typedef struct _Style_entries Style_Entries;
-typedef struct _Style_Editor Style_Editor;
+typedef struct _Style_Manager Style_Manager;
 typedef struct _Search_Data Search_Data;
 
 struct _Search_Data
@@ -58,12 +53,12 @@ struct _Search_Data
    Elm_Object_Item *last_item_found;
 };
 
-struct _Style_Editor
+struct _Style_Manager
 {
    Evas_Object *win;
    Evas_Object *layout;
    Evas_Object *panes;
-   Evas_Object *glist;
+   Evas_Object *genlist;
    Evas_Object *textblock_style;
    Evas_Object *entry_prev;
    Evas_Object *button_del;
@@ -71,23 +66,14 @@ struct _Style_Editor
    Elm_Object_Item *menu_tag;
    Search_Data style_search_data;
    struct {
-      const char *st_name;
-      const char *st_tag;
-      Eina_Stringshare *stvalue;
-   } current_style;
-   struct {
       Evas_Object *name;
-      Resource_Name_Validator *name_validator;
-      Evas_Object *btn_add;
-      Evas_Object *dialog;
-      Eina_List *buf_resources;
+      Resource_Name_Validator *validator;
    } popup;
    struct {
         Evas_Object *black;
         Evas_Object *tile;
         Evas_Object *white;
    } bg_switcher;
-   Elm_Object_Item *tag;
 };
 
 struct _Style_Entries
@@ -103,388 +89,228 @@ struct _Style_Tag_Entries
    Evas_Object *tag_value;
 };
 
-#define POPUP style_edit->popup
-#define CURRENT style_edit->current_style
-
+static Style_Manager mng;
 static Elm_Genlist_Item_Class *_itc_style = NULL;
 static Elm_Genlist_Item_Class *_itc_tags = NULL;
-static Eina_Bool is_expanded_glitem = EINA_FALSE;
 
 static void
-_on_popup_bt_cancel(void *data,
-                    Evas_Object *obj,
-                    void *ei __UNUSED__)
-{
-   Style_Editor *style_edit = (Style_Editor *)data;
-   Resource *res;
-
-   assert(style_edit != NULL);
-   assert(POPUP.name_validator != NULL);
-
-   if (obj && is_expanded_glitem)
-     {
-        elm_genlist_item_expanded_set(elm_genlist_selected_item_get(style_edit->glist), false);
-        is_expanded_glitem = EINA_FALSE;
-     }
-
-   evas_object_del(POPUP.dialog);
-   POPUP.dialog = NULL;
-
-   resource_name_validator_free(POPUP.name_validator);
-   POPUP.name_validator = NULL;
-
-   EINA_LIST_FREE(POPUP.buf_resources, res)
-     {
-        eina_stringshare_del(res->name);
-        free(res);
-     }
-   POPUP.buf_resources = NULL;
-}
-
-static void
-_on_unselected_cb(void *data,
+_on_unselected_cb(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
-   Style_Editor *style_edit = (Style_Editor *)data;
-   assert(style_edit != NULL);
-
-   elm_object_disabled_set(style_edit->button_del, true);
+   elm_object_disabled_set(mng.button_del, true);
    evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, NULL);
 }
 
 static void
-_on_glit_selected(void *data,
+_on_glit_selected(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *event_info)
 {
-   Eina_List *tags = NULL;
-   Eina_List *l = NULL;
-   Evas_Object *edje_edit_obj = NULL;
-
-   const char *style_name = NULL;
-   const char *tag, *value = NULL;
+   const char *style_name, *tag, *value;
    Evas_Textblock_Style *ts = NULL;
+   Elm_Object_Item *glit, *glit_parent;
+   Eina_Strbuf *style;
 
-   Style_Editor *style_edit = (Style_Editor *)data;
-   assert(style_edit != NULL);
+   elm_object_disabled_set(mng.button_del, false);
+   glit = (Elm_Object_Item *)event_info;
+   glit_parent = elm_genlist_item_parent_get(glit);
 
-   elm_object_disabled_set(style_edit->button_del, false);
-   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   if (!glit_parent) return;
 
-   Eina_Strbuf *style = eina_strbuf_new();
-   eina_strbuf_append(style, FONT_DEFAULT);
+   style = eina_strbuf_new();
+   eina_strbuf_append(style, STYLE_DEFAULT"='"STYLE_DEFAULT_VALUE);
 
-   Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
+   style_name = elm_object_item_data_get(glit_parent);
+   tag = (char *)elm_object_item_data_get(glit);
+   if (!strcmp(tag, STYLE_DEFAULT))
+     elm_object_disabled_set(mng.button_del, true);
+   value = edje_edit_style_tag_value_get(ap.project->global_object, style_name, tag);
+   eina_strbuf_append(style, value);
+
+   elm_object_signal_emit(mng.entry_prev, "entry,show", "eflete");
+   eina_strbuf_append(style, "'");
+   ts = evas_textblock_style_new();
+   evas_textblock_style_set(ts, eina_strbuf_string_get(style));
+   evas_object_textblock_style_set(mng.textblock_style, ts);
+   evas_textblock_style_free(ts);
 
    Style_Data *current_style = (Style_Data *)mem_calloc(1, sizeof(Style_Data));
-
-   edje_edit_obj = ap.project->global_object;
-
-   if (!glit_parent)
-     {
-        style_name = (char *)elm_object_item_data_get(glit);
-        tags = edje_edit_style_tags_list_get(edje_edit_obj, style_name);
-
-        EINA_LIST_FOREACH(tags, l, tag)
-          {
-             value = edje_edit_style_tag_value_get(edje_edit_obj, style_name,
-                                                   tag);
-             eina_strbuf_append(style, value);
-          }
-        eina_list_free(tags);
-     }
-   else
-     {
-        style_name = elm_object_item_data_get(glit_parent);
-        tag = (char *)elm_object_item_data_get(glit);
-        if (!strcmp(tag, "DEFAULT"))
-          elm_object_disabled_set(style_edit->button_del, true);
-        value = edje_edit_style_tag_value_get(edje_edit_obj, style_name, tag);
-        eina_strbuf_append(style, value);
-     }
-
    current_style->st_name = style_name;
    current_style->st_tag = tag;
    current_style->stvalue = eina_stringshare_add(value);
    current_style->style = style;
-   current_style->textblock_style = style_edit->textblock_style;
-   if (!elm_genlist_item_parent_get(glit))
-     {
-        elm_object_signal_emit(style_edit->entry_prev, "entry,hide", "eflete");
-        current_style->is_parent_item = EINA_TRUE;
-     }
-   else
-     {
-        elm_object_signal_emit(style_edit->entry_prev, "entry,show", "eflete");
-        eina_strbuf_append(style, "'");
-        ts = evas_textblock_style_new();
-        evas_textblock_style_set(ts, eina_strbuf_string_get(style));
-        evas_object_textblock_style_set(style_edit->textblock_style, ts);
-        evas_object_size_hint_max_set(style_edit->textblock_style, EVAS_HINT_FILL,
-                                      EVAS_HINT_FILL);
-        evas_textblock_style_free(ts);
-     }
+   current_style->textblock_style = mng.textblock_style;
+   edje_edit_string_free(value);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, current_style);
+   /* free data for callbacks */
+   eina_stringshare_del(current_style->stvalue);
+   eina_strbuf_free(current_style->style);
+   free(current_style);
 }
 
 static void
-_on_st_add_bt_ok(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *ei __UNUSED__)
-{
-   Elm_Object_Item *glit_style = NULL;
-   Evas_Object *edje_edit_obj = NULL;
-   Style_Editor *style_edit = (Style_Editor *)data;
-   Resource *res;
-
-   assert(style_edit != NULL);
-
-   const char *style_name = elm_entry_entry_get(POPUP.name);
-
-   edje_edit_obj = ap.project->global_object;
-
-   if (!edje_edit_style_add(edje_edit_obj, style_name))
-     {
-        WARN(_("Style name must be unique!"));
-        return;
-     }
-   if (edje_edit_style_tag_add(edje_edit_obj, style_name, "DEFAULT"))
-     {
-        if (!edje_edit_style_tag_value_set(edje_edit_obj,
-                                           style_name,
-                                          "DEFAULT",
-                                          "align=middle font=Sans font_size=24 color=#000000FF"))
-          {
-             WARN(_("Failed to add tag value. Tag will be deleted"));
-             edje_edit_style_tag_del(edje_edit_obj, style_name, "DEFAULT");
-             return;
-          }
-     }
-   else
-     {
-        WARN(_("Failed to add tag."));
-        return;
-     }
-
-   glit_style = elm_genlist_item_append(style_edit->glist, _itc_style,
-                                        style_name, NULL, ELM_GENLIST_ITEM_TREE,
-                                        _on_glit_selected, style_edit);
-   elm_object_item_data_set(glit_style, (char *)style_name);
-
-   elm_genlist_item_selected_set(glit_style, true);
-   elm_genlist_item_bring_in(glit_style, ELM_GENLIST_ITEM_SCROLLTO_TOP);
-
-   res = mem_calloc(1, sizeof(Resource));
-   res->name = eina_stringshare_add(style_name);
-   ap.project->styles = eina_list_sorted_insert(ap.project->styles,
-                                                (Eina_Compare_Cb) resource_cmp,
-                                                res);
-
-   _on_popup_bt_cancel(style_edit, NULL, NULL);
-
-   CRIT_ON_FAIL(editor_save(ap.project->global_object));
-   TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
-   ap.project->changed = true;
-}
-
-static void
-_on_tag_add_bt_ok(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *ei __UNUSED__)
-{
-   Style_Editor *style_edit = (Style_Editor *)data;
-   Elm_Object_Item *glit_tag = NULL;
-   Evas_Object *edje_edit_obj = NULL;
-
-   assert(style_edit != NULL);
-
-   const char *style_name = elm_object_item_data_get(style_edit->tag);
-   const char *tag_name = elm_entry_entry_get(POPUP.name);
-   edje_edit_obj = ap.project->global_object;
-
-   if (!edje_edit_style_tag_add(edje_edit_obj, style_name, tag_name))
-     {
-        WARN(_("Tag name must be unique!"));
-        return;
-     }
-   else
-     if (!edje_edit_style_tag_value_set(edje_edit_obj, style_name, tag_name, ""))
-       {
-          WARN(_("Failed to add tag value. Tag will be deleted"));
-          edje_edit_style_tag_del(edje_edit_obj, style_name, tag_name);
-          return;
-       }
-   glit_tag = elm_genlist_item_append(style_edit->glist, _itc_tags,
-                                      tag_name, style_edit->tag,
-                                      ELM_GENLIST_ITEM_NONE,
-                                      _on_glit_selected, style_edit);
-   elm_object_item_data_set(glit_tag,(char *)tag_name);
-   elm_genlist_item_selected_set(glit_tag, true);
-   elm_genlist_item_bring_in(glit_tag, ELM_GENLIST_ITEM_SCROLLTO_TOP);
-
-   _on_popup_bt_cancel(style_edit, NULL, NULL);
-
-   CRIT_ON_FAIL(editor_save(ap.project->global_object));
-   TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
-   ap.project->changed = true;
-}
-
-static void
-_validate(void *data,
+_validate(void *data __UNUSED__,
           Evas_Object *obj __UNUSED__,
           void *event_info __UNUSED__)
 {
-   Style_Editor *style_edit = (Style_Editor *)data;
-
-   if (ELM_REG_NOERROR != resource_name_validator_status_get(POPUP.name_validator))
-     elm_object_disabled_set(POPUP.btn_add, true);
+   if (ELM_REG_NOERROR != resource_name_validator_status_get(mng.popup.validator))
+     popup_buttons_disabled_set(BTN_OK, true);
    else
-     elm_object_disabled_set(POPUP.btn_add, false);
+     popup_buttons_disabled_set(BTN_OK, false);
 }
 
 static void
-_on_bt_style_add(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+_style_add_cb(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
 {
-   Evas_Object *box, *item, *button;
-
-   Style_Editor *style_edit = (Style_Editor *)data;
-
-   assert(style_edit != NULL);
-
-   POPUP.dialog = elm_popup_add(ap.win);
-   elm_popup_orient_set(POPUP.dialog, ELM_POPUP_ORIENT_CENTER);
-   elm_object_part_text_set(POPUP.dialog, "title,text", _("Add textblock style"));
-
-   BOX_ADD(POPUP.dialog, box, false, false);
-
-   LAYOUT_PROP_ADD(box, _("Style name:"), "popup", "1swallow")
-   POPUP.name_validator = resource_name_validator_new(NAME_REGEX, NULL);
-   resource_name_validator_list_set(POPUP.name_validator, &ap.project->styles, true);
-   ENTRY_ADD(item, POPUP.name, true);
-   eo_event_callback_add(POPUP.name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, POPUP.name_validator);
-   evas_object_smart_callback_add(POPUP.name, "changed", _validate, style_edit);
-   elm_object_part_text_set(POPUP.name, "guide", _("Type a new style name"));
-   elm_object_part_content_set(item, "elm.swallow.content", POPUP.name);
-   elm_box_pack_end(box, item);
-
-   elm_object_content_set(POPUP.dialog, box);
-   evas_object_show(box);
-
-   BUTTON_ADD(POPUP.dialog, POPUP.btn_add, _("Ok"));
-   evas_object_smart_callback_add(POPUP.btn_add, "clicked", _on_st_add_bt_ok,  style_edit);
-   elm_object_part_content_set(POPUP.dialog, "button1", POPUP.btn_add);
-   elm_object_disabled_set(POPUP.btn_add, true);
-
-   BUTTON_ADD(POPUP.dialog, button, _("Cancel"));
-   evas_object_smart_callback_add(button, "clicked", _on_popup_bt_cancel, style_edit);
-   elm_object_part_content_set(POPUP.dialog, "button2", button);
-
-   evas_object_show(POPUP.dialog);
-}
-
-static void
-_on_bt_tag_add(void *data,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
-{
-   Evas_Object *box, *item, *button;
-
-   Style_Editor *style_edit = (Style_Editor *)data;
-
-   assert(style_edit != NULL);
-   assert(POPUP.name_validator == NULL);
-
-   Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
-   Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
-   const char *style_name;
-   Eina_Stringshare *buf;
-   Eina_List *tags, *l_tg;
-   char *tag;
+   Evas_Object *item;
    Resource *res;
+   Popup_Button btn_res;
+   const char *style_name;
+   Elm_Object_Item *glit;
 
-   if (!glit)
+   LAYOUT_PROP_ADD(mng.win, _("Style name:"), "popup", "1swallow");
+   if (!mng.popup.validator)
+     mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
+   resource_name_validator_list_set(mng.popup.validator, &ap.project->styles, true);
+   ENTRY_ADD(item, mng.popup.name, true);
+   eo_event_callback_add(mng.popup.name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.popup.validator);
+   evas_object_smart_callback_add(mng.popup.name, "changed", _validate, NULL);
+   elm_object_part_text_set(mng.popup.name, "guide", _("Type a new style name"));
+   elm_object_part_content_set(item, "elm.swallow.content", mng.popup.name);
+
+   btn_res = popup_want_action(_("Add textblock style"), NULL, item,
+                               mng.popup.name, BTN_OK|BTN_CANCEL,
+                               NULL, mng.popup.name);
+   if (BTN_CANCEL == btn_res) goto close;
+
+   style_name = elm_entry_entry_get(mng.popup.name);
+   edje_edit_style_add(ap.project->global_object, style_name);
+   if (edje_edit_style_tag_add(ap.project->global_object, style_name, STYLE_DEFAULT))
      {
-         WARN(_("Select a style!"));
-         return;
+        if (!edje_edit_style_tag_value_set(ap.project->global_object, style_name, STYLE_DEFAULT, STYLE_DEFAULT_VALUE))
+          {
+             WARN(_("Failed to add tag value. Tag will be deleted"));
+             edje_edit_style_tag_del(ap.project->global_object, style_name, STYLE_DEFAULT);
+             goto close;
+          }
      }
+
+   glit = elm_genlist_item_append(mng.genlist, _itc_style,
+                                  style_name, NULL, ELM_GENLIST_ITEM_TREE,
+                                  _on_glit_selected, NULL);
+   elm_object_item_data_set(glit, (void *)style_name);
+   elm_genlist_item_selected_set(glit, true);
+   elm_genlist_item_bring_in(glit, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
+
+   res = mem_calloc(1, sizeof(Resource));
+   res->name = eina_stringshare_add(style_name);
+   ap.project->styles = eina_list_sorted_insert(ap.project->styles, (Eina_Compare_Cb)resource_cmp, res);
+
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
+   TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
+   ap.project->changed = true;
+
+close:
+   evas_object_del(item);
+}
+
+static void
+_tab_add_cb(void *data __UNUSED__,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
+{
+   Evas_Object *item;
+   Resource *res;
+   Eina_List *resources = NULL;
+   Eina_Stringshare *style_name, *tag_name;
+   Popup_Button btn_res;
+   Elm_Object_Item *glit, *glit_parent;
+   Eina_Stringshare *buf;
+   Eina_List *tags, *l;
+
+   glit = elm_genlist_selected_item_get(mng.genlist);
+   glit_parent = elm_genlist_item_parent_get(glit);
 
    if (!glit_parent)
      {
         if (!elm_genlist_item_expanded_get(glit))
-          {
-             elm_genlist_item_expanded_set(glit, true);
-             is_expanded_glitem = EINA_TRUE;
-          }
+          elm_genlist_item_expanded_set(glit, true);
 
         style_name = elm_object_item_data_get(glit);
-        style_edit->tag = glit;
+        glit_parent = glit;
      }
    else
-     {
-         style_name = elm_object_item_data_get(glit_parent);
-         style_edit->tag = glit_parent;
-     }
+     style_name = elm_object_item_data_get(glit_parent);
 
    tags = edje_edit_style_tags_list_get(ap.project->global_object, style_name);
-   EINA_LIST_FOREACH(tags, l_tg, tag)
+   EINA_LIST_FOREACH(tags, l, buf)
      {
         res = mem_calloc(1, sizeof(Resource));
-        res->name = eina_stringshare_add(tag);
-        POPUP.buf_resources = eina_list_sorted_insert(POPUP.buf_resources, (Eina_Compare_Cb) resource_cmp, res);
+        res->name = eina_stringshare_add(buf);
+        resources = eina_list_sorted_insert(resources, (Eina_Compare_Cb)resource_cmp, res);
      }
-   eina_list_free(tags);
+   edje_edit_string_list_free(tags);
 
-   POPUP.dialog = elm_popup_add(ap.win);
-   elm_popup_orient_set(POPUP.dialog, ELM_POPUP_ORIENT_CENTER);
-   buf = eina_stringshare_printf(_("Add tag to style: %s"), style_name);
-   elm_object_part_text_set(POPUP.dialog, "title,text", buf);
+   LAYOUT_PROP_ADD(mng.win, "Tag name:", "popup", "1swallow");
+   if (!mng.popup.validator)
+     mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
+   resource_name_validator_list_set(mng.popup.validator, &resources, true);
+   ENTRY_ADD(item, mng.popup.name, true);
+   eo_event_callback_add(mng.popup.name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.popup.validator);
+   evas_object_smart_callback_add(mng.popup.name, "changed", _validate, NULL);
+   elm_object_part_text_set(mng.popup.name, "guide", _("Type a new tag name."));
+   elm_object_part_content_set(item, "elm.swallow.content", mng.popup.name);
 
-   BOX_ADD(POPUP.dialog, box, false, false);
+   buf = eina_stringshare_printf(_("Add tag for style: %s"), style_name);
+   btn_res = popup_want_action(buf, NULL, item,
+                               mng.popup.name, BTN_OK|BTN_CANCEL,
+                               NULL, mng.popup.name);
+   if (BTN_CANCEL == btn_res) goto close;
 
-   LAYOUT_PROP_ADD(box, "Tag name:", "popup", "1swallow")
-   POPUP.name_validator = resource_name_validator_new(NAME_REGEX, NULL);
-   resource_name_validator_list_set(POPUP.name_validator, &POPUP.buf_resources, true);
-   ENTRY_ADD(item, POPUP.name, true);
-   eo_event_callback_add(POPUP.name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, POPUP.name_validator);
-   evas_object_smart_callback_add(POPUP.name, "changed", _validate, style_edit);
-   elm_object_part_text_set(POPUP.name, "guide", _("Type a new tag name."));
-   elm_object_part_content_set(item, "elm.swallow.content", POPUP.name);
-   elm_box_pack_end(box, item);
+   tag_name = elm_entry_entry_get(mng.popup.name);
+   edje_edit_style_tag_add(ap.project->global_object, style_name, tag_name);
+   if (!edje_edit_style_tag_value_set(ap.project->global_object, style_name, tag_name, ""))
+     {
+        WARN(_("Failed to add tag value. Tag will be deleted"));
+        edje_edit_style_tag_del(ap.project->global_object, style_name, tag_name);
+        return;
+     }
+   glit = elm_genlist_item_append(mng.genlist, _itc_tags,
+                                      tag_name, glit_parent,
+                                      ELM_GENLIST_ITEM_NONE,
+                                      _on_glit_selected, NULL);
+   elm_object_item_data_set(glit, (void *)tag_name);
+   elm_genlist_item_selected_set(glit, true);
+   elm_genlist_item_bring_in(glit, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
 
-   elm_object_content_set(POPUP.dialog, box);
-   evas_object_show(box);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
+   TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
+   ap.project->changed = true;
 
-   BUTTON_ADD(POPUP.dialog, POPUP.btn_add, _("Ok"));
-   evas_object_smart_callback_add(POPUP.btn_add, "clicked", _on_tag_add_bt_ok, style_edit);
-   elm_object_part_content_set(POPUP.dialog, "button1", POPUP.btn_add);
-   elm_object_disabled_set(POPUP.btn_add, true);
-
-   BUTTON_ADD(POPUP.dialog, button, _("Cancel"));
-   evas_object_smart_callback_add(button, "clicked", _on_popup_bt_cancel, style_edit);
-   elm_object_part_content_set(POPUP.dialog, "button2", button);
-
-   evas_object_show(POPUP.dialog);
+close:
+   EINA_LIST_FREE(resources, res)
+     {
+        eina_stringshare_del(res->name);
+        free(res);
+     }
+   evas_object_del(item);
    eina_stringshare_del(buf);
 }
 
 static void
-_on_bt_del(void *data,
-           Evas_Object *obj __UNUSED__,
-           void *event_info __UNUSED__)
+_btn_del_cb(void *data __UNUSED__,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
 {
    Evas_Object *edje_edit_obj = NULL;
    const char *style_name, *tag;
-
-   Style_Editor *style_edit = (Style_Editor *)data;
    Resource *res;
 
-   assert(style_edit != NULL);
-
-   Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
+   Elm_Object_Item *glit = elm_genlist_selected_item_get(mng.genlist);
    if (!glit) return;
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
    edje_edit_obj = ap.project->global_object;
@@ -505,7 +331,7 @@ _on_bt_del(void *data,
 
    elm_object_item_del(glit);
 
-   elm_object_disabled_set(style_edit->button_del, true);
+   elm_object_disabled_set(mng.button_del, true);
    evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, NULL);
 
    CRIT_ON_FAIL(editor_save(ap.project->global_object));
@@ -602,7 +428,7 @@ _search_tag_item_node(Evas_Object *obj,
 {
    Eina_List *tags, *l_tg;
    char *tag;
-   Eina_Bool find_tag_item = EINA_FALSE;
+   Eina_Bool find_tag_item = false;
 
    if ((!elm_genlist_item_parent_get(item_start)) && (!elm_genlist_item_expanded_get(item_start)))
      {
@@ -620,7 +446,7 @@ _search_tag_item_node(Evas_Object *obj,
                   elm_genlist_item_selected_set(search_data->last_item_found, true);
                   elm_genlist_item_bring_in(search_data->last_item_found, ELM_GENLIST_ITEM_SCROLLTO_TOP);
                   elm_object_focus_set(search_data->search_entry, true);
-                  find_tag_item = EINA_TRUE;
+                  find_tag_item = true;
                   break;
                 }
           }
@@ -644,14 +470,14 @@ _search_item_genlist_tree(Evas_Object *obj,
         elm_object_focus_set(search_data->search_entry, true);
 
         search_data->last_item_found = item;
-        return EINA_TRUE;
+        return true;
      }
    else
      {
         if (_search_tag_item_node(obj, item, search_data, str))
-          return EINA_TRUE;
+          return true;
      }
-   return EINA_FALSE;
+   return false;
 }
 static void
 _genlist_item_search_first_search(Evas_Object *obj,
@@ -697,48 +523,42 @@ _genlist_item_search_next_search(Evas_Object *obj,
 }
 
 static void
-_search_changed(void *data,
+_search_changed(void *data __UNUSED__,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
-   Style_Editor *style_edit = data;
-
-   assert(style_edit != NULL);
-   if (elm_entry_is_empty(style_edit->style_search_data.search_entry))
+   if (elm_entry_is_empty(mng.style_search_data.search_entry))
      {
-       if (style_edit->style_search_data.last_item_found)
+       if (mng.style_search_data.last_item_found)
          {
-            elm_genlist_item_selected_set(style_edit->style_search_data.last_item_found, false);
-            style_edit->style_search_data.last_item_found = NULL;
+            elm_genlist_item_selected_set(mng.style_search_data.last_item_found, false);
+            mng.style_search_data.last_item_found = NULL;
          }
-       elm_genlist_item_bring_in(elm_genlist_first_item_get(style_edit->glist),
+       elm_genlist_item_bring_in(elm_genlist_first_item_get(mng.genlist),
                                                             ELM_GENLIST_ITEM_SCROLLTO_TOP);
        return;
      }
 
    Eina_Stringshare *str = eina_stringshare_printf("%s",
-                                      elm_entry_entry_get(style_edit->style_search_data.search_entry));
+                                      elm_entry_entry_get(mng.style_search_data.search_entry));
 
-   _genlist_item_search_first_search(style_edit->glist, &(style_edit->style_search_data), str);
+   _genlist_item_search_first_search(mng.genlist, &(mng.style_search_data), str);
 
    eina_stringshare_del(str);
 
 }
 
 static void
-_search_nxt_gd_item(void *data,
+_search_nxt_gd_item(void *data __UNUSED__,
                     Evas_Object *obj __UNUSED__,
                     void *event_info __UNUSED__)
 {
-   Style_Editor *style_edit = data;
-
-   assert(style_edit != NULL);
-   if (style_edit->style_search_data.last_item_found)
+   if (mng.style_search_data.last_item_found)
      {
         Eina_Stringshare *str = eina_stringshare_printf("%s",
-                                           elm_entry_entry_get(style_edit->style_search_data.search_entry));
+                                           elm_entry_entry_get(mng.style_search_data.search_entry));
 
-        _genlist_item_search_next_search(style_edit->glist, &(style_edit->style_search_data), str);
+        _genlist_item_search_next_search(mng.genlist, &(mng.style_search_data), str);
         eina_stringshare_del(str);
      }
 
@@ -761,15 +581,14 @@ _expand_request_cb(void *data __UNUSED__,
                    void *event_info)
 {
    Elm_Object_Item *glit = event_info;
-   elm_genlist_item_expanded_set(glit, EINA_TRUE);
+   elm_genlist_item_expanded_set(glit, true);
 }
 
 static void
-_expanded_cb(void *data,
+_expanded_cb(void *data __UNUSED__,
              Evas_Object *o __UNUSED__,
              void *event_info)
 {
-   Style_Editor *style_edit = (Style_Editor *)data;
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    const char *name = elm_object_item_data_get(glit);
    Eina_List *tags, *l_tg;
@@ -779,9 +598,9 @@ _expanded_cb(void *data,
    tags = edje_edit_style_tags_list_get(ap.project->global_object, name);
    EINA_LIST_FOREACH(tags, l_tg, tag)
      {
-        glit_tag = elm_genlist_item_append(style_edit->glist, _itc_tags,
+        glit_tag = elm_genlist_item_append(mng.genlist, _itc_tags,
                                            tag, glit, ELM_GENLIST_ITEM_NONE,
-                                           _on_glit_selected, style_edit);
+                                           _on_glit_selected, NULL);
         elm_object_item_data_set(glit_tag, tag);
      }
    eina_list_free(tags);
@@ -793,7 +612,7 @@ _contract_request_cb(void *data __UNUSED__,
                      void *event_info)
 {
    Elm_Object_Item *glit = event_info;
-   elm_genlist_item_expanded_set(glit, EINA_FALSE);
+   elm_genlist_item_expanded_set(glit, false);
 }
 
 static void
@@ -806,23 +625,20 @@ _contracted_cb(void *data __UNUSED__,
 }
 
 static void
-_on_bt_add(void *data,
-           Evas_Object *obj __UNUSED__,
-           void *event_info __UNUSED__)
+_btn_add_cb(void *data __UNUSED__,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
 {
-   Style_Editor *style_edit = (Style_Editor *)data;
    Evas_Coord x, y, h;
 
-   assert(style_edit != NULL);
-
    evas_object_geometry_get(obj, &x, &y, NULL, &h);
-   elm_menu_move(style_edit->menu, x, y + h);
-   evas_object_show(style_edit->menu);
+   elm_menu_move(mng.menu, x, y + h);
+   evas_object_show(mng.menu);
 
-   if (elm_genlist_selected_item_get(style_edit->glist))
-     elm_object_item_disabled_set(style_edit->menu_tag, false);
+   if (elm_genlist_selected_item_get(mng.genlist))
+     elm_object_item_disabled_set(mng.menu_tag, false);
    else
-     elm_object_item_disabled_set(style_edit->menu_tag, true);
+     elm_object_item_disabled_set(mng.menu_tag, true);
 }
 
 static void
@@ -831,11 +647,10 @@ _bg_cb(void *data,
        void *event_info __UNUSED__)
 {
    Bg_Preview bg_mode;
-   Style_Editor *edit = data;
    const char *signal = NULL;
+   Evas_Object *entry_prev = data;
 
-   Evas_Object *bg = elm_object_part_content_get(edit->entry_prev, "background");
-
+   Evas_Object *bg = elm_object_part_content_get(entry_prev, "elm.swallow.background");
    bg_mode = elm_radio_value_get(obj);
    switch (bg_mode)
      {
@@ -854,7 +669,7 @@ _bg_cb(void *data,
 }
 
 static Evas_Object *
-_radio_switcher_add(Style_Editor *edit,
+_radio_switcher_add(Evas_Object *entry_prev,
                     const char *style,
                     Evas_Smart_Cb func,
                     int state_value,
@@ -866,14 +681,14 @@ _radio_switcher_add(Style_Editor *edit,
    evas_object_show(radio);
    elm_object_style_set(radio, style);
    elm_radio_state_value_set(radio, state_value);
-   evas_object_smart_callback_add(radio, "changed", func, edit);
+   evas_object_smart_callback_add(radio, "changed", func, entry_prev);
    elm_radio_group_add(radio, group);
 
    return radio;
 }
 
 static Evas_Object*
-_add_box_bg(Style_Editor *edit)
+_add_box_bg(void)
 {
    Evas_Object *box_bg;
 
@@ -882,60 +697,69 @@ _add_box_bg(Style_Editor *edit)
    elm_box_align_set(box_bg, 1.0, 0.5);
 
    /* add to toolbar bg switcher */
-   edit->bg_switcher.white = _radio_switcher_add(edit, "bg_white", _bg_cb, BG_PREVIEW_WHITE, NULL);
-   elm_box_pack_end(box_bg, edit->bg_switcher.white);
+   mng.bg_switcher.white = _radio_switcher_add(mng.entry_prev, "bg_white", _bg_cb, BG_PREVIEW_WHITE, NULL);
+   elm_box_pack_end(box_bg, mng.bg_switcher.white);
 
-   edit->bg_switcher.tile = _radio_switcher_add(edit, "bg_tile", _bg_cb, BG_PREVIEW_TILE, edit->bg_switcher.white);
-   elm_box_pack_end(box_bg, edit->bg_switcher.tile);
+   mng.bg_switcher.tile = _radio_switcher_add(mng.entry_prev, "bg_tile", _bg_cb, BG_PREVIEW_TILE, mng.bg_switcher.white);
+   elm_box_pack_end(box_bg, mng.bg_switcher.tile);
 
-   edit->bg_switcher.black = _radio_switcher_add(edit, "bg_black", _bg_cb, BG_PREVIEW_BLACK, edit->bg_switcher.white);
-   elm_box_pack_end(box_bg, edit->bg_switcher.black);
+   mng.bg_switcher.black = _radio_switcher_add(mng.entry_prev, "bg_black", _bg_cb, BG_PREVIEW_BLACK, mng.bg_switcher.white);
+   elm_box_pack_end(box_bg, mng.bg_switcher.black);
 
-   elm_radio_value_set(edit->bg_switcher.white, BG_PREVIEW_TILE);
+   elm_radio_value_set(mng.bg_switcher.white, BG_PREVIEW_TILE);
 
    return box_bg;
 }
 
 static void
-_on_style_manager_close(void *data,
-                        Evas *e __UNUSED__,
-                        Evas_Object *obj __UNUSED__,
-                        void *event_info __UNUSED__)
-{
-   Style_Editor *style_edit = (Style_Editor *)data;
-
-   assert(style_edit != NULL);
-
-   eina_stringshare_del(CURRENT.stvalue);
-   free(style_edit);
-}
-
-static void
-_property_hide(Style_Editor *mng)
+_mw_cancel_cb(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
 {
    Evas_Object *content;
 
    /* unset and hide the image property */
-   content = elm_object_part_content_unset(mng->panes, "right");
+   content = elm_object_content_unset(mng.win);
    evas_object_hide(content);
 }
 
 static void
-_mw_cancel(void *data,
-           Evas_Object *obj __UNUSED__,
-           void *event_info __UNUSED__)
+_mw_done_cb(void *data __UNUSED__,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
 {
-   Style_Editor *mng = data;
-   _property_hide(mng);
+   Evas_Object *content;
+
+   /* unset and hide the image property */
+   content = elm_object_content_unset(mng.win);
+   evas_object_hide(content);
 }
 
 static void
-_mw_done(void *data,
-         Evas_Object *obj __UNUSED__,
-         void *event_info __UNUSED__)
+_style_mamanger_init(void)
 {
-   Style_Editor *mng = data;
-   _property_hide(mng);
+   Eina_List *l_st;
+   Resource *res;
+   Elm_Object_Item *glit_style;
+
+   EINA_LIST_FOREACH(ap.project->styles, l_st, res)
+     {
+        glit_style = elm_genlist_item_append(mng.genlist, _itc_style,
+                                             res->name, NULL, ELM_GENLIST_ITEM_TREE,
+                                             _on_glit_selected, NULL);
+        elm_object_item_data_set(glit_style, (char *)res->name);
+     }
+}
+
+static void
+_project_closed_cb(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   elm_object_signal_emit(mng.entry_prev, "entry,hide", "eflete");
+   //elm_entry_entry_set(mng.entry_prev, "");
+   evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, NULL);
+   elm_genlist_clear(mng.genlist);
 }
 
 Evas_Object *
@@ -943,55 +767,49 @@ style_manager_add()
 {
    Evas_Object *bg, *box_bg;
    Evas *canvas;
-   Elm_Object_Item *glit_style;
    Evas_Object *button_add, *search, *ic;
-   Eina_List *styles, *l_st;
-   Resource *res;
    Evas_Textblock_Style *ts;
-   Style_Editor *style_edit;
-   static const char *style_buf = FONT_DEFAULT"'";
 
    assert(ap.project != NULL);
 
-   style_edit = (Style_Editor *)mem_calloc(1, sizeof(Style_Editor));
-
-   style_edit->win = mw_add();
-   mw_title_set(style_edit->win, _("Textblock style manager"));
-   evas_object_smart_callback_add(style_edit->win, "cancel", _mw_cancel, style_edit);
-   evas_object_smart_callback_add(style_edit->win, "done", _mw_done, style_edit);
-   ic = elm_icon_add(style_edit->win);
+   mng.win = mw_add();
+   mw_title_set(mng.win, _("Textblock style manager"));
+   evas_object_smart_callback_add(mng.win, "cancel", _mw_cancel_cb, NULL);
+   evas_object_smart_callback_add(mng.win, "done", _mw_done_cb, NULL);
+   ic = elm_icon_add(mng.win);
    elm_icon_standard_set(ic, "text2");
-   mw_icon_set(style_edit->win, ic);
-   style_edit->layout = elm_layout_add(ap.win);
-   elm_layout_theme_set(style_edit->layout, "layout", "style_manager", "default");
-   elm_object_part_text_set(style_edit->layout, "elm.text", _("Preview"));
-   elm_layout_text_set(style_edit->layout, "elm.subtext", _("Font list"));
-   style_edit->panes = elm_panes_add(style_edit->win);
-   elm_object_content_set(style_edit->win, style_edit->panes);
-   elm_object_part_content_set(style_edit->panes, "left", style_edit->layout);
-   elm_object_part_content_set(style_edit->panes, "right", ap.property.style_manager);
+   mw_icon_set(mng.win, ic);
 
-   style_edit->entry_prev = elm_layout_add(style_edit->layout);
-   elm_layout_theme_set(style_edit->entry_prev, "layout", "style_manager", "preview");
-   evas_object_show(style_edit->entry_prev);
-   elm_object_signal_emit(style_edit->entry_prev, "entry,hide", "eflete");
+   if(mng.layout) goto done;
+
+   mng.layout = elm_layout_add(ap.win);
+   elm_layout_theme_set(mng.layout, "layout", "manager", "internal");
+   elm_object_part_text_set(mng.layout, "elm.text", _("Preview"));
+   elm_layout_text_set(mng.layout, "elm.subtext", _("Font list"));
+   mng.panes = elm_panes_add(mng.win);
+   elm_object_part_content_set(mng.panes, "left", mng.layout);
+   elm_object_part_content_set(mng.panes, "right", ap.property.style_manager);
+
+   mng.entry_prev = elm_layout_add(mng.layout);
+   elm_layout_theme_set(mng.entry_prev, "layout", "manager", "preview");
+   evas_object_show(mng.entry_prev);
+   elm_object_signal_emit(mng.entry_prev, "entry,hide", "eflete");
 
    canvas = evas_object_evas_get(ap.win);
 
-   /* Entry preview to show colorclass */
-   bg = elm_layout_add(style_edit->layout);
+   bg = elm_layout_add(mng.layout);
    elm_layout_theme_set(bg, "layout", "workspace", "bg");
-   elm_object_part_content_set(style_edit->entry_prev, "background", bg);
+   elm_object_part_content_set(mng.entry_prev, "elm.swallow.background", bg);
 
-   style_edit->textblock_style = evas_object_textblock_add(canvas);
-   elm_object_part_content_set(style_edit->entry_prev, "entry", style_edit->textblock_style);
-   evas_object_textblock_valign_set(style_edit->textblock_style, 0.5);
+   mng.textblock_style = evas_object_textblock_add(canvas);
+   elm_object_part_content_set(mng.entry_prev, "elm.swallow.entry", mng.textblock_style);
+   evas_object_textblock_valign_set(mng.textblock_style, 0.5);
    ts = evas_textblock_style_new();
-   evas_textblock_style_set(ts, style_buf);
-   evas_object_textblock_style_set(style_edit->textblock_style, ts);
-   evas_object_textblock_text_markup_set(style_edit->textblock_style, TEST_TEXT);
-   evas_object_show(style_edit->textblock_style);
-   elm_object_part_content_set(style_edit->layout, "elm.swallow.preview", style_edit->entry_prev);
+   evas_textblock_style_set(ts, STYLE_DEFAULT"='"STYLE_DEFAULT_VALUE"'");
+   evas_object_textblock_style_set(mng.textblock_style, ts);
+   evas_object_textblock_text_markup_set(mng.textblock_style, TEST_TEXT);
+   evas_object_show(mng.textblock_style);
+   elm_object_part_content_set(mng.layout, "elm.swallow.preview", mng.entry_prev);
 
    if (!_itc_style)
      {
@@ -999,8 +817,6 @@ style_manager_add()
         _itc_style->item_style = "aligned";
         _itc_style->func.text_get = _item_style_label_get;
         _itc_style->func.content_get = _item_style_icon_get;
-        _itc_style->func.state_get = NULL;
-        _itc_style->func.del = NULL;
      }
    if (!_itc_tags)
      {
@@ -1008,61 +824,54 @@ style_manager_add()
         _itc_tags->item_style = "aligned";
         _itc_tags->func.text_get = _item_tags_label_get;
         _itc_tags->func.content_get = _item_tags_icon_get;
-        _itc_tags->func.state_get = NULL;
-        _itc_tags->func.del = NULL;
      }
 
-   search = _style_manager_search_field_create(style_edit->layout);
-   elm_object_part_content_set(style_edit->layout, "elm.swallow.search", search);
-   evas_object_smart_callback_add(search, "changed", _search_changed, style_edit);
-   evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, style_edit);
-   evas_object_smart_callback_add(style_edit->glist, "pressed", _search_reset_cb, &(style_edit->style_search_data));
-   style_edit->style_search_data.search_entry = search;
-   style_edit->style_search_data.last_item_found = NULL;
+   mng.genlist = elm_genlist_add(mng.layout);
+   elm_object_part_content_set(mng.layout, "elm.swallow.list", mng.genlist);
+   evas_object_smart_callback_add(mng.genlist, "expand,request", _expand_request_cb, NULL);
+   evas_object_smart_callback_add(mng.genlist, "expanded", _expanded_cb, NULL);
+   evas_object_smart_callback_add(mng.genlist, "contract,request", _contract_request_cb, NULL);
+   evas_object_smart_callback_add(mng.genlist, "contracted", _contracted_cb, NULL);
+   evas_object_smart_callback_add(mng.genlist, "unselected", _on_unselected_cb, NULL);
+   evas_object_show(mng.genlist);
 
-   style_edit->glist = elm_genlist_add(style_edit->layout);
-   elm_object_part_content_set(style_edit->layout, "elm.swallow.list", style_edit->glist);
-   evas_object_smart_callback_add(style_edit->glist, "expand,request", _expand_request_cb, NULL);
-   evas_object_smart_callback_add(style_edit->glist, "expanded", _expanded_cb, style_edit);
-   evas_object_smart_callback_add(style_edit->glist, "contract,request", _contract_request_cb, NULL);
-   evas_object_smart_callback_add(style_edit->glist, "contracted", _contracted_cb, NULL);
-   evas_object_smart_callback_add(style_edit->glist, "unselected", _on_unselected_cb, style_edit);
-   evas_object_show(style_edit->glist);
-   /*elm_genlist_tree_effect_enabled_set(style_edit->glist, EINA_TRUE);*/
+   search = _style_manager_search_field_create(mng.layout);
+   elm_object_part_content_set(mng.layout, "elm.swallow.search", search);
+   evas_object_smart_callback_add(search, "changed", _search_changed, NULL);
+   evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, NULL);
+   evas_object_smart_callback_add(mng.genlist, "pressed", _search_reset_cb, &(mng.style_search_data));
+   mng.style_search_data.search_entry = search;
+   mng.style_search_data.last_item_found = NULL;
 
-   styles = ap.project->styles;
-
-   EINA_LIST_FOREACH(styles, l_st, res)
-     {
-        glit_style = elm_genlist_item_append(style_edit->glist, _itc_style,
-                                             res->name, NULL, ELM_GENLIST_ITEM_TREE,
-                                             _on_glit_selected, style_edit);
-        elm_object_item_data_set(glit_style, (char *)res->name);
-     }
-
-   style_edit->menu = elm_menu_add(ap.win);
-   elm_menu_item_add(style_edit->menu, NULL, "text_style", _("Style"), _on_bt_style_add, style_edit);
-   style_edit->menu_tag = elm_menu_item_add(style_edit->menu, NULL, "text_style_tag", _("Tag"), _on_bt_tag_add, style_edit);
+   mng.menu = elm_menu_add(ap.win);
+   elm_menu_item_add(mng.menu, NULL, "text_style", _("Style"), _style_add_cb, NULL);
+   mng.menu_tag = elm_menu_item_add(mng.menu, NULL, "text_style_tag", _("Tag"), _tab_add_cb, NULL);
 
    button_add = elm_button_add(ap.win);
    elm_object_style_set(button_add, "plus");
-   evas_object_smart_callback_add(button_add, "clicked", _on_bt_add, style_edit);
-   elm_object_part_content_set(style_edit->layout, "elm.swallow.btn_add", button_add);
+   evas_object_smart_callback_add(button_add, "clicked", _btn_add_cb, NULL);
+   elm_object_part_content_set(mng.layout, "elm.swallow.btn_add", button_add);
 
-   style_edit->button_del = elm_button_add(ap.win);
-   elm_object_style_set(style_edit->button_del, "minus");
-   evas_object_smart_callback_add(style_edit->button_del, "clicked", _on_bt_del, style_edit);
-   elm_object_part_content_set(style_edit->layout, "elm.swallow.btn_del", style_edit->button_del);
-   elm_object_disabled_set(style_edit->button_del, true);
+   mng.button_del = elm_button_add(ap.win);
+   elm_object_style_set(mng.button_del, "minus");
+   evas_object_smart_callback_add(mng.button_del, "clicked", _btn_del_cb, NULL);
+   elm_object_part_content_set(mng.layout, "elm.swallow.btn_del", mng.button_del);
+   elm_object_disabled_set(mng.button_del, true);
 
-   box_bg = _add_box_bg(style_edit);
-   elm_object_part_content_set(style_edit->layout, "elm.swallow.menu", box_bg);
+   box_bg = _add_box_bg();
+   elm_object_part_content_set(mng.layout, "elm.swallow.menu", box_bg);
 
    evas_textblock_style_free(ts);
-   evas_object_event_callback_add(style_edit->layout, EVAS_CALLBACK_DEL, _on_style_manager_close, style_edit);
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CLOSED, _project_closed_cb, NULL);
 
-   evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, NULL);
+done:
+   /* if genlist is empty try to fill it. This happens if the managers called
+    * first time or project was reopened */
+   if (!elm_genlist_realized_items_get(mng.genlist))
+     _style_mamanger_init();
 
-   evas_object_show(style_edit->win);
-   return style_edit->win;
+   elm_object_content_set(mng.win, mng.panes);
+   evas_object_show(mng.win);
+   elm_object_focus_set(mng.style_search_data.search_entry, true);
+   return mng.win;
 }

@@ -1,7 +1,3 @@
-group { name: "elm/layout/colorclass_manager/default";
-   inherit: "elm/layout/style_manager/default";
-}
-
 group {
    name: "elm/layout/colorclass_manager/preview";
    parts {

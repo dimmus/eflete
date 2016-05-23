@@ -231,23 +231,6 @@ group { name: "elm/layout/property/default";
    }
 }
 
-group{ name: "elm/layout/colorclass_editor/preview";
-   parts {
-      part { name: "swallow.entry.bg";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-         }
-      }
-      part { name: "swallow.entry";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            rel1.to: "swallow.entry.bg";
-            rel2.to: "swallow.entry.bg";
-         }
-      }
-   }
-}
-
 group { name: "elm/layout/navigator/default";
    parts {
       part { name: "bg";
@@ -2051,7 +2034,7 @@ group { name: "elm/layout/property/tween";
    }
 }
 
-#include "layouts/style_manager.edc"
+#include "layouts/manager.edc"
 #include "layouts/colorclass_manager.edc"
 #include "layouts/live_view_toolbar_helper.edc"
 #include "layouts/history.edc"

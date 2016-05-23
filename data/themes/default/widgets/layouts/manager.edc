@@ -1,4 +1,4 @@
-group { name: "elm/layout/style_manager/default";
+group { name: "elm/layout/manager/internal";
    parts {
       part { name: "elm.text";
          type: TEXT;
@@ -8,17 +8,15 @@ group { name: "elm/layout/style_manager/default";
             fixed: 0 1;
             max: -1 19;
             color_class: "main";
-            rel1 {
-               offset: 0 2;
-            }
-            rel2 {
-               offset: -7 -1;
-               to_x: "separator";
-            }
             text {
                font: "PT";
                size: 12;
                max: 1 0;
+            }
+            rel1.offset: 0 2;
+            rel2 {
+               offset: -7 -1;
+               to_x: "separator";
             }
          }
       }
@@ -27,15 +25,15 @@ group { name: "elm/layout/style_manager/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
+            fixed: 1 0;
             rel1 {
                relative: 0.0 1.0;
                offset: 0 6;
                to_y: "elm.text";
             }
             rel2 {
-               relative: 0.0 0.0;
-               offset: -7 -7;
-               to_x: "separator";
+               relative: 1.0 0.0;
+               offset: -4 -4;
                to_y: "elm.swallow.menu";
             }
          }
@@ -48,7 +46,7 @@ group { name: "elm/layout/style_manager/default";
             fixed: 0 1;
             max: -1 19;
             rel2 {
-               offset: -1 -7;
+               relative: 1.0 0.45;
                to_x: "elm.swallow.preview";
             }
          }
@@ -59,35 +57,28 @@ group { name: "elm/layout/style_manager/default";
          description { state: "default" 0.0;
             align: 1.0 1.0;
             fixed: 1 0;
-            max: 300 -1;
             rel1 {
                relative: 0.0 1.0;
-               offset: 0 6;
-               to_y: "elm.text";
+               offset: 0 3;
+               to_y: "elm.subtext";
             }
-            rel2 {
-               relative: 1.0 0.0;
-               offset: -1 -6;
-               to_y: "elm.swallow.search";
-            }
+            rel2.offset: -4 -4;
          }
       }
       part { name: "separator";
          type: IMAGE;
          description { state: "default" 0.0;
-            align: 1.0 0.5;
+            align: 1.0 0.0;
             fixed: 1 0;
-            min: 2 1;
-            max: 2 -1;
-            rel2 {
+            min: 2 2;
+            max: -1 2;
+            image.normal: "separator-horizontal.png";
+            rel1 {
                relative: 0.0 1.0;
-               offset: -7 -1;
-               to_x: "elm.swallow.list";
+               offset: 0 3;
+               to_y: "elm.swallow.menu";
             }
-            image {
-               normal: "separator-vertical.png";
-               middle: DEFAULT;
-            }
+            rel2.offset: -4 -1;
          }
       }
       part { name: "elm.subtext";
@@ -97,18 +88,20 @@ group { name: "elm/layout/style_manager/default";
             align: 0.0 0.0;
             max: -1 19;
             color_class: "main";
-            rel1 {
-               offset: 0 2;
-               to_x: "elm.swallow.list";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "elm.swallow.btn_add";
-            }
             text {
                font: "PT";
                size: 12;
                max: 1 0;
+            }
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 3;
+               to_x: "elm.swallow.list";
+               to_y: "separator";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "elm.swallow.btn_add";
             }
          }
       }
@@ -118,11 +111,10 @@ group { name: "elm/layout/style_manager/default";
          description { state: "default" 0.0;
             align: 1.0 0.5;
             max: 18 19;
-            rel1 {
-               to_y: "elm.subtext";
-            }
+            rel1.to_y: "elm.subtext";
             rel2 {
                to_y: "elm.subtext";
+               offset: -4 -1;
             }
          }
       }
@@ -132,9 +124,7 @@ group { name: "elm/layout/style_manager/default";
          description { state: "default" 0.0;
             align: 1.0 0.5;
             max: 18 19;
-            rel1 {
-               to_y: "elm.subtext";
-            }
+            rel1.to_y: "elm.subtext";
             rel2 {
                relative: 0.0 1.0;
                offset: -4 -1;
@@ -147,25 +137,23 @@ group { name: "elm/layout/style_manager/default";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0.5 1.0;
-            max: -1 19;
+            align: 0.0 0.0;
+            max: 300 19;
             rel1 {
                relative: 1.0 0.0;
                offset: 6 0;
-               to_x: "separator";
+               to: "elm.subtext";
             }
-            rel2 {
-               offset: -1 -7;
-            }
+            rel2.offset: -1 -7;
          }
       }
    }
 }
 
-group { name: "elm/layout/style_manager/preview";
+group { name: "elm/layout/manager/preview";
    parts {
       part {
-         name: "background";
+         name: "elm.swallow.background";
          type: SWALLOW;
          description {
             state: "default" 0.0;
@@ -174,13 +162,13 @@ group { name: "elm/layout/style_manager/preview";
          }
       }
       part {
-         name: "entry";
+         name: "elm.swallow.entry";
          type: SWALLOW;
          description {
             state: "default" 0.0;
             visible: 0;
-            rel1.to: "background";
-            rel2.to: "background";
+            rel1.to: "elm.swallow.background";
+            rel2.to: "elm.swallow.background";
          }
          description {
             state: "visible" 0.0;
@@ -195,14 +183,14 @@ group { name: "elm/layout/style_manager/preview";
          signal: "entry,show";
          source: "eflete";
          action: STATE_SET "visible" 0.0;
-         target: "entry";
+         target: "elm.swallow.entry";
       }
       program {
          name: "entry_hide";
          signal: "entry,hide";
          source: "eflete";
          action: STATE_SET "default" 0.0;
-         target: "entry";
+         target: "elm.swallow.entry";
       }
    }
 }

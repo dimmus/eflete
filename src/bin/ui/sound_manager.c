@@ -24,12 +24,12 @@
 #include "project_manager.h"
 #include "modal_window.h"
 #include "config.h"
+#include "validator.h"
 
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
-#define SND_EDIT_KEY "sound_editor_key"
 
-typedef struct _Sound_Editor Sound_Editor;
+typedef struct _Sound_Manager Sound_Manager;
 typedef struct _Search_Data Search_Data;
 typedef struct _Sound Sound;
 
@@ -46,26 +46,26 @@ struct _Search_Data
    Elm_Object_Item *last_item_found;
 };
 
-struct _Sound_Editor
+struct _Sound_Manager
 {
    Evas_Object *win;
    Evas_Object *panes;
-   Evas_Object *popup;
-   Evas_Object *popup_btn_add;
-   Evas_Object *btn_add;
    Evas_Object *btn_del;
    Evas_Object *menu;
    Evas_Object *tone_entry, *frq_entry;
-   Elm_Validator_Regexp *tone_validator, *frq_validator;
+   Resource_Name_Validator *tone_validator;
+   Elm_Validator_Regexp *frq_validator;
    Evas_Object *gengrid;
-   Evas_Object *markup;
+   Evas_Object *layout;
    Elm_Object_Item *tone_header;
    Search_Data sound_search_data;
    Evas_Object *check;
    const char  *snd_src;
 };
 
-static Elm_Gengrid_Item_Class *gic = NULL, *ggic = NULL;
+static Sound_Manager mng;
+static Elm_Gengrid_Item_Class *gic = NULL;
+static Elm_Gengrid_Item_Class *ggic = NULL;
 
 static char *
 _grid_label_get(void *data,
@@ -117,15 +117,12 @@ _sound_format_get(Eina_Stringshare *snd_src)
 }
 
 static void
-_grid_selected(void *data,
-               Evas_Object *obj __UNUSED__,
-               void *event_info)
+_grid_sel_cb(void *data __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *event_info)
 {
-   Sound_Editor *edit = (Sound_Editor *)data;
    External_Resource *res = NULL;
    Sound_Data *snd;
-
-   assert(edit != NULL);
 
    snd = elm_object_item_data_get((Elm_Gengrid_Item *)event_info);
    switch (snd->type)
@@ -140,24 +137,23 @@ _grid_selected(void *data,
 
    assert(res != NULL);
 
-   if (!res->used_in) elm_object_disabled_set(edit->btn_del, false);
+   if (!res->used_in) elm_object_disabled_set(mng.btn_del, false);
    evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_SELECT, snd);
 }
 
 static void
-_gengrid_content_fill(Sound_Editor *edit)
+_sound_manager_init(void)
 {
    Eina_List *l;
    External_Resource *sample;
    Tone_Resource *tone;
    Sound_Data *snd;
 
-   assert(edit != NULL);
    assert(ap.project != NULL);
 
    snd = (Sound_Data *)mem_calloc(1, sizeof(Sound_Data));
    snd->name = eina_stringshare_add(_("Sound Samples"));
-   elm_gengrid_item_append(edit->gengrid, ggic, snd, NULL, NULL);
+   elm_gengrid_item_append(mng.gengrid, ggic, snd, NULL, NULL);
    EINA_LIST_FOREACH(ap.project->sounds, l, sample)
      {
         snd = (Sound_Data *)mem_calloc(1, sizeof(Sound_Data));
@@ -165,12 +161,12 @@ _gengrid_content_fill(Sound_Editor *edit)
         snd->type_label = _sound_format_get(sample->source);
         snd->type = SOUND_TYPE_SAMPLE;
         snd->resource = (Resource *)sample;
-        elm_gengrid_item_append(edit->gengrid, gic, snd, _grid_selected, edit);
+        elm_gengrid_item_append(mng.gengrid, gic, snd, _grid_sel_cb, NULL);
      }
 
    snd = (Sound_Data *)mem_calloc(1, sizeof(Sound_Data));
    snd->name = eina_stringshare_add(_("Sound Tones"));
-   edit->tone_header = elm_gengrid_item_append(edit->gengrid, ggic, snd, NULL, NULL);
+   mng.tone_header = elm_gengrid_item_append(mng.gengrid, ggic, snd, NULL, NULL);
    EINA_LIST_FOREACH(ap.project->tones, l, tone)
      {
         snd = (Sound_Data *)mem_calloc(1, sizeof(Sound_Data));
@@ -178,73 +174,21 @@ _gengrid_content_fill(Sound_Editor *edit)
         snd->type_label = eina_stringshare_printf("%d", tone->freq);
         snd->type = SOUND_TYPE_TONE;
         snd->resource = (Resource *)tone;
-        elm_gengrid_item_append(edit->gengrid, gic, snd, _grid_selected, edit);
+        elm_gengrid_item_append(mng.gengrid, gic, snd, _grid_sel_cb, NULL);
      }
 }
 
 static void
-_grid_sel(void *data,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
+_grid_unsel_cb(void *data __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
 {
-   Sound_Editor *editor = (Sound_Editor *)data;
-
-   elm_object_disabled_set(editor->btn_del, true);
+   elm_object_disabled_set(mng.btn_del, true);
    evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_UNSELECTED, NULL);
 }
 
-static void
-_create_gengrid(Evas_Object *parent, Sound_Editor *editor)
-{
-   assert(parent != NULL);
-   assert(editor != NULL);
-
-   editor->gengrid = elm_gengrid_add(parent);
-   elm_gengrid_item_size_set(editor->gengrid, ITEM_WIDTH, ITEM_HEIGHT);
-   elm_gengrid_group_item_size_set(editor->gengrid, ITEM_HEIGHT/3, ITEM_HEIGHT/3);
-   elm_gengrid_align_set(editor->gengrid, 0.0, 0.0);
-   evas_object_smart_callback_add(editor->gengrid, "unselected", _grid_sel, editor);
-   elm_scroller_policy_set(editor->gengrid, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-
-   elm_gengrid_multi_select_set(editor->gengrid, false);
-
-   evas_object_size_hint_weight_set(editor->gengrid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(editor->gengrid, EVAS_HINT_FILL, EVAS_HINT_FILL);
-
-   gic = elm_gengrid_item_class_new();
-   gic->item_style = "sound_editor";
-   gic->func.text_get = _grid_label_get;
-   gic->func.content_get = NULL;
-   gic->func.del = _grid_del;
-
-   ggic = elm_gengrid_item_class_new();
-   ggic->item_style = "group_index";
-   ggic->func.text_get = _grid_label_get;
-   ggic->func.content_get = NULL;
-   ggic->func.del = _grid_del;
-
-   _gengrid_content_fill(editor);
-
-   evas_object_show(editor->gengrid);
-   elm_object_part_content_set(editor->markup, "eflete.swallow.grid", editor->gengrid);
-}
-
-static inline Evas_Object *
-_sound_editor_search_field_create(Evas_Object *parent)
-{
-   Evas_Object *entry, *icon;
-
-   assert(parent != NULL);
-
-   ENTRY_ADD(parent, entry, true);
-   elm_object_part_text_set(entry, "guide", _("Search"));
-   ICON_STANDARD_ADD(entry, icon, true, "search");
-   elm_object_part_content_set(entry, "elm.swallow.end", icon);
-   return entry;
-}
-
 static Eina_Bool
-_add_sample_done(void *data,
+_add_sample_done(void *data __UNUSED__,
                  Evas_Object *obj __UNUSED__,
                  void *event_info)
 {
@@ -257,9 +201,6 @@ _add_sample_done(void *data,
 
    Eina_List *selected_list = (Eina_List *)event_info;
    const char *selected = eina_list_data_get(selected_list);
-   Sound_Editor *edit = (Sound_Editor *)data;
-
-   assert(edit != NULL);
 
    samples_list = ap.project->sounds;
 
@@ -313,7 +254,7 @@ _add_sample_done(void *data,
    snd->type_label = _sound_format_get(res->source);
    snd->type = SOUND_TYPE_SAMPLE;
    snd->resource = (Resource *)res;
-   elm_gengrid_item_insert_before(edit->gengrid, gic, snd, edit->tone_header, _grid_selected, edit);
+   elm_gengrid_item_insert_before(mng.gengrid, gic, snd, mng.tone_header, _grid_sel_cb, NULL);
 
    CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit_sound_sample_add would be added into Editor Module and saving would work properly")
@@ -323,67 +264,15 @@ _add_sample_done(void *data,
 }
 
 static void
-_popup_close(void *data)
-{
-   Sound_Editor *edit = (Sound_Editor *)data;
-
-   assert(edit != NULL);
-   assert(edit->tone_validator != NULL);
-   assert(edit->frq_validator != NULL);
-
-   evas_object_del(edit->popup);
-
-   elm_validator_regexp_free(edit->tone_validator);
-   elm_validator_regexp_free(edit->frq_validator);
-   edit->tone_validator = NULL;
-   edit->frq_validator = NULL;
-
-   elm_gengrid_item_selected_set(elm_gengrid_last_item_get(edit->gengrid), true);
-}
-
-static void
-_add_tone_cancel(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   Sound_Editor *edit = (Sound_Editor *)data;
-
-   ecore_job_add(_popup_close, edit);
-}
-
-static void
-_add_tone_done(void *data,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_tone_add(void)
 {
    Sound_Data *snd;
    Eina_Stringshare *tone_name;
    int frq;
-   Eina_List *tones_list, *l;
-   Eina_Bool exist = false;
    Tone_Resource *tone;
 
-   Sound_Editor *edit = (Sound_Editor *)data;
-
-   assert(edit != NULL);
-
-   tone_name = eina_stringshare_add(elm_entry_entry_get(edit->tone_entry));
-
-   tones_list = ap.project->tones;
-   EINA_LIST_FOREACH(tones_list, l, tone)
-     if (tone->name == tone_name) /* they both are stringshares */
-       {
-          exist = true;
-          break;
-       }
-   if (exist)
-     {
-        WARN(_("Tone '%s' is already added to project"), tone_name)
-        eina_stringshare_del(tone_name);
-        return;
-     }
-
-   frq = atoi(elm_entry_entry_get(edit->frq_entry));
+   tone_name = eina_stringshare_add(elm_entry_entry_get(mng.tone_entry));
+   frq = atoi(elm_entry_entry_get(mng.frq_entry));
    edje_edit_sound_tone_add(ap.project->global_object, tone_name, frq);
 
    tone = (Tone_Resource *)mem_calloc(1, sizeof(Tone_Resource));
@@ -393,16 +282,14 @@ _add_tone_done(void *data,
 
    snd = (Sound_Data *)mem_malloc(sizeof(Sound_Data));
    snd->name = eina_stringshare_ref(tone->name);
-   snd->type_label = eina_stringshare_add(elm_entry_entry_get(edit->frq_entry));
+   snd->type_label = eina_stringshare_add(elm_entry_entry_get(mng.frq_entry));
    snd->type = SOUND_TYPE_TONE;
    snd->resource = (Resource *)tone;
-   elm_gengrid_item_append(edit->gengrid, gic, snd, _grid_selected, edit);
+   elm_gengrid_item_append(mng.gengrid, gic, snd, _grid_sel_cb, NULL);
 
    CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit_image_add would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
-
-   ecore_job_add(_popup_close, edit);
 }
 
 static void
@@ -418,105 +305,87 @@ _validation(void *data __UNUSED__,
             Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
 {
-   Sound_Editor *edit = (Sound_Editor *)data;
-
-   if ((elm_validator_regexp_status_get(edit->tone_validator) != ELM_REG_NOERROR) ||
-       (elm_validator_regexp_status_get(edit->frq_validator) != ELM_REG_NOERROR))
-     elm_object_disabled_set(edit->popup_btn_add, true);
+   if ((resource_name_validator_status_get(mng.tone_validator) != ELM_REG_NOERROR) ||
+       (elm_validator_regexp_status_get(mng.frq_validator) != ELM_REG_NOERROR))
+     popup_buttons_disabled_set(BTN_OK, true);
    else
-     elm_object_disabled_set(edit->popup_btn_add, false);
+     popup_buttons_disabled_set(BTN_OK, false);
 }
 
 static void
-_tone_add_cb(void *data,
+_tone_add_cb(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   Sound_Editor *edit = data;
+   Evas_Object *box, *item;
+   Popup_Button btn_res;
 
-   assert(edit != NULL);
+   if (!mng.tone_validator)
+     {
+        mng.tone_validator = resource_name_validator_new(NAME_REGEX, NULL);
+        resource_name_validator_list_set(mng.tone_validator, &ap.project->tones, true);
+     }
+   if (!mng.frq_validator)
+     mng.frq_validator = elm_validator_regexp_new(FREQUENCY_REGEX, NULL);
 
-   Evas_Object *popup, *box, *item, *bt_no;
-   Eina_Stringshare *title;
-
-   popup = elm_popup_add(ap.win);
-   elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
-   title = eina_stringshare_add(_("Add new tone to the project"));
-   elm_object_part_text_set(popup, "title,text", title);
-   edit->popup = popup;
-
-   assert(edit->tone_validator == NULL);
-   assert(edit->frq_validator == NULL);
-   edit->tone_validator = elm_validator_regexp_new(NAME_REGEX, NULL);
-   edit->frq_validator = elm_validator_regexp_new(FREQUENCY_REGEX, NULL);
-
-   BOX_ADD(popup, box, false, false);
-   elm_object_content_set(popup, box);
+   BOX_ADD(mng.win, box, false, false);
    LAYOUT_PROP_ADD(box, _("Tone name:"), "popup", "1swallow")
-   ENTRY_ADD(item, edit->tone_entry, true);
-   eo_event_callback_add(edit->tone_entry, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, edit->tone_validator);
-   evas_object_smart_callback_add(edit->tone_entry, "changed", _validation, edit);
-   elm_object_part_text_set(edit->tone_entry, "guide", _("Type a new tone name"));
+   ENTRY_ADD(item, mng.tone_entry, true);
+   eo_event_callback_add(mng.tone_entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.tone_validator);
+   evas_object_smart_callback_add(mng.tone_entry, "changed", _validation, NULL);
+   elm_object_part_text_set(mng.tone_entry, "guide", _("Type a new tone name"));
+   elm_object_part_content_set(item, "elm.swallow.content", mng.tone_entry);
    /* need to manualy set not valid string for triggered validator */
-   elm_entry_entry_set(edit->tone_entry, NULL);
-   elm_object_part_content_set(item, "elm.swallow.content", edit->tone_entry);
+   elm_entry_entry_set(mng.tone_entry, NULL);
    elm_box_pack_end(box, item);
 
    LAYOUT_PROP_ADD(box, _("Frequency:"), "popup", "1swallow")
-   ENTRY_ADD(item, edit->frq_entry, true);
-   eo_event_callback_add(edit->frq_entry, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, edit->frq_validator);
-   evas_object_smart_callback_add(edit->frq_entry, "changed", _validation, edit);
-   elm_object_part_text_set(edit->frq_entry, "guide", _("Type a frequency (20 - 20000)"));
+   ENTRY_ADD(item, mng.frq_entry, true);
+   eo_event_callback_add(mng.frq_entry, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, mng.frq_validator);
+   evas_object_smart_callback_add(mng.frq_entry, "changed", _validation, NULL);
+   elm_object_part_text_set(mng.frq_entry, "guide", _("Type a frequency (20 - 20000)"));
+   elm_object_part_content_set(item, "elm.swallow.content", mng.frq_entry);
    /* need to manualy set not valid string for triggered validator */
-   elm_entry_entry_set(edit->frq_entry, NULL);
-   elm_object_part_content_set(item, "elm.swallow.content", edit->frq_entry);
+   elm_entry_entry_set(mng.frq_entry, NULL);
    elm_box_pack_end(box, item);
 
-   BUTTON_ADD(popup, edit->popup_btn_add, _("Add"));
-   evas_object_smart_callback_add (edit->popup_btn_add, "clicked", _add_tone_done, edit);
-   elm_object_part_content_set(popup, "button1", edit->popup_btn_add);
-   elm_object_disabled_set(edit->popup_btn_add, true);
+   popup_buttons_disabled_set(BTN_OK, true);
+   btn_res = popup_want_action(_("Create a new layout"), NULL, box,
+                               mng.tone_entry, BTN_OK|BTN_CANCEL,
+                               NULL, mng.tone_entry);
+   if (BTN_CANCEL == btn_res) goto close;
+   _tone_add();
 
-   BUTTON_ADD(popup, bt_no, _("Cancel"));
-   evas_object_smart_callback_add (bt_no, "clicked", _add_tone_cancel, edit);
-   elm_object_part_content_set(popup, "button2", bt_no);
-
-   evas_object_show(popup);
-   eina_stringshare_del(title);
+close:
+   evas_object_del(box);
 }
 
 #undef INFO_ADD
 
 static void
-_on_btn_plus_clicked(void *data,
-                     Evas_Object *obj,
-                     void *event_info __UNUSED__)
+_sound_add_cb(void *data __UNUSED__,
+              Evas_Object *obj,
+              void *event_info __UNUSED__)
 {
-   Sound_Editor *edit = (Sound_Editor *)data;
    Evas_Coord x, y, h;
-
-   assert(edit != NULL);
 
    evas_object_geometry_get(obj, &x, &y, NULL, &h);
 
-   elm_menu_move(edit->menu, x, y + h);
-   evas_object_show(edit->menu);
+   elm_menu_move(mng.menu, x, y + h);
+   evas_object_show(mng.menu);
 }
 
 static void
-_on_delete_clicked_cb(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info __UNUSED__)
+_sound_del_cb(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
 {
    Elm_Object_Item *grid_it;
    Sound_Data *snd;
    Eina_List *list, *l, *l_next;
-   Sound_Editor *edit = (Sound_Editor *)data;
    External_Resource *res;
 
-   assert(edit != NULL);
-
-   list = (Eina_List *)elm_gengrid_selected_items_get(edit->gengrid);
+   list = (Eina_List *)elm_gengrid_selected_items_get(mng.gengrid);
    EINA_LIST_FOREACH_SAFE(list, l, l_next, grid_it)
      {
         snd = elm_object_item_data_get(grid_it);
@@ -545,138 +414,74 @@ _on_delete_clicked_cb(void *data,
    TODO("Remove this line once edje_edit_sound_..._del would be added into Editor Modulei and saving would work properly")
    ap.project->changed = true;
 
-   elm_object_disabled_set(edit->btn_del, true);
+   elm_object_disabled_set(mng.btn_del, true);
    evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_UNSELECTED, NULL);
 }
 
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, "elm.text")
 
 static void
-_search_changed(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+_search_changed_cb(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
 {
-   Sound_Editor *edit = data;
-
-   assert(edit != NULL);
-
-   _gengrid_item_search(edit->gengrid, &(edit->sound_search_data),
-                        edit->sound_search_data.last_item_found);
+   _gengrid_item_search(mng.gengrid, &(mng.sound_search_data),
+                        mng.sound_search_data.last_item_found);
 
 }
 
 static void
-_search_nxt_gd_item(void *data __UNUSED__,
-                    Evas_Object *obj __UNUSED__,
-                    void *event_info __UNUSED__)
+_find_next_cb(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
 {
-   Sound_Editor *edit = data;
    Elm_Object_Item *start_from = NULL;
 
-   assert(edit != NULL);
-
-   if (edit->sound_search_data.last_item_found)
+   if (mng.sound_search_data.last_item_found)
      {
         start_from =
-           elm_gengrid_item_next_get(edit->sound_search_data.last_item_found);
+           elm_gengrid_item_next_get(mng.sound_search_data.last_item_found);
      }
 
-   _gengrid_item_search(edit->gengrid, &(edit->sound_search_data), start_from);
+   _gengrid_item_search(mng.gengrid, &(mng.sound_search_data), start_from);
 }
 
 static void
-_search_reset_cb(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   Search_Data *search_data = data;
-
-   assert(search_data != NULL);
-
-   search_data->last_item_found = NULL;
-}
-
-static void
-_property_hide(Sound_Editor *mng)
+_mw_cancel_cb(void *data __UNUSED__,
+           Evas_Object *obj __UNUSED__,
+           void *event_info __UNUSED__)
 {
    Evas_Object *content;
 
    /* unset and hide the image property */
-   content = elm_object_part_content_unset(mng->panes, "right");
+   content = elm_object_content_unset(mng.win);
    evas_object_hide(content);
 }
 
 static void
-_mw_cancel(void *data,
-           Evas_Object *obj __UNUSED__,
-           void *event_info __UNUSED__)
-{
-   Sound_Editor *mng = data;
-   _property_hide(mng);
-}
-
-static void
-_mw_done(void *data,
+_mw_done_cb(void *data __UNUSED__,
          Evas_Object *obj __UNUSED__,
          void *event_info __UNUSED__)
 {
-   Sound_Editor *mng = data;
-   _property_hide(mng);
+   Evas_Object *content;
+
+   /* unset and hide the image property */
+   content = elm_object_content_unset(mng.win);
+   evas_object_hide(content);
 }
 
 static void
-_sound_editor_main_markup_create(Sound_Editor *edit)
+_project_closed_cb(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
 {
-   Evas_Object *ic, *search;
-
-   assert(edit != NULL);
-
-   edit->win = mw_add();
-   mw_title_set(edit->win, _("Sound manager"));
-   evas_object_smart_callback_add(edit->win, "cancel", _mw_cancel, edit);
-   evas_object_smart_callback_add(edit->win, "done", _mw_done, edit);
-   ic = elm_icon_add(edit->win);
-   elm_icon_standard_set(ic, "sound2");
-   mw_icon_set(edit->win, ic);
-   edit->markup = elm_layout_add(edit->win);
-   elm_layout_theme_set(edit->markup, "layout", "sound_manager", "default");
-   evas_object_size_hint_weight_set(edit->markup, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_data_set(edit->win, SND_EDIT_KEY, edit);
-   edit->panes = elm_panes_add(edit->win);
-   elm_object_content_set(edit->win, edit->panes);
-   elm_object_part_content_set(edit->panes, "left", edit->markup);
-   elm_object_part_content_set(edit->panes, "right", ap.property.sound_manager);
-
-   edit->btn_del = elm_button_add(edit->markup);
-   elm_object_style_set(edit->btn_del, "minus");
-   evas_object_smart_callback_add(edit->btn_del, "clicked", _on_delete_clicked_cb, edit);
-   elm_object_part_content_set(edit->markup, "eflete.swallow.del_btn", edit->btn_del);
-   elm_object_disabled_set(edit->btn_del, true);
-
-   edit->btn_add = elm_button_add(edit->markup);
-   elm_object_style_set(edit->btn_add, "plus");
-   evas_object_smart_callback_add(edit->btn_add, "clicked", _on_btn_plus_clicked, edit);
-   elm_object_part_content_set(edit->markup, "eflete.swallow.add_btn", edit->btn_add);
-
-   edit->menu = elm_menu_add(ap.win);
-   elm_menu_item_add(edit->menu, NULL, "sound_sample", _("Sample"), _sample_add_cb, edit);
-   elm_menu_item_add(edit->menu, NULL, "sound_tone", _("Tone"), _tone_add_cb, edit);
-
-   search = _sound_editor_search_field_create(edit->markup);
-   evas_object_hide(search);
-   elm_layout_content_set(edit->markup, "eflete.swallow.search_area", search);
-   evas_object_smart_callback_add(search, "changed", _search_changed, edit);
-   evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, edit);
-   evas_object_smart_callback_add(edit->gengrid, "pressed", _search_reset_cb,
-                                  &(edit->sound_search_data));
-   edit->sound_search_data.search_entry = search;
-   edit->sound_search_data.last_item_found = NULL;
+   elm_gengrid_clear(mng.gengrid);
 }
 
 Evas_Object *
 sound_manager_add(void)
 {
-   Sound_Editor *edit;
+   Evas_Object *ic, *search_entry, *button;
 
    assert(ap.project != NULL);
 
@@ -684,13 +489,83 @@ sound_manager_add(void)
    ecore_audio_init();
 #endif
 
-   edit = (Sound_Editor *)mem_calloc(1, sizeof(Sound_Editor));
+   mng.win = mw_add();
+   mw_title_set(mng.win, _("Sound manager"));
+   evas_object_smart_callback_add(mng.win, "cancel", _mw_cancel_cb, NULL);
+   evas_object_smart_callback_add(mng.win, "done", _mw_done_cb, NULL);
+   ic = elm_icon_add(mng.win);
+   elm_icon_standard_set(ic, "sound2");
+   mw_icon_set(mng.win, ic);
 
-   _sound_editor_main_markup_create(edit);
-   _create_gengrid(edit->markup, edit);
-   elm_object_focus_set(edit->sound_search_data.search_entry, true);
+   if (mng.layout) goto done;
 
-   evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_UNSELECTED, NULL);
-   evas_object_show(edit->win);
-   return edit->win;
+   mng.layout = elm_layout_add(mng.win);
+   elm_layout_theme_set(mng.layout, "layout", "sound_manager", "default");
+   mng.panes = elm_panes_add(mng.win);
+   elm_object_part_content_set(mng.panes, "left", mng.layout);
+   elm_object_part_content_set(mng.panes, "right", ap.property.sound_manager);
+
+   if (!gic)
+     {
+        gic = elm_gengrid_item_class_new();
+        gic->item_style = "sound_editor";
+        gic->func.text_get = _grid_label_get;
+        gic->func.content_get = NULL;
+        gic->func.del = _grid_del;
+     }
+
+   if (!ggic)
+     {
+        ggic = elm_gengrid_item_class_new();
+        ggic->item_style = "group_index";
+        ggic->func.text_get = _grid_label_get;
+        ggic->func.content_get = NULL;
+        ggic->func.del = _grid_del;
+     }
+
+   mng.gengrid = elm_gengrid_add(mng.layout);
+   elm_gengrid_item_size_set(mng.gengrid, ITEM_WIDTH, ITEM_HEIGHT);
+   elm_gengrid_align_set(mng.gengrid, 0.0, 0.0);
+   elm_gengrid_group_item_size_set(mng.gengrid, ITEM_HEIGHT/3, ITEM_HEIGHT/3);
+   evas_object_smart_callback_add(mng.gengrid, "unselected", _grid_unsel_cb, NULL);
+   elm_scroller_policy_set(mng.gengrid, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
+   elm_object_part_content_set(mng.layout, "eflete.swallow.grid", mng.gengrid);
+
+   button = elm_button_add(mng.layout);
+   elm_object_style_set(button, "plus");
+   evas_object_smart_callback_add(button, "clicked", _sound_add_cb, NULL);
+   elm_object_part_content_set(mng.layout, "eflete.swallow.add_btn", button);
+
+   mng.btn_del = elm_button_add(mng.layout);
+   elm_object_style_set(mng.btn_del, "minus");
+   evas_object_smart_callback_add(mng.btn_del, "clicked", _sound_del_cb, NULL);
+   elm_object_part_content_set(mng.layout, "eflete.swallow.del_btn", mng.btn_del);
+   elm_object_disabled_set(mng.btn_del, true);
+
+   mng.menu = elm_menu_add(ap.win);
+   elm_menu_item_add(mng.menu, NULL, "sound_sample", _("Sample"), _sample_add_cb, NULL);
+   elm_menu_item_add(mng.menu, NULL, "sound_tone", _("Tone"), _tone_add_cb, NULL);
+
+   ENTRY_ADD(mng.layout, search_entry, true);
+   elm_object_part_text_set(search_entry, "guide", _("Search"));
+   ICON_STANDARD_ADD(search_entry, ic, true, "search");
+   elm_object_part_content_set(search_entry, "elm.swallow.end", ic);
+   elm_layout_content_set(mng.layout, "eflete.swallow.search_area", search_entry);
+   evas_object_smart_callback_add(search_entry, "changed", _search_changed_cb, NULL);
+   evas_object_smart_callback_add(search_entry, "activated", _find_next_cb, NULL);
+   mng.sound_search_data.search_entry = search_entry;
+   mng.sound_search_data.last_item_found = NULL;
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CLOSED, _project_closed_cb, NULL);
+
+done:
+   /* if gengrid is empty try to fill it. This happens if the managers called
+    * first time or project was reopened */
+   if (!elm_gengrid_realized_items_get(mng.gengrid))
+     _sound_manager_init();
+
+   elm_object_content_set(mng.win, mng.panes);
+   evas_object_show(mng.win);
+   elm_object_focus_set(mng.sound_search_data.search_entry, true);
+   return mng.win;
 }

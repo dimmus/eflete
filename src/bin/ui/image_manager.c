@@ -96,7 +96,6 @@ _image_manager_image_create(Evas_Object *parent,
 }
 
 /* icon fetching callback */
-#define MAX_ICON_SIZE 16
 static Evas_Object *
 _grid_content_get(void *data,
                   Evas_Object *obj,
@@ -116,8 +115,6 @@ _grid_content_get(void *data,
         elm_object_style_set(image_obj, "noframe");
         _image_manager_image_setup(image_obj, it);
         evas_object_show(image_obj);
-   /* functions for deferred creation of gengrid icons */
-   //ecore_job_add(_image_content_setup, image_init_data);
      }
    else if (!strcmp(part, "elm.swallow.end"))
      {
@@ -134,7 +131,6 @@ _grid_content_get(void *data,
 
    return image_obj;
 }
-#undef MAX_ICON_SIZE
 
 /* deletion callback */
 static void
@@ -158,7 +154,6 @@ _image_info_setup(const Image_Item* it)
    assert(it != NULL);
 
    image = _image_manager_image_create(mng.layout, it);
-   evas_object_image_smooth_scale_set(image, false);
    evas_object_show(image);
 
    evas_object_data_set(image, "image_name", it->image_name);
@@ -166,9 +161,9 @@ _image_info_setup(const Image_Item* it)
 
 /* item selection change callback */
 static void
-_grid_sel(void *data __UNUSED__,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
+_grid_sel_cb(void *data __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
 {
    Image_Item *item = NULL;
    Eina_List *l;
@@ -285,7 +280,7 @@ _on_image_done(void *data __UNUSED__,
         it = (Image_Item *)mem_malloc(sizeof(Image_Item));
         it->image_name = eina_stringshare_add(file_name);
         it->id = edje_edit_image_id_get(ap.project->global_object, it->image_name);
-        elm_gengrid_item_append(mng.gengrid, gic, it, _grid_sel, NULL);
+        elm_gengrid_item_append(mng.gengrid, gic, it, _grid_sel_cb, NULL);
         it->comp_type = edje_edit_image_compression_type_get(ap.project->global_object,
                                                              it->image_name);
         it->quality = edje_edit_image_compression_rate_get(ap.project->global_object,
@@ -301,9 +296,9 @@ _on_image_done(void *data __UNUSED__,
 }
 
 static void
-_on_button_add_clicked_cb(void *data,
-                          Evas_Object *obj __UNUSED__,
-                          void *event_info __UNUSED__)
+_image_add_cb(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
 {
    popup_fileselector_image_helper(NULL,
                                    NULL,
@@ -315,9 +310,9 @@ _on_button_add_clicked_cb(void *data,
 }
 
 static void
-_on_button_delete_clicked_cb(void *data __UNUSED__,
-                             Evas_Object *obj __UNUSED__,
-                             void *event_info __UNUSED__)
+_image_del_cb(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
 {
    Elm_Object_Item *grid_item = NULL;
    Image_Item *it = NULL;
@@ -356,29 +351,25 @@ _on_button_delete_clicked_cb(void *data __UNUSED__,
 ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, NULL)
 
 static void
-_on_images_search_entry_changed_cb(void *data __UNUSED__,
-                                   Evas_Object *obj __UNUSED__,
-                                   void *event_info __UNUSED__)
+_entry_changed_cb(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
 {
    _gengrid_item_search(mng.gengrid, &(mng.image_search_data),
                         mng.image_search_data.last_item_found);
 }
 
 static void
-_search_next_gengrid_item_cb(void *data __UNUSED__,
-                             Evas_Object *obj __UNUSED__,
-                             void *event_info __UNUSED__)
+_find_next_cb(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
 {
    Elm_Object_Item *start_from = NULL;
 
    if (mng.image_search_data.last_item_found)
-     {
-        start_from =
-           elm_gengrid_item_next_get(mng.image_search_data.last_item_found);
-     }
+     start_from = elm_gengrid_item_next_get(mng.image_search_data.last_item_found);
 
-   _gengrid_item_search(mng.gengrid, &(mng.image_search_data),
-                        start_from);
+   _gengrid_item_search(mng.gengrid, &(mng.image_search_data), start_from);
 }
 
 static inline Evas_Object *
@@ -421,15 +412,11 @@ printf("FIXN");
               /* skip dummy image */
               if (!strcmp(res->name, EFLETE_DUMMY_IMAGE_NAME)) continue;
 
-              it = _image_manager_gengrid_item_data_create(ap.project->global_object,
-                                                          res);
-
-              elm_gengrid_item_append(mng.gengrid, gic, it, _grid_sel, NULL);
+              it = _image_manager_gengrid_item_data_create(ap.project->global_object, res);
+              elm_gengrid_item_append(mng.gengrid, gic, it, _grid_sel_cb, NULL);
            }
-         elm_gengrid_item_bring_in(elm_gengrid_first_item_get(mng.gengrid),
-                                   ELM_GENGRID_ITEM_SCROLLTO_TOP);
+         elm_gengrid_item_bring_in(elm_gengrid_first_item_get(mng.gengrid), ELM_GENGRID_ITEM_SCROLLTO_TOP);
      }
-   evas_object_smart_calculate(mng.gengrid);
 
    evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, NULL);
 printf("FIXN");
@@ -437,9 +424,9 @@ printf("FIXN");
 }
 
 static void
-_mw_cancel(void *data __UNUSED__,
-           Evas_Object *obj __UNUSED__,
-           void *event_info __UNUSED__)
+_mw_cancel_cb(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
 {
    Evas_Object *content;
 
@@ -449,9 +436,9 @@ _mw_cancel(void *data __UNUSED__,
 }
 
 static void
-_mw_done(void *data __UNUSED__,
-         Evas_Object *obj __UNUSED__,
-         void *event_info __UNUSED__)
+_mw_done_cb(void *data __UNUSED__,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
 {
    Evas_Object *content;
 
@@ -461,26 +448,24 @@ _mw_done(void *data __UNUSED__,
 }
 
 static void
-_project_closed(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+_project_closed_cb(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
 {
    elm_gengrid_clear(mng.gengrid);
 }
 
 Evas_Object *
-image_manager_add()
+image_manager_add(void)
 {
-   Evas_Object *button;
-   Evas_Object *ic = NULL;
-   Evas_Object *search_entry = NULL;
+   Evas_Object *button, *ic, *search_entry = NULL;
 
    assert(ap.project != NULL);
 
    mng.win = mw_add();
    mw_title_set(mng.win, _("Image manager"));
-   evas_object_smart_callback_add(mng.win, "cancel", _mw_cancel, NULL);
-   evas_object_smart_callback_add(mng.win, "done", _mw_done, NULL);
+   evas_object_smart_callback_add(mng.win, "cancel", _mw_cancel_cb, NULL);
+   evas_object_smart_callback_add(mng.win, "done", _mw_done_cb, NULL);
    ic = elm_icon_add(mng.win);
    elm_icon_standard_set(ic, "image2");
    mw_icon_set(mng.win, ic);
@@ -493,44 +478,6 @@ image_manager_add()
    elm_object_part_content_set(mng.panes, "left", mng.layout);
    elm_object_part_content_set(mng.panes, "right", ap.property.image_manager);
 
-   mng.gengrid = elm_gengrid_add(mng.layout);
-   elm_object_part_content_set(mng.layout,
-                               "eflete.swallow.grid", mng.gengrid);
-   elm_gengrid_item_size_set(mng.gengrid, ITEM_WIDTH, ITEM_HEIGHT);
-   elm_gengrid_align_set(mng.gengrid, 0.0, 0.0);
-   elm_scroller_policy_set(mng.gengrid, ELM_SCROLLER_POLICY_OFF,
-                           ELM_SCROLLER_POLICY_AUTO);
-
-   elm_gengrid_multi_select_set(mng.gengrid, true);
-   elm_gengrid_multi_select_mode_set(mng.gengrid,
-                                     ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
-
-   elm_gengrid_select_mode_set(mng.gengrid, ELM_OBJECT_SELECT_MODE_ALWAYS);
-   evas_object_smart_callback_add(mng.gengrid, "unselected", _grid_sel, NULL);
-   evas_object_show(mng.gengrid);
-
-   button = elm_button_add(mng.layout);
-   elm_object_style_set(button, "plus");
-   evas_object_smart_callback_add(button, "clicked", _on_button_add_clicked_cb, NULL);
-   elm_object_part_content_set(mng.layout, "eflete.swallow.add_btn", button);
-
-   mng.del_button = elm_button_add(mng.layout);
-   elm_object_style_set(mng.del_button, "minus");
-   evas_object_smart_callback_add(mng.del_button, "clicked", _on_button_delete_clicked_cb, NULL);
-   elm_object_part_content_set(mng.layout, "eflete.swallow.del_btn", mng.del_button);
-   elm_object_disabled_set(mng.del_button, true);
-
-   // Search line add
-   search_entry = _image_manager_search_field_create(mng.layout);
-   elm_object_part_content_set(mng.layout,
-                               "eflete.swallow.search_area", search_entry);
-   evas_object_smart_callback_add(search_entry, "changed",
-                                  _on_images_search_entry_changed_cb, NULL);
-   evas_object_smart_callback_add(search_entry, "activated",
-                                  _search_next_gengrid_item_cb, NULL);
-   mng.image_search_data.search_entry = search_entry;
-   mng.image_search_data.last_item_found = NULL;
-
    if (!gic)
      {
         gic = elm_gengrid_item_class_new();
@@ -540,9 +487,37 @@ image_manager_add()
         gic->func.del = _grid_del;
      }
 
-   elm_object_focus_set(search_entry, true);
+   mng.gengrid = elm_gengrid_add(mng.layout);
+   elm_object_part_content_set(mng.layout, "eflete.swallow.grid", mng.gengrid);
+   elm_gengrid_item_size_set(mng.gengrid, ITEM_WIDTH, ITEM_HEIGHT);
+   elm_gengrid_align_set(mng.gengrid, 0.0, 0.0);
+   elm_scroller_policy_set(mng.gengrid, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
+   elm_gengrid_multi_select_set(mng.gengrid, true);
+   elm_gengrid_multi_select_mode_set(mng.gengrid, ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
+   elm_gengrid_select_mode_set(mng.gengrid, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   evas_object_smart_callback_add(mng.gengrid, "unselected", _grid_sel_cb, NULL);
+   evas_object_show(mng.gengrid);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CLOSED, _project_closed, NULL);
+   button = elm_button_add(mng.layout);
+   elm_object_style_set(button, "plus");
+   evas_object_smart_callback_add(button, "clicked", _image_add_cb, NULL);
+   elm_object_part_content_set(mng.layout, "eflete.swallow.add_btn", button);
+
+   mng.del_button = elm_button_add(mng.layout);
+   elm_object_style_set(mng.del_button, "minus");
+   evas_object_smart_callback_add(mng.del_button, "clicked", _image_del_cb, NULL);
+   elm_object_part_content_set(mng.layout, "eflete.swallow.del_btn", mng.del_button);
+   elm_object_disabled_set(mng.del_button, true);
+
+   // Search line add
+   search_entry = _image_manager_search_field_create(mng.layout);
+   elm_object_part_content_set(mng.layout, "eflete.swallow.search_area", search_entry);
+   evas_object_smart_callback_add(search_entry, "changed", _entry_changed_cb, NULL);
+   evas_object_smart_callback_add(search_entry, "activated", _find_next_cb, NULL);
+   mng.image_search_data.search_entry = search_entry;
+   mng.image_search_data.last_item_found = NULL;
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CLOSED, _project_closed_cb, NULL);
 
 done:
    /* if genlist is empty try to fill it. This happens if the managers called
@@ -552,5 +527,6 @@ done:
 
    elm_object_content_set(mng.win, mng.panes);
    evas_object_show(mng.win);
+   elm_object_focus_set(search_entry, true);
    return mng.win;
 }
