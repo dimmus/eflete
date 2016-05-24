@@ -227,6 +227,12 @@ _workspace_del(void *data,
 /*                              CODE RELOAD                                   */
 /******************************************************************************/
 static void
+_object_delete_job(void *data)
+{
+   evas_object_del(data);
+}
+
+static void
 _code_reload(void *data,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
@@ -239,7 +245,7 @@ _code_reload(void *data,
    if (MODE_CODE != wd->mode) return;
    elm_entry_entry_set(wd->code.obj, _group_code_get(wd));
    layout = elm_object_part_content_unset(wd->code.obj, "elm.swallow.overlay");
-   evas_object_del(layout);
+   ecore_job_add(_object_delete_job, layout);
 }
 
 /******************************************************************************/
