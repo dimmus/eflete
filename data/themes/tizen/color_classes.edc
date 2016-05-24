@@ -1,0 +1,7 @@
+color_classes {
+   color_class { name: "genlist_bg";
+      color: 244 244 244 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+}

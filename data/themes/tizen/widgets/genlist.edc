@@ -2034,15 +2034,15 @@ group { name: "elm/genlist/base/default";
       image: "scroll-runner-vbar.png" COMP;
       image: "scroll-runner-hbar.png" COMP;
       image: "scroll-bar.png" COMP;
-      image: "section-border.png" COMP;
    }
    parts {
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
-            color_class: "bg_scroller";
+            color_class: "genlist_bg";
          }
          description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
             color: 0 0 0 0;
          }
       }
@@ -2066,19 +2066,9 @@ group { name: "elm/genlist/base/default";
             }
          }
          description { state: "hidden" 0.0;
-            align: 1.0 0.0;
-            fixed: 1 0;
+            inherit: "default" 0.00;
+            min: 0 0;
             max: 0 -1;
-            rel1 {
-               offset: 0 1;
-               to: "bg";
-            }
-            rel2 {
-               relative: 1.0 0.0;
-               offset: -2 -2;
-               to_x: "bg";
-               to_y: "sb_hbar";
-            }
          }
       }
       part { name: "sb_vbar_p1";
@@ -2086,9 +2076,7 @@ group { name: "elm/genlist/base/default";
          clip_to: "sb_vbar";
          description { state: "default" 0.0;
             color: 0 0 0 0;
-            rel1 {
-               to: "sb_vbar";
-            }
+            rel1.to: "sb_vbar";
             rel2 {
                relative: 1.0 0.0;
                to: "elm.dragable.vbar";
@@ -2104,9 +2092,7 @@ group { name: "elm/genlist/base/default";
                relative: 0.0 1.0;
                to: "elm.dragable.vbar";
             }
-            rel2 {
-               to: "sb_vbar";
-            }
+            rel2.to: "sb_vbar";
          }
       }
       part { name: "elm.dragable.vbar";
@@ -2123,9 +2109,7 @@ group { name: "elm/genlist/base/default";
             min: 6 24;
             max: 6 -1;
             color: 0 0 0 0;
-            rel1 {
-               to: "sb_vbar";
-            }
+            rel1.to: "sb_vbar";
             rel2 {
                relative: 0.0 0.0;
                to: "sb_vbar";
@@ -2153,19 +2137,9 @@ group { name: "elm/genlist/base/default";
             }
          }
          description { state: "hidden" 0.0;
-            align: 0.0 1.0;
-            fixed: 0 1;
+            inherit: "default" 0.00;
+            min: 0 0;
             max: -1 0;
-            rel1 {
-               offset: 1 0;
-               to: "bg";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               offset: -2 -2;
-               to_x: "sb_vbar";
-               to_y: "bg";
-            }
          }
       }
       part { name: "sb_hbar_p1";
@@ -2174,9 +2148,7 @@ group { name: "elm/genlist/base/default";
          description { state: "default" 0.0;
             fixed: 1 1;
             color: 0 0 0 0;
-            rel1 {
-               to: "sb_hbar";
-            }
+            rel1.to: "sb_hbar";
             rel2 {
                relative: 0.0 1.0;
                to: "elm.dragable.hbar";
@@ -2192,9 +2164,7 @@ group { name: "elm/genlist/base/default";
                relative: 1.0 0.0;
                to: "elm.dragable.hbar";
             }
-            rel2 {
-               to: "sb_hbar";
-            }
+            rel2.to: "sb_hbar";
          }
       }
       part { name: "elm.dragable.hbar";
@@ -2211,9 +2181,7 @@ group { name: "elm/genlist/base/default";
             min: 24 6;
             max: -1 6;
             color: 0 0 0 0;
-            rel1 {
-               to: "sb_hbar";
-            }
+            rel1.to: "sb_hbar";
             rel2 {
                relative: 0.0 0.0;
                to: "sb_hbar";
@@ -2223,33 +2191,23 @@ group { name: "elm/genlist/base/default";
       part { name: "clipper";
          type: RECT;
          description { state: "default" 0.0;
-            rel1 {
-               to: "elm.swallow.content";
-            }
-            rel2 {
-               to: "elm.swallow.content";
-            }
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
          }
       }
       part { name: "elm.swallow.background";
          type: SWALLOW;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            rel1 {
-               to: "elm.swallow.content";
-            }
-            rel2 {
-               to: "elm.swallow.content";
-            }
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
          }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            rel1 {
-               to: "bg";
-            }
+            rel1.to: "bg";
             rel2 {
                relative: 0.0 0.0;
                to_x: "sb_vbar";
@@ -2262,12 +2220,8 @@ group { name: "elm/genlist/base/default";
          repeat_events: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            rel1 {
-               to: "elm.swallow.content";
-            }
-            rel2 {
-               to: "elm.swallow.content";
-            }
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
          }
       }
       part { name: "runner_vbar";
@@ -2277,6 +2231,11 @@ group { name: "elm/genlist/base/default";
             fixed: 1 1;
             min: 8 8;
             max: 8 -1;
+            image {
+               normal: "scroll-runner-vbar.png";
+               border: 3 3 3 3;
+            }
+            fill.smooth: 0;
             rel1 {
                offset: -1 -1;
                to: "sb_vbar";
@@ -2284,37 +2243,11 @@ group { name: "elm/genlist/base/default";
             rel2 {
                offset: 0 0;
                to: "sb_vbar";
-            }
-            image {
-               normal: "scroll-runner-vbar.png";
-               border: 3 3 3 3;
-               middle: DEFAULT;
-            }
-            fill {
-               smooth: 0;
             }
          }
          description { state: "hidden" 0.0;
+            inherit: "default" 0.00;
             visible: 0;
-            fixed: 1 1;
-            min: 8 8;
-            max: 8 -1;
-            rel1 {
-               offset: -1 -1;
-               to: "sb_vbar";
-            }
-            rel2 {
-               offset: 0 0;
-               to: "sb_vbar";
-            }
-            image {
-               normal: "scroll-runner-vbar.png";
-               border: 3 3 3 3;
-               middle: DEFAULT;
-            }
-            fill {
-               smooth: 0;
-            }
          }
       }
       part { name: "runner_hbar";
@@ -2324,6 +2257,11 @@ group { name: "elm/genlist/base/default";
             fixed: 1 1;
             min: 8 8;
             max: -1 8;
+            image {
+               normal: "scroll-runner-hbar.png";
+               border: 2 2 2 2;
+            }
+            fill.smooth: 0;
             rel1 {
                offset: -1 0;
                to: "sb_hbar";
@@ -2331,37 +2269,11 @@ group { name: "elm/genlist/base/default";
             rel2 {
                offset: 0 -1;
                to: "sb_hbar";
-            }
-            image {
-               normal: "scroll-runner-hbar.png";
-               border: 2 2 2 2;
-               middle: DEFAULT;
-            }
-            fill {
-               smooth: 0;
             }
          }
          description { state: "hidden" 0.0;
+            inherit: "default" 0.00;
             visible: 0;
-            fixed: 1 1;
-            min: 8 8;
-            max: -1 8;
-            rel1 {
-               offset: -1 0;
-               to: "sb_hbar";
-            }
-            rel2 {
-               offset: 0 -1;
-               to: "sb_hbar";
-            }
-            image {
-               normal: "scroll-runner-hbar.png";
-               border: 2 2 2 2;
-               middle: DEFAULT;
-            }
-            fill {
-               smooth: 0;
-            }
          }
       }
       part { name: "base_vbar";
@@ -2370,56 +2282,21 @@ group { name: "elm/genlist/base/default";
          clip_to: "sb_vbar";
          description { state: "default" 0.0;
             fixed: 1 0;
-            rel1 {
-               to: "elm.dragable.vbar";
-            }
-            rel2 {
-               to: "elm.dragable.vbar";
-            }
             image {
                normal: "scroll-bar.png";
                border: 2 2 2 2;
-               middle: DEFAULT;
             }
-            fill {
-               smooth: 0;
-            }
+            fill.smooth: 0;
+            rel1.to: "elm.dragable.vbar";
+            rel2.to: "elm.dragable.vbar";
          }
          description { state: "focused" 0.0;
-            fixed: 1 0;
+            inherit: "default" 0.00;
             color_class: "select_light";
-            rel1 {
-               to: "elm.dragable.vbar";
-            }
-            rel2 {
-               to: "elm.dragable.vbar";
-            }
-            image {
-               normal: "scroll-bar.png";
-               border: 2 2 2 2;
-               middle: DEFAULT;
-            }
-            fill {
-               smooth: 0;
-            }
          }
          description { state: "clicked" 0.0;
-            fixed: 1 0;
+            inherit: "default" 0.00;
             color_class: "select";
-            rel1 {
-               to: "elm.dragable.vbar";
-            }
-            rel2 {
-               to: "elm.dragable.vbar";
-            }
-            image {
-               normal: "scroll-bar.png";
-               border: 2 2 2 2;
-               middle: DEFAULT;
-            }
-            fill {
-               smooth: 0;
-            }
          }
       }
       part { name: "base_hbar";
@@ -2428,75 +2305,21 @@ group { name: "elm/genlist/base/default";
          clip_to: "sb_hbar";
          description { state: "default" 0.0;
             fixed: 0 1;
-            rel1 {
-               to: "elm.dragable.hbar";
-            }
-            rel2 {
-               to: "elm.dragable.hbar";
-            }
             image {
                normal: "scroll-bar.png";
                border: 2 2 2 2;
-               middle: DEFAULT;
             }
-            fill {
-               smooth: 0;
-            }
+            fill.smooth: 0;
+            rel1.to: "elm.dragable.hbar";
+            rel2.to: "elm.dragable.hbar";
          }
          description { state: "focused" 0.0;
-            fixed: 0 1;
+            inherit: "default" 0.00;
             color_class: "select_light";
-            rel1 {
-               to: "elm.dragable.hbar";
-            }
-            rel2 {
-               to: "elm.dragable.hbar";
-            }
-            image {
-               normal: "scroll-bar.png";
-               border: 2 2 2 2;
-               middle: DEFAULT;
-            }
-            fill {
-               smooth: 0;
-            }
          }
          description { state: "clicked" 0.0;
-            fixed: 0 1;
+            inherit: "default" 0.00;
             color_class: "select";
-            rel1 {
-               to: "elm.dragable.hbar";
-            }
-            rel2 {
-               to: "elm.dragable.hbar";
-            }
-            image {
-               normal: "scroll-bar.png";
-               border: 2 2 2 2;
-               middle: DEFAULT;
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-      }
-      part { name: "shadow";
-         type: IMAGE;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            image {
-               normal: "section-border.png";
-               border: 10 10 10 11;
-               middle: DEFAULT;
-            }
-         }
-         description { state: "disabled" 0.0;
-            color: 255 255 255 127;
-            image {
-               normal: "section-border.png";
-               border: 10 10 10 11;
-               middle: DEFAULT;
-            }
          }
       }
       part { name: "disabler";
@@ -2505,6 +2328,8 @@ group { name: "elm/genlist/base/default";
             visible: 0;
          }
          description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
+            visible: 1;
             color: 0 0 0 0;
          }
       }
@@ -2640,7 +2465,6 @@ group { name: "elm/genlist/base/default";
          source: "elm";
          action: STATE_SET "disabled" 0.00;
          target: "bg";
-         target: "shadow";
          target: "disabler";
       }
       program { name: "enabled";
@@ -2648,7 +2472,6 @@ group { name: "elm/genlist/base/default";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
-         target: "shadow";
          target: "disabler";
       }
    }

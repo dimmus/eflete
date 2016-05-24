@@ -2,6 +2,7 @@ data.item: "version" "110";
 
 collections {
    #include "../../macros.edc"
+   #include "color_classes.edc"
    #include "widgets/styles.edc"
    #include "widgets/bg.edc"
    #include "widgets/panes.edc"
