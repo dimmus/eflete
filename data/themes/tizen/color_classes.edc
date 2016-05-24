@@ -4,4 +4,14 @@ color_classes {
       color2: 0 0 0 0;
       color3: 0 0 0 0;
    }
+   color_class { name: "genlist_selected";
+      color: 0 150 221 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "genlist_text_tree";
+      color: 88 88 88 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
 }

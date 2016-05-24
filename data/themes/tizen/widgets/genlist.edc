@@ -349,37 +349,15 @@ group { name: "elm/genlist/tree/default/default";
          type: RECT;
          description { state: "default" 0.0;
             color: 0 0 0 0;
-            rel2 {
-               offset: -1 -2;
-            }
          }
          description { state: "selected" 0.0;
-            color_class: "select";
-            rel2 {
-               offset: -1 -2;
-            }
+            inherit: "default" 0.00;
+            color_class: "genlist_selected";
+            color: 255 255 255 255;
          }
          description { state: "reorder" 0.0;
+            inherit: "selected" 0.00;
             color_class: "select";
-            rel2 {
-               offset: -1 -2;
-            }
-         }
-      }
-      part { name: "separator";
-         type: RECT;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            min: 0 1;
-            max: -1 1;
-            color: 68 68 68 255;
-         }
-         description { state: "hide" 0.0;
-            visible: 0;
-            align: 0.5 1.0;
-            min: 0 1;
-            max: -1 1;
-            color: 68 68 68 255;
          }
       }
       part { name: "elm.swallow.icon";
@@ -387,17 +365,18 @@ group { name: "elm/genlist/tree/default/default";
          repeat_events: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            min: 14 14;
+            min: 16 16;
+            max: 16 16;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
             rel1 {
                relative: 1.0 0.0;
-               offset: 6 3;
+               offset: 7 4;
                to_x: "arrow";
             }
             rel2 {
                relative: 0.0 1.0;
-               offset: -1 -4;
+               offset: -1 -5;
                to_x: "arrow";
             }
          }
@@ -424,57 +403,44 @@ group { name: "elm/genlist/tree/default/default";
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
-            rel2 {
-               relative: 0.0 1.0;
-            }
+            rel2.relative: 0.0 1.0;
          }
          description { state: "hide" 0.0;
+            inherit: "default" 0.00;
             visible: 0;
-            align: 0.0 0.5;
-            rel2 {
-               relative: 0.0 1.0;
-            }
+            fixed: 0 0;
          }
       }
       part { name: "elm.text";
          type: TEXT;
          repeat_events: 1;
          description { state: "default" 0.0;
-            min: 0 26;
-            color_class: "main";
+            min: 0 16;
+            max: -1 16;
+            color_class: "genlist_text_tree";
+            text {
+               font: "Sans";
+               size: 13;
+               align: 0.0 0.5;
+            }
             rel1 {
                relative: 1.0 0.0;
-               offset: 6 0;
+               offset: 6 4;
                to_x: "elm.swallow.icon";
             }
             rel2 {
                relative: 0.0 1.0;
-               offset: -7 -1;
+               offset: -7 -5;
                to_x: "elm.swallow.end";
-            }
-            text {
-               font: "PT";
-               size: 12;
-               align: 0.0 0.5;
             }
          }
          description { state: "hide" 0.0;
+            inherit: "default" 0.00;
             visible: 0;
-            min: 0 26;
-            color_class: "main";
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 6 0;
-               to_x: "elm.swallow.icon";
-            }
+            rel1.offset: 6 0;
             rel2 {
-               relative: 0.0 1.0;
                offset: -7 -1;
-            }
-            text {
-               font: "PT";
-               size: 12;
-               align: 0.0 0.5;
+               to_x: "";
             }
          }
       }
@@ -482,30 +448,22 @@ group { name: "elm/genlist/tree/default/default";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 0.5;
+            fixed: 1 0;
+            min: 16 16;
+            max: 16 16;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
-            fixed: 1 0;
             rel1 {
                relative: 1.0 0.0;
                offset: 0 3;
             }
-            rel2 {
-               offset: -7 -4;
-            }
+            rel2.offset: -7 -4;
          }
          description { state: "hide" 0.0;
+            inherit: "default" 0.00;
             visible: 0;
-            align: 1.0 0.5;
-            aspect: 1.0 1.0;
-            aspect_preference: VERTICAL;
-            fixed: 1 0;
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 0 3;
-            }
-            rel2 {
-               offset: -7 -4;
-            }
+            min: 0 0;
+            max: -1 -1;
          }
       }
       part { name: "events";
@@ -519,46 +477,28 @@ group { name: "elm/genlist/tree/default/default";
          type: IMAGE;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            max: 14 14;
-            color_class: "main";
+            fixed: 1 1;
+            min: 9 9;
+            max: 9 9;
+            color_class: "genlist_text_tree";
+            image.normal: "icon_arrow_right.png";
             rel1 {
                relative: 1.0 0.0;
                offset: 6 0;
                to_x: "elm.swallow.pad";
-            }
-            image {
-               normal: "icon_arrow_right.png";
-               middle: DEFAULT;
             }
          }
          description { state: "hide" 0.0;
+            inherit: "default" 0.00;
             visible: 0;
-            align: 0.0 0.5;
+            fixed: 0 0;
+            min: 0 0;
             max: 14 14;
             color_class: "main";
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 6 0;
-               to_x: "elm.swallow.pad";
-            }
-            image {
-               normal: "icon_arrow_right.png";
-               middle: DEFAULT;
-            }
          }
          description { state: "selected" 0.0;
-            align: 0.0 0.5;
-            max: 14 14;
-            color_class: "main";
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 6 0;
-               to_x: "elm.swallow.pad";
-            }
-            image {
-               normal: "icon_arrow_down.png";
-               middle: DEFAULT;
-            }
+            inherit: "default" 0.00;
+            image.normal: "icon_arrow_down.png";
          }
       }
       part { name: "disclip";
@@ -568,8 +508,8 @@ group { name: "elm/genlist/tree/default/default";
             color: 0 0 0 0;
          }
          description { state: "hide" 0.0;
+            inherit: "default" 0.00;
             visible: 0;
-            color: 0 0 0 0;
          }
       }
    }
@@ -590,7 +530,6 @@ group { name: "elm/genlist/tree/default/default";
          signal: "elm,state,contract_flip";
          source: "elm";
          action: STATE_SET "hide" 0.00;
-         target: "separator";
          target: "elm.swallow.icon";
          target: "elm.swallow.pad";
          target: "arrow";
