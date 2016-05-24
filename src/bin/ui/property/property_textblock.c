@@ -177,7 +177,9 @@ static const char *direction_list[] = { "bottom_left",
                                         "top_right",
                                         NULL};
 
-#define DASHED_UNDERLINE_NUMBER 3 /* because it is dashed */
+#define SINGLE_UNDERLINE_NUMBER 1
+#define DOUBLE_UNDERLINE_NUMBER 2
+#define DASHED_UNDERLINE_NUMBER 3
 static const char *underl_styles[] = { "off",        /* 0 */
                                        "single",     /* 1 */
                                        "double",     /* 2 */
@@ -507,7 +509,8 @@ _subitems_get(Property_Attribute *pa)
       case PROPERTY_TEXTBLOCK_ITEM_LINES_TITLE:
          APPEND(PROPERTY_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH);
          APPEND(PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE);
-         APPEND(PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_TWO);
          APPEND(PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_COLOR);
          APPEND(PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH);
          break;
@@ -1177,6 +1180,8 @@ _underline_filter_cb(Property_Attribute *pa)
    if ((pa->type.textblock_item == PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH) ||
       (pa->type.textblock_item == PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_COLOR))
      return tpd.underline == DASHED_UNDERLINE_NUMBER;
+   else if (pa->type.textblock_item == PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_TWO)
+     return tpd.underline == DOUBLE_UNDERLINE_NUMBER;
    else
      return (tpd.underline < DASHED_UNDERLINE_NUMBER) && (tpd.underline);
 }
@@ -1325,11 +1330,15 @@ _init_items()
               IT.name = "underline";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE);
               break;
-           case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR:
-              IT.name = "underline color";
+           case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE:
+              IT.name = "underline color one";
               IT.filter_cb = _underline_filter_cb;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE);
-              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_TWO);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_TWO:
+              IT.name = "underline color two";
+              IT.filter_cb = _underline_filter_cb;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_TWO);
               break;
            case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH:
               IT.name = "underline dash";
