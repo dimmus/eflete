@@ -32,7 +32,7 @@ struct _Property_Textblock_Data {
    int font_style_width;
    struct {
       int r, g, b, a;
-   } color, bg_color;
+   } color, bg_color, outer_color, inner_color, shadow_color;
    int font_align_hor;
    int font_valign_hor;
    int left_margin, right_margin;
@@ -40,6 +40,8 @@ struct _Property_Textblock_Data {
    int linerelsize, linesize, tabstops;
    Eina_Bool pass, bg_check, ellipsis_check;
    int ellipsis_value;
+   int glow_style;
+   int direction;
 
    Style_Data current_style;
    Eina_Bool selected;
@@ -144,9 +146,50 @@ static const char *style_table[][2] = {{"font", NULL},
                                        {NULL, NULL},
                                        {"direction", NULL}};
 
+static const char *font_glow_list[] = { "none",
+                                        "plain",
+                                        "shadow",
+                                        "outline",
+                                        "soft_outline",
+                                        "outline_shadow",
+                                        "outline_soft_shadow",
+                                        "glow",
+                                        "shadow",
+                                        "far_shadow",
+                                        "soft_shadow",
+                                        "far_soft_shadow",
+                                        NULL};
+
+static const char *direction_list[] = { "bottom_left",
+                                        "bottom",
+                                        "bottom_right",
+                                        "left",
+                                        "right",
+                                        "top_left",
+                                        "top",
+                                        "top_right",
+                                        NULL};
+
 /************************************************************************/
 /*************        LOCAL FUNCTIONS TO SPLIT STYLE         ************/
 /************************************************************************/
+static Eina_Bool
+_check_value(const char *list[], const char *value)
+{
+   Eina_Bool exist = false;
+   int i = 0;
+
+   for (i = 0; list[i] != NULL; i++)
+     {
+        if (!strcmp(value, list[i]))
+          {
+             exist = true;
+             break;
+          }
+     }
+
+   return exist;
+}
 
 static int
 _combobox_get_num(Eina_Tmpstr *tmp, const char **array)
@@ -759,17 +802,32 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE:
          elm_spinner_value_set(action->control, tpd.linerelsize);
          break;
-      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_TITLE:
-         break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE:
+         ewe_combobox_select_item_set(action->control, tpd.glow_style);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR:
+         property_color_control_color_set(action->control,
+                                          tpd.shadow_color.r,
+                                          tpd.shadow_color.g,
+                                          tpd.shadow_color.b,
+                                          tpd.shadow_color.a);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
+         ewe_combobox_select_item_set(action->control, tpd.direction);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR:
+         property_color_control_color_set(action->control,
+                                          tpd.outer_color.r,
+                                          tpd.outer_color.g,
+                                          tpd.outer_color.b,
+                                          tpd.outer_color.a);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR:
+         property_color_control_color_set(action->control,
+                                          tpd.inner_color.r,
+                                          tpd.inner_color.g,
+                                          tpd.inner_color.b,
+                                          tpd.inner_color.a);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -794,6 +852,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_PASSWORD:
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_CHECK:
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_COLOR:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR:
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
          _fill_combobox_with_enum(action->control, font_weight_list);
@@ -827,20 +888,12 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_min_max_set(action->control, 0, 100);
          elm_spinner_step_set(action->control, 50);
          break;
-
-      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_TITLE:
-         break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE:
-         break;
-      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR:
+         _fill_combobox_with_enum(action->control, font_glow_list);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
+         _fill_combobox_with_enum(action->control, direction_list);
          break;
-      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR:
-         break;
-      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR:
-         break;
-
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("init callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -1042,6 +1095,9 @@ _on_style_selected(void *data,
    Style_Data *cur_style = (Style_Data *)event_info;
    Eina_Tmpstr *tmp;
    const char *value;
+   char *style_copy = NULL;
+   char *token;
+   int count = 0, i = 0;
 
    if (cur_style)
      {
@@ -1166,6 +1222,89 @@ _on_style_selected(void *data,
         if (!tmp) tmp = eina_tmpstr_add("0");
         tpd.linerelsize = atof(tmp);
         eina_tmpstr_del(tmp);
+
+        /* working with wonderful glow and shadow now */
+        tmp = _tag_value_get(value, "style");
+        if (!tmp) tmp = eina_tmpstr_add("none");
+        style_copy = mem_malloc(strlen(tmp) + 1);
+        strcpy(style_copy, tmp);
+        token = strtok(style_copy, ",");
+        TODO("replace with eina_str_split_full")
+        while (token)
+          {
+             if (count == 0)
+               {
+                  tmp = eina_tmpstr_add(token);
+                  count++;
+               }
+             else
+               {
+                  for (i = 0; direction_list[i] != NULL; i++)
+                    if (!strcmp(direction_list[i], token))
+                      tpd.direction = i;
+               }
+             token = strtok(0, " ");
+          }
+        free(style_copy);
+        if (!_check_value(font_glow_list, tmp))
+          {
+             eina_tmpstr_del(tmp);
+             tmp = eina_tmpstr_add("none");
+          }
+        tpd.glow_style = _combobox_get_num(tmp, font_glow_list);
+        eina_tmpstr_del(tmp);
+
+        tmp = _tag_value_get(value, "glow_color");
+        if (!tmp)
+          {
+             tmp = eina_tmpstr_add(WHITE_COLOR);
+             _tag_parse(WHITE_COLOR, "glow_color");
+          }
+        if (!_hex_to_rgb(tmp,
+                         &tpd.inner_color.r,
+                         &tpd.inner_color.g,
+                         &tpd.inner_color.b,
+                         &tpd.inner_color.a))
+          {
+             ERR("Can't convert backgorund color value");
+             abort();
+          }
+        eina_tmpstr_del(tmp);
+
+        tmp = _tag_value_get(value, "glow2_color");
+        if (!tmp)
+          {
+             tmp = eina_tmpstr_add(WHITE_COLOR);
+             _tag_parse(WHITE_COLOR, "glow2_color");
+          }
+        if (!_hex_to_rgb(tmp,
+                         &tpd.outer_color.r,
+                         &tpd.outer_color.g,
+                         &tpd.outer_color.b,
+                         &tpd.outer_color.a))
+          {
+             ERR("Can't convert backgorund color value");
+             abort();
+          }
+        eina_tmpstr_del(tmp);
+
+        tmp = _tag_value_get(value, "shadow_color");
+        if (!tmp)
+          {
+             tmp = eina_tmpstr_add(WHITE_COLOR);
+             _tag_parse(WHITE_COLOR, "shadow_color");
+          }
+        if (!_hex_to_rgb(tmp,
+                         &tpd.shadow_color.r,
+                         &tpd.shadow_color.g,
+                         &tpd.shadow_color.b,
+                         &tpd.shadow_color.a))
+          {
+             ERR("Can't convert backgorund color value");
+             abort();
+          }
+        eina_tmpstr_del(tmp);
+
      }
    else
      {
