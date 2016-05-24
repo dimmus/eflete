@@ -23,6 +23,7 @@
 
 #define FONT_DEFAULT "DEFAULT='align=middle font=Sans font_size=24 color=#000000 "
 #define DIRECTION_NUM 39
+#define WHITE_COLOR "#FFF"
 
 struct _Property_Textblock_Data {
    Eina_Stringshare *font;
@@ -31,11 +32,14 @@ struct _Property_Textblock_Data {
    int font_style_width;
    struct {
       int r, g, b, a;
-   } color;
+   } color, bg_color;
    int font_align_hor;
    int font_valign_hor;
    int left_margin, right_margin;
    int wrap;
+   int linerelsize, linesize, tabstops;
+   Eina_Bool pass, bg_check, ellipsis_check;
+   int ellipsis_value;
 
    Style_Data current_style;
    Eina_Bool selected;
@@ -451,6 +455,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
    Eina_Stringshare *str_val1 = NULL, *str_tmp = NULL;
    Ewe_Combobox_Item *cb_item = NULL;
    double double_val1 = 0.0;
+   Eina_Bool bool_val1 = false;
    int r, g, b, a;
 
    assert(pa != NULL);
@@ -459,6 +464,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
 
    switch (action->control_type)
      {
+      case PROPERTY_CONTROL_CHECK:
+         bool_val1 = elm_check_state_get(action->control);
+         break;
       case PROPERTY_CONTROL_SPINNER:
          double_val1 = elm_spinner_value_get(action->control);
          break;
@@ -563,23 +571,91 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          ap.project->changed = true;
          break;
 
-      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TITLE:
-         break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TABSTOPS:
+         tpd.tabstops = double_val1;
+         str_tmp = eina_stringshare_printf("%f", double_val1);
+         _tag_parse(str_tmp, "tabstops");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_SIZE:
+         tpd.linesize = double_val1;
+         str_tmp = eina_stringshare_printf("%f", double_val1);
+         _tag_parse(str_tmp, "linesize");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_CHECK:
-         break;
+         tpd.bg_check = bool_val1;
+         if (bool_val1)
+           str_tmp = eina_stringshare_add("on");
+         else
+           str_tmp = eina_stringshare_add("off");
+         _tag_parse(str_tmp, "backing");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
+         elm_object_disabled_set(pa->action2.control, !tpd.bg_check);
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_COLOR:
+         tpd.bg_color.r = r;
+         tpd.bg_color.g = g;
+         tpd.bg_color.b = b;
+         tpd.bg_color.a = a;
+         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
+         _tag_parse(str_tmp, "backing_color");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_PASSWORD:
+         tpd.pass = bool_val1;
+         if (bool_val1)
+           str_tmp = eina_stringshare_add("on");
+         else
+           str_tmp = eina_stringshare_add("off");
+         _tag_parse(str_tmp, "password");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_CHECK:
+         tpd.ellipsis_check = bool_val1;
+         if (!bool_val1)
+           tpd.ellipsis_value = -100;
+         else
+           tpd.ellipsis_value = 0;
+         str_tmp = eina_stringshare_printf("%f", (double)tpd.ellipsis_value / 100);
+         _tag_parse(str_tmp, "ellipsis");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
+         elm_object_disabled_set(pa->action2.control, !tpd.ellipsis_check);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE:
+         tpd.ellipsis_value = double_val1;
+         str_tmp = eina_stringshare_printf("%f", (double)double_val1 / 100);
+         _tag_parse(str_tmp, "ellipsis");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE:
+         tpd.linerelsize = double_val1;
+         str_tmp = eina_stringshare_printf("%f", double_val1);
+         _tag_parse(str_tmp, "linerelsize");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
          break;
 
       default:
@@ -633,23 +709,35 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP:
          ewe_combobox_select_item_set(action->control, tpd.wrap);
          break;
-      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TITLE:
-         break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TABSTOPS:
+         elm_spinner_value_set(action->control, tpd.tabstops);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_SIZE:
+         elm_spinner_value_set(action->control, tpd.linesize);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_CHECK:
+         elm_check_state_set(action->control, tpd.bg_check);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_COLOR:
+         property_color_control_color_set(action->control,
+                                          tpd.bg_color.r,
+                                          tpd.bg_color.g,
+                                          tpd.bg_color.b,
+                                          tpd.bg_color.a);
+         elm_object_disabled_set(action->control, !tpd.bg_check);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_PASSWORD:
+         elm_check_state_set(action->control, tpd.pass);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_CHECK:
+         elm_check_state_set(action->control, tpd.ellipsis_check);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE:
+         elm_object_disabled_set(action->control, !tpd.ellipsis_check);
+         elm_spinner_value_set(action->control, tpd.ellipsis_value);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE:
+         elm_spinner_value_set(action->control, tpd.linerelsize);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -670,6 +758,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
      {
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_NAME:
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_COLOR:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_CHECK:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_PASSWORD:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_CHECK:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_COLOR:
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
          _fill_combobox_with_enum(action->control, font_weight_list);
@@ -690,28 +782,18 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_LEFT:
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_RIGHT:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TABSTOPS:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_SIZE:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE:
          elm_spinner_min_max_set(action->control, 0, 9999);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP:
          _fill_combobox_with_enum(action->control, text_wrap);
          break;
-      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TITLE:
-         break;
-      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TABSTOPS:
-         break;
-      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_SIZE:
-         break;
-      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_CHECK:
-         break;
-      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_COLOR:
-         break;
-      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_PASSWORD:
-         break;
-      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_CHECK:
-         break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE:
-         break;
-      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE:
+         /* because ellipsis SIGSEV on a lot of values sadly... */
+         elm_spinner_min_max_set(action->control, 0, 100);
+         elm_spinner_step_set(action->control, 50);
          break;
 
       default:
@@ -951,6 +1033,67 @@ _on_style_selected(void *data,
         if (!tmp) tmp = eina_tmpstr_add("none");
         tpd.wrap = _combobox_get_num(tmp, text_wrap);
         eina_tmpstr_del(tmp);
+
+        /* working with FORMAT */
+        tmp = _tag_value_get(value, "tabstops");
+        if (!tmp) tmp = eina_tmpstr_add("0");
+        tpd.tabstops = atof(tmp);
+        eina_tmpstr_del(tmp);
+
+        tmp = _tag_value_get(value, "linesize");
+        if (!tmp) tmp = eina_tmpstr_add("0");
+        tpd.linesize = atof(tmp);
+        eina_tmpstr_del(tmp);
+
+        tmp = _tag_value_get(value, "backing");
+        if ((!tmp) || (!strcmp(tmp, "off")))
+          tpd.bg_check = EINA_FALSE;
+        else
+          tpd.bg_check = EINA_TRUE;
+        eina_tmpstr_del(tmp);
+        tmp = _tag_value_get(value, "backing_color");
+           if (!tmp)
+             {
+                tmp = eina_tmpstr_add(WHITE_COLOR);
+                _tag_parse(WHITE_COLOR, "backing_color");
+             }
+           if (!_hex_to_rgb(tmp,
+                            &tpd.bg_color.r,
+                            &tpd.bg_color.g,
+                            &tpd.bg_color.b,
+                            &tpd.bg_color.a))
+             {
+                ERR("Can't convert backgorund color value");
+                abort();
+             }
+           eina_tmpstr_del(tmp);
+
+           tmp = _tag_value_get(value, "password");
+           if ((!tmp) || (!strcmp(tmp, "off")))
+             tpd.pass = false;
+           else
+             tpd.pass = true;
+           eina_tmpstr_del(tmp);
+
+           tmp = _tag_value_get(value, "ellipsis");
+           if (!tmp) tmp = eina_tmpstr_add("0");
+           tpd.ellipsis_value = atof(tmp);
+           eina_tmpstr_del(tmp);
+
+           tmp = _tag_value_get(value, "check_ellipsis");
+           if ((!tmp) || (!strcmp(tmp, "off")))
+             {
+                tpd.ellipsis_value = -100;
+                tpd.ellipsis_check = false;
+             }
+           else
+             tpd.ellipsis_check = true;
+           eina_tmpstr_del(tmp);
+
+           tmp = _tag_value_get(value, "linerelsize");
+           if (!tmp) tmp = eina_tmpstr_add("0");
+           tpd.linerelsize = atof(tmp);
+           eina_tmpstr_del(tmp);
      }
    else
      {
