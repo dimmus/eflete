@@ -19,8 +19,10 @@
 
 #include "property.h"
 #include "property_private.h"
+#include "project_manager.h"
 
 #define FONT_DEFAULT "DEFAULT='align=middle font=Sans font_size=24 color=#000000 "
+#define DIRECTION_NUM 39
 
 struct _Property_Textblock_Data {
    Eina_Stringshare *font;
@@ -30,6 +32,8 @@ struct _Property_Textblock_Data {
    struct {
       int r, g, b, a;
    } color;
+
+   Style_Data current_style;
 
    Property_Attribute items[PROPERTY_TEXTBLOCK_ITEM_LAST];
 };
@@ -69,7 +73,46 @@ static const char *font_width_list[] = { "Normal",
                                          "Expanded",
                                          "Ultraexpanded",
                                          NULL};
-
+static const char *style_table[][2] = {{"font", NULL},
+                                       {"font_fallback", NULL},
+                                       {"font_size", NULL},
+                                       {"font_source", NULL},
+                                       {"font_weight", NULL},
+                                       {"font_style", NULL},
+                                       {"font_width", NULL},
+                                       {"lang", NULL},
+                                       {"color", NULL},
+                                       {"underline_color", NULL},
+                                       {"underline2_color", NULL},
+                                       {"underline_dash_color", NULL},
+                                       {"outline_color", NULL},
+                                       {"shadow_color", NULL},
+                                       {"glow_color", NULL},
+                                       {"glow2_color", NULL},
+                                       {"backing_color", NULL},
+                                       {"strikethrough_color", NULL},
+                                       {"align", NULL},
+                                       {"valign", NULL},
+                                       {"wrap", NULL},
+                                       {"left_margin", NULL},
+                                       {"right_margin", NULL},
+                                       {"underline", NULL},
+                                       {"strikethrough", NULL},
+                                       {"backing", NULL},
+                                       {"style", NULL},
+                                       {"tabstops", NULL},
+                                       {"linesize", NULL},
+                                       {"linerelsize", NULL},
+                                       {"linegap", NULL},
+                                       {"linerelgap", NULL},
+                                       {"item", NULL},
+                                       {"linefill", NULL},
+                                       {"ellipsis", NULL},
+                                       {"password", NULL},
+                                       {"underline_dash_width", NULL},
+                                       {"underline_dash_gap", NULL},
+                                       {NULL, NULL},
+                                       {"direction", NULL}};
 
 /************************************************************************/
 /*************        LOCAL FUNCTIONS TO SPLIT STYLE         ************/
@@ -85,7 +128,7 @@ _combobox_get_num(Eina_Tmpstr *tmp, const char **array)
 
    while (array[i] != NULL)
      {
-        if (strcmp(tmp, array[i])) return i;
+        if (!strcmp(tmp, array[i])) return i;
         ++i;
      }
    return 0; /* NONE */
@@ -196,6 +239,127 @@ _tag_value_get(const char* text_style, char* a_tag)
    return result;
 }
 
+static void
+_style_edit_update()
+{
+   Evas_Textblock_Style *ts = NULL;
+   Eina_Strbuf *style = eina_strbuf_new();
+
+   eina_strbuf_append(style, FONT_DEFAULT);
+   eina_strbuf_append(style, tpd.current_style.stvalue);
+   eina_strbuf_append(style, "'");
+   ts = evas_textblock_style_new();
+   evas_textblock_style_set(ts, eina_strbuf_string_get(style));
+   evas_object_textblock_style_set(tpd.current_style.textblock_style, ts);
+   evas_object_size_hint_max_set(tpd.current_style.textblock_style, EVAS_HINT_FILL,
+                                 EVAS_HINT_FILL);
+   eina_strbuf_free(style);
+   evas_textblock_style_free(ts);
+}
+
+static void
+_entry_repch_update(Eina_Bool password)
+{
+   if (password)
+     evas_object_textblock_replace_char_set(tpd.current_style.textblock_style, "*");
+   else
+     evas_object_textblock_replace_char_set(tpd.current_style.textblock_style, NULL);
+}
+
+static void
+_tag_parse(const char *value, const char *text)
+{
+   Evas_Object *edje_edit_obj = NULL;
+   Eina_Strbuf *tag = eina_strbuf_new();
+   char *stolen_buf;
+   char *token;
+   int i = 0, k = 0, exist = 0, style_length = 0;
+
+   assert(value != NULL);
+   assert(text != NULL);
+
+   eina_strbuf_append(tag, tpd.current_style.stvalue);
+   edje_edit_obj = ap.project->global_object;
+   stolen_buf = eina_strbuf_string_steal(tag);
+
+   token = strtok(stolen_buf, " =+");
+   while (token)
+     {
+        if ((i + 1) % 2 != 0)
+          {
+             for (k = 0; style_table[k][0] != NULL; k++)
+               {
+                  if (!strcmp(style_table[k][0], token)) exist = k;
+               }
+          }
+        else if (strstr(token, "shadow"))
+          {
+             style_table[DIRECTION_NUM][1] = eina_stringshare_add(strchr(token, ','));
+             if (style_table[DIRECTION_NUM][1])
+               {
+                  style_length = (int)(strlen(token) - strlen(style_table[DIRECTION_NUM][1]));
+                  style_table[exist][1] = eina_stringshare_add_length(token, style_length);
+               }
+          }
+        else
+          {
+             style_table[exist][1] = eina_stringshare_add(token);
+          }
+        token= strtok(NULL, " =+");
+        i++;
+     }
+   free(stolen_buf);
+   if (!strcmp(text, "password"))
+     _entry_repch_update(!strcmp(value, "on"));
+
+   if (!strcmp(text, "direction"))
+     {
+        if (style_table[DIRECTION_NUM][1]) eina_stringshare_del(style_table[DIRECTION_NUM][1]);
+        style_table[DIRECTION_NUM][1] = eina_stringshare_printf(",%s", value);
+     }
+   else
+     {
+        for (k = 0; style_table[k][0] != NULL; k++)
+          {
+             if (!strcmp(style_table[k][0], text))
+               {
+                  eina_stringshare_del(style_table[k][1]);
+                  style_table[k][1] = eina_stringshare_add(value);
+               }
+          }
+     }
+   if ((!strcmp(text, "style")) && (!style_table[DIRECTION_NUM][1]))
+     style_table[DIRECTION_NUM][1] = eina_stringshare_add(",bottom_right");
+   eina_strbuf_append(tag, "+ ");
+   for (k = 0; style_table[k][0] != NULL; k++)
+      {
+         if ((style_table[k][1] != NULL) && (!strstr(style_table[k][1], "shadow")))
+           {
+              eina_strbuf_append(tag, style_table[k][0]);
+              eina_strbuf_append(tag, "=");
+              eina_strbuf_append(tag, style_table[k][1]);
+              eina_strbuf_append(tag, " ");
+              eina_stringshare_del(style_table[k][1]);
+              style_table[k][1] = NULL;
+           }
+         else if ((style_table[k][1] != NULL) && (strstr(style_table[k][1], "shadow")))
+           {
+              eina_strbuf_append(tag, style_table[k][0]);
+              eina_strbuf_append(tag, "=");
+              eina_strbuf_append(tag, style_table[k][1]);
+              eina_strbuf_append(tag, style_table[DIRECTION_NUM][1]);
+              eina_strbuf_append(tag, " ");
+              eina_stringshare_del(style_table[k][1]);
+              style_table[k][1] = NULL;
+           }
+      }
+   edje_edit_style_tag_value_set(edje_edit_obj, tpd.current_style.st_name,
+                                 tpd.current_style.st_tag, eina_strbuf_string_get(tag));
+   eina_stringshare_del(tpd.current_style.stvalue);
+   tpd.current_style.stvalue = eina_stringshare_add(eina_strbuf_string_get(tag));
+   eina_strbuf_free(tag);
+}
+
 /************************************************************************/
 /************************************************************************/
 /************************************************************************/
@@ -244,7 +408,7 @@ _subitems_get(Property_Attribute *pa)
 static void
 _change_cb(Property_Attribute *pa, Property_Action *action)
 {
-   Eina_Stringshare *str_val1 = NULL;
+   Eina_Stringshare *str_val1 = NULL, *str_tmp = NULL;
    Ewe_Combobox_Item *cb_item = NULL;
    double double_val1 = 0.0;
    int r, g, b, a;
@@ -278,21 +442,45 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          if (tpd.font)
            eina_stringshare_del(tpd.font);
          tpd.font = eina_stringshare_add(str_val1);
+         _tag_parse(tpd.font, "font");
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
          tpd.font_style_weight = cb_item->index;
+         _tag_parse(eina_stringshare_add(cb_item->title), "font_weight");
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH:
          tpd.font_style_width = cb_item->index;
+         _tag_parse(eina_stringshare_add(cb_item->title), "font_width");
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_COLOR:
          tpd.color.r = r;
          tpd.color.g = g;
          tpd.color.b = b;
          tpd.color.a = a;
+         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
+         _tag_parse(str_tmp, "color");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_SIZE:
          tpd.font_size = double_val1;
+         str_tmp = eina_stringshare_printf("%f", double_val1);
+         _tag_parse(str_tmp, "font_size");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
          break;
 
       default:
@@ -358,7 +546,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          _fill_combobox_with_enum(action->control, font_width_list);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_SIZE:
-         elm_spinner_min_max_set(action->control, 1, 9999);
+         /* limit font size because, for example, value 600 completely ruin edj
+            file and project cannot be opened anymore for now */
+         elm_spinner_min_max_set(action->control, 1, 255);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -473,14 +663,15 @@ _on_style_selected(void *data __UNUSED__,
                    Evas_Object *obj __UNUSED__,
                    void *event_info)
 {
-   Style_Data *current_style = (Style_Data *)event_info;
+   Style_Data *cur_style = (Style_Data *)event_info;
    Eina_Tmpstr *tmp;
    const char *value;
 
-   if (current_style)
+   if (cur_style)
      {
         /* do a split */
-        value = eina_strbuf_string_get(current_style->style);
+        tpd.current_style = *((Style_Data *) cur_style);
+        value = eina_strbuf_string_get(cur_style->style);
 
         tmp = _tag_value_get(value, "font");
         if (!tmp) tmp = eina_tmpstr_add("");
