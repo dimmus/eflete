@@ -61,6 +61,12 @@ typedef struct _Item Item;
 static Elm_Gengrid_Item_Class *gic = NULL;
 
 static void
+_delete_object_job(void *data)
+{
+   evas_object_del(data);
+}
+
+static void
 _btn_cb(void *data,
         Evas_Object *obj __UNUSED__,
         void *ei __UNUSED__)
@@ -251,7 +257,7 @@ _helper_colorclass_dismiss(void *data,
 
    if (helper_data) free(helper_data);
 
-   evas_object_del(helper);
+   ecore_job_add(_delete_object_job, helper);
 }
 
 static void
@@ -281,7 +287,7 @@ _helper_dismiss(void *data __UNUSED__,
    Helper_Data *helper_data = evas_object_data_get(helper, "STRUCT");
    if (helper_data) free(helper_data);
 
-   evas_object_del(helper);
+   ecore_job_add(_delete_object_job, helper);
 }
 
 static void
