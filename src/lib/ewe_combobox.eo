@@ -14,7 +14,7 @@ class Ewe.Combobox (Elm.Widget)
             [[list of items on success, NULL otherwise]]
          }
          values {
-            items: const(list<Ewe_Combobox_Item *>)*;
+            items: const(list<Ewe_Combobox_Item *>);
          }
       }
       item_add {
@@ -119,7 +119,7 @@ class Ewe.Combobox (Elm.Widget)
          return: bool; [[EINA_TRUE on success, EINA_FALSE otherwise]]
          params {
             @in part: Eina.Stringshare*; [[Part name]]
-            @in content: Evas.Object*; [[A swallowed content]]
+            @in content: Evas.Object; [[A swallowed content]]
          }
       }
    }
