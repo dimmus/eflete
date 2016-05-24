@@ -516,6 +516,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_EMIT_SOURCE);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_DRAG_VALUE);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TITLE);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_SCRIPT);
          break;
       case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TYPE);
@@ -634,6 +635,11 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_NAME:
       case ATTRIBUTE_PART_ITEM_NAME:
       case ATTRIBUTE_STATE_IMAGE:
+         elm_object_disabled_set(action->control, true);
+         break;
+      case ATTRIBUTE_PROGRAM_SCRIPT:
+         elm_entry_single_line_set(action->control, false);
+         evas_object_size_hint_min_set(action->control, 0, 400);
          elm_object_disabled_set(action->control, true);
          break;
       case ATTRIBUTE_STATE_IMAGE_TWEEN:
@@ -1065,6 +1071,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
    Eina_Bool bool_val1;
    Eina_Stringshare *str_val1, *str_val2;
    Eina_List *images_list, *l;
+   char *code;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -1082,6 +1089,11 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PROGRAM_NAME:
          property_entry_set(action->control, PROGRAM_ARGS);
+         break;
+      case ATTRIBUTE_PROGRAM_SCRIPT:
+         code = edje_edit_script_program_get(EDIT_OBJ, PROGRAM_ARGS);
+         property_entry_set(action->control, code);
+         free(code);
          break;
       case ATTRIBUTE_PART_ITEM_NAME:
          property_entry_set(action->control, group_pd.part->current_item_name);
@@ -1812,6 +1824,9 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("program name changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, eina_stringshare_add(PROGRAM_ARGS));
          break;
+      case ATTRIBUTE_PROGRAM_SCRIPT:
+         TODO("implement script change");
+         break;
       case ATTRIBUTE_PART_ITEM_NAME:
          group_pd.history.format = _("part item's name changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, eina_stringshare_add(PROGRAM_ARGS));
@@ -2515,6 +2530,9 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PROGRAM_NAME:
          TODO("implement program rename");
+         break;
+      case ATTRIBUTE_PROGRAM_SCRIPT:
+         TODO("implement script change");
          break;
       case ATTRIBUTE_PART_ITEM_NAME:
          TODO("implement part's item rename");
@@ -3271,6 +3289,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_NAME:
       case ATTRIBUTE_STATE_NAME:
       case ATTRIBUTE_PROGRAM_NAME:
+      case ATTRIBUTE_PROGRAM_SCRIPT:
       case ATTRIBUTE_PART_ITEM_NAME:
       case ATTRIBUTE_STATE_IMAGE:
          CHECK_VAL(str_val1);
@@ -4143,6 +4162,11 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PROGRAM_NAME:
               IT.name = "name";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_NAME);
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_SCRIPT:
+              IT.name = "script";
+              IT.filter_data.action_types = ACTION_SCRIPT;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_SCRIPT);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION:
               IT.name = "action";
