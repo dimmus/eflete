@@ -512,6 +512,8 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
    assert(action != NULL);
    assert(action->control != NULL);
 
+   PROPERTY_DATA_GET(action->control);
+
    switch (action->control_type)
      {
       case PROPERTY_CONTROL_CHECK:
@@ -708,17 +710,56 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          ap.project->changed = true;
          break;
 
-      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_TITLE:
-         break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE:
+         tpd.glow_style = cb_item->index;
+         _tag_parse(eina_stringshare_add(cb_item->title), "style");
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
+         GENLIST_FILTER_APPLY(pd->genlist);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR:
+         tpd.shadow_color.r = r;
+         tpd.shadow_color.g = g;
+         tpd.shadow_color.b = b;
+         tpd.shadow_color.a = a;
+         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
+         _tag_parse(str_tmp, "shadow_color");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
+         eina_stringshare_del(style_table[DIRECTION_NUM][1]);
+         style_table[DIRECTION_NUM][1] = eina_stringshare_add(cb_item->title);
+         _tag_parse(cb_item->title, "direction");
+         _style_edit_update();
+         ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR:
+         tpd.outer_color.r = r;
+         tpd.outer_color.g = g;
+         tpd.outer_color.b = b;
+         tpd.outer_color.a = a;
+         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
+         _tag_parse(str_tmp, "glow2_color");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR:
+         tpd.inner_color.r = r;
+         tpd.inner_color.g = g;
+         tpd.inner_color.b = b;
+         tpd.inner_color.a = a;
+         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
+         _tag_parse(str_tmp, "glow_color");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
          break;
 
       default:
@@ -954,6 +995,22 @@ _filter_cb(Property_Attribute *pa)
    return tpd.selected;
 }
 
+static Eina_Bool
+_direction_filter_cb(Property_Attribute *pa)
+{
+   assert(pa != NULL);
+
+   return !!strstr(font_glow_list[tpd.glow_style], "shadow");
+}
+
+static Eina_Bool
+_no_direction_filter_cb(Property_Attribute *pa)
+{
+   assert(pa != NULL);
+
+   return !strstr(font_glow_list[tpd.glow_style], "shadow");
+}
+
 static void
 _init_items()
 {
@@ -1065,18 +1122,22 @@ _init_items()
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR:
               IT.name = "color";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR);
+              IT.filter_cb = _direction_filter_cb;
               break;
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
               IT.name = "direction";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION);
+              IT.filter_cb = _direction_filter_cb;
               break;
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR:
               IT.name = "outer glow color";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR);
+              IT.filter_cb = _no_direction_filter_cb;
               break;
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR:
               IT.name = "inner glow color";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR);
+              IT.filter_cb = _no_direction_filter_cb;
               break;
 
            case PROPERTY_TEXTBLOCK_ITEM_LAST:
