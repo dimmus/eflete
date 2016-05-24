@@ -175,7 +175,6 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/bin/ui/live_view/elementary \
 -I${top_srcdir}/src/bin/ui/preference \
 @EFL_CFLAGS@ \
-@ELEMENTARY_CFLAGS@ \
 @EFLETE_DEFINE@
 
 libete_a_CPPFLAGS = ${eflete_CPPFLAGS} \
@@ -184,7 +183,6 @@ libete_a_CPPFLAGS = ${eflete_CPPFLAGS} \
 eflete_LDADD = \
 libete.a \
 @EFL_LIBS@ \
-@ELEMENTARY_LIBS@ \
 ${top_builddir}/src/lib/libewe.la \
 @LTLIBINTL@
 

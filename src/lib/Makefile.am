@@ -21,7 +21,7 @@ AM_CPPFLAGS = \
 -DEFL_BETA_API_SUPPORT \
 -DELM_INTERNAL_API_ARGESFSDFEFC \
 -DEWE_BUILD \
-@ELEMENTARY_CFLAGS@
+@EFL_CFLAGS@
 
 lib_LTLIBRARIES = libewe.la
 
@@ -45,7 +45,7 @@ ewe_widget_ruler.h
 
 includesubdir = $(pkgincludedir)-@VMAJ@
 
-libewe_la_LIBADD = @ELEMENTARY_LIBS@
+libewe_la_LIBADD = @EFL_LIBS@
 libewe_la_LDFLAGS = @EWE_LTLIBRARY_FLAGS@
 libewe_la_SOURCES = \
 ewe_main.c \

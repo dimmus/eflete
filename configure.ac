@@ -14,9 +14,7 @@ LT_INIT([win32-dll disable-static pic-only])
 
 dnl m4_define([package], "EFL\ Edje\ Theme\ Editor")
 m4_define([efl_version], [1.17])
-m4_define([elm_version], [1.17])
 m4_define([efl_version_max], [1.17.9999])
-m4_define([elm_version_max], [1.17.9999])
 
 m4_define([enventor_version], [0.5.0])
 
@@ -83,14 +81,11 @@ PKG_CHECK_MODULES([EFL],
     eldbus >= efl_version        eldbus < efl_version_max
     efreet >= efl_version        efreet < efl_version_max
     efreet-mime >= efl_version   efreet-mime < efl_version_max
+    elementary >= efl_version    elementary < efl_version_max
    ],
    [have_efl="${GREEN}yes${RESET}"],
    [have_efl="${RED}no${RESET} (version < efl_version or > efl_version_max)"]
 )
-
-PKG_CHECK_MODULES([ELEMENTARY], [elementary >= elm_version elementary < elm_version_max],
-   [have_elm="${GREEN}yes${RESET}"],
-   [have_elm="${RED}no${RESET} (version < elm_version or > efl_version_max)"])
 
 PKG_CHECK_MODULES([CHECK], [check],
    [have_check="${GREEN}yes${RESET}"],
@@ -256,7 +251,6 @@ echo "Configuration Options Summary:"
 echo "  os.............: ${host_os}"
 echo "                   ${os_remark}"
 echo "  efl............: ${have_efl}"
-echo "  elementary.....: ${have_elm}"
 echo ""
 echo "Features:"
 echo "  tizen..........: ${summary_tizen}"

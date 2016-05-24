@@ -40,7 +40,6 @@ FLAGS = \
 -I${top_srcdir}/src/bin/ui/live_view/elementary \
 -I${top_srcdir}/tests \
 @EFL_CFLAGS@ \
-@ELEMENTARY_CFLAGS@ \
 @ENVENTOR_CFLAGS@ \
 @EFLETE_DEFINE@ \
 @CHECK_CFLAGS@
@@ -48,7 +47,6 @@ FLAGS = \
 LD = $(top_builddir)/src/bin/libete.a \
 @CHECK_LIBS@ \
 @EFL_LIBS@ \
-@ELEMENTARY_LIBS@ \
 ${top_builddir}/src/lib/libewe.la \
 @ENVENTOR_LIBS@
 
