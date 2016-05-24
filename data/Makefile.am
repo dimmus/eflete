@@ -10,6 +10,7 @@ EET_EET = @eet_eet@
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -id $(top_srcdir)/data/layouts/images -fd $(top_srcdir)/data/fonts
 EDJE_FLAGS_DEFAULT = -id $(top_srcdir)/data/themes/default/images -id $(top_srcdir)/data/themes/default/images/splash -fd $(top_srcdir)/data/fonts
+EDJE_FLAGS_TIZEN = -id $(top_srcdir)/data/themes/tizen/images -id $(top_srcdir)/data/themes/tizen/images/splash -fd $(top_srcdir)/data/fonts
 EDJE_FLAGS_RESOURCES = -id $(top_srcdir)/data/resources/images
 
 filesdir = $(datadir)/eflete/themes/default
@@ -55,6 +56,12 @@ colors_DATA = color.eet
 ewedir = $(datadir)/ewe/themes
 ewe_DATA = ewe.edj
 
+if WANT_TIZEN
+build_opt = $(EDJE_FLAGS_TIZEN) $(top_srcdir)/data/themes/tizen/default.edc
+else
+build_opt = $(EDJE_FLAGS_DEFAULT) $(top_srcdir)/data/themes/default/default.edc
+endif
+
 ewe_deps = \
 	$(top_srcdir)/data/*.edc \
 	$(top_srcdir)/data/themes/ewe/*.edc \
@@ -75,8 +82,13 @@ eflete_elm_deps = \
 	$(top_srcdir)/data/themes/default/widgets/*.edc \
 	$(top_srcdir)/data/themes/default/widgets/layouts/*.edc \
 	$(top_srcdir)/data/themes/default/images/*.png \
-	$(top_srcdir)/data/fonts/*.ttf \
-	$(top_srcdir)/data/themes/default/images/splash/*.png
+	$(top_srcdir)/data/themes/default/images/splash/*.png \
+	$(top_srcdir)/data/themes/tizen/*.edc \
+	$(top_srcdir)/data/themes/tizen/widgets/*.edc \
+	$(top_srcdir)/data/themes/tizen/widgets/layouts/*.edc \
+	$(top_srcdir)/data/themes/tizen/images/*.png \
+	$(top_srcdir)/data/themes/tizen/images/splash/*.png \
+	$(top_srcdir)/data/fonts/*.ttf
 
 color_eet_deps = \
 	$(top_srcdir)/data/color/color.src
@@ -95,9 +107,7 @@ eflete.edj: Makefile $(eflete_deps)
 	$(top_builddir)/data/eflete.edj
 
 eflete_elm.edj: Makefile $(eflete_elm_deps)
-	$(AM_V_EDJ)$(EDJE_CC) \
-		$(EDJE_FLAGS_DEFAULT) \
-	$(top_srcdir)/data/themes/default/default.edc \
+	$(AM_V_EDJ)$(EDJE_CC) $(build_opt) \
 	$(top_builddir)/data/eflete_elm.edj
 
 color.eet: Makefile $(color_eet_deps)

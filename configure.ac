@@ -131,6 +131,8 @@ if test "x$want_tizen" = "xno"; then
    summary_tizen="${RED}no${RESET}"
 fi
 
+AM_CONDITIONAL([WANT_TIZEN], [test "x${want_tizen}" = "xyes"])
+
 dnl --enable-debug/--disable-debug
 EFLETE_DEBUG_DEF="#undef"
 want_eflete_debug="no"

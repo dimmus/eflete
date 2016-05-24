@@ -1,0 +1,907 @@
+group { name: "elm/win/inwin/modal_window";
+   parts {
+      part { name: "block_events";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "clicked" 0.0;
+            color: 255 0 0 50;
+         }
+      }
+      part { name: "pop";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image {
+               normal: "popup-bg.png";
+               border: 34 34 34 34;
+            }
+            rel1.relative: 0.1 0.1;
+            rel2.relative: 0.9 0.9;
+         }
+      }
+      part { name: "base";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel1 {
+               offset: 26 20;
+               to: "pop";
+            }
+            rel2 {
+               offset: -27 -21;
+               to: "pop";
+            }
+         }
+      }
+      part { name: "elm.text.title";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            fixed: 1 1;
+            min: 0 34;
+            max: -1 34;
+            color_class: "main";
+            text {
+               font: "PT:style=Bold";
+               size: 13;
+               align: 0.0 0.5;
+            }
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 3 0;
+               to_x: "elm.swallow.icon";
+               to_y: "base";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -4 -1;
+               to_x: "elm.swallow.close";
+               to_y: "base";
+            }
+         }
+      }
+      part { name: "elm.swallow.icon";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 0;
+            min: 16 16;
+            max: 16 16;
+            rel1 {
+               to_x: "base";
+               to_y: "elm.text.title";
+            }
+            rel2.to_y: "elm.text.title";
+         }
+      }
+      part { name: "elm.swallow.close";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            max: 16 16;
+            aspect: 1.0 1.0;
+            rel1 {
+               to_x: "base";
+               to_y: "elm.text.title";
+            }
+            rel2 {
+               to_x: "base";
+               to_y: "elm.text.title";
+            }
+         }
+      }
+      part { name: "separator.title";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            min: 0 2;
+            max: -1 2;
+            image.normal: "separator-horizontal.png";
+            rel1 {
+               relative: 0.0 1.0;
+               to_x: "base";
+               to_y: "elm.text.title";
+            }
+            rel2.to_x: "base";
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            rel1 {
+               relative: 0.0 1.0;
+               to_x: "base";
+               to_y: "separator.title";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to_x: "base";
+               to_y: "separator.buttons";
+            }
+         }
+      }
+      part { name: "buttons.area";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            min: 0 34;
+            max: -1 34;
+            rel1.to: "base";
+            rel2.to: "base";
+         }
+      }
+      part { name: "separator.buttons";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 1 1;
+            min: 0 2;
+            max: -1 2;
+            image.normal: "separator-horizontal.png";
+            rel1.to: "base";
+            rel2 {
+               relative: 1.0 0.0;
+               to_x: "base";
+               to_y: "buttons.area";
+            }
+         }
+      }
+      part { name: "eflete.swallow.btn_close";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1 {
+               relative: 1.0 0.5;
+               to: "buttons.area";
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               to: "buttons.area";
+            }
+         }
+      }
+      part { name: "eflete.swallow.btn_ok";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            fixed: 1 1;
+            rel1.to: "eflete.swallow.btn_close";
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -7 -1;
+               to: "eflete.swallow.btn_close";
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "block_clicked";
+         signal: "mouse,clicked,*";
+         source: "block_events";
+         action: SIGNAL_EMIT "elm,action,click" "elm";
+         after: "deeper_block_color";
+      }
+      program { name: "deeper_block_color";
+         action: STATE_SET "clicked" 0.00;
+         target: "block_events";
+         after: "default_block_color";
+      }
+      program { name: "default_block_color";
+         action: STATE_SET "default" 0.00;
+         transition: LINEAR 0.20000;
+         target: "block_events";
+      }
+   }
+}
+
+images {
+   image: "popup-bg.png" COMP;
+   image: "downloader0001.png" COMP;
+   image: "downloader0002.png" COMP;
+   image: "downloader0003.png" COMP;
+   image: "downloader0004.png" COMP;
+   image: "downloader0005.png" COMP;
+   image: "downloader0006.png" COMP;
+   image: "downloader0007.png" COMP;
+   image: "downloader0008.png" COMP;
+   image: "downloader0009.png" COMP;
+   image: "downloader0010.png" COMP;
+   image: "downloader0011.png" COMP;
+   image: "downloader0012.png" COMP;
+   image: "downloader0013.png" COMP;
+   image: "downloader0014.png" COMP;
+   image: "downloader0015.png" COMP;
+   image: "downloader0016.png" COMP;
+   image: "downloader0017.png" COMP;
+   image: "downloader0018.png" COMP;
+   image: "downloader0019.png" COMP;
+   image: "downloader0020.png" COMP;
+   image: "downloader0021.png" COMP;
+   image: "downloader0022.png" COMP;
+   image: "downloader0023.png" COMP;
+   image: "downloader0024.png" COMP;
+   image: "downloader0025.png" COMP;
+   image: "downloader0026.png" COMP;
+   image: "downloader0027.png" COMP;
+   image: "downloader0028.png" COMP;
+   image: "downloader0029.png" COMP;
+   image: "downloader0030.png" COMP;
+   image: "downloader0031.png" COMP;
+   image: "downloader0032.png" COMP;
+   image: "downloader0033.png" COMP;
+   image: "downloader0034.png" COMP;
+   image: "downloader0035.png" COMP;
+   image: "downloader0036.png" COMP;
+   image: "downloader0037.png" COMP;
+   image: "downloader0038.png" COMP;
+   image: "downloader0039.png" COMP;
+   image: "downloader0040.png" COMP;
+   image: "downloader0041.png" COMP;
+   image: "downloader0042.png" COMP;
+   image: "downloader0043.png" COMP;
+   image: "downloader0044.png" COMP;
+   image: "downloader0045.png" COMP;
+   image: "downloader0046.png" COMP;
+   image: "downloader0047.png" COMP;
+   image: "downloader0048.png" COMP;
+   image: "downloader0049.png" COMP;
+   image: "downloader0050.png" COMP;
+   image: "downloader0051.png" COMP;
+   image: "downloader0052.png" COMP;
+   image: "downloader0053.png" COMP;
+   image: "downloader0054.png" COMP;
+   image: "downloader0055.png" COMP;
+   image: "downloader0056.png" COMP;
+   image: "downloader0057.png" COMP;
+   image: "downloader0058.png" COMP;
+   image: "downloader0059.png" COMP;
+   image: "downloader0060.png" COMP;
+   image: "downloader0061.png" COMP;
+   image: "downloader0062.png" COMP;
+   image: "downloader0063.png" COMP;
+   image: "downloader0064.png" COMP;
+   image: "downloader0065.png" COMP;
+   image: "downloader0066.png" COMP;
+   image: "downloader0067.png" COMP;
+   image: "downloader0068.png" COMP;
+   image: "downloader0069.png" COMP;
+   image: "downloader0070.png" COMP;
+   image: "downloader0071.png" COMP;
+   image: "downloader0072.png" COMP;
+   image: "downloader0073.png" COMP;
+   image: "downloader0074.png" COMP;
+   image: "downloader0075.png" COMP;
+   image: "downloader0076.png" COMP;
+   image: "downloader0077.png" COMP;
+   image: "downloader0078.png" COMP;
+   image: "downloader0079.png" COMP;
+   image: "downloader0080.png" COMP;
+   image: "downloader0081.png" COMP;
+   image: "downloader0082.png" COMP;
+   image: "downloader0083.png" COMP;
+   image: "downloader0084.png" COMP;
+   image: "downloader0085.png" COMP;
+   image: "downloader0086.png" COMP;
+   image: "downloader0087.png" COMP;
+   image: "downloader0088.png" COMP;
+   image: "downloader0089.png" COMP;
+   image: "downloader0090.png" COMP;
+   image: "downloader0091.png" COMP;
+   image: "downloader0092.png" COMP;
+   image: "downloader0093.png" COMP;
+   image: "downloader0094.png" COMP;
+   image: "downloader0095.png" COMP;
+   image: "downloader0096.png" COMP;
+   image: "downloader0097.png" COMP;
+   image: "downloader0098.png" COMP;
+   image: "downloader0099.png" COMP;
+   image: "downloader0100.png" COMP;
+   image: "downloader0101.png" COMP;
+   image: "downloader0102.png" COMP;
+   image: "downloader0103.png" COMP;
+   image: "downloader0105.png" COMP;
+   image: "downloader0104.png" COMP;
+   image: "downloader0106.png" COMP;
+   image: "downloader0107.png" COMP;
+   image: "downloader0108.png" COMP;
+   image: "downloader0109.png" COMP;
+   image: "downloader0110.png" COMP;
+   image: "downloader0111.png" COMP;
+   image: "downloader0112.png" COMP;
+   image: "downloader0113.png" COMP;
+   image: "downloader0114.png" COMP;
+   image: "downloader0115.png" COMP;
+   image: "downloader0116.png" COMP;
+   image: "downloader0117.png" COMP;
+   image: "downloader0118.png" COMP;
+   image: "downloader0119.png" COMP;
+   image: "downloader0121.png" COMP;
+   image: "downloader0120.png" COMP;
+   image: "downloader0122.png" COMP;
+   image: "downloader0124.png" COMP;
+   image: "downloader0123.png" COMP;
+   image: "downloader0125.png" COMP;
+   image: "downloader0126.png" COMP;
+   image: "downloader0127.png" COMP;
+   image: "downloader0128.png" COMP;
+   image: "downloader0129.png" COMP;
+   image: "downloader0130.png" COMP;
+   image: "downloader0131.png" COMP;
+   image: "downloader0132.png" COMP;
+   image: "downloader0133.png" COMP;
+   image: "downloader0134.png" COMP;
+   image: "downloader0135.png" COMP;
+   image: "downloader0136.png" COMP;
+   image: "downloader0137.png" COMP;
+   image: "downloader0138.png" COMP;
+   image: "downloader0139.png" COMP;
+   image: "downloader0140.png" COMP;
+   image: "downloader0141.png" COMP;
+   image: "downloader0142.png" COMP;
+   image: "downloader0143.png" COMP;
+   image: "downloader0144.png" COMP;
+   image: "downloader0145.png" COMP;
+   image: "downloader0146.png" COMP;
+   image: "downloader0147.png" COMP;
+   image: "downloader0148.png" COMP;
+   image: "downloader0149.png" COMP;
+   image: "downloader0150.png" COMP;
+   image: "downloader0151.png" COMP;
+   image: "downloader0152.png" COMP;
+   image: "downloader0153.png" COMP;
+   image: "downloader0154.png" COMP;
+   image: "downloader0155.png" COMP;
+   image: "downloader0156.png" COMP;
+   image: "downloader0157.png" COMP;
+   image: "downloader0158.png" COMP;
+   image: "downloader0159.png" COMP;
+   image: "downloader0160.png" COMP;
+   image: "downloader0161.png" COMP;
+   image: "downloader0162.png" COMP;
+   image: "downloader0163.png" COMP;
+   image: "downloader0164.png" COMP;
+   image: "downloader0165.png" COMP;
+   image: "downloader0166.png" COMP;
+   image: "downloader0168.png" COMP;
+   image: "downloader0167.png" COMP;
+   image: "downloader0169.png" COMP;
+   image: "downloader0170.png" COMP;
+   image: "downloader0171.png" COMP;
+   image: "downloader0172.png" COMP;
+   image: "downloader0173.png" COMP;
+   image: "downloader0174.png" COMP;
+   image: "downloader0175.png" COMP;
+   image: "downloader0176.png" COMP;
+   image: "downloader0177.png" COMP;
+   image: "downloader0178.png" COMP;
+   image: "downloader0179.png" COMP;
+   image: "downloader0180.png" COMP;
+   image: "downloader0181.png" COMP;
+   image: "downloader0182.png" COMP;
+   image: "downloader0183.png" COMP;
+   image: "downloader0184.png" COMP;
+   image: "downloader0185.png" COMP;
+   image: "downloader0186.png" COMP;
+   image: "downloader0187.png" COMP;
+   image: "downloader0188.png" COMP;
+   image: "downloader0189.png" COMP;
+   image: "downloader0190.png" COMP;
+   image: "downloader0191.png" COMP;
+   image: "downloader0192.png" COMP;
+   image: "downloader0194.png" COMP;
+   image: "downloader0193.png" COMP;
+   image: "downloader0195.png" COMP;
+   image: "downloader0197.png" COMP;
+   image: "downloader0196.png" COMP;
+   image: "downloader0198.png" COMP;
+   image: "downloader0200.png" COMP;
+   image: "downloader0199.png" COMP;
+   image: "downloader0201.png" COMP;
+   image: "downloader0202.png" COMP;
+   image: "downloader0203.png" COMP;
+   image: "downloader0204.png" COMP;
+   image: "downloader0205.png" COMP;
+   image: "downloader0206.png" COMP;
+   image: "downloader0207.png" COMP;
+   image: "downloader0208.png" COMP;
+   image: "downloader0209.png" COMP;
+   image: "downloader0210.png" COMP;
+   image: "downloader0211.png" COMP;
+   image: "downloader0212.png" COMP;
+   image: "downloader0213.png" COMP;
+   image: "downloader0214.png" COMP;
+   image: "downloader0215.png" COMP;
+   image: "downloader0216.png" COMP;
+   image: "downloader0217.png" COMP;
+   image: "downloader0218.png" COMP;
+   image: "downloader0219.png" COMP;
+   image: "downloader0220.png" COMP;
+}
+
+group { name: "elm/win/inwin/splash";
+   broadcast_signal: 0;
+   parts {
+      part { name: "block_events";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 0 0 0;
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
+            color: 255 0 0 50;
+         }
+      }
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            max: 0 0;
+            image {
+               normal: "popup-bg.png";
+               border: 32 32 32 32;
+               middle: DEFAULT;
+            }
+         }
+         description { state: "visible" 0.0;
+            min: 554 387;
+            max: 554 387;
+            image {
+               normal: "popup-bg.png";
+               border: 32 32 32 32;
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "padding.rel1";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0 0;
+            max: 27 27;
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+      }
+      part { name: "padding.rel2";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            max: 27 27;
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+      }
+      part { name: "area.content";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "padding.rel1";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "padding.rel2";
+            }
+         }
+      }
+      part { name: "area.info";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 1.0;
+            max: -1 30;
+            rel1.to: "area.content";
+            rel2.to: "area.content";
+         }
+      }
+      part { name: "clipper.area.info";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "area.info";
+            rel2.to: "area.info";
+            max: 0 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            max: -1 -1;
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         clip_to: "clipper.area.info";
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            max: 72 -1;
+            fixed: 1 1;
+            rel1.to: "area.info";
+            rel2.to: "area.info";
+         }
+      }
+      part { name: "label.info";
+         type: TEXT;
+         clip_to: "clipper.area.info";
+         description { state: "default" 0.0;
+            visible: 0;
+            fixed: 1 1;
+            rel1.to: "area.info";
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "elm.swallow.content";
+               to_y: "area.info";
+            }
+            text {
+               font: FN;
+               size: 12;
+               align: 0.0 0.5;
+            }
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+      part { name: "padding.rel2.anim";
+         type: SPACER;
+         description { state: "default" 0;
+            align: 1.0 1.0;
+            max: 7 7;
+            rel1.to: "area.content";
+            rel2 {
+               relative: 1.0 0.0;
+               to_x: "area.content";
+               to_y: "area.info";
+            }
+         }
+      }
+      part { name: "splash.anim";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            max: 500 300;
+            rel1.to: "area.content";
+            rel2 {
+               relative: 1.0 0.0;
+               to_x: "area.content";
+               to_y: "padding.rel2.anim";
+            }
+            image {
+               normal: "downloader0001.png";
+               tween: "downloader0002.png";
+               tween: "downloader0003.png";
+               tween: "downloader0004.png";
+               tween: "downloader0005.png";
+               tween: "downloader0006.png";
+               tween: "downloader0007.png";
+               tween: "downloader0008.png";
+               tween: "downloader0009.png";
+               tween: "downloader0010.png";
+               tween: "downloader0011.png";
+               tween: "downloader0012.png";
+               tween: "downloader0013.png";
+               tween: "downloader0014.png";
+               tween: "downloader0015.png";
+               tween: "downloader0016.png";
+               tween: "downloader0017.png";
+               tween: "downloader0018.png";
+               tween: "downloader0019.png";
+               tween: "downloader0020.png";
+               tween: "downloader0021.png";
+               tween: "downloader0022.png";
+               tween: "downloader0023.png";
+               tween: "downloader0024.png";
+               tween: "downloader0025.png";
+               tween: "downloader0026.png";
+               tween: "downloader0027.png";
+               tween: "downloader0028.png";
+               tween: "downloader0029.png";
+               tween: "downloader0030.png";
+               tween: "downloader0031.png";
+               tween: "downloader0032.png";
+               tween: "downloader0033.png";
+               tween: "downloader0034.png";
+               tween: "downloader0035.png";
+               tween: "downloader0036.png";
+               tween: "downloader0037.png";
+               tween: "downloader0038.png";
+               tween: "downloader0039.png";
+               tween: "downloader0040.png";
+               tween: "downloader0041.png";
+               tween: "downloader0042.png";
+               tween: "downloader0043.png";
+               tween: "downloader0044.png";
+               tween: "downloader0045.png";
+               tween: "downloader0046.png";
+               tween: "downloader0047.png";
+               tween: "downloader0048.png";
+               tween: "downloader0049.png";
+               tween: "downloader0050.png";
+               tween: "downloader0051.png";
+               tween: "downloader0052.png";
+               tween: "downloader0053.png";
+               tween: "downloader0054.png";
+               tween: "downloader0055.png";
+               tween: "downloader0056.png";
+               tween: "downloader0057.png";
+               tween: "downloader0058.png";
+               tween: "downloader0059.png";
+               tween: "downloader0060.png";
+               tween: "downloader0061.png";
+               tween: "downloader0062.png";
+               tween: "downloader0063.png";
+               tween: "downloader0064.png";
+               tween: "downloader0065.png";
+               tween: "downloader0066.png";
+               tween: "downloader0067.png";
+               tween: "downloader0068.png";
+               tween: "downloader0069.png";
+               tween: "downloader0070.png";
+               tween: "downloader0071.png";
+               tween: "downloader0072.png";
+               tween: "downloader0073.png";
+               tween: "downloader0074.png";
+               tween: "downloader0075.png";
+               tween: "downloader0076.png";
+               tween: "downloader0077.png";
+               tween: "downloader0078.png";
+               tween: "downloader0079.png";
+               tween: "downloader0080.png";
+               tween: "downloader0081.png";
+               tween: "downloader0082.png";
+               tween: "downloader0083.png";
+               tween: "downloader0084.png";
+               tween: "downloader0085.png";
+               tween: "downloader0086.png";
+               tween: "downloader0087.png";
+               tween: "downloader0088.png";
+               tween: "downloader0089.png";
+               tween: "downloader0090.png";
+               tween: "downloader0091.png";
+               tween: "downloader0092.png";
+               tween: "downloader0093.png";
+               tween: "downloader0094.png";
+               tween: "downloader0095.png";
+               tween: "downloader0096.png";
+               tween: "downloader0097.png";
+               tween: "downloader0098.png";
+               tween: "downloader0099.png";
+               tween: "downloader0100.png";
+               tween: "downloader0101.png";
+               tween: "downloader0102.png";
+               tween: "downloader0103.png";
+               tween: "downloader0105.png";
+               tween: "downloader0104.png";
+               tween: "downloader0106.png";
+               tween: "downloader0107.png";
+               tween: "downloader0108.png";
+               tween: "downloader0109.png";
+               tween: "downloader0110.png";
+               tween: "downloader0111.png";
+               tween: "downloader0112.png";
+               tween: "downloader0113.png";
+               tween: "downloader0114.png";
+               tween: "downloader0115.png";
+               tween: "downloader0116.png";
+               tween: "downloader0117.png";
+               tween: "downloader0118.png";
+               tween: "downloader0119.png";
+               tween: "downloader0121.png";
+               tween: "downloader0120.png";
+               tween: "downloader0122.png";
+               tween: "downloader0124.png";
+               tween: "downloader0123.png";
+               tween: "downloader0125.png";
+               tween: "downloader0126.png";
+               tween: "downloader0127.png";
+               tween: "downloader0128.png";
+               tween: "downloader0129.png";
+               tween: "downloader0130.png";
+               tween: "downloader0131.png";
+               tween: "downloader0132.png";
+               tween: "downloader0133.png";
+               tween: "downloader0134.png";
+               tween: "downloader0135.png";
+               tween: "downloader0136.png";
+               tween: "downloader0137.png";
+               tween: "downloader0138.png";
+               tween: "downloader0139.png";
+               tween: "downloader0140.png";
+               tween: "downloader0141.png";
+               tween: "downloader0142.png";
+               tween: "downloader0143.png";
+               tween: "downloader0144.png";
+               tween: "downloader0145.png";
+               tween: "downloader0146.png";
+               tween: "downloader0147.png";
+               tween: "downloader0148.png";
+               tween: "downloader0149.png";
+               tween: "downloader0150.png";
+               tween: "downloader0151.png";
+               tween: "downloader0152.png";
+               tween: "downloader0153.png";
+               tween: "downloader0154.png";
+               tween: "downloader0155.png";
+               tween: "downloader0156.png";
+               tween: "downloader0157.png";
+               tween: "downloader0158.png";
+               tween: "downloader0159.png";
+               tween: "downloader0160.png";
+               tween: "downloader0161.png";
+               tween: "downloader0162.png";
+               tween: "downloader0163.png";
+               tween: "downloader0164.png";
+               tween: "downloader0165.png";
+               tween: "downloader0166.png";
+               tween: "downloader0168.png";
+               tween: "downloader0167.png";
+               tween: "downloader0169.png";
+               tween: "downloader0170.png";
+               tween: "downloader0171.png";
+               tween: "downloader0172.png";
+               tween: "downloader0173.png";
+               tween: "downloader0174.png";
+               tween: "downloader0175.png";
+               tween: "downloader0176.png";
+               tween: "downloader0177.png";
+               tween: "downloader0178.png";
+               tween: "downloader0179.png";
+               tween: "downloader0180.png";
+               tween: "downloader0181.png";
+               tween: "downloader0182.png";
+               tween: "downloader0183.png";
+               tween: "downloader0184.png";
+               tween: "downloader0185.png";
+               tween: "downloader0186.png";
+               tween: "downloader0187.png";
+               tween: "downloader0188.png";
+               tween: "downloader0189.png";
+               tween: "downloader0190.png";
+               tween: "downloader0191.png";
+               tween: "downloader0192.png";
+               tween: "downloader0194.png";
+               tween: "downloader0193.png";
+               tween: "downloader0195.png";
+               tween: "downloader0197.png";
+               tween: "downloader0196.png";
+               tween: "downloader0198.png";
+               tween: "downloader0200.png";
+               tween: "downloader0199.png";
+               tween: "downloader0201.png";
+               tween: "downloader0202.png";
+               tween: "downloader0203.png";
+               tween: "downloader0204.png";
+               tween: "downloader0205.png";
+               tween: "downloader0206.png";
+               tween: "downloader0207.png";
+               tween: "downloader0208.png";
+               tween: "downloader0209.png";
+               tween: "downloader0210.png";
+               tween: "downloader0211.png";
+               tween: "downloader0212.png";
+               tween: "downloader0213.png";
+               tween: "downloader0214.png";
+               tween: "downloader0215.png";
+               tween: "downloader0216.png";
+               tween: "downloader0217.png";
+               tween: "downloader0218.png";
+               tween: "downloader0219.png";
+               tween: "downloader0220.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "load";
+         signal: "load";
+         action: STATE_SET "visible" 0.0;
+         transition: LINEAR 0.3;
+         target: "bg";
+         target: "label.info";
+         target: "clipper.area.info";
+         after: "anim";
+         after: "emit_start";
+      }
+      program { name: "emit_start";
+         action: SIGNAL_EMIT "setup" "eflete";
+      }
+      program { name: "teardown";
+         signal: "end";
+         source: "eflete";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.3;
+         target: "bg";
+         target: "label.info";
+         target: "clipper.area.info";
+         after: "emit_teardown";
+      }
+      program { name: "emit_teardown";
+         action: SIGNAL_EMIT "teardown" "eflete";
+      }
+      program { name: "anim";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 10.0;
+         target: "splash.anim";
+         after: "anim";
+      }
+      program { name: "block_clicked";
+         signal: "mouse,clicked,*";
+         source: "block_events";
+         action: SIGNAL_EMIT "elm,action,click" "elm";
+         after: "deeper_block_color";
+      }
+      program {
+         name: "deeper_block_color";
+         action: STATE_SET "clicked" 0.0;
+         target: "block_events";
+         transition: LINEAR 0.2;
+         after: "default_block_color";
+      }
+      program {
+         name: "default_block_color";
+         action: STATE_SET "default" 0.0;
+         target: "block_events";
+         transition: LINEAR 0.2;
+      }
+   }
+}
+
+group { name: "elm/layout/inwin/anim/helper";
+   parts {
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+         }
+         description { state: "flip" 0.0;
+            rel1.relative: -0.15 -0.15;
+            rel2.relative: 1.15 1.15;
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 255;
+         }
+         description { state: "flip" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+   }
+   programs {
+      program { name: "before_show";
+         signal: "show";
+         source: "eflete";
+         action: STATE_SET "flip" 0.0;
+         target: "elm.swallow.content";
+         target: "clipper";
+         after: "show_anim";
+      }
+      program { name: "show_anim";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.15;
+         target: "elm.swallow.content";
+         target: "clipper";
+         after: "show_anim_finish";
+      }
+      program { name: "show_anim_finish";
+         action: SIGNAL_EMIT "show,anim,finished" "eflete";
+      }
+      program { name: "before_hide";
+         signal: "hide";
+         source: "eflete";
+         action: STATE_SET "default" 0.0;
+         target: "elm.swallow.content";
+         target: "clipper";
+         after: "hide_anim";
+      }
+      program { name: "hide_anim";
+         action: STATE_SET "flip" 0.0;
+         transition: LINEAR 0.15;
+         target: "elm.swallow.content";
+         target: "clipper";
+         after: "hide_anim_finish";
+      }
+      program { name: "hide_anim_finish";
+         action: SIGNAL_EMIT "hide,anim,finished" "eflete";
+      }
+   }
+}

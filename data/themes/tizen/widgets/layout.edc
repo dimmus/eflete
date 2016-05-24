@@ -1,0 +1,1755 @@
+group { name: "elm/layout/window/main";
+   images {
+      image: "status-top_border-bg.png" COMP;
+   }
+   parts {
+      part { name: "eflete.swallow.panes";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description { state:   "default" 0.0;
+            rel2 {
+               relative: 1.0 0.0;
+               to: "statusbar";
+            }
+          }
+      }
+      part { name: "statusbar";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            max: -1 20;
+            align: 0.5 1.0;
+         }
+      }
+      part { name: "statusbar_border";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            max: -1 2;
+            rel1 {
+               to: "statusbar";
+            }
+            image {
+               normal: "status-top_border-bg.png";
+            }
+         }
+      }
+      part { name: "eflete.project.time";
+         type: TEXT;
+         description {
+            max: 500 -1;
+            align: 0.0 0.5;
+            rel1 {
+               to: "statusbar";
+               offset: 3 0;
+            }
+            rel2 {
+               to: "statusbar";
+            }
+            text {
+               size: 11;
+               font: PT;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "eflete.project.part";
+         type: TEXT;
+         description {
+            align: 0.0 0.5;
+            rel1 {
+               to_x: "eflete.project.time";
+               to_y: "statusbar";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "statusbar";
+            }
+            text {
+               size: 11;
+               font: PT;
+               align: 0.0 0.5;
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/popup/hint";
+   parts {
+      part { name: "event";
+         repeat_events: 1;
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.offset: -9999 -9999;
+            rel2.offset: 9999 9999;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               offset: -6 -6;
+            }
+            rel2 {
+               offset: 6 6;
+            }
+            image {
+               normal: "hint-background.png";
+               border: 5 5 3 3;
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               offset: 6 6;
+               to: "bg";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -7 -7;
+               to_x: "bg";
+               to_y: "elm.swallow.ok";
+            }
+         }
+      }
+      part { name: "elm.swallow.ok";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            max: 32 16;
+            rel2 {
+               offset: -7 -7;
+               to: "bg";
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "dismiss";
+         signal: "mouse,up,*";
+         source: "event";
+         action: SIGNAL_EMIT "hint,dismiss" "eflete";
+      }
+   }
+}
+
+
+group { name: "elm/layout/popup/hint_title";
+   images {
+      image: "hint-background.png" COMP;
+   }
+   parts {
+      part { name: "event";
+         repeat_events: 1;
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.offset: -9999 -9999;
+            rel2.offset: 9999 9999;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               to_y: "elm.text";
+               to_x: "elm.swallow.content";
+               offset: -7 -7;
+            }
+            rel2 {
+               to: "elm.swallow.content";
+               offset: 6 6;
+            }
+            image {
+               normal: "hint-background.png";
+               border: 5 5 3 3;
+            }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 1 1;
+            color_class: "main";
+            rel1 {
+               to_x: "elm.swallow.content";
+               offset: 0 6;
+            }
+            rel2 {
+               to: "elm.swallow.content";
+               relative: 1.0 0.0;
+               offset: 0 -7;
+            }
+            text {
+               font: PT;
+               size: 16;
+               min: 1 1;
+               elipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+         }
+      }
+   }
+   programs {
+      program { name: "dismiss";
+         signal: "mouse,up,*";
+         source: "event";
+         action: SIGNAL_EMIT "hint,dismiss" "eflete";
+      }
+   }
+}
+
+
+
+group { name: "elm/layout/property/default";
+   parts {
+      part { name: "bg_content";
+         type: RECT;
+         description { state: "default" 0.0;
+            color_class: "bg_main";
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+         }
+      }
+
+   }
+}
+
+group { name: "elm/layout/navigator/default";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color_class: "bg_main";
+         }
+      }
+      part { name: "area.top";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            fixed: 0 1;
+            min: 0 23;
+            max: -1 23;
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.5 0.5;
+            fixed: 1 1;
+            color_class: "main";
+            rel1 {
+               offset: 20 0;
+               to: "area.top";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -4 -1;
+               to_x: "elm.swallow.btn3";
+               to_y: "area.top";
+            }
+            text {
+               font: "PT";
+               size: 13;
+               align: 0.0 0.5;
+            }
+         }
+         description { state: "disabled" 0.0;
+            align: 0.5 0.5;
+            fixed: 1 1;
+            color_class: "main_disabled";
+            rel1 {
+               offset: 20 0;
+               to: "area.top";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -4 -1;
+               to_x: "elm.swallow.btn3";
+               to_y: "area.top";
+            }
+            text {
+               font: "pt";
+               size: 15;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 3 3;
+               to_y: "area.top";
+            }
+            rel2.offset: -4 -4;
+         }
+      }
+      part { name: "elm.swallow.btn0";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            min: 18 19;
+            max: 18 19;
+            rel1.to_y: "area.top";
+            rel2 {
+               offset: -4 -1;
+               to_y: "area.top";
+            }
+         }
+      }
+      part { name: "elm.swallow.btn1";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            min: 18 19;
+            max: 18 19;
+            rel1.to_y: "area.top";
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -4 0;
+               to_x: "elm.swallow.btn0";
+               to_y: "area.top";
+            }
+         }
+      }
+      part { name: "elm.swallow.btn2";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            min: 18 19;
+            max: 18 19;
+            rel1.to_y: "area.top";
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -4 0;
+               to_x: "elm.swallow.btn1";
+               to_y: "area.top";
+            }
+         }
+      }
+      part { name: "elm.swallow.btn3";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            min: 18 19;
+            max: 18 19;
+            rel1.to_y: "area.top";
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -4 0;
+               to_x: "elm.swallow.btn2";
+               to_y: "area.top";
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "enabled";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text";
+      }
+      program { name: "disabled";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "elm.text";
+      }
+   }
+}
+
+group { name: "elm/layout/notify/default";
+   max: 300 99999;
+   min: 200 156;
+   styles {
+      style { name: "warning_notify_title_style";
+         base: "font="FN" font_size=15 color=#c0c000ff wrap=none align=0.5 ellipsis=0.0 \
+                shadow_color=#d17c15ff  style=shadow,bottom_right";
+      }
+      style { name: "info_style";
+         base: "font="FN" font_size=10 color=#ffffffff wrap=word align=0.5 ellipsis=0.0";
+      }
+
+      style { name: "error_notify_title_style";
+         base: "font="FN" font_size=15 color=#f0c000ff wrap=none align=0.5 ellipsis=0.0 \
+                shadow_color=#d11515ff  style=shadow,bottom_right";
+      }
+   }
+
+   parts {
+      part { name: "pad_top";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+         }
+      }
+      part { name: "pad_center";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+         }
+      }
+      part { name: "title.text";
+         scale: 1;
+         type: TEXTBLOCK;
+         description { state: "default" 0.0;
+            text {
+               min: 1 0;
+               ellipsis: -1;
+            }
+            min: 0 25;
+            max: -1 25;
+            align: 0.5 0.0;
+            visible: 0;
+         }
+         description { state: "warning" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            text {
+               text: "Warning";
+               style: "warning_notify_title_style";
+               ellipsis: -1;
+               min: 1 1;
+            }
+         }
+         description { state: "error" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            text {
+               text: "Error";
+               style: "error_notify_title_style";
+               ellipsis: -1;
+               min: 1 1;
+            }
+         }
+      }
+      part { name: "pad_bottom";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 20 20;
+            max: 20 20;
+            align: 1.0 1.0;
+         }
+      }
+      part { name: "information";
+         scale: 1;
+         type: TEXTBLOCK;
+         effect: SOFT_SHADOW;
+         description { state: "default" 0.0;
+            min: 135 84;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+               align: 0.0 0.5;
+               style: "info_style";
+            }
+            rel1 {
+               to_x: "pad_top";
+               to_y: "title.text";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to_x: "pad_bottom";
+               to_y: "close_button";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part { name: "close_button";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            min: 100 32;
+            max: 100 32;
+            fixed: 1 1;
+            align: 0.5 1.0;
+         }
+      }
+   }
+   programs {
+      program {
+         name: "warning";
+         signal: "notify,warning";
+         source: "eflete";
+         action: STATE_SET "warning" 0.0;
+         target: "title.text";
+      }
+      program {
+         name: "error";
+         signal: "notify,error";
+         source: "eflete";
+         action: STATE_SET "error" 0.0;
+         target: "title.text";
+      }
+   }
+}
+
+group { name: "elm/layout/notify/info";
+   inherit: "elm/layout/notify/default";
+   max: 999 999;
+   min: 100 56;
+
+   parts {
+      part { name: "information";
+         scale: 1;
+         type: TEXTBLOCK;
+         description { state: "default" 0.0;
+            min: 135 55;
+            align: 0.5 0.0;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+               align: 0.0 0.0;
+               style: "info_style";
+            }
+            rel1 {
+               to_x: "pad_top";
+               to_y: "title.text";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to_x: "pad_bottom";
+               to_y: "close_button";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "pad_bottom";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 0 0;
+            max: 0 0;
+         }
+      }
+      part { name: "close_button";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 0 0;
+            max: 0 0;
+         }
+      }
+   }
+}
+
+#define BUTTON_PADDING 5
+#define BUTTON_W 100
+#define BUTTON_H 30
+group { name: "elm/layout/animator/live_view";
+   parts {
+      part { name: "area.content";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel2 {
+               relative: 1.0 0.0;
+               to_y: "padding.0";
+            }
+         }
+      }
+      part { name: "swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 30;
+            rel1.to: "area.content";
+            rel2.to: "area.content";
+         }
+      }
+      part { name: "padding.0";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            min: 0 1;
+            max: -1 1;
+            fixed: 0 1;
+            rel2 {
+               relative: 1.0 0.0;
+               to_y: "area.controls";
+            }
+         }
+      }
+      part { name: "area.controls";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            min: 0 BUTTON_H;
+            max: -1 BUTTON_H;
+            fixed: 0 1;
+         }
+      }
+      part { name: "swallow.button.play";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: BUTTON_W 0;
+            max: BUTTON_W -1;
+            fixed: 1 0;
+            rel1.to: "area.controls";
+            rel2.to: "area.controls";
+         }
+      }
+      part { name: "padding.1";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: BUTTON_PADDING 0;
+            max: BUTTON_PADDING -1;
+            fixed: 1 0;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "swallow.button.play";
+            }
+            rel2.to: "area.controls";
+         }
+      }
+      part { name: "swallow.button.reset";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: BUTTON_W 0;
+            max: BUTTON_W -1;
+            fixed: 1 0;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "padding.1";
+            }
+            rel2.to: "area.controls";
+         }
+      }
+      part { name: "padding.2";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: BUTTON_PADDING 0;
+            max: BUTTON_PADDING -1;
+            fixed: 1 0;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "swallow.button.reset";
+            }
+            rel2.to: "area.controls";
+         }
+      }
+      part { name: "swallow.button.cycled";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: BUTTON_W 0;
+            max: BUTTON_W -1;
+            fixed: 1 0;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "padding.2";
+            }
+            rel2.to: "area.controls";
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/animator/program_editor";
+   parts {
+      part { name: "swallow.slider";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            min: 0 30;
+            max: -1 30;
+         }
+      }
+      part { name: "swallow.edit";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "swallow.slider";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/animator/program_area";
+   parts {
+      part { name: "swallow.button";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            min: 20 20;
+            max: 20 -1;
+         }
+      }
+      part { name: "swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1 {
+               to: "swallow.button";
+               relative: 1.0 0.0;
+            }
+         }
+         description { state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+   }
+   programs {
+      program { name: "hide";
+         signal: "eflete,content,hide";
+         source: "eflete";
+         action: STATE_SET "hidden" 0.0;
+         target: "swallow.content";
+      }
+      program { name: "show";
+         signal: "eflete,content,show";
+         source: "eflete";
+         action: STATE_SET "default" 0.0;
+         target: "swallow.content";
+      }
+   }
+}
+#undef BUTTON_PADDING
+#undef BUTTON_W
+#undef BUTTON_H
+
+#define PADDING_SIZE_SET SET_SIZE(5, 5)
+#define BTNS_LARGE_SIZE_SET SET_SIZE(80, 25)
+#define BTNS_SMALL_SIZE_SET SET_SIZE(30, 22)
+
+group { name: "elm/layout/image_manager/default";
+   alias: "elm/layout/sound_manager/default";
+   parts {
+      part { name: "area.edit";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            fixed: 1 1;
+            min: 37 25;
+            max: -1 25;
+            rel1 {
+               offset: 0 2;
+            }
+            rel2 {
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "padding.edit_search";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            min: 5 5;
+            max: 5 5;
+            rel1 {
+               to: "area.edit";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to: "eflete.swallow.add_btn";
+            }
+         }
+      }
+      part { name: "eflete.swallow.search_area";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            fixed: 0 1;
+            max: 600 19;
+            rel1 {
+               to: "area.edit";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to: "padding.edit_search";
+            }
+         }
+      }
+      part { name: "eflete.swallow.del_btn";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            min: 18 19;
+            max: 18 19;
+            rel1 {
+               to: "area.edit";
+            }
+            rel2 {
+               to: "area.edit";
+            }
+         }
+      }
+      part { name: "padding.edit_btns";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            min: 3 3;
+            max: 3 3;
+            rel1 {
+               to: "area.edit";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to: "eflete.swallow.del_btn";
+            }
+         }
+      }
+      part { name: "eflete.swallow.add_btn";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            min: 18 19;
+            max: 18 19;
+            rel1 {
+               to: "area.edit";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to: "padding.edit_btns";
+            }
+         }
+      }
+      part { name: "eflete.swallow.grid";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "area.edit";
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/image_manager/preview";
+   parts {
+      part { name: "eflete.swallow.image";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            min: 1 300;
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/sound_editor/preview";
+   parts {
+      part { name: "eflete.swallow.sound_player";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            SET_SIZE(320, 320);
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/image_manager/usage_info";
+   parts {
+      part { name: "padding.top.left";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            PADDING_SIZE_SET;
+         }
+      }
+      part { name: "padding.bottom.right";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            PADDING_SIZE_SET;
+         }
+      }
+      part { name: "area.usage_info";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "padding.top.left";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding.bottom.right";
+               relative: 0.0 0.0;
+            }
+         }
+      }
+      part { name: "eflete.swallow.search_line";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 80 30;
+            rel1.to: "area.usage_info";
+            rel2.to: "area.usage_info";
+         }
+      }
+      part { name: "padding.genlist";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            PADDING_SIZE_SET;
+            rel1 {
+               to_y: "eflete.swallow.search_line";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "eflete.swallow.genlist";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               to_y: "padding.genlist";
+               to_x: "area.usage_info";
+               relative: 0.0 1.0;
+            }
+            rel2.to: "area.usage_info";
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/sound_editor/player";
+   parts {
+      part { name: "eflete.swallow.teg";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1 {
+               offset: 3 3;
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -4 -7;
+               to_y: "eflete.swallow.fast";
+            }
+         }
+      }
+      part { name: "eflete.swallow.fast";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 1 1;
+            max: -1 19;
+            rel1 {
+               offset: 3 0;
+            }
+            rel2 {
+               offset: -4 -4;
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/sound_editor/item";
+   parts {
+      part { name: "area.base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 40 30;
+            max: -1 30;
+         }
+      }
+      part { name: "padding.top_left";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            SET_SIZE(5, 5);
+            align: 0.0 0.0;
+            rel1.to: "area.base";
+            rel2.to: "area.base";
+         }
+      }
+      part { name: "padding.bottom_right";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            SET_SIZE(5, 5);
+            align: 1.0 1.0;
+            rel1.to: "area.base";
+            rel2.to: "area.base";
+         }
+      }
+      part { name: "area.item";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "padding.top_left";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding.bottom_right";
+               relative: 0.0 0.0;
+            }
+         }
+      }
+      part { name: "padding.label1";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            SET_SIZE(5, 5);
+            align: 0.0 0.0;
+            rel1 {
+               to: "area.item";
+               relative: 0.25 0.0;
+            }
+            rel2.to: "area.item";
+         }
+      }
+      part { name: "area.label1";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "area.item";
+            rel2 {
+               to_x: "padding.label1";
+               to_y: "area.item";
+            }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 0;
+            color_class: "main";
+            text {
+               align: 0.0 0.5;
+               elipsis: -1;
+               font: FN;
+               size: 12;
+               min: 0 0;
+               max: 1 1;
+            }
+            rel1.to: "area.label1";
+            rel2.to: "area.label1";
+         }
+      }
+      part { name: "swallow.first";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 0.5;
+            fixed: 1 1;
+            rel1 {
+               to_x: "padding.label1";
+               to_y: "area.item";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "area.item";
+               relative: 0.5 1.0;
+            }
+         }
+      }
+      part { name: "label.value";
+         type: TEXT;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 0;
+            color_class: "main";
+            text {
+               align: 0.0 0.5;
+               font: FN;
+               size: 12;
+               min: 0 0;
+               max: 1 1;
+            }
+            rel1.to: "swallow.first";
+            rel2.to: "swallow.second";
+         }
+      }
+      part { name: "area.value.spacer";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            SET_SIZE(30, 5);
+            align: 0.0 0.0;
+            rel1 {
+               to: "swallow.first";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "area.item";
+         }
+      }
+      part { name: "area.value.spacer2";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1 {
+               to_x: "area.value.spacer";
+               to_y: "area.item";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "area.item";
+               relative: 0.7 1.0;
+            }
+         }
+      }
+      part { name: "label.property";
+         type: TEXT;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            color_class: "main";
+            fixed: 1 0;
+            text {
+               align: 0.0 0.5;
+               font: FN;
+               size: 12;
+               min: 0 0;
+               max: 1 1;
+            }
+            rel1 {
+               to_x: "area.value.spacer2";
+               to_y: "area.item";
+            }
+            rel2 {
+               to_x: "swallow.second";
+               to_y: "area.item";
+            }
+         }
+      }
+      part { name: "swallow.second";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               to: "area.value.spacer2";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "area.item";
+         }
+      }
+   }
+}
+
+#undef ITEM_COLOR
+
+group { name: "elm/layout/preferences/general";
+   parts {
+      part { name: "padding.left";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 10 0;
+            max: 10 -1;
+            rel1.relative: 0.2 0.0;
+         }
+      }
+      part { name: "padding.right";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: 10 -1;
+            rel1.relative: 0.5 0;
+         }
+      }
+      part { name: "area.general";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: 100 40;
+         }
+      }
+      part { name: "area.profile";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: -1 26;
+            rel1 {
+               relative: 0.5 1.0;
+               to: "area.general";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "padding.left";
+            }
+         }
+      }
+      part { name: "label.general";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color_class: "main";
+            rel1.to: "area.general";
+            rel2.to: "area.general";
+            text {
+               text: "General";
+               font: FN;
+               size: 22;
+            }
+         }
+      }
+      part { name: "label.profile";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color_class: "main";
+            align: 1.0 0.5;
+            rel1.to: "area.profile";
+            rel2.to: "area.profile";
+            text {
+               text: "Profile:";
+               font: FN;
+               size: 12;
+            }
+         }
+      }
+      part { name: "swallow.profile";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            max: -1 20;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "padding.left";
+               to_y: "area.profile";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "padding.right";
+               to_y: "area.profile";
+            }
+         }
+      }
+      part { name: "area.home";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: 100 26;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "padding.right";
+               to_y: "area.profile";
+            }
+         }
+      }
+      part { name: "area.swap";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: 100 26;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "area.home";
+            }
+         }
+      }
+      part { name: "label.home";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color_class: "main";
+            align: 0.0 0.5;
+            rel1.to: "area.home";
+            rel2.to: "area.home";
+            text {
+               text: "home";
+               font: FN;
+               size: 12;
+            }
+         }
+      }
+      part { name: "label.swap";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color_class: "main";
+            align: 0.0 0.5;
+            rel1.to: "area.swap";
+            rel2.to: "area.swap";
+            text {
+               text: "swap";
+               font: FN;
+               size: 12;
+            }
+         }
+      }
+      part { name: "swallow.home";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 0 20;
+            max: -1 20;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "padding.left";
+               to_y: "area.home";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "padding.right";
+               to_y: "area.home";
+            }
+         }
+      }
+      part { name: "swallow.swap";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 0 20;
+            max: -1 20;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "padding.left";
+               to_y: "area.swap";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "padding.right";
+               to_y: "area.swap";
+            }
+         }
+      }
+      part { name: "swallow.autosave";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0 0;
+            max: -1 82;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "padding.left";
+               to_y: "area.swap";
+            }
+            rel2.to_x: "area.swap";
+         }
+      }
+      part { name: "swallow.uistore";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0 0;
+            max: -1 82;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "padding.left";
+               to_y: "swallow.autosave";
+            }
+            rel2.to_x: "area.swap";
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/preferences/frame";
+   parts {
+      part { name: "padding.left";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 10 0;
+            max: 10 -1;
+            rel1.relative: 0.2 0.0;
+         }
+      }
+      part { name: "area.first";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: -1 26;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "padding.left";
+            }
+         }
+      }
+      part { name: "area.second";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: -1 26;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "padding.left";
+               to_y: "area.first";
+            }
+         }
+      }
+      part { name: "label.first";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color_class: "main";
+            rel1.to: "area.first";
+            rel2.to: "area.first";
+            text {
+               text: "";
+               font: FN;
+               align: 0.0 0.0;
+               size: 12;
+            }
+         }
+      }
+      part { name: "label.second";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color_class: "main";
+            rel1.to: "area.second";
+            rel2.to: "area.second";
+            text {
+               text: "";
+               font: FN;
+               align: 0.0 0.0;
+               size: 12;
+            }
+         }
+      }
+      part { name: "swallow.first";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            max: -1 20;
+            rel1.to_y: "area.first";
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "padding.left";
+               to_y: "area.first";
+            }
+         }
+      }
+      part { name: "swallow.second";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            max: -1 20;
+            rel1.to_y: "area.second";
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "padding.left";
+               to_y: "area.second";
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/live_view/toolbar";
+   parts {
+      part { name: "eflete.swallow.bg";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0;
+         }
+      }
+      part { name: "eflete.swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0;
+            visible: 1;
+         }
+      }
+   }
+}
+group { name: "elm/layout/dialog/item";
+   images.image: "separator-vertical.png" COMP;
+   parts {
+      part { name: "items.swallow";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "left.padding";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to_x: "preview.padding";
+               to_y: "right.padding";
+            }
+         }
+      }
+      part { name: "origin.swallow";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "preview.swallow";
+            rel2.to: "preview.swallow";
+         }
+      }
+      part { name: "preview.swallow";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            aspect_preference: BOTH;
+            rel1.relative: 0.7 0.0;
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "right.padding";
+            }
+         }
+      }
+      part { name: "preview.padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            FIXED_SIZE(5, 5)
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "preview.swallow";
+            }
+         }
+      }
+      part { name: "separator.image";
+         type: IMAGE;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 2 0;
+            max: 2 -1;
+            rel1.to_x: "preview.padding";
+            rel2 {
+               to_x: "preview.padding";
+               offset: 0 0;
+            }
+            image.normal: "separator-vertical.png";
+         }
+      }
+      part { name: "right.padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            FIXED_SIZE(5, 5)
+         }
+      }
+      part { name: "left.padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            FIXED_SIZE(5, 5)
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/groupview/default";
+   parts {
+      images {
+         image: "bg_proxy.png" COMP;
+         image: "bg_swallow.png" COMP;
+         image: "bg_spacer.png" COMP;
+         image: "bg_group.png" COMP;
+         image: "bg_table.png" COMP;
+         image: "bg_box.png" COMP;
+         image: "bg_part_item.png" COMP;
+         image: "bg_object_area.png" COMP;
+      }
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            visible: 0;
+            image {
+               normal: "bg_proxy.png";
+            }
+            fill.type: TILE;
+         }
+         description { state: "text" 0.0;
+            inherit: "default" 0.0;
+         }
+#define BG(NAME, IMG) \
+   description { state: #NAME 0.0; \
+      inherit: "default" 0.0; \
+      visible: 1; \
+      image.normal: #IMG; \
+   }
+         BG(proxy,         bg_proxy.png)
+         BG(swallow,       bg_swallow.png)
+         BG(spacer,        bg_spacer.png)
+         BG(group,         bg_group.png)
+         BG(table,         bg_table.png)
+         BG(box,           bg_box.png)
+         BG(object_area,   bg_object_area.png)
+#undef BG
+         description { state: "part_item" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "part_item_hilight" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "bg_part_item.png";
+         }
+         description { state: "part_item_hilight" 1.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            image.normal: "bg_part_item.png";
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "border";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            color:  0 0 0 0;
+            image {
+               normal: "border_1.png";
+               border: 1 1 1 1;
+               middle: NONE;
+            }
+         }
+#define BORDER(NAME, COLOR) \
+   description { state: #NAME 0.0; \
+      inherit: "default" 0.0; \
+      color: COLOR; \
+   }
+         BORDER(text,         122 122 122 255)
+         BORDER(proxy,        255 112 49 255)
+         BORDER(swallow,      120 103 140 255)
+         BORDER(spacer,       101 117 133 255)
+         BORDER(group,        255 109 109 255)
+         BORDER(table,        138 125 109 255)
+         BORDER(box,          124 129 102 255)
+         BORDER(part_item,    49 140 141 255)
+         BORDER(object_area,  49 140 141 255)
+#undef BORDER
+      }
+   }
+   programs {
+#define PROGRAM(SIGNAL) \
+   program { name: #SIGNAL; \
+      source: "eflete"; \
+      signal: "border,"#SIGNAL; \
+      action: STATE_SET #SIGNAL; \
+      target: "border"; \
+      target: "bg"; \
+   }
+      PROGRAM(default)
+      PROGRAM(text)
+      PROGRAM(proxy)
+      PROGRAM(swallow)
+      PROGRAM(spacer)
+      PROGRAM(group)
+      PROGRAM(table)
+      PROGRAM(box)
+      PROGRAM(part_item)
+      PROGRAM(object_area)
+#undef PROGRAM
+   }
+   program { name: "part_item_hilight_off";
+      source: "eflete";
+      filter: "border" "part_item" 0.0;
+      signal: "border,part_item,hilight,off";
+      action: STATE_SET part_item_hilight 0.0;
+      target: "bg";
+   }
+   program { name: "part_item_hilight_on";
+      source: "eflete";
+      filter: "border" "part_item" 0.0;
+      signal: "border,part_item,hilight,on";
+      action: STATE_SET part_item_hilight 1.0;
+      target: "bg";
+   }
+}
+
+group { name: "elm/layout/groupview/object_area";
+   parts {
+      images {
+         image: "bg_object_area.png" COMP;
+         image: "border_1.png" COMP;
+      }
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            color_class: "select";
+            image {
+               normal: "bg_object_area.png";
+               middle: SOLID;
+            }
+            fill.type: TILE;
+         }
+      }
+      part { name: "border";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            color_class: "select";
+            image {
+               normal: "border_1.png";
+               border: 1 1 1 1;
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/entry/overlay";
+   broadcast_signal: 0;
+   parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color_class: "bg_scroller_disabled";
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color_class: "main";
+            text {
+               font: "PT";
+               size: 12;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            fixed: 1 1;
+            rel1 {
+               relative: 0.5 1.0;
+               offset: 0 6;
+               to_y: "elm.text";
+            }
+            rel2 {
+               relative: 0.5 1.0;
+               offset: -1 6;
+               to_y: "elm.text";
+            }
+         }
+      }
+   }
+}
+
+#include "layouts/manager.edc"
+#include "layouts/colorclass_manager.edc"
+#include "layouts/live_view_toolbar_helper.edc"
+#include "layouts/property.edc"
+#include "layouts/history.edc"
+#include "layouts/tabs.edc"
+#include "layouts/workspace.edc"

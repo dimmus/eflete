@@ -1,0 +1,52 @@
+#define ARROW                       "cursor-arrow.png"
+#define BOTTOM_LEFT_CORNER          "cursor-bottom-left-corner.png"
+#define BOTTOM_RIGHT_CORNER         "cursor-bottom-right-corner.png"
+#define TOP_LEFT_CORNER             "cursor-top-left-corner.png"
+#define TOP_RIGHT_CORNER            "cursor-top-right-corner.png"
+#define CROSSHAIR                   "cursor-crosshair.png"
+#define FLEUR                       "cursor-fleur.png"
+#define SIZING                      "cursor-sizing.png"
+#define HAND1                       "cursor-hand1.png"
+
+#define CURSOR(NAME, IMG, IMG_W, IMG_H, REL)  \
+group { name: "elm/cursor/"##NAME##"/default";              \
+   images.image: IMG COMP;                                  \
+   parts {                                                  \
+      part { name: "base";                                  \
+         type: IMAGE;                                       \
+         description { state: "default" 0.0;                \
+            min: IMG_H IMG_W;                               \
+            max: IMG_H IMG_W;                               \
+            image.normal: IMG;                              \
+         }                                                  \
+      }                                                     \
+      part { name: "hotspot";                               \
+         type: SPACER;                                      \
+         description { state: "default" 0.0;                \
+            fixed: 1 1;                                     \
+            rel1.relative: REL;                            \
+            rel2.relative: REL;                            \
+         }                                                  \
+      }                                                     \
+   }                                                        \
+}
+
+CURSOR(arrow, ARROW, 18, 15, 0.0 0.0)
+CURSOR(bottom_left_corner, BOTTOM_LEFT_CORNER, 12, 12, 0.0 1.0)
+CURSOR(bottom_right_corner, BOTTOM_RIGHT_CORNER, 12, 12, 1.0 1.0)
+CURSOR(top_left_corner, TOP_LEFT_CORNER, 12, 12, 0.0 0.0)
+CURSOR(top_right_corner, TOP_RIGHT_CORNER, 12, 12, 1.0 0.0)
+CURSOR(crosshair, CROSSHAIR, 21, 21, 0.5 0.5)
+CURSOR(fleur, FLEUR, 25, 25, 0.5 0.5)
+CURSOR(sizing, SIZING, 19, 19, 0.5 0.5)
+/* 7 and 1  it offset in image to plese where see the 'hand finger'*/
+CURSOR(hand1, HAND1, 19, 24, (7/19) (1/24))
+
+#undef ARROW
+#undef BOTTOM_LEFT_CORNER
+#undef CURSOR_BOTTOM_RIGHT_CORNER
+#undef CURSOR_TOP_LEFT_CORNER
+#undef CURSOR_TOP_RIGHT_CORNER
+#undef CURSOR_CROSSHAIR
+#undef CURSOR_FLEUR
+#undef CURSOR_SIZING

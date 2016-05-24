@@ -1,0 +1,169 @@
+group { name: "elm/separator/horizontal/icon";
+   images {
+      image: "group-border-bg-upper.png" COMP;
+   }
+   parts {
+      part { name: "base";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 0 32;
+         }
+      }
+      part { name: "separator_left";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 6 2;
+            max: 6 2;
+            rel1 {
+               to_x: "base";
+               to_y: "eflete.text";
+            }
+            rel2 {
+               to_x: "base";
+               to_y: "eflete.text";
+            }
+            image {
+               normal: "group-border-bg-upper.png";
+               middle: DEFAULT;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part { name: "padding_text_left";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 3 0;
+            max: 3 -1;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "separator_left";
+               to_y: "base";
+            }
+            rel2 {
+               to: "base";
+            }
+         }
+      }
+      part { name: "eflete.swallow.icon";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            min: 12 12;
+            max: 12 12;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "padding_text_left";
+               to_y: "eflete.text";
+            }
+            rel2 {
+               to_x: "base";
+               to_y: "eflete.text";
+            }
+         }
+      }
+      part { name: "padding_icon_right";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 3 0;
+            max: 3 -1;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "eflete.swallow.icon";
+               to_y: "base";
+            }
+            rel2 {
+               to: "base";
+            }
+         }
+      }
+      part { name: "eflete.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            color_class: "main";
+            rel1 {
+               relative: 1.0 0.0;
+               to: "padding_icon_right";
+            }
+            rel2 {
+               to: "base";
+            }
+            text {
+               font: PT;
+               size: 13;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "padding_text_right";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 3 0;
+            max: 3 -1;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "eflete.text";
+               to_y: "base";
+            }
+            rel2 {
+               to: "base";
+            }
+         }
+      }
+      part { name: "padding_right";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            max: 3 -1;
+         }
+      }
+      part { name: "separator_right";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 0 2;
+            max: -1 2;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "padding_text_right";
+               to_y: "eflete.text";
+            }
+            rel2 {
+               to_x: "base";
+               to_y: "eflete.text";
+            }
+            image {
+               normal: "group-border-bg-upper.png";
+               middle: DEFAULT;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/separator/horizontal/default";
+   images {
+      image: "separator-horizontal.png" COMP;
+   }
+   parts {
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            min: 0 2;
+            max: -1 2;
+            image.normal: "separator-horizontal.png";
+            fill.smooth: 0;
+         }
+      }
+   }
+}

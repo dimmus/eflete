@@ -1,0 +1,754 @@
+group { name: "elm/frame/base/default";
+   images {
+      image: "separator-horizontal.png" COMP;
+      image: "frame_border.png" COMP;
+      image: "icon_arrow_down.png" COMP;
+   }
+   parts {
+      part { name: "base";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 {
+               offset: 6 6;
+            }
+            rel2 {
+               offset: -7 -7;
+            }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            color_class: "main";
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "button";
+               to_y: "base";
+            }
+            text {
+               font: "PT";
+               size: 13;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "border_up";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            max: -1 2;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 0;
+               to_x: "elm.text";
+               to_y: "border";
+            }
+            rel2 {
+               offset: -4 -1;
+               to: "border";
+            }
+            image {
+               normal: "separator-horizontal.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "border";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.5;
+               to_x: "base";
+               to_y: "elm.text";
+            }
+            rel2 {
+               to: "base";
+            }
+            image {
+               normal: "frame_border.png";
+               border: 7 3 3 4;
+               middle: NONE;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part { name: "button";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 16 16;
+            max: 16 16;
+            rel1 {
+               offset: 7 0;
+               to_x: "border";
+               to_y: "elm.text";
+            }
+            rel2 {
+               to_y: "elm.text";
+            }
+            map {
+               on: 1;
+            }
+            image {
+               normal: "icon_arrow_down.png";
+               middle: DEFAULT;
+            }
+         }
+         description { state: "collapsed" 0.0;
+            align: 0.0 0.5;
+            min: 16 16;
+            max: 16 16;
+            rel1 {
+               offset: 7 0;
+               to_x: "border";
+               to_y: "elm.text";
+            }
+            rel2 {
+               to_y: "elm.text";
+            }
+            map {
+               on: 1;
+               smooth: 0;
+               rotation {
+                  center: "button";
+                  z: -90.0;
+               }
+            }
+            image {
+               normal: "icon_arrow_down.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            rel1 {
+               to: "clipper";
+            }
+            rel2 {
+               to: "clipper";
+            }
+         }
+         description { state: "collapsed" 0.0;
+            align: 0.5 0.0;
+            minmul: 1.0 0.0;
+            rel1 {
+               to: "clipper";
+            }
+            rel2 {
+               to: "clipper";
+            }
+         }
+      }
+      part { name: "event";
+         type: RECT;
+         ignore_flags: "ON_HOLD";
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 {
+               to_x: "button";
+               to_y: "elm.text";
+            }
+            rel2 {
+               to: "elm.text";
+            }
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 7 7;
+               to_x: "base";
+               to_y: "elm.text";
+            }
+            rel2 {
+               offset: -8 -8;
+               to: "border";
+            }
+         }
+         description { state: "collapsed" 0.0;
+            fixed: 1 0;
+            color: 255 255 255 0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 7 7;
+               to_x: "base";
+               to_y: "elm.text";
+            }
+            rel2 {
+               offset: -8 -8;
+               to: "border";
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "mouse_up_event";
+         signal: "mouse,up,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,click" "elm";
+      }
+      program { name: "action_toggle";
+         signal: "elm,action,toggle";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.swallow.content", st, 30, vl);
+            if (!strcmp(st, "default"))
+            run_program(PROGRAM:"collapse");
+            else
+            run_program(PROGRAM:"expand");
+         }
+      }
+      program { name: "collapse";
+         action: STATE_SET "collapsed" 0.00;
+         transition: ACCELERATE 0.50000;
+         target: "elm.swallow.content";
+         target: "button";
+         target: "clipper";
+         after: "signal";
+      }
+      program { name: "expand";
+         action: STATE_SET "default" 0.00;
+         transition: DECELERATE 0.50000;
+         target: "elm.swallow.content";
+         target: "button";
+         target: "clipper";
+         after: "signal";
+      }
+      program { name: "signal";
+         action: SIGNAL_EMIT "elm,anim,done" "elm";
+      }
+      program { name: "action_switch";
+         signal: "elm,action,switch";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.swallow.content", st, 30, vl);
+            if (!strcmp(st, "default"))
+               set_state(PART:"elm.swallow.content", "collapsed", 0.0);
+            else
+               set_state(PART:"elm.swallow.content", "default", 0.0);
+         }
+      }
+   }
+}
+
+group { name: "elm/frame/base/outdent_top";
+   images {
+      image: "separator-horizontal.png" COMP;
+      image: "frame_border.png" COMP;
+      image: "icon_arrow_down.png" COMP;
+   }
+   parts {
+      part { name: "base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 {
+               offset: 6 6;
+            }
+            rel2 {
+               offset: -7 -7;
+            }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            color_class: "main";
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "button";
+               to_y: "base";
+            }
+            text {
+               font: "PT";
+               size: 13;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "border_right";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            max: -1 2;
+            rel1 {
+               relative: 1.0 0.5;
+               offset: 6 0;
+               to: "elm.text";
+            }
+            image {
+               normal: "separator-horizontal.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "border_left";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: 10 2;
+            rel1 {
+               relative: 0.0 0.5;
+               to_y: "elm.text";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               to_y: "elm.text";
+            }
+            image {
+               normal: "separator-horizontal.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "button";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 16 16;
+            max: 16 16;
+            rel1 {
+               offset: 7 0;
+               to_x: "base";
+               to_y: "elm.text";
+            }
+            rel2 {
+               to_y: "elm.text";
+            }
+            map {
+               on: 1;
+            }
+            image {
+               normal: "icon_arrow_down.png";
+               middle: DEFAULT;
+            }
+         }
+         description { state: "collapsed" 0.0;
+            align: 0.0 0.5;
+            min: 16 16;
+            max: 16 16;
+            rel1 {
+               offset: 7 0;
+               to_x: "base";
+               to_y: "elm.text";
+            }
+            rel2 {
+               to_y: "elm.text";
+            }
+            map {
+               on: 1;
+               smooth: 0;
+               rotation {
+                  center: "button";
+                  z: -90.0;
+               }
+            }
+            image {
+               normal: "icon_arrow_down.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            rel1 {
+               to: "clipper";
+            }
+            rel2 {
+               to: "clipper";
+            }
+         }
+         description { state: "collapsed" 0.0;
+            align: 0.5 0.0;
+            minmul: 1.0 0.0;
+            rel1 {
+               to: "clipper";
+            }
+            rel2 {
+               to: "clipper";
+            }
+         }
+      }
+      part { name: "event";
+         type: RECT;
+         ignore_flags: "ON_HOLD";
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 {
+               to_x: "button";
+               to_y: "elm.text";
+            }
+            rel2 {
+               to: "elm.text";
+            }
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 3;
+               to_x: "base";
+               to_y: "elm.text";
+            }
+            rel2 {
+               to: "base";
+            }
+         }
+         description { state: "collapsed" 0.0;
+            fixed: 1 0;
+            color: 255 255 255 0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 3;
+               to_x: "base";
+               to_y: "elm.text";
+            }
+            rel2 {
+               to: "base";
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "mouse_up_event";
+         signal: "mouse,up,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,click" "elm";
+      }
+      program { name: "action_toggle";
+         signal: "elm,action,toggle";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.swallow.content", st, 30, vl);
+            if (!strcmp(st, "default"))
+            run_program(PROGRAM:"collapse");
+            else
+            run_program(PROGRAM:"expand");
+         }
+      }
+      program { name: "collapse";
+         action: STATE_SET "collapsed" 0.00;
+         transition: ACCELERATE 0.50000;
+         target: "elm.swallow.content";
+         target: "button";
+         target: "clipper";
+         after: "signal";
+      }
+      program { name: "expand";
+         action: STATE_SET "default" 0.00;
+         transition: DECELERATE 0.50000;
+         target: "elm.swallow.content";
+         target: "button";
+         target: "clipper";
+         after: "signal";
+      }
+      program { name: "signal";
+         action: SIGNAL_EMIT "elm,anim,done" "elm";
+      }
+      program { name: "action_switch";
+         signal: "elm,action,switch";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.swallow.content", st, 30, vl);
+            if (!strcmp(st, "default"))
+               set_state(PART:"elm.swallow.content", "collapsed", 0.0);
+            else
+               set_state(PART:"elm.swallow.content", "default", 0.0);
+         }
+      }
+   }
+}
+
+group { name: "elm/frame/base/icon";
+   images {
+      image: "separator-horizontal.png" COMP;
+      image: "frame_border.png" COMP;
+      image: "icon_arrow_down.png" COMP;
+   }
+   parts {
+      part { name: "base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 {
+               offset: 6 6;
+            }
+            rel2 {
+               offset: -7 -7;
+            }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            color_class: "main";
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 0;
+               to: "elm.swallow.icon";
+            }
+            text {
+               font: "PT";
+               size: 13;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "border_up";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            max: -1 2;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 6 0;
+               to_x: "elm.text";
+               to_y: "border";
+            }
+            rel2 {
+               offset: -4 -1;
+               to: "border";
+            }
+            image {
+               normal: "separator-horizontal.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "border";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.5;
+               to_x: "base";
+               to_y: "elm.swallow.icon";
+            }
+            rel2 {
+               to: "base";
+            }
+            image {
+               normal: "frame_border.png";
+               border: 7 3 3 4;
+               middle: NONE;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part { name: "button";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 16 16;
+            max: 16 16;
+            rel1 {
+               offset: 7 0;
+               to_x: "border";
+               to_y: "elm.swallow.icon";
+            }
+            rel2 {
+               to_y: "elm.swallow.icon";
+            }
+            map {
+               on: 1;
+            }
+            image {
+               normal: "icon_arrow_down.png";
+               middle: DEFAULT;
+            }
+         }
+         description { state: "collapsed" 0.0;
+            align: 0.0 0.5;
+            min: 16 16;
+            max: 16 16;
+            rel1 {
+               offset: 7 0;
+               to_x: "border";
+               to_y: "elm.swallow.icon";
+            }
+            rel2 {
+               to_y: "elm.swallow.icon";
+            }
+            map {
+               on: 1;
+               smooth: 0;
+               rotation {
+                  center: "button";
+                  z: -90.0;
+               }
+            }
+            image {
+               normal: "icon_arrow_down.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            rel1 {
+               to: "clipper";
+            }
+            rel2 {
+               to: "clipper";
+            }
+         }
+         description { state: "collapsed" 0.0;
+            align: 0.5 0.0;
+            minmul: 1.0 0.0;
+            rel1 {
+               to: "clipper";
+            }
+            rel2 {
+               to: "clipper";
+            }
+         }
+      }
+      part { name: "event";
+         type: RECT;
+         ignore_flags: "ON_HOLD";
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 {
+               to_x: "button";
+               to_y: "elm.swallow.icon";
+            }
+            rel2 {
+               to: "elm.swallow.icon";
+            }
+         }
+      }
+      part { name: "elm.swallow.icon";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: 18 19;
+            rel1 {
+               to_x: "button";
+               to_y: "base";
+               offset: 3 0;
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 7 7;
+               to_x: "base";
+               to_y: "elm.swallow.icon";
+            }
+            rel2 {
+               offset: -8 -8;
+               to: "border";
+            }
+         }
+         description { state: "collapsed" 0.0;
+            fixed: 1 0;
+            color: 255 255 255 0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 7 7;
+               to_x: "base";
+               to_y: "elm.swallow.icon";
+            }
+            rel2 {
+               offset: -8 -8;
+               to: "border";
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "mouse_up_event";
+         signal: "mouse,up,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,click" "elm";
+      }
+      program { name: "action_toggle";
+         signal: "elm,action,toggle";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.swallow.content", st, 30, vl);
+            if (!strcmp(st, "default"))
+            run_program(PROGRAM:"collapse");
+            else
+            run_program(PROGRAM:"expand");
+         }
+      }
+      program { name: "collapse";
+         action: STATE_SET "collapsed" 0.00;
+         transition: ACCELERATE 0.50000;
+         target: "elm.swallow.content";
+         target: "button";
+         target: "clipper";
+         after: "signal";
+      }
+      program { name: "expand";
+         action: STATE_SET "default" 0.00;
+         transition: DECELERATE 0.50000;
+         target: "elm.swallow.content";
+         target: "button";
+         target: "clipper";
+         after: "signal";
+      }
+      program { name: "signal";
+         action: SIGNAL_EMIT "elm,anim,done" "elm";
+      }
+      program { name: "action_switch";
+         signal: "elm,action,switch";
+         source: "elm";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.swallow.content", st, 30, vl);
+            if (!strcmp(st, "default"))
+               set_state(PART:"elm.swallow.content", "collapsed", 0.0);
+            else
+               set_state(PART:"elm.swallow.content", "default", 0.0);
+         }
+      }
+   }
+}

@@ -1,0 +1,46 @@
+group { name: "elm/layout/history/default";
+   broadcast_signal: 0;
+   parts {
+      part { name: "elm.swallow.btn_discard";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            min: 18 19;
+            max: -1 19;
+            fixed: 1 1;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: -6 0;
+               to_x: "elm.swallow.btn_clean";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -7 0;
+               to_x: "elm.swallow.btn_clean";
+            }
+         }
+      }
+      part { name: "elm.swallow.btn_clean";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            min: 18 19;
+            max: -1 19;
+            rel1 {
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 0 3;
+               to_y: "elm.swallow.btn_discard";
+            }
+         }
+      }
+   }
+}

@@ -1,0 +1,25 @@
+group {
+   name: "elm/layout/colorclass_manager/preview";
+   parts {
+      part {
+         name: "text_example";
+         type: TEXT;
+         effect: OUTLINE_SHADOW;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            color2: 255 255 255 255;
+            color3: 255 255 255 255;
+            color_class: "colorclass_manager/text_example_colorclass";
+            text {
+               size: 29;
+               min: 1 1;
+               fit: 1 1;
+               ellipsis: -1;
+               font: "arial";
+            }
+         }
+      }
+   }
+}

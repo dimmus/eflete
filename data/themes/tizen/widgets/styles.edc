@@ -1,0 +1,130 @@
+styles {
+   style { name: "main_text";
+      base: "font="FN" font_size=12 color=#d6d6d6 wrap=word text_class=entry ellipsis=1.0";
+      TEXTBLOCK_TAGS_ENABLED
+      }
+   style { name: "main_text_disabled";
+      base: "font="FN" font_size=12 color=#767778 wrap=word text_class=entry ellipsis=1.0";
+      TEXTBLOCK_TAGS_DISABLED
+   }
+   style { name: "entry_main_text";
+      base: "font="FN" font_size=12 color=#d6d6d6 wrap=word text_class=entry ellipsis=-1.0";
+      TEXTBLOCK_TAGS_ENABLED
+   }
+   style { name: "entry_main_spinner_text";
+      base: "font="FN" align=middle font_size=12 color=#d6d6d6 wrap=word text_class=entry ellipsis=-1.0";
+      TEXTBLOCK_TAGS_ENABLED
+   }
+   style { name: "entry_main_text_disabled";
+      base: "font="FN" font_size=12 color=#767778 wrap=word text_class=entry ellipsis=-1.0";
+      TEXTBLOCK_TAGS_DISABLED
+   }
+
+   /* not refactored */
+   style {
+      name: "list_item_normal";
+      base: "font="FN" font_size=10 text_class=list_item color=#000 wrap=word";
+      tag: "bold" "+ font_weight=bold";
+      tag: "italic" "+ font_style=Italic";
+      tag: "underline" "+ style=underline underline_color=#000A underline2_color=#0005 ";
+      tag: "br" "+ \n";
+   }
+   style {
+      name: "list_item_seleted";
+      base: "font="FN" font_size=10 text_class=list_item color=#FFF shadow_color=#000A wrap=word";
+      tag: "bold" "+ font_weight=bold";
+      tag: "italic" "+ font_style=Italic";
+      tag: "underline" "+ style=underline underline_color=#FFFA underline2_color=#0005 ";
+      tag: "br" "+ \n";
+   }
+   style { name: "entry_textblock_style_editor";
+      base: "font="FN" font_size=10 color=#000 wrap=word text_class=entry left_margin=2 right_margin=2";
+      tag: "em" "+ font_style=Oblique";
+      tag: "link" "+ color=#800 underline=on underline_color=#8008";
+      tag: "hilight" "+ font_weight=Bold";
+      tag: "preedit" "+ underline=on underline_color=#000";
+      tag: "preedit_sel" "+ backing=on backing_color=#000 color=#FFFFFF";
+   }
+   style { name: "entry_textblock_disabled_style_editor";
+      base: "font="FN" font_size=10 color=#00000080 wrap=word text_class=entry left_margin=2 right_margin=2";
+      tag: "em" "+ font_style=Oblique";
+      tag: "link" "+ color=#00000080 underline=on underline_color=#00000080";
+      tag: "hilight" "+ font_weight=Bold";
+      tag: "preedit" "+ underline=on underline_color=#000";
+      tag: "preedit_sel" "+ backing=on backing_color=#000 color=#FFFFFF";
+   }
+   style { name: "entry_textblock_guide_style_editor";
+      base: "font="FN" font_size=10 color=#00000040 wrap=word text_class=entry left_margin=2 right_margin=2 ellipsis=0.0";
+      tag: "em" "+ font_style=Oblique";
+      tag: "hilight" "+ font_weight=Bold";
+   }
+   style { name: "popup_desc_style";
+      base: "font="FN" font_size=10 align=center color=#000000 text_class=label";
+      tag:  "br" "\n";
+      tag:  "ps" "ps";
+      tag:  "whitecolor" "+ color=#ffffff";
+      tag:  "tab" "\t";
+   }
+   style { name: "popup_title_style";
+base: "font="FN_B" font_size=13 color=#d6d6d6 wrap=none text_class=label align=center ellipsis=1.0";
+      tag:  "br" "\n";
+      tag:  "tab" "\t";
+   }
+   style { name: "eflete_spinner_live_view_style";
+      base: "font="FN" font_size=10 color=#B6B6B6 wrap=word text_class=entry";
+      tag:  "em" "+ font_style=Oblique";
+      tag:  "link" "+ color=#B6B6B6 underline=on underline_color=#8008";
+      tag:  "hilight" "+ font_weight=Bold";
+      tag:  "preedit" "+ underline=on underline_color=#000";
+      tag:  "preedit_sel" "+ backing=on backing_color=#000 color=#FFFFFF";
+   }
+   style { name: "eflete_spinner_live_view_disabled_style";
+      base: "font="FN" font_size=10 color=#00000080 wrap=word text_class=entry left_margin=2 right_margin=2 ellipsis=1.0";
+      tag:  "em" "+ font_style=Oblique";
+      tag:  "link" "+ color=#00000080 underline=on underline_color=#00000080";
+      tag:  "hilight" "+ font_weight=Bold";
+      tag:  "preedit" "+ underline=on underline_color=#000";
+      tag:  "preedit_sel" "+ backing=on backing_color=#000 color=#FFFFFF";
+   }
+   style { name: "eflete_text_guide_style";
+      base: "font="FN" font_size=12 color=#555555 wrap=word text_class=entry left_margin=2 right_margin=2 ellipsis=0.0";
+      tag:  "em" "+ font_style=Oblique";
+      tag:  "hilight" "+ font_weight=Bold";
+   }
+   style { name: "eflete_text_search_guide_style";
+      base: "font="FN" font_size=12 color=#555555 wrap=word text_class=entry left_margin=2 right_margin=2 ellipsis=0.0";
+      tag:  "em" "+ font_style=Oblique";
+      tag:  "hilight" "+ font_weight=Bold";
+   }
+   style { name: "eflete_textblock_style";
+      base: "font="FN" font_size=11 color=#B6B6B6 text_class=label left_margin=2 right_margin=2";
+      tag:  "hilight" "+ font_weight=Bold";
+      tag:  "b" "+ font_weight=Bold";
+      tag:  "br" "\n";
+      tag:  "a" "+ color=#00000080 underline=on underline_color=#00000080";
+      tag: "path" "+ color=#80BFFF";
+      tag: "orange" "+ color=#FFBF80";
+   }
+   style { name: "eflete_editor_textblock_style";
+      base: "font="FN" font_size=12 color=#B6B6B6 text_class=label left_margin=2 right_margin=2";
+      tag:  "hilight" "+ font_weight=Bold";
+      tag:  "b" "+ font_weight=Bold";
+      tag:  "br" "\n";
+      tag:  "a" "+ color=#00000080 underline=on underline_color=#00000080";
+   }
+   style { name: "eflete_infoblock_style";
+      base: "font="FN" font_size=11 color=#B6B6B6 text_class=label left_margin=2 right_margin=2";
+      tag:  "hilight" "+ font_weight=Bold";
+      tag:  "b" "+ font_weight=Bold";
+      tag:  "br" "\n";
+      tag:  "a" "+ color=#5893c6ff underline=on underline_color=#5893c6ff";
+   }
+   style { name: "eflete_header_textblock_style";
+      base: "font="FN" font_size=16 color=#FFFFFF text_class=label left_margin=2 right_margin=2";
+      tag:  "b" "+ font_weight=Bold";
+   }
+   style { name: "frame";
+      base: "font="FN" font_size=13 font_style=Normal color=#d6d6d6ff shadow_color=#FFF glow_color=#FFF glow2_color=#FFF backing_color=#FFF align=middle left_margin=6 right_margin=6";
+         }
+
+}

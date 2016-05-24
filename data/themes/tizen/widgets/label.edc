@@ -1,0 +1,119 @@
+group { name: "elm/label/base/default";
+   alias: "elm/label/base/info";
+   data.item: "default_font_size" "11";
+   data.item: "min_font_size" "6";
+   data.item: "max_font_size" "60";
+   parts {
+      part { name: "label.text.clip";
+         type: RECT;
+         description { state: "default" 0.0;
+         }
+      }
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         scale: 1;
+         clip_to: "label.text.clip";
+         description { state: "default" 0.0;
+            text {
+               style: "main_text";
+               align: 0.5 0.0;
+            }
+         }
+         description { state: "disabled" 0.0;
+            text {
+               style: "main_text_disabled";
+               align: 0.5 0.0;
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "enabled";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text";
+      }
+      program { name: "disabled";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "elm.text";
+      }
+   }
+}
+
+group { name: "elm/label/base/slide_about";
+   data {
+      item: "min_font_size" "6";
+      item: "max_font_size" "60";
+      item: "default_font_size" "11";
+   }
+   parts {
+      part { name: "label.text.clip";
+         type: RECT;
+         description { state: "default" 0.0;
+            min: 0 300;
+         }
+      }
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         scale: 1;
+         clip_to: "label.text.clip";
+         description { state: "default" 0.0;
+            text {
+               style: "eflete_textblock_style";
+            }
+         }
+         description { state: "sliding" 0.0;
+            align: 0.5 1.0;
+            rel2 {
+               relative: 1.0 0.0;
+            }
+            text {
+               min: 1 1;
+               ellipsis: -1;
+               style: "eflete_textblock_style";
+            }
+         }
+         description { state: "slidin_start" 0.0;
+            align: 0.5 0.0;
+            rel1 {
+               relative: 0.0 1.0;
+            }
+            text {
+               min: 1 1;
+               ellipsis: -1;
+               style: "eflete_textblock_style";
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "animation_bottom";
+         signal: "elm,state,slide,start";
+         source: "elm";
+         action: STATE_SET "slidin_start" 0.00;
+         target: "elm.text";
+         after: "animation_sliding";
+      }
+      program { name: "animation_stop";
+         signal: "elm,state,slide,stop";
+         source: "elm";
+         action: ACTION_STOP;
+         target: "animation_bottom";
+         target: "animation_sliding";
+         after: "animation_set_default";
+      }
+      program { name: "animation_sliding";
+         action: STATE_SET "sliding" 0.00;
+         transition: LINEAR 16.0;
+         target: "elm.text";
+         after: "animation_bottom";
+      }
+      program { name: "animation_set_default";
+         action: STATE_SET "default" 0.00;
+         target: "elm.text";
+      }
+   }
+}

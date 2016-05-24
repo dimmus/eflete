@@ -1,0 +1,14 @@
+/* required for live_toolbar */
+group { name: "elm/layout/live_view/toolbar_helper";
+   parts {
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel2 {
+               relative: 1.0 0.0;
+            }
+         }
+      }
+   }
+}
