@@ -1,22 +1,97 @@
+#ifdef TEXTBLOCK_TAGS_ENABLED
+   #undef TEXTBLOCK_TAGS_ENABLED
+#endif /*  */
+
+#ifdef TEXTBLOCK_TAGS_DISABLED
+   #undef TEXTBLOCK_TAGS_DISABLED
+#endif /*  */
+
+#define TEXTBLOCK_TAGS_ENABLED                                             \
+   tag: "em" "+ font_style=Oblique";                                       \
+   tag: "hilight" "+ font_weight=Bold style=glow glow_color=#0054a780";    \
+   tag: "link" "+ color=#0054a7 underline=on underline_color=#0054a7";     \
+   tag: "preedit" "+ underline=on underline_color=#3399ff";                \
+   tag: "preedit_sel" "+ backing=on backing_color=#000000 color=#ffffff";  \
+   tag: "title" "+ font_size=26";                                          \
+   tag: "subtitle" "+ font_size=18";                                       \
+   tag: "bigger" "+ font_size=12";                                         \
+   tag: "big" "+ font_size=11";                                            \
+   tag: "small" "+ font_size=8";                                           \
+   tag: "smaller" "+ font_size=7";                                         \
+   tag: "name" "+ color=#888888 font_weight=Bold";                         \
+   tag: "val" "+ color=#ffffff";                                           \
+   tag: "info" "+ color=#0054a7 style=glow glow_color=#0054a730";          \
+   tag: "success" "+ color=#00ff00 style=glow glow_color=#00ff0030";       \
+   tag: "warning" "+ color=#ff7c00 style=glow glow_color=#ff7c0030";       \
+   tag: "failure" "+ color=#ff0000 style=glow glow_color=#ff000030";       \
+   tag: "code" "+ font=Mono style=plain color=#ffffff";                    \
+   tag: "comment" "+ color=#00B000";                                       \
+   tag: "string" "+ color=#ff3a35";                                        \
+   tag: "number" "+ color=#d4d42a font_weight=Bold";                       \
+   tag: "brace" "+ color=#656565";                                         \
+   tag: "type" "+ color=#0054a7";                                          \
+   tag: "class" "+ color=#72aad4 font_weight=Bold";                        \
+   tag: "function" "+ color=#72aad4 font_weight=Bold";                     \
+   tag: "param" "+ color=#ffffff";                                         \
+   tag: "keyword" "+ color=#ff9900 font_weight=Bold";                      \
+   tag: "preprocessor" "+ color=#0054a7 font_weight=Bold";                 \
+   tag: "line_added" "+ color=#00B000";                                    \
+   tag: "line_removed" "+ color=#ff3a35";                                  \
+   tag: "line_changed" "+ color=#ff9900";
+
+#define TEXTBLOCK_TAGS_DISABLED                                            \
+   tag: "em" "+ font_style=Oblique";                                       \
+   tag: "hilight" "+ font_weight=Bold";                                    \
+   tag: "link" "+ color=#151515 shadow_color=#ffffff19 underline=on underline_color=#1515"; \
+   tag: "preedit" "+ underline=on underline_color=#151515";              \
+   tag: "preedit_sel" "+ backing=on backing_color=#000000 color=#888888";  \
+   tag: "title" "+ font_size=26";                                          \
+   tag: "subtitle" "+ font_size=18";                                       \
+   tag: "bigger" "+ font_size=12";                                         \
+   tag: "big" "+ font_size=11";                                            \
+   tag: "small" "+ font_size=8";                                           \
+   tag: "smaller" "+ font_size=7";                                         \
+   tag: "name" "+ color=#151515 font_weight=Bold shadow_color=#ffffff19";  \
+   tag: "val" "+ color=#151515 shadow_color=#ffffff19";                    \
+   tag: "info" "+ color=#151515 shadow_color=#ffffff19";        \
+   tag: "success" "+ color=#151515 shadow_color=#ffffff19";     \
+   tag: "warning" "+ color=#151515 shadow_color=#ffffff19";     \
+   tag: "failure" "+ color=#151515 shadow_color=#ffffff19";     \
+   tag: "code" "+ style=shadow,bottom shadow_color=#ffffff19 font=Mono color=#151515"; \
+   tag: "comment" "+ color=#151515 shadow_color=#ffffff19";                                       \
+   tag: "string" "+ color=#151515 shadow_color=#ffffff19";                                        \
+   tag: "number" "+ color=#151515 shadow_color=#ffffff19 font_weight=Bold";                       \
+   tag: "brace" "+ color=#151515 shadow_color=#ffffff19";                                         \
+   tag: "type" "+ color=#151515 shadow_color=#ffffff19";                                          \
+   tag: "class" "+ color=#151515 shadow_color=#ffffff19 font_weight=Bold";                        \
+   tag: "function" "+ color=#151515 shadow_color=#ffffff19 font_weight=Bold";                     \
+   tag: "param" "+ color=#151515 shadow_color=#ffffff19";                                         \
+   tag: "keyword" "+ color=#151515 shadow_color=#ffffff19 font_weight=Bold";                      \
+   tag: "preprocessor" "+ color=#151515 shadow_color=#ffffff19 font_weight=Bold";                 \
+   tag: "line_added" "+ color=#151515 shadow_color=#ffffff19";                                    \
+   tag: "line_removed" "+ color=#151515 shadow_color=#ffffff19";                                  \
+   tag: "line_changed" "+ color=#151515 shadow_color=#ffffff19";
+
+
 styles {
    style { name: "main_text";
-      base: "font="FN" font_size=12 color=#d6d6d6 wrap=word text_class=entry ellipsis=1.0";
+      base: "font="FN" font_size=14 color=#585858 wrap=word text_class=entry ellipsis=1.0";
       TEXTBLOCK_TAGS_ENABLED
       }
    style { name: "main_text_disabled";
-      base: "font="FN" font_size=12 color=#767778 wrap=word text_class=entry ellipsis=1.0";
+      base: "font="FN" font_size=14 color=#767778 wrap=word text_class=entry ellipsis=1.0";
       TEXTBLOCK_TAGS_DISABLED
    }
    style { name: "entry_main_text";
-      base: "font="FN" font_size=12 color=#d6d6d6 wrap=word text_class=entry ellipsis=-1.0";
+      base: "font="FN" font_size=14 color=#585858 wrap=word text_class=entry ellipsis=-1.0";
       TEXTBLOCK_TAGS_ENABLED
    }
    style { name: "entry_main_spinner_text";
-      base: "font="FN" align=middle font_size=12 color=#d6d6d6 wrap=word text_class=entry ellipsis=-1.0";
+      base: "font="FN" align=middle font_size=14 color=#585858 wrap=word text_class=entry ellipsis=-1.0";
       TEXTBLOCK_TAGS_ENABLED
    }
    style { name: "entry_main_text_disabled";
-      base: "font="FN" font_size=12 color=#767778 wrap=word text_class=entry ellipsis=-1.0";
+      base: "font="FN" font_size=14 color=#767778 wrap=word text_class=entry ellipsis=-1.0";
       TEXTBLOCK_TAGS_DISABLED
    }
 
@@ -87,12 +162,12 @@ base: "font="FN_B" font_size=13 color=#d6d6d6 wrap=none text_class=label align=c
       tag:  "preedit_sel" "+ backing=on backing_color=#000 color=#FFFFFF";
    }
    style { name: "eflete_text_guide_style";
-      base: "font="FN" font_size=12 color=#555555 wrap=word text_class=entry left_margin=2 right_margin=2 ellipsis=0.0";
+      base: "font="FN" font_size=14 color=#555555 wrap=word text_class=entry left_margin=2 right_margin=2 ellipsis=0.0";
       tag:  "em" "+ font_style=Oblique";
       tag:  "hilight" "+ font_weight=Bold";
    }
    style { name: "eflete_text_search_guide_style";
-      base: "font="FN" font_size=12 color=#555555 wrap=word text_class=entry left_margin=2 right_margin=2 ellipsis=0.0";
+      base: "font="FN" font_size=14 color=#555555 wrap=word text_class=entry left_margin=2 right_margin=2 ellipsis=0.0";
       tag:  "em" "+ font_style=Oblique";
       tag:  "hilight" "+ font_weight=Bold";
    }
@@ -106,7 +181,7 @@ base: "font="FN_B" font_size=13 color=#d6d6d6 wrap=none text_class=label align=c
       tag: "orange" "+ color=#FFBF80";
    }
    style { name: "eflete_editor_textblock_style";
-      base: "font="FN" font_size=12 color=#B6B6B6 text_class=label left_margin=2 right_margin=2";
+      base: "font="FN" font_size=14 color=#B6B6B6 text_class=label left_margin=2 right_margin=2";
       tag:  "hilight" "+ font_weight=Bold";
       tag:  "b" "+ font_weight=Bold";
       tag:  "br" "\n";

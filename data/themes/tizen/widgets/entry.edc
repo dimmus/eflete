@@ -760,37 +760,22 @@ group { name: "elm/scroller/entry_single/default";
    data {
       item: "focus_highlight" "on";
    }
-
    images {
-      image: "control-bg.png" COMP;
-      image: "control-bg-disabled.png" COMP;
-      image: "control-shadow.png" COMP;
+      image: "border_1.png" COMP;
       image: "control-focus.png" COMP;
    }
-
    parts {
       part { name: "bg";
-         type: IMAGE;
+         type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
-            min: 0 19;
-            max: -1 19;
-            fixed: 0 1;
-            color_class: "bg_entry";
-            image {
-               normal: "control-bg.png";
-               border: 8 8 8 9;
-               middle: DEFAULT;
-            }
+            min: 0 24;
+            max: -1 24;
+            color_class: "entry_bg";
          }
-         description { state: "disabled" 0.0;
-            min: 150 19;
-            max: -1 19;
-            fixed: 0 1;
-            image {
-               normal: "control-bg-disabled.png";
-               border: 8 8 8 9;
-               middle: DEFAULT;
-            }
+         description { state: "disable" 0.0;
+            inherit: "default" 0.0;
+            color_class: "entry_bg_disabled";
          }
       }
       part { name: "sb_vbar_base";
@@ -798,9 +783,7 @@ group { name: "elm/scroller/entry_single/default";
          description { state: "default" 0.0;
             visible: 0;
             fixed: 1 1;
-            rel1 {
-               to: "bg";
-            }
+            rel1.to: "bg";
             rel2 {
                relative: 1.0 0.0;
                to: "bg";
@@ -836,9 +819,7 @@ group { name: "elm/scroller/entry_single/default";
                relative: 1.0 0.0;
                to: "bg";
             }
-            rel2 {
-               to: "bg";
-            }
+            rel2.to: "bg";
          }
       }
       part { name: "elm.dragable.hbar";
@@ -910,12 +891,8 @@ group { name: "elm/scroller/entry_single/default";
       part { name: "clipper";
          type: RECT;
          description { state: "default" 0.0;
-            rel1 {
-               to: "elm.swallow.background";
-            }
-            rel2 {
-               to: "elm.swallow.background";
-            }
+            rel1.to: "elm.swallow.background";
+            rel2.to: "elm.swallow.background";
          }
       }
       part { name: "content_clipper";
@@ -940,25 +917,15 @@ group { name: "elm/scroller/entry_single/default";
             visible: 0;
             align: 0.0 0.5;
             max: 0 -1;
-            rel1 {
-               to: "bg";
-            }
-            rel2 {
-               to: "bg";
-            }
+            rel1.to: "bg";
+            rel2.to: "bg";
          }
          description { state: "visible" 0.0;
             align: 0.0 0.5;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
-            rel1 {
-               offset: 6 1;
-               to: "bg";
-            }
-            rel2 {
-               offset: -1 -3;
-               to: "bg";
-            }
+            rel1.offset: 6 1;
+            rel2.offset: -1 -3;
          }
       }
       part { name: "elm.swallow.end";
@@ -968,9 +935,7 @@ group { name: "elm/scroller/entry_single/default";
             visible: 0;
             align: 1.0 0.5;
             max: 0 -1;
-            rel1 {
-               to: "bg";
-            }
+            rel1.to: "bg";
             rel2 {
                offset: -2 -1;
                to: "bg";
@@ -980,45 +945,8 @@ group { name: "elm/scroller/entry_single/default";
             align: 1.0 0.5;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
-            rel1 {
-               offset: 0 1;
-               to: "bg";
-            }
-            rel2 {
-               offset: -7 -3;
-               to: "bg";
-            }
-         }
-      }
-      part { name: "shadow";
-         type: IMAGE;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            rel1 {
-               to: "bg";
-            }
-            rel2 {
-               to: "bg";
-            }
-            image {
-               normal: "control-shadow.png";
-               border: 8 8 8 8;
-               middle: DEFAULT;
-            }
-         }
-         description { state: "disabled" 0.0;
-            visible: 0;
-            rel1 {
-               to: "bg";
-            }
-            rel2 {
-               to: "bg";
-            }
-            image {
-               normal: "control-shadow.png";
-               border: 8 8 8 8;
-               middle: DEFAULT;
-            }
+            rel1.offset: 0 1;
+            rel2.offset: -7 -3;
          }
       }
       part { name: "elm.swallow.elipsis";
@@ -1026,8 +954,8 @@ group { name: "elm/scroller/entry_single/default";
          clip_to: "clipper";
          description { state: "default" 0.0;
             align: 1.0 0.5;
-            max: 19 -1;
             fixed: 1 0;
+            max: 19 -1;
             rel1 {
                relative: 1.0 0.0;
                offset: 0 1;
@@ -1039,50 +967,28 @@ group { name: "elm/scroller/entry_single/default";
             }
          }
       }
-      part { name: "focus";
+      part { name: "border";
          type: IMAGE;
-         repeat_events: 1;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
-            rel1 {
-               to: "bg";
-            }
-            rel2 {
-               to: "bg";
-            }
+            color_class: "border";
             image {
-               normal: "control-focus.png";
-               border: 8 8 8 8;
-               middle: DEFAULT;
+               normal: "border_1.png";
+               border: 1 1 1 1;
             }
+            rel1.to: "bg";
+            rel2.to: "bg";
          }
-         description { state: "pass" 0.0;
+        description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            color_class: "border_focused";
+         }
+        description { state: "pass" 0.0;
+            inherit: "default" 0.0;
             color_class: "valid";
-            rel1 {
-               to: "bg";
-            }
-            rel2 {
-               to: "bg";
-            }
-            image {
-               normal: "control-focus.png";
-               border: 8 8 8 8;
-               middle: DEFAULT;
-            }
          }
          description { state: "fail" 0.0;
+            inherit: "default" 0.0;
             color_class: "invalid";
-            rel1 {
-               to: "bg";
-            }
-            rel2 {
-               to: "bg";
-            }
-            image {
-               normal: "control-focus.png";
-               border: 8 8 8 8;
-               middle: DEFAULT;
-            }
          }
       }
    }
@@ -1113,44 +1019,51 @@ group { name: "elm/scroller/entry_single/default";
       }
       program { name: "reload_on_load";
          signal: "load";
-         source: "";
          script {
-
-        emit("reload", "elm");
-                  }
+            emit("reload", "elm");
+         }
       }
       program { name: "enable";
          signal: "elm,state,enabled";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
-         target: "shadow";
       }
       program { name: "disable";
          signal: "elm,state,disabled";
          source: "elm";
          action: STATE_SET "disabled" 0.00;
          target: "bg";
-         target: "shadow";
-         //target: "focus";
+      }
+      program { name: "focused";
+         signal: "focused";
+         source: "";
+         action: STATE_SET "focused" 0.00;
+         target: "border";
+      }
+      program { name: "unfocused";
+         signal: "unfocused";
+         source: "";
+         action: STATE_SET "default" 0.00;
+         target: "border";
       }
       program { name: "validation_pass";
          signal: "validation,default,pass";
          source: "elm";
          action: STATE_SET "pass" 0.00;
-         target: "focus";
+         target: "border";
       }
       program { name: "validation_fail";
          signal: "validation,default,fail";
          source: "elm";
          action: STATE_SET "fail" 0.00;
-         target: "focus";
+         target: "border";
       }
       program { name: "validation_off";
          signal: "validation,default";
          source: "elm";
          action: STATE_SET "default" 0.00;
-         target: "focus";
+         target: "border";
       }
    }
 }
@@ -1330,32 +1243,22 @@ group { name: "elm/entry/cursor/default";
          type: IMAGE;
          scale: 1;
          description { state: "default" 0.0;
-            min: 5 15;
-            max: 5 15;
+            min: 11 22;
+            max: 11 22;
             visible: 0;
             rel1 {
-               offset: -2 -2;
+               offset: 0 -4;
             }
             rel2 {
-               offset: 1 1;
+               offset: -1 3;
             }
             image {
                normal: "cursor.png";
             }
          }
          description { state: "visible" 0.0;
-            min: 5 15;
-            max: 5 15;
+            inherit: "default" 0.0;
             visible: 1;
-            rel1 {
-               offset: -2 -2;
-            }
-            rel2 {
-               offset: 1 1;
-            }
-            image {
-               normal: "cursor.png";
-            }
          }
       }
    }
