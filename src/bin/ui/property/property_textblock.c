@@ -38,6 +38,7 @@ struct _Property_Textblock_Data {
    int wrap;
 
    Style_Data current_style;
+   Eina_Bool selected;
    Property_Attribute items[PROPERTY_TEXTBLOCK_ITEM_LAST];
 };
 typedef struct _Property_Textblock_Data Property_Textblock_Data;
@@ -770,7 +771,7 @@ _filter_cb(Property_Attribute *pa)
    assert(pa != NULL);
 
    /* will be updated later on */
-   return true;
+   return tpd.selected;
 }
 
 static void
@@ -879,10 +880,11 @@ _init_items()
 }
 
 static void
-_on_style_selected(void *data __UNUSED__,
+_on_style_selected(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info)
 {
+   Property_Data *pd = (Property_Data *)data;
    Style_Data *cur_style = (Style_Data *)event_info;
    Eina_Tmpstr *tmp;
    const char *value;
@@ -890,9 +892,11 @@ _on_style_selected(void *data __UNUSED__,
    if (cur_style)
      {
         /* do a split */
+        tpd.selected = true;
         tpd.current_style = *((Style_Data *) cur_style);
         value = eina_strbuf_string_get(cur_style->style);
 
+        /* working with first subitems of TEXT */
         tmp = _tag_value_get(value, "font");
         if (!tmp) tmp = eina_tmpstr_add("");
         if (tpd.font) eina_stringshare_del(tpd.font);
@@ -900,7 +904,7 @@ _on_style_selected(void *data __UNUSED__,
         eina_tmpstr_del(tmp);
 
         tmp = _tag_value_get(value, "font_size");
-        if (!tmp) tmp = eina_tmpstr_add("");
+        if (!tmp) tmp = eina_tmpstr_add("24");
         tpd.font_size = atof(tmp);
         eina_tmpstr_del(tmp);
 
@@ -950,11 +954,13 @@ _on_style_selected(void *data __UNUSED__,
      }
    else
      {
+        tpd.selected = false;
         if (tpd.font)
           eina_stringshare_del(tpd.font);
         tpd.font = NULL;
      }
 
+   GENLIST_FILTER_APPLY(pd->genlist);
    property_item_update_recursively(&textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_TEXT_TITLE]);
    property_item_update_recursively(&textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_POSITION_TITLE]);
    property_item_update_recursively(&textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_FORMAT_TITLE]);
@@ -970,7 +976,7 @@ property_textblock_manager_init(Property_Data *pd)
 
    _init_items();
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_STYLE_SELECTED, _on_style_selected, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_STYLE_SELECTED, _on_style_selected, pd);
 }
 
 Eina_List *
