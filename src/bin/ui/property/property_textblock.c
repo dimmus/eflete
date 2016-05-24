@@ -42,6 +42,11 @@ struct _Property_Textblock_Data {
    int ellipsis_value;
    int glow_style;
    int direction;
+   Eina_Bool strikethrough_check;
+   struct {
+      int r, g, b, a;
+   } underone_color, undertwo_color, strikethrough_color;
+   int underline;
 
    Style_Data current_style;
    Eina_Bool selected;
@@ -169,6 +174,11 @@ static const char *direction_list[] = { "bottom_left",
                                         "top",
                                         "top_right",
                                         NULL};
+
+static const char *underl_styles[] = { "off",
+                                       "single",
+                                       "double",
+                                       NULL};
 
 /************************************************************************/
 /*************        LOCAL FUNCTIONS TO SPLIT STYLE         ************/
@@ -490,6 +500,11 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR);
          APPEND(PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR);
          break;
+      case PROPERTY_TEXTBLOCK_ITEM_LINES_TITLE:
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR);
+         break;
       default:
          CRIT("items callback not found for %s", pa->name);
          abort();
@@ -762,6 +777,63 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          ap.project->changed = true;
          break;
 
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH_CHECK:
+         tpd.pass = bool_val1;
+         if (bool_val1)
+           str_tmp = eina_stringshare_add("on");
+         else
+           str_tmp = eina_stringshare_add("off");
+         _tag_parse(str_tmp, "strikethrough");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH_COLOR:
+         tpd.strikethrough_color.r = r;
+         tpd.strikethrough_color.g = g;
+         tpd.strikethrough_color.b = b;
+         tpd.strikethrough_color.a = a;
+         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
+         _tag_parse(str_tmp, "strikethrough_color");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE:
+         tpd.underline = cb_item->index;
+         _tag_parse(eina_stringshare_add(cb_item->title), "underline");
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
+         GENLIST_FILTER_APPLY(pd->genlist);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE:
+         tpd.underone_color.r = r;
+         tpd.underone_color.g = g;
+         tpd.underone_color.b = b;
+         tpd.underone_color.a = a;
+         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
+         _tag_parse(str_tmp, "underline_color");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_TWO:
+         tpd.undertwo_color.r = r;
+         tpd.undertwo_color.g = g;
+         tpd.undertwo_color.b = b;
+         tpd.undertwo_color.a = a;
+         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
+         _tag_parse(str_tmp, "underline2_color");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
+         break;
+
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -870,6 +942,33 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
                                           tpd.inner_color.b,
                                           tpd.inner_color.a);
          break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH_CHECK:
+         elm_check_state_set(action->control, tpd.strikethrough_check);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH_COLOR:
+         property_color_control_color_set(action->control,
+                                          tpd.strikethrough_color.r,
+                                          tpd.strikethrough_color.g,
+                                          tpd.strikethrough_color.b,
+                                          tpd.strikethrough_color.a);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE:
+         ewe_combobox_select_item_set(action->control, tpd.underline);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE:
+         property_color_control_color_set(action->control,
+                                          tpd.underone_color.r,
+                                          tpd.underone_color.g,
+                                          tpd.underone_color.b,
+                                          tpd.underone_color.a);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_TWO:
+         property_color_control_color_set(action->control,
+                                          tpd.undertwo_color.r,
+                                          tpd.undertwo_color.g,
+                                          tpd.undertwo_color.b,
+                                          tpd.undertwo_color.a);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -896,6 +995,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR:
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR:
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH_CHECK:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH_COLOR:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_TWO:
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
          _fill_combobox_with_enum(action->control, font_weight_list);
@@ -934,6 +1037,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
          _fill_combobox_with_enum(action->control, direction_list);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE:
+         _fill_combobox_with_enum(action->control, underl_styles);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -1009,6 +1115,14 @@ _no_direction_filter_cb(Property_Attribute *pa)
    assert(pa != NULL);
 
    return !strstr(font_glow_list[tpd.glow_style], "shadow");
+}
+
+static Eina_Bool
+_underline_filter_cb(Property_Attribute *pa)
+{
+   assert(pa != NULL);
+
+   return tpd.underline;
 }
 
 static void
@@ -1138,6 +1252,28 @@ _init_items()
               IT.name = "inner glow color";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR);
               IT.filter_cb = _no_direction_filter_cb;
+              break;
+
+           case PROPERTY_TEXTBLOCK_ITEM_LINES_TITLE:
+              IT.name = "Lines";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH:
+              IT.name = "strikethrough color";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH_CHECK);
+              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH_COLOR);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE:
+              IT.name = "underline";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR:
+              IT.name = "underline color";
+              IT.filter_cb = _underline_filter_cb;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE);
+              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_TWO);
               break;
 
            case PROPERTY_TEXTBLOCK_ITEM_LAST:
@@ -1366,6 +1502,73 @@ _on_style_selected(void *data,
           }
         eina_tmpstr_del(tmp);
 
+        /* and finally LINES */
+        tmp = _tag_value_get(value, "strikethrough");
+        if ((!tmp) || (!strcmp(tmp, "off")))
+          tpd.strikethrough_check = false;
+        else
+          tpd.strikethrough_check = true;
+        eina_tmpstr_del(tmp);
+        tmp = _tag_value_get(value, "strikethrough_color");
+        if (!tmp)
+          {
+             tmp = eina_tmpstr_add(WHITE_COLOR);
+             _tag_parse(WHITE_COLOR, "strikethrough_color");
+          }
+        if (!_hex_to_rgb(tmp,
+                         &tpd.strikethrough_color.r,
+                         &tpd.strikethrough_color.g,
+                         &tpd.strikethrough_color.b,
+                         &tpd.strikethrough_color.a))
+          {
+             ERR("Can't convert backgorund color value");
+             abort();
+          }
+        eina_tmpstr_del(tmp);
+
+        tmp = _tag_value_get(value, "underline");
+        if (!tmp) tmp = eina_tmpstr_add("off");
+        else if (!strcmp(tmp, "on")) /* check useless alias */
+          {
+             eina_tmpstr_del(tmp);
+             tmp = eina_tmpstr_add("single");
+          }
+        tpd.underline = _combobox_get_num(tmp, underl_styles);
+        eina_tmpstr_del(tmp);
+
+        tmp = _tag_value_get(value, "underline_color");
+        if (!tmp)
+          {
+             tmp = eina_tmpstr_add(WHITE_COLOR);
+             _tag_parse(WHITE_COLOR, "underline_color");
+          }
+        if (!_hex_to_rgb(tmp,
+                         &tpd.underone_color.r,
+                         &tpd.underone_color.g,
+                         &tpd.underone_color.b,
+                         &tpd.underone_color.a))
+          {
+             ERR("Can't convert underline color value");
+             abort();
+          }
+        eina_tmpstr_del(tmp);
+
+        tmp = _tag_value_get(value, "underline2_color");
+        if (!tmp)
+          {
+             tmp = eina_tmpstr_add(WHITE_COLOR);
+             _tag_parse(WHITE_COLOR, "underline2_color");
+          }
+        if (!_hex_to_rgb(tmp,
+                         &tpd.undertwo_color.r,
+                         &tpd.undertwo_color.g,
+                         &tpd.undertwo_color.b,
+                         &tpd.undertwo_color.a))
+          {
+             ERR("Can't convert underline2 color value");
+             abort();
+          }
+        eina_tmpstr_del(tmp);
      }
    else
      {
@@ -1380,6 +1583,7 @@ _on_style_selected(void *data,
    property_item_update_recursively(&textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_POSITION_TITLE]);
    property_item_update_recursively(&textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_FORMAT_TITLE]);
    property_item_update_recursively(&textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_TITLE]);
+   property_item_update_recursively(&textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_LINES_TITLE]);
 }
 
 #undef tpd
@@ -1404,6 +1608,7 @@ property_textblock_manager_items_get()
    items = eina_list_append(items, &textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_POSITION_TITLE]);
    items = eina_list_append(items, &textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_FORMAT_TITLE]);
    items = eina_list_append(items, &textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_TITLE]);
+   items = eina_list_append(items, &textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_LINES_TITLE]);
 
    return items;
 }
