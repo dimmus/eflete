@@ -440,6 +440,13 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS);
          APPEND(PROPERTY_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE);
          break;
+      case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_TITLE:
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR);
+         break;
       default:
          CRIT("items callback not found for %s", pa->name);
          abort();
@@ -658,6 +665,19 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          ap.project->changed = true;
          break;
 
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_TITLE:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR:
+         break;
+
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -739,6 +759,18 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE:
          elm_spinner_value_set(action->control, tpd.linerelsize);
          break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_TITLE:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR:
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -794,6 +826,19 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          /* because ellipsis SIGSEV on a lot of values sadly... */
          elm_spinner_min_max_set(action->control, 0, 100);
          elm_spinner_step_set(action->control, 50);
+         break;
+
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_TITLE:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR:
          break;
 
       default:
@@ -954,6 +999,33 @@ _init_items()
               _action1(&IT, NULL, "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE);
               break;
 
+           case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_TITLE:
+              IT.name = "Glow & Shadow";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE:
+              IT.name = "style";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR:
+              IT.name = "color";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
+              IT.name = "direction";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR:
+              IT.name = "outer glow color";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR:
+              IT.name = "inner glow color";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR);
+              break;
+
            case PROPERTY_TEXTBLOCK_ITEM_LAST:
               break;
           }
@@ -1052,48 +1124,48 @@ _on_style_selected(void *data,
           tpd.bg_check = EINA_TRUE;
         eina_tmpstr_del(tmp);
         tmp = _tag_value_get(value, "backing_color");
-           if (!tmp)
-             {
-                tmp = eina_tmpstr_add(WHITE_COLOR);
-                _tag_parse(WHITE_COLOR, "backing_color");
-             }
-           if (!_hex_to_rgb(tmp,
-                            &tpd.bg_color.r,
-                            &tpd.bg_color.g,
-                            &tpd.bg_color.b,
-                            &tpd.bg_color.a))
-             {
-                ERR("Can't convert backgorund color value");
-                abort();
-             }
-           eina_tmpstr_del(tmp);
+        if (!tmp)
+          {
+             tmp = eina_tmpstr_add(WHITE_COLOR);
+             _tag_parse(WHITE_COLOR, "backing_color");
+          }
+        if (!_hex_to_rgb(tmp,
+                         &tpd.bg_color.r,
+                         &tpd.bg_color.g,
+                         &tpd.bg_color.b,
+                         &tpd.bg_color.a))
+          {
+             ERR("Can't convert backgorund color value");
+             abort();
+          }
+        eina_tmpstr_del(tmp);
 
-           tmp = _tag_value_get(value, "password");
-           if ((!tmp) || (!strcmp(tmp, "off")))
-             tpd.pass = false;
-           else
-             tpd.pass = true;
-           eina_tmpstr_del(tmp);
+        tmp = _tag_value_get(value, "password");
+        if ((!tmp) || (!strcmp(tmp, "off")))
+          tpd.pass = false;
+        else
+          tpd.pass = true;
+        eina_tmpstr_del(tmp);
 
-           tmp = _tag_value_get(value, "ellipsis");
-           if (!tmp) tmp = eina_tmpstr_add("0");
-           tpd.ellipsis_value = atof(tmp);
-           eina_tmpstr_del(tmp);
+        tmp = _tag_value_get(value, "ellipsis");
+        if (!tmp) tmp = eina_tmpstr_add("0");
+        tpd.ellipsis_value = atof(tmp);
+        eina_tmpstr_del(tmp);
 
-           tmp = _tag_value_get(value, "check_ellipsis");
-           if ((!tmp) || (!strcmp(tmp, "off")))
-             {
-                tpd.ellipsis_value = -100;
-                tpd.ellipsis_check = false;
-             }
-           else
-             tpd.ellipsis_check = true;
-           eina_tmpstr_del(tmp);
+        tmp = _tag_value_get(value, "check_ellipsis");
+        if ((!tmp) || (!strcmp(tmp, "off")))
+          {
+             tpd.ellipsis_value = -100;
+             tpd.ellipsis_check = false;
+          }
+        else
+          tpd.ellipsis_check = true;
+        eina_tmpstr_del(tmp);
 
-           tmp = _tag_value_get(value, "linerelsize");
-           if (!tmp) tmp = eina_tmpstr_add("0");
-           tpd.linerelsize = atof(tmp);
-           eina_tmpstr_del(tmp);
+        tmp = _tag_value_get(value, "linerelsize");
+        if (!tmp) tmp = eina_tmpstr_add("0");
+        tpd.linerelsize = atof(tmp);
+        eina_tmpstr_del(tmp);
      }
    else
      {
@@ -1107,6 +1179,7 @@ _on_style_selected(void *data,
    property_item_update_recursively(&textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_TEXT_TITLE]);
    property_item_update_recursively(&textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_POSITION_TITLE]);
    property_item_update_recursively(&textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_FORMAT_TITLE]);
+   property_item_update_recursively(&textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_TITLE]);
 }
 
 #undef tpd
@@ -1130,6 +1203,7 @@ property_textblock_manager_items_get()
    items = eina_list_append(items, &textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_TEXT_TITLE]);
    items = eina_list_append(items, &textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_POSITION_TITLE]);
    items = eina_list_append(items, &textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_FORMAT_TITLE]);
+   items = eina_list_append(items, &textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_TITLE]);
 
    return items;
 }
