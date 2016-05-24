@@ -22,7 +22,7 @@
 #include "project_manager.h"
 
 #define FONT_DEFAULT "DEFAULT='align=middle font=Sans font_size=24 color=#000000 "
-#define DIRECTION_NUM 39
+#define DIRECTION_NUM 40
 #define WHITE_COLOR "#FFF"
 
 struct _Property_Textblock_Data {
@@ -45,8 +45,9 @@ struct _Property_Textblock_Data {
    Eina_Bool strikethrough_check;
    struct {
       int r, g, b, a;
-   } underone_color, undertwo_color, strikethrough_color;
+   } underone_color, undertwo_color, strikethrough_color, dash_color;
    int underline;
+   int dash_width, dash_gap;
 
    Style_Data current_style;
    Eina_Bool selected;
@@ -148,6 +149,7 @@ static const char *style_table[][2] = {{"font", NULL},
                                        {"password", NULL},
                                        {"underline_dash_width", NULL},
                                        {"underline_dash_gap", NULL},
+                                       {"underline_dash_color", NULL},
                                        {NULL, NULL},
                                        {"direction", NULL}};
 
@@ -175,9 +177,11 @@ static const char *direction_list[] = { "bottom_left",
                                         "top_right",
                                         NULL};
 
-static const char *underl_styles[] = { "off",
-                                       "single",
-                                       "double",
+#define DASHED_UNDERLINE_NUMBER 3 /* because it is dashed */
+static const char *underl_styles[] = { "off",        /* 0 */
+                                       "single",     /* 1 */
+                                       "double",     /* 2 */
+                                       "dashed",     /* 3 */
                                        NULL};
 
 /************************************************************************/
@@ -504,6 +508,8 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH);
          APPEND(PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE);
          APPEND(PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_COLOR);
          break;
       default:
          CRIT("items callback not found for %s", pa->name);
@@ -833,6 +839,36 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_save(ap.project->global_object));
          ap.project->changed = true;
          break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_WIDTH:
+         tpd.dash_width = double_val1;
+         str_tmp = eina_stringshare_printf("%f", double_val1);
+         _tag_parse(str_tmp, "underline_dash_width");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_GAP:
+         tpd.dash_gap = double_val1;
+         str_tmp = eina_stringshare_printf("%f", double_val1);
+         _tag_parse(str_tmp, "underline_dash_gap");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_COLOR:
+         tpd.dash_color.r = r;
+         tpd.dash_color.g = g;
+         tpd.dash_color.b = b;
+         tpd.dash_color.a = a;
+         str_tmp = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a);
+         _tag_parse(str_tmp, "underline_dash_color");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
+         break;
 
       default:
          TODO("remove default case after all attributes will be added");
@@ -969,6 +1005,19 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
                                           tpd.undertwo_color.b,
                                           tpd.undertwo_color.a);
          break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_WIDTH:
+         elm_spinner_value_set(action->control, tpd.dash_width);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_GAP:
+         elm_spinner_value_set(action->control, tpd.dash_gap);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_COLOR:
+         property_color_control_color_set(action->control,
+                                          tpd.dash_color.r,
+                                          tpd.dash_color.g,
+                                          tpd.dash_color.b,
+                                          tpd.dash_color.a);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -999,6 +1048,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH_COLOR:
       case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE:
       case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_TWO:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_COLOR:
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
          _fill_combobox_with_enum(action->control, font_weight_list);
@@ -1022,6 +1072,8 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TABSTOPS:
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_SIZE:
       case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_WIDTH:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_GAP:
          elm_spinner_min_max_set(action->control, 0, 9999);
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP:
@@ -1122,7 +1174,11 @@ _underline_filter_cb(Property_Attribute *pa)
 {
    assert(pa != NULL);
 
-   return tpd.underline;
+   if ((pa->type.textblock_item == PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH) ||
+      (pa->type.textblock_item == PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_COLOR))
+     return tpd.underline == DASHED_UNDERLINE_NUMBER;
+   else
+     return (tpd.underline < DASHED_UNDERLINE_NUMBER) && (tpd.underline);
 }
 
 static void
@@ -1274,6 +1330,17 @@ _init_items()
               IT.filter_cb = _underline_filter_cb;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE);
               _action2(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_TWO);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH:
+              IT.name = "underline dash";
+              IT.filter_cb = _underline_filter_cb;
+              _action1(&IT, "width", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_WIDTH);
+              _action2(&IT, "gap", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_GAP);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_COLOR:
+              IT.name = "underline dash color";
+              IT.filter_cb = _underline_filter_cb;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_COLOR);
               break;
 
            case PROPERTY_TEXTBLOCK_ITEM_LAST:
@@ -1564,6 +1631,33 @@ _on_style_selected(void *data,
                          &tpd.undertwo_color.g,
                          &tpd.undertwo_color.b,
                          &tpd.undertwo_color.a))
+          {
+             ERR("Can't convert underline2 color value");
+             abort();
+          }
+        eina_tmpstr_del(tmp);
+
+        tmp = _tag_value_get(value, "underline_dash_width");
+        if (!tmp) tmp = eina_tmpstr_add("0");
+        tpd.dash_width = atof(tmp);
+        eina_tmpstr_del(tmp);
+
+        tmp = _tag_value_get(value, "underline_dash_gap");
+        if (!tmp) tmp = eina_tmpstr_add("0");
+        tpd.dash_gap = atof(tmp);
+        eina_tmpstr_del(tmp);
+
+        tmp = _tag_value_get(value, "underline_dash_color");
+        if (!tmp)
+          {
+             tmp = eina_tmpstr_add(WHITE_COLOR);
+             _tag_parse(WHITE_COLOR, "underline_dash_color");
+          }
+        if (!_hex_to_rgb(tmp,
+                         &tpd.dash_color.r,
+                         &tpd.dash_color.g,
+                         &tpd.dash_color.b,
+                         &tpd.dash_color.a))
           {
              ERR("Can't convert underline2 color value");
              abort();
