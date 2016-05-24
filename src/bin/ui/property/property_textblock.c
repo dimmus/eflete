@@ -427,6 +427,14 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_TEXTBLOCK_ITEM_POSITION_MARGIN);
          APPEND(PROPERTY_TEXTBLOCK_ITEM_POSITION_WRAP);
          break;
+      case PROPERTY_TEXTBLOCK_ITEM_FORMAT_TITLE:
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_FORMAT_TABSTOPS);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_FORMAT_LINE_SIZE);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_FORMAT_BG_COLOR);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_FORMAT_PASSWORD);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE);
+         break;
       default:
          CRIT("items callback not found for %s", pa->name);
          abort();
@@ -554,6 +562,25 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          ap.project->changed = true;
          break;
 
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TITLE:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TABSTOPS:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_SIZE:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_CHECK:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_COLOR:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_PASSWORD:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_CHECK:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE:
+         break;
+
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -605,6 +632,24 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP:
          ewe_combobox_select_item_set(action->control, tpd.wrap);
          break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TITLE:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TABSTOPS:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_SIZE:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_CHECK:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_COLOR:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_PASSWORD:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_CHECK:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE:
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -649,6 +694,25 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP:
          _fill_combobox_with_enum(action->control, text_wrap);
          break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TITLE:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TABSTOPS:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_SIZE:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_CHECK:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_COLOR:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_PASSWORD:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_CHECK:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE:
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE:
+         break;
+
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("init callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -774,6 +838,39 @@ _init_items()
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP);
               break;
 
+           case PROPERTY_TEXTBLOCK_ITEM_FORMAT_TITLE:
+              IT.name = "Text format";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_FORMAT_TABSTOPS:
+              IT.name = "tabstops";
+              _action1(&IT, NULL, "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TABSTOPS);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_FORMAT_LINE_SIZE:
+              IT.name = "line size";
+              _action1(&IT, NULL, "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_SIZE);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_FORMAT_BG_COLOR:
+              IT.name = "background color";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_CHECK);
+              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_COLOR);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_FORMAT_PASSWORD:
+              IT.name = "password field";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_PASSWORD);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS:
+              IT.name = "ellipsis";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_CHECK);
+              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE:
+              IT.name = "line related size";
+              _action1(&IT, NULL, "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE);
+              break;
+
            case PROPERTY_TEXTBLOCK_ITEM_LAST:
               break;
           }
@@ -860,6 +957,7 @@ _on_style_selected(void *data __UNUSED__,
 
    property_item_update_recursively(&textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_TEXT_TITLE]);
    property_item_update_recursively(&textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_POSITION_TITLE]);
+   property_item_update_recursively(&textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_FORMAT_TITLE]);
 }
 
 #undef tpd
@@ -882,6 +980,7 @@ property_textblock_manager_items_get()
 
    items = eina_list_append(items, &textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_TEXT_TITLE]);
    items = eina_list_append(items, &textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_POSITION_TITLE]);
+   items = eina_list_append(items, &textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_FORMAT_TITLE]);
 
    return items;
 }

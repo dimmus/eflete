@@ -579,6 +579,7 @@ property_common_itc_init(Property_Data *pd)
    pd->item_classes[PROPERTY_CONTROL_CHECK]          [PROPERTY_CONTROL_NONE]     = pd->itc_2swallow;
    pd->item_classes[PROPERTY_CONTROL_CHECK]          [PROPERTY_CONTROL_CHECK]    = pd->itc_2swallow;
    pd->item_classes[PROPERTY_CONTROL_CHECK]          [PROPERTY_CONTROL_SPINNER]  = pd->itc_2swallow;
+   pd->item_classes[PROPERTY_CONTROL_CHECK]          [PROPERTY_CONTROL_COLOR]    = pd->itc_2swallow;
    pd->item_classes[PROPERTY_CONTROL_SPINNER]        [PROPERTY_CONTROL_NONE]     = pd->itc_2swallow;
    pd->item_classes[PROPERTY_CONTROL_SPINNER]        [PROPERTY_CONTROL_SPINNER]  = pd->itc_2swallow;
    pd->item_classes[PROPERTY_CONTROL_COLOR]          [PROPERTY_CONTROL_NONE]     = pd->itc_2swallow;
