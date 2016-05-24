@@ -189,11 +189,7 @@ _del_tab(Tabs_Item *item)
         if (item->group->current_part)
           item->group->current_part->current_item_name = NULL;
         item->group->current_part = NULL;
-        if (item->group->current_program)
-          {
-             eina_stringshare_del(item->group->current_program);
-             item->group->current_program = NULL;
-          }
+        item->group->current_program = NULL;
         evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CLOSE, item->group);
      }
    free(item);

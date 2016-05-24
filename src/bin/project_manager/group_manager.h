@@ -46,6 +46,16 @@ struct _Part
    Eina_Bool visible;         /**< is part visible on workspace*/
 };
 
+struct _Program
+{
+   Eina_Stringshare *name;    /**< program name */
+   Eina_List *used_in;        /**< list of programs where program is used */
+
+   Edje_Action_Type type;
+   Eina_List *targets;
+   Eina_List *afters;
+};
+
 struct _Group
 {
    Eina_Stringshare *name;    /**< group name */
@@ -61,7 +71,7 @@ struct _Group
 
    Evas_Object *edit_object;  /**< object needed to access group with edje_edit functions. Should be NULL if group is not open */
    Part *current_part;        /**< pointer to selected part */
-   Eina_Stringshare *current_program; /**< pointer to selected program */
+   Program *current_program;  /**< pointer to selected program */
 
    History *history;          /**< history of changes in the group */
 };

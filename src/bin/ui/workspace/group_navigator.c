@@ -576,7 +576,7 @@ _selected_cb(void *data,
    Eina_Stringshare *item_name;
    Part_List *pl = data;
    Part *part;
-   Resource *res;
+   Program *program;
    const Eina_List *items_list;
 
    assert(pl != NULL);
@@ -587,31 +587,23 @@ _selected_cb(void *data,
      {
         if (pl->selected_part_item)
           _unselect_part(pl);
-        if (pl->group->current_program)
-          {
-             eina_stringshare_del(pl->group->current_program);
-             pl->group->current_program = NULL;
-          }
+        pl->group->current_program = NULL;
         evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_NAVIGATOR_UNSELECTED, NULL);
         return;
      }
    itc = elm_genlist_item_item_class_get(glit);
 
-   TODO("REFACTOR")
-   if (pl->group->current_program)
-     {
-        eina_stringshare_del(pl->group->current_program);
-        pl->group->current_program = NULL;
-     }
+   TODO("REFACTOR");
+   pl->group->current_program = NULL;
    if (itc == pl->itc_program)
      {
         if (pl->selected_part_item)
           _unselect_part(pl);
 
         elm_object_disabled_set(pl->btn_del, false);
-        res = elm_object_item_data_get(glit);
-        pl->group->current_program = eina_stringshare_add(res->name);
-        evas_object_smart_callback_call(ap.win, SIGNAL_PROGRAM_SELECTED, (void *)res->name);
+        program = elm_object_item_data_get(glit);
+        pl->group->current_program = program;
+        evas_object_smart_callback_call(ap.win, SIGNAL_PROGRAM_SELECTED, (void *)program);
      }
    else
      {
@@ -1389,8 +1381,6 @@ _program_del(Part_List *pl,
    eina_stringshare_ref(program->name);
    CRIT_ON_FAIL(editor_program_del(pl->group->edit_object, change, false, program->name));
    eina_stringshare_del(program->name);
-   if (pl->group->current_program)
-     eina_stringshare_del(pl->group->current_program);
 
    history_change_add(pl->group->history, change);
 }

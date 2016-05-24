@@ -266,11 +266,10 @@ _group_load(Project *pro, Group *group)
    Eina_List *parts, *l, *lt, *programs, *targets;
    Eina_Stringshare *part_name, *program_name, *target_name, *state_name,
                     *state_full_name, *sample_name, *tone_name;
-   Edje_Action_Type act;
    double state_val;
    Part *part;
    State *state;
-   Resource *program;
+   Program *program;
 
    assert(pro != NULL);
    assert(group != NULL);
@@ -302,20 +301,20 @@ _group_load(Project *pro, Group *group)
         programs = edje_edit_programs_list_get(group->edit_object);
         EINA_LIST_FOREACH(programs, l, program_name)
           {
-            program = mem_calloc(1, sizeof(Resource));
+            program = mem_calloc(1, sizeof(Program));
             program->name = eina_stringshare_add(program_name);
+            program->type = edje_edit_program_action_get(group->edit_object, program_name);
             group->programs = eina_list_sorted_insert(group->programs, (Eina_Compare_Cb)resource_cmp, program);
           }
-        EINA_LIST_FOREACH(programs, l, program_name)
+        edje_edit_string_list_free(programs);
+        EINA_LIST_FOREACH(group->programs, l, program)
           {
-             program = pm_resource_get(group->programs, program_name);
-             act = edje_edit_program_action_get(group->edit_object, program_name);
-             switch (act)
+             switch (program->type)
                {
                 case EDJE_ACTION_TYPE_STATE_SET:
-                   targets = edje_edit_program_targets_get(group->edit_object, program_name);
-                   state_name = edje_edit_program_state_get(group->edit_object, program_name);
-                   state_val = edje_edit_program_value_get(group->edit_object, program_name);
+                   targets = edje_edit_program_targets_get(group->edit_object, program->name);
+                   state_name = edje_edit_program_state_get(group->edit_object, program->name);
+                   state_val = edje_edit_program_value_get(group->edit_object, program->name);
                    state_full_name = eina_stringshare_printf("%s %.2f", state_name, state_val);
                    eina_stringshare_del(state_name);
                    EINA_LIST_FOREACH(targets, lt, target_name)
@@ -338,18 +337,18 @@ _group_load(Project *pro, Group *group)
                 case EDJE_ACTION_TYPE_DRAG_VAL_SET:
                 case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
                 case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
-                   targets = edje_edit_program_targets_get(group->edit_object, program_name);
+                   targets = edje_edit_program_targets_get(group->edit_object, program->name);
                    EINA_LIST_FOREACH(targets, lt, target_name)
                       pm_resource_usage_unsorted_add(group->parts, target_name, (void *) program);
                    edje_edit_string_list_free(targets);
                    break;
                 case EDJE_ACTION_TYPE_SOUND_SAMPLE:
-                   sample_name = edje_edit_program_sample_name_get(group->edit_object, program_name);
+                   sample_name = edje_edit_program_sample_name_get(group->edit_object, program->name);
                    pm_resource_usage_add(pro->sounds, sample_name, (void *) program);
                    eina_stringshare_del(sample_name);
                    break;
                 case EDJE_ACTION_TYPE_SOUND_TONE:
-                   tone_name = edje_edit_program_tone_name_get(group->edit_object, program_name);
+                   tone_name = edje_edit_program_tone_name_get(group->edit_object, program->name);
                    pm_resource_usage_add(pro->tones, tone_name, (void *) program);
                    eina_stringshare_del(tone_name);
                    break;
@@ -358,7 +357,6 @@ _group_load(Project *pro, Group *group)
                    break;
                }
           }
-        edje_edit_string_list_free(programs);
      }
 
    gm_group_edit_object_unload(group);
@@ -421,8 +419,6 @@ gm_group_del(Project *pro, Group *group)
    /* delete group name after call signal, because the group name need in the
     * callbacks */
    eina_stringshare_del(group->name);
-   if (group->current_program)
-     eina_stringshare_del(group->current_program);
    free(group);
 }
 

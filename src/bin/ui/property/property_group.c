@@ -57,8 +57,7 @@
 struct _Property_Group_Data {
    Group *group;
    Part *part;
-   Eina_Stringshare *program;
-   Edje_Action_Type action_type;
+   Program *program;
 
    /* data needed to correctly handle changes that will be passed to history module */
    struct {
@@ -195,7 +194,7 @@ static const char *image_border_fill_strings[] = { STR_NONE,
 #define PART_ARGS group_pd.part->name
 #define ITEM_ARGS group_pd.part->name, group_pd.part->current_item_name
 #define STATE_ARGS PART_ARGS, group_pd.part->current_state->parsed_name, group_pd.part->current_state->parsed_val
-#define PROGRAM_ARGS group_pd.program
+#define PROGRAM_ARGS group_pd.program->name
 #define CHANGE_MERGE group_pd.history.change, true
 #define CHANGE_NO_MERGE group_pd.history.change, false
 
@@ -258,8 +257,7 @@ _on_program_selected(void *data,
    assert(pd != NULL);
    assert(group_pd.program != NULL);
 
-   group_pd.action_type = edje_edit_program_action_get(EDIT_OBJ, PROGRAM_ARGS);
-   DBG("selected program \"%s\"", group_pd.program);
+   DBG("selected program \"%s\"", group_pd.program->name);
    group_pd.part = NULL;
 
    GENLIST_FILTER_APPLY(pd->genlist);
@@ -333,7 +331,7 @@ _filter_cb(Property_Attribute *pa)
          if (group_pd.part)
            return !!(pa->filter_data.part_types & PART_MASK(group_pd.part->type));
          else if (group_pd.program)
-           return !!(pa->filter_data.action_types & ACTION_MASK(group_pd.action_type));
+           return !!(pa->filter_data.action_types & ACTION_MASK(group_pd.program->type));
          else
            return true;
      }
@@ -343,9 +341,9 @@ static Eina_Bool
 _transition_filter_cb(Property_Attribute *pa)
 {
    if (!group_pd.program) return false;
-   if (group_pd.action_type != EDJE_ACTION_TYPE_STATE_SET) return false;
+   if (group_pd.program->type != EDJE_ACTION_TYPE_STATE_SET) return false;
 
-   Edje_Tween_Mode type = editor_program_transition_type_get(EDIT_OBJ, group_pd.program);
+   Edje_Tween_Mode type = editor_program_transition_type_get(EDIT_OBJ, group_pd.program->name);
 
    assert(pa != NULL);
 
@@ -1130,7 +1128,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_layout_text_set(action->control, NULL, gm_part_type_text_get(group_pd.part->type));
          break;
       case ATTRIBUTE_PROGRAM_ACTION:
-         elm_layout_text_set(action->control, NULL, action_type[group_pd.action_type]);
+         elm_layout_text_set(action->control, NULL, action_type[group_pd.program->type]);
          break;
       case ATTRIBUTE_PART_SCALE:
          bool_val1 = edje_edit_part_scale_get(EDIT_OBJ, PART_ARGS);
