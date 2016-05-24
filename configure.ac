@@ -180,15 +180,15 @@ AC_ARG_ENABLE([enventor],
    [want_enventor=$enableval], [])
 
 if test "x$have_enventor" = "xno"; then
-   summery_enventor="${RED}no${RESET} (version < enventor_version)"
+   summary_enventor="${RED}no${RESET} (version < enventor_version)"
 fi
 if test "x$have_enventor" = "xyes" -a "x$want_enventor" = "xyes"; then
    AC_DEFINE(HAVE_ENVENTOR, 1, [Enventor is installed])
    HAVE_ENVENTOR_DEF="#define"
-   summery_enventor="${GREEN}yes${RESET}"
+   summary_enventor="${GREEN}yes${RESET}"
 fi
 if test "x$want_enventor" = "xno" -a "x$have_enventor" = "xyes"; then
-   summery_enventor="${RED}no${RESET}"
+   summary_enventor="${RED}no${RESET}"
 fi
 
 
@@ -260,7 +260,7 @@ echo "  elementary.....: ${have_elm}"
 echo ""
 echo "Features:"
 echo "  tizen..........: ${summary_tizen}"
-dnl echo "  enventor.......: ${summery_enventor}"
+dnl echo "  enventor.......: ${summary_enventor}"
 echo ""
 echo "edje-cc path.....: ${edje_cc}"
 echo ""
