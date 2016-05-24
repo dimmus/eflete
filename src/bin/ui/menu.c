@@ -263,18 +263,22 @@ ui_menu_add(void)
    elm_menu_item_separator_add(window_menu, menu->items[PARENT_ID]);
 
    ITEM_MENU_ADD(MENU_NULL, MENU_FILE, NULL, _("File"), NULL)
+#if !HAVE_TIZEN
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_NEW_PROJECT, "file", _("New project"), NULL)
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_OPEN_PROJECT, "folder", _("Open project"), "Ctrl-O")
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDJ, NULL, _("Import edj-file"), NULL)
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDC, NULL, _("Import edc-file"), NULL)
       ___(MENU_FILE);
+#endif /* if !HAVE_TIZEN */
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE, EFLETE_IMG_PATH"icon-save.png", _("Save"), "Ctrl-S")
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export as edc"), NULL)
          ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_GROUP, NULL, _("Group"), NULL)
          ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_PROJECT, NULL, _("Project"), NULL)
+#if !HAVE_TIZEN
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT, NULL, _("Export as edj"), NULL)
          ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_DEVELOP, NULL, _("Develop"), NULL)
          ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_RELEASE, NULL, _("Release"), NULL)
+#endif /* if !HAVE_TIZEN */
       ___(MENU_FILE);
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_CLOSE_PROJECT, NULL, _("Close project"), NULL)
       ___(MENU_FILE);
@@ -304,8 +308,10 @@ ui_menu_add(void)
       ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS_SHOW, NULL, _("Show rulers"), NULL)
 
    ITEM_MENU_ADD(MENU_NULL, MENU_WINDOW, NULL, _("Window"), NULL)
+#if !HAVE_TIZEN
       ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_TAB_HOME, NULL, _("Home"), NULL)
       ___(MENU_WINDOW);
+#endif /* if !HAVE_TIZEN */
       ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_MANAGER_IMAGE, "image2", _("Image manager"), "F7")
       ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_MANAGER_SOUND, "sound2", _("Sound manager"), "F8")
       ITEM_MENU_ADD(MENU_WINDOW, MENU_WINDOW_MANAGER_TEXT_STYLE, "text2", _("Textblock styles manager"), "F9")
