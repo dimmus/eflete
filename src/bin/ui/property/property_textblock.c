@@ -32,9 +32,12 @@ struct _Property_Textblock_Data {
    struct {
       int r, g, b, a;
    } color;
+   int font_align_hor;
+   int font_valign_hor;
+   int left_margin, right_margin;
+   int wrap;
 
    Style_Data current_style;
-
    Property_Attribute items[PROPERTY_TEXTBLOCK_ITEM_LAST];
 };
 typedef struct _Property_Textblock_Data Property_Textblock_Data;
@@ -73,6 +76,28 @@ static const char *font_width_list[] = { "Normal",
                                          "Expanded",
                                          "Ultraexpanded",
                                          NULL};
+
+static const char *font_horizontal_align[] = { "auto",
+                                               "center",
+                                               "middle",
+                                               "left",
+                                               "right",
+                                               NULL};
+
+static const char *font_horizontal_valign[] = { "top",
+                                                "bottom",
+                                                "middle",
+                                                "center",
+                                                "baseline",
+                                                "base",
+                                                NULL};
+
+static const char *text_wrap[] = { "none",
+                                   "word",
+                                   "char",
+                                   "mixed",
+                                   NULL};
+
 static const char *style_table[][2] = {{"font", NULL},
                                        {"font_fallback", NULL},
                                        {"font_size", NULL},
@@ -396,6 +421,12 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_TEXTBLOCK_ITEM_TEXT_COLOR);
          APPEND(PROPERTY_TEXTBLOCK_ITEM_TEXT_SIZE);
          break;
+      case PROPERTY_TEXTBLOCK_ITEM_POSITION_TITLE:
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_POSITION_ALIGN_VER);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_POSITION_MARGIN);
+         APPEND(PROPERTY_TEXTBLOCK_ITEM_POSITION_WRAP);
+         break;
       default:
          CRIT("items callback not found for %s", pa->name);
          abort();
@@ -483,6 +514,46 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          ap.project->changed = true;
          break;
 
+      case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR:
+         tpd.font_align_hor = cb_item->index;
+         _tag_parse(eina_stringshare_add(cb_item->title), "align");
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_VER:
+         tpd.font_valign_hor = cb_item->index;
+         _tag_parse(eina_stringshare_add(cb_item->title), "valign");
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_LEFT:
+         tpd.left_margin = double_val1;
+         str_tmp = eina_stringshare_printf("%f", double_val1);
+         _tag_parse(str_tmp, "left_margin");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_RIGHT:
+         tpd.right_margin = double_val1;
+         str_tmp = eina_stringshare_printf("%f", double_val1);
+         _tag_parse(str_tmp, "right_margin");
+         eina_stringshare_del(str_tmp);
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP:
+         tpd.wrap = cb_item->index;
+         _tag_parse(eina_stringshare_add(cb_item->title), "wrap");
+         _style_edit_update();
+         CRIT_ON_FAIL(editor_save(ap.project->global_object));
+         ap.project->changed = true;
+         break;
+
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -519,6 +590,21 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_SIZE:
          elm_spinner_value_set(action->control, tpd.font_size);
          break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR:
+         ewe_combobox_select_item_set(action->control, tpd.font_align_hor);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_VER:
+         ewe_combobox_select_item_set(action->control, tpd.font_valign_hor);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_LEFT:
+         elm_spinner_value_set(action->control, tpd.left_margin);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_RIGHT:
+         elm_spinner_value_set(action->control, tpd.right_margin);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP:
+         ewe_combobox_select_item_set(action->control, tpd.wrap);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -549,6 +635,19 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          /* limit font size because, for example, value 600 completely ruin edj
             file and project cannot be opened anymore for now */
          elm_spinner_min_max_set(action->control, 1, 255);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR:
+         _fill_combobox_with_enum(action->control, font_horizontal_align);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_VER:
+         _fill_combobox_with_enum(action->control, font_horizontal_valign);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_LEFT:
+      case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_RIGHT:
+         elm_spinner_min_max_set(action->control, 0, 9999);
+         break;
+      case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP:
+         _fill_combobox_with_enum(action->control, text_wrap);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -651,6 +750,30 @@ _init_items()
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_SIZE);
               break;
 
+           case PROPERTY_TEXTBLOCK_ITEM_POSITION_TITLE:
+              IT.name = "Positioning options";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR:
+              IT.name = "horizontal align";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_POSITION_ALIGN_VER:
+              IT.name = "vertical align";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_VER);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_POSITION_MARGIN:
+              IT.name = "margin";
+              _action1(&IT, "left", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_LEFT);
+              _action2(&IT, "right", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_RIGHT);
+              break;
+           case PROPERTY_TEXTBLOCK_ITEM_POSITION_WRAP:
+              IT.name = "font style (width)";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP);
+              break;
+
            case PROPERTY_TEXTBLOCK_ITEM_LAST:
               break;
           }
@@ -701,6 +824,32 @@ _on_style_selected(void *data __UNUSED__,
              abort();
           }
         eina_tmpstr_del(tmp);
+
+        /* working with second subitems of POSITIONS */
+        tmp = _tag_value_get(value, "align");
+        if (!tmp) tmp = eina_tmpstr_add("auto");
+        tpd.font_align_hor = _combobox_get_num(tmp, font_horizontal_align);
+        eina_tmpstr_del(tmp);
+
+        tmp = _tag_value_get(value, "valign");
+        if (!tmp) tmp = eina_tmpstr_add("baseline");
+        tpd.font_valign_hor = _combobox_get_num(tmp, font_horizontal_valign);
+        eina_tmpstr_del(tmp);
+
+        tmp = _tag_value_get(value, "left_margin");
+        if (!tmp) tmp = eina_tmpstr_add("0");
+        tpd.left_margin = atof(tmp);
+        eina_tmpstr_del(tmp);
+
+        tmp = _tag_value_get(value, "right_margin");
+        if (!tmp) tmp = eina_tmpstr_add("0");
+        tpd.right_margin = atof(tmp);
+        eina_tmpstr_del(tmp);
+
+        tmp = _tag_value_get(value, "wrap");
+        if (!tmp) tmp = eina_tmpstr_add("none");
+        tpd.wrap = _combobox_get_num(tmp, text_wrap);
+        eina_tmpstr_del(tmp);
      }
    else
      {
@@ -710,6 +859,7 @@ _on_style_selected(void *data __UNUSED__,
      }
 
    property_item_update_recursively(&textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_TEXT_TITLE]);
+   property_item_update_recursively(&textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_POSITION_TITLE]);
 }
 
 #undef tpd
@@ -731,6 +881,7 @@ property_textblock_manager_items_get()
    Eina_List *items = NULL;
 
    items = eina_list_append(items, &textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_TEXT_TITLE]);
+   items = eina_list_append(items, &textblock_pd.items[PROPERTY_TEXTBLOCK_ITEM_POSITION_TITLE]);
 
    return items;
 }
