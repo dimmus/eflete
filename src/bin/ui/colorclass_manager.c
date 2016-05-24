@@ -435,7 +435,7 @@ colorclass_manager_add(void)
    /* Controls (add, remove) of colorclasses */
    button = elm_button_add(mng.layout);
    elm_object_style_set(button, "plus");
-   evas_object_smart_callback_add(button, "clicked", _colorclass_add_cb, NULL);
+   evas_object_smart_callback_add(button, "clicked", _colorclass_add_cb, &mng);
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_add", button);
 
    mng.del_button = elm_button_add(mng.layout);
