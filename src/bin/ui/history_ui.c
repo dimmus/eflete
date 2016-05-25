@@ -30,6 +30,8 @@ typedef struct {
    Evas_Object *redo_cmbx;
    History *history;
    Group *group;
+   int to_undo;
+   int to_redo;
 } History_New_UI_data;
 
 #define HISTORY_DATA "history_data"
@@ -49,13 +51,21 @@ _list_update(History_New_UI_data *hd)
    ewe_combobox_items_list_free(hd->undo_cmbx, EINA_FALSE);
    ewe_combobox_items_list_free(hd->redo_cmbx, EINA_FALSE);
 
+   hd->to_undo = 0;
+   hd->to_redo = 0;
    Eina_List *reverse_redo = NULL;
    EINA_LIST_REVERSE_FOREACH(hd->history->changes, l, change)
      {
         if (!change->reverted)
-          ewe_combobox_item_add(hd->undo_cmbx, change->description);
+          {
+             hd->to_undo++;
+             ewe_combobox_item_add(hd->undo_cmbx, change->description);
+          }
         else
-          reverse_redo = eina_list_append(reverse_redo, change);
+          {
+             hd->to_redo++;
+             reverse_redo = eina_list_append(reverse_redo, change);
+          }
      }
 
    EINA_LIST_REVERSE_FOREACH(reverse_redo, l, change)
@@ -104,6 +114,7 @@ void
 history_ui_undo(Evas_Object *obj)
 {
    HISTORY_DATA_GET(obj);
+   if (hd->to_undo == 0) return;
    history_undo(hd->history);
    _list_update(hd);
 }
@@ -112,6 +123,7 @@ void
 history_ui_redo(Evas_Object *obj)
 {
    HISTORY_DATA_GET(obj);
+   if (hd->to_redo == 0) return;
    history_redo(hd->history);
    _list_update(hd);
 }
