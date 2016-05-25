@@ -190,11 +190,12 @@ static const char *image_border_fill_strings[] = { STR_NONE,
                                                    "Solid",
                                                    NULL};
 /* defines for args */
+TODO("remove NULL's after fixing genlist filters")
 #define EDIT_OBJ group_pd.group->edit_object
-#define PART_ARGS group_pd.part->name
-#define ITEM_ARGS group_pd.part->name, group_pd.part->current_item_name
-#define STATE_ARGS PART_ARGS, group_pd.part->current_state->parsed_name, group_pd.part->current_state->parsed_val
-#define PROGRAM_ARGS group_pd.program->name
+#define PART_ARGS (group_pd.part) ? group_pd.part->name : NULL
+#define ITEM_ARGS PART_ARGS, (group_pd.part) ? group_pd.part->current_item_name : NULL
+#define STATE_ARGS PART_ARGS, (group_pd.part) ? group_pd.part->current_state->parsed_name : NULL, (group_pd.part) ? group_pd.part->current_state->parsed_val : 0
+#define PROGRAM_ARGS (group_pd.program) ? group_pd.program->name : NULL
 #define CHANGE_MERGE group_pd.history.change, true
 #define CHANGE_NO_MERGE group_pd.history.change, false
 
