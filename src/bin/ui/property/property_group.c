@@ -246,6 +246,18 @@ _on_part_state_selected(void *data __UNUSED__,
    property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TITLE]);
 }
 
+static Eina_Bool _expand_done = true;
+static void
+_expand_later_job(void *data)
+{
+   if (elm_genlist_item_expanded_get(data))
+     {
+        elm_genlist_item_expanded_set(data, false);
+        elm_genlist_item_expanded_set(data, true);
+     }
+   _expand_done = true;
+}
+
 static void
 _on_program_selected(void *data,
                      Evas_Object *obj __UNUSED__,
@@ -262,6 +274,12 @@ _on_program_selected(void *data,
 
    GENLIST_FILTER_APPLY(pd->genlist);
    property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_TITLE]);
+
+   if (_expand_done)
+     {
+        _expand_done = false;
+        ecore_job_add(_expand_later_job, group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_AFTER].glit);
+     }
 }
 
 static void
@@ -299,6 +317,15 @@ _on_editor_attribute_changed(void *data __UNUSED__,
    Property_Attribute *pa = attribute_map[*attribute].pa;
    Property_Action *action = attribute_map[*attribute].action;
 
+   if (*attribute == ATTRIBUTE_PROGRAM_AFTER)
+     {
+        if (_expand_done)
+          {
+             _expand_done = false;
+             ecore_job_add(_expand_later_job, group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_AFTER].glit);
+          }
+        return;
+     }
    assert(pa != NULL);
    assert(action != NULL);
    assert(action->update_cb != NULL);
@@ -508,6 +535,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_FILTER_PART);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE);
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TITLE);
+         APPEND(PROPERTY_GROUP_ITEM_PROGRAM_AFTER);
          break;
       case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_PROGRAM_ACTION_STATE);
@@ -1060,6 +1088,114 @@ _color_classes_combobox_fill(Evas_Object *combo, const char *selected)
      }
 
    edje_edit_string_list_free(cclist);
+}
+
+static void
+_programs_combobox_fill(Evas_Object *combo, const char *selected)
+{
+   Eina_List *l;
+   Program *program;
+
+   assert(combo != NULL);
+
+   if (selected)
+     ewe_combobox_text_set(combo, selected);
+   else
+     ewe_combobox_text_set(combo, STR_NONE);
+   ewe_combobox_item_add(combo, STR_NONE);
+
+   EINA_LIST_FOREACH(group_pd.group->programs, l, program)
+      ewe_combobox_item_add(combo, program->name);
+}
+
+static void
+_del_cb(Property_Attribute *pa)
+{
+   eina_stringshare_del(pa->name);
+   eina_stringshare_del(pa->data);
+   free(pa);
+}
+
+static void
+_afters_init_cb(Property_Attribute *pa, Property_Action *action)
+{
+   assert(pa != NULL);
+   assert(action != NULL);
+   assert(action->control != NULL);
+
+   _programs_combobox_fill(action->control, pa->data);
+}
+
+static void
+_afters_change_cb(Property_Attribute *pa, Property_Action *action)
+{
+   Eina_List *afters, *l;
+   Eina_Stringshare *name;
+   int i = 0;
+   Ewe_Combobox_Item *cb_item = NULL;
+   Eina_Bool added = false;
+
+   assert(pa != NULL);
+   assert(action != NULL);
+   assert(action->control != NULL);
+   assert(group_pd.history.change == NULL);
+
+   group_pd.history.change = change_add("program afters changed");
+
+   TODO("change this after migrating to elm_combobox");
+   cb_item = ewe_combobox_select_item_get(action->control);
+
+   assert(cb_item != NULL);
+
+   afters = edje_edit_program_afters_get(EDIT_OBJ, PROGRAM_ARGS);
+   EINA_LIST_REVERSE_FOREACH(afters, l, name)
+     {
+        CRIT_ON_FAIL(editor_program_after_del(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, name));
+     }
+   EINA_LIST_FOREACH(afters, l, name)
+     {
+        if (i != pa->int_data)
+          CRIT_ON_FAIL(editor_program_after_add(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, name));
+        else if (cb_item->index != 0)
+          {
+             CRIT_ON_FAIL(editor_program_after_add(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, cb_item->title));
+             added = true;
+          }
+        i++;
+     }
+   if (!added && (cb_item->index != 0))
+     CRIT_ON_FAIL(editor_program_after_add(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, cb_item->title));
+   history_change_add(group_pd.group->history, group_pd.history.change);
+   group_pd.history.change = NULL;
+}
+
+static Eina_List *
+_afters_get(Property_Attribute *pa __UNUSED__)
+{
+   Property_Attribute *new_pa;
+   Eina_List *afters, *l, *items = NULL;
+   Eina_Stringshare *name;
+   int i = 0;
+
+   if (!group_pd.group) return NULL;
+   if (!group_pd.program) return NULL;
+
+   afters = edje_edit_program_afters_get(EDIT_OBJ, PROGRAM_ARGS);
+   afters = eina_list_append(afters, NULL);
+   EINA_LIST_FOREACH(afters, l, name)
+     {
+        new_pa = mem_calloc(1, sizeof(Property_Attribute));
+        if (!name)
+          new_pa->name = eina_stringshare_add("add new after");
+        new_pa->del_cb = _del_cb;
+        new_pa->data = (void *)eina_stringshare_add(name);
+        new_pa->int_data = i++;
+        new_pa->action1.control_type = PROPERTY_CONTROL_COMBOBOX;
+        new_pa->action1.init_cb = _afters_init_cb;
+        new_pa->action1.change_cb = _afters_change_cb;
+        items = eina_list_append(items, new_pa);
+     }
+   return items;
 }
 
 static void
@@ -4319,6 +4455,12 @@ _init_items()
               IT.filter_cb = _transition_filter_cb;
               _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2);
               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2);
+              break;
+           case PROPERTY_GROUP_ITEM_PROGRAM_AFTER:
+              IT.name = "afters";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _afters_get;
               break;
 
            case PROPERTY_GROUP_ITEM_LAST:

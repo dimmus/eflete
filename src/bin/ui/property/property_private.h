@@ -318,6 +318,7 @@ typedef enum {
    PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BEZIER_POINT1,
    PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BEZIER_POINT2,
    PROPERTY_GROUP_ITEM_PROGRAM_ACTION_SCRIPT,
+   PROPERTY_GROUP_ITEM_PROGRAM_AFTER,
 
    PROPERTY_GROUP_ITEM_LAST
 } Property_Group_Item;
@@ -419,6 +420,7 @@ struct _Property_Attribute {
    } type;
    Eina_Stringshare *icon_name;
    void *data;
+   int int_data;
    Elm_Object_Item *glit; /**< reference to gennlist item iteself */
    Property_Action action1; /**< first control */
    Property_Action action2; /**< second control */
