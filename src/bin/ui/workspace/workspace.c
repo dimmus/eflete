@@ -1294,7 +1294,7 @@ workspace_part_state_select(Evas_Object *obj,
    part = pm_resource_unsorted_get(wd->group->parts, part_name);
    state = pm_resource_get(part->states, state_name);
 
-   groupview_soft_update(wd->normal.content);
+   groupview_hard_update(wd->normal.content);
    group_navigator_part_state_select(wd->group_navi, state);
 }
 
