@@ -2,27 +2,23 @@ group { name: "elm/layout/tabs/default";
    parts {
       part { name: "bg_toolbar";
          type: RECT;
-         description {
-            color_class: "bg_main_alternative";
-            rel1 {
-               to: "elm.swallow.toolbar";
-            }
-            rel2 {
-               to: "elm.swallow.toolbar";
-            }
+         description { state: "default" 0.0;
+            color: 215 215 215 255;
+            rel1.to: "elm.swallow.toolbar";
+            rel2.to: "elm.swallow.toolbar";
          }
       }
       part { name: "elm.swallow.toolbar";
          type: SWALLOW;
          description { state: "default" 0.0;
-            max: -1 27;
             align: 0.0 0.0;
+            min: 0 33;
+            max: -1 33;
          }
       }
       part { name: "bg_content";
          type: RECT;
-         description {
-            color_class: "bg_main";
+         description { state: "default" 0.0;
             rel1 {
                relative: 0.0 1.0;
                to: "elm.swallow.toolbar";
@@ -31,14 +27,11 @@ group { name: "elm/layout/tabs/default";
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
-         description { state:   "default" 0.0;
+         description { state: "default" 0.0;
             rel1 {
-               offset: 3 3;
                relative: 0.0 1.0;
+               offset: 0 3;
                to: "elm.swallow.toolbar";
-            }
-            rel2 {
-               offset: -4 -4;
             }
          }
       }
