@@ -109,6 +109,7 @@ static const char *text_wrap[] = { "none",
                                    "word",
                                    "char",
                                    "mixed",
+                                   "hyphenation",
                                    NULL};
 
 static const char *style_table[][2] = {{"font", NULL},
@@ -1255,7 +1256,7 @@ _init_items()
               _action2(&IT, "right", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_RIGHT);
               break;
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_WRAP:
-              IT.name = "font style (width)";
+              IT.name = "wrap";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP);
               break;
 
