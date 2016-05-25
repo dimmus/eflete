@@ -44,3 +44,36 @@ group { name: "elm/layout/history/default";
       }
    }
 }
+
+group { name: "elm/layout/history/combobox";
+   broadcast_signal: 0;
+   parts {
+      part { name: "undo";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            min: 32 20;
+            max: 32 20;
+            rel1.offset: 16 0;
+         }
+      }
+      part { name: "redo";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            min: 32 20;
+            max: 32 20;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 9 0;
+               to_x: "undo";
+            }
+            rel2.offset: -17 -1;
+         }
+      }
+   }
+}
