@@ -69,9 +69,9 @@ property_image_selector_get(Evas_Object *parent)
    ENTRY_ADD(parent, content, true);
    btn = elm_button_add(content);
    elm_object_style_set(btn, "elipsis");
-   evas_object_smart_callback_add(btn, "clicked", _on_image_choose, content);
    evas_object_smart_callback_add(content, "clicked", _on_image_choose, content);
    elm_object_part_content_set(content, "elm.swallow.elipsis", btn);
+   evas_object_smart_callback_add(btn, "clicked", _on_image_choose, content);
    elm_entry_editable_set(content, false);
    evas_object_show(btn);
    evas_object_show(content);

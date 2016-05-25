@@ -949,24 +949,6 @@ group { name: "elm/scroller/entry_single/default";
             rel2.offset: -7 -3;
          }
       }
-      part { name: "elm.swallow.elipsis";
-         type: SWALLOW;
-         clip_to: "clipper";
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            fixed: 1 0;
-            max: 19 -1;
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 0 1;
-               to_y: "bg";
-            }
-            rel2 {
-               offset: -2 -3;
-               to_y: "bg";
-            }
-         }
-      }
       part { name: "border";
          type: IMAGE;
          repeat_events: 1;
@@ -990,6 +972,21 @@ group { name: "elm/scroller/entry_single/default";
          description { state: "fail" 0.0;
             inherit: "default" 0.0;
             color_class: "invalid";
+         }
+      }
+      part { name: "elm.swallow.elipsis";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            max: 24 24;
+            rel1 {
+               relative: 1.0 0.0;
+               to_y: "bg";
+            }
+            rel2 {
+               to_y: "bg";
+            }
          }
       }
    }
