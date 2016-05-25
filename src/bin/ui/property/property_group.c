@@ -3430,7 +3430,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
 
       case ATTRIBUTE_PART_ITEM_SOURCE:
          assert(cb_item != NULL);
-         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_part_item_source_set(EDIT_OBJ, CHANGE_NO_MERGE, ITEM_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
