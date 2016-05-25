@@ -132,11 +132,12 @@ ui_main_window_add(void)
    tabs = tabs_add();
    elm_object_part_content_set(ap.panes.right, "left", tabs);
 
-   ap.property.group = ui_property_add(ap.win);
-   ap.property.image_manager = ui_property_image_add(ap.win);
-   ap.property.sound_manager = ui_property_sound_add(ap.win);
-   ap.property.style_manager = ui_property_style_add(ap.win);
-   ap.property.color_manager = ui_property_color_add(ap.win);
+   ap.property.group = property_add(ap.win, PROPERTY_MODE_GROUP);
+   ap.property.image_manager = property_add(ap.win, PROPERTY_MODE_IMAGE);
+   ap.property.sound_manager = property_add(ap.win, PROPERTY_MODE_SOUND);
+   ap.property.style_manager = property_add(ap.win, PROPERTY_MODE_STYLE);
+   ap.property.color_manager = property_add(ap.win, PROPERTY_MODE_COLOR_CLASS);
+   ap.property.demo = property_add(ap.win, PROPERTY_MODE_DEMO);
    elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.group);
    elm_object_part_content_set(ap.panes.right, "right", ap.property.group);
 

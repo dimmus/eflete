@@ -421,7 +421,7 @@ _project_special_group_add(Project *project)
    edje_edit_obj = edje_edit_object_add(e);
 
    edje_object_file_set(edje_edit_obj, project->saved_edj, eina_list_data_get(list));
-   editor_internal_group_add(edje_edit_obj);
+   CRIT_ON_FAIL(editor_internal_group_add(edje_edit_obj));
 
    edje_edit_string_list_free(list);
    evas_object_del(edje_edit_obj);
@@ -780,7 +780,7 @@ _project_save(void *data __UNUSED__,
 {
    ecore_thread_main_loop_begin();
    PROGRESS_SEND(_("Save project '%s'"), worker.project->name);
-   editor_save_all(worker.project->global_object);
+   CRIT_ON_FAIL(editor_save_all(worker.project->global_object));
 
    ecore_file_cp(worker.project->dev, worker.project->saved_edj);
 
@@ -1105,7 +1105,7 @@ _sound_resources_load(Project *project)
                       snd_proc, snd_total, sound_file);
 
         res = mem_calloc(1, sizeof(External_Resource));
-        res->name = eina_stringshare_add(sound_file);
+        res->name = eina_stringshare_add(sound_name);
         res->source = eina_stringshare_printf("%s/%s", resource_folder, sound_file);
         project->sounds = eina_list_sorted_insert(project->sounds, (Eina_Compare_Cb) resource_cmp, res);
 
@@ -1664,7 +1664,7 @@ _develop_export(void *data __UNUSED__,
 {
    PROGRESS_SEND(_("Export project as develop file"));
    PROGRESS_SEND(_("Export to file '%s'"), worker.edj);
-   editor_save_all(worker.project->global_object);
+   CRIT_ON_FAIL(editor_save_all(worker.project->global_object));
    eina_file_copy(worker.project->dev, worker.edj,
                   EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
                   NULL, NULL);

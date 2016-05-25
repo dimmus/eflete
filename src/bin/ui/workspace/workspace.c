@@ -229,6 +229,12 @@ _workspace_del(void *data,
 /*                              CODE RELOAD                                   */
 /******************************************************************************/
 static void
+_object_delete_job(void *data)
+{
+   evas_object_del(data);
+}
+
+static void
 _code_reload(void *data,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
@@ -241,7 +247,7 @@ _code_reload(void *data,
    if (MODE_CODE != wd->mode) return;
    elm_entry_entry_set(wd->code.obj, _group_code_get(wd));
    layout = elm_object_part_content_unset(wd->code.obj, "elm.swallow.overlay");
-   evas_object_del(layout);
+   ecore_job_add(_object_delete_job, layout);
 }
 
 /******************************************************************************/
@@ -740,7 +746,7 @@ _mode_cb(void *data,
          //elm_object_part_content_set(wd->panes, "right", wd->group_navi);
          evas_object_show(wd->group_navi);
          _zoom_controls_disabled_set(wd, false);
-         evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, wd->group);
+         evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_CHANGED, wd->group);
 
          area = &wd->normal;
          ui_menu_disable_set(ap.menu, MENU_VIEW_WORKSPACE_FIT, false);
@@ -763,6 +769,7 @@ _mode_cb(void *data,
 
          area = &wd->demo;
          ui_menu_disable_set(ap.menu, MENU_VIEW_WORKSPACE_FIT, true);
+         demo_group_property_update(wd->demo_navi);
          break;
      }
 
@@ -825,11 +832,11 @@ _part_select(void *data,
    Part *part = event_info;
 
    assert((MODE_NORMAL == wd->mode) || (MODE_CODE == wd->mode));
+   assert(part != NULL);
 
-   groupview_part_select(wd->normal.content, part ? part->name : NULL);
+   groupview_part_select(wd->normal.content, part->name);
    evas_object_smart_callback_call(ap.win, SIGNAL_PART_SELECTED, part);
-   if (part)
-     groupview_part_item_selected_set(wd->normal.content, part->current_item_name, part->current_item_name ? true : false);
+   groupview_part_item_selected_set(wd->normal.content, part->current_item_name, part->current_item_name ? true : false);
 }
 
 static void
@@ -903,14 +910,14 @@ _groupview_hl_part_changed(void *data,
 
    if (MIDDLE != event->hl_type)
      {
-        editor_state_max_w_set(wd->group->edit_object, change, true, event->part->name,
-                               event->part->current_state->parsed_name,
-                               event->part->current_state->parsed_val,
-                               event->w);
-        editor_state_max_h_set(wd->group->edit_object, change, true, event->part->name,
-                               event->part->current_state->parsed_name,
-                               event->part->current_state->parsed_val,
-                               event->h);
+        CRIT_ON_FAIL(editor_state_max_w_set(wd->group->edit_object, change, true, event->part->name,
+                                            event->part->current_state->parsed_name,
+                                            event->part->current_state->parsed_val,
+                                            event->w));
+        CRIT_ON_FAIL(editor_state_max_h_set(wd->group->edit_object, change, true, event->part->name,
+                                            event->part->current_state->parsed_name,
+                                            event->part->current_state->parsed_val,
+                                            event->h));
      }
    else
      {
@@ -924,12 +931,12 @@ _groupview_hl_part_changed(void *data,
         if ((geom->h == event->h) || (align_y < 0)) align_y = 0;
         if (align_x > 1.0) align_x = 1.0;
         if (align_y > 1.0) align_y = 1.0;
-        editor_state_align_x_set(wd->group->edit_object, change, true, event->part->name,
-                                 event->part->current_state->parsed_name,
-                                 event->part->current_state->parsed_val, align_x);
-        editor_state_align_y_set(wd->group->edit_object, change, true, event->part->name,
-                                 event->part->current_state->parsed_name,
-                                 event->part->current_state->parsed_val, align_y);
+        CRIT_ON_FAIL(editor_state_align_x_set(wd->group->edit_object, change, true, event->part->name,
+                                              event->part->current_state->parsed_name,
+                                              event->part->current_state->parsed_val, align_x));
+        CRIT_ON_FAIL(editor_state_align_y_set(wd->group->edit_object, change, true, event->part->name,
+                                              event->part->current_state->parsed_name,
+                                              event->part->current_state->parsed_val, align_y));
 
      }
 }
@@ -1382,6 +1389,14 @@ workspace_rulers_visible_set(Evas_Object *obj, Eina_Bool visible)
      elm_layout_signal_emit(area->layout, "elm,state,rulers,show", "eflete");
    else
      elm_layout_signal_emit(area->layout, "elm,state,rulers,hide", "eflete");
+}
+
+void
+workspace_demo_group_property_update(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+   if (wd->mode == MODE_DEMO)
+     demo_group_property_update(wd->demo_navi);
 }
 
 Eina_Bool

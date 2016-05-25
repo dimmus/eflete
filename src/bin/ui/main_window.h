@@ -434,6 +434,17 @@ project_export_edc_project(void);
 void
 project_export_edc_group(void);
 
+struct _Image_Item
+{
+   int id;
+   const char* image_name;
+   const char* source;
+   Edje_Edit_Image_Comp comp_type;
+   int quality;
+   Eina_Bool is_used;
+   int height, width;
+};
+
 /**
  * Add new image editor layout for setting into tab.
  *
@@ -444,7 +455,6 @@ project_export_edc_group(void);
 Evas_Object *
 image_manager_add(void);
 
-typedef struct _Colorclass_Item Colorclass_Item;
 struct _Colorclass_Item
 {
    Eina_Stringshare *name;

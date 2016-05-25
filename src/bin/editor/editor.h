@@ -25,10 +25,14 @@
 #include "default.h"
 
 typedef enum {
+   ATTRIBUTE_NONE,
+
+   ATTRIBUTE_GROUP_NAME,
    ATTRIBUTE_GROUP_MIN_W,
    ATTRIBUTE_GROUP_MIN_H,
    ATTRIBUTE_GROUP_MAX_W,
    ATTRIBUTE_GROUP_MAX_H,
+   ATTRIBUTE_STATE_NAME,
    ATTRIBUTE_STATE_MIN_W,
    ATTRIBUTE_STATE_MIN_H,
    ATTRIBUTE_STATE_MAX_W,
@@ -56,6 +60,7 @@ typedef enum {
    ATTRIBUTE_STATE_TEXT_ALIGN_X,
    ATTRIBUTE_STATE_TEXT_ALIGN_Y,
    ATTRIBUTE_STATE_TEXT_ELIPSIS,
+   ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE /* virtual attribute */,
    ATTRIBUTE_STATE_TEXT_SIZE,
    ATTRIBUTE_STATE_TEXT_FIT_X,
    ATTRIBUTE_STATE_TEXT_FIT_Y,
@@ -80,12 +85,16 @@ typedef enum {
    ATTRIBUTE_STATE_FONT,
    ATTRIBUTE_STATE_TEXT_STYLE,
    ATTRIBUTE_STATE_COLOR,
-   ATTRIBUTE_STATE_COLOR2,
-   ATTRIBUTE_STATE_COLOR3,
-   ATTRIBUTE_STATE_IMAGE_BORDER,
+   ATTRIBUTE_STATE_OUTLINE_COLOR,
+   ATTRIBUTE_STATE_SHADOW_COLOR,
+   ATTRIBUTE_STATE_IMAGE_BORDER_TOP,
+   ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM,
+   ATTRIBUTE_STATE_IMAGE_BORDER_LEFT,
+   ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT,
    ATTRIBUTE_STATE_IMAGE_BORDER_FILL,
    ATTRIBUTE_STATE_ASPECT_PREF,
-   ATTRIBUTE_PART_EFFECT,
+   ATTRIBUTE_PART_TEXT_EFFECT,
+   ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION,
    ATTRIBUTE_PART_IGNORE_FLAGS,
    ATTRIBUTE_PART_MOUSE_EVENTS,
    ATTRIBUTE_PART_REPEAT_EVENTS,
@@ -101,13 +110,14 @@ typedef enum {
    ATTRIBUTE_PART_DRAG_THRESHOLD,
    ATTRIBUTE_PART_DRAG_EVENT,
    ATTRIBUTE_PART_NAME,
-   ATTRIBUTE_PART_SOURCE,
-   ATTRIBUTE_PART_SOURCE2,
-   ATTRIBUTE_PART_SOURCE3,
-   ATTRIBUTE_PART_SOURCE4,
-   ATTRIBUTE_PART_SOURCE5,
-   ATTRIBUTE_PART_SOURCE6,
-   ATTRIBUTE_GROUP_NAME,
+   ATTRIBUTE_PART_TYPE,
+   ATTRIBUTE_PART_GROUP_SOURCE,
+   ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER,
+   ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER,
+   ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER,
+   ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER,
+   ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER,
+   ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER,
    ATTRIBUTE_PART_ITEM_ASPECT_MODE,
    ATTRIBUTE_PART_ITEM_ALIGN_X,
    ATTRIBUTE_PART_ITEM_ALIGN_Y,
@@ -119,6 +129,7 @@ typedef enum {
    ATTRIBUTE_PART_ITEM_MAX_W,
    ATTRIBUTE_PART_ITEM_MIN_H,
    ATTRIBUTE_PART_ITEM_MIN_W,
+   ATTRIBUTE_PART_ITEM_NAME,
    ATTRIBUTE_PART_ITEM_PREFER_H,
    ATTRIBUTE_PART_ITEM_PREFER_W,
    ATTRIBUTE_PART_ITEM_SPREAD_H,
@@ -128,7 +139,10 @@ typedef enum {
    ATTRIBUTE_PART_ITEM_POSITION_COL,
    ATTRIBUTE_PART_ITEM_POSITION_ROW,
    ATTRIBUTE_PART_ITEM_SOURCE,
-   ATTRIBUTE_PART_ITEM_PADDING,
+   ATTRIBUTE_PART_ITEM_PADDING_TOP,
+   ATTRIBUTE_PART_ITEM_PADDING_BOTTOM,
+   ATTRIBUTE_PART_ITEM_PADDING_LEFT,
+   ATTRIBUTE_PART_ITEM_PADDING_RIGHT,
    ATTRIBUTE_STATE_CONTAINER_ALIGN_X,
    ATTRIBUTE_STATE_CONTAINER_ALIGN_Y,
    ATTRIBUTE_STATE_CONTAINER_MIN_H,
@@ -154,12 +168,16 @@ typedef enum {
    ATTRIBUTE_PROGRAM_IN_RANGE,
    ATTRIBUTE_PROGRAM_TRANSITION_TIME,
    ATTRIBUTE_PROGRAM_SAMPLE_SPEED,
-   ATTRIBUTE_PROGRAM_VALUE2,
    ATTRIBUTE_PROGRAM_VALUE,
-   ATTRIBUTE_PROGRAM_TRANSITION_VALUE1,
-   ATTRIBUTE_PROGRAM_TRANSITION_VALUE2,
-   ATTRIBUTE_PROGRAM_TRANSITION_VALUE3,
-   ATTRIBUTE_PROGRAM_TRANSITION_VALUE4,
+   ATTRIBUTE_PROGRAM_TRANSITION_FACTOR,
+   ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT,
+   ATTRIBUTE_PROGRAM_TRANSITION_DECAY,
+   ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES,
+   ATTRIBUTE_PROGRAM_TRANSITION_SWINGS,
+   ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X1,
+   ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y1,
+   ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2,
+   ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2,
    ATTRIBUTE_PROGRAM_FILTER_PART,
    ATTRIBUTE_PROGRAM_FILTER_STATE,
    ATTRIBUTE_PROGRAM_API_NAME,
@@ -169,10 +187,16 @@ typedef enum {
    ATTRIBUTE_PROGRAM_SIGNAL,
    ATTRIBUTE_PROGRAM_SOURCE,
    ATTRIBUTE_PROGRAM_STATE,
-   ATTRIBUTE_PROGRAM_STATE2,
+   ATTRIBUTE_PROGRAM_EMIT_SIGNAL,
+   ATTRIBUTE_PROGRAM_EMIT_SOURCE,
+   ATTRIBUTE_PROGRAM_DRAG_VALUE_X,
+   ATTRIBUTE_PROGRAM_DRAG_VALUE_Y,
    ATTRIBUTE_PROGRAM_NAME,
    ATTRIBUTE_PROGRAM_TARGET,
    ATTRIBUTE_PROGRAM_AFTER,
+   ATTRIBUTE_PROGRAM_SCRIPT,
+
+   ATTRIBUTE_LAST
 } Attribute;
 
 void
@@ -180,25 +204,25 @@ _editor_project_changed();
 
 /* General */
 Eina_Bool
-editor_save(Evas_Object *edit_object);
+editor_save(Evas_Object *edit_object) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
-editor_save_all(Evas_Object *edit_object);
+editor_save_all(Evas_Object *edit_object) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
-editor_internal_group_add(Evas_Object *edit_object);
+editor_internal_group_add(Evas_Object *edit_object) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
-editor_group_add(Evas_Object *obj, const char *name);
+editor_group_add(Evas_Object *obj, const char *name) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
-editor_group_copy(Evas_Object *obj, const char *group_src, const char *group_dest);
+editor_group_copy(Evas_Object *obj, const char *group_src, const char *group_dest) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
-editor_group_alias_add(Evas_Object *obj, const char *group_src, const char *group_alias);
+editor_group_alias_add(Evas_Object *obj, const char *group_src, const char *group_alias) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
-editor_group_del(Evas_Object *obj, const char *name);
+editor_group_del(Evas_Object *obj, const char *name) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
 you_shall_not_pass_editor_signals(Change *change);
@@ -209,416 +233,454 @@ you_shall_pass_editor_signals(Change *change);
 /* Group */
 Eina_Bool
 editor_group_min_w_set(Evas_Object *obj, Change *change, Eina_Bool merge,
-                       int new_val);
+                       int new_val) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
 editor_group_min_h_set(Evas_Object *obj, Change *change, Eina_Bool merge,
-                       int new_val);
+                       int new_val) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
 editor_group_max_w_set(Evas_Object *obj, Change *change, Eina_Bool merge,
-                       int new_val);
+                       int new_val) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
 editor_group_max_h_set(Evas_Object *obj, Change *change, Eina_Bool merge,
-                       int new_val);
+                       int new_val) EINA_WARN_UNUSED_RESULT;
 
 /* State */
 
 Eina_Bool
 editor_state_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                 const char *part_name, const char *state_name, double state_val);
+                 const char *part_name, const char *state_name, double state_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                   const char *part_name, const char *from_name, double from_val,
-                                         const char *state_name, double state_val);
+                                         const char *state_name, double state_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                 const char *part_name, const char *state_name, double state_val);
+                 const char *part_name, const char *state_name, double state_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_min_w_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_min_h_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_max_w_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_max_h_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_align_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_align_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_aspect_min_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_aspect_max_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_minmul_w_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_minmul_h_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_rel1_relative_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_rel1_relative_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_rel1_offset_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_rel1_offset_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_rel2_relative_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_rel2_relative_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_rel2_offset_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_rel2_offset_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_text_size_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_text_elipsis_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_text_align_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_text_align_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_fill_origin_relative_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_fill_origin_relative_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_fill_origin_offset_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_fill_origin_offset_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_fill_size_relative_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_fill_size_relative_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_fill_size_offset_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_fill_size_offset_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_container_align_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_container_align_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_container_padding_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_container_padding_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_visible_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      Eina_Bool new_val);
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_fixed_w_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      Eina_Bool new_val);
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_fixed_h_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      Eina_Bool new_val);
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_text_min_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      Eina_Bool new_val);
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_text_min_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      Eina_Bool new_val);
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_text_max_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      Eina_Bool new_val);
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_text_max_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      Eina_Bool new_val);
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_text_fit_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      Eina_Bool new_val);
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_text_fit_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      Eina_Bool new_val);
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_fill_smooth_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      Eina_Bool new_val);
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_container_min_v_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      Eina_Bool new_val);
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_container_min_h_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      Eina_Bool new_val);
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
 editor_state_proxy_source_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_rel1_to_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_rel1_to_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_rel2_to_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_rel2_to_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_text_source_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_text_text_source_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_text_style_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
 editor_state_aspect_pref_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      unsigned char new_val);
+      unsigned char new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_table_homogeneous_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      unsigned char new_val);
+      unsigned char new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_image_border_fill_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      unsigned char new_val);
+      unsigned char new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_state_image_border_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int new_val1, int new_val2, int new_val3, int new_val4);
+editor_state_image_border_left_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_image_border_right_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_image_border_top_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_image_border_bottom_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_fill_type_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      unsigned char new_val);
+      unsigned char new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_color_class_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
 editor_state_color_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int r, int g, int b, int a);
+      int r, int g, int b, int a) EINA_WARN_UNUSED_RESULT;
 
+#define edje_edit_state_outline_color_get edje_edit_state_color2_get
+#pragma GCC poison edje_edit_state_color2_get
 Eina_Bool
-editor_state_color2_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int r, int g, int b, int a);
+editor_state_outline_color_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int r, int g, int b, int a) EINA_WARN_UNUSED_RESULT;
 
+#define edje_edit_state_shadow_color_get edje_edit_state_color3_get
+#pragma GCC poison edje_edit_state_color3_get
 Eina_Bool
-editor_state_color3_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      int r, int g, int b, int a);
+editor_state_shadow_color_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
+      int r, int g, int b, int a) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
 editor_state_text_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_font_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_image_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *state_name, double state_val,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 
 
 /* Part */
 
 Eina_Bool
 editor_part_selected_state_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                               const char *part_name, const char *state_name, double state_val);
+                               const char *part_name, const char *state_name, double state_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                const char *part_name, Edje_Part_Type type);
+                const char *part_name, Edje_Part_Type type) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                const char *part_name);
+                const char *part_name) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                    const char *part_name, const char *relative_part);
+                    const char *part_name, const char *relative_part) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_restack(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                         const char *part_name, const char *part_item, const char *relative_part_item);
+                         const char *part_name, const char *part_item, const char *relative_part_item) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_append(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                        const char *part_name, const char *item_name, const char *source_group);
+                        const char *part_name, const char *item_name, const char *source_group) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                     const char *part_name, const char *item_name);
+                     const char *part_name, const char *item_name) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_min_w_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_min_h_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_max_w_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_max_h_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_prefer_w_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_prefer_h_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_align_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_align_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_weight_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_weight_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      double new_val);
+      double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_aspect_w_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_aspect_h_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_spread_w_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_spread_h_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_span_col_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      unsigned short new_val);
+      unsigned short new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_span_row_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      unsigned short new_val);
+      unsigned short new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_position_col_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      unsigned short new_val);
+      unsigned short new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_position_row_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      unsigned short new_val);
+      unsigned short new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_source_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_item_aspect_mode_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      Edje_Aspect_Control new_val);
+      Edje_Aspect_Control new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_part_item_padding_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
-      int new_val1, int new_val2, int new_val3, int new_val4);
+editor_part_item_padding_bottom_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
+      int new_val1) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_part_item_padding_top_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
+      int new_val1) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_part_item_padding_left_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
+      int new_val1) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_part_item_padding_right_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name, const char *item_name,
+      int new_val1) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_scale_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      Eina_Bool new_val);
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_mouse_events_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      Eina_Bool new_val);
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_repeat_events_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      Eina_Bool new_val);
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_multiline_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      Eina_Bool new_val);
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_ignore_flags_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      Evas_Event_Flags new_val);
+      Evas_Event_Flags new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_select_mode_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      Edje_Edit_Select_Mode new_val);
+      Edje_Edit_Select_Mode new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_entry_mode_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      Edje_Edit_Entry_Mode new_val);
+      Edje_Edit_Entry_Mode new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_pointer_mode_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      Evas_Object_Pointer_Mode new_val);
+      Evas_Object_Pointer_Mode new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_cursor_mode_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      unsigned char new_val);
+      unsigned char new_val) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
 editor_part_drag_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_drag_step_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_drag_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_drag_step_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_drag_count_x_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_drag_count_y_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      int new_val);
+      int new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_name_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      const char *new_val);
+      const char *new_val) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
 editor_state_tween_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                        const char *part_name, const char *state_name, double state_val,
-                       Eina_Stringshare *name);
+                       Eina_Stringshare *name) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_tween_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                        const char *part_name, const char *state_name, double state_val,
-                       Eina_Stringshare *name);
+                       Eina_Stringshare *name) EINA_WARN_UNUSED_RESULT;
 
 Eina_Bool
 editor_part_clip_to_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_part_source_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      const char * new_val);
+editor_part_group_source_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_drag_confine_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_drag_threshold_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_part_drag_event_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      const char * new_val);
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_part_source2_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      const char * new_val);
+editor_part_textblock_selection_under_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_part_source3_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      const char * new_val);
+editor_part_textblock_selection_over_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_part_source4_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      const char * new_val);
+editor_part_textblock_cursor_under_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_part_source5_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      const char * new_val);
+editor_part_textblock_cursor_over_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_part_source6_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      const char * new_val);
+editor_part_textblock_anchors_under_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_part_effect_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
-      Edje_Text_Effect new_val);
+editor_part_textblock_anchors_over_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
+#define edje_edit_part_textblock_selection_under_get(...) (edje_edit_part_source_get(__VA_ARGS__))
+#define edje_edit_part_textblock_selection_over_get(...) (edje_edit_part_source2_get(__VA_ARGS__))
+#define edje_edit_part_textblock_cursor_under_get(...) (edje_edit_part_source3_get(__VA_ARGS__))
+#define edje_edit_part_textblock_cursor_over_get(...) (edje_edit_part_source4_get(__VA_ARGS__))
+#define edje_edit_part_textblock_anchors_under_get(...) (edje_edit_part_source5_get(__VA_ARGS__))
+#define edje_edit_part_textblock_anchors_over_get(...) (edje_edit_part_source6_get(__VA_ARGS__))
+
+#define edje_edit_part_text_effect_get(...) (edje_edit_part_effect_get(__VA_ARGS__) & EDJE_TEXT_EFFECT_MASK_BASIC)
+#define edje_edit_part_text_shadow_direction_get(...) (edje_edit_part_effect_get(__VA_ARGS__) & EDJE_TEXT_EFFECT_MASK_SHADOW_DIRECTION)
+#pragma GCC poison edje_edit_part_effect_get
+Eina_Bool
+editor_part_text_effect_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      Edje_Text_Effect new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_part_text_shadow_direction_set(Evas_Object *obj, Change *change, Eina_Bool merge, const char *part_name,
+      Edje_Text_Effect new_val) EINA_WARN_UNUSED_RESULT;
 
 /* programs */
 Edje_Tween_Mode
@@ -630,99 +692,152 @@ editor_program_transition_from_current_get(Evas_Object *edit_object, const char 
 
 Eina_Bool
 editor_program_transition_type_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                                   const char *program, Edje_Tween_Mode new_val);
+                                   const char *program, Edje_Tween_Mode new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_transition_from_current_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                                           const char *program, Eina_Bool new_val);
-Eina_Bool
-editor_program_action_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                          const char *program, Edje_Action_Type new_val);
+                                           const char *program, Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_channel_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                           const char *program, Edje_Channel new_val);
+                           const char *program, Edje_Channel new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_tone_duration_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                                 const char *program, double new_val);
+                                 const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_in_from_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                           const char *program, double new_val);
+                           const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_in_range_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                            const char *program, double new_val);
+                            const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_transition_time_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                                   const char *program, double new_val);
+                                   const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_sample_speed_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                                const char *program, double new_val);
-Eina_Bool
-editor_program_value2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                          const char *program, double new_val);
+                                const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_value_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                         const char *program, double new_val);
+                         const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+#define edje_edit_program_drag_value_x_get edje_edit_program_value_get
 Eina_Bool
-editor_program_transition_value1_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                                     const char *program, double new_val);
+editor_program_drag_value_x_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+#define edje_edit_program_drag_value_y_get edje_edit_program_value2_get
+#pragma GCC poison edje_edit_program_value2_get
 Eina_Bool
-editor_program_transition_value2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                                     const char *program, double new_val);
+editor_program_drag_value_y_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+
+#define edje_edit_program_transition_factor_get editor_program_transition_factor_get
+#define edje_edit_program_transition_gradient_get editor_program_transition_gradient_get
+#define edje_edit_program_transition_decay_get editor_program_transition_decay_get
+#define edje_edit_program_transition_bounces_get editor_program_transition_bounces_get
+#define edje_edit_program_transition_swings_get editor_program_transition_swings_get
+#define edje_edit_program_transition_bezier_x1_get editor_program_transition_bezier_x1_get
+#define edje_edit_program_transition_bezier_x2_get editor_program_transition_bezier_x2_get
+#define edje_edit_program_transition_bezier_y1_get editor_program_transition_bezier_y1_get
+#define edje_edit_program_transition_bezier_y2_get editor_program_transition_bezier_y2_get
+double
+editor_program_transition_factor_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_program_transition_value3_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                                     const char *program, double new_val);
+editor_program_transition_factor_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+double
+editor_program_transition_gradient_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_program_transition_value4_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                                     const char *program, double new_val);
+editor_program_transition_gradient_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+double
+editor_program_transition_decay_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_program_transition_decay_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+double
+editor_program_transition_bounces_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_program_transition_bounces_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+double
+editor_program_transition_swings_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_program_transition_swings_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+double
+editor_program_transition_bezier_x1_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_program_transition_bezier_x1_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+double
+editor_program_transition_bezier_x2_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_program_transition_bezier_x2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+double
+editor_program_transition_bezier_y1_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_program_transition_bezier_y1_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+double
+editor_program_transition_bezier_y2_get(Evas_Object *edit_object, const char *program) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_program_transition_bezier_y2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val) EINA_WARN_UNUSED_RESULT;
+
 Eina_Bool
 editor_program_filter_part_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                               const char *program, const char *new_val);
+                               const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_filter_state_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                                const char *program, const char *new_val);
+                                const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_api_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                            const char *program, const char *new_val);
+                            const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_api_description_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                                   const char *program, const char *new_val);
+                                   const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_sample_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                               const char *program, const char *new_val);
+                               const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_tone_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                             const char *program, const char *new_val);
+                             const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_signal_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                          const char *program, const char *new_val);
+                          const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_source_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                          const char *program, const char *new_val);
+                          const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_state_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                         const char *program, const char *new_val);
+                         const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
+#define edje_edit_program_emit_signal_get edje_edit_program_state_get
 Eina_Bool
-editor_program_state2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                          const char *program, const char *new_val);
+editor_program_emit_signal_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                               const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
+#define edje_edit_program_emit_source_get edje_edit_program_state2_get
+#pragma GCC poison edje_edit_program_state2_get
+Eina_Bool
+editor_program_emit_source_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                           const char *program, const char *new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                        const char *name, const char *new_val);
+                        const char *name, const char *new_val) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_target_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                          const char *program_name, Eina_Stringshare *target);
+                          const char *program_name, Eina_Stringshare *target) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_target_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                          const char *program_name, Eina_Stringshare *target);
+                          const char *program_name, Eina_Stringshare *target) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_after_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                         const char *program_name, Eina_Stringshare *after);
+                         const char *program_name, Eina_Stringshare *after) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_after_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                         const char *program_name, Eina_Stringshare *after);
+                         const char *program_name, Eina_Stringshare *after) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                   const char *program_name);
+                   const char *program_name, Edje_Action_Type type) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                   const char *program_name);
+                   const char *program_name) EINA_WARN_UNUSED_RESULT;
 
 #endif /* EDITOR_H */

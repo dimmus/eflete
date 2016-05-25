@@ -32,9 +32,10 @@ includesub_HEADERS = \
 	ui/main_window.h \
 	ui/project_common.h \
 	ui/project_navigator.h \
-	ui/property.h \
-	ui/property_macros.h \
-	ui/property_private.h \
+	ui/property/property.h \
+	ui/property/property_common.h \
+	ui/property/property_private.h \
+	ui/sound_player/sound_player.h \
 	ui/tabs.h \
 	ui/tabs_private.h \
 	ui/live_view/demo.h \
@@ -98,15 +99,20 @@ libete_a_SOURCES = \
 ../../src/bin/ui/tab_home_import_edj.c \
 ../../src/bin/ui/tab_home_import_edc.c \
 ../../src/bin/ui/tab_home_info.c \
-../../src/bin/ui/property.c \
-../../src/bin/ui/property_group.c \
-../../src/bin/ui/property_image.c \
-../../src/bin/ui/property_sound.c \
-../../src/bin/ui/property_style.c \
-../../src/bin/ui/property_color.c \
-../../src/bin/ui/property_demo_program.c \
-../../src/bin/ui/property_demo_swallow.c \
-../../src/bin/ui/property_demo_text.c \
+../../src/bin/ui/property/property.c \
+../../src/bin/ui/property/property_common.c \
+../../src/bin/ui/property/property_color_control.c \
+../../src/bin/ui/property/property_common_image.c \
+../../src/bin/ui/property/property_common_tween.c \
+../../src/bin/ui/property/property_image_selector.c \
+../../src/bin/ui/property/property_dummy.c \
+../../src/bin/ui/property/property_color.c \
+../../src/bin/ui/property/property_image.c \
+../../src/bin/ui/property/property_sound.c \
+../../src/bin/ui/property/property_textblock.c \
+../../src/bin/ui/property/property_group.c \
+../../src/bin/ui/sound_player/sound_player.c \
+../../src/bin/ui/property/property_demo.c \
 ../../src/bin/ui/workspace/workspace.c \
 ../../src/bin/ui/workspace/groupview_calc.c \
 ../../src/bin/ui/workspace/groupview.c \
@@ -164,6 +170,8 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/bin/project_manager \
 -I${top_srcdir}/src/bin/config \
 -I${top_srcdir}/src/bin/ui \
+-I${top_srcdir}/src/bin/ui/property \
+-I${top_srcdir}/src/bin/ui/sound_player \
 -I${top_srcdir}/src/bin/ui/shortcuts \
 -I${top_srcdir}/src/bin/ui/container \
 -I${top_srcdir}/src/bin/ui/blocks \

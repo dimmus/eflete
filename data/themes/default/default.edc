@@ -9,6 +9,7 @@ collections {
    #include "widgets/scroller.edc"
    #include "widgets/inwin.edc"
    #include "widgets/genlist.edc"
+   #include "widgets/genlist_property.edc"
    #include "widgets/gengrid.edc"
    #include "widgets/entry.edc"
    #include "widgets/check.edc"

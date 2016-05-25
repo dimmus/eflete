@@ -122,71 +122,6 @@ editor_program_transition_from_current_set(Evas_Object *edit_object, Change *cha
 }
 
 Eina_Bool
-editor_program_action_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
-                          const char *program, Edje_Action_Type new_val)
-{
-   Diff *diff;
-   Attribute attribute = ATTRIBUTE_PROGRAM_ACTION;
-   Eina_Bool clean_targets = false;
-   Eina_List *targets, *l;
-   Eina_Stringshare *target;
-
-   assert(edit_object != NULL);
-   assert(program != NULL);
-
-   if (change)
-     {
-        Edje_Action_Type old_value = edje_edit_program_action_get(edit_object, program);
-        switch (new_val)
-          {
-           case EDJE_ACTION_TYPE_STATE_SET:
-           case EDJE_ACTION_TYPE_SIGNAL_EMIT:
-           case EDJE_ACTION_TYPE_DRAG_VAL_SET:
-           case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
-           case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
-           case EDJE_ACTION_TYPE_FOCUS_SET:
-           case EDJE_ACTION_TYPE_FOCUS_OBJECT:
-              /*These actions have part as a target so targets list can be left untouched
-                if it was not list of programs (EDJE_ACTION_TYPE_ACTION_STOP) */
-              if (old_value == EDJE_ACTION_TYPE_ACTION_STOP)
-                clean_targets = true;
-              break;
-           case EDJE_ACTION_TYPE_ACTION_STOP:
-              /*this action uses programs as targets*/
-           default:
-              /*other actions do not need targets so we need to delete them all */
-              clean_targets = true;
-          }
-        if (clean_targets)
-          {
-             targets = edje_edit_program_targets_get(edit_object, program);
-             EINA_LIST_FOREACH(targets, l, target)
-                editor_program_target_del(edit_object, change, false, program, target);
-             edje_edit_string_list_free(targets);
-          }
-
-        diff = mem_calloc(1, sizeof(Diff));
-        diff->redo.type = FUNCTION_TYPE_STRING_EDJEACTIONTYPE;
-        diff->redo.function = editor_program_action_set;
-        diff->redo.args.type_seat.s1 = eina_stringshare_add(program);
-        diff->redo.args.type_seat.eat2 = new_val;
-        diff->undo.type = FUNCTION_TYPE_STRING_EDJEACTIONTYPE;
-        diff->undo.function = editor_program_action_set;
-        diff->undo.args.type_seat.s1 = eina_stringshare_add(program);
-        diff->undo.args.type_seat.eat2 = old_value;
-        if (merge)
-          change_diff_merge_add(change, diff);
-        else
-          change_diff_add(change, diff);
-     }
-   if (!edje_edit_program_action_set(edit_object, program, new_val))
-     return false;
-   _editor_project_changed();
-   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
-   return true;
-}
-
-Eina_Bool
 editor_program_channel_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
                            const char *program, Edje_Channel new_val)
 {
@@ -218,28 +153,349 @@ editor_program_channel_set(Evas_Object *edit_object, Change *change, Eina_Bool m
    return true;
 }
 
-EDITOR_PROGRAM_DOUBLE(tone_duration, ATTRIBUTE_PROGRAM_TONE_DURATION);
-EDITOR_PROGRAM_DOUBLE(in_from, ATTRIBUTE_PROGRAM_IN_FROM);
-EDITOR_PROGRAM_DOUBLE(in_range, ATTRIBUTE_PROGRAM_IN_RANGE);
-EDITOR_PROGRAM_DOUBLE(transition_time, ATTRIBUTE_PROGRAM_TRANSITION_TIME);
-EDITOR_PROGRAM_DOUBLE(sample_speed, ATTRIBUTE_PROGRAM_SAMPLE_SPEED);
-EDITOR_PROGRAM_DOUBLE(value2, ATTRIBUTE_PROGRAM_VALUE2);
-EDITOR_PROGRAM_DOUBLE(value, ATTRIBUTE_PROGRAM_VALUE);
-EDITOR_PROGRAM_DOUBLE(transition_value1, ATTRIBUTE_PROGRAM_TRANSITION_VALUE1);
-EDITOR_PROGRAM_DOUBLE(transition_value2, ATTRIBUTE_PROGRAM_TRANSITION_VALUE2);
-EDITOR_PROGRAM_DOUBLE(transition_value3, ATTRIBUTE_PROGRAM_TRANSITION_VALUE3);
-EDITOR_PROGRAM_DOUBLE(transition_value4, ATTRIBUTE_PROGRAM_TRANSITION_VALUE4);
+EDITOR_PROGRAM_DOUBLE(tone_duration, tone_duration, ATTRIBUTE_PROGRAM_TONE_DURATION);
+EDITOR_PROGRAM_DOUBLE(in_from, in_from, ATTRIBUTE_PROGRAM_IN_FROM);
+EDITOR_PROGRAM_DOUBLE(in_range, in_range, ATTRIBUTE_PROGRAM_IN_RANGE);
+EDITOR_PROGRAM_DOUBLE(transition_time, transition_time, ATTRIBUTE_PROGRAM_TRANSITION_TIME);
+EDITOR_PROGRAM_DOUBLE(sample_speed, sample_speed, ATTRIBUTE_PROGRAM_SAMPLE_SPEED);
 
-EDITOR_PROGRAM_STRING(filter_part, ATTRIBUTE_PROGRAM_FILTER_PART);
-EDITOR_PROGRAM_STRING(filter_state, ATTRIBUTE_PROGRAM_FILTER_STATE);
-EDITOR_PROGRAM_STRING(api_name, ATTRIBUTE_PROGRAM_API_NAME);
-EDITOR_PROGRAM_STRING(api_description, ATTRIBUTE_PROGRAM_API_DESCRIPTION);
-EDITOR_PROGRAM_STRING(sample_name, ATTRIBUTE_PROGRAM_SAMPLE_NAME);
-EDITOR_PROGRAM_STRING(tone_name, ATTRIBUTE_PROGRAM_TONE_NAME);
-EDITOR_PROGRAM_STRING(signal, ATTRIBUTE_PROGRAM_SIGNAL);
-EDITOR_PROGRAM_STRING(source, ATTRIBUTE_PROGRAM_SOURCE);
-EDITOR_PROGRAM_STRING(state, ATTRIBUTE_PROGRAM_STATE);
-EDITOR_PROGRAM_STRING(state2, ATTRIBUTE_PROGRAM_STATE2);
+double
+editor_program_transition_factor_get(Evas_Object *edit_object, const char *program)
+{
+   assert(edit_object != NULL);
+   assert(program != NULL);
+
+   Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program);
+   TODO("Revert this commit after fix genlist filter in properties being not called before update callback");
+   /*
+   assert((type == EDJE_TWEEN_MODE_ACCELERATE_FACTOR) ||
+          (type == EDJE_TWEEN_MODE_DECELERATE_FACTOR) ||
+          (type == EDJE_TWEEN_MODE_SINUSOIDAL_FACTOR) ||
+          (type == EDJE_TWEEN_MODE_DIVISOR_INTERP));
+          */
+
+   if (type == EDJE_TWEEN_MODE_DIVISOR_INTERP)
+     return edje_edit_program_transition_value2_get(edit_object, program);
+   else
+     return edje_edit_program_transition_value1_get(edit_object, program);
+}
+Eina_Bool
+editor_program_transition_factor_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_PROGRAM_TRANSITION_FACTOR;
+   assert(edit_object != NULL);
+   assert(program != NULL);
+
+   Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program);
+   assert((type == EDJE_TWEEN_MODE_ACCELERATE_FACTOR) ||
+          (type == EDJE_TWEEN_MODE_DECELERATE_FACTOR) ||
+          (type == EDJE_TWEEN_MODE_SINUSOIDAL_FACTOR) ||
+          (type == EDJE_TWEEN_MODE_DIVISOR_INTERP));
+   if (change)
+     {
+        double old_value = editor_program_transition_factor_get(edit_object, program);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_DOUBLE;
+        diff->redo.function = editor_program_transition_factor_set;
+        diff->redo.args.type_sd.s1 = eina_stringshare_add(program);
+        diff->redo.args.type_sd.d2 = new_val;
+        diff->undo.type = FUNCTION_TYPE_STRING_DOUBLE;
+        diff->undo.function = editor_program_transition_factor_set;
+        diff->undo.args.type_sd.s1 = eina_stringshare_add(program);
+        diff->undo.args.type_sd.d2 = old_value;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (type == EDJE_TWEEN_MODE_DIVISOR_INTERP)
+     {
+        if (!edje_edit_program_transition_value2_set(edit_object, program, new_val))
+          return false;
+     }
+   else
+     {
+        if (!edje_edit_program_transition_value1_set(edit_object, program, new_val))
+          return false;
+     }
+
+   _editor_project_changed();
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+double
+editor_program_transition_gradient_get(Evas_Object *edit_object, const char *program)
+{
+   assert(edit_object != NULL);
+   assert(program != NULL);
+
+   /*
+   Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program);
+   assert(type == EDJE_TWEEN_MODE_DIVISOR_INTERP);
+   */
+
+   return edje_edit_program_transition_value1_get(edit_object, program);
+}
+Eina_Bool
+editor_program_transition_gradient_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                       const char *program, double new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT;
+   assert(edit_object != NULL);
+   assert(program != NULL);
+
+   Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program);
+   assert(type == EDJE_TWEEN_MODE_DIVISOR_INTERP);
+   if (change)
+     {
+        double old_value = editor_program_transition_gradient_get(edit_object, program);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_DOUBLE;
+        diff->redo.function = editor_program_transition_gradient_set;
+        diff->redo.args.type_sd.s1 = eina_stringshare_add(program);
+        diff->redo.args.type_sd.d2 = new_val;
+        diff->undo.type = FUNCTION_TYPE_STRING_DOUBLE;
+        diff->undo.function = editor_program_transition_gradient_set;
+        diff->undo.args.type_sd.s1 = eina_stringshare_add(program);
+        diff->undo.args.type_sd.d2 = old_value;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_program_transition_value1_set(edit_object, program, new_val))
+     return false;
+
+   _editor_project_changed();
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+double
+editor_program_transition_decay_get(Evas_Object *edit_object, const char *program)
+{
+   assert(edit_object != NULL);
+   assert(program != NULL);
+
+   /*
+   Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program);
+   assert((type == EDJE_TWEEN_MODE_BOUNCE) ||
+          (type == EDJE_TWEEN_MODE_SPRING));
+   */
+
+   return edje_edit_program_transition_value1_get(edit_object, program);
+}
+Eina_Bool
+editor_program_transition_decay_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                    const char *program, double new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_PROGRAM_TRANSITION_DECAY;
+   assert(edit_object != NULL);
+   assert(program != NULL);
+
+   Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program);
+   assert((type == EDJE_TWEEN_MODE_BOUNCE) ||
+          (type == EDJE_TWEEN_MODE_SPRING));
+   if (change)
+     {
+        double old_value = editor_program_transition_decay_get(edit_object, program);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_DOUBLE;
+        diff->redo.function = editor_program_transition_decay_set;
+        diff->redo.args.type_sd.s1 = eina_stringshare_add(program);
+        diff->redo.args.type_sd.d2 = new_val;
+        diff->undo.type = FUNCTION_TYPE_STRING_DOUBLE;
+        diff->undo.function = editor_program_transition_decay_set;
+        diff->undo.args.type_sd.s1 = eina_stringshare_add(program);
+        diff->undo.args.type_sd.d2 = old_value;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_program_transition_value1_set(edit_object, program, new_val))
+     return false;
+
+   _editor_project_changed();
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+double
+editor_program_transition_bounces_get(Evas_Object *edit_object, const char *program)
+{
+   assert(edit_object != NULL);
+   assert(program != NULL);
+
+   /*
+   Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program);
+   assert(type == EDJE_TWEEN_MODE_BOUNCE);
+   */
+
+   return edje_edit_program_transition_value2_get(edit_object, program);
+}
+Eina_Bool
+editor_program_transition_bounces_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                      const char *program, double new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES;
+   assert(edit_object != NULL);
+   assert(program != NULL);
+
+   Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program);
+   assert(type == EDJE_TWEEN_MODE_BOUNCE);
+   if (change)
+     {
+        double old_value = editor_program_transition_bounces_get(edit_object, program);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_DOUBLE;
+        diff->redo.function = editor_program_transition_bounces_set;
+        diff->redo.args.type_sd.s1 = eina_stringshare_add(program);
+        diff->redo.args.type_sd.d2 = new_val;
+        diff->undo.type = FUNCTION_TYPE_STRING_DOUBLE;
+        diff->undo.function = editor_program_transition_bounces_set;
+        diff->undo.args.type_sd.s1 = eina_stringshare_add(program);
+        diff->undo.args.type_sd.d2 = old_value;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_program_transition_value2_set(edit_object, program, new_val))
+     return false;
+
+   _editor_project_changed();
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+double
+editor_program_transition_swings_get(Evas_Object *edit_object, const char *program)
+{
+   assert(edit_object != NULL);
+   assert(program != NULL);
+
+   /*
+   Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program);
+   assert(type == EDJE_TWEEN_MODE_SPRING);
+   */
+
+   return edje_edit_program_transition_value2_get(edit_object, program);
+}
+Eina_Bool
+editor_program_transition_swings_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                                     const char *program, double new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_PROGRAM_TRANSITION_SWINGS;
+   assert(edit_object != NULL);
+   assert(program != NULL);
+
+   Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program);
+   assert(type == EDJE_TWEEN_MODE_SPRING);
+   if (change)
+     {
+        double old_value = editor_program_transition_swings_get(edit_object, program);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_DOUBLE;
+        diff->redo.function = editor_program_transition_swings_set;
+        diff->redo.args.type_sd.s1 = eina_stringshare_add(program);
+        diff->redo.args.type_sd.d2 = new_val;
+        diff->undo.type = FUNCTION_TYPE_STRING_DOUBLE;
+        diff->undo.function = editor_program_transition_swings_set;
+        diff->undo.args.type_sd.s1 = eina_stringshare_add(program);
+        diff->undo.args.type_sd.d2 = old_value;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_program_transition_value2_set(edit_object, program, new_val))
+     return false;
+
+   _editor_project_changed();
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+#define EDITOR_PROGRAM_TRANSITION_BEZIER(VAL, REAL_VAL, ATTRIBUTE) \
+double \
+editor_program_transition_bezier_## VAL ##_get(Evas_Object *edit_object, const char *program) \
+{ \
+   assert(edit_object != NULL); \
+   assert(program != NULL); \
+ \
+   /*
+   Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program); \
+   assert(type == EDJE_TWEEN_MODE_CUBIC_BEZIER); \
+   */ \
+ \
+   return edje_edit_program_transition_value## REAL_VAL ##_get(edit_object, program); \
+} \
+Eina_Bool \
+editor_program_transition_bezier_## VAL ##_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, \
+                                               const char *program, double new_val) \
+{ \
+   Diff *diff; \
+   Attribute attribute = ATTRIBUTE; \
+   assert(edit_object != NULL); \
+   assert(program != NULL); \
+ \
+   Edje_Tween_Mode type = editor_program_transition_type_get(edit_object, program); \
+   assert(type == EDJE_TWEEN_MODE_CUBIC_BEZIER); \
+   if (change) \
+     { \
+        double old_value = editor_program_transition_bezier_## VAL ##_get(edit_object, program); \
+        diff = mem_calloc(1, sizeof(Diff)); \
+        diff->redo.type = FUNCTION_TYPE_STRING_DOUBLE; \
+        diff->redo.function = editor_program_transition_bezier_## VAL ##_set; \
+        diff->redo.args.type_sd.s1 = eina_stringshare_add(program); \
+        diff->redo.args.type_sd.d2 = new_val; \
+        diff->undo.type = FUNCTION_TYPE_STRING_DOUBLE; \
+        diff->undo.function = editor_program_transition_bezier_## VAL ##_set; \
+        diff->undo.args.type_sd.s1 = eina_stringshare_add(program); \
+        diff->undo.args.type_sd.d2 = old_value; \
+        if (merge) \
+          change_diff_merge_add(change, diff); \
+        else \
+          change_diff_add(change, diff); \
+     } \
+   if (!edje_edit_program_transition_value## REAL_VAL##_set(edit_object, program, new_val)) \
+     return false; \
+ \
+   _editor_project_changed(); \
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+   return true; \
+}
+
+EDITOR_PROGRAM_TRANSITION_BEZIER(x1, 1, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X1);
+EDITOR_PROGRAM_TRANSITION_BEZIER(y1, 2, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y1);
+EDITOR_PROGRAM_TRANSITION_BEZIER(x2, 3, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2);
+EDITOR_PROGRAM_TRANSITION_BEZIER(y2, 4, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2);
+
+EDITOR_PROGRAM_STRING(filter_part, filter_part, ATTRIBUTE_PROGRAM_FILTER_PART);
+EDITOR_PROGRAM_STRING(filter_state, filter_state, ATTRIBUTE_PROGRAM_FILTER_STATE);
+EDITOR_PROGRAM_STRING(api_name, api_name, ATTRIBUTE_PROGRAM_API_NAME);
+EDITOR_PROGRAM_STRING(api_description, api_description, ATTRIBUTE_PROGRAM_API_DESCRIPTION);
+EDITOR_PROGRAM_STRING(sample_name, sample_name, ATTRIBUTE_PROGRAM_SAMPLE_NAME);
+EDITOR_PROGRAM_STRING(tone_name, tone_name, ATTRIBUTE_PROGRAM_TONE_NAME);
+EDITOR_PROGRAM_STRING(signal, signal, ATTRIBUTE_PROGRAM_SIGNAL);
+EDITOR_PROGRAM_STRING(source, source, ATTRIBUTE_PROGRAM_SOURCE);
+
+EDITOR_PROGRAM_STRING(state, state, ATTRIBUTE_PROGRAM_STATE);
+EDITOR_PROGRAM_DOUBLE(value, value, ATTRIBUTE_PROGRAM_VALUE);
+
+EDITOR_PROGRAM_STRING(emit_signal, state, ATTRIBUTE_PROGRAM_EMIT_SIGNAL);
+EDITOR_PROGRAM_STRING(emit_source, state2, ATTRIBUTE_PROGRAM_EMIT_SOURCE);
+
+EDITOR_PROGRAM_DOUBLE(drag_value_x, value, ATTRIBUTE_PROGRAM_DRAG_VALUE_X);
+EDITOR_PROGRAM_DOUBLE(drag_value_y, value2, ATTRIBUTE_PROGRAM_DRAG_VALUE_Y);
 
 Eina_Bool
 editor_program_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
@@ -414,6 +670,7 @@ editor_program_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge _
    Eina_Bool res = true;
    Eina_List *list, *l;
    Eina_Stringshare *name;
+   Edje_Tween_Mode transition_type;
    assert(edit_object != NULL);
    assert(program_name != NULL);
 
@@ -442,25 +699,51 @@ editor_program_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge _
    switch (type)
      {
         case EDJE_ACTION_TYPE_STATE_SET:
+           transition_type = editor_program_transition_type_get(edit_object, program_name);
+
            res = res && editor_program_state_reset(edit_object, change, program_name);
            res = res && editor_program_value_reset(edit_object, change, program_name);
            res = res && editor_program_transition_time_reset(edit_object, change, program_name);
-           res = res && editor_program_transition_value1_reset(edit_object, change, program_name);
-           res = res && editor_program_transition_value2_reset(edit_object, change, program_name);
-           res = res && editor_program_transition_value3_reset(edit_object, change, program_name);
-           res = res && editor_program_transition_value4_reset(edit_object, change, program_name);
+           switch(transition_type)
+             {
+              case EDJE_TWEEN_MODE_ACCELERATE_FACTOR:
+              case EDJE_TWEEN_MODE_DECELERATE_FACTOR:
+              case EDJE_TWEEN_MODE_SINUSOIDAL_FACTOR:
+                 res = res && editor_program_transition_factor_reset(edit_object, change, program_name);
+                 break;
+              case EDJE_TWEEN_MODE_DIVISOR_INTERP:
+                 res = res && editor_program_transition_gradient_reset(edit_object, change, program_name);
+                 res = res && editor_program_transition_factor_reset(edit_object, change, program_name);
+                 break;
+              case EDJE_TWEEN_MODE_BOUNCE:
+                 res = res && editor_program_transition_decay_reset(edit_object, change, program_name);
+                 res = res && editor_program_transition_bounces_reset(edit_object, change, program_name);
+                 break;
+              case EDJE_TWEEN_MODE_SPRING:
+                 res = res && editor_program_transition_decay_reset(edit_object, change, program_name);
+                 res = res && editor_program_transition_swings_reset(edit_object, change, program_name);
+                 break;
+              case EDJE_TWEEN_MODE_CUBIC_BEZIER:
+                 res = res && editor_program_transition_bezier_x1_reset(edit_object, change, program_name);
+                 res = res && editor_program_transition_bezier_x2_reset(edit_object, change, program_name);
+                 res = res && editor_program_transition_bezier_y1_reset(edit_object, change, program_name);
+                 res = res && editor_program_transition_bezier_y2_reset(edit_object, change, program_name);
+              default:
+                 break;
+             }
+
            res = res && editor_program_transition_from_current_reset(edit_object, change, program_name);
            res = res && editor_program_transition_type_reset(edit_object, change, program_name);
            break;
         case EDJE_ACTION_TYPE_SIGNAL_EMIT:
-           res = res && editor_program_state_reset(edit_object, change, program_name);
-           res = res && editor_program_state2_reset(edit_object, change, program_name);
+           res = res && editor_program_emit_signal_reset(edit_object, change, program_name);
+           res = res && editor_program_emit_source_reset(edit_object, change, program_name);
            break;
         case EDJE_ACTION_TYPE_DRAG_VAL_SET:
         case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
         case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
-           res = res && editor_program_value_reset(edit_object, change, program_name);
-           res = res && editor_program_value2_reset(edit_object, change, program_name);
+           res = res && editor_program_drag_value_x_reset(edit_object, change, program_name);
+           res = res && editor_program_drag_value_y_reset(edit_object, change, program_name);
            break;
         case EDJE_ACTION_TYPE_SOUND_SAMPLE:
            res = res && editor_program_sample_name_reset(edit_object, change, program_name);
@@ -476,7 +759,6 @@ editor_program_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge _
            TODO("Add other action types when they will be supported");
            break;
      }
-   res = res && editor_program_action_reset(edit_object, change, program_name);
 
    you_shall_pass_editor_signals(change);
 
@@ -485,7 +767,7 @@ editor_program_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge _
 
 Eina_Bool
 editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
-                const char *program_name)
+                   const char *program_name, Edje_Action_Type type)
 {
    Diff *diff;
    Eina_Stringshare *event_info;
@@ -495,9 +777,10 @@ editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
    if (change)
      {
         diff = mem_calloc(1, sizeof(Diff));
-        diff->redo.type = FUNCTION_TYPE_STRING;
+        diff->redo.type = FUNCTION_TYPE_STRING_EDJEACTIONTYPE;
         diff->redo.function = editor_program_add;
-        diff->redo.args.type_s.s1 = eina_stringshare_add(program_name);
+        diff->redo.args.type_seat.s1 = eina_stringshare_add(program_name);
+        diff->redo.args.type_seat.eat2 = type;
         diff->undo.type = FUNCTION_TYPE_STRING;
         diff->undo.function = editor_program_del;
         diff->undo.args.type_s.s1 = eina_stringshare_add(program_name);
@@ -506,8 +789,10 @@ editor_program_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
      }
    if (!edje_edit_program_add(edit_object, program_name))
      return false;
+   if (!edje_edit_program_action_set(edit_object, program_name, type))
+     return false;
 
-   editor_save(edit_object);
+   CRIT_ON_FAIL(editor_save(edit_object));
    _editor_project_changed();
 
    event_info = eina_stringshare_add(program_name);
@@ -530,15 +815,17 @@ editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
 
    if (change)
      {
+        Edje_Action_Type type = edje_edit_program_action_get(edit_object, program_name);
         if (!editor_program_reset(edit_object, change, false, program_name))
           return false;
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING;
         diff->redo.function = editor_program_del;
         diff->redo.args.type_s.s1 = eina_stringshare_add(program_name);
-        diff->undo.type = FUNCTION_TYPE_STRING;
+        diff->undo.type = FUNCTION_TYPE_STRING_EDJEACTIONTYPE;
         diff->undo.function = editor_program_add;
-        diff->undo.args.type_s.s1 = eina_stringshare_add(program_name);
+        diff->undo.args.type_seat.s1 = eina_stringshare_add(program_name);
+        diff->undo.args.type_seat.eat2 = type;
 
         change_diff_add(change, diff);
      }
@@ -548,7 +835,7 @@ editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
         return false;
      }
    eina_stringshare_del(event_info);
-   editor_save(edit_object);
+   CRIT_ON_FAIL(editor_save(edit_object));
    _editor_project_changed();
    return true;
 }

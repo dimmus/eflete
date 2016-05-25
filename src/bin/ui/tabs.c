@@ -114,12 +114,24 @@ _content_set(void *data,
              item->need_recalc = false;
           }
 
-        evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, item->group);
+        /* notify that group is changed */
+        evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_CHANGED, item->group);
 
-        /* if workspace is in demo mode then change property */
-        TODO("Refactor property and remove this")
+        /* and update property */
         if (workspace_active_demo_mode_get(tabs.current_workspace))
-          evas_object_smart_callback_call(ap.win, SIGNAL_DIFFERENT_TAB_CLICKED, NULL);
+          {
+             elm_layout_content_unset(ap.tabs, "elm.swallow.property");
+             evas_object_hide(ap.property.group);
+             elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.demo);
+             evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_MODE_DEMO, NULL);
+          }
+        else
+          {
+             elm_layout_content_unset(ap.tabs, "elm.swallow.property");
+             evas_object_hide(ap.property.demo);
+             elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.group);
+             evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_MODE_GROUP, NULL);
+          }
      }
 }
 
@@ -134,6 +146,20 @@ _mode_changed(void *data __UNUSED__,
    evas_object_hide(content);
 
    elm_layout_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(tabs.current_workspace));
+   Workspace_Mode mode = *((Workspace_Mode *)event_info);
+
+   if (mode == MODE_DEMO)
+     {
+        elm_layout_content_unset(ap.tabs, "elm.swallow.property");
+        evas_object_hide(ap.property.group);
+        elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.demo);
+     }
+   else
+     {
+        elm_layout_content_unset(ap.tabs, "elm.swallow.property");
+        evas_object_hide(ap.property.demo);
+        elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.group);
+     }
 }
 
 static Tabs_Item *
@@ -163,11 +189,7 @@ _del_tab(Tabs_Item *item)
         if (item->group->current_part)
           item->group->current_part->current_item_name = NULL;
         item->group->current_part = NULL;
-        if (item->group->current_program)
-          {
-             eina_stringshare_del(item->group->current_program);
-             item->group->current_program = NULL;
-          }
+        item->group->current_program = NULL;
         evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CLOSE, item->group);
      }
    free(item);
@@ -246,15 +268,17 @@ _property_attribute_changed(void *data __UNUSED__,
       case ATTRIBUTE_STATE_FONT:
       case ATTRIBUTE_STATE_TEXT_STYLE:
       case ATTRIBUTE_STATE_ASPECT_PREF:
-      case ATTRIBUTE_PART_EFFECT:
+      case ATTRIBUTE_PART_TEXT_EFFECT:
+      case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
       case ATTRIBUTE_PART_CLIP_TO:
       case ATTRIBUTE_PART_DRAG_CONFINE:
-      case ATTRIBUTE_PART_SOURCE:
-      case ATTRIBUTE_PART_SOURCE2:
-      case ATTRIBUTE_PART_SOURCE3:
-      case ATTRIBUTE_PART_SOURCE4:
-      case ATTRIBUTE_PART_SOURCE5:
-      case ATTRIBUTE_PART_SOURCE6:
+      case ATTRIBUTE_PART_GROUP_SOURCE:
+      case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER:
+      case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER:
+      case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER:
+      case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
+      case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER:
+      case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
       case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
       case ATTRIBUTE_PART_ITEM_ALIGN_X:
       case ATTRIBUTE_PART_ITEM_ALIGN_Y:
@@ -275,7 +299,10 @@ _property_attribute_changed(void *data __UNUSED__,
       case ATTRIBUTE_PART_ITEM_POSITION_COL:
       case ATTRIBUTE_PART_ITEM_POSITION_ROW:
       case ATTRIBUTE_PART_ITEM_SOURCE:
-      case ATTRIBUTE_PART_ITEM_PADDING:
+      case ATTRIBUTE_PART_ITEM_PADDING_RIGHT:
+      case ATTRIBUTE_PART_ITEM_PADDING_LEFT:
+      case ATTRIBUTE_PART_ITEM_PADDING_TOP:
+      case ATTRIBUTE_PART_ITEM_PADDING_BOTTOM:
       case ATTRIBUTE_STATE_CONTAINER_ALIGN_X:
       case ATTRIBUTE_STATE_CONTAINER_ALIGN_Y:
       case ATTRIBUTE_STATE_CONTAINER_MIN_H:
@@ -289,15 +316,18 @@ _property_attribute_changed(void *data __UNUSED__,
       case ATTRIBUTE_PART_ENTRY_MODE:
       case ATTRIBUTE_STATE_FILL_TYPE:
       case ATTRIBUTE_STATE_COLOR:
+      case ATTRIBUTE_STATE_OUTLINE_COLOR:
+      case ATTRIBUTE_STATE_SHADOW_COLOR:
          workspace_groupview_hard_update(tabs.current_workspace);
          break;
       case ATTRIBUTE_STATE_FILL_SMOOTH:
       case ATTRIBUTE_STATE_VISIBLE:
-      case ATTRIBUTE_STATE_IMAGE_BORDER:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_TOP:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_LEFT:
+      case ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT:
       case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
       case ATTRIBUTE_STATE_COLOR_CLASS:
-      case ATTRIBUTE_STATE_COLOR2:
-      case ATTRIBUTE_STATE_COLOR3:
          workspace_groupview_soft_update(tabs.current_workspace);
          break;
       default:
@@ -832,6 +862,16 @@ _shortcut_rulers_visible_cb(void *data __UNUSED__,
      }
 }
 
+static void
+_demo_property_update(void *data __UNUSED__,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_demo_group_property_update(tabs.current_workspace);
+}
+
+
 Evas_Object *
 tabs_add(void)
 {
@@ -910,6 +950,8 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_FILL, _shortcut_fill_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_OBJECT_AREA, _shortcut_object_area_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_RULERS_VISIBLED, _shortcut_rulers_visible_cb, NULL);
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_MODE_DEMO, _demo_property_update, NULL);
    return tabs.layout;
 }
 
@@ -948,7 +990,6 @@ _tab_close(void *data,
         content = elm_layout_content_unset(ap.panes.left_ver, "right");
         evas_object_hide(content);
         elm_layout_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(NULL));
-        evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, NULL);
      }
 }
 
@@ -1078,7 +1119,6 @@ tabs_clean(void)
      }
    tabs.selected = NULL;
    tabs.items = NULL;
-   evas_object_smart_callback_call(ap.win, SIGNAL_TAB_CHANGED, NULL);
 }
 
 Evas_Object *

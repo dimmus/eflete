@@ -274,17 +274,23 @@ editor_state_color_default_is(Evas_Object *edit_object, const char *part_name, c
 Eina_Bool
 editor_state_color_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
 Eina_Bool
-editor_state_color2_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+editor_state_outline_color_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
 Eina_Bool
-editor_state_color2_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+editor_state_outline_color_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
 Eina_Bool
-editor_state_color3_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+editor_state_shadow_color_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
 Eina_Bool
-editor_state_color3_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+editor_state_shadow_color_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
 Eina_Bool
 editor_state_image_border_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
 Eina_Bool
-editor_state_image_border_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+editor_state_image_border_top_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_image_border_bottom_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_image_border_left_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_image_border_right_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *state_name, double state_val);
 
 
 Eina_Bool
@@ -385,12 +391,22 @@ editor_part_item_weight_y_reset(Evas_Object *edit_object, Change *change, const 
 Eina_Bool
 editor_part_item_padding_default_is(Evas_Object *edit_object, const char *part_name, const char *item_name);
 Eina_Bool
-editor_part_item_padding_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *item_name);
+editor_part_item_padding_top_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *item_name);
+Eina_Bool
+editor_part_item_padding_bottom_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *item_name);
+Eina_Bool
+editor_part_item_padding_left_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *item_name);
+Eina_Bool
+editor_part_item_padding_right_reset(Evas_Object *edit_object, Change *change, const char *part_name, const char *item_name);
 
 Eina_Bool
-editor_part_effect_default_is(Evas_Object *edit_object, const char *part_name);
+editor_part_text_effect_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
-editor_part_effect_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+editor_part_text_effect_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_text_shadow_direction_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_text_shadow_direction_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 Eina_Bool
 editor_part_ignore_flags_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
@@ -464,29 +480,33 @@ editor_part_drag_event_default_is(Evas_Object *edit_object, const char *part_nam
 Eina_Bool
 editor_part_drag_event_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 Eina_Bool
-editor_part_source_default_is(Evas_Object *edit_object, const char *part_name);
+editor_part_group_source_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
-editor_part_source_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+editor_part_group_source_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 Eina_Bool
-editor_part_source2_default_is(Evas_Object *edit_object, const char *part_name);
+editor_part_textblock_selection_under_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
-editor_part_source2_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+editor_part_textblock_selection_under_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 Eina_Bool
-editor_part_source3_default_is(Evas_Object *edit_object, const char *part_name);
+editor_part_textblock_selection_over_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
-editor_part_source3_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+editor_part_textblock_selection_over_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 Eina_Bool
-editor_part_source4_default_is(Evas_Object *edit_object, const char *part_name);
+editor_part_textblock_cursor_under_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
-editor_part_source4_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+editor_part_textblock_cursor_under_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 Eina_Bool
-editor_part_source5_default_is(Evas_Object *edit_object, const char *part_name);
+editor_part_textblock_cursor_over_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
-editor_part_source5_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+editor_part_textblock_cursor_over_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 Eina_Bool
-editor_part_source6_default_is(Evas_Object *edit_object, const char *part_name);
+editor_part_textblock_anchors_under_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
-editor_part_source6_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+editor_part_textblock_anchors_under_reset(Evas_Object *edit_object, Change *change, const char *part_name);
+Eina_Bool
+editor_part_textblock_anchors_over_default_is(Evas_Object *edit_object, const char *part_name);
+Eina_Bool
+editor_part_textblock_anchors_over_reset(Evas_Object *edit_object, Change *change, const char *part_name);
 Eina_Bool
 editor_part_pointer_mode_default_is(Evas_Object *edit_object, const char *part_name);
 Eina_Bool
@@ -496,8 +516,6 @@ Eina_Bool
 editor_program_transition_type_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
 editor_program_transition_from_current_reset(Evas_Object *edit_object, Change *change, const char *program_name);
-Eina_Bool
-editor_program_action_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
 editor_program_channel_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
@@ -513,15 +531,27 @@ editor_program_sample_speed_reset(Evas_Object *edit_object, Change *change, cons
 Eina_Bool
 editor_program_value_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
-editor_program_value2_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+editor_program_drag_value_x_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
-editor_program_transition_value1_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+editor_program_drag_value_y_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
-editor_program_transition_value2_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+editor_program_transition_factor_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
-editor_program_transition_value3_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+editor_program_transition_gradient_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
-editor_program_transition_value4_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+editor_program_transition_decay_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_bounces_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_swings_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_bezier_x1_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_bezier_x2_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_bezier_y1_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_transition_bezier_y2_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
 editor_program_filter_part_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
@@ -541,6 +571,8 @@ editor_program_source_reset(Evas_Object *edit_object, Change *change, const char
 Eina_Bool
 editor_program_state_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 Eina_Bool
-editor_program_state2_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+editor_program_emit_signal_reset(Evas_Object *edit_object, Change *change, const char *program_name);
+Eina_Bool
+editor_program_emit_source_reset(Evas_Object *edit_object, Change *change, const char *program_name);
 
 #endif /* DEFAULT_H */

@@ -21,12 +21,26 @@
 #define SIGNALS_H
 
 /**
- * emited when tab changed.
- * eventinfo - pointer to Group structure. Can be NULL
+ * emited when active group changed.
+ * eventinfo - pointer to Group structure.
  *
  * @ingroup Window
  */
-#define SIGNAL_TAB_CHANGED "SIGNAL_TAB_CHANGED"
+#define SIGNAL_GROUP_CHANGED "SIGNAL_GROUP_CHANGED"
+
+/**
+ * emited when property mode should be changed to group.
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_PROPERTY_MODE_GROUP "SIGNAL_PROPERTY_MODE_GROUP"
+
+/**
+ * emited when property mode should be changed to demo.
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_PROPERTY_MODE_DEMO "SIGNAL_PROPERTY_MODE_DEMO"
 
 /**
  * emited while user trying to close tab.
@@ -82,7 +96,7 @@
  *
  * @ingroup Window
  */
-#define SIGNAL_PROGRAM_UNSELECTED "SIGNAL_PROGRAM_UNSELECTED"
+#define SIGNAL_GROUP_NAVIGATOR_UNSELECTED "SIGNAL_GROUP_NAVIGATOR_UNSELECTED"
 
 typedef struct {
    const char *old_name;

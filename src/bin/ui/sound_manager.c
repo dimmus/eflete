@@ -256,7 +256,7 @@ _add_sample_done(void *data __UNUSED__,
    snd->resource = (Resource *)res;
    elm_gengrid_item_insert_before(mng.gengrid, gic, snd, mng.tone_header, _grid_sel_cb, NULL);
 
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit_sound_sample_add would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
 
@@ -287,7 +287,7 @@ _tone_add(void)
    snd->resource = (Resource *)tone;
    elm_gengrid_item_append(mng.gengrid, gic, snd, _grid_sel_cb, NULL);
 
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit_image_add would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
 }
@@ -329,7 +329,7 @@ _tone_add_cb(void *data __UNUSED__,
      mng.frq_validator = elm_validator_regexp_new(FREQUENCY_REGEX, NULL);
 
    BOX_ADD(mng.win, box, false, false);
-   LAYOUT_PROP_ADD(box, _("Tone name:"), "property", "1swallow");
+   LAYOUT_PROP_ADD(box, _("Tone name:"), "popup", "1swallow")
    ENTRY_ADD(item, mng.tone_entry, true);
    eo_event_callback_add(mng.tone_entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.tone_validator);
    evas_object_smart_callback_add(mng.tone_entry, "changed", _validation, NULL);
@@ -339,7 +339,7 @@ _tone_add_cb(void *data __UNUSED__,
    elm_entry_entry_set(mng.tone_entry, NULL);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Frequency:"), "property", "1swallow");
+   LAYOUT_PROP_ADD(box, _("Frequency:"), "popup", "1swallow")
    ENTRY_ADD(item, mng.frq_entry, true);
    eo_event_callback_add(mng.frq_entry, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, mng.frq_validator);
    evas_object_smart_callback_add(mng.frq_entry, "changed", _validation, NULL);
@@ -410,7 +410,7 @@ _sound_del_cb(void *data __UNUSED__,
           }
      }
 
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit_sound_..._del would be added into Editor Modulei and saving would work properly")
    ap.project->changed = true;
 

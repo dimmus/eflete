@@ -114,7 +114,7 @@ _colorclass_add_cb(void *data __UNUSED__,
    evas_object_del(mng.popup);
    mng.popup = NULL;
 
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit_colorclass API would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
 
@@ -176,7 +176,7 @@ _colorclass_del_cb(void *data __UNUSED__,
         evas_object_smart_callback_call(ap.win, SIGNAL_COLOR_SELECTED, NULL);
      }
 
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit_colorclass API would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
 }

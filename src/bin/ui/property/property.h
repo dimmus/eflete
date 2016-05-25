@@ -1,6 +1,6 @@
 /*
  * Edje Theme Editor
- * Copyright (C) 2013-2014 Samsung Electronics.
+ * Copyright (C) 2013-2016 Samsung Electronics.
  *
  * This file is part of Edje Theme Editor.
  *
@@ -17,28 +17,23 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#ifndef UI_PROPERTY_1_H
-#define UI_PROPERTY_1_H
-
-/**
- * @defgroup Property Property
- * @ingroup Block
- *
- * This widget designed for show group and part details.
- */
+#ifndef PROPERTY_H
+#define PROPERTY_H
 
 #include "eflete.h"
 
-/**
- * Add a new Property widget.
- *
- * @param parent The parent widget.
- * @return A new 'property' widget handler or NULL, on errors
- *
- * @ingroup Property
- */
+typedef enum {
+   PROPERTY_MODE_NONE,
+   PROPERTY_MODE_GROUP,
+   PROPERTY_MODE_COLOR_CLASS,
+   PROPERTY_MODE_STYLE,
+   PROPERTY_MODE_SOUND,
+   PROPERTY_MODE_IMAGE,
+   PROPERTY_MODE_DEMO
+} Property_Mode;
+
 Evas_Object *
-ui_property_add(Evas_Object *parent);
+property_add(Evas_Object *parent, Property_Mode mode);
 
 Evas_Object *
 ui_property_image_add(Evas_Object *parent);
@@ -51,6 +46,5 @@ ui_property_style_add(Evas_Object *parent);
 
 Evas_Object *
 ui_property_color_add(Evas_Object *parent);
-
 
 #endif /* UI_PROPERTY_1_H */

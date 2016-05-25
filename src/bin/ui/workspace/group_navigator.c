@@ -388,10 +388,10 @@ _on_activated(void *data,
         assert(pl->selected_part_item != NULL);
 
         state = elm_object_item_data_get(glit);
-        editor_part_selected_state_set(pl->group->edit_object, NULL, false,
-                                       state->part->name,
-                                       state->parsed_name,
-                                       state->parsed_val);
+        CRIT_ON_FAIL(editor_part_selected_state_set(pl->group->edit_object, NULL, false,
+                                                    state->part->name,
+                                                    state->parsed_name,
+                                                    state->parsed_val));
      }
 }
 
@@ -563,7 +563,6 @@ _unselect_part(Part_List *pl)
    elm_object_disabled_set(pl->btn_del, true);
    elm_object_disabled_set(pl->btn_down, true);
    elm_object_disabled_set(pl->btn_up, true);
-   evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, NULL);
 }
 
 static void
@@ -577,7 +576,7 @@ _selected_cb(void *data,
    Eina_Stringshare *item_name;
    Part_List *pl = data;
    Part *part;
-   Resource *res;
+   Program *program;
    const Eina_List *items_list;
 
    assert(pl != NULL);
@@ -588,31 +587,23 @@ _selected_cb(void *data,
      {
         if (pl->selected_part_item)
           _unselect_part(pl);
-        if (pl->group->current_program)
-          {
-             eina_stringshare_del(pl->group->current_program);
-             pl->group->current_program = NULL;
-          }
-        evas_object_smart_callback_call(ap.win, SIGNAL_PROGRAM_SELECTED, NULL);
+        pl->group->current_program = NULL;
+        evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_NAVIGATOR_UNSELECTED, NULL);
         return;
      }
    itc = elm_genlist_item_item_class_get(glit);
 
-   TODO("REFACTOR")
-   if (pl->group->current_program)
-     {
-        eina_stringshare_del(pl->group->current_program);
-        pl->group->current_program = NULL;
-     }
+   TODO("REFACTOR");
+   pl->group->current_program = NULL;
    if (itc == pl->itc_program)
      {
         if (pl->selected_part_item)
           _unselect_part(pl);
 
         elm_object_disabled_set(pl->btn_del, false);
-        res = elm_object_item_data_get(glit);
-        pl->group->current_program = eina_stringshare_add(res->name);
-        evas_object_smart_callback_call(ap.win, SIGNAL_PROGRAM_SELECTED, (void *)res->name);
+        program = elm_object_item_data_get(glit);
+        pl->group->current_program = program;
+        evas_object_smart_callback_call(ap.win, SIGNAL_PROGRAM_SELECTED, (void *)program);
      }
    else
      {
@@ -845,7 +836,7 @@ _popup_add_part_ok_clicked(void *data,
    name = elm_entry_entry_get(pl->popup.entry_name);
    msg = eina_stringshare_printf(_("added new part \"%s\""), name);
    change = change_add(msg);
-   editor_part_add(pl->group->edit_object, change, false, name, type);
+   CRIT_ON_FAIL(editor_part_add(pl->group->edit_object, change, false, name, type));
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
@@ -914,7 +905,7 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
 
    BOX_ADD(ap.popup, box, false, false);
 
-   LAYOUT_PROP_ADD(box, _("Part name:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Part name:"), "popup", "1swallow")
    ENTRY_ADD(box, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, pl->name_validator);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new part here."));
@@ -924,7 +915,7 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Part type:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Part type:"), "popup", "1swallow")
    EWE_COMBOBOX_ADD(item, pl->popup.combobox)
    ewe_combobox_select_item_set(pl->popup.combobox, 0);
    for (type = EDJE_PART_TYPE_RECTANGLE; type <= EDJE_PART_TYPE_SPACER; type++)
@@ -983,8 +974,8 @@ _popup_add_state_ok_clicked(void *data,
      {
         msg = eina_stringshare_printf(_("added new state \"%s\" %.2f"), name, val);
         change = change_add(msg);
-        editor_state_add(pl->group->edit_object, change, false,
-                         part->name, name, val);
+        CRIT_ON_FAIL(editor_state_add(pl->group->edit_object, change, false,
+                                      part->name, name, val));
      }
    else
      {
@@ -992,10 +983,10 @@ _popup_add_state_ok_clicked(void *data,
         msg = eina_stringshare_printf(_("added new state \"%s\" %.2f as copy of \"%s\" %.2f"),
                                       name, val, state_from->parsed_name, state_from->parsed_val);
         change = change_add(msg);
-        editor_state_copy(pl->group->edit_object, change, false,
-                          part->name,
-                          state_from->parsed_name, state_from->parsed_val,
-                          name, val);
+        CRIT_ON_FAIL(editor_state_copy(pl->group->edit_object, change, false,
+                                       part->name,
+                                       state_from->parsed_name, state_from->parsed_val,
+                                       name, val));
      }
 
    history_change_add(pl->group->history, change);
@@ -1063,7 +1054,7 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    eina_stringshare_del(title);
 
    BOX_ADD(ap.popup, box, false, false);
-   LAYOUT_PROP_ADD(box, _("Name:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Name:"), "popup", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
                          elm_validator_regexp_helper, pl->name_validator);
@@ -1073,7 +1064,7 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Value:"), "property", "1swallow_subtext")
+   LAYOUT_PROP_ADD(box, _("Value:"), "popup", "1swallow_subtext")
    SPINNER_ADD(item, pl->popup.spinner_value, 0.0, 1.0, 0.1, true);
    elm_spinner_label_format_set(pl->popup.spinner_value, "%1.2f");
    elm_object_part_text_set(item, "elm.subtext", _("Available values: 0.0 - 1.0"));
@@ -1081,7 +1072,7 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.spinner_value);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Duplicate state:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Duplicate state:"), "popup", "1swallow")
    EWE_COMBOBOX_ADD(item, pl->popup.combobox)
 
    ewe_combobox_item_add(pl->popup.combobox, _("None"));
@@ -1132,7 +1123,7 @@ _popup_add_item_ok_clicked(void *data,
 
    msg = eina_stringshare_printf(_("added new item \"%s\" to part \"%s\""), name, part->name);
    change = change_add(msg);
-   editor_part_item_append(pl->group->edit_object, change, false, part->name, name, item->title);
+   CRIT_ON_FAIL(editor_part_item_append(pl->group->edit_object, change, false, part->name, name, item->title));
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
@@ -1188,7 +1179,7 @@ _on_menu_add_item_clicked(void *data __UNUSED__,
    eina_stringshare_del(title);
 
    BOX_ADD(ap.popup, box, false, false);
-   LAYOUT_PROP_ADD(box, _("Name:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Name:"), "popup", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
                          elm_validator_regexp_helper, pl->name_validator);
@@ -1198,7 +1189,7 @@ _on_menu_add_item_clicked(void *data __UNUSED__,
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Source group:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Source group:"), "popup", "1swallow")
    EWE_COMBOBOX_ADD(item, pl->popup.combobox)
    ewe_combobox_text_set(pl->popup.combobox, _("Select source group here."));
    evas_object_smart_callback_add(pl->popup.combobox, "selected", _item_validate, pl);
@@ -1280,8 +1271,7 @@ _popup_add_program_ok_clicked(void *data,
 
    msg = eina_stringshare_printf(_("added new program \"%s\""), name);
    change = change_add(msg);
-   editor_program_add(pl->group->edit_object, change, false, name);
-   editor_program_action_set(pl->group->edit_object, change, false, name, type);
+   CRIT_ON_FAIL(editor_program_add(pl->group->edit_object, change, false, name, type));
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
@@ -1304,7 +1294,7 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
    elm_object_part_text_set(ap.popup, "title,text", _("Add new program"));
 
    BOX_ADD(ap.popup, box, false, false);
-   LAYOUT_PROP_ADD(box, _("Name:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Name:"), "popup", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
                          elm_validator_regexp_helper, pl->name_validator);
@@ -1314,7 +1304,7 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
    elm_box_pack_end(box, item);
 
-   LAYOUT_PROP_ADD(box, _("Action type:"), "property", "1swallow")
+   LAYOUT_PROP_ADD(box, _("Action type:"), "popup", "1swallow")
    EWE_COMBOBOX_ADD(item, pl->popup.combobox)
    ewe_combobox_select_item_set(pl->popup.combobox, 0);
 
@@ -1383,17 +1373,14 @@ _program_del(Part_List *pl,
    program = elm_object_item_data_get(glit);
 
    assert(program != NULL);
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROGRAM_UNSELECTED, (void *)program);
 
    msg = eina_stringshare_printf(_("deleted program \"%s\""), program->name);
    change = change_add(msg);
    eina_stringshare_del(msg);
 
    eina_stringshare_ref(program->name);
-   editor_program_del(pl->group->edit_object, change, false, program->name);
+   CRIT_ON_FAIL(editor_program_del(pl->group->edit_object, change, false, program->name));
    eina_stringshare_del(program->name);
-   if (pl->group->current_program)
-     eina_stringshare_del(pl->group->current_program);
 
    history_change_add(pl->group->history, change);
 }
@@ -1447,7 +1434,7 @@ _part_del(Part_List *pl,
    part_name = eina_stringshare_add(part->name);
    msg = eina_stringshare_printf(_("deleted part \"%s\""), part_name);
    change = change_add(msg);
-   editor_part_del(pl->group->edit_object, change, false, part_name);
+   CRIT_ON_FAIL(editor_part_del(pl->group->edit_object, change, false, part_name));
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
    eina_stringshare_del(part_name);
@@ -1520,7 +1507,10 @@ group_navigator_part_del(Evas_Object *obj, Part *part)
 
    part_item = _part_item_find(pl, part);
    if (pl->selected_part_item == part_item)
-     _unselect_part(pl);
+     {
+        _unselect_part(pl);
+        evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_NAVIGATOR_UNSELECTED, NULL);
+     }
 
    elm_object_item_del(part_item);
    elm_genlist_item_update(pl->parts_caption_item);
@@ -1552,7 +1542,7 @@ _state_del(Part_List *pl,
    state_name = eina_stringshare_ref(state->parsed_name);
    state_val = state->parsed_val;
    TODO("recheck string args logic");
-   editor_state_del(pl->group->edit_object, change, false, part_name, state_name, state_val);
+   CRIT_ON_FAIL(editor_state_del(pl->group->edit_object, change, false, part_name, state_name, state_val));
    eina_stringshare_del(part_name);
    eina_stringshare_del(state_name);
    history_change_add(pl->group->history, change);
@@ -1617,7 +1607,7 @@ _item_del(Part_List *pl,
    eina_stringshare_del(msg);
 
    eina_stringshare_ref(item_name);
-   editor_part_item_del(pl->group->edit_object, change, false, part->name, item_name);
+   CRIT_ON_FAIL(editor_part_item_del(pl->group->edit_object, change, false, part->name, item_name));
    eina_stringshare_del(item_name);
 
    history_change_add(pl->group->history, change);
@@ -1667,7 +1657,7 @@ _on_btn_minus_clicked(void *data,
 
    TODO("Check if we still need this")
    /* Need to save pl->group->edit_object, since we changed it */
-   editor_save_all(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save_all(ap.project->global_object));
    TODO("Remove this line once edje_edit_image_add would be added into Editor Modulei and saving would work properly")
    ap.project->changed = true;
 }
@@ -1714,9 +1704,9 @@ _part_restack(Part_List *pl, Elm_Object_Item *glit, Eina_Bool move_up)
    else
       msg = eina_stringshare_printf(_("part \"%s\" restacked to the top of the stack"), part->name);
    change = change_add(msg);
-   editor_part_restack(pl->group->edit_object, change, false,
-                       part->name,
-                       (rel_part) ? rel_part->name : NULL);
+   CRIT_ON_FAIL(editor_part_restack(pl->group->edit_object, change, false,
+                                    part->name,
+                                    (rel_part) ? rel_part->name : NULL));
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
 }
@@ -1802,10 +1792,10 @@ _part_item_restack(Part_List *pl, Elm_Object_Item *glit, Eina_Bool move_up)
    else
       msg = eina_stringshare_printf(_("part item \"%s\" restacked to the top of the stack"), part_item);
    change = change_add(msg);
-   editor_part_item_restack(pl->group->edit_object, change, false,
-                            part->name,
-                            part_item,
-                            rel_part_item);
+   CRIT_ON_FAIL(editor_part_item_restack(pl->group->edit_object, change, false,
+                                         part->name,
+                                         part_item,
+                                         rel_part_item));
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
 }
@@ -2051,7 +2041,9 @@ group_navigator_part_select(Evas_Object *obj, Part *part)
      }
    else
      {
-        _unselect_part(pl);
+        if (pl->selected_part_item)
+          _unselect_part(pl);
+        evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_NAVIGATOR_UNSELECTED, NULL);
         elm_genlist_item_selected_set(elm_genlist_selected_item_get(pl->genlist), false);
      }
 }
@@ -2135,10 +2127,10 @@ group_navigator_state_next_request(Evas_Object *obj)
              else
                state = eina_list_data_get(part->states);
 
-             editor_part_selected_state_set(pl->group->edit_object, NULL, false,
-                                            state->part->name,
-                                            state->parsed_name,
-                                            state->parsed_val);
+             CRIT_ON_FAIL(editor_part_selected_state_set(pl->group->edit_object, NULL, false,
+                                                         state->part->name,
+                                                         state->parsed_name,
+                                                         state->parsed_val));
           }
      }
 }

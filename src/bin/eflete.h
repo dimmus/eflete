@@ -58,8 +58,11 @@ typedef struct _Group Group;
 typedef struct _History History;
 typedef struct _State State;
 typedef struct _Part Part;
+typedef struct _Program Program;
 typedef struct _Shortcuts Shortcuts;
 typedef struct _ColorClassData ColorClassData;
+typedef struct _Image_Item Image_Item;
+typedef struct _Colorclass_Item Colorclass_Item;
 
 #include "common_macro.h"
 TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
@@ -105,6 +108,7 @@ struct _App_Data
       Evas_Object *sound_manager;
       Evas_Object *style_manager;
       Evas_Object *color_manager;
+      Evas_Object *demo;
    } property;
 
    struct {

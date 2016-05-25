@@ -172,7 +172,7 @@ _style_add_cb(void *data __UNUSED__,
    const char *style_name;
    Elm_Object_Item *glit;
 
-   LAYOUT_PROP_ADD(mng.win, _("Style name:"), "property", "1swallow");
+   LAYOUT_PROP_ADD(mng.win, _("Style name:"), "popup", "1swallow");
    if (!mng.popup.validator)
      mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
    resource_name_validator_list_set(mng.popup.validator, &ap.project->styles, true);
@@ -210,7 +210,7 @@ _style_add_cb(void *data __UNUSED__,
    res->name = eina_stringshare_add(style_name);
    ap.project->styles = eina_list_sorted_insert(ap.project->styles, (Eina_Compare_Cb)resource_cmp, res);
 
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
 
@@ -255,7 +255,7 @@ _tab_add_cb(void *data __UNUSED__,
      }
    edje_edit_string_list_free(tags);
 
-   LAYOUT_PROP_ADD(mng.win, "Tag name:", "property", "1swallow");
+   LAYOUT_PROP_ADD(mng.win, "Tag name:", "popup", "1swallow");
    if (!mng.popup.validator)
      mng.popup.validator = resource_name_validator_new(NAME_REGEX, NULL);
    resource_name_validator_list_set(mng.popup.validator, &resources, true);
@@ -287,7 +287,7 @@ _tab_add_cb(void *data __UNUSED__,
    elm_genlist_item_selected_set(glit, true);
    elm_genlist_item_bring_in(glit, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
 
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
 
@@ -334,7 +334,7 @@ _btn_del_cb(void *data __UNUSED__,
    elm_object_disabled_set(mng.button_del, true);
    evas_object_smart_callback_call(ap.win, SIGNAL_STYLE_SELECTED, NULL);
 
-   editor_save(ap.project->global_object);
+   CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
    ap.project->changed = true;
 }

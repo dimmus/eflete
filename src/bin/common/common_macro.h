@@ -54,6 +54,15 @@ struct _Uns_List
    #define TODO(x)
 #endif
 
+#define CRIT_ON_FAIL(CALL) \
+do { \
+if (!(CALL)) \
+{ \
+   CRIT("Check ("#CALL ")==true failed"); \
+   abort(); \
+} \
+} while (0)
+
 #define FLOAT_NUMBER_REGEX "^[0-9]*(\\.[0-9]+)?$"
 #define FLOAT_NUMBER_0_1_REGEX "^(0?(\\.[0-9]+)?|1|1\\.0)?$"
 #define FLOAT_NUMBER_0_1_REGEX_2_SYMBOLS "^(0?(\\.[0-9]{,2})?|1|1\\.0)?$"

@@ -159,7 +159,7 @@ history_ui_add(void)
    evas_object_smart_callback_add(hd.redo_cmbx, "selected", _redo_item_selected, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_HISTORY_CHANGE_ADDED, _list_update, strdup("Add"));
-   evas_object_smart_callback_add(ap.win, SIGNAL_TAB_CHANGED, _history_set_new, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_CHANGED, _history_set_new, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_UNDO, _on_change_undo, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_REDO, _on_change_redo, NULL);
 
