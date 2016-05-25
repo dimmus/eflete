@@ -713,49 +713,19 @@ group { name: "elm/check/base/eye";
 
 group { name: "elm/check/base/locker";
    images {
-      image: "button_bg.png" COMP;
-      image: "button_disabled_bg.png" COMP;
-      image: "button_click_bg.png" COMP;
-      image: "icon_unlock.png" COMP;
-      image: "icon_lock.png" COMP;
+      image: "tool_s_lock_nor.png" COMP;
+      image: "tool_s_lock_over.png" COMP;
    }
    parts {
       part { name: "bg";
-         type: IMAGE;
+         type: SPACER;
          mouse_events: 0;
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            min: 18 19;
-            max: 18 19;
+            min: 20 20;
+            max: 20 20;
             aspect: 1.0 1.0;
-            image {
-               normal: "button_bg.png";
-               border: 4 4 9 9;
-               middle: DEFAULT;
-            }
-         }
-         description { state: "disabled" 0.0;
-            align: 0.0 0.5;
-            min: 18 19;
-            max: 18 19;
-            aspect: 1.0 1.0;
-            image {
-               normal: "button_disabled_bg.png";
-               border: 4 4 9 9;
-               middle: DEFAULT;
-            }
-         }
-         description { state: "visible" 0.0;
-            align: 0.0 0.5;
-            min: 18 19;
-            max: 18 19;
-            aspect: 1.0 1.0;
-            image {
-               normal: "button_click_bg.png";
-               border: 4 4 9 9;
-               middle: DEFAULT;
-            }
          }
       }
       part { name: "check";
@@ -764,34 +734,13 @@ group { name: "elm/check/base/locker";
          scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            color_class: "main_alternative";
-            rel1 {
-               offset: 1 1;
-               to: "bg";
-            }
-            rel2 {
-               offset: -2 -3;
-               to: "bg";
-            }
-            image {
-               normal: "icon_unlock.png";
-               middle: DEFAULT;
-            }
+            image.normal: "tool_s_lock_nor.png";
+            rel1.to: "bg";
+            rel2.to: "bg";
          }
          description { state: "visible" 0.0;
-            color_class: "main_alternative";
-            rel1 {
-               offset: 1 1;
-               to: "bg";
-            }
-            rel2 {
-               offset: -2 -3;
-               to: "bg";
-            }
-            image {
-               normal: "icon_lock.png";
-               middle: DEFAULT;
-            }
+            inherit: "default" 0.00;
+            image.normal: "tool_s_lock_over.png";
          }
       }
       part { name: "clipper";
@@ -801,6 +750,7 @@ group { name: "elm/check/base/locker";
             color_class: "main";
          }
          description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
             color_class: "main_disabled";
          }
       }
@@ -811,8 +761,8 @@ group { name: "elm/check/base/locker";
             color: 0 0 0 0;
          }
          description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
             visible: 0;
-            color: 0 0 0 0;
          }
       }
    }
@@ -827,20 +777,17 @@ group { name: "elm/check/base/locker";
          source: "elm";
          action: STATE_SET "visible" 0.00;
          target: "check";
-         target: "bg";
       }
       program { name: "check_off";
          signal: "elm,state,check,off";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "check";
-         target: "bg";
       }
       program { name: "disable";
          signal: "elm,state,disabled";
          source: "elm";
          action: STATE_SET "disabled" 0.00;
-         target: "bg";
          target: "events";
          target: "clipper";
       }
@@ -848,12 +795,12 @@ group { name: "elm/check/base/locker";
          signal: "elm,state,enabled";
          source: "elm";
          action: STATE_SET "default" 0.00;
-         target: "bg";
          target: "events";
          target: "clipper";
       }
    }
 }
+
 
 group { name: "elm/check/base/chain";
    images {
