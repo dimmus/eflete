@@ -679,12 +679,12 @@ editor_program_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge _
    Edje_Action_Type type = edje_edit_program_action_get(edit_object, program_name);
 
    list = edje_edit_program_targets_get(edit_object, program_name);
-   EINA_LIST_FOREACH(list, l, name)
+   EINA_LIST_REVERSE_FOREACH(list, l, name)
       res = res && editor_program_target_del(edit_object, change, false, program_name, name);
    edje_edit_string_list_free(list);
 
    list = edje_edit_program_afters_get(edit_object, program_name);
-   EINA_LIST_FOREACH(list, l, name)
+   EINA_LIST_REVERSE_FOREACH(list, l, name)
       res = res && editor_program_after_del(edit_object, change, false, program_name, name);
    edje_edit_string_list_free(list);
 
