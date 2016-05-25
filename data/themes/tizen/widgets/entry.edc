@@ -969,6 +969,7 @@ group { name: "elm/scroller/entry_single/default";
       }
       part { name: "border";
          type: IMAGE;
+         repeat_events: 1;
          description { state: "default" 0.0;
             color_class: "border";
             image {
