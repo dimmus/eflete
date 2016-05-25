@@ -289,6 +289,7 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
       case PROPERTY_CONTROL_IMAGE_TWEEN:
          content = property_image_tween_control_add(parent);
          evas_object_smart_callback_add(content, "image,tween,changed", _start_change_stop_cb, pa);
+         return content;
       case PROPERTY_CONTROL_SOUND_PLAYER:
          content = sound_player_add(parent);
          evas_object_show(content);
