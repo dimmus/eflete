@@ -38,48 +38,26 @@ group { name: "elm/notify/block_events/popup/default";
    }
 }
 group { name: "elm/notify/center/popup/default";
-   images {
-      image: "popup-bg.png" COMP;
-   }
-   parts {
-      part { name: "base";
-         type: RECT;
-         mouse_events: 0;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 1.0;
-         }
-      }
-      part { name: "pop";
-         description { state: "default" 0.0;
-            image {
-               normal: "popup-bg.png";
-               border: 34 34 34 34;
-            }
-            rel1 {
-               to: "base";
-            }
-            rel2 {
-               to: "base";
-            }
-         }
-      }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            rel1 {
-               to: "pop";
-               offset: 27 21;
-            }
-            rel2 {
-               to: "pop";
-               offset: -28 -22;
-            }
-         }
-      }
-   }
+  parts {
+     part { name: "base";
+        type: RECT;
+        mouse_events: 0;
+        repeat_events: 1;
+        description { state: "default" 0.0;
+           color: 0 0 0 0;
+        }
+     }
+     part { name: "bg";
+        type: RECT;
+        description { state: "default" 0.0;
+        }
+     }
+     part { name: "elm.swallow.content";
+        type: SWALLOW;
+        description { state: "default" 0.0;
+        }
+     }
+  }
 }
 
 group { name: "elm/label/base/popup/default";
@@ -98,11 +76,7 @@ group { name: "elm/label/base/popup/default";
       }
    }
 }
-
 group { name: "elm/popup/base/default";
-   images{
-         image:"separator-horizontal.png" COMP;
-   }
    parts {
       part { name: "base";
          type: SPACER;
@@ -115,34 +89,29 @@ group { name: "elm/popup/base/default";
       part { name: "elm.text.title";
          type: TEXT;
          description { state: "default" 0.0;
-            align: 0.5 0.0;
-            min: 0 34;
-            max: -1 34;
-            color_class: "main";
-            rel1 {
-               to: "base";
-            }
-            rel2 {
-               to: "base";
-            }
+            align: 0.0 0.0;
+            min: 0 30;
+            max: 491 34;
+            color_class: "genlist_text_tree";
             text {
-               font: "PT:style=Bold";
-               size: 13;
+               font: "PT";
+               size: 15;
+               align: 0.0 0.5;
             }
+            rel1 {
+               offset: 10 0;
+               to: "base";
+            }
+            rel2.to: "base";
          }
       }
-      part { name: "separator.title";
-         type: IMAGE;
+      part { name: "content_bg";
+         type: RECT;
+         scale: 1;
          description { state: "default" 0.0;
-            align: 0.5 0.0;
-            max: -1 2;
-            rel1 {
-               relative: 0.0 1.0;
-               to_y: "elm.text.title";
-            }
-            image {
-               normal: "separator-horizontal.png";
-            }
+         color: 244 244 244 255;
+            rel1.to_y: "separator.title";
+            rel2.to_y: "separator.action_area";
          }
       }
       part { name: "elm.swallow.content";
@@ -150,9 +119,10 @@ group { name: "elm/popup/base/default";
          scale: 1;
          description { state: "default" 0.0;
             fixed: 1 0;
-            min: 0 70;
+            min: 0 98;
             rel1 {
                relative: 0.0 1.0;
+               offset: 20 0;
                to_y: "separator.title";
             }
             rel2 {
@@ -162,16 +132,14 @@ group { name: "elm/popup/base/default";
          }
       }
       part { name: "separator.action_area";
-         type: IMAGE;
+         type: RECT;
          description { state: "default" 0.0;
             align: 0.5 1.0;
-            max: -1 2;
+            max: -1 1;
+            color: 176 176 176 255;
             rel2 {
                relative: 1.0 0.0;
                to_y: "elm.swallow.action_area";
-            }
-            image {
-               normal: "separator-horizontal.png";
             }
          }
       }
@@ -180,88 +148,24 @@ group { name: "elm/popup/base/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.5 1.0;
-            min: 0 34;
-            max: -1 34;
+            min: 0 60;
+            max: -1 60;
+         }
+      }
+      part { name: "separator.title";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            max: -1 1;
+            color: 204 204 204 255;
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "elm.text.title";
+            }
          }
       }
    }
-   programs {
-      /*
-      program { name: show_title_text;
-         signal: "elm,state,title,text,visible";
-         source: "elm";
-         action: STATE_SET "visible" 0.0;
-         target: "elm.text.title";
-      }
-      program { name: hide_title_text;
-         signal: "elm,state,title,text,hidden";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "elm.text.title";
-      }
-      program { name: show_title_area;
-         signal: "elm,state,title_area,visible";
-         source: "elm";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.swallow.action_area", st, 30, vl);
-            if (!strcmp(st, "visible"))
-              set_state(PART:"elm.swallow.content", "show_action_title_area", 0.0);
-            else
-              set_state(PART:"elm.swallow.content", "show_title_area", 0.0);
-            set_state(PART:"elm.text.title", "visible", 0.0);
-         }
-      }
-      program { name: hide_title_area;
-         signal: "elm,state,title_area,hidden";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.swallow.action_area", st, 30, vl);
-            if (!strcmp(st, "visible"))
-              set_state(PART:"elm.swallow.content", "show_action_area", 0.0);
-            else
-              set_state(PART:"elm.swallow.content", "default", 0.0);
-            set_state(PART:"elm.text.title", "default", 0.0);
-         }
-      }
-      program { name: show_action_area;
-         signal: "elm,state,action_area,visible";
-         source: "elm";
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.text.title", st, 30, vl);
-            if (!strcmp(st, "visible"))
-              set_state(PART:"elm.swallow.content", "show_action_title_area", 0.0);
-            else
-              set_state(PART:"elm.swallow.content", "show_action_area", 0.0);
-            set_state(PART:"elm.bg.action_area", "visible", 0.0);
-            set_state(PART:"elm.bg.action_area.separator", "visible", 0.0);
-         }
-      }
-      program { name: hide_action_area;
-         signal: "elm,state,action_area,hidden";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         script {
-            new st[31];
-            new Float:vl;
-            get_state(PART:"elm.text.title", st, 30, vl);
-            if (!strcmp(st, "visible"))
-              set_state(PART:"elm.swallow.content", "show_title_area", 0.0);
-            else
-              set_state(PART:"elm.swallow.content", "default", 0.0);
-            set_state(PART:"elm.bg.action_area", "default", 0.0);
-            set_state(PART:"elm.bg.action_area.separator", "default", 0.0);
-         }
-      } */
-   } /* end of programs */
 }
-
 
 group { name: "elm/popup/content/popup/default";
    parts{
@@ -605,13 +509,15 @@ group { name: "elm/popup/buttons1/popup/default";
          description { state: "default" 0.0;
             align: 1.0 0.5;
             fixed: 1 1;
+            min: 76 24;
+            max: 76 24;
             rel1 {
                relative: 1.0 0.5;
-               offset: -12 0;
+               offset: -21 0;
             }
             rel2 {
                relative: 1.0 0.5;
-               offset: -13 -1;
+               offset: -21 -1;
             }
          }
       }
@@ -626,14 +532,16 @@ group { name: "elm/popup/buttons2/popup/default";
          description { state: "default" 0.0;
             align: 1.0 0.5;
             fixed: 1 1;
+            min: 76 24;
+            max: 76 24;
             rel1 {
                relative: 0.0 0.5;
-               offset: -12 0;
+               offset: -8 0;
                to_x: "elm.swallow.content.button2";
             }
             rel2 {
                relative: 0.0 0.5;
-               offset: -13 -1;
+               offset: -8 -1;
                to_x: "elm.swallow.content.button2";
             }
          }
@@ -644,13 +552,15 @@ group { name: "elm/popup/buttons2/popup/default";
          description { state: "default" 0.0;
             align: 1.0 0.5;
             fixed: 1 1;
+            min: 76 24;
+            max: 76 24;
             rel1 {
                relative: 1.0 0.5;
-               offset: -12 0;
+               offset: -21 0;
             }
             rel2 {
                relative: 1.0 0.5;
-               offset: -13 -1;
+               offset: -21 -1;
             }
          }
       }
@@ -664,15 +574,17 @@ group { name: "elm/popup/buttons3/popup/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
+            min: 76 24;
+            max: 76 24;
             fixed: 1 1;
             rel1 {
                relative: 0.0 0.5;
-               offset: -12 0;
+               offset: -8 0;
                to_x: "elm.swallow.content.button2";
             }
             rel2 {
                relative: 0.0 0.5;
-               offset: -13 -1;
+               offset: -8 -1;
                to_x: "elm.swallow.content.button2";
             }
          }
@@ -682,15 +594,17 @@ group { name: "elm/popup/buttons3/popup/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
+            min: 76 24;
+            max: 76 24;
             fixed: 1 1;
             rel1 {
                relative: 0.0 0.5;
-               offset: -12 0;
+               offset: -8 0;
                to_x: "elm.swallow.content.button3";
             }
             rel2 {
                relative: 0.0 0.5;
-               offset: -13 -1;
+               offset: -8 -1;
                to_x: "elm.swallow.content.button3";
             }
          }
@@ -700,14 +614,16 @@ group { name: "elm/popup/buttons3/popup/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
+            min: 76 24;
+            max: 76 24;
             fixed: 1 1;
             rel1 {
                relative: 1.0 0.5;
-               offset: -12 0;
+               offset: -21 0;
             }
             rel2 {
                relative: 1.0 0.5;
-               offset: -13 -1;
+               offset: -21 -1;
             }
          }
       }
