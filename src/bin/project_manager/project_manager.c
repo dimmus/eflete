@@ -738,7 +738,8 @@ _project_open(void *data,
    TODO("Add crash recovery prompt here")
 
    pm_project_meta_data_get(worker.project, &worker.project->name, NULL, NULL, NULL, NULL);
-   if (!worker.project->name) worker.project->name = eina_stringshare_add(_("No title"));
+   if (!worker.project->name)
+     worker.project->name = ecore_file_strip_ext(ecore_file_file_get(worker.project->dev));
 
    _project_open_internal(worker.project);
 
