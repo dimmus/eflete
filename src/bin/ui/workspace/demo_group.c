@@ -189,11 +189,11 @@ _selected_cb(void *data,
    else if ((plit == pl->it_text) || (plit == pl->it_swallow))
      part = (Demo_Part *)elm_object_item_data_get(glit);
 
-   if ((plit == pl->it_text) &&
+   if ((part != NULL) && (plit == pl->it_text) &&
        ((part->type == EDJE_PART_TYPE_TEXT) ||
         (part->type == EDJE_PART_TYPE_TEXTBLOCK)))
      evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_PART_CLICKED, part);
-   else if ((plit == pl->it_swallow) && (part->type == EDJE_PART_TYPE_SWALLOW))
+   else if ((part != NULL) && (plit == pl->it_swallow) && (part->type == EDJE_PART_TYPE_SWALLOW))
      evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_PART_CLICKED, part);
    else if (plit == pl->it_signal)
      evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_PROGRAM_PART_CLICKED, signal);
@@ -281,7 +281,7 @@ _program_add(void *data,
                                 NULL,
                                 NULL);
      }
-   else if ((part_item) && (correct)) /* if program exist and data is correct */
+   else if ((part_item) && (pr) && (correct)) /* if program exist and data is correct */
      {
         eina_stringshare_del(pr->prog_name);
         eina_stringshare_del(pr->sig_name);
@@ -295,7 +295,7 @@ _program_add(void *data,
         pr->emitter = eina_stringshare_add(state2);
         elm_genlist_item_update(part_item);
      }
-   else if ((part_item) && (!correct)) /* if exists and data is NOT correct */
+   else if ((part_item) && (pr) && (!correct)) /* if exists and data is NOT correct */
      {
         pl->signal_list = eina_list_remove(pl->signal_list, pr);
         _program_item_del(pl->it_signal, pr);
@@ -799,11 +799,11 @@ demo_group_property_update(Evas_Object *demo)
    else if ((plit == pl->it_text) || (plit == pl->it_swallow))
      part = (Demo_Part *)elm_object_item_data_get(glit);
 
-   if ((plit == pl->it_text) &&
+   if ((part != NULL) && (plit == pl->it_text) &&
        ((part->type == EDJE_PART_TYPE_TEXT) ||
         (part->type == EDJE_PART_TYPE_TEXTBLOCK)))
      evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_PART_CLICKED, part);
-   else if ((plit == pl->it_swallow) && (part->type == EDJE_PART_TYPE_SWALLOW))
+   else if ((part != NULL) && (plit == pl->it_swallow) && (part->type == EDJE_PART_TYPE_SWALLOW))
      evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_PART_CLICKED, part);
    else if (plit == pl->it_signal)
      evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_PROGRAM_PART_CLICKED, signal);
