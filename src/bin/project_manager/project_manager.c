@@ -328,7 +328,8 @@ _project_files_create(void)
         free(pro);
         pro = NULL;
      }
-   eet_sync(pro->ef);
+   else
+     eet_sync(pro->ef);
 
    return pro;
 }
