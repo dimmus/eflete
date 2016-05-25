@@ -696,5 +696,6 @@ editor_program_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Boo
      return false; \
    _editor_project_changed(); \
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+   evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PROGRAM_UPDATE, (void *)program); \
    return true; \
 }
