@@ -67,24 +67,11 @@ _undo_item_selected(void *data __UNUSED__,
                    void *ei)
 {
    Ewe_Combobox_Item *it = (Ewe_Combobox_Item *)ei;
-   Change *cur_change = NULL;
+   unsigned int i;
 
-   while (true)
-     {
-        cur_change = eina_list_data_get(hd.history->current_change);
-        if (!cur_change || cur_change->description == it->title)
-          {
-             history_undo(hd.history);
-             break;
-          }
+   for (i = 0; i <= it->index; i++)
+     CRIT_ON_FAIL(history_undo(hd.history));
 
-        if (!history_undo(hd.history))
-          {
-             ERR("Can't undo change. Something is wrong with object");
-             TODO("Add error handling here");
-             abort();
-          }
-     }
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
    _list_update(data, obj, ei);
 }
@@ -95,19 +82,11 @@ _redo_item_selected(void *data __UNUSED__,
                     void *ei)
 {
    Ewe_Combobox_Item *it = (Ewe_Combobox_Item *)ei;
-   Change *cur_change = NULL;
+   unsigned int i;
 
-   do
-     {
-       if (!history_redo(hd.history))
-          {
-             ERR("Can't redo change. Something is wrong with object");
-             TODO("Add error handling here");
-             abort();
-          }
-        cur_change = eina_list_data_get(hd.history->current_change);
-      }
-   while (cur_change->description != it->title);
+   for (i = 0; i <= it->index; i++)
+     CRIT_ON_FAIL(history_redo(hd.history));
+
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
    _list_update(data, obj, ei);
 }
