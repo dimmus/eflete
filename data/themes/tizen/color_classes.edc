@@ -1,4 +1,15 @@
 color_classes {
+   color_class { name: "text_tabs_default";
+      color: 102 102 102 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "text_tabs_selected";
+      color: 0 150 221 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+
    color_class { name: "genlist_bg";
       color: 244 244 244 255;
       color2: 0 0 0 0;
