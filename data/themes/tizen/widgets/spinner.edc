@@ -74,10 +74,7 @@ group { name: "elm/spinner/base/default";
             fixed: 1 0;
             max: 17 22;
             image.normal: "spinner-horizontal-down.png";
-            rel1 {
-               offset: 1 0;
-               to: "area.drag";
-            }
+            rel1.to: "area.drag";
             rel2.to: "area.drag";
          }
          description { state: "clicked" 0.0;
@@ -97,10 +94,7 @@ group { name: "elm/spinner/base/default";
             max: 17 22;
             image.normal: "spinner-horizontal-up.png";
             rel1.to: "area.drag";
-            rel2 {
-               offset: -2 -1;
-               to: "area.drag";
-            }
+            rel2.to: "area.drag";
          }
          description { state: "clicked" 0.0;
             inherit: "default" 0.00;
