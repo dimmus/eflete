@@ -1100,6 +1100,8 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_IMAGE:
          str_val1 = edje_edit_state_image_get(EDIT_OBJ, STATE_ARGS);
+         TODO("This case should not be called for non-image parts. Need to fix filters in genlist");
+         if (!str_val1) break;
          if (!strcmp(str_val1, EFLETE_DUMMY_IMAGE_NAME))
            {
               edje_edit_string_free(str_val1);
