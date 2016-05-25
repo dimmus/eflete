@@ -411,4 +411,13 @@ workspace_code_changed(Evas_Object *obj);
 Evas_Object *
 workspace_group_navigator_get(Evas_Object *obj);
 
+void
+workspace_history_undo(Evas_Object *obj);
+
+void
+workspace_history_redo(Evas_Object *obj);
+
+void
+workspace_history_update(Evas_Object *obj);
+
 #endif /* WORKSPACE_H */

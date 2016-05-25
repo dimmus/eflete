@@ -32,115 +32,118 @@ typedef struct {
    Group *group;
 } History_New_UI_data;
 
-static History_New_UI_data hd;
+#define HISTORY_DATA "history_data"
+#define HISTORY_DATA_GET(OBJ) \
+   History_New_UI_data *hd = evas_object_data_get(OBJ, HISTORY_DATA); \
+   assert(hd != NULL);
 
 static void
-_list_update(void *data __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *ei __UNUSED__)
+_list_update(History_New_UI_data *hd)
 {
    Change *change = NULL;
    Eina_List *l = NULL;
 
+   assert(hd != NULL);
+
    /* removing all reverted changes because the were deleted from history */
-   ewe_combobox_items_list_free(hd.undo_cmbx, EINA_FALSE);
-   ewe_combobox_items_list_free(hd.redo_cmbx, EINA_FALSE);
+   ewe_combobox_items_list_free(hd->undo_cmbx, EINA_FALSE);
+   ewe_combobox_items_list_free(hd->redo_cmbx, EINA_FALSE);
 
    Eina_List *reverse_redo = NULL;
-   EINA_LIST_REVERSE_FOREACH(hd.history->changes, l, change)
+   EINA_LIST_REVERSE_FOREACH(hd->history->changes, l, change)
      {
         if (!change->reverted)
-          ewe_combobox_item_add(hd.undo_cmbx, change->description);
+          ewe_combobox_item_add(hd->undo_cmbx, change->description);
         else
           reverse_redo = eina_list_append(reverse_redo, change);
      }
 
    EINA_LIST_REVERSE_FOREACH(reverse_redo, l, change)
      {
-        ewe_combobox_item_add(hd.redo_cmbx, change->description);
+        ewe_combobox_item_add(hd->redo_cmbx, change->description);
      }
 }
 
 static void
-_undo_item_selected(void *data __UNUSED__,
+_undo_item_selected(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *ei)
 {
+   History_New_UI_data *hd = data;
    Ewe_Combobox_Item *it = (Ewe_Combobox_Item *)ei;
    unsigned int i;
 
+   assert(hd != NULL);
+
    for (i = 0; i <= it->index; i++)
-     CRIT_ON_FAIL(history_undo(hd.history));
+     CRIT_ON_FAIL(history_undo(hd->history));
 
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-   _list_update(data, obj, ei);
+   _list_update(hd);
 }
 
 static void
-_redo_item_selected(void *data __UNUSED__,
+_redo_item_selected(void *data,
                     Evas_Object *obj __UNUSED__,
                     void *ei)
 {
+   History_New_UI_data *hd = data;
    Ewe_Combobox_Item *it = (Ewe_Combobox_Item *)ei;
    unsigned int i;
 
+   assert(hd != NULL);
+
    for (i = 0; i <= it->index; i++)
-     CRIT_ON_FAIL(history_redo(hd.history));
+     CRIT_ON_FAIL(history_redo(hd->history));
 
    evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_ATTRIBUTE_CHANGED, NULL);
-   _list_update(data, obj, ei);
+   _list_update(hd);
 }
 
-static void
-_on_change_undo(void *data, Evas_Object *obj, void *ei)
+void
+history_ui_undo(Evas_Object *obj)
 {
-   history_undo(hd.history);
-   _list_update(data, obj, ei);
+   HISTORY_DATA_GET(obj);
+   history_undo(hd->history);
+   _list_update(hd);
 }
 
-static void
-_on_change_redo(void *data, Evas_Object *obj, void *ei)
+void
+history_ui_redo(Evas_Object *obj)
 {
-   history_redo(hd.history);
-   _list_update(data, obj, ei);
+   HISTORY_DATA_GET(obj);
+   history_redo(hd->history);
+   _list_update(hd);
 }
 
-static void
-_history_set_new(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *ei)
+void
+history_ui_update(Evas_Object *obj)
 {
-   Group *group = ei;
-
-   ewe_combobox_items_list_free(hd.undo_cmbx, EINA_FALSE);
-   ewe_combobox_items_list_free(hd.redo_cmbx, EINA_FALSE);
-
-   hd.history = (group) ? group->history : NULL;
-   hd.group = group;
+   HISTORY_DATA_GET(obj);
+   _list_update(hd);
 }
 
 Evas_Object *
-history_ui_add(void)
+history_ui_add(Evas_Object *parent, History *history)
 {
-   assert(ap.win != NULL);
+   assert(parent != NULL);
+   assert(history != NULL);
 
-   hd.layout = elm_layout_add(ap.win);
-   elm_layout_theme_set(hd.layout, "layout", "history", "combobox");
+   History_New_UI_data *hd = mem_calloc(1, sizeof(History_New_UI_data));
+   hd->layout = elm_layout_add(parent);
+   evas_object_data_set(hd->layout, HISTORY_DATA, hd);
+   hd->history = history;
+   elm_layout_theme_set(hd->layout, "layout", "history", "combobox");
 
-   EWE_COMBOBOX_ADD(hd.layout, hd.undo_cmbx);
-   ewe_combobox_style_set(hd.undo_cmbx, "undo");
-   elm_object_part_content_set(hd.layout, "undo", hd.undo_cmbx);
-   evas_object_smart_callback_add(hd.undo_cmbx, "selected", _undo_item_selected, NULL);
+   EWE_COMBOBOX_ADD(hd->layout, hd->undo_cmbx);
+   ewe_combobox_style_set(hd->undo_cmbx, "undo");
+   elm_object_part_content_set(hd->layout, "undo", hd->undo_cmbx);
+   evas_object_smart_callback_add(hd->undo_cmbx, "selected", _undo_item_selected, hd);
 
-   EWE_COMBOBOX_ADD(hd.layout, hd.redo_cmbx);
-   ewe_combobox_style_set(hd.redo_cmbx, "redo");
-   elm_object_part_content_set(hd.layout, "redo", hd.redo_cmbx);
-   evas_object_smart_callback_add(hd.redo_cmbx, "selected", _redo_item_selected, NULL);
+   EWE_COMBOBOX_ADD(hd->layout, hd->redo_cmbx);
+   ewe_combobox_style_set(hd->redo_cmbx, "redo");
+   elm_object_part_content_set(hd->layout, "redo", hd->redo_cmbx);
+   evas_object_smart_callback_add(hd->redo_cmbx, "selected", _redo_item_selected, hd);
 
-   evas_object_smart_callback_add(ap.win, SIGNAL_HISTORY_CHANGE_ADDED, _list_update, strdup("Add"));
-   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_CHANGED, _history_set_new, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_UNDO, _on_change_undo, NULL);
-   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_REDO, _on_change_redo, NULL);
-
-   return hd.layout;
+   return hd->layout;
 }

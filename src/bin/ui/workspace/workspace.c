@@ -1065,7 +1065,7 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_radio_value_set(wd->toolbar.bg_switcher.white, BG_PREVIEW_TILE);
 
    /*Add to toolbar history controls */
-   wd->toolbar.history =  history_ui_add();
+   wd->toolbar.history =  history_ui_add(wd->toolbar.obj, wd->group->history);
    evas_object_show(wd->toolbar.history);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.history);
@@ -1643,4 +1643,28 @@ workspace_group_navigator_get(Evas_Object *obj)
    if (MODE_DEMO == wd->mode)
      return wd->demo_navi;
    return wd->group_navi;
+}
+
+void
+workspace_history_undo(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+
+   history_ui_undo(wd->toolbar.history);
+}
+
+void
+workspace_history_redo(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+
+   history_ui_redo(wd->toolbar.history);
+}
+
+void
+workspace_history_update(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+
+   history_ui_update(wd->toolbar.history);
 }

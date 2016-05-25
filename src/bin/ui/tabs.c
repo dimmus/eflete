@@ -866,6 +866,33 @@ _shortcut_rulers_visible_cb(void *data __UNUSED__,
 }
 
 static void
+_shortcut_undo_cb(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_history_undo(tabs.current_workspace);
+}
+
+static void
+_shortcut_redo_cb(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_history_redo(tabs.current_workspace);
+}
+
+static void
+_history_update_cb(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   if (tabs.current_workspace)
+     workspace_history_update(tabs.current_workspace);
+}
+
+static void
 _demo_property_update(void *data __UNUSED__,
                       Evas_Object *obj __UNUSED__,
                       void *event_info __UNUSED__)
@@ -953,6 +980,10 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_FILL, _shortcut_fill_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_OBJECT_AREA, _shortcut_object_area_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_RULERS_VISIBLED, _shortcut_rulers_visible_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_UNDO, _shortcut_undo_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_REDO, _shortcut_redo_cb, NULL);
+
+   evas_object_smart_callback_add(ap.win, SIGNAL_HISTORY_CHANGE_ADDED, _history_update_cb, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_PROPERTY_MODE_DEMO, _demo_property_update, NULL);
    return tabs.layout;
