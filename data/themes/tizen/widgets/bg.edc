@@ -2,7 +2,7 @@ group { name: "elm/bg/base/default";
    parts {
       part { name: "base"; type: RECT;
          description { state: "default" 0.0;
-            color_class: "bg_scroller";
+            color_class: "genlist_bg";
          }
       }
       part { name: "elm.swallow.rectangle"; type: SWALLOW;

@@ -1,76 +1,77 @@
 group { name: "elm/layout/window/main";
-   images {
-      image: "status-top_border-bg.png" COMP;
-   }
    parts {
+      part { name: "window.border";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            min: 0 1;
+            max: -1 1;
+            color_class: "border";
+         }
+      }
       part { name: "eflete.swallow.panes";
          type: SWALLOW;
          scale: 1;
-         mouse_events: 1;
-         description { state:   "default" 0.0;
+         description { state: "default" 0.0;
+            rel1.to_y: "window.border";
             rel2 {
                relative: 1.0 0.0;
                to: "statusbar";
             }
-          }
+         }
       }
       part { name: "statusbar";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            max: -1 20;
             align: 0.5 1.0;
+            max: -1 20;
          }
       }
-      part { name: "statusbar_border";
-         type: IMAGE;
+      part { name: "statusbar.border";
+         type: RECT;
          description { state: "default" 0.0;
             align: 0.5 0.0;
-            max: -1 2;
-            rel1 {
-               to: "statusbar";
-            }
-            image {
-               normal: "status-top_border-bg.png";
-            }
+            min: 0 1;
+            max: -1 1;
+            color_class: "border";
+            rel1.to: "statusbar";
          }
       }
       part { name: "eflete.project.time";
          type: TEXT;
-         description {
-            max: 500 -1;
+         description { state: "default" 0.0;
             align: 0.0 0.5;
-            rel1 {
-               to: "statusbar";
-               offset: 3 0;
-            }
-            rel2 {
-               to: "statusbar";
-            }
+            max: 500 -1;
+            color_class: "genlist_text_tree";
             text {
+               font: "Sans";
                size: 11;
-               font: PT;
                align: 0.0 0.5;
             }
+            rel1 {
+               offset: 3 0;
+               to: "statusbar";
+            }
+            rel2.to: "statusbar";
          }
       }
       part { name: "eflete.project.part";
          type: TEXT;
-         description {
+         description { state: "default" 0.0;
             align: 0.0 0.5;
-            rel1 {
-               to_x: "eflete.project.time";
-               to_y: "statusbar";
-               relative: 1.0 0.0;
-            }
-            rel2 {
-               to: "statusbar";
-            }
+            color_class: "genlist_text_tree";
             text {
+               font: "Sans";
                size: 11;
-               font: PT;
                align: 0.0 0.5;
             }
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "eflete.project.time";
+               to_y: "statusbar";
+            }
+            rel2.to: "statusbar";
          }
       }
    }
