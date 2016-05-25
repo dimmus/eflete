@@ -25,6 +25,7 @@
 #include "modal_window.h"
 #include "config.h"
 #include "validator.h"
+#include "sound_player.h"
 
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
@@ -51,6 +52,8 @@ struct _Sound_Manager
    Evas_Object *win;
    Evas_Object *panes;
    Evas_Object *btn_del;
+   Evas_Object *player;
+   Evas_Object *property_panes;
    Evas_Object *menu;
    Evas_Object *tone_entry, *frq_entry;
    Resource_Name_Validator *tone_validator;
@@ -499,11 +502,30 @@ sound_manager_add(void)
 
    if (mng.layout) goto done;
 
+   mng.player = sound_player_add(mng.win);
+
+#ifdef HAVE_TIZEN
+   mng.layout = elm_layout_add(mng.win);
+   elm_layout_theme_set(mng.layout, "layout", "manager", "internal");
+   elm_object_part_text_set(mng.layout, "elm.text", _("Preview"));
+   elm_layout_text_set(mng.layout, "elm.subtext", _("Sound Gallery"));
+   mng.panes = elm_panes_add(mng.win);
+   elm_object_part_content_set(mng.panes, "left", mng.layout);
+   elm_object_part_content_set(mng.panes, "right", ap.property.sound_manager);
+   elm_object_part_content_set(mng.layout, "elm.swallow.preview", mng.player);
+#else
    mng.layout = elm_layout_add(mng.win);
    elm_layout_theme_set(mng.layout, "layout", "sound_manager", "default");
    mng.panes = elm_panes_add(mng.win);
    elm_object_part_content_set(mng.panes, "left", mng.layout);
-   elm_object_part_content_set(mng.panes, "right", ap.property.sound_manager);
+
+   mng.property_panes = elm_panes_add(mng.win);
+   elm_panes_horizontal_set(mng.property_panes, true);
+   elm_object_part_content_set(mng.panes, "right", mng.property_panes);
+
+   elm_object_part_content_set(mng.property_panes, "left", mng.player);
+   elm_object_part_content_set(mng.property_panes, "right", ap.property.sound_manager);
+#endif
 
    if (!gic)
      {
