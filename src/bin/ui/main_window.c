@@ -138,7 +138,6 @@ ui_main_window_add(void)
    ap.property.style_manager = property_add(ap.win, PROPERTY_MODE_STYLE);
    ap.property.color_manager = property_add(ap.win, PROPERTY_MODE_COLOR_CLASS);
    ap.property.demo = property_add(ap.win, PROPERTY_MODE_DEMO);
-   elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.group);
    elm_object_part_content_set(ap.panes.right, "right", ap.property.group);
 
    ap.menu = ui_menu_add();

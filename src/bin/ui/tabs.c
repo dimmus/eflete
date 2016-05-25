@@ -100,6 +100,9 @@ _content_set(void *data,
         if (!item->group)
           {
              elm_object_part_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(NULL));
+             elm_object_part_content_unset(ap.panes.right, "right");
+             evas_object_hide(ap.property.group);
+             evas_object_hide(ap.property.demo);
              return;
           }
 
@@ -120,16 +123,16 @@ _content_set(void *data,
         /* and update property */
         if (workspace_active_demo_mode_get(tabs.current_workspace))
           {
-             elm_layout_content_unset(ap.tabs, "elm.swallow.property");
+             elm_object_part_content_unset(ap.panes.right, "right");
              evas_object_hide(ap.property.group);
-             elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.demo);
+             elm_object_part_content_set(ap.panes.right, "right", ap.property.demo);
              evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_MODE_DEMO, NULL);
           }
         else
           {
-             elm_layout_content_unset(ap.tabs, "elm.swallow.property");
+             elm_object_part_content_unset(ap.panes.right, "right");
              evas_object_hide(ap.property.demo);
-             elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.group);
+             elm_object_part_content_set(ap.panes.right, "right", ap.property.group);
              evas_object_smart_callback_call(ap.win, SIGNAL_PROPERTY_MODE_GROUP, NULL);
           }
      }
@@ -150,15 +153,15 @@ _mode_changed(void *data __UNUSED__,
 
    if (mode == MODE_DEMO)
      {
-        elm_layout_content_unset(ap.tabs, "elm.swallow.property");
+        elm_object_part_content_unset(ap.panes.right, "right");
         evas_object_hide(ap.property.group);
-        elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.demo);
+        elm_object_part_content_set(ap.panes.right, "right", ap.property.demo);
      }
    else
      {
-        elm_layout_content_unset(ap.tabs, "elm.swallow.property");
+        elm_object_part_content_unset(ap.panes.right, "right");
         evas_object_hide(ap.property.demo);
-        elm_layout_content_set(ap.tabs, "elm.swallow.property", ap.property.group);
+        elm_object_part_content_set(ap.panes.right, "right", ap.property.group);
      }
 }
 
@@ -990,6 +993,9 @@ _tab_close(void *data,
         content = elm_layout_content_unset(ap.panes.left_ver, "right");
         evas_object_hide(content);
         elm_layout_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(NULL));
+        elm_object_part_content_unset(ap.panes.right, "right");
+        evas_object_hide(ap.property.group);
+        evas_object_hide(ap.property.demo);
      }
 }
 
