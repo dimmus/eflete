@@ -1,61 +1,5 @@
 group { name: "elm/check/base/toggle";
-   script {
-      public g_velocity;
-      public g_timer;
-      public move_button(val_on) {
-         new l_timer;
-         new Float:vel;
-         new Float:dx, Float:dy;
-
-         /* getting current velocity and saving increased value */
-         vel = get_float(g_velocity);
-         set_float(g_velocity, vel * 1.1);
-
-         /* getting current position */
-         get_drag(PART:"button", dx, dy);
-
-         if (val_on)
-         {
-            /* changing button picture. this can be accidently skiped with some
-               initial positions and velocity values. so we need to set it again
-               during final step to be sure that it is applied*/
-            if (dx > 0.6)
-            {
-               set_state(PART:"button", "on", 0.0);
-            }
-            /* moving button */
-            if (dx > 1.0 - vel) /* this is last iteration, finalizing state */
-            {
-               set_drag(PART:"button", 1.0, 0.0);
-               set_state(PART:"button", "on", 0.0);
-            }
-            else /* moving and sceduling next step */
-            {
-               set_drag(PART:"button", dx + vel, 0.0);
-               l_timer = timer(0.02, "move_button", val_on);
-            }
-         }
-         else
-         {
-            if (dx < 0.0 + vel)
-            {
-               set_drag(PART:"button", 0.0, 0.0);
-               set_state(PART:"button", "default", 0.0);
-            }
-            else
-            {
-               set_drag(PART:"button", dx - vel, 0.0);
-               l_timer = timer(0.02, "move_button", val_on);
-            }
-         }
-         /* save timer id to stop it later if needed */
-         set_int(g_timer, l_timer);
-      }
-   }
-
    images {
-      image: "control-bg.png" COMP;
-      image: "control-shadow.png" COMP;
       image: "toggle-off.png" COMP;
       image: "toggle-on.png" COMP;
    }
@@ -172,59 +116,11 @@ group { name: "elm/check/base/toggle";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: 60 19;
-            max: 60 19;
+            min: 78 28;
+            max: 78 28;
             rel1 {
                relative: 1.0 0.0;
                to_x: "padding.text";
-            }
-         }
-      }
-      part { name: "bg";
-         type: IMAGE;
-         scale: 1;
-         clip_to: "clipper";
-         description { state: "default" 0.0;
-            color_class: "bg_entry";
-            rel1 {
-               to: "base";
-            }
-            rel2 {
-               to: "base";
-            }
-            image {
-               normal: "control-bg.png";
-               border: 8 8 8 9;
-               middle: DEFAULT;
-            }
-         }
-      }
-      part { name: "shadow";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            rel1 {
-               to: "bg";
-            }
-            rel2 {
-               to: "bg";
-            }
-            image {
-               normal: "control-shadow.png";
-               border: 8 8 8 9;
-               middle: DEFAULT;
-            }
-         }
-      }
-      part { name: "area.drag";
-         type: SPACER;
-         description { state: "default" 0.0;
-            rel1 {
-               offset: 1 1;
-               to: "base";
-            }
-            rel2 {
-               offset: -2 -1;
-               to: "base";
             }
          }
       }
@@ -232,39 +128,17 @@ group { name: "elm/check/base/toggle";
          type: IMAGE;
          scale: 1;
          clip_to: "clipper";
-         dragable {
-            x: 1 1 0;
-            y: 0 0 0;
-            confine: "area.drag";
-            threshold: "elm.swallow.content";
-         }
          description { state: "default" 0.0;
-            min: 30 17;
-            max: 30 17;
-            rel1 {
-               to: "area.drag";
-            }
-            rel2 {
-               to: "area.drag";
-            }
+            rel1.to: "base";
+            rel2.to: "base";
             image {
                normal: "toggle-off.png";
                middle: DEFAULT;
             }
          }
          description { state: "on" 0.0;
-            min: 30 17;
-            max: 30 17;
-            rel1 {
-               to: "area.drag";
-            }
-            rel2 {
-               to: "area.drag";
-            }
-            image {
-               normal: "toggle-on.png";
-               middle: DEFAULT;
-            }
+            inherit: "default" 0.0;
+            image.normal: "toggle-on.png";
          }
       }
       part { name: "event.button";
@@ -319,54 +193,19 @@ group { name: "elm/check/base/toggle";
       program { name: "off";
          signal: "elm,state,check,off";
          source: "elm";
-         script {
-            /* stop transition if it's running */
-            new l_timer;
-            l_timer = get_int(g_timer);
-            cancel_timer(l_timer);
-
-            /* set start velocity */
-            set_float(g_velocity, 0.08);
-
-            move_button(false);
-         }
+         action: STATE_SET "default" 0.00;
+         target: "button";
       }
       program { name: "on";
          signal: "elm,state,check,on";
          source: "elm";
-         script {
-            /* stop transition if it's running */
-            new l_timer;
-            l_timer = get_int(g_timer);
-            cancel_timer(l_timer);
-
-            /* set start velocity */
-            set_float(g_velocity, 0.08);
-
-            move_button(true);
-         }
+         action: STATE_SET "on" 0.00;
+         target: "button";
       }
       program { name: "clicked_emit";
          signal: "mouse,clicked,1";
          source: "event.button";
          action: SIGNAL_EMIT "elm,action,check,toggle" "elm";
-      }
-      program { name: "drag_end";
-         signal: "drag,stop";
-         source: "button";
-         script {
-            new Float:dx, Float:dy;
-            get_drag(PART:"button", dx, dy);
-            /* tell c-part in what half button is stopped */
-            if (dx > 0.5)
-            {
-               emit("elm,action,check,on", "elm");
-            }
-            else
-            {
-               emit("elm,action,check,off", "elm");
-            }
-         }
       }
    }
 }
