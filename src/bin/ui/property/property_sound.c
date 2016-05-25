@@ -93,8 +93,6 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_SOUND_ITEM_TYPE:
       case PROPERTY_SOUND_ITEM_SIZE:
       case PROPERTY_SOUND_ITEM_FILE_NAME:
-      case PROPERTY_SOUND_ITEM_PLAYER:
-         break;
       case PROPERTY_SOUND_ITEM_COMPRESSION_TYPE:
          elm_object_disabled_set(action->control, true);
          _fill_combobox_with_enum(action->control, edje_sound_compression);
@@ -164,8 +162,6 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
            elm_spinner_value_set(action->control, sound_pd.tone->freq);
          break;
 
-      case PROPERTY_SOUND_ITEM_PLAYER:
-         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -225,9 +221,6 @@ _subitems_get(Property_Attribute *pa)
 #define APPEND(TYPE) items = eina_list_append(items, &sound_pd.items[TYPE]);
    switch (pa->type.sound_item)
      {
-      case PROPERTY_SOUND_ITEM_PREVIEW_TITLE:
-         APPEND(PROPERTY_SOUND_ITEM_PLAYER);
-         break;
       case PROPERTY_SOUND_ITEM_INFO_TITLE:
          APPEND(PROPERTY_SOUND_ITEM_NAME);
          APPEND(PROPERTY_SOUND_ITEM_FILE_NAME);
@@ -274,18 +267,7 @@ _init_items()
         IT.filter_data.sound_types = ~0u;
         switch(it)
           {
-             /* group block */
-           case PROPERTY_SOUND_ITEM_PREVIEW_TITLE:
-              IT.name = "preview";
-              IT.expandable = true;
-              IT.expanded = true;
-              IT.expand_cb = _subitems_get;
-              break;
-           case PROPERTY_SOUND_ITEM_PLAYER:
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SOUND_PLAYER);
-              break;
-
-              /* part block */
+           /* part block */
            case PROPERTY_SOUND_ITEM_INFO_TITLE:
               IT.name = "info";
               IT.expandable = true;
@@ -367,8 +349,6 @@ _on_grid_clicked(void *data,
 
    assert(pd != NULL);
 
-   sound_player_sound_set(sound_pd.snd);
-
    GENLIST_FILTER_APPLY(pd->genlist);
    property_item_update_recursively(&sound_pd.items[PROPERTY_SOUND_ITEM_INFO_TITLE]);
 }
@@ -391,9 +371,6 @@ property_sound_manager_items_get()
 {
    Eina_List *items = NULL;
 
-#ifdef HAVE_AUDIO
-   items = eina_list_append(items, &sound_pd.items[PROPERTY_SOUND_ITEM_PREVIEW_TITLE]);
-#endif
    items = eina_list_append(items, &sound_pd.items[PROPERTY_SOUND_ITEM_INFO_TITLE]);
 
    return items;

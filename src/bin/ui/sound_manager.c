@@ -141,6 +141,8 @@ _grid_sel_cb(void *data __UNUSED__,
    assert(res != NULL);
 
    if (!res->used_in) elm_object_disabled_set(mng.btn_del, false);
+
+   sound_player_sound_set(snd);
    evas_object_smart_callback_call(ap.win, SIGNAL_SOUND_SELECT, snd);
 }
 
