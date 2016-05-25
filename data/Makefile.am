@@ -13,7 +13,7 @@ EDJE_FLAGS_DEFAULT = -id $(top_srcdir)/data/themes/default/images -id $(top_srcd
 EDJE_FLAGS_TIZEN = -id $(top_srcdir)/data/themes/tizen/images -id $(top_srcdir)/data/themes/tizen/images/splash -fd $(top_srcdir)/data/fonts
 EDJE_FLAGS_RESOURCES = -id $(top_srcdir)/data/resources/images
 EDJE_FLAGS_EWE = -fd $(top_srcdir)/data/themes/ewe/fonts -id $(top_srcdir)/data/themes/ewe/widgets/images
-EDJE_FLAGS_EWE_TIZEN = -fd $(top_srcdir)/data/themes/ewe_tizen/fonts -id $(top_srcdir)/data/themes/ewe_tizen/widgets/images
+EDJE_FLAGS_EWE_TIZEN = -fd $(top_srcdir)/data/themes/ewe_tizen/fonts -id $(top_srcdir)/data/themes/ewe_tizen/widgets/images -id  $(top_srcdir)/data/themes/tizen/images
 
 filesdir = $(datadir)/eflete/themes/default
 files_DATA = eflete_elm.edj

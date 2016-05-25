@@ -1,60 +1,26 @@
 group { name: "ewe/combobox/base/default";
-   images {
-      image: "dropdown-bg.png" COMP;
-      image: "dropdown-focus-bg.png" COMP;
-      image: "dropdown-bg_unactive.png" COMP;
-      image: "icon-slidedown.png" COMP;
-      image: "icon-slideup.png" COMP;
-   }
-   min: 80 19;
-   max: 9999 19;
+   min: 76 24;
+   max: 9999 24;
+images {
+   image: "drop_arrow_nor.png" COMP;
+   image: "drop_arrow_sel.png" COMP;
+}
    parts {
-      part { name: "base";
-         type: SPACER;
+      part { name: "bg0";
+         type: RECT;
          description { state: "default" 0.0;
-            max: -1 19;
-         }
-      }
-      part { name: "bg";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            rel1 {
-               to: "base";
-            }
-            rel2 {
-               to: "base";
-            }
-            image {
-               normal: "dropdown-bg.png";
-               border: 3 3 1 1;
-               middle: DEFAULT;
-            }
+            color: 174 174 174 255;
          }
          description { state: "focus" 0.0;
-            rel1 {
-               to: "base";
-            }
-            rel2 {
-               to: "base";
-            }
-            image {
-               normal: "dropdown-focus-bg.png";
-               border: 3 3 1 1;
-               middle: DEFAULT;
-            }
+            inherit: "default" 0.00;
+            color: 5 140 238 255;
          }
-         description { state: "disable" 0.0;
-            rel1 {
-               to: "base";
-            }
-            rel2 {
-               to: "base";
-            }
-            image {
-               normal: "dropdown-bg_unactive.png";
-               border: 3 3 1 1;
-               middle: DEFAULT;
-            }
+      }
+      part { name: "bg1";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.offset: 1 1;
+            rel2.offset: -2 -2;
          }
       }
       part { name: "left.offset";
@@ -63,12 +29,6 @@ group { name: "ewe/combobox/base/default";
             align: 0.0 0.0;
             min: 10 0;
             max: 10 -1;
-            rel1 {
-               to: "base";
-            }
-            rel2 {
-               to: "base";
-            }
          }
       }
       part { name: "right.offset";
@@ -77,39 +37,21 @@ group { name: "ewe/combobox/base/default";
             align: 1.0 1.0;
             min: 20 19;
             max: 20 -1;
-            rel2 {
-               to: "bg";
-            }
          }
       }
       part { name: "arrow";
          type: IMAGE;
          clip_to: "disabler";
          description { state: "default" 0.0;
-            max: 6 4;
-            rel1 {
-               to: "right.offset";
-            }
-            rel2 {
-               to: "right.offset";
-            }
-            image {
-               normal: "icon-slidedown.png";
-               middle: DEFAULT;
-            }
+            max: 9 5;
+            image.normal: "drop_arrow_nor.png";
+            rel1.to: "right.offset";
+            rel2.to: "right.offset";
          }
          description { state: "expanded" 0.0;
-            max: 6 4;
-            rel1 {
-               to: "right.offset";
-            }
-            rel2 {
-               to: "right.offset";
-            }
-            image {
-               normal: "icon-slideup.png";
-               middle: DEFAULT;
-            }
+            inherit: "default" 0.00;
+            max: 8 4;
+            image.normal: "drop_arrow_sel.png";
          }
       }
       part { name: "ewe.text";
@@ -117,64 +59,33 @@ group { name: "ewe/combobox/base/default";
          clip_to: "disabler";
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            color: 213 213 213 255;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "left.offset";
-               to_y: "base";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "right.offset";
-               to_y: "base";
-            }
+            color: 88 88 88 255;
             text {
+               text: "";
                font: "PT";
-               size: 12;
+               size: 15;
                max: 1 1;
             }
+            rel1.offset: 5 0;
          }
       }
       part { name: "expand.btn";
          type: RECT;
          description { state: "default" 0.0;
             color: 0 0 0 0;
-            rel1 {
-               to: "bg";
-            }
-            rel2 {
-               to: "bg";
-            }
          }
          description { state: "unvisible" 0.0;
+            inherit: "default" 0.00;
             visible: 0;
-            color: 0 0 0 0;
-            rel1 {
-               to: "bg";
-            }
-            rel2 {
-               to: "bg";
-            }
          }
       }
       part { name: "disabler";
          type: RECT;
          description { state: "default" 0.0;
-            rel1 {
-               to: "bg";
-            }
-            rel2 {
-               to: "bg";
-            }
          }
          description { state: "active" 0.0;
+            inherit: "default" 0.00;
             color: 64 64 64 225;
-            rel1 {
-               to: "bg";
-            }
-            rel2 {
-               to: "bg";
-            }
          }
       }
    }
@@ -189,7 +100,7 @@ group { name: "ewe/combobox/base/default";
          signal: "ewe,state,expanded";
          source: "ewe";
          action: STATE_SET "focus" 0.00;
-         target: "bg";
+         target: "bg0";
       }
       program { name: "collapse";
          signal: "ewe,state,default";
@@ -201,7 +112,7 @@ group { name: "ewe/combobox/base/default";
          signal: "ewe,state,default";
          source: "ewe";
          action: STATE_SET "default" 0.00;
-         target: "bg";
+         target: "bg0";
       }
       program { name: "clicked";
          signal: "mouse,clicked,1";
@@ -219,12 +130,6 @@ group { name: "ewe/combobox/base/default";
          source: "ewe";
          action: STATE_SET "unvisible" 0.00;
          target: "expand.btn";
-      }
-      program { name: "back_disable";
-         signal: "ewe,state,disable";
-         source: "ewe";
-         action: STATE_SET "disable" 0.00;
-         target: "bg";
       }
       program { name: "disabler_active";
          signal: "ewe,disable,active";
@@ -944,7 +849,7 @@ group { name: "ewe/combobox/expander/default";
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
-            color: 52 53 55 255;
+            rel2.offset: -15 -1;
          }
       }
       part { name: "top.offset";
@@ -988,7 +893,7 @@ group {name: "ewe/combobox/item/default";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: 0 19;
+            min: 0 24;
             max: -1 0;
          }
       }
@@ -1030,7 +935,7 @@ group {name: "ewe/combobox/item/default";
             }
          }
          description { state: "focused" 0.0;
-            color: COMBOBOX_ITEM_FOCUSED_BG_COLOR;
+            color: 203 233 255 255;
             rel1 {
                to: "base";
             }
@@ -1043,7 +948,7 @@ group {name: "ewe/combobox/item/default";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
-            color: COMBOBOX_ITEM_TEXT_COLOR;
+            color: 85 85 85 255;
             rel1 {
                relative: 1.0 0.0;
                to_x: "padding.left.text";
@@ -1056,14 +961,14 @@ group {name: "ewe/combobox/item/default";
             }
             text {
                font: FN;
-               size: FONT_SIZE;
+               size: 15;
                align: 0.0 0.5;
                min: 1 1;
                ellipsis: -1;
             }
          }
          description { state: "focused" 0.0;
-            color: COMBOBOX_ITEM_TEXT_FOCUSED_COLOR;
+            color: 85 85 85 255;
             rel1 {
                relative: 1.0 0.0;
                to_x: "padding.left.text";
@@ -1076,7 +981,7 @@ group {name: "ewe/combobox/item/default";
             }
             text {
                font: FN;
-               size: FONT_SIZE;
+               size: 15;
                align: 0.0 0.5;
                min: 1 1;
                ellipsis: -1;

@@ -7,8 +7,12 @@ EAPI Eo_Op EWE_OBJ_COMBOBOX_BASE_ID = EO_NOOP;
 #define MY_CLASS_NAME "Ewe_Combobox"
 #define MY_CLASS_NAME_LEGACY "ewe_combobox"
 #define MIN_ITEMS 5
-#define ITEM_H 20
 
+#if !WANT_TIZEN
+#define ITEM_H 24
+#else
+#define ITEM_H 20
+#endif /*  */
 
 static void _focus_out_cb(void *, Evas_Object *, void *);
 
@@ -135,7 +139,13 @@ _combobox_geometry_calc(Evas *evas,
    if ((*width) < combo_width)
      (*width) = combo_width;
 
+#if !WANT_TIZEN
+   evas_object_geometry_set(sd->win, combo_x, combo_y + 7, *width, *height);
+#else
    evas_object_geometry_set(sd->win, combo_x, combo_y, *width, *height);
+#endif /*  */
+
+
 }
 
 static void
