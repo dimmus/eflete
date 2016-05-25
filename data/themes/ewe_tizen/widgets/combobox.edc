@@ -941,7 +941,7 @@ group { name: "ewe/combobox/item/color_class";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: 0 19;
+            min: 0 24;
             max: -1 0;
          }
       }
@@ -976,7 +976,7 @@ group { name: "ewe/combobox/item/color_class";
       part { name: "highlight";
          type: RECT;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
+            color: TRANSPARENT_COLOR;
             rel1 {
                to: "base";
             }
@@ -985,7 +985,7 @@ group { name: "ewe/combobox/item/color_class";
             }
          }
          description { state: "focused" 0.0;
-            color: 58 110 155 255;
+            color: 203 233 255 255;
             rel1 {
                to: "base";
             }
@@ -999,7 +999,7 @@ group { name: "ewe/combobox/item/color_class";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            color: 174 176 177 255;
+            color: 85 85 85 255;
             rel1 {
                relative: 1.0 0.0;
                to_x: "padding.left.text";
