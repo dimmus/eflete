@@ -216,6 +216,8 @@ _on_part_selected(void *data,
    GENLIST_FILTER_APPLY(pd->genlist);
    property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PART_TITLE]);
    property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TITLE]);
+   if (group_pd.part->current_item_name != NULL)
+     property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PART_ITEM_TITLE]);
 }
 
 static void
@@ -306,6 +308,8 @@ _on_group_changed(void *data,
      {
         property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PART_TITLE]);
         property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TITLE]);
+        if (group_pd.part->current_item_name != NULL)
+          property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PART_ITEM_TITLE]);
      }
 }
 
