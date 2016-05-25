@@ -508,7 +508,7 @@ group { name: "elm/button/base/colorselector/left/default";
             min: 10 17;
             max: 10 17;
             image {
-               normal: "spinner-horizontal-down-disabled.png";
+               normal: "spinner-horizontal-down.png";
                middle: DEFAULT;
             }
             fill.smooth: 0;
@@ -613,7 +613,7 @@ group { name: "elm/button/base/colorselector/right/default";
             min: 10 17;
             max: 10 17;
             image {
-               normal: "spinner-horizontal-up-disabled.png";
+               normal: "spinner-horizontal-up.png";
                middle: DEFAULT;
             }
             fill.smooth: 0;
