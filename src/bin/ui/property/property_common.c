@@ -277,11 +277,6 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
       case PROPERTY_CONTROL_LABEL:
          content = elm_label_add(parent);
          return content;
-      case PROPERTY_CONTROL_IMAGE_PREVIEW:
-         content = elm_image_add(parent);
-         evas_object_size_hint_min_set(content, 300, 300);
-         evas_object_show(content);
-         return content;
       case PROPERTY_CONTROL_IMAGE_NORMAL:
          content = property_image_normal_control_add(parent);
          evas_object_smart_callback_add(content, "image,changed", _start_change_stop_cb, pa);
@@ -571,7 +566,6 @@ property_common_itc_init(Property_Data *pd)
    pd->item_classes[PROPERTY_CONTROL_COMBOBOX]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_COLORSEL]       [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_LABEL]          [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
-   pd->item_classes[PROPERTY_CONTROL_IMAGE_PREVIEW]  [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_IMAGE_NORMAL]   [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_IMAGE_TWEEN]    [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;
    pd->item_classes[PROPERTY_CONTROL_SOUND_PLAYER]   [PROPERTY_CONTROL_NONE]     = pd->itc_1swallow;

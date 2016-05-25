@@ -25,7 +25,6 @@
 #define EMPTY_VALUE " - "
 
 typedef struct {
-   Property_Attribute item_preview;
    Property_Attribute item_name;
    Property_Attribute item_location;
    Property_Attribute item_type;
@@ -91,29 +90,12 @@ _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
 
    if (!image_data.image)
      {
-        if (action->type.attribute_image != PROPERTY_IMAGE_CONTROL_PREVIEW)
-          elm_object_text_set(action->control, EMPTY_VALUE);
-        else
-          elm_image_file_set(action->control, EFLETE_IMG_PATH EFLETE_DUMMY_IMAGE_NAME, NULL);
+        elm_object_text_set(action->control, EMPTY_VALUE);
         return;
      }
 
    switch (action->type.attribute_image)
      {
-      case PROPERTY_IMAGE_CONTROL_PREVIEW:
-         if (image_data.image->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
-           {
-              if (ecore_file_exists(image_data.image->source))
-                elm_image_file_set(action->control, image_data.image->source, NULL);
-              else
-                elm_image_file_set(action->control, EFLETE_THEME, "elm/image/icon/attention");
-           }
-         else
-           {
-              elm_image_file_set(action->control, image_data.image->source, NULL);
-           }
-         evas_object_image_smooth_scale_set(action->control, false);
-         break;
       case PROPERTY_IMAGE_CONTROL_NAME:
          elm_object_text_set(action->control, image_data.image->image_name);
          break;
@@ -168,7 +150,6 @@ _on_image_selected(void *data __UNUSED__,
 
    image_data.image = image;
 
-   _update_cb(NULL, &image_data.item_preview.action1);
    _update_cb(NULL, &image_data.item_name.action1);
    _update_cb(NULL, &image_data.item_type.action1);
    _update_cb(NULL, &image_data.item_location.action1);
@@ -181,11 +162,6 @@ _on_image_selected(void *data __UNUSED__,
 void
 property_image_manager_init()
 {
-   image_data.item_preview.name = eina_stringshare_add(_("preview"));
-   image_data.item_preview.action1.control_type = PROPERTY_CONTROL_IMAGE_PREVIEW;
-   image_data.item_preview.action1.update_cb = _update_cb;
-   image_data.item_preview.action1.type.attribute_image = PROPERTY_IMAGE_CONTROL_PREVIEW;
-
    image_data.item_name.name = eina_stringshare_add(_("name"));
    image_data.item_name.action1.control_type = PROPERTY_CONTROL_LABEL;
    image_data.item_name.action1.update_cb = _update_cb;
@@ -229,7 +205,6 @@ property_image_manager_items_get()
 {
    Eina_List *items = NULL;
 
-   items = eina_list_append(items, &image_data.item_preview);
    items = eina_list_append(items, &image_data.item_name);
    items = eina_list_append(items, &image_data.item_location);
    items = eina_list_append(items, &image_data.item_type);

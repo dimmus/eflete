@@ -45,6 +45,8 @@ struct _Image_Manager
 {
    Evas_Object *win;
    Evas_Object *panes;
+   Evas_Object *property_panes;
+   Evas_Object *image;
    Evas_Object *del_button;
    Evas_Object *gengrid;
    Evas_Object *layout;
@@ -184,6 +186,20 @@ _grid_sel_cb(void *data __UNUSED__,
         /* if selected image is not used, we can delete it */
         if (!item->is_used)
           elm_object_disabled_set(mng.del_button, false);
+
+         /* apply picture */
+         if (item->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
+           {
+              if (ecore_file_exists(item->source))
+                elm_image_file_set(mng.image, item->source, NULL);
+              else
+                elm_image_file_set(mng.image, EFLETE_THEME, "elm/image/icon/attention");
+           }
+         else
+           {
+              elm_image_file_set(mng.image, item->source, NULL);
+           }
+         evas_object_image_smooth_scale_set(mng.image, false);
      }
    else
      {
@@ -197,6 +213,7 @@ _grid_sel_cb(void *data __UNUSED__,
                   break;
                }
           }
+        elm_image_file_set(mng.image, EFLETE_IMG_PATH EFLETE_DUMMY_IMAGE_NAME, NULL);
      }
    evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, item);
 }
@@ -396,7 +413,6 @@ _image_manager_init(void)
    External_Resource *res;
 
    images = ap.project->images;
-printf("FIXN");
 
    if (images)
      {
@@ -419,7 +435,6 @@ printf("FIXN");
      }
 
    evas_object_smart_callback_call(ap.win, SIGNAL_IMAGE_SELECTED, NULL);
-printf("FIXN");
    return true;
 }
 
@@ -476,7 +491,13 @@ image_manager_add(void)
    elm_layout_theme_set(mng.layout, "layout", "image_manager", "default");
    mng.panes = elm_panes_add(mng.win);
    elm_object_part_content_set(mng.panes, "left", mng.layout);
-   elm_object_part_content_set(mng.panes, "right", ap.property.image_manager);
+   mng.property_panes = elm_panes_add(mng.win);
+   elm_panes_horizontal_set(mng.property_panes, true);
+   elm_object_part_content_set(mng.panes, "right", mng.property_panes);
+   mng.image = elm_image_add(mng.property_panes);
+   evas_object_show(mng.image);
+   elm_object_part_content_set(mng.property_panes, "left", mng.image);
+   elm_object_part_content_set(mng.property_panes, "right", ap.property.image_manager);
 
    if (!gic)
      {
