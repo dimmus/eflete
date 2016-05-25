@@ -6,16 +6,13 @@ group { name: "elm/win/inwin/modal_window";
             color: 0 0 0 0;
          }
          description { state: "clicked" 0.0;
+            inherit: "default" 0.00;
             color: 255 0 0 50;
          }
       }
-      part { name: "pop";
-         type: IMAGE;
+      part { name: "bg";
+         type: RECT;
          description { state: "default" 0.0;
-            image {
-               normal: "popup-bg.png";
-               border: 34 34 34 34;
-            }
             rel1.relative: 0.1 0.1;
             rel2.relative: 0.9 0.9;
          }
@@ -23,14 +20,8 @@ group { name: "elm/win/inwin/modal_window";
       part { name: "base";
          type: SPACER;
          description { state: "default" 0.0;
-            rel1 {
-               offset: 26 20;
-               to: "pop";
-            }
-            rel2 {
-               offset: -27 -21;
-               to: "pop";
-            }
+            rel1.to: "bg";
+            rel2.to: "bg";
          }
       }
       part { name: "elm.text.title";
@@ -38,9 +29,9 @@ group { name: "elm/win/inwin/modal_window";
          description { state: "default" 0.0;
             align: 0.5 0.0;
             fixed: 1 1;
-            min: 0 34;
-            max: -1 34;
-            color_class: "main";
+            min: 0 30;
+            max: -1 30;
+            color_class: "genlist_text_tree";
             text {
                font: "PT:style=Bold";
                size: 13;
@@ -62,16 +53,26 @@ group { name: "elm/win/inwin/modal_window";
       }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
+         clip_to: "icon_painter";
          description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
             min: 16 16;
             max: 16 16;
             rel1 {
+               offset: 10 0;
                to_x: "base";
                to_y: "elm.text.title";
             }
             rel2.to_y: "elm.text.title";
+         }
+      }
+      part { name: "icon_painter";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 138 237 255;
+            rel1.to: "elm.swallow.icon";
+            rel2.to: "elm.swallow.icon";
          }
       }
       part { name: "elm.swallow.close";
@@ -86,18 +87,19 @@ group { name: "elm/win/inwin/modal_window";
                to_y: "elm.text.title";
             }
             rel2 {
+               offset: -11 -1;
                to_x: "base";
                to_y: "elm.text.title";
             }
          }
       }
       part { name: "separator.title";
-         type: IMAGE;
+         type: RECT;
          description { state: "default" 0.0;
             align: 0.5 0.0;
-            min: 0 2;
-            max: -1 2;
-            image.normal: "separator-horizontal.png";
+            min: 0 1;
+            max: -1 1;
+            color: 204 204 204 255;
             rel1 {
                relative: 0.0 1.0;
                to_x: "base";
@@ -112,11 +114,13 @@ group { name: "elm/win/inwin/modal_window";
             fixed: 1 0;
             rel1 {
                relative: 0.0 1.0;
+               offset: 20 13;
                to_x: "base";
                to_y: "separator.title";
             }
             rel2 {
                relative: 1.0 0.0;
+               offset: -21 -20;
                to_x: "base";
                to_y: "separator.buttons";
             }
@@ -126,20 +130,20 @@ group { name: "elm/win/inwin/modal_window";
          type: SPACER;
          description { state: "default" 0.0;
             align: 0.5 1.0;
-            min: 0 34;
-            max: -1 34;
+            min: 0 60;
+            max: -1 60;
             rel1.to: "base";
             rel2.to: "base";
          }
       }
       part { name: "separator.buttons";
-         type: IMAGE;
+         type: RECT;
          description { state: "default" 0.0;
             align: 0.5 1.0;
             fixed: 1 1;
-            min: 0 2;
-            max: -1 2;
-            image.normal: "separator-horizontal.png";
+            min: 0 1;
+            max: -1 1;
+            color: 176 176 176 255;
             rel1.to: "base";
             rel2 {
                relative: 1.0 0.0;
@@ -148,31 +152,35 @@ group { name: "elm/win/inwin/modal_window";
             }
          }
       }
-      part { name: "eflete.swallow.btn_close";
+      part { name: "eflete.swallow.btn_ok";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 0.5;
             fixed: 1 1;
-            rel1 {
-               relative: 1.0 0.5;
-               to: "buttons.area";
-            }
+            min: 76 24;
+            max: 76 24;
+            rel1.to: "buttons.area";
             rel2 {
-               relative: 1.0 0.5;
+               offset: -21 -1;
                to: "buttons.area";
             }
          }
       }
-      part { name: "eflete.swallow.btn_ok";
+      part { name: "eflete.swallow.btn_close";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 1.0;
             fixed: 1 1;
-            rel1.to: "eflete.swallow.btn_close";
+            min: 76 24;
+            max: 76 24;
+            rel1 {
+               to_x: "buttons.area";
+               to_y: "eflete.swallow.btn_ok";
+            }
             rel2 {
                relative: 0.0 1.0;
-               offset: -7 -1;
-               to: "eflete.swallow.btn_close";
+               offset: -9 -1;
+               to: "eflete.swallow.btn_ok";
             }
          }
       }
