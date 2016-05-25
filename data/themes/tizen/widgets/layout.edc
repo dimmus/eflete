@@ -766,11 +766,11 @@ group { name: "elm/layout/image_manager/default";
             }
             rel2 {
                relative: 0.0 1.0;
-               to: "eflete.swallow.add_btn";
+               to: "elm.swallow.btn_add";
             }
          }
       }
-      part { name: "eflete.swallow.search_area";
+      part { name: "elm.swallow.search";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.0;
@@ -785,7 +785,7 @@ group { name: "elm/layout/image_manager/default";
             }
          }
       }
-      part { name: "eflete.swallow.del_btn";
+      part { name: "elm.swallow.btn_del";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 0.0;
@@ -810,11 +810,11 @@ group { name: "elm/layout/image_manager/default";
             }
             rel2 {
                relative: 0.0 1.0;
-               to: "eflete.swallow.del_btn";
+               to: "elm.swallow.btn_del";
             }
          }
       }
-      part { name: "eflete.swallow.add_btn";
+      part { name: "elm.swallow.btn_add";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 1.0;
@@ -829,7 +829,7 @@ group { name: "elm/layout/image_manager/default";
             }
          }
       }
-      part { name: "eflete.swallow.grid";
+      part { name: "elm.swallow.list";
          type: SWALLOW;
          description { state: "default" 0.0;
             fixed: 1 1;

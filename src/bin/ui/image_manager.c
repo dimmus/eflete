@@ -509,7 +509,7 @@ image_manager_add(void)
      }
 
    mng.gengrid = elm_gengrid_add(mng.layout);
-   elm_object_part_content_set(mng.layout, "eflete.swallow.grid", mng.gengrid);
+   elm_object_part_content_set(mng.layout, "elm.swallow.list", mng.gengrid);
    elm_gengrid_item_size_set(mng.gengrid, ITEM_WIDTH, ITEM_HEIGHT);
    elm_gengrid_align_set(mng.gengrid, 0.0, 0.0);
    elm_scroller_policy_set(mng.gengrid, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
@@ -522,17 +522,17 @@ image_manager_add(void)
    button = elm_button_add(mng.layout);
    elm_object_style_set(button, "plus");
    evas_object_smart_callback_add(button, "clicked", _image_add_cb, NULL);
-   elm_object_part_content_set(mng.layout, "eflete.swallow.add_btn", button);
+   elm_object_part_content_set(mng.layout, "elm.swallow.btn_add", button);
 
    mng.del_button = elm_button_add(mng.layout);
    elm_object_style_set(mng.del_button, "minus");
    evas_object_smart_callback_add(mng.del_button, "clicked", _image_del_cb, NULL);
-   elm_object_part_content_set(mng.layout, "eflete.swallow.del_btn", mng.del_button);
+   elm_object_part_content_set(mng.layout, "elm.swallow.btn_del", mng.del_button);
    elm_object_disabled_set(mng.del_button, true);
 
    // Search line add
    search_entry = _image_manager_search_field_create(mng.layout);
-   elm_object_part_content_set(mng.layout, "eflete.swallow.search_area", search_entry);
+   elm_object_part_content_set(mng.layout, "elm.swallow.search", search_entry);
    evas_object_smart_callback_add(search_entry, "changed", _entry_changed_cb, NULL);
    evas_object_smart_callback_add(search_entry, "activated", _find_next_cb, NULL);
    mng.image_search_data.search_entry = search_entry;

@@ -529,17 +529,17 @@ sound_manager_add(void)
    elm_gengrid_group_item_size_set(mng.gengrid, ITEM_HEIGHT/3, ITEM_HEIGHT/3);
    evas_object_smart_callback_add(mng.gengrid, "unselected", _grid_unsel_cb, NULL);
    elm_scroller_policy_set(mng.gengrid, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
-   elm_object_part_content_set(mng.layout, "eflete.swallow.grid", mng.gengrid);
+   elm_object_part_content_set(mng.layout, "elm.swallow.list", mng.gengrid);
 
    button = elm_button_add(mng.layout);
    elm_object_style_set(button, "plus");
    evas_object_smart_callback_add(button, "clicked", _sound_add_cb, NULL);
-   elm_object_part_content_set(mng.layout, "eflete.swallow.add_btn", button);
+   elm_object_part_content_set(mng.layout, "elm.swallow.btn_add", button);
 
    mng.btn_del = elm_button_add(mng.layout);
    elm_object_style_set(mng.btn_del, "minus");
    evas_object_smart_callback_add(mng.btn_del, "clicked", _sound_del_cb, NULL);
-   elm_object_part_content_set(mng.layout, "eflete.swallow.del_btn", mng.btn_del);
+   elm_object_part_content_set(mng.layout, "elm.swallow.btn_del", mng.btn_del);
    elm_object_disabled_set(mng.btn_del, true);
 
    mng.menu = elm_menu_add(ap.win);
@@ -550,7 +550,7 @@ sound_manager_add(void)
    elm_object_part_text_set(search_entry, "guide", _("Search"));
    ICON_STANDARD_ADD(search_entry, ic, true, "search");
    elm_object_part_content_set(search_entry, "elm.swallow.end", ic);
-   elm_layout_content_set(mng.layout, "eflete.swallow.search_area", search_entry);
+   elm_layout_content_set(mng.layout, "elm.swallow.search", search_entry);
    evas_object_smart_callback_add(search_entry, "changed", _search_changed_cb, NULL);
    evas_object_smart_callback_add(search_entry, "activated", _find_next_cb, NULL);
    mng.sound_search_data.search_entry = search_entry;
