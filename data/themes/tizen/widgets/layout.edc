@@ -88,20 +88,20 @@ group { name: "elm/layout/popup/hint";
             color: 0 0 0 0;
          }
       }
-      part { name: "bg";
-         type: IMAGE;
+      part { name: "border";
+         type: RECT;
          description { state: "default" 0.0;
-            rel1 {
-               offset: -6 -6;
-            }
-            rel2 {
-               offset: 6 6;
-            }
-            image {
-               normal: "hint-background.png";
-               border: 5 5 3 3;
-               middle: DEFAULT;
-            }
+            color: 0 138 238 255;
+            rel1.offset: -7 -7;
+            rel2.offset: 7 7;
+         }
+      }
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 215 215 215 255;
+            rel1.offset: -6 -6;
+            rel2.offset: 6 6;
          }
       }
       part { name: "elm.swallow.content";
@@ -141,7 +141,6 @@ group { name: "elm/layout/popup/hint";
    }
 }
 
-
 group { name: "elm/layout/popup/hint_title";
    images {
       image: "hint-background.png" COMP;
@@ -156,9 +155,18 @@ group { name: "elm/layout/popup/hint_title";
             color: 0 0 0 0;
          }
       }
-      part { name: "bg";
-         type: IMAGE;
+      part { name: "border";
+         type: RECT;
          description { state: "default" 0.0;
+            color: 0 138 238 255;
+            rel1.offset: -7 -7;
+            rel2.offset: 7 7;
+         }
+      }
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 215 215 215 255;
             rel1 {
                to_y: "elm.text";
                to_x: "elm.swallow.content";
@@ -167,10 +175,6 @@ group { name: "elm/layout/popup/hint_title";
             rel2 {
                to: "elm.swallow.content";
                offset: 6 6;
-            }
-            image {
-               normal: "hint-background.png";
-               border: 5 5 3 3;
             }
          }
       }
@@ -212,8 +216,6 @@ group { name: "elm/layout/popup/hint_title";
       }
    }
 }
-
-
 
 group { name: "elm/layout/property/default";
    parts {
