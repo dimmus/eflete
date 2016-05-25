@@ -391,7 +391,6 @@ gm_group_del(Project *pro, Group *group)
    assert(pro != NULL);
    assert(group != NULL);
    assert(group->edit_object == NULL);
-   assert(group->history == NULL);
 
    /* Don't free the list data (Part), because data owners are another groups */
    group->used_in = eina_list_free(group->used_in);
