@@ -11,6 +11,7 @@ collections {
    #include "widgets/inwin.edc"
    #include "widgets/genlist.edc"
    #include "widgets/gengrid.edc"
+   #include "widgets/genlist_property.edc"
    #include "widgets/entry.edc"
    #include "widgets/check.edc"
    #include "widgets/toolbar.edc"
