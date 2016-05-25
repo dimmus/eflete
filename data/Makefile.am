@@ -12,6 +12,8 @@ EDJE_FLAGS = -id $(top_srcdir)/data/layouts/images -fd $(top_srcdir)/data/fonts
 EDJE_FLAGS_DEFAULT = -id $(top_srcdir)/data/themes/default/images -id $(top_srcdir)/data/themes/default/images/splash -fd $(top_srcdir)/data/fonts
 EDJE_FLAGS_TIZEN = -id $(top_srcdir)/data/themes/tizen/images -id $(top_srcdir)/data/themes/tizen/images/splash -fd $(top_srcdir)/data/fonts
 EDJE_FLAGS_RESOURCES = -id $(top_srcdir)/data/resources/images
+EDJE_FLAGS_EWE = -fd $(top_srcdir)/data/themes/ewe/fonts -id $(top_srcdir)/data/themes/ewe/widgets/images
+EDJE_FLAGS_EWE_TIZEN = -fd $(top_srcdir)/data/themes/ewe_tizen/fonts -id $(top_srcdir)/data/themes/ewe_tizen/widgets/images
 
 filesdir = $(datadir)/eflete/themes/default
 files_DATA = eflete_elm.edj
@@ -58,8 +60,10 @@ ewe_DATA = ewe.edj
 
 if WANT_TIZEN
 build_opt = $(EDJE_FLAGS_TIZEN) $(top_srcdir)/data/themes/tizen/default.edc
+build_ewe_opt = $(EDJE_FLAGS_EWE_TIZEN) $(top_srcdir)/data/themes/ewe_tizen/default.edc
 else
 build_opt = $(EDJE_FLAGS_DEFAULT) $(top_srcdir)/data/themes/default/default.edc
+build_ewe_opt = $(EDJE_FLAGS_EWE) $(top_srcdir)/data/themes/ewe/default.edc
 endif
 
 ewe_deps = \
@@ -67,7 +71,11 @@ ewe_deps = \
 	$(top_srcdir)/data/themes/ewe/*.edc \
 	$(top_srcdir)/data/themes/ewe/widgets/*.edc \
 	$(top_srcdir)/data/themes/ewe/widgets/images/*.png \
-	$(top_srcdir)/data/themes/ewe/fonts/*.ttf
+	$(top_srcdir)/data/themes/ewe/fonts/*.ttf \
+	$(top_srcdir)/data/themes/ewe_tizen/*.edc \
+	$(top_srcdir)/data/themes/ewe_tizen/widgets/*.edc \
+	$(top_srcdir)/data/themes/ewe_tizen/widgets/images/*.png \
+	$(top_srcdir)/data/themes/ewe_tizen/fonts/*.ttf
 
 eflete_deps = \
 	$(top_srcdir)/data/*.edc \
@@ -94,10 +102,7 @@ color_eet_deps = \
 	$(top_srcdir)/data/color/color.src
 
 ewe.edj: Makefile $(ewe_deps)
-	$(AM_V_EDJ)$(EDJE_CC) \
-	-fd $(top_srcdir)/data/themes/ewe/fonts \
-	-id $(top_srcdir)/data/themes/ewe/widgets/images \
-	$(top_srcdir)/data/themes/ewe/default.edc \
+	$(AM_V_EDJ)$(EDJE_CC) $(build_ewe_opt) \
 	$(top_builddir)/data/ewe.edj
 
 eflete.edj: Makefile $(eflete_deps)
