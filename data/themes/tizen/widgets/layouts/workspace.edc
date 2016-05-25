@@ -80,25 +80,35 @@ group { name: "elm/layout/workspace/scroller";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
+            fixed: 1 0;
             max: 25 25;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "border_right";
+               to_y: "border_top";
+            }
          }
          description { state: "hide" 0.0;
-            align: 0.0 0.0;
+            inherit: "default" 0.00;
+            fixed: 0 0;
             max: 0 0;
+            rel1 {
+               relative: 0.0 0.0;
+               to_x: "";
+               to_y: "";
+            }
          }
       }
       part { name: "bg.ruler_v";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            color_class: "bg_entry";
+            color_class: "genlist_bg";
             rel1 {
                relative: 0.0 1.0;
                to_y: "area.ruler.cros";
             }
-            rel2 {
-               to_x: "area.ruler.cros";
-            }
+            rel2.to_x: "area.ruler.cros";
          }
       }
       part { name: "elm.swallow.ruler_v";
@@ -111,46 +121,27 @@ group { name: "elm/layout/workspace/scroller";
                relative: 0.0 1.0;
                to_y: "area.ruler.cros";
             }
-            rel2 {
-               to_x: "area.ruler.cros";
-            }
+            rel2.to_x: "area.ruler.cros";
          }
          description { state: "hidden" 0.0;
-            align: 0.0 0.5;
+            inherit: "default" 0.00;
             max: 0 -1;
-            rel1 {
-               relative: 0.0 1.0;
-               to_y: "area.ruler.cros";
-            }
-            rel2 {
-               to_x: "area.ruler.cros";
-            }
          }
-
       }
       part { name: "clipper.ruler_v";
          type: RECT;
          description { state: "default" 0.0;
-            rel1 {
-               to: "elm.swallow.ruler_v";
-            }
-            rel2 {
-               to: "elm.swallow.ruler_v";
-            }
+            rel1.to: "elm.swallow.ruler_v";
+            rel2.to: "elm.swallow.ruler_v";
          }
       }
       part { name: "bg.ruler_h";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            color_class: "bg_entry";
-            rel1 {
-               relative: 0.0 0.0;
-               to: "area.ruler.cros";
-            }
-            rel2 {
-               to_y: "area.ruler.cros";
-            }
+            color_class: "genlist_bg";
+            rel1.to: "area.ruler.cros";
+            rel2.to_y: "area.ruler.cros";
          }
       }
       part { name: "elm.swallow.ruler_h";
@@ -158,36 +149,23 @@ group { name: "elm/layout/workspace/scroller";
          scale: 1;
          clip_to: "clipper.ruler_h";
          description { state: "default" 0.0;
-            align: 0.5. 0.0;
+            align: 0.5 0.0;
             rel1 {
                relative: 1.0 0.0;
                to_x: "area.ruler.cros";
             }
-            rel2 {
-               to_y: "area.ruler.cros";
-            }
+            rel2.to_y: "area.ruler.cros";
          }
          description { state: "hidden" 0.0;
-            align: 0.5. 0.0;
+            inherit: "default" 0.00;
             max: -1 0;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "area.ruler.cros";
-            }
-            rel2 {
-               to_y: "area.ruler.cros";
-            }
          }
       }
       part { name: "clipper.ruler_h";
          type: RECT;
          description { state: "default" 0.0;
-            rel1 {
-               to: "elm.swallow.ruler_h";
-            }
-            rel2 {
-               to: "elm.swallow.ruler_h";
-            }
+            rel1.to: "elm.swallow.ruler_h";
+            rel2.to: "elm.swallow.ruler_h";
          }
       }
       part { name: "elm.swallow.scroller";
@@ -203,11 +181,51 @@ group { name: "elm/layout/workspace/scroller";
       part { name: "elm.swallow.overlay";
          type: SWALLOW;
          description { state: "default" 0.0;
+            rel1.to: "elm.swallow.scroller";
+            rel2.to: "elm.swallow.scroller";
+         }
+      }
+      part { name: "border_top";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            min: 1 1;
+            max: -1 1;
+            color_class: "border";
+         }
+      }
+      part { name: "border_right";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 1 0;
+            max: 1 -1;
+            color_class: "border";
+         }
+      }
+      part { name: "ruler_bottom";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            min: 0 1;
+            max: -1 1;
+            color_class: "border";
             rel1 {
-               to: "elm.swallow.scroller";
+               relative: 0.0 1.0;
+               to_y: "elm.swallow.ruler_h";
             }
-            rel2 {
-               to: "elm.swallow.scroller";
+         }
+      }
+      part { name: "ruler_left";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 1 0;
+            max: 1 -1;
+            color_class: "border";
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "elm.swallow.ruler_v";
             }
          }
       }
