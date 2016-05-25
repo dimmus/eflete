@@ -530,7 +530,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
    Ewe_Combobox_Item *cb_item = NULL;
    double double_val1 = 0.0;
    Eina_Bool bool_val1 = false;
-   int r, g, b, a;
+   int r = -1, g = -1, b = -1, a = -1;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -572,6 +572,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
+         assert(cb_item != NULL);
          tpd.font_style_weight = cb_item->index;
          _tag_parse(eina_stringshare_add(cb_item->title), "font_weight");
          _style_edit_update();
@@ -579,6 +580,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH:
+         assert(cb_item != NULL);
          tpd.font_style_width = cb_item->index;
          _tag_parse(eina_stringshare_add(cb_item->title), "font_width");
          _style_edit_update();
@@ -608,6 +610,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
 
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR:
+         assert(cb_item != NULL);
          tpd.font_align_hor = cb_item->index;
          _tag_parse(eina_stringshare_add(cb_item->title), "align");
          _style_edit_update();
@@ -615,6 +618,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_VER:
+         assert(cb_item != NULL);
          tpd.font_valign_hor = cb_item->index;
          _tag_parse(eina_stringshare_add(cb_item->title), "valign");
          _style_edit_update();
@@ -640,6 +644,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP:
+         assert(cb_item != NULL);
          tpd.wrap = cb_item->index;
          _tag_parse(eina_stringshare_add(cb_item->title), "wrap");
          _style_edit_update();
@@ -735,6 +740,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
 
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE:
+         assert(cb_item != NULL);
          tpd.glow_style = cb_item->index;
          _tag_parse(eina_stringshare_add(cb_item->title), "style");
          _style_edit_update();
@@ -755,6 +761,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
+         assert(cb_item != NULL);
          eina_stringshare_del(style_table[DIRECTION_NUM][1]);
          style_table[DIRECTION_NUM][1] = eina_stringshare_add(cb_item->title);
          _tag_parse(cb_item->title, "direction");
@@ -811,6 +818,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          ap.project->changed = true;
          break;
       case ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE:
+         assert(cb_item != NULL);
          tpd.underline = cb_item->index;
          _tag_parse(eina_stringshare_add(cb_item->title), "underline");
          _style_edit_update();

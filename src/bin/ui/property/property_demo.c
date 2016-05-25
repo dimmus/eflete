@@ -161,7 +161,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
    Eina_Stringshare *str_val1 = NULL;
    Ewe_Combobox_Item *cb_item = NULL;
    double double_val1 = 0.0;
-   int r, g, b, a;
+   int r = -1, g = -1, b = -1, a = -1;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -199,6 +199,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_TEXT_SET, demo_pd.part);
          break;
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_CONTENT:
+         assert(cb_item != NULL);
          demo_pd.part->swallow_content = cb_item->index;
          demo_pd.part->change = true;
          GENLIST_FILTER_APPLY(pd->genlist);
@@ -206,6 +207,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
 
       case ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET:
+         assert(cb_item != NULL);
          demo_pd.part->widget = cb_item->index;
          demo_pd.part->change = true;
          evas_object_smart_callback_call(ap.win, SIGNAL_DEMO_SWALLOW_SET, demo_pd.part);

@@ -2480,7 +2480,7 @@ static void
 _change_cb(Property_Attribute *pa, Property_Action *action)
 {
    double double_val1 = 0.0;
-   int r, g, b, a;
+   int r = -1, g = -1, b = -1, a = -1;
    Eina_Stringshare *str_val1 = NULL;
    Eina_Bool bool_val1 = false;;
    Ewe_Combobox_Item *cb_item = NULL;
@@ -2595,60 +2595,70 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_PART_CLIP_TO:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_part_clip_to_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_PROXY_SOURCE:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_state_proxy_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_IGNORE_FLAGS:
+         assert(cb_item != NULL);
          str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_part_ignore_flags_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_POINTER_MODE:
+         assert(cb_item != NULL);
          str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_part_pointer_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_SELECT_MODE:
+         assert(cb_item != NULL);
          str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_part_select_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_ENTRY_MODE:
+         assert(cb_item != NULL);
          str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_part_entry_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_CURSOR_MODE:
+         assert(cb_item != NULL);
          str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_part_cursor_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_FILL_TYPE:
+         assert(cb_item != NULL);
          str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_state_fill_type_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXT_EFFECT:
+         assert(cb_item != NULL);
          str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_part_text_effect_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION:
+         assert(cb_item != NULL);
          str_val1 = eina_stringshare_add(cb_item->title);
          /* shodow directions are shifted by 4 in enum */
          CRIT_ON_FAIL(editor_part_text_shadow_direction_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, cb_item->index << 4));
@@ -2680,78 +2690,91 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.int_val1 = edje_edit_part_drag_count_y_get(EDIT_OBJ, PART_ARGS);
          break;
       case ATTRIBUTE_PART_DRAG_CONFINE:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_part_drag_confine_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_DRAG_THRESHOLD:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_part_drag_threshold_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_DRAG_EVENT:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_part_drag_event_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_GROUP_SOURCE:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_part_group_source_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_part_textblock_selection_under_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_part_textblock_cursor_under_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_part_textblock_anchors_under_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_part_textblock_selection_over_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_part_textblock_cursor_over_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_part_textblock_anchors_over_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_SOURCE:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_state_text_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_state_text_text_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_TEXT_STYLE:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_state_text_style_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
@@ -2810,6 +2833,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.double_val1 = edje_edit_state_aspect_max_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_ASPECT_PREF:
+         assert(cb_item != NULL);
          str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_state_aspect_pref_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
@@ -2824,12 +2848,14 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.double_val1 = edje_edit_state_align_y_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_REL1_TO_X:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_state_rel1_to_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_REL1_TO_Y:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_state_rel1_to_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
@@ -2852,12 +2878,14 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.int_val1 = edje_edit_state_rel1_offset_y_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_REL2_TO_X:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_state_rel2_to_x_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_REL2_TO_Y:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_state_rel2_to_y_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
@@ -2896,6 +2924,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_state_image_border_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, NULL, &group_pd.history.new.int_val1);
          break;
       case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
+         assert(cb_item != NULL);
          str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_state_image_border_fill_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
@@ -2935,6 +2964,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.int_val1 = edje_edit_state_fill_size_offset_y_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_COLOR_CLASS:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          _color_class_select(action->control, str_val1);
          CRIT_ON_FAIL(editor_state_color_class_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
@@ -3109,6 +3139,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.double_val1 = edje_edit_program_value_get(EDIT_OBJ, PROGRAM_ARGS);
          break;
       case ATTRIBUTE_PROGRAM_FILTER_PART:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_program_filter_part_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
@@ -3116,6 +3147,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE]);
          break;
       case ATTRIBUTE_PROGRAM_FILTER_STATE:
+         assert(cb_item != NULL);
          str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_program_filter_state_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
@@ -3146,6 +3178,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_TABLE_HOMOGENEOUS:
+         assert(cb_item != NULL);
          str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_state_table_homogeneous_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
@@ -3153,6 +3186,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
 
       case ATTRIBUTE_PART_ITEM_SOURCE:
+         assert(cb_item != NULL);
          str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
          CRIT_ON_FAIL(editor_part_item_source_set(EDIT_OBJ, CHANGE_NO_MERGE, ITEM_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
@@ -3199,12 +3233,14 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.double_val1 = edje_edit_part_item_align_y_get(EDIT_OBJ, ITEM_ARGS);
          break;
       case ATTRIBUTE_PART_ITEM_ASPECT_MODE:
+         assert(cb_item != NULL);
          str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_part_item_aspect_mode_set(EDIT_OBJ, CHANGE_NO_MERGE, ITEM_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_PROGRAM_TRANSITION_TYPE:
+         assert(cb_item != NULL);
          str_val1 = eina_stringshare_add(cb_item->title);
          CRIT_ON_FAIL(editor_program_transition_type_set(EDIT_OBJ, CHANGE_NO_MERGE, PROGRAM_ARGS, cb_item->index));
          eina_stringshare_del(group_pd.history.new.str_val1);
