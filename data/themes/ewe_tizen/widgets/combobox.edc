@@ -1019,7 +1019,7 @@ group { name: "ewe/combobox/item/color_class";
          }
          description { state: "focused" 0.0;
             align: 0.0 0.5;
-            color: 239 239 239 255;
+            color: 85 85 85 255;
             rel1 {
                relative: 1.0 0.0;
                to_x: "padding.left.text";
