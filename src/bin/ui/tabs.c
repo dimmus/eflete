@@ -1105,8 +1105,10 @@ tabs_home_tab_add(Tabs_Menu view)
    item = mem_calloc(1, sizeof(Tabs_Item));
    item->group = NULL;
    item->content = tabs.home.content;
+#if WANT_TIZEN
    item->toolbar_item = elm_toolbar_item_append(tabs.toolbar, "go-home", _("Home"),
                                                 _content_set, (void *)item);
+#endif /* WANT_TIZEN */
 
    elm_toolbar_item_selected_set(item->toolbar_item, true);
    elm_object_item_signal_callback_add(item->toolbar_item, "tab,close", "eflete", _tab_close, (void *)item);
@@ -1134,6 +1136,12 @@ subtab_select:
       default:
          break;
      }
+#if !WANT_TIZEN
+   Evas_Object *content, *button;
+   content = elm_layout_content_get(tabs.home.content, NULL);
+   button = elm_object_part_content_get(content, "elm.swallow.btn_create");
+   evas_object_smart_callback_call(button, "clicked", NULL);
+#endif /* WANT_TIZEN */
 }
 
 void
