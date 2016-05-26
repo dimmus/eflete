@@ -94,16 +94,16 @@ _menu_cb(void *data __UNUSED__,
    switch (menu_event->mid)
      {
       case MENU_FILE_NEW_PROJECT:
-         //tabs_menu_tab_open(TAB_HOME_NEW_PROJECT);
+         tabs_home_tab_add(TAB_HOME_NEW_PROJECT);
          break;
       case MENU_FILE_OPEN_PROJECT:
-         //tabs_menu_tab_open(TAB_HOME_OPEN_PROJECT);
+         tabs_home_tab_add(TAB_HOME_OPEN_PROJECT);
          break;
       case MENU_FILE_IMPORT_EDJ:
-         //tabs_menu_tab_open(TAB_HOME_IMPORT_EDJ);
+         tabs_home_tab_add(TAB_HOME_IMPORT_EDJ);
          break;
       case MENU_FILE_IMPORT_EDC:
-         //tabs_menu_tab_open(TAB_HOME_IMPORT_EDC);
+         tabs_home_tab_add(TAB_HOME_IMPORT_EDC);
          break;
       case MENU_FILE_SAVE:
          project_save();
