@@ -116,7 +116,7 @@ AC_CHECK_PROGS([DOXYGEN], [doxygen])
 dnl custom flags
 
 dnl --enable-tizen
-TIZEN_DEF="#undef"
+HAVE_TIZEN_DEF="#undef"
 want_tizen="no"
 AC_ARG_ENABLE([tizen],
    [AC_HELP_STRING([--enable-tizen], [enable GUI for Tizen SDK. @<:@default=disabled@:>@])],
