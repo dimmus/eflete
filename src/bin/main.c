@@ -129,7 +129,7 @@ _import_edj(void *data __UNUSED__)
         tabs_menu_import_edj_data_set(proj_name, pro_path, file, widgets);
         eina_tmpstr_del(proj_name);
      }
-   //tabs_menu_tab_open(TAB_HOME_IMPORT_EDJ);
+   tabs_home_tab_add(TAB_HOME_IMPORT_EDJ);
 }
 
 static void
@@ -148,7 +148,7 @@ _import_edc(void *data __UNUSED__)
         tabs_menu_import_edc_data_set(proj_name, pro_path, file, img_dirs, snd_dirs, fnt_dirs, data_dirs);
         eina_tmpstr_del(proj_name);
      }
-   //tabs_menu_tab_open(TAB_HOME_IMPORT_EDC);
+   tabs_home_tab_add(TAB_HOME_IMPORT_EDC);
 }
 
 static void
@@ -167,7 +167,7 @@ _new_project(void *data __UNUSED__)
         tabs_menu_new_data_set(proj_name, pro_path, widgets);
         eina_tmpstr_del(proj_name);
      }
-   //tabs_menu_tab_open(TAB_HOME_NEW_PROJECT);
+   tabs_home_tab_add(TAB_HOME_NEW_PROJECT);
 }
 
 EAPI_MAIN int
