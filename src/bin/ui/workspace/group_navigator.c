@@ -26,6 +26,7 @@
 #include "project_manager.h"
 #include "change.h"
 #include "widget_macro.h"
+#include "validator.h"
 
 #define GROUP_NAVIGATOR_DATA "group_navigator_data"
 
@@ -58,6 +59,9 @@ typedef struct
    Elm_Object_Item *add_state_menu_item;
    Elm_Object_Item *add_part_item_menu_item;
    Elm_Validator_Regexp *name_validator;
+   Resource_Name_Validator *part_name_validator;
+   Resource_Name_Validator *program_name_validator;
+
    struct {
         Evas_Object *entry_name;
         Evas_Object *spinner_value;
@@ -677,18 +681,15 @@ _selected_cb(void *data,
 }
 
 static void
-_on_entry_changed(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+_on_part_name_changed(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
 {
    Part_List *pl = data;
-   const char *name;
 
    assert(pl != NULL);
 
-   name = elm_entry_entry_get(pl->popup.entry_name);
-   if ((elm_validator_regexp_status_get(pl->name_validator) != ELM_REG_NOERROR) ||
-       (edje_edit_part_exist(pl->group->edit_object, name)))
+   if (resource_name_validator_status_get(pl->part_name_validator) != ELM_REG_NOERROR)
      elm_object_disabled_set(pl->popup.btn_add, true);
    else
      elm_object_disabled_set(pl->popup.btn_add, false);
@@ -748,14 +749,10 @@ _program_validate(void *data,
                   void *event_info __UNUSED__)
 {
    Part_List *pl = data;
-   const char *program;
 
    assert(pl != NULL);
 
-   program = elm_entry_entry_get(pl->popup.entry_name);
-
-   if ((elm_validator_regexp_status_get(pl->name_validator) != ELM_REG_NOERROR) ||
-       (edje_edit_program_exist(pl->group->edit_object, program)))
+   if (resource_name_validator_status_get(pl->program_name_validator) != ELM_REG_NOERROR)
      elm_object_disabled_set(pl->popup.btn_add, true);
    else
      elm_object_disabled_set(pl->popup.btn_add, false);
@@ -907,9 +904,10 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
 
    LAYOUT_PROP_ADD(box, _("Part name:"), "popup", "1swallow")
    ENTRY_ADD(box, pl->popup.entry_name, true);
-   eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, elm_validator_regexp_helper, pl->name_validator);
+   eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, pl->part_name_validator);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new part here."));
-   evas_object_smart_callback_add(pl->popup.entry_name, "changed", _on_entry_changed, pl);
+   resource_name_validator_list_set(pl->part_name_validator, &pl->group->parts, false);
+   evas_object_smart_callback_add(pl->popup.entry_name, "changed", _on_part_name_changed, pl);
    evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_part_ok_clicked, pl);
    evas_object_show(pl->popup.entry_name);
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
@@ -1297,7 +1295,8 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
    LAYOUT_PROP_ADD(box, _("Name:"), "popup", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
-                         elm_validator_regexp_helper, pl->name_validator);
+                         resource_name_validator_helper, pl->program_name_validator);
+   resource_name_validator_list_set(pl->program_name_validator, &pl->group->programs, false);
    evas_object_smart_callback_add(pl->popup.entry_name, "changed", _program_validate, pl);
    evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_program_ok_clicked, pl);
    elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new program here."));
@@ -1991,6 +1990,9 @@ group_navigator_add(Evas_Object *parent, Group *group)
    elm_object_part_text_set(elm_menu_item_object_get(menu_item), "elm.shortcut", "r");
 
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
+   pl->part_name_validator = resource_name_validator_new(PART_NAME_REGEX, NULL);
+   pl->program_name_validator = resource_name_validator_new(NAME_REGEX, NULL);
+
    if (group->main_group)
      elm_object_disabled_set(pl->layout, true);
    else
