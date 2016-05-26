@@ -814,7 +814,7 @@ group { name: "elm/hover/base/main_menu/default";
          mouse_events: 0;
          type: RECT;
          description { state: "default" 0.0;
-            color_class: "bg_scroller";
+            color_class: "genlist_bg";
             rel1.to_y: "bottom";
             rel2.to_y: "bottom";
          }
