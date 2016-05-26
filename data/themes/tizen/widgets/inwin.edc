@@ -10,6 +10,20 @@ group { name: "elm/win/inwin/modal_window";
             color: 255 0 0 50;
          }
       }
+      part { name: "bg0";
+         type: RECT;
+         description { state: "default" 0.0;
+           color_class: "genlist_selected";
+            rel1 {
+               to: "bg";
+               offset: -1 -1;
+            }
+            rel2 {
+               to: "bg";
+               offset: 0 0;
+            }
+         }
+      }
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
