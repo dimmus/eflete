@@ -39,9 +39,9 @@ _project_navigator_group_open(void *data __UNUSED__,
 }
 
 static void
-_on_done(void *data __UNUSED__,
-         Evas_Object *obj __UNUSED__,
-         void *event_info __UNUSED__)
+_close_request(void *data __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
 {
    ui_main_window_del();
 }
@@ -86,7 +86,8 @@ ui_main_window_add(void)
 
    elm_win_title_set(ap.win, "EFL Edje Theme Editor");
 
-   evas_object_smart_callback_add(ap.win, "delete,request", _on_done, NULL);
+   evas_object_smart_callback_add(ap.win, "delete,request", _close_request, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_QUIT, _close_request, NULL);
    if (!cursor_main_set(ap.win, CURSOR_ARROW))
      {
         ERR("Main cursor not setted.");
