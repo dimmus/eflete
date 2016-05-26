@@ -22,6 +22,9 @@ group { name: "elm/button/base/default";
                border: 3 3 3 3;
             }
          }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+         }
          description { state: "clicked" 0.0;
             inherit: "default" 0.0;
             image {
@@ -115,6 +118,9 @@ group { name: "elm/button/base/default";
          description { state: "default" 0.0;
             color: 0 0 0 0;
          }
+         description { state: "visible" 0.0;
+            inherit:  "default" 0.0;
+         }
          description { state: "disabled" 0.0;
             inherit:  "default" 0.0;
             visible: 0;
@@ -135,6 +141,9 @@ group { name: "elm/button/base/default";
          description { state: "default" 0.0;
             color: 0 0 0 0;
             visible: 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -334,7 +343,10 @@ group { name: "elm/button/base/default";
          script {
             new st[31];
             new Float:vl;
-            get_state(PART:"elm.text", st, 30, vl);
+            set_state(PART:"button_image", "visible", 0.0);
+            set_state(PART:"over2", "visible", 0.0);
+            set_state(PART:"disabler", "visible", 0.0);
+             get_state(PART:"elm.text", st, 30, vl);
             if (!strcmp(st, "visible") || !strcmp(st, "disabled_visible"))
               set_state(PART:"elm.text", "visible", 0.0);
             else
