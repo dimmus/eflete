@@ -604,42 +604,27 @@ group { name: "elm/menu/separator/default";
 }
 
 group { name: "elm/menu/main_menu_submenu/default";
-   images {
-      image: "button_click_bg.png" COMP;
-   }
    parts {
       part { name: "base";
          type: SPACER;
          description { state: "default" 0.0;
             min: 0 19;
             max: -1 19;
-            rel1 {
-               offset: 1 1;
-            }
-            rel2 {
-               offset: -2 -2;
-            }
+            rel1.offset: 1 1;
+            rel2.offset: -2 -2;
          }
       }
       part { name: "bg";
-         type: IMAGE;
+         type: RECT;
          description { state: "default" 0.0;
-            min: 19 19;
             visible: 0;
-            rel1 {
-               to: "base";
-            }
-            rel2 {
-               to: "base";
-            }
+            rel1.to: "base";
+            rel2.to: "base";
          }
          description { state: "clicked" 0.0;
-            inherit: "default" 0.0;
+            inherit: "default" 0.00;
             visible: 1;
-            image {
-               normal: "button_click_bg.png";
-               border: 4 4 9 9;
-            }
+            color_class: "genlist_selected";
          }
       }
       part { name: "area.content";
@@ -648,12 +633,8 @@ group { name: "elm/menu/main_menu_submenu/default";
             align: 0.0 0.5;
             min: 22 0;
             max: 22 -1;
-            rel1 {
-               to: "base";
-            }
-            rel2 {
-               to: "base";
-            }
+            rel1.to: "base";
+            rel2.to: "base";
          }
       }
       part { name: "elm.swallow.content";
@@ -661,53 +642,33 @@ group { name: "elm/menu/main_menu_submenu/default";
          description { state: "default" 0.0;
             min: 16 16;
             max: 16 16;
-            rel1 {
-               to: "area.content";
-            }
-            rel2 {
-               to: "area.content";
-            }
+            rel1.to: "area.content";
+            rel2.to: "area.content";
          }
       }
       part { name: "elm.text";
          type: TEXT;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            color_class: "main";
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "area.content";
-               to_y: "base";
-            }
-            rel2 {
-               to: "base";
-            }
+            color: 0 0 0 255;
             text {
-               font: PT;
+               font: "Sans";
                size: 13;
                min: 1 1;
                max: 1 0;
                ellipsis: -1.0;
             }
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "area.content";
+               to_y: "base";
+            }
+            rel2.to: "base";
          }
          description { state: "disabled" 0.0;
-            align: 0.0 0.5;
-            color_class: "main_disabled";
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "area.content";
-               to_y: "base";
-            }
-            rel2 {
-               to: "base";
-            }
-            text {
-               font: PT;
-               size: 13;
-               min: 1 1;
-               max: 1 0;
-               ellipsis: -1.0;
-            }
+            inherit: "default" 0.00;
+            color_class: "text_tabs_default";
+            color: 255 255 255 255;
          }
       }
       part { name: "padding.end";
@@ -721,31 +682,19 @@ group { name: "elm/menu/main_menu_submenu/default";
                to_x: "elm.text";
                to_y: "base";
             }
-            rel2 {
-               to: "base";
-            }
+            rel2.to: "base";
          }
       }
       part { name: "event";
          type: RECT;
          description { state: "default" 0.0;
             color: 0 0 0 0;
-            rel1 {
-               to: "base";
-            }
-            rel2 {
-               to: "base";
-            }
+            rel1.to: "base";
+            rel2.to: "base";
          }
          description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
             visible: 0;
-            color: 0 0 0 0;
-            rel1 {
-               to: "base";
-            }
-            rel2 {
-               to: "base";
-            }
          }
       }
    }
