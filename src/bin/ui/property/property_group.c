@@ -756,7 +756,6 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_MAX_Y:
       case ATTRIBUTE_STATE_TEXT_FIT_X:
       case ATTRIBUTE_STATE_TEXT_FIT_Y:
-      case ATTRIBUTE_STATE_TEXT_SIZE:
       case ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE:
       case ATTRIBUTE_STATE_TEXT_SOURCE:
       case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
@@ -773,6 +772,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_EMIT_SOURCE:
       case ATTRIBUTE_PROGRAM_STATE:
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
+         break;
+      case ATTRIBUTE_STATE_TEXT_SIZE:
+         elm_spinner_min_max_set(action->control, 1, 9999);
          break;
       case ATTRIBUTE_STATE_MAX_W:
       case ATTRIBUTE_STATE_MAX_H:
