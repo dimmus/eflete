@@ -17,12 +17,17 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#define EO_BETA_API
+#define EFL_BETA_API_SUPPORT
+#define EFL_EO_API_SUPPORT
+
 #include "property.h"
 #include "property_private.h"
 #include "group_manager.h"
 #include "history.h"
 #include "change.h"
 #include "project_manager.h"
+#include "validator.h"
 
 #define PART_MASK(TYPE) (1u << TYPE)
 #define PART_RECTANGLE PART_MASK(EDJE_PART_TYPE_RECTANGLE)
@@ -58,6 +63,8 @@ struct _Property_Group_Data {
    Group *group;
    Part *part;
    Program *program;
+
+   Resource_Name_Validator *part_name_validator;
 
    /* data needed to correctly handle changes that will be passed to history module */
    struct {
@@ -213,6 +220,7 @@ _on_part_selected(void *data,
 
    DBG("selected part \"%s\"", PART_ARGS);
    group_pd.program = NULL;
+   resource_name_validator_resource_set(group_pd.part_name_validator, (Resource *)group_pd.part);
 
    GENLIST_FILTER_APPLY(pd->genlist);
    property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PART_TITLE]);
@@ -299,6 +307,7 @@ _on_group_changed(void *data,
    DBG("group changed to \"%s\"", group_pd.group ? group_pd.group->name : NULL);
    group_pd.part = group_pd.group ? group_pd.group->current_part : NULL;
    group_pd.program = group_pd.group ? group_pd.group->current_program : NULL;
+   resource_name_validator_list_set(group_pd.part_name_validator, &group_pd.group->parts, false);
 
    GENLIST_FILTER_APPLY(pd->genlist);
 
@@ -679,12 +688,14 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
          evas_object_size_hint_min_set(action->control, 0, 400);
          elm_object_disabled_set(action->control, true);
          break;
+      case ATTRIBUTE_PART_NAME:
+         eo_event_callback_add(action->control, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, group_pd.part_name_validator);
+         break;
       case ATTRIBUTE_STATE_IMAGE_TWEEN:
       case ATTRIBUTE_GROUP_MIN_W:
       case ATTRIBUTE_GROUP_MIN_H:
       case ATTRIBUTE_GROUP_MAX_W:
       case ATTRIBUTE_GROUP_MAX_H:
-      case ATTRIBUTE_PART_NAME:
       case ATTRIBUTE_PART_TYPE:
       case ATTRIBUTE_PROGRAM_ACTION:
       case ATTRIBUTE_PART_SCALE:
@@ -2816,6 +2827,8 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.int_val1 = edje_edit_group_max_h_get(EDIT_OBJ);
          break;
       case ATTRIBUTE_PART_NAME:
+         if (resource_name_validator_status_get(group_pd.part_name_validator) != ELM_REG_NOERROR)
+           break;
          CRIT_ON_FAIL(editor_part_name_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
@@ -4600,6 +4613,8 @@ property_group_init(Property_Data *pd)
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_STATE_SELECTED, _on_part_state_selected, pd);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROGRAM_SELECTED, _on_program_selected, pd);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _on_editor_attribute_changed, pd);
+
+   group_pd.part_name_validator = resource_name_validator_new(PART_NAME_REGEX, NULL);
 }
 
 Eina_List *
