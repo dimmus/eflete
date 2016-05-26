@@ -744,14 +744,15 @@ gm_part_item_restack(Part *part, Eina_Stringshare *part_item, Eina_Stringshare *
 void
 gm_program_add(Project *pro, Group *group, Eina_Stringshare *program_name)
 {
-   Resource *program;
+   Program *program;
 
    assert(pro != NULL);
    assert(program_name != NULL);
    assert(group != NULL);
 
-   program = mem_calloc(1, sizeof(Resource));
+   program = mem_calloc(1, sizeof(Program));
    program->name = eina_stringshare_add(program_name);
+   program->type = edje_edit_program_action_get(group->edit_object, program_name);
    group->programs = eina_list_sorted_insert(group->programs, (Eina_Compare_Cb)resource_cmp, program);
 }
 
