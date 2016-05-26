@@ -760,7 +760,6 @@ group { name: "ewe/combobox/expander/default";
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
-            rel2.offset: -15 -1;
          }
       }
       part { name: "top.offset";
