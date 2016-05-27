@@ -63,6 +63,7 @@ struct _Property_Group_Data {
    Group *group;
    Part *part;
    Program *program;
+   Resource *group_data;
 
    Resource_Name_Validator *part_name_validator;
 
@@ -220,6 +221,7 @@ _on_part_selected(void *data,
 
    DBG("selected part \"%s\"", PART_ARGS);
    group_pd.program = NULL;
+   group_pd.group_data = NULL;
    resource_name_validator_resource_set(group_pd.part_name_validator, (Resource *)group_pd.part);
 
    GENLIST_FILTER_APPLY(pd->genlist);
@@ -282,6 +284,7 @@ _on_program_selected(void *data,
 
    DBG("selected program \"%s\"", group_pd.program->name);
    group_pd.part = NULL;
+   group_pd.group_data = NULL;
 
    GENLIST_FILTER_APPLY(pd->genlist);
    property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_TITLE]);
@@ -292,6 +295,25 @@ _on_program_selected(void *data,
         ecore_job_add(_expand_later_job, group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_AFTER].glit);
         ecore_job_add(_expand_later_job, group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TARGET].glit);
      }
+}
+
+static void
+_on_group_data_selected(void *data,
+                        Evas_Object *obj __UNUSED__,
+                        void *event_info)
+{
+   Property_Data *pd = data;
+   group_pd.group_data = event_info;
+
+   assert(pd != NULL);
+   assert(group_pd.group_data != NULL);
+
+   DBG("selected group_data \"%s\"", group_pd.group_data->name);
+   group_pd.part = NULL;
+   group_pd.program = NULL;
+
+   GENLIST_FILTER_APPLY(pd->genlist);
+   property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE]);
 }
 
 static void
@@ -307,12 +329,16 @@ _on_group_changed(void *data,
    DBG("group changed to \"%s\"", group_pd.group ? group_pd.group->name : NULL);
    group_pd.part = group_pd.group ? group_pd.group->current_part : NULL;
    group_pd.program = group_pd.group ? group_pd.group->current_program : NULL;
+   group_pd.group_data = group_pd.group ? group_pd.group->current_group_data : NULL;
    resource_name_validator_list_set(group_pd.part_name_validator, &group_pd.group->parts, false);
 
    GENLIST_FILTER_APPLY(pd->genlist);
 
    if (group_pd.group)
      property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_GROUP_TITLE]);
+
+   if (group_pd.group_data)
+     property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE]);
 
    if (group_pd.part)
      {
@@ -370,6 +396,9 @@ _filter_cb(Property_Attribute *pa)
 
       case PROPERTY_GROUP_ITEM_PROGRAM_TITLE:
          return group_pd.program != NULL;
+
+      case PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE:
+         return group_pd.group_data != NULL;
 
       default:
          if (group_pd.part)
@@ -597,6 +626,8 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_POSITION);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_H);
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_V);
+         break;
+      case PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE:
          break;
       default:
          CRIT("items callback not found for %s", pa->name);
@@ -4593,6 +4624,14 @@ _init_items()
               IT.expand_cb = _afters_get;
               break;
 
+              /* group_data block */
+           case PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE:
+              IT.name = "group data";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              break;
+
            case PROPERTY_GROUP_ITEM_LAST:
               break;
           }
@@ -4614,6 +4653,7 @@ property_group_init(Property_Data *pd)
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_NAVIGATOR_UNSELECTED, _on_group_navigator_unselected, pd);
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_STATE_SELECTED, _on_part_state_selected, pd);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROGRAM_SELECTED, _on_program_selected, pd);
+   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DATA_SELECTED, _on_group_data_selected, pd);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _on_editor_attribute_changed, pd);
 
    group_pd.part_name_validator = resource_name_validator_new(PART_NAME_REGEX, NULL);
@@ -4629,6 +4669,7 @@ property_group_items_get()
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_STATE_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_PART_ITEM_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_TITLE]);
+   items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE]);
 
    return items;
 }
