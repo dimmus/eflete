@@ -66,6 +66,7 @@ struct _Property_Group_Data {
    Resource *group_data;
 
    Resource_Name_Validator *part_name_validator;
+   Resource_Name_Validator *group_data_name_validator;
 
    /* data needed to correctly handle changes that will be passed to history module */
    struct {
@@ -201,6 +202,7 @@ static const char *image_border_fill_strings[] = { STR_NONE,
 TODO("remove NULL's after fixing genlist filters")
 #define EDIT_OBJ group_pd.group->edit_object
 #define PART_ARGS (group_pd.part) ? group_pd.part->name : NULL
+#define GROUP_DATA_ARGS (group_pd.group_data) ? group_pd.group_data->name : NULL
 #define ITEM_ARGS PART_ARGS, (group_pd.part) ? group_pd.part->current_item_name : NULL
 #define STATE_ARGS PART_ARGS, (group_pd.part) ? group_pd.part->current_state->parsed_name : NULL, (group_pd.part) ? group_pd.part->current_state->parsed_val : 0
 #define PROGRAM_ARGS (group_pd.program) ? group_pd.program->name : NULL
@@ -311,6 +313,7 @@ _on_group_data_selected(void *data,
    DBG("selected group_data \"%s\"", group_pd.group_data->name);
    group_pd.part = NULL;
    group_pd.program = NULL;
+   resource_name_validator_resource_set(group_pd.group_data_name_validator, (Resource *)group_pd.group_data);
 
    GENLIST_FILTER_APPLY(pd->genlist);
    property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE]);
@@ -331,6 +334,9 @@ _on_group_changed(void *data,
    group_pd.program = group_pd.group ? group_pd.group->current_program : NULL;
    group_pd.group_data = group_pd.group ? group_pd.group->current_group_data : NULL;
    resource_name_validator_list_set(group_pd.part_name_validator, &group_pd.group->parts, false);
+   resource_name_validator_resource_set(group_pd.part_name_validator, (Resource *)group_pd.part);
+   resource_name_validator_list_set(group_pd.group_data_name_validator, &group_pd.group->data_items, true);
+   resource_name_validator_resource_set(group_pd.group_data_name_validator, (Resource *)group_pd.group_data);
 
    GENLIST_FILTER_APPLY(pd->genlist);
 
@@ -628,6 +634,8 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_V);
          break;
       case PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE:
+         APPEND(PROPERTY_GROUP_ITEM_GROUP_DATA_NAME);
+         APPEND(PROPERTY_GROUP_ITEM_GROUP_DATA_VALUE);
          break;
       default:
          CRIT("items callback not found for %s", pa->name);
@@ -722,6 +730,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_NAME:
          eo_event_callback_add(action->control, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, group_pd.part_name_validator);
          break;
+      case ATTRIBUTE_GROUP_DATA_NAME:
+         eo_event_callback_add(action->control, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, group_pd.group_data_name_validator);
+         break;
+      case ATTRIBUTE_GROUP_DATA_VALUE:
       case ATTRIBUTE_STATE_IMAGE_TWEEN:
       case ATTRIBUTE_GROUP_MIN_W:
       case ATTRIBUTE_GROUP_MIN_H:
@@ -1423,6 +1435,14 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_PART_NAME:
          property_entry_set(action->control, PART_ARGS);
+         break;
+      case ATTRIBUTE_GROUP_DATA_NAME:
+         property_entry_set(action->control, GROUP_DATA_ARGS);
+         break;
+      case ATTRIBUTE_GROUP_DATA_VALUE:
+         str_val1 = edje_edit_group_data_value_get(EDIT_OBJ, GROUP_DATA_ARGS);
+         property_entry_set(action->control, str_val1);
+         edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_TYPE:
          elm_layout_text_set(action->control, NULL, gm_part_type_text_get(group_pd.part->type));
@@ -2152,6 +2172,14 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("part name changed from \"%s\" to \"%s\"");
          STR_VAL(str_val1, eina_stringshare_add(PART_ARGS));
          break;
+      case ATTRIBUTE_GROUP_DATA_NAME:
+         group_pd.history.format = _("data item name changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(GROUP_DATA_ARGS));
+         break;
+      case ATTRIBUTE_GROUP_DATA_VALUE:
+         group_pd.history.format = _("data item value changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, eina_stringshare_add(GROUP_DATA_ARGS));
+         break;
       case ATTRIBUTE_PART_TYPE:
          /* part type can't be changed */
          break;
@@ -2863,6 +2891,18 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          if (resource_name_validator_status_get(group_pd.part_name_validator) != ELM_REG_NOERROR)
            break;
          CRIT_ON_FAIL(editor_part_name_set(EDIT_OBJ, CHANGE_NO_MERGE, PART_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_GROUP_DATA_NAME:
+         if (resource_name_validator_status_get(group_pd.group_data_name_validator) != ELM_REG_NOERROR)
+           break;
+         CRIT_ON_FAIL(editor_group_data_name_set(EDIT_OBJ, CHANGE_NO_MERGE, GROUP_DATA_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
+      case ATTRIBUTE_GROUP_DATA_VALUE:
+         CRIT_ON_FAIL(editor_group_data_value_set(EDIT_OBJ, CHANGE_MERGE, GROUP_DATA_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
          break;
@@ -3613,6 +3653,8 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
      {
       case ATTRIBUTE_GROUP_NAME:
       case ATTRIBUTE_PART_NAME:
+      case ATTRIBUTE_GROUP_DATA_NAME:
+      case ATTRIBUTE_GROUP_DATA_VALUE:
       case ATTRIBUTE_STATE_NAME:
       case ATTRIBUTE_PROGRAM_NAME:
       case ATTRIBUTE_PROGRAM_SCRIPT:
@@ -4626,10 +4668,18 @@ _init_items()
 
               /* group_data block */
            case PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE:
-              IT.name = "group data";
+              IT.name = "data item";
               IT.expandable = true;
               IT.expanded = true;
               IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_GROUP_ITEM_GROUP_DATA_NAME:
+              IT.name = "name";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_DATA_NAME);
+              break;
+           case PROPERTY_GROUP_ITEM_GROUP_DATA_VALUE:
+              IT.name = "value";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_DATA_VALUE);
               break;
 
            case PROPERTY_GROUP_ITEM_LAST:
@@ -4657,6 +4707,7 @@ property_group_init(Property_Data *pd)
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _on_editor_attribute_changed, pd);
 
    group_pd.part_name_validator = resource_name_validator_new(PART_NAME_REGEX, NULL);
+   group_pd.group_data_name_validator = resource_name_validator_new(DATA_NAME_REGEX, NULL);
 }
 
 Eina_List *
