@@ -211,7 +211,6 @@ EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_EDJ_PATH=\\\"${datadir}/eflete/themes/default
 EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_EDC_PATH=\\\"${datadir}/eflete/themes/default/template/edc\\\" "
 EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_IMAGES_PATH=\\\"${datadir}/eflete/themes/default/template/images\\\" "
 EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_SOUNDS_PATH=\\\"${datadir}/eflete/themes/default/template/sounds\\\" "
-EFLETE_DEFINE+=" -DEFLETE_SETT_PATH=\\\"${HOME}/.config/eflete/\\\" "
 AC_SUBST([EFLETE_DEFINE])
 
 AM_PROG_CC_C_O

@@ -45,6 +45,7 @@ eflete_main_loop_quit(void)
 Eina_Bool
 app_init()
 {
+   Eina_Stringshare *conf_path;
 #ifdef ENABLE_NLS
    setlocale(LC_ALL, "");
    bindtextdomain(PACKAGE, LOCALE_DIR);
@@ -81,8 +82,9 @@ app_init()
         return false;
      }
 
-   if (!ecore_file_exists(EFLETE_SETT_PATH))
-     ecore_file_mkdir(EFLETE_SETT_PATH);
+   conf_path = config_dir_get();
+   if (!ecore_file_exists(conf_path))
+     ecore_file_mkdir(conf_path);
 
    if (!config_init()) return false;
 
@@ -105,6 +107,7 @@ app_init()
 
    ap.last_path = NULL;
 
+   eina_stringshare_del(conf_path);
    return true;
 }
 

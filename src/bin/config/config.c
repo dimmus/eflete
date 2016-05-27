@@ -21,8 +21,7 @@
 #include "shortcuts.h"
 #include "enventor_module.h"
 
-#define CONFIG_FILE        EFLETE_SETT_PATH"eflete.cfg"
-#define CONFIG_FILE_TMP    CONFIG_FILE".tmp"
+#define CONFIG_FILE        "eflete.cfg"
 #define CONFIG_FILE_KEY    "config"
 
 #define PROFILE_FILE_EXT   ".prf"
@@ -37,6 +36,57 @@ static Eet_Data_Descriptor *edd_recent = NULL;
 static Eet_Data_Descriptor *edd_profile = NULL;
 static Eet_Data_Descriptor *edd_keys = NULL;
 static Eet_Data_Descriptor *edd_color = NULL;
+
+Eina_Stringshare *
+config_dir_get(void)
+{
+   const char *conf_path = NULL;
+   Eina_Stringshare *cfg;
+
+   conf_path = getenv("XDG_CONFIG_HOME");
+   if (conf_path)
+     cfg = eina_stringshare_printf("%s/eflete", conf_path);
+   else
+     {
+        conf_path = eina_environment_home_get();
+        cfg = eina_stringshare_printf("%s/.config/eflete", conf_path);
+     }
+   return cfg;
+}
+
+static Eina_Stringshare *
+_config_file_path_get(void)
+{
+   Eina_Stringshare *cfg, *conf_path;
+
+   conf_path = config_dir_get();
+   cfg = eina_stringshare_printf("%s/"CONFIG_FILE, conf_path);
+
+   eina_stringshare_del(conf_path);
+   return cfg;
+}
+
+static Eina_Stringshare *
+_config_tmp_file_path_get(const char *file)
+{
+   assert (file != NULL);
+
+   return eina_stringshare_printf("%s.tmp", file);
+}
+
+static Eina_Stringshare *
+_profile_path_get(const char *name)
+{
+   Eina_Stringshare *prf, *conf_path;
+
+   assert (name != NULL);
+
+   conf_path = config_dir_get();
+   prf = eina_stringshare_printf("%s/%s"PROFILE_FILE_EXT, conf_path, name);
+
+   eina_stringshare_del(conf_path);
+   return prf;
+}
 
 static void
 _config_free(void)
@@ -383,10 +433,11 @@ void
 config_load(void)
 {
    Eet_File *ef;
-
+   Eina_Stringshare *config_file;
 
    if (config) _config_free();
-   ef = eet_open(CONFIG_FILE, EET_FILE_MODE_READ);
+   config_file = _config_file_path_get();
+   ef = eet_open(config_file, EET_FILE_MODE_READ);
    if (ef)
      {
         config = eet_data_read(ef, edd_base, CONFIG_FILE_KEY);
@@ -404,6 +455,7 @@ config_load(void)
 #ifdef HAVE_ENVENTOR
    enventor_object_profile_load(ap.enventor, profile_get());
 #endif /* HAVE_ENVENTOR */
+   eina_stringshare_del(config_file);
 }
 
 Eina_Bool
@@ -429,7 +481,7 @@ config_save(void)
    int x, y, w, h;
    Eet_File *ef;
    Eina_Bool ok;
-
+   Eina_Stringshare *cfg, *tmp; 
 
    if (!edd_base)
      {
@@ -449,14 +501,18 @@ config_save(void)
      config_panes_sizes_data_update();
 
    profile_save(config->profile);
+   cfg = _config_file_path_get();
+   tmp = _config_tmp_file_path_get(cfg);
 
-   ef = eet_open(CONFIG_FILE_TMP, EET_FILE_MODE_WRITE);
+   ef = eet_open(tmp, EET_FILE_MODE_WRITE);
    if (!ef) return false;
    ok = eet_data_write(ef, edd_base, CONFIG_FILE_KEY, config, 1);
    eet_close(ef);
    if (!ok) return false;
-   ecore_file_mv(CONFIG_FILE_TMP, CONFIG_FILE);
+   ecore_file_mv(tmp, cfg);
 
+   eina_stringshare_del(tmp);
+   eina_stringshare_del(cfg);
    return true;
 }
 
@@ -474,7 +530,7 @@ profile_load(const char *name)
 
    assert(name != NULL);
 
-   path = eina_stringshare_printf(EFLETE_SETT_PATH"%s"PROFILE_FILE_EXT, name);
+   path = _profile_path_get(name);
 
    if (profile) _profile_free();
    ef = eet_open(path, EET_FILE_MODE_READ);
@@ -507,7 +563,7 @@ profile_save(const char *name)
         return false;
      }
 
-   path = eina_stringshare_printf(EFLETE_SETT_PATH"%s"PROFILE_FILE_EXT, name);
+   path = _profile_path_get(name); 
    tmp = eina_stringshare_printf("%s%s", path, ".tmp");
 
    ef = eet_open(tmp, EET_FILE_MODE_WRITE);
@@ -535,9 +591,10 @@ profiles_get(void)
    Eina_List *files;
    char *f;
    char tmp[BUFF_MAX];
-   Eina_Stringshare *p;
+   Eina_Stringshare *p, *conf_path;
 
-   files = ecore_file_ls(EFLETE_SETT_PATH);
+   conf_path = config_dir_get();
+   files = ecore_file_ls(conf_path);
    EINA_LIST_FREE(files, f)
      {
         if (eina_str_has_suffix(f, PROFILE_FILE_EXT))
@@ -551,5 +608,6 @@ profiles_get(void)
         free(f);
      }
 
+   eina_stringshare_del(conf_path);
    return profiles;
 }

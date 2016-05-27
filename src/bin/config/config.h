@@ -313,4 +313,15 @@ profile_get(void);
 Eina_List *
 profiles_get(void);
 
+/**
+ * Get the path to Eflete config dir
+ *
+ * @return The eina_stringshare with path to config dir
+ *
+ * @ingroup Config
+ */
+Eina_Stringshare *
+config_dir_get(void);
+
+
 #endif /* CONFIG_H */
