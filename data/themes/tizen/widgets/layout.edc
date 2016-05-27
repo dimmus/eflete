@@ -264,11 +264,12 @@ group { name: "elm/layout/navigator/default";
             }
             rel1 {
                offset: 20 0;
-               to: "area.top";
+               to_x: "elm.swallow.icon";
+               to_y: "area.top";
             }
             rel2 {
                relative: 0.0 1.0;
-               offset: -4 -1;
+               offset: -6 -1;
                to_x: "elm.swallow.btn3";
                to_y: "area.top";
             }
@@ -277,16 +278,28 @@ group { name: "elm/layout/navigator/default";
             inherit: "default" 0.00;
             color_class: "main_disabled";
             color: 255 255 255 255;
+            rel1.to_x: "area.top";
+            rel2.offset: -4 -1;
          }
       }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
          description { state: "default" 0.0;
-            min: 0 16;
-            max: -1 16;
+            align: 0.0 0.5;
+            min: 16 16;
+            max: 16 16;
+            rel1 {
+               offset: 10 0;
+               to: "area.top";
+            }
+            rel2.to: "area.top";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
+            visible: 0;
          }
       }
-     part { name: "elm.swallow.content";
+      part { name: "elm.swallow.content";
          type: SWALLOW;
          description { state: "default" 0.0;
             rel1 {
@@ -304,8 +317,10 @@ group { name: "elm/layout/navigator/default";
             max: -1 1;
             color_class: "border";
             rel1.to_y: "elm.swallow.content";
-            rel2.to_y: "elm.swallow.content";
-            rel2.offset: -1 -2;
+            rel2 {
+               offset: -1 -2;
+               to_y: "elm.swallow.content";
+            }
          }
       }
       part { name: "elm.swallow.btn0";
@@ -377,12 +392,14 @@ group { name: "elm/layout/navigator/default";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "elm.text";
+         target: "elm.swallow.icon";
       }
       program { name: "disabled";
          signal: "elm,state,disabled";
          source: "elm";
          action: STATE_SET "disabled" 0.00;
          target: "elm.text";
+         target: "elm.swallow.icon";
       }
    }
 }

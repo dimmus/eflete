@@ -1890,6 +1890,12 @@ group_navigator_add(Evas_Object *parent, Group *group)
    elm_layout_theme_set(pl->layout, "layout", "navigator", "default");
    evas_object_show(pl->layout);
 
+#ifdef HAVE_TIZEN
+   Evas_Object *icon;
+   ICON_STANDARD_ADD(pl->layout, icon, true, "file")
+   elm_object_part_content_set(pl->layout, "elm.swallow.icon", icon);
+#endif
+
    evas_object_data_set(pl->layout, GROUP_NAVIGATOR_DATA, pl);
 
    pl->group = group;

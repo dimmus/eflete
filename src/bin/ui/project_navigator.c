@@ -650,6 +650,13 @@ project_navigator_add(void)
 
    project_navigator.layout = elm_layout_add(ap.win);
    elm_layout_theme_set(project_navigator.layout, "layout", "navigator", "default");
+
+#ifdef HAVE_TIZEN
+   Evas_Object *icon;
+   IMAGE_ADD_NEW(project_navigator.layout, icon, "navigator", "project");
+   elm_object_part_content_set(project_navigator.layout, "elm.swallow.icon", icon);
+#endif
+
    evas_object_show(project_navigator.layout);
 
    project_navigator.btn_add = elm_button_add(project_navigator.layout);
