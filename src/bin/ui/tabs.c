@@ -410,6 +410,23 @@ _part_renamed(void *data __UNUSED__,
 }
 
 static void
+_group_data_renamed(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *ei)
+{
+   Rename *ren = ei;
+   Resource *group_data;
+
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+   assert(ren != NULL);
+
+   group_data = pm_resource_get(tabs.current_group->data_items, ren->old_name);
+   gm_group_data_rename(ap.project, tabs.current_group, group_data, ren->new_name);
+   workspace_group_navigator_update_group_data(tabs.current_workspace, group_data);
+}
+
+static void
 _editor_saved(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *ei __UNUSED__)
@@ -940,6 +957,7 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_DEMO_SIGNAL_SEND, _demo_send_signal, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_PART_RENAMED, _part_renamed, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DATA_RENAMED, _group_data_renamed, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_SAVED, _editor_saved, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_OPENED, _project_opened, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CLOSED, _project_closed, NULL);

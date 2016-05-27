@@ -1211,6 +1211,16 @@ workspace_group_navigator_update_part(Evas_Object *obj, Part *part)
    group_navigator_part_update(wd->group_navi, part);
 }
 
+void
+workspace_group_navigator_update_group_data(Evas_Object *obj, Resource *group_data)
+{
+   WS_DATA_GET(obj);
+
+   assert(group_data != NULL);
+
+   group_navigator_group_data_update(wd->group_navi, group_data);
+}
+
 Eina_Bool
 workspace_edit_object_recalc(Evas_Object *obj __UNUSED__)
 {

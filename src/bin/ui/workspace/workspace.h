@@ -70,6 +70,17 @@ void
 workspace_group_navigator_update_part(Evas_Object *obj, Part *part);
 
 /**
+ * Update group_data info in group_data list
+ *
+ * @param obj The workspace object.
+ * @param group_data Resource to be updated.
+ *
+ * @ingroup Workspace
+ */
+void
+workspace_group_navigator_update_group_data(Evas_Object *obj, Resource *group_data);
+
+/**
  * Update the parts attributes, with recalculation.
  *
  * @paramaram obj The workspace object.

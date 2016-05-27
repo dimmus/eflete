@@ -1563,6 +1563,33 @@ _part_item_find(Part_List *pl, Part *part)
    return part_item;
 }
 
+static Elm_Object_Item *
+_group_data_item_find(Part_List *pl, Resource *group_data)
+{
+   Elm_Object_Item *group_data_item;
+   const Eina_List *group_data_items;
+   Resource *pr;
+
+   assert(pl != NULL);
+   assert(group_data != NULL);
+
+   elm_genlist_item_expanded_set(pl->data_caption_item, true);
+   group_data_items = elm_genlist_item_subitems_get(pl->data_caption_item);
+
+   group_data_item = eina_list_data_get(group_data_items);
+   pr = elm_object_item_data_get(group_data_item);
+   while (pr != group_data)
+     {
+        group_data_items = eina_list_next(group_data_items);
+        group_data_item = eina_list_data_get(group_data_items);
+        pr = elm_object_item_data_get(group_data_item);
+
+        assert(pr != NULL);
+     }
+   assert(group_data_item != NULL);
+   return group_data_item;
+}
+
 static void
 _select_next_part(Part_List *pl, Eina_Bool reverse)
 {
@@ -2181,6 +2208,24 @@ group_navigator_part_update(Evas_Object *obj, Part *part)
         assert(part_item != NULL);
 
         elm_genlist_item_update(part_item);
+     }
+}
+
+void
+group_navigator_group_data_update(Evas_Object *obj, Resource *group_data)
+{
+   Elm_Object_Item *group_data_item;
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   assert(pl != NULL);
+   assert(group_data != NULL);
+
+   if (elm_genlist_item_expanded_get(pl->data_caption_item))
+     {
+        group_data_item = _group_data_item_find(pl, group_data);
+        assert(group_data_item != NULL);
+
+        elm_genlist_item_update(group_data_item);
      }
 }
 

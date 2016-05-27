@@ -65,6 +65,8 @@ group_navigator_part_select(Evas_Object *obj, Part *part);
 void
 group_navigator_part_update(Evas_Object *obj, Part *part);
 
+void
+group_navigator_group_data_update(Evas_Object *obj, Resource *group_data);
 
 void
 group_navigator_part_state_select(Evas_Object *obj, State *state);
