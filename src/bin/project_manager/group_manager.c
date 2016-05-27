@@ -803,6 +803,64 @@ gm_program_del(Project *pro, Group *group, Eina_Stringshare *program_name)
    free(program);
 }
 
+void
+gm_group_data_add(Project *pro, Group *group, Eina_Stringshare *group_data_name)
+{
+   Resource *group_data;
+
+   assert(pro != NULL);
+   assert(group_data_name != NULL);
+   assert(group != NULL);
+
+   group_data = mem_calloc(1, sizeof(Program));
+   group_data->name = eina_stringshare_add(group_data_name);
+   group->data_items = eina_list_sorted_insert(group->data_items, (Eina_Compare_Cb)resource_cmp, group_data);
+}
+
+void
+gm_group_data_del(Project *pro, Group *group, Eina_Stringshare *group_data_name)
+{
+   Eina_List *l;
+   Resource *group_data;
+
+   assert(pro != NULL);
+   assert(group_data_name != NULL);
+   assert(group != NULL);
+
+   group_data = pm_resource_get(group->data_items, group_data_name);
+
+   assert(group_data != NULL);
+
+   l = eina_list_data_find_list(group->data_items, group_data);
+
+   assert(l != NULL);
+
+   group->data_items = eina_list_remove_list(group->data_items, l);
+   eina_stringshare_del(group_data->name);
+   eina_list_free(group_data->used_in);
+   free(group_data);
+}
+
+void
+gm_group_data_rename(Project *pro, Group *group, Resource* group_data, const char *new_data_name)
+{
+   Eina_List *l;
+
+   assert(pro != NULL);
+   assert(group != NULL);
+   assert(group_data != NULL);
+   assert(new_data_name != NULL);
+
+   l = eina_list_data_find_list(group->data_items, group_data);
+
+   assert(l != NULL);
+
+   group->data_items = eina_list_remove_list(group->data_items, l);
+   eina_stringshare_del(group_data->name);
+   group_data->name = eina_stringshare_add(new_data_name);
+   group->data_items = eina_list_sorted_insert(group->data_items, (Eina_Compare_Cb)resource_cmp, group_data);
+}
+
 /**
  * ref http://docs.enlightenment.org/auto/edje/group__Edje__Object__Part.html
  */

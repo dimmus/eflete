@@ -68,6 +68,7 @@ struct _Group
    Eina_List *aliases;        /**< list of pointers to aliases. NULL if group is an alias */
    Eina_List *parts;          /**< list of parts */
    Eina_List *programs;       /**< list of programs */
+   Eina_List *data_items;     /**< list of data */
 
    Evas_Object *edit_object;  /**< object needed to access group with edje_edit functions. Should be NULL if group is not open */
    Part *current_part;        /**< pointer to selected part */
@@ -129,6 +130,13 @@ gm_program_add(Project *pro, Group *group, Eina_Stringshare *program);
 
 void
 gm_program_del(Project *pro, Group *group, Eina_Stringshare *program);
+
+void
+gm_group_data_add(Project *pro, Group *group, Eina_Stringshare *group_data_name);
+void
+gm_group_data_del(Project *pro, Group *group, Eina_Stringshare *group_data_name);
+void
+gm_group_data_rename(Project *pro, Group *group, Resource* group_data, const char *new_data_name);
 
 const char *
 gm_part_type_text_get(Edje_Part_Type part_type);
