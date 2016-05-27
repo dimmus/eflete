@@ -263,9 +263,9 @@ static void
 _group_load(Project *pro, Group *group)
 {
    Eina_Stringshare *main_group_name;
-   Eina_List *parts, *l, *lt, *programs, *targets;
+   Eina_List *parts, *l, *lt, *programs, *targets, *datas;
    Eina_Stringshare *part_name, *program_name, *target_name, *state_name,
-                    *state_full_name, *sample_name, *tone_name;
+                    *state_full_name, *sample_name, *tone_name, *group_data_name;
    double state_val;
    Part *part;
    State *state;
@@ -297,6 +297,10 @@ _group_load(Project *pro, Group *group)
         EINA_LIST_FOREACH(parts, l, part_name)
            gm_part_add(pro, group, part_name);
         edje_edit_string_list_free(parts);
+
+        datas = edje_edit_group_data_list_get(group->edit_object);
+        EINA_LIST_FOREACH(datas, l, group_data_name)
+           gm_group_data_add(pro, group, group_data_name);
 
         programs = edje_edit_programs_list_get(group->edit_object);
         EINA_LIST_FOREACH(programs, l, program_name)
