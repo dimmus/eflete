@@ -84,7 +84,11 @@ ui_main_window_add(void)
    evas_object_resize(ap.win, config->window.w, config->window.h);
    evas_object_move(ap.win, config->window.x, config->window.y);
 
+#ifdef HAVE_TIZEN
+   elm_win_title_set(ap.win, "Component Designer");
+#else
    elm_win_title_set(ap.win, "EFL Edje Theme Editor");
+#endif
 
    evas_object_smart_callback_add(ap.win, "delete,request", _close_request, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_QUIT, _close_request, NULL);
