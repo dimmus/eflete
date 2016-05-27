@@ -48,6 +48,7 @@ typedef enum _Property_Control Property_Control;
 typedef struct _Property_Attribute Property_Attribute;
 typedef struct _Property_Action Property_Action;
 typedef struct {
+   Evas_Object *layout;
    Evas_Object *genlist;
    Property_Mode mode;
    Property_Action *started_action;

@@ -168,10 +168,16 @@ property_add(Evas_Object *parent, Property_Mode mode)
    pd = mem_calloc(1, sizeof(Property_Data));
    property_common_itc_init(pd);
 
+   pd->layout = elm_layout_add(parent);
+   elm_layout_theme_set(pd->layout, "layout", "navigator", "default");
+   elm_object_text_set(pd->layout, "Property");
+   evas_object_show(pd->layout);
+
    pd->genlist = elm_genlist_add(parent);
    elm_genlist_block_count_set(pd->genlist, 256);
    elm_scroller_policy_set(pd->genlist, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
    elm_object_style_set(pd->genlist, "property");
+   elm_object_content_set(pd->layout, pd->genlist);
 
    evas_object_data_set(pd->genlist, PROPERTY_DATA, pd);
 
@@ -217,7 +223,7 @@ property_add(Evas_Object *parent, Property_Mode mode)
    _items_add(pd->genlist, &items, NULL);
    GENLIST_FILTER_APPLY(pd->genlist);
 
-   return pd->genlist;
+   return pd->layout;
 }
 
 void
