@@ -286,7 +286,7 @@ group { name: "elm/layout/navigator/default";
             max: -1 16;
          }
       }
-      part { name: "elm.swallow.content";
+     part { name: "elm.swallow.content";
          type: SWALLOW;
          description { state: "default" 0.0;
             rel1 {
@@ -294,6 +294,18 @@ group { name: "elm/layout/navigator/default";
                offset: -1 3;
                to_y: "area.top";
             }
+         }
+      }
+      part { name: "border";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            min: 0 1;
+            max: -1 1;
+            color_class: "border";
+            rel1.to_y: "elm.swallow.content";
+            rel2.to_y: "elm.swallow.content";
+            rel2.offset: -1 -2;
          }
       }
       part { name: "elm.swallow.btn0";
