@@ -91,6 +91,14 @@
 #define SIGNAL_PROGRAM_SELECTED "SIGNAL_PROGRAM_SELECTED"
 
 /**
+ * emited when group_data is unselected.
+ * eventinfo - pointer to Resource structure
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_GROUP_DATA_SELECTED "SIGNAL_GROUP_DATA_SELECTED"
+
+/**
  * emited when program is unselected.
  * eventinfo - pointer to Resource structure
  *
