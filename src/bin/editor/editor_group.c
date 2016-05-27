@@ -182,10 +182,10 @@ editor_group_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING;
         diff->redo.function = editor_group_name_set;
-        diff->redo.args.type_ssds.s1 = eina_stringshare_add(new_val);
+        diff->redo.args.type_s.s1 = eina_stringshare_add(new_val);
         diff->undo.type = FUNCTION_TYPE_STRING;
         diff->undo.function = editor_group_name_set;
-        diff->undo.args.type_ssds.s1 = eina_stringshare_add(old_value);
+        diff->undo.args.type_s.s1 = eina_stringshare_add(old_value);
         if (merge)
           change_diff_merge_add(change, diff);
         else
@@ -195,5 +195,146 @@ editor_group_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
      return false;
    _editor_project_changed();
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+Eina_Bool
+editor_group_data_value_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                            const char *item_name, const char *new_val)
+{
+   Diff *diff;
+   Attribute attribute = ATTRIBUTE_GROUP_DATA_VALUE;
+   assert(edit_object != NULL);
+   assert(item_name != NULL);
+   assert(new_val != NULL);
+   if (change)
+     {
+        Eina_Stringshare *old_value = edje_edit_group_data_value_get(edit_object, item_name);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->redo.function = editor_group_data_value_set;
+        diff->redo.args.type_ss.s1 = eina_stringshare_add(item_name);
+        diff->redo.args.type_ss.s2 = eina_stringshare_add(new_val);
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->undo.function = editor_group_data_value_set;
+        diff->undo.args.type_ss.s1 = eina_stringshare_add(item_name);
+        diff->undo.args.type_ss.s2 = old_value;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_group_data_value_set(edit_object, item_name, new_val))
+     return false;
+   _editor_project_changed();
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+Eina_Bool
+editor_group_data_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                           const char *item_name, const char *new_val)
+{
+   Diff *diff;
+   Rename ren;
+   Attribute attribute = ATTRIBUTE_GROUP_DATA_NAME;
+   assert(edit_object != NULL);
+   assert(item_name != NULL);
+   assert(new_val != NULL);
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->redo.function = editor_group_data_name_set;
+        diff->redo.args.type_ss.s1 = eina_stringshare_add(item_name);
+        diff->redo.args.type_ss.s2 = eina_stringshare_add(new_val);
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING;
+        diff->undo.function = editor_group_data_name_set;
+        diff->undo.args.type_ss.s1 = eina_stringshare_add(new_val);
+        diff->undo.args.type_ss.s2 = eina_stringshare_add(item_name);
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (!edje_edit_group_data_name_set(edit_object, item_name, new_val))
+     return false;
+   _editor_project_changed();
+   ren.old_name = item_name;
+   ren.new_name = new_val;
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_DATA_RENAMED, &ren);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   return true;
+}
+
+Eina_Bool
+editor_group_data_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                      const char *item_name)
+{
+   Diff *diff;
+   Eina_Stringshare *event_info;
+
+   assert(edit_object != NULL);
+   assert(item_name != NULL);
+
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING;
+        diff->redo.function = editor_group_data_add;
+        diff->redo.args.type_s.s1 = eina_stringshare_add(item_name);
+        diff->undo.type = FUNCTION_TYPE_STRING;
+        diff->undo.function = editor_group_data_del;
+        diff->undo.args.type_s.s1 = eina_stringshare_add(item_name);
+
+        change_diff_add(change, diff);
+     }
+   if (!edje_edit_group_data_add(edit_object, item_name, ""))
+     return false;
+
+   CRIT_ON_FAIL(editor_save(edit_object));
+   _editor_project_changed();
+
+   event_info = eina_stringshare_add(item_name);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, (void *)event_info);
+   eina_stringshare_del(event_info);
+   return true;
+}
+
+Eina_Bool
+editor_group_data_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+                      const char *item_name)
+{
+   Diff *diff;
+   Eina_Stringshare *event_info;
+
+   assert(edit_object != NULL);
+   assert(item_name != NULL);
+
+   event_info = eina_stringshare_add(item_name);
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, (void *)event_info);
+
+   if (change)
+     {
+        if (!editor_group_data_value_set(edit_object, change, false, item_name, ""))
+          return false;
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING;
+        diff->redo.function = editor_group_data_del;
+        diff->redo.args.type_s.s1 = eina_stringshare_add(item_name);
+        diff->undo.type = FUNCTION_TYPE_STRING;
+        diff->undo.function = editor_group_data_add;
+        diff->undo.args.type_s.s1 = eina_stringshare_add(item_name);
+
+        change_diff_add(change, diff);
+     }
+   if (!edje_edit_group_data_del(edit_object, item_name))
+     {
+        eina_stringshare_del(event_info);
+        return false;
+     }
+   eina_stringshare_del(event_info);
+   CRIT_ON_FAIL(editor_save(edit_object));
+   _editor_project_changed();
    return true;
 }

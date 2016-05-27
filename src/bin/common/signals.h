@@ -111,6 +111,14 @@ typedef struct {
 #define SIGNAL_PART_RENAMED "SIGNAL_PART_RENAMED"
 
 /**
+ * emited when group_data is renamed.
+ * eventinfo - pointer to Rename structure
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_GROUP_DATA_RENAMED "SIGNAL_GROUP_DATA_RENAMED"
+
+/**
  * emited when program is renamed.
  * eventinfo - pointer to Rename structure
  *
@@ -245,6 +253,22 @@ typedef struct {
  * @ingroup Window
  */
 #define SIGNAL_EDITOR_PROGRAM_DELETED "SIGNAL_EDITOR_PROGRAM_DELETED"
+
+/**
+ * emited when group_data is added in editor.
+ * eventinfo - stringshare with group_datas name
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_GROUP_DATA_ADDED "SIGNAL_EDITOR_GROUP_DATA_ADDED"
+
+/**
+ * emited *before* group_data will be deleted in editor.
+ * eventinfo - stringshare with group_datas name
+ *
+ * @ingroup Window
+ */
+#define SIGNAL_EDITOR_GROUP_DATA_DELETED "SIGNAL_EDITOR_GROUP_DATA_DELETED"
 
 typedef struct {
    const char *part_name;

@@ -32,6 +32,8 @@ typedef enum {
    ATTRIBUTE_GROUP_MIN_H,
    ATTRIBUTE_GROUP_MAX_W,
    ATTRIBUTE_GROUP_MAX_H,
+   ATTRIBUTE_GROUP_DATA_NAME,
+   ATTRIBUTE_GROUP_DATA_VALUE,
    ATTRIBUTE_STATE_NAME,
    ATTRIBUTE_STATE_MIN_W,
    ATTRIBUTE_STATE_MIN_H,
@@ -247,6 +249,18 @@ Eina_Bool
 editor_group_max_h_set(Evas_Object *obj, Change *change, Eina_Bool merge,
                        int new_val) EINA_WARN_UNUSED_RESULT;
 
+Eina_Bool
+editor_group_data_add(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                      const char *item_name) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_group_data_del(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                      const char *item_name) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_group_data_value_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                            const char *item_name, const char *new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_group_data_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+                           const char *item_name, const char *new_val) EINA_WARN_UNUSED_RESULT;
 /* State */
 
 Eina_Bool

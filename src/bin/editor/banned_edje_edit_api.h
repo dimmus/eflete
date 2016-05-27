@@ -53,10 +53,10 @@
 //#pragma GCC poison edje_edit_data_del
 //#pragma GCC poison edje_edit_data_value_set
 //#pragma GCC poison edje_edit_data_name_set
-//#pragma GCC poison edje_edit_group_data_add
-//#pragma GCC poison edje_edit_group_data_del
-//#pragma GCC poison edje_edit_group_data_value_set
-//#pragma GCC poison edje_edit_group_data_name_set
+#pragma GCC poison edje_edit_group_data_add
+#pragma GCC poison edje_edit_group_data_del
+#pragma GCC poison edje_edit_group_data_value_set
+#pragma GCC poison edje_edit_group_data_name_set
 
 /* Color Classes API */
 //#pragma GCC poison edje_edit_color_class_add
