@@ -100,6 +100,9 @@ struct _Workspace_Data
          Evas_Object *tile;
          Evas_Object *white;
       } bg_switcher;
+#if HAVE_TIZEN
+      Evas_Object *libraries_switcher;
+#endif
    } toolbar;
    Evas_Object *panes_h; /* for set subobject like code, sequance etc */
 
@@ -708,6 +711,35 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
      evas_object_event_callback_add(area->scroller, EVAS_CALLBACK_MOUSE_DOWN, _menu_cb, wd);
 }
 
+#if HAVE_TIZEN
+static void
+_library_select(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info)
+{
+   Workspace_Data *wd = data;
+   Ewe_Combobox_Item *item = event_info;
+
+   switch (item->index)
+     {
+        case 0: /* Image library */
+         image_manager_add();
+        break;
+        case 1: /* Sound library */
+         sound_manager_add();
+        break;
+        case 2: /* TextBlock library */
+         style_manager_add();
+        break;
+        case 3: /* Colorclass library */
+         colorclass_manager_add();
+        break;
+     }
+
+   ewe_combobox_text_set(wd->toolbar.libraries_switcher, _("Library"));
+}
+#endif
+
 static void
 _mode_cb(void *data,
          Evas_Object *obj,
@@ -1083,6 +1115,24 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.bg_switcher.black);
    elm_radio_value_set(wd->toolbar.bg_switcher.white, BG_PREVIEW_TILE);
 #endif
+
+
+#if HAVE_TIZEN
+   /* Combobox for a choose libraries. */
+   EWE_COMBOBOX_ADD(wd->toolbar.obj, wd->toolbar.libraries_switcher);
+   evas_object_size_hint_min_set(wd->toolbar.libraries_switcher, 92, 0);
+   ewe_combobox_text_set(wd->toolbar.libraries_switcher, _("Library"));
+   evas_object_smart_callback_add(wd->toolbar.libraries_switcher, "selected", _library_select, wd);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.libraries_switcher);
+
+   ewe_combobox_item_add(wd->toolbar.libraries_switcher, "Image");
+   ewe_combobox_item_add(wd->toolbar.libraries_switcher, "Sound");
+   ewe_combobox_item_add(wd->toolbar.libraries_switcher, "Textblock styles");
+   ewe_combobox_item_add(wd->toolbar.libraries_switcher, "Color classes");
+
+#endif
+
 
    /*Add to toolbar history controls */
    wd->toolbar.history =  history_ui_add(wd->toolbar.obj, wd->group->history);
