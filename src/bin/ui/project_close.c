@@ -152,9 +152,9 @@ project_close(void)
 
    assert(ap.project != NULL);
 
-   title = eina_stringshare_printf(_("Close project %s"), ap.project->name);
    if (ap.project->changed)
      {
+        title = eina_stringshare_printf(_("Close project %s"), ap.project->name);
         btn_res = popup_want_action(title, _("Do you want to save changes?"), NULL,
                                     NULL, BTN_OK|BTN_DONT_SAVE|BTN_CANCEL,
                                     NULL, NULL);
@@ -171,8 +171,8 @@ project_close(void)
               ERR("Popup return wrong value. Go to fix it!");
               abort(); /* it's wrong value need to fix popup code or popup call */
           }
+        eina_stringshare_del(title);
      }
-   eina_stringshare_del(title);
 
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
