@@ -80,11 +80,15 @@ struct _Workspace_Data
          Evas_Object *cmb_zoom;
          Evas_Object *slider;
       } zoom;
+#if !HAVE_TIZEN
       struct {
          Evas_Object *normal;
          Evas_Object *code;
          Evas_Object *demo;
       } mode_switcher;
+#else
+      Evas_Object *mode_switcher;
+#endif
       struct {
          Evas_Object *spinner_w;
          Evas_Object *check_chain;
@@ -715,7 +719,13 @@ _mode_cb(void *data,
    Scroll_Area *area = NULL;
    const Container_Geom *geom;
 
+#if !HAVE_TIZEN
    mode = elm_radio_value_get(obj);
+#else
+   // Tizen spceific code. Here uses check instead radio button.
+   mode = elm_check_state_get(obj) == EINA_TRUE ? MODE_DEMO : MODE_NORMAL;
+#endif
+
    if (mode == wd->mode) return;
 
    wd->mode = mode;
@@ -1036,6 +1046,7 @@ workspace_add(Evas_Object *parent, Group *group)
    wd->zoom_factor = 1.0;
    _zoom_controls_add(wd);
 
+#if !HAVE_TIZEN
    /* add to toolbar modes switcher */
    wd->toolbar.mode_switcher.normal = _radio_switcher_add(wd, "radio_normal", _mode_cb, MODE_NORMAL, NULL);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
@@ -1049,7 +1060,13 @@ workspace_add(Evas_Object *parent, Group *group)
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_it, true);
    elm_radio_value_set(wd->toolbar.mode_switcher.normal, 1);
-
+#else
+   CHECK_ADD(wd->layout, wd->toolbar.mode_switcher);
+   elm_object_style_set(wd->toolbar.mode_switcher, "demo");
+   evas_object_smart_callback_add(wd->toolbar.mode_switcher, "changed", _mode_cb, wd);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.mode_switcher);
+#endif
    /* add the container size controls */
    _container_size_controls_add(wd);
 
@@ -1120,8 +1137,18 @@ workspace_mode_set(Evas_Object *obj, Workspace_Mode mode)
 {
    WS_DATA_GET(obj);
 
+#if !HAVE_TIZEN
    elm_radio_value_set(wd->toolbar.mode_switcher.normal, mode);
    _mode_cb(wd, wd->toolbar.mode_switcher.normal, NULL);
+#else
+   assert(mode != MODE_CODE);
+
+   if (mode == MODE_NORMAL)
+     elm_check_state_set(wd->toolbar.mode_switcher, EINA_FALSE);
+   else if (mode == MODE_DEMO)
+     elm_check_state_set(wd->toolbar.mode_switcher, EINA_TRUE);
+   _mode_cb(wd, wd->toolbar.mode_switcher, NULL);
+#endif
 }
 
 void
