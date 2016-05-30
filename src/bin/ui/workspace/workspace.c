@@ -788,6 +788,7 @@ _mode_cb(void *data,
    elm_spinner_value_set(wd->toolbar.container_sizer.spinner_h, geom->h);
 }
 
+#if !HAVE_TIZEN
 static void
 _bg_cb(void *data,
        Evas_Object *obj,
@@ -820,8 +821,8 @@ _bg_cb(void *data,
      }
    area->bg_preview = bg_mode;
    elm_layout_signal_emit(area->bg, signal, "eflete");
-
 }
+#endif
 
 static void
 _part_select(void *data,
@@ -1052,6 +1053,7 @@ workspace_add(Evas_Object *parent, Group *group)
    /* add the container size controls */
    _container_size_controls_add(wd);
 
+#if !HAVE_TIZEN
    /* add to toolbar bg switcher */
    wd->toolbar.bg_switcher.white = _radio_switcher_add(wd, "bg_white", _bg_cb, BG_PREVIEW_WHITE, NULL);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
@@ -1063,6 +1065,7 @@ workspace_add(Evas_Object *parent, Group *group)
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.bg_switcher.black);
    elm_radio_value_set(wd->toolbar.bg_switcher.white, BG_PREVIEW_TILE);
+#endif
 
    /*Add to toolbar history controls */
    wd->toolbar.history =  history_ui_add(wd->toolbar.obj, wd->group->history);
