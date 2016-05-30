@@ -334,6 +334,7 @@ _tone_add_cb(void *data __UNUSED__,
      mng.frq_validator = elm_validator_regexp_new(FREQUENCY_REGEX, NULL);
 
    BOX_ADD(mng.win, box, false, false);
+   elm_box_padding_set(box, 0, 10);
    LAYOUT_PROP_ADD(box, _("Tone name:"), "popup", "1swallow")
    ENTRY_ADD(item, mng.tone_entry, true);
    eo_event_callback_add(mng.tone_entry, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, mng.tone_validator);

@@ -932,6 +932,7 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
    eina_stringshare_del(title);
 
    BOX_ADD(ap.popup, box, false, false);
+   elm_box_padding_set(box, 0, 10);
 
    LAYOUT_PROP_ADD(box, _("Part name:"), "popup", "1swallow")
    ENTRY_ADD(box, pl->popup.entry_name, true);
@@ -1169,6 +1170,8 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    eina_stringshare_del(title);
 
    BOX_ADD(ap.popup, box, false, false);
+   elm_box_padding_set(box, 0, 10);
+
    LAYOUT_PROP_ADD(box, _("Name:"), "popup", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
@@ -1295,6 +1298,8 @@ _on_menu_add_item_clicked(void *data __UNUSED__,
    eina_stringshare_del(title);
 
    BOX_ADD(ap.popup, box, false, false);
+   elm_box_padding_set(box, 0, 10);
+
    LAYOUT_PROP_ADD(box, _("Name:"), "popup", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,
@@ -1410,6 +1415,8 @@ _on_menu_add_program_clicked(void *data __UNUSED__,
    elm_object_part_text_set(ap.popup, "title,text", _("Add new program"));
 
    BOX_ADD(ap.popup, box, false, false);
+   elm_box_padding_set(box, 0, 10);
+
    LAYOUT_PROP_ADD(box, _("Name:"), "popup", "1swallow")
    ENTRY_ADD(item, pl->popup.entry_name, true);
    eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE,

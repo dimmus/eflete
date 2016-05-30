@@ -422,6 +422,7 @@ _btn_add_group_cb(void *data __UNUSED__,
    assert(validator == NULL);
 
    BOX_ADD(ap.win, layout_p.box, false, false)
+   elm_box_padding_set(layout_p.box, 0, 10);
    /* name: entry */
    validator = resource_name_validator_new(LAYOUT_NAME_REGEX, NULL);
    resource_name_validator_list_set(validator, &ap.project->groups, false);
