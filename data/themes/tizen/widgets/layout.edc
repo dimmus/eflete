@@ -1784,7 +1784,7 @@ group { name: "elm/layout/popup/1swallow";
             fixed: 1 0;
             min: 97 0;
             max: 97 -1;
-            color_class: "main";
+            color_class: "text_popup";
             text {
                font: "PT";
                size: 12;
@@ -1825,7 +1825,7 @@ group { name: "elm/layout/popup/1swallow_subtext";
             align: 0.0 0.5;
             min: 97 0;
             max: 97 -1;
-            color_class: "main";
+            color_class: "text_popup";
             text {
                font: "PT";
                size: 12;
@@ -1860,7 +1860,7 @@ group { name: "elm/layout/popup/1swallow_subtext";
       part { name: "elm.subtext";
          type: TEXT;
          description { state: "default" 0.0;
-            color_class: "main";
+            color_class: "text_popup";
             text {
                font: "PT";
                size: 12;

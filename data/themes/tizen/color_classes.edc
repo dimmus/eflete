@@ -1,4 +1,9 @@
 color_classes {
+   color_class { name: "text_popup";
+      color: 35 35 35 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
    color_class { name: "text_tabs_default";
       color: 102 102 102 255;
       color2: 0 0 0 0;
