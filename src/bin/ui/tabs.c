@@ -1071,7 +1071,6 @@ tabs_home_tab_add(Tabs_Menu view)
    item = _find_tab(NULL);
    if (item)
      {
-        elm_toolbar_item_selected_set(item->toolbar_item, true);
         goto subtab_select;
      }
 
@@ -1110,7 +1109,6 @@ tabs_home_tab_add(Tabs_Menu view)
                                                 _content_set, (void *)item);
 #endif /* HAVE_TIZEN */
 
-   elm_toolbar_item_selected_set(item->toolbar_item, true);
    elm_object_item_signal_callback_add(item->toolbar_item, "tab,close", "eflete", _tab_close, (void *)item);
    tabs.items = eina_list_append(tabs.items, item);
 
@@ -1142,6 +1140,7 @@ subtab_select:
    button = elm_object_part_content_get(content, "elm.swallow.btn_create");
    evas_object_smart_callback_call(button, "clicked", NULL);
 #endif /* HAVE_TIZEN */
+   elm_toolbar_item_selected_set(item->toolbar_item, true);
 }
 
 void
