@@ -1181,6 +1181,7 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
 
    LAYOUT_PROP_ADD(box, _("Value:"), "popup", "1swallow_subtext")
    SPINNER_ADD(item, pl->popup.spinner_value, 0.0, 1.0, 0.1, true);
+   elm_object_style_set(pl->popup.spinner_value, "vertical");
    elm_spinner_label_format_set(pl->popup.spinner_value, "%1.2f");
    elm_object_part_text_set(item, "elm.subtext", _("Available values: 0.0 - 1.0"));
    evas_object_smart_callback_add(pl->popup.spinner_value, "changed", _state_validate, pl);
