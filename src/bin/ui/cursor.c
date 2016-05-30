@@ -91,6 +91,9 @@ _eflete_cursor_mouse_in(void *data __UNUSED__,
    if (ev->event_flags & EVAS_EVENT_FLAG_ON_HOLD) return;
 
    cursor = evas_object_data_get(obj, CURSOR_KEY);
+
+   assert(cursor != NULL);
+
    cur_obj = _cursor_object_get(obj, cursor->type);
    _ecore_evas_cursor_set(cursor->ee, cur_obj);
 }
@@ -104,15 +107,23 @@ _eflete_cursor_mouse_out(void *data __UNUSED__,
    Evas_Event_Mouse_Out *ev;
    Cursor *cursor;
    Evas_Object *cur_obj;
+   Ecore_Evas *ee;
 
    ev = (Evas_Event_Mouse_Out *)event_info;
    if (ev->event_flags & EVAS_EVENT_FLAG_ON_HOLD) return;
 
    cursor = evas_object_data_get(obj, CURSOR_KEY);
    cursor = ecore_evas_data_get(cursor->ee, CURSOR_KEY);
-   cur_obj = _cursor_object_get(obj, cursor->type);
-
-   _ecore_evas_cursor_set(cursor->ee, cur_obj);
+   if (cursor)
+     {
+        cur_obj = _cursor_object_get(obj, cursor->type);
+        _ecore_evas_cursor_set(cursor->ee, cur_obj);
+     }
+   else
+     {
+        ee = ecore_evas_ecore_evas_get(e);
+        ecore_evas_cursor_set(ee, NULL, ELM_OBJECT_LAYER_CURSOR, 0, 0);
+     }
 }
 
 static void
