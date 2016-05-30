@@ -1156,14 +1156,17 @@ tabs_current_tab_close(void)
 void
 tabs_clean(void)
 {
+   Eina_List *l;
    Tabs_Item *item;
 
-   EINA_LIST_FREE(tabs.items, item)
+   /* delete all tab besides home tab */
+   EINA_LIST_FOREACH(tabs.items, l, item)
      {
+        if (!item->group) continue;
         _del_tab(item);
+        tabs.items = eina_list_remove(tabs.items, item);
      }
    tabs.selected = NULL;
-   tabs.items = NULL;
 }
 
 Evas_Object *
