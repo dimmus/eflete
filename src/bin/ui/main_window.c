@@ -92,11 +92,14 @@ ui_main_window_add(void)
 
    evas_object_smart_callback_add(ap.win, "delete,request", _close_request, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_QUIT, _close_request, NULL);
+
+#if 0 // turn off the eflete main cursor, while not used elementary combobox, and not fixed bug with double cursors
    if (!cursor_main_set(ap.win, CURSOR_ARROW))
      {
         ERR("Main cursor not setted.");
         abort();
      }
+#endif /* if 0 */
 
    elm_object_theme_set(ap.win, ap.theme);
 
