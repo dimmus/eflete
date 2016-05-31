@@ -134,7 +134,7 @@ group { name: "elm/win/inwin/modal_window";
             }
             rel2 {
                relative: 1.0 0.0;
-               offset: -21 -20;
+               offset: -21 -21;
                to_x: "base";
                to_y: "separator.buttons";
             }
