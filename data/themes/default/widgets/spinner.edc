@@ -1,5 +1,9 @@
 group { name: "elm/spinner/base/default";
    alias: "elm/spinner/base/colorselector/default";
+   /* because tizen theme use vertical spinners here and there,
+      and while compiling normal theme, it uses weird default vertical style
+      better use alias for now and implement vertical spinner later */
+   alias: "elm/spinner/base/vertical";
    images {
       image: "control-bg.png" COMP;
       image: "control-bg-disabled.png" COMP;
