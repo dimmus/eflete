@@ -1468,6 +1468,26 @@ workspace_program_del(Evas_Object *obj, Eina_Stringshare *program_name)
 }
 
 void
+workspace_group_data_add(Evas_Object *obj, Eina_Stringshare *group_data_name)
+{
+   WS_DATA_GET(obj);
+   assert(group_data_name != NULL);
+
+   gm_group_data_add(ap.project, wd->group, group_data_name);
+   group_navigator_group_data_add(wd->group_navi, group_data_name);
+}
+
+void
+workspace_group_data_del(Evas_Object *obj, Eina_Stringshare *group_data_name)
+{
+   WS_DATA_GET(obj);
+   assert(group_data_name != NULL);
+
+   gm_group_data_del(ap.project, wd->group, group_data_name);
+   group_navigator_group_data_del(wd->group_navi, group_data_name);
+}
+
+void
 workspace_rulers_visible_set(Evas_Object *obj, Eina_Bool visible)
 {
    Scroll_Area *area;

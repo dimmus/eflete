@@ -63,6 +63,7 @@ typedef struct
    Elm_Validator_Regexp *name_validator;
    Resource_Name_Validator *part_name_validator;
    Resource_Name_Validator *program_name_validator;
+   Resource_Name_Validator *group_data_name_validator;
 
    struct {
         Evas_Object *entry_name;
@@ -975,6 +976,92 @@ _on_menu_add_part_clicked(void *data __UNUSED__,
 }
 
 static void
+_on_group_data_name_changed(void *data,
+                            Evas_Object *obj __UNUSED__,
+                            void *event_info __UNUSED__)
+{
+   Part_List *pl = data;
+
+   assert(pl != NULL);
+
+   if (resource_name_validator_status_get(pl->group_data_name_validator) != ELM_REG_NOERROR)
+     elm_object_disabled_set(pl->popup.btn_add, true);
+   else
+     elm_object_disabled_set(pl->popup.btn_add, false);
+}
+
+static void
+_popup_add_group_data_ok_clicked(void *data,
+                                 Evas_Object *obj __UNUSED__,
+                                 void *event_info __UNUSED__)
+{
+   Part_List *pl = data;
+   const char *name;
+   Eina_Stringshare *msg;
+   Change *change;
+
+   assert(pl != NULL);
+
+   if (elm_object_disabled_get(pl->popup.btn_add)) return;
+
+   name = elm_entry_entry_get(pl->popup.entry_name);
+   msg = eina_stringshare_printf(_("added new data item \"%s\""), name);
+   change = change_add(msg);
+   CRIT_ON_FAIL(editor_group_data_add(pl->group->edit_object, change, false, name));
+
+   history_change_add(pl->group->history, change);
+   eina_stringshare_del(msg);
+   ecore_job_add(_job_popup_del, pl);
+}
+
+static void
+_on_menu_add_group_data_clicked(void *data __UNUSED__,
+                                Evas_Object *obj,
+                                void *ei __UNUSED__)
+{
+   Part_List *pl = evas_object_data_get(obj, GROUP_NAVIGATOR_DATA);
+
+   Eina_Stringshare *title;
+   Evas_Object *box, *item;
+
+   assert(pl != NULL);
+
+   ap.popup = elm_popup_add(ap.win);
+   elm_popup_orient_set(ap.popup, ELM_POPUP_ORIENT_CENTER);
+   title = eina_stringshare_printf(_("Add new data item to group \"%s\""), pl->group->name);
+   elm_object_part_text_set(ap.popup, "title,text", title);
+   eina_stringshare_del(title);
+
+   BOX_ADD(ap.popup, box, false, false);
+
+   LAYOUT_PROP_ADD(box, _("Part name:"), "popup", "1swallow")
+   ENTRY_ADD(box, pl->popup.entry_name, true);
+   eo_event_callback_add(pl->popup.entry_name, ELM_ENTRY_EVENT_VALIDATE, resource_name_validator_helper, pl->group_data_name_validator);
+   elm_object_part_text_set(pl->popup.entry_name, "guide", _("Enter name for new group_data here."));
+   resource_name_validator_list_set(pl->group_data_name_validator, &pl->group->data_items, false);
+   evas_object_smart_callback_add(pl->popup.entry_name, "changed", _on_group_data_name_changed, pl);
+   evas_object_smart_callback_add(pl->popup.entry_name, "activated", _popup_add_group_data_ok_clicked, pl);
+   evas_object_show(pl->popup.entry_name);
+   elm_object_part_content_set(item, "elm.swallow.content", pl->popup.entry_name);
+   elm_box_pack_end(box, item);
+
+   elm_object_content_set(ap.popup, box);
+   BUTTON_ADD(box, pl->popup.btn_add, _("Add"));
+   evas_object_smart_callback_add(pl->popup.btn_add, "clicked", _popup_add_group_data_ok_clicked, pl);
+   elm_object_part_content_set(ap.popup, "button1", pl->popup.btn_add);
+   elm_object_disabled_set(pl->popup.btn_add, true);
+
+   BUTTON_ADD(box, pl->popup.btn_cancel, _("Cancel"));
+   evas_object_smart_callback_add(pl->popup.btn_cancel, "clicked", _popup_cancel_clicked, pl);
+   elm_object_part_content_set(ap.popup, "button2", pl->popup.btn_cancel);
+
+   ui_menu_items_list_disable_set(ap.menu, MENU_ITEMS_LIST_MAIN, true);
+
+   evas_object_show(ap.popup);
+   elm_object_focus_set(pl->popup.entry_name, true);
+}
+
+static void
 _popup_add_state_ok_clicked(void *data,
                             Evas_Object *obj __UNUSED__,
                             void *event_info __UNUSED__)
@@ -1457,7 +1544,7 @@ group_navigator_group_data_add(Evas_Object *obj, Eina_Stringshare *group_data)
 
 static void
 _group_data_del(Part_List *pl,
-             Elm_Object_Item *glit)
+                Elm_Object_Item *glit)
 {
    Eina_Stringshare *msg;
    Change *change;
@@ -2130,9 +2217,14 @@ group_navigator_add(Evas_Object *parent, Group *group)
 
    menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Program"), _on_menu_add_program_clicked, NULL);
    elm_object_part_text_set(elm_menu_item_object_get(menu_item), "elm.shortcut", "r");
+   elm_menu_item_separator_add(pl->menu, NULL);
+
+   menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Data item"), _on_menu_add_group_data_clicked, NULL);
+   //elm_object_part_text_set(elm_menu_item_object_get(menu_item), "elm.shortcut", "q");
 
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
    pl->part_name_validator = resource_name_validator_new(PART_NAME_REGEX, NULL);
+   pl->group_data_name_validator = resource_name_validator_new(PART_NAME_REGEX, NULL);
    pl->program_name_validator = resource_name_validator_new(NAME_REGEX, NULL);
 
    if (group->main_group)
@@ -2233,6 +2325,12 @@ void
 group_navigator_add_part_request(Evas_Object *obj)
 {
    _on_menu_add_part_clicked(NULL, obj, NULL);
+}
+
+void
+group_navigator_add_group_data_request(Evas_Object *obj)
+{
+   _on_menu_add_group_data_clicked(NULL, obj, NULL);
 }
 
 void

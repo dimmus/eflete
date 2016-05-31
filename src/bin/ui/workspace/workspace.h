@@ -140,6 +140,18 @@ void
 workspace_program_add(Evas_Object *obj, Eina_Stringshare *program_name);
 
 /**
+ * Add new group_data to group_edit and group_navigator.
+ * Part should be already added to edit_object.
+ *
+ * @param obj The workspace object.
+ * @param group_data_name name of added group_data
+ *
+ * @ingroup Workspace
+ */
+void
+workspace_group_data_add(Evas_Object *obj, Eina_Stringshare *group_data_name);
+
+/**
  * Select state in group_navigator.
  * Part should be already selected.
  *
@@ -221,6 +233,18 @@ workspace_part_del(Evas_Object *obj, Eina_Stringshare *part_name);
  */
 void
 workspace_program_del(Evas_Object *obj, Eina_Stringshare *program_name);
+
+/**
+ * Del group_data from group_edit and group_navigator.
+ * Part should be already deleted edit_object.
+ *
+ * @param obj The workspace object.
+ * @param group_data_name name of deleted group_data
+ *
+ * @ingroup Workspace
+ */
+void
+workspace_group_data_del(Evas_Object *obj, Eina_Stringshare *group_data_name);
 
 /**
  *

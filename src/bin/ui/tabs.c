@@ -534,6 +534,34 @@ _editor_program_deleted_cb(void *data __UNUSED__,
 }
 
 static void
+_editor_group_data_added_cb(void *data __UNUSED__,
+                            Evas_Object *obj __UNUSED__,
+                            void *event_info)
+{
+   Eina_Stringshare *group_data_name = event_info;
+
+   assert(group_data_name != NULL);
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+
+   workspace_group_data_add(tabs.current_workspace, group_data_name);
+}
+
+static void
+_editor_group_data_deleted_cb(void *data __UNUSED__,
+                              Evas_Object *obj __UNUSED__,
+                              void *event_info)
+{
+   Eina_Stringshare *group_data_name = event_info;
+
+   assert(group_data_name != NULL);
+   assert(tabs.current_group != NULL);
+   assert(tabs.current_workspace != NULL);
+
+   workspace_group_data_del(tabs.current_workspace, group_data_name);
+}
+
+static void
 _editor_part_item_added_cb(void *data __UNUSED__,
                            Evas_Object *obj __UNUSED__,
                            void *event_info)
@@ -974,6 +1002,8 @@ tabs_add(void)
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_STATE_DELETED, _editor_state_deleted_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_ADDED, _editor_program_added_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_PROGRAM_DELETED, _editor_program_deleted_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, _editor_group_data_added_cb, NULL);
+   evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_GROUP_DATA_DELETED, _editor_group_data_deleted_cb, NULL);
 
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_PART, _shortcut_add_part_cb, NULL);
    evas_object_smart_callback_add(ap.win, SIGNAL_SHORTCUT_ADD_ITEM, _shortcut_add_part_item_cb, NULL);

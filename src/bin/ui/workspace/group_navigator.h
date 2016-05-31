@@ -105,6 +105,12 @@ void
 group_navigator_program_del(Evas_Object *obj, Eina_Stringshare *program);
 
 void
+group_navigator_group_data_add(Evas_Object *obj, Eina_Stringshare *group_data);
+
+void
+group_navigator_group_data_del(Evas_Object *obj, Eina_Stringshare *group_data);
+
+void
 group_navigator_add_part_request(Evas_Object *obj);
 
 void
