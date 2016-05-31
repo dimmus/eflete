@@ -1,4 +1,9 @@
 color_classes {
+   color_class { name: "text_splash";
+      color: 20 20 20 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
    color_class { name: "text_popup";
       color: 35 35 35 255;
       color2: 0 0 0 0;
