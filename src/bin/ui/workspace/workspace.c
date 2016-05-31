@@ -1556,6 +1556,16 @@ workspace_add_program_request(Evas_Object *obj)
 }
 
 void
+workspace_add_group_data_request(Evas_Object *obj)
+{
+   WS_DATA_GET(obj);
+
+   if (wd->mode != MODE_DEMO)
+     group_navigator_add_group_data_request(wd->group_navi);
+}
+
+
+void
 workspace_delete_request(Evas_Object *obj)
 {
    WS_DATA_GET(obj);

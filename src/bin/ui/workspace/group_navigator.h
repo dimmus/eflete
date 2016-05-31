@@ -123,6 +123,9 @@ void
 group_navigator_add_program_request(Evas_Object *obj);
 
 void
+group_navigator_add_group_data_request(Evas_Object *obj);
+
+void
 group_navigator_delete_request(Evas_Object *obj);
 
 void

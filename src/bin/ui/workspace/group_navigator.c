@@ -2220,7 +2220,7 @@ group_navigator_add(Evas_Object *parent, Group *group)
    elm_menu_item_separator_add(pl->menu, NULL);
 
    menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Data item"), _on_menu_add_group_data_clicked, NULL);
-   //elm_object_part_text_set(elm_menu_item_object_get(menu_item), "elm.shortcut", "q");
+   elm_object_part_text_set(elm_menu_item_object_get(menu_item), "elm.shortcut", "t");
 
    pl->name_validator = elm_validator_regexp_new(PART_NAME_REGEX, NULL);
    pl->part_name_validator = resource_name_validator_new(PART_NAME_REGEX, NULL);

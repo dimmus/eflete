@@ -405,6 +405,9 @@ void
 workspace_add_program_request(Evas_Object *obj);
 
 void
+workspace_add_group_data_request(Evas_Object *obj);
+
+void
 workspace_delete_request(Evas_Object *obj);
 
 void
