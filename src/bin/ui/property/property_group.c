@@ -245,6 +245,7 @@ _on_group_navigator_unselected(void *data,
    DBG("unselected_cb\n");
    group_pd.part = NULL;
    group_pd.program = NULL;
+   group_pd.group_data = NULL;
    GENLIST_FILTER_APPLY(pd->genlist);
 }
 
