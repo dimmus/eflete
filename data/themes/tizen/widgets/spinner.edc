@@ -136,11 +136,11 @@ group { name: "elm/spinner/base/vertical";
          description { state: "default" 0.0;
             fixed: 1 1;
             rel1 {
-               relative: 1.0 0.0;
+               relative: 0.0 0.0;
                to: "area.drag";
             }
             rel2 {
-               relative: 0.0 1.0;
+               relative: 1.0 1.0;
                to: "area.drag";
             }
          }
