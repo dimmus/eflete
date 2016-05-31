@@ -123,7 +123,7 @@ group { name: "elm/check/base/toggle";
                relative: 1.0 0.0;
             }
             text {
-               font: "Sans";
+               font: FN;
                size: 12;
                max: 1 1;
             }
@@ -136,7 +136,7 @@ group { name: "elm/check/base/toggle";
                to_x: "padding.icon";
             }
             text {
-               font: "Sans";
+               font: FN;
                size: 12;
                max: 1 1;
             }
@@ -541,7 +541,7 @@ group { name: "elm/check/base/default";
             }
             text {
                align: 0.0 0.5;
-               font: "PT";
+               font: FN;
                size: 12;
                min: 1 1;
                ellipsis: -1;
@@ -561,7 +561,7 @@ group { name: "elm/check/base/default";
             }
             text {
                align: 0.0 0.5;
-               font: "PT";
+               font: FN;
                size: 12;
                min: 1 1;
                ellipsis: -1;
@@ -832,7 +832,7 @@ group { name: "elm/check/base/eye";
             }
             text {
                align: 0.0 0.5;
-               font: "PT";
+               font: FN;
                size: 12;
                min: 1 1;
                ellipsis: -1;
@@ -852,7 +852,7 @@ group { name: "elm/check/base/eye";
             }
             text {
                align: 0.0 0.5;
-               font: "PT";
+               font: FN;
                size: 12;
                min: 1 1;
                ellipsis: -1;

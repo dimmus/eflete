@@ -228,7 +228,7 @@ group { name: "elm/layout/tab_home/open_project";
             align: 0.0 0.0;
             text {
                size: 12;
-               font: "PT";
+               font: FN;
                min: 1 1;
                max: 1 1;
                ellipsis: -1;
@@ -379,7 +379,7 @@ group { name: "elm/layout/tab_home/new_project";
                to_y: "swallow.all_widgets_check";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -429,7 +429,7 @@ group { name: "elm/layout/tab_home/new_project";
                to_y: "swallow.name";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -467,7 +467,7 @@ group { name: "elm/layout/tab_home/new_project";
                to_y: "swallow.path";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -507,7 +507,7 @@ group { name: "elm/layout/tab_home/new_project";
                to_y: "swallow.meta_version";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -547,7 +547,7 @@ group { name: "elm/layout/tab_home/new_project";
                to_y: "swallow.meta_authors";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.0;
             }
@@ -584,7 +584,7 @@ group { name: "elm/layout/tab_home/new_project";
                to_y: "swallow.meta_licenses";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.0;
             }
@@ -623,7 +623,7 @@ group { name: "elm/layout/tab_home/new_project";
                to_y: "swallow.meta_comment";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.0;
             }
@@ -666,7 +666,7 @@ group { name: "elm/layout/tab_home/import_edj";
                to_y: "swallow.edj";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -821,7 +821,7 @@ group { name: "elm/layout/tab_home/import_edc";
                to_y: "swallow.meta_version";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -887,7 +887,7 @@ group { name: "elm/layout/tab_home/import_edc";
                to: "area.meta_authors";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.0;
             }
@@ -940,7 +940,7 @@ group { name: "elm/layout/tab_home/import_edc";
                to: "area.meta_licenses";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.0;
             }
@@ -990,7 +990,7 @@ group { name: "elm/layout/tab_home/import_edc";
                to: "area.meta_comment";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.0;
             }
@@ -1025,7 +1025,7 @@ group { name: "elm/layout/tab_home/item";
                relative: 0.3 1.0;
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }

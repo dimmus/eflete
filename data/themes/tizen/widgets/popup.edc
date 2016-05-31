@@ -105,7 +105,7 @@ group { name: "elm/popup/base/default";
             max: -1 30;
             color_class: "genlist_text_tree";
             text {
-               font: "PT";
+               font: FN;
                size: 15;
                align: 0.0 0.5;
             }

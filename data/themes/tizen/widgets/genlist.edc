@@ -86,7 +86,7 @@
                min: 0 26;
                color_class: "genlist_text_tree";
                text {
-                  font: "Sans";
+                  font: FN;
                   size: 13;
                   align: 0.0 0.5;
                }
@@ -272,7 +272,7 @@
                to_x: "elm.swallow.end";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -440,7 +440,7 @@ group { name: "elm/genlist/item/aligned/default";
             max: -1 16;
             color_class: "genlist_text_tree";
             text {
-               font: "Sans";
+               font: FN;
                size: 13;
                align: 0.0 0.5;
             }
@@ -575,7 +575,7 @@ group { name: "elm/genlist/item/title/default";
                offset: -7 -1;
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -645,7 +645,7 @@ group { name: "elm/genlist/item/group_index/default";
                offset: -11 -1;
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -759,7 +759,7 @@ group { name: "elm/genlist/tree/default/default";
             max: -1 16;
             color_class: "genlist_text_tree";
             text {
-               font: "Sans";
+               font: FN;
                size: 13;
                align: 0.0 0.5;
             }
@@ -1001,7 +1001,7 @@ group { name: "elm/genlist/tree/part/default";
             max: -1 16;
             color_class: "genlist_text_tree";
             text {
-               font: "Sans";
+               font: FN;
                size: 13;
                align: 0.0 0.5;
             }
@@ -1181,7 +1181,7 @@ group { name: "elm/genlist/item/state/default";
             max: -1 16;
             color_class: "genlist_text_tree";
             text {
-               font: "Sans";
+               font: FN;
                size: 13;
                align: 0.0 0.5;
             }
@@ -1275,7 +1275,7 @@ group { name: "elm/genlist/item/item/default";
                offset: -7 -1;
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -1370,7 +1370,7 @@ group { name: "elm/genlist/item/state_selected/default";
             max: -1 16;
             color_class: "select";
             text {
-               font: "Sans";
+               font: FN;
                size: 13;
                align: 0.0 0.5;
             }
@@ -1479,7 +1479,7 @@ group { name: "elm/genlist/item/program/default";
             max: -1 16;
             color_class: "genlist_text_tree";
             text {
-               font: "Sans";
+               font: FN;
                size: 13;
                align: 0.0 0.5;
             }
@@ -1592,7 +1592,7 @@ group { name: "elm/genlist/tree/items_caption/default";
                offset: -7 -1;
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 0;
                align: 0.0 0.5;
@@ -1615,7 +1615,7 @@ group { name: "elm/genlist/tree/items_caption/default";
                offset: -7 -1;
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -2075,7 +2075,7 @@ group { name: "elm/genlist/item/message/default";
                offset: -25 -1;
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -2094,7 +2094,7 @@ group { name: "elm/genlist/item/message/default";
                offset: -7 -1;
             }
             text {
-               font: "PT";
+               font: FN;
                size: 10;
                align: 1.0 0.5;
             }
@@ -2112,7 +2112,7 @@ group { name: "elm/genlist/item/message/default";
                offset: -7 -1;
             }
             text {
-               font: "PT";
+               font: FN;
                size: 10;
                align: 1.0 0.5;
             }

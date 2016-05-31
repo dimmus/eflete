@@ -89,7 +89,7 @@ group { name: "elm/button/base/default";
             rel2.offset: -5 -5;
             color_class: genlist_text_tree;
             text {
-               font: Sans;
+               font: FN;
                size: 11;
                min: 0 0;
                align: 0.5 0.5;
@@ -157,7 +157,7 @@ group { name: "elm/button/base/default";
          description { state: "default" 0.0;
             visible: 0;
             text {
-               font: Sans;
+               font: FN;
                size: 11;
                min: 0 0;
                text_class: "button";
@@ -429,7 +429,7 @@ group { name: "elm/button/base/anchor";
          description { state: "default" 0.0;
             visible: 0;
             text {
-               font: "PT";
+               font: FN;
                size: 13;
                min: 1 1;
                max: 1 1;
@@ -448,7 +448,7 @@ group { name: "elm/button/base/anchor";
                offset: -11 -5;
             }
             text {
-               font: "PT";
+               font: FN;
                size: 13;
                min: 1 1;
                max: 1 1;
@@ -467,7 +467,7 @@ group { name: "elm/button/base/anchor";
                offset: -11 -5;
             }
             text {
-               font: "PT";
+               font: FN;
                size: 13;
                min: 1 1;
                max: 1 1;
@@ -1254,7 +1254,7 @@ group { name: "elm/button/base/recent";
                offset: -7 -1;
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.0;
             }
@@ -1278,7 +1278,7 @@ group { name: "elm/button/base/recent";
                offset: -7 -5;
             }
             text {
-               font: "PT";
+               font: FN;
                size: 10;
                align: 0.0 1.0;
             }

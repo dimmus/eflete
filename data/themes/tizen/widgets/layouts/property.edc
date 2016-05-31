@@ -25,7 +25,7 @@ group { name: "elm/layout/property/1swallow";
                to_y: "area.base";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -93,7 +93,7 @@ group { name: "elm/layout/property/1swallow_subtext";
                to_y: "area.base";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -129,7 +129,7 @@ group { name: "elm/layout/property/1swallow_subtext";
                to_y: "area.base";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -160,7 +160,7 @@ group { name: "elm/layout/property/1swallow_direction";
                to_y: "area.base";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -263,7 +263,7 @@ group { name: "elm/layout/property/2swallow";
                to_y: "area.content";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -285,7 +285,7 @@ group { name: "elm/layout/property/2swallow";
                to: "area.swallow1";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 1.0 0.5;
             }
@@ -323,7 +323,7 @@ group { name: "elm/layout/property/2swallow";
                to: "area.swallow1";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 1;
             }
@@ -345,7 +345,7 @@ group { name: "elm/layout/property/2swallow";
                to: "area.swallow2";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 1.0 0.5;
             }
@@ -383,7 +383,7 @@ group { name: "elm/layout/property/2swallow";
                to: "area.swallow2";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 1;
             }
@@ -475,7 +475,7 @@ group { name: "elm/layout/property/2swallow_pad";
                to_y: "area.content";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -497,7 +497,7 @@ group { name: "elm/layout/property/2swallow_pad";
                to: "area.swallow1";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 1.0 0.5;
             }
@@ -535,7 +535,7 @@ group { name: "elm/layout/property/2swallow_pad";
                to: "area.swallow1";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 1;
             }
@@ -557,7 +557,7 @@ group { name: "elm/layout/property/2swallow_pad";
                to: "area.swallow2";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 1.0 0.5;
             }
@@ -595,7 +595,7 @@ group { name: "elm/layout/property/2swallow_pad";
                to: "area.swallow2";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 1;
             }
@@ -703,7 +703,7 @@ group { name: "elm/layout/property/2swallow_vertical";
                to_y: "area.text";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -725,7 +725,7 @@ group { name: "elm/layout/property/2swallow_vertical";
                to: "area.swallow1";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 1.0 0.5;
             }
@@ -762,7 +762,7 @@ group { name: "elm/layout/property/2swallow_vertical";
                to: "area.swallow1";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 1;
             }
@@ -784,7 +784,7 @@ group { name: "elm/layout/property/2swallow_vertical";
                to: "area.swallow2";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 1.0 0.5;
             }
@@ -821,7 +821,7 @@ group { name: "elm/layout/property/2swallow_vertical";
                to: "area.swallow2";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 1;
             }
@@ -927,7 +927,7 @@ group { name: "elm/layout/property/2swallow_vertical_pad";
                to_y: "area.text";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -949,7 +949,7 @@ group { name: "elm/layout/property/2swallow_vertical_pad";
                to: "area.swallow1";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 1.0 0.5;
             }
@@ -986,7 +986,7 @@ group { name: "elm/layout/property/2swallow_vertical_pad";
                to: "area.swallow1";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 1;
             }
@@ -1008,7 +1008,7 @@ group { name: "elm/layout/property/2swallow_vertical_pad";
                to: "area.swallow2";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 1.0 0.5;
             }
@@ -1045,7 +1045,7 @@ group { name: "elm/layout/property/2swallow_vertical_pad";
                to: "area.swallow2";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 1;
             }

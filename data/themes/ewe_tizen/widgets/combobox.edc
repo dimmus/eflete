@@ -62,7 +62,7 @@ images {
             color: 88 88 88 255;
             text {
                text: "";
-               font: "PT";
+               font: FN;
                size: 15;
                max: 1 1;
             }
@@ -216,7 +216,7 @@ group { name: "ewe/combobox/base/color_class";
             color: 88 88 88 255;
             text {
                text: "";
-               font: "PT";
+               font: FN;
                size: 15;
                max: 1 1;
             }
@@ -1011,7 +1011,7 @@ group { name: "ewe/combobox/item/color_class";
                to_y: "base";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 1;
             }
@@ -1031,7 +1031,7 @@ group { name: "ewe/combobox/item/color_class";
                to_y: "base";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 1;
             }

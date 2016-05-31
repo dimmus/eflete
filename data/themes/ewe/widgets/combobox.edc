@@ -129,7 +129,7 @@ group { name: "ewe/combobox/base/default";
                to_y: "base";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 1;
             }
@@ -376,7 +376,7 @@ group { name: "ewe/combobox/base/color_class";
                to_y: "base";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 0 1;
                align: 0.0 0.5;
@@ -1196,7 +1196,7 @@ group { name: "ewe/combobox/item/color_class";
                to_y: "base";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 1;
             }
@@ -1216,7 +1216,7 @@ group { name: "ewe/combobox/item/color_class";
                to_y: "base";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 1;
             }

@@ -47,7 +47,7 @@ group { name: "elm/win/inwin/modal_window";
             max: -1 30;
             color_class: "genlist_text_tree";
             text {
-               font: "PT:style=Bold";
+               font: FN_B;
                size: 13;
                align: 0.0 0.5;
             }

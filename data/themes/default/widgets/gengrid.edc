@@ -136,7 +136,7 @@
                   to_x: "icon_border";
                }
                text {
-                  font: "PT";
+                  font: FN;
                   size: 11;
                   max: 0 1;
                }
@@ -289,7 +289,7 @@ group { name: "elm/gengrid/item/sound_editor/default";
             }
             text {
                text: "";
-               font: "PT";
+               font: FN;
                size: 11;
                min: 0 1;
                max: 0 1;
@@ -328,7 +328,7 @@ group { name: "elm/gengrid/item/sound_editor/default";
                to: "bg";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 25;
                min: 1 1;
                ellipsis: -1.0;
@@ -382,7 +382,7 @@ group { name: "elm/gengrid/item/group_index/default";
                to_x: "line_left";
             }
             text {
-               font: "PT:style=bold";
+               font: FN_B;
                size: 16;
                min: 1 1;
                max: 1 1;

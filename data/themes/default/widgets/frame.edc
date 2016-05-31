@@ -29,7 +29,7 @@ group { name: "elm/frame/base/default";
                to_y: "base";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 13;
                max: 1 1;
             }
@@ -279,7 +279,7 @@ group { name: "elm/frame/base/outdent_top";
                to_y: "base";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 13;
                max: 1 1;
             }
@@ -520,7 +520,7 @@ group { name: "elm/frame/base/icon";
                to: "elm.swallow.icon";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 13;
                max: 1 1;
             }

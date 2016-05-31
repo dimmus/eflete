@@ -126,7 +126,7 @@ group { name: "elm/popup/base/default";
                to: "base";
             }
             text {
-               font: "PT:style=Bold";
+               font: FN_B;
                size: 13;
             }
          }

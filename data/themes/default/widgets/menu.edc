@@ -99,7 +99,7 @@ group { name: "elm/menu/item/default";
                to_y: "base";
             }
             text {
-               font: PT;
+               font: FN;
                size: 12;
                min: 1 1;
                align: 0.0 0.5;
@@ -137,7 +137,7 @@ group { name: "elm/menu/item/default";
                to_y: "base";
             }
             text {
-               font: PT;
+               font: FN;
                size: 12;
                min: 1 1;
                max: 1 0;
@@ -683,7 +683,7 @@ group { name: "elm/menu/main_menu_submenu/default";
                to: "base";
             }
             text {
-               font: PT;
+               font: FN;
                size: 13;
                min: 1 1;
                max: 1 0;
@@ -702,7 +702,7 @@ group { name: "elm/menu/main_menu_submenu/default";
                to: "base";
             }
             text {
-               font: PT;
+               font: FN;
                size: 13;
                min: 1 1;
                max: 1 0;

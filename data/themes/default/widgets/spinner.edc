@@ -72,7 +72,7 @@ group { name: "elm/spinner/base/default";
                to_y: "bg";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
             }
          }
@@ -91,7 +91,7 @@ group { name: "elm/spinner/base/default";
                to_y: "bg";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 10;
             }
          }
@@ -420,7 +420,7 @@ group { name: "elm/spinner/base/live_view";
          description { state: "default" 0.0;
             color_class: "main";
             text {
-               font: "PT";
+               font: FN;
                size: 10;
             }
          }
@@ -428,21 +428,21 @@ group { name: "elm/spinner/base/live_view";
             visible: 0;
             color_class: "main";
             text {
-               font: "PT";
+               font: FN;
                size: 10;
             }
          }
          description { state: "disabled_active" 0.0;
             color_class: "main_disabled";
             text {
-               font: "PT";
+               font: FN;
                size: 10;
             }
          }
          description { state: "disabled" 0.0;
             color_class: "main_disabled";
             text {
-               font: "PT";
+               font: FN;
                size: 10;
             }
          }

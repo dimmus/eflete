@@ -9,7 +9,7 @@ group { name: "elm/slider/hidden/limit";
             align: 1.0 0.5;
             fixed: 1 1;
             text {
-               font: "FN";
+               font: FN;
                size: 10;
                text_class: "slider_text";
                min: 1 1;
@@ -28,7 +28,7 @@ group { name: "elm/slider/hidden/limit";
             fixed: 1 1;
             color_class: "main";
             text {
-               font: "PT:style=Bold";
+               font: FN_B;
                size: 10;
                text_class: "slider_text";
                min: 1 1;
@@ -141,7 +141,7 @@ group { name: "elm/slider/horizontal/indicator/default";
                to: "base";
             }
             text {
-               font: "PTSans-Bold";
+               font: FN_B;
                size: 10;
                text_class: "slider_indicator";
                min: 1 1;
@@ -164,7 +164,7 @@ group { name: "elm/slider/horizontal/indicator/default";
                to: "base";
             }
             text {
-               font: "PTSans-Bold";
+               font: FN_B;
                size: 10;
                text_class: "slider_indicator";
                min: 1 1;
@@ -400,7 +400,7 @@ group { name: "elm/slider/horizontal/default";
             }
             text {
                text: "elm.text";
-               font: "Sans";
+               font: FN;
                size: 10;
                min: 1 1;
                align: 1.0 0.5;
@@ -444,7 +444,7 @@ group { name: "elm/slider/horizontal/default";
                to_x: "elm.swallow.icon";
             }
             text {
-               font: "PT:style=Bold";
+               font: FN_B;
                size: 12;
             }
          }
@@ -461,7 +461,7 @@ group { name: "elm/slider/horizontal/default";
                to_x: "elm.swallow.icon";
             }
             text {
-               font: "PT:style=Bold";
+               font: FN_B;
                size: 12;
                min: 1 1;
                align: 0.0 0.5;

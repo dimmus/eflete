@@ -170,7 +170,7 @@ group { name: "elm/segment_control/item/default";
             rel2.offset: -6 -2;
             color_class: "main";
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                min: 1 1;
                max: 1 1;

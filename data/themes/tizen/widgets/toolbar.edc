@@ -338,7 +338,7 @@ group { name: "elm/toolbar/item/default";
                to_x: "elm.swallow.icon";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 0;
             }
@@ -355,7 +355,7 @@ group { name: "elm/toolbar/item/default";
                offset: -7 -7;
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                min: 1 1;
                max: 1 1;
@@ -829,7 +829,7 @@ group { name: "elm/toolbar/item/tabs_horizontal";
             color_class: "text_tabs_default";
             text {
                text: "";
-               font: "Sans:style=Bold";
+               font: FN_B;
                size: 13;
                max: 1 0;
                align: 0.0 0.5;
@@ -1097,7 +1097,7 @@ group { name: "elm/toolbar/item/editor_tabs_horizontal";
                to_x: "elm.swallow.icon";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 0;
             }
@@ -1114,7 +1114,7 @@ group { name: "elm/toolbar/item/editor_tabs_horizontal";
                offset: -5 -1;
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                ellipsis: 1.0;
             }
@@ -1316,7 +1316,7 @@ group { name: "elm/toolbar/item/tabs_vertical";
                to: "bg";
             }
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 0;
             }
@@ -1335,7 +1335,7 @@ group { name: "elm/toolbar/item/tabs_vertical";
             }
             text {
                align: 0.0 0.5;
-               font: "PT";
+               font: FN;
                size: 12;
                ellipsis: 1.0;
             }

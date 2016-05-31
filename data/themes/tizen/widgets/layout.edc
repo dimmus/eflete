@@ -45,7 +45,7 @@ group { name: "elm/layout/window/main";
             max: 500 -1;
             color_class: "genlist_text_tree";
             text {
-               font: "Sans";
+               font: FN;
                size: 11;
                align: 0.0 0.5;
             }
@@ -62,7 +62,7 @@ group { name: "elm/layout/window/main";
             align: 0.0 0.5;
             color_class: "genlist_text_tree";
             text {
-               font: "Sans";
+               font: FN;
                size: 11;
                align: 0.0 0.5;
             }
@@ -194,7 +194,7 @@ group { name: "elm/layout/popup/hint_title";
                offset: 0 -7;
             }
             text {
-               font: PT;
+               font: FN;
                size: 16;
                min: 1 1;
                elipsis: -1;
@@ -258,7 +258,7 @@ group { name: "elm/layout/navigator/default";
             color_class: "main";
             color: 0 150 221 255;
             text {
-               font: "Sans:style=Bold";
+               font: FN_B;
                size: 13;
                align: 0.0 0.5;
             }
@@ -1743,7 +1743,7 @@ group { name: "elm/layout/entry/overlay";
          description { state: "default" 0.0;
             color_class: "main";
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 1;
             }
@@ -1786,7 +1786,7 @@ group { name: "elm/layout/popup/1swallow";
             max: 97 -1;
             color_class: "text_popup";
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -1827,7 +1827,7 @@ group { name: "elm/layout/popup/1swallow_subtext";
             max: 97 -1;
             color_class: "text_popup";
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }
@@ -1862,7 +1862,7 @@ group { name: "elm/layout/popup/1swallow_subtext";
          description { state: "default" 0.0;
             color_class: "text_popup";
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }

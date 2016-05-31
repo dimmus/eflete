@@ -95,7 +95,7 @@ group { name: "elm/separator/horizontal/icon";
                to: "base";
             }
             text {
-               font: PT;
+               font: FN;
                size: 13;
                max: 1 1;
             }
