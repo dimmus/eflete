@@ -848,12 +848,12 @@ style_manager_add()
    mng.menu_tag = elm_menu_item_add(mng.menu, NULL, "text_style_tag", _("Tag"), _tab_add_cb, NULL);
 
    button_add = elm_button_add(ap.win);
-   elm_object_style_set(button_add, "plus");
+   elm_object_style_set(button_add, "plus_managers");
    evas_object_smart_callback_add(button_add, "clicked", _btn_add_cb, NULL);
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_add", button_add);
 
    mng.button_del = elm_button_add(ap.win);
-   elm_object_style_set(mng.button_del, "minus");
+   elm_object_style_set(mng.button_del, "minus_managers");
    evas_object_smart_callback_add(mng.button_del, "clicked", _btn_del_cb, NULL);
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_del", mng.button_del);
    elm_object_disabled_set(mng.button_del, true);

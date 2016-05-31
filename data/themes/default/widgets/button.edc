@@ -620,6 +620,7 @@ group { name: "elm/button/base/close";
 }
 
 group { name: "elm/button/base/plus";
+   alias: "elm/button/base/plus_managers";
    images {
       image: "button_click_bg.png" COMP;
       image: "icon_plus.png" COMP;
@@ -743,6 +744,7 @@ group { name: "elm/button/base/plus";
 }
 
 group { name: "elm/button/base/minus";
+   alias: "elm/button/base/minus_managers";
    inherit: "elm/button/base/plus";
    images.image: "icon_minus.png" COMP;
    parts {

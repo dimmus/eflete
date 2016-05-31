@@ -434,12 +434,12 @@ colorclass_manager_add(void)
 
    /* Controls (add, remove) of colorclasses */
    button = elm_button_add(mng.layout);
-   elm_object_style_set(button, "plus");
+   elm_object_style_set(button, "plus_managers");
    evas_object_smart_callback_add(button, "clicked", _colorclass_add_cb, &mng);
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_add", button);
 
    mng.del_button = elm_button_add(mng.layout);
-   elm_object_style_set(mng.del_button, "minus");
+   elm_object_style_set(mng.del_button, "minus_managers");
    evas_object_smart_callback_add(mng.del_button, "clicked", _colorclass_del_cb, NULL);
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_del", mng.del_button);
    elm_object_disabled_set(mng.del_button, EINA_TRUE);

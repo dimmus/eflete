@@ -557,12 +557,12 @@ sound_manager_add(void)
    elm_object_part_content_set(mng.layout, "elm.swallow.list", mng.gengrid);
 
    button = elm_button_add(mng.layout);
-   elm_object_style_set(button, "plus");
+   elm_object_style_set(button, "plus_managers");
    evas_object_smart_callback_add(button, "clicked", _sound_add_cb, NULL);
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_add", button);
 
    mng.btn_del = elm_button_add(mng.layout);
-   elm_object_style_set(mng.btn_del, "minus");
+   elm_object_style_set(mng.btn_del, "minus_managers");
    evas_object_smart_callback_add(mng.btn_del, "clicked", _sound_del_cb, NULL);
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_del", mng.btn_del);
    elm_object_disabled_set(mng.btn_del, true);
