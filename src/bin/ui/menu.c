@@ -56,6 +56,7 @@ int MENU_ITEMS_LIST_STYLE_ONLY[] = {
    MENU_EDIT_STATE_ADD,
    MENU_EDIT_ITEM_ADD,
    MENU_EDIT_PROGRAM_ADD,
+   MENU_EDIT_DATA_ITEM_ADD,
 
    MENU_NULL
 };
@@ -177,6 +178,9 @@ _menu_cb(void *data __UNUSED__,
       case MENU_EDIT_PROGRAM_ADD:
          evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_PROGRAM, NULL);
          break;
+      case MENU_EDIT_DATA_ITEM_ADD:
+         evas_object_smart_callback_call(ap.win, SIGNAL_SHORTCUT_ADD_DATA_ITEM, NULL);
+         break;
 
       case MENU_WINDOW_TAB_HOME:
          tabs_home_tab_add(TAB_HOME_OPEN_PROJECT);
@@ -294,6 +298,7 @@ ui_menu_add(void)
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_STATE_ADD, NULL, _("Add state"), "w")
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_ITEM_ADD, NULL, _("Add item"), "e")
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PROGRAM_ADD, NULL, _("Add program"), "r")
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_DATA_ITEM_ADD, NULL, _("Add data item"), "t")
       /* ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PREFERENCE, NULL, _("Preference..."))*/
 
    ITEM_MENU_ADD(MENU_NULL, MENU_VIEW, NULL, _("View"), NULL)
