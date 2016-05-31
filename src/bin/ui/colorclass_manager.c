@@ -287,6 +287,7 @@ _item_ccl_del(void *data,
    ccl_it = NULL;
 }
 
+#ifndef HAVE_TIZEN
 static void
 _bg_cb(void *data,
        Evas_Object *obj,
@@ -332,6 +333,7 @@ _radio_switcher_add(Evas_Object *obj,
 
    return radio;
 }
+#endif
 
 static void
 _mw_cancel_cb(void *data __UNUSED__,
@@ -475,6 +477,7 @@ colorclass_manager_add(void)
    elm_box_align_set(box_bg, 1.0, 0.5);
 
    /* add to toolbar bg switcher */
+#ifndef HAVE_TIZEN
    mng.bg_switcher.white = _radio_switcher_add(mng.preview_layout, "bg_white", _bg_cb, BG_PREVIEW_WHITE, NULL);
    elm_box_pack_end(box_bg, mng.bg_switcher.white);
 
@@ -487,6 +490,8 @@ colorclass_manager_add(void)
    elm_radio_value_set(mng.bg_switcher.white, BG_PREVIEW_TILE);
 
    elm_object_part_content_set(mng.layout, "elm.swallow.menu", box_bg);
+#endif
+
    if (!_colorclass_manager_init())
      {
         ERR(_("Failed initialize colorclasses manager"));

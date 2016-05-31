@@ -641,6 +641,7 @@ _btn_add_cb(void *data __UNUSED__,
      elm_object_item_disabled_set(mng.menu_tag, true);
 }
 
+#ifndef HAVE_TIZEN
 static void
 _bg_cb(void *data,
        Evas_Object *obj,
@@ -710,6 +711,7 @@ _add_box_bg(void)
 
    return box_bg;
 }
+#endif
 
 static void
 _mw_cancel_cb(void *data __UNUSED__,
@@ -765,7 +767,7 @@ _project_closed_cb(void *data __UNUSED__,
 Evas_Object *
 style_manager_add()
 {
-   Evas_Object *bg, *box_bg;
+   Evas_Object *bg;
    Evas *canvas;
    Evas_Object *button_add, *search, *ic;
    Evas_Textblock_Style *ts;
@@ -858,8 +860,10 @@ style_manager_add()
    elm_object_part_content_set(mng.layout, "elm.swallow.btn_del", mng.button_del);
    elm_object_disabled_set(mng.button_del, true);
 
-   box_bg = _add_box_bg();
+#ifndef HAVE_TIZEN
+   Evas_Object *box_bg = _add_box_bg();
    elm_object_part_content_set(mng.layout, "elm.swallow.menu", box_bg);
+#endif
 
    evas_textblock_style_free(ts);
    evas_object_smart_callback_add(ap.win, SIGNAL_PROJECT_CLOSED, _project_closed_cb, NULL);

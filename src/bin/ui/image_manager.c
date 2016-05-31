@@ -478,79 +478,6 @@ _project_closed_cb(void *data __UNUSED__,
    elm_gengrid_clear(mng.gengrid);
 }
 
-#ifdef HAVE_TIZEN
-static void
-_bg_cb(void *data,
-       Evas_Object *obj,
-       void *event_info __UNUSED__)
-{
-   Bg_Preview bg_mode;
-   const char *signal = NULL;
-   Evas_Object *entry_prev = data;
-
-   Evas_Object *bg = elm_object_part_content_get(entry_prev, "elm.swallow.background");
-   bg_mode = elm_radio_value_get(obj);
-   switch (bg_mode)
-     {
-      case BG_PREVIEW_WHITE:
-         signal = "elm,bg,white";
-         break;
-      case BG_PREVIEW_TILE:
-         signal = "elm,bg,tile";
-         break;
-      case BG_PREVIEW_BLACK:
-         signal = "elm,bg,black";
-         break;
-     }
-
-   elm_layout_signal_emit(bg, signal, "eflete");
-}
-
-static Evas_Object *
-_radio_switcher_add(Evas_Object *entry_prev,
-                    const char *style,
-                    Evas_Smart_Cb func,
-                    int state_value,
-                    Evas_Object *group)
-{
-   Evas_Object *radio;
-
-   radio = elm_radio_add(ap.win);
-   evas_object_show(radio);
-   elm_object_style_set(radio, style);
-   elm_radio_state_value_set(radio, state_value);
-   evas_object_smart_callback_add(radio, "changed", func, entry_prev);
-   elm_radio_group_add(radio, group);
-
-   return radio;
-}
-
-
-static Evas_Object*
-_add_box_bg(void)
-{
-   Evas_Object *box_bg;
-
-   BOX_ADD(ap.win, box_bg, true, false);
-   elm_box_padding_set(box_bg, 6, 6);
-   elm_box_align_set(box_bg, 1.0, 0.5);
-
-   /* add to toolbar bg switcher */
-   mng.bg_switcher.white = _radio_switcher_add(mng.entry_prev, "bg_white", _bg_cb, BG_PREVIEW_WHITE, NULL);
-   elm_box_pack_end(box_bg, mng.bg_switcher.white);
-
-   mng.bg_switcher.tile = _radio_switcher_add(mng.entry_prev, "bg_tile", _bg_cb, BG_PREVIEW_TILE, mng.bg_switcher.white);
-   elm_box_pack_end(box_bg, mng.bg_switcher.tile);
-
-   mng.bg_switcher.black = _radio_switcher_add(mng.entry_prev, "bg_black", _bg_cb, BG_PREVIEW_BLACK, mng.bg_switcher.white);
-   elm_box_pack_end(box_bg, mng.bg_switcher.black);
-
-   elm_radio_value_set(mng.bg_switcher.white, BG_PREVIEW_TILE);
-
-   return box_bg;
-}
-#endif
-
 Evas_Object *
 image_manager_add(void)
 {
@@ -569,7 +496,7 @@ image_manager_add(void)
    if (mng.layout) goto done;
 
 #ifdef HAVE_TIZEN
-   Evas_Object *bg, *box_bg;
+   Evas_Object *bg;
 
    mng.layout = elm_layout_add(mng.win);
    elm_layout_theme_set(mng.layout, "layout", "manager", "internal");
@@ -592,9 +519,6 @@ image_manager_add(void)
    elm_object_part_content_set(mng.entry_prev, "elm.swallow.entry", mng.image);
    elm_object_signal_emit(mng.entry_prev, "entry,show", "eflete");
    elm_object_part_content_set(mng.layout, "elm.swallow.preview", mng.entry_prev);
-
-   box_bg = _add_box_bg();
-   elm_object_part_content_set(mng.layout, "elm.swallow.menu", box_bg);
 #else
    mng.layout = elm_layout_add(mng.win);
    elm_layout_theme_set(mng.layout, "layout", "image_manager", "default");
