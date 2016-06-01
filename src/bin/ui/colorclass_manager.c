@@ -418,6 +418,9 @@ colorclass_manager_add(void)
    mng.panes = elm_panes_add(mng.win);
    elm_panes_content_right_size_set(mng.panes, 0);
    elm_panes_content_right_min_size_set(mng.panes, 355);
+#ifdef HAVE_TIZEN
+   elm_object_style_set(mng.panes, "manager");
+#endif
    elm_object_content_set(mng.win, mng.panes);
    elm_object_part_content_set(mng.panes, "left", mng.layout);
    elm_object_part_content_set(mng.panes, "right", ap.property.color_manager);

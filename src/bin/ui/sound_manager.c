@@ -516,6 +516,7 @@ sound_manager_add(void)
    elm_object_part_content_set(mng.panes, "left", mng.layout);
    elm_object_part_content_set(mng.panes, "right", ap.property.sound_manager);
    elm_object_part_content_set(mng.layout, "elm.swallow.preview", mng.player);
+   elm_object_style_set(mng.panes, "manager");
 #else
    mng.layout = elm_layout_add(mng.win);
    elm_layout_theme_set(mng.layout, "layout", "sound_manager", "default");

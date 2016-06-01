@@ -27,7 +27,7 @@ group { name: "elm/layout/manager/internal";
                offset: 0 8;
                to_y: "elm.text";
             }
-            rel2.offset: -4 -1;
+            rel2.offset: -1 -1;
          }
       }
       part { name: "elm.swallow.preview";
@@ -56,7 +56,7 @@ group { name: "elm/layout/manager/internal";
                relative: 0.0 1.0;
                to_y: "elm.swallow.search";
             }
-            rel2.offset: -4 -1;
+            rel2.offset: -1 -1;
          }
       }
       part { name: "elm.swallow.list";
@@ -88,7 +88,7 @@ group { name: "elm/layout/manager/internal";
                to_y: "elm.swallow.preview";
             }
             rel2 {
-               offset: -4 -1;
+               offset: -1 -1;
                to_y: "elm.swallow.search";
             }
          }
