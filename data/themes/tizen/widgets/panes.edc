@@ -81,20 +81,12 @@ group { name: "elm/panes/vertical/default";
             min: 13 0;
             max: 13 -1;
             color: 229 229 229 255;
-            rel1 {
-               offset: 1 0;
-               to: "bar";
-            }
-            rel2 {
-               offset: -1 -2;
-               to: "bar";
-            }
+            rel1.to: "bar";
+            rel2.to: "bar";
          }
          description { state: "focused" 0.0;
             inherit: "default" 0.00;
             color: 191 193 196 255;
-            rel1.offset: 0 0;
-            rel2.offset: -1 -1;
          }
          description { state: "clicked" 0.0;
             inherit: "focused" 0.00;
