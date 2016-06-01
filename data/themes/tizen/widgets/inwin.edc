@@ -122,6 +122,23 @@ group { name: "elm/win/inwin/modal_window";
             rel2.to_x: "base";
          }
       }
+      part { name: "bg.content";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            color: 244 244 244 255;
+            rel1 {
+               relative: 0.0 1.0;
+               to_x: "base";
+               to_y: "separator.title";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to_x: "base";
+               to_y: "separator.buttons";
+            }
+         }
+      }
       part { name: "elm.swallow.content";
          type: SWALLOW;
          description { state: "default" 0.0;
