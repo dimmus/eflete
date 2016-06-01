@@ -18,17 +18,48 @@
    }
 
 IM("color",    "color_set",      "color-set.png",           -1 -1,   7 7 6 7,    SCALE,   SOLID)
-IM("icon",     "rectangle",      "icon-rectangle.png",      12 11,   0 0 0 0,    SCALE,   SOLID)
-IM("icon",     "image",          "icon-image.png",          12 11,   0 0 0 0,    SCALE,   SOLID)
-IM("icon",     "spacer",         "icon-spacer.png",         12 11,   0 0 0 0,    SCALE,   SOLID)
-IM("icon",     "swallow",        "icon-swallow.png",        12 11,   0 0 0 0,    SCALE,   SOLID)
-IM("icon",     "text",           "icon-text.png",           12 11,   0 0 0 0,    SCALE,   SOLID)
-IM("icon",     "textblock",      "icon-textblock.png",      12 11,   0 0 0 0,    SCALE,   SOLID)
-IM("icon",     "group",          "icon-group.png",          12 11,   0 0 0 0,    SCALE,   SOLID)
-IM("icon",     "proxy",          "icon-proxy.png",          12 11,   0 0 0 0,    SCALE,   SOLID)
-IM("icon",     "table",          "icon-table.png",          12 11,   0 0 0 0,    SCALE,   SOLID)
-IM("icon",     "box",            "icon-box.png",            12 11,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "rectangle",      "icon-rectangle.png",      16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "rectangle1",     "icon-rectangle1.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "rectangle2",     "icon-rectangle2.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
+
+IM("icon",     "image",          "icon-image.png",          16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "image1",         "icon-image1.png",         16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "image2",         "icon-image2.png",         16 16,   0 0 0 0,    SCALE,   SOLID)
+
+IM("icon",     "spacer",         "icon-spacer.png",         16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "spacer1",        "icon-spacer1.png",        16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "spacer2",        "icon-spacer2.png",        16 16,   0 0 0 0,    SCALE,   SOLID)
+
+IM("icon",     "swallow",        "icon-swallow.png",        16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "swallow1",       "icon-swallow1.png",       16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "swallow2",       "icon-swallow2.png",       16 16,   0 0 0 0,    SCALE,   SOLID)
+
+IM("icon",     "text",           "icon-text.png",           16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "text1",          "icon-text1.png",          16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "text2",          "icon-text2.png",          16 16,   0 0 0 0,    SCALE,   SOLID)
+
+IM("icon",     "textblock",      "icon-textblock.png",      16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "textblock1",     "icon-textblock1.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "textblock2",     "icon-textblock2.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
+
+IM("icon",     "group",          "icon-group.png",          16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "group1",         "icon-group1.png",         16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "group2",         "icon-group2.png",         16 16,   0 0 0 0,    SCALE,   SOLID)
+
+IM("icon",     "proxy",          "icon-proxy.png",          16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "proxy1",         "icon-proxy1.png",         16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "proxy2",         "icon-proxy2.png",         16 16,   0 0 0 0,    SCALE,   SOLID)
+
+IM("icon",     "table",          "icon-table.png",          16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "table1",         "icon-table1.png",         16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "table2",         "icon-table2.png",         16 16,   0 0 0 0,    SCALE,   SOLID)
+
+IM("icon",     "box",            "icon-box.png",            16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "box1",           "icon-box1.png",           16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "box2",           "icon-box2.png",           16 16,   0 0 0 0,    SCALE,   SOLID)
+
 IM("icon",     "external",       "icon-external.png",       12 11,   0 0 0 0,    SCALE,   SOLID)
+
 IM("icon",     "attention",      "attention.png",           16 16,   0 0 0 0,    SCALE,   SOLID)
 
 IM("icon",     "alias_link",     "icon-alias_link.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
