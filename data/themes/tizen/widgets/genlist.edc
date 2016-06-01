@@ -48,6 +48,7 @@
             description { state: "default" 0.0;
                align: 0.0 0.5;
                fixed: 1 0;
+               rel1.offset: 20 0;
                rel2.relative: 0.0 1.0;
             }
             description { state: "hide" 0.0;
@@ -60,13 +61,13 @@
             repeat_events: 1;
             description { state: "default" 0.0;
                align: 0.0 0.5;
-               min: 14 14;
-               max: 14 14;
+               min: 16 16;
+               max: 16 16;
                aspect: 1.0 1.0;
                aspect_preference: VERTICAL;
                rel1 {
                   relative: 1.0 0.0;
-                  offset: 6 3;
+                  offset: 16 3;
                   to_x: "elm.swallow.pad";
                }
                rel2 {
@@ -355,7 +356,7 @@ group { name: "elm/genlist/item/aligned/default";
    data {
       item: "texts" "elm.text";
       item: "treesize" "20";
-      item: "contents" "elm.swallow.icon elm.swallow.end";
+      item: "contents" "elm.swallow.icon elm.swallow.end elm.swallow.icon1 elm.swallow.icon2";
       item: "stacking" "above";
       item: "selectraise" "on";
    }
@@ -363,15 +364,21 @@ group { name: "elm/genlist/item/aligned/default";
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
+            visible: 0;
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.00;
+            visible: 1;
             color_class: "genlist_selected";
-            color: 255 255 255 255;
+         }
+         description { state: "over" 0.0;
+            inherit: "default" 0.00;
+            visible: 1;
+            color_class: "over";
          }
          description { state: "reorder" 0.0;
             inherit: "selected" 0.00;
+            visible: 1;
             color_class: "select";
          }
       }
@@ -403,6 +410,62 @@ group { name: "elm/genlist/item/aligned/default";
             rel1.offset: 0 0;
          }
       }
+      part { name: "elm.swallow.icon1";
+         type: SWALLOW;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            min: 16 16;
+            max: 16 16;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 16 4;
+               to_x: "elm.swallow.pad";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -1 -4;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.00;
+         }
+         description { state: "hide" 0.0;
+            inherit: "default" 0.00;
+            visible: 0;
+         }
+      }
+      part { name: "elm.swallow.icon2";
+         type: SWALLOW;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            min: 16 16;
+            max: 16 16;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 16 4;
+               to_x: "elm.swallow.pad";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -1 -4;
+            }
+         }
+         description { state: "over" 0.0;
+            inherit: "default" 0.00;
+         }
+         description { state: "hide" 0.0;
+            inherit: "default" 0.00;
+            visible: 0;
+         }
+      }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
          repeat_events: 1;
@@ -415,7 +478,7 @@ group { name: "elm/genlist/item/aligned/default";
             aspect_preference: VERTICAL;
             rel1 {
                relative: 1.0 0.0;
-               offset: 0 3;
+               offset: 16 4;
                to_x: "elm.swallow.pad";
             }
             rel2 {
@@ -426,10 +489,6 @@ group { name: "elm/genlist/item/aligned/default";
          description { state: "hide" 0.0;
             inherit: "default" 0.00;
             visible: 0;
-            fixed: 0 0;
-            min: 14 14;
-            max: 14 14;
-            rel1.offset: 6 3;
          }
       }
       part { name: "elm.text";
@@ -497,12 +556,26 @@ group { name: "elm/genlist/item/aligned/default";
          source: "elm";
          action: STATE_SET "selected" 0.00;
          target: "bg";
+         target: "elm.swallow.icon1";
+         after: "select_icon";
+      }
+      program { name: "select_icon";
+         action: STATE_SET "hide" 0.0;
+         target: "elm.swallow.icon";
+         target: "elm.swallow.icon2";
       }
       program { name: "unselected";
          signal: "elm,state,unselected";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
+         target: "elm.swallow.icon";
+         after: "unselect_icon";
+      }
+      program { name: "unselect_icon";
+         action: STATE_SET "hide" 0.0;
+         target: "elm.swallow.icon1";
+         target: "elm.swallow.icon2";
       }
       program { name: "reorder";
          signal: "elm,state,reorder,enable";
@@ -517,6 +590,33 @@ group { name: "elm/genlist/item/aligned/default";
          target: "bg";
          after: "selected";
       }
+      program { name: "over,in";
+         signal: "mouse,in";
+         source: "disclip";
+         action: STATE_SET "over" 0.00;
+         target: "bg";
+         after: "over_icon";
+         target: "elm.swallow.icon2";
+      }
+      program { name: "over_icon";
+         action: STATE_SET "hide" 0.0;
+         target: "elm.swallow.icon";
+         target: "elm.swallow.icon1";
+      }
+      program { name: "over,out";
+         signal: "mouse,out";
+         source: "disclip";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+         target: "elm.swallow.icon";
+         after: "unover_icon";
+      }
+      program { name: "unover_icon";
+         action: STATE_SET "hide" 0.0;
+         target: "elm.swallow.icon1";
+         target: "elm.swallow.icon2";
+      }
+
       program { name: "item_hide";
          signal: "elm,state,contract_flip";
          source: "elm";
@@ -676,28 +776,125 @@ group { name: "elm/genlist/tree/default/default";
    data {
       item: "texts" "elm.text";
       item: "treesize" "20";
-      item: "contents" "elm.swallow.icon elm.swallow.end";
+      item: "contents" "elm.swallow.icon elm.swallow.end elm.swallow.icon1 elm.swallow.icon2";
       item: "stacking" "above";
       item: "selectraise" "on";
    }
-   images {
-         image: "arrow_side_nor.png" COMP;
-         image: "arrow_bottom_nor.png" COMP;
-      }
    parts {
       part { name: "bg";
          type: RECT;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
+            visible: 0;
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.00;
+            visible: 1;
             color_class: "genlist_selected";
-            color: 255 255 255 255;
+         }
+         description { state: "over" 0.0;
+            inherit: "default" 0.00;
+            visible: 1;
+            color_class: "over";
          }
          description { state: "reorder" 0.0;
             inherit: "selected" 0.00;
+            visible: 1;
             color_class: "select";
+         }
+      }
+      part { name: "elm.swallow.pad";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 0;
+            rel1.offset: 20 0;
+            rel2.relative: 0.0 1.0;
+         }
+         description { state: "hide" 0.0;
+            inherit: "default" 0.00;
+            visible: 0;
+         }
+      }
+      part { name: "arrow";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            min: 9 9;
+            max: 9 9;
+            image.normal: "arrow_side_nor.png";
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "elm.swallow.pad";
+            }
+         }
+         description { state: "hide" 0.0;
+            inherit: "default" 0.00;
+            visible: 0;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "arrow_bottom_nor.png";
+         }
+      }
+      part { name: "elm.swallow.icon1";
+         type: SWALLOW;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            min: 16 16;
+            max: 16 16;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 7 4;
+               to_x: "arrow";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -1 -5;
+               to_x: "arrow";
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.00;
+         }
+         description { state: "hide" 0.0;
+            inherit: "default" 0.00;
+            visible: 0;
+            rel2.offset: -1 -4;
+         }
+      }
+      part { name: "elm.swallow.icon2";
+         type: SWALLOW;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            min: 16 16;
+            max: 16 16;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 7 4;
+               to_x: "arrow";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -1 -5;
+               to_x: "arrow";
+            }
+         }
+         description { state: "over" 0.0;
+            inherit: "default" 0.00;
+         }
+         description { state: "hide" 0.0;
+            inherit: "default" 0.00;
+            visible: 0;
+            rel2.offset: -1 -4;
          }
       }
       part { name: "elm.swallow.icon";
@@ -705,6 +902,7 @@ group { name: "elm/genlist/tree/default/default";
          repeat_events: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
+            fixed: 1 1;
             min: 16 16;
             max: 16 16;
             aspect: 1.0 1.0;
@@ -721,34 +919,9 @@ group { name: "elm/genlist/tree/default/default";
             }
          }
          description { state: "hide" 0.0;
-            visible: 0;
-            align: 0.0 0.5;
-            min: 14 14;
-            aspect: 1.0 1.0;
-            aspect_preference: VERTICAL;
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 6 3;
-               to_x: "arrow";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               offset: -1 -4;
-               to_x: "arrow";
-            }
-         }
-      }
-      part { name: "elm.swallow.pad";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            fixed: 1 0;
-            rel2.relative: 0.0 1.0;
-         }
-         description { state: "hide" 0.0;
             inherit: "default" 0.00;
             visible: 0;
-            fixed: 0 0;
+            rel2.offset: -1 -4;
          }
       }
       part { name: "elm.text";
@@ -759,13 +932,13 @@ group { name: "elm/genlist/tree/default/default";
             max: -1 16;
             color_class: "genlist_text_tree";
             text {
-               font: FN;
+               font: "PT";
                size: 13;
                align: 0.0 0.5;
             }
             rel1 {
                relative: 1.0 0.0;
-               offset: 6 4;
+               offset: 5 4;
                to_x: "elm.swallow.icon";
             }
             rel2 {
@@ -777,11 +950,8 @@ group { name: "elm/genlist/tree/default/default";
          description { state: "hide" 0.0;
             inherit: "default" 0.00;
             visible: 0;
-            rel1.offset: 6 0;
-            rel2 {
-               offset: -7 -1;
-               to_x: "";
-            }
+            rel1.offset: 5 0;
+            rel2.offset: -7 -1;
          }
       }
       part { name: "elm.swallow.end";
@@ -813,33 +983,6 @@ group { name: "elm/genlist/tree/default/default";
             color: 0 0 0 0;
          }
       }
-      part { name: "arrow";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            fixed: 1 1;
-            min: 9 9;
-            max: 9 9;
-            image.normal: "arrow_side_nor.png";
-            rel1 {
-               relative: 1.0 0.0;
-               offset: 6 0;
-               to_x: "elm.swallow.pad";
-            }
-         }
-         description { state: "hide" 0.0;
-            inherit: "default" 0.00;
-            visible: 0;
-            fixed: 0 0;
-            min: 0 0;
-            max: 14 14;
-            color_class: "main";
-         }
-         description { state: "selected" 0.0;
-            inherit: "default" 0.00;
-            image.normal: "arrow_bottom_nor.png";
-         }
-      }
       part { name: "disclip";
          type: RECT;
          repeat_events: 1;
@@ -858,12 +1001,26 @@ group { name: "elm/genlist/tree/default/default";
          source: "elm";
          action: STATE_SET "selected" 0.00;
          target: "bg";
+         target: "elm.swallow.icon1";
+         after: "select_icon";
+      }
+      program { name: "select_icon";
+         action: STATE_SET "hide" 0.0;
+         target: "elm.swallow.icon";
+         target: "elm.swallow.icon2";
       }
       program { name: "unselected";
          signal: "elm,state,unselected";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
+         target: "elm.swallow.icon";
+         after: "unselect_icon";
+      }
+      program { name: "unselect_icon";
+         action: STATE_SET "hide" 0.0;
+         target: "elm.swallow.icon1";
+         target: "elm.swallow.icon2";
       }
       program { name: "item_hide";
          signal: "elm,state,contract_flip";
@@ -893,6 +1050,32 @@ group { name: "elm/genlist/tree/default/default";
          signal: "elm,state,reorder,disabled";
          source: "elm";
          after: "go_active";
+      }
+      program { name: "over,in";
+         signal: "mouse,in";
+         source: "disclip";
+         action: STATE_SET "over" 0.00;
+         target: "bg";
+         after: "over_icon";
+         target: "elm.swallow.icon2";
+      }
+      program { name: "over_icon";
+         action: STATE_SET "hide" 0.0;
+         target: "elm.swallow.icon";
+         target: "elm.swallow.icon1";
+      }
+      program { name: "over,out";
+         signal: "mouse,out";
+         source: "disclip";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+         target: "elm.swallow.icon";
+         after: "unover_icon";
+      }
+      program { name: "unover_icon";
+         action: STATE_SET "hide" 0.0;
+         target: "elm.swallow.icon1";
+         target: "elm.swallow.icon2";
       }
       program { name: "expanded_sig";
          signal: "mouse,up,1";
@@ -2012,7 +2195,7 @@ group { name: "elm/genlist/item/navigator/default";
 group { name: "elm/genlist/item/message/default";
    data {
       item: "texts" "elm.text elm.title.1 elm.title.2";
-      item: "treesize" "19"; // 13 + 6
+      item: "treesize" "20";
       item: "stacking" "above";
       item: "selectraise" "on";
    }
@@ -2158,7 +2341,7 @@ group { name: "elm/genlist/item/message/default";
 group { name: "elm/genlist/item/mode/default";
    alias: "elm/genlist/item_odd/mode/default";
    data.item: "contents" "elm.swallow.modeicon elm.swallow.container";
-   data.item: "treesize" TREEPAD;
+   data.item: "treesize" 20;
    images.image: "treemenu-lvl2-item-bg.png" COMP;
 
    parts {
