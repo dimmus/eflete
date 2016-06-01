@@ -1807,3 +1807,49 @@ group { name: "elm/button/base/redo";
    }
 }
 
+group { name: "elm/button/base/fit";
+   inherit: "elm/button/base/default";
+   images {
+      image: "tool_autofit_nor.png" COMP;
+      image: "tool_autofit_sel.png" COMP;
+      image: "tool_autofit_mv.png" COMP;
+      image: "tool_autofit_dim.png" COMP;
+   }
+   parts {
+      part { name: "button_image";
+         mouse_events: 1;
+         description { state: "default" 0.0;
+            min: 28 20;
+            max: 28 20;
+            image {
+               normal: "tool_autofit_nor.png";
+               border: 3 3 3 3;
+            }
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "tool_autofit_sel.png";
+               border: 3 3 3 3;
+            }
+         }
+         description { state: "disabled" 0.0;
+            inherit:  "default" 0.0;
+            image {
+               normal: "tool_autofit_dim.png";
+               border: 3 3 3 3;
+            }
+         }
+         description { state: "hovered" 0.0;
+            inherit:  "default" 0.0;
+            image {
+               normal: "tool_autofit_mv.png";
+               border: 3 3 3 3;
+            }
+         }
+      }
+   }
+}

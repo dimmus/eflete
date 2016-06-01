@@ -331,8 +331,12 @@ _zoom_controls_add(Workspace_Data *wd)
 
    wd->toolbar.zoom.fit = elm_button_add(wd->toolbar.obj);
    evas_object_smart_callback_add(wd->toolbar.zoom.fit, "clicked", _fit_cb, wd);
+#if HAVE_TIZEN
+   elm_object_style_set(wd->toolbar.zoom.fit, "fit");
+#else
    IMAGE_ADD_NEW(wd->toolbar.zoom.fit, img, "icon", "fit")
    elm_object_part_content_set(wd->toolbar.zoom.fit, NULL, img);
+#endif
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.fit);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
