@@ -22,62 +22,6 @@
 
 #include "eflete.h"
 
-struct _State
-{
-   Eina_Stringshare *name;    /**< state name as returned from edje_edit */
-   Eina_List *used_in;        /**< list of programs where state is used */
-
-   Eina_Stringshare *parsed_name;  /**< parsed state name */
-   double parsed_val;          /**< parsed state value */
-   Part *part;                /**< pointer to part */
-};
-
-struct _Part
-{
-   Eina_Stringshare *name;    /**< part name */
-   Eina_List *used_in;        /**< list of programs where part is used */
-
-   Edje_Part_Type type;       /**< part type */
-   Eina_List *states;         /**< list of states */
-   State *current_state;      /**< pointer to selected state */
-   Eina_List *items;          /**< list of item names. Used only for BOX and TABLE parts */
-   Eina_Stringshare * current_item_name; /**< name of selected item */
-   Group *group;              /**< pointer to group */
-   Eina_Bool visible;         /**< is part visible on workspace*/
-};
-
-struct _Program
-{
-   Eina_Stringshare *name;    /**< program name */
-   Eina_List *used_in;        /**< list of programs where program is used */
-
-   Edje_Action_Type type;
-   Eina_List *targets;
-   Eina_List *afters;
-};
-
-struct _Group
-{
-   Eina_Stringshare *name;    /**< group name */
-   Eina_List *used_in;        /**< list of parts where group is used */
-
-   Eina_Stringshare *widget;  /**< parsed widget name */
-   Eina_Stringshare *class;   /**< parsed class name */
-   Eina_Stringshare *style;   /**< parsed style name */
-   Group *main_group;         /**< pointer to main group. NULL if group is not an alias */
-   Eina_List *aliases;        /**< list of pointers to aliases. NULL if group is an alias */
-   Eina_List *parts;          /**< list of parts */
-   Eina_List *programs;       /**< list of programs */
-   Eina_List *data_items;     /**< list of data */
-
-   Evas_Object *edit_object;  /**< object needed to access group with edje_edit functions. Should be NULL if group is not open */
-   Part *current_part;        /**< pointer to selected part */
-   Program *current_program;  /**< pointer to selected program */
-   Resource *current_group_data;  /**< pointer to selected group_data */
-
-   History *history;          /**< history of changes in the group */
-};
-
 void
 gm_groups_load(Project *pro);
 

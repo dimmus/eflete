@@ -22,6 +22,10 @@
 
 #include "eflete.h"
 
+#define RESOURCE_COMMON \
+   Eina_Stringshare *name; \
+   Eina_List *used_in; \
+
 /**
  * @struct _Resource
  *
@@ -32,8 +36,7 @@
  */
 struct _Resource
 {
-   Eina_Stringshare *name;
-   Eina_List *used_in;
+   RESOURCE_COMMON;
 };
 
 /**
@@ -46,8 +49,8 @@ struct _Resource
  */
 struct _External_Resource
 {
-   Eina_Stringshare *name;
-   Eina_List *used_in;
+   RESOURCE_COMMON;
+
    Eina_Stringshare *source;
 };
 
@@ -61,9 +64,61 @@ struct _External_Resource
  */
 struct _Tone_Resource
 {
-   Eina_Stringshare *name;
-   Eina_List *used_in;
+   RESOURCE_COMMON;
+
    int freq;
+};
+
+struct _State
+{
+   RESOURCE_COMMON;
+
+   Eina_Stringshare *parsed_name;  /**< parsed state name */
+   double parsed_val;          /**< parsed state value */
+   Part *part;                /**< pointer to part */
+};
+
+struct _Part
+{
+   RESOURCE_COMMON;
+
+   Edje_Part_Type type;       /**< part type */
+   Eina_List *states;         /**< list of states */
+   State *current_state;      /**< pointer to selected state */
+   Eina_List *items;          /**< list of item names. Used only for BOX and TABLE parts */
+   Eina_Stringshare * current_item_name; /**< name of selected item */
+   Group *group;              /**< pointer to group */
+   Eina_Bool visible;         /**< is part visible on workspace*/
+};
+
+struct _Program
+{
+   RESOURCE_COMMON;
+
+   Edje_Action_Type type;
+   Eina_List *targets;
+   Eina_List *afters;
+};
+
+struct _Group
+{
+   RESOURCE_COMMON;
+
+   Eina_Stringshare *widget;  /**< parsed widget name */
+   Eina_Stringshare *class;   /**< parsed class name */
+   Eina_Stringshare *style;   /**< parsed style name */
+   Group *main_group;         /**< pointer to main group. NULL if group is not an alias */
+   Eina_List *aliases;        /**< list of pointers to aliases. NULL if group is an alias */
+   Eina_List *parts;          /**< list of parts */
+   Eina_List *programs;       /**< list of programs */
+   Eina_List *data_items;     /**< list of data */
+
+   Evas_Object *edit_object;  /**< object needed to access group with edje_edit functions. Should be NULL if group is not open */
+   Part *current_part;        /**< pointer to selected part */
+   Program *current_program;  /**< pointer to selected program */
+   Resource *current_group_data;  /**< pointer to selected group_data */
+
+   History *history;          /**< history of changes in the group */
 };
 
 /**
@@ -76,8 +131,7 @@ struct _Tone_Resource
  */
 struct _Colorclass_Resource
 {
-   Eina_Stringshare *name;
-   Eina_List *used_in;
+   RESOURCE_COMMON;
 
    struct {
       int r,g,b,a;
