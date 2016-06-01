@@ -957,6 +957,7 @@ group { name: "elm/scroller/entry_single/default";
             image {
                normal: "border_1.png";
                border: 1 1 1 1;
+               middle: NONE;
             }
             rel1.to: "bg";
             rel2.to: "bg";
