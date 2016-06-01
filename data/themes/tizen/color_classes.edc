@@ -55,4 +55,9 @@ color_classes {
       color2: 0 0 0 0;
       color3: 0 0 0 0;
    }
+   color_class { name: "over";
+      color: 205 233 255 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
 }
