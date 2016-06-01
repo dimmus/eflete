@@ -27,6 +27,7 @@ includesub_HEADERS = \
 	logger/logger.h \
 	project_manager/group_manager.h \
 	project_manager/project_manager.h \
+	project_manager/resource_manager.h \
 	ui/cursor.h \
 	ui/history_ui.h \
 	ui/main_window.h \
@@ -62,6 +63,7 @@ libete_a_SOURCES = \
 ../../src/bin/common/widget_list.c \
 ../../src/bin/project_manager/group_manager.c \
 ../../src/bin/project_manager/project_manager.c \
+../../src/bin/project_manager/resource_manager.c \
 ../../src/bin/logger/logger.c \
 ../../src/bin/config/config.c \
 ../../src/bin/external/syntax_color.c \
