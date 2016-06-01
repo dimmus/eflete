@@ -339,6 +339,92 @@ _part_content_get(void *data,
               abort();
           }
      }
+#ifdef HAVE_TIZEN
+   if (!strcmp(part, "elm.swallow.end1"))
+     {
+        switch (_part->type)
+          {
+           case EDJE_PART_TYPE_RECTANGLE:
+              IMAGE_ADD_NEW(obj, content, "icon", "rectangle1");
+              break;
+           case EDJE_PART_TYPE_IMAGE:
+              IMAGE_ADD_NEW(obj, content, "icon", "image1");
+              break;
+           case EDJE_PART_TYPE_SPACER:
+              IMAGE_ADD_NEW(obj, content, "icon", "spacer1");
+              break;
+           case EDJE_PART_TYPE_SWALLOW:
+              IMAGE_ADD_NEW(obj, content, "icon", "swallow1");
+              break;
+           case EDJE_PART_TYPE_TEXT:
+              IMAGE_ADD_NEW(obj, content, "icon", "text1");
+              break;
+           case EDJE_PART_TYPE_TEXTBLOCK:
+              IMAGE_ADD_NEW(obj, content, "icon", "textblock1");
+              break;
+           case EDJE_PART_TYPE_GROUP:
+              IMAGE_ADD_NEW(obj, content, "icon", "group1");
+              break;
+           case EDJE_PART_TYPE_PROXY:
+              IMAGE_ADD_NEW(obj, content, "icon", "proxy1");
+              break;
+           case EDJE_PART_TYPE_TABLE:
+              IMAGE_ADD_NEW(obj, content, "icon", "table1");
+              break;
+           case EDJE_PART_TYPE_BOX:
+              IMAGE_ADD_NEW(obj, content, "icon", "box1");
+              break;
+           case EDJE_PART_TYPE_EXTERNAL:
+              IMAGE_ADD_NEW(obj, content, "icon", "external");
+              break;
+          default:
+              ERR("Unhandled part type");
+              abort();
+          }
+     }
+   if (!strcmp(part, "elm.swallow.end2"))
+     {
+        switch (_part->type)
+          {
+           case EDJE_PART_TYPE_RECTANGLE:
+              IMAGE_ADD_NEW(obj, content, "icon", "rectangle2");
+              break;
+           case EDJE_PART_TYPE_IMAGE:
+              IMAGE_ADD_NEW(obj, content, "icon", "image2");
+              break;
+           case EDJE_PART_TYPE_SPACER:
+              IMAGE_ADD_NEW(obj, content, "icon", "spacer2");
+              break;
+           case EDJE_PART_TYPE_SWALLOW:
+              IMAGE_ADD_NEW(obj, content, "icon", "swallow2");
+              break;
+           case EDJE_PART_TYPE_TEXT:
+              IMAGE_ADD_NEW(obj, content, "icon", "text2");
+              break;
+           case EDJE_PART_TYPE_TEXTBLOCK:
+              IMAGE_ADD_NEW(obj, content, "icon", "textblock2");
+              break;
+           case EDJE_PART_TYPE_GROUP:
+              IMAGE_ADD_NEW(obj, content, "icon", "group2");
+              break;
+           case EDJE_PART_TYPE_PROXY:
+              IMAGE_ADD_NEW(obj, content, "icon", "proxy2");
+              break;
+           case EDJE_PART_TYPE_TABLE:
+              IMAGE_ADD_NEW(obj, content, "icon", "table2");
+              break;
+           case EDJE_PART_TYPE_BOX:
+              IMAGE_ADD_NEW(obj, content, "icon", "box2");
+              break;
+           case EDJE_PART_TYPE_EXTERNAL:
+              IMAGE_ADD_NEW(obj, content, "icon", "external");
+              break;
+          default:
+              ERR("Unhandled part type");
+              abort();
+          }
+     }
+#endif /* HAVE_TIZEN */
    return content;
 }
 
