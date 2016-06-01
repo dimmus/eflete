@@ -171,6 +171,9 @@ property_add(Evas_Object *parent, Property_Mode mode)
    pd->layout = elm_layout_add(parent);
    elm_layout_theme_set(pd->layout, "layout", "navigator", "default");
    elm_object_text_set(pd->layout, "Property");
+#ifdef HAVE_TIZEN
+   elm_layout_signal_emit(pd->layout, "elm,state,tizen,set", "elm");
+#endif
    evas_object_show(pd->layout);
 
    pd->genlist = elm_genlist_add(parent);
