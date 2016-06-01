@@ -176,9 +176,7 @@ property_add(Evas_Object *parent, Property_Mode mode)
    elm_object_part_content_set(pd->layout, "elm.swallow.icon", icon);
 #endif
     elm_object_text_set(pd->layout, "Property");
-#ifdef HAVE_TIZEN
-    elm_layout_signal_emit(pd->layout, "elm,state,tizen,set", "elm");
-#endif
+   elm_object_text_set(pd->layout, "Property");
    evas_object_show(pd->layout);
 
    pd->genlist = elm_genlist_add(parent);
@@ -208,18 +206,30 @@ property_add(Evas_Object *parent, Property_Mode mode)
          items = property_group_items_get();
         break;
       case PROPERTY_MODE_STYLE:
+#ifdef HAVE_TIZEN
+         elm_layout_signal_emit(pd->layout, "elm,state,tizen,set", "elm");
+#endif
          property_textblock_manager_init(pd);
          items = property_textblock_manager_items_get();
          break;
       case PROPERTY_MODE_COLOR_CLASS:
+#ifdef HAVE_TIZEN
+         elm_layout_signal_emit(pd->layout, "elm,state,tizen,set", "elm");
+#endif
          property_color_class_manager_init();
          items = property_color_class_manager_items_get();
          break;
       case PROPERTY_MODE_IMAGE:
+#ifdef HAVE_TIZEN
+         elm_layout_signal_emit(pd->layout, "elm,state,tizen,set", "elm");
+#endif
          property_image_manager_init();
          items = property_image_manager_items_get();
          break;
       case PROPERTY_MODE_SOUND:
+#ifdef HAVE_TIZEN
+         elm_layout_signal_emit(pd->layout, "elm,state,tizen,set", "elm");
+#endif
          property_sound_manager_init(pd);
          items = property_sound_manager_items_get();
          break;
