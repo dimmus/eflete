@@ -737,7 +737,11 @@ group { name: "elm/toolbar/base/tabs_horizontal";
 }
 
 group { name: "elm/toolbar/item/tabs_horizontal";
-   images.image: "icon_close.png" COMP;
+   images {
+      image: "tab_close_icon_nor.png" COMP;
+      image: "tab_close_icon_mv.png" COMP;
+      image: "tab_close_icon_sel.png" COMP;
+   }
    parts {
       part { name: "separator";
          type: RECT;
@@ -801,10 +805,9 @@ group { name: "elm/toolbar/item/tabs_horizontal";
          type: IMAGE;
          description { state: "default" 0.0;
             align: 1.0 0.5;
-            min: 15 15;
-            max: 15 15;
-            color_class: "main";
-            image.normal: "icon_close.png";
+            min: 9 9;
+            max: 9 9;
+            image.normal: "tab_close_icon_nor.png";
             rel1.to: "bg_solid";
             rel2 {
                offset: -7 -1;
@@ -813,11 +816,11 @@ group { name: "elm/toolbar/item/tabs_horizontal";
          }
          description { state: "focused" 0.0;
             inherit: "default" 0.00;
-            color_class: "select_light";
+            image.normal: "tab_close_icon_mv.png";
          }
          description { state: "clicked" 0.0;
             inherit: "default" 0.00;
-            color_class: "select";
+            image.normal: "tab_close_icon_sel.png";
          }
       }
       part { name: "elm.text";
