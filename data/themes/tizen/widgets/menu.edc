@@ -324,24 +324,19 @@ group { name: "elm/menu/item_with_submenu/default";
       part { name: "highlight";
          type: RECT;
          description { state: "default" 0.0;
-            visible: 0;
-            color_class: "select";
-            rel1 {
-               to: "base";
-            }
-            rel2 {
-               to: "base";
-            }
+            visible: 1;
+            rel1.to: "base";
+            rel1.offset: 1 1;
+            rel2.to: "base";
+            rel2.offset: -2 -2;
          }
          description { state: "selected" 0.0;
-            color_class: "select";
-            rel1 {
-               to: "base";
-               offset: 1 1;
-            }
-            rel2 {
-               to: "base";
-            }
+            inherit: "default" 0.0;
+            color_class: "text_tabs_selected";
+         }
+         description { state: "over" 0.0;
+            inherit: "default" 0.0;
+            color_class: "over";
          }
       }
       part { name: "area.content";
@@ -475,7 +470,7 @@ group { name: "elm/menu/item_with_submenu/default";
       part { name: "clipper.text";
          type: RECT;
          description { state: "default" 0.0;
-            color_class: "main";
+            color_class: "genlist_text_tree";
             rel1 {
                relative: 1.0 0.0;
                to_x: "area.content";
@@ -525,7 +520,7 @@ group { name: "elm/menu/item_with_submenu/default";
       program { name: "highlighted";
          signal: "mouse,in";
          source: "event";
-         action: STATE_SET "selected" 0.00;
+         action: STATE_SET "over" 0.00;
          target: "highlight";
          after: "activate";
       }
@@ -558,7 +553,19 @@ group { name: "elm/menu/item_with_submenu/default";
          action: SIGNAL_EMIT "elm,action,click" "elm";
          after: "inactivate";
       }
-      program { name: "inactivate";
+      program { name: "clicked_down";
+         signal: "mouse,down,1";
+         source: "event";
+         action: STATE_SET "selected" 0.0;
+         target: "highlight";
+      }
+      program { name: "unclicked";
+         signal: "mouse,up,1";
+         source: "event";
+         action: STATE_SET "over" 0.0;
+         target: "highlight";
+      }
+        program { name: "inactivate";
         action: SIGNAL_EMIT "elm,action,inactivate" "elm";
       }
       program { name: "activate";
