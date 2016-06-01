@@ -61,6 +61,7 @@ IM("animator", "arrow-left",     "animator_arrow_left.png",  13 19,  0 0 0 0,   
 IM("animator", "arrow-right",    "animator_arrow_right.png", 13 19,  0 0 0 0,    SCALE,   SOLID)
 
 IM("navigator", "project",    "navigator_project.png", 16 16,  0 0 0 0,    SCALE,   SOLID)
+IM("navigator", "property",   "pro_property_icon.png", 16 16,  0 0 0 0,    SCALE,   SOLID)
 
 group { name: "elm/image/icon/scale_smaller";
    parts {

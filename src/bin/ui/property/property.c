@@ -170,9 +170,14 @@ property_add(Evas_Object *parent, Property_Mode mode)
 
    pd->layout = elm_layout_add(parent);
    elm_layout_theme_set(pd->layout, "layout", "navigator", "default");
-   elm_object_text_set(pd->layout, "Property");
 #ifdef HAVE_TIZEN
-   elm_layout_signal_emit(pd->layout, "elm,state,tizen,set", "elm");
+   Evas_Object *icon;
+   IMAGE_ADD_NEW(pd->layout, icon, "navigator", "property");
+   elm_object_part_content_set(pd->layout, "elm.swallow.icon", icon);
+#endif
+    elm_object_text_set(pd->layout, "Property");
+#ifdef HAVE_TIZEN
+    elm_layout_signal_emit(pd->layout, "elm,state,tizen,set", "elm");
 #endif
    evas_object_show(pd->layout);
 
@@ -201,7 +206,7 @@ property_add(Evas_Object *parent, Property_Mode mode)
       case PROPERTY_MODE_GROUP:
          property_group_init(pd);
          items = property_group_items_get();
-         break;
+        break;
       case PROPERTY_MODE_STYLE:
          property_textblock_manager_init(pd);
          items = property_textblock_manager_items_get();
