@@ -135,6 +135,25 @@ history_ui_update(Evas_Object *obj)
    _list_update(hd);
 }
 
+static void
+_btn_undo_cb(void *data __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *eo __UNUSED__)
+{
+   History_New_UI_data *hd = (History_New_UI_data *) data;
+   history_ui_undo(hd->layout);
+}
+
+static void
+_btn_redo_cb(void *data __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *eo __UNUSED__)
+{
+   History_New_UI_data *hd = (History_New_UI_data *) data;
+   history_ui_redo(hd->layout);
+}
+
+
 Evas_Object *
 history_ui_add(Evas_Object *parent, History *history)
 {
@@ -146,16 +165,41 @@ history_ui_add(Evas_Object *parent, History *history)
    evas_object_data_set(hd->layout, HISTORY_DATA, hd);
    hd->history = history;
    elm_layout_theme_set(hd->layout, "layout", "history", "combobox");
+   evas_object_show(hd->layout);
+
+   Evas_Object *btn = elm_button_add(hd->layout);
+   elm_object_style_set(btn, "undo");
+   evas_object_show(btn);
+   evas_object_smart_callback_add(btn, "clicked", _btn_undo_cb, hd);
+
+   Evas_Object *undo_layout = elm_layout_add(hd->layout);
+   elm_layout_theme_set(undo_layout, "layout", "history", "control");
+   evas_object_show(undo_layout);
+   elm_object_part_content_set(undo_layout, "button", btn);
 
    EWE_COMBOBOX_ADD(hd->layout, hd->undo_cmbx);
-   ewe_combobox_style_set(hd->undo_cmbx, "undo");
-   elm_object_part_content_set(hd->layout, "undo", hd->undo_cmbx);
+   ewe_combobox_style_set(hd->undo_cmbx, "history");
    evas_object_smart_callback_add(hd->undo_cmbx, "selected", _undo_item_selected, hd);
+   evas_object_show(hd->undo_cmbx);
+   elm_object_part_content_set(undo_layout, "arrow", hd->undo_cmbx);
+   elm_object_part_content_set(hd->layout, "undo", undo_layout);
+
+   btn = elm_button_add(hd->layout);
+   elm_object_style_set(btn, "redo");
+   evas_object_show(btn);
+   evas_object_smart_callback_add(btn, "clicked", _btn_redo_cb, hd);
+
+   Evas_Object *redo_layout = elm_layout_add(hd->layout);
+   elm_layout_theme_set(redo_layout, "layout", "history", "control");
+   evas_object_show(redo_layout);
+   elm_object_part_content_set(redo_layout, "button", btn);
 
    EWE_COMBOBOX_ADD(hd->layout, hd->redo_cmbx);
-   ewe_combobox_style_set(hd->redo_cmbx, "redo");
-   elm_object_part_content_set(hd->layout, "redo", hd->redo_cmbx);
+   ewe_combobox_style_set(hd->redo_cmbx, "history");
    evas_object_smart_callback_add(hd->redo_cmbx, "selected", _redo_item_selected, hd);
+   evas_object_show(hd->redo_cmbx);
+   elm_object_part_content_set(redo_layout, "arrow", hd->redo_cmbx);
+   elm_object_part_content_set(hd->layout, "redo", redo_layout);
 
    return hd->layout;
 }

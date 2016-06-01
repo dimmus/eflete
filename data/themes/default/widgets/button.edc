@@ -1034,3 +1034,219 @@ group { name: "elm/button/base/recent";
       }
    }
 }
+group { name: "elm/button/base/undo";
+   images {
+      image: "tool_s_undo_nor.png" COMP;
+      image: "tool_s_undo_sel.png" COMP;
+      image: "tool_s_undo_mv.png" COMP;
+      image: "tool_s_undo_dim.png" COMP;
+   }
+   parts {
+      part { name: "icon";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 20;
+            max: 20 20;
+            image.normal: "tool_s_undo_nor.png";
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "tool_s_undo_sel.png";
+         }
+         description { state: "hilighted" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "tool_s_undo_mv.png";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "clicked" 0.00;
+            color_class: "bg_scroller_disabled";
+            image.normal: "tool_s_undo_dim.png";
+         }
+      }
+      part { name: "event";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
+            visible: 0;
+            color: 255 255 255 255;
+         }
+      }
+   }
+   programs {
+      program { name: "button_click";
+         signal: "mouse,down,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,press" "";
+         after: "button_click_anim";
+      }
+      program { name: "button_unclick";
+         signal: "mouse,up,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,unpress" "";
+         after: "button_unclick_anim";
+      }
+      program { name: "button_pressed_anim";
+         signal: "elm,anim,activate";
+         source: "elm";
+         action: STATE_SET "clicked" 0.00;
+         target: "icon";
+         after: "button_unpressed_anim";
+      }
+      program { name: "button_unclick2";
+         signal: "mouse,clicked,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,click" "";
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.00;
+         target: "event";
+         target: "icon";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "event";
+         target: "icon";
+      }
+      program { name: "mouse_in";
+         signal: "mouse,in";
+         source: "event";
+         action: STATE_SET "hilighted" 0.00;
+         target: "icon";
+      }
+      program { name: "mouse_out";
+         signal: "mouse,out";
+         source: "event";
+         action: STATE_SET "default" 0.00;
+         target: "icon";
+      }
+      program { name: "button_click_anim";
+         action: STATE_SET "clicked" 0.00;
+         target: "icon";
+      }
+      program { name: "button_unpressed_anim";
+         action: STATE_SET "default" 0.00;
+         target: "icon";
+      }
+      program { name: "button_unclick_anim";
+         action: STATE_SET "default" 0.00;
+         target: "icon";
+      }
+   }
+}
+
+group { name: "elm/button/base/redo";
+   images {
+      image: "tool_s_redo_nor.png" COMP;
+      image: "tool_s_redo_sel.png" COMP;
+      image: "tool_s_redo_mv.png" COMP;
+      image: "tool_s_redo_dim.png" COMP;
+   }
+   parts {
+      part { name: "icon";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 20;
+            max: 20 20;
+            image.normal: "tool_s_redo_nor.png";
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "tool_s_redo_sel.png";
+         }
+         description { state: "hilighted" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "tool_s_redo_mv.png";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "clicked" 0.00;
+            color_class: "bg_scroller_disabled";
+            image.normal: "tool_s_redo_dim.png";
+         }
+      }
+      part { name: "event";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
+            visible: 0;
+            color: 255 255 255 255;
+         }
+      }
+   }
+   programs {
+      program { name: "button_click";
+         signal: "mouse,down,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,press" "";
+         after: "button_click_anim";
+      }
+      program { name: "button_unclick";
+         signal: "mouse,up,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,unpress" "";
+         after: "button_unclick_anim";
+      }
+      program { name: "button_pressed_anim";
+         signal: "elm,anim,activate";
+         source: "elm";
+         action: STATE_SET "clicked" 0.00;
+         target: "icon";
+         after: "button_unpressed_anim";
+      }
+      program { name: "button_unclick2";
+         signal: "mouse,clicked,1";
+         source: "event";
+         action: SIGNAL_EMIT "elm,action,click" "";
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.00;
+         target: "event";
+         target: "icon";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "event";
+         target: "icon";
+      }
+      program { name: "mouse_in";
+         signal: "mouse,in";
+         source: "event";
+         action: STATE_SET "hilighted" 0.00;
+         target: "icon";
+      }
+      program { name: "mouse_out";
+         signal: "mouse,out";
+         source: "event";
+         action: STATE_SET "default" 0.00;
+         target: "icon";
+      }
+      program { name: "button_click_anim";
+         action: STATE_SET "clicked" 0.00;
+         target: "icon";
+      }
+      program { name: "button_unpressed_anim";
+         action: STATE_SET "default" 0.00;
+         target: "icon";
+      }
+      program { name: "button_unclick_anim";
+         action: STATE_SET "default" 0.00;
+         target: "icon";
+      }
+   }
+}
+
