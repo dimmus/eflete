@@ -74,10 +74,12 @@ group { name: "elm/label/base/popup/default";
          type: TEXTBLOCK;
          mouse_events: 0;
          scale: 1;
+         multiline: 1;
          description { state: "default" 0.0;
             text {
                style: "main_text";
-               min: 1 1;
+               min: 0 1;
+               max: 0 1;
             }
          }
       }

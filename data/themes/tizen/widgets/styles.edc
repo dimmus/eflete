@@ -75,7 +75,7 @@
 
 styles {
    style { name: "main_text";
-      base: "font="FN" font_size=14 color=#585858 wrap=word text_class=entry ellipsis=1.0";
+      base: "font="FN" font_size=14 color=#585858 wrap=word text_class=entry ";
       TEXTBLOCK_TAGS_ENABLED
       }
    style { name: "main_text_disabled";
