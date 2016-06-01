@@ -20,7 +20,11 @@ IC("delete",            "toolbar/delete",           "menu/delete",            "i
 IC("edit",              "toolbar/edit",             "menu/edit",              "icon_edit.png",           14, 0);
 IC("refresh",           "toolbar/refresh",          "menu/refresh",           "icon_refresh.png",        14, 0);
 IC("folder",            "toolbar/folder",           "menu/folder",            "icon_folder.png",         14, 0);
+IC("folder1",           "toolbar/folder1",          "menu/folder1",           "icon_folder1.png",        14, 0);
+IC("folder2",           "toolbar/folder2",          "menu/folder2",           "icon_folder2.png",        14, 0);
 IC("file",              "toolbar/file",             "menu/file",              "icon_file.png",           14, 0);
+IC("file1",             "toolbar/file1",            "menu/file1",             "icon_file1.png",          14, 0);
+IC("file2",             "toolbar/file2",            "menu/file2",             "icon_file2.png",          14, 0);
 IC("save",              "toolbar/save",             "menu/save",              "icon_save.png",           14, 0);
 IC("search",            "toolbar/search",           "menu/search",            "tizen_search.png",        14, 0);
 IC("plus",              "toolbar/plus",             "menu/plus",              "icon_plus.png",           14, 0);
