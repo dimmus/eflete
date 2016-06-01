@@ -60,4 +60,14 @@ color_classes {
       color2: 0 0 0 0;
       color3: 0 0 0 0;
    }
+   color_class { name: "gengrid_text_default";
+      color: 70 70 70 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "gengrid_text_clicked";
+      color: 0 138 238 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
 }

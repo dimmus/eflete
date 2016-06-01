@@ -27,8 +27,13 @@
 #include "validator.h"
 #include "sound_player.h"
 
-#define ITEM_WIDTH 100
-#define ITEM_HEIGHT 115
+#ifndef HAVE_TIZEN
+   #define ITEM_WIDTH 100
+   #define ITEM_HEIGHT 115
+#else
+   #define ITEM_WIDTH 87
+   #define ITEM_HEIGHT 114
+#endif
 
 typedef struct _Sound_Manager Sound_Manager;
 typedef struct _Search_Data Search_Data;
