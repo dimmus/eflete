@@ -801,12 +801,10 @@ group { name: "elm/check/base/locker";
    }
 }
 
-
 group { name: "elm/check/base/chain";
    images {
-      image: "chain-unlock.png" COMP;
-      image: "chain-lock.png" COMP;
-      image: "separator-horizontal.png" COMP;
+      image: "tool_s_ratio_nor.png" COMP;
+      image: "tool_s_ratio_sel.png" COMP;
    }
    parts {
       part { name: "check";
@@ -815,52 +813,14 @@ group { name: "elm/check/base/chain";
          scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            min: 12 8;
-            max: 12 8;
-            image {
-               normal: "chain-unlock.png";
-               middle: DEFAULT;
-            }
+            min: 20 20;
+            max: 20 20;
+            image.normal: "tool_s_ratio_nor.png";
          }
          description { state: "visible" 0.0;
-            min: 12 8;
-            max: 12 8;
-            image {
-               normal: "chain-lock.png";
-               middle: DEFAULT;
-            }
-         }
-      }
-      part { name: "sep_left";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            align: 1.0 0.5;
-            min: 8 2;
-            max: 8 2;
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "check";
-            }
-            image {
-               normal: "separator-horizontal.png";
-               middle: DEFAULT;
-            }
-         }
-      }
-      part { name: "sep_right";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            min: 8 2;
-            max: 8 2;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "check";
-            }
-            image {
-               normal: "separator-horizontal.png";
-               middle: DEFAULT;
-            }
+            inherit: "default" 0.00;
+            image.normal: "tool_s_ratio_sel.png";
+            fill.smooth: 0;
          }
       }
       part { name: "clipper";
@@ -870,6 +830,7 @@ group { name: "elm/check/base/chain";
             color_class: "main";
          }
          description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
             color_class: "main_disabled";
          }
       }
@@ -880,8 +841,8 @@ group { name: "elm/check/base/chain";
             color: 0 0 0 0;
          }
          description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
             visible: 0;
-            color: 0 0 0 0;
          }
       }
    }

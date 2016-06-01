@@ -335,6 +335,19 @@ _zoom_controls_add(Workspace_Data *wd)
    elm_object_part_content_set(wd->toolbar.zoom.fit, NULL, img);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.fit);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_toolbar_item_separator_set(tb_it, true);
+
+   wd->toolbar.zoom.slider = elm_slider_add(wd->toolbar.obj);
+   elm_slider_min_max_set(wd->toolbar.zoom.slider, 10.0, 1000.0);
+   elm_slider_value_set(wd->toolbar.zoom.slider, 100);
+   evas_object_smart_callback_add(wd->toolbar.zoom.slider, "changed", _slider_zoom_cb, wd);
+   IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_smaller")
+   elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.icon", img);
+   IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_larger")
+   elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.end", img);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.slider);
 
    EWE_COMBOBOX_ADD(wd->toolbar.obj, wd->toolbar.zoom.cmb_zoom);
    evas_object_size_hint_min_set(wd->toolbar.zoom.cmb_zoom, 70, 0);
@@ -350,16 +363,6 @@ _zoom_controls_add(Workspace_Data *wd)
       i++;
    }
 
-   wd->toolbar.zoom.slider = elm_slider_add(wd->toolbar.obj);
-   elm_slider_min_max_set(wd->toolbar.zoom.slider, 10.0, 1000.0);
-   elm_slider_value_set(wd->toolbar.zoom.slider, 100);
-   evas_object_smart_callback_add(wd->toolbar.zoom.slider, "changed", _slider_zoom_cb, wd);
-   IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_smaller")
-   elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.icon", img);
-   IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_larger")
-   elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.end", img);
-   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
-   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.slider);
 
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_it, true);
@@ -432,9 +435,19 @@ _container_size_controls_add(Workspace_Data *wd)
 {
    Elm_Object_Item *tb_it;
 
+   wd->toolbar.container_sizer.check_lock = elm_check_add(wd->toolbar.obj);
+   elm_object_style_set(wd->toolbar.container_sizer.check_lock, "locker");
+   evas_object_smart_callback_add(wd->toolbar.container_sizer.check_lock, "changed", _container_lock, wd);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.check_lock);
+
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_toolbar_item_separator_set(tb_it, true);
+
    wd->toolbar.container_sizer.spinner_w = elm_spinner_add(wd->toolbar.obj);
    elm_spinner_min_max_set(wd->toolbar.container_sizer.spinner_w, 0, 9999);
    elm_spinner_editable_set(wd->toolbar.container_sizer.spinner_w, true);
+   elm_object_style_set(wd->toolbar.container_sizer.spinner_w, "vertical");
    evas_object_smart_callback_add(wd->toolbar.container_sizer.spinner_w, "changed", _spinner_container_change, wd);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.spinner_w);
@@ -448,15 +461,10 @@ _container_size_controls_add(Workspace_Data *wd)
    wd->toolbar.container_sizer.spinner_h = elm_spinner_add(wd->toolbar.obj);
    elm_spinner_min_max_set(wd->toolbar.container_sizer.spinner_h, 0, 9999);
    elm_spinner_editable_set(wd->toolbar.container_sizer.spinner_h, true);
+   elm_object_style_set(wd->toolbar.container_sizer.spinner_h, "vertical");
    evas_object_smart_callback_add(wd->toolbar.container_sizer.spinner_h, "changed", _spinner_container_change, wd);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.spinner_h);
-
-   wd->toolbar.container_sizer.check_lock = elm_check_add(wd->toolbar.obj);
-   elm_object_style_set(wd->toolbar.container_sizer.check_lock, "locker");
-   evas_object_smart_callback_add(wd->toolbar.container_sizer.check_lock, "changed", _container_lock, wd);
-   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
-   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.check_lock);
 
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_it, true);
@@ -1074,9 +1082,35 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_toolbar_select_mode_set(wd->toolbar.obj, ELM_OBJECT_SELECT_MODE_ALWAYS);
    elm_layout_content_set(wd->layout, "elm.swallow.toolbar", wd->toolbar.obj);
 
-   /* add to toolbar the zoom controls */
-   wd->zoom_factor = 1.0;
-   _zoom_controls_add(wd);
+   /* add the container size controls */
+   _container_size_controls_add(wd);
+
+   /*Add to toolbar history controls */
+   wd->toolbar.history = history_ui_add(wd->toolbar.obj, wd->group->history);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.history);
+
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_toolbar_item_separator_set(tb_it, true);
+
+
+
+#if HAVE_TIZEN
+   /* Combobox for a choose libraries. */
+   EWE_COMBOBOX_ADD(wd->toolbar.obj, wd->toolbar.libraries_switcher);
+   evas_object_size_hint_min_set(wd->toolbar.libraries_switcher, 92, 0);
+   ewe_combobox_text_set(wd->toolbar.libraries_switcher, _("Library"));
+   evas_object_smart_callback_add(wd->toolbar.libraries_switcher, "selected", _library_select, wd);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.libraries_switcher);
+
+   ewe_combobox_item_add(wd->toolbar.libraries_switcher, "Image");
+   ewe_combobox_item_add(wd->toolbar.libraries_switcher, "Sound");
+   ewe_combobox_item_add(wd->toolbar.libraries_switcher, "Textblock styles");
+   ewe_combobox_item_add(wd->toolbar.libraries_switcher, "Color classes");
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_toolbar_item_separator_set(tb_it, true);
+#endif
 
 #if !HAVE_TIZEN
    /* add to toolbar modes switcher */
@@ -1098,9 +1132,13 @@ workspace_add(Evas_Object *parent, Group *group)
    evas_object_smart_callback_add(wd->toolbar.mode_switcher, "changed", _mode_cb, wd);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.mode_switcher);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_toolbar_item_separator_set(tb_it, true);
 #endif
-   /* add the container size controls */
-   _container_size_controls_add(wd);
+
+   /* add to toolbar the zoom controls */
+   wd->zoom_factor = 1.0;
+   _zoom_controls_add(wd);
 
 #if !HAVE_TIZEN
    /* add to toolbar bg switcher */
@@ -1115,30 +1153,6 @@ workspace_add(Evas_Object *parent, Group *group)
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.bg_switcher.black);
    elm_radio_value_set(wd->toolbar.bg_switcher.white, BG_PREVIEW_TILE);
 #endif
-
-
-#if HAVE_TIZEN
-   /* Combobox for a choose libraries. */
-   EWE_COMBOBOX_ADD(wd->toolbar.obj, wd->toolbar.libraries_switcher);
-   evas_object_size_hint_min_set(wd->toolbar.libraries_switcher, 92, 0);
-   ewe_combobox_text_set(wd->toolbar.libraries_switcher, _("Library"));
-   evas_object_smart_callback_add(wd->toolbar.libraries_switcher, "selected", _library_select, wd);
-   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
-   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.libraries_switcher);
-
-   ewe_combobox_item_add(wd->toolbar.libraries_switcher, "Image");
-   ewe_combobox_item_add(wd->toolbar.libraries_switcher, "Sound");
-   ewe_combobox_item_add(wd->toolbar.libraries_switcher, "Textblock styles");
-   ewe_combobox_item_add(wd->toolbar.libraries_switcher, "Color classes");
-
-#endif
-
-
-   /*Add to toolbar history controls */
-   wd->toolbar.history =  history_ui_add(wd->toolbar.obj, wd->group->history);
-   evas_object_show(wd->toolbar.history);
-   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
-   elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.history);
 
    wd->panes_h = elm_panes_add(wd->layout);
    elm_object_style_set(wd->panes_h, "pan_hide");
