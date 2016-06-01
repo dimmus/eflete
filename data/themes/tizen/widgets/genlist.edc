@@ -2534,6 +2534,17 @@ group { name: "elm/genlist/base/default";
    }
 }
 
+group { name: "elm/genlist/base/manager";
+   inherit: "elm/scroller/base/default";
+   parts {
+      part { name: "bg";
+         description { state: "default" 0.0;
+           color: 255 255 255 255;
+         }
+      }
+   }
+}
+
 #undef ITEM_HEIGHT
 #undef BORDER_COLOR
 #undef LIST_BORDER_COLOR

@@ -866,6 +866,8 @@ style_manager_add()
 #ifndef HAVE_TIZEN
    Evas_Object *box_bg = _add_box_bg();
    elm_object_part_content_set(mng.layout, "elm.swallow.menu", box_bg);
+#else
+   elm_object_style_set(mng.genlist, "manager");
 #endif
 
    evas_textblock_style_free(ts);
