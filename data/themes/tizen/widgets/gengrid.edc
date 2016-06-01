@@ -377,4 +377,11 @@ group { name: "elm/gengrid/item/group_index/default";
 
 group { name: "elm/gengrid/base/default";
    inherit: "elm/genlist/base/default";
+   parts {
+      part { name: "bg";
+         description { state: "default" 0.0;
+           color: 255 255 255 255;
+         }
+      }
+   }
 }
