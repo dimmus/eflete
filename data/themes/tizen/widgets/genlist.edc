@@ -2535,7 +2535,7 @@ group { name: "elm/genlist/base/default";
 }
 
 #undef ITEM_HEIGHT
-#ungef BORDER_COLOR
+#undef BORDER_COLOR
 #undef LIST_BORDER_COLOR
 #undef LIGHT_BORDER_COLOR
 #undef BG_COLOR
