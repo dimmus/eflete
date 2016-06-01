@@ -503,6 +503,8 @@ image_manager_add(void)
    elm_object_part_text_set(mng.layout, "elm.text", _("Preview"));
    elm_layout_text_set(mng.layout, "elm.subtext", _("Image Gallery"));
    mng.panes = elm_panes_add(mng.win);
+   elm_panes_content_right_size_set(mng.panes, 0);
+   elm_panes_content_right_min_size_set(mng.panes, 355);
    elm_object_part_content_set(mng.panes, "left", mng.layout);
    elm_object_part_content_set(mng.panes, "right", ap.property.image_manager);
 

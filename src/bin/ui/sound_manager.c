@@ -529,6 +529,8 @@ sound_manager_add(void)
    elm_object_part_content_set(mng.property_panes, "left", mng.player);
    elm_object_part_content_set(mng.property_panes, "right", ap.property.sound_manager);
 #endif
+   elm_panes_content_right_size_set(mng.panes, 0);
+   elm_panes_content_right_min_size_set(mng.panes, 355);
 
    if (!gic)
      {
