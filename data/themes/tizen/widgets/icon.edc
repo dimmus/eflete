@@ -22,7 +22,7 @@ IC("refresh",           "toolbar/refresh",          "menu/refresh",           "i
 IC("folder",            "toolbar/folder",           "menu/folder",            "icon_folder.png",         14, 0);
 IC("file",              "toolbar/file",             "menu/file",              "icon_file.png",           14, 0);
 IC("save",              "toolbar/save",             "menu/save",              "icon_save.png",           14, 0);
-IC("search",            "toolbar/search",           "menu/search",            "icon_search.png",         14, 0);
+IC("search",            "toolbar/search",           "menu/search",            "tizen_search.png",        14, 0);
 IC("plus",              "toolbar/plus",             "menu/plus",              "icon_plus.png",           14, 0);
 IC("minus",             "toolbar/minus",            "menu/minus",             "icon_minus.png",          14, 0);
 IC("animator",          "toolbar/animator",         "menu/animator",          "icon_animator.png",       14, 0);

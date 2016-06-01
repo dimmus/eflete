@@ -943,8 +943,8 @@ group { name: "elm/scroller/entry_single/default";
          }
          description { state: "visible" 0.0;
             align: 1.0 0.5;
-            aspect: 1.0 1.0;
-            aspect_preference: VERTICAL;
+            min: 16 16;
+            max: 16 16;
             rel1.offset: 0 1;
             rel2.offset: -7 -3;
          }
