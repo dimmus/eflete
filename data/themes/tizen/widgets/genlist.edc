@@ -1443,30 +1443,42 @@ group { name: "elm/genlist/tree/part/default";
          source: "disclip";
          action: STATE_SET "over" 0.00;
          target: "bg1";
-         after: "over_icon";
-         target: "elm.swallow.end2";
       }
       program { name: "over_icon";
+         signal: "mouse,in";
+         source: "disclip";
          action: STATE_SET "hide" 0.0;
+         filter: "bg" "default" 0.0;
          target: "elm.swallow.end";
          target: "elm.swallow.end1";
+         after: "over_i";
+      }
+      program { name: "over_i";
+         action: STATE_SET "over" 0.00;
+         target: "elm.swallow.end2";
       }
       program { name: "over,out";
          signal: "mouse,out";
          source: "disclip";
          action: STATE_SET "default" 0.00;
          target: "bg1";
-         target: "elm.swallow.end";
-         after: "unover_icon";
       }
       program { name: "unover_icon";
+         signal: "mouse,out";
+         source: "disclip";
          action: STATE_SET "hide" 0.0;
+         filter: "bg" "default" 0.0;
          target: "elm.swallow.end1";
          target: "elm.swallow.end2";
+         after: "unover_i";
       }
-
+      program { name: "unover_i";
+         action: STATE_SET "default" 0.00;
+         target: "elm.swallow.end";
+      }
    }
 }
+
 group { name: "elm/genlist/item/state/default";
    data {
       item: "texts" "elm.text";
