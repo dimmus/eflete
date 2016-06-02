@@ -12,8 +12,8 @@ group { name: "elm/layout/tabs/default";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.0;
-            min: 0 33;
-            max: -1 33;
+            min: 0 31;
+            max: -1 31;
          }
       }
       part { name: "bg_content";

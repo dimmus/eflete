@@ -516,8 +516,8 @@ group { name: "elm/toolbar/base/tabs_horizontal";
          type: RECT;
          description { state: "default" 0.0;
             align: 0.5 1.0;
-            min: 0 32;
-            max: -1 32;
+            min: 0 31;
+            max: -1 31;
             color: 215 215 215 255;
          }
       }
@@ -570,8 +570,8 @@ group { name: "elm/toolbar/base/tabs_horizontal";
          description { state: "default" 0.0;
             align: 0.5 1.0;
             fixed: 1 0;
-            min: 0 32;
-            max: -1 32;
+            min: 0 31;
+            max: -1 31;
             rel2.to_y: "separator";
          }
       }
@@ -767,8 +767,8 @@ group { name: "elm/toolbar/item/tabs_horizontal";
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.00;
-            min: 136 32;
-            max: 136 32;
+            min: 136 31;
+            max: 136 31;
             rel2.offset: -2 -1;
          }
       }
