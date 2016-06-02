@@ -1688,7 +1688,11 @@ _on_btn_plus_clicked(void *data,
 
    assert(pl != NULL);
 
+#if !HAVE_TIZEN
    evas_object_geometry_get(obj, &x, &y, NULL, &h);
+#else
+   evas_object_geometry_get(pl->btn_down, &x, &y, NULL, &h);
+#endif
 
    elm_menu_move(pl->menu, x, y + h);
    evas_object_show(pl->menu);
@@ -2299,7 +2303,9 @@ group_navigator_add(Evas_Object *parent, Group *group)
 
    menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Part"), _on_menu_add_part_clicked, NULL);
    elm_object_part_text_set(elm_menu_item_object_get(menu_item), "elm.shortcut", "q");
+#if !HAVE_TIZEN
    elm_menu_item_separator_add(pl->menu, NULL);
+#endif
 
    pl->add_state_menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("State"), _on_menu_add_state_clicked, NULL);
    elm_object_part_text_set(elm_menu_item_object_get(pl->add_state_menu_item), "elm.shortcut", "w");
@@ -2307,11 +2313,15 @@ group_navigator_add(Evas_Object *parent, Group *group)
    pl->add_part_item_menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Item"), _on_menu_add_item_clicked, NULL);
    elm_object_part_text_set(elm_menu_item_object_get(pl->add_part_item_menu_item), "elm.shortcut", "e");
    elm_object_item_disabled_set(pl->add_part_item_menu_item, true);
+#if !HAVE_TIZEN
    elm_menu_item_separator_add(pl->menu, NULL);
+#endif
 
    menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Program"), _on_menu_add_program_clicked, NULL);
    elm_object_part_text_set(elm_menu_item_object_get(menu_item), "elm.shortcut", "r");
+#if !HAVE_TIZEN
    elm_menu_item_separator_add(pl->menu, NULL);
+#endif
 
    menu_item = elm_menu_item_add(pl->menu, NULL, NULL, _("Data item"), _on_menu_add_group_data_clicked, NULL);
    elm_object_part_text_set(elm_menu_item_object_get(menu_item), "elm.shortcut", "t");
