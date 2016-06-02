@@ -175,9 +175,7 @@ property_add(Evas_Object *parent, Property_Mode mode)
    IMAGE_ADD_NEW(pd->layout, icon, "navigator", "property");
    elm_object_part_content_set(pd->layout, "elm.swallow.icon", icon);
 #endif
-    elm_object_text_set(pd->layout, "Property");
    elm_object_text_set(pd->layout, "Property");
-   evas_object_show(pd->layout);
 
    pd->genlist = elm_genlist_add(parent);
    elm_genlist_block_count_set(pd->genlist, 256);
