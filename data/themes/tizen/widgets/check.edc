@@ -650,15 +650,12 @@ group { name: "elm/check/base/eye";
          signal: "elm,state,check,on";
          source: "elm";
          action: STATE_SET "visible" 0.00;
-         transition: LINEAR 0.10000;
          target: "check";
-         after: "check_on_end";
       }
       program { name: "check_off";
          signal: "elm,state,check,off";
          source: "elm";
          action: STATE_SET "default" 0.00;
-         transition: LINEAR 0.16000;
          target: "check";
       }
       program { name: "text_show";
@@ -702,11 +699,6 @@ group { name: "elm/check/base/eye";
          target: "shadow";
          target: "events";
          target: "clipper";
-      }
-      program { name: "check_on_end";
-         action: STATE_SET "visible" 1.00;
-         transition: LINEAR 0.06000;
-         target: "check";
       }
    }
 }
