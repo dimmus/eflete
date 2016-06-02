@@ -1169,6 +1169,8 @@ tabs_home_tab_add(Tabs_Menu view)
 #ifndef HAVE_TIZEN
    item->toolbar_item = elm_toolbar_item_append(tabs.toolbar, "go-home", _("Home"),
                                                 _content_set, (void *)item);
+#else
+   elm_object_part_content_set(ap.panes.left_ver, "right", workspace_group_navigator_get(NULL));
 #endif /* HAVE_TIZEN */
 
    elm_object_item_signal_callback_add(item->toolbar_item, "tab,close", "eflete", _tab_close, (void *)item);
