@@ -358,7 +358,7 @@ group { name: "elm/layout/navigator/default";
             color: 204 204 204 255;
             rel1 {
                relative: 0.0 1.0;
-               offset: 0 8;
+               offset: 0 -5;
                to_y: "area.top";
             }
          }
