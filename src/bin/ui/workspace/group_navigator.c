@@ -1680,7 +1680,7 @@ group_navigator_group_data_del(Evas_Object *obj, Eina_Stringshare *group_data __
 
 static void
 _on_btn_plus_clicked(void *data,
-                     Evas_Object *obj,
+                     Evas_Object *obj __UNUSED__,
                      void *ei __UNUSED__)
 {
    Part_List *pl = data;

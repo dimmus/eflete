@@ -704,6 +704,11 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
    ewe_ruler_horizontal_set(area->ruler_v.obj, false);
    elm_layout_content_set(area->layout, "elm.swallow.ruler_v", area->ruler_v.obj);
 
+#if HAVE_TIZEN
+   ewe_ruler_scale_visible_set(area->ruler_v.obj, area->ruler_v.scale_rel, false);
+   ewe_ruler_scale_visible_set(area->ruler_h.obj, area->ruler_h.scale_rel, false);
+#endif
+
    /* create scroller for normal mode and set bg */
    area->scroller = elm_scroller_add(area->layout);
    elm_scroller_policy_set(area->scroller, ELM_SCROLLER_POLICY_ON, ELM_SCROLLER_POLICY_ON);
@@ -719,7 +724,7 @@ _scroll_area_add(Workspace_Data *wd, Scroll_Area *area, Eina_Bool scale_rel)
    elm_object_content_set(area->scroller, area->container);
    container_container_size_set(area->container, 350, 350);
 
-   if (scale_rel) /* this bool like marker, if scale_rel is true we have the area for normal mode */
+   if (wd->mode == MODE_NORMAL)
      evas_object_event_callback_add(area->scroller, EVAS_CALLBACK_MOUSE_DOWN, _menu_cb, wd);
 }
 
