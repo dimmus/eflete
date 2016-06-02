@@ -121,6 +121,8 @@ part { name: "dash"#i; \
       }
 
 group { name: "ewe/ruler/horizontal/dashes/default";
+   min: 0 16;
+   max: 0 16;
    parts {
       part { name: "cliper";
          type: RECT;
@@ -131,23 +133,18 @@ group { name: "ewe/ruler/horizontal/dashes/default";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
-            fixed: 0 1;
-            align: 0.0 1.0;
-            color: RULER_MARKS_TEXT_COLOR;
-            rel1 {
-               to: "dash0";
-               offset: -1 0;
-            }
-            rel2 {
-               to_y: "dash0";
-               relative: 0.0 0.0;
-               offset: 10 -1;
-            }
+            fixed: 1 1;
+            color: 96 96 96 255;
             text {
-               font: FN;
+               font: "PT";
                size: 9;
                min: 1 1;
-               ellipsis: -1;
+               ellipsis: -1.0;
+            }
+            rel1 {
+               relative: 1.0 0.0;
+               offset: -1 0;
+               to_x: "dash0";
             }
          }
       }
@@ -155,38 +152,32 @@ group { name: "ewe/ruler/horizontal/dashes/default";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
-            fixed: 0 1;
+            visible: 0;
             align: 0.0 1.0;
-            color:RULER_MARKS_TEXT_COLOR;
-            rel1 {
-               to: "dash5";
-               offset: -1 0;
-            }
-            rel2 {
-               to_y: "dash5";
-               relative: 0.0 0.0;
-               offset: 10 -1;
-            }
+            fixed: 0 1;
+            color: 96 96 96 255;
             text {
-               font: FN;
+               font: "PT";
                size: 9;
                min: 1 1;
-               ellipsis: -1;
+               ellipsis: -1.0;
             }
+        }
+      }
+      part { name: "dash0";
+         type: RECT;
+         clip_to: "cliper";
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            min: 1 4;
+            max: 1 4;
+            color: 161 161 161 255;
          }
       }
-      ITEM(0, 10, 1 1);
-      ITEM(1, 5, 0 1);
-      ITEM(2, 5, 0 1);
-      ITEM(3, 5, 0 1);
-      ITEM(4, 5, 0 1);
-      ITEM(5, 7, 1 1);
-      ITEM(6, 5, 0 1);
-      ITEM(7, 5, 0 1);
-      ITEM(8, 5, 0 1);
-      ITEM(9, 5, 0 1);
-   }
+  }
 }
+
 #undef ITEM
 
 #define ITEM_VER(i, sz, FIXED) \
@@ -202,52 +193,62 @@ part { name: "dash"#i; \
             rel1.relative: 1.0 0.i; \
          } \
       }
-
 group { name: "ewe/ruler/vertical/dashes/default";
-   inherit: "ewe/ruler/horizontal/dashes/default";
+   min: 16 16;
+   max: 16 0;
    parts {
-      part { name: "ewe.text";
+      part { name: "cliper";
+         type: RECT;
          description { state: "default" 0.0;
-            align: 1.0 0.0;
-            rel1 {
-               to: "dash0";
-               relative: 1.0 0.0;
-               offset: -5 1;
+         }
+      }
+      part { name: "ewe.text";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            color: 96 96 96 255;
+            text {
+               font: "PT";
+               size: 9;
+               min: 0 1;
+               align: 0.0 0.5;
+               ellipsis: -1.0;
             }
-            rel2 {
-               to: "dash0";
-               offset: -1 10;
-            }
+            map.on:1;
+            map.rotation.z: 270;
          }
       }
       part { name: "ewe.middle.text";
+         type: TEXT;
+         scale: 1;
          description { state: "default" 0.0;
+            visible: 0;
             align: 1.0 0.0;
             fixed: 1 1;
-            rel1 {
-               to: "dash5";
-               relative: 0.0 0.0;
-               offset: -5 1;
-            }
-            rel2 {
-               to_x: "dash5";
-               relative: 0.0 0.0;
-               offset: 0 1;
+            color: 96 96 96 255;
+            text {
+               font: "PT";
+               size: 9;
+               min: 1 1;
+               ellipsis: -1.0;
             }
          }
       }
-      ITEM_VER(0, 10, 1 0);
-      ITEM_VER(1, 5, 1 0);
-      ITEM_VER(2, 5, 1 0);
-      ITEM_VER(3, 5, 1 0);
-      ITEM_VER(4, 5, 1 0);
-      ITEM_VER(5, 7, 1 0);
-      ITEM_VER(6, 5, 1 0);
-      ITEM_VER(7, 5, 1 0);
-      ITEM_VER(8, 5, 1 0);
-      ITEM_VER(9, 5, 1 0);
+      part { name: "dash0";
+         type: RECT;
+         clip_to: "cliper";
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            fixed: 1 0;
+            min: 4 1;
+            max: 4 1;
+            color: 146 146 146 255;
+         }
+      }
    }
 }
+
 #undef ITEM_VER
 
 

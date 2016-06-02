@@ -81,7 +81,7 @@ group { name: "elm/layout/workspace/scroller";
          description { state: "default" 0.0;
             align: 0.0 0.0;
             fixed: 1 0;
-            max: 25 25;
+            max: 16 16;
             rel1 {
                relative: 1.0 1.0;
                to_x: "border_right";
@@ -235,7 +235,7 @@ group { name: "elm/layout/workspace/scroller";
          signal: "elm,state,rulers,hide";
          source: "eflete";
          action: STATE_SET "hidden" 0.00;
-         transition: LINEAR 0.30000 CURRENT;
+         transition: LINEAR 0 CURRENT;
          target: "elm.swallow.ruler_v";
          target: "elm.swallow.ruler_h";
       }
@@ -243,7 +243,7 @@ group { name: "elm/layout/workspace/scroller";
          signal: "elm,state,rulers,show";
          source: "eflete";
          action: STATE_SET "default" 0.00;
-         transition: LINEAR 0.30000 CURRENT;
+         transition: LINEAR 0 CURRENT;
          target: "elm.swallow.ruler_v";
          target: "elm.swallow.ruler_h";
       }
