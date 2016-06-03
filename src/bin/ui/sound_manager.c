@@ -467,6 +467,7 @@ _mw_cancel_cb(void *data __UNUSED__,
    /* unset and hide the image property */
    content = elm_object_content_unset(mng.win);
    evas_object_hide(content);
+   sound_player_sound_unset();
 }
 
 static void
@@ -479,6 +480,7 @@ _mw_done_cb(void *data __UNUSED__,
    /* unset and hide the image property */
    content = elm_object_content_unset(mng.win);
    evas_object_hide(content);
+   sound_player_sound_unset();
 }
 
 static void

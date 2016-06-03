@@ -26,6 +26,9 @@
 void
 sound_player_sound_set(Sound_Data *sound);
 
+void
+sound_player_sound_unset(void);
+
 Evas_Object *
 sound_player_add(Evas_Object *parent);
 
