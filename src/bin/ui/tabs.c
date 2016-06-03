@@ -1079,6 +1079,8 @@ _tab_close(void *data,
    Tabs_Item *item = (Tabs_Item *)data;
    Evas_Object *content;
 
+   if (!item) return;
+
    tabs.items = eina_list_remove(tabs.items, item);
    _del_tab(item);
    if (tabs.selected == it)
