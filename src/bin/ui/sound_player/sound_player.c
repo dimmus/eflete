@@ -198,6 +198,8 @@ _tone_play()
         ERR("Couldn't attach input and output!");
         abort();
      }
+   elm_slider_min_max_set(rewin, 0.0, TONE_PLAYING_DURATION);
+   elm_slider_value_set(rewin, 0.0);
 
    value = elm_slider_value_get(rewin);
    if (value)
@@ -208,7 +210,7 @@ _tone_play()
 static void
 _sample_play()
 {
-   double value;
+   double value, len = 0.0;
    Eina_Bool ret = false;
    External_Resource *sample;
 
@@ -223,6 +225,10 @@ _sample_play()
              ERR("Can not set source obj for added sample");
              return;
           }
+        len = ecore_audio_obj_in_length_get(in);
+        elm_slider_min_max_set(rewin, 0, len);
+        elm_slider_value_set(rewin, 0.0);
+        length = ecore_file_size(sample->source);
      }
 
    ret = ecore_audio_obj_out_input_attach(out, in);
@@ -314,41 +320,17 @@ _interrupt_playing()
 void
 sound_player_sound_set(Sound_Data *sound)
 {
-#ifdef HAVE_AUDIO
-   External_Resource *sample;
-   Eina_Bool ret;
-   double len = 0.0;
-#endif
-
    snd = sound;
 
 #ifdef HAVE_AUDIO
    if (!snd)
      {
-         elm_object_disabled_set(play, true);
+        elm_object_disabled_set(play, true);
      }
-   else if (snd->type == SOUND_TYPE_SAMPLE)
+   else
      {
-         elm_object_disabled_set(play, false);
+        elm_object_disabled_set(play, false);
         _interrupt_playing();
-
-        sample = (External_Resource *)snd->resource;
-        _create_io_stream();
-        ecore_audio_obj_name_set(in, sample->source);
-        ret = ecore_audio_obj_source_set(in, sample->source);
-        if (!ret) ERR("Can not set source '%s' to obj sample", sample->source)
-          len = ecore_audio_obj_in_length_get(in);
-        elm_slider_min_max_set(rewin, 0, len);
-        elm_slider_value_set(rewin, 0.0);
-        length = ecore_file_size(sample->source);
-     }
-   else if (snd->type == SOUND_TYPE_TONE)
-     {
-         elm_object_disabled_set(play, false);
-        _interrupt_playing();
-
-        elm_slider_min_max_set(rewin, 0.0, TONE_PLAYING_DURATION);
-        elm_slider_value_set(rewin, 0.0);
      }
 #endif
 }
