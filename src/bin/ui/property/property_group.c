@@ -205,6 +205,7 @@ TODO("remove NULL's after fixing genlist filters")
 #define GROUP_DATA_ARGS (group_pd.group_data) ? group_pd.group_data->name : NULL
 #define ITEM_ARGS PART_ARGS, (group_pd.part) ? group_pd.part->current_item_name : NULL
 #define STATE_ARGS PART_ARGS, (group_pd.part) ? group_pd.part->current_state->parsed_name : NULL, (group_pd.part) ? group_pd.part->current_state->parsed_val : 0
+#define STATE_SOURCE_ARGS str_val1, (group_pd.part) ? group_pd.part->current_state->parsed_name : NULL, (group_pd.part) ? group_pd.part->current_state->parsed_val : 0
 #define PROGRAM_ARGS (group_pd.program) ? group_pd.program->name : NULL
 #define CHANGE_MERGE group_pd.history.change, true
 #define CHANGE_NO_MERGE group_pd.history.change, false
@@ -1938,8 +1939,22 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_STATE_FONT:
-         str_val1 = edje_edit_state_font_get(EDIT_OBJ, STATE_ARGS);
-         property_entry_set(action->control, str_val1);
+         str_val1 = edje_edit_state_text_source_get(EDIT_OBJ, STATE_ARGS);
+         elm_object_disabled_set(action->control, !!str_val1);
+         if (!str_val1)
+           {
+              str_val2 = edje_edit_state_font_get(EDIT_OBJ, STATE_ARGS);
+              property_entry_set(action->control, str_val2);
+              edje_edit_string_free(str_val2);
+
+           }
+         else
+           {
+              str_val2 = edje_edit_state_font_get(EDIT_OBJ, STATE_SOURCE_ARGS);
+              property_entry_set(action->control, str_val2);
+              edje_edit_string_free(str_val2);
+           }
+
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_STATE_TEXT_MIN_X:
@@ -1976,7 +1991,15 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_TEXT_SIZE:
          int_val1 = edje_edit_state_text_size_get(EDIT_OBJ, STATE_ARGS);
-         elm_spinner_value_set(action->control, int_val1);
+         str_val1 = edje_edit_state_text_source_get(EDIT_OBJ, STATE_ARGS);
+         elm_object_disabled_set(action->control, !!str_val1);
+
+         if (!str_val1)
+           elm_spinner_value_set(action->control, int_val1);
+         else
+           elm_spinner_value_set(action->control, edje_edit_state_text_size_get(EDIT_OBJ, STATE_SOURCE_ARGS));
+
+         edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_STATE_TEXT_ELIPSIS:
          double_val1 = edje_edit_state_text_elipsis_get(EDIT_OBJ, STATE_ARGS);
@@ -3096,6 +3119,8 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_state_text_source_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
          eina_stringshare_del(group_pd.history.new.str_val1);
          group_pd.history.new.str_val1 = str_val1;
+         property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TEXT_FONT]);
+         property_item_update(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TEXT_SIZE]);
          break;
       case ATTRIBUTE_STATE_TEXT_TEXT_SOURCE:
          assert(cb_item != NULL);
