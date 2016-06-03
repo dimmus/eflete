@@ -283,6 +283,245 @@ group { name: "elm/toolbar/base/default";
    }
 }
 
+   group { name: "elm/toolbar/base/tabs_horizontal";
+      data {
+         item: "icon_size" "16";
+      }
+      parts {
+         part { name: "base";
+            type: RECT;
+            description { state: "default" 0.0;
+               align: 0.5 0.0;
+               min: 0 31;
+               max: -1 31;
+               color: 215 215 215 255;
+            }
+         }
+         part { name: "clipper_arrow_left";
+            type: RECT;
+            description { state: "default" 0.0;
+               visible: 0;
+               align: 0.0 0.5;
+               min: 18 0;
+               max: 18 -1;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.00;
+               visible: 1;
+            }
+         }
+         part { name: "clipper_arrow_right";
+            type: RECT;
+            description { state: "default" 0.0;
+               visible: 0;
+               align: 1.0 0.5;
+               min: 18 0;
+               max: 18 -1;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.00;
+               visible: 1;
+            }
+         }
+         part { name: "clipper";
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1 {
+                  offset: 0 -1;
+                  to: "elm.swallow.content";
+               }
+               rel2 {
+                  to_x: "elm.swallow.content";
+                  to_y: "separator";
+               }
+            }
+         }
+         part { name: "separator";
+            type: RECT;
+            description { state: "default" 0.0;
+               align: 0.5 1.0;
+               min: 0 1;
+               max: -1 1;
+               color: 170 170 170 255;
+               rel1.to_y: "base";
+            }
+         }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            clip_to: "clipper";
+            description { state: "default" 0.0;
+               align: 0.5 0.0;
+               fixed: 1 0;
+               min: 0 32;
+               max: -1 32;
+               rel1.to_y: "base";
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -1 0;
+                  to_y: "separator";
+               }
+            }
+         }
+         part { name: "arrow_right";
+            type: IMAGE;
+            clip_to: "clipper_arrow_right";
+            description { state: "default" 0.0;
+               max: 16 16;
+               color_class: "bg_main";
+               image.normal: "icon_arrow_right.png";
+               rel1 {
+                  to_x: "clipper_arrow_right";
+                  to_y: "elm.swallow.content";
+               }
+               rel2 {
+                  to_x: "clipper_arrow_right";
+                  to_y: "elm.swallow.content";
+               }
+            }
+            description { state: "focused" 0.0;
+               inherit: "default" 0.00;
+               color_class: "select_light";
+            }
+            description { state: "clicked" 0.0;
+               inherit: "default" 0.00;
+               color_class: "select";
+            }
+         }
+         part { name: "arrow_left";
+            type: IMAGE;
+            clip_to: "clipper_arrow_left";
+            description { state: "default" 0.0;
+               max: 16 16;
+               color_class: "bg_main";
+               image.normal: "icon_arrow_left.png";
+               rel1 {
+                  to_x: "clipper_arrow_left";
+                  to_y: "elm.swallow.content";
+               }
+               rel2 {
+                  to_x: "clipper_arrow_left";
+                  to_y: "elm.swallow.content";
+               }
+            }
+            description { state: "focused" 0.0;
+               inherit: "default" 0.00;
+               color_class: "select_light";
+            }
+            description { state: "clicked" 0.0;
+               inherit: "default" 0.00;
+               color_class: "select";
+            }
+         }
+      }
+      programs {
+         program { name: "arrow_left_focused";
+            signal: "mouse,in";
+            source: "arrow_left";
+            action: STATE_SET "focused" 0.00;
+            target: "arrow_left";
+         }
+         program { name: "arrow_left_unfocused";
+            signal: "mouse,out";
+            source: "arrow_left";
+            action: STATE_SET "default" 0.00;
+            target: "arrow_left";
+         }
+         program { name: "arrow_left_clicked";
+            signal: "mouse,down,1";
+            source: "arrow_left";
+            action: STATE_SET "clicked" 0.00;
+            target: "arrow_left";
+         }
+         program { name: "arrow_left_click_emit";
+            signal: "mouse,down,1";
+            source: "arrow_left";
+            action: SIGNAL_EMIT "elm,action,left" "elm";
+            after: "arrow_left_repeat";
+         }
+         program { name: "arrow_left_unclicked";
+            signal: "mouse,up,1";
+            source: "arrow_left";
+            action: STATE_SET "default" 0.00;
+            target: "arrow_left";
+         }
+         program { name: "arrow_left_repeat_stop";
+            signal: "mouse,up,1";
+            source: "arrow_left";
+            action: ACTION_STOP;
+            target: "arrow_left_repeat";
+         }
+         program { name: "arrow_left_show";
+            signal: "elm,action,show,left";
+            source: "elm";
+            action: STATE_SET "visible" 0.00;
+            target: "clipper_arrow_left";
+         }
+         program { name: "arrow_left_hide";
+            signal: "elm,action,hide,left";
+            source: "elm";
+            action: STATE_SET "default" 0.00;
+            target: "clipper_arrow_left";
+         }
+         program { name: "arrow_right_focused";
+            signal: "mouse,in";
+            source: "arrow_right";
+            action: STATE_SET "focused" 0.00;
+            target: "arrow_right";
+         }
+         program { name: "arrow_right_unfocused";
+            signal: "mouse,out";
+            source: "arrow_right";
+            action: STATE_SET "default" 0.00;
+            target: "arrow_right";
+         }
+         program { name: "arrow_right_clicked";
+            signal: "mouse,down,1";
+            source: "arrow_right";
+            action: STATE_SET "clicked" 0.00;
+            target: "arrow_right";
+         }
+         program { name: "arrow_right_click_emit";
+            signal: "mouse,down,1";
+            source: "arrow_right";
+            action: SIGNAL_EMIT "elm,action,right" "elm";
+            after: "arrow_right_repeat";
+         }
+         program { name: "arrow_right_unclicked";
+            signal: "mouse,up,1";
+            source: "arrow_right";
+            action: STATE_SET "default" 0.00;
+            target: "arrow_right";
+         }
+         program { name: "arrow_right_repeat_stop";
+            signal: "mouse,up,1";
+            source: "arrow_right";
+            action: ACTION_STOP;
+            target: "arrow_right_repeat";
+         }
+         program { name: "arrow_right_show";
+            signal: "elm,action,show,right";
+            source: "elm";
+            action: STATE_SET "visible" 0.00;
+            target: "clipper_arrow_right";
+         }
+         program { name: "arrow_right_hide";
+            signal: "elm,action,hide,right";
+            source: "elm";
+            action: STATE_SET "default" 0.00;
+            target: "clipper_arrow_right";
+         }
+         program { name: "arrow_left_repeat";
+            action: SIGNAL_EMIT "elm,action,left" "elm";
+            in: 0.30000 0.00000;
+            after: "arrow_left_repeat";
+         }
+         program { name: "arrow_right_repeat";
+            action: SIGNAL_EMIT "elm,action,right" "elm";
+            in: 0.30000 0.00000;
+            after: "arrow_right_repeat";
+         }
+      }
+   }
 group { name: "elm/toolbar/item/default";
    parts {
       part { name: "bg";
@@ -506,245 +745,6 @@ group { name: "elm/toolbar/separator/default";
       }
    }
 }
-
-group { name: "elm/toolbar/base/tabs_horizontal";
-   data {
-      item: "icon_size" "16";
-   }
-   parts {
-      part { name: "base";
-         type: RECT;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            min: 0 31;
-            max: -1 31;
-            color: 215 215 215 255;
-         }
-      }
-      part { name: "clipper_arrow_left";
-         type: RECT;
-         description { state: "default" 0.0;
-            visible: 0;
-            align: 0.0 0.5;
-            min: 18 0;
-            max: 18 -1;
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.00;
-            visible: 1;
-         }
-      }
-      part { name: "clipper_arrow_right";
-         type: RECT;
-         description { state: "default" 0.0;
-            visible: 0;
-            align: 1.0 0.5;
-            min: 18 0;
-            max: 18 -1;
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.00;
-            visible: 1;
-         }
-      }
-     part { name: "clipper";
-         type: RECT;
-         description { state: "default" 0.0;
-            rel1 {
-               offset: 0 -1;
-               to: "elm.swallow.content";
-            }
-            rel2 {
-               to_x: "elm.swallow.content";
-               to_y: "separator";
-            }
-         }
-      }
-      part { name: "separator";
-         type: RECT;
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            min: 0 1;
-            max: -1 1;
-            color: 170 170 170 255;
-            rel1.to_y: "base";
-         }
-      }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
-         clip_to: "clipper";
-         description { state: "default" 0.0;
-            align: 0.5 1.0;
-            fixed: 1 0;
-            min: 0 31;
-            max: -1 31;
-            rel2 {
-               relative: 1.0 0.0;
-               to_y: "separator";
-            }
-         }
-      }
-      part { name: "arrow_right";
-         type: IMAGE;
-         clip_to: "clipper_arrow_right";
-         description { state: "default" 0.0;
-            max: 16 16;
-            color_class: "bg_main";
-            image.normal: "icon_arrow_right.png";
-            rel1 {
-               to_x: "clipper_arrow_right";
-               to_y: "elm.swallow.content";
-            }
-            rel2 {
-               to_x: "clipper_arrow_right";
-               to_y: "elm.swallow.content";
-            }
-         }
-         description { state: "focused" 0.0;
-            inherit: "default" 0.00;
-            color_class: "select_light";
-         }
-         description { state: "clicked" 0.0;
-            inherit: "default" 0.00;
-            color_class: "select";
-         }
-      }
-      part { name: "arrow_left";
-         type: IMAGE;
-         clip_to: "clipper_arrow_left";
-         description { state: "default" 0.0;
-            max: 16 16;
-            color_class: "bg_main";
-            image.normal: "icon_arrow_left.png";
-            rel1 {
-               to_x: "clipper_arrow_left";
-               to_y: "elm.swallow.content";
-            }
-            rel2 {
-               to_x: "clipper_arrow_left";
-               to_y: "elm.swallow.content";
-            }
-         }
-         description { state: "focused" 0.0;
-            inherit: "default" 0.00;
-            color_class: "select_light";
-         }
-         description { state: "clicked" 0.0;
-            inherit: "default" 0.00;
-            color_class: "select";
-         }
-      }
-   }
-   programs {
-      program { name: "arrow_left_focused";
-         signal: "mouse,in";
-         source: "arrow_left";
-         action: STATE_SET "focused" 0.00;
-         target: "arrow_left";
-      }
-      program { name: "arrow_left_unfocused";
-         signal: "mouse,out";
-         source: "arrow_left";
-         action: STATE_SET "default" 0.00;
-         target: "arrow_left";
-      }
-      program { name: "arrow_left_clicked";
-         signal: "mouse,down,1";
-         source: "arrow_left";
-         action: STATE_SET "clicked" 0.00;
-         target: "arrow_left";
-      }
-      program { name: "arrow_left_click_emit";
-         signal: "mouse,down,1";
-         source: "arrow_left";
-         action: SIGNAL_EMIT "elm,action,left" "elm";
-         after: "arrow_left_repeat";
-      }
-      program { name: "arrow_left_unclicked";
-         signal: "mouse,up,1";
-         source: "arrow_left";
-         action: STATE_SET "default" 0.00;
-         target: "arrow_left";
-      }
-      program { name: "arrow_left_repeat_stop";
-         signal: "mouse,up,1";
-         source: "arrow_left";
-         action: ACTION_STOP;
-         target: "arrow_left_repeat";
-      }
-      program { name: "arrow_left_show";
-         signal: "elm,action,show,left";
-         source: "elm";
-         action: STATE_SET "visible" 0.00;
-         target: "clipper_arrow_left";
-      }
-      program { name: "arrow_left_hide";
-         signal: "elm,action,hide,left";
-         source: "elm";
-         action: STATE_SET "default" 0.00;
-         target: "clipper_arrow_left";
-      }
-      program { name: "arrow_right_focused";
-         signal: "mouse,in";
-         source: "arrow_right";
-         action: STATE_SET "focused" 0.00;
-         target: "arrow_right";
-      }
-      program { name: "arrow_right_unfocused";
-         signal: "mouse,out";
-         source: "arrow_right";
-         action: STATE_SET "default" 0.00;
-         target: "arrow_right";
-      }
-      program { name: "arrow_right_clicked";
-         signal: "mouse,down,1";
-         source: "arrow_right";
-         action: STATE_SET "clicked" 0.00;
-         target: "arrow_right";
-      }
-      program { name: "arrow_right_click_emit";
-         signal: "mouse,down,1";
-         source: "arrow_right";
-         action: SIGNAL_EMIT "elm,action,right" "elm";
-         after: "arrow_right_repeat";
-      }
-      program { name: "arrow_right_unclicked";
-         signal: "mouse,up,1";
-         source: "arrow_right";
-         action: STATE_SET "default" 0.00;
-         target: "arrow_right";
-      }
-      program { name: "arrow_right_repeat_stop";
-         signal: "mouse,up,1";
-         source: "arrow_right";
-         action: ACTION_STOP;
-         target: "arrow_right_repeat";
-      }
-      program { name: "arrow_right_show";
-         signal: "elm,action,show,right";
-         source: "elm";
-         action: STATE_SET "visible" 0.00;
-         target: "clipper_arrow_right";
-      }
-      program { name: "arrow_right_hide";
-         signal: "elm,action,hide,right";
-         source: "elm";
-         action: STATE_SET "default" 0.00;
-         target: "clipper_arrow_right";
-      }
-      program { name: "arrow_left_repeat";
-         action: SIGNAL_EMIT "elm,action,left" "elm";
-         in: 0.30000 0.00000;
-         after: "arrow_left_repeat";
-      }
-      program { name: "arrow_right_repeat";
-         action: SIGNAL_EMIT "elm,action,right" "elm";
-         in: 0.30000 0.00000;
-         after: "arrow_right_repeat";
-      }
-   }
-}
-
 group { name: "elm/toolbar/item/tabs_horizontal";
    images {
       image: "tab_close_icon_nor.png" COMP;
