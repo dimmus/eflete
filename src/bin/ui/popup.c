@@ -177,12 +177,23 @@ _helper_obj_follow(void *data __UNUSED__,
                    Evas_Object *obj,
                    void *event_info __UNUSED__)
 {
-   int x, y, w, h, nx, ny;
+   int w, h; /* window */
+   int nx, ny, nh, nw; /* follow object */
+   int hh, hw; /* helper */
 
-   evas_object_geometry_get(obj, &x, &y, &w, &h);
-   nx = x - (FS_W + 12 - w); /* 12 - it's a helper border */
-   ny = y + h;
-   evas_object_move(helper, nx, ny);
+   int move_x, move_y;
+
+   evas_object_geometry_get(ap.win, NULL, NULL, &w, &h);
+   evas_object_geometry_get(obj, &nx, &ny, &nw, &nh);
+   evas_object_geometry_get(helper, NULL, NULL, &hw, &hh);
+
+   move_x = nx - (hw + 12 - nw); /* 12 - it's a helper border */
+   if (ny + nh + hh < h)
+     move_y = ny + nh;
+   else
+     move_y = ny - hh;
+
+   evas_object_move(helper, move_x, move_y);
 }
 
 static void
@@ -205,12 +216,23 @@ _helper_property_follow(void *data __UNUSED__,
                         Evas_Object *obj,
                         void *event_info __UNUSED__)
 {
-   int x, y, w, h, nx, ny;
+   int w, h; /* window */
+   int nx, ny, nh, nw; /* follow object */
+   int hh, hw; /* helper */
 
-   evas_object_geometry_get(obj, &x, &y, &w, &h);
-   nx = x - (GENGRID_W + 12 - w); /* 12 - it's a helper border */
-   ny = y + h;
-   evas_object_move(helper, nx, ny);
+   int move_x, move_y;
+
+   evas_object_geometry_get(ap.win, NULL, NULL, &w, &h);
+   evas_object_geometry_get(obj, &nx, &ny, &nw, &nh);
+   evas_object_geometry_get(helper, NULL, NULL, &hw, &hh);
+
+   move_x = nx - (hw + 12 - nw); /* 12 - it's a helper border */
+   if (ny + nh + hh < h)
+     move_y = ny + nh;
+   else
+     move_y = ny - hh;
+
+   evas_object_move(helper, move_x, move_y);
 }
 
 static void
@@ -219,12 +241,23 @@ _helper_property_color_follow(void *data __UNUSED__,
                               Evas_Object *obj,
                               void *event_info __UNUSED__)
 {
-   int x, y, w, h, nx, ny;
+   int w, h; /* window */
+   int nx, ny, nh, nw; /* follow object */
+   int hh, hw; /* helper */
 
-   evas_object_geometry_get(obj, &x, &y, &w, &h);
-   nx = x - (COLOR_W + 12 - w); /* 12 - it's a helper border */
-   ny = y + h;
-   evas_object_move(helper, nx, ny);
+   int move_x, move_y;
+
+   evas_object_geometry_get(ap.win, NULL, NULL, &w, &h);
+   evas_object_geometry_get(obj, &nx, &ny, &nw, &nh);
+   evas_object_geometry_get(helper, NULL, NULL, &hw, &hh);
+
+   move_x = nx - (hw + 12 - nw); /* 12 - it's a helper border */
+   if (ny + nh + hh < h)
+     move_y = ny + nh;
+   else
+     move_y = ny - hh;
+
+   evas_object_move(helper, move_x, move_y);
 }
 
 static void
