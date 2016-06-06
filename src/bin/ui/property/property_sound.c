@@ -269,45 +269,45 @@ _init_items()
           {
            /* part block */
            case PROPERTY_SOUND_ITEM_INFO_TITLE:
-              IT.name = "info";
+              IT.name = "Info";
               IT.expandable = true;
               IT.expanded = true;
               IT.expand_cb = _subitems_get;
               IT.filter_data.sound_types = SOUND_SAMPLE | SOUND_TONE;
               break;
            case PROPERTY_SOUND_ITEM_NAME:
-              IT.name = "name";
+              IT.name = "Name";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY);
               break;
            case PROPERTY_SOUND_ITEM_FILE_NAME:
-              IT.name = "file_name";
+              IT.name = "File name";
               IT.filter_data.sound_types = SOUND_SAMPLE;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
               break;
 #ifdef HAVE_AUDIO
            case PROPERTY_SOUND_ITEM_DURATION:
               IT.filter_data.sound_types = SOUND_SAMPLE;
-              IT.name = "duration";
+              IT.name = "Duration";
               break;
 #endif
            case PROPERTY_SOUND_ITEM_TYPE:
               IT.filter_data.sound_types = SOUND_SAMPLE;
-              IT.name = "type";
+              IT.name = "Type";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
               break;
            case PROPERTY_SOUND_ITEM_SIZE:
               IT.filter_data.sound_types = SOUND_SAMPLE;
-              IT.name = "size";
+              IT.name = "Size";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL);
               break;
            case PROPERTY_SOUND_ITEM_COMPRESSION_TYPE:
               IT.filter_data.sound_types = SOUND_SAMPLE;
-              IT.name = "compression type";
+              IT.name = "Compression type";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX);
               break;
            case PROPERTY_SOUND_ITEM_COMPRESSION_QUALITY:
               IT.filter_data.sound_types = SOUND_SAMPLE;
-              IT.name = "compression quality";
+              IT.name = "Compression quality";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER);
               break;
            case PROPERTY_SOUND_ITEM_FREQ:
