@@ -954,6 +954,7 @@ _part_object_area_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
      {
         rel_part = _parts_list_find(sd->parts, rel_to);
         edje_object_part_geometry_get(sd->group->edit_object, rel_part->part->name, &xc, NULL, &wc, NULL);
+        xc += xg;
      }
    x = (xc + (int)(wc * relative)) + offset;
    edje_edit_string_free(rel_to);
@@ -967,6 +968,7 @@ _part_object_area_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
      {
         rel_part = _parts_list_find(sd->parts, rel_to);
         edje_object_part_geometry_get(sd->group->edit_object, rel_part->part->name, NULL, &yc, NULL, &hc);
+        yc += yg;
      }
    y = (yc + (int)(hc * relative)) + offset;
    edje_edit_string_free(rel_to);
@@ -979,6 +981,7 @@ _part_object_area_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
      {
         rel_part = _parts_list_find(sd->parts, rel_to);
         edje_object_part_geometry_get(sd->group->edit_object, rel_part->part->name, &xc, NULL, &wc, NULL);
+        xc += xg;
      }
    w = ((xc - x) + (int)(wc * relative)) + offset + 1;
    if (w < 0) { x += w; w = 0; }
@@ -992,6 +995,7 @@ _part_object_area_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
      {
         rel_part = _parts_list_find(sd->parts, rel_to);
         edje_object_part_geometry_get(sd->group->edit_object, rel_part->part->name, NULL, &yc, NULL, &hc);
+        yc += yg;
      }
    h = ((yc - y) + (int)(hc * relative)) + offset + 1;
    if (h < 0) { y += h; h = 0; }
