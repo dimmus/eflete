@@ -93,6 +93,8 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case PROPERTY_SOUND_ITEM_TYPE:
       case PROPERTY_SOUND_ITEM_SIZE:
       case PROPERTY_SOUND_ITEM_FILE_NAME:
+         elm_object_disabled_set(action->control, true);
+         break;
       case PROPERTY_SOUND_ITEM_COMPRESSION_TYPE:
          elm_object_disabled_set(action->control, true);
          _fill_combobox_with_enum(action->control, edje_sound_compression);
