@@ -162,37 +162,37 @@ _on_image_selected(void *data __UNUSED__,
 void
 property_image_manager_init()
 {
-   image_data.item_name.name = eina_stringshare_add(_("name"));
+   image_data.item_name.name = "Name";
    image_data.item_name.action1.control_type = PROPERTY_CONTROL_LABEL;
    image_data.item_name.action1.update_cb = _update_cb;
    image_data.item_name.action1.type.attribute_image = PROPERTY_IMAGE_CONTROL_NAME;
 
-   image_data.item_location.name = eina_stringshare_add(_("location"));
+   image_data.item_location.name = "Location";
    image_data.item_location.action1.control_type = PROPERTY_CONTROL_LABEL;
    image_data.item_location.action1.update_cb = _update_cb;
    image_data.item_location.action1.type.attribute_image = PROPERTY_IMAGE_CONTROL_LOCATION;
 
-   image_data.item_type.name = eina_stringshare_add(_("type"));
+   image_data.item_type.name = "Type";
    image_data.item_type.action1.control_type = PROPERTY_CONTROL_LABEL;
    image_data.item_type.action1.update_cb = _update_cb;
    image_data.item_type.action1.type.attribute_image = PROPERTY_IMAGE_CONTROL_TYPE;
 
-   image_data.item_image_compression.name = eina_stringshare_add(_("image compression"));
+   image_data.item_image_compression.name = "Image compression";
    image_data.item_image_compression.action1.control_type = PROPERTY_CONTROL_LABEL;
    image_data.item_image_compression.action1.update_cb = _update_cb;
    image_data.item_image_compression.action1.type.attribute_image = PROPERTY_IMAGE_CONTROL_COMPRESSION;
 
-   image_data.item_image_quality.name = eina_stringshare_add(_("image quality"));
+   image_data.item_image_quality.name = "Image quality";
    image_data.item_image_quality.action1.control_type = PROPERTY_CONTROL_LABEL;
    image_data.item_image_quality.action1.update_cb = _update_cb;
    image_data.item_image_quality.action1.type.attribute_image = PROPERTY_IMAGE_CONTROL_QUALITY;
 
-   image_data.item_width.name = eina_stringshare_add(_("width"));
+   image_data.item_width.name = "Width";
    image_data.item_width.action1.control_type = PROPERTY_CONTROL_LABEL;
    image_data.item_width.action1.update_cb = _update_cb;
    image_data.item_width.action1.type.attribute_image = PROPERTY_IMAGE_CONTROL_WIDTH;
 
-   image_data.item_height.name = eina_stringshare_add(_("height"));
+   image_data.item_height.name = "Height";
    image_data.item_height.action1.control_type = PROPERTY_CONTROL_LABEL;
    image_data.item_height.action1.update_cb = _update_cb;
    image_data.item_height.action1.type.attribute_image = PROPERTY_IMAGE_CONTROL_HEIGHT;
