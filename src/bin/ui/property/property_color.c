@@ -173,25 +173,25 @@ _color_class_selected(void *data __UNUSED__,
 void
 property_color_class_manager_init()
 {
-   color_data.item_description.name = eina_stringshare_add(_("description"));
+   color_data.item_description.name = "Description";
    color_data.item_description.action1.control_type = PROPERTY_CONTROL_ENTRY;
    color_data.item_description.action1.init_cb = _init_cb;
    color_data.item_description.action1.change_cb = _change_cb;
    color_data.item_description.action1.update_cb = _update_cb;
 
-   color_data.item_title1.name = eina_stringshare_add(_("object color"));
+   color_data.item_title1.name = "Object color";
    color_data.item_object_color.action1.control_type = PROPERTY_CONTROL_COLORSEL;
    color_data.item_object_color.action1.init_cb = _init_cb;
    color_data.item_object_color.action1.change_cb = _on_changed_1;
    color_data.item_object_color.action1.update_cb = _update_1_cb;
 
-   color_data.item_title2.name = eina_stringshare_add(_("outline color"));
+   color_data.item_title2.name = "Outline color";
    color_data.item_outline_color.action1.control_type = PROPERTY_CONTROL_COLORSEL;
    color_data.item_outline_color.action1.init_cb = _init_cb;
    color_data.item_outline_color.action1.change_cb = _on_changed_2;
    color_data.item_outline_color.action1.update_cb = _update_2_cb;
 
-   color_data.item_title3.name = eina_stringshare_add(_("shadow color"));
+   color_data.item_title3.name = "Shadow color";
    color_data.item_shadow_color.action1.control_type = PROPERTY_CONTROL_COLORSEL;
    color_data.item_shadow_color.action1.init_cb = _init_cb;
    color_data.item_shadow_color.action1.change_cb = _on_changed_3;
