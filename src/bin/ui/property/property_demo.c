@@ -454,69 +454,69 @@ _init_items()
         switch(it)
           {
            case PROPERTY_DEMO_ITEM_TEXT_TITLE:
-              IT.name = "text";
+              IT.name = "Text";
               IT.expandable = true;
               IT.expanded = true;
               IT.expand_cb = _subitems_get;
               IT.filter_data.demo_types = DEMO_TEXT | DEMO_TEXTBLOCK;
               break;
            case PROPERTY_DEMO_ITEM_TEXT_NAME:
-              IT.name = "name";
+              IT.name = "Name";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_DEMO_ITEM_TEXT_NAME);
               break;
            case PROPERTY_DEMO_ITEM_TEXT_CONTENT:
-              IT.name = "content";
+              IT.name = "Content";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_DEMO_ITEM_TEXT_CONTENT);
               break;
 
            case PROPERTY_DEMO_ITEM_SWALLOW_TITLE:
-              IT.name = "swallow";
+              IT.name = "Swallow";
               IT.expandable = true;
               IT.expanded = true;
               IT.expand_cb = _subitems_get;
               IT.filter_data.demo_types = DEMO_SWALLOW;
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_NAME:
-              IT.name = "name";
+              IT.name = "Name";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_DEMO_ITEM_SWALLOW_NAME);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_CONTENT:
-              IT.name = "content";
+              IT.name = "Content";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_DEMO_ITEM_SWALLOW_CONTENT);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_PICTURE:
-              IT.name = "image";
+              IT.name = "Image";
               IT.filter_cb = _filter_swallow_cb;
               IT.filter_data.demo_types = DEMO_SWALLOW_IMAGE;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_SELECTOR, ATTRIBUTE_DEMO_ITEM_SWALLOW_PICTURE);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_WIDGET:
-              IT.name = "widget";
+              IT.name = "Widget";
               IT.filter_cb = _filter_swallow_cb;
               IT.filter_data.demo_types = DEMO_SWALLOW_WIDGET;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_DEMO_ITEM_SWALLOW_WIDGET);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_STYLE:
-              IT.name = "widget style";
+              IT.name = "Widget style";
               IT.filter_cb = _filter_swallow_cb;
               IT.filter_data.demo_types = DEMO_SWALLOW_WIDGET;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_DEMO_ITEM_SWALLOW_STYLE);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_COLOR:
-              IT.name = "color";
+              IT.name = "Color";
               IT.filter_cb = _filter_swallow_cb;
               IT.filter_data.demo_types = ~DEMO_SWALLOW_NONE;
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_DEMO_ITEM_SWALLOW_COLOR);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_MIN:
-              IT.name = "min";
+              IT.name = "Min";
               IT.filter_cb = _filter_swallow_cb;
               IT.filter_data.demo_types = ~DEMO_SWALLOW_NONE;
               _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_W);
               _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MIN_H);
               break;
            case PROPERTY_DEMO_ITEM_SWALLOW_MAX:
-              IT.name = "max";
+              IT.name = "Max";
               IT.filter_cb = _filter_swallow_cb;
               IT.filter_data.demo_types = ~DEMO_SWALLOW_NONE;
               _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_DEMO_ITEM_SWALLOW_MAX_W);
@@ -524,30 +524,30 @@ _init_items()
               break;
 
            case PROPERTY_DEMO_ITEM_PROGRAM_TITLE:
-              IT.name = "program";
+              IT.name = "Program";
               IT.expandable = true;
               IT.expanded = true;
               IT.expand_cb = _subitems_get;
               IT.filter_data.demo_types = DEMO_SIGNAL;
               break;
            case PROPERTY_DEMO_ITEM_PROGRAM_SIGNAL:
-              IT.name = "signal";
+              IT.name = "Signal";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_DEMO_ITEM_PROGRAM_SIGNAL);
               break;
            case PROPERTY_DEMO_ITEM_PROGRAM_SOURCE:
-              IT.name = "source";
+              IT.name = "Source";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_DEMO_ITEM_PROGRAM_SOURCE);
               break;
            case PROPERTY_DEMO_ITEM_PROGRAM_ACTION:
-              IT.name = "action";
+              IT.name = "Action";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_DEMO_ITEM_PROGRAM_ACTION);
               break;
            case PROPERTY_DEMO_ITEM_PROGRAM_EMIT:
-              IT.name = "emit signal";
+              IT.name = "Emit signal";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_DEMO_ITEM_PROGRAM_EMIT);
               break;
            case PROPERTY_DEMO_ITEM_PROGRAM_EMITTER:
-              IT.name = "emitter";
+              IT.name = "Emitter";
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_DEMO_ITEM_PROGRAM_EMITTER);
               break;
 
