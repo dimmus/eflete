@@ -2132,8 +2132,16 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_string_free(str_val2);
          break;
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_state_map_perspective_get(EDIT_OBJ, STATE_ARGS);
+         _parts_combobox_fill(action->control, str_val1, 0);
+         edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_STATE_MAP_LIGHT:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_state_map_light_get(EDIT_OBJ, STATE_ARGS);
+         _parts_combobox_fill(action->control, str_val1, 0);
+         edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_STATE_MAP_ON:
          bool_val1 = edje_edit_state_map_on_get(EDIT_OBJ, STATE_ARGS);
@@ -2850,8 +2858,12 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          VAL(int_val1) = int_val1;
          break;
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
+         group_pd.history.format = _("map's perspective part changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_state_map_perspective_get(EDIT_OBJ, STATE_ARGS));
          break;
       case ATTRIBUTE_STATE_MAP_LIGHT:
+         group_pd.history.format = _("map's light part changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_state_map_light_get(EDIT_OBJ, STATE_ARGS));
          break;
       case ATTRIBUTE_STATE_MAP_ON:
          group_pd.history.format = _("map %s");
@@ -3712,8 +3724,18 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, &group_pd.history.new.int_val1, NULL, NULL);
          break;
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
+         assert(cb_item != NULL);
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         CRIT_ON_FAIL(editor_state_map_perspective_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_MAP_LIGHT:
+         assert(cb_item != NULL);
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         CRIT_ON_FAIL(editor_state_map_light_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
          break;
       case ATTRIBUTE_STATE_MAP_ON:
          CRIT_ON_FAIL(editor_state_map_on_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));

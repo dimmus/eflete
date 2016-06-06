@@ -877,6 +877,11 @@ editor_state_map_alpha_set(Evas_Object *obj, Change *change, Eina_Bool merge, Ei
 Eina_Bool
 editor_state_map_backface_cull_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *state_name, double state_val,
       Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
-
+Eina_Bool
+editor_state_map_perspective_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *state_name, double state_val,
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_map_light_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *state_name, double state_val,
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
 
 #endif /* EDITOR_H */
