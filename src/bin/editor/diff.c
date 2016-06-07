@@ -21,62 +21,62 @@
 #include "change.h"
 
 typedef Eina_Bool (* function_type_signalsblock) (Change*);
-typedef Eina_Bool (* function_type_int) (Evas_Object *, Change*, Eina_Bool, int);
-typedef Eina_Bool (* function_type_string_string_double_double) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_int) (Evas_Object *, Change*, Eina_Bool, Eina_Bool, int);
+typedef Eina_Bool (* function_type_string_string_double_double) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                                  const char *, const char *, double, double);
-typedef Eina_Bool (* function_type_string_string_double_int) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_string_double_int) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                               const char *, const char *, double, int);
-typedef Eina_Bool (* function_type_string_string_double_bool) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_string_double_bool) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                                const char *, const char *, double, Eina_Bool);
-typedef Eina_Bool (* function_type_string_string_double_string) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_string_double_string) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                                  const char *, const char *, double, const char *);
-typedef Eina_Bool (* function_type_string_string_double_string_double) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_string_double_string_double) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                                         const char *, const char *, double, const char *, double);
-typedef Eina_Bool (* function_type_string_string_double_int_int_int_int) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_string_double_int_int_int_int) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                                           const char *, const char *, double, int, int, int, int);
-typedef Eina_Bool (* function_type_string_string_double_uchar) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_string_double_uchar) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                                 const char *, const char *, double, unsigned char);
-typedef Eina_Bool (* function_type_string_edjetexteffect) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_edjetexteffect) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                            const char *, Edje_Text_Effect);
-typedef Eina_Bool (* function_type_string_evaseventflags) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_evaseventflags) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                            const char *, Evas_Event_Flags);
-typedef Eina_Bool (* function_type_string_bool) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_bool) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                  const char *, Eina_Bool);
-typedef Eina_Bool (* function_type_string_int) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_int) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                 const char *, int);
-typedef Eina_Bool (* function_type_string_string) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_string) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                    const char *, const char *);
-typedef Eina_Bool (* function_type_string) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                             const char *);
-typedef Eina_Bool (* function_type_string_string_edjeaspectcontrol) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_string_edjeaspectcontrol) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                                      const char *, const char *, Edje_Aspect_Control);
-typedef Eina_Bool (* function_type_string_edjeparttype) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_edjeparttype) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                          const char *, Edje_Part_Type);
-typedef Eina_Bool (* function_type_string_string_double) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_string_double) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                           const char *, const char *, double);
-typedef Eina_Bool (* function_type_string_string_int) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_string_int) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                        const char *, const char *, int);
-typedef Eina_Bool (* function_type_string_string_ushort) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_string_ushort) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                           const char *, const char *, unsigned short);
-typedef Eina_Bool (* function_type_string_string_string) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_string_string) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                           const char *, const char *, const char *);
-typedef Eina_Bool (* function_type_string_string_int_int_int_int) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_string_int_int_int_int) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                                    const char *, const char *, int, int, int, int);
-typedef Eina_Bool (* function_type_string_edjeeditselectmode) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_edjeeditselectmode) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                                const char *, Edje_Edit_Select_Mode);
-typedef Eina_Bool (* function_type_string_edjeeditentrymode) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_edjeeditentrymode) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                               const char *, Edje_Edit_Entry_Mode);
-typedef Eina_Bool (* function_type_string_evasobjectpointermode) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_evasobjectpointermode) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                                   const char *, Evas_Object_Pointer_Mode);
-typedef Eina_Bool (* function_type_string_uchar) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_uchar) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                   const char *, unsigned char);
-typedef Eina_Bool (* function_type_string_edjeactiontype) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_edjeactiontype) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                            const char *, Edje_Action_Type);
-typedef Eina_Bool (* function_type_string_edjechannel) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_edjechannel) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                         const char *, Edje_Channel);
-typedef Eina_Bool (* function_type_string_edjetweenmode) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_edjetweenmode) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                           const char *, Edje_Tween_Mode);
-typedef Eina_Bool (* function_type_string_double) (Evas_Object *, Change*, Eina_Bool,
+typedef Eina_Bool (* function_type_string_double) (Evas_Object *, Change*, Eina_Bool, Eina_Bool,
                                                    const char *, double);
 
 static Eina_Bool
@@ -89,91 +89,91 @@ _apply(Evas_Object *obj, Function_Info *fi)
       case FUNCTION_TYPE_SIGNALSBLOCK:
          return ((function_type_signalsblock)fi->function)(NULL);
       case FUNCTION_TYPE_INT:
-         return ((function_type_int)fi->function)(obj, NULL, false, fi->args.type_i.i1);
+         return ((function_type_int)fi->function)(obj, NULL, false, true, fi->args.type_i.i1);
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE:
-         return ((function_type_string_string_double_double)fi->function)(obj, NULL, false,
+         return ((function_type_string_string_double_double)fi->function)(obj, NULL, false, true,
                   fi->args.type_ssdd.s1, fi->args.type_ssdd.s2, fi->args.type_ssdd.d3, fi->args.type_ssdd.d4);
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_INT:
-         return ((function_type_string_string_double_int)fi->function)(obj, NULL, false,
+         return ((function_type_string_string_double_int)fi->function)(obj, NULL, false, true,
                   fi->args.type_ssdi.s1, fi->args.type_ssdi.s2, fi->args.type_ssdi.d3, fi->args.type_ssdi.i4);
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_BOOL:
-         return ((function_type_string_string_double_bool)fi->function)(obj, NULL, false,
+         return ((function_type_string_string_double_bool)fi->function)(obj, NULL, false, true,
                   fi->args.type_ssdb.s1, fi->args.type_ssdb.s2, fi->args.type_ssdb.d3, fi->args.type_ssdb.b4);
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_STRING:
-         return ((function_type_string_string_double_string)fi->function)(obj, NULL, false,
+         return ((function_type_string_string_double_string)fi->function)(obj, NULL, false, true,
                   fi->args.type_ssds.s1, fi->args.type_ssds.s2, fi->args.type_ssds.d3, fi->args.type_ssds.s4);
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_STRING_DOUBLE:
-         return ((function_type_string_string_double_string_double)fi->function)(obj, NULL, false,
+         return ((function_type_string_string_double_string_double)fi->function)(obj, NULL, false, true,
                   fi->args.type_ssdsd.s1, fi->args.type_ssdsd.s2, fi->args.type_ssdsd.d3, fi->args.type_ssdsd.s4, fi->args.type_ssdsd.d5);
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_INT_INT_INT_INT:
-         return ((function_type_string_string_double_int_int_int_int)fi->function)(obj, NULL, false,
+         return ((function_type_string_string_double_int_int_int_int)fi->function)(obj, NULL, false, true,
                   fi->args.type_ssdiiii.s1, fi->args.type_ssdiiii.s2, fi->args.type_ssdiiii.d3, fi->args.type_ssdiiii.i4, fi->args.type_ssdiiii.i5, fi->args.type_ssdiiii.i6, fi->args.type_ssdiiii.i7);
       case FUNCTION_TYPE_STRING_STRING_DOUBLE_UCHAR:
-         return ((function_type_string_string_double_uchar)fi->function)(obj, NULL, false,
+         return ((function_type_string_string_double_uchar)fi->function)(obj, NULL, false, true,
                   fi->args.type_ssduc.s1, fi->args.type_ssduc.s2, fi->args.type_ssduc.d3, fi->args.type_ssduc.uc4);
       case FUNCTION_TYPE_STRING_EDJEPARTTYPE:
-         return ((function_type_string_edjeparttype)fi->function)(obj, NULL, false,
+         return ((function_type_string_edjeparttype)fi->function)(obj, NULL, false, true,
                   fi->args.type_sept.s1, fi->args.type_sept.ept2);
       case FUNCTION_TYPE_STRING_EDJETEXTEFFECT:
-         return ((function_type_string_edjetexteffect)fi->function)(obj, NULL, false,
+         return ((function_type_string_edjetexteffect)fi->function)(obj, NULL, false, true,
                   fi->args.type_sete.s1, fi->args.type_sete.ete2);
       case FUNCTION_TYPE_STRING_EVASEVENTFLAGS:
-         return ((function_type_string_evaseventflags)fi->function)(obj, NULL, false,
+         return ((function_type_string_evaseventflags)fi->function)(obj, NULL, false, true,
                   fi->args.type_seef.s1, fi->args.type_seef.eef2);
       case FUNCTION_TYPE_STRING_BOOL:
-         return ((function_type_string_bool)fi->function)(obj, NULL, false,
+         return ((function_type_string_bool)fi->function)(obj, NULL, false, true,
                   fi->args.type_sb.s1, fi->args.type_sb.b2);
       case FUNCTION_TYPE_STRING_INT:
-         return ((function_type_string_int)fi->function)(obj, NULL, false,
+         return ((function_type_string_int)fi->function)(obj, NULL, false, true,
                   fi->args.type_si.s1, fi->args.type_si.i2);
       case FUNCTION_TYPE_STRING_STRING:
       case FUNCTION_TYPE_STRING_STRING_RENAME:
-         return ((function_type_string_string)fi->function)(obj, NULL, false,
+         return ((function_type_string_string)fi->function)(obj, NULL, false, true,
                   fi->args.type_ss.s1, fi->args.type_ss.s2);
       case FUNCTION_TYPE_STRING:
-         return ((function_type_string)fi->function)(obj, NULL, false,
+         return ((function_type_string)fi->function)(obj, NULL, false, true,
                   fi->args.type_s.s1);
       case FUNCTION_TYPE_STRING_STRING_EDJEASPECTCONTROL:
-         return ((function_type_string_string_edjeaspectcontrol)fi->function)(obj, NULL, false,
+         return ((function_type_string_string_edjeaspectcontrol)fi->function)(obj, NULL, false, true,
                   fi->args.type_sseac.s1, fi->args.type_sseac.s2, fi->args.type_sseac.eac3);
       case FUNCTION_TYPE_STRING_STRING_DOUBLE:
-         return ((function_type_string_string_double)fi->function)(obj, NULL, false,
+         return ((function_type_string_string_double)fi->function)(obj, NULL, false, true,
                   fi->args.type_ssd.s1, fi->args.type_ssd.s2, fi->args.type_ssd.d3);
       case FUNCTION_TYPE_STRING_STRING_INT:
-         return ((function_type_string_string_int)fi->function)(obj, NULL, false,
+         return ((function_type_string_string_int)fi->function)(obj, NULL, false, true,
                   fi->args.type_ssi.s1, fi->args.type_ssi.s2, fi->args.type_ssi.i3);
       case FUNCTION_TYPE_STRING_STRING_USHORT:
-         return ((function_type_string_string_ushort)fi->function)(obj, NULL, false,
+         return ((function_type_string_string_ushort)fi->function)(obj, NULL, false, true,
                   fi->args.type_ssus.s1, fi->args.type_ssus.s2, fi->args.type_ssus.us3);
       case FUNCTION_TYPE_STRING_STRING_STRING:
-         return ((function_type_string_string_string)fi->function)(obj, NULL, false,
+         return ((function_type_string_string_string)fi->function)(obj, NULL, false, true,
                   fi->args.type_sss.s1, fi->args.type_sss.s2, fi->args.type_sss.s3);
       case FUNCTION_TYPE_STRING_STRING_INT_INT_INT_INT:
-         return ((function_type_string_string_int_int_int_int)fi->function)(obj, NULL, false,
+         return ((function_type_string_string_int_int_int_int)fi->function)(obj, NULL, false, true,
                   fi->args.type_ssiiii.s1, fi->args.type_ssiiii.s2, fi->args.type_ssiiii.i3, fi->args.type_ssiiii.i4, fi->args.type_ssiiii.i5, fi->args.type_ssiiii.i6);
       case FUNCTION_TYPE_STRING_EDJEEDITSELECTMODE:
-         return ((function_type_string_edjeeditselectmode)fi->function)(obj, NULL, false,
+         return ((function_type_string_edjeeditselectmode)fi->function)(obj, NULL, false, true,
                   fi->args.type_seesm.s1, fi->args.type_seesm.eesm2);
       case FUNCTION_TYPE_STRING_EDJEEDITENTRYMODE:
-         return ((function_type_string_edjeeditentrymode)fi->function)(obj, NULL, false,
+         return ((function_type_string_edjeeditentrymode)fi->function)(obj, NULL, false, true,
                   fi->args.type_seeem.s1, fi->args.type_seeem.eeem2);
       case FUNCTION_TYPE_STRING_EVASOBJECTPOINTERMODE:
-         return ((function_type_string_evasobjectpointermode)fi->function)(obj, NULL, false,
+         return ((function_type_string_evasobjectpointermode)fi->function)(obj, NULL, false, true,
                   fi->args.type_seopm.s1, fi->args.type_seopm.eopm2);
       case FUNCTION_TYPE_STRING_UCHAR:
-         return ((function_type_string_uchar)fi->function)(obj, NULL, false,
+         return ((function_type_string_uchar)fi->function)(obj, NULL, false, true,
                   fi->args.type_suc.s1, fi->args.type_suc.uc2);
       case FUNCTION_TYPE_STRING_EDJEACTIONTYPE:
-         return ((function_type_string_edjeactiontype)fi->function)(obj, NULL, false,
+         return ((function_type_string_edjeactiontype)fi->function)(obj, NULL, false, true,
                   fi->args.type_seat.s1, fi->args.type_seat.eat2);
       case FUNCTION_TYPE_STRING_EDJECHANNEL:
-         return ((function_type_string_edjechannel)fi->function)(obj, NULL, false,
+         return ((function_type_string_edjechannel)fi->function)(obj, NULL, false, true,
                   fi->args.type_sec.s1, fi->args.type_sec.ec2);
       case FUNCTION_TYPE_STRING_EDJETWEENMODE:
-         return ((function_type_string_edjetweenmode)fi->function)(obj, NULL, false,
+         return ((function_type_string_edjetweenmode)fi->function)(obj, NULL, false, true,
                   fi->args.type_setm.s1, fi->args.type_setm.etm2);
       case FUNCTION_TYPE_STRING_DOUBLE:
-         return ((function_type_string_double)fi->function)(obj, NULL, false,
+         return ((function_type_string_double)fi->function)(obj, NULL, false, true,
                   fi->args.type_sd.s1, fi->args.type_sd.d2);
 
          /* Don't add 'case default:'. Compiler should warn about new values in enum */

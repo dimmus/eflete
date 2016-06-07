@@ -970,11 +970,13 @@ _groupview_hl_part_changed(void *data,
 
    if (MIDDLE != event->hl_type)
      {
-        CRIT_ON_FAIL(editor_state_max_w_set(wd->group->edit_object, change, true, event->part->name,
+        CRIT_ON_FAIL(editor_state_max_w_set(wd->group->edit_object, change, true, true,
+                                            event->part->name,
                                             event->part->current_state->parsed_name,
                                             event->part->current_state->parsed_val,
                                             event->w));
-        CRIT_ON_FAIL(editor_state_max_h_set(wd->group->edit_object, change, true, event->part->name,
+        CRIT_ON_FAIL(editor_state_max_h_set(wd->group->edit_object, change, true, true,
+                                            event->part->name,
                                             event->part->current_state->parsed_name,
                                             event->part->current_state->parsed_val,
                                             event->h));
@@ -991,10 +993,12 @@ _groupview_hl_part_changed(void *data,
         if ((geom->h == event->h) || (align_y < 0)) align_y = 0;
         if (align_x > 1.0) align_x = 1.0;
         if (align_y > 1.0) align_y = 1.0;
-        CRIT_ON_FAIL(editor_state_align_x_set(wd->group->edit_object, change, true, event->part->name,
+        CRIT_ON_FAIL(editor_state_align_x_set(wd->group->edit_object, change, true, true,
+                                              event->part->name,
                                               event->part->current_state->parsed_name,
                                               event->part->current_state->parsed_val, align_x));
-        CRIT_ON_FAIL(editor_state_align_y_set(wd->group->edit_object, change, true, event->part->name,
+        CRIT_ON_FAIL(editor_state_align_y_set(wd->group->edit_object, change, true, true,
+                                              event->part->name,
                                               event->part->current_state->parsed_name,
                                               event->part->current_state->parsed_val, align_y));
 

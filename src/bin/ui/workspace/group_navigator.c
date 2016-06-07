@@ -483,7 +483,7 @@ _on_activated(void *data,
         assert(pl->selected_part_item != NULL);
 
         state = elm_object_item_data_get(glit);
-        CRIT_ON_FAIL(editor_part_selected_state_set(pl->group->edit_object, NULL, false,
+        CRIT_ON_FAIL(editor_part_selected_state_set(pl->group->edit_object, NULL, false, true,
                                                     state->part->name,
                                                     state->parsed_name,
                                                     state->parsed_val));
@@ -950,7 +950,7 @@ _popup_add_part_ok_clicked(void *data,
    name = elm_entry_entry_get(pl->popup.entry_name);
    msg = eina_stringshare_printf(_("added new part \"%s\""), name);
    change = change_add(msg);
-   CRIT_ON_FAIL(editor_part_add(pl->group->edit_object, change, false, name, type));
+   CRIT_ON_FAIL(editor_part_add(pl->group->edit_object, change, false, true, name, type));
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
@@ -1094,7 +1094,7 @@ _popup_add_group_data_ok_clicked(void *data,
    name = elm_entry_entry_get(pl->popup.entry_name);
    msg = eina_stringshare_printf(_("added new data item \"%s\""), name);
    change = change_add(msg);
-   CRIT_ON_FAIL(editor_group_data_add(pl->group->edit_object, change, false, name));
+   CRIT_ON_FAIL(editor_group_data_add(pl->group->edit_object, change, false, true, name));
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
@@ -1176,7 +1176,7 @@ _popup_add_state_ok_clicked(void *data,
      {
         msg = eina_stringshare_printf(_("added new state \"%s\" %.2f"), name, val);
         change = change_add(msg);
-        CRIT_ON_FAIL(editor_state_add(pl->group->edit_object, change, false,
+        CRIT_ON_FAIL(editor_state_add(pl->group->edit_object, change, false, true,
                                       part->name, name, val));
      }
    else
@@ -1185,7 +1185,7 @@ _popup_add_state_ok_clicked(void *data,
         msg = eina_stringshare_printf(_("added new state \"%s\" %.2f as copy of \"%s\" %.2f"),
                                       name, val, state_from->parsed_name, state_from->parsed_val);
         change = change_add(msg);
-        CRIT_ON_FAIL(editor_state_copy(pl->group->edit_object, change, false,
+        CRIT_ON_FAIL(editor_state_copy(pl->group->edit_object, change, false, true,
                                        part->name,
                                        state_from->parsed_name, state_from->parsed_val,
                                        name, val));
@@ -1328,7 +1328,7 @@ _popup_add_item_ok_clicked(void *data,
 
    msg = eina_stringshare_printf(_("added new item \"%s\" to part \"%s\""), name, part->name);
    change = change_add(msg);
-   CRIT_ON_FAIL(editor_part_item_append(pl->group->edit_object, change, false, part->name, name, item->title));
+   CRIT_ON_FAIL(editor_part_item_append(pl->group->edit_object, change, false, true, part->name, name, item->title));
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
@@ -1478,7 +1478,7 @@ _popup_add_program_ok_clicked(void *data,
 
    msg = eina_stringshare_printf(_("added new program \"%s\""), name);
    change = change_add(msg);
-   CRIT_ON_FAIL(editor_program_add(pl->group->edit_object, change, false, name, type));
+   CRIT_ON_FAIL(editor_program_add(pl->group->edit_object, change, false, true, name, type));
 
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
@@ -1589,7 +1589,7 @@ _program_del(Part_List *pl,
    eina_stringshare_del(msg);
 
    eina_stringshare_ref(program->name);
-   CRIT_ON_FAIL(editor_program_del(pl->group->edit_object, change, false, program->name));
+   CRIT_ON_FAIL(editor_program_del(pl->group->edit_object, change, false, true, program->name));
    eina_stringshare_del(program->name);
 
    history_change_add(pl->group->history, change);
@@ -1656,7 +1656,7 @@ _group_data_del(Part_List *pl,
    eina_stringshare_del(msg);
 
    eina_stringshare_ref(group_data->name);
-   CRIT_ON_FAIL(editor_group_data_del(pl->group->edit_object, change, false, group_data->name));
+   CRIT_ON_FAIL(editor_group_data_del(pl->group->edit_object, change, false, true, group_data->name));
    eina_stringshare_del(group_data->name);
 
    history_change_add(pl->group->history, change);
@@ -1715,7 +1715,7 @@ _part_del(Part_List *pl,
    part_name = eina_stringshare_add(part->name);
    msg = eina_stringshare_printf(_("deleted part \"%s\""), part_name);
    change = change_add(msg);
-   CRIT_ON_FAIL(editor_part_del(pl->group->edit_object, change, false, part_name));
+   CRIT_ON_FAIL(editor_part_del(pl->group->edit_object, change, false, true, part_name));
    history_change_add(pl->group->history, change);
    eina_stringshare_del(msg);
    eina_stringshare_del(part_name);
@@ -1850,7 +1850,7 @@ _state_del(Part_List *pl,
    state_name = eina_stringshare_ref(state->parsed_name);
    state_val = state->parsed_val;
    TODO("recheck string args logic");
-   CRIT_ON_FAIL(editor_state_del(pl->group->edit_object, change, false, part_name, state_name, state_val));
+   CRIT_ON_FAIL(editor_state_del(pl->group->edit_object, change, false, true, part_name, state_name, state_val));
    eina_stringshare_del(part_name);
    eina_stringshare_del(state_name);
    history_change_add(pl->group->history, change);
@@ -1915,7 +1915,7 @@ _item_del(Part_List *pl,
    eina_stringshare_del(msg);
 
    eina_stringshare_ref(item_name);
-   CRIT_ON_FAIL(editor_part_item_del(pl->group->edit_object, change, false, part->name, item_name));
+   CRIT_ON_FAIL(editor_part_item_del(pl->group->edit_object, change, false, true,  part->name, item_name));
    eina_stringshare_del(item_name);
 
    history_change_add(pl->group->history, change);
@@ -2014,7 +2014,7 @@ _part_restack(Part_List *pl, Elm_Object_Item *glit, Eina_Bool move_up)
    else
       msg = eina_stringshare_printf(_("part \"%s\" restacked to the top of the stack"), part->name);
    change = change_add(msg);
-   CRIT_ON_FAIL(editor_part_restack(pl->group->edit_object, change, false,
+   CRIT_ON_FAIL(editor_part_restack(pl->group->edit_object, change, false, true,
                                     part->name,
                                     (rel_part) ? rel_part->name : NULL));
    history_change_add(pl->group->history, change);
@@ -2102,7 +2102,7 @@ _part_item_restack(Part_List *pl, Elm_Object_Item *glit, Eina_Bool move_up)
    else
       msg = eina_stringshare_printf(_("part item \"%s\" restacked to the top of the stack"), part_item);
    change = change_add(msg);
-   CRIT_ON_FAIL(editor_part_item_restack(pl->group->edit_object, change, false,
+   CRIT_ON_FAIL(editor_part_item_restack(pl->group->edit_object, change, false, true,
                                          part->name,
                                          part_item,
                                          rel_part_item));
@@ -2492,7 +2492,7 @@ group_navigator_state_next_request(Evas_Object *obj)
              else
                state = eina_list_data_get(part->states);
 
-             CRIT_ON_FAIL(editor_part_selected_state_set(pl->group->edit_object, NULL, false,
+             CRIT_ON_FAIL(editor_part_selected_state_set(pl->group->edit_object, NULL, false, true,
                                                          state->part->name,
                                                          state->parsed_name,
                                                          state->parsed_val));

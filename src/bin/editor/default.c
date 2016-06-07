@@ -33,11 +33,11 @@ editor_##FUNC##_default_is(Evas_Object *edit_object, PROTO_ARGS) \
 
 #define EDITOR_RESET(FUNC, PROTO_ARGS, ARGS, RESET_VAL) \
 Eina_Bool \
-editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
+editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply, PROTO_ARGS) \
 { \
    assert(edit_object != NULL); \
    if (editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
-   if (editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL)) \
+   if (editor_##FUNC##_set(edit_object, change, false, apply, ARGS, RESET_VAL)) \
      return true; \
    CRIT("reset failed"); \
    abort(); \
@@ -176,11 +176,11 @@ editor_##FUNC##_default_is(Evas_Object *edit_object, PROTO_ARGS) \
 
 #define EDITOR_INT_INT_INT_INT_RESET(FUNC, PROTO_ARGS, ARGS, RESET_VAL, RESET_VAL_2, RESET_VAL_3, RESET_VAL_4) \
 Eina_Bool \
-editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
+editor_##FUNC##_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply, PROTO_ARGS) \
 { \
    assert(edit_object != NULL); \
    if (editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
-   if(editor_##FUNC##_set(edit_object, change, false, ARGS, RESET_VAL, RESET_VAL_2, RESET_VAL_3, RESET_VAL_4)) \
+   if(editor_##FUNC##_set(edit_object, change, false, apply, ARGS, RESET_VAL, RESET_VAL_2, RESET_VAL_3, RESET_VAL_4)) \
      return true; \
    CRIT("reset failed"); \
    abort(); \
@@ -196,11 +196,11 @@ EDITOR_STATE_INT_INT_INT_INT_RESET(shadow_color, 0, 0, 0, 128)
 
 #define EDITOR_FOUR_INT_RESET(FUNC, TYPE, PROTO_ARGS, ARGS, RESET_VAL) \
 Eina_Bool \
-editor_##FUNC##_##TYPE##_reset(Evas_Object *edit_object, Change *change, PROTO_ARGS) \
+editor_##FUNC##_##TYPE##_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply, PROTO_ARGS) \
 { \
    assert(edit_object != NULL); \
    if(editor_##FUNC##_default_is(edit_object, ARGS)) return true; \
-   if(editor_##FUNC##_##TYPE##_set(edit_object, change, false, ARGS, RESET_VAL)) \
+   if(editor_##FUNC##_##TYPE##_set(edit_object, change, false, apply, ARGS, RESET_VAL)) \
      return true; \
    CRIT("reset failed"); \
    abort(); \
@@ -297,7 +297,7 @@ editor_part_pointer_mode_default_is(Evas_Object *edit_object, EDITOR_PART_ARGS_P
            ||(edje_edit_part_pointer_mode_get(edit_object, EDITOR_PART_ARGS) == EVAS_OBJECT_POINTER_MODE_AUTOGRAB));
 }
 Eina_Bool
-editor_part_pointer_mode_reset(Evas_Object *edit_object, Change *change, EDITOR_PART_ARGS_PROTO)
+editor_part_pointer_mode_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply, EDITOR_PART_ARGS_PROTO)
 {
    assert(edit_object != NULL);
    if (editor_part_pointer_mode_default_is(edit_object, EDITOR_PART_ARGS)) return true;
@@ -305,7 +305,7 @@ editor_part_pointer_mode_reset(Evas_Object *edit_object, Change *change, EDITOR_
    Evas_Object_Pointer_Mode reset_value = (type == EDJE_PART_TYPE_SWALLOW ||
                                            type == EDJE_PART_TYPE_GROUP ||
                                            type == EDJE_PART_TYPE_EXTERNAL) ? EVAS_OBJECT_POINTER_MODE_NOGRAB : EVAS_OBJECT_POINTER_MODE_AUTOGRAB;
-   if (editor_part_pointer_mode_set(edit_object, change, false, EDITOR_PART_ARGS, reset_value))
+   if (editor_part_pointer_mode_set(edit_object, change, false, apply, EDITOR_PART_ARGS, reset_value))
      return true;
    CRIT("reset failed");
    abort();

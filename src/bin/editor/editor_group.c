@@ -83,7 +83,7 @@ editor_group_del(Evas_Object *obj, const char *name)
 
 #define MAX_SET(VAL, VAL_CAPS) \
 Eina_Bool \
-editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge, \
+editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, \
                                int new_value) \
 { \
    int old_value; \
@@ -114,10 +114,13 @@ editor_group_max_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
         else \
           change_diff_add(change, diff); \
      } \
-   if (!edje_edit_group_max_## VAL ##_set(obj, new_value)) \
-     return false; \
-   _editor_project_changed(); \
-   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+   if (apply) \
+     { \
+        if (!edje_edit_group_max_## VAL ##_set(obj, new_value)) \
+          return false; \
+        _editor_project_changed(); \
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+     } \
    return true; \
 }
 
@@ -126,7 +129,7 @@ MAX_SET(h, H)
 
 #define MIN_SET(VAL, VAL_CAPS) \
 Eina_Bool \
-editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge, \
+editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, \
                                int new_value) \
 { \
    int old_value; \
@@ -157,10 +160,13 @@ editor_group_min_## VAL ##_set(Evas_Object *obj, Change *change, Eina_Bool merge
         else \
           change_diff_add(change, diff); \
      } \
-   if (!edje_edit_group_min_## VAL ##_set(obj, new_value)) \
-     return false; \
-   _editor_project_changed(); \
-   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+   if (apply) \
+     { \
+        if (!edje_edit_group_min_## VAL ##_set(obj, new_value)) \
+          return false; \
+        _editor_project_changed(); \
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute); \
+     } \
    return true; \
 }
 
@@ -168,7 +174,7 @@ MIN_SET(w, W)
 MIN_SET(h, H)
 
 Eina_Bool
-editor_group_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+editor_group_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                       const char *new_val)
 {
    Diff *diff;
@@ -191,15 +197,18 @@ editor_group_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
         else
           change_diff_add(change, diff);
      }
-   if (!edje_edit_group_name_set(edit_object, new_val))
-     return false;
-   _editor_project_changed();
-   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   if (apply)
+     {
+        if (!edje_edit_group_name_set(edit_object, new_val))
+          return false;
+        _editor_project_changed();
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+     }
    return true;
 }
 
 Eina_Bool
-editor_group_data_value_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+editor_group_data_value_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                             const char *item_name, const char *new_val)
 {
    Diff *diff;
@@ -224,15 +233,18 @@ editor_group_data_value_set(Evas_Object *edit_object, Change *change, Eina_Bool 
         else
           change_diff_add(change, diff);
      }
-   if (!edje_edit_group_data_value_set(edit_object, item_name, new_val))
-     return false;
-   _editor_project_changed();
-   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   if (apply)
+     {
+        if (!edje_edit_group_data_value_set(edit_object, item_name, new_val))
+          return false;
+        _editor_project_changed();
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+     }
    return true;
 }
 
 Eina_Bool
-editor_group_data_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+editor_group_data_name_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                            const char *item_name, const char *new_val)
 {
    Diff *diff;
@@ -257,18 +269,21 @@ editor_group_data_name_set(Evas_Object *edit_object, Change *change, Eina_Bool m
         else
           change_diff_add(change, diff);
      }
-   if (!edje_edit_group_data_name_set(edit_object, item_name, new_val))
-     return false;
-   _editor_project_changed();
-   ren.old_name = item_name;
-   ren.new_name = new_val;
-   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_DATA_RENAMED, &ren);
-   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   if (apply)
+     {
+        if (!edje_edit_group_data_name_set(edit_object, item_name, new_val))
+          return false;
+        _editor_project_changed();
+        ren.old_name = item_name;
+        ren.new_name = new_val;
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_DATA_RENAMED, &ren);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+     }
    return true;
 }
 
 Eina_Bool
-editor_group_data_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+editor_group_data_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
                       const char *item_name)
 {
    Diff *diff;
@@ -289,20 +304,23 @@ editor_group_data_add(Evas_Object *edit_object, Change *change, Eina_Bool merge 
 
         change_diff_add(change, diff);
      }
-   if (!edje_edit_group_data_add(edit_object, item_name, ""))
-     return false;
+   if (apply)
+     {
+        if (!edje_edit_group_data_add(edit_object, item_name, ""))
+          return false;
 
-   CRIT_ON_FAIL(editor_save(edit_object));
-   _editor_project_changed();
+        CRIT_ON_FAIL(editor_save(edit_object));
+        _editor_project_changed();
 
-   event_info = eina_stringshare_add(item_name);
-   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, (void *)event_info);
-   eina_stringshare_del(event_info);
+        event_info = eina_stringshare_add(item_name);
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_GROUP_DATA_ADDED, (void *)event_info);
+        eina_stringshare_del(event_info);
+     }
    return true;
 }
 
 Eina_Bool
-editor_group_data_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__,
+editor_group_data_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNUSED__, Eina_Bool apply,
                       const char *item_name)
 {
    Diff *diff;
@@ -316,7 +334,7 @@ editor_group_data_del(Evas_Object *edit_object, Change *change, Eina_Bool merge 
 
    if (change)
      {
-        if (!editor_group_data_value_set(edit_object, change, false, item_name, ""))
+        if (!editor_group_data_value_set(edit_object, change, false, apply, item_name, ""))
           return false;
         diff = mem_calloc(1, sizeof(Diff));
         diff->redo.type = FUNCTION_TYPE_STRING;
@@ -328,13 +346,16 @@ editor_group_data_del(Evas_Object *edit_object, Change *change, Eina_Bool merge 
 
         change_diff_add(change, diff);
      }
-   if (!edje_edit_group_data_del(edit_object, item_name))
+   if (apply)
      {
+        if (!edje_edit_group_data_del(edit_object, item_name))
+          {
+             eina_stringshare_del(event_info);
+             return false;
+          }
         eina_stringshare_del(event_info);
-        return false;
+        CRIT_ON_FAIL(editor_save(edit_object));
+        _editor_project_changed();
      }
-   eina_stringshare_del(event_info);
-   CRIT_ON_FAIL(editor_save(edit_object));
-   _editor_project_changed();
    return true;
 }

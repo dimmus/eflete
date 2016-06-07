@@ -30,7 +30,7 @@ EDITOR_STATE_DOUBLE(text_align_y, ATTRIBUTE_STATE_TEXT_ALIGN_Y)
 EDITOR_STATE_DOUBLE(text_elipsis, ATTRIBUTE_STATE_TEXT_ELIPSIS)
 
 Eina_Bool
-editor_state_text_size_set(Evas_Object *edit_object, Change *change, Eina_Bool merge,
+editor_state_text_size_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                            const char *part_name, const char *state_name, double state_val, int new_val)
 {
    Diff *diff;
@@ -62,10 +62,13 @@ editor_state_text_size_set(Evas_Object *edit_object, Change *change, Eina_Bool m
         else
           change_diff_add(change, diff);
      }
-   if (!edje_edit_state_text_size_set(edit_object, part_name, state_name, state_val, new_val))
-     return false;
-   _editor_project_changed();
-   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+   if (apply)
+     {
+        if (!edje_edit_state_text_size_set(edit_object, part_name, state_name, state_val, new_val))
+          return false;
+        _editor_project_changed();
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+     }
    return true;
 }
 
