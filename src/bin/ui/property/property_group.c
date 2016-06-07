@@ -843,8 +843,6 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_MAP_SMOOTH:
       case ATTRIBUTE_STATE_MAP_ALPHA:
       case ATTRIBUTE_STATE_MAP_BACKFACE_CULL:
-      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
-      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
       case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
@@ -862,6 +860,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_MAX_W:
       case ATTRIBUTE_PART_ITEM_MAX_H:
          elm_spinner_min_max_set(action->control, -1, 9999);
+         break;
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
+         elm_spinner_min_max_set(action->control, 0, 9999);
          break;
       case ATTRIBUTE_PART_ITEM_SPREAD_W:
       case ATTRIBUTE_PART_ITEM_SPREAD_H:
@@ -2187,7 +2189,13 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_check_state_set(action->control, bool_val1);
          break;
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
+         int_val1 = edje_edit_state_map_perspective_focal_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
+         int_val1 = edje_edit_state_map_perspective_zplane_get(EDIT_OBJ, STATE_ARGS);
+         elm_spinner_value_set(action->control, int_val1);
+         break;
       case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
@@ -2926,7 +2934,13 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("map backface cull %s");
          break;
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
+         group_pd.history.format = _("perspective focal changed from %d to %d");
+         VAL(int_val1) = edje_edit_state_map_perspective_focal_get(EDIT_OBJ, STATE_ARGS);
+         break;
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
+         group_pd.history.format = _("perspective zplane changed from %d to %d");
+         VAL(int_val1) = edje_edit_state_map_perspective_zplane_get(EDIT_OBJ, STATE_ARGS);
+         break;
       case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
@@ -3841,7 +3855,13 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.bool_val1 = bool_val1;
          break;
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
+         CRIT_ON_FAIL(editor_state_map_perspective_focal_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_state_map_perspective_focal_get(EDIT_OBJ, STATE_ARGS);
+         break;
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
+         CRIT_ON_FAIL(editor_state_map_perspective_zplane_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         group_pd.history.new.int_val1 = edje_edit_state_map_perspective_zplane_get(EDIT_OBJ, STATE_ARGS);
+         break;
       case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
@@ -4018,6 +4038,8 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT:
       case ATTRIBUTE_STATE_IMAGE_BORDER_TOP:
       case ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
          CHECK_VAL(int_val1);
          msg = eina_stringshare_printf(group_pd.history.format,
                                        group_pd.history.old.int_val1,
@@ -4135,8 +4157,6 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
                                        (group_pd.history.new.bool_val1) ?
                                        _("turned on") : _("turned off"));
          break;
-      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
-      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
       case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
