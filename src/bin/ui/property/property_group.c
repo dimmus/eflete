@@ -844,9 +844,6 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_MAP_ALPHA:
       case ATTRIBUTE_STATE_MAP_BACKFACE_CULL:
       case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
-      case ATTRIBUTE_STATE_MAP_ROTATION_X:
-      case ATTRIBUTE_STATE_MAP_ROTATION_Y:
-      case ATTRIBUTE_STATE_MAP_ROTATION_Z:
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_2:
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_3:
@@ -905,6 +902,9 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y1:
       case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2:
       case ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2:
+      case ATTRIBUTE_STATE_MAP_ROTATION_X:
+      case ATTRIBUTE_STATE_MAP_ROTATION_Y:
+      case ATTRIBUTE_STATE_MAP_ROTATION_Z:
          elm_spinner_min_max_set(action->control, -9999, 9999);
          elm_spinner_step_set(action->control, 0.1);
          elm_spinner_label_format_set(action->control, "%.2f");
@@ -2198,8 +2198,17 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
+         edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, &double_val1, NULL, NULL);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
+         edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, NULL, &double_val1, NULL);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
       case ATTRIBUTE_STATE_MAP_ROTATION_Z:
+         edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, &double_val1);
+         elm_spinner_value_set(action->control, double_val1);
+         break;
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
          edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 0, &int_val1, &int_val2, &int_val3, &int_val4);
          property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
@@ -2229,6 +2238,7 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
 {
    int r, g, b, a, int_val1;
    Eina_Stringshare *tmp_str_val1;
+   double tmp_double_val1;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -2943,8 +2953,20 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
+         group_pd.history.format = _("map rotation x changed from %.2f to %.2f");
+         edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, &tmp_double_val1, NULL, NULL);
+         VAL(double_val1) = tmp_double_val1;
+         break;
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
+         group_pd.history.format = _("map rotation y changed from %.2f to %.2f");
+         edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, NULL, &tmp_double_val1, NULL);
+         VAL(double_val1) = tmp_double_val1;
+         break;
       case ATTRIBUTE_STATE_MAP_ROTATION_Z:
+         group_pd.history.format = _("map rotation z changed from %.2f to %.2f");
+         edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, &tmp_double_val1);
+         VAL(double_val1) = tmp_double_val1;
+         break;
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
          group_pd.history.format = _("point color '1' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]");
          edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 0, &r, &g, &b, &a);
@@ -3864,8 +3886,17 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
+         CRIT_ON_FAIL(editor_state_map_rotation_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, &group_pd.history.new.double_val1, NULL, NULL);
+         break;
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
+         CRIT_ON_FAIL(editor_state_map_rotation_y_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, NULL, &group_pd.history.new.double_val1, NULL);
+         break;
       case ATTRIBUTE_STATE_MAP_ROTATION_Z:
+         CRIT_ON_FAIL(editor_state_map_rotation_z_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
+         edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, NULL, NULL, &group_pd.history.new.double_val1);
+         break;
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
          CRIT_ON_FAIL(editor_state_map_point_color_1_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, r, g, b, a));
          edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 0, &r, &g, &b, &a);
@@ -4090,6 +4121,9 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PART_ITEM_WEIGHT_Y:
       case ATTRIBUTE_STATE_CONTAINER_ALIGN_X:
       case ATTRIBUTE_STATE_CONTAINER_ALIGN_Y:
+      case ATTRIBUTE_STATE_MAP_ROTATION_X:
+      case ATTRIBUTE_STATE_MAP_ROTATION_Y:
+      case ATTRIBUTE_STATE_MAP_ROTATION_Z:
          if (fabs(group_pd.history.new.double_val1 - group_pd.history.old.double_val1) < DBL_EPSILON)
            {
               change_free(group_pd.history.change);
@@ -4158,9 +4192,6 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
                                        _("turned on") : _("turned off"));
          break;
       case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
-      case ATTRIBUTE_STATE_MAP_ROTATION_X:
-      case ATTRIBUTE_STATE_MAP_ROTATION_Y:
-      case ATTRIBUTE_STATE_MAP_ROTATION_Z:
          break;
       default:
          TODO("remove default case after all attributes will be added");
