@@ -168,6 +168,13 @@ typedef enum {
    ATTRIBUTE_STATE_MAP_SMOOTH,
    ATTRIBUTE_STATE_MAP_ALPHA,
    ATTRIBUTE_STATE_MAP_BACKFACE_CULL,
+   ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL,
+   ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE,
+   ATTRIBUTE_STATE_MAP_ROTATION_CENTER,
+   ATTRIBUTE_STATE_MAP_ROTATION_X,
+   ATTRIBUTE_STATE_MAP_ROTATION_Y,
+   ATTRIBUTE_STATE_MAP_ROTATION_Z,
+   ATTRIBUTE_STATE_MAP_POINT_COLOR,
    ATTRIBUTE_PROGRAM_TRANSITION_TYPE,
    ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT,
    ATTRIBUTE_PROGRAM_ACTION,
@@ -883,5 +890,26 @@ editor_state_map_perspective_set(Evas_Object *obj, Change *change, Eina_Bool mer
 Eina_Bool
 editor_state_map_light_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *state_name, double state_val,
       const char * new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_map_rotation_x_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                const char *part_name, const char *state_name, double state_val, double n4) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_map_rotation_y_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                const char *part_name, const char *state_name, double state_val, double n4) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_map_rotation_z_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                const char *part_name, const char *state_name, double state_val, double n4) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_map_point_color_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                 const char *part_name, const char *state_name, double state_val, int idx, int n4, int n5, int n6, int n7) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_map_rotation_center_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *state_name, double state_val,
+      const char * new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_map_perspective_focal_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *state_name, double state_val,
+      int new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_map_perspective_zplane_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *state_name, double state_val,
+      int new_val) EINA_WARN_UNUSED_RESULT;
 
 #endif /* EDITOR_H */

@@ -180,10 +180,182 @@ EDITOR_STATE_STRING(map_light, ATTRIBUTE_STATE_MAP_LIGHT, true)
 EDITOR_STATE_BOOL(map_smooth, ATTRIBUTE_STATE_MAP_SMOOTH)
 EDITOR_STATE_BOOL(map_alpha, ATTRIBUTE_STATE_MAP_ALPHA)
 EDITOR_STATE_BOOL(map_backface_cull, ATTRIBUTE_STATE_MAP_BACKFACE_CULL)
-//map_perspective_focal
-//map_perspective_zplane
-//map_rotation_center (part)
+EDITOR_STATE_INT(map_perspective_focal, ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL)
+EDITOR_STATE_INT(map_perspective_zplane, ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE)
+EDITOR_STATE_STRING(map_rotation_center, ATTRIBUTE_STATE_MAP_ROTATION_CENTER, true)
+
 //map_rotation (3 values)
+Eina_Bool
+editor_state_map_rotation_x_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                const char *part_name, const char *state_name, double state_val, double n4)
+{
+   Diff *diff;
+   double o4, o5, o6;
+   Attribute attribute = ATTRIBUTE_STATE_MAP_ROTATION_X;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+   edje_edit_state_map_rotation_get(edit_object, part_name, state_name, state_val, &o4, &o5, &o6);
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE;
+        diff->redo.function = editor_state_map_rotation_x_set;
+        diff->redo.args.type_ssdd.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssdd.s2 = eina_stringshare_add(state_name);
+        diff->redo.args.type_ssdd.d3 = state_val;
+        diff->redo.args.type_ssdd.d4 = n4;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE;
+        diff->undo.function = editor_state_map_rotation_x_set;
+        diff->undo.args.type_ssdd.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssdd.s2 = eina_stringshare_add(state_name);
+        diff->undo.args.type_ssdd.d3 = state_val;
+        diff->undo.args.type_ssdd.d4 = o4;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (apply)
+     {
+        if (!edje_edit_state_map_rotation_set(edit_object, part_name, state_name, state_val, n4, o5, o6))
+          return false;
+        _editor_project_changed();
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+     }
+   return true;
+}
+
+Eina_Bool
+editor_state_map_rotation_y_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                const char *part_name, const char *state_name, double state_val, double n5)
+{
+   Diff *diff;
+   double o4, o5, o6;
+   Attribute attribute = ATTRIBUTE_STATE_MAP_ROTATION_Y;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+   edje_edit_state_map_rotation_get(edit_object, part_name, state_name, state_val, &o4, &o5, &o6);
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE;
+        diff->redo.function = editor_state_map_rotation_y_set;
+        diff->redo.args.type_ssdd.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssdd.s2 = eina_stringshare_add(state_name);
+        diff->redo.args.type_ssdd.d3 = state_val;
+        diff->redo.args.type_ssdd.d4 = n5;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE;
+        diff->undo.function = editor_state_map_rotation_y_set;
+        diff->undo.args.type_ssdd.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssdd.s2 = eina_stringshare_add(state_name);
+        diff->undo.args.type_ssdd.d3 = state_val;
+        diff->undo.args.type_ssdd.d4 = o5;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (apply)
+     {
+        if (!edje_edit_state_map_rotation_set(edit_object, part_name, state_name, state_val, o4, n5, o6))
+          return false;
+        _editor_project_changed();
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+     }
+   return true;
+}
+
+Eina_Bool
+editor_state_map_rotation_z_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                const char *part_name, const char *state_name, double state_val, double n6)
+{
+   Diff *diff;
+   double o4, o5, o6;
+   Attribute attribute = ATTRIBUTE_STATE_MAP_ROTATION_Z;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+   edje_edit_state_map_rotation_get(edit_object, part_name, state_name, state_val, &o4, &o5, &o6);
+   if (change)
+     {
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE;
+        diff->redo.function = editor_state_map_rotation_z_set;
+        diff->redo.args.type_ssdd.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssdd.s2 = eina_stringshare_add(state_name);
+        diff->redo.args.type_ssdd.d3 = state_val;
+        diff->redo.args.type_ssdd.d4 = n6;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_DOUBLE;
+        diff->undo.function = editor_state_map_rotation_z_set;
+        diff->undo.args.type_ssdd.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssdd.s2 = eina_stringshare_add(state_name);
+        diff->undo.args.type_ssdd.d3 = state_val;
+        diff->undo.args.type_ssdd.d4 = o6;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (apply)
+     {
+        if (!edje_edit_state_map_rotation_set(edit_object, part_name, state_name, state_val, o4, o5, n6))
+          return false;
+        _editor_project_changed();
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+     }
+   return true;
+}
+
+Eina_Bool
+editor_state_map_point_color_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                 const char *part_name, const char *state_name, double state_val, int idx, int n4, int n5, int n6, int n7)
+{
+   Diff *diff;
+   int o4, o5, o6, o7;
+   Attribute attribute = ATTRIBUTE_STATE_MAP_POINT_COLOR;
+   assert(edit_object != NULL);
+   assert(part_name != NULL);
+   assert(state_name != NULL);
+   if (change)
+     {
+        edje_edit_state_map_point_color_get(edit_object, part_name, state_name, state_val, idx, &o4, &o5, &o6, &o7);
+        diff = mem_calloc(1, sizeof(Diff));
+        diff->redo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_INT_INT_INT_INT_INT;
+        diff->redo.function = editor_state_map_point_color_set;
+        diff->redo.args.type_ssdiiiii.s1 = eina_stringshare_add(part_name);
+        diff->redo.args.type_ssdiiiii.s2 = eina_stringshare_add(state_name);
+        diff->redo.args.type_ssdiiiii.d3 = state_val;
+        diff->redo.args.type_ssdiiiii.i4 = n4;
+        diff->redo.args.type_ssdiiiii.i5 = n5;
+        diff->redo.args.type_ssdiiiii.i6 = n6;
+        diff->redo.args.type_ssdiiiii.i7 = n7;
+        diff->redo.args.type_ssdiiiii.i8 = idx;
+        diff->undo.type = FUNCTION_TYPE_STRING_STRING_DOUBLE_INT_INT_INT_INT_INT;
+        diff->undo.function = editor_state_map_point_color_set;
+        diff->undo.args.type_ssdiiiii.s1 = eina_stringshare_add(part_name);
+        diff->undo.args.type_ssdiiiii.s2 = eina_stringshare_add(state_name);
+        diff->undo.args.type_ssdiiiii.d3 = state_val;
+        diff->undo.args.type_ssdiiiii.i4 = o4;
+        diff->undo.args.type_ssdiiiii.i5 = o5;
+        diff->undo.args.type_ssdiiiii.i6 = o6;
+        diff->undo.args.type_ssdiiiii.i7 = o7;
+        diff->undo.args.type_ssdiiiii.i8 = idx;
+        if (merge)
+          change_diff_merge_add(change, diff);
+        else
+          change_diff_add(change, diff);
+     }
+   if (apply)
+     {
+        if (!edje_edit_state_map_point_color_set(edit_object, part_name, state_name, state_val, idx, n4, n5, n6, n7))
+          return false;
+        _editor_project_changed();
+        if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, &attribute);
+     }
+   return true;
+}
 
 TODO("Fix edje_edit API")
 //EDITOR_STATE_STRING(box_layout, ATTRIBUTE_STATE_BOX_LAYOUT)
