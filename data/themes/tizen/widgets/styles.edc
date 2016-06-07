@@ -201,5 +201,9 @@ base: "font="FN_B" font_size=13 color=#d6d6d6 wrap=none text_class=label align=c
    style { name: "frame";
       base: "font="FN" font_size=13 font_style=Normal color=#d6d6d6ff shadow_color=#FFF glow_color=#FFF glow2_color=#FFF backing_color=#FFF align=middle left_margin=6 right_margin=6";
          }
-
+   style { name: "tooltip_text";
+      base: "font="FN" font_size=10 color=#727272ff wrap=word text_class=entry ellipsis=-1.0";
+      TEXTBLOCK_TAGS_ENABLED
+   }
+ 
 }
