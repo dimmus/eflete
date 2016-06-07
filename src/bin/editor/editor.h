@@ -174,7 +174,10 @@ typedef enum {
    ATTRIBUTE_STATE_MAP_ROTATION_X,
    ATTRIBUTE_STATE_MAP_ROTATION_Y,
    ATTRIBUTE_STATE_MAP_ROTATION_Z,
-   ATTRIBUTE_STATE_MAP_POINT_COLOR,
+   ATTRIBUTE_STATE_MAP_POINT_COLOR_1,
+   ATTRIBUTE_STATE_MAP_POINT_COLOR_2,
+   ATTRIBUTE_STATE_MAP_POINT_COLOR_3,
+   ATTRIBUTE_STATE_MAP_POINT_COLOR_4,
    ATTRIBUTE_PROGRAM_TRANSITION_TYPE,
    ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT,
    ATTRIBUTE_PROGRAM_ACTION,
@@ -900,8 +903,17 @@ Eina_Bool
 editor_state_map_rotation_z_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                                 const char *part_name, const char *state_name, double state_val, double n4) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
-editor_state_map_point_color_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
-                                 const char *part_name, const char *state_name, double state_val, int idx, int n4, int n5, int n6, int n7) EINA_WARN_UNUSED_RESULT;
+editor_state_map_point_color_1_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                 const char *part_name, const char *state_name, double state_val, int n4, int n5, int n6, int n7) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_map_point_color_2_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                 const char *part_name, const char *state_name, double state_val, int n4, int n5, int n6, int n7) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_map_point_color_3_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                 const char *part_name, const char *state_name, double state_val, int n4, int n5, int n6, int n7) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_map_point_color_4_set(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
+                                 const char *part_name, const char *state_name, double state_val, int n4, int n5, int n6, int n7) EINA_WARN_UNUSED_RESULT;
 Eina_Bool
 editor_state_map_rotation_center_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *state_name, double state_val,
       const char * new_val) EINA_WARN_UNUSED_RESULT;

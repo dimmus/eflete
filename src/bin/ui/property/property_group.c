@@ -544,7 +544,8 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_X);
          APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_Y);
          APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_Z);
-         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_POINT_COLOR);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_POINT_COLOR_12);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_POINT_COLOR_34);
          break;
       case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_X);
@@ -848,7 +849,10 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
       case ATTRIBUTE_STATE_MAP_ROTATION_Z:
-      case ATTRIBUTE_STATE_MAP_POINT_COLOR:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_2:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_3:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_4:
          break;
       case ATTRIBUTE_STATE_TEXT_SIZE:
          elm_spinner_min_max_set(action->control, 1, 9999);
@@ -2188,7 +2192,10 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
       case ATTRIBUTE_STATE_MAP_ROTATION_Z:
-      case ATTRIBUTE_STATE_MAP_POINT_COLOR:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_2:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_3:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_4:
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -2913,7 +2920,10 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
       case ATTRIBUTE_STATE_MAP_ROTATION_Z:
-      case ATTRIBUTE_STATE_MAP_POINT_COLOR:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_2:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_3:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_4:
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -3798,7 +3808,10 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
       case ATTRIBUTE_STATE_MAP_ROTATION_Z:
-      case ATTRIBUTE_STATE_MAP_POINT_COLOR:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_2:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_3:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_4:
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -4059,7 +4072,10 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
       case ATTRIBUTE_STATE_MAP_ROTATION_Z:
-      case ATTRIBUTE_STATE_MAP_POINT_COLOR:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_2:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_3:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_4:
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -4483,7 +4499,23 @@ _init_items()
               _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAP_ROTATION_Z,
                        _("rotation (in degrees) around the Z axis of the part considering the center set"));
               break;
-           case PROPERTY_GROUP_ITEM_STATE_MAP_POINT_COLOR:
+           case PROPERTY_GROUP_ITEM_STATE_MAP_POINT_COLOR_12:
+              IT.name = "Color Points";
+              _action1(&IT, "1:", NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_MAP_POINT_COLOR_1,
+                       _("Set the color of a vertex in the map.<br>"
+                         "This control changes Left-Top point of a part"));
+              _action2(&IT, "2:", NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_MAP_POINT_COLOR_2,
+                       _("Set the color of a vertex in the map.<br>"
+                         "This control changes Right-Top point of a part"));
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_MAP_POINT_COLOR_34:
+              IT.name = "";
+              _action1(&IT, "3:", NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_MAP_POINT_COLOR_3,
+                       _("Set the color of a vertex in the map.<br>"
+                         "This control changes Left-Bottom point of a part"));
+              _action2(&IT, "4:", NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_MAP_POINT_COLOR_4,
+                       _("Set the color of a vertex in the map.<br>"
+                         "This control changes Right-Bottom point of a part"));
               break;
               /* part text */
            case PROPERTY_GROUP_ITEM_PART_TEXT_EFFECT:
