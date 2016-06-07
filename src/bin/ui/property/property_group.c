@@ -2193,9 +2193,20 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
       case ATTRIBUTE_STATE_MAP_ROTATION_Z:
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
+         edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 0, &int_val1, &int_val2, &int_val3, &int_val4);
+         property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
+         break;
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_2:
+         edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 1, &int_val1, &int_val2, &int_val3, &int_val4);
+         property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
+         break;
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_3:
+         edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 2, &int_val1, &int_val2, &int_val3, &int_val4);
+         property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
+         break;
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_4:
+         edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 3, &int_val1, &int_val2, &int_val3, &int_val4);
+         property_color_control_color_set(action->control, int_val1, int_val2, int_val3, int_val4);
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -2921,9 +2932,36 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
       case ATTRIBUTE_STATE_MAP_ROTATION_Z:
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
+         group_pd.history.format = _("point color '1' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]");
+         edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 0, &r, &g, &b, &a);
+         VAL(int_val1) = r;
+         VAL(int_val2) = g;
+         VAL(int_val3) = b;
+         VAL(int_val4) = a;
+         break;
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_2:
+         group_pd.history.format = _("point color '2' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]");
+         edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 1, &r, &g, &b, &a);
+         VAL(int_val1) = r;
+         VAL(int_val2) = g;
+         VAL(int_val3) = b;
+         VAL(int_val4) = a;
+         break;
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_3:
+         group_pd.history.format = _("point color '3' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]");
+         edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 2, &r, &g, &b, &a);
+         VAL(int_val1) = r;
+         VAL(int_val2) = g;
+         VAL(int_val3) = b;
+         VAL(int_val4) = a;
+         break;
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_4:
+         group_pd.history.format = _("point color '4' changed from [%d,%d,%d,%d] to [%d,%d,%d,%d]");
+         edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 3, &r, &g, &b, &a);
+         VAL(int_val1) = r;
+         VAL(int_val2) = g;
+         VAL(int_val3) = b;
+         VAL(int_val4) = a;
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -3809,9 +3847,36 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
       case ATTRIBUTE_STATE_MAP_ROTATION_Z:
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
+         CRIT_ON_FAIL(editor_state_map_point_color_1_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, r, g, b, a));
+         edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 0, &r, &g, &b, &a);
+         group_pd.history.new.int_val1 = r;
+         group_pd.history.new.int_val2 = g;
+         group_pd.history.new.int_val3 = b;
+         group_pd.history.new.int_val4 = a;
+         break;
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_2:
+         CRIT_ON_FAIL(editor_state_map_point_color_2_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, r, g, b, a));
+         edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 1, &r, &g, &b, &a);
+         group_pd.history.new.int_val1 = r;
+         group_pd.history.new.int_val2 = g;
+         group_pd.history.new.int_val3 = b;
+         group_pd.history.new.int_val4 = a;
+         break;
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_3:
+         CRIT_ON_FAIL(editor_state_map_point_color_3_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, r, g, b, a));
+         edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 2, &r, &g, &b, &a);
+         group_pd.history.new.int_val1 = r;
+         group_pd.history.new.int_val2 = g;
+         group_pd.history.new.int_val3 = b;
+         group_pd.history.new.int_val4 = a;
+         break;
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_4:
+         CRIT_ON_FAIL(editor_state_map_point_color_4_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, r, g, b, a));
+         edje_edit_state_map_point_color_get(EDIT_OBJ, STATE_ARGS, 3, &r, &g, &b, &a);
+         group_pd.history.new.int_val1 = r;
+         group_pd.history.new.int_val2 = g;
+         group_pd.history.new.int_val3 = b;
+         group_pd.history.new.int_val4 = a;
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -4015,6 +4080,10 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_COLOR:
       case ATTRIBUTE_STATE_OUTLINE_COLOR:
       case ATTRIBUTE_STATE_SHADOW_COLOR:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_2:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_3:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_4:
          if ((group_pd.history.new.int_val1 == group_pd.history.old.int_val1) &&
              (group_pd.history.new.int_val2 == group_pd.history.old.int_val2) &&
              (group_pd.history.new.int_val3 == group_pd.history.old.int_val3) &&
@@ -4072,10 +4141,6 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
       case ATTRIBUTE_STATE_MAP_ROTATION_Y:
       case ATTRIBUTE_STATE_MAP_ROTATION_Z:
-      case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
-      case ATTRIBUTE_STATE_MAP_POINT_COLOR_2:
-      case ATTRIBUTE_STATE_MAP_POINT_COLOR_3:
-      case ATTRIBUTE_STATE_MAP_POINT_COLOR_4:
          break;
       default:
          TODO("remove default case after all attributes will be added");
