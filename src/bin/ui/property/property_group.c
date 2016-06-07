@@ -538,6 +538,13 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_SMOOTH);
          APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_ALPHA);
          APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_BACKFACE_CULL);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE_FOCAL);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE_ZPLANE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_CENTER);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_X);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_Y);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_Z);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_POINT_COLOR);
          break;
       case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_X);
@@ -835,6 +842,13 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_MAP_SMOOTH:
       case ATTRIBUTE_STATE_MAP_ALPHA:
       case ATTRIBUTE_STATE_MAP_BACKFACE_CULL:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
+      case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
+      case ATTRIBUTE_STATE_MAP_ROTATION_X:
+      case ATTRIBUTE_STATE_MAP_ROTATION_Y:
+      case ATTRIBUTE_STATE_MAP_ROTATION_Z:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR:
          break;
       case ATTRIBUTE_STATE_TEXT_SIZE:
          elm_spinner_min_max_set(action->control, 1, 9999);
@@ -2168,6 +2182,14 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          bool_val1 = edje_edit_state_map_backface_cull_get(EDIT_OBJ, STATE_ARGS);
          elm_check_state_set(action->control, bool_val1);
          break;
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
+      case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
+      case ATTRIBUTE_STATE_MAP_ROTATION_X:
+      case ATTRIBUTE_STATE_MAP_ROTATION_Y:
+      case ATTRIBUTE_STATE_MAP_ROTATION_Z:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR:
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -2884,6 +2906,14 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_MAP_BACKFACE_CULL:
          group_pd.history.format = _("map backface cull %s");
+         break;
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
+      case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
+      case ATTRIBUTE_STATE_MAP_ROTATION_X:
+      case ATTRIBUTE_STATE_MAP_ROTATION_Y:
+      case ATTRIBUTE_STATE_MAP_ROTATION_Z:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR:
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -3762,6 +3792,14 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_state_map_backface_cull_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
          group_pd.history.new.bool_val1 = bool_val1;
          break;
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
+      case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
+      case ATTRIBUTE_STATE_MAP_ROTATION_X:
+      case ATTRIBUTE_STATE_MAP_ROTATION_Y:
+      case ATTRIBUTE_STATE_MAP_ROTATION_Z:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR:
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -4014,6 +4052,14 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (group_pd.history.new.bool_val1) ?
                                        _("turned on") : _("turned off"));
+         break;
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
+      case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
+      case ATTRIBUTE_STATE_MAP_ROTATION_X:
+      case ATTRIBUTE_STATE_MAP_ROTATION_Y:
+      case ATTRIBUTE_STATE_MAP_ROTATION_Z:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR:
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -4406,7 +4452,39 @@ _init_items()
                          "the brightness (based on how directly the part's surface is facing<br>"
                          "the light source point)"));
               break;
-
+           case PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE_FOCAL:
+              IT.name = "perspective focal";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL,
+                       _("Sets the distance from the focal z plane (zplane) and the camera"));
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE_ZPLANE:
+              IT.name = "perspective zplane";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE,
+                       _("This sets the z value that will not be scaled"));
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_CENTER:
+              IT.name = "rotation center";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_MAP_ROTATION_CENTER,
+                       _("sets the part that is used as the center of rotation<br>"
+                         "when rotating the part with this description."));
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_X:
+              IT.name = "rotation X";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAP_ROTATION_X,
+                       _("rotation (in degrees) around the X axis of the part considering the center set"));
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_Y:
+              IT.name = "rotation Y";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAP_ROTATION_Y,
+                       _("rotation (in degrees) around the Y axis of the part considering the center set"));
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_MAP_ROTATION_Z:
+              IT.name = "rotation Z";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAP_ROTATION_Z,
+                       _("rotation (in degrees) around the Z axis of the part considering the center set"));
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_MAP_POINT_COLOR:
+              break;
               /* part text */
            case PROPERTY_GROUP_ITEM_PART_TEXT_EFFECT:
               IT.name = "Effect";
