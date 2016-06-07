@@ -763,6 +763,10 @@ editor_state_map_rotation_center_default_is(Evas_Object *edit_object, const char
 Eina_Bool
 editor_state_map_rotation_center_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply, const char *part_name, const char *state_name, double state_val);
 Eina_Bool
+editor_state_map_rotation_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_map_rotation_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
 editor_state_map_perspective_focal_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
 Eina_Bool
 editor_state_map_perspective_focal_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply, const char *part_name, const char *state_name, double state_val);
@@ -770,5 +774,9 @@ Eina_Bool
 editor_state_map_perspective_zplane_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
 Eina_Bool
 editor_state_map_perspective_zplane_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_map_point_color_default_is(Evas_Object *edit_object, const char *part_name, const char *state_name, double state_val);
+Eina_Bool
+editor_state_map_point_color_reset(Evas_Object *edit_object, Change *change, Eina_Bool apply, const char *part_name, const char *state_name, double state_val);
 
 #endif /* DEFAULT_H */

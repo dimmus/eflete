@@ -705,11 +705,8 @@ editor_state_reset(Evas_Object *edit_object, Change *change, Eina_Bool merge __U
    res = res && editor_state_map_backface_cull_reset(edit_object, change, apply, part_name, state_name, state_val);
    res = res && editor_state_map_perspective_reset(edit_object, change, apply, part_name, state_name, state_val);
    res = res && editor_state_map_light_reset(edit_object, change, apply, part_name, state_name, state_val);
-TODO("Implement reset and default_is functions")
-//   res = res && editor_state_map_rotation_x_reset(edit_object, change, apply, part_name, state_name, state_val);
-//   res = res && editor_state_map_rotation_y_reset(edit_object, change, apply, part_name, state_name, state_val);
-//   res = res && editor_state_map_rotation_z_reset(edit_object, change, apply, part_name, state_name, state_val);
-//   res = res && editor_state_map_point_color_reset(edit_object, change, apply, part_name, state_name, state_val);
+   res = res && editor_state_map_rotation_reset(edit_object, change, apply, part_name, state_name, state_val);
+   res = res && editor_state_map_point_color_reset(edit_object, change, apply, part_name, state_name, state_val);
    res = res && editor_state_map_rotation_center_reset(edit_object, change, apply, part_name, state_name, state_val);
    res = res && editor_state_map_perspective_focal_reset(edit_object, change, apply, part_name, state_name, state_val);
    res = res && editor_state_map_perspective_zplane_reset(edit_object, change, apply, part_name, state_name, state_val);
