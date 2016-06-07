@@ -94,7 +94,7 @@ EDITOR_STATE_SIMPLE_RESET(fill_size_offset_y, 0)
 EDITOR_STATE_SIMPLE_RESET(container_padding_x, 0)
 EDITOR_STATE_SIMPLE_RESET(container_padding_y, 0)
 EDITOR_STATE_SIMPLE_RESET(text_size, 12)
-EDITOR_STATE_SIMPLE_RESET(map_perspective_focal, 0)
+EDITOR_STATE_SIMPLE_RESET(map_perspective_focal, 1000)
 EDITOR_STATE_SIMPLE_RESET(map_perspective_zplane, 0)
 
 EDITOR_STATE_SIMPLE_RESET(fixed_h, false)
