@@ -4594,21 +4594,28 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_COLORS_COLOR_CLASS:
               IT.name = "Color class";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_COLOR_CLASS, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_COLOR_CLASS,
+                       _("The part will use the color values of the<br>"
+                         "choosen color class, these values can be<br>"
+                         "overrided by the \"color\", \"color2\" and<br>"
+                         "\"color3\" properties set below."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_COLORS_COLOR:
               IT.name = "Color";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_COLOR, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_COLOR,
+                       _("Sets the main color."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_COLORS_OUTLINE_COLOR:
               IT.name = "Outline color";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_OUTLINE_COLOR, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_OUTLINE_COLOR,
+                       _("Sets the text outline color."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_COLORS_SHADOWCOLOR:
               IT.name = "Shadow color";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_SHADOW_COLOR, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_SHADOW_COLOR,
+                       _("Sets the text shadow color."));
               break;
 
               /* state text common block */
@@ -4621,63 +4628,104 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TEXT:
               IT.name = "Text";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_TEXT, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_TEXT,
+                       _("Sets the default content of a text part,<br>"
+                         "normally the application is the one changing its value."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_ALIGN:
               IT.name = "Align";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_X, NULL);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_Y, NULL);
-              break;
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_X,
+                       _("Change the position on the X axis<br>"
+                         "of the point of balance inside the container."));
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_Y,
+                       _("Change the position on the Y axis<br>"
+                         "of the point of balance inside the container."));
+               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_MIN:
               IT.name = "Min";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_X, NULL);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_Y, NULL);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_X,
+                       _("When this parameter is enabled it<br>"
+                         "forces the minimum width of the container<br>"
+                         "to be equal to the minimum size of the text."));
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_Y,
+                        _("When this parameter is enabled it<br>"
+                         "forces the minimum height of the container<br>"
+                         "to be equal to the minimum size of the text."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_MAX:
               IT.name = "Max";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_X, NULL);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_Y, NULL);
-              break;
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_X,
+                       _("When this parameter is enabled it<br>"
+                         "forces the maximum width of the container<br>"
+                         "to be equal to the maximum size of the text."));
+               _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_Y,
+                        _("When this parameter is enabled it<br>"
+                         "forces the maximum height of the container<br>"
+                         "to be equal to the maximum size of the text."));
+               break;
 
               /* state text block */
            case PROPERTY_GROUP_ITEM_STATE_TEXT_FONT:
               IT.name = "Font";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_FONT, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_FONT,
+                       _("This sets the font family to one of the aliases.<br>"
+                         "Can be overrided by the application."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_SIZE:
               IT.name = "Size";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_SIZE, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_SIZE,
+                       _("Sets the default font size in points<br>"
+                         "for the text part.<br>"
+                         "Can be overrided by the application."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_FIT:
               IT.name = "Fit";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_FIT_X, NULL);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_FIT_Y, NULL);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_FIT_X,
+                       _("When this parameter is enabled, edje will<br>"
+                         "resize the text width for it to fit in it's container."));
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_FIT_Y,
+                        _("When this parameter is enabled, edje will<br>"
+                         "resize the text height for it to fit in it's container."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_SOURCE:
               IT.name = "Source";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_SOURCE, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_SOURCE,
+                       _("Causes the part to use the text properties<br>"
+                         "(like font and size) of another part and update<br>"
+                         "them as they change."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_TEXT_SOURCE:
               IT.name = "Text source";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_TEXT_SOURCE, NULL);
-              break;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_TEXT_SOURCE,
+                       _("Causes the part to display the text content<br>"
+                         "of another part and update them as they change."));
+               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_ELIPSIS:
               IT.name = "Elipsis";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE, NULL);
-              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ELIPSIS, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE,
+                       _("This parametr enable or disable ability to apply<br>"
+                         "ellipsis to the text."));
+              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ELIPSIS,
+                       _("Used to balance the text in a relative point<br>"
+                         "from 0.0 to 1.0, this point is the last section<br>"
+                         "of the string to be cut out in case of a resize<br>"
+                         "that is smaller than the text itself.<br>"
+                         "The default value is 0.0. "));
               break;
 
               /* state textblock block */
            case PROPERTY_GROUP_ITEM_STATE_TEXT_STYLE:
               IT.name = "Style";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_STYLE, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_STYLE,
+                       _("Causes the part to use the default style and tags<br>"
+                         "with the specified name. "));
               break;
 
               /* part item block */
