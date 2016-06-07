@@ -151,6 +151,7 @@ struct _Property_Action {
    Property_Control control_type;
    Eina_Stringshare *name;
    Eina_Stringshare *units;
+   Eina_Stringshare *tooltip;
    union {
       Attribute attribute; /**< type for group properties */
       Attribute_Image attribute_image; /**< type for group properties */

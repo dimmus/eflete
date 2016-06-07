@@ -223,7 +223,7 @@ _start_change_cb(void *data,
 static Evas_Object *
 _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *parent)
 {
-   Evas_Object *content;
+   Evas_Object *content = NULL;
 
    assert(pa != NULL);
    assert(action != NULL);
@@ -235,15 +235,15 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          CHECK_ADD(parent, content);
          elm_object_style_set(content, "toggle");
          evas_object_smart_callback_add(content, "changed", _start_change_stop_cb, pa);
-         return content;
+         break;
       case PROPERTY_CONTROL_BUTTON:
          BUTTON_ADD(parent, content, NULL);
          evas_object_smart_callback_add(content, "clicked", _start_change_stop_cb, pa);
-         return content;
+         break;
       case PROPERTY_CONTROL_COMBOBOX:
          EWE_COMBOBOX_ADD(parent, content);
          evas_object_smart_callback_add(content, "selected", _start_change_stop_cb, pa);
-         return content;
+         break;
       case PROPERTY_CONTROL_SPINNER:
          SPINNER_ADD(parent, content, 0.0, 9999.0, 1.0, true);
          evas_object_smart_callback_add(content, "spinner,drag,start", _start_cb, pa);
@@ -254,18 +254,18 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
                                                  EVAS_CALLBACK_MOUSE_WHEEL,
                                                  EVAS_CALLBACK_PRIORITY_BEFORE,
                                                  _on_spinner_mouse_wheel, NULL);
-         return content;
+         break;
       case PROPERTY_CONTROL_ENTRY:
          ENTRY_ADD(parent, content, true);
          evas_object_smart_callback_add(content, "changed,user", _start_change_cb, pa);
          evas_object_smart_callback_add(content, "activated", _stop_cb, pa);
          evas_object_smart_callback_add(content, "unfocused", _stop_cb, pa);
-         return content;
+         break;
       case PROPERTY_CONTROL_COLOR:
          content = property_color_control_add(parent);
          evas_object_smart_callback_add(content, "changed", _start_change_cb, pa);
          evas_object_smart_callback_add(content, "dismissed", _stop_cb, pa);
-         return content;
+         break;
       case PROPERTY_CONTROL_COLORSEL:
          content = elm_colorselector_add(parent);
          elm_colorselector_mode_set(content, ELM_COLORSELECTOR_ALL);
@@ -273,23 +273,23 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          TODO("start/stop callbacks for this item type would be incorrect. Add correct one if needed");
          evas_object_smart_callback_add(content, "changed,user", _start_change_stop_cb, pa);
          evas_object_smart_callback_add(content, "color,item,selected", _start_change_stop_cb, pa);
-         return content;
+         break;
       case PROPERTY_CONTROL_LABEL:
          content = elm_label_add(parent);
-         return content;
+         break;
       case PROPERTY_CONTROL_IMAGE_NORMAL:
          content = property_image_normal_control_add(parent);
          evas_object_smart_callback_add(content, "image,changed", _start_change_stop_cb, pa);
-         return content;
+         break;
       case PROPERTY_CONTROL_IMAGE_TWEEN:
          content = property_image_tween_control_add(parent);
          evas_object_smart_callback_add(content, "image,tween,changed", _start_change_stop_cb, pa);
-         return content;
+         break;
       case PROPERTY_CONTROL_IMAGE_SELECTOR:
          content = property_image_selector_get(parent);
          evas_object_smart_callback_add(content, "changed,demo,image", _start_change_stop_cb, pa);
          evas_object_show(content);
-         return content;
+         break;
       case PROPERTY_CONTROL_NONE:
       case PROPERTY_CONTROL_LAST:
          CRIT("Wrong control type");
@@ -297,7 +297,11 @@ _control_create(Property_Attribute *pa, Property_Action *action, Evas_Object *pa
          return NULL;
       /* do not add default: */
      }
-   return NULL;
+
+   if (action->tooltip)
+       elm_object_tooltip_text_set(content, action->tooltip);
+
+   return content;
 }
 
 /****************** content_get functions *************************************/

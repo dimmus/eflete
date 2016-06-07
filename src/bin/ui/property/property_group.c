@@ -3917,13 +3917,15 @@ clean:
 /* blocks */
 static inline void
 _action_internal(Property_Action *action, const char *name, const char *units,
-                 Property_Control control_type, Attribute attribute)
+                 Property_Control control_type, Attribute attribute,
+                 const char *tooltip)
 {
    /* check that we haven't inited this action already */
    assert(action->update_cb == NULL);
 
    action->name = name;
    action->units = units;
+   action->tooltip = eina_stringshare_add(tooltip);
    action->control_type = control_type;
    action->type.attribute = attribute;
    action->update_cb = _update_cb;
@@ -3935,9 +3937,10 @@ _action_internal(Property_Action *action, const char *name, const char *units,
 
 static inline void
 _action1(Property_Attribute *pa, const char *name, const char *units,
-         Property_Control control_type, Attribute attribute)
+         Property_Control control_type, Attribute attribute,
+         const char *tooltip)
 {
-   _action_internal(&pa->action1, name, units, control_type, attribute);
+   _action_internal(&pa->action1, name, units, control_type, attribute, tooltip);
 
    assert(attribute_map[attribute].pa == NULL);
    assert(attribute_map[attribute].action == NULL);
@@ -3948,9 +3951,10 @@ _action1(Property_Attribute *pa, const char *name, const char *units,
 
 static inline void
 _action2(Property_Attribute *pa, const char *name, const char *units,
-         Property_Control control_type, Attribute attribute)
+         Property_Control control_type, Attribute attribute,
+         const char *tooltip)
 {
-   _action_internal(&pa->action2, name, units, control_type, attribute);
+   _action_internal(&pa->action2, name, units, control_type, attribute, tooltip);
 
    assert(attribute_map[attribute].pa == NULL);
    assert(attribute_map[attribute].action == NULL);
@@ -3983,17 +3987,17 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_GROUP_NAME:
               IT.name = "Name";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_NAME);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_NAME, NULL);
               break;
            case PROPERTY_GROUP_ITEM_GROUP_MIN:
               IT.name = "Min";
-              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_W);
-              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_H);
+              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_W, NULL);
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MIN_H, NULL);
               break;
            case PROPERTY_GROUP_ITEM_GROUP_MAX:
               IT.name = "Max";
-              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_W);
-              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_H);
+              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_W, NULL);
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_GROUP_MAX_H, NULL);
               break;
 
               /* part block */
@@ -4005,40 +4009,40 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PART_NAME:
               IT.name = "Name";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PART_NAME);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PART_NAME, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_TYPE:
               IT.name = "Type";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_PART_TYPE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_PART_TYPE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_SCALE:
               IT.name = "Scale";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_SCALE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_SCALE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_MOUSE_EVENTS:
               IT.name = "Mouse events";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_MOUSE_EVENTS);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_MOUSE_EVENTS, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_REPEAT_EVENTS:
               IT.name = "Repeat events";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_REPEAT_EVENTS);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_REPEAT_EVENTS, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_CLIP_TO:
               IT.name = "Clip to";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_CLIP_TO);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_CLIP_TO, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_IGNORE_FLAGS:
               IT.name = "Ignore flags";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_IGNORE_FLAGS);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_IGNORE_FLAGS, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_POINTER_MODE:
               IT.name = "Pointer mode";
               IT.filter_data.part_types &= ~PART_SPACER;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_POINTER_MODE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_POINTER_MODE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_GROUP_SOURCE:
               IT.name = "Source";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_GROUP_SOURCE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_GROUP_SOURCE, NULL);
               IT.filter_data.part_types = PART_GROUP;
               break;
 
@@ -4051,30 +4055,30 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_ENABLE:
               IT.name = "Enable";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_STEP:
               IT.name = "Step";
-              _action1(&IT, "x", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_X);
-              _action2(&IT, "y", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_Y);
+              _action1(&IT, "x", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_X, NULL);
+              _action2(&IT, "y", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_STEP_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_COUNT:
               IT.name = "Count";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_COUNT_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_COUNT_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_COUNT_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_DRAG_COUNT_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_CONFINE:
               IT.name = "Confine";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_CONFINE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_CONFINE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_THRESHOLD:
               IT.name = "Threshold";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_THRESHOLD);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_THRESHOLD, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_EVENTS:
               IT.name = "Events";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_EVENT);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_DRAG_EVENT, NULL);
               break;
 
               /* state block */
@@ -4086,16 +4090,16 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_NAME:
               IT.name = "Name";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_NAME);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_NAME, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_VISIBLE:
               IT.name = "Visible";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_VISIBLE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_VISIBLE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_PROXY_SOURCE:
               IT.name = "Vroxy source";
               IT.filter_data.part_types = PART_PROXY;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_PROXY_SOURCE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_PROXY_SOURCE, NULL);
               break;
 
               /* state size block */
@@ -4107,96 +4111,96 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_MIN:
               IT.name = "Min";
-              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MIN_W);
-              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MIN_H);
+              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MIN_W, NULL);
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MIN_H, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_MAX:
               IT.name = "Max";
-              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAX_W);
-              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAX_H);
+              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAX_W, NULL);
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MAX_H, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_MINMUL:
               IT.name = "Minmul";
-              _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_W);
-              _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_H);
+              _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_W, NULL);
+              _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_MINMUL_H, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_FIXED:
               IT.name = "Fixed";
-              _action1(&IT, "w", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_W);
-              _action2(&IT, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_H);
+              _action1(&IT, "w", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_W, NULL);
+              _action2(&IT, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FIXED_H, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_ASPECT_PREF:
               IT.name = "Aspect preference";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_ASPECT_PREF);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_ASPECT_PREF, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_SIZE_ASPECT:
               IT.name = "Aspect";
-              _action1(&IT, "min", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MIN);
-              _action2(&IT, "max", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MAX);
+              _action1(&IT, "min", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MIN, NULL);
+              _action2(&IT, "max", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ASPECT_MAX, NULL);
               break;
 
               /* part text */
            case PROPERTY_GROUP_ITEM_PART_TEXT_EFFECT:
               IT.name = "Effect";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXT_EFFECT);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXT_EFFECT, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_TEXT_SHADOW_DIRECTION:
               IT.name = "Shadow direction";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXT_SHADOW_DIRECTION, NULL);
               break;
 
               /* part textblock */
            case PROPERTY_GROUP_ITEM_PART_SELECT_MODE:
               IT.name = "Select mode";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_SELECT_MODE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_SELECT_MODE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_ENTRY_MODE:
               IT.name = "Entry mode";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ENTRY_MODE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ENTRY_MODE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_CURSOR_MODE:
               IT.name = "Cursor mode";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_CURSOR_MODE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_CURSOR_MODE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_MULTILINE:
               IT.name = "Multiline";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_MULTILINE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PART_MULTILINE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_SELECTION_UNDER:
               IT.name = "Selection under";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_SELECTION_UNDER, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_SELECTION_OVER:
               IT.name = "Selection over";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_SELECTION_OVER, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_CURSOR_UNDER:
               IT.name = "Cursor under";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_CURSOR_UNDER, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_CURSOR_OVER:
               IT.name = "Cursor over";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_CURSOR_OVER, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_ANCHORS_UNDER:
               IT.name = "Anchors under";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_UNDER, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_TEXTBLOCK_ANCHORS_OVER:
               IT.name = "Anchors over";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_TEXTBLOCK_ANCHORS_OVER, NULL);
               break;
 
               /* state position block */
@@ -4208,8 +4212,8 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_ALIGN:
               IT.name = "Align";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ALIGN_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ALIGN_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ALIGN_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_ALIGN_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TITLE:
               IT.name = "Rel1 (start point)";
@@ -4218,23 +4222,23 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_X:
               IT.name = "Relative to";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_X);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_X, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_Y:
               IT.name = "";
-              _action1(&IT, "y", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_Y);
+              _action1(&IT, "y", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL1_TO_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_RELATIVE:
               IT.name = "Relative";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_RELATIVE_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_OFFSET:
               IT.name = "Offset";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_OFFSET_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_OFFSET_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_OFFSET_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL1_OFFSET_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TITLE:
               IT.name = "Rel2 (end point)";
@@ -4243,23 +4247,23 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_X:
               IT.name = "Relative to";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_X);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_X, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TO_Y:
               IT.name = "";
-              _action1(&IT, "y", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_Y);
+              _action1(&IT, "y", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_REL2_TO_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_RELATIVE:
               IT.name = "Relative";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_RELATIVE_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_OFFSET:
               IT.name = "Offset";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_REL2_OFFSET_Y, NULL);
               break;
 
               /* part image */
@@ -4272,25 +4276,25 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_NORMAL:
               IT.name = "Image";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_NORMAL, ATTRIBUTE_STATE_IMAGE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_NORMAL, ATTRIBUTE_STATE_IMAGE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_TWEEN:
               IT.name = "Tween";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_TWEEN, ATTRIBUTE_STATE_IMAGE_TWEEN);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_TWEEN, ATTRIBUTE_STATE_IMAGE_TWEEN, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_H:
               IT.name = "Border";
-              _action1(&IT, "left", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_LEFT);
-              _action2(&IT, "right", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT);
+              _action1(&IT, "left", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_LEFT, NULL);
+              _action2(&IT, "right", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_V:
               IT.name = "";
-              _action1(&IT, "top", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_TOP);
-              _action2(&IT, "bottom", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM);
+              _action1(&IT, "top", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_TOP, NULL);
+              _action2(&IT, "bottom", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_MIDDLE:
               IT.name = "Border fill";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_IMAGE_BORDER_FILL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_IMAGE_BORDER_FILL, NULL);
               break;
 
               /* state fill block */
@@ -4303,11 +4307,11 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_TYPE:
               IT.name = "Type";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_FILL_TYPE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_FILL_TYPE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_SMOOTH:
               IT.name = "Smooth";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FILL_SMOOTH);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FILL_SMOOTH, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_TITLE:
               IT.name = "Origin";
@@ -4317,14 +4321,14 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_RELATIVE:
               IT.name = "Relative";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_OFFSET:
               IT.name = "Offset";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_TITLE:
               IT.name = "Size";
@@ -4334,14 +4338,14 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_RELATIVE:
               IT.name = "Relative";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_OFFSET:
               IT.name = "Offset";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y, NULL);
               break;
 
               /* state colors block */
@@ -4354,21 +4358,21 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_COLORS_COLOR_CLASS:
               IT.name = "Color class";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_COLOR_CLASS);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_COLOR_CLASS, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_COLORS_COLOR:
               IT.name = "Color";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_COLOR);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_COLOR, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_COLORS_OUTLINE_COLOR:
               IT.name = "Outline color";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_OUTLINE_COLOR);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_OUTLINE_COLOR, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_COLORS_SHADOWCOLOR:
               IT.name = "Shadow color";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_SHADOW_COLOR);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_STATE_SHADOW_COLOR, NULL);
               break;
 
               /* state text common block */
@@ -4381,63 +4385,63 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TEXT:
               IT.name = "Text";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_TEXT);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_TEXT, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_ALIGN:
               IT.name = "Align";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ALIGN_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_MIN:
               IT.name = "Min";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MIN_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_MAX:
               IT.name = "Max";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_MAX_Y, NULL);
               break;
 
               /* state text block */
            case PROPERTY_GROUP_ITEM_STATE_TEXT_FONT:
               IT.name = "Font";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_FONT);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_STATE_FONT, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_SIZE:
               IT.name = "Size";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_SIZE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_SIZE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_FIT:
               IT.name = "Fit";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_FIT_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_FIT_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_FIT_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_FIT_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_SOURCE:
               IT.name = "Source";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_SOURCE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_SOURCE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_TEXT_SOURCE:
               IT.name = "Text source";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_TEXT_SOURCE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_TEXT_SOURCE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_TEXT_ELIPSIS:
               IT.name = "Elipsis";
               IT.filter_data.part_types = PART_TEXT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE);
-              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ELIPSIS);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE, NULL);
+              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_TEXT_ELIPSIS, NULL);
               break;
 
               /* state textblock block */
            case PROPERTY_GROUP_ITEM_STATE_TEXT_STYLE:
               IT.name = "Style";
               IT.filter_data.part_types = PART_TEXTBLOCK;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_STYLE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TEXT_STYLE, NULL);
               break;
 
               /* part item block */
@@ -4450,23 +4454,23 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_ALIGN:
               IT.name = "Align";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_PADDING:
               IT.name = "Padding";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_PADING_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_PADING_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_PADING_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_PADING_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_MIN:
               IT.name = "Min";
-              _action1(&IT, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_H);
-              _action2(&IT, "v", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_V);
+              _action1(&IT, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_H, NULL);
+              _action2(&IT, "v", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_V, NULL);
               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_HOMOGENEOUS:
               IT.name = "Homogeneous mode";
               IT.filter_data.part_types = PART_TABLE;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TABLE_HOMOGENEOUS);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TABLE_HOMOGENEOUS, NULL);
               break;
 
               /* part item block */
@@ -4479,71 +4483,71 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_NAME:
               IT.name = "Name";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PART_ITEM_NAME);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PART_ITEM_NAME, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_SOURCE:
               IT.name = "Item source";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ITEM_SOURCE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ITEM_SOURCE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_MIN:
               IT.name = "Min";
-              _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MIN_W);
-              _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MIN_H);
+              _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MIN_W, NULL);
+              _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MIN_H, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_MAX:
               IT.name = "Max";
-              _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MAX_W);
-              _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MAX_H);
+              _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MAX_W, NULL);
+              _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MAX_H, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_PREFER:
               IT.name = "Prefer";
-              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PREFER_W);
-              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PREFER_H);
+              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PREFER_W, NULL);
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PREFER_H, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_ALIGN:
               IT.name = "Align";
-              _action1(&IT, "x", "%", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ALIGN_X);
-              _action2(&IT, "y", "%", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ALIGN_Y);
+              _action1(&IT, "x", "%", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ALIGN_X, NULL);
+              _action2(&IT, "y", "%", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ALIGN_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_WEIGHT:
               IT.name = "Weight";
-              _action1(&IT, "x", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_WEIGHT_X);
-              _action2(&IT, "y", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_WEIGHT_Y);
+              _action1(&IT, "x", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_WEIGHT_X, NULL);
+              _action2(&IT, "y", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_WEIGHT_Y, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE:
               IT.name = "Aspect mode";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ITEM_ASPECT_MODE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ITEM_ASPECT_MODE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT:
               IT.name = "Aspect";
-              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ASPECT_W);
-              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ASPECT_H);
+              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ASPECT_W, NULL);
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ASPECT_H, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_SPREAD:
               IT.name = "Spread";
-              _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPREAD_W);
-              _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPREAD_H);
+              _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPREAD_W, NULL);
+              _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPREAD_H, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_H:
               IT.name = "Paddings";
-              _action1(&IT, "left", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_LEFT);
-              _action2(&IT, "right", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_RIGHT);
+              _action1(&IT, "left", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_LEFT, NULL);
+              _action2(&IT, "right", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_RIGHT, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_V:
-              _action1(&IT, "top", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_TOP);
-              _action2(&IT, "bottom", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_BOTTOM);
+              _action1(&IT, "top", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_TOP, NULL);
+              _action2(&IT, "bottom", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_BOTTOM, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_SPAN:
               IT.name = "Span";
               IT.filter_data.part_types = PART_TABLE;
-              _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPAN_COL);
-              _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPAN_ROW);
+              _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPAN_COL, NULL);
+              _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPAN_ROW, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_POSITION:
               IT.name = "Position";
               IT.filter_data.part_types = PART_TABLE;
-              _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_POSITION_COL);
-              _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_POSITION_ROW);
+              _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_POSITION_COL, NULL);
+              _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_POSITION_ROW, NULL);
               break;
 
               /* program block */
@@ -4555,37 +4559,37 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_NAME:
               IT.name = "Name";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_NAME);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_NAME, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_SCRIPT:
               IT.name = "Script";
               IT.filter_data.action_types = ACTION_SCRIPT;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_SCRIPT);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_SCRIPT, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION:
               IT.name = "Action";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_PROGRAM_ACTION);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_PROGRAM_ACTION, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_SIGNAL:
               IT.name = "Signal";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_SIGNAL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_SIGNAL, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_SOURCE:
               IT.name = "Source";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_SOURCE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_SOURCE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_IN:
               IT.name = "In";
-              _action1(&IT, "from", "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_IN_FROM);
-              _action2(&IT, "range", "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_IN_RANGE);
+              _action1(&IT, "from", "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_IN_FROM, NULL);
+              _action2(&IT, "range", "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_IN_RANGE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_FILTER_PART:
               IT.name = "Filter";
-              _action1(&IT, "part", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_PART);
+              _action1(&IT, "part", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_PART, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE:
               IT.name = "";
-              _action1(&IT, "state", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_STATE);
+              _action1(&IT, "state", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_STATE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TITLE:
               IT.name = "Action params";
@@ -4596,28 +4600,28 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_STATE:
               IT.name = "State";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_STATE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_STATE, NULL);
               IT.filter_data.action_types = ACTION_STATE_SET;
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_VALUE:
               IT.name = "Value";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_VALUE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_VALUE, NULL);
               IT.filter_data.action_types = ACTION_STATE_SET;
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_EMIT_SIGNAL:
               IT.name = "Signal";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_EMIT_SIGNAL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_EMIT_SIGNAL, NULL);
               IT.filter_data.action_types = ACTION_SIGNAL_EMIT;
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_EMIT_SOURCE:
               IT.name = "Source";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_EMIT_SOURCE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_EMIT_SOURCE, NULL);
               IT.filter_data.action_types = ACTION_SIGNAL_EMIT;
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_DRAG_VALUE:
               IT.name = "Drag value";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_DRAG_VALUE_X);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_DRAG_VALUE_Y);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_DRAG_VALUE_X, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_DRAG_VALUE_Y, NULL);
               IT.filter_data.action_types = ACTION_DRAG_VAL_SET | ACTION_DRAG_VAL_STEP | ACTION_DRAG_VAL_PAGE;
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TITLE:
@@ -4629,52 +4633,52 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TYPE:
               IT.name = "Type";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_TRANSITION_TYPE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_TRANSITION_TYPE, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_FROM_CURRENT:
               IT.name = "Current";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TIME:
               IT.name = "Time";
-              _action1(&IT, NULL, "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_TIME);
+              _action1(&IT, NULL, "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_TIME, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_FACTOR:
               IT.name = "Factor";
               IT.filter_cb = _transition_filter_cb;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_FACTOR);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_FACTOR, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_GRADIENT:
               IT.name = "Gradient";
               IT.filter_cb = _transition_filter_cb;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_DECAY:
               IT.name = "Decay";
               IT.filter_cb = _transition_filter_cb;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_DECAY);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_DECAY, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BOUNCES:
               IT.name = "Bounces";
               IT.filter_cb = _transition_filter_cb;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_SWINGS:
               IT.name = "Swings";
               IT.filter_cb = _transition_filter_cb;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_SWINGS);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_SWINGS, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BEZIER_POINT1:
               IT.name = "Point 1";
               IT.filter_cb = _transition_filter_cb;
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X1);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y1);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X1, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y1, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BEZIER_POINT2:
               IT.name = "Point 2";
               IT.filter_cb = _transition_filter_cb;
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_X2, NULL);
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BEZIER_Y2, NULL);
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TARGET:
               IT.name = "Targets";
@@ -4701,11 +4705,11 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_GROUP_DATA_NAME:
               IT.name = "Name";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_DATA_NAME);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_DATA_NAME, NULL);
               break;
            case PROPERTY_GROUP_ITEM_GROUP_DATA_VALUE:
               IT.name = "Value";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_DATA_VALUE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_DATA_VALUE, NULL);
               break;
 
            case PROPERTY_GROUP_ITEM_LAST:
