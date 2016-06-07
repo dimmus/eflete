@@ -850,17 +850,17 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_MAP_POINT_COLOR_4:
          break;
       case ATTRIBUTE_STATE_TEXT_SIZE:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
          elm_spinner_min_max_set(action->control, 1, 9999);
+         break;
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
+         elm_spinner_min_max_set(action->control, 0, 9999);
          break;
       case ATTRIBUTE_STATE_MAX_W:
       case ATTRIBUTE_STATE_MAX_H:
       case ATTRIBUTE_PART_ITEM_MAX_W:
       case ATTRIBUTE_PART_ITEM_MAX_H:
          elm_spinner_min_max_set(action->control, -1, 9999);
-         break;
-      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
-      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
-         elm_spinner_min_max_set(action->control, 0, 9999);
          break;
       case ATTRIBUTE_PART_ITEM_SPREAD_W:
       case ATTRIBUTE_PART_ITEM_SPREAD_H:
@@ -2197,6 +2197,11 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          elm_spinner_value_set(action->control, int_val1);
          break;
       case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
+         ewe_combobox_items_list_free(action->control, true);
+         str_val1 = edje_edit_state_map_rotation_center_get(EDIT_OBJ, STATE_ARGS);
+         _parts_combobox_fill(action->control, str_val1, 0);
+         edje_edit_string_free(str_val1);
+         break;
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
          edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, &double_val1, NULL, NULL);
          elm_spinner_value_set(action->control, double_val1);
@@ -2952,6 +2957,9 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          VAL(int_val1) = edje_edit_state_map_perspective_zplane_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
+         group_pd.history.format = _("map's rotation center part changed from \"%s\" to \"%s\"");
+         STR_VAL(str_val1, edje_edit_state_map_rotation_center_get(EDIT_OBJ, STATE_ARGS));
+         break;
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
          group_pd.history.format = _("map rotation x changed from %.2f to %.2f");
          edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, &tmp_double_val1, NULL, NULL);
@@ -3885,6 +3893,12 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.new.int_val1 = edje_edit_state_map_perspective_zplane_get(EDIT_OBJ, STATE_ARGS);
          break;
       case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
+         assert(cb_item != NULL);
+         str_val1 = (cb_item->index != 0) ? eina_stringshare_add(cb_item->title) : NULL;
+         CRIT_ON_FAIL(editor_state_map_rotation_center_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, str_val1));
+         eina_stringshare_del(group_pd.history.new.str_val1);
+         group_pd.history.new.str_val1 = str_val1;
+         break;
       case ATTRIBUTE_STATE_MAP_ROTATION_X:
          CRIT_ON_FAIL(editor_state_map_rotation_x_set(EDIT_OBJ, CHANGE_MERGE, STATE_ARGS, double_val1));
          edje_edit_state_map_rotation_get(EDIT_OBJ, STATE_ARGS, &group_pd.history.new.double_val1, NULL, NULL);
@@ -4010,6 +4024,7 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_FONT:
       case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
       case ATTRIBUTE_STATE_MAP_LIGHT:
+      case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
       case ATTRIBUTE_PROGRAM_SIGNAL:
       case ATTRIBUTE_PROGRAM_EMIT_SIGNAL:
       case ATTRIBUTE_PROGRAM_EMIT_SOURCE:
@@ -4190,8 +4205,6 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (group_pd.history.new.bool_val1) ?
                                        _("turned on") : _("turned off"));
-         break;
-      case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
          break;
       default:
          TODO("remove default case after all attributes will be added");
