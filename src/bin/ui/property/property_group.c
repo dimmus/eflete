@@ -4460,25 +4460,51 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_NORMAL:
               IT.name = "Image";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_NORMAL, ATTRIBUTE_STATE_IMAGE, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_NORMAL, ATTRIBUTE_STATE_IMAGE,
+                       _("Name of image to be used. In an animation, this<br>"
+                         "is the first and last image displayed."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_TWEEN:
               IT.name = "Tween";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_TWEEN, ATTRIBUTE_STATE_IMAGE_TWEEN, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_IMAGE_TWEEN, ATTRIBUTE_STATE_IMAGE_TWEEN,
+                       _("Name of an images to be used in an animation loop<br>"
+                         "Can have none, one or multiple tween declarations.<br>"
+                         "Images are displayed in the order they are listed,<br>"
+                         "during the transition to the state they are declared in.<br>"
+                         "the \"normal\" image is the final state."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_H:
               IT.name = "Border";
-              _action1(&IT, "left", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_LEFT, NULL);
-              _action2(&IT, "right", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT, NULL);
+              _action1(&IT, "left", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_LEFT,
+                       _("If set, the area (in pixels) of each side of the image<br>"
+                         "will be displayed as a fixed size border, <br>"
+                         "from the side -> inwards, preventing the corners<br>"
+                         "from being changed on a resize."));
+              _action2(&IT, "right", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT,
+                        _("If set, the area (in pixels) of each side of the image<br>"
+                         "will be displayed as a fixed size border, <br>"
+                         "from the side -> inwards, preventing the corners<br>"
+                         "from being changed on a resize."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_BORDER_V:
               IT.name = "";
-              _action1(&IT, "top", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_TOP, NULL);
-              _action2(&IT, "bottom", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM, NULL);
-              break;
+              _action1(&IT, "top", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_TOP,
+                        _("If set, the area (in pixels) of each side of the image<br>"
+                         "will be displayed as a fixed size border, <br>"
+                         "from the side -> inwards, preventing the corners<br>"
+                         "from being changed on a resize."));
+               _action2(&IT, "bottom", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_IMAGE_BORDER_BOTTOM,
+                        _("If set, the area (in pixels) of each side of the image<br>"
+                         "will be displayed as a fixed size border, <br>"
+                         "from the side -> inwards, preventing the corners<br>"
+                         "from being changed on a resize."));
+               break;
            case PROPERTY_GROUP_ITEM_STATE_IMAGE_MIDDLE:
               IT.name = "Border fill";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_IMAGE_BORDER_FILL, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_IMAGE_BORDER_FILL,
+                       _("If border is set, this value tells Edje if the<br>"
+                         "rest of the image (not covered by the defined border)<br>"
+                         "will be displayed or not or be assumed to be solid (without alpha)."));
               break;
 
               /* state fill block */
@@ -4491,11 +4517,21 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_TYPE:
               IT.name = "Type";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_FILL_TYPE, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_FILL_TYPE,
+                       _("Sets the image fill type.<br>"
+                         " * SCALE - image will be scaled accordingly params<br>"
+                         "   value \"relative\" and \"offset\" from \"origin\"<br>"
+                         "   and \"size\" blocks.<br>"
+                         " * TILE - image will be tiled accordingly params<br>"
+                         "   value \"relative\" and \"offset\" from \"origin\"<br>"
+                         "   and \"size\" blocks.<br>"
+                         "SCALE is default type."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_SMOOTH:
               IT.name = "Smooth";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FILL_SMOOTH, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_FILL_SMOOTH,
+                       _("The smooth property takes a boolean value to decide<br>"
+                         "if the image will be smoothed on scaling or not."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_TITLE:
               IT.name = "Origin";
@@ -4505,15 +4541,23 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_RELATIVE:
               IT.name = "Relative";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X, NULL);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y, NULL);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_X,
+                       _("Sets the left-up corner X coordinate<br>"
+                         "relatively to displayed element's content."));
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_RELATIVE_Y,
+                       _("Sets the left-up corner Y coordinate<br>"
+                         "relatively to displayed element's content."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_ORIGIN_OFFSET:
               IT.name = "Offset";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X, NULL);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y, NULL);
-              break;
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_X,
+                       _("Affects the left-up corner a fixed<br>"
+                         "number of pixels along X axis."));
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_ORIGIN_OFFSET_Y,
+                       _("Affects the left-up corner a fixed<br>"
+                         "number of pixels along Y axis."));
+               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_TITLE:
               IT.name = "Size";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/end-point"));
@@ -4522,15 +4566,23 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_RELATIVE:
               IT.name = "Relative";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/align"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X, NULL);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y, NULL);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_X,
+                       _("Sets the right-bottom corner X coordinate<br>"
+                         "relatively to displayed element's content."));
+               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_RELATIVE_Y,
+                        _("Sets the right-bottom corner Y coordinate<br>"
+                         "relatively to displayed element's content."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_FILL_SIZE_OFFSET:
               IT.name = "Offset";
               IT.icon_name = eina_stringshare_add(_("elm/image/icon/offset"));
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X, NULL);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y, NULL);
-              break;
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_X,
+                       _("Affects the right-bottom corner a fixed<br>"
+                         "number of pixels along X axis."));
+               _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_FILL_SIZE_OFFSET_Y,
+                       _("Affects the right-bottom corner a fixed<br>"
+                         "number of pixels along Y axis."));
+               break;
 
               /* state colors block */
            case PROPERTY_GROUP_ITEM_STATE_COLORS_TITLE:
