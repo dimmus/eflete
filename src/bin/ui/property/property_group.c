@@ -1208,7 +1208,7 @@ _afters_init_cb(Property_Attribute *pa, Property_Action *action)
    assert(action != NULL);
    assert(action->control != NULL);
 
-   _programs_combobox_fill(action->control, pa->data);
+  _programs_combobox_fill(action->control, pa->data);
 }
 
 static void
@@ -1278,6 +1278,10 @@ _afters_get(Property_Attribute *pa __UNUSED__)
         new_pa->action1.control_type = PROPERTY_CONTROL_COMBOBOX;
         new_pa->action1.init_cb = _afters_init_cb;
         new_pa->action1.change_cb = _afters_change_cb;
+        new_pa->action1.tooltip =
+                          eina_stringshare_add(_("Specifies a program to run after the current<br>"
+                                                 "program completes. The source and signal parameters<br>"
+                                                 "of a program run as an \"after\" are ignored."));
         items = eina_list_append(items, new_pa);
      }
    return items;
@@ -1375,6 +1379,7 @@ _targets_get(Property_Attribute *pa __UNUSED__)
         new_pa->action1.control_type = PROPERTY_CONTROL_COMBOBOX;
         new_pa->action1.init_cb = _targets_init_cb;
         new_pa->action1.change_cb = _targets_change_cb;
+        new_pa->action1.tooltip = eina_stringshare_add(_("Program or part on which the specified action acts."));
         items = eina_list_append(items, new_pa);
      }
    return items;
@@ -5050,7 +5055,8 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_NAME:
               IT.name = "Name";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_NAME, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_NAME,
+                       _("Symbolic name of program as a unique identifier."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_SCRIPT:
               IT.name = "Script";
@@ -5059,29 +5065,61 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION:
               IT.name = "Action";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_PROGRAM_ACTION, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_LABEL, ATTRIBUTE_PROGRAM_ACTION,
+                       _("Action to be performed by the program."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_SIGNAL:
               IT.name = "Signal";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_SIGNAL, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_SIGNAL,
+                       _("Specifies signal that should cause the program to run.<br>"
+                         "The signal received must match the specified source to run.<br>"
+                         "Signals may be globbed, but only one signal keyword<br>"
+                         "per program may be used. ex: \"mouse,clicked,*\";<br>"
+                         "(clicking any mouse button that matches source starts program).<br>"
+                         "A list of global signal, that edje provide:<br>"
+                         "  hold,on; hold,off;<br>"
+                         "  mouse,in; mouse,out; mouse,pressed,in; mouse,pressed,out;<br>"
+                         "  mouse,down,N: where N - mouse button number;<br>"
+                         "  mouse,down,N,double: where N - mouse button number;<br>"
+                         "  mouse,down,N,triple: where N - mouse button number;<br>"
+                         "  mouse,up,N: where N - mouse button number;<br>"
+                         "  mouse,clicked,N: where N - mouse button number;<br>"
+                         "  mouse,move;<br>"
+                         "  mouse,wheel,N,M: where N - the direction (by default is 0),<br>"
+                         "                   M - 1 if wheel scrolled up and -1 if down;<br>"
+                         "  drag,start; drag; drag,stop;<br>"
+                         "  focus,part,in; focus,part,out.<br>"));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_SOURCE:
               IT.name = "Source";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_SOURCE, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_SOURCE,
+                       _("Source of accepted signal. Sources may be globbed,<br>"
+                         "but only one source keyword per program may be used.<br>"
+                         "ex: \"button-*\"; (Signals from any part or program<br>"
+                         "named \"button-*\" are accepted)."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_IN:
               IT.name = "In";
-              _action1(&IT, "from", "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_IN_FROM, NULL);
-              _action2(&IT, "range", "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_IN_RANGE, NULL);
+              _action1(&IT, "from", "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_IN_FROM,
+                       _("Wait 'from' seconds before executing the program."));
+              _action2(&IT, "range", "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_IN_RANGE,
+                       _("And add a random number of seconds (from 0 to 'range')<br>"
+                         "to the total waiting time."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_FILTER_PART:
               IT.name = "Filter";
-              _action1(&IT, "part", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_PART, NULL);
+              _action1(&IT, "part", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_PART,
+                       _("Filter signals to be only accepted if the part [part] is in<br>"
+                         "state named [state]. Only one filter per program can be used.<br>"
+                         "If [state] is not given, the source of the event will be used instead."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_FILTER_STATE:
               IT.name = "";
-              _action1(&IT, "state", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_STATE, NULL);
-              break;
+              _action1(&IT, "state", NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_FILTER_STATE,
+                       _("Filter signals to be only accepted if the part [part] is in<br>"
+                         "state named [state]. Only one filter per program can be used.<br>"
+                         "If [state] is not given, the source of the event will be used instead."));
+               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TITLE:
               IT.name = "Action params";
               IT.expandable = true;
@@ -5091,23 +5129,29 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_STATE:
               IT.name = "State";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_STATE, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_STATE,
+                       _("Switch part state from current to the given"));
               IT.filter_data.action_types = ACTION_STATE_SET;
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_VALUE:
               IT.name = "Value";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_VALUE, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_VALUE,
+                       _("State index."));
               IT.filter_data.action_types = ACTION_STATE_SET;
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_EMIT_SIGNAL:
               IT.name = "Signal";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_EMIT_SIGNAL, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_EMIT_SIGNAL,
+                       _("Name of signal, which will be emmited to<br>"
+                         "the application on execution this programm"));
               IT.filter_data.action_types = ACTION_SIGNAL_EMIT;
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_EMIT_SOURCE:
               IT.name = "Source";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_EMIT_SOURCE, NULL);
-              IT.filter_data.action_types = ACTION_SIGNAL_EMIT;
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PROGRAM_EMIT_SOURCE,
+                       _("Name of signal source, which will be emmited to<br>"
+                         "the application on execution this programm"));
+               IT.filter_data.action_types = ACTION_SIGNAL_EMIT;
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_DRAG_VALUE:
               IT.name = "Drag value";
@@ -5124,40 +5168,56 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TYPE:
               IT.name = "Type";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_TRANSITION_TYPE, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PROGRAM_TRANSITION_TYPE,
+                       _("Defines how transitions occur using STATE_SET action."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_FROM_CURRENT:
               IT.name = "Current";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT,
+                       _("Causes the object to move from its current position."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_TIME:
               IT.name = "Time";
-              _action1(&IT, NULL, "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_TIME, NULL);
+              _action1(&IT, NULL, "sec", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_TIME,
+                       _("A double specifying the number of seconds<br>"
+                         "in which to preform the transition."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_FACTOR:
               IT.name = "Factor";
               IT.filter_cb = _transition_filter_cb;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_FACTOR, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_FACTOR,
+                       _("ACCEL_FAC, DECEL_FAC and SIN_FAC need the extra<br>"
+                         "optional value to determine the \"factor\" of curviness.<br>"
+                         "1.0 is the same as their non-factor counterparts,<br>"
+                         "where 0.0 is equal to linear. Numbers higher than one make<br>"
+                         "the curve angles steeper with a more pronounced curve point."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_GRADIENT:
               IT.name = "Gradient";
               IT.filter_cb = _transition_filter_cb;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_GRADIENT,
+                       _("Initial gradient start (0.0 is horizontal, 1.0 is<br>"
+                         "diagonal (linear), 2.0 is twice the gradient of linear etc.)."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_DECAY:
               IT.name = "Decay";
               IT.filter_cb = _transition_filter_cb;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_DECAY, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_DECAY,
+                       _("Determining how much the bounce decays,<br>"
+                         "with 0.0 giving linear decay per bounce,<br>"
+                         "and higher values giving much more decay."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BOUNCES:
               IT.name = "Bounces";
               IT.filter_cb = _transition_filter_cb;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_BOUNCES,
+                       _("Number of bounces (so its rounded down to the nearest integer value)"));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_SWINGS:
               IT.name = "Swings";
               IT.filter_cb = _transition_filter_cb;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_SWINGS, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PROGRAM_TRANSITION_SWINGS,
+                       _("Number of spring \"swings\"."));
               break;
            case PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TRANSITION_BEZIER_POINT1:
               IT.name = "Point 1";
