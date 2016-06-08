@@ -861,4 +861,22 @@ Eina_Bool
 editor_program_del(Evas_Object *edit_object, Change *change, Eina_Bool merge, Eina_Bool apply,
                    const char *program_name) EINA_WARN_UNUSED_RESULT;
 
+/* map */
+Eina_Bool
+editor_state_map_on_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_map_perspective_on_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_map_smooth_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_map_alpha_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
+Eina_Bool
+editor_state_map_backface_cull_set(Evas_Object *obj, Change *change, Eina_Bool merge, Eina_Bool apply, const char *part_name, const char *state_name, double state_val,
+      Eina_Bool new_val) EINA_WARN_UNUSED_RESULT;
+
+
 #endif /* EDITOR_H */

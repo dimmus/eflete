@@ -510,6 +510,7 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_COLORS_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_SIZE_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_TITLE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP);
          APPEND(PROPERTY_GROUP_ITEM_STATE_IMAGE_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_FILL_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_TEXT_COMMON_TITLE);
@@ -527,6 +528,16 @@ _subitems_get(Property_Attribute *pa)
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_ALIGN);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TITLE);
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL2_TITLE);
+         break;
+      case PROPERTY_GROUP_ITEM_STATE_MAP:
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_ON);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE_ON);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_LIGHT);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_SMOOTH);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_ALPHA);
+         APPEND(PROPERTY_GROUP_ITEM_STATE_MAP_BACKFACE_CULL);
          break;
       case PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TITLE:
          APPEND(PROPERTY_GROUP_ITEM_STATE_POSITION_REL1_TO_X);
@@ -817,6 +828,13 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_PROGRAM_EMIT_SOURCE:
       case ATTRIBUTE_PROGRAM_STATE:
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
+      case ATTRIBUTE_STATE_MAP_LIGHT:
+      case ATTRIBUTE_STATE_MAP_ON:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ON:
+      case ATTRIBUTE_STATE_MAP_SMOOTH:
+      case ATTRIBUTE_STATE_MAP_ALPHA:
+      case ATTRIBUTE_STATE_MAP_BACKFACE_CULL:
          break;
       case ATTRIBUTE_STATE_TEXT_SIZE:
          elm_spinner_min_max_set(action->control, 1, 9999);
@@ -2113,6 +2131,30 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_string_free(str_val1);
          edje_edit_string_free(str_val2);
          break;
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
+         break;
+      case ATTRIBUTE_STATE_MAP_LIGHT:
+         break;
+      case ATTRIBUTE_STATE_MAP_ON:
+         bool_val1 = edje_edit_state_map_on_get(EDIT_OBJ, STATE_ARGS);
+         elm_check_state_set(action->control, bool_val1);
+         break;
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ON:
+         bool_val1 = edje_edit_state_map_perspective_on_get(EDIT_OBJ, STATE_ARGS);
+         elm_check_state_set(action->control, bool_val1);
+         break;
+      case ATTRIBUTE_STATE_MAP_SMOOTH:
+         bool_val1 = edje_edit_state_map_smooth_get(EDIT_OBJ, STATE_ARGS);
+         elm_check_state_set(action->control, bool_val1);
+         break;
+      case ATTRIBUTE_STATE_MAP_ALPHA:
+         bool_val1 = edje_edit_state_map_alpha_get(EDIT_OBJ, STATE_ARGS);
+         elm_check_state_set(action->control, bool_val1);
+         break;
+      case ATTRIBUTE_STATE_MAP_BACKFACE_CULL:
+         bool_val1 = edje_edit_state_map_backface_cull_get(EDIT_OBJ, STATE_ARGS);
+         elm_check_state_set(action->control, bool_val1);
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("update callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -2806,6 +2848,25 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          group_pd.history.format = _("part item's bottom padding changed from %d to %d");
          edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, NULL, NULL, &int_val1);
          VAL(int_val1) = int_val1;
+         break;
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
+         break;
+      case ATTRIBUTE_STATE_MAP_LIGHT:
+         break;
+      case ATTRIBUTE_STATE_MAP_ON:
+         group_pd.history.format = _("map %s");
+         break;
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ON:
+         group_pd.history.format = _("map perspective %s");
+         break;
+      case ATTRIBUTE_STATE_MAP_SMOOTH:
+         group_pd.history.format = _("map smooth %s");
+         break;
+      case ATTRIBUTE_STATE_MAP_ALPHA:
+         group_pd.history.format = _("map alpha %s");
+         break;
+      case ATTRIBUTE_STATE_MAP_BACKFACE_CULL:
+         group_pd.history.format = _("map backface cull %s");
          break;
       default:
          TODO("remove default case after all attributes will be added");
@@ -3650,6 +3711,30 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
          CRIT_ON_FAIL(editor_part_item_padding_right_set(EDIT_OBJ, CHANGE_MERGE, ITEM_ARGS, double_val1));
          edje_edit_part_item_padding_get(EDIT_OBJ, ITEM_ARGS, NULL, &group_pd.history.new.int_val1, NULL, NULL);
          break;
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
+         break;
+      case ATTRIBUTE_STATE_MAP_LIGHT:
+         break;
+      case ATTRIBUTE_STATE_MAP_ON:
+         CRIT_ON_FAIL(editor_state_map_on_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
+         group_pd.history.new.bool_val1 = bool_val1;
+         break;
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ON:
+         CRIT_ON_FAIL(editor_state_map_perspective_on_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
+         group_pd.history.new.bool_val1 = bool_val1;
+         break;
+      case ATTRIBUTE_STATE_MAP_SMOOTH:
+         CRIT_ON_FAIL(editor_state_map_smooth_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
+         group_pd.history.new.bool_val1 = bool_val1;
+         break;
+      case ATTRIBUTE_STATE_MAP_ALPHA:
+         CRIT_ON_FAIL(editor_state_map_alpha_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
+         group_pd.history.new.bool_val1 = bool_val1;
+         break;
+      case ATTRIBUTE_STATE_MAP_BACKFACE_CULL:
+         CRIT_ON_FAIL(editor_state_map_backface_cull_set(EDIT_OBJ, CHANGE_NO_MERGE, STATE_ARGS, bool_val1));
+         group_pd.history.new.bool_val1 = bool_val1;
+         break;
       default:
          TODO("remove default case after all attributes will be added");
          CRIT("change callback not found for %s (%s)", pa->name, action->name ? action->name : "unnamed");
@@ -3729,6 +3814,8 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_COLOR_CLASS:
       case ATTRIBUTE_STATE_TEXT:
       case ATTRIBUTE_STATE_FONT:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
+      case ATTRIBUTE_STATE_MAP_LIGHT:
       case ATTRIBUTE_PROGRAM_SIGNAL:
       case ATTRIBUTE_PROGRAM_EMIT_SIGNAL:
       case ATTRIBUTE_PROGRAM_EMIT_SOURCE:
@@ -3891,6 +3978,11 @@ _stop_cb(Property_Attribute *pa, Property_Action *action)
       case ATTRIBUTE_STATE_TEXT_ELIPSIS_ENABLE:
       case ATTRIBUTE_STATE_CONTAINER_MIN_V:
       case ATTRIBUTE_STATE_CONTAINER_MIN_H:
+      case ATTRIBUTE_STATE_MAP_ON:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ON:
+      case ATTRIBUTE_STATE_MAP_SMOOTH:
+      case ATTRIBUTE_STATE_MAP_ALPHA:
+      case ATTRIBUTE_STATE_MAP_BACKFACE_CULL:
       case ATTRIBUTE_PROGRAM_TRANSITION_FROM_CURRENT:
          msg = eina_stringshare_printf(group_pd.history.format,
                                        (group_pd.history.new.bool_val1) ?
@@ -4236,6 +4328,57 @@ _init_items()
                          "independently. The aspect property forces the width to<br>"
                          "height ratio to be kept to the maximum."));
                break;
+
+           case PROPERTY_GROUP_ITEM_STATE_MAP:
+              IT.name = "MAP";
+              IT.expandable = true;
+              IT.expanded = true;
+              IT.expand_cb = _subitems_get;
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_MAP_ON:
+              IT.name = "Map on:";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_ON,
+                       _("Enable or disable mapping for the part"));
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE_ON:
+              IT.name = "Perspective on:";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_PERSPECTIVE_ON,
+                       _("Enable or disable perspective when rotating."));
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_MAP_SMOOTH:
+              IT.name = "Smooth:";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_SMOOTH,
+                       _("Enable or disable smooth map rendering.<br>"
+                         "This may be linear interpolation, anisotropic<br>"
+                         "filtering or anything the engine decides is \"smooth\""));
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_MAP_ALPHA:
+              IT.name = "Alpha:";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_ALPHA,
+                       _("Enable or disable alpha channel when map rendering"));
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_MAP_BACKFACE_CULL:
+              IT.name = "Backface Cull:";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_MAP_BACKFACE_CULL,
+                     _("Enables or disabled backface culling (when the rotated part<br>"
+                       "that normally faces the camera is facing away after being<br>"
+                       "rotated etc.). This means that the object will be hidden when<br>"
+                       "\"backface culled\""));
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_MAP_PERSPECTIVE:
+              IT.name = "Perspective:";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_MAP_PERSPECTIVE,
+                       _("This sets the part that is used as the \"perspective point\"<br>"
+                         "for giving a part a \"3d look\". The perspective point should<br>"
+                         "have a perspective section that provides zplane and focal properties."));
+              break;
+           case PROPERTY_GROUP_ITEM_STATE_MAP_LIGHT:
+              IT.name = "Light";
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_MAP_LIGHT,
+                       _("This sets the part that is used as the \"light\" for calculating<br>"
+                         "the brightness (based on how directly the part's surface is facing<br>"
+                         "the light source point)"));
+              break;
 
               /* part text */
            case PROPERTY_GROUP_ITEM_PART_TEXT_EFFECT:
@@ -5032,6 +5175,7 @@ property_group_items_get()
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_GROUP_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_PART_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_STATE_TITLE]);
+   items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_STATE_MAP]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_PART_ITEM_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_TITLE]);
    items = eina_list_append(items, &group_pd.items[PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE]);
