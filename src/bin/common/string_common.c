@@ -24,13 +24,13 @@
 int
 sort_cb(const void *data1, const void *data2)
 {
-   const char *str1 = data1;
-   const char *str2 = data2;
+   if (!data1) return 1;
+   if (!data2) return -1;
 
-   if (!str1) return 1;
-   if (!str2) return -1;
-
-   return strcmp(str1, str2);
+   if (data1 == data2)
+     return 0;
+   else
+     return strcmp(data1, data2);
 }
 
 void
