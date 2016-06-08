@@ -58,6 +58,8 @@ src/bin/ui/preference/preference.c
 src/bin/ui/project_close.c
 src/bin/ui/property/property.c
 src/bin/ui/property/property_group.c
+src/bin/ui/property/property_color.c
+src/bin/ui/property/property_textblock.c
 src/bin/ui/shortcuts/shortcuts.c
 src/bin/ui/splash.c
 src/bin/ui/tab_home_open.c
