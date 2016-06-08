@@ -110,6 +110,70 @@ _strings_list_duplicates_del(Eina_List *list)
    return list;
 }
 
+#define SOURCE_GET(FUNC) \
+do { \
+   source = FUNC(obj, part); \
+   if (source) \
+     { \
+        groups = eina_list_sorted_insert(groups, sort_cb, eina_stringshare_add(source)); \
+        eina_stringshare_del(source); \
+     } \
+   } \
+while (0);
+
+Eina_List *
+gm_group_used_groups_edj_get(const char *edj, const char *group)
+{
+   Eina_List *groups = NULL;
+   Eina_List *parts, *l1;
+   Eina_Stringshare *part, *source;
+   Evas *e;
+   Evas_Object *obj, *win;
+   Edje_Part_Type type;
+   int items_count, i;
+
+   ecore_thread_main_loop_begin();
+   win = elm_win_add(NULL, "eflete_group_groups_list_get", ELM_WIN_BASIC);
+   elm_win_norender_push(win);
+   e = evas_object_evas_get(win);
+   obj = edje_edit_object_add(e);
+   edje_object_file_set(obj, edj, group);
+
+   parts = edje_edit_parts_list_get(obj);
+   EINA_LIST_FOREACH(parts, l1, part)
+     {
+        type = edje_edit_part_type_get(obj, part);
+        if ((EDJE_PART_TYPE_GROUP != type) ||
+            (EDJE_PART_TYPE_TEXTBLOCK != type) ||
+            (EDJE_PART_TYPE_BOX != type) ||
+            (EDJE_PART_TYPE_TABLE != type))
+          continue;
+        SOURCE_GET(edje_edit_part_source_get)
+        SOURCE_GET(edje_edit_part_source2_get)
+        SOURCE_GET(edje_edit_part_source3_get)
+        SOURCE_GET(edje_edit_part_source4_get)
+        SOURCE_GET(edje_edit_part_source5_get)
+        SOURCE_GET(edje_edit_part_source6_get)
+
+        items_count = edje_edit_part_items_count_get(obj, part);
+        for (i = 0; i < items_count; i++)
+          {
+             source = edje_edit_part_item_index_source_get(obj, part, i);
+             if (source)
+               {
+                  groups = eina_list_sorted_insert(groups, sort_cb, eina_stringshare_add(source));
+                  eina_stringshare_del(source);
+               }
+          }
+     }
+   edje_edit_string_list_free(parts);
+   evas_object_del(win);
+   ecore_thread_main_loop_end();
+
+   return _strings_list_duplicates_del(groups);
+}
+#undef SOURCE_GET
+
 Eina_List *
 gm_group_used_images_edj_get(const char *edj, const char *group)
 {
