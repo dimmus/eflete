@@ -288,6 +288,48 @@ gm_group_used_color_classes_edj_get(const char *edj, const char *group)
    return _strings_list_duplicates_del(color_classes);
 }
 
+Eina_List *
+gm_group_used_styles_get(const char *edj, const char *group)
+{
+   Eina_List *styles = NULL;
+   Eina_List *parts, *l1, *states, *l2;
+   Eina_Stringshare *part, *state, *style, *pstate;
+   double pvalue;
+   Evas *e;
+   Evas_Object *obj, *win;
+
+   ecore_thread_main_loop_begin();
+   win = elm_win_add(NULL, "eflete_group_styles_list_get", ELM_WIN_BASIC);
+   elm_win_norender_push(win);
+   e = evas_object_evas_get(win);
+   obj = edje_edit_object_add(e);
+   edje_object_file_set(obj, edj, group);
+
+   parts = edje_edit_parts_list_get(obj);
+   EINA_LIST_FOREACH(parts, l1, part)
+     {
+        states = edje_edit_part_states_list_get(obj, part);
+        EINA_LIST_FOREACH(states, l2, state)
+          {
+             if (EDJE_PART_TYPE_TEXTBLOCK != edje_edit_part_type_get(obj, part)) continue;
+             state_name_split(state, &pstate, &pvalue);
+             style = edje_edit_state_text_style_get(obj, part, pstate, pvalue);
+             if (style)
+               {
+                  styles = eina_list_sorted_insert(styles, sort_cb, eina_stringshare_add(style));
+                  eina_stringshare_del(style);
+               }
+             eina_stringshare_del(pstate);
+          }
+     }
+   edje_edit_string_list_free(parts);
+   evas_object_del(win);
+   ecore_thread_main_loop_end();
+
+   return _strings_list_duplicates_del(styles);
+}
+
+
 State *
 gm_state_add(Project *pro, Part *part, const char *state_name)
 {

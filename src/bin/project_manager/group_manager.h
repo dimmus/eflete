@@ -49,6 +49,9 @@ gm_group_used_sample_edj_get(const char *edj, const char *group);
 Eina_List *
 gm_group_used_color_classes_edj_get(const char *edj, const char *group);
 
+Eina_List *
+gm_group_used_styles_get(const char *edj, const char *group);
+
 State *
 gm_state_add(Project *pro, Part *part, const char *state_name);
 
