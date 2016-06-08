@@ -5256,11 +5256,15 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_GROUP_DATA_NAME:
               IT.name = "Name";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_DATA_NAME, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_DATA_NAME,
+                       _("Defines a new parameter, the value will be<br>"
+                         "the string specified next to it."));
               break;
            case PROPERTY_GROUP_ITEM_GROUP_DATA_VALUE:
               IT.name = "Value";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_DATA_VALUE, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_GROUP_DATA_VALUE,
+                        _("Defines a new parameter, the value will be<br>"
+                         "the string specified next to it."));
               break;
 
            case PROPERTY_GROUP_ITEM_LAST:
