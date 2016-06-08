@@ -130,16 +130,21 @@ _grid_sel_cb(void *data __UNUSED__,
              void *event_info)
 {
    External_Resource *res = NULL;
+   Resource request;
    Sound_Data *snd;
 
    snd = elm_object_item_data_get((Elm_Gengrid_Item *)event_info);
    switch (snd->type)
      {
       case SOUND_TYPE_SAMPLE:
-         res = pm_resource_get(ap.project->sounds, snd->name);
+         request.name = snd->name;
+         request.resource_type = RESOURCE_TYPE_SOUND;
+         res = (External_Resource *)resource_get(ap.project->sounds, &request);
          break;
       case SOUND_TYPE_TONE:
-         res = pm_resource_get(ap.project->tones, snd->name);
+         request.name = snd->name;
+         request.resource_type = RESOURCE_TYPE_TONE;
+         res = (External_Resource *)resource_get(ap.project->tones, &request);
          break;
      }
 
@@ -240,20 +245,19 @@ _add_sample_done(void *data __UNUSED__,
         return false;
      }
 
-   res = mem_calloc(1, sizeof(External_Resource));
-   res->name = eina_stringshare_add(file_name);
+   res = (External_Resource *)resource_add(file_name, RESOURCE_TYPE_SOUND);
    res->source = eina_stringshare_printf("%s/sounds/%s", ap.project->develop_path, file_name);
 
    if (!ecore_file_exists(res->source))
      {
         ecore_file_cp(selected, res->source);
 
-        ap.project->sounds = eina_list_sorted_insert(ap.project->sounds, (Eina_Compare_Cb) resource_cmp, res);
+        resource_insert(&ap.project->sounds, (Resource *)res);
      }
    else
      {
         ERR(_("File '%s' exist"), res->name);
-        free(res);
+        resource_free((Resource *)res);
         return true;
      }
 
@@ -285,10 +289,9 @@ _tone_add(void)
    frq = atoi(elm_entry_entry_get(mng.frq_entry));
    edje_edit_sound_tone_add(ap.project->global_object, tone_name, frq);
 
-   tone = (Tone_Resource *)mem_calloc(1, sizeof(Tone_Resource));
-   tone->name = eina_stringshare_add(tone_name);
+   tone = (Tone_Resource *)resource_add(tone_name, RESOURCE_TYPE_TONE);
    tone->freq = frq;
-   ap.project->tones = eina_list_sorted_insert(ap.project->tones, (Eina_Compare_Cb)resource_cmp, tone);
+   resource_insert(&ap.project->tones, (Resource *)tone);
 
    snd = (Sound_Data *)mem_malloc(sizeof(Sound_Data));
    snd->name = eina_stringshare_ref(tone->name);
@@ -395,6 +398,7 @@ _sound_del_cb(void *data __UNUSED__,
    Sound_Data *snd;
    Eina_List *list, *l, *l_next;
    External_Resource *res;
+   Resource request;
 
    list = (Eina_List *)elm_gengrid_selected_items_get(mng.gengrid);
    EINA_LIST_FOREACH_SAFE(list, l, l_next, grid_it)
@@ -404,18 +408,22 @@ _sound_del_cb(void *data __UNUSED__,
         switch (snd->type)
           {
            case SOUND_TYPE_SAMPLE:
-              res = pm_resource_get(ap.project->sounds, snd->name);
+              request.name = snd->name;
+              request.resource_type = RESOURCE_TYPE_SOUND;
+              res = (External_Resource *)resource_get(ap.project->sounds, &request);
               if (res->used_in) ERR("Unable to delete sample '%s'", res->name);
               edje_edit_sound_sample_del(ap.project->global_object, snd->name);
               ecore_file_unlink(res->source);
-              ap.project->sounds = pm_resource_del(ap.project->sounds, res);
+              resource_remove(&ap.project->sounds, (Resource *)res);
               elm_object_item_del(grid_it);
               break;
            case SOUND_TYPE_TONE:
-              res = pm_resource_get(ap.project->tones, snd->name);
+              request.name = snd->name;
+              request.resource_type = RESOURCE_TYPE_SOUND;
+              res = (External_Resource *)resource_get(ap.project->tones, &request);
               if (res->used_in) ERR("Unable to delete tone '%s'", res->name);
               edje_edit_sound_tone_del(ap.project->global_object, snd->name);
-              ap.project->tones = pm_resource_del(ap.project->tones, res);
+              resource_remove(&ap.project->tones, (Resource *)res);
               elm_object_item_del(grid_it);
               break;
           }

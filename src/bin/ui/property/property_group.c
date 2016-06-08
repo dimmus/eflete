@@ -204,8 +204,8 @@ TODO("remove NULL's after fixing genlist filters")
 #define PART_ARGS (group_pd.part) ? group_pd.part->name : NULL
 #define GROUP_DATA_ARGS (group_pd.group_data) ? group_pd.group_data->name : NULL
 #define ITEM_ARGS PART_ARGS, (group_pd.part) ? group_pd.part->current_item_name : NULL
-#define STATE_ARGS PART_ARGS, (group_pd.part) ? group_pd.part->current_state->parsed_name : NULL, (group_pd.part) ? group_pd.part->current_state->parsed_val : 0
-#define STATE_SOURCE_ARGS str_val1, (group_pd.part) ? group_pd.part->current_state->parsed_name : NULL, (group_pd.part) ? group_pd.part->current_state->parsed_val : 0
+#define STATE_ARGS PART_ARGS, (group_pd.part) ? group_pd.part->current_state->name : NULL, (group_pd.part) ? group_pd.part->current_state->val : 0
+#define STATE_SOURCE_ARGS str_val1, (group_pd.part) ? group_pd.part->current_state->name : NULL, (group_pd.part) ? group_pd.part->current_state->val : 0
 #define PROGRAM_ARGS (group_pd.program) ? group_pd.program->name : NULL
 #define CHANGE_MERGE group_pd.history.change, true, true
 #define CHANGE_NO_MERGE group_pd.history.change, false, true
@@ -1090,6 +1090,7 @@ static void
 _part_states_combobox_fill(Evas_Object *combo, const char *part_name, const char *selected, Eina_Bool ignore_value)
 {
    Eina_List *l;
+   Resource request;
    Part *part;
    State *state;
    const char *state_name = NULL;
@@ -1109,18 +1110,20 @@ _part_states_combobox_fill(Evas_Object *combo, const char *part_name, const char
 
    elm_object_disabled_set(combo, false);
 
-   part = pm_resource_unsorted_get(group_pd.group->parts, part_name);
+   request.resource_type = RESOURCE_TYPE_PART;
+   request.name = part_name;
+   part = (Part *)resource_get(group_pd.group->parts, &request);
 
    if (ignore_value)
      {
         /* skipping states with same name but different value */
         EINA_LIST_FOREACH(part->states, l, state)
           {
-             if (state_name && !strcmp(state_name, state->parsed_name))
+             if (state_name && !strcmp(state_name, state->name))
                continue;
 
-             ewe_combobox_item_add(combo, state->parsed_name);
-             state_name = state->parsed_name;
+             ewe_combobox_item_add(combo, state->name);
+             state_name = state->name;
           }
      }
    else

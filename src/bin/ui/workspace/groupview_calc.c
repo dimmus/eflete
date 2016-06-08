@@ -534,12 +534,12 @@ _part_calc(Groupview_Smart_Data *sd, Groupview_Part *gp)
 
         x_align = edje_edit_state_text_align_x_get(sd->group->edit_object,
                                                    gp->part->name,
-                                                   gp->part->current_state->parsed_name,
-                                                   gp->part->current_state->parsed_val);
+                                                   gp->part->current_state->name,
+                                                   gp->part->current_state->val);
         y_align = edje_edit_state_text_align_y_get(sd->group->edit_object,
                                                    gp->part->name,
-                                                   gp->part->current_state->parsed_name,
-                                                   gp->part->current_state->parsed_val);
+                                                   gp->part->current_state->name,
+                                                   gp->part->current_state->val);
         evas_object_size_hint_align_set(gp->proxy_part, x_align, y_align);
      }
 }
@@ -558,8 +558,8 @@ _part_update(Groupview_Smart_Data *sd, Groupview_Part *gp)
       case EDJE_PART_TYPE_TEXT:
       case EDJE_PART_TYPE_TEXTBLOCK:
          str = edje_edit_state_text_get(sd->group->edit_object, gp->part->name,
-                                        gp->part->current_state->parsed_name,
-                                        gp->part->current_state->parsed_val);
+                                        gp->part->current_state->name,
+                                        gp->part->current_state->val);
          if (!str)
            edje_object_part_text_set(sd->group->edit_object, gp->part->name, gp->part->name);
          eina_stringshare_del(str);

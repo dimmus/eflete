@@ -1026,15 +1026,14 @@ _image_resources_load(Project *project)
         PROGRESS_SEND(_("image processing (%d/%d): %s"),
                       im_proc, im_total, image_name);
 
-        res = mem_calloc(1, sizeof(External_Resource));
-        res->name = eina_stringshare_add(image_name);
+        res = (External_Resource *) resource_add(image_name, RESOURCE_TYPE_IMAGE);
         comp_type = edje_edit_image_compression_type_get(project->global_object,
                                                          res->name);
         if (comp_type == EDJE_EDIT_IMAGE_COMP_USER)
           res->source = eina_stringshare_add(image_name);
         else
           res->source = eina_stringshare_printf("%s/%s", resource_folder, image_name);
-        project->images = eina_list_sorted_insert(project->images, (Eina_Compare_Cb) resource_cmp, res);
+        resource_insert(&project->images, (Resource *)res);
 
         if (!ecore_file_exists(res->source))
           {
@@ -1103,10 +1102,9 @@ _sound_resources_load(Project *project)
         PROGRESS_SEND(_("sound processing (%d/%d): %s"),
                       snd_proc, snd_total, sound_file);
 
-        res = mem_calloc(1, sizeof(External_Resource));
-        res->name = eina_stringshare_add(sound_name);
+        res = (External_Resource*)resource_add(sound_name, RESOURCE_TYPE_SOUND);
         res->source = eina_stringshare_printf("%s/%s", resource_folder, sound_file);
-        project->sounds = eina_list_sorted_insert(project->sounds, (Eina_Compare_Cb) resource_cmp, res);
+        resource_insert(&project->sounds, (Resource *)res);
 
         if (!ecore_file_exists(res->source))
           {
@@ -1171,10 +1169,9 @@ _font_resources_load(Project *project)
         PROGRESS_SEND(_("font processing (%d/%d): %s"),
                       fnt_proc, fnt_total, font_file);
 
-        res = mem_calloc(1, sizeof(External_Resource));
-        res->name = eina_stringshare_add(font_file);
+        res = (External_Resource *)resource_add(font_file, RESOURCE_TYPE_FONT);
         res->source = eina_stringshare_printf("%s/%s", resource_folder, font_file);
-        project->fonts = eina_list_sorted_insert(project->fonts, (Eina_Compare_Cb) resource_cmp, res);
+        resource_insert(&project->fonts, (Resource *)res);
 
         if (!ecore_file_exists(res->source))
           {
@@ -1219,10 +1216,9 @@ _tones_resources_load(Project *project)
         PROGRESS_SEND(_("tone processing (%d/%d): %s"),
                       ++tones_proc, tones_total, name);
 
-        res = mem_calloc(1, sizeof(Tone_Resource));
-        res->name = eina_stringshare_add(name);
+        res = (Tone_Resource *)resource_add(name, RESOURCE_TYPE_TONE);
         res->freq = edje_edit_sound_tone_frequency_get(project->global_object, name);
-        project->tones = eina_list_sorted_insert(project->tones, (Eina_Compare_Cb) resource_cmp, res);
+        resource_insert(&project->tones, (Resource *)res);
      }
 
    edje_edit_string_list_free(tones);
@@ -1247,8 +1243,7 @@ _colorclasses_resources_load(Project *project)
         PROGRESS_SEND(_("colorclass processing (%d/%d): %s"),
                       ++cc_proc, cc_total, name);
 
-        res = mem_calloc(1, sizeof(Colorclass_Resource));
-        res->name = eina_stringshare_add(name);
+        res = (Colorclass_Resource *)resource_add(name, RESOURCE_TYPE_COLORCLASS);
 
         if (!edje_edit_color_class_colors_get(project->global_object, name,
                                               &res->color1.r, &res->color1.g, &res->color1.b, &res->color1.a,
@@ -1256,10 +1251,10 @@ _colorclasses_resources_load(Project *project)
                                               &res->color3.r, &res->color3.g, &res->color3.b, &res->color3.a))
           {
              eina_stringshare_del(res->name);
-             free(res);
+             resource_free((Resource *)res);
           }
         else
-          project->colorclasses = eina_list_sorted_insert(project->colorclasses, (Eina_Compare_Cb) resource_cmp, res);
+          resource_insert(&project->colorclasses, (Resource *)res);
      }
 
    edje_edit_string_list_free(colorclasses);
@@ -1284,10 +1279,8 @@ _styles_resources_load(Project *project)
         PROGRESS_SEND(_("style processing (%d/%d): %s"),
                       ++styles_proc, styles_total, name);
 
-        res = mem_calloc(1, sizeof(Resource));
-        res->name = eina_stringshare_add(name);
-
-        project->styles = eina_list_sorted_insert(project->styles, (Eina_Compare_Cb) resource_cmp, res);
+        res = resource_add(name, RESOURCE_TYPE_STYLE);
+        resource_insert(&project->styles, res);
      }
 
    edje_edit_string_list_free(styles);
@@ -1405,7 +1398,7 @@ _group_source_code_export(void *data, Eina_Thread *thread __UNUSED__)
              ecore_file_mkdir(eina_strbuf_string_get(buf));
              EINA_LIST_FOREACH(part->states, ls, state)
                {
-                  resource = edje_edit_state_image_get(group->edit_object, part->name, state->parsed_name, state->parsed_val);
+                  resource = edje_edit_state_image_get(group->edit_object, part->name, state->name, state->val);
                   PROGRESS_SEND(_("Export image '%s'"), resource);
                   _external_resource_export(worker.project->images, resource, eina_strbuf_string_get(buf));
                   eina_stringshare_del(resource);
@@ -1419,7 +1412,7 @@ _group_source_code_export(void *data, Eina_Thread *thread __UNUSED__)
              ecore_file_mkdir(eina_strbuf_string_get(buf));
              EINA_LIST_FOREACH(part->states, ls, state)
                {
-                  resource = edje_edit_state_font_get(group->edit_object, part->name, state->parsed_name, state->parsed_val);
+                  resource = edje_edit_state_font_get(group->edit_object, part->name, state->name, state->val);
                   Eina_Stringshare *font_res = edje_edit_font_path_get(group->edit_object, resource);
                   PROGRESS_SEND(_("Export font '%s'"), font_res);
                   _external_resource_export(worker.project->fonts, font_res, eina_strbuf_string_get(buf));

@@ -206,9 +206,8 @@ _style_add_cb(void *data __UNUSED__,
    elm_genlist_item_selected_set(glit, true);
    elm_genlist_item_bring_in(glit, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
 
-   res = mem_calloc(1, sizeof(Resource));
-   res->name = eina_stringshare_add(style_name);
-   ap.project->styles = eina_list_sorted_insert(ap.project->styles, (Eina_Compare_Cb)resource_cmp, res);
+   res = resource_add(style_name, RESOURCE_TYPE_STYLE);
+   resource_insert(&ap.project->styles, res);
 
    CRIT_ON_FAIL(editor_save(ap.project->global_object));
    TODO("Remove this line once edje_edit API would be added into Editor Module and saving would work properly")
@@ -249,9 +248,8 @@ _tab_add_cb(void *data __UNUSED__,
    tags = edje_edit_style_tags_list_get(ap.project->global_object, style_name);
    EINA_LIST_FOREACH(tags, l, buf)
      {
-        res = mem_calloc(1, sizeof(Resource));
-        res->name = eina_stringshare_add(buf);
-        resources = eina_list_sorted_insert(resources, (Eina_Compare_Cb)resource_cmp, res);
+        res = resource_add(buf, RESOURCE_TYPE_TAG);
+        resource_insert(&resources, res);
      }
    edje_edit_string_list_free(tags);
 
@@ -293,10 +291,7 @@ _tab_add_cb(void *data __UNUSED__,
 
 close:
    EINA_LIST_FREE(resources, res)
-     {
-        eina_stringshare_del(res->name);
-        free(res);
-     }
+      resource_free(res);
    evas_object_del(item);
    eina_stringshare_del(buf);
 }
@@ -309,6 +304,7 @@ _btn_del_cb(void *data __UNUSED__,
    Evas_Object *edje_edit_obj = NULL;
    const char *style_name, *tag;
    Resource *res;
+   Resource request;
 
    Elm_Object_Item *glit = elm_genlist_selected_item_get(mng.genlist);
    if (!glit) return;
@@ -318,9 +314,11 @@ _btn_del_cb(void *data __UNUSED__,
    if (!glit_parent)
      {
         style_name = elm_object_item_part_text_get(glit, "elm.text");
-        res = pm_resource_get(ap.project->styles, style_name);
+        request.resource_type = RESOURCE_TYPE_STYLE;
+        request.name = style_name;
+        res = resource_get(ap.project->styles, &request);
         edje_edit_style_del(edje_edit_obj, style_name);
-        ap.project->styles = pm_resource_del(ap.project->styles, res);
+        resource_remove(&ap.project->styles, res);
      }
    else
      {

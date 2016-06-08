@@ -83,7 +83,8 @@ resource_name_validator_status_get(Resource_Name_Validator *validator)
 Eina_Bool
 resource_name_validator_helper(void *data, const Eo_Event *event)
 {
-   Resource *res;
+   Resource *res = NULL;
+   Resource request;
    Elm_Validate_Content *vc = event->info;
    Resource_Name_Validator *validator = (Resource_Name_Validator *)data;
 
@@ -94,10 +95,13 @@ resource_name_validator_helper(void *data, const Eo_Event *event)
    if (validator->status == ELM_REG_NOERROR) /* new name match regex */
      {
         /* check if resource with this name already exists in list */
-        if (validator->sorted)
-          res = pm_resource_get(*validator->list, vc->text);
-        else
-          res = pm_resource_unsorted_get(*validator->list, vc->text);
+        if (eina_list_data_get(*validator->list))
+          {
+             request.name = vc->text;
+             request.resource_type = ((Resource *)eina_list_data_get(*validator->list))->resource_type;
+             TODO("remove sorted flag");
+             res = resource_get(*validator->list, &request);
+          }
 
         if (!res) /* name is free */
           validator->status = ELM_REG_NOERROR;

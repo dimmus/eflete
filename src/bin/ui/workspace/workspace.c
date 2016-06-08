@@ -943,20 +943,20 @@ _groupview_hl_part_drag_start(void *data,
    if (MIDDLE != event->hl_type)
      {
         part_w = edje_edit_state_max_w_get(wd->group->edit_object, event->part->name,
-                                           event->part->current_state->parsed_name,
-                                           event->part->current_state->parsed_val);
+                                           event->part->current_state->name,
+                                           event->part->current_state->val);
         part_h = edje_edit_state_max_h_get(wd->group->edit_object, event->part->name,
-                                           event->part->current_state->parsed_name,
-                                           event->part->current_state->parsed_val);
+                                           event->part->current_state->name,
+                                           event->part->current_state->val);
      }
    else
      {
         part_align_x = edje_edit_state_align_x_get(wd->group->edit_object, event->part->name,
-                                                   event->part->current_state->parsed_name,
-                                                   event->part->current_state->parsed_val);
+                                                   event->part->current_state->name,
+                                                   event->part->current_state->val);
         part_align_y = edje_edit_state_align_y_get(wd->group->edit_object, event->part->name,
-                                                   event->part->current_state->parsed_name,
-                                                   event->part->current_state->parsed_val);
+                                                   event->part->current_state->name,
+                                                   event->part->current_state->val);
      }
 }
 
@@ -974,13 +974,13 @@ _groupview_hl_part_changed(void *data,
      {
         CRIT_ON_FAIL(editor_state_max_w_set(wd->group->edit_object, change, true, true,
                                             event->part->name,
-                                            event->part->current_state->parsed_name,
-                                            event->part->current_state->parsed_val,
+                                            event->part->current_state->name,
+                                            event->part->current_state->val,
                                             event->w));
         CRIT_ON_FAIL(editor_state_max_h_set(wd->group->edit_object, change, true, true,
                                             event->part->name,
-                                            event->part->current_state->parsed_name,
-                                            event->part->current_state->parsed_val,
+                                            event->part->current_state->name,
+                                            event->part->current_state->val,
                                             event->h));
      }
    else
@@ -997,13 +997,12 @@ _groupview_hl_part_changed(void *data,
         if (align_y > 1.0) align_y = 1.0;
         CRIT_ON_FAIL(editor_state_align_x_set(wd->group->edit_object, change, true, true,
                                               event->part->name,
-                                              event->part->current_state->parsed_name,
-                                              event->part->current_state->parsed_val, align_x));
+                                              event->part->current_state->name,
+                                              event->part->current_state->val, align_x));
         CRIT_ON_FAIL(editor_state_align_y_set(wd->group->edit_object, change, true, true,
                                               event->part->name,
-                                              event->part->current_state->parsed_name,
-                                              event->part->current_state->parsed_val, align_y));
-
+                                              event->part->current_state->name,
+                                              event->part->current_state->val, align_y));
      }
 }
 
@@ -1031,11 +1030,11 @@ _groupview_hl_part_drag_stop(void *data,
    else
      {
         double align_x = edje_edit_state_align_x_get(wd->group->edit_object, event->part->name,
-                                                     event->part->current_state->parsed_name,
-                                                     event->part->current_state->parsed_val);
+                                                     event->part->current_state->name,
+                                                     event->part->current_state->val);
         double align_y = edje_edit_state_align_y_get(wd->group->edit_object, event->part->name,
-                                                     event->part->current_state->parsed_name,
-                                                     event->part->current_state->parsed_val);
+                                                     event->part->current_state->name,
+                                                     event->part->current_state->val);
         if ((align_x == part_align_x) && (align_y == part_align_y))
           change_free(change);
         else
@@ -1330,10 +1329,13 @@ void
 workspace_part_del(Evas_Object *obj, Eina_Stringshare *part_name)
 {
    Part *part;
+   Resource request;
    WS_DATA_GET(obj);
    assert(part_name != NULL);
 
-   part = pm_resource_unsorted_get(wd->group->parts, part_name);
+   request.resource_type = RESOURCE_TYPE_PART;
+   request.name = part_name;
+   part = (Part *)resource_get(wd->group->parts, &request);
    group_navigator_part_del(wd->group_navi, part);
    demo_group_part_del(wd->demo_navi, part);
    groupview_part_del(wd->normal.content, part);
@@ -1346,11 +1348,14 @@ workspace_part_item_add(Evas_Object *obj,
                         Eina_Stringshare *item_name)
 {
    Part *part;
+   Resource request;
    WS_DATA_GET(obj);
    assert(part_name != NULL);
    assert(item_name != NULL);
 
-   part = pm_resource_unsorted_get(wd->group->parts, part_name);
+   request.resource_type = RESOURCE_TYPE_PART;
+   request.name = part_name;
+   part = (Part *)resource_get(wd->group->parts, &request);
 
    assert((part->type == EDJE_PART_TYPE_TABLE) ||
           (part->type == EDJE_PART_TYPE_BOX));
@@ -1367,11 +1372,14 @@ workspace_part_item_del(Evas_Object *obj,
                         Eina_Stringshare *item_name)
 {
    Part *part;
+   Resource request;
    WS_DATA_GET(obj);
    assert(part_name != NULL);
    assert(item_name != NULL);
 
-   part = pm_resource_unsorted_get(wd->group->parts, part_name);
+   request.resource_type = RESOURCE_TYPE_PART;
+   request.name = part_name;
+   part = (Part *)resource_get(wd->group->parts, &request);
 
    assert((part->type == EDJE_PART_TYPE_TABLE) ||
           (part->type == EDJE_PART_TYPE_BOX));
@@ -1387,12 +1395,15 @@ workspace_part_state_add(Evas_Object *obj,
                          Eina_Stringshare *state_name)
 {
    Part *part;
+   Resource request;
    State *state;
    WS_DATA_GET(obj);
    assert(part_name != NULL);
    assert(state_name != NULL);
 
-   part = pm_resource_unsorted_get(wd->group->parts, part_name);
+   request.resource_type = RESOURCE_TYPE_PART;
+   request.name = part_name;
+   part = (Part *)resource_get(wd->group->parts, &request);
 
    group_navigator_part_select(wd->group_navi, part);
    state = gm_state_add(ap.project, part, state_name);
@@ -1405,13 +1416,18 @@ workspace_part_state_select(Evas_Object *obj,
                             Eina_Stringshare *state_name)
 {
    Part *part;
+   Resource request;
    State *state;
    WS_DATA_GET(obj);
    assert(part_name != NULL);
    assert(state_name != NULL);
 
-   part = pm_resource_unsorted_get(wd->group->parts, part_name);
-   state = pm_resource_get(part->states, state_name);
+   request.resource_type = RESOURCE_TYPE_PART;
+   request.name = part_name;
+   part = (Part *)resource_get(wd->group->parts, &request);
+   request.resource_type = RESOURCE_TYPE_STATE;
+   request.name = state_name;
+   state = (State *)resource_get(part->states, &request);
 
    groupview_hard_update(wd->normal.content);
    group_navigator_part_state_select(wd->group_navi, state);
@@ -1423,13 +1439,18 @@ workspace_part_state_del(Evas_Object *obj,
                          Eina_Stringshare *state_name)
 {
    Part *part;
+   Resource request;
    State *state;
    WS_DATA_GET(obj);
    assert(part_name != NULL);
    assert(state_name != NULL);
 
-   part = pm_resource_unsorted_get(wd->group->parts, part_name);
-   state = pm_resource_get(part->states, state_name);
+   request.resource_type = RESOURCE_TYPE_PART;
+   request.name = part_name;
+   part = (Part *)resource_get(wd->group->parts, &request);
+   request.resource_type = RESOURCE_TYPE_STATE;
+   request.name = state_name;
+   state = (State *)resource_get(part->states, &request);
 
    group_navigator_part_select(wd->group_navi, part);
    group_navigator_part_state_del(wd->group_navi, part, state);
@@ -1442,12 +1463,18 @@ workspace_part_restack(Evas_Object *obj,
                        Eina_Stringshare *relative_part_name)
 {
    Part *part, *rel_part = NULL;
+   Resource request;
    WS_DATA_GET(obj);
    assert(part_name != NULL);
 
-   part = pm_resource_unsorted_get(wd->group->parts, part_name);
+   request.resource_type = RESOURCE_TYPE_PART;
+   request.name = part_name;
+   part = (Part *)resource_get(wd->group->parts, &request);
    if (relative_part_name)
-     rel_part = pm_resource_unsorted_get(wd->group->parts, relative_part_name);
+     {
+        request.name = relative_part_name;
+        rel_part = (Part *)resource_get(wd->group->parts, &request);
+     }
 
    group_navigator_part_select(wd->group_navi, part);
    group_navigator_part_restack(wd->group_navi, part, rel_part);
@@ -1463,10 +1490,13 @@ workspace_part_item_restack(Evas_Object *obj,
                             Eina_Stringshare *relative_part_item_name)
 {
    Part *part;
+   Resource request;
    WS_DATA_GET(obj);
    assert(part_item_name != NULL);
 
-   part = pm_resource_unsorted_get(wd->group->parts, part_name);
+   request.resource_type = RESOURCE_TYPE_PART;
+   request.name = part_name;
+   part = (Part *)resource_get(wd->group->parts, &request);
 
    group_navigator_part_select(wd->group_navi, part);
    gm_part_item_restack(part, part_item_name, relative_part_item_name);

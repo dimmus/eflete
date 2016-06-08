@@ -76,8 +76,8 @@ gm_group_edit_object_reload(Project *pro, Group *group)
    EINA_LIST_FOREACH(group->parts, l, part)
       edje_edit_part_selected_state_set(group->edit_object,
                                         part->name,
-                                        part->current_state->parsed_name,
-                                        part->current_state->parsed_val);
+                                        part->current_state->name,
+                                        part->current_state->val);
 }
 
 void
@@ -415,62 +415,67 @@ gm_group_used_fonts_get(const char *edj, const char *group)
 State *
 gm_state_add(Project *pro, Part *part, const char *state_name)
 {
+   Resource *resource, request;
    State *state;
-   Eina_Stringshare *image_name, *name;
+   Eina_Stringshare *parsed_state_name, *image_name, *name;
+   double val;
    Eina_List *tween_list, *l;
 
    assert(pro != NULL);
    assert(part != NULL);
    assert(state_name != NULL);
 
-   state = mem_calloc(1, sizeof(State));
-   state->name = eina_stringshare_add(state_name);
-   state->part = part;
+   state_name_split(state_name, &parsed_state_name, &val);
 
-   part->states = eina_list_sorted_insert(part->states, (Eina_Compare_Cb) resource_cmp, state);
+   state = (State *) resource_add(parsed_state_name, RESOURCE_TYPE_STATE);
+   state->val = val;
+   state->part = part;
+   eina_stringshare_del(parsed_state_name);
+
+   resource_insert(&part->states, (Resource *)state);
 
    /* default 0.0 should be allways first state */
    if (part->current_state == NULL)
      part->current_state = state;
 
-   state_name_split(state_name, &state->parsed_name, &state->parsed_val);
-
-   #define USAGE_ADD(TYPE, USAGE_LIST) \
+   #define USAGE_ADD(TYPE, LIST, USAGE_TYPE) \
    name = edje_edit_state_ ## TYPE ## _get(part->group->edit_object, \
                                            part->name, \
-                                           state->parsed_name, \
-                                           state->parsed_val); \
+                                           state->name, \
+                                           state->val); \
    if (name) \
      { \
-        pm_resource_usage_add(USAGE_LIST, name, state); \
+        request.resource_type = USAGE_TYPE; \
+        request.name = name; \
+        resource = resource_get(LIST, &request); \
+        resource_used_in_add(resource, (Resource *)state); \
         edje_edit_string_free(name); \
      }
 
    #define COLORCLASS_USAGE_ADD() \
    name = edje_edit_state_color_class_get(part->group->edit_object, \
                                           part->name, \
-                                          state->parsed_name, \
-                                          state->parsed_val); \
+                                          state->name, \
+                                          state->val); \
    if (name) \
      { \
-        if (!pm_resource_usage_add(pro->colorclasses, name, state)) \
+        request.resource_type = RESOURCE_TYPE_COLORCLASS; \
+        request.name = name; \
+        resource = resource_get(pro->colorclasses, &request); \
+        if (!resource) \
           { \
              /* Colorclass can be specified but not defined in edc.
                 If colorclass don't exist yet adding it */ \
              TODO("move this code to colorclass resource manager"); \
              edje_edit_color_class_add(pro->global_object, name); \
-             Colorclass_Resource *res = mem_calloc(1, sizeof(Colorclass_Resource)); \
-             res->name = eina_stringshare_add(name); \
+             Colorclass_Resource *res = (Colorclass_Resource *)resource_add(name, RESOURCE_TYPE_COLORCLASS); \
              res->color1.r = res->color1.g = res->color1.b = res->color1.a = 255; \
              res->color2.r = res->color2.g = res->color2.b = res->color2.a = 255; \
              res->color3.r = res->color3.g = res->color3.b = res->color3.a = 255; \
-             pro->colorclasses = eina_list_sorted_insert(pro->colorclasses, (Eina_Compare_Cb) resource_cmp, res); \
-             if (!pm_resource_usage_add(pro->colorclasses, name, state)) \
-               { \
-                  ERR("Err: resource not found: %s", name); \
-                  abort(); \
-               }; \
+             resource = (Resource *) res; \
+             resource_insert(&pro->colorclasses, resource); \
           } \
+        resource_used_in_add(resource, (Resource *)state); \
         edje_edit_string_free(name); \
      }
 
@@ -486,23 +491,28 @@ gm_state_add(Project *pro, Part *part, const char *state_name)
       case EDJE_PART_TYPE_IMAGE:
          COLORCLASS_USAGE_ADD();
 
-         USAGE_ADD(image, pro->images);
+         USAGE_ADD(image, pro->images, RESOURCE_TYPE_IMAGE);
 
          tween_list = edje_edit_state_tweens_list_get(part->group->edit_object,
                                                       part->name,
-                                                      state->parsed_name,
-                                                      state->parsed_val);
+                                                      state->name,
+                                                      state->val);
          EINA_LIST_FOREACH(tween_list, l, image_name)
-            pm_resource_usage_add(pro->images, image_name, state);
+           {
+              request.resource_type = RESOURCE_TYPE_IMAGE;
+              request.name = image_name;
+              resource = resource_get(pro->images, &request);
+              resource_used_in_add(resource, (Resource *)state);
+           }
          edje_edit_string_list_free(tween_list);
 
          break;
       case EDJE_PART_TYPE_TEXT:
          COLORCLASS_USAGE_ADD();
-         USAGE_ADD(font, pro->fonts);
+         //USAGE_ADD(font, pro->fonts, RESOURCE_TYPE_FONT);
          break;
       case EDJE_PART_TYPE_TEXTBLOCK:
-         USAGE_ADD(text_style, pro->styles);
+         USAGE_ADD(text_style, pro->styles, RESOURCE_TYPE_STYLE);
          break;
       default:
          break;
@@ -515,6 +525,7 @@ gm_state_add(Project *pro, Part *part, const char *state_name)
 Part *
 gm_part_add(Project *pro, Group *group, const char *part_name)
 {
+   Resource *resource, request;
    Part *part;
    Eina_List *states, *l;
    Eina_Stringshare *state_name, *group_name, *item_name;
@@ -523,12 +534,11 @@ gm_part_add(Project *pro, Group *group, const char *part_name)
    assert(group != NULL);
    assert(part_name != NULL);
 
-   part = mem_calloc(1, sizeof(Part));
-   part->name = eina_stringshare_add(part_name);
+   part = (Part*)resource_add(part_name, RESOURCE_TYPE_PART);
    part->group = group;
    part->type = edje_edit_part_type_get(group->edit_object, part_name);
    part->visible = true;
-   group->parts = eina_list_append(group->parts, part);
+   resource_insert(&group->parts, (Resource *)part);
    states = edje_edit_part_states_list_get(group->edit_object, part_name);
    EINA_LIST_FOREACH(states, l, state_name)
      gm_state_add(pro, part, state_name);
@@ -543,7 +553,10 @@ gm_part_add(Project *pro, Group *group, const char *part_name)
                                                 part->name); \
    if (group_name) \
      { \
-        pm_resource_usage_add(pro->groups, group_name, part); \
+        request.resource_type = RESOURCE_TYPE_GROUP; \
+        request.name = group_name; \
+        resource = resource_get(pro->groups, &request); \
+        resource_used_in_add(resource, (Resource *)part); \
         edje_edit_string_free(group_name); \
      }
 
@@ -558,7 +571,11 @@ gm_part_add(Project *pro, Group *group, const char *part_name)
                                                           item_name);
               if (group_name)
                 {
-                   pm_resource_usage_add(pro->groups, group_name, part);
+                   request.resource_type = RESOURCE_TYPE_GROUP;
+                   request.name = group_name;
+                   resource = resource_get(pro->groups, &request);
+                   TODO("replace with item");
+                   resource_used_in_add(resource, (Resource *)part);
                    edje_edit_string_free(group_name);
                 }
            }
@@ -584,13 +601,15 @@ gm_part_add(Project *pro, Group *group, const char *part_name)
 static void
 _group_load(Project *pro, Group *group)
 {
+   Resource request;
+   State state_request;
    Eina_Stringshare *main_group_name;
    Eina_List *parts, *l, *lt, *programs, *targets, *datas;
    Eina_Stringshare *part_name, *program_name, *target_name, *state_name,
-                    *state_full_name, *sample_name, *tone_name, *group_data_name;
+                    *sample_name, *tone_name, *group_data_name;
    double state_val;
    Part *part;
-   State *state;
+   Resource *state, *sound, *tone;
    Program *program;
 
    assert(pro != NULL);
@@ -603,14 +622,10 @@ _group_load(Project *pro, Group *group)
    if (edje_edit_group_alias_is(group->edit_object, group->name))
      {
         main_group_name = edje_edit_group_aliased_get(group->edit_object, group->name);
-        group->main_group = pm_resource_get(pro->groups, main_group_name);
-        if (!(group->main_group))
-          {
-             group->main_group = mem_calloc(1, sizeof(Group));
-             group->main_group->name = eina_stringshare_add(main_group_name);
-             pro->groups = eina_list_append(pro->groups, group->main_group);
-          }
-        group->main_group->aliases = eina_list_sorted_insert(group->main_group->aliases, (Eina_Compare_Cb)resource_cmp, group);
+        request.resource_type = RESOURCE_TYPE_GROUP;
+        request.name = main_group_name;
+        group->main_group = (Group *)resource_get(pro->groups, &request);
+        resource_insert(&group->main_group->aliases, (Resource *)group);
         edje_edit_string_free(main_group_name);
      }
    else
@@ -627,10 +642,9 @@ _group_load(Project *pro, Group *group)
         programs = edje_edit_programs_list_get(group->edit_object);
         EINA_LIST_FOREACH(programs, l, program_name)
           {
-            program = mem_calloc(1, sizeof(Program));
-            program->name = eina_stringshare_add(program_name);
+            program = (Program *)resource_add(program_name, RESOURCE_TYPE_PROGRAM);
             program->type = edje_edit_program_action_get(group->edit_object, program_name);
-            group->programs = eina_list_sorted_insert(group->programs, (Eina_Compare_Cb)resource_cmp, program);
+            resource_insert(&group->programs, (Resource *)program);
           }
         edje_edit_string_list_free(programs);
         EINA_LIST_FOREACH(group->programs, l, program)
@@ -641,23 +655,24 @@ _group_load(Project *pro, Group *group)
                    targets = edje_edit_program_targets_get(group->edit_object, program->name);
                    state_name = edje_edit_program_state_get(group->edit_object, program->name);
                    state_val = edje_edit_program_value_get(group->edit_object, program->name);
-                   state_full_name = eina_stringshare_printf("%s %.2f", state_name, state_val);
+                   state_request.name = state_name;
+                   state_request.val = state_val;
+                   state_request.resource_type = RESOURCE_TYPE_STATE;
                    eina_stringshare_del(state_name);
                    EINA_LIST_FOREACH(targets, lt, target_name)
                      {
-                        part = (Part *) pm_resource_unsorted_get(group->parts, target_name);
-                        state = (State *) pm_resource_get(part->states, state_full_name);
+                        request.resource_type = RESOURCE_TYPE_PART;
+                        request.name = target_name;
+                        part = (Part *) resource_get(group->parts, &request);
+                        state = resource_get(part->states, (Resource *)&state_request);
                         if (state)
-                          state->used_in = eina_list_sorted_insert(state->used_in,
-                                                                   (Eina_Compare_Cb) resource_cmp,
-                                                                   program);
+                          resource_used_in_add(state, (Resource *)program);
                         else
                           {
                              TODO("Handle programs with states that don't exist");
                           }
 
                      }
-                   eina_stringshare_del(state_full_name);
                    edje_edit_string_list_free(targets);
                    break;
                 case EDJE_ACTION_TYPE_DRAG_VAL_SET:
@@ -665,17 +680,28 @@ _group_load(Project *pro, Group *group)
                 case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
                    targets = edje_edit_program_targets_get(group->edit_object, program->name);
                    EINA_LIST_FOREACH(targets, lt, target_name)
-                      pm_resource_usage_unsorted_add(group->parts, target_name, (void *) program);
+                     {
+                        request.resource_type = RESOURCE_TYPE_PART;
+                        request.name = target_name;
+                        part = (Part *) resource_get(group->parts, &request);
+                        resource_used_in_add((Resource *)part, (Resource *)program);
+                     }
                    edje_edit_string_list_free(targets);
                    break;
                 case EDJE_ACTION_TYPE_SOUND_SAMPLE:
                    sample_name = edje_edit_program_sample_name_get(group->edit_object, program->name);
-                   pm_resource_usage_add(pro->sounds, sample_name, (void *) program);
+                   request.resource_type = RESOURCE_TYPE_SOUND;
+                   request.name = sample_name;
+                   sound = resource_get(pro->sounds, &request);
+                   resource_used_in_add(sound, (Resource *)program);
                    eina_stringshare_del(sample_name);
                    break;
                 case EDJE_ACTION_TYPE_SOUND_TONE:
                    tone_name = edje_edit_program_tone_name_get(group->edit_object, program->name);
-                   pm_resource_usage_add(pro->tones, tone_name, (void *) program);
+                   request.resource_type = RESOURCE_TYPE_TONE;
+                   request.name = tone_name;
+                   tone = resource_get(pro->tones, &request);
+                   resource_used_in_add(tone, (Resource *)program);
                    eina_stringshare_del(tone_name);
                    break;
                 default:
@@ -697,9 +723,8 @@ gm_group_add(Project *pro, const char *group_name)
    assert(pro != NULL);
    assert(group_name != NULL);
 
-   group = mem_calloc(1, sizeof(Group));
-   group->name = eina_stringshare_add(group_name);
-   pro->groups = eina_list_sorted_insert(pro->groups, (Eina_Compare_Cb) resource_cmp, group);
+   group = (Group *)resource_add(group_name, RESOURCE_TYPE_GROUP);
+   resource_insert(&pro->groups, (Resource *)group);
 
    _group_load(pro, group);
    evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_ADDED, (void *)group);
@@ -732,9 +757,8 @@ gm_group_del(Project *pro, Group *group)
      }
    EINA_LIST_FREE(group->programs, program)
      {
-        eina_stringshare_del(program->name);
         assert(program->used_in == NULL);
-        free(program);
+        resource_free((Resource *)program);
      }
    pro->groups = eina_list_remove(pro->groups, group);
    eina_stringshare_del(group->widget);
@@ -743,8 +767,7 @@ gm_group_del(Project *pro, Group *group)
    evas_object_smart_callback_call(ap.win, SIGNAL_GROUP_DELETED, (void *)group->name);
    /* delete group name after call signal, because the group name need in the
     * callbacks */
-   eina_stringshare_del(group->name);
-   free(group);
+   resource_free((Resource *)group);
 }
 
 Eina_Bool
@@ -828,8 +851,7 @@ gm_groups_load(Project *pro)
                }
              if (!check) continue;
           }
-        group = mem_calloc(1, sizeof(Group));
-        group->name = eina_stringshare_add(group_name);
+        group = (Group *)resource_add(group_name, RESOURCE_TYPE_GROUP);
         pro->groups = eina_list_append(pro->groups, group);
      }
    edje_file_collection_list_free(collections);
@@ -851,7 +873,6 @@ gm_groups_free(Project *pro)
 
    EINA_LIST_FREE(pro->groups, group)
      {
-        eina_stringshare_del(group->name);
         eina_list_free(group->used_in);
         eina_stringshare_del(group->widget);
         eina_stringshare_del(group->class);
@@ -860,28 +881,24 @@ gm_groups_free(Project *pro)
 
         EINA_LIST_FREE(group->parts, part)
           {
-             eina_stringshare_del(part->name);
              eina_list_free(part->used_in);
              EINA_LIST_FREE(part->states, state)
                {
-                  eina_stringshare_del(state->name);
-                  eina_stringshare_del(state->parsed_name);
                   eina_list_free(state->used_in);
-                  free(state);
+                  resource_free((Resource *)state);
                }
             EINA_LIST_FREE(part->items, item_name)
                eina_stringshare_del(item_name);
-            free(part);
+            resource_free((Resource *)part);
           }
         EINA_LIST_FREE(group->programs, program)
           {
-             eina_stringshare_del(program->name);
              eina_list_free(program->used_in);
-             free(program);
+             resource_free((Resource *)program);
           }
         /* object should be deleted before freeing groups list*/
         assert(group->edit_object == NULL);
-        free(group);
+        resource_free((Resource *)group);
      }
 }
 
@@ -897,8 +914,8 @@ gm_state_del(Project *pro, State *state)
 #define USAGE_DEL(TYPE, USAGE_LIST) \
    name = edje_edit_state_ ## TYPE ## _get(state->part->group->edit_object, \
                                            state->part->name, \
-                                           state->parsed_name, \
-                                           state->parsed_val); \
+                                           state->name, \
+                                           state->val); \
    if (name) \
      { \
         pm_resource_usage_del(USAGE_LIST, name, state); \
@@ -921,8 +938,8 @@ TODO("fix usage adding on properties change before using this code")
 
          tween_list = edje_edit_state_tweens_list_get(state->part->group->edit_object,
                                                       state->part->name,
-                                                      state->parsed_name,
-                                                      state->parsed_val);
+                                                      state->name,
+                                                      state->val);
          EINA_LIST_FOREACH(tween_list, l, image_name)
             pm_resource_usage_del(pro->images, image_name, state);
          edje_edit_string_list_free(tween_list);
@@ -943,10 +960,8 @@ TODO("fix usage adding on properties change before using this code")
      }
 #endif
    state->used_in = eina_list_free(state->used_in);
-   state->part->states = eina_list_remove(state->part->states, state);
-   eina_stringshare_del(state->parsed_name);
-   eina_stringshare_del(state->name);
-   free(state);
+   resource_remove(&state->part->states, (Resource *)state);
+   resource_free((Resource *)state);
 
 #undef USAGE_DEL
 }
@@ -986,6 +1001,7 @@ void
 gm_part_del(Project *pro, Part* part)
 {
    State *state;
+   Resource *group, request;
    const char *group_name, *item_name;
    Eina_List *l;
 
@@ -997,7 +1013,10 @@ gm_part_del(Project *pro, Part* part)
                                                 part->name); \
    if (group_name) \
      { \
-        pm_resource_usage_del(pro->groups, group_name, part); \
+        request.resource_type = RESOURCE_TYPE_GROUP; \
+        request.name = group_name; \
+        group = resource_get(pro->groups, &request); \
+        resource_used_in_del(group, (Resource *)part); \
         edje_edit_string_free(group_name); \
      }
 
@@ -1012,7 +1031,10 @@ gm_part_del(Project *pro, Part* part)
                                                           item_name);
               if (group_name)
                 {
-                   pm_resource_usage_del(pro->groups, group_name, part);
+                   request.resource_type = RESOURCE_TYPE_GROUP;
+                   request.name = group_name;
+                   group = resource_get(pro->groups, &request);
+                   resource_used_in_del(group, (Resource *)part);
                    edje_edit_string_free(group_name);
                 }
            }
@@ -1099,34 +1121,24 @@ gm_program_add(Project *pro, Group *group, Eina_Stringshare *program_name)
    assert(program_name != NULL);
    assert(group != NULL);
 
-   program = mem_calloc(1, sizeof(Program));
-   program->name = eina_stringshare_add(program_name);
+   program = (Program *)resource_add(program_name, RESOURCE_TYPE_PROGRAM);
    program->type = edje_edit_program_action_get(group->edit_object, program_name);
-   group->programs = eina_list_sorted_insert(group->programs, (Eina_Compare_Cb)resource_cmp, program);
+   resource_insert(&group->programs, (Resource *)program);
 }
 
 void
 gm_program_del(Project *pro, Group *group, Eina_Stringshare *program_name)
 {
-   Eina_List *l;
-   Resource *program;
+   Resource *program, request;
 
    assert(pro != NULL);
    assert(program_name != NULL);
    assert(group != NULL);
 
-   program = pm_resource_get(group->programs, program_name);
-
-   assert(program != NULL);
-
-   l = eina_list_data_find_list(group->programs, program);
-
-   assert(l != NULL);
-
-   group->programs = eina_list_remove_list(group->programs, l);
-   eina_stringshare_del(program->name);
-   eina_list_free(program->used_in);
-   free(program);
+   request.resource_type = RESOURCE_TYPE_PROGRAM;
+   request.name = program_name;
+   program = resource_remove(&group->programs, &request);
+   resource_free(program);
 }
 
 void
@@ -1138,53 +1150,37 @@ gm_group_data_add(Project *pro, Group *group, Eina_Stringshare *group_data_name)
    assert(group_data_name != NULL);
    assert(group != NULL);
 
-   group_data = mem_calloc(1, sizeof(Program));
-   group_data->name = eina_stringshare_add(group_data_name);
-   group->data_items = eina_list_sorted_insert(group->data_items, (Eina_Compare_Cb)resource_cmp, group_data);
+   group_data = (Resource *)resource_add(group_data_name, RESOURCE_TYPE_DATA);
+   resource_insert(&group->data_items, group_data);
 }
 
 void
 gm_group_data_del(Project *pro, Group *group, Eina_Stringshare *group_data_name)
 {
-   Eina_List *l;
-   Resource *group_data;
+   Resource *group_data, request;
 
    assert(pro != NULL);
    assert(group_data_name != NULL);
    assert(group != NULL);
 
-   group_data = pm_resource_get(group->data_items, group_data_name);
-
-   assert(group_data != NULL);
-
-   l = eina_list_data_find_list(group->data_items, group_data);
-
-   assert(l != NULL);
-
-   group->data_items = eina_list_remove_list(group->data_items, l);
-   eina_stringshare_del(group_data->name);
-   eina_list_free(group_data->used_in);
-   free(group_data);
+   request.resource_type = RESOURCE_TYPE_DATA;
+   request.name = group_data_name;
+   group_data = resource_remove(&group->data_items, &request);
+   resource_free(group_data);
 }
 
 void
 gm_group_data_rename(Project *pro, Group *group, Resource* group_data, const char *new_data_name)
 {
-   Eina_List *l;
-
    assert(pro != NULL);
    assert(group != NULL);
    assert(group_data != NULL);
    assert(new_data_name != NULL);
 
-   l = eina_list_data_find_list(group->data_items, group_data);
-
-   assert(l != NULL);
-
-   group->data_items = eina_list_remove_list(group->data_items, l);
+   resource_remove(&group->data_items, group_data);
    eina_stringshare_del(group_data->name);
    group_data->name = eina_stringshare_add(new_data_name);
-   group->data_items = eina_list_sorted_insert(group->data_items, (Eina_Compare_Cb)resource_cmp, group_data);
+   resource_insert(&group->data_items, group_data);
 }
 
 /**

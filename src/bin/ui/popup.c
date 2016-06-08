@@ -654,7 +654,7 @@ _grid_content_get(void *data,
    Item *it = data;
    Evas_Object *image_obj = NULL;
    Evas_Object *grid = (Evas_Object *)obj;
-   Resource *res;
+   Resource *res, request;
 
    assert(it != NULL);
    assert(grid != NULL);
@@ -668,7 +668,9 @@ _grid_content_get(void *data,
      }
    else if (!strcmp(part, "elm.swallow.end"))
      {
-        res = (Resource *) pm_resource_get(ap.project->images, it->image_name);
+        request.resource_type = RESOURCE_TYPE_IMAGE;
+        request.name = it->image_name;
+        res = resource_get(ap.project->images, &request);
         if (eina_list_count(res->used_in) == 0)
           {
              image_obj = elm_icon_add(grid);

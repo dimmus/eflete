@@ -22,8 +22,27 @@
 
 #include "eflete.h"
 
+typedef enum
+{
+   RESOURCE_TYPE_NONE,
+   RESOURCE_TYPE_GROUP,
+   RESOURCE_TYPE_PART,
+   RESOURCE_TYPE_STATE,
+   RESOURCE_TYPE_PROGRAM,
+   RESOURCE_TYPE_ITEM,
+   RESOURCE_TYPE_DATA,
+   RESOURCE_TYPE_IMAGE,
+   RESOURCE_TYPE_SOUND,
+   RESOURCE_TYPE_TONE,
+   RESOURCE_TYPE_STYLE,
+   RESOURCE_TYPE_TAG,
+   RESOURCE_TYPE_COLORCLASS,
+   RESOURCE_TYPE_FONT,
+} Resource_Type;
+
 #define RESOURCE_COMMON \
    Eina_Stringshare *name; \
+   Resource_Type resource_type; \
    Eina_List *used_in; \
 
 /**
@@ -73,8 +92,7 @@ struct _State
 {
    RESOURCE_COMMON;
 
-   Eina_Stringshare *parsed_name;  /**< parsed state name */
-   double parsed_val;          /**< parsed state value */
+   double val;                /**< parsed state value */
    Part *part;                /**< pointer to part */
 };
 
@@ -162,92 +180,31 @@ typedef struct _Tone_Resource Tone_Resource;
  */
 typedef struct _External_Resource External_Resource;
 
-int
-resource_cmp(Resource *res1, Resource *res2);
+Resource *
+resource_add(const char *name, Resource_Type type);
 
-/**
- * Find resource in sorted list by its name.
- *
- * @param list Resources list
- * @param name Name of the resource to be found
- *
- * @return pointer to resource or NULL if it was not found
- *
- * @ingroup ProjectManager.
- */
-void *
-pm_resource_get(Eina_List *list, Eina_Stringshare *name);
-
-/**
- * Find resource in not sorted list by its name.
- *
- * @param list Resources list
- * @param name Name of the resource to be found
- *
- * @return pointer to resource or NULL if it was not found
- *
- * @ingroup ProjectManager.
- */
-void *
-pm_resource_unsorted_get(Eina_List *list, Eina_Stringshare *name);
-
-/**
- * Add reference to resource with info where it is used (i.e. part for images)
- *
- * @param list Resources list
- * @param name Name of the resource. Must be in the list.
- * @param usage_data Place where resource is used
- *
- * @ingroup ProjectManager.
- */
-Eina_Bool
-pm_resource_usage_add(Eina_List *list, Eina_Stringshare *name, void *usage_data);
-
-/**
- * Add reference to resource with info where it is used (i.e. part for images)
- *
- * @param list Resources list
- * @param name Name of the resource. Must be in the list.
- * @param usage_data Place where resource is used
- *
- * @ingroup ProjectManager.
- */
-Eina_Bool
-pm_resource_usage_unsorted_add(Eina_List *list, Eina_Stringshare *name, void *usage_data);
-
-/**
- * Remove resource.
- *
- * @param list Resources list
- * @param res Resource structure
- *
- * @ingroup ProjectManager.
- */
-Eina_List *
-pm_resource_del(Eina_List *list, void *res);
-
-/**
- * Remove reference to resource.
- *
- * @param list Resources list
- * @param name Name of the resource. Must be in the list.
- * @param usage_data Place where resource is used. Must be added to usage list.
- *
- * @ingroup ProjectManager.
- */
 void
-pm_resource_usage_del(Eina_List *list, Eina_Stringshare *name, void *usage_data);
+resource_free(Resource *res);
 
-/**
- * Remove reference to resource.
- *
- * @param list Resources list
- * @param name Name of the resource. Must be in the list.
- * @param usage_data Place where resource is used. Must be added to usage list.
- *
- * @ingroup ProjectManager.
- */
+Resource *
+resource_get(const Eina_List *list, const Resource *request);
+
 void
-pm_resource_usage_unsorted_del(Eina_List *list, Eina_Stringshare *name, void *usage_data);
+resource_insert(Eina_List **list, const Resource *res);
+
+void
+resource_insert_after(Eina_List **list, const Resource *after, const Resource *res);
+
+Resource *
+resource_remove(Eina_List **list, const Resource *res);
+
+void
+resource_used_in_add(Resource *res, const Resource *used_in);
+
+void
+resource_used_in_del(Resource *res, const Resource *used_in);
+
+Eina_Bool
+resource_used_in_get(Resource *res, const Resource *used_in);
 
 #endif /* RESOURCE_MANAGER_H */

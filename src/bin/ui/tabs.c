@@ -416,12 +416,15 @@ _part_renamed(void *data __UNUSED__,
 {
    Rename *ren = ei;
    Part *part;
+   Resource request;
 
    assert(tabs.current_group != NULL);
    assert(tabs.current_workspace != NULL);
    assert(ren != NULL);
 
-   part = pm_resource_unsorted_get(tabs.current_group->parts, ren->old_name);
+   request.resource_type = RESOURCE_TYPE_PART;
+   request.name = ren->old_name;
+   part = (Part *)resource_get(tabs.current_group->parts, &request);
    gm_part_rename(part, ren->new_name);
    workspace_group_navigator_update_part(tabs.current_workspace, part);
 }
@@ -433,12 +436,15 @@ _group_data_renamed(void *data __UNUSED__,
 {
    Rename *ren = ei;
    Resource *group_data;
+   Resource request;
 
    assert(tabs.current_group != NULL);
    assert(tabs.current_workspace != NULL);
    assert(ren != NULL);
 
-   group_data = pm_resource_get(tabs.current_group->data_items, ren->old_name);
+   request.resource_type = RESOURCE_TYPE_DATA;
+   request.name = ren->old_name;
+   group_data = resource_get(tabs.current_group->data_items, &request);
    gm_group_data_rename(ap.project, tabs.current_group, group_data, ren->new_name);
    workspace_group_navigator_update_group_data(tabs.current_workspace, group_data);
 }

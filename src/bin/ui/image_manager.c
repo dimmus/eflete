@@ -120,6 +120,7 @@ _grid_content_get(void *data,
    Evas_Object *image_obj = NULL;
    Evas_Object *grid = (Evas_Object *)obj;
    Resource *res;
+   Resource request;
 
    assert(it != NULL);
    assert(grid != NULL);
@@ -134,7 +135,9 @@ _grid_content_get(void *data,
    else if (!strcmp(part, "elm.swallow.end"))
      {
         it->is_used = true;
-        res = (Resource *) pm_resource_get(ap.project->images, it->image_name);
+        request.name = it->image_name;
+        request.resource_type = RESOURCE_TYPE_IMAGE;
+        res = resource_get(ap.project->images, &request);
         if (eina_list_count(res->used_in) == 0)
           {
              image_obj = elm_icon_add(grid);
@@ -285,21 +288,20 @@ _on_image_done(void *data __UNUSED__,
           }
         file_name = ecore_file_file_get(selected);
 
-        res = mem_calloc(1, sizeof(External_Resource));
-        res->name = eina_stringshare_add(file_name);
+        res = (External_Resource *)resource_add(file_name, RESOURCE_TYPE_IMAGE);
         res->source = eina_stringshare_printf("%s/images/%s", ap.project->develop_path, file_name);
 
         if (!ecore_file_exists(res->source))
           {
              ecore_file_cp(selected, res->source);
 
-             ap.project->images = eina_list_sorted_insert(ap.project->images, (Eina_Compare_Cb) resource_cmp, res);
+             resource_insert(&ap.project->images, (Resource *)res);
           }
         else
           {
              ERR(_("File exist"));
              free(image);
-             free(res);
+             resource_free((Resource *)res);
              continue;
           }
         edje_edit_image_add(ap.project->global_object, selected);
@@ -348,6 +350,7 @@ _image_del_cb(void *data __UNUSED__,
    Image_Item *it = NULL;
    Eina_List *grid_list, *l, *l2;
    External_Resource *res;
+   Resource request;
 
    assert(mng.gengrid != NULL);
 
@@ -358,14 +361,17 @@ _image_del_cb(void *data __UNUSED__,
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
         it = elm_object_item_data_get(grid_item);
-        res = pm_resource_get(ap.project->images, it->image_name);
+        request.name = it->image_name;
+        request.resource_type = RESOURCE_TYPE_IMAGE;
+        res = (External_Resource *)resource_get(ap.project->images, &request);
 
         if (!res->used_in)
           {
              ecore_file_unlink(res->source);
              elm_object_item_del(grid_item);
              edje_edit_image_del(ap.project->global_object, it->image_name);
-             ap.project->images = pm_resource_del(ap.project->images, res);
+             resource_remove(&ap.project->images, (Resource *)res);
+             resource_free((Resource *)res);
           }
         else
           elm_gengrid_item_selected_set(grid_item, false);

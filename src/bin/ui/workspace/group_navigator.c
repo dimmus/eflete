@@ -485,8 +485,8 @@ _on_activated(void *data,
         state = elm_object_item_data_get(glit);
         CRIT_ON_FAIL(editor_part_selected_state_set(pl->group->edit_object, NULL, false, true,
                                                     state->part->name,
-                                                    state->parsed_name,
-                                                    state->parsed_val));
+                                                    state->name,
+                                                    state->val));
      }
 }
 
@@ -1159,6 +1159,7 @@ _popup_add_state_ok_clicked(void *data,
    double val;
    Part *part;
    State *state_from;
+   Resource request;
    Eina_Stringshare *msg;
    Change *change;
 
@@ -1181,13 +1182,16 @@ _popup_add_state_ok_clicked(void *data,
      }
    else
      {
-        state_from = pm_resource_get(part->states, item->title);
+        request.resource_type = RESOURCE_TYPE_STATE;
+        TODO("Check this");
+        request.name = item->title;
+        state_from = (State *)resource_get(part->states, &request);
         msg = eina_stringshare_printf(_("added new state \"%s\" %.2f as copy of \"%s\" %.2f"),
-                                      name, val, state_from->parsed_name, state_from->parsed_val);
+                                      name, val, state_from->name, state_from->val);
         change = change_add(msg);
         CRIT_ON_FAIL(editor_state_copy(pl->group->edit_object, change, false, true,
                                        part->name,
-                                       state_from->parsed_name, state_from->parsed_val,
+                                       state_from->name, state_from->val,
                                        name, val));
      }
 
@@ -1843,12 +1847,12 @@ _state_del(Part_List *pl,
    assert(state != NULL);
    assert(strcmp(state->name, "default 0.00")); /* default state can't be deleted */
 
-   msg = eina_stringshare_printf(_("deleted state \"%s\" %.2f"), state->parsed_name, state->parsed_val);
+   msg = eina_stringshare_printf(_("deleted state \"%s\" %.2f"), state->name, state->val);
    change = change_add(msg);
    eina_stringshare_del(msg);
    part_name = eina_stringshare_ref(state->part->name);
-   state_name = eina_stringshare_ref(state->parsed_name);
-   state_val = state->parsed_val;
+   state_name = eina_stringshare_ref(state->name);
+   state_val = state->val;
    TODO("recheck string args logic");
    CRIT_ON_FAIL(editor_state_del(pl->group->edit_object, change, false, true, part_name, state_name, state_val));
    eina_stringshare_del(part_name);
@@ -2494,8 +2498,8 @@ group_navigator_state_next_request(Evas_Object *obj)
 
              CRIT_ON_FAIL(editor_part_selected_state_set(pl->group->edit_object, NULL, false, true,
                                                          state->part->name,
-                                                         state->parsed_name,
-                                                         state->parsed_val));
+                                                         state->name,
+                                                         state->val));
           }
      }
 }

@@ -100,11 +100,8 @@ _colorclass_add_cb(void *data __UNUSED__,
    it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
    it->name = elm_entry_entry_get(mng.entry);
 
-   res = mem_calloc(1, sizeof(Colorclass_Resource));
-   res->name = eina_stringshare_add(it->name);
-   ap.project->colorclasses = eina_list_sorted_insert(ap.project->colorclasses,
-                                                      (Eina_Compare_Cb) resource_cmp,
-                                                      res);
+   res = (Colorclass_Resource *)resource_add(it->name, RESOURCE_TYPE_COLORCLASS);
+   resource_insert(&ap.project->colorclasses, (Resource *)res);
    edje_edit_color_class_add(ap.project->global_object, eina_stringshare_add(it->name));
 
    glit_ccl = elm_genlist_item_append(mng.genlist, _itc_ccl, it, NULL,
@@ -129,14 +126,18 @@ _colorclass_del_cb(void *data __UNUSED__,
                    void *event_info __UNUSED__)
 {
    Resource *res;
+   Resource request;
 
    Elm_Object_Item *it = elm_genlist_selected_item_get(mng.genlist);
    Elm_Object_Item *next = elm_genlist_item_next_get(it);
    Colorclass_Item *ccl = elm_object_item_data_get(it);
 
-   res = pm_resource_get(ap.project->colorclasses, ccl->name);
+   request.resource_type = RESOURCE_TYPE_COLORCLASS;
+   request.name = ccl->name;
+   res = resource_get(ap.project->colorclasses, &request);
    edje_edit_color_class_del(ap.project->global_object, ccl->name);
-   ap.project->colorclasses = pm_resource_del(ap.project->colorclasses, res);
+   resource_remove(&ap.project->colorclasses, res);
+   resource_free(res);
    elm_object_item_del(it);
 
 #if 0
