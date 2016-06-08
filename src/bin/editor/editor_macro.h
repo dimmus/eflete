@@ -89,7 +89,7 @@ editor_state_## FUNC ##_set(Evas_Object *edit_object, Change *change, Eina_Bool 
         else \
           change_diff_add(change, diff); \
      } \
-   if (!apply) \
+   if (apply) \
      { \
        if (!edje_edit_state_## FUNC ##_set(edit_object, part_name, state_name, state_val, new_val)) \
          return false; \
