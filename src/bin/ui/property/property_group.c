@@ -4903,23 +4903,36 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_ALIGN:
               IT.name = "Align";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_X, NULL);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_Y, NULL);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_X,
+                       _("Change the position of the point of balance<br>"
+                         "by X axis inside the container."));
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_ALIGN_Y,
+                       _("Change the position of the point of balance<br>"
+                         "by Y axis inside the container."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_PADDING:
               IT.name = "Padding";
-              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_PADING_X, NULL);
-              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_PADING_Y, NULL);
+              _action1(&IT, "x", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_PADING_X,
+                       _("Sets the space between cells by X axis in pixels."));
+              _action2(&IT, "y", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_STATE_CONTAINER_PADING_Y,
+                       _("Sets the space between cells by Y axis in pixels."));
               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_MIN:
               IT.name = "Min";
-              _action1(&IT, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_H, NULL);
-              _action2(&IT, "v", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_V, NULL);
-              break;
+              _action1(&IT, "h", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_H,
+                       _("When this parameters is enabled it forces the<br>"
+                         "minimum horizonal size of the box/table to be equal to<br>"
+                         "the minimum horizonal size of the items."));
+              _action2(&IT, "v", NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_STATE_CONTAINER_MIN_V,
+                       _("When this parameters is enabled it forces the<br>"
+                         "minimum vertical size of the box/table to be equal to<br>"
+                         "the minimum vertical size of the items."));
+               break;
            case PROPERTY_GROUP_ITEM_STATE_CONTAINER_HOMOGENEOUS:
               IT.name = "Homogeneous mode";
               IT.filter_data.part_types = PART_TABLE;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TABLE_HOMOGENEOUS, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_STATE_TABLE_HOMOGENEOUS,
+                       _("Sets the homogeneous mode for the table."));
               break;
 
               /* part item block */
@@ -4932,71 +4945,100 @@ _init_items()
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_NAME:
               IT.name = "Name";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PART_ITEM_NAME, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_PART_ITEM_NAME,
+                       _("Sets the name of the object via <b>evas_object_name_set()</b>."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_SOURCE:
               IT.name = "Item source";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ITEM_SOURCE, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ITEM_SOURCE,
+                       _("Sets the group this object will be made from."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_MIN:
               IT.name = "Min";
-              _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MIN_W, NULL);
-              _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MIN_H, NULL);
+              _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MIN_W,
+                       _("Sets the minimum size hints of width for this object."));
+              _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MIN_H,
+                       _("Sets the minimum size hints of height for this object."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_MAX:
               IT.name = "Max";
-              _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MAX_W, NULL);
-              _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MAX_H, NULL);
+              _action1(&IT, "w", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MAX_W,
+                       _("Sets the maximum size hints of width for this object."));
+              _action2(&IT, "h", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_MAX_H,
+                       _("Sets the maximum size hints of height for this object."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_PREFER:
               IT.name = "Prefer";
-              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PREFER_W, NULL);
-              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PREFER_H, NULL);
+              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PREFER_W,
+                       _("Sets the prederred size hints of width for this object."));
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PREFER_H,
+                       _("Sets the prederred size hints of height for this object."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_ALIGN:
               IT.name = "Align";
-              _action1(&IT, "x", "%", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ALIGN_X, NULL);
-              _action2(&IT, "y", "%", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ALIGN_Y, NULL);
+              _action1(&IT, "x", "%", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ALIGN_X,
+                       _("Sets the alignment size hints for this object by X axis."));
+              _action2(&IT, "y", "%", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ALIGN_Y,
+                       _("Sets the alignment size hints for this object by Y axis."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_WEIGHT:
               IT.name = "Weight";
-              _action1(&IT, "x", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_WEIGHT_X, NULL);
-              _action2(&IT, "y", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_WEIGHT_Y, NULL);
+              _action1(&IT, "x", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_WEIGHT_X,
+                       _("Sets the weight size hints for this object by X axis."));
+              _action2(&IT, "y", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_WEIGHT_Y,
+                       _("Sets the weight size hints for this object by Y axis."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT_MODE:
               IT.name = "Aspect mode";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ITEM_ASPECT_MODE, NULL);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_PART_ITEM_ASPECT_MODE,
+                       _("Sets the aspect control hints for this object."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_ASPECT:
               IT.name = "Aspect";
-              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ASPECT_W, NULL);
-              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ASPECT_H, NULL);
+              _action1(&IT, "w", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ASPECT_W,
+                       _("Sets the aspect width hints for this object."));
+              _action2(&IT, "h", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_ASPECT_H,
+                       _("Sets the aspect height hints for this object."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_SPREAD:
               IT.name = "Spread";
-              _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPREAD_W, NULL);
-              _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPREAD_H, NULL);
+              _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPREAD_W,
+                       _("Will replicate the item in a rectangle with<br>"
+                         "given amount of rows starting from the defined<br>"
+                         "position of this item."));
+              _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPREAD_H,
+                       _("Will replicate the item in a rectangle with<br>"
+                         "given amount of columns starting from the defined<br>"
+                         "position of this item."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_H:
               IT.name = "Paddings";
-              _action1(&IT, "left", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_LEFT, NULL);
-              _action2(&IT, "right", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_RIGHT, NULL);
+              _action1(&IT, "left", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_LEFT,
+                       _("Sets the left padding hints for this object."));
+              _action2(&IT, "right", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_RIGHT,
+                       _("Sets the right padding hints for this object."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_PADDING_V:
-              _action1(&IT, "top", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_TOP, NULL);
-              _action2(&IT, "bottom", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_BOTTOM, NULL);
+              _action1(&IT, "top", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_TOP,
+                       _("Sets the top padding hints for this object."));
+              _action2(&IT, "bottom", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_PADDING_BOTTOM,
+                       _("Sets the bottom padding hints for this object."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_SPAN:
               IT.name = "Span";
               IT.filter_data.part_types = PART_TABLE;
-              _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPAN_COL, NULL);
-              _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPAN_ROW, NULL);
+              _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPAN_COL,
+                       _("Sets how many rows this item will use."));
+              _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_SPAN_ROW,
+                       _("Sets how many columns this item will use."));
               break;
            case PROPERTY_GROUP_ITEM_PART_ITEM_POSITION:
               IT.name = "Position";
               IT.filter_data.part_types = PART_TABLE;
-              _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_POSITION_COL, NULL);
-              _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_POSITION_ROW, NULL);
+              _action1(&IT, "row", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_POSITION_COL,
+                       _("Sets the row position this item will have in the table."));
+              _action2(&IT, "column", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_PART_ITEM_POSITION_ROW,
+                       _("Sets the column position this item will have in the table."));
               break;
 
               /* program block */
