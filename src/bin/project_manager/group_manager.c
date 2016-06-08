@@ -90,6 +90,67 @@ gm_group_edit_object_unload(Group *group)
    group->edit_object = NULL;
 }
 
+Eina_List *
+_strings_list_duplicates_del(Eina_List *list)
+{
+   Eina_List *l, *l2;
+   Eina_Stringshare *str, *str2;
+
+   EINA_LIST_FOREACH(list, l, str)
+     {
+        EINA_LIST_FOREACH(eina_list_next(l), l2, str2)
+          {
+             if ((str == str2) || !strcmp(str, str2))
+               {
+                  list = eina_list_remove_list(list, l2);
+                  eina_stringshare_del(str2);
+               }
+          }
+     }
+   return list;
+}
+
+Eina_List *
+gm_group_used_images_edj_get(const char *edj, const char *group)
+{
+   Eina_List *images = NULL;
+   Eina_List *parts, *l1, *states, *l2, *tweens;
+   Eina_Stringshare *part, *state, *img, *pstate;
+   double pvalue;
+   Evas *e;
+   Evas_Object *obj, *win;
+
+   ecore_thread_main_loop_begin();
+   win = elm_win_add(NULL, "eflete_group_images_list_get", ELM_WIN_BASIC);
+   elm_win_norender_push(win);
+   e = evas_object_evas_get(win);
+   obj = edje_edit_object_add(e);
+   edje_object_file_set(obj, edj, group);
+
+   parts = edje_edit_parts_list_get(obj);
+   EINA_LIST_FOREACH(parts, l1, part)
+     {
+        if (EDJE_PART_TYPE_IMAGE != edje_edit_part_type_get(obj, part)) continue;
+        states = edje_edit_part_states_list_get(obj, part);
+        EINA_LIST_FOREACH(states, l2, state)
+          {
+             state_name_split(state, &pstate, &pvalue);
+             img = edje_edit_state_image_get(obj, part, pstate, pvalue);
+             images = eina_list_sorted_insert(images, sort_cb, eina_stringshare_add(img));
+             eina_stringshare_del(img);
+             eina_stringshare_del(pstate);
+
+             tweens = edje_edit_state_tweens_list_get(obj, part, pstate, pvalue);
+             images = eina_list_sorted_merge(images, tweens, sort_cb);
+          }
+     }
+   edje_edit_string_list_free(parts);
+   evas_object_del(win);
+   ecore_thread_main_loop_end();
+
+   return _strings_list_duplicates_del(images);
+}
+
 State *
 gm_state_add(Project *pro, Part *part, const char *state_name)
 {

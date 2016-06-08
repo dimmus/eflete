@@ -37,6 +37,9 @@ gm_group_edit_object_reload(Project *pro, Group *group);
 void
 gm_group_edit_object_unload(Group *group);
 
+Eina_List *
+gm_group_used_images_edj_get(const char *edj, const char *group);
+
 State *
 gm_state_add(Project *pro, Part *part, const char *state_name);
 
