@@ -1228,8 +1228,8 @@ tabs_clean(void)
    EINA_LIST_FOREACH(tabs.items, l, item)
      {
         if (!item->group) continue;
-        _del_tab(item);
         tabs.items = eina_list_remove(tabs.items, item);
+        _del_tab(item);
      }
    tabs.selected = NULL;
 }
