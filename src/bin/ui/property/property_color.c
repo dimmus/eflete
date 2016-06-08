@@ -178,6 +178,7 @@ property_color_class_manager_init()
    color_data.item_description.action1.init_cb = _init_cb;
    color_data.item_description.action1.change_cb = _change_cb;
    color_data.item_description.action1.update_cb = _update_cb;
+   color_data.item_description.action1.tooltip = eina_stringshare_add(_("Provides a descriptive name for the effect of the color class"));
 
    color_data.item_title1.name = "Object color";
    color_data.item_object_color.action1.control_type = PROPERTY_CONTROL_COLORSEL;
