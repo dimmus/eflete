@@ -321,6 +321,14 @@ _property_attribute_changed(void *data __UNUSED__,
       case ATTRIBUTE_STATE_COLOR:
       case ATTRIBUTE_STATE_OUTLINE_COLOR:
       case ATTRIBUTE_STATE_SHADOW_COLOR:
+      case ATTRIBUTE_STATE_MAP_ROTATION_CENTER:
+      case ATTRIBUTE_STATE_MAP_ROTATION_X:
+      case ATTRIBUTE_STATE_MAP_ROTATION_Y:
+      case ATTRIBUTE_STATE_MAP_ROTATION_Z:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_1:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_2:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_3:
+      case ATTRIBUTE_STATE_MAP_POINT_COLOR_4:
          workspace_groupview_hard_update(tabs.current_workspace);
          break;
       case ATTRIBUTE_STATE_FILL_SMOOTH:
@@ -331,6 +339,15 @@ _property_attribute_changed(void *data __UNUSED__,
       case ATTRIBUTE_STATE_IMAGE_BORDER_RIGHT:
       case ATTRIBUTE_STATE_IMAGE_BORDER_FILL:
       case ATTRIBUTE_STATE_COLOR_CLASS:
+      case ATTRIBUTE_STATE_MAP_ON:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ON:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE:
+      case ATTRIBUTE_STATE_MAP_LIGHT:
+      case ATTRIBUTE_STATE_MAP_SMOOTH:
+      case ATTRIBUTE_STATE_MAP_ALPHA:
+      case ATTRIBUTE_STATE_MAP_BACKFACE_CULL:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_FOCAL:
+      case ATTRIBUTE_STATE_MAP_PERSPECTIVE_ZPLANE:
          workspace_groupview_soft_update(tabs.current_workspace);
          break;
       default:
