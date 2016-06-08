@@ -38,10 +38,13 @@ void
 gm_group_edit_object_unload(Group *group);
 
 Eina_List *
+gm_group_used_groups_edj_get(const char *edj, const char *group);
+
+Eina_List *
 gm_group_used_images_edj_get(const char *edj, const char *group);
 
 Eina_List *
-gm_group_used_groups_edj_get(const char *edj, const char *group);
+gm_group_used_sample_edj_get(const char *edj, const char *group);
 
 State *
 gm_state_add(Project *pro, Part *part, const char *state_name);

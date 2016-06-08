@@ -215,6 +215,42 @@ gm_group_used_images_edj_get(const char *edj, const char *group)
    return _strings_list_duplicates_del(images);
 }
 
+Eina_List *
+gm_group_used_sample_edj_get(const char *edj, const char *group)
+{
+   Eina_List *samples = NULL;
+   Eina_List *programs, *l1;
+   Evas *e;
+   Evas_Object *obj, *win;
+   Eina_Stringshare *program, *sample;
+
+   ecore_thread_main_loop_begin();
+   win = elm_win_add(NULL, "eflete_group_samples_list_get", ELM_WIN_BASIC);
+   elm_win_norender_push(win);
+   e = evas_object_evas_get(win);
+   obj = edje_edit_object_add(e);
+   edje_object_file_set(obj, edj, group);
+
+   programs = edje_edit_programs_list_get(obj);
+   EINA_LIST_FOREACH(programs, l1, program)
+     {
+        if (EDJE_ACTION_TYPE_SOUND_SAMPLE != edje_edit_program_action_get(obj, program))
+          continue;
+
+        sample = edje_edit_program_sample_name_get(obj, program);
+        if (sample)
+          {
+             samples = eina_list_sorted_insert(samples, sort_cb, eina_stringshare_add(sample));
+             eina_stringshare_del(sample);
+          }
+     }
+   edje_edit_string_list_free(programs);
+   evas_object_del(win);
+   ecore_thread_main_loop_end();
+
+   return _strings_list_duplicates_del(samples);
+}
+
 State *
 gm_state_add(Project *pro, Part *part, const char *state_name)
 {
