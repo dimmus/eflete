@@ -1116,13 +1116,15 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
 /* blocks */
 static inline void
 _action_internal(Property_Action *action, const char *name, const char *units,
-                 Property_Control control_type, Attribute_Textblock_Item attribute)
+                 Property_Control control_type, Attribute_Textblock_Item attribute,
+                 const char *tooltip)
 {
    /* check that we haven't inited this action already */
    assert(action->update_cb == NULL);
 
    action->name = name;
    action->units = units;
+   action->tooltip = eina_stringshare_add(tooltip);
    action->control_type = control_type;
    action->type.attribute_textblock = attribute;
    action->init_cb = _init_cb;
@@ -1132,9 +1134,10 @@ _action_internal(Property_Action *action, const char *name, const char *units,
 
 static inline void
 _action1(Property_Attribute *pa, const char *name, const char *units,
-         Property_Control control_type, Attribute_Textblock_Item attribute)
+         Property_Control control_type, Attribute_Textblock_Item attribute,
+         const char *tooltip)
 {
-   _action_internal(&pa->action1, name, units, control_type, attribute);
+   _action_internal(&pa->action1, name, units, control_type, attribute, tooltip);
 
    assert(attribute_map[attribute].pa == NULL);
    assert(attribute_map[attribute].action == NULL);
@@ -1145,9 +1148,10 @@ _action1(Property_Attribute *pa, const char *name, const char *units,
 
 static inline void
 _action2(Property_Attribute *pa, const char *name, const char *units,
-         Property_Control control_type, Attribute_Textblock_Item attribute)
+         Property_Control control_type, Attribute_Textblock_Item attribute,
+         const char *tooltip)
 {
-   _action_internal(&pa->action2, name, units, control_type, attribute);
+   _action_internal(&pa->action2, name, units, control_type, attribute, tooltip);
 
    assert(attribute_map[attribute].pa == NULL);
    assert(attribute_map[attribute].action == NULL);
@@ -1217,23 +1221,28 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_TEXT_FONT_NAME:
               IT.name = "Font name";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_NAME);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_ENTRY, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_NAME,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT:
               IT.name = "Font style (weight)";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WEIGHT,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH:
               IT.name = "Font style (width)";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_FONT_STYLE_WIDTH,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_TEXT_COLOR:
               IT.name = "Color";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_COLOR);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_COLOR,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_TEXT_SIZE:
               IT.name = "Size";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_SIZE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_TEXT_SIZE,
+                       _(""));
               break;
 
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_TITLE:
@@ -1244,20 +1253,25 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR:
               IT.name = "Horizontal align";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_HOR,
+                      _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_ALIGN_VER:
               IT.name = "Vertical align";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_VER);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_ALIGN_VER,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_MARGIN:
               IT.name = "Margin";
-              _action1(&IT, "left", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_LEFT);
-              _action2(&IT, "right", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_RIGHT);
+              _action1(&IT, "left", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_LEFT,
+                       _(""));
+              _action2(&IT, "right", "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_MARGIN_RIGHT,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_POSITION_WRAP:
               IT.name = "Wrap";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_POSITION_WRAP,
+                       _(""));
               break;
 
            case PROPERTY_TEXTBLOCK_ITEM_FORMAT_TITLE:
@@ -1268,29 +1282,37 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_FORMAT_TABSTOPS:
               IT.name = "Tabstops";
-              _action1(&IT, NULL, "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TABSTOPS);
+              _action1(&IT, NULL, "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_TABSTOPS,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_FORMAT_LINE_SIZE:
               IT.name = "Line size";
-              _action1(&IT, NULL, "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_SIZE);
+              _action1(&IT, NULL, "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_SIZE,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_FORMAT_BG_COLOR:
               IT.name = "Background color";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_CHECK);
-              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_COLOR);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_CHECK,
+                       _(""));
+              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_BG_COLOR_COLOR,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_FORMAT_PASSWORD:
               IT.name = "Password field";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_PASSWORD);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_PASSWORD,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS:
               IT.name = "Ellipsis";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_CHECK);
-              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_CHECK,
+                       _(""));
+              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_ELLIPSIS_VALUE,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE:
               IT.name = "Line related size";
-              _action1(&IT, NULL, "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE);
+              _action1(&IT, NULL, "px", PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_FORMAT_LINE_RELATED_SIZE,
+                       _(""));
               break;
 
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_TITLE:
@@ -1301,26 +1323,31 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE:
               IT.name = "Style";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_STYLE,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR:
               IT.name = "Color";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_COLOR,
+                       _(""));
               IT.filter_cb = _direction_filter_cb;
               break;
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION:
               IT.name = "Direction";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_DIRECTION,
+                       _(""));
               IT.filter_cb = _direction_filter_cb;
               break;
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR:
               IT.name = "Outer glow color";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_OUTER_COLOR,
+                       _(""));
               IT.filter_cb = _no_direction_filter_cb;
               break;
            case PROPERTY_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR:
               IT.name = "Inner glow color";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_GLOW_SHADOW_INNER_COLOR,
+                       _(""));
               IT.filter_cb = _no_direction_filter_cb;
               break;
 
@@ -1332,33 +1359,41 @@ _init_items()
               break;
            case PROPERTY_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH:
               IT.name = "Strikethrough color";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH_CHECK);
-              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH_COLOR);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_CHECK, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH_CHECK,
+                       _(""));
+              _action2(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_STRIKETHROUGH_COLOR,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE:
               IT.name = "Underline";
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COMBOBOX, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE:
               IT.name = "Underline color one";
               IT.filter_cb = _underline_filter_cb;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_ONE,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_TWO:
               IT.name = "Underline color two";
               IT.filter_cb = _underline_filter_cb;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_TWO);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_COLOR_TWO,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH:
               IT.name = "Underline dash";
               IT.filter_cb = _underline_filter_cb;
-              _action1(&IT, "width", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_WIDTH);
-              _action2(&IT, "gap", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_GAP);
+              _action1(&IT, "width", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_WIDTH,
+                       _(""));
+              _action2(&IT, "gap", NULL, PROPERTY_CONTROL_SPINNER, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_GAP,
+                       _(""));
               break;
            case PROPERTY_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_COLOR:
               IT.name = "Underline dash color";
               IT.filter_cb = _underline_filter_cb;
-              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_COLOR);
+              _action1(&IT, NULL, NULL, PROPERTY_CONTROL_COLOR, ATTRIBUTE_TEXTBLOCK_ITEM_LINES_UNDERLINE_DASH_COLOR,
+                       _(""));
               break;
 
            case PROPERTY_TEXTBLOCK_ITEM_LAST:
