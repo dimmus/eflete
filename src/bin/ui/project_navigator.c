@@ -324,9 +324,22 @@ _on_clicked_double(void *data __UNUSED__,
 static Elm_Object_Item *
 _find_item(Elm_Object_Item *item, const char *name)
 {
+   char *item_text = NULL;
+
    while (item)
      {
-        if (!strcmp(elm_object_item_text_get(item), name)) break;
+        if (elm_genlist_item_item_class_get(item) == project_navigator.itc_folder)
+          item_text = _folder_item_label_get(elm_object_item_data_get(item), NULL, NULL);
+        else if (elm_genlist_item_item_class_get(item) == project_navigator.itc_group)
+          item_text = _group_item_label_get(elm_object_item_data_get(item), NULL, NULL);
+
+        if (item_text && !strcmp(item_text, name))
+          {
+             free(item_text);
+             break;
+          }
+        if (item_text) free(item_text);
+
         item = elm_genlist_item_next_get(item);
      }
    return item;
