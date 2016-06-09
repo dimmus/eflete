@@ -329,6 +329,88 @@ gm_group_used_styles_get(const char *edj, const char *group)
    return _strings_list_duplicates_del(styles);
 }
 
+Eina_List *
+_style_font_get(Evas_Object *obj, const char *style)
+{
+   Eina_List *fonts = fonts;
+   Eina_List *tags, *l;
+   Eina_Stringshare *font, *tag_value;
+   char *pch;
+
+   tags = edje_edit_style_tags_list_get(obj, style);
+   EINA_LIST_FOREACH(tags, l, tag_value)
+     {
+        pch = strstr(tag_value, "font");
+        pch += strlen("font");
+        pch = strtok(pch, " ");
+        font = edje_edit_font_path_get(obj, pch);
+        if (font)
+          {
+             fonts = eina_list_sorted_insert(fonts, sort_cb, font);
+             eina_stringshare_del(font);
+          }
+     }
+
+   return fonts;
+}
+
+Eina_List *
+gm_group_used_fonts_get(const char *edj, const char *group)
+{
+   Eina_List *fonts = NULL;
+   Eina_List *parts, *l1, *states, *l2, *style_fonts;
+   Eina_Stringshare *part, *state, *font, *style, *real_font, *pstate;
+   double pvalue;
+   Evas *e;
+   Evas_Object *obj, *win;
+   Edje_Part_Type type;
+
+   ecore_thread_main_loop_begin();
+   win = elm_win_add(NULL, "eflete_group_fonts_list_get", ELM_WIN_BASIC);
+   elm_win_norender_push(win);
+   e = evas_object_evas_get(win);
+   obj = edje_edit_object_add(e);
+   edje_object_file_set(obj, edj, group);
+
+   parts = edje_edit_parts_list_get(obj);
+   EINA_LIST_FOREACH(parts, l1, part)
+     {
+        type = edje_edit_part_type_get(obj, part);
+        states = edje_edit_part_states_list_get(obj, part);
+        EINA_LIST_FOREACH(states, l2, state)
+          {
+             state_name_split(state, &pstate, &pvalue);
+             if (EDJE_PART_TYPE_TEXT == type)
+               {
+                  font = edje_edit_state_font_get(obj, part, pstate, pvalue);
+                  if (font)
+                    {
+                       real_font = edje_edit_font_path_get(obj, font);
+                       fonts = eina_list_sorted_insert(fonts, sort_cb, eina_stringshare_add(real_font));
+                       eina_stringshare_del(font);
+                       eina_stringshare_del(real_font);
+                    }
+               }
+             if (EDJE_PART_TYPE_TEXTBLOCK == type)
+               {
+                  style = edje_edit_state_text_style_get(obj, part, pstate, pvalue);
+                  if (style)
+                    {
+                       style_fonts = _style_font_get(obj, style);
+                       fonts = eina_list_sorted_merge(fonts, style_fonts, sort_cb);
+                       eina_stringshare_del(style);
+                       edje_edit_string_list_free(style_fonts);
+                    }
+               }
+             eina_stringshare_del(pstate);
+          }
+     }
+   edje_edit_string_list_free(parts);
+   evas_object_del(win);
+   ecore_thread_main_loop_end();
+
+   return _strings_list_duplicates_del(fonts);
+}
 
 State *
 gm_state_add(Project *pro, Part *part, const char *state_name)
