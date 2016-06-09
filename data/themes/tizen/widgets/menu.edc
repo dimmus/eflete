@@ -231,7 +231,7 @@ group { name: "elm/menu/item/default";
          target: "event";
       }
       program { name: "clicked";
-         signal: "mouse,up,1";
+         signal: "mouse,down,1";
          source: "event";
          action: STATE_SET "selected" 0.00;
          target: "highlight";
@@ -257,6 +257,7 @@ group { name: "elm/menu/item/default";
          target: "area.content";
       }
       program { name: "select";
+         in: 0.1 0;
          action: SIGNAL_EMIT "elm,action,click" "elm";
          after: "inactivate";
       }
