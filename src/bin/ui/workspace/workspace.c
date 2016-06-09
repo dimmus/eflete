@@ -681,7 +681,9 @@ _menu_add(Workspace_Data *wd)
    elm_menu_item_separator_add(wd->menu.obj, NULL);
    MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Show rulers"), _menu_rulers_visible, NULL, NULL, NULL);
 
+#if !HAVE_TIZEN
    elm_menu_item_separator_add(wd->menu.obj, NULL);
+#endif
    wd->menu.scale_abs = _radio_switcher_add(wd, NULL, NULL, 0, NULL);
    MENU_ITEM_ADD(wd->menu.obj, NULL, NULL, _("Absolute scale"), _menu_ruler_abs, NULL, wd->menu.scale_abs, wd);
    wd->menu.scale_rel = _radio_switcher_add(wd, NULL, NULL, 1, wd->menu.scale_abs);
