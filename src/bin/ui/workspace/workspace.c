@@ -1134,8 +1134,9 @@ workspace_add(Evas_Object *parent, Group *group)
 #if HAVE_TIZEN
    /* Combobox for a choose libraries. */
    EWE_COMBOBOX_ADD(wd->toolbar.obj, wd->toolbar.libraries_switcher);
-   evas_object_size_hint_min_set(wd->toolbar.libraries_switcher, 92, 0);
+   evas_object_size_hint_min_set(wd->toolbar.libraries_switcher, 95, 0);
    ewe_combobox_text_set(wd->toolbar.libraries_switcher, _("Library"));
+   ewe_combobox_style_set(wd->toolbar.libraries_switcher, "library");
    evas_object_smart_callback_add(wd->toolbar.libraries_switcher, "selected", _library_select, wd);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.libraries_switcher);
