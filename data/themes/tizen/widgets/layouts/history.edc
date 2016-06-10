@@ -80,8 +80,8 @@ group { name: "elm/layout/history/combobox";
          type: SPACER;
          description { state: "default" 0.0;
             fixed: 1 1;
-            min: 3 3;
-            max: 3 3;
+            min: 10 10;
+            max: 10 10;
          }
       }
       part { name: "undo";
