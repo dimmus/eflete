@@ -1146,7 +1146,8 @@ editor_part_selected_state_set(Evas_Object *edit_object, Change *change, Eina_Bo
         if (!_editor_signals_blocked)
           {
              event_info.part_name = eina_stringshare_add(part_name);
-             event_info.state_name = eina_stringshare_printf("%s %.2f", state_name, state_val);
+             event_info.state_name = eina_stringshare_add(state_name);
+             event_info.state_value = state_val;
              evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_PART_STATE_SELECTED, &event_info);
              eina_stringshare_del(event_info.part_name);
              eina_stringshare_del(event_info.state_name);

@@ -497,7 +497,8 @@ _editor_part_state_selected_cb(void *data __UNUSED__,
    assert(tabs.current_group != NULL);
    assert(tabs.current_workspace != NULL);
 
-   workspace_part_state_select(tabs.current_workspace, editor_state->part_name, editor_state->state_name);
+   workspace_part_state_select(tabs.current_workspace, editor_state->part_name,
+                               editor_state->state_name, editor_state->state_value);
 }
 
 static void
@@ -623,7 +624,8 @@ _editor_state_added_cb(void *data __UNUSED__,
    assert(tabs.current_group != NULL);
    assert(tabs.current_workspace != NULL);
 
-   workspace_part_state_add(tabs.current_workspace, editor_state->part_name, editor_state->state_name);
+   workspace_part_state_add(tabs.current_workspace, editor_state->part_name,
+                               editor_state->state_name, editor_state->state_value);
 }
 
 static void
@@ -637,7 +639,8 @@ _editor_state_deleted_cb(void *data __UNUSED__,
    assert(tabs.current_group != NULL);
    assert(tabs.current_workspace != NULL);
 
-   workspace_part_state_del(tabs.current_workspace, editor_state->part_name, editor_state->state_name);
+   workspace_part_state_del(tabs.current_workspace, editor_state->part_name,
+                               editor_state->state_name, editor_state->state_value);
 }
 
 static void

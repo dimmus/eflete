@@ -413,24 +413,20 @@ gm_group_used_fonts_get(const char *edj, const char *group)
 }
 
 State *
-gm_state_add(Project *pro, Part *part, const char *state_name)
+gm_state_add(Project *pro, Part *part, const char *state_name, double state_value)
 {
    Resource *resource, request;
    State *state;
-   Eina_Stringshare *parsed_state_name, *image_name, *name;
-   double val;
+   Eina_Stringshare *image_name, *name;
    Eina_List *tween_list, *l;
 
    assert(pro != NULL);
    assert(part != NULL);
    assert(state_name != NULL);
 
-   state_name_split(state_name, &parsed_state_name, &val);
-
-   state = (State *) resource_add(parsed_state_name, RESOURCE_TYPE_STATE);
-   state->val = val;
+   state = (State *) resource_add(state_name, RESOURCE_TYPE_STATE);
+   state->val = state_value;
    state->part = part;
-   eina_stringshare_del(parsed_state_name);
 
    resource_insert(&part->states, (Resource *)state);
 
@@ -528,7 +524,8 @@ gm_part_add(Project *pro, Group *group, const char *part_name)
    Resource *resource, request;
    Part *part;
    Eina_List *states, *l;
-   Eina_Stringshare *state_name, *group_name, *item_name;
+   Eina_Stringshare *state_name, *parsed_state_name, *group_name, *item_name;
+   double val;
 
    assert(pro != NULL);
    assert(group != NULL);
@@ -541,7 +538,11 @@ gm_part_add(Project *pro, Group *group, const char *part_name)
    resource_insert(&group->parts, (Resource *)part);
    states = edje_edit_part_states_list_get(group->edit_object, part_name);
    EINA_LIST_FOREACH(states, l, state_name)
-     gm_state_add(pro, part, state_name);
+     {
+        state_name_split(state_name, &parsed_state_name, &val);
+        gm_state_add(pro, part, parsed_state_name, val);
+        eina_stringshare_del(parsed_state_name);
+     }
    edje_edit_string_list_free(states);
 
    if ((part->type == EDJE_PART_TYPE_TABLE) ||

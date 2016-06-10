@@ -1431,7 +1431,11 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          property_entry_set(action->control, group_pd.group->name);
          break;
       case ATTRIBUTE_STATE_NAME:
-         property_entry_set(action->control, group_pd.part->current_state->name);
+         str_val1 = eina_stringshare_printf("%s %.2f",
+                                            group_pd.part->current_state->name,
+                                            group_pd.part->current_state->val);
+         property_entry_set(action->control, str_val1);
+         eina_stringshare_del(str_val1);
          break;
       case ATTRIBUTE_PROGRAM_NAME:
          property_entry_set(action->control, PROGRAM_ARGS);

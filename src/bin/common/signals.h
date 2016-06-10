@@ -185,6 +185,7 @@ typedef struct {
 typedef struct {
    const char *part_name;
    const char *state_name;
+   double state_value;
 } Editor_State;
 /**
  * emited when state is added in editor.

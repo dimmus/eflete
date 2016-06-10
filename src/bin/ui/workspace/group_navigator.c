@@ -122,6 +122,24 @@ _resource_label_get(void *data,
 }
 
 static char *
+_state_resource_label_get(void *data,
+                          Evas_Object *obj __UNUSED__,
+                          const char *pr __UNUSED__)
+{
+   char * ret;
+   State *res= data;
+   Eina_Stringshare *label;
+
+   assert(res != NULL);
+   assert(res->name != NULL);
+
+   label = eina_stringshare_printf("%s %.2f", res->name, res->val);
+   ret = strdup(label);
+   eina_stringshare_del(label);
+   return ret;
+}
+
+static char *
 _item_caption_label_get(void *data,
                         Evas_Object *obj __UNUSED__,
                         const char *pr)
@@ -557,7 +575,7 @@ _expanded_cb(void *data,
         EINA_LIST_FOREACH(part->states, l, state)
           {
              /* default state should be listed first */
-             if ((first_item) || (strcmp(state->name, "default 0.00") != 0))
+             if ((first_item) || ((strcmp(state->name, "default") != 0) || (state->val != 0)))
                {
                   elm_genlist_item_append(pl->genlist,
                                           (state->part->current_state == state) ? pl->itc_state_selected : pl->itc_state,
@@ -758,7 +776,8 @@ _selected_cb(void *data,
         /* enabling or disabling del button */
         if ((itc == pl->itc_item_caption) ||
             (((itc == pl->itc_state) || (itc == pl->itc_state_selected)) &&
-             (!strcmp(((State *)elm_object_item_data_get(glit))->name, "default 0.00"))))
+             (!strcmp(((State *)elm_object_item_data_get(glit))->name, "default")) &&
+             (((State *)elm_object_item_data_get(glit))->val == 0)))
           elm_object_disabled_set(pl->btn_del, true);
         else
           elm_object_disabled_set(pl->btn_del, false);
@@ -1845,7 +1864,7 @@ _state_del(Part_List *pl,
    state = elm_object_item_data_get(glit);
 
    assert(state != NULL);
-   assert(strcmp(state->name, "default 0.00")); /* default state can't be deleted */
+   assert((strcmp(state->name, "default") || (state->val != 0))); /* default state can't be deleted */
 
    msg = eina_stringshare_printf(_("deleted state \"%s\" %.2f"), state->name, state->val);
    change = change_add(msg);
@@ -2236,11 +2255,11 @@ group_navigator_add(Evas_Object *parent, Group *group)
 
    pl->itc_state = elm_genlist_item_class_new();
    pl->itc_state->item_style = "state";
-   pl->itc_state->func.text_get = _resource_label_get;
+   pl->itc_state->func.text_get = _state_resource_label_get;
 
    pl->itc_state_selected = elm_genlist_item_class_new();
    pl->itc_state_selected->item_style = "state_selected";
-   pl->itc_state_selected->func.text_get = _resource_label_get;
+   pl->itc_state_selected->func.text_get = _state_resource_label_get;
 
    pl->itc_item = elm_genlist_item_class_new();
    pl->itc_item->item_style = "item";

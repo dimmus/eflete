@@ -113,7 +113,7 @@ resource_cmp(Resource *res1, Resource *res2)
         return 0;
      }
 
-   return strcmp(res1->name, res2->name);
+   return cmp;
 }
 
 Resource *
@@ -204,10 +204,10 @@ resource_remove(Eina_List **list, const Resource *res)
       case RESOURCE_TYPE_TAG:
       case RESOURCE_TYPE_COLORCLASS:
       case RESOURCE_TYPE_ITEM:
-         l_del = eina_list_search_sorted_list(res->used_in, (Eina_Compare_Cb)resource_cmp, res);
+         l_del = eina_list_search_sorted_list(*list, (Eina_Compare_Cb)resource_cmp, res);
          break;
       case RESOURCE_TYPE_PART:
-         l_del = eina_list_search_unsorted_list(res->used_in, (Eina_Compare_Cb)resource_cmp, res);
+         l_del = eina_list_search_unsorted_list(*list, (Eina_Compare_Cb)resource_cmp, res);
          break;
       case RESOURCE_TYPE_NONE:
          break;

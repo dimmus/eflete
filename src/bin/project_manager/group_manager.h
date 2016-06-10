@@ -56,7 +56,7 @@ Eina_List *
 gm_group_used_fonts_get(const char *edj, const char *group);
 
 State *
-gm_state_add(Project *pro, Part *part, const char *state_name);
+gm_state_add(Project *pro, Part *part, const char *state_name, double state_value);
 
 Part *
 gm_part_add(Project *pro, Group *group, Eina_Stringshare *part_name);

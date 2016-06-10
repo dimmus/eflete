@@ -759,7 +759,8 @@ editor_state_add(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
 
         _editor_project_changed();
         event_info.part_name = eina_stringshare_add(part_name);
-        event_info.state_name = eina_stringshare_printf("%s %.2f", state_name, state_val);
+        event_info.state_name = eina_stringshare_add(state_name);
+        event_info.state_value = state_val;
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_ADDED, (void *)&event_info);
         eina_stringshare_del(event_info.part_name);
         eina_stringshare_del(event_info.state_name);
@@ -801,7 +802,8 @@ editor_state_copy(Evas_Object *edit_object, Change *change, Eina_Bool merge __UN
           return false;
         _editor_project_changed();
         event_info.part_name = eina_stringshare_add(part_name);
-        event_info.state_name = eina_stringshare_printf("%s %.2f", state_name, state_val);
+        event_info.state_name = eina_stringshare_add(state_name);
+        event_info.state_value = state_val;
         if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_ADDED, (void *)&event_info);
         eina_stringshare_del(event_info.part_name);
         eina_stringshare_del(event_info.state_name);
@@ -819,7 +821,8 @@ editor_state_del(Evas_Object *edit_object, Change *change, Eina_Bool merge __UNU
    assert(edit_object != NULL);
 
    event_info.part_name = eina_stringshare_add(part_name);
-   event_info.state_name = eina_stringshare_printf("%s %.2f", state_name, state_val);
+   event_info.state_name = eina_stringshare_add(state_name);
+   event_info.state_value = state_val;
    if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_EDITOR_STATE_DELETED, (void *)&event_info);
    if (change)
      {

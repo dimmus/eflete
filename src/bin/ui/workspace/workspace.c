@@ -1392,7 +1392,8 @@ workspace_part_item_del(Evas_Object *obj,
 void
 workspace_part_state_add(Evas_Object *obj,
                          Eina_Stringshare *part_name,
-                         Eina_Stringshare *state_name)
+                         Eina_Stringshare *state_name,
+                         double state_val)
 {
    Part *part;
    Resource request;
@@ -1406,28 +1407,30 @@ workspace_part_state_add(Evas_Object *obj,
    part = (Part *)resource_get(wd->group->parts, &request);
 
    group_navigator_part_select(wd->group_navi, part);
-   state = gm_state_add(ap.project, part, state_name);
+   state = gm_state_add(ap.project, part, state_name, state_val);
    group_navigator_part_state_add(wd->group_navi, part, state);
 }
 
 void
 workspace_part_state_select(Evas_Object *obj,
                             Eina_Stringshare *part_name,
-                            Eina_Stringshare *state_name)
+                            Eina_Stringshare *state_name,
+                            double state_val)
 {
    Part *part;
-   Resource request;
-   State *state;
+   Resource part_request;
+   State *state, request;
    WS_DATA_GET(obj);
    assert(part_name != NULL);
    assert(state_name != NULL);
 
-   request.resource_type = RESOURCE_TYPE_PART;
-   request.name = part_name;
-   part = (Part *)resource_get(wd->group->parts, &request);
+   part_request.resource_type = RESOURCE_TYPE_PART;
+   part_request.name = part_name;
+   part = (Part *)resource_get(wd->group->parts, &part_request);
    request.resource_type = RESOURCE_TYPE_STATE;
    request.name = state_name;
-   state = (State *)resource_get(part->states, &request);
+   request.val = state_val;
+   state = (State *)resource_get(part->states, (Resource *)&request);
 
    groupview_hard_update(wd->normal.content);
    group_navigator_part_state_select(wd->group_navi, state);
@@ -1436,21 +1439,23 @@ workspace_part_state_select(Evas_Object *obj,
 void
 workspace_part_state_del(Evas_Object *obj,
                          Eina_Stringshare *part_name,
-                         Eina_Stringshare *state_name)
+                         Eina_Stringshare *state_name,
+                         double state_val)
 {
    Part *part;
-   Resource request;
-   State *state;
+   Resource part_request;
+   State *state, request;
    WS_DATA_GET(obj);
    assert(part_name != NULL);
    assert(state_name != NULL);
 
-   request.resource_type = RESOURCE_TYPE_PART;
-   request.name = part_name;
-   part = (Part *)resource_get(wd->group->parts, &request);
+   part_request.resource_type = RESOURCE_TYPE_PART;
+   part_request.name = part_name;
+   part = (Part *)resource_get(wd->group->parts, &part_request);
    request.resource_type = RESOURCE_TYPE_STATE;
    request.name = state_name;
-   state = (State *)resource_get(part->states, &request);
+   request.val = state_val;
+   state = (State *)resource_get(part->states, (Resource *)&request);
 
    group_navigator_part_select(wd->group_navi, part);
    group_navigator_part_state_del(wd->group_navi, part, state);
