@@ -439,11 +439,18 @@ _container_size_controls_add(Workspace_Data *wd)
 {
    Elm_Object_Item *tb_it;
 
+#if HAVE_TIZEN
+   Evas_Object *size_controls = elm_layout_add(wd->toolbar.obj);
+   elm_layout_theme_set(size_controls, "layout", "container/controls", "default");
+   evas_object_show(size_controls);
+#endif
+
    wd->toolbar.container_sizer.check_lock = elm_check_add(wd->toolbar.obj);
    elm_object_style_set(wd->toolbar.container_sizer.check_lock, "locker");
    evas_object_smart_callback_add(wd->toolbar.container_sizer.check_lock, "changed", _container_lock, wd);
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.check_lock);
+
 
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_it, true);
@@ -453,22 +460,37 @@ _container_size_controls_add(Workspace_Data *wd)
    elm_spinner_editable_set(wd->toolbar.container_sizer.spinner_w, true);
    elm_object_style_set(wd->toolbar.container_sizer.spinner_w, "vertical");
    evas_object_smart_callback_add(wd->toolbar.container_sizer.spinner_w, "changed", _spinner_container_change, wd);
+#if !HAVE_TIZEN
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.spinner_w);
+#else
+   elm_object_part_content_set(size_controls, "width", wd->toolbar.container_sizer.spinner_w);
+#endif
 
    wd->toolbar.container_sizer.check_chain = elm_check_add(wd->toolbar.obj);
-   evas_object_smart_callback_add(wd->toolbar.container_sizer.check_chain, "changed", _container_aspect_change, wd);
    elm_object_style_set(wd->toolbar.container_sizer.check_chain, "chain");
+   evas_object_smart_callback_add(wd->toolbar.container_sizer.check_chain, "changed", _container_aspect_change, wd);
+
+#if !HAVE_TIZEN
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.check_chain);
+#else
+   elm_object_part_content_set(size_controls, "chain", wd->toolbar.container_sizer.check_chain);
+#endif
 
    wd->toolbar.container_sizer.spinner_h = elm_spinner_add(wd->toolbar.obj);
    elm_spinner_min_max_set(wd->toolbar.container_sizer.spinner_h, 0, 9999);
    elm_spinner_editable_set(wd->toolbar.container_sizer.spinner_h, true);
    elm_object_style_set(wd->toolbar.container_sizer.spinner_h, "vertical");
    evas_object_smart_callback_add(wd->toolbar.container_sizer.spinner_h, "changed", _spinner_container_change, wd);
+#if !HAVE_TIZEN
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.container_sizer.spinner_h);
+#else
+   elm_object_part_content_set(size_controls, "height", wd->toolbar.container_sizer.spinner_h);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, size_controls);
+#endif
 
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_toolbar_item_separator_set(tb_it, true);

@@ -7,6 +7,14 @@ group { name: "elm/toolbar/base/default";
       image: "icon_arrow_right.png" COMP;
    }
    parts {
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            min: 0 19;
+         }
+      }
       part { name: "clipper_arrow_left";
          type: RECT;
          scale: 1;
@@ -153,22 +161,6 @@ group { name: "elm/toolbar/base/default";
             }
             rel2 {
                to: "elm.swallow.content";
-            }
-         }
-      }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
-         scale: 1;
-         clip_to: "clipper";
-         description { state: "default" 0.0;
-            min: 0 19;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "clipper_arrow_left";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "clipper_arrow_right";
             }
          }
       }
