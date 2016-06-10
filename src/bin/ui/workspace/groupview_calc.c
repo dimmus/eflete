@@ -818,6 +818,18 @@ _image_param_update(Groupview_Part *gp, Evas_Object *edit_obj)
    int id;
    int bl, br, bt, bb;
    unsigned char middle;
+   /* map values */
+   Evas_Map *m;
+   Eina_Bool map_on;
+   const char *perpective = NULL, *light = NULL, *rot_part = NULL;
+   double rotX, rotY, rotZ;
+   int center_x, center_y, center_z; /* for rotations */
+   int persp_x, persp_y;
+   int rx, ry, rw, rh, w, h, xe, ye; /* for perspective */
+   int lx, ly, lz, lr, lg, lb, lar, lag, lab; /* colors and geom for light */
+   int r, g, b, a;
+   int iw = 1, ih = 1;
+   int zplane = 0, focal = 1000;
 
    assert(gp != NULL);
    assert(edit_obj != NULL);
@@ -854,6 +866,111 @@ _image_param_update(Groupview_Part *gp, Evas_Object *edit_obj)
      evas_object_image_border_center_fill_set(gp->proxy_part, EVAS_BORDER_FILL_SOLID);
 
    _image_proxy_common_param_update(gp->proxy_part, gp, edit_obj);
+
+   /* ===================================================================
+      WORKING WITH MAP!
+      All that happening in here just because image part can't be proxed.
+      Proxy doesn't apply somehow all maps and borders etc, so we need to
+      calculate it with our own hands.
+
+      This calculation was taken from edje_calc.c functions
+      =================================================================== */
+   map_on = edje_edit_state_map_on_get(edit_obj, gp->part->name, state, value);
+   if (map_on)
+     {
+
+        rot_part = edje_edit_state_map_rotation_center_get(edit_obj, gp->part->name, state, value);
+        edje_object_part_geometry_get(edit_obj, rot_part, &rx, &ry, &rw, &rh);
+        edje_object_part_geometry_get(edit_obj, gp->part->name, NULL, NULL, &w, &h);
+        evas_object_geometry_get(edit_obj, &xe, &ye, NULL, NULL);
+
+        if (rot_part)
+          {
+             center_x = xe + rx + (rw / 2);
+             center_y = ye + ry + (rh / 2);
+          }
+        else
+          {
+             center_x = xe + w / 2;
+             center_y = ye + h / 2;
+          }
+        center_z = 0;
+
+        m = evas_map_new(4);
+        evas_map_smooth_set(m, edje_edit_state_map_smooth_get(edit_obj, gp->part->name, state, value));
+        evas_map_alpha_set(m, edje_edit_state_map_alpha_get(edit_obj, gp->part->name, state, value));
+        evas_map_util_points_populate_from_object(m, gp->proxy_part);
+
+        evas_object_image_size_get(gp->proxy_part, &iw, &ih);
+        evas_map_point_image_uv_set(m, 0, 0.0, 0.0);
+        evas_map_point_image_uv_set(m, 1, iw, 0.0);
+        evas_map_point_image_uv_set(m, 2, iw, ih);
+        evas_map_point_image_uv_set(m, 3, 0.0, ih);
+
+        /* map color */
+        edje_edit_state_map_point_color_get(edit_obj, gp->part->name, state, value, 0, &r, &g, &b, &a);
+        evas_map_point_color_set(m, 0, r, g, b, a);
+        edje_edit_state_map_point_color_get(edit_obj, gp->part->name, state, value, 1, &r, &g, &b, &a);
+        evas_map_point_color_set(m, 1, r, g, b, a);
+        edje_edit_state_map_point_color_get(edit_obj, gp->part->name, state, value, 2, &r, &g, &b, &a);
+        evas_map_point_color_set(m, 2, r, g, b, a);
+        edje_edit_state_map_point_color_get(edit_obj, gp->part->name, state, value, 3, &r, &g, &b, &a);
+        evas_map_point_color_set(m, 3, r, g, b, a);
+
+        /* zoom */
+        TODO("Implement edje edit API and apply it here")
+        evas_map_util_zoom(m, 1.0, 1.0, center_x, center_y);
+
+        /* rotate */
+        edje_edit_state_map_rotation_get(edit_obj, gp->part->name, state, value, &rotX, &rotY, &rotZ);
+        evas_map_util_3d_rotate(m, rotX, rotY, rotZ, center_x, center_y, center_z);
+
+        /* calculate perspective point */
+        if (edje_edit_state_map_perspective_on_get(edit_obj, gp->part->name, state, value))
+          {
+             perpective = edje_edit_state_map_perspective_get(edit_obj, gp->part->name, state, value);
+             if (perpective)
+               {
+                  edje_object_part_geometry_get(edit_obj, perpective, &rx, &ry, &rw, &rh);
+                  zplane = edje_edit_state_map_perspective_zplane_get(edit_obj, perpective, state, value);
+                  focal = edje_edit_state_map_perspective_focal_get(edit_obj, perpective, state, value);
+
+                  persp_x = xe + rx + (rw / 2);
+                  persp_y = ye + ry + (rh / 2);
+               }
+             else
+               {
+                  persp_x = xe + (w / 2);
+                  persp_y = ye + (h / 2);
+               }
+             evas_map_util_3d_perspective(m, persp_x, persp_y, zplane, focal);
+          }
+
+        /* calculate light color & position etc. if there is one */
+        light = edje_edit_state_map_light_get(edit_obj, gp->part->name, state, value);
+        if (light)
+          {
+             edje_object_part_geometry_get(edit_obj, light, &rx, &ry, &rw, &rh);
+             edje_edit_state_color_get(edit_obj, light, state, value, &lr, &lg, &lb, NULL);
+             /* outline because color2 being used in edje_calc */
+             edje_edit_state_outline_color_get(edit_obj, light, state, value, &lar, &lag, &lab, NULL);
+             lx = xe + rx + (rw / 2);
+             ly = ye + ry + (rh / 2);
+             lz = edje_edit_state_map_perspective_zplane_get(edit_obj, perpective, state, value);
+             evas_map_util_3d_lighting(m, lx, ly, lz, lr, lg, lb, lar, lag, lab);
+          }
+
+        /* handle backface culling (object is facing away from view */
+        if (edje_edit_state_map_backface_cull_get(edit_obj, gp->part->name, state, value))
+          {
+             if (evas_map_util_clockwise_get(m))
+               evas_object_show(gp->proxy_part);
+             else evas_object_hide(gp->proxy_part);
+          }
+
+        evas_object_map_set(gp->proxy_part, m);
+     }
+   evas_object_map_enable_set(gp->proxy_part, map_on);
 
    PART_STATE_FREE
    eina_stringshare_del(buf);
