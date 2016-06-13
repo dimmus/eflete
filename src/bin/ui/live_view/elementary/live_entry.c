@@ -70,6 +70,7 @@ widget_entry_create(Evas_Object *parent, const Group *group)
 
    elm_object_style_set(object, group->style);
    _entry_set_params(object, group->class);
+   elm_entry_scrollable_set(object, true);
 
    elm_object_text_set(object, "This is an entry widget in this window that "
             "uses markup <b>like this</> for styling and "
