@@ -1865,12 +1865,11 @@ group { name: "elm/button/base/fit";
          type: IMAGE;
          mouse_events: 1;
          description { state: "default" 0.0;
-            min: 28 20;
-            max: 28 20;
+            min: 20 20;
+            max: 20 20;
             color: 255 255 255 255;
             image {
                normal: "tool_autofit_nor.png";
-               border: 3 3 3 3;
             }
          }
          description { state: "visible" 0.0;
@@ -1880,21 +1879,18 @@ group { name: "elm/button/base/fit";
             inherit: "default" 0.0;
             image {
                normal: "tool_autofit_sel.png";
-               border: 3 3 3 3;
             }
          }
          description { state: "disabled" 0.0;
             inherit:  "default" 0.0;
             image {
                normal: "tool_autofit_dim.png";
-               border: 3 3 3 3;
             }
          }
          description { state: "hovered" 0.0;
             inherit:  "default" 0.0;
             image {
                normal: "tool_autofit_mv.png";
-               border: 3 3 3 3;
             }
          }
       }
