@@ -370,14 +370,25 @@ _zoom_controls_add(Workspace_Data *wd)
    elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.icon", img);
    IMAGE_ADD_NEW(wd->toolbar.zoom.slider, img, "icon", "scale_larger")
    elm_object_part_content_set(wd->toolbar.zoom.slider, "elm.swallow.end", img);
+#if HAVE_TIZEN
+   evas_object_size_hint_min_set(wd->toolbar.zoom.slider, 134, 0);
+   Evas_Object *zoom_layout = elm_layout_add(wd->toolbar.obj);
+   elm_layout_theme_set(zoom_layout, "layout", "zoom", "controls");
+   evas_object_show(zoom_layout);
+   elm_object_part_content_set(zoom_layout, "swallow.slider", wd->toolbar.zoom.slider);
+#else
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.slider);
+#endif
 
 #if HAVE_TIZEN
    SPINNER_ADD(wd->toolbar.obj, wd->toolbar.zoom.cmb_zoom, 10, 1000, 10, true);
    evas_object_size_hint_min_set(wd->toolbar.zoom.cmb_zoom, 76, 0);
    elm_spinner_value_set(wd->toolbar.zoom.cmb_zoom, 100);
    evas_object_smart_callback_add(wd->toolbar.zoom.cmb_zoom, "changed", _spinner_zoom_cb, wd);
+   elm_object_part_content_set(zoom_layout, "swallow.spinner", wd->toolbar.zoom.cmb_zoom);
+   tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
+   elm_object_item_part_content_set(tb_it, NULL, zoom_layout);
 #else
    int i = 0;
    Eina_Stringshare *text;
@@ -385,16 +396,16 @@ _zoom_controls_add(Workspace_Data *wd)
    evas_object_size_hint_min_set(wd->toolbar.zoom.cmb_zoom, 70, 0);
    ewe_combobox_text_set(wd->toolbar.zoom.cmb_zoom, _("100%"));
    evas_object_smart_callback_add(wd->toolbar.zoom.cmb_zoom, "selected", _zoom_selected_cb, wd);
-  while (zoom_values[i])
-   {
+   while (zoom_values[i])
+    {
       text = eina_stringshare_printf("%d%%", zoom_values[i]);
       ewe_combobox_item_add(wd->toolbar.zoom.cmb_zoom, text);
       eina_stringshare_del(text);
       i++;
-   }
-#endif
+    }
    tb_it = elm_toolbar_item_append(wd->toolbar.obj, NULL, NULL, NULL, NULL);
    elm_object_item_part_content_set(tb_it, NULL, wd->toolbar.zoom.cmb_zoom);
+#endif
 }
 
 static void

@@ -1957,3 +1957,4 @@ group { name: "elm/layout/popup/1swallow_subtext";
 #include "layouts/tabs.edc"
 #include "layouts/workspace.edc"
 #include "layouts/container.edc"
+#include "layouts/zoom.edc"
