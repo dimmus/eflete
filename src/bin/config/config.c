@@ -37,6 +37,19 @@ static Eet_Data_Descriptor *edd_profile = NULL;
 static Eet_Data_Descriptor *edd_keys = NULL;
 static Eet_Data_Descriptor *edd_color = NULL;
 
+#ifdef __APPLE__
+Eina_Stringshare *
+config_dir_get(void)
+{
+   const char *conf_path = NULL;
+   Eina_Stringshare *cfg;
+
+   conf_path = "Library/Preferences";
+   cfg = eina_stringshare_printf("%s/%s", getenv("HOME"), conf_path);
+
+   return cfg;
+}
+#else
 Eina_Stringshare *
 config_dir_get(void)
 {
@@ -53,7 +66,7 @@ config_dir_get(void)
      }
    return cfg;
 }
-
+#endif
 static Eina_Stringshare *
 _config_file_path_get(void)
 {
@@ -505,15 +518,15 @@ config_save(void)
    tmp = _config_tmp_file_path_get(cfg);
 
    ef = eet_open(tmp, EET_FILE_MODE_WRITE);
-   if (!ef) return false;
+   if (!ef) return EINA_FALSE;
    ok = eet_data_write(ef, edd_base, CONFIG_FILE_KEY, config, 1);
    eet_close(ef);
-   if (!ok) return false;
+   if (!ok) return EINA_FALSE;
    ecore_file_mv(tmp, cfg);
 
    eina_stringshare_del(tmp);
    eina_stringshare_del(cfg);
-   return true;
+   return EINA_TRUE;
 }
 
 Config *
