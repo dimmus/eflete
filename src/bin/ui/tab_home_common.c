@@ -101,6 +101,13 @@ _tabs_progress_end(void *data, PM_Project_Result result)
         popup_want_action(_("File is locked"), _("File locked by another application"), NULL, NULL, BTN_OK, NULL, NULL);
         return;
      }
+   if (PM_PROJECT_ERROR == result)
+     {
+        progress_end(data, result);
+        popup_want_action(_("File opening error"), _("Unknown problem with file appeared.<br>"
+                                                     "(wrong file, filesystem error, no memory, etc)"), NULL, NULL, BTN_OK, NULL, NULL);
+        return;
+     }
    if (PM_PROJECT_SUCCESS != result) return;
 
    ap.project = pm_project_thread_project_get();
