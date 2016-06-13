@@ -17,7 +17,6 @@
       } \
    }
 
-IM("color",    "color_set",      "color-set.png",           -1 -1,   7 7 6 7,    SCALE,   SOLID)
 IM("icon",     "rectangle",      "icon-rectangle.png",      16 16,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "rectangle1",     "icon-rectangle1.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "rectangle2",     "icon-rectangle2.png",     16 16,   0 0 0 0,    SCALE,   SOLID)
@@ -144,3 +143,15 @@ group { name: "elm/image/icon/scale_larger";
       }
    }
 }
+
+group { name: "elm/image/color/color_set";
+   parts {
+      part { name: "image";
+         type: RECT;
+         description { state: "default" 0.0;
+         }
+      }
+   }
+}
+
+
