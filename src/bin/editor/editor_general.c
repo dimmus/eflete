@@ -103,6 +103,9 @@ you_shall_pass_editor_signals(Change *change)
 void
 _editor_project_changed()
 {
-   ap.project->changed = true;
-   evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_CHANGED, NULL);
+   /* avoid changes not opened project while we create fake diffs for import
+    * groups from custom groups */
+   if (ap.project)
+     ap.project->changed = true;
+   if (!_editor_signals_blocked) evas_object_smart_callback_call(ap.win, SIGNAL_PROJECT_CHANGED, NULL);
 }

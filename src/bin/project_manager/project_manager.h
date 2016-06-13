@@ -535,4 +535,18 @@ pm_project_enventor_save(Project *project,
 Eina_Bool
 pm_lock_check(const char *path) EINA_ARG_NONNULL(1);
 
+/**
+ * Import group to project from custom edj file.
+ *
+ * @param project The project where be imported group
+ * @param edj The path to edj file contains a group
+ * @param group The group name for import
+ *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE
+ *
+ * @ingroup ProjectManager
+ */
+Eina_Bool
+pm_project_group_import(Project *project, const char *edj, const char *group);
+
 #endif /* PROJECT_MANAGER_H */

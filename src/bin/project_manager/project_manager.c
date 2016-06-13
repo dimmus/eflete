@@ -26,6 +26,8 @@
 #endif
 #define PROJECT_FILE_KEY      "project"
 
+#include "change.h"
+
 #define PROJECT_KEY_NAME         "edje/name"
 #define PROJECT_KEY_AUTHORS      "edje/authors"
 #define PROJECT_KEY_FILE_VERSION "edje/file_version"
@@ -1818,4 +1820,52 @@ Eina_Bool
 pm_lock_check(const char *path)
 {
    return _lock_try(path, false);
+}
+
+Eina_Bool
+pm_project_group_import(Project *project, const char *edj, const char *group)
+{
+   Change *change;
+   Evas_Object *obj, *win;
+   Evas *e;
+   Eina_List *parts, *l;
+   Eina_Stringshare *part;
+
+   assert(edj != NULL);
+   assert(group != NULL);
+
+   ecore_thread_main_loop_begin();
+   win = elm_win_add(NULL, "eflete_group_import", ELM_WIN_BASIC);
+   elm_win_norender_push(win);
+   e = evas_object_evas_get(win);
+   obj = edje_edit_object_add(e);
+   edje_object_file_set(obj, edj, group);
+
+   change = change_add(NULL);
+
+   parts = edje_edit_parts_list_get(obj);
+   you_shall_not_pass_editor_signals(NULL);
+   EINA_LIST_FOREACH(parts, l, part)
+     {
+        if (!editor_part_del(obj, change, true, false, part))
+          ERR("Ohhh, fuck, cann't do fake deletion of part '%s'", part);
+     }
+   edje_edit_string_list_free(parts);
+
+   CRIT_ON_FAIL(editor_group_add(project->global_object, group));
+   CRIT_ON_FAIL(editor_save(project->global_object));
+
+   obj = edje_edit_object_add(e);
+   edje_object_file_set(obj, project->dev, group);
+
+   change_undo(obj, change);
+   CRIT_ON_FAIL(editor_save(obj));
+
+   evas_object_del(win);
+   you_shall_pass_editor_signals(NULL);
+
+   change_free(change);
+   ecore_thread_main_loop_end();
+
+   return true;
 }
