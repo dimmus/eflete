@@ -312,7 +312,6 @@ _part_content_get(void *data,
         elm_object_style_set(content, "eye");
         evas_object_data_set(content, GROUP_NAVIGATOR_DATA, pl);
         edje_object_animation_set(elm_layout_edje_get(content), true);
-
         evas_object_smart_callback_add(content, "changed", _on_eye_clicked, _part);
      }
    if (!strcmp(part, "elm.swallow.end"))
@@ -689,7 +688,12 @@ _unselect_part(Part_List *pl)
    elm_object_disabled_set(pl->btn_del, true);
    elm_object_disabled_set(pl->btn_down, true);
    elm_object_disabled_set(pl->btn_up, true);
-}
+#if HAVE_TIZEN
+   Evas_Object *check = elm_object_item_part_content_get(glit_part, "elm.swallow.icon");
+   if (check)
+     elm_object_signal_emit(check, "unselected", "eflete");
+#endif
+ }
 
 static void
 _selected_cb(void *data,
@@ -765,6 +769,11 @@ _selected_cb(void *data,
              part->current_item_name = item_name;
              pl->group->current_part = part;
              elm_genlist_item_fields_update(glit_part, "selected", ELM_GENLIST_ITEM_FIELD_STATE);
+#if HAVE_TIZEN
+             Evas_Object *check = elm_object_item_part_content_get(glit_part, "elm.swallow.icon");
+             if (check)
+               elm_object_signal_emit(check, "selected", "eflete");
+#endif
              evas_object_smart_callback_call(pl->layout, SIGNAL_GROUP_NAVIGATOR_PART_SELECTED, part);
           }
         else

@@ -499,13 +499,40 @@ group { name: "elm/check/base/default";
       }
    }
 }
-
 group { name: "elm/check/base/eye";
    images {
-     image: "eye_on_icon_nor.png" COMP;
-     image: "eye_off_icon_nor.png" COMP;
+      image: "group_eye_off_nor.png" COMP;
+      image: "group_eye_off_mv.png" COMP;
+      image: "group_eye_off_sel.png" COMP;
+      image: "group_eye_on_nor.png" COMP;
+      image: "group_eye_on_mv.png" COMP;
+      image: "group_eye_on_sel.png" COMP;
    }
    parts {
+      part { name: "dummy.state";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "on" 0.0;
+            inherit: "default" 0.00;
+         }
+         description { state: "off" 0.0;
+            inherit: "default" 0.00;
+         }
+      }
+      part { name: "dummy.selected";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.00;
+         }
+         description { state: "unselected" 0.0;
+            inherit: "default" 0.00;
+         }
+      }
       part { name: "bg";
          type: IMAGE;
          mouse_events: 0;
@@ -515,12 +542,23 @@ group { name: "elm/check/base/eye";
             min: 16 16;
             max: 16 16;
             aspect: 1.0 1.0;
-            image.normal: "eye_off_icon_nor.png";
+            image.normal: "group_eye_off_nor.png";
          }
-         description { state: "disabled" 0.0;
+         description { state: "hovered" 0.0;
             inherit: "default" 0.00;
-            color_class: "bg_scroller_disabled";
-            image.border: 8 8 8 8;
+            image.normal: "group_eye_off_mv.png";
+         }
+         description { state: "hidden" 0.0;
+            inherit: "default" 0.00;
+            visible: 0;
+            fill.smooth: 0;
+         }
+         description { state: "selected" 0.0;
+            inherit: "hovered" 0.00;
+            image {
+               normal: "group_eye_off_sel.png";
+               border: 8 8 8 8;
+            }
          }
       }
       part { name: "check";
@@ -529,39 +567,22 @@ group { name: "elm/check/base/eye";
          scale: 1;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            visible: 0;
-            image.normal: "eye_on_icon_nor.png";
-            rel1 {
-               offset: 2 2;
-               to: "bg";
-            }
-            rel2 {
-               offset: -3 -3;
-               to: "bg";
-            }
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.00;
-            visible: 1;
-            rel1.offset: 0 0;
-            rel2.offset: 0 0;
-         }
-         description { state: "visible" 1.0;
-            inherit: "visible" 0.00;
-            rel2.offset: -1 -1;
-         }
-      }
-      part { name: "shadow";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image {
-               normal: "control-shadow.png";
-               border: 8 8 8 8;
-            }
+            min: 16 16;
+            max: 16 16;
+            image.normal: "group_eye_on_nor.png";
+            fill.smooth: 0;
             rel1.to: "bg";
             rel2.to: "bg";
          }
-         description { state: "disabled" 0.0;
+         description { state: "hovered" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "group_eye_on_mv.png";
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "group_eye_on_sel.png";
+         }
+         description { state: "hidden" 0.0;
             inherit: "default" 0.00;
             visible: 0;
          }
@@ -598,7 +619,7 @@ group { name: "elm/check/base/eye";
             visible: 0;
             fixed: 0 1;
             text {
-               font: FN;
+               font: "PT";
                size: 12;
                min: 1 1;
                align: 0.0 0.5;
@@ -649,14 +670,17 @@ group { name: "elm/check/base/eye";
       program { name: "check_on_start";
          signal: "elm,state,check,on";
          source: "elm";
-         action: STATE_SET "visible" 0.00;
+         action: STATE_SET "default" 0.00;
          target: "check";
+         after: "bg_hide";
+         after: "state_on";
       }
       program { name: "check_off";
          signal: "elm,state,check,off";
          source: "elm";
-         action: STATE_SET "default" 0.00;
+         action: STATE_SET "hidden" 0.00;
          target: "check";
+         after: "state_off";
       }
       program { name: "text_show";
          signal: "elm,state,text,visible";
@@ -687,7 +711,6 @@ group { name: "elm/check/base/eye";
          source: "elm";
          action: STATE_SET "disabled" 0.00;
          target: "bg";
-         target: "shadow";
          target: "events";
          target: "clipper";
       }
@@ -696,9 +719,119 @@ group { name: "elm/check/base/eye";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
-         target: "shadow";
          target: "events";
          target: "clipper";
+      }
+      program { name: "check_off_unselected";
+         signal: "elm,state,check,off";
+         source: "elm";
+         filter: "dummy.selected" "default";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+      }
+      program { name: "bg_hide";
+         action: STATE_SET "hidden" 0.00;
+         target: "bg";
+      }
+      program { name: "state_on";
+         action: STATE_SET "on" 0.00;
+         target: "dummy.state";
+      }
+      program { name: "state_off";
+         action: STATE_SET "off" 0.00;
+         target: "dummy.state";
+      }
+      program { name: "over_on";
+         signal: "over";
+         source: "eflete";
+         filter: "dummy.state" "on";
+         action: STATE_SET "hovered" 0.00;
+         target: "check";
+      }
+      program { name: "over_off";
+         signal: "over";
+         source: "eflete";
+         filter: "dummy.state" "off";
+         action: STATE_SET "hovered" 0.00;
+         target: "bg";
+      }
+      program { name: "out_on";
+         signal: "out";
+         source: "eflete";
+         filter: "dummy.state" "on";
+         action: STATE_SET "default" 0.00;
+         target: "check";
+      }
+      program { name: "out_off";
+         signal: "out";
+         source: "eflete";
+         filter: "dummy.state" "off";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+      }
+      program { name: "select_on";
+         signal: "selected";
+         source: "eflete";
+         filter: "dummy.state" "on";
+         action: STATE_SET "selected" 0.00;
+         target: "check";
+      }
+      program { name: "select_off";
+         signal: "selected";
+         source: "eflete";
+         filter: "dummy.state" "off";
+         action: STATE_SET "selected" 0.00;
+         target: "bg";
+         target: "dummy.selected";
+      }
+      program { name: "unselect_on";
+         signal: "unselected";
+         source: "eflete";
+         filter: "dummy.state" "on";
+         action: STATE_SET "default" 0.00;
+         target: "check";
+         target: "dummy.selected";
+      }
+      program { name: "unselect_off";
+         signal: "unselected";
+         source: "eflete";
+         filter: "dummy.state" "off";
+         action: STATE_SET "default" 0.00;
+         target: "bg";
+         target: "dummy.selected";
+      }
+      program { name: "check_off_selected";
+         signal: "elm,state,check,off";
+         source: "elm";
+         filter: "dummy.selected" "selected";
+         action: STATE_SET "selected" 0.00;
+         target: "bg";
+      }
+      program { name: "check_on_selected";
+         signal: "elm,state,check,on";
+         source: "elm";
+         filter: "dummy.selected" "selected";
+         action: STATE_SET "selected" 0.00;
+         target: "check";
+      }
+      program { name: "check_on_unselected";
+         signal: "elm,state,check,on";
+         source: "elm";
+         filter: "dummy.selected" "default";
+         action: STATE_SET "default" 0.00;
+         target: "check";
+      }
+      program { name: "selected";
+         signal: "selected";
+         source: "eflete";
+         action: STATE_SET "selected" 0.00;
+         target: "dummy.selected";
+      }
+      program { name: "unselected";
+         signal: "unselected";
+         source: "eflete";
+         action: STATE_SET "default" 0.00;
+         target: "dummy.selected";
       }
    }
 }
