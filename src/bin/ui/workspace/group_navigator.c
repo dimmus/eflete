@@ -2226,7 +2226,7 @@ group_navigator_add(Evas_Object *parent, Group *group)
 
 #ifdef HAVE_TIZEN
    Evas_Object *icon;
-   ICON_STANDARD_ADD(pl->layout, icon, true, "file")
+   IMAGE_ADD_NEW(pl->layout, icon, "icon", "group_navigator");
    elm_object_part_content_set(pl->layout, "elm.swallow.icon", icon);
 #endif
 

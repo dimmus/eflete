@@ -46,6 +46,8 @@ IM("icon",     "group",          "icon-group.png",          16 16,   0 0 0 0,   
 IM("icon",     "group1",         "icon-group1.png",         16 16,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "group2",         "icon-group2.png",         16 16,   0 0 0 0,    SCALE,   SOLID)
 
+IM("icon",     "group_navigator","view_s_group_nor.png",    16 16,   0 0 0 0,    SCALE,   SOLID)
+
 IM("icon",     "proxy",          "icon-proxy.png",          16 16,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "proxy1",         "icon-proxy1.png",         16 16,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "proxy2",         "icon-proxy2.png",         16 16,   0 0 0 0,    SCALE,   SOLID)
