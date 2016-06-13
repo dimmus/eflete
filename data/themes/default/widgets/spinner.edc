@@ -1,9 +1,285 @@
+group { name: "elm/spinner/base/vertical";
+   images {
+      image: "control-bg.png" COMP;
+      image: "control-bg-disabled.png" COMP;
+      image: "control-shadow.png" COMP;
+      image: "spinner-vertical-up.png" COMP;
+      image: "spinner-vertical-up-clicked.png" COMP;
+      image: "spinner-vertical-up-disabled.png" COMP;
+      image: "spinner-vertical-down.png" COMP;
+      image: "spinner-vertical-down-clicked.png" COMP;
+      image: "spinner-vertical-down-disabled.png" COMP;
+   }
+   parts {
+      part { name: "bg";
+         type: IMAGE;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 60 19;
+            max: -1 19;
+            color_class: "bg_entry";
+            image {
+               normal: "control-bg.png";
+               border: 8 8 8 9;
+            }
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "control-bg-disabled.png";
+         }
+      }
+      part { name: "area.drag";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 {
+               offset: 1 0;
+               to: "bg";
+            }
+            rel2 {
+               offset: -1 -2;
+               to: "bg";
+            }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            color_class: "main_alternative";
+            text {
+               font: "PT";
+               size: 12;
+            }
+            rel1.to: "bg";
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "button.up";
+               to_y: "bg";
+            }
+         }
+         description { state: "active" 0.0;
+            inherit: "default" 0.00;
+            visible: 0;
+            text.size: 10;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "button.down";
+            }
+         }
+      }
+      part { name: "shadow";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            image {
+               normal: "control-shadow.png";
+               border: 8 8 8 9;
+            }
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
+            visible: 0;
+         }
+      }
+      part { name: "button.down";
+         type: IMAGE;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            max: 11 9;
+            image.normal: "spinner-vertical-down.png";
+            rel1.to: "area.drag";
+            rel2.to: "area.drag";
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "spinner-vertical-down-clicked.png";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "spinner-vertical-down-disabled.png";
+         }
+      }
+      part { name: "button.up";
+         type: IMAGE;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            max: 11 9;
+            image.normal: "spinner-vertical-up.png";
+            rel1.to: "area.drag";
+            rel2.to: "area.drag";
+         }
+         description { state: "clicked" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "spinner-vertical-up-clicked.png";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
+            image.normal: "spinner-vertical-up-disabled.png";
+         }
+      }
+      part { name: "elm.swallow.entry";
+         type: SWALLOW;
+         clip_to: "text.clipper";
+         description { state: "default" 0.0;
+            visible: 0;
+            fixed: 1 1;
+            rel1 {
+               to_x: "bg";
+               to_y: "area.drag";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "button.up";
+               to_y: "area.drag";
+            }
+         }
+         description { state: "active" 0.0;
+            fixed: 1 1;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "button.down";
+               to_y: "bg";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "button.up";
+               to_y: "bg";
+            }
+         }
+      }
+      part { name: "text.clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1.to: "bg";
+            rel2 {
+               relative: 0.0 1.0;
+               to: "button.up";
+            }
+         }
+      }
+      part { name: "elm.dragable.slider";
+         type: RECT;
+         repeat_events: 1;
+         scale: 1;
+         dragable {
+            x: 1 0 0;
+            y: 0 0 0;
+            threshold: "bg";
+         }
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.to: "bg";
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "button.up";
+               to_y: "bg";
+            }
+         }
+      }
+      part { name: "disabler";
+         type: RECT;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 0 0 0 0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.00;
+            visible: 1;
+         }
+      }
+   }
+   programs {
+      program { name: "down_press";
+         signal: "mouse,down,1";
+         source: "button.down";
+         action: STATE_SET "clicked" 0.00;
+         target: "button.down";
+         after: "decrement_start";
+      }
+      program { name: "down_unpress";
+         signal: "mouse,up,1";
+         source: "button.down";
+         action: STATE_SET "default" 0.00;
+         target: "button.down";
+         after: "decrement_stop";
+      }
+      program { name: "up_press";
+         signal: "mouse,down,1";
+         source: "button.up";
+         action: STATE_SET "clicked" 0.00;
+         target: "button.up";
+         after: "increment_start";
+      }
+      program { name: "up_unpress";
+         signal: "mouse,up,1";
+         source: "button.up";
+         action: STATE_SET "default" 0.00;
+         target: "button.up";
+         after: "increment_stop";
+      }
+      program { name: "toggle_entry";
+         signal: "mouse,clicked,1";
+         source: "elm.dragable.slider";
+         action: SIGNAL_EMIT "elm,action,entry,toggle" "elm";
+      }
+      program { name: "active";
+         signal: "elm,state,active";
+         source: "elm";
+         action: STATE_SET "active" 0.00;
+         target: "elm.text";
+         target: "elm.swallow.entry";
+      }
+      program { name: "inactive";
+         signal: "elm,state,inactive";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "elm.text";
+         target: "elm.swallow.entry";
+      }
+      program { name: "program_0x2b9bfb249a60";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "button.down";
+         target: "button.up";
+         target: "bg";
+         target: "disabler";
+      }
+      program { name: "program_0x2b9bfb24a2b0";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.00;
+         target: "button.down";
+         target: "button.up";
+         target: "bg";
+         target: "disabler";
+      }
+      program { name: "decrement_start";
+         action: SIGNAL_EMIT "elm,action,decrement,start" "elm";
+      }
+      program { name: "decrement_stop";
+         action: SIGNAL_EMIT "elm,action,decrement,stop" "elm";
+      }
+      program { name: "increment_start";
+         action: SIGNAL_EMIT "elm,action,increment,start" "elm";
+      }
+      program { name: "increment_stop";
+         action: SIGNAL_EMIT "elm,action,increment,stop" "elm";
+      }
+   }
+}
+
 group { name: "elm/spinner/base/default";
    alias: "elm/spinner/base/colorselector/default";
-   /* because tizen theme use vertical spinners here and there,
-      and while compiling normal theme, it uses weird default vertical style
-      better use alias for now and implement vertical spinner later */
-   alias: "elm/spinner/base/vertical";
    images {
       image: "control-bg.png" COMP;
       image: "control-bg-disabled.png" COMP;
