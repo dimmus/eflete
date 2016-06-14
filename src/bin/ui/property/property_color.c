@@ -62,7 +62,7 @@ _colorclass_update(ColorClassData *selected)
 
 /* Colorselector widget callbacks */
 #define COLORSELECTOR_CALLBACK(NUMBER) \
-static void \
+static Eina_Bool \
 _update_##NUMBER##_cb(Property_Attribute *pa __UNUSED__, Property_Action *action) \
 { \
    if (color_data.selected) \
@@ -74,6 +74,7 @@ _update_##NUMBER##_cb(Property_Attribute *pa __UNUSED__, Property_Action *action
                                     cc_it->b##NUMBER, \
                                     cc_it->a##NUMBER); \
      }\
+   return true; \
 } \
 static void \
 _on_changed_##NUMBER(Property_Attribute *pa __UNUSED__, Property_Action *action) \
@@ -108,7 +109,7 @@ _change_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
    eina_stringshare_del(text);
 }
 
-static void
+static Eina_Bool
 _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
 {
    Eina_Stringshare *description;
@@ -124,6 +125,7 @@ _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
           }
         edje_edit_string_free(description);
      }
+   return true;
 }
 
 static void

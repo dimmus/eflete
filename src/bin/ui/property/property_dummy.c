@@ -105,10 +105,11 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
    DBG("change of %s->%s", pa->name, action->name);
 }
 
-static void
+static Eina_Bool
 _update_cb(Property_Attribute *pa, Property_Action *action)
 {
    DBG("update of %s->%s", pa->name, action->name);
+   return true;
 }
 
 static void

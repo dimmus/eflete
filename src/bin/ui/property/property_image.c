@@ -83,7 +83,7 @@ _image_info_type_setup(Property_Action *action, const char *image_name)
    elm_object_text_set(action->control, buf);
 }
 
-static void
+static Eina_Bool
 _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
 {
    Eina_Stringshare *str;
@@ -91,7 +91,7 @@ _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
    if (!image_data.image)
      {
         elm_object_text_set(action->control, EMPTY_VALUE);
-        return;
+        return true;
      }
 
    switch (action->type.attribute_image)
@@ -139,6 +139,7 @@ _update_cb(Property_Attribute *pa __UNUSED__, Property_Action *action)
       default:
          break;
      }
+   return true;
 }
 
 static void

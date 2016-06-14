@@ -107,7 +107,7 @@ _init_cb(Property_Attribute *pa, Property_Action *action)
      }
 }
 
-static void
+static Eina_Bool
 _update_cb(Property_Attribute *pa, Property_Action *action)
 {
    Eina_Stringshare *str_val1;
@@ -170,6 +170,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          abort();
          break;
      }
+   return true;
 }
 
 /* blocks */

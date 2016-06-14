@@ -890,7 +890,7 @@ _change_cb(Property_Attribute *pa, Property_Action *action)
      }
 }
 
-static void
+static Eina_Bool
 _update_cb(Property_Attribute *pa, Property_Action *action)
 {
    assert(pa != NULL);
@@ -1036,6 +1036,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          abort();
          break;
      }
+   return true;
 }
 
 static void

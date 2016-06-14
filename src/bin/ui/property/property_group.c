@@ -381,8 +381,7 @@ _on_editor_attribute_changed(void *data __UNUSED__,
    assert(action != NULL);
    assert(action->update_cb != NULL);
 
-   if (pa->realized)
-     action->update_cb(pa, action);
+   property_item_update(pa);
 }
 
 static Eina_Bool
@@ -1414,7 +1413,7 @@ _targets_get(Property_Attribute *pa __UNUSED__)
    return items;
 }
 
-static void
+static Eina_Bool
 _update_cb(Property_Attribute *pa, Property_Action *action)
 {
    int int_val1, int_val2, int_val3, int_val4;
@@ -2249,6 +2248,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          abort();
          break;
      }
+   return true;
 }
 
 static void

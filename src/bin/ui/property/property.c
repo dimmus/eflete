@@ -249,16 +249,23 @@ property_item_update(Property_Attribute *pa)
 
    if (!pa->realized) return;
 
+   pa->default_is = true;
+
    if (pa->action1.update_cb != NULL)
      {
         DBG("calling update_cb of %s (%s)", pa->name, (pa->action1.name) ? pa->action1.name : "unnamed");
-        pa->action1.update_cb(pa, &pa->action1);
+        pa->default_is = pa->default_is && pa->action1.update_cb(pa, &pa->action1);
      }
    if (pa->action2.update_cb != NULL)
      {
         DBG("calling update_cb of %s (%s)", pa->name, (pa->action2.name) ? pa->action2.name : "unnamed");
-        pa->action2.update_cb(pa, &pa->action2);
+        pa->default_is = pa->default_is && pa->action2.update_cb(pa, &pa->action2);
      }
+
+   if (pa->default_is)
+     elm_genlist_item_fields_update(pa->glit, "default", ELM_GENLIST_ITEM_FIELD_STATE);
+   else
+     elm_genlist_item_fields_update(pa->glit, "changed", ELM_GENLIST_ITEM_FIELD_STATE);
 }
 
 void

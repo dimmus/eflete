@@ -63,6 +63,7 @@ typedef struct {
 } Property_Data;
 
 typedef void (* Property_Cb) (Property_Attribute *, Property_Action *);
+typedef Eina_Bool (* Property_Update_Cb) (Property_Attribute *, Property_Action *);
 typedef Eina_Bool (* Property_Attribute_Filter_Cb) (Property_Attribute *);
 typedef void (* Property_Attribute_Del_Cb) (Property_Attribute *);
 typedef Eina_List * (* Property_Expand_Cb) (Property_Attribute *);
@@ -163,7 +164,7 @@ struct _Property_Action {
    Property_Cb start_cb;
    Property_Cb change_cb;
    Property_Cb stop_cb;
-   Property_Cb update_cb; /**< called when item is realized and control's values should be updated */
+   Property_Update_Cb update_cb; /**< called when item is realized and control's values should be updated */
 };
 
 /* Enum of property_group items. Can't use Attribute here because items can have
@@ -457,6 +458,7 @@ struct _Property_Attribute {
    Eina_Bool expandable : 1; /**< if true  item is tree node */
    Eina_Bool expanded : 1; /**< if true initial state will be expanded. */
    Eina_Bool realized : 1; /**< if item is not realized update callback will not be called */
+   Eina_Bool default_is : 1; /**< if attribute is in default state */
 };
 
 void

@@ -532,6 +532,22 @@ _filter(void *data,
    return true;
 }
 
+static Eina_Bool
+_state_get(void *data,
+           Evas_Object *obj __UNUSED__,
+           const char *state)
+{
+   Property_Attribute *pa = data;
+
+   assert(pa != NULL);
+
+   if ((pa->default_is) && ((!strcmp(state, "default"))))
+     return true;
+   if ((!pa->default_is) && ((!strcmp(state, "changed"))))
+     return true;
+   return false;
+}
+
 void
 property_common_itc_init(Property_Data *pd)
 {
@@ -551,6 +567,7 @@ property_common_itc_init(Property_Data *pd)
    pd->itc_1swallow->func.content_get = _1swallow_content_get;
    pd->itc_1swallow->func.del = _del;
    pd->itc_1swallow->func.filter_get = _filter;
+   pd->itc_1swallow->func.state_get = _state_get;
 
    pd->itc_2swallow = elm_genlist_item_class_new();
    pd->itc_2swallow->item_style = "2swallow";
@@ -558,6 +575,7 @@ property_common_itc_init(Property_Data *pd)
    pd->itc_2swallow->func.content_get = _2swallow_content_get;
    pd->itc_2swallow->func.del = _del;
    pd->itc_2swallow->func.filter_get = _filter;
+   pd->itc_2swallow->func.state_get = _state_get;
 
    /* map control pairs to item classes */
    pd->item_classes[PROPERTY_CONTROL_NONE]           [PROPERTY_CONTROL_NONE]     = pd->itc_caption;
