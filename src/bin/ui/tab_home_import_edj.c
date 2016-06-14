@@ -516,11 +516,9 @@ _import(void *data __UNUSED__,
 
    eina_strbuf_reset(buf);
    eina_strbuf_append_printf(buf,
-                            _("<wrap=word>A project folder named '%s' already exist."
+                            _("<wrap=word>A project folder named <b>'%s'</b> already exist in <b>'%s'</b>."
                               "Do you want to replace it?<br>"
-                              "The project folder '%s' already exist in '%s'. Replacing it will overwrite"
-                              "<b>all</b> contents.</wrap>"),
-                            elm_entry_entry_get(tab_edj.name),
+                              "Replacing it will overwrite <b>all</b> contents.</wrap>"),
                             elm_entry_entry_get(tab_edj.name),
                             elm_entry_entry_get(tab_edj.path));
 
