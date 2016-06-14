@@ -238,7 +238,51 @@ group { name: "elm/win/inwin/modal_window";
 
 group { name: "elm/win/inwin/splash";
    images {
-      image: "cd_splash_img.png" COMP;
+     image: "splash/Comp 1_00000_00001.png" COMP;
+     image: "splash/Comp 1_00000_00002.png" COMP;
+     image: "splash/Comp 1_00000_00003.png" COMP;
+     image: "splash/Comp 1_00000_00004.png" COMP;
+     image: "splash/Comp 1_00000_00005.png" COMP;
+     image: "splash/Comp 1_00000_00006.png" COMP;
+     image: "splash/Comp 1_00000_00007.png" COMP;
+     image: "splash/Comp 1_00000_00008.png" COMP;
+     image: "splash/Comp 1_00000_00009.png" COMP;
+     image: "splash/Comp 1_00000_00010.png" COMP;
+     image: "splash/Comp 1_00000_00011.png" COMP;
+     image: "splash/Comp 1_00000_00012.png" COMP;
+     image: "splash/Comp 1_00000_00013.png" COMP;
+     image: "splash/Comp 1_00000_00014.png" COMP;
+     image: "splash/Comp 1_00000_00015.png" COMP;
+     image: "splash/Comp 1_00000_00016.png" COMP;
+     image: "splash/Comp 1_00000_00017.png" COMP;
+     image: "splash/Comp 1_00000_00018.png" COMP;
+     image: "splash/Comp 1_00000_00019.png" COMP;
+     image: "splash/Comp 1_00000_00020.png" COMP;
+     image: "splash/Comp 1_00000_00021.png" COMP;
+     image: "splash/Comp 1_00000_00022.png" COMP;
+     image: "splash/Comp 1_00000_00023.png" COMP;
+     image: "splash/Comp 1_00000_00024.png" COMP;
+     image: "splash/Comp 1_00000_00025.png" COMP;
+     image: "splash/Comp 1_00000_00026.png" COMP;
+     image: "splash/Comp 1_00000_00027.png" COMP;
+     image: "splash/Comp 1_00000_00028.png" COMP;
+     image: "splash/Comp 1_00000_00029.png" COMP;
+     image: "splash/Comp 1_00000_00030.png" COMP;
+     image: "splash/Comp 1_00000_00031.png" COMP;
+     image: "splash/Comp 1_00000_00032.png" COMP;
+     image: "splash/Comp 1_00000_00033.png" COMP;
+     image: "splash/Comp 1_00000_00034.png" COMP;
+     image: "splash/Comp 1_00000_00035.png" COMP;
+     image: "splash/Comp 1_00000_00036.png" COMP;
+     image: "splash/Comp 1_00000_00037.png" COMP;
+     image: "splash/Comp 1_00000_00038.png" COMP;
+     image: "splash/Comp 1_00000_00039.png" COMP;
+     image: "splash/Comp 1_00000_00040.png" COMP;
+     image: "splash/Comp 1_00000_00041.png" COMP;
+     image: "splash/Comp 1_00000_00042.png" COMP;
+     image: "splash/Comp 1_00000_00043.png" COMP;
+     image: "splash/Comp 1_00000_00044.png" COMP;
+     image: "cd_splash_img.png" COMP;
    }
    broadcast_signal: 0;
    parts {
@@ -254,12 +298,12 @@ group { name: "elm/win/inwin/splash";
          type: RECT;
          description { state: "default" 0.0;
             rel1 {
-               to: "border";
                offset: 1 1;
+               to: "border";
             }
             rel2 {
-               to: "border";
                offset: -2 -2;
+               to: "border";
             }
          }
       }
@@ -279,9 +323,9 @@ group { name: "elm/win/inwin/splash";
             align: 0.0 0.0;
             max: -1 24;
             rel1 {
-               relative: 0.0 1.0;
+               relative: 1.0 1.0;
                offset: 20 18;
-               to_x: "bg";
+               to_x: "image.load";
                to_y: "bg_title_picture";
             }
             rel2 {
@@ -316,10 +360,7 @@ group { name: "elm/win/inwin/splash";
             fixed: 1 1;
             max: 86 -1;
             rel1.to: "area.info";
-            rel2 {
-               offset: -1 -1;
-               to: "area.info";
-            }
+            rel2.to: "area.info";
          }
       }
       part { name: "label.info";
@@ -330,7 +371,7 @@ group { name: "elm/win/inwin/splash";
             fixed: 1 1;
             color_class: "text_splash";
             text {
-               font: FN;
+               font: "PT";
                size: 12;
                align: 0.0 0.5;
             }
@@ -344,6 +385,71 @@ group { name: "elm/win/inwin/splash";
          description { state: "visible" 0.0;
             inherit: "default" 0.00;
             visible: 1;
+         }
+      }
+      part { name: "image.load";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 0;
+            min: 19 19;
+            max: 19 19;
+            image {
+               normal: "splash/Comp 1_00000_00001.png";
+               tween: "splash/Comp 1_00000_00002.png";
+               tween: "splash/Comp 1_00000_00003.png";
+               tween: "splash/Comp 1_00000_00004.png";
+               tween: "splash/Comp 1_00000_00005.png";
+               tween: "splash/Comp 1_00000_00006.png";
+               tween: "splash/Comp 1_00000_00007.png";
+               tween: "splash/Comp 1_00000_00008.png";
+               tween: "splash/Comp 1_00000_00009.png";
+               tween: "splash/Comp 1_00000_00010.png";
+               tween: "splash/Comp 1_00000_00011.png";
+               tween: "splash/Comp 1_00000_00012.png";
+               tween: "splash/Comp 1_00000_00013.png";
+               tween: "splash/Comp 1_00000_00014.png";
+               tween: "splash/Comp 1_00000_00015.png";
+               tween: "splash/Comp 1_00000_00016.png";
+               tween: "splash/Comp 1_00000_00017.png";
+               tween: "splash/Comp 1_00000_00018.png";
+               tween: "splash/Comp 1_00000_00019.png";
+               tween: "splash/Comp 1_00000_00020.png";
+               tween: "splash/Comp 1_00000_00021.png";
+               tween: "splash/Comp 1_00000_00022.png";
+               tween: "splash/Comp 1_00000_00023.png";
+               tween: "splash/Comp 1_00000_00024.png";
+               tween: "splash/Comp 1_00000_00025.png";
+               tween: "splash/Comp 1_00000_00026.png";
+               tween: "splash/Comp 1_00000_00027.png";
+               tween: "splash/Comp 1_00000_00028.png";
+               tween: "splash/Comp 1_00000_00029.png";
+               tween: "splash/Comp 1_00000_00030.png";
+               tween: "splash/Comp 1_00000_00031.png";
+               tween: "splash/Comp 1_00000_00032.png";
+               tween: "splash/Comp 1_00000_00033.png";
+               tween: "splash/Comp 1_00000_00034.png";
+               tween: "splash/Comp 1_00000_00035.png";
+               tween: "splash/Comp 1_00000_00036.png";
+               tween: "splash/Comp 1_00000_00037.png";
+               tween: "splash/Comp 1_00000_00038.png";
+               tween: "splash/Comp 1_00000_00039.png";
+               tween: "splash/Comp 1_00000_00040.png";
+               tween: "splash/Comp 1_00000_00041.png";
+               tween: "splash/Comp 1_00000_00042.png";
+               tween: "splash/Comp 1_00000_00043.png";
+               tween: "splash/Comp 1_00000_00044.png";
+            }
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 20 0;
+               to_x: "bg";
+               to_y: "bg_title_picture";
+            }
+            rel2 {
+               offset: -1 0;
+               to: "bg";
+            }
          }
       }
       part { name: "bg_title_picture";
@@ -361,24 +467,10 @@ group { name: "elm/win/inwin/splash";
    programs {
       program { name: "load";
          signal: "load";
-         action: STATE_SET "visible" 0.0;
+         action: STATE_SET "visible" 0.00;
          target: "label.info";
          target: "clipper.area.info";
          after: "emit_start";
-      }
-      program { name: "emit_start";
-         action: SIGNAL_EMIT "setup" "eflete";
-      }
-      program { name: "teardown";
-         signal: "end";
-         source: "eflete";
-         action: STATE_SET "default" 0.0;
-         target: "label.info";
-         target: "clipper.area.info";
-         after: "emit_teardown";
-      }
-      program { name: "emit_teardown";
-         action: SIGNAL_EMIT "teardown" "eflete";
       }
       program { name: "block_clicked";
          signal: "mouse,clicked,*";
@@ -386,18 +478,37 @@ group { name: "elm/win/inwin/splash";
          action: SIGNAL_EMIT "elm,action,click" "elm";
          after: "deeper_block_color";
       }
-      program {
-         name: "deeper_block_color";
-         action: STATE_SET "clicked" 0.0;
+      program { name: "teardown";
+         signal: "end";
+         source: "eflete";
+         action: STATE_SET "default" 0.00;
+         target: "label.info";
+         target: "clipper.area.info";
+         after: "emit_teardown";
+      }
+      program { name: "emit_start";
+         action: SIGNAL_EMIT "setup" "eflete";
+      }
+      program { name: "emit_teardown";
+         action: SIGNAL_EMIT "teardown" "eflete";
+      }
+      program { name: "deeper_block_color";
+         action: STATE_SET "clicked" 0.00;
+         transition: LINEAR 0.20000;
          target: "block_events";
-         transition: LINEAR 0.2;
          after: "default_block_color";
       }
-      program {
-         name: "default_block_color";
-         action: STATE_SET "default" 0.0;
+      program { name: "default_block_color";
+         action: STATE_SET "default" 0.00;
+         transition: LINEAR 0.20000;
          target: "block_events";
-         transition: LINEAR 0.2;
+      }
+      program { name: "load_anim";
+         signal: "load";
+         action: STATE_SET "default" 0.00;
+         transition: LINEAR 1.50000;
+         target: "image.load";
+         after: "load_anim";
       }
    }
 }
