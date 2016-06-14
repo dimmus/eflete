@@ -289,7 +289,7 @@ gm_group_used_color_classes_edj_get(const char *edj, const char *group)
 }
 
 Eina_List *
-gm_group_used_styles_get(const char *edj, const char *group)
+gm_group_used_styles_edj_get(const char *edj, const char *group)
 {
    Eina_List *styles = NULL;
    Eina_List *parts, *l1, *states, *l2;
@@ -355,7 +355,7 @@ _style_font_get(Evas_Object *obj, const char *style)
 }
 
 Eina_List *
-gm_group_used_fonts_get(const char *edj, const char *group)
+gm_group_used_fonts_edj_get(const char *edj, const char *group)
 {
    Eina_List *fonts = NULL;
    Eina_List *parts, *l1, *states, *l2, *style_fonts;
