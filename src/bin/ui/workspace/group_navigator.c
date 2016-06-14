@@ -1104,7 +1104,7 @@ _popup_add_state_ok_clicked(void *data,
    const char *name;
    double val;
    State *state_from;
-   Resource request;
+   State request;
    Eina_Stringshare *msg;
    Change *change;
 
@@ -1128,9 +1128,9 @@ _popup_add_state_ok_clicked(void *data,
    else
      {
         request.resource_type = RESOURCE_TYPE_STATE;
-        TODO("Check this");
-        request.name = item->title;
-        state_from = (State *)resource_get(pl->part->states, &request);
+        TODO("Avoid parse here");
+        state_name_split(item->title, &request.name, &request.val);
+        state_from = (State *)resource_get(pl->part->states, (Resource *)&request);
         msg = eina_stringshare_printf(_("added new state \"%s\" %.2f as copy of \"%s\" %.2f"),
                                       name, val, state_from->name, state_from->val);
         change = change_add(msg);
@@ -1192,6 +1192,7 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    Eina_Stringshare *title;
    Evas_Object *box, *item;
    Eina_List *l;
+   Eina_Stringshare *label;
 
    assert(pl != NULL);
    assert(pl->part != NULL);
@@ -1231,7 +1232,9 @@ _on_menu_add_state_clicked(void *data __UNUSED__,
    ewe_combobox_select_item_set(pl->popup.combobox, 0);
    EINA_LIST_FOREACH(pl->part->states, l, state)
      {
-       ewe_combobox_item_add(pl->popup.combobox, state->name);
+        label = eina_stringshare_printf("%s %.2f", state->name, state->val);
+        ewe_combobox_item_add(pl->popup.combobox, label);
+        eina_stringshare_del(label);
      }
    elm_object_part_content_set(item, "elm.swallow.content", pl->popup.combobox);
 
