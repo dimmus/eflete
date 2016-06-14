@@ -111,7 +111,7 @@ group { name: "elm/button/base/default";
             visible: 0;
             color_class: "genlist_text_tree";
             text {
-               font: "PT";
+               font: FN;
                size: 11;
                text_class: "button";
             }
@@ -185,7 +185,7 @@ group { name: "elm/button/base/default";
          description { state: "default" 0.0;
             visible: 0;
             text {
-               font: "PT";
+               font: FN;
                size: 11;
                text_class: "button";
             }
@@ -194,7 +194,7 @@ group { name: "elm/button/base/default";
             visible: 0;
             text {
                text: "M";
-               font: "PT";
+               font: FN;
                size: 11;
                text_class: "button";
                min: 1 1;

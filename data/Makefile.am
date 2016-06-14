@@ -10,10 +10,10 @@ EET_EET = @eet_eet@
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -id $(top_srcdir)/data/layouts/images -fd $(top_srcdir)/data/fonts
 EDJE_FLAGS_DEFAULT = -id $(top_srcdir)/data/themes/default/images -id $(top_srcdir)/data/themes/default/images/splash -fd $(top_srcdir)/data/fonts
-EDJE_FLAGS_TIZEN = -id $(top_srcdir)/data/themes/tizen/images -id $(top_srcdir)/data/themes/tizen/images/splash -fd $(top_srcdir)/data/fonts
+EDJE_FLAGS_TIZEN = -id $(top_srcdir)/data/themes/tizen/images -id $(top_srcdir)/data/themes/tizen/images/splash -fd $(top_srcdir)/data/themes/tizen/fonts
 EDJE_FLAGS_RESOURCES = -id $(top_srcdir)/data/resources/images
 EDJE_FLAGS_EWE = -fd $(top_srcdir)/data/themes/ewe/fonts -id $(top_srcdir)/data/themes/ewe/widgets/images
-EDJE_FLAGS_EWE_TIZEN = -fd $(top_srcdir)/data/themes/ewe_tizen/fonts -id $(top_srcdir)/data/themes/ewe_tizen/widgets/images -id  $(top_srcdir)/data/themes/tizen/images
+EDJE_FLAGS_EWE_TIZEN = -fd $(top_srcdir)/data/themes/tizen/fonts -id $(top_srcdir)/data/themes/ewe_tizen/widgets/images -id  $(top_srcdir)/data/themes/tizen/images
 
 filesdir = $(datadir)/eflete/themes/default
 files_DATA = eflete_elm.edj
@@ -75,7 +75,7 @@ ewe_deps = \
 	$(top_srcdir)/data/themes/ewe_tizen/*.edc \
 	$(top_srcdir)/data/themes/ewe_tizen/widgets/*.edc \
 	$(top_srcdir)/data/themes/ewe_tizen/widgets/images/*.png \
-	$(top_srcdir)/data/themes/ewe_tizen/fonts/*.ttf
+	$(top_srcdir)/data/themes/tizen/fonts/*.ttf
 
 eflete_deps = \
 	$(top_srcdir)/data/*.edc \

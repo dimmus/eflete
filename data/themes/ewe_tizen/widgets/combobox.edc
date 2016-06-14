@@ -100,7 +100,7 @@ group { name: "ewe/combobox/base/library";
             color: 88 88 88 255;
             text {
                text: "";
-               font: "PT";
+               font: FN;
                size: 15;
                max: 1 1;
             }
@@ -420,7 +420,7 @@ group { name: "ewe/combobox/base/color_class";
             color: 88 88 88 255;
             text {
                text: "";
-               font: "PT";
+               font: FN;
                size: 15;
                max: 1 1;
             }
@@ -1148,7 +1148,7 @@ group { name: "ewe/combobox/item/color_class";
             align: 0.0 0.5;
             color: 85 85 85 255;
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                max: 1 1;
             }

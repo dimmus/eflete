@@ -96,7 +96,7 @@ group { name: "elm/radio/base/default";
             rel1.relative: 1.0 0.0;
             rel2.offset: -7 -3;
             color_class: "main";
-            text { font: PT; size: 12;
+            text { font: FN; size: 12;
               min: 0 0;
               align: 0.0 0.5;
               text_class: "radio";

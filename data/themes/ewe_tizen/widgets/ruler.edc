@@ -136,7 +136,7 @@ group { name: "ewe/ruler/horizontal/dashes/default";
             fixed: 1 1;
             color: 96 96 96 255;
             text {
-               font: "PT";
+               font: FN;
                size: 9;
                min: 1 1;
                ellipsis: -1.0;
@@ -157,7 +157,7 @@ group { name: "ewe/ruler/horizontal/dashes/default";
             fixed: 0 1;
             color: 96 96 96 255;
             text {
-               font: "PT";
+               font: FN;
                size: 9;
                min: 1 1;
                ellipsis: -1.0;
@@ -209,7 +209,7 @@ group { name: "ewe/ruler/vertical/dashes/default";
             fixed: 1 1;
             color: 96 96 96 255;
             text {
-               font: "PT";
+               font: FN;
                size: 9;
                min: 0 1;
                align: 0.0 0.5;
@@ -228,7 +228,7 @@ group { name: "ewe/ruler/vertical/dashes/default";
             fixed: 1 1;
             color: 96 96 96 255;
             text {
-               font: "PT";
+               font: FN;
                size: 9;
                min: 1 1;
                ellipsis: -1.0;

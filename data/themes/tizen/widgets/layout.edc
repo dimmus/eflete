@@ -278,7 +278,7 @@ group { name: "elm/layout/navigator/default";
             color_class: "main";
             color: 0 150 221 255;
             text {
-               font: "Sans:style=Bold";
+               font: FN_B;
                size: 13;
                align: 0.0 0.5;
             }
@@ -304,7 +304,7 @@ group { name: "elm/layout/navigator/default";
          description { state: "tizen" 0.0;
             inherit: "disabled" 0.00;
             color_class: "genlist_text_tree";
-            text.font: "PT";
+            text.font: FN;
             rel1 {
                offset: 0 0;
                to_x: "elm.swallow.icon";

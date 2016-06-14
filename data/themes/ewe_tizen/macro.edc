@@ -2,15 +2,12 @@
  *  [ fonts ]
  */
 fonts {
-   font: "PTS55F.ttf" "PT";
-   font: "PTS75F.ttf" "PT-Bold";
-   font: "PTS56F.ttf" "PT-Italic";
-   font: "PTS76F.ttf" "PT-BoldItalic";
+   font: "BreezeSans-Regular_20150728.ttf" "Breeze";
+   font: "BreezeSans-Bold_20150728.ttf" "Breeze-Bold";
 }
-#define FN "PT"
-#define FN_B "PT-Bold"
-#define FN_I "PT-Italic"
-#define FN_BI "PT-BoldItalic"
+
+#define FN "Breeze"
+#define FN_B "Breeze-Bold"
 
 #define FONT_SIZE 12
 #define LABEL_FONT_SIZE 12

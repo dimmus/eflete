@@ -1,7 +1,8 @@
 data.item: "version" "110";
 
 collections {
-   #include "../../macros.edc"
+   #include "macros.edc"
+   #include "fonts.edc"
    #include "widgets/tooltip.edc"
    #include "color_classes.edc"
    #include "widgets/styles.edc"

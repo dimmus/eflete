@@ -371,7 +371,7 @@ group { name: "elm/win/inwin/splash";
             fixed: 1 1;
             color_class: "text_splash";
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                align: 0.0 0.5;
             }

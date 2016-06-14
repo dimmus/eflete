@@ -1,0 +1,8 @@
+fonts {
+   font: "BreezeSans-Regular_20150728.ttf" "Breeze";
+   font: "BreezeSans-Bold_20150728.ttf" "Breeze-Bold";
+}
+
+#define FN "Breeze"
+#define FN_B "Breeze-Bold"
+

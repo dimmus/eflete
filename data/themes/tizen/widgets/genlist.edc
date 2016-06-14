@@ -974,7 +974,7 @@ group { name: "elm/genlist/tree/default/default";
             max: -1 16;
             color_class: "genlist_text_tree";
             text {
-               font: "PT";
+               font: FN;
                size: 13;
                align: 0.0 0.5;
             }
@@ -2154,7 +2154,7 @@ group { name: "elm/genlist/tree/caption/default";
             max: -1 16;
             color_class: "genlist_text_tree";
             text {
-               font: "Sans:style=Bold";
+               font: FN_B;
                size: 12;
                max: 1 0;
                align: 0.0 0.5;
@@ -2176,7 +2176,7 @@ group { name: "elm/genlist/tree/caption/default";
             max: -1 16;
             color: 120 120 120 255;
             text {
-               font: "Sans:style=Bold";
+               font: FN_B;
                size: 13;
                align: 0.0 0.5;
             }

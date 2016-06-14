@@ -619,7 +619,7 @@ group { name: "elm/check/base/eye";
             visible: 0;
             fixed: 0 1;
             text {
-               font: "PT";
+               font: FN;
                size: 12;
                min: 1 1;
                align: 0.0 0.5;

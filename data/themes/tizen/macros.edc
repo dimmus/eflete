@@ -1,0 +1,154 @@
+/*
+ *  [ macros ]
+ */
+#define TILED_HORIZ(_WIDTH) \
+   fill { size { relative: 0.0 1.0; offset: _WIDTH 0; } }
+
+#define FIXED_SIZE(_WIDTH, _HEIGHT) \
+   min: _WIDTH _HEIGHT; max: _WIDTH _HEIGHT; fixed: 1 1;
+
+#define SET_SIZE(_X, _Y) \
+   min: _X _Y; max: _X _Y;
+
+#define TEXTBLOCK_TAGS_ENABLED                                             \
+   tag: "em" "+ font_style=Oblique";                                       \
+   tag: "hilight" "+ font_weight=Bold style=glow glow_color=#0054a780";    \
+   tag: "link" "+ color=#0054a7 underline=on underline_color=#0054a7";     \
+   tag: "preedit" "+ underline=on underline_color=#3399ff";                \
+   tag: "preedit_sel" "+ backing=on backing_color=#000000 color=#ffffff";  \
+   tag: "title" "+ font_size=26";                                          \
+   tag: "subtitle" "+ font_size=18";                                       \
+   tag: "bigger" "+ font_size=12";                                         \
+   tag: "big" "+ font_size=11";                                            \
+   tag: "small" "+ font_size=8";                                           \
+   tag: "smaller" "+ font_size=7";                                         \
+   tag: "name" "+ color=#888888 font_weight=Bold";                         \
+   tag: "val" "+ color=#ffffff";                                           \
+   tag: "info" "+ color=#0054a7 style=glow glow_color=#0054a730";          \
+   tag: "success" "+ color=#00ff00 style=glow glow_color=#00ff0030";       \
+   tag: "warning" "+ color=#ff7c00 style=glow glow_color=#ff7c0030";       \
+   tag: "failure" "+ color=#ff0000 style=glow glow_color=#ff000030";       \
+   tag: "code" "+ font=Mono style=plain color=#ffffff";                    \
+   tag: "comment" "+ color=#00B000";                                       \
+   tag: "string" "+ color=#ff3a35";                                        \
+   tag: "number" "+ color=#d4d42a font_weight=Bold";                       \
+   tag: "brace" "+ color=#656565";                                         \
+   tag: "type" "+ color=#0054a7";                                          \
+   tag: "class" "+ color=#72aad4 font_weight=Bold";                        \
+   tag: "function" "+ color=#72aad4 font_weight=Bold";                     \
+   tag: "param" "+ color=#ffffff";                                         \
+   tag: "keyword" "+ color=#ff9900 font_weight=Bold";                      \
+   tag: "preprocessor" "+ color=#0054a7 font_weight=Bold";                 \
+   tag: "line_added" "+ color=#00B000";                                    \
+   tag: "line_removed" "+ color=#ff3a35";                                  \
+   tag: "line_changed" "+ color=#ff9900";
+
+#define TEXTBLOCK_TAGS_DISABLED                                            \
+   tag: "em" "+ font_style=Oblique";                                       \
+   tag: "hilight" "+ font_weight=Bold";                                    \
+   tag: "link" "+ color=#151515 shadow_color=#ffffff19 underline=on underline_color=#1515"; \
+   tag: "preedit" "+ underline=on underline_color=#151515";              \
+   tag: "preedit_sel" "+ backing=on backing_color=#000000 color=#888888";  \
+   tag: "title" "+ font_size=26";                                          \
+   tag: "subtitle" "+ font_size=18";                                       \
+   tag: "bigger" "+ font_size=12";                                         \
+   tag: "big" "+ font_size=11";                                            \
+   tag: "small" "+ font_size=8";                                           \
+   tag: "smaller" "+ font_size=7";                                         \
+   tag: "name" "+ color=#151515 font_weight=Bold shadow_color=#ffffff19";  \
+   tag: "val" "+ color=#151515 shadow_color=#ffffff19";                    \
+   tag: "info" "+ color=#151515 shadow_color=#ffffff19";        \
+   tag: "success" "+ color=#151515 shadow_color=#ffffff19";     \
+   tag: "warning" "+ color=#151515 shadow_color=#ffffff19";     \
+   tag: "failure" "+ color=#151515 shadow_color=#ffffff19";     \
+   tag: "code" "+ style=shadow,bottom shadow_color=#ffffff19 font=Mono color=#151515"; \
+   tag: "comment" "+ color=#151515 shadow_color=#ffffff19";                                       \
+   tag: "string" "+ color=#151515 shadow_color=#ffffff19";                                        \
+   tag: "number" "+ color=#151515 shadow_color=#ffffff19 font_weight=Bold";                       \
+   tag: "brace" "+ color=#151515 shadow_color=#ffffff19";                                         \
+   tag: "type" "+ color=#151515 shadow_color=#ffffff19";                                          \
+   tag: "class" "+ color=#151515 shadow_color=#ffffff19 font_weight=Bold";                        \
+   tag: "function" "+ color=#151515 shadow_color=#ffffff19 font_weight=Bold";                     \
+   tag: "param" "+ color=#151515 shadow_color=#ffffff19";                                         \
+   tag: "keyword" "+ color=#151515 shadow_color=#ffffff19 font_weight=Bold";                      \
+   tag: "preprocessor" "+ color=#151515 shadow_color=#ffffff19 font_weight=Bold";                 \
+   tag: "line_added" "+ color=#151515 shadow_color=#ffffff19";                                    \
+   tag: "line_removed" "+ color=#151515 shadow_color=#ffffff19";                                  \
+   tag: "line_changed" "+ color=#151515 shadow_color=#ffffff19";
+
+color_classes {
+   color_class { name: "main";
+      color: 214 214 214 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "main_alternative";
+      color: 182 182 182 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "main_disabled";
+      color: 118 119 120 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "bg_main";
+      color: 80 82 83 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "bg_scroller";
+      color: 52 53 54 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "bg_scroller_disabled";
+      color: 100 102 104 146;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "bg_entry";
+      color: 46 48 49 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "bg_main_alternative";
+      color: 35 37 38 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "select_light";
+      color: 160 203 240 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "select";
+      color: 58 110 155 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "select_dark";
+      color: 52 70 84 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "invalid";
+      color: 155 58 58 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "valid";
+      color: 44 102 78 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+   color_class { name: "white";
+      color: 255 255 225 255;
+      color2: 0 0 0 0;
+      color3: 0 0 0 0;
+   }
+}
+
+#define CTXPOPUP_BG_COLOR 34 34 34 34
+
+#define TREEPAD 15

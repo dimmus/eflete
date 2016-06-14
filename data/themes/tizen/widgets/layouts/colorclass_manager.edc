@@ -17,7 +17,7 @@ group {
                min: 1 1;
                fit: 1 1;
                ellipsis: -1;
-               font: "arial";
+               font: FN;
             }
          }
       }
