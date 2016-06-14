@@ -670,7 +670,6 @@ group { name: "elm/genlist/tree/part/default";
       item: "texts" "elm.text";
       item: "treesize" "20";
       item: "contents" "elm.swallow.icon elm.swallow.end elm.swallow.penult";
-      item: "states" "selected unselected";
    }
    parts {
       part { name: "bg";
@@ -802,13 +801,13 @@ group { name: "elm/genlist/tree/part/default";
    }
    programs {
       program { name: "state,selected";
-         signal: "elm,state,selected,active";
+         signal: "elm,state,selected";
          source: "elm";
          action: STATE_SET "selected" 0.00;
          target: "bg";
       }
       program { name: "state,unselected";
-         signal: "elm,state,unselected,active";
+         signal: "elm,state,unselected";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
@@ -866,7 +865,7 @@ group { name: "elm/genlist/item/state/default";
             }
          }
          description { state: "selected" 0.0;
-            color_class: "select_dark";
+            color_class: "select";
             rel2 {
                offset: -1 -2;
             }
@@ -973,7 +972,7 @@ group { name: "elm/genlist/item/item/default";
             }
          }
          description { state: "selected" 0.0;
-            color_class: "select_dark";
+            color_class: "select";
             rel2 {
                offset: -1 -2;
             }
@@ -1208,7 +1207,7 @@ group { name: "elm/genlist/tree/items_caption/default";
             }
          }
          description { state: "selected" 0.0;
-            color_class: "select_dark";
+            color_class: "select";
             rel2 {
                offset: -1 -2;
             }

@@ -1173,7 +1173,6 @@ group { name: "elm/genlist/tree/part/default";
       item: "texts" "elm.text";
       item: "treesize" "20";
       item: "contents" "elm.swallow.icon elm.swallow.end elm.swallow.end1 elm.swallow.end2";
-      item: "states" "selected unselected";
    }
    images {
       image: "arrow_side_nor.png" COMP;
@@ -1379,7 +1378,7 @@ group { name: "elm/genlist/tree/part/default";
    }
    programs {
       program { name: "state,selected";
-         signal: "elm,state,selected,active";
+         signal: "elm,state,selected";
          source: "elm";
          action: STATE_SET "selected" 0.00;
          target: "bg";
@@ -1392,7 +1391,7 @@ group { name: "elm/genlist/tree/part/default";
          target: "elm.swallow.end2";
       }
       program { name: "state,unselected";
-         signal: "elm,state,unselected,active";
+         signal: "elm,state,unselected";
          source: "elm";
          action: STATE_SET "default" 0.00;
          target: "bg";
