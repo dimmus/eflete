@@ -102,7 +102,6 @@ _unselect_part(void *data,
    GROUPVIEW_DATA_GET(o, sd)
 
    if (ev->button != 1) return;
-   if (!sd->selected) return;
 
    evas_object_smart_callback_call(o, SIGNAL_GROUPVIEW_CLICKED, NULL);
    sd->selected = NULL;
