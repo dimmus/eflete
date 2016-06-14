@@ -4416,7 +4416,7 @@ _init_items()
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_TITLE:
               IT.name = "Dragable";
               IT.expandable = true;
-              IT.expanded = false;
+              IT.expanded = true;
               IT.expand_cb = _subitems_get;
               break;
            case PROPERTY_GROUP_ITEM_PART_DRAGABLE_ENABLE:
@@ -4563,7 +4563,7 @@ _init_items()
            case PROPERTY_GROUP_ITEM_STATE_MAP:
               IT.name = "MAP";
               IT.expandable = true;
-              IT.expanded = true;
+              IT.expanded = false;
               IT.expand_cb = _subitems_get;
               break;
            case PROPERTY_GROUP_ITEM_STATE_MAP_ON:
