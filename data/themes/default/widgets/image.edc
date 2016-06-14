@@ -42,6 +42,9 @@ IM("icon",     "offset",         "icon_offset.png",         15 15,   0 0 0 0,   
 IM("icon",     "scale_smaller",  "scale_smaller.png",       15 12,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "scale_larger",   "scale_larger.png",        26 12,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "fit",            "fit.png",                 10 11,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "folder",         "icon_folder.png",         16 16,   0 0 0 0,    SCALE,   SOLID)
+
+IM("icon",     "file",           "icon_file.png",           16 16,   0 0 0 0,    SCALE,   SOLID)
 
 IM("bg",       "tile",           "bg_demo.png",             -1 -1,   0 0 0 0,    TILE,    SOLID)
 IM("bg",       "box",            "bg_box.png",              -1 -1,   0 0 0 0,    TILE,    SOLID)

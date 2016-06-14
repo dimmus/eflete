@@ -59,6 +59,14 @@ IM("icon",     "box",            "icon-box.png",            16 16,   0 0 0 0,   
 IM("icon",     "box1",           "icon-box1.png",           16 16,   0 0 0 0,    SCALE,   SOLID)
 IM("icon",     "box2",           "icon-box2.png",           16 16,   0 0 0 0,    SCALE,   SOLID)
 
+IM("icon",     "folder",         "icon_folder.png",         16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "folder1",        "icon_folder1.png",        16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "folder2",        "icon_folder2.png",        16 16,   0 0 0 0,    SCALE,   SOLID)
+
+IM("icon",     "file",           "icon_file.png",           16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "file1",          "icon_file1.png",          16 16,   0 0 0 0,    SCALE,   SOLID)
+IM("icon",     "file2",          "icon_file2.png",          16 16,   0 0 0 0,    SCALE,   SOLID)
+
 IM("icon",     "external",       "icon-external.png",       12 11,   0 0 0 0,    SCALE,   SOLID)
 
 IM("icon",     "attention",      "attention.png",           16 16,   0 0 0 0,    SCALE,   SOLID)

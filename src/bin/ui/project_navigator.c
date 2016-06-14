@@ -88,16 +88,16 @@ _folder_item_icon_get(void *data __UNUSED__,
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
-        ICON_STANDARD_ADD(obj, icon, true, "folder");
+        IMAGE_ADD_NEW(obj, icon, "icon", "folder");
      }
 #ifdef HAVE_TIZEN
    if (!strcmp(part, "elm.swallow.icon1"))
      {
-        ICON_STANDARD_ADD(obj, icon, true, "folder1");
+        IMAGE_ADD_NEW(obj, icon, "icon", "folder1");
      }
    if (!strcmp(part, "elm.swallow.icon2"))
      {
-        ICON_STANDARD_ADD(obj, icon, true, "folder2");
+        IMAGE_ADD_NEW(obj, icon, "icon", "folder2");
      }
 #endif /* HAVE_TIZEN */
 
@@ -116,7 +116,7 @@ _group_item_icon_get(void *data,
      {
         if (group->main_group == NULL)
           {
-             ICON_STANDARD_ADD(obj, icon, true, "file")
+             IMAGE_ADD_NEW(obj, icon, "icon", "file");
           }
         else
           {
@@ -128,7 +128,7 @@ _group_item_icon_get(void *data,
      {
         if (group->main_group == NULL)
           {
-             ICON_STANDARD_ADD(obj, icon, true, "file1")
+             IMAGE_ADD_NEW(obj, icon, "icon", "file1");
           }
         else
           {
@@ -139,7 +139,7 @@ _group_item_icon_get(void *data,
      {
         if (group->main_group == NULL)
           {
-             ICON_STANDARD_ADD(obj, icon, true, "file2")
+             IMAGE_ADD_NEW(obj, icon, "icon", "file2");
           }
         else
           {
