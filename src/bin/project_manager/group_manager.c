@@ -444,7 +444,10 @@ gm_state_add(Project *pro, Part *part, const char *state_name, double state_valu
         request.resource_type = USAGE_TYPE; \
         request.name = name; \
         resource = resource_get(LIST, &request); \
-        resource_used_in_add(resource, (Resource *)state); \
+        if (resource) \
+          resource_used_in_add(resource, (Resource *)state); \
+        else \
+          ERR("" #TYPE " \"%s\" not found", name); \
         edje_edit_string_free(name); \
      }
 
