@@ -952,11 +952,8 @@ _part_select(void *data,
    Part *part = event_info;
 
    assert((MODE_NORMAL == wd->mode) || (MODE_CODE == wd->mode));
-   assert(part != NULL);
 
-   groupview_part_select(wd->normal.content, part->name);
-   evas_object_smart_callback_call(ap.win, SIGNAL_PART_SELECTED, part);
-   groupview_part_item_selected_set(wd->normal.content, part->current_item_name, part->current_item_name ? true : false);
+   groupview_part_select(wd->normal.content, (part) ? part->name : NULL);
 }
 
 static void
@@ -985,7 +982,7 @@ _groupview_clicked(void *data,
 
    assert((MODE_NORMAL == wd->mode) || (MODE_CODE == wd->mode));
 
-   group_navigator_part_select(wd->group_navi, part ? part : NULL);
+   group_navigator_select(wd->group_navi, part ? (Resource *)part : NULL);
    groupview_part_select(wd->normal.content, part ? part->name : NULL);
 }
 
@@ -1419,7 +1416,7 @@ workspace_part_item_add(Evas_Object *obj,
    assert((part->type == EDJE_PART_TYPE_TABLE) ||
           (part->type == EDJE_PART_TYPE_BOX));
 
-   group_navigator_part_select(wd->group_navi, part);
+   group_navigator_select(wd->group_navi, (Resource *)part);
    gm_part_item_add(ap.project, part, item_name);
    groupview_hard_update(wd->normal.content);
    group_navigator_part_item_add(wd->group_navi, part, item_name);
@@ -1443,7 +1440,7 @@ workspace_part_item_del(Evas_Object *obj,
    assert((part->type == EDJE_PART_TYPE_TABLE) ||
           (part->type == EDJE_PART_TYPE_BOX));
 
-   group_navigator_part_select(wd->group_navi, part);
+   group_navigator_select(wd->group_navi, (Resource *)part);
    gm_part_item_del(ap.project, part, item_name);
    group_navigator_part_item_del(wd->group_navi, part, item_name);
 }
@@ -1465,7 +1462,7 @@ workspace_part_state_add(Evas_Object *obj,
    request.name = part_name;
    part = (Part *)resource_get(wd->group->parts, &request);
 
-   group_navigator_part_select(wd->group_navi, part);
+   group_navigator_select(wd->group_navi, (Resource *)part);
    state = gm_state_add(ap.project, part, state_name, state_val);
    group_navigator_part_state_add(wd->group_navi, part, state);
 }
@@ -1516,7 +1513,7 @@ workspace_part_state_del(Evas_Object *obj,
    request.val = state_val;
    state = (State *)resource_get(part->states, (Resource *)&request);
 
-   group_navigator_part_select(wd->group_navi, part);
+   group_navigator_select(wd->group_navi, (Resource *)part);
    group_navigator_part_state_del(wd->group_navi, part, state);
    gm_state_del(ap.project, state);
 }
@@ -1540,7 +1537,7 @@ workspace_part_restack(Evas_Object *obj,
         rel_part = (Part *)resource_get(wd->group->parts, &request);
      }
 
-   group_navigator_part_select(wd->group_navi, part);
+   group_navigator_select(wd->group_navi, (Resource *)part);
    group_navigator_part_restack(wd->group_navi, part, rel_part);
    gm_part_restack(part, rel_part);
 
@@ -1562,7 +1559,7 @@ workspace_part_item_restack(Evas_Object *obj,
    request.name = part_name;
    part = (Part *)resource_get(wd->group->parts, &request);
 
-   group_navigator_part_select(wd->group_navi, part);
+   group_navigator_select(wd->group_navi, (Resource *)part);
    gm_part_item_restack(part, part_item_name, relative_part_item_name);
    group_navigator_part_item_restack(wd->group_navi, part, part_item_name, relative_part_item_name);
 
@@ -1819,7 +1816,7 @@ workspace_part_unselect_request(Evas_Object *obj)
    WS_DATA_GET(obj);
 
    if (wd->mode != MODE_DEMO)
-     group_navigator_part_select(wd->group_navi, NULL);
+     group_navigator_select(wd->group_navi, NULL);
 }
 
 void

@@ -74,38 +74,6 @@
  */
 #define SIGNAL_GROUP_DELETED "SIGNAL_GROUP_DELETED"
 
-/**
- * emited when part is selected.
- * eventinfo - pointer to Part structure
- *
- * @ingroup Window
- */
-#define SIGNAL_PART_SELECTED "SIGNAL_PART_SELECTED"
-
-/**
- * emited when program is selected.
- * eventinfo - pointer to Resource structure
- *
- * @ingroup Window
- */
-#define SIGNAL_PROGRAM_SELECTED "SIGNAL_PROGRAM_SELECTED"
-
-/**
- * emited when group_data is unselected.
- * eventinfo - pointer to Resource structure
- *
- * @ingroup Window
- */
-#define SIGNAL_GROUP_DATA_SELECTED "SIGNAL_GROUP_DATA_SELECTED"
-
-/**
- * emited when program is unselected.
- * eventinfo - pointer to Resource structure
- *
- * @ingroup Window
- */
-#define SIGNAL_GROUP_NAVIGATOR_UNSELECTED "SIGNAL_GROUP_NAVIGATOR_UNSELECTED"
-
 typedef struct {
    const char *old_name;
    const char *new_name;
@@ -141,14 +109,6 @@ typedef struct {
  * @ingroup Window
  */
 #define SIGNAL_STATE_ADDED "SIGNAL_STATE_ADDED"
-
-/**
- * emited when part state changed.
- * eventinfo - pointer to Part structure
- *
- * @ingroup Window
- */
-#define SIGNAL_PART_STATE_SELECTED "SIGNAL_PART_STATE_SELECTED"
 
 /**
  * emited when part item is selected.

@@ -132,9 +132,7 @@ struct _Group
    Eina_List *data_items;     /**< list of data */
 
    Evas_Object *edit_object;  /**< object needed to access group with edje_edit functions. Should be NULL if group is not open */
-   Part *current_part;        /**< pointer to selected part */
-   Program *current_program;  /**< pointer to selected program */
-   Resource *current_group_data;  /**< pointer to selected group_data */
+   Resource *current_selected;
 
    History *history;          /**< history of changes in the group */
 };

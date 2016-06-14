@@ -57,7 +57,7 @@ group_navigator_dummy_get(void);
  * @ingroup Partlist
  */
 void
-group_navigator_part_select(Evas_Object *obj, Part *part);
+group_navigator_select(Evas_Object *obj, Resource *res);
 
 /**
  * @ingroup Partlist

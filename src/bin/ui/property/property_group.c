@@ -61,9 +61,6 @@
 
 struct _Property_Group_Data {
    Group *group;
-   Part *part;
-   Program *program;
-   Resource *group_data;
 
    Resource_Name_Validator *part_name_validator;
    Resource_Name_Validator *group_data_name_validator;
@@ -199,70 +196,99 @@ static const char *image_border_fill_strings[] = { STR_NONE,
                                                    "Solid",
                                                    NULL};
 /* defines for args */
-TODO("remove NULL's after fixing genlist filters")
+static inline const char *
+_part_name_get(void)
+{
+   TODO("change to assert after fixing genlist filters")
+   if (!group_pd.group->current_selected)
+     return NULL;
+
+   if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_PART)
+     return group_pd.group->current_selected->name;
+
+   if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_STATE)
+     return ((State *)group_pd.group->current_selected)->part->name;
+
+   TODO("Add item case")
+   return NULL;
+}
+
+static inline const char *
+_state_name_get(void)
+{
+   TODO("change to assert after fixing genlist filters")
+   if (!group_pd.group->current_selected)
+     return NULL;
+
+   if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_STATE)
+     return group_pd.group->current_selected->name;
+
+   return NULL;
+}
+
+static inline double
+_state_val_get(void)
+{
+   TODO("change to assert after fixing genlist filters")
+   if (!group_pd.group->current_selected)
+     return 0;
+
+   if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_STATE)
+     return ((State *)group_pd.group->current_selected)->val;
+
+   return 0;
+}
+
+static inline const char *
+_item_name_get(void)
+{
+   TODO("change to assert after fixing genlist filters")
+   if (!group_pd.group->current_selected)
+     return NULL;
+
+   if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_ITEM)
+     return group_pd.group->current_selected->name;
+
+   return NULL;
+}
+
+static inline const char *
+_data_name_get(void)
+{
+   TODO("change to assert after fixing genlist filters")
+   if (!group_pd.group->current_selected)
+     return NULL;
+
+   if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_DATA)
+     return group_pd.group->current_selected->name;
+
+   return NULL;
+}
+
+static inline const char *
+_program_name_get(void)
+{
+   TODO("change to assert after fixing genlist filters")
+   if (!group_pd.group->current_selected)
+     return NULL;
+
+   if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_PROGRAM)
+     return group_pd.group->current_selected->name;
+
+   return NULL;
+}
+
 #define EDIT_OBJ group_pd.group->edit_object
-#define PART_ARGS (group_pd.part) ? group_pd.part->name : NULL
-#define GROUP_DATA_ARGS (group_pd.group_data) ? group_pd.group_data->name : NULL
-#define ITEM_ARGS PART_ARGS, (group_pd.part) ? group_pd.part->current_item_name : NULL
-#define STATE_ARGS PART_ARGS, (group_pd.part) ? group_pd.part->current_state->name : NULL, (group_pd.part) ? group_pd.part->current_state->val : 0
-#define STATE_SOURCE_ARGS str_val1, (group_pd.part) ? group_pd.part->current_state->name : NULL, (group_pd.part) ? group_pd.part->current_state->val : 0
-#define PROGRAM_ARGS (group_pd.program) ? group_pd.program->name : NULL
+#define PART_ARGS _part_name_get()
+#define GROUP_DATA_ARGS _data_name_get()
+#define ITEM_ARGS PART_ARGS, _item_name_get()
+#define STATE_ARGS PART_ARGS, _state_name_get(), _state_val_get()
+#define STATE_SOURCE_ARGS str_val1, _state_name_get(), _state_val_get()
+#define PROGRAM_ARGS _program_name_get()
 #define CHANGE_MERGE group_pd.history.change, true, true
 #define CHANGE_NO_MERGE group_pd.history.change, false, true
 
 /* global callbacks */
-static void
-_on_part_selected(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info)
-{
-   Property_Data *pd = data;
-   group_pd.part = event_info;
-
-   assert(pd != NULL);
-   assert(group_pd.part != NULL);
-
-   DBG("selected part \"%s\"", PART_ARGS);
-   group_pd.program = NULL;
-   group_pd.group_data = NULL;
-   resource_name_validator_resource_set(group_pd.part_name_validator, (Resource *)group_pd.part);
-
-   GENLIST_FILTER_APPLY(pd->genlist);
-   property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PART_TITLE]);
-   property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TITLE]);
-   if (group_pd.part->current_item_name != NULL)
-     property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PART_ITEM_TITLE]);
-}
-
-static void
-_on_group_navigator_unselected(void *data,
-                               Evas_Object *obj __UNUSED__,
-                               void *event_info __UNUSED__)
-{
-   Property_Data *pd = data;
-
-   assert(pd != NULL);
-
-   DBG("unselected_cb\n");
-   group_pd.part = NULL;
-   group_pd.program = NULL;
-   group_pd.group_data = NULL;
-   GENLIST_FILTER_APPLY(pd->genlist);
-}
-
-static void
-_on_part_state_selected(void *data __UNUSED__,
-                        Evas_Object *obj __UNUSED__,
-                        void *event_info)
-{
-   Part *part = event_info;
-
-   assert(group_pd.part == part);
-
-   DBG("selected state \"%s\"", group_pd.part->current_state->name);
-   property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TITLE]);
-}
-
 static Eina_Bool _expand_done = true;
 static void
 _expand_later_job(void *data)
@@ -276,52 +302,6 @@ _expand_later_job(void *data)
 }
 
 static void
-_on_program_selected(void *data,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info)
-{
-   Property_Data *pd = data;
-   group_pd.program = event_info;
-
-   assert(pd != NULL);
-   assert(group_pd.program != NULL);
-
-   DBG("selected program \"%s\"", group_pd.program->name);
-   group_pd.part = NULL;
-   group_pd.group_data = NULL;
-
-   GENLIST_FILTER_APPLY(pd->genlist);
-   property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_TITLE]);
-
-   if (_expand_done)
-     {
-        _expand_done = false;
-        ecore_job_add(_expand_later_job, group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_AFTER].glit);
-        ecore_job_add(_expand_later_job, group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TARGET].glit);
-     }
-}
-
-static void
-_on_group_data_selected(void *data,
-                        Evas_Object *obj __UNUSED__,
-                        void *event_info)
-{
-   Property_Data *pd = data;
-   group_pd.group_data = event_info;
-
-   assert(pd != NULL);
-   assert(group_pd.group_data != NULL);
-
-   DBG("selected group_data \"%s\"", group_pd.group_data->name);
-   group_pd.part = NULL;
-   group_pd.program = NULL;
-   resource_name_validator_resource_set(group_pd.group_data_name_validator, (Resource *)group_pd.group_data);
-
-   GENLIST_FILTER_APPLY(pd->genlist);
-   property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE]);
-}
-
-static void
 _on_group_changed(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info)
@@ -331,29 +311,49 @@ _on_group_changed(void *data,
 
    assert(pd != NULL);
 
-   DBG("group changed to \"%s\"", group_pd.group ? group_pd.group->name : NULL);
-   group_pd.part = group_pd.group ? group_pd.group->current_part : NULL;
-   group_pd.program = group_pd.group ? group_pd.group->current_program : NULL;
-   group_pd.group_data = group_pd.group ? group_pd.group->current_group_data : NULL;
    resource_name_validator_list_set(group_pd.part_name_validator, &group_pd.group->parts, false);
-   resource_name_validator_resource_set(group_pd.part_name_validator, (Resource *)group_pd.part);
    resource_name_validator_list_set(group_pd.group_data_name_validator, &group_pd.group->data_items, true);
-   resource_name_validator_resource_set(group_pd.group_data_name_validator, (Resource *)group_pd.group_data);
+   resource_name_validator_resource_set(group_pd.part_name_validator, group_pd.group->current_selected);
+   resource_name_validator_resource_set(group_pd.group_data_name_validator, group_pd.group->current_selected);
 
    GENLIST_FILTER_APPLY(pd->genlist);
 
-   if (group_pd.group)
-     property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_GROUP_TITLE]);
-
-   if (group_pd.group_data)
-     property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE]);
-
-   if (group_pd.part)
+   if (!group_pd.group->current_selected) /* group_only */
      {
+        DBG("selected group \"%s\"", group_pd.group ? group_pd.group->name : NULL);
+        property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_GROUP_TITLE]);
+     }
+   else if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_PART)
+     {
+        DBG("selected part \"%s\"", group_pd.group->current_selected->name);
         property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PART_TITLE]);
+     }
+   else if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_STATE)
+     {
+        DBG("selected state \"%s %.2f\"", _state_name_get(), _state_val_get());
         property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_STATE_TITLE]);
-        if (group_pd.part->current_item_name != NULL)
-          property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PART_ITEM_TITLE]);
+     }
+   else if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_ITEM)
+     {
+        DBG("selected program \"%s\"", group_pd.group->current_selected->name);
+        property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PART_ITEM_TITLE]);
+     }
+   else if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_DATA)
+     {
+        DBG("selected group_data \"%s\"", group_pd.group->current_selected->name);
+        property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE]);
+     }
+   else if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_PROGRAM)
+     {
+        DBG("selected program \"%s\"", group_pd.group->current_selected->name);
+        property_item_update_recursively(&group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_TITLE]);
+
+        if (_expand_done)
+          {
+             _expand_done = false;
+             ecore_job_add(_expand_later_job, group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_AFTER].glit);
+             ecore_job_add(_expand_later_job, group_pd.items[PROPERTY_GROUP_ITEM_PROGRAM_ACTION_TARGET].glit);
+          }
      }
 }
 
@@ -390,29 +390,32 @@ _filter_cb(Property_Attribute *pa)
 {
    assert(pa != NULL);
 
+   if (!group_pd.group) return false;
+
    switch (pa->type.group_item)
      {
       case PROPERTY_GROUP_ITEM_GROUP_TITLE:
-         return group_pd.group != NULL;
+         return group_pd.group->current_selected == NULL;
       case PROPERTY_GROUP_ITEM_PART_TITLE:
+         return ((group_pd.group->current_selected != NULL) && (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_PART));
       case PROPERTY_GROUP_ITEM_STATE_TITLE:
-         return group_pd.part != NULL;
-
+         return ((group_pd.group->current_selected != NULL) && (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_STATE));
       case PROPERTY_GROUP_ITEM_PART_ITEM_TITLE:
-         return group_pd.part &&
-            group_pd.part->current_item_name != NULL;
-
+         return ((group_pd.group->current_selected != NULL) && (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_ITEM));
       case PROPERTY_GROUP_ITEM_PROGRAM_TITLE:
-         return group_pd.program != NULL;
-
+         return ((group_pd.group->current_selected != NULL) && (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_PROGRAM));
       case PROPERTY_GROUP_ITEM_GROUP_DATA_TITLE:
-         return group_pd.group_data != NULL;
+         return ((group_pd.group->current_selected != NULL) && (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_DATA));
 
       default:
-         if (group_pd.part)
-           return !!(pa->filter_data.part_types & PART_MASK(group_pd.part->type));
-         else if (group_pd.program)
-           return !!(pa->filter_data.action_types & ACTION_MASK(group_pd.program->type));
+         if (group_pd.group->current_selected == NULL)
+            return true;
+         else if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_PART)
+           return !!(pa->filter_data.part_types & PART_MASK(((Part *)group_pd.group->current_selected)->type));
+         else if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_STATE)
+           return !!(pa->filter_data.part_types & PART_MASK(((State *)group_pd.group->current_selected)->part->type));
+         else if (group_pd.group->current_selected->resource_type == RESOURCE_TYPE_PROGRAM)
+           return !!(pa->filter_data.action_types & ACTION_MASK(((Program *)group_pd.group->current_selected)->type));
          else
            return true;
      }
@@ -421,10 +424,11 @@ _filter_cb(Property_Attribute *pa)
 static Eina_Bool
 _transition_filter_cb(Property_Attribute *pa)
 {
-   if (!group_pd.program) return false;
-   if (group_pd.program->type != EDJE_ACTION_TYPE_STATE_SET) return false;
+   if (group_pd.group->current_selected) return false;
+   if (group_pd.group->current_selected->resource_type != RESOURCE_TYPE_PROGRAM) return false;
+   if (((Program *)group_pd.group->current_selected)->type != EDJE_ACTION_TYPE_STATE_SET) return false;
 
-   Edje_Tween_Mode type = editor_program_transition_type_get(EDIT_OBJ, group_pd.program->name);
+   Edje_Tween_Mode type = editor_program_transition_type_get(EDIT_OBJ, group_pd.group->current_selected->name);
 
    assert(pa != NULL);
 
@@ -1072,7 +1076,7 @@ _parts_combobox_fill(Evas_Object *combo, const char *selected, int allowed_types
      {
         EINA_LIST_FOREACH(group_pd.group->parts, l, part)
           {
-             if ((PART_MASK(part->type) & allowed_types_mask) && (part != group_pd.part))
+             if ((PART_MASK(part->type) & allowed_types_mask) && (part != (Part *)group_pd.group->current_selected))
                ewe_combobox_item_add(combo, part->name);
           }
      }
@@ -1080,7 +1084,7 @@ _parts_combobox_fill(Evas_Object *combo, const char *selected, int allowed_types
      {
         EINA_LIST_FOREACH(group_pd.group->parts, l, part)
           {
-             if (part != group_pd.part)
+             if (part != (Part *)group_pd.group->current_selected)
                ewe_combobox_item_add(combo, part->name);
           }
      }
@@ -1286,7 +1290,8 @@ _afters_get(Property_Attribute *pa __UNUSED__)
    int i = 0;
 
    if (!group_pd.group) return NULL;
-   if (!group_pd.program) return NULL;
+   if (!group_pd.group->current_selected) return NULL;
+   if (group_pd.group->current_selected->resource_type != RESOURCE_TYPE_PROGRAM) return NULL;
 
    afters = edje_edit_program_afters_get(EDIT_OBJ, PROGRAM_ARGS);
    afters = eina_list_append(afters, NULL);
@@ -1317,7 +1322,7 @@ _targets_init_cb(Property_Attribute *pa, Property_Action *action)
    assert(action != NULL);
    assert(action->control != NULL);
 
-   switch (group_pd.program->type)
+   switch (((Program *)group_pd.group->current_selected)->type)
      {
       case EDJE_ACTION_TYPE_ACTION_STOP:
          _programs_combobox_fill(action->control, pa->data);
@@ -1387,7 +1392,8 @@ _targets_get(Property_Attribute *pa __UNUSED__)
    int i = 0;
 
    if (!group_pd.group) return NULL;
-   if (!group_pd.program) return NULL;
+   if (!group_pd.group->current_selected) return NULL;
+   if (group_pd.group->current_selected->resource_type != RESOURCE_TYPE_PROGRAM) return NULL;
 
    targets = edje_edit_program_targets_get(EDIT_OBJ, PROGRAM_ARGS);
    targets = eina_list_append(targets, NULL);
@@ -1432,8 +1438,8 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_NAME:
          str_val1 = eina_stringshare_printf("%s %.2f",
-                                            group_pd.part->current_state->name,
-                                            group_pd.part->current_state->val);
+                                            _state_name_get(),
+                                            _state_val_get());
          property_entry_set(action->control, str_val1);
          eina_stringshare_del(str_val1);
          break;
@@ -1446,7 +1452,7 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          free(code);
          break;
       case ATTRIBUTE_PART_ITEM_NAME:
-         property_entry_set(action->control, group_pd.part->current_item_name);
+         property_entry_set(action->control, _item_name_get());
          break;
       case ATTRIBUTE_STATE_IMAGE:
          str_val1 = edje_edit_state_image_get(EDIT_OBJ, STATE_ARGS);
@@ -1497,10 +1503,10 @@ _update_cb(Property_Attribute *pa, Property_Action *action)
          edje_edit_string_free(str_val1);
          break;
       case ATTRIBUTE_PART_TYPE:
-         elm_layout_text_set(action->control, NULL, gm_part_type_text_get(group_pd.part->type));
+         elm_layout_text_set(action->control, NULL, gm_part_type_text_get(((Part *)group_pd.group->current_selected)->type));
          break;
       case ATTRIBUTE_PROGRAM_ACTION:
-         elm_layout_text_set(action->control, NULL, action_type[group_pd.program->type]);
+         elm_layout_text_set(action->control, NULL, action_type[((Part *)group_pd.group->current_selected)->type]);
          break;
       case ATTRIBUTE_PART_SCALE:
          bool_val1 = edje_edit_part_scale_get(EDIT_OBJ, PART_ARGS);
@@ -2275,7 +2281,7 @@ _start_cb(Property_Attribute *pa, Property_Action *action)
          break;
       case ATTRIBUTE_STATE_NAME:
          group_pd.history.format = _("state name changed from \"%s\" to \"%s\"");
-         STR_VAL(str_val1, eina_stringshare_add(group_pd.part->current_state->name));
+         STR_VAL(str_val1, eina_stringshare_add(group_pd.group->current_selected->name));
          break;
       case ATTRIBUTE_PROGRAM_NAME:
          group_pd.history.format = _("program name changed from \"%s\" to \"%s\"");
@@ -5530,11 +5536,6 @@ property_group_init(Property_Data *pd)
 
    /* register global callbacks */
    evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_CHANGED, _on_group_changed, pd);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PART_SELECTED, _on_part_selected, pd);
-   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_NAVIGATOR_UNSELECTED, _on_group_navigator_unselected, pd);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PART_STATE_SELECTED, _on_part_state_selected, pd);
-   evas_object_smart_callback_add(ap.win, SIGNAL_PROGRAM_SELECTED, _on_program_selected, pd);
-   evas_object_smart_callback_add(ap.win, SIGNAL_GROUP_DATA_SELECTED, _on_group_data_selected, pd);
    evas_object_smart_callback_add(ap.win, SIGNAL_EDITOR_ATTRIBUTE_CHANGED, _on_editor_attribute_changed, pd);
 
    group_pd.part_name_validator = resource_name_validator_new(PART_NAME_REGEX, NULL);
